@@ -1,6 +1,6 @@
 {
     "name": "@budgie/contracts",
-    "version": "6.105.0",
+    "version": "6.106.1",
     "private": true,
     "description": "Contracts",
     "sideEffects": false,
@@ -28,13 +28,13 @@
         "test": "vitest run"
     },
     "dependencies": {
-        "@rnw-community/shared": "^2.2.0",
+        "@rnw-community/shared": "^2.28.0",
         "drizzle-orm": "1.0.0-rc.4",
-        "effect": "4.0.0"
+        "effect": "4.0.5"
     },
     "devDependencies": {
-        "@effect/vitest": "4.0.0",
-        "@types/node": "22.20.1",
-        "vitest": "^5.0.2"
+        "@effect/vitest": "4.0.5",
+        "@types/node": "26.6.5",
+        "vitest": "^5.0.5"
     }
 }

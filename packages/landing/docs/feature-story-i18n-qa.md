@@ -16,7 +16,7 @@ Companion to `docs/seo-pages.md` §12 (component contract) and `docs/lingui-rsc.
 
 ## 2. Copy budgets (translator brief)
 
-Keep these budgets when writing English source copy — non-`en` locales routinely run 10–20% longer, and callout labels in particular have zero margin (they sit in a numbered list beside or under the phone on mobile and in an 11–13rem column beside the frame on desktop; see §5):
+Keep these budgets when writing English source copy — non-`en` locales routinely run 10–20% longer, and callout labels in particular have zero margin (they sit in a numbered list beside or under the phone on mobile and in an 11–14.5rem column beside the frame on desktop; see §5):
 
 | Element | Budget |
 | --- | --- |
@@ -89,7 +89,7 @@ Run against a real `pnpm --filter @budgie-at/landing build` + `next start` (neve
 1. **No empty `msgstr` for your new strings** — `grep -B1 'msgstr ""' src/i18n/locales/<lang>/messages.po | grep '^#:'` should show none of your page's source paths, for de/es/fr/uk.
 2. **Overflow sweep, mobile and desktop, `de` + `uk`** (longest expansions), light and dark:
    - Mobile (360–390px): step title ≤ 2 lines (`getBoundingClientRect().height` ÷ computed `line-height`), callout list items wrap freely because the list takes its natural height and the phone shrinks to the remaining space; confirm the whole pinned panel fits the viewport at 390×844, 390×667 and 320×568, no horizontal scroll (`document.documentElement.scrollWidth === window.innerWidth`).
-   - Desktop (1280–1440px): step title ≤ 2 lines. Desktop labels sit in an 11–13rem column beside the frame and **legitimately wrap to 2 lines** by design — this is not the same constraint as mobile; do not flag desktop pill wrapping as a defect. Confirm instead that the pill stays inside the viewport and does not overlap the frame or the leader line.
+   - Desktop (1280–1440px): step title ≤ 2 lines. Desktop labels sit in an 11–14.5rem column beside the frame and **legitimately wrap to 2 lines** by design — this is not the same constraint as mobile; do not flag desktop pill wrapping as a defect. Confirm instead that the pill stays inside the viewport and does not overlap the frame or the leader line.
 3. **Aliased-string audit** — `pnpm i18n:extract`, compare the resulting total message count against what you expect (baseline + your genuinely-new strings). An unexpected jump larger than your new-string count means a string you meant to alias character-identically with an existing one (shared `alt`/callout phrasing across pages) was retyped with a variation instead of copied verbatim, so Lingui created a second `msgid` instead of deduping it.
 4. **Callout/`alt` collision check** — no callout label is a substring of its own shot's `alt` (§1, trap 2).
 5. **Placeholder audit** — no story string (`<Trans>`, `t`) takes an interpolation (`{variable}`, ICU plural). Story copy is static prose; a placeholder here is a sign the string should not be page-local.

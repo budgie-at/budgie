@@ -60,7 +60,7 @@ vi.mock('@app/@generic/runtime/app.runtime', async () => {
 import { mockServer } from './mock-server';
 
 beforeAll(() => {
-    mockServer.listen({ onUnhandledRequest: 'error' });
+    mockServer.listen({ onUnhandledFrame: 'error' });
 });
 
 beforeEach(() => {

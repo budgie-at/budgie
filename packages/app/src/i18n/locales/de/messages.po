@@ -2069,7 +2069,7 @@ msgstr "Regel bearbeiten"
 msgid "Edit Tag"
 msgstr "Tag bearbeiten"
 
-#: src/transaction/components/transaction-info-page/transaction-info-page.tsx
+#: src/transaction/components/transaction-info-page-content/transaction-info-page-content.tsx
 msgid "Edit transaction"
 msgstr "Transaktion bearbeiten"
 
@@ -4434,7 +4434,7 @@ msgstr "Transaktionen für {displayTitle} anzeigen"
 msgid "Show transactions when any main amount is inside this range, regardless of currency."
 msgstr "Transaktionen anzeigen, wenn ein Hauptbetrag in diesem Bereich liegt, unabhängig von der Währung."
 
-#: src/transaction/components/transaction-info-page/transaction-info-page.tsx
+#: src/transaction/components/transaction-info-page-content/transaction-info-page-content.tsx
 msgid "Similar transactions"
 msgstr "Ähnliche Transaktionen"
 

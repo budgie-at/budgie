@@ -277,7 +277,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 Motion is plain CSS, with no animation library:
 
 - Transitions and keyframes use the motion tokens in `styles/globals.css`: `--ease-out`, `--ease-in-out`, `--dur-fast`, `--dur-base`, `--dur-slow`.
-- Activation on scroll uses `IntersectionObserver` in a small client island (see `feature-story-stage.tsx`, `categorize-demo-player.tsx`).
+- Activation on scroll uses a passive scroll and resize listener resolving the active step and focused callout from the pinned panel offset via `getBoundingClientRect` in `feature-story-stage.tsx`, and `IntersectionObserver` in `categorize-demo-player.tsx`, both in small client islands.
 - Where supported, scroll-linked effects use CSS scroll-driven timelines inside `@supports (animation-timeline: view())`.
 - Every animation has a `prefers-reduced-motion: reduce` fallback (an opacity-only transition or no motion).
 

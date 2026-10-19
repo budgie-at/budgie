@@ -2,27 +2,25 @@
 
 import { useEffect, useRef } from 'react';
 
-import { emptyFn, isDefined, isEmptyArray } from '@rnw-community/shared';
+import { emptyFn, isDefined } from '@rnw-community/shared';
 
 import type { ReactNode } from 'react';
-
-const STORY_ANCHOR = 0.5;
 
 const readIndex = (element: Element) => Number(element.getAttribute('data-index') ?? 0);
 
 const createActivator = (grid: HTMLElement) => {
     const steps = [...grid.querySelectorAll<HTMLElement>('[data-story-step]')];
     const stages = [...grid.querySelectorAll<HTMLElement>('[data-story-stage]')];
-    const callouts = [...grid.querySelectorAll<HTMLElement>('[data-story-callout]')];
-    let activeIndex = -1;
+    const callouts = [...grid.querySelectorAll<HTMLElement>('[data-story-callout]')].map(callout => {
+        const index = readIndex(callout);
+        const peers = [...(callout.parentElement?.children ?? [])].filter(
+            peer => peer.hasAttribute('data-story-callout') && readIndex(peer) === index
+        );
 
-    return (index: number) => {
-        if (index === activeIndex) {
-            return;
-        }
+        return { callout, index, slot: peers.indexOf(callout), slots: peers.length };
+    });
 
-        activeIndex = index;
-
+    return (index: number, progress: number) => {
         const activeStageIndex = Math.max(0, ...stages.map(readIndex).filter(stageIndex => stageIndex <= index));
 
         steps.forEach(step => {
@@ -32,32 +30,11 @@ const createActivator = (grid: HTMLElement) => {
         stages.forEach(stage => {
             stage.toggleAttribute('data-active', readIndex(stage) === activeStageIndex);
         });
-        callouts.forEach(callout => {
-            callout.toggleAttribute('data-shown', readIndex(callout) <= index);
+        callouts.forEach(({ callout, index: calloutIndex, slot, slots }) => {
+            callout.toggleAttribute('data-shown', calloutIndex <= index);
+            callout.toggleAttribute('data-focus', calloutIndex === index && slot === Math.min(slots - 1, Math.floor(progress * slots)));
         });
     };
-};
-
-const observeStory = (sentinels: HTMLElement[], activate: (index: number) => void) => {
-    const resolveActiveIndex = () => {
-        const anchorLine = window.innerHeight * STORY_ANCHOR;
-        const lastPassed = sentinels.filter(sentinel => sentinel.getBoundingClientRect().top <= anchorLine).at(-1);
-
-        return isDefined(lastPassed) ? readIndex(lastPassed) : 0;
-    };
-
-    const observer = new IntersectionObserver(
-        () => {
-            activate(resolveActiveIndex());
-        },
-        { rootMargin: ['-50%', '0px', '-49%', '0px'].join(' '), threshold: 0 }
-    );
-
-    sentinels.forEach(sentinel => {
-        observer.observe(sentinel);
-    });
-
-    return observer;
 };
 
 interface Props {
@@ -67,37 +44,43 @@ interface Props {
 
 export const FeatureStoryStage = ({ count, children }: Props) => {
     const gridRef = useRef<HTMLDivElement>(null);
+    const panelRef = useRef<HTMLDivElement>(null);
     const positions = Array.from({ length: count }, (_, position) => position);
     const gridStyle = { '--story-steps': count };
 
     useEffect(() => {
         const grid = gridRef.current;
+        const panel = panelRef.current;
 
-        if (!isDefined(grid) || !('IntersectionObserver' in window)) {
-            return emptyFn;
-        }
-
-        const sentinels = [...grid.querySelectorAll<HTMLElement>('[data-story-sentinel]')];
-
-        if (isEmptyArray(sentinels)) {
+        if (!isDefined(grid) || !isDefined(panel)) {
             return emptyFn;
         }
 
         const activate = createActivator(grid);
-        const observer = observeStory(sentinels, activate);
+        const update = () => {
+            const gridBox = grid.getBoundingClientRect();
+            const panelBox = panel.getBoundingClientRect();
+            const position = ((panelBox.top - gridBox.top) / (gridBox.height - panelBox.height)) * count;
+            const index = Math.min(count - 1, Math.floor(position));
+
+            activate(index, position - index);
+        };
 
         grid.dataset.ready = '';
-        activate(0);
+        window.addEventListener('scroll', update, { passive: true });
+        window.addEventListener('resize', update);
+        update();
 
         return () => {
-            observer.disconnect();
+            window.removeEventListener('scroll', update);
+            window.removeEventListener('resize', update);
             grid.removeAttribute('data-ready');
         };
-    }, []);
+    }, [count]);
 
     return (
         <div className="story-grid" ref={gridRef} style={gridStyle}>
-            <div className="story-panel">
+            <div className="story-panel" ref={panelRef}>
                 <div aria-hidden="true" className="story-progress">
                     {positions.map(position => (
                         <span className="story-progress-segment" data-index={position} data-story-step key={position} />
@@ -105,20 +88,6 @@ export const FeatureStoryStage = ({ count, children }: Props) => {
                 </div>
                 {children}
             </div>
-            {positions.map(position => {
-                const sentinelStyle = { '--story-sentinel': position };
-
-                return (
-                    <span
-                        aria-hidden="true"
-                        className="story-sentinel"
-                        data-index={position}
-                        data-story-sentinel
-                        key={position}
-                        style={sentinelStyle}
-                    />
-                );
-            })}
         </div>
     );
 };

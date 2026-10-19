@@ -3,6 +3,56 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.107.0](https://github.com/budgie-at/budgie/compare/v6.106.4...v6.107.0) (2026-10-19)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+## [6.106.4](https://github.com/budgie-at/budgie/compare/v6.106.3...v6.106.4) (2026-10-19)
+
+### Bug Fixes
+
+* **app:** hide the first row divider under the transaction hero again ([#1604](https://github.com/budgie-at/budgie/issues/1604)) ([d0ab671](https://github.com/budgie-at/budgie/commit/d0ab67193fb0408e0b62af2cd0ea617f0639fb6e)), closes [#1600](https://github.com/budgie-at/budgie/issues/1600)
+
+
+## [6.106.3](https://github.com/budgie-at/budgie/compare/v6.106.2...v6.106.3) (2026-10-19)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+## [6.106.1](https://github.com/budgie-at/budgie/compare/v6.106.0...v6.106.1) (2026-10-18)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+# [6.106.0](https://github.com/budgie-at/budgie/compare/v6.105.0...v6.106.0) (2026-10-16)
+
+
+### Bug Fixes
+
+* **app:** label the debt amount by direction on the debt form ([973a1d5](https://github.com/budgie-at/budgie/commit/973a1d518664f7e8265d9670fef0e90f52cc3a01))
+* **market:** backfill historical fiat rates from ECB and revalue affected entries ([daf3146](https://github.com/budgie-at/budgie/commit/daf31464fc762c7862867207e00aece24dcc111b))
+* **market:** stop refetching a year of fiat rates for currencies the rate source does not cover ([66465f5](https://github.com/budgie-at/budgie/commit/66465f521c96ebcf2be071e0d16f9022620703b9))
+* **market:** stop the fiat backfill from blocking crypto market data on Hermes ([d73ab16](https://github.com/budgie-at/budgie/commit/d73ab162b079b8a24871594d0422fa02d7277750))
+
+
+### Performance Improvements
+
+* **landing:** replace looping clips with static screenshots and trim motion ([a58d749](https://github.com/budgie-at/budgie/commit/a58d74921f11f17c1ce73e451c272b6be9647f3c))
+
+
+
+
+
 # [6.105.0](https://github.com/budgie-at/budgie/compare/v6.104.1...v6.105.0) (2026-10-16)
 
 

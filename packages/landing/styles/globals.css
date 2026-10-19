@@ -1191,9 +1191,17 @@
     --story-frame-width: 22rem;
     --story-frame-height: calc(var(--story-frame-width) * 2.1722);
     --story-label-width: 11rem;
+    --story-gutter: 0.5rem;
+    --story-screen: rgb(255 255 255);
+    --story-rule: color-mix(in srgb, var(--story-ink) 20%, transparent);
 
     position: relative;
-    height: calc(var(--story-panel-height) + (var(--story-steps) - 1) * var(--story-step-scroll));
+    height: calc(var(--story-panel-height) + var(--story-steps) * var(--story-step-scroll));
+}
+
+.dark .story-grid {
+    --story-screen: rgb(0 0 0);
+    --story-rule: color-mix(in srgb, var(--story-ink) 26%, transparent);
 }
 
 .story-panel {
@@ -1204,19 +1212,6 @@
     gap: 0.875rem;
     height: var(--story-panel-height);
     padding-block: 0.75rem 1.25rem;
-}
-
-.story-sentinel {
-    position: absolute;
-    inset-inline: 0;
-    top: calc((var(--story-sentinel) - 0.5) * var(--story-step-scroll) + 50svh - var(--story-pin-top));
-    bottom: 0;
-    visibility: hidden;
-    pointer-events: none;
-}
-
-.story-sentinel[data-index='0'] {
-    top: 0;
 }
 
 .story-progress {
@@ -1327,7 +1322,7 @@
     z-index: 0;
     grid-area: 1 / 1;
     justify-self: center;
-    width: min(100cqw, calc(100cqh / 2.1722), 18rem);
+    width: min(100cqw - 3.5rem, calc(100cqh / 2.1722), 18rem);
     margin: 0;
     opacity: 0;
     transition: opacity 0s linear var(--story-fade);
@@ -1344,52 +1339,77 @@
     --phone-shadow: 0 0.75rem 1.75rem color-mix(in srgb, var(--story-ink) 22%, transparent);
 
     position: relative;
+    container-type: inline-size;
     counter-reset: story-callout;
 }
 
 .story-callout {
+    --story-inset: min(1rem, 6cqw);
+    --story-dot-x: clamp(5.11cqw + var(--story-inset), var(--story-callout-x) * 100cqw, 94.78cqw - var(--story-inset));
+    --story-dot-y: clamp(11.12cqw + var(--story-inset), var(--story-callout-y) * 217.22cqw, 206.1cqw - var(--story-inset));
+    --story-chip-y: calc(var(--story-callout-label-y) * 217.22cqw);
+    --story-leader-x: calc(100cqw + var(--story-gutter) - 0.3125rem - var(--story-dot-x));
+    --story-leader-y: calc(var(--story-chip-y) - var(--story-dot-y));
+    --story-chip: clamp(0.875rem, 12cqw, 1.125rem);
+    --story-delay: 0ms;
+
     position: absolute;
     inset: 0;
     counter-increment: story-callout;
     pointer-events: none;
 }
 
+.story-callout:nth-child(2 of .story-callout) {
+    --story-delay: 60ms;
+}
+
+.story-callout:nth-child(n + 3 of .story-callout) {
+    --story-delay: 120ms;
+}
+
 .story-callout-pin {
     position: absolute;
-    display: grid;
-    place-items: center;
-    width: 1.125rem;
-    height: 1.125rem;
+    top: var(--story-dot-y);
+    left: var(--story-dot-x);
+    width: 6px;
+    height: 6px;
     border-radius: 999px;
     background: var(--story-accent);
-    color: var(--pillar-on);
-    box-shadow: 0 0 0 0.1875rem color-mix(in srgb, var(--story-accent) 28%, transparent);
-    font-size: 0.6875rem;
-    font-weight: 600;
-    line-height: 1;
-    font-variant-numeric: tabular-nums;
+    box-shadow: 0 0 0 1.5px var(--story-screen);
     translate: -50% -50%;
     opacity: 0;
     scale: 0.6;
     transition:
-        opacity var(--story-fade) var(--ease-out),
-        scale var(--story-fade) var(--ease-out);
+        opacity var(--story-fade) var(--ease-out) var(--story-delay),
+        scale var(--story-fade) var(--ease-out) var(--story-delay),
+        box-shadow 200ms ease;
 }
 
 .story-callout-pin::before {
-    content: counter(story-callout);
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: inherit;
+    box-shadow: 0 0 0 1px var(--story-accent);
+    opacity: 0;
 }
 
-.story-callout:nth-child(2 of .story-callout) .story-callout-pin {
-    transition-delay: 40ms;
-}
-
-.story-callout:nth-child(3 of .story-callout) .story-callout-pin {
-    transition-delay: 80ms;
-}
-
-.story-callout:nth-child(n + 4 of .story-callout) .story-callout-pin {
-    transition-delay: 120ms;
+.story-callout-pin::after {
+    content: '';
+    position: absolute;
+    top: calc(50% - 0.5px);
+    left: 50%;
+    width: hypot(var(--story-leader-x), var(--story-leader-y));
+    height: 1px;
+    background-color: var(--story-rule);
+    -webkit-mask-image: linear-gradient(to right, transparent 7px, #000 7px);
+    mask-image: linear-gradient(to right, transparent 7px, #000 7px);
+    transform-origin: 0 50%;
+    rotate: atan2(var(--story-leader-y), var(--story-leader-x));
+    scale: 0 1;
+    transition:
+        scale 420ms var(--ease-out) calc(var(--story-delay) + 90ms),
+        background-color 200ms ease;
 }
 
 .story-callout[data-shown] .story-callout-pin,
@@ -1398,8 +1418,79 @@
     scale: 1;
 }
 
+.story-callout[data-shown] .story-callout-pin::after,
+.story-grid:not([data-ready]) .story-shot[data-index='0'] .story-callout[data-index='0'] .story-callout-pin::after {
+    scale: 1;
+}
+
+.story-callout[data-focus] .story-callout-pin {
+    box-shadow:
+        0 0 0 1.5px var(--story-screen),
+        0 0 0 4.5px color-mix(in srgb, var(--story-accent) 22%, transparent);
+}
+
+.story-callout[data-focus] .story-callout-pin::before {
+    animation: story-halo 2.4s var(--ease-out) 600ms infinite;
+}
+
+.story-callout[data-focus] .story-callout-pin::after {
+    background-color: color-mix(in srgb, var(--story-accent) 85%, transparent);
+}
+
+@keyframes story-halo {
+    0% {
+        opacity: 0.55;
+        scale: 0.6;
+    }
+
+    70%,
+    100% {
+        opacity: 0;
+        scale: 1.7;
+    }
+}
+
 .story-callout-label {
-    display: none;
+    position: absolute;
+    top: var(--story-chip-y);
+    left: calc(100% + var(--story-gutter));
+    font-size: 0;
+    visibility: hidden;
+    translate: 0 calc(var(--story-chip) / -2);
+    opacity: 0;
+    transition:
+        opacity var(--story-fade) var(--ease-out) calc(var(--story-delay) + 260ms),
+        color 200ms ease;
+}
+
+.story-callout[data-shown] .story-callout-label,
+.story-grid:not([data-ready]) .story-shot[data-index='0'] .story-callout[data-index='0'] .story-callout-label {
+    opacity: 1;
+}
+
+:is(.story-callout-label, .story-note)::before {
+    content: counter(story-callout);
+    display: grid;
+    place-items: center;
+    width: var(--story-chip);
+    height: var(--story-chip);
+    border-radius: 0.3125rem;
+    background: var(--pillar-tint);
+    color: var(--story-accent);
+    box-shadow: inset 0 0 0 0.5px color-mix(in srgb, var(--story-accent) 28%, transparent);
+    font-size: min(0.6875rem, var(--story-chip) * 0.6);
+    font-weight: 600;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    visibility: visible;
+    transition:
+        background-color 200ms ease,
+        color 200ms ease;
+}
+
+:is(.story-callout[data-focus] .story-callout-label, .story-note[data-focus])::before {
+    background: var(--story-accent);
+    color: var(--pillar-on);
 }
 
 .story-notes {
@@ -1428,32 +1519,26 @@
 }
 
 .story-note {
+    --story-chip: 1.25rem;
+
     display: grid;
-    grid-template-columns: 1.375rem minmax(0, 1fr);
-    gap: 0.625rem;
+    grid-template-columns: var(--story-chip) minmax(0, 1fr);
+    gap: 0.75rem;
     align-items: start;
     counter-increment: story-callout;
     font-size: 0.9375rem;
-    line-height: 1.4;
+    line-height: 1.25rem;
     font-weight: 500;
+    color: hsl(var(--muted-foreground));
     text-wrap: pretty;
     opacity: 0;
-    transition: opacity var(--story-fade) var(--ease-out);
+    transition:
+        opacity var(--story-fade) var(--ease-out),
+        color 200ms ease;
 }
 
-.story-note::before {
-    content: counter(story-callout);
-    display: grid;
-    place-items: center;
-    width: 1.375rem;
-    height: 1.375rem;
-    border-radius: 999px;
-    background: var(--story-accent);
-    color: var(--pillar-on);
-    font-size: 0.75rem;
-    font-weight: 600;
-    line-height: 1;
-    font-variant-numeric: tabular-nums;
+.story-note[data-focus] {
+    color: hsl(var(--foreground));
 }
 
 .story-note[data-shown],
@@ -1511,6 +1596,7 @@ section[data-density='COMPACT'] .story-grid {
 
     .story-grid {
         --story-step-scroll: 70svh;
+        --story-gutter: 1.25rem;
     }
 
     section[data-density='COMPACT'] .story-grid {
@@ -1607,7 +1693,7 @@ section[data-density='COMPACT'] .story-grid {
     }
 
     .story-device {
-        width: calc(var(--story-frame-width) + 4rem + var(--story-label-width));
+        width: calc(var(--story-frame-width) + 6rem + var(--story-label-width));
         height: 100%;
         padding-inline: 2.75rem 0;
         overflow: hidden;
@@ -1633,40 +1719,30 @@ section[data-density='COMPACT'] .story-grid {
         --phone-shadow: 0 1.25rem 2.25rem color-mix(in srgb, var(--story-ink) 22%, transparent);
     }
 
-    .story-callout-pin {
-        width: 1.625rem;
-        height: 1.625rem;
-        font-size: 0.8125rem;
+    .story-callout {
+        --story-chip: 1.25rem;
     }
 
     .story-callout-label {
-        position: absolute;
-        left: calc(100% + 1.25rem);
-        display: block;
-        width: var(--story-label-width);
-        translate: 0 -50%;
-        font-size: 1.0625rem;
-        line-height: 1.35;
+        width: calc(var(--story-label-width) + var(--story-chip) + 0.75rem);
+        padding-left: calc(var(--story-chip) + 0.75rem);
+        font-size: 0.9375rem;
+        line-height: var(--story-chip);
         font-weight: 500;
-        color: hsl(var(--foreground));
+        letter-spacing: -0.011em;
+        color: hsl(var(--muted-foreground));
         text-wrap: pretty;
-        opacity: 0;
-        transition: opacity var(--story-fade) var(--ease-out);
+        visibility: visible;
+    }
+
+    .story-callout[data-focus] .story-callout-label {
+        color: hsl(var(--foreground));
     }
 
     .story-callout-label::before {
-        content: '';
         position: absolute;
-        top: calc(50% + var(--story-callout-shift) * var(--story-frame-height));
-        right: calc(100% + 0.25rem);
-        width: calc((1 - var(--story-callout-x)) * var(--story-frame-width) + 0.25rem);
-        border-top: 1px solid var(--story-accent);
-        opacity: 0.55;
-    }
-
-    .story-callout[data-shown] .story-callout-label,
-    .story-grid:not([data-ready]) .story-shot[data-index='0'] .story-callout[data-index='0'] .story-callout-label {
-        opacity: 1;
+        top: 0;
+        left: 0;
     }
 
     .story-notes {
@@ -1677,7 +1753,7 @@ section[data-density='COMPACT'] .story-grid {
 @media (min-width: 1280px) {
     .story-grid {
         --story-frame-width: 26.5rem;
-        --story-label-width: 13rem;
+        --story-label-width: 14.5rem;
     }
 }
 
@@ -1688,7 +1764,18 @@ section[data-density='COMPACT'] .story-grid {
 
     .story-callout-pin {
         scale: 1;
-        transition: opacity var(--story-fade) linear;
+        transition:
+            opacity var(--story-fade) linear,
+            box-shadow 200ms ease;
+    }
+
+    .story-callout-pin::after {
+        scale: 1;
+        transition: background-color 200ms ease;
+    }
+
+    .story-callout[data-focus] .story-callout-pin::before {
+        animation: none;
     }
 
     .story-progress-segment::after {

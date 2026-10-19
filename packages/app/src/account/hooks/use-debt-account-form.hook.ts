@@ -16,7 +16,10 @@ interface DebtAccountFormValues extends Omit<DebtAccountCreateInputInterface, 'c
 export const useDebtAccountForm = (
     initialValues: DebtAccountFormValues,
     onSubmit: (values: DebtAccountFormValues) => Promise<AccountEntityInterface>
-) => {
+): ReturnType<typeof useAccountEntityForm<DebtAccountFormValues>> & {
+    readonly debtType: DebtAccountFormValues['debtType'];
+    readonly instrument: ReturnType<typeof useGetInstrumentByIdQuery>['instrument'];
+} => {
     const form = useAccountEntityForm(
         standardSchemaResolver(Schema.toStandardSchemaV1(DebtAccountCreateInputSchema)),
         initialValues,

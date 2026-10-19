@@ -15,10 +15,8 @@ import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { NetWorthAssetChips } from '../net-worth-asset-chips/net-worth-asset-chips';
 
 import type { LayoutChangeEvent } from 'react-native';
-import type { SharedValue } from 'react-native-reanimated';
 
 interface Props {
-    readonly scrollY: SharedValue<number>;
     readonly netWorth: number;
     readonly fiatTotal: number;
     readonly cryptoTotal: number;
@@ -31,7 +29,7 @@ const HEADER_EXPANDED_HEIGHT = 156;
 const SCROLL_THRESHOLD = 100;
 const EXPANDED_CONTENT_HORIZONTAL_PADDING = 40;
 
-export const NetWorthCollapsibleHeader = ({ scrollY, netWorth, fiatTotal, cryptoTotal, fiatCount, cryptoCount }: Props) => {
+export const NetWorthCollapsibleHeader = ({ netWorth, fiatTotal, cryptoTotal, fiatCount, cryptoCount }: Props) => {
     const { defaultInstrument } = useSettingsContext();
     const isRunwayPillEnabled = useSetting('isRunwayPillEnabled');
     const formatDigits = useDisplayFormatDigits();
@@ -91,7 +89,6 @@ export const NetWorthCollapsibleHeader = ({ scrollY, netWorth, fiatTotal, crypto
         <View className="pt-safe">
             <CollapsibleHeader
                 testID={HomePageSelector.TotalBalance}
-                scrollY={scrollY}
                 expandedHeight={HEADER_EXPANDED_HEIGHT}
                 collapsedHeight={HEADER_COLLAPSED_HEIGHT}
                 collapseDistance={SCROLL_THRESHOLD}

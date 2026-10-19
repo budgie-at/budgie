@@ -1,6 +1,9 @@
 import { AccountWithSyncEntityInterface } from '@budgie/contracts';
+import { SectionList } from 'react-native';
+import Animated from 'react-native-reanimated';
 
-import { AnimatedSectionList } from '../../../@generic/component/animated-section-list/animated-section-list';
+import { useScreenChromeScrollProps } from '@rnw-community/react-native-screen-chrome';
+
 import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../../@generic/constant/floating-tab-bar.constant';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { COLLAPSIBLE_NET_WORTH_HEADER_SCROLL_SPACER_MIN_ACCOUNT_COUNT } from '../../constant/collapsible-net-worth-header-scroll-spacer.constant';
@@ -14,10 +17,13 @@ import { HomeSectionHeader } from '../home-section-header/home-section-header';
 import { HomeSectionItem } from '../home-section-item/home-section-item';
 
 import type { ReactElement } from 'react';
-import type { SharedValue } from 'react-native-reanimated';
+
+type HomeSectionsListItem = AccountRowInterface | CryptoCurrencyGroupInterface | AccountWithSyncEntityInterface;
+
+const AnimatedSectionList = Animated.createAnimatedComponent(SectionList<HomeSectionsListItem, HomeSectionInterface>);
+const LIST_HORIZONTAL_PADDING = 20;
 
 interface Props {
-    readonly scrollY: SharedValue<number>;
     readonly sections: HomeSectionInterface[];
     readonly activeAccountCount: number;
     readonly bottomInset: number;
@@ -25,10 +31,18 @@ interface Props {
     readonly listHeaderComponent?: ReactElement;
 }
 
-export const HomeSectionsList = ({ scrollY, sections, activeAccountCount, bottomInset, balanceSummary, listHeaderComponent }: Props) => {
+export const HomeSectionsList = ({ sections, activeAccountCount, bottomInset, balanceSummary, listHeaderComponent }: Props) => {
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
     const bottomPadding = FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottomInset;
-    const contentContainerStyle = { paddingBottom: bottomPadding, paddingHorizontal: 20, flexGrow: 1 };
+    const scrollProps = useScreenChromeScrollProps({
+        contentContainerStyle: {
+            paddingTop: 0,
+            paddingBottom: bottomPadding,
+            paddingLeft: LIST_HORIZONTAL_PADDING,
+            paddingRight: LIST_HORIZONTAL_PADDING,
+            flexGrow: 1
+        }
+    });
     const listFormatKey = `${defaultInstrument.id}-${decimalPlaces}`;
     const listFooterComponent =
         activeAccountCount > COLLAPSIBLE_NET_WORTH_HEADER_SCROLL_SPACER_MIN_ACCOUNT_COUNT ? (
@@ -39,15 +53,11 @@ export const HomeSectionsList = ({ scrollY, sections, activeAccountCount, bottom
         <HomeSectionHeader section={section} balanceSummary={balanceSummary} />
     );
 
-    const renderItem = ({
-        item,
-        section
-    }: {
-        item: AccountRowInterface | CryptoCurrencyGroupInterface | AccountWithSyncEntityInterface;
-        section: HomeSectionInterface;
-    }) => <HomeSectionItem item={item} section={section} balanceSummary={balanceSummary} />;
+    const renderItem = ({ item, section }: { item: HomeSectionsListItem; section: HomeSectionInterface }) => (
+        <HomeSectionItem item={item} section={section} balanceSummary={balanceSummary} />
+    );
 
-    const keyExtractor = (item: AccountRowInterface | CryptoCurrencyGroupInterface | AccountWithSyncEntityInterface) => {
+    const keyExtractor = (item: HomeSectionsListItem) => {
         if ('type' in item) {
             return `debt-${item.id}`;
         }
@@ -56,9 +66,8 @@ export const HomeSectionsList = ({ scrollY, sections, activeAccountCount, bottom
     };
 
     return (
-        <AnimatedSectionList<AccountRowInterface | CryptoCurrencyGroupInterface | AccountWithSyncEntityInterface, HomeSectionInterface>
+        <AnimatedSectionList
             key={listFormatKey}
-            scrollY={scrollY}
             sections={sections}
             renderSectionHeader={renderSectionHeader}
             renderItem={renderItem}
@@ -66,10 +75,10 @@ export const HomeSectionsList = ({ scrollY, sections, activeAccountCount, bottom
             extraData={listFormatKey}
             showsVerticalScrollIndicator={false}
             stickySectionHeadersEnabled
-            contentContainerStyle={contentContainerStyle}
             ListHeaderComponent={listHeaderComponent}
             ListFooterComponent={listFooterComponent}
             ListEmptyComponent={AccountsEmptyState}
+            {...scrollProps}
         />
     );
 };

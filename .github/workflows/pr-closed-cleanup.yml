@@ -5,48 +5,18 @@ on:
         types: [closed]
 
 permissions:
-    actions: write
+    contents: read
 
 jobs:
     cleanup:
-        name: Cancel queued/in-progress runs for the closed PR branch
+        name: Cancel the closed PR's runs and delete its OTA previews
+        # contents: write lets mobile-ci's delete-ota-previews job remove the
+        # closed PR's expo-ota-preview releases and tags
+        # (<prefix>-<app-scope>-pr-<number>-<sha>); the prefix must match the
+        # release-tag-prefix pr.yml passes to expo-ota-preview.yml.
         permissions:
             actions: write
-        uses: rnw-community/mobile-ci/.github/workflows/pr-closed-cleanup-reusable.yml@v3.1.0 # v3.1.0
-
-    ota-preview-cleanup:
-        name: Delete OTA preview releases for the closed PR
-        needs: cleanup
-        if: always()
-        runs-on: [self-hosted, linux-portable-2x4]
-        permissions:
             contents: write
-            actions: read
-        steps:
-            - name: Wait for the PR's workflow runs to stop and delete its preview releases
-              uses: actions/github-script@v9
-              with:
-                  script: |
-                      const { owner, repo } = context.repo;
-                      const prNumber = context.payload.pull_request.number;
-                      const branch = context.payload.pull_request.head.ref;
-                      const countActiveRuns = async () => {
-                          const runs = await github.paginate(github.rest.actions.listWorkflowRunsForRepo, { owner, repo, branch, per_page: 100 });
-                          return runs.filter(run => run.status === 'queued' || run.status === 'in_progress').length;
-                      };
-                      for (let attempt = 1; attempt <= 20; attempt += 1) {
-                          const active = await countActiveRuns();
-                          if (active === 0) {
-                              core.info(`No queued or in-progress runs for '${branch}'.`);
-                              break;
-                          }
-                          core.info(`Waiting for ${active} active run(s) on '${branch}' (attempt ${attempt}).`);
-                          await new Promise(resolve => setTimeout(resolve, 15_000));
-                      }
-                      const previewTag = new RegExp(`^ota-.*-pr-${prNumber}-`);
-                      const releases = await github.paginate(github.rest.repos.listReleases, { owner, repo, per_page: 100 });
-                      for (const release of releases.filter(candidate => previewTag.test(candidate.tag_name))) {
-                          await github.rest.repos.deleteRelease({ owner, repo, release_id: release.id });
-                          await github.rest.git.deleteRef({ owner, repo, ref: `tags/${release.tag_name}` });
-                          core.info(`Deleted ${release.tag_name}.`);
-                      }
+        uses: rnw-community/mobile-ci/.github/workflows/pr-closed-cleanup-reusable.yml@b9502c1c3ea1c933485b3e657b47574072ed7ddf # v3.3.1
+        with:
+            ota-preview-release-tag-prefix: ota-pr${{ github.event.pull_request.number }}

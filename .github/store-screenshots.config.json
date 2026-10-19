@@ -24,13 +24,13 @@
     ],
     "capture-scenes": [
         { "name": "00-prime", "flow": "flows/setup/prime-deep-links-scene.flow.yaml" },
-        { "name": "01-home", "deepLink": "budgie://" },
-        { "name": "02-transactions", "deepLink": "budgie://transactions" },
-        { "name": "03-analytics", "deepLink": "budgie://analytics" },
-        { "name": "04-budget", "deepLink": "budgie://budget" },
-        { "name": "05-add-expense", "deepLink": "budgie://create-transaction/expense" },
-        { "name": "06-account", "deepLink": "budgie://account/1/details" },
-        { "name": "07-settings", "deepLink": "budgie://settings" }
+        { "name": "01-home", "deepLink": "budgie://", "readySelector": { "id": "HomePage.TotalBalance" } },
+        { "name": "02-transactions", "deepLink": "budgie://transactions", "readySelector": { "id": "TransactionsPage.Container" } },
+        { "name": "03-analytics", "deepLink": "budgie://analytics", "readySelector": { "id": "AnalyticsPage.Container" } },
+        { "name": "04-budget", "deepLink": "budgie://budget", "readySelector": { "id": "BudgetDetails.EditButton" } },
+        { "name": "05-add-expense", "deepLink": "budgie://create-transaction/expense", "readySelector": { "id": "TransactionForm.AmountInput" } },
+        { "name": "06-account", "deepLink": "budgie://account/1/details", "readySelector": { "id": "AccountDetails.Page" } },
+        { "name": "07-settings", "deepLink": "budgie://settings", "readySelector": { "id": "SettingsPage.Container" } }
     ],
     "screenshots-dir": "tests/app-tests",
     "maestro-config": "tests/app-tests/config.yaml",

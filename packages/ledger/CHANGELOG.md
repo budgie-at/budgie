@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.106.1](https://github.com/budgie-at/budgie/compare/v6.106.0...v6.106.1) (2026-10-18)
+
+**Note:** Version bump only for package @budgie/ledger
+
+
+
+
+
+# [6.106.0](https://github.com/budgie-at/budgie/compare/v6.105.0...v6.106.0) (2026-10-16)
+
+
+### Bug Fixes
+
+* **market:** backfill historical fiat rates from ECB and revalue affected entries ([daf3146](https://github.com/budgie-at/budgie/commit/daf31464fc762c7862867207e00aece24dcc111b))
+
+
+
+
+
 # [6.105.0](https://github.com/budgie-at/budgie/compare/v6.104.1...v6.105.0) (2026-10-16)
 
 **Note:** Version bump only for package @budgie/ledger
