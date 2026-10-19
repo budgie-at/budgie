@@ -112,7 +112,8 @@ SET
           AND transactions.consolidation_parent_transaction_id IS NULL
           AND (transaction_entries.original_transaction_id IS NULL OR transactions.consolidation_type = 'REFUND')
     ), 0),
-    updated_at = unixepoch('now');
+    updated_at = unixepoch('now')
+WHERE account_id IN (SELECT account_id FROM overlay_ledger);
 
 DROP TABLE overlay_opening;
 DROP TABLE overlay_ledger;
