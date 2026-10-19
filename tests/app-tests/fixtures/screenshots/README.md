@@ -73,8 +73,8 @@ the seed hook owns both, because the same overlay is reused for the `light` and
 ## Scene overlays
 
 The store scenes have their own overlays, `scenes/<NN>-<scene>.sql`:
-`01-home`, `06-account` and `08-widgets` add every account kind on top of a
-~65% budget, `03-analytics` moves everything before today back so the previous
+`01-home` and `06-account` add every account kind on top of a ~65% budget and
+book opening balances so every asset account ends positive, `03-analytics` moves everything before today back so the previous
 calendar month ends full, `05-add-expense` seeds a pattern the suggestion row
 offers at capture time, `07-settings` turns screenshot protection on and
 `09-inbox` leaves the newest expenses uncategorized.
@@ -127,7 +127,7 @@ overlay.
 | `long-history.sql`           | the newest base transactions replayed monthly over 17 months                                                      |
 | `net-worth-full.sql`         | every live account included in net worth, with fresh rate timestamps                                              |
 | `budget-healthy.sql`         | budget 1 limits derived from the period's spend: ~65% overall, categories split between green and amber          |
-| `positive-travel-card.sql`   | the Travel Card's negative balance mirrored to positive, so no account card shows a negative amount              |
+| `opening-balances.sql`       | an opening ADJUSTMENT per asset account short of its intended balance, then `account_balances` set to the ledger |
 
 Every overlay keeps amounts in micro-units (`PRECISION = 1_000_000`) and dates
 in epoch seconds, and is safe to apply more than once, matching

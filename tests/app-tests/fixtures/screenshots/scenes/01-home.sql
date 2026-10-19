@@ -4,4 +4,4 @@
 .read shared/debt.sql
 .read shared/net-worth-full.sql
 .read shared/budget-healthy.sql
-.read shared/positive-travel-card.sql
+.read shared/opening-balances.sql

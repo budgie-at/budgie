@@ -41,7 +41,7 @@ synthesize_frame "$FRAMES_DIR/Apple iPad Pro (12.9-inch) (4th generation) Space 
 
 RAW_DIR="$WORK_DIR/raw/ios/iphone-17-pro-max/en/light"
 mkdir -p "$RAW_DIR"
-for scene in 01-home 03-analytics 04-budget 05-add-expense 06-account 07-settings 08-widgets 09-inbox; do
+for scene in 01-home 03-analytics 04-budget 05-add-expense 06-account 07-settings 09-inbox; do
     magick -size 1320x2868 gradient:'#3366FF-#FFFFFF' -alpha off "$RAW_DIR/$scene.png"
 done
 
@@ -61,7 +61,7 @@ HOME="$FAKE_HOME" CAPTION_FONT="$REPO_ROOT/packages/app/assets/fonts/FixelDispla
 
 PUBLISHED_DIR="$WORK_DIR/screenshots/variants/selftest/ios/en-US"
 HOME_SHOT="$PUBLISHED_DIR/01_iphone_home.png"
-assert_equals 'the whole iPhone run is published' "$(find "$PUBLISHED_DIR" -maxdepth 1 -name '*.png' | wc -l | tr -d ' ')" '8'
+assert_equals 'the whole iPhone run is published' "$(find "$PUBLISHED_DIR" -maxdepth 1 -name '*.png' | wc -l | tr -d ' ')" '7'
 assert_equals 'output keeps the exact capture pixel size deliver matches slots on' "$(magick identify -format "%wx%h" "$HOME_SHOT")" '1320x2868'
 assert_equals 'the store variant stays opaque (it ships a palette plate)' "$(magick identify -format "%A" "$HOME_SHOT")" 'Undefined'
 assert_equals 'the brand canvas fills the canvas corner' "$(magick "$HOME_SHOT" -format "%[hex:p{0,0}]" info:)" '003B25'

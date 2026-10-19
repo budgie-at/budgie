@@ -1,4 +1,4 @@
--- Derives budget 1 limits from the current period's spend so the overall bar lands near 65% with a green and amber category mix.
+-- Derives budget 1 limits from the current period's spend, converted to the base currency, so the overall bar lands near 65% with a green and amber category mix.
 
 CREATE TEMP TABLE overlay_unit AS
 SELECT CASE settings.language WHEN 'uk' THEN 100000000 ELSE 10000000 END AS rounding_unit
@@ -16,9 +16,21 @@ WHERE budgets.id = 1;
 CREATE TEMP TABLE overlay_spend AS
 SELECT
     transaction_entries.category_id AS category_id,
-    SUM(transaction_entries.amount) AS amount
+    SUM(transaction_entries.amount * CASE
+        WHEN accounts.instrument_id = settings.default_instrument_id THEN 1.0
+        ELSE COALESCE((
+            SELECT exchange_rates.rate
+            FROM exchange_rates
+            WHERE exchange_rates.base_instrument_id = accounts.instrument_id
+              AND exchange_rates.quote_instrument_id = settings.default_instrument_id
+            ORDER BY exchange_rates.updated_at DESC
+            LIMIT 1
+        ), 1.0)
+    END) AS amount
 FROM transaction_entries
 INNER JOIN transactions ON transactions.id = transaction_entries.transaction_id
+INNER JOIN accounts ON accounts.id = transaction_entries.account_id
+CROSS JOIN settings
 WHERE transactions.type = 'EXPENSE'
   AND transactions.deleted_at IS NULL
   AND transaction_entries.type = 'CREDIT'

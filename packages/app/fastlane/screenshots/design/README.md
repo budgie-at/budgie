@@ -44,7 +44,7 @@ with the cutout rectangle leaves only the screen opening.
 
 ## Story
 
-Eight slides per device, in store order. The output filename sets the order;
+Seven slides per device, in store order. The output filename sets the order;
 the scene name is the raw capture it is built from.
 
 | Slot | Scene            | Message                                                  |
@@ -53,10 +53,9 @@ the scene name is the raw capture it is built from.
 | 2    | `05-add-expense` | One tap on the pattern suggestion fills category and sum |
 | 3    | `03-analytics`   | Last calendar month, full of categories and income       |
 | 4    | `04-budget`      | Category limits, a mix of green and amber                |
-| 5    | `08-widgets`     | Net worth and budget widgets on the Home Screen          |
-| 6    | `09-inbox`       | Categorize inbox with history-based suggestions          |
-| 7    | `06-account`     | Home scrolled to crypto, deposits and debts              |
-| 8    | `07-settings`    | Privacy and security, screenshot protection on           |
+| 5    | `09-inbox`       | Categorize inbox with history-based suggestions          |
+| 6    | `06-account`     | Home scrolled to crypto, deposits and debts              |
+| 7    | `07-settings`    | Privacy and security, screenshot protection on           |
 
 The first three slides carry the pitch on their own, because a search result
 shows only those.
@@ -69,9 +68,6 @@ bottom, so the gap stays fixed whatever the copy length. The device is sized by
 width (80% of the canvas, 92% on slot 1 and 88% on the iPad's slot 1) and is
 allowed to run past the bottom edge, so the screen reads larger than a fully
 framed device would.
-
-Slot 5 is the only tilted slide (-5°), to set the Home Screen apart from the
-in-app screens.
 
 ## Typography
 

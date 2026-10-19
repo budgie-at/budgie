@@ -30,7 +30,6 @@
         { "name": "05-add-expense", "flow": "flows/store/05-add-expense.flow.yaml" },
         { "name": "06-account", "flow": "flows/media/net-worth-tracker-2.flow.yaml" },
         { "name": "07-settings", "deepLink": "budgie://settings", "readySelector": { "id": "SettingsPage.Container" } },
-        { "name": "08-widgets", "flow": "flows/store/08-widgets.flow.yaml" },
         { "name": "09-inbox", "flow": "flows/media/bulk-categorize-transactions-1.flow.yaml" }
     ],
     "screenshots-dir": "tests/app-tests",

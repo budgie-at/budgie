@@ -68,10 +68,9 @@ CANVAS_PALETTES=(
     '#013B22|#00140A|7,118,73'
     '#003B29|#00150D|0,119,86'
     '#003B23|#00140B|0,119,76'
-    '#003C2C|#00150F|0,119,92'
     '#043B20|#001409|18,118,70'
     '#003B28|#00140D|0,119,84'
-    '#003B25|#00140C|0,119,80'
+    '#003C2C|#00150F|0,119,92'
 )
 TEXT_HEX='#FFFFFF'
 HIGHLIGHT_HEX='#54EAA6'
@@ -328,7 +327,7 @@ build_shadow() {
 }
 
 compose_one() {
-    local device="$1" scene="$2" appearance="$3" palette_index="$4" width_fraction="$5" tilt="$6" out_name="$7"
+    local device="$1" scene="$2" appearance="$3" palette_index="$4" width_fraction="$5" out_name="$6"
     local device_slug frame_file cutout_x cutout_y cutout_w cutout_h
     local src canvas_w canvas_h headline subline chips work
     local top_hex bottom_hex glow_rgb frame_w frame_h device_w device_h device_x device_y
@@ -386,9 +385,8 @@ compose_one() {
     frame_h="$(magick identify -format "%h" "$frame_file")"
     device_w=$(calc "$canvas_w * $width_fraction")
     device_h=$(calc "$device_w * $frame_h / $frame_w")
-    magick "$work/framed-device.png" -resize "${device_w}x${device_h}!" -background none -rotate "$tilt" +repage \
+    magick "$work/framed-device.png" -resize "${device_w}x${device_h}!" \
         -define png:color-type=6 -depth 8 "$work/framed-device-scaled.png"
-    device_w="$(magick identify -format "%w" "$work/framed-device-scaled.png")"
     device_x=$(((canvas_w - device_w) / 2))
     device_y=$((text_y + stack_h + $(calc "$canvas_h * $TEXT_DEVICE_GAP_FRACTION")))
 
@@ -418,36 +416,34 @@ compose_one() {
 }
 
 SCENES=(
-    "iphone|01-home|0|0.92|0|01_iphone_home.png"
-    "iphone|05-add-expense|1|0.80|0|02_iphone_add-expense.png"
-    "iphone|03-analytics|2|0.80|0|03_iphone_analytics.png"
-    "iphone|04-budget|3|0.80|0|04_iphone_budget.png"
-    "iphone|08-widgets|4|0.78|-5|05_iphone_widgets.png"
-    "iphone|09-inbox|5|0.80|0|06_iphone_inbox.png"
-    "iphone|06-account|6|0.80|0|07_iphone_account.png"
-    "iphone|07-settings|7|0.80|0|08_iphone_settings.png"
-    "ipad|01-home|0|0.88|0|21_ipad_home.png"
-    "ipad|05-add-expense|1|0.80|0|22_ipad_add-expense.png"
-    "ipad|03-analytics|2|0.80|0|23_ipad_analytics.png"
-    "ipad|04-budget|3|0.80|0|24_ipad_budget.png"
-    "ipad|08-widgets|4|0.76|-5|25_ipad_widgets.png"
-    "ipad|09-inbox|5|0.80|0|26_ipad_inbox.png"
-    "ipad|06-account|6|0.80|0|27_ipad_account.png"
-    "ipad|07-settings|7|0.80|0|28_ipad_settings.png"
+    "iphone|01-home|0|0.92|01_iphone_home.png"
+    "iphone|05-add-expense|1|0.80|02_iphone_add-expense.png"
+    "iphone|03-analytics|2|0.80|03_iphone_analytics.png"
+    "iphone|04-budget|3|0.80|04_iphone_budget.png"
+    "iphone|09-inbox|4|0.80|05_iphone_inbox.png"
+    "iphone|06-account|5|0.80|06_iphone_account.png"
+    "iphone|07-settings|6|0.80|07_iphone_settings.png"
+    "ipad|01-home|0|0.88|21_ipad_home.png"
+    "ipad|05-add-expense|1|0.80|22_ipad_add-expense.png"
+    "ipad|03-analytics|2|0.80|23_ipad_analytics.png"
+    "ipad|04-budget|3|0.80|24_ipad_budget.png"
+    "ipad|09-inbox|4|0.80|25_ipad_inbox.png"
+    "ipad|06-account|5|0.80|26_ipad_account.png"
+    "ipad|07-settings|6|0.80|27_ipad_settings.png"
 )
 
 run_variant() {
-    local variant="$1" entry device scene palette_index width_fraction tilt out_name
+    local variant="$1" entry device scene palette_index width_fraction out_name
 
     OUT_DIR="$STAGE_ROOT/$variant-ios-$ASC_LOCALE"
     mkdir -p "$OUT_DIR"
 
     for entry in "${SCENES[@]}"; do
-        IFS='|' read -r device scene palette_index width_fraction tilt out_name <<< "$entry"
+        IFS='|' read -r device scene palette_index width_fraction out_name <<< "$entry"
         if [[ "$DEVICE_ARGUMENT" != "all" && "$DEVICE_ARGUMENT" != "$device" ]]; then
             continue
         fi
-        compose_one "$device" "$scene" "$variant" "$palette_index" "$width_fraction" "$tilt" "$out_name"
+        compose_one "$device" "$scene" "$variant" "$palette_index" "$width_fraction" "$out_name"
     done
 
     publish_stage "$SCREENSHOTS_DIR/variants/${PUBLISH_VARIANT_NAME:-$variant}/ios/$ASC_LOCALE"
