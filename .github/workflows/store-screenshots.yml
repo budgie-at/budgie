@@ -58,9 +58,9 @@ jobs:
             # is dropped here - before the raw artifact is uploaded - and never
             # reaches the download dir, the apple-screenshot-slots gate or deliver.
             post-capture-command: find "$SCREENSHOTS_OUTPUT_DIR/raw" -name '00-prime.png' -delete
-            build-runner-labels: '["self-hosted","macOS","ARM64","macos-builder"]'
+            build-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
             capture-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
-            upload-runner-labels: '["self-hosted","macOS","ARM64","macos-builder"]'
+            upload-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
             upload-screenshots: ${{ inputs.upload }}
         secrets:
             ASC_API_KEY: ${{ secrets.EXPO_IOS_ASC_API_KEY }}
