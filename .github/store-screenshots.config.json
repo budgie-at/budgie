@@ -17,7 +17,7 @@
         },
         {
             "platform": "ios",
-            "device": "iPad Pro 13-inch (M4)",
+            "device": "iPad Pro 13-inch (M5)",
             "locales": ["en", "fr", "uk", "de", "es"],
             "appearances": ["light", "dark"]
         }
@@ -44,6 +44,7 @@
     },
     "build-env": "APP_VARIANT=e2e\nEXPO_PUBLIC_AI_DISABLE=true\nEXPO_PUBLIC_LOGGING_DISABLE=true\n",
     "install-command": "pnpm install --frozen-lockfile",
+    "build-command": "pnpm exec turbo build --filter='@budgie/*'",
     "rct-use-prebuilt-rncore": true,
     "rct-use-rn-dep": true,
     "upload-command": "export PATH=\"$HOME/.rbenv/shims:/opt/homebrew/bin:/opt/homebrew/sbin:$PATH\"\nexport SCREENSHOT_VARIANT=ci\nfastlane ios ios_screenshots\n",

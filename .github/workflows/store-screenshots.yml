@@ -33,8 +33,6 @@ jobs:
         with:
             config-path: .github/store-screenshots.config.json
             package-manager: pnpm
-            install-command: pnpm install --frozen-lockfile
-            build-command: pnpm exec turbo build --filter='@budgie/*'
             expo-use-precompiled-modules: true
             maestro-version: '2.8.0'
             simulator-requires: push,universal-links

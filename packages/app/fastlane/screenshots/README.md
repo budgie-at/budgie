@@ -17,7 +17,7 @@ with `jq` rather than keeping its own copy.
 | Device                | Slug                  | Capture size | Store slot  |
 | --------------------- | --------------------- | ------------ | ----------- |
 | iPhone 17 Pro Max     | `iphone-17-pro-max`   | 1320x2868    | iPhone 6.9" |
-| iPad Pro 13-inch (M4) | `ipad-pro-13-inch-m4` | 2064x2752    | iPad 13"    |
+| iPad Pro 13-inch (M5) | `ipad-pro-13-inch-m5` | 2064x2752    | iPad 13"    |
 
 | App locale | ASC folder | Regional OS locale |
 | ---------- | ---------- | ------------------ |
