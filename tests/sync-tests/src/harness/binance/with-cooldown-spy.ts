@@ -15,7 +15,7 @@ export const withCoolDownSpy = <A, E, R>(coolDownWindowMs: number, effect: Effec
             const setTimeoutSpy = vi
                 .spyOn(global, 'setTimeout')
                 .mockImplementation((handler: (...arguments_: unknown[]) => void, delay?: number, ...arguments_: unknown[]) => {
-                    if (typeof handler === 'function' && delay === coolDownWindowMs) {
+                    if (delay === coolDownWindowMs) {
                         coolDownDelays.push(delay);
                         handler();
                         const noopTimerId = realSetTimeout(emptyFn, 0);
