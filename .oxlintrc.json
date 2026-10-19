@@ -1218,6 +1218,14 @@
                     {
                         "property": "toSorted",
                         "message": "Hermes has no Array.prototype.toSorted; use Arr.sort from effect/Array."
+                    },
+                    {
+                        "property": "formatToParts",
+                        "message": "Hermes cannot format to parts; format the absolute value and add the sign."
+                    },
+                    {
+                        "property": "formatNumberToParts",
+                        "message": "Hermes cannot format to parts; format the absolute value and add the sign."
                     }
                 ]
             }
