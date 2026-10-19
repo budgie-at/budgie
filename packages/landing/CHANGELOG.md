@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.107.0](https://github.com/budgie-at/budgie/compare/v6.106.4...v6.107.0) (2026-10-19)
+
+### Features
+
+* **landing:** leader-line callouts that stay inside the phone screen ([b272333](https://github.com/budgie-at/budgie/commit/b2723333ff106d559d197a3e66248b6cf0f580c4))
+
+
 ## [6.106.3](https://github.com/budgie-at/budgie/compare/v6.106.2...v6.106.3) (2026-10-19)
 
 **Note:** Version bump only for package @budgie-at/landing
