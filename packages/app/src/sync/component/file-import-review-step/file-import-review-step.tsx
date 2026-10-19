@@ -16,6 +16,8 @@ import { FileImportReviewStepSelector } from './file-import-review-step.selector
 
 import type { FileBankSyncImportReviewInterface } from '@budgie/sync';
 
+const DATE_FORMAT = { day: 'numeric', month: 'long', year: 'numeric' } as const;
+
 interface Props {
     readonly review: FileBankSyncImportReviewInterface;
     readonly fileName: string;
@@ -30,7 +32,7 @@ export const FileImportReviewStep = ({ review, fileName }: Props) => {
     const foundLabel = t({ message: plural(parsedTransactionCount, { one: '# transaction found', other: '# transactions found' }) });
     const dateRange =
         isDefined(earliestOperatedAt) && isDefined(latestOperatedAt)
-            ? intl.formatDateTimeRange(earliestOperatedAt, latestOperatedAt, { day: 'numeric', month: 'long', year: 'numeric' })
+            ? `${intl.formatDate(earliestOperatedAt, DATE_FORMAT)} – ${intl.formatDate(latestOperatedAt, DATE_FORMAT)}`
             : null;
     const importInto = review.accounts.map(account => account.title).join(', ');
     const duplicatesLabel = isPositiveNumber(duplicateTransactionCount)
