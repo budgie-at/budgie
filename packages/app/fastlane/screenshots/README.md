@@ -27,9 +27,13 @@ with `jq` rather than keeping its own copy.
 | `de`       | `de-DE`    | `de_DE`            |
 | `es`       | `es-ES`    | `es_ES`            |
 
-Scenes, in store order: `01-home`, `02-transactions`, `03-analytics`,
-`04-budget`, `05-add-expense`, `06-account`, `07-settings`. Appearances: `light`
-and `dark`; `deployed-variant.json` records which one the store carries, and only that
+Scenes: `01-home`, `03-analytics`, `04-budget`, `05-add-expense`,
+`06-account`, `07-settings`, `08-widgets` and `09-inbox`; the store order is
+set by `compose-screenshots.sh` (see [design/README.md](design/README.md)).
+`08-widgets` is a Maestro flow that leaves the app for the Home Screen: on the
+first `en`/`light` cell of a simulator it adds the Budget and Net worth widgets
+through the widget gallery, and every later cell reuses them after the app has
+republished its snapshot. Appearances: `light` and `dark`; `deployed-variant.json` records which one the store carries, and only that
 variant is committed.
 
 `00-prime` is the exception: a Maestro-backed scene that only grants the

@@ -1,10 +1,11 @@
 # Screenshot design system
 
 `compose-screenshots.sh` turns a raw simulator capture into a store image:
-a variant-palette canvas, a real device frame, a soft drop shadow, and a
-two-tier caption stack. Output is always the **exact pixel size of the raw
-capture**, because `deliver` assigns App Store Connect device slots by matching
-the uploaded file's dimensions.
+a deep brand-colour canvas, a two-line headline with one highlighted phrase, a
+second line, and a real device frame that bleeds off the bottom edge. Output
+is always the **exact pixel size of the raw capture**, because `deliver`
+assigns App Store Connect device slots by matching the uploaded file's
+dimensions.
 
 ## Framing
 
@@ -41,63 +42,83 @@ capture would otherwise poke past the bezel at all four corners. Flood-filling
 the border-connected transparent region out of the alpha mask and intersecting
 with the cutout rectangle leaves only the screen opening.
 
-## Typography
+## Story
 
-`CAPTION_FONT` defaults to `packages/app/assets/fonts/FixelDisplay-Bold.ttf` —
-the app's own display face. It is in-repo, so it renders identically on macOS
-and on Linux without depending on either OS's installed font set, and it covers
-Latin, Latin-accented and Cyrillic, which is exactly the script coverage the
-five store locales need. Passing a TTF path rather than a font *name* also
-sidesteps ImageMagick's platform-specific font lookup.
+Eight slides per device, in store order. The output filename sets the order;
+the scene name is the raw capture it is built from.
 
-The headline point size targets 10% of an *effective width*: the canvas width
-for a canvas at the iPhone's aspect, or the canvas height rescaled to that
-reference aspect when the canvas is proportionally wider (the iPad). Both
-devices are then calibrated to the same proportion of their own vertical budget
-instead of the iPad headline swallowing its shallower band.
+| Slot | Scene            | Message                                                  |
+| ---- | ---------------- | -------------------------------------------------------- |
+| 1    | `01-home`        | Net worth across currencies, budget card at ~65%         |
+| 2    | `05-add-expense` | One tap on the pattern suggestion fills category and sum |
+| 3    | `03-analytics`   | Last calendar month, full of categories and income       |
+| 4    | `04-budget`      | Category limits, a mix of green and amber                |
+| 5    | `08-widgets`     | Net worth and budget widgets on the Home Screen          |
+| 6    | `09-inbox`       | Categorize inbox with history-based suggestions          |
+| 7    | `06-account`     | Home scrolled to crypto, deposits and debts              |
+| 8    | `07-settings`    | Privacy and security, screenshot protection on           |
 
-From there the size shrinks in 4px steps until the headline fits 90% of the
-canvas width, never below 55% of the starting size. A headline that still
-overflows at that floor is scaled down with a `note:` on stderr — that note
-means the copy should be shortened, not that the layout is fine.
-
-Descriptors render at 55% of the headline size and 75% opacity, and **wrap**
-inside the caption width rather than shrinking, so a long descriptor grows the
-caption stack and pushes the device down.
+The first three slides carry the pitch on their own, because a search result
+shows only those.
 
 ## Layout
 
-Two variants alternate by position for scroll rhythm:
+Every slide is text-top: the caption stack starts at 5.2% of the canvas
+height, and the device starts 3% of the height below the stack's rendered
+bottom, so the gap stays fixed whatever the copy length. The device is sized by
+width (80% of the canvas, 92% on slot 1 and 88% on the iPad's slot 1) and is
+allowed to run past the bottom edge, so the screen reads larger than a fully
+framed device would.
 
-- **A** — caption at the top edge margin, device immediately below it.
-- **B** — device at the top edge margin, caption immediately below it.
+Slot 5 is the only tilted slide (-5°), to set the Home Screen apart from the
+in-app screens.
 
-Both place the device relative to the caption stack's *actual rendered height*
-plus one fixed gap, rather than anchoring text and device to opposite canvas
-edges and letting whatever is left over become the gap — that is what makes the
-composition read as one unit instead of two islands.
+## Typography
 
-The first and last shot of each device's run use the taller end of the device
-height range (0.78 of canvas height); every other shot uses 0.74.
+`CAPTION_FONT` defaults to `packages/app/assets/fonts/FixelDisplay-Bold.ttf`
+and `SUBLINE_FONT` to `FixelDisplay-SemiBold.ttf`, the app's own display face.
+Both are in-repo TTFs, so macOS and Linux render identically, and they cover
+Latin, accented Latin and Cyrillic.
+
+- **Headline**: 11.5% of an *effective width* (the canvas width at the
+  iPhone's aspect, or the canvas height rescaled to that aspect on the wider
+  iPad), -0.025em tracking, 1.02 leading, white. `\n` in the copy breaks the
+  line (two lines at most), and `*text*` is set in the highlight colour. A line
+  wider than 88% of the canvas shrinks the whole headline in 4px steps, never
+  below 72% of the starting size; a headline still too wide at that floor is
+  scaled down with a `note:` on stderr, which means the copy needs shortening.
+- **Second line**: 70% of the headline size at 92% white, wrapped inside the
+  caption width and then narrowed to the tightest width that keeps the same
+  line count, so the lines come out balanced instead of leaving an orphan.
+  Keep it to two lines.
+- **Chips**: an optional row of pills under the second line, 33% of the
+  headline size, from `chips.strings`. Only slot 1 has them.
 
 ## Palette
 
-Both palettes are the app's own tokens from `src/global.css`, as a near-flat
-top-to-bottom tone shift rather than a solid fill — flat at a glance, but not a
-dead swatch next to the device shadow.
+The canvas uses the landing site's privacy pillar (`--privacy`,
+`oklch(0.52 0.12 163)`), the one brand colour that carries Budgie's offline and
+private positioning. Each slide shifts the hue a few degrees around 163, so the
+set reads as one family with some movement when scrolled.
 
-| Variant | Canvas              | Text      |
-| ------- | ------------------- | --------- |
-| light   | `#F8F8F8`→`#F1F1F1` | `#0A0A0A` |
-| dark    | `#141414`→`#0A0A0A` | `#F5F5F5` |
+| Element   | Value                                                                    |
+| --------- | ------------------------------------------------------------------------ |
+| Canvas    | vertical gradient, `oklch(0.31 0.072 h)` to `oklch(0.17 0.038 h+4)`      |
+| Glow      | radial `oklch(0.50 0.115 h)` at 55% behind the device's top third        |
+| Headline  | `#FFFFFF`, highlight `#54EAA6` (`--privacy` in the landing's dark theme) |
+| Chip      | `#54EAA6` at 10% fill, 60% stroke, `#DFFBEE` text                        |
+| Shadow    | black at 45%, blur 1.6% of the canvas height, offset 1.2%                |
+
+The canvas does not depend on the appearance: the light and dark sets differ
+only in the app UI inside the device. `deployed-variant.json` ships the dark
+set.
 
 ## Captions
 
-`<asc-locale>/title.strings` and `<asc-locale>/subtitle.strings`, keyed by scene
-name, in `"key" = "value";` format. Copy uses the app's own translated
-vocabulary (Ausgabe, Dépense, Витрата, Gasto) so the caption and the screenshot
-under it speak the same language.
-
-Keep headlines under roughly 22 characters. They are set as a single unwrapped
-line, so a long one is set small rather than clipped, and a set of headlines
-that vary wildly in size reads as an accident rather than a system.
+`<asc-locale>/title.strings`, `subtitle.strings` and `chips.strings`, keyed by
+scene name, in `"key" = "value";` format. Each locale is written for that
+market rather than translated, uses the app's own vocabulary (Ausgabe, Dépense,
+Витрата, Gasto, the app's Reichweite/Autonomía/Autonomie/Запас for runway) and
+never claims bank sync. Keep each headline line to about 14 characters so the
+set stays at one type size; `compose-screenshots.sh` prints a `note:` when one
+cannot fit.

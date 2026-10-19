@@ -1,0 +1,26 @@
+appId: ${APP_ID}
+env:
+    GALLERY_SWIPES: ${GALLERY_SWIPES}
+---
+- tapOn: 'Edit'
+
+- tapOn: 'Add Widget'
+
+- tapOn: 'Search Widgets'
+
+- inputText: 'budgie'
+
+- tapOn:
+      text: 'budgie \(E2E\)'
+      index: 0
+
+- repeat:
+      times: ${GALLERY_SWIPES}
+      commands:
+          - swipe:
+                direction: LEFT
+          - waitForAnimationToEnd
+
+- tapOn: 'Add Widget'
+
+- waitForAnimationToEnd

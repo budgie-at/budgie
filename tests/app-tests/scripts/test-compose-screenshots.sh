@@ -41,16 +41,17 @@ synthesize_frame "$FRAMES_DIR/Apple iPad Pro (12.9-inch) (4th generation) Space 
 
 RAW_DIR="$WORK_DIR/raw/ios/iphone-17-pro-max/en/light"
 mkdir -p "$RAW_DIR"
-for scene in 01-home 02-transactions 03-analytics 04-budget 05-add-expense 06-account 07-settings; do
+for scene in 01-home 03-analytics 04-budget 05-add-expense 06-account 07-settings 08-widgets 09-inbox; do
     magick -size 1320x2868 gradient:'#3366FF-#FFFFFF' -alpha off "$RAW_DIR/$scene.png"
 done
 
 SCRATCH_DESIGN="$WORK_DIR/screenshots/design"
 mkdir -p "$SCRATCH_DESIGN/en-US"
 cp "$DESIGN_DIR/compose-screenshots.sh" "$DESIGN_DIR/frame-device.sh" "$SCRATCH_DESIGN/"
-cp "$DESIGN_DIR/en-US/title.strings" "$DESIGN_DIR/en-US/subtitle.strings" "$SCRATCH_DESIGN/en-US/"
+cp "$DESIGN_DIR/en-US/title.strings" "$DESIGN_DIR/en-US/subtitle.strings" "$DESIGN_DIR/en-US/chips.strings" "$SCRATCH_DESIGN/en-US/"
 
 HOME="$FAKE_HOME" CAPTION_FONT="$REPO_ROOT/packages/app/assets/fonts/FixelDisplay-Bold.ttf" \
+    SUBLINE_FONT="$REPO_ROOT/packages/app/assets/fonts/FixelDisplay-SemiBold.ttf" \
     SCREENSHOTS_RAW_DIR="$WORK_DIR/raw" PUBLISH_VARIANT_NAME=selftest \
     bash "$SCRATCH_DESIGN/compose-screenshots.sh" en-US light --device iphone > "$WORK_DIR/compose.log" 2>&1 || {
     echo "FAIL compose-screenshots.sh exited non-zero:"
@@ -60,12 +61,12 @@ HOME="$FAKE_HOME" CAPTION_FONT="$REPO_ROOT/packages/app/assets/fonts/FixelDispla
 
 PUBLISHED_DIR="$WORK_DIR/screenshots/variants/selftest/ios/en-US"
 HOME_SHOT="$PUBLISHED_DIR/01_iphone_home.png"
-assert_equals 'the whole iPhone run is published' "$(find "$PUBLISHED_DIR" -maxdepth 1 -name '*.png' | wc -l | tr -d ' ')" '7'
+assert_equals 'the whole iPhone run is published' "$(find "$PUBLISHED_DIR" -maxdepth 1 -name '*.png' | wc -l | tr -d ' ')" '8'
 assert_equals 'output keeps the exact capture pixel size deliver matches slots on' "$(magick identify -format "%wx%h" "$HOME_SHOT")" '1320x2868'
 assert_equals 'the store variant stays opaque (it ships a palette plate)' "$(magick identify -format "%A" "$HOME_SHOT")" 'Undefined'
-assert_equals 'the light palette plate fills the canvas corner' "$(magick "$HOME_SHOT" -format "%[hex:p{0,0}]" info:)" 'F8F8F8'
-assert_equals 'the caption stack is burned into the canvas' "$(magick "$HOME_SHOT" -crop 1320x220+0+140 +repage -colorspace gray -format "%[fx:minima < 0.3]" info:)" '1'
-assert_equals 'the framed device covers the middle of the canvas' "$(magick "$HOME_SHOT" -format "%[fx:p{660,1600}.r < 0.9]" info:)" '1'
+assert_equals 'the brand canvas fills the canvas corner' "$(magick "$HOME_SHOT" -format "%[hex:p{0,0}]" info:)" '003B25'
+assert_equals 'the caption stack is burned into the canvas' "$(magick "$HOME_SHOT" -crop 1320x220+0+140 +repage -colorspace gray -format "%[fx:maxima > 0.9]" info:)" '1'
+assert_equals 'the framed device covers the middle of the canvas' "$(magick "$HOME_SHOT" -format "%[fx:p{660,1600}.b > 0.5]" info:)" '1'
 
 if [ "$FAILURES" -eq 0 ]; then
     echo "test-compose-screenshots: all checks passed"

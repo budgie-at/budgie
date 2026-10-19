@@ -1,0 +1,39 @@
+appId: ${APP_ID}
+---
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://'
+
+- extendedWaitUntil:
+      visible:
+          id: 'HomePage.TotalBalance'
+      timeout: 15000
+
+- extendedWaitUntil:
+      notVisible:
+          id: 'HomePage.TotalBalance'
+      timeout: 4000
+      optional: true
+
+- pressKey: Home
+
+- runFlow:
+      when:
+          true: ${LOCALE == 'en' && APPEARANCE == 'light'}
+      commands:
+          - longPressOn: 'Settings'
+          - tapOn: 'Edit Home Screen'
+          - runFlow:
+                file: add-home-screen-widget.flow.yaml
+                env:
+                    GALLERY_SWIPES: 3
+          - runFlow:
+                file: add-home-screen-widget.flow.yaml
+                env:
+                    GALLERY_SWIPES: 1
+          - tapOn: 'Done'
+
+- waitForAnimationToEnd
+
+- takeScreenshot: scene

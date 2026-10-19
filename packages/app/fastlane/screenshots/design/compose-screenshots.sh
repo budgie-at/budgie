@@ -1,47 +1,5 @@
 #!/usr/bin/env bash
-#
-# Compose framed, captioned App Store screenshots with ImageMagick 7, using
-# fastlane frameit's real device frame PNGs (Apple Design Resources, via
-# facebook/design) rather than a hand-drawn rounded rectangle.
-#
-# `deliver` assigns App Store Connect screenshot slots by matching the *exact*
-# pixel dimensions of the uploaded file, and frameit's own `run`/`ios` commands
-# letterbox every capture into a single fixed canvas, so frameit's pipeline
-# cannot be used unmodified. This script borrows frameit's downloaded frame
-# assets directly instead: each raw capture is composited into the frame PNG's
-# own transparent screen cutout (so the frame's real bezel, not a synthetic
-# radius, covers the capture's square corners), then scaled onto a canvas of the
-# exact same resolution as the raw capture, over a variant-palette background,
-# with a two-tier headline/descriptor caption stack and a soft drop shadow.
-#
-# One-time setup - download the frame assets (cached at ~/.fastlane/frameit):
-#
-#   fastlane frameit download_frames
-#
-# Usage:
-#   packages/app/fastlane/screenshots/design/compose-screenshots.sh \
-#       <asc-locale|all> <light|dark|all> [--device iphone|ipad|all]
-#
-# `asc-locale` is an App Store Connect locale folder (en-US, fr-FR, uk, de-DE,
-# es-ES) and must have design/<asc-locale>/title.strings and subtitle.strings.
-# Raw captures are read from the layout mobile-ci's capture-screenshots-ios
-# action and scripts/capture-store-screenshots.sh both write:
-#
-#   ../raw/ios/<device-slug>/<app-locale>/<appearance>/<scene>.png
-#
-# Composed sets are published to ../variants/<appearance>/ios/<asc-locale>.
-#
-# CAPTION_FONT overrides the caption typeface; it defaults to the app's own
-# FixelDisplay Bold TTF, which is in-repo and therefore renders identically on
-# macOS and Linux without depending on either OS's installed font set.
-#
-# SCREENSHOTS_RAW_DIR overrides where raw captures are read from, and
-# PUBLISH_VARIANT_NAME overrides the variants/<name> directory the composed set
-# is published to. The Fastfile's ios_screenshots lane uses both to compose CI's
-# downloaded captures into variants/ci without touching the committed sets.
-# PUBLISH_VARIANT_NAME pins one output directory, so it cannot be combined with
-# the `all` appearance argument - both appearances would publish into the same
-# directory and the second would replace the first.
+# Composes the captioned, framed App Store story on the brand canvas; the layout and every constant are documented in design/README.md.
 set -euo pipefail
 
 DESIGN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -49,6 +7,7 @@ SCREENSHOTS_DIR="$(cd "$DESIGN_DIR/.." && pwd)"
 APP_DIR="$(cd "$SCREENSHOTS_DIR/../.." && pwd)"
 RAW_DIR="${SCREENSHOTS_RAW_DIR:-$SCREENSHOTS_DIR/raw}/ios"
 FONT="${CAPTION_FONT:-$APP_DIR/assets/fonts/FixelDisplay-Bold.ttf}"
+SUBLINE_FONT="${SUBLINE_FONT:-$APP_DIR/assets/fonts/FixelDisplay-SemiBold.ttf}"
 
 LOCALE_ARGUMENT="${1:-en-US}"
 VARIANT_ARGUMENT="${2:-all}"
@@ -75,9 +34,6 @@ case "$DEVICE_ARGUMENT" in
         ;;
 esac
 
-# publish_stage clears the destination before moving the staged set in, so a
-# pinned PUBLISH_VARIANT_NAME plus `all` would compose light, publish it, then
-# compose dark and wipe it - silently shipping one appearance twice.
 if [[ -n "${PUBLISH_VARIANT_NAME:-}" && "$VARIANT_ARGUMENT" == "all" ]]; then
     echo "error: PUBLISH_VARIANT_NAME ('$PUBLISH_VARIANT_NAME') publishes every appearance into variants/$PUBLISH_VARIANT_NAME, so it cannot be combined with the 'all' appearance argument - light and dark would overwrite each other. Pass light or dark." >&2
     exit 1
@@ -87,10 +43,12 @@ if ! command -v magick >/dev/null 2>&1; then
     echo "error: ImageMagick 7 ('magick') is required on PATH" >&2
     exit 1
 fi
-if [[ ! -f "$FONT" ]]; then
-    echo "error: caption font not found at $FONT (override with CAPTION_FONT)" >&2
-    exit 1
-fi
+for font_file in "$FONT" "$SUBLINE_FONT"; do
+    if [[ ! -f "$font_file" ]]; then
+        echo "error: caption font not found at $font_file (override with CAPTION_FONT / SUBLINE_FONT)" >&2
+        exit 1
+    fi
+done
 
 source "$DESIGN_DIR/frame-device.sh"
 
@@ -105,78 +63,51 @@ fi
 resolve_frameit_frames_dir
 resolve_device_frames
 
-# --- Design system constants - see README.md "Design system". ---------------
+CANVAS_PALETTES=(
+    '#003B25|#00140C|0,119,80'
+    '#013B22|#00140A|7,118,73'
+    '#003B29|#00150D|0,119,86'
+    '#003B23|#00140B|0,119,76'
+    '#003C2C|#00150F|0,119,92'
+    '#043B20|#001409|18,118,70'
+    '#003B28|#00140D|0,119,84'
+    '#003B25|#00140C|0,119,80'
+)
+TEXT_HEX='#FFFFFF'
+HIGHLIGHT_HEX='#54EAA6'
+SUBLINE_FILL='rgba(255,255,255,0.92)'
+CHIP_FILL='rgba(84,234,166,0.10)'
+CHIP_STROKE='rgba(84,234,166,0.60)'
+CHIP_TEXT_HEX='#DFFBEE'
 
-# Near-flat canvas with an almost imperceptible top-to-bottom tone shift instead
-# of a pure solid fill: reads as flat at a glance (a real gradient would fight
-# Budgie's monochrome brand) but keeps the canvas from looking like a dead
-# printer-paper swatch next to the device shadow. The two palettes are the app's
-# own secondary background and primary text tokens from src/global.css.
-set_variant_palette() {
-    if [[ "$1" == "dark" ]]; then
-        BACKGROUND_TOP_HEX='#141414'
-        BACKGROUND_BOTTOM_HEX='#0A0A0A'
-        TEXT_HEX='#F5F5F5'
-        DESCRIPTOR_RGB='245,245,245'
-    else
-        BACKGROUND_TOP_HEX='#F8F8F8'
-        BACKGROUND_BOTTOM_HEX='#F1F1F1'
-        TEXT_HEX='#0A0A0A'
-        DESCRIPTOR_RGB='10,10,10'
-    fi
-}
-
-# Headline point size targets 10% of an "effective width" rather than the raw
-# canvas width, so both devices are calibrated to the same proportion of their
-# own vertical budget. The iPhone's 1320x2868 canvas is already at the reference
-# aspect, so its effective width is its own width; the much wider iPad canvas
-# clamps down to its height rescaled to that reference aspect, which keeps its
-# headline from swallowing the shallow band left around the device.
 REFERENCE_ASPECT_W_OVER_H='0.46003051'
-HEADLINE_POINTSIZE_FRACTION='0.10'
-HEADLINE_MIN_FRACTION='0.55'
-HEADLINE_TARGET_WIDTH_FRACTION='0.90'
+HEADLINE_FRACTION='0.115'
+HEADLINE_MIN_RATIO='0.72'
 HEADLINE_SHRINK_STEP=4
-DESCRIPTOR_SIZE_RATIO='0.55'
-DESCRIPTOR_OPACITY='0.75'
+HEADLINE_LEADING='1.02'
+HEADLINE_TRACKING_EM='-0.025'
+TEXT_WIDTH_FRACTION='0.88'
+SUBLINE_RATIO='0.70'
+SUBLINE_LEADING_EM='-0.14'
+CHIP_RATIO='0.33'
 
-STACK_GAP_FRACTION='0.012'
+TOP_MARGIN_FRACTION='0.052'
+HEADLINE_SUBLINE_GAP_FRACTION='0.019'
+CHIP_GAP_FRACTION='0.026'
+TEXT_DEVICE_GAP_FRACTION='0.030'
 
-# Vertical gap between the caption stack and the device frame - deliberately
-# tight so the composition reads as one cohesive unit instead of a
-# caption-island floating above a separate device-island. Both layout variants
-# place the device relative to the caption stack's actual rendered height rather
-# than anchoring text and device to opposite canvas edges and letting whatever
-# is left over become the gap.
-TEXT_EDGE_MARGIN_FRACTION='0.05'
-TEXT_DEVICE_GAP_FRACTION='0.016'
-
-DEVICE_HEIGHT_FRACTION_DEFAULT='0.74'
-DEVICE_HEIGHT_FRACTION_ENDPOINT='0.78'
-
-# Soft drop shadow under the framed device - black, low opacity, blurred, offset
-# down. Ratios are relative to canvas height so both devices get a
-# proportionally identical shadow.
-SHADOW_OPACITY='0.15'
-SHADOW_BLUR_RATIO='0.01335'
-SHADOW_OFFSET_RATIO='0.00953'
+GLOW_SIZE_RATIO='1.25'
+GLOW_OPACITY='0.55'
+SHADOW_OPACITY='0.45'
+SHADOW_BLUR_RATIO='0.016'
+SHADOW_OFFSET_RATIO='0.012'
 
 WORK_ROOT="$(mktemp -d "${TMPDIR:-/tmp}/budgie-compose-work.XXXXXX")"
-# Every scene composes into a staging directory and the published set is only
-# replaced once the whole variant succeeded. `set -e` aborts on the first
-# ImageMagick failure, so clearing the output directory up front and composing
-# into it in place would destroy a good set and leave nothing behind.
 STAGE_ROOT="$(mktemp -d "${TMPDIR:-/tmp}/budgie-compose-stage.XXXXXX")"
 trap 'rm -rf "$WORK_ROOT" "$STAGE_ROOT"' EXIT
 
 OUT_DIR=''
 
-# Lossless recompression only - never palette-quantizing tools like pngquant,
-# which would band the two-tier caption gradient. Prefers oxipng (zopfli
-# deflate, same filter/color-type search magick can't do) and falls back to
-# ImageMagick's own max zlib level when oxipng isn't on PATH. Both leave the
-# IHDR width/height/color-type/bit-depth untouched, which is what deliver's
-# slot matching and the apple-screenshot-slots gate key on.
 optimize_png() {
     local png="$1"
     if command -v oxipng >/dev/null 2>&1; then
@@ -208,137 +139,200 @@ string_for() {
     local file="$1" scene="$2" label="$3" line
     line="$(grep -F "\"$scene\" = " "$file" || true)"
     if [[ -z "$line" ]]; then
+        if [[ "$label" == "chips" ]]; then
+            return 0
+        fi
         echo "error: no $label for scene '$scene' in $file" >&2
         exit 1
     fi
     echo "$line" | sed -E 's/^"[^"]+" = "(.*)";$/\1/'
 }
 
-# Renders `text` at `pointsize` as an unwrapped label and prints its pixel
-# width - used by fit_headline_pointsize's shrink-to-fit loop.
-label_width() {
-    magick -font "$FONT" -pointsize "$1" label:"$2" -format "%w" info:
+calc() {
+    awk "BEGIN { printf \"%d\", $1 }"
 }
 
-# Shrinks the headline point size in fixed steps until it fits inside 90% of the
-# canvas width, never going below 60% of the starting (max) point size.
-fit_headline_pointsize() {
-    local effective_w="$1" canvas_w="$2" text="$3"
-    local max_pt min_pt target_w pt width
-    max_pt=$(awk -v w="$effective_w" -v f="$HEADLINE_POINTSIZE_FRACTION" 'BEGIN { printf "%d", w * f }')
-    min_pt=$(awk -v m="$max_pt" -v f="$HEADLINE_MIN_FRACTION" 'BEGIN { printf "%d", m * f }')
-    target_w=$(awk -v w="$canvas_w" -v f="$HEADLINE_TARGET_WIDTH_FRACTION" 'BEGIN { printf "%d", w * f }')
+escape_magick_text() {
+    local text="${1//\\/\\\\}"
+    echo "${text//%/%%}"
+}
+
+render_headline_line() {
+    local pointsize="$1" line="$2" out="$3"
+    local kerning segment index=0 segment_files=() segments=() fill
+    kerning=$(awk -v p="$pointsize" -v t="$HEADLINE_TRACKING_EM" 'BEGIN { printf "%.2f", p * t }')
+    IFS='*' read -r -a segments <<< "$line"
+    for segment in "${segments[@]}"; do
+        if [[ -n "$segment" ]]; then
+            fill="$TEXT_HEX"
+            if ((index % 2 == 1)); then
+                fill="$HIGHLIGHT_HEX"
+            fi
+            segment_files+=("$out.segment-$index.png")
+            magick -background none -fill "$fill" -font "$FONT" -pointsize "$pointsize" -kerning "$kerning" \
+                label:"$(escape_magick_text "$segment")" -define png:color-type=6 -depth 8 "$out.segment-$index.png"
+        fi
+        index=$((index + 1))
+    done
+    magick -background none "${segment_files[@]}" +append -define png:color-type=6 -depth 8 "$out"
+    rm -f "${segment_files[@]}"
+}
+
+render_headline() {
+    local pointsize="$1" text="$2" out="$3"
+    local line index=0 line_index pitch line_h=0 block_w=0 block_h width layers=()
+    pitch=$(calc "$pointsize * $HEADLINE_LEADING")
+    while IFS= read -r line; do
+        render_headline_line "$pointsize" "$line" "$out.line-$index.png"
+        width="$(magick identify -format "%w" "$out.line-$index.png")"
+        line_h="$(magick identify -format "%h" "$out.line-$index.png")"
+        if ((width > block_w)); then
+            block_w=$width
+        fi
+        index=$((index + 1))
+    done < <(printf '%s\n' "${text//\\n/$'\n'}")
+    block_h=$((pitch * (index - 1) + line_h))
+    for ((line_index = 0; line_index < index; line_index++)); do
+        layers+=("$out.line-$line_index.png" -gravity North -geometry "+0+$((line_index * pitch))" -compose Over -composite)
+    done
+    magick -size "${block_w}x${block_h}" xc:none "${layers[@]}" -trim +repage -define png:color-type=6 -depth 8 "$out"
+    for ((line_index = 0; line_index < index; line_index++)); do
+        rm -f "$out.line-$line_index.png"
+    done
+}
+
+fit_headline() {
+    local effective_w="$1" cap_w="$2" text="$3" out="$4"
+    local max_pt min_pt pt width
+    max_pt=$(calc "$effective_w * $HEADLINE_FRACTION")
+    min_pt=$(calc "$max_pt * $HEADLINE_MIN_RATIO")
     pt="$max_pt"
-    width="$(label_width "$pt" "$text")"
-    while ((width > target_w && pt > min_pt)); do
+    render_headline "$pt" "$text" "$out"
+    width="$(magick identify -format "%w" "$out")"
+    while ((width > cap_w && pt > min_pt)); do
         pt=$((pt - HEADLINE_SHRINK_STEP))
         if ((pt < min_pt)); then
             pt=$min_pt
         fi
-        width="$(label_width "$pt" "$text")"
+        render_headline "$pt" "$text" "$out"
+        width="$(magick identify -format "%w" "$out")"
     done
+    if ((width > cap_w)); then
+        echo "note: headline \"$text\" is ${width}px at its minimum point size, wider than the ${cap_w}px caption width; scaling it down - shorten the copy" >&2
+        magick "$out" -resize "${cap_w}x" -define png:color-type=6 -depth 8 "$out"
+    fi
     echo "$pt"
 }
 
-# Builds the black, blurred, low-opacity shadow silhouette of a
-# transparent-canvas image (same pixel dimensions in and out) and shifts it down
-# by the configured offset, ready to composite onto the background before the
-# device itself.
-build_shadow() {
-    local device_on_canvas="$1" canvas_w="$2" canvas_h="$3" out="$4"
-    local blur offset silhouette
-    blur=$(awk -v h="$canvas_h" -v r="$SHADOW_BLUR_RATIO" 'BEGIN { printf "%d", h * r }')
-    offset=$(awk -v h="$canvas_h" -v r="$SHADOW_OFFSET_RATIO" 'BEGIN { printf "%d", h * r }')
-    silhouette="$WORK_ROOT/shadow-silhouette-$$-$RANDOM.png"
-    magick "$device_on_canvas" -fill black -colorize 100% \
-        -channel A -evaluate multiply "$SHADOW_OPACITY" +channel \
-        -channel A -blur "0x${blur}" +channel \
-        -define png:color-type=6 -depth 8 "$silhouette"
-    magick -size "${canvas_w}x${canvas_h}" xc:none "$silhouette" \
-        -gravity NorthWest -geometry "+0+${offset}" -compose Over -composite \
-        -define png:color-type=6 -depth 8 "$out"
-    rm -f "$silhouette"
+subline_height() {
+    magick -background none -font "$SUBLINE_FONT" -pointsize "$1" -kerning "$2" -interline-spacing "$3" \
+        -size "${4}x" caption:"$(escape_magick_text "$5")" -format "%h" info:
 }
 
-# Builds the two-tier caption stack (headline, descriptor) as one transparent
-# PNG, exactly as tall as its rendered content, so the device can be placed
-# directly beneath or above it with a fixed, tight gap instead of being centred
-# in a fixed box.
-build_text_stack() {
-    local canvas_w="$1" canvas_h="$2" headline="$3" descriptor="$4" out="$5"
-    local effective_w headline_pt descriptor_pt cap_w
-    local headline_png descriptor_png headline_w headline_h descriptor_h
-    local sub_gap descriptor_y stack_h
+render_subline() {
+    local pointsize="$1" cap_w="$2" text="$3" out="$4"
+    local kerning leading full_h low high middle
+    kerning=$(awk -v p="$pointsize" 'BEGIN { printf "%.2f", p * -0.01 }')
+    leading=$(calc "$pointsize * $SUBLINE_LEADING_EM")
+    full_h="$(subline_height "$pointsize" "$kerning" "$leading" "$cap_w" "$text")"
+    low=$((cap_w / 3))
+    high=$cap_w
+    while ((high - low > 8)); do
+        middle=$(((low + high) / 2))
+        if (($(subline_height "$pointsize" "$kerning" "$leading" "$middle" "$text") == full_h)); then
+            high=$middle
+        else
+            low=$middle
+        fi
+    done
+    magick -background none -fill "$SUBLINE_FILL" -font "$SUBLINE_FONT" -pointsize "$pointsize" -kerning "$kerning" \
+        -interline-spacing "$leading" -gravity center -size "${high}x" caption:"$(escape_magick_text "$text")" \
+        -trim +repage -define png:color-type=6 -depth 8 "$out"
+}
 
+render_chips() {
+    local pointsize="$1" cap_w="$2" text="$3" out="$4"
+    local chip index=0 chip_files=() pad_x pad_y radius stroke text_w text_h chip_w chip_h gap
+    pad_x=$(calc "$pointsize * 0.85")
+    pad_y=$(calc "$pointsize * 0.42")
+    stroke=$(calc "$pointsize * 0.06 + 1")
+    gap=$(calc "$pointsize * 0.45")
+    while IFS= read -r chip; do
+        magick -background none -fill "$CHIP_TEXT_HEX" -font "$SUBLINE_FONT" -pointsize "$pointsize" \
+            label:"$(escape_magick_text "$chip")" -trim +repage -define png:color-type=6 -depth 8 "$out.text-$index.png"
+        text_w="$(magick identify -format "%w" "$out.text-$index.png")"
+        text_h=$(calc "$pointsize * 0.74")
+        chip_w=$((text_w + 2 * pad_x))
+        chip_h=$((text_h + 2 * pad_y))
+        radius=$((chip_h / 2))
+        magick -size "${chip_w}x${chip_h}" xc:none -fill "$CHIP_FILL" -stroke "$CHIP_STROKE" -strokewidth "$stroke" \
+            -draw "roundrectangle $stroke,$stroke $((chip_w - stroke - 1)),$((chip_h - stroke - 1)) $radius,$radius" \
+            "$out.text-$index.png" -gravity center -compose Over -composite -define png:color-type=6 -depth 8 "$out.chip-$index.png"
+        if ((index > 0)); then
+            chip_files+=("-size" "${gap}x${chip_h}" "xc:none")
+        fi
+        chip_files+=("$out.chip-$index.png")
+        rm -f "$out.text-$index.png"
+        index=$((index + 1))
+    done < <(printf '%s\n' "${text// • /$'\n'}")
+    magick -background none "${chip_files[@]}" -gravity center +append -define png:color-type=6 -depth 8 "$out"
+    rm -f "$out".chip-*.png
+    if (($(magick identify -format "%w" "$out") > cap_w)); then
+        magick "$out" -resize "${cap_w}x" -define png:color-type=6 -depth 8 "$out"
+    fi
+}
+
+build_text_stack() {
+    local canvas_w="$1" canvas_h="$2" headline="$3" subline="$4" chips="$5" out="$6"
+    local effective_w cap_w headline_pt layers=() stack_h=0 block_h gap
     effective_w=$(awk -v w="$canvas_w" -v h="$canvas_h" -v a="$REFERENCE_ASPECT_W_OVER_H" \
         'BEGIN { aspect_w = h * a; printf "%d", (aspect_w < w ? aspect_w : w) }')
+    cap_w=$(calc "$canvas_w * $TEXT_WIDTH_FRACTION")
 
-    headline_pt="$(fit_headline_pointsize "$effective_w" "$canvas_w" "$headline")"
-    descriptor_pt=$(awk -v p="$headline_pt" -v r="$DESCRIPTOR_SIZE_RATIO" 'BEGIN { printf "%d", p * r }')
-    cap_w=$(awk -v w="$canvas_w" -v f="$HEADLINE_TARGET_WIDTH_FRACTION" 'BEGIN { printf "%d", w * f }')
+    headline_pt="$(fit_headline "$effective_w" "$cap_w" "$headline" "$out.headline.png")"
+    layers+=("$out.headline.png" -gravity North -geometry "+0+0" -compose Over -composite)
+    stack_h="$(magick identify -format "%h" "$out.headline.png")"
 
-    headline_png="$WORK_ROOT/headline-$$-$RANDOM.png"
-    magick -background none -fill "$TEXT_HEX" -font "$FONT" -pointsize "$headline_pt" \
-        label:"$headline" -trim +repage -define png:color-type=6 -depth 8 "$headline_png"
-
-    # The shrink-to-fit loop stops at the minimum point size, so a headline long
-    # enough to still overflow there would render past the canvas edge and be
-    # clipped on publish. Clamp it to the caption width instead - the note is
-    # the signal to shorten the copy rather than ship a mismatched type size.
-    headline_w="$(magick identify -format "%w" "$headline_png")"
-    if ((headline_w > cap_w)); then
-        echo "note: headline \"$headline\" is ${headline_w}px at its minimum point size, wider than the ${cap_w}px caption width; scaling it down - shorten the copy" >&2
-        magick "$headline_png" -resize "${cap_w}x" -define png:color-type=6 -depth 8 "$headline_png"
-    fi
-    headline_h="$(magick identify -format "%h" "$headline_png")"
-
-    descriptor_png="$WORK_ROOT/descriptor-$$-$RANDOM.png"
-    magick -background none -fill "rgba(${DESCRIPTOR_RGB},${DESCRIPTOR_OPACITY})" -font "$FONT" \
-        -pointsize "$descriptor_pt" -gravity center -size "${cap_w}x" caption:"$descriptor" \
-        -trim +repage -define png:color-type=6 -depth 8 "$descriptor_png"
-    descriptor_h="$(magick identify -format "%h" "$descriptor_png")"
-
-    sub_gap=$(awk -v h="$canvas_h" -v f="$STACK_GAP_FRACTION" 'BEGIN { printf "%d", h * f }')
-    if ((sub_gap < 2)); then
-        sub_gap=2
+    if [[ -n "$subline" ]]; then
+        render_subline "$(calc "$headline_pt * $SUBLINE_RATIO")" "$cap_w" "$subline" "$out.subline.png"
+        gap=$(calc "$canvas_h * $HEADLINE_SUBLINE_GAP_FRACTION")
+        layers+=("$out.subline.png" -gravity North -geometry "+0+$((stack_h + gap))" -compose Over -composite)
+        block_h="$(magick identify -format "%h" "$out.subline.png")"
+        stack_h=$((stack_h + gap + block_h))
     fi
 
-    descriptor_y=$((headline_h + sub_gap))
-    stack_h=$((descriptor_y + descriptor_h))
+    if [[ -n "$chips" ]]; then
+        render_chips "$(calc "$headline_pt * $CHIP_RATIO")" "$cap_w" "$chips" "$out.chips.png"
+        gap=$(calc "$canvas_h * $CHIP_GAP_FRACTION")
+        layers+=("$out.chips.png" -gravity North -geometry "+0+$((stack_h + gap))" -compose Over -composite)
+        block_h="$(magick identify -format "%h" "$out.chips.png")"
+        stack_h=$((stack_h + gap + block_h))
+    fi
 
-    magick -size "${cap_w}x${stack_h}" xc:none \
-        "$headline_png" -gravity North -geometry "+0+0" -compose Over -composite \
-        "$descriptor_png" -gravity North -geometry "+0+${descriptor_y}" -compose Over -composite \
-        -define png:color-type=6 -depth 8 "$out"
-
-    rm -f "$headline_png" "$descriptor_png"
+    magick -size "${cap_w}x${stack_h}" xc:none "${layers[@]}" -define png:color-type=6 -depth 8 "$out"
+    rm -f "$out.headline.png" "$out.subline.png" "$out.chips.png"
 }
 
-# Given the layout variant and the rendered heights of the caption stack and the
-# device block, prints "device_y text_y" as absolute North-anchored offsets.
-# Layout A is text-top/device-bottom: the text sits at the fixed outer edge
-# margin and the device starts immediately after it. Layout B mirrors that.
-position_layout() {
-    local canvas_h="$1" layout="$2" device_h="$3" stack_h="$4"
-    local edge_margin gap device_y text_y
-    edge_margin=$(awk -v h="$canvas_h" -v f="$TEXT_EDGE_MARGIN_FRACTION" 'BEGIN { printf "%d", h * f }')
-    gap=$(awk -v h="$canvas_h" -v f="$TEXT_DEVICE_GAP_FRACTION" 'BEGIN { printf "%d", h * f }')
-    if [[ "$layout" == "A" ]]; then
-        text_y="$edge_margin"
-        device_y=$((text_y + stack_h + gap))
-    else
-        device_y="$edge_margin"
-        text_y=$((device_y + device_h + gap))
-    fi
-    echo "$device_y $text_y"
+build_shadow() {
+    local device_on_canvas="$1" canvas_w="$2" canvas_h="$3" out="$4"
+    local blur offset
+    blur=$(calc "$canvas_h * $SHADOW_BLUR_RATIO")
+    offset=$(calc "$canvas_h * $SHADOW_OFFSET_RATIO")
+    magick "$device_on_canvas" -fill black -colorize 100% \
+        -channel A -evaluate multiply "$SHADOW_OPACITY" -blur "0x${blur}" +channel \
+        -define png:color-type=6 -depth 8 "$out.silhouette.png"
+    magick -size "${canvas_w}x${canvas_h}" xc:none "$out.silhouette.png" \
+        -gravity NorthWest -geometry "+0+${offset}" -compose Over -composite \
+        -define png:color-type=6 -depth 8 "$out"
+    rm -f "$out.silhouette.png"
 }
 
 compose_one() {
-    local device="$1" scene="$2" appearance="$3" layout="$4" height_fraction="$5" out_name="$6"
+    local device="$1" scene="$2" appearance="$3" palette_index="$4" width_fraction="$5" tilt="$6" out_name="$7"
     local device_slug frame_file cutout_x cutout_y cutout_w cutout_h
-    local src canvas_w canvas_h headline descriptor
-    local frame_native_w frame_native_h frame_h frame_w frame_x
-    local work stack_h device_y text_y
+    local src canvas_w canvas_h headline subline chips work
+    local top_hex bottom_hex glow_rgb frame_w frame_h device_w device_h device_x device_y
+    local stack_h text_y glow_size glow_x glow_y
 
     case "$device" in
         iphone)
@@ -370,7 +364,8 @@ compose_one() {
     fi
 
     headline="$(string_for "$TITLES" "$scene" 'headline')"
-    descriptor="$(string_for "$SUBTITLES" "$scene" 'descriptor')"
+    subline="$(string_for "$SUBTITLES" "$scene" 'subline')"
+    chips="$(string_for "$CHIPS" "$scene" 'chips')"
 
     canvas_w="$(magick identify -format "%w" "$src")"
     canvas_h="$(magick identify -format "%h" "$src")"
@@ -379,31 +374,35 @@ compose_one() {
         exit 1
     fi
 
-    frame_native_w="$(magick identify -format "%w" "$frame_file")"
-    frame_native_h="$(magick identify -format "%h" "$frame_file")"
+    IFS='|' read -r top_hex bottom_hex glow_rgb <<< "${CANVAS_PALETTES[$palette_index]}"
     work="$(mktemp -d "$WORK_ROOT/compose-XXXXXX")"
 
-    magick -size "${canvas_w}x${canvas_h}" "gradient:${BACKGROUND_TOP_HEX}-${BACKGROUND_BOTTOM_HEX}" \
-        -define png:color-type=2 -depth 8 "$work/bg.png"
+    build_text_stack "$canvas_w" "$canvas_h" "$headline" "$subline" "$chips" "$work/text-stack.png"
+    stack_h="$(magick identify -format "%h" "$work/text-stack.png")"
+    text_y=$(calc "$canvas_h * $TOP_MARGIN_FRACTION")
 
     frame_capture "$src" "$frame_file" "$cutout_x" "$cutout_y" "$cutout_w" "$cutout_h" "$work/framed-device.png"
-
-    frame_h=$(awk -v h="$canvas_h" -v f="$height_fraction" 'BEGIN { printf "%d", h * f }')
-    frame_w=$(awk -v fh="$frame_h" -v nw="$frame_native_w" -v nh="$frame_native_h" 'BEGIN { printf "%d", (fh * nw) / nh }')
-    frame_x=$(((canvas_w - frame_w) / 2))
-
-    magick "$work/framed-device.png" -resize "${frame_w}x${frame_h}!" \
+    frame_w="$(magick identify -format "%w" "$frame_file")"
+    frame_h="$(magick identify -format "%h" "$frame_file")"
+    device_w=$(calc "$canvas_w * $width_fraction")
+    device_h=$(calc "$device_w * $frame_h / $frame_w")
+    magick "$work/framed-device.png" -resize "${device_w}x${device_h}!" -background none -rotate "$tilt" +repage \
         -define png:color-type=6 -depth 8 "$work/framed-device-scaled.png"
+    device_w="$(magick identify -format "%w" "$work/framed-device-scaled.png")"
+    device_x=$(((canvas_w - device_w) / 2))
+    device_y=$((text_y + stack_h + $(calc "$canvas_h * $TEXT_DEVICE_GAP_FRACTION")))
 
-    build_text_stack "$canvas_w" "$canvas_h" "$headline" "$descriptor" "$work/text-stack.png"
-    stack_h="$(magick identify -format "%h" "$work/text-stack.png")"
-
-    read -r device_y text_y <<< "$(position_layout "$canvas_h" "$layout" "$frame_h" "$stack_h")"
+    glow_size=$(calc "$canvas_w * $GLOW_SIZE_RATIO")
+    glow_x=$(((canvas_w - glow_size) / 2))
+    glow_y=$((device_y - glow_size / 3))
+    magick -size "${canvas_w}x${canvas_h}" "gradient:${top_hex}-${bottom_hex}" \
+        \( -size "${glow_size}x${glow_size}" "radial-gradient:rgba(${glow_rgb},${GLOW_OPACITY})-rgba(${glow_rgb},0)" \) \
+        -geometry "+${glow_x}+${glow_y}" -compose Over -composite \
+        -define png:color-type=2 -depth 8 "$work/bg.png"
 
     magick -size "${canvas_w}x${canvas_h}" xc:none "$work/framed-device-scaled.png" \
-        -geometry "+${frame_x}+${device_y}" -compose Over -composite \
+        -geometry "+${device_x}+${device_y}" -compose Over -composite \
         -define png:color-type=6 -depth 8 "$work/device-on-canvas.png"
-
     build_shadow "$work/device-on-canvas.png" "$canvas_w" "$canvas_h" "$work/shadow.png"
 
     magick "$work/bg.png" "$work/shadow.png" -compose Over -composite \
@@ -415,56 +414,40 @@ compose_one() {
     cp "$work/final.png" "$OUT_DIR/$out_name"
     rm -rf "$work"
 
-    echo "wrote $OUT_DIR/$out_name (${canvas_w}x${canvas_h}), layout $layout, headline: \"$headline\""
+    echo "wrote $OUT_DIR/$out_name (${canvas_w}x${canvas_h}), headline: \"$headline\""
 }
 
-# device | scene | layout | device height fraction | output filename
-#
-# This list is the only scene enumeration: raw captures are read by name from it,
-# never discovered from the raw directory, so a raw PNG with no entry here - such
-# as the capture matrix's 00-prime deep-link trust scene - is never composed and
-# can never reach variants/, the PR gallery, or deliver. A scene added here
-# without matching design/<locale>/title.strings and subtitle.strings entries
-# fails closed in string_for().
-#
-# Curated store order, mirroring the app's own navigation: the balance overview
-# first, then the record it builds from, then what the app makes of that record,
-# then the acts of budgeting and capturing, and finally the account and privacy
-# story. Layout alternates A (text top / device bottom) and B (device top / text
-# bottom) by position for scroll rhythm; the first and last shot of each device's
-# run use the taller end of the device height range. The appearance is not part
-# of the manifest - each variant composes the whole run from its own appearance's
-# raw captures, so a light set and a dark set are the same story twice.
 SCENES=(
-    "iphone|01-home|A|$DEVICE_HEIGHT_FRACTION_ENDPOINT|01_iphone_home.png"
-    "iphone|02-transactions|B|$DEVICE_HEIGHT_FRACTION_DEFAULT|02_iphone_transactions.png"
-    "iphone|03-analytics|A|$DEVICE_HEIGHT_FRACTION_DEFAULT|03_iphone_analytics.png"
-    "iphone|04-budget|B|$DEVICE_HEIGHT_FRACTION_DEFAULT|04_iphone_budget.png"
-    "iphone|05-add-expense|A|$DEVICE_HEIGHT_FRACTION_DEFAULT|05_iphone_add-expense.png"
-    "iphone|06-account|B|$DEVICE_HEIGHT_FRACTION_DEFAULT|06_iphone_account.png"
-    "iphone|07-settings|A|$DEVICE_HEIGHT_FRACTION_ENDPOINT|07_iphone_settings.png"
-    "ipad|01-home|A|$DEVICE_HEIGHT_FRACTION_ENDPOINT|21_ipad_home.png"
-    "ipad|02-transactions|B|$DEVICE_HEIGHT_FRACTION_DEFAULT|22_ipad_transactions.png"
-    "ipad|03-analytics|A|$DEVICE_HEIGHT_FRACTION_DEFAULT|23_ipad_analytics.png"
-    "ipad|04-budget|B|$DEVICE_HEIGHT_FRACTION_DEFAULT|24_ipad_budget.png"
-    "ipad|05-add-expense|A|$DEVICE_HEIGHT_FRACTION_DEFAULT|25_ipad_add-expense.png"
-    "ipad|06-account|B|$DEVICE_HEIGHT_FRACTION_DEFAULT|26_ipad_account.png"
-    "ipad|07-settings|A|$DEVICE_HEIGHT_FRACTION_ENDPOINT|27_ipad_settings.png"
+    "iphone|01-home|0|0.92|0|01_iphone_home.png"
+    "iphone|05-add-expense|1|0.80|0|02_iphone_add-expense.png"
+    "iphone|03-analytics|2|0.80|0|03_iphone_analytics.png"
+    "iphone|04-budget|3|0.80|0|04_iphone_budget.png"
+    "iphone|08-widgets|4|0.78|-5|05_iphone_widgets.png"
+    "iphone|09-inbox|5|0.80|0|06_iphone_inbox.png"
+    "iphone|06-account|6|0.80|0|07_iphone_account.png"
+    "iphone|07-settings|7|0.80|0|08_iphone_settings.png"
+    "ipad|01-home|0|0.88|0|21_ipad_home.png"
+    "ipad|05-add-expense|1|0.80|0|22_ipad_add-expense.png"
+    "ipad|03-analytics|2|0.80|0|23_ipad_analytics.png"
+    "ipad|04-budget|3|0.80|0|24_ipad_budget.png"
+    "ipad|08-widgets|4|0.76|-5|25_ipad_widgets.png"
+    "ipad|09-inbox|5|0.80|0|26_ipad_inbox.png"
+    "ipad|06-account|6|0.80|0|27_ipad_account.png"
+    "ipad|07-settings|7|0.80|0|28_ipad_settings.png"
 )
 
 run_variant() {
-    local variant="$1" entry device scene layout height_fraction out_name
-    set_variant_palette "$variant"
+    local variant="$1" entry device scene palette_index width_fraction tilt out_name
 
     OUT_DIR="$STAGE_ROOT/$variant-ios-$ASC_LOCALE"
     mkdir -p "$OUT_DIR"
 
     for entry in "${SCENES[@]}"; do
-        IFS='|' read -r device scene layout height_fraction out_name <<< "$entry"
+        IFS='|' read -r device scene palette_index width_fraction tilt out_name <<< "$entry"
         if [[ "$DEVICE_ARGUMENT" != "all" && "$DEVICE_ARGUMENT" != "$device" ]]; then
             continue
         fi
-        compose_one "$device" "$scene" "$variant" "$layout" "$height_fraction" "$out_name"
+        compose_one "$device" "$scene" "$variant" "$palette_index" "$width_fraction" "$tilt" "$out_name"
     done
 
     publish_stage "$SCREENSHOTS_DIR/variants/${PUBLISH_VARIANT_NAME:-$variant}/ios/$ASC_LOCALE"
@@ -474,15 +457,14 @@ for ASC_LOCALE in "${SELECTED_LOCALES[@]}"; do
     RAW_LOCALE="$(raw_locale_for "$ASC_LOCALE")"
     TITLES="$DESIGN_DIR/$ASC_LOCALE/title.strings"
     SUBTITLES="$DESIGN_DIR/$ASC_LOCALE/subtitle.strings"
+    CHIPS="$DESIGN_DIR/$ASC_LOCALE/chips.strings"
 
-    if [[ ! -f "$TITLES" ]]; then
-        echo "error: no title.strings for locale '$ASC_LOCALE' at $TITLES" >&2
-        exit 1
-    fi
-    if [[ ! -f "$SUBTITLES" ]]; then
-        echo "error: no subtitle.strings for locale '$ASC_LOCALE' at $SUBTITLES" >&2
-        exit 1
-    fi
+    for strings_file in "$TITLES" "$SUBTITLES" "$CHIPS"; do
+        if [[ ! -f "$strings_file" ]]; then
+            echo "error: missing $strings_file for locale '$ASC_LOCALE'" >&2
+            exit 1
+        fi
+    done
 
     if [[ "$VARIANT_ARGUMENT" == "all" ]]; then
         run_variant light

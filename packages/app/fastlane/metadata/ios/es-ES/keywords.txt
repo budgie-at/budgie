@@ -1,1 +1,1 @@
-dinero,finanzas,ahorro,cuenta,factura,suscripción,deuda,cripto,divisa,privacidad,voz,saldo,recibo
+dinero,finanzas,ahorro,cuenta,factura,suscripción,deuda,cripto,divisa,ingresos,cartera,saldo,recibo
