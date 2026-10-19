@@ -71,7 +71,6 @@ export const TransactionInfoPageContent = ({
     };
     const handleGoBack = () => void router.back();
 
-    const isEditDisabled = !isDefined(editHref);
     const contentInsetBottom = Math.max(chromeHeight, FOOTER_CONTENT_CLEARANCE);
 
     return (
@@ -89,15 +88,17 @@ export const TransactionInfoPageContent = ({
                 />
 
                 <View className="gap-y-2xl">
-                    <View className="overflow-hidden -mt-px">
-                        <TransactionInfoAccountRows transaction={transaction} />
-                        <TransactionInfoCategoryRows transaction={transaction} />
-                        <TransactionInfoMoneyRows transaction={transaction} />
-                        <TransactionInfoSourceRows
-                            transaction={transaction}
-                            onOpenRefundSources={onOpenRefundSources}
-                            onOpenConsolidationSources={onOpenConsolidationSources}
-                        />
+                    <View className="overflow-hidden">
+                        <View className="-mt-px">
+                            <TransactionInfoAccountRows transaction={transaction} />
+                            <TransactionInfoCategoryRows transaction={transaction} />
+                            <TransactionInfoMoneyRows transaction={transaction} />
+                            <TransactionInfoSourceRows
+                                transaction={transaction}
+                                onOpenRefundSources={onOpenRefundSources}
+                                onOpenConsolidationSources={onOpenConsolidationSources}
+                            />
+                        </View>
                     </View>
 
                     <TransactionInfoTagsSection transaction={transaction} />
@@ -120,7 +121,7 @@ export const TransactionInfoPageContent = ({
                         leftIcon={UserIconNameEnum.Pencil}
                         content={t`Edit transaction`}
                         onPress={handleEditPress}
-                        disabled={isEditDisabled}
+                        disabled={!isDefined(editHref)}
                         testID={TransactionInfoPageSelector.EditButton}
                     />
                 </View>
