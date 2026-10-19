@@ -11,15 +11,12 @@ interface Props {
 }
 
 export const FeatureStoryCallout = ({ y, x = DEFAULT_CALLOUT_X, index, labelY = y, children }: Props) => {
-    const pinPosition = { left: `${x * 100}%`, top: `${y * 100}%` };
-    const labelPosition = { top: `${labelY * 100}%`, '--story-callout-x': x, '--story-callout-shift': y - labelY };
+    const anchor = { '--story-callout-x': x, '--story-callout-y': y, '--story-callout-label-y': labelY };
 
     return (
-        <div className="story-callout" data-index={index} data-story-callout>
-            <span aria-hidden="true" className="story-callout-pin" style={pinPosition} />
-            <span className="story-callout-label" style={labelPosition}>
-                {children}
-            </span>
+        <div className="story-callout" data-index={index} data-story-callout style={anchor}>
+            <span aria-hidden="true" className="story-callout-pin" />
+            <span className="story-callout-label">{children}</span>
         </div>
     );
 };
