@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.106.4](https://github.com/budgie-at/budgie/compare/v6.106.3...v6.106.4) (2026-10-19)
+
+### Bug Fixes
+
+* **app:** hide the first row divider under the transaction hero again ([#1604](https://github.com/budgie-at/budgie/issues/1604)) ([d0ab671](https://github.com/budgie-at/budgie/commit/d0ab67193fb0408e0b62af2cd0ea617f0639fb6e)), closes [#1600](https://github.com/budgie-at/budgie/issues/1600)
+
+
 ## [6.106.3](https://github.com/budgie-at/budgie/compare/v6.106.2...v6.106.3) (2026-10-19)
 
 **Note:** Version bump only for package @budgie-at/app
