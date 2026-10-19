@@ -3,13 +3,12 @@ import { describe, expect, it } from '@effect/vitest';
 import { formatSymbolAmount } from '../src/i18n/utils/format-symbol-amount.util';
 
 const format = (locale: string, value: number, symbol: string, fractionDigits: number, notation: 'standard' | 'compact' = 'standard') =>
-    formatSymbolAmount(
+    formatSymbolAmount(value, symbol, absolute =>
         new Intl.NumberFormat(locale, {
             notation,
             minimumFractionDigits: notation === 'compact' ? 0 : fractionDigits,
             maximumFractionDigits: fractionDigits
-        }).formatToParts(value),
-        symbol
+        }).format(absolute)
     );
 
 describe('formatSymbolAmount', () => {

@@ -67,13 +67,12 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
                     return maskedAmount;
                 }
 
-                return formatSymbolAmount(
+                return formatSymbolAmount(value, symbol, absolute =>
                     new Intl.NumberFormat(context.locale, {
                         style: 'decimal',
                         minimumFractionDigits: context.decimalPlaces,
                         maximumFractionDigits: context.decimalPlaces
-                    }).formatToParts(value),
-                    symbol
+                    }).format(absolute)
                 );
             };
 

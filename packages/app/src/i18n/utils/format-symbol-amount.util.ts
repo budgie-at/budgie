@@ -1,9 +1,2 @@
-export const formatSymbolAmount = (parts: readonly Intl.NumberFormatPart[], symbol: string): string => {
-    const sign = parts.find(part => part.type === 'minusSign')?.value ?? '';
-    const digits = parts
-        .filter(part => part.type !== 'minusSign')
-        .map(part => part.value)
-        .join('');
-
-    return `${sign}${symbol}${digits}`;
-};
+export const formatSymbolAmount = (value: number, symbol: string, formatAbsolute: (absolute: number) => string): string =>
+    `${value < 0 ? '-' : ''}${symbol}${formatAbsolute(Math.abs(value))}`;

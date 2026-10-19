@@ -22,7 +22,7 @@ export const useFormatCompactDigits = (minimumCompactThreshold = HUNDRED_THOUSAN
         const absoluteValue = Math.abs(value);
 
         if (!Number.isFinite(value) || absoluteValue < minimumCompactThreshold) {
-            return formatSymbolAmount(intl.formatNumberToParts(value, { maximumFractionDigits: 0 }), symbol);
+            return formatSymbolAmount(value, symbol, absolute => intl.formatNumber(absolute, { maximumFractionDigits: 0 }));
         }
 
         const sign = value < 0 ? '-' : '';

@@ -7,13 +7,12 @@ export const useFormatDigits = (minimumDecimalPlaces: number, maximumDecimalPlac
     const { intl } = useI18nContext();
 
     const formatNumeric = (value: number, symbol: string) =>
-        formatSymbolAmount(
-            intl.formatNumberToParts(value, {
+        formatSymbolAmount(value, symbol, absolute =>
+            intl.formatNumber(absolute, {
                 style: 'decimal',
                 minimumFractionDigits: minimumDecimalPlaces,
                 maximumFractionDigits: maximumDecimalPlaces
-            }),
-            symbol
+            })
         );
 
     return (rawNumeric: string | number, symbol = '') => {
