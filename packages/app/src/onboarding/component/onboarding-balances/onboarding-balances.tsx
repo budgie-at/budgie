@@ -80,7 +80,6 @@ export const OnboardingBalances = () => {
     const hasManualAccounts = isNotEmptyArray(manualAccounts);
     const sourcesAccountId = manualAccounts.find(account => account.type === AccountTypeEnum.BANK)?.id;
     const hasStandaloneSources = !isDefined(sourcesAccountId);
-    const isSaveDisabled = !isNotEmptyArray(enteredBalances);
 
     const monobankAccountCount = accounts.filter(account => account.externalSource === ExternalSourceEnum.MONOBANK).length;
     const isMonobankConnected = isPositiveNumber(monobankAccountCount);
@@ -95,6 +94,23 @@ export const OnboardingBalances = () => {
               })
           })
         : t`Your token is stored in Budgie's file and only ever sent to Monobank.`;
+
+    const statementAccountCount = accounts.filter(
+        account => account.externalSource === ExternalSourceEnum.PRIVATBANK || account.externalSource === ExternalSourceEnum.ERSTE
+    ).length;
+    const isStatementImported = isPositiveNumber(statementAccountCount);
+    const statementIcon = isStatementImported ? UserIconNameEnum.CircleCheck : UserIconNameEnum.FileText;
+    const statementIconClassName = isStatementImported ? 'text-positive-foreground' : 'text-cyan-foreground';
+    const statementTitle = isStatementImported ? t`Statement imported` : t`A bank statement (PDF or XLSX)`;
+    const statementDescription = isStatementImported
+        ? t({
+              message: plural(statementAccountCount, {
+                  one: '# account. Balances come from the statement.',
+                  other: '# accounts. Balances come from the statement.'
+              })
+          })
+        : t`Read on this phone, then you can delete it.`;
+    const isSaveDisabled = !isNotEmptyArray(enteredBalances) && !isMonobankConnected && !isStatementImported;
 
     const sources = (
         <View className="gap-y-md">
@@ -112,10 +128,10 @@ export const OnboardingBalances = () => {
             />
             <OnboardingSourceRow
                 testID={OnboardingBalancesSelector.StatementOption}
-                icon={UserIconNameEnum.FileText}
-                iconClassName="text-cyan-foreground"
-                title={t`A bank statement (PDF or XLSX)`}
-                description={t`Read on this phone, then you can delete it.`}
+                icon={statementIcon}
+                iconClassName={statementIconClassName}
+                title={statementTitle}
+                description={statementDescription}
                 onPress={handleStatementPress}
             />
         </View>

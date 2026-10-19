@@ -332,6 +332,10 @@ msgstr "{spikeLabel}: разова витрата {spikeAmount}. Для оцін
 msgid "{splitEntryCount, plural, one {# item} other {# items}}"
 msgstr "{splitEntryCount, plural, one {# елемент} few {# елементи} many {# елементів} other {# елемента}}"
 
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "{statementAccountCount, plural, one {# account. Balances come from the statement.} other {# accounts. Balances come from the statement.}}"
+msgstr "{statementAccountCount, plural, one {# рахунок. Баланси взято з виписки.} few {# рахунки. Баланси взято з виписки.} many {# рахунків. Баланси взято з виписки.} other {# рахунків. Баланси взято з виписки.}}"
+
 #: src/ai/component/ai-on-device-link-card/ai-on-device-link-card.tsx
 msgid "{statusLabel} · {downloaded} of {total} GB"
 msgstr "{statusLabel} · {downloaded} з {total} ГБ"
@@ -4534,6 +4538,10 @@ msgstr "Почніть відстежувати свої витрати, вик�
 #: src/ai/constant/ai-umbrella-status-atom.constant.ts
 msgid "Starting up AI…"
 msgstr "Запуск ШІ…"
+
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "Statement imported"
+msgstr "Виписку імпортовано"
 
 #: src/account/constant/account-type.constant.ts
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx

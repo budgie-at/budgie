@@ -332,6 +332,10 @@ msgstr "{spikeLabel} a eu une dépense exceptionnelle de {spikeAmount}. L'estima
 msgid "{splitEntryCount, plural, one {# item} other {# items}}"
 msgstr "{splitEntryCount, plural, one {# élément} other {# éléments}}"
 
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "{statementAccountCount, plural, one {# account. Balances come from the statement.} other {# accounts. Balances come from the statement.}}"
+msgstr "{statementAccountCount, plural, one {# compte. Les soldes viennent du relevé.} other {# comptes. Les soldes viennent du relevé.}}"
+
 #: src/ai/component/ai-on-device-link-card/ai-on-device-link-card.tsx
 msgid "{statusLabel} · {downloaded} of {total} GB"
 msgstr "{statusLabel} · {downloaded} sur {total} Go"
@@ -4534,6 +4538,10 @@ msgstr "Commencez à suivre vos dépenses en utilisant le bouton micro ou en ajo
 #: src/ai/constant/ai-umbrella-status-atom.constant.ts
 msgid "Starting up AI…"
 msgstr "Démarrage de l'IA…"
+
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "Statement imported"
+msgstr "Relevé importé"
 
 #: src/account/constant/account-type.constant.ts
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx

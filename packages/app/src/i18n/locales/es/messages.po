@@ -332,6 +332,10 @@ msgstr "{spikeLabel} tuvo un gasto puntual de {spikeAmount}. La estimación usa 
 msgid "{splitEntryCount, plural, one {# item} other {# items}}"
 msgstr "{splitEntryCount, plural, one {# elemento} other {# elementos}}"
 
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "{statementAccountCount, plural, one {# account. Balances come from the statement.} other {# accounts. Balances come from the statement.}}"
+msgstr "{statementAccountCount, plural, one {# cuenta. Los saldos vienen del extracto.} other {# cuentas. Los saldos vienen del extracto.}}"
+
 #: src/ai/component/ai-on-device-link-card/ai-on-device-link-card.tsx
 msgid "{statusLabel} · {downloaded} of {total} GB"
 msgstr "{statusLabel} · {downloaded} de {total} GB"
@@ -4534,6 +4538,10 @@ msgstr "Comienza a rastrear tus gastos usando el botón de micrófono o agregand
 #: src/ai/constant/ai-umbrella-status-atom.constant.ts
 msgid "Starting up AI…"
 msgstr "Iniciando IA…"
+
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "Statement imported"
+msgstr "Extracto importado"
 
 #: src/account/constant/account-type.constant.ts
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx

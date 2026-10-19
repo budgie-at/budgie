@@ -333,6 +333,10 @@ msgstr "{spikeLabel} had a one-off {spikeAmount}. The estimate uses a typical mo
 msgid "{splitEntryCount, plural, one {# item} other {# items}}"
 msgstr "{splitEntryCount, plural, one {# item} other {# items}}"
 
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "{statementAccountCount, plural, one {# account. Balances come from the statement.} other {# accounts. Balances come from the statement.}}"
+msgstr "{statementAccountCount, plural, one {# account. Balances come from the statement.} other {# accounts. Balances come from the statement.}}"
+
 #: src/ai/component/ai-on-device-link-card/ai-on-device-link-card.tsx
 msgid "{statusLabel} · {downloaded} of {total} GB"
 msgstr "{statusLabel} · {downloaded} of {total} GB"
@@ -4535,6 +4539,10 @@ msgstr "Start tracking your spending by using the mic button or adding transacti
 #: src/ai/constant/ai-umbrella-status-atom.constant.ts
 msgid "Starting up AI…"
 msgstr "Starting up AI…"
+
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "Statement imported"
+msgstr "Statement imported"
 
 #: src/account/constant/account-type.constant.ts
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx

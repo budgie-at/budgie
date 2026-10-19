@@ -332,6 +332,10 @@ msgstr "{spikeLabel} hatte eine Einmalausgabe von {spikeAmount}. Die Schätzung 
 msgid "{splitEntryCount, plural, one {# item} other {# items}}"
 msgstr "{splitEntryCount, plural, one {# Element} other {# Elemente}}"
 
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "{statementAccountCount, plural, one {# account. Balances come from the statement.} other {# accounts. Balances come from the statement.}}"
+msgstr "{statementAccountCount, plural, one {# Konto. Die Salden stammen aus dem Kontoauszug.} other {# Konten. Die Salden stammen aus dem Kontoauszug.}}"
+
 #: src/ai/component/ai-on-device-link-card/ai-on-device-link-card.tsx
 msgid "{statusLabel} · {downloaded} of {total} GB"
 msgstr "{statusLabel} · {downloaded} von {total} GB"
@@ -4534,6 +4538,10 @@ msgstr "Beginnen Sie mit der Verfolgung Ihrer Ausgaben, indem Sie die Mikrofonta
 #: src/ai/constant/ai-umbrella-status-atom.constant.ts
 msgid "Starting up AI…"
 msgstr "KI wird gestartet…"
+
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "Statement imported"
+msgstr "Kontoauszug importiert"
 
 #: src/account/constant/account-type.constant.ts
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
