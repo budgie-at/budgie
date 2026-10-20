@@ -1,4 +1,5 @@
 import { ComponentProps, useRef, useState } from 'react';
+import { BlurEvent, FocusEvent } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
@@ -47,6 +48,8 @@ export const AmountInput = ({
     selectTextOnFocus = false,
     valuePrefix = '',
     minimumDecimalPlaces = 0,
+    onFocus,
+    onBlur,
     ...rest
 }: Props) => {
     const { decimalSeparator, digitGroupingSeparator } = useLocaleInfo();
@@ -86,7 +89,9 @@ export const AmountInput = ({
         }
     };
 
-    const handleFocus = () => {
+    const handleFocus = (event: FocusEvent) => {
+        onFocus?.(event);
+
         const editableText =
             value === 0
                 ? ''
@@ -105,7 +110,8 @@ export const AmountInput = ({
         setSelection({ start: selectionStart, end: editableTextEnd });
     };
 
-    const handleBlur = () => {
+    const handleBlur = (event: BlurEvent) => {
+        onBlur?.(event);
         setIsFocused(false);
         setDisplayValue('');
         setSelection(null);

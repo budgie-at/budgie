@@ -7,8 +7,7 @@ import { AiModelResidencyService } from '@app/ai/service/ai-model-residency.serv
 import { ChatService } from '@app/ai/service/chat.service';
 import { LocalEmbeddingService } from '@app/ai/service/embedding.service';
 import { SttService } from '@app/ai/service/stt.service';
-import { WhisperModelService } from '@app/ai/service/whisper-model.service';
-import { describe, expect, it } from '@effect/vitest';
+import { expect, layer } from '@effect/vitest';
 import * as Deferred from 'effect/Deferred';
 import * as Effect from 'effect/Effect';
 import * as Exit from 'effect/Exit';
@@ -17,6 +16,8 @@ import * as Layer from 'effect/Layer';
 import { beforeEach, vi } from 'vitest';
 
 import { emptyFn, isDefined } from '@rnw-community/shared';
+
+import { aiModelDownloadStub } from '../../harness';
 
 const native = vi.hoisted(() => {
     const context = {
@@ -38,7 +39,6 @@ const native = vi.hoisted(() => {
 
 vi.mock('llama.rn', () => ({ initLlama: native.initialize }));
 vi.mock('whisper.rn', () => ({ initWhisper: native.initializeWhisper, releaseAllWhisper: native.releaseWhisper }));
-vi.mock('@app/ai/utils/download-model.util', () => ({ downloadModel: () => Effect.succeed('/tmp/model') }));
 
 beforeEach(() => {
     native.context.release.mockReset().mockResolvedValue(void 0);
@@ -56,8 +56,6 @@ beforeEach(() => {
 });
 
 const transcriptionSampleCount = 6_400;
-
-const sttLayer = Layer.mock(WhisperModelService, { download: () => Effect.succeed('/tmp/whisper'), delete: emptyFn });
 
 const holdNativeCall = Effect.fnUntraced(function* <A>(result: A) {
     const services = yield* Effect.context();
@@ -86,7 +84,7 @@ const interruptAndStop = Effect.fnUntraced(function* <A, E, B, E2, R>(running: F
     };
 });
 
-describe('AI native ownership', () => {
+layer(aiModelDownloadStub)('AI native ownership', it => {
     it.effect('interrupts a loaded context when native stopCompletion returns synchronous undefined', () =>
         Effect.gen(function* () {
             const chat = yield* ChatService.make;
@@ -135,11 +133,11 @@ describe('AI native ownership', () => {
             yield* stt.stop();
             expect(native.releaseWhisper).toHaveBeenCalledTimes(2);
             expect(appAtomRegistry.get(stt.snapshot).status).toBe(AiSubsystemStatusEnum.SUSPENDED);
-        }).pipe(Effect.provide(sttLayer))
+        })
     );
 });
 
-describe('AI native ownership initialization', () => {
+layer(aiModelDownloadStub)('AI native ownership initialization', it => {
     it.effect('joins initialization before an interrupted owner can release its context', () =>
         Effect.gen(function* () {
             const chat = yield* ChatService.make;
@@ -195,11 +193,11 @@ describe('AI native ownership initialization', () => {
             expect(prematureReleases).toBe(0);
             expect(native.releaseWhisper).toHaveBeenCalledTimes(1);
             expect(appAtomRegistry.get(stt.snapshot).status).toBe(AiSubsystemStatusEnum.SUSPENDED);
-        }).pipe(Effect.provide(sttLayer))
+        })
     );
 });
 
-describe('AI native ownership in-flight work', () => {
+layer(aiModelDownloadStub)('AI native ownership in-flight work', it => {
     it.effect('joins interrupted transcription before native release', () =>
         Effect.gen(function* () {
             const stt = yield* SttService.make;
@@ -217,7 +215,7 @@ describe('AI native ownership in-flight work', () => {
             yield* transcription.complete;
             yield* interrupted.join;
             expect(prematureReleases).toBe(0);
-        }).pipe(Effect.provide(sttLayer))
+        })
     );
 
     it.effect('awaits residency resume and serializes its native initialization with suspension', () =>

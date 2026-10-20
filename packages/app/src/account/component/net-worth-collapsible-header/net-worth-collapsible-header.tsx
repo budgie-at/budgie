@@ -7,6 +7,7 @@ import { CollapsibleHeader } from '@rnw-community/react-native-collapsible-heade
 import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { HomePageSelector } from '../../../app/(tabs)/home-page.selector';
+import { SecurityStatusChip } from '../../../auth/components/security-status-chip/security-status-chip';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { RunwayPill } from '../../../runway/component/runway-pill/runway-pill';
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -60,7 +61,9 @@ export const NetWorthCollapsibleHeader = ({ netWorth, fiatTotal, cryptoTotal, fi
                 </ProtectedMoney>
             </View>
 
-            <View className="mt-lg flex-row items-center gap-x-sm">
+            <View className="mt-lg flex-row flex-wrap items-center justify-center gap-sm">
+                <SecurityStatusChip />
+
                 <NetWorthAssetChips fiatTotal={fiatTotal} cryptoTotal={cryptoTotal} fiatCount={fiatCount} cryptoCount={cryptoCount} />
 
                 {isRunwayPillEnabled ? <RunwayPill /> : null}

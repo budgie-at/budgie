@@ -35,7 +35,7 @@ export const useSyncAccountSetupFlow = <Identifier extends AppServices, Shape>(
             await appRuntime.runPromise(
                 Effect.flatMap(service, syncService => setupSync(syncService, [...accountSelection.selectedAccounts]))
             );
-            router.replace(exitHref);
+            router.dismissTo(exitHref);
         } catch (error) {
             showErrorToast(t`Could not set up sync`, getErrorMessage(error));
         } finally {

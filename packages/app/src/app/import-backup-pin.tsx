@@ -1,13 +1,18 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
+import { File } from 'expo-file-system';
 import React, { useEffect, useEffectEvent, useState } from 'react';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { Button } from '../@generic/component/button/button';
+import { FileChip } from '../@generic/component/file-chip/file-chip';
 import { GoBackButton } from '../@generic/component/go-back-button/go-back-button';
 import { LoadingOverlay } from '../@generic/component/loading-overlay/loading-overlay';
 import { FullPage } from '../@generic/component/page/full-page';
+import { useFormatFileSize } from '../@generic/hook/use-format-file-size.hook';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { appRuntime } from '../@generic/runtime/app.runtime';
 import { PinForm } from '../auth/components/pin-form/pin-form';
@@ -15,11 +20,13 @@ import { PIN_LENGTH } from '../auth/constant/pin-length.constant';
 import { useImportBackupPinModal, useImportBackupPinModalParams } from '../import/context/import-backup-pin-modal.context';
 import { DatabaseImportService } from '../import/service/database-import.service';
 
+// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export default function ImportBackupPinModal() {
     const { t } = useLingui();
     const [, resolveImportBackupPin, dismissImportBackupPin] = useImportBackupPinModal();
     useModalDismiss(dismissImportBackupPin);
     const sourceUri = useImportBackupPinModalParams();
+    const formatFileSize = useFormatFileSize();
 
     const [input, setInput] = useState('');
     const [error, setError] = useState<string | null>(null);
@@ -79,20 +86,32 @@ export default function ImportBackupPinModal() {
 
     useEffect(() => () => void handleDismiss(), []);
 
+    const backupFile = isNotEmptyString(sourceUri) ? new File(sourceUri) : null;
+    const backupFileName = isDefined(backupFile) ? decodeURIComponent(backupFile.name) : '';
+    const backupFileSize = isDefined(backupFile) && backupFile.exists ? formatFileSize(backupFile.size) : '';
+
     return (
         <FullPage>
-            <GoBackButton onPress={handleCancel} className="absolute left-[20px] top-[20px]" />
+            <View className="flex-row items-center gap-x-md px-5xl pt-lg">
+                <GoBackButton onPress={handleCancel} />
+
+                <FileChip icon={UserIconNameEnum.Archive} name={backupFileName}>
+                    <Text className="ml-auto text-secondary-foreground text-xs">{backupFileSize}</Text>
+                </FileChip>
+            </View>
 
             <View className="flex-1 px-6xl justify-center">
                 <PinForm
-                    title={t`Backup PIN`}
-                    description={t`Enter the PIN this backup was created with. It becomes your app PIN after the restore.`}
+                    title={t`Enter the PIN this backup was sealed with`}
+                    description={t`If you don't remember it, this backup can't be opened. You can start fresh instead.`}
                     currentInput={input}
                     error={error}
                     isLoading={isLoading}
                     onDigitPress={addDigit}
                     onDeletePress={deleteDigit}
                 />
+
+                <Button variant="ghost" content={t`Start fresh instead`} onPress={handleCancel} className="mb-5xl" />
 
                 {isLoading ? <LoadingOverlay /> : null}
             </View>

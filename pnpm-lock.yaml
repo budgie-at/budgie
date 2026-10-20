@@ -447,6 +447,9 @@ importers:
       expo-localization:
         specifier: ~58.0.4
         version: 58.0.4(expo@58.0.14)(react@19.3.0)
+      expo-network:
+        specifier: ~58.0.3
+        version: 58.0.3(expo@58.0.14)(react@19.3.0)
       expo-notifications:
         specifier: ~58.1.5
         version: 58.1.5(expo@58.0.14)(react-native@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)(supports-color@8.1.1)
@@ -6605,6 +6608,12 @@ packages:
 
   expo-modules-macros@0.20.0:
     resolution: {integrity: sha512-Ekgb5c9LQPM9CPnmDZdeWcOa1eBbCDUGrgdN5lIFNH2GWDUf9doeAOK7IqQOOVviamy37eIp5FW+N1zyrIwzoA==}
+
+  expo-network@58.0.3:
+    resolution: {integrity: sha512-0WfFHUKt08Zk7ajaFzVDcZ4iNF3ywPVhGtxo7kDSiNQI4XO3MAqB6jYvpqf0D7+KQ28o/BIEkFdwkZl6AynIvw==}
+    peerDependencies:
+      expo: '*'
+      react: 19.3.0
 
   expo-notifications@58.1.5:
     resolution: {integrity: sha512-5bf3l+nP/yIadq6v1f3pyOmEk0WRsEaSEcfJdpCXzOyaMwg5YtqR48sMPU0Wg7KESwOtLVtetSH6y3XkGzSiVw==}
@@ -14573,6 +14582,11 @@ snapshots:
     optionalDependencies:
       '@expo/modules-macros-win32-arm64': 0.20.0
       '@expo/modules-macros-win32-x64': 0.20.0
+
+  expo-network@58.0.3(expo@58.0.14)(react@19.3.0):
+    dependencies:
+      expo: 58.0.14(8677b076ee095b4fc887672c560c971e)
+      react: 19.3.0
 
   expo-notifications@58.1.5(expo@58.0.14)(react-native@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)(supports-color@8.1.1):
     dependencies:

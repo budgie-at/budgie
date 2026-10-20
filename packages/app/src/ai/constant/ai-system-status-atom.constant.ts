@@ -9,6 +9,7 @@ import { AiSystemStateEnum } from '../enum/ai-system-state.enum';
 import { DrainerStateEnum } from '../enum/drainer-state.enum';
 import { AiSystemSnapshotInterface } from '../interface/ai-system-snapshot.interface';
 
+import { aiModelDownloadSummaryAtom } from './ai-model-download-summary-atom.constant';
 import {
     aiCoordinatorSnapshotAtom,
     chatModelSnapshotAtom,
@@ -21,7 +22,6 @@ import {
 import { embeddingDrainerSnapshotAtom } from './embedding-drainer-snapshot-atom.constant';
 
 const FULL_PERCENT = 100;
-const SUBSYSTEM_COUNT = 3;
 const EMPTY_SNAPSHOT: AiSystemSnapshotInterface = {
     state: AiSystemStateEnum.DISABLED,
     percent: 0
@@ -52,7 +52,7 @@ const deriveSystemStatus = (get: Atom.AtomContext): AiSystemSnapshotInterface =>
     if (isBooting([chat.status, embedding.status, stt.status])) {
         return {
             state: AiSystemStateEnum.BOOTING,
-            percent: Math.round((chat.downloadProgress + embedding.downloadProgress + stt.downloadProgress) / SUBSYSTEM_COUNT)
+            percent: get(aiModelDownloadSummaryAtom).percent
         };
     }
 

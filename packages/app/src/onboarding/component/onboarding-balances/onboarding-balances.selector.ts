@@ -1,3 +1,6 @@
 export const OnboardingBalancesSelector = {
-    OptionRow: (key: string): string => `OnboardingBalances.${key}`
+    MonobankOption: 'OnboardingBalances.MonobankOption',
+    StatementOption: 'OnboardingBalances.StatementOption',
+    SaveButton: 'OnboardingBalances.SaveButton',
+    LaterButton: 'OnboardingBalances.LaterButton'
 } as const;

@@ -1,9 +1,8 @@
 import { AccountWithSyncEntityInterface } from '@budgie/contracts';
-import { SectionList, View } from 'react-native';
+import { SectionList } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { useScreenChromeScrollProps } from '@rnw-community/react-native-screen-chrome';
-import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../../@generic/constant/floating-tab-bar.constant';
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -40,10 +39,10 @@ export const HomeSectionsList = ({ sections, activeAccountCount, bottomInset, ba
             paddingTop: 0,
             paddingBottom: bottomPadding,
             paddingLeft: LIST_HORIZONTAL_PADDING,
-            paddingRight: LIST_HORIZONTAL_PADDING
+            paddingRight: LIST_HORIZONTAL_PADDING,
+            flexGrow: 1
         }
     });
-    const emptyStateStyle = { paddingBottom: bottomPadding };
     const listFormatKey = `${defaultInstrument.id}-${decimalPlaces}`;
     const listFooterComponent =
         activeAccountCount > COLLAPSIBLE_NET_WORTH_HEADER_SCROLL_SPACER_MIN_ACCOUNT_COUNT ? (
@@ -66,15 +65,6 @@ export const HomeSectionsList = ({ sections, activeAccountCount, bottomInset, ba
         return 'accounts' in item ? `crypto-${item.instrument.id}` : String(item.left.id);
     };
 
-    if (!isNotEmptyArray(sections)) {
-        return (
-            <View className="flex-1 px-5xl" style={emptyStateStyle}>
-                {listHeaderComponent}
-                <AccountsEmptyState />
-            </View>
-        );
-    }
-
     return (
         <AnimatedSectionList
             key={listFormatKey}
@@ -87,6 +77,7 @@ export const HomeSectionsList = ({ sections, activeAccountCount, bottomInset, ba
             stickySectionHeadersEnabled
             ListHeaderComponent={listHeaderComponent}
             ListFooterComponent={listFooterComponent}
+            ListEmptyComponent={AccountsEmptyState}
             {...scrollProps}
         />
     );

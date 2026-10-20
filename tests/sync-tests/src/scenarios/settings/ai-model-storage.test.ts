@@ -259,7 +259,7 @@ describe('AI inventory reactivity', () => {
                 expect(ready.unusedBytes).toBe(0);
                 yield* Effect.gen(function* () {
                     const previous = appAtomRegistry.get(aiModelStorageAtom);
-                    patchAtom(chatModelSnapshotAtom, { downloadProgress: 0.5 });
+                    patchAtom(chatModelSnapshotAtom, { errorMessage: null });
                     yield* Effect.yieldNow;
                     expect(appAtomRegistry.get(aiModelStorageAtom)).toBe(previous);
                 });
