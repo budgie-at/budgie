@@ -1,0 +1,3 @@
+/* Optional trust chips under the caption, separated by " • ". See README.md. */
+
+"01-home" = "No account • No tracking • No subscription";
