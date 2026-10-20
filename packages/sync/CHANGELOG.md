@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.109.1](https://github.com/budgie-at/budgie/compare/v6.109.0...v6.109.1) (2026-10-20)
+
+### Bug Fixes
+
+* **sync:** never skip Monobank forward windows ([4e3cbaa](https://github.com/budgie-at/budgie/commit/4e3cbaa23ad1afe84705d172ca25740bc3194542))
+
+
 # [6.109.0](https://github.com/budgie-at/budgie/compare/v6.108.0...v6.109.0) (2026-10-20)
 
 ### Features

@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.109.1](https://github.com/budgie-at/budgie/compare/v6.109.0...v6.109.1) (2026-10-20)
+
+### Bug Fixes
+
+* **consolidation:** claim IBAN bridge end legs instead of counting them twice ([2680b21](https://github.com/budgie-at/budgie/commit/2680b21a3df57201aa62841876cd3aa148c79ed6))
+* **consolidation:** restore dropped transfer fees on every consolidation run ([781803a](https://github.com/budgie-at/budgie/commit/781803a4f4d1f32dcb639be327650f68534d1ece))
+
+
 # [6.109.0](https://github.com/budgie-at/budgie/compare/v6.108.0...v6.109.0) (2026-10-20)
 
 **Note:** Version bump only for package @budgie/consolidation
