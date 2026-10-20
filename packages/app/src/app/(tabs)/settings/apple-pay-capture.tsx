@@ -3,15 +3,15 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import * as Cause from 'effect/Cause';
 import * as Effect from 'effect/Effect';
 import { useEffect } from 'react';
-import { Linking, ScrollView, Text } from 'react-native';
+import { Linking, Text, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { Card } from '../../../@generic/component/card/card';
-import { PageHeader } from '../../../@generic/component/page-header/page-header';
-import { Page } from '../../../@generic/component/page/page';
+import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
+import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { SettingsGroup } from '../../../settings/components/settings-group/settings-group';
@@ -60,11 +60,12 @@ export default function ApplePayCaptureSettingsPage() {
     };
 
     return (
-        <Page
+        <CollapsibleChromePage
+            title={t`Apple Pay capture`}
+            leading={<GoBackButton onPress={handleGoBack} />}
             testID={ApplePayCaptureSettingsSelector.Container}
-            header={<PageHeader title={t`Apple Pay capture`} onGoBack={handleGoBack} />}
         >
-            <ScrollView className="flex-1" contentContainerClassName="gap-y-xl pb-5xl pt-3xl" showsVerticalScrollIndicator={false}>
+            <View className="gap-y-xl pb-5xl">
                 <ApplePayCaptureHistoryNotice />
 
                 {errorMessage ? (
@@ -110,7 +111,7 @@ export default function ApplePayCaptureSettingsPage() {
                 <SettingsGroup title={t`Troubleshooting`}>
                     <ApplePayCaptureTroubleshootingCard />
                 </SettingsGroup>
-            </ScrollView>
-        </Page>
+            </View>
+        </CollapsibleChromePage>
     );
 }
