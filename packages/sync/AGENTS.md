@@ -168,8 +168,9 @@ One tagged union, `SyncError`, of `Schema.TaggedError` classes in `core/error/`.
 | `SyncNetworkError`         | transport failure, timeout, other HTTP statuses               |              |
 | `SyncInvalidResponseError` | HTTP 400, schema decode failure, unparsable file, bad account | `apiCode?`   |
 
-`SyncInvalidResponseError` is meaningful: `BaseSyncService` treats it as an empty batch rather than a
-sync failure, and Binance treats `apiCode -1121` (unknown symbol) as an empty trade page.
+`SyncInvalidResponseError` is meaningful: a Monobank backward window treats it as an empty batch, while a
+forward batch fails and keeps its cursor so no window is skipped; Binance treats `apiCode -1121` (unknown
+symbol) as an empty trade page.
 
 Monobank retry stays in the SDK, scoped to `SYNC_RETRY_STATUS_CODES` (`[408, 500, 502, 503, 504]`).
 `429` is deliberately excluded: Monobank documents these endpoints at one request per 60 seconds, so a
