@@ -14,7 +14,8 @@ import * as Layer from 'effect/Layer';
 import { isDefined, isNotEmptyArray, isNumber } from '@rnw-community/shared';
 
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
-import { TransactionService } from '../../transaction/service/transaction.service';
+
+import { BalanceAdjustmentService } from './balance-adjustment.service';
 
 import type {
     AccountEntityInterface,
@@ -28,7 +29,7 @@ export class AccountService extends Context.Service<AccountService>()('@budgie/l
         const accountRepository = yield* AccountRepository;
         const accountBalanceRepository = yield* AccountBalanceRepository;
         const settingsRepository = yield* SettingsRepository;
-        const transactionService = yield* TransactionService;
+        const balanceAdjustmentService = yield* BalanceAdjustmentService;
 
         const adjustBalanceTo = Effect.fn('AccountService.adjustBalanceTo')(function* (
             accountId: number,
@@ -43,7 +44,7 @@ export class AccountService extends Context.Service<AccountService>()('@budgie/l
                 return;
             }
 
-            yield* transactionService.createBalanceAdjustment(accountId, delta, operatedAt);
+            yield* balanceAdjustmentService.create(accountId, delta, operatedAt);
 
             yield* accountBalanceRepository.upsert({ accountId, amount: targetBalanceMicro });
         });
@@ -154,6 +155,6 @@ export class AccountService extends Context.Service<AccountService>()('@budgie/l
     })
 }) {
     static readonly layer = Layer.effect(AccountService, AccountService.make).pipe(
-        Layer.provide([AccountRepository.layer, AccountBalanceRepository.layer, SettingsRepository.layer, TransactionService.layer])
+        Layer.provide([AccountRepository.layer, AccountBalanceRepository.layer, SettingsRepository.layer, BalanceAdjustmentService.layer])
     );
 }

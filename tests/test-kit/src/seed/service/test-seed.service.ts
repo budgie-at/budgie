@@ -140,6 +140,7 @@ export class TestSeedService {
                     backwardSyncFromAt: input.backwardSyncFromAt ?? null,
                     backwardSyncedAt: input.backwardSyncedAt ?? null,
                     backwardSyncLimitAt: input.backwardSyncLimitAt ?? null,
+                    setupBalance: input.setupBalance ?? null,
                     transactionCount: input.transactionCount ?? 0,
                     errorCount: input.errorCount ?? 0,
                     lastError: input.lastError ?? null,

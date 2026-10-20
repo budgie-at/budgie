@@ -1,5 +1,5 @@
 /* eslint-disable max-lines -- File owns the account-balance ledger and valuation SQL pipeline that must stay together */
-import { type SQL, type SQLWrapper, and, eq, inArray, isNull, lte, notInArray, sql } from 'drizzle-orm';
+import { type SQL, type SQLWrapper, and, asc, eq, inArray, isNotNull, isNull, lte, notInArray, or, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -32,8 +32,10 @@ const CRYPTO_ACCOUNT_TYPES = [AccountTypeEnum.CRYPTO, AccountTypeEnum.CRYPTO_SYN
 
 const LIQUID_ACCOUNT_TYPES = [AccountTypeEnum.CASH, AccountTypeEnum.BANK, AccountTypeEnum.BANK_SYNC];
 
-const getTransactionsSumSql = () =>
-    sql<number>`SUM(CASE WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT} THEN -${TransactionEntryEntityTable.amount} WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.FEE} THEN -${TransactionEntryEntityTable.amount} WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT} THEN ${TransactionEntryEntityTable.amount} ELSE 0 END)`;
+const getSignedAmountSql = () =>
+    sql<number>`CASE WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT} THEN -${TransactionEntryEntityTable.amount} WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.FEE} THEN -${TransactionEntryEntityTable.amount} WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT} THEN ${TransactionEntryEntityTable.amount} ELSE 0 END`;
+
+const getTransactionsSumSql = () => sql<number>`SUM(${getSignedAmountSql()})`;
 
 const buildFiatExchangeRateConversionSql = (defaultInstrumentId: number) =>
     sql`COALESCE(${getExchangeRateWithHistoricalFallbackSql(defaultInstrumentId, sql.raw('accounts.instrument_id'))}, 1.0)`;
@@ -159,6 +161,29 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
                         )
                     )
             ).pipe(Effect.map(([row]) => row.balance)),
+        getBalanceTimeline: (accountId: number) => {
+            const ledgerEntryConditionSql = and(transactionFilters.buildVisibleTransactionCondition(), getBalanceLedgerEntryConditionSql());
+
+            return Db.query(db =>
+                db
+                    .select({
+                        operatedAt: TransactionEntityTable.operatedAt,
+                        amount: sql<number>`CASE WHEN ${ledgerEntryConditionSql} THEN ${getSignedAmountSql()} ELSE 0 END`.mapWith(Number),
+                        providerBalance: TransactionEntryEntityTable.providerBalance
+                    })
+                    .from(TransactionEntryEntityTable)
+                    .innerJoin(TransactionEntityTable, eq(TransactionEntityTable.id, TransactionEntryEntityTable.transactionId))
+                    .where(
+                        and(
+                            eq(TransactionEntryEntityTable.accountId, accountId),
+                            isNull(TransactionEntryEntityTable.deletedAt),
+                            isNull(TransactionEntityTable.deletedAt),
+                            or(ledgerEntryConditionSql, isNotNull(TransactionEntryEntityTable.providerBalance))
+                        )
+                    )
+                    .orderBy(asc(TransactionEntityTable.operatedAt), asc(TransactionEntryEntityTable.id))
+            );
+        },
         bulkUpsert,
         upsert: (balance: Pick<AccountBalanceCreateEntityInterface, 'accountId' | 'amount'>) => bulkUpsert([balance]),
         getByAccountIds: (accountIds: number[]) =>
