@@ -28,7 +28,6 @@ const getUniqueIdentifier = isAndroid => {
     return prefix;
 };
 
-const getWalletCaptureAppGroupIdentifier = () => `group.${getUniqueIdentifier(false)}.wallet-capture`;
 const getAppGroup = () => `group.${getUniqueIdentifier(false)}`;
 
 const getAppName = () => {
@@ -131,7 +130,7 @@ export default ({ config }) => ({
                 }
             }
         ],
-        ['./modules/apple-wallet-capture/app.plugin.js', { appGroupIdentifier: getWalletCaptureAppGroupIdentifier() }],
+        'expo-app-intents',
         [
             'expo-widgets',
             {
@@ -248,7 +247,10 @@ export default ({ config }) => ({
     ],
     experiments: {
         typedRoutes: true,
-        reactCompiler: true
+        reactCompiler: true,
+        inlineModules: {
+            watchedDirectories: ['app-intents']
+        }
     },
     runtimeVersion: {
         policy: 'fingerprint'

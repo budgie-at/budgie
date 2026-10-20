@@ -1,5 +1,4 @@
 import { WalletCaptureReviewReasonEnum } from '@app/wallet-capture/enum/wallet-capture-review-reason.enum';
-import { WalletCaptureStatusEnum } from '@app/wallet-capture/enum/wallet-capture-status.enum';
 import { WalletCaptureImportService } from '@app/wallet-capture/service/wallet-capture-import.service';
 import {
     CategorySourceEnum,
@@ -18,6 +17,7 @@ import { buildMonobank } from '../../harness/monobank/build-monobank';
 import { monobankStub } from '../../harness/monobank/monobank-stub';
 import { testDb } from '../../harness/scenario/setup';
 import { TestLayer } from '../../harness/scenario/test-runtime';
+import { walletCaptureNativeStub } from '../../harness/wallet-capture/wallet-capture-app-intents.stub';
 import { walletCaptureSeedMonobankAccount } from '../../harness/wallet-capture/wallet-capture-bank-account.harness';
 import { walletCaptureSeedHistoricalRate } from '../../harness/wallet-capture/wallet-capture-historical-rate.harness';
 import {
@@ -25,8 +25,7 @@ import {
     walletCaptureFindTransaction,
     walletCaptureSeedRule
 } from '../../harness/wallet-capture/wallet-capture-import.harness';
-import { walletCaptureNativeStub } from '../../harness/wallet-capture/wallet-capture-native.stub';
-import { walletCaptureParseSwiftPayload, walletCaptureSwiftJson } from '../../harness/wallet-capture/wallet-capture-swift-payload.harness';
+import { walletCaptureRawInvocation } from '../../harness/wallet-capture/wallet-capture-raw-invocation.harness';
 
 const CAPTURE_ID = '8E3F58AE-CD1C-45C8-91DA-E54A5C8EA111';
 const SECOND_CAPTURE_ID = '8E3F58AE-CD1C-45C8-91DA-E54A5C8EA222';
@@ -42,15 +41,11 @@ const SYNC_FROM = new Date('2026-08-01T00:00:00.000Z');
 const drainCapture = Effect.fnUntraced(function* (
     accountId: number,
     captureId: string = CAPTURE_ID,
-    overrides: Readonly<Record<string, string | null>> = {}
+    overrides: Readonly<Record<string, string>> = {}
 ) {
     const walletCaptureImportService = yield* WalletCaptureImportService;
 
-    walletCaptureNativeStub.seed(
-        walletCaptureParseSwiftPayload([
-            walletCaptureSwiftJson(captureId, accountId, { capturedAt: JSON.stringify(CAPTURED_AT.toISOString()), ...overrides })
-        ])
-    );
+    walletCaptureNativeStub.seedInvocations([walletCaptureRawInvocation(captureId, accountId, overrides)]);
 
     return yield* walletCaptureImportService.drain();
 });
@@ -202,9 +197,7 @@ describe('wallet-capture/bank-consolidation', () => {
 
             expect(reviewItems.map(item => item.reason)).toEqual([WalletCaptureReviewReasonEnum.DUPLICATE]);
             expect(reviewItems.map(item => item.duplicateTransactionId)).toEqual([first.id]);
-            expect(yield* Effect.promise(() => walletCaptureNativeStub.getCaptures())).toMatchObject([
-                { captureId: SECOND_CAPTURE_ID, status: WalletCaptureStatusEnum.NEEDS_REVIEW }
-            ]);
+            expect(walletCaptureNativeStub.pendingCaptureIds()).toEqual([SECOND_CAPTURE_ID]);
             expect(yield* testDb.select().from(TransactionEntityTable)).toHaveLength(1);
         }).pipe(Effect.provide(TestLayer))
     );

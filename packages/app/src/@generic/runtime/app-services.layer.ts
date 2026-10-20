@@ -116,7 +116,6 @@ import { BackgroundSyncSessionService } from '../../sync/service/background-sync
 import { TagService } from '../../tag/service/tag.service';
 import { PatternCacheService } from '../../transaction/service/pattern-cache/pattern-cache.service';
 import { RepeatedTransactionService } from '../../transaction/service/repeated-transaction.service';
-import { WalletCaptureAccountMirrorService } from '../../wallet-capture/service/wallet-capture-account-mirror.service';
 import { WalletCaptureImportService } from '../../wallet-capture/service/wallet-capture-import.service';
 import { WalletCaptureNativeService } from '../../wallet-capture/service/wallet-capture-native.service';
 import { WalletCaptureTransactionService } from '../../wallet-capture/service/wallet-capture-transaction.service';
@@ -253,7 +252,6 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     TransferCreationService.layer,
     TransactionService.layer,
     WalletCaptureNativeService.layer,
-    WalletCaptureAccountMirrorService.layer,
     WalletCaptureTransactionService.layer,
     WalletCaptureImportService.layer
 ).pipe(Layer.provideMerge(Layer.mergeAll(syncWorkloadLayer, syncFileReaderLayer)), Layer.provide(ledgerPortsLayer));

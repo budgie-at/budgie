@@ -14,7 +14,6 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { WalletCaptureReactivityKeyEnum } from '../enum/wallet-capture-reactivity-key.enum';
 import { WalletCaptureReviewReasonEnum } from '../enum/wallet-capture-review-reason.enum';
-import { WalletCaptureStatusEnum } from '../enum/wallet-capture-status.enum';
 
 import { WalletCaptureNativeService } from './wallet-capture-native.service';
 import { WalletCaptureTransactionService } from './wallet-capture-transaction.service';
@@ -35,37 +34,35 @@ export class WalletCaptureImportService extends Context.Service<WalletCaptureImp
         const reactivity = yield* Reactivity.Reactivity;
         const duplicateWindowSeconds = 120;
 
-        const resolveUnavailableReason = Effect.fnUntraced(function* (record: WalletCaptureNativeRecordInterface) {
-            const account = yield* accountRepository.findById(record.accountId);
-
-            if (!isDefined(account) || !account.isActive) {
-                return WalletCaptureReviewReasonEnum.ACCOUNT_UNAVAILABLE;
-            }
-
-            return isDefined(yield* captureTransactionService.resolveAccountAmount(record))
-                ? null
-                : WalletCaptureReviewReasonEnum.CURRENCY_UNAVAILABLE;
-        });
-
         const resolveReviewItem = Effect.fnUntraced(function* (
             record: WalletCaptureNativeRecordInterface
         ): Effect.fn.Return<WalletCaptureReviewItemInterface | null, DbError, Db> {
-            if (record.status === WalletCaptureStatusEnum.NEEDS_REVIEW) {
-                const duplicateTransactionId = record.duplicateTransactionId ?? null;
+            const account = yield* accountRepository.findById(record.accountId);
 
-                return {
-                    capture: record,
-                    duplicateTransactionId,
-                    reason: isDefined(duplicateTransactionId)
-                        ? WalletCaptureReviewReasonEnum.DUPLICATE
-                        : WalletCaptureReviewReasonEnum.INVALID_PAYLOAD
-                };
+            if (!isDefined(account) || !account.isActive) {
+                return { capture: record, duplicateTransactionId: null, reason: WalletCaptureReviewReasonEnum.ACCOUNT_UNAVAILABLE };
             }
 
-            const unavailableReason = yield* resolveUnavailableReason(record);
+            const accountAmount = yield* captureTransactionService.resolveAccountAmount(record);
 
-            return isDefined(unavailableReason) ? { capture: record, duplicateTransactionId: null, reason: unavailableReason } : null;
+            if (!isDefined(accountAmount)) {
+                return { capture: record, duplicateTransactionId: null, reason: WalletCaptureReviewReasonEnum.CURRENCY_UNAVAILABLE };
+            }
+
+            const duplicateTransactionId = yield* transactionRepository.findPotentialExpenseDuplicate({
+                accountId: record.accountId,
+                amountInMicroUnits: convertToMicroUnits(accountAmount.amount),
+                normalizedTitle: record.merchant.trim().toLocaleLowerCase(),
+                operatedAt: new Date(record.capturedAt),
+                timeWindowSeconds: duplicateWindowSeconds
+            });
+
+            return isDefined(duplicateTransactionId)
+                ? { capture: record, duplicateTransactionId, reason: WalletCaptureReviewReasonEnum.DUPLICATE }
+                : null;
         });
+
+        const findImportedIds = () => transactionService.findIdMapByExternalSource(ExternalSourceEnum.APPLE_PAY_AUTOMATION);
 
         const importAndAcknowledgeCapture = Effect.fnUntraced(function* (
             record: WalletCaptureNativeRecordInterface,
@@ -87,22 +84,6 @@ export class WalletCaptureImportService extends Context.Service<WalletCaptureImp
             return isDefined(scope) ? transferConsolidationDrainerService.enqueue(scope) : Effect.void;
         };
 
-        const findDuplicateCapture = Effect.fnUntraced(function* (record: WalletCaptureNativeRecordInterface) {
-            const accountAmount = yield* captureTransactionService.resolveAccountAmount(record);
-
-            if (!isDefined(accountAmount)) {
-                return null;
-            }
-
-            return yield* transactionRepository.findPotentialExpenseDuplicate({
-                accountId: record.accountId,
-                amountInMicroUnits: convertToMicroUnits(accountAmount.amount),
-                normalizedTitle: record.merchant.trim().toLocaleLowerCase(),
-                operatedAt: new Date(record.capturedAt),
-                timeWindowSeconds: duplicateWindowSeconds
-            });
-        });
-
         const processCapture = Effect.fnUntraced(function* (
             record: WalletCaptureNativeRecordInterface,
             importedIds: Map<string, number>,
@@ -116,14 +97,6 @@ export class WalletCaptureImportService extends Context.Service<WalletCaptureImp
                 if (isDefined(reviewItem)) {
                     return reviewItem;
                 }
-
-                const duplicateTransactionId = yield* findDuplicateCapture(record);
-
-                if (isDefined(duplicateTransactionId)) {
-                    yield* nativeService.markNeedsReview(record.captureId, duplicateTransactionId);
-
-                    return { capture: record, duplicateTransactionId, reason: WalletCaptureReviewReasonEnum.DUPLICATE };
-                }
             }
 
             importedCaptures.push(yield* importAndAcknowledgeCapture(record, importedTransactionId));
@@ -135,7 +108,7 @@ export class WalletCaptureImportService extends Context.Service<WalletCaptureImp
             drain: Effect.fn('WalletCaptureImportService.drain')(
                 function* () {
                     const records = yield* nativeService.getCaptures();
-                    const importedIds = yield* transactionService.findIdMapByExternalSource(ExternalSourceEnum.APPLE_PAY_AUTOMATION);
+                    const importedIds = yield* findImportedIds();
                     const importedCaptures: Pick<TransactionEntityInterface, 'id' | 'operatedAt'>[] = [];
 
                     const results = yield* Effect.forEach(records, record =>
@@ -172,21 +145,14 @@ export class WalletCaptureImportService extends Context.Service<WalletCaptureImp
             ),
             forceImport: Effect.fn('WalletCaptureImportService.forceImport')(
                 function* (captureId: string) {
-                    const record = (yield* nativeService.getCaptures()).find(
-                        capture => capture.captureId === captureId && capture.status === WalletCaptureStatusEnum.NEEDS_REVIEW
-                    );
+                    const record = (yield* nativeService.getCaptures()).find(capture => capture.captureId === captureId);
 
-                    if (!isDefined(record) || isDefined(yield* resolveUnavailableReason(record))) {
+                    if (!isDefined(record) || (yield* resolveReviewItem(record))?.reason !== WalletCaptureReviewReasonEnum.DUPLICATE) {
                         return;
                     }
 
                     yield* enqueueConsolidation([
-                        yield* importAndAcknowledgeCapture(
-                            record,
-                            (yield* transactionService.findIdMapByExternalSource(ExternalSourceEnum.APPLE_PAY_AUTOMATION)).get(
-                                record.captureId
-                            )
-                        )
+                        yield* importAndAcknowledgeCapture(record, (yield* findImportedIds()).get(record.captureId))
                     ]);
                 },
                 effect => lock.withPermit(effect)
@@ -202,7 +168,10 @@ export class WalletCaptureImportService extends Context.Service<WalletCaptureImp
                 effect => lock.withPermit(effect)
             ),
             getReviewItems: Effect.fn('WalletCaptureImportService.getReviewItems')(function* () {
-                return (yield* Effect.forEach(yield* nativeService.getCaptures(), record => resolveReviewItem(record))).filter(isDefined);
+                const importedIds = yield* findImportedIds();
+                const records = (yield* nativeService.getCaptures()).filter(record => !importedIds.has(record.captureId));
+
+                return (yield* Effect.forEach(records, record => resolveReviewItem(record))).filter(isDefined);
             })
         };
     })

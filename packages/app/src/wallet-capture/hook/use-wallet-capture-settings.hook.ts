@@ -1,4 +1,11 @@
-import { AccountEntityTable, AccountRepository, InstrumentEntityTable, InstrumentRepository } from '@budgie/contracts';
+import {
+    AccountEntityTable,
+    AccountRepository,
+    InstrumentEntityTable,
+    InstrumentRepository,
+    TransactionEntityTable,
+    TransactionEntryEntityTable
+} from '@budgie/contracts';
 import { useAtomRefresh } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import * as Cause from 'effect/Cause';
@@ -13,14 +20,14 @@ import { appAtomRuntime, appRuntime } from '../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 import { databaseQueryAtom } from '../../@generic/utils/database-query-atom.util';
 import { WalletCaptureReactivityKeyEnum } from '../enum/wallet-capture-reactivity-key.enum';
-import { WalletCaptureAccountMirrorService } from '../service/wallet-capture-account-mirror.service';
 import { WalletCaptureImportService } from '../service/wallet-capture-import.service';
+import { WalletCaptureNativeService } from '../service/wallet-capture-native.service';
 
 import type { AppServices } from '../../@generic/runtime/app.runtime';
 
 const walletCaptureSettingsAtom = appAtomRuntime.factory.withReactivity([WalletCaptureReactivityKeyEnum.CAPTURES])(
     databaseQueryAtom(
-        [AccountEntityTable, InstrumentEntityTable],
+        [AccountEntityTable, InstrumentEntityTable, TransactionEntityTable, TransactionEntryEntityTable],
         Effect.gen(function* () {
             const captureImportService = yield* WalletCaptureImportService;
             const accountRepository = yield* AccountRepository;
@@ -48,7 +55,7 @@ export const useWalletCaptureSettings = () => {
 
     const refresh = useCallback(() => {
         appRuntime.runFork(
-            Effect.flatMap(WalletCaptureAccountMirrorService, service => service.refresh()).pipe(
+            Effect.flatMap(WalletCaptureNativeService, service => service.refreshAccounts()).pipe(
                 Effect.tapCause(Effect.logError),
                 Effect.matchCause({
                     onFailure: cause => void setMutationError(getErrorMessage(Cause.squash(cause))),

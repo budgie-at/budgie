@@ -4345,10 +4345,6 @@ msgstr "La règle a été enregistrée, mais aucune transaction existante n'avai
 msgid "The selected Budgie account is archived or no longer exists."
 msgstr "Le compte Budgie sélectionné est archivé ou n'existe plus."
 
-#: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
-msgid "The Wallet automation did not provide a usable amount or merchant."
-msgstr "L'automatisation Wallet n'a pas fourni de montant ou de commerçant exploitable."
-
 #: src/account/hooks/use-archive-account.hook.ts
 msgid "This account will be hidden from your main view and won't be included in totals. You can restore it anytime from Settings → Archived Accounts."
 msgstr "Ce compte sera masqué de votre vue principale et ne sera pas inclus dans les totaux. Vous pouvez le restaurer à tout moment depuis Paramètres → Comptes archivés."

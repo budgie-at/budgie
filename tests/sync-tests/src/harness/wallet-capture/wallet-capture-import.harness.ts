@@ -1,4 +1,3 @@
-import { WalletCaptureStatusEnum } from '@app/wallet-capture/enum/wallet-capture-status.enum';
 import {
     CategoryEntityTable,
     CategorySourceEnum,
@@ -46,11 +45,10 @@ export const walletCaptureBuild = (
     captureId,
     accountId: 1,
     amount: WALLET_CAPTURE_AMOUNT,
+    currency: null,
     merchant: 'Silpo',
     cardName: 'Mono Black',
     capturedAt: '2026-08-07T10:00:00.000Z',
-    status: WalletCaptureStatusEnum.PENDING,
-    duplicateTransactionId: null,
     ...overrides
 });
 

@@ -7,6 +7,11 @@ const VIRTUAL_PREFIX = '\0virtual:';
 
 const VIRTUAL_SHIMS: Record<string, string> = {
     'expo-secure-store': `export const getItem = () => null;`,
+    'expo-app-intents': `
+        export const getPendingInvocationsAsync = async () => [];
+        export const removePendingInvocationAsync = async () => undefined;
+        export const setEntityCatalogAsync = async () => undefined;
+    `,
     expo: `export const requireNativeModule = () => ({}); export const requireOptionalNativeModule = () => null; export const NativeModule = class {};`,
     'expo-file-system': `
         export const File = class { constructor() {} };

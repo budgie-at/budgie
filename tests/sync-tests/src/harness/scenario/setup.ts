@@ -57,13 +57,13 @@ vi.mock('@app/@generic/runtime/app.runtime', async () => {
     return { appAtomRuntime: testAtomRuntime, appRuntime: testRuntime };
 });
 
-vi.mock('@app/../modules/apple-wallet-capture/src/apple-wallet-capture', async () => {
-    const { walletCaptureNativeStub } = await import('../wallet-capture/wallet-capture-native.stub');
+vi.mock('expo-app-intents', async () => {
+    const { walletCaptureNativeStub } = await import('../wallet-capture/wallet-capture-app-intents.stub');
 
-    return { appleWalletCaptureNativeModule: Effect.succeed(walletCaptureNativeStub) };
+    return walletCaptureNativeStub;
 });
 
-import { walletCaptureNativeStub } from '../wallet-capture/wallet-capture-native.stub';
+import { walletCaptureNativeStub } from '../wallet-capture/wallet-capture-app-intents.stub';
 
 import { mockServer } from './mock-server';
 

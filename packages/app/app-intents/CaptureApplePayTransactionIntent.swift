@@ -1,11 +1,12 @@
 import AppIntents
-internal import AppleWalletCapture
+internal import ExpoAppIntents
 import Foundation
 
 @available(iOS 17.0, *)
 struct BudgieWalletAccountEntity: AppEntity {
   typealias ID = Int
 
+  static let catalogKind = "walletAccount"
   static let defaultQuery = BudgieWalletAccountQuery()
   static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "Budgie account")
 
@@ -16,9 +17,13 @@ struct BudgieWalletAccountEntity: AppEntity {
     DisplayRepresentation(title: "\(title)")
   }
 
-  init(account: AppleWalletCaptureAccount) {
-    self.id = account.id
-    self.title = account.title
+  init?(record: AppIntentEntityRecord) {
+    guard let id = Int(record.id) else {
+      return nil
+    }
+
+    self.id = id
+    self.title = record.title
   }
 }
 
@@ -27,18 +32,15 @@ struct BudgieWalletAccountQuery: EntityQuery {
   init() {}
 
   func entities(for identifiers: [BudgieWalletAccountEntity.ID]) async throws -> [BudgieWalletAccountEntity] {
-    let accounts = try await AppleWalletCaptureStore.shared.accounts()
-    let requestedIdentifiers = Set(identifiers)
-
-    return accounts
-      .filter { requestedIdentifiers.contains($0.id) }
-      .map(BudgieWalletAccountEntity.init(account:))
+    return try await AppIntentEntityStore.shared
+      .entities(ofKind: BudgieWalletAccountEntity.catalogKind, matching: identifiers.map(String.init))
+      .compactMap(BudgieWalletAccountEntity.init(record:))
   }
 
   func suggestedEntities() async throws -> [BudgieWalletAccountEntity] {
-    let accounts = try await AppleWalletCaptureStore.shared.accounts()
-
-    return accounts.map(BudgieWalletAccountEntity.init(account:))
+    return try await AppIntentEntityStore.shared
+      .entities(ofKind: BudgieWalletAccountEntity.catalogKind)
+      .compactMap(BudgieWalletAccountEntity.init(record:))
   }
 }
 
@@ -89,27 +91,22 @@ struct CaptureApplePayTransactionIntent: AppIntent {
       throw AppleWalletCaptureIntentError.invalidAmount
     }
 
-    let storedAccounts = try await AppleWalletCaptureStore.shared.accounts()
-    let accountIsAvailable = storedAccounts.contains { storedAccount in
-      storedAccount.id == account.id
-    }
-
-    guard accountIsAvailable else {
+    guard try await !BudgieWalletAccountQuery().entities(for: [account.id]).isEmpty else {
       throw AppleWalletCaptureIntentError.accountUnavailable
     }
 
-    let trimmedMerchant = merchant.trimmingCharacters(in: .whitespacesAndNewlines)
+    let normalizedCurrency = currency?.trimmingCharacters(in: .whitespacesAndNewlines).uppercased() ?? ""
     let trimmedCardName = cardName?.trimmingCharacters(in: .whitespacesAndNewlines)
-    let normalizedCurrency = currency?
-      .trimmingCharacters(in: .whitespacesAndNewlines)
-      .uppercased()
 
-    _ = try await AppleWalletCaptureStore.shared.enqueue(
-      accountId: account.id,
-      amount: amount,
-      currency: normalizedCurrency?.isEmpty == false ? normalizedCurrency : nil,
-      merchant: trimmedMerchant,
-      cardName: trimmedCardName
+    await AppIntentDispatcher.shared.dispatch(
+      name: "captureApplePayTransaction",
+      params: [
+        "accountId": .int(account.id),
+        "amount": .double(amount),
+        "currency": normalizedCurrency.isEmpty ? .null : .string(normalizedCurrency),
+        "merchant": .string(merchant.trimmingCharacters(in: .whitespacesAndNewlines)),
+        "cardName": trimmedCardName.map(AppIntentValue.string) ?? .null
+      ]
     )
 
     return .result(dialog: "Saved to Budgie")

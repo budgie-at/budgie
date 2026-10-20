@@ -1,5 +1,4 @@
 import { WalletCaptureReviewReasonEnum } from '@app/wallet-capture/enum/wallet-capture-review-reason.enum';
-import { WalletCaptureStatusEnum } from '@app/wallet-capture/enum/wallet-capture-status.enum';
 import { WalletCaptureImportService } from '@app/wallet-capture/service/wallet-capture-import.service';
 import {
     AccountBalanceEntityTable,
@@ -22,6 +21,7 @@ import * as Exit from 'effect/Exit';
 import { testDb } from '../../harness/scenario/setup';
 import { TestLayer } from '../../harness/scenario/test-runtime';
 import { seed } from '../../harness/seed/seed';
+import { walletCaptureNativeStub } from '../../harness/wallet-capture/wallet-capture-app-intents.stub';
 import {
     WALLET_CAPTURE_AMOUNT,
     WALLET_CAPTURE_AMOUNT_IN_MICRO_UNITS,
@@ -32,27 +32,37 @@ import {
     walletCaptureSeedExistingTransaction,
     walletCaptureSeedRule
 } from '../../harness/wallet-capture/wallet-capture-import.harness';
-import { walletCaptureNativeStub } from '../../harness/wallet-capture/wallet-capture-native.stub';
 
 import type { WalletCaptureNativeRecordInterface } from '@app/wallet-capture/interface/wallet-capture-native-record.interface';
 
 const CAPTURE_ID = '8e3f58ae-cd1c-45c8-91da-e54a5c8ea111';
 const SAFE_CAPTURE_ID = '8e3f58ae-cd1c-45c8-91da-e54a5c8ea222';
 const FAILING_CAPTURE_ID = '8e3f58ae-cd1c-45c8-91da-e54a5c8ea333';
-const REVIEW_DUPLICATE_TRANSACTION_ID = 77;
 
-const buildReviewedCapture = (accountId: number): WalletCaptureNativeRecordInterface =>
-    walletCaptureBuild(CAPTURE_ID, {
-        accountId,
-        status: WalletCaptureStatusEnum.NEEDS_REVIEW,
-        duplicateTransactionId: REVIEW_DUPLICATE_TRANSACTION_ID
+const seedDuplicateTransaction = Effect.fnUntraced(function* (accountId: number) {
+    const existingTransaction = yield* seed.bankPairExpense(
+        { externalId: 'existing-wallet-candidate', operatedAt: new Date('2026-08-07T10:01:30.000Z') },
+        { accountId, amount: WALLET_CAPTURE_AMOUNT_IN_MICRO_UNITS, mccCategoryId: null }
+    );
+
+    yield* seed.updateTransaction(existingTransaction.id, {
+        externalSource: ExternalSourceEnum.APPLE_PAY_AUTOMATION,
+        title: ' silpo '
     });
 
-const seedReviewedCapture = Effect.fnUntraced(function* () {
-    yield* seed.instrument();
-    const account = yield* seed.account({ title: 'Wallet card' });
-    const capture = buildReviewedCapture(account.id);
+    return existingTransaction;
+});
 
+const expectStoredState = Effect.fnUntraced(function* (transactionCount: number, pendingCaptureIds: readonly string[]) {
+    expect(yield* testDb.select().from(TransactionEntityTable)).toHaveLength(transactionCount);
+    expect(walletCaptureNativeStub.pendingCaptureIds()).toEqual(pendingCaptureIds);
+});
+
+const seedReviewedCapture = Effect.fnUntraced(function* () {
+    const account = yield* walletCaptureSeedAccount();
+    const capture = walletCaptureBuild(CAPTURE_ID, { accountId: account.id });
+
+    yield* seedDuplicateTransaction(account.id);
     walletCaptureNativeStub.seed([capture]);
 
     return capture;
@@ -117,7 +127,7 @@ describe('Wallet capture import creation', () => {
             expect(yield* walletCaptureImportService.drain()).toEqual([]);
 
             yield* expectImportedCapture(capture, category);
-            expect(yield* Effect.promise(() => walletCaptureNativeStub.getCaptures())).toEqual([]);
+            expect(walletCaptureNativeStub.pendingCaptureIds()).toEqual([]);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -132,8 +142,7 @@ describe('Wallet capture import creation', () => {
 
             expect(yield* walletCaptureImportService.drain()).toEqual([]);
 
-            expect(yield* testDb.select().from(TransactionEntityTable)).toHaveLength(1);
-            expect(yield* Effect.promise(() => walletCaptureNativeStub.getCaptures())).toEqual([]);
+            yield* expectStoredState(1, []);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -151,7 +160,7 @@ describe('Wallet capture import creation', () => {
             const result = yield* Effect.exit(walletCaptureImportService.drain());
             expect(Exit.isFailure(result) && Cause.hasInterrupts(result.cause)).toBe(true);
             expect(yield* testDb.select().from(TransactionEntityTable)).toEqual([]);
-            expect(yield* Effect.promise(() => walletCaptureNativeStub.getCaptures())).toEqual(records);
+            expect(walletCaptureNativeStub.pendingCaptureIds()).toEqual(records.map(record => record.captureId));
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -171,11 +180,10 @@ describe('Wallet capture import creation', () => {
             expect(Exit.isFailure(yield* Effect.exit(walletCaptureImportService.drain()))).toBe(true);
 
             expect((yield* walletCaptureFindTransaction(safeCapture.captureId)).externalId).toBe(safeCapture.captureId);
-            expect(yield* Effect.promise(() => walletCaptureNativeStub.getCaptures())).toEqual([failingCapture]);
+            expect(walletCaptureNativeStub.pendingCaptureIds()).toEqual([failingCapture.captureId]);
             expect(yield* walletCaptureImportService.drain()).toEqual([]);
             expect((yield* walletCaptureFindTransaction(failingCapture.captureId)).externalId).toBe(failingCapture.captureId);
-            expect(yield* testDb.select().from(TransactionEntityTable)).toHaveLength(2);
-            expect(yield* Effect.promise(() => walletCaptureNativeStub.getCaptures())).toEqual([]);
+            yield* expectStoredState(2, []);
         }).pipe(Effect.provide(TestLayer))
     );
 });
@@ -186,24 +194,17 @@ describe('Wallet capture import review', () => {
             const walletCaptureImportService = yield* WalletCaptureImportService;
             const account = yield* walletCaptureSeedAccount();
             const capture = walletCaptureBuild(CAPTURE_ID, { accountId: account.id });
-            const existingTransaction = yield* seed.bankPairExpense(
-                { externalId: 'existing-wallet-candidate', operatedAt: new Date('2026-08-07T10:01:30.000Z') },
-                { accountId: account.id, amount: WALLET_CAPTURE_AMOUNT_IN_MICRO_UNITS, mccCategoryId: null }
-            );
+            const existingTransaction = yield* seedDuplicateTransaction(account.id);
 
-            yield* seed.updateTransaction(existingTransaction.id, {
-                externalSource: ExternalSourceEnum.APPLE_PAY_AUTOMATION,
-                title: ' silpo '
-            });
             walletCaptureNativeStub.seed([capture]);
 
             expect(yield* walletCaptureImportService.drain()).toEqual([
                 { capture, duplicateTransactionId: existingTransaction.id, reason: WalletCaptureReviewReasonEnum.DUPLICATE }
             ]);
 
-            expect(yield* testDb.select().from(TransactionEntityTable)).toHaveLength(1);
-            expect(yield* Effect.promise(() => walletCaptureNativeStub.getCaptures())).toEqual([
-                { ...capture, status: WalletCaptureStatusEnum.NEEDS_REVIEW, duplicateTransactionId: existingTransaction.id }
+            yield* expectStoredState(1, [capture.captureId]);
+            expect(yield* walletCaptureImportService.getReviewItems()).toEqual([
+                { capture, duplicateTransactionId: existingTransaction.id, reason: WalletCaptureReviewReasonEnum.DUPLICATE }
             ]);
         }).pipe(Effect.provide(TestLayer))
     );
@@ -216,7 +217,7 @@ describe('Wallet capture import review', () => {
             yield* walletCaptureImportService.forceImport(capture.captureId);
 
             expect((yield* walletCaptureFindTransaction(capture.captureId)).externalSource).toBe(ExternalSourceEnum.APPLE_PAY_AUTOMATION);
-            expect(yield* Effect.promise(() => walletCaptureNativeStub.getCaptures())).toEqual([]);
+            yield* expectStoredState(2, []);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -227,8 +228,7 @@ describe('Wallet capture import review', () => {
 
             yield* walletCaptureImportService.dismiss(capture.captureId);
 
-            expect(yield* testDb.select().from(TransactionEntityTable)).toHaveLength(0);
-            expect(yield* Effect.promise(() => walletCaptureNativeStub.getCaptures())).toEqual([]);
+            yield* expectStoredState(1, []);
         }).pipe(Effect.provide(TestLayer))
     );
 });
@@ -246,8 +246,7 @@ describe('Wallet capture import preservation', () => {
                 { capture, duplicateTransactionId: null, reason: WalletCaptureReviewReasonEnum.ACCOUNT_UNAVAILABLE }
             ]);
 
-            expect(yield* testDb.select().from(TransactionEntityTable)).toHaveLength(0);
-            expect(yield* Effect.promise(() => walletCaptureNativeStub.getCaptures())).toEqual([capture]);
+            yield* expectStoredState(0, [capture.captureId]);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -261,7 +260,7 @@ describe('Wallet capture import preservation', () => {
             walletCaptureNativeStub.seed([invalidCapture]);
 
             expect(Exit.isFailure(yield* Effect.exit(walletCaptureImportService.drain()))).toBe(true);
-            expect(yield* Effect.promise(() => walletCaptureNativeStub.getCaptures())).toEqual([invalidCapture]);
+            expect(walletCaptureNativeStub.pendingCaptureIds()).toEqual([invalidCapture.captureId]);
         }).pipe(Effect.provide(TestLayer))
     );
 });

@@ -58,26 +58,20 @@ describe('Wallet native review reactivity', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('refreshes native-only review mutations and an empty drain without recursively invalidating reads', () =>
+    it.effect('refreshes the review query when a capture is acknowledged and on an empty drain without recursive invalidation', () =>
         Effect.gen(function* () {
             const { notification, results } = yield* subscribeToReview();
             const nativeService = yield* WalletCaptureNativeService;
             const importService = yield* WalletCaptureImportService;
             walletCaptureNativeStub.seed([capture]);
-            yield* nativeService.markNeedsReview(capture.captureId, 77);
-            expect(notification).toHaveBeenCalledTimes(1);
-            expect((yield* Queue.take(results))[0]).toMatchObject({
-                duplicateTransactionId: 77,
-                reason: WalletCaptureReviewReasonEnum.DUPLICATE
-            });
             yield* nativeService.acknowledgeCaptures([capture.captureId]);
-            expect(notification).toHaveBeenCalledTimes(2);
+            expect(notification).toHaveBeenCalledTimes(1);
             expect(yield* Queue.take(results)).toEqual([]);
             yield* importService.drain();
-            expect(notification).toHaveBeenCalledTimes(3);
+            expect(notification).toHaveBeenCalledTimes(2);
             expect(yield* Queue.take(results)).toEqual([]);
             yield* Effect.yieldNow;
-            expect(notification).toHaveBeenCalledTimes(3);
+            expect(notification).toHaveBeenCalledTimes(2);
         }).pipe(Effect.provide(TestLayer))
     );
 });

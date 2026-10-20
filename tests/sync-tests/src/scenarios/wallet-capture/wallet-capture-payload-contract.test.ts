@@ -10,20 +10,20 @@ import { requireInstrument } from '../../harness/db/require-instrument';
 import { testDb } from '../../harness/scenario/setup';
 import { TestLayer } from '../../harness/scenario/test-runtime';
 import { seed } from '../../harness/seed/seed';
+import { walletCaptureNativeStub } from '../../harness/wallet-capture/wallet-capture-app-intents.stub';
 import { walletCaptureSeedHistoricalRate } from '../../harness/wallet-capture/wallet-capture-historical-rate.harness';
 import { walletCaptureFindEntry, walletCaptureFindTransaction } from '../../harness/wallet-capture/wallet-capture-import.harness';
-import { walletCaptureNativeStub } from '../../harness/wallet-capture/wallet-capture-native.stub';
-import { walletCaptureParseSwiftPayload, walletCaptureSwiftJson } from '../../harness/wallet-capture/wallet-capture-swift-payload.harness';
+import { walletCaptureRawInvocation } from '../../harness/wallet-capture/wallet-capture-raw-invocation.harness';
 
 import type { WalletCaptureReviewItemInterface } from '@app/wallet-capture/interface/wallet-capture-review-item.interface';
 
 const CAPTURE_ID = '8E3F58AE-CD1C-45C8-91DA-E54A5C8EA111';
 const SECOND_CAPTURE_ID = '8E3F58AE-CD1C-45C8-91DA-E54A5C8EA222';
 
-const drainSwiftCapture = Effect.fnUntraced(function* (accountId: number, overrides: Readonly<Record<string, string | null>> = {}) {
+const drainRawCapture = Effect.fnUntraced(function* (accountId: number, overrides: Readonly<Record<string, string>> = {}) {
     const walletCaptureImportService = yield* WalletCaptureImportService;
 
-    walletCaptureNativeStub.seed(walletCaptureParseSwiftPayload([walletCaptureSwiftJson(CAPTURE_ID, accountId, overrides)]));
+    walletCaptureNativeStub.seedInvocations([walletCaptureRawInvocation(CAPTURE_ID, accountId, overrides)]);
 
     return yield* walletCaptureImportService.drain();
 });
@@ -54,29 +54,27 @@ const walletCaptureSeedAccount = Effect.fnUntraced(function* () {
     return yield* seed.account({ title: 'Wallet card', instrumentId: hryvnia.id });
 });
 
-const remainingCaptures = () => Effect.promise(() => walletCaptureNativeStub.getCaptures());
-
 const expectCaptureKeptForReview = Effect.fnUntraced(function* (
     reviewItems: readonly WalletCaptureReviewItemInterface[],
     reason: WalletCaptureReviewReasonEnum
 ) {
     expect(reviewItems.map(item => item.reason)).toEqual([reason]);
     expect(yield* testDb.select().from(TransactionEntityTable)).toEqual([]);
-    expect(yield* remainingCaptures()).toHaveLength(1);
+    expect(walletCaptureNativeStub.pendingCaptureIds()).toEqual([CAPTURE_ID]);
 });
 
 describe('wallet-capture/payload-contract amounts and text', () => {
-    it.effect.each(AMOUNT_CASES)('Swift Double $literal round-trips to exact microunits $micro', ({ literal, micro }) =>
+    it.effect.each(AMOUNT_CASES)('native Double $literal round-trips to exact microunits $micro', ({ literal, micro }) =>
         Effect.gen(function* () {
             const account = yield* walletCaptureSeedAccount();
 
-            expect(yield* drainSwiftCapture(account.id, { amount: literal })).toEqual([]);
+            expect(yield* drainRawCapture(account.id, { amount: literal })).toEqual([]);
 
             const { entry, transaction } = yield* fetchImported();
 
             expect(entry.amount).toBe(micro);
             expect(transaction.externalId).toBe(CAPTURE_ID);
-            expect(yield* remainingCaptures()).toEqual([]);
+            expect(walletCaptureNativeStub.pendingCaptureIds()).toEqual([]);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -90,34 +88,30 @@ describe('wallet-capture/payload-contract amounts and text', () => {
         Effect.gen(function* () {
             const account = yield* walletCaptureSeedAccount();
 
-            yield* drainSwiftCapture(account.id, { merchant: literal });
+            yield* drainRawCapture(account.id, { merchant: literal });
 
             expect((yield* fetchImported()).transaction.title).toBe(title);
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('decodes a Swift record that omits cardName, currency and duplicateTransactionId keys', () =>
+    it.effect('decodes an invocation whose cardName and currency are null', () =>
         Effect.gen(function* () {
             const account = yield* walletCaptureSeedAccount();
 
-            expect(yield* drainSwiftCapture(account.id, { cardName: null })).toEqual([]);
+            expect(yield* drainRawCapture(account.id, { cardName: 'null' })).toEqual([]);
 
             expect((yield* fetchImported()).transaction.externalId).toBe(CAPTURE_ID);
-            expect(yield* remainingCaptures()).toEqual([]);
+            expect(walletCaptureNativeStub.pendingCaptureIds()).toEqual([]);
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect.each([
-        ['2026-08-07T10:00:00.123Z', '2026-08-07T10:00:00.000Z'],
-        ['2026-08-07T13:00:00+03:00', '2026-08-07T10:00:00.000Z'],
-        ['2026-08-07T05:00:00-05:00', '2026-08-07T10:00:00.000Z']
-    ])('capturedAt %s maps to the same UTC instant %s', ([capturedAt, instant]) =>
+    it.effect('uses the invocation createdAt instant as the operation time', () =>
         Effect.gen(function* () {
             const account = yield* walletCaptureSeedAccount();
 
-            yield* drainSwiftCapture(account.id, { capturedAt: JSON.stringify(capturedAt) });
+            yield* drainRawCapture(account.id);
 
-            expect((yield* fetchImported()).transaction.operatedAt.toISOString()).toBe(instant);
+            expect((yield* fetchImported()).transaction.operatedAt.toISOString()).toBe('2026-08-07T10:00:00.000Z');
         }).pipe(Effect.provide(TestLayer))
     );
 });
@@ -127,7 +121,7 @@ describe('wallet-capture/payload-contract accounts and idempotency', () => {
         Effect.gen(function* () {
             yield* walletCaptureSeedAccount();
 
-            const reviewItems = yield* drainSwiftCapture(999);
+            const reviewItems = yield* drainRawCapture(999);
 
             yield* expectCaptureKeptForReview(reviewItems, WalletCaptureReviewReasonEnum.ACCOUNT_UNAVAILABLE);
         }).pipe(Effect.provide(TestLayer))
@@ -137,7 +131,7 @@ describe('wallet-capture/payload-contract accounts and idempotency', () => {
         Effect.gen(function* () {
             const account = yield* seed.account({ title: 'Archived card', isActive: false });
 
-            const reviewItems = yield* drainSwiftCapture(account.id);
+            const reviewItems = yield* drainRawCapture(account.id);
 
             yield* expectCaptureKeptForReview(reviewItems, WalletCaptureReviewReasonEnum.ACCOUNT_UNAVAILABLE);
         }).pipe(Effect.provide(TestLayer))
@@ -150,16 +144,14 @@ describe('wallet-capture/payload-contract accounts and idempotency', () => {
                 const account = yield* walletCaptureSeedAccount();
                 const walletCaptureImportService = yield* WalletCaptureImportService;
 
-                walletCaptureNativeStub.seed(
-                    walletCaptureParseSwiftPayload([
-                        walletCaptureSwiftJson(CAPTURE_ID, account.id, { amount: literal }),
-                        walletCaptureSwiftJson(SECOND_CAPTURE_ID, account.id)
-                    ])
-                );
+                walletCaptureNativeStub.seedInvocations([
+                    walletCaptureRawInvocation(CAPTURE_ID, account.id, { amount: literal }),
+                    walletCaptureRawInvocation(SECOND_CAPTURE_ID, account.id)
+                ]);
 
                 expect(Exit.isFailure(yield* Effect.exit(walletCaptureImportService.drain()))).toBe(true);
                 expect(yield* testDb.select().from(TransactionEntityTable)).toEqual([]);
-                expect(yield* remainingCaptures()).toHaveLength(2);
+                expect(walletCaptureNativeStub.pendingCaptureIds()).toEqual([CAPTURE_ID, SECOND_CAPTURE_ID]);
             }).pipe(Effect.provide(TestLayer))
     );
 
@@ -168,13 +160,13 @@ describe('wallet-capture/payload-contract accounts and idempotency', () => {
             const walletCaptureImportService = yield* WalletCaptureImportService;
             const account = yield* walletCaptureSeedAccount();
 
-            yield* drainSwiftCapture(account.id);
-            walletCaptureNativeStub.seed(walletCaptureParseSwiftPayload([walletCaptureSwiftJson(CAPTURE_ID, account.id)]));
+            yield* drainRawCapture(account.id);
+            walletCaptureNativeStub.seedInvocations([walletCaptureRawInvocation(CAPTURE_ID, account.id)]);
             yield* walletCaptureImportService.drain();
 
             expect(yield* testDb.select().from(TransactionEntityTable)).toHaveLength(1);
             expect(yield* testDb.select().from(TransactionEntryEntityTable)).toHaveLength(1);
-            expect(yield* remainingCaptures()).toEqual([]);
+            expect(walletCaptureNativeStub.pendingCaptureIds()).toEqual([]);
         }).pipe(Effect.provide(TestLayer))
     );
 });
@@ -184,7 +176,7 @@ describe('wallet-capture/payload-contract currency', () => {
         Effect.gen(function* () {
             const account = yield* walletCaptureSeedAccount();
 
-            yield* drainSwiftCapture(account.id, { amount: '19.99' });
+            yield* drainRawCapture(account.id, { amount: '19.99' });
 
             const { entry, transaction } = yield* fetchImported();
 
@@ -200,7 +192,7 @@ describe('wallet-capture/payload-contract currency', () => {
             Effect.gen(function* () {
                 const account = yield* walletCaptureSeedAccount();
 
-                yield* drainSwiftCapture(account.id, { amount: '19.99', currency: literal });
+                yield* drainRawCapture(account.id, { amount: '19.99', currency: literal });
 
                 const { entry } = yield* fetchImported();
 
@@ -215,14 +207,14 @@ describe('wallet-capture/payload-contract currency', () => {
             const euro = yield* requireInstrument(CurrencyEnum.EUR);
 
             yield* walletCaptureSeedHistoricalRate(euro.id, account.instrumentId, EURO_RATE, '2026-08-07');
-            yield* drainSwiftCapture(account.id, { amount: '10', currency: '"EUR"' });
+            yield* drainRawCapture(account.id, { amount: '10', currency: '"EUR"' });
 
             const { entry, transaction } = yield* fetchImported();
 
             expect(entry.amount).toBe(EURO_AMOUNT_MICRO);
             expect(entry.exchangeRate).toBe(EURO_RATE);
             expect(transaction.exchangeRate).toBe(EURO_RATE);
-            expect(yield* remainingCaptures()).toEqual([]);
+            expect(walletCaptureNativeStub.pendingCaptureIds()).toEqual([]);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -230,7 +222,7 @@ describe('wallet-capture/payload-contract currency', () => {
         Effect.gen(function* () {
             const account = yield* walletCaptureSeedAccount();
 
-            const reviewItems = yield* drainSwiftCapture(account.id, { currency: '"XYZ"' });
+            const reviewItems = yield* drainRawCapture(account.id, { currency: '"XYZ"' });
 
             yield* expectCaptureKeptForReview(reviewItems, WalletCaptureReviewReasonEnum.CURRENCY_UNAVAILABLE);
         }).pipe(Effect.provide(TestLayer))
@@ -242,7 +234,7 @@ describe('wallet-capture/payload-contract currency', () => {
             const custom = yield* seed.instrument({ code: 'ZZZ', name: 'Custom unit', symbol: 'Z' });
 
             yield* seedExchangeRate(custom.id, account.instrumentId, 2.5);
-            yield* drainSwiftCapture(account.id, { amount: '10', currency: '"ZZZ"' });
+            yield* drainRawCapture(account.id, { amount: '10', currency: '"ZZZ"' });
 
             const { entry } = yield* fetchImported();
 
@@ -257,7 +249,7 @@ describe('wallet-capture/payload-contract currency', () => {
 
             yield* seed.instrument({ code: 'ZZZ', name: 'Custom unit', symbol: 'Z' });
 
-            const reviewItems = yield* drainSwiftCapture(account.id, { currency: '"ZZZ"' });
+            const reviewItems = yield* drainRawCapture(account.id, { currency: '"ZZZ"' });
 
             yield* expectCaptureKeptForReview(reviewItems, WalletCaptureReviewReasonEnum.CURRENCY_UNAVAILABLE);
         }).pipe(Effect.provide(TestLayer))

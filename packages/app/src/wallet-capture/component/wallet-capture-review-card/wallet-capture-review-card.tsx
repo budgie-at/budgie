@@ -38,10 +38,8 @@ export const WalletCaptureReviewCard = ({ item, accountTitle, instrumentSymbol, 
             case WalletCaptureReviewReasonEnum.CURRENCY_UNAVAILABLE:
                 return t`Budgie has no exchange rate for this payment currency yet.`;
             case WalletCaptureReviewReasonEnum.DUPLICATE:
-                return t`This capture looks similar to an existing transaction.`;
-            case WalletCaptureReviewReasonEnum.INVALID_PAYLOAD:
             default:
-                return t`The Wallet automation did not provide a usable amount or merchant.`;
+                return t`This capture looks similar to an existing transaction.`;
         }
     };
 

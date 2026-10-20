@@ -21,6 +21,11 @@ const config = {
     ],
     extraSources: [
         {
+            type: 'dir',
+            filePath: 'app-intents',
+            reasons: ['expo-app-intents']
+        },
+        {
             type: 'contents',
             id: 'op-sqlite-config',
             contents: JSON.stringify(require('../../package.json')['op-sqlite']),
