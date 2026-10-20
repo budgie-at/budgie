@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.109.0](https://github.com/budgie-at/budgie/compare/v6.108.0...v6.109.0) (2026-10-20)
+
+### Features
+
+* **app:** add controllable on-device AI downloads ([86ab4da](https://github.com/budgie-at/budgie/commit/86ab4daa1125a89339bacaadaf3c5d55d82e7422))
+* **app:** add your data screen, forgot PIN and add PIN later ([d375d3f](https://github.com/budgie-at/budgie/commit/d375d3f00807d2c5f121e06a951170f76ce8ef4e))
+
+
 ## [6.106.1](https://github.com/budgie-at/budgie/compare/v6.106.0...v6.106.1) (2026-10-18)
 
 **Note:** Version bump only for package @budgie/contracts
