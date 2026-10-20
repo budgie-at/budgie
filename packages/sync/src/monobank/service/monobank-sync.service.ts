@@ -189,11 +189,6 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
             return [...createdTransactions, ...buildExistingTransactionScopeSeeds(existingTransactions, existingTransactionIdMap)];
         });
 
-        const fetchTransactions = (client: MonobankClient, accountId: string, from: Date, to: Date) =>
-            client
-                .getTransactions(accountId, getUnixTime(from), getUnixTime(to))
-                .pipe(Effect.catchTag('SyncInvalidResponseError', () => Effect.succeed<SyncTransactionInterface[]>([])));
-
         const hasMoreTransactions = (transactions: SyncTransactionInterface[]): boolean =>
             transactions.length === maxTransactionsPerRequest;
 
@@ -202,7 +197,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
         const syncTransactionsForward = Effect.fnUntraced(function* (client: MonobankClient, accountId: string, from: Date) {
             const now = new Date();
             const to = min([now, addSeconds(from, MONOBANK_MAX_PERIOD_SECONDS)]);
-            const transactions = yield* fetchTransactions(client, accountId, from, to);
+            const transactions = yield* client.getTransactions(accountId, getUnixTime(from), getUnixTime(to));
             const oldestTransaction = transactions.at(-1);
 
             if (hasMoreTransactions(transactions) && isDefined(oldestTransaction)) {
@@ -227,7 +222,9 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
 
             const windowFrom = addSeconds(to, -MONOBANK_MAX_PERIOD_SECONDS);
             const from = isDefined(limitAt) ? max([windowFrom, limitAt]) : windowFrom;
-            const transactions = yield* fetchTransactions(client, accountId, from, to);
+            const transactions = yield* client
+                .getTransactions(accountId, getUnixTime(from), getUnixTime(to))
+                .pipe(Effect.catchTag('SyncInvalidResponseError', () => Effect.succeed<SyncTransactionInterface[]>([])));
             const oldestTransaction = transactions.at(-1);
 
             if (hasMoreTransactions(transactions) && isDefined(oldestTransaction)) {

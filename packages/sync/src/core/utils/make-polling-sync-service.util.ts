@@ -229,9 +229,12 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
             return { result, continuationAtMs };
         }
 
-        const pendingBackwardSyncs = yield* syncRepository.getPendingBackwardSync(definition.provider);
+        const hasPendingWork =
+            isDefined(failedSyncId) ||
+            isNotEmptyArray(yield* syncRepository.getPendingBackwardSync(definition.provider)) ||
+            isNotEmptyArray(yield* syncRepository.getPendingForwardSync(definition.provider, forwardSyncStaleThresholdMs));
 
-        return { result, continuationAtMs: isNotEmptyArray(pendingBackwardSyncs) || isDefined(failedSyncId) ? continuationAtMs : null };
+        return { result, continuationAtMs: hasPendingWork ? continuationAtMs : null };
     });
 
     const runContinuation = Effect.fnUntraced(function* (firstContinuationAtMs: number) {

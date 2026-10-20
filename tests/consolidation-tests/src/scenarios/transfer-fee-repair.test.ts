@@ -80,6 +80,20 @@ layer(TestLayer)('consolidation/transfer-fee-repair', it => {
         })
     );
 
+    it.effect('restores a dropped transfer fee on the next consolidation run', () =>
+        Effect.gen(function* () {
+            const { balancesBeforeConsolidation, canonicalId, fromAccount, toAccount } = yield* seedLegacyTransferPairCanonical();
+
+            yield* expectConsolidationResult({ found: 1, consolidated: 1 });
+
+            expect((yield* fetchLiveFeeEntries(canonicalId)).map(entry => [entry.accountId, entry.amount])).toEqual([
+                [fromAccount.id, TRANSFER_FEE_AMOUNT]
+            ]);
+            expect(yield* fetchLedgerBalances([fromAccount.id, toAccount.id])).toEqual(balancesBeforeConsolidation);
+            yield* expectConsolidationResult({ found: 0, consolidated: 0 });
+        })
+    );
+
     it.effect('does not touch a canonical that already carries its fee', () =>
         Effect.gen(function* () {
             const transferMcc = yield* testQueryService.findMccByCode('4829');
