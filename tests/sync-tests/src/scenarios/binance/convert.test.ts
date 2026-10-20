@@ -10,6 +10,7 @@ import {
     expectSingleBinanceTransaction,
     fetchBinanceEntriesByExternalId,
     fetchBinanceTransactions,
+    fetchSortedBinanceExternalIds,
     seedCryptoInstrument,
     setupUsdtSpotFixtureWithBalances,
     TestLayer
@@ -104,7 +105,7 @@ describe('binance/convert', () => {
 
             yield* binanceSyncService.sync();
 
-            const externalIds = (yield* fetchBinanceTransactions()).map(transaction => transaction.externalId).sort();
+            const externalIds = yield* fetchSortedBinanceExternalIds();
             expect(externalIds).toEqual(['binance:convert:7003', 'binance:trade:BTCUSDT:7003']);
         }).pipe(Effect.provide(TestLayer))
     );

@@ -1,4 +1,3 @@
-import { AccountDebtOpeningService } from '@app/account/service/account-debt-opening.service';
 import {
     AccountDebtTypeEnum,
     AccountTypeEnum,
@@ -15,12 +14,12 @@ import {
     TransactionTypeEnum,
     UserIconNameEnum
 } from '@budgie/contracts';
-import { AccountBalanceIncrementalService } from '@budgie/ledger';
+import { AccountDebtOpeningService, AccountBalanceIncrementalService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { fetchAccountBalance, TestLayer, upsertCurrencyRate } from '../../harness';
+import { fetchAccountBalance, TestLayer, upsertCurrencyRate, DEBT_OPENING_MESSAGES } from '../../harness';
 import { testDb } from '../../harness/scenario/setup';
 import { seed } from '../../harness/seed/seed';
 
@@ -48,7 +47,8 @@ const openDebt = Effect.fnUntraced(function* (
             contactId: null,
             deadline: null
         },
-        fundingAccount.id
+        fundingAccount.id,
+        DEBT_OPENING_MESSAGES
     );
 });
 
@@ -88,7 +88,7 @@ describe('opening a debt from a funding account', () => {
             const debtEvents = yield* readDebtEvents(debtAccount.id);
 
             expect(yield* readEntries(fundingAccount.id)).toHaveLength(1);
-            expect(transaction?.type).toBe(transactionType);
+            expect(transaction.type).toBe(transactionType);
             expect(entry.categoryId).toBe(categoryId);
             expect(entry.categorySource).toBe(CategorySourceEnum.DEBT_SETTLEMENT);
             expect(entry.amount).toBe(OPENING_AMOUNT * PRECISION);

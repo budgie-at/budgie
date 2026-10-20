@@ -1,19 +1,17 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { Database, Lock, Mobile, Server } from 'reicon-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageCategoryComparison } from '../../../../feature/component/feature-page-category-comparison/feature-page-category-comparison';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureProof } from '../../../../feature/component/feature-proof/feature-proof';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
+import { FeatureVersus } from '../../../../feature/component/feature-versus/feature-versus';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -25,21 +23,23 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(i18n)`Budgie data management settings showing Import Database and Export Database rows`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Self-Hosted Finance App on Mobile — Without Running a Server</Trans>}
-                locale={lang}
+                heading={<Trans>Self-hosted privacy, no server</Trans>}
                 tagline={
                     <Trans>
                         Self-hosting promises privacy but ships a server you have to babysit. Budgie gives you the same data ownership with
-                        zero ops — your phone is the server.
+                        zero ops. Your phone is the server.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="database-backup-1" slug="database-backup" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>Where the backup file replaces the server</Trans>}>
@@ -53,14 +53,7 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
                     </Trans>
                 </FeatureStory.Point>
 
-                <FeatureStory.Shot
-                    alt={t(i18n)`Budgie data management settings showing Import Database and Export Database rows`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="database-backup-1"
-                    slug="database-backup"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="database-backup-1" slug="database-backup">
                     <FeatureStory.Callout index={0} y={0.458}>
                         <Trans>Restore from a backup file</Trans>
                     </FeatureStory.Callout>
@@ -71,8 +64,9 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
 
                 <FeatureStory.Point index={1}>
                     <Trans>
-                        Export Database writes one file with everything, encrypted if you have a PIN set. Import Database restores it on a
-                        new phone after you pick the file and enter that PIN if the backup was encrypted.
+                        Export Database writes one compressed file with everything, PIN-locked if you have a PIN set. Import Database
+                        restores it on a new phone after you pick the file and enter that PIN if the backup was PIN-locked. A restore
+                        replaces the data on that phone; it is not sync.
                     </Trans>
                 </FeatureStory.Point>
                 <FeatureStory.Point index={2}>
@@ -80,87 +74,89 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
                 </FeatureStory.Point>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why this matters</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Self-hosting promises privacy but ships a server you have to babysit. Budgie gives you the same data ownership with
-                        zero ops — your phone is the server.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
+            <FeatureVersus
+                heading={<Trans>A server to run, or just your phone</Trans>}
+                lede={<Trans>Self-hosting keeps data yours but hands you the ops work. Budgie skips the server.</Trans>}
+            >
+                <FeatureVersus.Without title={<Trans>A self-hosted finance app</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>Data lives on a server you run</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>You patch it and renew certificates</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Mobile is often a web app, or none</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Setup can take hours</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.Without>
+                <FeatureVersus.With title={<Trans>Budgie</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>Data lives on your phone</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>No server to maintain</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Native iOS and Android app</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Install and open</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.With>
+            </FeatureVersus>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Budgie vs. the category</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>
-                            If you enjoy ops work, do that. Most people don&apos;t, and a forgotten server with stale TLS is worse than a
-                            vendor&apos;s cloud. Budgie keeps the data ownership story without the ops cost.
-                        </Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
-                        <Trans>
-                            Copy the backup file via your own iCloud Drive, Google Drive, or Dropbox — it is encrypted if you set a PIN when
-                            you made it. Restore it on the second device by picking the file and entering that PIN.
-                        </Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Export your data as CSV anytime. Budgie doesn&apos;t lock you in.</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
-                        <Trans>
-                            Yes — the backup is just a file, encrypted if you had a PIN set when you made it. Save it anywhere you control:
-                            NAS, S3, your own server, your own cloud.
-                        </Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+            <FeatureProof
+                crop={
+                    <FeatureProof.Crop
+                        alt={t(i18n)`Budgie Settings data management list with the Import Database and Export Database rows`}
+                        locale={lang}
+                        scene="database-backup-1"
+                        slug="database-backup"
+                        y={0.3}
+                    />
+                }
+                heading={<Trans>Your backup is just a file</Trans>}
+                lede={<Trans>Two rows in Settings save and restore everything. Keep the file wherever you like.</Trans>}
+            >
+                <FeatureProof.Fact icon={Database}>
+                    <Trans>Export Database writes one file with all your data</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Fact icon={Mobile}>
+                    <Trans>Import Database restores it on a new phone</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Source />
+            </FeatureProof>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Feature comparison</Trans>
-                </FeaturePageHeading>
-                <FeaturePageCategoryComparison categoryLabel={<Trans>Server-based finance apps</Trans>}>
-                    <FeaturePageCategoryComparison.Row
-                        budgieValue={<Trans>On your phone, encrypted when a PIN is set</Trans>}
-                        competitorValue={<Trans>Your VPS / Docker host</Trans>}
-                        label={<Trans>Where data lives</Trans>}
-                    />
-                    <FeaturePageCategoryComparison.Row
-                        budgieValue={<Trans>None</Trans>}
-                        competitorValue={<Trans>Yes — updates, certs, backups</Trans>}
-                        label={<Trans>Server to maintain</Trans>}
-                    />
-                    <FeaturePageCategoryComparison.Row
-                        budgieValue={<Trans>Native iOS + Android</Trans>}
-                        competitorValue={<Trans>Web wrapper or none</Trans>}
-                        label={<Trans>Mobile experience</Trans>}
-                    />
-                    <FeaturePageCategoryComparison.Row
-                        budgieValue={<Trans>To your own iCloud / Google Drive</Trans>}
-                        competitorValue={<Trans>Manual server snapshots</Trans>}
-                        label={<Trans>Backup</Trans>}
-                    />
-                    <FeaturePageCategoryComparison.Row
-                        budgieValue={<Trans>Backup file copied via your cloud</Trans>}
-                        competitorValue={<Trans>Built-in via your server</Trans>}
-                        label={<Trans>Multi-device sync</Trans>}
-                    />
-                    <FeaturePageCategoryComparison.Row
-                        budgieValue={<Trans>Install + open</Trans>}
-                        competitorValue={<Trans>Hours of ops</Trans>}
-                        label={<Trans>Setup time</Trans>}
-                    />
-                </FeaturePageCategoryComparison>
-            </FeaturePageSection>
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={Server} title={<Trans>No server to maintain</Trans>}>
+                    <Trans>No server to patch, renew certificates for, or pay for — just a file only you hold.</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Lock} title={<Trans>Your data on your phone</Trans>}>
+                    <Trans>On your phone, encrypted when a PIN is set</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Mobile} title={<Trans>A real mobile app</Trans>}>
+                    <Trans>Native iOS + Android</Trans>
+                </FeatureBenefits.Benefit>
+            </FeatureBenefits>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why this matters</Trans>}>
+                    <p>
+                        <Trans>
+                            Self-hosting promises privacy but ships a server you have to babysit. Budgie gives you the same data ownership
+                            with zero ops — your phone is the server.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
+
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>Why not just self-host an existing finance app?</Trans>}
                     answer={
                         <Trans>
@@ -169,29 +165,34 @@ export default async function SelfHostedFinanceAppMobilePage(props: PageLangPara
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
-                    question={<Trans>How do I sync between phone and tablet?</Trans>}
+                <FeatureFaq.Item
+                    index={1}
+                    question={<Trans>Can I use Budgie on a phone and a tablet at once?</Trans>}
                     answer={
                         <Trans>
-                            Copy the backup file via your own iCloud Drive, Google Drive, or Dropbox — it is encrypted if you set a PIN when
-                            you made it. Restore it on the second device by picking the file and entering that PIN.
+                            Budgie does not sync between devices. You can move your data by copying the backup file through your own iCloud
+                            Drive, Google Drive, or Dropbox and restoring it on the second device — but a restore replaces everything on
+                            that device, and later changes stay on the device where you made them. If the backup was PIN-locked, enter that
+                            PIN when you restore.
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>What if I want to migrate to a real self-hosted app later?</Trans>}
                     answer={<Trans>Export your data as CSV anytime. Budgie doesn&apos;t lock you in.</Trans>}
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Can I keep my data backed up to my own server?</Trans>}
                     answer={
                         <Trans>
                             Yes — the backup is just a file, encrypted if you had a PIN set when you made it. Save it anywhere you control:
-                            NAS, S3, your own server, your own cloud.
+                            NAS, your own server, your own cloud.
                         </Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

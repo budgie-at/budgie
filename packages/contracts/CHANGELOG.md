@@ -3,6 +3,75 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.106.1](https://github.com/budgie-at/budgie/compare/v6.106.0...v6.106.1) (2026-10-18)
+
+**Note:** Version bump only for package @budgie/contracts
+
+
+
+
+
+# [6.106.0](https://github.com/budgie-at/budgie/compare/v6.105.0...v6.106.0) (2026-10-16)
+
+
+### Bug Fixes
+
+* **market:** backfill historical fiat rates from ECB and revalue affected entries ([daf3146](https://github.com/budgie-at/budgie/commit/daf31464fc762c7862867207e00aece24dcc111b))
+* **market:** stop refetching a year of fiat rates for currencies the rate source does not cover ([66465f5](https://github.com/budgie-at/budgie/commit/66465f521c96ebcf2be071e0d16f9022620703b9))
+
+
+
+
+
+# [6.105.0](https://github.com/budgie-at/budgie/compare/v6.104.1...v6.105.0) (2026-10-16)
+
+
+### Features
+
+* **app:** manage AI features and unused downloads ([8e1f0be](https://github.com/budgie-at/budgie/commit/8e1f0bede72ff567a1d46a9a66a38af62d9e9be5))
+
+
+
+
+
+# [6.104.0](https://github.com/budgie-at/budgie/compare/v6.103.13...v6.104.0) (2026-10-15)
+
+
+### Features
+
+* **app:** make the full Reicon catalog selectable without losing saved icons ([56aecff](https://github.com/budgie-at/budgie/commit/56aecff80ff1c2129862fb0c3174180b1bac722e))
+
+
+
+
+
+## [6.103.4](https://github.com/budgie-at/budgie/compare/v6.103.3...v6.103.4) (2026-10-14)
+
+**Note:** Version bump only for package @budgie/contracts
+
+
+
+
+
+## [6.103.3](https://github.com/budgie-at/budgie/compare/v6.103.2...v6.103.3) (2026-10-13)
+
+
+### Bug Fixes
+
+* **sync:** undo only ATM cash moves ([eb696b3](https://github.com/budgie-at/budgie/commit/eb696b3153713626fb69dc327cd3240babc3cdbb))
+
+
+
+
+
+## [6.103.1](https://github.com/budgie-at/budgie/compare/v6.103.0...v6.103.1) (2026-10-13)
+
+**Note:** Version bump only for package @budgie/contracts
+
+
+
+
+
 # [6.103.0](https://github.com/budgie-at/budgie/compare/v6.102.0...v6.103.0) (2026-10-13)
 
 **Note:** Version bump only for package @budgie/contracts

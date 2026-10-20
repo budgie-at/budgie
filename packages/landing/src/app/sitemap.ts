@@ -2,13 +2,12 @@ import { ARTICLE_REGISTRY } from '../blog/constant/article-registry.constant';
 import { FeatureTierEnum } from '../feature/constant/feature-tier.enum';
 import { PILLAR_HUB_REGISTRY } from '../feature/constant/pillar-hub-registry.constant';
 import { BASE_URL, LOCALES } from '../generic/constant/seo.constant';
-import { SITEMAP_STATIC_LAST_MODIFIED } from '../generic/constant/sitemap-last-modified.constant';
 
 import { FEATURE_METADATA_LIST } from './[lang]/features/metadata';
 
 import type { MetadataRoute } from 'next';
 
-const staticPages = ['', '/blog', '/features'];
+const staticPages = ['', '/blog', '/features', '/changelog'];
 
 const buildSitemapLanguages = (path: string) => ({
     ...Object.fromEntries(LOCALES.map(locale => [locale, `${BASE_URL}/${locale}${path}`])),
@@ -18,7 +17,8 @@ const buildSitemapLanguages = (path: string) => ({
 const STATIC_PAGE_PRIORITY: Record<string, number> = {
     '': 1,
     '/features': 0.9,
-    '/blog': 0.8
+    '/blog': 0.8,
+    '/changelog': 0.6
 };
 
 const FEATURE_TIER_PRIORITY: Record<string, number> = {
@@ -28,11 +28,22 @@ const FEATURE_TIER_PRIORITY: Record<string, number> = {
     [FeatureTierEnum.NICHE]: 0.7
 };
 
+const latestDate = (dates: readonly string[]) => dates.reduce((latest, date) => (date > latest ? date : latest));
+
 const sitemap = (): MetadataRoute.Sitemap => {
+    const latestBlogDate = latestDate(ARTICLE_REGISTRY.map(entry => entry.date));
+    const latestFeatureDate = latestDate(FEATURE_METADATA_LIST.map(entry => entry.updatedAt));
+    const staticLastModified: Record<string, string> = {
+        '': latestDate([latestBlogDate, latestFeatureDate, ...PILLAR_HUB_REGISTRY.map(entry => entry.updatedAt)]),
+        '/features': latestFeatureDate,
+        '/blog': latestBlogDate,
+        '/changelog': '2026-10-14'
+    };
+
     const staticEntries = LOCALES.flatMap(locale =>
         staticPages.map(page => ({
             url: `${BASE_URL}/${locale}${page}`,
-            lastModified: new Date(SITEMAP_STATIC_LAST_MODIFIED[page]),
+            lastModified: new Date(staticLastModified[page]),
             changeFrequency: page === '' ? ('weekly' as const) : ('monthly' as const),
             priority: STATIC_PAGE_PRIORITY[page],
             alternates: { languages: buildSitemapLanguages(page) }
@@ -42,7 +53,7 @@ const sitemap = (): MetadataRoute.Sitemap => {
     const blogEntries = LOCALES.flatMap(locale =>
         ARTICLE_REGISTRY.map(entry => ({
             url: `${BASE_URL}/${locale}/blog/${entry.slug}`,
-            lastModified: new Date(entry.date),
+            lastModified: new Date(entry.dateModified ?? entry.date),
             changeFrequency: 'monthly' as const,
             priority: 0.7,
             alternates: { languages: buildSitemapLanguages(`/blog/${entry.slug}`) }

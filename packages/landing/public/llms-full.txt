@@ -466,7 +466,7 @@ Which banks have direct API support? Monobank today; we add direct integrations 
 
 ---
 
-# Comparison: Open-Source Budget App for Mobile
+# Comparison: Source-Available Budget App for Mobile
 Source: https://budgie.at/en/open-source
 
 Closed-source finance apps ask you to trust marketing. Budgie's mobile app has public source, so the privacy and security claims are auditable line by line.
@@ -514,36 +514,6 @@ Can I keep my data backed up to my own server? Yes — the encrypted backup is j
 
 ---
 
-# Blog: How Budgie Keeps Your Financial Data Off the Cloud
-Source: https://budgie.at/en/blog/budgie-offline-financial-data
-Published: February 10, 2025 | 15 min read | By Budgie Team
-
-A technical deep-dive into Budgie's offline-first architecture, explaining how SQLite, AES-256 encryption, and device-to-device sync keep your financial data completely private.
-
-When you open most expense tracking apps, something happens in the background: your transaction data, account balances, and spending habits are uploaded to servers you do not control. Budgie takes a fundamentally different approach. Your financial data never leaves your device. This is a literal description of how the app works at the code level.
-
-## The Architecture: SQLite and Local-First Design
-
-At the heart of Budgie is a local-first architecture built on SQLite. Cloud-based expense trackers typically use databases like PostgreSQL or MySQL running on remote servers, creating four problems: network dependency (no offline access), latency (every action requires a round trip), data exposure (financial data on servers that could be breached), and service dependency (if the company shuts down, your data disappears).
-
-SQLite eliminates all of these problems. The database file lives on your device, operations happen in microseconds, and your data remains under your physical control.
-
-## How Data Storage Works in Budgie
-
-When you create a transaction in Budgie: the app validates the input using Zod schemas; the transaction is written to a SQLite database stored in your device's secure app storage; the database uses Drizzle ORM for type-safe operations; the write completes locally with no network activity. There is no background sync silently uploading your data.
-
-## No Analytics, No Tracking, No Telemetry
-
-Budgie includes zero analytics SDKs. We do not use Firebase Analytics, Mixpanel, Amplitude, or any similar service. We do not collect crash reports through third-party services. We do not record which features you use, how often you open the app, or what categories you spend money in.
-
-## End-to-End Encryption
-
-AES-256 Encryption at Rest — Budgie encrypts your database using AES-256, the same encryption standard used by governments and financial institutions worldwide. When your database is encrypted, the file on disk appears as random binary data.
-
-Key derivation: your encryption key is derived from your device credentials. Secure storage: the derived key is stored in platform-specific secure enclaves — iOS Keychain and Android Keystore, hardware-backed where available. Key isolation: each device has its own encryption key. There is no master key that could decrypt all user databases.
-
----
-
 # Blog: On-Device AI in Your Budget App
 Source: https://budgie.at/en/blog/on-device-ai-budget-app-explainer
 Published: May 7, 2026 | 11 min read | By Budgie Team
@@ -584,34 +554,6 @@ Stage 2: LLM-Based Semantic Categorization — when the embedding stage produces
 
 ---
 
-# Blog: Bank Data Safety — Why Offline-First Is the Only Honest Answer
-Source: https://budgie.at/en/blog/offline-first-bank-data-safety
-Published: May 7, 2026 | 10 min read | By Budgie Team
-
-Financial aggregators centralise millions of bank credentials in one place — a magnet for attackers. Offline-first architecture eliminates the target.
-
-## The Aggregator Pattern: What Plaid Does and What It Sees
-
-When you connect a bank account through an app that uses Plaid: Credential collection — Plaid historically used screen-scraping, which required your actual username and password; Transaction mirroring — Plaid pulls your transaction stream from the bank and stores it; Data sharing — Plaid data can be shared with other Plaid-connected apps, lenders, credit bureaus, and partners; Retention — transaction data is retained beyond the active period of any individual app connection.
-
-When you use any budgeting app backed by a major aggregator, your bank data exists in at least three places: your bank, the app, and the aggregator. Each is an independent breach surface.
-
-## Why Mass Aggregation Is a High-Value Breach Target
-
-A financial data aggregator that services millions of users holds credentials or access tokens for millions of bank accounts in one system. Single point of entry — compromising one system yields access to credentials spanning hundreds of different banks. Concentrated transaction history — aggregators hold not just credentials but also years of normalized transaction history. Third-party security posture — your data exposure depends on a third party you did not explicitly choose.
-
-## Offline-First as the Architectural Answer
-
-No credential escrow — your bank credentials or OAuth tokens are stored only on your device, encrypted at rest. No third-party server holds a copy. Direct bank communication — when sync runs, your device communicates directly with your bank API. No aggregator copy of your history. Breach impact is isolated — if your device is compromised, the exposure is limited to your accounts. An aggregator breach can expose every user simultaneously.
-
-## Direct API Tokens vs Aggregator OAuth
-
-Direct API tokens with scoped permissions: grant read-only access to transaction data; revocable from your bank portal at any time; no credential exposure; stored locally on your device.
-
-Aggregator OAuth routes your bank authorization through the aggregator platform. The resulting token is held by the aggregator, not by the app or your device.
-
----
-
 # Blog: Why Cloud Budgeting Apps Are a Privacy Nightmare
 Source: https://budgie.at/en/blog/cloud-budgeting-privacy-risks
 Published: January 27, 2025 | 16 min read | By Budgie Team
@@ -648,7 +590,7 @@ Financial apps have been breached, and user data has been exposed. Mint (Intuit)
 Source: https://budgie.at/en/blog/ynab-alternatives-privacy
 Published: February 3, 2025 | 17 min read | By Budgie Team
 
-Compare the best YNAB alternatives for privacy-conscious users in 2025. Discover offline-first, open-source, and self-hosted budgeting apps that keep your financial data private.
+Compare the best YNAB alternatives for privacy-conscious users in 2026. Discover privacy-focused, offline-first and self-hosted budgeting apps that keep your financial data private.
 
 ## Why People Are Looking for YNAB Alternatives
 
@@ -664,7 +606,7 @@ Data Storage Location: Local-first/Offline-first (data stored exclusively on you
 
 ## Comparison Table
 
-Budgie: Device only storage, optional bank sync, yes open source, free, iOS and Android, best for privacy maximalists who want modern UX.
+Budgie: Device only storage, optional bank sync, source-available, free, iOS and Android, currently in private beta (waitlist), best for privacy maximalists who want modern UX.
 
 Actual Budget: Local/Self-hosted storage, optional plugin bank sync, yes open source, free (self-hosted), Web and Desktop, best for technical users wanting full control.
 

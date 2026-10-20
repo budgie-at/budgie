@@ -123,13 +123,15 @@ export default async function RootLayout({ params, children }: Props) {
 
     initLingui(lang);
 
+    const i18n = getI18nInstance(lang);
+
     /* oxlint-disable lingui/no-unlocalized-strings */
     const organizationData = {
         '@context': 'https://schema.org',
         '@type': 'Organization',
         name: 'Budgie',
         url: BASE_URL,
-        description: 'Developer of Budgie, a privacy-first offline expense tracker for iOS and Android.',
+        description: i18n._(msg`Developer of Budgie, a privacy-first offline expense tracker for iOS and Android.`),
         logo: { '@type': 'ImageObject', url: `${BASE_URL}/logo/black-on-white.svg`, width: 200, height: 60 },
         sameAs: ['https://github.com/budgie-at/budgie', 'https://x.com/budgie_at']
     };

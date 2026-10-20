@@ -1,4 +1,3 @@
-import { Workload } from '@app/@generic/service/workload.service';
 import { describe, expect, it } from '@effect/vitest';
 import * as Deferred from 'effect/Deferred';
 import * as Effect from 'effect/Effect';
@@ -7,7 +6,7 @@ import * as Fiber from 'effect/Fiber';
 import * as Option from 'effect/Option';
 import * as Schedule from 'effect/Schedule';
 
-import { inWorkload, TestLayer } from '../../harness';
+import { inWorkload, TestLayer, Workload } from '../../harness';
 
 const nextTaskDelayMs = 0;
 

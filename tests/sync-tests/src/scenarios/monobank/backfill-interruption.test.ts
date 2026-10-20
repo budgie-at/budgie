@@ -1,4 +1,3 @@
-import { Workload } from '@app/@generic/service/workload.service';
 import { MONOBANK_RATE_LIMIT_MS } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Deferred from 'effect/Deferred';
@@ -7,7 +6,16 @@ import * as FiberSet from 'effect/FiberSet';
 import * as TestClock from 'effect/testing/TestClock';
 import { HttpResponse, http } from 'msw';
 
-import { Clock, Fiber, fetchSyncById, inWorkload, MonobankSyncService, setupBackwardSweepFixture, TestClockLayer } from '../../harness';
+import {
+    Clock,
+    Fiber,
+    fetchSyncById,
+    inWorkload,
+    MonobankSyncService,
+    setupBackwardSweepFixture,
+    TestClockLayer,
+    Workload
+} from '../../harness';
 import { mockServer } from '../../harness/scenario/mock-server';
 import { testRuntime } from '../../harness/scenario/test-runtime';
 
@@ -42,6 +50,7 @@ describe('monobank/backfill-interruption', () => {
                             maximumInFlightRequests = Math.max(maximumInFlightRequests, inFlightRequests.size);
                             if (requests.length === 1) {
                                 runFork(workload.runUser(Deferred.succeed(firstUserFinished, undefined)));
+
                                 return HttpResponse.json([]);
                             }
 
@@ -50,6 +59,7 @@ describe('monobank/backfill-interruption', () => {
                                 yield* Deferred.succeed(resumedRequestStarted, undefined);
                             }
                             yield* Deferred.await(releaseRequests);
+
                             return HttpResponse.json([]);
                         }).pipe(Effect.ensuring(Effect.sync(() => inFlightRequests.delete(request.signal))))
                     )
@@ -106,6 +116,7 @@ describe('monobank/backfill-interruption', () => {
                                 yield* Deferred.succeed(requestStarted, undefined);
                                 yield* Deferred.await(releaseRequest);
                             }
+
                             return HttpResponse.json([]);
                         })
                     )

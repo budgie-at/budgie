@@ -14,7 +14,7 @@ These rules apply uniformly across blog articles, feature pages, pillar hubs, le
 
 Every SEO landing lives at its own `src/app/[lang]/<route>/page.tsx`. Do not collapse static SEO pages into a dynamic `[slug]/page.tsx`. Adding a page means adding a new route file; deleting a page means deleting the route file.
 
-Blog articles use explicit per-slug folders such as `src/app/[lang]/blog/budgie-offline-financial-data/page.tsx`. The codebase does not use `src/app/[lang]/blog/[slug]/page.tsx` for articles.
+Blog articles use explicit per-slug folders such as `src/app/[lang]/blog/cloud-budgeting-privacy-risks/page.tsx`. The codebase does not use `src/app/[lang]/blog/[slug]/page.tsx` for articles.
 
 Feature pages use explicit per-slug folders under `src/app/[lang]/features/<slug>/page.tsx`. Pillar hubs use explicit top-level locale folders such as `src/app/[lang]/privacy/page.tsx`.
 
@@ -154,13 +154,13 @@ App icons are generated via `src/app/icon.tsx` + `src/app/apple-icon.tsx`. Never
 
 A feature page carries at most one `FeatureStory`, with **2–5 steps** (steps variant) or **one shot plus 2–4 points** (basic variant). Step titles, value copy, and callout labels are inline `<Trans>` in the route page; `alt` uses `t(i18n)`. Passing steps as `steps={[…]}`, as a registry field, or as any array of copy is prohibited — it is the same violation as §2 and §6.
 
-Prefer staged stills over motion: build a step out of `FeatureStory.Shot` scenes the scroll swaps whenever the manifest carries stills for the scene, and reach for `FeatureStory.Clip` only when the interaction cannot be told in framed screenshots. Stills carry the device frame baked in by `compose-web-media.sh`; clip media is screen-only and the site draws the same frame around it at render time through `.device-frame`, so `compose-web-clips.sh` must never bake a frame into clip media — MP4 has no alpha channel to carry the frame's transparent surround.
+Build a step out of `FeatureStory.Shot` scenes the scroll swaps. Stills carry the device frame baked in by `compose-web-media.sh`. The site ships no video or looping clips.
 
 Scene ids, `slug`, `locale`, and callout coordinates are page-local literals. They never enter `metadata.ts` or the feature registry; the allowed registry field list is unchanged.
 
-A callout is a numbered dot on the screenshot plus a label rendered **outside** the frame — never a band or pill over app pixels. `y` is the dot's vertical centre as a fraction of the framed screenshot height; the optional `x` is the same fraction horizontally and defaults to the device's right edge, so the dot marks a row without covering content. Keep labels to six words: they sit beside the frame on desktop (alternating sides from 1280px, right-hand side below that, joined by a hairline leader drawn outside the device bounds) and in a numbered caption rail under the frame on mobile. Numbering is a CSS counter, so callout order in the page is the only source of truth. Never use pixel coordinates.
+A callout is a numbered dot on the screenshot plus a label rendered **outside** the frame — never a band or pill over app pixels. `y` is the dot's vertical centre as a fraction of the framed screenshot height; the optional `x` is the same fraction horizontally and defaults to the device's right edge, so the dot marks a row without covering content. Keep labels to six words: on desktop they sit to the right of the frame at the dot's height (nudged apart when two dots are close), joined to the dot by a hairline leader; on mobile they become a numbered list under or beside the phone whose numbers match the dots. Numbering is a CSS counter, so callout order in the page is the only source of truth. Never use pixel coordinates. Consecutive `Shot`s with the same `scene` render as one screenshot whose callouts appear step by step, so a story about one screen repeats the `Shot` per step instead of swapping identical images.
 
-The stage is pinned on every viewport: sticky and top-aligned under the header on mobile with the step copy scrolling in the band beneath it, sticky beside the copy column on desktop. Shots crossfade per active step, parallax and the progress rail run on `animation-timeline` where supported and on one passive scroll listener writing `--story-progress` where it is not, and `prefers-reduced-motion` keeps the crossfade only.
+The stage is one panel pinned under the header that always fits the viewport, and scroll advances the active step. Desktop shows the numbered step list (only the active step's copy is shown) beside a phone that is cropped and shifted towards its callouts so app text stays readable. Mobile shows a progress bar, the active step, the phone sized to the space left and the numbered callout list. Shots crossfade per active step, and `prefers-reduced-motion` shortens every transition to a 150ms fade with no transforms.
 
 The story renders a server compound root; only its inner observer island is `"use client"`, it renders `{children}`, and it holds no translatable text, so every step string stays server-rendered in the SSG'd HTML for all five locales. `FeaturePageMedia` is retained only for a supplementary single shot; a page with a story does not also open with a `FeaturePageMedia` hero shot, and it drops its "How it works" prose section.
 
@@ -171,6 +171,99 @@ i18n authoring contract, callout anchor measurement across locales, and the loca
 ### 13. Metadata char budgets
 
 Titles must fit 60 characters including the ` | Budgie` template suffix; descriptions must fit 160 characters. The `fitText` util (`src/generic/utils/fit-text.util.ts`) is applied inside the metadata builders, so page copy in `metadata.ts` sidecars may be longer — the builder clamps it. Do not add per-page clamping logic.
+
+### 14. Alternatives and switch-from pages
+
+Two explicit page families target people leaving another app. Both are allowed; both obey rules 1-8 and 13.
+
+Routes, one folder per page, never `[slug]`:
+
+```text
+src/app/[lang]/alternatives/<competitor>/{page.tsx,metadata.ts,opengraph-image.tsx}
+src/app/[lang]/switch-from/<app>/{page.tsx,metadata.ts,opengraph-image.tsx}
+```
+
+- `alternatives/<competitor>` answers "alternative to X": a fair comparison for someone still choosing.
+- `switch-from/<app>` answers "move from X to Budgie": a migration guide for someone who has decided. It exists only for apps whose export Budgie can import.
+- The folder name is the lowercase kebab-case product name and is the page's `slug`. An app may have both pages; they link to each other.
+- `alternatives/page.tsx` and `switch-from/page.tsx` are listing hubs. They may iterate the family registry, never render body copy from it.
+
+Metadata, registry, sitemap:
+
+- Each page owns a sibling `metadata.ts` with `slug`, `title`, `metaTitle`, `metaDescription`, `publishedAt`, `updatedAt`, `relatedFeatureSlugs`, `relatedArticleSlugs` and `verifiedAt` (ISO date of the last competitor-claim check). No claim text lives in the sidecar.
+- Two metadata-only aggregators, `ALTERNATIVE_REGISTRY` and `SWITCH_FROM_REGISTRY`, import the sidecars. A route never looks itself up in them.
+- `src/app/sitemap.ts` includes both families and both hubs in every locale with `lastModified: meta.updatedAt`, and `buildAlternates(lang, path)` supplies the hreflang set. A page that is not yet publishable (see the publication gate) has no route file, no sidecar import and no sitemap entry: gate by not merging the page, never by `noindex` or a runtime flag.
+- Metadata is built with `buildFeaturePageMetadata`-style website Open Graph and alternates; do not add a new helper unless the existing one cannot express the page.
+
+JSON-LD: `WebPage` and `BreadcrumbList` (Home, the family hub, the page) as typed JSX schema components. `FAQPage` only when the page renders a visible FAQ written from real user questions, generated from the same JSX children (rule 7). Never emit `Review`, `AggregateRating`, `Product` ratings or any rating markup about a competitor or about Budgie.
+
+Required sections, as inline JSX in the route page (rule 2):
+
+1. Who this page is for: who should stay with the competitor and who should consider Budgie.
+2. Honest comparison table: rows are user-visible capabilities, with at least one row where the competitor wins or ties. Cells state facts, not adjectives. Build the table from explicit row children, not an array of strings.
+3. Switching steps (`switch-from` always; `alternatives` only when an import preset for that app exists): numbered steps that match the shipped import flow, verified in `packages/app` (cite `file:line` in the PR).
+4. Data and privacy: where the user's data lives in each product, stated as an outcome.
+5. Bottom CTA via the shared page CTA primitive.
+
+Competitor-claim rule:
+
+- Every statement about a competitor (features, pricing, limits, platforms, bank coverage, privacy, shutdowns) needs a public source. The PR description lists, per claim, the source URL and the access date. Sources are the competitor's own pages, store listings, help centre or changelog; third-party reviews are acceptable only as a second source.
+- No pricing claim without a source cited in the PR. Prefer "free tier available" to a number; if a price is shown, the page says when it was checked via `meta.verifiedAt`.
+- Every claim about Budgie is verified in code per the landing standard (PR cites `packages/app` `file:line`).
+- Tone is fair, factual and non-disparaging. No superlatives about the competitor, no speculation about their intent, no claim that cannot be checked by a reader. Name a competitor only to identify it; use its name in plain text, never its logo, never styling that implies affiliation or endorsement, and add the short disclaimer that the product is not affiliated with Budgie.
+- Re-verify every claim at least every 6 months. `meta.verifiedAt` is the clock: when it is older than 6 months the page is stale; refresh it or remove the unverifiable claims, and bump `updatedAt` in the same PR. A claim that cannot be re-verified is deleted, not softened.
+- Do not claim Revolut, Wise or Coinbase sync, and describe only integrations that exist (see rule 2 and `AGENTS.md`).
+
+Publication gate:
+
+- `alternatives/*` pages and their hub are merged only once the App Store badge (#1149) is live, because the page's call to action must lead to an install.
+- `switch-from/*` pages may be published earlier: they serve people who already chose Budgie and need the import steps. Their CTA uses whichever store badges are live.
+- Angle for both families: privacy, on-device data, and bank sync for Ukraine and the EU. Do not invent other angles.
+
+### 15. Merchant-code (MCC) glossary pages
+
+The merchant-code glossary is an allowed page family, primary languages `uk` and `en` (the other locales are still translated and built, as for every page). It obeys rules 1-8 and 13 except where stated here.
+
+Routes, never `[slug]`:
+
+```text
+src/app/[lang]/merchant-codes/{page.tsx,metadata.ts,opengraph-image.tsx}
+src/app/[lang]/merchant-codes/<code>/{page.tsx,metadata.ts,opengraph-image.tsx}
+```
+
+- One hub: `merchant-codes/page.tsx`.
+- A FIXED list of explicit code pages, one folder per four-digit code (`merchant-codes/5499/`). The list is chosen by a human for search demand (codes people look up on statements) and for being verifiable against the seed. A new code page is a new folder in a PR that states the demand and cites the seed row. There is no generation of code pages from the seed, and a code in the seed does not get a page by default.
+
+Allowed enumeration (the explicit exception to rules 2 and 6):
+
+- The hub may render the full list of seeded codes grouped by category. That list is rendered from the data constant `mcc-default-category-seed.constant.ts` in `@budgie/contracts`, never hand-copied into the page, a registry or a sidecar. It is runtime/enumerated listing data in the sense of rule 6, not fixed body copy.
+- The hub's introduction, category headings' explanatory prose and FAQ stay inline JSX (rule 2). Only code number to category rows are enumerated; category labels are translated through the existing category labels, not new strings per code.
+- Code pages state their own meaning, typical merchants and the category Budgie assigns inline. The assigned category must equal the seed's entry for that code.
+- A package test (colocated, `@effect/vitest`, rule 27) asserts parity: every code with an explicit page exists in the seed with the category the page's sidecar declares (`categoryKey`), the explicit-page list equals the folders under `merchant-codes/`, and the hub renders exactly the seed's code set. A seed change that breaks parity fails CI; update the page in the same PR.
+
+Metadata, registry, sitemap:
+
+- Each code page and the hub own a sibling `metadata.ts`: `code`, `slug` (equal to the folder name and the code), `categoryKey`, `title`, `metaTitle`, `metaDescription`, `publishedAt`, `updatedAt`, `relatedFeatureSlugs`, `relatedArticleSlugs`. No visible copy.
+- `MERCHANT_CODE_REGISTRY` is a metadata-only aggregator of the code-page sidecars for the hub's links, related codes and the sitemap. The hub's full code table comes from the seed, not from the registry.
+- `src/app/sitemap.ts` lists the hub and each explicit code page in every locale with `lastModified: meta.updatedAt` and hreflang via `buildAlternates`. Seeded codes without a page are not in the sitemap.
+
+JSON-LD:
+
+- Code pages: `WebPage` + `BreadcrumbList` (Home, Merchant codes, the code) and a `DefinedTerm` (`name` is the code, `description` is the plain meaning, `inDefinedTermSet` points at the hub URL). `DefinedTerm` fits schema.org for a glossary entry.
+- Hub: `WebPage` + `BreadcrumbList` + a `DefinedTermSet` (`name`, `url`). It lists terms through `hasDefinedTerm` only for the explicit code pages, not the full seed, so the schema never duplicates the enumerated table. If a typed `DefinedTermSet` component does not yet exist, add it as a JSX schema component (rule 7), not an object builder.
+- `FAQPage` only for a visible FAQ rendered from the same JSX children. No `Review` or rating markup.
+
+Linking:
+
+- Every code page links to `/features/mcc-auto-category` (how Budgie assigns a category from the code) and `/features/categorization-rules` (how to override it with a rule), through the related-features slots using `relatedFeatureSlugs`, plus one in-prose link from the explanation text. The hub links to both as well.
+- `mcc-auto-category` links back to the hub, and to a code page where its prose names that code.
+- Code pages link to the neighbouring explicit codes of the same category through registry relationship data.
+
+Content rules:
+
+- State what the code means and what Budgie does with it as outcomes (the category assigned, that the user can change it). Never describe the seed format, the database or the mapping implementation (`AGENTS.md` -> "No implementation details in user-facing copy").
+- Do not claim what a bank or card network will report for a given purchase: a merchant can be coded differently. Phrase code meaning as "usually" and cite the standard classification only in the PR.
+- Every claim about Budgie behaviour is verified in code and cited as `file:line` in the PR, as the landing standard requires.
 
 ---
 
@@ -300,8 +393,8 @@ Legal pages are plain TSX server pages. They call `initLingui(lang)`, render leg
 
 One helper per page family may build the final `Metadata` object. Helpers should accept route-local metadata and resolved locale values, not reach into body-content registries.
 
-| Helper                     | File                                                   | Accepts                                                    | Notes                                  |
-| -------------------------- | ------------------------------------------------------ | ---------------------------------------------------------- | -------------------------------------- |
+| Helper                     | File                                                    | Accepts                                                    | Notes                                  |
+| -------------------------- | ------------------------------------------------------- | ---------------------------------------------------------- | -------------------------------------- |
 | `buildBlogArticleMetadata` | `src/blog/utils/build-blog-article-metadata.util.ts`    | page-owned meta values, resolved title/description, locale | sets article Open Graph and alternates |
 | `buildFeaturePageMetadata` | `src/feature/utils/build-feature-page-metadata.util.ts` | page-owned meta values, resolved title/description, locale | sets website Open Graph and alternates |
 | `buildPillarHubMetadata`   | `src/feature/utils/build-pillar-hub-metadata.util.ts`   | page-owned meta values, resolved title/description, locale | same metadata shape as feature pages   |
@@ -410,6 +503,8 @@ Not allowed in the registry:
 | Blog articles                             | article metadata sidecars via registry/index aggregator    | `meta.date`              |
 | Feature pages                             | feature metadata sidecars via registry/index aggregator    | `meta.updatedAt`         |
 | Pillar hub pages                          | pillar hub metadata sidecars via registry/index aggregator | `meta.updatedAt`         |
+| Alternatives pages and hub                | alternative metadata sidecars via `ALTERNATIVE_REGISTRY`   | `meta.updatedAt`         |
+| Switch-from pages and hub                 | switch-from sidecars via `SWITCH_FROM_REGISTRY`            | `meta.updatedAt`         |
 
 When you add a new SEO page:
 
@@ -419,7 +514,7 @@ When you add a new SEO page:
 4. Keep body copy in the route page.
 5. Run `pnpm i18n:sync` after changing visible or metadata strings.
 
-`SITEMAP_STATIC_LAST_MODIFIED` (`src/generic/constant/sitemap-last-modified.constant.ts`) must be updated manually when the corresponding static page is meaningfully changed.
+The static `lastModified` map in `src/app/sitemap.ts` must be updated manually when the corresponding static page is meaningfully changed.
 
 ---
 
@@ -466,7 +561,6 @@ Check this list before authoring a new SEO component.
 | Story heading + lede        | `FeatureStory.Intro heading` + children                                 |
 | Narration step              | `FeatureStory.Step index title` + children                              |
 | Sticky screenshot           | `FeatureStory.Shot index slug scene locale alt priority` + callouts     |
-| Sticky motion clip          | `FeatureStory.Clip index slug scene locale alt` + callouts              |
 | Screenshot highlight        | `FeatureStory.Callout y x index` + children                             |
 | Basic-variant bullet        | `FeatureStory.Point index` + children                                   |
 
@@ -485,6 +579,8 @@ Check this list before authoring a new SEO component.
 - Adding a new blog article: create `src/app/[lang]/blog/<slug>/page.tsx`, create sibling `metadata.ts`, import the sidecar into the article registry/index aggregator, and optionally add `opengraph-image.tsx`.
 - Adding a new feature page: create `src/app/[lang]/features/<slug>/page.tsx`, create sibling `metadata.ts`, import the sidecar into the feature registry/index aggregator, compose a `FeatureStory` with 2–5 steps referencing only scene ids present in the generated media manifest, and optionally add `opengraph-image.tsx`.
 - Adding a new pillar hub: create `src/app/[lang]/<slug>/page.tsx`, create sibling metadata if the family is enumerated, and keep visible hub copy in the page or a page-owned explicit JSX component.
+- Adding a merchant-code page: follow rule 15. Create the explicit `merchant-codes/<code>/` folder with `page.tsx`, `metadata.ts` and `opengraph-image.tsx`, confirm the code and category in the seed, link `mcc-auto-category` and `categorization-rules`, and keep the parity test green.
+- Adding an alternatives or switch-from page: follow rule 14. Create the explicit folder with `page.tsx`, `metadata.ts` (including `verifiedAt`) and `opengraph-image.tsx`, import the sidecar into the family registry, list per-claim sources and access dates in the PR, and respect the publication gate.
 - Adding a new legal page: create `src/app/[lang]/legal/<slug>/page.tsx`; do not add it to a registry or sitemap.
 - Adding a new SEO concern: build a primitive component and have pages compose it as children. Do not bolt body-copy prop bags onto existing wrappers.
 - Interactive widgets such as accordion, scroll sentinel, and search belong in client islands rendered inside server primitives. Keep `"use client"` off the page and off structural primitives.

@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,10 +9,11 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'expense-tracking',
     tier: FeatureTierEnum.CORE,
-    title: msg`Expense Tracking, Reimagined`,
-    tagline: msg`Two taps from open to saved — a bottom-sheet quick-entry form designed for one-handed use.`,
-    metaTitle: msg`Expense Tracking, Reimagined — Budgie`,
-    metaDescription: msg`Log expenses, income, and transfers in seconds. Budgie tracks every transaction on-device, opens each one in a read-only detail view, and shows six months of comparable spending before you edit.`,
+    pillar: PillarEnum.PLANNING,
+    name: msg`Expense Tracking`,
+    tagline: msg`Two taps from open to saved. A bottom-sheet quick-entry form designed for one-handed use.`,
+    metaTitle: msg`Expense Tracking App, Log in Seconds — Budgie`,
+    metaDescription: msg`Log expenses, income, and transfers in seconds. Each transaction opens read-only with six months of comparable spending before you edit.`,
     primaryKeyword: 'personal expense tracker',
     seoKeywords: [
         'personal expense tracker',
@@ -28,7 +30,7 @@ export const FEATURE_METADATA = {
         'budget-planning',
         'recurring-payments-calendar'
     ],
-    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-alternatives-developers'],
+    relatedArticleSlugs: ['ynab-alternatives-privacy', 'mint-shutdown-private-alternative'],
     publishedAt: '2025-12-14',
     updatedAt: '2026-09-02',
     ogTags: ['expense tracking', 'transactions', 'mobile']

@@ -1,4 +1,4 @@
-import { Check } from 'lucide-react';
+import { Check } from 'reicon-react';
 
 import type { ReactNode } from 'react';
 

@@ -18,7 +18,7 @@ import {
     TransactionTagsRepository
 } from '@budgie/contracts';
 import { AccountBalanceIncrementalService, LedgerWorkload, TransactionService } from '@budgie/ledger';
-import { TransferConsolidationService } from '@budgie/sync';
+import { AtmCashMoveService, TransferConsolidationService } from '@budgie/sync';
 import * as Clock from 'effect/Clock';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -44,6 +44,7 @@ export const TestLayer = Layer.mergeAll(
     AccountBalanceRepository.layer,
     AccountBalanceIncrementalService.layer,
     TransferConsolidationService.layer,
+    AtmCashMoveService.layer,
     TransactionService.layer,
     StatisticsRepository.layer,
     TransactionRepository.layer,

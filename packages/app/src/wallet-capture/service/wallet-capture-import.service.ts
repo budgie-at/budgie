@@ -1,6 +1,7 @@
 import { consolidationScopeService } from '@budgie/consolidation';
 import { AccountRepository, ExternalSourceEnum, TransactionRepository, YIELD_TO_UI, convertToMicroUnits } from '@budgie/contracts';
 import { TransactionService } from '@budgie/ledger';
+import { TransferConsolidationDrainerService } from '@budgie/sync';
 import * as Cause from 'effect/Cause';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -11,7 +12,6 @@ import * as Semaphore from 'effect/Semaphore';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { TransferConsolidationDrainerService } from '../../sync/service/transfer-consolidation-drainer.service';
 import { WalletCaptureReactivityKeyEnum } from '../enum/wallet-capture-reactivity-key.enum';
 import { WalletCaptureReviewReasonEnum } from '../enum/wallet-capture-review-reason.enum';
 import { WalletCaptureStatusEnum } from '../enum/wallet-capture-status.enum';
@@ -212,7 +212,6 @@ export class WalletCaptureImportService extends Context.Service<WalletCaptureImp
             AccountRepository.layer,
             TransactionRepository.layer,
             TransactionService.layer,
-            TransferConsolidationDrainerService.layer,
             WalletCaptureNativeService.layer,
             WalletCaptureTransactionService.layer
         ])

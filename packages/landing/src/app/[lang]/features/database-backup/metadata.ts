@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,10 +9,11 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'database-backup',
     tier: FeatureTierEnum.CORE,
-    title: msg`Database Backup & Restore`,
-    tagline: msg`One backup file, encrypted once you set a PIN. No account, restore by picking the file.`,
-    metaTitle: msg`Encrypted Database Backup to Your Cloud — Budgie`,
-    metaDescription: msg`Capture your entire Budgie database in one file, encrypted once you set a PIN. Save to iCloud or Drive on your terms; restore on a new device by picking the file — no account needed.`,
+    pillar: PillarEnum.PRIVACY,
+    name: msg`Backup & Restore`,
+    tagline: msg`One compressed backup file, PIN-locked once you set a PIN. No account, restore by picking the file.`,
+    metaTitle: msg`PIN-Locked Database Backup — Budgie`,
+    metaDescription: msg`Back up your entire Budgie database as one compressed file, PIN-locked if you set a PIN. Save it anywhere and restore by picking the file.`,
     primaryKeyword: 'expense tracker backup restore',
     seoKeywords: [
         'expense tracker backup restore',
@@ -20,7 +22,7 @@ export const FEATURE_METADATA = {
         'restore expense data',
         'no-account backup app'
     ],
-    relatedFeatureSlugs: ['data-export', 'pin-app-lock', 'expense-tracking'],
+    relatedFeatureSlugs: ['data-export', 'pin-app-lock', 'expense-tracking', 'screenshot-protection'],
     relatedArticleSlugs: ['open-source-budgeting-transparency', 'local-first-movement-developers'],
     publishedAt: '2025-12-21',
     updatedAt: '2026-05-03',

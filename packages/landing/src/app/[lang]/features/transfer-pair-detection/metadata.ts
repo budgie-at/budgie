@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,10 +9,11 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'transfer-pair-detection',
     tier: FeatureTierEnum.POWER,
-    title: msg`Smart Transfer and Refund Consolidation`,
+    pillar: PillarEnum.BANK,
+    name: msg`Transfer and Refund Consolidation`,
     tagline: msg`Budgie consolidates obvious transfers and merchant refunds automatically, then leaves ambiguous matches for review.`,
     metaTitle: msg`Smart Transfer and Refund Consolidation — Budgie`,
-    metaDescription: msg`Budgie merges obvious transfer pairs and merchant refunds so bank imports do not inflate spending or income. Counter-IBAN, amount, date, and title matching run on-device.`,
+    metaDescription: msg`Budgie merges obvious transfer pairs, merchant refunds and duplicates of manual expenses so bank imports do not inflate spending or income.`,
     primaryKeyword: 'duplicate transaction merger',
     seoKeywords: [
         'duplicate transaction merger',
@@ -22,7 +24,7 @@ export const FEATURE_METADATA = {
         'cross-currency transfer detection'
     ],
     relatedFeatureSlugs: ['sync-data-repairs', 'account-transfers', 'transaction-long-press-menu', 'bank-resync-window'],
-    relatedArticleSlugs: ['budgie-offline-financial-data', 'mint-alternatives-developers'],
+    relatedArticleSlugs: ['mint-shutdown-private-alternative', 'cloud-budgeting-privacy-risks'],
     publishedAt: '2026-05-01',
     updatedAt: '2026-09-16',
     ogTags: ['transfers', 'deduplication', 'smart']

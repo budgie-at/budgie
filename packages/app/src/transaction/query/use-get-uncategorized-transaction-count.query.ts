@@ -5,7 +5,7 @@ import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
 import { TRANSACTION_LIST_TABLES } from '../constant/transaction-list-tables.constant';
 
-const uncategorizedTransactionCountAtom = databaseQueryFamily(
+export const uncategorizedTransactionCountAtom = databaseQueryFamily(
     TRANSACTION_LIST_TABLES,
     TransactionViewRepository,
     (transactionViewRepository, filters: TransactionFilterInterface) => transactionViewRepository.countUncategorized(filters)

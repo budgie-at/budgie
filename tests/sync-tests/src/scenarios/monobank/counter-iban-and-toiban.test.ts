@@ -16,10 +16,10 @@ describe('monobank/counter-iban-and-toiban', () => {
 
             yield* monobankSyncService.sync();
 
-            const entry = (yield* testDb
+            const [entry] = yield* testDb
                 .select()
                 .from(TransactionEntryEntityTable)
-                .where(eq(TransactionEntryEntityTable.externalId, 'tx-with-iban')))[0];
+                .where(eq(TransactionEntryEntityTable.externalId, 'tx-with-iban'));
             expect(entry.toIban).toBe(counterIban);
         }).pipe(Effect.provide(TestLayer))
     );
@@ -32,10 +32,10 @@ describe('monobank/counter-iban-and-toiban', () => {
 
             yield* monobankSyncService.sync();
 
-            const entry = (yield* testDb
+            const [entry] = yield* testDb
                 .select()
                 .from(TransactionEntryEntityTable)
-                .where(eq(TransactionEntryEntityTable.externalId, 'tx-no-iban')))[0];
+                .where(eq(TransactionEntryEntityTable.externalId, 'tx-no-iban'));
             expect(entry.toIban).toBeNull();
         }).pipe(Effect.provide(TestLayer))
     );

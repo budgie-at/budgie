@@ -1,8 +1,8 @@
 'use client';
 
 import { Trans } from '@lingui/react/macro';
-import { Search } from 'lucide-react';
 import { useState } from 'react';
+import { Search } from 'reicon-react';
 
 import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
@@ -45,6 +45,10 @@ export const BlogBrowser = ({ articles, locale }: Props) => {
     return (
         <>
             <BlogSearch onSearch={handleSearch} searchQuery={rawSearchQuery} />
+
+            <h2 className="sr-only">
+                <Trans>All articles</Trans>
+            </h2>
 
             {isNotEmptyArray(paginatedArticles) ? (
                 <>

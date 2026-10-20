@@ -1,9 +1,9 @@
-/* Budgie - Untertitel der App-Store-Screenshots (de-DE) */
+/* Second line under each headline, at 70% of its size. See README.md. */
 
-"01-home" = "Alle Konten, ein klarer Saldo.";
-"02-transactions" = "Suchen, filtern und taggen mit einem Tipp.";
-"03-analytics" = "Ausgabentrends nach Kategorie.";
-"04-budget" = "Limit setzen, Verbleibendes im Blick.";
-"05-add-expense" = "Betrag, Kategorie, fertig.";
-"06-account" = "Banksynchronisation oder manuelle Eingabe.";
-"07-settings" = "Ihre Daten bleiben auf Ihrem Gerät.";
+"01-home" = "Ohne Konto, Bank-Login und Abo.";
+"05-add-expense" = "Die Kategorie setzt sich selbst.";
+"03-analytics" = "Jede Kategorie, jeder Monat.";
+"04-budget" = "Hinweise bei 80 % und 100 %.";
+"09-inbox" = "Vorschläge mit einem Tipp übernehmen.";
+"06-account" = "Bargeld, Karten, Krypto und Schulden.";
+"07-settings" = "Deine Daten bleiben auf deinem Gerät.";

@@ -1,6 +1,6 @@
 {
     "name": "@budgie/ai",
-    "version": "6.103.0",
+    "version": "6.106.1",
     "private": true,
     "description": "AI services for transaction categorization, embedding suggestions, and voice extraction",
     "sideEffects": false,
@@ -24,7 +24,7 @@
     },
     "dependencies": {
         "@budgie/contracts": "workspace:^",
-        "@rnw-community/shared": "^2.2.0",
-        "effect": "4.0.0"
+        "@rnw-community/shared": "^2.28.0",
+        "effect": "4.0.5"
     }
 }

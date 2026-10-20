@@ -1,8 +1,6 @@
-import { CategorizeInboxSectionEnum, categorizeInboxEngineService } from '@budgie/categorization';
+import { categorizeInboxEngineService, selectAcceptableAssignments } from '@budgie/categorization';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { useState } from 'react';
-
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { useSettingsContext } from '../../settings/context/settings.context';
@@ -93,12 +91,7 @@ export const useCategorizeInbox = (
         items,
         remainingCount,
         categorizedCount: Math.max(0, peakRowCount - remainingCount),
-        acceptableAssignments: items.flatMap(item => {
-            const labelId = 'rows' in item && item.section === CategorizeInboxSectionEnum.CONFIDENT ? item.candidateLabelIds.at(0) : null;
-            const includedRows = 'rows' in item ? item.rows.filter(row => !transactionIdSets.excluded.has(row.transactionId)) : [];
-
-            return 'rows' in item && isDefined(labelId) && isNotEmptyArray(includedRows) ? [{ ...item, rows: includedRows, labelId }] : [];
-        }),
+        acceptableAssignments: selectAcceptableAssignments(items, transactionIdSets.excluded),
         cashWithdrawalTransactionIds: new Set(AsyncResult.getOrElse(cashWithdrawalResult, () => [])),
         visibility
     };

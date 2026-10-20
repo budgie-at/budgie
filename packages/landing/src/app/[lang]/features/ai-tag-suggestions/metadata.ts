@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,10 +9,11 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'ai-tag-suggestions',
     tier: FeatureTierEnum.POWER,
-    title: msg`Automatic Tag Suggestions — Tap, Don't Type`,
-    tagline: msg`After picking a category, the on-device model proposes up to three tags as tappable pills. A lighter fallback answers while it loads or is busy.`,
+    pillar: PillarEnum.AI,
+    name: msg`Tag Suggestions`,
+    tagline: msg`After picking a category, Budgie proposes the tags you usually use as tappable pills, from your own history, on your phone.`,
     metaTitle: msg`Automatic Expense Tags — On-Device — Budgie`,
-    metaDescription: msg`Budgie's local model suggests up to three tags per transaction so heavy taggers stop typing. A lighter fallback answers while it loads.`,
+    metaDescription: msg`Budgie suggests the tags you usually use for a merchant as tappable pills, so heavy taggers stop typing. Private and offline.`,
     primaryKeyword: 'automatic expense tags',
     seoKeywords: [
         'automatic expense tags',
@@ -21,7 +23,7 @@ export const FEATURE_METADATA = {
         'offline tag suggestions'
     ],
     relatedFeatureSlugs: ['transaction-tags', 'tag-analytics', 'ai-auto-categorization', 'ai-transaction-suggestions', 'primary-tag'],
-    relatedArticleSlugs: ['budgie-offline-financial-data'],
+    relatedArticleSlugs: ['cloud-budgeting-privacy-risks', 'local-first-movement-developers'],
     publishedAt: '2026-05-07',
     updatedAt: '2026-09-16',
     ogTags: ['ai', 'tags', 'suggestions']

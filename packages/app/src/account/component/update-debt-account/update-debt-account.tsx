@@ -1,4 +1,5 @@
 import { AccountDebtTypeEnum, AccountEntityInterface, convertFromMicroUnits } from '@budgie/contracts';
+import { DebtAccountService } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 
@@ -10,7 +11,6 @@ import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { useDebtAccountForm } from '../../hooks/use-debt-account-form.hook';
 import { useDebtAccountManualSettledAmountQuery } from '../../query/use-debt-account-manual-settled-amount.query';
-import { DebtAccountService } from '../../service/debt-account.service';
 import { AccountFormDateField } from '../account-form-date-field/account-form-date-field';
 import { AccountTargetBalanceField } from '../account-target-balance-field.tsx/account-target-balance-field';
 import { UpdateAccountScreen } from '../create-account-screen/update-account-screen';
@@ -47,7 +47,9 @@ export const UpdateDebtAccount = ({ account }: Props) => {
     );
 
     const stickyInstrument = useStickyDefinedValue(instrument);
-    const balanceFieldLabel = account.debtType === AccountDebtTypeEnum.LENT ? t`Already returned` : t`Already repaid`;
+    const isLentDebt = account.debtType === AccountDebtTypeEnum.LENT;
+    const balanceFieldLabel = isLentDebt ? t`Already returned` : t`Already repaid`;
+    const debtAmountLabel = isLentDebt ? t`Amount lent` : t`Amount borrowed`;
 
     if (!isDefined(stickyInstrument)) {
         return <EmptyScreen />;
@@ -64,7 +66,7 @@ export const UpdateDebtAccount = ({ account }: Props) => {
             control={control}
             isSubmitting={isSubmitting}
         >
-            <AccountTargetBalanceField control={control} instrumentSymbol={instrumentSymbol} />
+            <AccountTargetBalanceField control={control} instrumentSymbol={instrumentSymbol} label={debtAmountLabel} />
             <DebtAccountContactField control={control} />
             <AccountFormDateField control={control} variant={ACCOUNT_COLOR.DEBT} />
             <IncludeInNetWorthField control={control} />

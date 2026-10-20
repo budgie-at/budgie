@@ -5,6 +5,12 @@ import * as Effect from 'effect/Effect';
 
 import { buildMonobank, monobankStub, MonobankSyncService, setupMonobankFixture, testDb, TestLayer, testQueryService } from '../../harness';
 
+const fetchEntryByExternalId = (externalId: string) =>
+    Effect.map(
+        testDb.select().from(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.externalId, externalId)),
+        ([entry]) => entry
+    );
+
 describe('monobank/mcc-mapping', () => {
     it.effect('resolves the MCC code to the matching mcc_categories row id on insert', () =>
         Effect.gen(function* () {
@@ -18,10 +24,7 @@ describe('monobank/mcc-mapping', () => {
 
             yield* monobankSyncService.sync();
 
-            const entry = (yield* testDb
-                .select()
-                .from(TransactionEntryEntityTable)
-                .where(eq(TransactionEntryEntityTable.externalId, 'tx-grocery')))[0];
+            const entry = yield* fetchEntryByExternalId('tx-grocery');
             expect(entry.mccCategoryId).toBe(groceryRow.id);
         }).pipe(Effect.provide(TestLayer))
     );
@@ -36,10 +39,7 @@ describe('monobank/mcc-mapping', () => {
 
             yield* monobankSyncService.sync();
 
-            const entry = (yield* testDb
-                .select()
-                .from(TransactionEntryEntityTable)
-                .where(eq(TransactionEntryEntityTable.externalId, 'tx-unknown-mcc')))[0];
+            const entry = yield* fetchEntryByExternalId('tx-unknown-mcc');
             expect(entry.mccCategoryId).toBeNull();
         }).pipe(Effect.provide(TestLayer))
     );

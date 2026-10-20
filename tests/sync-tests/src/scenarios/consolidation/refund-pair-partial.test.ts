@@ -56,8 +56,8 @@ describe('consolidation/refund-pair-partial', () => {
             yield* transferConsolidationService.consolidate(null);
 
             const [totals] = yield* statisticsRepository.getTotalIncomeAndExpenseQuery(DEFAULT_TRANSACTION_FILTER, account.instrumentId);
-            expect(totals?.income).toBe(0);
-            expect(totals?.expense).toBe(PARTIAL_REFUNDED_EXPENSE_AMOUNT);
+            expect(totals.income).toBe(0);
+            expect(totals.expense).toBe(PARTIAL_REFUNDED_EXPENSE_AMOUNT);
 
             const categoryRows = yield* statisticsRepository.getExpenseByCategoryQuery(
                 DEFAULT_TRANSACTION_FILTER,
@@ -81,7 +81,7 @@ describe('consolidation/refund-pair-partial', () => {
 
             const [balance] = yield* accountBalanceRepository.getByAccountId(account.id);
 
-            expect(balance?.balance).toBe(-PARTIAL_REFUNDED_EXPENSE_AMOUNT);
+            expect(balance.balance).toBe(-PARTIAL_REFUNDED_EXPENSE_AMOUNT);
         }).pipe(Effect.provide(TestLayer))
     );
 

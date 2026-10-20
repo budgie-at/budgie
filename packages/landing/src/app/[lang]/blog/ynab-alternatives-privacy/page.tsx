@@ -39,17 +39,17 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                         <Trans>Blog</Trans>
                     </BlogBreadcrumbLink>
                     <BlogBreadcrumbCurrent position={3}>
-                        <Trans>Best YNAB Alternatives for Privacy-Conscious Users (2025)</Trans>
+                        <Trans>Best YNAB Alternatives for Privacy-Conscious Users (2026)</Trans>
                     </BlogBreadcrumbCurrent>
                 </BlogBreadcrumbs>
 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
-                    <Trans>Best YNAB Alternatives for Privacy-Conscious Users (2025)</Trans>
+                    <Trans>Best YNAB Alternatives for Privacy-Conscious Users (2026)</Trans>
                 </h1>
 
                 <p className="text-lg md:text-xl text-muted-foreground mb-6">
                     <Trans>
-                        Compare the best YNAB alternatives for privacy-conscious users in 2025. Discover offline-first, open-source, and
+                        Compare the best YNAB alternatives for privacy-conscious users in 2026. Discover offline-first, open-source, and
                         self-hosted budgeting apps that keep your financial data private.
                     </Trans>
                 </p>
@@ -77,7 +77,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                                 <Trans>offline-first</Trans>
                             </Badge>
                             <Badge variant="secondary">
-                                <Trans>open source</Trans>
+                                <Trans>source-available</Trans>
                             </Badge>
                         </>
                     }
@@ -104,7 +104,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     <BlogArticleProse>
                         <Trans>
                             In this comprehensive guide, we’ll explore why people are leaving YNAB, what to look for in a privacy-focused
-                            alternative, and provide honest reviews of the top options available in 2025. Whether you’re concerned about
+                            alternative, and provide honest reviews of the top options available in 2026. Whether you’re concerned about
                             cloud data storage, subscription fatigue, or simply want more control over your financial information, we’ve got
                             you covered.
                         </Trans>
@@ -360,7 +360,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Open Source</strong>: Yes
+                                <strong>Source</strong>: Source-available
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -371,6 +371,11 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                         <BlogArticleListItem>
                             <Trans>
                                 <strong>Platforms</strong>: iOS, Android
+                            </Trans>
+                        </BlogArticleListItem>
+                        <BlogArticleListItem>
+                            <Trans>
+                                <strong>Availability</strong>: Private beta, join the waitlist
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -627,6 +632,10 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     </BlogArticleProse>
 
                     <BlogArticleProse>
+                        <Trans>Budgie is in private beta. Join the waitlist and we will write to you when your build is ready.</Trans>
+                    </BlogArticleProse>
+
+                    <BlogArticleProse>
                         <strong>
                             <Trans>What makes Budgie different:</Trans>
                         </strong>
@@ -647,14 +656,14 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Open source transparency.</strong> The codebase is public, allowing security researchers and privacy
-                                advocates to verify claims.
+                                <strong>Source-available transparency.</strong> The code is public, allowing security researchers and
+                                privacy advocates to verify claims.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>
-                                <strong>Multi-currency support.</strong> Track accounts in 150+ currencies, plus cryptocurrency, without
-                                compromising privacy.
+                                <strong>Multi-currency support.</strong> Track accounts in more than 100 currencies, plus cryptocurrency,
+                                without compromising privacy.
                             </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
@@ -697,6 +706,9 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     <BlogArticleList>
                         <BlogArticleListItem>
                             <Trans>Mobile-focused (no web app currently)</Trans>
+                        </BlogArticleListItem>
+                        <BlogArticleListItem>
+                            <Trans>Still in private beta, so access is by waitlist</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>Newer to market compared to established alternatives</Trans>
@@ -1382,7 +1394,9 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
 
                     <BlogArticleList>
                         <BlogArticleListItem>
-                            <Trans>Your banking credentials are encrypted and stored locally on your device</Trans>
+                            <Trans>
+                                Your bank access details are stored only on your device, in a database that is encrypted once you set a PIN
+                            </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>The connection to your bank happens directly from your phone</Trans>
@@ -1422,12 +1436,13 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
                     </BlogArticleProse>
 
                     <BlogArticleSubheading>
-                        <Trans>Open Source Verification</Trans>
+                        <Trans>Source-Available Verification</Trans>
                     </BlogArticleSubheading>
 
                     <BlogArticleProse>
                         <Trans>
-                            Privacy claims are easy to make and hard to verify—unless you can read the code. Budgie is open source, meaning:
+                            Privacy claims are easy to make and hard to verify—unless you can read the code. Budgie is source-available,
+                            meaning:
                         </Trans>
                     </BlogArticleProse>
 
@@ -1460,7 +1475,7 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
 
                     <BlogArticleList>
                         <BlogArticleListItem>
-                            <Trans>Export anytime in CSV or JSON</Trans>
+                            <Trans>Export anytime as CSV or as a full database backup</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>Your data doesn’t disappear if we go out of business</Trans>
@@ -1720,10 +1735,10 @@ export default async function YnabAlternativesPrivacyArticle(props: PageLangPara
 
                         <BlogFaqItem question={<Trans>Which YNAB alternative has the best mobile app?</Trans>}>
                             <Trans>
-                                Among privacy-focused options, Budgie offers the best mobile experience as it was built mobile-first.
-                                Copilot has an excellent iOS app but requires Apple ecosystem and bank sync. Most open-source alternatives
-                                (Actual, Firefly III) have web interfaces that work on mobile but aren’t native apps, which can feel less
-                                polished on a phone.
+                                Among privacy-focused options, Budgie is built mobile-first and is currently in private beta. Copilot has an
+                                excellent iOS app but requires Apple ecosystem and bank sync. Most open-source alternatives (Actual, Firefly
+                                III) have web interfaces that work on mobile but aren’t native apps, which can feel less polished on a
+                                phone.
                             </Trans>
                         </BlogFaqItem>
 

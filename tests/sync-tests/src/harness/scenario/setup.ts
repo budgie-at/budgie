@@ -4,12 +4,6 @@ import { vi, afterAll, afterEach, beforeAll, beforeEach } from 'vitest';
 
 import { emptyFn, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-vi.mock('@app/sync/service/transfer-consolidation-drainer.service', async () => {
-    const { FakeTransferConsolidationDrainerService } = await import('../fake/fake-transfer-consolidation-drainer.service');
-
-    return { TransferConsolidationDrainerService: FakeTransferConsolidationDrainerService };
-});
-
 vi.mock('@app/@generic/drizzle/service/database-connection.service', async () => {
     const { FakeDatabaseConnectionService } = await import('../fake/fake-database-connection.service');
 
@@ -58,9 +52,9 @@ const testDbHandle = await buildTestDb(backupDatabasePath);
 export const testDb = testDbHandle.database;
 
 vi.mock('@app/@generic/runtime/app.runtime', async () => {
-    const { testRuntime } = await import('./test-runtime');
+    const { testAtomRuntime, testRuntime } = await import('./test-runtime');
 
-    return { appRuntime: testRuntime };
+    return { appAtomRuntime: testAtomRuntime, appRuntime: testRuntime };
 });
 
 vi.mock('@app/../modules/apple-wallet-capture/src/apple-wallet-capture', async () => {
@@ -74,7 +68,7 @@ import { walletCaptureNativeStub } from '../wallet-capture/wallet-capture-native
 import { mockServer } from './mock-server';
 
 beforeAll(() => {
-    mockServer.listen({ onUnhandledRequest: 'error' });
+    mockServer.listen({ onUnhandledFrame: 'error' });
 });
 
 beforeEach(() => {

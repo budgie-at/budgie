@@ -1,19 +1,18 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { ArrowSwapHorizontal, CloudCross, Plane, Refresh, Safe } from 'reicon-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageComparisonTable } from '../../../../feature/component/feature-page-comparison-table/feature-page-comparison-table';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureProof } from '../../../../feature/component/feature-proof/feature-proof';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
+import { FeatureVersus } from '../../../../feature/component/feature-versus/feature-versus';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -25,21 +24,23 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(i18n)`Budgie Connect Monobank screen with the Get API Token row and the token field`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={featureName}
-                locale={lang}
+                heading={<Trans>Your Monobank, on your phone</Trans>}
                 tagline={
                     <Trans>
-                        Connect your Monobank account, pull a full transaction history straight to your device, and keep working offline. No
+                        Connect your Monobank account, choose how much history to pull to your device, and keep working offline. No
                         third-party aggregator in between.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="no-bank-login-budget-app-1" slug="no-bank-login-budget-app" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>From one token to your home screen</Trans>}>
@@ -50,10 +51,9 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                     <Trans>Budgie calls the Monobank API directly with a token you generate. No aggregator, no bank password.</Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
-                    alt={t(i18n)`Budgie Connect Monobank screen with the Get API Token row and the token field`}
+                    alt={firstShotAlt}
                     index={0}
                     locale={lang}
-                    priority
                     scene="no-bank-login-budget-app-1"
                     slug="no-bank-login-budget-app"
                 >
@@ -82,151 +82,201 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                         <Trans>Jars come across too</Trans>
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
-
-                <FeatureStory.Step index={2} title={<Trans>Grouped under the bank</Trans>}>
-                    <Trans>Home keeps the whole connection in one Monobank group, and the gear beside it opens the accounts again.</Trans>
-                </FeatureStory.Step>
-                <FeatureStory.Clip
-                    alt={t(i18n)`Screen recording of the Monobank group on the Budgie home screen opening its synced accounts`}
-                    index={2}
-                    locale={lang}
-                    scene="monobank-sync-clip-1"
-                    slug="monobank-sync"
-                />
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why direct API matters more than convenience</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Monobank exposes a clean public API, so Budgie talks to it directly from your phone using your token — no Plaid, no
-                        data broker. Every transaction lands on your phone the moment it arrives.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        Cross-currency transactions carry their original FX rate. Counter-party IBANs are stored, which lets Budgie
-                        auto-merge transfer pairs across two accounts you own. The optional re-sync window lets you re-pull just the last N
-                        days when your data drifts — without nuking manual edits.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
+            <FeatureSpecTiles heading={<Trans>Everything Monobank knows, nothing extra in the loop</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>companies between you and your bank</Trans>} value="0">
+                    <Trans>Budgie asks Monobank directly from your phone. Nobody else sees a single transaction.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>token for everything</Trans>} value="1">
+                    <Trans>All cards and jars on one connection.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>history if you want it</Trans>} value={<Trans>Full</Trans>}>
+                    <Trans>Pick how far back to go, from one month to the whole period.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Direct Monobank Personal API — your token, your call</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Full historical sync on first connect, then incremental every 30 minutes</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Cross-currency transactions preserve original FX rate per leg</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Counter-IBAN stored from the corr_iban field, enabling smart transfer-pair consolidation</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Windowed re-sync to fix drift without losing manual edits</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={5}>
+            <FeatureVersus
+                heading={<Trans>Why skip the middleman</Trans>}
+                lede={
+                    <Trans>Many bank-sync apps route your bank through a data aggregator. Here is what changes when they don&apos;t.</Trans>
+                }
+            >
+                <FeatureVersus.Without title={<Trans>Apps that use an aggregator</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>Your bank access sits in someone else&apos;s vault</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Every transaction is copied to their servers</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Original exchange rates are often lost</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Fees often get folded into the amount</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.Without>
+                <FeatureVersus.With title={<Trans>Budgie with Monobank</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>Your token, kept on your phone</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Transactions go from Monobank straight to you</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>The original amount stays on foreign purchases</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Fees show up as their own entries</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.With>
+            </FeatureVersus>
+
+            <FeatureProof
+                crop={
+                    <FeatureProof.Crop
+                        alt={t(
+                            i18n
+                        )`Budgie Settings screen with the 100% Offline & Private card saying all your data is stored on the device`}
+                        locale={lang}
+                        scene="ai-auto-categorization-2"
+                        slug="ai-auto-categorization"
+                        y={0.16}
+                    />
+                }
+                heading={<Trans>Don&apos;t trust us. Check.</Trans>}
+                lede={<Trans>Budgie is source-available, so anyone can read exactly what happens to your bank data.</Trans>}
+            >
+                <FeatureProof.Fact icon={Plane}>
+                    <Trans>Turn on airplane mode: everything already synced still works</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Fact icon={CloudCross}>
+                    <Trans>There is no Budgie server to send anything to</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Source />
+            </FeatureProof>
+
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={ArrowSwapHorizontal} title={<Trans>Transfers that don&apos;t count twice</Trans>}>
+                    <Trans>
+                        Automatic transfer consolidation — both sides of a transfer between your accounts are detected from the counterparty
+                        account and exchange rate, then merged into a single transfer
+                    </Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Safe} title={<Trans>Jars next to your cards</Trans>}>
+                    <Trans>Jars sync next to your cards, each one selectable on its own, with top-ups merged into transfers</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Refresh} title={<Trans>Fix drift without losing edits</Trans>}>
+                    <Trans>Windowed re-sync to fix drift while keeping your own comments, categories and tags</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
+                        <Trans>Direct connection to Monobank with your personal token — your token, your call</Trans>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>
-                            Automatic Transfer Consolidation — both legs of a cross-bank transfer are detected via counter-IBAN and
-                            exchange-rate matching, then merged into a single transfer entry
+                            Choose your history on first connect — 1, 3 or 6 months, a year, everything, or new transactions only — then
+                            refreshes on app open and in the background
                         </Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={6}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
+                        <Trans>Cross-currency transactions keep their original exchange rate</Trans>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
+                        <Trans>Counterparty account numbers are kept, enabling smart transfer consolidation</Trans>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
+                        <Trans>On iPhone, a long history import keeps running in the background with a progress notice</Trans>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>Imported commissions become bank-fee entries, so fees stay in analytics after transfer consolidation</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={7}>
-                        <Trans>Jars sync next to your cards, each one selectable on its own, with top-ups merged into transfers</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Counter-IBAN enrichment and transfer consolidation</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Monobank&apos;s API returns a corr_iban field on every transaction that has a counterparty IBAN — outgoing payments,
-                        bank transfers, and peer-to-peer moves all carry it. Budgie stores this field per transaction leg, which gives the
-                        transfer-pair detector a primary signal: when the debit side and credit side of the same transfer both reference the
-                        same IBAN, they collapse into one transfer automatically.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        The same matching runs between two banks and between a card and one of your jars: both legs are detected via
-                        counter-IBAN and exchange-rate matching, then consolidated into a single transfer — no double-counting in your
-                        spending stats, no manual cleanup needed.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why a direct connection matters more than convenience</Trans>}>
+                    <p>
+                        <Trans>
+                            Monobank offers a public API, so Budgie talks to it directly from your phone using your token — no data broker
+                            in between. New transactions arrive each time you open the app, and in the background at intervals your
+                            phone&apos;s system decides.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            Cross-currency transactions carry their original exchange rate. The counterparty account number Monobank reports
+                            lets Budgie auto-merge the two sides of a transfer between accounts you own. The optional re-sync window lets
+                            you re-pull just the last 7, 30 or 90 days when your data drifts, while your own comments and categories stay.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Item index={1} title={<Trans>Counterparty accounts and transfer consolidation</Trans>}>
+                    <p>
+                        <Trans>
+                            Monobank reports the counterparty&apos;s account number on payments and transfers that have one. Budgie keeps it
+                            with each transaction, which gives transfer matching its main signal: when the outgoing and incoming sides of
+                            the same transfer point at the same account, they collapse into one transfer automatically.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            The same matching runs between two banks and between a card and one of your jars: both sides are matched on the
+                            counterparty account and exchange rate, then consolidated into a single transfer — no double-counting in your
+                            spending stats, no manual cleanup needed.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={2} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Plaid-based apps vs. Budgie + Monobank</Trans>
-                </FeaturePageHeading>
-                <FeaturePageComparisonTable rivalLabel={<Trans>Plaid-based app</Trans>}>
-                    <FeaturePageComparisonTable.Row
-                        budgie={<Trans>Your token, in your local database</Trans>}
-                        concern={<Trans>Token control</Trans>}
-                        rival={<Trans>Plaid-managed credential vault</Trans>}
-                    />
-                    <FeaturePageComparisonTable.Row
-                        budgie={<Trans>Original FX kept per leg</Trans>}
-                        concern={<Trans>FX preserved</Trans>}
-                        rival={<Trans>Often dropped or recomputed</Trans>}
-                    />
-                    <FeaturePageComparisonTable.Row
-                        budgie={<Trans>Tracked as fee entries</Trans>}
-                        concern={<Trans>Bank fees</Trans>}
-                        rival={<Trans>Often merged into the main amount</Trans>}
-                    />
-                    <FeaturePageComparisonTable.Row
-                        budgie={<Trans>Yes — enables transfer-pair detection</Trans>}
-                        concern={<Trans>Counter-IBAN stored</Trans>}
-                        rival={<Trans>Rarely surfaced</Trans>}
-                    />
-                    <FeaturePageComparisonTable.Row
-                        budgie={<Trans>None — Budgie talks to Monobank directly</Trans>}
-                        concern={<Trans>Aggregator middleman</Trans>}
-                        rival={<Trans>Plaid (or similar) sees every transaction</Trans>}
-                    />
-                </FeaturePageComparisonTable>
-            </FeaturePageSection>
-
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
-                    question={<Trans>How is this different from Plaid-based apps?</Trans>}
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
+                    question={<Trans>How is this different from aggregator-based apps?</Trans>}
                     answer={
                         <Trans>
-                            Plaid sits between you and your bank, mirroring all your transactions to its servers. Budgie talks to
-                            Monobank&apos;s API directly from your phone using your token. Monobank sees the request; nothing else.
+                            An aggregator sits between you and your bank, mirroring your transactions to its servers. Budgie talks to
+                            Monobank directly from your phone using your token. Monobank sees the request; nothing else.
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
+                    question={<Trans>How often does it sync?</Trans>}
+                    answer={
+                        <Trans>
+                            Budgie refreshes Monobank every time you open the app, and also in the background. In the background your
+                            phone&apos;s system decides when to run it, so there is no fixed schedule and new transactions do not appear the
+                            instant they happen.
+                        </Trans>
+                    }
+                />
+                <FeatureFaq.Item
+                    index={2}
+                    question={<Trans>How much history can I pull?</Trans>}
+                    answer={
+                        <Trans>
+                            When you connect you pick 1, 3 or 6 months, a year, the whole period, or only new transactions. Monobank sends
+                            about one month of history per minute for each account you selected, so a long history can take hours and runs
+                            much slower while the app is closed. On iPhone it keeps going in the background.
+                        </Trans>
+                    }
+                />
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Where does my Monobank token live?</Trans>}
                     answer={
-                        <Trans>
-                            On your device. When you set a PIN, that PIN is held in your platform&apos;s keystore and is what your data is
-                            encrypted with; the token itself is never sent to a Budgie server (we have none).
-                        </Trans>
+                        <Trans>On your device, in Budgie&apos;s local database. It is never sent to a Budgie server — there is none.</Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={4}
                     question={<Trans>Can I use multiple Monobank accounts?</Trans>}
                     answer={<Trans>Yes — one token grants access to all your Monobank accounts. Pick which to import per account.</Trans>}
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={5}
                     question={<Trans>Do jars sync as well?</Trans>}
                     answer={
                         <Trans>
@@ -236,16 +286,14 @@ export default async function MonobankSyncFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={6}
                     question={<Trans>What if Monobank&apos;s API changes?</Trans>}
                     answer={
-                        <Trans>
-                            Budgie is open source. The Monobank integration lives in packages/sync/src/monobank/ and the project&apos;s
-                            release cadence keeps it current.
-                        </Trans>
+                        <Trans>Budgie is source-available, and the Monobank connection is kept current through regular releases.</Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

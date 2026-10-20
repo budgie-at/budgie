@@ -33,4 +33,4 @@ transfer-consolidation drainers, `AppDataSyncService`, and the port adapters in 
 ### Adding a provider
 
 Add the provider service in `@budgie/sync` and register it in `SyncProviderRegistryService`, add its row to
-`constant/sync-provider-capabilities.constant.ts`, and add its layer to `appServicesLayer`.
+`SYNC_PROVIDER_CAPABILITIES` in `@budgie/sync`, and add its layer to `appServicesLayer`.

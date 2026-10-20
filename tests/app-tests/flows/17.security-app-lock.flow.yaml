@@ -7,6 +7,14 @@ appId: ${APP_ID}
 
 - runFlow: subflows/navigation/navigate-to-settings.flow.yaml
 
+- extendedWaitUntil:
+    visible:
+      id: 'SettingsPage.AppLockCard'
+    timeout: 3000
+
+- assertNotVisible:
+    id: 'Icon.Fallback'
+
 - runFlow:
     file: subflows/navigation/open-settings-card.flow.yaml
     env:
@@ -46,6 +54,22 @@ appId: ${APP_ID}
       text: 'Enter your PIN'
     timeout: 10000
 
+- repeat:
+    times: 4
+    commands:
+      - tapOn:
+          id: 'PinPage.Digit.1'
+      - tapOn:
+          id: 'PinPage.Digit.1'
+      - tapOn:
+          id: 'PinPage.Digit.1'
+      - tapOn:
+          id: 'PinPage.Digit.1'
+      - extendedWaitUntil:
+          visible:
+            text: 'Incorrect PIN'
+          timeout: 10000
+
 - tapOn:
     id: 'PinPage.Digit.1'
 - tapOn:
@@ -57,8 +81,23 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
     visible:
-      id: 'PinPage.Error'
+      text: 'Too many attempts.*'
     timeout: 10000
+
+- assertVisible:
+    id: 'PinPage.Digit.1'
+    enabled: false
+
+- tapOn:
+    id: 'PinPage.Digit.1'
+
+- assertVisible:
+    text: 'Too many attempts.*'
+
+- extendedWaitUntil:
+    notVisible:
+      text: 'Too many attempts.*'
+    timeout: 45000
 
 - tapOn:
     id: 'PinPage.Digit.1'
@@ -86,6 +125,51 @@ appId: ${APP_ID}
     visible:
       id: 'PinPage.Container'
     timeout: 10000
+
+- repeat:
+    times: 4
+    commands:
+      - tapOn:
+          id: 'PinPage.Digit.1'
+      - tapOn:
+          id: 'PinPage.Digit.1'
+      - tapOn:
+          id: 'PinPage.Digit.1'
+      - tapOn:
+          id: 'PinPage.Digit.1'
+      - extendedWaitUntil:
+          visible:
+            text: 'Incorrect PIN'
+          timeout: 10000
+
+- tapOn:
+    id: 'PinPage.Digit.1'
+- tapOn:
+    id: 'PinPage.Digit.1'
+- tapOn:
+    id: 'PinPage.Digit.1'
+- tapOn:
+    id: 'PinPage.Digit.1'
+
+- extendedWaitUntil:
+    visible:
+      text: 'Too many attempts.*'
+    timeout: 10000
+
+- assertVisible:
+    id: 'PinPage.Digit.1'
+    enabled: false
+
+- tapOn:
+    id: 'PinPage.Digit.1'
+
+- assertVisible:
+    text: 'Too many attempts.*'
+
+- extendedWaitUntil:
+    notVisible:
+      text: 'Too many attempts.*'
+    timeout: 45000
 
 - tapOn:
     id: 'PinPage.Digit.1'

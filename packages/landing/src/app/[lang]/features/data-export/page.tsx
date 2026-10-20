@@ -1,18 +1,17 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { Cursor, Database, FileText } from 'reicon-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureProof } from '../../../../feature/component/feature-proof/feature-proof';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
+import { FeatureVersus } from '../../../../feature/component/feature-versus/feature-versus';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -24,21 +23,23 @@ export default async function DataExportFeaturePage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(i18n)`Budgie settings screen showing the data management section with Export CSV and Export Database rows`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Export Every Transaction You&apos;ve Logged</Trans>}
-                locale={lang}
+                heading={<Trans>Your data, yours to take</Trans>}
                 tagline={
                     <Trans>
-                        One-tap CSV export of all transactions, plus a full database backup file — encrypted with your PIN if you set one —
-                        you can save to iCloud, Drive, or anywhere.
+                        One-tap CSV export of your transactions, plus a compressed full backup file you can save to iCloud, Drive, or
+                        anywhere, locked with your PIN if you set one.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="database-backup-1" slug="database-backup" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>Two ways out, one screen</Trans>}>
@@ -49,20 +50,14 @@ export default async function DataExportFeaturePage(props: PageLangParam) {
 
                 <FeatureStory.Point index={0}>
                     <Trans>
-                        Export CSV takes the whole ledger in a single tap. There is no range to pick and no partial file to reconcile later.
+                        Export CSV takes your transactions in a single tap. There is no range to pick. Deleted transactions and the
+                        originals behind a merged transaction are left out.
                     </Trans>
                 </FeatureStory.Point>
 
-                <FeatureStory.Shot
-                    alt={t(i18n)`Budgie settings screen showing the data management section with Export CSV and Export Database rows`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="database-backup-1"
-                    slug="database-backup"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="database-backup-1" slug="database-backup">
                     <FeatureStory.Callout index={0} y={0.365}>
-                        <Trans>Every transaction, one file</Trans>
+                        <Trans>Your transactions, one file</Trans>
                     </FeatureStory.Callout>
                     <FeatureStory.Callout index={1} y={0.538}>
                         <Trans>A backup of everything</Trans>
@@ -71,8 +66,8 @@ export default async function DataExportFeaturePage(props: PageLangParam) {
 
                 <FeatureStory.Point index={1}>
                     <Trans>
-                        Export Database writes the whole database to one file. The Import Database row directly above it restores from that
-                        same file on any device.
+                        Export Database writes the whole database to one compressed file. The Import Database row directly above it restores
+                        from that same file on another device.
                     </Trans>
                 </FeatureStory.Point>
                 <FeatureStory.Point index={2}>
@@ -83,72 +78,133 @@ export default async function DataExportFeaturePage(props: PageLangParam) {
                 </FeatureStory.Point>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why an expense app must respect the export</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Your data, your call. Budgie ships two exports: a flat CSV for spreadsheets and a copy of the database file itself
-                        for a full restore. Both are user-initiated and saved through the OS share sheet.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        CSV columns map cleanly to most spreadsheet pivots: title, both account legs with their amounts and currencies,
-                        category, MCC, date, comment, and the bank&apos;s own transaction id. The database backup is a byte-for-byte copy of
-                        the database file, so it is encrypted only if a PIN was set when you exported it.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
+            <FeatureVersus
+                heading={<Trans>Getting your data out</Trans>}
+                lede={<Trans>Exports are often an afterthought. In Budgie they are two plain rows.</Trans>}
+            >
+                <FeatureVersus.Without title={<Trans>Many apps</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>Export may sit behind a paid plan</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>A vendor account is often required</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Partial exports you reconcile later</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Backups held on company servers</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.Without>
+                <FeatureVersus.With title={<Trans>Budgie</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>Both exports are free, no plan</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>No vendor account needed</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Your transactions in one tap</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Backups saved where you choose</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.With>
+            </FeatureVersus>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>
-                            CSV export with title, both account legs and amounts, currencies, category, MCC, date, comment, and the
-                            bank&apos;s transaction id
-                        </Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Full database backup file for a complete restore — encrypted if a PIN was set at export time</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
-                        <Trans>One tap exports the whole history — no range to pick, no partial file to reconcile later</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
+            <FeatureProof
+                crop={
+                    <FeatureProof.Crop
+                        alt={t(
+                            i18n
+                        )`Budgie Settings Data Management section listing Import CSV, Export CSV, Import Database and Export Database rows`}
+                        locale={lang}
+                        scene="database-backup-1"
+                        slug="database-backup"
+                        y={0.3}
+                    />
+                }
+                heading={<Trans>Check it in Settings</Trans>}
+                lede={<Trans>Both exports are plain rows, each beside the import that reads the file back in.</Trans>}
+            >
+                <FeatureProof.Fact icon={FileText}>
+                    <Trans>Export CSV takes your transactions in one tap</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Fact icon={Database}>
+                    <Trans>The backup export is a full copy you can restore from</Trans>
+                </FeatureProof.Fact>
+                <FeatureProof.Action href={`/${lang}/features/database-backup`}>
+                    <Trans>See how backup works</Trans>
+                </FeatureProof.Action>
+            </FeatureProof>
+
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={FileText} title={<Trans>CSV for any spreadsheet</Trans>}>
+                    <Trans>
+                        CSV export with title, both accounts and amounts, currencies, category, MCC, date, comment, and the bank&apos;s
+                        transaction id
+                    </Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Database} title={<Trans>Complete restore from one file</Trans>}>
+                    <Trans>Compressed full backup file for a complete restore — PIN-locked if a PIN was set at export time</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Cursor} title={<Trans>Your transactions in one tap</Trans>}>
+                    <Trans>One tap exports your whole history — no range to pick, and deleted or merged-away rows stay out</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>Save through the OS share sheet — Files, iCloud, Drive, anything</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>No vendor account required — your data, your storage of choice</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why an expense app must respect the export</Trans>}>
+                    <p>
+                        <Trans>
+                            Your data, your call. Budgie ships two exports: a flat CSV for spreadsheets and a compressed copy of your
+                            database for a full restore. Both are user-initiated and saved through the OS share sheet.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            CSV columns map cleanly to most spreadsheet pivots: title, both accounts with their amounts and currencies,
+                            category, MCC, date, comment, and the bank&apos;s own transaction id. There is no tags column, and built-in
+                            system categories export blank. The database backup is a compressed copy of your data, so it is locked with your
+                            PIN only if a PIN was set when you exported it.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
+
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>Why two export formats?</Trans>}
                     answer={
                         <Trans>
-                            CSV is for spreadsheets, tax software, and other apps that want flat data. The database backup preserves every
-                            relationship and account state for full restore on a new device.
+                            CSV is for spreadsheets, tax software, and other apps that want flat data. The backup preserves all your data,
+                            including what the CSV leaves out, for a full restore on a new device.
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>Is the backup encrypted?</Trans>}
                     answer={
                         <Trans>
-                            Only if a PIN was set when you exported it. The backup is a copy of the database file, so it carries whatever
-                            state your data was in: encrypted with your PIN if you had one set, and unencrypted if you never did. Restoring
-                            an encrypted backup asks for the PIN that backup was made with, and that PIN becomes the app PIN.
+                            Only if a PIN was set when you exported it: the backup is locked with your PIN if you had one set, and not
+                            locked if you never did. Restoring a PIN-locked backup asks for the PIN that backup was made with, and that PIN
+                            becomes the app PIN.
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>Can I import the CSV back into Budgie?</Trans>}
                     answer={
                         <Trans>
@@ -157,7 +213,8 @@ export default async function DataExportFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Does export work offline?</Trans>}
                     answer={
                         <Trans>
@@ -165,7 +222,7 @@ export default async function DataExportFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

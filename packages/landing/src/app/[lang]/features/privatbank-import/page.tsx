@@ -1,17 +1,17 @@
 /* eslint-disable max-lines-per-function */
+import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import Link from 'next/link';
+import { Copy, FileText, Tags } from 'reicon-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureCropBand } from '../../../../feature/component/feature-crop-band/feature-crop-band';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -23,102 +23,133 @@ export default async function PrivatbankImportFeaturePage(props: PageLangParam) 
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>PrivatBank XLSX Import</Trans>}
-                locale={lang}
+                heading={<Trans>Bring in your PrivatBank history</Trans>}
                 tagline={
                     <Trans>
-                        Import accounts and transactions from a PrivatBank24 XLSX export — with PrivatBank&apos;s own MCC categories mapped
-                        automatically.
+                        Import accounts and transactions from a Privat24 Excel export, with PrivatBank&apos;s own category names matched to
+                        your Budgie categories automatically.
                     </Trans>
                 }
             />
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why MCC mapping matters for downstream automation</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        This is a one-time import from a Privat24 statement export, not a live sync — each export covers a single card or
-                        account, so a multi-card wallet needs one import per card.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        PrivatBank exports XLSX with a fixed schema and proprietary MCC labels. Budgie parses both, mapping each PrivatBank
-                        category to the equivalent ISO MCC code so AI categorization downstream still works.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        Long-press a PrivatBank account card on the home screen to jump straight to the file picker for that account — pick
-                        a fresh export and Budgie merges it in, skipping anything already imported.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        After each import, anything left without a category is ready for{' '}
-                        <Link
-                            className="font-semibold underline underline-offset-4"
-                            href={`/${lang}/features/bulk-categorize-transactions`}
-                        >
-                            bulk categorization
-                        </Link>
-                        : one tap on a suggestion sorts a whole merchant group.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
+            <FeatureSpecTiles heading={<Trans>PrivatBank import at a glance</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>PrivatBank categories matched for you</Trans>} value={<Trans>Auto</Trans>}>
+                    <Trans>Each PrivatBank category name is matched to a Budgie category.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>columns to map by hand</Trans>} value={<Trans>None</Trans>}>
+                    <Trans>The Privat24 Excel export is read as it comes.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>to re-import the same export</Trans>} value={<Trans>Safe</Trans>}>
+                    <Trans>Anything already imported is skipped.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Native PrivatBank24 XLSX schema parser — no manual column mapping</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
-                        <Trans>PrivatBank&apos;s proprietary MCC labels map to ISO MCC codes automatically</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
+            <FeatureCropBand
+                heading={<Trans>Switch on the accounts you want</Trans>}
+                lede={<Trans>Budgie lists the card found in your export and imports only what you choose.</Trans>}
+                shot={
+                    <FeatureCropBand.Shot
+                        alt={t(i18n)`Budgie Import Privatbank screen with the card found in the export switched on and a Start Sync button`}
+                        locale={lang}
+                        scene="privatbank-import-2"
+                        slug="privatbank-import"
+                        y={0.1}
+                    >
+                        <FeatureCropBand.Pin x={0.62} y={0.19} />
+                        <FeatureCropBand.Pin x={0.55} y={0.27} />
+                    </FeatureCropBand.Shot>
+                }
+            >
+                <FeatureCropBand.Note>
+                    <Trans>Select or deselect everything</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Your card, found in the export</Trans>
+                </FeatureCropBand.Note>
+            </FeatureCropBand>
+
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={FileText} title={<Trans>No column mapping</Trans>}>
+                    <Trans>Reads the Privat24 Excel layout as exported — no manual column mapping</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Tags} title={<Trans>Categories matched for you</Trans>}>
+                    <Trans>PrivatBank&apos;s own category names are matched to Budgie categories automatically</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Copy} title={<Trans>Safe to re-import</Trans>}>
+                    <Trans>Dedupes against existing transactions on re-import</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>
                             Long-press a PrivatBank account card on the home screen to jump straight to the file picker for a fresh import
                         </Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Currency, FX, and counterparty fields all preserved</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Dedupes against existing transactions on re-import</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={5}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
+                        <Trans>Card and operation amounts and currencies are kept</Trans>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>One-time import per card or account — not a live sync, so re-run it whenever you want fresh data</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>How it works</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        In the Privat24 app, select the card or account you want to import, open its statement, and choose a date range
-                        covering your full history. Export it as Excel — PDF and CSV aren&apos;t accepted — and if Privat24 emails the file
-                        instead of downloading it, save the attachment from your inbox. In Budgie, start a new account, choose PrivatBank,
-                        and pick the saved file. Budgie validates it, parses the rows, and writes them to your selected account.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Categories arrive already matched</Trans>}>
+                    <p>
+                        <Trans>
+                            This is a one-time import from a Privat24 statement export, not a live sync — each export covers a single card
+                            or account, so a multi-card wallet needs one import per card.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            A Privat24 export is an Excel file with a fixed column layout: date and time, category, card, description, the
+                            amount in the card and operation currencies, and the balance after each operation. Budgie reads all of it and
+                            matches each PrivatBank category name to a Budgie category, so the Categorize inbox only has the leftovers to
+                            sort.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            Long-press a PrivatBank account card on the home screen to jump straight to the file picker for that account —
+                            pick a fresh export and Budgie merges it in, skipping anything already imported.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            After each import, anything left without a category is ready for{' '}
+                            <Link
+                                className="font-semibold underline underline-offset-4"
+                                href={`/${lang}/features/bulk-categorize-transactions`}
+                            >
+                                bulk categorization
+                            </Link>
+                            : one tap on a suggestion sorts a whole merchant group.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Item index={1} title={<Trans>How it works</Trans>}>
+                    <p>
+                        <Trans>
+                            In the Privat24 app, select the card or account you want to import, open its statement, and choose a date range
+                            covering your full history. Export it as Excel — PDF and CSV aren&apos;t accepted — and if Privat24 emails the
+                            file instead of downloading it, save the attachment from your inbox. In Budgie, start a new account, choose
+                            PrivatBank, and pick the saved file. Budgie checks it, reads the rows, and writes them to your selected account.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={2} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>How do I export from Privat24?</Trans>}
                     answer={
                         <Trans>
@@ -129,16 +160,18 @@ export default async function PrivatbankImportFeaturePage(props: PageLangParam) 
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
-                    question={<Trans>What about PrivatBank&apos;s custom MCC labels?</Trans>}
+                <FeatureFaq.Item
+                    index={1}
+                    question={<Trans>How are PrivatBank categories handled?</Trans>}
                     answer={
                         <Trans>
-                            Budgie maps each PrivatBank category label to the corresponding ISO MCC code, so AI categorization, MCC chips,
-                            and analytics all work the same as with other bank-synced data.
+                            Budgie matches each PrivatBank category name to a Budgie category, so analytics work the same as with other
+                            bank-synced data. A name Budgie does not recognise stays uncategorized and waits in the Categorize inbox.
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>Is the long-press shortcut destructive?</Trans>}
                     answer={
                         <Trans>
@@ -147,7 +180,8 @@ export default async function PrivatbankImportFeaturePage(props: PageLangParam) 
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Is this a live sync?</Trans>}
                     answer={
                         <Trans>
@@ -156,15 +190,17 @@ export default async function PrivatbankImportFeaturePage(props: PageLangParam) 
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={4}
                     question={<Trans>Does it work offline?</Trans>}
                     answer={
                         <Trans>
-                            The parsing step is on-device. You only need internet to download the XLSX from PrivatBank24 in the first place.
+                            Reading the file happens on your device. You only need internet to download the export from Privat24 in the
+                            first place.
                         </Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

@@ -3,6 +3,320 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.108.0](https://github.com/budgie-at/budgie/compare/v6.107.1...v6.108.0) (2026-10-20)
+
+### Bug Fixes
+
+* **app:** keep seeded debt balances and use device-neutral privacy captions ([1f95474](https://github.com/budgie-at/budgie/commit/1f95474d217e9c1f73340d133b5c8a440c560f71))
+* **app:** seed positive store screenshot balances and drop the widgets slide ([501ea73](https://github.com/budgie-at/budgie/commit/501ea73788c56e83d58dc1ec0b11641bc4ae3cab))
+
+### Features
+
+* **app:** publish the 7-slide store screenshot set for all five locales ([1169791](https://github.com/budgie-at/budgie/commit/11697916d91de8b1adac65bb7ab22b741aa1a4a4))
+* **app:** rebuild the App Store screenshot story and localized store metadata ([d07610e](https://github.com/budgie-at/budgie/commit/d07610e050dee03287cd0302bfb7c34a633719e5))
+* **app:** recompose store screenshots from the debt-balance recapture ([d092e99](https://github.com/budgie-at/budgie/commit/d092e99542aa2cd40e512cbc130bd9a409f91ce2))
+
+
+## [6.107.1](https://github.com/budgie-at/budgie/compare/v6.107.0...v6.107.1) (2026-10-19)
+
+### Bug Fixes
+
+* **app:** format the absolute amount instead of number parts, which Hermes lacks ([e0a5dbb](https://github.com/budgie-at/budgie/commit/e0a5dbb6987efc81410ccebd2c393049b16fe174))
+* **app:** put the minus sign before the currency symbol ([2523fd0](https://github.com/budgie-at/budgie/commit/2523fd066f5ad4c9e6527388562d1dd4f85ba7a6))
+
+
+# [6.107.0](https://github.com/budgie-at/budgie/compare/v6.106.4...v6.107.0) (2026-10-19)
+
+### Features
+
+* **landing:** leader-line callouts that stay inside the phone screen ([b272333](https://github.com/budgie-at/budgie/commit/b2723333ff106d559d197a3e66248b6cf0f580c4))
+
+
+## [6.106.4](https://github.com/budgie-at/budgie/compare/v6.106.3...v6.106.4) (2026-10-19)
+
+### Bug Fixes
+
+* **app:** hide the first row divider under the transaction hero again ([#1604](https://github.com/budgie-at/budgie/issues/1604)) ([d0ab671](https://github.com/budgie-at/budgie/commit/d0ab67193fb0408e0b62af2cd0ea617f0639fb6e)), closes [#1600](https://github.com/budgie-at/budgie/issues/1600)
+
+
+## [6.106.3](https://github.com/budgie-at/budgie/compare/v6.106.2...v6.106.3) (2026-10-19)
+
+**Note:** Version bump only for package @budgie-at/root
+
+
+
+
+
+## [6.106.2](https://github.com/budgie-at/budgie/compare/v6.106.1...v6.106.2) (2026-10-18)
+
+### Bug Fixes
+
+* **landing:** keep scroll stories in sync with viewport ([#1602](https://github.com/budgie-at/budgie/issues/1602)) ([700960e](https://github.com/budgie-at/budgie/commit/700960e709660487aa3509b5852781947a3892c1))
+
+
+## [6.106.1](https://github.com/budgie-at/budgie/compare/v6.106.0...v6.106.1) (2026-10-18)
+
+**Note:** Version bump only for package @budgie-at/root
+
+
+
+
+
+# [6.106.0](https://github.com/budgie-at/budgie/compare/v6.105.0...v6.106.0) (2026-10-16)
+
+
+### Bug Fixes
+
+* **app:** label the debt amount by direction on the debt form ([973a1d5](https://github.com/budgie-at/budgie/commit/973a1d518664f7e8265d9670fef0e90f52cc3a01))
+* delete OTA preview releases without the gh CLI ([735ae4b](https://github.com/budgie-at/budgie/commit/735ae4beb39868553e186621816ee36091cc0a1b))
+* **landing:** address review findings on AI and misc truth pass ([a8914ad](https://github.com/budgie-at/budgie/commit/a8914addc7a2c635964a3420022c1ceb29483274))
+* **landing:** address review findings on the Monobank token guide ([ec8b9ca](https://github.com/budgie-at/budgie/commit/ec8b9ca9c1d2c46c5cbf535ebc4901197c467fad))
+* **landing:** correct Budgie claims in the privacy blog posts ([8d25427](https://github.com/budgie-at/budgie/commit/8d2542744d236250f2f38225a73e069faf66745a))
+* **landing:** drop retired whats-new related slug ([32c1114](https://github.com/budgie-at/budgie/commit/32c1114e39efc9927d0b346d0e11f134b9b3bfa2))
+* **landing:** make voice, translation, dark mode and widget pages truthful ([6bab008](https://github.com/budgie-at/budgie/commit/6bab008409317c4536bb464a9784723ddf39d548))
+* **landing:** qualify capture blocking and present biometrics as the PIN alternative ([ba4a707](https://github.com/budgie-at/budgie/commit/ba4a707f99094ac390017895aec6a90d0c78aced))
+* **landing:** readable story stage with pinned callouts and a mobile layout that fits ([20ef7a7](https://github.com/budgie-at/budgie/commit/20ef7a762a2126395d71a1959d553c312dc6f62f))
+* **landing:** refresh the YNAB alternatives article for 2026 ([7b74fec](https://github.com/budgie-at/budgie/commit/7b74fec1956a7a5fb13cc37f66aa1b33ccc2e83a))
+* **landing:** repoint related slugs away from folded posts ([458f8dc](https://github.com/budgie-at/budgie/commit/458f8dc4a3fe493863a819deeb1169e111e4a89d))
+* **landing:** security pages tell the truth about screenshot protection and PIN lock ([ab79e8a](https://github.com/budgie-at/budgie/commit/ab79e8a1bc70dcedc1be3ea099db083814768480))
+* **landing:** use formal French on the corrected pages ([0037e50](https://github.com/budgie-at/budgie/commit/0037e50ab7025fbdcf5f6d9705401f37aea5133f))
+* **market:** backfill historical fiat rates from ECB and revalue affected entries ([daf3146](https://github.com/budgie-at/budgie/commit/daf31464fc762c7862867207e00aece24dcc111b))
+* **market:** record daily fiat rates in rate history ([dcd380b](https://github.com/budgie-at/budgie/commit/dcd380be7ab98856ef9dcd09a3d1107d50065e0b))
+* **market:** run the fiat rate backfill after crypto price jobs ([4051977](https://github.com/budgie-at/budgie/commit/4051977bc4a7c3121e65960dfeb6fcbf3e81a278))
+* **market:** stop refetching a year of fiat rates for currencies the rate source does not cover ([66465f5](https://github.com/budgie-at/budgie/commit/66465f521c96ebcf2be071e0d16f9022620703b9))
+* **market:** stop the fiat backfill from blocking crypto market data on Hermes ([d73ab16](https://github.com/budgie-at/budgie/commit/d73ab162b079b8a24871594d0422fa02d7277750))
+
+
+### Features
+
+* **landing:** add a bank FAQ to the bank-sync hub ([cea4a3c](https://github.com/budgie-at/budgie/commit/cea4a3ca12d64d57f008811c2ffa35dcb8506c9c))
+* **landing:** add a guide to tracking money you lent and borrowed ([3687ef5](https://github.com/budgie-at/budgie/commit/3687ef5ea1fdb0e250c2698dbc9df234be57eb91))
+* **landing:** add a guide to tracking Monobank spending automatically ([ac77771](https://github.com/budgie-at/budgie/commit/ac7777120e09ca1133687399e4148311b902e0c1))
+* **landing:** add a guide to tracking pay-in-parts purchases ([aa85176](https://github.com/budgie-at/budgie/commit/aa85176056c528529047c1ec6cdc269b4f909543))
+* **landing:** add a Monobank token setup guide ([06e196d](https://github.com/budgie-at/budgie/commit/06e196d77a7f5642db83b5116d96cace2aee71cb))
+* **landing:** add a Privat24 statement import guide ([51a1835](https://github.com/budgie-at/budgie/commit/51a18356e8a1e72821d039f148db01dba474ca4a))
+* **landing:** add a UAH and EUR budgeting guide for Ukrainians in the EU ([a33d7d5](https://github.com/budgie-at/budgie/commit/a33d7d562ba9d5cdde6b0469891b692358659174))
+* **landing:** add an Erste George statement import guide ([738d23e](https://github.com/budgie-at/budgie/commit/738d23e8db95223a3aef04d34d1c3ee04ba50fe5))
+* **landing:** four section layouts so feature pages stop looking identical ([6339fda](https://github.com/budgie-at/budgie/commit/6339fdaa5a8fbd7d024d13c8bcebacdccedb6d4e))
+* **landing:** per-pillar accent colours and black ink buttons ([21fc71a](https://github.com/budgie-at/budgie/commit/21fc71a84265fa576744febecd535756d9c8f99e))
+* **landing:** short outcome H1s separate from SEO titles ([8aa3ff5](https://github.com/budgie-at/budgie/commit/8aa3ff53ec3989f1658b52db9ae29523245b0f66))
+* **landing:** shorter feature page body with an indexed details drawer ([200d274](https://github.com/budgie-at/budgie/commit/200d274df0fe9f2a01a334bf38e0223c7435a90b))
+* **landing:** show-then-tell feature hero with inline signup and trust strip ([5b739d3](https://github.com/budgie-at/budgie/commit/5b739d3a37cebfd0fb3b4db3e34c17e1f917d7ef))
+
+
+### Performance Improvements
+
+* **landing:** replace looping clips with static screenshots and trim motion ([a58d749](https://github.com/budgie-at/budgie/commit/a58d74921f11f17c1ce73e451c272b6be9647f3c))
+
+
+
+
+
+# [6.105.0](https://github.com/budgie-at/budgie/compare/v6.104.1...v6.105.0) (2026-10-16)
+
+
+### Bug Fixes
+
+* **app:** add the AI feature settings migration snapshot ([f9b223f](https://github.com/budgie-at/budgie/commit/f9b223f28395cf5f20245644f07248ffc35a9fbb))
+* **app:** hide empty AI downloads cleanup ([d17762d](https://github.com/budgie-at/budgie/commit/d17762d9474b7a63e6091962fa6752854c6a2243))
+* **app:** keep AI shutdown safe for model cleanup ([3dd3580](https://github.com/budgie-at/budgie/commit/3dd35805397b1f482eb7d0230b615da3be47b675))
+* **app:** prevent unsafe AI cleanup and lost feature changes ([32a3733](https://github.com/budgie-at/budgie/commit/32a37332da4c92dc5fde11918522fc5ab31844fa))
+* **app:** show the shared-downloads note after a confirmed disable ([7e2efa7](https://github.com/budgie-at/budgie/commit/7e2efa76728dd9cf355163738619ac3a0bb55f41))
+* keep iOS detection compatible with the Turbo config ([a7b13ad](https://github.com/budgie-at/budgie/commit/a7b13ad0298fe3ba13f4d3eccb6fa23c85edeee6))
+
+
+### Features
+
+* **app:** add AI model storage cleanup service ([7a2ff94](https://github.com/budgie-at/budgie/commit/7a2ff941631686aa540dfd8aa0425469577c5215))
+* **app:** clarify unused AI downloads cleanup ([a419725](https://github.com/budgie-at/budgie/commit/a41972509f2a1d980c4dc34f51970888c6383d52))
+* **app:** expose AI model storage in settings ([b88dbe1](https://github.com/budgie-at/budgie/commit/b88dbe1d05857e2088140dfe92ffb698288b6f7b))
+* **app:** manage AI features and unused downloads ([8e1f0be](https://github.com/budgie-at/budgie/commit/8e1f0bede72ff567a1d46a9a66a38af62d9e9be5))
+* **app:** move AI model storage to its own settings screen ([e9271aa](https://github.com/budgie-at/budgie/commit/e9271aa6000d72c24749586fd700511c43a6a0cf))
+* **app:** show downloaded AI model storage controls ([6a57cef](https://github.com/budgie-at/budgie/commit/6a57cef261ab947d97ea94e7f8c3c647c22f5e3a))
+* **app:** simplify AI model storage screen ([724d6de](https://github.com/budgie-at/budgie/commit/724d6decb248c7b146d1b669b1573ad227995a75))
+
+
+
+
+
+## [6.104.1](https://github.com/budgie-at/budgie/compare/v6.104.0...v6.104.1) (2026-10-15)
+
+**Note:** Version bump only for package @budgie-at/root
+
+
+
+
+
+# [6.104.0](https://github.com/budgie-at/budgie/compare/v6.103.13...v6.104.0) (2026-10-15)
+
+
+### Bug Fixes
+
+* address icon review findings ([fffc644](https://github.com/budgie-at/budgie/commit/fffc644acb9cedb2db93131c7a9afd41d924b044))
+* **app:** drop Russian from icon search ([0c013a8](https://github.com/budgie-at/budgie/commit/0c013a8a1676dd48f2692a335ecd37b3a8045539))
+* **app:** make every icon searchable by the image it shows ([4ec1601](https://github.com/budgie-at/budgie/commit/4ec16015086066e47d6debc84472d89ac6a4516b))
+* **app:** map MailOpen to the Reicon open envelope ([56ff24d](https://github.com/budgie-at/budgie/commit/56ff24d1f6a0f97a466174bf712149cf1b395c00))
+* **app:** map Plane to the Reicon airplane ([a1e72ae](https://github.com/budgie-at/budgie/commit/a1e72ae4f7d68478ffaf844369b939c35ac97f8b))
+* **app:** render Reicon glyphs on first launch ([5b54177](https://github.com/budgie-at/budgie/commit/5b541776ae5a0999aa19c8e84e47544f73ec9694))
+* **app:** show each distinct icon once in the icon picker ([50df7a7](https://github.com/budgie-at/budgie/commit/50df7a7a875ab924a5fe43acaf59414f46f660fe))
+* **app:** sync icon catalogs ([d04a724](https://github.com/budgie-at/budgie/commit/d04a7240d1387ef3a6d2da7b0cf48df4e9b599c2))
+
+
+### Features
+
+* **app:** make the full Reicon catalog selectable without losing saved icons ([56aecff](https://github.com/budgie-at/budgie/commit/56aecff80ff1c2129862fb0c3174180b1bac722e))
+* replace Lucide with Reicon while preserving saved icons ([45180c2](https://github.com/budgie-at/budgie/commit/45180c248fb0a50444c5e75c33daa301cdba8ed1)), closes [#1419](https://github.com/budgie-at/budgie/issues/1419)
+
+
+
+
+
+## [6.103.13](https://github.com/budgie-at/budgie/compare/v6.103.12...v6.103.13) (2026-10-15)
+
+
+### Bug Fixes
+
+* **landing:** clean up structured data, sitemap dates and blog headings ([10eba4a](https://github.com/budgie-at/budgie/commit/10eba4ae9495391529117ab0b7c005875afb35fb))
+
+
+
+
+
+## [6.103.12](https://github.com/budgie-at/budgie/compare/v6.103.11...v6.103.12) (2026-10-15)
+
+
+### Bug Fixes
+
+* **landing:** describe Budgie as source-available in every locale ([05e3c58](https://github.com/budgie-at/budgie/commit/05e3c582e4e6af0a7b1c057969f32756fc54d007))
+* **landing:** say source-available, not open source ([28f936a](https://github.com/budgie-at/budgie/commit/28f936aba5f03bc2502e11fca332c4549f2fe0fd))
+
+
+
+
+
+## [6.103.11](https://github.com/budgie-at/budgie/compare/v6.103.10...v6.103.11) (2026-10-14)
+
+
+### Bug Fixes
+
+* **landing:** self canonicals for legal and beta pages ([01e3a55](https://github.com/budgie-at/budgie/commit/01e3a5508d78797e2d874c07ab8356de65509754))
+
+
+
+
+
+## [6.103.10](https://github.com/budgie-at/budgie/compare/v6.103.9...v6.103.10) (2026-10-14)
+
+
+### Bug Fixes
+
+* **landing:** temporary language redirect and a localized 404 ([79998d2](https://github.com/budgie-at/budgie/commit/79998d275fc11d9a65182bbc953521a2a8b810a3))
+
+
+
+
+
+## [6.103.9](https://github.com/budgie-at/budgie/compare/v6.103.8...v6.103.9) (2026-10-14)
+
+
+### Bug Fixes
+
+* **landing:** bank and sync pages tell the truth ([e41f07c](https://github.com/budgie-at/budgie/commit/e41f07c01428c668280213837e811f00b8f05158))
+
+
+
+
+
+## [6.103.8](https://github.com/budgie-at/budgie/compare/v6.103.7...v6.103.8) (2026-10-14)
+
+
+### Bug Fixes
+
+* **landing:** money pages tell the truth ([69b71c0](https://github.com/budgie-at/budgie/commit/69b71c0443cea339aa1b299c0b4d2d6b41cd3f8a))
+
+
+
+
+
+## [6.103.7](https://github.com/budgie-at/budgie/compare/v6.103.6...v6.103.7) (2026-10-14)
+
+
+### Bug Fixes
+
+* **landing:** categorization pages tell the truth ([5652e58](https://github.com/budgie-at/budgie/commit/5652e58bc010c00c0a4b0459e45195ed0c1d5d8c))
+* **landing:** use formal French on the corrected pages ([af8c6ab](https://github.com/budgie-at/budgie/commit/af8c6ab39ee5ffeae39d7f788837fd6233da98b4))
+
+
+
+
+
+## [6.103.6](https://github.com/budgie-at/budgie/compare/v6.103.5...v6.103.6) (2026-10-14)
+
+
+### Bug Fixes
+
+* **landing:** make transaction feature pages accurate ([fa37dac](https://github.com/budgie-at/budgie/commit/fa37dac5019c041a5a3f851ff1f4368ce8bfbc9a))
+* **landing:** use formal French on the corrected pages ([d95da3d](https://github.com/budgie-at/budgie/commit/d95da3ddb5ea8901f064bedd9594deef70f7819f))
+
+
+
+
+
+## [6.103.5](https://github.com/budgie-at/budgie/compare/v6.103.4...v6.103.5) (2026-10-14)
+
+**Note:** Version bump only for package @budgie-at/root
+
+
+
+
+
+## [6.103.4](https://github.com/budgie-at/budgie/compare/v6.103.3...v6.103.4) (2026-10-14)
+
+
+### Bug Fixes
+
+* **app:** refresh the installment schedule when instruments change ([6c66540](https://github.com/budgie-at/budgie/commit/6c66540e7185d505bf4438634cbc768d97dadbc6))
+
+
+
+
+
+## [6.103.3](https://github.com/budgie-at/budgie/compare/v6.103.2...v6.103.3) (2026-10-13)
+
+
+### Bug Fixes
+
+* **app:** treat a cancelled duplicate-rule prompt as a normal outcome ([1d2331d](https://github.com/budgie-at/budgie/commit/1d2331d6efd626045f847549250aeedcab0154e4))
+* **ledger:** read historical rate dates as local days ([4f278ea](https://github.com/budgie-at/budgie/commit/4f278ea417861a292f7929272708c661addfbdba))
+* **market:** skip empty lots when consuming crypto lots ([2b7bf5c](https://github.com/budgie-at/budgie/commit/2b7bf5caee989f0bbb347c98920f81a917e45275))
+* **sync:** undo only ATM cash moves ([eb696b3](https://github.com/budgie-at/budgie/commit/eb696b3153713626fb69dc327cd3240babc3cdbb))
+
+
+
+
+
+## [6.103.2](https://github.com/budgie-at/budgie/compare/v6.103.1...v6.103.2) (2026-10-13)
+
+
+### Bug Fixes
+
+* **app:** count a PIN attempt before checking it ([5601cdc](https://github.com/budgie-at/budgie/commit/5601cdc26e80571bb5c78f5b53697d8cf5e2a11a))
+* **app:** fail closed on unreadable or unwritable PIN attempt state ([1771914](https://github.com/budgie-at/budgie/commit/17719142e02e9c0ae2765c0081b76dbadfca47e9))
+* **app:** limit PIN unlock attempts with a growing wait ([1cdfc1f](https://github.com/budgie-at/budgie/commit/1cdfc1f89d6e5f5435ac76b7f734e89cef5635a7)), closes [#1475](https://github.com/budgie-at/budgie/issues/1475)
+* **app:** lock the change-PIN keypad during a PIN wait ([0aaa43f](https://github.com/budgie-at/budgie/commit/0aaa43f1580a379212bfb901bba446a183fe108d))
+
+
+
+
+
+## [6.103.1](https://github.com/budgie-at/budgie/compare/v6.103.0...v6.103.1) (2026-10-13)
+
+**Note:** Version bump only for package @budgie-at/root
+
+
+
+
+
 # [6.103.0](https://github.com/budgie-at/budgie/compare/v6.102.0...v6.103.0) (2026-10-13)
 
 

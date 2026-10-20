@@ -10,7 +10,7 @@ pnpm build                    # Production build
 pnpm i18n:sync                # Extract & compile i18n translations
 pnpm media:manifest           # Rescan public/media and regenerate the committed media manifest
 pnpm media:og                 # Regenerate the dark OG device plates in public/og-plate from public/media
-pnpm media:check              # Verify manifest freshness, OG plate coverage, asset budgets and <AppShot>/<AppClip> usages
+pnpm media:check              # Verify manifest freshness, OG plate coverage, asset budgets and <AppShot> usages
 pnpm ts                       # Native TypeScript 7 check
 pnpm lint                     # Oxlint (incl. local `lint-rules/` plugin)
 ```
@@ -46,13 +46,13 @@ src/
 
 Before starting any of the work areas below, read the corresponding doc first.
 
-| When working on…                                                                                                                       | Read first           |
-| -------------------------------------------------------------------------------------------------------------------------------------- | -------------------- |
-| Blog articles, feature pages, pillar hubs, legal pages, sitemap entries, `generateMetadata`, JSON-LD helpers, anything SEO-related     | `docs/seo-pages.md`  |
-| `<Trans>` / `t` / `msg`, `generateMetadata` i18n strings, catalog `.po`/`.ts` files, RSC i18n setup, dispatching translation subagents | `docs/lingui-rsc.md` |
-| `FeatureStory` page copy, callout `y`/`x` anchors, i18n sync/rebase for a story PR, locale QA before merging a story page              | `docs/feature-story-i18n-qa.md` |
-| IndexNow key file, GSC/Bing sitemap submission, merge-to-main URL submission, API/root `.txt` proxy bypass rules                       | `docs/indexnow.md`   |
-| Product screenshots and motion clips, `public/media/**`, `<AppShot>`/`<AppClip>`, the generated media manifest, `media:manifest`/`media:check` | `tests/app-tests/readme.md` |
+| When working on…                                                                                                                               | Read first                      |
+| ---------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------- |
+| Blog articles, feature pages, pillar hubs, legal pages, sitemap entries, `generateMetadata`, JSON-LD helpers, anything SEO-related             | `docs/seo-pages.md`             |
+| `<Trans>` / `t` / `msg`, `generateMetadata` i18n strings, catalog `.po`/`.ts` files, RSC i18n setup, dispatching translation subagents         | `docs/lingui-rsc.md`            |
+| `FeatureStory` page copy, callout `y`/`x` anchors, i18n sync/rebase for a story PR, locale QA before merging a story page                      | `docs/feature-story-i18n-qa.md` |
+| IndexNow key file, GSC/Bing sitemap submission, merge-to-main URL submission, API/root `.txt` proxy bypass rules                               | `docs/indexnow.md`              |
+| Product screenshots, `public/media/**`, `<AppShot>`, the generated media manifest, `media:manifest`/`media:check` | `tests/app-tests/readme.md`     |
 
 ---
 
@@ -169,13 +169,13 @@ Wrap with `LinguiClientProvider`:
 
 ### Supported Locales
 
-| Code | Language         |
-| ---- | ---------------- |
-| `en` | English (source) |
-| `uk` | Ukrainian        |
-| `fr` | French           |
-| `de` | German           |
-| `es` | Spanish          |
+| Code | Language         | Voice                                |
+| ---- | ---------------- | ------------------------------------ |
+| `en` | English (source) | Plain, direct                        |
+| `uk` | Ukrainian        | Natural and idiomatic, never literal |
+| `fr` | French           | Formal `vous` (vouvoiement)          |
+| `de` | German           | Informal `du`                        |
+| `es` | Spanish          | Informal `tú`                        |
 
 ### After Changes
 
@@ -274,19 +274,12 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 ### Animation
 
-Use Framer Motion for animations:
+Motion is plain CSS, with no animation library:
 
-```typescript
-import { motion } from 'framer-motion';
-
-<motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.5 }}
->
-    {children}
-</motion.div>
-```
+- Transitions and keyframes use the motion tokens in `styles/globals.css`: `--ease-out`, `--ease-in-out`, `--dur-fast`, `--dur-base`, `--dur-slow`.
+- Activation on scroll uses a passive scroll and resize listener resolving the active step and focused callout from the pinned panel offset via `getBoundingClientRect` in `feature-story-stage.tsx`, and `IntersectionObserver` in `categorize-demo-player.tsx`, both in small client islands.
+- Where supported, scroll-linked effects use CSS scroll-driven timelines inside `@supports (animation-timeline: view())`.
+- Every animation has a `prefers-reduced-motion: reduce` fallback (an opacity-only transition or no motion).
 
 ## Middleware
 
@@ -333,6 +326,27 @@ import { useTheme } from 'next-themes';
 
 const { theme, setTheme } = useTheme();
 ```
+
+## Claims
+
+Page copy is a promise to the reader, so every claim is checked before it ships.
+
+- Verify every product claim added or changed in app code, and cite it as `packages/<name>/path:line` in the PR description. Never put the citation on the page.
+- No invented statistics, counts, percentages or benchmarks. Use a number only when code, a measurement or a dated public source backs it.
+- No absolute competitor claims ("the only", "no other app") without a dated source in the PR description.
+- Describe user outcomes, never implementation. Copy says what the person gets, not how it is built.
+- Budgie is "source-available" (O'Saasy licence), never "open source".
+- Never claim Revolut, Wise or Coinbase sync. No sync service exists for them.
+
+### Banned terms in page copy
+
+These never appear in headings, body, alt text, metadata, JSON-LD or `.po` strings:
+
+- Vendor, library and framework names: CoinGecko, exchangerate-api, SQLCipher, llama.cpp, Whisper, ONNX, Plaid, HMAC, Next.js, React Native.
+- Schema and API words: endpoint, schema, parser, field names such as `corr_iban`, soft-delete, legs, double-entry, credit/debit entries.
+- Implementation words: keychain, encryption key in headings, background queue, repo paths.
+
+Bank and currency names that name what the user connects or tracks are fine. Run a case-insensitive grep over the changed page and its five locale catalogs for the terms above before opening the PR.
 
 ## SEO
 
@@ -439,7 +453,6 @@ Blog articles are static routes under `app/[lang]/blog/<slug>/page.tsx`. Each ar
 | `next`                     | Framework        |
 | `react`                    | UI Library       |
 | `@lingui/*`                | i18n             |
-| `framer-motion`            | Animations       |
 | `@radix-ui/*`              | UI Primitives    |
 | `tailwindcss`              | Styling          |
 | `class-variance-authority` | CVA variants     |

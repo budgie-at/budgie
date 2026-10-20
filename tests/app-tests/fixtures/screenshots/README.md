@@ -72,7 +72,14 @@ the seed hook owns both, because the same overlay is reused for the `light` and
 
 ## Scene overlays
 
-`showcase.db` alone only covers the 8 store scenes. Landing feature pages need
+The store scenes have their own overlays, `scenes/<NN>-<scene>.sql`:
+`01-home` and `06-account` add every account kind on top of a ~65% budget and
+book opening balances so every asset account ends positive, `03-analytics` moves everything before today back so the previous
+calendar month ends full, `05-add-expense` seeds a pattern the suggestion row
+offers at capture time, `07-settings` turns screenshot protection on and
+`09-inbox` leaves the newest expenses uncategorized.
+
+Landing feature pages need
 states the curated dataset does not have — an active PIN lock, a budget over
 its limit, unsynced Monobank data, and so on. `seed-screenshot-scene.sh`
 applies an optional per-scene overlay after the locale overlay and before
@@ -82,8 +89,8 @@ The overlay for a scene is resolved by filename convention against
 `scenes/`, trying each of these in order and using the first match, or none:
 
 1. `scenes/<SCENE>.sql` — exact match.
-2. `scenes/<SCENE minus trailing -N>.sql` — lets `pin-app-lock-2` and
-   `pin-app-lock-clip-1` share `scenes/pin-app-lock.sql`.
+2. `scenes/<SCENE minus trailing -N>.sql` — lets `pin-app-lock-1` and
+   `pin-app-lock-2` share `scenes/pin-app-lock.sql`.
 
 A scene overlay file is either the SQL itself or a one-line
 `.read shared/<state>.sql`, so multiple scenes that need the same state (for
@@ -119,6 +126,8 @@ overlay.
 | `cyrillic-taxonomy.sql`      | Cyrillic-titled categories and tags with AI-generated English titles                                              |
 | `long-history.sql`           | the newest base transactions replayed monthly over 17 months                                                      |
 | `net-worth-full.sql`         | every live account included in net worth, with fresh rate timestamps                                              |
+| `budget-healthy.sql`         | budget 1 limits derived from the period's spend: ~65% overall, categories split between green and amber          |
+| `opening-balances.sql`       | an opening ADJUSTMENT per asset account short of its intended balance, then `account_balances` set to the ledger |
 
 Every overlay keeps amounts in micro-units (`PRECISION = 1_000_000`) and dates
 in epoch seconds, and is safe to apply more than once, matching

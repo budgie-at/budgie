@@ -1,0 +1,28 @@
+version: 2
+updates:
+    - package-ecosystem: github-actions
+      directory: /
+      schedule:
+          interval: weekly
+      open-pull-requests-limit: 5
+      groups:
+          github-actions:
+              patterns:
+                  - '*'
+      commit-message:
+          prefix: ci
+
+    - package-ecosystem: npm
+      directory: /
+      schedule:
+          interval: weekly
+      open-pull-requests-limit: 3
+      groups:
+          npm-minor-patch:
+              update-types:
+                  - minor
+                  - patch
+      commit-message:
+          # No scope: commitlint's lerna-scopes rule only accepts package names,
+          # and the PR title is linted in pr.yml's code-quality job.
+          prefix: chore

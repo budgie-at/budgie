@@ -70,26 +70,34 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
                     <PillarHubFeatureGrid.Item
                         href={`/${lang}/features/pin-app-lock`}
                         index={1}
-                        tagline={<Trans>The PIN unlocks the app and unlocks your data — no PIN, no readable database.</Trans>}
-                        title={<Trans>PIN App Lock — Locks With the Encryption Key</Trans>}
+                        tagline={
+                            <Trans>
+                                A 4-digit PIN guards the app, with a growing wait after wrong tries and optional fingerprint or face unlock.
+                            </Trans>
+                        }
+                        title={<Trans>PIN App Lock — Nothing Opens Without Your PIN or Biometrics</Trans>}
                     />
                     <PillarHubFeatureGrid.Item
                         href={`/${lang}/features/biometric-authentication`}
                         index={2}
-                        tagline={<Trans>Biometric unlock hands Budgie only a yes or no — your PIN stays the key.</Trans>}
-                        title={<Trans>Face ID / Touch ID Authentication</Trans>}
+                        tagline={<Trans>Biometric unlock hands Budgie only a yes or no — your PIN stays the fallback.</Trans>}
+                        title={<Trans>Face ID, Touch ID and Fingerprint Unlock</Trans>}
                     />
                     <PillarHubFeatureGrid.Item
                         href={`/${lang}/features/screenshot-protection`}
                         index={3}
-                        tagline={<Trans>Accidental shares stay private — balances blur in screenshots and the app switcher.</Trans>}
+                        tagline={
+                            <Trans>
+                                Ask your phone to block screen capture and hide amounts in the app switcher with one switch in Settings.
+                            </Trans>
+                        }
                         title={<Trans>Screenshot Protection — Hide Bank Balance from Previews</Trans>}
                     />
                     <PillarHubFeatureGrid.Item
                         href={`/${lang}/features/data-export`}
                         index={4}
                         tagline={<Trans>CSV for spreadsheets. A full database backup for restore. Both yours, never ours.</Trans>}
-                        title={<Trans>Export Every Transaction You&apos;ve Logged</Trans>}
+                        title={<Trans>Export Your Transactions, Plus a Full Backup</Trans>}
                     />
                     <PillarHubFeatureGrid.Item
                         href={`/${lang}/features/database-backup`}
@@ -305,6 +313,25 @@ export default async function PrivacyPillarHubPage(props: PageLangParam) {
                             Export Database writes the whole database to one file and hands it to the system share sheet, so you choose
                             where it goes — iCloud Drive, Google Drive, Dropbox, a NAS. Budgie has no sync server and no integration with
                             any of them.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>How do I move my data to a new phone?</Trans>}
+                    answer={
+                        <Trans>
+                            Export a backup on the old phone, carry the file across yourself, then pick it in Import Database on the new
+                            one. Confirm the replacement and, if the backup is PIN-protected, enter its PIN, which becomes your app PIN. No
+                            account and no server sit in between.
+                        </Trans>
+                    }
+                />
+                <FeaturePageFaqItem
+                    question={<Trans>What happens if I lose my phone?</Trans>}
+                    answer={
+                        <Trans>
+                            Without a backup file your data is gone, because Budgie has no copy to restore. That is the price of keeping
+                            everything on your device, so save backups to storage you control.
                         </Trans>
                     }
                 />

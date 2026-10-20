@@ -1,18 +1,17 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { ArrowSwapHorizontal, Coins, History } from 'reicon-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureCropBand } from '../../../../feature/component/feature-crop-band/feature-crop-band';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
+import { FeatureVersus } from '../../../../feature/component/feature-versus/feature-versus';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -24,21 +23,25 @@ export default async function AccountTransfersFeaturePage(props: PageLangParam) 
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie New Transfer screen with 250 entered above a row naming Main Checking as the source and Cash Wallet as the destination`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Account Transfers — Done Right</Trans>}
-                locale={lang}
+                heading={<Trans>Move money, not expenses</Trans>}
                 tagline={
                     <Trans>
                         Move money between your own accounts with automatic FX conversion and dual-amount display for cross-currency
                         transfers.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="account-transfers-1" slug="account-transfers" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>Money moved, not money spent</Trans>}>
@@ -54,16 +57,7 @@ export default async function AccountTransfersFeaturePage(props: PageLangParam) 
                         and credits the other — not an expense here and an income there that you have to remember to cancel out.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie New Transfer screen with 250 entered above a row naming Main Checking as the source and Cash Wallet as the destination`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="account-transfers-1"
-                    slug="account-transfers"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="account-transfers-1" slug="account-transfers">
                     <FeatureStory.Callout y={0.292}>
                         <Trans>One amount, entered once</Trans>
                     </FeatureStory.Callout>
@@ -121,49 +115,105 @@ export default async function AccountTransfersFeaturePage(props: PageLangParam) 
                 </FeatureStory.Shot>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why transfers must be a first-class type</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Transfers between your accounts are not income or expenses — and an app that treats them as such will mis-state your
-                        spending. Budgie has a first-class Transfer transaction type with explicit source and destination accounts.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        For cross-currency transfers (e.g. USD to EUR), Budgie shows both amounts side by side and lets you pin either side.
-                        Switch the &ldquo;currency mode&rdquo; pill to drive the conversion from send or receive direction.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
+            <FeatureVersus
+                heading={<Trans>Transfers without the bookkeeping</Trans>}
+                lede={<Trans>Many apps make you log a transfer as an expense and an income. Budgie does not.</Trans>}
+            >
+                <FeatureVersus.Without title={<Trans>Transfers as two entries</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>Log an expense, then an income</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Totals can count the money twice</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Currency maths done by hand</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Fixing a mistake means two edits</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.Without>
+                <FeatureVersus.With title={<Trans>Budgie</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>One transfer, entered once</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Spending and income stay clean</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Both amounts shown, rate saved</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Edit or delete one transfer</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.With>
+            </FeatureVersus>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>First-class Transfer transaction type — never confused with expense or income</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Cross-currency dual-amount display: pin send or receive, system computes the other</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
+            <FeatureCropBand
+                heading={<Trans>Type one side, see the other</Trans>}
+                lede={<Trans>Pick which currency you type and Budgie converts the rest.</Trans>}
+                shot={
+                    <FeatureCropBand.Shot
+                        alt={t(i18n)`Budgie New Transfer screen with 250 US dollars, the sending pill and the converted euro amount`}
+                        locale={lang}
+                        scene="account-transfers-2"
+                        slug="account-transfers"
+                        y={0.24}
+                    >
+                        <FeatureCropBand.Pin x={0.33} y={0.31} />
+                        <FeatureCropBand.Pin x={0.65} y={0.335} />
+                    </FeatureCropBand.Shot>
+                }
+            >
+                <FeatureCropBand.Note>
+                    <Trans>Pin the side you type</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>The other side, converted for you</Trans>
+                </FeatureCropBand.Note>
+            </FeatureCropBand>
+
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={ArrowSwapHorizontal} title={<Trans>Never confused with spending</Trans>}>
+                    <Trans>First-class Transfer transaction type — never confused with expense or income</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Coins} title={<Trans>Both currencies side by side</Trans>}>
+                    <Trans>Cross-currency dual-amount display: pin send or receive, system computes the other</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={History} title={<Trans>Convert past entries later</Trans>}>
+                    <Trans>Convert any expense or income to a transfer retroactively — no re-entry needed</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>The exchange rate is saved with the transfer, so both balances reconcile exactly</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>Currency-mode pill switches whether you drive from send or receive direction</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Convert any expense or income to a transfer retroactively — no re-entry needed</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why transfers must be a first-class type</Trans>}>
+                    <p>
+                        <Trans>
+                            Transfers between your accounts are not income or expenses — and an app that treats them as such will mis-state
+                            your spending. Budgie has a first-class Transfer transaction type with explicit source and destination accounts.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            For cross-currency transfers (e.g. USD to EUR), Budgie shows both amounts side by side and lets you pin either
+                            side. Switch the &ldquo;currency mode&rdquo; pill to drive the conversion from send or receive direction.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
+
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>Why is &ldquo;transfer&rdquo; a separate type?</Trans>}
                     answer={
                         <Trans>
@@ -172,7 +222,8 @@ export default async function AccountTransfersFeaturePage(props: PageLangParam) 
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>What about cross-currency transfers?</Trans>}
                     answer={
                         <Trans>
@@ -181,7 +232,8 @@ export default async function AccountTransfersFeaturePage(props: PageLangParam) 
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>Can I auto-link transfers from my bank?</Trans>}
                     answer={
                         <Trans>
@@ -190,7 +242,8 @@ export default async function AccountTransfersFeaturePage(props: PageLangParam) 
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Can I undo a transfer?</Trans>}
                     answer={
                         <Trans>
@@ -199,7 +252,7 @@ export default async function AccountTransfersFeaturePage(props: PageLangParam) 
                         </Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

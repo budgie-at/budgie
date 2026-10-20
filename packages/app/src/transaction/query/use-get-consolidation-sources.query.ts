@@ -32,7 +32,7 @@ const orderSourcesByTransferChain = (rows: readonly ConsolidationSourceRowInterf
     return [...rows].sort((left, right) => rankOf(left) - rankOf(right));
 };
 
-const consolidationSourcesAtom = Atom.family(([transactionId, language]: readonly [number, LanguageEnum]) =>
+export const consolidationSourcesAtom = Atom.family(([transactionId, language]: readonly [number, LanguageEnum]) =>
     databaseQueryAtom(
         TRANSACTION_LIST_TABLES,
         Effect.gen(function* () {

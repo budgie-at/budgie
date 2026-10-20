@@ -1,18 +1,17 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { ArrowSwapHorizontal, Bolt, Scissors } from 'reicon-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
+import { FeatureVersus } from '../../../../feature/component/feature-versus/feature-versus';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -24,20 +23,24 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie new expense screen with the amount keypad, the account selector and the date, note, tags and category shortcuts`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Expense Tracking, Reimagined</Trans>}
-                locale={lang}
+                heading={<Trans>Log every expense in seconds</Trans>}
                 tagline={
                     <Trans>
                         Log expenses, income, and transfers in seconds with a bottom-sheet quick-entry form designed for one-handed use.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="expense-tracking-1" slug="expense-tracking" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>From an empty sheet to a list you can read</Trans>}>
@@ -45,18 +48,12 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
                 </FeatureStory.Intro>
 
                 <FeatureStory.Step index={0} title={<Trans>Two taps to saved</Trans>}>
-                    <Trans>Plus, amount, save. The account, today&apos;s date and the likely category are already filled in for you.</Trans>
+                    <Trans>
+                        Plus, amount, save. The account and today&apos;s date are already filled in, and a suggested category is one tap
+                        away.
+                    </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie new expense screen with the amount keypad, the account selector and the date, note, tags and category shortcuts`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="expense-tracking-1"
-                    slug="expense-tracking"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="expense-tracking-1" slug="expense-tracking">
                     <FeatureStory.Callout y={0.335}>
                         <Trans>Type the amount</Trans>
                     </FeatureStory.Callout>
@@ -67,8 +64,8 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
 
                 <FeatureStory.Step index={1} title={<Trans>Every action on a long-press</Trans>}>
                     <Trans>
-                        Edit, convert to a transfer, attach a debt or delete. A plain tap only opens the row to read, so nothing changes by
-                        accident.
+                        Edit, convert to a transfer or refund, attach a debt or delete — whichever apply to that row. A plain tap only opens
+                        the row to read, so nothing changes by accident.
                     </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
@@ -104,96 +101,135 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
                 </FeatureStory.Shot>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why entry friction kills expense trackers</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        An expense tracker lives or dies by entry friction. Budgie&apos;s quick-entry sheet picks the right account, the
-                        most-likely category, and the current date by default — typically two taps to a saved transaction.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        Every entry is amount + account + category + tags + comment + date. Long-press any transaction in the list for a
-                        context menu. Edit, delete, split, convert to a transfer, or link income back to a refunded expense without leaving
-                        the screen.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
+            <FeatureSpecTiles heading={<Trans>Built for a quick entry</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>is already the date</Trans>} value={<Trans>Today</Trans>}>
+                    <Trans>Your default account is filled in too, so you type the amount and save.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>tap on a pill sets the category</Trans>} value={<Trans>One</Trans>}>
+                    <Trans>Once you type a title, a suggested category appears.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>monthly bars show what is normal</Trans>} value="6">
+                    <Trans>Open a transaction with similar ones to compare it.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Two-tap entry: smart defaults for account, category, and date pick the right values out of the box</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Three first-class transaction types: expense, income, transfer — never confused, never miscounted</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Long-press any row for context actions: edit, delete, split, convert to transfer, convert to refund</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
-                        <Trans>MCC pre-fill on bank-synced transactions; AI category suggestion on manual entries</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Comments grow vertically up to two lines so receipts and references fit without truncation</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={5}>
+            <FeatureVersus
+                heading={<Trans>Beyond the notebook</Trans>}
+                lede={<Trans>A notebook or spreadsheet means retyping everything. Budgie fills in what it can.</Trans>}
+            >
+                <FeatureVersus.Without title={<Trans>Notebook or spreadsheet</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>Type every field each time</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Easy to overwrite a row by accident</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Transfers often get counted as spending</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>No quick way to spot an odd cost</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.Without>
+                <FeatureVersus.With title={<Trans>Budgie</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>Account and date are pre-filled</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>A tap reads, a long-press acts</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Transfers never count as spending</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Monthly bars compare similar transactions</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.With>
+            </FeatureVersus>
+
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={Bolt} title={<Trans>Pre-filled for fast entry</Trans>}>
+                    <Trans>Fast entry: account and date are pre-filled, and a suggested category is one tap away</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={ArrowSwapHorizontal} title={<Trans>Transfers never miscounted</Trans>}>
+                    <Trans>Three first-class transaction types: expense, income, transfer — never confused, never miscounted</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Scissors} title={<Trans>One entry, several categories</Trans>}>
+                    <Trans>Split one entry across several categories right in the quick-entry form</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
+                        <Trans>Long-press any row for actions such as edit, delete, convert to transfer or refund, and attach a debt</Trans>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>Tapping a transaction opens a read-only detail view — editing is a deliberate second step</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={6}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>Six monthly bars on that view show what you usually spend at the same place, in the same category</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Read first, edit on purpose</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Opening a transaction no longer drops you into a form. You get a read-only Transaction Info view — amount, account,
-                        category, tags, comment, and the details the bank sent — with editing behind an explicit button. Looking something
-                        up stops being a chance to change it by accident.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        That view also answers the question a single number never can: is this normal? Six monthly bars show what you spent
-                        on the same thing — same account, same category, same merchant title — over the six months leading up to this
-                        transaction, with the monthly totals, a total, and an average. It appears only when there is more than one match, so
-                        one-off purchases stay uncluttered.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why entry friction kills expense trackers</Trans>}>
+                    <p>
+                        <Trans>
+                            An expense tracker lives or dies by entry friction. Budgie&apos;s quick-entry sheet starts with your account and
+                            the current date, and suggests a category you can accept with one tap.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            Every entry is amount + account + category + tags + comment + date. Split an entry across categories right in
+                            the quick-entry form. Long-press any transaction in the list for a menu to edit, delete, convert to a transfer,
+                            or link income back to a refunded expense without leaving the screen.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Item index={1} title={<Trans>Read first, edit on purpose</Trans>}>
+                    <p>
+                        <Trans>
+                            Opening a transaction no longer drops you into a form. You get a read-only Transaction Info view — amount,
+                            account, category, tags, comment, and the details the bank sent — with editing behind an explicit button.
+                            Looking something up stops being a chance to change it by accident.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            That view also answers the question a single number never can: is this normal? Six monthly bars show what you
+                            spent on the same thing — same account, same category, same merchant title — over the six months leading up to
+                            this transaction, with the monthly totals, a total, and an average. It appears only when there is more than one
+                            match, so one-off purchases stay uncluttered.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={2} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>How fast is the quick-entry form?</Trans>}
                     answer={
                         <Trans>
-                            Open the sheet, type the amount, tap save — that&apos;s the typical flow once defaults are tuned to your habits.
-                            The form picks your default account, the most-likely category, and today&apos;s date automatically.
+                            Open the sheet, type the amount, tap save. The form starts with your account and today&apos;s date, and suggests
+                            a category you can accept with one tap.
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>Can I edit a transaction after saving?</Trans>}
                     answer={
                         <Trans>
-                            Always. Tapping a row opens its read-only detail view with an Edit button, and long-pressing it in the list
-                            gives you a context menu with Edit, Delete, Split, Convert to Transfer, and Convert to Refund actions when they
-                            apply.
+                            Yes. Tapping a row opens its read-only detail view with an Edit button, and long-pressing it in the list gives
+                            you a menu with Edit, Delete, Convert to Transfer, Convert to Refund and more, depending on the row. Merged or
+                            refunded transactions offer fewer actions, such as Revert.
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>What do the monthly bars on a transaction mean?</Trans>}
                     answer={
                         <Trans>
@@ -203,7 +239,8 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Does Budgie distinguish transfers from expenses?</Trans>}
                     answer={
                         <Trans>
@@ -212,7 +249,8 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={4}
                     question={<Trans>What about recurring purchases?</Trans>}
                     answer={
                         <Trans>
@@ -221,7 +259,7 @@ export default async function ExpenseTrackingFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

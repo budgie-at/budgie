@@ -34,10 +34,14 @@ layer(TestLayer)('consolidation/monobank-card-to-jar-transfer', it => {
             yield* runConsolidation();
 
             const [canonical] = yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
-            expect(canonical?.fromAccountId).toBe(card.id);
-            expect(canonical?.toAccountId).toBe(jar.id);
-            expect((yield* testQueryService.fetchTransactionById(expense.id)).consolidationParentTransactionId).toBe(canonical?.id);
-            expect((yield* testQueryService.fetchTransactionById(income.id)).consolidationParentTransactionId).toBe(canonical?.id);
+            expect(canonical).toMatchObject({ fromAccountId: card.id, toAccountId: jar.id });
+            const parentIds = yield* Effect.forEach([expense.id, income.id], transactionId =>
+                Effect.map(
+                    testQueryService.fetchTransactionById(transactionId),
+                    transaction => transaction.consolidationParentTransactionId
+                )
+            );
+            expect(parentIds).toEqual([canonical.id, canonical.id]);
         })
     );
 });

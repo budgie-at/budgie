@@ -3,6 +3,72 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.106.1](https://github.com/budgie-at/budgie/compare/v6.106.0...v6.106.1) (2026-10-18)
+
+**Note:** Version bump only for package @budgie/market
+
+
+
+
+
+# [6.106.0](https://github.com/budgie-at/budgie/compare/v6.105.0...v6.106.0) (2026-10-16)
+
+
+### Bug Fixes
+
+* **market:** backfill historical fiat rates from ECB and revalue affected entries ([daf3146](https://github.com/budgie-at/budgie/commit/daf31464fc762c7862867207e00aece24dcc111b))
+* **market:** record daily fiat rates in rate history ([dcd380b](https://github.com/budgie-at/budgie/commit/dcd380be7ab98856ef9dcd09a3d1107d50065e0b))
+* **market:** run the fiat rate backfill after crypto price jobs ([4051977](https://github.com/budgie-at/budgie/commit/4051977bc4a7c3121e65960dfeb6fcbf3e81a278))
+* **market:** stop refetching a year of fiat rates for currencies the rate source does not cover ([66465f5](https://github.com/budgie-at/budgie/commit/66465f521c96ebcf2be071e0d16f9022620703b9))
+* **market:** stop the fiat backfill from blocking crypto market data on Hermes ([d73ab16](https://github.com/budgie-at/budgie/commit/d73ab162b079b8a24871594d0422fa02d7277750))
+
+
+
+
+
+# [6.105.0](https://github.com/budgie-at/budgie/compare/v6.104.1...v6.105.0) (2026-10-16)
+
+**Note:** Version bump only for package @budgie/market
+
+
+
+
+
+# [6.104.0](https://github.com/budgie-at/budgie/compare/v6.103.13...v6.104.0) (2026-10-15)
+
+**Note:** Version bump only for package @budgie/market
+
+
+
+
+
+## [6.103.4](https://github.com/budgie-at/budgie/compare/v6.103.3...v6.103.4) (2026-10-14)
+
+**Note:** Version bump only for package @budgie/market
+
+
+
+
+
+## [6.103.3](https://github.com/budgie-at/budgie/compare/v6.103.2...v6.103.3) (2026-10-13)
+
+
+### Bug Fixes
+
+* **market:** skip empty lots when consuming crypto lots ([2b7bf5c](https://github.com/budgie-at/budgie/commit/2b7bf5caee989f0bbb347c98920f81a917e45275))
+
+
+
+
+
+## [6.103.1](https://github.com/budgie-at/budgie/compare/v6.103.0...v6.103.1) (2026-10-13)
+
+**Note:** Version bump only for package @budgie/market
+
+
+
+
+
 # [6.103.0](https://github.com/budgie-at/budgie/compare/v6.102.0...v6.103.0) (2026-10-13)
 
 

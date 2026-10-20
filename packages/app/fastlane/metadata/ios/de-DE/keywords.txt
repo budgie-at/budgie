@@ -1,1 +1,1 @@
-geld,finanzen,budget,sparen,konto,bank,rechnung,abo,datenschutz,krypto,schulden,währung,beleg
+geld,finanzen,sparen,konto,ausgabenplaner,rechnung,abo,krypto,schulden,währung,beleg,kassenbuch

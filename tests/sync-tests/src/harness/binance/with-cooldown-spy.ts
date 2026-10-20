@@ -12,18 +12,22 @@ export const withCoolDownSpy = <A, E, R>(coolDownWindowMs: number, effect: Effec
         Effect.sync(() => {
             const coolDownDelays: number[] = [];
             const realSetTimeout = setTimeout;
-            const setTimeoutSpy = vi.spyOn(global, 'setTimeout').mockImplementation((handler, delay, ...args) => {
-                if (typeof handler === 'function' && delay === coolDownWindowMs) {
-                    coolDownDelays.push(delay);
-                    handler();
-                    const noopTimerId = realSetTimeout(emptyFn, 0);
-                    globalThis.clearTimeout(noopTimerId);
+            const setTimeoutSpy = vi
+                .spyOn(global, 'setTimeout')
+                .mockImplementation((handler: (...arguments_: unknown[]) => void, delay?: number, ...arguments_: unknown[]) => {
+                    if (delay === coolDownWindowMs) {
+                        coolDownDelays.push(delay);
+                        handler();
+                        const noopTimerId = realSetTimeout(emptyFn, 0);
+                        globalThis.clearTimeout(noopTimerId);
 
-                    return noopTimerId;
-                }
+                        return noopTimerId;
+                    }
 
-                return realSetTimeout(handler, delay, ...args);
-            });
+                    return realSetTimeout(() => {
+                        handler(...arguments_);
+                    }, delay);
+                });
 
             sleepMode.isRateLimitInstant = false;
 

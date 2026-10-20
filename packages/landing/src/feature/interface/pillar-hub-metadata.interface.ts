@@ -1,7 +1,9 @@
+import type { PillarEnum } from '../constant/pillar.enum';
 import type { MessageDescriptor } from '@lingui/core';
 
 export interface PillarHubMetadataInterface {
     readonly slug: string;
+    readonly pillar: PillarEnum;
     readonly title: MessageDescriptor;
     readonly metaTitle: MessageDescriptor;
     readonly metaDescription: MessageDescriptor;

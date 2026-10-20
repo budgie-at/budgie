@@ -1,4 +1,3 @@
-import { TransferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
 import { WalletCaptureReviewReasonEnum } from '@app/wallet-capture/enum/wallet-capture-review-reason.enum';
 import { WalletCaptureStatusEnum } from '@app/wallet-capture/enum/wallet-capture-status.enum';
 import { WalletCaptureImportService } from '@app/wallet-capture/service/wallet-capture-import.service';
@@ -9,7 +8,7 @@ import {
     TransactionConsolidationTypeEnum,
     TransactionEntityTable
 } from '@budgie/contracts';
-import { MonobankSyncService, TransferConsolidationService } from '@budgie/sync';
+import { MonobankSyncService, TransferConsolidationDrainerService, TransferConsolidationService } from '@budgie/sync';
 import { describe, expect, it, vi } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';

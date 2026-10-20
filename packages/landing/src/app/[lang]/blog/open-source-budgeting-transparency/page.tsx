@@ -910,7 +910,7 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
 
                     <BlogArticleProse>
                         <Trans>
-                            Budgie isn’t the only open-source option for financial management. A healthy ecosystem of alternatives exists,
+                            Budgie isn’t the only transparent option for financial management. A healthy ecosystem of alternatives exists,
                             and we believe in acknowledging them fairly. Different tools suit different needs, and the best choice depends
                             on your specific requirements.
                         </Trans>
@@ -1047,11 +1047,8 @@ export default async function OpenSourceBudgetingTransparencyArticle(props: Page
 
                         <BlogFaqItem question={<Trans>How does Budgie make money if the software is free?</Trans>}>
                             <Trans>
-                                Budgie is free to use with optional premium features for users who want additional capabilities. Our
-                                business model relies on users who find enough value in the product to support its development, not on
-                                monetizing user data. The public-source model actually supports this because users can trust their data
-                                isn’t being sold, making them more willing to pay for premium features. Transparency and sustainable
-                                business can coexist.
+                                Budgie is free to use. There is no paid tier, no advertising, and your data is never sold. Public source
+                                supports this because anyone can check that your data stays on your device.
                             </Trans>
                         </BlogFaqItem>
                     </BlogFaqSection>

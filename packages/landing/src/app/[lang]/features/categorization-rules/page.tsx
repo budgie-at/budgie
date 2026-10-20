@@ -1,17 +1,16 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { Bolt, History, Tags } from 'reicon-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureCropBand } from '../../../../feature/component/feature-crop-band/feature-crop-band';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -24,21 +23,25 @@ export default async function CategorizationRulesFeaturePage(props: PageLangPara
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie Rules screen: four rules, each with its conditions above the category and tag it sets, and an on-off switch`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Categorization Rules — Deterministic, Not Guesswork</Trans>}
-                locale={lang}
+                heading={<Trans>Set a rule, skip the sorting</Trans>}
                 tagline={
                     <Trans>
                         Write the rule once and every future import obeys it: match on what the transaction actually says, then set the
                         category, add a tag, or turn it into a transfer.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="categorization-rules-1" slug="categorization-rules" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>From a rule you wrote to what is left for the AI</Trans>}>
@@ -56,16 +59,7 @@ export default async function CategorizationRulesFeaturePage(props: PageLangPara
                         never means deleting it.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie Rules screen: four rules, each with its conditions above the category and tag it sets, and an on-off switch`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="categorization-rules-1"
-                    slug="categorization-rules"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="categorization-rules-1" slug="categorization-rules">
                     <FeatureStory.Callout y={0.252}>
                         <Trans>Conditions you wrote yourself</Trans>
                     </FeatureStory.Callout>
@@ -101,10 +95,9 @@ export default async function CategorizationRulesFeaturePage(props: PageLangPara
 
                 <FeatureStory.Step index={2} title={<Trans>Rules run before the AI does</Trans>}>
                     <Trans>
-                        Rules are evaluated on Monobank sync, on bank file sync and on file import, so most rows land already categorized —
-                        and a category a rule assigned is never second-guessed by a suggestion. What no rule covered is counted in the
-                        missing-categories pill above the list; open one of those rows and the on-device suggestion offers a category for
-                        it.
+                        Rules are evaluated on Monobank sync, on bank file sync and on file import, so most rows land already categorized.
+                        What no rule covered is counted in the missing-categories pill above the list; open one of those rows and a
+                        suggestion offers a category for it.
                     </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
@@ -123,97 +116,127 @@ export default async function CategorizationRulesFeaturePage(props: PageLangPara
                 </FeatureStory.Shot>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Some categorization should be a rule, not a suggestion</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Your landlord&apos;s transfer, your gym membership, the corner shop you visit twice a week — you already know where
-                        those belong. A rule states that once, in plain conditions, and the app stops asking.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        Conditions can look at the title, the comment, the amount, the merchant category code, the account, the transaction
-                        type, or the import source it came from. Combine them with &quot;match all&quot; or &quot;match any&quot;, and pick
-                        the operator that fits: equals, contains, does not contain, greater than, less than, between, in a list, or a
-                        regular expression. Text comparisons ignore letter case.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
+            <FeatureSpecTiles heading={<Trans>What a rule can do</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>things a condition can look at</Trans>} value="7">
+                    <Trans>Title, comment, amount, merchant code, account, type and import source.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>actions on every match</Trans>} value="3">
+                    <Trans>Set a category, add a tag, or turn it into a transfer.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>import and sync runs your rules</Trans>} value={<Trans>Every</Trans>}>
+                    <Trans>Most rows land already sorted.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
+            <FeatureCropBand
+                heading={<Trans>From an edit to a rule</Trans>}
+                lede={<Trans>Recategorize a transaction and Budgie offers to remember it for next time.</Trans>}
+                shot={
+                    <FeatureCropBand.Shot
+                        alt={t(
+                            i18n
+                        )`Budgie edit expense screen with a Quick rule pill above the amount and Tags and Category buttons below`}
+                        locale={lang}
+                        scene="categorization-rules-2"
+                        slug="categorization-rules"
+                        y={0.22}
+                    >
+                        <FeatureCropBand.Pin x={0.72} y={0.262} />
+                        <FeatureCropBand.Pin x={0.66} y={0.455} />
+                        <FeatureCropBand.Pin x={0.82} y={0.455} />
+                    </FeatureCropBand.Shot>
+                }
+            >
+                <FeatureCropBand.Note>
+                    <Trans>Tap the pill to create the rule</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>It keeps the tags you picked</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>And the category you chose</Trans>
+                </FeatureCropBand.Note>
+            </FeatureCropBand>
+
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={Tags} title={<Trans>Category, tag or transfer</Trans>}>
+                    <Trans>Actions that set a category, add a tag, or convert the transaction into a transfer</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Bolt} title={<Trans>Applied on every sync</Trans>}>
+                    <Trans>Rules run automatically on Monobank sync, bank file sync, and CSV import</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={History} title={<Trans>Fix existing transactions too</Trans>}>
+                    <Trans>Saving a rule asks whether to apply it to the matching transactions you already have</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>Conditions on title, comment, amount, MCC, account, transaction type, and import source</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>Match all or match any, with contains, equals, comparison, list, and regular-expression operators</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Actions that set a category, add a tag, or convert the transaction into a transfer</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Rules run automatically on Monobank sync, bank file sync, and CSV import</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Saving a rule applies it retroactively to matching transactions you already have</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={5}>
-                        <Trans>A dedicated Rules screen with search across conditions, actions, categories, tags, and accounts</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={6}>
-                        <Trans>Every rule can be switched off without being deleted</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={7}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>A &quot;matching rules&quot; pill on a transaction shows which rules apply to it</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>The Quick rule pill writes the rule for you</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        When exactly one of your existing rules already matches the transaction, the pill turns into &ldquo;Update
-                        rule?&rdquo; and rewrites that rule&apos;s category and tag instead of creating a near-duplicate. When the
-                        conditions it would write already exist word for word, Budgie says so and lets you open the existing rule or create
-                        the new one anyway. Either way the rule is applied to your existing transactions as soon as it is saved.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Some categorization should be a rule, not a suggestion</Trans>}>
+                    <p>
+                        <Trans>
+                            Your landlord&apos;s transfer, your gym membership, the corner shop you visit twice a week — you already know
+                            where those belong. A rule states that once, in plain conditions, and the app stops asking.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            Conditions can look at the title, the comment, the amount, the merchant category code, the account, the
+                            transaction type, or the import source it came from. Combine them with &quot;match all&quot; or &quot;match
+                            any&quot;, and pick the operator that fits: equals, contains, does not contain, greater than, less than,
+                            between, in a list, or a regular expression. Text comparisons ignore letter case.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Item index={1} title={<Trans>The Quick rule pill writes the rule for you</Trans>}>
+                    <p>
+                        <Trans>
+                            When exactly one of your existing rules already matches the transaction, the pill turns into &ldquo;Update
+                            rule?&rdquo; and rewrites that rule&apos;s category and tag instead of creating a near-duplicate. When the
+                            conditions it would write already exist word for word, Budgie says so and lets you open the existing rule or
+                            create the new one anyway. A rule made from the pill is applied to your existing transactions as soon as it is
+                            saved, and that replaces the category on every matching transaction — including ones you set yourself.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Item index={2} title={<Trans>Rules and on-device AI do different jobs</Trans>}>
+                    <p>
+                        <Trans>
+                            Rules are deterministic: the same conditions produce the same category every single time, which is what you want
+                            for rent, salary, subscriptions, and anything with a stable merchant name. On-device AI categorization is the
+                            opposite tool — it guesses sensibly for merchants you have never seen before. They are separate systems, and
+                            most setups end up using both.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={3} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Rules and on-device AI do different jobs</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Rules are deterministic: the same conditions produce the same category every single time, which is what you want for
-                        rent, salary, subscriptions, and anything with a stable merchant name. On-device AI categorization is the opposite
-                        tool — it guesses sensibly for merchants you have never seen before. They are separate systems, and most setups end
-                        up using both.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
-
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>Do rules apply to transactions I type in myself?</Trans>}
                     answer={
                         <Trans>
                             Automatic evaluation runs on Monobank sync, bank file sync, and CSV import. For everything else, saving or
-                            editing a rule re-applies it across your existing transactions, which covers manual entries too.
+                            editing a rule asks &ldquo;Apply to existing transactions?&rdquo; and shows how many match; choose Apply and it
+                            covers manual entries too. Applying replaces the category on matching transactions, including ones you set
+                            yourself, so check the count first.
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>Can one rule do more than one thing?</Trans>}
                     answer={
                         <Trans>
@@ -222,7 +245,8 @@ export default async function CategorizationRulesFeaturePage(props: PageLangPara
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>What happens when I already have a lot of rules?</Trans>}
                     answer={
                         <Trans>
@@ -231,7 +255,8 @@ export default async function CategorizationRulesFeaturePage(props: PageLangPara
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Is this the same as the AI categorization?</Trans>}
                     answer={
                         <Trans>
@@ -240,7 +265,8 @@ export default async function CategorizationRulesFeaturePage(props: PageLangPara
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={4}
                     question={<Trans>Can I turn a rule off temporarily?</Trans>}
                     answer={
                         <Trans>
@@ -249,7 +275,7 @@ export default async function CategorizationRulesFeaturePage(props: PageLangPara
                         </Trans>
                     }
                 />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

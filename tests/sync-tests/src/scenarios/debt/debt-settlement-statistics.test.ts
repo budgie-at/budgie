@@ -1,5 +1,3 @@
-import { AccountDebtOpeningService } from '@app/account/service/account-debt-opening.service';
-import { DebtAccountService } from '@app/account/service/debt-account.service';
 import {
     AccountBalanceRepository,
     AccountEntityTable,
@@ -29,7 +27,7 @@ import {
     convertFromMicroUnits,
     convertToMicroUnits
 } from '@budgie/contracts';
-import { TransactionDebtSettlementService } from '@budgie/ledger';
+import { AccountDebtOpeningService, DebtAccountService, TransactionDebtSettlementService } from '@budgie/ledger';
 import { ExchangeRateRepository, HistoricalExchangeRateRepository } from '@budgie/market';
 import { afterEach, describe, expect, it, vi } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
@@ -37,7 +35,7 @@ import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { fetchAccountBalance, requireInstrument, TestLayer } from '../../harness';
+import { fetchAccountBalance, requireInstrument, TestLayer, DEBT_OPENING_MESSAGES } from '../../harness';
 import { insertOne } from '../../harness/db/insert-one';
 import { testDb } from '../../harness/scenario/setup';
 import { seed } from '../../harness/seed/seed';
@@ -632,7 +630,8 @@ describe('debt settlement statistics', () => {
                     contactId: null,
                     deadline: null
                 },
-                openingIncome.id
+                openingIncome.id,
+                DEBT_OPENING_MESSAGES
             );
             const additionalIncome = yield* createIncomeTransaction(cashAccount.id, category.id, 100 * PRECISION);
 
@@ -666,7 +665,6 @@ describe('debt settlement statistics', () => {
                 for (const _save of [1, 2, 3, 4, 5]) {
                     const manualSettledAmount = (yield* debtEventRepository.getManualSettledAmountByAccountId(account.id)).at(0);
 
-                    // eslint-disable-next-line no-await-in-loop -- Repeated saves must run sequentially to reproduce the drift
                     yield* debtAccountService.updateDebtById(account.id, {
                         debtType,
                         currentBalance: convertFromMicroUnits(manualSettledAmount?.amount ?? 0),
@@ -738,7 +736,8 @@ const createFundedLentDebt = Effect.fnUntraced(function* () {
             contactId: null,
             deadline: null
         },
-        cashAccount.id
+        cashAccount.id,
+        DEBT_OPENING_MESSAGES
     );
 });
 
@@ -1285,7 +1284,7 @@ const openFundedDebt = Effect.fnUntraced(function* (
     debtType: AccountDebtTypeEnum,
     fundingAccount: Pick<AccountEntityInterface, 'id' | 'instrumentId'>,
     targetAmount: number,
-    instrumentId = fundingAccount.instrumentId
+    instrumentId: number = fundingAccount.instrumentId
 ) {
     const accountDebtOpeningService = yield* AccountDebtOpeningService;
 
@@ -1302,7 +1301,8 @@ const openFundedDebt = Effect.fnUntraced(function* (
             contactId: null,
             deadline: null
         },
-        fundingAccount.id
+        fundingAccount.id,
+        DEBT_OPENING_MESSAGES
     );
 });
 
@@ -1405,7 +1405,7 @@ const attachMarchRepayment = Effect.fnUntraced(function* (
     debtAccountId: number,
     type: TransactionTypeEnum.EXPENSE | TransactionTypeEnum.INCOME,
     amount: number,
-    operatedAt = DEBT_V2_MARCH_OPERATED_AT
+    operatedAt: Date = DEBT_V2_MARCH_OPERATED_AT
 ) {
     const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
 

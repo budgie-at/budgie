@@ -1,17 +1,22 @@
 import { AccountEntityInterface } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { router } from 'expo-router';
-import { FieldErrors, FieldValues, Resolver, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
 import { useShowError } from '../../@generic/hook/use-show-error.hook';
 
+import type { FieldErrors, FieldValues, Resolver, UseFormHandleSubmit, UseFormReturn } from 'react-hook-form';
+
 export const useAccountEntityForm = <T extends FieldValues>(
     resolver: Resolver<T>,
     values: T,
     onSubmit: (values: T) => Promise<AccountEntityInterface>
-) => {
+): Omit<UseFormReturn<T>, 'handleSubmit'> & {
+    readonly isSubmitting: boolean;
+    readonly handleSubmit: ReturnType<UseFormHandleSubmit<T>>;
+} => {
     const showError = useShowError();
     const form = useForm<T>({
         resolver,

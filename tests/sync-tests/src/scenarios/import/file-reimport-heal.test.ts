@@ -1,4 +1,3 @@
-import { TransferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
 import {
     BANK_FEE_CATEGORY_ID,
     CategoryEntityTable,
@@ -13,7 +12,8 @@ import {
     SyncAccountTypeEnum,
     SyncProviderEnum,
     SyncTransactionTypeEnum,
-    TransferConsolidationService
+    TransferConsolidationService,
+    TransferConsolidationDrainerService
 } from '@budgie/sync';
 import { describe, expect, it, vi } from '@effect/vitest';
 import { and, eq, isNull, ne, or } from 'drizzle-orm';

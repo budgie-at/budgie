@@ -59,22 +59,22 @@ export const HomeTourSection = ({ locale }: Props) => {
             <FeatureStory.Step index={2} title={<Trans>Your bank, with nobody in between</Trans>}>
                 <Trans>Monobank cards and jars arrive through your own token, straight into the database on your phone.</Trans>
             </FeatureStory.Step>
-            <FeatureStory.Clip
-                alt={t(i18n)`Screen recording of the Monobank group on the Budgie home screen opening its synced accounts`}
+            <FeatureStory.Shot
+                alt={t(i18n)`Budgie Monobank screen listing two cards and a car jar, each with a balance and a switch`}
                 index={2}
                 locale={locale}
-                scene="monobank-sync-clip-1"
+                scene="monobank-sync-1"
                 slug="monobank-sync"
             />
 
             <FeatureStory.Step index={3} title={<Trans>See where it actually goes</Trans>}>
                 <Trans>Spending by category and by tag, for any period, and every slice opens the transactions underneath it.</Trans>
             </FeatureStory.Step>
-            <FeatureStory.Clip
-                alt={t(i18n)`Screen recording of Budgie analytics filtering spending by category and drilling into a period`}
+            <FeatureStory.Shot
+                alt={t(i18n)`Budgie analytics screen breaking spending down by category with amounts and percentages`}
                 index={3}
                 locale={locale}
-                scene="spending-analytics-clip-1"
+                scene="spending-analytics-1"
                 slug="spending-analytics"
             />
 

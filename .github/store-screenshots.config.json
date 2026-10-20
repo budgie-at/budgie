@@ -17,20 +17,20 @@
         },
         {
             "platform": "ios",
-            "device": "iPad Pro 13-inch (M4)",
+            "device": "iPad Pro 13-inch (M5)",
             "locales": ["en", "fr", "uk", "de", "es"],
             "appearances": ["light", "dark"]
         }
     ],
     "capture-scenes": [
         { "name": "00-prime", "flow": "flows/setup/prime-deep-links-scene.flow.yaml" },
-        { "name": "01-home", "deepLink": "budgie://" },
-        { "name": "02-transactions", "deepLink": "budgie://transactions" },
-        { "name": "03-analytics", "deepLink": "budgie://analytics" },
-        { "name": "04-budget", "deepLink": "budgie://budget" },
-        { "name": "05-add-expense", "deepLink": "budgie://create-transaction/expense" },
-        { "name": "06-account", "deepLink": "budgie://account/1/details" },
-        { "name": "07-settings", "deepLink": "budgie://settings" }
+        { "name": "01-home", "deepLink": "budgie://", "readySelector": { "id": "HomePage.TotalBalance" } },
+        { "name": "03-analytics", "flow": "flows/store/03-analytics.flow.yaml" },
+        { "name": "04-budget", "deepLink": "budgie://budget", "readySelector": { "id": "BudgetDetails.EditButton" } },
+        { "name": "05-add-expense", "flow": "flows/store/05-add-expense.flow.yaml" },
+        { "name": "06-account", "flow": "flows/media/net-worth-tracker-2.flow.yaml" },
+        { "name": "07-settings", "deepLink": "budgie://settings", "readySelector": { "id": "SettingsPage.Container" } },
+        { "name": "09-inbox", "flow": "flows/media/bulk-categorize-transactions-1.flow.yaml" }
     ],
     "screenshots-dir": "tests/app-tests",
     "maestro-config": "tests/app-tests/config.yaml",
@@ -43,6 +43,7 @@
     },
     "build-env": "APP_VARIANT=e2e\nEXPO_PUBLIC_AI_DISABLE=true\nEXPO_PUBLIC_LOGGING_DISABLE=true\n",
     "install-command": "pnpm install --frozen-lockfile",
+    "build-command": "pnpm exec turbo build --filter='@budgie/*'",
     "rct-use-prebuilt-rncore": true,
     "rct-use-rn-dep": true,
     "upload-command": "export PATH=\"$HOME/.rbenv/shims:/opt/homebrew/bin:/opt/homebrew/sbin:$PATH\"\nexport SCREENSHOT_VARIANT=ci\nfastlane ios ios_screenshots\n",

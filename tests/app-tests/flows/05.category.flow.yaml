@@ -25,7 +25,7 @@ appId: ${APP_ID}
       id: 'IconSelector.SearchInput'
 - inputText: 'bike'
 - tapOn:
-      id: 'IconSelector.Icon.Bike'
+      id: 'IconSelector.Icon.reicon:Bicycle'
 
 - tapOn:
       id: 'CategoryForm.Input'
@@ -38,7 +38,7 @@ appId: ${APP_ID}
 - assertVisible:
       id: 'CategoryCard.E2E Category Primary'
 - assertVisible:
-      id: 'CategoryCard.Icon.E2E Category Primary.Bike'
+      id: 'CategoryCard.Icon.E2E Category Primary.reicon:Bicycle'
 
 # --- Create Second Category For Search ---
 
@@ -53,7 +53,7 @@ appId: ${APP_ID}
       id: 'IconSelector.SearchInput'
 - inputText: 'home'
 - tapOn:
-      id: 'IconSelector.Icon.Home'
+      id: 'IconSelector.Icon.reicon:Home'
 
 - tapOn:
       id: 'CategoryForm.Input'
@@ -66,7 +66,7 @@ appId: ${APP_ID}
 - assertVisible:
       id: 'CategoryCard.E2E Category Search'
 - assertVisible:
-      id: 'CategoryCard.Icon.E2E Category Search.Home'
+      id: 'CategoryCard.Icon.E2E Category Search.reicon:Home'
 
 # --- Search And Open Result ---
 
@@ -123,7 +123,7 @@ appId: ${APP_ID}
       id: 'IconSelector.SearchInput'
 - inputText: 'heart'
 - tapOn:
-      id: 'IconSelector.Icon.Heart'
+      id: 'IconSelector.Icon.reicon:Heart'
 
 - tapOn:
       id: 'CategoryForm.Input'
@@ -137,7 +137,7 @@ appId: ${APP_ID}
 - assertVisible:
       id: 'CategoryCard.E2E Category Updated'
 - assertVisible:
-      id: 'CategoryCard.Icon.E2E Category Updated.Heart'
+      id: 'CategoryCard.Icon.E2E Category Updated.reicon:Heart'
 - assertNotVisible:
       id: 'CategoryCard.E2E Category Primary'
 

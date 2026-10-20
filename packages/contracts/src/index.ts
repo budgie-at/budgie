@@ -13,6 +13,8 @@ export { CurrencyEnum } from './@generic/enum/currency.enum';
 export { DatePeriodEnum } from './@generic/enum/date-period.enum';
 export { LanguageEnum } from './@generic/enum/language.enum';
 export { UserIconNameEnum } from './@generic/enum/user-icon-name.enum';
+export { ReiconIconNameEnum } from './@generic/enum/reicon-icon-name.enum';
+export { isReiconIcon } from './@generic/type-guard/is-reicon-icon.type-guard';
 export { isEmojiIcon } from './@generic/type-guard/is-emoji-icon.type-guard';
 export { isUserIcon } from './@generic/type-guard/is-user-icon.type-guard';
 export type { UserIconType } from './@generic/type/user-icon.type';
@@ -276,6 +278,7 @@ export type { TransactionEntryCreateEntityInterface } from './transaction-entry/
 export type { CryptoPositionEntryRowInterface } from './transaction-entry/interface/crypto-position-entry-row.interface';
 export type { PendingBaseValuationBucketInterface } from './transaction-entry/interface/pending-base-valuation-bucket.interface';
 
+export { TransactionEntryBaseValuationRepository } from './transaction-entry/repository/transaction-entry-base-valuation.repository';
 export { TransactionEntryRepository } from './transaction-entry/repository/transaction-entry.repository';
 export { TransactionEntryPositionRepository } from './transaction-entry/repository/transaction-entry-position.repository';
 

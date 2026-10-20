@@ -27,6 +27,8 @@ export { CategorizeInboxSectionEnum } from './inbox/enum/categorize-inbox-sectio
 export { CategorizeInboxService } from './inbox/service/categorize-inbox.service';
 export { categorizeInboxEngineService } from './inbox/service/categorize-inbox-engine.service';
 export { TransactionCategorizeInboxRepository } from './inbox/repository/transaction-categorize-inbox.repository';
+export { selectAcceptableAssignments } from './inbox/utils/select-acceptable-assignments.util';
+export { buildRulePrefillActions } from './inbox/utils/build-rule-prefill-actions.util';
 export type { CategorizeInboxAssignmentInterface } from './inbox/interface/categorize-inbox-assignment.interface';
 export type { CategorizeInboxClusterInterface } from './inbox/interface/categorize-inbox-cluster.interface';
 export type { CategorizeInboxRowInterface } from './inbox/interface/categorize-inbox-row.interface';

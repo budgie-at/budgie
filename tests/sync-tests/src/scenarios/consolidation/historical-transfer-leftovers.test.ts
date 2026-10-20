@@ -350,8 +350,8 @@ const expectPrivatTargetRouted = (canonicalId: number, privatAccountId: number, 
         const [debitEntry] = yield* fetchLiveDebitEntry(canonicalId);
 
         expect(canonical.toAccountId).toBe(privatAccountId);
-        expect(debitEntry?.accountId).toBe(privatAccountId);
-        expect(debitEntry?.amount).toBe(amount);
+        expect(debitEntry.accountId).toBe(privatAccountId);
+        expect(debitEntry.amount).toBe(amount);
     });
 
 const expectExistingTransferBridgeConsolidated = Effect.fnUntraced(function* (

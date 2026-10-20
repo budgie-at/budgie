@@ -39,10 +39,8 @@ Budgie's source code is publicly available under a source-available license (htt
 
 ## Blog
 
-- [How Budgie Keeps Your Financial Data Off the Cloud](https://budgie.at/en/blog/budgie-offline-financial-data): SQLite architecture, encryption, device-to-device sync.
 - [Why Cloud Budgeting Apps Are a Privacy Nightmare](https://budgie.at/en/blog/cloud-budgeting-privacy-risks): How cloud PFM apps expose financial data.
 - [On-Device AI in Your Budget App](https://budgie.at/en/blog/on-device-ai-budget-app-explainer): How local models, embeddings, and speech recognition work together.
-- [Bank Data Safety: Why Offline-First Is the Only Honest Answer](https://budgie.at/en/blog/offline-first-bank-data-safety): Why aggregators are breach targets.
 - [Best YNAB Alternatives for Privacy](https://budgie.at/en/blog/ynab-alternatives-privacy): Privacy-focused YNAB replacements.
 - [All Blog Posts](https://budgie.at/en/blog): Full article index.
 

@@ -9,6 +9,6 @@ export const contentType = 'image/png';
 
 export default createFeatureOgRoute('monobank-sync', i18n => ({
     title: t(i18n)`Monobank Bank Sync`,
-    tagline: t(i18n)`Direct API. No aggregator. Yours forever.`,
+    tagline: t(i18n)`Direct from Monobank. No aggregator. Your history on your device.`,
     tags: [t(i18n)`monobank`, t(i18n)`privacy`, t(i18n)`bank sync`]
 }));

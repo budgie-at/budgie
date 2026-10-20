@@ -1,6 +1,7 @@
 import { msg } from '@lingui/core/macro';
 
 import { FeatureTierEnum } from '../../../../feature/constant/feature-tier.enum';
+import { PillarEnum } from '../../../../feature/constant/pillar.enum';
 
 import type { FeatureRegistryEntryInterface } from '../../../../feature/interface/feature-registry-entry.interface';
 
@@ -8,10 +9,11 @@ import type { FeatureRegistryEntryInterface } from '../../../../feature/interfac
 export const FEATURE_METADATA = {
     slug: 'crypto-investment-tracking',
     tier: FeatureTierEnum.NICHE,
-    title: msg`Crypto Holdings Alongside Your Cash`,
+    pillar: PillarEnum.BANK,
+    name: msg`Crypto Holdings`,
     tagline: msg`Two hundred crypto assets in one dashboard, alongside your bank accounts.`,
     metaTitle: msg`Crypto Portfolio Tracking — Budgie`,
-    metaDescription: msg`Track Bitcoin, Ethereum, and 200 crypto assets alongside your bank accounts in one net-worth view. The largest ship with a year of daily price history.`,
+    metaDescription: msg`Track Bitcoin, Ethereum, and 200 crypto assets alongside your bank accounts in one net-worth view. The largest come with a year of daily price history.`,
     primaryKeyword: 'crypto portfolio tracker app',
     seoKeywords: [
         'crypto portfolio tracker app',

@@ -4,7 +4,7 @@ Companion to `docs/seo-pages.md` §12 (component contract) and `docs/lingui-rsc.
 
 ## 1. Authoring contract
 
-- `FeatureStory.Intro` heading/lede, `.Step` title/body, `.Point` body, and `.Callout` label are all `<Trans>` **inline in the route `page.tsx`**. `.Shot`/`.Clip` `alt` is `t(i18n)` (a string prop, not a JSX child).
+- `FeatureStory.Intro` heading/lede, `.Step` title/body, `.Point` body, and `.Callout` label are all `<Trans>` **inline in the route `page.tsx`**. `.Shot` `alt` is `t(i18n)` (a string prop, not a JSX child).
 - No `msg` descriptors in story copy — `msg` is reserved for `metadata.ts` sidecars (resolved later via `getI18nInstance`/`i18n._`). A story's copy lives and dies with the page that renders it.
 - No arrays of copy and no shared step/callout constants (`STEPS = [...]`, a `feature-story-copy.constant.ts`, etc.). This is the same violation class as `seo-pages.md` §2/§6: registries and constants are enumeration/metadata sources, never content sources. Every merged story PR keeps the diff to one `page.tsx` plus the five locale catalogs — no new `/constant` or `/interface` file.
 - Scene ids, `slug`, `locale`, and callout `y`/`x` are page-local numeric/string literals passed as JSX props, never `metadata.ts` or `FEATURE_REGISTRY` fields.
@@ -16,7 +16,7 @@ Companion to `docs/seo-pages.md` §12 (component contract) and `docs/lingui-rsc.
 
 ## 2. Copy budgets (translator brief)
 
-Keep these budgets when writing English source copy — non-`en` locales routinely run 10–20% longer, and callout labels in particular have zero margin (they sit in a fixed-width caption rail on mobile and a `max-width: 8.25rem` column on desktop; see §5):
+Keep these budgets when writing English source copy — non-`en` locales routinely run 10–20% longer, and callout labels in particular have zero margin (they sit in a numbered list beside or under the phone on mobile and in an 11–14.5rem column beside the frame on desktop; see §5):
 
 | Element | Budget |
 | --- | --- |
@@ -74,9 +74,9 @@ The measurement method used by every PR from #995 onward:
 5. **Verify in-browser against a real production build**, not the source asset file:
    ```js
    // against the rendered <img> element inside .story-frame, not .story-frame itself —
-   // .story-frame also contains the caption rail on mobile, which would skew the box
+   // measure the rendered <img>, not .story-frame, which also holds the callout layers
    document.querySelector('.story-frame img').getBoundingClientRect();
-   document.querySelector('.story-callout-dot').getBoundingClientRect();
+   document.querySelector('.story-callout-pin').getBoundingClientRect();
    ```
    Confirm the dot's normalized position against the `img` box matches the intended `y`/`x` (`x` defaults to `0.93`, the device's right edge) at both a mobile and a desktop viewport, and that every shown label box sits fully **outside** the `img` box (a callout is a dot + external label, never a band over app pixels).
 
@@ -88,8 +88,8 @@ Run against a real `pnpm --filter @budgie-at/landing build` + `next start` (neve
 
 1. **No empty `msgstr` for your new strings** — `grep -B1 'msgstr ""' src/i18n/locales/<lang>/messages.po | grep '^#:'` should show none of your page's source paths, for de/es/fr/uk.
 2. **Overflow sweep, mobile and desktop, `de` + `uk`** (longest expansions), light and dark:
-   - Mobile (360–390px): step title ≤ 2 lines (`getBoundingClientRect().height` ÷ computed `line-height`), callout pill **exactly 1 line** (mobile pills sit in the fixed-width caption rail — a wrap here is a real defect, see issue #1023 for what happens when the rail's reserved space is wrong), no horizontal scroll (`document.documentElement.scrollWidth === window.innerWidth`).
-   - Desktop (1280–1440px): step title ≤ 2 lines. Desktop pills sit in a narrow `max-width: 8.25rem` column beside the frame and **legitimately wrap to 2–3 lines** by design — this is not the same constraint as mobile; do not flag desktop pill wrapping as a defect. Confirm instead that the pill stays inside the viewport and does not overlap the frame or the leader line.
+   - Mobile (360–390px): step title ≤ 2 lines (`getBoundingClientRect().height` ÷ computed `line-height`), callout list items wrap freely because the list takes its natural height and the phone shrinks to the remaining space; confirm the whole pinned panel fits the viewport at 390×844, 390×667 and 320×568, no horizontal scroll (`document.documentElement.scrollWidth === window.innerWidth`).
+   - Desktop (1280–1440px): step title ≤ 2 lines. Desktop labels sit in an 11–14.5rem column beside the frame and **legitimately wrap to 2 lines** by design — this is not the same constraint as mobile; do not flag desktop pill wrapping as a defect. Confirm instead that the pill stays inside the viewport and does not overlap the frame or the leader line.
 3. **Aliased-string audit** — `pnpm i18n:extract`, compare the resulting total message count against what you expect (baseline + your genuinely-new strings). An unexpected jump larger than your new-string count means a string you meant to alias character-identically with an existing one (shared `alt`/callout phrasing across pages) was retyped with a variation instead of copied verbatim, so Lingui created a second `msgid` instead of deduping it.
 4. **Callout/`alt` collision check** — no callout label is a substring of its own shot's `alt` (§1, trap 2).
 5. **Placeholder audit** — no story string (`<Trans>`, `t`) takes an interpolation (`{variable}`, ICU plural). Story copy is static prose; a placeholder here is a sign the string should not be page-local.

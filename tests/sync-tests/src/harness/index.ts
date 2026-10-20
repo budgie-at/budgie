@@ -36,6 +36,7 @@ export {
     expectSingleBinanceTransaction,
     fetchBinanceEntriesByExternalId,
     fetchBinanceTransactions,
+    fetchSortedBinanceExternalIds,
     recentDayInMonthsAgo,
     resetBinanceSyncForResync,
     seedCryptoInstrument,
@@ -69,8 +70,9 @@ export {
     seedP2pIncome,
     seedP2pPair
 } from './consolidation/seed-p2p-fiat-transfer-fixture';
-export { TestClockLayer, TestLayer } from './scenario/test-runtime';
+export { RealDrainerTestClockLayer, TestClockLayer, TestLayer } from './scenario/test-runtime';
 export { MonobankSyncService } from '@budgie/sync';
+export { Workload } from '@app/@generic/service/workload.service';
 export { inWorkload } from './sync-workload/run-in-workload';
 export { pauseUserWork } from './sync-workload/pause-user-work';
 export { advanceScheduledDrain } from './scheduler/advance-scheduled-drain';
@@ -82,3 +84,4 @@ export { seedUsdtFundingAccount } from './binance/seed-usdt-funding-account';
 export { expectParentedToCanonical } from './consolidation/expect-parented-to-canonical';
 export * as Clock from 'effect/Clock';
 export * as Fiber from 'effect/Fiber';
+export { DEBT_OPENING_MESSAGES } from './debt/debt-opening-messages';

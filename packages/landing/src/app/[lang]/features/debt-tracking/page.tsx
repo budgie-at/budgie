@@ -1,18 +1,17 @@
 /* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { CalendarTick, Link2, Scale } from 'reicon-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureCropBand } from '../../../../feature/component/feature-crop-band/feature-crop-band';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
+import { FeatureVersus } from '../../../../feature/component/feature-versus/feature-versus';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
 
@@ -24,21 +23,25 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie home screen scrolled to the You owe and Owed to you debt sections, each with a subtotal and a progress bar`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={<Trans>Debt & Loan Tracking</Trans>}
-                locale={lang}
+                heading={<Trans>Know who owes whom</Trans>}
                 tagline={
                     <Trans>
-                        That €200 you lent your sister, the €1500 you owe a friend — first-class accounts with target balances, return
-                        dates, and contact assignment.
+                        That €200 you lent your sister, the €1500 you owe a friend. Both are first-class accounts with target balances,
+                        return dates, and contact assignment.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot alt={firstShotAlt} locale={lang} scene="debt-tracking-1" slug="debt-tracking" />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>Loans between people are accounts too</Trans>}>
@@ -54,16 +57,7 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                         has been settled.
                     </Trans>
                 </FeatureStory.Step>
-                <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie home screen scrolled to the You owe and Owed to you debt sections, each with a subtotal and a progress bar`}
-                    index={0}
-                    locale={lang}
-                    priority
-                    scene="debt-tracking-1"
-                    slug="debt-tracking"
-                >
+                <FeatureStory.Shot alt={firstShotAlt} index={0} locale={lang} scene="debt-tracking-1" slug="debt-tracking">
                     <FeatureStory.Callout y={0.321}>
                         <Trans>Money you owe</Trans>
                     </FeatureStory.Callout>
@@ -118,74 +112,125 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                 </FeatureStory.Shot>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Why inter-personal debt deserves its own account type</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Inter-personal debt is invisible to most apps. Budgie has Debt as a real account type, with explicit &quot;I
-                        owe&quot; / &quot;owes me&quot; direction, optional contact, target return date, and target balance.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        Net worth respects debt direction: liabilities reduce, receivables increase. But no transaction ever touches the
-                        debt account itself. Lending money books an expense; a repayment books an income — both on the account the money
-                        actually moved through, both filed under Lending or Borrowing. The debt account only keeps score: remaining against
-                        repaid, until you archive it.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
+            <FeatureVersus
+                heading={<Trans>A loan that stays in view</Trans>}
+                lede={<Trans>Many people track loans in notes or a sheet. Here is the difference.</Trans>}
+            >
+                <FeatureVersus.Without title={<Trans>Notes or a spreadsheet</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>Loans kept in a separate sheet</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Balances updated by hand</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Repayments typed in twice</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Net worth often ignores what you owe</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.Without>
+                <FeatureVersus.With title={<Trans>Debts live next to your accounts</Trans>}>
+                    <FeatureVersus.Item>
+                        <Trans>Loans sit beside your accounts</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Remaining balance moves for you</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Attach a repayment you already logged</Trans>
+                    </FeatureVersus.Item>
+                    <FeatureVersus.Item>
+                        <Trans>Net worth can include what you owe</Trans>
+                    </FeatureVersus.Item>
+                </FeatureVersus.With>
+            </FeatureVersus>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Explicit direction: &quot;I owe&quot; vs &quot;owes me&quot; — net worth signs them correctly</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
+            <FeatureCropBand
+                heading={<Trans>What one loan looks like</Trans>}
+                lede={<Trans>A debt account keeps score so you do not have to.</Trans>}
+                shot={
+                    <FeatureCropBand.Shot
+                        alt={t(
+                            i18n
+                        )`Budgie debt account screen for Lent to Daniel showing the amount still to receive, the returned and lent totals and the repayment below`}
+                        locale={lang}
+                        scene="debt-tracking-2"
+                        slug="debt-tracking"
+                        y={0.17}
+                    >
+                        <FeatureCropBand.Pin x={0.74} y={0.237} />
+                        <FeatureCropBand.Pin x={0.5} y={0.285} />
+                        <FeatureCropBand.Pin x={0.65} y={0.445} />
+                    </FeatureCropBand.Shot>
+                }
+            >
+                <FeatureCropBand.Note>
+                    <Trans>What is still to receive</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Returned so far against the total lent</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Each repayment, listed under the debt</Trans>
+                </FeatureCropBand.Note>
+            </FeatureCropBand>
+
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={Scale} title={<Trans>Owe and owed, signed correctly</Trans>}>
+                    <Trans>Explicit direction: &quot;I owe&quot; vs &quot;owes me&quot; — net worth signs them correctly</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={CalendarTick} title={<Trans>Targets and return dates</Trans>}>
+                    <Trans>Target balance and return date for closing the loop</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Link2} title={<Trans>Repayments without re-entering</Trans>}>
+                    <Trans>Attach an existing income or expense to a debt as a repayment, without inventing a second transaction</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
                         <Trans>Optional contact name — track inter-personal loans without spreadsheets</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Target balance and return date for closing the loop</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>
                             Lending and repayments are categorized Lending or Borrowing automatically, and count toward your monthly
                             spending and income
                         </Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Archive when settled — debt drops off the home screen but stays in history</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={5}>
-                        <Trans>Attach an existing income or expense to a debt as a repayment, without inventing a second transaction</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={6}>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
+                        <Trans>
+                            Paid off shows a clear done state and the debt leaves the home screen; repay too much and the overpaid amount is
+                            shown
+                        </Trans>
+                    </FeatureBenefits.Item>
+                    <FeatureBenefits.Item>
                         <Trans>Debts in another currency are valued with the exchange rate from the day the money actually moved</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Attach a repayment you already recorded</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Repayments rarely arrive labelled. A friend sends money back and it lands in your account as ordinary income long
-                        before you think about the debt. Attach that transaction to the debt instead of re-entering it: Budgie files it
-                        under Lending or Borrowing and moves the debt&apos;s remaining balance, while it stays exactly where your bank put
-                        it and keeps counting as income.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Why inter-personal debt deserves its own account type</Trans>}>
+                    <p>
+                        <Trans>
+                            Inter-personal debt is invisible to most apps. Budgie has Debt as a real account type, with explicit &quot;I
+                            owe&quot; / &quot;owes me&quot; direction, optional contact, target return date, and target balance.
+                        </Trans>
+                    </p>
+                    <p>
+                        <Trans>
+                            Net worth respects debt direction: liabilities reduce, receivables increase. But no transaction ever touches the
+                            debt account itself. Lending money books an expense; a repayment books an income — both on the account the money
+                            actually moved through, both filed under Lending or Borrowing. The debt account only keeps score: remaining
+                            against repaid, until the debt is paid off.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
 
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
                     question={<Trans>What&apos;s the difference between &quot;I owe&quot; and &quot;owes me&quot;?</Trans>}
                     answer={
                         <Trans>
@@ -194,25 +239,19 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
-                    question={<Trans>Can I link a debt to a contact?</Trans>}
-                    answer={
-                        <Trans>
-                            Yes — each debt account has an optional contact name. Useful for tracking inter-personal loans without
-                            spreadsheets.
-                        </Trans>
-                    }
-                />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>How do I settle a debt?</Trans>}
                     answer={
                         <Trans>
                             Record or attach the repayment as a normal income or expense — Budgie categorizes it Lending or Borrowing and
-                            moves the remaining balance. No transfer ever touches the debt account itself; archive it once it&apos;s repaid.
+                            moves the remaining balance. No transfer ever touches the debt account itself. Once it&apos;s fully repaid the
+                            debt shows a paid-off state and leaves the home screen; archive it from there to keep it in your history.
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>My friend repaid me by bank transfer — do I have to re-enter it?</Trans>}
                     answer={
                         <Trans>
@@ -222,7 +261,8 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>What if the loan was in a different currency?</Trans>}
                     answer={
                         <Trans>
@@ -231,7 +271,8 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={4}
                     question={<Trans>Does the target return date trigger a reminder?</Trans>}
                     answer={
                         <Trans>
@@ -240,16 +281,7 @@ export default async function DebtTrackingFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
-                    question={<Trans>I already had debts before this change — do I need to redo anything?</Trans>}
-                    answer={
-                        <Trans>
-                            No. Existing debts migrate automatically the first time you open the updated app, and are recategorized as
-                            Lending or Borrowing without any prompts.
-                        </Trans>
-                    }
-                />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

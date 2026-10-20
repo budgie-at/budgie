@@ -260,7 +260,7 @@ describe.skipIf(!isDefined(backupDatabasePath))('categorization/categorization-e
 
                         addKnnDocument(historyEntry, documentVectors, merchantDocuments, commentDocuments, historyEntry.tagIds);
 
-                        historyEntry.tagIds.forEach(tagId => addEvidence(tagEvidence, historyEntry, tagId));
+                        historyEntry.tagIds.forEach(tagId => void addEvidence(tagEvidence, historyEntry, tagId));
                     });
 
                     if (historyIndex !== historyStartIndex) {
@@ -380,7 +380,7 @@ describe.skipIf(isDefined(backupDatabasePath))('categorization-eval/index-candid
                 testDb
                     .update(TransactionEntityTable)
                     .set({
-                        title: index === 0 ? 'Cafe' : index === 1 ? 'Cafe shop' : index === 3 ? '' : 'Cafe',
+                        title: ['Cafe', 'Cafe shop', 'Cafe', ''][index] ?? 'Cafe',
                         comment: index === 3 ? 'Cafe receipt' : '',
                         needsEmbedding: true
                     })
@@ -426,15 +426,17 @@ describe.skipIf(isDefined(backupDatabasePath))('categorization-eval/index-candid
             const commentDocuments = new Map<string, KnnDocument>();
             const documentVectors = new Map<string, Float32Array>();
 
+            const vectorByTransactionId = new Map([
+                [mccMerchant.id, mccDocumentVector],
+                [userMerchant.id, userDocumentVector]
+            ]);
+
             entries.forEach(entry => {
                 documentVectors.set(
                     buildKnnDocumentText(entry),
                     documentVectors.get(buildKnnDocumentText(entry)) ??
-                        (entry.transactionId === mccMerchant.id
-                            ? mccDocumentVector
-                            : entry.transactionId === userMerchant.id
-                              ? userDocumentVector
-                              : otherDocumentVector)
+                        vectorByTransactionId.get(entry.transactionId) ??
+                        otherDocumentVector
                 );
             });
 

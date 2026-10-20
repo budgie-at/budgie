@@ -365,12 +365,9 @@ msgid "Account {accountId}"
 msgstr "Compte {accountId}"
 
 #: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
+#: src/account/utils/get-debt-opening-messages.util.ts
 msgid "Account {accountId} not found"
 msgstr "Compte {accountId} introuvable"
-
-#: src/account/service/account-debt-opening.service.ts
-msgid "Account {id} not found"
-msgstr "Compte {id} introuvable"
 
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Account actions"
@@ -527,6 +524,15 @@ msgstr "Ajustement"
 msgid "AI"
 msgstr "IA"
 
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "AI downloads on this device: {totalSize}"
+msgstr "Téléchargements IA sur cet appareil : {totalSize}"
+
+#: src/ai/component/ai-features-settings-card/ai-features-settings-card.tsx
+#: src/app/(tabs)/settings/ai-features.tsx
+msgid "AI features"
+msgstr "Fonctionnalités d’IA"
+
 #: src/ai/constant/ai-umbrella-status-atom.constant.ts
 msgid "AI off"
 msgstr "IA désactivée"
@@ -604,9 +610,19 @@ msgstr "Déjà suivi"
 msgid "Amount"
 msgstr "Montant"
 
+#: src/account/component/create-debt-account/create-debt-account.tsx
+#: src/account/component/update-debt-account/update-debt-account.tsx
+msgid "Amount borrowed"
+msgstr "Montant emprunté"
+
 #: src/onboarding/component/onboarding-expense/onboarding-expense.tsx
 msgid "Amount first. Budgie picks the account and guesses the category."
 msgstr "Le montant d'abord. Budgie choisit le compte et devine la catégorie."
+
+#: src/account/component/create-debt-account/create-debt-account.tsx
+#: src/account/component/update-debt-account/update-debt-account.tsx
+msgid "Amount lent"
+msgstr "Montant prêté"
 
 #: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
 msgid "Amount or merchant is empty"
@@ -772,7 +788,7 @@ msgstr "Synchronisation bancaire réinitialisée"
 msgid "Base currency"
 msgstr "Devise de base"
 
-#: src/money-data/service/money-data-upgrade.service.ts
+#: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Base instrument not found"
 msgstr "Devise de base introuvable"
 
@@ -835,7 +851,7 @@ msgstr "Authentification biométrique"
 msgid "Borrowed"
 msgstr "Emprunté"
 
-#: src/account/service/account-debt-opening.service.ts
+#: src/account/utils/get-debt-opening-messages.util.ts
 msgid "Borrowed debt account expected"
 msgstr "Compte de dette empruntée attendu"
 
@@ -911,6 +927,10 @@ msgstr "Budgie supprimera de façon réversible {countText}. Vos transactions ma
 #: src/runway/component/runway-verdict/runway-verdict.tsx
 msgid "Burning"
 msgstr "En baisse"
+
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "bytes"
+msgstr "octets"
 
 #: src/sync/component/sync-history-duration-notice/sync-history-duration-notice.tsx
 msgid "Can run for hours on old accounts, and much slower while the app is closed."
@@ -989,10 +1009,6 @@ msgstr "Les catégories ventilent vos dépenses automatiquement. Ajoutez une tra
 msgid "Categorise imports automatically"
 msgstr "Catégoriser les imports automatiquement"
 
-#: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
-msgid "Categorises transactions, suggests tags and transcribes voice notes on this device. Downloads about 2.5 GB of models once — best on Wi-Fi."
-msgstr "Catégorise les transactions, suggère des tags et transcrit les notes vocales directement sur cet appareil. Télécharge environ 2,5 Go de modèles une seule fois — de préférence en Wi-Fi."
-
 #: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
 msgid "Categorize"
 msgstr "Catégoriser"
@@ -1058,6 +1074,10 @@ msgstr "Choisissez « Excel » comme format d'export — les fichiers PDF et CSV
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "Choose a preset to auto-fill column mappings"
 msgstr "Choisissez un modèle pour remplir automatiquement les correspondances de colonnes"
+
+#: src/ai/component/ai-features-settings-card/ai-features-settings-card.tsx
+msgid "Choose features and free space from unused downloads"
+msgstr "Choisir les fonctionnalités et libérer l’espace des téléchargements inutilisés"
 
 #: src/@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle.tsx
 msgid "Clear"
@@ -1364,6 +1384,10 @@ msgstr "Impossible de charger les comptes"
 msgid "Could not load accounts from the bank"
 msgstr "Impossible de charger les comptes depuis la banque"
 
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "Could not load AI downloads"
+msgstr "Impossible de charger les téléchargements IA"
+
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "Could not load sources. Please try again."
 msgstr "Impossible de charger les sources. Veuillez réessayer."
@@ -1411,6 +1435,10 @@ msgstr "Impossible de réassigner l'étiquette"
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
 msgid "Could not recalculate balances"
 msgstr "Impossible de recalculer les soldes"
+
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "Could not remove unused downloads"
+msgstr "Impossible de supprimer les téléchargements inutilisés"
 
 #: src/transaction/components/recurring-series-title-input/recurring-series-title-input.tsx
 msgid "Could not rename recurring payment."
@@ -1469,6 +1497,10 @@ msgstr "Impossible de déconsolider la transaction."
 msgid "Could not undo the move to cash"
 msgstr "Impossible d'annuler le déplacement vers les espèces"
 
+#: src/ai/component/ai-feature-toggle/ai-feature-toggle.tsx
+msgid "Could not update AI feature"
+msgstr "Impossible de mettre à jour la fonctionnalité d’IA"
+
 #: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
 msgid "Could not update category icon"
 msgstr "Impossible de mettre à jour l'icône de la catégorie"
@@ -1476,10 +1508,6 @@ msgstr "Impossible de mettre à jour l'icône de la catégorie"
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Could not update notifications"
 msgstr "Impossible de mettre à jour les notifications"
-
-#: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
-msgid "Could not update on-device AI"
-msgstr "Impossible de mettre à jour l'IA sur l'appareil"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "Could not update recurring payment."
@@ -1904,7 +1932,7 @@ msgstr "Modifier la règle"
 msgid "Edit Tag"
 msgstr "Modifier l'étiquette"
 
-#: src/transaction/components/transaction-info-page/transaction-info-page.tsx
+#: src/transaction/components/transaction-info-page-content/transaction-info-page-content.tsx
 msgid "Edit transaction"
 msgstr "Modifier la transaction"
 
@@ -1969,7 +1997,7 @@ msgstr "Traduction anglaise"
 msgid "Enter a {PIN_LENGTH}-digit PIN"
 msgstr "Entrez un code PIN à {PIN_LENGTH} chiffres"
 
-#: src/account/service/account-debt-opening.service.ts
+#: src/account/utils/get-debt-opening-messages.util.ts
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
 msgid "Enter all amounts"
 msgstr "Saisissez tous les montants"
@@ -2260,6 +2288,10 @@ msgstr "Montant du financement"
 msgid "General"
 msgstr "Général"
 
+#: src/ai/component/ai-settings-section/ai-settings-section.tsx
+msgid "Generate English names and search keywords automatically."
+msgstr "Générez automatiquement des noms anglais et des mots-clés de recherche."
+
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "Generic"
 msgstr "Générique"
@@ -2275,6 +2307,10 @@ msgstr "Obtenir la clé API"
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Get API Token"
 msgstr "Obtenir le jeton API"
+
+#: src/ai/component/ai-settings-section/ai-settings-section.tsx
+msgid "Get category, tag, and note suggestions from your history."
+msgstr "Recevez des suggestions de catégories, d’étiquettes et de notes à partir de votre historique."
 
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Get notified when a budget threshold is crossed"
@@ -2323,10 +2359,6 @@ msgstr "Comment configurer"
 #: src/sync/component/file-upload-step/file-upload-step.tsx
 msgid "How to export"
 msgstr "Comment exporter"
-
-#: src/@generic/component/icon/icon.tsx
-msgid "Icon importer not found: {icon}"
-msgstr "Importateur d'icônes introuvable : {icon}"
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "If Privat24 emails you the file instead of downloading it, save the attachment from your inbox"
@@ -2462,8 +2494,7 @@ msgid "Income by Tag"
 msgstr "Revenus par étiquette"
 
 #: src/app/import-backup-pin.tsx
-#: src/auth/hook/use-pin-authentication.hook.ts
-#: src/auth/hook/use-pin-setup.hook.tsx
+#: src/auth/hook/use-pin-error.hook.ts
 msgid "Incorrect PIN"
 msgstr "Code PIN incorrect"
 
@@ -2587,6 +2618,10 @@ msgstr "Limite"
 #: src/ai/component/voice-input-bubble/voice-input-bubble.tsx
 msgid "Listening..."
 msgstr "Écoute..."
+
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "Loading AI downloads…"
+msgstr "Chargement des téléchargements IA…"
 
 #: src/transaction/components/suggestion-loading-indicator/suggestion-loading-indicator.tsx
 msgid "Loading AI model..."
@@ -2741,6 +2776,10 @@ msgstr "Catégories manquantes"
 #: src/account/component/crypto-currency-group-toggle-row/crypto-currency-group-toggle-row.tsx
 msgid "Missing rate"
 msgstr "Taux manquant"
+
+#: src/app/(tabs)/settings/ai-features.tsx
+msgid "Models download once, best on Wi-Fi"
+msgstr "Les modèles se téléchargent une fois, idéalement en Wi-Fi"
 
 #: src/runway/component/runway-history-legend/runway-history-legend.tsx
 msgid "Money in"
@@ -3092,10 +3131,6 @@ msgstr "maintenant"
 msgid "of"
 msgstr "sur"
 
-#: src/ai/component/ai-enabled-toggle/ai-enabled-toggle.tsx
-msgid "On-device AI"
-msgstr "IA sur l'appareil"
-
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 #: src/onboarding/component/onboarding-done/onboarding-done.tsx
 msgid "On-device AI enabled"
@@ -3130,7 +3165,7 @@ msgid "Only expense transactions can be converted"
 msgstr "Seules les transactions de dépense peuvent être converties"
 
 #: ../ledger/src/transaction/constant/transfer-conversion-error-message.constant.ts
-#: src/account/service/account-debt-opening.service.ts
+#: src/account/utils/get-debt-opening-messages.util.ts
 msgid "Only income transactions can be converted"
 msgstr "Seules les transactions de revenu peuvent être converties"
 
@@ -3139,7 +3174,7 @@ msgid "Only single-entry expenses can be converted"
 msgstr "Seules les dépenses à écriture unique peuvent être converties"
 
 #: ../ledger/src/transaction/constant/transfer-conversion-error-message.constant.ts
-#: src/account/service/account-debt-opening.service.ts
+#: src/account/utils/get-debt-opening-messages.util.ts
 msgid "Only single-entry incomes can be converted"
 msgstr "Seuls les revenus à écriture unique peuvent être convertis"
 
@@ -3565,6 +3600,10 @@ msgstr "Supprimer la répartition"
 msgid "Remove split?"
 msgstr "Supprimer la répartition ?"
 
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "Remove unused downloads ({unusedSize})"
+msgstr "Supprimer les téléchargements inutilisés ({unusedSize})"
+
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "Rename"
 msgstr "Renommer"
@@ -3614,6 +3653,10 @@ msgstr "Restaurer depuis une sauvegarde"
 #: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
 msgid "Restore the account or choose another active account in the automation before importing the capture."
 msgstr "Restaurez le compte ou choisissez un autre compte actif dans l’automatisation avant d’importer la capture."
+
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "Retry"
+msgstr "Réessayer"
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Return to Budgie and select the saved XLSX file below"
@@ -4036,7 +4079,7 @@ msgstr "Afficher les transactions de {displayTitle}"
 msgid "Show transactions when any main amount is inside this range, regardless of currency."
 msgstr "Afficher les transactions lorsqu’un montant principal se situe dans cette plage, quelle que soit la devise."
 
-#: src/transaction/components/transaction-info-page/transaction-info-page.tsx
+#: src/transaction/components/transaction-info-page-content/transaction-info-page-content.tsx
 msgid "Similar transactions"
 msgstr "Transactions similaires"
 
@@ -4044,6 +4087,10 @@ msgstr "Transactions similaires"
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Skip"
 msgstr "Ignorer"
+
+#: src/ai/component/ai-settings-section/ai-settings-section.tsx
+msgid "Smart suggestions"
+msgstr "Suggestions intelligentes"
 
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "Smarter, without the cloud"
@@ -4081,6 +4128,10 @@ msgstr "Sources"
 #: src/i18n/constant/languages.constant.ts
 msgid "Spanish"
 msgstr "Espagnol"
+
+#: src/ai/component/ai-settings-section/ai-settings-section.tsx
+msgid "Speak an expense and Budgie fills in the transaction."
+msgstr "Dictez une dépense et Budgie remplit la transaction."
 
 #: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
 msgid "Spending by Category"
@@ -4282,10 +4333,6 @@ msgstr "Appuyez pour effacer"
 msgid "Tap to select"
 msgstr "Appuyez pour sélectionner"
 
-#: src/account/component/account-target-balance-field.tsx/account-target-balance-field.tsx
-msgid "Target balance"
-msgstr "Solde cible"
-
 #: src/account/component/start-deposit-form/start-deposit-form.tsx
 msgid "The bank did not report the deposit currency. Confirm the currency and the receiving amount."
 msgstr "La banque n’a pas indiqué la devise du dépôt. Confirmez la devise et le montant reçu."
@@ -4456,6 +4503,10 @@ msgstr "Aujourd'hui"
 msgid "Token required"
 msgstr "Jeton requis"
 
+#: src/auth/hook/use-pin-error.hook.ts
+msgid "Too many attempts. Try again in {time}"
+msgstr "Trop de tentatives. Réessayez dans {time}"
+
 #: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
 #: src/account/component/debt-account-card/debt-account-card.tsx
@@ -4507,7 +4558,7 @@ msgstr "La transaction doit avoir exactement une écriture principale"
 
 #: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
 #: ../ledger/src/transaction/service/transaction-transfer.service.ts
-#: src/account/service/account-debt-opening.service.ts
+#: src/account/utils/get-debt-opening-messages.util.ts
 msgid "Transaction not found"
 msgstr "Transaction introuvable"
 
@@ -4549,6 +4600,10 @@ msgstr "Transfert depuis le compte"
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Transfer To Account"
 msgstr "Transfert vers le compte"
+
+#: src/ai/component/ai-settings-section/ai-settings-section.tsx
+msgid "Translate categories and tags"
+msgstr "Traduire les catégories et les étiquettes"
 
 #: src/ai/constant/ai-translation-status-atom.constant.ts
 msgid "Translating categories and tags"
@@ -4749,6 +4804,10 @@ msgstr "Voir les transactions source"
 #: src/app/(tabs)/settings/apple-pay-capture.tsx
 msgid "View step-by-step instructions"
 msgstr "Voir les instructions étape par étape"
+
+#: src/ai/component/ai-settings-section/ai-settings-section.tsx
+msgid "Voice notes"
+msgstr "Notes vocales"
 
 #: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
 msgid "Volume"

@@ -1,8 +1,8 @@
 /* eslint-disable react/jsx-max-depth */
 
 import { Trans } from '@lingui/react/macro';
-import { GitBranch } from 'lucide-react';
 import Link from 'next/link';
+import { BranchUp } from 'reicon-react';
 
 import { getCurrentYear } from '../../utils/get-current-year.util';
 import { Logo } from '../logo/logo';
@@ -39,7 +39,7 @@ export const Footer = async ({ lang }: Props) => {
                                 className="text-muted-foreground hover:text-foreground transition-colors"
                                 href="https://github.com/budgie-at/budgie"
                             >
-                                <GitBranch className="size-5" />
+                                <BranchUp className="size-5" />
 
                                 <span className="sr-only">
                                     <Trans>GitHub</Trans>
@@ -159,6 +159,11 @@ export const Footer = async ({ lang }: Props) => {
                                 </Link>
                             </li>
                             <li>
+                                <Link className="text-muted-foreground hover:text-foreground transition-colors" href={`/${lang}/changelog`}>
+                                    <Trans>Changelog</Trans>
+                                </Link>
+                            </li>
+                            <li>
                                 <Link
                                     className="text-muted-foreground hover:text-foreground transition-colors"
                                     href="https://github.com/budgie-at/budgie"
@@ -177,7 +182,7 @@ export const Footer = async ({ lang }: Props) => {
                             <li>
                                 <Link
                                     className="text-muted-foreground hover:text-foreground transition-colors"
-                                    href={`/${lang}/blog/mint-alternatives-developers`}
+                                    href={`/${lang}/blog/mint-shutdown-private-alternative`}
                                 >
                                     <Trans>Mint Alternatives</Trans>
                                 </Link>
@@ -251,7 +256,7 @@ export const Footer = async ({ lang }: Props) => {
                             className="text-xs text-muted-foreground hover:text-foreground transition-colors"
                             href={`/${lang}/legal/license`}
                         >
-                            <Trans>Open Source License</Trans>
+                            <Trans>Source-Available License</Trans>
                         </Link>
                     </div>
                 </div>

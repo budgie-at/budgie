@@ -1,4 +1,3 @@
-import { Workload } from '@app/@generic/service/workload.service';
 import { AccountRepository, AccountTypeEnum, SyncModeEnum } from '@budgie/contracts';
 import { MONOBANK_RATE_LIMIT_MS } from '@budgie/sync';
 import { describe, expect, it, vi } from '@effect/vitest';
@@ -17,7 +16,8 @@ import {
     seed,
     setupBackwardSweepFixture,
     subtractMonths,
-    TestClockLayer
+    TestClockLayer,
+    Workload
 } from '../../harness';
 import { mockServer } from '../../harness/scenario/mock-server';
 
@@ -44,7 +44,7 @@ describe('monobank/backfill-token-rotation', () => {
                 backwardSyncLimitAt: subtractMonths(sweepStart, 4),
                 forwardSyncedAt: sweepStart
             });
-            const findById = accountRepository.findById;
+            const { findById } = accountRepository;
             const requestedTokens: string[] = [];
             const requestedAccounts: string[] = [];
             const requestTimesByToken = new Map<string, number[]>();
@@ -57,6 +57,7 @@ describe('monobank/backfill-token-rotation', () => {
                         yield* Deferred.succeed(batchLookupStarted, undefined);
                         yield* Deferred.await(releaseBatchLookup);
                     }
+
                     return yield* findById(accountId);
                 })
             );
@@ -73,8 +74,10 @@ describe('monobank/backfill-token-rotation', () => {
                         requestedAtMs - previousTimes[previousTimes.length - 1] < MONOBANK_RATE_LIMIT_MS
                     ) {
                         rateLimitedRequests += 1;
+
                         return new HttpResponse(null, { status: 429 });
                     }
+
                     return HttpResponse.json([]);
                 })
             );
@@ -101,7 +104,7 @@ describe('monobank/backfill-token-rotation', () => {
                 expect(requestTimesByToken.get('quota-token-b')).toEqual([0, MONOBANK_RATE_LIMIT_MS]);
                 expect(rateLimitedRequests).toBe(0);
             }).pipe(
-                Effect.ensuring(Effect.sync(() => accountLookup.mockRestore())),
+                Effect.ensuring(Effect.sync(() => void accountLookup.mockRestore())),
                 Effect.ensuring(Deferred.succeed(releaseBatchLookup, undefined))
             );
         }).pipe(Effect.provide(TestClockLayer))

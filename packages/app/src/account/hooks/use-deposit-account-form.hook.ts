@@ -11,7 +11,9 @@ import { useAccountEntityForm } from './use-account-entity-form.hook';
 export const useDepositAccountForm = (
     initialValues: DepositAccountFormValues,
     onSubmit: (values: DepositAccountFormValues) => Promise<AccountEntityInterface>
-) => {
+): ReturnType<typeof useAccountEntityForm<DepositAccountFormValues>> & {
+    readonly instrument: ReturnType<typeof useGetInstrumentByIdQuery>['instrument'];
+} => {
     const form = useAccountEntityForm(
         standardSchemaResolver(Schema.toStandardSchemaV1(DepositAccountCreateInputSchema)),
         initialValues,

@@ -1,8 +1,8 @@
 'use client';
 
 /* oxlint-disable lingui/no-unlocalized-strings */
-import { RotateCcw } from 'lucide-react';
 import { useEffect, useRef } from 'react';
+import { RotateLeft } from 'reicon-react';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -175,7 +175,7 @@ export const CategorizeDemoPlayer = ({ replay, children }: Props) => {
                 {children}
             </div>
             <button className="cdemo-replay" onClick={handleReplay} type="button">
-                <RotateCcw aria-hidden="true" size={14} />
+                <RotateLeft aria-hidden="true" size={14} />
                 {replay}
             </button>
         </div>

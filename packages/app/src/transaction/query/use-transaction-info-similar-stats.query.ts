@@ -78,7 +78,7 @@ const fillSimilarStatsMonths = (stats: SimilarTransactionStatsInterface, operate
     return { ...stats, months };
 };
 
-const similarStatsAtom = Atom.family((query: SimilarTransactionStatsQueryInterface | null) =>
+export const similarStatsAtom = Atom.family((query: SimilarTransactionStatsQueryInterface | null) =>
     databaseQueryAtom(
         TRANSACTION_LIST_TABLES,
         isDefined(query)

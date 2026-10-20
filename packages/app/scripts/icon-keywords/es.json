@@ -411,6 +411,9 @@
 "angler": [
 "pescador"
 ],
+"angles": [
+"ángulos"
+],
 "angry": [
 "enojado",
 "enfadado"
@@ -652,6 +655,9 @@
 ],
 "asterisk": [
 "asterisco"
+],
+"asteroid": [
+"asteroide"
 ],
 "astroid": [
 "astroide"
@@ -1344,6 +1350,9 @@
 "explosión",
 "auge"
 ],
+"boombox": [
+"radiocasete"
+],
 "boost": [
 "impulso",
 "potenciar"
@@ -1590,6 +1599,9 @@
 "bullet": [
 "viñeta",
 "bala"
+],
+"bullhorn": [
+"megáfono"
 ],
 "bullseye": [
 "diana",
@@ -2025,6 +2037,9 @@
 ],
 "ceremony": [
 "ceremonia"
+],
+"certificate": [
+"certificado"
 ],
 "certification": [
 "certificación"
@@ -2683,6 +2698,9 @@
 "conflict": [
 "conflicto"
 ],
+"confused": [
+"confundido"
+],
 "congratulations": [
 "felicidades",
 "enhorabuena"
@@ -3045,6 +3063,9 @@
 "crosshair": [
 "mira",
 "punto de mira"
+],
+"crosshairs": [
+"mira"
 ],
 "crossing": [
 "cruce",
@@ -3558,6 +3579,9 @@
 "diamante",
 "rombo"
 ],
+"diamonds": [
+"diamantes"
+],
 "diary": [
 "diario",
 "agenda"
@@ -3781,6 +3805,9 @@
 "dna": [
 "adn"
 ],
+"doc": [
+"documento"
+],
 "dock": [
 "muelle",
 "base de conexión"
@@ -3859,6 +3886,9 @@
 ],
 "dots": [
 "puntos"
+],
+"dotted": [
+"punteado"
 ],
 "double": [
 "doble"
@@ -4028,6 +4058,9 @@
 "ear": [
 "oreja",
 "oído"
+],
+"earbuds": [
+"auriculares"
 ],
 "earnings": [
 "ganancias",
@@ -4834,6 +4867,9 @@
 "flight": [
 "vuelo"
 ],
+"flip": [
+"voltear"
+],
 "float": [
 "flotar"
 ],
@@ -5127,6 +5163,9 @@
 "front": [
 "frente",
 "delantero"
+],
+"frown": [
+"ceño fruncido"
 ],
 "frowning": [
 "ceño fruncido",
@@ -6975,6 +7014,9 @@
 "life": [
 "vida"
 ],
+"lifebuoy": [
+"salvavidas"
+],
 "lifeguard": [
 "socorrista",
 "salvavidas"
@@ -7948,6 +7990,9 @@
 "mudanza",
 "moviéndose"
 ],
+"msg": [
+"mensaje"
+],
 "mug": [
 "taza",
 "tazón"
@@ -8164,6 +8209,9 @@
 "notice": [
 "aviso",
 "notar"
+],
+"notif": [
+"notificación"
 ],
 "notification": [
 "notificación"
@@ -8533,6 +8581,9 @@
 "pincel",
 "brocha"
 ],
+"paintbucket": [
+"bote de pintura"
+],
 "paired": [
 "emparejado",
 "vinculado"
@@ -8824,6 +8875,9 @@
 "performance": [
 "rendimiento",
 "actuación"
+],
+"perfume": [
+"perfume"
 ],
 "period": [
 "periodo",
@@ -9838,6 +9892,9 @@
 "recibo",
 "ticket"
 ],
+"receive": [
+"recibir"
+],
 "received": [
 "recibido"
 ],
@@ -10707,6 +10764,9 @@
 "screen": [
 "pantalla"
 ],
+"screencast": [
+"transmisión de pantalla"
+],
 "screening": [
 "cribado",
 "proyección"
@@ -11190,6 +11250,9 @@
 "tarjeta sim",
 "sim"
 ],
+"simcard": [
+"tarjeta sim"
+],
 "sine": [
 "seno"
 ],
@@ -11274,6 +11337,9 @@
 "slash": [
 "barra",
 "barra diagonal"
+],
+"sledgehammer": [
+"mazo"
 ],
 "sleep": [
 "dormir",
@@ -11486,6 +11552,9 @@
 ],
 "sound": [
 "sonido"
+],
+"soundwave": [
+"onda sonora"
 ],
 "soup": [
 "sopa"
@@ -11887,6 +11956,9 @@
 "pegajoso",
 "adhesivo"
 ],
+"stickynote": [
+"nota adhesiva"
+],
 "stinger": [
 "aguijón"
 ],
@@ -11966,6 +12038,9 @@
 ],
 "street": [
 "calle"
+],
+"streets": [
+"calles"
 ],
 "strength": [
 "fuerza",
@@ -12052,6 +12127,9 @@
 ],
 "subscript": [
 "subíndice"
+],
+"subscription": [
+"suscripción"
 ],
 "substitute": [
 "sustituir",
@@ -12487,6 +12565,9 @@
 ],
 "text": [
 "texto"
+],
+"textalign": [
+"alineación de texto"
 ],
 "textarea": [
 "área de texto"
@@ -13028,6 +13109,9 @@
 "try": [
 "intentar",
 "probar"
+],
+"tshirt": [
+"camiseta"
 ],
 "tube": [
 "tubo"
@@ -13894,6 +13978,9 @@
 "wash": [
 "lavar"
 ],
+"washer": [
+"lavadora"
+],
 "washing": [
 "lavado",
 "lavando"
@@ -14078,6 +14165,9 @@
 ],
 "wine": [
 "vino"
+],
+"wineglass": [
+"copa de vino"
 ],
 "winery": [
 "bodega",

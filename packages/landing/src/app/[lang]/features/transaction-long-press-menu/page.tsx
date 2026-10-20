@@ -1,17 +1,16 @@
-/* eslint-disable max-lines, max-lines-per-function */
+/* eslint-disable max-lines-per-function */
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
+import { Hand, ListCheck, Mobile } from 'reicon-react';
 
+import { FeatureBenefits } from '../../../../feature/component/feature-benefits/feature-benefits';
 import { FeatureBreadcrumbs } from '../../../../feature/component/feature-breadcrumbs/feature-breadcrumbs';
-import { FeaturePageBenefitGridItem } from '../../../../feature/component/feature-page-benefit-grid-item/feature-page-benefit-grid-item';
-import { FeaturePageBenefitGrid } from '../../../../feature/component/feature-page-benefit-grid/feature-page-benefit-grid';
-import { FeaturePageFaqItem } from '../../../../feature/component/feature-page-faq-item/feature-page-faq-item';
-import { FeaturePageFaqSection } from '../../../../feature/component/feature-page-faq-section/feature-page-faq-section';
-import { FeaturePageHeading } from '../../../../feature/component/feature-page-heading/feature-page-heading';
+import { FeatureCropBand } from '../../../../feature/component/feature-crop-band/feature-crop-band';
+import { FeatureDetails } from '../../../../feature/component/feature-details/feature-details';
+import { FeatureFaq } from '../../../../feature/component/feature-faq/feature-faq';
 import { FeaturePageHero } from '../../../../feature/component/feature-page-hero/feature-page-hero';
-import { FeaturePageProse } from '../../../../feature/component/feature-page-prose/feature-page-prose';
-import { FeaturePageSection } from '../../../../feature/component/feature-page-section/feature-page-section';
 import { FeaturePageShell } from '../../../../feature/component/feature-page-shell/feature-page-shell';
+import { FeatureSpecTiles } from '../../../../feature/component/feature-spec-tiles/feature-spec-tiles';
 import { FeatureStory } from '../../../../feature/component/feature-story/feature-story';
 import { createFeatureGenerateMetadata } from '../../../../feature/utils/create-feature-generate-metadata.util';
 import { PageLangParam, initLingui } from '../../../../i18n/init-lingui';
@@ -24,21 +23,30 @@ export default async function TransactionLongPressMenuFeaturePage(props: PageLan
     const { lang } = await props.params;
     const i18n = initLingui(lang);
 
-    const featureName = i18n._(FEATURE_METADATA.title);
+    const featureName = i18n._(FEATURE_METADATA.name);
+    const firstShotAlt = t(
+        i18n
+    )`Budgie transaction list with a context menu on one card offering edit, convert to transfer, attach debt and delete`;
 
     return (
         <FeaturePageShell lang={lang} meta={FEATURE_METADATA}>
             <FeaturePageHero
                 breadcrumbs={<FeatureBreadcrumbs current={featureName} locale={lang} />}
-                heading={featureName}
-                locale={lang}
+                heading={<Trans>Long-press for quick actions</Trans>}
                 tagline={
                     <Trans>
-                        Long-press any transaction card for a native context menu — edit, delete, split, convert to transfer, or convert
-                        income to a refund without opening the full edit form.
+                        Long-press any transaction card for a menu: edit, delete, convert to a transfer, convert income to a refund, attach
+                        a debt and more, without opening the full edit form.
                     </Trans>
                 }
-            />
+            >
+                <FeaturePageHero.Shot
+                    alt={firstShotAlt}
+                    locale={lang}
+                    scene="transaction-long-press-menu-1"
+                    slug="transaction-long-press-menu"
+                />
+            </FeaturePageHero>
 
             <FeatureStory>
                 <FeatureStory.Intro heading={<Trans>Every change starts on the list</Trans>}>
@@ -52,12 +60,9 @@ export default async function TransactionLongPressMenuFeaturePage(props: PageLan
                     <Trans>The menu opens anchored to the card you pressed, and the rest of the list dims behind it.</Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
-                    alt={t(
-                        i18n
-                    )`Budgie transaction list with a context menu on one card offering edit, convert to transfer, attach debt and delete`}
+                    alt={firstShotAlt}
                     index={0}
                     locale={lang}
-                    priority
                     scene="transaction-long-press-menu-1"
                     slug="transaction-long-press-menu"
                 >
@@ -69,10 +74,10 @@ export default async function TransactionLongPressMenuFeaturePage(props: PageLan
                     </FeatureStory.Callout>
                 </FeatureStory.Shot>
 
-                <FeatureStory.Step index={1} title={<Trans>Six actions, no form</Trans>}>
+                <FeatureStory.Step index={1} title={<Trans>Up to eight actions, no form</Trans>}>
                     <Trans>
-                        Edit, convert to refund, convert to transfer, attach a debt, delete, or revert — every one of them starts from the
-                        list.
+                        Edit, convert to refund, convert to transfer, start a deposit, pay in parts, attach a debt, delete, or revert —
+                        every one of them starts from the list, and each row shows only the ones that fit it.
                     </Trans>
                 </FeatureStory.Step>
                 <FeatureStory.Shot
@@ -159,140 +164,110 @@ export default async function TransactionLongPressMenuFeaturePage(props: PageLan
                 </FeatureStory.Shot>
             </FeatureStory>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Five taps is four taps too many</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Editing a transaction in most expense apps means tapping the row to open a detail screen, then tapping an edit
-                        button, then navigating form tabs, then saving, then going back. Common operations like deleting a duplicate or
-                        reclassifying an expense as a transfer should not cost five taps. Budgie surfaces all of them behind a single
-                        long-press gesture anchored to the transaction card itself.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        The same popover menu opens on every platform, anchored to the transaction card. There is no modal, no full-screen
-                        form, and no intermediate navigation step for the common actions.
-                    </Trans>
-                </FeaturePageProse>
-            </FeaturePageSection>
+            <FeatureSpecTiles heading={<Trans>Everything you do to a transaction</Trans>}>
+                <FeatureSpecTiles.Tile title={<Trans>actions behind one long-press</Trans>} value={<Trans>Up to 6</Trans>}>
+                    <Trans>Not every action shows on every transaction. A single expense can show six.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>the actions that fit the row</Trans>} value={<Trans>Only</Trans>}>
+                    <Trans>Refund shows for income, deposit for expenses.</Trans>
+                </FeatureSpecTiles.Tile>
+                <FeatureSpecTiles.Tile title={<Trans>press and hold to open it</Trans>} value={<Trans>One</Trans>}>
+                    <Trans>The menu opens next to the card you pressed.</Trans>
+                </FeatureSpecTiles.Tile>
+            </FeatureSpecTiles>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>What you get</Trans>
-                </FeaturePageHeading>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Two taps from list to done — long-press plus action, no intermediate screens</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Context-aware menu — actions adapt to transaction type so you never see an invalid option</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
-                        <Trans>One popover menu on every platform — no modal, no full-screen form to open first</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Gesture-driven flow — one-handed, no toolbar hunting, no extra navigation layer</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+            <FeatureCropBand
+                heading={<Trans>One short menu, right at the card</Trans>}
+                lede={<Trans>Pick an action without leaving the list. Delete always comes last.</Trans>}
+                shot={
+                    <FeatureCropBand.Shot
+                        alt={t(
+                            i18n
+                        )`Budgie context menu with Edit Transaction, Convert to Transfer, Attach debt and a red Delete Transaction`}
+                        locale={lang}
+                        scene="transaction-long-press-menu-1"
+                        slug="transaction-long-press-menu"
+                        y={0.33}
+                    >
+                        <FeatureCropBand.Pin x={0.81} y={0.42} />
+                        <FeatureCropBand.Pin x={0.81} y={0.455} />
+                        <FeatureCropBand.Pin x={0.81} y={0.53} />
+                    </FeatureCropBand.Shot>
+                }
+            >
+                <FeatureCropBand.Note>
+                    <Trans>Edit it straight from the list</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Convert it to a transfer here</Trans>
+                </FeatureCropBand.Note>
+                <FeatureCropBand.Note>
+                    <Trans>Delete sits last, marked in red</Trans>
+                </FeatureCropBand.Note>
+            </FeatureCropBand>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Convert a Transaction to a Transfer</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        Mistakes happen. You log a transfer as an expense, the spending stats inflate, the destination account doesn&apos;t
-                        credit. Budgie&apos;s &quot;Convert to transfer&quot; action takes the existing transaction and turns it into a
-                        transfer to the account you pick.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        The transaction becomes a single transfer with a credit entry and a debit entry against the two accounts, balances
-                        reconcile in both, and the original spending stat falls out of the analytics. No double-entry surgery from you.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>One-tap action from any transaction&apos;s long-press menu</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
-                        <Trans>One transaction carries both account entries automatically — no double-entry by you</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Spending analytics updates in place — old expense falls out cleanly</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Cross-currency conversion supported — dual-amount input after destination pick</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={4}>
-                        <Trans>Fee entries on the original transaction carry over to the transfer automatically</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
+            <FeatureBenefits>
+                <FeatureBenefits.Benefit icon={Hand} title={<Trans>Act straight from the list</Trans>}>
+                    <Trans>Start any action from the list — long-press the row, then pick it</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={ListCheck} title={<Trans>Only actions that apply</Trans>}>
+                    <Trans>Context-aware menu — actions adapt to the transaction so you never see an option that does not apply</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Benefit icon={Mobile} title={<Trans>One-handed, no extra screens</Trans>}>
+                    <Trans>Gesture-driven flow — one-handed, no toolbar hunting, no extra navigation layer</Trans>
+                </FeatureBenefits.Benefit>
+                <FeatureBenefits.Included>
+                    <FeatureBenefits.Item>
+                        <Trans>One menu on every platform — no full-screen form to open first</Trans>
+                    </FeatureBenefits.Item>
+                </FeatureBenefits.Included>
+            </FeatureBenefits>
 
-            <FeaturePageSection>
-                <FeaturePageHeading>
-                    <Trans>Convert Income to Refund</Trans>
-                </FeaturePageHeading>
-                <FeaturePageProse>
-                    <Trans>
-                        When a merchant refunds a purchase, the money reappears on your card as a positive transaction. Most expense
-                        trackers record it as income — which is technically accurate in a cash-flow sense but misleading for actual income
-                        analysis.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageProse>
-                    <Trans>
-                        Budgie treats that positive transaction as a refund. It links the refund income to the original expense, supports
-                        partial refunds, and keeps the audit trail visible from the transaction detail screen.
-                    </Trans>
-                </FeaturePageProse>
-                <FeaturePageBenefitGrid>
-                    <FeaturePageBenefitGridItem index={0}>
-                        <Trans>Clean income totals — refund income links back to the expense instead of counting as earnings</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={1}>
-                        <Trans>Partial and full refunds — Budgie compares the refund amount with the original expense</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={2}>
-                        <Trans>Cross-account manual search — find same-currency expenses even when the refund lands elsewhere</Trans>
-                    </FeaturePageBenefitGridItem>
-                    <FeaturePageBenefitGridItem index={3}>
-                        <Trans>Reversible audit trail — Revert restores the original income and expense rows</Trans>
-                    </FeaturePageBenefitGridItem>
-                </FeaturePageBenefitGrid>
-            </FeaturePageSection>
-
-            <FeaturePageFaqSection locale={lang}>
-                <FeaturePageFaqItem
-                    question={<Trans>How do I open the menu?</Trans>}
-                    answer={
+            <FeatureDetails>
+                <FeatureDetails.Item index={0} title={<Trans>Actions belong on the list</Trans>}>
+                    <p>
                         <Trans>
-                            Press and hold any transaction card for about 300ms. The native context menu appears anchored to the card.
+                            Editing a transaction in most expense apps means opening a detail screen, then an edit button, then a form.
+                            Common operations like deleting a duplicate or reclassifying an expense as a transfer should not cost that much.
+                            Budgie puts them behind a single long-press anchored to the transaction card itself.
                         </Trans>
-                    }
+                    </p>
+                    <p>
+                        <Trans>
+                            The menu opens next to the card you pressed, with no full-screen form to open first. The same menu opens on
+                            every platform.
+                        </Trans>
+                    </p>
+                </FeatureDetails.Item>
+                <FeatureDetails.Guides index={1} locale={lang} slugs={FEATURE_METADATA.relatedArticleSlugs} />
+            </FeatureDetails>
+
+            <FeatureFaq locale={lang}>
+                <FeatureFaq.Item
+                    index={0}
+                    question={<Trans>How do I open the menu?</Trans>}
+                    answer={<Trans>Press and hold any transaction card. Budgie&apos;s own menu appears next to the card.</Trans>}
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={1}
                     question={<Trans>What actions are available?</Trans>}
                     answer={
                         <Trans>
-                            Edit, Convert to Refund, Convert to Transfer, Attach Debt, Delete, and Revert. The exact set depends on the
-                            transaction type — only income can become a refund, for example.
+                            Edit, Convert to Refund, Convert to Transfer, Start Deposit, Pay in parts, Attach Debt, Delete, and Revert. The
+                            exact set depends on the transaction — only income can become a refund, and Revert appears instead of Delete on
+                            merged or refunded rows.
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={2}
                     question={<Trans>Can I customize the menu?</Trans>}
                     answer={
                         <Trans>Not yet. The menu surfaces the most common actions; let us know on GitHub if you want a custom slot.</Trans>
                     }
                 />
-                <FeaturePageFaqItem
+                <FeatureFaq.Item
+                    index={3}
                     question={<Trans>Does this work on iPad?</Trans>}
                     answer={
                         <Trans>
@@ -300,78 +275,7 @@ export default async function TransactionLongPressMenuFeaturePage(props: PageLan
                         </Trans>
                     }
                 />
-                <FeaturePageFaqItem
-                    question={<Trans>What does &quot;Convert to Transfer&quot; actually do?</Trans>}
-                    answer={
-                        <Trans>
-                            The same transaction switches type to Transfer; you pick the other account, and Budgie replaces its entries with
-                            a credit and a debit against the two accounts — no second transaction is created.
-                        </Trans>
-                    }
-                />
-                <FeaturePageFaqItem
-                    question={<Trans>Will my analytics update?</Trans>}
-                    answer={
-                        <Trans>
-                            Yes — the original spending stat falls out immediately because transfers don&apos;t count as expenses.
-                        </Trans>
-                    }
-                />
-                <FeaturePageFaqItem
-                    question={<Trans>Can I undo the conversion?</Trans>}
-                    answer={
-                        <Trans>
-                            No one-tap undo. Convert to Transfer overwrites the original entries, so reversing it means manually recreating
-                            the expense or income entry yourself.
-                        </Trans>
-                    }
-                />
-                <FeaturePageFaqItem
-                    question={<Trans>Does this work for cross-currency?</Trans>}
-                    answer={
-                        <Trans>
-                            Yes. The dual-amount input opens after picking the destination account. Original amount is preserved on the
-                            source leg; destination leg gets your specified amount.
-                        </Trans>
-                    }
-                />
-                <FeaturePageFaqItem
-                    question={<Trans>Why would I convert income to a refund?</Trans>}
-                    answer={
-                        <Trans>
-                            Merchant refunds arrive as positive income, but they usually reverse an earlier expense. Linking the income to
-                            that expense keeps income and spending analytics honest.
-                        </Trans>
-                    }
-                />
-                <FeaturePageFaqItem
-                    question={<Trans>Can I refund only part of an expense?</Trans>}
-                    answer={
-                        <Trans>
-                            Yes. Pick the original expense and Budgie marks the refund as partial when the refunded amount is lower than the
-                            expense amount.
-                        </Trans>
-                    }
-                />
-                <FeaturePageFaqItem
-                    question={<Trans>Can I undo a refund link?</Trans>}
-                    answer={
-                        <Trans>
-                            Yes. Open the refunded transaction and tap Revert. The income and expense return to their original standalone
-                            state.
-                        </Trans>
-                    }
-                />
-                <FeaturePageFaqItem
-                    question={<Trans>What if the expense is on another account?</Trans>}
-                    answer={
-                        <Trans>
-                            Manual refund search can find same-currency expenses across accounts. Budgie sorts likely matches by amount and
-                            date so the closest refund target appears first.
-                        </Trans>
-                    }
-                />
-            </FeaturePageFaqSection>
+            </FeatureFaq>
         </FeaturePageShell>
     );
 }

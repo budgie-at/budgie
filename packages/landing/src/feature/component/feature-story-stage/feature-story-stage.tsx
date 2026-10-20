@@ -2,194 +2,92 @@
 
 import { useEffect, useRef } from 'react';
 
-import { emptyFn, isDefined, isEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { emptyFn, isDefined } from '@rnw-community/shared';
 
 import type { ReactNode } from 'react';
 
-const STORY_DESKTOP_QUERY = '(min-width:1024px)';
-const STORY_STATIC_QUERY = '(prefers-reduced-motion:reduce)';
-const STORY_DESKTOP_ANCHOR = 0.5;
-const STORY_PINNED_ANCHOR = 0.85;
-const STORY_PROGRESS_PROPERTY = '--story-progress';
-const STORY_PROGRESS_STEPS = 400;
-const STORY_MOTION_TARGETS = '.story-frame,.story-bloom,.story-rail-progress';
-
-const readSaveData = () => {
-    const connection: unknown = Reflect.get(navigator, 'connection');
-
-    return typeof connection === 'object' && isDefined(connection) && 'saveData' in connection && connection.saveData === true;
-};
-
 const readIndex = (element: Element) => Number(element.getAttribute('data-index') ?? 0);
 
-const readCalloutIndex = (callout: HTMLElement) => {
-    const ownIndex = callout.getAttribute('data-index');
-    const stage = callout.closest('[data-story-stage]');
+const createActivator = (grid: HTMLElement) => {
+    const steps = [...grid.querySelectorAll<HTMLElement>('[data-story-step]')];
+    const stages = [...grid.querySelectorAll<HTMLElement>('[data-story-stage]')];
+    const callouts = [...grid.querySelectorAll<HTMLElement>('[data-story-callout]')].map(callout => {
+        const index = readIndex(callout);
+        const peers = [...(callout.parentElement?.children ?? [])].filter(
+            peer => peer.hasAttribute('data-story-callout') && readIndex(peer) === index
+        );
 
-    if (isNotEmptyString(ownIndex)) {
-        return Number(ownIndex);
-    }
+        return { callout, index, slot: peers.indexOf(callout), slots: peers.length };
+    });
 
-    return isDefined(stage) ? readIndex(stage) : 0;
-};
-
-const createActivator = (grid: HTMLElement, steps: HTMLElement[], stages: HTMLElement[]) => {
-    const calloutIndexes = new Map(
-        [...grid.querySelectorAll<HTMLElement>('[data-story-callout]')].map(callout => [callout, readCalloutIndex(callout)])
-    );
-    let activeIndex = -1;
-
-    return (index: number) => {
-        if (index === activeIndex) {
-            return;
-        }
-
-        activeIndex = index;
-
-        const activeStageIndex = Math.max(...stages.map(readIndex).filter(stageIndex => stageIndex <= index));
+    return (index: number, progress: number) => {
+        const activeStageIndex = Math.max(0, ...stages.map(readIndex).filter(stageIndex => stageIndex <= index));
 
         steps.forEach(step => {
             step.toggleAttribute('data-active', readIndex(step) === index);
+            step.toggleAttribute('data-passed', readIndex(step) <= index);
         });
         stages.forEach(stage => {
             stage.toggleAttribute('data-active', readIndex(stage) === activeStageIndex);
         });
-        calloutIndexes.forEach((calloutIndex, callout) => {
+        callouts.forEach(({ callout, index: calloutIndex, slot, slots }) => {
             callout.toggleAttribute('data-shown', calloutIndex <= index);
+            callout.toggleAttribute('data-focus', calloutIndex === index && slot === Math.min(slots - 1, Math.floor(progress * slots)));
         });
     };
-};
-
-const buildRootMargin = (anchor: number) => {
-    const above = Math.round(anchor * 100) - 4;
-    const below = 96 - Math.round(anchor * 100);
-
-    return [`-${above}%`, '0px', `-${below}%`, '0px'].join(' ');
-};
-
-const observeStory = (steps: HTMLElement[], stages: HTMLElement[], anchor: number, activate: (index: number) => void) => {
-    const resolveActiveIndex = () => {
-        const anchorLine = window.innerHeight * anchor;
-        const lastPassed = steps.filter(step => step.getBoundingClientRect().top <= anchorLine).at(-1);
-
-        return isDefined(lastPassed) ? readIndex(lastPassed) : 0;
-    };
-
-    const observer = new IntersectionObserver(
-        () => {
-            activate(resolveActiveIndex());
-        },
-        { rootMargin: buildRootMargin(anchor), threshold: 0 }
-    );
-
-    [...steps, ...stages].forEach(element => {
-        observer.observe(element);
-    });
-
-    return observer;
-};
-
-const attachStoryObserver = (steps: HTMLElement[], stages: HTMLElement[], activate: (index: number) => void) => {
-    const desktopQuery = window.matchMedia(STORY_DESKTOP_QUERY);
-    const resolveAnchor = () => (desktopQuery.matches ? STORY_DESKTOP_ANCHOR : STORY_PINNED_ANCHOR);
-    let observer = observeStory(steps, stages, resolveAnchor(), activate);
-
-    const reobserve = () => {
-        observer.disconnect();
-        observer = observeStory(steps, stages, resolveAnchor(), activate);
-    };
-
-    desktopQuery.addEventListener('change', reobserve);
-
-    return () => {
-        desktopQuery.removeEventListener('change', reobserve);
-        observer.disconnect();
-    };
-};
-
-const supportsScrollTimeline = () => 'CSS' in window && CSS.supports('animation-timeline', 'view()');
-
-const skipsScrollFallback = () => window.matchMedia(STORY_STATIC_QUERY).matches || readSaveData() || supportsScrollTimeline();
-
-const trackStoryProgress = (grid: HTMLElement) => {
-    const targets = [...grid.querySelectorAll<HTMLElement>(STORY_MOTION_TARGETS)];
-    let lastProgress = -1;
-
-    const update = () => {
-        const bounds = grid.getBoundingClientRect();
-        const span = bounds.height - window.innerHeight;
-        const ratio = span > 0 ? -bounds.top / span : 0;
-        const progress = Math.round(Math.min(1, Math.max(0, ratio)) * STORY_PROGRESS_STEPS) / STORY_PROGRESS_STEPS;
-
-        if (progress === lastProgress) {
-            return;
-        }
-
-        lastProgress = progress;
-        targets.forEach(target => {
-            target.style.setProperty(STORY_PROGRESS_PROPERTY, String(progress));
-        });
-    };
-
-    window.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', update, { passive: true });
-    grid.dataset.storyMotion = 'fallback';
-    update();
-
-    return () => {
-        window.removeEventListener('scroll', update);
-        window.removeEventListener('resize', update);
-        delete grid.dataset.storyMotion;
-    };
-};
-
-const startStory = (grid: HTMLElement, saveData: boolean, activate: (index: number) => void) => {
-    grid.dataset.ready = '';
-    grid.toggleAttribute('data-save-data', saveData);
-    activate(0);
 };
 
 interface Props {
+    readonly count: number;
     readonly children: ReactNode;
 }
 
-export const FeatureStoryStage = ({ children }: Props) => {
+export const FeatureStoryStage = ({ count, children }: Props) => {
     const gridRef = useRef<HTMLDivElement>(null);
+    const panelRef = useRef<HTMLDivElement>(null);
+    const positions = Array.from({ length: count }, (_, position) => position);
+    const gridStyle = { '--story-steps': count };
 
     useEffect(() => {
         const grid = gridRef.current;
+        const panel = panelRef.current;
 
-        if (!isDefined(grid) || !('IntersectionObserver' in window)) {
+        if (!isDefined(grid) || !isDefined(panel)) {
             return emptyFn;
         }
 
-        const steps = [...grid.querySelectorAll<HTMLElement>('[data-story-step]')];
+        const activate = createActivator(grid);
+        const update = () => {
+            const gridBox = grid.getBoundingClientRect();
+            const panelBox = panel.getBoundingClientRect();
+            const position = ((panelBox.top - gridBox.top) / (gridBox.height - panelBox.height)) * count;
+            const index = Math.min(count - 1, Math.floor(position));
 
-        if (isEmptyArray(steps)) {
-            return emptyFn;
-        }
+            activate(index, position - index);
+        };
 
-        const stages = [...grid.querySelectorAll<HTMLElement>('[data-story-stage]')];
-        const activate = createActivator(grid, steps, stages);
-        const stopObserving = attachStoryObserver(steps, stages, activate);
-        const stopProgress = skipsScrollFallback() ? emptyFn : trackStoryProgress(grid);
-
-        startStory(grid, readSaveData(), activate);
+        grid.dataset.ready = '';
+        window.addEventListener('scroll', update, { passive: true });
+        window.addEventListener('resize', update);
+        update();
 
         return () => {
-            stopObserving();
-            stopProgress();
+            window.removeEventListener('scroll', update);
+            window.removeEventListener('resize', update);
             grid.removeAttribute('data-ready');
         };
-    }, []);
+    }, [count]);
 
     return (
-        <div className="story-grid" ref={gridRef}>
-            <div aria-hidden="true" className="story-scrim" />
-            <div aria-hidden="true" className="story-rail">
-                <span className="story-rail-progress" />
+        <div className="story-grid" ref={gridRef} style={gridStyle}>
+            <div className="story-panel" ref={panelRef}>
+                <div aria-hidden="true" className="story-progress">
+                    {positions.map(position => (
+                        <span className="story-progress-segment" data-index={position} data-story-step key={position} />
+                    ))}
+                </div>
+                {children}
             </div>
-            {children}
         </div>
     );
 };

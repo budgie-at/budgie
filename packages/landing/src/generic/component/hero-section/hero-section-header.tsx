@@ -1,6 +1,7 @@
 import { Trans } from '@lingui/react/macro';
 
 import { Badge } from '../../../ui/badge';
+import { WaitlistVariantEnum } from '../../enum/waitlist-variant.enum';
 import { WaitlistForm } from '../waitlist-form/waitlist-form';
 
 export const HeroSectionHeader = () => (
@@ -18,7 +19,7 @@ export const HeroSectionHeader = () => (
         </p>
 
         <div className="hero-enter hero-action">
-            <WaitlistForm variant="hero" />
+            <WaitlistForm variant={WaitlistVariantEnum.HERO} />
         </div>
     </div>
 );

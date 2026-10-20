@@ -1,10 +1,9 @@
-import { AccountDebtOpeningService } from '@app/account/service/account-debt-opening.service';
 import { AccountDebtTypeEnum, AccountTypeEnum, CurrencyEnum, UserIconNameEnum } from '@budgie/contracts';
-import { TransferCreationService } from '@budgie/ledger';
+import { AccountDebtOpeningService, TransferCreationService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { buildTransferInput, seed, testDb, TestLayer, upsertCurrencyRate } from '../../harness';
+import { buildTransferInput, seed, testDb, TestLayer, upsertCurrencyRate, DEBT_OPENING_MESSAGES } from '../../harness';
 
 const NON_TERMINATING_RATE = 3;
 const OPERATED_AT = new Date('2026-06-02T12:00:00.000Z');
@@ -51,7 +50,8 @@ describe('cross-instrument money legs at a non-terminating rate', () => {
                     contactId: null,
                     deadline: null
                 },
-                eurAccount.id
+                eurAccount.id,
+                DEBT_OPENING_MESSAGES
             );
 
             expect(yield* countFractionalMicroUnitRows).toBe(0);

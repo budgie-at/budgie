@@ -1,6 +1,11 @@
-import { TransferConsolidationDrainerService } from '@app/sync/service/transfer-consolidation-drainer.service';
 import { ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
-import { SyncAccountBalanceStateEnum, SyncAccountTypeEnum, SyncProviderEnum, privatbankTransactionMapper } from '@budgie/sync';
+import {
+    SyncAccountBalanceStateEnum,
+    SyncAccountTypeEnum,
+    SyncProviderEnum,
+    privatbankTransactionMapper,
+    TransferConsolidationDrainerService
+} from '@budgie/sync';
 import { describe, expect, it, vi } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
@@ -79,7 +84,7 @@ describe('consolidation/privatbank-file-import-triggers-consolidation', () => {
                 .from(TransactionEntityTable)
                 .where(eq(TransactionEntityTable.externalSource, ExternalSourceEnum.PRIVATBANK));
 
-            yield* expectFileImportConsolidationEnqueued(transaction?.id);
+            yield* expectFileImportConsolidationEnqueued(transaction.id);
         }).pipe(Effect.provide(TestLayer))
     );
 

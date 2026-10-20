@@ -1,9 +1,12 @@
 import { msg } from '@lingui/core/macro';
 
+import { PillarEnum } from '../../../feature/constant/pillar.enum';
+
 import type { PillarHubMetadataInterface } from '../../../feature/interface/pillar-hub-metadata.interface';
 
 export const OPEN_SOURCE_PILLAR_HUB_METADATA: PillarHubMetadataInterface = {
     slug: 'open-source',
+    pillar: PillarEnum.PRIVACY,
     title: msg`Source-Available Personal Finance — Transparent by Design`,
     metaTitle: msg`Source-Available Personal Finance App — Budgie`,
     metaDescription: msg`Budgie is a source-available personal finance app. Read the source, audit privacy claims, contribute features, and trust your expense tracker because you can verify it.`,

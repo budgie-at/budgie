@@ -10,7 +10,9 @@ import { useAccountEntityForm } from './use-account-entity-form.hook';
 export const useLiabilityAccountForm = (
     values: LiabilityAccountCreateInputInterface,
     onSubmit: (values: LiabilityAccountCreateInputInterface) => Promise<AccountEntityInterface>
-) => {
+): ReturnType<typeof useAccountEntityForm<LiabilityAccountCreateInputInterface>> & {
+    readonly instrument: ReturnType<typeof useGetInstrumentByIdQuery>['instrument'];
+} => {
     const form = useAccountEntityForm(
         standardSchemaResolver(Schema.toStandardSchemaV1(LiabilityAccountCreateInputSchema)),
         values,

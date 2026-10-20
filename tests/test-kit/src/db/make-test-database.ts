@@ -3,28 +3,29 @@ import { withReplicas } from 'drizzle-orm/sqlite-core/effect';
 import * as Effect from 'effect/Effect';
 import { identity } from 'effect/Function';
 
-import type { DB } from '@budgie/contracts';
+import type { DB, DbMutationInterface } from '@budgie/contracts';
 
 type Client = DB['$client'];
 
 export const makeTestDatabase = Effect.fnUntraced(function* (
     client: Client,
-    onStatement?: (queryText: string, params?: ReadonlyArray<unknown>) => void
+    onStatement?: (queryText: string, params?: ReadonlyArray<unknown>) => void,
+    onMutate: (mutation: DbMutationInterface) => Effect.Effect<void> = () => Effect.void
 ) {
     const observed =
         onStatement === undefined
             ? client
             : new Proxy(client, {
-                  get: (target, property, receiver) =>
+                  get: (target, property, receiver): unknown =>
                       property === 'unsafe'
-                          ? (queryText: string, params?: ReadonlyArray<unknown>) => {
+                          ? (queryText: string, params?: ReadonlyArray<unknown>): unknown => {
                                 onStatement(queryText, params);
 
                                 return target.unsafe(queryText, params);
                             }
                           : Reflect.get(target, property, receiver)
               });
-    const primary = yield* makeEffectSqliteClientDatabase(observed, { onMutate: () => Effect.void, runQuery: identity });
+    const primary = yield* makeEffectSqliteClientDatabase(observed, { onMutate, runQuery: identity });
 
     return withReplicas(primary, [primary]);
 });

@@ -1,4 +1,5 @@
 import { Db, HistoricalExchangeRateEntityTable } from '@budgie/contracts';
+import { and, asc, eq, gte, isNull, or, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -37,6 +38,40 @@ export class HistoricalExchangeRateRepository extends Context.Service<Historical
                             orderBy: { rateDate: 'desc' }
                         })
                     ),
+                findGapStartDate: (sourceInstrumentId: number, targetInstrumentId: number, sinceDate: string, maxGapDays: number) =>
+                    Db.query(db => {
+                        const rates = db
+                            .select({
+                                rateDate: HistoricalExchangeRateEntityTable.rateDate,
+                                nextRateDate: sql<
+                                    string | null
+                                >`LEAD(${HistoricalExchangeRateEntityTable.rateDate}) OVER (ORDER BY ${HistoricalExchangeRateEntityTable.rateDate})`.as(
+                                    'next_rate_date'
+                                )
+                            })
+                            .from(HistoricalExchangeRateEntityTable)
+                            .where(
+                                and(
+                                    eq(HistoricalExchangeRateEntityTable.sourceInstrumentId, sourceInstrumentId),
+                                    eq(HistoricalExchangeRateEntityTable.targetInstrumentId, targetInstrumentId),
+                                    isNull(HistoricalExchangeRateEntityTable.deletedAt),
+                                    gte(HistoricalExchangeRateEntityTable.rateDate, sinceDate)
+                                )
+                            )
+                            .as('rates');
+
+                        return db
+                            .select({ rateDate: rates.rateDate })
+                            .from(rates)
+                            .where(
+                                or(
+                                    isNull(rates.nextRateDate),
+                                    sql`julianday(${rates.nextRateDate}) - julianday(${rates.rateDate}) > ${maxGapDays}`
+                                )
+                            )
+                            .orderBy(asc(rates.rateDate))
+                            .limit(1);
+                    }).pipe(Effect.map(rows => rows.at(0)?.rateDate ?? null)),
                 findEarliest: (sourceInstrumentId: number, targetInstrumentId: number) =>
                     Db.query(db =>
                         db.query.HistoricalExchangeRateEntityTable.findFirst({

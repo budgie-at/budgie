@@ -26,7 +26,7 @@ import type { HomeAccountBalanceInterface } from '../interface/home-account-bala
 import type { HomeSectionInterface } from '../interface/home-section.interface';
 import type { AccountWithSyncEntityInterface, ExternalSourceEnum } from '@budgie/contracts';
 
-const homeAccountRowsAtom = databaseQueryFamily(
+export const homeAccountRowsAtom = databaseQueryFamily(
     [...ACCOUNT_CONVERTED_BALANCE_TABLES, InstrumentEntityTable, DebtEventEntityTable],
     AccountBalanceRepository,
     (accountBalanceRepository, defaultInstrumentId: number) => accountBalanceRepository.getHomeAccountRows(defaultInstrumentId)
