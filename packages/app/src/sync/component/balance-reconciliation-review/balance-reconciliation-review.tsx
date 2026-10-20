@@ -2,6 +2,7 @@ import { convertFromMicroUnits } from '@budgie/contracts';
 import { SyncBalanceReconciliationService } from '@budgie/sync';
 import { Trans, useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { Text } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -9,10 +10,11 @@ import { isDefined } from '@rnw-community/shared';
 import { Button } from '../../../@generic/component/button/button';
 import { Card } from '../../../@generic/component/card/card';
 import { useEffectAction } from '../../../@generic/hook/use-effect-action.hook';
+import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
-import { useBalanceReconciliationReview } from '../../hook/use-balance-reconciliation-review.hook';
+import { balanceReconciliationReviewAtom } from '../../constant/balance-reconciliation-review-atom.constant';
 import { SyncDataRow } from '../sync-data-row/sync-data-row';
 
 interface Props {
@@ -25,7 +27,7 @@ export const BalanceReconciliationReview = ({ accountId, instrumentSymbol }: Pro
     const { decimalPlaces } = useSettingsContext();
     const formatAmount = useFormatDigits(decimalPlaces);
     const { formatDayAndMonthAndYear } = useFormatDate();
-    const review = useBalanceReconciliationReview(accountId);
+    const review = AsyncResult.getOrElse(useLiveAtomValue(balanceReconciliationReviewAtom(accountId)), () => null);
     const [runEffect, isApplying] = useEffectAction(t`Could not apply the bank balance`);
 
     if (!isDefined(review)) {

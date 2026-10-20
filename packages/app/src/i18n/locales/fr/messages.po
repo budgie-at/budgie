@@ -757,7 +757,7 @@ msgstr "Appliquer aux transactions existantes ?"
 
 #: src/sync/component/balance-reconciliation-review/balance-reconciliation-review.tsx
 msgid "Applying the bank balance books a correction of {correction}."
-msgstr "Appliquer le solde bancaire enregistre une correction de {correction}."
+msgstr "L’application du solde bancaire enregistrera une correction de {correction}."
 
 #: src/account/component/debt-account-paid-off/debt-account-paid-off.tsx
 #: src/account/hooks/use-archive-account.hook.ts
