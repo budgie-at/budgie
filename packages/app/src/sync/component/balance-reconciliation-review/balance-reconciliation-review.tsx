@@ -9,11 +9,12 @@ import { isDefined } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { Card } from '../../../@generic/component/card/card';
+import { MICRO_UNIT_DECIMAL_PLACES } from '../../../@generic/constant/micro-unit-decimal-places.constant';
 import { useEffectAction } from '../../../@generic/hook/use-effect-action.hook';
 import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
+import { DEFAULT_DECIMAL_PLACES } from '../../../i18n/constant/default-decimal-places.constant';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
 import { balanceReconciliationReviewAtom } from '../../constant/balance-reconciliation-review-atom.constant';
 import { SyncDataRow } from '../sync-data-row/sync-data-row';
 
@@ -24,8 +25,7 @@ interface Props {
 
 export const BalanceReconciliationReview = ({ accountId, instrumentSymbol }: Props) => {
     const { t } = useLingui();
-    const { decimalPlaces } = useSettingsContext();
-    const formatAmount = useFormatDigits(decimalPlaces);
+    const formatAmount = useFormatDigits(DEFAULT_DECIMAL_PLACES, MICRO_UNIT_DECIMAL_PLACES);
     const { formatDayAndMonthAndYear } = useFormatDate();
     const review = AsyncResult.getOrElse(useLiveAtomValue(balanceReconciliationReviewAtom(accountId)), () => null);
     const [runEffect, isApplying] = useEffectAction(t`Could not apply the bank balance`);
