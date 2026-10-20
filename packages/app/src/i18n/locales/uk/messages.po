@@ -22,11 +22,6 @@ msgstr "P2P-купівля {assetCode} на Binance"
 msgid "Binance P2P sell {assetCode}"
 msgstr "P2P-продаж {assetCode} на Binance"
 
-#. placeholder {0}: accounts.length
-#: src/onboarding/component/onboarding-done/onboarding-done.tsx
-msgid "{0, plural, one {# account created} other {# accounts created}}"
-msgstr "{0, plural, one {# рахунок створено} few {# рахунки створено} many {# рахунків створено} other {# рахунка створено}}"
-
 #. placeholder {0}: labels.length
 #: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
 msgid "{0, plural, one {# tag} other {# tags}}"
@@ -48,6 +43,10 @@ msgstr "{0, plural, one {Прийняти # пропозицію} few {Прий�
 #: src/categorize-inbox/components/categorize-inbox-move-to-cash-chip/categorize-inbox-move-to-cash-chip.tsx
 msgid "{0, plural, one {Move # withdrawal to cash} other {Move # withdrawals to cash}}"
 msgstr "{0, plural, one {Перенести # зняття в готівку} few {Перенести # зняття в готівку} many {Перенести # знять у готівку} other {Перенести # зняття в готівку}}"
+
+#: src/onboarding/hook/use-onboarding-file-state.hook.ts
+msgid "{accountCount, plural, one {# account} other {# accounts}}"
+msgstr "{accountCount, plural, one {# рахунок} few {# рахунки} many {# рахунків} other {# рахунку}}"
 
 #: src/account/component/accounts-group/accounts-group.tsx
 #: src/account/component/crypto-currency-group-toggle-row/crypto-currency-group-toggle-row.tsx
@@ -138,9 +137,30 @@ msgstr "{daysRemaining, plural, one {Залишився # день} few {Зал�
 msgid "{displayPercentage}%"
 msgstr "{displayPercentage}%"
 
+#: src/ai/component/ai-download-home-row/ai-download-home-row.tsx
+msgid "{downloaded} of {total} GB"
+msgstr "{downloaded} з {total} ГБ"
+
+#: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
+#: src/ai/component/ai-download-wifi-banner/ai-download-wifi-banner.tsx
+msgid "{downloaded} of {total} GB is kept. It carries on when you're back on Wi-Fi."
+msgstr "{downloaded} з {total} ГБ збережено. Завантаження продовжиться, коли ви знову будете в Wi-Fi."
+
+#: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
+msgid "{downloaded} of {total} GB is kept. It carries on when you're back online."
+msgstr "{downloaded} з {total} ГБ збережено. Завантаження продовжиться, коли ви знову будете онлайн."
+
 #: src/@generic/component/ai-translation-fields-header-right/ai-translation-fields-header-right.tsx
 msgid "{downloadPercent}%"
 msgstr "{downloadPercent}%"
+
+#: src/sync/component/file-import-review-step/file-import-review-step.tsx
+msgid "{duplicateTransactionCount, plural, one {# skipped} other {# skipped}}"
+msgstr "{duplicateTransactionCount, plural, one {# пропущено} few {# пропущено} many {# пропущено} other {# пропущено}}"
+
+#: src/settings/components/your-data-file-card/your-data-file-card.tsx
+msgid "{fileSize} · on this phone"
+msgstr "{fileSize} · на цьому телефоні"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "{formattedAmount} · {detail}"
@@ -166,6 +186,26 @@ msgstr "{formattedRemaining} понад бюджет"
 msgid "{found, plural, one {# high-confidence match} other {# high-confidence matches}}"
 msgstr "{found, plural, one {# збіг з високою впевненістю} few {# збіги з високою впевненістю} many {# збігів з високою впевненістю} other {# збігу з високою впевненістю}}"
 
+#: src/sync/component/account-selection-step/account-selection-step.tsx
+msgid "{foundAccountCount, plural, one {Found # account} other {Found # accounts}}"
+msgstr "{foundAccountCount, plural, one {Знайдено # рахунок} few {Знайдено # рахунки} many {Знайдено # рахунків} other {Знайдено # рахунку}}"
+
+#: src/ai/component/ai-download-preflight-note/ai-download-preflight-note.tsx
+msgid "{free} GB free on this phone."
+msgstr "{free} ГБ вільно на цьому телефоні."
+
+#: src/ai/component/ai-download-stopped-card/ai-download-stopped-card.tsx
+msgid "{free} GB is free right now. Your money data isn't affected."
+msgstr "Зараз вільно {free} ГБ. Ваші фінансові дані це не зачіпає."
+
+#: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
+msgid "{freeSize} GB free on this phone"
+msgstr "{freeSize} ГБ вільно на цьому телефоні"
+
+#: src/@generic/hook/use-format-file-size.hook.ts
+msgid "{gigabytes} GB"
+msgstr "{gigabytes} ГБ"
+
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "{loadedDays}/{totalDays} days"
 msgstr "{loadedDays}/{totalDays} днів"
@@ -179,9 +219,33 @@ msgstr "{localSelectedCount, plural, =0 {Показати всі типи} one {
 msgid "{matchingRulesCount, plural, one {# matching rule} other {# matching rules}}"
 msgstr "{matchingRulesCount, plural, one {# відповідне правило} few {# відповідні правила} many {# відповідних правил} other {# відповідного правила}}"
 
+#: src/@generic/hook/use-format-file-size.hook.ts
+msgid "{megabytes} MB"
+msgstr "{megabytes} МБ"
+
+#: src/ai/component/ai-download-eta/ai-download-eta.tsx
+msgid "{minutesLeft, plural, one {About # minute left on Wi-Fi} other {About # minutes left on Wi-Fi}}"
+msgstr "{minutesLeft, plural, one {Залишилася приблизно # хвилина у Wi-Fi} few {Залишилося приблизно # хвилини у Wi-Fi} many {Залишилося приблизно # хвилин у Wi-Fi} other {Залишилося приблизно # хвилини у Wi-Fi}}"
+
+#: src/ai/component/ai-download-eta/ai-download-eta.tsx
+msgid "{minutesLeft, plural, one {About # minute left} other {About # minutes left}}"
+msgstr "{minutesLeft, plural, one {Залишилася приблизно # хвилина} few {Залишилося приблизно # хвилини} many {Залишилося приблизно # хвилин} other {Залишилося приблизно # хвилини}}"
+
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "{monobankAccountCount, plural, one {# account. Balances come straight from the bank.} other {# accounts. Balances come straight from the bank.}}"
+msgstr "{monobankAccountCount, plural, one {# рахунок. Баланси надходять безпосередньо з банку.} few {# рахунки. Баланси надходять безпосередньо з банку.} many {# рахунків. Баланси надходять безпосередньо з банку.} other {# рахунку. Баланси надходять безпосередньо з банку.}}"
+
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "{months, plural, one {# month} other {# months}}"
 msgstr "{months, plural, one {# місяць} few {# місяці} many {# місяців} other {# місяця}}"
+
+#: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
+msgid "{newAccountCount, plural, one {Add # account} other {Add # accounts}}"
+msgstr "{newAccountCount, plural, one {Додати # рахунок} few {Додати # рахунки} many {Додати # рахунків} other {Додати # рахунку}}"
+
+#: src/sync/component/create-file-bank-account/create-file-bank-account.tsx
+msgid "{newTransactionCount, plural, one {Import # transaction} other {Import # transactions}}"
+msgstr "{newTransactionCount, plural, one {Імпортувати # транзакцію} few {Імпортувати # транзакції} many {Імпортувати # транзакцій} other {Імпортувати # транзакції}}"
 
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "{newTransactionCount} new, {existingTransactionCount} already imported, {parsedTransactionCount} checked"
@@ -195,6 +259,10 @@ msgstr "{overdueDays, plural, one {Прострочено # день} few {Пр�
 msgid "{paidCount} of {installmentCount} paid"
 msgstr "Сплачено {paidCount} з {installmentCount}"
 
+#: src/sync/component/file-import-review-step/file-import-review-step.tsx
+msgid "{parsedTransactionCount, plural, one {# transaction found} other {# transactions found}}"
+msgstr "{parsedTransactionCount, plural, one {Знайдено # транзакцію} few {Знайдено # транзакції} many {Знайдено # транзакцій} other {Знайдено # транзакції}}"
+
 #: src/@generic/component/statistics-card/statistics-card.tsx
 msgid "{percentage}% of expenses"
 msgstr "{percentage}% витрат"
@@ -202,6 +270,10 @@ msgstr "{percentage}% витрат"
 #: src/@generic/component/statistics-card/statistics-card.tsx
 msgid "{percentage}% of income"
 msgstr "{percentage}% доходів"
+
+#: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
+msgid "{remaining} GB one-time download"
+msgstr "Одноразове завантаження {remaining} ГБ"
 
 #: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
 msgid "{remainingCount, plural, one {# left} other {# left}}"
@@ -223,6 +295,10 @@ msgstr "{rowCount, plural, one {Категоризовано # транзакц�
 #: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
 msgid "{rowCount, plural, one {Tagged # transaction} other {Tagged # transactions}}"
 msgstr "{rowCount, plural, one {Тег додано до # транзакції} few {Тег додано до # транзакцій} many {Тег додано до # транзакцій} other {Тег додано до # транзакції}}"
+
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
+msgid "{selectedAccountCount, plural, one {Add # account} other {Add # accounts}}"
+msgstr "{selectedAccountCount, plural, one {Додати # рахунок} few {Додати # рахунки} many {Додати # рахунків} other {Додати # рахунку}}"
 
 #: src/app/transaction-account-filter.tsx
 msgid "{selectedCount, plural, =0 {Show all accounts} one {Show # account} other {Show # accounts}}"
@@ -256,9 +332,25 @@ msgstr "{spikeLabel}: разова витрата {spikeAmount}. Для оцін
 msgid "{splitEntryCount, plural, one {# item} other {# items}}"
 msgstr "{splitEntryCount, plural, one {# елемент} few {# елементи} many {# елементів} other {# елемента}}"
 
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "{statementAccountCount, plural, one {# account. Balances come from the statement.} other {# accounts. Balances come from the statement.}}"
+msgstr "{statementAccountCount, plural, one {# рахунок. Баланси взято з виписки.} few {# рахунки. Баланси взято з виписки.} many {# рахунків. Баланси взято з виписки.} other {# рахунків. Баланси взято з виписки.}}"
+
+#: src/ai/component/ai-on-device-link-card/ai-on-device-link-card.tsx
+msgid "{statusLabel} · {downloaded} of {total} GB"
+msgstr "{statusLabel} · {downloaded} з {total} ГБ"
+
 #: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
 msgid "{taggedCount, plural, one {# tagged this session} other {# tagged this session}}"
 msgstr "{taggedCount, plural, one {# з тегом за цей сеанс} few {# з тегами за цей сеанс} many {# з тегами за цей сеанс} other {# з тегами за цей сеанс}}"
+
+#: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
+msgid "{total} GB on this phone"
+msgstr "{total} ГБ на цьому телефоні"
+
+#: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
+msgid "{totalSize} GB"
+msgstr "{totalSize} ГБ"
 
 #: src/transaction/components/transaction-list/transaction-list.tsx
 msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
@@ -302,21 +394,25 @@ msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 msgid "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 
-#: src/app/(tabs)/settings/index.tsx
-msgid "100% Offline & Private"
-msgstr "100% офлайн і приватно"
-
-#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
-msgid "100% on-device"
-msgstr "100% локально"
-
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "A balanced starter budget with common categories"
 msgstr "Збалансований стартовий бюджет із поширеними категоріями"
 
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "A bank statement (PDF or XLSX)"
+msgstr "Банківська виписка (PDF або XLSX)"
+
 #: ../ledger/src/account/error/deposit-receiving-amount-mismatch.error.ts
 msgid "A deposit in the funding account currency must receive the full funding amount"
 msgstr "Депозит у валюті рахунку списання має отримати всю суму списання"
+
+#: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
+msgid "A forgotten PIN can't be reset."
+msgstr "Забутий PIN-код не можна скинути."
+
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "A rough number is fine. You can correct it any time."
+msgstr "Приблизної суми достатньо. Її можна виправити будь-коли."
 
 #: src/rule/components/rules-feature-intro/rules-feature-intro.tsx
 msgid "A rule matches incoming bank transactions and applies a category and tags for you."
@@ -443,6 +539,10 @@ msgstr "Додати нотатку..."
 msgid "Add a per-category cap"
 msgstr "Додати ліміт для категорії"
 
+#: src/onboarding/component/onboarding-key/onboarding-key.tsx
+msgid "Add a PIN any time later"
+msgstr "PIN-код можна додати будь-коли пізніше"
+
 #: src/category/components/categories-feature-intro/categories-feature-intro.tsx
 msgid "Add a transaction"
 msgstr "Додати транзакцію"
@@ -460,6 +560,14 @@ msgstr "Додати рахунки"
 msgid "Add accounts from bank"
 msgstr "Додати рахунки з банку"
 
+#: src/account/component/account-grid-item/account-grid-item.tsx
+msgid "Add balance"
+msgstr "Додати баланс"
+
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "Add balances later"
+msgstr "Додати баланси пізніше"
+
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
 msgid "Add category"
 msgstr "Додати категорію"
@@ -471,10 +579,6 @@ msgstr "Додати депозит"
 #: src/transaction/components/split-entries-add-item-footer/split-entries-add-item-footer.tsx
 msgid "Add item"
 msgstr "Додати запис"
-
-#: src/onboarding/component/onboarding-expense/onboarding-expense.tsx
-msgid "Add my first expense"
-msgstr "Додати мою першу витрату"
 
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 msgid "Add Tag"
@@ -492,10 +596,6 @@ msgstr "Додати теги до цих транзакцій"
 msgid "Add your first account to start tracking your finances"
 msgstr "Додайте свій перший рахунок, щоб почати відстежувати свої фінанси"
 
-#: src/onboarding/component/onboarding-expense/onboarding-expense.tsx
-msgid "Add your first expense"
-msgstr "Додайте свою першу витрату"
-
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
 msgid "Adds the fee of the plan"
 msgstr "Додає комісію плану"
@@ -503,6 +603,10 @@ msgstr "Додає комісію плану"
 #: src/transaction/constant/transaction-type.constant.ts
 msgid "Adjustment"
 msgstr "Коригування"
+
+#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+msgid "After 5 wrong tries, Budgie waits a little longer between attempts."
+msgstr "Після 5 невдалих спроб Budgie трохи довше чекає між спробами."
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "AI"
@@ -517,6 +621,11 @@ msgstr "Завантаження ШІ на цьому пристрої: {totalSi
 msgid "AI features"
 msgstr "Функції ШІ"
 
+#: src/ai/component/ai-download-wifi-banner/ai-download-wifi-banner.tsx
+msgid "AI model download paused: no Wi-Fi"
+msgstr "Завантаження моделей ШІ призупинено: немає Wi-Fi"
+
+#: src/ai/constant/ai-download-card-visuals.constant.ts
 #: src/ai/constant/ai-umbrella-status-atom.constant.ts
 msgid "AI off"
 msgstr "ШІ вимкнено"
@@ -561,13 +670,13 @@ msgstr "Усі регулярні"
 msgid "All Time"
 msgstr "Весь час"
 
-#: src/app/(tabs)/settings/index.tsx
-msgid "All your financial data is stored locally on your device. No cloud sync, no tracking, no data sharing."
-msgstr "Усі ваші фінансові дані зберігаються локально на вашому пристрої. Без хмарної синхронізації, відстеження та передачі даних."
-
 #: src/budget/components/budget-allocation-summary/budget-allocation-summary.tsx
 msgid "Allocated"
 msgstr "Розподілено"
+
+#: src/sync/component/file-import-review-step/file-import-review-step.tsx
+msgid "Already in Budgie"
+msgstr "Уже в Budgie"
 
 #: src/account/component/create-debt-account/create-debt-account.tsx
 #: src/account/component/update-debt-account/update-debt-account.tsx
@@ -599,10 +708,6 @@ msgstr "Сума"
 msgid "Amount borrowed"
 msgstr "Позичена сума"
 
-#: src/onboarding/component/onboarding-expense/onboarding-expense.tsx
-msgid "Amount first. Budgie picks the account and guesses the category."
-msgstr "Спочатку сума. Budgie обере рахунок і вгадає категорію."
-
 #: src/account/component/create-debt-account/create-debt-account.tsx
 #: src/account/component/update-debt-account/update-debt-account.tsx
 msgid "Amount lent"
@@ -612,6 +717,10 @@ msgstr "Надана в борг сума"
 msgid "and"
 msgstr "та"
 
+#: src/onboarding/component/onboarding-key/onboarding-key.tsx
+msgid "Anyone who can unlock this phone"
+msgstr "Будь-хто, хто може розблокувати цей телефон"
+
 #: src/sync/component/sync-token-section/sync-token-section.tsx
 msgid "API Token"
 msgstr "API токен"
@@ -620,11 +729,6 @@ msgstr "API токен"
 #: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "App Lock"
 msgstr "Блокування додатка"
-
-#: src/onboarding/component/onboarding-done/onboarding-done.tsx
-#: src/onboarding/component/onboarding-lock/onboarding-lock.tsx
-msgid "App locked and encrypted"
-msgstr "Застосунок заблоковано і зашифровано"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "App Version"
@@ -705,10 +809,6 @@ msgstr "Середнє"
 msgid "Avg cost"
 msgstr "Сер. ціна"
 
-#: src/app/import-backup-pin.tsx
-msgid "Backup PIN"
-msgstr "PIN резервної копії"
-
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Balance"
 msgstr "Баланс"
@@ -726,13 +826,9 @@ msgstr "Прогноз балансу"
 msgid "Bank"
 msgstr "Банк"
 
-#: src/onboarding/component/onboarding-track/onboarding-track.tsx
+#: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "Bank account"
 msgstr "Банківський рахунок"
-
-#: src/onboarding/component/onboarding-done/onboarding-done.tsx
-msgid "Bank connected"
-msgstr "Банк підключено"
 
 #: src/account/component/bank-provider-section-header/bank-provider-section-header.tsx
 msgid "Bank integration settings"
@@ -761,10 +857,6 @@ msgstr "За останні {monthsUsed} місяців"
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "Based on your recent spending"
 msgstr "На основі ваших нещодавніх витрат"
-
-#: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
-msgid "Best on Wi-Fi"
-msgstr "Найкраще через Wi-Fi"
 
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "between"
@@ -819,32 +911,49 @@ msgid "Budget limit reached"
 msgstr "Ліміт бюджету досягнуто"
 
 #: src/app/(tabs)/settings/index.tsx
+#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
 msgid "Budgie"
 msgstr "Budgie"
 
-#: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
-msgid "Budgie can categorise transactions, suggest tags and transcribe voice notes — all on this device. Nothing is sent anywhere."
-msgstr "Budgie вміє категоризувати транзакції, пропонувати теги та розшифровувати голосові нотатки — і все це на пристрої. Нічого нікуди не надсилається."
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
+msgid "Budgie brings in the last month of history, then asks Monobank for new transactions when you open the app."
+msgstr "Budgie завантажить історію за останній місяць, а потім питатиме Monobank про нові транзакції, коли ви відкриваєте застосунок."
 
 #: src/settings/components/sync-repairs-intro-card/sync-repairs-intro-card.tsx
 msgid "Budgie can find duplicated bank sync imports and repair transfer consolidations that landed on inactive accounts."
 msgstr "Budgie може знайти дублікати імпортів банківської синхронізації та виправити консолідації переказів, що потрапили на неактивні рахунки."
 
+#: src/app/note-input.tsx
+msgid "Budgie can sort notes on this phone"
+msgstr "Budgie може сортувати нотатки на цьому телефоні"
+
+#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+msgid "Budgie can't reset your PIN"
+msgstr "Budgie не може скинути ваш PIN-код"
+
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
 msgid "Budgie could not open your data"
 msgstr "Budgie не вдалося відкрити ваші дані"
+
+#: src/ai/component/ai-download-stopped-card/ai-download-stopped-card.tsx
+msgid "Budgie deleted the damaged part. It starts again only when you ask."
+msgstr "Budgie видалив пошкоджену частину. Завантаження почнеться знову лише на ваш запит."
 
 #: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
 msgid "Budgie hit an unexpected problem. You can restart the app or report the issue so we can investigate."
 msgstr "Budgie зіткнувся з неочікуваною проблемою. Ви можете перезапустити застосунок або повідомити про проблему, щоб ми її дослідили."
 
-#: src/onboarding/component/onboarding-done/onboarding-done.tsx
-msgid "Budgie is ready to go. You can revisit any of these steps later from Settings."
-msgstr "Budgie готовий до роботи. Ви можете повернутися до будь-якого з цих кроків пізніше в Налаштуваннях."
+#: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
+msgid "Budgie re-encrypts {DB_NAME} ({fileSize}) on this phone. It takes a few seconds."
+msgstr "Budgie перешифровує {DB_NAME} ({fileSize}) на цьому телефоні. Це займе кілька секунд."
 
-#: src/onboarding/component/onboarding-budget/onboarding-budget.tsx
-msgid "Budgie warns you before you cross it, and shows what's left right on the home screen."
-msgstr "Budgie попереджає вас, перш ніж ви її перевищите, і показує залишок прямо на головному екрані."
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "Budgie reads these statements on this phone."
+msgstr "Budgie читає ці виписки на цьому телефоні."
+
+#: src/auth/hook/use-pin-authentication.hook.ts
+msgid "Budgie restarted, so it needs your PIN once before {biometricName} works again."
+msgstr "Budgie перезапустився, тож потрібен ваш PIN-код один раз, перш ніж {biometricName} знову запрацює."
 
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Budgie will fill missing base-currency values from historical exchange rates. Analytics may be unavailable until this finishes."
@@ -889,9 +998,12 @@ msgstr "Може тривати годинами"
 #: src/app/(tabs)/settings/import.tsx
 #: src/app/convert-to-transfer.tsx
 #: src/app/resync-window-picker.tsx
+#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 #: src/budget/hooks/use-budget-form.hook.ts
-#: src/import/components/import-database/import-database.tsx
+#: src/import/hook/use-restore-backup.hook.ts
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+#: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
@@ -909,8 +1021,12 @@ msgstr "Може тривати годинами"
 msgid "Cancel"
 msgstr "Скасувати"
 
+#: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
+msgid "Cancel and delete"
+msgstr "Скасувати й видалити"
+
 #: src/account/constant/account-type.constant.ts
-#: src/onboarding/component/onboarding-track/onboarding-track.tsx
+#: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "Cash"
 msgstr "Готівка"
 
@@ -933,6 +1049,10 @@ msgstr "Категорії ({selectedCategoriesCount})"
 #: src/category/components/categories-feature-intro/categories-feature-intro.tsx
 msgid "Categories break your spending down automatically. Add a transaction, or widen the period to see earlier ones."
 msgstr "Категорії автоматично розподіляють ваші витрати. Додайте транзакцію або розширте період, щоб побачити попередні."
+
+#: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
+msgid "Categories, tags and voice notes are handled on this phone."
+msgstr "Категорії, теги та голосові нотатки обробляються на цьому телефоні."
 
 #: src/rule/components/rules-feature-intro/rules-feature-intro.tsx
 msgid "Categorise imports automatically"
@@ -973,13 +1093,13 @@ msgstr "Ліміти за категоріями"
 msgid "Category Name"
 msgstr "Назва категорії"
 
-#: src/onboarding/component/onboarding-track/onboarding-track.tsx
+#: src/onboarding/component/onboarding-currency-row/onboarding-currency-row.tsx
 #: src/sync/component/binance-sync-token-summary/binance-sync-token-summary.tsx
 #: src/sync/component/sync-token-section/sync-token-section.tsx
 msgid "Change"
 msgstr "Змінити"
 
-#: src/onboarding/component/onboarding-track/onboarding-track.tsx
+#: src/onboarding/component/onboarding-currency-row/onboarding-currency-row.tsx
 msgid "Change currency"
 msgstr "Змінити валюту"
 
@@ -1000,13 +1120,34 @@ msgstr "Поточний рахунок"
 msgid "Choose \"Excel\" as the export format — PDF and CSV files can't be imported"
 msgstr "Оберіть «Excel» як формат експорту — файли PDF і CSV імпортувати не можна"
 
+#: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
+msgid "Choose a different PIN"
+msgstr "Вибрати інший PIN-код"
+
+#: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
+#: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
+msgid "Choose a PIN"
+msgstr "Виберіть PIN-код"
+
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "Choose a preset to auto-fill column mappings"
 msgstr "Оберіть шаблон для автоматичного заповнення відповідностей стовпців"
 
+#: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
+msgid "Choose and confirm a PIN"
+msgstr "Виберіть і підтвердьте PIN-код"
+
 #: src/ai/component/ai-features-settings-card/ai-features-settings-card.tsx
 msgid "Choose features and free space from unused downloads"
 msgstr "Вибирайте функції та звільняйте місце від невикористаних завантажень"
+
+#: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
+msgid "Choose what goes inside"
+msgstr "Вибрати, що буде всередині"
+
+#: src/sync/component/account-selection-step/account-selection-step.tsx
+msgid "Choose what to track. Balances and history come straight from the bank."
+msgstr "Оберіть, що відстежувати. Баланси й історія надходять безпосередньо з банку."
 
 #: src/@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle.tsx
 msgid "Clear"
@@ -1048,6 +1189,10 @@ msgstr "Закрити депозит?"
 #: src/@generic/component/popover-menu/popover-menu.tsx
 msgid "Close menu"
 msgstr "Закрити меню"
+
+#: src/sync/component/file-import-review-step/file-import-review-step.tsx
+msgid "Closing balance · {title}"
+msgstr "Кінцевий баланс · {title}"
 
 #: src/rule/constant/external-source.constant.ts
 msgid "Coinbase"
@@ -1091,6 +1236,10 @@ msgstr "Підтвердити розділення"
 msgid "Confirm tag selection"
 msgstr "Підтвердити вибір тегів"
 
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
+msgid "Connect"
+msgstr "Підключити"
+
 #: src/rule/components/rules-feature-intro/rules-feature-intro.tsx
 msgid "Connect a bank"
 msgstr "Підключити банк"
@@ -1103,7 +1252,6 @@ msgstr "Спершу підключіть банк або імпортуйте �
 msgid "Connect Binance"
 msgstr "Підключити Binance"
 
-#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Connect Monobank"
 msgstr "Підключити Монобанк"
@@ -1137,16 +1285,17 @@ msgid "Contains"
 msgstr "Містить"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
-#: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
-#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
-#: src/onboarding/component/onboarding-budget/onboarding-budget.tsx
-#: src/onboarding/component/onboarding-expense/onboarding-expense.tsx
-#: src/onboarding/component/onboarding-lock/onboarding-lock.tsx
-#: src/onboarding/component/onboarding-track/onboarding-track.tsx
+#: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 #: src/sync/component/add-bank-integration-accounts/add-bank-integration-accounts.tsx
+#: src/sync/component/create-file-bank-account-footer/create-file-bank-account-footer.tsx
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Continue"
 msgstr "Продовжити"
+
+#: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
+#: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
+msgid "Continue without a PIN"
+msgstr "Продовжити без PIN-коду"
 
 #: src/app/convert-to-transfer.tsx
 msgid "Conversion failed"
@@ -1178,9 +1327,17 @@ msgstr "Перетворити на переказ"
 msgid "Convert to Transfer?"
 msgstr "Конвертувати у переказ?"
 
+#: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
+msgid "Copies elsewhere"
+msgstr "Копії деінде"
+
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Copy the API Key and Secret Key into the fields below"
 msgstr "Скопіюйте API-ключ і секретний ключ у поля нижче"
+
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Copy the token and paste it below"
+msgstr "Скопіюйте токен і вставте його нижче"
 
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Cost basis"
@@ -1289,6 +1446,10 @@ msgstr "Не вдалося видалити тег"
 msgid "Could not delete transaction."
 msgstr "Не вдалося видалити транзакцію."
 
+#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+msgid "Could not erase the data"
+msgstr "Не вдалося стерти дані"
+
 #: src/export/components/export-csv/export-csv.tsx
 msgid "Could not export CSV"
 msgstr "Не вдалося експортувати CSV"
@@ -1389,11 +1550,15 @@ msgstr "Не вдалося зберегти категорію"
 msgid "Could not save tag"
 msgstr "Не вдалося зберегти тег"
 
+#: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
+msgid "Could not seal the file"
+msgstr "Не вдалося запечатати файл"
+
 #: src/import/components/import-csv/import-csv.tsx
 msgid "Could not select CSV file"
 msgstr "Не вдалося вибрати CSV-файл"
 
-#: src/import/components/import-database/import-database.tsx
+#: src/import/hook/use-restore-backup.hook.ts
 msgid "Could not select database backup"
 msgstr "Не вдалося вибрати резервну копію бази даних"
 
@@ -1446,6 +1611,14 @@ msgstr "Не вдалося оновити налаштування"
 msgid "Could not update settings"
 msgstr "Не вдалося оновити налаштування"
 
+#: src/ai/hook/use-ai-model-download-actions.hook.ts
+msgid "Could not update the AI model download"
+msgstr "Не вдалося оновити завантаження моделей ШІ"
+
+#: src/app/(tabs)/settings/ai.tsx
+msgid "Could not update the download setting"
+msgstr "Не вдалося оновити налаштування завантаження"
+
 #: src/sync/component/binance-sync-token-section/binance-sync-token-section.tsx
 #: src/sync/component/sync-token-section/sync-token-section.tsx
 msgid "Could not update token"
@@ -1476,10 +1649,6 @@ msgstr "Покрито {coverMonths} місяцями витрат"
 #: src/runway/component/runway-verdict/runway-verdict.tsx
 msgid "Covered by your liquid balance"
 msgstr "Покрито вашим ліквідним балансом"
-
-#: src/export/components/export-database/export-database.tsx
-msgid "Create a backup of all your data"
-msgstr "Створити резервну копію всіх ваших даних"
 
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-debt-settlement-transaction-actions.hook.ts
@@ -1514,10 +1683,6 @@ msgstr "Створити рахунки"
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Create and copy the personal token"
 msgstr "Створити та скопіювати персональний токен"
-
-#: src/sync/constant/bank-credentials-step-config.constant.ts
-msgid "Create and copy your personal API token"
-msgstr "Створіть і скопіюйте свій персональний API-токен"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Create and organize transaction tags"
@@ -1567,7 +1732,7 @@ msgid "Credentials required"
 msgstr "Потрібні облікові дані"
 
 #: src/account/constant/account-type.constant.ts
-#: src/onboarding/component/onboarding-track/onboarding-track.tsx
+#: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "Crypto"
 msgstr "Криптовалюта"
 
@@ -1651,15 +1816,16 @@ msgstr "Борговий рахунок не знайдено"
 msgid "Debt accounts cannot take part in transfers"
 msgstr "Боргові рахунки не можуть брати участь у переказах"
 
-#: src/onboarding/component/onboarding-track/onboarding-track.tsx
-msgid "Debts & loans"
-msgstr "Борги та кредити"
+#: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
+msgid "Debts and loans"
+msgstr "Борги та позики"
 
 #: src/settings/components/default-account-selector/default-account-selector.tsx
 msgid "Default Account"
 msgstr "Рахунок за замовчуванням"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
+#: src/ai/hook/use-ai-model-download-actions.hook.ts
 #: src/budget/hooks/use-budget-form.hook.ts
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
@@ -1690,10 +1856,22 @@ msgstr "Видалити назавжди"
 msgid "Delete rule"
 msgstr "Видалити правило"
 
+#: src/ai/component/ai-download-stopped-card/ai-download-stopped-card.tsx
+msgid "Delete the {downloaded} GB part"
+msgstr "Видалити завантажені {downloaded} ГБ"
+
+#: src/ai/hook/use-ai-model-download-actions.hook.ts
+msgid "Delete the {downloaded} GB part?"
+msgstr "Видалити завантажені {downloaded} ГБ?"
+
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
 #: src/transaction/components/transaction-list-delete-menu-item/transaction-list-delete-menu-item.tsx
 msgid "Delete Transaction"
 msgstr "Видалити транзакцію"
+
+#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+msgid "Deletes {DB_NAME} from this phone"
+msgstr "Видаляє {DB_NAME} з цього телефона"
 
 #: src/account/component/start-deposit-form/start-deposit-form.tsx
 #: src/account/constant/account-type.constant.ts
@@ -1715,6 +1893,10 @@ msgstr "Депозитні рахунки не можуть фінансуват
 msgid "account.depositNegativeBalanceDisallowed"
 msgstr "Баланс депозиту не може стати відʼємним"
 
+#: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
+msgid "Deposits"
+msgstr "Депозити"
+
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Deselect all"
 msgstr "Скасувати вибір"
@@ -1726,6 +1908,10 @@ msgstr "Відкріпити борг"
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Details"
 msgstr "Деталі"
+
+#: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
+msgid "Didn't match"
+msgstr "Не збігається"
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "Disable App Lock"
@@ -1762,17 +1948,57 @@ msgstr "Готово"
 msgid "Done ({count})"
 msgstr "Готово ({count})"
 
+#: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
+msgid "Download {remaining} GB"
+msgstr "Завантажити {remaining} ГБ"
+
+#: src/ai/component/ai-download-stopped-card/ai-download-stopped-card.tsx
+msgid "Download {remaining} GB again"
+msgstr "Завантажити {remaining} ГБ знову"
+
+#: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
+msgid "Download {totalSize} GB now"
+msgstr "Завантажити {totalSize} ГБ зараз"
+
+#: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
+msgid "Download {totalSize} GB on mobile data"
+msgstr "Завантажити {totalSize} ГБ через мобільний інтернет"
+
+#: src/ai/constant/ai-download-card-visuals.constant.ts
+msgid "Download damaged"
+msgstr "Завантаження пошкоджене"
+
+#: src/ai/constant/ai-download-card-visuals.constant.ts
+msgid "Download interrupted"
+msgstr "Завантаження перервано"
+
+#: src/app/(tabs)/settings/ai.tsx
+msgid "Download only on Wi-Fi"
+msgstr "Завантажувати лише через Wi-Fi"
+
+#: src/ai/constant/ai-download-card-visuals.constant.ts
+msgid "Download stopped"
+msgstr "Завантаження зупинено"
+
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Download your statement as PDF"
 msgstr "Завантажте виписку у форматі PDF"
 
+#: src/ai/constant/ai-download-card-visuals.constant.ts
+msgid "Downloading"
+msgstr "Завантаження"
+
+#: src/ai/component/ai-download-home-row/ai-download-home-row.tsx
+msgid "Downloading AI models"
+msgstr "Завантаження моделей ШІ"
+
+#: src/ai/component/ai-download-home-row/ai-download-home-row.tsx
+msgid "Downloading AI models on Wi-Fi"
+msgstr "Завантаження моделей ШІ через Wi-Fi"
+
 #: src/ai/constant/ai-umbrella-status-atom.constant.ts
 msgid "Downloading AI models…"
 msgstr "Завантаження моделей ШІ…"
-
-#: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
-msgid "Downloads about 2.5 GB of models once"
-msgstr "Одноразово завантажує близько 2.5 GB моделей"
 
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
 msgid "Due {date}"
@@ -1805,6 +2031,10 @@ msgstr "напр. Продукти, Розваги"
 #: src/@generic/component/account-details-field/account-details-field.tsx
 msgid "e.g. Savings Account"
 msgstr "напр. Ощадний рахунок"
+
+#: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
+msgid "Each one becomes an account. Rename or remove them later."
+msgstr "Кожен стане рахунком. Перейменувати чи видалити їх можна пізніше."
 
 #: src/account/component/deposit-account-actions-menu/deposit-account-actions-menu.tsx
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
@@ -1867,6 +2097,10 @@ msgstr "Змінює загальну суму плану"
 msgid "Emergency fund and savings goals"
 msgstr "Резервний фонд та цілі заощаджень"
 
+#: src/onboarding/hook/use-onboarding-file-state.hook.ts
+msgid "empty"
+msgstr "порожній"
+
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "Empty canvas"
 msgstr "Порожній шаблон"
@@ -1883,10 +2117,6 @@ msgstr "Увімкнути біометричне розблокування?"
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Enable Face ID unlock?"
 msgstr "Увімкнути розблокування Face ID?"
-
-#: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
-msgid "Enable on-device AI"
-msgstr "Увімкнути локальний ШІ"
 
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Enable them in device settings to receive budget alerts."
@@ -1917,10 +2147,6 @@ msgstr "Введіть усі суми"
 msgid "Enter amount..."
 msgstr "Введіть суму..."
 
-#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
-msgid "Enter balances by hand"
-msgstr "Ввести баланси вручну"
-
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Enter current PIN"
 msgstr "Введіть поточний PIN-код"
@@ -1928,6 +2154,10 @@ msgstr "Введіть поточний PIN-код"
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Enter current PIN to disable protection"
 msgstr "Введіть поточний PIN-код для вимкнення захисту"
+
+#: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
+msgid "Enter it once more"
+msgstr "Введіть його ще раз"
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Enter new PIN"
@@ -1938,8 +2168,8 @@ msgid "Enter new token"
 msgstr "Введіть новий токен"
 
 #: src/app/import-backup-pin.tsx
-msgid "Enter the PIN this backup was created with. It becomes your app PIN after the restore."
-msgstr "Введіть PIN, з яким було створено цю резервну копію. Після відновлення він стане PIN-кодом застосунку."
+msgid "Enter the PIN this backup was sealed with"
+msgstr "Введіть PIN-код, яким запечатано цю резервну копію"
 
 #: src/rule/components/rule-condition-text-value-input/rule-condition-text-value-input.tsx
 msgid "Enter value..."
@@ -1965,6 +2195,10 @@ msgstr "Введіть свій API-секрет Binance"
 msgid "Enter your Monobank API token"
 msgstr "Введіть ваш API-токен Монобанку"
 
+#: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
+msgid "Enter your new PIN again from the start. Take your time: this is the one you'll need to remember."
+msgstr "Введіть новий PIN-код ще раз від початку. Не поспішайте: саме його потрібно буде пам'ятати."
+
 #: src/auth/hook/use-pin-authentication.hook.ts
 msgid "Enter your PIN"
 msgstr "Введіть свій PIN-код"
@@ -1981,6 +2215,18 @@ msgstr "дорівнює"
 msgid "Equals"
 msgstr "Дорівнює"
 
+#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+msgid "Erase"
+msgstr "Стерти"
+
+#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+msgid "Erase and start fresh"
+msgstr "Стерти й почати заново"
+
+#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+msgid "Erase and start fresh?"
+msgstr "Стерти й почати заново?"
+
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Errors"
 msgstr "Помилки"
@@ -1993,6 +2239,10 @@ msgstr "Erste"
 #: src/app/(main)/create-account/index.tsx
 msgid "Erste Bank"
 msgstr "Erste Bank"
+
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "Erste Bank (PDF)"
+msgstr "Erste Bank (PDF)"
 
 #: src/sync/component/add-bank-integration-accounts-content/add-bank-integration-accounts-content.tsx
 msgid "Every account from this bank is already linked."
@@ -2009,6 +2259,10 @@ msgstr "Кожна транзакція має тег."
 #: src/app/(main)/create-account/index.tsx
 msgid "Everyday transactions and spending"
 msgstr "Щоденні транзакції та витрати"
+
+#: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
+msgid "Everything still stays on this device and nothing is uploaded. But anyone who can unlock your phone can open Budgie."
+msgstr "Усе й надалі лишається на цьому пристрої, нічого не вивантажується. Але будь-хто, хто може розблокувати ваш телефон, зможе відкрити Budgie."
 
 #: src/account/component/start-deposit-funding-summary/start-deposit-funding-summary.tsx
 #: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
@@ -2054,6 +2308,10 @@ msgstr "Витрата"
 msgid "Expenses"
 msgstr "Витрати"
 
+#: src/export/components/export-database/export-database.tsx
+msgid "Export a backup"
+msgstr "Експортувати резервну копію"
+
 #: src/export/components/export-csv/export-csv.tsx
 msgid "Export all transactions to a CSV file"
 msgstr "Експортувати всі транзакції до CSV-файлу"
@@ -2062,14 +2320,11 @@ msgstr "Експортувати всі транзакції до CSV-файлу
 msgid "Export CSV"
 msgstr "Експортувати CSV"
 
-#: src/export/components/export-database/export-database.tsx
-msgid "Export Database"
-msgstr "Експортувати базу даних"
-
 #: src/app/(tabs)/settings/import.tsx
 msgid "External ID"
 msgstr "Зовнішній ID"
 
+#: src/auth/hook/use-pin-authentication.hook.ts
 #: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "Face ID"
 msgstr "Face ID"
@@ -2078,6 +2333,10 @@ msgstr "Face ID"
 #: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "Face ID / Touch ID"
 msgstr "Face ID / Touch ID"
+
+#: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
+msgid "Face ID day to day"
+msgstr "Face ID щодня"
 
 #: src/@generic/hook/use-contacts.hook.ts
 msgid "Failed to load contacts."
@@ -2109,7 +2368,6 @@ msgid "Fee, percent"
 msgstr "Комісія, відсоток"
 
 #: src/sync/component/create-binance-account/create-binance-account.tsx
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Fetch Accounts"
 msgstr "Отримати рахунки"
 
@@ -2120,6 +2378,10 @@ msgstr "Завантаження нових..."
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 msgid "Field"
 msgstr "Поле"
+
+#: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
+msgid "File"
+msgstr "Файл"
 
 #: src/app/transaction-account-filter.tsx
 msgid "Filter accounts"
@@ -2137,9 +2399,13 @@ msgstr "Фільтрувати категорії"
 msgid "Filter tags"
 msgstr "Фільтрувати теги"
 
-#: src/onboarding/component/onboarding-expense/onboarding-expense.tsx
-msgid "First expense added"
-msgstr "Першу витрату додано"
+#: src/auth/hook/use-pin-authentication.hook.ts
+msgid "fingerprint"
+msgstr "відбиток пальця"
+
+#: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
+msgid "Fingerprint day to day"
+msgstr "Відбиток пальця щодня"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "Fix Errors"
@@ -2148,6 +2414,10 @@ msgstr "Виправити помилки"
 #: src/app/(main)/create-account/index.tsx
 msgid "Fixed-term savings with an interest rate"
 msgstr "Строкові заощадження з відсотковою ставкою"
+
+#: src/app/(main)/pin.tsx
+msgid "Forgot PIN?"
+msgstr "Забули PIN-код?"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Found an issue or have an idea? Open GitHub issue templates."
@@ -2227,9 +2497,17 @@ msgstr "Отримуйте пропозиції категорій, тегів �
 msgid "Get notified when a budget threshold is crossed"
 msgstr "Сповіщати, коли перетинається порогове значення бюджету"
 
+#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
+msgid "Get started"
+msgstr "Почати"
+
 #: src/@generic/component/go-back-button/go-back-button.tsx
 msgid "Go back"
 msgstr "Назад"
+
+#: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
+msgid "Go straight to Budgie"
+msgstr "Одразу до Budgie"
 
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Greater Than"
@@ -2238,6 +2516,10 @@ msgstr "Більше ніж"
 #: src/runway/component/runway-verdict/runway-verdict.tsx
 msgid "Growing"
 msgstr "Зростає"
+
+#: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
+msgid "Help sorting, without leaving the phone?"
+msgstr "Допомога з сортуванням, не виходячи з телефона?"
 
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Hidden from Home"
@@ -2263,6 +2545,10 @@ msgstr "Завантаження історії призупинено"
 msgid "History synced"
 msgstr "Історію синхронізовано"
 
+#: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
+msgid "Hold to seal with this PIN"
+msgstr "Утримуйте, щоб запечатати цим PIN-кодом"
+
 #: src/sync/component/sync-credentials-step-header/sync-credentials-step-header.tsx
 msgid "How to configure"
 msgstr "Як налаштувати"
@@ -2271,17 +2557,25 @@ msgstr "Як налаштувати"
 msgid "How to export"
 msgstr "Як експортувати"
 
+#: src/onboarding/component/onboarding-key/onboarding-key.tsx
+msgid "I have a Budgie backup"
+msgstr "У мене є резервна копія Budgie"
+
+#: src/app/(tabs)/settings/ai.tsx
+msgid "If a download arrives damaged, Budgie deletes it and asks before starting again."
+msgstr "Якщо завантаження надійде пошкодженим, Budgie видалить його та запитає, перш ніж почати знову."
+
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "If Privat24 emails you the file instead of downloading it, save the attachment from your inbox"
 msgstr "Якщо Приват24 надсилає файл на пошту замість завантаження, збережіть вкладення зі своєї поштової скриньки"
 
-#: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
-msgid "Import"
-msgstr "Імпортувати"
+#: src/app/import-backup-pin.tsx
+msgid "If you don't remember it, this backup can't be opened. You can start fresh instead."
+msgstr "Якщо ви його не пам'ятаєте, цю резервну копію не відкрити. Натомість можна почати з чистого аркуша."
 
-#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
-msgid "Import a statement"
-msgstr "Імпортувати виписку"
+#: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
+msgid "If you forget it, nobody can open this file, including you and us."
+msgstr "Якщо ви його забудете, ніхто не зможе відкрити цей файл — ні ви, ні ми."
 
 #: src/app/(main)/create-account/index.tsx
 #: src/sync/component/create-erste-account/create-erste-account.tsx
@@ -2297,6 +2591,7 @@ msgid "Import CSV"
 msgstr "Імпортувати CSV"
 
 #: src/import/components/import-database/import-database.tsx
+#: src/import/hook/use-restore-backup.hook.ts
 msgid "Import Database"
 msgstr "Імпортувати базу даних"
 
@@ -2313,6 +2608,10 @@ msgstr "Помилка імпорту"
 msgid "Import file"
 msgstr "Імпортувати файл"
 
+#: src/sync/component/file-import-review-step/file-import-review-step.tsx
+msgid "Import into"
+msgstr "Імпортувати в"
+
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Import Privatbank"
 msgstr "Імпорт Приватбанку"
@@ -2325,7 +2624,7 @@ msgstr "Імпорт розпочато"
 msgid "Import transactions from a CSV file"
 msgstr "Імпортувати транзакції з CSV файлу"
 
-#: src/import/components/import-database/import-database.tsx
+#: src/import/hook/use-restore-backup.hook.ts
 msgid "Importing a database will replace all current data. The app will restart after import. This action cannot be undone."
 msgstr "Імпорт бази даних замінить усі поточні дані. Додаток перезапуститься після імпорту. Цю дію неможливо скасувати."
 
@@ -2424,13 +2723,25 @@ msgstr "Відсоткова ставка % (необов'язково)"
 msgid "Invalid file"
 msgstr "Невірний файл"
 
+#: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
+msgid "It will encrypt everything you put in Budgie. Pick one you'll remember but others won't guess."
+msgstr "Він шифруватиме все, що ви додаєте в Budgie. Оберіть такий, що ви запам'ятаєте, а інші не вгадають."
+
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "It will no longer appear in the calendar."
 msgstr "Він більше не з’являтиметься в календарі."
 
+#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+msgid "It's the only key to your file. There's no account and no copy on a server, so there's nothing to reset it from."
+msgstr "Це єдиний ключ до вашого файлу. Немає ні акаунта, ні копії на сервері, тож нема звідки його скинути."
+
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Jars"
 msgstr "Банки"
+
+#: src/ai/hook/use-ai-model-download-actions.hook.ts
+msgid "Keep"
+msgstr "Залишити"
 
 #: src/categorize-inbox/components/categorize-inbox-already-tracked-chip/categorize-inbox-already-tracked-chip.tsx
 msgid "Keep as already tracked cash, not spending"
@@ -2439,6 +2750,14 @@ msgstr "Залишити як уже враховану готівку, не в�
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Keep only \"Enable Reading\" on — never allow trading or withdrawals"
 msgstr "Залиште увімкненим лише \"Дозволити читання\" — ніколи не дозволяйте торгівлю чи виведення"
+
+#: src/app/(tabs)/settings/ai.tsx
+msgid "Keep using Budgie meanwhile. Until the model is ready, categories come from simple rules on the phone."
+msgstr "Користуйтеся Budgie тим часом. Поки модель не готова, категорії визначаються простими правилами на телефоні."
+
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Kept inside Budgie's file on this phone. Sent only to Monobank, never to us."
+msgstr "Зберігається у файлі Budgie на цьому телефоні. Надсилається лише в Monobank, ніколи нам."
 
 #: src/settings/components/language-selector/language-selector.tsx
 msgid "Language"
@@ -2468,6 +2787,10 @@ msgstr "Останні 7 днів"
 msgid "Last 90 days"
 msgstr "Останні 90 днів"
 
+#: src/settings/components/your-data-file-card/your-data-file-card.tsx
+msgid "Last backup"
+msgstr "Остання резервна копія"
+
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Last error"
 msgstr "Остання помилка"
@@ -2488,6 +2811,10 @@ msgstr "Минулий тиждень"
 msgid "Last year"
 msgstr "Останній рік"
 
+#: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
+msgid "Later, next time I'm on Wi-Fi"
+msgstr "Пізніше, коли буду в Wi-Fi"
+
 #: src/ai/component/ai-embedding-status-card/ai-embedding-status-card.tsx
 msgid "Learning"
 msgstr "Навчання"
@@ -2499,6 +2826,10 @@ msgstr "Навчання на транзакціях"
 #: src/ai/constant/ai-embedding-status-atom.constant.ts
 msgid "Learning up to date"
 msgstr "Навчання актуальне"
+
+#: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
+msgid "Leave it empty for now"
+msgstr "Поки залишити порожнім"
 
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "left"
@@ -2526,6 +2857,10 @@ msgstr "Ліміт"
 msgid "Listening..."
 msgstr "Слухаю..."
 
+#: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
+msgid "Lives on"
+msgstr "Зберігається на"
+
 #: src/ai/component/ai-model-storage/ai-model-storage.tsx
 msgid "Loading AI downloads…"
 msgstr "Завантаження даних ШІ…"
@@ -2550,13 +2885,25 @@ msgstr "Завантаження..."
 msgid "Loading…"
 msgstr "Завантаження…"
 
-#: src/onboarding/component/onboarding-lock/onboarding-lock.tsx
-msgid "Lock it down"
-msgstr "Заблокуйте це"
+#: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
+msgid "Lock Budgie with your own PIN"
+msgstr "Заблокуйте Budgie власним PIN-кодом"
+
+#: src/sync/component/token-input-step/token-input-step.tsx
+msgid "Looks right"
+msgstr "Виглядає правильно"
 
 #: src/settings/components/default-currency-selector/default-currency-selector.tsx
 msgid "Main Currency"
 msgstr "Основна валюта"
+
+#: src/onboarding/component/onboarding-currency-row/onboarding-currency-row.tsx
+msgid "Main currency: <0>{currencyName}</0>, from your phone's region"
+msgstr "Основна валюта: <0>{currencyName}</0>, за регіоном вашого телефона"
+
+#: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
+msgid "Make a PIN after all"
+msgstr "Усе ж створити PIN-код"
 
 #: src/budget/components/budget-details/budget-details.tsx
 #: src/settings/components/budget-management-card/budget-management-card.tsx
@@ -2684,6 +3031,10 @@ msgstr "Без категорій"
 msgid "Missing rate"
 msgstr "Курс відсутній"
 
+#: src/ai/component/ai-on-device-link-card/ai-on-device-link-card.tsx
+msgid "Models and downloads"
+msgstr "Моделі та завантаження"
+
 #: src/app/(tabs)/settings/ai-features.tsx
 msgid "Models download once, best on Wi-Fi"
 msgstr "Моделі завантажуються один раз, краще через Wi-Fi"
@@ -2702,9 +3053,18 @@ msgstr "Витрати"
 
 #: src/account/constant/bank-provider-title.constant.ts
 #: src/app/(main)/create-account/index.tsx
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 #: src/rule/constant/external-source.constant.ts
 msgid "Monobank"
 msgstr "Монобанк"
+
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "Monobank connected"
+msgstr "Monobank підключено"
+
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
+msgid "Monobank gives you a personal token. Budgie uses it to talk to the bank directly, with no one in between."
+msgstr "Monobank видає вам особистий токен. Budgie використовує його, щоб говорити з банком напряму, без посередників."
 
 #: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
 msgid "Monobank sends about one month of history per minute, for each account you selected."
@@ -2718,11 +3078,6 @@ msgstr "Місячний бюджет"
 #: src/budget/hooks/use-budget-form.hook.ts
 msgid "Monthly Budget"
 msgstr "Місячний бюджет"
-
-#: src/onboarding/component/onboarding-budget/onboarding-budget.tsx
-#: src/onboarding/component/onboarding-done/onboarding-done.tsx
-msgid "Monthly budget set"
-msgstr "Місячний бюджет встановлено"
 
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
 msgid "Monthly Costs"
@@ -2776,6 +3131,14 @@ msgstr "Чистий"
 msgid "Net worth"
 msgstr "Чисті активи"
 
+#: src/settings/components/your-data-file-card/your-data-file-card.tsx
+msgid "Never"
+msgstr "Ніколи"
+
+#: src/onboarding/component/onboarding-key/onboarding-key.tsx
+msgid "Never synced, never uploaded."
+msgstr "Ніколи не синхронізується й не вивантажується."
+
 #: src/app/(main)/create-account/index.tsx
 msgid "New Account"
 msgstr "Новий рахунок"
@@ -2801,8 +3164,12 @@ msgid "Next {formattedNextAmount} · {nextDate}"
 msgstr "Наступний {formattedNextAmount} · {nextDate}"
 
 #: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
-msgid "No account. No sign-up. Everything lives in an encrypted database on this device."
-msgstr "Без акаунту. Без реєстрації. Усе зберігається в зашифрованій базі даних на цьому пристрої."
+msgid "No account needed · Takes about a minute"
+msgstr "Без акаунта · Близько хвилини"
+
+#: src/onboarding/component/onboarding-key/onboarding-key.tsx
+msgid "No account. There's nothing to sign up for."
+msgstr "Жодного акаунта. Не треба ніде реєструватися."
 
 #: src/account/component/account-select-content/account-select-content.tsx
 #: src/app/transaction-account-filter.tsx
@@ -2961,13 +3328,13 @@ msgstr "Тегів не знайдено"
 msgid "No tags match your search"
 msgstr "Жоден тег не відповідає вашому пошуку"
 
+#: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
+msgid "No thanks"
+msgstr "Ні, дякую"
+
 #: src/transaction/components/transaction-picker-row/transaction-picker-row.tsx
 msgid "No title"
 msgstr "Без назви"
-
-#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
-msgid "No tracking"
-msgstr "Без трекінгу"
 
 #: src/rule/utils/show-rule-application-toast.util.ts
 msgid "No transactions matched"
@@ -2976,6 +3343,11 @@ msgstr "Жодна транзакція не відповідає"
 #: src/transaction/components/transaction-list/transaction-list.tsx
 msgid "No transactions yet"
 msgstr "Поки немає транзакцій"
+
+#: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
+#: src/sync/component/file-import-review-step/file-import-review-step.tsx
+msgid "None"
+msgstr "Немає"
 
 #: src/settings/components/default-account-selector/default-account-selector.tsx
 msgid "None selected"
@@ -2989,9 +3361,17 @@ msgstr "не містить"
 msgid "Not Contains"
 msgstr "Не містить"
 
+#: src/ai/constant/ai-download-card-visuals.constant.ts
+msgid "Not downloaded"
+msgstr "Не завантажено"
+
+#: src/export/components/export-database/export-database.tsx
+msgid "Not encrypted, because there's no PIN. You choose where it goes."
+msgstr "Не зашифровано, бо немає PIN-коду. Ви обираєте, куди її зберегти."
+
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
 #: src/app/import-backup-pin.tsx
-#: src/import/components/import-database/import-database.tsx
+#: src/import/hook/use-restore-backup.hook.ts
 msgid "Not enough free storage to extract this backup."
 msgstr "Недостатньо вільного місця, щоб розпакувати цю резервну копію."
 
@@ -3010,6 +3390,10 @@ msgstr "Не дорівнює"
 #: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx
 msgid "Not generated"
 msgstr "Не згенеровано"
+
+#: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
+msgid "Not now"
+msgstr "Не зараз"
 
 #: src/transaction/components/transaction-field-icon/transaction-field-icon.tsx
 msgid "not set"
@@ -3037,10 +3421,21 @@ msgstr "зараз"
 msgid "of"
 msgstr "з"
 
-#: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
-#: src/onboarding/component/onboarding-done/onboarding-done.tsx
-msgid "On-device AI enabled"
-msgstr "Локальний ШІ увімкнено"
+#: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
+msgid "of {total} GB"
+msgstr "з {total} ГБ"
+
+#: src/ai/component/ai-download-wifi-banner/ai-download-wifi-banner.tsx
+msgid "OK"
+msgstr "OK"
+
+#: src/app/(tabs)/settings/ai.tsx
+msgid "On-device AI"
+msgstr "ШІ на пристрої"
+
+#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+msgid "One you exported with a PIN you remember"
+msgstr "Ту, яку ви експортували з PIN-кодом, що пам'ятаєте"
 
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
 msgid "One-off"
@@ -3053,6 +3448,10 @@ msgstr "Разовий стрибок"
 #: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
 msgid "One-offs"
 msgstr "Разові витрати"
+
+#: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
+msgid "one-time download"
+msgstr "одноразове завантаження"
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "One-time import from a Privat24 statement — this is not a live sync, and each export covers a single card or account"
@@ -3075,6 +3474,10 @@ msgstr "Можна конвертувати лише витратні транз
 msgid "Only income transactions can be converted"
 msgstr "Можна конвертувати лише дохідні транзакції"
 
+#: src/onboarding/component/onboarding-key/onboarding-key.tsx
+msgid "Only me, with a PIN"
+msgstr "Лише я, з PIN-кодом"
+
 #: ../ledger/src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only single-entry expenses can be converted"
 msgstr "Можна конвертувати лише витрати з одним записом"
@@ -3083,6 +3486,14 @@ msgstr "Можна конвертувати лише витрати з одни�
 #: src/account/utils/get-debt-opening-messages.util.ts
 msgid "Only single-entry incomes can be converted"
 msgstr "Можна конвертувати лише доходи з одним записом"
+
+#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
+msgid "Only you hold the key."
+msgstr "Ключ лише у вас."
+
+#: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
+msgid "Only your PIN opens this file."
+msgstr "Лише ваш PIN-код відкриває цей файл."
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Open Binance to get your API key"
@@ -3112,6 +3523,10 @@ msgstr "Відкрийте Приват24 і виберіть картку аб�
 msgid "Open settings"
 msgstr "Відкрити налаштування"
 
+#: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
+msgid "Opens with"
+msgstr "Відкривається"
+
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Operator"
 msgstr "Оператор"
@@ -3123,6 +3538,10 @@ msgstr "Необов’язково — без нього сума залиша�
 #: src/rule/components/rule-summary-pills/rule-summary-condition-item.tsx
 msgid "or"
 msgstr "або"
+
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "Or fill it from"
+msgstr "Або заповнити з"
 
 #: src/tag/components/tags-settings-feature-intro/tags-settings-feature-intro.tsx
 msgid "Organise spending your own way"
@@ -3204,10 +3623,6 @@ msgstr "Винен вам"
 msgid "Paid {paidAmount} · {paidCount} of {installmentCount}"
 msgstr "Сплачено {paidAmount} · {paidCount} з {installmentCount}"
 
-#: src/sync/constant/bank-credentials-step-config.constant.ts
-msgid "Paste the token into the field below"
-msgstr "Вставте токен у поле нижче"
-
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "Paste your API token below:"
 msgstr "Вставте ваш API-токен нижче:"
@@ -3221,6 +3636,22 @@ msgstr "Вставте свій API-ключ Binance:"
 #: src/sync/component/binance-sync-token-summary/binance-sync-token-summary.tsx
 msgid "Paste your Binance API secret:"
 msgstr "Вставте свій API-секрет Binance:"
+
+#: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
+msgid "Pause"
+msgstr "Пауза"
+
+#: src/ai/constant/ai-download-card-visuals.constant.ts
+msgid "Paused"
+msgstr "Призупинено"
+
+#: src/ai/constant/ai-download-card-visuals.constant.ts
+msgid "Paused: no Wi-Fi"
+msgstr "Призупинено: немає Wi-Fi"
+
+#: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
+msgid "Paused. {downloaded} of {total} GB is kept."
+msgstr "Призупинено. {downloaded} з {total} ГБ збережено."
 
 #: src/installment-plan/component/convert-to-installment-content/convert-to-installment-content.tsx
 #: src/transaction/components/transaction-list-convert-to-installment-menu-item/transaction-list-convert-to-installment-menu-item.tsx
@@ -3252,6 +3683,19 @@ msgstr "на місяць"
 msgid "Permission to access contacts was denied."
 msgstr "Відмовлено в доступі до контактів."
 
+#: src/auth/components/security-status-badge/security-status-badge.tsx
+#: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
+msgid "Phone lock only"
+msgstr "Лише блокування телефона"
+
+#: src/onboarding/hook/use-onboarding-file-state.hook.ts
+msgid "Phone lock only · {contents}"
+msgstr "Лише блокування телефона · {contents}"
+
+#: src/auth/components/security-status-chip/security-status-chip.tsx
+msgid "Phone lock only. Make a PIN to encrypt your data."
+msgstr "Лише блокування телефона. Створіть PIN-код, щоб зашифрувати дані."
+
 #: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
 msgid "Pick a category for this transaction"
 msgstr "Вибрати категорію для цієї транзакції"
@@ -3264,10 +3708,6 @@ msgstr "Оберіть категорію для встановлення лім
 msgid "Pick a window. Existing data is preserved."
 msgstr "Виберіть період. Наявні дані зберігаються."
 
-#: src/onboarding/component/onboarding-track/onboarding-track.tsx
-msgid "Pick any. We'll create the accounts for you — rename or remove them later."
-msgstr "Виберіть будь-які. Ми створимо рахунки за вас — перейменуйте або видаліть їх пізніше."
-
 #: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
 msgid "Pick tags for this transaction"
 msgstr "Вибрати теги для цієї транзакції"
@@ -3275,6 +3715,10 @@ msgstr "Вибрати теги для цієї транзакції"
 #: src/auth/hook/use-pin-setup.hook.tsx
 msgid "PINs do not match"
 msgstr "PIN-коди не збігаються"
+
+#: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
+msgid "PINs match"
+msgstr "PIN-коди збігаються"
 
 #: src/installment-plan/hook/use-open-convert-to-installment.hook.ts
 msgid "Plan created"
@@ -3319,6 +3763,10 @@ msgstr "Підготовка оцінки"
 msgid "Preset applied. Adjust columns below if needed."
 msgstr "Шаблон застосовано. За потреби налаштуйте стовпці нижче."
 
+#: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
+msgid "Press and hold to seal"
+msgstr "Натисніть і утримуйте, щоб запечатати"
+
 #: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
 msgid "Press to re-evaluate transactions"
 msgstr "Натисніть, щоб переоцінити транзакції"
@@ -3343,6 +3791,10 @@ msgstr "Приватбанк"
 #: src/account/constant/bank-provider-title.constant.ts
 msgid "PrivatBank"
 msgstr "ПриватБанк"
+
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "Privatbank (XLSX)"
+msgstr "Приватбанк (XLSX)"
 
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Push notifications are disabled"
@@ -3391,6 +3843,18 @@ msgstr "Повторна синхронізація останніх 90 днів
 #: src/app/resync-window-picker.tsx
 msgid "Re-sync transactions"
 msgstr "Повторно синхронізувати транзакції"
+
+#: src/sync/component/file-import-review-step/file-import-review-step.tsx
+msgid "Read on this phone"
+msgstr "Прочитано на цьому телефоні"
+
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "Read on this phone, then you can delete it."
+msgstr "Читається на цьому телефоні, потім її можна видалити."
+
+#: src/ai/constant/ai-download-card-visuals.constant.ts
+msgid "Ready"
+msgstr "Готово"
 
 #: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
 msgid "Ready to accept"
@@ -3528,6 +3992,10 @@ msgstr "Перезапустити застосунок"
 msgid "Restore"
 msgstr "Відновити"
 
+#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+msgid "Restore a backup"
+msgstr "Відновити з резервної копії"
+
 #: src/account/component/archived-account-card/archived-account-card.tsx
 msgid "Restore Account?"
 msgstr "Відновити рахунок?"
@@ -3539,6 +4007,10 @@ msgstr "Відновити з файлу резервної копії"
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
 msgid "Restore from Backup"
 msgstr "Відновити з резервної копії"
+
+#: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
+msgid "Resume"
+msgstr "Продовжити"
 
 #: src/ai/component/ai-model-storage/ai-model-storage.tsx
 msgid "Retry"
@@ -3567,6 +4039,10 @@ msgstr "Скасувати об'єднання?"
 #: src/rule/constant/external-source.constant.ts
 msgid "Revolut"
 msgstr "Revolut"
+
+#: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
+msgid "Right now anyone who can unlock your phone can open Budgie. With a PIN, the file itself is encrypted and only opens with it."
+msgstr "Зараз будь-хто, хто може розблокувати ваш телефон, може відкрити Budgie. З PIN-кодом сам файл шифрується й відкривається лише ним."
 
 #: src/rule/hooks/use-rules-list-page-actions.hook.ts
 msgid "Rule"
@@ -3600,6 +4076,14 @@ msgstr "Правила працюють з імпортованими транз
 msgid "Runs in the background, and much slower while the app is closed."
 msgstr "Виконується у фоновому режимі й значно повільніше, коли застосунок закрито."
 
+#: src/app/(tabs)/settings/ai.tsx
+msgid "Runs on"
+msgstr "Працює на"
+
+#: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
+msgid "Runs on this phone. Nothing it reads is sent anywhere."
+msgstr "Працює на цьому телефоні. Нічого з прочитаного нікуди не надсилається."
+
 #: src/runway/component/runway-verdict/runway-verdict.tsx
 msgid "Runs out around {runOutDate}"
 msgstr "Закінчиться близько {runOutDate}"
@@ -3623,11 +4107,16 @@ msgstr "Зберегти"
 msgid "Save {count}"
 msgstr "Зберегти {count}"
 
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "Save balances"
+msgstr "Зберегти баланси"
+
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 msgid "Save fee"
 msgstr "Зберегти комісію"
 
 #: src/account/constant/account-type.constant.ts
+#: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "Savings"
 msgstr "Заощадження"
 
@@ -3636,9 +4125,41 @@ msgstr "Заощадження"
 msgid "Savings Account"
 msgstr "Ощадний рахунок"
 
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Scan the QR code with the Monobank app"
+msgstr "Відскануйте QR-код у застосунку Monobank"
+
 #: src/app/(tabs)/settings/index.tsx
 msgid "Screenshot Protection"
 msgstr "Захист від скріншотів"
+
+#: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
+msgid "Seal"
+msgstr "Запечатати"
+
+#: src/auth/components/security-status-badge/security-status-badge.tsx
+msgid "Sealed"
+msgstr "Запечатано"
+
+#: src/onboarding/hook/use-onboarding-file-state.hook.ts
+msgid "Sealed · {contents}"
+msgstr "Запечатано · {contents}"
+
+#: src/export/components/export-database/export-database.tsx
+msgid "Sealed with your PIN. You choose where it goes."
+msgstr "Запечатано вашим PIN-кодом. Ви обираєте, куди її зберегти."
+
+#: src/onboarding/component/onboarding-sealed-moment/onboarding-sealed-moment.tsx
+msgid "Sealed."
+msgstr "Запечатано."
+
+#: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
+msgid "Sealed. Face ID or fingerprint is optional."
+msgstr "Запечатано. Face ID або відбиток пальця — за бажанням."
+
+#: src/onboarding/component/onboarding-sealed-moment/onboarding-sealed-moment.tsx
+msgid "Sealed. Only your PIN opens this file."
+msgstr "Запечатано. Лише ваш PIN-код відкриває цей файл."
 
 #: src/app/account-selector.tsx
 #: src/app/transaction-account-filter.tsx
@@ -3748,10 +4269,6 @@ msgstr "Виберіть рахунок"
 msgid "Select Account"
 msgstr "Вибрати рахунок"
 
-#: src/sync/component/account-selection-step/account-selection-step.tsx
-msgid "Select accounts to sync:"
-msgstr "Виберіть рахунки для синхронізації:"
-
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 msgid "Select Action Type"
 msgstr "Вибрати тип дії"
@@ -3842,17 +4359,9 @@ msgstr "Вибрано"
 msgid "Sending {fromCode}"
 msgstr "Відправлення {fromCode}"
 
-#: src/onboarding/component/onboarding-budget/onboarding-budget.tsx
-msgid "Set a budget"
-msgstr "Встановити бюджет"
-
 #: src/budget/components/budget-missing-currency-guard/budget-missing-currency-guard.tsx
 msgid "Set a default currency in Settings first"
 msgstr "Спочатку оберіть валюту за замовчуванням у Налаштуваннях"
-
-#: src/onboarding/component/onboarding-budget/onboarding-budget.tsx
-msgid "Set a monthly ceiling"
-msgstr "Встановіть місячну межу"
 
 #: src/settings/components/budget-management-card/budget-management-card.tsx
 msgid "Set a monthly limit and track spending"
@@ -3861,10 +4370,6 @@ msgstr "Встановіть місячний ліміт та відстежуй
 #: src/budget/components/budget-empty-state/budget-empty-state.tsx
 msgid "Set a monthly limit and track your spending"
 msgstr "Встановіть місячний ліміт та відстежуйте свої витрати"
-
-#: src/onboarding/component/onboarding-lock/onboarding-lock.tsx
-msgid "Set a PIN"
-msgstr "Встановити PIN-код"
 
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 msgid "Set Category"
@@ -3883,10 +4388,6 @@ msgstr "Встановити дату погашення"
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx
 msgid "Set Return Date"
 msgstr "Встановити дату повернення"
-
-#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
-msgid "Set up Budgie"
-msgstr "Налаштувати Budgie"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Settings"
@@ -3941,7 +4442,6 @@ msgstr "Показувати транзакції, коли будь-яка ос
 msgid "Similar transactions"
 msgstr "Схожі транзакції"
 
-#: src/onboarding/component/onboarding-step-header/onboarding-step-header.tsx
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Skip"
 msgstr "Пропустити"
@@ -3949,10 +4449,6 @@ msgstr "Пропустити"
 #: src/ai/component/ai-settings-section/ai-settings-section.tsx
 msgid "Smart suggestions"
 msgstr "Розумні підказки"
-
-#: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
-msgid "Smarter, without the cloud"
-msgstr "Розумніше, без хмари"
 
 #: src/rule/components/rule-conflict-warning/rule-conflict-warning.tsx
 msgid "Some transactions may match multiple rules. The first matching rule will take priority."
@@ -3969,6 +4465,10 @@ msgstr "Щось пішло не так"
 #: src/account/hooks/use-delete-account.hook.ts
 msgid "Something went wrong. Please try again later."
 msgstr "Щось пішло не так. Будь ласка, спробуйте пізніше."
+
+#: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
+msgid "Sorts transactions into categories and suggests tags"
+msgstr "Розкладає транзакції за категоріями й пропонує теги"
 
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
@@ -4004,11 +4504,19 @@ msgstr "Витрачено"
 msgid "Split"
 msgstr "Розділити"
 
+#: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
+msgid "Start again with your new PIN"
+msgstr "Почніть знову з новим PIN-кодом"
+
 #: src/account/component/start-deposit-form/start-deposit-form.tsx
 #: src/transaction/components/transaction-list-start-deposit-menu-item/transaction-list-start-deposit-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Start Deposit"
 msgstr "Розпочати депозит"
+
+#: src/app/import-backup-pin.tsx
+msgid "Start fresh instead"
+msgstr "Почати з чистого аркуша"
 
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "Start from scratch and set every limit yourself"
@@ -4019,7 +4527,6 @@ msgid "Start Import"
 msgstr "Почати імпорт"
 
 #: src/sync/component/create-binance-account/create-binance-account.tsx
-#: src/sync/component/create-file-bank-account-footer/create-file-bank-account-footer.tsx
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Start Sync"
 msgstr "Розпочати синхронізацію"
@@ -4028,19 +4535,16 @@ msgstr "Розпочати синхронізацію"
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Почніть відстежувати свої витрати, використовуючи кнопку мікрофона або додаючи транзакції вручну"
 
-#: src/onboarding/component/onboarding-done/onboarding-done.tsx
-msgid "Start using Budgie"
-msgstr "Почати користуватися Budgie"
-
-#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
-msgid "Start with a blank canvas"
-msgstr "Почати з чистого аркуша"
-
 #: src/ai/constant/ai-umbrella-status-atom.constant.ts
 msgid "Starting up AI…"
 msgstr "Запуск ШІ…"
 
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "Statement imported"
+msgstr "Виписку імпортовано"
+
 #: src/account/constant/account-type.constant.ts
+#: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "Stocks"
 msgstr "Акції"
 
@@ -4111,10 +4615,6 @@ msgstr "Виправлення синхронізації"
 msgid "Sync your Binance balances and transactions"
 msgstr "Синхронізуйте свої баланси та транзакції Binance"
 
-#: src/sync/component/create-monobank-account/create-monobank-account.tsx
-msgid "Sync your Monobank accounts and transactions"
-msgstr "Синхронізуйте свої рахунки та транзакції Монобанку"
-
 #: src/sync/service/background-sync-session.service.ts
 msgid "Syncing bank history"
 msgstr "Синхронізація банківської історії"
@@ -4167,8 +4667,8 @@ msgid "Tap \"Get API Key\" above and sign in to Binance"
 msgstr "Натисніть \"Отримати API-ключ\" вгорі та увійдіть у Binance"
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
-msgid "Tap \"Get API Token\" above and log in to Monobank"
-msgstr "Натисніть \"Отримати API-токен\" вгорі та увійдіть у Монобанк"
+msgid "Tap \"Get API Token\" above to open api.monobank.ua"
+msgstr "Торкніться «Get API Token» вище, щоб відкрити api.monobank.ua"
 
 #: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
 msgid "Tap a suggestion to accept it"
@@ -4183,6 +4683,10 @@ msgstr "Торкніться «Записати знову», щоб спроб�
 msgid "Tap to clear"
 msgstr "Натисніть, щоб очистити"
 
+#: src/onboarding/component/onboarding-sealed-moment/onboarding-sealed-moment.tsx
+msgid "Tap to continue"
+msgstr "Торкніться, щоб продовжити"
+
 #: src/sync/component/file-upload-step/file-upload-step.tsx
 msgid "Tap to select"
 msgstr "Торкніться для вибору"
@@ -4191,9 +4695,29 @@ msgstr "Торкніться для вибору"
 msgid "The bank did not report the deposit currency. Confirm the currency and the receiving amount."
 msgstr "Банк не передав валюту депозиту. Підтвердіть валюту та суму зарахування."
 
+#: src/ai/component/ai-download-stopped-card/ai-download-stopped-card.tsx
+msgid "The download arrived damaged."
+msgstr "Завантаження надійшло пошкодженим."
+
+#: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
+msgid "The download stopped before it finished. Try again when the connection is stable."
+msgstr "Завантаження зупинилося, не завершившись. Спробуйте знову, коли з'єднання буде стабільним."
+
+#: src/ai/hook/use-ai-model-download-actions.hook.ts
+msgid "The downloaded AI model data is removed from this phone. Nothing downloads again until you start it."
+msgstr "Завантажені дані моделей ШІ буде видалено з цього телефону. Нічого не завантажуватиметься, доки ви не запустите це знову."
+
+#: src/onboarding/component/onboarding-key/onboarding-key.tsx
+msgid "The PIN becomes the encryption key"
+msgstr "PIN-код стає ключем шифрування"
+
 #: src/rule/utils/show-rule-application-toast.util.ts
 msgid "The rule was saved but no existing transactions needed updating."
 msgstr "Правило збережено, але жодна наявна транзакція не потребувала оновлення."
+
+#: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
+msgid "There is no \"forgot PIN\"."
+msgstr "Немає кнопки «забув PIN-код»."
 
 #: src/account/hooks/use-archive-account.hook.ts
 msgid "This account will be hidden from your main view and won't be included in totals. You can restore it anytime from Settings → Archived Accounts."
@@ -4207,7 +4731,7 @@ msgstr "Цю дію неможливо скасувати."
 
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
 #: src/app/import-backup-pin.tsx
-#: src/import/components/import-database/import-database.tsx
+#: src/import/hook/use-restore-backup.hook.ts
 msgid "This backup archive does not contain a Budgie database."
 msgstr "Цей архів резервної копії не містить бази даних Budgie."
 
@@ -4215,12 +4739,12 @@ msgstr "Цей архів резервної копії не містить ба
 msgid "This backup could not be opened with your current PIN."
 msgstr "Не вдалося відкрити цю резервну копію з вашим поточним PIN-кодом."
 
-#: src/import/components/import-database/import-database.tsx
+#: src/import/hook/use-restore-backup.hook.ts
 msgid "This backup is protected by a PIN. Importing it will replace all current data and its PIN becomes your app PIN. The app will restart after import. This action cannot be undone."
 msgstr "Ця резервна копія захищена PIN-кодом. Імпорт замінить усі поточні дані, а її PIN стане PIN-кодом застосунку. Після імпорту застосунок перезапуститься. Цю дію не можна скасувати."
 
 #: src/app/import-backup-pin.tsx
-#: src/import/components/import-database/import-database.tsx
+#: src/import/hook/use-restore-backup.hook.ts
 msgid "This backup was made by an older Budgie version and cannot be imported."
 msgstr "Цю резервну копію створено старішою версією Budgie, її не можна імпортувати."
 
@@ -4232,6 +4756,18 @@ msgstr "Цю резервну копію створено старішою ве�
 msgid "This consolidated transfer has no moved source entries."
 msgstr "Цей консолідований переказ не має перенесених вихідних записів."
 
+#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+msgid "This deletes {DB_NAME} and everything in it from this phone. It can't be undone."
+msgstr "Це видалить {DB_NAME} і все, що в ньому, з цього телефона. Скасувати неможливо."
+
+#: src/sync/component/token-input-step/token-input-step.tsx
+msgid "This doesn't look like a Monobank token yet"
+msgstr "Це ще не схоже на токен Monobank"
+
+#: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
+msgid "This is where your data lives and who can read it. You can find it again in Settings › Privacy."
+msgstr "Тут зберігаються ваші дані й видно, хто може їх прочитати. Знайти це знову можна в Налаштування › Конфіденційність."
+
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "This month"
 msgstr "Цього місяця"
@@ -4239,6 +4775,30 @@ msgstr "Цього місяця"
 #: src/@generic/constant/date-period.constant.ts
 msgid "This Month"
 msgstr "Цього місяця"
+
+#: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
+msgid "This phone"
+msgstr "Цей телефон"
+
+#: src/ai/component/ai-download-preflight-note/ai-download-preflight-note.tsx
+msgid "This phone needs {missing} GB more free space first."
+msgstr "Спершу цьому телефону потрібно ще {missing} ГБ вільного місця."
+
+#: src/ai/component/ai-download-stopped-card/ai-download-stopped-card.tsx
+msgid "This phone needs {missing} GB more free space."
+msgstr "Цьому телефону потрібно ще {missing} ГБ вільного місця."
+
+#: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
+msgid "This phone needs {missingSize} GB more free space first. Your money data isn't affected."
+msgstr "Цьому телефону спершу потрібно ще {missingSize} ГБ вільного місця. Ваші фінансові дані не постраждають."
+
+#: src/app/(tabs)/settings/ai.tsx
+msgid "This phone only"
+msgstr "Лише цей телефон"
+
+#: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
+msgid "This phone's lock"
+msgstr "Блокування цього телефона"
 
 #: src/ai/component/ai-embedding-status-card/ai-embedding-status-card.tsx
 msgid "This re-indexes every transaction. Continue?"
@@ -4291,6 +4851,10 @@ msgstr "Початкові транзакції буде відновлено, �
 #: src/@generic/constant/date-period.constant.ts
 msgid "This Year"
 msgstr "Цього року"
+
+#: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
+msgid "Those didn't match"
+msgstr "Вони не збіглися"
 
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
@@ -4373,10 +4937,6 @@ msgstr "Усього надано в борг"
 msgid "Touch ID"
 msgstr "Touch ID"
 
-#: src/onboarding/component/onboarding-track/onboarding-track.tsx
-msgid "Tracking in {defaultInstrumentCode}"
-msgstr "Облік у {defaultInstrumentCode}"
-
 #: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Transaction already has a debt attachment"
 msgstr "Транзакція вже має прив’язку боргу"
@@ -4404,6 +4964,10 @@ msgstr "Транзакцію не знайдено"
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Transactions"
 msgstr "Транзакції"
+
+#: src/sync/component/file-import-review-step/file-import-review-step.tsx
+msgid "Transactions already in Budgie are skipped. Nothing is written until you import."
+msgstr "Транзакції, які вже є в Budgie, пропускаються. Нічого не записується, доки ви не імпортуєте."
 
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "Transactions imported"
@@ -4479,6 +5043,9 @@ msgstr "Спробуйте інший пошуковий запит або ст�
 msgid "Try adjusting your filters to see more results"
 msgstr "Спробуйте налаштувати фільтри, щоб побачити більше результатів"
 
+#: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
+#: src/ai/component/ai-download-stopped-card/ai-download-stopped-card.tsx
+#: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 #: src/sync/component/add-bank-integration-accounts-content/add-bank-integration-accounts-content.tsx
 msgid "Try again"
 msgstr "Спробувати ще раз"
@@ -4489,6 +5056,22 @@ msgstr "Спробувати ще раз"
 msgid "Try Again"
 msgstr "Спробувати знову"
 
+#: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
+msgid "Try switching on Airplane Mode. Budgie works exactly the same."
+msgstr "Спробуйте ввімкнути режим польоту. Budgie працює так само."
+
+#: src/app/note-input.tsx
+msgid "Turn on On-device AI in Settings. Tap to see what it downloads."
+msgstr "Увімкніть ШІ на пристрої в Налаштуваннях. Торкніться, щоб побачити, що завантажується."
+
+#: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
+msgid "Turn on on-device AI to download the models."
+msgstr "Увімкніть ШІ на пристрої, щоб завантажити моделі."
+
+#: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
+msgid "Turns a voice note into an expense"
+msgstr "Перетворює голосову нотатку на витрату"
+
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
 #: src/transaction/components/transaction-type-filter/transaction-type-filter.tsx
@@ -4498,6 +5081,10 @@ msgstr "Тип"
 #: src/transaction/components/transaction-type-filter/transaction-type-filter.tsx
 msgid "Type ({selectedTypesCount})"
 msgstr "Тип ({selectedTypesCount})"
+
+#: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
+msgid "Type the same PIN again to make sure it's the one you meant."
+msgstr "Введіть той самий PIN-код ще раз, щоб переконатися, що це саме він."
 
 #: src/runway/component/runway-history-legend/runway-history-legend.tsx
 msgid "typical month {amount}"
@@ -4579,6 +5166,11 @@ msgstr "Використовуйте Face ID або Touch ID для швидко
 msgid "Use Face ID to unlock your app quickly and securely"
 msgstr "Використовуйте Face ID для швидкого та безпечного розблокування вашого додатку"
 
+#: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
+#: src/ai/component/ai-download-wifi-banner/ai-download-wifi-banner.tsx
+msgid "Use mobile data for {remaining} GB"
+msgstr "Використати мобільні дані для {remaining} ГБ"
+
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Use Touch ID to unlock your app quickly and securely"
 msgstr "Використовуйте Touch ID для швидкого та безпечного розблокування вашого додатку"
@@ -4643,21 +5235,37 @@ msgstr "Обсяг"
 msgid "Waiting"
 msgstr "Очікування"
 
+#: src/ai/constant/ai-download-card-visuals.constant.ts
+msgid "Waiting for a connection"
+msgstr "Очікування з'єднання"
+
+#: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
+msgid "Waiting for a key"
+msgstr "Очікує на ключ"
+
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Warning"
 msgstr "Попередження"
+
+#: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
+msgid "We never see your PIN, and there's no account to reset it through. {noResetSentence}"
+msgstr "Ми ніколи не бачимо ваш PIN-код, і немає акаунта, через який його можна скинути. {noResetSentence}"
 
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "We will retry this quietly."
 msgstr "Ми повторимо спробу у фоновому режимі."
 
-#: src/onboarding/component/onboarding-track/onboarding-track.tsx
-msgid "What do you want to track?"
-msgstr "Що ви хочете відстежувати?"
+#: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
+msgid "What goes inside?"
+msgstr "Що буде всередині?"
 
 #: src/runway/component/runway-drivers/runway-drivers.tsx
 msgid "What's driving it"
 msgstr "Що на це впливає"
+
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "What's in them today?"
+msgstr "Що на них сьогодні?"
 
 #: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
 msgid "When does the deposit mature?"
@@ -4667,13 +5275,17 @@ msgstr "Коли настає термін погашення депозиту?"
 msgid "When should it be returned?"
 msgstr "Коли це потрібно повернути?"
 
-#: src/ai/service/whisper-model.service.ts
-msgid "Whisper model download failed"
-msgstr "Не вдалося завантажити модель Whisper"
+#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
+msgid "Which bank is the statement from?"
+msgstr "З якого банку виписка?"
 
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx
 msgid "Who do you owe?"
 msgstr "Кому ви винні?"
+
+#: src/onboarding/component/onboarding-key/onboarding-key.tsx
+msgid "Who holds the key?"
+msgstr "У кого ключ?"
 
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx
 msgid "Who owes you?"
@@ -4683,13 +5295,25 @@ msgstr "Хто винен вам гроші?"
 msgid "Whole period"
 msgstr "Увесь період"
 
+#: src/onboarding/component/onboarding-key/onboarding-key.tsx
+msgid "Will be created on this phone"
+msgstr "Буде створено на цьому телефоні"
+
 #: src/rule/constant/external-source.constant.ts
 msgid "Wise"
 msgstr "Wise"
 
-#: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
-msgid "Works offline"
-msgstr "Працює офлайн"
+#: src/ai/component/ai-download-eta/ai-download-eta.tsx
+msgid "Working out the time left…"
+msgstr "Обчислюємо, скільки залишилося…"
+
+#: src/onboarding/component/onboarding-key/onboarding-key.tsx
+msgid "Works with no connection at all."
+msgstr "Працює взагалі без з'єднання."
+
+#: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
+msgid "Write it on paper and keep it somewhere safe. The only other way back is a backup you export yourself."
+msgstr "Запишіть його на папері й зберігайте в надійному місці. Єдиний інший шлях назад — резервна копія, яку ви експортуєте самі."
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "XLSX export"
@@ -4699,13 +5323,9 @@ msgstr "XLSX-експорт"
 msgid "Yesterday"
 msgstr "Вчора"
 
-#: src/onboarding/component/onboarding-done/onboarding-done.tsx
-msgid "You can always finish these steps later. Budgie's ready whenever you are."
-msgstr "Ви завжди можете завершити ці кроки пізніше. Budgie готовий, коли готові ви."
-
-#: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
-msgid "You can turn this on later in Settings"
-msgstr "Ви можете увімкнути це пізніше в Налаштуваннях"
+#: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
+msgid "You can add a PIN any time in Settings. Budgie re-encrypts the file with it then."
+msgstr "PIN-код можна додати будь-коли в Налаштуваннях. Тоді Budgie перешифрує ним файл."
 
 #: src/account/component/account-dept-type-card/account-dept-type-card.tsx
 msgid "You gave money"
@@ -4736,17 +5356,49 @@ msgstr "Ви платите частинами"
 msgid "You received money"
 msgstr "Ви отримали гроші"
 
-#: src/onboarding/component/onboarding-done/onboarding-done.tsx
-msgid "You're all set"
-msgstr "Усе готово"
+#: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
+msgid "You'll still need the PIN after a restart."
+msgstr "Після перезапуску PIN-код усе одно знадобиться."
 
-#: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
-msgid "Your bank, with nobody in between"
-msgstr "Ваш банк, без посередників"
+#: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
+msgid "You're offline right now"
+msgstr "Зараз ви офлайн"
+
+#: src/ai/component/ai-download-preflight-note/ai-download-preflight-note.tsx
+msgid "You're offline. It starts when you're back online."
+msgstr "Ви офлайн. Завантаження почнеться, коли ви знову будете онлайн."
+
+#: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
+msgid "You're on mobile data"
+msgstr "Ви на мобільному інтернеті"
+
+#: src/ai/component/ai-download-preflight-note/ai-download-preflight-note.tsx
+msgid "You're on mobile data."
+msgstr "Ви використовуєте мобільні дані."
+
+#: src/ai/component/ai-download-preflight-note/ai-download-preflight-note.tsx
+msgid "You're on mobile data. It starts when you're back on Wi-Fi."
+msgstr "Ви використовуєте мобільні дані. Завантаження почнеться, коли ви знову будете в Wi-Fi."
+
+#: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
+msgid "You're on Wi-Fi"
+msgstr "Ви підключені до Wi-Fi"
+
+#: src/ai/component/ai-download-preflight-note/ai-download-preflight-note.tsx
+msgid "You're on Wi-Fi."
+msgstr "Ви підключені до Wi-Fi."
+
+#: src/auth/components/security-status-chip/security-status-chip.tsx
+msgid "Your data is sealed. Only your PIN opens it."
+msgstr "Ваші дані запечатано. Лише ваш PIN-код їх відкриває."
 
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
 msgid "Your data stays on this device untouched. Try again, or restore a backup made with your current PIN."
 msgstr "Ваші дані залишаються недоторканими на цьому пристрої. Спробуйте ще раз або відновіть резервну копію, створену з вашим поточним PIN-кодом."
+
+#: src/onboarding/component/onboarding-file-strip/onboarding-file-strip.tsx
+msgid "Your data: {state}"
+msgstr "Ваші дані: {state}"
 
 #: src/export/components/export-database/export-database.tsx
 msgid "Your database backup is ready to share."
@@ -4757,24 +5409,32 @@ msgid "Your holdings"
 msgstr "Ваші активи"
 
 #: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
-msgid "Your money. Your phone. Nobody else's server."
-msgstr "Ваші гроші. Ваш телефон. Жодного чужого сервера."
+msgid "Your money in one file."
+msgstr "Ваші гроші в одному файлі."
 
-#: src/onboarding/component/onboarding-done/onboarding-done.tsx
-msgid "YOUR NET WORTH"
-msgstr "ВАША ЧИСТА ВАРТІСТЬ"
+#: src/onboarding/component/onboarding-key/onboarding-key.tsx
+msgid "Your money will live in one file on this phone. Choose who can open it."
+msgstr "Ваші гроші зберігатимуться в одному файлі на цьому телефоні. Оберіть, хто може його відкрити."
+
+#: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
+msgid "Your phone's lock will be the only lock."
+msgstr "Блокування телефона буде єдиним замком."
+
+#: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
+msgid "Your PIN"
+msgstr "Ваш PIN-код"
+
+#: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
+msgid "Your PIN · Face ID"
+msgstr "Ваш PIN-код · Face ID"
+
+#: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
+msgid "Your PIN · Fingerprint"
+msgstr "Ваш PIN-код · Відбиток пальця"
 
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
-msgid "Your own token talks to the bank directly. No Plaid, no aggregator, no third party holding your data."
-msgstr "Ваш власний токен напряму спілкується з банком. Жодного Plaid, жодного агрегатора, жодної третьої сторони, що зберігає ваші дані."
-
-#: src/onboarding/component/onboarding-lock/onboarding-lock.tsx
-msgid "Your PIN unlocks the database itself — it is the encryption key. Without it the file is unreadable, even to us."
-msgstr "Ваш PIN-код розблоковує саму базу даних — це ключ шифрування. Без нього файл нечитабельний навіть для нас."
-
-#: src/sync/constant/bank-credentials-step-config.constant.ts
-msgid "Your token is stored securely in the database. Sync continues in the background."
-msgstr "Ваш токен зберігається в безпечній базі даних. Синхронізація продовжується у фоновому режимі."
+msgid "Your token is stored in Budgie's file and only ever sent to Monobank."
+msgstr "Ваш токен зберігається у файлі Budgie й надсилається лише в Monobank."
 
 #: src/export/components/export-csv/export-csv.tsx
 msgid "Your transaction file is ready to share."

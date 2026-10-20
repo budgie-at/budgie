@@ -1,9 +1,9 @@
-/* Budgie - titres des captures App Store (fr-FR) */
+/* Headlines: \n breaks the line, *text* is set in the highlight colour. See README.md. */
 
-"01-home" = "En un coup d'œil.";
-"02-transactions" = "Chaque dépense classée.";
-"03-analytics" = "Où va votre argent.";
-"04-budget" = "Des budgets tenus.";
-"05-add-expense" = "Saisi en 3 secondes.";
-"06-account" = "Comptes multidevises.";
-"07-settings" = "Hors ligne d'abord.";
+"01-home" = "Votre argent.\n*Hors ligne.*";
+"05-add-expense" = "Noté en\n*3 secondes.*";
+"03-analytics" = "Voyez où\n*il file.*";
+"04-budget" = "Des budgets\n*qui alertent.*";
+"09-inbox" = "Un mois trié\n*en une minute.*";
+"06-account" = "Chaque devise,\n*un seul total.*";
+"07-settings" = "Privé\n*par conception.*";

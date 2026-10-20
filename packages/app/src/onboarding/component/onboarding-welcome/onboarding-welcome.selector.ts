@@ -1,5 +1,4 @@
 export const OnboardingWelcomeSelector = {
     Root: 'OnboardingWelcome.Root',
-    PrimaryButton: 'OnboardingWelcome.PrimaryButton',
-    BlankCanvasButton: 'OnboardingWelcome.BlankCanvasButton'
+    StartButton: 'OnboardingWelcome.StartButton'
 } as const;

@@ -9,22 +9,26 @@ import { NativeCallError } from '../../@generic/error/native-call.error';
 import { chatModelSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { AiNotReadyError } from '../error/ai-not-ready.error';
-import { CHAT_CONTEXT_SIZE, CHAT_MODEL_FILENAME, CHAT_MODEL_URL } from '../utils/ai-constants.util';
+import { CHAT_CONTEXT_SIZE } from '../utils/ai-constants.util';
 import { runCompletion } from '../utils/run-completion.util';
 
+import { AiModelDownloadService } from './ai-model-download.service';
 import { LlamaModelService } from './llama-model.service';
 
 import type { GenerateOptionsInterface } from '@budgie/ai';
 
 export class ChatService extends Context.Service<ChatService>()('@budgie/app/ChatService', {
-    make: Effect.sync(() => {
-        const model = new LlamaModelService({
-            modelUrl: CHAT_MODEL_URL,
-            modelFilename: CHAT_MODEL_FILENAME,
-            contextSize: CHAT_CONTEXT_SIZE,
-            embedding: false,
-            snapshot: chatModelSnapshotAtom
-        });
+    make: Effect.gen(function* () {
+        const aiModelDownloadService = yield* AiModelDownloadService;
+        const model = new LlamaModelService(
+            {
+                name: AiSubsystemNameEnum.CHAT,
+                contextSize: CHAT_CONTEXT_SIZE,
+                embedding: false,
+                snapshot: chatModelSnapshotAtom
+            },
+            aiModelDownloadService
+        );
 
         return {
             model,
@@ -58,7 +62,7 @@ export class ChatService extends Context.Service<ChatService>()('@budgie/app/Cha
         };
     })
 }) {
-    static readonly layer = Layer.effect(ChatService, ChatService.make);
+    static readonly layer = Layer.effect(ChatService, ChatService.make).pipe(Layer.provide(AiModelDownloadService.layer));
 
     static readonly invokerLayer = Layer.effect(ChatInvoker, ChatService).pipe(Layer.provide(ChatService.layer));
 }

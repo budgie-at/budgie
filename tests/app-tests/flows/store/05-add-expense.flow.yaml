@@ -1,0 +1,23 @@
+appId: ${APP_ID}
+---
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://create-transaction/expense'
+
+- extendedWaitUntil:
+      visible:
+          id: 'SuggestionPill.PatternCategory.0'
+      timeout: 15000
+
+- tapOn:
+      id: 'SuggestionPill.PatternCategory.0'
+
+- extendedWaitUntil:
+      notVisible:
+          id: 'SuggestionPill.PatternCategory.0'
+      timeout: 10000
+
+- waitForAnimationToEnd
+
+- takeScreenshot: scene

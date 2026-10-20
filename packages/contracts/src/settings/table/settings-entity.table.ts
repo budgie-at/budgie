@@ -34,7 +34,10 @@ export const SettingsEntityTable = sqliteTable(
         isAiVoiceInputEnabled: int('is_ai_voice_input_enabled', { mode: 'boolean' }).notNull().default(false),
         isAiSuggestionsEnabled: int('is_ai_suggestions_enabled', { mode: 'boolean' }).notNull().default(false),
         isAiTranslationsEnabled: int('is_ai_translations_enabled', { mode: 'boolean' }).notNull().default(false),
+        isAiWifiOnly: int('is_ai_wifi_only', { mode: 'boolean' }).notNull().default(true),
         isRunwayPillEnabled: int('is_runway_pill_enabled', { mode: 'boolean' }).notNull().default(true),
-        isRunwayCryptoIncluded: int('is_runway_crypto_included', { mode: 'boolean' }).notNull().default(false)
+        isRunwayCryptoIncluded: int('is_runway_crypto_included', { mode: 'boolean' }).notNull().default(false),
+        lastBackupAt: int('last_backup_at', { mode: 'timestamp' }),
+        isAiNoteHintShown: int('is_ai_note_hint_shown', { mode: 'boolean' }).notNull().default(false)
     })
 );

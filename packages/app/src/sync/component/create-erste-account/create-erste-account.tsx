@@ -22,6 +22,10 @@ export const CreateErsteAccount = () => {
         selectFileText: t`Select the downloaded PDF file`,
         importPreview: uri =>
             appRuntime.runPromise(Effect.flatMap(ErsteSyncService, ersteSyncService => ersteSyncService.importPreview(uri))),
+        reviewImport: (uri, selectedAccountIds) =>
+            appRuntime.runPromise(
+                Effect.flatMap(ErsteSyncService, ersteSyncService => ersteSyncService.reviewImport(uri, selectedAccountIds))
+            ),
         executeImportForSelectedAccounts: (uri, selectedAccountIds) =>
             appRuntime.runPromise(
                 Effect.flatMap(ErsteSyncService, ersteSyncService =>

@@ -1,5 +1,5 @@
 import type { UserIconNameEnum } from '@budgie/contracts';
-import type { SyncAccountPreviewInterface } from '@budgie/sync';
+import type { FileBankSyncImportReviewInterface, SyncAccountPreviewInterface } from '@budgie/sync';
 
 export interface CreateFileBankAccountConfigInterface {
     readonly mimeType: string;
@@ -9,7 +9,7 @@ export interface CreateFileBankAccountConfigInterface {
     readonly fileIcon: UserIconNameEnum;
     readonly fileTypeLabel: string;
     readonly selectFileText: string;
-    readonly ctaLabel?: string;
     readonly importPreview: (uri: string) => Promise<SyncAccountPreviewInterface[]>;
+    readonly reviewImport: (uri: string, selectedAccountIds: string[]) => Promise<FileBankSyncImportReviewInterface>;
     readonly executeImportForSelectedAccounts: (uri: string, selectedAccountIds: string[]) => Promise<void>;
 }

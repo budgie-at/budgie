@@ -1,23 +1,22 @@
-import { AccountWithSyncEntityInterface } from '@budgie/contracts';
-import { SectionList, View } from 'react-native';
-import Animated from 'react-native-reanimated';
+import { AccountWithSyncEntityInterface } from "@budgie/contracts";
+import { SectionList } from "react-native";
+import Animated from "react-native-reanimated";
 
-import { useScreenChromeScrollProps } from '@rnw-community/react-native-screen-chrome';
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { useScreenChromeScrollProps } from "@rnw-community/react-native-screen-chrome";
 
-import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../../@generic/constant/floating-tab-bar.constant';
-import { useSettingsContext } from '../../../settings/context/settings.context';
-import { COLLAPSIBLE_NET_WORTH_HEADER_SCROLL_SPACER_MIN_ACCOUNT_COUNT } from '../../constant/collapsible-net-worth-header-scroll-spacer.constant';
-import { AccountRowInterface } from '../../interface/account-row.interface';
-import { CryptoCurrencyGroupInterface } from '../../interface/crypto-currency-group.interface';
-import { HomeAccountBalanceSummaryInterface } from '../../interface/home-account-balance-summary.interface';
-import { HomeSectionInterface } from '../../interface/home-section.interface';
-import { AccountsEmptyState } from '../accounts-empty-state/accounts-empty-state';
-import { CollapsibleNetWorthHeaderScrollSpacer } from '../collapsible-net-worth-header-scroll-spacer/collapsible-net-worth-header-scroll-spacer';
-import { HomeSectionHeader } from '../home-section-header/home-section-header';
-import { HomeSectionItem } from '../home-section-item/home-section-item';
+import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from "../../../@generic/constant/floating-tab-bar.constant";
+import { useSettingsContext } from "../../../settings/context/settings.context";
+import { COLLAPSIBLE_NET_WORTH_HEADER_SCROLL_SPACER_MIN_ACCOUNT_COUNT } from "../../constant/collapsible-net-worth-header-scroll-spacer.constant";
+import { AccountRowInterface } from "../../interface/account-row.interface";
+import { CryptoCurrencyGroupInterface } from "../../interface/crypto-currency-group.interface";
+import { HomeAccountBalanceSummaryInterface } from "../../interface/home-account-balance-summary.interface";
+import { HomeSectionInterface } from "../../interface/home-section.interface";
+import { AccountsEmptyState } from "../accounts-empty-state/accounts-empty-state";
+import { CollapsibleNetWorthHeaderScrollSpacer } from "../collapsible-net-worth-header-scroll-spacer/collapsible-net-worth-header-scroll-spacer";
+import { HomeSectionHeader } from "../home-section-header/home-section-header";
+import { HomeSectionItem } from "../home-section-item/home-section-item";
 
-import type { ReactElement } from 'react';
+import type { ReactElement } from "react";
 
 type HomeSectionsListItem = AccountRowInterface | CryptoCurrencyGroupInterface | AccountWithSyncEntityInterface;
 
@@ -37,9 +36,8 @@ export const HomeSectionsList = ({ sections, activeAccountCount, bottomInset, ba
     const bottomPadding = FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottomInset;
     const scrollProps = useScreenChromeScrollProps({
         includeTopSafeArea: false,
-        contentContainerStyle: { paddingBottom: bottomPadding, paddingHorizontal: LIST_HORIZONTAL_PADDING }
+        contentContainerStyle: { paddingBottom: bottomPadding, paddingHorizontal: LIST_HORIZONTAL_PADDING, flexGrow: 1 },
     });
-    const emptyStateStyle = { paddingBottom: bottomPadding };
     const listFormatKey = `${defaultInstrument.id}-${decimalPlaces}`;
     const listFooterComponent =
         activeAccountCount > COLLAPSIBLE_NET_WORTH_HEADER_SCROLL_SPACER_MIN_ACCOUNT_COUNT ? (
@@ -55,21 +53,12 @@ export const HomeSectionsList = ({ sections, activeAccountCount, bottomInset, ba
     );
 
     const keyExtractor = (item: HomeSectionsListItem) => {
-        if ('type' in item) {
+        if ("type" in item) {
             return `debt-${item.id}`;
         }
 
-        return 'accounts' in item ? `crypto-${item.instrument.id}` : String(item.left.id);
+        return "accounts" in item ? `crypto-${item.instrument.id}` : String(item.left.id);
     };
-
-    if (!isNotEmptyArray(sections)) {
-        return (
-            <View className="flex-1 px-5xl" style={emptyStateStyle}>
-                {listHeaderComponent}
-                <AccountsEmptyState />
-            </View>
-        );
-    }
 
     return (
         <AnimatedSectionList
@@ -83,6 +72,7 @@ export const HomeSectionsList = ({ sections, activeAccountCount, bottomInset, ba
             stickySectionHeadersEnabled
             ListHeaderComponent={listHeaderComponent}
             ListFooterComponent={listFooterComponent}
+            ListEmptyComponent={AccountsEmptyState}
             {...scrollProps}
         />
     );

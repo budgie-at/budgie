@@ -14,4 +14,5 @@ export interface HomeAccountBalanceInterface {
     readonly debtType: AccountDebtTypeEnum;
     readonly includeInNetWorth: boolean;
     readonly isActive: boolean;
+    readonly hasLedgerHistory: boolean;
 }

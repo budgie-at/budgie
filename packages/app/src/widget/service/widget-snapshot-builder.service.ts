@@ -25,6 +25,7 @@ import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/sha
 
 import { ACCOUNT_TYPE } from '../../account/constant/account-type.constant';
 import { DEFAULT_DECIMAL_PLACES } from '../../i18n/constant/default-decimal-places.constant';
+import { formatSymbolAmount } from '../../i18n/utils/format-symbol-amount.util';
 import { i18nLoadLanguageMessages } from '../../i18n/utils/i18n.util';
 import { languageToLocale } from '../../i18n/utils/language-to-locale.util';
 import { RUNWAY_MINIMUM_MONTHS } from '../../runway/constant/runway-minimum-months.constant';
@@ -66,11 +67,13 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
                     return maskedAmount;
                 }
 
-                return `${symbol}${new Intl.NumberFormat(context.locale, {
-                    style: 'decimal',
-                    minimumFractionDigits: context.decimalPlaces,
-                    maximumFractionDigits: context.decimalPlaces
-                }).format(value)}`;
+                return formatSymbolAmount(value, symbol, absolute =>
+                    new Intl.NumberFormat(context.locale, {
+                        style: 'decimal',
+                        minimumFractionDigits: context.decimalPlaces,
+                        maximumFractionDigits: context.decimalPlaces
+                    }).format(absolute)
+                );
             };
 
             const resolveDeltaPrefix = (value: number): string => {

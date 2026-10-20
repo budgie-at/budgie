@@ -1,9 +1,9 @@
-/* Budgie - Überschriften der App-Store-Screenshots (de-DE) */
+/* Headlines: \n breaks the line, *text* is set in the highlight colour. See README.md. */
 
-"01-home" = "Geld auf einen Blick.";
-"02-transactions" = "Jede Ausgabe erfasst.";
-"03-analytics" = "Wohin das Geld geht.";
-"04-budget" = "Budgets, die halten.";
-"05-add-expense" = "In 3 Sekunden erfasst.";
-"06-account" = "Jede Währung.";
-"07-settings" = "Offline zuerst.";
+"01-home" = "Dein Geld.\n*Offline.*";
+"05-add-expense" = "Erfasst in\n*3 Sekunden.*";
+"03-analytics" = "Sieh, wohin\n*es fließt.*";
+"04-budget" = "Budgets, die\n*früh warnen.*";
+"09-inbox" = "Monat sortiert\n*in einer Minute.*";
+"06-account" = "Jede Währung,\n*eine Summe.*";
+"07-settings" = "Privat\n*aus Prinzip.*";

@@ -203,10 +203,10 @@ appId: ${APP_ID}
       timeout: 10000
 - scrollUntilVisible:
       element:
-          id: 'AccountCard.Balance.E2E_Consolidation_Cash.0'
+          id: 'AccountCard.AddBalance.E2E_Consolidation_Cash'
       direction: DOWN
 - assertVisible:
-      id: 'AccountCard.Balance.E2E_Consolidation_Cash.0'
+      id: 'AccountCard.AddBalance.E2E_Consolidation_Cash'
 - scrollUntilVisible:
       element:
           id: 'AccountCard.Balance.E2E_Consolidation_A.750'

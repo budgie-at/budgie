@@ -17,7 +17,7 @@ with `jq` rather than keeping its own copy.
 | Device                | Slug                  | Capture size | Store slot  |
 | --------------------- | --------------------- | ------------ | ----------- |
 | iPhone 17 Pro Max     | `iphone-17-pro-max`   | 1320x2868    | iPhone 6.9" |
-| iPad Pro 13-inch (M4) | `ipad-pro-13-inch-m4` | 2064x2752    | iPad 13"    |
+| iPad Pro 13-inch (M5) | `ipad-pro-13-inch-m5` | 2064x2752    | iPad 13"    |
 
 | App locale | ASC folder | Regional OS locale |
 | ---------- | ---------- | ------------------ |
@@ -27,9 +27,10 @@ with `jq` rather than keeping its own copy.
 | `de`       | `de-DE`    | `de_DE`            |
 | `es`       | `es-ES`    | `es_ES`            |
 
-Scenes, in store order: `01-home`, `02-transactions`, `03-analytics`,
-`04-budget`, `05-add-expense`, `06-account`, `07-settings`. Appearances: `light`
-and `dark`; `deployed-variant.json` records which one the store carries, and only that
+Scenes: `01-home`, `03-analytics`, `04-budget`, `05-add-expense`,
+`06-account`, `07-settings` and `09-inbox`; the store order is set by
+`compose-screenshots.sh` (see [design/README.md](design/README.md)).
+Appearances: `light` and `dark`; `deployed-variant.json` records which one the store carries, and only that
 variant is committed.
 
 `00-prime` is the exception: a Maestro-backed scene that only grants the

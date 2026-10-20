@@ -1,0 +1,1 @@
+.read screenshot-protection.sql

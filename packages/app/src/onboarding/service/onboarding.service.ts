@@ -1,4 +1,4 @@
-import { AccountRepository, AccountTypeEnum, Db, InstrumentRepository, SettingsRepository, UserIconNameEnum } from '@budgie/contracts';
+import { AccountRepository, AccountTypeEnum, Db, InstrumentRepository, SettingsRepository } from '@budgie/contracts';
 import { AccountService } from '@budgie/ledger';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -10,7 +10,8 @@ import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/sh
 import { i18nGetOSLocale } from '../../i18n/utils/i18n.util';
 import { DEFAULT_INSTRUMENT } from '../../settings/constants/default-instrument.constant';
 
-import type { OnboardingAccountInputInterface } from '../interface/onboarding-account-input.interface';
+import type { OnboardingAccountOptionInterface } from '../interface/onboarding-account-option.interface';
+import type { OnboardingBalanceInputInterface } from '../interface/onboarding-balance-input.interface';
 
 export class OnboardingService extends Context.Service<OnboardingService>()('@budgie/app/OnboardingService', {
     make: Effect.gen(function* () {
@@ -18,13 +19,6 @@ export class OnboardingService extends Context.Service<OnboardingService>()('@bu
         const instrumentRepository = yield* InstrumentRepository;
         const settingsRepository = yield* SettingsRepository;
         const accountService = yield* AccountService;
-
-        const onboardingAccountIcon: Partial<Record<AccountTypeEnum, UserIconNameEnum>> = {
-            [AccountTypeEnum.CASH]: UserIconNameEnum.Wallet,
-            [AccountTypeEnum.BANK]: UserIconNameEnum.Landmark,
-            [AccountTypeEnum.CRYPTO]: UserIconNameEnum.Bitcoin,
-            [AccountTypeEnum.DEBT]: UserIconNameEnum.HandCoins
-        };
 
         const detectDeviceInstrumentCode = (): string | null => {
             for (const locale of getLocales()) {
@@ -49,17 +43,14 @@ export class OnboardingService extends Context.Service<OnboardingService>()('@bu
         });
 
         const createOnboardingAccount = Effect.fn('OnboardingService.createOnboardingAccount')(function* (
-            account: OnboardingAccountInputInterface,
+            account: OnboardingAccountOptionInterface,
             instrumentId: number
         ) {
-            yield* accountService.create({
-                type: account.type,
-                title: account.title,
-                currentBalance: 0,
-                icon: onboardingAccountIcon[account.type] ?? UserIconNameEnum.Wallet,
-                includeInNetWorth: true,
-                instrumentId
-            });
+            const input = { ...account, currentBalance: 0, includeInNetWorth: true, instrumentId };
+
+            yield* account.type === AccountTypeEnum.DEPOSIT
+                ? accountService.createDeposit({ ...input, iban: null, deadline: null, interestRate: null })
+                : accountService.create(input);
         });
 
         return {
@@ -76,7 +67,9 @@ export class OnboardingService extends Context.Service<OnboardingService>()('@bu
 
                 yield* settingsRepository.update({ defaultInstrumentId: instrumentId, language });
             }),
-            provisionAccounts: Effect.fn('OnboardingService.provisionAccounts')(function* (accounts: OnboardingAccountInputInterface[]) {
+            provisionAccounts: Effect.fn('OnboardingService.provisionAccounts')(function* (
+                accounts: readonly OnboardingAccountOptionInterface[]
+            ) {
                 const { defaultInstrumentId } = yield* settingsRepository.getSettings();
                 const instrumentId = defaultInstrumentId ?? DEFAULT_INSTRUMENT.id;
                 const existingAccounts = yield* accountRepository.getAllActiveAccounts();
@@ -85,6 +78,16 @@ export class OnboardingService extends Context.Service<OnboardingService>()('@bu
 
                 yield* Effect.forEach(accountsToCreate, account => createOnboardingAccount(account, instrumentId), { discard: true });
             }),
+            saveBalances: (balances: OnboardingBalanceInputInterface[]) =>
+                Db.transaction(
+                    Effect.forEach(
+                        balances,
+                        ({ accountId, balance }) => accountService.updateById(accountId, { currentBalance: balance }),
+                        {
+                            discard: true
+                        }
+                    )
+                ),
             complete: () => Db.transaction(settingsRepository.update({ isOnboardingCompleted: true }))
         };
     })

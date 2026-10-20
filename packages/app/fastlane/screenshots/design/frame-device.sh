@@ -38,7 +38,7 @@ resolve_device_frames() {
     IPHONE_CUTOUT_H=2868
 
     IPAD_FRAME="$FRAMES_DIR/Apple iPad Pro (12.9-inch) (4th generation) Space Gray.png"
-    IPAD_DEVICE_SLUG='ipad-pro-13-inch-m4'
+    IPAD_DEVICE_SLUG='ipad-pro-13-inch-m5'
     IPAD_CUTOUT_X=96
     IPAD_CUTOUT_Y=102
     IPAD_CUTOUT_W=2048

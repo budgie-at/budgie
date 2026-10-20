@@ -2,7 +2,7 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Text, View } from 'react-native';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { Icon } from '../../../@generic/component/icon/icon';
 import { cn } from '../../../@generic/utils/cn.util';
@@ -29,7 +29,10 @@ const BANNER_COLOR: Record<AiSystemUmbrellaStateEnum, string> = {
 
 export const AiSystemStatusBanner = () => {
     const umbrella = useAtomValue(aiUmbrellaStatusAtom);
-    const isHidden = umbrella.state === AiSystemUmbrellaStateEnum.HEALTHY || umbrella.state === AiSystemUmbrellaStateEnum.DISABLED;
+    const isHidden =
+        umbrella.state === AiSystemUmbrellaStateEnum.HEALTHY ||
+        umbrella.state === AiSystemUmbrellaStateEnum.DISABLED ||
+        umbrella.state === AiSystemUmbrellaStateEnum.DOWNLOADING;
 
     if (isHidden) {
         return null;
@@ -37,7 +40,6 @@ export const AiSystemStatusBanner = () => {
 
     const icon = BANNER_ICON[umbrella.state];
     const colorClass = BANNER_COLOR[umbrella.state];
-    const showPercent = umbrella.state === AiSystemUmbrellaStateEnum.DOWNLOADING && isPositiveNumber(umbrella.downloadPercent);
 
     return (
         <View className="flex-row items-center gap-x-sm px-lg py-md bg-secondary-background rounded-xl">
@@ -45,7 +47,6 @@ export const AiSystemStatusBanner = () => {
             <Text className={cn('flex-1 text-xs font-medium', colorClass)} numberOfLines={1}>
                 {umbrella.statusText}
             </Text>
-            {showPercent && <Text className={cn('text-xs font-medium', colorClass)}>{`${umbrella.downloadPercent}%`}</Text>}
         </View>
     );
 };

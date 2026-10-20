@@ -1,4 +1,4 @@
-import { Db } from '@budgie/contracts';
+import { Db, SettingsRepository } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -11,33 +11,38 @@ import { toNativePath } from '../../@generic/utils/to-native-path.util';
 import { shareCacheFile } from '../utils/share-cache-file.util';
 
 export class DatabaseExportService extends Context.Service<DatabaseExportService>()('@budgie/app/DatabaseExportService', {
-    make: Effect.succeed({
-        exportAndShare: Effect.fn('DatabaseExportService.exportAndShare')(function* () {
-            const { $client: client } = yield* Db;
+    make: Effect.gen(function* () {
+        const settingsRepository = yield* SettingsRepository;
 
-            yield* client`PRAGMA wal_checkpoint(FULL)`.raw;
-            yield* shareCacheFile(
-                'budgie-backup',
-                'db.zip',
-                archive =>
-                    Effect.gen(function* () {
-                        const databaseCopy = new File(Paths.cache, archive.name.replace(/\.zip$/u, ''));
+        return {
+            exportAndShare: Effect.fn('DatabaseExportService.exportAndShare')(function* () {
+                const { $client: client } = yield* Db;
 
-                        yield* Effect.promise(() => new File(DATABASE_DIRECTORY, DB_NAME).copy(databaseCopy)).pipe(
-                            Effect.andThen(Effect.promise(() => zip([toNativePath(databaseCopy.uri)], toNativePath(archive.uri)))),
-                            Effect.ensuring(
-                                Effect.sync(() => {
-                                    if (databaseCopy.exists) {
-                                        databaseCopy.delete();
-                                    }
-                                })
-                            )
-                        );
-                    }),
-                { mimeType: 'application/zip', UTI: 'public.zip-archive' }
-            );
-        })
+                yield* client`PRAGMA wal_checkpoint(FULL)`.raw;
+                yield* shareCacheFile(
+                    'budgie-backup',
+                    'db.zip',
+                    archive =>
+                        Effect.gen(function* () {
+                            const databaseCopy = new File(Paths.cache, archive.name.replace(/\.zip$/u, ''));
+
+                            yield* Effect.promise(() => new File(DATABASE_DIRECTORY, DB_NAME).copy(databaseCopy)).pipe(
+                                Effect.andThen(Effect.promise(() => zip([toNativePath(databaseCopy.uri)], toNativePath(archive.uri)))),
+                                Effect.ensuring(
+                                    Effect.sync(() => {
+                                        if (databaseCopy.exists) {
+                                            databaseCopy.delete();
+                                        }
+                                    })
+                                )
+                            );
+                        }),
+                    { mimeType: 'application/zip', UTI: 'public.zip-archive' }
+                );
+                yield* settingsRepository.update({ lastBackupAt: new Date() });
+            })
+        };
     })
 }) {
-    static readonly layer = Layer.effect(DatabaseExportService, DatabaseExportService.make);
+    static readonly layer = Layer.effect(DatabaseExportService, DatabaseExportService.make).pipe(Layer.provide(SettingsRepository.layer));
 }

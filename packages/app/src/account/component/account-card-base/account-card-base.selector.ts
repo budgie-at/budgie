@@ -2,5 +2,6 @@ const normalizePart = (value: string | number) => String(value).replaceAll(/[^a-
 
 export const AccountCardBaseSelector = {
     Card: (title: string) => `AccountCard.${title}` as const,
-    Balance: (title: string, value: string | number) => `AccountCard.Balance.${normalizePart(title)}.${normalizePart(value)}` as const
+    Balance: (title: string, value: string | number) => `AccountCard.Balance.${normalizePart(title)}.${normalizePart(value)}` as const,
+    AddBalance: (title: string) => `AccountCard.AddBalance.${normalizePart(title)}` as const
 } as const;

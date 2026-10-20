@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.108.0](https://github.com/budgie-at/budgie/compare/v6.107.1...v6.108.0) (2026-10-20)
+
+### Bug Fixes
+
+* **app:** keep seeded debt balances and use device-neutral privacy captions ([1f95474](https://github.com/budgie-at/budgie/commit/1f95474d217e9c1f73340d133b5c8a440c560f71))
+* **app:** seed positive store screenshot balances and drop the widgets slide ([501ea73](https://github.com/budgie-at/budgie/commit/501ea73788c56e83d58dc1ec0b11641bc4ae3cab))
+
+### Features
+
+* **app:** publish the 7-slide store screenshot set for all five locales ([1169791](https://github.com/budgie-at/budgie/commit/11697916d91de8b1adac65bb7ab22b741aa1a4a4))
+* **app:** rebuild the App Store screenshot story and localized store metadata ([d07610e](https://github.com/budgie-at/budgie/commit/d07610e050dee03287cd0302bfb7c34a633719e5))
+* **app:** recompose store screenshots from the debt-balance recapture ([d092e99](https://github.com/budgie-at/budgie/commit/d092e99542aa2cd40e512cbc130bd9a409f91ce2))
+
+
+## [6.107.1](https://github.com/budgie-at/budgie/compare/v6.107.0...v6.107.1) (2026-10-19)
+
+### Bug Fixes
+
+* **app:** format the absolute amount instead of number parts, which Hermes lacks ([e0a5dbb](https://github.com/budgie-at/budgie/commit/e0a5dbb6987efc81410ccebd2c393049b16fe174))
+* **app:** put the minus sign before the currency symbol ([2523fd0](https://github.com/budgie-at/budgie/commit/2523fd066f5ad4c9e6527388562d1dd4f85ba7a6))
+
+
 # [6.107.0](https://github.com/budgie-at/budgie/compare/v6.106.4...v6.107.0) (2026-10-19)
 
 **Note:** Version bump only for package @budgie-at/app

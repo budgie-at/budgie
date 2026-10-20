@@ -6,6 +6,7 @@ import { View } from 'react-native';
 import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
 import { LoadingOverlay } from '../../../@generic/component/loading-overlay/loading-overlay';
 import { FullPage } from '../../../@generic/component/page/full-page';
+import { useIsSlowWork } from '../../../@generic/hook/use-is-slow-work.hook';
 import { isEnumValue } from '../../../@generic/type-guard/is-enum-value.type-guard';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { BiometricConfiguration } from '../../../auth/components/biometric-configuration/biometric-configuration';
@@ -23,6 +24,7 @@ export default function PinSetupScreen() {
 
     const { state, addDigit, deleteDigit, saveAndContinue } = usePinSetup({ mode });
     const { title, description } = getPinSetupMeta(state.mode, state.step, isFaceIdAvailable, isTouchIdAvailable);
+    const isSlowWork = useIsSlowWork(state.isLoading);
 
     if (!isEnumValue(mode, PinSetupModeEnum)) {
         return <Redirect href="/settings" />;
@@ -50,7 +52,7 @@ export default function PinSetupScreen() {
                 )}
             </View>
 
-            {state.isLoading ? <LoadingOverlay /> : null}
+            {isSlowWork ? <LoadingOverlay /> : null}
         </FullPage>
     );
 }
