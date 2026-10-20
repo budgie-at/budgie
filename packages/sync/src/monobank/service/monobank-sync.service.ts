@@ -131,7 +131,11 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
                 const oldestTransactionAt = yield* transactionService.getEarliestTransactionTimeByAccountId(sync.accountId);
                 const openingBalanceAt = isDefined(oldestTransactionAt) ? subSeconds(oldestTransactionAt, 1) : setupAt;
 
-                for (const transactionId of [sync.balanceAdjustmentTransactionId, sync.reconciliationTransactionId].filter(isDefined)) {
+                const currentSync = (yield* syncRepository.getById(sync.id)) ?? sync;
+
+                for (const transactionId of [currentSync.balanceAdjustmentTransactionId, currentSync.reconciliationTransactionId].filter(
+                    isDefined
+                )) {
                     yield* transactionRepository.deleteById(transactionId);
                 }
 

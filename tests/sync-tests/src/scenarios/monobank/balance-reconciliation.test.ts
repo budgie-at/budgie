@@ -14,6 +14,8 @@ import { and, eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 import * as FiberSet from 'effect/FiberSet';
 
+import { emptyFn } from '@rnw-community/shared';
+
 import { buildMonobank, fetchAccountBalance, monobankStub, seed, skipRequestedSync, testDb, TestLayer } from '../../harness';
 
 import type { Services } from '../../harness/scenario/test-runtime';
@@ -176,6 +178,35 @@ describe('monobank/balance-reconciliation', () => {
 
             expect(yield* fetchAdjustments(account.id)).toStrictEqual([]);
             expect(yield* fetchAccountBalance(account.id)).toBe(toMicroUnits(-20_050));
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('drops the reconciliation when a full resync rebuilds the opening from backward history', () =>
+        Effect.gen(function* () {
+            const resyncService = yield* ResyncService;
+            const monobankSyncService = yield* MonobankSyncService;
+            const account = yield* seedForwardAccount('mono-full-resync');
+            const recentExpense = expense('full-resync-2', 20_000, 1, -20_050);
+
+            yield* syncWithBank(buildMonobank.account({ id: 'mono-full-resync', balance: -20_050 }), [recentExpense]);
+            const anchoredSync = yield* fetchSync(account.id);
+            monobankStub.clientInfo(
+                buildMonobank.clientInfo({ accounts: [buildMonobank.account({ id: 'mono-full-resync', balance: -20_200 })], jars: [] })
+            );
+            yield* skipRequestedSync(resyncService.resync({ accountId: account.id, sinceDays: null }));
+            const resetSync = yield* fetchSync(account.id);
+            const adjustmentsAfterReset = yield* fetchAdjustments(account.id);
+            monobankStub.statementThen([recentExpense, expense('full-resync-1', 100, 48, -100)], emptyFn);
+            yield* monobankSyncService.sync();
+
+            expect(anchoredSync?.reconciliationTransactionId).not.toBeNull();
+            expect(resetSync).toMatchObject({ reconciledAt: null, reconciledBalance: null, reconciliationTransactionId: null });
+            expect(adjustmentsAfterReset).toStrictEqual([]);
+            expect(yield* fetchAdjustments(account.id)).toStrictEqual([
+                { amount: toMicroUnits(100), type: TransactionEntryTypeEnum.CREDIT }
+            ]);
+            expect(yield* fetchSync(account.id)).toMatchObject({ mode: SyncModeEnum.FORWARD, reconciliationTransactionId: null });
+            expect(yield* fetchAccountBalance(account.id)).toBe(toMicroUnits(-20_200));
         }).pipe(Effect.provide(TestLayer))
     );
 

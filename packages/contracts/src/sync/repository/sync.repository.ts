@@ -93,6 +93,11 @@ export class SyncRepository extends Context.Service<SyncRepository>()('@budgie/c
                             forwardSyncedAt: null,
                             backwardBatchAt: null,
                             setupBalance,
+                            reconciledAt: null,
+                            reconciledBalance: null,
+                            reconciliationTransactionId: null,
+                            pendingReconciliationAt: null,
+                            pendingReconciliationBalance: null,
                             transactionCount: 0,
                             errorCount: 0,
                             lastError: null
@@ -142,6 +147,7 @@ export class SyncRepository extends Context.Service<SyncRepository>()('@budgie/c
                         .where(
                             and(
                                 inArray(SyncEntityTable.accountId, accountIds),
+                                eq(SyncEntityTable.mode, SyncModeEnum.FORWARD),
                                 isNotNull(SyncEntityTable.reconciledAt),
                                 isNull(SyncEntityTable.deletedAt)
                             )
