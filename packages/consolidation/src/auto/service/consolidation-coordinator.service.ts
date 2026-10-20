@@ -179,6 +179,31 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
                     getSourceTransactionIds: getIbanBridgeTransferSourceTransactionIds
                 }),
                 makeConsolidationFamilyStrategy({
+                    findCandidates: scope => consolidationCandidateRepository.findIbanBridgeDuplicatePairCandidates(scope),
+                    consolidateCandidate: candidate => consolidationRepairExecutorService.consolidateIbanBridgeDuplicatePair(candidate),
+                    getSourceTransactionIds: candidate => [
+                        candidate.pairTransactionId,
+                        candidate.sourceExpenseTransactionId,
+                        candidate.targetIncomeTransactionId
+                    ],
+                    getScopeTransactionIds: candidate => [
+                        candidate.pairTransactionId,
+                        candidate.bridgeTransactionId,
+                        candidate.sourceExpenseTransactionId,
+                        candidate.targetIncomeTransactionId
+                    ]
+                }),
+                makeConsolidationFamilyStrategy({
+                    findCandidates: scope => consolidationCandidateRepository.findIbanBridgeEndLegCandidates(scope),
+                    consolidateCandidate: candidate => consolidationRepairExecutorService.consolidateIbanBridgeEndLeg(candidate),
+                    getSourceTransactionIds: candidate => [candidate.endLegTransactionId],
+                    getScopeTransactionIds: candidate => [
+                        candidate.endLegTransactionId,
+                        candidate.canonicalTransactionId,
+                        candidate.bridgeOriginTransactionId
+                    ]
+                }),
+                makeConsolidationFamilyStrategy({
                     findCandidates: scope => consolidationCandidateRepository.findIbanBridgeCanonicalSupersessionCandidates(scope),
                     consolidateCandidate: candidate =>
                         consolidationRepairExecutorService.consolidateIbanBridgeCanonicalSupersession(candidate),

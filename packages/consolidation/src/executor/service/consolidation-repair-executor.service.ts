@@ -19,6 +19,8 @@ import { ConsolidationEligibilityService } from './consolidation-eligibility.ser
 import { ConsolidationMutationService } from './consolidation-mutation.service';
 import { UnconsolidationService } from './unconsolidation.service';
 
+import type { IbanBridgeDuplicatePairCandidateInterface } from '../../query/interface/iban-bridge-duplicate-pair-candidate.interface';
+import type { IbanBridgeEndLegCandidateInterface } from '../../query/interface/iban-bridge-end-leg-candidate.interface';
 import type { ManualExpenseDuplicateCandidateInterface } from '../../query/interface/manual-expense-duplicate-candidate.interface';
 import type { CanonicalTransferInputInterface } from '../interface/canonical-transfer-input.interface';
 import type {
@@ -122,7 +124,74 @@ export class ConsolidationRepairExecutorService extends Context.Service<Consolid
                 return existingTransfers.at(0) ?? null;
             });
 
+            const isClaimableIbanBridgeCanonical = Effect.fnUntraced(function* (canonicalTransactionId: number) {
+                const canonical = yield* transactionRepository.getByIdRaw(canonicalTransactionId);
+
+                return (
+                    isDefined(canonical) &&
+                    canonical.consolidationType === TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER &&
+                    !isDefined(canonical.updatedBy) &&
+                    !isDefined(canonical.consolidationParentTransactionId) &&
+                    !isDefined(canonical.deletedAt)
+                );
+            });
+
+            const claimIbanBridgeEndLegs = Effect.fnUntraced(function* (
+                canonicalTransactionId: number,
+                endLegTransactionIds: number[],
+                accountIds: number[]
+            ) {
+                const endLegs = yield* consolidationEligibilityService.findEligibleSourceTransactions(endLegTransactionIds);
+
+                if (!isDefined(endLegs)) {
+                    return false;
+                }
+
+                yield* consolidationMutationService.createTransferPairFeeEntries(accountIds, endLegs, canonicalTransactionId);
+                yield* consolidationMutationService.moveSourcesToCanonical(endLegTransactionIds, canonicalTransactionId);
+
+                return true;
+            });
+
             return {
+                consolidateIbanBridgeEndLeg: Effect.fnUntraced(
+                    function* (candidate: IbanBridgeEndLegCandidateInterface) {
+                        if (!(yield* isClaimableIbanBridgeCanonical(candidate.canonicalTransactionId))) {
+                            return false;
+                        }
+
+                        return yield* claimIbanBridgeEndLegs(
+                            candidate.canonicalTransactionId,
+                            [candidate.endLegTransactionId],
+                            [candidate.accountId]
+                        );
+                    },
+                    effect => Db.transaction(effect)
+                ),
+                consolidateIbanBridgeDuplicatePair: Effect.fnUntraced(
+                    function* (candidate: IbanBridgeDuplicatePairCandidateInterface) {
+                        const pair = yield* transactionRepository.getByIdRaw(candidate.pairTransactionId);
+
+                        if (
+                            pair?.consolidationType !== TransactionConsolidationTypeEnum.TRANSFER_PAIR ||
+                            isDefined(pair.updatedBy) ||
+                            isDefined(pair.consolidationParentTransactionId) ||
+                            isDefined(pair.deletedAt) ||
+                            !(yield* isClaimableIbanBridgeCanonical(candidate.bridgeTransactionId))
+                        ) {
+                            return false;
+                        }
+
+                        yield* unconsolidationService.unconsolidateById(candidate.pairTransactionId);
+
+                        return yield* claimIbanBridgeEndLegs(
+                            candidate.bridgeTransactionId,
+                            [candidate.sourceExpenseTransactionId, candidate.targetIncomeTransactionId],
+                            [pair.fromAccountId, pair.toAccountId].filter(isDefined)
+                        );
+                    },
+                    effect => Db.transaction(effect)
+                ),
                 repairP2pFiatCanonical: Effect.fnUntraced(
                     function* (canonicalTransactionId: number) {
                         const canonical = yield* transactionRepository.getByIdRaw(canonicalTransactionId);

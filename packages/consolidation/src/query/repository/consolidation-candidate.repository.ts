@@ -17,9 +17,13 @@ import { EXISTING_TRANSFER_INCOME_DUPLICATE_CANDIDATES_SQL } from './sql-factory
 import { IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_SQL } from './sql-factory/transfer-pair-iban-bridge-canonical-duplicate-sql.factory';
 import { IBAN_BRIDGE_CANONICAL_SUPERSESSION_CANDIDATES_SQL } from './sql-factory/transfer-pair-iban-bridge-canonical-supersession-sql.factory';
 import { IBAN_BRIDGE_CHAIN_TRANSFER_CANDIDATES_SQL } from './sql-factory/transfer-pair-iban-bridge-chain-sql.factory';
+import { IBAN_BRIDGE_DUPLICATE_PAIR_CANDIDATES_SQL } from './sql-factory/transfer-pair-iban-bridge-duplicate-pair-sql.factory';
+import { IBAN_BRIDGE_END_LEG_CANDIDATES_SQL } from './sql-factory/transfer-pair-iban-bridge-end-leg-sql.factory';
 import { IBAN_BRIDGE_TRANSFER_CANDIDATES_SQL } from './sql-factory/transfer-pair-iban-bridge-transfer-sql.factory';
 
 import type { FeeEntrySourceInterface } from '../interface/fee-entry-source.interface';
+import type { IbanBridgeDuplicatePairCandidateInterface } from '../interface/iban-bridge-duplicate-pair-candidate.interface';
+import type { IbanBridgeEndLegCandidateInterface } from '../interface/iban-bridge-end-leg-candidate.interface';
 import type { ManualExpenseDuplicateCandidateInterface } from '../interface/manual-expense-duplicate-candidate.interface';
 import type { P2pFiatAtomicCandidateInterface } from '../interface/p2p-fiat-atomic-candidate.interface';
 import type { P2pFiatAuthoritativeCandidateInterface } from '../interface/p2p-fiat-authoritative-candidate.interface';
@@ -59,6 +63,10 @@ export class ConsolidationCandidateRepository extends Context.Service<Consolidat
                     find<IbanBridgeCanonicalDuplicateCandidateInterface>(IBAN_BRIDGE_CANONICAL_DUPLICATE_CANDIDATES_SQL(scope)),
                 findIbanBridgeCanonicalSupersessionCandidates: (scope: ConsolidationScanScopeInterface | null) =>
                     find<IbanBridgeCanonicalSupersessionCandidateInterface>(IBAN_BRIDGE_CANONICAL_SUPERSESSION_CANDIDATES_SQL(scope)),
+                findIbanBridgeDuplicatePairCandidates: (scope: ConsolidationScanScopeInterface | null) =>
+                    find<IbanBridgeDuplicatePairCandidateInterface>(IBAN_BRIDGE_DUPLICATE_PAIR_CANDIDATES_SQL(scope)),
+                findIbanBridgeEndLegCandidates: (scope: ConsolidationScanScopeInterface | null) =>
+                    find<IbanBridgeEndLegCandidateInterface>(IBAN_BRIDGE_END_LEG_CANDIDATES_SQL(scope)),
                 findIbanBridgeChainTransferCandidates: (scope: ConsolidationScanScopeInterface | null) =>
                     find<IbanBridgeChainTransferCandidateInterface>(IBAN_BRIDGE_CHAIN_TRANSFER_CANDIDATES_SQL(scope)),
                 findManualExpenseDuplicateCandidates: (scope: ConsolidationScanScopeInterface | null) =>

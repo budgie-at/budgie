@@ -14,8 +14,7 @@ import {
     expectConsolidationParent,
     expectRevertRemovedCanonical,
     fetchLedgerBalances,
-    fetchMovedSourceIds,
-    fetchSingleCanonicalId
+    fetchMovedSourceIds
 } from '../harness/consolidation-revert-audit';
 import {
     IBAN_BRIDGE_EUR_AMOUNT,
@@ -29,7 +28,7 @@ import {
     seedIbanBridgeTargetIncome
 } from '../harness/iban-bridge-topology';
 import { expectSecondConsolidationRunStable, runConsolidation } from '../harness/run-consolidation';
-import { rebuildStoredBalances, testDb, testSeedService, unconsolidateById, TestLayer } from '../harness/test-context';
+import { rebuildStoredBalances, testDb, testQueryService, testSeedService, unconsolidateById, TestLayer } from '../harness/test-context';
 
 const DUPLICATED_LEG_COUNT = 2;
 
@@ -96,7 +95,7 @@ layer(TestLayer)('consolidation/iban-bridge-canonical-duplicate absorption', it 
             })
     );
 
-    it.effect('keeps unproven bridge-addressed sibling direct legs in a separate transfer canonical', () =>
+    it.effect('claims bridge-addressed end legs into the bridge canonical instead of counting them twice', () =>
         Effect.gen(function* () {
             const { bridgeExpense, bridgeIncome, sourceAccount, sourceExpense, bridgeAccount, targetAccount, targetIncome } =
                 yield* seedBridgeAddressedDuplicateBeforeCanonical();
@@ -106,20 +105,18 @@ layer(TestLayer)('consolidation/iban-bridge-canonical-duplicate absorption', it 
             const result = yield* runConsolidation();
             const canonicalId = yield* fetchBridgeCanonicalId();
 
-            expect(result.consolidated).toBe(2);
-            const pairCanonicalId = yield* fetchSingleCanonicalId(TransactionConsolidationTypeEnum.TRANSFER_PAIR);
-
-            expect(pairCanonicalId).not.toBe(canonicalId);
+            expect(result.consolidated).toBe(3);
+            expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.TRANSFER_PAIR)).toHaveLength(0);
             yield* expectConsolidationParent(bridgeExpense.id, canonicalId);
             yield* expectConsolidationParent(bridgeIncome.id, canonicalId);
-            yield* expectConsolidationParent(sourceExpense.id, pairCanonicalId);
-            yield* expectConsolidationParent(targetIncome.id, pairCanonicalId);
+            yield* expectConsolidationParent(sourceExpense.id, canonicalId);
+            yield* expectConsolidationParent(targetIncome.id, canonicalId);
             expect(balancesBeforeConsolidation).toEqual([
                 [sourceAccount.id, -IBAN_BRIDGE_EUR_AMOUNT],
                 [bridgeAccount.id, 0],
                 [targetAccount.id, IBAN_BRIDGE_UAH_AMOUNT]
             ]);
-            yield* expectIbanBridgeBalances(accountIds, -2 * IBAN_BRIDGE_EUR_AMOUNT, 2 * IBAN_BRIDGE_UAH_AMOUNT);
+            yield* expectIbanBridgeBalances(accountIds, -IBAN_BRIDGE_EUR_AMOUNT, IBAN_BRIDGE_UAH_AMOUNT);
             yield* expectSecondConsolidationRunStable();
         })
     );
