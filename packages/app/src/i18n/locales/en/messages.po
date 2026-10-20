@@ -744,6 +744,10 @@ msgstr "Appearance"
 msgid "Apply"
 msgstr "Apply"
 
+#: src/sync/component/balance-reconciliation-review/balance-reconciliation-review.tsx
+msgid "Apply bank balance"
+msgstr "Apply bank balance"
+
 #: src/settings/components/auto-assign-mcc-category/auto-assign-mcc-category.tsx
 msgid "Apply default categories based on merchant category codes"
 msgstr "Apply default categories based on merchant category codes"
@@ -751,6 +755,10 @@ msgstr "Apply default categories based on merchant category codes"
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Apply to existing transactions?"
 msgstr "Apply to existing transactions?"
+
+#: src/sync/component/balance-reconciliation-review/balance-reconciliation-review.tsx
+msgid "Applying the bank balance books a correction of {correction}."
+msgstr "Applying the bank balance books a correction of {correction}."
 
 #: src/account/component/debt-account-paid-off/debt-account-paid-off.tsx
 #: src/account/hooks/use-archive-account.hook.ts
@@ -818,6 +826,10 @@ msgstr "Balance"
 #: src/transaction/components/transaction-sections-list/transaction-sections-list.tsx
 msgid "Balance Adjustment"
 msgstr "Balance Adjustment"
+
+#: src/sync/component/balance-reconciliation-review/balance-reconciliation-review.tsx
+msgid "Balance differs from the bank"
+msgstr "Balance differs from the bank"
 
 #: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
 msgid "Balance forecast"
@@ -1355,6 +1367,10 @@ msgstr "Could not add accounts"
 #: src/rule/utils/show-rule-application-toast.util.ts
 msgid "Could not apply rule to existing transactions"
 msgstr "Could not apply rule to existing transactions"
+
+#: src/sync/component/balance-reconciliation-review/balance-reconciliation-review.tsx
+msgid "Could not apply the bank balance"
+msgstr "Could not apply the bank balance"
 
 #: src/account/hooks/use-archive-account.hook.ts
 msgid "Could not archive account"
@@ -1913,6 +1929,10 @@ msgstr "Details"
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "Didn't match"
 msgstr "Didn't match"
+
+#: src/sync/component/balance-reconciliation-review/balance-reconciliation-review.tsx
+msgid "Differs since"
+msgstr "Differs since"
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "Disable App Lock"

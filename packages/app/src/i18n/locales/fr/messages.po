@@ -743,6 +743,10 @@ msgstr "Apparence"
 msgid "Apply"
 msgstr "Appliquer"
 
+#: src/sync/component/balance-reconciliation-review/balance-reconciliation-review.tsx
+msgid "Apply bank balance"
+msgstr "Appliquer le solde bancaire"
+
 #: src/settings/components/auto-assign-mcc-category/auto-assign-mcc-category.tsx
 msgid "Apply default categories based on merchant category codes"
 msgstr "Appliquer les catégories par défaut selon les codes de catégorie des marchands"
@@ -750,6 +754,10 @@ msgstr "Appliquer les catégories par défaut selon les codes de catégorie des 
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Apply to existing transactions?"
 msgstr "Appliquer aux transactions existantes ?"
+
+#: src/sync/component/balance-reconciliation-review/balance-reconciliation-review.tsx
+msgid "Applying the bank balance books a correction of {correction}."
+msgstr "Appliquer le solde bancaire enregistre une correction de {correction}."
 
 #: src/account/component/debt-account-paid-off/debt-account-paid-off.tsx
 #: src/account/hooks/use-archive-account.hook.ts
@@ -817,6 +825,10 @@ msgstr "Solde"
 #: src/transaction/components/transaction-sections-list/transaction-sections-list.tsx
 msgid "Balance Adjustment"
 msgstr "Ajustement de solde"
+
+#: src/sync/component/balance-reconciliation-review/balance-reconciliation-review.tsx
+msgid "Balance differs from the bank"
+msgstr "Le solde diffère de celui de la banque"
 
 #: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
 msgid "Balance forecast"
@@ -1354,6 +1366,10 @@ msgstr "Impossible d'ajouter les comptes"
 #: src/rule/utils/show-rule-application-toast.util.ts
 msgid "Could not apply rule to existing transactions"
 msgstr "Impossible d'appliquer la règle aux transactions existantes"
+
+#: src/sync/component/balance-reconciliation-review/balance-reconciliation-review.tsx
+msgid "Could not apply the bank balance"
+msgstr "Impossible d’appliquer le solde bancaire"
 
 #: src/account/hooks/use-archive-account.hook.ts
 msgid "Could not archive account"
@@ -1912,6 +1928,10 @@ msgstr "Détails"
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "Didn't match"
 msgstr "Ne correspond pas"
+
+#: src/sync/component/balance-reconciliation-review/balance-reconciliation-review.tsx
+msgid "Differs since"
+msgstr "Écart depuis"
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "Disable App Lock"

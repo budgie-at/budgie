@@ -743,6 +743,10 @@ msgstr "Вигляд"
 msgid "Apply"
 msgstr "Застосувати"
 
+#: src/sync/component/balance-reconciliation-review/balance-reconciliation-review.tsx
+msgid "Apply bank balance"
+msgstr "Застосувати баланс банку"
+
 #: src/settings/components/auto-assign-mcc-category/auto-assign-mcc-category.tsx
 msgid "Apply default categories based on merchant category codes"
 msgstr "Застосовувати типові категорії на основі кодів категорій продавців"
@@ -750,6 +754,10 @@ msgstr "Застосовувати типові категорії на осно
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Apply to existing transactions?"
 msgstr "Застосувати до наявних транзакцій?"
+
+#: src/sync/component/balance-reconciliation-review/balance-reconciliation-review.tsx
+msgid "Applying the bank balance books a correction of {correction}."
+msgstr "Застосування балансу банку створить коригування на {correction}."
 
 #: src/account/component/debt-account-paid-off/debt-account-paid-off.tsx
 #: src/account/hooks/use-archive-account.hook.ts
@@ -817,6 +825,10 @@ msgstr "Баланс"
 #: src/transaction/components/transaction-sections-list/transaction-sections-list.tsx
 msgid "Balance Adjustment"
 msgstr "Коригування балансу"
+
+#: src/sync/component/balance-reconciliation-review/balance-reconciliation-review.tsx
+msgid "Balance differs from the bank"
+msgstr "Баланс відрізняється від банківського"
 
 #: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
 msgid "Balance forecast"
@@ -1354,6 +1366,10 @@ msgstr "Не вдалося додати рахунки"
 #: src/rule/utils/show-rule-application-toast.util.ts
 msgid "Could not apply rule to existing transactions"
 msgstr "Не вдалося застосувати правило до наявних транзакцій"
+
+#: src/sync/component/balance-reconciliation-review/balance-reconciliation-review.tsx
+msgid "Could not apply the bank balance"
+msgstr "Не вдалося застосувати баланс банку"
 
 #: src/account/hooks/use-archive-account.hook.ts
 msgid "Could not archive account"
@@ -1912,6 +1928,10 @@ msgstr "Деталі"
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "Didn't match"
 msgstr "Не збігається"
+
+#: src/sync/component/balance-reconciliation-review/balance-reconciliation-review.tsx
+msgid "Differs since"
+msgstr "Розбіжність з"
 
 #: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "Disable App Lock"
