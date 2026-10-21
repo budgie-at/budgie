@@ -34,7 +34,11 @@ jobs:
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 22.22.2
-          cache: pnpm
+
+      - name: Restore package manager cache
+        uses: rnw-community/mobile-ci/actions/node-pm-cache@a9fac576ef1c8a9a565d03851f2624502a868214 # v4.4.1
+        with:
+          package-manager: pnpm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -47,7 +51,7 @@ jobs:
     needs: assert-ai
     permissions:
       contents: read
-    uses: rnw-community/mobile-ci/.github/workflows/native-publish.yml@c45b9b0e1cc8e841a9d1f1df5f8a9acaa422ce19 # v4.3.1
+    uses: rnw-community/mobile-ci/.github/workflows/native-publish.yml@a9fac576ef1c8a9a565d03851f2624502a868214 # v4.4.1
     with:
       enable-ios: true
       enable-android: false
