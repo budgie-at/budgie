@@ -3,6 +3,8 @@ import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
 
+import { isEmptyArray } from '@rnw-community/shared';
+
 import { LEGACY_REICON_ICONS } from '../src/@generic/constant/legacy-reicon-icons.constant';
 import REICON_GLYPHS from '../src/@generic/constant/reicon-glyphs.json';
 import { resolveReiconIcon } from '../src/@generic/utils/resolve-reicon-icon.util';
@@ -17,7 +19,7 @@ describe('REICON_GLYPHS', () => {
     });
 
     it('drawsEveryReiconIcon', () => {
-        expect(Object.entries(REICON_GLYPHS.outline).filter(([, elements]) => elements.length === 0)).toEqual([]);
+        expect(Object.entries(REICON_GLYPHS.outline).filter(([, elements]) => isEmptyArray(elements))).toEqual([]);
     });
 
     it('drawsTheFilledStar', () => {
