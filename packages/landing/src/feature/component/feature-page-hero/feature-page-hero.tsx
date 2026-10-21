@@ -16,7 +16,7 @@ interface Props {
 
 const FeaturePageHeroRoot = ({ heading, tagline, breadcrumbs, children }: Props) => (
     <section className="feature-hero w-full">
-        <div className="feature-hero-grid container px-4 md:px-6" data-stage={isDefined(children)}>
+        <div className="feature-hero-grid container" data-stage={isDefined(children)}>
             <div className="feature-hero-copy">
                 {breadcrumbs}
                 <h1 className="feature-hero-title hero-enter hero-title">{heading}</h1>

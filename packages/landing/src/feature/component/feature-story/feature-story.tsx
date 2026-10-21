@@ -25,7 +25,7 @@ const FeatureStoryRoot = ({ density = StoryDensityEnum.DEFAULT, children }: Prop
 
     return (
         <section className="story-section" {...(density === StoryDensityEnum.COMPACT && { 'data-density': density })}>
-            <div className="container px-4 md:px-6 max-w-7xl">
+            <div className="container">
                 {intro}
                 <FeatureStoryStage count={steps.length}>
                     <ol className="story-steps">{steps}</ol>

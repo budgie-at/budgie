@@ -5,7 +5,7 @@ import { WaitlistForm } from '../waitlist-form/waitlist-form';
 
 export const CtaSection = () => (
     <section className="w-full bg-primary py-8 text-primary-foreground md:py-20" id="waitlist">
-        <div className="container px-4 md:px-6 max-w-7xl">
+        <div className="container">
             <div className="mx-auto flex max-w-2xl flex-col items-center gap-6 text-center">
                 <h2 className="text-2xl md:text-4xl font-bold tracking-tight text-balance">
                     <Trans>Take control of your money without handing it over</Trans>

@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.111.1](https://github.com/budgie-at/budgie/compare/v6.111.0...v6.111.1) (2026-10-21)
+
+### Bug Fixes
+
+* **app:** point the iOS screenshot upload at the iOS metadata folder ([c38d464](https://github.com/budgie-at/budgie/commit/c38d464d150913fcfe8f1fba847119de29e8fd44))
+
+
+# [6.111.0](https://github.com/budgie-at/budgie/compare/v6.110.0...v6.111.0) (2026-10-21)
+
+### Features
+
+* **landing:** align page sections to the header frame and use wide screens ([b93ab97](https://github.com/budgie-at/budgie/commit/b93ab97436fc8defda269b2063f00384931ceebd))
+
+
 # [6.110.0](https://github.com/budgie-at/budgie/compare/v6.109.2...v6.110.0) (2026-10-21)
 
 ### Bug Fixes

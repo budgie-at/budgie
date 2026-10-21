@@ -24,7 +24,7 @@ export const FeatureRelated = ({ locale, slugs }: Props) => {
 
     return (
         <section aria-labelledby="related-heading" className="feature-section">
-            <div className="feature-wrap container px-4 md:px-6">
+            <div className="container">
                 <div className="feature-section-head">
                     <h2 className="feature-section-title" id="related-heading">
                         <Trans>Works well with</Trans>

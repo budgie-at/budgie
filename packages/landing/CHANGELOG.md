@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.111.0](https://github.com/budgie-at/budgie/compare/v6.110.0...v6.111.0) (2026-10-21)
+
+### Features
+
+* **landing:** align page sections to the header frame and use wide screens ([b93ab97](https://github.com/budgie-at/budgie/commit/b93ab97436fc8defda269b2063f00384931ceebd))
+
+
 # [6.107.0](https://github.com/budgie-at/budgie/compare/v6.106.4...v6.107.0) (2026-10-19)
 
 ### Features

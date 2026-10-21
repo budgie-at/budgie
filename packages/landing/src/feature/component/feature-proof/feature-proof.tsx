@@ -14,7 +14,7 @@ interface Props {
 
 const FeatureProofRoot = ({ heading, lede, crop, children }: Props) => (
     <section className="feature-section">
-        <div className="feature-wrap container px-4 md:px-6">
+        <div className="container">
             <div className="feature-proof">
                 <div className="feature-proof-copy">
                     <h2 className="feature-section-title">{heading}</h2>

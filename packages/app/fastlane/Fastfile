@@ -335,6 +335,7 @@ platform :ios do
       submit_for_review: false,
       force: true,
       precheck_include_in_app_purchases: false,
+      metadata_path: IOS_METADATA_PATH,
       screenshots_path: path
     )
   end

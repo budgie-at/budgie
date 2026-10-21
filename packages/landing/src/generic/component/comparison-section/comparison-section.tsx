@@ -3,7 +3,7 @@ import { ComparisonTable } from './comparison-table';
 
 export const ComparisonSection = () => (
     <section className="w-full py-8 md:py-20" id="comparison">
-        <div className="container px-4 md:px-6 max-w-7xl">
+        <div className="container section-split">
             <ComparisonSectionHeader />
             <ComparisonTable />
         </div>
