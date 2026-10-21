@@ -3,6 +3,7 @@ import { BinanceSyncService, MonobankSyncService } from '@budgie/sync';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
+import * as Stream from 'effect/Stream';
 
 import { Workload } from '../../@generic/service/workload.service';
 import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
@@ -23,6 +24,8 @@ export class AppDataSyncService extends Context.Service<AppDataSyncService>()('@
         return {
             sync: Effect.fn('AppDataSyncService.sync')(function* () {
                 yield* logAndContinue(accountBalanceIncrementalService.updateAllBalances(false));
+                yield* logAndContinue(walletCaptureNativeService.refreshAccounts());
+                yield* logAndContinue(walletCaptureImportService.drain());
                 yield* logAndContinue(exchangeRateBackgroundService.sync());
                 if (yield* workload.hasQueuedUserWork) {
                     return false;
@@ -35,11 +38,11 @@ export class AppDataSyncService extends Context.Service<AppDataSyncService>()('@
 
                 yield* logAndContinue(binanceSyncService.sync());
 
-                yield* logAndContinue(walletCaptureNativeService.refreshAccounts());
-                yield* logAndContinue(walletCaptureImportService.drain());
-
                 return true;
-            })
+            }),
+            drainWalletCapturesOnInvocation: Stream.runForEach(walletCaptureNativeService.captureInvocations, () =>
+                logAndContinue(walletCaptureImportService.drain())
+            )
         };
     })
 }) {

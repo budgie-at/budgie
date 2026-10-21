@@ -11,6 +11,7 @@ const VIRTUAL_SHIMS: Record<string, string> = {
         export const getPendingInvocationsAsync = async () => [];
         export const removePendingInvocationAsync = async () => undefined;
         export const setEntityCatalogAsync = async () => undefined;
+        export const addAppIntentListener = () => ({ remove: () => undefined });
     `,
     expo: `export const requireNativeModule = () => ({}); export const requireOptionalNativeModule = () => null; export const NativeModule = class {};`,
     'expo-file-system': `

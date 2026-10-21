@@ -2,10 +2,13 @@ import { AccountRepository } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
+import * as Queue from 'effect/Queue';
 import * as Reactivity from 'effect/reactivity/Reactivity';
 import * as Schema from 'effect/Schema';
+import * as Stream from 'effect/Stream';
 import * as AppIntents from 'expo-app-intents';
 
+import { NativeCallError } from '../../@generic/error/native-call.error';
 import { WalletCaptureNativeRecordsSchema } from '../constant/wallet-capture-native-record-schema.constant';
 import { WalletCaptureReactivityKeyEnum } from '../enum/wallet-capture-reactivity-key.enum';
 
@@ -16,11 +19,13 @@ export class WalletCaptureNativeService extends Context.Service<WalletCaptureNat
         const captureInvocationName = 'captureApplePayTransaction';
         const accountCatalogKind = 'walletAccount';
 
+        const callNative = <A>(call: () => Promise<A>) => Effect.tryPromise({ try: call, catch: cause => new NativeCallError({ cause }) });
+
         return {
             refreshAccounts: Effect.fn('WalletCaptureNativeService.refreshAccounts')(function* () {
                 const accounts = yield* accountRepository.getAllActiveAccounts();
 
-                yield* Effect.promise(() =>
+                yield* callNative(() =>
                     AppIntents.setEntityCatalogAsync(
                         accountCatalogKind,
                         accounts.filter(account => account.isActive).map(({ id, title }) => ({ id: String(id), title }))
@@ -28,7 +33,7 @@ export class WalletCaptureNativeService extends Context.Service<WalletCaptureNat
                 );
             }),
             getCaptures: Effect.fn('WalletCaptureNativeService.getCaptures')(function* () {
-                const invocations = yield* Effect.promise(() => AppIntents.getPendingInvocationsAsync());
+                const invocations = yield* callNative(() => AppIntents.getPendingInvocationsAsync());
 
                 return yield* Schema.decodeUnknownEffect(WalletCaptureNativeRecordsSchema)(
                     invocations
@@ -36,10 +41,27 @@ export class WalletCaptureNativeService extends Context.Service<WalletCaptureNat
                         .map(({ id, params, createdAt }) => ({ ...params, captureId: id, capturedAt: new Date(createdAt).toISOString() }))
                 );
             }),
+            captureInvocations: Stream.callback<string>(
+                queue =>
+                    Effect.acquireRelease(
+                        Effect.sync(() =>
+                            AppIntents.addAppIntentListener(invocation => {
+                                if (invocation.name === captureInvocationName) {
+                                    Queue.offerUnsafe(queue, invocation.id);
+                                }
+                            })
+                        ),
+                        subscription =>
+                            Effect.sync(() => {
+                                subscription.remove();
+                            })
+                    ),
+                { bufferSize: 1, strategy: 'sliding' }
+            ),
             acknowledgeCaptures: (captureIds: readonly string[]) =>
                 reactivity.mutation(
                     [WalletCaptureReactivityKeyEnum.CAPTURES],
-                    Effect.forEach(captureIds, captureId => Effect.promise(() => AppIntents.removePendingInvocationAsync(captureId)), {
+                    Effect.forEach(captureIds, captureId => callNative(() => AppIntents.removePendingInvocationAsync(captureId)), {
                         discard: true
                     })
                 )

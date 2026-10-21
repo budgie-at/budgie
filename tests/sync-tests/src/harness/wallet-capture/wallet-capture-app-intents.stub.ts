@@ -11,6 +11,13 @@ const walletCaptureInvocation = ({ captureId, capturedAt, ...params }: WalletCap
 class WalletCaptureAppIntentsStub {
     private invocations: AppIntentInvocation[] = [];
     private catalogs = new Map<string, AppIntentEntity[]>();
+    private listeners = new Set<(invocation: AppIntentInvocation) => void>();
+
+    addAppIntentListener = (listener: (invocation: AppIntentInvocation) => void) => {
+        this.listeners.add(listener);
+
+        return { remove: () => void this.listeners.delete(listener) };
+    };
 
     getPendingInvocationsAsync = async (): Promise<AppIntentInvocation[]> => [...this.invocations];
 
@@ -30,6 +37,19 @@ class WalletCaptureAppIntentsStub {
         this.invocations = [...invocations];
     }
 
+    invoke(record: WalletCaptureNativeRecordInterface): void {
+        const invocation = walletCaptureInvocation(record);
+
+        this.invocations = [...this.invocations, invocation];
+        for (const listener of this.listeners) {
+            listener(invocation);
+        }
+    }
+
+    hasListeners(): boolean {
+        return this.listeners.size > 0;
+    }
+
     pendingCaptureIds(): string[] {
         return this.invocations.map(invocation => invocation.id);
     }
@@ -41,6 +61,7 @@ class WalletCaptureAppIntentsStub {
     reset(): void {
         this.invocations = [];
         this.catalogs = new Map();
+        this.listeners = new Set();
     }
 }
 
