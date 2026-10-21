@@ -87,11 +87,11 @@ export const AccountCardBase = ({ account, balance, amountLabel, onImport, child
             </HapticPressable>
 
             <AccountCardMenu
-                accountId={id}
                 integrationId={integrationId}
                 anchor={menuAnchor}
                 isOpen={isMenuOpen}
                 onClose={closeMenu}
+                onEdit={navigateToEdit}
                 {...(isDefined(onImport) && { onImport })}
             />
         </View>

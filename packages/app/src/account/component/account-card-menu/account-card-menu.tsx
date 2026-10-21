@@ -11,15 +11,15 @@ import { PopoverMenu, PopoverMenuAnchor } from '../../../@generic/component/popo
 import { AccountCardMenuSelector } from './account-card-menu.selector';
 
 interface Props {
-    readonly accountId: number;
     readonly integrationId: number | null;
     readonly anchor?: PopoverMenuAnchor;
     readonly isOpen: boolean;
     readonly onClose: EmptyFn;
+    readonly onEdit: EmptyFn;
     readonly onImport?: EmptyFn;
 }
 
-export const AccountCardMenu = ({ accountId, integrationId, anchor, isOpen, onClose, onImport }: Props) => {
+export const AccountCardMenu = ({ integrationId, anchor, isOpen, onClose, onEdit, onImport }: Props) => {
     const { t } = useLingui();
 
     const handleImport = () => {
@@ -28,7 +28,7 @@ export const AccountCardMenu = ({ accountId, integrationId, anchor, isOpen, onCl
     };
     const handleEdit = () => {
         onClose();
-        router.push({ pathname: '/account/[id]/update', params: { id: String(accountId) } });
+        onEdit();
     };
     const handleIntegrationSettings = () => {
         onClose();
