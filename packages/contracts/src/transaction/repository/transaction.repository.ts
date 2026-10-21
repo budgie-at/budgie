@@ -83,13 +83,29 @@ export class TransactionRepository extends Context.Service<TransactionRepository
             ) {
                 const candidates = yield* Db.query(db =>
                     db
-                        .select({ id: TransactionEntityTable.id, title: TransactionEntityTable.title })
+                        .select({
+                            id: TransactionEntityTable.id,
+                            title: TransactionEntityTable.title,
+                            consolidationParentTransactionId: TransactionEntityTable.consolidationParentTransactionId
+                        })
                         .from(TransactionEntityTable)
-                        .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+                        .innerJoin(
+                            TransactionEntryEntityTable,
+                            or(
+                                and(
+                                    eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id),
+                                    isNull(TransactionEntryEntityTable.originalTransactionId)
+                                ),
+                                and(
+                                    eq(TransactionEntryEntityTable.originalTransactionId, TransactionEntityTable.id),
+                                    isNotNull(TransactionEntityTable.consolidationParentTransactionId)
+                                )
+                            )
+                        )
                         .where(
                             and(
-                                transactionFilters.buildVisibleTransactionCondition(),
-                                transactionFilters.buildLedgerEntryCondition(),
+                                isNull(TransactionEntityTable.deletedAt),
+                                isNull(TransactionEntryEntityTable.deletedAt),
                                 inArray(TransactionEntityTable.type, [TransactionTypeEnum.EXPENSE, TransactionTypeEnum.DEBT]),
                                 or(
                                     isNull(TransactionEntityTable.externalSource),
@@ -112,8 +128,9 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                             )
                         )
                 );
+                const duplicate = candidates.find(candidate => candidate.title.trim().toLocaleLowerCase() === input.normalizedTitle);
 
-                return candidates.find(candidate => candidate.title.trim().toLocaleLowerCase() === input.normalizedTitle)?.id ?? null;
+                return duplicate?.consolidationParentTransactionId ?? duplicate?.id ?? null;
             }),
 
             touchUpdatedByIds: Effect.fn('TransactionRepository.touchUpdatedByIds')(function* (

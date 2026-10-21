@@ -101,6 +101,17 @@ const expectMerged = Effect.fnUntraced(function* () {
     return { bankTransaction, captureTransaction };
 });
 
+const drainParkedSecondCapture = Effect.fnUntraced(function* () {
+    const walletCaptureImportService = yield* WalletCaptureImportService;
+    const reviewItems = yield* walletCaptureImportService.drain();
+
+    expect(reviewItems.map(item => item.reason)).toEqual([WalletCaptureReviewReasonEnum.DUPLICATE]);
+    expect(walletCaptureNativeStub.pendingCaptureIds()).toEqual([SECOND_CAPTURE_ID]);
+    expect(yield* walletCaptureFindTransaction(SECOND_CAPTURE_ID)).toBeUndefined();
+
+    return reviewItems;
+});
+
 const expectNotMerged = Effect.fnUntraced(function* () {
     const bankTransaction = yield* fetchBankTransaction();
     const captureTransaction = yield* walletCaptureFindTransaction(CAPTURE_ID);
@@ -199,6 +210,39 @@ describe('wallet-capture/bank-consolidation', () => {
             expect(reviewItems.map(item => item.duplicateTransactionId)).toEqual([first.id]);
             expect(walletCaptureNativeStub.pendingCaptureIds()).toEqual([SECOND_CAPTURE_ID]);
             expect(yield* testDb.select().from(TransactionEntityTable)).toHaveLength(1);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('keeps a parked DUPLICATE capture parked after the first capture merges into a Monobank row', () =>
+        Effect.gen(function* () {
+            const account = yield* walletCaptureSeedMonobankAccount(SYNC_FROM);
+
+            yield* drainCapture(account.id);
+            yield* drainCapture(account.id, SECOND_CAPTURE_ID);
+            yield* syncBankExpense(BANK_AMOUNT);
+            yield* consolidate();
+
+            const { bankTransaction } = yield* expectMerged();
+            const reviewItems = yield* drainParkedSecondCapture();
+
+            expect(reviewItems.map(item => item.duplicateTransactionId)).toEqual([bankTransaction.id]);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('flags a capture arriving after the first capture merged into a Monobank row as a DUPLICATE of that row', () =>
+        Effect.gen(function* () {
+            const account = yield* walletCaptureSeedMonobankAccount(SYNC_FROM);
+
+            yield* drainCapture(account.id);
+            yield* syncBankExpense(BANK_AMOUNT);
+            yield* consolidate();
+
+            const { bankTransaction } = yield* expectMerged();
+            const reviewItems = yield* drainCapture(account.id, SECOND_CAPTURE_ID);
+
+            expect(reviewItems.map(item => [item.reason, item.duplicateTransactionId])).toEqual([
+                [WalletCaptureReviewReasonEnum.DUPLICATE, bankTransaction.id]
+            ]);
         }).pipe(Effect.provide(TestLayer))
     );
 });
