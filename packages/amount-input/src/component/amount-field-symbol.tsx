@@ -12,12 +12,26 @@ interface Props extends AmountFieldSymbolPropsInterface {
     readonly gapSide: 'marginStart' | 'marginEnd';
 }
 
-export const AmountFieldSymbol = ({ children, scale = 1, gapSide, style, className, ...textProps }: Props) => {
-    const { fontSize, baseFontSize } = useAmountFieldContext();
+export const AmountFieldSymbol = (props: Props) => {
+    const {
+        children,
+        scale = 1,
+        minimumFontSize = 0,
+        gapSide,
+        style,
+        className,
+        allowFontScaling,
+        maxFontSizeMultiplier,
+        ...textProps
+    } = props;
+    const { fontSize, baseFontSize, contentOpacity } = useAmountFieldContext();
     const measureExtraWidth = baseFontSize * SYMBOL_GAP_SCALE;
+    const symbolFontSize = Math.max(fontSize * scale, minimumFontSize);
     const typographyProps = {
         className,
-        style: [style, { fontSize: fontSize * scale, [gapSide]: fontSize * SYMBOL_GAP_SCALE }]
+        allowFontScaling,
+        maxFontSizeMultiplier,
+        style: [style, { fontSize: symbolFontSize, opacity: contentOpacity, [gapSide]: fontSize * SYMBOL_GAP_SCALE }]
     };
 
     return (
@@ -25,7 +39,16 @@ export const AmountFieldSymbol = ({ children, scale = 1, gapSide, style, classNa
             <Text {...textProps} {...typographyProps} numberOfLines={1}>
                 {children}
             </Text>
-            <AmountFieldMeasure text={children} scale={scale} extraWidth={measureExtraWidth} style={style} className={className} />
+            <AmountFieldMeasure
+                text={children}
+                scale={scale}
+                extraWidth={measureExtraWidth}
+                minimumFontSize={minimumFontSize}
+                style={style}
+                className={className}
+                allowFontScaling={allowFontScaling}
+                maxFontSizeMultiplier={maxFontSizeMultiplier}
+            />
         </>
     );
 };

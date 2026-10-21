@@ -12,16 +12,30 @@ const styles = StyleSheet.create({
     }
 });
 
-export const AmountFieldText = ({ children, style, className, ...textProps }: AmountFieldTextPropsInterface) => {
-    const { fontSize } = useAmountFieldContext();
-    const typographyProps = { className, style: [styles.text, style, { fontSize }] };
+export const AmountFieldText = (props: AmountFieldTextPropsInterface) => {
+    const { children, style, className, allowFontScaling, maxFontSizeMultiplier, ...textProps } = props;
+    const { fontSize, contentOpacity } = useAmountFieldContext();
+    const typographyProps = {
+        className,
+        allowFontScaling,
+        maxFontSizeMultiplier,
+        style: [styles.text, style, { fontSize, opacity: contentOpacity }]
+    };
 
     return (
         <>
             <Text {...textProps} {...typographyProps} numberOfLines={1}>
                 {children}
             </Text>
-            <AmountFieldMeasure text={children} scale={1} extraWidth={0} style={style} className={className} />
+            <AmountFieldMeasure
+                text={children}
+                scale={1}
+                extraWidth={0}
+                style={style}
+                className={className}
+                allowFontScaling={allowFontScaling}
+                maxFontSizeMultiplier={maxFontSizeMultiplier}
+            />
         </>
     );
 };

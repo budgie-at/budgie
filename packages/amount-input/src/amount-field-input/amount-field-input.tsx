@@ -29,17 +29,32 @@ export const AmountFieldInput = (props: AmountFieldInputPropsInterface) => {
         placeholder = '',
         style,
         className,
+        allowFontScaling,
+        maxFontSizeMultiplier,
         ...textInputProps
     } = props;
-    const { fontSize } = useAmountFieldContext();
+    const { fontSize, contentOpacity } = useAmountFieldContext();
     const amountInputProps = useAmountInput({ value, format, onChangeValue, selectTextOnFocus, onFocus, onBlur });
-    const typographyProps = { className, style: [styles.input, style, { fontSize }] };
+    const typographyProps = {
+        className,
+        allowFontScaling,
+        maxFontSizeMultiplier,
+        style: [styles.input, style, { fontSize, opacity: contentOpacity }]
+    };
     const measuredText = isNotEmptyString(amountInputProps.value) ? amountInputProps.value : placeholder;
 
     return (
         <>
             <TextInput {...textInputProps} {...amountInputProps} {...typographyProps} placeholder={placeholder} />
-            <AmountFieldMeasure text={measuredText} scale={1} extraWidth={0} style={style} className={className} />
+            <AmountFieldMeasure
+                text={measuredText}
+                scale={1}
+                extraWidth={0}
+                style={style}
+                className={className}
+                allowFontScaling={allowFontScaling}
+                maxFontSizeMultiplier={maxFontSizeMultiplier}
+            />
         </>
     );
 };

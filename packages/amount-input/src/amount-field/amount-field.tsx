@@ -1,15 +1,17 @@
-import { useState } from 'react';
+import { useReducer, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
+import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { AmountFieldContext } from '../context/amount-field.context';
 import { getFittedFontSize } from '../utils/get-fitted-font-size/get-fitted-font-size.util';
+import { reducePartWidths } from '../utils/reduce-part-widths/reduce-part-widths.util';
 
 import type { AmountFieldPropsInterface } from '../interface/amount-field-props.interface';
 import type { LayoutChangeEvent } from 'react-native';
 
 const DEFAULT_MINIMUM_FONT_SCALE = 0.3;
+const FIT_SLACK_WIDTH = 1;
 
 const styles = StyleSheet.create({
     row: {
@@ -27,24 +29,14 @@ export const AmountField = ({
     ...viewProps
 }: AmountFieldPropsInterface) => {
     const [availableWidth, setAvailableWidth] = useState(0);
-    const [partWidths, setPartWidths] = useState<Readonly<Record<string, number>>>({});
-    const measuredWidth = Object.values(partWidths).reduce((total, width) => total + width, 0);
-    const fontSize = getFittedFontSize(baseFontSize, minimumFontScale, availableWidth, measuredWidth);
-
-    const setPartWidth = (partId: string, width: number | null) =>
-        void setPartWidths(currentWidths => {
-            if (currentWidths[partId] === width) {
-                return currentWidths;
-            }
-
-            const otherWidths = Object.fromEntries(Object.entries(currentWidths).filter(([currentPartId]) => currentPartId !== partId));
-
-            return isDefined(width) ? { ...otherWidths, [partId]: width } : otherWidths;
-        });
+    const [partWidths, dispatchPartWidth] = useReducer(reducePartWidths, {});
+    const measuredParts = Object.values(partWidths);
+    const fontSize = getFittedFontSize(baseFontSize, minimumFontScale, availableWidth - FIT_SLACK_WIDTH, measuredParts);
+    const contentOpacity = isPositiveNumber(availableWidth) && isNotEmptyArray(measuredParts) ? 1 : 0;
 
     const handleLayout = (event: LayoutChangeEvent) => void setAvailableWidth(event.nativeEvent.layout.width);
 
-    const contextValue = { fontSize, baseFontSize, setPartWidth };
+    const contextValue = { fontSize, baseFontSize, contentOpacity, dispatchPartWidth };
 
     return (
         <View {...viewProps}>

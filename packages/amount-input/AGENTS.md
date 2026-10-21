@@ -16,10 +16,15 @@ pnpm test && pnpm build && pnpm ts && pnpm lint
    plain numbers and strings; formatting is injected through `AmountFormatInterface`; colours and typography arrive
    through `style`/`className`; labels arrive as props.
 2. Pure logic lives in `src/utils/<name>/<name>.util.ts` with a colocated `<name>.spec.ts`; components are not
-   rendered in tests (root rule 27).
+   rendered in tests (root rule 27). Single-consumer helpers stay in `utils/` instead of being inlined (root rule 52) because the
+   specs are this package's only executable verification of the fit, parsing and sign logic.
 3. Hermes-safe APIs only (no `formatToParts`, no `toSorted`). No worklets: animation uses Reanimated CSS transitions.
 4. Keep every component at or under 8 own props; add a part component instead of a prop.
-5. Measuring copies must stay invisible, accessibility-hidden, and sized at the base font size so fitting never loops.
+5. Measuring copies must stay invisible, accessibility-hidden, and sized at the base font size so fitting never loops;
+   part widths go through the `reducePartWidths` reducer, which returns the same state for a no-op, and parts
+   register through the stable `useReducer` dispatch, so the loop guarantee holds without the React Compiler.
+6. `useAmountFieldContext` throws when a part renders outside `AmountField`: that is a programming error with no
+   safe fallback size, matching the rnw-community assert-on-misuse convention.
 
 ## Architecture
 

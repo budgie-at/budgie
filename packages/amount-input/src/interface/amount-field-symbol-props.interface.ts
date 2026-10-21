@@ -2,4 +2,5 @@ import type { AmountFieldTextPropsInterface } from './amount-field-text-props.in
 
 export interface AmountFieldSymbolPropsInterface extends AmountFieldTextPropsInterface {
     readonly scale?: number;
+    readonly minimumFontSize?: number;
 }

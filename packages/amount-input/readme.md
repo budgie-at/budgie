@@ -44,10 +44,12 @@ export const BalanceField = ({ value, onChange }: Props) => (
 ## How fitting works
 
 Every part of an `AmountField` renders an invisible, accessibility-hidden, single-line copy of its text at the base
-font size and reports its width. The field sums the part widths (plus the symbol gaps) and sets
-`fontSize = clamp(base × available / measured, base × minimumFontScale, base)`, where `available` is the row's own
-content width (padding excluded). The measuring copies never change size, so a re-fit costs one render and can never
-loop. Re-fitting happens on value, placeholder, focus (raw text), locale and typography changes.
+font size and reports its width (and, for a symbol with `minimumFontSize`, its width at that minimum). The field picks
+the largest font size, between `fontSize × minimumFontScale` and `fontSize`, at which the parts fit the row's own
+content width minus 1px of slack; a symbol held at its minimum size counts as a fixed width. The measuring copies never
+change size and widths flow through a reducer that ignores no-op updates, so a re-fit costs one render and can never
+loop. Visible text stays transparent until the first measurement, so the base size never flashes. Re-fitting happens
+on value, placeholder, focus (raw text), locale, font scaling and typography changes.
 
 The field fits against its own width, so give it a definite one (`flex: 1` in a row, `alignSelf: 'stretch'` inside a
 centered column); a content-sized field has nothing to shrink into.
@@ -97,6 +99,7 @@ Currency symbol before or after the amount, separated by a gap of `0.2 × fontSi
 | Prop    | Type     | Default | Description                                       |
 | ------- | -------- | ------- | ------------------------------------------------- |
 | `scale` | `number` | `1`     | Symbol font size as a fraction of the amount's.   |
+| `minimumFontSize` | `number` | `0` | Smallest symbol font size; the amount shrinks further to make room. |
 
 ### `AmountSignToggle`
 
