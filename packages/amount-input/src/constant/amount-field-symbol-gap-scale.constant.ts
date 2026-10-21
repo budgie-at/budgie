@@ -1,1 +1,0 @@
-export const AMOUNT_FIELD_SYMBOL_GAP_SCALE = 0.2;

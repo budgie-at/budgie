@@ -33,7 +33,6 @@ src/
   amount-sign-toggle/amount-sign-toggle.tsx    — public flip sign toggle (CSS transition, backface faces)
   component/amount-field-measure.tsx           — internal hidden base-size text reporting its width
   component/amount-field-symbol.tsx            — internal shared prefix/suffix implementation
-  constant/                                    — internal symbol gap scale
   context/amount-field.context.ts              — internal fit context
   hooks/                                       — useAmountInput, useAmountSign (public), useAmountFieldContext (internal)
   interface/                                   — public props/format contracts and internal context value
