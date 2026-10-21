@@ -9,12 +9,14 @@ import { resolveReiconIcon } from '../../utils/resolve-reicon-icon.util';
 import { IconSelector } from '../icon/icon.selector';
 
 import type { UserIconNameEnum } from '@budgie/contracts';
-import type { IconProps } from 'reicon-react-native';
+import type { IconProps, IconWeight } from 'reicon-react-native';
 import type { ApplyUniwind } from 'uniwind';
 
-interface Props extends ApplyUniwind<Omit<IconProps, 'secondaryColor'>> {
-    readonly icon: UserIconNameEnum | ReiconIconNameEnum;
-}
+type Props = ApplyUniwind<Omit<IconProps, 'secondaryColor' | 'weight'>> &
+    (
+        | { readonly icon: UserIconNameEnum | ReiconIconNameEnum; readonly weight?: never }
+        | { readonly icon: ReiconIconNameEnum.STAR; readonly weight: IconWeight }
+    );
 
 const StyledSvg = withUniwind(Svg);
 const OUTLINE_GLYPHS: Partial<Record<ReiconIconNameEnum, readonly Readonly<Record<string, string | undefined>>[]>> = REICON_GLYPHS.outline;
