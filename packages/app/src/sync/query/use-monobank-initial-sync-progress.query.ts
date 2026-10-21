@@ -1,39 +1,33 @@
 import { AccountEntityTable, ExternalSourceEnum, SyncEntityTable, SyncRepository } from '@budgie/contracts';
 import { MONOBANK_MAX_PERIOD_SECONDS, MONOBANK_RATE_LIMIT_MS } from '@budgie/sync';
+import { millisecondsInMinute, millisecondsInSecond } from 'date-fns/constants';
 import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
-import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { databaseQueryAtom } from '../../@generic/utils/database-query-atom.util';
 
 import type { MonobankInitialSyncProgressInterface } from '../interface/monobank-initial-sync-progress.interface';
-import type { MonobankInitialSyncWindowInterface } from '../interface/monobank-initial-sync-window.interface';
 import type { SyncEntityInterface } from '@budgie/contracts';
 
-const MILLISECONDS_PER_SECOND = 1000;
-const MONOBANK_MAX_PERIOD_MS = MONOBANK_MAX_PERIOD_SECONDS * MILLISECONDS_PER_SECOND;
-const FULL_PERCENT = 100;
+const MONOBANK_MAX_PERIOD_MS = MONOBANK_MAX_PERIOD_SECONDS * millisecondsInSecond;
 const MAX_IN_PROGRESS_PERCENT = 99;
 
-const resolveInitialSyncWindow = (
-    sync: Pick<SyncEntityInterface, 'backwardSyncFromAt' | 'backwardSyncLimitAt' | 'forwardSyncFromAt'>
-): MonobankInitialSyncWindowInterface | null => {
-    const { backwardSyncFromAt, backwardSyncLimitAt, forwardSyncFromAt } = sync;
-    if (!isDefined(backwardSyncLimitAt) || !isDefined(forwardSyncFromAt)) {
+const resolveInitialSyncWindow = ({ backwardSyncFromAt, backwardSyncLimitAt, forwardSyncFromAt }: SyncEntityInterface) => {
+    if (!isDefined(backwardSyncLimitAt) || !isDefined(forwardSyncFromAt) || backwardSyncLimitAt >= forwardSyncFromAt) {
         return null;
     }
 
     const limitMs = backwardSyncLimitAt.getTime();
-    const totalMs = forwardSyncFromAt.getTime() - limitMs;
-    if (!isPositiveNumber(totalMs)) {
-        return null;
-    }
+    const remainingMs = Math.max(0, (backwardSyncFromAt ?? forwardSyncFromAt).getTime() - limitMs);
 
-    const cursorMs = (backwardSyncFromAt ?? forwardSyncFromAt).getTime();
-
-    return { totalMs, remainingMs: Math.min(totalMs, Math.max(0, cursorMs - limitMs)) };
+    return {
+        totalMs: forwardSyncFromAt.getTime() - limitMs,
+        remainingMs,
+        remainingRequests: Math.ceil(remainingMs / MONOBANK_MAX_PERIOD_MS)
+    };
 };
 
 const resolveInitialSyncProgress = (syncs: SyncEntityInterface[]): MonobankInitialSyncProgressInterface | null => {
@@ -42,13 +36,12 @@ const resolveInitialSyncProgress = (syncs: SyncEntityInterface[]): MonobankIniti
         return null;
     }
 
-    const totalMs = windows.reduce((sum, window) => sum + window.totalMs, 0);
-    const remainingMs = windows.reduce((sum, window) => sum + window.remainingMs, 0);
-    const remainingRequests = windows.reduce((sum, window) => sum + Math.ceil(window.remainingMs / MONOBANK_MAX_PERIOD_MS), 0);
+    const sumOf = (key: keyof (typeof windows)[number]) => windows.reduce((sum, window) => sum + window[key], 0);
+    const totalMs = sumOf('totalMs');
 
     return {
-        percent: Math.min(MAX_IN_PROGRESS_PERCENT, Math.floor(((totalMs - remainingMs) / totalMs) * FULL_PERCENT)),
-        etaSeconds: (remainingRequests * MONOBANK_RATE_LIMIT_MS) / MILLISECONDS_PER_SECOND
+        percent: Math.min(MAX_IN_PROGRESS_PERCENT, Math.floor(((totalMs - sumOf('remainingMs')) / totalMs) * 100)),
+        minutesLeft: Math.max(1, Math.ceil((sumOf('remainingRequests') * MONOBANK_RATE_LIMIT_MS) / millisecondsInMinute))
     };
 };
 

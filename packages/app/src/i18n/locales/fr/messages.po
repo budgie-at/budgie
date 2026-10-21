@@ -206,10 +206,6 @@ msgstr "{freeSize} Go libres sur ce téléphone"
 msgid "{gigabytes} GB"
 msgstr "{gigabytes} Go"
 
-#: src/sync/component/monobank-initial-sync-home-card/monobank-initial-sync-home-card.tsx
-msgid "{hoursLeft, plural, one {About # hour left} other {About # hours left}}"
-msgstr "{hoursLeft, plural, one {Environ # heure restante} other {Environ # heures restantes}}"
-
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "{loadedDays}/{totalDays} days"
 msgstr "{loadedDays}/{totalDays} jours"

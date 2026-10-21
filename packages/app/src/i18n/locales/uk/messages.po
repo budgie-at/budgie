@@ -206,10 +206,6 @@ msgstr "{freeSize} ГБ вільно на цьому телефоні"
 msgid "{gigabytes} GB"
 msgstr "{gigabytes} ГБ"
 
-#: src/sync/component/monobank-initial-sync-home-card/monobank-initial-sync-home-card.tsx
-msgid "{hoursLeft, plural, one {About # hour left} other {About # hours left}}"
-msgstr "{hoursLeft, plural, one {Залишилася приблизно # година} few {Залишилося приблизно # години} many {Залишилося приблизно # годин} other {Залишилося приблизно # години}}"
-
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "{loadedDays}/{totalDays} days"
 msgstr "{loadedDays}/{totalDays} днів"
