@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.111.2](https://github.com/budgie-at/budgie/compare/v6.111.1...v6.111.2) (2026-10-21)
+
+### Bug Fixes
+
+* **app:** accept filled weight only for the star icon ([7f243e7](https://github.com/budgie-at/budgie/commit/7f243e73a8ce5f268fe769bb5646c206079cc489))
+
+### Performance Improvements
+
+* **app:** render Reicon icons synchronously from precompiled glyph data ([72ab98a](https://github.com/budgie-at/budgie/commit/72ab98a4dd513bccd23975c7e0a24c926553e880)), closes [#1595](https://github.com/budgie-at/budgie/issues/1595)
+
+
 ## [6.111.1](https://github.com/budgie-at/budgie/compare/v6.111.0...v6.111.1) (2026-10-21)
 
 ### Bug Fixes
