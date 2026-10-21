@@ -179,6 +179,31 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
                     getSourceTransactionIds: getIbanBridgeTransferSourceTransactionIds
                 }),
                 makeConsolidationFamilyStrategy({
+                    findCandidates: scope => consolidationCandidateRepository.findIbanBridgeDuplicatePairCandidates(scope),
+                    consolidateCandidate: candidate => consolidationRepairExecutorService.consolidateIbanBridgeDuplicatePair(candidate),
+                    getSourceTransactionIds: candidate => [
+                        candidate.pairTransactionId,
+                        candidate.sourceExpenseTransactionId,
+                        candidate.targetIncomeTransactionId
+                    ],
+                    getScopeTransactionIds: candidate => [
+                        candidate.pairTransactionId,
+                        candidate.bridgeTransactionId,
+                        candidate.sourceExpenseTransactionId,
+                        candidate.targetIncomeTransactionId
+                    ]
+                }),
+                makeConsolidationFamilyStrategy({
+                    findCandidates: scope => consolidationCandidateRepository.findIbanBridgeEndLegCandidates(scope),
+                    consolidateCandidate: candidate => consolidationRepairExecutorService.consolidateIbanBridgeEndLeg(candidate),
+                    getSourceTransactionIds: candidate => [candidate.endLegTransactionId],
+                    getScopeTransactionIds: candidate => [
+                        candidate.endLegTransactionId,
+                        candidate.canonicalTransactionId,
+                        candidate.bridgeOriginTransactionId
+                    ]
+                }),
+                makeConsolidationFamilyStrategy({
                     findCandidates: scope => consolidationCandidateRepository.findIbanBridgeCanonicalSupersessionCandidates(scope),
                     consolidateCandidate: candidate =>
                         consolidationRepairExecutorService.consolidateIbanBridgeCanonicalSupersession(candidate),
@@ -283,6 +308,14 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
             const countCanonicals = (movedFeeEntries: readonly FeeEntrySourceInterface[]): number =>
                 new Set(movedFeeEntries.map(feeEntry => feeEntry.transactionId)).size;
 
+            const repairMissingTransferFees = Effect.fn('ConsolidationCoordinatorService.repairMissingTransferFees')(function* () {
+                const movedFeeEntries = yield* consolidationCandidateRepository.findMissingTransferFeeEntries();
+
+                yield* consolidationMutationService.restoreMovedFeeEntries(movedFeeEntries);
+
+                return countCanonicals(movedFeeEntries);
+            });
+
             const findBridgeClaimedRepairCandidates = Effect.fn('ConsolidationCoordinatorService.findBridgeClaimedRepairCandidates')(
                 function* () {
                     const candidates = yield* consolidationCandidateRepository.findBridgeClaimedRepairCandidates();
@@ -324,7 +357,12 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
                     found += familyResult.found;
                 }
 
-                return { found, consolidated } satisfies ConsolidationResultInterface;
+                const restoredFeeCanonicalCount = yield* repairMissingTransferFees();
+
+                return {
+                    found: found + restoredFeeCanonicalCount,
+                    consolidated: consolidated + restoredFeeCanonicalCount
+                } satisfies ConsolidationResultInterface;
             });
 
             return {
@@ -395,13 +433,7 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
                 )(function* () {
                     return countCanonicals(yield* consolidationCandidateRepository.findMissingTransferFeeEntries());
                 }),
-                repairMissingTransferFees: Effect.fn('ConsolidationCoordinatorService.repairMissingTransferFees')(function* () {
-                    const movedFeeEntries = yield* consolidationCandidateRepository.findMissingTransferFeeEntries();
-
-                    yield* consolidationMutationService.restoreMovedFeeEntries(movedFeeEntries);
-
-                    return countCanonicals(movedFeeEntries);
-                }),
+                repairMissingTransferFees,
                 repairBridgeClaimedTransferPairs: Effect.fn('ConsolidationCoordinatorService.repairBridgeClaimedTransferPairs')(
                     function* () {
                         const candidates = yield* findBridgeClaimedRepairCandidates();

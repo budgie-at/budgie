@@ -35,13 +35,8 @@ export const HomeSectionsList = ({ sections, activeAccountCount, bottomInset, ba
     const { decimalPlaces, defaultInstrument } = useSettingsContext();
     const bottomPadding = FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottomInset;
     const scrollProps = useScreenChromeScrollProps({
-        contentContainerStyle: {
-            paddingTop: 0,
-            paddingBottom: bottomPadding,
-            paddingLeft: LIST_HORIZONTAL_PADDING,
-            paddingRight: LIST_HORIZONTAL_PADDING,
-            flexGrow: 1
-        }
+        includeTopSafeArea: false,
+        contentContainerStyle: { paddingBottom: bottomPadding, paddingHorizontal: LIST_HORIZONTAL_PADDING, flexGrow: 1 }
     });
     const listFormatKey = `${defaultInstrument.id}-${decimalPlaces}`;
     const listFooterComponent =
