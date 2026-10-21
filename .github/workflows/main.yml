@@ -120,15 +120,6 @@ jobs:
     env:
       APP_VARIANT: production
     steps:
-      - name: Check for EXPO_TOKEN
-        env:
-          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-        run: |
-          if [ -z "$EXPO_TOKEN" ]; then
-            echo "You must provide an EXPO_TOKEN secret linked to this project's Expo account in this repo's secrets. Learn more: https://docs.expo.dev/eas-update/github-actions"
-            exit 1
-          fi
-
       - name: Verify x86-64 Hermes host
         run: test "$(uname -m)" = 'x86_64'
 
@@ -136,7 +127,6 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-          fetch-depth: 2
           ref: main
 
       - name: Setup pnpm
@@ -146,17 +136,24 @@ jobs:
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 22.x
-          cache: pnpm
 
-      - name: Setup EAS
-        uses: expo/expo-github-action@eab7a230208c952974db8c3245cfd78402c7b385 # 9.0.0
+      - name: Restore package manager cache
+        id: pm-cache
+        uses: rnw-community/mobile-ci/actions/node-pm-cache@a9fac576ef1c8a9a565d03851f2624502a868214 # v4.4.1
         with:
-          eas-version: latest
-          packager: npm
-          token: ${{ secrets.EXPO_TOKEN }}
+          package-manager: pnpm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Save package manager cache
+        if: steps.pm-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        timeout-minutes: 10
+        continue-on-error: true
+        with:
+          path: ${{ steps.pm-cache.outputs.path }}
+          key: ${{ steps.pm-cache.outputs.cache-key }}
 
       - name: Build internal workspace packages
         run: pnpm exec turbo build --filter='@budgie/*'
@@ -164,9 +161,25 @@ jobs:
       - name: Assert AI is enabled
         run: bash .github/scripts/assert-ai-enabled.sh
 
-      - name: Publish update
+      - name: Export JavaScript bundles
         working-directory: packages/app
-        run: |
-          COMMIT_MSG=$(git log -1 --pretty=%s)
-          pnpm exec expo export --output-dir dist --dump-assetmap --platform ios --platform android
-          eas update --skip-bundler --input-dir dist --channel production --auto --message "${COMMIT_MSG}"
+        run: pnpm exec expo export --output-dir dist --dump-assetmap --platform ios --platform android
+
+      - name: Resolve runtime versions
+        id: runtime
+        uses: rnw-community/mobile-ci/actions/ota-runtime-version@a9fac576ef1c8a9a565d03851f2624502a868214 # v4.4.1
+        with:
+          app-dir: packages/app
+          eas-profile: production
+
+      - name: Publish update
+        uses: rnw-community/mobile-ci/actions/eas-update@a9fac576ef1c8a9a565d03851f2624502a868214 # v4.4.1
+        with:
+          app-dir: packages/app
+          channel: production
+          eas-profile: production
+          auto-create-channel: 'false'
+          input-dir: dist
+          ios-runtime-version: ${{ steps.runtime.outputs.ios-runtime-version }}
+          android-runtime-version: ${{ steps.runtime.outputs.android-runtime-version }}
+          expo-token: ${{ secrets.EXPO_TOKEN }}
