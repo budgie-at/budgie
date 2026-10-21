@@ -686,7 +686,6 @@
                             "packages/app/src/@generic/component/card/card.tsx",
                             "packages/app/src/@generic/component/circle-icon/circle-icon.tsx",
                             "packages/app/src/@generic/component/empty-state/empty-state.tsx",
-                            "packages/app/src/@generic/component/form-amount-input/form-amount-input.tsx",
                             "packages/app/src/@generic/component/selector-grid-content/selector-grid-content.tsx",
                             "packages/app/src/account/component/account-action-card/account-action-card.tsx",
                             "packages/app/src/ai/component/voice-review-footer/voice-review-footer.tsx",

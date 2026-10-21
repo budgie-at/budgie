@@ -1,6 +1,7 @@
+import { AmountField, AmountFieldText } from '@budgie/amount-input';
 import { cva } from 'class-variance-authority';
 import { ReactNode, RefObject, useEffect, useImperativeHandle, useRef } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import Animated, { FadeIn, FadeInDown, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
@@ -38,8 +39,6 @@ const textVariants = cva('text-center font-semibold', {
 const BOUNCE_SCALE = 1.04;
 const BOUNCE_SPRING = { damping: 12, mass: 0.8, stiffness: 200 };
 const RETURN_SPRING = { damping: 15, mass: 1, stiffness: 150 };
-const FONT_SIZE = 52;
-const fontSizeStyle = { fontSize: FONT_SIZE };
 
 const SECONDARY_ANIMATION_DELAY = 50;
 const SECONDARY_ANIMATION_DURATION = 200;
@@ -86,20 +85,16 @@ export const TransactionAmountDisplay = ({
 
     return (
         <Animated.View entering={FadeIn.duration(200)} className="flex-1 items-center justify-center">
-            <View className="items-center">
+            <View className="items-center self-stretch">
                 {isDefined(topContent) ? <View className="absolute bottom-full mb-sm items-center z-10">{topContent}</View> : null}
-                <Pressable onPress={onSecondaryAmountPress} disabled={!isDefined(onSecondaryAmountPress)}>
+                <Pressable className="self-stretch" onPress={onSecondaryAmountPress} disabled={!isDefined(onSecondaryAmountPress)}>
                     <Animated.View style={shakeStyle} className="w-full">
                         <Animated.View style={scaleStyle}>
-                            <Text
-                                className={textVariants({ variant })}
-                                style={fontSizeStyle}
-                                adjustsFontSizeToFit
-                                numberOfLines={1}
-                                testID={testID}
-                            >
-                                {fullDisplay}
-                            </Text>
+                            <AmountField fontSize={52}>
+                                <AmountFieldText className={textVariants({ variant })} testID={testID}>
+                                    {fullDisplay}
+                                </AmountFieldText>
+                            </AmountField>
                         </Animated.View>
                     </Animated.View>
                 </Pressable>
