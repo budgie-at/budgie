@@ -89,7 +89,11 @@ jobs:
               uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
               with:
                   node-version: 22.22.2
-                  cache: pnpm
+
+            - name: Restore package manager cache
+              uses: rnw-community/mobile-ci/actions/node-pm-cache@a9fac576ef1c8a9a565d03851f2624502a868214 # v4.4.1
+              with:
+                package-manager: pnpm
 
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
@@ -205,7 +209,11 @@ jobs:
               uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
               with:
                   node-version: 22.22.2
-                  cache: pnpm
+
+            - name: Restore package manager cache
+              uses: rnw-community/mobile-ci/actions/node-pm-cache@a9fac576ef1c8a9a565d03851f2624502a868214 # v4.4.1
+              with:
+                package-manager: pnpm
 
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
