@@ -2,17 +2,19 @@ import { AccountAssociationEnum, AccountWithSyncEntityInterface } from '@budgie/
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { ReactNode } from 'react';
-import { Text, View } from 'react-native';
+import { AccessibilityActionEvent, View } from 'react-native';
 
-import { OnEventFn, isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { EmptyFn, isDefined } from '@rnw-community/shared';
 
-import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { AccountSyncStateEnum } from '../../enum/account-sync-state.enum';
+import { useAccountCardMenu } from '../../hook/use-account-card-menu.hook';
 import { getAccountSyncState } from '../../utils/get-account-sync-state.util';
 import { AccountCardBalance } from '../account-card-balance/account-card-balance';
-import { AccountEditButton } from '../account-edit-button/account-edit-button';
+import { AccountCardMenu } from '../account-card-menu/account-card-menu';
+import { AccountCardTitle } from '../account-card-title/account-card-title';
 import { AccountSyncBadge } from '../account-sync-badge/account-sync-badge';
 
 import { AccountCardBaseSelector } from './account-card-base.selector';
@@ -20,21 +22,23 @@ import { AccountCardBaseSelector } from './account-card-base.selector';
 interface Props {
     readonly account: Pick<
         AccountWithSyncEntityInterface,
-        'id' | 'title' | 'icon' | 'iban' | AccountAssociationEnum.SYNC | AccountAssociationEnum.INSTRUMENT
+        'id' | 'title' | 'icon' | 'iban' | 'integrationId' | AccountAssociationEnum.SYNC | AccountAssociationEnum.INSTRUMENT
     >;
     readonly balance: number;
     readonly amountLabel?: string;
-    readonly onLongPress?: OnEventFn;
+    readonly onImport?: EmptyFn;
     readonly children?: ReactNode;
 }
 
-export const AccountCardBase = ({ account, balance, amountLabel, onLongPress, children }: Props) => {
-    const { id, title, icon, iban, sync, instrument } = account;
+export const AccountCardBase = ({ account, balance, amountLabel, onImport, children }: Props) => {
+    const { id, title, icon, iban, integrationId, sync, instrument } = account;
 
     const { t } = useLingui();
     const protectAmount = useProtectedAmountLabel();
+    const { cardRef, isMenuOpen, menuAnchor, openMenu, closeMenu } = useAccountCardMenu();
 
     const navigateToAccount = () => void router.push({ pathname: '/account/[id]/details', params: { id: String(id) } });
+    const navigateToEdit = () => void router.push({ pathname: '/account/[id]/update', params: { id: String(id) } });
 
     const syncState = getAccountSyncState(sync);
     const syncStateLabels: Record<AccountSyncStateEnum, string> = {
@@ -44,43 +48,52 @@ export const AccountCardBase = ({ account, balance, amountLabel, onLongPress, ch
         [AccountSyncStateEnum.FAILED]: t`Sync Failed`,
         [AccountSyncStateEnum.DISABLED]: t`Sync paused`
     };
-    const syncStateLabel = isDefined(syncState) ? `, ${syncStateLabels[syncState]}` : '';
-    const accessibilityLabel = `${title}, ${amountLabel ?? protectAmount(balance, instrument.symbol)}${syncStateLabel}`;
-    const metaLabel = isNotEmptyString(iban) ? `${instrument.code} · ••${iban.slice(-4)}` : instrument.code;
-    const syncBadge = isDefined(syncState) ? <AccountSyncBadge state={syncState} /> : null;
+    const syncStateLabel = isDefined(syncState) ? syncStateLabels[syncState] : null;
+    const accessibilityLabel = [title, amountLabel ?? protectAmount(balance, instrument.symbol), syncStateLabel]
+        .filter(isDefined)
+        .join(', ');
+    const accessibilityActions = [
+        ...(isDefined(onImport) ? [{ name: 'import', label: t`Import file`, onAction: onImport }] : []),
+        { name: 'edit', label: t`Edit account`, onAction: navigateToEdit }
+    ];
+    const handleAccessibilityAction = (event: AccessibilityActionEvent) =>
+        accessibilityActions.find(action => action.name === event.nativeEvent.actionName)?.onAction();
 
     return (
-        <Card
-            accessible
-            size="md"
-            testID={AccountCardBaseSelector.Card(title)}
-            accessibilityLabel={accessibilityLabel}
-            onPress={navigateToAccount}
-            onLongPress={onLongPress}
-            className="flex-1 gap-lg rounded-6xl active:scale-xs"
-        >
-            <View className="flex-row items-center justify-between">
-                <View>
-                    <CircleIcon size={30} iconSize={16} radius={10} icon={icon} variant="ghost" border={false} />
-                    {syncBadge}
+        <View ref={cardRef} collapsable={false} className="flex-1">
+            <HapticPressable
+                accessible
+                accessibilityRole="button"
+                testID={AccountCardBaseSelector.Card(title)}
+                accessibilityLabel={accessibilityLabel}
+                accessibilityActions={accessibilityActions}
+                onAccessibilityAction={handleAccessibilityAction}
+                onPress={navigateToAccount}
+                onLongPress={openMenu}
+                className="flex-1 gap-xs rounded-5xl border border-secondary-corner bg-primary-reverse p-xl active:scale-xs"
+            >
+                <View className="flex-row items-start gap-sm">
+                    <View className="min-w-0 flex-1">
+                        {children ?? <AccountCardBalance title={title} balance={balance} instrumentSymbol={instrument.symbol} />}
+                    </View>
+
+                    <View>
+                        <CircleIcon size={24} iconSize={14} radius={8} icon={icon} variant="ghost" border={false} />
+                        {isDefined(syncState) ? <AccountSyncBadge state={syncState} /> : null}
+                    </View>
                 </View>
 
-                <AccountEditButton id={id} />
-            </View>
+                <AccountCardTitle title={title} iban={iban} syncState={syncState} syncStateLabel={syncStateLabel} />
+            </HapticPressable>
 
-            {children ?? <AccountCardBalance title={title} balance={balance} instrumentSymbol={instrument.symbol} />}
-
-            <View className="mt-auto">
-                <View className="min-h-[36px] justify-end">
-                    <Text className="text-sm leading-[18px] text-primary" numberOfLines={2} ellipsizeMode="tail">
-                        {title}
-                    </Text>
-                </View>
-
-                <Text className="text-xs leading-[16px] tracking-wide text-secondary-foreground tabular-nums" numberOfLines={1}>
-                    {metaLabel}
-                </Text>
-            </View>
-        </Card>
+            <AccountCardMenu
+                accountId={id}
+                integrationId={integrationId}
+                anchor={menuAnchor}
+                isOpen={isMenuOpen}
+                onClose={closeMenu}
+                {...(isDefined(onImport) && { onImport })}
+            />
+        </View>
     );
 };

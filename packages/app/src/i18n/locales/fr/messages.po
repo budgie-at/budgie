@@ -830,6 +830,7 @@ msgstr "Banque"
 msgid "Bank account"
 msgstr "Compte bancaire"
 
+#: src/account/component/account-card-menu/account-card-menu.tsx
 #: src/account/component/bank-provider-section-header/bank-provider-section-header.tsx
 msgid "Bank integration settings"
 msgstr "Paramètres de l'intégration bancaire"
@@ -2041,7 +2042,8 @@ msgstr "Chacun devient un compte. Tu peux les renommer ou les supprimer plus tar
 msgid "Edit"
 msgstr "Modifier"
 
-#: src/account/component/account-edit-button/account-edit-button.tsx
+#: src/account/component/account-card-base/account-card-base.tsx
+#: src/account/component/account-card-menu/account-card-menu.tsx
 msgid "Edit account"
 msgstr "Modifier le compte"
 
@@ -2604,6 +2606,8 @@ msgstr "Importer Erste Bank"
 msgid "Import failed"
 msgstr "Échec de l'importation"
 
+#: src/account/component/account-card-base/account-card-base.tsx
+#: src/account/component/account-card-menu/account-card-menu.tsx
 #: src/sync/component/bank-integration-page/bank-integration-page.tsx
 msgid "Import file"
 msgstr "Importer un fichier"
