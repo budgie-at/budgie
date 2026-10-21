@@ -96,8 +96,6 @@ export class SyncRepository extends Context.Service<SyncRepository>()('@budgie/c
                             reconciledAt: null,
                             reconciledBalance: null,
                             reconciliationTransactionId: null,
-                            pendingReconciliationAt: null,
-                            pendingReconciliationBalance: null,
                             transactionCount: 0,
                             errorCount: 0,
                             lastError: null

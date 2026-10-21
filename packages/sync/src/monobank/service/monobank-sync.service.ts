@@ -149,9 +149,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
                     balanceAdjustmentTransactionId,
                     reconciledAt: null,
                     reconciledBalance: null,
-                    reconciliationTransactionId: null,
-                    pendingReconciliationAt: null,
-                    pendingReconciliationBalance: null
+                    reconciliationTransactionId: null
                 });
                 yield* accountBalanceIncrementalService.updateBalancesByAccountIds([sync.accountId]);
             },

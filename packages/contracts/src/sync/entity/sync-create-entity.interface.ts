@@ -22,7 +22,5 @@ export type SyncCreateEntityInterface = PartialByKeysType<
     | 'reconciledAt'
     | 'reconciledBalance'
     | 'reconciliationTransactionId'
-    | 'pendingReconciliationAt'
-    | 'pendingReconciliationBalance'
     | 'transactionCount'
 >;

@@ -1,7 +1,7 @@
 {
   "version": "7",
   "dialect": "sqlite",
-  "id": "0db0df1d-4e10-45f2-9b55-aca6de293de1",
+  "id": "924a9e03-61c7-4826-9e6f-3d41cec6501a",
   "prevIds": [
     "4f07a14e-0edd-43b4-9a67-2f5338cebffd"
   ],
@@ -2759,26 +2759,6 @@
       "default": null,
       "generated": null,
       "name": "reconciliation_transaction_id",
-      "entityType": "columns",
-      "table": "bank_syncs"
-    },
-    {
-      "type": "integer",
-      "notNull": false,
-      "autoincrement": false,
-      "default": null,
-      "generated": null,
-      "name": "pending_reconciliation_at",
-      "entityType": "columns",
-      "table": "bank_syncs"
-    },
-    {
-      "type": "integer",
-      "notNull": false,
-      "autoincrement": false,
-      "default": null,
-      "generated": null,
-      "name": "pending_reconciliation_balance",
       "entityType": "columns",
       "table": "bank_syncs"
     },

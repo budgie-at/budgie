@@ -38,8 +38,6 @@ export const SyncEntityTable = sqliteTable(
         reconciledAt: int('reconciled_at', { mode: 'timestamp' }),
         reconciledBalance: int('reconciled_balance', { mode: 'number' }),
         reconciliationTransactionId: int('reconciliation_transaction_id', { mode: 'number' }),
-        pendingReconciliationAt: int('pending_reconciliation_at', { mode: 'timestamp' }),
-        pendingReconciliationBalance: int('pending_reconciliation_balance', { mode: 'number' }),
         transactionCount: int('transaction_count', { mode: 'number' }).default(0).notNull(),
         errorCount: int('error_count', { mode: 'number' }).default(0).notNull(),
         lastError: text('last_error'),

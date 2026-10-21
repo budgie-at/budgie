@@ -8,7 +8,7 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
-import { MonobankSyncService, ResyncService, SyncBalanceReconciliationService, TransferConsolidationService } from '@budgie/sync';
+import { MonobankSyncService, ResyncService, TransferConsolidationService } from '@budgie/sync';
 import { afterEach, describe, expect, it, vi } from '@effect/vitest';
 import { and, eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
@@ -88,7 +88,7 @@ describe('monobank/balance-reconciliation', () => {
             ]);
 
             yield* expectSmallDriftApplied(account.id);
-            expect(yield* fetchSync(account.id)).toMatchObject({ reconciledBalance: toMicroUnits(-20_050), pendingReconciliationAt: null });
+            expect(yield* fetchSync(account.id)).toMatchObject({ reconciledBalance: toMicroUnits(-20_050) });
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -105,47 +105,19 @@ describe('monobank/balance-reconciliation', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('surfaces a missing opening above the threshold for approval and applies it once approved', () =>
+    it.effect('applies a large missing opening automatically after the forward sync catches up', () =>
         Effect.gen(function* () {
-            const syncBalanceReconciliationService = yield* SyncBalanceReconciliationService;
             const account = yield* seedForwardAccount('mono-missing-opening');
 
             yield* syncWithBank(buildMonobank.account({ id: 'mono-missing-opening', balance: 80_000 }), [
                 expense('opening-1', 20_000, 1, 80_000)
             ]);
 
-            expect(yield* fetchAdjustments(account.id)).toStrictEqual([]);
-            expect(yield* fetchAccountBalance(account.id)).toBe(toMicroUnits(-20_000));
-            expect(yield* syncBalanceReconciliationService.getPendingReview(account.id)).toMatchObject({
-                delta: toMicroUnits(100_000)
-            });
-
-            yield* syncBalanceReconciliationService.approve(account.id);
-
             expect(yield* fetchAdjustments(account.id)).toStrictEqual([
                 { amount: toMicroUnits(100_000), type: TransactionEntryTypeEnum.DEBIT }
             ]);
             expect(yield* fetchAccountBalance(account.id)).toBe(toMicroUnits(80_000));
-            expect(yield* syncBalanceReconciliationService.getPendingReview(account.id)).toBeNull();
-        }).pipe(Effect.provide(TestLayer))
-    );
-
-    it.effect('points the review at the first statement item where the bank and the ledger diverged', () =>
-        Effect.gen(function* () {
-            const syncBalanceReconciliationService = yield* SyncBalanceReconciliationService;
-            const account = yield* seedForwardAccount('mono-drift-start');
-            const divergedItem = expense('start-2', 5_000, 2, 4_000);
-
-            yield* syncWithBank(buildMonobank.account({ id: 'mono-drift-start', balance: 1_000 }), [
-                expense('start-3', 3_000, 1, 1_000),
-                divergedItem,
-                buildMonobank.transaction({ id: 'start-1', amount: 10_000, hold: false, time: hoursAgo(3), balance: 10_000 })
-            ]);
-
-            expect(yield* syncBalanceReconciliationService.getPendingReview(account.id)).toStrictEqual({
-                delta: toMicroUnits(-1_000),
-                driftStartAt: new Date(divergedItem.time * MS_PER_SECOND)
-            });
+            expect(yield* fetchSync(account.id)).toMatchObject({ reconciledBalance: toMicroUnits(80_000) });
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -159,7 +131,7 @@ describe('monobank/balance-reconciliation', () => {
 
             expect(yield* fetchAdjustments(account.id)).toStrictEqual([]);
             expect(yield* fetchAccountBalance(account.id)).toBe(toMicroUnits(20_000));
-            expect(yield* fetchSync(account.id)).toMatchObject({ reconciledBalance: toMicroUnits(20_000), pendingReconciliationAt: null });
+            expect(yield* fetchSync(account.id)).toMatchObject({ reconciledBalance: toMicroUnits(20_000) });
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -259,7 +231,7 @@ describe('monobank/balance-reconciliation', () => {
             monobankStub.statement([expense('consolidation-1', 20_000, 1, -20_050)]);
             yield* monobankSyncService.sync(Date.now() + MS_PER_SECOND);
 
-            expect(yield* fetchSync(account.id)).toMatchObject({ reconciledAt: null, pendingReconciliationAt: null });
+            expect(yield* fetchSync(account.id)).toMatchObject({ reconciledAt: null });
             expect(yield* fetchAdjustments(account.id)).toStrictEqual([]);
         }).pipe(Effect.provide(TestLayer))
     );

@@ -14,7 +14,6 @@ import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { AccountSyncCard } from '../../../sync/component/account-sync-card/account-sync-card';
-import { BalanceReconciliationReview } from '../../../sync/component/balance-reconciliation-review/balance-reconciliation-review';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { ACCOUNT_ICON } from '../../constant/account-icon.constant';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
@@ -72,7 +71,6 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
                     </View>
                 </View>
             </FormItem>
-            {isSyncedAccount ? <BalanceReconciliationReview accountId={account.id} instrumentSymbol={stickyInstrument.symbol} /> : null}
             {isSyncedAccount ? <AccountSyncCard accountId={account.id} /> : null}
             <IncludeInNetWorthField control={control} />
         </UpdateAccountScreen>
