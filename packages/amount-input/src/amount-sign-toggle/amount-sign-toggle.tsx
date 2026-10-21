@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import type { AmountSignTogglePropsInterface } from '../interface/amount-sign-toggle-props.interface';
@@ -13,8 +13,7 @@ const styles = StyleSheet.create({
         backfaceVisibility: 'hidden'
     },
     backFace: {
-        ...StyleSheet.absoluteFill,
-        transform: [{ rotateY: '180deg' }]
+        ...StyleSheet.absoluteFill
     }
 });
 
@@ -24,18 +23,17 @@ const flipTransition = {
     transitionTimingFunction: 'ease-out'
 } as const;
 
+const getFaceStyle = (rotation: string) => [flipTransition, { transform: [{ perspective: FLIP_PERSPECTIVE }, { rotateY: rotation }] }];
+
 export const AmountSignToggle = ({ isNegative, positiveIcon, negativeIcon, ...pressableProps }: AmountSignTogglePropsInterface) => {
-    const rotation = isNegative ? '180deg' : '0deg';
-    const flipStyle = [flipTransition, { transform: [{ perspective: FLIP_PERSPECTIVE }, { rotateY: rotation }] }];
-    const backFaceStyle = [styles.face, styles.backFace];
+    const frontFaceStyle = [styles.face, ...getFaceStyle(isNegative ? '180deg' : '0deg')];
+    const backFaceStyle = [styles.face, styles.backFace, ...getFaceStyle(isNegative ? '0deg' : '-180deg')];
     const accessibilityState = { checked: isNegative };
 
     return (
         <Pressable accessibilityRole="switch" accessibilityState={accessibilityState} {...pressableProps}>
-            <Animated.View style={flipStyle}>
-                <View style={styles.face}>{positiveIcon}</View>
-                <View style={backFaceStyle}>{negativeIcon}</View>
-            </Animated.View>
+            <Animated.View style={frontFaceStyle}>{positiveIcon}</Animated.View>
+            <Animated.View style={backFaceStyle}>{negativeIcon}</Animated.View>
         </Pressable>
     );
 };
