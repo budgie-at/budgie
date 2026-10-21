@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.112.0](https://github.com/budgie-at/budgie/compare/v6.111.2...v6.112.0) (2026-10-21)
+
+### Bug Fixes
+
+* **amount-input:** harden fitting, symbol minimum size and editable text ([0a87b53](https://github.com/budgie-at/budgie/commit/0a87b538de7fbe56f54b149772578bfeaf7d6feb))
+* **amount-input:** rotate each sign toggle face so the minus face shows ([317280c](https://github.com/budgie-at/budgie/commit/317280c42c8eb39b02c92ae556da80c42dd6aaae))
+* **app:** address tile review findings ([7852fc0](https://github.com/budgie-at/budgie/commit/7852fc09eaa4ad421d01e3c89dcfcffa854730df))
+* **app:** hide content scrolling under the tab buttons ([e7b04ed](https://github.com/budgie-at/budgie/commit/e7b04ed32bb254302a3fe692f51ed6c03f74ab54))
+* **app:** keep the crypto suffix symbol at least 22px ([4788ba7](https://github.com/budgie-at/budgie/commit/4788ba726ee6a416a20e61bae9c3fb4dfe9d5cd7))
+* **app:** split tile balance cents by decimal places, not the separator ([8ed6127](https://github.com/budgie-at/budgie/commit/8ed612725e13f63aae05edf07005f3a831795662))
+
+### Features
+
+* **amount-input:** add auto-fitting amount input package ([455d477](https://github.com/budgie-at/budgie/commit/455d47733d9d6f28f007d0e9f3f6bca3b7fe5b06))
+* **app:** redesign Home account tiles balance first ([6df7258](https://github.com/budgie-at/budgie/commit/6df72580dc9ed94477c1763f39721a5ff9a663bb))
+* **app:** show app lock state as an icon beside the net worth ([8c830c2](https://github.com/budgie-at/budgie/commit/8c830c2cad854bbacf20a9f5c88ffb2a17b736c8))
+* **app:** use a quiet ellipsis for the account settings button ([8db6322](https://github.com/budgie-at/budgie/commit/8db632248c0bd3de73a37d92c73b7e611b70f6ad))
+
+
 ## [6.111.2](https://github.com/budgie-at/budgie/compare/v6.111.1...v6.111.2) (2026-10-21)
 
 ### Bug Fixes

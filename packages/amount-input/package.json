@@ -1,6 +1,6 @@
 {
     "name": "@budgie/amount-input",
-    "version": "6.110.0",
+    "version": "6.112.0",
     "private": true,
     "description": "Auto-fitting amount input and display with a sign toggle for React Native",
     "keywords": [
