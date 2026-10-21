@@ -11,7 +11,7 @@ interface Props {
 
 export const ProofBand = ({ locale }: Props) => (
     <section className="w-full border-y border-border/60 bg-muted/30 py-8 md:py-20" id="proof">
-        <div className="container px-4 md:px-6 max-w-7xl">
+        <div className="container">
             <h2 className="max-w-2xl text-2xl md:text-4xl font-bold tracking-tight text-balance">
                 <Trans>Why offline-first and source-available matter</Trans>
             </h2>
@@ -22,7 +22,7 @@ export const ProofBand = ({ locale }: Props) => (
                         <Trans>There is no server to phone home to</Trans>
                     </h3>
 
-                    <p className="text-sm md:text-base leading-relaxed text-muted-foreground text-pretty">
+                    <p className="measure text-sm md:text-base leading-relaxed text-muted-foreground text-pretty">
                         <Trans>
                             Every transaction, budget and chart is computed on your phone. There is no account to create, so there is
                             nothing to sign into, nothing to sync and nothing to leak. Turn the radio off and the app behaves exactly the
@@ -40,7 +40,7 @@ export const ProofBand = ({ locale }: Props) => (
                         <Trans>You do not have to take our word for it</Trans>
                     </h3>
 
-                    <p className="text-sm md:text-base leading-relaxed text-muted-foreground text-pretty">
+                    <p className="measure text-sm md:text-base leading-relaxed text-muted-foreground text-pretty">
                         <Trans>
                             The application source is published under the O&apos;SAASY license, so anyone can read the code that touches
                             money, check that nothing is uploaded, and open an issue when it is not.

@@ -5,8 +5,8 @@ import { FaqSectionItem } from '../faq-section-item/faq-section-item';
 
 export const FaqSection = () => (
     <section className="w-full py-8 md:py-20" id="faq">
-        <div className="container px-4 md:px-6 max-w-7xl">
-            <div className="max-w-2xl mb-8 md:mb-12">
+        <div className="container section-split">
+            <div className="section-split-head">
                 <h2 className="text-2xl md:text-4xl font-bold tracking-tight text-balance">
                     <Trans>Offline expense tracker FAQ</Trans>
                 </h2>
@@ -16,7 +16,7 @@ export const FaqSection = () => (
                 </p>
             </div>
 
-            <div className="max-w-3xl">
+            <div>
                 <FaqSectionAccordion>
                     <FaqSectionItem
                         answer={

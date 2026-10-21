@@ -7,7 +7,7 @@ export const TrustBanner = () => (
             <Trans>What Budgie guarantees</Trans>
         </h2>
 
-        <div className="container px-4 md:px-6 max-w-7xl">
+        <div className="container">
             <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm md:gap-x-12">
                 <p className="flex items-center gap-2">
                     <Shield aria-hidden="true" className="size-4 text-green-600 dark:text-green-500" />
