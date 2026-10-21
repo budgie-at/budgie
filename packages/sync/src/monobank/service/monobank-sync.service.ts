@@ -14,7 +14,7 @@ import {
     UserIconNameEnum,
     convertToMicroUnits
 } from '@budgie/contracts';
-import { AccountBalanceIncrementalService, TransactionService } from '@budgie/ledger';
+import { AccountBalanceIncrementalService, BalanceAdjustmentService, TransactionService } from '@budgie/ledger';
 import { RuleEngineService } from '@budgie/rules';
 import { addMonths } from 'date-fns/addMonths';
 import { addSeconds } from 'date-fns/addSeconds';
@@ -34,6 +34,7 @@ import { SyncAccountTypeEnum } from '../../core/enum/sync-account-type.enum';
 import { SyncHistoryDepthEnum } from '../../core/enum/sync-history-depth.enum';
 import { pollingSyncDependenciesLayer } from '../../core/layer/polling-sync-dependencies.layer';
 import { SyncWorkload } from '../../core/port/sync-workload.port';
+import { SyncBalanceReconciliationService } from '../../core/service/sync-balance-reconciliation.service';
 import { SyncIntegrationTokenService } from '../../core/service/sync-integration-token.service';
 import { SyncOperationMetadataService } from '../../core/service/sync-operation-metadata.service';
 import { TransferConsolidationService } from '../../core/service/transfer-consolidation.service';
@@ -61,6 +62,8 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
         const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
         const ruleEngineService = yield* RuleEngineService;
         const transactionService = yield* TransactionService;
+        const balanceAdjustmentService = yield* BalanceAdjustmentService;
+        const syncBalanceReconciliationService = yield* SyncBalanceReconciliationService;
         const syncIntegrationTokenService = yield* SyncIntegrationTokenService;
         const syncWorkload = yield* SyncWorkload;
         const syncOperationMetadataService = yield* SyncOperationMetadataService;
@@ -74,14 +77,22 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
 
         const mapBankTransactions = (bankTransactions: SyncTransactionInterface[], accountId: number) =>
             syncOperationMetadataService.applyToInputs(
-                bankTransactions.map(bankTransaction =>
-                    mapBankTransactionToCreateInput(
+                bankTransactions.map(bankTransaction => {
+                    const input = mapBankTransactionToCreateInput(
                         bankTransaction,
                         accountId,
                         mccCategoryLookupMap.get(String(bankTransaction.mcc)) ?? null,
                         provider
-                    )
-                ),
+                    );
+                    const providerBalance = convertToMicroUnits(bankTransaction.balance);
+
+                    return {
+                        ...input,
+                        entries: input.entries.map(entry =>
+                            entry.externalId === bankTransaction.id ? { ...entry, providerBalance } : entry
+                        )
+                    };
+                }),
                 bankTransactions
             );
 
@@ -120,23 +131,37 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
                 const oldestTransactionAt = yield* transactionService.getEarliestTransactionTimeByAccountId(sync.accountId);
                 const openingBalanceAt = isDefined(oldestTransactionAt) ? subSeconds(oldestTransactionAt, 1) : setupAt;
 
-                if (isDefined(sync.balanceAdjustmentTransactionId)) {
-                    yield* transactionRepository.deleteById(sync.balanceAdjustmentTransactionId);
+                const currentSync = (yield* syncRepository.getById(sync.id)) ?? sync;
+
+                for (const transactionId of [currentSync.balanceAdjustmentTransactionId, currentSync.reconciliationTransactionId].filter(
+                    isDefined
+                )) {
+                    yield* transactionRepository.deleteById(transactionId);
                 }
 
                 const delta = setupBalance - (yield* accountBalanceRepository.getLedgerBalanceUntil(sync.accountId, setupAt));
                 const balanceAdjustmentTransactionId =
-                    delta === 0 ? null : yield* transactionService.createBalanceAdjustment(sync.accountId, delta, openingBalanceAt);
+                    delta === 0 ? null : yield* balanceAdjustmentService.create(sync.accountId, delta, openingBalanceAt);
 
                 yield* syncRepository.update(sync.id, {
                     ...resolveSyncProgressUpdate(sync, result),
                     setupBalance: null,
-                    balanceAdjustmentTransactionId
+                    balanceAdjustmentTransactionId,
+                    reconciledAt: null,
+                    reconciledBalance: null,
+                    reconciliationTransactionId: null
                 });
                 yield* accountBalanceIncrementalService.updateBalancesByAccountIds([sync.accountId]);
             },
             effect => Db.transaction(effect)
         );
+
+        const updateProgressAndReconcile = Effect.fnUntraced(function* (sync: SyncEntityInterface, result: SyncBatchResultInterface) {
+            yield* syncRepository.update(sync.id, resolveSyncProgressUpdate(sync, result));
+            if (sync.mode === SyncModeEnum.FORWARD && result.completed && isDefined(result.balanceSnapshot)) {
+                yield* syncBalanceReconciliationService.reconcile(sync.accountId, result.balanceSnapshot);
+            }
+        });
 
         const reconcileChangedTransactions = Effect.fnUntraced(function* (
             changedTransactions: Array<Pick<TransactionEntityInterface, 'id' | 'operatedAt'>>
@@ -194,7 +219,22 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
 
         const getNextTimeFromTransaction = (transaction: SyncTransactionInterface): Date => addSeconds(fromUnixTime(transaction.time), -1);
 
+        const fetchBalanceSnapshot = (client: MonobankClient, accountId: string) => {
+            const at = fromUnixTime(getUnixTime(new Date()));
+
+            return Effect.all([client.getAccounts(), client.getJars()]).pipe(
+                Effect.map(([accounts, jars]) => {
+                    const bankAccount = [...accounts, ...jars].find(item => item.id === accountId);
+
+                    return isDefined(bankAccount) ? { at, balance: getOwnBalance(bankAccount) } : null;
+                }),
+                Effect.orElseSucceed(() => null)
+            );
+        };
+
         const syncTransactionsForward = Effect.fnUntraced(function* (client: MonobankClient, accountId: string, from: Date) {
+            const balanceSnapshot =
+                addSeconds(from, MONOBANK_MAX_PERIOD_SECONDS) >= new Date() ? yield* fetchBalanceSnapshot(client, accountId) : null;
             const now = new Date();
             const to = min([now, addSeconds(from, MONOBANK_MAX_PERIOD_SECONDS)]);
             const transactions = yield* client.getTransactions(accountId, getUnixTime(from), getUnixTime(to));
@@ -204,7 +244,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
                 return { nextFrom: getNextTimeFromTransaction(oldestTransaction), nextTo: to, transactions, completed: false };
             }
 
-            return { nextFrom: to, nextTo: to, transactions, completed: to >= now };
+            return { nextFrom: to, nextTo: to, transactions, completed: to >= now, balanceSnapshot };
         });
 
         const syncTransactionsBackward = Effect.fnUntraced(function* (
@@ -286,7 +326,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
             applyProgressUpdate: (sync, result) =>
                 sync.mode === SyncModeEnum.BACKWARD && result.completed && isDefined(sync.setupBalance)
                     ? completeBackwardHistory(sync, sync.setupBalance, result)
-                    : Effect.asVoid(syncRepository.update(sync.id, resolveSyncProgressUpdate(sync, result)))
+                    : updateProgressAndReconcile(sync, result)
         });
 
         return {
@@ -333,6 +373,8 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
             MccCategoryRepository.layer,
             SettingsRepository.layer,
             AccountBalanceIncrementalService.layer,
+            BalanceAdjustmentService.layer,
+            SyncBalanceReconciliationService.layer,
             RuleEngineService.layer,
             TransferConsolidationService.layer,
             SyncOperationMetadataService.layer

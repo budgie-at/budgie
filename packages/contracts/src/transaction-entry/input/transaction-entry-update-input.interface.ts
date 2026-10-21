@@ -22,6 +22,7 @@ export type TransactionEntryUpdateInputInterface = Partial<
         | 'operationInstrumentId'
         | 'operationAmount'
         | 'toIban'
+        | 'providerBalance'
         | 'originalTransactionId'
     >
 >;

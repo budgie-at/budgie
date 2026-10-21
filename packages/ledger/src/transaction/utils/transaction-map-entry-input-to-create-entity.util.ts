@@ -27,5 +27,6 @@ export const transactionMapEntryInputToCreateEntity = (
     operationInstrumentId: entry.operationInstrumentId ?? null,
     operationAmount: entry.operationAmount ?? null,
     toIban: entry.toIban ?? null,
+    providerBalance: entry.providerBalance ?? null,
     originalTransactionId: null
 });

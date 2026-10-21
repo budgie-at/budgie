@@ -1,4 +1,4 @@
-import { and, asc, eq, getTableColumns, isNull, lt, or } from 'drizzle-orm';
+import { and, asc, eq, getTableColumns, inArray, isNotNull, isNull, lt, or } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -93,6 +93,9 @@ export class SyncRepository extends Context.Service<SyncRepository>()('@budgie/c
                             forwardSyncedAt: null,
                             backwardBatchAt: null,
                             setupBalance,
+                            reconciledAt: null,
+                            reconciledBalance: null,
+                            reconciliationTransactionId: null,
                             transactionCount: 0,
                             errorCount: 0,
                             lastError: null
@@ -133,6 +136,20 @@ export class SyncRepository extends Context.Service<SyncRepository>()('@budgie/c
                     db.query.SyncEntityTable.findMany({
                         where: { provider, deletedAt: { isNull: true } }
                     })
+                ),
+            findReconciledByAccountIds: (accountIds: number[]) =>
+                Db.query(db =>
+                    db
+                        .select()
+                        .from(SyncEntityTable)
+                        .where(
+                            and(
+                                inArray(SyncEntityTable.accountId, accountIds),
+                                eq(SyncEntityTable.mode, SyncModeEnum.FORWARD),
+                                isNotNull(SyncEntityTable.reconciledAt),
+                                isNull(SyncEntityTable.deletedAt)
+                            )
+                        )
                 ),
             getEnabledByProvider: (provider: ExternalSourceEnum) =>
                 Db.query(db => selectWithActiveAccount(db).where(and(...buildEnabledProviderConditions(provider)))),

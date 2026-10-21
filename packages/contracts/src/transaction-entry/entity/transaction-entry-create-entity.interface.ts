@@ -17,5 +17,6 @@ export type TransactionEntryCreateEntityInterface = PartialByKeysType<
     | 'operationInstrumentId'
     | 'operationAmount'
     | 'toIban'
+    | 'providerBalance'
     | 'originalTransactionId'
 >;

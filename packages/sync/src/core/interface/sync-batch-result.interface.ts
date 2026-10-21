@@ -1,3 +1,4 @@
+import type { SyncBalanceSnapshotInterface } from './sync-balance-snapshot.interface';
 import type { SyncTransactionInterface } from './sync-transaction.interface';
 
 export interface SyncBatchResultInterface {
@@ -6,4 +7,5 @@ export interface SyncBatchResultInterface {
     readonly nextTo: Date;
     readonly nextFrom: Date;
     readonly completed: boolean;
+    readonly balanceSnapshot?: SyncBalanceSnapshotInterface | null;
 }
