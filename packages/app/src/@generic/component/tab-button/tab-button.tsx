@@ -54,6 +54,7 @@ export const TabButton = ({ children, isFocused = false, onPress, icon, navigate
             accessibilityLabel={testID}
             accessibilityRole="button"
             accessible
+            className="rounded-full bg-primary-reverse"
             collapsable={false}
             hitSlop={12}
             nativeID={testID}

@@ -1,28 +1,23 @@
-import { AccountTypeEnum, AccountWithSyncEntityInterface, SyncEntityInterface } from '@budgie/contracts';
+import { AccountTypeEnum, AccountWithSyncEntityInterface } from '@budgie/contracts';
 
 import { AccountCardBase } from '../account-card-base/account-card-base';
 import { CryptoAccountCard } from '../crypto-account-card/crypto-account-card';
 import { SyncAccountCard } from '../sync-account-card/sync-account-card';
 
-interface Props extends Pick<AccountWithSyncEntityInterface, 'id' | 'title' | 'type' | 'icon' | 'externalId' | 'targetBalance'> {
+interface Props {
+    readonly account: AccountWithSyncEntityInterface;
     readonly balance: number;
-    readonly sync: SyncEntityInterface | null;
-    readonly className?: string;
-    readonly instrumentId: number;
-    readonly instrumentCode: string;
-    readonly instrumentSymbol: string;
+    readonly type: AccountTypeEnum;
 }
 
-export const AccountCard = (props: Props) => {
-    const { type } = props;
-
+export const AccountCard = ({ account, balance, type }: Props) => {
     if (type === AccountTypeEnum.BANK_SYNC) {
-        return <SyncAccountCard {...props} />;
+        return <SyncAccountCard account={account} balance={balance} />;
     }
 
     if (type === AccountTypeEnum.CRYPTO || type === AccountTypeEnum.CRYPTO_SYNC) {
-        return <CryptoAccountCard {...props} />;
+        return <CryptoAccountCard account={account} balance={balance} />;
     }
 
-    return <AccountCardBase {...props} />;
+    return <AccountCardBase account={account} balance={balance} />;
 };

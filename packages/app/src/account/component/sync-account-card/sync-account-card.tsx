@@ -1,4 +1,4 @@
-import { AccountWithSyncEntityInterface, SyncEntityInterface } from '@budgie/contracts';
+import { AccountWithSyncEntityInterface } from '@budgie/contracts';
 import { ImpactFeedbackStyle } from 'expo-haptics';
 
 import { emptyFn, isDefined } from '@rnw-community/shared';
@@ -7,17 +7,14 @@ import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { quickImportConfigMap } from '../../../sync/constant/quick-import-config-map.constant';
 import { useQuickImport } from '../../../sync/hook/use-quick-import.hook';
 import { AccountCardBase } from '../account-card-base/account-card-base';
-import { SyncStatusDot } from '../sync-status-dot/sync-status-dot';
 
-interface Props extends Pick<AccountWithSyncEntityInterface, 'id' | 'title' | 'icon'> {
+interface Props {
+    readonly account: AccountWithSyncEntityInterface;
     readonly balance: number;
-    readonly sync: SyncEntityInterface | null;
-    readonly className?: string;
-    readonly instrumentSymbol: string;
 }
 
-export const SyncAccountCard = (props: Props) => {
-    const { id, title, icon, balance, className, instrumentSymbol, sync } = props;
+export const SyncAccountCard = ({ account, balance }: Props) => {
+    const { sync } = account;
 
     const [, hapticImpact] = useVibration();
 
@@ -31,16 +28,5 @@ export const SyncAccountCard = (props: Props) => {
 
     const longPressHandler = isDefined(quickImportConfig) ? handleLongPress : emptyFn;
 
-    return (
-        <AccountCardBase
-            id={id}
-            title={title}
-            icon={icon}
-            balance={balance}
-            instrumentSymbol={instrumentSymbol}
-            className={className}
-            onLongPress={longPressHandler}
-            bottomRight={<SyncStatusDot sync={sync} />}
-        />
-    );
+    return <AccountCardBase account={account} balance={balance} onLongPress={longPressHandler} />;
 };

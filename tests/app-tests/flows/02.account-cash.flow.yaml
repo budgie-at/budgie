@@ -32,3 +32,27 @@ appId: ${APP_ID}
 
 - assertVisible:
     id: 'AccountCard.E2E Savings Account'
+
+- runFlow:
+    file: subflows/accounts/open-account-settings.flow.yaml
+    env:
+      ACCOUNT_NAME: 'E2E Savings Account'
+
+- runFlow:
+    file: subflows/accounts/update-account-balance.flow.yaml
+    env:
+      NEW_BALANCE: '123456789'
+
+- runFlow:
+    file: subflows/accounts/open-account-settings.flow.yaml
+    env:
+      ACCOUNT_NAME: 'E2E Savings Account'
+
+- assertVisible:
+    id: 'CreateAccount.Amount'
+    text: '123,456,789(\.00)?'
+
+- tapOn:
+    id: 'PageHeader.BackButton'
+
+- runFlow: subflows/accounts/exit-account-details-to-home.flow.yaml

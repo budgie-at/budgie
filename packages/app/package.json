@@ -25,6 +25,7 @@
     },
     "dependencies": {
         "@budgie/ai": "workspace:^",
+        "@budgie/amount-input": "workspace:*",
         "@budgie/budget": "workspace:*",
         "@budgie/categorization": "workspace:*",
         "@budgie/consolidation": "workspace:*",

@@ -16,7 +16,7 @@ export const AccountSectionHeaderFrame = ({ total, children }: Props) => {
     const formattedTotal = formatDigits(total, defaultInstrument.symbol);
 
     return (
-        <View className="bg-primary-reverse py-md -mx-5xl px-5xl flex-row justify-between items-center">
+        <View className="bg-primary-reverse py-md -mx-3xl px-3xl flex-row justify-between items-center">
             {children}
             <Text className="text-xs text-secondary-foreground">{formattedTotal}</Text>
         </View>

@@ -1,3 +1,4 @@
+import { AmountField, AmountFieldText } from '@budgie/amount-input';
 import { TransactionConsolidationTypeEnum, TransactionTypeEnum, UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { Text, View } from 'react-native';
 
@@ -83,10 +84,12 @@ export const TransactionInfoHero = ({ transaction, matchingRuleIds, onOpenRefund
                 className="rounded-5xl"
             />
 
-            <View className="items-center gap-y-sm">
-                <Text className={cn('text-5xl font-semibold text-center', FOREGROUND_COLOR_PALETTE[variant])} selectable>
-                    {formattedAmount}
-                </Text>
+            <View className="items-center gap-y-sm self-stretch">
+                <AmountField fontSize={32} className="self-stretch">
+                    <AmountFieldText className={cn('font-semibold text-center', FOREGROUND_COLOR_PALETTE[variant])} selectable>
+                        {formattedAmount}
+                    </AmountFieldText>
+                </AmountField>
                 {isNotEmptyString(secondaryAmount) ? (
                     <View className="flex-row items-center gap-x-xs">
                         <TransactionMetaPill icon={UserIconNameEnum.ArrowRight} label={secondaryAmount} />

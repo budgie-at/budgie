@@ -7,7 +7,7 @@ import { CollapsibleHeader } from '@rnw-community/react-native-collapsible-heade
 import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { HomePageSelector } from '../../../app/(tabs)/home-page.selector';
-import { SecurityStatusChip } from '../../../auth/components/security-status-chip/security-status-chip';
+import { SecurityLockButton } from '../../../auth/components/security-lock-button/security-lock-button';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { RunwayPill } from '../../../runway/component/runway-pill/runway-pill';
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -27,7 +27,8 @@ interface Props {
 const HEADER_COLLAPSED_HEIGHT = 40;
 const HEADER_EXPANDED_HEIGHT = 156;
 const SCROLL_THRESHOLD = 100;
-const EXPANDED_CONTENT_HORIZONTAL_PADDING = 40;
+const EXPANDED_CONTENT_HORIZONTAL_PADDING = 32;
+const LOCK_BUTTON_RESERVED_WIDTH = 68;
 
 export const NetWorthCollapsibleHeader = ({ netWorth, fiatTotal, cryptoTotal, fiatCount, cryptoCount }: Props) => {
     const { defaultInstrument } = useSettingsContext();
@@ -42,10 +43,10 @@ export const NetWorthCollapsibleHeader = ({ netWorth, fiatTotal, cryptoTotal, fi
     const formattedNetWorth = formatDigits(netWorth, defaultInstrument.symbol);
     const formattedNetWorthValue = formatDigits(netWorth);
     const netWorthValueTestID = HomePageSelector.NetWorthValue(formattedNetWorthValue);
-    const availableTickerWidth = Math.max(expandedHeaderWidth - EXPANDED_CONTENT_HORIZONTAL_PADDING, 0);
+    const availableTickerWidth = Math.max(expandedHeaderWidth - EXPANDED_CONTENT_HORIZONTAL_PADDING - LOCK_BUTTON_RESERVED_WIDTH, 0);
 
     const expandedContent = (
-        <View className="flex-1 items-center justify-center px-5xl" onLayout={handleExpandedHeaderLayout}>
+        <View className="flex-1 items-center justify-center px-3xl" onLayout={handleExpandedHeaderLayout}>
             <Text className="text-xs uppercase text-secondary-foreground mb-md">
                 <Trans>Total Balance</Trans>
             </Text>
@@ -56,14 +57,13 @@ export const NetWorthCollapsibleHeader = ({ netWorth, fiatTotal, cryptoTotal, fi
                     maxFontSize={60}
                     instrumentSymbol={defaultInstrument.symbol}
                     availableWidth={availableTickerWidth}
+                    accessory={<SecurityLockButton />}
                 >
                     {netWorth}
                 </ProtectedMoney>
             </View>
 
             <View className="mt-lg flex-row flex-wrap items-center justify-center gap-sm">
-                <SecurityStatusChip />
-
                 <NetWorthAssetChips fiatTotal={fiatTotal} cryptoTotal={cryptoTotal} fiatCount={fiatCount} cryptoCount={cryptoCount} />
 
                 {isRunwayPillEnabled ? <RunwayPill /> : null}
@@ -72,7 +72,7 @@ export const NetWorthCollapsibleHeader = ({ netWorth, fiatTotal, cryptoTotal, fi
     );
 
     const collapsedContent = (
-        <View className="flex-1 flex-row items-center justify-between px-5xl">
+        <View className="flex-1 flex-row items-center justify-between px-3xl">
             <Text className="text-xs uppercase text-secondary-foreground">
                 <Trans>Total Balance</Trans>
             </Text>

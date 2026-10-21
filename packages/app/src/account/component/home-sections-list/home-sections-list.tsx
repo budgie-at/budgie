@@ -21,7 +21,7 @@ import type { ReactElement } from 'react';
 type HomeSectionsListItem = AccountRowInterface | CryptoCurrencyGroupInterface | AccountWithSyncEntityInterface;
 
 const AnimatedSectionList = Animated.createAnimatedComponent(SectionList<HomeSectionsListItem, HomeSectionInterface>);
-const LIST_HORIZONTAL_PADDING = 20;
+const LIST_HORIZONTAL_PADDING = 16;
 
 interface Props {
     readonly sections: HomeSectionInterface[];

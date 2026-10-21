@@ -1,28 +1,25 @@
-import { AccountEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { AccountEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
+import { View } from 'react-native';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/component/icon/icon';
-import { cn } from '../../../@generic/utils/cn.util';
 
-interface Props extends Pick<AccountEntityInterface, 'id'> {
-    readonly className?: string;
-}
-
-export const AccountEditButton = ({ id, className }: Props) => {
+export const AccountEditButton = ({ id }: Pick<AccountEntityInterface, 'id'>) => {
     const { t } = useLingui();
 
     const navigateToEditAccount = () => void router.push({ pathname: '/account/[id]/update', params: { id: String(id) } });
 
     return (
         <HapticPressable
-            className={cn('rounded-full active:bg-secondary-background', className)}
+            className="-mr-xs size-[28px] flex-row items-center justify-center gap-[2px] rounded-full active:bg-secondary-background"
             onPress={navigateToEditAccount}
             accessibilityRole="button"
             accessibilityLabel={t`Edit account`}
         >
-            <Icon className="text-primary" icon={UserIconNameEnum.EllipsisVertical} size={14} />
+            <View className="size-[3px] rounded-full bg-secondary-foreground" />
+            <View className="size-[3px] rounded-full bg-secondary-foreground" />
+            <View className="size-[3px] rounded-full bg-secondary-foreground" />
         </HapticPressable>
     );
 };

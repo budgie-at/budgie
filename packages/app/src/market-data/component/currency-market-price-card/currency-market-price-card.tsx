@@ -1,3 +1,4 @@
+import { AmountField, AmountFieldText } from '@budgie/amount-input';
 import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
@@ -41,14 +42,15 @@ export const CurrencyMarketPriceCard = ({ instrument, latestPrice, previousPrice
                     <Text className="text-secondary-foreground text-xs uppercase">
                         <Trans>Market price</Trans>
                     </Text>
-                    <Text
-                        selectable
-                        className="text-primary text-5xl font-light"
-                        numberOfLines={1}
-                        testID={CurrencyMarketPageSelector.Price(instrument.code)}
-                    >
-                        {formattedPrice}
-                    </Text>
+                    <AmountField fontSize={32}>
+                        <AmountFieldText
+                            selectable
+                            className="text-primary font-light"
+                            testID={CurrencyMarketPageSelector.Price(instrument.code)}
+                        >
+                            {formattedPrice}
+                        </AmountFieldText>
+                    </AmountField>
                 </View>
 
                 <View
