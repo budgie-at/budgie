@@ -5238,6 +5238,7 @@ msgstr "Notas de voz"
 msgid "Volume"
 msgstr "Volumen"
 
+#: src/account/component/account-card-base/account-card-base.tsx
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Waiting"
 msgstr "Esperando"

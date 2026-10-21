@@ -1,5 +1,5 @@
 import { AccountTypeEnum, AccountWithSyncEntityInterface } from '@budgie/contracts';
-import { Trans } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { MANUAL_BALANCE_ACCOUNT_TYPES } from '../../constant/manual-balance-account-types.constant';
@@ -16,13 +16,15 @@ interface Props {
 }
 
 export const AccountGridItem = ({ account, balance, hasLedgerHistory, type, isLeft }: Props) => {
+    const { t } = useLingui();
+
     const containerClassName = isLeft ? 'flex-1 pr-[5px]' : 'flex-1 pl-[5px]';
     const isAwaitingBalance = !hasLedgerHistory && MANUAL_BALANCE_ACCOUNT_TYPES.has(account.type);
 
     return (
         <View className={containerClassName}>
             {isAwaitingBalance ? (
-                <AccountCardBase account={account} balance={balance}>
+                <AccountCardBase account={account} balance={balance} amountLabel={t`Add balance`}>
                     <Text
                         testID={AccountCardBaseSelector.AddBalance(account.title)}
                         className="text-md leading-[28px] font-medium text-secondary-foreground"

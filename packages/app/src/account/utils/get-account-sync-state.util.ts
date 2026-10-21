@@ -1,10 +1,10 @@
-import { SyncEntityInterface, SyncStatusEnum } from '@budgie/contracts';
+import { SyncEntityInterface, SyncModeEnum, SyncStatusEnum } from '@budgie/contracts';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { AccountSyncStateEnum } from '../enum/account-sync-state.enum';
 
-export const getAccountSyncState = (sync: Pick<SyncEntityInterface, 'enabled' | 'status'> | null): AccountSyncStateEnum | null => {
+export const getAccountSyncState = (sync: Pick<SyncEntityInterface, 'enabled' | 'status' | 'mode'> | null): AccountSyncStateEnum | null => {
     if (!isDefined(sync)) {
         return null;
     }
@@ -17,5 +17,9 @@ export const getAccountSyncState = (sync: Pick<SyncEntityInterface, 'enabled' | 
         return AccountSyncStateEnum.SYNCING;
     }
 
-    return sync.status === SyncStatusEnum.FAILED ? AccountSyncStateEnum.FAILED : AccountSyncStateEnum.SYNCED;
+    if (sync.status === SyncStatusEnum.FAILED) {
+        return AccountSyncStateEnum.FAILED;
+    }
+
+    return sync.mode === SyncModeEnum.FORWARD ? AccountSyncStateEnum.SYNCED : AccountSyncStateEnum.WAITING;
 };
