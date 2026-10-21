@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.109.1](https://github.com/budgie-at/budgie/compare/v6.109.0...v6.109.1) (2026-10-20)
+
+**Note:** Version bump only for package @budgie/ledger
+
+
+
+
+
+# [6.109.0](https://github.com/budgie-at/budgie/compare/v6.108.0...v6.109.0) (2026-10-20)
+
+### Bug Fixes
+
+* **ledger:** allow balance-only account updates ([9112cc2](https://github.com/budgie-at/budgie/commit/9112cc2d1f4831fbc3113da16660a4c30d064f26))
+
+
 ## [6.106.1](https://github.com/budgie-at/budgie/compare/v6.106.0...v6.106.1) (2026-10-18)
 
 **Note:** Version bump only for package @budgie/ledger

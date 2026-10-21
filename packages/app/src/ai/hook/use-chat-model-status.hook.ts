@@ -3,11 +3,11 @@ import * as Effect from 'effect/Effect';
 import { useEffect } from 'react';
 
 import { appRuntime } from '../../@generic/runtime/app.runtime';
-import { chatModelSnapshotAtom, embeddingModelSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
+import { aiModelDownloadSnapshotAtom, chatModelSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { AiModelResidencyService } from '../service/ai-model-residency.service';
-import { CHAT_DOWNLOAD_WEIGHT, EMBEDDING_DOWNLOAD_WEIGHT } from '../utils/ai-constants.util';
+import { sumAiModelDownloadBytes } from '../utils/sum-ai-model-download-bytes.util';
 
 interface ChatModelStatusInterface {
     readonly isReady: boolean;
@@ -23,7 +23,7 @@ interface UseChatModelStatusReturn {
 
 export const useChatModelStatus = (): UseChatModelStatusReturn => {
     const chat = useAtomValue(chatModelSnapshotAtom);
-    const embedding = useAtomValue(embeddingModelSnapshotAtom);
+    const { models } = useAtomValue(aiModelDownloadSnapshotAtom);
     const isChatReady = chat.status === AiSubsystemStatusEnum.READY;
 
     useEffect(() => {
@@ -40,12 +40,14 @@ export const useChatModelStatus = (): UseChatModelStatusReturn => {
         };
     }, []);
 
+    const { ratio } = sumAiModelDownloadBytes([models[AiSubsystemNameEnum.CHAT], models[AiSubsystemNameEnum.EMBEDDING]]);
+
     return {
         isChatReady,
         modelStatus: {
             isReady: isChatReady,
             isInitializing: chat.status === AiSubsystemStatusEnum.INITIALIZING || chat.status === AiSubsystemStatusEnum.DOWNLOADING,
-            downloadProgress: chat.downloadProgress * CHAT_DOWNLOAD_WEIGHT + embedding.downloadProgress * EMBEDDING_DOWNLOAD_WEIGHT,
+            downloadProgress: ratio,
             error: chat.errorMessage
         }
     };

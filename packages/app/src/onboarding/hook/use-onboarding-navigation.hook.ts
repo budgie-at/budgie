@@ -1,39 +1,31 @@
+import * as Effect from 'effect/Effect';
 import { useRouter } from 'expo-router';
 
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
 import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
-import { updateSettingsMutation } from '../../settings/mutation/update-settings.mutation';
-import { ONBOARDING_STEP_ORDER } from '../constant/onboarding-step-order.constant';
+import { ONBOARDING_STEP_ROUTE } from '../constant/onboarding-step-route.constant';
 import { OnboardingStepEnum } from '../enum/onboarding-step.enum';
+import { OnboardingService } from '../service/onboarding.service';
 
 export const useOnboardingNavigation = () => {
     const router = useRouter();
 
-    const goToNextStep = (step: OnboardingStepEnum): void => {
-        const currentIndex = ONBOARDING_STEP_ORDER.indexOf(step);
-        const nextIndex = currentIndex + 1;
-        const nextStep = ONBOARDING_STEP_ORDER[nextIndex];
-
-        appRuntime.runFork(logAndContinue(updateSettingsMutation({ onboardingStep: nextIndex })));
-
-        router.push(`/onboarding/${nextStep.toLowerCase()}`);
+    const goToStep = (step: OnboardingStepEnum): void => {
+        router.push(ONBOARDING_STEP_ROUTE[step]);
     };
 
-    const goToPreviousStep = (step: OnboardingStepEnum): void => {
-        const currentIndex = ONBOARDING_STEP_ORDER.indexOf(step);
-
-        if (currentIndex <= 0) {
-            return;
-        }
-
-        const previousIndex = currentIndex - 1;
-        const previousStep = ONBOARDING_STEP_ORDER[previousIndex];
-
-        appRuntime.runFork(logAndContinue(updateSettingsMutation({ onboardingStep: previousIndex })));
-
-        goBackOrReplace(previousIndex === 0 ? '/onboarding' : `/onboarding/${previousStep.toLowerCase()}`);
+    const replaceWithStep = (step: OnboardingStepEnum): void => {
+        router.replace(ONBOARDING_STEP_ROUTE[step]);
     };
 
-    return { goToNextStep, goToPreviousStep };
+    const goBack = (): void => {
+        goBackOrReplace(ONBOARDING_STEP_ROUTE[OnboardingStepEnum.KEY]);
+    };
+
+    const completeOnboarding = (): void => {
+        appRuntime.runFork(logAndContinue(Effect.flatMap(OnboardingService, onboardingService => onboardingService.complete())));
+    };
+
+    return { goToStep, replaceWithStep, goBack, completeOnboarding };
 };

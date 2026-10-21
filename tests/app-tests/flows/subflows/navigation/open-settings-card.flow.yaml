@@ -6,7 +6,7 @@ env:
 - scrollUntilVisible:
       element:
           id: '${CARD_ID}'
-      direction: UP
+      direction: DOWN
       speed: 20
       centerElement: true
       waitToSettleTimeoutMs: 1000
@@ -26,7 +26,7 @@ env:
           - scrollUntilVisible:
                 element:
                     id: '${CARD_ID}'
-                direction: DOWN
+                direction: UP
                 speed: 20
                 centerElement: true
                 waitToSettleTimeoutMs: 1000

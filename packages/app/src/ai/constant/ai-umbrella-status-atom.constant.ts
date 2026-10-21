@@ -13,7 +13,6 @@ import { AiSystemUmbrellaSnapshotInterface } from '../interface/ai-system-umbrel
 import { chatModelSnapshotAtom, embeddingModelSnapshotAtom, sttSnapshotAtom } from './ai-snapshot-atoms.constant';
 
 const TRUNCATE_LEN = 80;
-const SUBSYSTEM_COUNT = 3;
 
 const getErrorSource = (chatError: string | null, embeddingError: string | null): AiSubsystemNameEnum => {
     if (isDefined(chatError)) {
@@ -28,7 +27,7 @@ const getErrorSource = (chatError: string | null, embeddingError: string | null)
 
 const deriveUmbrellaStatus = (get: Atom.AtomContext): AiSystemUmbrellaSnapshotInterface => {
     if (!isAiEnabled()) {
-        return { state: AiSystemUmbrellaStateEnum.DISABLED, statusText: t`AI off`, downloadPercent: 0, errorMessage: null };
+        return { state: AiSystemUmbrellaStateEnum.DISABLED, statusText: t`AI off`, errorMessage: null };
     }
 
     const chat = get(chatModelSnapshotAtom);
@@ -46,7 +45,6 @@ const deriveUmbrellaStatus = (get: Atom.AtomContext): AiSystemUmbrellaSnapshotIn
         return {
             state: AiSystemUmbrellaStateEnum.MODEL_ERROR,
             statusText: t`${source} error · ${message}`,
-            downloadPercent: 0,
             errorMessage: message
         };
     }
@@ -54,12 +52,9 @@ const deriveUmbrellaStatus = (get: Atom.AtomContext): AiSystemUmbrellaSnapshotIn
     const statuses = [chat.status, embedding.status, stt.status] as const;
 
     if (statuses.some(status => status === AiSubsystemStatusEnum.DOWNLOADING)) {
-        const downloadPercent = Math.round((chat.downloadProgress + embedding.downloadProgress + stt.downloadProgress) / SUBSYSTEM_COUNT);
-
         return {
             state: AiSystemUmbrellaStateEnum.DOWNLOADING,
             statusText: t`Downloading AI models…`,
-            downloadPercent,
             errorMessage: null
         };
     }
@@ -68,16 +63,15 @@ const deriveUmbrellaStatus = (get: Atom.AtomContext): AiSystemUmbrellaSnapshotIn
         return {
             state: AiSystemUmbrellaStateEnum.INITIALIZING,
             statusText: t`Starting up AI…`,
-            downloadPercent: 0,
             errorMessage: null
         };
     }
 
     if (statuses.every(status => status === AiSubsystemStatusEnum.DISABLED)) {
-        return { state: AiSystemUmbrellaStateEnum.DISABLED, statusText: t`AI off`, downloadPercent: 0, errorMessage: null };
+        return { state: AiSystemUmbrellaStateEnum.DISABLED, statusText: t`AI off`, errorMessage: null };
     }
 
-    return { state: AiSystemUmbrellaStateEnum.HEALTHY, statusText: '', downloadPercent: 0, errorMessage: null };
+    return { state: AiSystemUmbrellaStateEnum.HEALTHY, statusText: '', errorMessage: null };
 };
 
 export const aiUmbrellaStatusAtom = Atom.make(deriveUmbrellaStatus).pipe(Atom.withEquality(Equal.equals));

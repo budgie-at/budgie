@@ -26,9 +26,12 @@ export const CreatePrivatbankAccount = () => {
         fileIcon: UserIconNameEnum.FileSpreadsheet,
         fileTypeLabel: t`XLSX export`,
         selectFileText: t`Select the exported XLSX file`,
-        ctaLabel: t`Import`,
         importPreview: uri =>
             appRuntime.runPromise(Effect.flatMap(PrivatbankSyncService, privatbankSyncService => privatbankSyncService.importPreview(uri))),
+        reviewImport: (uri, selectedAccountIds) =>
+            appRuntime.runPromise(
+                Effect.flatMap(PrivatbankSyncService, privatbankSyncService => privatbankSyncService.reviewImport(uri, selectedAccountIds))
+            ),
         executeImportForSelectedAccounts: (uri, selectedAccountIds) =>
             appRuntime.runPromise(
                 Effect.flatMap(PrivatbankSyncService, privatbankSyncService =>

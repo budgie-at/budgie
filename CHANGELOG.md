@@ -3,6 +3,52 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.109.2](https://github.com/budgie-at/budgie/compare/v6.109.1...v6.109.2) (2026-10-21)
+
+**Note:** Version bump only for package @budgie-at/root
+
+
+
+
+
+## [6.109.1](https://github.com/budgie-at/budgie/compare/v6.109.0...v6.109.1) (2026-10-20)
+
+### Bug Fixes
+
+* **consolidation:** claim IBAN bridge end legs instead of counting them twice ([2680b21](https://github.com/budgie-at/budgie/commit/2680b21a3df57201aa62841876cd3aa148c79ed6))
+* **consolidation:** restore dropped transfer fees on every consolidation run ([781803a](https://github.com/budgie-at/budgie/commit/781803a4f4d1f32dcb639be327650f68534d1ece))
+* **sync:** never skip Monobank forward windows ([4e3cbaa](https://github.com/budgie-at/budgie/commit/4e3cbaa23ad1afe84705d172ca25740bc3194542))
+
+
+# [6.109.0](https://github.com/budgie-at/budgie/compare/v6.108.0...v6.109.0) (2026-10-20)
+
+### Bug Fixes
+
+* **app:** accept dashes and underscores in Monobank tokens ([73e170e](https://github.com/budgie-at/budgie/commit/73e170e288b62f22591212cbb0fd1bc7cb6be7fa))
+* **app:** fill the PIN sheets to the bottom ([4bfc6e4](https://github.com/budgie-at/budgie/commit/4bfc6e4c49e96a57942e59154a72fcae6e94911d))
+* **app:** format the statement date range without Intl formatRange ([0900a85](https://github.com/budgie-at/budgie/commit/0900a855c9401aa338e4acaef79185ad41463d5b))
+* **app:** keep entered balances after connecting a bank ([0474491](https://github.com/budgie-at/budgie/commit/0474491f21b7195d64bcb1f0651fd9493c862b52))
+* **app:** keep the lock screen steady while unlocking ([2bd902b](https://github.com/budgie-at/budgie/commit/2bd902be75f1a9cbdc4c9c94ff1b408c74a47a8a))
+* **app:** show full amounts on the onboarding balances step ([7d9d1f8](https://github.com/budgie-at/budgie/commit/7d9d1f8f5e45eeb839015ec51d882e0f27e993de))
+* **app:** stop reporting deliberate interruptions as errors ([27ebcad](https://github.com/budgie-at/budgie/commit/27ebcad822afd1df473d5f5d845585b6a361c4ad))
+* **app:** stop the empty home state overlapping its header ([c8d0a41](https://github.com/budgie-at/budgie/commit/c8d0a41913532c22564e4603650ef0de3a7f5c71))
+* **app:** stop the Sealed badge painting boxes behind its content ([18e26a6](https://github.com/budgie-at/budgie/commit/18e26a672391a1472830c2e948221ef2141a29be))
+* **ledger:** allow balance-only account updates ([9112cc2](https://github.com/budgie-at/budgie/commit/9112cc2d1f4831fbc3113da16660a4c30d064f26))
+
+### Features
+
+* **app:** add an onboarding welcome screen ([935c3fd](https://github.com/budgie-at/budgie/commit/935c3fd849c5f063c5bf911730c39e3151100441))
+* **app:** add controllable on-device AI downloads ([86ab4da](https://github.com/budgie-at/budgie/commit/86ab4daa1125a89339bacaadaf3c5d55d82e7422))
+* **app:** add your data screen, forgot PIN and add PIN later ([d375d3f](https://github.com/budgie-at/budgie/commit/d375d3f00807d2c5f121e06a951170f76ce8ef4e))
+* **app:** match seal, accounts and balances steps to the design ([9a1002e](https://github.com/budgie-at/budgie/commit/9a1002e7d839d9af7f0fbfd0eedd1f335bb164eb))
+* **app:** rebuild onboarding around choosing the key ([9958c1b](https://github.com/budgie-at/budgie/commit/9958c1bd217b6fa6e665a95f4dc93330956b8136))
+* **app:** remove first steps from home ([3f63c80](https://github.com/budgie-at/budgie/commit/3f63c8025920e540ac483fae63897c3bb4a16251))
+* **app:** show imported statements on the onboarding balances step ([7be4eef](https://github.com/budgie-at/budgie/commit/7be4eefd6d83a378e5dedaf26b2682613e98ca98))
+* **app:** show Monobank as connected on the balances step ([b997b9d](https://github.com/budgie-at/budgie/commit/b997b9d4580321fb00be28b97a58a3bd00ebbdfb))
+* **app:** wait for a tap on the sealed screen ([791cc34](https://github.com/budgie-at/budgie/commit/791cc34daaa5073d41da7f9ef2af9f906165e39d))
+* review bank statements before import and simplify Monobank setup ([4690df0](https://github.com/budgie-at/budgie/commit/4690df015d97986f5c9b346669dd6806922497fd))
+
+
 # [6.108.0](https://github.com/budgie-at/budgie/compare/v6.107.1...v6.108.0) (2026-10-20)
 
 ### Bug Fixes

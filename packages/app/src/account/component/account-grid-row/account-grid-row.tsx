@@ -21,15 +21,23 @@ export const AccountGridRow = ({ row, accountType, balancesByAccountId, classNam
     const leftBalance = isDefined(leftBalanceRow) ? leftBalanceRow.balance : 0;
     const rightBalanceRow = isDefined(row.right) ? balancesByAccountId.get(row.right.id) : null;
     const rightBalance = isDefined(rightBalanceRow) ? rightBalanceRow.balance : 0;
+    const hasLeftLedgerHistory = leftBalanceRow?.hasLedgerHistory ?? true;
+    const hasRightLedgerHistory = rightBalanceRow?.hasLedgerHistory ?? true;
     const rightItem = isDefined(row.right) ? (
-        <AccountGridItem account={row.right} balance={rightBalance} type={accountType} isLeft={false} />
+        <AccountGridItem
+            account={row.right}
+            balance={rightBalance}
+            hasLedgerHistory={hasRightLedgerHistory}
+            type={accountType}
+            isLeft={false}
+        />
     ) : (
         <View className="flex-1" />
     );
 
     return (
         <View className={cn('flex-row items-start', className)}>
-            <AccountGridItem account={row.left} balance={leftBalance} type={accountType} isLeft />
+            <AccountGridItem account={row.left} balance={leftBalance} hasLedgerHistory={hasLeftLedgerHistory} type={accountType} isLeft />
             {rightItem}
         </View>
     );

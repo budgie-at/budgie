@@ -207,7 +207,8 @@ export const useHomePageDataQuery = () => {
             debtProgressSummary,
             debtType: row.account.debtType,
             includeInNetWorth: row.account.includeInNetWorth,
-            isActive: row.account.isActive
+            isActive: row.account.isActive,
+            hasLedgerHistory: row.hasLedgerHistory === 1
         };
         const { accountType, accountId, convertedBalance, isActive } = homeAccountBalance;
 

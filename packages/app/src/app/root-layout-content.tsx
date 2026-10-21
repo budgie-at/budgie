@@ -77,7 +77,7 @@ const handleSafeAreaChange: SafeAreaListenerProps['onChange'] = ({ insets }) => 
 };
 
 const handleAppStateChange = (isActive: boolean): void => {
-    void appRuntime.runPromise(
+    appRuntime.runFork(
         Effect.gen(function* () {
             const workload = yield* Workload;
 
@@ -208,6 +208,14 @@ export const RootLayoutContent = () => {
                                                                         options={formSheetOptions([0.75, DETENT_95])}
                                                                     />
                                                                     <Stack.Screen name="import-backup-pin" options={PIN_OPTIONS} />
+                                                                    <Stack.Screen
+                                                                        name="forgot-pin"
+                                                                        options={formSheetOptions('fitToContents')}
+                                                                    />
+                                                                    <Stack.Screen
+                                                                        name="add-pin"
+                                                                        options={formSheetOptions('fitToContents')}
+                                                                    />
                                                                     <Stack.Screen
                                                                         name="transaction-type-filter"
                                                                         options={formSheetOptions([DETENT_40])}

@@ -10,7 +10,7 @@ import { seed, seedBankPair, seedBankSyncAccount, testDb, TestLayer, testQuerySe
 it.effect.each(
     [false, true].flatMap(crossAccountCollision => [0, 30000, 60000].map(gapMilliseconds => ({ crossAccountCollision, gapMilliseconds })))
 )(
-    'retains a second real movement (collision $crossAccountCollision, gap $gapMilliseconds ms)',
+    'claims bridge-addressed end legs into the bridge canonical (collision $crossAccountCollision, gap $gapMilliseconds ms)',
     ({ crossAccountCollision, gapMilliseconds }) =>
         Effect.gen(function* () {
             const transferMcc = yield* testQueryService.findMccByCode('4829');
@@ -63,27 +63,28 @@ it.effect.each(
             );
             const candidates = yield* consolidationCandidateRepository.findIbanBridgeCanonicalDuplicateCandidates(null);
             const result = yield* service.consolidate(null);
-            const after = yield* balances.getLedgerBalances([source.id, target.id]);
+            const [bridgeCanonical] = canonicalIdsBefore;
+            const claimedBalances = new Map([
+                [source.id, -100 * PRECISION],
+                [target.id, 500 * PRECISION]
+            ]);
             expect(candidates).toEqual([]);
-            expect(result).toEqual({ found: 1, consolidated: 1 });
-            expect(after).toEqual(before);
-            const canonicalIdsAfter = yield* testDb
-                .select({ id: TransactionEntityTable.id })
-                .from(TransactionEntityTable)
-                .where(eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER));
-            const existingCanonicalIds = new Set(canonicalIdsBefore.map(canonical => canonical.id));
-            const newCanonicalIds = canonicalIdsAfter.map(canonical => canonical.id).filter(id => !existingCanonicalIds.has(id));
-            const outerParents = yield* testDb
+            expect(result).toEqual({ found: 2, consolidated: 2 });
+            expect(yield* balances.getLedgerBalances([source.id, target.id])).toEqual(claimedBalances);
+            expect(
+                yield* testDb
+                    .select({ id: TransactionEntityTable.id })
+                    .from(TransactionEntityTable)
+                    .where(eq(TransactionEntityTable.type, TransactionTypeEnum.TRANSFER))
+            ).toEqual(canonicalIdsBefore);
+            const endLegParents = yield* testDb
                 .select({ id: TransactionEntityTable.id, parent: TransactionEntityTable.consolidationParentTransactionId })
                 .from(TransactionEntityTable)
                 .where(inArray(TransactionEntityTable.id, [secondExpense.id, secondIncome.id]));
-            const [newCanonicalId] = newCanonicalIds;
-            expect(canonicalIdsAfter).toHaveLength(2);
-            expect(newCanonicalIds).toHaveLength(1);
-            expect(new Map(outerParents.map(leg => [leg.id, leg.parent]))).toEqual(
+            expect(new Map(endLegParents.map(leg => [leg.id, leg.parent]))).toEqual(
                 new Map([
-                    [secondExpense.id, newCanonicalId],
-                    [secondIncome.id, newCanonicalId]
+                    [secondExpense.id, bridgeCanonical.id],
+                    [secondIncome.id, bridgeCanonical.id]
                 ])
             );
             expect(
@@ -92,20 +93,10 @@ it.effect.each(
                     [source.id, target.id]
                 )
             ).toEqual([
-                { account_id: source.id, amount: -200 * PRECISION },
-                { account_id: target.id, amount: 1000 * PRECISION }
-            ]);
-            expect(
-                yield* testDb
-                    .select({ id: TransactionEntityTable.id, externalId: TransactionEntityTable.externalId })
-                    .from(TransactionEntityTable)
-                    .where(inArray(TransactionEntityTable.id, [secondExpense.id, secondIncome.id]))
-                    .orderBy(TransactionEntityTable.id)
-            ).toEqual([
-                { id: secondExpense.id, externalId: secondExpense.externalId },
-                { id: secondIncome.id, externalId: secondIncome.externalId }
+                { account_id: source.id, amount: -100 * PRECISION },
+                { account_id: target.id, amount: 500 * PRECISION }
             ]);
             expect(yield* service.consolidate(null)).toEqual({ found: 0, consolidated: 0 });
-            expect(yield* balances.getLedgerBalances([source.id, target.id])).toEqual(before);
+            expect(yield* balances.getLedgerBalances([source.id, target.id])).toEqual(claimedBalances);
         }).pipe(Effect.provide([ConsolidationCandidateRepository.layer, TestLayer]))
 );

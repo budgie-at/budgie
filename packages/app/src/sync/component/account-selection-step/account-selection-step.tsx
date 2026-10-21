@@ -1,5 +1,6 @@
 import { SyncAccountPreviewInterface, SyncAccountTypeEnum } from '@budgie/sync';
-import { Trans } from '@lingui/react/macro';
+import { plural } from '@lingui/core/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { EmptyFn, isNotEmptyArray } from '@rnw-community/shared';
@@ -18,6 +19,9 @@ interface Props {
 }
 
 export const AccountSelectionStep = ({ accountPreviews, selectedAccounts, onToggle, onSelectAll, onDeselectAll }: Props) => {
+    const { t } = useLingui();
+    const foundAccountCount = accountPreviews.length;
+    const foundLabel = t({ message: plural(foundAccountCount, { one: 'Found # account', other: 'Found # accounts' }) });
     const cardPreviews = accountPreviews.filter(preview => preview.type !== SyncAccountTypeEnum.JAR);
     const jarPreviews = accountPreviews.filter(preview => preview.type === SyncAccountTypeEnum.JAR);
     const areAllSelected = isNotEmptyArray(accountPreviews) && selectedAccounts.size === accountPreviews.length;
@@ -26,11 +30,14 @@ export const AccountSelectionStep = ({ accountPreviews, selectedAccounts, onTogg
 
     return (
         <>
-            <View className="flex-row items-center justify-between px-md">
+            <View className="gap-y-xs px-md">
+                <Text className="text-primary text-xl font-semibold">{foundLabel}</Text>
                 <Text className="text-secondary-foreground text-sm">
-                    <Trans>Select accounts to sync:</Trans>
+                    <Trans>Choose what to track. Balances and history come straight from the bank.</Trans>
                 </Text>
+            </View>
 
+            <View className="flex-row items-center justify-end px-md">
                 <HapticPressable onPress={handleToggleAll} testID={AccountSelectionStepSelector.ToggleAll}>
                     <Text className="text-primary font-semibold text-sm">{toggleAllLabel}</Text>
                 </HapticPressable>

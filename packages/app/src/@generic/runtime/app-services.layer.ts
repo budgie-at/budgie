@@ -85,6 +85,7 @@ import * as Layer from 'effect/Layer';
 
 import { AiCoordinatorService } from '../../ai/service/ai-coordinator.service';
 import { AiEmbeddingStatusService } from '../../ai/service/ai-embedding-status.service';
+import { AiModelDownloadService } from '../../ai/service/ai-model-download.service';
 import { AiModelResidencyService } from '../../ai/service/ai-model-residency.service';
 import { AiModelStorageService } from '../../ai/service/ai-model-storage.service';
 import { AiStorageReplacementService } from '../../ai/service/ai-storage-replacement.service';
@@ -95,7 +96,6 @@ import { LocalEmbeddingService } from '../../ai/service/embedding.service';
 import { SttService } from '../../ai/service/stt.service';
 import { TranslationDrainerService } from '../../ai/service/translation-drainer.service';
 import { VoiceReviewBatchCreateService } from '../../ai/service/voice-review-batch-create.service';
-import { WhisperModelService } from '../../ai/service/whisper-model.service';
 import { EmbeddingProgressStore } from '../../ai/store/embedding-progress.store';
 import { TranslationProgressStore } from '../../ai/store/translation-progress.store';
 import { AuthService } from '../../auth/service/auth.service';
@@ -125,6 +125,7 @@ import { DatabaseLifecycleService } from '../drizzle/service/database-lifecycle.
 import { DatabaseMigrationService } from '../drizzle/service/database-migration.service';
 import { DatabaseRekeyService } from '../drizzle/service/database-rekey.service';
 import { AppResetService } from '../service/app-reset.service';
+import { NetworkService } from '../service/network.service';
 import { Workload } from '../service/workload.service';
 
 const ledgerWorkloadLayer = Layer.effect(
@@ -180,7 +181,8 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     AtmCashMoveService.layer,
     ChatService.layer,
     LocalEmbeddingService.layer,
-    WhisperModelService.layer,
+    NetworkService.layer,
+    AiModelDownloadService.layer,
     SttService.layer,
     AiModelResidencyService.layer,
     TranslationProgressStore.layer,

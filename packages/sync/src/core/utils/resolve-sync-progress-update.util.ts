@@ -11,7 +11,7 @@ export const resolveSyncProgressUpdate = (sync: SyncEntityInterface, result: Syn
     const baseUpdate = { transactionCount: sync.transactionCount + transactionCount, errorCount: 0, lastError: null };
 
     if (result.completed && sync.mode === SyncModeEnum.FORWARD) {
-        return { ...baseUpdate, status: SyncStatusEnum.IDLE, forwardSyncedAt: now, forwardSyncFromAt: now };
+        return { ...baseUpdate, status: SyncStatusEnum.IDLE, forwardSyncedAt: now, forwardSyncFromAt: result.nextFrom };
     }
 
     if (result.completed) {

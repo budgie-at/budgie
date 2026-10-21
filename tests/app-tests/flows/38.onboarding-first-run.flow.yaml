@@ -10,28 +10,44 @@ env:
 
 - extendedWaitUntil:
       visible:
-          id: 'OnboardingWelcome.Root'
+          id: 'OnboardingWelcome.StartButton'
       timeout: 30000
 
 - tapOn:
-      id: 'OnboardingWelcome.PrimaryButton'
+      id: 'OnboardingWelcome.StartButton'
 
 - extendedWaitUntil:
       visible:
-          id: 'OnboardingTrackOptionRow.CASH'
+          id: 'OnboardingKey.PhoneLockOption'
       timeout: 3000
 
 - tapOn:
-      id: 'OnboardingTrackOptionRow.CASH'
-- tapOn:
-      id: 'OnboardingTrackOptionRow.BANK'
-
-- tapOn:
-      id: 'OnboardingStepLayout.PrimaryButton'
+      id: 'OnboardingKey.PhoneLockOption'
 
 - extendedWaitUntil:
       visible:
-          id: 'OnboardingBalances.connect-monobank'
+          id: 'OnboardingPhoneLock.ContinueButton'
+      timeout: 3000
+
+- tapOn:
+      id: 'OnboardingPhoneLock.ContinueButton'
+
+- extendedWaitUntil:
+      visible:
+          id: 'OnboardingAccounts.CASH'
+      timeout: 3000
+
+- tapOn:
+      id: 'OnboardingAccounts.CASH'
+- tapOn:
+      id: 'OnboardingAccounts.BANK'
+
+- tapOn:
+      id: 'OnboardingAccounts.AddButton'
+
+- extendedWaitUntil:
+      visible:
+          id: 'OnboardingBalances.LaterButton'
       timeout: 3000
 
 - tapOn:
@@ -39,35 +55,35 @@ env:
 
 - extendedWaitUntil:
       visible:
-          id: 'OnboardingTrackOptionRow.CASH'
+          id: 'OnboardingAccounts.CASH'
       timeout: 3000
 
 - tapOn:
-      id: 'OnboardingStepLayout.PrimaryButton'
+      id: 'OnboardingAccounts.AddButton'
 
 - extendedWaitUntil:
       visible:
-          id: 'OnboardingBalances.connect-monobank'
-      timeout: 3000
-
-- repeat:
-      times: 5
-      commands:
-          - tapOn:
-                id: 'OnboardingStepLayout.SkipButton'
-
-- extendedWaitUntil:
-      visible:
-          id: 'OnboardingDone.accounts'
+          id: 'OnboardingBalances.LaterButton'
       timeout: 3000
 
 - tapOn:
-      id: 'OnboardingStepLayout.PrimaryButton'
+      id: 'OnboardingBalances.LaterButton'
+
+- extendedWaitUntil:
+      visible:
+          id: 'OnboardingAi.NoThanksButton'
+      timeout: 3000
+
+- tapOn:
+      id: 'OnboardingAi.NoThanksButton'
 
 - extendedWaitUntil:
       visible:
           id: 'HomePage.TotalBalance'
       timeout: 30000
+
+- assertVisible:
+      id: 'SecurityStatusChip.Root'
 
 - assertNotVisible:
       id: 'AccountsEmptyState.AddAccountButton'
@@ -81,4 +97,4 @@ env:
           id: 'HomePage.TotalBalance'
       timeout: 10000
 - assertNotVisible:
-      id: 'OnboardingWelcome.Root'
+      id: 'OnboardingKey.PhoneLockOption'
