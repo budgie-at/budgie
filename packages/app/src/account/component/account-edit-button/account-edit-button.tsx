@@ -1,9 +1,9 @@
-import { AccountEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { AccountEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
+import { View } from 'react-native';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/component/icon/icon';
 
 export const AccountEditButton = ({ id }: Pick<AccountEntityInterface, 'id'>) => {
     const { t } = useLingui();
@@ -12,12 +12,14 @@ export const AccountEditButton = ({ id }: Pick<AccountEntityInterface, 'id'>) =>
 
     return (
         <HapticPressable
-            className="-mr-xs size-[28px] items-center justify-center rounded-full bg-secondary-background active:scale-s active:opacity-70"
+            className="-mr-xs size-[28px] flex-row items-center justify-center gap-[2px] rounded-full active:bg-secondary-background"
             onPress={navigateToEditAccount}
             accessibilityRole="button"
             accessibilityLabel={t`Edit account`}
         >
-            <Icon className="text-secondary-foreground" icon={UserIconNameEnum.Ellipsis} size={16} weight="Filled" />
+            <View className="size-[3px] rounded-full bg-secondary-foreground" />
+            <View className="size-[3px] rounded-full bg-secondary-foreground" />
+            <View className="size-[3px] rounded-full bg-secondary-foreground" />
         </HapticPressable>
     );
 };
