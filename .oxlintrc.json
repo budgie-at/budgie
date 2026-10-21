@@ -1062,6 +1062,7 @@
         {
             "files": [
                 "packages/*/test/**",
+                "packages/*/src/**/*.spec.ts",
                 "tests/**"
             ],
             "plugins": [
@@ -1181,6 +1182,7 @@
         {
             "files": [
                 "packages/*/test/**/*.ts",
+                "packages/*/src/**/*.spec.ts",
                 "tests/*/src/**/*.ts"
             ],
             "rules": {

@@ -1,0 +1,105 @@
+{
+    "name": "@budgie/amount-input",
+    "version": "6.110.0",
+    "private": true,
+    "description": "Auto-fitting amount input and display with a sign toggle for React Native",
+    "keywords": [
+        "react",
+        "react-native",
+        "reanimated",
+        "react-compiler",
+        "amount input",
+        "currency input",
+        "auto fit text"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/budgie-at/budgie.git",
+        "directory": "packages/amount-input"
+    },
+    "license": "MIT",
+    "sideEffects": false,
+    "exports": {
+        ".": {
+            "import": {
+                "types": "./dist/typescript/module/index.d.ts",
+                "default": "./dist/module/index.js"
+            },
+            "require": {
+                "types": "./dist/typescript/commonjs/index.d.ts",
+                "default": "./dist/commonjs/index.js"
+            }
+        }
+    },
+    "main": "dist/commonjs/index.js",
+    "module": "dist/module/index.js",
+    "types": "dist/typescript/module/index.d.ts",
+    "files": [
+        "dist/**/*",
+        "llms.txt",
+        "!dist/**/*.tsbuildinfo"
+    ],
+    "scripts": {
+        "build": "rm -rf ./dist && bob build",
+        "clear": "rm -rf coverage && rm -rf dist && rm -f *.tsbuildinfo",
+        "format": "oxfmt --write src",
+        "lint": "oxlint --type-aware src",
+        "lint:fix": "oxlint --type-aware --fix src",
+        "test": "vitest run",
+        "ts": "node ../../node_modules/@typescript/native/bin/tsc -p tsconfig.json && node ../../node_modules/@typescript/native/bin/tsc -p tsconfig.build.json --noEmit false --emitDeclarationOnly --outDir dist/typescript/module"
+    },
+    "dependencies": {
+        "@rnw-community/shared": "^2.28.0",
+        "react-compiler-runtime": "^1.0.0"
+    },
+    "devDependencies": {
+        "@babel/core": "7.29.7",
+        "@types/react": "19.3.0",
+        "babel-plugin-react-compiler": "^1.0.0",
+        "react": "19.3.1",
+        "react-native": "0.88.0",
+        "react-native-builder-bob": "^0.43.0",
+        "react-native-reanimated": "4.7.1",
+        "react-native-worklets": "0.13.0",
+        "vitest": "^5.0.5"
+    },
+    "peerDependencies": {
+        "react": ">=18",
+        "react-native": ">=0.78",
+        "react-native-reanimated": ">=4.1.0 <5"
+    },
+    "engines": {
+        "node": ">=22.0.0"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "react-native-builder-bob": {
+        "source": "src",
+        "output": "dist",
+        "exclude": "**/{__tests__/**,__fixtures__/**,__mocks__/**,*.spec.{ts,tsx}}",
+        "targets": [
+            [
+                "module",
+                {
+                    "esm": true,
+                    "configFile": "./babel.config.bob.js"
+                }
+            ],
+            [
+                "commonjs",
+                {
+                    "esm": true,
+                    "configFile": "./babel.config.bob.js"
+                }
+            ],
+            [
+                "typescript",
+                {
+                    "project": "tsconfig.build.json",
+                    "tsc": "../../node_modules/@typescript/native/bin/tsc"
+                }
+            ]
+        ]
+    }
+}
