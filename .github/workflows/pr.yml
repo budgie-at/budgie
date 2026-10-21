@@ -93,7 +93,7 @@ jobs:
             - name: Restore package manager cache
               uses: rnw-community/mobile-ci/actions/node-pm-cache@a9fac576ef1c8a9a565d03851f2624502a868214 # v4.4.1
               with:
-                package-manager: pnpm
+                  package-manager: pnpm
 
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
@@ -124,9 +124,6 @@ jobs:
             - name: Typescript checks
               run: pnpm ts
 
-            - name: Effect diagnostics
-              run: pnpm effect:check
-
             - name: Maestro selector checks
               run: pnpm --filter @budgie-at/app-tests selectors:check
 
@@ -142,11 +139,45 @@ jobs:
             - name: Build
               run: pnpm build
 
-            - name: Unit tests
-              run: pnpm test --concurrency=2
-
             - name: Verify generated files are committed
               run: git diff --exit-code
+
+    unit-tests:
+        name: Effect diagnostics and unit tests
+        runs-on: ubuntu-latest
+        timeout-minutes: 45
+        permissions:
+            contents: read
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+              with:
+                  persist-credentials: false
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+            - name: Setup Node
+              uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+              with:
+                  node-version: 22.22.2
+
+            - name: Restore package manager cache
+              uses: rnw-community/mobile-ci/actions/node-pm-cache@a9fac576ef1c8a9a565d03851f2624502a868214 # v4.4.1
+              with:
+                  package-manager: pnpm
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Build
+              run: pnpm build
+
+            - name: Effect diagnostics
+              run: pnpm effect:check
+
+            - name: Unit tests
+              run: pnpm test --concurrency=2
 
     e2e-script-tests:
         name: E2E script self-tests
@@ -213,7 +244,7 @@ jobs:
             - name: Restore package manager cache
               uses: rnw-community/mobile-ci/actions/node-pm-cache@a9fac576ef1c8a9a565d03851f2624502a868214 # v4.4.1
               with:
-                package-manager: pnpm
+                  package-manager: pnpm
 
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
@@ -478,6 +509,7 @@ jobs:
             - detect-mobile-impact
             - lint-workflows
             - code-quality
+            - unit-tests
             - e2e-script-tests
             - assert-ai-ota
             - ota-preview
