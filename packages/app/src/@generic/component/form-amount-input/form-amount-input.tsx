@@ -66,7 +66,7 @@ export const FormAmountInput = (props: Props) => {
                 />
 
                 {showInstrumentAfterAmount ? (
-                    <AmountFieldSuffix scale={0.4} className={symbolClassName}>
+                    <AmountFieldSuffix scale={0.4} minimumFontSize={22} className={symbolClassName}>
                         {instrumentSymbol}
                     </AmountFieldSuffix>
                 ) : null}
