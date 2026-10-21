@@ -20,7 +20,9 @@ export const AccountCardBalance = ({ title, balance, instrumentSymbol }: Props) 
 
     const formattedBalance = formatDigits(balance, instrumentSymbol);
     const fractionStart = isPositiveNumber(decimalPlaces) ? formattedBalance.length - decimalPlaces - 1 : formattedBalance.length;
-    const toneClassName = balance < 0 ? 'text-destructive-foreground' : 'text-primary';
+    const isNegative = balance < 0;
+    const toneClassName = isNegative ? 'text-destructive-foreground' : 'text-primary';
+    const fractionToneClassName = isNegative ? 'text-destructive-foreground/70' : 'text-secondary-foreground';
 
     return (
         <ProtectedText
@@ -31,7 +33,7 @@ export const AccountCardBalance = ({ title, balance, instrumentSymbol }: Props) 
             className={cn('text-2xl font-semibold tracking-tight tabular-nums', toneClassName)}
         >
             {formattedBalance.slice(0, fractionStart)}
-            <Text className="text-sm font-medium text-secondary-foreground">{formattedBalance.slice(fractionStart)}</Text>
+            <Text className={cn('text-sm font-medium', fractionToneClassName)}>{formattedBalance.slice(fractionStart)}</Text>
         </ProtectedText>
     );
 };

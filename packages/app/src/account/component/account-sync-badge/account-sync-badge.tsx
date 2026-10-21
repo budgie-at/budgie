@@ -12,6 +12,7 @@ const syncBadgeVariants = cva('absolute -bottom-[2px] -right-[2px] size-[12px] r
         state: {
             [AccountSyncStateEnum.SYNCED]: 'bg-positive-foreground',
             [AccountSyncStateEnum.SYNCING]: 'bg-warning-foreground animate-pulse',
+            [AccountSyncStateEnum.WAITING]: 'bg-warning-foreground',
             [AccountSyncStateEnum.FAILED]: 'bg-destructive-foreground',
             [AccountSyncStateEnum.DISABLED]: 'bg-secondary-foreground'
         }

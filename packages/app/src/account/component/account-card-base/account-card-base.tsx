@@ -23,11 +23,12 @@ interface Props {
         'id' | 'title' | 'icon' | 'iban' | AccountAssociationEnum.SYNC | AccountAssociationEnum.INSTRUMENT
     >;
     readonly balance: number;
+    readonly amountLabel?: string;
     readonly onLongPress?: OnEventFn;
     readonly children?: ReactNode;
 }
 
-export const AccountCardBase = ({ account, balance, onLongPress, children }: Props) => {
+export const AccountCardBase = ({ account, balance, amountLabel, onLongPress, children }: Props) => {
     const { id, title, icon, iban, sync, instrument } = account;
 
     const { t } = useLingui();
@@ -39,11 +40,12 @@ export const AccountCardBase = ({ account, balance, onLongPress, children }: Pro
     const syncStateLabels: Record<AccountSyncStateEnum, string> = {
         [AccountSyncStateEnum.SYNCED]: t`Up to date`,
         [AccountSyncStateEnum.SYNCING]: t`Syncing`,
+        [AccountSyncStateEnum.WAITING]: t`Waiting`,
         [AccountSyncStateEnum.FAILED]: t`Sync Failed`,
         [AccountSyncStateEnum.DISABLED]: t`Sync paused`
     };
     const syncStateLabel = isDefined(syncState) ? `, ${syncStateLabels[syncState]}` : '';
-    const accessibilityLabel = `${title}, ${protectAmount(balance, instrument.symbol)}${syncStateLabel}`;
+    const accessibilityLabel = `${title}, ${amountLabel ?? protectAmount(balance, instrument.symbol)}${syncStateLabel}`;
     const metaLabel = isNotEmptyString(iban) ? `${instrument.code} · ••${iban.slice(-4)}` : instrument.code;
     const syncBadge = isDefined(syncState) ? <AccountSyncBadge state={syncState} /> : null;
 

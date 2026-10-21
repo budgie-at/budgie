@@ -5238,6 +5238,7 @@ msgstr "Голосові нотатки"
 msgid "Volume"
 msgstr "Обсяг"
 
+#: src/account/component/account-card-base/account-card-base.tsx
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Waiting"
 msgstr "Очікування"
