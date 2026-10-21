@@ -22,27 +22,11 @@ const CONTRACTS_DIR = resolve(APP_DIR, '../contracts/src/@generic');
 const REICON_DIR = join(APP_DIR, 'node_modules', 'reicon-react-native');
 const REICON_INDEX_FILE = join(REICON_DIR, 'index.d.ts');
 const FILLED_ICON_NAMES = ['Star'];
-const GLYPH_CONTAINER_TAGS: Record<string, string> = { clipPath: 'CLIP_PATH', defs: 'DEFS', g: 'GROUP' };
-const GLYPH_SHAPE_GEOMETRY: Record<string, readonly string[]> = {
-    circle: ['cx', 'cy', 'r'],
-    ellipse: ['cx', 'cy', 'rx', 'ry'],
-    line: ['x1', 'y1', 'x2', 'y2'],
-    path: ['d'],
-    polygon: ['points'],
-    polyline: ['points'],
-    rect: ['x', 'y', 'width', 'height', 'rx', 'ry']
-};
 const EMOJI_LANGUAGES = ['en', 'uk', 'de', 'es', 'fr'];
 const EMOJI_COMPONENT_GROUP = 2;
 const MIN_TRANSLATED_WORD_LENGTH = 3;
 const StringArrayRecordSchema = Schema.Record(Schema.String, Schema.Array(Schema.String));
 const StringRecordSchema = Schema.Record(Schema.String, Schema.String);
-
-interface GlyphElement {
-    readonly tag: string;
-    readonly attributes: Record<string, string>;
-    readonly children?: GlyphElement[];
-}
 
 const EmojibaseDataSchema = Schema.Array(
     Schema.Struct({
@@ -157,89 +141,78 @@ const buildRectPathData = (attributes: Record<string, string>): string => {
     return `M${x + radiusX} ${y}H${x + width - radiusX}${corner} ${x + width} ${y + radiusY}V${y + height - radiusY}${corner} ${x + width - radiusX} ${y + height}H${x + radiusX}${corner} ${x} ${y + height - radiusY}V${y + radiusY}${corner} ${x + radiusX} ${y}Z`;
 };
 
-const buildShapePathData = (tag: string, attributes: Record<string, string>): string => {
-    switch (tag) {
-        case 'circle':
-            return buildEllipsePathData(
+const GLYPH_SHAPES: Record<
+    string,
+    { readonly geometry: readonly string[]; readonly build: (attributes: Record<string, string>) => string }
+> = {
+    circle: {
+        geometry: ['cx', 'cy', 'r'],
+        build: attributes =>
+            buildEllipsePathData(
                 readGlyphNumber(attributes, 'cx'),
                 readGlyphNumber(attributes, 'cy'),
                 readGlyphNumber(attributes, 'r'),
                 readGlyphNumber(attributes, 'r')
-            );
-        case 'ellipse':
-            return buildEllipsePathData(
+            )
+    },
+    ellipse: {
+        geometry: ['cx', 'cy', 'rx', 'ry'],
+        build: attributes =>
+            buildEllipsePathData(
                 readGlyphNumber(attributes, 'cx'),
                 readGlyphNumber(attributes, 'cy'),
                 readGlyphNumber(attributes, 'rx'),
                 readGlyphNumber(attributes, 'ry')
+            )
+    },
+    line: {
+        geometry: ['x1', 'y1', 'x2', 'y2'],
+        build: attributes =>
+            `M${readGlyphNumber(attributes, 'x1')} ${readGlyphNumber(attributes, 'y1')}L${readGlyphNumber(attributes, 'x2')} ${readGlyphNumber(attributes, 'y2')}`
+    },
+    path: { geometry: ['d'], build: attributes => attributes.d ?? '' },
+    polygon: { geometry: ['points'], build: attributes => buildPointsPathData(attributes.points ?? '', true) },
+    polyline: { geometry: ['points'], build: attributes => buildPointsPathData(attributes.points ?? '', false) },
+    rect: { geometry: ['x', 'y', 'width', 'height', 'rx', 'ry'], build: buildRectPathData }
+};
+const FULL_VIEWPORT_CLIP_RECT = '<rect width="24" height="24" fill="currentColor"/>';
+
+const parseGlyphMarkup = (iconName: string, markup: string): Record<string, string>[] =>
+    markup
+        .replaceAll(/<defs>\s*<clipPath id="[^"]+">\s*([^]*?)\s*<\/clipPath>\s*<\/defs>/gu, (clip, content: string) => {
+            if (content !== FULL_VIEWPORT_CLIP_RECT) {
+                throw new Error(`Unsupported clipPath ${clip} in Reicon ${iconName}`);
+            }
+
+            return '';
+        })
+        .replaceAll(/<g(?: clip-path="url\(#[^)]+\)")?>|<\/[a-zA-Z]+>/gu, '')
+        .match(/<[^>]*>|[^<\s]+/gu)
+        ?.map(element => {
+            const [, tag = '', rawAttributes = ''] = /^<([a-zA-Z]+)([^>]*?)\/?>$/u.exec(element) ?? [];
+            const shape = GLYPH_SHAPES[tag];
+
+            if (!isDefined(shape)) {
+                throw new Error(`Unsupported ${element} in Reicon ${iconName}`);
+            }
+
+            const attributes = Object.fromEntries(
+                [...rawAttributes.matchAll(/([a-zA-Z][a-zA-Z0-9-]*)="([^"]*)"/gu)].map(([, attributeName, value]) => [
+                    toGlyphAttributeName(attributeName),
+                    value
+                ])
             );
-        case 'line':
-            return `M${readGlyphNumber(attributes, 'x1')} ${readGlyphNumber(attributes, 'y1')}L${readGlyphNumber(attributes, 'x2')} ${readGlyphNumber(attributes, 'y2')}`;
-        case 'polygon':
-            return buildPointsPathData(attributes.points ?? '', true);
-        case 'polyline':
-            return buildPointsPathData(attributes.points ?? '', false);
-        case 'rect':
-            return buildRectPathData(attributes);
-        default:
-            return attributes.d ?? '';
-    }
-};
 
-const toGlyphElement = (iconName: string, tag: string, attributes: Record<string, string>): GlyphElement => {
-    const containerTag = GLYPH_CONTAINER_TAGS[tag];
-
-    if (isDefined(containerTag)) {
-        return { tag: containerTag, attributes, children: [] };
-    }
-
-    const geometry = GLYPH_SHAPE_GEOMETRY[tag];
-
-    if (!isDefined(geometry)) {
-        throw new Error(`Unsupported <${tag}> in Reicon ${iconName}`);
-    }
-
-    return {
-        tag: 'PATH',
-        attributes: {
-            ...Object.fromEntries(Object.entries(attributes).filter(([name]) => !geometry.includes(name))),
-            d: buildShapePathData(tag, attributes)
-        }
-    };
-};
-
-const parseGlyphMarkup = (iconName: string, markup: string): GlyphElement[] => {
-    const root: GlyphElement = { tag: 'ROOT', attributes: {}, children: [] };
-    const stack = [root];
-
-    for (const [, closing, tag, rawAttributes, selfClosing] of markup.matchAll(/<(\/?)([a-zA-Z]+)([^>]*?)(\/?)>/gu)) {
-        if (closing === '/') {
-            stack.pop();
-            continue;
-        }
-
-        const attributes = Object.fromEntries(
-            [...rawAttributes.matchAll(/([a-zA-Z][a-zA-Z0-9-]*)="([^"]*)"/gu)].map(([, attributeName, value]) => [
-                toGlyphAttributeName(attributeName),
-                value
-            ])
-        );
-        const element = toGlyphElement(iconName, tag, attributes);
-
-        stack.at(-1)?.children?.push(element);
-
-        if (selfClosing !== '/') {
-            stack.push(element);
-        }
-    }
-
-    return root.children ?? [];
-};
+            return {
+                ...Object.fromEntries(Object.entries(attributes).filter(([name]) => !shape.geometry.includes(name))),
+                d: shape.build(attributes)
+            };
+        }) ?? [];
 
 const readGlyphMarkup = (name: string, weight: 'F' | 'O'): string | undefined =>
     readFileSync(join(REICON_DIR, 'icons', `${name}.js`), 'utf8').match(new RegExp(`\\b${weight}: \`([^\`]*)\``, 'u'))?.[1];
 
-const buildGlyphs = (names: readonly string[], weight: 'F' | 'O'): Record<string, GlyphElement[]> =>
+const buildGlyphs = (names: readonly string[], weight: 'F' | 'O'): Record<string, Record<string, string>[]> =>
     Object.fromEntries(
         names.map(name => {
             const markup = readGlyphMarkup(name, weight);
