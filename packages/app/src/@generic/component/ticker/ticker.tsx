@@ -9,7 +9,7 @@ import { cn } from '../../utils/cn.util';
 import { StaticChar } from './static-char';
 import { Tick } from './tick';
 
-interface Props extends Pick<ViewProps, 'accessible' | 'testID'> {
+interface Props extends Pick<ViewProps, 'accessible' | 'testID' | 'children'> {
     readonly number: number | string;
     readonly textClassName?: string;
     readonly minFontSize?: number;
@@ -31,7 +31,8 @@ export const Ticker = (props: Props) => {
         hasAnimation = true,
         availableWidth,
         accessible = false,
-        testID
+        testID,
+        children
     } = props;
 
     const [containerWidth, setContainerWidth] = useState(0);
@@ -81,7 +82,10 @@ export const Ticker = (props: Props) => {
 
     return (
         <View accessible={accessible} className="w-full" testID={testID} {...(!isDefined(availableWidth) && { onLayout: handleLayout })}>
-            <View className={cn('flex-row justify-center', className)}>{elements}</View>
+            <View className={cn('flex-row justify-center', className)}>
+                {elements}
+                {children}
+            </View>
         </View>
     );
 };

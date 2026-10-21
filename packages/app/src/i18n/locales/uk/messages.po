@@ -3692,7 +3692,7 @@ msgstr "Лише блокування телефона"
 msgid "Phone lock only · {contents}"
 msgstr "Лише блокування телефона · {contents}"
 
-#: src/auth/components/security-status-chip/security-status-chip.tsx
+#: src/auth/components/security-lock-button/security-lock-button.tsx
 msgid "Phone lock only. Make a PIN to encrypt your data."
 msgstr "Лише блокування телефона. Створіть PIN-код, щоб зашифрувати дані."
 
@@ -4599,10 +4599,12 @@ msgstr "Дані синхронізації виправлено"
 msgid "Sync data repairs"
 msgstr "Виправлення даних синхронізації"
 
+#: src/account/component/account-card-base/account-card-base.tsx
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Sync Failed"
 msgstr "Синхронізація не вдалась"
 
+#: src/account/component/account-card-base/account-card-base.tsx
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Sync paused"
 msgstr "Синхронізацію призупинено"
@@ -4614,6 +4616,10 @@ msgstr "Виправлення синхронізації"
 #: src/sync/component/create-binance-account/create-binance-account.tsx
 msgid "Sync your Binance balances and transactions"
 msgstr "Синхронізуйте свої баланси та транзакції Binance"
+
+#: src/account/component/account-card-base/account-card-base.tsx
+msgid "Syncing"
+msgstr "Синхронізація"
 
 #: src/sync/service/background-sync-session.service.ts
 msgid "Syncing bank history"
@@ -5129,6 +5135,7 @@ msgstr "Нереаліз. приб./збиток"
 msgid "Untagged"
 msgstr "Без тегу"
 
+#: src/account/component/account-card-base/account-card-base.tsx
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Up to date"
 msgstr "Актуальний"
@@ -5231,6 +5238,7 @@ msgstr "Голосові нотатки"
 msgid "Volume"
 msgstr "Обсяг"
 
+#: src/account/component/account-card-base/account-card-base.tsx
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Waiting"
 msgstr "Очікування"
@@ -5388,7 +5396,7 @@ msgstr "Ви підключені до Wi-Fi"
 msgid "You're on Wi-Fi."
 msgstr "Ви підключені до Wi-Fi."
 
-#: src/auth/components/security-status-chip/security-status-chip.tsx
+#: src/auth/components/security-lock-button/security-lock-button.tsx
 msgid "Your data is sealed. Only your PIN opens it."
 msgstr "Ваші дані запечатано. Лише ваш PIN-код їх відкриває."
 

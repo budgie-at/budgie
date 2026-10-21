@@ -83,7 +83,7 @@ env:
       timeout: 30000
 
 - assertVisible:
-      id: 'SecurityStatusChip.Root'
+      id: 'SecurityLockButton.Root'
 
 - assertNotVisible:
       id: 'AccountsEmptyState.AddAccountButton'

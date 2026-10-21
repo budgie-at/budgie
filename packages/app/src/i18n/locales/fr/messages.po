@@ -3692,7 +3692,7 @@ msgstr "Verrouillage du téléphone uniquement"
 msgid "Phone lock only · {contents}"
 msgstr "Verrouillage du téléphone uniquement · {contents}"
 
-#: src/auth/components/security-status-chip/security-status-chip.tsx
+#: src/auth/components/security-lock-button/security-lock-button.tsx
 msgid "Phone lock only. Make a PIN to encrypt your data."
 msgstr "Verrouillage du téléphone uniquement. Crée un code PIN pour chiffrer tes données."
 
@@ -4599,10 +4599,12 @@ msgstr "Données de synchronisation réparées"
 msgid "Sync data repairs"
 msgstr "Réparations des données de synchronisation"
 
+#: src/account/component/account-card-base/account-card-base.tsx
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Sync Failed"
 msgstr "Échec de la synchronisation"
 
+#: src/account/component/account-card-base/account-card-base.tsx
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Sync paused"
 msgstr "Synchronisation en pause"
@@ -4614,6 +4616,10 @@ msgstr "Réparations de synchronisation"
 #: src/sync/component/create-binance-account/create-binance-account.tsx
 msgid "Sync your Binance balances and transactions"
 msgstr "Synchronisez vos soldes et transactions Binance"
+
+#: src/account/component/account-card-base/account-card-base.tsx
+msgid "Syncing"
+msgstr "Synchronisation en cours"
 
 #: src/sync/service/background-sync-session.service.ts
 msgid "Syncing bank history"
@@ -5129,6 +5135,7 @@ msgstr "Gain/perte latent"
 msgid "Untagged"
 msgstr "Sans étiquette"
 
+#: src/account/component/account-card-base/account-card-base.tsx
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Up to date"
 msgstr "À jour"
@@ -5231,6 +5238,7 @@ msgstr "Notes vocales"
 msgid "Volume"
 msgstr "Volume"
 
+#: src/account/component/account-card-base/account-card-base.tsx
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Waiting"
 msgstr "En attente"
@@ -5388,7 +5396,7 @@ msgstr "Tu es connecté au Wi-Fi"
 msgid "You're on Wi-Fi."
 msgstr "Vous êtes en Wi-Fi."
 
-#: src/auth/components/security-status-chip/security-status-chip.tsx
+#: src/auth/components/security-lock-button/security-lock-button.tsx
 msgid "Your data is sealed. Only your PIN opens it."
 msgstr "Tes données sont scellées. Seul ton code PIN les ouvre."
 

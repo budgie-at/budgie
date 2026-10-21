@@ -36,7 +36,7 @@ export const AccountGridRow = ({ row, accountType, balancesByAccountId, classNam
     );
 
     return (
-        <View className={cn('flex-row items-start', className)}>
+        <View className={cn('flex-row items-stretch', className)}>
             <AccountGridItem account={row.left} balance={leftBalance} hasLedgerHistory={hasLeftLedgerHistory} type={accountType} isLeft />
             {rightItem}
         </View>

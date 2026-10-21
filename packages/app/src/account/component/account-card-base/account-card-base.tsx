@@ -1,76 +1,85 @@
-import { AccountEntityInterface } from '@budgie/contracts';
+import { AccountAssociationEnum, AccountWithSyncEntityInterface } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { ReactNode } from 'react';
 import { Text, View } from 'react-native';
 
-import { OnEventFn, isDefined } from '@rnw-community/shared';
+import { OnEventFn, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
-import { cn } from '../../../@generic/utils/cn.util';
-import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
+import { AccountSyncStateEnum } from '../../enum/account-sync-state.enum';
+import { getAccountSyncState } from '../../utils/get-account-sync-state.util';
+import { AccountCardBalance } from '../account-card-balance/account-card-balance';
 import { AccountEditButton } from '../account-edit-button/account-edit-button';
+import { AccountSyncBadge } from '../account-sync-badge/account-sync-badge';
 
 import { AccountCardBaseSelector } from './account-card-base.selector';
 
-interface Props extends Pick<AccountEntityInterface, 'id' | 'title' | 'icon'> {
+interface Props {
+    readonly account: Pick<
+        AccountWithSyncEntityInterface,
+        'id' | 'title' | 'icon' | 'iban' | AccountAssociationEnum.SYNC | AccountAssociationEnum.INSTRUMENT
+    >;
     readonly balance: number;
-    readonly className?: string;
-    readonly instrumentSymbol: string;
-    readonly accessibilityLabel?: string;
-    readonly bottomRight?: ReactNode;
-    readonly balanceContent?: ReactNode;
+    readonly amountLabel?: string;
     readonly onLongPress?: OnEventFn;
+    readonly children?: ReactNode;
 }
 
-export const AccountCardBase = (props: Props) => {
-    const { id, title, icon, balance, className, instrumentSymbol, accessibilityLabel, bottomRight, balanceContent, onLongPress } = props;
+export const AccountCardBase = ({ account, balance, amountLabel, onLongPress, children }: Props) => {
+    const { id, title, icon, iban, sync, instrument } = account;
 
-    const formatDigits = useDisplayFormatDigits();
+    const { t } = useLingui();
     const protectAmount = useProtectedAmountLabel();
 
     const navigateToAccount = () => void router.push({ pathname: '/account/[id]/details', params: { id: String(id) } });
 
-    const accountCardTestID = AccountCardBaseSelector.Card(title);
-    const accountBalance = formatDigits(balance, instrumentSymbol);
-    const accountBalanceTestValue = formatDigits(balance);
+    const syncState = getAccountSyncState(sync);
+    const syncStateLabels: Record<AccountSyncStateEnum, string> = {
+        [AccountSyncStateEnum.SYNCED]: t`Up to date`,
+        [AccountSyncStateEnum.SYNCING]: t`Syncing`,
+        [AccountSyncStateEnum.WAITING]: t`Waiting`,
+        [AccountSyncStateEnum.FAILED]: t`Sync Failed`,
+        [AccountSyncStateEnum.DISABLED]: t`Sync paused`
+    };
+    const syncStateLabel = isDefined(syncState) ? `, ${syncStateLabels[syncState]}` : '';
+    const accessibilityLabel = `${title}, ${amountLabel ?? protectAmount(balance, instrument.symbol)}${syncStateLabel}`;
+    const metaLabel = isNotEmptyString(iban) ? `${instrument.code} · ••${iban.slice(-4)}` : instrument.code;
+    const syncBadge = isDefined(syncState) ? <AccountSyncBadge state={syncState} /> : null;
 
     return (
         <Card
             accessible
-            testID={accountCardTestID}
-            accessibilityLabel={accessibilityLabel ?? `${title}, ${protectAmount(balance, instrumentSymbol)}`}
+            size="md"
+            testID={AccountCardBaseSelector.Card(title)}
+            accessibilityLabel={accessibilityLabel}
             onPress={navigateToAccount}
             onLongPress={onLongPress}
-            className={cn('relative flex-none gap-3 active:scale-xs overflow-hidden border-secondary-corner', className)}
+            className="flex-1 gap-lg rounded-6xl active:scale-xs"
         >
-            <View className="gap-3">
-                <View className="flex-row items-center justify-between">
-                    <CircleIcon size={36} iconSize={20} icon={icon} variant="ghost" border={false} />
-
-                    <AccountEditButton id={id} />
+            <View className="flex-row items-center justify-between">
+                <View>
+                    <CircleIcon size={30} iconSize={16} radius={10} icon={icon} variant="ghost" border={false} />
+                    {syncBadge}
                 </View>
 
-                <View className="flex-row items-end justify-between gap-2">
-                    <View className="min-w-0 flex-1 gap-1">
-                        <Text className="text-secondary-foreground" ellipsizeMode="tail" numberOfLines={1}>
-                            {title}
-                        </Text>
+                <AccountEditButton id={id} />
+            </View>
 
-                        {balanceContent ?? (
-                            <ProtectedText
-                                className="text-primary font-medium"
-                                testID={AccountCardBaseSelector.Balance(title, accountBalanceTestValue)}
-                            >
-                                {accountBalance}
-                            </ProtectedText>
-                        )}
-                    </View>
+            {children ?? <AccountCardBalance title={title} balance={balance} instrumentSymbol={instrument.symbol} />}
 
-                    {isDefined(bottomRight) && <View className="w-[14px] items-center">{bottomRight}</View>}
+            <View className="mt-auto">
+                <View className="min-h-[36px] justify-end">
+                    <Text className="text-sm leading-[18px] text-primary" numberOfLines={2} ellipsizeMode="tail">
+                        {title}
+                    </Text>
                 </View>
+
+                <Text className="text-xs leading-[16px] tracking-wide text-secondary-foreground tabular-nums" numberOfLines={1}>
+                    {metaLabel}
+                </Text>
             </View>
         </Card>
     );
