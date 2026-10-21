@@ -8,13 +8,15 @@
 
 @utility container {
     margin-inline: auto;
-    padding-inline: 2rem;
-    @media (width >= --theme(--breakpoint-sm)) {
-        max-width: none;
+    padding-inline: 1rem;
+    max-width: 1400px;
+    @media (width >= --theme(--breakpoint-md)) {
+        padding-inline: 2rem;
     }
-    @media (width >= 1400px) {
-        max-width: 1400px;
-    }
+}
+
+@utility measure {
+    max-width: 68ch;
 }
 
 @utility scrollbar-hide {
@@ -280,6 +282,32 @@
     background-image: linear-gradient(to right, #1f1f1f 1px, transparent 1px), linear-gradient(to bottom, #1f1f1f 1px, transparent 1px);
 }
 
+.section-split-head {
+    max-width: 42rem;
+    margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+    .section-split-head {
+        margin-bottom: 3rem;
+    }
+}
+
+@media (min-width: 1280px) {
+    .section-split {
+        display: grid;
+        grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+        column-gap: 4rem;
+        align-items: start;
+    }
+
+    .section-split-head {
+        position: sticky;
+        top: 6rem;
+        margin-bottom: 0;
+    }
+}
+
 .hero-grid {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
@@ -391,12 +419,10 @@
     }
 
     .hero-grid {
-        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
         align-items: center;
         justify-items: start;
-        gap: 3rem;
-        max-width: 68rem;
-        margin-inline: auto;
+        gap: 4rem;
     }
 
     .hero-copy {
@@ -412,7 +438,7 @@
 
     .hero-stage {
         order: 2;
-        justify-self: end;
+        justify-self: center;
     }
 }
 
@@ -424,12 +450,14 @@
     display: grid;
     gap: 1rem;
     align-items: center;
-    max-width: 76rem;
 }
 
 .feature-hero-grid:not([data-stage='true']) {
-    max-width: 56rem;
     padding-top: 2rem;
+}
+
+.feature-hero-grid:not([data-stage='true']) .feature-hero-copy {
+    max-width: 56rem;
 }
 
 .feature-hero-copy {
@@ -543,10 +571,6 @@
     --feature-surface: hsl(var(--background));
 
     background: hsl(var(--muted));
-}
-
-.feature-wrap {
-    max-width: 76rem;
 }
 
 .feature-section-head {
@@ -1148,7 +1172,7 @@
     }
 
     .feature-crop-band .feature-crop {
-        --crop-w: 48rem;
+        --crop-w: max(48rem, 112cqw);
 
         height: auto;
         min-height: 36rem;
