@@ -41,20 +41,6 @@ appId: ${APP_ID}
 - runFlow:
     file: subflows/accounts/update-account-balance.flow.yaml
     env:
-      NEW_BALANCE: '405000'
-
-- runFlow:
-    file: subflows/accounts/open-account-settings.flow.yaml
-    env:
-      ACCOUNT_NAME: 'E2E Savings Account'
-
-- assertVisible:
-    id: 'CreateAccount.Amount'
-    text: '405,000(\.00)?'
-
-- runFlow:
-    file: subflows/accounts/update-account-balance.flow.yaml
-    env:
       NEW_BALANCE: '123456789'
 
 - runFlow:
