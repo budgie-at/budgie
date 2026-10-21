@@ -57,6 +57,14 @@ vi.mock('@app/@generic/runtime/app.runtime', async () => {
     return { appAtomRuntime: testAtomRuntime, appRuntime: testRuntime };
 });
 
+vi.mock('expo-app-intents', async () => {
+    const { walletCaptureNativeStub } = await import('../wallet-capture/wallet-capture-app-intents.stub');
+
+    return walletCaptureNativeStub;
+});
+
+import { walletCaptureNativeStub } from '../wallet-capture/wallet-capture-app-intents.stub';
+
 import { mockServer } from './mock-server';
 
 beforeAll(() => {
@@ -64,6 +72,7 @@ beforeAll(() => {
 });
 
 beforeEach(() => {
+    walletCaptureNativeStub.reset();
     if (!isDefined(backupDatabasePath)) {
         return Effect.runPromise(resetTestDb(testDb));
     }

@@ -15,10 +15,16 @@ const config = {
         '**/ios/**/*',
         '!**/ios/Podfile',
         '!**/ios/Podfile.lock',
+        '!**/modules/**/ios/**/*',
         // HINT: We have build errors with react-native-audio-api
         '**/node_modules/react-native-audio-api/**/*'
     ],
     extraSources: [
+        {
+            type: 'dir',
+            filePath: 'app-intents',
+            reasons: ['expo-app-intents']
+        },
         {
             type: 'contents',
             id: 'op-sqlite-config',

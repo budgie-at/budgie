@@ -75,6 +75,7 @@ const initializeAppServices = Effect.gen(function* () {
     const historicalMarketDataDrainerService = yield* HistoricalMarketDataDrainerService;
     const backgroundSyncSessionService = yield* BackgroundSyncSessionService;
 
+    yield* Effect.forkDetach(appDataSyncService.drainWalletCapturesOnInvocation);
     yield* registerBackgroundTasks;
     yield* widgetSnapshotService.start();
     yield* backgroundSyncSessionService.start();

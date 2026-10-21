@@ -18,6 +18,7 @@ export const SettingsPageSelector = {
         isDefined(account)
             ? (`SettingsPage.DefaultAccountCard.Selected.${normalizePart(account.id)}.${normalizePart(account.title)}` as const)
             : ('SettingsPage.DefaultAccountCard.None' as const),
+    ApplePayCaptureCard: 'SettingsPage.ApplePayCaptureCard',
     DarkModeCard: 'SettingsPage.DarkModeCard',
     DarkModeSwitch: 'SettingsPage.DarkModeSwitch',
     ShowCentsCard: 'SettingsPage.ShowCentsCard',

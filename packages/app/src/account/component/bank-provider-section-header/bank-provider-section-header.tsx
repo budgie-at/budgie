@@ -25,8 +25,7 @@ export const BankProviderSectionHeader = ({ provider, integrationId, total }: Pr
     const titleDescriptor = BANK_PROVIDER_TITLE[provider];
     const title = isDefined(titleDescriptor) ? t(titleDescriptor) : provider;
 
-    const handleOpenIntegrationSettings = () =>
-        void router.push({ pathname: '/bank-integration/[id]', params: { id: String(integrationId) } });
+    const handleOpenIntegrationSettings = () => void router.push(`/bank-integration/${integrationId}`);
 
     return (
         <AccountSectionHeaderFrame total={total}>

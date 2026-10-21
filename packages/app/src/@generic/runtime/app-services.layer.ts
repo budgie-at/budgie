@@ -116,6 +116,9 @@ import { BackgroundSyncSessionService } from '../../sync/service/background-sync
 import { TagService } from '../../tag/service/tag.service';
 import { PatternCacheService } from '../../transaction/service/pattern-cache/pattern-cache.service';
 import { RepeatedTransactionService } from '../../transaction/service/repeated-transaction.service';
+import { WalletCaptureImportService } from '../../wallet-capture/service/wallet-capture-import.service';
+import { WalletCaptureNativeService } from '../../wallet-capture/service/wallet-capture-native.service';
+import { WalletCaptureTransactionService } from '../../wallet-capture/service/wallet-capture-transaction.service';
 import { WidgetSnapshotBuilderService } from '../../widget/service/widget-snapshot-builder.service';
 import { WidgetSnapshotService } from '../../widget/service/widget-snapshot.service';
 import { DatabaseLifecycleService } from '../drizzle/service/database-lifecycle.service';
@@ -249,7 +252,10 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     RefundConsolidationService.layer,
     TransactionTransferService.layer,
     TransferCreationService.layer,
-    TransactionService.layer
+    TransactionService.layer,
+    WalletCaptureNativeService.layer,
+    WalletCaptureTransactionService.layer,
+    WalletCaptureImportService.layer
 ).pipe(Layer.provideMerge(Layer.mergeAll(syncWorkloadLayer, syncFileReaderLayer)), Layer.provide(ledgerPortsLayer));
 
 export const appServicesLayer = appServicesWithoutDrainerLayer.pipe(

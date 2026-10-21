@@ -62,7 +62,8 @@ export default ({ config }) => ({
         },
         infoPlist: {
             BGTaskSchedulerPermittedIdentifiers: ['$(PRODUCT_BUNDLE_IDENTIFIER).sync.*'],
-            UIBackgroundModes: ['processing']
+            UIBackgroundModes: ['processing'],
+            LSApplicationQueriesSchemes: ['shortcuts']
         },
         associatedDomains: ['applinks:budgie.at'],
         entitlements: {
@@ -129,6 +130,7 @@ export default ({ config }) => ({
                 }
             }
         ],
+        'expo-app-intents',
         [
             'expo-widgets',
             {
@@ -245,7 +247,10 @@ export default ({ config }) => ({
     ],
     experiments: {
         typedRoutes: true,
-        reactCompiler: true
+        reactCompiler: true,
+        inlineModules: {
+            watchedDirectories: ['app-intents']
+        }
     },
     runtimeVersion: {
         policy: 'fingerprint'
