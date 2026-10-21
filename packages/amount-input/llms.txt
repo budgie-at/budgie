@@ -1,0 +1,21 @@
+# @rnw-community/react-native-amount-input
+
+> Auto-fitting amount input and display for React Native (iOS, Android). Measures rendered text to shrink hero amounts
+> so they always fit beside their currency symbol; ships amount parsing utilities and a flip sign toggle. ESM + CJS
+> precompiled with the React Compiler; peer-depends on react-native-reanimated (>=4.1.0 <5).
+
+## Guides
+
+- [Installation](readme.md#installation): Peer dependencies and supported platforms.
+- [Quick start](readme.md#quick-start): An editable hero amount with a prefix symbol.
+- [How fitting works](readme.md#how-fitting-works): The measured fit formula and its no-loop guarantee.
+- [Recipes](readme.md#recipes): Suffix symbols, keypad-driven displays, custom inputs and signed amounts.
+
+## API reference
+
+- [`AmountField`](readme.md#amountfield): Row that fits its parts to its width.
+- [`AmountFieldInput`](readme.md#amountfieldinput): Editable amount part.
+- [`AmountFieldText`](readme.md#amountfieldtext): Read-only amount part.
+- [`AmountFieldPrefix` / `AmountFieldSuffix`](readme.md#amountfieldprefix--amountfieldsuffix): Currency symbol parts.
+- [`AmountSignToggle`](readme.md#amountsigntoggle): Flip toggle between a plus and a minus face.
+- [Hooks](readme.md#hooks): `useAmountInput`, `useAmountSign`.
