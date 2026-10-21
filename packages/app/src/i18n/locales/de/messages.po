@@ -4599,10 +4599,12 @@ msgstr "Synchronisierungsdaten repariert"
 msgid "Sync data repairs"
 msgstr "Synchronisationsdaten-Reparaturen"
 
+#: src/account/component/account-card-base/account-card-base.tsx
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Sync Failed"
 msgstr "Synchronisation fehlgeschlagen"
 
+#: src/account/component/account-card-base/account-card-base.tsx
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Sync paused"
 msgstr "Synchronisation pausiert"
@@ -4614,6 +4616,10 @@ msgstr "Synchronisations-Reparaturen"
 #: src/sync/component/create-binance-account/create-binance-account.tsx
 msgid "Sync your Binance balances and transactions"
 msgstr "Synchronisieren Sie Ihre Binance-Salden und -Transaktionen"
+
+#: src/account/component/account-card-base/account-card-base.tsx
+msgid "Syncing"
+msgstr "Synchronisierung läuft"
 
 #: src/sync/service/background-sync-session.service.ts
 msgid "Syncing bank history"
@@ -5129,6 +5135,7 @@ msgstr "Unrealisierte GuV"
 msgid "Untagged"
 msgstr "Ohne Tag"
 
+#: src/account/component/account-card-base/account-card-base.tsx
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Up to date"
 msgstr "Auf dem neuesten Stand"

@@ -1,44 +1,31 @@
-import { AccountEntityInterface, InstrumentTypeEnum, SyncEntityInterface } from '@budgie/contracts';
-import { View } from 'react-native';
+import { AccountWithSyncEntityInterface, InstrumentTypeEnum } from '@budgie/contracts';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { useFormatInstrumentAmount } from '../../../i18n/hook/use-format-instrument-amount.hook';
 import { AccountCardBase } from '../account-card-base/account-card-base';
 import { AccountCardBaseSelector } from '../account-card-base/account-card-base.selector';
-import { SyncStatusDot } from '../sync-status-dot/sync-status-dot';
 
-interface Props extends Pick<AccountEntityInterface, 'id' | 'title' | 'icon'> {
+interface Props {
+    readonly account: AccountWithSyncEntityInterface;
     readonly balance: number;
-    readonly sync: SyncEntityInterface | null;
-    readonly className?: string;
-    readonly instrumentCode: string;
-    readonly instrumentSymbol: string;
 }
 
-export const CryptoAccountCard = (props: Props) => {
-    const { id, title, icon, balance, sync, className, instrumentCode, instrumentSymbol } = props;
+export const CryptoAccountCard = ({ account, balance }: Props) => {
     const formatInstrumentAmount = useFormatInstrumentAmount();
 
-    const formattedBalance = formatInstrumentAmount(balance, instrumentCode, InstrumentTypeEnum.CRYPTO);
-
-    const balanceContent = (
-        <View className="gap-y-1">
-            <ProtectedText className="text-primary font-medium" testID={AccountCardBaseSelector.Balance(title, formattedBalance)}>
-                {formattedBalance}
-            </ProtectedText>
-        </View>
-    );
+    const formattedBalance = formatInstrumentAmount(balance, account.instrument.code, InstrumentTypeEnum.CRYPTO);
 
     return (
-        <AccountCardBase
-            id={id}
-            title={title}
-            icon={icon}
-            balance={balance}
-            className={className}
-            instrumentSymbol={instrumentSymbol}
-            balanceContent={balanceContent}
-            bottomRight={<SyncStatusDot sync={sync} />}
-        />
+        <AccountCardBase account={account} balance={balance}>
+            <ProtectedText
+                testID={AccountCardBaseSelector.Balance(account.title, formattedBalance)}
+                numberOfLines={1}
+                adjustsFontSizeToFit
+                minimumFontScale={0.5}
+                className="text-2xl font-semibold tracking-tight tabular-nums text-primary"
+            >
+                {formattedBalance}
+            </ProtectedText>
+        </AccountCardBase>
     );
 };

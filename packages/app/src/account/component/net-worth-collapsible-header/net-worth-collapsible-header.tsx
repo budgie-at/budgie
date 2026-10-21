@@ -27,7 +27,7 @@ interface Props {
 const HEADER_COLLAPSED_HEIGHT = 40;
 const HEADER_EXPANDED_HEIGHT = 156;
 const SCROLL_THRESHOLD = 100;
-const EXPANDED_CONTENT_HORIZONTAL_PADDING = 40;
+const EXPANDED_CONTENT_HORIZONTAL_PADDING = 32;
 
 export const NetWorthCollapsibleHeader = ({ netWorth, fiatTotal, cryptoTotal, fiatCount, cryptoCount }: Props) => {
     const { defaultInstrument } = useSettingsContext();
@@ -45,7 +45,7 @@ export const NetWorthCollapsibleHeader = ({ netWorth, fiatTotal, cryptoTotal, fi
     const availableTickerWidth = Math.max(expandedHeaderWidth - EXPANDED_CONTENT_HORIZONTAL_PADDING, 0);
 
     const expandedContent = (
-        <View className="flex-1 items-center justify-center px-5xl" onLayout={handleExpandedHeaderLayout}>
+        <View className="flex-1 items-center justify-center px-3xl" onLayout={handleExpandedHeaderLayout}>
             <Text className="text-xs uppercase text-secondary-foreground mb-md">
                 <Trans>Total Balance</Trans>
             </Text>
@@ -72,7 +72,7 @@ export const NetWorthCollapsibleHeader = ({ netWorth, fiatTotal, cryptoTotal, fi
     );
 
     const collapsedContent = (
-        <View className="flex-1 flex-row items-center justify-between px-5xl">
+        <View className="flex-1 flex-row items-center justify-between px-3xl">
             <Text className="text-xs uppercase text-secondary-foreground">
                 <Trans>Total Balance</Trans>
             </Text>
