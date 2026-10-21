@@ -3692,7 +3692,7 @@ msgstr "Nur Telefonsperre"
 msgid "Phone lock only · {contents}"
 msgstr "Nur Telefonsperre · {contents}"
 
-#: src/auth/components/security-status-chip/security-status-chip.tsx
+#: src/auth/components/security-lock-button/security-lock-button.tsx
 msgid "Phone lock only. Make a PIN to encrypt your data."
 msgstr "Nur Telefonsperre. Erstelle eine PIN, um deine Daten zu verschlüsseln."
 
@@ -5395,7 +5395,7 @@ msgstr "Du bist im WLAN"
 msgid "You're on Wi-Fi."
 msgstr "Du bist im WLAN."
 
-#: src/auth/components/security-status-chip/security-status-chip.tsx
+#: src/auth/components/security-lock-button/security-lock-button.tsx
 msgid "Your data is sealed. Only your PIN opens it."
 msgstr "Deine Daten sind versiegelt. Nur deine PIN öffnet sie."
 
