@@ -551,15 +551,6 @@ msgstr "Ajouter une transaction"
 msgid "Add Account"
 msgstr "Ajouter un compte"
 
-#: src/sync/component/add-bank-integration-accounts/add-bank-integration-accounts.tsx
-#: src/sync/component/bank-integration-page/bank-integration-page.tsx
-msgid "Add accounts"
-msgstr "Ajouter des comptes"
-
-#: src/sync/component/add-bank-integration-accounts/add-bank-integration-accounts.tsx
-msgid "Add accounts from bank"
-msgstr "Ajouter des comptes depuis la banque"
-
 #: src/account/component/account-grid-item/account-grid-item.tsx
 msgid "Add balance"
 msgstr "Ajouter un solde"
@@ -641,10 +632,6 @@ msgstr "Application de budget alimentée par l'IA avec confidentialité totale. 
 #: src/@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle.tsx
 msgid "All"
 msgstr "Tous"
-
-#: src/sync/component/add-bank-integration-accounts-content/add-bank-integration-accounts-content.tsx
-msgid "All accounts already added"
-msgstr "Tous les comptes ont déjà été ajoutés"
 
 #: src/app/(tabs)/settings/category-icons.tsx
 msgid "All categories have icons"
@@ -1107,6 +1094,10 @@ msgstr "Changer de devise"
 msgid "Change PIN"
 msgstr "Modifier le code PIN"
 
+#: src/sync/component/sync-token-section/sync-token-section.tsx
+msgid "Check the key and try again."
+msgstr "Vérifiez la clé et réessayez."
+
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Checking"
 msgstr "Vérification"
@@ -1115,6 +1106,10 @@ msgstr "Vérification"
 #: src/app/(main)/create-account/index.tsx
 msgid "Checking Account"
 msgstr "Compte courant"
+
+#: src/sync/component/bank-integration-new-accounts/bank-integration-new-accounts.tsx
+msgid "Checking Monobank for new accounts…"
+msgstr "Recherche de nouveaux comptes chez Monobank…"
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Choose \"Excel\" as the export format — PDF and CSV files can't be imported"
@@ -1286,7 +1281,6 @@ msgstr "Contient"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
-#: src/sync/component/add-bank-integration-accounts/add-bank-integration-accounts.tsx
 #: src/sync/component/create-file-bank-account-footer/create-file-bank-account-footer.tsx
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Continue"
@@ -1346,10 +1340,6 @@ msgstr "Coût d'acquisition"
 #: src/account/component/inactive-account-card/inactive-account-card.tsx
 msgid "Could not activate account."
 msgstr "Impossible d'activer le compte."
-
-#: src/sync/component/add-bank-integration-accounts/add-bank-integration-accounts.tsx
-msgid "Could not add accounts"
-msgstr "Impossible d'ajouter les comptes"
 
 #: src/rule/utils/show-rule-application-toast.util.ts
 msgid "Could not apply rule to existing transactions"
@@ -1470,10 +1460,6 @@ msgstr "Impossible d'importer le fichier CSV"
 msgid "Could not load accounts"
 msgstr "Impossible de charger les comptes"
 
-#: src/sync/component/add-bank-integration-accounts-content/add-bank-integration-accounts-content.tsx
-msgid "Could not load accounts from the bank"
-msgstr "Impossible de charger les comptes depuis la banque"
-
 #: src/ai/component/ai-model-storage/ai-model-storage.tsx
 msgid "Could not load AI downloads"
 msgstr "Impossible de charger les téléchargements IA"
@@ -1517,6 +1503,10 @@ msgstr "Impossible de recalculer les soldes"
 #: src/ai/component/ai-model-storage/ai-model-storage.tsx
 msgid "Could not remove unused downloads"
 msgstr "Impossible de supprimer les téléchargements inutilisés"
+
+#: src/sync/component/bank-integration-name-section/bank-integration-name-section.tsx
+msgid "Could not rename"
+msgstr "Impossible de renommer"
 
 #: src/transaction/components/recurring-series-title-input/recurring-series-title-input.tsx
 msgid "Could not rename recurring payment."
@@ -1565,6 +1555,10 @@ msgstr "Impossible de sélectionner la sauvegarde de la base de données"
 #: src/sync/hook/use-sync-account-setup-flow.hook.ts
 msgid "Could not set up sync"
 msgstr "Impossible de configurer la synchronisation"
+
+#: src/sync/component/bank-integration-new-account-row/bank-integration-new-account-row.tsx
+msgid "Could not start syncing"
+msgstr "Impossible de lancer la synchronisation"
 
 #: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
 #: src/categorize-inbox/hook/use-categorize-inbox-actions.hook.ts
@@ -1629,6 +1623,10 @@ msgstr "Impossible de mettre à jour le jeton"
 #: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "Could not update transaction."
 msgstr "Impossible de mettre à jour la transaction."
+
+#: src/sync/component/bank-integration-new-accounts/bank-integration-new-accounts.tsx
+msgid "Couldn’t check Monobank for new accounts"
+msgstr "Impossible de vérifier les nouveaux comptes chez Monobank"
 
 #: src/account/component/include-in-net-worth-field/include-in-net-worth-field.tsx
 msgid "Count this account in your net worth calculation"
@@ -2243,10 +2241,6 @@ msgstr "Erste Bank"
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Erste Bank (PDF)"
 msgstr "Erste Bank (PDF)"
-
-#: src/sync/component/add-bank-integration-accounts-content/add-bank-integration-accounts-content.tsx
-msgid "Every account from this bank is already linked."
-msgstr "Tous les comptes de cette banque sont déjà liés."
 
 #: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
 msgid "Every transaction has a category."
@@ -3066,6 +3060,22 @@ msgstr "Monobank connecté"
 msgid "Monobank gives you a personal token. Budgie uses it to talk to the bank directly, with no one in between."
 msgstr "Monobank te fournit un jeton personnel. Budgie l'utilise pour parler directement à la banque, sans intermédiaire."
 
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
+msgid "Monobank key updated"
+msgstr "Clé Monobank mise à jour"
+
+#: src/sync/component/sync-token-section/sync-token-section.tsx
+msgid "Monobank limits how often keys can be checked. Try again in a minute."
+msgstr "Monobank limite la fréquence de vérification des clés. Réessayez dans une minute."
+
+#: src/sync/component/sync-token-section/sync-token-section.tsx
+msgid "Monobank rejected this key"
+msgstr "Monobank a refusé cette clé"
+
+#: src/sync/component/bank-integration-new-accounts/bank-integration-new-accounts.tsx
+msgid "Monobank rejected this key. Update it above."
+msgstr "Monobank a refusé cette clé. Mettez-la à jour ci-dessus."
+
 #: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
 msgid "Monobank sends about one month of history per minute, for each account you selected."
 msgstr "Monobank envoie environ un mois d'historique par minute, pour chaque compte sélectionné."
@@ -3114,6 +3124,10 @@ msgstr "Vers les espèces"
 #: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
 msgid "Moved to cash"
 msgstr "Déplacé vers les espèces"
+
+#: src/sync/component/bank-integration-name-section/bank-integration-name-section.tsx
+msgid "Name"
+msgstr "Nom"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Navigate to Account → Statements"
@@ -3402,6 +3416,14 @@ msgstr "Pas maintenant"
 #: src/transaction/components/transaction-field-icon/transaction-field-icon.tsx
 msgid "not set"
 msgstr "non défini"
+
+#: src/sync/component/bank-integration-name-section/bank-integration-name-section.tsx
+msgid "Not set"
+msgstr "Non défini"
+
+#: src/sync/component/bank-integration-new-accounts/bank-integration-new-accounts.tsx
+msgid "Not synced yet"
+msgstr "Pas encore synchronisés"
 
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
 #: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
@@ -3962,6 +3984,7 @@ msgstr "Supprimer la répartition ?"
 msgid "Remove unused downloads ({unusedSize})"
 msgstr "Supprimer les téléchargements inutilisés ({unusedSize})"
 
+#: src/sync/component/bank-integration-name-section/bank-integration-name-section.tsx
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "Rename"
 msgstr "Renommer"
@@ -4017,6 +4040,7 @@ msgid "Resume"
 msgstr "Reprendre"
 
 #: src/ai/component/ai-model-storage/ai-model-storage.tsx
+#: src/sync/component/bank-integration-new-accounts/bank-integration-new-accounts.tsx
 msgid "Retry"
 msgstr "Réessayer"
 
@@ -4230,6 +4254,10 @@ msgstr "Rechercher..."
 #: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx
 msgid "Secondary Value"
 msgstr "Valeur secondaire"
+
+#: src/sync/component/bank-integration-name-section/bank-integration-name-section.tsx
+msgid "Section name"
+msgstr "Nom de la section"
 
 #: src/settings/components/security-settings/pin-disabled-card.tsx
 msgid "Secure your app with PIN & Face ID"
@@ -4587,6 +4615,7 @@ msgid "Switch between light and dark themes"
 msgstr "Basculer entre les thèmes clair et sombre"
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx
+#: src/sync/component/bank-integration-new-account-row/bank-integration-new-account-row.tsx
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Sync"
 msgstr "Synchronisation"
@@ -4778,6 +4807,10 @@ msgstr "Ça ne ressemble pas encore à un jeton Monobank"
 msgid "This is where your data lives and who can read it. You can find it again in Settings › Privacy."
 msgstr "Voici où vivent vos données et qui peut les lire. Vous retrouverez ces infos dans Paramètres › Confidentialité."
 
+#: src/sync/component/sync-token-section/sync-token-section.tsx
+msgid "This key is for a different Monobank client"
+msgstr "Cette clé appartient à un autre client Monobank"
+
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "This month"
 msgstr "Ce mois-ci"
@@ -4817,6 +4850,14 @@ msgstr "Cela réindexe chaque transaction. Continuer ?"
 #: src/ai/component/ai-translation-status-card/ai-translation-status-card.tsx
 msgid "This re-translates every category and tag. Continue?"
 msgstr "Cela retraduit chaque catégorie et tag. Continuer ?"
+
+#: src/sync/component/sync-token-section/sync-token-section.tsx
+msgid "This token already syncs another of your Monobank sections. Enter a different token."
+msgstr "Ce jeton synchronise déjà une autre de vos sections Monobank. Saisissez un autre jeton."
+
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
+msgid "This token already syncs one of your Monobank sections. Use the gear on its Home section to add accounts."
+msgstr "Ce jeton synchronise déjà l'une de vos sections Monobank. Utilisez l'engrenage de sa section sur l'accueil pour ajouter des comptes."
 
 #: src/@generic/constant/date-period.constant.ts
 msgid "This Week"
@@ -4910,6 +4951,11 @@ msgstr "À rembourser"
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
 msgid "Today"
 msgstr "Aujourd'hui"
+
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
+#: src/sync/component/sync-token-section/sync-token-section.tsx
+msgid "Token already connected"
+msgstr "Jeton déjà connecté"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Token required"
@@ -5056,7 +5102,6 @@ msgstr "Essayez d'ajuster vos filtres pour voir plus de résultats"
 #: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
 #: src/ai/component/ai-download-stopped-card/ai-download-stopped-card.tsx
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
-#: src/sync/component/add-bank-integration-accounts-content/add-bank-integration-accounts-content.tsx
 msgid "Try again"
 msgstr "Réessayer"
 
@@ -5156,10 +5201,6 @@ msgstr "Mettre à jour le compte"
 msgid "Update rule?"
 msgstr "Mettre à jour la règle ?"
 
-#: src/sync/component/add-bank-integration-accounts-content/add-bank-integration-accounts-content.tsx
-msgid "Update the token from any account already syncing with this integration, then try again."
-msgstr "Mettez à jour le jeton depuis un compte déjà synchronisé avec cette intégration, puis réessayez."
-
 #: src/rule/utils/show-rule-application-toast.util.ts
 msgid "Updated {applied} of {total} transactions."
 msgstr "{applied} sur {total} transactions mises à jour."
@@ -5181,6 +5222,10 @@ msgstr "Utilisez Face ID pour déverrouiller votre application rapidement et en 
 #: src/ai/component/ai-download-wifi-banner/ai-download-wifi-banner.tsx
 msgid "Use mobile data for {remaining} GB"
 msgstr "Utiliser les données mobiles pour {remaining} Go"
+
+#: src/sync/component/sync-token-section/sync-token-section.tsx
+msgid "Use the key for the accounts in this section."
+msgstr "Utilisez la clé des comptes de cette section."
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Use Touch ID to unlock your app quickly and securely"
@@ -5399,6 +5444,10 @@ msgstr "Tu es connecté au Wi-Fi"
 #: src/ai/component/ai-download-preflight-note/ai-download-preflight-note.tsx
 msgid "You're on Wi-Fi."
 msgstr "Vous êtes en Wi-Fi."
+
+#: src/sync/component/create-monobank-account/create-monobank-account.tsx
+msgid "Your accounts keep syncing with the new key."
+msgstr "Vos comptes continuent de se synchroniser avec la nouvelle clé."
 
 #: src/auth/components/security-lock-button/security-lock-button.tsx
 msgid "Your data is sealed. Only your PIN opens it."

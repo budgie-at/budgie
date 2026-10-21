@@ -1,6 +1,7 @@
 import {
     AccountBalanceRepository,
     AccountTypeEnum,
+    BankIntegrationEntityTable,
     DebtEventEntityTable,
     InstrumentEntityTable,
     convertFromMicroUnits
@@ -27,7 +28,7 @@ import type { HomeSectionInterface } from '../interface/home-section.interface';
 import type { AccountWithSyncEntityInterface, ExternalSourceEnum } from '@budgie/contracts';
 
 export const homeAccountRowsAtom = databaseQueryFamily(
-    [...ACCOUNT_CONVERTED_BALANCE_TABLES, InstrumentEntityTable, DebtEventEntityTable],
+    [...ACCOUNT_CONVERTED_BALANCE_TABLES, InstrumentEntityTable, DebtEventEntityTable, BankIntegrationEntityTable],
     AccountBalanceRepository,
     (accountBalanceRepository, defaultInstrumentId: number) => accountBalanceRepository.getHomeAccountRows(defaultInstrumentId)
 );
@@ -58,7 +59,8 @@ const groupBy = <Item, Key>(items: readonly Item[], getKey: (item: Item) => Key)
 
 const buildHomePageSections = (
     activeAccounts: AccountWithSyncEntityInterface[],
-    integrationProviders: ReadonlyMap<number, ExternalSourceEnum>
+    integrationProviders: ReadonlyMap<number, ExternalSourceEnum>,
+    integrationLabels: ReadonlyMap<number, string | null>
 ): HomeSectionInterface[] => {
     const debtAccounts = activeAccounts.filter(account => account.type === AccountTypeEnum.DEBT);
     const otherAccounts = activeAccounts.filter(account => account.type !== AccountTypeEnum.DEBT);
@@ -91,12 +93,30 @@ const buildHomePageSections = (
         return isNotEmptyArray(data) ? [{ kind, data }] : [];
     });
 
-    const providerSections = [...providerGroups].flatMap(([integrationId, accounts]) => {
+    const providerGroupEntries = [...providerGroups].flatMap(([integrationId, accounts]) => {
         const provider = resolveBankProviderGroup(integrationId, integrationProviders)?.provider;
 
         return isDefined(provider) && isDefined(integrationId)
-            ? [{ kind: HomeSectionKindEnum.BANK_PROVIDER as const, provider, integrationId, data: pairAccountsIntoRows(accounts) }]
+            ? [{ provider, integrationId, label: integrationLabels.get(integrationId) ?? null, accounts }]
             : [];
+    });
+    const providerSections = providerGroupEntries.map(({ provider, integrationId, label, accounts }) => {
+        const unlabeledSameProviderIntegrationIds = providerGroupEntries
+            .filter(entry => entry.provider === provider && !isDefined(entry.label))
+            .map(entry => entry.integrationId)
+            .sort((left, right) => left - right);
+
+        return {
+            kind: HomeSectionKindEnum.BANK_PROVIDER as const,
+            provider,
+            integrationId,
+            label,
+            groupNumber:
+                !isDefined(label) && unlabeledSameProviderIntegrationIds.length > 1
+                    ? unlabeledSameProviderIntegrationIds.indexOf(integrationId) + 1
+                    : null,
+            data: pairAccountsIntoRows(accounts)
+        };
     });
 
     return [...typeSections, ...debtSections, ...providerSections];
@@ -222,7 +242,10 @@ export const useHomePageDataQuery = () => {
     }, createHomeAccountBalanceSummary());
 
     const displayedAccounts = accounts.filter(account => account.isActive && !isSettledDebtAccount(account, balanceSummary, decimalPlaces));
-    const sections = buildHomePageSections(displayedAccounts, integrationProviders);
+    const integrationLabels = new Map(
+        data.flatMap(row => (isDefined(row.account.integrationId) ? [[row.account.integrationId, row.integrationLabel] as const] : []))
+    );
+    const sections = buildHomePageSections(displayedAccounts, integrationProviders, integrationLabels);
 
     return { activeAccountCount: displayedAccounts.length, accounts, balanceSummary, sections };
 };

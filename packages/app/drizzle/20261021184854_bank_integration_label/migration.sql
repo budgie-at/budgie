@@ -1,0 +1,1 @@
+ALTER TABLE `bank_integrations` ADD `label` text;

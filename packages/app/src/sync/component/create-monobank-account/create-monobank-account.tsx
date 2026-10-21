@@ -1,8 +1,11 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { MonobankSyncService, SyncHistoryDepthEnum } from '@budgie/sync';
+import { MonobankConnectionResultEnum, MonobankSyncService, SyncHistoryDepthEnum } from '@budgie/sync';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
+import { router } from 'expo-router';
 import { useState } from 'react';
+import Toast from 'react-native-toast-message';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
@@ -36,6 +39,11 @@ export const CreateMonobankAccount = () => {
             monobankSyncService.setupAccountSyncBatch(token.trim(), selectedAccountIds, effectiveHistoryDepth)
         );
 
+    const handleTokenRotated = (integrationId: number) => {
+        Toast.show({ type: 'success', text1: t`Monobank key updated`, text2: t`Your accounts keep syncing with the new key.` });
+        router.dismissTo({ pathname: '/bank-integration/[id]', params: { id: String(integrationId) } });
+    };
+
     const handleFetchAccounts = async () => {
         const trimmedToken = token.trim();
 
@@ -46,7 +54,28 @@ export const CreateMonobankAccount = () => {
         }
 
         await fetchAccountPreviews(
-            monobankSyncService => monobankSyncService.fetchAccountsPreview(trimmedToken),
+            monobankSyncService =>
+                monobankSyncService.fetchNewConnectionAccountsPreview(trimmedToken).pipe(
+                    Effect.flatMap(result =>
+                        result.kind === MonobankConnectionResultEnum.TOKEN_ROTATED
+                            ? Effect.as(
+                                  Effect.sync(() => void handleTokenRotated(result.integrationId)),
+                                  null
+                              )
+                            : Effect.succeed(result.previews)
+                    ),
+                    Effect.catchTags({
+                        SyncTokenAlreadyConnectedError: () =>
+                            Effect.sync(() => {
+                                showErrorToast(
+                                    t`Token already connected`,
+                                    t`This token already syncs one of your Monobank sections. Use the gear on its Home section to add accounts.`
+                                );
+
+                                return null;
+                            })
+                    })
+                ),
             previews => {
                 accountSelection.setPreviews(previews);
                 setStep(SetupStepEnum.ACCOUNTS);

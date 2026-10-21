@@ -2,8 +2,11 @@ export { SyncAccountTypeEnum } from './core/enum/sync-account-type.enum';
 export { SyncAccountBalanceStateEnum } from './core/enum/sync-account-balance-state.enum';
 export { SyncProviderEnum } from './core/enum/sync-provider.enum';
 export { SyncRateLimitedError } from './core/error/sync-rate-limited.error';
+export { SyncUnauthorizedError } from './core/error/sync-unauthorized.error';
 export { SyncDeferredError } from './core/error/sync-deferred.error';
 export { SyncInvalidResponseError } from './core/error/sync-invalid-response.error';
+export { SyncTokenAlreadyConnectedError } from './core/error/sync-token-already-connected.error';
+export { SyncTokenClientMismatchError } from './core/error/sync-token-client-mismatch.error';
 export { SyncTransactionTypeEnum } from './core/enum/sync-transaction-type.enum';
 export { CashbackTypeEnum } from './core/enum/cashback-type.enum';
 
@@ -12,6 +15,7 @@ export type { SyncTransactionInterface } from './core/interface/sync-transaction
 
 export { MonobankClient } from './monobank/client/monobank.client';
 export { MonobankSyncService } from './monobank/service/monobank-sync.service';
+export { MonobankConnectionResultEnum } from './monobank/enum/monobank-connection-result.enum';
 export { MONOBANK_AUTH_URL } from './monobank/constant/monobank-auth-url.constant';
 export { MONOBANK_MAX_PERIOD_SECONDS } from './monobank/constant/monobank-max-period-seconds.constant';
 export { MONOBANK_RATE_LIMIT_MS } from './monobank/constant/monobank-rate-limit-ms.constant';

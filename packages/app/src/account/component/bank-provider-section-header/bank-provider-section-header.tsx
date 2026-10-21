@@ -9,6 +9,7 @@ import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { BANK_PROVIDER_TITLE } from '../../constant/bank-provider-title.constant';
+import { getBankIntegrationTitle } from '../../utils/get-bank-integration-title.util';
 import { AccountSectionHeaderFrame } from '../account-section-header-frame/account-section-header-frame';
 
 import { BankProviderSectionHeaderSelector } from './bank-provider-section-header.selector';
@@ -16,14 +17,17 @@ import { BankProviderSectionHeaderSelector } from './bank-provider-section-heade
 interface Props {
     readonly provider: ExternalSourceEnum;
     readonly integrationId: number;
+    readonly label: string | null;
+    readonly groupNumber: number | null;
     readonly total: number;
 }
 
-export const BankProviderSectionHeader = ({ provider, integrationId, total }: Props) => {
+export const BankProviderSectionHeader = ({ provider, integrationId, label, groupNumber, total }: Props) => {
     const { t } = useLingui();
 
     const titleDescriptor = BANK_PROVIDER_TITLE[provider];
-    const title = isDefined(titleDescriptor) ? t(titleDescriptor) : provider;
+    const providerTitle = isDefined(titleDescriptor) ? t(titleDescriptor) : provider;
+    const title = getBankIntegrationTitle(providerTitle, label, groupNumber);
 
     const handleOpenIntegrationSettings = () =>
         void router.push({ pathname: '/bank-integration/[id]', params: { id: String(integrationId) } });

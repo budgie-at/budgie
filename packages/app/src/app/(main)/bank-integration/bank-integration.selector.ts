@@ -1,6 +1,7 @@
 export const BankIntegrationSelector = {
     Page: 'BankIntegration.Page',
-    AddAccountsButton: 'BankIntegration.AddAccountsButton',
+    NewAccountsStatus: 'BankIntegration.NewAccountsStatus',
+    NewAccountRow: (externalId: string) => `BankIntegration.NewAccountRow.${externalId}` as const,
     ImportFileButton: 'BankIntegration.ImportFileButton',
     AddDepositButton: 'BankIntegration.AddDepositButton',
     EmptyState: 'BankIntegration.EmptyState',

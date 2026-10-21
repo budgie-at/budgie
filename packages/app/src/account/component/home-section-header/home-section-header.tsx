@@ -15,7 +15,15 @@ export const HomeSectionHeader = ({ section, balanceSummary }: Props) => {
     if (isBankProviderSection(section)) {
         const total = balanceSummary.bankProviderTotals.get(section.integrationId) ?? 0;
 
-        return <BankProviderSectionHeader provider={section.provider} integrationId={section.integrationId} total={total} />;
+        return (
+            <BankProviderSectionHeader
+                provider={section.provider}
+                integrationId={section.integrationId}
+                label={section.label}
+                groupNumber={section.groupNumber}
+                total={total}
+            />
+        );
     }
 
     if (isDebtSection(section)) {

@@ -3,13 +3,14 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { ActivityIndicator, Text, View } from 'react-native';
 
-import { getErrorMessage, isDefined, isEmptyArray } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { DashedActionRow } from '../../../@generic/component/dashed-action-row/dashed-action-row';
 import { useGetAccountsByIntegrationIdQuery } from '../../../account/query/use-get-accounts-by-integration-id.query';
 import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/bank-integration.selector';
 import { useBankIntegration } from '../../context/bank-integration.context';
 import { BankIntegrationAccountRow } from '../bank-integration-account-row/bank-integration-account-row';
+import { BankIntegrationNewAccounts } from '../bank-integration-new-accounts/bank-integration-new-accounts';
 
 export const BankIntegrationAccountList = () => {
     const { t } = useLingui();
@@ -41,12 +42,16 @@ export const BankIntegrationAccountList = () => {
         </DashedActionRow>
     ) : null;
 
+    const linkedExternalIds = new Set(accounts.map(account => account.externalId).filter(isNotEmptyString));
+    const newAccounts = capabilities.supportsAccountDiscovery ? <BankIntegrationNewAccounts linkedExternalIds={linkedExternalIds} /> : null;
+
     if (isEmptyArray(accounts)) {
         return (
             <>
                 <Text className="text-secondary-foreground py-3xl text-center text-sm" testID={BankIntegrationSelector.EmptyState}>
                     {t`No accounts in this integration yet`}
                 </Text>
+                {newAccounts}
                 {addDepositRow}
             </>
         );
@@ -57,6 +62,7 @@ export const BankIntegrationAccountList = () => {
             {accounts.map(account => (
                 <BankIntegrationAccountRow key={account.id} account={account} />
             ))}
+            {newAccounts}
             {addDepositRow}
         </>
     );

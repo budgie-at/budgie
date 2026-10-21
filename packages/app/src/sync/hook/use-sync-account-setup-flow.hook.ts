@@ -3,7 +3,7 @@ import * as Effect from 'effect/Effect';
 import { router } from 'expo-router';
 import { useState } from 'react';
 
-import { getErrorMessage } from '@rnw-community/shared';
+import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
@@ -44,12 +44,15 @@ export const useSyncAccountSetupFlow = <Identifier extends AppServices, Shape>(
     };
 
     const fetchAccountPreviews = async (
-        loadPreviews: (syncService: Shape) => Effect.Effect<SyncAccountPreviewInterface[], unknown, AppServices>,
+        loadPreviews: (syncService: Shape) => Effect.Effect<SyncAccountPreviewInterface[] | null, unknown, AppServices>,
         onLoaded: (previews: SyncAccountPreviewInterface[]) => void
     ) => {
         setIsLoading(true);
         try {
-            onLoaded(await appRuntime.runPromise(Effect.flatMap(service, loadPreviews)));
+            const previews = await appRuntime.runPromise(Effect.flatMap(service, loadPreviews));
+            if (isDefined(previews)) {
+                onLoaded(previews);
+            }
         } catch (error) {
             showErrorToast(t`Could not fetch accounts`, getErrorMessage(error));
         } finally {
