@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.110.0](https://github.com/budgie-at/budgie/compare/v6.109.2...v6.110.0) (2026-10-21)
+
+### Bug Fixes
+
+* **app:** inline the balance review atom read and fix French copy ([4433ca9](https://github.com/budgie-at/budgie/commit/4433ca916f379b3d8061c999d53e1b6f28c6b7f7))
+* **app:** show the exact bank correction amount regardless of display rounding ([b951656](https://github.com/budgie-at/budgie/commit/b951656a2a78e293d8815475833603fec8b4dc32))
+* **sync:** drop the reconciliation anchor when a full resync starts ([4f53094](https://github.com/budgie-at/budgie/commit/4f53094b20be8a4e896ad70cae1f2844e2cfb791))
+
+### Features
+
+* **app:** review large bank balance corrections on synced accounts ([8bb1577](https://github.com/budgie-at/budgie/commit/8bb15777813d172c9182ff26489db9895b42abc2))
+* store provider balances and bank reconciliation anchors ([5e98dc4](https://github.com/budgie-at/budgie/commit/5e98dc45f481e5cff567994434c3cd2fbce490db))
+* **sync:** apply bank balance corrections automatically ([c12031a](https://github.com/budgie-at/budgie/commit/c12031af32d1b2ef12d0dc66c28a4acf4d5cb4ac))
+* **sync:** reconcile Monobank balances against the bank after forward sync ([54df93d](https://github.com/budgie-at/budgie/commit/54df93d82d7cef2e3db6bf1e5607ca4218e2d5a7))
+
+
 ## [6.109.2](https://github.com/budgie-at/budgie/compare/v6.109.1...v6.109.2) (2026-10-21)
 
 **Note:** Version bump only for package @budgie-at/root

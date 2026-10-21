@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.110.0](https://github.com/budgie-at/budgie/compare/v6.109.2...v6.110.0) (2026-10-21)
+
+### Bug Fixes
+
+* **sync:** drop the reconciliation anchor when a full resync starts ([4f53094](https://github.com/budgie-at/budgie/commit/4f53094b20be8a4e896ad70cae1f2844e2cfb791))
+
+### Features
+
+* **sync:** apply bank balance corrections automatically ([c12031a](https://github.com/budgie-at/budgie/commit/c12031af32d1b2ef12d0dc66c28a4acf4d5cb4ac))
+* **sync:** reconcile Monobank balances against the bank after forward sync ([54df93d](https://github.com/budgie-at/budgie/commit/54df93d82d7cef2e3db6bf1e5607ca4218e2d5a7))
+
+
 ## [6.109.1](https://github.com/budgie-at/budgie/compare/v6.109.0...v6.109.1) (2026-10-20)
 
 ### Bug Fixes
