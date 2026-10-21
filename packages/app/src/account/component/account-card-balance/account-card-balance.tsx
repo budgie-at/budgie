@@ -1,9 +1,11 @@
 import { Text } from 'react-native';
 
+import { isPositiveNumber } from '@rnw-community/shared';
+
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { cn } from '../../../@generic/utils/cn.util';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
-import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
+import { useSettingsContext } from '../../../settings/context/settings.context';
 import { AccountCardBaseSelector } from '../account-card-base/account-card-base.selector';
 
 interface Props {
@@ -13,12 +15,11 @@ interface Props {
 }
 
 export const AccountCardBalance = ({ title, balance, instrumentSymbol }: Props) => {
-    const { decimalSeparator } = useLocaleInfo();
+    const { decimalPlaces } = useSettingsContext();
     const formatDigits = useDisplayFormatDigits();
 
     const formattedBalance = formatDigits(balance, instrumentSymbol);
-    const separatorIndex = formattedBalance.lastIndexOf(decimalSeparator);
-    const fractionStart = separatorIndex === -1 ? formattedBalance.length : separatorIndex;
+    const fractionStart = isPositiveNumber(decimalPlaces) ? formattedBalance.length - decimalPlaces - 1 : formattedBalance.length;
     const toneClassName = balance < 0 ? 'text-destructive-foreground' : 'text-primary';
 
     return (
