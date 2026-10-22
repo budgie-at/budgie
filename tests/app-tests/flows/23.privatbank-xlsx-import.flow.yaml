@@ -115,6 +115,9 @@ appId: ${APP_ID}
 - longPressOn:
       id: 'AccountCard.Privatbank •1234'
 
+- tapOn:
+      id: 'AccountCardMenu.ImportButton'
+
 - runFlow:
       file: subflows/import/select-file-from-app-provider.flow.yaml
       env:
@@ -183,6 +186,9 @@ appId: ${APP_ID}
 
 - longPressOn:
       id: 'AccountCard.Privatbank •1234'
+
+- tapOn:
+      id: 'AccountCardMenu.ImportButton'
 
 - runFlow:
       file: subflows/import/select-file-from-app-provider.flow.yaml

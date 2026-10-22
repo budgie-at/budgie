@@ -27,14 +27,15 @@ interface Props {
     readonly children: ReactNode;
     readonly anchor?: PopoverMenuAnchor;
     readonly placement?: 'bottom' | 'auto';
+    readonly align?: 'end' | 'auto';
 }
 
 // eslint-disable-next-line max-statements -- Popover positioning derives many local values from layout, animation, and safe-area inputs
-export const PopoverMenu = ({ isOpen, onClose, onCloseComplete, children, anchor, placement = 'auto' }: Props) => {
+export const PopoverMenu = ({ isOpen, onClose, onCloseComplete, children, anchor, placement = 'auto', align = 'end' }: Props) => {
     const { t } = useLingui();
     const { width: screenWidth, height: screenHeight } = useWindowDimensions();
     const { bottom: safeBottom } = useSafeAreaInsets();
-    const { isRendered, backdropStyle, menuStyle } = usePopoverAnimation(isOpen, onCloseComplete);
+    const { isRendered, isVisible, handleDismiss, backdropStyle, menuStyle } = usePopoverAnimation(isOpen, onCloseComplete);
     const [menuHeight, setMenuHeight] = useState(0);
     const onCloseRef = useRef(onClose);
 
@@ -67,10 +68,13 @@ export const PopoverMenu = ({ isOpen, onClose, onCloseComplete, children, anchor
     }
 
     const menuRight = hasAnchor ? screenWidth - anchor.x - anchor.width : MENU_MARGIN;
+    const isStartAligned = hasAnchor && align === 'auto' && anchor.x + anchor.width / 2 < screenWidth / 2;
     const isMeasuring = hasAnchor && placement === 'auto' && menuHeight === 0;
     const measuringStyle: ViewStyle | null = isMeasuring ? { opacity: 0 } : null;
 
-    const menuContainerStyle: ViewStyle = { position: 'absolute', top: menuTop, right: menuRight };
+    const menuContainerStyle: ViewStyle = isStartAligned
+        ? { position: 'absolute', top: menuTop, left: anchor.x }
+        : { position: 'absolute', top: menuTop, right: menuRight };
     const animatedMenuStyle = [menuStyle, measuringStyle];
     const measuringPointerEvents = isMeasuring ? 'none' : 'auto';
     const measuringImportantForAccessibility = isMeasuring ? 'no-hide-descendants' : 'auto';
@@ -82,7 +86,7 @@ export const PopoverMenu = ({ isOpen, onClose, onCloseComplete, children, anchor
     }
 
     return (
-        <Modal transparent visible={isRendered} animationType="none" onRequestClose={handleClose}>
+        <Modal transparent visible={isVisible} animationType="none" onRequestClose={handleClose} onDismiss={handleDismiss}>
             <View className="flex-1" accessibilityViewIsModal>
                 <Pressable onPress={handleClose} style={StyleSheet.absoluteFill} accessibilityLabel={t`Close menu`}>
                     <Animated.View className="absolute inset-0 bg-black" style={backdropStyle} />

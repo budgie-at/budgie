@@ -9,7 +9,7 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
     visible:
-      id: 'SettingsPage.AppLockCard'
+      id: 'SettingsPage.DataEncryption.State.Off'
     timeout: 3000
 
 - assertNotVisible:
@@ -114,6 +114,11 @@ appId: ${APP_ID}
     timeout: 10000
 
 - runFlow: subflows/navigation/navigate-to-settings.flow.yaml
+
+- extendedWaitUntil:
+    visible:
+      id: 'SettingsPage.DataEncryption.State.On'
+    timeout: 3000
 
 - runFlow:
     file: subflows/navigation/open-settings-card.flow.yaml

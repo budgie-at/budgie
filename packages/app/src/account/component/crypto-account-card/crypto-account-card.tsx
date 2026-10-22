@@ -28,7 +28,7 @@ export const CryptoAccountCard = ({ account, balance }: Props) => {
                 numberOfLines={1}
                 adjustsFontSizeToFit
                 minimumFontScale={0.5}
-                className={cn('text-2xl font-semibold tracking-tight tabular-nums', toneClassName)}
+                className={cn('text-xl leading-[26px] font-semibold tracking-tight tabular-nums', toneClassName)}
             >
                 {formattedBalance}
             </ProtectedText>

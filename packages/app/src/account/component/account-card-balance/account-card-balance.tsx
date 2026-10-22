@@ -30,10 +30,10 @@ export const AccountCardBalance = ({ title, balance, instrumentSymbol }: Props) 
             numberOfLines={1}
             adjustsFontSizeToFit
             minimumFontScale={0.5}
-            className={cn('text-2xl font-semibold tracking-tight tabular-nums', toneClassName)}
+            className={cn('text-xl leading-[26px] font-semibold tracking-tight tabular-nums', toneClassName)}
         >
             {formattedBalance.slice(0, fractionStart)}
-            <Text className={cn('text-sm font-medium', fractionToneClassName)}>{formattedBalance.slice(fractionStart)}</Text>
+            <Text className={cn('text-xs font-medium', fractionToneClassName)}>{formattedBalance.slice(fractionStart)}</Text>
         </ProtectedText>
     );
 };

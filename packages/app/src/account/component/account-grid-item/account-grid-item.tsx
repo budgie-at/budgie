@@ -27,7 +27,7 @@ export const AccountGridItem = ({ account, balance, hasLedgerHistory, type, isLe
                 <AccountCardBase account={account} balance={balance} amountLabel={t`Add balance`}>
                     <Text
                         testID={AccountCardBaseSelector.AddBalance(account.title)}
-                        className="text-md leading-[28px] font-medium text-secondary-foreground"
+                        className="text-md leading-[26px] font-medium text-secondary-foreground"
                     >
                         <Trans>Add balance</Trans>
                     </Text>

@@ -68,10 +68,9 @@ jobs:
 
     code-quality:
         name: Code quality checks
-        # GitHub-hosted (public repo: 4 vCPU / 16 GiB, no queue). The monorepo
-        # typecheck + type-aware oxlint + build need more than the fleet's 4 GiB
-        # 2x4 pool, and the 4x8 pool is the KVM pool Android e2e queues on.
-        runs-on: ubuntu-latest
+        # The monorepo typecheck + type-aware oxlint + build need more than the
+        # 4 GiB 2x4 shape.
+        runs-on: [self-hosted, trf-linux-amd64-4x8]
         timeout-minutes: 60
         permissions:
             contents: read
@@ -144,7 +143,7 @@ jobs:
 
     unit-tests:
         name: Effect diagnostics and unit tests
-        runs-on: ubuntu-latest
+        runs-on: [self-hosted, trf-linux-amd64-4x8]
         timeout-minutes: 45
         permissions:
             contents: read
@@ -223,7 +222,7 @@ jobs:
         if: needs.detect-mobile-impact.outputs.mobile == 'true'
         needs: [detect-mobile-impact]
         name: Assert AI is enabled (OTA preview)
-        runs-on: ubuntu-latest
+        runs-on: [self-hosted, trf-linux-amd64-2x4]
         timeout-minutes: 10
         permissions:
             contents: read
@@ -291,7 +290,9 @@ jobs:
 
     ios-maestro:
         if: needs.detect-mobile-impact.outputs.mobile == 'true'
-        needs: [detect-mobile-impact, code-quality]
+        # Starts beside code-quality rather than after it: Required CI still
+        # fails the PR when either fails.
+        needs: [detect-mobile-impact]
         name: iOS Maestro E2E
         # A reusable workflow can only narrow the token it is given: the base
         # binary every pull request repacks is fetched (packages) and published
@@ -303,6 +304,7 @@ jobs:
             actions: read
         uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@a9fac576ef1c8a9a565d03851f2624502a868214 # v4.4.1
         with:
+            control-runner-labels: '["self-hosted","trf-linux-amd64-2x4"]'
             build-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
             test-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
             # Gate on the turbo graph as well as detect-mobile-impact's path
@@ -473,7 +475,7 @@ jobs:
         name: Lint workflows
         # Catches workflow files GitHub would reject at startup (e.g. a key
         # duplicated by two merged PRs) before they reach main.
-        runs-on: ubuntu-latest
+        runs-on: [self-hosted, trf-linux-amd64-2x4]
         timeout-minutes: 5
         permissions:
             contents: read
@@ -516,7 +518,7 @@ jobs:
             - fingerprint-guard
             - ios-maestro
             - store-screenshots-gallery
-        runs-on: ubuntu-latest
+        runs-on: [self-hosted, trf-linux-amd64-2x4]
         timeout-minutes: 5
         permissions: {}
         steps:
