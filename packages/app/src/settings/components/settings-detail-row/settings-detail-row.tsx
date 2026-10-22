@@ -19,7 +19,13 @@ interface Props {
 }
 
 export const SettingsDetailRow = ({ icon, variant, title, description, right, onPress, testID }: Props) => (
-    <HapticPressable className="flex-row items-center gap-x-lg py-xl" onPress={onPress} disabled={!isDefined(onPress)} testID={testID}>
+    <HapticPressable
+        className="flex-row items-center gap-x-lg py-xl"
+        onPress={onPress}
+        disabled={!isDefined(onPress)}
+        accessible={isDefined(onPress)}
+        testID={testID}
+    >
         <CircleIcon icon={icon} variant={variant} border={false} size={36} iconSize={18} />
 
         <View className="flex-1">
