@@ -78,8 +78,8 @@ minimumReleaseAgeExclude:
   - expo-dev-launcher@58.0.14
   - node-llama-cpp@3.22.2
   - turbo@2.11.9
-  - '@rnw-community/react-native-collapsible-header@2.29.0 || 2.29.2'
-  - '@rnw-community/react-native-screen-chrome@2.29.1 || 2.29.2 || 2.29.3'
+  - '@rnw-community/react-native-collapsible-header@2.29.0 || 2.29.2 || 2.29.5'
+  - '@rnw-community/react-native-screen-chrome@2.29.1 || 2.29.2 || 2.29.3 || 2.29.5'
   - '@rnw-community/shared@2.29.0'
 
 ignoredOptionalDependencies:
