@@ -35,7 +35,7 @@ export const PopoverMenu = ({ isOpen, onClose, onCloseComplete, children, anchor
     const { t } = useLingui();
     const { width: screenWidth, height: screenHeight } = useWindowDimensions();
     const { bottom: safeBottom } = useSafeAreaInsets();
-    const { isRendered, backdropStyle, menuStyle } = usePopoverAnimation(isOpen, onCloseComplete);
+    const { isRendered, isVisible, handleDismiss, backdropStyle, menuStyle } = usePopoverAnimation(isOpen, onCloseComplete);
     const [menuHeight, setMenuHeight] = useState(0);
     const onCloseRef = useRef(onClose);
 
@@ -86,7 +86,7 @@ export const PopoverMenu = ({ isOpen, onClose, onCloseComplete, children, anchor
     }
 
     return (
-        <Modal transparent visible={isRendered} animationType="none" onRequestClose={handleClose}>
+        <Modal transparent visible={isVisible} animationType="none" onRequestClose={handleClose} onDismiss={handleDismiss}>
             <View className="flex-1" accessibilityViewIsModal>
                 <Pressable onPress={handleClose} style={StyleSheet.absoluteFill} accessibilityLabel={t`Close menu`}>
                     <Animated.View className="absolute inset-0 bg-black" style={backdropStyle} />
