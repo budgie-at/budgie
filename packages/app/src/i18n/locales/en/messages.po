@@ -70,7 +70,7 @@ msgstr "{accountTitle} will be restored to your main view."
 msgid "{applied, plural, one {# matching transaction updated} other {# matching transactions updated}}"
 msgstr "{applied, plural, one {# matching transaction updated} other {# matching transactions updated}}"
 
-#: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
+#: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "{approxTransactions, plural, one {~# transaction} other {~# transactions}}"
 msgstr "{approxTransactions, plural, one {~# transaction} other {~# transactions}}"
 
@@ -78,7 +78,7 @@ msgstr "{approxTransactions, plural, one {~# transaction} other {~# transactions
 msgid "{availableCount, plural, one {# column available} other {# columns available}}"
 msgstr "{availableCount, plural, one {# column available} other {# columns available}}"
 
-#: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
+#: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "{categoriesCount, plural, one {# category} other {# categories}}"
 msgstr "{categoriesCount, plural, one {# category} other {# categories}}"
 
@@ -229,6 +229,7 @@ msgid "{minutesLeft, plural, one {About # minute left on Wi-Fi} other {About # m
 msgstr "{minutesLeft, plural, one {About # minute left on Wi-Fi} other {About # minutes left on Wi-Fi}}"
 
 #: src/ai/component/ai-download-eta/ai-download-eta.tsx
+#: src/sync/component/monobank-initial-sync-home-card/monobank-initial-sync-home-card.tsx
 msgid "{minutesLeft, plural, one {About # minute left} other {About # minutes left}}"
 msgstr "{minutesLeft, plural, one {About # minute left} other {About # minutes left}}"
 
@@ -236,7 +237,7 @@ msgstr "{minutesLeft, plural, one {About # minute left} other {About # minutes l
 msgid "{monobankAccountCount, plural, one {# account. Balances come straight from the bank.} other {# accounts. Balances come straight from the bank.}}"
 msgstr "{monobankAccountCount, plural, one {# account. Balances come straight from the bank.} other {# accounts. Balances come straight from the bank.}}"
 
-#: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
+#: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "{months, plural, one {# month} other {# months}}"
 msgstr "{months, plural, one {# month} other {# months}}"
 
@@ -802,6 +803,10 @@ msgstr "Auto-sync accounts and transactions from Monobank"
 msgid "Available Columns"
 msgstr "Available Columns"
 
+#: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
+msgid "Available once the Monobank sync finishes"
+msgstr "Available once the Monobank sync finishes"
+
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "Average"
 msgstr "Average"
@@ -855,7 +860,7 @@ msgstr "Base instrument not found"
 msgid "Based on your last {monthsUsed} months"
 msgstr "Based on your last {monthsUsed} months"
 
-#: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
+#: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "Based on your recent spending"
 msgstr "Based on your recent spending"
 
@@ -2629,6 +2634,10 @@ msgstr "Import transactions from a CSV file"
 msgid "Importing a database will replace all current data. The app will restart after import. This action cannot be undone."
 msgstr "Importing a database will replace all current data. The app will restart after import. This action cannot be undone."
 
+#: src/sync/component/monobank-initial-sync-home-card/monobank-initial-sync-home-card.tsx
+msgid "Importing Monobank history"
+msgstr "Importing Monobank history"
+
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "in"
 msgstr "in"
@@ -3357,6 +3366,10 @@ msgstr "None"
 #: src/settings/components/default-account-selector/default-account-selector.tsx
 msgid "None selected"
 msgstr "None selected"
+
+#: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
+msgid "Not all of your bank history is imported yet"
+msgstr "Not all of your bank history is imported yet"
 
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "not contains"
@@ -4562,7 +4575,7 @@ msgid "Subscriptions"
 msgstr "Subscriptions"
 
 #: src/app/icon-selector.tsx
-#: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
+#: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "Suggested"
 msgstr "Suggested"
 
