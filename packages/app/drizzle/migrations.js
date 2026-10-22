@@ -10,6 +10,7 @@ import m0006 from './20261007190655_transaction_entry_operation_metadata/migrati
 import m0007 from './20261011120000_ai_feature_settings/migration.sql';
 import m0008 from './20261016150134_settings_onboarding/migration.sql';
 import m0009 from './20261020195645_sync_balance_reconciliation/migration.sql';
+import m0010 from './20261021184854_bank_integration_label/migration.sql';
 
   export default {
     migrations: {
@@ -22,7 +23,8 @@ import m0009 from './20261020195645_sync_balance_reconciliation/migration.sql';
 "20261007190655_transaction_entry_operation_metadata": m0006,
 "20261011120000_ai_feature_settings": m0007,
 "20261016150134_settings_onboarding": m0008,
-"20261020195645_sync_balance_reconciliation": m0009
+"20261020195645_sync_balance_reconciliation": m0009,
+"20261021184854_bank_integration_label": m0010
 }
   }
   

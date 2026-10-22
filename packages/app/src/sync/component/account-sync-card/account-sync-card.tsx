@@ -15,7 +15,6 @@ import { useAccountSync } from '../../hook/use-account-sync.hook';
 import { BinanceSyncTokenSection } from '../binance-sync-token-section/binance-sync-token-section';
 import { ResyncAccount } from '../resync-account/resync-account';
 import { SyncDataRow } from '../sync-data-row/sync-data-row';
-import { SyncTokenSection } from '../sync-token-section/sync-token-section';
 
 import { AccountSyncCardSelector } from './account-sync-card.selector';
 
@@ -54,17 +53,12 @@ export const AccountSyncCard = ({ accountId }: Props) => {
         runEffect(Effect.flatMap(SyncProviderRegistryService, registry => registry.setAccountSyncEnabled(accountId, enabled)));
     };
 
-    const { supportsTokenAuth, supportsFileImport } = SYNC_PROVIDER_CAPABILITIES[sync.provider];
+    const { supportsFileImport } = SYNC_PROVIDER_CAPABILITIES[sync.provider];
     const syncLabel = supportsFileImport ? t`Include in file imports` : t`Sync`;
     const warningLabels: Record<SyncWarningEnum, string> = {
         [SyncWarningEnum.C2C_UNAVAILABLE]: t`Binance P2P orders are unavailable: the API key is missing P2P read permission.`
     };
-    const tokenSection =
-        sync.provider === ExternalSourceEnum.BINANCE ? (
-            <BinanceSyncTokenSection accountId={accountId} />
-        ) : (
-            <SyncTokenSection accountId={accountId} />
-        );
+    const tokenSection = sync.provider === ExternalSourceEnum.BINANCE ? <BinanceSyncTokenSection accountId={accountId} /> : null;
 
     return (
         <Card className="gap-y-lg">
@@ -122,7 +116,7 @@ export const AccountSyncCard = ({ accountId }: Props) => {
                     </View>
                 )}
 
-                {supportsTokenAuth ? tokenSection : null}
+                {tokenSection}
             </View>
         </Card>
     );

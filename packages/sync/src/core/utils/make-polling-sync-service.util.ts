@@ -275,13 +275,23 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
         definition.shouldRequestSyncWhenEnabled === true && enabled ? requestSync() : Effect.void
     );
 
+    const validateToken = definition.validateToken ?? (() => Effect.void);
+
     return {
         ...syncService,
         sync,
         requestSync,
         updateAccountToken: Effect.fn('AbstractPollingSyncService.updateAccountToken')(function* (accountId: number, token: string) {
-            yield* (definition.validateToken ?? (() => Effect.void))(token);
+            yield* validateToken(token);
             yield* syncIntegrationTokenService.updateAccountToken(definition.provider, accountId, token);
+        }),
+        updateIntegrationToken: Effect.fn('AbstractPollingSyncService.updateIntegrationToken')(function* (
+            integrationId: number,
+            token: string
+        ) {
+            yield* validateToken(token);
+            yield* syncIntegrationTokenService.updateIntegrationToken(integrationId, token);
+            yield* requestSync();
         })
     };
 });
