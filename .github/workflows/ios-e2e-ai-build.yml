@@ -20,6 +20,7 @@ jobs:
             actions: read
         uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@a9fac576ef1c8a9a565d03851f2624502a868214 # v4.4.1
         with:
+            control-runner-labels: '["self-hosted","trf-linux-amd64-2x4"]'
             build-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
             test-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
             targets: >-

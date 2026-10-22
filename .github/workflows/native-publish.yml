@@ -53,6 +53,8 @@ jobs:
       contents: read
     uses: rnw-community/mobile-ci/.github/workflows/native-publish.yml@a9fac576ef1c8a9a565d03851f2624502a868214 # v4.4.1
     with:
+      control-runner-labels: '["self-hosted","trf-linux-amd64-2x4"]'
+      lint-runner-labels: '["self-hosted","trf-linux-amd64-4x8"]'
       enable-ios: true
       enable-android: false
       ios-runner-labels: '["self-hosted","macOS","ARM64","macos-tartelet"]'

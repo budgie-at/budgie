@@ -19,4 +19,6 @@ jobs:
             contents: write
         uses: rnw-community/mobile-ci/.github/workflows/pr-closed-cleanup-reusable.yml@a9fac576ef1c8a9a565d03851f2624502a868214 # v4.4.1
         with:
+            control-runner-labels: '["self-hosted","trf-linux-amd64-2x4"]'
+            ota-preview-cleanup-runner-labels: '["self-hosted","trf-linux-amd64-2x4"]'
             ota-preview-release-tag-prefix: ota-pr${{ github.event.pull_request.number }}
