@@ -2,15 +2,13 @@ import { ReactElement, ReactNode } from 'react';
 import { Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
+import { CollapsibleHeaderBackdrop, EdgeFade, ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
 import { EmptyFn, isNotEmptyArray } from '@rnw-community/shared';
 
 import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../constant/floating-tab-bar.constant';
 import { IdInterface } from '../../interface/id.interface';
 import { ScreenChromeThemeProvider } from '../../provider/screen-chrome-theme.provider';
 import { CollapsibleChromeHeader } from '../collapsible-chrome-header/collapsible-chrome-header';
-import { CollapsibleHeaderBackdrop } from '../collapsible-header-backdrop/collapsible-header-backdrop';
-import { EdgeFade } from '../edge-fade/edge-fade';
 import { GoBackButton } from '../go-back-button/go-back-button';
 import { KeyboardStickySearchInput } from '../keyboard-sticky-search-input/keyboard-sticky-search-input';
 import { SearchablePageList } from '../searchable-page-list/searchable-page-list';

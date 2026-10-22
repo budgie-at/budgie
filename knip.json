@@ -27,7 +27,6 @@
         "react-compiler-runtime",
         "@oxlint/migrate",
         "expo-pdf-text-extract",
-        "@sbaiahmed1/react-native-blur",
         "babel-plugin-react-compiler",
         "eas-build-cache-provider",
         "@types/react-dom",

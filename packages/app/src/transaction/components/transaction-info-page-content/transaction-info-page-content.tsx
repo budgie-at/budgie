@@ -32,10 +32,8 @@ import { TransactionInfoTagsSection } from '../transaction-info-tags-section/tra
 
 import type { TransactionInfoPagePropsInterface } from '../../interface/transaction-info-page-props.interface';
 import type { SuggestRuleDataInterface } from '@budgie/rules';
-import type { EdgeFadePropsInterface } from '@rnw-community/react-native-screen-chrome';
 
 const FOOTER_CONTENT_CLEARANCE = 140;
-const FOOTER_EDGE_FADE_PROPS = { blurMethod: 'dimezisBlurView' } satisfies Omit<EdgeFadePropsInterface, 'position'>;
 
 export const TransactionInfoPageContent = ({
     transaction,
@@ -107,14 +105,14 @@ export const TransactionInfoPageContent = ({
                 </View>
             </ScreenChromeScrollView>
 
-            <EdgeFade position="top" blurMethod="dimezisBlurView" />
+            <EdgeFade position="top" />
 
             <ScreenChromeHeader>
                 <GoBackButton onPress={handleGoBack} />
                 {actionsMenu}
             </ScreenChromeHeader>
 
-            <ScreenChromeFooter edgeFadeProps={FOOTER_EDGE_FADE_PROPS}>
+            <ScreenChromeFooter>
                 <View className="px-5xl pb-md pt-lg">
                     <Button
                         variant="ghost"
