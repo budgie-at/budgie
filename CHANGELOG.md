@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.114.1](https://github.com/budgie-at/budgie/compare/v6.114.0...v6.114.1) (2026-10-22)
+
+### Bug Fixes
+
+* **app:** fade content into the edge blur and sticky section headers ([f022872](https://github.com/budgie-at/budgie/commit/f0228726ac44883826a189b0de286074a4a30fa4))
+* **app:** ship the progressive edge-fade blur native module ([088e224](https://github.com/budgie-at/budgie/commit/088e2243c5ba96de70401cfc373d4edb38bf6203)), closes [rnw-community/rnw-community#730](https://github.com/rnw-community/rnw-community/issues/730)
+* **app:** shorten the edge-fade blur bands to the chrome ([4cc82e8](https://github.com/budgie-at/budgie/commit/4cc82e85981ddb063fd1c1defca6b1efd23356c4))
+
+
 # [6.114.0](https://github.com/budgie-at/budgie/compare/v6.113.0...v6.114.0) (2026-10-22)
 
 ### Bug Fixes
