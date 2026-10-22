@@ -407,8 +407,8 @@ importers:
         specifier: ^2.29.5
         version: 2.29.5(react-native-reanimated@4.7.1(react-native-worklets@0.13.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(react-native@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)(supports-color@8.1.1))(react-native@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(react-native@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
       '@rnw-community/react-native-screen-chrome':
-        specifier: ^2.29.5
-        version: 2.29.5(46e767ea15c433d526d65bc7e9c87b1c)
+        specifier: ^3.0.0
+        version: 3.0.0(39b2bd75054e7a44c3a72c101797e32a)
       '@rnw-community/shared':
         specifier: ^2.28.0
         version: 2.28.0
@@ -5185,25 +5185,16 @@ packages:
       react-native: '>=0.78'
       react-native-reanimated: '>=4.1.0 <5'
 
-  '@rnw-community/react-native-screen-chrome@2.29.5':
-    resolution: {integrity: sha512-/QT26yKn7fvSVCBKHI5TN1E3UU4kBN1wtRKkNq5ysckZaUWLy2KWcFWjqOjiGLcQ05QYjqHjUlf/a21YMQCxvQ==}
+  '@rnw-community/react-native-screen-chrome@3.0.0':
+    resolution: {integrity: sha512-f2IqAJgI4Jm/1pRPicHSWv2J5wBEg583r73e8tngWiPabVzbNxs+MnWx4h/Ef6hvVUAxQcXqTP8P8lDf+JEZlQ==}
     engines: {node: '>=22.0.0'}
     peerDependencies:
-      '@react-native-masked-view/masked-view': '>=0.3 <1'
       '@rnw-community/react-native-collapsible-header': '>=2.18.0 <3'
-      expo-blur: '>=55 <59'
-      expo-linear-gradient: '>=55 <59'
+      expo: '>=55 <59'
       react: 19.3.0
       react-native: '>=0.78'
       react-native-reanimated: '>=4.1.0 <5'
       react-native-safe-area-context: '>=4 <6'
-    peerDependenciesMeta:
-      '@react-native-masked-view/masked-view':
-        optional: true
-      expo-blur:
-        optional: true
-      expo-linear-gradient:
-        optional: true
 
   '@rnw-community/shared@2.28.0':
     resolution: {integrity: sha512-OImNr5lECIE8/4QXvN2X/PVUL0MW5SvKVMWPXHd36xuWY9fYhQVlSmH3Sow38DI4+pcJw/Fp4RDLtW3lk1bOsg==}
@@ -5211,6 +5202,10 @@ packages:
 
   '@rnw-community/shared@2.29.0':
     resolution: {integrity: sha512-O5sjLHRYgmSRVLI8qacKyOL5z+ezXPy4yHjqg6D2STIXhpv6xWnu/Y/INRyKg3uzNM/1upmuaXbg3qD0C3gZ4Q==}
+    engines: {node: '>=22.0.0'}
+
+  '@rnw-community/shared@3.0.0':
+    resolution: {integrity: sha512-xAZxjTyDfVmhfwYgisMU3mmbyVCurhZJVSJWWboPnnptod2QN/9U24gVxRAwHh+htidlx5ZwuPb2ASJdzJ1nnA==}
     engines: {node: '>=22.0.0'}
 
   '@rolldown/binding-android-arm64@1.0.3':
@@ -14011,21 +14006,21 @@ snapshots:
       react-native: 0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
       react-native-reanimated: 4.7.1(react-native-worklets@0.13.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(react-native@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)(supports-color@8.1.1))(react-native@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
 
-  '@rnw-community/react-native-screen-chrome@2.29.5(46e767ea15c433d526d65bc7e9c87b1c)':
+  '@rnw-community/react-native-screen-chrome@3.0.0(39b2bd75054e7a44c3a72c101797e32a)':
     dependencies:
       '@rnw-community/react-native-collapsible-header': 2.29.5(react-native-reanimated@4.7.1(react-native-worklets@0.13.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(react-native@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)(supports-color@8.1.1))(react-native@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(react-native@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
-      '@rnw-community/shared': 2.29.0
+      '@rnw-community/shared': 3.0.0
+      expo: 58.0.14(8677b076ee095b4fc887672c560c971e)
       react: 19.3.0
       react-native: 0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
       react-native-reanimated: 4.7.1(react-native-worklets@0.13.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(react-native@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)(supports-color@8.1.1))(react-native@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
       react-native-safe-area-context: 5.10.1(react-native@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
-    optionalDependencies:
-      '@react-native-masked-view/masked-view': 0.3.2(react-native@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
-      expo-linear-gradient: 58.0.3(expo@58.0.14)(react-native@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
 
   '@rnw-community/shared@2.28.0': {}
 
   '@rnw-community/shared@2.29.0': {}
+
+  '@rnw-community/shared@3.0.0': {}
 
   '@rolldown/binding-android-arm64@1.0.3':
     optional: true
