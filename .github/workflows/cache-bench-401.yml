@@ -27,6 +27,7 @@ jobs:
             - name: Describe the guest
               run: |
                   echo "runner=$RUNNER_NAME"
+                  echo "host-ip=$(hostname -I 2>/dev/null || ip -4 -o addr show scope global | awk '{print $4}')"
                   echo "results-url-overridden=${ACTIONS_RESULTS_URL:+yes}"
                   command -v zstd || echo 'zstd: absent'
 
