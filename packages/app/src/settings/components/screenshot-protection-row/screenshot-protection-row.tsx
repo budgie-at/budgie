@@ -25,6 +25,7 @@ export const ScreenshotProtectionRow = () => {
             right={
                 <ThemedSwitch
                     testID={SettingsPageSelector.ScreenshotProtectionSwitch}
+                    accessibilityLabel={t`Hide in screenshots`}
                     onValueChange={handleToggle}
                     value={isScreenshotProtectionEnabled}
                 />

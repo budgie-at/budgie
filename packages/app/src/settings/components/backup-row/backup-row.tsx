@@ -20,20 +20,21 @@ export const BackupRow = () => {
     const { isLoading, handleExport } = useExportAction({
         exportAction: () =>
             appRuntime.runPromise(Effect.flatMap(DatabaseExportService, databaseExportService => databaseExportService.exportAndShare())),
-        successTitle: t`Backup created`,
-        successMessage: t`Keep a copy somewhere other than this device.`,
+        successTitle: t`Backup file ready`,
+        successMessage: t`Save it to Files or another app.`,
         errorTitle: t`Could not create a backup`
     });
 
     const hasBackup = isDefined(lastBackupAt);
     const lastBackupLabel = hasBackup ? intl.formatDate(lastBackupAt, { day: 'numeric', month: 'short', year: 'numeric' }) : t`Not yet`;
+    const backupLabel = hasBackup ? t`Last export` : t`Backup`;
     const lastBackupClassName = hasBackup ? 'text-primary' : 'text-warning-foreground';
     const buttonVariant = hasBackup ? 'secondary' : 'cta';
     const handleBackup = () => void handleExport();
 
     return (
         <View className="flex-row items-center gap-x-lg py-lg" testID={SettingsPageSelector.DataBackup}>
-            <Text className="flex-1 text-sm text-secondary-foreground">{t`Backup`}</Text>
+            <Text className="flex-1 text-sm text-secondary-foreground">{backupLabel}</Text>
             <Text className={cn('text-sm font-semibold', lastBackupClassName)}>{lastBackupLabel}</Text>
             <SettingsPillButton
                 label={t`Back up`}

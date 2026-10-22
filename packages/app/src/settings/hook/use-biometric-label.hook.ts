@@ -8,7 +8,7 @@ export const useBiometricLabel = (): string | null => {
     const { isFaceIdAvailable, isTouchIdAvailable } = useAuthContext();
 
     if (isFaceIdAvailable) {
-        return t`Face ID`;
+        return Platform.OS === 'ios' ? t`Face ID` : t`Facial recognition`;
     }
 
     if (isTouchIdAvailable) {

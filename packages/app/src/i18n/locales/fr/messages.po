@@ -816,8 +816,8 @@ msgid "Backup"
 msgstr "Sauvegarde"
 
 #: src/settings/components/backup-row/backup-row.tsx
-msgid "Backup created"
-msgstr "Sauvegarde créée"
+msgid "Backup file ready"
+msgstr "Fichier de sauvegarde prêt"
 
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Balance"
@@ -1340,10 +1340,6 @@ msgstr "Convertir en virement"
 #: src/app/convert-to-transfer.tsx
 msgid "Convert to Transfer?"
 msgstr "Convertir en transfert ?"
-
-#: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
-msgid "Copies elsewhere"
-msgstr "Copies ailleurs"
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Copy the API Key and Secret Key into the fields below"
@@ -2347,6 +2343,10 @@ msgstr "Face ID / Touch ID"
 msgid "Face ID day to day"
 msgstr "Face ID au quotidien"
 
+#: src/settings/hook/use-biometric-label.hook.ts
+msgid "Facial recognition"
+msgstr "Reconnaissance faciale"
+
 #: src/@generic/hook/use-contacts.hook.ts
 msgid "Failed to load contacts."
 msgstr "Échec du chargement des contacts."
@@ -2756,10 +2756,6 @@ msgstr "Cagnottes"
 msgid "Keep"
 msgstr "Conserver"
 
-#: src/settings/components/backup-row/backup-row.tsx
-msgid "Keep a copy somewhere other than this device."
-msgstr "Conservez une copie ailleurs que sur cet appareil."
-
 #: src/categorize-inbox/components/categorize-inbox-already-tracked-chip/categorize-inbox-already-tracked-chip.tsx
 msgid "Keep as already tracked cash, not spending"
 msgstr "Garder comme espèces déjà suivies, pas une dépense"
@@ -2807,6 +2803,10 @@ msgstr "90 derniers jours"
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Last error"
 msgstr "Dernière erreur"
+
+#: src/settings/components/backup-row/backup-row.tsx
+msgid "Last export"
+msgstr "Dernier export"
 
 #: src/@generic/constant/date-period.constant.ts
 msgid "Last Month"
@@ -3357,7 +3357,6 @@ msgstr "Aucune transaction ne correspond"
 msgid "No transactions yet"
 msgstr "Aucune transaction pour le moment"
 
-#: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
 #: src/sync/component/file-import-review-step/file-import-review-step.tsx
 msgid "None"
 msgstr "Aucune"
@@ -4151,6 +4150,10 @@ msgstr "Enregistrer les soldes"
 msgid "Save fee"
 msgstr "Enregistrer les frais"
 
+#: src/settings/components/backup-row/backup-row.tsx
+msgid "Save it to Files or another app."
+msgstr "Enregistrez-le dans Fichiers ou une autre app."
+
 #: src/account/constant/account-type.constant.ts
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "Savings"
@@ -4791,8 +4794,8 @@ msgid "This doesn't look like a Monobank token yet"
 msgstr "Ça ne ressemble pas encore à un jeton Monobank"
 
 #: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
-msgid "This is where your data lives and who can read it. You can find it again in Settings › Privacy."
-msgstr "Voici où vivent vos données et qui peut les lire. Vous retrouverez ces infos dans Paramètres › Confidentialité."
+msgid "This is where your data lives and who can read it. You can find it again in Settings › Your data."
+msgstr "Voici où vivent vos données et qui peut les lire. Vous retrouverez ces infos dans Paramètres › Vos données."
 
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "This month"

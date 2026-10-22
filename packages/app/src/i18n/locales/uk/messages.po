@@ -816,8 +816,8 @@ msgid "Backup"
 msgstr "Резервна копія"
 
 #: src/settings/components/backup-row/backup-row.tsx
-msgid "Backup created"
-msgstr "Резервну копію створено"
+msgid "Backup file ready"
+msgstr "Файл резервної копії готовий"
 
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Balance"
@@ -1340,10 +1340,6 @@ msgstr "Перетворити на переказ"
 #: src/app/convert-to-transfer.tsx
 msgid "Convert to Transfer?"
 msgstr "Конвертувати у переказ?"
-
-#: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
-msgid "Copies elsewhere"
-msgstr "Копії деінде"
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Copy the API Key and Secret Key into the fields below"
@@ -2347,6 +2343,10 @@ msgstr "Face ID / Touch ID"
 msgid "Face ID day to day"
 msgstr "Face ID щодня"
 
+#: src/settings/hook/use-biometric-label.hook.ts
+msgid "Facial recognition"
+msgstr "Розпізнавання обличчя"
+
 #: src/@generic/hook/use-contacts.hook.ts
 msgid "Failed to load contacts."
 msgstr "Не вдалося завантажити контакти."
@@ -2756,10 +2756,6 @@ msgstr "Банки"
 msgid "Keep"
 msgstr "Залишити"
 
-#: src/settings/components/backup-row/backup-row.tsx
-msgid "Keep a copy somewhere other than this device."
-msgstr "Збережіть її поза цим пристроєм."
-
 #: src/categorize-inbox/components/categorize-inbox-already-tracked-chip/categorize-inbox-already-tracked-chip.tsx
 msgid "Keep as already tracked cash, not spending"
 msgstr "Залишити як уже враховану готівку, не витрату"
@@ -2807,6 +2803,10 @@ msgstr "Останні 90 днів"
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Last error"
 msgstr "Остання помилка"
+
+#: src/settings/components/backup-row/backup-row.tsx
+msgid "Last export"
+msgstr "Останній експорт"
 
 #: src/@generic/constant/date-period.constant.ts
 msgid "Last Month"
@@ -3357,7 +3357,6 @@ msgstr "Жодна транзакція не відповідає"
 msgid "No transactions yet"
 msgstr "Поки немає транзакцій"
 
-#: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
 #: src/sync/component/file-import-review-step/file-import-review-step.tsx
 msgid "None"
 msgstr "Немає"
@@ -4151,6 +4150,10 @@ msgstr "Зберегти баланси"
 msgid "Save fee"
 msgstr "Зберегти комісію"
 
+#: src/settings/components/backup-row/backup-row.tsx
+msgid "Save it to Files or another app."
+msgstr "Збережіть його у Файлах або іншому застосунку."
+
 #: src/account/constant/account-type.constant.ts
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "Savings"
@@ -4791,8 +4794,8 @@ msgid "This doesn't look like a Monobank token yet"
 msgstr "Це ще не схоже на токен Monobank"
 
 #: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
-msgid "This is where your data lives and who can read it. You can find it again in Settings › Privacy."
-msgstr "Тут зберігаються ваші дані й видно, хто може їх прочитати. Знайти це знову можна в Налаштування › Конфіденційність."
+msgid "This is where your data lives and who can read it. You can find it again in Settings › Your data."
+msgstr "Тут зберігаються ваші дані й видно, хто може їх прочитати. Знайти це знову можна в Налаштування › Ваші дані."
 
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "This month"

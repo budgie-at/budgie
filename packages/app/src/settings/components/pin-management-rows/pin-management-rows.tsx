@@ -36,6 +36,7 @@ export const PinManagementRows = () => {
 
                     <ThemedSwitch
                         testID={SettingsPageSelector.AppLockBiometricSwitch}
+                        accessibilityLabel={biometricLabel}
                         onValueChange={handleToggleBiometric}
                         value={isBiometricEnabled}
                     />
