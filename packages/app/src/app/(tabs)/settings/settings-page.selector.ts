@@ -6,6 +6,11 @@ const normalizePart = (value: number | string) => String(value).replaceAll(/[^a-
 
 export const SettingsPageSelector = {
     Container: 'SettingsPage.Container',
+    YourDataCard: 'SettingsPage.YourDataCard',
+    DataEncryptionStateOn: 'SettingsPage.DataEncryption.State.On',
+    DataEncryptionStateOff: 'SettingsPage.DataEncryption.State.Off',
+    DataBackup: 'SettingsPage.DataBackup',
+    DataBackupButton: 'SettingsPage.DataBackupButton',
     AppLockCard: 'SettingsPage.AppLockCard',
     AppLockChangePinButton: 'SettingsPage.AppLockChangePinButton',
     AppLockDisableButton: 'SettingsPage.AppLockDisableButton',
@@ -27,7 +32,6 @@ export const SettingsPageSelector = {
     ArchivedCard: 'SettingsPage.ArchivedCard',
     InactiveCard: 'SettingsPage.InactiveCard',
     ImportDatabaseCard: 'SettingsPage.ImportDatabaseCard',
-    ExportDatabaseCard: 'SettingsPage.ExportDatabaseCard',
     ClearDataCard: 'SettingsPage.ClearDataCard',
     ManageRulesCard: 'SettingsPage.ManageRulesCard',
     BudgetManagementCard: 'SettingsPage.BudgetManagementCard',

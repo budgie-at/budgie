@@ -158,9 +158,9 @@ msgstr "{downloadPercent}%"
 msgid "{duplicateTransactionCount, plural, one {# skipped} other {# skipped}}"
 msgstr "{duplicateTransactionCount, plural, one {# пропущено} few {# пропущено} many {# пропущено} other {# пропущено}}"
 
-#: src/settings/components/your-data-file-card/your-data-file-card.tsx
-msgid "{fileSize} · on this phone"
-msgstr "{fileSize} · на цьому телефоні"
+#: src/settings/components/your-data-card/your-data-card.tsx
+msgid "{fileSize} · no Budgie servers"
+msgstr "{fileSize} · без серверів Budgie"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "{formattedAmount} · {detail}"
@@ -527,7 +527,6 @@ msgid "Activate Account?"
 msgstr "Активувати рахунок?"
 
 #: src/account/component/account-active-toggle-field/account-active-toggle-field.tsx
-#: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "Active"
 msgstr "Активний"
 
@@ -725,10 +724,9 @@ msgstr "Будь-хто, хто може розблокувати цей тел�
 msgid "API Token"
 msgstr "API токен"
 
-#: src/settings/components/security-settings/pin-disabled-card.tsx
-#: src/settings/components/security-settings/pin-enabled-card.tsx
+#: src/settings/components/app-lock-row/app-lock-row.tsx
 msgid "App Lock"
-msgstr "Блокування додатка"
+msgstr "Блокування застосунку"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "App Version"
@@ -808,6 +806,18 @@ msgstr "Середнє"
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Avg cost"
 msgstr "Сер. ціна"
+
+#: src/settings/components/backup-row/backup-row.tsx
+msgid "Back up"
+msgstr "Створити"
+
+#: src/settings/components/backup-row/backup-row.tsx
+msgid "Backup"
+msgstr "Резервна копія"
+
+#: src/settings/components/backup-row/backup-row.tsx
+msgid "Backup created"
+msgstr "Резервну копію створено"
 
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Balance"
@@ -954,6 +964,10 @@ msgstr "Budgie читає ці виписки на цьому телефоні."
 #: src/auth/hook/use-pin-authentication.hook.ts
 msgid "Budgie restarted, so it needs your PIN once before {biometricName} works again."
 msgstr "Budgie перезапустився, тож потрібен ваш PIN-код один раз, перш ніж {biometricName} знову запрацює."
+
+#: src/settings/components/screenshot-protection-row/screenshot-protection-row.tsx
+msgid "Budgie stays blank in screenshots and screen recordings"
+msgstr "Скріншоти й записи екрана покажуть порожній екран"
 
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Budgie will fill missing base-currency values from historical exchange rates. Analytics may be unavailable until this finishes."
@@ -1103,7 +1117,7 @@ msgstr "Змінити"
 msgid "Change currency"
 msgstr "Змінити валюту"
 
-#: src/settings/components/security-settings/pin-enabled-card.tsx
+#: src/settings/components/pin-management-rows/pin-management-rows.tsx
 msgid "Change PIN"
 msgstr "Змінити PIN-код"
 
@@ -1389,6 +1403,10 @@ msgstr "Не вдалося консолідувати збіги"
 msgid "Could not convert to refund"
 msgstr "Не вдалося перетворити на повернення"
 
+#: src/settings/components/backup-row/backup-row.tsx
+msgid "Could not create a backup"
+msgstr "Не вдалося створити резервну копію"
+
 #: src/budget/hooks/use-budget-form.hook.ts
 msgid "Could not create budget"
 msgstr "Не вдалося створити бюджет"
@@ -1453,10 +1471,6 @@ msgstr "Не вдалося стерти дані"
 #: src/export/components/export-csv/export-csv.tsx
 msgid "Could not export CSV"
 msgstr "Не вдалося експортувати CSV"
-
-#: src/export/components/export-database/export-database.tsx
-msgid "Could not export database"
-msgstr "Не вдалося експортувати базу даних"
 
 #: src/sync/hook/use-sync-account-setup-flow.hook.ts
 msgid "Could not fetch accounts"
@@ -1773,10 +1787,6 @@ msgstr "Темний режим"
 msgid "Data management"
 msgstr "Управління даними"
 
-#: src/export/components/export-database/export-database.tsx
-msgid "Database exported"
-msgstr "Базу даних експортовано"
-
 #: src/@generic/component/date-filter/date-filter.tsx
 #: src/app/(tabs)/settings/import.tsx
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
@@ -1913,7 +1923,7 @@ msgstr "Деталі"
 msgid "Didn't match"
 msgstr "Не збігається"
 
-#: src/settings/components/security-settings/pin-enabled-card.tsx
+#: src/settings/components/pin-management-rows/pin-management-rows.tsx
 msgid "Disable App Lock"
 msgstr "Вимкнути блокування"
 
@@ -2105,7 +2115,7 @@ msgstr "порожній"
 msgid "Empty canvas"
 msgstr "Порожній шаблон"
 
-#: src/settings/components/security-settings/pin-disabled-card.tsx
+#: src/settings/components/app-lock-row/app-lock-row.tsx
 msgid "Enable"
 msgstr "Увімкнути"
 
@@ -2125,6 +2135,10 @@ msgstr "Увімкніть їх у налаштуваннях пристрою, 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Enable Touch ID unlock?"
 msgstr "Увімкнути розблокування Touch ID?"
+
+#: src/settings/components/your-data-card/your-data-card.tsx
+msgid "Encryption"
+msgstr "Шифрування"
 
 #: src/i18n/constant/languages.constant.ts
 msgid "English"
@@ -2308,10 +2322,6 @@ msgstr "Витрата"
 msgid "Expenses"
 msgstr "Витрати"
 
-#: src/export/components/export-database/export-database.tsx
-msgid "Export a backup"
-msgstr "Експортувати резервну копію"
-
 #: src/export/components/export-csv/export-csv.tsx
 msgid "Export all transactions to a CSV file"
 msgstr "Експортувати всі транзакції до CSV-файлу"
@@ -2325,12 +2335,11 @@ msgid "External ID"
 msgstr "Зовнішній ID"
 
 #: src/auth/hook/use-pin-authentication.hook.ts
-#: src/settings/components/security-settings/pin-enabled-card.tsx
+#: src/settings/hook/use-biometric-label.hook.ts
 msgid "Face ID"
 msgstr "Face ID"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
-#: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "Face ID / Touch ID"
 msgstr "Face ID / Touch ID"
 
@@ -2402,6 +2411,10 @@ msgstr "Фільтрувати теги"
 #: src/auth/hook/use-pin-authentication.hook.ts
 msgid "fingerprint"
 msgstr "відбиток пальця"
+
+#: src/settings/hook/use-biometric-label.hook.ts
+msgid "Fingerprint"
+msgstr "Відбиток пальця"
 
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Fingerprint day to day"
@@ -2525,9 +2538,9 @@ msgstr "Допомога з сортуванням, не виходячи з т�
 msgid "Hidden from Home"
 msgstr "Приховано з Головної"
 
-#: src/app/(tabs)/settings/index.tsx
-msgid "Hide account balances and net worth when taking screenshots"
-msgstr "Приховувати баланси рахунків та загальну вартість при знятті скріншотів"
+#: src/settings/components/screenshot-protection-row/screenshot-protection-row.tsx
+msgid "Hide in screenshots"
+msgstr "Приховувати на скріншотах"
 
 #: src/categorize-inbox/components/categorize-inbox-cluster-card/categorize-inbox-cluster-card.tsx
 msgid "Hide transactions for {displayTitle}"
@@ -2743,6 +2756,10 @@ msgstr "Банки"
 msgid "Keep"
 msgstr "Залишити"
 
+#: src/settings/components/backup-row/backup-row.tsx
+msgid "Keep a copy somewhere other than this device."
+msgstr "Збережіть її поза цим пристроєм."
+
 #: src/categorize-inbox/components/categorize-inbox-already-tracked-chip/categorize-inbox-already-tracked-chip.tsx
 msgid "Keep as already tracked cash, not spending"
 msgstr "Залишити як уже враховану готівку, не витрату"
@@ -2786,10 +2803,6 @@ msgstr "Останні 7 днів"
 #: src/app/resync-window-picker.tsx
 msgid "Last 90 days"
 msgstr "Останні 90 днів"
-
-#: src/settings/components/your-data-file-card/your-data-file-card.tsx
-msgid "Last backup"
-msgstr "Остання резервна копія"
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Last error"
@@ -3135,10 +3148,6 @@ msgstr "Чистий"
 msgid "Net worth"
 msgstr "Чисті активи"
 
-#: src/settings/components/your-data-file-card/your-data-file-card.tsx
-msgid "Never"
-msgstr "Ніколи"
-
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "Never synced, never uploaded."
 msgstr "Ніколи не синхронізується й не вивантажується."
@@ -3369,10 +3378,6 @@ msgstr "Не містить"
 msgid "Not downloaded"
 msgstr "Не завантажено"
 
-#: src/export/components/export-database/export-database.tsx
-msgid "Not encrypted, because there's no PIN. You choose where it goes."
-msgstr "Не зашифровано, бо немає PIN-коду. Ви обираєте, куди її зберегти."
-
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
 #: src/app/import-backup-pin.tsx
 #: src/import/hook/use-restore-backup.hook.ts
@@ -3403,6 +3408,10 @@ msgstr "Не зараз"
 msgid "not set"
 msgstr "не встановлено"
 
+#: src/settings/components/backup-row/backup-row.tsx
+msgid "Not yet"
+msgstr "Ще немає"
+
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
 #: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
 msgid "Note"
@@ -3429,9 +3438,29 @@ msgstr "з"
 msgid "of {total} GB"
 msgstr "з {total} ГБ"
 
+#: src/settings/components/your-data-card/your-data-card.tsx
+msgid "Off"
+msgstr "Вимкнено"
+
 #: src/ai/component/ai-download-wifi-banner/ai-download-wifi-banner.tsx
 msgid "OK"
 msgstr "OK"
+
+#: src/settings/components/app-lock-row/app-lock-row.tsx
+msgid "On · PIN"
+msgstr "Увімкнено · PIN-код"
+
+#: src/settings/components/app-lock-row/app-lock-row.tsx
+msgid "On · PIN and {biometricLabel}"
+msgstr "Увімкнено · PIN-код і {biometricLabel}"
+
+#: src/settings/components/your-data-card/your-data-card.tsx
+msgid "On this iPhone"
+msgstr "На цьому iPhone"
+
+#: src/settings/components/your-data-card/your-data-card.tsx
+msgid "On this phone"
+msgstr "На цьому телефоні"
 
 #: src/app/(tabs)/settings/ai.tsx
 msgid "On-device AI"
@@ -3687,7 +3716,6 @@ msgstr "на місяць"
 msgid "Permission to access contacts was denied."
 msgstr "Відмовлено в доступі до контактів."
 
-#: src/auth/components/security-status-badge/security-status-badge.tsx
 #: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
 msgid "Phone lock only"
 msgstr "Лише блокування телефона"
@@ -3715,6 +3743,14 @@ msgstr "Виберіть період. Наявні дані зберігают�
 #: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
 msgid "Pick tags for this transaction"
 msgstr "Вибрати теги для цієї транзакції"
+
+#: src/settings/components/app-lock-row/app-lock-row.tsx
+msgid "PIN and {biometricLabel}. Encrypts your data."
+msgstr "PIN-код і {biometricLabel}. Шифрує ваші дані."
+
+#: src/settings/components/app-lock-row/app-lock-row.tsx
+msgid "PIN. Encrypts your data."
+msgstr "PIN-код. Шифрує ваші дані."
 
 #: src/auth/hook/use-pin-setup.hook.tsx
 msgid "PINs do not match"
@@ -3782,10 +3818,6 @@ msgstr "Ціна змінилася"
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "Prices fill in quietly while you use the app."
 msgstr "Ціни додаються у фоновому режимі, поки ви користуєтеся застосунком."
-
-#: src/app/(tabs)/settings/index.tsx
-msgid "Privacy"
-msgstr "Конфіденційність"
 
 #: src/app/(main)/create-account/index.tsx
 #: src/rule/constant/external-source.constant.ts
@@ -4133,25 +4165,13 @@ msgstr "Ощадний рахунок"
 msgid "Scan the QR code with the Monobank app"
 msgstr "Відскануйте QR-код у застосунку Monobank"
 
-#: src/app/(tabs)/settings/index.tsx
-msgid "Screenshot Protection"
-msgstr "Захист від скріншотів"
-
 #: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
 msgid "Seal"
 msgstr "Запечатати"
 
-#: src/auth/components/security-status-badge/security-status-badge.tsx
-msgid "Sealed"
-msgstr "Запечатано"
-
 #: src/onboarding/hook/use-onboarding-file-state.hook.ts
 msgid "Sealed · {contents}"
 msgstr "Запечатано · {contents}"
-
-#: src/export/components/export-database/export-database.tsx
-msgid "Sealed with your PIN. You choose where it goes."
-msgstr "Запечатано вашим PIN-кодом. Ви обираєте, куди її зберегти."
 
 #: src/onboarding/component/onboarding-sealed-moment/onboarding-sealed-moment.tsx
 msgid "Sealed."
@@ -4230,10 +4250,6 @@ msgstr "Пошук..."
 #: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx
 msgid "Secondary Value"
 msgstr "Другорядне значення"
-
-#: src/settings/components/security-settings/pin-disabled-card.tsx
-msgid "Secure your app with PIN & Face ID"
-msgstr "Захистіть свій додаток за допомогою PIN-коду та Face ID"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Security"
@@ -4943,7 +4959,7 @@ msgstr "Усього позичено"
 msgid "Total lent"
 msgstr "Усього надано в борг"
 
-#: src/settings/components/security-settings/pin-enabled-card.tsx
+#: src/settings/hook/use-biometric-label.hook.ts
 msgid "Touch ID"
 msgstr "Touch ID"
 
@@ -5171,11 +5187,11 @@ msgstr "Оновлено {formattedDate}"
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Use Face ID or Touch ID to unlock your app quickly and securely"
-msgstr "Використовуйте Face ID або Touch ID для швидкого та безпечного розблокування вашого додатку"
+msgstr "Використовуйте Face ID або Touch ID для швидкого й безпечного розблокування застосунку"
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Use Face ID to unlock your app quickly and securely"
-msgstr "Використовуйте Face ID для швидкого та безпечного розблокування вашого додатку"
+msgstr "Використовуйте Face ID для швидкого й безпечного розблокування застосунку"
 
 #: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
 #: src/ai/component/ai-download-wifi-banner/ai-download-wifi-banner.tsx
@@ -5184,7 +5200,7 @@ msgstr "Використати мобільні дані для {remaining} ГБ
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Use Touch ID to unlock your app quickly and securely"
-msgstr "Використовуйте Touch ID для швидкого та безпечного розблокування вашого додатку"
+msgstr "Використовуйте Touch ID для швидкого й безпечного розблокування застосунку"
 
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
 msgid "Usually 0% up to 4 months"
@@ -5315,6 +5331,10 @@ msgstr "Буде створено на цьому телефоні"
 msgid "Wise"
 msgstr "Wise"
 
+#: src/settings/components/your-data-card/your-data-card.tsx
+msgid "With your PIN"
+msgstr "PIN-кодом"
+
 #: src/ai/component/ai-download-eta/ai-download-eta.tsx
 msgid "Working out the time left…"
 msgstr "Обчислюємо, скільки залишилося…"
@@ -5400,6 +5420,10 @@ msgstr "Ви підключені до Wi-Fi"
 msgid "You're on Wi-Fi."
 msgstr "Ви підключені до Wi-Fi."
 
+#: src/app/(tabs)/settings/index.tsx
+msgid "Your data"
+msgstr "Ваші дані"
+
 #: src/auth/components/security-lock-button/security-lock-button.tsx
 msgid "Your data is sealed. Only your PIN opens it."
 msgstr "Ваші дані запечатано. Лише ваш PIN-код їх відкриває."
@@ -5411,10 +5435,6 @@ msgstr "Ваші дані залишаються недоторканими на
 #: src/onboarding/component/onboarding-file-strip/onboarding-file-strip.tsx
 msgid "Your data: {state}"
 msgstr "Ваші дані: {state}"
-
-#: src/export/components/export-database/export-database.tsx
-msgid "Your database backup is ready to share."
-msgstr "Ваша резервна копія бази даних готова до поширення."
 
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Your holdings"
