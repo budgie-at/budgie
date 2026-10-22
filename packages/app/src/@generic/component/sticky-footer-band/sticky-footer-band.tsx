@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { View } from 'react-native';
 import { KeyboardStickyView } from 'react-native-keyboard-controller';
 
-import { EdgeFade } from '../edge-fade/edge-fade';
+import { EdgeFade } from '@rnw-community/react-native-screen-chrome';
 
 import type { ViewStyle } from 'react-native';
 
