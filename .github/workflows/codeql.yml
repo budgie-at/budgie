@@ -16,6 +16,13 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+    # Docs, store metadata and the landing site never reach the app bundle;
+    # main pushes and the weekly schedule still scan all of it.
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+      - 'packages/landing/**'
+      - 'packages/app/fastlane/**'
   schedule:
     - cron: '25 13 * * 0'
 
@@ -34,8 +41,8 @@ jobs:
     #   - https://gh.io/supported-runners-and-hardware-resources
     #   - https://gh.io/using-larger-runners (GitHub.com only)
     # Consider using larger runners or machines with greater resources for possible analysis time improvements.
-    # CodeQL is pinned to GitHub-hosted Ubuntu because the CLI does not support Linux arm64.
-    runs-on: ubuntu-latest
+    # amd64, not linux-portable: the CodeQL CLI does not support Linux arm64.
+    runs-on: [self-hosted, trf-linux-amd64-2x4]
     timeout-minutes: 30
     permissions:
       # required for all workflows
@@ -82,6 +89,9 @@ jobs:
       with:
         languages: ${{ matrix.language }}
         build-mode: ${{ matrix.build-mode }}
+        # A container sees the host's memory and CPUs, not its 2 CPU / 4 GiB quota.
+        ram: 3072
+        threads: 2
         # If you wish to specify custom queries, you can do so here or in a config file.
         # By default, queries listed here will override any specified in a config file.
         # Prefix the list here with "+" to use these queries and those in the config file.
@@ -109,3 +119,5 @@ jobs:
       uses: github/codeql-action/analyze@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee # v4.39.0
       with:
         category: "/language:${{matrix.language}}"
+        ram: 3072
+        threads: 2
