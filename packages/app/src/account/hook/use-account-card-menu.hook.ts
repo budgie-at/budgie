@@ -2,6 +2,8 @@ import { ImpactFeedbackStyle } from 'expo-haptics';
 import { useRef, useState } from 'react';
 import { View } from 'react-native';
 
+import { EmptyFn, isDefined } from '@rnw-community/shared';
+
 import { PopoverMenuAnchor } from '../../@generic/component/popover-menu/popover-menu';
 import { useVibration } from '../../@generic/hook/use-vibration.hook';
 
@@ -10,6 +12,7 @@ export const useAccountCardMenu = () => {
     const cardRef = useRef<View>(null);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [menuAnchor, setMenuAnchor] = useState<PopoverMenuAnchor>();
+    const pendingActionRef = useRef<EmptyFn | null>(null);
 
     const openMenu = () => {
         hapticImpact(ImpactFeedbackStyle.Medium);
@@ -18,7 +21,16 @@ export const useAccountCardMenu = () => {
             setIsMenuOpen(true);
         });
     };
-    const closeMenu = () => void setIsMenuOpen(false);
+    const closeMenu = (afterClose?: EmptyFn) => {
+        pendingActionRef.current = afterClose ?? null;
+        setIsMenuOpen(false);
+    };
+    const handleCloseComplete = () => {
+        if (isDefined(pendingActionRef.current)) {
+            pendingActionRef.current();
+            pendingActionRef.current = null;
+        }
+    };
 
-    return { cardRef, isMenuOpen, menuAnchor, openMenu, closeMenu };
+    return { cardRef, isMenuOpen, menuAnchor, openMenu, closeMenu, handleCloseComplete };
 };

@@ -14,29 +14,22 @@ interface Props {
     readonly integrationId: number | null;
     readonly anchor?: PopoverMenuAnchor;
     readonly isOpen: boolean;
-    readonly onClose: EmptyFn;
+    readonly onClose: (afterClose?: EmptyFn) => void;
+    readonly onCloseComplete: EmptyFn;
     readonly onEdit: EmptyFn;
     readonly onImport?: EmptyFn;
 }
 
-export const AccountCardMenu = ({ integrationId, anchor, isOpen, onClose, onEdit, onImport }: Props) => {
+export const AccountCardMenu = ({ integrationId, anchor, isOpen, onClose, onCloseComplete, onEdit, onImport }: Props) => {
     const { t } = useLingui();
 
-    const handleImport = () => {
-        onClose();
-        onImport?.();
-    };
-    const handleEdit = () => {
-        onClose();
-        onEdit();
-    };
-    const handleIntegrationSettings = () => {
-        onClose();
-        router.push({ pathname: '/bank-integration/[id]', params: { id: String(integrationId) } });
-    };
+    const handleImport = () => void onClose(onImport);
+    const handleEdit = () => void onClose(onEdit);
+    const handleIntegrationSettings = () =>
+        void onClose(() => void router.push({ pathname: '/bank-integration/[id]', params: { id: String(integrationId) } }));
 
     return (
-        <PopoverMenu isOpen={isOpen} onClose={onClose} anchor={anchor} align="auto">
+        <PopoverMenu isOpen={isOpen} onClose={onClose} onCloseComplete={onCloseComplete} anchor={anchor} align="auto">
             <View className="py-sm">
                 {isDefined(onImport) ? (
                     <PopoverMenuItem

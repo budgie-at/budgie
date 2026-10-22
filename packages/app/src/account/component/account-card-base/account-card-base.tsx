@@ -35,7 +35,7 @@ export const AccountCardBase = ({ account, balance, amountLabel, onImport, child
 
     const { t } = useLingui();
     const protectAmount = useProtectedAmountLabel();
-    const { cardRef, isMenuOpen, menuAnchor, openMenu, closeMenu } = useAccountCardMenu();
+    const { cardRef, isMenuOpen, menuAnchor, openMenu, closeMenu, handleCloseComplete } = useAccountCardMenu();
 
     const navigateToAccount = () => void router.push({ pathname: '/account/[id]/details', params: { id: String(id) } });
     const navigateToEdit = () => void router.push({ pathname: '/account/[id]/update', params: { id: String(id) } });
@@ -91,6 +91,7 @@ export const AccountCardBase = ({ account, balance, amountLabel, onImport, child
                 anchor={menuAnchor}
                 isOpen={isMenuOpen}
                 onClose={closeMenu}
+                onCloseComplete={handleCloseComplete}
                 onEdit={navigateToEdit}
                 {...(isDefined(onImport) && { onImport })}
             />
