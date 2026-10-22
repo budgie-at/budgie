@@ -55,7 +55,7 @@ jobs:
       control-runner-labels: '["self-hosted","trf-linux-amd64-2x4"]'
       enable-ios: true
       enable-android: false
-      ios-runner-labels: '["self-hosted","macOS","ARM64","macos-tartelet"]'
+      ios-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
       app-dir: packages/app
       build-profile: development
       tag-prefix: dev
