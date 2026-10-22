@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useEffectEvent, useRef, useState } from 'react';
+import { Platform } from 'react-native';
 import { Easing, interpolate, runOnJS, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import { EmptyFn } from '@rnw-community/shared';
@@ -8,26 +9,25 @@ const MENU_SCALE_CLOSED = 0.95;
 
 const TIMING_CONFIG = { duration: 150, easing: Easing.out(Easing.cubic) };
 
+// eslint-disable-next-line max-statements -- Close sequencing tracks the animation and the iOS native dismissal as separate phases
 export const usePopoverAnimation = (isOpen: boolean, onCloseComplete?: EmptyFn) => {
     const progress = useSharedValue(isOpen ? 1 : 0);
     const [isClosing, setIsClosing] = useState(false);
+    const [isDismissing, setIsDismissing] = useState(false);
     const [previousIsOpen, setPreviousIsOpen] = useState(isOpen);
-    const onCloseCompleteRef = useRef(onCloseComplete);
-    const isRendered = isOpen || isClosing;
+    const notifyCloseComplete = useEffectEvent(() => onCloseComplete?.());
+    const isRendered = isOpen || isClosing || isDismissing;
     const wasRenderedRef = useRef(isRendered);
 
     if (isOpen !== previousIsOpen) {
         setPreviousIsOpen(isOpen);
         setIsClosing(!isOpen);
+        setIsDismissing(!isOpen && Platform.OS === 'ios');
     }
 
     useEffect(() => {
-        onCloseCompleteRef.current = onCloseComplete;
-    });
-
-    useEffect(() => {
         if (wasRenderedRef.current && !isRendered) {
-            onCloseCompleteRef.current?.();
+            notifyCloseComplete();
         }
 
         wasRenderedRef.current = isRendered;
@@ -53,5 +53,5 @@ export const usePopoverAnimation = (isOpen: boolean, onCloseComplete?: EmptyFn) 
         transform: [{ scale: interpolate(progress.get(), [0, 1], [MENU_SCALE_CLOSED, 1]) }]
     }));
 
-    return { isRendered, backdropStyle, menuStyle };
+    return { isRendered, isVisible: isOpen || isClosing, handleDismiss: () => void setIsDismissing(false), backdropStyle, menuStyle };
 };

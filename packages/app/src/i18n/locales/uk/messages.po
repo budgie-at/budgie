@@ -830,6 +830,7 @@ msgstr "Банк"
 msgid "Bank account"
 msgstr "Банківський рахунок"
 
+#: src/account/component/account-card-menu/account-card-menu.tsx
 #: src/account/component/bank-provider-section-header/bank-provider-section-header.tsx
 msgid "Bank integration settings"
 msgstr "Налаштування банківської інтеграції"
@@ -2041,7 +2042,8 @@ msgstr "Кожен стане рахунком. Перейменувати чи 
 msgid "Edit"
 msgstr "Редагувати"
 
-#: src/account/component/account-edit-button/account-edit-button.tsx
+#: src/account/component/account-card-base/account-card-base.tsx
+#: src/account/component/account-card-menu/account-card-menu.tsx
 msgid "Edit account"
 msgstr "Редагувати рахунок"
 
@@ -2604,6 +2606,8 @@ msgstr "Імпортувати Erste Bank"
 msgid "Import failed"
 msgstr "Помилка імпорту"
 
+#: src/account/component/account-card-base/account-card-base.tsx
+#: src/account/component/account-card-menu/account-card-menu.tsx
 #: src/sync/component/bank-integration-page/bank-integration-page.tsx
 msgid "Import file"
 msgstr "Імпортувати файл"
