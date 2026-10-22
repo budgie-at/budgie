@@ -291,7 +291,9 @@ jobs:
 
     ios-maestro:
         if: needs.detect-mobile-impact.outputs.mobile == 'true'
-        needs: [detect-mobile-impact, code-quality]
+        # Starts beside code-quality rather than after it: Required CI still
+        # fails the PR when either fails.
+        needs: [detect-mobile-impact]
         name: iOS Maestro E2E
         # A reusable workflow can only narrow the token it is given: the base
         # binary every pull request repacks is fetched (packages) and published
