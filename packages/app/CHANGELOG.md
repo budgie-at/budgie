@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.112.1](https://github.com/budgie-at/budgie/compare/v6.112.0...v6.112.1) (2026-10-22)
+
+### Bug Fixes
+
+* **app:** render the native edge-fade blur on iOS and Android ([dcfb88d](https://github.com/budgie-at/budgie/commit/dcfb88de2b20516a8cf6f17aa2df54c094949bcc))
+
+
 # [6.112.0](https://github.com/budgie-at/budgie/compare/v6.111.2...v6.112.0) (2026-10-21)
 
 ### Bug Fixes
