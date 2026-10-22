@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.113.0](https://github.com/budgie-at/budgie/compare/v6.112.1...v6.113.0) (2026-10-22)
+
+### Bug Fixes
+
+* **app:** keep the chosen account menu action when the backdrop is tapped while closing ([832958e](https://github.com/budgie-at/budgie/commit/832958efb7c5017579ffed8e884db14f9ccbbddb))
+* **app:** keep the first chosen account menu action while the menu closes ([bc39ce9](https://github.com/budgie-at/budgie/commit/bc39ce911f6e217aa88c661e3a550d2cbde84a69))
+* **app:** open account menu actions after the popover dismisses ([6796083](https://github.com/budgie-at/budgie/commit/6796083bdb6b17adae5d11f3f09f709c86313877))
+* **app:** run popover menu actions after the native modal dismisses ([a55d611](https://github.com/budgie-at/budgie/commit/a55d611d2b8c30a4c870e28a342388c75ca0a606))
+
+### Features
+
+* **app:** compact balance-first account tiles with two-line titles and a long-press menu ([b6ff717](https://github.com/budgie-at/budgie/commit/b6ff7177fb5f9b220c390222af095a0e82288903))
+
+
 ## [6.112.1](https://github.com/budgie-at/budgie/compare/v6.112.0...v6.112.1) (2026-10-22)
 
 ### Bug Fixes
