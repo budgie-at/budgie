@@ -1,0 +1,91 @@
+name: cache-bench (temporary, tart-runner-fleet#401)
+
+# Temporary benchmark for vitalyiegorov/tart-runner-fleet#401: pull-request
+# Code quality checks, step for step, on the fleet's 4x8 Linux pool, with the
+# pnpm store restored and saved under a per-run key so each run measures one
+# restore and one save. TURBO_TOKEN is deliberately absent, so the remote
+# Turborepo cache cannot make one run cheaper than another. Deleted when the
+# measurement ends.
+on:
+    push:
+        branches: [scratch/cache-bench-401]
+    workflow_dispatch:
+
+permissions:
+    contents: read
+
+concurrency:
+    group: cache-bench-401
+    cancel-in-progress: false
+
+jobs:
+    code-quality:
+        name: Code quality checks (cache bench)
+        runs-on: [self-hosted, trf-linux-amd64-4x8]
+        timeout-minutes: 60
+        steps:
+            - name: Describe the guest
+              run: |
+                  echo "runner=$RUNNER_NAME"
+                  echo "results-url-overridden=${ACTIONS_RESULTS_URL:+yes}"
+                  command -v zstd || echo 'zstd: absent'
+
+            - name: Checkout repository
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+              with:
+                  persist-credentials: false
+
+            - name: Setup pnpm
+              uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+            - name: Setup Node
+              uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+              with:
+                  node-version: 22.22.2
+
+            - name: Resolve the pnpm store
+              id: pnpm-store
+              run: echo "path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
+
+            - name: Restore pnpm store
+              uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+              with:
+                  path: ${{ steps.pnpm-store.outputs.path }}
+                  key: bench401-pnpm-${{ github.run_id }}-${{ github.run_attempt }}
+                  restore-keys: bench401-pnpm-
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Save pnpm store
+              uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+              with:
+                  path: ${{ steps.pnpm-store.outputs.path }}
+                  key: bench401-pnpm-${{ github.run_id }}-${{ github.run_attempt }}
+
+            - name: Lingui catalogs are up to date
+              run: pnpm i18n:check
+
+            - name: Formatting checks
+              run: pnpm format:check
+
+            - name: Typescript checks
+              run: pnpm ts
+
+            - name: Maestro selector checks
+              run: pnpm --filter @budgie-at/app-tests selectors:check
+
+            - name: Lint checks
+              run: pnpm lint
+
+            - name: Deadcode detection
+              run: pnpm deadcode
+
+            - name: Copy/Paste detection
+              run: pnpm cpd
+
+            - name: Build
+              run: pnpm build
+
+            - name: Verify generated files are committed
+              run: git diff --exit-code
