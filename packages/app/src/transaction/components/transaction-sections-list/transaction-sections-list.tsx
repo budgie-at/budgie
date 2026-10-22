@@ -10,6 +10,7 @@ import { isEmptyArray } from '@rnw-community/shared';
 
 import { BudgieLegendList } from '../../../@generic/component/budgie-legend-list/budgie-legend-list';
 import { PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
+import { StickySectionHeaderBackdrop } from '../../../@generic/component/sticky-section-header-backdrop/sticky-section-header-backdrop';
 import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../../@generic/constant/floating-tab-bar.constant';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
@@ -75,7 +76,8 @@ export const TransactionSectionsList = ({
 
     const renderItem = ({ item }: { item: TransactionListItemType }) =>
         item.type === TransactionListItemKindEnum.HEADER ? (
-            <View className="bg-primary-reverse py-sm">
+            <View className="py-sm">
+                <StickySectionHeaderBackdrop />
                 <Text className="text-secondary-foreground uppercase text-xs">{item.title}</Text>
             </View>
         ) : (
