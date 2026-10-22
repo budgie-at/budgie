@@ -22,7 +22,7 @@ export const useAccountCardMenu = () => {
         });
     };
     const closeMenu = (afterClose?: EmptyFn) => {
-        pendingActionRef.current = afterClose ?? pendingActionRef.current;
+        pendingActionRef.current ??= afterClose ?? null;
         setIsMenuOpen(false);
     };
     const handleCloseComplete = () => {
