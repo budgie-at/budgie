@@ -41,7 +41,7 @@ jobs:
     #   - https://gh.io/supported-runners-and-hardware-resources
     #   - https://gh.io/using-larger-runners (GitHub.com only)
     # Consider using larger runners or machines with greater resources for possible analysis time improvements.
-    # amd64, not linux-portable: the CodeQL CLI does not support Linux arm64.
+    # The dedicated amd64 Linux hosts, not linux-portable, which shares the Mac mini.
     runs-on: [self-hosted, trf-linux-amd64-2x4]
     timeout-minutes: 30
     permissions:
