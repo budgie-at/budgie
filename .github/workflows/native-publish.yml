@@ -57,7 +57,7 @@ jobs:
       lint-runner-labels: '["self-hosted","trf-linux-amd64-4x8"]'
       enable-ios: true
       enable-android: false
-      ios-runner-labels: '["self-hosted","macOS","ARM64","macos-tartelet"]'
+      ios-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
       app-dir: packages/app
       build-profile: production
       submit-profile: production
