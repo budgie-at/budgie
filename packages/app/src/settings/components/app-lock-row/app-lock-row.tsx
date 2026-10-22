@@ -19,8 +19,6 @@ export const AppLockRow = () => {
 
     const handleCreatePin = () => void router.push({ pathname: '/settings/pin', params: { mode: PinSetupModeEnum.CREATE } });
 
-    const enableDescription = isDefined(biometricLabel) ? t`PIN and ${biometricLabel}. Encrypts your data.` : t`PIN. Encrypts your data.`;
-
     if (isPinEnabled) {
         const description = isBiometricEnabled && isDefined(biometricLabel) ? t`On · PIN and ${biometricLabel}` : t`On · PIN`;
 
@@ -30,11 +28,12 @@ export const AppLockRow = () => {
                 variant="positive"
                 title={t`App Lock`}
                 description={description}
-                right={null}
                 testID={SettingsPageSelector.AppLockCard}
             />
         );
     }
+
+    const enableDescription = isDefined(biometricLabel) ? t`PIN and ${biometricLabel}. Encrypts your data.` : t`PIN. Encrypts your data.`;
 
     return (
         <SettingsDetailRow

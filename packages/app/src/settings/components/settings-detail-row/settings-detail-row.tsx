@@ -13,7 +13,7 @@ interface Props {
     readonly variant: ColorPaletteVariant;
     readonly title: string;
     readonly description: string;
-    readonly right: ReactNode;
+    readonly right?: ReactNode;
     readonly onPress?: () => void;
     readonly testID?: string;
 }
