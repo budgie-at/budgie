@@ -407,8 +407,8 @@ importers:
         specifier: ^2.29.5
         version: 2.29.5(react-native-reanimated@4.7.1(react-native-worklets@0.13.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(react-native@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)(supports-color@8.1.1))(react-native@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(react-native@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
       '@rnw-community/react-native-screen-chrome':
-        specifier: ^3.0.0
-        version: 3.0.0(39b2bd75054e7a44c3a72c101797e32a)
+        specifier: ^3.0.1
+        version: 3.0.1(39b2bd75054e7a44c3a72c101797e32a)
       '@rnw-community/shared':
         specifier: ^2.28.0
         version: 2.28.0
@@ -5182,11 +5182,11 @@ packages:
       react-native: '>=0.78'
       react-native-reanimated: '>=4.1.0 <5'
 
-  '@rnw-community/react-native-screen-chrome@3.0.0':
-    resolution: {integrity: sha512-f2IqAJgI4Jm/1pRPicHSWv2J5wBEg583r73e8tngWiPabVzbNxs+MnWx4h/Ef6hvVUAxQcXqTP8P8lDf+JEZlQ==}
+  '@rnw-community/react-native-screen-chrome@3.0.1':
+    resolution: {integrity: sha512-eGnv6A9mStrOdpqZkcIzA3mjHWSagdxz8/7eRF/cOCXR27kD6vP+ofQXWID4MFAXUBqItj34HCaI6hK7K5sS0A==}
     engines: {node: '>=22.0.0'}
     peerDependencies:
-      '@rnw-community/react-native-collapsible-header': '>=2.18.0 <3'
+      '@rnw-community/react-native-collapsible-header': '>=2.18.0 <4'
       expo: '>=55 <59'
       react: 19.3.0
       react-native: '>=0.78'
@@ -13996,7 +13996,7 @@ snapshots:
       react-native: 0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
       react-native-reanimated: 4.7.1(react-native-worklets@0.13.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(react-native@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)(supports-color@8.1.1))(react-native@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
 
-  '@rnw-community/react-native-screen-chrome@3.0.0(39b2bd75054e7a44c3a72c101797e32a)':
+  '@rnw-community/react-native-screen-chrome@3.0.1(39b2bd75054e7a44c3a72c101797e32a)':
     dependencies:
       '@rnw-community/react-native-collapsible-header': 2.29.5(react-native-reanimated@4.7.1(react-native-worklets@0.13.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(react-native@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)(supports-color@8.1.1))(react-native@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0))(react-native@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(@react-native/metro-config@0.88.0(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
       '@rnw-community/shared': 3.0.0
