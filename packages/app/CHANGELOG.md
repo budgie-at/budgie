@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.114.3](https://github.com/budgie-at/budgie/compare/v6.114.2...v6.114.3) (2026-10-23)
+
+### Bug Fixes
+
+* **app:** ignore repeat taps while an action is loading ([f0b71d8](https://github.com/budgie-at/budgie/commit/f0b71d83e8ea66f536ab40a953d445e2bb8e96ac))
+
+
 ## [6.114.2](https://github.com/budgie-at/budgie/compare/v6.114.1...v6.114.2) (2026-10-23)
 
 ### Bug Fixes
