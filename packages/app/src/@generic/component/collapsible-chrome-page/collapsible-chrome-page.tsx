@@ -3,6 +3,7 @@ import { Text, View } from 'react-native';
 import { CollapsibleHeaderBackdrop, ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
 import { isDefined } from '@rnw-community/shared';
 
+import { SCREEN_CHROME_CONFIG } from '../../constant/screen-chrome-config.constant';
 import { SCREEN_CHROME_CONTENT_INSET_TOP } from '../../constant/screen-chrome-content-inset.constant';
 import { TestIDPartEnum } from '../../enum/test-id-part.enum';
 import { ScreenChromeThemeProvider } from '../../provider/screen-chrome-theme.provider';
@@ -89,7 +90,11 @@ export const CollapsibleChromePage = ({
                     <View className={cn('px-5xl', contentClassName)}>{children}</View>
                 </ChromeKeyboardScrollView>
 
-                <CollapsibleHeaderBackdrop />
+                <CollapsibleHeaderBackdrop
+                    chromeHeight={SCREEN_CHROME_CONFIG.collapsedHeaderHeight}
+                    intensity={SCREEN_CHROME_CONFIG.maxBlurIntensity}
+                    scrollAnimation={{}}
+                />
 
                 <CollapsibleChromeHeader
                     {...testIDProps(testID, TestIDPartEnum.HEADER)}
