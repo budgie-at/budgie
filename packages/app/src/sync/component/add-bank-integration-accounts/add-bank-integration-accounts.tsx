@@ -12,6 +12,7 @@ import { Button } from '../../../@generic/component/button/button';
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
 import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
+import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
@@ -37,7 +38,7 @@ export const AddBankIntegrationAccounts = ({ integration }: Props) => {
     const [step, setStep] = useState<AddAccountsStep>('accounts');
     const [historyDepth, setHistoryDepth] = useState(DEFAULT_SYNC_HISTORY_DEPTH);
     const [loadResult, setLoadResult] = useState<AsyncResult.AsyncResult<unknown, unknown>>(() => AsyncResult.initial());
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const { isLoading: isSubmitting, run } = useSingleFlight();
     const [reloadToken, setReloadToken] = useState(0);
 
     const accountSelection = useAccountSelection();
@@ -47,21 +48,19 @@ export const AddBankIntegrationAccounts = ({ integration }: Props) => {
         setLoadResult(AsyncResult.initial());
         setReloadToken(previous => previous + 1);
     };
-    const handleConfirm = async (): Promise<void> => {
-        setIsSubmitting(true);
-        try {
-            await appRuntime.runPromise(
-                Effect.flatMap(MonobankSyncService, monobankSyncService =>
-                    monobankSyncService.setupAccountSyncBatch(integration.token, [...selectedAccounts], historyDepth)
-                )
-            );
-            goBackOrReplace(`/bank-integration/${integration.id}`);
-        } catch (error) {
-            showErrorToast(t`Could not add accounts`, getErrorMessage(error));
-        } finally {
-            setIsSubmitting(false);
-        }
-    };
+    const handleConfirm = () =>
+        run(async () => {
+            try {
+                await appRuntime.runPromise(
+                    Effect.flatMap(MonobankSyncService, monobankSyncService =>
+                        monobankSyncService.setupAccountSyncBatch(integration.token, [...selectedAccounts], historyDepth)
+                    )
+                );
+                goBackOrReplace(`/bank-integration/${integration.id}`);
+            } catch (error) {
+                showErrorToast(t`Could not add accounts`, getErrorMessage(error));
+            }
+        });
 
     const handleContinueToHistory = () => {
         setStep('history');

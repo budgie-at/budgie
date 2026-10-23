@@ -26,6 +26,7 @@ import { getErrorMessage, isNotEmptyArray, isNotEmptyString } from '@rnw-communi
 
 import { Button } from '../../../@generic/component/button/button';
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
+import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { ImportColumnMapField } from '../../../import/components/import-column-map-field/import-column-map-field';
@@ -61,7 +62,9 @@ export default function ImportScreen() {
     const [csvText, setCsvText] = useState('');
     const [headers, setHeaders] = useState<string[]>([]);
     const [rowCount, setRowCount] = useState(0);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isReadingFile, setIsReadingFile] = useState(false);
+    const { isLoading: isImporting, run } = useSingleFlight();
+    const isLoading = isReadingFile || isImporting;
     const [selectedPreset, setSelectedPreset] = useState<ImportPresetEnum | undefined>();
 
     const headersSet = new Set(headers);
@@ -113,7 +116,7 @@ export default function ImportScreen() {
 
         appRuntime.runFork(
             Effect.gen(function* () {
-                setIsLoading(true);
+                setIsReadingFile(true);
                 const text = yield* Effect.promise(() => new File(fileUri).text());
                 const [parsedHeaders, count] = yield* Effect.all([parseCsvHeaders(text), countCsvRows(text)]);
 
@@ -127,30 +130,26 @@ export default function ImportScreen() {
                         router.back();
                     })
                 ),
-                Effect.ensuring(Effect.sync(() => void setIsLoading(false)))
+                Effect.ensuring(Effect.sync(() => void setIsReadingFile(false)))
             )
         );
     }, [fileUri, t]);
 
-    const handleStartImport = (columnMap: ImporterColumnMapInterface) => {
-        setIsLoading(true);
+    const handleStartImport = (columnMap: ImporterColumnMapInterface) =>
+        run(() =>
+            appRuntime.runPromise(
+                Effect.gen(function* () {
+                    const importerService = yield* ImporterService;
+                    const ruleApplicationDrainerService = yield* RuleApplicationDrainerService;
 
-        return appRuntime.runPromise(
-            Effect.gen(function* () {
-                const importerService = yield* ImporterService;
-                const ruleApplicationDrainerService = yield* RuleApplicationDrainerService;
+                    yield* YIELD_TO_UI;
+                    const { transactionIds, transactions } = yield* importerService.replaceAll(columnMap, csvText);
+                    yield* ruleApplicationDrainerService.enqueueTransactions(transactionIds, transactions);
 
-                yield* YIELD_TO_UI;
-                const { transactionIds, transactions } = yield* importerService.replaceAll(columnMap, csvText);
-                yield* ruleApplicationDrainerService.enqueueTransactions(transactionIds, transactions);
-
-                router.back();
-            }).pipe(
-                Effect.catch(error => Effect.sync(() => void showErrorToast(t`Could not import CSV file`, getErrorMessage(error)))),
-                Effect.ensuring(Effect.sync(() => void setIsLoading(false)))
+                    router.back();
+                }).pipe(Effect.catch(error => Effect.sync(() => void showErrorToast(t`Could not import CSV file`, getErrorMessage(error)))))
             )
         );
-    };
     const handleCancel = () => void router.back();
 
     const hasErrors = isNotEmptyArray(Object.keys(errors));
