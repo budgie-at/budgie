@@ -962,10 +962,6 @@ msgstr "Budgie перешифровує {DB_NAME} ({fileSize}) на цьому �
 msgid "Budgie reads these statements on this phone."
 msgstr "Budgie читає ці виписки на цьому телефоні."
 
-#: src/auth/hook/use-pin-authentication.hook.ts
-msgid "Budgie restarted, so it needs your PIN once before {biometricName} works again."
-msgstr "Budgie перезапустився, тож потрібен ваш PIN-код один раз, перш ніж {biometricName} знову запрацює."
-
 #: src/settings/components/screenshot-protection-row/screenshot-protection-row.tsx
 msgid "Budgie stays blank in screenshots and screen recordings"
 msgstr "Скріншоти й записи екрана покажуть порожній екран"
@@ -2332,7 +2328,6 @@ msgstr "Експортувати CSV"
 msgid "External ID"
 msgstr "Зовнішній ID"
 
-#: src/auth/hook/use-pin-authentication.hook.ts
 #: src/settings/hook/use-biometric-label.hook.ts
 msgid "Face ID"
 msgstr "Face ID"
@@ -2409,10 +2404,6 @@ msgstr "Фільтрувати категорії"
 #: src/app/transaction-tag-filter.tsx
 msgid "Filter tags"
 msgstr "Фільтрувати теги"
-
-#: src/auth/hook/use-pin-authentication.hook.ts
-msgid "fingerprint"
-msgstr "відбиток пальця"
 
 #: src/settings/hook/use-biometric-label.hook.ts
 msgid "Fingerprint"
