@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.114.5](https://github.com/budgie-at/budgie/compare/v6.114.4...v6.114.5) (2026-10-23)
+
+### Bug Fixes
+
+* **app:** compact the header and tab edge bands ([b082907](https://github.com/budgie-at/budgie/commit/b082907fdfe76bbcdeeace0d84836733cc0c3f33))
+* **app:** keep the backdrop animation value stable ([e3cc18b](https://github.com/budgie-at/budgie/commit/e3cc18b72b0b09e450a6b754c9f16c22754a9afc))
+* **app:** use screen-chrome 3.0.3 ([93d3677](https://github.com/budgie-at/budgie/commit/93d3677db02d99cba60de05b8fc9362e3c1bfe62))
+
+
 ## [6.114.4](https://github.com/budgie-at/budgie/compare/v6.114.3...v6.114.4) (2026-10-23)
 
 **Note:** Version bump only for package @budgie-at/root
