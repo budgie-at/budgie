@@ -4,20 +4,18 @@ export const useSingleFlight = () => {
     const isInFlightRef = useRef(false);
     const [isLoading, setIsLoading] = useState(false);
 
-    const run = async <T>(action: () => Promise<T>): Promise<T | undefined> => {
+    const run = <T>(action: () => Promise<T>): Promise<T | null> => {
         if (isInFlightRef.current) {
-            return;
+            return Promise.resolve(null);
         }
 
         isInFlightRef.current = true;
         setIsLoading(true);
 
-        try {
-            return await action();
-        } finally {
+        return action().finally(() => {
             isInFlightRef.current = false;
             setIsLoading(false);
-        }
+        });
     };
 
     return { isLoading, run };
