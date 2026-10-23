@@ -30,6 +30,7 @@ type Props = TitleProps & {
 };
 
 const FOOTER_CONTENT_BOTTOM_INSET = 96;
+const HEADER_BACKDROP_SCROLL_ANIMATION = {};
 
 export const CollapsibleChromePage = ({
     title,
@@ -93,7 +94,7 @@ export const CollapsibleChromePage = ({
                 <CollapsibleHeaderBackdrop
                     chromeHeight={SCREEN_CHROME_CONFIG.collapsedHeaderHeight}
                     intensity={SCREEN_CHROME_CONFIG.maxBlurIntensity}
-                    scrollAnimation={{}}
+                    scrollAnimation={HEADER_BACKDROP_SCROLL_ANIMATION}
                 />
 
                 <CollapsibleChromeHeader
