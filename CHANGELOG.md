@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.114.2](https://github.com/budgie-at/budgie/compare/v6.114.1...v6.114.2) (2026-10-23)
+
+### Bug Fixes
+
+* **app:** let Face ID unlock after a restart and make PIN setup back work ([74dde6e](https://github.com/budgie-at/budgie/commit/74dde6e9cecefef5bc765d7057b0699a90b472bf))
+
+
 ## [6.114.1](https://github.com/budgie-at/budgie/compare/v6.114.0...v6.114.1) (2026-10-22)
 
 ### Bug Fixes
