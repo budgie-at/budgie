@@ -36,7 +36,7 @@ export default function PinSetupScreen() {
         <FullPage>
             <View className="flex-1 justify-center">
                 {state.step === PinSetupStepEnum.BIOMETRIC ? (
-                    <BiometricConfiguration onSubmit={saveAndContinue} />
+                    <BiometricConfiguration isLoading={state.isLoading} onSubmit={saveAndContinue} />
                 ) : (
                     <PinForm
                         error={state.error}

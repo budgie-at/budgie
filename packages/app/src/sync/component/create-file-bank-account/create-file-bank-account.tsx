@@ -10,6 +10,7 @@ import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/sha
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
+import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { useOnboardingRedirect } from '../../../onboarding/hook/use-onboarding-redirect.hook';
 import { FileImportStepEnum } from '../../enum/file-import-step.enum';
 import { useAccountSelection } from '../../hook/use-account-selection.hook';
@@ -31,23 +32,21 @@ interface CreateFileBankAccountProps {
 export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) => {
     const { t } = useLingui();
     const [step, setStep] = useState(FileImportStepEnum.FILE);
-    const [isLoading, setIsLoading] = useState(false);
+    const { isLoading, run } = useSingleFlight();
     const [selectedFile, setSelectedFile] = useState<Pick<DocumentPicker.DocumentPickerAsset, 'name' | 'uri'> | null>(null);
     const [review, setReview] = useState<FileBankSyncImportReviewInterface | null>(null);
     const accountSelection = useAccountSelection();
     const { selectedAccounts, setPreviews } = accountSelection;
     const onboardingHref = useOnboardingRedirect();
 
-    const runStep = async (errorTitle: string, action: () => Promise<void>) => {
-        setIsLoading(true);
-        try {
-            await action();
-        } catch (error) {
-            Toast.show({ type: 'error', text1: errorTitle, text2: getErrorMessage(error) });
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    const runStep = (errorTitle: string, action: () => Promise<void>) =>
+        run(async () => {
+            try {
+                await action();
+            } catch (error) {
+                Toast.show({ type: 'error', text1: errorTitle, text2: getErrorMessage(error) });
+            }
+        });
 
     const handleSelectFile = () =>
         runStep(t`Invalid file`, async () => {

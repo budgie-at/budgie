@@ -2,11 +2,11 @@ import { useLingui } from '@lingui/react/macro';
 import * as Cause from 'effect/Cause';
 import * as Effect from 'effect/Effect';
 import * as DocumentPicker from 'expo-document-picker';
-import { useState } from 'react';
 import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
+import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { showErrorToast } from '../../@generic/utils/show-error-toast/show-error-toast';
 import { QuickImportConfigInterface } from '../interface/quick-import-config.interface';
@@ -21,7 +21,7 @@ interface QuickImportResult {
 export const useQuickImport = (config: QuickImportConfigInterface | null): QuickImportResult => {
     const { t } = useLingui();
 
-    const [isLoading, setIsLoading] = useState(false);
+    const { isLoading, run } = useSingleFlight();
 
     const showImportDoneToast = (importResult: FileBankSyncImportResultInterface) => {
         const hasAccounts = isPositiveNumber(importResult.accountCount);
@@ -51,28 +51,26 @@ export const useQuickImport = (config: QuickImportConfigInterface | null): Quick
             return;
         }
 
-        if (isLoading) {
-            return;
-        }
+        void run(() =>
+            appRuntime.runPromise(
+                Effect.gen(function* () {
+                    const result = yield* Effect.promise(() =>
+                        DocumentPicker.getDocumentAsync({ type: config.mimeType, copyToCacheDirectory: true })
+                    );
+                    const uri = result.assets?.at(0)?.uri;
 
-        setIsLoading(true);
-        appRuntime.runFork(
-            Effect.gen(function* () {
-                const result = yield* Effect.promise(() =>
-                    DocumentPicker.getDocumentAsync({ type: config.mimeType, copyToCacheDirectory: true })
-                );
-                const uri = result.assets?.at(0)?.uri;
+                    if (result.canceled || !isNotEmptyString(uri)) {
+                        return;
+                    }
 
-                if (result.canceled || !isNotEmptyString(uri)) {
-                    return;
-                }
-
-                Toast.show({ type: 'info', text1: t`Import started`, text2: t`Budgie will notify you when it finishes` });
-                showImportDoneToast(yield* config.importHandler(uri));
-            }).pipe(
-                Effect.tapCause(Effect.logError),
-                Effect.catchCause(cause => Effect.sync(() => void showErrorToast(t`Import failed`, getErrorMessage(Cause.squash(cause))))),
-                Effect.ensuring(Effect.sync(() => void setIsLoading(false)))
+                    Toast.show({ type: 'info', text1: t`Import started`, text2: t`Budgie will notify you when it finishes` });
+                    showImportDoneToast(yield* config.importHandler(uri));
+                }).pipe(
+                    Effect.tapCause(Effect.logError),
+                    Effect.catchCause(cause =>
+                        Effect.sync(() => void showErrorToast(t`Import failed`, getErrorMessage(Cause.squash(cause))))
+                    )
+                )
             )
         );
     };
