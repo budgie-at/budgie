@@ -16,6 +16,8 @@ appId: ${APP_ID}
       timeout: 5000
 - assertVisible:
       id: 'TransactionInfo.Row.Account'
+- assertNotVisible:
+      id: 'TransactionInfo.Row.Debt'
 - assertVisible:
       id: 'TransactionInfo.Row.Category'
 - assertVisible:

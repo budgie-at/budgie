@@ -13,6 +13,7 @@ export const TransactionInfoPageSelector = {
         Date: 'TransactionInfo.Row.Date',
         ExchangeRate: 'TransactionInfo.Row.ExchangeRate',
         Fee: 'TransactionInfo.Row.Fee',
+        Debt: 'TransactionInfo.Row.Debt',
         FromAccount: 'TransactionInfo.Row.FromAccount',
         MerchantCode: 'TransactionInfo.Row.MerchantCode',
         Note: 'TransactionInfo.Row.Note',

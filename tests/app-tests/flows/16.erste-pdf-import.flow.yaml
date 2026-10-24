@@ -66,6 +66,9 @@ appId: ${APP_ID}
 - longPressOn:
       id: 'AccountCard.Erste EUR'
 
+- tapOn:
+      id: 'AccountCardMenu.ImportButton'
+
 - runFlow:
       file: subflows/import/select-file-from-app-provider.flow.yaml
       env:
@@ -140,6 +143,9 @@ appId: ${APP_ID}
 
 - longPressOn:
       id: 'AccountCard.Erste EUR'
+
+- tapOn:
+      id: 'AccountCardMenu.ImportButton'
 
 - runFlow:
       file: subflows/import/select-file-from-app-provider.flow.yaml

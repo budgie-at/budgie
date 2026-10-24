@@ -52,7 +52,7 @@ describe('sync/user-work-priority', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('runs queued user work before older pending background work', () =>
+    it.effect('runs queued user work before older pending background work, then runs the preempted background work', () =>
         Effect.gen(function* () {
             const workload = yield* Workload;
             const events: string[] = [];
@@ -96,10 +96,9 @@ describe('sync/user-work-priority', () => {
             yield* gatedWork.release;
             yield* Fiber.joinAll([currentWork, backgroundWork, fileImportWork]);
 
-            expect(events).toContain('background:cancelled');
-            expect(events).toContain('file-import');
-            expect(events).not.toContain('background');
+            expect(events).not.toContain('background:cancelled');
             expect(events).not.toContain('current:interrupted');
+            expect(events.indexOf('file-import')).toBeLessThan(events.indexOf('background'));
             expect(events[0]).toBe('current');
             expect(events.indexOf('hasQueuedUserWork:true')).toBeLessThan(events.indexOf('file-import'));
         }).pipe(Effect.provide(TestLayer))

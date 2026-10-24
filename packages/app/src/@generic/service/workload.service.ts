@@ -31,6 +31,7 @@ export class Workload extends Context.Service<
         readonly hasQueuedUserWork: Effect.Effect<boolean>;
         readonly awaitQueuedUserWork: Effect.Effect<void>;
         readonly interruptBackground: Effect.Effect<void>;
+        readonly awaitBackgroundAllowed: Effect.Effect<void>;
         readonly block: Effect.Effect<void>;
         readonly unblock: Effect.Effect<void>;
         readonly foregroundCount: SubscriptionRef.SubscriptionRef<number>;
@@ -46,10 +47,11 @@ export class Workload extends Context.Service<
     static readonly layer = Layer.effect(
         Workload,
         Effect.gen(function* () {
-            const [lane, laneCount, isBlocked, queuedBackground, queuedUser, foregroundCount] = yield* Effect.all([
+            const [lane, laneCount, isBlocked, queuedBackground, preemptedBackground, queuedUser, foregroundCount] = yield* Effect.all([
                 Semaphore.make(1),
                 Ref.make(0),
                 Ref.make(false),
+                SubscriptionRef.make<ReadonlySet<Deferred.Deferred<Fiber.Fiber<unknown, unknown>>>>(new Set()),
                 SubscriptionRef.make<ReadonlySet<Deferred.Deferred<Fiber.Fiber<unknown, unknown>>>>(new Set()),
                 SubscriptionRef.make<ReadonlySet<Fiber.Fiber<unknown, unknown>>>(new Set()),
                 SubscriptionRef.make(0)
@@ -61,8 +63,17 @@ export class Workload extends Context.Service<
             const runScheduled = yield* FiberMap.runtime(scheduled)<Db | HttpClient.HttpClient>();
             const runScheduledBackground = yield* FiberMap.runtime(scheduledBackground)<Db | HttpClient.HttpClient>();
             const interruptIfBlocked = Effect.flatMap(Ref.get(isBlocked), blocked => (blocked ? Effect.interrupt : Effect.void));
-            const interruptQueuedBackground = Effect.flatMap(SubscriptionRef.getAndSet(queuedBackground, new Set()), tokens =>
-                Effect.forEach(tokens, token => Effect.flatMap(Deferred.await(token), Fiber.interrupt), { discard: true })
+            const interruptTokens = (tokens: ReadonlySet<Deferred.Deferred<Fiber.Fiber<unknown, unknown>>>) =>
+                Effect.forEach(tokens, token => Effect.flatMap(Deferred.await(token), Fiber.interrupt), { discard: true });
+            const interruptQueuedBackground = Effect.flatMap(SubscriptionRef.getAndSet(queuedBackground, new Set()), interruptTokens);
+            const preemptQueuedBackground = Effect.flatMap(SubscriptionRef.getAndSet(queuedBackground, new Set()), tokens =>
+                Effect.andThen(
+                    SubscriptionRef.update(preemptedBackground, preempted => new Set([...preempted, ...tokens])),
+                    interruptTokens(tokens)
+                )
+            );
+            const awaitUserLaneClaimed = Stream.runDrain(
+                Stream.takeUntil(SubscriptionRef.changes(queuedUser), fibers => fibers.size === 0)
             );
             const interruptBackground = Effect.andThen(
                 backgroundSchedulingAllowed.close,
@@ -83,45 +94,50 @@ export class Workload extends Context.Service<
                         () => Ref.update(laneCount, count => count - 1)
                     )
                 );
-            const workload = Workload.of({
-                run: effect =>
-                    Effect.flatMap(Deferred.make<Fiber.Fiber<unknown, unknown>>(), token =>
-                        Effect.flatMap(
-                            Effect.uninterruptible(
-                                SubscriptionRef.update(queuedBackground, tokens => new Set([...tokens, token])).pipe(
-                                    Effect.andThen(
-                                        Effect.sync(() =>
-                                            runBackground(
-                                                runInLane(
-                                                    Effect.provideService(effect, Workload, workload),
-                                                    Effect.flatMap(Workload.dequeue(queuedBackground, token), isQueued =>
-                                                        isQueued
-                                                            ? Effect.andThen(
-                                                                  interruptIfBlocked,
-                                                                  Effect.asVoid(backgroundSchedulingAllowed.open)
-                                                              )
-                                                            : Effect.interrupt
-                                                    )
-                                                ).pipe(Effect.ensuring(Workload.dequeue(queuedBackground, token)))
-                                            )
+            const runBackgroundInLane = <A, E>(effect: Effect.Effect<A, E, Db | HttpClient.HttpClient>): Effect.Effect<A, E> =>
+                Effect.flatMap(Deferred.make<Fiber.Fiber<unknown, unknown>>(), token =>
+                    Effect.flatMap(
+                        Effect.uninterruptible(
+                            SubscriptionRef.update(queuedBackground, tokens => new Set([...tokens, token])).pipe(
+                                Effect.andThen(
+                                    Effect.sync(() =>
+                                        runBackground(
+                                            runInLane(
+                                                effect,
+                                                Effect.flatMap(Workload.dequeue(queuedBackground, token), isQueued =>
+                                                    isQueued
+                                                        ? Effect.andThen(
+                                                              interruptIfBlocked,
+                                                              Effect.asVoid(backgroundSchedulingAllowed.open)
+                                                          )
+                                                        : Effect.interrupt
+                                                )
+                                            ).pipe(Effect.ensuring(Workload.dequeue(queuedBackground, token)))
                                         )
-                                    ),
-                                    Effect.tap(fiber => Deferred.succeed(token, fiber))
-                                )
-                            ),
-                            fiber => Effect.onInterrupt(Fiber.join(fiber), () => Fiber.interrupt(fiber))
-                        )
-                    ),
-                runUser: effect =>
-                    Effect.andThen(
-                        interruptQueuedBackground,
-                        Effect.withFiber(fiber =>
-                            Effect.andThen(
-                                SubscriptionRef.update(queuedUser, fibers => new Set([...fibers, fiber])),
-                                runInLane(effect, Effect.asVoid(Workload.dequeue(queuedUser, fiber))).pipe(
-                                    Effect.ensuring(Workload.dequeue(queuedUser, fiber))
-                                )
+                                    )
+                                ),
+                                Effect.tap(fiber => Deferred.succeed(token, fiber))
                             )
+                        ),
+                        fiber => Effect.onInterrupt(Fiber.join(fiber), () => Fiber.interrupt(fiber))
+                    ).pipe(
+                        Effect.catchCause(cause =>
+                            Effect.flatMap(Workload.dequeue(preemptedBackground, token), isPreempted =>
+                                isPreempted ? Effect.andThen(awaitUserLaneClaimed, runBackgroundInLane(effect)) : Effect.failCause(cause)
+                            )
+                        )
+                    )
+                );
+            const workload = Workload.of({
+                run: effect => runBackgroundInLane(Effect.provideService(effect, Workload, workload)),
+                runUser: effect =>
+                    Effect.withFiber(fiber =>
+                        Effect.andThen(
+                            SubscriptionRef.update(queuedUser, fibers => new Set([...fibers, fiber])),
+                            Effect.andThen(
+                                preemptQueuedBackground,
+                                runInLane(effect, Effect.asVoid(Workload.dequeue(queuedUser, fiber)))
+                            ).pipe(Effect.ensuring(Workload.dequeue(queuedUser, fiber)))
                         )
                     ),
                 runForeground,
@@ -130,6 +146,7 @@ export class Workload extends Context.Service<
                 hasQueuedUserWork: Effect.map(SubscriptionRef.get(queuedUser), fibers => fibers.size > 0),
                 awaitQueuedUserWork: Stream.runDrain(Stream.takeUntil(SubscriptionRef.changes(queuedUser), fibers => fibers.size > 0)),
                 interruptBackground,
+                awaitBackgroundAllowed: backgroundSchedulingAllowed.await,
                 block: Effect.andThen(Ref.set(isBlocked, true), interruptBackground),
                 unblock: Ref.set(isBlocked, false),
                 foregroundCount,

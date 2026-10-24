@@ -10,10 +10,11 @@ import { SettingsCard } from '../../../settings/components/settings-card/setting
 import { PinFormSelector } from '../pin-form/pin-form.selector';
 
 interface Props {
+    readonly isLoading: boolean;
     readonly onSubmit: (enableBiometrics: boolean) => void;
 }
 
-export const BiometricConfiguration = ({ onSubmit }: Props) => {
+export const BiometricConfiguration = ({ isLoading, onSubmit }: Props) => {
     const [enableBiometrics, setEnableBiometrics] = useState(true);
     const { t } = useLingui();
 
@@ -50,7 +51,13 @@ export const BiometricConfiguration = ({ onSubmit }: Props) => {
                 }
             />
 
-            <Button testID={PinFormSelector.ContinueButton} onPress={handleContinue} content={t`Continue`} />
+            <Button
+                testID={PinFormSelector.ContinueButton}
+                onPress={handleContinue}
+                content={t`Continue`}
+                isLoading={isLoading}
+                disabled={isLoading}
+            />
         </View>
     );
 };

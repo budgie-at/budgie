@@ -1,4 +1,5 @@
 import { AccountTypeEnum, CurrencyEnum, ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
+import { LedgerWorkload } from '@budgie/ledger';
 import { ErsteSyncService, mapErsteTransaction, SyncFileReader, SyncInvalidResponseError } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { asc, eq } from 'drizzle-orm';
@@ -61,6 +62,7 @@ const ersteStatementLayer = (items: PdfTextItemInterface[]) =>
                 readBytes: () => Effect.succeed(new Uint8Array())
             })
         ),
+        Layer.provide(Layer.succeed(LedgerWorkload, LedgerWorkload.of({ runForeground: effect => effect }))),
         Layer.provideMerge(TestLayer)
     );
 

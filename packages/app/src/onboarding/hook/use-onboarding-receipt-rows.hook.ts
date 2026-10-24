@@ -15,8 +15,5 @@ export const useOnboardingReceiptRows = (): OnboardingReceiptRowInterface[] => {
     const pinOpensWith = isBiometricEnabled ? biometricOpensWith : t`Your PIN`;
     const opensWith = isPinEnabled ? pinOpensWith : t`This phone's lock`;
 
-    return [
-        { label: t`Opens with`, value: opensWith },
-        { label: t`Copies elsewhere`, value: t`None` }
-    ];
+    return [{ label: t`Opens with`, value: opensWith }];
 };

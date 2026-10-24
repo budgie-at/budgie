@@ -132,6 +132,7 @@ export const useSimpleTransactionActionsMenu = ({
 
     return {
         actionsMenuProps: {
+            transaction,
             onDelete,
             isConsolidated,
             onRevert: handleRevert,
