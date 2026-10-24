@@ -2,7 +2,7 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { ClassValue } from 'cn';
 import { ComponentProps, ReactNode } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyString, isString } from '@rnw-community/shared';
 
@@ -15,6 +15,7 @@ import { cn } from '../../utils/cn.util';
 import { testID as testIDProps } from '../../utils/test-id.util';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
+import { LoadingContent } from '../loading-content/loading-content';
 
 interface Props extends ComponentProps<typeof HapticPressable> {
     readonly content?: ReactNode;
@@ -66,13 +67,19 @@ export const Button = (props: Props) => {
         isLoading,
         testID,
         accessibilityLabel,
+        accessibilityState,
         accessibilityRole = 'button',
         ...rest
     } = props;
 
-    const isDisabled = disabled || isLoading;
+    const isDisabled = Boolean(disabled || isLoading || accessibilityState?.disabled);
     const resolvedAccessibilityLabel = accessibilityLabel ?? (isString(content) ? content : testID);
     const hasTestID = isNotEmptyString(testID);
+    const resolvedAccessibilityState = {
+        ...accessibilityState,
+        busy: Boolean(isLoading || accessibilityState?.busy),
+        disabled: isDisabled
+    };
 
     return (
         <HapticPressable
@@ -85,13 +92,11 @@ export const Button = (props: Props) => {
             accessible
             accessibilityLabel={resolvedAccessibilityLabel}
             accessibilityRole={accessibilityRole}
+            accessibilityState={resolvedAccessibilityState}
             {...rest}
         >
             {hasTestID ? <View collapsable={false} nativeID={testID} style={StyleSheet.absoluteFill} testID={testID} /> : null}
-
-            {isLoading ? (
-                <ActivityIndicator size="small" />
-            ) : (
+            <LoadingContent isLoading={isLoading ?? false} className="flex-row gap-x-xl">
                 <>
                     {isNotEmptyString(leftIcon) ? <Icon className={textVariants({ variant })} size={16} icon={leftIcon} /> : null}
 
@@ -103,7 +108,7 @@ export const Button = (props: Props) => {
 
                     {isNotEmptyString(rightIcon) ? <Icon className={textVariants({ variant })} size={16} icon={rightIcon} /> : null}
                 </>
-            )}
+            </LoadingContent>
         </HapticPressable>
     );
 };
