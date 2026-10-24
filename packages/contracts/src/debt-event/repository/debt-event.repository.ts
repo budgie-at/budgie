@@ -91,11 +91,11 @@ export class DebtEventRepository extends Context.Service<DebtEventRepository>()(
                     .set({ ...input, updatedAt: new Date() })
                     .where(eq(DebtEventEntityTable.id, id))
             ),
-        moveToTransaction: (fromTransactionId: number, toTransactionId: number) =>
+        moveToTransaction: (fromTransactionId: number, toTransactionId: number, transactionEntryId: number | null) =>
             Db.query(db =>
                 db
                     .update(DebtEventEntityTable)
-                    .set({ transactionId: toTransactionId, updatedAt: new Date() })
+                    .set({ transactionId: toTransactionId, transactionEntryId, updatedAt: new Date() })
                     .where(and(eq(DebtEventEntityTable.transactionId, fromTransactionId), isNull(DebtEventEntityTable.deletedAt)))
             ),
         moveByTransactionEntryIds: Effect.fn('DebtEventRepository.moveByTransactionEntryIds')(function* (

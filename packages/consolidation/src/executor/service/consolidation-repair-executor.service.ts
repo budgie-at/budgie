@@ -375,7 +375,11 @@ export class ConsolidationRepairExecutorService extends Context.Service<Consolid
                             [candidate.manualTransactionId],
                             candidate.syncedTransactionId
                         );
-                        yield* debtEventRepository.moveToTransaction(candidate.manualTransactionId, candidate.syncedTransactionId);
+                        yield* debtEventRepository.moveToTransaction(
+                            candidate.manualTransactionId,
+                            candidate.syncedTransactionId,
+                            manualTransaction.entries.find(entry => entry.type !== TransactionEntryTypeEnum.FEE)?.id ?? null
+                        );
 
                         return true;
                     },
