@@ -1,9 +1,11 @@
 import { TabList, TabSlot, TabTrigger, Tabs } from 'expo-router/ui';
 import { View } from 'react-native';
 
+import { EdgeFade } from '@rnw-community/react-native-screen-chrome';
+
 import { AnimatedBackdrop } from '../../@generic/component/animated-backdrop/animated-backdrop';
-import { EdgeFade } from '../../@generic/component/edge-fade/edge-fade';
 import { TabButtons } from '../../@generic/component/tab-buttons/tab-buttons';
+import { FLOATING_TAB_BAR_HEIGHT } from '../../@generic/constant/floating-tab-bar.constant';
 import { useCreateActionContext } from '../../@generic/context/create-action.context';
 import { useVoiceInputContext } from '../../ai/context/voice-input.context';
 import { useIsOnboardingActive } from '../../onboarding/hook/use-is-onboarding-active.hook';
@@ -46,7 +48,7 @@ export default function TabsLayout() {
 
                 {isTabBarVisible ? (
                     <>
-                        <EdgeFade position="bottom" />
+                        <EdgeFade position="bottom" chromeHeight={FLOATING_TAB_BAR_HEIGHT} />
                         <View className="absolute inset-x-0 bottom-0" pointerEvents="box-none" style={tabBarWrapperStyle}>
                             <View className="flex-row items-center justify-between px-lg pb-safe pt-md">
                                 <TabButtons />

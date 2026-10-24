@@ -46,12 +46,12 @@ export const HomeSectionItem = ({ item, section, balanceSummary }: Props) => {
                 row={item}
                 accountType={AccountTypeEnum.BANK_SYNC}
                 balancesByAccountId={balanceSummary.balancesByAccountId}
-                className="mb-lg"
+                className="mb-xl"
             />
         );
     }
 
     return (
-        <AccountGridRow row={item} accountType={section.type} balancesByAccountId={balanceSummary.balancesByAccountId} className="mb-lg" />
+        <AccountGridRow row={item} accountType={section.type} balancesByAccountId={balanceSummary.balancesByAccountId} className="mb-xl" />
     );
 };

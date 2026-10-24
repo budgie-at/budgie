@@ -18,7 +18,7 @@ interface Props {
 export const AccountGridItem = ({ account, balance, hasLedgerHistory, type, isLeft }: Props) => {
     const { t } = useLingui();
 
-    const containerClassName = isLeft ? 'flex-1 pr-[5px]' : 'flex-1 pl-[5px]';
+    const containerClassName = isLeft ? 'flex-1 pr-[6px]' : 'flex-1 pl-[6px]';
     const isAwaitingBalance = !hasLedgerHistory && MANUAL_BALANCE_ACCOUNT_TYPES.has(account.type);
 
     return (
@@ -27,7 +27,7 @@ export const AccountGridItem = ({ account, balance, hasLedgerHistory, type, isLe
                 <AccountCardBase account={account} balance={balance} amountLabel={t`Add balance`}>
                     <Text
                         testID={AccountCardBaseSelector.AddBalance(account.title)}
-                        className="text-md leading-[28px] font-medium text-secondary-foreground"
+                        className="text-md leading-[26px] font-medium text-secondary-foreground"
                     >
                         <Trans>Add balance</Trans>
                     </Text>

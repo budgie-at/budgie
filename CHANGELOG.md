@@ -3,6 +3,129 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.115.2](https://github.com/budgie-at/budgie/compare/v6.115.1...v6.115.2) (2026-10-24)
+
+### Bug Fixes
+
+* **app:** show blurred content under the screen chrome ([#1653](https://github.com/budgie-at/budgie/issues/1653)) ([dab5727](https://github.com/budgie-at/budgie/commit/dab57276d7a49b6ddb0bdfaf1c59899bf060aabb))
+
+
+## [6.115.1](https://github.com/budgie-at/budgie/compare/v6.115.0...v6.115.1) (2026-10-24)
+
+### Bug Fixes
+
+* **app:** prevent loading control layout shifts ([#1650](https://github.com/budgie-at/budgie/issues/1650)) ([0b91b07](https://github.com/budgie-at/budgie/commit/0b91b07a2129601c6b81606f97a448e9c059c46c))
+
+
+# [6.115.0](https://github.com/budgie-at/budgie/compare/v6.114.9...v6.115.0) (2026-10-24)
+
+### Features
+
+* **app:** create a rule from any transaction's actions menu ([9693c81](https://github.com/budgie-at/budgie/commit/9693c81cf92bfa86589447155a7bcc3bbea05ec7))
+
+
+## [6.114.9](https://github.com/budgie-at/budgie/compare/v6.114.8...v6.114.9) (2026-10-24)
+
+### Bug Fixes
+
+* **app:** pad transaction info rows away from the screen edges ([f5e4607](https://github.com/budgie-at/budgie/commit/f5e4607b8a01036412080bdfdfcce85cd84c4e6e))
+* **app:** show the attached debt on transaction info ([3926644](https://github.com/budgie-at/budgie/commit/3926644af06e108d689e84b051cd403400bf2d4b))
+
+
+## [6.114.8](https://github.com/budgie-at/budgie/compare/v6.114.7...v6.114.8) (2026-10-24)
+
+### Bug Fixes
+
+* apply rules on file import and rerun preempted background work ([f2530a3](https://github.com/budgie-at/budgie/commit/f2530a344d81d331090d36e48a7ad5b7cc288300))
+
+
+## [6.114.7](https://github.com/budgie-at/budgie/compare/v6.114.6...v6.114.7) (2026-10-24)
+
+### Bug Fixes
+
+* **app:** give bank sections more room and soften account names ([e019dac](https://github.com/budgie-at/budgie/commit/e019dac15f95094a183bfe816972ccf6d8685ea2))
+
+
+## [6.114.6](https://github.com/budgie-at/budgie/compare/v6.114.5...v6.114.6) (2026-10-24)
+
+### Bug Fixes
+
+* **app:** soften the edge chrome so content stays visible ([3b1f836](https://github.com/budgie-at/budgie/commit/3b1f836dbce075addfc9d5ea963d9ebb82fcd0e1))
+
+
+## [6.114.5](https://github.com/budgie-at/budgie/compare/v6.114.4...v6.114.5) (2026-10-23)
+
+### Bug Fixes
+
+* **app:** compact the header and tab edge bands ([b082907](https://github.com/budgie-at/budgie/commit/b082907fdfe76bbcdeeace0d84836733cc0c3f33))
+* **app:** keep the backdrop animation value stable ([e3cc18b](https://github.com/budgie-at/budgie/commit/e3cc18b72b0b09e450a6b754c9f16c22754a9afc))
+* **app:** use screen-chrome 3.0.3 ([93d3677](https://github.com/budgie-at/budgie/commit/93d3677db02d99cba60de05b8fc9362e3c1bfe62))
+
+
+## [6.114.4](https://github.com/budgie-at/budgie/compare/v6.114.3...v6.114.4) (2026-10-23)
+
+**Note:** Version bump only for package @budgie-at/root
+
+
+
+
+
+## [6.114.3](https://github.com/budgie-at/budgie/compare/v6.114.2...v6.114.3) (2026-10-23)
+
+### Bug Fixes
+
+* **app:** ignore repeat taps while an action is loading ([f0b71d8](https://github.com/budgie-at/budgie/commit/f0b71d83e8ea66f536ab40a953d445e2bb8e96ac))
+
+
+## [6.114.2](https://github.com/budgie-at/budgie/compare/v6.114.1...v6.114.2) (2026-10-23)
+
+### Bug Fixes
+
+* **app:** let Face ID unlock after a restart and make PIN setup back work ([74dde6e](https://github.com/budgie-at/budgie/commit/74dde6e9cecefef5bc765d7057b0699a90b472bf))
+
+
+## [6.114.1](https://github.com/budgie-at/budgie/compare/v6.114.0...v6.114.1) (2026-10-22)
+
+### Bug Fixes
+
+* **app:** fade content into the edge blur and sticky section headers ([f022872](https://github.com/budgie-at/budgie/commit/f0228726ac44883826a189b0de286074a4a30fa4))
+* **app:** ship the progressive edge-fade blur native module ([088e224](https://github.com/budgie-at/budgie/commit/088e2243c5ba96de70401cfc373d4edb38bf6203)), closes [rnw-community/rnw-community#730](https://github.com/rnw-community/rnw-community/issues/730)
+* **app:** shorten the edge-fade blur bands to the chrome ([4cc82e8](https://github.com/budgie-at/budgie/commit/4cc82e85981ddb063fd1c1defca6b1efd23356c4))
+
+
+# [6.114.0](https://github.com/budgie-at/budgie/compare/v6.113.0...v6.114.0) (2026-10-22)
+
+### Bug Fixes
+
+* **app:** address review feedback on the Settings data sections ([3f2d470](https://github.com/budgie-at/budgie/commit/3f2d470c6e9f94790f0bf8166b907be035a38e7e)), closes [#1636](https://github.com/budgie-at/budgie/issues/1636)
+* **app:** expose controls nested in non-tappable settings rows ([7fa05a2](https://github.com/budgie-at/budgie/commit/7fa05a2cffabbc78446b89bfe54954899bc9ee75))
+
+### Features
+
+* **app:** clarify the Settings data and security sections ([455797f](https://github.com/budgie-at/budgie/commit/455797fc9e9c48a2a65863d1f1f276f19376b64c))
+
+
+# [6.113.0](https://github.com/budgie-at/budgie/compare/v6.112.1...v6.113.0) (2026-10-22)
+
+### Bug Fixes
+
+* **app:** keep the chosen account menu action when the backdrop is tapped while closing ([832958e](https://github.com/budgie-at/budgie/commit/832958efb7c5017579ffed8e884db14f9ccbbddb))
+* **app:** keep the first chosen account menu action while the menu closes ([bc39ce9](https://github.com/budgie-at/budgie/commit/bc39ce911f6e217aa88c661e3a550d2cbde84a69))
+* **app:** open account menu actions after the popover dismisses ([6796083](https://github.com/budgie-at/budgie/commit/6796083bdb6b17adae5d11f3f09f709c86313877))
+* **app:** run popover menu actions after the native modal dismisses ([a55d611](https://github.com/budgie-at/budgie/commit/a55d611d2b8c30a4c870e28a342388c75ca0a606))
+
+### Features
+
+* **app:** compact balance-first account tiles with two-line titles and a long-press menu ([b6ff717](https://github.com/budgie-at/budgie/commit/b6ff7177fb5f9b220c390222af095a0e82288903))
+
+
+## [6.112.1](https://github.com/budgie-at/budgie/compare/v6.112.0...v6.112.1) (2026-10-22)
+
+### Bug Fixes
+
+* **app:** render the native edge-fade blur on iOS and Android ([dcfb88d](https://github.com/budgie-at/budgie/commit/dcfb88de2b20516a8cf6f17aa2df54c094949bcc))
+
+
 # [6.112.0](https://github.com/budgie-at/budgie/compare/v6.111.2...v6.112.0) (2026-10-21)
 
 ### Bug Fixes

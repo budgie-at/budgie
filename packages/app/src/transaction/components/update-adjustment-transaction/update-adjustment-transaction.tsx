@@ -11,13 +11,14 @@ import {
 import { TransactionService } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { useReducer, useRef, useState } from 'react';
+import { useReducer, useRef } from 'react';
 import { View } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { AmountSignPill } from '../../../@generic/component/amount-sign-pill/amount-sign-pill';
+import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { useEmbeddingGenerator } from '../../../ai/hook/use-embedding-generator.hook';
@@ -95,7 +96,7 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
     const { markForEmbedding } = useEmbeddingGenerator();
     const amountDisplayRef = useRef<TransactionAmountDisplayRef | null>(null);
     const details = getAdjustmentDetails(transaction);
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const { isLoading: isSubmitting, run } = useSingleFlight();
     const [isIncrease, toggleIsIncrease] = useReducer((current: boolean) => !current, details?.initialIsIncrease ?? true);
     const { displayValue, numericValue, handlers } = useKeypadInput({ initialValue: details?.initialAmount ?? 0 });
 
@@ -109,31 +110,33 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
 
     const handleGoBack = () => void goBackOrReplace('/');
 
-    const handleConfirm = async () => {
+    const handleConfirm = () => {
         if (!isPositiveNumber(numericValue)) {
             amountDisplayRef.current?.shake();
 
             return;
         }
 
-        try {
-            setIsSubmitting(true);
-            await appRuntime.runPromise(
-                Effect.flatMap(TransactionService, transactionService =>
-                    transactionService.updateById(transactionId, buildAdjustmentUpdateInput(transaction, details, numericValue, isIncrease))
-                )
-            );
-            void markForEmbedding(transactionId);
-            goBackOrReplace('/');
-        } catch (error: unknown) {
-            Toast.show({
-                type: 'error',
-                text1: t`Could not update transaction.`,
-                text2: getErrorMessage(error)
-            });
-        } finally {
-            setIsSubmitting(false);
-        }
+        return run(async () => {
+            try {
+                await appRuntime.runPromise(
+                    Effect.flatMap(TransactionService, transactionService =>
+                        transactionService.updateById(
+                            transactionId,
+                            buildAdjustmentUpdateInput(transaction, details, numericValue, isIncrease)
+                        )
+                    )
+                );
+                void markForEmbedding(transactionId);
+                goBackOrReplace('/');
+            } catch (error: unknown) {
+                Toast.show({
+                    type: 'error',
+                    text1: t`Could not update transaction.`,
+                    text2: getErrorMessage(error)
+                });
+            }
+        });
     };
 
     return (

@@ -1,6 +1,6 @@
 import { Text, View } from 'react-native';
 
-import { ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
+import { CollapsibleHeaderBackdrop, ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
 import { isDefined } from '@rnw-community/shared';
 
 import { SCREEN_CHROME_CONTENT_INSET_TOP } from '../../constant/screen-chrome-content-inset.constant';
@@ -10,7 +10,6 @@ import { cn } from '../../utils/cn.util';
 import { testID as testIDProps } from '../../utils/test-id.util';
 import { ChromeKeyboardScrollView } from '../chrome-keyboard-scroll-view/chrome-keyboard-scroll-view';
 import { CollapsibleChromeHeader } from '../collapsible-chrome-header/collapsible-chrome-header';
-import { CollapsibleHeaderBackdrop } from '../collapsible-header-backdrop/collapsible-header-backdrop';
 import { StickyFooterBand } from '../sticky-footer-band/sticky-footer-band';
 
 import type { ComponentProps, ReactNode } from 'react';

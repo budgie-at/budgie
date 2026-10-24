@@ -45,8 +45,9 @@ jobs:
             contents: read
             packages: write
             actions: read
-        uses: rnw-community/mobile-ci/.github/workflows/seed-native-cache.yml@c45b9b0e1cc8e841a9d1f1df5f8a9acaa422ce19 # v4.3.1
+        uses: rnw-community/mobile-ci/.github/workflows/seed-native-cache.yml@a9fac576ef1c8a9a565d03851f2624502a868214 # v4.4.1
         with:
+            control-runner-labels: '["self-hosted","trf-linux-amd64-2x4"]'
             ios-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
             ios-targets: >-
                 [{"name":"e2e","appDir":"packages/app","workspace":"budgieE2E.xcworkspace","scheme":"budgieE2E",

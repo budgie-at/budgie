@@ -1,0 +1,74 @@
+appId: ${APP_ID}
+---
+- runFlow:
+      file: subflows/import/import-database-from-settings.flow.yaml
+      env:
+          FIXTURE_ROW_ID_MATCH: '17.db'
+
+- runFlow: subflows/navigation/navigate-to-settings.flow.yaml
+
+- extendedWaitUntil:
+      visible:
+          id: 'SettingsPage.DataEncryption.State.Off'
+      timeout: 5000
+
+- tapOn:
+      id: 'SettingsPage.DataBackupButton'
+
+- extendedWaitUntil:
+      visible: 'Save to Files'
+      timeout: 15000
+
+- retry:
+      maxRetries: 2
+      commands:
+          - swipe:
+                from: 'Save to Files'
+                direction: DOWN
+          - extendedWaitUntil:
+                notVisible: 'Save to Files'
+                timeout: 3000
+
+- extendedWaitUntil:
+      visible:
+          id: 'SettingsPage.Container'
+      timeout: 5000
+
+- assertNotVisible:
+      id: 'PinPage.Container'
+
+- assertVisible:
+      id: 'SettingsPage.DataEncryption.State.Off'
+
+- runFlow:
+      file: subflows/navigation/open-settings-card.flow.yaml
+      env:
+          CARD_ID: 'SettingsPage.AppLockCard'
+          DESTINATION_ID: 'PinPage.Container'
+
+- tapOn:
+      id: 'PinPage.Digit.1'
+- tapOn:
+      id: 'PinPage.Digit.2'
+
+- tapOn:
+      id: 'PageHeader.BackButton'
+
+- extendedWaitUntil:
+      visible:
+          id: 'SettingsPage.Container'
+      timeout: 5000
+
+- assertVisible:
+      id: 'SettingsPage.DataEncryption.State.Off'
+
+- assertVisible:
+      id: 'SettingsPage.AppLockCard'
+
+- tapOn:
+      id: 'TabBar.Home'
+
+- extendedWaitUntil:
+      visible:
+          id: 'HomePage.TotalBalance'
+      timeout: 10000

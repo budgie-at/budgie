@@ -1,10 +1,10 @@
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { router } from 'expo-router';
-import { useState } from 'react';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
+import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
 import { showErrorToast } from '../../@generic/utils/show-error-toast/show-error-toast';
@@ -21,7 +21,7 @@ export const useSyncAccountSetupFlow = <Identifier extends AppServices, Shape>(
     setupSync: (syncService: Shape, selectedAccountIds: string[]) => Effect.Effect<unknown, unknown, AppServices>
 ) => {
     const { t } = useLingui();
-    const [isLoading, setIsLoading] = useState(false);
+    const { isLoading, run } = useSingleFlight();
     const accountSelection = useAccountSelection();
     const onboardingHref = useOnboardingRedirect();
 
@@ -29,36 +29,32 @@ export const useSyncAccountSetupFlow = <Identifier extends AppServices, Shape>(
 
     const handleGoBack = () => void goBackOrReplace(exitHref);
 
-    const handleSetupSync = async () => {
-        setIsLoading(true);
-        try {
-            await appRuntime.runPromise(
-                Effect.flatMap(service, syncService => setupSync(syncService, [...accountSelection.selectedAccounts]))
-            );
-            router.dismissTo(exitHref);
-        } catch (error) {
-            showErrorToast(t`Could not set up sync`, getErrorMessage(error));
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    const handleSetupSync = () =>
+        run(async () => {
+            try {
+                await appRuntime.runPromise(
+                    Effect.flatMap(service, syncService => setupSync(syncService, [...accountSelection.selectedAccounts]))
+                );
+                router.dismissTo(exitHref);
+            } catch (error) {
+                showErrorToast(t`Could not set up sync`, getErrorMessage(error));
+            }
+        });
 
-    const fetchAccountPreviews = async (
+    const fetchAccountPreviews = (
         loadPreviews: (syncService: Shape) => Effect.Effect<SyncAccountPreviewInterface[] | null, unknown, AppServices>,
         onLoaded: (previews: SyncAccountPreviewInterface[]) => void
-    ) => {
-        setIsLoading(true);
-        try {
-            const previews = await appRuntime.runPromise(Effect.flatMap(service, loadPreviews));
-            if (isDefined(previews)) {
-                onLoaded(previews);
+    ) =>
+        run(async () => {
+            try {
+                const previews = await appRuntime.runPromise(Effect.flatMap(service, loadPreviews));
+                if (isDefined(previews)) {
+                    onLoaded(previews);
+                }
+            } catch (error) {
+                showErrorToast(t`Could not fetch accounts`, getErrorMessage(error));
             }
-        } catch (error) {
-            showErrorToast(t`Could not fetch accounts`, getErrorMessage(error));
-        } finally {
-            setIsLoading(false);
-        }
-    };
+        });
 
     const isStartSyncDisabled = isLoading || accountSelection.selectedAccounts.size === 0;
 
