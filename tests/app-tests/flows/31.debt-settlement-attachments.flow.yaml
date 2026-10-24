@@ -75,6 +75,8 @@ appId: ${APP_ID}
           id: 'TransactionInfo.Page'
       timeout: 10000
 - waitForAnimationToEnd
+- assertNotVisible:
+      id: 'TransactionInfo.Row.Debt'
 
 - tapOn:
       id: 'TransactionActionsMenu.TriggerButton'
@@ -102,6 +104,9 @@ appId: ${APP_ID}
       notVisible:
           id: 'AccountPickerBottomSheet.Input'
 - waitForAnimationToEnd
+- assertVisible:
+      id: 'TransactionInfo.Row.Debt'
+- assertVisible: 'E2E Lent Debt'
 - tapOn:
       id: 'TransactionActionsMenu.TriggerButton'
 - extendedWaitUntil:
@@ -132,6 +137,8 @@ appId: ${APP_ID}
 - tapOn:
       id: 'TransactionActionsMenu.DetachDebtSettlementButton'
 - waitForAnimationToEnd
+- assertNotVisible:
+      id: 'TransactionInfo.Row.Debt'
 - tapOn:
       id: 'TransactionActionsMenu.TriggerButton'
 - extendedWaitUntil:

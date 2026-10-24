@@ -23,6 +23,7 @@ import { convertTransactionToInput } from '../../utils/convert-transaction-to-in
 import { getTransactionDisplayTitle } from '../../utils/get-transaction-display-title.util';
 import { TransactionInfoAccountRows } from '../transaction-info-account-rows/transaction-info-account-rows';
 import { TransactionInfoCategoryRows } from '../transaction-info-category-rows/transaction-info-category-rows';
+import { TransactionInfoDebtRows } from '../transaction-info-debt-rows/transaction-info-debt-rows';
 import { TransactionInfoHero } from '../transaction-info-hero/transaction-info-hero';
 import { TransactionInfoMoneyRows } from '../transaction-info-money-rows/transaction-info-money-rows';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
@@ -76,32 +77,34 @@ export const TransactionInfoPageContent = ({
             <ScreenChromeScrollView
                 contentInsetTop={config.headerHeight}
                 contentInsetBottom={contentInsetBottom}
-                contentContainerClassName="px-5xl"
                 showsVerticalScrollIndicator={false}
             >
-                <TransactionInfoHero
-                    transaction={transaction}
-                    matchingRuleIds={matchingRuleIds}
-                    onOpenRefundSources={onOpenRefundSources}
-                />
+                <View className="px-5xl">
+                    <TransactionInfoHero
+                        transaction={transaction}
+                        matchingRuleIds={matchingRuleIds}
+                        onOpenRefundSources={onOpenRefundSources}
+                    />
 
-                <View className="gap-y-2xl">
-                    <View className="overflow-hidden">
-                        <View className="-mt-px">
-                            <TransactionInfoAccountRows transaction={transaction} />
-                            <TransactionInfoCategoryRows transaction={transaction} />
-                            <TransactionInfoMoneyRows transaction={transaction} />
-                            <TransactionInfoSourceRows
-                                transaction={transaction}
-                                onOpenRefundSources={onOpenRefundSources}
-                                onOpenConsolidationSources={onOpenConsolidationSources}
-                            />
+                    <View className="gap-y-2xl">
+                        <View className="overflow-hidden">
+                            <View className="-mt-px">
+                                <TransactionInfoAccountRows transaction={transaction} />
+                                <TransactionInfoDebtRows transaction={transaction} />
+                                <TransactionInfoCategoryRows transaction={transaction} />
+                                <TransactionInfoMoneyRows transaction={transaction} />
+                                <TransactionInfoSourceRows
+                                    transaction={transaction}
+                                    onOpenRefundSources={onOpenRefundSources}
+                                    onOpenConsolidationSources={onOpenConsolidationSources}
+                                />
+                            </View>
                         </View>
+
+                        <TransactionInfoTagsSection transaction={transaction} />
+
+                        <TransactionInfoSimilarCard stats={stats} title={t`Similar transactions`} isLoading={isLoading} />
                     </View>
-
-                    <TransactionInfoTagsSection transaction={transaction} />
-
-                    <TransactionInfoSimilarCard stats={stats} title={t`Similar transactions`} isLoading={isLoading} />
                 </View>
             </ScreenChromeScrollView>
 
