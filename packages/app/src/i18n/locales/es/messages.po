@@ -3478,7 +3478,7 @@ msgstr "Gasto puntual"
 
 #: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
 msgid "One-offs"
-msgstr "Gastos únicos"
+msgstr "Movimientos únicos"
 
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "one-time download"
