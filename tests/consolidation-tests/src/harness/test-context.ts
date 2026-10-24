@@ -12,6 +12,7 @@ import {
 import {
     AccountBalanceRepository,
     AccountRepository,
+    DebtEventRepository,
     StatisticsRepository,
     TransactionEntryRepository,
     TransactionRepository,
@@ -42,6 +43,7 @@ export const TestLayer = Layer.mergeAll(
     RefundPairRepository.layer,
     AccountRepository.layer,
     AccountBalanceRepository.layer,
+    DebtEventRepository.layer,
     AccountBalanceIncrementalService.layer,
     TransferConsolidationService.layer,
     AtmCashMoveService.layer,

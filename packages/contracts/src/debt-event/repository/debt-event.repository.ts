@@ -91,6 +91,13 @@ export class DebtEventRepository extends Context.Service<DebtEventRepository>()(
                     .set({ ...input, updatedAt: new Date() })
                     .where(eq(DebtEventEntityTable.id, id))
             ),
+        moveToTransaction: (fromTransactionId: number, toTransactionId: number) =>
+            Db.query(db =>
+                db
+                    .update(DebtEventEntityTable)
+                    .set({ transactionId: toTransactionId, updatedAt: new Date() })
+                    .where(and(eq(DebtEventEntityTable.transactionId, fromTransactionId), isNull(DebtEventEntityTable.deletedAt)))
+            ),
         deleteByTransactionId: (transactionId: number) =>
             Db.query(db => db.delete(DebtEventEntityTable).where(eq(DebtEventEntityTable.transactionId, transactionId))),
         deleteByAccountId: (accountId: number) =>

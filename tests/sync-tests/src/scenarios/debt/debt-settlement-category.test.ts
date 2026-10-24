@@ -101,7 +101,8 @@ const createSettlementTransaction = (
     type: TransactionTypeEnum.EXPENSE | TransactionTypeEnum.INCOME,
     cashAccountId: number,
     categoryId: number | null,
-    amount = SETTLED_AMOUNT
+    amount = SETTLED_AMOUNT,
+    categorySource = CategorySourceEnum.USER
 ) =>
     Effect.gen(function* () {
         const isExpense = type === TransactionTypeEnum.EXPENSE;
@@ -125,6 +126,7 @@ const createSettlementTransaction = (
             kind: TransactionEntryKindEnum.PRIMARY,
             amount,
             categoryId,
+            categorySource,
             mccCategoryId: null,
             externalId: null,
             exchangeRate: 1,
@@ -290,6 +292,35 @@ describe('debt settlement categorization', () => {
             expectUserCategoryPreserved(entry, userCategory.id);
             expect(yield* fetchDebtEvents(debtAccount.id)).toHaveLength(2);
         }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect.each([CategorySourceEnum.MCC_DEFAULT, CategorySourceEnum.AI])(
+        'overwrites a machine-guessed %s category with the debt category when attaching',
+        categorySource =>
+            Effect.gen(function* () {
+                const guessedCategory = (yield* testDb.select().from(CategoryEntityTable)).find(
+                    row => row.id !== LENDING_CATEGORY_ID && row.id !== BORROWING_CATEGORY_ID
+                );
+
+                if (!isDefined(guessedCategory)) {
+                    throw new Error('No non-debt category seeded');
+                }
+
+                const cashAccount = yield* createCashAccount();
+                const debtAccount = yield* createDebtAccount(AccountDebtTypeEnum.LENT);
+                const transaction = yield* createSettlementTransaction(
+                    TransactionTypeEnum.INCOME,
+                    cashAccount.id,
+                    guessedCategory.id,
+                    SETTLED_AMOUNT,
+                    categorySource
+                );
+
+                const entry = yield* attachAndReadEntry(transaction.id, debtAccount.id);
+
+                expect(entry.categoryId).toBe(LENDING_CATEGORY_ID);
+                expect(entry.categorySource).toBe(CategorySourceEnum.DEBT_SETTLEMENT);
+            }).pipe(Effect.provide(TestLayer))
     );
 
     it.effect('reverts only the settlement-sourced category on detach', () =>

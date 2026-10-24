@@ -430,19 +430,21 @@ export class TestSeedService {
         readonly title?: string;
         readonly externalId?: string;
         readonly externalSource?: ExternalSourceEnum;
+        readonly type?: TransactionTypeEnum.EXPENSE | TransactionTypeEnum.INCOME;
     }) {
         return Effect.gen({ self: this }, function* () {
+            const isIncome = input.type === TransactionTypeEnum.INCOME;
             const transactionRows = yield* this.database
                 .insert(TransactionEntityTable)
                 .values({
-                    type: TransactionTypeEnum.EXPENSE,
+                    type: input.type ?? TransactionTypeEnum.EXPENSE,
                     title: input.title ?? '',
                     externalId: input.externalId ?? null,
                     externalSource: input.externalSource ?? null,
                     operatedAt: input.operatedAt,
                     exchangeRate: 1,
-                    fromAccountId: input.accountId,
-                    toAccountId: null,
+                    fromAccountId: isIncome ? null : input.accountId,
+                    toAccountId: isIncome ? input.accountId : null,
                     comment: input.comment ?? '',
                     updatedBy: null
                 } satisfies TransactionCreateEntityInterface)
@@ -453,7 +455,7 @@ export class TestSeedService {
                 .values({
                     transactionId: transaction.id,
                     accountId: input.accountId,
-                    type: TransactionEntryTypeEnum.CREDIT,
+                    type: isIncome ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT,
                     amount: input.amount,
                     externalId: null,
                     exchangeRate: 1,

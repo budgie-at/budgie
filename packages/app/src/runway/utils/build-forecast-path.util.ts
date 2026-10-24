@@ -12,7 +12,7 @@ interface RunwayForecastPointInterface {
 }
 
 interface RunwayForecastGeometryInterface {
-    readonly medianPath: string;
+    readonly likelyPath: string;
     readonly bandPath: string;
     readonly zeroY: number;
     readonly runOutX: number | null;
@@ -43,11 +43,11 @@ export const buildRunwayForecastPath = (params: BuildRunwayForecastPathParamsInt
 
     const drawableWidth = width - paddingLeft - paddingRight;
     const drawableHeight = height - paddingTop - paddingBottom;
-    const medianValues = RUNWAY_HORIZON_MONTHS.map(months => liquid + net * months);
+    const likelyValues = RUNWAY_HORIZON_MONTHS.map(months => liquid + net * months);
     const p25Values = RUNWAY_HORIZON_MONTHS.map(months => liquid + p25Net * months);
     const p75Values = RUNWAY_HORIZON_MONTHS.map(months => liquid + p75Net * months);
-    const minValue = Math.min(...medianValues, ...p25Values, ...p75Values, ZERO_VALUE);
-    const maxValue = Math.max(...medianValues, ...p25Values, ...p75Values, ZERO_VALUE);
+    const minValue = Math.min(...likelyValues, ...p25Values, ...p75Values, ZERO_VALUE);
+    const maxValue = Math.max(...likelyValues, ...p25Values, ...p75Values, ZERO_VALUE);
     const valueRange = maxValue - minValue;
 
     const xAt = (months: number) => paddingLeft + (months / RUNWAY_MAX_MONTHS) * drawableWidth;
@@ -60,8 +60,8 @@ export const buildRunwayForecastPath = (params: BuildRunwayForecastPathParamsInt
     const p75Points = p75Values.map((value, index) => ({ x: xTicks[index], y: yAt(value) }));
 
     return {
-        medianPath: buildForecastPath(
-            medianValues.map((value, index) => ({ x: xTicks[index], y: yAt(value) })),
+        likelyPath: buildForecastPath(
+            likelyValues.map((value, index) => ({ x: xTicks[index], y: yAt(value) })),
             false
         ),
         bandPath: buildForecastPath([...p75Points, ...[...p25Points].reverse()], true),

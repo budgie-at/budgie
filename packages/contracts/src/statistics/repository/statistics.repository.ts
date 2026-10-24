@@ -16,6 +16,8 @@ import {
     getInverseExchangeRateSql,
     getInverseHistoricalExchangeRateSql
 } from '../../@generic/utils/get-exchange-rate-sql.util';
+import { CRYPTO_ACCOUNT_TYPES } from '../../account/constant/crypto-account-types.constant';
+import { LIQUID_ACCOUNT_TYPES } from '../../account/constant/liquid-account-types.constant';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { DefaultCategoryTranslationEntityTable } from '../../category-translation/table/default-category-translation-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
@@ -260,13 +262,19 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
 
         const buildRunwayMonthSql = () => sql<string>`strftime('%Y-%m', ${TransactionEntityTable.operatedAt}, 'unixepoch', 'localtime')`;
 
-        const buildRunwayCompleteMonthsCondition = (months: number) => {
+        const buildRunwayScopeCondition = (months: number, isCryptoIncluded: boolean) => {
             const windowStartEpoch = sql`unixepoch(strftime('%Y-%m-01', 'now', 'localtime', 'start of month', ${`-${months} months`}), 'utc')`;
             const currentMonthStartEpoch = sql`unixepoch(strftime('%Y-%m-01', 'now', 'localtime'), 'utc')`;
 
             return and(
                 sql`${TransactionEntityTable.operatedAt} >= ${windowStartEpoch}`,
-                sql`${TransactionEntityTable.operatedAt} < ${currentMonthStartEpoch}`
+                sql`${TransactionEntityTable.operatedAt} < ${currentMonthStartEpoch}`,
+                inArray(
+                    AccountEntityTable.type,
+                    isCryptoIncluded ? [...LIQUID_ACCOUNT_TYPES, ...CRYPTO_ACCOUNT_TYPES] : LIQUID_ACCOUNT_TYPES
+                ),
+                eq(AccountEntityTable.isActive, true),
+                isNull(AccountEntityTable.deletedAt)
             );
         };
 
@@ -285,7 +293,8 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
                 .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id));
 
         const buildRunwayCategoryDriverSeriesQuery =
-            (filters: TransactionFilterInterface, defaultInstrumentId: number, months: number, language: LanguageEnum) => (db: DB) => {
+            (filters: TransactionFilterInterface, defaultInstrumentId: number, language: LanguageEnum, runwayScope: SQL | undefined) =>
+            (db: DB) => {
                 const amountSql = buildExpenseTotalSql(defaultInstrumentId);
                 const monthSql = buildRunwayMonthSql();
                 const categoryTitleSql = sql<string>`COALESCE(${DefaultCategoryTranslationEntityTable.title}, ${CategoryEntityTable.title}, '')`;
@@ -293,7 +302,7 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
                 return buildRunwayDriverSeriesBaseQuery(db, CategoryEntityTable.id, categoryTitleSql, amountSql)
                     .leftJoin(CategoryEntityTable, eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id))
                     .leftJoin(DefaultCategoryTranslationEntityTable, buildCategoryTranslationJoinCondition(language))
-                    .where(buildStatisticsLedgerWhere(filters, buildRunwayCompleteMonthsCondition(months)))
+                    .where(buildStatisticsLedgerWhere(filters, runwayScope))
                     .groupBy(CategoryEntityTable.id, categoryTitleSql, monthSql)
                     .orderBy(monthSql, desc(amountSql));
             };
@@ -302,7 +311,7 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
             db: DB,
             filters: TransactionFilterInterface,
             defaultInstrumentId: number,
-            months: number
+            runwayScope: SQL | undefined
         ) => {
             const amountSql = buildExpenseTotalSql(defaultInstrumentId);
             const monthSql = buildRunwayMonthSql();
@@ -311,7 +320,7 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
             return buildRunwayDriverSeriesBaseQuery(db, TagEntityTable.id, tagTitleSql, amountSql)
                 .leftJoin(TransactionTagsEntityTable, eq(TransactionTagsEntityTable.transactionId, TransactionEntityTable.id))
                 .leftJoin(TagEntityTable, eq(TransactionTagsEntityTable.tagId, TagEntityTable.id))
-                .where(buildStatisticsLedgerWhere(filters, buildRunwayCompleteMonthsCondition(months)))
+                .where(buildStatisticsLedgerWhere(filters, runwayScope))
                 .groupBy(TagEntityTable.id, tagTitleSql, monthSql)
                 .orderBy(monthSql, desc(amountSql));
         };
@@ -339,30 +348,46 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
                         .where(buildStatisticsLedgerWhere(filters))
                 ),
 
-            getRunwaySeriesQuery: (filters: TransactionFilterInterface, defaultInstrumentId: number, months: number) =>
+            getRunwaySeriesQuery: (
+                filters: TransactionFilterInterface,
+                defaultInstrumentId: number,
+                months: number,
+                isCryptoIncluded: boolean
+            ) =>
                 Db.query(db => {
                     const monthSql = buildRunwayMonthSql();
 
                     return buildLedgerEntriesQuery(db, { month: monthSql.as('month'), ...buildIncomeExpenseFields(defaultInstrumentId) })
                         .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
                         .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-                        .where(buildStatisticsLedgerWhere(filters, buildRunwayCompleteMonthsCondition(months)))
+                        .where(buildStatisticsLedgerWhere(filters, buildRunwayScopeCondition(months, isCryptoIncluded)))
                         .groupBy(monthSql)
                         .orderBy(monthSql);
                 }),
 
-            // eslint-disable-next-line @typescript-eslint/max-params -- Runway drivers keep the mandated positional signature (filters, defaultInstrumentId, dimension, months, language)
+            // eslint-disable-next-line @typescript-eslint/max-params -- Runway drivers keep the mandated positional signature (filters, defaultInstrumentId, dimension, months, language, isCryptoIncluded)
             getRunwayDriverSeriesQuery: (
                 filters: TransactionFilterInterface,
                 defaultInstrumentId: number,
                 dimension: RunwayDriverDimensionEnum,
                 months: number,
-                language: LanguageEnum
+                language: LanguageEnum,
+                isCryptoIncluded: boolean
             ) =>
                 Db.query(db =>
                     dimension === RunwayDriverDimensionEnum.CATEGORY
-                        ? buildRunwayCategoryDriverSeriesQuery(filters, defaultInstrumentId, months, language)(db)
-                        : buildRunwayTagDriverSeriesQuery(db, filters, defaultInstrumentId, months)
+                        ? buildRunwayCategoryDriverSeriesQuery(
+                              filters,
+                              defaultInstrumentId,
+                              language,
+                              buildRunwayScopeCondition(months, isCryptoIncluded)
+                          )(db)
+                        : buildRunwayTagDriverSeriesQuery(
+                              db,
+                              filters,
+                              defaultInstrumentId,
+                              buildRunwayScopeCondition(months, isCryptoIncluded)
+                          )
                 ),
 
             getIncomeByCategoryQuery: (filters: TransactionFilterInterface, defaultInstrumentId: number, language: LanguageEnum) =>

@@ -1,6 +1,8 @@
 import { aggregateRunwayDrivers } from '@app/runway/utils/aggregate-runway-drivers.util';
-import { median } from '@app/runway/utils/median.util';
+import { mean } from '@app/runway/utils/mean.util';
 import {
+    AccountEntityTable,
+    AccountTypeEnum,
     CategoryEntityTable,
     UserIconNameEnum,
     CurrencyEnum,
@@ -17,7 +19,7 @@ import {
     TransactionTypeEnum
 } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
-import { sql } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
 import { explainQueryPlan, requireInstrument, testDb, TestLayer } from '../../harness';
@@ -91,21 +93,28 @@ const seedScenario = Effect.fnUntraced(function* () {
 
 const aggregate = Effect.fnUntraced(function* (dimension: RunwayDriverDimensionEnum, instrumentId: number, isAllIn: boolean) {
     const statisticsRepository = yield* StatisticsRepository;
-    const seriesRows = yield* statisticsRepository.getRunwaySeriesQuery(DEFAULT_TRANSACTION_FILTER, instrumentId, RUNWAY_WINDOW_MONTHS);
-    const monthlyBurn = median(seriesRows.map(row => row.expense));
+    const seriesRows = yield* statisticsRepository.getRunwaySeriesQuery(
+        DEFAULT_TRANSACTION_FILTER,
+        instrumentId,
+        RUNWAY_WINDOW_MONTHS,
+        false
+    );
+    const monthlyBurn = mean(seriesRows.map(row => row.expense));
     const driverRows = yield* statisticsRepository.getRunwayDriverSeriesQuery(
         DEFAULT_TRANSACTION_FILTER,
         instrumentId,
         dimension,
         RUNWAY_WINDOW_MONTHS,
-        LanguageEnum.EN
+        LanguageEnum.EN,
+        false
     );
     const categoryRows = yield* statisticsRepository.getRunwayDriverSeriesQuery(
         DEFAULT_TRANSACTION_FILTER,
         instrumentId,
         RunwayDriverDimensionEnum.CATEGORY,
         RUNWAY_WINDOW_MONTHS,
-        LanguageEnum.EN
+        LanguageEnum.EN,
+        false
     );
 
     return {
@@ -240,7 +249,7 @@ describe('runway month window predicate', () => {
 
             const statisticsRepository = yield* StatisticsRepository;
             const seriesPlan = yield* explainQueryPlan(
-                statisticsRepository.getRunwaySeriesQuery(DEFAULT_TRANSACTION_FILTER, instrumentId, RUNWAY_WINDOW_MONTHS)
+                statisticsRepository.getRunwaySeriesQuery(DEFAULT_TRANSACTION_FILTER, instrumentId, RUNWAY_WINDOW_MONTHS, false)
             );
 
             expect(seriesPlan.some(detail => detail.includes('transactions_visible_operated_idx'))).toBe(true);
@@ -252,12 +261,84 @@ describe('runway month window predicate', () => {
                     instrumentId,
                     RunwayDriverDimensionEnum.CATEGORY,
                     RUNWAY_WINDOW_MONTHS,
-                    LanguageEnum.EN
+                    LanguageEnum.EN,
+                    false
                 )
             );
 
             expect(driverPlan.some(detail => detail.includes('transactions_visible_operated_idx'))).toBe(true);
             expect(driverPlan.some(detail => detail.includes('SCAN transactions '))).toBe(false);
+        }).pipe(Effect.provide(TestLayer))
+    );
+});
+
+describe('runway account scope', () => {
+    const expectedExpense = 30 * PRECISION;
+
+    const seedScopedExpenses = Effect.fnUntraced(function* (instrumentId: number) {
+        const category = yield* seedCategory('Groceries');
+        const liquid = yield* seed.account({ instrumentId, type: AccountTypeEnum.BANK });
+        const deleted = yield* seed.account({ instrumentId, type: AccountTypeEnum.BANK });
+        const excludedAccounts = [
+            yield* seed.account({ instrumentId, type: AccountTypeEnum.BANK, isActive: false }),
+            deleted,
+            yield* seed.account({ instrumentId, type: AccountTypeEnum.DEPOSIT })
+        ];
+
+        yield* testDb.update(AccountEntityTable).set({ deletedAt: new Date() }).where(eq(AccountEntityTable.id, deleted.id));
+        const crypto = yield* seed.account({ instrumentId, type: AccountTypeEnum.CRYPTO });
+
+        yield* seedExpense(liquid.id, category.id, expectedExpense, 1);
+        yield* Effect.forEach(excludedAccounts, account => seedExpense(account.id, category.id, 70 * PRECISION, 1), { discard: true });
+        yield* seedExpense(crypto.id, category.id, 5 * PRECISION, 1);
+    });
+
+    const readTotals = Effect.fnUntraced(function* (instrumentId: number, isCryptoIncluded: boolean) {
+        const statisticsRepository = yield* StatisticsRepository;
+        const seriesRows = yield* statisticsRepository.getRunwaySeriesQuery(
+            DEFAULT_TRANSACTION_FILTER,
+            instrumentId,
+            RUNWAY_WINDOW_MONTHS,
+            isCryptoIncluded
+        );
+        const driverRows = yield* statisticsRepository.getRunwayDriverSeriesQuery(
+            DEFAULT_TRANSACTION_FILTER,
+            instrumentId,
+            RunwayDriverDimensionEnum.CATEGORY,
+            RUNWAY_WINDOW_MONTHS,
+            LanguageEnum.EN,
+            isCryptoIncluded
+        );
+
+        return {
+            seriesExpense: seriesRows.reduce((total, row) => total + row.expense, 0),
+            driverExpense: driverRows.reduce((total, row) => total + row.amount, 0)
+        };
+    });
+
+    it.effect('counts only active liquid accounts in the series and drivers', () =>
+        Effect.gen(function* () {
+            const { instrumentId } = yield* seedScenario();
+
+            yield* seedScopedExpenses(instrumentId);
+
+            expect(yield* readTotals(instrumentId, false)).toStrictEqual({
+                seriesExpense: expectedExpense,
+                driverExpense: expectedExpense
+            });
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('adds crypto accounts only when crypto is included', () =>
+        Effect.gen(function* () {
+            const { instrumentId } = yield* seedScenario();
+
+            yield* seedScopedExpenses(instrumentId);
+
+            expect(yield* readTotals(instrumentId, true)).toStrictEqual({
+                seriesExpense: expectedExpense + 5 * PRECISION,
+                driverExpense: expectedExpense + 5 * PRECISION
+            });
         }).pipe(Effect.provide(TestLayer))
     );
 });
