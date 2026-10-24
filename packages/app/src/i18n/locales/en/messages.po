@@ -2176,7 +2176,7 @@ msgstr "Enter new PIN"
 msgid "Enter new token"
 msgstr "Enter new token"
 
-#: src/app/import-backup-pin.tsx
+#: src/import/component/import-backup-pin/import-backup-pin.tsx
 msgid "Enter the PIN this backup was sealed with"
 msgstr "Enter the PIN this backup was sealed with"
 
@@ -2422,7 +2422,7 @@ msgstr "Fix Errors"
 msgid "Fixed-term savings with an interest rate"
 msgstr "Fixed-term savings with an interest rate"
 
-#: src/app/(main)/pin.tsx
+#: src/auth/components/pin-unlock/pin-unlock.tsx
 msgid "Forgot PIN?"
 msgstr "Forgot PIN?"
 
@@ -2576,7 +2576,7 @@ msgstr "If a download arrives damaged, Budgie deletes it and asks before startin
 msgid "If Privat24 emails you the file instead of downloading it, save the attachment from your inbox"
 msgstr "If Privat24 emails you the file instead of downloading it, save the attachment from your inbox"
 
-#: src/app/import-backup-pin.tsx
+#: src/import/component/import-backup-pin/import-backup-pin.tsx
 msgid "If you don't remember it, this backup can't be opened. You can start fresh instead."
 msgstr "If you don't remember it, this backup can't be opened. You can start fresh instead."
 
@@ -2708,8 +2708,8 @@ msgstr "Income by category"
 msgid "Income by Tag"
 msgstr "Income by Tag"
 
-#: src/app/import-backup-pin.tsx
 #: src/auth/hook/use-pin-error.hook.ts
+#: src/import/component/import-backup-pin/import-backup-pin.tsx
 msgid "Incorrect PIN"
 msgstr "Incorrect PIN"
 
@@ -3374,7 +3374,7 @@ msgid "Not downloaded"
 msgstr "Not downloaded"
 
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
-#: src/app/import-backup-pin.tsx
+#: src/import/component/import-backup-pin/import-backup-pin.tsx
 #: src/import/hook/use-restore-backup.hook.ts
 msgid "Not enough free storage to extract this backup."
 msgstr "Not enough free storage to extract this backup."
@@ -4533,7 +4533,7 @@ msgstr "Start again with your new PIN"
 msgid "Start Deposit"
 msgstr "Start Deposit"
 
-#: src/app/import-backup-pin.tsx
+#: src/import/component/import-backup-pin/import-backup-pin.tsx
 msgid "Start fresh instead"
 msgstr "Start fresh instead"
 
@@ -4755,7 +4755,7 @@ msgid "This action cannot be undone."
 msgstr "This action cannot be undone."
 
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
-#: src/app/import-backup-pin.tsx
+#: src/import/component/import-backup-pin/import-backup-pin.tsx
 #: src/import/hook/use-restore-backup.hook.ts
 msgid "This backup archive does not contain a Budgie database."
 msgstr "This backup archive does not contain a Budgie database."
@@ -4768,7 +4768,7 @@ msgstr "This backup could not be opened with your current PIN."
 msgid "This backup is protected by a PIN. Importing it will replace all current data and its PIN becomes your app PIN. The app will restart after import. This action cannot be undone."
 msgstr "This backup is protected by a PIN. Importing it will replace all current data and its PIN becomes your app PIN. The app will restart after import. This action cannot be undone."
 
-#: src/app/import-backup-pin.tsx
+#: src/import/component/import-backup-pin/import-backup-pin.tsx
 #: src/import/hook/use-restore-backup.hook.ts
 msgid "This backup was made by an older Budgie version and cannot be imported."
 msgstr "This backup was made by an older Budgie version and cannot be imported."
