@@ -4,6 +4,7 @@ import { Keyboard } from 'react-native';
 
 import { emptyFn } from '@rnw-community/shared';
 
+import { AppToastHost } from '../../@generic/component/app-toast-host/app-toast-host';
 import { ForgotPinSheet } from '../../auth/components/forgot-pin-sheet/forgot-pin-sheet';
 import { PinUnlock } from '../../auth/components/pin-unlock/pin-unlock';
 import { useAuthContext } from '../../auth/context/auth.context';
@@ -19,9 +20,12 @@ export default function PinScreen() {
 
     useEffect(() => void Keyboard.dismiss(), []);
 
-    if (isRecovering) {
-        return <ForgotPinSheet onTryAgain={handleTryAgain} />;
-    }
+    const content = isRecovering ? <ForgotPinSheet onTryAgain={handleTryAgain} /> : <PinUnlock onForgotPin={handleForgotPin} />;
 
-    return <PinUnlock onForgotPin={handleForgotPin} />;
+    return (
+        <>
+            {content}
+            <AppToastHost />
+        </>
+    );
 }
