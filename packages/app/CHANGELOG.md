@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.114.9](https://github.com/budgie-at/budgie/compare/v6.114.8...v6.114.9) (2026-10-24)
+
+### Bug Fixes
+
+* **app:** pad transaction info rows away from the screen edges ([f5e4607](https://github.com/budgie-at/budgie/commit/f5e4607b8a01036412080bdfdfcce85cd84c4e6e))
+* **app:** show the attached debt on transaction info ([3926644](https://github.com/budgie-at/budgie/commit/3926644af06e108d689e84b051cd403400bf2d4b))
+
+
 ## [6.114.8](https://github.com/budgie-at/budgie/compare/v6.114.7...v6.114.8) (2026-10-24)
 
 ### Bug Fixes
