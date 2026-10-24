@@ -144,7 +144,6 @@ export const RootLayoutContent = () => {
                                                                 <Stack screenOptions={DEFAULT_STACK_OPTIONS} screenLayout={ScreenLayout}>
                                                                     <Stack.Screen name="(tabs)" />
                                                                     <Stack.Screen name="onboarding" />
-                                                                    <Stack.Screen name="(main)/pin" />
                                                                     <Stack.Screen name="(main)/create-account" />
                                                                     <Stack.Screen name="(main)/account/[id]/details" />
                                                                     <Stack.Screen name="(main)/account/[id]/update" />
@@ -208,10 +207,6 @@ export const RootLayoutContent = () => {
                                                                         options={formSheetOptions([0.75, DETENT_95])}
                                                                     />
                                                                     <Stack.Screen name="import-backup-pin" options={PIN_OPTIONS} />
-                                                                    <Stack.Screen
-                                                                        name="forgot-pin"
-                                                                        options={formSheetOptions('fitToContents')}
-                                                                    />
                                                                     <Stack.Screen
                                                                         name="add-pin"
                                                                         options={formSheetOptions('fitToContents')}
