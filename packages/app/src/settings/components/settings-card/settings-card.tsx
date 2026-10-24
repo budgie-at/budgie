@@ -14,11 +14,17 @@ interface Props extends ComponentProps<typeof SimpleHorizontalCell> {
     readonly isLoading?: boolean;
 }
 
-export const SettingsCard = ({ icon, variant, isLoading = false, disabled, right, left, ...rest }: Props) => {
-    const rightSlot = <LoadingContent isLoading={isLoading}>{right}</LoadingContent>;
+export const SettingsCard = ({ icon, variant, isLoading, disabled, right, left, ...rest }: Props) => {
+    const rightSlot = isDefined(isLoading) ? (
+        <LoadingContent isLoading={isLoading} className="min-h-[20px] min-w-[20px] items-center justify-center">
+            {right}
+        </LoadingContent>
+    ) : (
+        right
+    );
     const isDisabled = isLoading || disabled;
     const leftSlot = isDefined(icon) ? <CircleIcon icon={icon} variant={variant} border={false} size={36} iconSize={20} /> : left;
-    const accessibilityState = { ...rest.accessibilityState, busy: isLoading };
+    const accessibilityState = { ...rest.accessibilityState, busy: Boolean(isLoading) };
 
     return (
         <SimpleHorizontalCell {...rest} left={leftSlot} disabled={isDisabled} right={rightSlot} accessibilityState={accessibilityState} />

@@ -92,7 +92,7 @@ export const Button = (props: Props) => {
             {...rest}
         >
             {hasTestID ? <View collapsable={false} nativeID={testID} style={StyleSheet.absoluteFill} testID={testID} /> : null}
-            <LoadingContent isLoading={isLoading} className="flex-row gap-x-xl">
+            <LoadingContent isLoading={isLoading} className="flex-row items-center gap-x-xl">
                 <>
                     {isNotEmptyString(leftIcon) ? <Icon className={textVariants({ variant })} size={16} icon={leftIcon} /> : null}
 
