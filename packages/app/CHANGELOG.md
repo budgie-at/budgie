@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.115.2](https://github.com/budgie-at/budgie/compare/v6.115.1...v6.115.2) (2026-10-24)
+
+### Bug Fixes
+
+* **app:** show blurred content under the screen chrome ([#1653](https://github.com/budgie-at/budgie/issues/1653)) ([dab5727](https://github.com/budgie-at/budgie/commit/dab57276d7a49b6ddb0bdfaf1c59899bf060aabb))
+
+
 ## [6.115.1](https://github.com/budgie-at/budgie/compare/v6.115.0...v6.115.1) (2026-10-24)
 
 ### Bug Fixes
