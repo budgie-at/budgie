@@ -32,7 +32,6 @@ import { languageToLocale } from '../../i18n/utils/language-to-locale.util';
 import { RUNWAY_MINIMUM_MONTHS } from '../../runway/constant/runway-minimum-months.constant';
 import { aggregateRunwayDrivers } from '../../runway/utils/aggregate-runway-drivers.util';
 import { computeRunway } from '../../runway/utils/compute-runway.util';
-import { mean } from '../../runway/utils/mean.util';
 import { DEFAULT_INSTRUMENT } from '../../settings/constants/default-instrument.constant';
 
 import type { WidgetAccountTypeTotalInterface } from '../interface/widget-account-type-total.interface';
@@ -224,8 +223,7 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
                 const computation = computeRunway({
                     series,
                     liquid: liquidRows.at(0)?.total ?? 0,
-                    irregularMonthlyAmount: aggregateRunwayDrivers(driverRows, mean(series.map(row => row.expense)), false)
-                        .irregularMonthlyAmount,
+                    irregularMonthlyAmount: aggregateRunwayDrivers(driverRows, series, false).irregularMonthlyAmount,
                     referenceDate: new Date()
                 });
 

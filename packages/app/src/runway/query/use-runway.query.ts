@@ -9,7 +9,6 @@ import { useSetting } from '../../settings/hook/use-setting.hook';
 import { STATISTICS_TABLES } from '../../transaction/constant/statistics-tables.constant';
 import { aggregateRunwayDrivers } from '../utils/aggregate-runway-drivers.util';
 import { computeRunway } from '../utils/compute-runway.util';
-import { mean } from '../utils/mean.util';
 
 import type { UseRunwayQueryParams } from '../interface/use-runway-query-params.interface';
 import type { LanguageEnum } from '@budgie/contracts';
@@ -50,10 +49,9 @@ export const useRunwayQuery = (params: UseRunwayQueryParams) => {
     );
     const today = useToday();
     const seriesRows = AsyncResult.getOrElse(seriesResult, () => []);
-    const monthlyBurn = mean(seriesRows.map(row => row.expense));
     const breakdown = aggregateRunwayDrivers(
         AsyncResult.getOrElse(driverResult, () => []),
-        monthlyBurn,
+        seriesRows,
         isAllIn
     );
     const categoryBreakdown =
@@ -61,7 +59,7 @@ export const useRunwayQuery = (params: UseRunwayQueryParams) => {
             ? breakdown
             : aggregateRunwayDrivers(
                   AsyncResult.getOrElse(categoryDriverResult, () => []),
-                  monthlyBurn,
+                  seriesRows,
                   isAllIn
               );
     const computation = computeRunway({

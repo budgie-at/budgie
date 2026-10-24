@@ -1,6 +1,7 @@
 import { describe, expect, it } from '@effect/vitest';
 
 import { RUNWAY_MINIMUM_MONTHS } from '../src/runway/constant/runway-minimum-months.constant';
+import { aggregateRunwayDrivers } from '../src/runway/utils/aggregate-runway-drivers.util';
 import { computeRunway } from '../src/runway/utils/compute-runway.util';
 
 import type { RunwaySeriesRowInterface } from '@budgie/contracts';
@@ -40,6 +41,21 @@ describe('computeRunway', () => {
         expect(typical.net).toBeCloseTo(allIn.net + 500);
         expect(typical.p25Net).toBeCloseTo(allIn.p25Net + 500);
         expect(typical.p75Net).toBeCloseTo(allIn.p75Net + 500);
+    });
+
+    it('averages irregular drivers over every series month so typical burn never goes negative', () => {
+        const series = buildSeries([
+            { income: 1000, expense: 3000 },
+            { income: 1000, expense: 0 },
+            { income: 1000, expense: 0 },
+            { income: 1000, expense: 0 },
+            { income: 1000, expense: 0 },
+            { income: 1000, expense: 0 }
+        ]);
+        const breakdown = aggregateRunwayDrivers([{ id: 1, title: 'Laptop', month: '2026-01', amount: 3000 }], series, false);
+
+        expect(breakdown.irregularMonthlyAmount).toBeCloseTo(500);
+        expect(compute(series, breakdown.irregularMonthlyAmount).burn).toBeCloseTo(0);
     });
 
     it('widens the band to net when the percentiles do not bracket it', () => {

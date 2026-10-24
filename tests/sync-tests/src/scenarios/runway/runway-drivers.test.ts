@@ -1,5 +1,4 @@
 import { aggregateRunwayDrivers } from '@app/runway/utils/aggregate-runway-drivers.util';
-import { mean } from '@app/runway/utils/mean.util';
 import {
     AccountEntityTable,
     AccountTypeEnum,
@@ -99,7 +98,6 @@ const aggregate = Effect.fnUntraced(function* (dimension: RunwayDriverDimensionE
         RUNWAY_WINDOW_MONTHS,
         false
     );
-    const monthlyBurn = mean(seriesRows.map(row => row.expense));
     const driverRows = yield* statisticsRepository.getRunwayDriverSeriesQuery(
         DEFAULT_TRANSACTION_FILTER,
         instrumentId,
@@ -118,8 +116,8 @@ const aggregate = Effect.fnUntraced(function* (dimension: RunwayDriverDimensionE
     );
 
     return {
-        drivers: aggregateRunwayDrivers(driverRows, monthlyBurn, isAllIn).drivers,
-        irregularMonthlyAmount: aggregateRunwayDrivers(categoryRows, monthlyBurn, isAllIn).irregularMonthlyAmount
+        drivers: aggregateRunwayDrivers(driverRows, seriesRows, isAllIn).drivers,
+        irregularMonthlyAmount: aggregateRunwayDrivers(categoryRows, seriesRows, isAllIn).irregularMonthlyAmount
     } satisfies RunwayDriverBreakdownInterface;
 });
 
