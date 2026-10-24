@@ -15,7 +15,7 @@ interface Props {
 export const SettingsPillButton = ({ label, onPress, variant, isLoading = false, testID }: Props) => {
     const containerClassName = variant === 'cta' ? 'bg-cta-background' : 'bg-secondary-corner';
     const labelClassName = variant === 'cta' ? 'text-cta-foreground' : 'text-primary';
-    const accessibilityState = { busy: isLoading, disabled: isLoading };
+    const accessibilityState = { busy: isLoading };
 
     return (
         <HapticPressable

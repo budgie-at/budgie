@@ -9,29 +9,21 @@ interface Props {
     readonly className?: string;
 }
 
-const styles = StyleSheet.create({
-    smallIndicatorFootprint: { minWidth: 20, minHeight: 20 }
-});
-
 export const LoadingContent = ({ children, isLoading, className }: Props) => {
     const contentPointerEvents = isLoading ? 'none' : 'auto';
 
     return (
-        <View className="relative items-center justify-center" style={styles.smallIndicatorFootprint}>
+        <View className="min-h-[20px] min-w-[20px] items-center justify-center">
             <View pointerEvents={contentPointerEvents} className={cn('items-center justify-center', className, isLoading && 'opacity-0')}>
                 {children}
             </View>
             {isLoading ? (
-                <View
-                    pointerEvents="none"
-                    accessible={false}
+                <ActivityIndicator
+                    size="small"
+                    style={StyleSheet.absoluteFill}
                     accessibilityElementsHidden
                     importantForAccessibility="no-hide-descendants"
-                    style={StyleSheet.absoluteFill}
-                    className="items-center justify-center"
-                >
-                    <ActivityIndicator size="small" />
-                </View>
+                />
             ) : null}
         </View>
     );

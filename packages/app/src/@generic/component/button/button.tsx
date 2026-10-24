@@ -64,7 +64,7 @@ export const Button = (props: Props) => {
         rightIcon,
         variant = 'ghost',
         size = 'md',
-        isLoading,
+        isLoading = false,
         testID,
         accessibilityLabel,
         accessibilityState,
@@ -72,14 +72,10 @@ export const Button = (props: Props) => {
         ...rest
     } = props;
 
-    const isDisabled = Boolean(disabled || isLoading || accessibilityState?.disabled);
+    const isDisabled = disabled || isLoading;
     const resolvedAccessibilityLabel = accessibilityLabel ?? (isString(content) ? content : testID);
     const hasTestID = isNotEmptyString(testID);
-    const resolvedAccessibilityState = {
-        ...accessibilityState,
-        busy: Boolean(isLoading || accessibilityState?.busy),
-        disabled: isDisabled
-    };
+    const resolvedAccessibilityState = { ...accessibilityState, busy: isLoading };
 
     return (
         <HapticPressable
@@ -96,7 +92,7 @@ export const Button = (props: Props) => {
             {...rest}
         >
             {hasTestID ? <View collapsable={false} nativeID={testID} style={StyleSheet.absoluteFill} testID={testID} /> : null}
-            <LoadingContent isLoading={isLoading ?? false} className="flex-row gap-x-xl">
+            <LoadingContent isLoading={isLoading} className="flex-row gap-x-xl">
                 <>
                     {isNotEmptyString(leftIcon) ? <Icon className={textVariants({ variant })} size={16} icon={leftIcon} /> : null}
 
