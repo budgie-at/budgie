@@ -1797,7 +1797,7 @@ msgstr "Залишилось днів"
 
 #: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
 #: src/account/constant/account-type.constant.ts
-#: src/transaction/components/debt-settlement-pill/debt-settlement-pill.tsx
+#: src/transaction/constant/debt-settlement-label.constant.ts
 #: src/transaction/constant/transaction-type.constant.ts
 msgid "Debt"
 msgstr "Борг"
@@ -2715,7 +2715,7 @@ msgstr "Неправильний PIN-код"
 #: src/account/constant/account-debt-type.constant.ts
 #: src/installment-plan/component/convert-to-installment-content/convert-to-installment-content.tsx
 #: src/installment-plan/component/convert-to-installment-title-field/convert-to-installment-title-field.tsx
-#: src/transaction/components/debt-settlement-pill/debt-settlement-pill.tsx
+#: src/transaction/constant/debt-settlement-label.constant.ts
 msgid "Installment plan"
 msgstr "Оплата частинами"
 
