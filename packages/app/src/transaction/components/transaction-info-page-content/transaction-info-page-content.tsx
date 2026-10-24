@@ -23,6 +23,7 @@ import { convertTransactionToInput } from '../../utils/convert-transaction-to-in
 import { getTransactionDisplayTitle } from '../../utils/get-transaction-display-title.util';
 import { TransactionInfoAccountRows } from '../transaction-info-account-rows/transaction-info-account-rows';
 import { TransactionInfoCategoryRows } from '../transaction-info-category-rows/transaction-info-category-rows';
+import { TransactionInfoDebtRows } from '../transaction-info-debt-rows/transaction-info-debt-rows';
 import { TransactionInfoHero } from '../transaction-info-hero/transaction-info-hero';
 import { TransactionInfoMoneyRows } from '../transaction-info-money-rows/transaction-info-money-rows';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
@@ -89,6 +90,7 @@ export const TransactionInfoPageContent = ({
                     <View className="overflow-hidden">
                         <View className="-mt-px">
                             <TransactionInfoAccountRows transaction={transaction} />
+                            <TransactionInfoDebtRows transaction={transaction} />
                             <TransactionInfoCategoryRows transaction={transaction} />
                             <TransactionInfoMoneyRows transaction={transaction} />
                             <TransactionInfoSourceRows
