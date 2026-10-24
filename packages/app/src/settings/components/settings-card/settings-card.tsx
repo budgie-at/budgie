@@ -24,9 +24,6 @@ export const SettingsCard = ({ icon, variant, isLoading, disabled, right, left, 
     );
     const isDisabled = isLoading || disabled;
     const leftSlot = isDefined(icon) ? <CircleIcon icon={icon} variant={variant} border={false} size={36} iconSize={20} /> : left;
-    const accessibilityState = { ...rest.accessibilityState, busy: Boolean(isLoading) };
 
-    return (
-        <SimpleHorizontalCell {...rest} left={leftSlot} disabled={isDisabled} right={rightSlot} accessibilityState={accessibilityState} />
-    );
+    return <SimpleHorizontalCell {...rest} left={leftSlot} disabled={isDisabled} right={rightSlot} />;
 };

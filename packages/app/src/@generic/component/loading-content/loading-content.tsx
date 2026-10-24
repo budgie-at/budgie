@@ -17,14 +17,7 @@ export const LoadingContent = ({ children, isLoading, className }: Props) => {
             <View pointerEvents={contentPointerEvents} className={cn(className, isLoading && 'opacity-0')}>
                 {children}
             </View>
-            {isLoading ? (
-                <ActivityIndicator
-                    size="small"
-                    style={StyleSheet.absoluteFill}
-                    accessibilityElementsHidden
-                    importantForAccessibility="no-hide-descendants"
-                />
-            ) : null}
+            {isLoading ? <ActivityIndicator size="small" style={StyleSheet.absoluteFill} /> : null}
         </View>
     );
 };
