@@ -1717,6 +1717,10 @@ msgstr "Créez-en un pour commencer."
 msgid "Create plan"
 msgstr "Créer le plan"
 
+#: src/transaction/components/create-rule-menu-item/create-rule-menu-item.tsx
+msgid "Create rule"
+msgstr "Créer une règle"
+
 #: src/rule/components/rule-form-create/rule-form-create.tsx
 msgid "Create Rule"
 msgstr "Créer une règle"
