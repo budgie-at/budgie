@@ -1,17 +1,21 @@
 import { useLingui } from '@lingui/react/macro';
-import { router } from 'expo-router';
+import { router, usePreventRemove } from 'expo-router';
 import React from 'react';
 import { View } from 'react-native';
+
+import { emptyFn } from '@rnw-community/shared';
 
 import { Button } from '../../@generic/component/button/button';
 import { LoadingOverlay } from '../../@generic/component/loading-overlay/loading-overlay';
 import { PinForm } from '../../auth/components/pin-form/pin-form';
+import { useAuthContext } from '../../auth/context/auth.context';
 import { usePinAuthentication } from '../../auth/hook/use-pin-authentication.hook';
 
 import { PinScreenSelector } from './pin-screen.selector';
 
 export default function PinScreen() {
     const { t } = useLingui();
+    const { isUnlocked } = useAuthContext();
     const {
         addDigit,
         canUseBiometric,
@@ -25,6 +29,8 @@ export default function PinScreen() {
         isLoading,
         title
     } = usePinAuthentication();
+
+    usePreventRemove(!isUnlocked, emptyFn);
 
     const handleForgotPinPress = () => void router.push('/forgot-pin');
 

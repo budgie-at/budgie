@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { router, useIsFocused, useNavigation } from 'expo-router';
+import { useIsFocused, useNavigation } from 'expo-router';
 import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { AppState } from 'react-native';
 
@@ -127,7 +127,6 @@ export const usePinAuthentication = () => {
 
         if (success) {
             setIsUnlocked(true);
-            router.replace('/');
         } else if (isPinAttempt) {
             setInput('');
             reportIncorrectPin();
