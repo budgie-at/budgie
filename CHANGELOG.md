@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.115.0](https://github.com/budgie-at/budgie/compare/v6.114.9...v6.115.0) (2026-10-24)
+
+### Features
+
+* **app:** create a rule from any transaction's actions menu ([9693c81](https://github.com/budgie-at/budgie/commit/9693c81cf92bfa86589447155a7bcc3bbea05ec7))
+
+
 ## [6.114.9](https://github.com/budgie-at/budgie/compare/v6.114.8...v6.114.9) (2026-10-24)
 
 ### Bug Fixes
