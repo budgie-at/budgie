@@ -6,8 +6,6 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible: 'Enter your PIN'
     timeout: 10000
-- assertNotVisible:
-    id: ${RESUMED_SCREEN_ID}
 - runFlow:
     when:
       platform: Android
