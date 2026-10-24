@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.115.3](https://github.com/budgie-at/budgie/compare/v6.115.2...v6.115.3) (2026-10-24)
+
+### Bug Fixes
+
+* **app:** refresh Lingui catalog references for moved PIN screens ([c1bf6e6](https://github.com/budgie-at/budgie/commit/c1bf6e619ef5d04a1068e32579ae58011812a4bd))
+* **app:** return to the same screen after PIN unlock ([c7f92fa](https://github.com/budgie-at/budgie/commit/c7f92fa0605c25aa4e1f307d01acd451c17393f5))
+
+
 ## [6.115.2](https://github.com/budgie-at/budgie/compare/v6.115.1...v6.115.2) (2026-10-24)
 
 ### Bug Fixes

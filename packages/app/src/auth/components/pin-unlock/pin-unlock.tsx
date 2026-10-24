@@ -1,16 +1,19 @@
 import { useLingui } from '@lingui/react/macro';
-import { router } from 'expo-router';
 import React from 'react';
 import { View } from 'react-native';
 
-import { Button } from '../../@generic/component/button/button';
-import { LoadingOverlay } from '../../@generic/component/loading-overlay/loading-overlay';
-import { PinForm } from '../../auth/components/pin-form/pin-form';
-import { usePinAuthentication } from '../../auth/hook/use-pin-authentication.hook';
+import { Button } from '../../../@generic/component/button/button';
+import { LoadingOverlay } from '../../../@generic/component/loading-overlay/loading-overlay';
+import { usePinAuthentication } from '../../hook/use-pin-authentication.hook';
+import { PinForm } from '../pin-form/pin-form';
 
-import { PinScreenSelector } from './pin-screen.selector';
+import { PinUnlockSelector } from './pin-unlock.selector';
 
-export default function PinScreen() {
+interface Props {
+    readonly onForgotPin: () => void;
+}
+
+export const PinUnlock = ({ onForgotPin }: Props) => {
     const { t } = useLingui();
     const {
         addDigit,
@@ -26,10 +29,8 @@ export default function PinScreen() {
         title
     } = usePinAuthentication();
 
-    const handleForgotPinPress = () => void router.push('/forgot-pin');
-
     return (
-        <View className="flex-1 bg-primary-reverse">
+        <View className="flex-1 bg-primary-reverse pt-safe pb-safe">
             <View className="flex-1 px-6xl justify-center">
                 <PinForm
                     title={title}
@@ -45,10 +46,10 @@ export default function PinScreen() {
                 />
 
                 <Button
-                    testID={PinScreenSelector.ForgotPinButton}
+                    testID={PinUnlockSelector.ForgotPinButton}
                     variant="ghost"
                     content={t`Forgot PIN?`}
-                    onPress={handleForgotPinPress}
+                    onPress={onForgotPin}
                     className="mb-5xl"
                 />
 
@@ -56,4 +57,4 @@ export default function PinScreen() {
             </View>
         </View>
     );
-}
+};
