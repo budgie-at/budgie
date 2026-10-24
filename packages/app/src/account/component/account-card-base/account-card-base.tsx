@@ -70,7 +70,7 @@ export const AccountCardBase = ({ account, balance, amountLabel, onImport, child
                 onAccessibilityAction={handleAccessibilityAction}
                 onPress={navigateToAccount}
                 onLongPress={openMenu}
-                className="flex-1 gap-xs rounded-5xl border border-secondary-corner bg-primary-reverse p-xl active:scale-xs"
+                className="flex-1 gap-sm rounded-5xl border border-secondary-corner bg-primary-reverse p-3xl active:scale-xs"
             >
                 <View className="flex-row items-start gap-sm">
                     <View className="min-w-0 flex-1">

@@ -19,10 +19,10 @@ export const AccountCardTitle = ({ title, iban, syncState, syncStateLabel }: Pro
         syncState === AccountSyncStateEnum.DISABLED;
     const ibanSuffix = isNotEmptyString(iban) ? `••${iban.slice(-4)}` : null;
     const suffix = isSyncIssue ? syncStateLabel : ibanSuffix;
-    const suffixToneClassName = syncState === AccountSyncStateEnum.FAILED ? 'text-destructive-foreground' : 'text-secondary-foreground';
+    const suffixToneClassName = syncState === AccountSyncStateEnum.FAILED ? 'text-destructive-foreground' : 'text-primary/40';
 
     return (
-        <Text className="text-sm leading-[18px] text-primary" numberOfLines={2} ellipsizeMode="tail">
+        <Text className="text-[13px] leading-[18px] text-primary/65" numberOfLines={2} ellipsizeMode="tail">
             {title}
             {isDefined(suffix) ? <Text className={cn('text-xs tabular-nums', suffixToneClassName)}>{` ${suffix}`}</Text> : null}
         </Text>
