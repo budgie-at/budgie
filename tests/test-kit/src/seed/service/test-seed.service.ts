@@ -98,6 +98,18 @@ export class TestSeedService {
         });
     }
 
+    accountCreatedAt(accountId: number, createdAt: Date) {
+        return Effect.gen({ self: this }, function* () {
+            const rows = yield* this.database
+                .update(AccountEntityTable)
+                .set({ createdAt })
+                .where(eq(AccountEntityTable.id, accountId))
+                .returning();
+
+            return TestSeedService.requireInserted(rows, 'accounts');
+        });
+    }
+
     bankSyncAccount(
         title: string,
         externalSource: ExternalSourceEnum | null,

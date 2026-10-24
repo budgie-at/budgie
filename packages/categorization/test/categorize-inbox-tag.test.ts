@@ -135,4 +135,19 @@ describe('categorization/inbox-tag', () => {
         expect(large.section).toBe(CategorizeInboxSectionEnum.REVIEW);
         expect(large.candidateLabelIds).toEqual([7]);
     });
+
+    it('groups MCC-less withdrawals of any bank into cash withdrawals by their localized title prefix', () => {
+        const clusters = categorizeInboxEngineService.buildClusters(
+            [
+                buildRow(1, TransactionTypeEnum.EXPENSE, 'BANKOMAT QUELLENSTRAS WIENFAVORITEN 1100 040'),
+                buildRow(2, TransactionTypeEnum.EXPENSE, 'Банкомат Erste Bank'),
+                buildRow(3, TransactionTypeEnum.EXPENSE, 'BANKOMATENSHOP WIEN 1010'),
+                buildRow(4, TransactionTypeEnum.INCOME, 'ATM deposit')
+            ],
+            categorizeInboxEngineService.buildContext([], 1, CategorizeInboxLabelKindEnum.TAG)
+        );
+        const cashWithdrawals = clusters.find(cluster => cluster.section === CategorizeInboxSectionEnum.CASH_WITHDRAWALS);
+
+        expect(cashWithdrawals?.rows.map(row => row.transactionId)).toEqual([1, 2]);
+    });
 });

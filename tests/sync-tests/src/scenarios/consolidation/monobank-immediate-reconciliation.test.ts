@@ -8,11 +8,12 @@ import * as Fiber from 'effect/Fiber';
 import { buildMonobank, monobankStub, MonobankSyncService, seed, setupMonobankFixture, TestLayer, testQueryService } from '../../harness';
 
 describe('consolidation/monobank-immediate-reconciliation', () => {
-    it.effect('keeps a synced ATM withdrawal as a bank expense through immediate reconciliation and after sync', () =>
+    it.effect('moves a synced ATM withdrawal to cash through immediate reconciliation by the end of the sync', () =>
         Effect.gen(function* () {
             const monobankSyncService = yield* MonobankSyncService;
             const { account: bankAccount } = yield* setupMonobankFixture();
-            yield* seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: bankAccount.instrumentId });
+            const cashAccount = yield* seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: bankAccount.instrumentId });
+            yield* seed.accountCreatedAt(cashAccount.id, new Date(Date.now() - 24 * 60 * 60 * 1000));
             const rateLimitWaitEntered = yield* Deferred.make<void>();
             const releaseRateLimitWait = yield* Deferred.make<void>();
 
@@ -59,7 +60,7 @@ describe('consolidation/monobank-immediate-reconciliation', () => {
             );
             yield* Fiber.join(syncFiber);
 
-            expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toEqual([]);
+            expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toHaveLength(1);
         }).pipe(Effect.provide(TestLayer))
     );
 });
