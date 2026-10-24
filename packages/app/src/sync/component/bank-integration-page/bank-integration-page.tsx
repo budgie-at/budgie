@@ -7,16 +7,17 @@ import { View } from 'react-native';
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
-import { Card } from '../../../@generic/component/card/card';
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
 import { getBankIntegrationTitle } from '../../../account/utils/get-bank-integration-title.util';
 import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/bank-integration.selector';
 import { EXTERNAL_SOURCE } from '../../../rule/constant/external-source.constant';
+import { SettingsGroup } from '../../../settings/components/settings-group/settings-group';
 import { BankIntegrationContext } from '../../context/bank-integration.context';
 import { BankIntegrationAccountList } from '../bank-integration-account-list/bank-integration-account-list';
-import { BankIntegrationNameSection } from '../bank-integration-name-section/bank-integration-name-section';
-import { SyncTokenSection } from '../sync-token-section/sync-token-section';
+import { BankIntegrationKeyCard } from '../bank-integration-key-card/bank-integration-key-card';
+import { BankIntegrationNameCard } from '../bank-integration-name-card/bank-integration-name-card';
+import { BankIntegrationOverview } from '../bank-integration-overview/bank-integration-overview';
 
 interface Props {
     readonly integration: BankIntegrationEntityInterface;
@@ -49,11 +50,11 @@ export const BankIntegrationPage = ({ integration }: Props) => {
     ) : null;
     const footer = isDefined(importFileButton) ? <View className="flex-row pt-xl px-7xl">{importFileButton}</View> : null;
 
-    const connectionCard = capabilities.supportsAccountDiscovery ? (
-        <Card className="gap-y-lg">
-            <BankIntegrationNameSection />
-            <SyncTokenSection />
-        </Card>
+    const connectionSection = capabilities.supportsAccountDiscovery ? (
+        <SettingsGroup title={t`Connection`}>
+            <BankIntegrationNameCard />
+            <BankIntegrationKeyCard />
+        </SettingsGroup>
     ) : null;
     const title = getBankIntegrationTitle(t(EXTERNAL_SOURCE[integration.provider]), integration.label, null);
 
@@ -64,12 +65,13 @@ export const BankIntegrationPage = ({ integration }: Props) => {
             testID={BankIntegrationSelector.Page}
             title={title}
             leading={<HeaderBackButton />}
-            contentClassName="gap-y-lg"
+            contentClassName="gap-y-7xl"
             footer={footer}
         >
             <BankIntegrationContext.Provider value={contextValue}>
-                {connectionCard}
+                <BankIntegrationOverview />
                 <BankIntegrationAccountList />
+                {connectionSection}
             </BankIntegrationContext.Provider>
         </CollapsibleChromePage>
     );

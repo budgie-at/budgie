@@ -3,8 +3,8 @@ import { t } from '@lingui/core/macro';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
+import { MetaPill } from '../../../@generic/component/meta-pill/meta-pill';
 import { useFormatInstrumentAmount } from '../../../i18n/hook/use-format-instrument-amount.hook';
-import { TransactionMetaPill } from '../transaction-meta-pill/transaction-meta-pill';
 
 import { TransactionFeePillSelector } from './transaction-fee-pill.selector';
 
@@ -27,5 +27,5 @@ export const TransactionFeePill = ({ amount, currencySymbol, instrumentType, sho
     const formattedAmount = formatInstrumentAmount(amount, currencySymbol, instrumentType ?? null);
     const label = hasFee ? t`Fee ${formattedAmount}` : t`Set fee`;
 
-    return <TransactionMetaPill label={label} onPress={onPress} testID={TransactionFeePillSelector.Pill} />;
+    return <MetaPill label={label} onPress={onPress} testID={TransactionFeePillSelector.Pill} />;
 };

@@ -1,13 +1,16 @@
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
-import { isEmptyArray } from '@rnw-community/shared';
+import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/bank-integration.selector';
+import { useBankIntegrationKeyModal } from '../../context/bank-integration-key-modal.context';
 import { useBankIntegration } from '../../context/bank-integration.context';
-import { useBankIntegrationNewAccountsQuery } from '../../query/use-bank-integration-new-accounts.query';
+import { useBankIntegrationAccountPreviewsQuery } from '../../query/use-bank-integration-account-previews.query';
+import { BankIntegrationAccountRowSkeleton } from '../bank-integration-account-row-skeleton/bank-integration-account-row-skeleton';
 import { BankIntegrationNewAccountRow } from '../bank-integration-new-account-row/bank-integration-new-account-row';
+import { BankIntegrationStatusBanner } from '../bank-integration-status-banner/bank-integration-status-banner';
 
 interface Props {
     readonly linkedExternalIds: ReadonlySet<string>;
@@ -16,35 +19,56 @@ interface Props {
 export const BankIntegrationNewAccounts = ({ linkedExternalIds }: Props) => {
     const { t } = useLingui();
     const { integration } = useBankIntegration();
-    const { newAccountPreviews, isLoading, isKeyRejected, hasError, refresh } = useBankIntegrationNewAccountsQuery(
-        integration.id,
-        linkedExternalIds
+    const [openKeyModal] = useBankIntegrationKeyModal();
+    const { previews, isLoading, isKeyRejected, hasError, refresh } = useBankIntegrationAccountPreviewsQuery(integration.id);
+
+    const newAccountPreviews = previews.filter(
+        preview => !isDefined(preview.existingAccountId) && !linkedExternalIds.has(preview.externalId)
     );
+    const handleUpdateKey = () => void openKeyModal(integration.id);
 
     if (isLoading) {
         return (
-            <Text className="text-secondary-foreground text-xs" testID={BankIntegrationSelector.NewAccountsStatus}>
-                <Trans>Checking Monobank for new accounts…</Trans>
-            </Text>
+            <View className="gap-y-lg" testID={BankIntegrationSelector.NewAccountsStatus}>
+                <BankIntegrationAccountRowSkeleton />
+                <BankIntegrationAccountRowSkeleton />
+            </View>
         );
     }
 
     if (isKeyRejected) {
         return (
-            <Text className="text-secondary-foreground text-xs" testID={BankIntegrationSelector.NewAccountsStatus}>
-                <Trans>Monobank rejected this key. Update it above.</Trans>
-            </Text>
+            <BankIntegrationStatusBanner
+                variant="destructive"
+                text={t`Monobank rejected this key`}
+                testID={BankIntegrationSelector.NewAccountsStatus}
+            >
+                <Button
+                    variant="default"
+                    size="sm"
+                    onPress={handleUpdateKey}
+                    content={t`Update key`}
+                    testID={BankIntegrationSelector.UpdateKeyButton}
+                />
+            </BankIntegrationStatusBanner>
         );
     }
 
     if (hasError) {
         return (
-            <View className="flex-row items-center justify-between" testID={BankIntegrationSelector.NewAccountsStatus}>
-                <Text className="text-secondary-foreground text-xs">
-                    <Trans>Couldn’t check Monobank for new accounts</Trans>
-                </Text>
-                <Button variant="default" size="sm" onPress={refresh} content={t`Retry`} />
-            </View>
+            <BankIntegrationStatusBanner
+                variant="warning"
+                text={t`Couldn’t check Monobank for new accounts`}
+                testID={BankIntegrationSelector.NewAccountsStatus}
+            >
+                <Button
+                    variant="default"
+                    size="sm"
+                    onPress={refresh}
+                    content={t`Retry`}
+                    testID={BankIntegrationSelector.RetryNewAccountsButton}
+                />
+            </BankIntegrationStatusBanner>
         );
     }
 
@@ -53,10 +77,15 @@ export const BankIntegrationNewAccounts = ({ linkedExternalIds }: Props) => {
     }
 
     return (
-        <View className="gap-y-sm">
-            <Text className="text-xs uppercase text-secondary-foreground">
-                <Trans>Not synced yet</Trans>
-            </Text>
+        <View className="gap-y-lg">
+            <View className="gap-y-xs">
+                <Text className="text-xs uppercase text-secondary-foreground">
+                    <Trans>New in Monobank</Trans>
+                </Text>
+                <Text className="text-xs text-secondary-foreground">
+                    <Trans>Switch on to start syncing</Trans>
+                </Text>
+            </View>
             {newAccountPreviews.map(preview => (
                 <BankIntegrationNewAccountRow key={preview.externalId} preview={preview} />
             ))}

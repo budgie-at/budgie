@@ -486,9 +486,15 @@ msgstr "Синхронізація рахунків"
 msgid "Account Type"
 msgstr "Тип рахунку"
 
+#: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
 msgid "Accounts"
 msgstr "Рахунки"
+
+#. placeholder {0}: accounts.length
+#: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
+msgid "Accounts · {0}"
+msgstr "Рахунки · {0}"
 
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
 msgid "Accounts ({selectedAccountsCount})"
@@ -501,6 +507,10 @@ msgstr "Архівовані рахунки відображатимуться �
 #: src/account/component/inactive-accounts-empty-state/inactive-accounts-empty-state.tsx
 msgid "Accounts you mark as inactive will appear here. They won't be shown on the main page."
 msgstr "Рахунки, які ви позначите як неактивні, з'являться тут. Вони не відображатимуться на головній сторінці."
+
+#: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
+msgid "Accounts you sync or import appear here."
+msgstr "Тут з’являться рахунки, які ви синхронізуєте або імпортуєте."
 
 #: src/rule/components/rule-action-row/rule-action-row.tsx
 msgid "Action"
@@ -707,9 +717,9 @@ msgstr "та"
 msgid "Anyone who can unlock this phone"
 msgstr "Будь-хто, хто може розблокувати цей телефон"
 
-#: src/sync/component/sync-token-section/sync-token-section.tsx
-msgid "API Token"
-msgstr "API токен"
+#: src/sync/component/bank-integration-key-card/bank-integration-key-card.tsx
+msgid "API key"
+msgstr "API-ключ"
 
 #: src/settings/components/app-lock-row/app-lock-row.tsx
 msgid "App Lock"
@@ -1093,7 +1103,6 @@ msgstr "Назва категорії"
 
 #: src/onboarding/component/onboarding-currency-row/onboarding-currency-row.tsx
 #: src/sync/component/binance-sync-token-summary/binance-sync-token-summary.tsx
-#: src/sync/component/sync-token-section/sync-token-section.tsx
 msgid "Change"
 msgstr "Змінити"
 
@@ -1105,10 +1114,6 @@ msgstr "Змінити валюту"
 msgid "Change PIN"
 msgstr "Змінити PIN-код"
 
-#: src/sync/component/sync-token-section/sync-token-section.tsx
-msgid "Check the key and try again."
-msgstr "Перевірте ключ і спробуйте ще раз."
-
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Checking"
 msgstr "Перевірка"
@@ -1117,10 +1122,6 @@ msgstr "Перевірка"
 #: src/app/(main)/create-account/index.tsx
 msgid "Checking Account"
 msgstr "Поточний рахунок"
-
-#: src/sync/component/bank-integration-new-accounts/bank-integration-new-accounts.tsx
-msgid "Checking Monobank for new accounts…"
-msgstr "Перевіряємо нові рахунки в Monobank…"
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Choose \"Excel\" as the export format — PDF and CSV files can't be imported"
@@ -1261,6 +1262,10 @@ msgstr "Підключити Binance"
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Connect Monobank"
 msgstr "Підключити Монобанк"
+
+#: src/sync/component/bank-integration-page/bank-integration-page.tsx
+msgid "Connection"
+msgstr "Підключення"
 
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
 msgid "Consolidate"
@@ -1511,7 +1516,7 @@ msgstr "Не вдалося перерахувати баланси"
 msgid "Could not remove unused downloads"
 msgstr "Не вдалося видалити невикористані завантаження"
 
-#: src/sync/component/bank-integration-name-section/bank-integration-name-section.tsx
+#: src/app/bank-integration-name.tsx
 msgid "Could not rename"
 msgstr "Не вдалося перейменувати"
 
@@ -1588,6 +1593,10 @@ msgstr "Не вдалося оновити функцію ШІ"
 msgid "Could not update category icon"
 msgstr "Не вдалося оновити іконку категорії"
 
+#: src/app/bank-integration-key.tsx
+msgid "Could not update key"
+msgstr "Не вдалося оновити ключ"
+
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Could not update notifications"
 msgstr "Не вдалося оновити сповіщення"
@@ -1620,8 +1629,11 @@ msgstr "Не вдалося оновити завантаження моделе
 msgid "Could not update the download setting"
 msgstr "Не вдалося оновити налаштування завантаження"
 
+#: src/app/bank-integration-key.tsx
+msgid "Could not update the key. Try again."
+msgstr "Не вдалося оновити ключ. Спробуйте ще раз."
+
 #: src/sync/component/binance-sync-token-section/binance-sync-token-section.tsx
-#: src/sync/component/sync-token-section/sync-token-section.tsx
 msgid "Could not update token"
 msgstr "Не вдалося оновити токен"
 
@@ -2173,7 +2185,7 @@ msgstr "Введіть його ще раз"
 msgid "Enter new PIN"
 msgstr "Введіть новий PIN-код"
 
-#: src/sync/component/sync-token-section/sync-token-section.tsx
+#: src/app/bank-integration-key.tsx
 msgid "Enter new token"
 msgstr "Введіть новий токен"
 
@@ -2485,6 +2497,10 @@ msgstr "Загальний"
 msgid "German"
 msgstr "Німецька"
 
+#: src/app/bank-integration-key.tsx
+msgid "Get a new key"
+msgstr "Отримати новий ключ"
+
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Get API Key"
 msgstr "Отримати API-ключ"
@@ -2672,10 +2688,6 @@ msgstr "Включити в чисту вартість"
 msgid "Include one-offs"
 msgstr "Включити разові витрати"
 
-#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
-msgid "Included in file imports"
-msgstr "Враховується в імпортах файлів"
-
 #: src/runway/component/runway-verdict/runway-verdict.tsx
 msgid "Includes crypto"
 msgstr "Включно з криптовалютою"
@@ -2764,6 +2776,14 @@ msgstr "Користуйтеся Budgie тим часом. Поки модель
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Kept inside Budgie's file on this phone. Sent only to Monobank, never to us."
 msgstr "Зберігається у файлі Budgie на цьому телефоні. Надсилається лише в Monobank, ніколи нам."
+
+#: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
+msgid "Key rejected"
+msgstr "Ключ відхилено"
+
+#: src/app/bank-integration-key.tsx
+msgid "Key updated"
+msgstr "Ключ оновлено"
 
 #: src/settings/components/language-selector/language-selector.tsx
 msgid "Language"
@@ -3064,6 +3084,10 @@ msgstr "Витрати"
 msgid "Monobank"
 msgstr "Монобанк"
 
+#: src/app/bank-integration-key.tsx
+msgid "Monobank API key"
+msgstr "API-ключ Monobank"
+
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Monobank connected"
 msgstr "Monobank підключено"
@@ -3076,17 +3100,17 @@ msgstr "Monobank видає вам особистий токен. Budgie вик�
 msgid "Monobank key updated"
 msgstr "Ключ Monobank оновлено"
 
-#: src/sync/component/sync-token-section/sync-token-section.tsx
+#: src/app/bank-integration-key.tsx
 msgid "Monobank limits how often keys can be checked. Try again in a minute."
 msgstr "Monobank обмежує, як часто можна перевіряти ключі. Спробуйте за хвилину."
 
-#: src/sync/component/sync-token-section/sync-token-section.tsx
+#: src/sync/component/bank-integration-new-accounts/bank-integration-new-accounts.tsx
 msgid "Monobank rejected this key"
 msgstr "Monobank відхилив цей ключ"
 
-#: src/sync/component/bank-integration-new-accounts/bank-integration-new-accounts.tsx
-msgid "Monobank rejected this key. Update it above."
-msgstr "Monobank відхилив цей ключ. Оновіть його вище."
+#: src/app/bank-integration-key.tsx
+msgid "Monobank rejected this key. Check it and try again."
+msgstr "Monobank відхилив цей ключ. Перевірте його та спробуйте ще раз."
 
 #: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
 msgid "Monobank sends about one month of history per minute, for each account you selected."
@@ -3137,13 +3161,17 @@ msgstr "У готівку"
 msgid "Moved to cash"
 msgstr "Перенесено в готівку"
 
-#: src/sync/component/bank-integration-name-section/bank-integration-name-section.tsx
+#: src/sync/component/bank-integration-name-card/bank-integration-name-card.tsx
 msgid "Name"
 msgstr "Назва"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Navigate to Account → Statements"
 msgstr "Перейдіть до Рахунок → Виписки"
+
+#: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
+msgid "Needs attention"
+msgstr "Потребує уваги"
 
 #: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
 msgid "Needs review"
@@ -3176,6 +3204,10 @@ msgstr "Новий позичений борг"
 #: src/app/(main)/create-transaction/expense.tsx
 msgid "New Expense"
 msgstr "Нова витрата"
+
+#: src/sync/component/bank-integration-new-accounts/bank-integration-new-accounts.tsx
+msgid "New in Monobank"
+msgstr "Нові в Monobank"
 
 #: src/app/(main)/create-transaction/income.tsx
 msgid "New Income"
@@ -3420,13 +3452,10 @@ msgstr "Не зараз"
 msgid "not set"
 msgstr "не встановлено"
 
-#: src/sync/component/bank-integration-name-section/bank-integration-name-section.tsx
+#: src/app/bank-integration-name.tsx
+#: src/sync/component/bank-integration-name-card/bank-integration-name-card.tsx
 msgid "Not set"
 msgstr "Не задано"
-
-#: src/sync/component/bank-integration-new-accounts/bank-integration-new-accounts.tsx
-msgid "Not synced yet"
-msgstr "Ще не синхронізуються"
 
 #: src/settings/components/backup-row/backup-row.tsx
 msgid "Not yet"
@@ -3676,6 +3705,10 @@ msgstr "Винен вам"
 msgid "Paid {paidAmount} · {paidCount} of {installmentCount}"
 msgstr "Сплачено {paidAmount} · {paidCount} з {installmentCount}"
 
+#: src/app/bank-integration-key.tsx
+msgid "Paste the key from api.monobank.ua"
+msgstr "Вставте ключ з api.monobank.ua"
+
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "Paste your API token below:"
 msgstr "Вставте ваш API-токен нижче:"
@@ -3695,6 +3728,7 @@ msgid "Pause"
 msgstr "Пауза"
 
 #: src/ai/constant/ai-download-card-visuals.constant.ts
+#: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
 msgid "Paused"
 msgstr "Призупинено"
 
@@ -4014,7 +4048,6 @@ msgstr "Прибрати розділення?"
 msgid "Remove unused downloads ({unusedSize})"
 msgstr "Видалити невикористані завантаження ({unusedSize})"
 
-#: src/sync/component/bank-integration-name-section/bank-integration-name-section.tsx
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "Rename"
 msgstr "Перейменувати"
@@ -4277,7 +4310,7 @@ msgstr "Пошук..."
 msgid "Secondary Value"
 msgstr "Другорядне значення"
 
-#: src/sync/component/bank-integration-name-section/bank-integration-name-section.tsx
+#: src/app/bank-integration-name.tsx
 msgid "Section name"
 msgstr "Назва розділу"
 
@@ -4632,6 +4665,10 @@ msgstr "Проведіть, щоб видалити цей ліміт катег
 msgid "Switch between light and dark themes"
 msgstr "Перемикайтеся між світлою та темною темами"
 
+#: src/sync/component/bank-integration-new-accounts/bank-integration-new-accounts.tsx
+msgid "Switch on to start syncing"
+msgstr "Увімкніть, щоб почати синхронізацію"
+
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 #: src/sync/component/bank-integration-new-account-row/bank-integration-new-account-row.tsx
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
@@ -4649,6 +4686,10 @@ msgstr "Дані синхронізації виправлено"
 #: src/settings/components/sync-repairs-intro-card/sync-repairs-intro-card.tsx
 msgid "Sync data repairs"
 msgstr "Виправлення даних синхронізації"
+
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
+msgid "Sync failed"
+msgstr "Помилка синхронізації"
 
 #: src/account/component/account-card-base/account-card-base.tsx
 #: src/sync/component/account-sync-card/account-sync-card.tsx
@@ -4679,6 +4720,11 @@ msgstr "Синхронізація банківської історії"
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Syncing history..."
 msgstr "Синхронізація історії..."
+
+#: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
+msgid "Syncing…"
+msgstr "Синхронізація…"
 
 #: src/app/(tabs)/settings/tags.tsx
 #: src/rule/components/rule-action-tag-selector/rule-action-tag-selector.tsx
@@ -4825,9 +4871,13 @@ msgstr "Це ще не схоже на токен Monobank"
 msgid "This is where your data lives and who can read it. You can find it again in Settings › Your data."
 msgstr "Тут зберігаються ваші дані й видно, хто може їх прочитати. Знайти це знову можна в Налаштування › Ваші дані."
 
-#: src/sync/component/sync-token-section/sync-token-section.tsx
-msgid "This key is for a different Monobank client"
-msgstr "Цей ключ належить іншому клієнту Monobank"
+#: src/app/bank-integration-key.tsx
+msgid "This key already syncs another of your Monobank sections."
+msgstr "Цей ключ уже синхронізує інший ваш розділ Monobank."
+
+#: src/app/bank-integration-key.tsx
+msgid "This key is for a different Monobank client."
+msgstr "Цей ключ належить іншому клієнту Monobank."
 
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "This month"
@@ -4868,10 +4918,6 @@ msgstr "Це переіндексує всі транзакції. Продов�
 #: src/ai/component/ai-translation-status-card/ai-translation-status-card.tsx
 msgid "This re-translates every category and tag. Continue?"
 msgstr "Це перекладе всі категорії та теги. Продовжити?"
-
-#: src/sync/component/sync-token-section/sync-token-section.tsx
-msgid "This token already syncs another of your Monobank sections. Enter a different token."
-msgstr "Цей токен уже синхронізує інший ваш розділ Monobank. Введіть інший токен."
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "This token already syncs one of your Monobank sections. Use the gear on its Home section to add accounts."
@@ -4971,7 +5017,6 @@ msgid "Today"
 msgstr "Сьогодні"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
-#: src/sync/component/sync-token-section/sync-token-section.tsx
 msgid "Token already connected"
 msgstr "Токен уже підключено"
 
@@ -5204,8 +5249,14 @@ msgstr "Без тегу"
 
 #: src/account/component/account-card-base/account-card-base.tsx
 #: src/sync/component/account-sync-card/account-sync-card.tsx
+#: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
 msgid "Up to date"
 msgstr "Актуальний"
+
+#. placeholder {0}: formatWeekdayWithTime(lastSyncedAt)
+#: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
+msgid "Up to date · {0}"
+msgstr "Актуально · {0}"
 
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "Upcoming"
@@ -5214,6 +5265,10 @@ msgstr "Незабаром"
 #: src/account/component/update-account-page/update-account-page.tsx
 msgid "Update Account"
 msgstr "Оновити рахунок"
+
+#: src/sync/component/bank-integration-new-accounts/bank-integration-new-accounts.tsx
+msgid "Update key"
+msgstr "Оновити ключ"
 
 #: src/rule/components/rule-update-card/rule-update-card.tsx
 msgid "Update rule?"
@@ -5240,10 +5295,6 @@ msgstr "Використовуйте Face ID для швидкого й безп
 #: src/ai/component/ai-download-wifi-banner/ai-download-wifi-banner.tsx
 msgid "Use mobile data for {remaining} GB"
 msgstr "Використати мобільні дані для {remaining} ГБ"
-
-#: src/sync/component/sync-token-section/sync-token-section.tsx
-msgid "Use the key for the accounts in this section."
-msgstr "Використайте ключ для рахунків цього розділу."
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Use Touch ID to unlock your app quickly and securely"

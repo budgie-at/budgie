@@ -12,6 +12,8 @@ import { ConvertToInstallmentModalProvider } from '../../installment-plan/provid
 import { RuleFormModalProvider } from '../../rule/provider/rule-form-modal.provider';
 import { RuleMccSelectorModalProvider } from '../../rule/provider/rule-mcc-selector-modal.provider';
 import { RuleSelectorModalProvider } from '../../rule/provider/rule-selector-modal.provider';
+import { BankIntegrationKeyModalProvider } from '../../sync/provider/bank-integration-key-modal.provider';
+import { BankIntegrationNameModalProvider } from '../../sync/provider/bank-integration-name-modal.provider';
 import { ResyncWindowPickerModalProvider } from '../../sync/provider/resync-window-picker-modal.provider';
 import { TagFormModalProvider } from '../../tag/provider/tag-form-modal.provider';
 import { TagsSelectorModalProvider } from '../../tag/provider/tags-selector-modal.provider';
@@ -64,7 +66,13 @@ export const ModalProvider = ({ children }: PropsWithChildren) => (
                                                                                                                 <RuleSelectorModalProvider>
                                                                                                                     <RuleMccSelectorModalProvider>
                                                                                                                         <ConvertToInstallmentModalProvider>
-                                                                                                                            {children}
+                                                                                                                            <BankIntegrationNameModalProvider>
+                                                                                                                                <BankIntegrationKeyModalProvider>
+                                                                                                                                    {
+                                                                                                                                        children
+                                                                                                                                    }
+                                                                                                                                </BankIntegrationKeyModalProvider>
+                                                                                                                            </BankIntegrationNameModalProvider>
                                                                                                                         </ConvertToInstallmentModalProvider>
                                                                                                                     </RuleMccSelectorModalProvider>
                                                                                                                 </RuleSelectorModalProvider>

@@ -3,8 +3,9 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/component/icon/icon';
+import { MetaPillVariant } from '../../type/meta-pill-variant.type';
+import { HapticPressable } from '../haptic-pressable/haptic-pressable';
+import { Icon } from '../icon/icon';
 
 import type { UserIconType } from '@budgie/contracts';
 
@@ -13,24 +14,30 @@ interface Props {
     readonly icon?: UserIconType;
     readonly onPress?: () => void;
     readonly testID?: string;
-    readonly variant?: 'default' | 'warning';
+    readonly variant?: MetaPillVariant;
 }
 
 const PILL_ICON_SIZE = 12;
 const ENTER_DURATION_MS = 200;
 const baseClassName = 'flex-row max-w-full items-center gap-x-xs rounded-full border px-sm py-[2px]';
-const defaultContainerClassName = 'border-secondary-corner bg-secondary-background';
-const defaultLabelClassName = 'text-secondary-foreground';
-const warningContainerClassName = 'border-warning-corner bg-warning-background';
-const warningLabelClassName = 'text-warning-foreground font-semibold';
+const containerClassNames: Record<MetaPillVariant, string> = {
+    default: 'border-secondary-corner bg-secondary-background',
+    warning: 'border-warning-corner bg-warning-background',
+    destructive: 'border-destructive-corner bg-destructive-background',
+    positive: 'border-positive-corner bg-positive-background'
+};
+const labelClassNames: Record<MetaPillVariant, string> = {
+    default: 'text-secondary-foreground',
+    warning: 'text-warning-foreground font-semibold',
+    destructive: 'text-destructive-foreground font-semibold',
+    positive: 'text-positive-foreground font-semibold'
+};
 const continuousBorder = { borderCurve: 'continuous' as const };
 
-export const TransactionMetaPill = ({ label, icon, onPress, testID, variant = 'default' }: Props) => {
-    const containerClassName = variant === 'warning' ? warningContainerClassName : defaultContainerClassName;
-    const labelVariantClassName = variant === 'warning' ? warningLabelClassName : defaultLabelClassName;
-    const labelClassName = `text-xs ${labelVariantClassName}`;
+export const MetaPill = ({ label, icon, onPress, testID, variant = 'default' }: Props) => {
+    const labelClassName = `text-xs ${labelClassNames[variant]}`;
     const body = (
-        <View className={`${baseClassName} ${containerClassName}`} style={continuousBorder}>
+        <View className={`${baseClassName} ${containerClassNames[variant]}`} style={continuousBorder}>
             {isDefined(icon) && <Icon icon={icon} size={PILL_ICON_SIZE} className={labelClassName} />}
             <Text className={`${labelClassName} shrink`} numberOfLines={1} ellipsizeMode="tail">
                 {label}
