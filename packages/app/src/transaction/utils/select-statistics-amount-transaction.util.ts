@@ -8,9 +8,7 @@ export const selectStatisticsAmountTransaction = (
     transaction: TransactionWithRelationsEntityInterface,
     categoryIds: number[] | null
 ): TransactionWithRelationsEntityInterface => {
-    const isIncomeOrExpense = transaction.type === TransactionTypeEnum.EXPENSE || transaction.type === TransactionTypeEnum.INCOME;
-
-    if (!isIncomeOrExpense || !isNotEmptyArray(categoryIds)) {
+    if (transaction.type === TransactionTypeEnum.ADJUSTMENT || !isNotEmptyArray(categoryIds)) {
         return transaction;
     }
 
