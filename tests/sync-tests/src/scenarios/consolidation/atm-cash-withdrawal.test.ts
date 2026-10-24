@@ -263,7 +263,7 @@ describe('consolidation/atm-cash-withdrawal', () => {
 
             const { bankAccount, cashAccount, expense } = yield* seedAtmCashWithdrawalFixture();
             const otherExpense = yield* seedBankPair.expense(
-                { externalId: 'tx-atm-other', operatedAt: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+                { externalId: 'tx-atm-other', operatedAt: expense.operatedAt },
                 { accountId: bankAccount.id, amount: 300 * PRECISION, mccCategoryId: (yield* testQueryService.findMccByCode('6011')).id }
             );
             const expectStoredBalancesOnLedger = Effect.fnUntraced(function* (expectedBankBalance: number, expectedCashBalance: number) {

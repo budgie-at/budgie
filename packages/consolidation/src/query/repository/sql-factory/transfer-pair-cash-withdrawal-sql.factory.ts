@@ -16,14 +16,13 @@ const ERSTE_ATM_WITHDRAWAL_TITLE_GLOB = 'AUTOMAT [0-9]* K[0-9]* *';
 const ERSTE_ATM_TERMINAL_TOKENS_SQL = `substr(expense_tx.title, 9)`;
 const ERSTE_ATM_CARD_TOKENS_SQL = `substr(${ERSTE_ATM_TERMINAL_TOKENS_SQL}, instr(${ERSTE_ATM_TERMINAL_TOKENS_SQL}, ' ') + 2)`;
 
-const ATM_TITLE_PREFIX_SQL = buildPrefixLikeSql(`(expense_tx.title || ' ')`, [
-    ...new Set(
-        Object.values(ATM_CASH_WITHDRAWAL_TITLE_PREFIXES)
-            .flat()
-            .flatMap(prefix => [prefix, prefix.toLocaleUpperCase(), `${prefix.charAt(0).toLocaleUpperCase()}${prefix.slice(1)}`])
-            .map(prefix => `${prefix} `)
-    )
-]);
+const ATM_TITLE_PREFIX_SQL = buildPrefixLikeSql(
+    `(expense_tx.title || ' ')`,
+    Object.values(ATM_CASH_WITHDRAWAL_TITLE_PREFIXES)
+        .flat()
+        .flatMap(prefix => [prefix, prefix.toLocaleUpperCase(), `${prefix.charAt(0).toLocaleUpperCase()}${prefix.slice(1)}`])
+        .map(prefix => `${prefix} `)
+);
 
 const buildFirstTokenSql = (tokensSql: string): string => `substr(${tokensSql}, 1, instr(${tokensSql}, ' ') - 1)`;
 
@@ -77,10 +76,6 @@ const buildCandidatesSql = (scope: ConsolidationScanScopeInterface | null, condi
                 AND expense_entry.type = '${TransactionEntryTypeEnum.CREDIT}'
                 AND expense_entry.original_transaction_id IS NULL
                 AND (
-                    expense_entry.category_id IS NULL
-                    OR expense_entry.category_source IN ('${CategorySourceEnum.AI}', '${CategorySourceEnum.MCC_DEFAULT}')
-                )
-                AND (
                     expense_mcc.mcc = '${ATM_CASH_WITHDRAWAL_MCC}'
                     OR (
                         expense_entry.mcc_category_id IS NULL
@@ -101,4 +96,11 @@ const buildCandidatesSql = (scope: ConsolidationScanScopeInterface | null, condi
 export const buildAtmCashWithdrawalCandidatesSql = (scope: ConsolidationScanScopeInterface | null): string => buildCandidatesSql(scope, '');
 
 export const buildAutoAtmCashWithdrawalCandidatesSql = (scope: ConsolidationScanScopeInterface | null): string =>
-    buildCandidatesSql(scope, 'AND expense_tx.operated_at >= target_cash_account.created_at');
+    buildCandidatesSql(
+        scope,
+        `AND expense_tx.operated_at >= target_cash_account.created_at
+                AND (
+                    expense_entry.category_id IS NULL
+                    OR expense_entry.category_source IN ('${CategorySourceEnum.AI}', '${CategorySourceEnum.MCC_DEFAULT}')
+                )`
+    );

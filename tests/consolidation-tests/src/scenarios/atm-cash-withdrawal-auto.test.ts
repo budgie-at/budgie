@@ -1,3 +1,4 @@
+import { ConsolidationCoordinatorService } from '@budgie/consolidation';
 import { AccountTypeEnum, CategorySourceEnum, ExternalSourceEnum, PRECISION, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { expect, layer } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
@@ -124,8 +125,9 @@ layer(TestLayer)('consolidation/atm-cash-withdrawal-auto', it => {
         })
     );
 
-    it.effect('respects a withdrawal the user categorized and still moves one categorized by AI', () =>
+    it.effect('respects a withdrawal the user categorized, still offering it for a manual move, and moves one categorized by AI', () =>
         Effect.gen(function* () {
+            const consolidationCoordinatorService = yield* ConsolidationCoordinatorService;
             const bankAccount = yield* testSeedService.account({ title: 'Mono', type: AccountTypeEnum.BANK_SYNC });
             const cashAccount = yield* seedCashAccount(bankAccount.instrumentId);
             const category = yield* testSeedService.category('Cash spending');
@@ -150,6 +152,9 @@ layer(TestLayer)('consolidation/atm-cash-withdrawal-auto', it => {
 
             expect(yield* runConsolidation()).toEqual({ consolidated: 1, found: 1 });
             expect(yield* fetchConsolidationParentIds([userCategorized.id])).toEqual([null]);
+            expect(yield* consolidationCoordinatorService.findAtmCashWithdrawalTransactionIds([userCategorized.id])).toEqual([
+                userCategorized.id
+            ]);
             yield* expectConsolidationParent(
                 aiCategorized.id,
                 yield* fetchSingleCanonicalId(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)
