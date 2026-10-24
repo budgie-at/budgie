@@ -44,7 +44,7 @@ export const RunwayForecastChart = ({ computation }: Props) => {
     const { formatMonthAndYear } = useFormatDate();
     const formatDigits = useFormatDigits(0);
 
-    const { bandPath, medianPath, runOutX, tickXs, zeroY } = buildRunwayForecastPath({
+    const { bandPath, likelyPath, runOutX, tickXs, zeroY } = buildRunwayForecastPath({
         computation,
         width: CHART_WIDTH,
         height: CHART_HEIGHT,
@@ -67,7 +67,7 @@ export const RunwayForecastChart = ({ computation }: Props) => {
                 <StyledLine x1={CHART_PADDING_LEFT} y1={zeroY} x2={CHART_RIGHT} y2={zeroY} strokeClassName="accent-corner" />
                 <StyledPath d={bandPath} fillClassName="accent-ghost-background" strokeClassName="accent-ghost-corner" strokeWidth={1} />
                 <StyledPath
-                    d={medianPath}
+                    d={likelyPath}
                     fill="none"
                     strokeClassName="accent-primary"
                     strokeWidth={2}

@@ -1,5 +1,6 @@
 import {
     Db,
+    DebtEventRepository,
     TransactionConsolidationTypeEnum,
     TransactionEntryTypeEnum,
     TransactionRepository,
@@ -42,6 +43,7 @@ export class ConsolidationRepairExecutorService extends Context.Service<Consolid
             const consolidationEligibilityService = yield* ConsolidationEligibilityService;
             const consolidationMutationService = yield* ConsolidationMutationService;
             const unconsolidationService = yield* UnconsolidationService;
+            const debtEventRepository = yield* DebtEventRepository;
             const millisecondsInSecond = 1000;
 
             const isUntouchedIbanBridgeCanonical = (transaction: TransactionWithEntriesEntityInterface): boolean => {
@@ -373,6 +375,11 @@ export class ConsolidationRepairExecutorService extends Context.Service<Consolid
                             [candidate.manualTransactionId],
                             candidate.syncedTransactionId
                         );
+                        yield* debtEventRepository.moveToTransaction(
+                            candidate.manualTransactionId,
+                            candidate.syncedTransactionId,
+                            manualTransaction.entries.find(entry => entry.type !== TransactionEntryTypeEnum.FEE)?.id ?? null
+                        );
 
                         return true;
                     },
@@ -417,7 +424,8 @@ export class ConsolidationRepairExecutorService extends Context.Service<Consolid
             TransactionConsolidationRepository.layer,
             ConsolidationEligibilityService.layer,
             ConsolidationMutationService.layer,
-            UnconsolidationService.layer
+            UnconsolidationService.layer,
+            DebtEventRepository.layer
         ])
     );
 }
