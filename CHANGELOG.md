@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.114.6](https://github.com/budgie-at/budgie/compare/v6.114.5...v6.114.6) (2026-10-24)
+
+### Bug Fixes
+
+* **app:** soften the edge chrome so content stays visible ([3b1f836](https://github.com/budgie-at/budgie/commit/3b1f836dbce075addfc9d5ea963d9ebb82fcd0e1))
+
+
 ## [6.114.5](https://github.com/budgie-at/budgie/compare/v6.114.4...v6.114.5) (2026-10-23)
 
 ### Bug Fixes
