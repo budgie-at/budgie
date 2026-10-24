@@ -6,7 +6,7 @@ import { useSettingsContext } from '../../settings/context/settings.context';
 import { useAuthContext } from '../context/auth.context';
 
 const PIN_PATH = '/pin';
-const LOCKED_ALLOWED_PATHS: ReadonlySet<string> = new Set([PIN_PATH, '/forgot-pin', '/import-backup-pin']);
+const LOCKED_ALLOWED_PATHS: ReadonlySet<string> = new Set([PIN_PATH, '/import-backup-pin']);
 
 interface Props {
     readonly children: ReactNode;

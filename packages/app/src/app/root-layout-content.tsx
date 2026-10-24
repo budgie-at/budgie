@@ -61,7 +61,7 @@ const STACKED_FILTER_OPTIONS: NativeStackNavigationOptions = {
 
 const PIN_OPTIONS: NativeStackNavigationOptions = { ...MODAL_OPTIONS, gestureEnabled: false };
 
-const LOCK_SCREEN_OPTIONS: NativeStackNavigationOptions = { presentation: 'fullScreenModal', animation: 'none', gestureEnabled: false };
+const LOCK_SCREEN_OPTIONS: NativeStackNavigationOptions = { presentation: 'fullScreenModal', animation: 'none' };
 
 const SELECTOR_OPTIONS = formSheetOptions([DETENT_40, DETENT_70], 0);
 
@@ -210,10 +210,6 @@ export const RootLayoutContent = () => {
                                                                         options={formSheetOptions([0.75, DETENT_95])}
                                                                     />
                                                                     <Stack.Screen name="import-backup-pin" options={PIN_OPTIONS} />
-                                                                    <Stack.Screen
-                                                                        name="forgot-pin"
-                                                                        options={formSheetOptions('fitToContents')}
-                                                                    />
                                                                     <Stack.Screen
                                                                         name="add-pin"
                                                                         options={formSheetOptions('fitToContents')}
