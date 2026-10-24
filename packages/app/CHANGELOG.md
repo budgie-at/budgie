@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.115.1](https://github.com/budgie-at/budgie/compare/v6.115.0...v6.115.1) (2026-10-24)
+
+### Bug Fixes
+
+* **app:** prevent loading control layout shifts ([#1650](https://github.com/budgie-at/budgie/issues/1650)) ([0b91b07](https://github.com/budgie-at/budgie/commit/0b91b07a2129601c6b81606f97a448e9c059c46c))
+
+
 # [6.115.0](https://github.com/budgie-at/budgie/compare/v6.114.9...v6.115.0) (2026-10-24)
 
 ### Features
