@@ -1,5 +1,6 @@
 export const TransactionActionsMenuSelector = {
     TriggerButton: 'TransactionActionsMenu.TriggerButton',
+    CreateRuleButton: 'TransactionActionsMenu.CreateRuleButton',
     FeeButton: 'TransactionActionsMenu.FeeButton',
     ConvertToTransferButton: 'TransactionActionsMenu.ConvertToTransferButton',
     ConvertToRefundButton: 'TransactionActionsMenu.ConvertToRefundButton',
