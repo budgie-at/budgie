@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.114.7](https://github.com/budgie-at/budgie/compare/v6.114.6...v6.114.7) (2026-10-24)
+
+### Bug Fixes
+
+* **app:** give bank sections more room and soften account names ([e019dac](https://github.com/budgie-at/budgie/commit/e019dac15f95094a183bfe816972ccf6d8685ea2))
+
+
 ## [6.114.6](https://github.com/budgie-at/budgie/compare/v6.114.5...v6.114.6) (2026-10-24)
 
 ### Bug Fixes
