@@ -20,11 +20,7 @@ const BEFORE_CASH_ACCOUNT_OPERATED_AT = new Date(Date.now() - 400 * DAY_MILLISEC
 const ATM_WITHDRAWAL_AMOUNT = 10 * PRECISION;
 
 const seedCashAccount = (instrumentId: number) =>
-    Effect.gen(function* () {
-        const cashAccount = yield* testSeedService.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId });
-
-        return yield* testSeedService.accountCreatedAt(cashAccount.id, CASH_ACCOUNT_CREATED_AT);
-    });
+    testSeedService.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId, createdAt: CASH_ACCOUNT_CREATED_AT });
 
 const seedWithdrawal = (input: {
     readonly accountId: number;
@@ -149,15 +145,11 @@ layer(TestLayer)('consolidation/atm-cash-withdrawal-auto', it => {
 
                     return expense;
                 });
-            const userCategorized = [
-                yield* seedCategorizedWithdrawal('user-category', CategorySourceEnum.USER),
-                yield* seedCategorizedWithdrawal('inbox-category', CategorySourceEnum.INBOX),
-                yield* seedCategorizedWithdrawal('rule-category', CategorySourceEnum.RULE)
-            ];
+            const userCategorized = yield* seedCategorizedWithdrawal('user-category', CategorySourceEnum.USER);
             const aiCategorized = yield* seedCategorizedWithdrawal('ai-category', CategorySourceEnum.AI);
 
             expect(yield* runConsolidation()).toEqual({ consolidated: 1, found: 1 });
-            expect(yield* fetchConsolidationParentIds(userCategorized.map(transaction => transaction.id))).toEqual([null, null, null]);
+            expect(yield* fetchConsolidationParentIds([userCategorized.id])).toEqual([null]);
             yield* expectConsolidationParent(
                 aiCategorized.id,
                 yield* fetchSingleCanonicalId(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)

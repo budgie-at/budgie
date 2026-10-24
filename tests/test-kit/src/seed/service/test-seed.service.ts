@@ -34,6 +34,7 @@ import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/sha
 import type { SeedBankPairEntryInputType } from '../interface/seed-bank-pair-entry-input.type';
 import type {
     AccountCreateEntityInterface,
+    AccountEntityInterface,
     BankIntegrationCreateEntityInterface,
     SyncCreateEntityInterface,
     DB,
@@ -67,7 +68,7 @@ export class TestSeedService {
         });
     }
 
-    account(input: Partial<AccountCreateEntityInterface> = {}) {
+    account(input: Partial<AccountCreateEntityInterface & Pick<AccountEntityInterface, 'createdAt'>> = {}) {
         return Effect.gen({ self: this }, function* () {
             const rows = yield* this.database
                 .insert(AccountEntityTable)
@@ -90,20 +91,9 @@ export class TestSeedService {
                     targetBaseExchangeRate: input.targetBaseExchangeRate ?? null,
                     targetBaseAmount: input.targetBaseAmount ?? null,
                     includeInNetWorth: input.includeInNetWorth ?? true,
-                    isActive: input.isActive ?? true
+                    isActive: input.isActive ?? true,
+                    ...(isDefined(input.createdAt) && { createdAt: input.createdAt })
                 } satisfies AccountCreateEntityInterface)
-                .returning();
-
-            return TestSeedService.requireInserted(rows, 'accounts');
-        });
-    }
-
-    accountCreatedAt(accountId: number, createdAt: Date) {
-        return Effect.gen({ self: this }, function* () {
-            const rows = yield* this.database
-                .update(AccountEntityTable)
-                .set({ createdAt })
-                .where(eq(AccountEntityTable.id, accountId))
                 .returning();
 
             return TestSeedService.requireInserted(rows, 'accounts');

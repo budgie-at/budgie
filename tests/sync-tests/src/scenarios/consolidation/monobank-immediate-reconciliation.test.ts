@@ -12,8 +12,12 @@ describe('consolidation/monobank-immediate-reconciliation', () => {
         Effect.gen(function* () {
             const monobankSyncService = yield* MonobankSyncService;
             const { account: bankAccount } = yield* setupMonobankFixture();
-            const cashAccount = yield* seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: bankAccount.instrumentId });
-            yield* seed.accountCreatedAt(cashAccount.id, new Date(Date.now() - 24 * 60 * 60 * 1000));
+            yield* seed.account({
+                title: 'Cash',
+                type: AccountTypeEnum.CASH,
+                instrumentId: bankAccount.instrumentId,
+                createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000)
+            });
             const rateLimitWaitEntered = yield* Deferred.make<void>();
             const releaseRateLimitWait = yield* Deferred.make<void>();
 
