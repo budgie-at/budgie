@@ -177,8 +177,7 @@ export class TransactionDebtSettlementService extends Context.Service<Transactio
                 debtAccount: Pick<AccountEntityInterface, 'id' | 'debtType'>
             ) {
                 const hasMachineGuessedCategory =
-                    isDefined(primaryEntry.categorySource) &&
-                    [CategorySourceEnum.MCC_DEFAULT, CategorySourceEnum.AI].includes(primaryEntry.categorySource);
+                    primaryEntry.categorySource === CategorySourceEnum.MCC_DEFAULT || primaryEntry.categorySource === CategorySourceEnum.AI;
 
                 if (
                     (isDefined(primaryEntry.categoryId) && !hasMachineGuessedCategory) ||

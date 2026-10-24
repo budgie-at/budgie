@@ -18,9 +18,9 @@ const runsOutDate = (referenceDate: Date, months: number | null): Date | null =>
     isDefined(months) ? new Date(referenceDate.getTime() + months * MILLISECONDS_PER_MONTH) : null;
 
 export const computeRunway = (params: ComputeRunwayParams): RunwayComputationInterface => {
-    const { series, liquid, irregularMonthlyAmount, isAllIn, referenceDate } = params;
+    const { series, liquid, irregularMonthlyAmount, referenceDate } = params;
     const rows = series.length < RUNWAY_MINIMUM_MONTHS ? [] : series;
-    const irregularAdjustment = isAllIn || isEmptyArray(rows) ? 0 : irregularMonthlyAmount;
+    const irregularAdjustment = isEmptyArray(rows) ? 0 : irregularMonthlyAmount;
     const burn = mean(rows.map(row => row.expense)) - irregularAdjustment;
     const income = mean(rows.map(row => row.income));
     const net = income - burn;

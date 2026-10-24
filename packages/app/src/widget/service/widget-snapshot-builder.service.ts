@@ -226,7 +226,6 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
                     liquid: liquidRows.at(0)?.total ?? 0,
                     irregularMonthlyAmount: aggregateRunwayDrivers(driverRows, mean(series.map(row => row.expense)), false)
                         .irregularMonthlyAmount,
-                    isAllIn: false,
                     referenceDate: new Date()
                 });
 

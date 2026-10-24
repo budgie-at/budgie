@@ -67,8 +67,7 @@ export const useRunwayQuery = (params: UseRunwayQueryParams) => {
     const computation = computeRunway({
         series: seriesRows,
         liquid,
-        irregularMonthlyAmount: categoryBreakdown.irregularMonthlyAmount,
-        isAllIn,
+        irregularMonthlyAmount: isAllIn ? 0 : categoryBreakdown.irregularMonthlyAmount,
         referenceDate: today
     });
 

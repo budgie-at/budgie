@@ -273,26 +273,6 @@ describe('runway month window predicate', () => {
 });
 
 describe('runway account scope', () => {
-    const expectedExpense = 30 * PRECISION;
-
-    const seedScopedExpenses = Effect.fnUntraced(function* (instrumentId: number) {
-        const category = yield* seedCategory('Groceries');
-        const liquid = yield* seed.account({ instrumentId, type: AccountTypeEnum.BANK });
-        const deleted = yield* seed.account({ instrumentId, type: AccountTypeEnum.BANK });
-        const excludedAccounts = [
-            yield* seed.account({ instrumentId, type: AccountTypeEnum.BANK, isActive: false }),
-            deleted,
-            yield* seed.account({ instrumentId, type: AccountTypeEnum.DEPOSIT })
-        ];
-
-        yield* testDb.update(AccountEntityTable).set({ deletedAt: new Date() }).where(eq(AccountEntityTable.id, deleted.id));
-        const crypto = yield* seed.account({ instrumentId, type: AccountTypeEnum.CRYPTO });
-
-        yield* seedExpense(liquid.id, category.id, expectedExpense, 1);
-        yield* Effect.forEach(excludedAccounts, account => seedExpense(account.id, category.id, 70 * PRECISION, 1), { discard: true });
-        yield* seedExpense(crypto.id, category.id, 5 * PRECISION, 1);
-    });
-
     const readTotals = Effect.fnUntraced(function* (instrumentId: number, isCryptoIncluded: boolean) {
         const statisticsRepository = yield* StatisticsRepository;
         const seriesRows = yield* statisticsRepository.getRunwaySeriesQuery(
@@ -316,29 +296,26 @@ describe('runway account scope', () => {
         };
     });
 
-    it.effect('counts only active liquid accounts in the series and drivers', () =>
+    it.effect('counts only active liquid accounts, plus crypto when it is included', () =>
         Effect.gen(function* () {
             const { instrumentId } = yield* seedScenario();
+            const category = yield* seedCategory('Groceries');
+            const liquid = yield* seed.account({ instrumentId, type: AccountTypeEnum.BANK });
+            const crypto = yield* seed.account({ instrumentId, type: AccountTypeEnum.CRYPTO });
+            const deleted = yield* seed.account({ instrumentId, type: AccountTypeEnum.BANK });
+            const excludedAccounts = [
+                deleted,
+                yield* seed.account({ instrumentId, type: AccountTypeEnum.BANK, isActive: false }),
+                yield* seed.account({ instrumentId, type: AccountTypeEnum.DEPOSIT })
+            ];
 
-            yield* seedScopedExpenses(instrumentId);
+            yield* testDb.update(AccountEntityTable).set({ deletedAt: new Date() }).where(eq(AccountEntityTable.id, deleted.id));
+            yield* seedExpense(liquid.id, category.id, 30 * PRECISION, 1);
+            yield* seedExpense(crypto.id, category.id, 5 * PRECISION, 1);
+            yield* Effect.forEach(excludedAccounts, account => seedExpense(account.id, category.id, 70 * PRECISION, 1), { discard: true });
 
-            expect(yield* readTotals(instrumentId, false)).toStrictEqual({
-                seriesExpense: expectedExpense,
-                driverExpense: expectedExpense
-            });
-        }).pipe(Effect.provide(TestLayer))
-    );
-
-    it.effect('adds crypto accounts only when crypto is included', () =>
-        Effect.gen(function* () {
-            const { instrumentId } = yield* seedScenario();
-
-            yield* seedScopedExpenses(instrumentId);
-
-            expect(yield* readTotals(instrumentId, true)).toStrictEqual({
-                seriesExpense: expectedExpense + 5 * PRECISION,
-                driverExpense: expectedExpense + 5 * PRECISION
-            });
+            expect(yield* readTotals(instrumentId, false)).toStrictEqual({ seriesExpense: 30 * PRECISION, driverExpense: 30 * PRECISION });
+            expect(yield* readTotals(instrumentId, true)).toStrictEqual({ seriesExpense: 35 * PRECISION, driverExpense: 35 * PRECISION });
         }).pipe(Effect.provide(TestLayer))
     );
 });
