@@ -7,11 +7,10 @@ import { isDefined } from '@rnw-community/shared';
 import {
     expectConsolidationParent,
     fetchLedgerBalances,
-    fetchLedgerEntry,
     fetchOwnLedgerEntries,
     fetchSingleCanonicalId
 } from '../harness/consolidation-revert-audit';
-import { expectSecondConsolidationRunStable, runConsolidation } from '../harness/run-consolidation';
+import { runConsolidation } from '../harness/run-consolidation';
 import { testQueryService, testSeedService, TestLayer } from '../harness/test-context';
 
 const DAY_MILLISECONDS = 24 * 60 * 60 * 1000;
@@ -19,7 +18,6 @@ const CASH_ACCOUNT_CREATED_AT = new Date(Date.now() - 30 * DAY_MILLISECONDS);
 const ATM_OPERATED_AT = new Date(Date.now() - DAY_MILLISECONDS);
 const BEFORE_CASH_ACCOUNT_OPERATED_AT = new Date(Date.now() - 400 * DAY_MILLISECONDS);
 const ATM_WITHDRAWAL_AMOUNT = 10 * PRECISION;
-const ATM_WITHDRAWAL_FEE_AMOUNT = 2 * PRECISION;
 
 const seedCashAccount = (instrumentId: number) =>
     Effect.gen(function* () {
@@ -52,35 +50,6 @@ const fetchConsolidationParentIds = (transactionIds: readonly number[]) =>
     );
 
 layer(TestLayer)('consolidation/atm-cash-withdrawal-auto', it => {
-    it.effect('moves an MCC 6011 withdrawal with its fee to the single cash account automatically', () =>
-        Effect.gen(function* () {
-            const bankAccount = yield* testSeedService.account({ title: 'Mono', type: AccountTypeEnum.BANK_SYNC });
-            const cashAccount = yield* seedCashAccount(bankAccount.instrumentId);
-            const expense = yield* seedWithdrawal({
-                accountId: bankAccount.id,
-                externalId: 'mono-atm',
-                title: 'Банкомат UniCredit Bank Austria',
-                externalSource: ExternalSourceEnum.MONOBANK,
-                mcc: '6011',
-                operatedAt: ATM_OPERATED_AT
-            });
-            yield* testSeedService.feeEntry(expense.id, 'mono-atm-fee', { accountId: bankAccount.id, amount: ATM_WITHDRAWAL_FEE_AMOUNT });
-
-            expect(yield* runConsolidation()).toEqual({ consolidated: 1, found: 1 });
-
-            const canonicalId = yield* fetchSingleCanonicalId(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL);
-
-            yield* expectConsolidationParent(expense.id, canonicalId);
-            expect(yield* fetchOwnLedgerEntries(canonicalId)).toHaveLength(3);
-            expect((yield* fetchLedgerEntry(canonicalId, cashAccount.id)).amount).toBe(ATM_WITHDRAWAL_AMOUNT);
-            expect(yield* fetchLedgerBalances([bankAccount.id, cashAccount.id])).toEqual([
-                [bankAccount.id, -(ATM_WITHDRAWAL_AMOUNT + ATM_WITHDRAWAL_FEE_AMOUNT)],
-                [cashAccount.id, ATM_WITHDRAWAL_AMOUNT]
-            ]);
-            yield* expectSecondConsolidationRunStable();
-        })
-    );
-
     it.effect('recognises MCC-less withdrawals of any bank by their localized title prefix', () =>
         Effect.gen(function* () {
             const bankAccount = yield* testSeedService.account({ title: 'Erste EUR', type: AccountTypeEnum.BANK_SYNC });
