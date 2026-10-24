@@ -1,0 +1,39 @@
+appId: ${APP_ID}
+---
+- pressKey: HOME
+- launchApp:
+    stopApp: false
+- extendedWaitUntil:
+    visible: 'Enter your PIN'
+    timeout: 10000
+- assertNotVisible:
+    id: ${RESUMED_SCREEN_ID}
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - pressKey: BACK
+      - assertVisible: 'Enter your PIN'
+- tapOn:
+    id: 'PinScreen.ForgotPinButton'
+- extendedWaitUntil:
+    visible:
+      id: 'ForgotPinSheet.TryAgainButton'
+    timeout: 3000
+- tapOn:
+    id: 'ForgotPinSheet.TryAgainButton'
+- extendedWaitUntil:
+    visible: 'Enter your PIN'
+    timeout: 3000
+- tapOn:
+    id: 'PinPage.Digit.1'
+- tapOn:
+    id: 'PinPage.Digit.2'
+- tapOn:
+    id: 'PinPage.Digit.3'
+- tapOn:
+    id: 'PinPage.Digit.4'
+- extendedWaitUntil:
+    visible:
+      id: ${RESUMED_SCREEN_ID}
+    timeout: 10000

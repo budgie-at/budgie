@@ -1,7 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { router } from 'expo-router';
 import { useState } from 'react';
 import { Text, View } from 'react-native';
 
@@ -20,7 +19,11 @@ import { PinSheetLayout } from '../pin-sheet-layout/pin-sheet-layout';
 
 import { ForgotPinSheetSelector } from './forgot-pin-sheet.selector';
 
-export const ForgotPinSheet = () => {
+interface Props {
+    readonly onTryAgain: () => void;
+}
+
+export const ForgotPinSheet = ({ onTryAgain }: Props) => {
     const { t } = useLingui();
 
     const [isErasing, setIsErasing] = useState(false);
@@ -48,8 +51,6 @@ export const ForgotPinSheet = () => {
                 showErrorToast(t`Could not erase the data`, getErrorMessage(error));
             });
     };
-
-    const handleTryAgainPress = () => void router.back();
 
     const isBusy = isRestoring || isErasing;
 
@@ -79,7 +80,7 @@ export const ForgotPinSheet = () => {
                 />
             </View>
 
-            <Button testID={ForgotPinSheetSelector.TryAgainButton} variant="cta" content={t`Try again`} onPress={handleTryAgainPress} />
+            <Button testID={ForgotPinSheetSelector.TryAgainButton} variant="cta" content={t`Try again`} onPress={onTryAgain} />
 
             <Text className="text-secondary-foreground text-xs text-center">
                 <Trans>After 5 wrong tries, Budgie waits a little longer between attempts.</Trans>

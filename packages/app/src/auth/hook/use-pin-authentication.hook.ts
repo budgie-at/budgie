@@ -1,7 +1,6 @@
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { router, useIsFocused, useNavigation } from 'expo-router';
-import { useEffect, useEffectEvent, useRef, useState } from 'react';
+import { useEffect, useEffectEvent, useState } from 'react';
 import { AppState } from 'react-native';
 
 import { emptyFn } from '@rnw-community/shared';
@@ -16,50 +15,9 @@ import { usePinError } from './use-pin-error.hook';
 
 import type { AppStateStatus } from 'react-native';
 
-const useAuthAttemptFocus = (invalidateAuthAttempts: () => void) => {
-    const navigation = useNavigation();
-    const isPinScreenFocused = useIsFocused();
-    const isPinScreenFocusedRef = useRef(false);
-    const handlePinScreenFocus = useEffectEvent(() => {
-        if (isPinScreenFocusedRef.current) {
-            return;
-        }
-
-        isPinScreenFocusedRef.current = true;
-        invalidateAuthAttempts();
-    });
-    const handlePinScreenBlur = useEffectEvent(() => {
-        if (!isPinScreenFocusedRef.current) {
-            return;
-        }
-
-        isPinScreenFocusedRef.current = false;
-        invalidateAuthAttempts();
-    });
-    const canStartAuthAttempt = () => isPinScreenFocusedRef.current && AppState.currentState === 'active';
-
-    useEffect(() => {
-        if (navigation.isFocused()) {
-            handlePinScreenFocus();
-        } else {
-            handlePinScreenBlur();
-        }
-
-        const unsubscribeFocus = navigation.addListener('focus', handlePinScreenFocus);
-        const unsubscribeBlur = navigation.addListener('blur', handlePinScreenBlur);
-
-        return () => {
-            unsubscribeFocus();
-            unsubscribeBlur();
-            handlePinScreenBlur();
-        };
-    }, [navigation]);
-
-    return { canStartAuthAttempt, isPinScreenFocused };
-};
-
 const useIsAppActive = (onBackground: () => void) => {
     const [isAppActive, setIsAppActive] = useState(AppState.currentState === 'active');
+    const handleInvalidate = useEffectEvent(onBackground);
     const handleAppStateChange = useEffectEvent((nextAppState: AppStateStatus) => {
         setIsAppActive(nextAppState === 'active');
 
@@ -71,16 +29,14 @@ const useIsAppActive = (onBackground: () => void) => {
     useEffect(() => {
         const appStateSubscription = AppState.addEventListener('change', handleAppStateChange);
 
-        return () => void appStateSubscription.remove();
+        return () => {
+            appStateSubscription.remove();
+            handleInvalidate();
+        };
     }, []);
 
     return isAppActive;
 };
-
-const useAuthAttemptGate = (invalidateAuthAttempts: () => void) => ({
-    ...useAuthAttemptFocus(invalidateAuthAttempts),
-    isAppActive: useIsAppActive(invalidateAuthAttempts)
-});
 
 const useAutomaticBiometric = (canStart: boolean, attempt: () => boolean) => {
     const [hasAttempted, setHasAttempted] = useState(false);
@@ -120,22 +76,21 @@ export const usePinAuthentication = () => {
             setInput('');
         }
     };
-    const { canStartAuthAttempt, isAppActive, isPinScreenFocused } = useAuthAttemptGate(invalidateAuthAttempts);
+    const isAppActive = useIsAppActive(invalidateAuthAttempts);
 
     const acceptAttempt = (isPinAttempt: boolean) => (success: boolean) => {
         setIsLoading(false);
 
         if (success) {
             setIsUnlocked(true);
-            router.replace('/');
         } else if (isPinAttempt) {
             setInput('');
             reportIncorrectPin();
         }
     };
 
-    useAutomaticBiometric(canUseBiometric && isAppActive && isPinScreenFocused, () => {
-        if (!canStartAuthAttempt() || !startBiometricAttempt(acceptAttempt(false))) {
+    useAutomaticBiometric(canUseBiometric && isAppActive, () => {
+        if (AppState.currentState !== 'active' || !startBiometricAttempt(acceptAttempt(false))) {
             return false;
         }
 
@@ -154,7 +109,7 @@ export const usePinAuthentication = () => {
         setInput(nextInput);
         clearError();
 
-        if (input.length === PIN_LENGTH - 1 && isAppActive && isPinScreenFocused) {
+        if (input.length === PIN_LENGTH - 1 && isAppActive) {
             setIsLoading(true);
             startPinAttempt(nextInput, acceptAttempt(true));
         }
@@ -164,7 +119,7 @@ export const usePinAuthentication = () => {
         clearError();
     };
     const handleBiometricAuth = () => {
-        if (canUseBiometric && canStartAuthAttempt() && startBiometricAttempt(acceptAttempt(false))) {
+        if (canUseBiometric && AppState.currentState === 'active' && startBiometricAttempt(acceptAttempt(false))) {
             setIsLoading(true);
         }
     };
