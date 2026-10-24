@@ -1718,6 +1718,10 @@ msgstr "Create one to get started."
 msgid "Create plan"
 msgstr "Create plan"
 
+#: src/transaction/components/create-rule-menu-item/create-rule-menu-item.tsx
+msgid "Create rule"
+msgstr "Create rule"
+
 #: src/rule/components/rule-form-create/rule-form-create.tsx
 msgid "Create Rule"
 msgstr "Create Rule"
