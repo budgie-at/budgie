@@ -17,7 +17,7 @@ export const AccountSectionHeaderFrame = ({ total, children }: Props) => {
     const formattedTotal = formatDigits(total, defaultInstrument.symbol);
 
     return (
-        <View className="py-md -mx-3xl px-3xl flex-row justify-between items-center">
+        <View className="pt-md pb-xl -mx-3xl px-3xl flex-row justify-between items-center">
             <StickySectionHeaderBackdrop />
             {children}
             <Text className="text-xs text-secondary-foreground">{formattedTotal}</Text>
