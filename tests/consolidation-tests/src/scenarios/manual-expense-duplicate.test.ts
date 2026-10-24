@@ -44,6 +44,15 @@ const expectAllPairsConsolidated = (pairs: ReadonlyArray<Effect.Success<ReturnTy
         yield* Effect.forEach(pairs, ({ synced, manual }) => expectManualExpenseDuplicateConsolidated(synced.id, manual.id));
     });
 
+const seedDebtAccountAndPair = Effect.fnUntraced(function* () {
+    const accounts = yield* seedManualExpenseDuplicateAccounts();
+    const debtAccount = yield* testSeedService.account({ title: 'Debt', type: AccountTypeEnum.DEBT });
+    yield* seedManualExpenseDuplicatePairs(accounts, SUPPORTING_PAIR_INDEXES);
+    const { synced, manual } = yield* seedManualExpenseDuplicatePair({ accounts, index: 3 });
+
+    return { accounts, debtAccount, synced, manual };
+});
+
 const expectUntouched = (transactionIds: readonly number[]) =>
     Effect.forEach(transactionIds, transactionId =>
         Effect.gen(function* () {
@@ -362,11 +371,14 @@ layer(TestLayer)('consolidation/manual-expense-duplicate', it => {
     it.effect('merges a debt-linked manual expense and moves its debt event to the synced expense and back on undo', () =>
         Effect.gen(function* () {
             const debtEventRepository = yield* DebtEventRepository;
-            const accounts = yield* seedManualExpenseDuplicateAccounts();
-            const debtAccount = yield* testSeedService.account({ title: 'Debt', type: AccountTypeEnum.DEBT });
-            yield* seedManualExpenseDuplicatePairs(accounts, SUPPORTING_PAIR_INDEXES);
-            const { synced, manual } = yield* seedManualExpenseDuplicatePair({ accounts, index: 3 });
-            const debtEvent = yield* testSeedService.debtEvent(manual.id, debtAccount.id, buildManualExpenseDuplicateAmount(3));
+            const { accounts, debtAccount, synced, manual } = yield* seedDebtAccountAndPair();
+            const [manualEntry] = yield* testQueryService.fetchEntriesByTransactionId(manual.id);
+            const debtEvent = yield* testSeedService.debtEvent(
+                manual.id,
+                debtAccount.id,
+                buildManualExpenseDuplicateAmount(3),
+                manualEntry.id
+            );
             const balancesBefore = yield* fetchLedgerBalances([accounts.syncedAccount.id, debtAccount.id]);
 
             expect((yield* runConsolidation()).consolidated).toBe(4);
@@ -380,6 +392,31 @@ layer(TestLayer)('consolidation/manual-expense-duplicate', it => {
             yield* expectUntouched([synced.id, manual.id]);
             expect((yield* debtEventRepository.findByTransactionId(manual.id))?.id).toBe(debtEvent.id);
             expect(yield* debtEventRepository.findByTransactionId(synced.id)).toBeUndefined();
+        })
+    );
+
+    it.effect('keeps a debt event attached after the merge on the synced expense when the merge is undone', () =>
+        Effect.gen(function* () {
+            const debtEventRepository = yield* DebtEventRepository;
+            const { debtAccount, synced, manual } = yield* seedDebtAccountAndPair();
+
+            expect((yield* runConsolidation()).consolidated).toBe(4);
+
+            const syncedEntry = (yield* testQueryService.fetchEntriesByTransactionId(synced.id)).find(
+                entry => !isDefined(entry.originalTransactionId)
+            );
+            const debtEvent = yield* testSeedService.debtEvent(
+                synced.id,
+                debtAccount.id,
+                buildManualExpenseDuplicateAmount(3),
+                syncedEntry?.id
+            );
+
+            yield* unconsolidateById(synced.id);
+
+            yield* expectUntouched([synced.id, manual.id]);
+            expect((yield* debtEventRepository.findByTransactionId(synced.id))?.id).toBe(debtEvent.id);
+            expect(yield* debtEventRepository.findByTransactionId(manual.id)).toBeUndefined();
         })
     );
 

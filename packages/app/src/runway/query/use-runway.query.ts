@@ -9,6 +9,7 @@ import { useSetting } from '../../settings/hook/use-setting.hook';
 import { STATISTICS_TABLES } from '../../transaction/constant/statistics-tables.constant';
 import { aggregateRunwayDrivers } from '../utils/aggregate-runway-drivers.util';
 import { computeRunway } from '../utils/compute-runway.util';
+import { fillRunwaySeriesMonths } from '../utils/fill-runway-series-months.util';
 
 import type { UseRunwayQueryParams } from '../interface/use-runway-query-params.interface';
 import type { LanguageEnum } from '@budgie/contracts';
@@ -48,7 +49,10 @@ export const useRunwayQuery = (params: UseRunwayQueryParams) => {
         runwayDriverSeriesAtom([defaultInstrument.id, RunwayDriverDimensionEnum.CATEGORY, language, isCryptoIncluded])
     );
     const today = useToday();
-    const seriesRows = AsyncResult.getOrElse(seriesResult, () => []);
+    const seriesRows = fillRunwaySeriesMonths(
+        AsyncResult.getOrElse(seriesResult, () => []),
+        today
+    );
     const breakdown = aggregateRunwayDrivers(
         AsyncResult.getOrElse(driverResult, () => []),
         seriesRows,
@@ -65,7 +69,7 @@ export const useRunwayQuery = (params: UseRunwayQueryParams) => {
     const computation = computeRunway({
         series: seriesRows,
         liquid,
-        irregularMonthlyAmount: isAllIn ? 0 : categoryBreakdown.irregularMonthlyAmount,
+        irregularMonthlyAmounts: isAllIn ? [] : categoryBreakdown.irregularMonthlyAmounts,
         referenceDate: today
     });
 

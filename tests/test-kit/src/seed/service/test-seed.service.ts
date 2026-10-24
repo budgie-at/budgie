@@ -487,13 +487,14 @@ export class TestSeedService {
         });
     }
 
-    debtEvent(transactionId: number, debtAccountId: number, amount: number) {
+    debtEvent(transactionId: number, debtAccountId: number, amount: number, transactionEntryId: number | null = null) {
         return Effect.gen({ self: this }, function* () {
             const rows = yield* this.database
                 .insert(DebtEventEntityTable)
                 .values({
                     debtAccountId,
                     transactionId,
+                    transactionEntryId,
                     direction: DebtEventDirectionEnum.OPEN,
                     source: DebtEventSourceEnum.MANUAL,
                     amount

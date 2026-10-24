@@ -48,9 +48,15 @@ export class UnconsolidationService extends Context.Service<UnconsolidationServi
 
             const manualTransactionIds = [...new Set(canonical.entries.map(entry => entry.originalTransactionId).filter(isDefined))];
 
-            if (manualTransactionIds.length === 1) {
-                yield* debtEventRepository.moveToTransaction(canonicalTransactionId, manualTransactionIds[0]);
-            }
+            yield* Effect.forEach(
+                manualTransactionIds,
+                manualTransactionId =>
+                    debtEventRepository.moveByTransactionEntryIds(
+                        canonical.entries.filter(entry => entry.originalTransactionId === manualTransactionId).map(entry => entry.id),
+                        manualTransactionId
+                    ),
+                { discard: true }
+            );
 
             const manualTags = yield* transactionTagsRepository.findByTransactionIds(manualTransactionIds);
             const manualTransactions = yield* transactionRepository.findByIds(manualTransactionIds);

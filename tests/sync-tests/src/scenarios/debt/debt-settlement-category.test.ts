@@ -11,6 +11,7 @@ import {
     ExternalSourceEnum,
     LENDING_CATEGORY_ID,
     LanguageEnum,
+    MccCategoryEntityTable,
     PRECISION,
     StatisticsRepository,
     TransactionEntryEntityTable,
@@ -21,7 +22,7 @@ import {
 } from '@budgie/contracts';
 import { TransactionDebtSettlementService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
-import { eq } from 'drizzle-orm';
+import { and, eq, isNotNull, notInArray } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
@@ -47,7 +48,7 @@ const fetchPrimaryEntry = (transactionId: number) =>
         );
 
         if (!isDefined(entry)) {
-            throw new Error(`Primary entry for transaction ${transactionId} not found`);
+            return yield* Effect.die(new Error(`Primary entry for transaction ${transactionId} not found`));
         }
 
         return entry;
@@ -140,16 +141,21 @@ const createSettlementTransaction = (
         return transaction;
     });
 
+const fetchNonDebtCategory = Effect.fnUntraced(function* () {
+    const category = (yield* testDb.select().from(CategoryEntityTable)).find(
+        row => row.id !== LENDING_CATEGORY_ID && row.id !== BORROWING_CATEGORY_ID
+    );
+
+    if (!isDefined(category)) {
+        return yield* Effect.die(new Error('No non-debt category seeded'));
+    }
+
+    return category;
+});
+
 const createUserCategorizedIncomeFixture = () =>
     Effect.gen(function* () {
-        const userCategory = (yield* testDb.select().from(CategoryEntityTable)).find(
-            row => row.id !== LENDING_CATEGORY_ID && row.id !== BORROWING_CATEGORY_ID
-        );
-
-        if (!isDefined(userCategory)) {
-            throw new Error('No non-debt category seeded');
-        }
-
+        const userCategory = yield* fetchNonDebtCategory();
         const cashAccount = yield* createCashAccount();
         const debtAccount = yield* createDebtAccount(AccountDebtTypeEnum.LENT);
         const transaction = yield* createSettlementTransaction(TransactionTypeEnum.INCOME, cashAccount.id, userCategory.id);
@@ -298,14 +304,7 @@ describe('debt settlement categorization', () => {
         'overwrites a machine-guessed %s category with the debt category when attaching',
         categorySource =>
             Effect.gen(function* () {
-                const guessedCategory = (yield* testDb.select().from(CategoryEntityTable)).find(
-                    row => row.id !== LENDING_CATEGORY_ID && row.id !== BORROWING_CATEGORY_ID
-                );
-
-                if (!isDefined(guessedCategory)) {
-                    throw new Error('No non-debt category seeded');
-                }
-
+                const guessedCategory = yield* fetchNonDebtCategory();
                 const cashAccount = yield* createCashAccount();
                 const debtAccount = yield* createDebtAccount(AccountDebtTypeEnum.LENT);
                 const transaction = yield* createSettlementTransaction(
@@ -332,6 +331,40 @@ describe('debt settlement categorization', () => {
             expect(entry.categoryId).toBeNull();
             expect(entry.categorySource).toBe(CategorySourceEnum.USER);
             expect(yield* fetchAccountBalance(debtAccount.id)).toBe(OPENED_AMOUNT);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('restores the MCC default category on detach of an attachment that replaced it', () =>
+        Effect.gen(function* () {
+            const [mccCategory] = yield* testDb
+                .select()
+                .from(MccCategoryEntityTable)
+                .where(
+                    and(
+                        isNotNull(MccCategoryEntityTable.defaultCategoryId),
+                        notInArray(MccCategoryEntityTable.defaultCategoryId, [LENDING_CATEGORY_ID, BORROWING_CATEGORY_ID])
+                    )
+                )
+                .limit(1);
+            const cashAccount = yield* createCashAccount();
+            const debtAccount = yield* createDebtAccount(AccountDebtTypeEnum.LENT);
+            const transaction = yield* createSettlementTransaction(
+                TransactionTypeEnum.INCOME,
+                cashAccount.id,
+                mccCategory.defaultCategoryId,
+                SETTLED_AMOUNT,
+                CategorySourceEnum.MCC_DEFAULT
+            );
+
+            yield* testDb
+                .update(TransactionEntryEntityTable)
+                .set({ mccCategoryId: mccCategory.id })
+                .where(eq(TransactionEntryEntityTable.transactionId, transaction.id));
+
+            const entry = yield* attachDetachAndReadEntry(transaction.id, debtAccount.id);
+
+            expect(entry.categoryId).toBe(mccCategory.defaultCategoryId);
+            expect(entry.categorySource).toBe(CategorySourceEnum.MCC_DEFAULT);
         }).pipe(Effect.provide(TestLayer))
     );
 

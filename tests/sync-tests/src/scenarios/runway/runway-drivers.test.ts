@@ -117,7 +117,7 @@ const aggregate = Effect.fnUntraced(function* (dimension: RunwayDriverDimensionE
 
     return {
         drivers: aggregateRunwayDrivers(driverRows, seriesRows, isAllIn).drivers,
-        irregularMonthlyAmount: aggregateRunwayDrivers(categoryRows, seriesRows, isAllIn).irregularMonthlyAmount
+        irregularMonthlyAmounts: aggregateRunwayDrivers(categoryRows, seriesRows, isAllIn).irregularMonthlyAmounts
     } satisfies RunwayDriverBreakdownInterface;
 });
 
@@ -139,7 +139,7 @@ describe('runway drivers', () => {
             yield* seedExpense(accountId, firstTail.id, FIRST_TAIL_AMOUNT, 3);
             yield* seedExpense(accountId, secondTail.id, SECOND_TAIL_AMOUNT, 1);
 
-            const { drivers, irregularMonthlyAmount } = yield* aggregate(RunwayDriverDimensionEnum.CATEGORY, instrumentId, true);
+            const { drivers, irregularMonthlyAmounts } = yield* aggregate(RunwayDriverDimensionEnum.CATEGORY, instrumentId, true);
 
             expect(drivers).toStrictEqual([
                 { id: regular.id, title: regular.title, monthlyAmount: REGULAR_MONTHLY_AMOUNT, isIrregular: false, foldedDriverCount: 0 },
@@ -158,7 +158,9 @@ describe('runway drivers', () => {
                     foldedDriverCount: 2
                 }
             ]);
-            expect(irregularMonthlyAmount).toBe((ONE_OFF_AMOUNT + FIRST_TAIL_AMOUNT + SECOND_TAIL_AMOUNT) / SEEDED_MONTHS);
+            expect(irregularMonthlyAmounts.reduce((total, amount) => total + amount, 0)).toBe(
+                ONE_OFF_AMOUNT + FIRST_TAIL_AMOUNT + SECOND_TAIL_AMOUNT
+            );
             expect((yield* aggregate(RunwayDriverDimensionEnum.CATEGORY, instrumentId, false)).drivers).toStrictEqual([
                 { id: regular.id, title: regular.title, monthlyAmount: REGULAR_MONTHLY_AMOUNT, isIrregular: false, foldedDriverCount: 0 }
             ]);
@@ -208,7 +210,7 @@ describe('runway drivers', () => {
                 },
                 { id: null, title: '', monthlyAmount: UNTAGGED_AMOUNT / SEEDED_MONTHS, isIrregular: true, foldedDriverCount: 0 }
             ]);
-            expect(tagBreakdown.irregularMonthlyAmount).toBe(ONE_OFF_AMOUNT / SEEDED_MONTHS);
+            expect(tagBreakdown.irregularMonthlyAmounts.reduce((total, amount) => total + amount, 0)).toBe(ONE_OFF_AMOUNT);
         }).pipe(Effect.provide(TestLayer))
     );
 });
