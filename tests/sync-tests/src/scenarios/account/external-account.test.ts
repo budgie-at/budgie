@@ -1,50 +1,40 @@
 import {
     AccountBalanceRepository,
     AccountEntityTable,
-    AccountTypeEnum,
     DEFAULT_TRANSACTION_FILTER,
     ExternalSourceEnum,
     PRECISION,
     RuleActionTypeEnum,
     StatisticsRepository,
-    TransactionEntityTable,
     TransactionEntryEntityTable,
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
 import {
     ExternalAccountService,
-    SyncAccountBalanceStateEnum,
-    SyncAccountTypeEnum,
-    SyncProviderEnum,
     SyncRepairService,
     TransferConsolidationService,
-    UnpairedOwnCardTransferRepairService,
-    privatbankTransactionMapper
+    UnpairedOwnCardTransferRepairService
 } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { and, eq, isNull } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { makeStubFileBankSyncService, seed, testDb, TestLayer, testQueryService } from '../../harness';
+import { seed, testDb, TestLayer, testQueryService } from '../../harness';
+import {
+    buildOwnCardRow,
+    fetchVisibleTransactions,
+    summarize,
+    makeOwnCardStatementService,
+    buildOwnCardStatementClient,
+    seedOwnCard
+} from '../../harness/file-sync/privatbank-own-card-statement';
 import { seedTitleRule } from '../../harness/seed/seed-title-rule';
-
-import type { TransactionEntityInterface } from '@budgie/contracts';
-import type { FileBasedSyncClientInterface, PrivatbankRowInterface } from '@budgie/sync';
 
 const EXTERNAL_CARD = '4000 **** **** 9174';
 const LIVE_CARD = '4000 **** **** 8522';
 const STATEMENT_URI = 'privatbank-statement.xlsx';
 const OPERATED_AT = new Date('2026-03-04T09:15:00.000Z');
-
-const seedCard = (card: string) =>
-    seed.account({
-        title: `Privatbank •${card.slice(-4)}`,
-        type: AccountTypeEnum.BANK_SYNC,
-        externalSource: ExternalSourceEnum.PRIVATBANK,
-        externalId: card,
-        iban: `UA00PRIVATBANK${card.slice(-4)}`
-    });
 
 const seedOwnCardTransfer = (sourceAccountId: number, targetAccountId: number, amount: number, title: string, operatedAt = OPERATED_AT) =>
     Effect.gen(function* () {
@@ -68,15 +58,6 @@ const fetchLiveEntries = (accountId: number) =>
         .from(TransactionEntryEntityTable)
         .where(and(eq(TransactionEntryEntityTable.accountId, accountId), isNull(TransactionEntryEntityTable.deletedAt)));
 
-const fetchVisibleTransactions = () =>
-    testDb
-        .select()
-        .from(TransactionEntityTable)
-        .where(and(isNull(TransactionEntityTable.deletedAt), isNull(TransactionEntityTable.consolidationParentTransactionId)));
-
-const summarize = (transactions: Pick<TransactionEntityInterface, 'type' | 'fromAccountId' | 'toAccountId'>[]) =>
-    transactions.map(transaction => [transaction.type, transaction.fromAccountId, transaction.toAccountId]);
-
 const fetchIncomeTotal = Effect.fnUntraced(function* () {
     const statisticsRepository = yield* StatisticsRepository;
     const [totals] = yield* statisticsRepository.getTotalIncomeAndExpenseQuery(DEFAULT_TRANSACTION_FILTER, 1);
@@ -84,38 +65,10 @@ const fetchIncomeTotal = Effect.fnUntraced(function* () {
     return totals.income;
 });
 
-const buildRow = (card: string, cardAmount: number, description: string): PrivatbankRowInterface => ({
-    rawDate: '04.03.2026 11:15:00',
-    date: OPERATED_AT,
-    deviceLocalDate: OPERATED_AT,
-    category: 'Перекази',
-    card,
-    description,
-    cardAmount,
-    cardCurrency: 'UAH',
-    operationAmount: Math.abs(cardAmount),
-    operationCurrency: 'UAH',
-    endBalance: 0,
-    balanceCurrency: 'UAH'
-});
-
-const ownCardStatementClient: FileBasedSyncClientInterface = {
-    getAccounts: () =>
-        [EXTERNAL_CARD, LIVE_CARD].map(card => ({
-            id: card,
-            provider: SyncProviderEnum.PRIVATBANK,
-            currencyCode: 'UAH',
-            currencyCodeNumeric: 980,
-            balance: 0,
-            balanceState: SyncAccountBalanceStateEnum.REPRESENTABLE,
-            creditLimit: 0,
-            type: SyncAccountTypeEnum.CARD
-        })),
-    getTransactions: accountId =>
-        [buildRow(EXTERNAL_CARD, -500, 'На мою картку *8522'), buildRow(LIVE_CARD, 500, 'Зі своєї картки *9174')]
-            .filter(row => row.card === accountId)
-            .map(privatbankTransactionMapper)
-};
+const ownCardStatementClient = buildOwnCardStatementClient([
+    buildOwnCardRow(EXTERNAL_CARD, -500, 'На мою картку *8522'),
+    buildOwnCardRow(LIVE_CARD, 500, 'Зі своєї картки *9174')
+]);
 
 describe('account/external-account', () => {
     it.effect('stores transfers with an external account as income and expense on the live card and keeps them converted', () =>
@@ -125,8 +78,8 @@ describe('account/external-account', () => {
             const unpairedOwnCardTransferRepairService = yield* UnpairedOwnCardTransferRepairService;
             const accountBalanceRepository = yield* AccountBalanceRepository;
             const rentCategory = yield* seed.category('Rent');
-            const externalCard = yield* seedCard(EXTERNAL_CARD);
-            const liveCard = yield* seedCard(LIVE_CARD);
+            const externalCard = yield* seedOwnCard(EXTERNAL_CARD);
+            const liveCard = yield* seedOwnCard(LIVE_CARD);
             const incoming = yield* seedOwnCardTransfer(externalCard.id, liveCard.id, 100 * PRECISION, 'Зі своєї картки *9174');
             const outgoing = yield* seedOwnCardTransfer(liveCard.id, externalCard.id, 40 * PRECISION, 'На мою картку *9174');
 
@@ -178,14 +131,9 @@ describe('account/external-account', () => {
         Effect.gen(function* () {
             const externalAccountService = yield* ExternalAccountService;
             const transferConsolidationService = yield* TransferConsolidationService;
-            const externalCard = yield* seedCard(EXTERNAL_CARD);
-            const liveCard = yield* seedCard(LIVE_CARD);
-            const transferMcc = yield* testQueryService.findMccByCode('4829');
-            const syncService = yield* makeStubFileBankSyncService(
-                ExternalSourceEnum.PRIVATBANK,
-                ownCardStatementClient,
-                new Map([['Перекази', { id: transferMcc.id, defaultCategoryId: null }]])
-            );
+            const externalCard = yield* seedOwnCard(EXTERNAL_CARD);
+            const liveCard = yield* seedOwnCard(LIVE_CARD);
+            const syncService = yield* makeOwnCardStatementService(ownCardStatementClient);
 
             yield* syncService.executeImportForSelectedAccounts(STATEMENT_URI, [EXTERNAL_CARD, LIVE_CARD]);
             yield* transferConsolidationService.consolidate(null);

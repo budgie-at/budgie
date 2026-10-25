@@ -62,6 +62,16 @@ export const makeSyncService = Effect.fnUntraced(function* (
                 account => ![account.id, resolveMatchableIban(account)].some(key => isDefined(key) && externalKeys.has(key))
             );
         }),
+        excludeKnownAccounts: Effect.fn('AbstractSyncService.excludeKnownAccounts')(function* (accounts: SyncAccountInterface[]) {
+            const knownAccounts = yield* accountRepository.findIncludingArchivedByExternalKeys(
+                accounts.flatMap(account => [account.id, resolveMatchableIban(account)]).filter(isDefined)
+            );
+            const knownKeys = new Set(knownAccounts.flatMap(account => [account.externalId, account.iban]).filter(isDefined));
+
+            return accounts.filter(
+                account => ![account.id, resolveMatchableIban(account)].some(key => isDefined(key) && knownKeys.has(key))
+            );
+        }),
         setAccountSyncEnabled: Effect.fn('AbstractSyncService.setAccountSyncEnabled')(function* (accountId: number, enabled: boolean) {
             yield* Db.transaction(syncRepository.setEnabled(accountId, enabled));
             yield* afterSyncEnabledChange(enabled);

@@ -86,6 +86,17 @@ export class AccountRepository extends Context.Service<AccountRepository>()('@bu
                     })
                 );
             }),
+            findIncludingArchivedByExternalKeys: Effect.fn('AccountRepository.findIncludingArchivedByExternalKeys')(function* (
+                keys: string[]
+            ) {
+                if (!isNotEmptyArray(keys)) {
+                    return [];
+                }
+
+                return yield* Db.query(db =>
+                    db.query.AccountEntityTable.findMany({ where: { OR: [{ externalId: { in: keys } }, { iban: { in: keys } }] } })
+                );
+            }),
             updateById: (id: number, input: AccountUpdateEntityInterface) =>
                 Db.query(db =>
                     db

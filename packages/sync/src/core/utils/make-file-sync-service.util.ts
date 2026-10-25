@@ -38,13 +38,15 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
 
     const buildImportResult = (
         accountCount: number,
-        accountImportResults: FileBankSyncAccountImportResultInterface[]
+        accountImportResults: FileBankSyncAccountImportResultInterface[],
+        createdAccountCount = 0
     ): FileBankSyncImportResultInterface => {
         const parsedTransactionCount = accountImportResults.reduce((total, result) => total + result.parsedTransactionCount, 0);
         const newTransactionCount = accountImportResults.reduce((total, result) => total + result.newTransactions.length, 0);
 
         return {
             accountCount,
+            createdAccountCount,
             existingTransactionCount: parsedTransactionCount - newTransactionCount,
             newTransactionCount,
             parsedTransactionCount
@@ -180,7 +182,11 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
         return accountImportResults;
     });
 
-    const importWork = Effect.fnUntraced(function* (client: FileBasedSyncClientInterface, bankAccounts: SyncAccountInterface[]) {
+    const importWork = Effect.fnUntraced(function* (
+        client: FileBasedSyncClientInterface,
+        bankAccounts: SyncAccountInterface[],
+        createdAccountCount: number
+    ) {
         const [mccCategoryLookupMap, existingTransactionIdMap] = yield* Effect.all([
             definition.resolveMccCategoryIdMap(client, bankAccounts),
             transactionService.findIdMapByExternalSource(definition.provider)
@@ -198,7 +204,7 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
             yield* syncWorkload.enqueueTransferConsolidation(scope);
         }
 
-        return buildImportResult(bankAccounts.length, accountImportResults);
+        return buildImportResult(bankAccounts.length, accountImportResults, createdAccountCount);
     });
 
     const parseFile = Effect.fnUntraced(function* (uri: string) {
@@ -207,8 +213,8 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
         return { client, bankAccounts: yield* syncService.excludeExternalAccounts(bankAccounts) };
     });
 
-    const executeImport = (client: FileBasedSyncClientInterface, bankAccounts: SyncAccountInterface[]) =>
-        syncWorkload.runUser(importWork(client, bankAccounts));
+    const executeImport = (client: FileBasedSyncClientInterface, bankAccounts: SyncAccountInterface[], createdAccountCount = 0) =>
+        syncWorkload.runUser(importWork(client, bankAccounts, createdAccountCount));
 
     return {
         ...syncService,
@@ -249,12 +255,15 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
             }
 
             const enabledExternalIds = yield* getEnabledExternalIds();
-            const enabledBankAccounts = bankAccounts.filter(account => enabledExternalIds.has(account.id));
-            if (!isNotEmptyArray(enabledBankAccounts)) {
+            const newBankAccounts = yield* syncService.excludeKnownAccounts(bankAccounts);
+            const bankAccountsToImport = bankAccounts.filter(
+                account => enabledExternalIds.has(account.id) || newBankAccounts.includes(account)
+            );
+            if (!isNotEmptyArray(bankAccountsToImport)) {
                 return buildImportResult(0, []);
             }
 
-            return yield* executeImport(client, enabledBankAccounts);
+            return yield* executeImport(client, bankAccountsToImport, newBankAccounts.length);
         })
     };
 });
