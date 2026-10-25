@@ -35,8 +35,8 @@
     "devDependencies": {
         "@budgie-at/test-kit": "workspace:*",
         "@budgie/rules": "workspace:*",
-        "@effect/sql-sqlite-node": "4.0.5",
-        "@effect/vitest": "4.0.5",
+        "@effect/sql-sqlite-node": "4.0.6",
+        "@effect/vitest": "4.0.6",
         "@types/node": "26.6.5",
         "node-llama-cpp": "3.22.2",
         "typescript": "npm:@typescript/typescript6@6.0.2",

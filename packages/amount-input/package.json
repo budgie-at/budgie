@@ -58,7 +58,7 @@
         "babel-plugin-react-compiler": "^1.0.0",
         "react": "19.3.1",
         "react-native": "0.88.0",
-        "react-native-builder-bob": "^0.43.0",
+        "react-native-builder-bob": "^0.44.0",
         "react-native-reanimated": "4.7.1",
         "react-native-worklets": "0.13.0",
         "vitest": "^5.0.5"
