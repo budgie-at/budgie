@@ -3478,7 +3478,7 @@ msgstr "Разовий стрибок"
 
 #: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
 msgid "One-offs"
-msgstr "Разові витрати"
+msgstr "Разові операції"
 
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "one-time download"

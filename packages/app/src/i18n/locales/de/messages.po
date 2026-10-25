@@ -3478,7 +3478,7 @@ msgstr "Einmaliger Ausschlag"
 
 #: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
 msgid "One-offs"
-msgstr "Einmalige Ausgaben"
+msgstr "Einmalige Buchungen"
 
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "one-time download"
