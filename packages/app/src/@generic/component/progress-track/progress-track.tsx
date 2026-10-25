@@ -3,8 +3,8 @@ import { useEffect } from 'react';
 import { View } from 'react-native';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
-import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
-import { cn } from '../../../@generic/utils/cn.util';
+import { useReducedMotion } from '../../hook/use-reduced-motion.hook';
+import { cn } from '../../utils/cn.util';
 
 interface Props {
     readonly percentage: number;
@@ -19,7 +19,7 @@ const FILL_EASING_X2 = 0.175;
 const FILL_EASING_Y2 = 1;
 const FILL_EASING = Easing.bezier(FILL_EASING_X1, FILL_EASING_Y1, FILL_EASING_X2, FILL_EASING_Y2);
 
-export const DebtProgressTrack = ({ percentage, className, fillClassName = 'bg-primary' }: Props) => {
+export const ProgressTrack = ({ percentage, className, fillClassName = 'bg-primary' }: Props) => {
     const reducedMotion = useReducedMotion();
     const width = useSharedValue(percentage);
 

@@ -18,11 +18,14 @@ import type { SyncUpdateEntityInterface } from '../entity/sync-update-entity.int
 
 export class SyncRepository extends Context.Service<SyncRepository>()('@budgie/contracts/SyncRepository', {
     make: Effect.sync(() => {
-        const buildEnabledProviderConditions = (provider: ExternalSourceEnum) => [
-            eq(SyncEntityTable.provider, provider),
+        const enabledConditions = [
             eq(SyncEntityTable.enabled, true),
             isNull(SyncEntityTable.deletedAt),
             isNull(AccountEntityTable.deletedAt)
+        ];
+        const buildEnabledProviderConditions = (provider: ExternalSourceEnum) => [
+            eq(SyncEntityTable.provider, provider),
+            ...enabledConditions
         ];
 
         const selectWithActiveAccount = (db: DB) =>
@@ -158,6 +161,10 @@ export class SyncRepository extends Context.Service<SyncRepository>()('@budgie/c
                     selectWithActiveAccount(db)
                         .where(and(...buildEnabledProviderConditions(provider), eq(SyncEntityTable.mode, SyncModeEnum.BACKWARD)))
                         .orderBy(asc(SyncEntityTable.backwardBatchAt), asc(SyncEntityTable.id))
+                ),
+            getAllPendingBackwardSyncs: () =>
+                Db.query(db =>
+                    selectWithActiveAccount(db).where(and(...enabledConditions, eq(SyncEntityTable.mode, SyncModeEnum.BACKWARD)))
                 ),
             setStatus: (id: number, status: SyncStatusEnum) =>
                 Db.query(db => db.update(SyncEntityTable).set({ status }).where(eq(SyncEntityTable.id, id))),

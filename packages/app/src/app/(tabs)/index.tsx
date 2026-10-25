@@ -11,7 +11,6 @@ import { useHomePageDataQuery } from '../../account/query/use-home-page-data.que
 import { AiDownloadHomeStatus } from '../../ai/component/ai-download-home-status/ai-download-home-status';
 import { BudgetWidget } from '../../budget/components/budget-widget/budget-widget';
 import { useOnboardingRedirect } from '../../onboarding/hook/use-onboarding-redirect.hook';
-import { MonobankInitialSyncHomeCard } from '../../sync/component/monobank-initial-sync-home-card/monobank-initial-sync-home-card';
 
 export default function HomePage() {
     const { activeAccountCount, balanceSummary, sections } = useHomePageDataQuery();
@@ -25,7 +24,6 @@ export default function HomePage() {
     const listHeaderComponent = (
         <View className="mb-3xl gap-y-3xl">
             <AiDownloadHomeStatus />
-            <MonobankInitialSyncHomeCard />
             <BudgetWidget />
         </View>
     );

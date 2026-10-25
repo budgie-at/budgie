@@ -2,9 +2,7 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 
-import { isDefined } from '@rnw-community/shared';
-
-import { useMonobankInitialSyncProgressQuery } from '../../../sync/query/use-monobank-initial-sync-progress.query';
+import { useIsImportingHistoryQuery } from '../../../sync/query/use-is-importing-history.query';
 import { BudgetSelector } from '../../budget.selector';
 import { BudgetTemplateKindEnum } from '../../enum/budget-template-kind.enum';
 import { useBudgetTemplateDraft } from '../../hooks/use-budget-template-draft.hook';
@@ -18,7 +16,7 @@ export const BudgetSuggestedTemplateCard = ({ onPress }: Props) => {
     const { t } = useLingui();
 
     const { isAvailable, stats } = useBudgetTemplateDraft(BudgetTemplateKindEnum.SUGGESTED);
-    const isHistorySyncing = isDefined(useMonobankInitialSyncProgressQuery());
+    const isHistorySyncing = useIsImportingHistoryQuery();
 
     if (!isAvailable && !isHistorySyncing) {
         return null;
@@ -32,7 +30,7 @@ export const BudgetSuggestedTemplateCard = ({ onPress }: Props) => {
     const categoriesText = t({ message: plural(categoriesCount, { one: '# category', other: '# categories' }) });
     const statsSummary = `${monthsText} · ${transactionsText} · ${categoriesText}`;
     const description = isHistorySyncing ? t`Not all of your bank history is imported yet` : t`Based on your recent spending`;
-    const summary = isHistorySyncing ? t`Available once the Monobank sync finishes` : statsSummary;
+    const summary = isHistorySyncing ? t`Available once the import finishes` : statsSummary;
 
     return (
         <BudgetTemplateOptionCard

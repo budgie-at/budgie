@@ -229,7 +229,7 @@ msgid "{minutesLeft, plural, one {About # minute left on Wi-Fi} other {About # m
 msgstr "{minutesLeft, plural, one {About # minute left on Wi-Fi} other {About # minutes left on Wi-Fi}}"
 
 #: src/ai/component/ai-download-eta/ai-download-eta.tsx
-#: src/sync/component/monobank-initial-sync-home-card/monobank-initial-sync-home-card.tsx
+#: src/sync/component/sync-import-progress/sync-import-progress.tsx
 msgid "{minutesLeft, plural, one {About # minute left} other {About # minutes left}}"
 msgstr "{minutesLeft, plural, one {About # minute left} other {About # minutes left}}"
 
@@ -802,8 +802,8 @@ msgid "Available Columns"
 msgstr "Available Columns"
 
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
-msgid "Available once the Monobank sync finishes"
-msgstr "Available once the Monobank sync finishes"
+msgid "Available once the import finishes"
+msgstr "Available once the import finishes"
 
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "Average"
@@ -2646,9 +2646,13 @@ msgstr "Import transactions from a CSV file"
 msgid "Importing a database will replace all current data. The app will restart after import. This action cannot be undone."
 msgstr "Importing a database will replace all current data. The app will restart after import. This action cannot be undone."
 
-#: src/sync/component/monobank-initial-sync-home-card/monobank-initial-sync-home-card.tsx
-msgid "Importing Monobank history"
-msgstr "Importing Monobank history"
+#: src/sync/component/sync-import-progress/sync-import-progress.tsx
+msgid "Importing history · {percent}%"
+msgstr "Importing history · {percent}%"
+
+#: src/sync/component/sync-import-progress/sync-import-progress.tsx
+msgid "Importing history…"
+msgstr "Importing history…"
 
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "in"

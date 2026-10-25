@@ -228,7 +228,7 @@ msgid "{minutesLeft, plural, one {About # minute left on Wi-Fi} other {About # m
 msgstr "{minutesLeft, plural, one {Queda aproximadamente # minuto con Wi-Fi} other {Quedan aproximadamente # minutos con Wi-Fi}}"
 
 #: src/ai/component/ai-download-eta/ai-download-eta.tsx
-#: src/sync/component/monobank-initial-sync-home-card/monobank-initial-sync-home-card.tsx
+#: src/sync/component/sync-import-progress/sync-import-progress.tsx
 msgid "{minutesLeft, plural, one {About # minute left} other {About # minutes left}}"
 msgstr "{minutesLeft, plural, one {Queda aproximadamente # minuto} other {Quedan aproximadamente # minutos}}"
 
@@ -801,8 +801,8 @@ msgid "Available Columns"
 msgstr "Columnas disponibles"
 
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
-msgid "Available once the Monobank sync finishes"
-msgstr "Disponible cuando termine la sincronización con Monobank"
+msgid "Available once the import finishes"
+msgstr "Disponible cuando termine la importación"
 
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "Average"
@@ -2645,9 +2645,13 @@ msgstr "Importar transacciones desde un archivo CSV"
 msgid "Importing a database will replace all current data. The app will restart after import. This action cannot be undone."
 msgstr "Importar una base de datos reemplazará todos los datos actuales. La aplicación se reiniciará después de la importación. Esta acción no se puede deshacer."
 
-#: src/sync/component/monobank-initial-sync-home-card/monobank-initial-sync-home-card.tsx
-msgid "Importing Monobank history"
-msgstr "Importando el historial de Monobank"
+#: src/sync/component/sync-import-progress/sync-import-progress.tsx
+msgid "Importing history · {percent}%"
+msgstr "Importando el historial · {percent}%"
+
+#: src/sync/component/sync-import-progress/sync-import-progress.tsx
+msgid "Importing history…"
+msgstr "Importando el historial…"
 
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "in"
