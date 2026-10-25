@@ -166,6 +166,7 @@ export { MccGroupEntityTable } from './mcc-group/table/mcc-group-entity.table';
 export { MccGroupRepository } from './mcc-group/repository/mcc-group.repository';
 
 export { ATM_CASH_WITHDRAWAL_MCC } from './mcc-category/constant/atm-cash-withdrawal-mcc.constant';
+export { ATM_CASH_WITHDRAWAL_TITLE_PREFIXES } from './mcc-category/constant/atm-cash-withdrawal-title-prefixes.constant';
 export { MCC_DEFAULT_CATEGORY_SEED } from './mcc-category/constant/mcc-default-category-seed.constant';
 
 export { MccCategoryEntityTable } from './mcc-category/table/mcc-category-entity.table';

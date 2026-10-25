@@ -64,3 +64,13 @@ appId: ${APP_ID}
           id: 'SettingsPage.AppLockBiometricSwitch'
       direction: DOWN
       centerElement: true
+
+- pressKey: HOME
+- launchApp:
+      stopApp: false
+- extendedWaitUntil:
+      visible:
+          id: 'SettingsPage.Container'
+      timeout: 10000
+- assertNotVisible:
+      id: 'PinPage.Container'

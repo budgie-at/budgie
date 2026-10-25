@@ -7,7 +7,10 @@ import {
 
 import { isEmptyArray, isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
+import { mean } from './mean.util';
+
 import type { RunwayDriverBreakdownInterface } from '../interface/runway-driver-breakdown.interface';
+import type { RunwaySeriesRowInterface } from '@budgie/contracts';
 
 const NULL_DRIVER_KEY = -1;
 
@@ -22,9 +25,9 @@ const isIrregularDriver = (monthlyAmounts: readonly number[]): boolean => {
         return false;
     }
 
-    const mean = total / monthlyAmounts.length;
-    const variance = monthlyAmounts.reduce((sum, amount) => sum + (amount - mean) ** 2, 0) / monthlyAmounts.length;
-    const coefficientOfVariation = Math.sqrt(variance) / mean;
+    const averageAmount = mean(monthlyAmounts);
+    const variance = mean(monthlyAmounts.map(amount => (amount - averageAmount) ** 2));
+    const coefficientOfVariation = Math.sqrt(variance) / averageAmount;
     const concentration = Math.max(...monthlyAmounts) / total;
 
     return coefficientOfVariation > RUNWAY_IRREGULAR_CV_THRESHOLD || concentration >= RUNWAY_IRREGULAR_CONCENTRATION_THRESHOLD;
@@ -32,44 +35,48 @@ const isIrregularDriver = (monthlyAmounts: readonly number[]): boolean => {
 
 export const aggregateRunwayDrivers = (
     rows: readonly RunwayDriverSeriesRowInterface[],
-    monthlyBurn: number,
+    series: readonly RunwaySeriesRowInterface[],
     isAllIn: boolean
 ): RunwayDriverBreakdownInterface => {
-    const monthKeys = [...new Set(rows.map(row => row.month))].sort();
+    const monthKeys = series.map(row => row.month);
     const monthIndexByKey = new Map(monthKeys.map((month, index) => [month, index]));
     const driverKeys = [...new Set(rows.map(row => row.id ?? NULL_DRIVER_KEY))];
-    const drivers = driverKeys
-        .map(driverKey => {
-            const driverRows = rows.filter(row => (row.id ?? NULL_DRIVER_KEY) === driverKey);
-            const firstRow = driverRows.at(0);
-            const title = driverRows.reduce((currentTitle, row) => (isNotEmptyString(row.title) ? row.title : currentTitle), '');
-            const amount = driverRows.reduce((total, row) => total + row.amount, 0);
-            const monthlyAmounts = Array.from({ length: monthKeys.length }, () => 0);
+    const driverEntries = driverKeys.map(driverKey => {
+        const driverRows = rows.filter(row => (row.id ?? NULL_DRIVER_KEY) === driverKey);
+        const firstRow = driverRows.at(0);
+        const title = driverRows.reduce((currentTitle, row) => (isNotEmptyString(row.title) ? row.title : currentTitle), '');
+        const monthlyAmounts = Array.from({ length: monthKeys.length }, () => 0);
 
-            driverRows.forEach(row => {
-                const monthIndex = monthIndexByKey.get(row.month);
+        driverRows.forEach(row => {
+            const monthIndex = monthIndexByKey.get(row.month);
 
-                if (isDefined(monthIndex)) {
-                    monthlyAmounts[monthIndex] += row.amount;
-                }
-            });
+            if (isDefined(monthIndex)) {
+                monthlyAmounts[monthIndex] += row.amount;
+            }
+        });
 
-            return {
+        return {
+            monthlyAmounts,
+            driver: {
                 id: isDefined(firstRow) ? firstRow.id : null,
                 title,
-                monthlyAmount: amount / monthKeys.length,
+                monthlyAmount: mean(monthlyAmounts),
                 isIrregular: isIrregularDriver(monthlyAmounts),
                 foldedDriverCount: 0
-            };
-        })
-        .sort((left, right) => right.monthlyAmount - left.monthlyAmount);
-    const irregularMonthlyAmount = drivers.filter(driver => driver.isIrregular).reduce((total, driver) => total + driver.monthlyAmount, 0);
+            }
+        };
+    });
+    const drivers = driverEntries.map(entry => entry.driver).sort((left, right) => right.monthlyAmount - left.monthlyAmount);
+    const irregularDriverEntries = driverEntries.filter(entry => entry.driver.isIrregular);
+    const irregularMonthlyAmounts = monthKeys.map((_, monthIndex) =>
+        irregularDriverEntries.reduce((total, entry) => total + entry.monthlyAmounts[monthIndex], 0)
+    );
     const countedDrivers = isAllIn ? drivers : drivers.filter(driver => !driver.isIrregular);
-    const minimumMonthlyAmount = monthlyBurn * RUNWAY_DRIVER_MIN_BURN_SHARE;
+    const minimumMonthlyAmount = mean(series.map(row => row.expense)) * RUNWAY_DRIVER_MIN_BURN_SHARE;
     const foldedDrivers = countedDrivers.filter(driver => driver.monthlyAmount < minimumMonthlyAmount);
 
     if (isEmptyArray(foldedDrivers)) {
-        return { drivers: countedDrivers, irregularMonthlyAmount };
+        return { drivers: countedDrivers, irregularMonthlyAmounts };
     }
 
     return {
@@ -83,6 +90,6 @@ export const aggregateRunwayDrivers = (
                 foldedDriverCount: foldedDrivers.length
             }
         ],
-        irregularMonthlyAmount
+        irregularMonthlyAmounts
     };
 };

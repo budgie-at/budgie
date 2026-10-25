@@ -228,7 +228,7 @@ export class VoiceLlmService extends Context.Service<VoiceLlmService>()('@budgie
 
         const cleanVoiceDescription = (description: string): string =>
             description
-                .replace(CURRENCY_TERM_PATTERN, ' ')
+                .replaceAll(CURRENCY_TERM_PATTERN, ' ')
                 .replaceAll(/(?:^|\s)[-–—−]+(?:\s|$)/gu, ' ')
                 .replaceAll(/\s+/gu, ' ')
                 .replaceAll(/^[-–—−.,!?\s]+|[-–—−.,!?\s]+$/gu, '')

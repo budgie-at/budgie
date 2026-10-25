@@ -6,6 +6,7 @@ import { isDefined } from '@rnw-community/shared';
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query';
 import { UNTAGGED_TAG_ID_PARAM } from '../../constant/untagged-tag-id-param.constant';
+import { StatisticsCategoryIdsContext } from '../../context/statistics-category-ids.context';
 import { AnalyticsTransactionsModeEnum } from '../../enum/analytics-transactions-mode.enum';
 import { TransactionFilterPageHeaderModeEnum } from '../../enum/transaction-filter-page-header-mode.enum';
 import { useGetStatisticsTransactionsQuery } from '../../query/use-get-statistics-transactions.query';
@@ -104,5 +105,9 @@ export const StatisticsAnalyticsTransactionsPage = (params: AnalyticsTransaction
         onGoBack: handleGoBack
     };
 
-    return <AnalyticsTransactionsPageContent headerProps={headerProps} sections={sections} isLoading={isLoading} onLoadMore={loadMore} />;
+    return (
+        <StatisticsCategoryIdsContext.Provider value={filters.categoryIds}>
+            <AnalyticsTransactionsPageContent headerProps={headerProps} sections={sections} isLoading={isLoading} onLoadMore={loadMore} />
+        </StatisticsCategoryIdsContext.Provider>
+    );
 };

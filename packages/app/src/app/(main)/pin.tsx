@@ -1,59 +1,31 @@
-import { useLingui } from '@lingui/react/macro';
-import { router } from 'expo-router';
-import React from 'react';
-import { View } from 'react-native';
+import { usePreventRemove } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { Keyboard } from 'react-native';
 
-import { Button } from '../../@generic/component/button/button';
-import { LoadingOverlay } from '../../@generic/component/loading-overlay/loading-overlay';
-import { PinForm } from '../../auth/components/pin-form/pin-form';
-import { usePinAuthentication } from '../../auth/hook/use-pin-authentication.hook';
+import { emptyFn } from '@rnw-community/shared';
 
-import { PinScreenSelector } from './pin-screen.selector';
+import { AppToastHost } from '../../@generic/component/app-toast-host/app-toast-host';
+import { ForgotPinSheet } from '../../auth/components/forgot-pin-sheet/forgot-pin-sheet';
+import { PinUnlock } from '../../auth/components/pin-unlock/pin-unlock';
+import { useAuthContext } from '../../auth/context/auth.context';
 
 export default function PinScreen() {
-    const { t } = useLingui();
-    const {
-        addDigit,
-        canUseBiometric,
-        deleteDigit,
-        description,
-        error,
-        handleBiometricAuth,
-        input,
-        isFaceIdAvailable,
-        isInputDisabled,
-        isLoading,
-        title
-    } = usePinAuthentication();
+    const { isUnlocked } = useAuthContext();
+    const [isRecovering, setIsRecovering] = useState(false);
 
-    const handleForgotPinPress = () => void router.push('/forgot-pin');
+    const handleForgotPin = () => void setIsRecovering(true);
+    const handleTryAgain = () => void setIsRecovering(false);
+
+    usePreventRemove(!isUnlocked, emptyFn);
+
+    useEffect(() => void Keyboard.dismiss(), []);
+
+    const content = isRecovering ? <ForgotPinSheet onTryAgain={handleTryAgain} /> : <PinUnlock onForgotPin={handleForgotPin} />;
 
     return (
-        <View className="flex-1 bg-primary-reverse">
-            <View className="flex-1 px-6xl justify-center">
-                <PinForm
-                    title={title}
-                    description={description}
-                    currentInput={input}
-                    error={error}
-                    isLoading={isInputDisabled}
-                    onDigitPress={addDigit}
-                    onDeletePress={deleteDigit}
-                    onScanPress={handleBiometricAuth}
-                    canScan={canUseBiometric}
-                    isFaceIdAvailable={isFaceIdAvailable}
-                />
-
-                <Button
-                    testID={PinScreenSelector.ForgotPinButton}
-                    variant="ghost"
-                    content={t`Forgot PIN?`}
-                    onPress={handleForgotPinPress}
-                    className="mb-5xl"
-                />
-
-                {isLoading ? <LoadingOverlay /> : null}
-            </View>
-        </View>
+        <>
+            {content}
+            <AppToastHost />
+        </>
     );
 }

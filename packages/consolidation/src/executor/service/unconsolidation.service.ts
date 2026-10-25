@@ -1,5 +1,6 @@
 import {
     CategorySourceEnum,
+    DebtEventRepository,
     TransactionConsolidationTypeEnum,
     TransactionEntryRepository,
     TransactionRepository,
@@ -20,6 +21,7 @@ export class UnconsolidationService extends Context.Service<UnconsolidationServi
         const transactionRepository = yield* TransactionRepository;
         const transactionConsolidationRepository = yield* TransactionConsolidationRepository;
         const transactionTagsRepository = yield* TransactionTagsRepository;
+        const debtEventRepository = yield* DebtEventRepository;
 
         const isPreExistingCanonical = (transaction: TransactionEntityInterface | undefined): boolean => {
             if (!isDefined(transaction)) {
@@ -45,6 +47,17 @@ export class UnconsolidationService extends Context.Service<UnconsolidationServi
             }
 
             const manualTransactionIds = [...new Set(canonical.entries.map(entry => entry.originalTransactionId).filter(isDefined))];
+
+            yield* Effect.forEach(
+                manualTransactionIds,
+                manualTransactionId =>
+                    debtEventRepository.moveByTransactionEntryIds(
+                        canonical.entries.filter(entry => entry.originalTransactionId === manualTransactionId).map(entry => entry.id),
+                        manualTransactionId
+                    ),
+                { discard: true }
+            );
+
             const manualTags = yield* transactionTagsRepository.findByTransactionIds(manualTransactionIds);
             const manualTransactions = yield* transactionRepository.findByIds(manualTransactionIds);
             const hasCopiedComment = manualTransactions.some(
@@ -101,7 +114,8 @@ export class UnconsolidationService extends Context.Service<UnconsolidationServi
             TransactionEntryRepository.layer,
             TransactionRepository.layer,
             TransactionConsolidationRepository.layer,
-            TransactionTagsRepository.layer
+            TransactionTagsRepository.layer,
+            DebtEventRepository.layer
         ])
     );
 }

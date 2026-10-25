@@ -38,9 +38,9 @@ const cleanMerchantTitle = (title: string): string => {
         cleaned = cleaned.replace(pattern, ' ');
     }
 
-    cleaned = cleaned.replace(SUFFIX_PATTERN, ' ');
-    cleaned = cleaned.replace(EXTRA_WHITESPACE, ' ');
-    cleaned = cleaned.replace(LEADING_TRAILING_SEPARATORS, '');
+    cleaned = cleaned.replaceAll(SUFFIX_PATTERN, ' ');
+    cleaned = cleaned.replaceAll(EXTRA_WHITESPACE, ' ');
+    cleaned = cleaned.replaceAll(LEADING_TRAILING_SEPARATORS, '');
 
     if (cleaned.length < MINIMUM_CLEANED_LENGTH) {
         return title.trim();

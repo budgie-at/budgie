@@ -104,7 +104,6 @@ describe('consolidation/atm-cash-withdrawal', () => {
 
     it.effect('keeps Monobank ATM commission as a fee entry after cash withdrawal consolidation', () =>
         Effect.gen(function* () {
-            const atmCashMoveService = yield* AtmCashMoveService;
             const monobankSyncService = yield* MonobankSyncService;
             const transferConsolidationService = yield* TransferConsolidationService;
             const transactionService = yield* TransactionService;
@@ -131,10 +130,9 @@ describe('consolidation/atm-cash-withdrawal', () => {
                 .where(eq(TransactionEntityTable.externalId, 'tx-atm-with-fee'));
 
             expect(result.consolidated).toBe(0);
-            expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toEqual([]);
-            expect(yield* atmCashMoveService.moveToCash([atmExpense.id])).toEqual([atmExpense.id]);
 
             const [canonical] = yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL);
+            expect(atmExpense.consolidationParentTransactionId).toBe(canonical.id);
             expect(canonical.fromAccountId).toBe(bankAccount.id);
             const canonicalEntries = yield* fetchExpenseEntries(canonical.id);
             const [canonicalBankEntry] = canonicalEntries.filter(
@@ -265,7 +263,7 @@ describe('consolidation/atm-cash-withdrawal', () => {
 
             const { bankAccount, cashAccount, expense } = yield* seedAtmCashWithdrawalFixture();
             const otherExpense = yield* seedBankPair.expense(
-                { externalId: 'tx-atm-other', operatedAt: new Date() },
+                { externalId: 'tx-atm-other', operatedAt: expense.operatedAt },
                 { accountId: bankAccount.id, amount: 300 * PRECISION, mccCategoryId: (yield* testQueryService.findMccByCode('6011')).id }
             );
             const expectStoredBalancesOnLedger = Effect.fnUntraced(function* (expectedBankBalance: number, expectedCashBalance: number) {

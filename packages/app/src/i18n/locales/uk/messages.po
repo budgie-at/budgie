@@ -2184,7 +2184,7 @@ msgstr "Введіть новий PIN-код"
 msgid "Enter new token"
 msgstr "Введіть новий токен"
 
-#: src/app/import-backup-pin.tsx
+#: src/import/component/import-backup-pin/import-backup-pin.tsx
 msgid "Enter the PIN this backup was sealed with"
 msgstr "Введіть PIN-код, яким запечатано цю резервну копію"
 
@@ -2430,7 +2430,7 @@ msgstr "Виправити помилки"
 msgid "Fixed-term savings with an interest rate"
 msgstr "Строкові заощадження з відсотковою ставкою"
 
-#: src/app/(main)/pin.tsx
+#: src/auth/components/pin-unlock/pin-unlock.tsx
 msgid "Forgot PIN?"
 msgstr "Забули PIN-код?"
 
@@ -2584,7 +2584,7 @@ msgstr "Якщо завантаження надійде пошкодженим,
 msgid "If Privat24 emails you the file instead of downloading it, save the attachment from your inbox"
 msgstr "Якщо Приват24 надсилає файл на пошту замість завантаження, збережіть вкладення зі своєї поштової скриньки"
 
-#: src/app/import-backup-pin.tsx
+#: src/import/component/import-backup-pin/import-backup-pin.tsx
 msgid "If you don't remember it, this backup can't be opened. You can start fresh instead."
 msgstr "Якщо ви його не пам'ятаєте, цю резервну копію не відкрити. Натомість можна почати з чистого аркуша."
 
@@ -2720,8 +2720,8 @@ msgstr "Доходи за категоріями"
 msgid "Income by Tag"
 msgstr "Доходи за тегами"
 
-#: src/app/import-backup-pin.tsx
 #: src/auth/hook/use-pin-error.hook.ts
+#: src/import/component/import-backup-pin/import-backup-pin.tsx
 msgid "Incorrect PIN"
 msgstr "Неправильний PIN-код"
 
@@ -3390,7 +3390,7 @@ msgid "Not downloaded"
 msgstr "Не завантажено"
 
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
-#: src/app/import-backup-pin.tsx
+#: src/import/component/import-backup-pin/import-backup-pin.tsx
 #: src/import/hook/use-restore-backup.hook.ts
 msgid "Not enough free storage to extract this backup."
 msgstr "Недостатньо вільного місця, щоб розпакувати цю резервну копію."
@@ -3491,7 +3491,7 @@ msgstr "Разовий стрибок"
 
 #: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
 msgid "One-offs"
-msgstr "Разові витрати"
+msgstr "Разові операції"
 
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "one-time download"
@@ -4549,7 +4549,7 @@ msgstr "Почніть знову з новим PIN-кодом"
 msgid "Start Deposit"
 msgstr "Розпочати депозит"
 
-#: src/app/import-backup-pin.tsx
+#: src/import/component/import-backup-pin/import-backup-pin.tsx
 msgid "Start fresh instead"
 msgstr "Почати з чистого аркуша"
 
@@ -4771,7 +4771,7 @@ msgid "This action cannot be undone."
 msgstr "Цю дію неможливо скасувати."
 
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
-#: src/app/import-backup-pin.tsx
+#: src/import/component/import-backup-pin/import-backup-pin.tsx
 #: src/import/hook/use-restore-backup.hook.ts
 msgid "This backup archive does not contain a Budgie database."
 msgstr "Цей архів резервної копії не містить бази даних Budgie."
@@ -4784,7 +4784,7 @@ msgstr "Не вдалося відкрити цю резервну копію з
 msgid "This backup is protected by a PIN. Importing it will replace all current data and its PIN becomes your app PIN. The app will restart after import. This action cannot be undone."
 msgstr "Ця резервна копія захищена PIN-кодом. Імпорт замінить усі поточні дані, а її PIN стане PIN-кодом застосунку. Після імпорту застосунок перезапуститься. Цю дію не можна скасувати."
 
-#: src/app/import-backup-pin.tsx
+#: src/import/component/import-backup-pin/import-backup-pin.tsx
 #: src/import/hook/use-restore-backup.hook.ts
 msgid "This backup was made by an older Budgie version and cannot be imported."
 msgstr "Цю резервну копію створено старішою версією Budgie, її не можна імпортувати."

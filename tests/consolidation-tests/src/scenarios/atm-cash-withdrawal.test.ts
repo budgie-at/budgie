@@ -25,7 +25,6 @@ const ATM_EXPENSE_LEDGER_ENTRY_COUNT = 2;
 const ATM_MCC = '6011';
 const DAY_MILLISECONDS = 24 * 60 * 60 * 1000;
 const ATM_OPERATED_AT = new Date(Date.now() - DAY_MILLISECONDS);
-const HISTORICAL_ATM_OPERATED_AT = new Date(Date.now() - 400 * DAY_MILLISECONDS);
 
 const seedAtmExpense = (bankAccountId: number, externalId: string, operatedAt: Date) =>
     Effect.gen(function* () {
@@ -54,20 +53,6 @@ const fetchAtmCanonicalId = () =>
     });
 
 layer(TestLayer)('consolidation/atm-cash-withdrawal', it => {
-    it.effect('never moves a recent or historical ATM expense to cash without the user', () =>
-        Effect.gen(function* () {
-            const { bankAccount, cashAccount, expense } = yield* seedAtmCashWithdrawalFixture();
-            const historicalExpense = yield* seedAtmExpense(bankAccount.id, 'tx-atm-historical', HISTORICAL_ATM_OPERATED_AT);
-            const balancesBefore = yield* fetchLedgerBalances([bankAccount.id, cashAccount.id]);
-
-            expect(yield* runConsolidation()).toEqual({ consolidated: 0, found: 0 });
-            expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toEqual([]);
-            expect((yield* testQueryService.fetchTransactionById(expense.id)).consolidationParentTransactionId).toBeNull();
-            expect((yield* testQueryService.fetchTransactionById(historicalExpense.id)).consolidationParentTransactionId).toBeNull();
-            expect(yield* fetchLedgerBalances([bankAccount.id, cashAccount.id])).toEqual(balancesBefore);
-        })
-    );
-
     it.effect('moves only the selected ATM expense to cash with its fee entry and ignores a repeated move', () =>
         Effect.gen(function* () {
             const consolidationCoordinatorService = yield* ConsolidationCoordinatorService;

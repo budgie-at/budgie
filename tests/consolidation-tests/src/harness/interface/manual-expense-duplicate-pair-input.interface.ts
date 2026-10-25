@@ -1,5 +1,5 @@
 import type { ManualExpenseDuplicateAccountsInterface } from './manual-expense-duplicate-accounts.interface';
-import type { ExternalSourceEnum } from '@budgie/contracts';
+import type { ExternalSourceEnum, TransactionTypeEnum } from '@budgie/contracts';
 
 export interface ManualExpenseDuplicatePairInputInterface {
     readonly accounts: ManualExpenseDuplicateAccountsInterface;
@@ -9,4 +9,5 @@ export interface ManualExpenseDuplicatePairInputInterface {
     readonly manualExternalSource?: ExternalSourceEnum;
     readonly manualComment?: string;
     readonly manualOperatedAtOffsetSeconds?: number;
+    readonly type?: TransactionTypeEnum.EXPENSE | TransactionTypeEnum.INCOME;
 }

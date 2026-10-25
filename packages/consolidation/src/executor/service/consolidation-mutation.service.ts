@@ -79,7 +79,7 @@ export class ConsolidationMutationService extends Context.Service<ConsolidationM
                     syncedTransaction.entries.find(
                         entry =>
                             entry.kind === TransactionEntryKindEnum.PRIMARY &&
-                            entry.type === TransactionEntryTypeEnum.CREDIT &&
+                            entry.type !== TransactionEntryTypeEnum.FEE &&
                             !isDefined(entry.categoryId) &&
                             entry.categorySource === CategorySourceEnum.USER
                     ) ?? null

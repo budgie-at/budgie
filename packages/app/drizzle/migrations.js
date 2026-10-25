@@ -1,5 +1,3 @@
-// This file is required for Expo/React Native SQLite migrations - https://orm.drizzle.team/quick-sqlite/expo
-
 import m0000 from './20261001084501_baseline/migration.sql';
 import m0001 from './20261002214604_recurring_series/migration.sql';
 import m0002 from './20261004064254_transaction_import_fingerprint/migration.sql';
@@ -10,6 +8,7 @@ import m0006 from './20261007190655_transaction_entry_operation_metadata/migrati
 import m0007 from './20261011120000_ai_feature_settings/migration.sql';
 import m0008 from './20261016150134_settings_onboarding/migration.sql';
 import m0009 from './20261020195645_sync_balance_reconciliation/migration.sql';
+import m0010 from './20261024181034_clear_money_transfer_mcc_default_category/migration.sql';
 
   export default {
     migrations: {
@@ -22,7 +21,8 @@ import m0009 from './20261020195645_sync_balance_reconciliation/migration.sql';
 "20261007190655_transaction_entry_operation_metadata": m0006,
 "20261011120000_ai_feature_settings": m0007,
 "20261016150134_settings_onboarding": m0008,
-"20261020195645_sync_balance_reconciliation": m0009
+"20261020195645_sync_balance_reconciliation": m0009,
+"20261024181034_clear_money_transfer_mcc_default_category": m0010
 }
   }
   

@@ -61,6 +61,8 @@ const STACKED_FILTER_OPTIONS: NativeStackNavigationOptions = {
 
 const PIN_OPTIONS: NativeStackNavigationOptions = { ...MODAL_OPTIONS, gestureEnabled: false };
 
+const LOCK_SCREEN_OPTIONS: NativeStackNavigationOptions = { presentation: 'fullScreenModal', animation: 'none' };
+
 const SELECTOR_OPTIONS = formSheetOptions([DETENT_40, DETENT_70], 0);
 
 enableScreens();
@@ -144,7 +146,7 @@ export const RootLayoutContent = () => {
                                                                 <Stack screenOptions={DEFAULT_STACK_OPTIONS} screenLayout={ScreenLayout}>
                                                                     <Stack.Screen name="(tabs)" />
                                                                     <Stack.Screen name="onboarding" />
-                                                                    <Stack.Screen name="(main)/pin" />
+                                                                    <Stack.Screen name="(main)/pin" options={LOCK_SCREEN_OPTIONS} />
                                                                     <Stack.Screen name="(main)/create-account" />
                                                                     <Stack.Screen name="(main)/account/[id]/details" />
                                                                     <Stack.Screen name="(main)/account/[id]/update" />
@@ -208,10 +210,6 @@ export const RootLayoutContent = () => {
                                                                         options={formSheetOptions([0.75, DETENT_95])}
                                                                     />
                                                                     <Stack.Screen name="import-backup-pin" options={PIN_OPTIONS} />
-                                                                    <Stack.Screen
-                                                                        name="forgot-pin"
-                                                                        options={formSheetOptions('fitToContents')}
-                                                                    />
                                                                     <Stack.Screen
                                                                         name="add-pin"
                                                                         options={formSheetOptions('fitToContents')}

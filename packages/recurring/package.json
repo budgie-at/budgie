@@ -1,6 +1,6 @@
 {
     "name": "@budgie/recurring",
-    "version": "6.110.0",
+    "version": "6.115.5",
     "private": true,
     "description": "Recurring charge detection and calendar projection",
     "sideEffects": false,
