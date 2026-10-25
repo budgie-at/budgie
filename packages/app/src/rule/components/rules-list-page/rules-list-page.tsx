@@ -25,7 +25,7 @@ const DISABLED_SEARCH_VALUE = 'disabled';
 const ENABLED_SEARCH_VALUE = 'enabled';
 const SEARCH_TOKEN_SEPARATOR = /\s+/u;
 
-const normalizeSearchValue = (value: string) => value.normalize('NFKD').replace(COMBINING_MARK_REGEX, '').toLowerCase().trim();
+const normalizeSearchValue = (value: string) => value.normalize('NFKD').replaceAll(COMBINING_MARK_REGEX, '').toLowerCase().trim();
 
 const getSearchTokens = (search: string) => normalizeSearchValue(search).split(SEARCH_TOKEN_SEPARATOR).filter(isNotEmptyString);
 
