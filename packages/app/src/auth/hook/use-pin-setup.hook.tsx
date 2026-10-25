@@ -2,6 +2,7 @@ import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useState } from 'react';
 
+import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { PIN_LENGTH } from '../constant/pin-length.constant';
 import { useAuthContext } from '../context/auth.context';
@@ -26,7 +27,9 @@ export const usePinSetup = ({ mode }: Params) => {
     const [input, setInput] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [tempNewPin, setTempNewPin] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
+    const { isLoading: isSubmitting, run: runSubmit } = useSingleFlight();
+    const { isLoading: isSaving, run: runSave } = useSingleFlight();
+    const isLoading = isSubmitting || isSaving;
 
     const deleteDigit = () => {
         setError(null);
@@ -41,7 +44,6 @@ export const usePinSetup = ({ mode }: Params) => {
         setError(null);
         setInput('');
         setTempNewPin('');
-        setIsLoading(false);
     };
 
     const verifyOldPin = async (pin: string): Promise<boolean> => {
@@ -85,26 +87,22 @@ export const usePinSetup = ({ mode }: Params) => {
         setInput('');
     };
 
-    const savePinAndContinue = (isBiometricEnabled: boolean) => {
-        setIsLoading(true);
+    const savePinAndContinue = (isBiometricEnabled: boolean) =>
+        runSave(() =>
+            appRuntime.runPromise(
+                Effect.gen(function* () {
+                    const authService = yield* AuthService;
 
-        return appRuntime.runPromise(
-            Effect.gen(function* () {
-                const authService = yield* AuthService;
+                    if (isBiometricEnabled && isSomeAvailable && !(yield* authService.authenticateWithBiometrics())) {
+                        return yield* new BiometricAuthenticationFailedError();
+                    }
 
-                if (isBiometricEnabled && isSomeAvailable && !(yield* authService.authenticateWithBiometrics())) {
-                    return yield* new BiometricAuthenticationFailedError();
-                }
-
-                yield* mode === PinSetupModeEnum.CHANGE
-                    ? authService.changePin(tempNewPin)
-                    : authService.createPin(tempNewPin, isBiometricEnabled);
-            }).pipe(
-                Effect.catchCause(() => Effect.sync(() => void setError(t`Failed to save PIN. Please try again.`))),
-                Effect.ensuring(Effect.sync(() => void setIsLoading(false)))
+                    yield* mode === PinSetupModeEnum.CHANGE
+                        ? authService.changePin(tempNewPin)
+                        : authService.createPin(tempNewPin, isBiometricEnabled);
+                }).pipe(Effect.catchCause(() => Effect.sync(() => void setError(t`Failed to save PIN. Please try again.`))))
             )
         );
-    };
 
     const handleConfirmStep = async (pin: string) => {
         if (pin !== tempNewPin) {
@@ -127,10 +125,8 @@ export const usePinSetup = ({ mode }: Params) => {
         }
     };
 
-    const submitPin = async (pin: string) => {
-        setIsLoading(true);
-
-        try {
+    const submitPin = (pin: string) =>
+        runSubmit(async () => {
             if (step === PinSetupStepEnum.VERIFY_OLD) {
                 await handleVerifyOldStep(pin);
             } else if (step === PinSetupStepEnum.CREATE) {
@@ -138,10 +134,7 @@ export const usePinSetup = ({ mode }: Params) => {
             } else if (step === PinSetupStepEnum.CONFIRM) {
                 await handleConfirmStep(pin);
             }
-        } finally {
-            setIsLoading(false);
-        }
-    };
+        });
 
     const addDigit = (digit: string) => {
         if (isLockedOut || input.length >= PIN_LENGTH) {

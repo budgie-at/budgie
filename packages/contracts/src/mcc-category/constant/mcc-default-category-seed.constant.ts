@@ -768,7 +768,6 @@ export const MCC_DEFAULT_CATEGORY_SEED: Record<string, string> = {
     '4815': 'Subscriptions',
     '4816': 'Subscriptions',
     '4821': 'Subscriptions',
-    '4829': 'Bank Fees & Charges',
     '4899': 'Subscriptions',
     '4900': 'Housing & Utilities',
     '5013': 'Car & Fuel',

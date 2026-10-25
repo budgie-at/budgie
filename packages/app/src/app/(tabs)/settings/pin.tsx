@@ -34,11 +34,9 @@ export default function PinSetupScreen() {
 
     return (
         <FullPage>
-            <GoBackButton onPress={handleGoBack} className="absolute left-[20px] top-[20px]" />
-
             <View className="flex-1 justify-center">
                 {state.step === PinSetupStepEnum.BIOMETRIC ? (
-                    <BiometricConfiguration onSubmit={saveAndContinue} />
+                    <BiometricConfiguration isLoading={state.isLoading} onSubmit={saveAndContinue} />
                 ) : (
                     <PinForm
                         error={state.error}
@@ -51,6 +49,8 @@ export default function PinSetupScreen() {
                     />
                 )}
             </View>
+
+            <GoBackButton onPress={handleGoBack} className="absolute left-[20px] top-[20px]" />
 
             {isSlowWork ? <LoadingOverlay /> : null}
         </FullPage>

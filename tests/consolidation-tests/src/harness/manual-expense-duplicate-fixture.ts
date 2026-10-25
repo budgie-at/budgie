@@ -1,4 +1,4 @@
-import { AccountTypeEnum, PRECISION } from '@budgie/contracts';
+import { AccountTypeEnum, PRECISION, TransactionTypeEnum } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 
 import { testSeedService } from './test-context';
@@ -29,16 +29,18 @@ export const buildManualExpenseDuplicateAmount = (index: number): number => (100
 export const seedManualExpenseDuplicatePair = Effect.fnUntraced(function* (input: ManualExpenseDuplicatePairInputInterface) {
     const operatedAt = buildManualExpenseDuplicateOperatedAt(input.index);
     const amount = buildManualExpenseDuplicateAmount(input.index);
-    const synced = yield* testSeedService.bankPairExpense(
-        { externalId: `manual-duplicate-synced-${input.index}`, operatedAt },
-        { accountId: input.accounts.syncedAccount.id, amount }
-    );
+    const syncedTransaction = { externalId: `manual-duplicate-synced-${input.index}`, operatedAt };
+    const syncedEntry = { accountId: input.accounts.syncedAccount.id, amount };
+    const synced = yield* input.type === TransactionTypeEnum.INCOME
+        ? testSeedService.bankPairIncome(syncedTransaction, syncedEntry)
+        : testSeedService.bankPairExpense(syncedTransaction, syncedEntry);
     const manual = yield* testSeedService.manualExpense({
         accountId: input.accounts.manualAccount.id,
         amount: amount + (input.manualAmountDelta ?? 0),
         operatedAt: new Date(operatedAt.getTime() + (input.manualOperatedAtOffsetSeconds ?? 0) * 1000),
         categoryId: input.manualCategoryId ?? null,
         comment: input.manualComment ?? '',
+        type: input.type,
         ...(input.manualExternalSource && {
             externalId: `manual-duplicate-imported-${input.index}`,
             externalSource: input.manualExternalSource

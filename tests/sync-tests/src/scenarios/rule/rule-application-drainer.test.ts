@@ -3,9 +3,10 @@ import { CategorySourceEnum, DbError, ExternalSourceEnum, TransactionEntryTypeEn
 import { RuleEngineService } from '@budgie/rules';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
+import * as Fiber from 'effect/Fiber';
 import { vi } from 'vitest';
 
-import { TestClockLayer } from '../../harness';
+import { inWorkload, TestClockLayer, Workload } from '../../harness';
 import { advanceScheduledDrain } from '../../harness/scheduler/advance-scheduled-drain';
 import { pauseUserWork } from '../../harness/sync-workload/pause-user-work';
 
@@ -60,23 +61,63 @@ const arrange = Effect.gen(function* () {
     };
 });
 
+const queueDrainBehindUserWork = Effect.gen(function* () {
+    const ruleApplicationDrainerService = yield* RuleApplicationDrainerService;
+    const { appliedRulesToTransactions } = yield* arrange;
+    const releaseImportWork = yield* pauseUserWork(ruleApplicationDrainerService.enqueueTransactions([42], [buildTransactionInput()]));
+
+    yield* advanceScheduledDrain(drainDelayMs);
+
+    return { appliedRulesToTransactions, releaseImportWork };
+});
+
+const expectAppliedOnce = (appliedRulesToTransactions: ReturnType<typeof vi.fn>) => {
+    expect(appliedRulesToTransactions).toHaveBeenCalledTimes(1);
+    expect(appliedRulesToTransactions).toHaveBeenCalledWith([42], [buildTransactionInput()]);
+};
+
 describe('rule/rule-application-drainer', () => {
     it.effect('waits for active user import work before applying queued transaction rules', () =>
         Effect.gen(function* () {
-            const ruleApplicationDrainerService = yield* RuleApplicationDrainerService;
-            const { appliedRulesToTransactions } = yield* arrange;
-            const releaseImportWork = yield* pauseUserWork(
-                ruleApplicationDrainerService.enqueueTransactions([42], [buildTransactionInput()])
-            );
-
-            yield* advanceScheduledDrain(drainDelayMs);
+            const { appliedRulesToTransactions, releaseImportWork } = yield* queueDrainBehindUserWork;
             expect(appliedRulesToTransactions).not.toHaveBeenCalled();
 
             yield* releaseImportWork();
             yield* advanceScheduledDrain(drainDelayMs);
 
-            expect(appliedRulesToTransactions).toHaveBeenCalledTimes(1);
-            expect(appliedRulesToTransactions).toHaveBeenCalledWith([42], [buildTransactionInput()]);
+            expectAppliedOnce(appliedRulesToTransactions);
+        }).pipe(Effect.provide(TestClockLayer))
+    );
+
+    it.effect('keeps a queued transaction batch when later user work preempts it', () =>
+        Effect.gen(function* () {
+            const workload = yield* Workload;
+            const { appliedRulesToTransactions, releaseImportWork } = yield* queueDrainBehindUserWork;
+            const laterUserWork = yield* Effect.forkChild(workload.runUser(Effect.void));
+
+            yield* advanceScheduledDrain(drainDelayMs);
+            yield* releaseImportWork();
+            yield* Fiber.join(laterUserWork);
+            yield* advanceScheduledDrain(drainDelayMs);
+
+            expectAppliedOnce(appliedRulesToTransactions);
+        }).pipe(Effect.provide(TestClockLayer))
+    );
+
+    it.effect('keeps a queued transaction batch interrupted by app backgrounding and applies it once background work resumes', () =>
+        Effect.gen(function* () {
+            const workload = yield* Workload;
+            const { appliedRulesToTransactions, releaseImportWork } = yield* queueDrainBehindUserWork;
+
+            yield* workload.interruptBackground;
+            yield* releaseImportWork();
+            yield* advanceScheduledDrain(drainDelayMs);
+            expect(appliedRulesToTransactions).not.toHaveBeenCalled();
+
+            yield* inWorkload(Effect.void);
+            yield* advanceScheduledDrain(drainDelayMs);
+
+            expectAppliedOnce(appliedRulesToTransactions);
         }).pipe(Effect.provide(TestClockLayer))
     );
 

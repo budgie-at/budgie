@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.115.5](https://github.com/budgie-at/budgie/compare/v6.115.4...v6.115.5) (2026-10-25)
+
+**Note:** Version bump only for package @budgie/sync
+
+
+
+
+
+## [6.115.4](https://github.com/budgie-at/budgie/compare/v6.115.3...v6.115.4) (2026-10-24)
+
+**Note:** Version bump only for package @budgie/sync
+
+
+
+
+
+## [6.114.8](https://github.com/budgie-at/budgie/compare/v6.114.7...v6.114.8) (2026-10-24)
+
+### Bug Fixes
+
+* apply rules on file import and rerun preempted background work ([f2530a3](https://github.com/budgie-at/budgie/commit/f2530a344d81d331090d36e48a7ad5b7cc288300))
+
+
 # [6.110.0](https://github.com/budgie-at/budgie/compare/v6.109.2...v6.110.0) (2026-10-21)
 
 ### Bug Fixes

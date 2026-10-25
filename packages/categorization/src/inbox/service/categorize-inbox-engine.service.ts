@@ -1,4 +1,11 @@
-import { ATM_CASH_WITHDRAWAL_MCC, LanguageEnum, PRECISION, REFUND_TITLE_PREFIXES, TransactionTypeEnum } from '@budgie/contracts';
+import {
+    ATM_CASH_WITHDRAWAL_MCC,
+    ATM_CASH_WITHDRAWAL_TITLE_PREFIXES,
+    LanguageEnum,
+    PRECISION,
+    REFUND_TITLE_PREFIXES,
+    TransactionTypeEnum
+} from '@budgie/contracts';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
@@ -44,6 +51,11 @@ class CategorizeInboxEngineService {
     private static readonly LEGAL_FORMS = new Set(Object.values(CategorizeInboxEngineService.LEGAL_FORM_TOKENS).flat());
     private static readonly PAYMENT_TYPE_PREFIX_PATTERN = new RegExp(
         `^(?:${Object.values(CategorizeInboxEngineService.PAYMENT_TYPE_PREFIX_KEYWORDS).flat().join('|')})(?!\\p{L})`,
+        'iu'
+    );
+
+    private static readonly CASH_WITHDRAWAL_TITLE_PATTERN = new RegExp(
+        `^(?:${Object.values(ATM_CASH_WITHDRAWAL_TITLE_PREFIXES).flat().join('|')})(?:\\s|$)`,
         'iu'
     );
 
@@ -146,8 +158,12 @@ class CategorizeInboxEngineService {
         };
     }
 
-    private isCashWithdrawal(row: Pick<CategorizeInboxRowInterface, 'type' | 'mcc'>): boolean {
-        return row.type === TransactionTypeEnum.EXPENSE && row.mcc === ATM_CASH_WITHDRAWAL_MCC;
+    private isCashWithdrawal(row: Pick<CategorizeInboxRowInterface, 'type' | 'mcc' | 'title'>): boolean {
+        return (
+            row.type === TransactionTypeEnum.EXPENSE &&
+            (row.mcc === ATM_CASH_WITHDRAWAL_MCC ||
+                (!isDefined(row.mcc) && CategorizeInboxEngineService.CASH_WITHDRAWAL_TITLE_PATTERN.test(row.title)))
+        );
     }
 
     private isRefund(row: Pick<CategorizeInboxRowInterface, 'type' | 'title'>): boolean {

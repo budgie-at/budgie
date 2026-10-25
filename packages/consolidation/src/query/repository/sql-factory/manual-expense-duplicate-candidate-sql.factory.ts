@@ -1,4 +1,10 @@
-import { AccountTypeEnum, TransactionEntryKindEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import {
+    AccountTypeEnum,
+    ExternalSourceEnum,
+    TransactionEntryKindEnum,
+    TransactionEntryTypeEnum,
+    TransactionTypeEnum
+} from '@budgie/contracts';
 
 import { buildConsolidationScanScopeSql } from '../../utils/build-consolidation-scan-scope-sql.util';
 
@@ -9,11 +15,15 @@ const MANUAL_EXPENSE_DUPLICATE_MIN_ACCOUNT_PAIR_SUPPORT = 3;
 const MANUAL_EXPENSE_DUPLICATE_APPROXIMATE_TIME_WINDOW_SECONDS = 3 * 60 * 60;
 const MANUAL_EXPENSE_DUPLICATE_APPROXIMATE_AMOUNT_PERCENT = 1;
 const PERCENT_DIVISOR = 100;
+const MANUAL_DUPLICATE_ENTRY_TYPE_SQL = (transactionAlias: string): string =>
+    `CASE ${transactionAlias}.type WHEN '${TransactionTypeEnum.EXPENSE}' THEN '${TransactionEntryTypeEnum.CREDIT}' ELSE '${TransactionEntryTypeEnum.DEBIT}' END`;
+const MANUAL_DUPLICATE_TRANSACTION_TYPES_SQL = `'${TransactionTypeEnum.EXPENSE}', '${TransactionTypeEnum.INCOME}'`;
 
 const MANUAL_EXPENSE_DUPLICATE_PAIRS_SQL = `
-    WITH synced_expenses AS MATERIALIZED (
+    WITH synced_rows AS MATERIALIZED (
         SELECT
             synced_tx.id AS syncedTransactionId,
+            synced_tx.type AS transactionType,
             synced_tx.operated_at AS operatedAt,
             synced_tx.external_source AS externalSource,
             synced_entry.account_id AS accountId,
@@ -25,11 +35,11 @@ const MANUAL_EXPENSE_DUPLICATE_PAIRS_SQL = `
             AND synced_entry.deleted_at IS NULL
             AND synced_entry.original_transaction_id IS NULL
             AND synced_entry.kind = '${TransactionEntryKindEnum.PRIMARY}'
-            AND synced_entry.type = '${TransactionEntryTypeEnum.CREDIT}'
+            AND synced_entry.type = ${MANUAL_DUPLICATE_ENTRY_TYPE_SQL('synced_tx')}
         INNER JOIN accounts synced_account
             ON synced_account.id = synced_entry.account_id
             AND synced_account.type = '${AccountTypeEnum.BANK_SYNC}'
-        WHERE synced_tx.type = '${TransactionTypeEnum.EXPENSE}'
+        WHERE synced_tx.type IN (${MANUAL_DUPLICATE_TRANSACTION_TYPES_SQL})
             AND synced_tx.deleted_at IS NULL
             AND synced_tx.consolidation_parent_transaction_id IS NULL
             AND synced_tx.consolidation_type IS NULL
@@ -53,9 +63,10 @@ const MANUAL_EXPENSE_DUPLICATE_PAIRS_SQL = `
                     AND synced_debt_event.deleted_at IS NULL
             )
     ),
-    manual_expenses AS MATERIALIZED (
+    manual_rows AS MATERIALIZED (
         SELECT
             manual_tx.id AS manualTransactionId,
+            manual_tx.type AS transactionType,
             manual_tx.operated_at AS operatedAt,
             manual_entry.account_id AS accountId,
             manual_entry.amount AS amount,
@@ -65,27 +76,24 @@ const MANUAL_EXPENSE_DUPLICATE_PAIRS_SQL = `
             ON manual_entry.transaction_id = manual_tx.id
             AND manual_entry.deleted_at IS NULL
             AND manual_entry.original_transaction_id IS NULL
+            AND manual_entry.type = ${MANUAL_DUPLICATE_ENTRY_TYPE_SQL('manual_tx')}
         INNER JOIN accounts manual_account
             ON manual_account.id = manual_entry.account_id
             AND manual_account.type = '${AccountTypeEnum.BANK}'
-        WHERE manual_tx.type = '${TransactionTypeEnum.EXPENSE}'
+        WHERE manual_tx.type IN (${MANUAL_DUPLICATE_TRANSACTION_TYPES_SQL})
             AND manual_tx.deleted_at IS NULL
             AND manual_tx.consolidation_parent_transaction_id IS NULL
             AND manual_tx.consolidation_type IS NULL
-            AND manual_tx.external_id IS NULL
-            AND manual_tx.external_source IS NULL
+            AND (
+                (manual_tx.external_id IS NULL AND manual_tx.external_source IS NULL)
+                OR manual_tx.external_source = '${ExternalSourceEnum.CSV}'
+            )
             AND NOT EXISTS (
                 SELECT 1
                 FROM transaction_entries manual_sibling_entry
                 WHERE manual_sibling_entry.transaction_id = manual_tx.id
                     AND manual_sibling_entry.deleted_at IS NULL
                     AND manual_sibling_entry.id != manual_entry.id
-            )
-            AND NOT EXISTS (
-                SELECT 1
-                FROM debt_events manual_debt_event
-                WHERE manual_debt_event.transaction_id = manual_tx.id
-                    AND manual_debt_event.deleted_at IS NULL
             )
     ),
     eligible_pairs AS (
@@ -101,9 +109,10 @@ const MANUAL_EXPENSE_DUPLICATE_PAIRS_SQL = `
             MAX(manual.amount = synced.amount) OVER (PARTITION BY manual.manualTransactionId) AS manualHasExactAmount,
             COUNT(*) OVER (PARTITION BY synced.syncedTransactionId, manual.amount = synced.amount) AS syncedMatchCount,
             COUNT(*) OVER (PARTITION BY manual.manualTransactionId, manual.amount = synced.amount) AS manualMatchCount
-        FROM synced_expenses synced
-        INNER JOIN manual_expenses manual
+        FROM synced_rows synced
+        INNER JOIN manual_rows manual
             ON manual.instrumentId = synced.instrumentId
+            AND manual.transactionType = synced.transactionType
             AND manual.operatedAt BETWEEN synced.operatedAt - ${MANUAL_EXPENSE_DUPLICATE_TIME_WINDOW_SECONDS}
                 AND synced.operatedAt + ${MANUAL_EXPENSE_DUPLICATE_TIME_WINDOW_SECONDS}
             AND (

@@ -13,7 +13,7 @@ import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts'
 import type { EmptyFn } from '@rnw-community/shared';
 
 interface Props extends Pick<TransactionActionsMenuPropsInterface, 'onDelete'> {
-    readonly transaction: Pick<TransactionWithRelationsEntityInterface, 'id' | 'consolidationType'>;
+    readonly transaction: TransactionWithRelationsEntityInterface;
     readonly onFeePress: EmptyFn;
 }
 
@@ -32,5 +32,13 @@ export const TransferTransactionActionsMenu = ({ transaction, onDelete, onFeePre
         }
     ];
 
-    return <UpdateTransactionActionsMenu onDelete={onDelete} isConsolidated={isConsolidated} onRevert={handleRevert} items={items} />;
+    return (
+        <UpdateTransactionActionsMenu
+            transaction={transaction}
+            onDelete={onDelete}
+            isConsolidated={isConsolidated}
+            onRevert={handleRevert}
+            items={items}
+        />
+    );
 };

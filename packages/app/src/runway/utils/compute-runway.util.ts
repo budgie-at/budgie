@@ -1,8 +1,8 @@
-import { isDefined, isEmptyArray } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { RUNWAY_MINIMUM_MONTHS } from '../constant/runway-minimum-months.constant';
 
-import { median } from './median.util';
+import { mean } from './mean.util';
 import { percentile } from './percentile.util';
 
 import type { ComputeRunwayParams } from '../interface/compute-runway-params.interface';
@@ -18,12 +18,13 @@ const runsOutDate = (referenceDate: Date, months: number | null): Date | null =>
     isDefined(months) ? new Date(referenceDate.getTime() + months * MILLISECONDS_PER_MONTH) : null;
 
 export const computeRunway = (params: ComputeRunwayParams): RunwayComputationInterface => {
-    const { series, liquid, irregularMonthlyAmount, referenceDate } = params;
+    const { series, liquid, irregularMonthlyAmounts, referenceDate } = params;
     const rows = series.length < RUNWAY_MINIMUM_MONTHS ? [] : series;
-    const burn = median(rows.map(row => row.expense)) + (isEmptyArray(rows) ? 0 : irregularMonthlyAmount);
-    const income = median(rows.map(row => row.income));
+    const typicalExpenses = rows.map((row, index) => row.expense - (irregularMonthlyAmounts.at(index) ?? 0));
+    const burn = mean(typicalExpenses);
+    const income = mean(rows.map(row => row.income));
     const net = income - burn;
-    const netSeries = rows.map(row => row.income - row.expense);
+    const netSeries = rows.map((row, index) => row.income - typicalExpenses[index]);
     const runwayMonths = net < 0 ? liquid / Math.abs(net) : null;
 
     return {
@@ -33,8 +34,8 @@ export const computeRunway = (params: ComputeRunwayParams): RunwayComputationInt
         liquid,
         runwayMonths,
         runsOutAt: runsOutDate(referenceDate, runwayMonths),
-        p25Net: percentile(netSeries, P25_PERCENTILE),
-        p75Net: percentile(netSeries, P75_PERCENTILE),
+        p25Net: Math.min(net, percentile(netSeries, P25_PERCENTILE)),
+        p75Net: Math.max(net, percentile(netSeries, P75_PERCENTILE)),
         monthsUsed: series.length,
         isPositive: net >= 0
     };

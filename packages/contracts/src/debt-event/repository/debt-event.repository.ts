@@ -91,6 +91,30 @@ export class DebtEventRepository extends Context.Service<DebtEventRepository>()(
                     .set({ ...input, updatedAt: new Date() })
                     .where(eq(DebtEventEntityTable.id, id))
             ),
+        moveToTransaction: (fromTransactionId: number, toTransactionId: number, transactionEntryId: number | null) =>
+            Db.query(db =>
+                db
+                    .update(DebtEventEntityTable)
+                    .set({ transactionId: toTransactionId, transactionEntryId, updatedAt: new Date() })
+                    .where(and(eq(DebtEventEntityTable.transactionId, fromTransactionId), isNull(DebtEventEntityTable.deletedAt)))
+            ),
+        moveByTransactionEntryIds: Effect.fn('DebtEventRepository.moveByTransactionEntryIds')(function* (
+            transactionEntryIds: number[],
+            toTransactionId: number
+        ) {
+            if (!isNotEmptyArray(transactionEntryIds)) {
+                return;
+            }
+
+            yield* Db.query(db =>
+                db
+                    .update(DebtEventEntityTable)
+                    .set({ transactionId: toTransactionId, updatedAt: new Date() })
+                    .where(
+                        and(inArray(DebtEventEntityTable.transactionEntryId, transactionEntryIds), isNull(DebtEventEntityTable.deletedAt))
+                    )
+            );
+        }),
         deleteByTransactionId: (transactionId: number) =>
             Db.query(db => db.delete(DebtEventEntityTable).where(eq(DebtEventEntityTable.transactionId, transactionId))),
         deleteByAccountId: (accountId: number) =>

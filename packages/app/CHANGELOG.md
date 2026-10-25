@@ -3,6 +3,116 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.115.6](https://github.com/budgie-at/budgie/compare/v6.115.5...v6.115.6) (2026-10-25)
+
+### Bug Fixes
+
+* **app:** return to the previous screen after PIN unlock ([#1660](https://github.com/budgie-at/budgie/issues/1660)) ([370f97f](https://github.com/budgie-at/budgie/commit/370f97f77f44c9cbfb5a3fd501aef5465e630485))
+
+
+## [6.115.5](https://github.com/budgie-at/budgie/compare/v6.115.4...v6.115.5) (2026-10-25)
+
+### Bug Fixes
+
+* correct bank-fee categorization and auto-move ATM withdrawals to cash ([#1659](https://github.com/budgie-at/budgie/issues/1659)) ([f0c5964](https://github.com/budgie-at/budgie/commit/f0c5964c98b369377d25429a90f40afdeb92ee6a))
+
+
+## [6.115.4](https://github.com/budgie-at/budgie/compare/v6.115.3...v6.115.4) (2026-10-24)
+
+### Bug Fixes
+
+* correct runway cash-flow maths and merge manual bank duplicates ([#1662](https://github.com/budgie-at/budgie/issues/1662)) ([45bd478](https://github.com/budgie-at/budgie/commit/45bd4785f10c3f37a2b3643625ab2dcf42732f8d))
+
+
+## [6.115.3](https://github.com/budgie-at/budgie/compare/v6.115.2...v6.115.3) (2026-10-24)
+
+### Bug Fixes
+
+* **app:** refresh Lingui catalog references for moved PIN screens ([c1bf6e6](https://github.com/budgie-at/budgie/commit/c1bf6e619ef5d04a1068e32579ae58011812a4bd))
+* **app:** return to the same screen after PIN unlock ([c7f92fa](https://github.com/budgie-at/budgie/commit/c7f92fa0605c25aa4e1f307d01acd451c17393f5))
+
+
+## [6.115.2](https://github.com/budgie-at/budgie/compare/v6.115.1...v6.115.2) (2026-10-24)
+
+### Bug Fixes
+
+* **app:** show blurred content under the screen chrome ([#1653](https://github.com/budgie-at/budgie/issues/1653)) ([dab5727](https://github.com/budgie-at/budgie/commit/dab57276d7a49b6ddb0bdfaf1c59899bf060aabb))
+
+
+## [6.115.1](https://github.com/budgie-at/budgie/compare/v6.115.0...v6.115.1) (2026-10-24)
+
+### Bug Fixes
+
+* **app:** prevent loading control layout shifts ([#1650](https://github.com/budgie-at/budgie/issues/1650)) ([0b91b07](https://github.com/budgie-at/budgie/commit/0b91b07a2129601c6b81606f97a448e9c059c46c))
+
+
+# [6.115.0](https://github.com/budgie-at/budgie/compare/v6.114.9...v6.115.0) (2026-10-24)
+
+### Features
+
+* **app:** create a rule from any transaction's actions menu ([9693c81](https://github.com/budgie-at/budgie/commit/9693c81cf92bfa86589447155a7bcc3bbea05ec7))
+
+
+## [6.114.9](https://github.com/budgie-at/budgie/compare/v6.114.8...v6.114.9) (2026-10-24)
+
+### Bug Fixes
+
+* **app:** pad transaction info rows away from the screen edges ([f5e4607](https://github.com/budgie-at/budgie/commit/f5e4607b8a01036412080bdfdfcce85cd84c4e6e))
+* **app:** show the attached debt on transaction info ([3926644](https://github.com/budgie-at/budgie/commit/3926644af06e108d689e84b051cd403400bf2d4b))
+
+
+## [6.114.8](https://github.com/budgie-at/budgie/compare/v6.114.7...v6.114.8) (2026-10-24)
+
+### Bug Fixes
+
+* apply rules on file import and rerun preempted background work ([f2530a3](https://github.com/budgie-at/budgie/commit/f2530a344d81d331090d36e48a7ad5b7cc288300))
+
+
+## [6.114.7](https://github.com/budgie-at/budgie/compare/v6.114.6...v6.114.7) (2026-10-24)
+
+### Bug Fixes
+
+* **app:** give bank sections more room and soften account names ([e019dac](https://github.com/budgie-at/budgie/commit/e019dac15f95094a183bfe816972ccf6d8685ea2))
+
+
+## [6.114.6](https://github.com/budgie-at/budgie/compare/v6.114.5...v6.114.6) (2026-10-24)
+
+### Bug Fixes
+
+* **app:** soften the edge chrome so content stays visible ([3b1f836](https://github.com/budgie-at/budgie/commit/3b1f836dbce075addfc9d5ea963d9ebb82fcd0e1))
+
+
+## [6.114.5](https://github.com/budgie-at/budgie/compare/v6.114.4...v6.114.5) (2026-10-23)
+
+### Bug Fixes
+
+* **app:** compact the header and tab edge bands ([b082907](https://github.com/budgie-at/budgie/commit/b082907fdfe76bbcdeeace0d84836733cc0c3f33))
+* **app:** keep the backdrop animation value stable ([e3cc18b](https://github.com/budgie-at/budgie/commit/e3cc18b72b0b09e450a6b754c9f16c22754a9afc))
+* **app:** use screen-chrome 3.0.3 ([93d3677](https://github.com/budgie-at/budgie/commit/93d3677db02d99cba60de05b8fc9362e3c1bfe62))
+
+
+## [6.114.4](https://github.com/budgie-at/budgie/compare/v6.114.3...v6.114.4) (2026-10-23)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+## [6.114.3](https://github.com/budgie-at/budgie/compare/v6.114.2...v6.114.3) (2026-10-23)
+
+### Bug Fixes
+
+* **app:** ignore repeat taps while an action is loading ([f0b71d8](https://github.com/budgie-at/budgie/commit/f0b71d83e8ea66f536ab40a953d445e2bb8e96ac))
+
+
+## [6.114.2](https://github.com/budgie-at/budgie/compare/v6.114.1...v6.114.2) (2026-10-23)
+
+### Bug Fixes
+
+* **app:** let Face ID unlock after a restart and make PIN setup back work ([74dde6e](https://github.com/budgie-at/budgie/commit/74dde6e9cecefef5bc765d7057b0699a90b472bf))
+
+
 ## [6.114.1](https://github.com/budgie-at/budgie/compare/v6.114.0...v6.114.1) (2026-10-22)
 
 ### Bug Fixes
