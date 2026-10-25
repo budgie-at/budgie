@@ -7,9 +7,9 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { fileSyncDependenciesLayer } from '../../core/layer/file-sync-dependencies.layer';
 import { SyncFileReader } from '../../core/port/sync-file-reader.port';
+import { generateDefaultSyncAccountTitle } from '../../core/utils/generate-default-sync-account-title.util';
 import { makeFileSyncService } from '../../core/utils/make-file-sync-service.util';
 import { PrivatbankFileClient } from '../client/privatbank-file.client';
-import { generatePrivatbankAccountTitle } from '../utils/generate-privatbank-account-title.util';
 import { parsePrivatbankXlsx } from '../utils/parse-privatbank-xlsx.util';
 
 import { PrivatbankCategoryMatcherService } from './privatbank-category-matcher.service';
@@ -40,7 +40,7 @@ export class PrivatbankSyncService extends Context.Service<PrivatbankSyncService
         return yield* makeFileSyncService({
             provider: ExternalSourceEnum.PRIVATBANK,
             accountType: AccountTypeEnum.BANK_SYNC,
-            generateAccountTitle: generatePrivatbankAccountTitle,
+            generateAccountTitle: account => generateDefaultSyncAccountTitle('Privatbank', account),
             accountIcon: () => UserIconNameEnum.Landmark,
             resolveMccCategoryIdMap: Effect.fn('PrivatbankSyncService.resolveMccCategoryIdMap')(function* (
                 client: FileBasedSyncClientInterface,

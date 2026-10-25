@@ -46,7 +46,7 @@ describe('import/quick-import-new-cards', () => {
             const [newCard] = yield* findAccountsByExternalId(NEW_CARD);
             const visible = yield* fetchVisibleTransactions();
 
-            expect(result).toMatchObject({ accountCount: 2, createdAccountCount: 1, newTransactionCount: 3 });
+            expect(result).toMatchObject({ accountCount: 2, newTransactionCount: 3 });
             expect(newCard).toBeDefined();
             expect(yield* testDb.select().from(SyncEntityTable).where(eq(SyncEntityTable.accountId, newCard.id))).toHaveLength(1);
             expect(summarize(visible)).toEqual(
@@ -77,7 +77,7 @@ describe('import/quick-import-new-cards', () => {
 
             const result = yield* syncService.quickImport(STATEMENT_URI);
 
-            expect(result).toMatchObject({ accountCount: 1, createdAccountCount: 0, newTransactionCount: 1 });
+            expect(result).toMatchObject({ accountCount: 1, newTransactionCount: 1 });
             expect(yield* findAccountsByExternalId(ARCHIVED_CARD)).toHaveLength(1);
             expect(yield* findAccountsByExternalId(EXTERNAL_CARD)).toHaveLength(1);
             expect(yield* testDb.select().from(AccountEntityTable).where(isNull(AccountEntityTable.deletedAt))).toHaveLength(1);

@@ -1,8 +1,4 @@
-import type { ExternalSourceEnum } from '@budgie/contracts';
-
 export interface AccountReissueCandidateInterface {
-    readonly provider: ExternalSourceEnum;
-    readonly currencyCode: string;
     readonly predecessorTitle: string;
     readonly predecessorAccountId: number;
     readonly predecessorExternalId: string | null;

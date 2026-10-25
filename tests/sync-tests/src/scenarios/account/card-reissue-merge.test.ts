@@ -91,12 +91,12 @@ describe('account/card-reissue-merge', () => {
                 convertToMicroUnits(chainRows.reduce((total, row) => total + row.cardAmount, 0))
             );
 
-            expect(yield* quickImport(chainRows)).toMatchObject({ createdAccountCount: 0, newTransactionCount: 0 });
+            expect(yield* quickImport(chainRows)).toMatchObject({ newTransactionCount: 0 });
             expect(yield* fetchLiveAccounts()).toHaveLength(1);
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('keeps cards apart when they overlap, share no counterparty or have two possible predecessors', () =>
+    it.effect('keeps cards apart when they overlap or share no counterparty', () =>
         Effect.gen(function* () {
             yield* quickImport([
                 buildOwnCardRow(OLD_CARD, 1000, SALARY, day('2026-06-01')),

@@ -7,8 +7,6 @@ import * as Layer from 'effect/Layer';
 import { isDefined } from '@rnw-community/shared';
 
 import { PRIVATBANK_CARD_REISSUE_EVIDENCE_SQL } from '../../privatbank/constant/privatbank-card-reissue-evidence-sql.constant';
-import { privatbankCardAccountMapper } from '../../privatbank/mapper/privatbank-account.mapper';
-import { generatePrivatbankAccountTitle } from '../../privatbank/utils/generate-privatbank-account-title.util';
 
 import type { AccountReissueCandidateInterface } from '../interface/account-reissue-candidate.interface';
 
@@ -37,7 +35,6 @@ export class AccountReissueMergeService extends Context.Service<AccountReissueMe
                     account.integration_id,
                     account.is_active,
                     account.title,
-                    (SELECT instrument.code FROM instruments instrument WHERE instrument.id = account.instrument_id) AS currency_code,
                     MIN(bank_rows.operated_at) AS first_at,
                     MAX(bank_rows.operated_at) AS last_at
                 FROM bank_rows
@@ -45,8 +42,6 @@ export class AccountReissueMergeService extends Context.Service<AccountReissueMe
                 GROUP BY bank_rows.account_id
             )
             SELECT
-                successor.provider AS provider,
-                successor.currency_code AS currencyCode,
                 predecessor.title AS predecessorTitle,
                 predecessor.account_id AS predecessorAccountId,
                 predecessor.external_id AS predecessorExternalId,
@@ -83,29 +78,20 @@ export class AccountReissueMergeService extends Context.Service<AccountReissueMe
             'DELETE FROM account_balances WHERE account_id IN (?, ?)'
         ];
 
-        const generateCardTitleByProvider = new Map([
-            [
-                ExternalSourceEnum.PRIVATBANK,
-                (card: string, currencyCode: string) => generatePrivatbankAccountTitle(privatbankCardAccountMapper(card, currencyCode))
-            ]
-        ]);
+        const resolveMergedTitle = ({ predecessorTitle, predecessorExternalId, externalId }: AccountReissueCandidateInterface) => {
+            if (!isDefined(predecessorExternalId) || !isDefined(externalId)) {
+                return null;
+            }
 
-        const resolveMergedTitle = (candidate: AccountReissueCandidateInterface): string | null => {
-            const generateCardTitle = generateCardTitleByProvider.get(candidate.provider);
-            const { predecessorExternalId, externalId, currencyCode } = candidate;
-            const hasDefaultTitle =
-                isDefined(generateCardTitle) &&
-                isDefined(predecessorExternalId) &&
-                isDefined(externalId) &&
-                candidate.predecessorTitle === generateCardTitle(predecessorExternalId, currencyCode);
+            const previousCardSuffix = `•${predecessorExternalId.slice(-4)}`;
 
-            return hasDefaultTitle ? generateCardTitle(externalId, currencyCode) : null;
+            return predecessorTitle.endsWith(previousCardSuffix)
+                ? `${predecessorTitle.slice(0, -previousCardSuffix.length)}•${externalId.slice(-4)}`
+                : null;
         };
 
-        const findCandidates = () => Db.query(db => db.$client.unsafe<AccountReissueCandidateInterface>(candidatesSql));
-
         const findUnambiguousCandidates = Effect.fnUntraced(function* () {
-            const candidates = yield* findCandidates();
+            const candidates = yield* Db.query(db => db.$client.unsafe<AccountReissueCandidateInterface>(candidatesSql));
             const isUnambiguous = (candidate: AccountReissueCandidateInterface): boolean =>
                 candidates.filter(other => other.successorAccountId === candidate.successorAccountId).length === 1 &&
                 !candidates.some(
@@ -165,9 +151,7 @@ export class AccountReissueMergeService extends Context.Service<AccountReissueMe
         );
 
         return {
-            countCandidates: Effect.fn('AccountReissueMergeService.countCandidates')(function* () {
-                return (yield* findUnambiguousCandidates()).length;
-            }),
+            countCandidates: () => Effect.map(findUnambiguousCandidates(), candidates => candidates.length),
             mergeReissuedAccounts: Effect.fn('AccountReissueMergeService.mergeReissuedAccounts')(function* () {
                 let mergedCount = 0;
                 let [candidate] = yield* findUnambiguousCandidates();
