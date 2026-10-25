@@ -1,20 +1,34 @@
 const { spawn } = require('node:child_process');
+const { createRequire } = require('node:module');
 const path = require('node:path');
 
+const isPlatformInstalled = (compilerRequire, platformPackage) => {
+    try {
+        compilerRequire.resolve(`${platformPackage}/package.json`);
+        return true;
+    } catch {
+        return false;
+    }
+};
+
 const selectCompiler = (platform, architecture, forceNative = false) => {
-    const tsrsPlatforms = require('tsrs/package.json').optionalDependencies;
-    const nativePlatforms = require('@typescript/native/package.json').optionalDependencies;
+    const tsrsRequire = createRequire(require.resolve('tsrs/package.json'));
+    const nativeRequire = createRequire(require.resolve('@typescript/native/package.json'));
+    const tsrsPlatform = tsrsRequire('./lib/platform.js').getPlatformPackageName(platform, architecture);
+    const nativePlatform = `@typescript/typescript-${platform}-${architecture}`;
 
     if (
         !forceNative &&
-        Object.keys(tsrsPlatforms).some(
-            name => name === `@tsrs/${platform}-${architecture}` || name.startsWith(`@tsrs/${platform}-${architecture}-`)
-        )
+        Object.hasOwn(tsrsRequire('./package.json').optionalDependencies, tsrsPlatform) &&
+        isPlatformInstalled(tsrsRequire, tsrsPlatform)
     ) {
         return 'tsrs';
     }
 
-    if (Object.hasOwn(nativePlatforms, `@typescript/typescript-${platform}-${architecture}`)) {
+    if (
+        Object.hasOwn(nativeRequire('./package.json').optionalDependencies, nativePlatform) &&
+        isPlatformInstalled(nativeRequire, nativePlatform)
+    ) {
         return 'native';
     }
 
