@@ -60,6 +60,7 @@ export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@
                     return entries.some(entry => entry.type === TransactionEntryTypeEnum.DEBIT)
                         ? sumEntryAmountsOfType(entries, TransactionEntryTypeEnum.DEBIT)
                         : sumEntryAmountsOfType(entries, TransactionEntryTypeEnum.CREDIT);
+                case TransactionTypeEnum.DEBT:
                 default:
                     return 0;
             }
@@ -152,6 +153,7 @@ export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@
                     return sql`COALESCE(${TransactionEntityTable.fromAccountId}, ${TransactionEntityTable.toAccountId})`;
                 case RuleConditionFieldEnum.MCC_CODE:
                     return sql`(SELECT ${MccCategoryEntityTable.mcc} FROM ${MccCategoryEntityTable} WHERE ${MccCategoryEntityTable.id} = ${TransactionEntryEntityTable.mccCategoryId})`;
+                case RuleConditionFieldEnum.AMOUNT:
                 default:
                     return null;
             }

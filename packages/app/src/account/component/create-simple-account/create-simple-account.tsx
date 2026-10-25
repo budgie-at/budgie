@@ -18,6 +18,7 @@ import { useGetInstrumentsByTypeQuery } from '../../../instrument/query/use-get-
 import { HistoricalMarketDataDrainerService } from '../../../market-data/service/historical-market-data-drainer.service';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
+import { useAccountCreateBindings } from '../../hooks/use-account-create-bindings.hook';
 import { useLiabilityAccountForm } from '../../hooks/use-liability-account-form.hook';
 import { AccountBalanceField } from '../account-balance-field/account-balance-field';
 import { CreateAccountScreen } from '../create-account-screen/create-account-screen';
@@ -41,7 +42,6 @@ export const CreateSimpleAccount = ({ type }: Props) => {
     const { defaultInstrument } = useSettingsContext();
     const { instruments } = useGetInstrumentsByTypeQuery(instrumentType);
     const cryptoInstrumentId = instruments.at(0)?.id;
-    const instrumentId = isDefined(cryptoInstrumentId) ? cryptoInstrumentId : defaultInstrument.id;
 
     const formValues = {
         type,
@@ -49,7 +49,7 @@ export const CreateSimpleAccount = ({ type }: Props) => {
         currentBalance: 0,
         icon: isCrypto ? UserIconNameEnum.Coins : UserIconNameEnum.Home,
         includeInNetWorth: true,
-        instrumentId
+        instrumentId: isDefined(cryptoInstrumentId) ? cryptoInstrumentId : defaultInstrument.id
     };
 
     const { control, handleSubmit, instrument, isSubmitting } = useLiabilityAccountForm(formValues, values =>
@@ -68,6 +68,13 @@ export const CreateSimpleAccount = ({ type }: Props) => {
         )
     );
 
+    const fields = useAccountCreateBindings(control, {
+        title: 'title',
+        icon: 'icon',
+        currentBalance: 'currentBalance',
+        instrumentId: 'instrumentId',
+        includeInNetWorth: 'includeInNetWorth'
+    });
     const stickyInstrument = useStickyDefinedValue(instrument);
 
     if ((isCrypto && !isDefined(cryptoInstrumentId)) || !isDefined(stickyInstrument)) {
@@ -82,16 +89,26 @@ export const CreateSimpleAccount = ({ type }: Props) => {
             <AccountBalanceField
                 variant={variant}
                 instrumentSymbol={stickyInstrument.symbol}
-                control={control}
+                value={fields.currentBalance.field.value}
+                onChange={fields.currentBalance.field.onChange}
                 allowNegative={!isCrypto}
                 minimumDecimalPlaces={minimumDecimalPlaces}
                 showInstrumentAfterAmount={isCrypto}
             />
 
             <FormLayoutGroup>
-                <AccountDetailsField variant={variant} control={control} nameInputTestID={CreateAccountScreenSelector.NameInput} />
-                <CreateAccountCurrencyField control={control} instrumentType={instrumentType} />
-                <IncludeInNetWorthField control={control} />
+                <AccountDetailsField
+                    variant={variant}
+                    titleBinding={fields.title}
+                    iconBinding={fields.icon}
+                    nameInputTestID={CreateAccountScreenSelector.NameInput}
+                />
+                <CreateAccountCurrencyField
+                    value={fields.instrumentId.field.value}
+                    onChange={fields.instrumentId.field.onChange}
+                    instrumentType={instrumentType}
+                />
+                <IncludeInNetWorthField value={fields.includeInNetWorth.field.value} onChange={fields.includeInNetWorth.field.onChange} />
             </FormLayoutGroup>
         </CreateAccountScreen>
     );
