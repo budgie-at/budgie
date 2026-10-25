@@ -300,6 +300,7 @@ export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@
         });
 
         return {
+            convertTransactionForRuleEvaluation,
             countMatchingTransactions,
             collectMatchingTransactionIds,
             evaluateRule: (rule: RuleWithRelationsEntityInterface, input: RuleEvaluationInputInterface) => matchesRule(rule, input)

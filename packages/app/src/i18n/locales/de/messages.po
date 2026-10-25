@@ -1489,6 +1489,10 @@ msgstr "KI-Downloads konnten nicht geladen werden"
 msgid "Could not load sources. Please try again."
 msgstr "Quellen konnten nicht geladen werden. Bitte erneut versuchen."
 
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "Could not mark account as external"
+msgstr "Konto konnte nicht als extern markiert werden"
+
 #: src/category/components/category-form/category-form.tsx
 msgid "Could not merge category"
 msgstr "Kategorie konnte nicht zusammengeführt werden"
@@ -2327,6 +2331,10 @@ msgstr "Alle Transaktionen in eine CSV-Datei exportieren"
 #: src/export/components/export-csv/export-csv.tsx
 msgid "Export CSV"
 msgstr "CSV exportieren"
+
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "External account"
+msgstr "Externes Konto"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "External ID"

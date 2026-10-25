@@ -246,6 +246,16 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
             });
         });
 
+        const applyMatches = (matches: RuleTransactionMatchInterface[]) =>
+            Effect.forEach(
+                Arr.chunksOf(
+                    matches.filter(match => isNotEmptyArray(match.matchingRules)),
+                    RULE_BATCH_SIZE
+                ),
+                batch => Effect.andThen(applyMatchedRulesInBatch(batch), Effect.sleep(RULE_BATCH_DELAY_MS)),
+                { discard: true }
+            );
+
         const applyRulesToTransactions = Effect.fn('RuleEngineService.applyRulesToTransactions')(function* (
             transactionIds: number[],
             transactionInputs: TransactionCreateInputInterface[]
@@ -256,17 +266,27 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
             }
 
             const matchingRulesByIndex = yield* findMatchingRulesByIndex(rules, transactionInputs);
-            const matches = transactionIds
-                .map((transactionId, index): RuleTransactionMatchInterface => ({
-                    transactionId,
-                    matchingRules: matchingRulesByIndex[index] ?? []
-                }))
-                .filter(match => isNotEmptyArray(match.matchingRules));
 
-            yield* Effect.forEach(
-                Arr.chunksOf(matches, RULE_BATCH_SIZE),
-                batch => Effect.andThen(applyMatchedRulesInBatch(batch), Effect.sleep(RULE_BATCH_DELAY_MS)),
-                { discard: true }
+            yield* applyMatches(
+                transactionIds.map((transactionId, index) => ({ transactionId, matchingRules: matchingRulesByIndex[index] ?? [] }))
+            );
+        });
+
+        const applyRulesToTransactionIds = Effect.fn('RuleEngineService.applyRulesToTransactionIds')(function* (transactionIds: number[]) {
+            const rules = yield* ruleRepository.findEnabledWithRelations();
+            if (!isNotEmptyArray(rules)) {
+                return;
+            }
+
+            const transactions = yield* transactionRepository.findByIdsWithEntries(transactionIds);
+
+            yield* applyMatches(
+                transactions.map(transaction => ({
+                    transactionId: transaction.id,
+                    matchingRules: rules.filter(rule =>
+                        matchesRule(rule, ruleMatcherService.convertTransactionForRuleEvaluation(transaction))
+                    )
+                }))
             );
         });
 
@@ -417,7 +437,7 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
             return { applied: total - failed, failed, total } satisfies ApplyRuleResultInterface;
         });
 
-        return { applyRulesToTransactions, prepareCreateInputsForRules, applyRuleToMatchingTransactions };
+        return { applyRulesToTransactions, applyRulesToTransactionIds, prepareCreateInputsForRules, applyRuleToMatchingTransactions };
     })
 }) {
     static readonly layer = Layer.effect(RuleEngineService, RuleEngineService.make).pipe(

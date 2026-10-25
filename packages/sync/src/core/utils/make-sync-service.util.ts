@@ -54,6 +54,14 @@ export const makeSyncService = Effect.fnUntraced(function* (
     });
 
     return {
+        excludeExternalAccounts: Effect.fn('AbstractSyncService.excludeExternalAccounts')(function* (accounts: SyncAccountInterface[]) {
+            const externalAccounts = yield* accountRepository.findExternal();
+            const externalKeys = new Set(externalAccounts.flatMap(account => [account.externalId, account.iban]).filter(isDefined));
+
+            return accounts.filter(
+                account => ![account.id, resolveMatchableIban(account)].some(key => isDefined(key) && externalKeys.has(key))
+            );
+        }),
         setAccountSyncEnabled: Effect.fn('AbstractSyncService.setAccountSyncEnabled')(function* (accountId: number, enabled: boolean) {
             yield* Db.transaction(syncRepository.setEnabled(accountId, enabled));
             yield* afterSyncEnabledChange(enabled);

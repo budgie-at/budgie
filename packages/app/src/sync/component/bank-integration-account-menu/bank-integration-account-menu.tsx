@@ -1,5 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { ExternalAccountService } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { useRouter } from 'expo-router';
 import { View } from 'react-native';
 
@@ -10,6 +12,7 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
 import { PopoverMenu } from '../../../@generic/component/popover-menu/popover-menu';
 import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
+import { useEffectAction } from '../../../@generic/hook/use-effect-action.hook';
 import { usePopoverMenuAnchor } from '../../../@generic/hook/use-popover-menu-anchor.hook';
 import { testID } from '../../../@generic/utils/test-id.util';
 import { useArchiveAccount } from '../../../account/hooks/use-archive-account.hook';
@@ -27,12 +30,22 @@ export const BankIntegrationAccountMenu = ({ accountId, rowTestID }: Props) => {
     const router = useRouter();
     const { anchor, closeMenu, handleCloseComplete, handleToggleMenu, isMenuOpen } = usePopoverMenuAnchor();
     const { handleArchive, isLoading } = useArchiveAccount(accountId, emptyFn);
+    const [runMarkExternal, isMarkingExternal] = useEffectAction(t`Could not mark account as external`);
 
     const handleDetailsPress = () =>
         void closeMenu(() => void router.navigate({ pathname: '/account/[id]/details', params: { id: String(accountId) } }));
     const handleEditPress = () =>
         void closeMenu(() => void router.navigate({ pathname: '/account/[id]/update', params: { id: String(accountId) } }));
     const handleArchivePress = () => void closeMenu(() => void handleArchive());
+    const handleExternalPress = () =>
+        void closeMenu(
+            () =>
+                void runMarkExternal(
+                    Effect.flatMap(ExternalAccountService, externalAccountService => externalAccountService.markExternal(accountId))
+                )
+        );
+
+    const isBusy = isLoading || isMarkingExternal;
 
     return (
         <View>
@@ -41,7 +54,7 @@ export const BankIntegrationAccountMenu = ({ accountId, rowTestID }: Props) => {
                     className="items-center justify-center"
                     onPress={handleToggleMenu}
                     hitSlop={12}
-                    disabled={isLoading}
+                    disabled={isBusy}
                     accessibilityRole="button"
                     accessibilityLabel={t`Account actions`}
                     {...testID(rowTestID, TestIDPartEnum.MENU)}
@@ -69,6 +82,12 @@ export const BankIntegrationAccountMenu = ({ accountId, rowTestID }: Props) => {
                         label={t`Edit`}
                         onPress={handleEditPress}
                         {...testID(rowTestID, TestIDPartEnum.MENU, TestIDPartEnum.EDIT)}
+                    />
+                    <PopoverMenuItem
+                        icon={UserIconNameEnum.ArrowUpRight}
+                        label={t`External account`}
+                        onPress={handleExternalPress}
+                        {...testID(rowTestID, TestIDPartEnum.MENU, TestIDPartEnum.EXTERNAL)}
                     />
                     <PopoverMenuItem
                         icon={UserIconNameEnum.Archive}

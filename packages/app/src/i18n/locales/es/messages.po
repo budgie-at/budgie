@@ -1489,6 +1489,10 @@ msgstr "No se pudieron cargar las descargas de IA"
 msgid "Could not load sources. Please try again."
 msgstr "No se pudieron cargar las fuentes. Inténtalo de nuevo."
 
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "Could not mark account as external"
+msgstr "No se pudo marcar la cuenta como externa"
+
 #: src/category/components/category-form/category-form.tsx
 msgid "Could not merge category"
 msgstr "No se pudo fusionar la categoría"
@@ -2327,6 +2331,10 @@ msgstr "Exportar todas las transacciones a un archivo CSV"
 #: src/export/components/export-csv/export-csv.tsx
 msgid "Export CSV"
 msgstr "Exportar CSV"
+
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "External account"
+msgstr "Cuenta externa"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "External ID"

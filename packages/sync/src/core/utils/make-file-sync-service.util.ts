@@ -201,13 +201,19 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
         return buildImportResult(bankAccounts.length, accountImportResults);
     });
 
+    const parseFile = Effect.fnUntraced(function* (uri: string) {
+        const { client, bankAccounts } = yield* definition.parseFile(uri);
+
+        return { client, bankAccounts: yield* syncService.excludeExternalAccounts(bankAccounts) };
+    });
+
     const executeImport = (client: FileBasedSyncClientInterface, bankAccounts: SyncAccountInterface[]) =>
         syncWorkload.runUser(importWork(client, bankAccounts));
 
     return {
         ...syncService,
         importPreview: Effect.fn('AbstractFileSyncService.importPreview')(function* (uri: string) {
-            const { bankAccounts } = yield* definition.parseFile(uri);
+            const { bankAccounts } = yield* parseFile(uri);
 
             if (!isNotEmptyArray(bankAccounts)) {
                 return [];
@@ -216,7 +222,7 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
             return yield* syncService.mapAccountsToPreview(bankAccounts);
         }),
         reviewImport: Effect.fn('AbstractFileSyncService.reviewImport')(function* (uri: string, selectedAccountIds: string[]) {
-            const { client, bankAccounts } = yield* definition.parseFile(uri);
+            const { client, bankAccounts } = yield* parseFile(uri);
             const selectedBankAccounts = bankAccounts.filter(account => selectedAccountIds.includes(account.id));
             const existingTransactionIdMap = yield* transactionService.findIdMapByExternalSource(definition.provider);
 
@@ -226,7 +232,7 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
             uri: string,
             selectedAccountIds: string[]
         ) {
-            const { client, bankAccounts } = yield* definition.parseFile(uri);
+            const { client, bankAccounts } = yield* parseFile(uri);
             const selectedBankAccounts = bankAccounts.filter(account => selectedAccountIds.includes(account.id));
 
             if (!isNotEmptyArray(selectedBankAccounts)) {
@@ -236,7 +242,7 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
             yield* executeImport(client, selectedBankAccounts);
         }),
         quickImport: Effect.fn('AbstractFileSyncService.quickImport')(function* (uri: string) {
-            const { client, bankAccounts } = yield* definition.parseFile(uri);
+            const { client, bankAccounts } = yield* parseFile(uri);
 
             if (!isNotEmptyArray(bankAccounts)) {
                 return buildImportResult(0, []);

@@ -1489,6 +1489,10 @@ msgstr "Не вдалося завантажити дані ШІ"
 msgid "Could not load sources. Please try again."
 msgstr "Не вдалося завантажити джерела. Спробуйте ще раз."
 
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "Could not mark account as external"
+msgstr "Не вдалося позначити рахунок як зовнішній"
+
 #: src/category/components/category-form/category-form.tsx
 msgid "Could not merge category"
 msgstr "Не вдалося об'єднати категорію"
@@ -2327,6 +2331,10 @@ msgstr "Експортувати всі транзакції до CSV-файлу
 #: src/export/components/export-csv/export-csv.tsx
 msgid "Export CSV"
 msgstr "Експортувати CSV"
+
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "External account"
+msgstr "Зовнішній рахунок"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "External ID"
