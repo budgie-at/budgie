@@ -10,6 +10,7 @@ import {
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { AccountArchiveService } from '@budgie/ledger';
 import {
     ExternalAccountService,
     SyncRepairService,
@@ -90,6 +91,15 @@ describe('account/external-account', () => {
             const incomeBefore = yield* fetchIncomeTotal();
 
             yield* externalAccountService.markExternal(externalCard.id);
+            yield* (yield* AccountArchiveService).restoreById(externalCard.id);
+
+            const [restoredExternalCard] = yield* testDb
+                .select()
+                .from(AccountEntityTable)
+                .where(eq(AccountEntityTable.id, externalCard.id));
+
+            expect(restoredExternalCard.deletedAt).toBeInstanceOf(Date);
+            expect(restoredExternalCard.isExternal).toBe(true);
 
             const postArchive = yield* seedOwnCardTransfer(
                 externalCard.id,

@@ -14,6 +14,7 @@ import { PopoverMenu } from '../../../@generic/component/popover-menu/popover-me
 import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
 import { useEffectAction } from '../../../@generic/hook/use-effect-action.hook';
 import { usePopoverMenuAnchor } from '../../../@generic/hook/use-popover-menu-anchor.hook';
+import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { testID } from '../../../@generic/utils/test-id.util';
 import { useArchiveAccount } from '../../../account/hooks/use-archive-account.hook';
 
@@ -37,13 +38,22 @@ export const BankIntegrationAccountMenu = ({ accountId, rowTestID }: Props) => {
     const handleEditPress = () =>
         void closeMenu(() => void router.navigate({ pathname: '/account/[id]/update', params: { id: String(accountId) } }));
     const handleArchivePress = () => void closeMenu(() => void handleArchive());
-    const handleExternalPress = () =>
-        void closeMenu(
-            () =>
-                void runMarkExternal(
-                    Effect.flatMap(ExternalAccountService, externalAccountService => externalAccountService.markExternal(accountId))
-                )
-        );
+    const handleMarkExternal = async () => {
+        const confirmed = await confirmAlert({
+            title: t`Mark as External?`,
+            message: t`This account will be archived and its transfers will become income and expenses on your other accounts. This cannot be undone.`,
+            confirmText: t`Mark External`,
+            cancelText: t`Cancel`,
+            isDestructive: true
+        });
+
+        if (!confirmed) {
+            return;
+        }
+
+        runMarkExternal(Effect.flatMap(ExternalAccountService, externalAccountService => externalAccountService.markExternal(accountId)));
+    };
+    const handleExternalPress = () => void closeMenu(() => void handleMarkExternal());
 
     const isBusy = isLoading || isMarkingExternal;
 

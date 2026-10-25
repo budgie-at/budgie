@@ -1021,6 +1021,7 @@ msgstr "Peut prendre des heures"
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
 #: src/settings/components/sync-repairs-confirmation-card/sync-repairs-confirmation-card.tsx
 #: src/settings/components/truncate-data/truncate-data.tsx
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
@@ -2950,6 +2951,14 @@ msgstr "Manuel"
 msgid "Map CSV Columns"
 msgstr "Mapper les colonnes CSV"
 
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "Mark as External?"
+msgstr "Marquer comme externe ?"
+
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "Mark External"
+msgstr "Marquer comme externe"
+
 #: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
 msgid "Market cap"
 msgstr "Capitalisation"
@@ -4754,6 +4763,10 @@ msgstr "La règle a été enregistrée, mais aucune transaction existante n'avai
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "There is no \"forgot PIN\"."
 msgstr "Il n'y a pas de « code PIN oublié »."
+
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "This account will be archived and its transfers will become income and expenses on your other accounts. This cannot be undone."
+msgstr "Ce compte sera archivé et ses virements deviendront des revenus et des dépenses sur vos autres comptes. Cette action est irréversible."
 
 #: src/account/hooks/use-archive-account.hook.ts
 msgid "This account will be hidden from your main view and won't be included in totals. You can restore it anytime from Settings → Archived Accounts."

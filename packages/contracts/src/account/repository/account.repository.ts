@@ -130,7 +130,11 @@ export class AccountRepository extends Context.Service<AccountRepository>()('@bu
                 Db.query(db => db.update(AccountEntityTable).set({ deletedAt: new Date() }).where(eq(AccountEntityTable.id, id))),
             restoreById: (id: number) =>
                 Db.query(db =>
-                    db.update(AccountEntityTable).set({ deletedAt: null, isExternal: false }).where(eq(AccountEntityTable.id, id))
+                    db
+                        .update(AccountEntityTable)
+                        .set({ deletedAt: null })
+                        .where(and(eq(AccountEntityTable.id, id), eq(AccountEntityTable.isExternal, false)))
+                        .returning({ id: AccountEntityTable.id })
                 ),
             findExternal: () => Db.query(db => db.query.AccountEntityTable.findMany({ where: { isExternal: true } })),
             deleteById: (id: number) => Db.query(db => db.delete(AccountEntityTable).where(eq(AccountEntityTable.id, id))),

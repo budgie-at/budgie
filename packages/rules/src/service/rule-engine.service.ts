@@ -25,6 +25,7 @@ import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/sha
 import { RULE_BATCH_DELAY_MS, RULE_BATCH_SIZE, RULE_SET_BATCH_SIZE } from '../constant/batch-processing.constant';
 import { RuleRepository } from '../repository/rule.repository';
 import { TransactionRuleRepository } from '../repository/transaction-rule.repository';
+import { convertTransactionForRuleEvaluation } from '../utils/convert-transaction-for-rule-evaluation.util';
 import { extractRuleActionOutcomes } from '../utils/extract-rule-action-outcomes.util';
 import { matchesRule } from '../utils/matches-rule.util';
 
@@ -283,9 +284,7 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
             yield* applyMatches(
                 transactions.map(transaction => ({
                     transactionId: transaction.id,
-                    matchingRules: rules.filter(rule =>
-                        matchesRule(rule, ruleMatcherService.convertTransactionForRuleEvaluation(transaction))
-                    )
+                    matchingRules: rules.filter(rule => matchesRule(rule, convertTransactionForRuleEvaluation(transaction)))
                 }))
             );
         });
