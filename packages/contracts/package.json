@@ -34,7 +34,7 @@
         "effect": "4.0.5"
     },
     "devDependencies": {
-        "@effect/vitest": "4.0.5",
+        "@effect/vitest": "4.0.6",
         "@types/node": "26.6.5",
         "vitest": "^5.0.5"
     }

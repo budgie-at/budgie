@@ -33,8 +33,8 @@
     },
     "devDependencies": {
         "@budgie-at/test-kit": "workspace:*",
-        "@effect/sql-sqlite-node": "4.0.5",
-        "@effect/vitest": "4.0.5",
+        "@effect/sql-sqlite-node": "4.0.6",
+        "@effect/vitest": "4.0.6",
         "@types/node": "26.6.5",
         "typescript": "npm:@typescript/typescript6@6.0.2",
         "vitest": "^5.0.5"

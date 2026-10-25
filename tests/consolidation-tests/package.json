@@ -15,8 +15,8 @@
         "@budgie/contracts": "workspace:^",
         "@budgie/ledger": "workspace:*",
         "@budgie/sync": "workspace:*",
-        "@effect/sql-sqlite-node": "4.0.5",
-        "@effect/vitest": "4.0.5",
+        "@effect/sql-sqlite-node": "4.0.6",
+        "@effect/vitest": "4.0.6",
         "@rnw-community/shared": "^2.28.0",
         "drizzle-orm": "1.0.0-rc.4",
         "vitest": "^5.0.5"
