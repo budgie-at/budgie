@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.115.10](https://github.com/budgie-at/budgie/compare/v6.115.9...v6.115.10) (2026-10-25)
+
+### Bug Fixes
+
+* **app:** ease the screen chrome blur in across the whole edge band ([85b7883](https://github.com/budgie-at/budgie/commit/85b7883ca97fa2d622119d793ea2424d62aba224)), closes [rnw-community#737](https://github.com/rnw-community/issues/737)
+
+
 ## [6.115.9](https://github.com/budgie-at/budgie/compare/v6.115.8...v6.115.9) (2026-10-25)
 
 **Note:** Version bump only for package @budgie-at/app
