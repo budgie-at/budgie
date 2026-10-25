@@ -20,6 +20,8 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 import { testDb, TestLayer } from '../../harness';
 import { backupDatabasePath } from '../../harness/scenario/setup';
 
+import type { SQL } from 'drizzle-orm';
+
 const REPLAY_TIMEOUT_MS = 600_000;
 const ACCEPTED_ACCOUNT_IDS = new Set(
     String(process.env['BUDGIE_BACKUP_ACCEPT'] ?? '')
@@ -42,7 +44,7 @@ const snapshotBalances = Effect.fnUntraced(function* (accountIds: number[]) {
     };
 });
 
-const fetchManualDuplicateEntries = () =>
+const fetchConsolidationEntries = (consolidationType: TransactionConsolidationTypeEnum, condition: SQL | undefined) =>
     testDb
         .select({
             id: TransactionEntryEntityTable.id,
@@ -56,17 +58,30 @@ const fetchManualDuplicateEntries = () =>
         .innerJoin(AccountEntityTable, eq(AccountEntityTable.id, TransactionEntryEntityTable.accountId))
         .where(
             and(
-                eq(TransactionEntityTable.consolidationType, TransactionConsolidationTypeEnum.MANUAL_EXPENSE_DUPLICATE),
-                isNotNull(TransactionEntryEntityTable.originalTransactionId),
-                isNull(TransactionEntryEntityTable.deletedAt)
+                eq(TransactionEntityTable.consolidationType, consolidationType),
+                isNull(TransactionEntityTable.deletedAt),
+                isNull(TransactionEntryEntityTable.deletedAt),
+                condition
             )
         );
+
+const fetchManualDuplicateEntries = () =>
+    fetchConsolidationEntries(
+        TransactionConsolidationTypeEnum.MANUAL_EXPENSE_DUPLICATE,
+        isNotNull(TransactionEntryEntityTable.originalTransactionId)
+    );
+
+const fetchAtmCashMoveEntries = () =>
+    fetchConsolidationEntries(
+        TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL,
+        and(isNull(TransactionEntryEntityTable.originalTransactionId), eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.DEBIT))
+    );
 
 const formatAmount = (amount: number | undefined): string => (isDefined(amount) ? convertFromMicroUnits(amount).toFixed(2) : '-');
 
 describe.skipIf(!isDefined(backupDatabasePath))('database/backup-replay', () => {
     it.effect(
-        'replays consolidation and the balance rebuild on a migrated real backup moving ledger balances only by removed manual duplicates',
+        'replays consolidation and the balance rebuild on a migrated real backup moving ledger balances only by removed manual duplicates and ATM cash moves',
         () =>
             Effect.gen(function* () {
                 const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
@@ -79,6 +94,7 @@ describe.skipIf(!isDefined(backupDatabasePath))('database/backup-replay', () => 
                 const accountIds = accounts.map(({ id }) => id);
                 const before = yield* snapshotBalances(accountIds);
                 const manualDuplicateEntryIdsBefore = new Set((yield* fetchManualDuplicateEntries()).map(({ id }) => id));
+                const atmCashMoveEntryIdsBefore = new Set((yield* fetchAtmCashMoveEntries()).map(({ id }) => id));
 
                 yield* transferConsolidationService.consolidate(null);
                 yield* accountBalanceIncrementalService.updateAllBalances(false);
@@ -86,9 +102,13 @@ describe.skipIf(!isDefined(backupDatabasePath))('database/backup-replay', () => 
                 const removedManualDuplicateEntries = (yield* fetchManualDuplicateEntries()).filter(
                     ({ id }) => !manualDuplicateEntryIdsBefore.has(id)
                 );
-                const expectedLedgerDeltas = removedManualDuplicateEntries.reduce(
-                    (deltas, { accountId, type, amount }) =>
-                        deltas.set(accountId, (deltas.get(accountId) ?? 0) - (LEDGER_SIGN_BY_ENTRY_TYPE[type] ?? 0) * amount),
+                const addedAtmCashMoveEntries = (yield* fetchAtmCashMoveEntries()).filter(({ id }) => !atmCashMoveEntryIdsBefore.has(id));
+                const expectedLedgerDeltas = [
+                    ...removedManualDuplicateEntries.map(entry => ({ ...entry, direction: -1 })),
+                    ...addedAtmCashMoveEntries.map(entry => ({ ...entry, direction: 1 }))
+                ].reduce(
+                    (deltas, { accountId, type, amount, direction }) =>
+                        deltas.set(accountId, (deltas.get(accountId) ?? 0) + direction * (LEDGER_SIGN_BY_ENTRY_TYPE[type] ?? 0) * amount),
                     new Map<number, number>()
                 );
                 const rows = accounts.map(({ id, title, currency }) =>
@@ -102,10 +122,11 @@ describe.skipIf(!isDefined(backupDatabasePath))('database/backup-replay', () => 
                 );
 
                 process.stdout.write(
-                    `id\ttitle\tcurrency\tstoredBefore\tstoredAfter\tledgerBefore\tledgerAfter\tmanualDuplicateDelta\n${rows.join('\n')}\n`
+                    `id\ttitle\tcurrency\tstoredBefore\tstoredAfter\tledgerBefore\tledgerAfter\texpectedDelta\n${rows.join('\n')}\n`
                 );
 
                 expect(removedManualDuplicateEntries.filter(({ accountType }) => accountType !== AccountTypeEnum.BANK)).toEqual([]);
+                expect(addedAtmCashMoveEntries.filter(({ accountType }) => accountType !== AccountTypeEnum.CASH)).toEqual([]);
                 expect(
                     accountIds.filter(
                         id =>
