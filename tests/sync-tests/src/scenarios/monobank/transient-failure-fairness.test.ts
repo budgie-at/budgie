@@ -5,8 +5,7 @@ import * as Clock from 'effect/Clock';
 import * as Effect from 'effect/Effect';
 import { http, HttpResponse } from 'msw';
 
-import { fetchSyncById, MonobankSyncService, TestLayer } from '../../harness';
-import { setupTransientFailureFixture } from '../../harness/monobank/setup-transient-failure-fixture';
+import { fetchSyncById, MonobankSyncService, setupTransientFailureFixture, TestLayer } from '../../harness';
 import { mockServer } from '../../harness/scenario/mock-server';
 
 const statementEndpoint = 'https://api.monobank.ua/personal/statement/:account/:from/:to';

@@ -9,40 +9,26 @@ export const setupTransientFailureFixture = Effect.fnUntraced(function* (mode: S
     const shared = yield* seed.account({ externalId: 'mono-shared', type: AccountTypeEnum.BANK_SYNC });
     const healthy = yield* seed.account({ externalId: 'mono-healthy', type: AccountTypeEnum.BANK_SYNC });
     const paused = yield* seed.account({ externalId: 'mono-paused', type: AccountTypeEnum.BANK_SYNC });
-    const failed = yield* seed.sync({
-        accountId: selected.id,
-        provider: ExternalSourceEnum.MONOBANK,
-        token: 'broken-endpoint-token',
+    const seedMonobankSync = (accountId: number, token: string, overrides: Partial<Parameters<typeof seed.sync>[0]> = {}) =>
+        seed.sync({
+            accountId,
+            provider: ExternalSourceEnum.MONOBANK,
+            token,
+            mode,
+            forwardSyncFromAt: cursor,
+            forwardSyncedAt: cursor,
+            backwardSyncFromAt: cursor,
+            backwardSyncLimitAt: new Date(cursor.getTime() - 86_400_000),
+            ...overrides
+        });
+    const failed = yield* seedMonobankSync(selected.id, 'broken-endpoint-token', {
         enabled: true,
         errorCount: 3,
         status: SyncStatusEnum.FAILED,
-        lastError: 'Previous failure',
-        mode,
-        forwardSyncFromAt: cursor,
-        forwardSyncedAt: cursor,
-        backwardSyncFromAt: cursor,
-        backwardSyncLimitAt: new Date(cursor.getTime() - 86_400_000)
+        lastError: 'Previous failure'
     });
-    const sharedSync = yield* seed.sync({
-        accountId: shared.id,
-        provider: ExternalSourceEnum.MONOBANK,
-        token: 'broken-endpoint-token',
-        mode,
-        forwardSyncFromAt: cursor,
-        forwardSyncedAt: cursor,
-        backwardSyncFromAt: cursor,
-        backwardSyncLimitAt: new Date(cursor.getTime() - 86_400_000)
-    });
-    const good = yield* seed.sync({
-        accountId: healthy.id,
-        provider: ExternalSourceEnum.MONOBANK,
-        token: 'healthy-independent-token',
-        mode,
-        forwardSyncFromAt: cursor,
-        forwardSyncedAt: new Date(cursor.getTime() + 1_000),
-        backwardSyncFromAt: cursor,
-        backwardSyncLimitAt: new Date(cursor.getTime() - 86_400_000)
-    });
+    const sharedSync = yield* seedMonobankSync(shared.id, 'broken-endpoint-token');
+    const good = yield* seedMonobankSync(healthy.id, 'healthy-independent-token', { forwardSyncedAt: new Date(cursor.getTime() + 1_000) });
     const pausedSync = yield* seed.sync({ accountId: paused.id, enabled: false, mode });
 
     return { cursor, failed, good, pausedSync, sharedSync };

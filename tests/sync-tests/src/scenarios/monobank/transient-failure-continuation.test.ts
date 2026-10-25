@@ -7,8 +7,7 @@ import * as FiberSet from 'effect/FiberSet';
 import * as TestClock from 'effect/testing/TestClock';
 import { http, HttpResponse } from 'msw';
 
-import { fetchSyncById, inWorkload, MonobankSyncService, TestClockLayer, Workload } from '../../harness';
-import { setupTransientFailureFixture } from '../../harness/monobank/setup-transient-failure-fixture';
+import { fetchSyncById, inWorkload, MonobankSyncService, setupTransientFailureFixture, TestClockLayer, Workload } from '../../harness';
 import { mockServer } from '../../harness/scenario/mock-server';
 import { testRuntime } from '../../harness/scenario/test-runtime';
 

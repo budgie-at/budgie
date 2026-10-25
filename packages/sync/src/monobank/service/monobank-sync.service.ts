@@ -10,7 +10,6 @@ import {
     SettingsRepository,
     SyncModeEnum,
     SyncRepository,
-    SyncStatusEnum,
     TransactionRepository,
     UserIconNameEnum,
     convertToMicroUnits
@@ -336,18 +335,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
             ...pollingSyncService,
             updateAccountToken: Effect.fn('MonobankSyncService.updateAccountToken')(function* (accountId: number, token: string) {
                 yield* Db.transaction(
-                    Effect.gen(function* () {
-                        yield* pollingSyncService.updateAccountToken(accountId, token);
-                        const sync = yield* syncRepository.getByAccountId(accountId);
-                        if (isDefined(sync)) {
-                            yield* syncRepository.update(sync.id, {
-                                enabled: true,
-                                status: SyncStatusEnum.IDLE,
-                                errorCount: 0,
-                                lastError: null
-                            });
-                        }
-                    })
+                    Effect.andThen(pollingSyncService.updateAccountToken(accountId, token), syncRepository.recoverByAccountId(accountId))
                 );
                 yield* pollingSyncService.requestSync();
             }),

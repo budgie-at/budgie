@@ -58,10 +58,8 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
         const nowMs = yield* Clock.currentTimeMillis;
         let pendingSync: SyncEntityInterface | null = null;
         let earliestRequestAtMs = Number.POSITIVE_INFINITY;
-
-        for (const sync of [...backwardSyncs, ...forwardSyncs.filter(sync => !processedForwardSyncIds.has(sync.id))].filter(
-            isNotExhausted
-        )) {
+        const candidates = [...backwardSyncs, ...forwardSyncs.filter(sync => !processedForwardSyncIds.has(sync.id))].filter(isNotExhausted);
+        for (const sync of candidates) {
             const requestAtMs = Math.max(nowMs, yield* rateGate.requestReadyAtMs(yield* resolveSyncToken(sync)));
             if (requestAtMs < earliestRequestAtMs) {
                 pendingSync = sync;
@@ -133,10 +131,13 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
             return true;
         }
 
-        return !(yield* processPendingSync(pendingSync)) ||
-            (definition.isRunWorkComplete?.() !== true && ((yield* shouldYieldAfterBatch()) || (yield* shouldStopProcessing)))
-            ? true
-            : null;
+        if (!(yield* processPendingSync(pendingSync))) {
+            return true;
+        }
+        const isRunFinished =
+            definition.isRunWorkComplete?.() !== true && ((yield* shouldYieldAfterBatch()) || (yield* shouldStopProcessing));
+
+        return isRunFinished ? true : null;
     });
 
     const retryAfterError = Effect.fnUntraced(function* (enabledSyncs: SyncEntityInterface[], errorMessage: string) {
