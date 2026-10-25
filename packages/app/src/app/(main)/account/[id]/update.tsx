@@ -32,6 +32,13 @@ export default function UpdateAccount() {
             return <UpdateDebtAccount account={account} />;
         case AccountTypeEnum.DEPOSIT:
             return <UpdateDepositAccount account={account} />;
+        case AccountTypeEnum.CASH:
+        case AccountTypeEnum.BANK:
+        case AccountTypeEnum.CRYPTO:
+        case AccountTypeEnum.STOCKS:
+        case AccountTypeEnum.SAVINGS:
+        case AccountTypeEnum.BANK_SYNC:
+        case AccountTypeEnum.CRYPTO_SYNC:
         default:
             return <UpdateLiabilityAccount account={account} />;
     }

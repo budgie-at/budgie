@@ -27,6 +27,7 @@ const calculateAmountForRuleEvaluation = (transaction: TransactionWithEntriesMcc
             return entries.some(entry => entry.type === TransactionEntryTypeEnum.DEBIT)
                 ? sumEntryAmountsOfType(entries, TransactionEntryTypeEnum.DEBIT)
                 : sumEntryAmountsOfType(entries, TransactionEntryTypeEnum.CREDIT);
+        case TransactionTypeEnum.DEBT:
         default:
             return 0;
     }

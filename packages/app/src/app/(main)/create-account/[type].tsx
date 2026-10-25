@@ -31,6 +31,15 @@ export default function CreateAccountType() {
             return <CreateErsteAccount />;
         case ExternalSourceEnum.BINANCE:
             return <CreateBinanceAccount />;
+        case AccountTypeEnum.STOCKS:
+        case AccountTypeEnum.SAVINGS:
+        case AccountTypeEnum.BANK_SYNC:
+        case AccountTypeEnum.CRYPTO_SYNC:
+        case ExternalSourceEnum.MANUAL:
+        case ExternalSourceEnum.REVOLUT:
+        case ExternalSourceEnum.COINBASE:
+        case ExternalSourceEnum.WISE:
+        case ExternalSourceEnum.CSV:
         default:
             return <Redirect href="/" />;
     }

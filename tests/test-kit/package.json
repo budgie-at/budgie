@@ -16,7 +16,8 @@
         }
     },
     "scripts": {
-        "ts": "node ../../node_modules/@typescript/native/bin/tsc --noEmit"
+        "ts": "node ../../scripts/typecheck.cjs --noEmit -p tsconfig.json",
+        "ts:native": "node ../../scripts/typecheck.cjs --native --noEmit -p tsconfig.json"
     },
     "dependencies": {
         "@budgie/contracts": "workspace:^",

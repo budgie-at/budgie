@@ -554,6 +554,7 @@
                 ],
                 "typescript/no-floating-promises": "error",
                 "typescript/no-for-in-array": "error",
+                "typescript/no-generated-empty-object-type": "error",
                 "typescript/no-implied-eval": "error",
                 "typescript/no-invalid-void-type": "error",
                 "typescript/no-meaningless-void-operator": "off",
@@ -591,6 +592,7 @@
                 "typescript/no-unsafe-function-type": "error",
                 "typescript/no-unsafe-member-access": "error",
                 "typescript/no-unsafe-return": "error",
+                "typescript/no-unsafe-type-assertion": "error",
                 "typescript/no-unsafe-unary-minus": "error",
                 "typescript/no-useless-default-assignment": "error",
                 "typescript/no-wrapper-object-types": "error",
@@ -622,6 +624,13 @@
                 "typescript/return-await": [
                     "error",
                     "error-handling-correctness-only"
+                ],
+                "typescript/switch-exhaustiveness-check": [
+                    "error",
+                    {
+                        "considerDefaultExhaustiveForUnions": false,
+                        "allowDefaultCaseForExhaustiveSwitch": true
+                    }
                 ],
                 "typescript/triple-slash-reference": "error",
                 "typescript/unbound-method": "error",

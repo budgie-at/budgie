@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.115.8](https://github.com/budgie-at/budgie/compare/v6.115.7...v6.115.8) (2026-10-25)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+## [6.115.7](https://github.com/budgie-at/budgie/compare/v6.115.6...v6.115.7) (2026-10-25)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+## [6.115.6](https://github.com/budgie-at/budgie/compare/v6.115.5...v6.115.6) (2026-10-25)
+
+### Bug Fixes
+
+* **app:** return to the previous screen after PIN unlock ([#1660](https://github.com/budgie-at/budgie/issues/1660)) ([370f97f](https://github.com/budgie-at/budgie/commit/370f97f77f44c9cbfb5a3fd501aef5465e630485))
+
+
 ## [6.115.5](https://github.com/budgie-at/budgie/compare/v6.115.4...v6.115.5) (2026-10-25)
 
 ### Bug Fixes

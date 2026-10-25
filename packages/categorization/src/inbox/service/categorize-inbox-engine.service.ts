@@ -385,6 +385,8 @@ class CategorizeInboxEngineService {
                 return cluster.rows.length * Math.log10(10 + absoluteAmount);
             case CategorizeInboxSectionEnum.ONE_OFFS:
                 return absoluteAmount;
+            case CategorizeInboxSectionEnum.CASH_WITHDRAWALS:
+            case CategorizeInboxSectionEnum.CONFIDENT:
             default:
                 return cluster.rows.length;
         }
