@@ -1,7 +1,6 @@
-import { AccountEntityInterface, UserIconType } from '@budgie/contracts';
+import { AccountEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { ReactNode } from 'react';
-import { Control } from 'react-hook-form';
 import { View } from 'react-native';
 
 import { EmptyFn } from '@rnw-community/shared';
@@ -12,27 +11,21 @@ import { CollapsibleChromePage } from '../../../@generic/component/collapsible-c
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
+import { AccountFormBindingsInterface } from '../../interface/account-form-bindings.interface';
 import { AccountActiveToggleField } from '../account-active-toggle-field/account-active-toggle-field';
 import { ArchiveAccount } from '../archive-account/archive-account';
 import { CreateAccountScreenSelector } from '../create-account-screen/create-account-screen.selector';
 
-interface Props<T extends { title: string; icon: UserIconType; isActive?: boolean }> {
+interface Props {
     readonly account: AccountEntityInterface;
-    readonly control: Control<T>;
+    readonly fields: Pick<AccountFormBindingsInterface, 'title' | 'icon' | 'isActive'>;
     readonly hero: ReactNode;
     readonly children?: ReactNode;
     readonly onSubmit: EmptyFn;
     readonly isSubmitting?: boolean;
 }
 
-export const UpdateAccountPage = <T extends { title: string; icon: UserIconType; isActive?: boolean }>({
-    account,
-    control,
-    hero,
-    children,
-    onSubmit,
-    isSubmitting
-}: Props<T>) => {
+export const UpdateAccountPage = ({ account, fields, hero, children, onSubmit, isSubmitting }: Props) => {
     const { t } = useLingui();
     const variant = ACCOUNT_COLOR[account.type];
 
@@ -62,7 +55,8 @@ export const UpdateAccountPage = <T extends { title: string; icon: UserIconType;
 
             <FormLayoutGroup>
                 <AccountDetailsField
-                    control={control}
+                    titleBinding={fields.title}
+                    iconBinding={fields.icon}
                     variant={variant}
                     nameInputTestID={CreateAccountScreenSelector.NameInput}
                     selectNameOnFocus
@@ -70,7 +64,7 @@ export const UpdateAccountPage = <T extends { title: string; icon: UserIconType;
 
                 {children}
 
-                <AccountActiveToggleField control={control} />
+                <AccountActiveToggleField value={fields.isActive.field.value} onChange={fields.isActive.field.onChange} />
             </FormLayoutGroup>
         </CollapsibleChromePage>
     );

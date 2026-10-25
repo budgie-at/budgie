@@ -1,8 +1,8 @@
-import { ACCOUNT_TITLE_MAX_LENGTH, UserIconType } from '@budgie/contracts';
+import { ACCOUNT_TITLE_MAX_LENGTH } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { Control, Controller, FieldPath, UseControllerReturn } from 'react-hook-form';
 import { View } from 'react-native';
 
+import { AccountFormBindingsInterface } from '../../../account/interface/account-form-bindings.interface';
 import { useIconSelectorModal } from '../../context/icon-selector-modal.context';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { CircleIcon } from '../circle-icon/circle-icon';
@@ -10,61 +10,47 @@ import { FormItem } from '../form-item/form-item';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Input } from '../input/input';
 
-type AccountDetailsFieldsProps<T extends { title: string; icon: UserIconType }> = {
-    readonly control: Control<T>;
+interface Props {
+    readonly titleBinding: AccountFormBindingsInterface['title'];
+    readonly iconBinding: AccountFormBindingsInterface['icon'];
     readonly variant: ColorPaletteVariant;
     readonly nameInputTestID?: string;
     readonly selectNameOnFocus?: boolean;
-};
+}
 
-export const AccountDetailsField = <T extends { title: string; icon: UserIconType }>({
-    control,
-    variant,
-    nameInputTestID,
-    selectNameOnFocus = false
-}: AccountDetailsFieldsProps<T>) => {
+export const AccountDetailsField = (props: Props) => {
+    const { titleBinding, iconBinding, variant, nameInputTestID, selectNameOnFocus = false } = props;
     const { t } = useLingui();
     const [openIconSelector] = useIconSelectorModal();
+    const status = titleBinding.fieldState.invalid ? 'error' : 'default';
 
-    const renderIconField = ({ field: { value, onChange } }: UseControllerReturn<T, FieldPath<T>>) => {
-        const handlePress = () => {
-            openIconSelector({ selectedIcon: value as UserIconType, variant }, selectedIcon => {
-                if (selectedIcon) {
-                    onChange(selectedIcon as Parameters<typeof onChange>[0]);
-                }
-            });
-        };
-
-        return (
-            <HapticPressable onPress={handlePress}>
-                <CircleIcon variant={variant} size={62} iconSize={28} icon={value as UserIconType} />
-            </HapticPressable>
-        );
+    const handleIconPress = () => {
+        openIconSelector({ selectedIcon: iconBinding.field.value, variant }, selectedIcon => {
+            if (selectedIcon) {
+                iconBinding.field.onChange(selectedIcon);
+            }
+        });
     };
 
-    const renderTitleField = ({ field, fieldState }: UseControllerReturn<T, FieldPath<T>>) => {
-        const status = fieldState.invalid ? 'error' : 'default';
-
-        return (
-            <FormItem label={t`Account Name & Icon`} error={fieldState.error?.message}>
-                <View className="flex-row gap-x-xl items-center">
-                    <Controller control={control} name={'icon' as FieldPath<T>} render={renderIconField} />
-
-                    <Input
-                        size="lg"
-                        status={status}
-                        value={field.value}
-                        onChangeText={field.onChange}
-                        selectTextOnFocus={selectNameOnFocus}
-                        className="flex-1"
-                        maxLength={ACCOUNT_TITLE_MAX_LENGTH}
-                        placeholder={t`e.g. Savings Account`}
-                        testID={nameInputTestID}
-                    />
-                </View>
-            </FormItem>
-        );
-    };
-
-    return <Controller control={control} name={'title' as FieldPath<T>} render={renderTitleField} />;
+    return (
+        <FormItem label={t`Account Name & Icon`} error={titleBinding.fieldState.error?.message}>
+            <View className="flex-row gap-x-xl items-center">
+                <HapticPressable onPress={handleIconPress}>
+                    <CircleIcon variant={variant} size={62} iconSize={28} icon={iconBinding.field.value} />
+                </HapticPressable>
+                <Input
+                    size="lg"
+                    status={status}
+                    value={titleBinding.field.value}
+                    onChangeText={titleBinding.field.onChange}
+                    onBlur={titleBinding.field.onBlur}
+                    selectTextOnFocus={selectNameOnFocus}
+                    className="flex-1"
+                    maxLength={ACCOUNT_TITLE_MAX_LENGTH}
+                    placeholder={t`e.g. Savings Account`}
+                    testID={nameInputTestID}
+                />
+            </View>
+        </FormItem>
+    );
 };

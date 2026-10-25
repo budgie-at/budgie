@@ -2,7 +2,8 @@
     "$schema": "https://turborepo.com/schema.json",
     "globalDependencies": [
         "tsconfig*.json",
-        ".env*"
+        ".env*",
+        "scripts/typecheck.cjs"
     ],
     "tasks": {
         "release": {
@@ -16,12 +17,11 @@
         },
         "ts": {
             "dependsOn": [
-                "^ts"
+                "^ts",
+                "^build"
             ],
-            "outputs": [
-                "node_modules/.cache/tsbuildinfo.json",
-                "dist/**"
-            ]
+            "outputs": [],
+            "cache": false
         },
         "clear": {
             "outputs": []
@@ -41,7 +41,8 @@
             ],
             "outputs": [
                 "dist/**",
-                ".next/**"
+                ".next/**",
+                "node_modules/.cache/tsbuildinfo.json"
             ]
         },
         "test": {
@@ -56,6 +57,15 @@
         },
         "//#deadcode": {
             "outputs": []
+        },
+        "ts:native": {
+            "dependsOn": [
+                "^ts:native",
+                "^build"
+            ],
+            "outputs": [
+                "node_modules/.cache/typecheck-native-*.json"
+            ]
         }
     },
     "agentGuidance": false

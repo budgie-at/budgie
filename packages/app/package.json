@@ -21,7 +21,8 @@
         "start": "expo start --dev-client -c",
         "store:notes": "node --experimental-strip-types scripts/generate-store-release-notes.ts",
         "test": "vitest run",
-        "ts": "node ../../node_modules/@typescript/native/bin/tsc -p ."
+        "ts": "node ../../scripts/typecheck.cjs --noEmit -p tsconfig.json",
+        "ts:native": "node ../../scripts/typecheck.cjs --native --noEmit -p tsconfig.json"
     },
     "dependencies": {
         "@budgie/ai": "workspace:^",
