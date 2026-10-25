@@ -30,6 +30,8 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
     const forwardSyncStaleThresholdMs = 2 * 60 * 1000;
     const syncErrorThreshold = 3;
     const processedForwardSyncIds = new Set<number>();
+    const exhaustedSyncIds = new Set<number>();
+    const isNotExhausted = (sync: SyncEntityInterface) => !exhaustedSyncIds.has(sync.id);
     const applyProgressUpdate =
         definition.applyProgressUpdate ??
         ((sync: SyncEntityInterface, result: SyncBatchResultInterface) =>
@@ -50,22 +52,31 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
     const resolveSyncToken = (sync: SyncEntityInterface) =>
         syncIntegrationTokenService.resolveAccountToken(definition.provider, sync.accountId);
 
-    const claimPendingSync = Effect.fnUntraced(function* (sync: SyncEntityInterface) {
-        yield* syncRepository.setStatus(sync.id, SyncStatusEnum.SYNCING);
-
-        return sync;
-    });
-
     const getNextPendingSync = Effect.fnUntraced(function* () {
-        const [backwardSync] = yield* syncRepository.getPendingBackwardSync(definition.provider);
-        if (isDefined(backwardSync)) {
-            return yield* claimPendingSync(backwardSync);
+        const backwardSyncs = yield* syncRepository.getPendingBackwardSync(definition.provider);
+        const forwardSyncs = yield* syncRepository.getPendingForwardSync(definition.provider, forwardSyncStaleThresholdMs);
+        const nowMs = yield* Clock.currentTimeMillis;
+        let pendingSync: SyncEntityInterface | null = null;
+        let earliestRequestAtMs = Number.POSITIVE_INFINITY;
+
+        for (const sync of [...backwardSyncs, ...forwardSyncs.filter(sync => !processedForwardSyncIds.has(sync.id))].filter(
+            isNotExhausted
+        )) {
+            const requestAtMs = Math.max(nowMs, yield* rateGate.requestReadyAtMs(yield* resolveSyncToken(sync)));
+            if (requestAtMs < earliestRequestAtMs) {
+                pendingSync = sync;
+                earliestRequestAtMs = requestAtMs;
+            }
+            if (requestAtMs === nowMs) {
+                break;
+            }
         }
 
-        const forwardSyncs = yield* syncRepository.getPendingForwardSync(definition.provider, forwardSyncStaleThresholdMs);
-        const forwardSync = forwardSyncs.find(sync => !processedForwardSyncIds.has(sync.id));
+        if (isDefined(pendingSync)) {
+            yield* syncRepository.setStatus(pendingSync.id, SyncStatusEnum.SYNCING);
+        }
 
-        return isDefined(forwardSync) ? yield* claimPendingSync(forwardSync) : null;
+        return pendingSync;
     });
 
     const processPendingSync = Effect.fnUntraced(function* (pendingSync: SyncEntityInterface) {
@@ -97,10 +108,10 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
         return true;
     });
 
-    const shouldYieldAfterBatch = Effect.fnUntraced(function* () {
-        const shouldYield = yield* rateGate.shouldYieldAfterBatch(runDeadlineAtMs, definition.rateLimitMs);
+    const shouldYieldAfterBatch = Effect.fnUntraced(function* (rateLimitMs: number = definition.rateLimitMs) {
+        const shouldYield = yield* rateGate.shouldYieldAfterBatch(runDeadlineAtMs, rateLimitMs);
         if (shouldYield && !Number.isFinite(runDeadlineAtMs)) {
-            nextContinuationAtMs = yield* rateGate.lastRequestReadyAtMs;
+            nextContinuationAtMs = rateLimitMs === 0 ? yield* Clock.currentTimeMillis : yield* rateGate.lastRequestReadyAtMs;
         }
 
         return shouldYield;
@@ -122,14 +133,10 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
             return true;
         }
 
-        if (!(yield* processPendingSync(pendingSync))) {
-            return true;
-        }
-
-        const isRunFinished =
-            definition.isRunWorkComplete?.() !== true && ((yield* shouldYieldAfterBatch()) || (yield* shouldStopProcessing));
-
-        return isRunFinished ? true : null;
+        return !(yield* processPendingSync(pendingSync)) ||
+            (definition.isRunWorkComplete?.() !== true && ((yield* shouldYieldAfterBatch()) || (yield* shouldStopProcessing)))
+            ? true
+            : null;
     });
 
     const retryAfterError = Effect.fnUntraced(function* (enabledSyncs: SyncEntityInterface[], errorMessage: string) {
@@ -189,11 +196,20 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
             return false;
         }
 
+        const failedSyncs = yield* resolveSyncsToDisable(enabledSyncs, error);
+        const keepEnabled = definition.shouldKeepFailedSyncEnabledAfterError?.(error) === true;
         yield* Effect.forEach(
-            yield* resolveSyncsToDisable(enabledSyncs, error),
-            sync => syncRepository.update(sync.id, { status: SyncStatusEnum.FAILED, lastError: errorMessage, enabled: false }),
+            failedSyncs,
+            sync => syncRepository.update(sync.id, { status: SyncStatusEnum.FAILED, lastError: errorMessage, enabled: keepEnabled }),
             { discard: true }
         );
+
+        if (keepEnabled && isNotEmptyArray(failedSyncs)) {
+            failedSyncs.forEach(sync => exhaustedSyncIds.add(sync.id));
+            failedSyncId = null;
+
+            return (yield* shouldYieldAfterBatch(0)) ? true : null;
+        }
 
         return false;
     });
@@ -208,7 +224,7 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
             );
         }
 
-        return result;
+        return result && exhaustedSyncIds.size === 0;
     });
 
     const runSyncAttempt = Effect.fnUntraced(function* (deadlineAtMs: number) {
@@ -216,13 +232,9 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
         failedSyncId = null;
         nextContinuationAtMs = null;
         processedForwardSyncIds.clear();
+        exhaustedSyncIds.clear();
 
-        const result = yield* Effect.ensuring(
-            runSyncLoop(),
-            Effect.sync(() => {
-                definition.afterSyncRun?.();
-            })
-        );
+        const result = yield* runSyncLoop().pipe(Effect.ensuring(Effect.sync(() => definition.afterSyncRun?.())));
 
         const continuationAtMs = nextContinuationAtMs;
         if (!isDefined(continuationAtMs)) {
@@ -231,8 +243,8 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
 
         const hasPendingWork =
             isDefined(failedSyncId) ||
-            isNotEmptyArray(yield* syncRepository.getPendingBackwardSync(definition.provider)) ||
-            isNotEmptyArray(yield* syncRepository.getPendingForwardSync(definition.provider, forwardSyncStaleThresholdMs));
+            (yield* syncRepository.getPendingBackwardSync(definition.provider)).some(isNotExhausted) ||
+            (yield* syncRepository.getPendingForwardSync(definition.provider, forwardSyncStaleThresholdMs)).some(isNotExhausted);
 
         return { result, continuationAtMs: hasPendingWork ? continuationAtMs : null };
     });

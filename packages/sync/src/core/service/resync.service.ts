@@ -1,5 +1,5 @@
 import { UnconsolidationService } from '@budgie/consolidation';
-import { Db, ExternalSourceEnum, SyncRepository, TransactionConsolidationRepository } from '@budgie/contracts';
+import { Db, ExternalSourceEnum, SyncRepository, SyncStatusEnum, TransactionConsolidationRepository } from '@budgie/contracts';
 import { TransactionService } from '@budgie/ledger';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -55,16 +55,31 @@ export class ResyncService extends Context.Service<ResyncService>()('@budgie/syn
         return {
             resync: Effect.fn('ResyncService.resync')(function* (input: ResyncInputInterface) {
                 const { accountId, sinceDays } = input;
-                if (isDefined(sinceDays)) {
-                    yield* Db.transaction(resyncWindowed(accountId, sinceDays));
-                } else {
-                    const sync = yield* syncRepository.getByAccountId(accountId);
-                    const setupBalance =
-                        sync?.provider === ExternalSourceEnum.MONOBANK ? yield* monobankSyncService.fetchSetupBalance(accountId) : null;
-                    yield* Db.transaction(resyncFull(accountId, setupBalance));
-                }
-
                 const service = yield* syncProviderRegistryService.getServiceForAccount(accountId);
+                const sync = yield* syncRepository.getByAccountId(accountId);
+                const setupBalance =
+                    !isDefined(sinceDays) && sync?.provider === ExternalSourceEnum.MONOBANK
+                        ? yield* monobankSyncService.fetchSetupBalance(accountId)
+                        : null;
+
+                yield* Db.transaction(
+                    Effect.gen(function* () {
+                        if (isDefined(sinceDays)) {
+                            yield* resyncWindowed(accountId, sinceDays);
+                        } else {
+                            yield* resyncFull(accountId, setupBalance);
+                        }
+
+                        if (isDefined(sync) && isDefined(service) && 'requestSync' in service) {
+                            yield* syncRepository.update(sync.id, {
+                                enabled: true,
+                                status: SyncStatusEnum.IDLE,
+                                errorCount: 0,
+                                lastError: null
+                            });
+                        }
+                    })
+                );
 
                 if (isDefined(service) && 'requestSync' in service) {
                     yield* service.requestSync();
