@@ -274,6 +274,10 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
         });
 
         const applyRulesToTransactionIds = Effect.fn('RuleEngineService.applyRulesToTransactionIds')(function* (transactionIds: number[]) {
+            if (!isNotEmptyArray(transactionIds)) {
+                return;
+            }
+
             const rules = yield* ruleRepository.findEnabledWithRelations();
             if (!isNotEmptyArray(rules)) {
                 return;

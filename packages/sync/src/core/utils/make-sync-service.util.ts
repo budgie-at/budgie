@@ -81,8 +81,16 @@ export const makeSyncService = Effect.fnUntraced(function* (
 
     return {
         findAccountsByExternalId,
-        excludeExternalAccounts: (accounts: SyncAccountInterface[]) =>
-            Effect.map(accountRepository.findExternal(), externalAccounts => excludeMatchingAccounts(accounts, externalAccounts, [])),
+        excludeExternalAccounts: Effect.fn('AbstractSyncService.excludeExternalAccounts')(function* (accounts: SyncAccountInterface[]) {
+            const externalAccounts = yield* accountRepository.findExternal();
+            const aliases = yield* accountRepository.findExternalIdAliases(accounts.map(account => account.id));
+
+            return excludeMatchingAccounts(
+                accounts,
+                externalAccounts,
+                aliases.filter(alias => alias.account.isExternal).map(alias => alias.externalId)
+            );
+        }),
         excludeKnownAccounts: Effect.fn('AbstractSyncService.excludeKnownAccounts')(function* (accounts: SyncAccountInterface[]) {
             const knownAccounts = yield* accountRepository.findIncludingArchivedByExternalKeys(
                 accounts.flatMap(account => [account.id, resolveMatchableIban(account)]).filter(isDefined)

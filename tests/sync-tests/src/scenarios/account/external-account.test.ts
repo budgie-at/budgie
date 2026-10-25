@@ -1,6 +1,7 @@
 import {
     AccountBalanceRepository,
     AccountEntityTable,
+    AccountRepository,
     DEFAULT_TRANSACTION_FILTER,
     ExternalSourceEnum,
     PRECISION,
@@ -34,6 +35,7 @@ import { seedTitleRule } from '../../harness/seed/seed-title-rule';
 
 const EXTERNAL_CARD = '4000 **** **** 9174';
 const LIVE_CARD = '4000 **** **** 8522';
+const EXTERNAL_ALIAS_CARD = '4000 **** **** 1174';
 const STATEMENT_URI = 'privatbank-statement.xlsx';
 const OPERATED_AT = new Date('2026-03-04T09:15:00.000Z');
 
@@ -66,10 +68,11 @@ const fetchIncomeTotal = Effect.fnUntraced(function* () {
     return totals.income;
 });
 
-const ownCardStatementClient = buildOwnCardStatementClient([
+const ownCardStatementRows = [
     buildOwnCardRow(EXTERNAL_CARD, -500, 'На мою картку *8522'),
     buildOwnCardRow(LIVE_CARD, 500, 'Зі своєї картки *9174')
-]);
+];
+const ownCardStatementClient = buildOwnCardStatementClient(ownCardStatementRows);
 
 describe('account/external-account', () => {
     it.effect('stores transfers with an external account as income and expense on the live card and keeps them converted', () =>
@@ -137,32 +140,39 @@ describe('account/external-account', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('keeps a consolidated own-card transfer as income on the live card and skips the external card on re-import', () =>
-        Effect.gen(function* () {
-            const externalAccountService = yield* ExternalAccountService;
-            const transferConsolidationService = yield* TransferConsolidationService;
-            const externalCard = yield* seedOwnCard(EXTERNAL_CARD);
-            const liveCard = yield* seedOwnCard(LIVE_CARD);
-            const syncService = yield* makeOwnCardStatementService(ownCardStatementClient);
+    it.effect(
+        'keeps a consolidated own-card transfer as income on the live card and skips the external card and its aliases on re-import',
+        () =>
+            Effect.gen(function* () {
+                const externalAccountService = yield* ExternalAccountService;
+                const transferConsolidationService = yield* TransferConsolidationService;
+                const externalCard = yield* seedOwnCard(EXTERNAL_CARD);
+                const liveCard = yield* seedOwnCard(LIVE_CARD);
+                const syncService = yield* makeOwnCardStatementService(ownCardStatementClient);
 
-            yield* syncService.executeImportForSelectedAccounts(STATEMENT_URI, [EXTERNAL_CARD, LIVE_CARD]);
-            yield* transferConsolidationService.consolidate(null);
+                yield* syncService.executeImportForSelectedAccounts(STATEMENT_URI, [EXTERNAL_CARD, LIVE_CARD]);
+                yield* transferConsolidationService.consolidate(null);
 
-            const accountCount = (yield* testDb.select().from(AccountEntityTable)).length;
+                const accountCount = (yield* testDb.select().from(AccountEntityTable)).length;
 
-            expect(summarize(yield* fetchVisibleTransactions())).toEqual([[TransactionTypeEnum.TRANSFER, externalCard.id, liveCard.id]]);
+                expect(summarize(yield* fetchVisibleTransactions())).toEqual([
+                    [TransactionTypeEnum.TRANSFER, externalCard.id, liveCard.id]
+                ]);
 
-            const rentCategory = yield* seed.category('Rent');
+                const rentCategory = yield* seed.category('Rent');
 
-            yield* seedTitleRule('*9174', { type: RuleActionTypeEnum.SET_CATEGORY, categoryId: rentCategory.id, accountId: null });
-            yield* externalAccountService.markExternal(externalCard.id);
-            yield* syncService.executeImportForSelectedAccounts(STATEMENT_URI, [EXTERNAL_CARD, LIVE_CARD]);
-            yield* transferConsolidationService.consolidate(null);
+                yield* seedTitleRule('*9174', { type: RuleActionTypeEnum.SET_CATEGORY, categoryId: rentCategory.id, accountId: null });
+                yield* (yield* AccountRepository).addExternalIdAlias(EXTERNAL_ALIAS_CARD, externalCard.id);
+                yield* externalAccountService.markExternal(externalCard.id);
+                yield* (yield* makeOwnCardStatementService(
+                    buildOwnCardStatementClient([...ownCardStatementRows, buildOwnCardRow(EXTERNAL_ALIAS_CARD, -10, 'На мою картку *8522')])
+                )).executeImportForSelectedAccounts(STATEMENT_URI, [EXTERNAL_CARD, LIVE_CARD, EXTERNAL_ALIAS_CARD]);
+                yield* transferConsolidationService.consolidate(null);
 
-            expect(yield* testDb.select().from(AccountEntityTable)).toHaveLength(accountCount);
-            expect(summarize(yield* fetchVisibleTransactions())).toEqual([[TransactionTypeEnum.INCOME, null, liveCard.id]]);
-            expect(yield* fetchLiveEntries(externalCard.id)).toEqual([]);
-            expect((yield* fetchLiveEntries(liveCard.id)).map(entry => entry.categoryId)).toEqual([rentCategory.id]);
-        }).pipe(Effect.provide(TestLayer))
+                expect(yield* testDb.select().from(AccountEntityTable)).toHaveLength(accountCount);
+                expect(summarize(yield* fetchVisibleTransactions())).toEqual([[TransactionTypeEnum.INCOME, null, liveCard.id]]);
+                expect(yield* fetchLiveEntries(externalCard.id)).toEqual([]);
+                expect((yield* fetchLiveEntries(liveCard.id)).map(entry => entry.categoryId)).toEqual([rentCategory.id]);
+            }).pipe(Effect.provide(TestLayer))
     );
 });
