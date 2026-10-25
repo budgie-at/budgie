@@ -1,5 +1,11 @@
 import { AccountTypeEnum, ExternalSourceEnum, TransactionEntityTable } from '@budgie/contracts';
-import { SyncAccountBalanceStateEnum, SyncAccountTypeEnum, SyncProviderEnum, privatbankTransactionMapper } from '@budgie/sync';
+import {
+    generateDefaultSyncAccountTitle,
+    SyncAccountBalanceStateEnum,
+    SyncAccountTypeEnum,
+    SyncProviderEnum,
+    privatbankTransactionMapper
+} from '@budgie/sync';
 import { and, isNull } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
@@ -23,10 +29,15 @@ export const seedOwnCard = (card: string) =>
         iban: `UA00PRIVATBANK${card.slice(-4)}`
     });
 
-export const buildOwnCardRow = (card: string, cardAmount: number, description: string): PrivatbankRowInterface => ({
-    rawDate: '04.03.2026 11:15:00',
-    date: OWN_CARD_OPERATED_AT,
-    deviceLocalDate: OWN_CARD_OPERATED_AT,
+export const buildOwnCardRow = (
+    card: string,
+    cardAmount: number,
+    description: string,
+    operatedAt = OWN_CARD_OPERATED_AT
+): PrivatbankRowInterface => ({
+    rawDate: operatedAt.toISOString(),
+    date: operatedAt,
+    deviceLocalDate: operatedAt,
     category: 'Перекази',
     card,
     description,
@@ -48,7 +59,8 @@ export const buildOwnCardStatementClient = (rows: PrivatbankRowInterface[]): Fil
             balance: 0,
             balanceState: SyncAccountBalanceStateEnum.REPRESENTABLE,
             creditLimit: 0,
-            type: SyncAccountTypeEnum.CARD
+            type: SyncAccountTypeEnum.CARD,
+            maskedPan: [card]
         })),
     getTransactions: accountId => rows.filter(row => row.card === accountId).map(privatbankTransactionMapper)
 });
@@ -60,7 +72,8 @@ export const makeOwnCardStatementService = (client: FileBasedSyncClientInterface
         return yield* makeStubFileBankSyncService(
             ExternalSourceEnum.PRIVATBANK,
             client,
-            new Map([['Перекази', { id: transferMcc.id, defaultCategoryId: null }]])
+            new Map([['Перекази', { id: transferMcc.id, defaultCategoryId: null }]]),
+            { generateAccountTitle: account => generateDefaultSyncAccountTitle('Privatbank', account) }
         );
     });
 

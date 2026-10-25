@@ -8,7 +8,7 @@ import { privatbankCurrencyCodeMapper } from './privatbank-currency-code.mapper'
 import type { SyncAccountInterface } from '../../core/interface/sync-account.interface';
 import type { PrivatbankRowInterface } from '../interface/privatbank-row.interface';
 
-const mapCardToAccount = (card: string, currencyString: string): SyncAccountInterface => ({
+export const privatbankCardAccountMapper = (card: string, currencyString: string): SyncAccountInterface => ({
     id: card,
     provider: SyncProviderEnum.PRIVATBANK,
     currencyCode: currencyString,
@@ -30,5 +30,5 @@ export const privatbankAccountMapper = (rows: PrivatbankRowInterface[]): SyncAcc
         }
     }
 
-    return [...uniqueCards.entries()].map(([card, currency]) => mapCardToAccount(card, currency));
+    return [...uniqueCards.entries()].map(([card, currency]) => privatbankCardAccountMapper(card, currency));
 };

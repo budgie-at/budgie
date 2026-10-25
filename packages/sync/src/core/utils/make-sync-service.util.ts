@@ -35,10 +35,22 @@ export const makeSyncService = Effect.fnUntraced(function* (
     const syncRepository = yield* SyncRepository;
     const accountService = yield* AccountService;
 
+    const findAccountsByExternalId = Effect.fnUntraced(function* (externalIds: string[]) {
+        const [accounts, aliases] = yield* Effect.all([
+            accountRepository.findByExternalIds(externalIds),
+            accountRepository.findExternalIdAliases(externalIds)
+        ]);
+
+        return new Map([
+            ...aliases.filter(alias => !isDefined(alias.account.deletedAt)).map(alias => [alias.externalId, alias.account] as const),
+            ...accounts.map(account => [account.externalId, account] as const)
+        ]);
+    });
+
     const findExistingSyncAccount = Effect.fnUntraced(function* (account: SyncAccountInterface) {
-        const existingByExternalId = yield* accountRepository.findByExternalIds([account.id]);
-        if (isNotEmptyArray(existingByExternalId)) {
-            return existingByExternalId[0];
+        const existingByExternalId = (yield* findAccountsByExternalId([account.id])).get(account.id);
+        if (isDefined(existingByExternalId)) {
+            return existingByExternalId;
         }
 
         const matchableIban = resolveMatchableIban(account);
@@ -54,6 +66,7 @@ export const makeSyncService = Effect.fnUntraced(function* (
     });
 
     return {
+        findAccountsByExternalId,
         excludeExternalAccounts: Effect.fn('AbstractSyncService.excludeExternalAccounts')(function* (accounts: SyncAccountInterface[]) {
             const externalAccounts = yield* accountRepository.findExternal();
             const externalKeys = new Set(externalAccounts.flatMap(account => [account.externalId, account.iban]).filter(isDefined));
@@ -66,7 +79,11 @@ export const makeSyncService = Effect.fnUntraced(function* (
             const knownAccounts = yield* accountRepository.findIncludingArchivedByExternalKeys(
                 accounts.flatMap(account => [account.id, resolveMatchableIban(account)]).filter(isDefined)
             );
-            const knownKeys = new Set(knownAccounts.flatMap(account => [account.externalId, account.iban]).filter(isDefined));
+            const aliases = yield* accountRepository.findExternalIdAliases(accounts.map(account => account.id));
+            const knownKeys = new Set([
+                ...knownAccounts.flatMap(account => [account.externalId, account.iban]).filter(isDefined),
+                ...aliases.map(alias => alias.externalId)
+            ]);
 
             return accounts.filter(
                 account => ![account.id, resolveMatchableIban(account)].some(key => isDefined(key) && knownKeys.has(key))
@@ -101,8 +118,7 @@ export const makeSyncService = Effect.fnUntraced(function* (
             accounts: SyncAccountInterface[],
             isParked: (account: SyncAccountInterface) => boolean = () => false
         ) {
-            const existingByExternalId = yield* accountRepository.findByExternalIds(accounts.map(account => account.id));
-            const existingByExternalIdMap = new Map(existingByExternalId.map(account => [account.externalId, account]));
+            const existingByExternalIdMap = yield* findAccountsByExternalId(accounts.map(account => account.id));
             const existingByIban = yield* accountRepository.findByIbans(accounts.map(resolveMatchableIban).filter(isDefined));
             const existingByIbanMap = new Map(existingByIban.map(account => [account.iban, account]));
             const existingSyncs = yield* syncRepository.getByProvider(definition.provider);

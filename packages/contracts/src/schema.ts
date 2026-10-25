@@ -1,4 +1,5 @@
 export { AccountEntityTable } from './account/table/account-entity.table';
+export { AccountExternalIdEntityTable } from './account/table/account-external-id-entity.table';
 export { AccountBalanceEntityTable } from './account-balance/table/account-balance-entity.table';
 export { DebtEventEntityTable } from './debt-event/table/debt-event-entity.table';
 export { BankIntegrationEntityTable } from './bank-integration/table/bank-integration-entity.table';

@@ -45,6 +45,7 @@ export { AccountDebtTypeEnum } from './account/enum/account-debt-type.enum';
 export { AccountAssociationEnum } from './account/enum/account-association.enum';
 
 export { AccountEntityTable } from './account/table/account-entity.table';
+export { AccountExternalIdEntityTable } from './account/table/account-external-id-entity.table';
 
 export { DebtAccountCreateInputSchema } from './account/schema/debt-account-create-input.schema';
 export { LiabilityAccountCreateInputSchema } from './account/schema/liability-account-create-input.schema';

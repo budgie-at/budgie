@@ -7,6 +7,7 @@ import * as Effect from 'effect/Effect';
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { SyncWorkload } from '../port/sync-workload.port';
+import { AccountReissueMergeService } from '../service/account-reissue-merge.service';
 import { SyncOperationMetadataService } from '../service/sync-operation-metadata.service';
 
 import { buildFileSyncImportReview } from './build-file-sync-import-review.util';
@@ -32,6 +33,7 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
     const transactionService = yield* TransactionService;
     const syncOperationMetadataService = yield* SyncOperationMetadataService;
     const ruleEngineService = yield* RuleEngineService;
+    const accountReissueMergeService = yield* AccountReissueMergeService;
     const syncService = yield* makeSyncService(definition);
     const resolveMccCategoryLookupKey =
         definition.resolveMccCategoryLookupKey ?? ((transaction: SyncTransactionInterface) => transaction.category ?? '');
@@ -84,17 +86,6 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
         yield* linkFileImportIntegration(account);
 
         return account;
-    });
-
-    const getEnabledExternalIds = Effect.fnUntraced(function* () {
-        const enabledSyncs = yield* syncRepository.getEnabledByProvider(definition.provider);
-        if (!isNotEmptyArray(enabledSyncs)) {
-            return new Set<string>();
-        }
-
-        const accounts = yield* accountRepository.findByIds(enabledSyncs.map(sync => sync.accountId));
-
-        return new Set(accounts.map(account => account.externalId).filter(isDefined));
     });
 
     const importAccountTransactions = Effect.fnUntraced(function* (
@@ -193,6 +184,7 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
         ]);
         const context: ImportContextInterface = { mccCategoryLookupMap, existingTransactionIdMap };
         const accountImportResults = yield* Db.transaction(importAccounts(client, bankAccounts, context));
+        yield* accountReissueMergeService.mergeReissuedAccounts();
 
         const transactionsToProcess = accountImportResults.flatMap(result => [...result.newTransactions, ...result.refilledTransactions]);
         yield* syncWorkload.enqueueRuleApplication(
@@ -254,11 +246,17 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
                 return buildImportResult(0, []);
             }
 
-            const enabledExternalIds = yield* getEnabledExternalIds();
-            const newBankAccounts = yield* syncService.excludeKnownAccounts(bankAccounts);
-            const bankAccountsToImport = bankAccounts.filter(
-                account => enabledExternalIds.has(account.id) || newBankAccounts.includes(account)
+            const enabledAccountIds = new Set(
+                (yield* syncRepository.getEnabledByProvider(definition.provider)).map(sync => sync.accountId)
             );
+            const existingAccounts = yield* syncService.findAccountsByExternalId(bankAccounts.map(account => account.id));
+            const newBankAccounts = yield* syncService.excludeKnownAccounts(bankAccounts);
+            const isSyncEnabled = (account: SyncAccountInterface): boolean => {
+                const existingAccount = existingAccounts.get(account.id);
+
+                return isDefined(existingAccount) && enabledAccountIds.has(existingAccount.id);
+            };
+            const bankAccountsToImport = bankAccounts.filter(account => isSyncEnabled(account) || newBankAccounts.includes(account));
             if (!isNotEmptyArray(bankAccountsToImport)) {
                 return buildImportResult(0, []);
             }

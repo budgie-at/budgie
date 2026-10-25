@@ -1,4 +1,4 @@
-import { and, count, eq, inArray, isNull, notInArray } from 'drizzle-orm';
+import { and, count, eq, getTableColumns, inArray, isNull, notInArray } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -14,6 +14,7 @@ import { AccountTypeEnum } from '../enum/account-type.enum';
 import { ExternalSourceEnum } from '../enum/external-source.enum';
 import { AccountFilterInterface } from '../interface/account-filter.interface';
 import { AccountEntityTable } from '../table/account-entity.table';
+import { AccountExternalIdEntityTable } from '../table/account-external-id-entity.table';
 
 export class AccountRepository extends Context.Service<AccountRepository>()('@budgie/contracts/AccountRepository', {
     make: Effect.sync(() => {
@@ -97,6 +98,26 @@ export class AccountRepository extends Context.Service<AccountRepository>()('@bu
                     db.query.AccountEntityTable.findMany({ where: { OR: [{ externalId: { in: keys } }, { iban: { in: keys } }] } })
                 );
             }),
+            findExternalIdAliases: Effect.fn('AccountRepository.findExternalIdAliases')(function* (externalIds: string[]) {
+                if (!isNotEmptyArray(externalIds)) {
+                    return [];
+                }
+
+                return yield* Db.query(db =>
+                    db
+                        .select({ externalId: AccountExternalIdEntityTable.externalId, account: getTableColumns(AccountEntityTable) })
+                        .from(AccountExternalIdEntityTable)
+                        .innerJoin(AccountEntityTable, eq(AccountEntityTable.id, AccountExternalIdEntityTable.accountId))
+                        .where(inArray(AccountExternalIdEntityTable.externalId, externalIds))
+                );
+            }),
+            addExternalIdAlias: (externalId: string, accountId: number) =>
+                Db.query(db =>
+                    db
+                        .insert(AccountExternalIdEntityTable)
+                        .values({ externalId, accountId })
+                        .onConflictDoUpdate({ target: AccountExternalIdEntityTable.externalId, set: { accountId } })
+                ),
             updateById: (id: number, input: AccountUpdateEntityInterface) =>
                 Db.query(db =>
                     db

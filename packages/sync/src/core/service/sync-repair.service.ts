@@ -12,6 +12,7 @@ import { ERSTE_DUPLICATE_CANDIDATE_SQL } from '../../erste/constant/erste-duplic
 import { PRIVATBANK_DUPLICATE_CANDIDATE_SQL } from '../../privatbank/constant/privatbank-duplicate-candidate-sql.constant';
 import { UnpairedOwnCardTransferRepairService } from '../../privatbank/service/unpaired-own-card-transfer-repair.service';
 
+import { AccountReissueMergeService } from './account-reissue-merge.service';
 import { ExternalAccountService } from './external-account.service';
 
 import type { SyncDuplicateCandidateRowInterface } from '../interface/sync-duplicate-candidate-row.interface';
@@ -25,6 +26,7 @@ export class SyncRepairService extends Context.Service<SyncRepairService>()('@bu
         const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
         const unpairedOwnCardTransferRepairService = yield* UnpairedOwnCardTransferRepairService;
         const externalAccountService = yield* ExternalAccountService;
+        const accountReissueMergeService = yield* AccountReissueMergeService;
         const exclusive = yield* Semaphore.make(1);
         const sources = [
             { externalSource: ExternalSourceEnum.PRIVATBANK, candidateSql: PRIVATBANK_DUPLICATE_CANDIDATE_SQL },
@@ -96,6 +98,7 @@ export class SyncRepairService extends Context.Service<SyncRepairService>()('@bu
         });
 
         const repairConsolidationDuplicates = Effect.fnUntraced(function* () {
+            const reissueMergeCount = yield* accountReissueMergeService.mergeReissuedAccounts();
             const incomeDuplicateRepairCount = yield* consolidationCoordinatorService.repairExistingTransferIncomeDuplicates();
             const bridgeClaimRepairCount = yield* consolidationCoordinatorService.repairBridgeClaimedTransferPairs();
             const missingTransferFeeRepairCount = yield* consolidationCoordinatorService.repairMissingTransferFees();
@@ -103,6 +106,7 @@ export class SyncRepairService extends Context.Service<SyncRepairService>()('@bu
             const ownCardTransferRepairCount = yield* unpairedOwnCardTransferRepairService.repair();
 
             return (
+                reissueMergeCount +
                 incomeDuplicateRepairCount +
                 bridgeClaimRepairCount +
                 missingTransferFeeRepairCount +
@@ -137,6 +141,7 @@ export class SyncRepairService extends Context.Service<SyncRepairService>()('@bu
                 (yield* consolidationCoordinatorService.countExistingTransferIncomeDuplicateRepairCandidates()) +
                 (yield* consolidationCoordinatorService.countBridgeClaimRepairCandidates()) +
                 (yield* consolidationCoordinatorService.countMissingTransferFeeRepairCandidates()) +
+                (yield* accountReissueMergeService.countCandidates()) +
                 (yield* externalAccountService.countCandidates()) +
                 (yield* unpairedOwnCardTransferRepairService.countCandidates());
 
@@ -172,7 +177,8 @@ export class SyncRepairService extends Context.Service<SyncRepairService>()('@bu
             ConsolidationCoordinatorService.layer,
             AccountBalanceIncrementalService.layer,
             UnpairedOwnCardTransferRepairService.layer,
-            ExternalAccountService.layer
+            ExternalAccountService.layer,
+            AccountReissueMergeService.layer
         ])
     );
 }
