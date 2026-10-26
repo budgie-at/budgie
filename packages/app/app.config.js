@@ -50,6 +50,7 @@ const getAppName = () => {
 
 const STRIP_EMBEDDED_FRAMEWORKS_SCRIPT_PHASE = `
   script_phase name: 'Strip Embedded Frameworks', execution_position: :any, always_out_of_date: '1', script: <<~'SCRIPT'
+    set -e
     if [ "$CONFIGURATION" != "Release" ]; then
       exit 0
     fi
