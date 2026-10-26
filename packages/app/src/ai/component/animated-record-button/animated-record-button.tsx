@@ -55,6 +55,8 @@ const getIcon = (state: RecordButtonStateType): UserIconNameEnum => {
             return UserIconNameEnum.Sparkles;
         case 'confirm':
             return UserIconNameEnum.Check;
+        case 'idle':
+        case 'loading':
         default:
             return UserIconNameEnum.Mic;
     }

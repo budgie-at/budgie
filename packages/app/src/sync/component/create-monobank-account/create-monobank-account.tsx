@@ -143,6 +143,7 @@ export const CreateMonobankAccount = () => {
             stepContent = <SyncHistoryDepthStep selectedDepth={historyDepth} onSelect={setHistoryDepth} />;
             footer = <Button onPress={handleSetupSync} disabled={isStartSyncDisabled} content={t`Start Sync`} />;
             break;
+        case SetupStepEnum.TOKEN:
         default:
             break;
     }

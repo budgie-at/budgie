@@ -1,6 +1,7 @@
 import { aggregateRunwayDrivers } from '@app/runway/utils/aggregate-runway-drivers.util';
-import { median } from '@app/runway/utils/median.util';
 import {
+    AccountEntityTable,
+    AccountTypeEnum,
     CategoryEntityTable,
     UserIconNameEnum,
     CurrencyEnum,
@@ -17,7 +18,7 @@ import {
     TransactionTypeEnum
 } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
-import { sql } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
 import { explainQueryPlan, requireInstrument, testDb, TestLayer } from '../../harness';
@@ -91,26 +92,32 @@ const seedScenario = Effect.fnUntraced(function* () {
 
 const aggregate = Effect.fnUntraced(function* (dimension: RunwayDriverDimensionEnum, instrumentId: number, isAllIn: boolean) {
     const statisticsRepository = yield* StatisticsRepository;
-    const seriesRows = yield* statisticsRepository.getRunwaySeriesQuery(DEFAULT_TRANSACTION_FILTER, instrumentId, RUNWAY_WINDOW_MONTHS);
-    const monthlyBurn = median(seriesRows.map(row => row.expense));
+    const seriesRows = yield* statisticsRepository.getRunwaySeriesQuery(
+        DEFAULT_TRANSACTION_FILTER,
+        instrumentId,
+        RUNWAY_WINDOW_MONTHS,
+        false
+    );
     const driverRows = yield* statisticsRepository.getRunwayDriverSeriesQuery(
         DEFAULT_TRANSACTION_FILTER,
         instrumentId,
         dimension,
         RUNWAY_WINDOW_MONTHS,
-        LanguageEnum.EN
+        LanguageEnum.EN,
+        false
     );
     const categoryRows = yield* statisticsRepository.getRunwayDriverSeriesQuery(
         DEFAULT_TRANSACTION_FILTER,
         instrumentId,
         RunwayDriverDimensionEnum.CATEGORY,
         RUNWAY_WINDOW_MONTHS,
-        LanguageEnum.EN
+        LanguageEnum.EN,
+        false
     );
 
     return {
-        drivers: aggregateRunwayDrivers(driverRows, monthlyBurn, isAllIn).drivers,
-        irregularMonthlyAmount: aggregateRunwayDrivers(categoryRows, monthlyBurn, isAllIn).irregularMonthlyAmount
+        drivers: aggregateRunwayDrivers(driverRows, seriesRows, isAllIn).drivers,
+        irregularMonthlyAmounts: aggregateRunwayDrivers(categoryRows, seriesRows, isAllIn).irregularMonthlyAmounts
     } satisfies RunwayDriverBreakdownInterface;
 });
 
@@ -132,7 +139,7 @@ describe('runway drivers', () => {
             yield* seedExpense(accountId, firstTail.id, FIRST_TAIL_AMOUNT, 3);
             yield* seedExpense(accountId, secondTail.id, SECOND_TAIL_AMOUNT, 1);
 
-            const { drivers, irregularMonthlyAmount } = yield* aggregate(RunwayDriverDimensionEnum.CATEGORY, instrumentId, true);
+            const { drivers, irregularMonthlyAmounts } = yield* aggregate(RunwayDriverDimensionEnum.CATEGORY, instrumentId, true);
 
             expect(drivers).toStrictEqual([
                 { id: regular.id, title: regular.title, monthlyAmount: REGULAR_MONTHLY_AMOUNT, isIrregular: false, foldedDriverCount: 0 },
@@ -151,7 +158,9 @@ describe('runway drivers', () => {
                     foldedDriverCount: 2
                 }
             ]);
-            expect(irregularMonthlyAmount).toBe((ONE_OFF_AMOUNT + FIRST_TAIL_AMOUNT + SECOND_TAIL_AMOUNT) / SEEDED_MONTHS);
+            expect(irregularMonthlyAmounts.reduce((total, amount) => total + amount, 0)).toBe(
+                ONE_OFF_AMOUNT + FIRST_TAIL_AMOUNT + SECOND_TAIL_AMOUNT
+            );
             expect((yield* aggregate(RunwayDriverDimensionEnum.CATEGORY, instrumentId, false)).drivers).toStrictEqual([
                 { id: regular.id, title: regular.title, monthlyAmount: REGULAR_MONTHLY_AMOUNT, isIrregular: false, foldedDriverCount: 0 }
             ]);
@@ -201,7 +210,7 @@ describe('runway drivers', () => {
                 },
                 { id: null, title: '', monthlyAmount: UNTAGGED_AMOUNT / SEEDED_MONTHS, isIrregular: true, foldedDriverCount: 0 }
             ]);
-            expect(tagBreakdown.irregularMonthlyAmount).toBe(ONE_OFF_AMOUNT / SEEDED_MONTHS);
+            expect(tagBreakdown.irregularMonthlyAmounts.reduce((total, amount) => total + amount, 0)).toBe(ONE_OFF_AMOUNT);
         }).pipe(Effect.provide(TestLayer))
     );
 });
@@ -240,7 +249,7 @@ describe('runway month window predicate', () => {
 
             const statisticsRepository = yield* StatisticsRepository;
             const seriesPlan = yield* explainQueryPlan(
-                statisticsRepository.getRunwaySeriesQuery(DEFAULT_TRANSACTION_FILTER, instrumentId, RUNWAY_WINDOW_MONTHS)
+                statisticsRepository.getRunwaySeriesQuery(DEFAULT_TRANSACTION_FILTER, instrumentId, RUNWAY_WINDOW_MONTHS, false)
             );
 
             expect(seriesPlan.some(detail => detail.includes('transactions_visible_operated_idx'))).toBe(true);
@@ -252,12 +261,61 @@ describe('runway month window predicate', () => {
                     instrumentId,
                     RunwayDriverDimensionEnum.CATEGORY,
                     RUNWAY_WINDOW_MONTHS,
-                    LanguageEnum.EN
+                    LanguageEnum.EN,
+                    false
                 )
             );
 
             expect(driverPlan.some(detail => detail.includes('transactions_visible_operated_idx'))).toBe(true);
             expect(driverPlan.some(detail => detail.includes('SCAN transactions '))).toBe(false);
+        }).pipe(Effect.provide(TestLayer))
+    );
+});
+
+describe('runway account scope', () => {
+    const readTotals = Effect.fnUntraced(function* (instrumentId: number, isCryptoIncluded: boolean) {
+        const statisticsRepository = yield* StatisticsRepository;
+        const seriesRows = yield* statisticsRepository.getRunwaySeriesQuery(
+            DEFAULT_TRANSACTION_FILTER,
+            instrumentId,
+            RUNWAY_WINDOW_MONTHS,
+            isCryptoIncluded
+        );
+        const driverRows = yield* statisticsRepository.getRunwayDriverSeriesQuery(
+            DEFAULT_TRANSACTION_FILTER,
+            instrumentId,
+            RunwayDriverDimensionEnum.CATEGORY,
+            RUNWAY_WINDOW_MONTHS,
+            LanguageEnum.EN,
+            isCryptoIncluded
+        );
+
+        return {
+            seriesExpense: seriesRows.reduce((total, row) => total + row.expense, 0),
+            driverExpense: driverRows.reduce((total, row) => total + row.amount, 0)
+        };
+    });
+
+    it.effect('counts only active liquid accounts, plus crypto when it is included', () =>
+        Effect.gen(function* () {
+            const { instrumentId } = yield* seedScenario();
+            const category = yield* seedCategory('Groceries');
+            const liquid = yield* seed.account({ instrumentId, type: AccountTypeEnum.BANK });
+            const crypto = yield* seed.account({ instrumentId, type: AccountTypeEnum.CRYPTO });
+            const deleted = yield* seed.account({ instrumentId, type: AccountTypeEnum.BANK });
+            const excludedAccounts = [
+                deleted,
+                yield* seed.account({ instrumentId, type: AccountTypeEnum.BANK, isActive: false }),
+                yield* seed.account({ instrumentId, type: AccountTypeEnum.DEPOSIT })
+            ];
+
+            yield* testDb.update(AccountEntityTable).set({ deletedAt: new Date() }).where(eq(AccountEntityTable.id, deleted.id));
+            yield* seedExpense(liquid.id, category.id, 30 * PRECISION, 1);
+            yield* seedExpense(crypto.id, category.id, 5 * PRECISION, 1);
+            yield* Effect.forEach(excludedAccounts, account => seedExpense(account.id, category.id, 70 * PRECISION, 1), { discard: true });
+
+            expect(yield* readTotals(instrumentId, false)).toStrictEqual({ seriesExpense: 30 * PRECISION, driverExpense: 30 * PRECISION });
+            expect(yield* readTotals(instrumentId, true)).toStrictEqual({ seriesExpense: 35 * PRECISION, driverExpense: 35 * PRECISION });
         }).pipe(Effect.provide(TestLayer))
     );
 });

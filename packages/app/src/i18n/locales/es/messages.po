@@ -1018,6 +1018,7 @@ msgstr "Puede tardar horas"
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
 #: src/settings/components/sync-repairs-confirmation-card/sync-repairs-confirmation-card.tsx
 #: src/settings/components/truncate-data/truncate-data.tsx
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
@@ -1479,6 +1480,10 @@ msgstr "No se pudieron cargar las descargas de IA"
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "Could not load sources. Please try again."
 msgstr "No se pudieron cargar las fuentes. Inténtalo de nuevo."
+
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "Could not mark account as external"
+msgstr "No se pudo marcar la cuenta como externa"
 
 #: src/category/components/category-form/category-form.tsx
 msgid "Could not merge category"
@@ -2334,6 +2339,10 @@ msgstr "Exportar todas las transacciones a un archivo CSV"
 msgid "Export CSV"
 msgstr "Exportar CSV"
 
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "External account"
+msgstr "Cuenta externa"
+
 #: src/app/(tabs)/settings/import.tsx
 msgid "External ID"
 msgstr "ID externo"
@@ -2956,6 +2965,14 @@ msgstr "Manual"
 msgid "Map CSV Columns"
 msgstr "Asignar columnas CSV"
 
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "Mark as External?"
+msgstr "¿Marcar como externa?"
+
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "Mark External"
+msgstr "Marcar como externa"
+
 #: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
 msgid "Market cap"
 msgstr "Capitalización de mercado"
@@ -3529,7 +3546,7 @@ msgstr "Gasto puntual"
 
 #: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
 msgid "One-offs"
-msgstr "Gastos únicos"
+msgstr "Movimientos únicos"
 
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "one-time download"
@@ -4687,12 +4704,9 @@ msgstr "Datos de sincronización reparados"
 msgid "Sync data repairs"
 msgstr "Reparaciones de datos de sincronización"
 
-#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
-msgid "Sync failed"
-msgstr "Error de sincronización"
-
 #: src/account/component/account-card-base/account-card-base.tsx
 #: src/sync/component/account-sync-card/account-sync-card.tsx
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Sync Failed"
 msgstr "Sincronización fallida"
 
@@ -4821,6 +4835,10 @@ msgstr "La regla se guardó, pero ninguna transacción existente necesitaba actu
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "There is no \"forgot PIN\"."
 msgstr "No existe «olvidé el PIN»."
+
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "This account will be archived and its transfers will become income and expenses on your other accounts. This cannot be undone."
+msgstr "Esta cuenta se archivará y sus transferencias se convertirán en ingresos y gastos en tus otras cuentas. Esto no se puede deshacer."
 
 #: src/account/hooks/use-archive-account.hook.ts
 msgid "This account will be hidden from your main view and won't be included in totals. You can restore it anytime from Settings → Archived Accounts."

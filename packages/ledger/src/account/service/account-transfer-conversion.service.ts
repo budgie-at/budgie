@@ -1,5 +1,4 @@
 import {
-    ACCOUNT_DELETED_TRANSFER_CATEGORY_ID,
     CategorySourceEnum,
     TransactionEntryCreateEntityInterface,
     TransactionEntryRepository,
@@ -22,7 +21,8 @@ export class AccountTransferConversionService extends Context.Service<AccountTra
 
             const collectSurvivingEntries = (
                 transfers: TransactionWithEntriesEntityInterface[],
-                accountId: number
+                accountId: number,
+                categoryId: number | null
             ): TransactionEntryCreateEntityInterface[] =>
                 transfers.flatMap(transfer =>
                     transfer.entries
@@ -30,18 +30,19 @@ export class AccountTransferConversionService extends Context.Service<AccountTra
                         .map(entry =>
                             entry.type === TransactionEntryTypeEnum.FEE
                                 ? entry
-                                : { ...entry, categoryId: ACCOUNT_DELETED_TRANSFER_CATEGORY_ID, categorySource: CategorySourceEnum.USER }
+                                : { ...entry, categoryId, categorySource: CategorySourceEnum.USER }
                         )
                 );
 
             return {
                 convertAccountTransfers: Effect.fn('AccountTransferConversionService.convertAccountTransfers')(function* (
-                    accountId: number
+                    accountId: number,
+                    categoryId: number | null
                 ) {
                     const transfers = yield* transactionRepository.findTransfersForConversion(accountId);
 
                     if (!isNotEmptyArray(transfers)) {
-                        return;
+                        return [];
                     }
 
                     const orphanedTransferIds = transfers
@@ -52,13 +53,15 @@ export class AccountTransferConversionService extends Context.Service<AccountTra
                     yield* transactionRepository.convertTransfersFromAccountToIncome(accountId);
                     yield* transactionRepository.convertTransfersToAccountToExpense(accountId);
 
-                    const entriesToCreate = collectSurvivingEntries(transfers, accountId);
+                    const entriesToCreate = collectSurvivingEntries(transfers, accountId, categoryId);
 
                     yield* transactionEntryRepository.deleteLedgerByTransactionIds(transfers.map(transaction => transaction.id));
 
                     if (isNotEmptyArray(entriesToCreate)) {
                         yield* transactionEntryRepository.bulkCreate(entriesToCreate);
                     }
+
+                    return [...new Set(entriesToCreate.map(entry => entry.transactionId))];
                 })
             };
         })

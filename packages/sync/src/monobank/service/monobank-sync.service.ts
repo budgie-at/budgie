@@ -36,6 +36,7 @@ import { UNKNOWN_SYNC_ERROR } from '../../core/constant/unknown-sync-error.const
 import { SyncAccountTypeEnum } from '../../core/enum/sync-account-type.enum';
 import { SyncHistoryDepthEnum } from '../../core/enum/sync-history-depth.enum';
 import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
+import { SyncNetworkError } from '../../core/error/sync-network.error';
 import { SyncTokenClientMismatchError } from '../../core/error/sync-token-client-mismatch.error';
 import { SyncUnauthorizedError } from '../../core/error/sync-unauthorized.error';
 import { pollingSyncDependenciesLayer } from '../../core/layer/polling-sync-dependencies.layer';
@@ -317,6 +318,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
             accountType: AccountTypeEnum.BANK_SYNC,
             rateLimitMs: MONOBANK_RATE_LIMIT_MS,
             shouldRequestSyncWhenEnabled: true,
+            shouldKeepFailedSyncEnabledAfterError: error => error instanceof SyncNetworkError,
             generateAccountTitle,
             accountIcon: account => (account.type === SyncAccountTypeEnum.JAR ? UserIconNameEnum.PiggyBank : UserIconNameEnum.Landmark),
             executeSyncBatch: Effect.fn('MonobankSyncService.executeSyncBatch')(function* (sync: SyncEntityInterface, token: string) {
@@ -378,6 +380,12 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
 
         return {
             ...pollingSyncService,
+            updateAccountToken: Effect.fn('MonobankSyncService.updateAccountToken')(function* (accountId: number, token: string) {
+                yield* Db.transaction(
+                    Effect.andThen(pollingSyncService.updateAccountToken(accountId, token), syncRepository.recoverByAccountId(accountId))
+                );
+                yield* pollingSyncService.requestSync();
+            }),
             fetchAccountsPreview: Effect.fn('MonobankSyncService.fetchAccountsPreview')(function* (token: string) {
                 return yield* mapBankAccountsToPreview(yield* fetchBankAccountsAndJars(yield* loadClient(token)));
             }),

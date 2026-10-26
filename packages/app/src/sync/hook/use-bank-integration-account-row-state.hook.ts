@@ -1,7 +1,7 @@
 import { AccountAssociationEnum, AccountWithInstrumentEntityInterface, SyncStatusEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { AccountSyncStateEnum } from '../../account/enum/account-sync-state.enum';
 import { getAccountSyncState } from '../../account/utils/get-account-sync-state.util';
@@ -23,15 +23,14 @@ export const useBankIntegrationAccountRowState = (
         [AccountSyncStateEnum.SYNCING]: t`Syncing…`,
         [AccountSyncStateEnum.DISABLED]: t`Sync paused`
     };
-    const syncIssueLabel = sync?.status === SyncStatusEnum.FAILED && capabilities.supportsLiveSync ? t`Sync failed` : null;
 
     let description = getAccountIdentityLabel(account.instrument.code, account.iban);
-    if (!account.isActive) {
+    if (capabilities.supportsLiveSync && sync?.status === SyncStatusEnum.FAILED) {
+        description = isNotEmptyString(sync.lastError) ? `${t`Sync Failed`}: ${sync.lastError}` : t`Sync Failed`;
+    } else if (!account.isActive) {
         description = t`Hidden from Home`;
     } else if (capabilities.supportsFileImport && sync?.enabled === false) {
         description = t`Excluded from file imports`;
-    } else if (isDefined(syncIssueLabel)) {
-        description = syncIssueLabel;
     } else if (isDefined(syncState)) {
         description = syncIssueLabels[syncState] ?? description;
     }

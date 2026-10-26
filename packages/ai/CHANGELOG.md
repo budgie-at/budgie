@@ -3,6 +3,46 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.116.0](https://github.com/budgie-at/budgie/compare/v6.115.10...v6.116.0) (2026-10-26)
+
+**Note:** Version bump only for package @budgie/ai
+
+
+
+
+
+## [6.115.9](https://github.com/budgie-at/budgie/compare/v6.115.8...v6.115.9) (2026-10-25)
+
+**Note:** Version bump only for package @budgie/ai
+
+
+
+
+
+## [6.115.8](https://github.com/budgie-at/budgie/compare/v6.115.7...v6.115.8) (2026-10-25)
+
+**Note:** Version bump only for package @budgie/ai
+
+
+
+
+
+## [6.115.5](https://github.com/budgie-at/budgie/compare/v6.115.4...v6.115.5) (2026-10-25)
+
+**Note:** Version bump only for package @budgie/ai
+
+
+
+
+
+## [6.115.4](https://github.com/budgie-at/budgie/compare/v6.115.3...v6.115.4) (2026-10-24)
+
+**Note:** Version bump only for package @budgie/ai
+
+
+
+
+
 # [6.110.0](https://github.com/budgie-at/budgie/compare/v6.109.2...v6.110.0) (2026-10-21)
 
 **Note:** Version bump only for package @budgie/ai

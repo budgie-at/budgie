@@ -3,6 +3,73 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.116.1](https://github.com/budgie-at/budgie/compare/v6.116.0...v6.116.1) (2026-10-26)
+
+### Bug Fixes
+
+* **app:** hash autolinked gradle plugin sources in the native fingerprint ([059a898](https://github.com/budgie-at/budgie/commit/059a898697f4087fa1a6bc6a34b9ec2dc6883ab1))
+* **app:** hash library native sources in the native fingerprint ([498b304](https://github.com/budgie-at/budgie/commit/498b3046c4d26813fb2fc80af51159ef4d77899f))
+
+
+# [6.116.0](https://github.com/budgie-at/budgie/compare/v6.115.10...v6.116.0) (2026-10-26)
+
+### Features
+
+* external accounts, automatic card discovery and reissue merge ([#1672](https://github.com/budgie-at/budgie/issues/1672)) ([176b4ed](https://github.com/budgie-at/budgie/commit/176b4ed78e84d6f5eb52ddab517c867b0387e5cb)), closes [#1664](https://github.com/budgie-at/budgie/issues/1664) [#1666](https://github.com/budgie-at/budgie/issues/1666) [#1667](https://github.com/budgie-at/budgie/issues/1667)
+
+
+## [6.115.10](https://github.com/budgie-at/budgie/compare/v6.115.9...v6.115.10) (2026-10-25)
+
+### Bug Fixes
+
+* **app:** ease the screen chrome blur in across the whole edge band ([85b7883](https://github.com/budgie-at/budgie/commit/85b7883ca97fa2d622119d793ea2424d62aba224)), closes [rnw-community#737](https://github.com/rnw-community/issues/737)
+
+
+## [6.115.9](https://github.com/budgie-at/budgie/compare/v6.115.8...v6.115.9) (2026-10-25)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+## [6.115.8](https://github.com/budgie-at/budgie/compare/v6.115.7...v6.115.8) (2026-10-25)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+## [6.115.7](https://github.com/budgie-at/budgie/compare/v6.115.6...v6.115.7) (2026-10-25)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+## [6.115.6](https://github.com/budgie-at/budgie/compare/v6.115.5...v6.115.6) (2026-10-25)
+
+### Bug Fixes
+
+* **app:** return to the previous screen after PIN unlock ([#1660](https://github.com/budgie-at/budgie/issues/1660)) ([370f97f](https://github.com/budgie-at/budgie/commit/370f97f77f44c9cbfb5a3fd501aef5465e630485))
+
+
+## [6.115.5](https://github.com/budgie-at/budgie/compare/v6.115.4...v6.115.5) (2026-10-25)
+
+### Bug Fixes
+
+* correct bank-fee categorization and auto-move ATM withdrawals to cash ([#1659](https://github.com/budgie-at/budgie/issues/1659)) ([f0c5964](https://github.com/budgie-at/budgie/commit/f0c5964c98b369377d25429a90f40afdeb92ee6a))
+
+
+## [6.115.4](https://github.com/budgie-at/budgie/compare/v6.115.3...v6.115.4) (2026-10-24)
+
+### Bug Fixes
+
+* correct runway cash-flow maths and merge manual bank duplicates ([#1662](https://github.com/budgie-at/budgie/issues/1662)) ([45bd478](https://github.com/budgie-at/budgie/commit/45bd4785f10c3f37a2b3643625ab2dcf42732f8d))
+
+
 ## [6.115.3](https://github.com/budgie-at/budgie/compare/v6.115.2...v6.115.3) (2026-10-24)
 
 ### Bug Fixes

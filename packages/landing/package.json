@@ -1,6 +1,6 @@
 {
     "name": "@budgie-at/landing",
-    "version": "6.111.0",
+    "version": "6.115.9",
     "private": true,
     "scripts": {
         "build": "pnpm media:check && next build",
@@ -15,7 +15,8 @@
         "media:og": "node scripts/og-plate.mjs",
         "release:start": "next start",
         "start": "next dev",
-        "ts": "node ../../node_modules/@typescript/native/bin/tsc -p ."
+        "ts": "node ../../scripts/typecheck.cjs --noEmit -p tsconfig.json",
+        "ts:native": "node ../../scripts/typecheck.cjs --native --noEmit -p tsconfig.json"
     },
     "dependencies": {
         "@lingui/core": "6.10.0",

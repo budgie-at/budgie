@@ -1,6 +1,6 @@
 {
     "name": "@budgie/amount-input",
-    "version": "6.112.0",
+    "version": "6.115.9",
     "private": true,
     "description": "Auto-fitting amount input and display with a sign toggle for React Native",
     "keywords": [
@@ -46,7 +46,8 @@
         "lint": "oxlint --type-aware src",
         "lint:fix": "oxlint --type-aware --fix src",
         "test": "vitest run",
-        "ts": "node ../../node_modules/@typescript/native/bin/tsc -p tsconfig.json && node ../../node_modules/@typescript/native/bin/tsc -p tsconfig.build.json --noEmit false --emitDeclarationOnly --outDir dist/typescript/module"
+        "ts": "node ../../scripts/typecheck.cjs --noEmit -p tsconfig.json && node ../../scripts/typecheck.cjs --noEmit -p tsconfig.build.json",
+        "ts:native": "node ../../scripts/typecheck.cjs --native --noEmit -p tsconfig.json && node ../../scripts/typecheck.cjs --native --noEmit -p tsconfig.build.json"
     },
     "dependencies": {
         "@rnw-community/shared": "^2.28.0",

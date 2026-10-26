@@ -6,7 +6,7 @@ export const padFlatListData = <T extends object>(items: T[], numberOfColumns = 
 
     const toPad = (cols - (mapped.length % cols)) % cols;
 
-    const padItems: FlatListDataItem<T>[] = Array.from({ length: toPad }, () => ({ ...({} as T), isEmpty: true }));
+    const padItems: FlatListDataItem<T>[] = Array.from({ length: toPad }, () => ({ isEmpty: true }));
 
     return [...mapped, ...padItems];
 };

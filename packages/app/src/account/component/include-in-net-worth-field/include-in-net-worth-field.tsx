@@ -1,5 +1,4 @@
 import { useLingui } from '@lingui/react/macro';
-import { Control, Controller, Path, UseControllerReturn } from 'react-hook-form';
 import { Text } from 'react-native';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -7,37 +6,32 @@ import { HorizontalCell } from '../../../@generic/component/horizontal-cell/hori
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { CreateAccountScreenSelector } from '../create-account-screen/create-account-screen.selector';
 
-interface Props<T extends { includeInNetWorth?: boolean }> {
-    readonly control: Control<T>;
+interface Props {
+    readonly value: boolean | undefined;
+    readonly onChange: (value: boolean) => void;
 }
 
-export const IncludeInNetWorthField = <T extends { includeInNetWorth?: boolean }>({ control }: Props<T>) => {
+export const IncludeInNetWorthField = ({ value, onChange }: Props) => {
     const { t } = useLingui();
 
-    const render = ({ field: { value, onChange } }: UseControllerReturn<T, Path<T>>) => {
-        const handlePress = () => void onChange(!value);
+    const handlePress = () => void onChange(!value);
 
-        return (
-            <HorizontalCell
-                testID={CreateAccountScreenSelector.IncludeInNetWorthRow}
-                right={
-                    <ThemedSwitch
-                        className="my-auto"
-                        value={value}
-                        onValueChange={onChange}
-                        testID={CreateAccountScreenSelector.IncludeInNetWorthSwitch}
-                    />
-                }
-            >
-                <HapticPressable className="flex-1" onPress={handlePress} testID={CreateAccountScreenSelector.IncludeInNetWorthTitle}>
-                    <Text className="text-sm font-medium text-primary">{t`Include in Net Worth`}</Text>
-                    <Text className="text-sm font-medium text-secondary-foreground">
-                        {t`Count this account in your net worth calculation`}
-                    </Text>
-                </HapticPressable>
-            </HorizontalCell>
-        );
-    };
-
-    return <Controller control={control} name={'includeInNetWorth' as Path<T>} render={render} />;
+    return (
+        <HorizontalCell
+            testID={CreateAccountScreenSelector.IncludeInNetWorthRow}
+            right={
+                <ThemedSwitch
+                    className="my-auto"
+                    value={value}
+                    onValueChange={onChange}
+                    testID={CreateAccountScreenSelector.IncludeInNetWorthSwitch}
+                />
+            }
+        >
+            <HapticPressable className="flex-1" onPress={handlePress} testID={CreateAccountScreenSelector.IncludeInNetWorthTitle}>
+                <Text className="text-sm font-medium text-primary">{t`Include in Net Worth`}</Text>
+                <Text className="text-sm font-medium text-secondary-foreground">{t`Count this account in your net worth calculation`}</Text>
+            </HapticPressable>
+        </HorizontalCell>
+    );
 };

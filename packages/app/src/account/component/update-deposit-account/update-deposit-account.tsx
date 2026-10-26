@@ -9,6 +9,7 @@ import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-scre
 import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
+import { useAccountUpdateBindings } from '../../hooks/use-account-update-bindings.hook';
 import { useDepositAccountForm } from '../../hooks/use-deposit-account-form.hook';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
 import { UpdateAccountScreen } from '../create-account-screen/update-account-screen';
@@ -50,6 +51,13 @@ export const UpdateDepositAccount = ({ account }: Props) => {
         )
     );
 
+    const fields = useAccountUpdateBindings(control, {
+        title: 'title',
+        icon: 'icon',
+        currentBalance: 'currentBalance',
+        isActive: 'isActive',
+        includeInNetWorth: 'includeInNetWorth'
+    });
     const stickyInstrument = useStickyDefinedValue(instrument);
 
     if (!isDefined(stickyInstrument)) {
@@ -60,13 +68,13 @@ export const UpdateDepositAccount = ({ account }: Props) => {
         <UpdateAccountScreen
             instrumentSymbol={stickyInstrument.symbol}
             onSubmit={handleSubmit}
-            control={control}
+            fields={fields}
             account={account}
             isSubmitting={isSubmitting}
         >
             <DepositInterestRateField control={control} />
             <DepositMaturityDateField control={control} variant={ACCOUNT_COLOR.DEPOSIT} />
-            <IncludeInNetWorthField control={control} />
+            <IncludeInNetWorthField value={fields.includeInNetWorth.field.value} onChange={fields.includeInNetWorth.field.onChange} />
         </UpdateAccountScreen>
     );
 };

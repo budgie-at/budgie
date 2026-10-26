@@ -45,6 +45,7 @@ export { AccountDebtTypeEnum } from './account/enum/account-debt-type.enum';
 export { AccountAssociationEnum } from './account/enum/account-association.enum';
 
 export { AccountEntityTable } from './account/table/account-entity.table';
+export { AccountExternalIdEntityTable } from './account/table/account-external-id-entity.table';
 
 export { DebtAccountCreateInputSchema } from './account/schema/debt-account-create-input.schema';
 export { LiabilityAccountCreateInputSchema } from './account/schema/liability-account-create-input.schema';
@@ -166,6 +167,7 @@ export { MccGroupEntityTable } from './mcc-group/table/mcc-group-entity.table';
 export { MccGroupRepository } from './mcc-group/repository/mcc-group.repository';
 
 export { ATM_CASH_WITHDRAWAL_MCC } from './mcc-category/constant/atm-cash-withdrawal-mcc.constant';
+export { ATM_CASH_WITHDRAWAL_TITLE_PREFIXES } from './mcc-category/constant/atm-cash-withdrawal-title-prefixes.constant';
 export { MCC_DEFAULT_CATEGORY_SEED } from './mcc-category/constant/mcc-default-category-seed.constant';
 
 export { MccCategoryEntityTable } from './mcc-category/table/mcc-category-entity.table';

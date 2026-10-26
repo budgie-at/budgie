@@ -32,6 +32,7 @@ export const getDateFilterByPeriod = (period: DatePeriodEnum): DateRangeInterfac
             return { from: startOfMonth(lastMonth), to: endOfMonth(lastMonth) };
         case DatePeriodEnum.THIS_YEAR:
             return { from: startOfYear(now), to: endOfYear(now) };
+        case DatePeriodEnum.ALL_TIME:
         default:
             return { from: null, to: null };
     }

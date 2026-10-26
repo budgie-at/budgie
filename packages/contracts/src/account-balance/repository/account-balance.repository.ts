@@ -11,6 +11,8 @@ import { transactionFilters } from '../../@generic/repository/base-transaction-f
 import { Db } from '../../@generic/service/db.service';
 import { getExchangeRateWithHistoricalFallbackSql } from '../../@generic/utils/get-exchange-rate-sql.util';
 import { BANK_AUTHORITATIVE_ACCOUNT_TYPES } from '../../account/constant/bank-authoritative-account-types.constant';
+import { CRYPTO_ACCOUNT_TYPES } from '../../account/constant/crypto-account-types.constant';
+import { LIQUID_ACCOUNT_TYPES } from '../../account/constant/liquid-account-types.constant';
 import { AccountDebtTypeEnum } from '../../account/enum/account-debt-type.enum';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
@@ -28,10 +30,6 @@ import { TransactionEntityTable } from '../../transaction/table/transaction-enti
 import { AccountBalanceEntityTable } from '../table/account-balance-entity.table';
 
 import type { AccountBalanceCreateEntityInterface } from '../entity/account-balance-create-entity.interface';
-
-const CRYPTO_ACCOUNT_TYPES = [AccountTypeEnum.CRYPTO, AccountTypeEnum.CRYPTO_SYNC];
-
-const LIQUID_ACCOUNT_TYPES = [AccountTypeEnum.CASH, AccountTypeEnum.BANK, AccountTypeEnum.BANK_SYNC];
 
 const getTransactionsSumSql = () =>
     sql<number>`SUM(CASE WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.CREDIT} THEN -${TransactionEntryEntityTable.amount} WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.FEE} THEN -${TransactionEntryEntityTable.amount} WHEN ${TransactionEntryEntityTable.type} = ${TransactionEntryTypeEnum.DEBIT} THEN ${TransactionEntryEntityTable.amount} ELSE 0 END)`;

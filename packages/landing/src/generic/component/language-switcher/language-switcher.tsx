@@ -23,11 +23,11 @@ const LANGUAGE_NAMES: Record<string, string> = {
 export const LanguageSwitcher = () => {
     const router = useRouter();
     const pathname = usePathname();
-    const params = useParams();
+    const params = useParams<{ lang: string }>();
     const { i18n } = useLingui();
 
     // Determine current locale: prioritize URL param, fallback to i18n state, then config default
-    const currentLocale = (params.lang as string) || i18n.locale || locales[0] || 'en';
+    const currentLocale = params.lang || i18n.locale || locales[0] || 'en';
 
     const handleLanguageChange = (newLocale: string) => (): void => {
         // Replace the current locale in the pathname with the new one

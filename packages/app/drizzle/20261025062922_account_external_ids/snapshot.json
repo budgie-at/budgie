@@ -1,9 +1,9 @@
 {
   "version": "7",
   "dialect": "sqlite",
-  "id": "df072dbe-c35e-40c5-89d3-8efc97d8907f",
+  "id": "7b3c0d52-f46e-4a14-88a5-6095e5958179",
   "prevIds": [
-    "924a9e03-61c7-4826-9e6f-3d41cec6501a"
+    "c4b1d0b5-19af-4da3-b7e7-7a9fdf24416f"
   ],
   "ddl": [
     {
@@ -12,6 +12,10 @@
     },
     {
       "name": "accounts",
+      "entityType": "tables"
+    },
+    {
+      "name": "account_external_ids",
       "entityType": "tables"
     },
     {
@@ -454,6 +458,36 @@
     },
     {
       "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "false",
+      "generated": null,
+      "name": "is_external",
+      "entityType": "columns",
+      "table": "accounts"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "external_id",
+      "entityType": "columns",
+      "table": "account_external_ids"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "account_id",
+      "entityType": "columns",
+      "table": "account_external_ids"
+    },
+    {
+      "type": "integer",
       "notNull": false,
       "autoincrement": true,
       "default": null,
@@ -509,16 +543,6 @@
       "default": null,
       "generated": null,
       "name": "token",
-      "entityType": "columns",
-      "table": "bank_integrations"
-    },
-    {
-      "type": "text",
-      "notNull": false,
-      "autoincrement": false,
-      "default": null,
-      "generated": null,
-      "name": "label",
       "entityType": "columns",
       "table": "bank_integrations"
     },
@@ -3455,6 +3479,21 @@
     },
     {
       "columns": [
+        "account_id"
+      ],
+      "tableTo": "accounts",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_account_external_ids_account_id_accounts_id_fk",
+      "entityType": "fks",
+      "table": "account_external_ids"
+    },
+    {
+      "columns": [
         "budget_id"
       ],
       "tableTo": "budgets",
@@ -4163,6 +4202,15 @@
     },
     {
       "columns": [
+        "external_id"
+      ],
+      "nameExplicit": false,
+      "name": "account_external_ids_pk",
+      "table": "account_external_ids",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
         "id"
       ],
       "nameExplicit": false,
@@ -4416,6 +4464,20 @@
       "name": "accounts_active_type_instrument_idx",
       "entityType": "indexes",
       "table": "accounts"
+    },
+    {
+      "columns": [
+        {
+          "value": "account_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "origin": "manual",
+      "name": "account_external_ids_account_idx",
+      "entityType": "indexes",
+      "table": "account_external_ids"
     },
     {
       "columns": [

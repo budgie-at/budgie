@@ -3,6 +3,7 @@ import { AccountDebtOpeningService, DebtAccountService } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useState } from 'react';
+import { useController } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -11,6 +12,7 @@ import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
+import { useAccountCreateBindings } from '../../hooks/use-account-create-bindings.hook';
 import { useDebtAccountForm } from '../../hooks/use-debt-account-form.hook';
 import { getDebtOpeningMessages } from '../../utils/get-debt-opening-messages.util';
 import { AccountFormDateField } from '../account-form-date-field/account-form-date-field';
@@ -54,6 +56,19 @@ export const CreateDebtAccount = () => {
     });
     const isLentDebt = debtType === AccountDebtTypeEnum.LENT;
     const variant = ACCOUNT_COLOR.DEBT;
+    const fields = {
+        ...useAccountCreateBindings(control, {
+            title: 'title',
+            icon: 'icon',
+            currentBalance: 'currentBalance',
+            instrumentId: 'instrumentId',
+            includeInNetWorth: 'includeInNetWorth'
+        }),
+        targetBalance: useController({ control, name: 'targetBalance' }),
+        debtType: useController({ control, name: 'debtType' }),
+        contactId: useController({ control, name: 'contactId' }),
+        deadline: useController({ control, name: 'deadline' })
+    };
     const stickyInstrument = useStickyDefinedValue(instrument);
     const balanceFieldLabel = isLentDebt ? t`Already returned` : t`Already repaid`;
     const debtAmountLabel = isLentDebt ? t`Amount lent` : t`Amount borrowed`;
@@ -67,7 +82,7 @@ export const CreateDebtAccount = () => {
         <CreateAccountScreen variant={variant} title={t`Debt Account`} onSubmit={handleSubmit} isSubmitting={isSubmitting}>
             <CreateAccountCoreFields
                 variant={variant}
-                control={control}
+                fields={fields}
                 instrumentSymbol={stickyInstrument.symbol}
                 balanceFieldLabel={balanceFieldLabel}
             >
@@ -78,13 +93,22 @@ export const CreateDebtAccount = () => {
                     onChange={setOpeningAccountId}
                 />
 
-                <AccountTargetBalanceField control={control} instrumentSymbol={stickyInstrument.symbol} label={debtAmountLabel} />
+                <AccountTargetBalanceField
+                    value={fields.targetBalance.field.value}
+                    onChange={fields.targetBalance.field.onChange}
+                    instrumentSymbol={stickyInstrument.symbol}
+                    label={debtAmountLabel}
+                />
 
-                <DebtAccountTypeField control={control} />
+                <DebtAccountTypeField value={fields.debtType.field.value} onChange={fields.debtType.field.onChange} />
 
-                <DebtAccountContactField control={control} />
+                <DebtAccountContactField
+                    debtType={debtType}
+                    value={fields.contactId.field.value}
+                    onChange={fields.contactId.field.onChange}
+                />
 
-                <AccountFormDateField control={control} variant={variant} />
+                <AccountFormDateField value={fields.deadline.field.value} onChange={fields.deadline.field.onChange} variant={variant} />
             </CreateAccountCoreFields>
         </CreateAccountScreen>
     );

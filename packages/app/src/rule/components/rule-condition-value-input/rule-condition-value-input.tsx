@@ -2,7 +2,6 @@ import { RuleConditionFieldEnum, RuleCreateInputInterface } from '@budgie/contra
 import { useLingui } from '@lingui/react/macro';
 import { useFormContext, useWatch } from 'react-hook-form';
 
-import { typedObjectEntries } from '../../../@generic/utils/typed-object-entries.util';
 import { TRANSACTION_TYPE } from '../../../transaction/constant/transaction-type.constant';
 import { EXTERNAL_SOURCE } from '../../constant/external-source.constant';
 import { RuleConditionAccountSelector } from '../rule-condition-account-selector/rule-condition-account-selector';
@@ -11,9 +10,9 @@ import { RuleConditionMccSelector } from '../rule-condition-mcc-selector/rule-co
 import { RuleConditionTextValueInput } from '../rule-condition-text-value-input/rule-condition-text-value-input';
 import { RuleConditionValueEnumSelector } from '../rule-condition-value-enum-selector/rule-condition-value-enum-selector';
 
-const EXTERNAL_SOURCE_OPTIONS = typedObjectEntries(EXTERNAL_SOURCE).map(([value, label]) => ({ value, label }));
+const EXTERNAL_SOURCE_OPTIONS = Object.entries(EXTERNAL_SOURCE).map(([value, label]) => ({ value, label }));
 
-const TRANSACTION_TYPE_OPTIONS = typedObjectEntries(TRANSACTION_TYPE).map(([value, label]) => ({ value, label }));
+const TRANSACTION_TYPE_OPTIONS = Object.entries(TRANSACTION_TYPE).map(([value, label]) => ({ value, label }));
 
 interface Props {
     readonly index: number;
@@ -53,6 +52,8 @@ export const RuleConditionValueInput = ({ index, testID, secondaryTestID }: Prop
             return <RuleConditionMccSelector index={index} testID={testID} />;
         case RuleConditionFieldEnum.AMOUNT:
             return <RuleConditionAmountValueInput index={index} testID={testID} secondaryTestID={secondaryTestID} />;
+        case RuleConditionFieldEnum.TITLE:
+        case RuleConditionFieldEnum.COMMENT:
         default:
             return <RuleConditionTextValueInput index={index} testID={testID} />;
     }

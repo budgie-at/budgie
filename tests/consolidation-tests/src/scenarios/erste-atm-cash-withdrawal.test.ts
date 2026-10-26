@@ -21,7 +21,7 @@ const seedErsteAndCashAccounts = Effect.fnUntraced(function* () {
 });
 
 layer(TestLayer)('consolidation/erste-atm-cash-withdrawal', it => {
-    it.effect('moves an Erste AUTOMAT withdrawal to the cash account only on request and leaves cash back and deposits unpaired', () =>
+    it.effect('moves an Erste AUTOMAT withdrawal older than the cash account only on request and leaves cash back and deposits', () =>
         Effect.gen(function* () {
             const transferConsolidationService = yield* TransferConsolidationService;
             const { bankAccount, cashAccount } = yield* seedErsteAndCashAccounts();

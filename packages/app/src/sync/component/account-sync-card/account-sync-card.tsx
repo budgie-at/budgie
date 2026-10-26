@@ -89,20 +89,17 @@ export const AccountSyncCard = ({ accountId }: Props) => {
                     <SyncDataRow label={t`History synced`} value={formatDayAndMonthAndYearWithTime(sync.backwardSyncedAt)} />
                 )}
 
-                {sync.errorCount > 0 && (
-                    <>
-                        <SyncDataRow label={t`Errors`} value={String(sync.errorCount)} />
-                        {isNotEmptyString(sync.lastError) && (
-                            <View className="gap-y-xs">
-                                <Text className="text-xs text-secondary-foreground">
-                                    <Trans>Last error</Trans>
-                                </Text>
-                                <Text className="text-secondary-foreground text-destructive text-xs" numberOfLines={2}>
-                                    {sync.lastError}
-                                </Text>
-                            </View>
-                        )}
-                    </>
+                {sync.errorCount > 0 && <SyncDataRow label={t`Errors`} value={String(sync.errorCount)} />}
+
+                {isNotEmptyString(sync.lastError) && (
+                    <View className="gap-y-xs">
+                        <Text className="text-xs text-secondary-foreground">
+                            <Trans>Last error</Trans>
+                        </Text>
+                        <Text className="text-secondary-foreground text-destructive text-xs" numberOfLines={2}>
+                            {sync.lastError}
+                        </Text>
+                    </View>
                 )}
 
                 {isDefined(sync.lastWarning) && (

@@ -1,5 +1,3 @@
-// This file is required for Expo/React Native SQLite migrations - https://orm.drizzle.team/quick-sqlite/expo
-
 import m0000 from './20261001084501_baseline/migration.sql';
 import m0001 from './20261002214604_recurring_series/migration.sql';
 import m0002 from './20261004064254_transaction_import_fingerprint/migration.sql';
@@ -10,7 +8,10 @@ import m0006 from './20261007190655_transaction_entry_operation_metadata/migrati
 import m0007 from './20261011120000_ai_feature_settings/migration.sql';
 import m0008 from './20261016150134_settings_onboarding/migration.sql';
 import m0009 from './20261020195645_sync_balance_reconciliation/migration.sql';
-import m0010 from './20261021184854_bank_integration_label/migration.sql';
+import m0010 from './20261024181034_clear_money_transfer_mcc_default_category/migration.sql';
+import m0011 from './20261025051229_account_is_external/migration.sql';
+import m0012 from './20261025062922_account_external_ids/migration.sql';
+import m0013 from './20261026092451_bank_integration_label/migration.sql';
 
   export default {
     migrations: {
@@ -24,7 +25,10 @@ import m0010 from './20261021184854_bank_integration_label/migration.sql';
 "20261011120000_ai_feature_settings": m0007,
 "20261016150134_settings_onboarding": m0008,
 "20261020195645_sync_balance_reconciliation": m0009,
-"20261021184854_bank_integration_label": m0010
+"20261024181034_clear_money_transfer_mcc_default_category": m0010,
+"20261025051229_account_is_external": m0011,
+"20261025062922_account_external_ids": m0012,
+"20261026092451_bank_integration_label": m0013
 }
   }
   
