@@ -23,17 +23,17 @@ import {
     walletCaptureSeedInput
 } from '../../harness/wallet-capture/wallet-capture-import.harness';
 
-import type { WalletCaptureNativeRecordInterface } from '@app/wallet-capture/interface/wallet-capture-native-record.interface';
+import type { WalletCaptureRecordInterface } from '@app/wallet-capture/interface/wallet-capture-record.interface';
 
 const CAPTURE_ID = '8e3f58ae-cd1c-45c8-91da-e54a5c8ea444';
-const expectCreatedCapturePending = Effect.fnUntraced(function* (capture: WalletCaptureNativeRecordInterface) {
+const expectCreatedCapturePending = Effect.fnUntraced(function* (capture: WalletCaptureRecordInterface) {
     const transaction = yield* walletCaptureFindTransaction(capture.captureId);
 
     expect(transaction.externalSource).toBe(ExternalSourceEnum.APPLE_PAY_AUTOMATION);
     expect((yield* walletCaptureFindEntry(transaction.id)).categorySource).toBe(CategorySourceEnum.USER);
 });
 
-const expectUnavailableCaptureDismissed = Effect.fnUntraced(function* (capture: WalletCaptureNativeRecordInterface) {
+const expectUnavailableCaptureDismissed = Effect.fnUntraced(function* (capture: WalletCaptureRecordInterface) {
     const walletCaptureImportService = yield* WalletCaptureImportService;
     walletCaptureNativeStub.seed([capture]);
     expect(yield* walletCaptureImportService.getReviewItems()).toEqual([

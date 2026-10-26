@@ -470,10 +470,6 @@ msgstr "Account {accountId} not found"
 msgid "Account actions"
 msgstr "Account actions"
 
-#: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
-msgid "Account is archived"
-msgstr "Account is archived"
-
 #: src/@generic/component/account-details-field/account-details-field.tsx
 msgid "Account Name & Icon"
 msgstr "Account Name & Icon"
@@ -481,6 +477,10 @@ msgstr "Account Name & Icon"
 #. js-lingui-explicit-id
 #: ../ledger/src/transaction/service/transfer-creation.service.ts
 msgid "transaction.accountNotFound"
+msgstr "Account not found"
+
+#: src/wallet-capture/component/wallet-capture-review-list/wallet-capture-review-list.tsx
+msgid "Account not found"
 msgstr "Account not found"
 
 #: src/account/component/update-account-page/update-account-page.tsx
@@ -582,8 +582,8 @@ msgid "Add balances later"
 msgstr "Add balances later"
 
 #: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
-msgid "Add Budgie's Capture Apple Pay transaction action."
-msgstr "Add Budgie's Capture Apple Pay transaction action."
+msgid "Add Budgie's Capture Apple Pay transaction action and set Amount, Merchant and Card from the Shortcut Input."
+msgstr "Add Budgie's Capture Apple Pay transaction action and set Amount, Merchant and Card from the Shortcut Input."
 
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
 msgid "Add category"
@@ -918,22 +918,6 @@ msgstr "Binance"
 msgid "Binance P2P orders are unavailable: the API key is missing P2P read permission."
 msgstr "Binance P2P orders are unavailable: the API key is missing P2P read permission."
 
-#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
-msgid "Bind Amount to Shortcut Input → Amount."
-msgstr "Bind Amount to Shortcut Input → Amount."
-
-#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
-msgid "Bind Merchant to Shortcut Input → Merchant."
-msgstr "Bind Merchant to Shortcut Input → Merchant."
-
-#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
-msgid "Bind the optional Card field to the Wallet card/pass value."
-msgstr "Bind the optional Card field to the Wallet card/pass value."
-
-#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
-msgid "Bind the optional Currency field to the payment currency code, for example EUR."
-msgstr "Bind the optional Currency field to the payment currency code, for example EUR."
-
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
 msgid "Biometric Authentication"
 msgstr "Biometric Authentication"
@@ -1005,6 +989,10 @@ msgstr "Budgie has no exchange rate for this payment currency yet."
 #: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
 msgid "Budgie hit an unexpected problem. You can restart the app or report the issue so we can investigate."
 msgstr "Budgie hit an unexpected problem. You can restart the app or report the issue so we can investigate."
+
+#: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
+msgid "Budgie picks the account from the card name, then your default account. Name the account like the card, or set the optional Account field in the action to pin one."
+msgstr "Budgie picks the account from the card name, then your default account. Name the account like the card, or set the optional Account field in the action to pin one."
 
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 msgid "Budgie re-encrypts {DB_NAME} ({fileSize}) on this phone. It takes a few seconds."
@@ -1742,6 +1730,10 @@ msgstr "Create a debt account first."
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Create a new System-generated API key"
 msgstr "Create a new System-generated API key"
+
+#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
+msgid "Create a personal automation in Shortcuts with the Transaction trigger, select your cards and choose Run Immediately."
+msgstr "Create a personal automation in Shortcuts with the Transaction trigger, select your cards and choose Run Immediately."
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Create a PIN"
@@ -3630,10 +3622,6 @@ msgstr "Open settings"
 msgid "Open Shortcuts"
 msgstr "Open Shortcuts"
 
-#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
-msgid "Open Shortcuts and create a personal automation."
-msgstr "Open Shortcuts and create a personal automation."
-
 #: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
 msgid "Opens with"
 msgstr "Opens with"
@@ -4119,10 +4107,6 @@ msgstr "Restore from a backup file"
 msgid "Restore from Backup"
 msgstr "Restore from Backup"
 
-#: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
-msgid "Restore the account or choose another active account in the automation before importing the capture."
-msgstr "Restore the account or choose another active account in the automation before importing the capture."
-
 #: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
 msgid "Resume"
 msgstr "Resume"
@@ -4370,10 +4354,6 @@ msgstr "Select a category to merge into"
 msgid "Select a contact"
 msgstr "Select a contact"
 
-#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
-msgid "Select a fixed Budgie account in the action's Account picker."
-msgstr "Select a fixed Budgie account in the action's Account picker."
-
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Select a tag to merge into"
 msgstr "Select a tag to merge into"
@@ -4438,17 +4418,9 @@ msgstr "Select Import Preset"
 msgid "Select MCC code"
 msgstr "Select MCC code"
 
-#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
-msgid "Select one Wallet card."
-msgstr "Select one Wallet card."
-
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Select Operator"
 msgstr "Select Operator"
-
-#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
-msgid "Select Run Immediately."
-msgstr "Select Run Immediately."
 
 #: src/rule/components/rule-condition-value-input/rule-condition-value-input.tsx
 msgid "Select source"
@@ -4469,10 +4441,6 @@ msgstr "Select the downloaded PDF file"
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Select the exported XLSX file"
 msgstr "Select the exported XLSX file"
-
-#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
-msgid "Select the Wallet or Transaction trigger."
-msgstr "Select the Wallet or Transaction trigger."
 
 #: src/rule/components/rule-condition-value-input/rule-condition-value-input.tsx
 msgid "Select Transaction Type"
@@ -5489,6 +5457,10 @@ msgstr "Works with no connection at all."
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Write it on paper and keep it somewhere safe. The only other way back is a backup you export yourself."
 msgstr "Write it on paper and keep it somewhere safe. The only other way back is a backup you export yourself."
+
+#: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
+msgid "Wrong or missing account"
+msgstr "Wrong or missing account"
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "XLSX export"

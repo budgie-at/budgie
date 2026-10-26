@@ -5,6 +5,7 @@ import {
     CategorySourceEnum,
     DbError,
     ExternalSourceEnum,
+    SettingsEntityTable,
     TransactionEntityTable,
     TransactionEntryEntityTable,
     TransactionEntryTypeEnum,
@@ -33,7 +34,7 @@ import {
     walletCaptureSeedRule
 } from '../../harness/wallet-capture/wallet-capture-import.harness';
 
-import type { WalletCaptureNativeRecordInterface } from '@app/wallet-capture/interface/wallet-capture-native-record.interface';
+import type { WalletCaptureRecordInterface } from '@app/wallet-capture/interface/wallet-capture-record.interface';
 
 const CAPTURE_ID = '8e3f58ae-cd1c-45c8-91da-e54a5c8ea111';
 const SAFE_CAPTURE_ID = '8e3f58ae-cd1c-45c8-91da-e54a5c8ea222';
@@ -68,7 +69,7 @@ const seedReviewedCapture = Effect.fnUntraced(function* () {
     return capture;
 });
 const expectImportedBalanceAndTag = Effect.fnUntraced(function* (
-    capture: WalletCaptureNativeRecordInterface,
+    capture: WalletCaptureRecordInterface,
     transactionId: number,
     tagId: number
 ) {
@@ -85,7 +86,7 @@ const expectImportedBalanceAndTag = Effect.fnUntraced(function* (
     expect(transactionTag.tagId).toBe(tagId);
 });
 
-const expectImportedTransaction = Effect.fnUntraced(function* (capture: WalletCaptureNativeRecordInterface) {
+const expectImportedTransaction = Effect.fnUntraced(function* (capture: WalletCaptureRecordInterface) {
     const transaction = yield* walletCaptureFindTransaction(capture.captureId);
     expect(transaction.externalSource).toBe(ExternalSourceEnum.APPLE_PAY_AUTOMATION);
     expect(transaction.externalId).toBe(capture.captureId);
@@ -97,7 +98,7 @@ const expectImportedTransaction = Effect.fnUntraced(function* (capture: WalletCa
 });
 
 const expectImportedCapture = Effect.fnUntraced(function* (
-    capture: WalletCaptureNativeRecordInterface,
+    capture: WalletCaptureRecordInterface,
     category: { readonly id: number; readonly tagId: number }
 ) {
     const transactionId = yield* expectImportedTransaction(capture);
@@ -261,6 +262,71 @@ describe('Wallet capture import preservation', () => {
 
             expect(Exit.isFailure(yield* Effect.exit(walletCaptureImportService.drain()))).toBe(true);
             expect(walletCaptureNativeStub.pendingCaptureIds()).toEqual([invalidCapture.captureId]);
+        }).pipe(Effect.provide(TestLayer))
+    );
+});
+
+describe('Wallet capture account resolution', () => {
+    const buildUnpinnedCapture = (cardName: string | null) => ({ ...walletCaptureBuild(CAPTURE_ID), accountId: null, cardName });
+
+    it.effect('prefers the account whose title words all appear in the card name', () =>
+        Effect.gen(function* () {
+            const walletCaptureImportService = yield* WalletCaptureImportService;
+            yield* seed.instrument();
+            yield* seed.account({ title: 'Cash' });
+            const revolut = yield* seed.account({ title: 'Revolut' });
+            const revolutBusiness = yield* seed.account({ title: 'Revolut Business Pro' });
+
+            walletCaptureNativeStub.seed([buildUnpinnedCapture('Revolut Visa')]);
+
+            expect(yield* walletCaptureImportService.drain()).toEqual([]);
+            expect((yield* walletCaptureFindTransaction(CAPTURE_ID)).fromAccountId).toBe(revolut.id);
+            expect(revolutBusiness.id).not.toBe(revolut.id);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('falls back to the default account when no title matches the card name', () =>
+        Effect.gen(function* () {
+            const walletCaptureImportService = yield* WalletCaptureImportService;
+            yield* seed.instrument();
+            yield* seed.account({ title: 'Cash' });
+            const preferred = yield* seed.account({ title: 'Everyday' });
+            yield* testDb.update(SettingsEntityTable).set({ defaultAccountId: preferred.id });
+
+            walletCaptureNativeStub.seed([buildUnpinnedCapture('Unknown card')]);
+
+            expect(yield* walletCaptureImportService.drain()).toEqual([]);
+            expect((yield* walletCaptureFindTransaction(CAPTURE_ID)).fromAccountId).toBe(preferred.id);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('uses the only active account when nothing else resolves', () =>
+        Effect.gen(function* () {
+            const walletCaptureImportService = yield* WalletCaptureImportService;
+            const account = yield* walletCaptureSeedAccount();
+
+            walletCaptureNativeStub.seed([buildUnpinnedCapture(null)]);
+
+            expect(yield* walletCaptureImportService.drain()).toEqual([]);
+            expect((yield* walletCaptureFindTransaction(CAPTURE_ID)).fromAccountId).toBe(account.id);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('keeps the capture for review when several accounts remain and none is preferred', () =>
+        Effect.gen(function* () {
+            const walletCaptureImportService = yield* WalletCaptureImportService;
+            yield* seed.instrument();
+            yield* seed.account({ title: 'Cash' });
+            yield* seed.account({ title: 'Everyday' });
+            yield* testDb.update(SettingsEntityTable).set({ defaultAccountId: null });
+            const capture = buildUnpinnedCapture('Unknown card');
+
+            walletCaptureNativeStub.seed([capture]);
+
+            expect(yield* walletCaptureImportService.drain()).toEqual([
+                { capture, duplicateTransactionId: null, reason: WalletCaptureReviewReasonEnum.ACCOUNT_UNAVAILABLE }
+            ]);
+            yield* expectStoredState(0, [CAPTURE_ID]);
         }).pipe(Effect.provide(TestLayer))
     );
 });

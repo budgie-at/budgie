@@ -10,16 +10,8 @@ interface Props {
 export const ApplePayCaptureSetupCard = ({ testID }: Props) => {
     const { t } = useLingui();
     const setupSteps = [
-        t`Open Shortcuts and create a personal automation.`,
-        t`Select the Wallet or Transaction trigger.`,
-        t`Select one Wallet card.`,
-        t`Select Run Immediately.`,
-        t`Add Budgie's Capture Apple Pay transaction action.`,
-        t`Bind Amount to Shortcut Input → Amount.`,
-        t`Bind Merchant to Shortcut Input → Merchant.`,
-        t`Bind the optional Currency field to the payment currency code, for example EUR.`,
-        t`Bind the optional Card field to the Wallet card/pass value.`,
-        t`Select a fixed Budgie account in the action's Account picker.`,
+        t`Create a personal automation in Shortcuts with the Transaction trigger, select your cards and choose Run Immediately.`,
+        t`Add Budgie's Capture Apple Pay transaction action and set Amount, Merchant and Card from the Shortcut Input.`,
         t`Save the automation.`
     ];
 

@@ -15,8 +15,8 @@ export const ApplePayCaptureTroubleshootingCard = () => {
             description: t`Some issuers do not provide every Wallet trigger field. Edit the automation and check the variable bindings.`
         },
         {
-            title: t`Account is archived`,
-            description: t`Restore the account or choose another active account in the automation before importing the capture.`
+            title: t`Wrong or missing account`,
+            description: t`Budgie picks the account from the card name, then your default account. Name the account like the card, or set the optional Account field in the action to pin one.`
         }
     ];
 

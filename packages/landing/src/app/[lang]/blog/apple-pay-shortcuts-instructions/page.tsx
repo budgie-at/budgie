@@ -96,10 +96,12 @@ export default async function ApplePayShortcutsInstructionsArticle(props: PageLa
                             <Trans>Open Budgie and turn on Apple Pay capture in Settings.</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>Create a personal automation that runs after a Wallet transaction.</Trans>
+                            <Trans>
+                                Create one personal automation with the Transaction trigger, select your cards, and run it immediately.
+                            </Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
-                            <Trans>Add the Budgie action and bind the Wallet transaction fields.</Trans>
+                            <Trans>Add the Budgie action and set Amount, Merchant and Card from the Shortcut Input.</Trans>
                         </BlogArticleListItem>
                         <BlogArticleListItem>
                             <Trans>Make one small test payment, then review the capture in Budgie.</Trans>
@@ -122,14 +124,14 @@ export default async function ApplePayShortcutsInstructionsArticle(props: PageLa
 
                     <BlogArticleProse>
                         <Trans>
-                            Open Budgie, go to Settings, then Apple Pay Capture. Choose the account where Apple Pay card payments should
-                            appear. Keep this screen available while you create the automation.
+                            Open Budgie, go to Settings, then Apple Pay Capture. You do not choose an account: Budgie picks it from the card
+                            name, then your default account.
                         </Trans>
                     </BlogArticleProse>
 
                     <ArticleFigure
                         alt={t(i18n)`Budgie Apple Pay capture setup screen`}
-                        caption={<Trans>The setup screen shows which account Budgie will use when a Shortcuts event arrives.</Trans>}
+                        caption={<Trans>The setup screen lists the three steps to complete in Shortcuts.</Trans>}
                         src="/images/apple-pay-shortcuts-instructions/apple-pay-capture-setup-screen.png"
                     />
                 </BlogArticleSection>
@@ -153,8 +155,8 @@ export default async function ApplePayShortcutsInstructionsArticle(props: PageLa
 
                     <BlogArticleProse>
                         <Trans>
-                            Open Shortcuts, choose Automation, then create a personal automation for Wallet transactions. Select the card
-                            you use with Apple Pay and set the automation to run immediately when iOS offers that option.
+                            Open Shortcuts, choose Automation, then create one personal automation with the Transaction trigger. Select all
+                            the cards you use with Apple Pay and choose Run Immediately. One automation covers every selected card.
                         </Trans>
                     </BlogArticleProse>
 
@@ -172,9 +174,9 @@ export default async function ApplePayShortcutsInstructionsArticle(props: PageLa
 
                     <BlogArticleProse>
                         <Trans>
-                            In the automation action list, search for Budgie. Add the action that records an Apple Pay capture. Bind the
-                            Wallet transaction amount, merchant, and card fields, add the payment currency code when you pay abroad, then
-                            choose the Budgie account for the payment.
+                            In the automation action list, search for Budgie. Add the Capture Apple Pay transaction action and set Amount,
+                            Merchant and Card from the Shortcut Input. Currency is optional and detected automatically. The optional Account
+                            field pins one account; leave it empty and Budgie chooses it for you.
                         </Trans>
                     </BlogArticleProse>
 

@@ -469,10 +469,6 @@ msgstr "Konto {accountId} nicht gefunden"
 msgid "Account actions"
 msgstr "Kontoaktionen"
 
-#: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
-msgid "Account is archived"
-msgstr "Konto ist archiviert"
-
 #: src/@generic/component/account-details-field/account-details-field.tsx
 msgid "Account Name & Icon"
 msgstr "Kontoname & Symbol"
@@ -480,6 +476,10 @@ msgstr "Kontoname & Symbol"
 #. js-lingui-explicit-id
 #: ../ledger/src/transaction/service/transfer-creation.service.ts
 msgid "transaction.accountNotFound"
+msgstr "Konto nicht gefunden"
+
+#: src/wallet-capture/component/wallet-capture-review-list/wallet-capture-review-list.tsx
+msgid "Account not found"
 msgstr "Konto nicht gefunden"
 
 #: src/account/component/update-account-page/update-account-page.tsx
@@ -581,8 +581,8 @@ msgid "Add balances later"
 msgstr "Salden später hinzufügen"
 
 #: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
-msgid "Add Budgie's Capture Apple Pay transaction action."
-msgstr "Füge die Budgie-Aktion „Apple Pay-Transaktion erfassen“ hinzu."
+msgid "Add Budgie's Capture Apple Pay transaction action and set Amount, Merchant and Card from the Shortcut Input."
+msgstr "Füge die Budgie-Aktion „Apple-Pay-Transaktion erfassen“ hinzu und setze Betrag, Händler und Karte aus der Kurzbefehl-Eingabe."
 
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
 msgid "Add category"
@@ -917,22 +917,6 @@ msgstr "Binance"
 msgid "Binance P2P orders are unavailable: the API key is missing P2P read permission."
 msgstr "Binance-P2P-Orders sind nicht verfügbar: dem API-Schlüssel fehlt die P2P-Leseberechtigung."
 
-#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
-msgid "Bind Amount to Shortcut Input → Amount."
-msgstr "Verknüpfe Betrag mit Shortcut Input → Betrag."
-
-#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
-msgid "Bind Merchant to Shortcut Input → Merchant."
-msgstr "Verknüpfe Händler mit Shortcut Input → Händler."
-
-#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
-msgid "Bind the optional Card field to the Wallet card/pass value."
-msgstr "Verknüpfe das optionale Feld Karte mit dem Karten-/Passwert aus Wallet."
-
-#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
-msgid "Bind the optional Currency field to the payment currency code, for example EUR."
-msgstr "Verknüpfe das optionale Feld Währung mit dem Währungscode der Zahlung, zum Beispiel EUR."
-
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
 msgid "Biometric Authentication"
 msgstr "Biometrische Authentifizierung"
@@ -1004,6 +988,10 @@ msgstr "Budgie hat noch keinen Wechselkurs für diese Zahlungswährung."
 #: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
 msgid "Budgie hit an unexpected problem. You can restart the app or report the issue so we can investigate."
 msgstr "Budgie ist auf ein unerwartetes Problem gestoßen. Du kannst die App neu starten oder das Problem melden, damit wir es untersuchen können."
+
+#: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
+msgid "Budgie picks the account from the card name, then your default account. Name the account like the card, or set the optional Account field in the action to pin one."
+msgstr "Budgie wählt das Konto anhand des Kartennamens und dann über dein Standardkonto. Benenne das Konto wie die Karte oder lege es über das optionale Feld „Konto“ in der Aktion fest."
 
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 msgid "Budgie re-encrypts {DB_NAME} ({fileSize}) on this phone. It takes a few seconds."
@@ -1741,6 +1729,10 @@ msgstr "Erstellen Sie zuerst ein Schuldenkonto."
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Create a new System-generated API key"
 msgstr "Erstellen Sie einen neuen systemgenerierten API-Schlüssel"
+
+#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
+msgid "Create a personal automation in Shortcuts with the Transaction trigger, select your cards and choose Run Immediately."
+msgstr "Erstelle in Kurzbefehle eine persönliche Automation mit dem Auslöser „Transaktion“, wähle deine Karten aus und aktiviere „Sofort ausführen“."
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Create a PIN"
@@ -3629,10 +3621,6 @@ msgstr "Einstellungen öffnen"
 msgid "Open Shortcuts"
 msgstr "Shortcuts öffnen"
 
-#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
-msgid "Open Shortcuts and create a personal automation."
-msgstr "Öffne Shortcuts und erstelle eine persönliche Automation."
-
 #: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
 msgid "Opens with"
 msgstr "Öffnet mit"
@@ -4118,10 +4106,6 @@ msgstr "Aus einer Sicherungsdatei wiederherstellen"
 msgid "Restore from Backup"
 msgstr "Aus Sicherung wiederherstellen"
 
-#: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
-msgid "Restore the account or choose another active account in the automation before importing the capture."
-msgstr "Stelle das Konto wieder her oder wähle in der Automation ein anderes aktives Konto, bevor du die Erfassung importierst."
-
 #: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
 msgid "Resume"
 msgstr "Fortsetzen"
@@ -4369,10 +4353,6 @@ msgstr "Wählen Sie eine Kategorie zum Zusammenführen"
 msgid "Select a contact"
 msgstr "Wählen Sie einen Kontakt"
 
-#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
-msgid "Select a fixed Budgie account in the action's Account picker."
-msgstr "Wähle in der Kontoauswahl der Aktion ein festes Budgie-Konto aus."
-
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Select a tag to merge into"
 msgstr "Wählen Sie einen Tag zum Zusammenführen"
@@ -4437,17 +4417,9 @@ msgstr "Import-Vorlage auswählen"
 msgid "Select MCC code"
 msgstr "MCC-Code auswählen"
 
-#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
-msgid "Select one Wallet card."
-msgstr "Wähle eine Wallet-Karte aus."
-
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Select Operator"
 msgstr "Operator auswählen"
-
-#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
-msgid "Select Run Immediately."
-msgstr "Wähle „Sofort ausführen“."
 
 #: src/rule/components/rule-condition-value-input/rule-condition-value-input.tsx
 msgid "Select source"
@@ -4468,10 +4440,6 @@ msgstr "Heruntergeladene PDF-Datei auswählen"
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Select the exported XLSX file"
 msgstr "Exportierte XLSX-Datei auswählen"
-
-#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
-msgid "Select the Wallet or Transaction trigger."
-msgstr "Wähle den Auslöser Wallet oder Transaktion."
 
 #: src/rule/components/rule-condition-value-input/rule-condition-value-input.tsx
 msgid "Select Transaction Type"
@@ -5488,6 +5456,10 @@ msgstr "Funktioniert ganz ohne Verbindung."
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Write it on paper and keep it somewhere safe. The only other way back is a backup you export yourself."
 msgstr "Schreib sie auf Papier und bewahre es sicher auf. Der einzige andere Weg zurück ist ein Backup, das du selbst exportierst."
+
+#: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
+msgid "Wrong or missing account"
+msgstr "Falsches oder fehlendes Konto"
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "XLSX export"

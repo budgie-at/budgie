@@ -1,6 +1,8 @@
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { WalletCaptureReviewCard } from '../wallet-capture-review-card/wallet-capture-review-card';
 
@@ -9,8 +11,8 @@ import type { WalletCaptureReviewItemInterface } from '../../interface/wallet-ca
 interface Props {
     readonly reviewItems: WalletCaptureReviewItemInterface[];
     readonly mutatingCaptureIds: Record<string, boolean>;
-    readonly getAccountTitle: (accountId: number, fallback: string) => string;
-    readonly getAccountInstrumentSymbol: (accountId: number, fallback: string) => string;
+    readonly getAccountTitle: (accountId: number | null, fallback: string) => string;
+    readonly getAccountInstrumentSymbol: (accountId: number | null, fallback: string) => string;
     readonly importCapture: (captureId: string) => void;
     readonly dismissCapture: (captureId: string) => void;
 }
@@ -30,7 +32,7 @@ export const WalletCaptureReviewList = ({
         <View className="gap-y-lg">
             {reviewItems.map(item => {
                 const { accountId, captureId } = item.capture;
-                const fallbackTitle = t`Account ${accountId}`;
+                const fallbackTitle = isDefined(accountId) ? t`Account ${accountId}` : t`Account not found`;
                 const accountTitle = getAccountTitle(accountId, fallbackTitle);
                 const instrumentSymbol = getAccountInstrumentSymbol(accountId, defaultInstrument.symbol);
                 const isMutating = mutatingCaptureIds[captureId];

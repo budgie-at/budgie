@@ -26,7 +26,7 @@ import { isDefined } from '@rnw-community/shared';
 import { testDb } from '../scenario/setup';
 import { seed } from '../seed/seed';
 
-import type { WalletCaptureNativeRecordInterface } from '@app/wallet-capture/interface/wallet-capture-native-record.interface';
+import type { WalletCaptureRecordInterface } from '@app/wallet-capture/interface/wallet-capture-record.interface';
 
 export const WALLET_CAPTURE_AMOUNT = 125;
 export const WALLET_CAPTURE_AMOUNT_IN_MICRO_UNITS = WALLET_CAPTURE_AMOUNT * PRECISION;
@@ -40,8 +40,8 @@ export const walletCaptureSeedAccount = Effect.fnUntraced(function* () {
 
 export const walletCaptureBuild = (
     captureId: string,
-    overrides: Partial<WalletCaptureNativeRecordInterface> = {}
-): WalletCaptureNativeRecordInterface => ({
+    overrides: Partial<WalletCaptureRecordInterface> = {}
+): WalletCaptureRecordInterface => ({
     captureId,
     accountId: 1,
     amount: WALLET_CAPTURE_AMOUNT,
@@ -145,7 +145,7 @@ export const walletCaptureForcePostCreateRulePreparation = (ruleEngineService: R
     );
 };
 
-export const walletCaptureSeedExistingTransaction = Effect.fnUntraced(function* (capture: WalletCaptureNativeRecordInterface) {
+export const walletCaptureSeedExistingTransaction = Effect.fnUntraced(function* (capture: WalletCaptureRecordInterface) {
     yield* seed.bankPairExpense(
         { externalId: capture.captureId, operatedAt: new Date(capture.capturedAt) },
         { accountId: capture.accountId, amount: WALLET_CAPTURE_AMOUNT_IN_MICRO_UNITS, mccCategoryId: null }
@@ -157,7 +157,7 @@ export const walletCaptureSeedExistingTransaction = Effect.fnUntraced(function* 
 });
 
 export const walletCaptureExpectRuleApplied = Effect.fnUntraced(function* (
-    capture: WalletCaptureNativeRecordInterface,
+    capture: WalletCaptureRecordInterface,
     category: { readonly id: number; readonly tagId: number }
 ) {
     const transaction = yield* walletCaptureFindTransaction(capture.captureId);

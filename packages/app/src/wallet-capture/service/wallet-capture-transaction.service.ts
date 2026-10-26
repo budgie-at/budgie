@@ -20,7 +20,7 @@ import * as Layer from 'effect/Layer';
 import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import type { WalletCaptureAccountAmountInterface } from '../interface/wallet-capture-account-amount.interface';
-import type { WalletCaptureNativeRecordInterface } from '../interface/wallet-capture-native-record.interface';
+import type { WalletCaptureRecordInterface } from '../interface/wallet-capture-record.interface';
 import type { TransactionCreateInputInterface } from '@budgie/contracts';
 
 export class WalletCaptureTransactionService extends Context.Service<WalletCaptureTransactionService>()(
@@ -34,7 +34,7 @@ export class WalletCaptureTransactionService extends Context.Service<WalletCaptu
             const transactionService = yield* TransactionService;
 
             const resolveAccountAmount = Effect.fn('WalletCaptureTransactionService.resolveAccountAmount')(function* (
-                record: WalletCaptureNativeRecordInterface
+                record: WalletCaptureRecordInterface
             ) {
                 const account = yield* accountRepository.findById(record.accountId);
                 const currencyCode = record.currency?.trim().toUpperCase() ?? '';
@@ -76,7 +76,7 @@ export class WalletCaptureTransactionService extends Context.Service<WalletCaptu
             });
 
             const mapCaptureToTransactionInput = (
-                record: WalletCaptureNativeRecordInterface,
+                record: WalletCaptureRecordInterface,
                 accountAmount: WalletCaptureAccountAmountInterface
             ): TransactionCreateInputInterface => ({
                 amount: accountAmount.amount,
@@ -106,7 +106,7 @@ export class WalletCaptureTransactionService extends Context.Service<WalletCaptu
                 ]
             });
 
-            const prepareCaptureForRules = Effect.fnUntraced(function* (record: WalletCaptureNativeRecordInterface) {
+            const prepareCaptureForRules = Effect.fnUntraced(function* (record: WalletCaptureRecordInterface) {
                 const accountAmount = yield* resolveAccountAmount(record);
 
                 if (!isDefined(accountAmount)) {
@@ -129,7 +129,7 @@ export class WalletCaptureTransactionService extends Context.Service<WalletCaptu
             return {
                 resolveAccountAmount,
                 createCaptureTransaction: Effect.fn('WalletCaptureTransactionService.createCaptureTransaction')(function* (
-                    record: WalletCaptureNativeRecordInterface
+                    record: WalletCaptureRecordInterface
                 ) {
                     const { transactionInputs, postCreateIndexes } = yield* prepareCaptureForRules(record);
                     const [createdTransaction] = yield* transactionService.bulkCreate(transactionInputs);
@@ -143,7 +143,7 @@ export class WalletCaptureTransactionService extends Context.Service<WalletCaptu
                     return createdTransaction.id;
                 }),
                 applyRulesToExistingCaptureTransaction: Effect.fn('WalletCaptureTransactionService.applyRulesToExistingCaptureTransaction')(
-                    function* (record: WalletCaptureNativeRecordInterface, transactionId: number) {
+                    function* (record: WalletCaptureRecordInterface, transactionId: number) {
                         const { transactionInputs, postCreateIndexes } = yield* prepareCaptureForRules(record);
 
                         yield* applyPostCreateRules(transactionInputs, postCreateIndexes, transactionId);

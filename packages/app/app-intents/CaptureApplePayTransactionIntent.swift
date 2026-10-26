@@ -78,10 +78,14 @@ struct CaptureApplePayTransactionIntent: AppIntent {
   var cardName: String?
 
   @Parameter(title: "Account")
-  var account: BudgieWalletAccountEntity
+  var account: BudgieWalletAccountEntity?
 
   static var parameterSummary: some ParameterSummary {
-    Summary("Capture \(\.$amount) at \(\.$merchant) in \(\.$account)")
+    Summary("Capture \(\.$amount) at \(\.$merchant)") {
+      \.$cardName
+      \.$currency
+      \.$account
+    }
   }
 
   init() {}
@@ -91,8 +95,10 @@ struct CaptureApplePayTransactionIntent: AppIntent {
       throw AppleWalletCaptureIntentError.invalidAmount
     }
 
-    guard try await !BudgieWalletAccountQuery().entities(for: [account.id]).isEmpty else {
-      throw AppleWalletCaptureIntentError.accountUnavailable
+    if let account {
+      guard try await !BudgieWalletAccountQuery().entities(for: [account.id]).isEmpty else {
+        throw AppleWalletCaptureIntentError.accountUnavailable
+      }
     }
 
     let normalizedCurrency = currency?.trimmingCharacters(in: .whitespacesAndNewlines).uppercased() ?? ""
@@ -101,7 +107,7 @@ struct CaptureApplePayTransactionIntent: AppIntent {
     await AppIntentDispatcher.shared.dispatch(
       name: "captureApplePayTransaction",
       params: [
-        "accountId": .int(account.id),
+        "accountId": account.map { AppIntentValue.int($0.id) } ?? .null,
         "amount": .double(amount),
         "currency": normalizedCurrency.isEmpty ? .null : .string(normalizedCurrency),
         "merchant": .string(merchant.trimmingCharacters(in: .whitespacesAndNewlines)),

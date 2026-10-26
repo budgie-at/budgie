@@ -2399,8 +2399,8 @@ msgid "Add the Budgie action"
 msgstr "Ajouter l’action Budgie"
 
 #: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
-msgid "Add the Budgie action and bind the Wallet transaction fields."
-msgstr "Ajoutez l’action Budgie et associez les champs de transaction Wallet."
+msgid "Add the Budgie action and set Amount, Merchant and Card from the Shortcut Input."
+msgstr "Ajoute l'action Budgie et renseigne Montant, Commerçant et Carte à partir de l'entrée du raccourci."
 
 #: src/app/[lang]/features/home-screen-widgets/page.tsx
 msgid "Add them to your Home Screen and your numbers are already there before you unlock your phone."
@@ -6564,10 +6564,6 @@ msgstr "Créez un compte d’espèces pour les euros et un autre pour les hryvni
 msgid "Create a feature branch for your changes"
 msgstr "Créer une branche de fonctionnalité pour vos modifications"
 
-#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
-msgid "Create a personal automation that runs after a Wallet transaction."
-msgstr "Créez une automatisation personnelle qui s’exécute après une transaction Wallet."
-
 #: src/app/[lang]/bank-sync/page.tsx
 msgid "Create a read-only API key in Binance with only reading enabled, never trading or withdrawals, and enter it in Budgie. Your balances and history come in, and P2P purchases are matched with the bank payments you made for them."
 msgstr "Créez dans Binance une clé API en lecture seule, avec uniquement la lecture activée, sans trading ni retraits, puis saisissez-la dans Budgie. Vos soldes et votre historique arrivent, et les achats P2P sont rapprochés des paiements bancaires que vous avez effectués pour eux."
@@ -6579,6 +6575,10 @@ msgstr "Créez un compte dans Budgie pour chaque compte bancaire ou carte de cr�
 #: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
 msgid "Create one iOS Shortcuts automation so future eligible Apple Pay taps can arrive in Budgie for review."
 msgstr "Créez une automatisation iOS Shortcuts pour que les futurs paiements Apple Pay éligibles puissent arriver dans Budgie pour révision."
+
+#: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
+msgid "Create one personal automation with the Transaction trigger, select your cards, and run it immediately."
+msgstr "Crée une automatisation personnelle avec le déclencheur Transaction, sélectionne tes cartes et exécute-la immédiatement."
 
 #: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
 msgid "Create the Shortcuts automation"
@@ -9971,8 +9971,8 @@ msgid "In Settings, choose your main currency. Most people living in the EU pick
 msgstr "Dans les Paramètres, choisissez votre devise principale. La plupart des personnes vivant dans l’UE choisissent l’euro, mais vous pouvez garder la hryvnia si c’est ainsi que vous pensez votre argent. Le solde total, le patrimoine net et les rapports de dépenses s’affichent dans cette devise, et vous pouvez en changer à tout moment."
 
 #: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
-msgid "In the automation action list, search for Budgie. Add the action that records an Apple Pay capture. Bind the Wallet transaction amount, merchant, and card fields, add the payment currency code when you pay abroad, then choose the Budgie account for the payment."
-msgstr "Dans la liste des actions de l’automatisation, recherchez Budgie. Ajoutez l’action qui enregistre une capture Apple Pay. Associez le montant, le commerçant et la carte de la transaction Wallet, ajoutez le code de devise du paiement lorsque vous payez à l’étranger, puis choisissez le compte Budgie pour le paiement."
+msgid "In the automation action list, search for Budgie. Add the Capture Apple Pay transaction action and set Amount, Merchant and Card from the Shortcut Input. Currency is optional and detected automatically. The optional Account field pins one account; leave it empty and Budgie chooses it for you."
+msgstr "Dans la liste des actions de l'automatisation, recherche Budgie. Ajoute l'action « Capturer une transaction Apple Pay » et renseigne Montant, Commerçant et Carte à partir de l'entrée du raccourci. La devise est facultative et détectée automatiquement. Le champ facultatif Compte fixe un compte ; laisse-le vide et Budgie le choisira pour toi."
 
 #: src/app/[lang]/features/multi-currency/page.tsx
 msgid "In the background, at intervals your phone's operating system chooses, and again whenever the app syncs — but never more than once every five minutes. The newest rate for each currency pair replaces the one held on your device."
@@ -13411,8 +13411,8 @@ msgid "Open Budgie so the latest Monobank transactions come in."
 msgstr "Ouvrez Budgie pour récupérer les dernières transactions Monobank."
 
 #: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
-msgid "Open Budgie, go to Settings, then Apple Pay Capture. Choose the account where Apple Pay card payments should appear. Keep this screen available while you create the automation."
-msgstr "Ouvrez Budgie, allez dans Réglages, puis Capture Apple Pay. Choisissez le compte où les paiements par carte Apple Pay doivent apparaître. Gardez cet écran disponible pendant que vous créez l’automatisation."
+msgid "Open Budgie, go to Settings, then Apple Pay Capture. You do not choose an account: Budgie picks it from the card name, then your default account."
+msgstr "Ouvre Budgie, va dans Réglages, puis Capture Apple Pay. Tu n'as pas de compte à choisir : Budgie le choisit d'après le nom de la carte, puis ton compte par défaut."
 
 #: src/app/[lang]/features/bulk-categorize-transactions/page.tsx
 msgid "Open each transaction, one by one"
@@ -13443,8 +13443,8 @@ msgid "Open Privat24, select the card or account you want to import, and open it
 msgstr "Dans Privat24, sélectionnez la carte ou le compte que vous souhaitez importer, puis ouvrez son relevé. Choisissez une plage de dates couvrant tout votre historique, puis exportez-le au format Excel — les fichiers PDF et CSV ne peuvent pas être importés. Si Privat24 vous envoie le fichier par e-mail au lieu de le télécharger, enregistrez la pièce jointe depuis votre boîte de réception, puis sélectionnez-le dans le sélecteur de fichiers de Budgie."
 
 #: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
-msgid "Open Shortcuts, choose Automation, then create a personal automation for Wallet transactions. Select the card you use with Apple Pay and set the automation to run immediately when iOS offers that option."
-msgstr "Ouvrez Shortcuts, choisissez Automatisation, puis créez une automatisation personnelle pour les transactions Wallet. Sélectionnez la carte que vous utilisez avec Apple Pay et configurez l’exécution immédiate lorsque iOS propose cette option."
+msgid "Open Shortcuts, choose Automation, then create one personal automation with the Transaction trigger. Select all the cards you use with Apple Pay and choose Run Immediately. One automation covers every selected card."
+msgstr "Ouvre Raccourcis, choisis Automatisation, puis crée une automatisation personnelle avec le déclencheur Transaction. Sélectionne toutes les cartes que tu utilises avec Apple Pay et choisis Exécuter immédiatement. Une seule automatisation couvre toutes les cartes sélectionnées."
 
 #: src/app/[lang]/blog/ynab-alternatives-privacy/page.tsx
 msgid "Open Source Transparency"
@@ -17999,8 +17999,8 @@ msgid "The Service, including its original content, features, and functionality,
 msgstr "Le Service, y compris son contenu original, ses caractéristiques et ses fonctionnalités, appartient à Budgie et est protégé par les lois internationales relatives au droit d'auteur, aux marques, aux brevets, au secret des affaires et à la propriété intellectuelle. Nos marques et notre habillage commercial ne peuvent être utilisés sans notre autorisation écrite préalable."
 
 #: src/app/[lang]/blog/apple-pay-shortcuts-instructions/page.tsx
-msgid "The setup screen shows which account Budgie will use when a Shortcuts event arrives."
-msgstr "L’écran de configuration montre quel compte Budgie utilisera lorsqu’un événement Shortcuts arrive."
+msgid "The setup screen lists the three steps to complete in Shortcuts."
+msgstr "L'écran de configuration liste les trois étapes à effectuer dans Raccourcis."
 
 #: src/app/[lang]/features/database-backup/page.tsx
 msgid "The share sheet is the last step Budgie takes part in. Send the file to Files, iCloud Drive, a Drive folder or a USB stick, and keep as many dated copies as you want — the name carries the date and time, so exports never collide."

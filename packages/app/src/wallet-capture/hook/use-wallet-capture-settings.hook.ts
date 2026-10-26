@@ -13,7 +13,7 @@ import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { useCallback, useState } from 'react';
 
-import { getErrorMessage, isNotEmptyArray } from '@rnw-community/shared';
+import { getErrorMessage, isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { appAtomRuntime, appRuntime } from '../../@generic/runtime/app.runtime';
@@ -33,7 +33,9 @@ const walletCaptureSettingsAtom = appAtomRuntime.factory.withReactivity([WalletC
             const accountRepository = yield* AccountRepository;
             const instrumentRepository = yield* InstrumentRepository;
             const reviewItems = yield* captureImportService.getReviewItems();
-            const accounts = yield* accountRepository.findByIds([...new Set(reviewItems.map(item => item.capture.accountId))]);
+            const accounts = yield* accountRepository.findByIds([
+                ...new Set(reviewItems.map(item => item.capture.accountId).filter(isDefined))
+            ]);
             const accountDetails = yield* Effect.forEach(accounts, account =>
                 Effect.map(instrumentRepository.findById(account.instrumentId), instrument => ({ account, instrument }))
             );
@@ -108,9 +110,9 @@ export const useWalletCaptureSettings = () => {
         );
     };
 
-    const getAccountTitle = (accountId: number, fallback: string) =>
+    const getAccountTitle = (accountId: number | null, fallback: string) =>
         accountDetails.find(detail => detail.account.id === accountId)?.account.title ?? fallback;
-    const getAccountInstrumentSymbol = (accountId: number, fallback: string) =>
+    const getAccountInstrumentSymbol = (accountId: number | null, fallback: string) =>
         accountDetails.find(detail => detail.account.id === accountId)?.instrument?.symbol ?? fallback;
 
     return {
