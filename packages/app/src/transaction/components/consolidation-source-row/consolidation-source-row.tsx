@@ -1,14 +1,10 @@
-import {
-    ConsolidationSourceRowInterface,
-    TransactionConsolidationTypeEnum,
-    TransactionEntryTypeEnum,
-    TransactionTypeEnum
-} from '@budgie/contracts';
+import { ConsolidationSourceRowInterface, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import Animated, { FadeIn, LinearTransition } from 'react-native-reanimated';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
+import { getConsolidationSourceDisplayType } from '../../utils/get-consolidation-source-display-type.util';
 import { TransactionPickerRow } from '../transaction-picker-row/transaction-picker-row';
 
 import type { TransactionPickerItemInterface } from '../../interface/transaction-picker-item.interface';
@@ -35,23 +31,12 @@ const getSourceTitle = (source: ConsolidationSourceRowInterface): string => {
     return t`Original transaction`;
 };
 
-const getSourceDisplayType = (
-    source: ConsolidationSourceRowInterface,
-    consolidationType: TransactionConsolidationTypeEnum | null
-): TransactionTypeEnum.EXPENSE | TransactionTypeEnum.INCOME => {
-    if (consolidationType === TransactionConsolidationTypeEnum.REFUND) {
-        return source.sourceType === TransactionTypeEnum.INCOME ? TransactionTypeEnum.INCOME : TransactionTypeEnum.EXPENSE;
-    }
-
-    return source.entryType === TransactionEntryTypeEnum.CREDIT ? TransactionTypeEnum.EXPENSE : TransactionTypeEnum.INCOME;
-};
-
 const mapSourceToPickerItem = (
     source: ConsolidationSourceRowInterface,
     consolidationType: TransactionConsolidationTypeEnum | null
 ): TransactionPickerItemInterface => ({
     id: source.sourceTransactionId,
-    type: getSourceDisplayType(source, consolidationType),
+    type: getConsolidationSourceDisplayType(source, consolidationType),
     title: getSourceTitle(source),
     operatedAt: new Date(source.sourceOperatedAtMs),
     amount: source.amount,

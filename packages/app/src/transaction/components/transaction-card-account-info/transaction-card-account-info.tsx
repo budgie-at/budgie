@@ -1,4 +1,4 @@
-import { TransactionEntryTypeEnum } from '@budgie/contracts';
+import { isOutflowEntryType } from '@budgie/contracts';
 import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -22,7 +22,7 @@ export const TransactionCardAccountInfo = ({ transaction, accountId = null }: Pr
         selectedAccountEntry.accountId !== transaction.fromAccountId &&
         selectedAccountEntry.accountId !== transaction.toAccountId
     ) {
-        const selectedAccountDirection = selectedAccountEntry.type === TransactionEntryTypeEnum.CREDIT ? 'from' : 'to';
+        const selectedAccountDirection = isOutflowEntryType(selectedAccountEntry.type) ? 'from' : 'to';
 
         return (
             <TransactionAccountLine
