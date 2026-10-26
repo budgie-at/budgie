@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.116.2](https://github.com/budgie-at/budgie/compare/v6.116.1...v6.116.2) (2026-10-26)
+
+### Bug Fixes
+
+* **sync:** let paused Monobank accounts recover after failures ([c805058](https://github.com/budgie-at/budgie/commit/c805058afd339f5141b6151ebaee74a64d5116b3))
+
+
 ## [6.116.1](https://github.com/budgie-at/budgie/compare/v6.116.0...v6.116.1) (2026-10-26)
 
 ### Bug Fixes
