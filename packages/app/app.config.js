@@ -48,7 +48,7 @@ const getAppName = () => {
     return 'budgie';
 };
 
-const StripEmbeddedFrameworksScriptPhase = `
+const STRIP_EMBEDDED_FRAMEWORKS_SCRIPT_PHASE = `
   script_phase name: 'Strip Embedded Frameworks', execution_position: :any, always_out_of_date: '1', script: <<~'SCRIPT'
     if [ "$CONFIGURATION" != "Release" ]; then
       exit 0
@@ -67,7 +67,7 @@ const StripEmbeddedFrameworksScriptPhase = `
 
   post_install do |installer|`;
 
-const AndroidProguardRules = `
+const ANDROID_PROGUARD_RULES = `
 -dontwarn com.gemalto.jp2.**
 -keepnames class com.facebook.react.ReactRootView
 -keepnames class com.swmansion.rnscreens.Screen
@@ -78,7 +78,10 @@ const AndroidProguardRules = `
 
 const withStrippedIosFrameworks = config =>
     withPodfile(config, mod => {
-        mod.modResults.contents = mod.modResults.contents.replace('\n  post_install do |installer|', StripEmbeddedFrameworksScriptPhase);
+        mod.modResults.contents = mod.modResults.contents.replace(
+            '\n  post_install do |installer|',
+            STRIP_EMBEDDED_FRAMEWORKS_SCRIPT_PHASE
+        );
 
         return mod;
     });
@@ -162,7 +165,7 @@ const getExpoConfig = ({ config }) => ({
                 android: {
                     enableMinifyInReleaseBuilds: true,
                     enableShrinkResourcesInReleaseBuilds: true,
-                    extraProguardRules: AndroidProguardRules,
+                    extraProguardRules: ANDROID_PROGUARD_RULES,
                     gifEnabled: false,
                     webpEnabled: false,
                     packagingOptions: {
