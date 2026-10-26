@@ -59,9 +59,11 @@ export const ArchivedAccountCard = ({ account }: Props) => {
                         {formatDigits(balance, account.instrument.symbol)}
                     </ProtectedText>
 
-                    <HapticPressable testID={ArchivedAccountCardSelector.RestoreButton(accountTitle)} onPress={handleRestore}>
-                        <CircleIcon variant="positive" icon={UserIconNameEnum.RotateCcw} />
-                    </HapticPressable>
+                    {!account.isExternal && (
+                        <HapticPressable testID={ArchivedAccountCardSelector.RestoreButton(accountTitle)} onPress={handleRestore}>
+                            <CircleIcon variant="positive" icon={UserIconNameEnum.RotateCcw} />
+                        </HapticPressable>
+                    )}
                 </View>
             }
             left={<CircleIcon icon={account.icon} variant="dark-warning" size={46} iconSize={20} />}

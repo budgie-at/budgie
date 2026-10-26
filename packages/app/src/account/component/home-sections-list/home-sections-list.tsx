@@ -1,5 +1,5 @@
 import { AccountWithSyncEntityInterface } from '@budgie/contracts';
-import { SectionList } from 'react-native';
+import { SectionList, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { useScreenChromeScrollProps } from '@rnw-community/react-native-screen-chrome';
@@ -21,7 +21,7 @@ import type { ReactElement } from 'react';
 type HomeSectionsListItem = AccountRowInterface | CryptoCurrencyGroupInterface | AccountWithSyncEntityInterface;
 
 const AnimatedSectionList = Animated.createAnimatedComponent(SectionList<HomeSectionsListItem, HomeSectionInterface>);
-const LIST_HORIZONTAL_PADDING = 20;
+const LIST_HORIZONTAL_PADDING = 16;
 
 interface Props {
     readonly sections: HomeSectionInterface[];
@@ -52,6 +52,8 @@ export const HomeSectionsList = ({ sections, activeAccountCount, bottomInset, ba
         <HomeSectionItem item={item} section={section} balanceSummary={balanceSummary} />
     );
 
+    const renderSectionFooter = () => <View className="h-[16px]" />;
+
     const keyExtractor = (item: HomeSectionsListItem) => {
         if ('type' in item) {
             return `debt-${item.id}`;
@@ -66,6 +68,7 @@ export const HomeSectionsList = ({ sections, activeAccountCount, bottomInset, ba
             sections={sections}
             renderSectionHeader={renderSectionHeader}
             renderItem={renderItem}
+            renderSectionFooter={renderSectionFooter}
             keyExtractor={keyExtractor}
             extraData={listFormatKey}
             showsVerticalScrollIndicator={false}

@@ -16,7 +16,6 @@ import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { openGithubIssueCreation } from '../../../@generic/utils/open-github-issue-creation.util';
 import { AiFeaturesSettingsCard } from '../../../ai/component/ai-features-settings-card/ai-features-settings-card';
 import { ExportCsv } from '../../../export/components/export-csv/export-csv';
-import { ExportDatabase } from '../../../export/components/export-database/export-database';
 import { ImportCsv } from '../../../import/components/import-csv/import-csv';
 import { ImportDatabase } from '../../../import/components/import-database/import-database';
 import { MoneyDataUpgradeStatusCard } from '../../../money-data/component/money-data-upgrade-status-card/money-data-upgrade-status-card';
@@ -31,12 +30,12 @@ import { DefaultCurrencySelector } from '../../../settings/components/default-cu
 import { LanguageSelector } from '../../../settings/components/language-selector/language-selector';
 import { RecalculateBalances } from '../../../settings/components/recalculate-balances/recalculate-balances';
 import { RepairSyncData } from '../../../settings/components/repair-sync-data/repair-sync-data';
-import { PinCard } from '../../../settings/components/security-settings/pin-card';
+import { SecurityCard } from '../../../settings/components/security-card/security-card';
 import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
 import { SettingsGroup } from '../../../settings/components/settings-group/settings-group';
 import { ThemeSwitch } from '../../../settings/components/theme-switch/theme-switch';
 import { TruncateData } from '../../../settings/components/truncate-data/truncate-data';
-import { YourDataFileCard } from '../../../settings/components/your-data-file-card/your-data-file-card';
+import { YourDataCard } from '../../../settings/components/your-data-card/your-data-card';
 import { useScrollToAnchor } from '../../../settings/hook/use-scroll-to-anchor.hook';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { updateSettingsMutation } from '../../../settings/mutation/update-settings.mutation';
@@ -44,13 +43,12 @@ import { ApplePayCaptureSettingsCard } from '../../../wallet-capture/component/a
 
 import { SettingsPageSelector } from './settings-page.selector';
 
-// eslint-disable-next-line max-lines-per-function, max-statements
+// eslint-disable-next-line max-lines-per-function
 export default function SettingsPage() {
     const { t } = useLingui();
     const { anchor } = useLocalSearchParams<{ anchor?: string }>();
     const { scrollViewRef, onScrollViewLayout, anchorLayout, anchorHighlight } = useScrollToAnchor(anchor);
 
-    const isScreenshotProtectionEnabled = useSetting('isScreenshotProtectionEnabled');
     const showCents = useSetting('showCents');
     const handleNavigateToCategories = () => void router.push('/settings/categories');
     const handleNavigateToArchived = () => void router.push('/settings/archived');
@@ -75,29 +73,14 @@ export default function SettingsPage() {
     return (
         <CollapsibleChromePage title={t`Settings`} testID={SettingsPageSelector.Container} scrollViewProps={scrollViewProps}>
             <View className="gap-y-7xl pb-5xl">
-                <SettingsGroup title={t`Privacy`}>
-                    <YourDataFileCard />
+                <SettingsGroup title={t`Your data`}>
+                    <YourDataCard />
                 </SettingsGroup>
 
                 <View {...anchorLayout('security')}>
                     <SettingsGroup title={t`Security`}>
-                        <Animated.View className="gap-y-lg" {...anchorHighlight('security')}>
-                            <PinCard />
-                            <SettingsCard
-                                icon={UserIconNameEnum.ShieldCheck}
-                                variant="pink"
-                                title={t`Screenshot Protection`}
-                                description={t`Hide account balances and net worth when taking screenshots`}
-                                testID={SettingsPageSelector.ScreenshotProtectionCard}
-                                right={
-                                    <ThemedSwitch
-                                        className="my-auto"
-                                        testID={SettingsPageSelector.ScreenshotProtectionSwitch}
-                                        onValueChange={handleToggle('isScreenshotProtectionEnabled')}
-                                        value={isScreenshotProtectionEnabled}
-                                    />
-                                }
-                            />
+                        <Animated.View {...anchorHighlight('security')}>
+                            <SecurityCard />
                         </Animated.View>
                     </SettingsGroup>
                 </View>
@@ -220,7 +203,6 @@ export default function SettingsPage() {
                             <ImportCsv />
                             <ExportCsv />
                             <ImportDatabase />
-                            <ExportDatabase testID={SettingsPageSelector.ExportDatabaseCard} />
                             <MoneyDataUpgradeStatusCard testID={SettingsPageSelector.MoneyDataUpgradeCard} />
                             <RepairSyncData />
                             <ConsolidateTransfers />

@@ -10,6 +10,8 @@ import {
     DebtEventRepository,
     DebtEventSourceEnum,
     LENDING_CATEGORY_ID,
+    MccCategoryRepository,
+    SettingsRepository,
     TransactionEntryKindEnum,
     TransactionEntryRepository,
     TransactionRepository,
@@ -36,6 +38,8 @@ export class TransactionDebtSettlementService extends Context.Service<Transactio
         make: Effect.gen(function* () {
             const accountRepository = yield* AccountRepository;
             const categoryRepository = yield* CategoryRepository;
+            const mccCategoryRepository = yield* MccCategoryRepository;
+            const settingsRepository = yield* SettingsRepository;
             const debtEventRepository = yield* DebtEventRepository;
             const transactionEntryRepository = yield* TransactionEntryRepository;
             const transactionRepository = yield* TransactionRepository;
@@ -176,7 +180,13 @@ export class TransactionDebtSettlementService extends Context.Service<Transactio
                 primaryEntry: TransactionEntryEntityInterface,
                 debtAccount: Pick<AccountEntityInterface, 'id' | 'debtType'>
             ) {
-                if (isDefined(primaryEntry.categoryId) || debtAccount.debtType === AccountDebtTypeEnum.INSTALLMENT) {
+                const hasMachineGuessedCategory =
+                    primaryEntry.categorySource === CategorySourceEnum.MCC_DEFAULT || primaryEntry.categorySource === CategorySourceEnum.AI;
+
+                if (
+                    (isDefined(primaryEntry.categoryId) && !hasMachineGuessedCategory) ||
+                    debtAccount.debtType === AccountDebtTypeEnum.INSTALLMENT
+                ) {
                     return false;
                 }
 
@@ -202,9 +212,15 @@ export class TransactionDebtSettlementService extends Context.Service<Transactio
                     return;
                 }
 
+                const mccDefaultCategoryId = isDefined(primaryEntry.mccCategoryId)
+                    ? ((yield* mccCategoryRepository.findById(primaryEntry.mccCategoryId))?.defaultCategoryId ?? null)
+                    : null;
+                const isMccDefaultApplied =
+                    isDefined(mccDefaultCategoryId) && (yield* settingsRepository.getSettings()).applyMccDefaultCategory;
+
                 yield* transactionEntryRepository.updateById(primaryEntry.id, {
-                    categoryId: null,
-                    categorySource: CategorySourceEnum.USER
+                    categoryId: isMccDefaultApplied ? mccDefaultCategoryId : null,
+                    categorySource: isMccDefaultApplied ? CategorySourceEnum.MCC_DEFAULT : CategorySourceEnum.USER
                 });
             });
 
@@ -280,6 +296,8 @@ export class TransactionDebtSettlementService extends Context.Service<Transactio
         Layer.provide([
             AccountRepository.layer,
             CategoryRepository.layer,
+            MccCategoryRepository.layer,
+            SettingsRepository.layer,
             DebtEventRepository.layer,
             TransactionEntryRepository.layer,
             TransactionRepository.layer,

@@ -93,6 +93,29 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
                 getSourceTransactionIds: candidate => [candidate.existingTransferId, candidate.duplicateTransactionId]
             });
 
+            const atmCashWithdrawalFamily = makeConsolidationFamilyStrategy({
+                findCandidates: scope => consolidationCandidateRepository.findAutoAtmCashWithdrawalCandidates(scope),
+                consolidateCandidate: candidate =>
+                    consolidationExecutorService.consolidateAtmCashWithdrawal(candidate, {
+                        sourceTransactionIds: [candidate.transactionId],
+                        allowedMovedSourceTransactionIds: [],
+                        canonicalInput: {
+                            title: candidate.transactionTitle ?? '',
+                            operatedAt: candidate.operatedAt,
+                            fromAccountId: candidate.sourceAccountId,
+                            toAccountId: candidate.targetCashAccountId,
+                            fromAmount: candidate.amount,
+                            toAmount: candidate.amount,
+                            exchangeRate: 1,
+                            consolidationType: TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL,
+                            fromEntryExchangeRate: 1,
+                            toEntryExchangeRate: 1,
+                            fromEntryToIban: null
+                        }
+                    }),
+                getSourceTransactionIds: candidate => [candidate.transactionId]
+            });
+
             const families: ConsolidationFamilyStrategyInterface[] = [
                 makeConsolidationFamilyStrategy({
                     findCandidates: scope => consolidationCandidateRepository.findApplePayCaptureDuplicateCandidates(scope),
@@ -253,36 +276,14 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
                     findCandidates: scope => consolidationCandidateRepository.findManualExpenseDuplicateCandidates(scope),
                     consolidateCandidate: candidate => consolidationRepairExecutorService.consolidateManualExpenseDuplicate(candidate),
                     getSourceTransactionIds: candidate => [candidate.syncedTransactionId, candidate.manualTransactionId]
-                })
+                }),
+                atmCashWithdrawalFamily
             ];
 
             const bridgeClaimRepairFamily = makeConsolidationFamilyStrategy({
                 findCandidates: () => consolidationCandidateRepository.findBridgeClaimedRepairCandidates(),
                 consolidateCandidate: candidate => consolidationRepairExecutorService.unconsolidateBridgeClaimedTransferPair(candidate),
                 getSourceTransactionIds: candidate => [candidate.canonicalTransferId, candidate.claimedIncomeTransactionId]
-            });
-
-            const atmCashWithdrawalFamily = makeConsolidationFamilyStrategy({
-                findCandidates: scope => consolidationCandidateRepository.findAtmCashWithdrawalCandidates(scope),
-                consolidateCandidate: candidate =>
-                    consolidationExecutorService.consolidateAtmCashWithdrawal(candidate, {
-                        sourceTransactionIds: [candidate.transactionId],
-                        allowedMovedSourceTransactionIds: [],
-                        canonicalInput: {
-                            title: candidate.transactionTitle ?? '',
-                            operatedAt: candidate.operatedAt,
-                            fromAccountId: candidate.sourceAccountId,
-                            toAccountId: candidate.targetCashAccountId,
-                            fromAmount: candidate.amount,
-                            toAmount: candidate.amount,
-                            exchangeRate: 1,
-                            consolidationType: TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL,
-                            fromEntryExchangeRate: 1,
-                            toEntryExchangeRate: 1,
-                            fromEntryToIban: null
-                        }
-                    }),
-                getSourceTransactionIds: candidate => [candidate.transactionId]
             });
 
             const findExistingTransferIncomeDuplicateRepairCandidates = Effect.fn(

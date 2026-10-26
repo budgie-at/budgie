@@ -1,6 +1,6 @@
 {
     "name": "@budgie/sync",
-    "version": "6.109.1",
+    "version": "6.117.0",
     "private": true,
     "description": "Bank synchronization package with multi-bank support",
     "sideEffects": false,
@@ -20,7 +20,8 @@
         "format": "oxfmt --write src",
         "lint": "oxlint --type-aware src",
         "lint:fix": "oxlint --type-aware --fix src",
-        "ts": "node ../../node_modules/@typescript/native/bin/tsc -p ."
+        "ts": "node ../../scripts/typecheck.cjs --noEmit -p tsconfig.json",
+        "ts:native": "node ../../scripts/typecheck.cjs --native --noEmit -p tsconfig.json"
     },
     "dependencies": {
         "@budgie/consolidation": "workspace:*",

@@ -7,6 +7,8 @@ import { isDefined, isEmptyArray, isPositiveNumber } from '@rnw-community/shared
 
 import { DepositNegativeBalanceError } from '../error/deposit-negative-balance.error';
 
+import { BalanceAdjustmentService } from './balance-adjustment.service';
+
 import type { AccountBalanceCreateEntityInterface, AccountEntityInterface } from '@budgie/contracts';
 
 export class AccountBalanceIncrementalService extends Context.Service<AccountBalanceIncrementalService>()(
@@ -15,6 +17,7 @@ export class AccountBalanceIncrementalService extends Context.Service<AccountBal
         make: Effect.gen(function* () {
             const accountRepository = yield* AccountRepository;
             const accountBalanceRepository = yield* AccountBalanceRepository;
+            const balanceAdjustmentService = yield* BalanceAdjustmentService;
 
             const buildBalanceInput = (
                 account: AccountEntityInterface,
@@ -96,6 +99,7 @@ export class AccountBalanceIncrementalService extends Context.Service<AccountBal
                 }
 
                 const accountIds = accounts.map(({ id }) => id);
+                yield* balanceAdjustmentService.rebaseReconciliations(accountIds);
                 const ledgerBalances = yield* accountBalanceRepository.getLedgerBalances(accountIds);
                 const debtLedgerBalances = yield* getDebtLedgerBalances(accounts);
 
@@ -139,6 +143,6 @@ export class AccountBalanceIncrementalService extends Context.Service<AccountBal
     }
 ) {
     static readonly layer = Layer.effect(AccountBalanceIncrementalService, AccountBalanceIncrementalService.make).pipe(
-        Layer.provide([AccountRepository.layer, AccountBalanceRepository.layer])
+        Layer.provide([AccountRepository.layer, AccountBalanceRepository.layer, BalanceAdjustmentService.layer])
     );
 }

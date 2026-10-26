@@ -8,7 +8,7 @@ import { ReiconIcon } from '../reicon-icon/reicon-icon';
 import type { IconProps } from 'reicon-react-native';
 import type { ApplyUniwind } from 'uniwind';
 
-interface Props extends ApplyUniwind<IconProps> {
+interface Props extends ApplyUniwind<Omit<IconProps, 'weight'>> {
     readonly icon: UserIconType;
 }
 

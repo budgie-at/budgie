@@ -8,6 +8,7 @@ export { AccountDebtOpeningService } from './account/service/account-debt-openin
 export { AccountArchiveService } from './account/service/account-archive.service';
 export { AccountBalanceIncrementalService } from './account/service/account-balance-incremental.service';
 export { AccountService } from './account/service/account.service';
+export { BalanceAdjustmentService } from './account/service/balance-adjustment.service';
 export { AccountTransferConversionService } from './account/service/account-transfer-conversion.service';
 export { DebtAccountService } from './account/service/debt-account.service';
 

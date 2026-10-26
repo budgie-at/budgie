@@ -1,4 +1,4 @@
-import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { ReiconIconNameEnum, TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 import Animated, { LinearTransition, useAnimatedStyle, withSpring } from 'react-native-reanimated';
@@ -7,6 +7,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { ReiconIcon } from '../../../@generic/component/reicon-icon/reicon-icon';
 import { cn } from '../../../@generic/utils/cn.util';
 import { TagVariantType } from '../../type/tag-variant.type';
 
@@ -134,7 +135,12 @@ export const TagsSelectorCard = ({
 
                 {showStarBadge ? (
                     <View className="absolute top-1.5 right-1.5">
-                        <Icon icon={UserIconNameEnum.Star} size={STAR_SIZE} weight={starWeight} className={starVariants({ isPrimary })} />
+                        <ReiconIcon
+                            icon={ReiconIconNameEnum.STAR}
+                            size={STAR_SIZE}
+                            weight={starWeight}
+                            className={starVariants({ isPrimary })}
+                        />
                     </View>
                 ) : null}
 

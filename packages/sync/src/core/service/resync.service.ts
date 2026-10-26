@@ -1,5 +1,6 @@
 import { UnconsolidationService } from '@budgie/consolidation';
 import { Db, ExternalSourceEnum, SyncRepository, TransactionConsolidationRepository } from '@budgie/contracts';
+import { TransactionService } from '@budgie/ledger';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -18,6 +19,7 @@ export class ResyncService extends Context.Service<ResyncService>()('@budgie/syn
         const syncRepository = yield* SyncRepository;
         const transactionConsolidationRepository = yield* TransactionConsolidationRepository;
         const unconsolidationService = yield* UnconsolidationService;
+        const transactionService = yield* TransactionService;
         const monobankSyncService = yield* MonobankSyncService;
         const syncProviderRegistryService = yield* SyncProviderRegistryService;
         const millisecondsPerDay = 24 * 60 * 60 * 1000;
@@ -36,7 +38,11 @@ export class ResyncService extends Context.Service<ResyncService>()('@budgie/syn
         const resyncFull = Effect.fnUntraced(function* (accountId: number, setupBalance: number | null) {
             const canonicals = yield* transactionConsolidationRepository.findActiveAutoConsolidatedByAccountIds([accountId]);
             yield* unconsolidateCanonicals(canonicals);
+            const reconciliationTransactionId = (yield* syncRepository.getByAccountId(accountId))?.reconciliationTransactionId;
             yield* syncRepository.resetForResync(accountId, setupBalance);
+            if (isDefined(reconciliationTransactionId)) {
+                yield* transactionService.deleteById(reconciliationTransactionId);
+            }
         });
 
         const resyncWindowed = Effect.fnUntraced(function* (accountId: number, sinceDays: number) {
@@ -61,6 +67,7 @@ export class ResyncService extends Context.Service<ResyncService>()('@budgie/syn
                 const service = yield* syncProviderRegistryService.getServiceForAccount(accountId);
 
                 if (isDefined(service) && 'requestSync' in service) {
+                    yield* syncRepository.recoverByAccountId(accountId);
                     yield* service.requestSync();
                 }
             })
@@ -72,6 +79,7 @@ export class ResyncService extends Context.Service<ResyncService>()('@budgie/syn
             SyncRepository.layer,
             TransactionConsolidationRepository.layer,
             UnconsolidationService.layer,
+            TransactionService.layer,
             MonobankSyncService.layer,
             SyncProviderRegistryService.layer
         ])

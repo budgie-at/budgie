@@ -7,6 +7,7 @@ import { EmptyFn, isDefined } from '@rnw-community/shared';
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
 import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
+import { useAccountCreateBindings } from '../../hooks/use-account-create-bindings.hook';
 import { CreateAccountCoreFields } from '../create-account-core-fields/create-account-core-fields';
 import { CreateAccountScreen } from '../create-account-screen/create-account-screen';
 import { DepositInterestRateField } from '../deposit-interest-rate-field/deposit-interest-rate-field';
@@ -26,6 +27,13 @@ interface Props {
 }
 
 export const DepositAccountFormScreen = ({ title, control, instrument, onSubmit, isSubmitting, balanceFieldLabel, children }: Props) => {
+    const fields = useAccountCreateBindings(control, {
+        title: 'title',
+        icon: 'icon',
+        currentBalance: 'currentBalance',
+        instrumentId: 'instrumentId',
+        includeInNetWorth: 'includeInNetWorth'
+    });
     const variant = ACCOUNT_COLOR[AccountTypeEnum.DEPOSIT];
     const stickyInstrument = useStickyDefinedValue(instrument);
 
@@ -39,7 +47,7 @@ export const DepositAccountFormScreen = ({ title, control, instrument, onSubmit,
 
             <CreateAccountCoreFields
                 variant={variant}
-                control={control}
+                fields={fields}
                 instrumentSymbol={stickyInstrument.symbol}
                 balanceFieldLabel={balanceFieldLabel}
             >

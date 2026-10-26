@@ -1,7 +1,7 @@
-import { AccountEntityInterface } from '@budgie/contracts';
+import { AccountEntityInterface, SyncStatusEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { useBankIntegration } from '../context/bank-integration.context';
 
@@ -15,7 +15,9 @@ export const useBankIntegrationAccountRowState = (account: Pick<AccountEntityInt
     const switchLabel = capabilities.supportsFileImport ? t`Include in file imports` : t`Sync`;
 
     let description = '';
-    if (!account.isActive) {
+    if (capabilities.supportsLiveSync && sync?.status === SyncStatusEnum.FAILED) {
+        description = isNotEmptyString(sync.lastError) ? `${t`Sync Failed`}: ${sync.lastError}` : t`Sync Failed`;
+    } else if (!account.isActive) {
         description = t`Hidden from Home`;
     } else if (isDefined(sync)) {
         if (capabilities.supportsFileImport) {

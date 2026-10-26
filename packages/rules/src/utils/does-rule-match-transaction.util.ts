@@ -20,6 +20,10 @@ const getSuggestRuleFieldValue = (
             return data.comment;
         case RuleConditionFieldEnum.MCC_CODE:
             return data.mccCode;
+        case RuleConditionFieldEnum.AMOUNT:
+        case RuleConditionFieldEnum.ACCOUNT_ID:
+        case RuleConditionFieldEnum.TRANSACTION_TYPE:
+        case RuleConditionFieldEnum.EXTERNAL_SOURCE:
         default:
             return null;
     }

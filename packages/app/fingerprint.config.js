@@ -1,5 +1,27 @@
+const { execFileSync } = require('node:child_process');
+const { realpathSync } = require('node:fs');
+const path = require('node:path');
+
+const autolinkingCli = require.resolve('expo-modules-autolinking/bin/expo-modules-autolinking', {
+    paths: [require.resolve('expo/package.json')]
+});
+
+// HINT: @expo/fingerprint 0.21.x throws on gradle plugins without a sourceDir and silently drops every expo android autolinking source.
+const androidModuleSources = JSON.parse(
+    execFileSync('node', [autolinkingCli, 'resolve', '-p', 'android', '--json'], { cwd: __dirname, encoding: 'utf8' })
+).modules.flatMap(autolinkedModule =>
+    [...(autolinkedModule.projects ?? []), ...(autolinkedModule.plugins ?? [])]
+        .filter(nativeSource => nativeSource.sourceDir)
+        .map(nativeSource => ({
+            type: 'dir',
+            filePath: path.relative(__dirname, realpathSync(nativeSource.sourceDir)),
+            reasons: ['expoAutolinkingAndroidNativeSource']
+        }))
+);
+
 /** @type {import('@expo/fingerprint').Config} */
 const config = {
+    nativeModuleSourceType: 'files',
     // The correctness boundary of every repack: each entry is a promise that
     // the path cannot change the native binary in a way that matters. It lives
     // here rather than in a sibling `.fingerprintignore` because mobile-ci's
@@ -9,17 +31,15 @@ const config = {
     ignorePaths: [
         // HINT: We bump version on each master commit.
         'package.json',
-        // Ignore the entire android directory
-        '**/android/**/*',
-        // Ignore the entire ios directory but still keep ios/Podfile and ios/Podfile.lock
-        '**/ios/**/*',
-        '!**/ios/Podfile',
-        '!**/ios/Podfile.lock',
-        '!**/modules/**/ios/**/*',
+        // Ignore the app's own generated android directory only (not dependency native sources)
+        'android/**/*',
+        // Ignore the app's own generated ios directory only, Podfile included: CNG checkouts have no ios/ to hash
+        'ios/**/*',
         // HINT: We have build errors with react-native-audio-api
         '**/node_modules/react-native-audio-api/**/*'
     ],
     extraSources: [
+        ...androidModuleSources,
         {
             type: 'dir',
             filePath: 'app-intents',

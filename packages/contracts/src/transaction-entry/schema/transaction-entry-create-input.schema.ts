@@ -24,6 +24,7 @@ export const TransactionEntryCreateInputSchema = Schema.Struct({
     quotedUnitPrice: OptionalNullablePositiveNumberSchema,
     operationInstrumentId: OptionalNullablePositiveNumberSchema,
     operationAmount: OptionalNullablePositiveNumberSchema,
+    providerBalance: Schema.optional(Schema.NullOr(Schema.Number)),
     toIban: Schema.optional(Schema.NullOr(Schema.String.check(Schema.isMaxLength(34)))),
     originalTransactionId: OptionalNullablePositiveNumberSchema
 });

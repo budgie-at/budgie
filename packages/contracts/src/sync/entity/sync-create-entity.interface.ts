@@ -19,5 +19,8 @@ export type SyncCreateEntityInterface = PartialByKeysType<
     | 'backwardBatchAt'
     | 'setupBalance'
     | 'balanceAdjustmentTransactionId'
+    | 'reconciledAt'
+    | 'reconciledBalance'
+    | 'reconciliationTransactionId'
     | 'transactionCount'
 >;

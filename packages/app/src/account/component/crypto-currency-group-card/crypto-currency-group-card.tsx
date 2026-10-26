@@ -43,8 +43,8 @@ export const CryptoCurrencyGroupCard = ({ group, balance, balancesByAccountId }:
     const formattedRate = isDefined(valuationRate) ? formatExchangeRate(valuationRate) : null;
 
     return (
-        <View className="mb-3 gap-y-3">
-            <Card size="md" testID={CryptoCurrencyGroupCardSelector.Card(group.instrument.code)}>
+        <View className="mb-lg gap-y-lg">
+            <Card size="sm" testID={CryptoCurrencyGroupCardSelector.Card(group.instrument.code)}>
                 <View className="gap-y-3">
                     <CryptoCurrencyGroupMarketLink
                         instrumentCode={group.instrument.code}

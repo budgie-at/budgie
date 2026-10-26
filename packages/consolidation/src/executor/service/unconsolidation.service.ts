@@ -2,6 +2,7 @@ import {
     CategorySourceEnum,
     MccCategoryRepository,
     SettingsRepository,
+    DebtEventRepository,
     TransactionConsolidationTypeEnum,
     TransactionEntryRepository,
     TransactionRepository,
@@ -37,6 +38,7 @@ export class UnconsolidationService extends Context.Service<UnconsolidationServi
                     : { categoryId: null, categorySource: CategorySourceEnum.USER }
             );
         });
+        const debtEventRepository = yield* DebtEventRepository;
 
         const isPreExistingCanonical = (transaction: TransactionEntityInterface | undefined): boolean => {
             if (!isDefined(transaction)) {
@@ -62,6 +64,17 @@ export class UnconsolidationService extends Context.Service<UnconsolidationServi
             }
 
             const manualTransactionIds = [...new Set(canonical.entries.map(entry => entry.originalTransactionId).filter(isDefined))];
+
+            yield* Effect.forEach(
+                manualTransactionIds,
+                manualTransactionId =>
+                    debtEventRepository.moveByTransactionEntryIds(
+                        canonical.entries.filter(entry => entry.originalTransactionId === manualTransactionId).map(entry => entry.id),
+                        manualTransactionId
+                    ),
+                { discard: true }
+            );
+
             const manualTags = yield* transactionTagsRepository.findByTransactionIds(manualTransactionIds);
             const manualTransactions = yield* transactionRepository.findByIds(manualTransactionIds);
             const hasCopiedComment = manualTransactions.some(
@@ -117,7 +130,8 @@ export class UnconsolidationService extends Context.Service<UnconsolidationServi
             TransactionConsolidationRepository.layer,
             TransactionTagsRepository.layer,
             MccCategoryRepository.layer,
-            SettingsRepository.layer
+            SettingsRepository.layer,
+            DebtEventRepository.layer
         ])
     );
 }

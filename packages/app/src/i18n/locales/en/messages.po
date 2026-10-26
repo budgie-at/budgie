@@ -70,7 +70,7 @@ msgstr "{accountTitle} will be restored to your main view."
 msgid "{applied, plural, one {# matching transaction updated} other {# matching transactions updated}}"
 msgstr "{applied, plural, one {# matching transaction updated} other {# matching transactions updated}}"
 
-#: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
+#: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "{approxTransactions, plural, one {~# transaction} other {~# transactions}}"
 msgstr "{approxTransactions, plural, one {~# transaction} other {~# transactions}}"
 
@@ -78,7 +78,7 @@ msgstr "{approxTransactions, plural, one {~# transaction} other {~# transactions
 msgid "{availableCount, plural, one {# column available} other {# columns available}}"
 msgstr "{availableCount, plural, one {# column available} other {# columns available}}"
 
-#: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
+#: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "{categoriesCount, plural, one {# category} other {# categories}}"
 msgstr "{categoriesCount, plural, one {# category} other {# categories}}"
 
@@ -159,9 +159,9 @@ msgstr "{downloadPercent}%"
 msgid "{duplicateTransactionCount, plural, one {# skipped} other {# skipped}}"
 msgstr "{duplicateTransactionCount, plural, one {# skipped} other {# skipped}}"
 
-#: src/settings/components/your-data-file-card/your-data-file-card.tsx
-msgid "{fileSize} · on this phone"
-msgstr "{fileSize} · on this phone"
+#: src/settings/components/your-data-card/your-data-card.tsx
+msgid "{fileSize} · no Budgie servers"
+msgstr "{fileSize} · no Budgie servers"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "{formattedAmount} · {detail}"
@@ -229,6 +229,7 @@ msgid "{minutesLeft, plural, one {About # minute left on Wi-Fi} other {About # m
 msgstr "{minutesLeft, plural, one {About # minute left on Wi-Fi} other {About # minutes left on Wi-Fi}}"
 
 #: src/ai/component/ai-download-eta/ai-download-eta.tsx
+#: src/sync/component/sync-import-progress/sync-import-progress.tsx
 msgid "{minutesLeft, plural, one {About # minute left} other {About # minutes left}}"
 msgstr "{minutesLeft, plural, one {About # minute left} other {About # minutes left}}"
 
@@ -236,7 +237,7 @@ msgstr "{minutesLeft, plural, one {About # minute left} other {About # minutes l
 msgid "{monobankAccountCount, plural, one {# account. Balances come straight from the bank.} other {# accounts. Balances come straight from the bank.}}"
 msgstr "{monobankAccountCount, plural, one {# account. Balances come straight from the bank.} other {# accounts. Balances come straight from the bank.}}"
 
-#: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
+#: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "{months, plural, one {# month} other {# months}}"
 msgstr "{months, plural, one {# month} other {# months}}"
 
@@ -537,7 +538,6 @@ msgid "Activate Account?"
 msgstr "Activate Account?"
 
 #: src/account/component/account-active-toggle-field/account-active-toggle-field.tsx
-#: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "Active"
 msgstr "Active"
 
@@ -747,8 +747,7 @@ msgstr "Anyone who can unlock this phone"
 msgid "API Token"
 msgstr "API Token"
 
-#: src/settings/components/security-settings/pin-disabled-card.tsx
-#: src/settings/components/security-settings/pin-enabled-card.tsx
+#: src/settings/components/app-lock-row/app-lock-row.tsx
 msgid "App Lock"
 msgstr "App Lock"
 
@@ -841,6 +840,10 @@ msgstr "Automatically record eligible card taps using Shortcuts"
 msgid "Available Columns"
 msgstr "Available Columns"
 
+#: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
+msgid "Available once the import finishes"
+msgstr "Available once the import finishes"
+
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "Average"
 msgstr "Average"
@@ -848,6 +851,18 @@ msgstr "Average"
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Avg cost"
 msgstr "Avg cost"
+
+#: src/settings/components/backup-row/backup-row.tsx
+msgid "Back up"
+msgstr "Back up"
+
+#: src/settings/components/backup-row/backup-row.tsx
+msgid "Backup"
+msgstr "Backup"
+
+#: src/settings/components/backup-row/backup-row.tsx
+msgid "Backup file ready"
+msgstr "Backup file ready"
 
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Balance"
@@ -870,6 +885,7 @@ msgstr "Bank"
 msgid "Bank account"
 msgstr "Bank account"
 
+#: src/account/component/account-card-menu/account-card-menu.tsx
 #: src/account/component/bank-provider-section-header/bank-provider-section-header.tsx
 msgid "Bank integration settings"
 msgstr "Bank integration settings"
@@ -894,7 +910,7 @@ msgstr "Base instrument not found"
 msgid "Based on your last {monthsUsed} months"
 msgstr "Based on your last {monthsUsed} months"
 
-#: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
+#: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "Based on your recent spending"
 msgstr "Based on your recent spending"
 
@@ -1012,9 +1028,9 @@ msgstr "Budgie reads these statements on this phone."
 msgid "Budgie records Apple Pay payments the moment you tap, through a Shortcuts automation."
 msgstr "Budgie records Apple Pay payments the moment you tap, through a Shortcuts automation."
 
-#: src/auth/hook/use-pin-authentication.hook.ts
-msgid "Budgie restarted, so it needs your PIN once before {biometricName} works again."
-msgstr "Budgie restarted, so it needs your PIN once before {biometricName} works again."
+#: src/settings/components/screenshot-protection-row/screenshot-protection-row.tsx
+msgid "Budgie stays blank in screenshots and screen recordings"
+msgstr "Budgie stays blank in screenshots and screen recordings"
 
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Budgie will fill missing base-currency values from historical exchange rates. Analytics may be unavailable until this finishes."
@@ -1071,6 +1087,7 @@ msgstr "Can take hours"
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
 #: src/settings/components/sync-repairs-confirmation-card/sync-repairs-confirmation-card.tsx
 #: src/settings/components/truncate-data/truncate-data.tsx
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
@@ -1173,7 +1190,7 @@ msgstr "Change"
 msgid "Change currency"
 msgstr "Change currency"
 
-#: src/settings/components/security-settings/pin-enabled-card.tsx
+#: src/settings/components/pin-management-rows/pin-management-rows.tsx
 msgid "Change PIN"
 msgstr "Change PIN"
 
@@ -1397,10 +1414,6 @@ msgstr "Convert to Transfer"
 msgid "Convert to Transfer?"
 msgstr "Convert to Transfer?"
 
-#: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
-msgid "Copies elsewhere"
-msgstr "Copies elsewhere"
-
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Copy the API Key and Secret Key into the fields below"
 msgstr "Copy the API Key and Secret Key into the fields below"
@@ -1458,6 +1471,10 @@ msgstr "Could not consolidate matches"
 #: src/transaction/hook/use-convert-to-refund-action.hook.ts
 msgid "Could not convert to refund"
 msgstr "Could not convert to refund"
+
+#: src/settings/components/backup-row/backup-row.tsx
+msgid "Could not create a backup"
+msgstr "Could not create a backup"
 
 #: src/budget/hooks/use-budget-form.hook.ts
 msgid "Could not create budget"
@@ -1524,10 +1541,6 @@ msgstr "Could not erase the data"
 msgid "Could not export CSV"
 msgstr "Could not export CSV"
 
-#: src/export/components/export-database/export-database.tsx
-msgid "Could not export database"
-msgstr "Could not export database"
-
 #: src/sync/hook/use-sync-account-setup-flow.hook.ts
 msgid "Could not fetch accounts"
 msgstr "Could not fetch accounts"
@@ -1551,6 +1564,10 @@ msgstr "Could not load AI downloads"
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "Could not load sources. Please try again."
 msgstr "Could not load sources. Please try again."
+
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "Could not mark account as external"
+msgstr "Could not mark account as external"
 
 #: src/category/components/category-form/category-form.tsx
 msgid "Could not merge category"
@@ -1796,6 +1813,10 @@ msgstr "Create one to get started."
 msgid "Create plan"
 msgstr "Create plan"
 
+#: src/transaction/components/create-rule-menu-item/create-rule-menu-item.tsx
+msgid "Create rule"
+msgstr "Create rule"
+
 #: src/rule/components/rule-form-create/rule-form-create.tsx
 msgid "Create Rule"
 msgstr "Create Rule"
@@ -1859,10 +1880,6 @@ msgstr "Dark Mode"
 msgid "Data management"
 msgstr "Data management"
 
-#: src/export/components/export-database/export-database.tsx
-msgid "Database exported"
-msgstr "Database exported"
-
 #: src/@generic/component/date-filter/date-filter.tsx
 #: src/app/(tabs)/settings/import.tsx
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
@@ -1880,7 +1897,7 @@ msgstr "Days Remaining"
 
 #: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
 #: src/account/constant/account-type.constant.ts
-#: src/transaction/components/debt-settlement-pill/debt-settlement-pill.tsx
+#: src/transaction/constant/debt-settlement-label.constant.ts
 #: src/transaction/constant/transaction-type.constant.ts
 msgid "Debt"
 msgstr "Debt"
@@ -1999,7 +2016,7 @@ msgstr "Details"
 msgid "Didn't match"
 msgstr "Didn't match"
 
-#: src/settings/components/security-settings/pin-enabled-card.tsx
+#: src/settings/components/pin-management-rows/pin-management-rows.tsx
 msgid "Disable App Lock"
 msgstr "Disable App Lock"
 
@@ -2133,7 +2150,8 @@ msgstr "Each one becomes an account. Rename or remove them later."
 msgid "Edit"
 msgstr "Edit"
 
-#: src/account/component/account-edit-button/account-edit-button.tsx
+#: src/account/component/account-card-base/account-card-base.tsx
+#: src/account/component/account-card-menu/account-card-menu.tsx
 msgid "Edit account"
 msgstr "Edit account"
 
@@ -2197,7 +2215,7 @@ msgstr "empty"
 msgid "Empty canvas"
 msgstr "Empty canvas"
 
-#: src/settings/components/security-settings/pin-disabled-card.tsx
+#: src/settings/components/app-lock-row/app-lock-row.tsx
 msgid "Enable"
 msgstr "Enable"
 
@@ -2217,6 +2235,10 @@ msgstr "Enable them in device settings to receive budget alerts."
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Enable Touch ID unlock?"
 msgstr "Enable Touch ID unlock?"
+
+#: src/settings/components/your-data-card/your-data-card.tsx
+msgid "Encryption"
+msgstr "Encryption"
 
 #: src/i18n/constant/languages.constant.ts
 msgid "English"
@@ -2259,7 +2281,7 @@ msgstr "Enter new PIN"
 msgid "Enter new token"
 msgstr "Enter new token"
 
-#: src/app/import-backup-pin.tsx
+#: src/import/component/import-backup-pin/import-backup-pin.tsx
 msgid "Enter the PIN this backup was sealed with"
 msgstr "Enter the PIN this backup was sealed with"
 
@@ -2404,10 +2426,6 @@ msgstr "Expense"
 msgid "Expenses"
 msgstr "Expenses"
 
-#: src/export/components/export-database/export-database.tsx
-msgid "Export a backup"
-msgstr "Export a backup"
-
 #: src/export/components/export-csv/export-csv.tsx
 msgid "Export all transactions to a CSV file"
 msgstr "Export all transactions to a CSV file"
@@ -2416,23 +2434,29 @@ msgstr "Export all transactions to a CSV file"
 msgid "Export CSV"
 msgstr "Export CSV"
 
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "External account"
+msgstr "External account"
+
 #: src/app/(tabs)/settings/import.tsx
 msgid "External ID"
 msgstr "External ID"
 
-#: src/auth/hook/use-pin-authentication.hook.ts
-#: src/settings/components/security-settings/pin-enabled-card.tsx
+#: src/settings/hook/use-biometric-label.hook.ts
 msgid "Face ID"
 msgstr "Face ID"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
-#: src/settings/components/security-settings/pin-enabled-card.tsx
 msgid "Face ID / Touch ID"
 msgstr "Face ID / Touch ID"
 
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Face ID day to day"
 msgstr "Face ID day to day"
+
+#: src/settings/hook/use-biometric-label.hook.ts
+msgid "Facial recognition"
+msgstr "Facial recognition"
 
 #: src/@generic/hook/use-contacts.hook.ts
 msgid "Failed to load contacts."
@@ -2495,9 +2519,9 @@ msgstr "Filter categories"
 msgid "Filter tags"
 msgstr "Filter tags"
 
-#: src/auth/hook/use-pin-authentication.hook.ts
-msgid "fingerprint"
-msgstr "fingerprint"
+#: src/settings/hook/use-biometric-label.hook.ts
+msgid "Fingerprint"
+msgstr "Fingerprint"
 
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Fingerprint day to day"
@@ -2511,7 +2535,7 @@ msgstr "Fix Errors"
 msgid "Fixed-term savings with an interest rate"
 msgstr "Fixed-term savings with an interest rate"
 
-#: src/app/(main)/pin.tsx
+#: src/auth/components/pin-unlock/pin-unlock.tsx
 msgid "Forgot PIN?"
 msgstr "Forgot PIN?"
 
@@ -2621,9 +2645,9 @@ msgstr "Help sorting, without leaving the phone?"
 msgid "Hidden from Home"
 msgstr "Hidden from Home"
 
-#: src/app/(tabs)/settings/index.tsx
-msgid "Hide account balances and net worth when taking screenshots"
-msgstr "Hide account balances and net worth when taking screenshots"
+#: src/settings/components/screenshot-protection-row/screenshot-protection-row.tsx
+msgid "Hide in screenshots"
+msgstr "Hide in screenshots"
 
 #: src/categorize-inbox/components/categorize-inbox-cluster-card/categorize-inbox-cluster-card.tsx
 msgid "Hide transactions for {displayTitle}"
@@ -2665,7 +2689,7 @@ msgstr "If a download arrives damaged, Budgie deletes it and asks before startin
 msgid "If Privat24 emails you the file instead of downloading it, save the attachment from your inbox"
 msgstr "If Privat24 emails you the file instead of downloading it, save the attachment from your inbox"
 
-#: src/app/import-backup-pin.tsx
+#: src/import/component/import-backup-pin/import-backup-pin.tsx
 msgid "If you don't remember it, this backup can't be opened. You can start fresh instead."
 msgstr "If you don't remember it, this backup can't be opened. You can start fresh instead."
 
@@ -2704,6 +2728,8 @@ msgstr "Import Erste Bank"
 msgid "Import failed"
 msgstr "Import failed"
 
+#: src/account/component/account-card-base/account-card-base.tsx
+#: src/account/component/account-card-menu/account-card-menu.tsx
 #: src/sync/component/bank-integration-page/bank-integration-page.tsx
 msgid "Import file"
 msgstr "Import file"
@@ -2727,6 +2753,14 @@ msgstr "Import transactions from a CSV file"
 #: src/import/hook/use-restore-backup.hook.ts
 msgid "Importing a database will replace all current data. The app will restart after import. This action cannot be undone."
 msgstr "Importing a database will replace all current data. The app will restart after import. This action cannot be undone."
+
+#: src/sync/component/sync-import-progress/sync-import-progress.tsx
+msgid "Importing history · {percent}%"
+msgstr "Importing history · {percent}%"
+
+#: src/sync/component/sync-import-progress/sync-import-progress.tsx
+msgid "Importing history…"
+msgstr "Importing history…"
 
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "in"
@@ -2803,15 +2837,15 @@ msgstr "Income by category"
 msgid "Income by Tag"
 msgstr "Income by Tag"
 
-#: src/app/import-backup-pin.tsx
 #: src/auth/hook/use-pin-error.hook.ts
+#: src/import/component/import-backup-pin/import-backup-pin.tsx
 msgid "Incorrect PIN"
 msgstr "Incorrect PIN"
 
 #: src/account/constant/account-debt-type.constant.ts
 #: src/installment-plan/component/convert-to-installment-content/convert-to-installment-content.tsx
 #: src/installment-plan/component/convert-to-installment-title-field/convert-to-installment-title-field.tsx
-#: src/transaction/components/debt-settlement-pill/debt-settlement-pill.tsx
+#: src/transaction/constant/debt-settlement-label.constant.ts
 msgid "Installment plan"
 msgstr "Installment plan"
 
@@ -2891,13 +2925,13 @@ msgstr "Last 7 days"
 msgid "Last 90 days"
 msgstr "Last 90 days"
 
-#: src/settings/components/your-data-file-card/your-data-file-card.tsx
-msgid "Last backup"
-msgstr "Last backup"
-
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Last error"
 msgstr "Last error"
+
+#: src/settings/components/backup-row/backup-row.tsx
+msgid "Last export"
+msgstr "Last export"
 
 #: src/@generic/constant/date-period.constant.ts
 msgid "Last Month"
@@ -3033,6 +3067,14 @@ msgstr "Manual"
 #: src/app/(tabs)/settings/import.tsx
 msgid "Map CSV Columns"
 msgstr "Map CSV Columns"
+
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "Mark as External?"
+msgstr "Mark as External?"
+
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "Mark External"
+msgstr "Mark External"
 
 #: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
 msgid "Market cap"
@@ -3228,6 +3270,10 @@ msgstr "Navigate to Account → Statements"
 msgid "Needs review"
 msgstr "Needs review"
 
+#: src/@generic/component/amount-sign-pill/amount-sign-pill.tsx
+msgid "Negative amount"
+msgstr "Negative amount"
+
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
 msgid "Net"
 msgstr "Net"
@@ -3235,10 +3281,6 @@ msgstr "Net"
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Net worth"
 msgstr "Net worth"
-
-#: src/settings/components/your-data-file-card/your-data-file-card.tsx
-msgid "Never"
-msgstr "Never"
 
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "Never synced, never uploaded."
@@ -3449,7 +3491,6 @@ msgstr "No transactions matched"
 msgid "No transactions yet"
 msgstr "No transactions yet"
 
-#: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
 #: src/sync/component/file-import-review-step/file-import-review-step.tsx
 msgid "None"
 msgstr "None"
@@ -3457,6 +3498,10 @@ msgstr "None"
 #: src/settings/components/default-account-selector/default-account-selector.tsx
 msgid "None selected"
 msgstr "None selected"
+
+#: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
+msgid "Not all of your bank history is imported yet"
+msgstr "Not all of your bank history is imported yet"
 
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "not contains"
@@ -3470,12 +3515,8 @@ msgstr "Not Contains"
 msgid "Not downloaded"
 msgstr "Not downloaded"
 
-#: src/export/components/export-database/export-database.tsx
-msgid "Not encrypted, because there's no PIN. You choose where it goes."
-msgstr "Not encrypted, because there's no PIN. You choose where it goes."
-
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
-#: src/app/import-backup-pin.tsx
+#: src/import/component/import-backup-pin/import-backup-pin.tsx
 #: src/import/hook/use-restore-backup.hook.ts
 msgid "Not enough free storage to extract this backup."
 msgstr "Not enough free storage to extract this backup."
@@ -3504,6 +3545,10 @@ msgstr "Not now"
 msgid "not set"
 msgstr "not set"
 
+#: src/settings/components/backup-row/backup-row.tsx
+msgid "Not yet"
+msgstr "Not yet"
+
 #: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
 #: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
 msgid "Note"
@@ -3530,9 +3575,29 @@ msgstr "of"
 msgid "of {total} GB"
 msgstr "of {total} GB"
 
+#: src/settings/components/your-data-card/your-data-card.tsx
+msgid "Off"
+msgstr "Off"
+
 #: src/ai/component/ai-download-wifi-banner/ai-download-wifi-banner.tsx
 msgid "OK"
 msgstr "OK"
+
+#: src/settings/components/app-lock-row/app-lock-row.tsx
+msgid "On · PIN"
+msgstr "On · PIN"
+
+#: src/settings/components/app-lock-row/app-lock-row.tsx
+msgid "On · PIN and {biometricLabel}"
+msgstr "On · PIN and {biometricLabel}"
+
+#: src/settings/components/your-data-card/your-data-card.tsx
+msgid "On this iPhone"
+msgstr "On this iPhone"
+
+#: src/settings/components/your-data-card/your-data-card.tsx
+msgid "On this phone"
+msgstr "On this phone"
 
 #: src/app/(tabs)/settings/ai.tsx
 msgid "On-device AI"
@@ -3804,7 +3869,6 @@ msgstr "per month"
 msgid "Permission to access contacts was denied."
 msgstr "Permission to access contacts was denied."
 
-#: src/auth/components/security-status-badge/security-status-badge.tsx
 #: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
 msgid "Phone lock only"
 msgstr "Phone lock only"
@@ -3813,7 +3877,7 @@ msgstr "Phone lock only"
 msgid "Phone lock only · {contents}"
 msgstr "Phone lock only · {contents}"
 
-#: src/auth/components/security-status-chip/security-status-chip.tsx
+#: src/auth/components/security-lock-button/security-lock-button.tsx
 msgid "Phone lock only. Make a PIN to encrypt your data."
 msgstr "Phone lock only. Make a PIN to encrypt your data."
 
@@ -3832,6 +3896,14 @@ msgstr "Pick a window. Existing data is preserved."
 #: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
 msgid "Pick tags for this transaction"
 msgstr "Pick tags for this transaction"
+
+#: src/settings/components/app-lock-row/app-lock-row.tsx
+msgid "PIN and {biometricLabel}. Encrypts your data."
+msgstr "PIN and {biometricLabel}. Encrypts your data."
+
+#: src/settings/components/app-lock-row/app-lock-row.tsx
+msgid "PIN. Encrypts your data."
+msgstr "PIN. Encrypts your data."
 
 #: src/auth/hook/use-pin-setup.hook.tsx
 msgid "PINs do not match"
@@ -3899,10 +3971,6 @@ msgstr "Price changed"
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "Prices fill in quietly while you use the app."
 msgstr "Prices fill in quietly while you use the app."
-
-#: src/app/(tabs)/settings/index.tsx
-msgid "Privacy"
-msgstr "Privacy"
 
 #: src/app/(main)/create-account/index.tsx
 #: src/rule/constant/external-source.constant.ts
@@ -4240,6 +4308,10 @@ msgstr "Save fee"
 msgid "Save it"
 msgstr "Save it"
 
+#: src/settings/components/backup-row/backup-row.tsx
+msgid "Save it to Files or another app."
+msgstr "Save it to Files or another app."
+
 #: src/account/constant/account-type.constant.ts
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "Savings"
@@ -4254,25 +4326,13 @@ msgstr "Savings Account"
 msgid "Scan the QR code with the Monobank app"
 msgstr "Scan the QR code with the Monobank app"
 
-#: src/app/(tabs)/settings/index.tsx
-msgid "Screenshot Protection"
-msgstr "Screenshot Protection"
-
 #: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
 msgid "Seal"
 msgstr "Seal"
 
-#: src/auth/components/security-status-badge/security-status-badge.tsx
-msgid "Sealed"
-msgstr "Sealed"
-
 #: src/onboarding/hook/use-onboarding-file-state.hook.ts
 msgid "Sealed · {contents}"
 msgstr "Sealed · {contents}"
-
-#: src/export/components/export-database/export-database.tsx
-msgid "Sealed with your PIN. You choose where it goes."
-msgstr "Sealed with your PIN. You choose where it goes."
 
 #: src/onboarding/component/onboarding-sealed-moment/onboarding-sealed-moment.tsx
 msgid "Sealed."
@@ -4351,10 +4411,6 @@ msgstr "Search..."
 #: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx
 msgid "Secondary Value"
 msgstr "Secondary Value"
-
-#: src/settings/components/security-settings/pin-disabled-card.tsx
-msgid "Secure your app with PIN & Face ID"
-msgstr "Secure your app with PIN & Face ID"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Security"
@@ -4655,7 +4711,7 @@ msgstr "Start again with your new PIN"
 msgid "Start Deposit"
 msgstr "Start Deposit"
 
-#: src/app/import-backup-pin.tsx
+#: src/import/component/import-backup-pin/import-backup-pin.tsx
 msgid "Start fresh instead"
 msgstr "Start fresh instead"
 
@@ -4702,7 +4758,7 @@ msgid "Subscriptions"
 msgstr "Subscriptions"
 
 #: src/app/icon-selector.tsx
-#: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
+#: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "Suggested"
 msgstr "Suggested"
 
@@ -4744,10 +4800,13 @@ msgstr "Sync data repaired"
 msgid "Sync data repairs"
 msgstr "Sync data repairs"
 
+#: src/account/component/account-card-base/account-card-base.tsx
 #: src/sync/component/account-sync-card/account-sync-card.tsx
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Sync Failed"
 msgstr "Sync Failed"
 
+#: src/account/component/account-card-base/account-card-base.tsx
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Sync paused"
 msgstr "Sync paused"
@@ -4759,6 +4818,10 @@ msgstr "Sync Repairs"
 #: src/sync/component/create-binance-account/create-binance-account.tsx
 msgid "Sync your Binance balances and transactions"
 msgstr "Sync your Binance balances and transactions"
+
+#: src/account/component/account-card-base/account-card-base.tsx
+msgid "Syncing"
+msgstr "Syncing"
 
 #: src/sync/service/background-sync-session.service.ts
 msgid "Syncing bank history"
@@ -4872,6 +4935,10 @@ msgstr "The selected Budgie account is archived or no longer exists."
 msgid "There is no \"forgot PIN\"."
 msgstr "There is no \"forgot PIN\"."
 
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "This account will be archived and its transfers will become income and expenses on your other accounts. This cannot be undone."
+msgstr "This account will be archived and its transfers will become income and expenses on your other accounts. This cannot be undone."
+
 #: src/account/hooks/use-archive-account.hook.ts
 msgid "This account will be hidden from your main view and won't be included in totals. You can restore it anytime from Settings → Archived Accounts."
 msgstr "This account will be hidden from your main view and won't be included in totals. You can restore it anytime from Settings → Archived Accounts."
@@ -4883,7 +4950,7 @@ msgid "This action cannot be undone."
 msgstr "This action cannot be undone."
 
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
-#: src/app/import-backup-pin.tsx
+#: src/import/component/import-backup-pin/import-backup-pin.tsx
 #: src/import/hook/use-restore-backup.hook.ts
 msgid "This backup archive does not contain a Budgie database."
 msgstr "This backup archive does not contain a Budgie database."
@@ -4896,7 +4963,7 @@ msgstr "This backup could not be opened with your current PIN."
 msgid "This backup is protected by a PIN. Importing it will replace all current data and its PIN becomes your app PIN. The app will restart after import. This action cannot be undone."
 msgstr "This backup is protected by a PIN. Importing it will replace all current data and its PIN becomes your app PIN. The app will restart after import. This action cannot be undone."
 
-#: src/app/import-backup-pin.tsx
+#: src/import/component/import-backup-pin/import-backup-pin.tsx
 #: src/import/hook/use-restore-backup.hook.ts
 msgid "This backup was made by an older Budgie version and cannot be imported."
 msgstr "This backup was made by an older Budgie version and cannot be imported."
@@ -4922,8 +4989,8 @@ msgid "This doesn't look like a Monobank token yet"
 msgstr "This doesn't look like a Monobank token yet"
 
 #: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
-msgid "This is where your data lives and who can read it. You can find it again in Settings › Privacy."
-msgstr "This is where your data lives and who can read it. You can find it again in Settings › Privacy."
+msgid "This is where your data lives and who can read it. You can find it again in Settings › Your data."
+msgstr "This is where your data lives and who can read it. You can find it again in Settings › Your data."
 
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "This month"
@@ -5075,7 +5142,7 @@ msgstr "Too many attempts. Try again in {time}"
 #: src/account/component/debt-account-card/debt-account-card.tsx
 #: src/account/component/debt-account-paid-off/debt-account-paid-off.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
-#: src/installment-plan/component/convert-to-installment-total/convert-to-installment-total.tsx
+#: src/installment-plan/component/convert-to-installment-total-input/convert-to-installment-total-input.tsx
 #: src/installment-plan/component/installment-plan-total-field/installment-plan-total-field.tsx
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "Total"
@@ -5094,7 +5161,7 @@ msgstr "Total borrowed"
 msgid "Total lent"
 msgstr "Total lent"
 
-#: src/settings/components/security-settings/pin-enabled-card.tsx
+#: src/settings/hook/use-biometric-label.hook.ts
 msgid "Touch ID"
 msgstr "Touch ID"
 
@@ -5298,6 +5365,7 @@ msgstr "Unrealized P&L"
 msgid "Untagged"
 msgstr "Untagged"
 
+#: src/account/component/account-card-base/account-card-base.tsx
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Up to date"
 msgstr "Up to date"
@@ -5404,6 +5472,7 @@ msgstr "Voice notes"
 msgid "Volume"
 msgstr "Volume"
 
+#: src/account/component/account-card-base/account-card-base.tsx
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Waiting"
 msgstr "Waiting"
@@ -5475,6 +5544,10 @@ msgstr "Will be created on this phone"
 #: src/rule/constant/external-source.constant.ts
 msgid "Wise"
 msgstr "Wise"
+
+#: src/settings/components/your-data-card/your-data-card.tsx
+msgid "With your PIN"
+msgstr "With your PIN"
 
 #: src/ai/component/ai-download-eta/ai-download-eta.tsx
 msgid "Working out the time left…"
@@ -5565,7 +5638,11 @@ msgstr "You're on Wi-Fi"
 msgid "You're on Wi-Fi."
 msgstr "You're on Wi-Fi."
 
-#: src/auth/components/security-status-chip/security-status-chip.tsx
+#: src/app/(tabs)/settings/index.tsx
+msgid "Your data"
+msgstr "Your data"
+
+#: src/auth/components/security-lock-button/security-lock-button.tsx
 msgid "Your data is sealed. Only your PIN opens it."
 msgstr "Your data is sealed. Only your PIN opens it."
 
@@ -5576,10 +5653,6 @@ msgstr "Your data stays on this device untouched. Try again, or restore a backup
 #: src/onboarding/component/onboarding-file-strip/onboarding-file-strip.tsx
 msgid "Your data: {state}"
 msgstr "Your data: {state}"
-
-#: src/export/components/export-database/export-database.tsx
-msgid "Your database backup is ready to share."
-msgstr "Your database backup is ready to share."
 
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Your holdings"

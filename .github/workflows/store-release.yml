@@ -1,0 +1,39 @@
+# Submits the uploaded iOS build for App Review; dry run by default.
+name: Release to App Store
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Only print the plan; change nothing in App Store Connect'
+        type: boolean
+        default: true
+      ios_version:
+        description: 'iOS marketing version to submit (empty reads packages/app/package.json; set it when the last native build predates later version bumps)'
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+
+concurrency:
+  group: budgie-store-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Release
+    permissions:
+      contents: read
+    uses: rnw-community/mobile-ci/.github/workflows/store-release.yml@a9fac576ef1c8a9a565d03851f2624502a868214 # v4.4.1
+    with:
+      control-runner-labels: '["self-hosted","trf-linux-amd64-2x4"]'
+      platforms: ios
+      dry-run: ${{ inputs.dry_run }}
+      version-file: packages/app/package.json
+      ios-app-id: '6757147597'
+      ios-version: ${{ inputs.ios_version }}
+    secrets:
+      ASC_API_KEY: ${{ secrets.EXPO_IOS_ASC_API_KEY }}
+      ASC_KEY_ID: ${{ secrets.EXPO_IOS_ASC_KEY_ID }}
+      ASC_ISSUER_ID: ${{ secrets.EXPO_IOS_ASC_ISSUER_ID }}

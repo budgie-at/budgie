@@ -11,7 +11,10 @@ import { buildP2pFiatAuthoritativeRepairCandidateSql } from './sql-factory/p2p-f
 import { MISSING_TRANSFER_FEE_ENTRIES_SQL } from './sql-factory/transfer-fee-repair-sql.factory';
 import { BRIDGE_CLAIM_REPAIR_CANDIDATES_SQL } from './sql-factory/transfer-pair-bridge-claim-repair-sql.factory';
 import { TRANSFER_PAIR_MANUAL_REVIEW_COUNT_SQL, buildTransferPairCandidatesSql } from './sql-factory/transfer-pair-candidate-sql.factory';
-import { buildAtmCashWithdrawalCandidatesSql } from './sql-factory/transfer-pair-cash-withdrawal-sql.factory';
+import {
+    buildAtmCashWithdrawalCandidatesSql,
+    buildAutoAtmCashWithdrawalCandidatesSql
+} from './sql-factory/transfer-pair-cash-withdrawal-sql.factory';
 import { EXISTING_TRANSFER_BRIDGE_CANDIDATES_SQL } from './sql-factory/transfer-pair-existing-transfer-bridge-sql.factory';
 import { EXISTING_TRANSFER_CHAIN_RECLAIM_CANDIDATES_SQL } from './sql-factory/transfer-pair-existing-transfer-chain-reclaim-sql.factory';
 import { EXISTING_TRANSFER_INCOME_DUPLICATE_CANDIDATES_SQL } from './sql-factory/transfer-pair-existing-transfer-income-duplicate-sql.factory';
@@ -52,6 +55,8 @@ export class ConsolidationCandidateRepository extends Context.Service<Consolidat
             return {
                 findAtmCashWithdrawalCandidates: (scope: ConsolidationScanScopeInterface | null) =>
                     find<AtmCashWithdrawalCandidateInterface>(buildAtmCashWithdrawalCandidatesSql(scope)),
+                findAutoAtmCashWithdrawalCandidates: (scope: ConsolidationScanScopeInterface | null) =>
+                    find<AtmCashWithdrawalCandidateInterface>(buildAutoAtmCashWithdrawalCandidatesSql(scope)),
                 findExistingTransferBridgeCandidates: (scope: ConsolidationScanScopeInterface | null) =>
                     find<ExistingTransferBridgeCandidateInterface>(EXISTING_TRANSFER_BRIDGE_CANDIDATES_SQL(scope)),
                 findExistingTransferChainReclaimCandidates: (scope: ConsolidationScanScopeInterface | null) =>

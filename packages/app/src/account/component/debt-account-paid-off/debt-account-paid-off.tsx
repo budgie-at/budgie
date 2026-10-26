@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 
 import { Button } from '../../../@generic/component/button/button';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { ProgressTrack } from '../../../@generic/component/progress-track/progress-track';
 import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { dismissAllOrReplace } from '../../../@generic/utils/dismiss-all-or-replace.util';
@@ -12,7 +13,6 @@ import { DEBT_SETTLED_LABEL } from '../../constant/debt-settled-label.constant';
 import { useArchiveAccount } from '../../hooks/use-archive-account.hook';
 import { getDebtProgressDisplayState } from '../../utils/get-debt-progress-display-state.util';
 import { DebtAccountBalanceSelector } from '../debt-account-balance/debt-account-balance.selector';
-import { DebtProgressTrack } from '../debt-progress-track/debt-progress-track';
 
 import { DebtAccountPaidOffSelector } from './debt-account-paid-off.selector';
 
@@ -62,7 +62,7 @@ export const DebtAccountPaidOff = ({ accountId, debtType, instrumentSymbol, summ
                     {paidAmount}
                 </ProtectedMoney>
 
-                <DebtProgressTrack percentage={100} className="h-2.5 w-full" fillClassName="bg-positive-foreground" />
+                <ProgressTrack percentage={100} className="h-2.5 w-full" fillClassName="bg-positive-foreground" />
 
                 <Text className="text-secondary-foreground text-sm" testID={DebtAccountBalanceSelector.TotalAmount(totalAmount)}>
                     {totalLabel}: {formattedTotalAmount}

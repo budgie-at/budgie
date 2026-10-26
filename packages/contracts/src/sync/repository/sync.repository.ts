@@ -1,4 +1,4 @@
-import { and, asc, eq, getTableColumns, isNull, lt, or } from 'drizzle-orm';
+import { and, asc, eq, getTableColumns, inArray, isNotNull, isNull, lt, or } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -18,11 +18,14 @@ import type { SyncUpdateEntityInterface } from '../entity/sync-update-entity.int
 
 export class SyncRepository extends Context.Service<SyncRepository>()('@budgie/contracts/SyncRepository', {
     make: Effect.sync(() => {
-        const buildEnabledProviderConditions = (provider: ExternalSourceEnum) => [
-            eq(SyncEntityTable.provider, provider),
+        const enabledConditions = [
             eq(SyncEntityTable.enabled, true),
             isNull(SyncEntityTable.deletedAt),
             isNull(AccountEntityTable.deletedAt)
+        ];
+        const buildEnabledProviderConditions = (provider: ExternalSourceEnum) => [
+            eq(SyncEntityTable.provider, provider),
+            ...enabledConditions
         ];
 
         const selectWithActiveAccount = (db: DB) =>
@@ -93,6 +96,9 @@ export class SyncRepository extends Context.Service<SyncRepository>()('@budgie/c
                             forwardSyncedAt: null,
                             backwardBatchAt: null,
                             setupBalance,
+                            reconciledAt: null,
+                            reconciledBalance: null,
+                            reconciliationTransactionId: null,
                             transactionCount: 0,
                             errorCount: 0,
                             lastError: null
@@ -120,6 +126,13 @@ export class SyncRepository extends Context.Service<SyncRepository>()('@budgie/c
                         })
                         .where(eq(SyncEntityTable.accountId, accountId))
                 ),
+            recoverByAccountId: (accountId: number) =>
+                Db.query(db =>
+                    db
+                        .update(SyncEntityTable)
+                        .set({ enabled: true, status: SyncStatusEnum.IDLE, errorCount: 0, lastError: null })
+                        .where(eq(SyncEntityTable.accountId, accountId))
+                ),
             create: (input: SyncCreateEntityInterface) =>
                 Db.query(db => db.insert(SyncEntityTable).values([input]).returning()).pipe(Effect.map(([sync]) => sync)),
             getByAccountId: (accountId: number) =>
@@ -134,6 +147,20 @@ export class SyncRepository extends Context.Service<SyncRepository>()('@budgie/c
                         where: { provider, deletedAt: { isNull: true } }
                     })
                 ),
+            findReconciledByAccountIds: (accountIds: number[]) =>
+                Db.query(db =>
+                    db
+                        .select()
+                        .from(SyncEntityTable)
+                        .where(
+                            and(
+                                inArray(SyncEntityTable.accountId, accountIds),
+                                eq(SyncEntityTable.mode, SyncModeEnum.FORWARD),
+                                isNotNull(SyncEntityTable.reconciledAt),
+                                isNull(SyncEntityTable.deletedAt)
+                            )
+                        )
+                ),
             getEnabledByProvider: (provider: ExternalSourceEnum) =>
                 Db.query(db => selectWithActiveAccount(db).where(and(...buildEnabledProviderConditions(provider)))),
             getPendingBackwardSync: (provider: ExternalSourceEnum) =>
@@ -141,6 +168,10 @@ export class SyncRepository extends Context.Service<SyncRepository>()('@budgie/c
                     selectWithActiveAccount(db)
                         .where(and(...buildEnabledProviderConditions(provider), eq(SyncEntityTable.mode, SyncModeEnum.BACKWARD)))
                         .orderBy(asc(SyncEntityTable.backwardBatchAt), asc(SyncEntityTable.id))
+                ),
+            getAllPendingBackwardSyncs: () =>
+                Db.query(db =>
+                    selectWithActiveAccount(db).where(and(...enabledConditions, eq(SyncEntityTable.mode, SyncModeEnum.BACKWARD)))
                 ),
             setStatus: (id: number, status: SyncStatusEnum) =>
                 Db.query(db => db.update(SyncEntityTable).set({ status }).where(eq(SyncEntityTable.id, id))),

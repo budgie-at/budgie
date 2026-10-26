@@ -9,7 +9,7 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
     visible:
-      id: 'SettingsPage.AppLockCard'
+      id: 'SettingsPage.DataEncryption.State.Off'
     timeout: 3000
 
 - assertNotVisible:
@@ -113,6 +113,59 @@ appId: ${APP_ID}
       id: 'TabBar.Settings'
     timeout: 10000
 
+- runFlow: subflows/navigation/navigate-to-settings.flow.yaml
+
+- extendedWaitUntil:
+    visible:
+      id: 'SettingsPage.DataEncryption.State.On'
+    timeout: 3000
+
+- runFlow: subflows/accounts/open-new-account.flow.yaml
+
+- tapOn:
+    id: 'CreateAccount.BANK'
+- extendedWaitUntil:
+    visible:
+      id: 'AccountForm.NameInput'
+    timeout: 3000
+- tapOn:
+    id: 'AccountForm.NameInput'
+- inputText: 'Unfinished lock regression'
+
+- runFlow:
+    file: subflows/security/resume-after-pin-unlock.flow.yaml
+    env:
+      RESUMED_SCREEN_ID: 'AccountForm.NameInput'
+- assertVisible: 'Unfinished lock regression'
+
+- scrollUntilVisible:
+    element:
+      id: 'AccountForm.CurrencySelector'
+    direction: DOWN
+- tapOn:
+    id: 'AccountForm.CurrencySelector'
+- extendedWaitUntil:
+    visible:
+      id: 'CurrencySelector.SearchInput'
+    timeout: 3000
+- tapOn:
+    id: 'CurrencySelector.SearchInput'
+- inputText: 'EUR'
+- runFlow:
+    file: subflows/security/resume-after-pin-unlock.flow.yaml
+    env:
+      RESUMED_SCREEN_ID: 'CurrencySelector.SearchInput'
+- assertVisible: 'EUR'
+- tapOn:
+    id: 'AccountForm.CurrencyOption.EUR'
+- extendedWaitUntil:
+    visible:
+      id: 'AccountForm.NameInput'
+    timeout: 3000
+- assertVisible: 'Unfinished lock regression'
+
+- tapOn:
+    id: 'PageHeader.BackButton'
 - runFlow: subflows/navigation/navigate-to-settings.flow.yaml
 
 - runFlow:

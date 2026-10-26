@@ -1,35 +1,29 @@
-import { existsSync, readdirSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
-
 import { CategoryCreateEntitySchema, ReiconIconNameEnum, UserIconNameEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
 
-import { ICON_IMPORTS } from '../src/@generic/constant/icons.constant';
+import { isEmptyArray } from '@rnw-community/shared';
+
 import { LEGACY_REICON_ICONS } from '../src/@generic/constant/legacy-reicon-icons.constant';
+import REICON_GLYPHS from '../src/@generic/constant/reicon-glyphs.json';
 import { resolveReiconIcon } from '../src/@generic/utils/resolve-reicon-icon.util';
 
 const REICON_ICON_COUNT = 2676;
 const LEGACY_ICON_COUNT = 1878;
 
-const CHUNKS_DIR = join(__dirname, '..', 'src', '@generic', 'constant', 'icons');
-const REICON_ICONS_DIR = join(__dirname, '..', 'node_modules', 'reicon-react-native', 'icons');
-
-const mappedIconNames = readdirSync(CHUNKS_DIR)
-    .flatMap(fileName => [...readFileSync(join(CHUNKS_DIR, fileName), 'utf8').matchAll(/reicon-react-native\/icons\/(\w+)'/gu)])
-    .map(([, iconName]) => iconName);
-
-describe('ICON_IMPORTS', () => {
+describe('REICON_GLYPHS', () => {
     it('mapsAllReiconIconNameEnumValues', () => {
-        expect(Object.keys(ICON_IMPORTS)).toHaveLength(REICON_ICON_COUNT);
-        expect(Object.keys(ICON_IMPORTS).sort()).toEqual(Object.values(ReiconIconNameEnum).sort());
+        expect(Object.keys(REICON_GLYPHS.outline)).toHaveLength(REICON_ICON_COUNT);
+        expect(Object.keys(REICON_GLYPHS.outline).sort()).toEqual(Object.values(ReiconIconNameEnum).sort());
     });
 
-    it('pointsEveryMappingAtAnExistingReiconIcon', () => {
-        expect(mappedIconNames).toHaveLength(Object.keys(ICON_IMPORTS).length);
-        expect(mappedIconNames.map(iconName => `reicon:${iconName}`).sort()).toEqual(Object.values(ReiconIconNameEnum).sort());
-        expect(mappedIconNames.filter(iconName => !existsSync(join(REICON_ICONS_DIR, `${iconName}.js`)))).toEqual([]);
+    it('drawsEveryReiconIcon', () => {
+        expect(Object.entries(REICON_GLYPHS.outline).filter(([, elements]) => isEmptyArray(elements))).toEqual([]);
+    });
+
+    it('drawsTheFilledStar', () => {
+        expect(Object.keys(REICON_GLYPHS.filled)).toEqual([ReiconIconNameEnum.STAR]);
     });
 });
 
@@ -39,10 +33,10 @@ describe('LEGACY_REICON_ICONS', () => {
         expect(Object.keys(LEGACY_REICON_ICONS).sort()).toEqual(Object.values(UserIconNameEnum).sort());
     });
 
-    it('resolvesEveryLegacyIconToACanonicalImport', () => {
+    it('resolvesEveryLegacyIconToACanonicalGlyph', () => {
         for (const icon of Object.values(UserIconNameEnum)) {
             expect(resolveReiconIcon(icon)).toBe(LEGACY_REICON_ICONS[icon]);
-            expect(ICON_IMPORTS[resolveReiconIcon(icon)]).toBeTypeOf('function');
+            expect(Object.keys(REICON_GLYPHS.outline)).toContain(resolveReiconIcon(icon));
         }
     });
 

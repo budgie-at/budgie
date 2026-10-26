@@ -40,7 +40,7 @@ export default async function FeaturesHubPage(props: PageLangParam) {
             </BreadcrumbsJsonLd>
             <JsonLd data={itemList} />
             <section className="w-full pt-12 pb-8 md:pt-20 md:pb-12">
-                <div className="container px-4 md:px-6 max-w-5xl">
+                <div className="container">
                     <h1 className="text-3xl md:text-5xl font-bold tracking-tight">
                         <Trans>All Budgie Features</Trans>
                     </h1>
@@ -53,7 +53,7 @@ export default async function FeaturesHubPage(props: PageLangParam) {
                 </div>
             </section>
             <section className="w-full pb-20">
-                <div className="container px-4 md:px-6 max-w-5xl">
+                <div className="container">
                     <FeaturesHubGrid locale={lang} />
                 </div>
             </section>

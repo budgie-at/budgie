@@ -3,6 +3,67 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.117.0](https://github.com/budgie-at/budgie/compare/v6.116.4...v6.117.0) (2026-10-26)
+
+### Bug Fixes
+
+* treat fee entries as outflows wherever entry direction is displayed ([26dddc0](https://github.com/budgie-at/budgie/commit/26dddc0f0d100a5b01b230bf9968cbe26566ee5e))
+
+### Features
+
+* show initial history import progress inline per bank ([356ef48](https://github.com/budgie-at/budgie/commit/356ef48a389d1d854607632892118dee79c2c1f3))
+
+
+## [6.116.2](https://github.com/budgie-at/budgie/compare/v6.116.1...v6.116.2) (2026-10-26)
+
+**Note:** Version bump only for package @budgie/contracts
+
+
+
+
+
+# [6.116.0](https://github.com/budgie-at/budgie/compare/v6.115.10...v6.116.0) (2026-10-26)
+
+### Features
+
+* external accounts, automatic card discovery and reissue merge ([#1672](https://github.com/budgie-at/budgie/issues/1672)) ([176b4ed](https://github.com/budgie-at/budgie/commit/176b4ed78e84d6f5eb52ddab517c867b0387e5cb)), closes [#1664](https://github.com/budgie-at/budgie/issues/1664) [#1666](https://github.com/budgie-at/budgie/issues/1666) [#1667](https://github.com/budgie-at/budgie/issues/1667)
+
+
+## [6.115.9](https://github.com/budgie-at/budgie/compare/v6.115.8...v6.115.9) (2026-10-25)
+
+**Note:** Version bump only for package @budgie/contracts
+
+
+
+
+
+## [6.115.5](https://github.com/budgie-at/budgie/compare/v6.115.4...v6.115.5) (2026-10-25)
+
+### Bug Fixes
+
+* correct bank-fee categorization and auto-move ATM withdrawals to cash ([#1659](https://github.com/budgie-at/budgie/issues/1659)) ([f0c5964](https://github.com/budgie-at/budgie/commit/f0c5964c98b369377d25429a90f40afdeb92ee6a))
+
+
+## [6.115.4](https://github.com/budgie-at/budgie/compare/v6.115.3...v6.115.4) (2026-10-24)
+
+### Bug Fixes
+
+* correct runway cash-flow maths and merge manual bank duplicates ([#1662](https://github.com/budgie-at/budgie/issues/1662)) ([45bd478](https://github.com/budgie-at/budgie/commit/45bd4785f10c3f37a2b3643625ab2dcf42732f8d))
+
+
+# [6.110.0](https://github.com/budgie-at/budgie/compare/v6.109.2...v6.110.0) (2026-10-21)
+
+### Bug Fixes
+
+* **sync:** drop the reconciliation anchor when a full resync starts ([4f53094](https://github.com/budgie-at/budgie/commit/4f53094b20be8a4e896ad70cae1f2844e2cfb791))
+
+### Features
+
+* store provider balances and bank reconciliation anchors ([5e98dc4](https://github.com/budgie-at/budgie/commit/5e98dc45f481e5cff567994434c3cd2fbce490db))
+* **sync:** apply bank balance corrections automatically ([c12031a](https://github.com/budgie-at/budgie/commit/c12031af32d1b2ef12d0dc66c28a4acf4d5cb4ac))
+* **sync:** reconcile Monobank balances against the bank after forward sync ([54df93d](https://github.com/budgie-at/budgie/commit/54df93d82d7cef2e3db6bf1e5607ca4218e2d5a7))
+
+
 # [6.109.0](https://github.com/budgie-at/budgie/compare/v6.108.0...v6.109.0) (2026-10-20)
 
 ### Features

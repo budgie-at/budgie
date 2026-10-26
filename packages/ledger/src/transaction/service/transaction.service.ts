@@ -5,7 +5,6 @@ import {
     type TransactionCreateInputInterface,
     type TransactionEntryEntityInterface,
     TransactionEntryRepository,
-    TransactionEntryTypeEnum,
     TransactionRepository,
     TransactionTagsRepository,
     TransactionTypeEnum,
@@ -17,7 +16,7 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { processInputWithBatches } from '../../@generic/utils/process-input-with-batches.util';
 import { AccountBalanceIncrementalService } from '../../account/service/account-balance-incremental.service';
@@ -159,47 +158,6 @@ export class TransactionService extends Context.Service<TransactionService>()('@
                 Effect.map(transactionRepository.findExternalIdsByExternalSource(externalSource), externalIds => new Set(externalIds)),
             findIdMapByExternalSource: (externalSource: ExternalSourceEnum) =>
                 transactionRepository.findIdMapByExternalSource(externalSource),
-            createBalanceAdjustment: Effect.fn('TransactionService.createBalanceAdjustment')(function* (
-                accountId: number,
-                delta: number,
-                operatedAt: Date
-            ) {
-                const isIncome = isPositiveNumber(delta);
-                const amount = Math.abs(delta);
-                const valuation = yield* entryBaseValuationService.valueMicroUnitEntry({
-                    accountId,
-                    amount,
-                    operatedAt
-                });
-
-                const transaction = yield* transactionRepository.create({
-                    type: TransactionTypeEnum.ADJUSTMENT,
-                    title: '',
-                    comment: '',
-                    externalId: null,
-                    externalSource: null,
-                    operatedAt,
-                    exchangeRate: valuation.baseExchangeRate ?? 1,
-                    fromAccountId: isIncome ? null : accountId,
-                    toAccountId: isIncome ? accountId : null,
-                    updatedBy: null
-                });
-
-                yield* transactionEntryRepository.create({
-                    accountId,
-                    transactionId: transaction.id,
-                    categoryId: null,
-                    mccCategoryId: null,
-                    amount,
-                    type: isIncome ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT,
-                    exchangeRate: valuation.baseExchangeRate ?? 1,
-                    baseInstrumentId: valuation.baseInstrumentId,
-                    baseExchangeRate: valuation.baseExchangeRate,
-                    baseAmount: valuation.baseAmount
-                });
-
-                return transaction.id;
-            }),
             moveExternalEntryToAccount: Effect.fn('TransactionService.moveExternalEntryToAccount')(
                 function* (transactionId: number, externalId: string, accountId: number, isIncome: boolean) {
                     const existingEntry = yield* transactionEntryRepository.findByTransactionIdAndExternalId(transactionId, externalId);

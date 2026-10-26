@@ -5,6 +5,7 @@ import { Text, View } from 'react-native';
 import { Card } from '../../../@generic/component/card/card';
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
+import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { SettingsGroup } from '../../../settings/components/settings-group/settings-group';
 import { ApplePayCaptureHero } from '../../../wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero';
@@ -85,6 +86,8 @@ export default function ApplePayCaptureSettingsPage() {
                 <SettingsGroup title={t`Troubleshooting`}>
                     <ApplePayCaptureTroubleshootingCard />
                 </SettingsGroup>
+
+                <MenuSpacer />
             </View>
         </CollapsibleChromePage>
     );

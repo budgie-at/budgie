@@ -11,7 +11,7 @@ import { Workload } from '../../@generic/service/workload.service';
 import { waitForIdle } from '../../@generic/utils/wait-for-idle.util';
 
 import type { PendingRuleApplicationInterface } from '../interface/pending-rule-application.interface';
-import type { TransactionCreateInputInterface } from '@budgie/contracts';
+import type { Db, TransactionCreateInputInterface } from '@budgie/contracts';
 import type { ApplyRuleResultInterface } from '@budgie/rules';
 
 export class RuleApplicationDrainerService extends Context.Service<RuleApplicationDrainerService>()(
@@ -26,6 +26,17 @@ export class RuleApplicationDrainerService extends Context.Service<RuleApplicati
             const pendingTransactionIds: number[] = [];
             const pendingTransactionInputs: TransactionCreateInputInterface[] = [];
 
+            const runUntilSettled = <A, E>(effect: Effect.Effect<A, E, Db>): Effect.Effect<A, E> =>
+                workload
+                    .run(effect)
+                    .pipe(
+                        Effect.catchCause(cause =>
+                            Cause.hasInterruptsOnly(cause)
+                                ? Effect.andThen(workload.awaitBackgroundAllowed, runUntilSettled(effect))
+                                : Effect.failCause(cause)
+                        )
+                    );
+
             const processPendingTransactionBatch = Effect.fn('RuleApplicationDrainerService.processPendingTransactionBatch')(function* () {
                 if (!isNotEmptyArray(pendingTransactionIds)) {
                     return;
@@ -34,7 +45,7 @@ export class RuleApplicationDrainerService extends Context.Service<RuleApplicati
                 const transactionIds = pendingTransactionIds.splice(0);
                 const transactionInputs = pendingTransactionInputs.splice(0);
 
-                yield* workload.run(ruleEngineService.applyRulesToTransactions(transactionIds, transactionInputs)).pipe(
+                yield* runUntilSettled(ruleEngineService.applyRulesToTransactions(transactionIds, transactionInputs)).pipe(
                     Effect.tapCause(cause =>
                         Effect.logError('processPendingTransactionBatch:throw', {
                             queuedTransactionIds: transactionIds.join(','),
@@ -56,7 +67,7 @@ export class RuleApplicationDrainerService extends Context.Service<RuleApplicati
 
                 const { ruleId, onSettled } = pending;
 
-                yield* workload.run(ruleEngineService.applyRuleToMatchingTransactions(ruleId)).pipe(
+                yield* runUntilSettled(ruleEngineService.applyRuleToMatchingTransactions(ruleId)).pipe(
                     Effect.matchCause({
                         onSuccess: result => {
                             onSettled?.(result, null);

@@ -13,7 +13,7 @@ interface Props {
 
 const FeatureCropBandRoot = ({ heading, lede, shot, children }: Props) => (
     <section className="feature-section">
-        <div className="feature-wrap container px-4 md:px-6">
+        <div className="container">
             <div className="feature-crop-band">
                 <div className="feature-crop-band-copy">
                     <h2 className="feature-section-title">{heading}</h2>

@@ -110,7 +110,7 @@ appId: ${APP_ID}
           id: 'BankIntegration.Page'
       timeout: 10000
 
-# 10. Overflow menu exposes Details/Edit/Archive; Details opens the account details screen
+# 10. Overflow menu exposes Details/Edit/External/Archive; Details opens the account details screen
 - tapOn:
       id: 'BankIntegration.AccountRow.1.Menu'
 - extendedWaitUntil:
@@ -119,6 +119,8 @@ appId: ${APP_ID}
       timeout: 3000
 - assertVisible:
       id: 'BankIntegration.AccountRow.1.Menu.Edit'
+- assertVisible:
+      id: 'BankIntegration.AccountRow.1.Menu.External'
 - assertVisible:
       id: 'BankIntegration.AccountRow.1.Menu.Archive'
 - tapOn:
@@ -220,3 +222,24 @@ appId: ${APP_ID}
       id: 'BankIntegration.AccountRow.9'
 - assertVisible:
       id: 'BankIntegration.AccountRow.8'
+
+# 15. Confirming the external-account prompt archives the account, removing it from the integration page
+- tapOn:
+      id: 'BankIntegration.AccountRow.8.Menu'
+- extendedWaitUntil:
+      visible:
+          id: 'BankIntegration.AccountRow.8.Menu.External'
+      timeout: 3000
+- tapOn:
+      id: 'BankIntegration.AccountRow.8.Menu.External'
+- extendedWaitUntil:
+      visible: 'Mark as External?'
+      timeout: 10000
+- tapOn:
+      text: '^Mark External$'
+- extendedWaitUntil:
+      notVisible:
+          id: 'BankIntegration.AccountRow.8'
+      timeout: 10000
+- assertVisible:
+      id: 'BankIntegration.Page'

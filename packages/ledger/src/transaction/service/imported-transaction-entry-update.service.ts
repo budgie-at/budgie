@@ -173,6 +173,7 @@ export class ImportedTransactionEntryUpdateService extends Context.Service<Impor
                 const nextAmount = convertToMicroUnits(entry.amount);
                 const nextBaseValuation = yield* resolveValuation(entry, input, context);
                 const nextMccCategoryId = entry.mccCategoryId ?? existingEntry.mccCategoryId;
+                const nextProviderBalance = entry.providerBalance ?? existingEntry.providerBalance;
                 const { operationInstrumentId: nextOperationInstrumentId, operationAmount: nextOperationAmount } =
                     transactionResolveImportedOperationMetadata(existingEntry, entry);
 
@@ -185,7 +186,8 @@ export class ImportedTransactionEntryUpdateService extends Context.Service<Impor
                     existingEntry.baseAmount === nextBaseValuation.baseAmount &&
                     existingEntry.toIban === entry.toIban &&
                     existingEntry.operationInstrumentId === nextOperationInstrumentId &&
-                    existingEntry.operationAmount === nextOperationAmount
+                    existingEntry.operationAmount === nextOperationAmount &&
+                    existingEntry.providerBalance === nextProviderBalance
                 ) {
                     return;
                 }
@@ -200,7 +202,8 @@ export class ImportedTransactionEntryUpdateService extends Context.Service<Impor
                         toIban: entry.toIban,
                         mccCategoryId: nextMccCategoryId,
                         operationInstrumentId: nextOperationInstrumentId,
-                        operationAmount: nextOperationAmount
+                        operationAmount: nextOperationAmount,
+                        providerBalance: nextProviderBalance
                     },
                     context
                 );

@@ -10,6 +10,7 @@
         "scripts/after-install.cjs",
         "tests/app-tests/scripts/prepare-date-sensitive-fixtures.js",
         "packages/sync/babel.config.js",
+        "packages/amount-input/babel.config.bob.js",
         "tsconfig.json",
         "packages/contracts/src/**/*.enum.ts",
         "packages/app/scripts/bench-budget-spent.ts",

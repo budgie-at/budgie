@@ -15,7 +15,7 @@ export const CryptoCurrencyGroupAccounts = ({ group, balancesByAccountId }: Prop
     const rows = pairAccountsIntoRows(group.accounts);
 
     return (
-        <View className="gap-y-3">
+        <View className="gap-y-lg">
             {rows.map(row => (
                 <AccountGridRow
                     key={row.left.id}

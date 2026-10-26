@@ -33,6 +33,12 @@ const getBankIcon = (provider: ExternalSourceEnum, size: number): ReactElement |
             return <ErsteIcon size={size} />;
         case ExternalSourceEnum.BINANCE:
             return <BinanceIcon size={size} />;
+        case ExternalSourceEnum.MANUAL:
+        case ExternalSourceEnum.REVOLUT:
+        case ExternalSourceEnum.COINBASE:
+        case ExternalSourceEnum.WISE:
+        case ExternalSourceEnum.CSV:
+        case ExternalSourceEnum.APPLE_PAY_AUTOMATION:
         default:
             return null;
     }

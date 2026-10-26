@@ -13,6 +13,8 @@ import { TransferConsolidationService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
+import { isNotEmptyString } from '@rnw-community/shared';
+
 import { seed, TestLayer, testQueryService } from '../../harness';
 import { snapshotTransactionState } from '../../harness/db/snapshot-transaction-state';
 import { seedRefundedExpense } from '../../harness/seed/seed-refund-fixture';
@@ -22,7 +24,23 @@ import type { TransactionCreateInputInterface, TransactionEntityInterface } from
 const DAY_MS = 24 * 60 * 60 * 1000;
 const MANUAL_DUPLICATE_OPERATED_AT_MS = new Date(2025, 10, 2, 10, 0, 0).getTime();
 
-const buildRefreshInput = (transaction: TransactionEntityInterface, accountId: number): TransactionCreateInputInterface => ({
+const buildRefreshEntry = (accountId: number, type: TransactionEntryTypeEnum, externalId: string | null) => ({
+    accountId,
+    type,
+    amount: 0,
+    categoryId: null,
+    categorySource: CategorySourceEnum.USER,
+    mccCategoryId: null,
+    externalId,
+    exchangeRate: 1,
+    toIban: null
+});
+
+const buildRefreshInput = (
+    transaction: TransactionEntityInterface,
+    accountId: number,
+    feeExternalId: string | null
+): TransactionCreateInputInterface => ({
     amount: 0,
     title: transaction.title,
     comment: '',
@@ -36,17 +54,8 @@ const buildRefreshInput = (transaction: TransactionEntityInterface, accountId: n
     toAccountId: null,
     tagIds: [],
     entries: [
-        {
-            accountId,
-            type: TransactionEntryTypeEnum.CREDIT,
-            amount: 0,
-            categoryId: null,
-            categorySource: CategorySourceEnum.USER,
-            mccCategoryId: null,
-            externalId: transaction.externalId,
-            exchangeRate: 1,
-            toIban: null
-        }
+        buildRefreshEntry(accountId, TransactionEntryTypeEnum.CREDIT, transaction.externalId),
+        ...(isNotEmptyString(feeExternalId) ? [buildRefreshEntry(accountId, TransactionEntryTypeEnum.FEE, feeExternalId)] : [])
     ]
 });
 
@@ -57,12 +66,12 @@ const fetchLedgerBalances = (accountIds: readonly number[]) =>
         )
     );
 
-const refreshImportedTransaction = (transaction: TransactionEntityInterface, accountId: number) =>
+const refreshImportedTransaction = (transaction: TransactionEntityInterface, accountId: number, feeExternalId: string | null) =>
     Effect.flatMap(TransactionImportService, transactionImportService =>
         Effect.map(
             transactionImportService.bulkUpsertPreparedImported(
                 transactionImportService.prepareImportedInputs(
-                    [buildRefreshInput(transaction, accountId)],
+                    [buildRefreshInput(transaction, accountId, feeExternalId)],
                     new Map([[transaction.externalId ?? '', transaction.id]])
                 )
             ),
@@ -76,6 +85,7 @@ const expectRefreshKeepsMovedEntriesAndUndo = Effect.fnUntraced(function* (input
     readonly canonicalAccountId: number;
     readonly consolidationType: TransactionConsolidationTypeEnum;
     readonly movedSourceIds: readonly number[];
+    readonly feeExternalId?: string;
 }) {
     const transferConsolidationService = yield* TransferConsolidationService;
     const transactionService = yield* TransactionService;
@@ -89,7 +99,7 @@ const expectRefreshKeepsMovedEntriesAndUndo = Effect.fnUntraced(function* (input
     const balancesAfterConsolidation = yield* fetchLedgerBalances(input.accountIds);
     const movedStateBeforeRefresh = yield* snapshotTransactionState(input.movedSourceIds);
 
-    yield* refreshImportedTransaction(input.canonical, input.canonicalAccountId);
+    yield* refreshImportedTransaction(input.canonical, input.canonicalAccountId, input.feeExternalId ?? null);
 
     expect(yield* snapshotTransactionState(input.movedSourceIds)).toEqual(movedStateBeforeRefresh);
     expect(yield* fetchLedgerBalances(input.accountIds)).toEqual(balancesAfterConsolidation);
@@ -156,6 +166,30 @@ describe('import/import-refresh-preserves-consolidated-entries', () => {
                 consolidationType: TransactionConsolidationTypeEnum.REFUND,
                 movedSourceIds: refunds.map(refund => refund.id)
             });
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('keeps both refund incomes moved under a payment and fee refunded separately when the expense is refreshed', () =>
+        Effect.gen(function* () {
+            const account = yield* seed.account({ externalId: 'privat-card' });
+            const { expense, refunds } = yield* seed.refundedExpense({
+                accountId: account.id,
+                expenseAmount: 120 * PRECISION,
+                expenseFeeAmount: 3 * PRECISION,
+                refundAmounts: [120 * PRECISION, 3 * PRECISION],
+                refundDelaySeconds: 60,
+                externalIdPrefix: 'refresh-fee-refund'
+            });
+
+            yield* expectRefreshKeepsMovedEntriesAndUndo({
+                accountIds: [account.id],
+                canonical: expense,
+                canonicalAccountId: account.id,
+                consolidationType: TransactionConsolidationTypeEnum.REFUND,
+                movedSourceIds: refunds.map(refund => refund.id),
+                feeExternalId: 'refresh-fee-refund-expense-fee'
+            });
+            expect(yield* fetchLedgerBalances([account.id])).toEqual([[account.id, 0]]);
         }).pipe(Effect.provide(TestLayer))
     );
 });

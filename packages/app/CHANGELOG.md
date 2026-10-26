@@ -3,6 +3,298 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.117.1](https://github.com/budgie-at/budgie/compare/v6.117.0...v6.117.1) (2026-10-26)
+
+### Bug Fixes
+
+* **app:** stop hashing the prebuild Podfile in the native fingerprint ([81e0485](https://github.com/budgie-at/budgie/commit/81e048546709e9890f09048e63d794ebf9ccb3d1))
+
+
+# [6.117.0](https://github.com/budgie-at/budgie/compare/v6.116.4...v6.117.0) (2026-10-26)
+
+### Bug Fixes
+
+* **app:** show consolidated fee source rows as expenses ([6549c7d](https://github.com/budgie-at/budgie/commit/6549c7d7e59257c965e616a09fc20e644f1dbaf0)), closes [#1685](https://github.com/budgie-at/budgie/issues/1685)
+* treat fee entries as outflows wherever entry direction is displayed ([26dddc0](https://github.com/budgie-at/budgie/commit/26dddc0f0d100a5b01b230bf9968cbe26566ee5e))
+
+### Features
+
+* **app:** show Monobank initial sync progress ([239b1c9](https://github.com/budgie-at/budgie/commit/239b1c9cc624b35c3baf3934220afca2e4947607)), closes [#1629](https://github.com/budgie-at/budgie/issues/1629)
+* show initial history import progress inline per bank ([356ef48](https://github.com/budgie-at/budgie/commit/356ef48a389d1d854607632892118dee79c2c1f3))
+
+
+## [6.116.4](https://github.com/budgie-at/budgie/compare/v6.116.3...v6.116.4) (2026-10-26)
+
+### Bug Fixes
+
+* **app:** use the iMessage-style screen chrome bands and softer blur ([09cc4c9](https://github.com/budgie-at/budgie/commit/09cc4c9ebc8e55ed12fda783fad6eb57b2b33ab8))
+
+
+## [6.116.3](https://github.com/budgie-at/budgie/compare/v6.116.2...v6.116.3) (2026-10-26)
+
+### Bug Fixes
+
+* **app:** fail the release build when stripping or re-signing a framework fails ([cc36ef5](https://github.com/budgie-at/budgie/commit/cc36ef5b3eda7ea331c4bd99358b7bd63eea5e21))
+
+### Performance Improvements
+
+* **app:** shrink the Android and iOS app size ([5de630f](https://github.com/budgie-at/budgie/commit/5de630fb686fd60df53349c06dfc40c884ff6f59))
+
+
+## [6.116.2](https://github.com/budgie-at/budgie/compare/v6.116.1...v6.116.2) (2026-10-26)
+
+### Bug Fixes
+
+* **sync:** let paused Monobank accounts recover after failures ([c805058](https://github.com/budgie-at/budgie/commit/c805058afd339f5141b6151ebaee74a64d5116b3))
+
+
+## [6.116.1](https://github.com/budgie-at/budgie/compare/v6.116.0...v6.116.1) (2026-10-26)
+
+### Bug Fixes
+
+* **app:** hash autolinked gradle plugin sources in the native fingerprint ([059a898](https://github.com/budgie-at/budgie/commit/059a898697f4087fa1a6bc6a34b9ec2dc6883ab1))
+* **app:** hash library native sources in the native fingerprint ([498b304](https://github.com/budgie-at/budgie/commit/498b3046c4d26813fb2fc80af51159ef4d77899f))
+
+
+# [6.116.0](https://github.com/budgie-at/budgie/compare/v6.115.10...v6.116.0) (2026-10-26)
+
+### Features
+
+* external accounts, automatic card discovery and reissue merge ([#1672](https://github.com/budgie-at/budgie/issues/1672)) ([176b4ed](https://github.com/budgie-at/budgie/commit/176b4ed78e84d6f5eb52ddab517c867b0387e5cb)), closes [#1664](https://github.com/budgie-at/budgie/issues/1664) [#1666](https://github.com/budgie-at/budgie/issues/1666) [#1667](https://github.com/budgie-at/budgie/issues/1667)
+
+
+## [6.115.10](https://github.com/budgie-at/budgie/compare/v6.115.9...v6.115.10) (2026-10-25)
+
+### Bug Fixes
+
+* **app:** ease the screen chrome blur in across the whole edge band ([85b7883](https://github.com/budgie-at/budgie/commit/85b7883ca97fa2d622119d793ea2424d62aba224)), closes [rnw-community#737](https://github.com/rnw-community/issues/737)
+
+
+## [6.115.9](https://github.com/budgie-at/budgie/compare/v6.115.8...v6.115.9) (2026-10-25)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+## [6.115.8](https://github.com/budgie-at/budgie/compare/v6.115.7...v6.115.8) (2026-10-25)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+## [6.115.7](https://github.com/budgie-at/budgie/compare/v6.115.6...v6.115.7) (2026-10-25)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+## [6.115.6](https://github.com/budgie-at/budgie/compare/v6.115.5...v6.115.6) (2026-10-25)
+
+### Bug Fixes
+
+* **app:** return to the previous screen after PIN unlock ([#1660](https://github.com/budgie-at/budgie/issues/1660)) ([370f97f](https://github.com/budgie-at/budgie/commit/370f97f77f44c9cbfb5a3fd501aef5465e630485))
+
+
+## [6.115.5](https://github.com/budgie-at/budgie/compare/v6.115.4...v6.115.5) (2026-10-25)
+
+### Bug Fixes
+
+* correct bank-fee categorization and auto-move ATM withdrawals to cash ([#1659](https://github.com/budgie-at/budgie/issues/1659)) ([f0c5964](https://github.com/budgie-at/budgie/commit/f0c5964c98b369377d25429a90f40afdeb92ee6a))
+
+
+## [6.115.4](https://github.com/budgie-at/budgie/compare/v6.115.3...v6.115.4) (2026-10-24)
+
+### Bug Fixes
+
+* correct runway cash-flow maths and merge manual bank duplicates ([#1662](https://github.com/budgie-at/budgie/issues/1662)) ([45bd478](https://github.com/budgie-at/budgie/commit/45bd4785f10c3f37a2b3643625ab2dcf42732f8d))
+
+
+## [6.115.3](https://github.com/budgie-at/budgie/compare/v6.115.2...v6.115.3) (2026-10-24)
+
+### Bug Fixes
+
+* **app:** refresh Lingui catalog references for moved PIN screens ([c1bf6e6](https://github.com/budgie-at/budgie/commit/c1bf6e619ef5d04a1068e32579ae58011812a4bd))
+* **app:** return to the same screen after PIN unlock ([c7f92fa](https://github.com/budgie-at/budgie/commit/c7f92fa0605c25aa4e1f307d01acd451c17393f5))
+
+
+## [6.115.2](https://github.com/budgie-at/budgie/compare/v6.115.1...v6.115.2) (2026-10-24)
+
+### Bug Fixes
+
+* **app:** show blurred content under the screen chrome ([#1653](https://github.com/budgie-at/budgie/issues/1653)) ([dab5727](https://github.com/budgie-at/budgie/commit/dab57276d7a49b6ddb0bdfaf1c59899bf060aabb))
+
+
+## [6.115.1](https://github.com/budgie-at/budgie/compare/v6.115.0...v6.115.1) (2026-10-24)
+
+### Bug Fixes
+
+* **app:** prevent loading control layout shifts ([#1650](https://github.com/budgie-at/budgie/issues/1650)) ([0b91b07](https://github.com/budgie-at/budgie/commit/0b91b07a2129601c6b81606f97a448e9c059c46c))
+
+
+# [6.115.0](https://github.com/budgie-at/budgie/compare/v6.114.9...v6.115.0) (2026-10-24)
+
+### Features
+
+* **app:** create a rule from any transaction's actions menu ([9693c81](https://github.com/budgie-at/budgie/commit/9693c81cf92bfa86589447155a7bcc3bbea05ec7))
+
+
+## [6.114.9](https://github.com/budgie-at/budgie/compare/v6.114.8...v6.114.9) (2026-10-24)
+
+### Bug Fixes
+
+* **app:** pad transaction info rows away from the screen edges ([f5e4607](https://github.com/budgie-at/budgie/commit/f5e4607b8a01036412080bdfdfcce85cd84c4e6e))
+* **app:** show the attached debt on transaction info ([3926644](https://github.com/budgie-at/budgie/commit/3926644af06e108d689e84b051cd403400bf2d4b))
+
+
+## [6.114.8](https://github.com/budgie-at/budgie/compare/v6.114.7...v6.114.8) (2026-10-24)
+
+### Bug Fixes
+
+* apply rules on file import and rerun preempted background work ([f2530a3](https://github.com/budgie-at/budgie/commit/f2530a344d81d331090d36e48a7ad5b7cc288300))
+
+
+## [6.114.7](https://github.com/budgie-at/budgie/compare/v6.114.6...v6.114.7) (2026-10-24)
+
+### Bug Fixes
+
+* **app:** give bank sections more room and soften account names ([e019dac](https://github.com/budgie-at/budgie/commit/e019dac15f95094a183bfe816972ccf6d8685ea2))
+
+
+## [6.114.6](https://github.com/budgie-at/budgie/compare/v6.114.5...v6.114.6) (2026-10-24)
+
+### Bug Fixes
+
+* **app:** soften the edge chrome so content stays visible ([3b1f836](https://github.com/budgie-at/budgie/commit/3b1f836dbce075addfc9d5ea963d9ebb82fcd0e1))
+
+
+## [6.114.5](https://github.com/budgie-at/budgie/compare/v6.114.4...v6.114.5) (2026-10-23)
+
+### Bug Fixes
+
+* **app:** compact the header and tab edge bands ([b082907](https://github.com/budgie-at/budgie/commit/b082907fdfe76bbcdeeace0d84836733cc0c3f33))
+* **app:** keep the backdrop animation value stable ([e3cc18b](https://github.com/budgie-at/budgie/commit/e3cc18b72b0b09e450a6b754c9f16c22754a9afc))
+* **app:** use screen-chrome 3.0.3 ([93d3677](https://github.com/budgie-at/budgie/commit/93d3677db02d99cba60de05b8fc9362e3c1bfe62))
+
+
+## [6.114.4](https://github.com/budgie-at/budgie/compare/v6.114.3...v6.114.4) (2026-10-23)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+## [6.114.3](https://github.com/budgie-at/budgie/compare/v6.114.2...v6.114.3) (2026-10-23)
+
+### Bug Fixes
+
+* **app:** ignore repeat taps while an action is loading ([f0b71d8](https://github.com/budgie-at/budgie/commit/f0b71d83e8ea66f536ab40a953d445e2bb8e96ac))
+
+
+## [6.114.2](https://github.com/budgie-at/budgie/compare/v6.114.1...v6.114.2) (2026-10-23)
+
+### Bug Fixes
+
+* **app:** let Face ID unlock after a restart and make PIN setup back work ([74dde6e](https://github.com/budgie-at/budgie/commit/74dde6e9cecefef5bc765d7057b0699a90b472bf))
+
+
+## [6.114.1](https://github.com/budgie-at/budgie/compare/v6.114.0...v6.114.1) (2026-10-22)
+
+### Bug Fixes
+
+* **app:** fade content into the edge blur and sticky section headers ([f022872](https://github.com/budgie-at/budgie/commit/f0228726ac44883826a189b0de286074a4a30fa4))
+* **app:** ship the progressive edge-fade blur native module ([088e224](https://github.com/budgie-at/budgie/commit/088e2243c5ba96de70401cfc373d4edb38bf6203)), closes [rnw-community/rnw-community#730](https://github.com/rnw-community/rnw-community/issues/730)
+* **app:** shorten the edge-fade blur bands to the chrome ([4cc82e8](https://github.com/budgie-at/budgie/commit/4cc82e85981ddb063fd1c1defca6b1efd23356c4))
+
+
+# [6.114.0](https://github.com/budgie-at/budgie/compare/v6.113.0...v6.114.0) (2026-10-22)
+
+### Bug Fixes
+
+* **app:** address review feedback on the Settings data sections ([3f2d470](https://github.com/budgie-at/budgie/commit/3f2d470c6e9f94790f0bf8166b907be035a38e7e)), closes [#1636](https://github.com/budgie-at/budgie/issues/1636)
+* **app:** expose controls nested in non-tappable settings rows ([7fa05a2](https://github.com/budgie-at/budgie/commit/7fa05a2cffabbc78446b89bfe54954899bc9ee75))
+
+### Features
+
+* **app:** clarify the Settings data and security sections ([455797f](https://github.com/budgie-at/budgie/commit/455797fc9e9c48a2a65863d1f1f276f19376b64c))
+
+
+# [6.113.0](https://github.com/budgie-at/budgie/compare/v6.112.1...v6.113.0) (2026-10-22)
+
+### Bug Fixes
+
+* **app:** keep the chosen account menu action when the backdrop is tapped while closing ([832958e](https://github.com/budgie-at/budgie/commit/832958efb7c5017579ffed8e884db14f9ccbbddb))
+* **app:** keep the first chosen account menu action while the menu closes ([bc39ce9](https://github.com/budgie-at/budgie/commit/bc39ce911f6e217aa88c661e3a550d2cbde84a69))
+* **app:** open account menu actions after the popover dismisses ([6796083](https://github.com/budgie-at/budgie/commit/6796083bdb6b17adae5d11f3f09f709c86313877))
+* **app:** run popover menu actions after the native modal dismisses ([a55d611](https://github.com/budgie-at/budgie/commit/a55d611d2b8c30a4c870e28a342388c75ca0a606))
+
+### Features
+
+* **app:** compact balance-first account tiles with two-line titles and a long-press menu ([b6ff717](https://github.com/budgie-at/budgie/commit/b6ff7177fb5f9b220c390222af095a0e82288903))
+
+
+## [6.112.1](https://github.com/budgie-at/budgie/compare/v6.112.0...v6.112.1) (2026-10-22)
+
+### Bug Fixes
+
+* **app:** render the native edge-fade blur on iOS and Android ([dcfb88d](https://github.com/budgie-at/budgie/commit/dcfb88de2b20516a8cf6f17aa2df54c094949bcc))
+
+
+# [6.112.0](https://github.com/budgie-at/budgie/compare/v6.111.2...v6.112.0) (2026-10-21)
+
+### Bug Fixes
+
+* **app:** address tile review findings ([7852fc0](https://github.com/budgie-at/budgie/commit/7852fc09eaa4ad421d01e3c89dcfcffa854730df))
+* **app:** hide content scrolling under the tab buttons ([e7b04ed](https://github.com/budgie-at/budgie/commit/e7b04ed32bb254302a3fe692f51ed6c03f74ab54))
+* **app:** keep the crypto suffix symbol at least 22px ([4788ba7](https://github.com/budgie-at/budgie/commit/4788ba726ee6a416a20e61bae9c3fb4dfe9d5cd7))
+* **app:** split tile balance cents by decimal places, not the separator ([8ed6127](https://github.com/budgie-at/budgie/commit/8ed612725e13f63aae05edf07005f3a831795662))
+
+### Features
+
+* **app:** redesign Home account tiles balance first ([6df7258](https://github.com/budgie-at/budgie/commit/6df72580dc9ed94477c1763f39721a5ff9a663bb))
+* **app:** show app lock state as an icon beside the net worth ([8c830c2](https://github.com/budgie-at/budgie/commit/8c830c2cad854bbacf20a9f5c88ffb2a17b736c8))
+* **app:** use a quiet ellipsis for the account settings button ([8db6322](https://github.com/budgie-at/budgie/commit/8db632248c0bd3de73a37d92c73b7e611b70f6ad))
+
+
+## [6.111.2](https://github.com/budgie-at/budgie/compare/v6.111.1...v6.111.2) (2026-10-21)
+
+### Bug Fixes
+
+* **app:** accept filled weight only for the star icon ([7f243e7](https://github.com/budgie-at/budgie/commit/7f243e73a8ce5f268fe769bb5646c206079cc489))
+
+### Performance Improvements
+
+* **app:** render Reicon icons synchronously from precompiled glyph data ([72ab98a](https://github.com/budgie-at/budgie/commit/72ab98a4dd513bccd23975c7e0a24c926553e880)), closes [#1595](https://github.com/budgie-at/budgie/issues/1595)
+
+
+## [6.111.1](https://github.com/budgie-at/budgie/compare/v6.111.0...v6.111.1) (2026-10-21)
+
+### Bug Fixes
+
+* **app:** point the iOS screenshot upload at the iOS metadata folder ([c38d464](https://github.com/budgie-at/budgie/commit/c38d464d150913fcfe8f1fba847119de29e8fd44))
+
+
+# [6.110.0](https://github.com/budgie-at/budgie/compare/v6.109.2...v6.110.0) (2026-10-21)
+
+### Bug Fixes
+
+* **app:** inline the balance review atom read and fix French copy ([4433ca9](https://github.com/budgie-at/budgie/commit/4433ca916f379b3d8061c999d53e1b6f28c6b7f7))
+* **app:** show the exact bank correction amount regardless of display rounding ([b951656](https://github.com/budgie-at/budgie/commit/b951656a2a78e293d8815475833603fec8b4dc32))
+
+### Features
+
+* **app:** review large bank balance corrections on synced accounts ([8bb1577](https://github.com/budgie-at/budgie/commit/8bb15777813d172c9182ff26489db9895b42abc2))
+* store provider balances and bank reconciliation anchors ([5e98dc4](https://github.com/budgie-at/budgie/commit/5e98dc45f481e5cff567994434c3cd2fbce490db))
+* **sync:** apply bank balance corrections automatically ([c12031a](https://github.com/budgie-at/budgie/commit/c12031af32d1b2ef12d0dc66c28a4acf4d5cb4ac))
+* **sync:** reconcile Monobank balances against the bank after forward sync ([54df93d](https://github.com/budgie-at/budgie/commit/54df93d82d7cef2e3db6bf1e5607ca4218e2d5a7))
+
+
 ## [6.109.2](https://github.com/budgie-at/budgie/compare/v6.109.1...v6.109.2) (2026-10-21)
 
 **Note:** Version bump only for package @budgie-at/app

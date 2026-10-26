@@ -1,15 +1,18 @@
 import {
-    TransactionEntryTypeEnum,
+    isOutflowEntryType,
     TransactionWithRelationsEntityInterface,
     isNegativeAdjustmentTransaction,
     isPositiveAdjustmentTransaction,
     convertFromMicroUnits
 } from '@budgie/contracts';
+import { useContext } from 'react';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
+import { StatisticsCategoryIdsContext } from '../../context/statistics-category-ids.context';
 import { getTransactionType } from '../../utils/get-transaction-type.util';
+import { selectStatisticsAmountTransaction } from '../../utils/select-statistics-amount-transaction.util';
 import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 import { TransactionCardSelector } from '../transaction-card/transaction-card.selector';
 import { TransactionEntryAmount } from '../transaction-entry-amount/transaction-entry-amount';
@@ -61,14 +64,16 @@ const resolveDisplayEntries = (transaction: TransactionWithRelationsEntityInterf
         return { contextualEntry, fromEntry, toEntry };
     }
 
-    if (contextualEntry.type === TransactionEntryTypeEnum.CREDIT) {
+    if (isOutflowEntryType(contextualEntry.type)) {
         return { contextualEntry, fromEntry: contextualEntry, toEntry };
     }
 
     return { contextualEntry, fromEntry, toEntry: contextualEntry };
 };
 
-export const TransactionAmount = ({ transaction, accountId = null }: Props) => {
+export const TransactionAmount = ({ transaction: fullTransaction, accountId = null }: Props) => {
+    const statisticsCategoryIds = useContext(StatisticsCategoryIdsContext);
+    const transaction = selectStatisticsAmountTransaction(fullTransaction, statisticsCategoryIds);
     const { fromEntry, toEntry } = resolveDisplayEntries(transaction, accountId);
     const amountTestID = TransactionCardSelector.Amount(transaction.id);
 

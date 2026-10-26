@@ -3,15 +3,10 @@ import {
     RuleConditionFieldEnum,
     RuleConditionMatchTypeEnum,
     RuleConditionOperatorEnum,
-    TransactionAssociationEnum,
     TransactionEntityTable,
-    TransactionEntryAssociationEnum,
     TransactionEntryEntityTable,
-    TransactionEntryTypeEnum,
     TransactionRepository,
-    TransactionTypeEnum,
-    YIELD_TO_UI,
-    convertFromMicroUnits
+    YIELD_TO_UI
 } from '@budgie/contracts';
 import { SQL, and, or, sql } from 'drizzle-orm';
 import * as Arr from 'effect/Array';
@@ -23,6 +18,7 @@ import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/sha
 
 import { RULE_SET_BATCH_SIZE } from '../constant/batch-processing.constant';
 import { TransactionRuleRepository } from '../repository/transaction-rule.repository';
+import { convertTransactionForRuleEvaluation } from '../utils/convert-transaction-for-rule-evaluation.util';
 import { matchesRule } from '../utils/matches-rule.util';
 
 import type { RuleConditionInputInterface } from '../interface/rule-condition-input.interface';
@@ -41,49 +37,6 @@ export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@
         const transactionRuleRepository = yield* TransactionRuleRepository;
 
         const UNSUPPORTED_SQL_REGEX_TOKEN_PATTERN = /[\\^$.*+?()[\]{}|]/u;
-
-        const sumEntryAmountsOfType = (
-            entries: TransactionWithEntriesMccCategoryEntityInterface['entries'],
-            type: TransactionEntryTypeEnum
-        ): number => entries.filter(entry => entry.type === type).reduce((sum, entry) => sum + entry.amount, 0);
-
-        const calculateAmountForRuleEvaluation = (transaction: TransactionWithEntriesMccCategoryEntityInterface): number => {
-            const entries = transaction[TransactionAssociationEnum.ENTRIES];
-
-            switch (transaction.type) {
-                case TransactionTypeEnum.EXPENSE:
-                case TransactionTypeEnum.TRANSFER:
-                    return sumEntryAmountsOfType(entries, TransactionEntryTypeEnum.CREDIT);
-                case TransactionTypeEnum.INCOME:
-                    return sumEntryAmountsOfType(entries, TransactionEntryTypeEnum.DEBIT);
-                case TransactionTypeEnum.ADJUSTMENT:
-                    return entries.some(entry => entry.type === TransactionEntryTypeEnum.DEBIT)
-                        ? sumEntryAmountsOfType(entries, TransactionEntryTypeEnum.DEBIT)
-                        : sumEntryAmountsOfType(entries, TransactionEntryTypeEnum.CREDIT);
-                default:
-                    return 0;
-            }
-        };
-
-        const convertTransactionForRuleEvaluation = (
-            transaction: TransactionWithEntriesMccCategoryEntityInterface
-        ): RuleEvaluationInputInterface => {
-            const entries = transaction[TransactionAssociationEnum.ENTRIES];
-
-            return {
-                ...transaction,
-                amount: convertFromMicroUnits(calculateAmountForRuleEvaluation(transaction)),
-                tagIds: [],
-                entries: entries.map(entry => ({
-                    type: entry.type,
-                    categoryId: entry.categoryId,
-                    accountId: entry.accountId,
-                    amount: convertFromMicroUnits(entry.amount),
-                    mccCategoryId: entry[TransactionEntryAssociationEnum.MCC_CATEGORY]?.id ?? null,
-                    mccCode: entry[TransactionEntryAssociationEnum.MCC_CATEGORY]?.mcc ?? null
-                }))
-            };
-        };
 
         const filterMatchingIds = (
             transactions: TransactionWithEntriesMccCategoryEntityInterface[],
@@ -152,6 +105,7 @@ export class RuleMatcherService extends Context.Service<RuleMatcherService>()('@
                     return sql`COALESCE(${TransactionEntityTable.fromAccountId}, ${TransactionEntityTable.toAccountId})`;
                 case RuleConditionFieldEnum.MCC_CODE:
                     return sql`(SELECT ${MccCategoryEntityTable.mcc} FROM ${MccCategoryEntityTable} WHERE ${MccCategoryEntityTable.id} = ${TransactionEntryEntityTable.mccCategoryId})`;
+                case RuleConditionFieldEnum.AMOUNT:
                 default:
                     return null;
             }

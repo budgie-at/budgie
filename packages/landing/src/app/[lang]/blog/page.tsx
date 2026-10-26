@@ -51,7 +51,7 @@ export default async function BlogPage(props: PageLangParam) {
                 <BreadcrumbsJsonLd.Item name={i18n._(msg`Blog`)} path={`/${lang}/blog`} />
             </BreadcrumbsJsonLd>
             <section className="w-full py-20 md:py-32 overflow-hidden">
-                <div className="container px-4 md:px-6">
+                <div className="container">
                     <Motion className="text-center mb-12">
                         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
                             <Trans>Financial Privacy Blog & Insights</Trans>

@@ -1,0 +1,1 @@
+ALTER TABLE `accounts` ADD `is_external` integer DEFAULT false NOT NULL;

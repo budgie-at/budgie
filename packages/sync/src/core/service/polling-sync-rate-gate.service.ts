@@ -12,6 +12,7 @@ export class PollingSyncRateGate extends Context.Service<PollingSyncRateGate>()(
         let lastRequestReadyAtMs = 0;
 
         return {
+            requestReadyAtMs: (token: string) => Effect.sync(() => nextRequestAtMsByToken.get(token) ?? 0),
             waitForRequest: Effect.fn('PollingSyncRateGate.waitForRequest')(function* (token: string, deadlineAtMs: number) {
                 const nextRequestAtMs = nextRequestAtMsByToken.get(token) ?? 0;
                 const nowMs = yield* Clock.currentTimeMillis;
