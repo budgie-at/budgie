@@ -7,7 +7,7 @@ import {
     TransferCreationService
 } from '@budgie/ledger';
 import { getUnixTime } from 'date-fns/getUnixTime';
-import { subDays } from 'date-fns/subDays';
+import { subHours } from 'date-fns/subHours';
 import { subYears } from 'date-fns/subYears';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -62,7 +62,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
         const createOrUpdateSync = yield* makePollingSyncAccountSetup(provider);
         const transferChunkSize = 50;
         const sourceInputYieldInterval = 50;
-        const forwardOverlapDays = 1;
+        const forwardOverlapHours = 24;
         const fiatRefreshIntervalMs = 23 * 60 * 60 * 1000;
         const decodeCredentials = Schema.decodeUnknownEffect(Schema.fromJsonString(BinanceCredentialsSchema));
         const transferLookbackYears = 5;
@@ -86,7 +86,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             }
 
             if (isDefined(sync.forwardSyncedAt)) {
-                return subDays(sync.forwardSyncedAt, forwardOverlapDays);
+                return subHours(sync.forwardSyncedAt, forwardOverlapHours);
             }
 
             return subYears(sync.forwardSyncFromAt ?? new Date(), transferLookbackYears);
