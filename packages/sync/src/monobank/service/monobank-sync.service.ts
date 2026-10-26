@@ -32,6 +32,7 @@ import { isDefined, isEmptyArray, isNotEmptyArray, isNotEmptyString } from '@rnw
 import { UNKNOWN_SYNC_ERROR } from '../../core/constant/unknown-sync-error.constant';
 import { SyncAccountTypeEnum } from '../../core/enum/sync-account-type.enum';
 import { SyncHistoryDepthEnum } from '../../core/enum/sync-history-depth.enum';
+import { SyncNetworkError } from '../../core/error/sync-network.error';
 import { pollingSyncDependenciesLayer } from '../../core/layer/polling-sync-dependencies.layer';
 import { SyncWorkload } from '../../core/port/sync-workload.port';
 import { SyncBalanceReconciliationService } from '../../core/service/sync-balance-reconciliation.service';
@@ -298,6 +299,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
             accountType: AccountTypeEnum.BANK_SYNC,
             rateLimitMs: MONOBANK_RATE_LIMIT_MS,
             shouldRequestSyncWhenEnabled: true,
+            shouldKeepFailedSyncEnabledAfterError: error => error instanceof SyncNetworkError,
             generateAccountTitle,
             accountIcon: account => (account.type === SyncAccountTypeEnum.JAR ? UserIconNameEnum.PiggyBank : UserIconNameEnum.Landmark),
             executeSyncBatch: Effect.fn('MonobankSyncService.executeSyncBatch')(function* (sync: SyncEntityInterface, token: string) {
@@ -331,6 +333,12 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
 
         return {
             ...pollingSyncService,
+            updateAccountToken: Effect.fn('MonobankSyncService.updateAccountToken')(function* (accountId: number, token: string) {
+                yield* Db.transaction(
+                    Effect.andThen(pollingSyncService.updateAccountToken(accountId, token), syncRepository.recoverByAccountId(accountId))
+                );
+                yield* pollingSyncService.requestSync();
+            }),
             fetchAccountsPreview: Effect.fn('MonobankSyncService.fetchAccountsPreview')(function* (token: string) {
                 const bankAccounts = yield* fetchBankAccountsAndJars(token);
 

@@ -123,6 +123,13 @@ export class SyncRepository extends Context.Service<SyncRepository>()('@budgie/c
                         })
                         .where(eq(SyncEntityTable.accountId, accountId))
                 ),
+            recoverByAccountId: (accountId: number) =>
+                Db.query(db =>
+                    db
+                        .update(SyncEntityTable)
+                        .set({ enabled: true, status: SyncStatusEnum.IDLE, errorCount: 0, lastError: null })
+                        .where(eq(SyncEntityTable.accountId, accountId))
+                ),
             create: (input: SyncCreateEntityInterface) =>
                 Db.query(db => db.insert(SyncEntityTable).values([input]).returning()).pipe(Effect.map(([sync]) => sync)),
             getByAccountId: (accountId: number) =>

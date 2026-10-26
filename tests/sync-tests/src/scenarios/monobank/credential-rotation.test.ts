@@ -15,6 +15,7 @@ const SEPARATE_FORWARD_SYNC_FROM_AT = new Date('2026-04-03T10:00:00.000Z');
 
 interface ExpectedForwardSyncInterface {
     readonly errorCount: number;
+    readonly status: SyncStatusEnum;
     readonly forwardSyncFromAt: Date;
     readonly lastError: string | null;
 }
@@ -84,7 +85,7 @@ const expectForwardSync = (sync: SyncEntityInterface, expected: ExpectedForwardS
         errorCount: expected.errorCount,
         lastError: expected.lastError,
         mode: SyncModeEnum.FORWARD,
-        status: SyncStatusEnum.FAILED
+        status: expected.status
     });
     expect(sync.forwardSyncFromAt).toEqual(expected.forwardSyncFromAt);
     expect(sync.forwardSyncedAt).toBeNull();
@@ -115,16 +116,19 @@ describe('Monobank credential rotation', () => {
 
             expectForwardSync(yield* fetchSyncById(scenario.selectedSync.id), {
                 errorCount: 0,
+                status: SyncStatusEnum.IDLE,
                 forwardSyncFromAt: SELECTED_FORWARD_SYNC_FROM_AT,
                 lastError: null
             });
             expectForwardSync(yield* fetchSyncById(scenario.sharedSync.id), {
                 errorCount: 0,
+                status: SyncStatusEnum.FAILED,
                 forwardSyncFromAt: SHARED_FORWARD_SYNC_FROM_AT,
                 lastError: null
             });
             expectForwardSync(yield* fetchSyncById(scenario.separateSync.id), {
                 errorCount: 4,
+                status: SyncStatusEnum.FAILED,
                 forwardSyncFromAt: SEPARATE_FORWARD_SYNC_FROM_AT,
                 lastError: 'separate monobank failure'
             });
