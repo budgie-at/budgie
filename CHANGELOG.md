@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.116.3](https://github.com/budgie-at/budgie/compare/v6.116.2...v6.116.3) (2026-10-26)
+
+### Bug Fixes
+
+* **app:** fail the release build when stripping or re-signing a framework fails ([cc36ef5](https://github.com/budgie-at/budgie/commit/cc36ef5b3eda7ea331c4bd99358b7bd63eea5e21))
+
+### Performance Improvements
+
+* **app:** shrink the Android and iOS app size ([5de630f](https://github.com/budgie-at/budgie/commit/5de630fb686fd60df53349c06dfc40c884ff6f59))
+
+
 ## [6.116.2](https://github.com/budgie-at/budgie/compare/v6.116.1...v6.116.2) (2026-10-26)
 
 ### Bug Fixes
