@@ -1,3 +1,5 @@
+import { withPodfile } from 'expo/config-plugins';
+
 import rootPkg from './package.json';
 
 const APP_VARIANT = process.env.APP_VARIANT;
@@ -46,7 +48,42 @@ const getAppName = () => {
     return 'budgie';
 };
 
-export default ({ config }) => ({
+const StripEmbeddedFrameworksScriptPhase = `
+  script_phase name: 'Strip Embedded Frameworks', execution_position: :any, always_out_of_date: '1', script: <<~'SCRIPT'
+    if [ "$CONFIGURATION" != "Release" ]; then
+      exit 0
+    fi
+    for framework in "$TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH"/*.framework; do
+      binary="$framework/$(basename "$framework" .framework)"
+      if [ "$(basename "$framework")" = "hermesvm.framework" ] || [ ! -f "$binary" ]; then
+        continue
+      fi
+      xcrun strip -x "$binary"
+      if [ -n "$EXPANDED_CODE_SIGN_IDENTITY" ]; then
+        codesign --force --sign "$EXPANDED_CODE_SIGN_IDENTITY" --preserve-metadata=identifier,entitlements "$framework"
+      fi
+    done
+  SCRIPT
+
+  post_install do |installer|`;
+
+const AndroidProguardRules = `
+-dontwarn com.gemalto.jp2.**
+-keepnames class com.facebook.react.ReactRootView
+-keepnames class com.swmansion.rnscreens.Screen
+-keepclassmembers class com.qmdeve.blurview.base.BaseBlurView { boolean mForceRedraw; }
+-keepnames class com.facebook.react.uimanager.HasChildPressedStateDelay { *** setHasChildPressedStateDelay(java.lang.Boolean); }
+-keepnames class com.facebook.react.views.scroll.ReactNestedScrollView { *** getScrollEnabled(); }
+`;
+
+const withStrippedIosFrameworks = config =>
+    withPodfile(config, mod => {
+        mod.modResults.contents = mod.modResults.contents.replace('\n  post_install do |installer|', StripEmbeddedFrameworksScriptPhase);
+
+        return mod;
+    });
+
+const getExpoConfig = ({ config }) => ({
     ...config,
     name: getAppName(),
     slug: 'budgie',
@@ -122,7 +159,17 @@ export default ({ config }) => ({
             'expo-build-properties',
             {
                 useHermesV1: true,
-                ...(IS_PRODUCTION && { android: { buildArchs: ['armeabi-v7a', 'arm64-v8a'] } }),
+                android: {
+                    enableMinifyInReleaseBuilds: true,
+                    enableShrinkResourcesInReleaseBuilds: true,
+                    extraProguardRules: AndroidProguardRules,
+                    gifEnabled: false,
+                    webpEnabled: false,
+                    packagingOptions: {
+                        exclude: ['org/bouncycastle/pqc/**', 'org/bouncycastle/x509/**', 'org/apache/commons/codec/language/bm/**']
+                    },
+                    ...(IS_PRODUCTION && { buildArchs: ['armeabi-v7a', 'arm64-v8a'] })
+                },
                 ios: {
                     ccacheEnabled: true,
                     usePrecompiledModules: true
@@ -251,3 +298,5 @@ export default ({ config }) => ({
         policy: 'fingerprint'
     }
 });
+
+export default context => withStrippedIosFrameworks(getExpoConfig(context));
