@@ -1,4 +1,4 @@
-import { ExternalSourceEnum, SyncEntityTable, SyncRepository } from '@budgie/contracts';
+import { SyncEntityTable, SyncRepository } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { getTableName } from 'drizzle-orm';
 import * as Context from 'effect/Context';
@@ -19,10 +19,7 @@ export class BackgroundSyncSessionService extends Context.Service<BackgroundSync
             const reactivity = yield* Reactivity.Reactivity;
             const syncRepository = yield* SyncRepository;
 
-            const pendingBackwardSyncs = Effect.map(
-                Effect.forEach(Object.values(ExternalSourceEnum), provider => syncRepository.getPendingBackwardSync(provider)),
-                syncs => syncs.flat()
-            );
+            const pendingBackwardSyncs = syncRepository.getAllPendingBackwardSyncs();
 
             return {
                 start: Effect.fn('BackgroundSyncSessionService.start')(function* () {

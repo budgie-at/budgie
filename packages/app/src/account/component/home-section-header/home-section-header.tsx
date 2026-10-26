@@ -1,3 +1,5 @@
+import { resolveInitialSyncProgress } from '@budgie/sync';
+
 import { HomeAccountBalanceSummaryInterface } from '../../interface/home-account-balance-summary.interface';
 import { HomeSectionInterface } from '../../interface/home-section.interface';
 import { isBankProviderSection } from '../../type-guard/is-bank-provider-section.type-guard';
@@ -14,6 +16,7 @@ interface Props {
 export const HomeSectionHeader = ({ section, balanceSummary }: Props) => {
     if (isBankProviderSection(section)) {
         const total = balanceSummary.bankProviderTotals.get(section.integrationId) ?? 0;
+        const importProgress = resolveInitialSyncProgress(section.data.flatMap(row => [row.left.sync, row.right?.sync ?? null]));
 
         return (
             <BankProviderSectionHeader
@@ -22,6 +25,7 @@ export const HomeSectionHeader = ({ section, balanceSummary }: Props) => {
                 label={section.label}
                 groupNumber={section.groupNumber}
                 total={total}
+                importProgress={importProgress}
             />
         );
     }

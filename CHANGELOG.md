@@ -3,6 +3,44 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.117.0](https://github.com/budgie-at/budgie/compare/v6.116.4...v6.117.0) (2026-10-26)
+
+### Bug Fixes
+
+* **app:** show consolidated fee source rows as expenses ([6549c7d](https://github.com/budgie-at/budgie/commit/6549c7d7e59257c965e616a09fc20e644f1dbaf0)), closes [#1685](https://github.com/budgie-at/budgie/issues/1685)
+* treat fee entries as outflows wherever entry direction is displayed ([26dddc0](https://github.com/budgie-at/budgie/commit/26dddc0f0d100a5b01b230bf9968cbe26566ee5e))
+
+### Features
+
+* **app:** show Monobank initial sync progress ([239b1c9](https://github.com/budgie-at/budgie/commit/239b1c9cc624b35c3baf3934220afca2e4947607)), closes [#1629](https://github.com/budgie-at/budgie/issues/1629)
+* show initial history import progress inline per bank ([356ef48](https://github.com/budgie-at/budgie/commit/356ef48a389d1d854607632892118dee79c2c1f3))
+
+
+## [6.116.4](https://github.com/budgie-at/budgie/compare/v6.116.3...v6.116.4) (2026-10-26)
+
+### Bug Fixes
+
+* **app:** use the iMessage-style screen chrome bands and softer blur ([09cc4c9](https://github.com/budgie-at/budgie/commit/09cc4c9ebc8e55ed12fda783fad6eb57b2b33ab8))
+
+
+## [6.116.3](https://github.com/budgie-at/budgie/compare/v6.116.2...v6.116.3) (2026-10-26)
+
+### Bug Fixes
+
+* **app:** fail the release build when stripping or re-signing a framework fails ([cc36ef5](https://github.com/budgie-at/budgie/commit/cc36ef5b3eda7ea331c4bd99358b7bd63eea5e21))
+
+### Performance Improvements
+
+* **app:** shrink the Android and iOS app size ([5de630f](https://github.com/budgie-at/budgie/commit/5de630fb686fd60df53349c06dfc40c884ff6f59))
+
+
+## [6.116.2](https://github.com/budgie-at/budgie/compare/v6.116.1...v6.116.2) (2026-10-26)
+
+### Bug Fixes
+
+* **sync:** let paused Monobank accounts recover after failures ([c805058](https://github.com/budgie-at/budgie/commit/c805058afd339f5141b6151ebaee74a64d5116b3))
+
+
 ## [6.116.1](https://github.com/budgie-at/budgie/compare/v6.116.0...v6.116.1) (2026-10-26)
 
 ### Bug Fixes

@@ -5,6 +5,7 @@ import { Text, View } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { Icon } from '../../../@generic/component/icon/icon';
+import { ProgressTrack } from '../../../@generic/component/progress-track/progress-track';
 import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -13,7 +14,6 @@ import { DEBT_SETTLED_LABEL } from '../../constant/debt-settled-label.constant';
 import { getDebtProgressDisplayState } from '../../utils/get-debt-progress-display-state.util';
 import { DebtAccountBalanceSkeleton } from '../debt-account-balance-skeleton/debt-account-balance-skeleton';
 import { DebtAccountPaidOff } from '../debt-account-paid-off/debt-account-paid-off';
-import { DebtProgressTrack } from '../debt-progress-track/debt-progress-track';
 
 import { DebtAccountBalanceSelector } from './debt-account-balance.selector';
 
@@ -88,7 +88,7 @@ export const DebtAccountBalance = ({ accountId, debtType, instrumentSymbol, summ
                 {outstandingAmount}
             </ProtectedMoney>
 
-            <DebtProgressTrack percentage={percentage} className="h-2.5" />
+            <ProgressTrack percentage={percentage} className="h-2.5" />
 
             <View className="flex-row items-center justify-between">
                 <Text className="text-secondary-foreground text-sm" testID={DebtAccountBalanceSelector.PaidAmount(paidAmount)}>
