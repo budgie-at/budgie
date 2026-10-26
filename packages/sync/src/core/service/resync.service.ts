@@ -67,6 +67,7 @@ export class ResyncService extends Context.Service<ResyncService>()('@budgie/syn
                 const service = yield* syncProviderRegistryService.getServiceForAccount(accountId);
 
                 if (isDefined(service) && 'requestSync' in service) {
+                    yield* syncRepository.recoverByAccountId(accountId);
                     yield* service.requestSync();
                 }
             })

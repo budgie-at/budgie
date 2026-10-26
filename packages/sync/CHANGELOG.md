@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.116.1](https://github.com/budgie-at/budgie/compare/v6.116.0...v6.116.1) (2026-10-26)
+
+### Bug Fixes
+
+* **sync:** use a 24-hour duration for the binance forward sync overlap ([8e41f1d](https://github.com/budgie-at/budgie/commit/8e41f1da574c3242f5b90a5e9a13ddd2caabcfee))
+
+
+# [6.116.0](https://github.com/budgie-at/budgie/compare/v6.115.10...v6.116.0) (2026-10-26)
+
+### Features
+
+* external accounts, automatic card discovery and reissue merge ([#1672](https://github.com/budgie-at/budgie/issues/1672)) ([176b4ed](https://github.com/budgie-at/budgie/commit/176b4ed78e84d6f5eb52ddab517c867b0387e5cb)), closes [#1664](https://github.com/budgie-at/budgie/issues/1664) [#1666](https://github.com/budgie-at/budgie/issues/1666) [#1667](https://github.com/budgie-at/budgie/issues/1667)
+
+
+## [6.115.9](https://github.com/budgie-at/budgie/compare/v6.115.8...v6.115.9) (2026-10-25)
+
+**Note:** Version bump only for package @budgie/sync
+
+
+
+
+
 ## [6.115.8](https://github.com/budgie-at/budgie/compare/v6.115.7...v6.115.8) (2026-10-25)
 
 **Note:** Version bump only for package @budgie/sync

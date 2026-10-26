@@ -1,20 +1,20 @@
 import { InstrumentTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { Control, Controller, FieldPath, UseControllerReturn } from 'react-hook-form';
 
 import { CreateAccountScreenSelector } from '../../../account/component/create-account-screen/create-account-screen.selector';
 import { CurrencySelector } from '../currency-selector/currency-selector';
 import { FormItem } from '../form-item/form-item';
 
-interface Props<T extends { instrumentId: number }> {
-    readonly control: Control<T>;
+interface Props {
+    readonly value: number;
+    readonly onChange: (instrumentId: number) => void;
     readonly instrumentType?: InstrumentTypeEnum;
 }
 
-export const CreateAccountCurrencyField = <T extends { instrumentId: number }>({ control, instrumentType }: Props<T>) => {
+export const CreateAccountCurrencyField = ({ value, onChange, instrumentType }: Props) => {
     const { t } = useLingui();
 
-    const renderCurrencySelector = ({ field: { value, onChange } }: UseControllerReturn<T, FieldPath<T>>) => (
+    return (
         <FormItem label={t`Currency`}>
             <CurrencySelector
                 testID={CreateAccountScreenSelector.CurrencySelector}
@@ -24,6 +24,4 @@ export const CreateAccountCurrencyField = <T extends { instrumentId: number }>({
             />
         </FormItem>
     );
-
-    return <Controller control={control} name={'instrumentId' as FieldPath<T>} render={renderCurrencySelector} />;
 };

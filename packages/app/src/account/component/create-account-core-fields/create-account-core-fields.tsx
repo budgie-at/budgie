@@ -1,57 +1,45 @@
-import { UserIconType } from '@budgie/contracts';
 import { ReactNode } from 'react';
-import { Control } from 'react-hook-form';
 
 import { AccountDetailsField } from '../../../@generic/component/account-details-field/account-details-field';
 import { CreateAccountCurrencyField } from '../../../@generic/component/create-account-currency-field/create-account-currency-field';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { AccountFormBindingsInterface } from '../../interface/account-form-bindings.interface';
 import { AccountBalanceField } from '../account-balance-field/account-balance-field';
 import { CreateAccountScreenSelector } from '../create-account-screen/create-account-screen.selector';
 import { IncludeInNetWorthField } from '../include-in-net-worth-field/include-in-net-worth-field';
 
-interface Props<
-    T extends {
-        title: string;
-        icon: UserIconType;
-        instrumentId: number;
-        currentBalance: number;
-        includeInNetWorth?: boolean;
-    }
-> {
-    readonly control: Control<T>;
+interface Props {
+    readonly fields: Pick<AccountFormBindingsInterface, 'title' | 'icon' | 'currentBalance' | 'instrumentId' | 'includeInNetWorth'>;
     readonly variant: ColorPaletteVariant;
     readonly instrumentSymbol: string;
     readonly balanceFieldLabel?: string;
     readonly children?: ReactNode;
 }
 
-export const CreateAccountCoreFields = <
-    T extends {
-        title: string;
-        icon: UserIconType;
-        instrumentId: number;
-        currentBalance: number;
-        includeInNetWorth?: boolean;
-    }
->({
-    control,
-    variant,
-    instrumentSymbol,
-    balanceFieldLabel,
-    children
-}: Props<T>) => (
+export const CreateAccountCoreFields = ({ fields, variant, instrumentSymbol, balanceFieldLabel, children }: Props) => (
     <>
-        <AccountBalanceField variant={variant} instrumentSymbol={instrumentSymbol} control={control} label={balanceFieldLabel} />
+        <AccountBalanceField
+            variant={variant}
+            instrumentSymbol={instrumentSymbol}
+            value={fields.currentBalance.field.value}
+            onChange={fields.currentBalance.field.onChange}
+            label={balanceFieldLabel}
+        />
 
         <FormLayoutGroup>
-            <AccountDetailsField variant={variant} control={control} nameInputTestID={CreateAccountScreenSelector.NameInput} />
+            <AccountDetailsField
+                variant={variant}
+                titleBinding={fields.title}
+                iconBinding={fields.icon}
+                nameInputTestID={CreateAccountScreenSelector.NameInput}
+            />
 
-            <CreateAccountCurrencyField control={control} />
+            <CreateAccountCurrencyField value={fields.instrumentId.field.value} onChange={fields.instrumentId.field.onChange} />
 
             {children}
 
-            <IncludeInNetWorthField control={control} />
+            <IncludeInNetWorthField value={fields.includeInNetWorth.field.value} onChange={fields.includeInNetWorth.field.onChange} />
         </FormLayoutGroup>
     </>
 );

@@ -53,7 +53,7 @@ describe('monobank/backfill-token-rotation', () => {
             const accountLookup = vi.spyOn(accountRepository, 'findById').mockImplementation(accountId =>
                 Effect.gen(function* () {
                     lookupCount += 1;
-                    if (lookupCount === 3) {
+                    if (lookupCount === 4) {
                         yield* Deferred.succeed(batchLookupStarted, undefined);
                         yield* Deferred.await(releaseBatchLookup);
                     }

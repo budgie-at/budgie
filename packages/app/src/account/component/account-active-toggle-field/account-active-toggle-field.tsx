@@ -1,41 +1,37 @@
 import { useLingui } from '@lingui/react/macro';
-import { Control, Controller, FieldPath, FieldValues, Path, UseControllerReturn } from 'react-hook-form';
 import { Text } from 'react-native';
 
 import { HorizontalCell } from '../../../@generic/component/horizontal-cell/horizontal-cell';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { CreateAccountScreenSelector } from '../create-account-screen/create-account-screen.selector';
 
-interface Props<T extends FieldValues> {
-    readonly control: Control<T>;
+interface Props {
+    readonly value: boolean | undefined;
+    readonly onChange: (value: boolean) => void;
 }
 
-export const AccountActiveToggleField = <T extends { isActive?: boolean }>({ control }: Props<T>) => {
+export const AccountActiveToggleField = ({ value, onChange }: Props) => {
     const { t } = useLingui();
 
-    const renderField = ({ field: { value, onChange } }: UseControllerReturn<T, FieldPath<T>>) => {
-        const handlePress = () => void onChange(!(value as boolean));
+    const handlePress = () => void onChange(!value);
 
-        return (
-            <HorizontalCell
-                onPress={handlePress}
-                testID={CreateAccountScreenSelector.ActiveRow}
-                right={
-                    <ThemedSwitch
-                        className="my-auto"
-                        onValueChange={onChange}
-                        value={value}
-                        testID={CreateAccountScreenSelector.ActiveSwitch}
-                    />
-                }
-            >
-                <Text className="text-sm font-medium text-primary" testID={CreateAccountScreenSelector.ActiveTitle}>
-                    {t`Active`}
-                </Text>
-                <Text className="text-sm font-medium text-secondary-foreground">{t`Show this account on the main page`}</Text>
-            </HorizontalCell>
-        );
-    };
-
-    return <Controller control={control} name={'isActive' as Path<T>} render={renderField} />;
+    return (
+        <HorizontalCell
+            onPress={handlePress}
+            testID={CreateAccountScreenSelector.ActiveRow}
+            right={
+                <ThemedSwitch
+                    className="my-auto"
+                    onValueChange={onChange}
+                    value={value}
+                    testID={CreateAccountScreenSelector.ActiveSwitch}
+                />
+            }
+        >
+            <Text className="text-sm font-medium text-primary" testID={CreateAccountScreenSelector.ActiveTitle}>
+                {t`Active`}
+            </Text>
+            <Text className="text-sm font-medium text-secondary-foreground">{t`Show this account on the main page`}</Text>
+        </HorizontalCell>
+    );
 };

@@ -3,6 +3,7 @@ import { DebtAccountService } from '@budgie/ledger';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
+import { useController } from 'react-hook-form';
 import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -16,6 +17,7 @@ import { InstallmentPlanTotalField } from '../../../installment-plan/component/i
 import { InstallmentPlanUpdateFormSchema } from '../../../installment-plan/constant/installment-plan-update-form-schema.constant';
 import { useInstallmentPlanScheduleQuery } from '../../../installment-plan/query/use-installment-plan-schedule.query';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
+import { useAccountDetailsBindings } from '../../hooks/use-account-details-bindings.hook';
 import { useAccountEntityForm } from '../../hooks/use-account-entity-form.hook';
 import { IncludeInNetWorthField } from '../include-in-net-worth-field/include-in-net-worth-field';
 import { UpdateAccountPage } from '../update-account-page/update-account-page';
@@ -57,6 +59,15 @@ export const UpdateInstallmentPlanAccount = ({ account }: Props) => {
             )
     );
 
+    const fields = {
+        ...useAccountDetailsBindings(control, {
+            title: 'title',
+            icon: 'icon'
+        }),
+        isActive: useController({ control, name: 'isActive' }),
+        includeInNetWorth: useController({ control, name: 'includeInNetWorth' })
+    };
+
     if (!isDefined(stickyInstrument)) {
         return <EmptyScreen />;
     }
@@ -64,7 +75,7 @@ export const UpdateInstallmentPlanAccount = ({ account }: Props) => {
     return (
         <UpdateAccountPage
             account={account}
-            control={control}
+            fields={fields}
             onSubmit={handleSubmit}
             isSubmitting={isSubmitting}
             hero={
@@ -77,7 +88,7 @@ export const UpdateInstallmentPlanAccount = ({ account }: Props) => {
                 </View>
             }
         >
-            <IncludeInNetWorthField control={control} />
+            <IncludeInNetWorthField value={fields.includeInNetWorth.field.value} onChange={fields.includeInNetWorth.field.onChange} />
         </UpdateAccountPage>
     );
 };

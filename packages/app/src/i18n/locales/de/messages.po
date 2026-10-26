@@ -1026,6 +1026,7 @@ msgstr "Kann Stunden dauern"
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
 #: src/settings/components/sync-repairs-confirmation-card/sync-repairs-confirmation-card.tsx
 #: src/settings/components/truncate-data/truncate-data.tsx
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
@@ -1493,6 +1494,10 @@ msgstr "KI-Downloads konnten nicht geladen werden"
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "Could not load sources. Please try again."
 msgstr "Quellen konnten nicht geladen werden. Bitte erneut versuchen."
+
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "Could not mark account as external"
+msgstr "Konto konnte nicht als extern markiert werden"
 
 #: src/category/components/category-form/category-form.tsx
 msgid "Could not merge category"
@@ -2333,6 +2338,10 @@ msgstr "Alle Transaktionen in eine CSV-Datei exportieren"
 msgid "Export CSV"
 msgstr "CSV exportieren"
 
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "External account"
+msgstr "Externes Konto"
+
 #: src/app/(tabs)/settings/import.tsx
 msgid "External ID"
 msgstr "Externe ID"
@@ -2954,6 +2963,14 @@ msgstr "Manuell"
 #: src/app/(tabs)/settings/import.tsx
 msgid "Map CSV Columns"
 msgstr "CSV-Spalten zuordnen"
+
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "Mark as External?"
+msgstr "Als extern markieren?"
+
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "Mark External"
+msgstr "Als extern markieren"
 
 #: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
 msgid "Market cap"
@@ -4640,6 +4657,7 @@ msgstr "Synchronisationsdaten-Reparaturen"
 
 #: src/account/component/account-card-base/account-card-base.tsx
 #: src/sync/component/account-sync-card/account-sync-card.tsx
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Sync Failed"
 msgstr "Synchronisation fehlgeschlagen"
 
@@ -4763,6 +4781,10 @@ msgstr "Die Regel wurde gespeichert, aber keine vorhandenen Transaktionen musste
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "There is no \"forgot PIN\"."
 msgstr "Es gibt kein „PIN vergessen“."
+
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "This account will be archived and its transfers will become income and expenses on your other accounts. This cannot be undone."
+msgstr "Dieses Konto wird archiviert und seine Überweisungen werden zu Einnahmen und Ausgaben auf deinen anderen Konten. Dies kann nicht rückgängig gemacht werden."
 
 #: src/account/hooks/use-archive-account.hook.ts
 msgid "This account will be hidden from your main view and won't be included in totals. You can restore it anytime from Settings → Archived Accounts."

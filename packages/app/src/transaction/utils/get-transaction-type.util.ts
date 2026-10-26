@@ -10,18 +10,25 @@ import {
 export const getTransactionType = (
     transaction: TransactionWithRelationsEntityInterface
 ): TransactionTypeEnum.EXPENSE | TransactionTypeEnum.INCOME | TransactionTypeEnum.TRANSFER | TransactionTypeEnum.DEBT => {
-    switch (true) {
-        case isPositiveAdjustmentTransaction(transaction):
-            return TransactionTypeEnum.INCOME;
-        case isNegativeAdjustmentTransaction(transaction):
-            return TransactionTypeEnum.EXPENSE;
-        case isIncomeTransaction(transaction):
-            return TransactionTypeEnum.INCOME;
-        case isExpenseTransaction(transaction):
-            return TransactionTypeEnum.EXPENSE;
-        case transaction.type === TransactionTypeEnum.DEBT:
-            return TransactionTypeEnum.DEBT;
-        default:
-            return TransactionTypeEnum.TRANSFER;
+    if (isPositiveAdjustmentTransaction(transaction)) {
+        return TransactionTypeEnum.INCOME;
     }
+
+    if (isNegativeAdjustmentTransaction(transaction)) {
+        return TransactionTypeEnum.EXPENSE;
+    }
+
+    if (isIncomeTransaction(transaction)) {
+        return TransactionTypeEnum.INCOME;
+    }
+
+    if (isExpenseTransaction(transaction)) {
+        return TransactionTypeEnum.EXPENSE;
+    }
+
+    if (transaction.type === TransactionTypeEnum.DEBT) {
+        return TransactionTypeEnum.DEBT;
+    }
+
+    return TransactionTypeEnum.TRANSFER;
 };

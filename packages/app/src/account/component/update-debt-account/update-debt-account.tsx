@@ -2,6 +2,7 @@ import { AccountDebtTypeEnum, AccountEntityInterface, convertFromMicroUnits } fr
 import { DebtAccountService } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
+import { useController } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -9,6 +10,7 @@ import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-scre
 import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
+import { useAccountUpdateBindings } from '../../hooks/use-account-update-bindings.hook';
 import { useDebtAccountForm } from '../../hooks/use-debt-account-form.hook';
 import { useDebtAccountManualSettledAmountQuery } from '../../query/use-debt-account-manual-settled-amount.query';
 import { AccountFormDateField } from '../account-form-date-field/account-form-date-field';
@@ -40,12 +42,24 @@ export const UpdateDebtAccount = ({ account }: Props) => {
         isActive: account.isActive
     };
 
-    const { control, handleSubmit, instrument, isSubmitting } = useDebtAccountForm(initialValues, values =>
+    const { control, handleSubmit, instrument, debtType, isSubmitting } = useDebtAccountForm(initialValues, values =>
         appRuntime.runPromise(
             Effect.flatMap(DebtAccountService, debtAccountService => debtAccountService.updateDebtById(account.id, values))
         )
     );
 
+    const fields = {
+        ...useAccountUpdateBindings(control, {
+            title: 'title',
+            icon: 'icon',
+            currentBalance: 'currentBalance',
+            isActive: 'isActive',
+            includeInNetWorth: 'includeInNetWorth'
+        }),
+        targetBalance: useController({ control, name: 'targetBalance' }),
+        contactId: useController({ control, name: 'contactId' }),
+        deadline: useController({ control, name: 'deadline' })
+    };
     const stickyInstrument = useStickyDefinedValue(instrument);
     const isLentDebt = account.debtType === AccountDebtTypeEnum.LENT;
     const balanceFieldLabel = isLentDebt ? t`Already returned` : t`Already repaid`;
@@ -63,13 +77,22 @@ export const UpdateDebtAccount = ({ account }: Props) => {
             balanceFieldLabel={balanceFieldLabel}
             onSubmit={handleSubmit}
             account={account}
-            control={control}
+            fields={fields}
             isSubmitting={isSubmitting}
         >
-            <AccountTargetBalanceField control={control} instrumentSymbol={instrumentSymbol} label={debtAmountLabel} />
-            <DebtAccountContactField control={control} />
-            <AccountFormDateField control={control} variant={ACCOUNT_COLOR.DEBT} />
-            <IncludeInNetWorthField control={control} />
+            <AccountTargetBalanceField
+                value={fields.targetBalance.field.value}
+                onChange={fields.targetBalance.field.onChange}
+                instrumentSymbol={instrumentSymbol}
+                label={debtAmountLabel}
+            />
+            <DebtAccountContactField debtType={debtType} value={fields.contactId.field.value} onChange={fields.contactId.field.onChange} />
+            <AccountFormDateField
+                value={fields.deadline.field.value}
+                onChange={fields.deadline.field.onChange}
+                variant={ACCOUNT_COLOR.DEBT}
+            />
+            <IncludeInNetWorthField value={fields.includeInNetWorth.field.value} onChange={fields.includeInNetWorth.field.onChange} />
         </UpdateAccountScreen>
     );
 };

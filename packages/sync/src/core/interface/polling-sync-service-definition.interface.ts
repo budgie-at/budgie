@@ -24,5 +24,6 @@ export interface PollingSyncServiceDefinitionInterface extends SyncServiceDefini
     readonly validateToken?: (token: string) => Effect.Effect<unknown, Schema.SchemaError>;
     readonly isRetryableError?: (error: unknown) => boolean;
     readonly isCredentialWideError?: (error: unknown) => boolean;
+    readonly shouldKeepFailedSyncEnabledAfterError?: (error: unknown) => boolean;
     readonly shouldKeepSyncsEnabledAfterError?: (error: unknown) => boolean;
 }

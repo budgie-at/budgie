@@ -1027,6 +1027,7 @@ msgstr "Can take hours"
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
 #: src/settings/components/sync-repairs-confirmation-card/sync-repairs-confirmation-card.tsx
 #: src/settings/components/truncate-data/truncate-data.tsx
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
@@ -1494,6 +1495,10 @@ msgstr "Could not load AI downloads"
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "Could not load sources. Please try again."
 msgstr "Could not load sources. Please try again."
+
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "Could not mark account as external"
+msgstr "Could not mark account as external"
 
 #: src/category/components/category-form/category-form.tsx
 msgid "Could not merge category"
@@ -2334,6 +2339,10 @@ msgstr "Export all transactions to a CSV file"
 msgid "Export CSV"
 msgstr "Export CSV"
 
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "External account"
+msgstr "External account"
+
 #: src/app/(tabs)/settings/import.tsx
 msgid "External ID"
 msgstr "External ID"
@@ -2955,6 +2964,14 @@ msgstr "Manual"
 #: src/app/(tabs)/settings/import.tsx
 msgid "Map CSV Columns"
 msgstr "Map CSV Columns"
+
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "Mark as External?"
+msgstr "Mark as External?"
+
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "Mark External"
+msgstr "Mark External"
 
 #: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
 msgid "Market cap"
@@ -4641,6 +4658,7 @@ msgstr "Sync data repairs"
 
 #: src/account/component/account-card-base/account-card-base.tsx
 #: src/sync/component/account-sync-card/account-sync-card.tsx
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Sync Failed"
 msgstr "Sync Failed"
 
@@ -4764,6 +4782,10 @@ msgstr "The rule was saved but no existing transactions needed updating."
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "There is no \"forgot PIN\"."
 msgstr "There is no \"forgot PIN\"."
+
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "This account will be archived and its transfers will become income and expenses on your other accounts. This cannot be undone."
+msgstr "This account will be archived and its transfers will become income and expenses on your other accounts. This cannot be undone."
 
 #: src/account/hooks/use-archive-account.hook.ts
 msgid "This account will be hidden from your main view and won't be included in totals. You can restore it anytime from Settings → Archived Accounts."
