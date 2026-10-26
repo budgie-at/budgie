@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.116.1](https://github.com/budgie-at/budgie/compare/v6.116.0...v6.116.1) (2026-10-26)
+
+### Bug Fixes
+
+* **app:** hash autolinked gradle plugin sources in the native fingerprint ([059a898](https://github.com/budgie-at/budgie/commit/059a898697f4087fa1a6bc6a34b9ec2dc6883ab1))
+* **app:** hash library native sources in the native fingerprint ([498b304](https://github.com/budgie-at/budgie/commit/498b3046c4d26813fb2fc80af51159ef4d77899f))
+
+
 # [6.116.0](https://github.com/budgie-at/budgie/compare/v6.115.10...v6.116.0) (2026-10-26)
 
 ### Features

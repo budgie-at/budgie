@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.116.1](https://github.com/budgie-at/budgie/compare/v6.116.0...v6.116.1) (2026-10-26)
+
+### Bug Fixes
+
+* **sync:** use a 24-hour duration for the binance forward sync overlap ([8e41f1d](https://github.com/budgie-at/budgie/commit/8e41f1da574c3242f5b90a5e9a13ddd2caabcfee))
+
+
 # [6.116.0](https://github.com/budgie-at/budgie/compare/v6.115.10...v6.116.0) (2026-10-26)
 
 ### Features
