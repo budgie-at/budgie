@@ -10,6 +10,12 @@ on:
     push:
         branches: [scratch/cache-bench-401]
     workflow_dispatch:
+        inputs:
+            arm:
+                description: github = GitHub's Actions cache; lan = the node's LAN cache (tart-runner-fleet ADR 0078)
+                type: choice
+                options: [lan, github]
+                default: lan
 
 permissions:
     contents: read
@@ -23,12 +29,16 @@ jobs:
         name: Code quality checks (cache bench)
         runs-on: [self-hosted, trf-linux-amd64-4x8]
         timeout-minutes: 60
+        env:
+            ACTIONS_RESULTS_URL: ${{ inputs.arm == 'github' && 'https://results-receiver.actions.githubusercontent.com/' || 'http://host.containers.internal:3017/' }}
         steps:
             - name: Describe the guest
+              env:
+                  BENCH_ARM: ${{ inputs.arm || 'lan' }}
               run: |
                   echo "runner=$RUNNER_NAME"
                   echo "host-ip=$(hostname -I 2>/dev/null || ip -4 -o addr show scope global | awk '{print $4}')"
-                  echo "results-url-overridden=${ACTIONS_RESULTS_URL:+yes}"
+                  echo "arm=${BENCH_ARM} results-url=${ACTIONS_RESULTS_URL}"
                   command -v zstd || echo 'zstd: absent'
 
             - name: Checkout repository
@@ -52,8 +62,8 @@ jobs:
               uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
               with:
                   path: ${{ steps.pnpm-store.outputs.path }}
-                  key: bench401-pnpm-${{ github.run_id }}-${{ github.run_attempt }}
-                  restore-keys: bench401-pnpm-
+                  key: bench401-${{ inputs.arm || 'lan' }}-pnpm-${{ github.run_id }}-${{ github.run_attempt }}
+                  restore-keys: bench401-${{ inputs.arm || 'lan' }}-pnpm-
 
             - name: Install dependencies
               run: pnpm install --frozen-lockfile
@@ -62,7 +72,7 @@ jobs:
               uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
               with:
                   path: ${{ steps.pnpm-store.outputs.path }}
-                  key: bench401-pnpm-${{ github.run_id }}-${{ github.run_attempt }}
+                  key: bench401-${{ inputs.arm || 'lan' }}-pnpm-${{ github.run_id }}-${{ github.run_attempt }}
 
             - name: Lingui catalogs are up to date
               run: pnpm i18n:check
