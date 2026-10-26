@@ -55,6 +55,8 @@ export { ResyncService } from './core/service/resync.service';
 export { SyncOperationMetadataService } from './core/service/sync-operation-metadata.service';
 export { SyncProviderRegistryService } from './core/service/sync-provider-registry.service';
 export { SyncRepairService } from './core/service/sync-repair.service';
+export { ExternalAccountService } from './core/service/external-account.service';
+export { AccountReissueMergeService } from './core/service/account-reissue-merge.service';
 export { SyncBalanceReconciliationService } from './core/service/sync-balance-reconciliation.service';
 export { AtmCashMoveService } from './core/service/atm-cash-move.service';
 export { TransferConsolidationDrainerService } from './core/service/transfer-consolidation-drainer.service';

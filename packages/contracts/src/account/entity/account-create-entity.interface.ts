@@ -20,4 +20,5 @@ export type AccountCreateEntityInterface = PartialByKeysType<
     | 'integrationId'
     | 'includeInNetWorth'
     | 'isActive'
+    | 'isExternal'
 >;

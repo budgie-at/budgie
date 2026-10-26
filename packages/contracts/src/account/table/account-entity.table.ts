@@ -51,7 +51,8 @@ export const AccountEntityTable = sqliteTable(
         integrationId: int('integration_id', { mode: 'number' }).references(() => BankIntegrationEntityTable.id, { onDelete: 'set null' }),
         iban: text('iban'),
         includeInNetWorth: int('include_in_net_worth', { mode: 'boolean' }).default(true).notNull(),
-        isActive: int('is_active', { mode: 'boolean' }).default(true).notNull()
+        isActive: int('is_active', { mode: 'boolean' }).default(true).notNull(),
+        isExternal: int('is_external', { mode: 'boolean' }).default(false).notNull()
     }),
     table => [
         index('accounts_iban_active_idx')
