@@ -69,7 +69,7 @@ msgstr "{accountTitle} буде відновлено у вашому голов�
 msgid "{applied, plural, one {# matching transaction updated} other {# matching transactions updated}}"
 msgstr "{applied, plural, one {# відповідну транзакцію оновлено} other {# відповідних транзакцій оновлено}}"
 
-#: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
+#: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "{approxTransactions, plural, one {~# transaction} other {~# transactions}}"
 msgstr "{approxTransactions, plural, one {~# транзакція} few {~# транзакції} many {~# транзакцій} other {~# транзакції}}"
 
@@ -77,7 +77,7 @@ msgstr "{approxTransactions, plural, one {~# транзакція} few {~# тр�
 msgid "{availableCount, plural, one {# column available} other {# columns available}}"
 msgstr "{availableCount, plural, one {# стовпець доступний} few {# стовпці доступні} many {# стовпців доступні} other {# стовпця доступні}}"
 
-#: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
+#: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "{categoriesCount, plural, one {# category} other {# categories}}"
 msgstr "{categoriesCount, plural, one {# категорія} few {# категорії} many {# категорій} other {# категорії}}"
 
@@ -228,6 +228,7 @@ msgid "{minutesLeft, plural, one {About # minute left on Wi-Fi} other {About # m
 msgstr "{minutesLeft, plural, one {Залишилася приблизно # хвилина у Wi-Fi} few {Залишилося приблизно # хвилини у Wi-Fi} many {Залишилося приблизно # хвилин у Wi-Fi} other {Залишилося приблизно # хвилини у Wi-Fi}}"
 
 #: src/ai/component/ai-download-eta/ai-download-eta.tsx
+#: src/sync/component/sync-import-progress/sync-import-progress.tsx
 msgid "{minutesLeft, plural, one {About # minute left} other {About # minutes left}}"
 msgstr "{minutesLeft, plural, one {Залишилася приблизно # хвилина} few {Залишилося приблизно # хвилини} many {Залишилося приблизно # хвилин} other {Залишилося приблизно # хвилини}}"
 
@@ -235,7 +236,7 @@ msgstr "{minutesLeft, plural, one {Залишилася приблизно # х�
 msgid "{monobankAccountCount, plural, one {# account. Balances come straight from the bank.} other {# accounts. Balances come straight from the bank.}}"
 msgstr "{monobankAccountCount, plural, one {# рахунок. Баланси надходять безпосередньо з банку.} few {# рахунки. Баланси надходять безпосередньо з банку.} many {# рахунків. Баланси надходять безпосередньо з банку.} other {# рахунку. Баланси надходять безпосередньо з банку.}}"
 
-#: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
+#: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "{months, plural, one {# month} other {# months}}"
 msgstr "{months, plural, one {# місяць} few {# місяці} many {# місяців} other {# місяця}}"
 
@@ -799,6 +800,10 @@ msgstr "Автоматична синхронізація рахунків та 
 msgid "Available Columns"
 msgstr "Доступні стовпці"
 
+#: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
+msgid "Available once the import finishes"
+msgstr "Стане доступним після завершення імпорту"
+
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "Average"
 msgstr "Середнє"
@@ -865,7 +870,7 @@ msgstr "Базову валюту не знайдено"
 msgid "Based on your last {monthsUsed} months"
 msgstr "За останні {monthsUsed} місяців"
 
-#: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
+#: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "Based on your recent spending"
 msgstr "На основі ваших нещодавніх витрат"
 
@@ -2649,6 +2654,14 @@ msgstr "Імпортувати транзакції з CSV файлу"
 msgid "Importing a database will replace all current data. The app will restart after import. This action cannot be undone."
 msgstr "Імпорт бази даних замінить усі поточні дані. Додаток перезапуститься після імпорту. Цю дію неможливо скасувати."
 
+#: src/sync/component/sync-import-progress/sync-import-progress.tsx
+msgid "Importing history · {percent}%"
+msgstr "Імпортуємо історію · {percent}%"
+
+#: src/sync/component/sync-import-progress/sync-import-progress.tsx
+msgid "Importing history…"
+msgstr "Імпортуємо історію…"
+
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "in"
 msgstr "в"
@@ -3380,6 +3393,10 @@ msgstr "Немає"
 #: src/settings/components/default-account-selector/default-account-selector.tsx
 msgid "None selected"
 msgstr "Нічого не вибрано"
+
+#: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
+msgid "Not all of your bank history is imported yet"
+msgstr "Ще не вся історія з банку імпортована"
 
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "not contains"
@@ -4596,7 +4613,7 @@ msgid "Subscriptions"
 msgstr "Підписки"
 
 #: src/app/icon-selector.tsx
-#: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
+#: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "Suggested"
 msgstr "Запропоновані"
 

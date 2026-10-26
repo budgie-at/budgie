@@ -50,6 +50,8 @@ export { SyncWorkload } from './core/port/sync-workload.port';
 export { TransferConsolidationWorkload } from './core/port/transfer-consolidation-workload.port';
 export { SyncFileReader } from './core/port/sync-file-reader.port';
 export { SYNC_PROVIDER_CAPABILITIES } from './core/constant/sync-provider-capabilities.constant';
+export { resolveInitialSyncProgress } from './core/utils/resolve-initial-sync-progress.util';
+export type { InitialSyncProgressInterface } from './core/interface/initial-sync-progress.interface';
 export { SyncHistoryDepthEnum } from './core/enum/sync-history-depth.enum';
 export { ResyncService } from './core/service/resync.service';
 export { SyncOperationMetadataService } from './core/service/sync-operation-metadata.service';
