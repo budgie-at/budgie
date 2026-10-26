@@ -11,6 +11,8 @@ import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { WalletCaptureReviewReasonEnum } from '../../enum/wallet-capture-review-reason.enum';
+import { WalletCaptureReviewDetailRow } from '../wallet-capture-review-detail-row/wallet-capture-review-detail-row';
+import { WalletCaptureReviewReasonIcon } from '../wallet-capture-review-reason-icon/wallet-capture-review-reason-icon';
 
 import { WalletCaptureReviewCardSelector } from './wallet-capture-review-card.selector';
 
@@ -60,18 +62,24 @@ export const WalletCaptureReviewCard = ({ item, accountTitle, instrumentSymbol, 
     };
 
     return (
-        <Card testID={WalletCaptureReviewCardSelector.Card(capture.captureId)} className="gap-y-3xl">
-            <View className="gap-y-xs">
-                <Text className="text-primary text-base font-semibold">{merchant}</Text>
-                <Text className="text-primary text-xl font-semibold">{amount}</Text>
-                <Text className="text-secondary-foreground text-sm">{formatDayAndMonthAndYearWithTime(capture.capturedAt)}</Text>
+        <Card testID={WalletCaptureReviewCardSelector.Card(capture.captureId)} size="md" className="gap-y-xl">
+            <View className="flex-row items-center gap-x-xl">
+                <WalletCaptureReviewReasonIcon reason={reason} />
+                <View className="flex-1 gap-y-xxs">
+                    <Text className="text-primary text-base font-semibold" numberOfLines={1}>
+                        {merchant}
+                    </Text>
+                    <Text className="text-secondary-foreground text-xs">{formatDayAndMonthAndYearWithTime(capture.capturedAt)}</Text>
+                </View>
+                <Text className="text-primary text-lg font-semibold">{amount}</Text>
             </View>
 
-            <View className="gap-y-xs">
-                <Text className="text-secondary-foreground text-sm">{t`Account: ${accountTitle}`}</Text>
-                <Text className="text-secondary-foreground text-sm">{t`Card: ${cardNameText}`}</Text>
-                <Text className="text-secondary-foreground text-sm">{reasonText}</Text>
+            <View className="rounded-3xl border border-secondary-corner bg-ghost-background px-xl py-lg gap-y-sm">
+                <WalletCaptureReviewDetailRow label={t`Account`} value={accountTitle} />
+                <WalletCaptureReviewDetailRow label={t`Card`} value={cardNameText} />
             </View>
+
+            <Text className="text-secondary-foreground text-sm">{reasonText}</Text>
 
             {isDefined(duplicateTransactionId) ? (
                 <Button

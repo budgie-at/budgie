@@ -449,6 +449,7 @@ msgstr "About a minute"
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/components/transaction-account-row/transaction-account-row.tsx
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
+#: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "Account"
 msgstr "Account"
 
@@ -494,10 +495,6 @@ msgstr "Account Sync"
 #: src/account/component/update-liability-account/update-liability-account.tsx
 msgid "Account Type"
 msgstr "Account Type"
-
-#: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
-msgid "Account: {accountTitle}"
-msgstr "Account: {accountTitle}"
 
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
 msgid "Accounts"
@@ -582,8 +579,8 @@ msgid "Add balances later"
 msgstr "Add balances later"
 
 #: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
-msgid "Add Budgie's Capture Apple Pay transaction action and set Amount, Merchant and Card from the Shortcut Input."
-msgstr "Add Budgie's Capture Apple Pay transaction action and set Amount, Merchant and Card from the Shortcut Input."
+msgid "Add Capture Apple Pay transaction and set Amount, Merchant and Card from the Shortcut Input."
+msgstr "Add Capture Apple Pay transaction and set Amount, Merchant and Card from the Shortcut Input."
 
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
 msgid "Add category"
@@ -608,6 +605,10 @@ msgstr "Add tags"
 #: src/categorize-inbox/components/categorize-inbox-follow-up-button/categorize-inbox-follow-up-button.tsx
 msgid "Add tags to these transactions"
 msgstr "Add tags to these transactions"
+
+#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
+msgid "Add the Budgie action"
+msgstr "Add the Budgie action"
 
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add your first account to start tracking your finances"
@@ -951,6 +952,7 @@ msgstr "Budget limit reached"
 
 #: src/app/(tabs)/settings/index.tsx
 #: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
+#: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
 msgid "Budgie"
 msgstr "Budgie"
 
@@ -990,6 +992,10 @@ msgstr "Budgie has no exchange rate for this payment currency yet."
 msgid "Budgie hit an unexpected problem. You can restart the app or report the issue so we can investigate."
 msgstr "Budgie hit an unexpected problem. You can restart the app or report the issue so we can investigate."
 
+#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
+msgid "Budgie picks the account from the card name, so one automation covers all your cards."
+msgstr "Budgie picks the account from the card name, so one automation covers all your cards."
+
 #: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
 msgid "Budgie picks the account from the card name, then your default account. Name the account like the card, or set the optional Account field in the action to pin one."
 msgstr "Budgie picks the account from the card name, then your default account. Name the account like the card, or set the optional Account field in the action to pin one."
@@ -1001,6 +1007,10 @@ msgstr "Budgie re-encrypts {DB_NAME} ({fileSize}) on this phone. It takes a few 
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Budgie reads these statements on this phone."
 msgstr "Budgie reads these statements on this phone."
+
+#: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
+msgid "Budgie records Apple Pay payments the moment you tap, through a Shortcuts automation."
+msgstr "Budgie records Apple Pay payments the moment you tap, through a Shortcuts automation."
 
 #: src/auth/hook/use-pin-authentication.hook.ts
 msgid "Budgie restarted, so it needs your PIN once before {biometricName} works again."
@@ -1082,8 +1092,8 @@ msgid "Captures new eligible Apple Pay taps. It cannot import Wallet history or 
 msgstr "Captures new eligible Apple Pay taps. It cannot import Wallet history or final bank settlement changes."
 
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
-msgid "Card: {cardNameText}"
-msgstr "Card: {cardNameText}"
+msgid "Card"
+msgstr "Card"
 
 #: src/account/constant/account-type.constant.ts
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
@@ -1558,7 +1568,7 @@ msgstr "Could not move withdrawals to cash"
 msgid "Could not open GitHub"
 msgstr "Could not open GitHub"
 
-#: src/app/(tabs)/settings/apple-pay-capture.tsx
+#: src/wallet-capture/component/apple-pay-capture-instructions-button/apple-pay-capture-instructions-button.tsx
 msgid "Could not open instructions"
 msgstr "Could not open instructions"
 
@@ -1731,10 +1741,6 @@ msgstr "Create a debt account first."
 msgid "Create a new System-generated API key"
 msgstr "Create a new System-generated API key"
 
-#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
-msgid "Create a personal automation in Shortcuts with the Transaction trigger, select your cards and choose Run Immediately."
-msgstr "Create a personal automation in Shortcuts with the Transaction trigger, select your cards and choose Run Immediately."
-
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Create a PIN"
 msgstr "Create a PIN"
@@ -1755,6 +1761,10 @@ msgstr "Create a tag"
 #: src/app/transaction-account-filter.tsx
 msgid "Create Accounts"
 msgstr "Create Accounts"
+
+#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
+msgid "Create an automation"
+msgstr "Create an automation"
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Create and copy the personal token"
@@ -2330,6 +2340,10 @@ msgstr "Erste Bank (PDF)"
 msgid "Every account from this bank is already linked."
 msgstr "Every account from this bank is already linked."
 
+#: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
+msgid "Every tap, recorded"
+msgstr "Every tap, recorded"
+
 #: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
 msgid "Every transaction has a category."
 msgstr "Every transaction has a category."
@@ -2721,6 +2735,10 @@ msgstr "in"
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "In List"
 msgstr "In List"
+
+#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
+msgid "In Shortcuts, add a personal automation with the Transaction trigger, select your cards and choose Run Immediately."
+msgstr "In Shortcuts, add a personal automation with the Transaction trigger, select your cards and choose Run Immediately."
 
 #: src/account/component/account-inactive-icon/account-inactive-icon.tsx
 msgid "Inactive"
@@ -3565,6 +3583,10 @@ msgstr "Only income transactions can be converted"
 msgid "Only me, with a PIN"
 msgstr "Only me, with a PIN"
 
+#: src/wallet-capture/component/apple-pay-capture-history-notice/apple-pay-capture-history-notice.tsx
+msgid "Only new taps"
+msgstr "Only new taps"
+
 #: ../ledger/src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only single-entry expenses can be converted"
 msgstr "Only single-entry expenses can be converted"
@@ -4215,8 +4237,8 @@ msgid "Save fee"
 msgstr "Save fee"
 
 #: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
-msgid "Save the automation."
-msgstr "Save the automation."
+msgid "Save it"
+msgstr "Save it"
 
 #: src/account/constant/account-type.constant.ts
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
@@ -4500,6 +4522,10 @@ msgstr "Settings"
 msgid "Setup"
 msgstr "Setup"
 
+#: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
+msgid "Shortcuts"
+msgstr "Shortcuts"
+
 #: src/wallet-capture/component/apple-pay-capture-open-shortcuts-button/apple-pay-capture-open-shortcuts-button.tsx
 msgid "Shortcuts is not available on this device."
 msgstr "Shortcuts is not available on this device."
@@ -4658,6 +4684,10 @@ msgstr "Starting up AI…"
 msgid "Statement imported"
 msgstr "Statement imported"
 
+#: src/wallet-capture/component/apple-pay-capture-setup-row/apple-pay-capture-setup-row.tsx
+msgid "Step {stepNumber}"
+msgstr "Step {stepNumber}"
+
 #: src/account/constant/account-type.constant.ts
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "Stocks"
@@ -4776,6 +4806,10 @@ msgstr "Tags ({selectedTagsCount})"
 #: src/tag/components/tags-settings-feature-intro/tags-settings-feature-intro.tsx
 msgid "Tags cut across categories — track a trip, a project or a person and see the true total."
 msgstr "Tags cut across categories — track a trip, a project or a person and see the true total."
+
+#: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
+msgid "Tap"
+msgstr "Tap"
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Tap \"Get API Key\" above and sign in to Binance"
@@ -5358,7 +5392,7 @@ msgstr "View and restore archived accounts"
 msgid "View source transactions"
 msgstr "View source transactions"
 
-#: src/app/(tabs)/settings/apple-pay-capture.tsx
+#: src/wallet-capture/component/apple-pay-capture-instructions-button/apple-pay-capture-instructions-button.tsx
 msgid "View step-by-step instructions"
 msgstr "View step-by-step instructions"
 
@@ -5381,10 +5415,6 @@ msgstr "Waiting for a connection"
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "Waiting for a key"
 msgstr "Waiting for a key"
-
-#: src/wallet-capture/component/apple-pay-capture-history-notice/apple-pay-capture-history-notice.tsx
-msgid "Wallet history is not available"
-msgstr "Wallet history is not available"
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Warning"

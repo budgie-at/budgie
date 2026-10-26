@@ -14,7 +14,6 @@ appId: ${APP_ID}
           id: 'ApplePayCaptureSettings.Container'
       timeout: 10000
 - assertVisible: 'Apple Pay capture'
-- assertVisible: '.*Wallet history.*'
 - scrollUntilVisible:
       element:
           id: 'ApplePayCaptureSettings.OpenShortcutsButton'
@@ -24,3 +23,8 @@ appId: ${APP_ID}
       id: 'ApplePayCaptureSettings.OpenShortcutsButton'
 - assertVisible:
       id: 'ApplePayCaptureSettings.InstructionsGuideLink'
+- scrollUntilVisible:
+      element: '.*Wallet history.*'
+      direction: DOWN
+      centerElement: true
+- assertVisible: '.*Wallet history.*'

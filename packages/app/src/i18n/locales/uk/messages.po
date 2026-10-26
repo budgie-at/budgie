@@ -448,6 +448,7 @@ msgstr "Близько хвилини"
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/components/transaction-account-row/transaction-account-row.tsx
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
+#: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "Account"
 msgstr "Рахунок"
 
@@ -493,10 +494,6 @@ msgstr "Синхронізація рахунків"
 #: src/account/component/update-liability-account/update-liability-account.tsx
 msgid "Account Type"
 msgstr "Тип рахунку"
-
-#: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
-msgid "Account: {accountTitle}"
-msgstr "Рахунок: {accountTitle}"
 
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
 msgid "Accounts"
@@ -581,8 +578,8 @@ msgid "Add balances later"
 msgstr "Додати баланси пізніше"
 
 #: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
-msgid "Add Budgie's Capture Apple Pay transaction action and set Amount, Merchant and Card from the Shortcut Input."
-msgstr "Додай дію Budgie «Capture Apple Pay transaction» і встанови Суму, Продавця та Картку зі вхідних даних команди."
+msgid "Add Capture Apple Pay transaction and set Amount, Merchant and Card from the Shortcut Input."
+msgstr "Додайте Capture Apple Pay transaction і задайте Суму, Продавця та Картку з вхідних даних швидкої команди."
 
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
 msgid "Add category"
@@ -607,6 +604,10 @@ msgstr "Додати теги"
 #: src/categorize-inbox/components/categorize-inbox-follow-up-button/categorize-inbox-follow-up-button.tsx
 msgid "Add tags to these transactions"
 msgstr "Додати теги до цих транзакцій"
+
+#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
+msgid "Add the Budgie action"
+msgstr "Додайте дію Budgie"
 
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add your first account to start tracking your finances"
@@ -950,6 +951,7 @@ msgstr "Ліміт бюджету досягнуто"
 
 #: src/app/(tabs)/settings/index.tsx
 #: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
+#: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
 msgid "Budgie"
 msgstr "Budgie"
 
@@ -989,6 +991,10 @@ msgstr "Budgie ще не має курсу для валюти цього пла
 msgid "Budgie hit an unexpected problem. You can restart the app or report the issue so we can investigate."
 msgstr "Budgie зіткнувся з неочікуваною проблемою. Ви можете перезапустити застосунок або повідомити про проблему, щоб ми її дослідили."
 
+#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
+msgid "Budgie picks the account from the card name, so one automation covers all your cards."
+msgstr "Budgie обирає рахунок за назвою картки, тож одна автоматизація охоплює всі ваші картки."
+
 #: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
 msgid "Budgie picks the account from the card name, then your default account. Name the account like the card, or set the optional Account field in the action to pin one."
 msgstr "Budgie обирає рахунок за назвою картки, а потім за рахунком за замовчуванням. Назви рахунок так само, як картку, або закріпи рахунок необов'язковим полем «Рахунок» у дії."
@@ -1000,6 +1006,10 @@ msgstr "Budgie перешифровує {DB_NAME} ({fileSize}) на цьому �
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Budgie reads these statements on this phone."
 msgstr "Budgie читає ці виписки на цьому телефоні."
+
+#: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
+msgid "Budgie records Apple Pay payments the moment you tap, through a Shortcuts automation."
+msgstr "Budgie записує платежі Apple Pay щойно ви прикладаєте пристрій — через автоматизацію в Швидких командах."
 
 #: src/auth/hook/use-pin-authentication.hook.ts
 msgid "Budgie restarted, so it needs your PIN once before {biometricName} works again."
@@ -1081,8 +1091,8 @@ msgid "Captures new eligible Apple Pay taps. It cannot import Wallet history or 
 msgstr "Зберігає нові відповідні оплати через Apple Pay. Історію Wallet та остаточні зміни банківського розрахунку імпортувати неможливо."
 
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
-msgid "Card: {cardNameText}"
-msgstr "Картка: {cardNameText}"
+msgid "Card"
+msgstr "Картка"
 
 #: src/account/constant/account-type.constant.ts
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
@@ -1557,7 +1567,7 @@ msgstr "Не вдалося перенести зняття в готівку"
 msgid "Could not open GitHub"
 msgstr "Не вдалося відкрити GitHub"
 
-#: src/app/(tabs)/settings/apple-pay-capture.tsx
+#: src/wallet-capture/component/apple-pay-capture-instructions-button/apple-pay-capture-instructions-button.tsx
 msgid "Could not open instructions"
 msgstr "Не вдалося відкрити інструкції"
 
@@ -1730,10 +1740,6 @@ msgstr "Спочатку створіть борговий рахунок."
 msgid "Create a new System-generated API key"
 msgstr "Створіть новий згенерований системою API-ключ"
 
-#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
-msgid "Create a personal automation in Shortcuts with the Transaction trigger, select your cards and choose Run Immediately."
-msgstr "Створи персональну автоматизацію в Командах з тригером «Транзакція», вибери свої картки й обери «Запускати одразу»."
-
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Create a PIN"
 msgstr "Створити PIN-код"
@@ -1754,6 +1760,10 @@ msgstr "Створити тег"
 #: src/app/transaction-account-filter.tsx
 msgid "Create Accounts"
 msgstr "Створити рахунки"
+
+#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
+msgid "Create an automation"
+msgstr "Створіть автоматизацію"
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Create and copy the personal token"
@@ -2329,6 +2339,10 @@ msgstr "Erste Bank (PDF)"
 msgid "Every account from this bank is already linked."
 msgstr "Усі рахунки цього банку вже прив'язано."
 
+#: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
+msgid "Every tap, recorded"
+msgstr "Кожна оплата — записана"
+
 #: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
 msgid "Every transaction has a category."
 msgstr "Кожна транзакція має категорію."
@@ -2720,6 +2734,10 @@ msgstr "в"
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "In List"
 msgstr "У списку"
+
+#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
+msgid "In Shortcuts, add a personal automation with the Transaction trigger, select your cards and choose Run Immediately."
+msgstr "У Швидких командах додайте особисту автоматизацію з тригером «Транзакція», виберіть свої картки та оберіть «Запускати одразу»."
 
 #: src/account/component/account-inactive-icon/account-inactive-icon.tsx
 msgid "Inactive"
@@ -3564,6 +3582,10 @@ msgstr "Можна конвертувати лише дохідні транза
 msgid "Only me, with a PIN"
 msgstr "Лише я, з PIN-кодом"
 
+#: src/wallet-capture/component/apple-pay-capture-history-notice/apple-pay-capture-history-notice.tsx
+msgid "Only new taps"
+msgstr "Лише нові оплати"
+
 #: ../ledger/src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only single-entry expenses can be converted"
 msgstr "Можна конвертувати лише витрати з одним записом"
@@ -4214,8 +4236,8 @@ msgid "Save fee"
 msgstr "Зберегти комісію"
 
 #: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
-msgid "Save the automation."
-msgstr "Збережіть автоматизацію."
+msgid "Save it"
+msgstr "Збережіть її"
 
 #: src/account/constant/account-type.constant.ts
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
@@ -4499,6 +4521,10 @@ msgstr "Налаштування"
 msgid "Setup"
 msgstr "Налаштування"
 
+#: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
+msgid "Shortcuts"
+msgstr "Швидкі команди"
+
 #: src/wallet-capture/component/apple-pay-capture-open-shortcuts-button/apple-pay-capture-open-shortcuts-button.tsx
 msgid "Shortcuts is not available on this device."
 msgstr "Shortcuts недоступний на цьому пристрої."
@@ -4657,6 +4683,10 @@ msgstr "Запуск ШІ…"
 msgid "Statement imported"
 msgstr "Виписку імпортовано"
 
+#: src/wallet-capture/component/apple-pay-capture-setup-row/apple-pay-capture-setup-row.tsx
+msgid "Step {stepNumber}"
+msgstr "Крок {stepNumber}"
+
 #: src/account/constant/account-type.constant.ts
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "Stocks"
@@ -4775,6 +4805,10 @@ msgstr "Теги ({selectedTagsCount})"
 #: src/tag/components/tags-settings-feature-intro/tags-settings-feature-intro.tsx
 msgid "Tags cut across categories — track a trip, a project or a person and see the true total."
 msgstr "Теги перетинають категорії — відстежуйте подорож, проєкт або людину та бачте справжню суму."
+
+#: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
+msgid "Tap"
+msgstr "Оплата"
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Tap \"Get API Key\" above and sign in to Binance"
@@ -5357,7 +5391,7 @@ msgstr "Перегляд та відновлення архівованих ра
 msgid "View source transactions"
 msgstr "Переглянути вихідні транзакції"
 
-#: src/app/(tabs)/settings/apple-pay-capture.tsx
+#: src/wallet-capture/component/apple-pay-capture-instructions-button/apple-pay-capture-instructions-button.tsx
 msgid "View step-by-step instructions"
 msgstr "Переглянути покрокові інструкції"
 
@@ -5380,10 +5414,6 @@ msgstr "Очікування з'єднання"
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "Waiting for a key"
 msgstr "Очікує на ключ"
-
-#: src/wallet-capture/component/apple-pay-capture-history-notice/apple-pay-capture-history-notice.tsx
-msgid "Wallet history is not available"
-msgstr "Історія Wallet недоступна"
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Warning"

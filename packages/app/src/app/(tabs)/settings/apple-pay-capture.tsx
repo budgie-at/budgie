@@ -1,22 +1,15 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
-import * as Cause from 'effect/Cause';
-import * as Effect from 'effect/Effect';
 import { useEffect } from 'react';
-import { Linking, Text, View } from 'react-native';
-import Toast from 'react-native-toast-message';
+import { Text, View } from 'react-native';
 
-import { getErrorMessage } from '@rnw-community/shared';
-
-import { Button } from '../../../@generic/component/button/button';
 import { Card } from '../../../@generic/component/card/card';
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { SettingsGroup } from '../../../settings/components/settings-group/settings-group';
-import { useSetting } from '../../../settings/hook/use-setting.hook';
+import { ApplePayCaptureHero } from '../../../wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero';
 import { ApplePayCaptureHistoryNotice } from '../../../wallet-capture/component/apple-pay-capture-history-notice/apple-pay-capture-history-notice';
+import { ApplePayCaptureInstructionsButton } from '../../../wallet-capture/component/apple-pay-capture-instructions-button/apple-pay-capture-instructions-button';
 import { ApplePayCaptureOpenShortcutsButton } from '../../../wallet-capture/component/apple-pay-capture-open-shortcuts-button/apple-pay-capture-open-shortcuts-button';
 import { ApplePayCaptureSetupCard } from '../../../wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card';
 import { ApplePayCaptureTroubleshootingCard } from '../../../wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card';
@@ -29,7 +22,6 @@ const handleGoBack = () => void goBackOrReplace('/settings');
 
 export default function ApplePayCaptureSettingsPage() {
     const { t } = useLingui();
-    const language = useSetting('language');
     const {
         dismissCapture,
         errorMessage,
@@ -46,19 +38,6 @@ export default function ApplePayCaptureSettingsPage() {
         refresh();
     }, [refresh]);
 
-    const handlePressInstructionsGuide = () => {
-        appRuntime.runFork(
-            Effect.promise(() => Linking.openURL(`https://budgie.at/${language}/blog/apple-pay-shortcuts-instructions`)).pipe(
-                Effect.tapCause(Effect.logError),
-                Effect.catchCause(cause =>
-                    Effect.sync(() => {
-                        Toast.show({ type: 'error', text1: t`Could not open instructions`, text2: getErrorMessage(Cause.squash(cause)) });
-                    })
-                )
-            )
-        );
-    };
-
     return (
         <CollapsibleChromePage
             title={t`Apple Pay capture`}
@@ -66,7 +45,10 @@ export default function ApplePayCaptureSettingsPage() {
             testID={ApplePayCaptureSettingsSelector.Container}
         >
             <View className="gap-y-xl pb-5xl">
-                <ApplePayCaptureHistoryNotice />
+                <ApplePayCaptureHero>
+                    <ApplePayCaptureOpenShortcutsButton testID={ApplePayCaptureSettingsSelector.OpenShortcutsButton} />
+                    <ApplePayCaptureInstructionsButton testID={ApplePayCaptureSettingsSelector.InstructionsGuideLink} />
+                </ApplePayCaptureHero>
 
                 {errorMessage ? (
                     <Card testID={ApplePayCaptureSettingsSelector.ErrorCard} variant="destructive" className="gap-y-sm">
@@ -83,15 +65,7 @@ export default function ApplePayCaptureSettingsPage() {
                     <ApplePayCaptureSetupCard testID={ApplePayCaptureSettingsSelector.SetupCard} />
                 </SettingsGroup>
 
-                <ApplePayCaptureOpenShortcutsButton testID={ApplePayCaptureSettingsSelector.OpenShortcutsButton} />
-
-                <Button
-                    testID={ApplePayCaptureSettingsSelector.InstructionsGuideLink}
-                    onPress={handlePressInstructionsGuide}
-                    content={t`View step-by-step instructions`}
-                    leftIcon={UserIconNameEnum.ExternalLink}
-                    variant="ghost"
-                />
+                <ApplePayCaptureHistoryNotice />
 
                 {hasReviewItems ? (
                     <SettingsGroup title={t`Needs review`}>
