@@ -31,8 +31,7 @@ export default function BankIntegrationKeyModal() {
     const [errorMessage, setErrorMessage] = useState('');
     const [runEffect, isSaving] = useEffectAction(t`Could not update key`);
 
-    const trimmedKey = key.trim();
-    const isSaveDisabled = isSaving || !isNotEmptyString(trimmedKey);
+    const isSaveDisabled = isSaving || !isNotEmptyString(key.trim());
     const showError = (message: string) => Effect.sync(() => void setErrorMessage(message));
     const handleCancel = () => void resolveKeyModal(null);
     const handleOpenKeyPage = () => void Linking.openURL(MONOBANK_AUTH_URL);
@@ -40,15 +39,16 @@ export default function BankIntegrationKeyModal() {
         setKey(value);
         setErrorMessage('');
     };
-    const handleSaved = () => {
-        resolveKeyModal(null);
-        refreshAccountPreviews();
-        Toast.show({ type: 'success', text1: t`Key updated` });
-    };
     const handleSave = () =>
         void runEffect(
-            Effect.flatMap(SyncProviderRegistryService, registry => registry.updateIntegrationToken(integrationId, trimmedKey)).pipe(
-                Effect.tap(() => Effect.sync(handleSaved)),
+            Effect.flatMap(SyncProviderRegistryService, registry => registry.updateIntegrationToken(integrationId, key.trim())).pipe(
+                Effect.tap(() =>
+                    Effect.sync(() => {
+                        resolveKeyModal(null);
+                        refreshAccountPreviews();
+                        Toast.show({ type: 'success', text1: t`Key updated` });
+                    })
+                ),
                 Effect.catchTags({
                     SyncUnauthorizedError: () => showError(t`Monobank rejected this key. Check it and try again.`),
                     SyncTokenClientMismatchError: () => showError(t`This key is for a different Monobank client.`),

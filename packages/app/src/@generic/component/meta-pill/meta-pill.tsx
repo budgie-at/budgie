@@ -1,3 +1,5 @@
+import { cva } from 'class-variance-authority';
+import { ClassValue } from 'cn';
 import { Text, View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
@@ -19,25 +21,37 @@ interface Props {
 
 const PILL_ICON_SIZE = 12;
 const ENTER_DURATION_MS = 200;
-const baseClassName = 'flex-row max-w-full items-center gap-x-xs rounded-full border px-sm py-[2px]';
-const containerClassNames: Record<MetaPillVariant, string> = {
-    default: 'border-secondary-corner bg-secondary-background',
-    warning: 'border-warning-corner bg-warning-background',
-    destructive: 'border-destructive-corner bg-destructive-background',
-    positive: 'border-positive-corner bg-positive-background'
-};
-const labelClassNames: Record<MetaPillVariant, string> = {
-    default: 'text-secondary-foreground',
-    warning: 'text-warning-foreground font-semibold',
-    destructive: 'text-destructive-foreground font-semibold',
-    positive: 'text-positive-foreground font-semibold'
-};
+const containerVariants = cva<{ variant: Record<MetaPillVariant, ClassValue> }>(
+    'flex-row max-w-full items-center gap-x-xs rounded-full border px-sm py-[2px]',
+    {
+        variants: {
+            variant: {
+                default: 'border-secondary-corner bg-secondary-background',
+                warning: 'border-warning-corner bg-warning-background',
+                destructive: 'border-destructive-corner bg-destructive-background',
+                positive: 'border-positive-corner bg-positive-background'
+            }
+        },
+        defaultVariants: { variant: 'default' }
+    }
+);
+const labelVariants = cva<{ variant: Record<MetaPillVariant, ClassValue> }>('text-xs', {
+    variants: {
+        variant: {
+            default: 'text-secondary-foreground',
+            warning: 'text-warning-foreground font-semibold',
+            destructive: 'text-destructive-foreground font-semibold',
+            positive: 'text-positive-foreground font-semibold'
+        }
+    },
+    defaultVariants: { variant: 'default' }
+});
 const continuousBorder = { borderCurve: 'continuous' as const };
 
 export const MetaPill = ({ label, icon, onPress, testID, variant = 'default' }: Props) => {
-    const labelClassName = `text-xs ${labelClassNames[variant]}`;
+    const labelClassName = labelVariants({ variant });
     const body = (
-        <View className={`${baseClassName} ${containerClassNames[variant]}`} style={continuousBorder}>
+        <View className={containerVariants({ variant })} style={continuousBorder}>
             {isDefined(icon) && <Icon icon={icon} size={PILL_ICON_SIZE} className={labelClassName} />}
             <Text className={`${labelClassName} shrink`} numberOfLines={1} ellipsizeMode="tail">
                 {label}

@@ -73,9 +73,8 @@ export class SyncProviderRegistryService extends Context.Service<SyncProviderReg
                     token: string
                 ) {
                     const integration = yield* bankIntegrationRepository.findById(integrationId);
-                    const service = isDefined(integration) ? pollingServiceByProvider.get(integration.provider) : null;
-                    if (isDefined(service)) {
-                        yield* service.updateIntegrationToken(integrationId, token);
+                    if (integration?.provider === ExternalSourceEnum.MONOBANK) {
+                        yield* monobankSyncService.updateIntegrationToken(integrationId, token);
                     }
                 })
             };

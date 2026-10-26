@@ -43,7 +43,8 @@ export const BankIntegrationStatusPill = ({ syncs }: Props) => {
         .map(sync => sync.forwardSyncedAt)
         .filter(isDefined)
         .reduce<Date | null>((latest, syncedAt) => (isDefined(latest) && latest >= syncedAt ? latest : syncedAt), null);
-    const upToDateLabel = isDefined(lastSyncedAt) ? t`Up to date · ${formatWeekdayWithTime(lastSyncedAt)}` : t`Up to date`;
+    const lastSyncedLabel = isDefined(lastSyncedAt) ? formatWeekdayWithTime(lastSyncedAt) : null;
+    const upToDateLabel = isDefined(lastSyncedLabel) ? t`Up to date · ${lastSyncedLabel}` : t`Up to date`;
     const statusLabels: Record<BankIntegrationSyncStatusEnum, string> = {
         [BankIntegrationSyncStatusEnum.NEEDS_ATTENTION]: t`Needs attention`,
         [BankIntegrationSyncStatusEnum.KEY_REJECTED]: t`Key rejected`,

@@ -70,7 +70,8 @@ export const BankIntegrationAccountList = () => {
             ))}
         </View>
     );
-    const title = isEmptyArray(accounts) ? t`Accounts` : t`Accounts · ${accounts.length}`;
+    const accountCount = accounts.length;
+    const title = isEmptyArray(accounts) ? t`Accounts` : t`Accounts · ${accountCount}`;
 
     return (
         <SettingsGroup title={title}>

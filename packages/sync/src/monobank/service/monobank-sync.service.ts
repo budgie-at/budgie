@@ -353,11 +353,12 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
 
         const rotateIntegrationToken = Effect.fnUntraced(function* (integrationId: number, client: MonobankClient, token: string) {
             const previousToken = (yield* bankIntegrationRepository.findById(integrationId))?.token;
-            yield* pollingSyncService.updateIntegrationToken(integrationId, token);
+            yield* syncIntegrationTokenService.updateIntegrationToken(integrationId, token);
             if (isDefined(previousToken)) {
                 yield* Cache.invalidate(loadedClientCache, previousToken);
             }
             yield* syncIntegrationTokenService.fillIntegrationLabel(integrationId, yield* client.getClientName());
+            yield* pollingSyncService.requestSync();
         });
 
         const mapBankAccountsToPreview = (bankAccounts: SyncAccountInterface[]) =>
