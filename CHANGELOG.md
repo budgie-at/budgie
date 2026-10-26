@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.117.1](https://github.com/budgie-at/budgie/compare/v6.117.0...v6.117.1) (2026-10-26)
+
+### Bug Fixes
+
+* **app:** stop hashing the prebuild Podfile in the native fingerprint ([81e0485](https://github.com/budgie-at/budgie/commit/81e048546709e9890f09048e63d794ebf9ccb3d1))
+
+
 # [6.117.0](https://github.com/budgie-at/budgie/compare/v6.116.4...v6.117.0) (2026-10-26)
 
 ### Bug Fixes
