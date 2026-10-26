@@ -33,10 +33,8 @@ const config = {
         'package.json',
         // Ignore the app's own generated android directory only (not dependency native sources)
         'android/**/*',
-        // Ignore the app's own generated ios directory but still keep ios/Podfile and ios/Podfile.lock
+        // Ignore the app's own generated ios directory only, Podfile included: CNG checkouts have no ios/ to hash
         'ios/**/*',
-        '!ios/Podfile',
-        '!ios/Podfile.lock',
         // HINT: We have build errors with react-native-audio-api
         '**/node_modules/react-native-audio-api/**/*'
     ],
