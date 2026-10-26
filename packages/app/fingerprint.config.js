@@ -10,11 +10,13 @@ const autolinkingCli = require.resolve('expo-modules-autolinking/bin/expo-module
 const androidModuleSources = JSON.parse(
     execFileSync('node', [autolinkingCli, 'resolve', '-p', 'android', '--json'], { cwd: __dirname, encoding: 'utf8' })
 ).modules.flatMap(autolinkedModule =>
-    autolinkedModule.projects.map(project => ({
-        type: 'dir',
-        filePath: path.relative(__dirname, realpathSync(project.sourceDir)),
-        reasons: ['expoAutolinkingAndroidNativeSource']
-    }))
+    [...(autolinkedModule.projects ?? []), ...(autolinkedModule.plugins ?? [])]
+        .filter(nativeSource => nativeSource.sourceDir)
+        .map(nativeSource => ({
+            type: 'dir',
+            filePath: path.relative(__dirname, realpathSync(nativeSource.sourceDir)),
+            reasons: ['expoAutolinkingAndroidNativeSource']
+        }))
 );
 
 /** @type {import('@expo/fingerprint').Config} */
