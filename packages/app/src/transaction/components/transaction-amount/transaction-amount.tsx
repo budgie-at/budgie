@@ -1,5 +1,5 @@
 import {
-    TransactionEntryTypeEnum,
+    isOutflowEntryType,
     TransactionWithRelationsEntityInterface,
     isNegativeAdjustmentTransaction,
     isPositiveAdjustmentTransaction,
@@ -64,7 +64,7 @@ const resolveDisplayEntries = (transaction: TransactionWithRelationsEntityInterf
         return { contextualEntry, fromEntry, toEntry };
     }
 
-    if (contextualEntry.type === TransactionEntryTypeEnum.CREDIT) {
+    if (isOutflowEntryType(contextualEntry.type)) {
         return { contextualEntry, fromEntry: contextualEntry, toEntry };
     }
 

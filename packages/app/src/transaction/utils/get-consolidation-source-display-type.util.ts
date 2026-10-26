@@ -1,4 +1,4 @@
-import { TransactionConsolidationTypeEnum, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { TransactionConsolidationTypeEnum, TransactionTypeEnum, isOutflowEntryType } from '@budgie/contracts';
 
 import type { ConsolidationSourceRowInterface } from '@budgie/contracts';
 
@@ -10,5 +10,5 @@ export const getConsolidationSourceDisplayType = (
         return source.sourceType === TransactionTypeEnum.INCOME ? TransactionTypeEnum.INCOME : TransactionTypeEnum.EXPENSE;
     }
 
-    return source.entryType === TransactionEntryTypeEnum.DEBIT ? TransactionTypeEnum.INCOME : TransactionTypeEnum.EXPENSE;
+    return isOutflowEntryType(source.entryType) ? TransactionTypeEnum.EXPENSE : TransactionTypeEnum.INCOME;
 };

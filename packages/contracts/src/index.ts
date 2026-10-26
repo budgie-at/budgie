@@ -266,6 +266,7 @@ export { CategorySourceEnum } from './transaction-entry/enum/category-source.enu
 export { TransactionEntryKindEnum } from './transaction-entry/enum/transaction-entry-kind.enum';
 export { TransactionEntryTypeEnum } from './transaction-entry/enum/transaction-entry-type.enum';
 export { buildSpendingEntryCondition } from './transaction-entry/utils/build-spending-entry-condition.util';
+export { isOutflowEntryType } from './transaction-entry/utils/is-outflow-entry-type.util';
 export { TransactionEntryAssociationEnum } from './transaction-entry/enum/transaction-entry-association.enum';
 
 export { TransactionEntryEntityTable } from './transaction-entry/table/transaction-entry-entity.table';
