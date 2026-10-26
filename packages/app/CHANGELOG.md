@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.116.4](https://github.com/budgie-at/budgie/compare/v6.116.3...v6.116.4) (2026-10-26)
+
+### Bug Fixes
+
+* **app:** use the iMessage-style screen chrome bands and softer blur ([09cc4c9](https://github.com/budgie-at/budgie/commit/09cc4c9ebc8e55ed12fda783fad6eb57b2b33ab8))
+
+
 ## [6.116.3](https://github.com/budgie-at/budgie/compare/v6.116.2...v6.116.3) (2026-10-26)
 
 ### Bug Fixes
