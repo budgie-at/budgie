@@ -492,10 +492,9 @@ msgstr "Type de compte"
 msgid "Accounts"
 msgstr "Comptes"
 
-#. placeholder {0}: accounts.length
 #: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
-msgid "Accounts · {0}"
-msgstr "Comptes · {0}"
+msgid "Accounts · {accountCount}"
+msgstr "Comptes · {accountCount}"
 
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
 msgid "Accounts ({selectedAccountsCount})"
@@ -5288,10 +5287,9 @@ msgstr "Sans étiquette"
 msgid "Up to date"
 msgstr "À jour"
 
-#. placeholder {0}: formatWeekdayWithTime(lastSyncedAt)
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
-msgid "Up to date · {0}"
-msgstr "À jour · {0}"
+msgid "Up to date · {lastSyncedLabel}"
+msgstr "À jour · {lastSyncedLabel}"
 
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "Upcoming"
