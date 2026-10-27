@@ -132,7 +132,7 @@ export class ReceiptScanService extends Context.Service<ReceiptScanService>()('@
 
             return yield* receiptMatchService
                 .match({ ...draft, occurredAt: draft.occurredAt ?? new Date(now), title, description, categoryId }, transactionId =>
-                    ruleEngineService.applyRulesToTransactionIds([transactionId])
+                    ruleEngineService.applyCreateSafeRulesToTransactionIds([transactionId])
                 )
                 .pipe(
                     Effect.map((result): ReceiptScanResultInterface => ({

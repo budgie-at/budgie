@@ -9,6 +9,7 @@ import {
     RuleConditionMatchTypeEnum,
     RuleConditionOperatorEnum,
     TagSourceEnum,
+    TransactionTypeEnum,
     TransactionRepository,
     TransactionTagsRepository
 } from '@budgie/contracts';
@@ -62,7 +63,7 @@ const scan = (categoryId: number | null, total = TOTAL) =>
                 description: null,
                 categoryId
             },
-            transactionId => ruleEngineService.applyRulesToTransactionIds([transactionId])
+            transactionId => ruleEngineService.applyCreateSafeRulesToTransactionIds([transactionId])
         );
     });
 
@@ -73,6 +74,7 @@ const readTransaction = Effect.fnUntraced(function* (transactionId: number) {
     yield* assertStoredBalancesMatchLedger(yield* Db);
 
     return {
+        type: transaction?.type,
         title: transaction?.title,
         categories: transaction?.entries.map(entry => [entry.categoryId, entry.categorySource]),
         tags: tags.map(tag => [tag.tagId, tag.source])
@@ -130,6 +132,7 @@ layer(ReceiptTestLayer)('receipt rules', it => {
             const result = yield* scan(embeddingCategory.id);
 
             expect(yield* readTransaction(result.transactionId)).toEqual({
+                type: TransactionTypeEnum.EXPENSE,
                 title: 'Ihr Labor',
                 categories: [[embeddingCategory.id, CategorySourceEnum.AI]],
                 tags: []
@@ -179,6 +182,27 @@ layer(ReceiptTestLayer)('receipt rules', it => {
                 title: 'Ihr Labor',
                 categories: [[userCategory.id, CategorySourceEnum.USER]]
             });
+        })
+    );
+    it.effect('never converts a created receipt expense or a matched bank expense to a transfer', () =>
+        Effect.gen(function* () {
+            const account = yield* seedAccount;
+            const savings = yield* testSeedService.account({ title: 'Savings' });
+            const bankTotal = convertToMicroUnits(18.4);
+            const expense = yield* testSeedService.manualExpense({
+                accountId: account.id,
+                amount: bankTotal,
+                operatedAt: OPERATED_AT,
+                title: 'CARD 4711'
+            });
+            yield* createTitleRule({ type: RuleActionTypeEnum.CONVERT_TO_TRANSFER, categoryId: null, tagId: null, accountId: savings.id });
+
+            const created = yield* scan(null);
+            const matched = yield* scan(null, bankTotal);
+
+            expect(matched).toEqual({ kind: ReceiptMatchResultKindEnum.MATCHED, transactionId: expense.id });
+            expect((yield* readTransaction(created.transactionId)).type).toBe(TransactionTypeEnum.EXPENSE);
+            expect(yield* readTransaction(expense.id)).toMatchObject({ type: TransactionTypeEnum.EXPENSE, title: 'Ihr Labor' });
         })
     );
 });

@@ -273,7 +273,10 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
             );
         });
 
-        const applyRulesToTransactionIds = Effect.fn('RuleEngineService.applyRulesToTransactionIds')(function* (transactionIds: number[]) {
+        const applyRulesToTransactionIdsWhere = Effect.fn('RuleEngineService.applyRulesToTransactionIdsWhere')(function* (
+            transactionIds: number[],
+            isActionAllowed: (action: RuleActionEntityInterface) => boolean
+        ) {
             if (!isNotEmptyArray(transactionIds)) {
                 return;
             }
@@ -283,12 +286,15 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
                 return;
             }
 
+            const allowedRules = rules
+                .map(rule => ({ ...rule, actions: rule.actions.filter(isActionAllowed) }))
+                .filter(rule => isNotEmptyArray(rule.actions));
             const transactions = yield* transactionRepository.findByIdsWithEntries(transactionIds);
 
             yield* applyMatches(
                 transactions.map(transaction => ({
                     transactionId: transaction.id,
-                    matchingRules: rules.filter(rule => matchesRule(rule, convertTransactionForRuleEvaluation(transaction)))
+                    matchingRules: allowedRules.filter(rule => matchesRule(rule, convertTransactionForRuleEvaluation(transaction)))
                 }))
             );
         });
@@ -440,7 +446,14 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
             return { applied: total - failed, failed, total } satisfies ApplyRuleResultInterface;
         });
 
-        return { applyRulesToTransactions, applyRulesToTransactionIds, prepareCreateInputsForRules, applyRuleToMatchingTransactions };
+        return {
+            applyRulesToTransactions,
+            applyRulesToTransactionIds: (transactionIds: number[]) => applyRulesToTransactionIdsWhere(transactionIds, () => true),
+            applyCreateSafeRulesToTransactionIds: (transactionIds: number[]) =>
+                applyRulesToTransactionIdsWhere(transactionIds, action => action.type !== RuleActionTypeEnum.CONVERT_TO_TRANSFER),
+            prepareCreateInputsForRules,
+            applyRuleToMatchingTransactions
+        };
     })
 }) {
     static readonly layer = Layer.effect(RuleEngineService, RuleEngineService.make).pipe(
