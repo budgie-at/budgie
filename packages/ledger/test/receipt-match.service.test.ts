@@ -83,6 +83,28 @@ describe('ReceiptMatchService', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
+    it.effect('scans again a receipt whose transaction was soft-deleted', () =>
+        Effect.gen(function* () {
+            const testSeedService = yield* seed;
+            const account = yield* testSeedService.account();
+            yield* testSeedService.manualExpense({ accountId: account.id, amount: convertToMicroUnits(5), operatedAt: OPERATED_AT });
+            const first = yield* match(buildReceipt());
+            const transactionRepository = yield* TransactionRepository;
+
+            yield* transactionRepository.archiveByIds([first.transactionId]);
+
+            const rescan = yield* match(buildReceipt());
+
+            expect(first.kind).toBe(ReceiptMatchResultKindEnum.CREATED);
+            expect(rescan.kind).toBe(ReceiptMatchResultKindEnum.CREATED);
+            expect(rescan.transactionId).not.toBe(first.transactionId);
+            expect((yield* (yield* TransactionReceiptRepository).findByFingerprint(buildReceipt().fingerprint))?.transactionId).toBe(
+                rescan.transactionId
+            );
+            yield* assertStoredBalancesMatchLedger(yield* Db);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
     it.effect('enriches an exact match without touching its money', () =>
         Effect.gen(function* () {
             const testSeedService = yield* seed;

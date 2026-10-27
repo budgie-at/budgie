@@ -1,4 +1,4 @@
-import { and, between, desc, eq, isNull, notExists, notInArray, or, sql } from 'drizzle-orm';
+import { and, between, desc, eq, inArray, isNotNull, isNull, notExists, notInArray, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -67,6 +67,23 @@ export class TransactionReceiptRepository extends Context.Service<TransactionRec
             return {
                 findByFingerprint: (fingerprint: string) =>
                     Db.query(db => db.query.TransactionReceiptEntityTable.findFirst({ where: { fingerprint } })),
+                deleteForDeletedTransaction: (fingerprint: string) =>
+                    Db.query(db =>
+                        db
+                            .delete(TransactionReceiptEntityTable)
+                            .where(
+                                and(
+                                    eq(TransactionReceiptEntityTable.fingerprint, fingerprint),
+                                    inArray(
+                                        TransactionReceiptEntityTable.transactionId,
+                                        db
+                                            .select({ id: TransactionEntityTable.id })
+                                            .from(TransactionEntityTable)
+                                            .where(isNotNull(TransactionEntityTable.deletedAt))
+                                    )
+                                )
+                            )
+                    ),
                 insert: (input: TransactionReceiptCreateEntityInterface) =>
                     Db.query(db => db.insert(TransactionReceiptEntityTable).values(input).returning()).pipe(
                         Effect.map(([receipt]) => receipt)

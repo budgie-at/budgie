@@ -168,6 +168,8 @@ export class ReceiptMatchService extends Context.Service<ReceiptMatchService>()(
         return {
             match: Effect.fn('ReceiptMatchService.match')(
                 function* (input: ReceiptMatchInputInterface) {
+                    yield* transactionReceiptRepository.deleteForDeletedTransaction(input.fingerprint);
+
                     const existing = yield* transactionReceiptRepository.findByFingerprint(input.fingerprint);
 
                     if (isDefined(existing)) {
