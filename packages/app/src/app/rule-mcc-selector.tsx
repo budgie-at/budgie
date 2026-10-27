@@ -8,7 +8,6 @@ import { emptyFn, isNotEmptyArray, isNotEmptyString } from '@rnw-community/share
 import { BudgieLegendList } from '../@generic/component/budgie-legend-list/budgie-legend-list';
 import { CircleIcon } from '../@generic/component/circle-icon/circle-icon';
 import { EmptyState } from '../@generic/component/empty-state/empty-state';
-import { ListItemSeparator } from '../@generic/component/list-item-separator/list-item-separator';
 import { SelectorCard } from '../@generic/component/selector-card/selector-card';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
 import { LEGEND_LIST_STYLE } from '../@generic/constant/legend-list.constant';
@@ -44,7 +43,7 @@ export default function RuleMccSelectorModal() {
     const [, resolveRuleMccSelector, dismissRuleMccSelector] = useRuleMccSelectorModal();
     useModalDismiss(dismissRuleMccSelector);
     const currentParams = useRuleMccSelectorModalParams();
-    const contentContainerStyle = useFormsheetListContentStyle();
+    const contentContainerStyle = { ...useFormsheetListContentStyle(), gap: 10 };
     const [search, setSearch] = useState('');
     const { mccCategories } = useGetAllMccCategoriesQuery();
 
@@ -75,7 +74,7 @@ export default function RuleMccSelectorModal() {
             <SelectorModalSearchHeader search={search} onSearchChange={setSearch} placeholder={t`Search by code or description...`} />
 
             {isNotEmptyArray(filteredCategories) ? (
-                <View className="absolute inset-0 bg-primary-reverse">
+                <View className="absolute inset-0 bg-primary-reverse pt-3 px-xl">
                     <BudgieLegendList
                         style={LEGEND_LIST_STYLE}
                         contentContainerStyle={contentContainerStyle}
@@ -83,7 +82,6 @@ export default function RuleMccSelectorModal() {
                         data={filteredCategories}
                         keyExtractor={keyExtractor}
                         renderItem={renderItem}
-                        ItemSeparatorComponent={ListItemSeparator}
                     />
                 </View>
             ) : (
