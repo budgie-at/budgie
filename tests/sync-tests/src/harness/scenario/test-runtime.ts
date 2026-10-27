@@ -74,8 +74,13 @@ const livePlatformLayer = Layer.mergeAll(
     Logger.layer([])
 ).pipe(Layer.provideMerge(DatabaseChangeService.layer), Layer.provideMerge(Reactivity.layer));
 
-export const testAtomRuntime = Atom.context({ memoMap: Layer.makeMemoMapUnsafe() })(
-    appServicesWithoutDrainerLayer.pipe(Layer.provideMerge(Layer.merge(fakeTransferConsolidationDrainerLayer, livePlatformLayer)))
+export const liveAtomClock = Atom.make<Clock.Clock>(Clock.Clock.defaultValue());
+
+export const testAtomRuntime = Atom.context({ memoMap: Layer.makeMemoMapUnsafe() })(get =>
+    appServicesWithoutDrainerLayer.pipe(
+        Layer.provideMerge(Layer.merge(fakeTransferConsolidationDrainerLayer, livePlatformLayer)),
+        Layer.provideMerge(Layer.succeed(Clock.Clock, get(liveAtomClock)))
+    )
 );
 
 let testContext: Context.Context<Services> | null = null;
