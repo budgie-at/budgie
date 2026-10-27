@@ -15,7 +15,6 @@ import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
 import { getTransactionDisplayTitle } from '../../utils/get-transaction-display-title.util';
 import { getTransactionIcon } from '../../utils/get-transaction-icon.util';
 import { getTransactionType } from '../../utils/get-transaction-type.util';
-import { ReceiptPill } from '../receipt-pill/receipt-pill';
 import { RefundedPill } from '../refunded-pill/refunded-pill';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
 
@@ -73,8 +72,6 @@ export const TransactionInfoHero = ({ transaction, matchingRuleIds, onOpenRefund
         ? formatDigits(convertFromMicroUnits(secondaryEntry.amount), secondaryEntry.account.instrument.symbol)
         : null;
     const showRefundedPill = transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND;
-    const hasReceipt = isDefined(transaction.receipt);
-    const hasPills = showRefundedPill || hasReceipt;
 
     return (
         <View className="items-center gap-y-xl py-4xl">
@@ -106,18 +103,13 @@ export const TransactionInfoHero = ({ transaction, matchingRuleIds, onOpenRefund
                 </Text>
             ) : null}
 
-            {hasPills ? (
-                <View className="flex-row flex-wrap justify-center gap-xs">
-                    {showRefundedPill ? (
-                        <RefundedPill
-                            key={`${transaction.id}-${transaction.consolidationType}`}
-                            transaction={transaction}
-                            onPress={onOpenRefundSources}
-                            testID={TransactionInfoPageSelector.RefundedPill}
-                        />
-                    ) : null}
-                    {hasReceipt ? <ReceiptPill testID={TransactionInfoPageSelector.ReceiptPill} /> : null}
-                </View>
+            {showRefundedPill ? (
+                <RefundedPill
+                    key={`${transaction.id}-${transaction.consolidationType}`}
+                    transaction={transaction}
+                    onPress={onOpenRefundSources}
+                    testID={TransactionInfoPageSelector.RefundedPill}
+                />
             ) : null}
 
             {isNotEmptyArray(matchingRuleIds) ? (

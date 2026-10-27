@@ -1,9 +1,8 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
-import { MetaPill } from '../../../@generic/component/meta-pill/meta-pill';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
 import { TransactionInfoRow } from '../transaction-info-row/transaction-info-row';
 
@@ -20,7 +19,6 @@ export const TransactionInfoSourceRows = ({ transaction, onOpenConsolidationSour
     const isConsolidated = isDefined(transaction.consolidationType);
     const handleOpenSources = onOpenConsolidationSources ?? onOpenRefundSources;
     const { receipt } = transaction;
-    const vatPill = isNotEmptyString(receipt?.merchantVatId) ? <MetaPill label={receipt.merchantVatId} /> : null;
 
     return (
         <>
@@ -40,9 +38,7 @@ export const TransactionInfoSourceRows = ({ transaction, onOpenConsolidationSour
                     value={receipt.receiptNumber}
                     description={receipt.merchantLegalName}
                     testID={TransactionInfoPageSelector.Row.Receipt}
-                >
-                    {vatPill}
-                </TransactionInfoRow>
+                />
             ) : null}
         </>
     );

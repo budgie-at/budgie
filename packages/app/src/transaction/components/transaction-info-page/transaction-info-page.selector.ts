@@ -5,7 +5,6 @@ export const TransactionInfoPageSelector = {
     SimilarTotal: 'TransactionInfo.SimilarTotal',
     SimilarAverage: 'TransactionInfo.SimilarAverage',
     RefundedPill: 'TransactionInfo.RefundedPill',
-    ReceiptPill: 'TransactionInfo.ReceiptPill',
     SimilarBar: (index: number) => `TransactionInfo.SimilarBar.${index}` as const,
     Row: {
         Account: 'TransactionInfo.Row.Account',

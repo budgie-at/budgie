@@ -29,10 +29,8 @@ env:
       id: 'ReceiptScanToast.DONE'
 - extendedWaitUntil:
       visible:
-          id: 'TransactionInfo.ReceiptPill'
+          id: 'TransactionInfo.Row.Receipt'
       timeout: 5000
-- assertVisible:
-      id: 'TransactionInfo.Row.Receipt'
 - assertVisible: '2026-0042'
 - tapOn:
       id: 'PageHeader.BackButton'
