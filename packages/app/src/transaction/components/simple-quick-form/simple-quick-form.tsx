@@ -2,7 +2,6 @@ import { TransactionTypeEnum } from '@budgie/contracts';
 import { ReactNode, Ref, useImperativeHandle, useRef } from 'react';
 import { View } from 'react-native';
 
-import { SimpleQuickFormContext } from '../../context/simple-quick-form.context';
 import { useQuickFormAmount } from '../../hook/use-quick-form-amount.hook';
 import { useQuickFormFee } from '../../hook/use-quick-form-fee.hook';
 import { useSimpleQuickFormState } from '../../hook/use-simple-quick-form-state.hook';
@@ -15,7 +14,6 @@ import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transa
 import { SimpleQuickFormSelector } from './simple-quick-form.selector';
 
 import type { DebtSettlementAccountInterface } from '../../interface/debt-settlement-account.interface';
-import type { SimpleQuickFormContextValueInterface } from '../../interface/simple-quick-form-context-value.interface';
 import type { SimpleQuickFormRefInterface } from '../../interface/simple-quick-form-ref.interface';
 
 interface Props {
@@ -56,51 +54,48 @@ export const SimpleQuickForm = ({
 
     useImperativeHandle(ref, () => ({ openFee: handleFeePress }));
 
-    const contextValue: SimpleQuickFormContextValueInterface = {
-        variant,
-        transactionType,
-        accountFieldName,
-        aiContext,
-        isNewTransaction,
-        currencySymbol,
-        keypadHandlers,
-        setFromNumeric,
-        formState,
-        amountDisplayRef,
-        onSubmit,
-        onCancel
-    };
-
     return (
-        <SimpleQuickFormContext.Provider value={contextValue}>
+        <View className="flex-1">
             <View className="flex-1">
                 <View className="flex-1">
-                    <View className="flex-1">
-                        <TransactionAmountDisplay
-                            ref={amountDisplayRef}
-                            amount={displayValue}
-                            currencySymbol={currencySymbol}
-                            variant={variant}
-                            topContent={<SimpleQuickFormAmountHeader>{children}</SimpleQuickFormAmountHeader>}
-                            testID={SimpleQuickFormSelector.AmountInput}
-                        >
-                            <View className="mt-lg items-center">
-                                <SimpleQuickFormAmountBottomContent
-                                    debtSettlementAccount={debtSettlementAccount}
-                                    feeAmount={feeAmount}
-                                    feeCurrencySymbol={currencySymbol}
-                                    feeInstrumentType={instrumentType}
-                                    showInlineFeeAction={isNewTransaction}
-                                    onFeePress={handleFeePress}
-                                />
-                            </View>
-                        </TransactionAmountDisplay>
-                    </View>
-                    <QuickFormBottomOverlay />
+                    <TransactionAmountDisplay
+                        ref={amountDisplayRef}
+                        amount={displayValue}
+                        currencySymbol={currencySymbol}
+                        variant={variant}
+                        topContent={<SimpleQuickFormAmountHeader>{children}</SimpleQuickFormAmountHeader>}
+                        testID={SimpleQuickFormSelector.AmountInput}
+                    >
+                        <View className="mt-lg items-center">
+                            <SimpleQuickFormAmountBottomContent
+                                debtSettlementAccount={debtSettlementAccount}
+                                feeAmount={feeAmount}
+                                feeCurrencySymbol={currencySymbol}
+                                feeInstrumentType={instrumentType}
+                                showInlineFeeAction={isNewTransaction}
+                                onFeePress={handleFeePress}
+                            />
+                        </View>
+                    </TransactionAmountDisplay>
                 </View>
-
-                <SimpleQuickFormControls />
+                <QuickFormBottomOverlay
+                    transactionType={transactionType}
+                    aiContext={aiContext}
+                    isNewTransaction={isNewTransaction}
+                    formState={formState}
+                />
             </View>
-        </SimpleQuickFormContext.Provider>
+
+            <SimpleQuickFormControls
+                transactionType={transactionType}
+                currencySymbol={currencySymbol}
+                keypadHandlers={keypadHandlers}
+                setFromNumeric={setFromNumeric}
+                formState={formState}
+                amountDisplayRef={amountDisplayRef}
+                onSubmit={onSubmit}
+                onCancel={onCancel}
+            />
+        </View>
     );
 };

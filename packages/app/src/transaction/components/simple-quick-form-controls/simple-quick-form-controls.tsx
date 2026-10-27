@@ -1,8 +1,7 @@
 import { TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
-import { useRef } from 'react';
+import { RefObject, useRef } from 'react';
 import { View } from 'react-native';
 
-import { useSimpleQuickForm } from '../../context/simple-quick-form.context';
 import { useQuickFormModals } from '../../hook/use-quick-form-modals.hook';
 import { useQuickFormSplit } from '../../hook/use-quick-form-split.hook';
 import { useQuickFormSubmit } from '../../hook/use-quick-form-submit.hook';
@@ -17,21 +16,36 @@ import { TransactionNoteFieldIcon } from '../transaction-note-field-icon/transac
 import { TransactionSplitFieldIcon } from '../transaction-split-field-icon/transaction-split-field-icon';
 import { TransactionTagsFieldIcon } from '../transaction-tags-field-icon/transaction-tags-field-icon';
 
-export const SimpleQuickFormControls = () => {
-    const {
-        variant,
-        transactionType,
-        accountFieldName,
-        currencySymbol,
-        keypadHandlers,
-        setFromNumeric,
-        formState,
-        amountDisplayRef,
-        onSubmit,
-        onCancel
-    } = useSimpleQuickForm();
+import type { useSimpleQuickFormState } from '../../hook/use-simple-quick-form-state.hook';
+import type { KeypadHandlersInterface } from '../../interface/keypad-handlers.interface';
+import type { TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
+
+interface Props {
+    readonly transactionType: TransactionTypeEnum;
+    readonly currencySymbol: string;
+    readonly keypadHandlers: KeypadHandlersInterface;
+    readonly setFromNumeric: (value: number) => void;
+    readonly formState: ReturnType<typeof useSimpleQuickFormState>;
+    readonly amountDisplayRef: RefObject<TransactionAmountDisplayRef | null>;
+    readonly onSubmit: () => void;
+    readonly onCancel: () => void;
+}
+
+export const SimpleQuickFormControls = ({
+    transactionType,
+    currencySymbol,
+    keypadHandlers,
+    setFromNumeric,
+    formState,
+    amountDisplayRef,
+    onSubmit,
+    onCancel
+}: Props) => {
+    const isExpense = transactionType === TransactionTypeEnum.EXPENSE;
+    const variant = isExpense ? 'destructive' : 'positive';
+    const accountFieldName = isExpense ? 'fromAccountId' : 'toAccountId';
     const { handleCommentPress, handleDatePress } = useQuickFormModals();
-    const entryType = transactionType === TransactionTypeEnum.EXPENSE ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT;
+    const entryType = isExpense ? TransactionEntryTypeEnum.CREDIT : TransactionEntryTypeEnum.DEBIT;
     const { handleSplitIconPress } = useQuickFormSplit({
         accountFieldName,
         currencySymbol,
