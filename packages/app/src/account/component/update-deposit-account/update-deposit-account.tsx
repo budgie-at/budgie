@@ -7,7 +7,6 @@ import { isDefined } from '@rnw-community/shared';
 
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
 import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { useAccountUpdateBindings } from '../../hooks/use-account-update-bindings.hook';
 import { useDepositAccountForm } from '../../hooks/use-deposit-account-form.hook';
@@ -41,12 +40,10 @@ export const UpdateDepositAccount = ({ account }: Props) => {
     };
 
     const { control, handleSubmit, instrument, isSubmitting } = useDepositAccountForm(initialValues, values =>
-        appRuntime.runPromise(
-            Effect.flatMap(AccountService, accountService =>
-                accountService.updateDepositById(
-                    account.id,
-                    Struct.pick(values, ['title', 'icon', 'currentBalance', 'interestRate', 'deadline', 'includeInNetWorth', 'isActive'])
-                )
+        Effect.flatMap(AccountService, accountService =>
+            accountService.updateDepositById(
+                account.id,
+                Struct.pick(values, ['title', 'icon', 'currentBalance', 'interestRate', 'deadline', 'includeInNetWorth', 'isActive'])
             )
         )
     );

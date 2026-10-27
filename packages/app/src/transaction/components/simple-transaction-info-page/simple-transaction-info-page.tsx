@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { useDeleteTransaction } from '../../hook/use-delete-transaction.hook';
 import { useSimpleTransactionActionsMenu } from '../../hook/use-simple-transaction-actions-menu.hook';
 import { getTransactionEditHref } from '../../utils/get-transaction-edit-href.util';
@@ -19,13 +20,14 @@ interface Props {
 
 export const SimpleTransactionInfoPage = ({ transaction, transactionType, onOpenRefundSources }: Props) => {
     const deleteTransaction = useDeleteTransaction();
+    const { run } = useSingleFlight();
     const router = useRouter();
     const isExpense = transactionType === TransactionTypeEnum.EXPENSE;
     const isConsolidated = isDefined(transaction.consolidationType);
     const transactionId = transaction.id;
     const transactionAccountId = isExpense ? transaction.fromAccountId : transaction.toAccountId;
     const categoryEntryCount = getTransactionCategoryEntries(transaction.entries).length;
-    const handleDelete = () => deleteTransaction(transactionId, { isConsolidated });
+    const handleDelete = () => run(deleteTransaction(transactionId, { isConsolidated }));
     const handleOpenFee = () => void router.push(getTransactionFeeEditHref(transactionType, transactionId));
     const { actionsMenuProps } = useSimpleTransactionActionsMenu({
         transaction,

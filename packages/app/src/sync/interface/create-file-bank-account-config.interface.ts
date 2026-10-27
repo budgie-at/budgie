@@ -1,5 +1,7 @@
+import type { AppServices } from '../../@generic/runtime/app.runtime';
 import type { UserIconNameEnum } from '@budgie/contracts';
 import type { FileBankSyncImportReviewInterface, SyncAccountPreviewInterface } from '@budgie/sync';
+import type * as Effect from 'effect/Effect';
 
 export interface CreateFileBankAccountConfigInterface {
     readonly mimeType: string;
@@ -9,7 +11,10 @@ export interface CreateFileBankAccountConfigInterface {
     readonly fileIcon: UserIconNameEnum;
     readonly fileTypeLabel: string;
     readonly selectFileText: string;
-    readonly importPreview: (uri: string) => Promise<SyncAccountPreviewInterface[]>;
-    readonly reviewImport: (uri: string, selectedAccountIds: string[]) => Promise<FileBankSyncImportReviewInterface>;
-    readonly executeImportForSelectedAccounts: (uri: string, selectedAccountIds: string[]) => Promise<void>;
+    readonly importPreview: (uri: string) => Effect.Effect<SyncAccountPreviewInterface[], unknown, AppServices>;
+    readonly reviewImport: (
+        uri: string,
+        selectedAccountIds: string[]
+    ) => Effect.Effect<FileBankSyncImportReviewInterface, unknown, AppServices>;
+    readonly executeImportForSelectedAccounts: (uri: string, selectedAccountIds: string[]) => Effect.Effect<unknown, unknown, AppServices>;
 }

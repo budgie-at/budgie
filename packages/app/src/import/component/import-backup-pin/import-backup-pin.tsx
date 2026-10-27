@@ -14,7 +14,6 @@ import { LoadingOverlay } from '../../../@generic/component/loading-overlay/load
 import { FullPage } from '../../../@generic/component/page/full-page';
 import { useFormatFileSize } from '../../../@generic/hook/use-format-file-size.hook';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { PinForm } from '../../../auth/components/pin-form/pin-form';
 import { PIN_LENGTH } from '../../../auth/constant/pin-length.constant';
 import { DatabaseImportService } from '../../service/database-import.service';
@@ -33,13 +32,14 @@ export const ImportBackupPin = ({ sourceUri, onResult }: Props) => {
     const { isLoading, run } = useSingleFlight();
 
     const submitPin = (pin: string) =>
-        run(async () => {
-            if (!isNotEmptyString(sourceUri)) {
-                return;
-            }
+        run(
+            Effect.gen(function* () {
+                if (!isNotEmptyString(sourceUri)) {
+                    return;
+                }
 
-            const backupError = await appRuntime.runPromise(
-                Effect.flatMap(DatabaseImportService, databaseImportService => databaseImportService.canOpenBackup(sourceUri, pin)).pipe(
+                const databaseImportService = yield* DatabaseImportService;
+                const backupError = yield* databaseImportService.canOpenBackup(sourceUri, pin).pipe(
                     Effect.map(canOpenBackup => (canOpenBackup ? null : t`Incorrect PIN`)),
                     Effect.catchTags({
                         BackupArchiveMissingDatabaseError: () => Effect.succeed(t`This backup archive does not contain a Budgie database.`),
@@ -47,18 +47,18 @@ export const ImportBackupPin = ({ sourceUri, onResult }: Props) => {
                         UnsupportedBackupError: () =>
                             Effect.succeed(t`This backup was made by an older Budgie version and cannot be imported.`)
                     })
-                )
-            );
+                );
 
-            if (!isDefined(backupError)) {
-                onResult(pin);
+                if (!isDefined(backupError)) {
+                    onResult(pin);
 
-                return;
-            }
+                    return;
+                }
 
-            setInput('');
-            setError(backupError);
-        });
+                setInput('');
+                setError(backupError);
+            })
+        );
 
     const addDigit = (digit: string) => {
         const nextInput = (input + digit).slice(0, PIN_LENGTH);

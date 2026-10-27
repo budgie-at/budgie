@@ -3,7 +3,6 @@ import * as Effect from 'effect/Effect';
 import { useState } from 'react';
 
 import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
-import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { PIN_LENGTH } from '../constant/pin-length.constant';
 import { useAuthContext } from '../context/auth.context';
 import { PinSetupModeEnum } from '../enum/pin-setup-mode.enum';
@@ -46,40 +45,41 @@ export const usePinSetup = ({ mode }: Params) => {
         setTempNewPin('');
     };
 
-    const verifyOldPin = async (pin: string): Promise<boolean> => {
-        const isCorrect = await appRuntime.runPromise(
-            Effect.flatMap(AuthService, authService => authService.verifyPin(pin)).pipe(
+    const deletePin = Effect.flatMap(AuthService, authService => authService.deletePin());
+
+    const verifyOldPin = (pin: string) =>
+        Effect.gen(function* () {
+            const authService = yield* AuthService;
+            const isCorrect = yield* authService.verifyPin(pin).pipe(
                 Effect.tapError(Effect.logError),
                 Effect.orElseSucceed(() => false)
-            )
-        );
+            );
 
-        if (!isCorrect) {
-            reportIncorrectPin();
+            if (!isCorrect) {
+                reportIncorrectPin();
+                setInput('');
+            }
+
+            return isCorrect;
+        });
+
+    const handleVerifyOldStep = (pin: string) =>
+        Effect.gen(function* () {
+            const success = yield* verifyOldPin(pin);
+
+            if (!success) {
+                return;
+            }
+
+            if (mode === PinSetupModeEnum.DISABLE) {
+                yield* deletePin;
+
+                return;
+            }
+
+            setStep(PinSetupStepEnum.CREATE);
             setInput('');
-
-            return false;
-        }
-
-        return true;
-    };
-
-    const handleVerifyOldStep = async (pin: string) => {
-        const success = await verifyOldPin(pin);
-
-        if (!success) {
-            return;
-        }
-
-        if (mode === PinSetupModeEnum.DISABLE) {
-            await appRuntime.runPromise(Effect.flatMap(AuthService, authService => authService.deletePin()));
-
-            return;
-        }
-
-        setStep(PinSetupStepEnum.CREATE);
-        setInput('');
-    };
+        });
 
     const handleCreateStep = (pin: string) => {
         setTempNewPin(pin);
@@ -87,54 +87,51 @@ export const usePinSetup = ({ mode }: Params) => {
         setInput('');
     };
 
-    const savePinAndContinue = (isBiometricEnabled: boolean) =>
-        runSave(() =>
-            appRuntime.runPromise(
-                Effect.gen(function* () {
-                    const authService = yield* AuthService;
+    const savePin = (isBiometricEnabled: boolean) =>
+        Effect.gen(function* () {
+            const authService = yield* AuthService;
 
-                    if (isBiometricEnabled && isSomeAvailable && !(yield* authService.authenticateWithBiometrics())) {
-                        return yield* new BiometricAuthenticationFailedError();
-                    }
+            if (isBiometricEnabled && isSomeAvailable && !(yield* authService.authenticateWithBiometrics())) {
+                return yield* new BiometricAuthenticationFailedError();
+            }
 
-                    yield* mode === PinSetupModeEnum.CHANGE
-                        ? authService.changePin(tempNewPin)
-                        : authService.createPin(tempNewPin, isBiometricEnabled);
-                }).pipe(Effect.catchCause(() => Effect.sync(() => void setError(t`Failed to save PIN. Please try again.`))))
-            )
-        );
+            yield* mode === PinSetupModeEnum.CHANGE
+                ? authService.changePin(tempNewPin)
+                : authService.createPin(tempNewPin, isBiometricEnabled);
+        }).pipe(Effect.catchCause(() => Effect.sync(() => void setError(t`Failed to save PIN. Please try again.`))));
 
-    const handleConfirmStep = async (pin: string) => {
-        if (pin !== tempNewPin) {
-            setError(t`PINs do not match`);
-            reset();
+    const savePinAndContinue = (isBiometricEnabled: boolean) => runSave(savePin(isBiometricEnabled));
 
-            return;
-        }
+    const handleConfirmStep = (pin: string) =>
+        Effect.gen(function* () {
+            if (pin !== tempNewPin) {
+                setError(t`PINs do not match`);
+                reset();
 
-        if (mode === PinSetupModeEnum.CHANGE) {
-            await savePinAndContinue(false);
+                return;
+            }
 
-            return;
-        }
+            if (mode !== PinSetupModeEnum.CHANGE && isSomeAvailable) {
+                setStep(PinSetupStepEnum.BIOMETRIC);
 
-        if (isSomeAvailable) {
-            setStep(PinSetupStepEnum.BIOMETRIC);
-        } else {
-            await savePinAndContinue(false);
-        }
-    };
+                return;
+            }
+
+            yield* savePin(false);
+        });
 
     const submitPin = (pin: string) =>
-        runSubmit(async () => {
-            if (step === PinSetupStepEnum.VERIFY_OLD) {
-                await handleVerifyOldStep(pin);
-            } else if (step === PinSetupStepEnum.CREATE) {
-                handleCreateStep(pin);
-            } else if (step === PinSetupStepEnum.CONFIRM) {
-                await handleConfirmStep(pin);
-            }
-        });
+        runSubmit(
+            Effect.gen(function* () {
+                if (step === PinSetupStepEnum.VERIFY_OLD) {
+                    yield* handleVerifyOldStep(pin);
+                } else if (step === PinSetupStepEnum.CREATE) {
+                    handleCreateStep(pin);
+                } else if (step === PinSetupStepEnum.CONFIRM) {
+                    yield* handleConfirmStep(pin);
+                }
+            })
+        );
 
     const addDigit = (digit: string) => {
         if (isLockedOut || input.length >= PIN_LENGTH) {
@@ -155,9 +152,6 @@ export const usePinSetup = ({ mode }: Params) => {
         state: { mode, step, input, error: pinError ?? error, isLoading, isInputDisabled: isLoading || isLockedOut },
         addDigit,
         deleteDigit,
-        saveAndContinue:
-            mode === PinSetupModeEnum.DISABLE
-                ? () => appRuntime.runPromise(Effect.flatMap(AuthService, authService => authService.deletePin()))
-                : savePinAndContinue
+        saveAndContinue: mode === PinSetupModeEnum.DISABLE ? () => runSave(deletePin) : savePinAndContinue
     };
 };

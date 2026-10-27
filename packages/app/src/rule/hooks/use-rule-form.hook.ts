@@ -16,8 +16,9 @@ import { useForm } from 'react-hook-form';
 
 import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { useEffectAction } from '../../@generic/hook/use-effect-action.hook';
+import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
+import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 import { RulePrefillDataInterface } from '../interface/rule-prefill-data.interface';
 import { RuleApplicationDrainerService } from '../service/rule-application-drainer.service';
 import { showRuleApplicationToast } from '../utils/show-rule-application-toast.util';
@@ -101,8 +102,8 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
 
     const defaultValues: RuleCreateInputInterface = resolveDefaultValues(providedDefaultValues, prefillData);
     const isEditing = isDefined(ruleId);
-    const [runSubmit, isSaving] = useEffectAction(isEditing ? t`Could not update rule` : t`Could not create rule`);
-    const [runDelete, isDeleting] = useEffectAction(t`Could not delete rule.`);
+    const { isLoading: isSaving, run: runSubmit } = useSingleFlight();
+    const { isLoading: isDeleting, run: runDelete } = useSingleFlight();
 
     const form = useForm<RuleCreateInputInterface>({
         resolver: standardSchemaResolver(Schema.toStandardSchemaV1(RuleCreateInputSchema)),
@@ -126,19 +127,17 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
             return false;
         }
 
-        return yield* Effect.promise(() =>
-            confirmAlert({
-                title: t`Apply to existing transactions?`,
-                message: t({
-                    message: plural(count, {
-                        one: '# existing transaction matches this rule.',
-                        other: '# existing transactions match this rule.'
-                    })
-                }),
-                confirmText: t`Apply`,
-                cancelText: t`Skip`
-            })
-        );
+        return yield* confirmAlert({
+            title: t`Apply to existing transactions?`,
+            message: t({
+                message: plural(count, {
+                    one: '# existing transaction matches this rule.',
+                    other: '# existing transactions match this rule.'
+                })
+            }),
+            confirmText: t`Apply`,
+            cancelText: t`Skip`
+        });
     });
 
     const enqueueApplyToExisting = Effect.fn('useRuleForm.enqueueApplyToExisting')(function* (targetRuleId: number, shouldApply: boolean) {
@@ -164,14 +163,21 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
     });
 
     const handleSubmit = (values: RuleCreateInputInterface) => {
-        runSubmit(submitRule(values), () => void onSuccess?.(isEditing ? 'updated' : 'created'));
+        void runSubmit(
+            submitRule(values).pipe(
+                Effect.tap(() => Effect.sync(() => void onSuccess?.(isEditing ? 'updated' : 'created'))),
+                toastOnFailure(isEditing ? t`Could not update rule` : t`Could not create rule`)
+            )
+        );
     };
 
     const handleDelete = () => {
         if (isDefined(ruleId)) {
-            runDelete(
-                Effect.flatMap(RuleService, ruleService => ruleService.archiveById(ruleId)),
-                () => void onSuccess?.('deleted')
+            void runDelete(
+                Effect.flatMap(RuleService, ruleService => ruleService.archiveById(ruleId)).pipe(
+                    Effect.tap(() => Effect.sync(() => void onSuccess?.('deleted'))),
+                    toastOnFailure(t`Could not delete rule.`)
+                )
             );
         }
     };

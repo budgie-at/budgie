@@ -8,8 +8,9 @@ import { View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { useEffectAction } from '../../../@generic/hook/use-effect-action.hook';
+import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
+import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useSyncToken } from '../../hook/use-sync-token.hook';
 import { BinanceSyncTokenInputs } from '../binance-sync-token-inputs/binance-sync-token-inputs';
 import { BinanceSyncTokenSummary } from '../binance-sync-token-summary/binance-sync-token-summary';
@@ -27,7 +28,7 @@ export const BinanceSyncTokenSection = ({ accountId }: Props) => {
     const [isEditing, setIsEditing] = useState(false);
     const [apiKey, setApiKey] = useState('');
     const [apiSecret, setApiSecret] = useState('');
-    const [runEffect, isSaving] = useEffectAction(t`Could not update token`);
+    const { isLoading: isSaving, run } = useSingleFlight();
 
     const handleEdit = () => {
         const credentials = Option.getOrNull(Schema.decodeUnknownOption(Schema.fromJsonString(BinanceCredentialsSchema))(token));
@@ -53,15 +54,19 @@ export const BinanceSyncTokenSection = ({ accountId }: Props) => {
             return;
         }
 
-        runEffect(
+        void run(
             Effect.flatMap(SyncProviderRegistryService, registry =>
                 registry.updateAccountToken(accountId, JSON.stringify({ apiKey: trimmedApiKey, apiSecret: trimmedApiSecret }))
-            ),
-            () => {
-                setIsEditing(false);
-                setApiKey('');
-                setApiSecret('');
-            }
+            ).pipe(
+                Effect.tap(() =>
+                    Effect.sync(() => {
+                        setIsEditing(false);
+                        setApiKey('');
+                        setApiSecret('');
+                    })
+                ),
+                toastOnFailure(t`Could not update token`)
+            )
         );
     };
 

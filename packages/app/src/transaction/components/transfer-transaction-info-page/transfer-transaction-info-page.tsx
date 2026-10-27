@@ -3,6 +3,7 @@ import { useRouter } from 'expo-router';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { useConsolidationSourceModal } from '../../context/consolidation-source-modal.context';
 import { useDeleteTransaction } from '../../hook/use-delete-transaction.hook';
 import { getTransactionEditHref } from '../../utils/get-transaction-edit-href.util';
@@ -15,11 +16,12 @@ import type { UpdateTransactionFormPropsInterface } from '../../interface/update
 export const TransferTransactionInfoPage = ({ transaction }: UpdateTransactionFormPropsInterface) => {
     const router = useRouter();
     const deleteTransaction = useDeleteTransaction();
+    const { run } = useSingleFlight();
     const [openConsolidationSource] = useConsolidationSourceModal();
     const isConsolidated = isDefined(transaction.consolidationType);
     const transactionId = transaction.id;
     const handleOpenFee = () => void router.push(getTransactionFeeEditHref(TransactionTypeEnum.TRANSFER, transactionId));
-    const handleDelete = () => deleteTransaction(transactionId, { isConsolidated });
+    const handleDelete = () => run(deleteTransaction(transactionId, { isConsolidated }));
     const handleConsolidationPress = () => {
         openConsolidationSource({ transactionId });
     };

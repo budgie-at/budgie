@@ -8,7 +8,6 @@ import { FormProvider } from 'react-hook-form';
 
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { FullPage } from '../../../@generic/component/page/full-page';
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { normalizeRouteParam } from '../../../@generic/utils/normalize-route-param.util';
 import { parsePositiveRouteParam } from '../../../@generic/utils/parse-positive-route-param.util';
@@ -32,8 +31,7 @@ export default function CreateExpenseTransactionPage() {
     const normalizedAiContext = normalizeRouteParam(aiContext);
 
     const { form, handleSubmit } = useCreateTransactionForm({
-        onSubmit: data =>
-            appRuntime.runPromise(Effect.flatMap(TransactionService, transactionService => transactionService.createInternal(data))),
+        onSubmit: data => Effect.flatMap(TransactionService, transactionService => transactionService.createInternal(data)),
         schema: ExpenseTransactionCreateInputSchema,
         fromAccountId: parsePositiveRouteParam(accountId) ?? defaultAccount?.id ?? 0,
         type: TransactionTypeEnum.EXPENSE,

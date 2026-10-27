@@ -3,7 +3,6 @@ import { PrivatbankSyncService } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { XLSX_MIME_TYPE } from '../../constant/xlsx-mime-type.constant';
 import { CreateFileBankAccount } from '../create-file-bank-account/create-file-bank-account';
 
@@ -26,17 +25,12 @@ export const CreatePrivatbankAccount = () => {
         fileIcon: UserIconNameEnum.FileSpreadsheet,
         fileTypeLabel: t`XLSX export`,
         selectFileText: t`Select the exported XLSX file`,
-        importPreview: uri =>
-            appRuntime.runPromise(Effect.flatMap(PrivatbankSyncService, privatbankSyncService => privatbankSyncService.importPreview(uri))),
+        importPreview: uri => Effect.flatMap(PrivatbankSyncService, privatbankSyncService => privatbankSyncService.importPreview(uri)),
         reviewImport: (uri, selectedAccountIds) =>
-            appRuntime.runPromise(
-                Effect.flatMap(PrivatbankSyncService, privatbankSyncService => privatbankSyncService.reviewImport(uri, selectedAccountIds))
-            ),
+            Effect.flatMap(PrivatbankSyncService, privatbankSyncService => privatbankSyncService.reviewImport(uri, selectedAccountIds)),
         executeImportForSelectedAccounts: (uri, selectedAccountIds) =>
-            appRuntime.runPromise(
-                Effect.flatMap(PrivatbankSyncService, privatbankSyncService =>
-                    privatbankSyncService.executeImportForSelectedAccounts(uri, selectedAccountIds)
-                )
+            Effect.flatMap(PrivatbankSyncService, privatbankSyncService =>
+                privatbankSyncService.executeImportForSelectedAccounts(uri, selectedAccountIds)
             )
     };
 

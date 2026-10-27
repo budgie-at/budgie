@@ -29,6 +29,7 @@ import { CollapsibleChromePage } from '../../../@generic/component/collapsible-c
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
+import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { ImportColumnMapField } from '../../../import/components/import-column-map-field/import-column-map-field';
 import { ImportPresetPicker } from '../../../import/components/import-preset-picker/import-preset-picker';
 import { RuleApplicationDrainerService } from '../../../rule/service/rule-application-drainer.service';
@@ -136,19 +137,17 @@ export default function ImportScreen() {
     }, [fileUri, t]);
 
     const handleStartImport = (columnMap: ImporterColumnMapInterface) =>
-        run(() =>
-            appRuntime.runPromise(
-                Effect.gen(function* () {
-                    const importerService = yield* ImporterService;
-                    const ruleApplicationDrainerService = yield* RuleApplicationDrainerService;
+        run(
+            Effect.gen(function* () {
+                const importerService = yield* ImporterService;
+                const ruleApplicationDrainerService = yield* RuleApplicationDrainerService;
 
-                    yield* YIELD_TO_UI;
-                    const { transactionIds, transactions } = yield* importerService.replaceAll(columnMap, csvText);
-                    yield* ruleApplicationDrainerService.enqueueTransactions(transactionIds, transactions);
+                yield* YIELD_TO_UI;
+                const { transactionIds, transactions } = yield* importerService.replaceAll(columnMap, csvText);
+                yield* ruleApplicationDrainerService.enqueueTransactions(transactionIds, transactions);
 
-                    router.back();
-                }).pipe(Effect.catch(error => Effect.sync(() => void showErrorToast(t`Could not import CSV file`, getErrorMessage(error)))))
-            )
+                router.back();
+            }).pipe(toastOnFailure(t`Could not import CSV file`))
         );
     const handleCancel = () => void router.back();
 

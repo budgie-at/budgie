@@ -3,7 +3,6 @@ import { ErsteSyncService } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { PDF_MIME_TYPE } from '../../constant/pdf-mime-type.constant';
 import { CreateFileBankAccount } from '../create-file-bank-account/create-file-bank-account';
 
@@ -20,18 +19,11 @@ export const CreateErsteAccount = () => {
         fileIcon: UserIconNameEnum.FileText,
         fileTypeLabel: t`PDF statement`,
         selectFileText: t`Select the downloaded PDF file`,
-        importPreview: uri =>
-            appRuntime.runPromise(Effect.flatMap(ErsteSyncService, ersteSyncService => ersteSyncService.importPreview(uri))),
+        importPreview: uri => Effect.flatMap(ErsteSyncService, ersteSyncService => ersteSyncService.importPreview(uri)),
         reviewImport: (uri, selectedAccountIds) =>
-            appRuntime.runPromise(
-                Effect.flatMap(ErsteSyncService, ersteSyncService => ersteSyncService.reviewImport(uri, selectedAccountIds))
-            ),
+            Effect.flatMap(ErsteSyncService, ersteSyncService => ersteSyncService.reviewImport(uri, selectedAccountIds)),
         executeImportForSelectedAccounts: (uri, selectedAccountIds) =>
-            appRuntime.runPromise(
-                Effect.flatMap(ErsteSyncService, ersteSyncService =>
-                    ersteSyncService.executeImportForSelectedAccounts(uri, selectedAccountIds)
-                )
-            )
+            Effect.flatMap(ErsteSyncService, ersteSyncService => ersteSyncService.executeImportForSelectedAccounts(uri, selectedAccountIds))
     };
 
     return <CreateFileBankAccount config={config} />;
