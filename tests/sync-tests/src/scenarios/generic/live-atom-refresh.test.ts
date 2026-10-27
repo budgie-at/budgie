@@ -79,12 +79,14 @@ import * as schema from '@budgie/contracts/schema';
 import { AccountService } from '@budgie/ledger';
 import { describe, expect, it } from '@effect/vitest';
 import { eq, getTableColumns, getTableName, sql } from 'drizzle-orm';
+import * as Clock from 'effect/Clock';
 import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import * as AtomRegistry from 'effect/reactivity/AtomRegistry';
+import * as TestClock from 'effect/testing/TestClock';
 
-import { seed, seedLedgerBalance, testDb, TestLayer } from '../../harness';
-import { liveStatements, testAtomRuntime } from '../../harness/scenario/test-runtime';
+import { seed, seedLedgerBalance, testDb, TestClockLayer } from '../../harness';
+import { liveAtomClock, liveStatements, testAtomRuntime } from '../../harness/scenario/test-runtime';
 
 import type { SQLiteTable } from 'drizzle-orm/sqlite-core';
 import type * as Atom from 'effect/reactivity/Atom';
@@ -225,7 +227,7 @@ const touch = (table: SQLiteTable) =>
 
 const withLiveRegistry = <A, E, R>(use: (registry: AtomRegistry.AtomRegistry) => Effect.Effect<A, E, R>) =>
     Effect.acquireUseRelease(
-        Effect.sync(() => AtomRegistry.make()),
+        Effect.map(Clock.Clock, clock => AtomRegistry.make({ initialValues: [[liveAtomClock, clock]] })),
         registry =>
             Effect.andThen(
                 Effect.sync(() => registry.mount(testAtomRuntime)),
@@ -239,7 +241,7 @@ const inLiveRuntime = <A, E, R>(registry: AtomRegistry.AtomRegistry, effect: Eff
 
 const settle = (registry: AtomRegistry.AtomRegistry, atoms: readonly LiveAtom[]) =>
     Effect.andThen(
-        Effect.sleep(FLUSH_WAIT),
+        TestClock.adjust(FLUSH_WAIT),
         Effect.forEach(atoms, atom => Effect.exit(AtomRegistry.getResult(registry, atom, { suspendOnWaiting: true })), { discard: true })
     );
 
@@ -292,7 +294,7 @@ describe('generic/live-atom-refresh', () => {
                 expect(mounted.filter(({ reads }) => reads.size === 0).map(({ name }) => name)).toEqual([]);
                 expect(staleReads).toEqual([]);
             })
-        ).pipe(Effect.provide(TestLayer))
+        ).pipe(Effect.provide(TestClockLayer))
     );
 
     it.effect('keeps settings when only accounts or instruments change', () =>
@@ -307,7 +309,7 @@ describe('generic/live-atom-refresh', () => {
 
                 expect(registry.get(settingsResultAtom)).toBe(before);
             })
-        ).pipe(Effect.provide(TestLayer))
+        ).pipe(Effect.provide(TestClockLayer))
     );
 
     it.effect('shows owning-service writes in the live values', () =>
@@ -315,7 +317,7 @@ describe('generic/live-atom-refresh', () => {
             Effect.gen(function* () {
                 const inactive = yield* seed.account({ title: 'Dormant', isActive: false });
                 const read = <A, E>(atom: Atom.Atom<AsyncResult.AsyncResult<A, E>>) =>
-                    Effect.andThen(Effect.sleep(FLUSH_WAIT), AtomRegistry.getResult(registry, atom, { suspendOnWaiting: true }));
+                    Effect.andThen(TestClock.adjust(FLUSH_WAIT), AtomRegistry.getResult(registry, atom, { suspendOnWaiting: true }));
 
                 registry.mount(settingsResultAtom);
                 registry.mount(inactiveAccountsAtom);
@@ -338,6 +340,6 @@ describe('generic/live-atom-refresh', () => {
                 expect(yield* read(inactiveAccountsAtom)).toEqual([]);
                 expect((yield* read(searchTagsAtom(''))).map(({ title }) => title)).toEqual(['travel']);
             })
-        ).pipe(Effect.provide(TestLayer))
+        ).pipe(Effect.provide(TestClockLayer))
     );
 });

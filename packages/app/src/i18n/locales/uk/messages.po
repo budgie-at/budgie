@@ -313,6 +313,10 @@ msgstr "{selectedCount, plural, =0 {Показати всі категорії} 
 msgid "{selectedCount, plural, =0 {Show all tags} one {Show # tag} other {Show # tags}}"
 msgstr "{selectedCount, plural, =0 {Показати всі теги} one {Показати # тег} few {Показати # теги} many {Показати # тегів} other {Показати # тега}}"
 
+#: src/account/component/accounts-group/accounts-group.tsx
+msgid "{selectedInGroupCount} of {accountsCount} selected"
+msgstr "Вибрано {selectedInGroupCount} з {accountsCount}"
+
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "{similarCount, plural, one {# similar transaction} other {# similar transactions}}"
 msgstr "{similarCount, plural, one {# схожа транзакція} other {# схожих транзакцій}}"
@@ -730,6 +734,10 @@ msgstr "Надана в борг сума"
 msgid "Amount or merchant is empty"
 msgstr "Сума або продавець не вказані"
 
+#: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
+msgid "Analytics will appear once we can confirm your history is ready."
+msgstr "Аналітика з’явиться, щойно ми підтвердимо, що історію завантажено."
+
 #: src/rule/components/rule-summary-pills/rule-summary-condition-item.tsx
 msgid "and"
 msgstr "та"
@@ -858,10 +866,6 @@ msgstr "Резервна копія"
 #: src/settings/components/backup-row/backup-row.tsx
 msgid "Backup file ready"
 msgstr "Файл резервної копії готовий"
-
-#: src/transaction/components/statistics-content/statistics-content.tsx
-msgid "Balance"
-msgstr "Баланс"
 
 #: src/app/(main)/transactions/[id]/adjustment.tsx
 #: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx
@@ -1195,6 +1199,10 @@ msgstr "Перевірка"
 msgid "Checking Account"
 msgstr "Поточний рахунок"
 
+#: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
+msgid "Checking transaction history"
+msgstr "Перевіряємо історію транзакцій"
+
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Choose \"Excel\" as the export format — PDF and CSV files can't be imported"
 msgstr "Оберіть «Excel» як формат експорту — файли PDF і CSV імпортувати не можна"
@@ -1211,6 +1219,10 @@ msgstr "Виберіть PIN-код"
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "Choose a preset to auto-fill column mappings"
 msgstr "Оберіть шаблон для автоматичного заповнення відповідностей стовпців"
+
+#: src/transaction/components/statistics-content/statistics-content.tsx
+msgid "Choose accounts"
+msgstr "Вибрати рахунки"
 
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 msgid "Choose and confirm a PIN"
@@ -2521,6 +2533,10 @@ msgstr "Відбиток пальця"
 msgid "Fingerprint day to day"
 msgstr "Відбиток пальця щодня"
 
+#: src/sync/component/analytics-sync-account-progress/analytics-sync-account-progress.tsx
+msgid "Finish importing this account’s history to include it in analytics."
+msgstr "Завершіть імпорт історії цього рахунку, щоб включити його в аналітику."
+
 #: src/app/(tabs)/settings/import.tsx
 msgid "Fix Errors"
 msgstr "Виправити помилки"
@@ -2655,6 +2671,14 @@ msgstr "Сховати транзакції {displayTitle}"
 msgid "Historical valuation failed"
 msgstr "Не вдалося виконати історичну оцінку"
 
+#: src/sync/utils/get-history-import-status-message.util.ts
+msgid "History import needs attention"
+msgstr "Імпорт історії потребує уваги"
+
+#: src/sync/utils/get-history-import-status-message.util.ts
+msgid "History import paused"
+msgstr "Імпорт історії призупинено"
+
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "History loading paused"
 msgstr "Завантаження історії призупинено"
@@ -2751,6 +2775,10 @@ msgstr "Імпортувати транзакції з CSV файлу"
 #: src/import/hook/use-restore-backup.hook.ts
 msgid "Importing a database will replace all current data. The app will restart after import. This action cannot be undone."
 msgstr "Імпорт бази даних замінить усі поточні дані. Додаток перезапуститься після імпорту. Цю дію неможливо скасувати."
+
+#: src/sync/utils/get-history-import-status-message.util.ts
+msgid "Importing history"
+msgstr "Імпортуємо історію"
 
 #: src/sync/component/sync-import-progress/sync-import-progress.tsx
 msgid "Importing history · {percent}%"
@@ -4261,6 +4289,10 @@ msgstr "Відновити"
 msgid "Revert consolidation?"
 msgstr "Скасувати об'єднання?"
 
+#: src/sync/component/analytics-sync-account-progress/analytics-sync-account-progress.tsx
+msgid "Review sync settings"
+msgstr "Переглянути налаштування синхронізації"
+
 #: src/rule/constant/external-source.constant.ts
 msgid "Revolut"
 msgstr "Revolut"
@@ -5210,6 +5242,10 @@ msgstr "Забагато спроб. Спробуйте ще раз через {
 msgid "Total"
 msgstr "Загалом"
 
+#: src/transaction/components/statistics-content/statistics-content.tsx
+msgid "Total balance"
+msgstr "Загальний баланс"
+
 #: src/account/component/net-worth-collapsible-header/net-worth-collapsible-header.tsx
 msgid "Total Balance"
 msgstr "Загальний баланс"
@@ -5340,6 +5376,7 @@ msgstr "Спробуйте налаштувати фільтри, щоб поб�
 #: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
 #: src/ai/component/ai-download-stopped-card/ai-download-stopped-card.tsx
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
 msgid "Try again"
 msgstr "Спробувати ще раз"
 
@@ -5386,6 +5423,10 @@ msgstr "типовий місяць {amount}"
 #: src/i18n/constant/languages.constant.ts
 msgid "Ukrainian"
 msgstr "Українська"
+
+#: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
+msgid "Unable to check transaction history"
+msgstr "Не вдалося перевірити історію транзакцій"
 
 #: src/@generic/component/ai-translation-fields-header-right/ai-translation-fields-header-right.tsx
 msgid "Unavailable"
@@ -5559,6 +5600,14 @@ msgstr "Ми ніколи не бачимо ваш PIN-код, і немає а�
 msgid "We will retry this quietly."
 msgstr "Ми повторимо спробу у фоновому режимі."
 
+#: src/runway/component/runway-content/runway-content.tsx
+msgid "We’re still importing transaction history for your Runway accounts. Your forecast will appear when their history is ready."
+msgstr "Ми ще імпортуємо історію транзакцій рахунків для прогнозу. Прогноз з’явиться, коли історію буде завантажено."
+
+#: src/transaction/components/statistics-content/statistics-content.tsx
+msgid "We’re still importing transaction history. Wait for these accounts to finish, or select only accounts whose history is ready."
+msgstr "Ми ще імпортуємо історію транзакцій. Дочекайтеся завершення імпорту цих рахунків або виберіть лише рахунки, історію яких уже завантажено."
+
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "What goes inside?"
 msgstr "Що буде всередині?"
@@ -5703,6 +5752,10 @@ msgstr "Ви підключені до Wi-Fi."
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Your accounts keep syncing with the new key."
 msgstr "Ваші рахунки й надалі синхронізуються з новим ключем."
+
+#: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
+msgid "Your analytics are taking shape"
+msgstr "Ваша аналітика набуває форми"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Your data"

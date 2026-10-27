@@ -173,6 +173,29 @@ export class SyncRepository extends Context.Service<SyncRepository>()('@budgie/c
                 Db.query(db =>
                     selectWithActiveAccount(db).where(and(...enabledConditions, eq(SyncEntityTable.mode, SyncModeEnum.BACKWARD)))
                 ),
+            getHistorySyncs: () =>
+                Db.query(db =>
+                    db
+                        .select({
+                            sync: getTableColumns(SyncEntityTable),
+                            account: {
+                                id: AccountEntityTable.id,
+                                title: AccountEntityTable.title,
+                                type: AccountEntityTable.type,
+                                isActive: AccountEntityTable.isActive,
+                                integrationId: AccountEntityTable.integrationId
+                            }
+                        })
+                        .from(SyncEntityTable)
+                        .innerJoin(AccountEntityTable, eq(SyncEntityTable.accountId, AccountEntityTable.id))
+                        .where(
+                            and(
+                                eq(SyncEntityTable.mode, SyncModeEnum.BACKWARD),
+                                isNull(SyncEntityTable.deletedAt),
+                                isNull(AccountEntityTable.deletedAt)
+                            )
+                        )
+                ),
             setStatus: (id: number, status: SyncStatusEnum) =>
                 Db.query(db => db.update(SyncEntityTable).set({ status }).where(eq(SyncEntityTable.id, id))),
             setEnabled: (accountId: number, enabled: boolean) =>

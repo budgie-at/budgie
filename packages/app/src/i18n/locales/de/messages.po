@@ -313,6 +313,10 @@ msgstr "{selectedCount, plural, =0 {Alle Kategorien anzeigen} one {# Kategorie a
 msgid "{selectedCount, plural, =0 {Show all tags} one {Show # tag} other {Show # tags}}"
 msgstr "{selectedCount, plural, =0 {Alle Tags anzeigen} one {# Tag anzeigen} other {# Tags anzeigen}}"
 
+#: src/account/component/accounts-group/accounts-group.tsx
+msgid "{selectedInGroupCount} of {accountsCount} selected"
+msgstr "{selectedInGroupCount} von {accountsCount} ausgewählt"
+
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "{similarCount, plural, one {# similar transaction} other {# similar transactions}}"
 msgstr "{similarCount, plural, one {# ähnliche Transaktion} other {# ähnliche Transaktionen}}"
@@ -730,6 +734,10 @@ msgstr "Verliehener Betrag"
 msgid "Amount or merchant is empty"
 msgstr "Betrag oder Händler fehlt"
 
+#: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
+msgid "Analytics will appear once we can confirm your history is ready."
+msgstr "Die Auswertungen erscheinen, sobald wir bestätigen können, dass dein Verlauf vollständig ist."
+
 #: src/rule/components/rule-summary-pills/rule-summary-condition-item.tsx
 msgid "and"
 msgstr "und"
@@ -858,10 +866,6 @@ msgstr "Backup"
 #: src/settings/components/backup-row/backup-row.tsx
 msgid "Backup file ready"
 msgstr "Backup-Datei bereit"
-
-#: src/transaction/components/statistics-content/statistics-content.tsx
-msgid "Balance"
-msgstr "Saldo"
 
 #: src/app/(main)/transactions/[id]/adjustment.tsx
 #: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx
@@ -1195,6 +1199,10 @@ msgstr "Prüfen"
 msgid "Checking Account"
 msgstr "Girokonto"
 
+#: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
+msgid "Checking transaction history"
+msgstr "Transaktionsverlauf wird geprüft"
+
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Choose \"Excel\" as the export format — PDF and CSV files can't be imported"
 msgstr "Wählen Sie „Excel“ als Exportformat – PDF- und CSV-Dateien können nicht importiert werden"
@@ -1211,6 +1219,10 @@ msgstr "Wähle eine PIN"
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "Choose a preset to auto-fill column mappings"
 msgstr "Wählen Sie eine Vorlage zum automatischen Ausfüllen der Spaltenzuordnungen"
+
+#: src/transaction/components/statistics-content/statistics-content.tsx
+msgid "Choose accounts"
+msgstr "Konten auswählen"
 
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 msgid "Choose and confirm a PIN"
@@ -2521,6 +2533,10 @@ msgstr "Fingerabdruck"
 msgid "Fingerprint day to day"
 msgstr "Fingerabdruck im Alltag"
 
+#: src/sync/component/analytics-sync-account-progress/analytics-sync-account-progress.tsx
+msgid "Finish importing this account’s history to include it in analytics."
+msgstr "Schließe den Import des Verlaufs dieses Kontos ab, um es in die Auswertungen einzubeziehen."
+
 #: src/app/(tabs)/settings/import.tsx
 msgid "Fix Errors"
 msgstr "Fehler beheben"
@@ -2655,6 +2671,14 @@ msgstr "Transaktionen für {displayTitle} ausblenden"
 msgid "Historical valuation failed"
 msgstr "Historische Bewertung fehlgeschlagen"
 
+#: src/sync/utils/get-history-import-status-message.util.ts
+msgid "History import needs attention"
+msgstr "Der Verlaufsimport benötigt deine Aufmerksamkeit"
+
+#: src/sync/utils/get-history-import-status-message.util.ts
+msgid "History import paused"
+msgstr "Verlaufsimport pausiert"
+
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "History loading paused"
 msgstr "Laden des Verlaufs pausiert"
@@ -2751,6 +2775,10 @@ msgstr "Transaktionen aus einer CSV-Datei importieren"
 #: src/import/hook/use-restore-backup.hook.ts
 msgid "Importing a database will replace all current data. The app will restart after import. This action cannot be undone."
 msgstr "Beim Importieren einer Datenbank werden alle aktuellen Daten ersetzt. Die App wird nach dem Import neu gestartet. Diese Aktion kann nicht rückgängig gemacht werden."
+
+#: src/sync/utils/get-history-import-status-message.util.ts
+msgid "Importing history"
+msgstr "Verlauf wird importiert"
 
 #: src/sync/component/sync-import-progress/sync-import-progress.tsx
 msgid "Importing history · {percent}%"
@@ -4261,6 +4289,10 @@ msgstr "Rückgängig machen"
 msgid "Revert consolidation?"
 msgstr "Konsolidierung rückgängig machen?"
 
+#: src/sync/component/analytics-sync-account-progress/analytics-sync-account-progress.tsx
+msgid "Review sync settings"
+msgstr "Synchronisierungseinstellungen prüfen"
+
 #: src/rule/constant/external-source.constant.ts
 msgid "Revolut"
 msgstr "Revolut"
@@ -5210,6 +5242,10 @@ msgstr "Zu viele Versuche. Versuche es in {time} erneut"
 msgid "Total"
 msgstr "Gesamt"
 
+#: src/transaction/components/statistics-content/statistics-content.tsx
+msgid "Total balance"
+msgstr "Gesamtsaldo"
+
 #: src/account/component/net-worth-collapsible-header/net-worth-collapsible-header.tsx
 msgid "Total Balance"
 msgstr "Gesamtsaldo"
@@ -5340,6 +5376,7 @@ msgstr "Versuchen Sie, Ihre Filter anzupassen, um mehr Ergebnisse zu sehen"
 #: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
 #: src/ai/component/ai-download-stopped-card/ai-download-stopped-card.tsx
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
 msgid "Try again"
 msgstr "Erneut versuchen"
 
@@ -5386,6 +5423,10 @@ msgstr "typischer Monat {amount}"
 #: src/i18n/constant/languages.constant.ts
 msgid "Ukrainian"
 msgstr "Ukrainisch"
+
+#: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
+msgid "Unable to check transaction history"
+msgstr "Transaktionsverlauf konnte nicht geprüft werden"
 
 #: src/@generic/component/ai-translation-fields-header-right/ai-translation-fields-header-right.tsx
 msgid "Unavailable"
@@ -5559,6 +5600,14 @@ msgstr "Wir sehen deine PIN nie, und es gibt kein Konto, über das sie sich zur�
 msgid "We will retry this quietly."
 msgstr "Wir versuchen es im Hintergrund erneut."
 
+#: src/runway/component/runway-content/runway-content.tsx
+msgid "We’re still importing transaction history for your Runway accounts. Your forecast will appear when their history is ready."
+msgstr "Wir importieren noch den Transaktionsverlauf deiner Konten für die Reichweitenprognose. Die Prognose erscheint, sobald der Verlauf vollständig ist."
+
+#: src/transaction/components/statistics-content/statistics-content.tsx
+msgid "We’re still importing transaction history. Wait for these accounts to finish, or select only accounts whose history is ready."
+msgstr "Wir importieren noch den Transaktionsverlauf. Warte, bis diese Konten fertig sind, oder wähle nur Konten aus, deren Verlauf bereits vollständig ist."
+
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "What goes inside?"
 msgstr "Was kommt hinein?"
@@ -5703,6 +5752,10 @@ msgstr "Du bist im WLAN."
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Your accounts keep syncing with the new key."
 msgstr "Deine Konten synchronisieren weiter mit dem neuen Schlüssel."
+
+#: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
+msgid "Your analytics are taking shape"
+msgstr "Deine Auswertungen nehmen Gestalt an"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Your data"
