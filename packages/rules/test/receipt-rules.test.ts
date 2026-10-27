@@ -63,7 +63,7 @@ const scan = (categoryId: number | null, total = TOTAL) =>
                 description: null,
                 categoryId
             },
-            transactionId => ruleEngineService.applyCreateSafeRulesToTransactionIds([transactionId])
+            transactionId => Effect.orDie(ruleEngineService.applyCreateSafeRulesToTransactionIds([transactionId]))
         );
     });
 

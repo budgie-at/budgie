@@ -94,11 +94,10 @@ export class ReceiptMatchService extends Context.Service<ReceiptMatchService>()(
                 merchantLegalName: input.merchantLegalName
             });
 
-        const applyMatch = Effect.fnUntraced(function* <E>(
+        const applyMatch = Effect.fnUntraced(function* (
             candidate: ReceiptMatchCandidateInterface,
             input: ReceiptMatchInputInterface,
-            cardExternalId: string | null,
-            applyRules: (transactionId: number) => Effect.Effect<void, E, Db>
+            cardExternalId: string | null
         ) {
             const shouldSetTitle = !isDefined(candidate.updatedBy) && isNotEmptyString(input.title);
             const shouldSetComment = !isNotEmptyString(candidate.comment) && isNotEmptyString(input.description);
@@ -117,24 +116,20 @@ export class ReceiptMatchService extends Context.Service<ReceiptMatchService>()(
                 });
             }
 
-            if (shouldSetTitle && !isDefined(candidate.categoryId)) {
-                yield* applyRules(candidate.transactionId);
-            }
-
             if (isDefined(cardExternalId)) {
                 yield* learnCardAccount(cardExternalId, candidate.accountId);
             }
 
             yield* insertReceipt(candidate.transactionId, input);
 
-            return { kind: ReceiptMatchResultKindEnum.MATCHED, transactionId: candidate.transactionId };
+            return {
+                kind: ReceiptMatchResultKindEnum.MATCHED,
+                transactionId: candidate.transactionId,
+                shouldApplyRules: shouldSetTitle && !isDefined(candidate.categoryId)
+            };
         });
 
-        const createExpense = Effect.fnUntraced(function* <E>(
-            input: ReceiptMatchInputInterface,
-            cardExternalId: string | null,
-            applyRules: (transactionId: number) => Effect.Effect<void, E, Db>
-        ) {
+        const createExpense = Effect.fnUntraced(function* (input: ReceiptMatchInputInterface, cardExternalId: string | null) {
             const accountId = yield* transactionReceiptRepository.findExpenseAccountId(input.currency, cardExternalId);
 
             if (!isDefined(accountId)) {
@@ -169,39 +164,46 @@ export class ReceiptMatchService extends Context.Service<ReceiptMatchService>()(
                 externalSource: ExternalSourceEnum.RECEIPT
             });
 
-            yield* applyRules(transaction.id);
             yield* insertReceipt(transaction.id, input);
 
-            return { kind: ReceiptMatchResultKindEnum.CREATED, transactionId: transaction.id };
+            return { kind: ReceiptMatchResultKindEnum.CREATED, transactionId: transaction.id, shouldApplyRules: true };
+        });
+
+        const recordReceipt = Effect.fnUntraced(function* (input: ReceiptMatchInputInterface) {
+            yield* transactionReceiptRepository.deleteForDeletedTransaction(input.fingerprint);
+
+            const existing = yield* transactionReceiptRepository.findByFingerprint(input.fingerprint);
+
+            if (isDefined(existing)) {
+                return { kind: ReceiptMatchResultKindEnum.DUPLICATE, transactionId: existing.transactionId, shouldApplyRules: false };
+            }
+
+            const cardExternalId = isNotEmptyString(input.cardLast4) ? `${CARD_EXTERNAL_ID_PREFIX}${input.cardLast4}` : null;
+            const candidates = yield* transactionReceiptRepository.findMatchCandidates({
+                total: input.total,
+                currency: input.currency,
+                from: subDays(input.occurredAt, WINDOW_DAYS_BEFORE),
+                to: addDays(input.occurredAt, WINDOW_DAYS_AFTER),
+                cardExternalId
+            });
+            const candidate = pickCandidate(candidates, input);
+
+            return isDefined(candidate) ? yield* applyMatch(candidate, input, cardExternalId) : yield* createExpense(input, cardExternalId);
         });
 
         return {
-            match: Effect.fn('ReceiptMatchService.match')(
-                function* <E>(input: ReceiptMatchInputInterface, applyRules: (transactionId: number) => Effect.Effect<void, E, Db>) {
-                    yield* transactionReceiptRepository.deleteForDeletedTransaction(input.fingerprint);
+            match: Effect.fn('ReceiptMatchService.match')(function* (
+                input: ReceiptMatchInputInterface,
+                applyRules: (transactionId: number) => Effect.Effect<void, never, Db>
+            ) {
+                const { shouldApplyRules, ...result } = yield* Db.transaction(recordReceipt(input));
 
-                    const existing = yield* transactionReceiptRepository.findByFingerprint(input.fingerprint);
+                if (shouldApplyRules) {
+                    yield* applyRules(result.transactionId);
+                }
 
-                    if (isDefined(existing)) {
-                        return { kind: ReceiptMatchResultKindEnum.DUPLICATE, transactionId: existing.transactionId };
-                    }
-
-                    const cardExternalId = isNotEmptyString(input.cardLast4) ? `${CARD_EXTERNAL_ID_PREFIX}${input.cardLast4}` : null;
-                    const candidates = yield* transactionReceiptRepository.findMatchCandidates({
-                        total: input.total,
-                        currency: input.currency,
-                        from: subDays(input.occurredAt, WINDOW_DAYS_BEFORE),
-                        to: addDays(input.occurredAt, WINDOW_DAYS_AFTER),
-                        cardExternalId
-                    });
-                    const candidate = pickCandidate(candidates, input);
-
-                    return isDefined(candidate)
-                        ? yield* applyMatch(candidate, input, cardExternalId, applyRules)
-                        : yield* createExpense(input, cardExternalId, applyRules);
-                },
-                effect => Db.transaction(effect)
-            )
+                return result;
+            })
         };
     })
 }) {
