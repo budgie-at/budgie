@@ -34,7 +34,8 @@ const QuickAdd = (props: Props, environment: WidgetEnvironment) => {
     const tiles = [
         { title: props.strings.expense, symbolName: 'minus.circle', destination: props.links.expenseUrl },
         { title: props.strings.income, symbolName: 'plus.circle', destination: props.links.incomeUrl },
-        { title: props.strings.transfer, symbolName: 'arrow.left.arrow.right', destination: props.links.transferUrl }
+        { title: props.strings.transfer, symbolName: 'arrow.left.arrow.right', destination: props.links.transferUrl },
+        { title: props.strings.scan, symbolName: 'doc.text.viewfinder', destination: props.links.scanUrl }
     ] as const;
 
     return (

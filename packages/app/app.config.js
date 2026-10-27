@@ -220,6 +220,14 @@ const getExpoConfig = ({ config }) => ({
                 disableAndroid: true
             }
         ],
+        [
+            'expo-quick-actions',
+            {
+                iosActions: [
+                    { id: 'scan-receipt', title: 'Scan receipt', icon: 'symbol:doc.text.viewfinder', params: { href: '/scan-receipt' } }
+                ]
+            }
+        ],
         'expo-asset',
         'expo-image',
         [

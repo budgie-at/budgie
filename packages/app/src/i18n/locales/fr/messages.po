@@ -4247,6 +4247,10 @@ msgstr "Épargne"
 msgid "Savings Account"
 msgstr "Compte d'épargne"
 
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "Scan"
+msgstr "Scanner"
+
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 msgid "Scan receipt"
 msgstr "Scanner un reçu"

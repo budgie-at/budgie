@@ -4247,6 +4247,10 @@ msgstr "Заощадження"
 msgid "Savings Account"
 msgstr "Ощадний рахунок"
 
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "Scan"
+msgstr "Сканувати"
+
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 msgid "Scan receipt"
 msgstr "Сканувати чек"

@@ -9,5 +9,6 @@ export interface WidgetSnapshotStringsInterface {
     readonly expense: string;
     readonly income: string;
     readonly transfer: string;
+    readonly scan: string;
     readonly empty: string;
 }
