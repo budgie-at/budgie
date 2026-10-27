@@ -66,6 +66,22 @@ Useful flags: `--device`, `--udid`, `--locales`, `--appearances`, `--scenes`,
 `--settle`, `--status-bar real|override`, `--output`, `--skip-install`,
 `--skip-prime`, `--keep-booted`, `--dry-run`.
 
+The private Settings scene seeds a backup date and screenshot hiding, then creates
+and confirms PIN `1234` through the app UI, encrypting the database, and unlocks it
+before capture. Each seed resets the simulator keychain before replacing the
+database. The showcase fixture includes the current database migrations.
+
+For this scene, pass `--flow-screenshot-source simctl`: Maestro's screenshot API
+honors screenshot protection and returns a blank image; the simulator host can
+capture the visible screen. This option captures the screen after the flow ends,
+so keep the scene's `takeScreenshot` as its last step. For example:
+
+```bash
+bash tests/app-tests/scripts/capture-store-screenshots.sh \
+  --config .github/store-screenshots.config.json --app <path/to/Budgie.app> \
+  --scenes 07-settings --appearances dark --flow-screenshot-source simctl
+```
+
 Like CI, a run clears `raw/ios/<device-slug>` before its first cell, so a
 partial re-capture (`--scenes 03-analytics`, or a single `--locales`) leaves the
 device directory holding only what that run captured. Re-run the whole device

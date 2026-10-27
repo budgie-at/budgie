@@ -1,0 +1,57 @@
+appId: ${APP_ID}
+---
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://settings/pin?mode=CREATE'
+
+- extendedWaitUntil:
+      visible:
+          id: 'PinPage.Container'
+      timeout: 15000
+
+- repeat:
+      times: 2
+      commands:
+          - tapOn:
+                id: 'PinPage.Digit.1'
+          - tapOn:
+                id: 'PinPage.Digit.2'
+          - tapOn:
+                id: 'PinPage.Digit.3'
+          - tapOn:
+                id: 'PinPage.Digit.4'
+          - waitForAnimationToEnd
+
+- extendedWaitUntil:
+      visible:
+          id: 'PinScreen.ForgotPinButton'
+      timeout: 90000
+
+- tapOn:
+      id: 'PinPage.Digit.1'
+- tapOn:
+      id: 'PinPage.Digit.2'
+- tapOn:
+      id: 'PinPage.Digit.3'
+- tapOn:
+      id: 'PinPage.Digit.4'
+
+- extendedWaitUntil:
+      visible:
+          id: 'TabBar.Settings'
+      timeout: 15000
+
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://settings'
+
+- extendedWaitUntil:
+      visible:
+          id: 'SettingsPage.DataEncryption.State.On'
+      timeout: 15000
+
+- waitForAnimationToEnd
+
+- takeScreenshot: scene

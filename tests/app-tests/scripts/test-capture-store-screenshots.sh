@@ -257,6 +257,24 @@ else
     FAILURES=$((FAILURES + 1))
 fi
 
+SIMCTL_FLOW_OUTPUT="$WORK_DIR/simctl-flow-output"
+PATH="$STUB_BIN:$PATH" bash "$TARGET" \
+    --config "$RUN_CONFIG" \
+    --device 'iPhone 17 Pro Max' \
+    --locales en \
+    --appearances dark \
+    --scenes 00-prime \
+    --flow-screenshot-source simctl \
+    --output "$SIMCTL_FLOW_OUTPUT" \
+    --skip-install \
+    --skip-prime >/dev/null
+
+assert_contains "$(cat "$XCRUN_LOG")" \
+    "simctl io NEW-UDID screenshot $SIMCTL_FLOW_OUTPUT/raw/ios/iphone-17-pro-max/en/dark/00-prime.png" \
+    'flow scenes can capture protected content through the simulator host'
+
+assert_fails 'invalid flow screenshot source fails closed' bash "$TARGET" --config "$CONFIG" --dry-run --flow-screenshot-source invalid
+
 # A flow-backed scene that also records a clip keeps the single mp4 alongside
 # the PNG, at the same final path with an .mp4 extension.
 CLIP_BIN="$WORK_DIR/clip-bin"
