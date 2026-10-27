@@ -1,15 +1,15 @@
-import { DebtEventAssociationEnum, TransactionConsolidationTypeEnum, convertFromMicroUnits } from '@budgie/contracts';
+import { DebtEventAssociationEnum, TransactionConsolidationTypeEnum, UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { getTransactionFeeEntries } from '@budgie/ledger';
 import { t } from '@lingui/core/macro';
 import { View } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { MetaPill } from '../../../@generic/component/meta-pill/meta-pill';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 import { DebtSettlementPill } from '../debt-settlement-pill/debt-settlement-pill';
-import { ReceiptPill } from '../receipt-pill/receipt-pill';
 import { RefundedPill } from '../refunded-pill/refunded-pill';
 import { TransactionMetadataRow } from '../transaction-metadata-row/transaction-metadata-row';
 
@@ -49,7 +49,7 @@ export const TransactionMetadataRows = ({ transaction, refundedPillTestID, recei
                 testID={refundedPillTestID}
             />
 
-            {hasReceipt ? <ReceiptPill testID={receiptPillTestID} /> : null}
+            {hasReceipt ? <MetaPill icon={UserIconNameEnum.Receipt} label={t`Receipt`} testID={receiptPillTestID} /> : null}
 
             {hasFee ? <TransactionMetadataRow label={feeLabel} testID={feeTestID} /> : null}
 
