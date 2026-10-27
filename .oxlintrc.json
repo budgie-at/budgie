@@ -73,6 +73,7 @@
         "**/messages.ts",
         "**/client-messages.ts",
         "**/media-manifest.constant.ts",
+        "packages/app/src/@generic/constant/reicon-glyphs.constant.ts",
         "**/babel.config.js",
         "**/fingerprint.config.js",
         "packages/app/scripts/**"
