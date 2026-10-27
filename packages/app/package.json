@@ -5,6 +5,7 @@
     "scripts": {
         "android": "expo run:android",
         "bench:budget-spent": "node --experimental-strip-types scripts/bench-budget-spent.ts",
+        "bundle:analyze": "EXPO_ATLAS=1 expo export --platform ios --output-dir dist/atlas && expo-atlas .expo/atlas.jsonl",
         "clear": "rimraf dist node_modules/.cache .turbo .expo",
         "db:generate": "drizzle-kit generate",
         "eas-build-post-install": "cd ../.. && pnpm build",
@@ -128,6 +129,7 @@
         "drizzle-kit": "1.0.0-rc.4",
         "eas-build-cache-provider": "^25.1.1",
         "emojibase-data": "~18.0.0",
+        "expo-atlas": "^0.5.0",
         "tailwindcss": "^4.3.3",
         "vitest": "^5.0.5"
     },
