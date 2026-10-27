@@ -7,6 +7,7 @@ import {
     convertFromMicroUnits
 } from '@budgie/contracts';
 import { AccountDebtOpeningService, TransactionDebtSettlementService, getTransactionCategoryEntries } from '@budgie/ledger';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import Toast from 'react-native-toast-message';
@@ -18,7 +19,7 @@ import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { getDebtOpeningMessages } from '../../../account/utils/get-debt-opening-messages.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
 import { useTransactionListContextMenu } from '../../context/transaction-list-context-menu.context';
 import { TransactionListContextMenuSelector } from '../transaction-list-context-menu/transaction-list-context-menu.selector';
 
@@ -26,7 +27,7 @@ import type { AccountSelectorCreateActionInterface } from '../../../account/inte
 
 export const TransactionListAttachDebtMenuItem = () => {
     const { t } = useLingui();
-    const { decimalPlaces } = useSettingsContext();
+    const decimalPlaces = useAtomValue(decimalPlacesAtom);
     const formatDigits = useFormatDigits(decimalPlaces);
     const { transaction, closeMenu } = useTransactionListContextMenu();
     const [openAccountSelector] = useAccountSelectorModal();

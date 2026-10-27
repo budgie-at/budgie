@@ -1,4 +1,5 @@
 import { RunwayDriverDimensionEnum, UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 
@@ -8,7 +9,7 @@ import { ProtectedText } from '../../../@generic/component/protected-text/protec
 import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { RUNWAY_MINIMUM_MONTHS } from '../../constant/runway-minimum-months.constant';
 import { useLiquidBalanceQuery } from '../../query/use-liquid-balance.query';
 import { useRunwayQuery } from '../../query/use-runway.query';
@@ -29,7 +30,7 @@ const ICON_SIZE = 14;
 
 export const RunwayPill = () => {
     const { t } = useLingui();
-    const { defaultInstrument } = useSettingsContext();
+    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const isAmountProtected = useIsAmountProtected();
     const liquid = useLiquidBalanceQuery();
     const { computation } = useRunwayQuery({ dimension: RunwayDriverDimensionEnum.CATEGORY, liquid, isAllIn: false });

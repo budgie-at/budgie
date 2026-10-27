@@ -1,9 +1,10 @@
 import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { useFormatDigits } from '../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../settings/context/settings.context';
+import { decimalPlacesAtom, defaultInstrumentAtom } from '../../settings/constants/settings-atoms.constant';
 import { useAccountBalanceQuery } from '../query/use-account-balance.query';
 import { useGetAccountByIdQuery } from '../query/use-get-account-by-id.query';
 
@@ -14,7 +15,8 @@ interface UseAccountSelectorParams {
 
 export const useAccountSelector = (args: UseAccountSelectorParams) => {
     const { accountId, excludeAccountTypes } = args;
-    const { decimalPlaces, defaultInstrument } = useSettingsContext();
+    const decimalPlaces = useAtomValue(decimalPlacesAtom);
+    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
 
     const { account: selectedAccount } = useGetAccountByIdQuery(accountId ?? 0);
     const { balance } = useAccountBalanceQuery(accountId ?? 0);

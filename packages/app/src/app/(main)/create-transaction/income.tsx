@@ -1,3 +1,4 @@
+import { useAtomValue } from '@effect/atom-react/Hooks';
 /* jscpd:ignore-start */
 import { IncomeTransactionCreateInputSchema, TransactionTypeEnum } from '@budgie/contracts';
 import { TransactionService } from '@budgie/ledger';
@@ -12,7 +13,7 @@ import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { parsePositiveRouteParam } from '../../../@generic/utils/parse-positive-route-param.util';
 import { useEmbeddingGenerator } from '../../../ai/hook/use-embedding-generator.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { defaultAccountAtom } from '../../../settings/constants/settings-atoms.constant';
 import { SimpleQuickForm } from '../../../transaction/components/simple-quick-form/simple-quick-form';
 import { useCreateTransactionForm } from '../../../transaction/hook/use-create-transaction-form.hook';
 /* jscpd:ignore-end */
@@ -20,7 +21,7 @@ import { useCreateTransactionForm } from '../../../transaction/hook/use-create-t
 /* jscpd:ignore-start */
 export default function CreateIncomeTransactionPage() {
     const { t } = useLingui();
-    const { defaultAccount } = useSettingsContext();
+    const defaultAccount = useAtomValue(defaultAccountAtom);
     const { markForEmbedding } = useEmbeddingGenerator();
     const { accountId } = useLocalSearchParams<{ accountId?: string | string[] }>();
 

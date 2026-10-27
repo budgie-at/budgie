@@ -1,3 +1,4 @@
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { ImpactFeedbackStyle } from 'expo-haptics';
 import { useState } from 'react';
@@ -12,7 +13,8 @@ import { ProtectedText } from '../../../@generic/component/protected-text/protec
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { ConvertToInstallmentModalSelector } from '../../../app/convert-to-installment-modal.selector';
 import { useI18nContext } from '../../../i18n/context/i18n.context';
-import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
+import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
 
 import type { ConvertToInstallmentFormValues } from '../../constant/convert-to-installment-form-schema.constant';
 import type { UseControllerReturn } from 'react-hook-form';
@@ -28,7 +30,7 @@ export const ConvertToInstallmentFee = ({ instrumentSymbol }: Props) => {
     const [, hapticImpact] = useVibration();
     const [isExpanded, setIsExpanded] = useState(false);
     const { intl } = useI18nContext();
-    const formatDigits = useDisplayFormatDigits();
+    const formatDigits = useFormatDigits(useAtomValue(decimalPlacesAtom));
     const { control } = useFormContext<ConvertToInstallmentFormValues>();
     const [feePercent, totalAmount] = useWatch({ control, name: ['feePercent', 'totalAmount'] });
 

@@ -1,8 +1,9 @@
 import { DebtEventAssociationEnum, convertFromMicroUnits } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Text } from 'react-native';
 
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
 
 import type { DebtEventWithRelationsEntityInterface } from '@budgie/contracts';
 
@@ -11,7 +12,7 @@ interface Props {
 }
 
 export const DebtSettlementConvertedAmountLabel = ({ debtEvent }: Props) => {
-    const { decimalPlaces } = useSettingsContext();
+    const decimalPlaces = useAtomValue(decimalPlacesAtom);
     const formatDigits = useFormatDigits(decimalPlaces);
     const debtInstrument = debtEvent[DebtEventAssociationEnum.DEBT_ACCOUNT].instrument;
 

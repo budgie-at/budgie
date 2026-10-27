@@ -1,4 +1,5 @@
 import { AccountDebtTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
@@ -8,7 +9,7 @@ import { ProgressTrack } from '../../../@generic/component/progress-track/progre
 import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { dismissAllOrReplace } from '../../../@generic/utils/dismiss-all-or-replace.util';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
 import { DEBT_SETTLED_LABEL } from '../../constant/debt-settled-label.constant';
 import { useArchiveAccount } from '../../hooks/use-archive-account.hook';
 import { getDebtProgressDisplayState } from '../../utils/get-debt-progress-display-state.util';
@@ -28,7 +29,7 @@ interface Props {
 export const DebtAccountPaidOff = ({ accountId, debtType, instrumentSymbol, summary }: Props) => {
     const { t } = useLingui();
     const protectAmount = useProtectedAmountLabel();
-    const { decimalPlaces } = useSettingsContext();
+    const decimalPlaces = useAtomValue(decimalPlacesAtom);
     const { handleArchive, isLoading } = useArchiveAccount(accountId, () => void dismissAllOrReplace('/'));
 
     const { overpaidAmount, paidAmount, totalAmount } = summary;

@@ -1,4 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
@@ -7,7 +8,7 @@ import { isPositiveNumber } from '@rnw-community/shared';
 import { Button } from '../../../@generic/component/button/button';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
 
 import { VoiceReviewFooterSelector } from './voice-review-footer.selector';
 
@@ -30,7 +31,7 @@ export const VoiceReviewFooter = (props: Props) => {
     const { count, totalAmount, currencySymbol, canSave, hasInvalidAmounts, hasMissingCategories, isSaving, onCancel, onReRecord, onSave } =
         props;
     const { t } = useLingui();
-    const { decimalPlaces } = useSettingsContext();
+    const decimalPlaces = useAtomValue(decimalPlacesAtom);
     const formatDigits = useFormatDigits(decimalPlaces);
     const validSaveLabel = t`Save ${count}`;
     const amountAwareSaveLabel = hasInvalidAmounts ? t`Enter all amounts` : validSaveLabel;

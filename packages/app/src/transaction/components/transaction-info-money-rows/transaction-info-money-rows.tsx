@@ -1,11 +1,12 @@
 import { TransactionTypeEnum, UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { getTransactionFeeEntries } from '@budgie/ledger';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 
 import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
 import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
 import { TransactionInfoRow } from '../transaction-info-row/transaction-info-row';
@@ -61,7 +62,7 @@ const getTransferExchangeRateLabel = (
 
 export const TransactionInfoMoneyRows = ({ transaction }: Props) => {
     const { t } = useLingui();
-    const { decimalPlaces } = useSettingsContext();
+    const decimalPlaces = useAtomValue(decimalPlacesAtom);
     const formatDigits = useFormatDigits(decimalPlaces);
     const formatRate = useFormatDigits(0, 4);
     const feeDisplay = getFeeDisplay(transaction, formatDigits);

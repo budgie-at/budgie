@@ -1,5 +1,6 @@
 import { AmountField, AmountFieldText } from '@budgie/amount-input';
 import { TransactionConsolidationTypeEnum, TransactionTypeEnum, UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
@@ -10,7 +11,7 @@ import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-
 import { cn } from '../../../@generic/utils/cn.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { MatchingRulesPill } from '../../../rule/components/matching-rules-pill/matching-rules-pill';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
 import { getTransactionDisplayTitle } from '../../utils/get-transaction-display-title.util';
 import { getTransactionIcon } from '../../utils/get-transaction-icon.util';
@@ -59,7 +60,7 @@ const getFormattedAmount = (
 ): string => `${getAmountPrefix(transaction.type)}${formatDigits(amount, currencySymbol)}`;
 
 export const TransactionInfoHero = ({ transaction, matchingRuleIds, onOpenRefundSources }: Props) => {
-    const { decimalPlaces } = useSettingsContext();
+    const decimalPlaces = useAtomValue(decimalPlacesAtom);
     const formatDigits = useFormatDigits(decimalPlaces);
     const variant = TRANSACTION_COLOR[getTransactionType(transaction)];
     const primaryEntry = getPrimaryEntry(transaction);

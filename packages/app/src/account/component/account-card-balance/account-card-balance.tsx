@@ -1,11 +1,12 @@
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Text } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { cn } from '../../../@generic/utils/cn.util';
-import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
+import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
 import { AccountCardBaseSelector } from '../account-card-base/account-card-base.selector';
 
 interface Props {
@@ -15,8 +16,8 @@ interface Props {
 }
 
 export const AccountCardBalance = ({ title, balance, instrumentSymbol }: Props) => {
-    const { decimalPlaces } = useSettingsContext();
-    const formatDigits = useDisplayFormatDigits();
+    const decimalPlaces = useAtomValue(decimalPlacesAtom);
+    const formatDigits = useFormatDigits(decimalPlaces);
 
     const formattedBalance = formatDigits(balance, instrumentSymbol);
     const fractionStart = isPositiveNumber(decimalPlaces) ? formattedBalance.length - decimalPlaces - 1 : formattedBalance.length;

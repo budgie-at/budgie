@@ -1,4 +1,5 @@
 import { LanguageEnum } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { createIntl, createIntlCache } from '@formatjs/intl';
 import { i18n } from '@lingui/core';
 import { I18nProvider as LinguiProvider } from '@lingui/react';
@@ -8,7 +9,8 @@ import { ReactNode, useEffect, useState } from 'react';
 import { isDefined } from '@rnw-community/shared';
 
 import { appRuntime } from '../../@generic/runtime/app.runtime';
-import { useSettingsContext } from '../../settings/context/settings.context';
+import { isSettingsLoadingAtom } from '../../settings/constants/settings-atoms.constant';
+import { useSetting } from '../../settings/hook/use-setting.hook';
 import { I18nContext, I18nContextInterface } from '../context/i18n.context';
 import { i18nActivateFallback, i18nEnsureLanguageActivated, i18nGetOSLocale } from '../utils/i18n.util';
 import { languageToLocale } from '../utils/language-to-locale.util';
@@ -20,8 +22,8 @@ interface Props {
 const intlCache = createIntlCache();
 
 export const I18nProvider = ({ children }: Props) => {
-    const { settings, isLoading: isSettingsLoading } = useSettingsContext();
-    const { language } = settings;
+    const isSettingsLoading = useAtomValue(isSettingsLoadingAtom);
+    const language = useSetting('language');
     const [activatedLanguage, setActivatedLanguage] = useState<LanguageEnum | null>(null);
 
     useEffect(() => {

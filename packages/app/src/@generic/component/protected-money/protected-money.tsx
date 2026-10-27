@@ -1,6 +1,8 @@
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { ComponentProps, ReactNode } from 'react';
 
-import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
+import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
 import { useIsAmountProtected } from '../../hook/use-is-amount-protected.hook';
 import { cn } from '../../utils/cn.util';
 import { Ticker } from '../ticker/ticker';
@@ -17,7 +19,7 @@ export const ProtectedMoney = (props: Props) => {
     const { children, className, instrumentSymbol, accessory, protectedText = '$999.99', ...rest } = props;
 
     const isAmountProtected = useIsAmountProtected();
-    const formatDigits = useDisplayFormatDigits();
+    const formatDigits = useFormatDigits(useAtomValue(decimalPlacesAtom));
 
     const formatted = isAmountProtected ? protectedText : formatDigits(children, instrumentSymbol);
 

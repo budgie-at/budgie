@@ -1,4 +1,5 @@
 import { AccountEntityInterface, AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { Alert, View } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -8,7 +9,7 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
 
@@ -41,7 +42,7 @@ export const AccountActionCard = (props: Props) => {
     const { icon, title, type } = account;
 
     const { balance } = useAccountBalanceQuery(account.id);
-    const { decimalPlaces } = useSettingsContext();
+    const decimalPlaces = useAtomValue(decimalPlacesAtom);
     const formatDigits = useFormatDigits(decimalPlaces);
     const { t } = useLingui();
 

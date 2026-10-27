@@ -1,5 +1,6 @@
 import { RecurringSeriesUserStateEnum, UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { RecurringAlertEnum, RecurringService } from '@budgie/recurring';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useRouter } from 'expo-router';
@@ -15,7 +16,7 @@ import { DeletableRow } from '../../../@generic/component/deletable-row/deletabl
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { decimalPlacesAtom, defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { RecurringCalendarSelector } from '../recurring-calendar-content/recurring-calendar.selector';
 import { RecurringSeriesTitleInput } from '../recurring-series-title-input/recurring-series-title-input';
 
@@ -35,7 +36,8 @@ interface Props {
 export const RecurringCalendarEntryRow = ({ entry, index, onPress, dayLabel }: Props) => {
     const router = useRouter();
     const { t } = useLingui();
-    const { decimalPlaces, defaultInstrument } = useSettingsContext();
+    const decimalPlaces = useAtomValue(decimalPlacesAtom);
+    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const formatDigits = useFormatDigits(decimalPlaces);
     const [isRenaming, setIsRenaming] = useState(false);
 

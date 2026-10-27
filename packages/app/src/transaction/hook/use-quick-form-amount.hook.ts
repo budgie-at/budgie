@@ -1,8 +1,9 @@
 import { InstrumentTypeEnum, TransactionCreateInputInterface } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import { useGetAccountByIdQuery } from '../../account/query/use-get-account-by-id.query';
-import { useSettingsContext } from '../../settings/context/settings.context';
+import { defaultInstrumentAtom } from '../../settings/constants/settings-atoms.constant';
 import { KeypadHandlersInterface } from '../interface/keypad-handlers.interface';
 import { QuickFormAccountFieldName } from '../interface/quick-form-account-field-name.type';
 
@@ -22,7 +23,7 @@ interface UseQuickFormAmountResult {
 }
 
 export const useQuickFormAmount = ({ accountFieldName }: UseQuickFormAmountConfig): UseQuickFormAmountResult => {
-    const { defaultInstrument } = useSettingsContext();
+    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const { control, setValue, getValues } = useFormContext<TransactionCreateInputInterface>();
 
     const initialAmount = getValues('amount');

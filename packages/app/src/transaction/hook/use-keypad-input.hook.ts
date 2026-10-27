@@ -1,6 +1,7 @@
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useEffect, useRef, useState } from 'react';
 
-import { useSettingsContext } from '../../settings/context/settings.context';
+import { decimalPlacesAtom } from '../../settings/constants/settings-atoms.constant';
 import { KeypadHandlersInterface } from '../interface/keypad-handlers.interface';
 
 interface UseKeypadInputConfig {
@@ -23,7 +24,7 @@ const formatNumericDisplay = (value: number, maxDecimalPlaces: number): string =
 
 export const useKeypadInput = (config: UseKeypadInputConfig = {}): UseKeypadInputResult => {
     const { initialValue = 0, onChange } = config;
-    const { decimalPlaces } = useSettingsContext();
+    const decimalPlaces = useAtomValue(decimalPlacesAtom);
     const maxDecimals = Math.max(decimalPlaces, 2);
     const [displayValue, setDisplayValue] = useState(() => (initialValue === 0 ? '0' : formatNumericDisplay(initialValue, maxDecimals)));
     const isInitialMount = useRef(true);

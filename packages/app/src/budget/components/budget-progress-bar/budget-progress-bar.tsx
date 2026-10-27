@@ -1,9 +1,10 @@
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
 import { buildBudgetProgressBarMetrics } from '../../utils/build-budget-progress-bar-metrics.util';
 import { BudgetBarTone, resolveBudgetBarTone } from '../../utils/resolve-budget-bar-tone.util';
 
@@ -53,7 +54,7 @@ export const BudgetProgressBar = (props: Props) => {
         remainingTestID
     } = props;
     const { t } = useLingui();
-    const { decimalPlaces } = useSettingsContext();
+    const decimalPlaces = useAtomValue(decimalPlacesAtom);
     const effectiveDecimalPlaces = amountDecimalPlaces ?? decimalPlaces;
     const formatDigits = useFormatDigits(effectiveDecimalPlaces);
     const metrics = buildBudgetProgressBarMetrics(spent, limit);

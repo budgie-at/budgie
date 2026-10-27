@@ -1,9 +1,10 @@
 import { categorizeInboxEngineService, selectAcceptableAssignments } from '@budgie/categorization';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { useState } from 'react';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
-import { useSettingsContext } from '../../settings/context/settings.context';
+import { defaultInstrumentIdAtom } from '../../settings/constants/settings-atoms.constant';
 import { atmCashWithdrawalTransactionIdsAtom } from '../constant/categorize-inbox-atoms.constant';
 
 import type { CategorizeInboxDataInterface } from '../interface/categorize-inbox-data.interface';
@@ -25,7 +26,7 @@ export const useCategorizeInbox = (
     filters: TransactionFilterInterface,
     { rowsAtom, evidenceAtom, labelKind }: Pick<CategorizeInboxStrategyInterface, 'rowsAtom' | 'evidenceAtom' | 'labelKind'>
 ): CategorizeInboxDataInterface => {
-    const { defaultInstrument } = useSettingsContext();
+    const defaultInstrumentId = useAtomValue(defaultInstrumentIdAtom);
     const inboxResult = AsyncResult.all([useLiveAtomValue(rowsAtom(filters)), useLiveAtomValue(evidenceAtom)]);
     const [rows, evidence] = AsyncResult.getOrElse(inboxResult, () => EMPTY_INBOX);
     const cashWithdrawalResult = useLiveAtomValue(atmCashWithdrawalTransactionIdsAtom([...new Set(rows.map(row => row.transactionId))]));
@@ -63,11 +64,11 @@ export const useCategorizeInbox = (
     const { items, remainingCount, placements, clustersByKey } = categorizeInboxEngineService.placeClusters(
         categorizeInboxEngineService.buildClusters(
             rows,
-            categorizeInboxEngineService.buildContext(evidence, defaultInstrument.id, labelKind)
+            categorizeInboxEngineService.buildContext(evidence, defaultInstrumentId, labelKind)
         ),
         session,
         transactionIdSets.hidden,
-        defaultInstrument.id
+        defaultInstrumentId
     );
     const peakRowCount = Math.max(session.peakRowCount, new Set(rows.map(row => row.transactionId)).size);
 

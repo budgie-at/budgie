@@ -1,9 +1,10 @@
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { WalletCaptureReviewCard } from '../wallet-capture-review-card/wallet-capture-review-card';
 
 import type { WalletCaptureReviewItemInterface } from '../../interface/wallet-capture-review-item.interface';
@@ -26,7 +27,7 @@ export const WalletCaptureReviewList = ({
     dismissCapture
 }: Props) => {
     const { t } = useLingui();
-    const { defaultInstrument } = useSettingsContext();
+    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
 
     return (
         <View className="gap-y-lg">

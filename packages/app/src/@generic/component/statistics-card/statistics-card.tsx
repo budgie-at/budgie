@@ -1,4 +1,5 @@
 import { convertFromMicroUnits } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { PropsWithChildren } from 'react';
 import { Text, View } from 'react-native';
@@ -6,7 +7,7 @@ import { Text, View } from 'react-native';
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { decimalPlacesAtom, defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { statsAmountVariants } from '../../constant/stats-variants.constant';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
@@ -24,7 +25,8 @@ interface Props extends PropsWithChildren {
 
 export const StatisticsCard = ({ amount, totalAmount, variant, isIncome, cardTestID, amountTestID, onPress, children }: Props) => {
     const { t } = useLingui();
-    const { decimalPlaces, defaultInstrument } = useSettingsContext();
+    const decimalPlaces = useAtomValue(decimalPlacesAtom);
+    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const formatDigits = useFormatDigits(decimalPlaces);
 
     const microAmount = convertFromMicroUnits(amount);

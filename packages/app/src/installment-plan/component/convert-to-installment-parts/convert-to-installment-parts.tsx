@@ -1,10 +1,12 @@
 import { convertFromMicroUnits, convertToMicroUnits } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { ConvertToInstallmentModalSelector } from '../../../app/convert-to-installment-modal.selector';
-import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
+import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
 
 import type { ConvertToInstallmentFormValues } from '../../constant/convert-to-installment-form-schema.constant';
 import type { ConvertToInstallmentModalParamsInterface } from '../../interface/convert-to-installment-modal-params.interface';
@@ -15,7 +17,7 @@ interface Props {
 
 export const ConvertToInstallmentParts = ({ params }: Props) => {
     const { t } = useLingui();
-    const formatDigits = useDisplayFormatDigits();
+    const formatDigits = useFormatDigits(useAtomValue(decimalPlacesAtom));
     const { control } = useFormContext<ConvertToInstallmentFormValues>();
     const [installmentCount, totalAmount] = useWatch({ control, name: ['installmentCount', 'totalAmount'] });
 

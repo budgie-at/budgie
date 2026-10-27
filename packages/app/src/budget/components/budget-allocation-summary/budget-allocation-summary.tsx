@@ -1,4 +1,5 @@
 import { budgetComputeAllocation } from '@budgie/budget';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { useFormContext, useWatch } from 'react-hook-form';
@@ -8,7 +9,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
 import { BudgetSelector } from '../../budget.selector';
 import { BudgetFormValues } from '../../constant/budget-form-schema.constant';
 
@@ -43,7 +44,7 @@ export const BudgetAllocationSummary = () => {
         name: ['overallLimit', 'otherLimit', 'categoryLimits', 'instrumentId']
     });
     const { instrument } = useGetInstrumentByIdQuery(instrumentId);
-    const { decimalPlaces } = useSettingsContext();
+    const decimalPlaces = useAtomValue(decimalPlacesAtom);
     const formatDigits = useFormatDigits(decimalPlaces);
 
     const allocation = budgetComputeAllocation({ overallLimit, otherLimit, categoryLimits });

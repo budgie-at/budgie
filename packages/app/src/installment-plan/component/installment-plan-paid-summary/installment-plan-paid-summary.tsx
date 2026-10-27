@@ -1,10 +1,12 @@
 import { convertFromMicroUnits } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
-import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
+import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
 import { useInstallmentPlanScheduleQuery } from '../../query/use-installment-plan-schedule.query';
 
 interface Props {
@@ -14,7 +16,7 @@ interface Props {
 
 export const InstallmentPlanPaidSummary = ({ accountId, instrumentSymbol }: Props) => {
     const { t } = useLingui();
-    const formatDigits = useDisplayFormatDigits();
+    const formatDigits = useFormatDigits(useAtomValue(decimalPlacesAtom));
     const schedule = useInstallmentPlanScheduleQuery(accountId);
 
     if (!isDefined(schedule)) {

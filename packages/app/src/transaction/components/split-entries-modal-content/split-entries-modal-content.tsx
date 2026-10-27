@@ -6,6 +6,7 @@ import {
     convertFromMicroUnits,
     convertToMicroUnits
 } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { t } from '@lingui/core/macro';
 import { NotificationFeedbackType } from 'expo-haptics';
 import { useEffect, useRef, useState } from 'react';
@@ -22,7 +23,7 @@ import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-aler
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
 import { DEFAULT_DECIMAL_PLACES } from '../../../i18n/constant/default-decimal-places.constant';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
 import {
     EntryWithLocalIdInterface,
     addLocalId,
@@ -52,7 +53,7 @@ interface Props {
 export const SplitEntriesModalContent = (props: Props) => {
     const { initialEntries, variant, entryType, currencySymbol, totalAmount, onConfirm } = props;
 
-    const { decimalPlaces } = useSettingsContext();
+    const decimalPlaces = useAtomValue(decimalPlacesAtom);
     const splitRemainderDecimalPlaces = Math.max(decimalPlaces, DEFAULT_DECIMAL_PLACES);
     const formatDigits = useFormatDigits(splitRemainderDecimalPlaces);
     const [openCategorySelector] = useCategorySelectorModal();

@@ -1,5 +1,6 @@
 import { AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { AccountArchiveService } from '@budgie/ledger';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { Alert, View } from 'react-native';
@@ -11,7 +12,7 @@ import { ProtectedText } from '../../../@generic/component/protected-text/protec
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { useArchivedAccountBalanceQuery } from '../../query/use-archived-account-balance.query';
 
@@ -23,7 +24,7 @@ interface Props {
 
 export const ArchivedAccountCard = ({ account }: Props) => {
     const { t } = useLingui();
-    const { decimalPlaces } = useSettingsContext();
+    const decimalPlaces = useAtomValue(decimalPlacesAtom);
     const { balance } = useArchivedAccountBalanceQuery(account.id);
     const formatDigits = useFormatDigits(decimalPlaces);
 
