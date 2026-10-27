@@ -70,6 +70,7 @@ graphify-out/
 packages/app/fastlane/screenshots/raw/
 packages/app/fastlane/screenshots/variants/*
 !packages/app/fastlane/screenshots/variants/dark/
+!packages/app/fastlane/screenshots/variants/6.117.0-dark/
 packages/app/fastlane/screenshots/**/*.staging*
 packages/app/fastlane/screenshots/landing-raw/
 packages/app/fastlane/report.xml

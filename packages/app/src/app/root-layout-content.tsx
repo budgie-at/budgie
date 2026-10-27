@@ -187,6 +187,10 @@ export const RootLayoutContent = () => {
                                                                         name="note-input"
                                                                         options={formSheetOptions([DETENT_12])}
                                                                     />
+                                                                    <Stack.Screen
+                                                                        name="bank-integration-key"
+                                                                        options={formSheetOptions('fitToContents')}
+                                                                    />
                                                                     <Stack.Screen name="convert-to-transfer" options={MODAL_OPTIONS} />
                                                                     <Stack.Screen
                                                                         name="convert-to-installment"

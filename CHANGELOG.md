@@ -3,6 +3,43 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.120.0](https://github.com/budgie-at/budgie/compare/v6.119.1...v6.120.0) (2026-10-27)
+
+### Bug Fixes
+
+* **app:** show the private settings state in the store privacy screenshot ([bf931d0](https://github.com/budgie-at/budgie/commit/bf931d0326655776d280192fba954f9e1168ec94))
+* **app:** translate renamed account count and sync time labels ([da72c47](https://github.com/budgie-at/budgie/commit/da72c47196b3785cb61c827a4f1e16eb9b564e0d))
+* **app:** vertically center switches on iOS 27 ([798594f](https://github.com/budgie-at/budgie/commit/798594f4d885b61535106511f3d27ac60e4b7273))
+* resolve lint errors in Monobank group key and status UI ([02804da](https://github.com/budgie-at/budgie/commit/02804da65ff75d6113bf52a8b4067ac2964cc41b))
+
+### Features
+
+* **app:** polish bank integration group screen ([87ad3a2](https://github.com/budgie-at/budgie/commit/87ad3a2aeeed654d06015d71eb1686bcdd3461df))
+* **app:** recapture store screenshots for 6.117.0 with the new captions ([30ce72b](https://github.com/budgie-at/budgie/commit/30ce72bfd0824d1c882b26e7a8fdcc53d64623e7))
+* **app:** show the rejected key state on the Monobank key card ([6c5333c](https://github.com/budgie-at/budgie/commit/6c5333cdf2f6b383cb1c7d62826405b32ad6f4ba))
+* one Monobank API key per account group ([f8efe33](https://github.com/budgie-at/budgie/commit/f8efe33d9fcc4bd7a2cba4cd9e628b3a69ed29f1)), closes [#1632](https://github.com/budgie-at/budgie/issues/1632)
+
+
+## [6.119.1](https://github.com/budgie-at/budgie/compare/v6.119.0...v6.119.1) (2026-10-27)
+
+### Bug Fixes
+
+* **app:** let the metadata push target the uploaded App Store version ([0e10272](https://github.com/budgie-at/budgie/commit/0e10272337c98ae002991c32ea9a94e8ff61c3f4))
+
+
+# [6.119.0](https://github.com/budgie-at/budgie/compare/v6.118.0...v6.119.0) (2026-10-27)
+
+### Bug Fixes
+
+* **app:** keep the whole recorded preview flow up to Apple's 30 second limit ([fbae38f](https://github.com/budgie-at/budgie/commit/fbae38f147fa5e005d03bcb7a329f3a1766f4f77))
+* **app:** lay out the universal header without covering the device ([a0db3ee](https://github.com/budgie-at/budgie/commit/a0db3ee0de042d1d4db3e45743d7a57583ca2acc))
+
+### Features
+
+* **app:** add App Store header asset and missing marketing surfaces ([3250073](https://github.com/budgie-at/budgie/commit/3250073c5759c186510593faf7ed3ced9600a9d0))
+* **app:** header asset v2 with localized headline and healthy hero ([71d3bdc](https://github.com/budgie-at/budgie/commit/71d3bdc60d3d4481dd32794b4c00acaa4c5be231))
+
+
 # [6.118.0](https://github.com/budgie-at/budgie/compare/v6.117.2...v6.118.0) (2026-10-27)
 
 ### Features

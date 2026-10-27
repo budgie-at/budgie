@@ -319,6 +319,7 @@ install_database() {
     sqlite_directory="$app_data_container/Documents/SQLite"
 
     xcrun simctl terminate "$SIMULATOR_UDID" "$APP_ID" >/dev/null 2>&1 || true
+    xcrun simctl keychain "$SIMULATOR_UDID" reset
     mkdir -p "$sqlite_directory"
     rm -f "$sqlite_directory"/budgie.db*
     cp "$PREPARED_DATABASE_PATH" "$sqlite_directory/budgie.db"

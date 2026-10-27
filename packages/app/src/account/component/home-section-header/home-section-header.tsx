@@ -22,6 +22,8 @@ export const HomeSectionHeader = ({ section, balanceSummary }: Props) => {
             <BankProviderSectionHeader
                 provider={section.provider}
                 integrationId={section.integrationId}
+                label={section.label}
+                groupNumber={section.groupNumber}
                 total={total}
                 importProgress={importProgress}
             />

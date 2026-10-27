@@ -5,6 +5,7 @@ import { Text, View } from 'react-native';
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { MetaPill } from '../../../@generic/component/meta-pill/meta-pill';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { cn } from '../../../@generic/utils/cn.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
@@ -17,7 +18,6 @@ import { getTransactionType } from '../../utils/get-transaction-type.util';
 import { ReceiptPill } from '../receipt-pill/receipt-pill';
 import { RefundedPill } from '../refunded-pill/refunded-pill';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
-import { TransactionMetaPill } from '../transaction-meta-pill/transaction-meta-pill';
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
@@ -95,7 +95,7 @@ export const TransactionInfoHero = ({ transaction, matchingRuleIds, onOpenRefund
                 </AmountField>
                 {isNotEmptyString(secondaryAmount) ? (
                     <View className="flex-row items-center gap-x-xs">
-                        <TransactionMetaPill icon={UserIconNameEnum.ArrowRight} label={secondaryAmount} />
+                        <MetaPill icon={UserIconNameEnum.ArrowRight} label={secondaryAmount} />
                     </View>
                 ) : null}
             </View>

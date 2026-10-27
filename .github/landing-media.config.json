@@ -22,6 +22,10 @@
             "flow": "flows/setup/prime-deep-links-scene.flow.yaml"
         },
         {
+            "name": "app-store-preview",
+            "flow": "flows/store/app-store-preview.flow.yaml"
+        },
+        {
             "name": "home-hero-1",
             "deepLink": "budgie://"
         },

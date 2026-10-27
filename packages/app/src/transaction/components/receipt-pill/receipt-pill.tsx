@@ -1,7 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
-import { TransactionMetaPill } from '../transaction-meta-pill/transaction-meta-pill';
+import { MetaPill } from '../../../@generic/component/meta-pill/meta-pill';
 
 interface Props {
     readonly testID: string;
@@ -10,5 +10,5 @@ interface Props {
 export const ReceiptPill = ({ testID }: Props) => {
     const { t } = useLingui();
 
-    return <TransactionMetaPill icon={UserIconNameEnum.Receipt} label={t`Receipt`} testID={testID} />;
+    return <MetaPill icon={UserIconNameEnum.Receipt} label={t`Receipt`} testID={testID} />;
 };

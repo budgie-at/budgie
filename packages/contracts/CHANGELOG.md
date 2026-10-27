@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.120.0](https://github.com/budgie-at/budgie/compare/v6.119.1...v6.120.0) (2026-10-27)
+
+### Features
+
+* one Monobank API key per account group ([f8efe33](https://github.com/budgie-at/budgie/commit/f8efe33d9fcc4bd7a2cba4cd9e628b3a69ed29f1)), closes [#1632](https://github.com/budgie-at/budgie/issues/1632)
+
+
 # [6.117.0](https://github.com/budgie-at/budgie/compare/v6.116.4...v6.117.0) (2026-10-26)
 
 ### Bug Fixes

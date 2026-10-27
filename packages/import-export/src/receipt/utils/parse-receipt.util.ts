@@ -83,7 +83,7 @@ const CURRENCY_CODES = new Map<string, CurrencyEnum>(Object.values(CurrencyEnum)
 const CURRENCY_TOKEN_PATTERN = /\p{L}+|[$£€₴]/gu;
 const CURRENCY_CODE_PATTERN = /(?<!\p{L})([A-Za-z]{3})(?!\p{L})\s*(?=\d)|(?<=\d)\s*([A-Za-z]{3})(?!\p{L})/gu;
 const AMOUNT_PATTERN = /(?<![\d.,])([-−])?(\d{1,3}(?:[.,'\s]\d{3})+|\d+)[.,](\d{2})(?!\d|[.,]\d)(?!\s?%)/gu;
-const PARENTHESIZED_PATTERN = /\([^)]*\)/gu;
+const PARENTHESIZED_PATTERN = /\([^()]*\)/gu;
 const INCLUSIVE_MARKER_PATTERN = buildReceiptKeywordPattern(Object.values(INCLUSIVE_MARKERS).flat(), 'iu');
 const CASH_LABEL_PATTERN = buildReceiptKeywordPattern(Object.values(CASH_LABELS).flat(), 'iu');
 const PAYMENT_PATTERN = buildReceiptKeywordPattern([...PAYMENT_BRANDS, ...Object.values(PAYMENT_LABELS).flat()], 'iu');

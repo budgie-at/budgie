@@ -1,9 +1,11 @@
-import { AccountRepository, BankIntegrationRepository, SyncRepository } from '@budgie/contracts';
+import { AccountRepository, BankIntegrationRepository, Db, SyncRepository, SyncStatusEnum } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+
+import { SyncTokenAlreadyConnectedError } from '../error/sync-token-already-connected.error';
 
 import type { AccountEntityInterface, ExternalSourceEnum } from '@budgie/contracts';
 
@@ -43,22 +45,45 @@ export class SyncIntegrationTokenService extends Context.Service<SyncIntegration
                 return yield* bankIntegrationRepository.create({ provider, token });
             });
 
-            const clearCredentialGroupErrors = Effect.fnUntraced(function* (provider: ExternalSourceEnum, accountId: number) {
-                const providerSyncs = yield* syncRepository.getByProvider(provider);
-                const accounts = yield* accountRepository.findByIds(providerSyncs.map(providerSync => providerSync.accountId));
-                const integrationIdByAccountId = new Map(accounts.map(account => [account.id, account.integrationId]));
-                const credentialGroupIntegrationId = integrationIdByAccountId.get(accountId);
-
-                const groupSyncs = isDefined(credentialGroupIntegrationId)
-                    ? providerSyncs.filter(
-                          providerSync => integrationIdByAccountId.get(providerSync.accountId) === credentialGroupIntegrationId
-                      )
-                    : providerSyncs.filter(providerSync => providerSync.accountId === accountId);
-
-                yield* Effect.all(
-                    groupSyncs.map(groupSync => syncRepository.update(groupSync.id, { errorCount: 0, lastError: null })),
-                    { concurrency: 'unbounded' }
+            const resetIntegrationSyncs = Effect.fnUntraced(function* (
+                provider: ExternalSourceEnum,
+                integrationId: number,
+                shouldReenableFailedSyncs: boolean
+            ) {
+                const integrationAccountIds = new Set(
+                    (yield* accountRepository.findByIntegrationId(integrationId)).map(account => account.id)
                 );
+                const integrationSyncs = (yield* syncRepository.getByProvider(provider)).filter(providerSync =>
+                    integrationAccountIds.has(providerSync.accountId)
+                );
+
+                yield* Effect.forEach(
+                    integrationSyncs,
+                    integrationSync =>
+                        syncRepository.update(integrationSync.id, {
+                            errorCount: 0,
+                            lastError: null,
+                            ...(shouldReenableFailedSyncs &&
+                                integrationSync.status === SyncStatusEnum.FAILED &&
+                                !integrationSync.enabled && { enabled: true, status: SyncStatusEnum.IDLE })
+                        }),
+                    { concurrency: 'unbounded', discard: true }
+                );
+            });
+
+            const ensureTokenAvailable = Effect.fn('SyncIntegrationTokenService.ensureTokenAvailable')(function* (
+                provider: ExternalSourceEnum,
+                token: string,
+                ownIntegrationId: number | null
+            ) {
+                const existingIntegration = yield* bankIntegrationRepository.findByProviderAndToken(provider, token);
+                if (isDefined(existingIntegration) && existingIntegration.id !== ownIntegrationId) {
+                    return yield* new SyncTokenAlreadyConnectedError({
+                        provider,
+                        integrationId: existingIntegration.id,
+                        message: `This ${provider} token is already connected`
+                    });
+                }
             });
 
             const applyAccountIntegrationToken = Effect.fnUntraced(function* (
@@ -72,21 +97,32 @@ export class SyncIntegrationTokenService extends Context.Service<SyncIntegration
                         yield* accountRepository.updateById(account.id, { integrationId: existingIntegration.id });
                     }
 
-                    return;
+                    return existingIntegration.id;
                 }
 
                 if (isDefined(account.integrationId)) {
                     yield* bankIntegrationRepository.updateById(account.integrationId, { provider, token });
 
-                    return;
+                    return account.integrationId;
                 }
 
                 const integration = yield* getOrCreateIntegration(provider, token);
                 yield* accountRepository.updateById(account.id, { integrationId: integration.id });
+
+                return integration.id;
             });
 
             return {
                 resolveIntegrationToken,
+                fillIntegrationLabel: Effect.fn('SyncIntegrationTokenService.fillIntegrationLabel')(function* (
+                    integrationId: number,
+                    label: string
+                ) {
+                    const integration = yield* bankIntegrationRepository.findById(integrationId);
+                    if (isDefined(integration) && !isDefined(integration.label) && isNotEmptyString(label)) {
+                        yield* bankIntegrationRepository.updateById(integrationId, { label });
+                    }
+                }),
                 getOrCreateIntegration,
                 updateAccountToken: Effect.fn('SyncIntegrationTokenService.updateAccountToken')(function* (
                     provider: ExternalSourceEnum,
@@ -103,10 +139,25 @@ export class SyncIntegrationTokenService extends Context.Service<SyncIntegration
                         return yield* Effect.die(new Error('Account not found'));
                     }
 
-                    yield* applyAccountIntegrationToken(provider, account, token);
+                    const integrationId = yield* applyAccountIntegrationToken(provider, account, token);
 
-                    return yield* clearCredentialGroupErrors(provider, accountId);
+                    return yield* resetIntegrationSyncs(provider, integrationId, false);
                 }),
+                ensureTokenAvailable,
+                updateIntegrationToken: Effect.fn('SyncIntegrationTokenService.updateIntegrationToken')(
+                    function* (integrationId: number, token: string) {
+                        const integration = yield* bankIntegrationRepository.findById(integrationId);
+                        if (!isDefined(integration)) {
+                            return yield* Effect.die(new Error('Bank integration not found'));
+                        }
+
+                        yield* ensureTokenAvailable(integration.provider, token, integrationId);
+                        yield* bankIntegrationRepository.updateById(integrationId, { token });
+
+                        return yield* resetIntegrationSyncs(integration.provider, integrationId, true);
+                    },
+                    effect => Db.transaction(effect)
+                ),
                 resolveAccountToken: Effect.fn('SyncIntegrationTokenService.resolveAccountToken')(function* (
                     provider: ExternalSourceEnum,
                     accountId: number

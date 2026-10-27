@@ -30,8 +30,8 @@ with `jq` rather than keeping its own copy.
 Scenes: `01-home`, `03-analytics`, `04-budget`, `05-add-expense`,
 `06-account`, `07-settings` and `09-inbox`; the store order is set by
 `compose-screenshots.sh` (see [design/README.md](design/README.md)).
-Appearances: `light` and `dark`; `deployed-variant.json` records which one the store carries, and only that
-variant is committed.
+Appearances: `light` and `dark`; `deployed-variant.json` records which one the store carries.
+The deployed `dark` variant and the versioned `6.117.0-dark` recapture are committed.
 
 `00-prime` is the exception: a Maestro-backed scene that only grants the
 deep-link trust (below) and is never composed or uploaded.
@@ -65,6 +65,22 @@ using for something else.
 Useful flags: `--device`, `--udid`, `--locales`, `--appearances`, `--scenes`,
 `--settle`, `--status-bar real|override`, `--output`, `--skip-install`,
 `--skip-prime`, `--keep-booted`, `--dry-run`.
+
+The private Settings scene seeds a backup date and screenshot hiding, then creates
+and confirms PIN `1234` through the app UI, encrypting the database, and unlocks it
+before capture. Each seed resets the simulator keychain before replacing the
+database. The showcase fixture includes the current database migrations.
+
+For this scene, pass `--flow-screenshot-source simctl`: Maestro's screenshot API
+honors screenshot protection and returns a blank image; the simulator host can
+capture the visible screen. This option captures the screen after the flow ends,
+so keep the scene's `takeScreenshot` as its last step. For example:
+
+```bash
+bash tests/app-tests/scripts/capture-store-screenshots.sh \
+  --config .github/store-screenshots.config.json --app <path/to/Budgie.app> \
+  --scenes 07-settings --appearances dark --flow-screenshot-source simctl
+```
 
 Like CI, a run clears `raw/ios/<device-slug>` before its first cell, so a
 partial re-capture (`--scenes 03-analytics`, or a single `--locales`) leaves the
@@ -133,7 +149,7 @@ leave a locale half-published. Composition detail and the design system live in
 2. Refresh date-sensitive fixtures so the seeded data reads as current.
 3. `pnpm --filter @budgie-at/app-tests screenshots:capture --app <.app>` (both devices run by default).
 4. `screenshots:compose all all` and review `variants/light` and `variants/dark`.
-   Only `variants/dark` (the deployed variant) is committed; `variants/light` is gitignored.
+   `variants/dark` (the deployed variant) and `variants/6.117.0-dark` are committed; `variants/light` is gitignored.
 5. Commit `variants/dark` and any caption edits; `raw/` and other variants are
    gitignored.
 6. `cd packages/app && fastlane store_preflight`, then

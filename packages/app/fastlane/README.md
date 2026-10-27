@@ -66,6 +66,8 @@ from the spec above.
 fastlane store_preflight        # no credentials needed
 fastlane ios ios_metadata       # deliver App Store text metadata
 fastlane ios ios_screenshots    # deliver the composed screenshot set
+fastlane ios ios_marketing_assets # upload headers to Asset Library; no placements or submission
+fastlane ios ios_app_previews   # upload generated preview videos; no submission
 fastlane android android_metadata     # supply Play text metadata + changelogs
 fastlane android android_screenshots  # supply Play screenshots
 ```
@@ -148,8 +150,20 @@ The uploaded set is `screenshots/variants/<variant>/ios`. The variant is
 `screenshots/deployed-variant.json` (currently `dark`, matching the app's own
 default theme).
 
-Only the deployed variant (`dark`) is committed; every other variant is
-composed locally or in CI and gitignored.
+The deployed variant (`dark`) and the versioned `6.117.0-dark` set are
+committed; every other variant is composed locally or in CI and gitignored.
+
+The versioned set uses the deployed dark appearance and the current captions
+for App Store version 6.117.0. Upload it without rebuilding on the Linux control pool:
+
+```bash
+gh workflow run store-metadata.yml --ref feat/store-screenshots-6-117 -f ios_version=6.117.0 -f screenshots=true
+```
+
+The `screenshots` input defaults to false. When enabled, the workflow runs
+`fastlane ios ios_screenshots` with `SCREENSHOT_VARIANT=6.117.0-dark` after the
+metadata upload. `APP_STORE_VERSION` comes from `ios_version` for both lanes.
+The deployed pointer remains unchanged until this set is published.
 
 `SCREENSHOT_VARIANT=ci` is the CI path: instead of reading a committed set, the
 lane composes `screenshots/raw/ios` — which is where mobile-ci's
@@ -277,6 +291,12 @@ since the latest `v*` tag (types `feat`, `fix`, `perf`, unscoped or scoped
 the state file was written. It only warns and never blocks a release.
 
 ## Refresh procedure
+
+Header assets, the 2026 marketing-surface audit, preview capture/encoding commands,
+and manual ASC placement steps are documented in
+[screenshots/MARKETING.md](screenshots/MARKETING.md). For a submission whose version
+differs from the package version, prefix version-bound lanes with
+`APP_STORE_VERSION=6.117.0`; otherwise they retain their package-version default.
 
 1. Build the E2E app and capture on a Mac — see
    [screenshots/README.md](screenshots/README.md).
