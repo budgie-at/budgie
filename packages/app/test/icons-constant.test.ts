@@ -6,7 +6,7 @@ import * as Schema from 'effect/Schema';
 import { isEmptyArray } from '@rnw-community/shared';
 
 import { LEGACY_REICON_ICONS } from '../src/@generic/constant/legacy-reicon-icons.constant';
-import REICON_GLYPHS from '../src/@generic/constant/reicon-glyphs.json';
+import { REICON_FILLED_GLYPHS, REICON_GLYPHS } from '../src/@generic/constant/reicon-glyphs.constant';
 import { resolveReiconIcon } from '../src/@generic/utils/resolve-reicon-icon.util';
 
 const REICON_ICON_COUNT = 2676;
@@ -14,16 +14,20 @@ const LEGACY_ICON_COUNT = 1878;
 
 describe('REICON_GLYPHS', () => {
     it('mapsAllReiconIconNameEnumValues', () => {
-        expect(Object.keys(REICON_GLYPHS.outline)).toHaveLength(REICON_ICON_COUNT);
-        expect(Object.keys(REICON_GLYPHS.outline).sort()).toEqual(Object.values(ReiconIconNameEnum).sort());
+        expect(Object.keys(REICON_GLYPHS)).toHaveLength(REICON_ICON_COUNT);
+        expect(Object.keys(REICON_GLYPHS).sort()).toEqual(Object.values(ReiconIconNameEnum).sort());
     });
 
     it('drawsEveryReiconIcon', () => {
-        expect(Object.entries(REICON_GLYPHS.outline).filter(([, elements]) => isEmptyArray(elements))).toEqual([]);
+        expect(
+            Object.entries(REICON_GLYPHS)
+                .filter(([, glyph]) => isEmptyArray(glyph()))
+                .map(([name]) => name)
+        ).toEqual([]);
     });
 
     it('drawsTheFilledStar', () => {
-        expect(Object.keys(REICON_GLYPHS.filled)).toEqual([ReiconIconNameEnum.STAR]);
+        expect(Object.keys(REICON_FILLED_GLYPHS)).toEqual([ReiconIconNameEnum.STAR]);
     });
 });
 
@@ -36,7 +40,7 @@ describe('LEGACY_REICON_ICONS', () => {
     it('resolvesEveryLegacyIconToACanonicalGlyph', () => {
         for (const icon of Object.values(UserIconNameEnum)) {
             expect(resolveReiconIcon(icon)).toBe(LEGACY_REICON_ICONS[icon]);
-            expect(Object.keys(REICON_GLYPHS.outline)).toContain(resolveReiconIcon(icon));
+            expect(Object.keys(REICON_GLYPHS)).toContain(resolveReiconIcon(icon));
         }
     });
 

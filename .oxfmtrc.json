@@ -26,7 +26,7 @@
     "ignorePatterns": [
         ".agents/**",
         "packages/app/uniwind-types.d.ts",
-        "packages/app/src/@generic/constant/reicon-glyphs.json",
+        "packages/app/src/@generic/constant/reicon-glyphs.constant.ts",
         "packages/app/src/i18n/locales/*/messages.ts",
         "packages/landing/src/i18n/locales/*/messages.ts",
         "packages/landing/src/i18n/locales/*/client-messages.ts"
