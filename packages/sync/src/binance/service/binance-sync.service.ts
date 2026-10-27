@@ -29,7 +29,7 @@ import { mapBankTransactionToCreateInput } from '../../core/utils/map-bank-trans
 import { BinanceSignedClient } from '../client/binance-signed.client';
 import { BINANCE_ACCOUNT_DEFINITION } from '../constant/binance-account-definition.constant';
 import { BinanceCredentialsSchema } from '../constant/binance-credentials.schema';
-import { BINANCE_RATE_LIMIT_MS } from '../constant/binance-rate-limit-ms.constant';
+import { BinanceRateLimitMs } from '../constant/binance-rate-limit-ms.constant';
 import { mapBinanceTransfersToInputs } from '../mapper/binance-transfer-input.mapper';
 
 import { BinanceAccountService } from './binance-account.service';
@@ -344,7 +344,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
 
         const pollingSyncService = yield* makePollingSyncService({
             ...BINANCE_ACCOUNT_DEFINITION,
-            rateLimitMs: BINANCE_RATE_LIMIT_MS,
+            rateLimitMs: yield* BinanceRateLimitMs,
             executeSyncBatch: Effect.fn('BinanceSyncService.executeSyncBatch')(function* (sync: SyncEntityInterface, token: string) {
                 const account = yield* accountRepository.findById(sync.accountId);
                 const externalAccountId = account?.externalId ?? null;

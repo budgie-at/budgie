@@ -30,7 +30,7 @@ export { BinanceSignedClient } from './binance/client/binance-signed.client';
 export { mapBinanceDepositToTransaction, mapBinanceWithdrawalToTransaction, parseBinanceAmount } from './binance/mapper/binance.mapper';
 export { encodeBinanceAccountId, decodeBinanceAccountId } from './binance/utils/binance-account-id.util';
 export { BinanceWalletEnum } from './binance/enum/binance-wallet.enum';
-export { BINANCE_RATE_LIMIT_MS } from './binance/constant/binance-rate-limit-ms.constant';
+export { BinanceRateLimitMs } from './binance/constant/binance-rate-limit-ms.constant';
 export { BINANCE_API_MANAGEMENT_URL } from './binance/constant/binance-api-management-url.constant';
 export { BinanceCredentialsSchema } from './binance/constant/binance-credentials.schema';
 

@@ -1,1 +1,3 @@
-export const BINANCE_RATE_LIMIT_MS = 1000;
+import * as Context from 'effect/Context';
+
+export const BinanceRateLimitMs = Context.Reference<number>('@budgie/sync/BinanceRateLimitMs', { defaultValue: () => 1000 });
