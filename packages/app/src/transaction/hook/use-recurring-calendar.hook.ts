@@ -1,4 +1,9 @@
-import { RecurringSeriesEntityTable, SettingsEntityTable } from '@budgie/contracts';
+import {
+    ExchangeRateEntityTable,
+    HistoricalExchangeRateEntityTable,
+    RecurringSeriesEntityTable,
+    SettingsEntityTable
+} from '@budgie/contracts';
 import { RecurringService } from '@budgie/recurring';
 import { isSameDay } from 'date-fns/isSameDay';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
@@ -7,12 +12,18 @@ import { useState } from 'react';
 import { useAppState } from '../../@generic/hook/use-app-state.hook';
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
-import { STATISTICS_TABLES } from '../constant/statistics-tables.constant';
+import { TRANSACTION_LIST_TABLES } from '../constant/transaction-list-tables.constant';
 
 import type { RecurringCalendarDataInterface } from '@budgie/recurring';
 
 export const recurringCalendarAtom = databaseQueryFamily(
-    [...STATISTICS_TABLES, SettingsEntityTable, RecurringSeriesEntityTable],
+    [
+        ...TRANSACTION_LIST_TABLES,
+        ExchangeRateEntityTable,
+        HistoricalExchangeRateEntityTable,
+        SettingsEntityTable,
+        RecurringSeriesEntityTable
+    ],
     RecurringService,
     (recurringService, [year, month, nowTime]: readonly [number, number, number]) =>
         recurringService.calendar(year, month, new Date(nowTime))

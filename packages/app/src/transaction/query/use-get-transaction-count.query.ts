@@ -3,10 +3,10 @@ import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
-import { TRANSACTION_LIST_TABLES } from '../constant/transaction-list-tables.constant';
+import { TRANSACTION_FILTER_TABLES } from '../constant/transaction-filter-tables.constant';
 
 export const transactionCountAtom = databaseQueryFamily(
-    TRANSACTION_LIST_TABLES,
+    TRANSACTION_FILTER_TABLES,
     TransactionViewRepository,
     (transactionViewRepository, filters: TransactionFilterInterface) => transactionViewRepository.countAll(filters)
 );

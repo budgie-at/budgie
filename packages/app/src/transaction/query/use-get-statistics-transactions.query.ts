@@ -3,7 +3,7 @@ import { StatisticsRepository } from '@budgie/contracts';
 import { isDefined } from '@rnw-community/shared';
 
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
-import { STATISTICS_TABLES } from '../constant/statistics-tables.constant';
+import { TRANSACTION_LIST_TABLES } from '../constant/transaction-list-tables.constant';
 import { buildTransactionFilterKey } from '../utils/build-transaction-filter-key.util';
 
 import { useGetTransactionSectionsQuery } from './use-get-transaction-sections.query';
@@ -20,7 +20,7 @@ const buildTransactionFilter = (filters: StatisticsFilterInterface): Transaction
 });
 
 export const statisticsTransactionsAtom = databaseQueryFamily(
-    STATISTICS_TABLES,
+    TRANSACTION_LIST_TABLES,
     StatisticsRepository,
     (statisticsRepository, [filters, language, limit]: readonly [StatisticsFilterInterface, LanguageEnum, number]) =>
         statisticsRepository.getTransactions(filters, limit, language)

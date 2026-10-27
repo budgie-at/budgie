@@ -1,4 +1,4 @@
-import { StatisticsRepository } from '@budgie/contracts';
+import { CategoryEntityTable, DefaultCategoryTranslationEntityTable, StatisticsRepository } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
@@ -11,7 +11,7 @@ import { STATISTICS_TABLES } from '../constant/statistics-tables.constant';
 import type { LanguageEnum, TransactionFilterInterface } from '@budgie/contracts';
 
 export const statisticsByCategoryAtom = databaseQueryFamily(
-    STATISTICS_TABLES,
+    [...STATISTICS_TABLES, CategoryEntityTable, DefaultCategoryTranslationEntityTable],
     StatisticsRepository,
     (statisticsRepository, [filters, defaultInstrumentId, language]: readonly [TransactionFilterInterface, number, LanguageEnum]) =>
         Effect.all({
