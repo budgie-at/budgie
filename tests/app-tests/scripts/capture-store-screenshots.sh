@@ -80,6 +80,7 @@ SKIP_PRIME='false'
 KEEP_BOOTED='false'
 DRY_RUN='false'
 MAESTRO_WORK_DIR=''
+FLOW_SCREENSHOT_SOURCE='maestro'
 
 # mobile-ci's own bounds: one retry per cell, a wedged simulator gives up after
 # five minutes, and the closing shutdown never blocks a run for more than 30s.
@@ -120,6 +121,7 @@ while [ "$#" -gt 0 ]; do
         --status-bar) STATUS_BAR_MODE="${2:-}"; shift 2 ;;
         --os-locale) OS_LOCALE_MODE="${2:-}"; shift 2 ;;
         --output) OUTPUT_ROOT="${2:-}"; shift 2 ;;
+        --flow-screenshot-source) FLOW_SCREENSHOT_SOURCE="${2:-}"; shift 2 ;;
         --skip-install) SKIP_INSTALL='true'; shift ;;
         --skip-prime) SKIP_PRIME='true'; shift ;;
         --keep-booted) KEEP_BOOTED='true'; shift ;;
@@ -130,6 +132,12 @@ while [ "$#" -gt 0 ]; do
 done
 
 command -v jq >/dev/null 2>&1 || fail "'jq' is required to read $CONFIG_PATH"
+
+case "$FLOW_SCREENSHOT_SOURCE" in
+    maestro | simctl) ;;
+    *) fail "--flow-screenshot-source must be 'maestro' or 'simctl', got '$FLOW_SCREENSHOT_SOURCE'" ;;
+esac
+
 [ -f "$CONFIG_PATH" ] || fail "no store screenshot config at $CONFIG_PATH"
 jq -e . "$CONFIG_PATH" >/dev/null 2>&1 || fail "$CONFIG_PATH is not valid JSON"
 
@@ -442,7 +450,11 @@ capture_flow_cell() {
     fi
 
     mkdir -p "$(dirname "$final_path")"
-    mv "$shot_file" "$final_path"
+    if [ "$FLOW_SCREENSHOT_SOURCE" = 'simctl' ]; then
+        xcrun simctl io "$udid" screenshot "$final_path" >/dev/null || return 1
+    else
+        mv "$shot_file" "$final_path"
+    fi
 
     while IFS= read -r candidate; do
         clip_count=$((clip_count + 1))

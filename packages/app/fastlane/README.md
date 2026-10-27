@@ -150,8 +150,20 @@ The uploaded set is `screenshots/variants/<variant>/ios`. The variant is
 `screenshots/deployed-variant.json` (currently `dark`, matching the app's own
 default theme).
 
-Only the deployed variant (`dark`) is committed; every other variant is
-composed locally or in CI and gitignored.
+The deployed variant (`dark`) and the versioned `6.117.0-dark` set are
+committed; every other variant is composed locally or in CI and gitignored.
+
+The versioned set uses the deployed dark appearance and the current captions
+for App Store version 6.117.0. Upload it without rebuilding on the Linux control pool:
+
+```bash
+gh workflow run store-metadata.yml --ref feat/store-screenshots-6-117 -f ios_version=6.117.0 -f screenshots=true
+```
+
+The `screenshots` input defaults to false. When enabled, the workflow runs
+`fastlane ios ios_screenshots` with `SCREENSHOT_VARIANT=6.117.0-dark` after the
+metadata upload. `APP_STORE_VERSION` comes from `ios_version` for both lanes.
+The deployed pointer remains unchanged until this set is published.
 
 `SCREENSHOT_VARIANT=ci` is the CI path: instead of reading a committed set, the
 lane composes `screenshots/raw/ios` — which is where mobile-ci's

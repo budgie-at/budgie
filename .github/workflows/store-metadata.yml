@@ -8,6 +8,10 @@ on:
                 description: 'App Store version to edit (empty reads packages/app/package.json; set it to the uploaded build version when OTA bumps moved package.json past it)'
                 type: string
                 default: ''
+            screenshots:
+                description: Upload the latest committed screenshot set (variants/6.117.0-dark) to the edited version
+                type: boolean
+                default: false
 
 permissions:
     contents: read
@@ -66,6 +70,16 @@ jobs:
               run: |
                   fastlane store_preflight
                   fastlane ios ios_metadata
+
+            - name: Push iOS screenshots
+              if: inputs.screenshots
+              working-directory: packages/app
+              env:
+                  ASC_KEY_ID: ${{ secrets.EXPO_IOS_ASC_KEY_ID }}
+                  ASC_ISSUER_ID: ${{ secrets.EXPO_IOS_ASC_ISSUER_ID }}
+                  ASC_REVIEW_CONTACT_PHONE: ${{ secrets.ASC_REVIEW_CONTACT_PHONE }}
+                  SCREENSHOT_VARIANT: 6.117.0-dark
+              run: fastlane ios ios_screenshots
 
             - name: Remove ASC key
               if: always()
