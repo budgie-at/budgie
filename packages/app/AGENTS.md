@@ -287,7 +287,7 @@ Valid cases for `max-statements` disable:
 
 ## Component Patterns
 
-> Composition rules (prop budget, compound components, explicit variants, hook chains) live in [docs/component-composition.md](../../docs/component-composition.md). Oxlint loads the `budgie/max-component-props` rule through its JavaScript-plugin bridge and errors above 8 props; refactor with composition instead of growing the `.oxlintrc.json` grandfather list.
+> Composition rules (prop budget, compound components, explicit variants, hook chains) live in [docs/component-composition.md](../../docs/component-composition.md). Oxlint loads the `budgie/max-component-props` rule through its JavaScript-plugin bridge and errors above 8 props with no allow list; refactor with composition instead.
 
 ### File Organization
 
