@@ -229,7 +229,6 @@ export type { TransactionReceiptEntityInterface } from './transaction-receipt/en
 export type { TransactionReceiptCreateEntityInterface } from './transaction-receipt/entity/transaction-receipt-create-entity.interface';
 export { TransactionReceiptRepository } from './transaction-receipt/repository/transaction-receipt.repository';
 export type { ReceiptMatchCandidateInterface } from './transaction-receipt/interface/receipt-match-candidate.interface';
-export type { ReceiptMatchCandidateQueryInterface } from './transaction-receipt/interface/receipt-match-candidate-query.interface';
 
 export { ExpenseTransactionCreateInputSchema } from './transaction/schema/expense-transaction-create-input.schema';
 

@@ -138,8 +138,7 @@ export class ReceiptScanService extends Context.Service<ReceiptScanService>()('@
                     Effect.catchTags({
                         ReceiptAccountNotFoundError: () =>
                             Effect.succeed({
-                                kind: ReceiptScanFailureEnum.MANUAL,
-                                transactionId: null,
+                                ...failure(ReceiptScanFailureEnum.MANUAL),
                                 title,
                                 fallback: { amount: convertFromMicroUnits(draft.total), aiContext: toContext(lines) }
                             })

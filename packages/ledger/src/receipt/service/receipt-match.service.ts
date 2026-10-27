@@ -12,6 +12,7 @@ import {
     TransactionRepository,
     TransactionTypeEnum
 } from '@budgie/contracts';
+import { addDays, subDays } from 'date-fns';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -24,7 +25,6 @@ import { ReceiptMatchResultKindEnum } from '../enum/receipt-match-result-kind.en
 import { ReceiptAccountNotFoundError } from '../error/receipt-account-not-found.error';
 
 import type { ReceiptMatchInputInterface } from '../interface/receipt-match-input.interface';
-import type { ReceiptMatchResultInterface } from '../interface/receipt-match-result.interface';
 
 export class ReceiptMatchService extends Context.Service<ReceiptMatchService>()('@budgie/ledger/ReceiptMatchService', {
     make: Effect.gen(function* () {
@@ -35,7 +35,6 @@ export class ReceiptMatchService extends Context.Service<ReceiptMatchService>()(
         const transactionService = yield* TransactionService;
 
         const CARD_EXTERNAL_ID_PREFIX = 'receipt-card:';
-        const DAY_MS = 24 * 60 * 60 * 1000;
         const WINDOW_DAYS_BEFORE = 1;
         const WINDOW_DAYS_AFTER = 5;
 
@@ -176,16 +175,15 @@ export class ReceiptMatchService extends Context.Service<ReceiptMatchService>()(
                     const candidates = yield* transactionReceiptRepository.findMatchCandidates({
                         total: input.total,
                         currency: input.currency,
-                        from: new Date(input.occurredAt.getTime() - WINDOW_DAYS_BEFORE * DAY_MS),
-                        to: new Date(input.occurredAt.getTime() + WINDOW_DAYS_AFTER * DAY_MS),
+                        from: subDays(input.occurredAt, WINDOW_DAYS_BEFORE),
+                        to: addDays(input.occurredAt, WINDOW_DAYS_AFTER),
                         cardExternalId
                     });
                     const candidate = pickCandidate(candidates, input);
-                    const result: ReceiptMatchResultInterface = isDefined(candidate)
+
+                    return isDefined(candidate)
                         ? yield* applyMatch(candidate, input, cardExternalId)
                         : yield* createExpense(input, cardExternalId);
-
-                    return result;
                 },
                 effect => Db.transaction(effect)
             )

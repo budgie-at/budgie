@@ -45,4 +45,3 @@ export type { ImportedBatchPreparationInterface } from './transaction/interface/
 export type { InstallmentPlanConvertInputInterface } from './installment/interface/installment-plan-convert-input.interface';
 export type { StartDepositInputInterface } from './transaction/interface/start-deposit-input.interface';
 export type { ReceiptMatchInputInterface } from './receipt/interface/receipt-match-input.interface';
-export type { ReceiptMatchResultInterface } from './receipt/interface/receipt-match-result.interface';
