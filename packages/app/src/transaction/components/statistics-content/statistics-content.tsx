@@ -3,6 +3,9 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { Activity, useState } from 'react';
 import { Text, View } from 'react-native';
 
+import { isDefined } from '@rnw-community/shared';
+
+import { Button } from '../../../@generic/component/button/button';
 import { ChromeScrollFrame } from '../../../@generic/component/chrome-scroll-frame/chrome-scroll-frame';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { AnalyticsTabType } from '../../../@generic/type/analytics-tab.type';
@@ -10,9 +13,9 @@ import { getDateFilterByPeriod } from '../../../@generic/utils/date/get-date-fil
 import { useNetWorthQuery } from '../../../account/query/use-net-worth.query';
 import { RunwayContent } from '../../../runway/component/runway-content/runway-content';
 import { AnalyticsHistoryBoundary } from '../../../sync/component/analytics-history-boundary/analytics-history-boundary';
+import { useTransactionAccountFilterModal } from '../../context/transaction-account-filter-modal.context';
 import { useGetTotalIncomeAndExpensesQuery } from '../../query/use-get-total-income-and-expenses.query';
 import { checkIfFiltersSelected } from '../../utils/check-if-filters-selected.util';
-import { AnalyticsChooseAccounts } from '../analytics-choose-accounts/analytics-choose-accounts';
 import { StatisticsCategoriesActivityContent } from '../statistics-categories-activity-content/statistics-categories-activity-content';
 import { StatisticsTagsActivityContent } from '../statistics-tags-activity-content/statistics-tags-activity-content';
 import { TransactionAnalyticsCard } from '../transaction-analytics-card/transaction-analytics-card';
@@ -31,6 +34,15 @@ export const StatisticsContent = ({ activeTab }: Props) => {
 
     const { expense, income } = useGetTotalIncomeAndExpensesQuery(filters);
     const netWorth = useNetWorthQuery();
+    const [openAccountFilter] = useTransactionAccountFilterModal();
+
+    const handleChooseAccounts = () => {
+        openAccountFilter({ value: filters.accountIds }, result => {
+            if (isDefined(result)) {
+                setFilters(current => ({ ...current, accountIds: result.value }));
+            }
+        });
+    };
 
     const isRunwayTab = activeTab === 'runway';
     const isCategoriesTab = activeTab === 'categories';
@@ -54,7 +66,14 @@ export const StatisticsContent = ({ activeTab }: Props) => {
             <AnalyticsHistoryBoundary
                 accountIds={filters.accountIds}
                 description={t`We’re still importing transaction history. Wait for these accounts to finish, or select only accounts whose history is ready.`}
-                action={<AnalyticsChooseAccounts filters={filters} onChange={setFilters} />}
+                action={
+                    <Button
+                        content={t`Choose accounts`}
+                        leftIcon={UserIconNameEnum.Wallet}
+                        onPress={handleChooseAccounts}
+                        variant="primary"
+                    />
+                }
             >
                 <View className="gap-y-lg">
                     <Text className="uppercase text-secondary-foreground text-xs">

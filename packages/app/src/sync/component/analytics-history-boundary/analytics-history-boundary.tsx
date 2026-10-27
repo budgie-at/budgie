@@ -1,13 +1,14 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
-import { ActivityIndicator, View } from 'react-native';
+import { Trans, useLingui } from '@lingui/react/macro';
+import { ActivityIndicator, Text, View } from 'react-native';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
 import { useAnalyticsHistorySyncsQuery } from '../../query/use-analytics-history-syncs.query';
-import { AnalyticsSyncPending } from '../analytics-sync-pending/analytics-sync-pending';
+import { AnalyticsSyncAccountProgress } from '../analytics-sync-account-progress/analytics-sync-account-progress';
 
 import type { AccountTypeEnum } from '@budgie/contracts';
 import type { ReactNode } from 'react';
@@ -51,7 +52,25 @@ export const AnalyticsHistoryBoundary = ({ children, description, action, accoun
     }
 
     if (isNotEmptyArray(syncs)) {
-        return <AnalyticsSyncPending syncs={syncs} description={description} action={action} />;
+        return (
+            <View className="rounded-5xl border border-secondary-corner bg-secondary-background p-5xl gap-y-3xl">
+                <View className="items-center gap-y-lg">
+                    <CircleIcon icon={UserIconNameEnum.ChartNoAxesCombined} variant="ghost" size={64} iconSize={32} />
+                    <Text className="text-primary text-md font-semibold text-center">
+                        <Trans>Your analytics are taking shape</Trans>
+                    </Text>
+                    <Text className="text-secondary-foreground text-sm text-center">{description}</Text>
+                </View>
+
+                {action}
+
+                <View className="gap-y-3xl">
+                    {syncs.map(history => (
+                        <AnalyticsSyncAccountProgress key={history.account.id} history={history} />
+                    ))}
+                </View>
+            </View>
+        );
     }
 
     return children;

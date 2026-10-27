@@ -1154,7 +1154,7 @@ msgstr "Виберіть PIN-код"
 msgid "Choose a preset to auto-fill column mappings"
 msgstr "Оберіть шаблон для автоматичного заповнення відповідностей стовпців"
 
-#: src/transaction/components/analytics-choose-accounts/analytics-choose-accounts.tsx
+#: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Choose accounts"
 msgstr "Вибрати рахунки"
 
@@ -5506,7 +5506,7 @@ msgstr "Ви підключені до Wi-Fi"
 msgid "You're on Wi-Fi."
 msgstr "Ви підключені до Wi-Fi."
 
-#: src/sync/component/analytics-sync-pending/analytics-sync-pending.tsx
+#: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
 msgid "Your analytics are taking shape"
 msgstr "Ваша аналітика набуває форми"
 

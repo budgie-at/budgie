@@ -1154,7 +1154,7 @@ msgstr "Elige un PIN"
 msgid "Choose a preset to auto-fill column mappings"
 msgstr "Elige un preset para autocompletar las asignaciones de columnas"
 
-#: src/transaction/components/analytics-choose-accounts/analytics-choose-accounts.tsx
+#: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Choose accounts"
 msgstr "Elegir cuentas"
 
@@ -5506,7 +5506,7 @@ msgstr "Estás conectado a Wi-Fi"
 msgid "You're on Wi-Fi."
 msgstr "Estás conectado a Wi-Fi."
 
-#: src/sync/component/analytics-sync-pending/analytics-sync-pending.tsx
+#: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
 msgid "Your analytics are taking shape"
 msgstr "Tus análisis van tomando forma"
 

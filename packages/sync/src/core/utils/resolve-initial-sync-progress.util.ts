@@ -18,8 +18,6 @@ const SYNC_BACKFILL_PACE: Partial<Record<ExternalSourceEnum, SyncBackfillPaceInt
 const MAX_IN_PROGRESS_PERCENT = 99;
 const INDETERMINATE_PROGRESS: InitialSyncProgressInterface = { percent: null, minutesLeft: null };
 
-const isImportingHistory = (sync: SyncEntityInterface) => sync.enabled && isInitialSyncIncomplete(sync);
-
 const resolveBackfillWindow = ({ provider, backwardSyncFromAt, backwardSyncLimitAt, forwardSyncFromAt }: SyncEntityInterface) => {
     const pace = SYNC_BACKFILL_PACE[provider];
     if (!isDefined(pace) || !isDefined(backwardSyncLimitAt) || !isDefined(forwardSyncFromAt)) {
@@ -37,7 +35,7 @@ const resolveBackfillWindow = ({ provider, backwardSyncFromAt, backwardSyncLimit
 };
 
 export const resolveInitialSyncProgress = (syncs: ReadonlyArray<SyncEntityInterface | null>): InitialSyncProgressInterface | null => {
-    const importingSyncs = syncs.filter(isDefined).filter(isImportingHistory);
+    const importingSyncs = syncs.filter(isDefined).filter(sync => sync.enabled && isInitialSyncIncomplete(sync));
     if (!isNotEmptyArray(importingSyncs)) {
         return null;
     }
