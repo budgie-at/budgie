@@ -1,0 +1,43 @@
+appId: ${APP_ID}
+env:
+    E2E_FIXTURES_URI: ${E2E_FIXTURES_URI}
+    FIXTURE_ROW_ID_MATCH: '42-receipt-scan.db'
+    FILE_ROW_ID_MATCH: 'receipt-e2e, pdf'
+---
+- runFlow:
+      file: subflows/import/import-database-from-settings.flow.yaml
+      env:
+          FIXTURE_ROW_ID_MATCH: ${FIXTURE_ROW_ID_MATCH}
+- openLink: ${E2E_FIXTURES_URI.replace('file://', 'shareddocuments://')}
+- extendedWaitUntil:
+      visible:
+          id: ${FILE_ROW_ID_MATCH}
+      timeout: 10000
+- longPressOn:
+      id: ${FILE_ROW_ID_MATCH}
+- tapOn: 'Share'
+- extendedWaitUntil:
+      visible: 'Budgie Receipt'
+      timeout: 5000
+- tapOn: 'Budgie Receipt'
+- extendedWaitUntil:
+      visible:
+          id: 'ReceiptScanToast.DONE'
+      timeout: 30000
+- assertVisible: '1 matched'
+- tapOn:
+      id: 'ReceiptScanToast.DONE'
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionInfo.ReceiptPill'
+      timeout: 5000
+- assertVisible:
+      id: 'TransactionInfo.Row.Receipt'
+- assertVisible: '2026-0042'
+- tapOn:
+      id: 'PageHeader.BackButton'
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionCard.ReceiptPill.4242'
+      timeout: 5000

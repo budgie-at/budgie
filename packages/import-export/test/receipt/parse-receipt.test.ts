@@ -4,6 +4,7 @@ import { describe, expect, it } from '@effect/vitest';
 import { parseReceipt } from '../../src/receipt/utils/parse-receipt.util';
 
 import { BILLA_RECEIPT } from './fixture/billa-receipt.fixture';
+import { E2E_SHARED_RECEIPT } from './fixture/e2e-shared-receipt.fixture';
 import { IHR_LABOR_LEGAL_NAME, IHR_LABOR_RECEIPT } from './fixture/ihr-labor-receipt.fixture';
 import { UKRAINIAN_FISCAL_RECEIPT } from './fixture/ukrainian-fiscal-receipt.fixture';
 import { USD_TIP_RECEIPT } from './fixture/usd-tip-receipt.fixture';
@@ -68,6 +69,21 @@ describe('parseReceipt', () => {
                 merchantLegalName: null,
                 merchantCandidates: ['THE GOLDEN SPOON', 'Bistro & Bar'],
                 fingerprint: 'thegoldenspoon|62680000|2026-10-27|20:14'
+            }
+        ],
+        [
+            'the dateless E2E receipt PDF with a USD total',
+            E2E_SHARED_RECEIPT,
+            {
+                total: convertToMicroUnits(62.1),
+                currency: CurrencyEnum.USD,
+                occurredAt: null,
+                cardLast4: null,
+                receiptNumber: '2026-0042',
+                merchantVatId: 'ATU12345678',
+                merchantLegalName: 'Ihr Labor GmbH',
+                merchantCandidates: ['IHR LABOR', 'Ihr Labor GmbH'],
+                fingerprint: 'ATU12345678|2026-0042|62100000|'
             }
         ]
     ])('reads %s', (_name, lines, expected) => {
