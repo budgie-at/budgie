@@ -1,1 +1,5 @@
-This build focuses on getting the numbers right: crypto sync with Binance is more reliable after interrupted runs, and own-card transfer repairs behave correctly after restoring an archived card. Also included: dozens of smaller translation and stability fixes across the app.
+Welcome to Budgie, now on the App Store!
+
+Track expenses offline, plan monthly budgets and see where your money goes. Bring your accounts and currencies together, review recurring charges and try optional on-device AI for categorization and voice entry.
+
+No sign-up. No subscription. Your money, your control.
