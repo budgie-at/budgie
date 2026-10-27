@@ -1146,6 +1146,16 @@
         },
         {
             "files": [
+                "packages/app/src/**/{hook,hooks,utils}/**/*.ts",
+                "packages/app/src/**/*.{hook,util}.ts",
+                "packages/app/src/**/*.tsx"
+            ],
+            "rules": {
+                "budgie/effect-no-imperative": "error"
+            }
+        },
+        {
+            "files": [
                 "packages/*/src/**/service/**/*.ts",
                 "packages/*/src/**/repository/**/*.ts",
                 "packages/*/src/**/*.service.ts",
