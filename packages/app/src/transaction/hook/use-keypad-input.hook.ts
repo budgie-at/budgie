@@ -1,4 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { useSettingsContext } from '../../settings/context/settings.context';
 import { KeypadHandlersInterface } from '../interface/keypad-handlers.interface';
@@ -26,67 +28,46 @@ export const useKeypadInput = (config: UseKeypadInputConfig = {}): UseKeypadInpu
     const { decimalPlaces } = useSettingsContext();
     const maxDecimals = Math.max(decimalPlaces, 2);
     const [displayValue, setDisplayValue] = useState(() => (initialValue === 0 ? '0' : formatNumericDisplay(initialValue, maxDecimals)));
-    const isInitialMount = useRef(true);
-    const onChangeRef = useRef(onChange);
-
-    useEffect(() => {
-        onChangeRef.current = onChange;
-    }, [onChange]);
-
     const numericValue = Number.parseFloat(displayValue) || 0;
 
-    useEffect(() => {
-        if (isInitialMount.current) {
-            isInitialMount.current = false;
+    const commit = (nextDisplayValue: string) => {
+        const nextNumericValue = Number.parseFloat(nextDisplayValue) || 0;
+
+        setDisplayValue(nextDisplayValue);
+
+        if (nextNumericValue !== numericValue) {
+            onChange?.(nextNumericValue);
+        }
+    };
+
+    const handleDigit = (digit: string) => {
+        if (displayValue === '0') {
+            commit(digit);
 
             return;
         }
 
-        onChangeRef.current?.(numericValue);
-    }, [numericValue]);
+        const [, decimalPart] = displayValue.split('.');
 
-    const handleDigit = (digit: string) => {
-        setDisplayValue(prev => {
-            if (prev === '0') {
-                return digit;
-            }
+        if (isDefined(decimalPart) && decimalPart.length >= maxDecimals) {
+            return;
+        }
 
-            const parts = prev.split('.');
-            const hasDecimal = parts.length > 1;
-            const decimalPart = parts[1] ?? '';
-
-            if (hasDecimal && decimalPart.length >= maxDecimals) {
-                return prev;
-            }
-
-            return prev + digit;
-        });
+        commit(displayValue + digit);
     };
 
     const handleDecimal = () => {
-        setDisplayValue(prev => {
-            if (prev.includes('.')) {
-                return prev;
-            }
-
-            return `${prev}.`;
-        });
+        if (!displayValue.includes('.')) {
+            commit(`${displayValue}.`);
+        }
     };
 
     const handleBackspace = () => {
-        setDisplayValue(prev => {
-            if (prev.length <= 1) {
-                return '0';
-            }
-
-            return prev.slice(0, -1);
-        });
+        commit(displayValue.length <= 1 ? '0' : displayValue.slice(0, -1));
     };
 
     const setFromNumeric = (value: number) => {
-        const newDisplay = value === 0 ? '0' : formatNumericDisplay(value, maxDecimals);
-
-        setDisplayValue(newDisplay);
+        commit(value === 0 ? '0' : formatNumericDisplay(value, maxDecimals));
     };
 
     const handlers: KeypadHandlersInterface = {
@@ -94,7 +75,7 @@ export const useKeypadInput = (config: UseKeypadInputConfig = {}): UseKeypadInpu
         onDecimal: handleDecimal,
         onBackspace: handleBackspace,
         onLongBackspace: () => {
-            setDisplayValue('0');
+            commit('0');
         }
     };
 
