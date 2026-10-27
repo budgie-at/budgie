@@ -22,13 +22,13 @@ import { logAndContinue } from '../../utils/log-and-continue.util';
 import { DeletableRow } from '../deletable-row/deletable-row';
 
 import type { LegendListSizingInterface } from '../../interface/legend-list-sizing.interface';
-import type { DeleteItemEffectType } from '../../type/delete-item-effect.type';
+import type { AppServices } from '../../runtime/app.runtime';
 import type { DeleteConfirmation } from '../deletable-row/deletable-row';
 
 interface Props<T extends IdInterface> {
     data: T[] | null;
     emptyState: ReactNode;
-    onDelete?: DeleteItemEffectType;
+    onDelete?: (id: number) => Effect.Effect<unknown, unknown, AppServices>;
     renderCard: (item: T, index: number) => ReactNode;
     getDeleteConfirmation?: (item: T) => DeleteConfirmation | undefined;
     listHeader?: ReactElement | null;
