@@ -114,8 +114,6 @@ export class SyncIntegrationTokenService extends Context.Service<SyncIntegration
 
             return {
                 resolveIntegrationToken,
-                renameIntegration: (integrationId: number, label: string) =>
-                    bankIntegrationRepository.updateById(integrationId, { label: isNotEmptyString(label.trim()) ? label.trim() : null }),
                 fillIntegrationLabel: Effect.fn('SyncIntegrationTokenService.fillIntegrationLabel')(function* (
                     integrationId: number,
                     label: string

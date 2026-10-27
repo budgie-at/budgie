@@ -181,10 +181,6 @@ export const RootLayoutContent = () => {
                                                                         options={formSheetOptions([DETENT_12])}
                                                                     />
                                                                     <Stack.Screen
-                                                                        name="bank-integration-name"
-                                                                        options={formSheetOptions('fitToContents')}
-                                                                    />
-                                                                    <Stack.Screen
                                                                         name="bank-integration-key"
                                                                         options={formSheetOptions('fitToContents')}
                                                                     />

@@ -26,7 +26,7 @@ const GROUP_B_TOKEN = 'group-b-token';
 const ROTATED_TOKEN = 'group-a-rotated-token';
 const NEW_CONNECTION_TOKEN = 'new-connection-token';
 const CLIENT_NAME = 'Ivan Petrenko';
-const USER_LABEL = 'Family';
+const OTHER_CLIENT_NAME = 'Olena Petrenko';
 const CLIENT_INFO_ENDPOINT = 'https://api.monobank.ua/personal/client-info';
 
 const fetchIntegration = (integrationId: number) =>
@@ -159,7 +159,7 @@ describe('monobank/token-groups', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('fills a missing label from the client name on key update and keeps a user label', () =>
+    it.effect('fills a missing label from the client name on key update and keeps an existing label', () =>
         Effect.gen(function* () {
             const registry = yield* SyncProviderRegistryService;
             const scenario = yield* seedTwoTokenGroups();
@@ -168,23 +168,9 @@ describe('monobank/token-groups', () => {
             yield* skipRequestedSync(registry.updateIntegrationToken(scenario.groupA.id, ROTATED_TOKEN));
             expect(yield* fetchIntegration(scenario.groupA.id)).toMatchObject({ label: CLIENT_NAME });
 
-            yield* registry.renameIntegration(scenario.groupA.id, USER_LABEL);
+            monobankStub.clientInfo({ ...buildMonobank.clientInfoWith(['group-a-failed']), name: OTHER_CLIENT_NAME });
             yield* skipRequestedSync(registry.updateIntegrationToken(scenario.groupA.id, NEW_CONNECTION_TOKEN));
-            expect(yield* fetchIntegration(scenario.groupA.id)).toMatchObject({ token: NEW_CONNECTION_TOKEN, label: USER_LABEL });
-        }).pipe(Effect.provide(TestLayer))
-    );
-
-    it.effect('renames a group and clears its label', () =>
-        Effect.gen(function* () {
-            const registry = yield* SyncProviderRegistryService;
-            const { groupA, groupB } = yield* seedTwoTokenGroups();
-
-            yield* registry.renameIntegration(groupA.id, ` ${USER_LABEL} `);
-            expect(yield* fetchIntegration(groupA.id)).toMatchObject({ label: USER_LABEL });
-            expect(yield* fetchIntegration(groupB.id)).toMatchObject({ label: null });
-
-            yield* registry.renameIntegration(groupA.id, '  ');
-            expect(yield* fetchIntegration(groupA.id)).toMatchObject({ label: null });
+            expect(yield* fetchIntegration(scenario.groupA.id)).toMatchObject({ token: NEW_CONNECTION_TOKEN, label: CLIENT_NAME });
         }).pipe(Effect.provide(TestLayer))
     );
 

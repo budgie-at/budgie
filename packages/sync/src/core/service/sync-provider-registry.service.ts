@@ -10,15 +10,12 @@ import { ErsteSyncService } from '../../erste/service/erste-sync.service';
 import { MonobankSyncService } from '../../monobank/service/monobank-sync.service';
 import { PrivatbankSyncService } from '../../privatbank/service/privatbank-sync.service';
 
-import { SyncIntegrationTokenService } from './sync-integration-token.service';
-
 export class SyncProviderRegistryService extends Context.Service<SyncProviderRegistryService>()(
     '@budgie/sync/SyncProviderRegistryService',
     {
         make: Effect.gen(function* () {
             const syncRepository = yield* SyncRepository;
             const bankIntegrationRepository = yield* BankIntegrationRepository;
-            const syncIntegrationTokenService = yield* SyncIntegrationTokenService;
             const monobankSyncService = yield* MonobankSyncService;
             const binanceSyncService = yield* BinanceSyncService;
             const ersteSyncService = yield* ErsteSyncService;
@@ -47,8 +44,6 @@ export class SyncProviderRegistryService extends Context.Service<SyncProviderReg
 
             return {
                 getServiceForAccount,
-                renameIntegration: (integrationId: number, label: string) =>
-                    syncIntegrationTokenService.renameIntegration(integrationId, label),
                 setAccountSyncEnabled: Effect.fn('SyncProviderRegistryService.setAccountSyncEnabled')(function* (
                     accountId: number,
                     enabled: boolean
@@ -85,7 +80,6 @@ export class SyncProviderRegistryService extends Context.Service<SyncProviderReg
         Layer.provide([
             SyncRepository.layer,
             BankIntegrationRepository.layer,
-            SyncIntegrationTokenService.layer,
             MonobankSyncService.layer,
             BinanceSyncService.layer,
             ErsteSyncService.layer,

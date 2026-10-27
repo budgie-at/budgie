@@ -16,7 +16,6 @@ import { SettingsGroup } from '../../../settings/components/settings-group/setti
 import { BankIntegrationContext } from '../../context/bank-integration.context';
 import { BankIntegrationAccountList } from '../bank-integration-account-list/bank-integration-account-list';
 import { BankIntegrationKeyCard } from '../bank-integration-key-card/bank-integration-key-card';
-import { BankIntegrationNameCard } from '../bank-integration-name-card/bank-integration-name-card';
 import { BankIntegrationOverview } from '../bank-integration-overview/bank-integration-overview';
 
 interface Props {
@@ -52,7 +51,6 @@ export const BankIntegrationPage = ({ integration }: Props) => {
 
     const connectionSection = capabilities.supportsAccountDiscovery ? (
         <SettingsGroup title={t`Connection`}>
-            <BankIntegrationNameCard />
             <BankIntegrationKeyCard />
         </SettingsGroup>
     ) : null;

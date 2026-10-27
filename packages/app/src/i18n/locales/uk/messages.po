@@ -1525,10 +1525,6 @@ msgstr "Не вдалося перерахувати баланси"
 msgid "Could not remove unused downloads"
 msgstr "Не вдалося видалити невикористані завантаження"
 
-#: src/app/bank-integration-name.tsx
-msgid "Could not rename"
-msgstr "Не вдалося перейменувати"
-
 #: src/transaction/components/recurring-series-title-input/recurring-series-title-input.tsx
 msgid "Could not rename recurring payment."
 msgstr "Не вдалося перейменувати регулярний платіж."
@@ -3186,10 +3182,6 @@ msgstr "У готівку"
 msgid "Moved to cash"
 msgstr "Перенесено в готівку"
 
-#: src/sync/component/bank-integration-name-card/bank-integration-name-card.tsx
-msgid "Name"
-msgstr "Назва"
-
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Navigate to Account → Statements"
 msgstr "Перейдіть до Рахунок → Виписки"
@@ -3480,11 +3472,6 @@ msgstr "Не зараз"
 #: src/transaction/components/transaction-field-icon/transaction-field-icon.tsx
 msgid "not set"
 msgstr "не встановлено"
-
-#: src/app/bank-integration-name.tsx
-#: src/sync/component/bank-integration-name-card/bank-integration-name-card.tsx
-msgid "Not set"
-msgstr "Не задано"
 
 #: src/settings/components/backup-row/backup-row.tsx
 msgid "Not yet"
@@ -4338,10 +4325,6 @@ msgstr "Пошук..."
 #: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx
 msgid "Secondary Value"
 msgstr "Другорядне значення"
-
-#: src/app/bank-integration-name.tsx
-msgid "Section name"
-msgstr "Назва розділу"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Security"

@@ -1526,10 +1526,6 @@ msgstr "Could not recalculate balances"
 msgid "Could not remove unused downloads"
 msgstr "Could not remove unused downloads"
 
-#: src/app/bank-integration-name.tsx
-msgid "Could not rename"
-msgstr "Could not rename"
-
 #: src/transaction/components/recurring-series-title-input/recurring-series-title-input.tsx
 msgid "Could not rename recurring payment."
 msgstr "Could not rename recurring payment."
@@ -3187,10 +3183,6 @@ msgstr "Move to cash"
 msgid "Moved to cash"
 msgstr "Moved to cash"
 
-#: src/sync/component/bank-integration-name-card/bank-integration-name-card.tsx
-msgid "Name"
-msgstr "Name"
-
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Navigate to Account → Statements"
 msgstr "Navigate to Account → Statements"
@@ -3481,11 +3473,6 @@ msgstr "Not now"
 #: src/transaction/components/transaction-field-icon/transaction-field-icon.tsx
 msgid "not set"
 msgstr "not set"
-
-#: src/app/bank-integration-name.tsx
-#: src/sync/component/bank-integration-name-card/bank-integration-name-card.tsx
-msgid "Not set"
-msgstr "Not set"
 
 #: src/settings/components/backup-row/backup-row.tsx
 msgid "Not yet"
@@ -4339,10 +4326,6 @@ msgstr "Search..."
 #: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx
 msgid "Secondary Value"
 msgstr "Secondary Value"
-
-#: src/app/bank-integration-name.tsx
-msgid "Section name"
-msgstr "Section name"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Security"
