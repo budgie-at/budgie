@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.121.1](https://github.com/budgie-at/budgie/compare/v6.121.0...v6.121.1) (2026-10-27)
+
+### Bug Fixes
+
+* **sync:** stop Binance scenario tests sleeping on the real clock ([c9d2265](https://github.com/budgie-at/budgie/commit/c9d226565d2117f5ab9a130512e5557ef774513d))
+
+
 # [6.121.0](https://github.com/budgie-at/budgie/compare/v6.120.0...v6.121.0) (2026-10-27)
 
 **Note:** Version bump only for package @budgie/sync
