@@ -11,6 +11,7 @@ import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '
 
 import { useVibration } from '../../@generic/hook/use-vibration.hook';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
+import { useI18nContext } from '../../i18n/context/i18n.context';
 import { RECEIPT_SCAN_TOAST_TYPE } from '../constant/receipt-scan-toast-type.constant';
 import { ReceiptScanFailureEnum } from '../enum/receipt-scan-failure.enum';
 import { ReceiptScanToastStatusEnum } from '../enum/receipt-scan-toast-status.enum';
@@ -20,9 +21,10 @@ import type { ReceiptScanResultInterface } from '../interface/receipt-scan-resul
 
 export const useReceiptScan = () => {
     const { t } = useLingui();
+    const { intl } = useI18nContext();
     const [hapticNotification] = useVibration();
 
-    const showToast = (status: ReceiptScanToastStatusEnum, text1: string, text2: string, transactionId: number | null) => {
+    const showToast = (status: ReceiptScanToastStatusEnum, transactionId: number | null, text1: string, text2?: string) => {
         const handlePress = () => {
             Toast.hide();
             if (isDefined(transactionId)) {
@@ -30,46 +32,60 @@ export const useReceiptScan = () => {
             }
         };
 
+        if (status === ReceiptScanToastStatusEnum.DONE) {
+            hapticNotification(NotificationFeedbackType.Success);
+        }
+
         Toast.show({ type: RECEIPT_SCAN_TOAST_TYPE, props: status, text1, text2, onPress: handlePress });
-        AccessibilityInfo.announceForAccessibilityWithOptions(text1, { queue: true });
-        AccessibilityInfo.announceForAccessibilityWithOptions(text2, { queue: true });
+        AccessibilityInfo.announceForAccessibilityWithOptions([text1, text2].filter(isNotEmptyString).join(', '), { queue: true });
     };
 
-    const showDone = (changed: readonly ReceiptScanResultInterface[], unreadableCount: number) => {
-        const matchedCount = changed.filter(result => result.kind === ReceiptMatchResultKindEnum.MATCHED).length;
-        const createdCount = changed.length - matchedCount;
-        const matchedLabel = t({ message: plural(matchedCount, { one: '# matched', other: '# matched' }) });
-        const addedLabel = t({ message: plural(createdCount, { one: '# added', other: '# added' }) });
-        const singleLabel = isPositiveNumber(matchedCount) ? matchedLabel : addedLabel;
-        const title = isPositiveNumber(matchedCount) && isPositiveNumber(createdCount) ? t`${matchedLabel} · ${addedLabel}` : singleLabel;
-        const hint = isPositiveNumber(unreadableCount)
-            ? t({ message: plural(unreadableCount, { one: "Couldn't read # receipt", other: "Couldn't read # receipts" }) })
-            : t`Tap to open`;
+    const getOutcomeLabel = (kind: ReceiptScanResultInterface['kind']) => {
+        if (kind === ReceiptMatchResultKindEnum.MATCHED) {
+            return t`Matched to existing`;
+        }
 
-        hapticNotification(NotificationFeedbackType.Success);
-        showToast(ReceiptScanToastStatusEnum.DONE, title, hint, changed[0].transactionId);
+        if (kind === ReceiptMatchResultKindEnum.DUPLICATE) {
+            return t`Already scanned`;
+        }
+
+        return t`Added`;
+    };
+
+    const showOutcome = ({ kind, transactionId, title, amount, currency }: ReceiptScanResultInterface) => {
+        const outcome = getOutcomeLabel(kind);
+        const status =
+            kind === ReceiptMatchResultKindEnum.DUPLICATE ? ReceiptScanToastStatusEnum.DUPLICATE : ReceiptScanToastStatusEnum.DONE;
+        const subtitle =
+            isDefined(amount) && isDefined(currency)
+                ? `${intl.formatNumber(-amount, { style: 'currency', currency })} · ${outcome}`
+                : outcome;
+
+        showToast(status, transactionId, isNotEmptyString(title) ? title : t`Receipt`, subtitle);
     };
 
     const showResult = (results: readonly ReceiptScanResultInterface[]) => {
         const changed = results.filter(
             result => result.kind === ReceiptMatchResultKindEnum.MATCHED || result.kind === ReceiptMatchResultKindEnum.CREATED
         );
-        const duplicate = results.find(result => result.kind === ReceiptMatchResultKindEnum.DUPLICATE);
+        const outcome = changed.at(0) ?? results.find(result => result.kind === ReceiptMatchResultKindEnum.DUPLICATE);
         const manual = results.find(result => isDefined(result.fallback));
         const unreadableCount = results.filter(
             result => result.kind === ReceiptScanFailureEnum.NO_TEXT || result.kind === ReceiptScanFailureEnum.FAILED
         ).length;
+        const unreadableHint = isPositiveNumber(unreadableCount)
+            ? t({ message: plural(unreadableCount, { one: "Couldn't read # receipt", other: "Couldn't read # receipts" }) })
+            : void 0;
 
-        if (isNotEmptyArray(changed)) {
-            showDone(changed, unreadableCount);
-        } else if (isDefined(duplicate)) {
-            const { title } = duplicate;
-            const hint = isNotEmptyString(title) ? t`${title} · nothing changed` : t`Nothing changed`;
-            showToast(ReceiptScanToastStatusEnum.DUPLICATE, t`Already scanned`, hint, duplicate.transactionId);
+        if (changed.length > 1 || (isNotEmptyArray(changed) && isPositiveNumber(unreadableCount))) {
+            const title = t({ message: plural(changed.length, { one: '# receipt saved', other: '# receipts saved' }) });
+            showToast(ReceiptScanToastStatusEnum.DONE, changed[0].transactionId, title, unreadableHint);
+        } else if (isDefined(outcome)) {
+            showOutcome(outcome);
         } else if (isDefined(manual)) {
             Toast.hide();
         } else {
-            showToast(ReceiptScanToastStatusEnum.NOT_FOUND, t`No receipt found`, t`This image has no readable text`, null);
+            showToast(ReceiptScanToastStatusEnum.NOT_FOUND, null, t`No receipt found`);
         }
 
         if (isDefined(manual?.fallback)) {
@@ -89,7 +105,6 @@ export const useReceiptScan = () => {
         Toast.show({
             type: RECEIPT_SCAN_TOAST_TYPE,
             props: ReceiptScanToastStatusEnum.READING,
-            text2: t`On device · works offline`,
             autoHide: false
         });
         appRuntime.runFork(

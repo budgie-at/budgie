@@ -38,6 +38,8 @@ export const ReceiptScanToast = ({ text1, text2, props: status, onPress }: Props
     const title = isReading ? readingTitle : text1;
     const variant: ColorPaletteVariant = status === ReceiptScanToastStatusEnum.DONE ? 'positive' : 'secondary';
     const isPulsing = isReading && !isReducedMotion;
+    const opensTransaction = status === ReceiptScanToastStatusEnum.DONE || status === ReceiptScanToastStatusEnum.DUPLICATE;
+    const accessibilityHint = opensTransaction ? t`Opens the transaction` : void 0;
     const pulseStyle = useAnimatedStyle(() => ({ opacity: pulse.get() }));
 
     useEffect(() => {
@@ -45,7 +47,13 @@ export const ReceiptScanToast = ({ text1, text2, props: status, onPress }: Props
     }, [isPulsing, pulse]);
 
     return (
-        <Pressable className="w-full items-center" onPress={onPress} testID={ReceiptScanToastSelector.Toast(status)}>
+        <Pressable
+            className="w-full items-center"
+            accessibilityRole="button"
+            accessibilityHint={accessibilityHint}
+            onPress={onPress}
+            testID={ReceiptScanToastSelector.Toast(status)}
+        >
             <AppToast text1={title} text2={text2} type="info">
                 <View>
                     <CircleIcon icon={TOAST_ICON[status]} variant={variant} border={false} size={36} iconSize={20} />

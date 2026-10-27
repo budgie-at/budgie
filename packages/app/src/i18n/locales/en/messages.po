@@ -23,6 +23,11 @@ msgstr "Binance P2P buy {assetCode}"
 msgid "Binance P2P sell {assetCode}"
 msgstr "Binance P2P sell {assetCode}"
 
+#. placeholder {0}: changed.length
+#: src/receipt/hook/use-receipt-scan.hook.ts
+msgid "{0, plural, one {# receipt saved} other {# receipts saved}}"
+msgstr "{0, plural, one {# receipt saved} other {# receipts saved}}"
+
 #. placeholder {0}: labels.length
 #: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
 msgid "{0, plural, one {# tag} other {# tags}}"
@@ -126,10 +131,6 @@ msgstr "{count, plural, one {This category has # transaction. Select another cat
 msgid "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
 msgstr "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
 
-#: src/receipt/hook/use-receipt-scan.hook.ts
-msgid "{createdCount, plural, one {# added} other {# added}}"
-msgstr "{createdCount, plural, one {# added} other {# added}}"
-
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
 msgid "{days, plural, one {In # day} other {In # days}}"
 msgstr "{days, plural, one {In # day} other {In # days}}"
@@ -218,14 +219,6 @@ msgstr "{loadedDays}/{totalDays} days"
 #: src/app/transaction-type-filter.tsx
 msgid "{localSelectedCount, plural, =0 {Show all types} one {Show # type} other {Show # types}}"
 msgstr "{localSelectedCount, plural, =0 {Show all types} one {Show # type} other {Show # types}}"
-
-#: src/receipt/hook/use-receipt-scan.hook.ts
-msgid "{matchedCount, plural, one {# matched} other {# matched}}"
-msgstr "{matchedCount, plural, one {# matched} other {# matched}}"
-
-#: src/receipt/hook/use-receipt-scan.hook.ts
-msgid "{matchedLabel} · {addedLabel}"
-msgstr "{matchedLabel} · {addedLabel}"
 
 #: src/rule/components/matching-rules-pill/matching-rules-pill.tsx
 #: src/rule/components/rules-list-page/rules-list-page.tsx
@@ -357,10 +350,6 @@ msgstr "{statusLabel} · {downloaded} of {total} GB"
 #: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
 msgid "{taggedCount, plural, one {# tagged this session} other {# tagged this session}}"
 msgstr "{taggedCount, plural, one {# tagged this session} other {# tagged this session}}"
-
-#: src/receipt/hook/use-receipt-scan.hook.ts
-msgid "{title} · nothing changed"
-msgstr "{title} · nothing changed"
 
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "{total} GB on this phone"
@@ -633,6 +622,10 @@ msgstr "Add the Budgie action"
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add your first account to start tracking your finances"
 msgstr "Add your first account to start tracking your finances"
+
+#: src/receipt/hook/use-receipt-scan.hook.ts
+msgid "Added"
+msgstr "Added"
 
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
 msgid "Adds the fee of the plan"
@@ -3137,6 +3130,10 @@ msgstr "Matched expenses are converted into a transfer to this account."
 msgid "Matched income is converted into a transfer from this account."
 msgstr "Matched income is converted into a transfer from this account."
 
+#: src/receipt/hook/use-receipt-scan.hook.ts
+msgid "Matched to existing"
+msgstr "Matched to existing"
+
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "matches"
 msgstr "matches"
@@ -3611,10 +3608,6 @@ msgstr "Not yet"
 msgid "Note"
 msgstr "Note"
 
-#: src/receipt/hook/use-receipt-scan.hook.ts
-msgid "Nothing changed"
-msgstr "Nothing changed"
-
 #: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
 msgid "Nothing from the past is imported"
 msgstr "Nothing from the past is imported"
@@ -3651,10 +3644,6 @@ msgstr "On · PIN"
 #: src/settings/components/app-lock-row/app-lock-row.tsx
 msgid "On · PIN and {biometricLabel}"
 msgstr "On · PIN and {biometricLabel}"
-
-#: src/receipt/hook/use-receipt-scan.hook.ts
-msgid "On device · works offline"
-msgstr "On device · works offline"
 
 #: src/settings/components/your-data-card/your-data-card.tsx
 msgid "On this iPhone"
@@ -3773,6 +3762,10 @@ msgstr "Open settings"
 #: src/wallet-capture/component/apple-pay-capture-open-shortcuts-button/apple-pay-capture-open-shortcuts-button.tsx
 msgid "Open Shortcuts"
 msgstr "Open Shortcuts"
+
+#: src/receipt/components/receipt-scan-toast/receipt-scan-toast.tsx
+msgid "Opens the transaction"
+msgstr "Opens the transaction"
 
 #: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
 msgid "Opens with"
@@ -4159,6 +4152,7 @@ msgstr "Recalculate Balances"
 msgid "Recalculating balances"
 msgstr "Recalculating balances"
 
+#: src/receipt/hook/use-receipt-scan.hook.ts
 #: src/rule/constant/external-source.constant.ts
 #: src/transaction/components/receipt-pill/receipt-pill.tsx
 #: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
@@ -5006,10 +5000,6 @@ msgstr "Tap to clear"
 msgid "Tap to continue"
 msgstr "Tap to continue"
 
-#: src/receipt/hook/use-receipt-scan.hook.ts
-msgid "Tap to open"
-msgstr "Tap to open"
-
 #: src/sync/component/file-upload-step/file-upload-step.tsx
 msgid "Tap to select"
 msgstr "Tap to select"
@@ -5098,10 +5088,6 @@ msgstr "This deletes {DB_NAME} and everything in it from this phone. It can't be
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "This doesn't look like a Monobank token yet"
 msgstr "This doesn't look like a Monobank token yet"
-
-#: src/receipt/hook/use-receipt-scan.hook.ts
-msgid "This image has no readable text"
-msgstr "This image has no readable text"
 
 #: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
 msgid "This is where your data lives and who can read it. You can find it again in Settings › Your data."

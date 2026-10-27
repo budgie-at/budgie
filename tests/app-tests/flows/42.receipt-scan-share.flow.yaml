@@ -24,7 +24,7 @@ env:
       visible:
           id: 'ReceiptScanToast.DONE'
       timeout: 30000
-- assertVisible: '1 matched'
+- assertVisible: 'Ihr Labor'
 - tapOn:
       id: 'ReceiptScanToast.DONE'
 - extendedWaitUntil:

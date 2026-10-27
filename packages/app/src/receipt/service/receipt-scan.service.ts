@@ -53,6 +53,8 @@ export class ReceiptScanService extends Context.Service<ReceiptScanService>()('@
             kind,
             transactionId: null,
             title: '',
+            amount: null,
+            currency: null,
             fallback: null
         });
 
@@ -135,7 +137,13 @@ export class ReceiptScanService extends Context.Service<ReceiptScanService>()('@
                     categoryId
                 })
                 .pipe(
-                    Effect.map((result): ReceiptScanResultInterface => ({ ...result, title, fallback: null })),
+                    Effect.map((result): ReceiptScanResultInterface => ({
+                        ...result,
+                        title,
+                        amount: convertFromMicroUnits(draft.total),
+                        currency: draft.currency,
+                        fallback: null
+                    })),
                     Effect.catchTags({
                         ReceiptAccountNotFoundError: () =>
                             Effect.succeed({

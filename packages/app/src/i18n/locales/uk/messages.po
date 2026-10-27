@@ -22,6 +22,11 @@ msgstr "P2P-купівля {assetCode} на Binance"
 msgid "Binance P2P sell {assetCode}"
 msgstr "P2P-продаж {assetCode} на Binance"
 
+#. placeholder {0}: changed.length
+#: src/receipt/hook/use-receipt-scan.hook.ts
+msgid "{0, plural, one {# receipt saved} other {# receipts saved}}"
+msgstr "{0, plural, one {# чек збережено} few {# чеки збережено} many {# чеків збережено} other {# чека збережено}}"
+
 #. placeholder {0}: labels.length
 #: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
 msgid "{0, plural, one {# tag} other {# tags}}"
@@ -125,10 +130,6 @@ msgstr "{count, plural, one {Ця категорія має # транзакці
 msgid "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
 msgstr "{count, plural, one {Цей тег має # транзакцію. Виберіть інший тег, щоб перепризначити її.} few {Цей тег має # транзакції. Виберіть інший тег, щоб перепризначити їх.} many {Цей тег має # транзакцій. Виберіть інший тег, щоб перепризначити їх.} other {Цей тег має # транзакції. Виберіть інший тег, щоб перепризначити їх.}}"
 
-#: src/receipt/hook/use-receipt-scan.hook.ts
-msgid "{createdCount, plural, one {# added} other {# added}}"
-msgstr "{createdCount, plural, one {# додано} few {# додано} many {# додано} other {# додано}}"
-
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
 msgid "{days, plural, one {In # day} other {In # days}}"
 msgstr "{days, plural, one {Через # день} few {Через # дні} many {Через # днів} other {Через # дня}}"
@@ -217,14 +218,6 @@ msgstr "{loadedDays}/{totalDays} днів"
 #: src/app/transaction-type-filter.tsx
 msgid "{localSelectedCount, plural, =0 {Show all types} one {Show # type} other {Show # types}}"
 msgstr "{localSelectedCount, plural, =0 {Показати всі типи} one {Показати # тип} few {Показати # типи} many {Показати # типів} other {Показати # типу}}"
-
-#: src/receipt/hook/use-receipt-scan.hook.ts
-msgid "{matchedCount, plural, one {# matched} other {# matched}}"
-msgstr "{matchedCount, plural, one {# зіставлено} few {# зіставлено} many {# зіставлено} other {# зіставлено}}"
-
-#: src/receipt/hook/use-receipt-scan.hook.ts
-msgid "{matchedLabel} · {addedLabel}"
-msgstr "{matchedLabel} · {addedLabel}"
 
 #: src/rule/components/matching-rules-pill/matching-rules-pill.tsx
 #: src/rule/components/rules-list-page/rules-list-page.tsx
@@ -356,10 +349,6 @@ msgstr "{statusLabel} · {downloaded} з {total} ГБ"
 #: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
 msgid "{taggedCount, plural, one {# tagged this session} other {# tagged this session}}"
 msgstr "{taggedCount, plural, one {# з тегом за цей сеанс} few {# з тегами за цей сеанс} many {# з тегами за цей сеанс} other {# з тегами за цей сеанс}}"
-
-#: src/receipt/hook/use-receipt-scan.hook.ts
-msgid "{title} · nothing changed"
-msgstr "{title} · нічого не змінено"
 
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "{total} GB on this phone"
@@ -632,6 +621,10 @@ msgstr "Додайте дію Budgie"
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add your first account to start tracking your finances"
 msgstr "Додайте свій перший рахунок, щоб почати відстежувати свої фінанси"
+
+#: src/receipt/hook/use-receipt-scan.hook.ts
+msgid "Added"
+msgstr "Додано"
 
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
 msgid "Adds the fee of the plan"
@@ -3136,6 +3129,10 @@ msgstr "Відповідні витрати перетворюються на п
 msgid "Matched income is converted into a transfer from this account."
 msgstr "Відповідні надходження перетворюються на переказ із цього рахунку."
 
+#: src/receipt/hook/use-receipt-scan.hook.ts
+msgid "Matched to existing"
+msgstr "Зіставлено з наявною"
+
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "matches"
 msgstr "збігається"
@@ -3610,10 +3607,6 @@ msgstr "Ще немає"
 msgid "Note"
 msgstr "Нотатка"
 
-#: src/receipt/hook/use-receipt-scan.hook.ts
-msgid "Nothing changed"
-msgstr "Нічого не змінено"
-
 #: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
 msgid "Nothing from the past is imported"
 msgstr "Нічого з минулого не імпортується"
@@ -3650,10 +3643,6 @@ msgstr "Увімкнено · PIN-код"
 #: src/settings/components/app-lock-row/app-lock-row.tsx
 msgid "On · PIN and {biometricLabel}"
 msgstr "Увімкнено · PIN-код і {biometricLabel}"
-
-#: src/receipt/hook/use-receipt-scan.hook.ts
-msgid "On device · works offline"
-msgstr "На пристрої · працює офлайн"
 
 #: src/settings/components/your-data-card/your-data-card.tsx
 msgid "On this iPhone"
@@ -3772,6 +3761,10 @@ msgstr "Відкрити налаштування"
 #: src/wallet-capture/component/apple-pay-capture-open-shortcuts-button/apple-pay-capture-open-shortcuts-button.tsx
 msgid "Open Shortcuts"
 msgstr "Відкрити Shortcuts"
+
+#: src/receipt/components/receipt-scan-toast/receipt-scan-toast.tsx
+msgid "Opens the transaction"
+msgstr "Відкриває транзакцію"
 
 #: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
 msgid "Opens with"
@@ -4158,6 +4151,7 @@ msgstr "Перерахувати баланси"
 msgid "Recalculating balances"
 msgstr "Перерахунок балансів"
 
+#: src/receipt/hook/use-receipt-scan.hook.ts
 #: src/rule/constant/external-source.constant.ts
 #: src/transaction/components/receipt-pill/receipt-pill.tsx
 #: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
@@ -5005,10 +4999,6 @@ msgstr "Натисніть, щоб очистити"
 msgid "Tap to continue"
 msgstr "Торкніться, щоб продовжити"
 
-#: src/receipt/hook/use-receipt-scan.hook.ts
-msgid "Tap to open"
-msgstr "Торкніться, щоб відкрити"
-
 #: src/sync/component/file-upload-step/file-upload-step.tsx
 msgid "Tap to select"
 msgstr "Торкніться для вибору"
@@ -5097,10 +5087,6 @@ msgstr "Це видалить {DB_NAME} і все, що в ньому, з цьо
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "This doesn't look like a Monobank token yet"
 msgstr "Це ще не схоже на токен Monobank"
-
-#: src/receipt/hook/use-receipt-scan.hook.ts
-msgid "This image has no readable text"
-msgstr "На цьому зображенні немає тексту, який можна прочитати"
 
 #: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
 msgid "This is where your data lives and who can read it. You can find it again in Settings › Your data."
