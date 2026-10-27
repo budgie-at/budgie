@@ -1,11 +1,13 @@
 import { AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { FlatList, View } from 'react-native';
+import { View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
+import { BudgieLegendList } from '../../../@generic/component/budgie-legend-list/budgie-legend-list';
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
 import { ListItemSeparator } from '../../../@generic/component/list-item-separator/list-item-separator';
+import { LEGEND_LIST_STYLE } from '../../../@generic/constant/legend-list.constant';
 import { useFormsheetListContentStyle } from '../../../@generic/hook/use-formsheet-list-content-style/use-formsheet-list-content-style.hook';
 import { AccountSelectorCard } from '../account-selector-card/account-selector-card';
 import { AccountSelectorCreateActionCard } from '../account-selector-create-action-card/account-selector-create-action-card';
@@ -64,17 +66,18 @@ export const AccountSelectContent = (props: Props) => {
         );
 
     return (
-        <FlatList
-            className="absolute inset-0 bg-primary-reverse"
-            data={data}
-            keyExtractor={keyExtractor}
-            renderItem={renderItem}
-            keyboardShouldPersistTaps="always"
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={contentContainerStyle}
-            ListHeaderComponent={listHeaderComponent}
-            ListEmptyComponent={listEmptyComponent}
-            ItemSeparatorComponent={ListItemSeparator}
-        />
+        <View className="absolute inset-0 bg-primary-reverse">
+            <BudgieLegendList
+                style={LEGEND_LIST_STYLE}
+                data={data}
+                keyExtractor={keyExtractor}
+                renderItem={renderItem}
+                keyboardShouldPersistTaps="always"
+                contentContainerStyle={contentContainerStyle}
+                ListHeaderComponent={listHeaderComponent}
+                ListEmptyComponent={listEmptyComponent}
+                ItemSeparatorComponent={ListItemSeparator}
+            />
+        </View>
     );
 };

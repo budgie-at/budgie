@@ -9,13 +9,15 @@ import {
 import { t } from '@lingui/core/macro';
 import { NotificationFeedbackType } from 'expo-haptics';
 import { useEffect, useRef, useState } from 'react';
-import { FlatList, View } from 'react-native';
+import { View } from 'react-native';
 import { KeyboardStickyView } from 'react-native-keyboard-controller';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { BudgieLegendList } from '../../../@generic/component/budgie-legend-list/budgie-legend-list';
 import { Button } from '../../../@generic/component/button/button';
 import { ListItemSeparator } from '../../../@generic/component/list-item-separator/list-item-separator';
+import { LEGEND_LIST_STYLE } from '../../../@generic/constant/legend-list.constant';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
@@ -38,6 +40,7 @@ import { SplitEntryRow } from '../split-entry-row/split-entry-row';
 import { SplitEntriesModalContentSelector } from './split-entries-modal-content.selector';
 
 const keyboardOffset = { closed: 0, opened: 8 };
+const CONTENT_CONTAINER_STYLE = { paddingHorizontal: 12, paddingTop: 16, paddingBottom: 12 };
 
 interface Props {
     readonly initialEntries: TransactionEntryCreateInputInterface[];
@@ -181,14 +184,13 @@ export const SplitEntriesModalContent = (props: Props) => {
 
     return (
         <View className="flex-1">
-            <FlatList
-                className="flex-1"
+            <BudgieLegendList
+                style={LEGEND_LIST_STYLE}
                 data={entries}
                 keyExtractor={entryKeyExtractor}
                 renderItem={renderItem}
                 keyboardShouldPersistTaps="handled"
-                showsVerticalScrollIndicator={false}
-                contentContainerClassName="px-xl pt-3xl pb-xl"
+                contentContainerStyle={CONTENT_CONTAINER_STYLE}
                 ListFooterComponent={listFooter}
                 ItemSeparatorComponent={ListItemSeparator}
             />
