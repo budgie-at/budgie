@@ -10,7 +10,15 @@ import { DatabaseOpenError } from '../error/database-open.error';
 import { DatabaseMigrationService } from '../service/database-migration.service';
 
 const databaseMigrationAtom = appAtomRuntime
-    .atom(Effect.flatMap(DatabaseMigrationService, databaseMigrationService => databaseMigrationService.migrate()))
+    .atom(
+        Effect.gen(function* () {
+            const databaseMigrationService = yield* DatabaseMigrationService;
+
+            performance.mark('budgie:runtime-ready');
+            yield* databaseMigrationService.migrate();
+            performance.mark('budgie:migrations-done');
+        })
+    )
     .pipe(Atom.keepAlive);
 
 export const useDatabaseMigration = (): DatabaseMigrationStatusEnum =>
