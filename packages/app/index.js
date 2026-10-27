@@ -7,3 +7,5 @@ import './src/sync/task/monobank-sync.task';
 import './src/sync/task/transfer-consolidation.task';
 import './src/widget/task/widget-snapshot.task';
 import 'expo-router/entry';
+
+performance.mark('budgie:entry-evaluated');
