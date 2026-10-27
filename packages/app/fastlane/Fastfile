@@ -12,6 +12,11 @@ COMPOSE_SCRIPT = File.join(SCREENSHOTS_DIR, "design", "compose-screenshots.sh")
 IOS_METADATA_PATH = File.join(FASTLANE_DIR, "metadata", "ios")
 ANDROID_METADATA_PATH = File.join(FASTLANE_DIR, "metadata", "android")
 IOS_COPYRIGHT_PATH = File.join(IOS_METADATA_PATH, "copyright.txt")
+IOS_APP_RATING_CONFIG_PATH = File.join(IOS_METADATA_PATH, "app_rating_config.json")
+
+REVIEW_CONTACT_NAME = { contact_first_name: "Vitalii", contact_last_name: "Yehorov" }.freeze
+CONTENT_RIGHTS_DECLARATION = "DOES_NOT_USE_THIRD_PARTY_CONTENT"
+PRICE_BASE_TERRITORY = "USA"
 
 PNG_SIGNATURE = "\x89PNG\r\n\x1A\n".b.freeze
 PNG_COLOR_TYPE_RGB = 2
@@ -213,18 +218,75 @@ def asc_api_key_settings
   { key_id: key_id, issuer_id: issuer_id, key_filepath: absolute_key_path }
 end
 
+def budgie_app
+  Spaceship::ConnectAPI::App.find(CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier))
+end
+
 def ensure_app_store_review_detail
-  app = Spaceship::ConnectAPI::App.find(CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier))
-  version = app.get_edit_app_store_version
+  version = budgie_app.get_edit_app_store_version
   return if version.nil?
 
-  begin
+  detail = begin
     version.fetch_app_store_review_detail
   rescue RuntimeError => e
     raise unless e.message == "No data"
 
     version.create_app_store_review_detail(attributes: {})
   end
+
+  contact = REVIEW_CONTACT_NAME.merge(
+    contact_email: CredentialsManager::AppfileConfig.try_fetch_value(:apple_id),
+    contact_phone: ENV["ASC_REVIEW_CONTACT_PHONE"]
+  )
+  missing = contact.reject { |attribute, value| value.to_s.empty? || !detail.public_send(attribute).to_s.empty? }
+  missing[:demo_account_required] = false unless detail.demo_account_required == false
+  UI.user_error!("App Review contact phone is empty; set ASC_REVIEW_CONTACT_PHONE") if detail.contact_phone.to_s.empty? && !missing.key?(:contact_phone)
+  return if missing.empty?
+
+  detail.update(attributes: missing)
+  UI.success("App Review detail: set #{missing.keys.join(', ')}")
+end
+
+def ensure_content_rights_declaration(app)
+  return if app.content_rights_declaration == CONTENT_RIGHTS_DECLARATION
+
+  app.update(attributes: { content_rights_declaration: CONTENT_RIGHTS_DECLARATION })
+  UI.success("Content rights: #{CONTENT_RIGHTS_DECLARATION}")
+end
+
+def ensure_free_price_schedule(app)
+  client = Spaceship::ConnectAPI.client.tunes_request_client
+  manual_prices = begin
+    client.get("v1/appPriceSchedules/#{app.id}/manualPrices", { limit: 1 }).body["data"]
+  rescue Spaceship::UnexpectedResponse
+    []
+  end
+  return UI.success("Price schedule already set") unless manual_prices.empty?
+
+  price_points = client.get(
+    "v1/apps/#{app.id}/appPricePoints",
+    { filter: { territory: PRICE_BASE_TERRITORY }, fields: { appPricePoints: "customerPrice" }, limit: 200 }
+  ).body["data"]
+  free_point = price_points.find { |point| point.dig("attributes", "customerPrice").to_f.zero? }
+  UI.user_error!("No free #{PRICE_BASE_TERRITORY} price point for app #{app.id}") if free_point.nil?
+
+  client.post("v1/appPriceSchedules", {
+    data: {
+      type: "appPriceSchedules",
+      relationships: {
+        app: { data: { type: "apps", id: app.id } },
+        baseTerritory: { data: { type: "territories", id: PRICE_BASE_TERRITORY } },
+        manualPrices: { data: [{ type: "appPrices", id: "${free}" }] }
+      }
+    },
+    included: [{
+      type: "appPrices",
+      id: "${free}",
+      attributes: { startDate: nil },
+      relationships: { appPricePoint: { data: { type: "appPricePoints", id: free_point["id"] } } }
+    }]
+  })
+  UI.success("Price schedule: free, base territory #{PRICE_BASE_TERRITORY}")
 end
 
 # mobile-ci's store-screenshots workflow downloads every capture job's artifact
@@ -310,8 +372,13 @@ platform :ios do
       skip_screenshots: true,
       force: true,
       precheck_include_in_app_purchases: false,
-      metadata_path: IOS_METADATA_PATH
+      metadata_path: IOS_METADATA_PATH,
+      app_rating_config_path: IOS_APP_RATING_CONFIG_PATH
     )
+
+    app = budgie_app
+    ensure_content_rights_declaration(app)
+    ensure_free_price_schedule(app)
   end
 
   lane :ios_screenshots do
