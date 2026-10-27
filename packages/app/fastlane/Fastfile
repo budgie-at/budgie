@@ -64,7 +64,10 @@ ASC_LOCALES = %w[en-US fr-FR uk de-DE es-ES].freeze
 # deliver select or create it instead of failing with "could not find an
 # editable version".
 def app_store_version
-  ENV.fetch("APP_STORE_VERSION") { JSON.parse(File.read(File.join(APP_DIR, "package.json"))).fetch("version") }
+  override = ENV["APP_STORE_VERSION"].to_s
+  return override unless override.empty?
+
+  JSON.parse(File.read(File.join(APP_DIR, "package.json"))).fetch("version")
 end
 
 def screenshot_variant
