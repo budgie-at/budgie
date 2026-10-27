@@ -1,16 +1,14 @@
-import { LanguageEnum } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { createIntl, createIntlCache } from '@formatjs/intl';
 import { i18n } from '@lingui/core';
 import { I18nProvider as LinguiProvider } from '@lingui/react';
-import * as Effect from 'effect/Effect';
-import { ReactNode, useEffect, useState } from 'react';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
+import { ReactNode } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { appRuntime } from '../../@generic/runtime/app.runtime';
-import { useSettingsContext } from '../../settings/context/settings.context';
+import { activatedLanguageAtom } from '../constant/activated-language-atom.constant';
 import { I18nContext, I18nContextInterface } from '../context/i18n.context';
-import { i18nActivateFallback, i18nEnsureLanguageActivated, i18nGetOSLocale } from '../utils/i18n.util';
 import { languageToLocale } from '../utils/language-to-locale.util';
 
 interface Props {
@@ -20,38 +18,15 @@ interface Props {
 const intlCache = createIntlCache();
 
 export const I18nProvider = ({ children }: Props) => {
-    const { settings, isLoading: isSettingsLoading } = useSettingsContext();
-    const { language } = settings;
-    const [activatedLanguage, setActivatedLanguage] = useState<LanguageEnum | null>(null);
-
-    useEffect(() => {
-        const targetLanguage = isSettingsLoading ? i18nGetOSLocale() : language;
-        const fiber = appRuntime.runFork(
-            i18nEnsureLanguageActivated(targetLanguage).pipe(
-                Effect.match({
-                    onSuccess: () => {
-                        setActivatedLanguage(targetLanguage);
-                    },
-                    onFailure: () => {
-                        i18nActivateFallback();
-                        setActivatedLanguage(LanguageEnum.EN);
-                    }
-                })
-            )
-        );
-
-        return () => void fiber.interruptUnsafe();
-    }, [isSettingsLoading, language]);
-
-    const locale = languageToLocale(isDefined(activatedLanguage) ? activatedLanguage : language);
-
-    const intl = createIntl({ locale }, intlCache);
-
-    const value: I18nContextInterface = { intl };
+    const activatedLanguage = AsyncResult.getOrElse(useAtomValue(activatedLanguageAtom), () => null);
 
     if (!isDefined(activatedLanguage)) {
         return null;
     }
+
+    const intl = createIntl({ locale: languageToLocale(activatedLanguage) }, intlCache);
+
+    const value: I18nContextInterface = { intl };
 
     return (
         <I18nContext.Provider value={value}>
