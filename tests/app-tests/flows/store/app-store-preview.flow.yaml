@@ -1,0 +1,43 @@
+appId: ${APP_ID}
+---
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://'
+
+- extendedWaitUntil:
+      visible:
+          id: 'HomePage.TotalBalance'
+      timeout: 15000
+
+- startRecording: preview
+
+- swipe:
+      direction: UP
+      duration: 4000
+
+- swipe:
+      direction: DOWN
+      duration: 4000
+
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://analytics'
+
+- extendedWaitUntil:
+      visible:
+          id: '^CategoryStatisticsCard[.][^.]+$'
+      timeout: 15000
+
+- swipe:
+      direction: UP
+      duration: 6000
+
+- swipe:
+      direction: DOWN
+      duration: 6000
+
+- stopRecording
+
+- takeScreenshot: scene
