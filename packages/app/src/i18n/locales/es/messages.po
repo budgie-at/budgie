@@ -3960,6 +3960,10 @@ msgstr "Recalcular saldos"
 msgid "Recalculating balances"
 msgstr "Recalculando saldos"
 
+#: src/rule/constant/external-source.constant.ts
+msgid "Receipt"
+msgstr "Recibo"
+
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 msgid "Receiving {toCode}"
 msgstr "Recibiendo {toCode}"

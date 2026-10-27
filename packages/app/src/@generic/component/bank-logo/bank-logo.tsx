@@ -38,6 +38,7 @@ const getBankIcon = (provider: ExternalSourceEnum, size: number): ReactElement |
         case ExternalSourceEnum.COINBASE:
         case ExternalSourceEnum.WISE:
         case ExternalSourceEnum.CSV:
+        case ExternalSourceEnum.RECEIPT:
         default:
             return null;
     }

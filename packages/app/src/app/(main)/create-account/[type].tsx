@@ -40,6 +40,7 @@ export default function CreateAccountType() {
         case ExternalSourceEnum.COINBASE:
         case ExternalSourceEnum.WISE:
         case ExternalSourceEnum.CSV:
+        case ExternalSourceEnum.RECEIPT:
         default:
             return <Redirect href="/" />;
     }
