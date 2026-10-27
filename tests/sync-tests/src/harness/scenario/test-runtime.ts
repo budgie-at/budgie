@@ -2,7 +2,7 @@ import { DatabaseChangeService } from '@app/@generic/drizzle/service/database-ch
 import { appServicesLayer, appServicesWithoutDrainerLayer } from '@app/@generic/runtime/app-services.layer';
 import { makeTestDatabase, makeTestPlatformLayer } from '@budgie-at/test-kit';
 import { Db } from '@budgie/contracts';
-import { BINANCE_RATE_LIMIT_MS, MONOBANK_RATE_LIMIT_MS } from '@budgie/sync';
+import { BinanceRateLimitMs, MONOBANK_RATE_LIMIT_MS } from '@budgie/sync';
 import * as Clock from 'effect/Clock';
 import * as Duration from 'effect/Duration';
 import * as Effect from 'effect/Effect';
@@ -22,8 +22,6 @@ import { sleepMode } from './sleep-mode';
 
 import type * as Context from 'effect/Context';
 
-const rateLimitDurationsMs = new Set([MONOBANK_RATE_LIMIT_MS, BINANCE_RATE_LIMIT_MS]);
-
 const withInstantRateLimit = (clock: Clock.Clock): Clock.Clock => {
     let virtualOffsetMs = 0;
 
@@ -35,7 +33,7 @@ const withInstantRateLimit = (clock: Clock.Clock): Clock.Clock => {
         currentTimeMillis: Effect.sync(() => Date.now() + virtualOffsetMs),
         currentTimeMillisUnsafe: () => Date.now() + virtualOffsetMs,
         sleep: (duration: Parameters<Clock.Clock['sleep']>[0]) => {
-            if (sleepMode.isRateLimitInstant && !vi.isFakeTimers() && rateLimitDurationsMs.has(Duration.toMillis(duration))) {
+            if (sleepMode.isRateLimitInstant && !vi.isFakeTimers() && Duration.toMillis(duration) === MONOBANK_RATE_LIMIT_MS) {
                 return Effect.andThen(
                     Effect.sync(() => {
                         virtualOffsetMs += Duration.toMillis(duration);
@@ -49,7 +47,7 @@ const withInstantRateLimit = (clock: Clock.Clock): Clock.Clock => {
     };
 };
 
-const platformLayer = makeTestPlatformLayer(testDb);
+const platformLayer = Layer.merge(makeTestPlatformLayer(testDb), Layer.succeed(BinanceRateLimitMs, 0));
 
 const servicesLayer = appServicesWithoutDrainerLayer.pipe(
     Layer.provideMerge(Layer.merge(fakeTransferConsolidationDrainerLayer, platformLayer))
@@ -76,8 +74,13 @@ const livePlatformLayer = Layer.mergeAll(
     Logger.layer([])
 ).pipe(Layer.provideMerge(DatabaseChangeService.layer), Layer.provideMerge(Reactivity.layer));
 
-export const testAtomRuntime = Atom.context({ memoMap: Layer.makeMemoMapUnsafe() })(
-    appServicesWithoutDrainerLayer.pipe(Layer.provideMerge(Layer.merge(fakeTransferConsolidationDrainerLayer, livePlatformLayer)))
+export const liveAtomClock = Atom.make<Clock.Clock>(Clock.Clock.defaultValue());
+
+export const testAtomRuntime = Atom.context({ memoMap: Layer.makeMemoMapUnsafe() })(get =>
+    appServicesWithoutDrainerLayer.pipe(
+        Layer.provideMerge(Layer.merge(fakeTransferConsolidationDrainerLayer, livePlatformLayer)),
+        Layer.provideMerge(Layer.succeed(Clock.Clock, get(liveAtomClock)))
+    )
 );
 
 let testContext: Context.Context<Services> | null = null;

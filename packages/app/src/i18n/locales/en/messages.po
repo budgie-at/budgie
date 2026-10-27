@@ -748,6 +748,10 @@ msgstr "Amount lent"
 msgid "Amount or merchant is empty"
 msgstr "Amount or merchant is empty"
 
+#: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
+msgid "Analytics will appear once we can confirm your history is ready."
+msgstr "Analytics will appear once we can confirm your history is ready."
+
 #: src/rule/components/rule-summary-pills/rule-summary-condition-item.tsx
 msgid "and"
 msgstr "and"
@@ -876,10 +880,6 @@ msgstr "Backup"
 #: src/settings/components/backup-row/backup-row.tsx
 msgid "Backup file ready"
 msgstr "Backup file ready"
-
-#: src/transaction/components/statistics-content/statistics-content.tsx
-msgid "Balance"
-msgstr "Balance"
 
 #: src/app/(main)/transactions/[id]/adjustment.tsx
 #: src/transaction/components/transaction-sections-list/transaction-sections-list.tsx
@@ -1215,6 +1215,10 @@ msgstr "Checking"
 msgid "Checking Account"
 msgstr "Checking Account"
 
+#: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
+msgid "Checking transaction history"
+msgstr "Checking transaction history"
+
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Choose \"Excel\" as the export format — PDF and CSV files can't be imported"
 msgstr "Choose \"Excel\" as the export format — PDF and CSV files can't be imported"
@@ -1231,6 +1235,10 @@ msgstr "Choose a PIN"
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "Choose a preset to auto-fill column mappings"
 msgstr "Choose a preset to auto-fill column mappings"
+
+#: src/transaction/components/statistics-content/statistics-content.tsx
+msgid "Choose accounts"
+msgstr "Choose accounts"
 
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 msgid "Choose and confirm a PIN"
@@ -2541,6 +2549,10 @@ msgstr "Fingerprint"
 msgid "Fingerprint day to day"
 msgstr "Fingerprint day to day"
 
+#: src/sync/component/analytics-sync-account-progress/analytics-sync-account-progress.tsx
+msgid "Finish importing this account’s history to include it in analytics."
+msgstr "Finish importing this account’s history to include it in analytics."
+
 #: src/app/(tabs)/settings/import.tsx
 msgid "Fix Errors"
 msgstr "Fix Errors"
@@ -2675,6 +2687,14 @@ msgstr "Hide transactions for {displayTitle}"
 msgid "Historical valuation failed"
 msgstr "Historical valuation failed"
 
+#: src/sync/utils/get-history-import-status-message.util.ts
+msgid "History import needs attention"
+msgstr "History import needs attention"
+
+#: src/sync/utils/get-history-import-status-message.util.ts
+msgid "History import paused"
+msgstr "History import paused"
+
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "History loading paused"
 msgstr "History loading paused"
@@ -2771,6 +2791,10 @@ msgstr "Import transactions from a CSV file"
 #: src/import/hook/use-restore-backup.hook.ts
 msgid "Importing a database will replace all current data. The app will restart after import. This action cannot be undone."
 msgstr "Importing a database will replace all current data. The app will restart after import. This action cannot be undone."
+
+#: src/sync/utils/get-history-import-status-message.util.ts
+msgid "Importing history"
+msgstr "Importing history"
 
 #: src/sync/component/sync-import-progress/sync-import-progress.tsx
 msgid "Importing history · {percent}%"
@@ -4308,6 +4332,10 @@ msgstr "Revert"
 msgid "Revert consolidation?"
 msgstr "Revert consolidation?"
 
+#: src/sync/component/analytics-sync-account-progress/analytics-sync-account-progress.tsx
+msgid "Review sync settings"
+msgstr "Review sync settings"
+
 #: src/rule/constant/external-source.constant.ts
 msgid "Revolut"
 msgstr "Revolut"
@@ -5265,6 +5293,10 @@ msgstr "Too many attempts. Try again in {time}"
 msgid "Total"
 msgstr "Total"
 
+#: src/transaction/components/statistics-content/statistics-content.tsx
+msgid "Total balance"
+msgstr "Total balance"
+
 #: src/account/component/net-worth-collapsible-header/net-worth-collapsible-header.tsx
 msgid "Total Balance"
 msgstr "Total Balance"
@@ -5395,6 +5427,7 @@ msgstr "Try adjusting your filters to see more results"
 #: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
 #: src/ai/component/ai-download-stopped-card/ai-download-stopped-card.tsx
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
 msgid "Try again"
 msgstr "Try again"
 
@@ -5441,6 +5474,10 @@ msgstr "typical month {amount}"
 #: src/i18n/constant/languages.constant.ts
 msgid "Ukrainian"
 msgstr "Ukrainian"
+
+#: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
+msgid "Unable to check transaction history"
+msgstr "Unable to check transaction history"
 
 #: src/@generic/component/ai-translation-fields-header-right/ai-translation-fields-header-right.tsx
 msgid "Unavailable"
@@ -5614,6 +5651,14 @@ msgstr "We never see your PIN, and there's no account to reset it through. {noRe
 msgid "We will retry this quietly."
 msgstr "We will retry this quietly."
 
+#: src/runway/component/runway-content/runway-content.tsx
+msgid "We’re still importing transaction history for your Runway accounts. Your forecast will appear when their history is ready."
+msgstr "We’re still importing transaction history for your Runway accounts. Your forecast will appear when their history is ready."
+
+#: src/transaction/components/statistics-content/statistics-content.tsx
+msgid "We’re still importing transaction history. Wait for these accounts to finish, or select only accounts whose history is ready."
+msgstr "We’re still importing transaction history. Wait for these accounts to finish, or select only accounts whose history is ready."
+
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "What goes inside?"
 msgstr "What goes inside?"
@@ -5758,6 +5803,10 @@ msgstr "You're on Wi-Fi."
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Your accounts keep syncing with the new key."
 msgstr "Your accounts keep syncing with the new key."
+
+#: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
+msgid "Your analytics are taking shape"
+msgstr "Your analytics are taking shape"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Your data"

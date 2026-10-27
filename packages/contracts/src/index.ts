@@ -369,3 +369,6 @@ export { RunwayDriverDimensionEnum } from './runway/enum/runway-driver-dimension
 
 export type { RunwaySeriesRowInterface } from './runway/interface/runway-series-row.interface';
 export type { RunwayDriverSeriesRowInterface } from './runway/interface/runway-driver-series-row.interface';
+
+export { LIQUID_ACCOUNT_TYPES } from './account/constant/liquid-account-types.constant';
+export { CRYPTO_ACCOUNT_TYPES } from './account/constant/crypto-account-types.constant';

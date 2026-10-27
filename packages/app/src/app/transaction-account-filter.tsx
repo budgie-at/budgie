@@ -31,6 +31,7 @@ const ANALYTICS_ACCOUNT_FILTER_TYPES = [
     AccountTypeEnum.BANK_SYNC,
     AccountTypeEnum.CASH,
     AccountTypeEnum.CRYPTO,
+    AccountTypeEnum.CRYPTO_SYNC,
     AccountTypeEnum.STOCKS,
     AccountTypeEnum.SAVINGS
 ] satisfies Exclude<AccountTypeEnum, AccountTypeEnum.DEBT>[];

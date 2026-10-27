@@ -1,10 +1,12 @@
-import { ExternalSourceEnum, SyncModeEnum } from '@budgie/contracts';
+import { ExternalSourceEnum } from '@budgie/contracts';
 import { millisecondsInMinute, millisecondsInSecond } from 'date-fns/constants';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { MONOBANK_MAX_PERIOD_SECONDS } from '../../monobank/constant/monobank-max-period-seconds.constant';
 import { MONOBANK_RATE_LIMIT_MS } from '../../monobank/constant/monobank-rate-limit-ms.constant';
+
+import { isInitialSyncIncomplete } from './is-initial-sync-incomplete.util';
 
 import type { InitialSyncProgressInterface } from '../interface/initial-sync-progress.interface';
 import type { SyncBackfillPaceInterface } from '../interface/sync-backfill-pace.interface';
@@ -15,11 +17,6 @@ const SYNC_BACKFILL_PACE: Partial<Record<ExternalSourceEnum, SyncBackfillPaceInt
 };
 const MAX_IN_PROGRESS_PERCENT = 99;
 const INDETERMINATE_PROGRESS: InitialSyncProgressInterface = { percent: null, minutesLeft: null };
-
-const isImportingHistory = (sync: SyncEntityInterface) =>
-    sync.enabled &&
-    sync.mode === SyncModeEnum.BACKWARD &&
-    !(isDefined(sync.backwardSyncLimitAt) && isDefined(sync.forwardSyncFromAt) && sync.backwardSyncLimitAt >= sync.forwardSyncFromAt);
 
 const resolveBackfillWindow = ({ provider, backwardSyncFromAt, backwardSyncLimitAt, forwardSyncFromAt }: SyncEntityInterface) => {
     const pace = SYNC_BACKFILL_PACE[provider];
@@ -38,7 +35,7 @@ const resolveBackfillWindow = ({ provider, backwardSyncFromAt, backwardSyncLimit
 };
 
 export const resolveInitialSyncProgress = (syncs: ReadonlyArray<SyncEntityInterface | null>): InitialSyncProgressInterface | null => {
-    const importingSyncs = syncs.filter(isDefined).filter(isImportingHistory);
+    const importingSyncs = syncs.filter(isDefined).filter(sync => sync.enabled && isInitialSyncIncomplete(sync));
     if (!isNotEmptyArray(importingSyncs)) {
         return null;
     }

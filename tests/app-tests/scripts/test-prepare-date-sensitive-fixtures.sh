@@ -118,4 +118,6 @@ for output_directory in "$TEMP_DIR/output-1" "$TEMP_DIR/output-2"; do
         test -f "$output_directory/$database_name"
         test "$(sqlite3 "$output_directory/$database_name" 'PRAGMA integrity_check;')" = ok
     done
+
+    test "$(sqlite3 "$output_directory/22.db" "SELECT enabled || '|' || mode || '|' || status FROM bank_syncs WHERE account_id = 1;")" = '0|FORWARD|IDLE'
 done
