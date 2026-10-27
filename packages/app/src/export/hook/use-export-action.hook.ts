@@ -1,8 +1,8 @@
+import * as Effect from 'effect/Effect';
 import Toast from 'react-native-toast-message';
 
-import { getErrorMessage } from '@rnw-community/shared';
-
 import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
+import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 
 import type { UseExportActionOptionsInterface } from '../interface/use-export-action-options.interface';
 
@@ -10,14 +10,12 @@ export const useExportAction = ({ exportAction, successTitle, successMessage, er
     const { isLoading, run } = useSingleFlight();
 
     const handleExport = () =>
-        run(async () => {
-            try {
-                await exportAction();
-                Toast.show({ type: 'success', text1: successTitle, text2: successMessage });
-            } catch (error) {
-                Toast.show({ type: 'error', text1: errorTitle, text2: getErrorMessage(error) });
-            }
-        });
+        run(
+            Effect.promise(exportAction).pipe(
+                Effect.tap(() => Effect.sync(() => void Toast.show({ type: 'success', text1: successTitle, text2: successMessage }))),
+                toastOnFailure(errorTitle)
+            )
+        );
 
     return { isLoading, handleExport };
 };

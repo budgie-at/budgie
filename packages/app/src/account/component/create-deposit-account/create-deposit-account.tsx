@@ -5,7 +5,6 @@ import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useLocalSearchParams } from 'expo-router';
 
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { parsePositiveRouteParam } from '../../../@generic/utils/parse-positive-route-param.util';
 import { defaultInstrumentIdAtom } from '../../../settings/constants/settings-atoms.constant';
 import { ACCOUNT_ICON } from '../../constant/account-icon.constant';
@@ -32,7 +31,7 @@ export const CreateDepositAccount = () => {
     };
 
     const { control, handleSubmit, instrument, isSubmitting } = useDepositAccountForm(initialValues, values =>
-        appRuntime.runPromise(Effect.flatMap(AccountService, accountService => accountService.createDeposit(values)))
+        Effect.flatMap(AccountService, accountService => accountService.createDeposit(values))
     );
 
     return (

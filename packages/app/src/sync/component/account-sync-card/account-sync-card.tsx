@@ -9,7 +9,9 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
-import { useEffectAction } from '../../../@generic/hook/use-effect-action.hook';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
+import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
+import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useAccountSync } from '../../hook/use-account-sync.hook';
 import { BinanceSyncTokenSection } from '../binance-sync-token-section/binance-sync-token-section';
@@ -35,7 +37,6 @@ const statusTextVariants = cva('text-xs font-medium', {
 export const AccountSyncCard = ({ accountId }: Props) => {
     const { t } = useLingui();
     const { sync } = useAccountSync(accountId);
-    const [runEffect] = useEffectAction(t`Could not update setting`);
     const { formatDayAndMonthAndYearWithTime } = useFormatDate();
 
     if (!isDefined(sync)) {
@@ -50,7 +51,13 @@ export const AccountSyncCard = ({ accountId }: Props) => {
     };
 
     const handleToggle = (enabled: boolean) => {
-        runEffect(Effect.flatMap(SyncProviderRegistryService, registry => registry.setAccountSyncEnabled(accountId, enabled)));
+        appRuntime.runFork(
+            logAndContinue(
+                Effect.flatMap(SyncProviderRegistryService, registry => registry.setAccountSyncEnabled(accountId, enabled)).pipe(
+                    toastOnFailure(t`Could not update setting`)
+                )
+            )
+        );
     };
 
     const { supportsFileImport } = SYNC_PROVIDER_CAPABILITIES[sync.provider];

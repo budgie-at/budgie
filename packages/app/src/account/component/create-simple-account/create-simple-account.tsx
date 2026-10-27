@@ -14,7 +14,6 @@ import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-scre
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
 import { MICRO_UNIT_DECIMAL_PLACES } from '../../../@generic/constant/micro-unit-decimal-places.constant';
 import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useGetInstrumentsByTypeQuery } from '../../../instrument/query/use-get-instruments-by-type.query';
 import { HistoricalMarketDataDrainerService } from '../../../market-data/service/historical-market-data-drainer.service';
 import { defaultInstrumentIdAtom } from '../../../settings/constants/settings-atoms.constant';
@@ -54,19 +53,15 @@ export const CreateSimpleAccount = ({ type }: Props) => {
     };
 
     const { control, handleSubmit, instrument, isSubmitting } = useLiabilityAccountForm(formValues, values =>
-        appRuntime.runPromise(
-            Effect.gen(function* () {
-                const accountService = yield* AccountService;
-                const historicalMarketDataDrainerService = yield* HistoricalMarketDataDrainerService;
-                const account = yield* accountService.create(values);
+        Effect.gen(function* () {
+            const accountService = yield* AccountService;
+            const historicalMarketDataDrainerService = yield* HistoricalMarketDataDrainerService;
+            const account = yield* accountService.create(values);
 
-                yield* Effect.forkDetach(
-                    historicalMarketDataDrainerService.enqueueAccounts([account]).pipe(Effect.tapCause(Effect.logError))
-                );
+            yield* Effect.forkDetach(historicalMarketDataDrainerService.enqueueAccounts([account]).pipe(Effect.tapCause(Effect.logError)));
 
-                return account;
-            })
-        )
+            return account;
+        })
     );
 
     const fields = useAccountCreateBindings(control, {

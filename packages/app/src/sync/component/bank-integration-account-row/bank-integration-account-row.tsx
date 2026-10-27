@@ -13,8 +13,10 @@ import { ProtectedText } from '../../../@generic/component/protected-text/protec
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
-import { useEffectAction } from '../../../@generic/hook/use-effect-action.hook';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
+import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { testID } from '../../../@generic/utils/test-id.util';
+import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { AccountSyncBadge } from '../../../account/component/account-sync-badge/account-sync-badge';
 import { useAccountBalanceQuery } from '../../../account/query/use-account-balance.query';
 import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/bank-integration.selector';
@@ -33,14 +35,19 @@ interface Props {
 export const BankIntegrationAccountRow = ({ account }: Props) => {
     const { t } = useLingui();
     const router = useRouter();
-    const [runEffect] = useEffectAction(t`Could not update setting`);
     const { balance } = useAccountBalanceQuery(account.id);
     const formatDigits = useFormatDigits(useAtomValue(decimalPlacesAtom));
     const { sync, syncState, switchLabel, description, isToggleVisible } = useBankIntegrationAccountRowState(account);
 
     const rowTestID = BankIntegrationSelector.AccountRow(account.id);
     const handleToggle = (enabled: boolean) =>
-        void runEffect(Effect.flatMap(SyncProviderRegistryService, registry => registry.setAccountSyncEnabled(account.id, enabled)));
+        void appRuntime.runFork(
+            logAndContinue(
+                Effect.flatMap(SyncProviderRegistryService, registry => registry.setAccountSyncEnabled(account.id, enabled)).pipe(
+                    toastOnFailure(t`Could not update setting`)
+                )
+            )
+        );
     const handlePress = () => void router.push({ pathname: '/account/[id]/update', params: { id: String(account.id) } });
 
     const toggle = isToggleVisible ? (

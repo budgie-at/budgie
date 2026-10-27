@@ -7,8 +7,9 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
-import { useEffectAction } from '../../../@generic/hook/use-effect-action.hook';
+import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { testID } from '../../../@generic/utils/test-id.util';
+import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/bank-integration.selector';
 import { DEFAULT_SYNC_HISTORY_DEPTH } from '../../constant/sync-history-depth-options.constant';
 import { useBankIntegration } from '../../context/bank-integration.context';
@@ -23,16 +24,16 @@ interface Props {
 export const BankIntegrationNewAccountRow = ({ preview }: Props) => {
     const { t } = useLingui();
     const { integration } = useBankIntegration();
-    const [runEffect, isStarting] = useEffectAction(t`Could not start syncing`);
+    const { isLoading: isStarting, run } = useSingleFlight();
 
     const rowTestID = BankIntegrationSelector.NewAccountRow(preview.externalId);
     const description = getAccountIdentityLabel(preview.currencyCode, preview.iban);
     const icon = preview.type === SyncAccountTypeEnum.JAR ? UserIconNameEnum.PiggyBank : UserIconNameEnum.Wallet;
     const handleToggle = () =>
-        void runEffect(
+        void run(
             Effect.flatMap(MonobankSyncService, monobankSyncService =>
                 monobankSyncService.setupAccountSyncBatch(integration.token, [preview.externalId], DEFAULT_SYNC_HISTORY_DEPTH)
-            )
+            ).pipe(toastOnFailure(t`Could not start syncing`))
         );
 
     return (

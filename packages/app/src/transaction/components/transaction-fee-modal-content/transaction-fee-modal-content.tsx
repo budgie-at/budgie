@@ -1,12 +1,15 @@
 import { BANK_FEE_CATEGORY_ID, CategorySourceEnum, TransactionEntryTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
+import * as Effect from 'effect/Effect';
 import { useState } from 'react';
 import { View } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
+import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
 import { SplitEntryRow } from '../split-entry-row/split-entry-row';
 
@@ -61,19 +64,24 @@ export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, v
         onConfirm([feeEntry]);
     };
 
-    const handleRemove = async () => {
-        const confirmed = await confirmAlert({
-            title: t`Remove fee?`,
-            message: t`This will remove the fee entry from this transaction.`,
-            confirmText: t`Remove fee`,
-            cancelText: t`Cancel`,
-            isDestructive: true
-        });
+    const handleRemove = () =>
+        appRuntime.runFork(
+            logAndContinue(
+                Effect.gen(function* () {
+                    const confirmed = yield* confirmAlert({
+                        title: t`Remove fee?`,
+                        message: t`This will remove the fee entry from this transaction.`,
+                        confirmText: t`Remove fee`,
+                        cancelText: t`Cancel`,
+                        isDestructive: true
+                    });
 
-        if (confirmed) {
-            onConfirm([]);
-        }
-    };
+                    if (confirmed) {
+                        onConfirm([]);
+                    }
+                })
+            )
+        );
 
     return (
         <View className="px-xl pt-3xl pb-xl gap-lg">

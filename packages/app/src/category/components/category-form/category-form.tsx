@@ -13,8 +13,8 @@ import { PageHeader } from '../../../@generic/component/page-header/page-header'
 import { ModalPage } from '../../../@generic/component/page/modal-page';
 import { useIconSelectorModal } from '../../../@generic/context/icon-selector-modal.context';
 import { useAiTranslationFields } from '../../../@generic/hook/use-ai-translation-fields.hook';
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
+import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
+import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useChatModelStatus } from '../../../ai/hook/use-chat-model-status.hook';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { useCategorySelectorModal } from '../../context/category-selector-modal.context';
@@ -48,6 +48,7 @@ export const CategoryForm = (props: Props) => {
     const { t } = useLingui();
     const language = useSetting('language');
     const [openCategorySelector] = useCategorySelectorModal();
+    const { run } = useSingleFlight();
     const [openIconSelector] = useIconSelectorModal();
     const { regenerate, isRegenerating } = useRegenerateCategoryTranslation();
     const isTranslationsEnabled = useSetting('isAiTranslationsEnabled');
@@ -85,26 +86,17 @@ export const CategoryForm = (props: Props) => {
         setValue('title', value);
     };
 
-    const mergeInto = async (sourceCategoryId: number, targetCategoryId: number) => {
-        try {
-            const targetCategory = await appRuntime.runPromise(
-                Effect.gen(function* () {
-                    const categoryRepository = yield* CategoryRepository;
-                    const categoryService = yield* CategoryService;
-                    const [foundCategory] = yield* categoryRepository.findById(targetCategoryId, language);
-                    yield* categoryService.mergeInto(sourceCategoryId, targetCategoryId);
-
-                    return foundCategory;
-                })
-            );
+    const mergeInto = (sourceCategoryId: number, targetCategoryId: number) =>
+        Effect.gen(function* () {
+            const categoryRepository = yield* CategoryRepository;
+            const categoryService = yield* CategoryService;
+            const [targetCategory] = yield* categoryRepository.findById(targetCategoryId, language);
+            yield* categoryService.mergeInto(sourceCategoryId, targetCategoryId);
 
             if (isDefined(targetCategory)) {
                 onSuccess({ category: targetCategory, action: 'merged' });
             }
-        } catch {
-            showErrorToast(t`Could not merge category`, t`Please try again later`);
-        }
-    };
+        }).pipe(toastOnFailure(t`Could not merge category`, t`Please try again later`));
 
     const handleMerge = () => {
         const sourceCategoryId = category?.id;
@@ -121,36 +113,24 @@ export const CategoryForm = (props: Props) => {
             },
             targetCategoryId => {
                 if (isDefined(targetCategoryId)) {
-                    void mergeInto(sourceCategoryId, targetCategoryId);
+                    void run(mergeInto(sourceCategoryId, targetCategoryId));
                 }
             }
         );
     };
 
-    const handleEditSubmit = async (categoryId: number, values: CategoryCreateEntityInterface): Promise<void> => {
-        const savedCategory = await appRuntime.runPromise(updateCategory(categoryId, values, { titleEn, titleTags }, language));
-
-        onSuccess({ category: savedCategory, action: 'updated' });
-    };
-
-    const handleCreateSubmit = async (values: CategoryCreateEntityInterface): Promise<void> => {
-        const savedCategory = await appRuntime.runPromise(createCategory(values, { titleEn, titleTags }));
-
-        onSuccess({ category: savedCategory, action: 'created' });
-    };
-
-    const handleFormSubmit = handleSubmit(async values => {
-        try {
+    const submitCategory = (values: CategoryCreateEntityInterface) =>
+        Effect.gen(function* () {
             if (isDefined(category)) {
-                await handleEditSubmit(category.id, values);
+                const updatedCategory = yield* updateCategory(category.id, values, { titleEn, titleTags }, language);
+                onSuccess({ category: updatedCategory, action: 'updated' });
             } else {
-                await handleCreateSubmit(values);
+                const createdCategory = yield* createCategory(values, { titleEn, titleTags });
+                onSuccess({ category: createdCategory, action: 'created' });
             }
-        } catch {
-            const errorMessage = isEditing ? t`Could not save category` : t`Could not create category`;
-            showErrorToast(errorMessage, t`Please try again later`);
-        }
-    });
+        }).pipe(toastOnFailure(isEditing ? t`Could not save category` : t`Could not create category`, t`Please try again later`));
+
+    const handleFormSubmit = handleSubmit(values => run(submitCategory(values)));
 
     return (
         <ModalPage header={<PageHeader title={headerTitle} onGoBack={onCancel} />}>

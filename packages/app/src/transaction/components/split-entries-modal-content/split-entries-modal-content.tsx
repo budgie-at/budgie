@@ -8,6 +8,7 @@ import {
 } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { t } from '@lingui/core/macro';
+import * as Effect from 'effect/Effect';
 import { NotificationFeedbackType } from 'expo-haptics';
 import { useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
@@ -20,8 +21,10 @@ import { Button } from '../../../@generic/component/button/button';
 import { ListItemSeparator } from '../../../@generic/component/list-item-separator/list-item-separator';
 import { LEGEND_LIST_STYLE } from '../../../@generic/constant/legend-list.constant';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
+import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
 import { DEFAULT_DECIMAL_PLACES } from '../../../i18n/constant/default-decimal-places.constant';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
@@ -127,28 +130,30 @@ export const SplitEntriesModalContent = (props: Props) => {
         onConfirm(entries.map(stripLocalId));
     };
 
-    const handleRemoveSplit = async () => {
+    const handleRemoveSplit = () => {
         const [firstEntry] = entries;
 
         if (!isDefined(firstEntry)) {
             return;
         }
 
-        const confirmed = await confirmAlert({
-            title: t`Remove split?`,
-            message: t`This will keep one entry with the full transaction amount.`,
-            confirmText: t`Remove split`,
-            cancelText: t`Cancel`,
-            isDestructive: true
-        });
+        appRuntime.runFork(
+            logAndContinue(
+                Effect.gen(function* () {
+                    const confirmed = yield* confirmAlert({
+                        title: t`Remove split?`,
+                        message: t`This will keep one entry with the full transaction amount.`,
+                        confirmText: t`Remove split`,
+                        cancelText: t`Cancel`,
+                        isDestructive: true
+                    });
 
-        if (!confirmed) {
-            return;
-        }
-
-        const singleEntry = stripLocalId(withEntryAmount(firstEntry, totalAmount));
-
-        onConfirm([singleEntry]);
+                    if (confirmed) {
+                        onConfirm([stripLocalId(withEntryAmount(firstEntry, totalAmount))]);
+                    }
+                })
+            )
+        );
     };
 
     const renderItem = ({ item, index }: { item: EntryWithLocalIdInterface; index: number }) => {

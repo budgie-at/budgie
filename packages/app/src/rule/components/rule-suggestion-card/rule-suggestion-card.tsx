@@ -6,7 +6,6 @@ import { Alert } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useRuleFormModal } from '../../context/rule-form-modal.context';
 import { RuleApplicationDrainerService } from '../../service/rule-application-drainer.service';
 import { showRuleApplicationToast } from '../../utils/show-rule-application-toast.util';
@@ -72,19 +71,19 @@ export const RuleSuggestionCard = (props: Props) => {
         return true;
     });
 
-    const resetCreatingWhenNotCreated = (isCreated: boolean): boolean => {
-        if (!isCreated) {
-            onCreatingChange?.(false);
-        }
-
-        return isCreated;
-    };
-
-    const handleYes = (): Promise<boolean> => {
+    const handleYes = Effect.suspend(() => {
         onCreatingChange?.(true);
 
-        return appRuntime.runPromise(createRule).then(resetCreatingWhenNotCreated);
-    };
+        return createRule;
+    }).pipe(
+        Effect.tap(isCreated =>
+            Effect.sync(() => {
+                if (!isCreated) {
+                    onCreatingChange?.(false);
+                }
+            })
+        )
+    );
 
     return (
         <SwipeableRuleCard

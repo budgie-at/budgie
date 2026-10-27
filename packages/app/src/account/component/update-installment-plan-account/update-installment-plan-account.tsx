@@ -10,7 +10,6 @@ import { isDefined } from '@rnw-community/shared';
 
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
 import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { InstallmentPlanCountField } from '../../../installment-plan/component/installment-plan-count-field/installment-plan-count-field';
 import { InstallmentPlanPaidSummary } from '../../../installment-plan/component/installment-plan-paid-summary/installment-plan-paid-summary';
 import { InstallmentPlanTotalField } from '../../../installment-plan/component/installment-plan-total-field/installment-plan-total-field';
@@ -48,14 +47,12 @@ export const UpdateInstallmentPlanAccount = ({ account }: Props) => {
             isActive: account.isActive
         },
         ({ targetBalance, installmentCount, ...values }: InstallmentPlanUpdateFormValues) =>
-            appRuntime.runPromise(
-                Effect.flatMap(DebtAccountService, debtAccountService =>
-                    debtAccountService.updateDebtById(account.id, {
-                        ...values,
-                        installmentCount: Math.max(installmentCount, minimumCount),
-                        ...(targetBalance !== initialTargetBalance && { targetBalance })
-                    })
-                )
+            Effect.flatMap(DebtAccountService, debtAccountService =>
+                debtAccountService.updateDebtById(account.id, {
+                    ...values,
+                    installmentCount: Math.max(installmentCount, minimumCount),
+                    ...(targetBalance !== initialTargetBalance && { targetBalance })
+                })
             )
     );
 

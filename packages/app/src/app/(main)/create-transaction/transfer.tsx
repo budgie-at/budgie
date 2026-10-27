@@ -8,7 +8,6 @@ import { FormProvider } from 'react-hook-form';
 
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { FullPage } from '../../../@generic/component/page/full-page';
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { parsePositiveRouteParam } from '../../../@generic/utils/parse-positive-route-param.util';
 import { useEmbeddingGenerator } from '../../../ai/hook/use-embedding-generator.hook';
@@ -27,14 +26,14 @@ export default function CreateTransferTransactionPage() {
     const { accountId, toAccountId } = useLocalSearchParams<{ accountId?: string | string[]; toAccountId?: string | string[] }>();
 
     const { form, handleSubmit } = useCreateTransactionForm({
-        onSubmit: async data => {
-            const result = await appRuntime.runPromise(
-                Effect.flatMap(TransferCreationService, transferCreationService => transferCreationService.createInternalTransfer(data))
-            );
-            markForEmbedding(result.id);
-
-            return result;
-        },
+        onSubmit: data =>
+            Effect.flatMap(TransferCreationService, transferCreationService => transferCreationService.createInternalTransfer(data)).pipe(
+                Effect.tap(result =>
+                    Effect.sync(() => {
+                        markForEmbedding(result.id);
+                    })
+                )
+            ),
         schema: TransferTransactionCreateInputSchema,
         type: TransactionTypeEnum.TRANSFER,
         fromAccountId: parsePositiveRouteParam(accountId) ?? 0,

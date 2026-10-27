@@ -11,9 +11,12 @@ import { isDefined } from '@rnw-community/shared';
 import { CircleIcon } from '../@generic/component/circle-icon/circle-icon';
 import { FormsheetHeader } from '../@generic/component/formsheet-header/formsheet-header';
 import { HorizontalCell } from '../@generic/component/horizontal-cell/horizontal-cell';
-import { useEffectAction } from '../@generic/hook/use-effect-action.hook';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
+import { useSingleFlight } from '../@generic/hook/use-single-flight.hook';
+import { appRuntime } from '../@generic/runtime/app.runtime';
 import { confirmAlert } from '../@generic/utils/confirm-alert/confirm-alert.util';
+import { logAndContinue } from '../@generic/utils/log-and-continue.util';
+import { toastOnFailure } from '../@generic/utils/toast-on-failure.util';
 import { RESYNC_WINDOW_OPTIONS } from '../sync/constant/resync-window-options.constant';
 import { useResyncWindowPickerModal, useResyncWindowPickerModalParams } from '../sync/context/resync-window-picker-modal.context';
 
@@ -32,18 +35,29 @@ export default function ResyncWindowPickerModal() {
     const { t } = useLingui();
     const [, resolveResyncWindowPicker, dismissResyncWindowPicker] = useResyncWindowPickerModal();
     useModalDismiss(dismissResyncWindowPicker);
-    const [run] = useEffectAction(t`Could not reset bank sync`);
+    const { run } = useSingleFlight();
 
     const accountId = useResyncWindowPickerModalParams()?.accountId ?? 0;
 
     const resync = (sinceDays: number | null) => {
-        run(
-            Effect.flatMap(ResyncService, resyncService => resyncService.resync({ accountId, sinceDays })),
-            () => void Toast.show({ type: 'success', text1: t`Bank sync reset`, text2: t(WINDOW_TEXT[String(sinceDays)].successMessage) })
+        void run(
+            Effect.flatMap(ResyncService, resyncService => resyncService.resync({ accountId, sinceDays })).pipe(
+                Effect.tap(() =>
+                    Effect.sync(
+                        () =>
+                            void Toast.show({
+                                type: 'success',
+                                text1: t`Bank sync reset`,
+                                text2: t(WINDOW_TEXT[String(sinceDays)].successMessage)
+                            })
+                    )
+                ),
+                toastOnFailure(t`Could not reset bank sync`)
+            )
         );
     };
 
-    const handleOptionPress = (option: ResyncWindowOptionInterface) => async () => {
+    const handleOptionPress = (option: ResyncWindowOptionInterface) => () => {
         resolveResyncWindowPicker(null);
 
         if (isDefined(option.sinceDays)) {
@@ -52,16 +66,22 @@ export default function ResyncWindowPickerModal() {
             return;
         }
 
-        const confirmed = await confirmAlert({
-            title: t`Re-sync Bank Account?`,
-            message: t`This will reset the sync history and re-sync all transactions from this bank account. Your existing transactions, tags, and categories will be preserved and updated with any new data.`,
-            confirmText: t`Re-sync History`,
-            cancelText: t`Cancel`
-        });
+        appRuntime.runFork(
+            logAndContinue(
+                Effect.gen(function* () {
+                    const confirmed = yield* confirmAlert({
+                        title: t`Re-sync Bank Account?`,
+                        message: t`This will reset the sync history and re-sync all transactions from this bank account. Your existing transactions, tags, and categories will be preserved and updated with any new data.`,
+                        confirmText: t`Re-sync History`,
+                        cancelText: t`Cancel`
+                    });
 
-        if (confirmed) {
-            resync(null);
-        }
+                    if (confirmed) {
+                        resync(null);
+                    }
+                })
+            )
+        );
     };
 
     return (

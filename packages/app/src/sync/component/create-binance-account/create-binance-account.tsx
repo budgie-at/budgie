@@ -32,14 +32,14 @@ export const CreateBinanceAccount = () => {
             binanceSyncService.setupAccountSyncBatch(buildToken(), selectedAccountIds)
         );
 
-    const handleFetchAccounts = async () => {
+    const handleFetchAccounts = () => {
         if (!isNotEmptyString(apiKey.trim()) || !isNotEmptyString(apiSecret.trim())) {
             showErrorToast(t`Credentials required`, t`Please enter your Binance API key and secret`);
 
             return;
         }
 
-        await fetchAccountPreviews(
+        void fetchAccountPreviews(
             binanceSyncService => binanceSyncService.fetchAccountsPreview(buildToken()),
             previews => {
                 accountSelection.setPreviews(previews.filter(preview => !preview.isParked));

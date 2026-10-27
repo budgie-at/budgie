@@ -91,15 +91,13 @@ export const useWalletCaptureSettings = () => {
     const dismissCapture = (captureId: string) => {
         appRuntime.runFork(
             Effect.gen(function* () {
-                const confirmed = yield* Effect.promise(() =>
-                    confirmAlert({
-                        title: t`Dismiss Wallet capture?`,
-                        message: t`This removes the pending capture without creating a transaction.`,
-                        confirmText: t`Dismiss`,
-                        cancelText: t`Cancel`,
-                        isDestructive: true
-                    })
-                );
+                const confirmed = yield* confirmAlert({
+                    title: t`Dismiss Wallet capture?`,
+                    message: t`This removes the pending capture without creating a transaction.`,
+                    confirmText: t`Dismiss`,
+                    cancelText: t`Cancel`,
+                    isDestructive: true
+                });
                 if (confirmed) {
                     runCaptureMutation(
                         captureId,
