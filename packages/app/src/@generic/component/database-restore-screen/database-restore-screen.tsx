@@ -10,7 +10,6 @@ import { Text, View } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { restoreDatabaseFromPickedBackup } from '../../drizzle/utils/restore-database-from-picked-backup.util';
-import { useSingleFlight } from '../../hook/use-single-flight.hook';
 import { isLoggingEnabled } from '../../utils/is-logging-enabled.util';
 import { reloadApp } from '../../utils/reload-app.util';
 import { Button } from '../button/button';
@@ -21,7 +20,7 @@ import type { Edge } from 'react-native-safe-area-context';
 
 export const DatabaseRestoreScreen = () => {
     const { t } = useLingui();
-    const { isLoading, run } = useSingleFlight();
+    const [isLoading, setIsLoading] = useState(false);
     const [backupError, setBackupError] = useState<string | null>(null);
     const safeEdges: Edge[] = ['top', 'bottom'];
 
@@ -29,23 +28,28 @@ export const DatabaseRestoreScreen = () => {
         void SplashScreen.hideAsync();
     }, []);
 
-    const handleRestore = () =>
-        run(() =>
-            Effect.runPromise(
-                restoreDatabaseFromPickedBackup().pipe(
-                    Effect.as(null),
-                    Effect.catchTags({
-                        BackupArchiveMissingDatabaseError: () => Effect.succeed(t`This backup archive does not contain a Budgie database.`),
-                        InsufficientStorageError: () => Effect.succeed(t`Not enough free storage to extract this backup.`),
-                        UnsupportedBackupError: () =>
-                            Effect.succeed(t`This backup was made by an older Budgie version and cannot be restored.`)
-                    }),
-                    Effect.catch(() => Effect.succeed(t`This backup could not be opened with your current PIN.`)),
-                    Effect.tap(nextBackupError => Effect.sync(() => void setBackupError(nextBackupError))),
-                    Effect.provide(Layer.mergeAll(makeLoggerLayer(isLoggingEnabled()), Reactivity.layer))
-                )
+    const handleRestore = () => {
+        if (isLoading) {
+            return Promise.resolve();
+        }
+
+        setIsLoading(true);
+
+        return Effect.runPromise(
+            restoreDatabaseFromPickedBackup().pipe(
+                Effect.as(null),
+                Effect.catchTags({
+                    BackupArchiveMissingDatabaseError: () => Effect.succeed(t`This backup archive does not contain a Budgie database.`),
+                    InsufficientStorageError: () => Effect.succeed(t`Not enough free storage to extract this backup.`),
+                    UnsupportedBackupError: () => Effect.succeed(t`This backup was made by an older Budgie version and cannot be restored.`)
+                }),
+                Effect.catch(() => Effect.succeed(t`This backup could not be opened with your current PIN.`)),
+                Effect.tap(nextBackupError => Effect.sync(() => void setBackupError(nextBackupError))),
+                Effect.provide(Layer.mergeAll(makeLoggerLayer(isLoggingEnabled()), Reactivity.layer)),
+                Effect.ensuring(Effect.sync(() => void setIsLoading(false)))
             )
         );
+    };
 
     const handleRetry = () => void reloadApp();
 
