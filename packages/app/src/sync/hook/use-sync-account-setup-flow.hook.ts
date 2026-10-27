@@ -2,7 +2,7 @@ import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { router } from 'expo-router';
 
-import { getErrorMessage } from '@rnw-community/shared';
+import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
@@ -42,12 +42,15 @@ export const useSyncAccountSetupFlow = <Identifier extends AppServices, Shape>(
         });
 
     const fetchAccountPreviews = (
-        loadPreviews: (syncService: Shape) => Effect.Effect<SyncAccountPreviewInterface[], unknown, AppServices>,
+        loadPreviews: (syncService: Shape) => Effect.Effect<SyncAccountPreviewInterface[] | null, unknown, AppServices>,
         onLoaded: (previews: SyncAccountPreviewInterface[]) => void
     ) =>
         run(async () => {
             try {
-                onLoaded(await appRuntime.runPromise(Effect.flatMap(service, loadPreviews)));
+                const previews = await appRuntime.runPromise(Effect.flatMap(service, loadPreviews));
+                if (isDefined(previews)) {
+                    onLoaded(previews);
+                }
             } catch (error) {
                 showErrorToast(t`Could not fetch accounts`, getErrorMessage(error));
             }

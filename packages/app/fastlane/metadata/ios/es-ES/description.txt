@@ -1,33 +1,37 @@
-Budgie es control de gastos sin peajes: sin crear cuenta, sin dar las claves del banco y sin suscripción. Apuntas un gasto en menos de cinco segundos — en la cola del súper, en el metro, en un avión — y todo se queda en tu móvil, también cuando no hay cobertura.
+Tu dinero es personal. Su gestión también debería serlo.
 
-FUNCIONA SIN COBERTURA
-Cada movimiento se queda en tu móvil. Añade gastos, revisa el historial y consulta tus análisis sin ninguna conexión.
+Budgie te ayuda a registrar gastos, respetar tu presupuesto y ver tus cuentas con claridad, sin crear una cuenta de usuario. Tus movimientos se guardan en tu dispositivo y puedes consultarlos aunque no tengas conexión.
 
-CADA GASTO EN SEGUNDOS
-Dicta un gasto o escríbelo, y Budgie elige la categoría directamente en el propio dispositivo. Reparte una compra entre varias categorías en el mismo paso.
+DESCUBRE EN QUÉ GASTAS
+• Registra gastos, ingresos y transferencias entre efectivo, tarjetas y cuentas.
+• Crea categorías y etiquetas a tu medida y reparte una compra entre varias categorías.
+• Consulta gráficos y desgloses por categoría con filtros de fechas.
 
-ADÓNDE VA TU DINERO
-Los análisis por categoría y etiqueta muestran un patrón antes de que se convierta en un problema. Tu patrimonio, con todas las cuentas, tarjetas y divisas juntas, de un vistazo.
+PLANIFICA CON MÁS PERSPECTIVA
+• Define un presupuesto mensual con límites por categoría y consulta cuánto te queda.
+• Activa avisos cuando te acerques a un límite o lo alcances.
+• Estima cuánto podría durarte el dinero a partir de tu historial de movimientos.
+• Consulta los pagos recurrentes y las suscripciones detectados en un calendario.
 
-PRESUPUESTOS Y AUTONOMÍA
-Un presupuesto que sigue tu fecha de cobro, no el mes natural, con una autonomía que se actualiza con cada gasto.
+MENOS TECLEAR, MÁS CONTROL
+• Aprovecha las sugerencias de movimientos anteriores para registrar gastos habituales.
+• Organiza movimientos con reglas y clasifica juntos los gastos pendientes.
+• Activa la IA en el dispositivo para sugerir categorías y etiquetas o añadir gastos con la voz. Tras descargar los modelos, el reconocimiento de voz y la IA funcionan de forma local.
 
-CUENTAS, TARJETAS Y CRIPTO
-Efectivo, tarjetas y criptomonedas juntos, cada uno en su divisa real — Budgie convierte automáticamente. Donde tu banco lo permite, importa los movimientos en lugar de escribirlos a mano.
+TUS CUENTAS, EN CONJUNTO
+• Lleva el control del efectivo, las cuentas bancarias, las criptomonedas, los depósitos y las deudas.
+• Consulta saldos y patrimonio neto en tu moneda base mediante tipos de cambio.
+• Ten a mano tu presupuesto y patrimonio con widgets en la pantalla de inicio.
 
-DEUDAS Y PRÉSTAMOS
-Un registro de quién debe qué a quién, con los pagos hechos y el saldo realmente pendiente de un vistazo.
+TRAE TU HISTORIAL
+• Importa archivos CSV y extractos bancarios compatibles, incluidos PDF de Erste y exportaciones de PrivatBank.
+• Si lo deseas, conecta Monobank o Binance con tus propias credenciales de API. El registro manual no requiere conectar ningún banco.
+• Exporta movimientos en CSV y crea copias de seguridad de tu base de datos.
 
-BAJO LLAVE
-Desbloqueo con PIN, cara o huella, saldos ocultos en capturas de pantalla y en el multitarea. Tus copias de seguridad quedan protegidas en todo momento.
+PRIVACIDAD EN TU DISPOSITIVO
+Activa un PIN para cifrar la base de datos con SQLCipher. Añade el desbloqueo biométrico y activa la protección de capturas de pantalla. Las copias de seguridad conservan el cifrado cuando hay un PIN configurado.
 
-ADEMÁS
-• Cuentas multidivisa con conversión automática
-• Calendario de pagos recurrentes
-• Importa extractos bancarios en CSV o PDF, según el banco
-• Etiquetas propias para lo que quieras seguir
-• Dictado por voz cuando escribir no es cómodo
-• PIN, bloqueo biométrico y protección contra capturas
-• Sin cuenta, sin acceso bancario y sin suscripción
+El registro diario, los presupuestos y las estadísticas funcionan sin conexión. La sincronización bancaria, la actualización de tipos de cambio y la descarga de modelos de IA necesitan internet. La IA es opcional y requiere espacio para sus modelos.
 
-Más información en budgie.at.
+Gratis. Sin cuenta de Budgie. Sin suscripción.
+Empieza con tu próximo gasto.

@@ -4,7 +4,12 @@ import * as Effect from 'effect/Effect';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
-import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_TOO_MANY_REQUESTS, HTTP_STATUS_UNAUTHORIZED } from '../../core/constant/http-status.constant';
+import {
+    HTTP_STATUS_BAD_REQUEST,
+    HTTP_STATUS_FORBIDDEN,
+    HTTP_STATUS_TOO_MANY_REQUESTS,
+    HTTP_STATUS_UNAUTHORIZED
+} from '../../core/constant/http-status.constant';
 import { SYNC_RETRY_STATUS_CODES } from '../../core/constant/sync-retry-status-codes.constant';
 import { SYNC_TIMEOUT_MS } from '../../core/constant/sync-timeout-ms.constant';
 import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
@@ -31,6 +36,10 @@ export class MonobankClient implements SyncProviderClientInterface {
 
     readonly getJars = Effect.fn('MonobankClient.getJars')(function* (this: MonobankClient) {
         return ((yield* this.fetchClientInfo()).jars ?? []).map(monobankJarMapper);
+    });
+
+    readonly getClientName = Effect.fn('MonobankClient.getClientName')(function* (this: MonobankClient) {
+        return (yield* this.fetchClientInfo()).name;
     });
 
     readonly getTransactions = Effect.fn('MonobankClient.getTransactions')(function* (
@@ -88,6 +97,7 @@ export class MonobankClient implements SyncProviderClientInterface {
 
         switch (error.status) {
             case HTTP_STATUS_UNAUTHORIZED:
+            case HTTP_STATUS_FORBIDDEN:
                 return new SyncUnauthorizedError({ provider, message });
             case HTTP_STATUS_TOO_MANY_REQUESTS:
                 return new SyncRateLimitedError({ provider, message });

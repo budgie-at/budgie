@@ -71,6 +71,18 @@ assert_equals \
 
 FALLBACK_DATABASE_PATH="$TEMP_DIR/pin-app-lock-2.db"
 
+for LOCALE in en fr uk de es; do
+    PRIVACY_DATABASE_PATH="$TEMP_DIR/07-settings-$LOCALE.db"
+
+    SCENE=07-settings LOCALE="$LOCALE" APPEARANCE=dark \
+        bash "$SEED_SCRIPT" --dry-run --output "$PRIVACY_DATABASE_PATH" >/dev/null
+
+    assert_equals \
+        "07-settings $LOCALE prepares screenshot protection and a recent backup before real PIN setup" \
+        '0|0|1|1' \
+        "$(sqlite3 "$PRIVACY_DATABASE_PATH" "SELECT is_pin_enabled || '|' || is_biometric_enabled || '|' || is_screenshot_protection_enabled || '|' || (date(last_backup_at, 'unixepoch') = date('now')) FROM settings;")"
+done
+
 SCENE=pin-app-lock-2 LOCALE=en APPEARANCE=light \
     bash "$SEED_SCRIPT" --dry-run --output "$FALLBACK_DATABASE_PATH" >/dev/null
 
