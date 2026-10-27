@@ -216,18 +216,13 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 50. **Don't hardcode external resource sizes/hashes.** When validating a downloaded file, prefer the server-reported size from the download progress callback (`totalBytesExpectedToWrite`) or HTTP `Content-Length` header. Hardcoded byte counts go stale silently when the upstream resource changes; runtime values stay correct.
 51. **No deferred-promise resolver-ref bridging.** Don't store `resolverRef`/`rejecterRef` (or `this.resolveX`/`this.rejectX`) to bridge a `Promise` from a `start()` to a `stop()`/`cancel()`. The pattern always demands a custom `CancelledError` and complicates cancellation. Pick one shape: (a) `start(...): void` + `stop(): Promise<TResult>` — caller awaits the stop directly; (b) `start(onResult: (result: TResult) => void): void` — caller passes a result callback. Same applies to hooks exposing a Promise from `startAndCollect`-style methods: pass the result through a callback or expose it via state, never via a stored Promise resolver. There is no exception for modals: `useModalResolver` is being replaced by callback-based modal results in #1471.
 52. **Single-consumer rule covers all artifact types.** Rule 38's "single-consumer = method in disguise" applies equally to `*.util.ts`, `*.constant.ts`, `*.reducer.ts`, `/type` aliases, mapping records, and discriminated-union action interfaces. Before creating any of these, run `grep -r 'name' src/` — if exactly one importer, inline as a module-level `const` at the consumer file (for non-class consumers) or as a `private` method / `private static readonly` field (for class consumers). Domain interfaces (`/interface`) and enums (`/enum`) are excluded — they live in their own files for navigation and tooling even with one consumer. A branching util used by a component is also excluded, because rule 62 wins (see rule 14).
-53. **`useEffect` cleanups capture their target via a stable ref, not via deps.** A cleanup that depends on a function returned by a custom hook, a tuple member from a context provider, or any prop reconstructed each render fires on every parent re-render — not on actual unmount. Pattern:
+53. **`useEffect` cleanups read the latest callback via `useEffectEvent`, not via deps or a synced ref.** A cleanup that depends on a function returned by a custom hook, a tuple member from a context provider, or any prop reconstructed each render fires on every parent re-render — not on actual unmount. Pattern:
     ```ts
-    const resolveRef = useRef(resolveFromHook);
+    const handleUnmount = useEffectEvent(() => resolveFromHook(...));
 
-    useEffect(() => {
-        resolveRef.current = resolveFromHook;
-    });
-
-    // oxlint-disable-next-line react/exhaustive-deps -- mount-only cleanup; ref reads the live value
-    useEffect(() => () => resolveRef.current(...), []);
+    useEffect(() => () => handleUnmount(), []);
     ```
-    Empty deps + ref-stable read = cleanup fires only on actual unmount.
+    Empty deps + an Effect Event = cleanup fires only on actual unmount and calls the live callback. Effect Events may only be called from inside effects; when the latest value is read from event handlers, native callbacks, or non-React effect hooks such as `useFocusEffect`, keep a ref synced in an effect.
 54. **After `await` inside `useEffect`, downstream reads come from the awaited result, not the captured closure.** Hook destructured state (`const { data } = useFoo()`) is captured at render time. By the time `await something()` resolves, `data` is stale. Thread fresh values through the resolved value, the callback parameter, or a fresh ref read — never `data.foo` from the original closure.
 55. **Snapshot Typed Array buffers from native callbacks.** When a native API hands you a `Float32Array`/`Int16Array`/etc. view (`AudioBuffer.getChannelData(0)`, JNI callbacks, FFI), the underlying memory is typically reused on the next callback. Always copy via `new Float32Array(samples)` before storing — otherwise all stored chunks alias the latest buffer.
 56. **Extract repeated JSX rows/items into named components, not render functions.** Composition is the default shape for UI. If a list row, card body, or repeated item has its own JSX structure, make it a real component in its own folder and keep `renderItem` / `.map()` callbacks limited to selecting that component and passing props. Inline render functions are acceptable only for trivial primitives or one-line pass-throughs with no branching.

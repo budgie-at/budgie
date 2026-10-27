@@ -73,12 +73,10 @@ export default function TagsSelectorModal() {
     const [primaryTagId, setPrimaryTagId] = useState<number | null>(initialPrimaryTagId);
     const { tags } = useSearchTagsQuery(search);
 
-    const selectedRef = useRef(selected);
     const primaryTagIdRef = useRef(primaryTagId);
     const hasResolvedRef = useRef(false);
 
     useEffect(() => {
-        selectedRef.current = selected;
         primaryTagIdRef.current = primaryTagId;
     });
 
@@ -129,7 +127,7 @@ export default function TagsSelectorModal() {
 
     const handleDone = () => {
         hasResolvedRef.current = true;
-        resolveTagsSelector(reorderTagIdsByPrimary(selectedRef.current, primaryTagIdRef.current));
+        resolveTagsSelector(reorderTagIdsByPrimary(selected, primaryTagId));
     };
 
     useEffect(

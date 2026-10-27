@@ -1,6 +1,6 @@
 import { AITransactionInterface } from '@budgie/ai';
 import { useLingui } from '@lingui/react/macro';
-import { useEffect, useRef } from 'react';
+import { useEffect, useEffectEvent } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 
 import { isDefined, isEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
@@ -86,12 +86,9 @@ export default function VoiceReviewModal() {
     const handleCancel = () => void resolveVoiceReview({ kind: 'cancelled' });
     const handleReRecord = () => void resolveVoiceReview({ kind: 're-record' });
 
-    const resolveRef = useRef(resolveVoiceReview);
-    useEffect(() => {
-        resolveRef.current = resolveVoiceReview;
-    });
+    const handleUnmount = useEffectEvent(() => void resolveVoiceReview({ kind: 're-record' }, { skipBack: true }));
 
-    useEffect(() => () => void resolveRef.current({ kind: 're-record' }, { skipBack: true }), []);
+    useEffect(() => () => void handleUnmount(), []);
     const handleSave = async () => {
         if (!isPositiveNumber(accountId)) {
             return;
