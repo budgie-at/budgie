@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.119.1](https://github.com/budgie-at/budgie/compare/v6.119.0...v6.119.1) (2026-10-27)
+
+### Bug Fixes
+
+* **app:** let the metadata push target the uploaded App Store version ([0e10272](https://github.com/budgie-at/budgie/commit/0e10272337c98ae002991c32ea9a94e8ff61c3f4))
+
+
 # [6.119.0](https://github.com/budgie-at/budgie/compare/v6.118.0...v6.119.0) (2026-10-27)
 
 ### Bug Fixes
