@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.117.2](https://github.com/budgie-at/budgie/compare/v6.117.1...v6.117.2) (2026-10-27)
+
+### Bug Fixes
+
+* **app:** fail the metadata lane when the App Review phone is missing ([604ee1d](https://github.com/budgie-at/budgie/commit/604ee1d30cf8970d523e4d59c0a20e4f306a2000))
+
+
 ## [6.117.1](https://github.com/budgie-at/budgie/compare/v6.117.0...v6.117.1) (2026-10-26)
 
 ### Bug Fixes

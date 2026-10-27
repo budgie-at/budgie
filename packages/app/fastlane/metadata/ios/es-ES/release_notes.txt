@@ -1,1 +1,5 @@
-Esta versión hace más fiable la sincronización de criptomonedas con Binance tras una interrupción, y corrige la reparación de transferencias entre tarjetas propias tras restaurar una tarjeta archivada. También incluye numerosas correcciones de traducción y estabilidad.
+¡Te damos la bienvenida a Budgie, ya en el App Store!
+
+Registra gastos sin conexión, planifica presupuestos mensuales y descubre en qué gastas. Reúne tus cuentas y divisas, revisa los pagos recurrentes y prueba la IA opcional en tu dispositivo para clasificar gastos y añadirlos con la voz.
+
+Sin registro. Sin suscripción. Tu dinero, tú decides.

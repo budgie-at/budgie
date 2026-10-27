@@ -1,9 +1,9 @@
 /* Second line under each headline, at 70% of its size. See README.md. */
 
-"01-home" = "No account. No bank login. No subscription.";
-"05-add-expense" = "Category fills itself.";
-"03-analytics" = "Every category, every month.";
-"04-budget" = "Alerts at 80% and 100%.";
-"09-inbox" = "Accept suggestions in one tap.";
+"01-home" = "Track spending, even offline.";
+"05-add-expense" = "Suggestions for familiar expenses.";
+"03-analytics" = "Understand spending by category.";
+"04-budget" = "See what is left in your budget.";
+"09-inbox" = "Review category suggestions together.";
 "06-account" = "Cash, cards, crypto and debts.";
-"07-settings" = "Your data never leaves your device.";
+"07-settings" = "Local data. PIN lock. Your choice.";

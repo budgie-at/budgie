@@ -1,9 +1,9 @@
 /* Second line under each headline, at 70% of its size. See README.md. */
 
-"01-home" = "Sin cuenta, sin banco, sin suscripción.";
-"05-add-expense" = "La categoría se pone sola.";
-"03-analytics" = "Cada categoría, cada mes.";
-"04-budget" = "Avisos al 80 % y al 100 %.";
-"09-inbox" = "Acepta sugerencias con un toque.";
+"01-home" = "Controla gastos, incluso sin conexión.";
+"05-add-expense" = "Sugerencias para gastos habituales.";
+"03-analytics" = "Entiende cada categoría de gasto.";
+"04-budget" = "Consulta cuánto te queda por gastar.";
+"09-inbox" = "Revisa juntas las sugerencias.";
 "06-account" = "Efectivo, tarjetas, cripto y deudas.";
-"07-settings" = "Tus datos nunca salen de tu dispositivo.";
+"07-settings" = "Datos locales. PIN. Tú eliges.";

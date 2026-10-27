@@ -1,1 +1,5 @@
-Dieses Update macht die Krypto-Synchronisierung mit Binance nach Unterbrechungen zuverlässiger und korrigiert die Reparatur von Übertragungen zwischen eigenen Karten nach der Wiederherstellung einer archivierten Karte. Dazu kommen zahlreiche kleinere Übersetzungs- und Stabilitätsverbesserungen.
+Willkommen bei Budgie, jetzt im App Store!
+
+Erfasse Ausgaben offline, plane Monatsbudgets und sieh, wohin dein Geld fließt. Behalte Konten und Währungen im Blick, prüfe regelmäßige Zahlungen und probiere die optionale KI auf deinem Gerät für Kategorien und Spracheingabe aus.
+
+Ohne Registrierung. Ohne Abo. Dein Geld, deine Regeln.
