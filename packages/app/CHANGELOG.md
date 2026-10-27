@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.122.0](https://github.com/budgie-at/budgie/compare/v6.121.2...v6.122.0) (2026-10-27)
+
+### Features
+
+* **app:** make the accounts filter sheet scannable with tri-state groups ([#1704](https://github.com/budgie-at/budgie/issues/1704)) ([9684df9](https://github.com/budgie-at/budgie/commit/9684df9eb60da394a08dec9af3b37e2aecf2e463))
+
+
 ## [6.121.2](https://github.com/budgie-at/budgie/compare/v6.121.1...v6.121.2) (2026-10-27)
 
 ### Bug Fixes
