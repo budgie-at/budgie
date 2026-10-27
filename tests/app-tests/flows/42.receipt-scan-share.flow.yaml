@@ -32,8 +32,8 @@ env:
 - extendedWaitUntil:
       visible:
           id: 'ReceiptScanToast.DONE'
+          text: 'Ihr Labor.*'
       timeout: 30000
-- assertVisible: 'Ihr Labor'
 - tapOn:
       id: 'ReceiptScanToast.DONE'
 - extendedWaitUntil:
