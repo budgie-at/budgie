@@ -1,19 +1,13 @@
-import { useEffect, useState } from 'react';
-import { AccessibilityInfo } from 'react-native';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useReducedMotion as useInitialReducedMotion } from 'react-native-reanimated';
 
+import { isDefined } from '@rnw-community/shared';
+
+import { reducedMotionAtom } from '../constant/reduced-motion-atom.constant';
+
 export const useReducedMotion = (): boolean => {
-    const [isReducedMotion, setIsReducedMotion] = useState(useInitialReducedMotion());
+    const initialReducedMotion = useInitialReducedMotion();
+    const reducedMotion = useAtomValue(reducedMotionAtom);
 
-    useEffect(() => {
-        const subscription = AccessibilityInfo.addEventListener('reduceMotionChanged', setIsReducedMotion);
-
-        void AccessibilityInfo.isReduceMotionEnabled().then(setIsReducedMotion);
-
-        return () => {
-            subscription.remove();
-        };
-    }, []);
-
-    return isReducedMotion;
+    return isDefined(reducedMotion) ? reducedMotion : initialReducedMotion;
 };
