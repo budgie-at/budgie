@@ -8,7 +8,7 @@ import {
 } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { NotificationFeedbackType } from 'expo-haptics';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { FlatList, View } from 'react-native';
 import { KeyboardStickyView } from 'react-native-keyboard-controller';
 
@@ -61,8 +61,6 @@ export const SplitEntriesModalContent = (props: Props) => {
     const [entries, setEntries] = useState<EntryWithLocalIdInterface[]>(() => initialEntries.map(addLocalId));
     const [autoFocusIndex, setAutoFocusIndex] = useState(-1);
 
-    const previouslyFullySplitRef = useRef(false);
-
     const entriesTotalMicroUnits = convertToMicroUnits(sumEntryAmounts(entries));
     const totalAmountMicroUnits = convertToMicroUnits(totalAmount);
     const remainingAmountMicroUnits = totalAmountMicroUnits - entriesTotalMicroUnits;
@@ -79,15 +77,18 @@ export const SplitEntriesModalContent = (props: Props) => {
     const canAddEntry = remainingAmountMicroUnits > 0 && allEntriesHaveAmount;
     const canConfirm = isFullySplit && allEntriesValid;
 
-    useEffect(() => {
-        if (isFullySplit && !previouslyFullySplitRef.current) {
+    const applyEntries = (nextEntries: EntryWithLocalIdInterface[]) => {
+        const nextEntriesTotalMicroUnits = convertToMicroUnits(sumEntryAmounts(nextEntries));
+
+        if (!isFullySplit && nextEntriesTotalMicroUnits > 0 && nextEntriesTotalMicroUnits === totalAmountMicroUnits) {
             hapticNotification(NotificationFeedbackType.Success);
         }
-        previouslyFullySplitRef.current = isFullySplit;
-    }, [isFullySplit, hapticNotification]);
+
+        setEntries(nextEntries);
+    };
 
     const handleAmountChange = (index: number, amount: number) => {
-        setEntries(previous => previous.map((entry, entryIndex) => (entryIndex === index ? withEntryAmount(entry, amount) : entry)));
+        applyEntries(entries.map((entry, entryIndex) => (entryIndex === index ? withEntryAmount(entry, amount) : entry)));
     };
 
     const handleCategoryPress = (index: number) => {
@@ -115,7 +116,7 @@ export const SplitEntriesModalContent = (props: Props) => {
     };
 
     const handleRemoveEntry = (index: number) => {
-        setEntries(previous => previous.filter((_, entryIndex) => entryIndex !== index));
+        applyEntries(entries.filter((_, entryIndex) => entryIndex !== index));
         setAutoFocusIndex(-1);
     };
 

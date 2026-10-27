@@ -47,6 +47,10 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
     const rotation = useSharedValue(0);
     const menuScale = useSharedValue(0);
 
+    if (isOpen && !isVisible) {
+        setIsVisible(true);
+    }
+
     const handleClose = () => {
         hapticImpact(ImpactFeedbackStyle.Light);
         onClose();
@@ -123,8 +127,6 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
 
     useEffect(() => {
         if (isOpen) {
-            // oxlint-disable-next-line react/set-state-in-effect -- Animation mount/unmount pattern: visibility deferred until close animation completes
-            setIsVisible(true);
             rotation.set(withSpring(BUTTON_ROTATION_ACTIVE, SPRING_CONFIG));
             menuScale.set(withSpring(1, SPRING_CONFIG));
         } else if (isVisible) {
