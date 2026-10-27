@@ -1,6 +1,5 @@
 import { assertStoredBalancesMatchLedger } from '@budgie-at/test-kit';
 import {
-    AccountBalanceRepository,
     AccountRepository,
     CategorySourceEnum,
     convertToMicroUnits,
@@ -12,6 +11,8 @@ import {
 } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
+import * as Exit from 'effect/Exit';
+import * as Option from 'effect/Option';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -25,6 +26,7 @@ import type { ReceiptMatchInputInterface } from '../src/receipt/interface/receip
 const OCCURRED_AT = new Date(2026, 9, 27, 7, 52, 0);
 const OPERATED_AT = new Date(2026, 9, 27, 9, 0, 0);
 const TOTAL = convertToMicroUnits(62.1);
+const SMALL_AMOUNT = convertToMicroUnits(5);
 const EUR_INSTRUMENT_ID = 2;
 const CARD_EXTERNAL_ID = 'receipt-card:4242';
 const BANK_TITLE = 'CARD PAYMENT IHR LABOR';
@@ -45,114 +47,119 @@ const buildReceipt = (overrides: Partial<ReceiptMatchInputInterface> = {}): Rece
     ...overrides
 });
 
-const match = (input: ReceiptMatchInputInterface) =>
-    Effect.flatMap(ReceiptMatchService, service => service.match(input, () => Effect.void));
+const match = (
+    input: ReceiptMatchInputInterface,
+    applyRules: (transactionId: number) => Effect.Effect<void, never, Db> = () => Effect.void
+) => Effect.flatMap(ReceiptMatchService, service => service.match(input, applyRules));
 
-const seedExpense = Effect.fnUntraced(function* (accountId: number, title: string) {
-    const testSeedService = yield* seed;
+const seedAccount = (title: string, isActive = true) =>
+    Effect.flatMap(seed, testSeedService => testSeedService.account({ title, isActive }));
 
-    return yield* testSeedService.manualExpense({ accountId, amount: TOTAL, operatedAt: OPERATED_AT, title });
-});
+const seedExpense = (accountId: number, title = BANK_TITLE, amount = TOTAL, operatedAt = OPERATED_AT) =>
+    Effect.flatMap(seed, testSeedService => testSeedService.manualExpense({ accountId, amount, operatedAt, title }));
 
 const fetchTransaction = Effect.fnUntraced(function* (transactionId: number) {
-    const transactionRepository = yield* TransactionRepository;
-    const transaction = yield* transactionRepository.getByIdWithEntries(transactionId);
+    const transaction = yield* (yield* TransactionRepository).getByIdWithEntries(transactionId);
 
-    if (!isDefined(transaction)) {
-        return yield* Effect.die(new Error(`Transaction ${transactionId} not found`));
-    }
-
-    return transaction;
+    return isDefined(transaction) ? transaction : yield* Effect.die(new Error(`Transaction ${transactionId} not found`));
 });
+
+const findReceiptTransactionId = (fingerprint = buildReceipt().fingerprint) =>
+    Effect.map(
+        Effect.flatMap(TransactionReceiptRepository, repository => repository.findByFingerprint(fingerprint)),
+        receipt => receipt?.transactionId
+    );
 
 const linkCard = (accountId: number) =>
     Effect.flatMap(AccountRepository, repository => repository.addExternalIdAlias(CARD_EXTERNAL_ID, accountId));
 
+const findCardAccountIds = Effect.map(
+    Effect.flatMap(AccountRepository, repository => repository.findExternalIdAliases([CARD_EXTERNAL_ID])),
+    aliases => aliases.map(alias => alias.account.id)
+);
+
 describe('ReceiptMatchService', () => {
-    it.effect('returns the existing transaction for a duplicate fingerprint and writes nothing', () =>
+    it.effect('returns the existing transaction for a duplicate fingerprint without writing or applying rules', () =>
         Effect.gen(function* () {
-            const testSeedService = yield* seed;
-            const account = yield* testSeedService.account();
-            const transaction = yield* seedExpense(account.id, BANK_TITLE);
-            const receipt = buildReceipt();
-            const transactionReceiptRepository = yield* TransactionReceiptRepository;
+            const account = yield* seedAccount('Main');
+            const transaction = yield* seedExpense(account.id);
+            const ruledIds: number[] = [];
 
-            yield* transactionReceiptRepository.insert({ ...receipt, transactionId: transaction.id });
+            yield* (yield* TransactionReceiptRepository).insert({ ...buildReceipt(), transactionId: transaction.id });
 
-            expect(yield* match(receipt)).toEqual({ kind: ReceiptMatchResultKindEnum.DUPLICATE, transactionId: transaction.id });
+            expect(yield* match(buildReceipt(), id => Effect.sync(() => void ruledIds.push(id)))).toEqual({
+                kind: ReceiptMatchResultKindEnum.DUPLICATE,
+                transactionId: transaction.id
+            });
             expect((yield* fetchTransaction(transaction.id)).title).toBe(BANK_TITLE);
+            expect(ruledIds).toEqual([]);
         }).pipe(Effect.provide(TestLayer))
     );
 
     it.effect('scans again a receipt whose transaction was soft-deleted', () =>
         Effect.gen(function* () {
-            const testSeedService = yield* seed;
-            const account = yield* testSeedService.account();
-            yield* testSeedService.manualExpense({ accountId: account.id, amount: convertToMicroUnits(5), operatedAt: OPERATED_AT });
+            const account = yield* seedAccount('Main');
+            yield* seedExpense(account.id, BANK_TITLE, SMALL_AMOUNT);
             const first = yield* match(buildReceipt());
-            const transactionRepository = yield* TransactionRepository;
 
-            yield* transactionRepository.archiveByIds([first.transactionId]);
+            yield* (yield* TransactionRepository).archiveByIds([first.transactionId]);
 
             const rescan = yield* match(buildReceipt());
 
-            expect(first.kind).toBe(ReceiptMatchResultKindEnum.CREATED);
-            expect(rescan.kind).toBe(ReceiptMatchResultKindEnum.CREATED);
+            expect([first.kind, rescan.kind]).toEqual([ReceiptMatchResultKindEnum.CREATED, ReceiptMatchResultKindEnum.CREATED]);
             expect(rescan.transactionId).not.toBe(first.transactionId);
-            expect((yield* (yield* TransactionReceiptRepository).findByFingerprint(buildReceipt().fingerprint))?.transactionId).toBe(
-                rescan.transactionId
-            );
+            expect(yield* findReceiptTransactionId()).toBe(rescan.transactionId);
             yield* assertStoredBalancesMatchLedger(yield* Db);
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('enriches an exact match without touching its money', () =>
+    it.effect('enriches an exact match without touching its money and learns the card account', () =>
         Effect.gen(function* () {
-            const testSeedService = yield* seed;
-            const account = yield* testSeedService.account();
-            const category = yield* testSeedService.category('Health');
-            const transaction = yield* seedExpense(account.id, BANK_TITLE);
+            const account = yield* seedAccount('Main');
+            const category = yield* Effect.flatMap(seed, testSeedService => testSeedService.category('Health'));
+            const transaction = yield* seedExpense(account.id);
 
             const result = yield* match(buildReceipt({ cardLast4: '4242', categoryId: category.id }));
-            const matched = yield* fetchTransaction(transaction.id);
-            const accountRepository = yield* AccountRepository;
-            const [alias] = yield* accountRepository.findExternalIdAliases([CARD_EXTERNAL_ID]);
 
             expect(result).toEqual({ kind: ReceiptMatchResultKindEnum.MATCHED, transactionId: transaction.id });
-            expect(matched.title).toBe('Ihr Labor');
-            expect(matched.comment).toBe('Blood test');
-            expect(matched.operatedAt).toEqual(OPERATED_AT);
-            expect(matched.entries).toMatchObject([
-                { accountId: account.id, amount: TOTAL, categoryId: category.id, categorySource: CategorySourceEnum.AI }
-            ]);
-            expect(alias.account.id).toBe(account.id);
-            expect((yield* (yield* TransactionReceiptRepository).findByFingerprint(buildReceipt().fingerprint))?.transactionId).toBe(
-                transaction.id
-            );
+            expect(yield* fetchTransaction(transaction.id)).toMatchObject({
+                title: 'Ihr Labor',
+                comment: 'Blood test',
+                operatedAt: OPERATED_AT,
+                entries: [{ accountId: account.id, amount: TOTAL, categoryId: category.id, categorySource: CategorySourceEnum.AI }]
+            });
+            expect(yield* findCardAccountIds).toEqual([account.id]);
+            expect(yield* findReceiptTransactionId()).toBe(transaction.id);
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('keeps a title the user edited', () =>
+    it.effect('keeps a title the user edited and skips rules for it', () =>
         Effect.gen(function* () {
-            const testSeedService = yield* seed;
-            const account = yield* testSeedService.account();
+            const account = yield* seedAccount('Main');
             const transaction = yield* seedExpense(account.id, 'Lab visit');
-            const database = yield* Db;
+            const ruledIds: number[] = [];
 
-            yield* database.$client.unsafe(`UPDATE transactions SET updated_by = 'user' WHERE id = ${transaction.id}`);
+            yield* (yield* Db).$client.unsafe(`UPDATE transactions SET updated_by = 'user' WHERE id = ${transaction.id}`);
 
-            expect((yield* match(buildReceipt())).kind).toBe(ReceiptMatchResultKindEnum.MATCHED);
+            expect((yield* match(buildReceipt(), id => Effect.sync(() => void ruledIds.push(id)))).kind).toBe(
+                ReceiptMatchResultKindEnum.MATCHED
+            );
             expect((yield* fetchTransaction(transaction.id)).title).toBe('Lab visit');
+            expect(ruledIds).toEqual([]);
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('breaks a tie by the account learned for the card', () =>
+    it.effect('picks the card account among tied candidates and matches only one of them', () =>
         Effect.gen(function* () {
-            const testSeedService = yield* seed;
-            const firstAccount = yield* testSeedService.account({ title: 'First' });
-            const cardAccount = yield* testSeedService.account({ title: 'Card' });
-            yield* seedExpense(firstAccount.id, BANK_TITLE);
-            const cardTransaction = yield* seedExpense(cardAccount.id, BANK_TITLE);
+            const firstAccount = yield* seedAccount('First');
+            const cardAccount = yield* seedAccount('Card');
+            const first = yield* seedExpense(firstAccount.id);
+            const cardTransaction = yield* seedExpense(cardAccount.id);
+
+            expect(yield* match(buildReceipt({ fingerprint: 'no-card' }))).toEqual({
+                kind: ReceiptMatchResultKindEnum.MATCHED,
+                transactionId: first.id
+            });
 
             yield* linkCard(cardAccount.id);
 
@@ -160,29 +167,15 @@ describe('ReceiptMatchService', () => {
                 kind: ReceiptMatchResultKindEnum.MATCHED,
                 transactionId: cardTransaction.id
             });
-        }).pipe(Effect.provide(TestLayer))
-    );
-
-    it.effect('matches one of the tied candidates instead of double-counting the expense', () =>
-        Effect.gen(function* () {
-            const testSeedService = yield* seed;
-            const firstAccount = yield* testSeedService.account({ title: 'First' });
-            const secondAccount = yield* testSeedService.account({ title: 'Second' });
-            const first = yield* seedExpense(firstAccount.id, BANK_TITLE);
-            yield* seedExpense(secondAccount.id, BANK_TITLE);
-
-            expect(yield* match(buildReceipt())).toEqual({ kind: ReceiptMatchResultKindEnum.MATCHED, transactionId: first.id });
             yield* assertStoredBalancesMatchLedger(yield* Db);
         }).pipe(Effect.provide(TestLayer))
     );
 
     it.effect('keeps the account learned for the card when the receipt matches another account by amount', () =>
         Effect.gen(function* () {
-            const testSeedService = yield* seed;
-            const cardAccount = yield* testSeedService.account({ title: 'Card' });
-            const otherAccount = yield* testSeedService.account({ title: 'Other' });
-            const otherTransaction = yield* seedExpense(otherAccount.id, BANK_TITLE);
-            const accountRepository = yield* AccountRepository;
+            const cardAccount = yield* seedAccount('Card');
+            const otherAccount = yield* seedAccount('Other');
+            const otherTransaction = yield* seedExpense(otherAccount.id);
 
             yield* linkCard(cardAccount.id);
 
@@ -190,25 +183,18 @@ describe('ReceiptMatchService', () => {
                 kind: ReceiptMatchResultKindEnum.MATCHED,
                 transactionId: otherTransaction.id
             });
-            expect((yield* accountRepository.findExternalIdAliases([CARD_EXTERNAL_ID])).map(alias => alias.account.id)).toEqual([
-                cardAccount.id
-            ]);
+            expect(yield* findCardAccountIds).toEqual([cardAccount.id]);
         }).pipe(Effect.provide(TestLayer))
     );
 
     it.effect('matches a foreign-currency receipt through the operation amount', () =>
         Effect.gen(function* () {
-            const testSeedService = yield* seed;
-            const euroAccount = yield* testSeedService.account({ instrumentId: EUR_INSTRUMENT_ID });
-            const transaction = yield* testSeedService.manualExpense({
-                accountId: euroAccount.id,
-                amount: convertToMicroUnits(57.4),
-                operatedAt: OPERATED_AT,
-                title: 'IHR LABOR'
-            });
-            const database = yield* Db;
+            const euroAccount = yield* Effect.flatMap(seed, testSeedService =>
+                testSeedService.account({ instrumentId: EUR_INSTRUMENT_ID })
+            );
+            const transaction = yield* seedExpense(euroAccount.id, 'IHR LABOR', convertToMicroUnits(57.4));
 
-            yield* database.$client.unsafe(
+            yield* (yield* Db).$client.unsafe(
                 `UPDATE transaction_entries SET operation_instrument_id = 1, operation_amount = ${TOTAL} WHERE transaction_id = ${transaction.id}`
             );
 
@@ -217,72 +203,56 @@ describe('ReceiptMatchService', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('creates the expense on the account learned for the card with correct balances', () =>
+    it.effect('creates the expense on the active card account, else the most recent account in the receipt currency', () =>
         Effect.gen(function* () {
-            const testSeedService = yield* seed;
-            const recentAccount = yield* testSeedService.account({ title: 'Recent' });
-            const cardAccount = yield* testSeedService.account({ title: 'Card' });
-            const category = yield* testSeedService.category('Health');
-            yield* testSeedService.manualExpense({ accountId: recentAccount.id, amount: convertToMicroUnits(5), operatedAt: OPERATED_AT });
-            yield* linkCard(cardAccount.id);
+            const recentAccount = yield* seedAccount('Recent');
+            const archivedCardAccount = yield* seedAccount('Archived card', false);
+            yield* seedExpense(recentAccount.id, BANK_TITLE, SMALL_AMOUNT, OCCURRED_AT);
+            yield* seedExpense(archivedCardAccount.id, BANK_TITLE, SMALL_AMOUNT);
+            yield* linkCard(archivedCardAccount.id);
 
-            const result = yield* match(buildReceipt({ cardLast4: '4242', categoryId: category.id, total: convertToMicroUnits(12.5) }));
-            const created = yield* fetchTransaction(result.transactionId);
-            const accountBalanceRepository = yield* AccountBalanceRepository;
-            const [balance] = yield* accountBalanceRepository.getByAccountIds([cardAccount.id]);
+            const fallback = yield* match(buildReceipt({ cardLast4: '4242', fingerprint: 'archived-card', total: SMALL_AMOUNT * 3 }));
+            const cardAccount = yield* seedAccount('Card');
+            yield* (yield* AccountRepository).addExternalIdAlias('receipt-card:1111', cardAccount.id);
+            const created = yield* match(buildReceipt({ cardLast4: '1111', total: convertToMicroUnits(12.5) }));
 
-            expect(result.kind).toBe(ReceiptMatchResultKindEnum.CREATED);
-            expect(created).toMatchObject({
+            expect((yield* fetchTransaction(fallback.transactionId)).entries[0].accountId).toBe(recentAccount.id);
+            expect(created.kind).toBe(ReceiptMatchResultKindEnum.CREATED);
+            expect(yield* fetchTransaction(created.transactionId)).toMatchObject({
                 title: 'Ihr Labor',
                 comment: 'Blood test',
                 operatedAt: OCCURRED_AT,
                 externalSource: ExternalSourceEnum.RECEIPT,
-                externalId: buildReceipt().fingerprint
+                externalId: buildReceipt().fingerprint,
+                entries: [{ accountId: cardAccount.id, amount: convertToMicroUnits(12.5) }]
             });
-            expect(created.entries).toMatchObject([
-                {
-                    accountId: cardAccount.id,
-                    amount: convertToMicroUnits(12.5),
-                    categoryId: category.id,
-                    categorySource: CategorySourceEnum.AI
-                }
-            ]);
-            expect(balance.amount).toBe(-convertToMicroUnits(12.5));
             yield* assertStoredBalancesMatchLedger(yield* Db);
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('falls back to the most recently used expense account in the receipt currency', () =>
+    it.effect('applies rules after the receipt commits, so a rule failure keeps the expense and its receipt', () =>
         Effect.gen(function* () {
-            const testSeedService = yield* seed;
-            const recentAccount = yield* testSeedService.account({ title: 'Recent' });
-            yield* testSeedService.manualExpense({ accountId: recentAccount.id, amount: convertToMicroUnits(5), operatedAt: OPERATED_AT });
+            const account = yield* seedAccount('Main');
+            yield* seedExpense(account.id, BANK_TITLE, SMALL_AMOUNT);
+            const database = yield* Db;
+            const ruleCalls: Array<[number, boolean]> = [];
 
-            const result = yield* match(buildReceipt());
+            const exit = yield* Effect.exit(
+                match(buildReceipt(), transactionId =>
+                    Effect.flatMap(Effect.serviceOption(database.$client.transactionService), transaction =>
+                        Effect.andThen(
+                            Effect.sync(() => void ruleCalls.push([transactionId, Option.isSome(transaction)])),
+                            Effect.die(new Error('rule failed'))
+                        )
+                    )
+                )
+            );
+            const receiptTransactionId = yield* findReceiptTransactionId();
 
-            expect(result.kind).toBe(ReceiptMatchResultKindEnum.CREATED);
-            expect((yield* fetchTransaction(result.transactionId)).entries[0].accountId).toBe(recentAccount.id);
-            yield* assertStoredBalancesMatchLedger(yield* Db);
-        }).pipe(Effect.provide(TestLayer))
-    );
-
-    it.effect('never creates the expense on an archived account', () =>
-        Effect.gen(function* () {
-            const testSeedService = yield* seed;
-            const activeAccount = yield* testSeedService.account({ title: 'Active' });
-            const archivedCardAccount = yield* testSeedService.account({ title: 'Archived card', isActive: false });
-            yield* testSeedService.manualExpense({ accountId: activeAccount.id, amount: convertToMicroUnits(5), operatedAt: OCCURRED_AT });
-            yield* testSeedService.manualExpense({
-                accountId: archivedCardAccount.id,
-                amount: convertToMicroUnits(5),
-                operatedAt: OPERATED_AT
-            });
-            yield* linkCard(archivedCardAccount.id);
-
-            const result = yield* match(buildReceipt({ cardLast4: '4242' }));
-
-            expect(result.kind).toBe(ReceiptMatchResultKindEnum.CREATED);
-            expect((yield* fetchTransaction(result.transactionId)).entries[0].accountId).toBe(activeAccount.id);
+            expect(Exit.isFailure(exit)).toBe(true);
+            expect(isDefined(receiptTransactionId)).toBe(true);
+            expect(ruleCalls).toEqual([[receiptTransactionId, false]]);
+            yield* assertStoredBalancesMatchLedger(database);
         }).pipe(Effect.provide(TestLayer))
     );
 });
