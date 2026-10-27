@@ -1,4 +1,4 @@
 declare module '*.sql' {
-    const content: string;
-    export default content;
+    const statements: () => string[];
+    export default statements;
 }
