@@ -314,6 +314,10 @@ msgstr "{selectedCount, plural, =0 {Show all categories} one {Show # category} o
 msgid "{selectedCount, plural, =0 {Show all tags} one {Show # tag} other {Show # tags}}"
 msgstr "{selectedCount, plural, =0 {Show all tags} one {Show # tag} other {Show # tags}}"
 
+#: src/account/component/accounts-group/accounts-group.tsx
+msgid "{selectedInGroupCount} of {accountsCount} selected"
+msgstr "{selectedInGroupCount} of {accountsCount} selected"
+
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "{similarCount, plural, one {# similar transaction} other {# similar transactions}}"
 msgstr "{similarCount, plural, one {# similar transaction} other {# similar transactions}}"
