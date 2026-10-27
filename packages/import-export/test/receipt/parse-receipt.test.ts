@@ -68,7 +68,7 @@ describe('parseReceipt', () => {
                 merchantVatId: null,
                 merchantLegalName: null,
                 merchantCandidates: ['THE GOLDEN SPOON', 'Bistro & Bar'],
-                fingerprint: 'thegoldenspoon|62680000|2026-10-27|20:14'
+                fingerprint: 'thegoldenspoon|62680000|2026-10-27|20:14|1047'
             }
         ],
         [

@@ -55,6 +55,12 @@ describe('parseReceipt hardening', () => {
         expect(parseReceipt(lines)).toMatchObject(expected);
     });
 
+    it('keeps two undated receipts with different numbers apart', () => {
+        expect(parseReceipt(rowsOf('CAFE', 'Bon 101', 'Total 4.50'))?.fingerprint).not.toBe(
+            parseReceipt(rowsOf('CAFE', 'Bon 102', 'Total 4.50'))?.fingerprint
+        );
+    });
+
     it.each([
         ['tax-total row (de)', rowsOf('MwSt-Summe 2,00')],
         ['tax-total row (en)', rowsOf('Tax total 4.18')],

@@ -339,7 +339,7 @@ const buildFingerprint = (draft: Omit<ReceiptDraftInterface, 'fingerprint'>, tim
     const time = isDefined(timestamp) && timestamp.hasTime ? format(timestamp.occurredAt, 'HH:mm') : '';
     const merchant = (draft.merchantCandidates.at(0) ?? '').toLocaleLowerCase().replaceAll(/[^\p{L}\p{N}]+/gu, '');
 
-    return [merchant, draft.total, date, time].join('|');
+    return [merchant, draft.total, date, time, draft.receiptNumber].filter(isDefined).join('|');
 };
 
 export const parseReceipt = (lines: readonly ReceiptTextLineInterface[]): ReceiptDraftInterface | null => {
