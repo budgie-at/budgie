@@ -70,8 +70,8 @@ export const BankIntegrationPage = ({ integration }: Props) => {
         >
             <BankIntegrationContext.Provider value={contextValue}>
                 <BankIntegrationOverview />
-                <BankIntegrationAccountList />
                 {connectionSection}
+                <BankIntegrationAccountList />
             </BankIntegrationContext.Provider>
         </CollapsibleChromePage>
     );
