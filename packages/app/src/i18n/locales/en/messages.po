@@ -354,7 +354,7 @@ msgstr "{total} GB on this phone"
 msgid "{totalSize} GB"
 msgstr "{totalSize} GB"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx
+#: src/transaction/components/transaction-list-meta/transaction-list-meta.tsx
 msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{transactionCount, plural, one {# transaction} other {# transactions}}"
 
@@ -1877,6 +1877,10 @@ msgstr "Currency"
 msgid "Current Balance"
 msgstr "Current Balance"
 
+#: src/account/component/account-balance/account-balance.tsx
+msgid "Current Balance: {formattedBalance}"
+msgstr "Current Balance: {formattedBalance}"
+
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "Custom categories you create will appear here"
 msgstr "Custom categories you create will appear here"
@@ -2161,6 +2165,7 @@ msgstr "Edit"
 
 #: src/account/component/account-card-base/account-card-base.tsx
 #: src/account/component/account-card-menu/account-card-menu.tsx
+#: src/account/component/account-details-edit-button/account-details-edit-button.tsx
 msgid "Edit account"
 msgstr "Edit account"
 
@@ -3475,7 +3480,7 @@ msgid "No matching expenses"
 msgstr "No matching expenses"
 
 #: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx
-#: src/transaction/components/transaction-list/transaction-list.tsx
+#: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
 msgid "No matching transactions"
 msgstr "No matching transactions"
 
@@ -3540,7 +3545,7 @@ msgstr "No title"
 msgid "No transactions matched"
 msgstr "No transactions matched"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx
+#: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
 msgid "No transactions yet"
 msgstr "No transactions yet"
 
@@ -4795,7 +4800,7 @@ msgstr "Start Import"
 msgid "Start Sync"
 msgstr "Start Sync"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx
+#: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Start tracking your spending by using the mic button or adding transactions manually"
 
@@ -5368,7 +5373,7 @@ msgid "Try a different search term or create a new tag"
 msgstr "Try a different search term or create a new tag"
 
 #: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx
-#: src/transaction/components/transaction-list/transaction-list.tsx
+#: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
 msgid "Try adjusting your filters to see more results"
 msgstr "Try adjusting your filters to see more results"
 

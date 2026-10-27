@@ -353,7 +353,7 @@ msgstr "{total} ГБ на цьому телефоні"
 msgid "{totalSize} GB"
 msgstr "{totalSize} ГБ"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx
+#: src/transaction/components/transaction-list-meta/transaction-list-meta.tsx
 msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{transactionCount, plural, one {# транзакція} few {# транзакції} many {# транзакцій} other {# транзакцій}}"
 
@@ -1876,6 +1876,10 @@ msgstr "Валюта"
 msgid "Current Balance"
 msgstr "Поточний баланс"
 
+#: src/account/component/account-balance/account-balance.tsx
+msgid "Current Balance: {formattedBalance}"
+msgstr "Поточний баланс: {formattedBalance}"
+
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "Custom categories you create will appear here"
 msgstr "Власні категорії, які ви створите, з'являться тут"
@@ -2160,6 +2164,7 @@ msgstr "Редагувати"
 
 #: src/account/component/account-card-base/account-card-base.tsx
 #: src/account/component/account-card-menu/account-card-menu.tsx
+#: src/account/component/account-details-edit-button/account-details-edit-button.tsx
 msgid "Edit account"
 msgstr "Редагувати рахунок"
 
@@ -3474,7 +3479,7 @@ msgid "No matching expenses"
 msgstr "Немає відповідних витрат"
 
 #: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx
-#: src/transaction/components/transaction-list/transaction-list.tsx
+#: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
 msgid "No matching transactions"
 msgstr "Немає відповідних транзакцій"
 
@@ -3539,7 +3544,7 @@ msgstr "Без назви"
 msgid "No transactions matched"
 msgstr "Жодна транзакція не відповідає"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx
+#: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
 msgid "No transactions yet"
 msgstr "Поки немає транзакцій"
 
@@ -4794,7 +4799,7 @@ msgstr "Почати імпорт"
 msgid "Start Sync"
 msgstr "Розпочати синхронізацію"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx
+#: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Почніть відстежувати свої витрати, використовуючи кнопку мікрофона або додаючи транзакції вручну"
 
@@ -5367,7 +5372,7 @@ msgid "Try a different search term or create a new tag"
 msgstr "Спробуйте інший пошуковий запит або створіть новий тег"
 
 #: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx
-#: src/transaction/components/transaction-list/transaction-list.tsx
+#: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
 msgid "Try adjusting your filters to see more results"
 msgstr "Спробуйте налаштувати фільтри, щоб побачити більше результатів"
 

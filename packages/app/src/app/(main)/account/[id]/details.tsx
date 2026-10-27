@@ -1,50 +1,37 @@
-import { AccountDebtTypeEnum, AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
-import { cva } from 'class-variance-authority';
-import { Redirect, useLocalSearchParams, useRouter } from 'expo-router';
+import { AccountDebtTypeEnum, AccountTypeEnum } from '@budgie/contracts';
+import { Redirect, useLocalSearchParams } from 'expo-router';
 import { View } from 'react-native';
 
+import { CollapsibleHeaderBackdrop, ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
 import { isDefined } from '@rnw-community/shared';
 
-import { CircleIcon } from '../../../../@generic/component/circle-icon/circle-icon';
-import { HapticPressable } from '../../../../@generic/component/haptic-pressable/haptic-pressable';
+import { CollapsibleChromeHeader } from '../../../../@generic/component/collapsible-chrome-header/collapsible-chrome-header';
+import { HeaderBackButton } from '../../../../@generic/component/header-back-button/header-back-button';
 import { LoadingScreen } from '../../../../@generic/component/loading-screen/loading-screen';
-import { PageHeader } from '../../../../@generic/component/page-header/page-header';
-import { Page } from '../../../../@generic/component/page/page';
-import { FOREGROUND_COLOR_PALETTE } from '../../../../@generic/constant/foreground-color-palette.constant';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
-import { goBackOrReplace } from '../../../../@generic/utils/go-back-or-replace.util';
+import { ScreenChromeThemeProvider } from '../../../../@generic/provider/screen-chrome-theme.provider';
 import { AccountBalance } from '../../../../account/component/account-balance/account-balance';
+import { AccountDetailsEditButton } from '../../../../account/component/account-details-edit-button/account-details-edit-button';
+import { AccountDetailsLargeTitle } from '../../../../account/component/account-details-large-title/account-details-large-title';
 import { AccountDetailsMenuControls } from '../../../../account/component/account-details-menu-controls/account-details-menu-controls';
+import { AccountDetailsSmallTitle } from '../../../../account/component/account-details-small-title/account-details-small-title';
 import { DebtAccountBalance } from '../../../../account/component/debt-account-balance/debt-account-balance';
 import { DepositAccountActionsMenu } from '../../../../account/component/deposit-account-actions-menu/deposit-account-actions-menu';
 import { DepositDetailsCard } from '../../../../account/component/deposit-details-card/deposit-details-card';
-import { ACCOUNT_COLOR } from '../../../../account/constant/account-color.constant';
-import { ACCOUNT_DEBT_TYPE } from '../../../../account/constant/account-debt-type.constant';
-import { ACCOUNT_TYPE } from '../../../../account/constant/account-type.constant';
 import { useAccountBalanceQuery } from '../../../../account/query/use-account-balance.query';
 import { useDebtAccountProgressSummaryQuery } from '../../../../account/query/use-debt-account-progress-summary.query';
 import { useGetAccountByIdQuery } from '../../../../account/query/use-get-account-by-id.query';
 import { InstallmentPlanScheduleSummary } from '../../../../installment-plan/component/installment-plan-schedule-summary/installment-plan-schedule-summary';
-import { TransactionList } from '../../../../transaction/components/transaction-list/transaction-list';
+import { CollapsibleChromeTransactionList } from '../../../../transaction/components/collapsible-chrome-transaction-list/collapsible-chrome-transaction-list';
 
 import { AccountDetailsSelector } from './account-details.selector';
-
-const descriptionVariants = cva('uppercase', {
-    variants: { variant: FOREGROUND_COLOR_PALETTE }
-});
 
 export default function AccountDetails() {
     const id = Number(useLocalSearchParams<IdParamInterface>().id);
 
-    const router = useRouter();
     const { account, isLoading } = useGetAccountByIdQuery(id);
     const { balance } = useAccountBalanceQuery(id);
     const debtProgressSummary = useDebtAccountProgressSummaryQuery(id);
-    const { t } = useLingui();
-
-    const handleGoBack = () => void goBackOrReplace('/');
-    const handleOpenAccountSettings = () => void router.navigate({ pathname: '/account/[id]/update', params: { id: String(id) } });
 
     if (isLoading) {
         return <LoadingScreen />;
@@ -54,69 +41,58 @@ export default function AccountDetails() {
         return <Redirect href="/" />;
     }
 
-    const accountDescription =
-        account.debtType === AccountDebtTypeEnum.INSTALLMENT ? t(ACCOUNT_DEBT_TYPE[account.debtType]) : t(ACCOUNT_TYPE[account.type]);
-    const headerRight =
+    const instrumentSymbol = account.instrument.symbol;
+    const headerTrailing =
         account.type === AccountTypeEnum.DEPOSIT ? (
-            <DepositAccountActionsMenu accountId={id} balance={balance} instrumentSymbol={account.instrument.symbol} />
+            <DepositAccountActionsMenu accountId={id} balance={balance} instrumentSymbol={instrumentSymbol} />
         ) : (
-            <HapticPressable
-                className="ml-auto h-10 w-10 items-center justify-center"
-                onPress={handleOpenAccountSettings}
-                testID={AccountDetailsSelector.EditButton}
-                nativeID={AccountDetailsSelector.EditButton}
-                collapsable={false}
-                accessibilityRole="button"
-            >
-                <CircleIcon icon={UserIconNameEnum.EllipsisVertical} variant="ghost" size={40} iconSize={24} border={false} />
-            </HapticPressable>
+            <AccountDetailsEditButton accountId={id} />
         );
 
     return (
-        <View className="relative flex-1">
-            <Page
-                testID={AccountDetailsSelector.Page}
-                header={
-                    <PageHeader
-                        icon={account.icon}
-                        onGoBack={handleGoBack}
-                        title={account.title}
-                        iconVariant={ACCOUNT_COLOR[account.type]}
-                        right={headerRight}
-                        description={accountDescription}
-                        descriptionClassName={descriptionVariants({ variant: ACCOUNT_COLOR[account.type] })}
+        <View className="flex-1" testID={AccountDetailsSelector.Page} collapsable={false}>
+            <ScreenChromeThemeProvider>
+                <ScreenChromeFrame>
+                    <View className="flex-1 px-5xl">
+                        <CollapsibleChromeTransactionList accountId={id}>
+                            {account.type === AccountTypeEnum.DEBT ? (
+                                <DebtAccountBalance
+                                    accountId={id}
+                                    debtType={account.debtType}
+                                    instrumentSymbol={instrumentSymbol}
+                                    summary={debtProgressSummary}
+                                />
+                            ) : (
+                                <AccountBalance instrumentSymbol={instrumentSymbol} balance={balance} />
+                            )}
+
+                            {account.debtType === AccountDebtTypeEnum.INSTALLMENT ? (
+                                <InstallmentPlanScheduleSummary accountId={id} instrumentSymbol={instrumentSymbol} />
+                            ) : null}
+
+                            {account.type === AccountTypeEnum.DEPOSIT ? (
+                                <DepositDetailsCard
+                                    balance={balance}
+                                    instrumentSymbol={instrumentSymbol}
+                                    interestRate={account.interestRate}
+                                    deadline={account.deadline}
+                                />
+                            ) : null}
+                        </CollapsibleChromeTransactionList>
+                    </View>
+
+                    <CollapsibleHeaderBackdrop />
+
+                    <CollapsibleChromeHeader
+                        leading={<HeaderBackButton />}
+                        trailing={headerTrailing}
+                        expandedTitle={<AccountDetailsLargeTitle account={account} />}
+                        collapsedTitle={
+                            <AccountDetailsSmallTitle title={account.title} balance={balance} instrumentSymbol={instrumentSymbol} />
+                        }
                     />
-                }
-                contentClassName="flex-1"
-            >
-                <View className="pb-md">
-                    {account.type === AccountTypeEnum.DEBT ? (
-                        <DebtAccountBalance
-                            accountId={id}
-                            debtType={account.debtType}
-                            instrumentSymbol={account.instrument.symbol}
-                            summary={debtProgressSummary}
-                        />
-                    ) : (
-                        <AccountBalance instrumentSymbol={account.instrument.symbol} balance={balance} />
-                    )}
-
-                    {account.debtType === AccountDebtTypeEnum.INSTALLMENT ? (
-                        <InstallmentPlanScheduleSummary accountId={id} instrumentSymbol={account.instrument.symbol} />
-                    ) : null}
-
-                    {account.type === AccountTypeEnum.DEPOSIT ? (
-                        <DepositDetailsCard
-                            balance={balance}
-                            instrumentSymbol={account.instrument.symbol}
-                            interestRate={account.interestRate}
-                            deadline={account.deadline}
-                        />
-                    ) : null}
-                </View>
-
-                <TransactionList accountId={id} footerSpacerMultiplier={3} />
-            </Page>
+                </ScreenChromeFrame>
+            </ScreenChromeThemeProvider>
 
             <AccountDetailsMenuControls accountId={id} accountType={account.type} />
         </View>
