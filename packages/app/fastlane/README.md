@@ -101,7 +101,28 @@ and `changelogs/default.txt` carries the same release notes as iOS
 
 `ios_metadata` runs `deliver` with `skip_binary_upload` and `skip_screenshots`,
 so it only pushes text metadata to the editable version and leaves the binary
-and the current store images alone.
+and the current store images alone. It also completes the listing App Review
+requires, each step idempotent:
+
+- `<locale>/privacy_url.txt` and `primary_category.txt` (`FINANCE`) go through
+  `deliver`'s app info upload.
+- `app_rating_config.json` is the age rating declaration (every question
+  `NONE`/`false`, rated 4+), passed as `app_rating_config_path`; `deliver`
+  sends its App Store Connect attribute names verbatim.
+- `ensure_app_store_review_detail` fills empty App Review contact fields (name,
+  the Appfile `apple_id` email, and the `ASC_REVIEW_CONTACT_PHONE` env, which
+  is never committed) and sets `demoAccountRequired` to `false`.
+- `ensure_content_rights_declaration` sets `DOES_NOT_USE_THIRD_PARTY_CONTENT`.
+- `ensure_free_price_schedule` creates a free price schedule with base
+  territory USA when the app has no manual price yet.
+
+App Privacy answers cannot be published with an API key and stay a manual
+App Store Connect step.
+
+`.github/workflows/store-metadata.yml` runs `store_preflight` and
+`ios_metadata` on demand from the Linux control pool, without a build:
+`gh workflow run store-metadata.yml`. `native-publish.yml` hands the phone
+secret to its post-submit hook through `EAS_EXTRA_ENV`.
 
 `ios_screenshots` re-runs the screenshot gates against the set it is about to
 upload, so a variant missing a locale can never reach `deliver`. It then runs
