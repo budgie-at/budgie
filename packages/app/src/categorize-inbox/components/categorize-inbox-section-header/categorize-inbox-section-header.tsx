@@ -1,5 +1,6 @@
 import { CategorizeInboxSectionEnum } from '@budgie/categorization';
 import { convertFromMicroUnits } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
@@ -7,7 +8,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { testID } from '../../../@generic/utils/test-id.util';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 
 import { CategorizeInboxSectionHeaderSelector } from './categorize-inbox-section-header.selector';
 
@@ -20,7 +21,7 @@ interface Props {
 export const CategorizeInboxSectionHeader = ({ section, rowCount, totalBaseAmount }: Props) => {
     const { t } = useLingui();
     const protectAmount = useProtectedAmountLabel();
-    const { defaultInstrument } = useSettingsContext();
+    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
 
     const sectionTitles: Record<CategorizeInboxSectionEnum, string> = {
         [CategorizeInboxSectionEnum.CASH_WITHDRAWALS]: t`Cash withdrawals`,

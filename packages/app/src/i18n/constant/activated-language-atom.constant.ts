@@ -1,11 +1,14 @@
 import { LanguageEnum } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import * as Atom from 'effect/reactivity/Atom';
 
-import { settingsContextAtom } from '../../settings/constants/settings-context-atom.constant';
+import { settingsAtom, settingsResultAtom } from '../../settings/constants/settings-atoms.constant';
 import { i18nActivateFallback, i18nEnsureLanguageActivated, i18nGetOSLocale } from '../utils/i18n.util';
 
-const targetLanguageAtom = Atom.map(settingsContextAtom, ({ isLoading, settings }) => (isLoading ? i18nGetOSLocale() : settings.language));
+const targetLanguageAtom = Atom.make(get =>
+    AsyncResult.isInitial(get(settingsResultAtom)) ? i18nGetOSLocale() : get(settingsAtom).language
+);
 
 export const activatedLanguageAtom = Atom.make(get => {
     const targetLanguage = get(targetLanguageAtom);

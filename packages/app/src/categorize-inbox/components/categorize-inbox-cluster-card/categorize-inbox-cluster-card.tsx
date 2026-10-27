@@ -1,5 +1,6 @@
 import { CategorizeInboxSectionEnum } from '@budgie/categorization';
 import { UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
@@ -11,7 +12,7 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { Icon } from '../../../@generic/component/icon/icon';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { testID } from '../../../@generic/utils/test-id.util';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 import { CategorizeInboxAlreadyTrackedChip } from '../categorize-inbox-already-tracked-chip/categorize-inbox-already-tracked-chip';
 import { CategorizeInboxClusterRow } from '../categorize-inbox-cluster-row/categorize-inbox-cluster-row';
@@ -29,7 +30,7 @@ interface Props {
 export const CategorizeInboxClusterCard = ({ cluster }: Props) => {
     const { t } = useLingui();
     const protectAmount = useProtectedAmountLabel();
-    const { defaultInstrument } = useSettingsContext();
+    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const { expandedClusterKey, excludedTransactionIds, toggleExpanded } = useCategorizeInboxContext();
 
     const handleTogglePress = (): void => void toggleExpanded(cluster.key);

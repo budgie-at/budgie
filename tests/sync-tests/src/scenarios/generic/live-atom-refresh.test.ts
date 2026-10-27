@@ -41,7 +41,7 @@ import { allRulesAtom } from '@app/rule/query/use-get-all-rules.query';
 import { ruleByIdAtom } from '@app/rule/query/use-get-rule-by-id.query';
 import { liquidBalanceAtom } from '@app/runway/query/use-liquid-balance.query';
 import { runwayDriverSeriesAtom, runwaySeriesAtom } from '@app/runway/query/use-runway.query';
-import { settingsAtom } from '@app/settings/constants/settings-context-atom.constant';
+import { defaultAccountResultAtom, defaultInstrumentResultAtom, settingsResultAtom } from '@app/settings/constants/settings-atoms.constant';
 import { updateSettingsMutation } from '@app/settings/mutation/update-settings.mutation';
 import { accountSyncAtom } from '@app/sync/hook/use-account-sync.hook';
 import { syncTokenAtom } from '@app/sync/hook/use-sync-token.hook';
@@ -69,6 +69,7 @@ import {
     AccountTypeEnum,
     DEFAULT_TRANSACTION_FILTER,
     Db,
+    InstrumentEntityTable,
     InstrumentTypeEnum,
     LanguageEnum,
     RunwayDriverDimensionEnum,
@@ -170,7 +171,9 @@ const liveAtoms = ({
     liquidBalance: liquidBalanceAtom([BASE_INSTRUMENT_ID, true]),
     runwaySeries: runwaySeriesAtom([BASE_INSTRUMENT_ID, true]),
     runwayDriverSeries: runwayDriverSeriesAtom([BASE_INSTRUMENT_ID, RunwayDriverDimensionEnum.CATEGORY, EN, true]),
-    settings: settingsAtom,
+    settings: settingsResultAtom,
+    defaultInstrument: defaultInstrumentResultAtom,
+    defaultAccount: defaultAccountResultAtom,
     accountSync: accountSyncAtom(account.id),
     syncToken: syncTokenAtom(account.id),
     bankIntegrationById: bankIntegrationByIdAtom(integrationId),
@@ -292,6 +295,21 @@ describe('generic/live-atom-refresh', () => {
         ).pipe(Effect.provide(TestLayer))
     );
 
+    it.effect('keeps settings when only accounts or instruments change', () =>
+        withLiveRegistry(registry =>
+            Effect.gen(function* () {
+                registry.mount(settingsResultAtom);
+                yield* settle(registry, [settingsResultAtom]);
+                const before = registry.get(settingsResultAtom);
+
+                yield* inLiveRuntime(registry, Effect.all([touch(AccountEntityTable), touch(InstrumentEntityTable)]));
+                yield* settle(registry, [settingsResultAtom]);
+
+                expect(registry.get(settingsResultAtom)).toBe(before);
+            })
+        ).pipe(Effect.provide(TestLayer))
+    );
+
     it.effect('shows owning-service writes in the live values', () =>
         withLiveRegistry(registry =>
             Effect.gen(function* () {
@@ -299,11 +317,11 @@ describe('generic/live-atom-refresh', () => {
                 const read = <A, E>(atom: Atom.Atom<AsyncResult.AsyncResult<A, E>>) =>
                     Effect.andThen(Effect.sleep(FLUSH_WAIT), AtomRegistry.getResult(registry, atom, { suspendOnWaiting: true }));
 
-                registry.mount(settingsAtom);
+                registry.mount(settingsResultAtom);
                 registry.mount(inactiveAccountsAtom);
                 registry.mount(searchTagsAtom(''));
 
-                expect((yield* read(settingsAtom))?.showCents).toBe(true);
+                expect((yield* read(settingsResultAtom))?.showCents).toBe(true);
                 expect((yield* read(inactiveAccountsAtom)).map(({ id }) => id)).toEqual([inactive.id]);
                 expect(yield* read(searchTagsAtom(''))).toEqual([]);
 
@@ -316,7 +334,7 @@ describe('generic/live-atom-refresh', () => {
                     ])
                 );
 
-                expect((yield* read(settingsAtom))?.showCents).toBe(false);
+                expect((yield* read(settingsResultAtom))?.showCents).toBe(false);
                 expect(yield* read(inactiveAccountsAtom)).toEqual([]);
                 expect((yield* read(searchTagsAtom(''))).map(({ title }) => title)).toEqual(['travel']);
             })

@@ -8,7 +8,7 @@ import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-er
 import { AiFeaturesPageSelector } from '../../../app/(tabs)/settings/ai-features-page.selector';
 import { SettingSwitch } from '../../../settings/components/setting-switch/setting-switch';
 import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { updateAiFeatureMutation } from '../../../settings/mutation/update-settings.mutation';
 
 import type { AiFeatureSettingsInterface } from '../../interface/ai-feature-settings.interface';
@@ -23,7 +23,7 @@ interface Props {
 
 export const AiFeatureToggle = ({ settingKey, title, description, icon }: Props) => {
     const { t } = useLingui();
-    const { settings } = useSettingsContext();
+    const isFeatureEnabled = useSetting(settingKey);
 
     const handleValueChange = (next: boolean) => {
         appRuntime.runFork(
@@ -36,7 +36,7 @@ export const AiFeatureToggle = ({ settingKey, title, description, icon }: Props)
 
     const switchSlot = (
         <SettingSwitch
-            value={settings[settingKey]}
+            value={isFeatureEnabled}
             onValueChange={handleValueChange}
             testID={AiFeaturesPageSelector.FeatureSwitch(settingKey)}
             stateOnTestID={AiFeaturesPageSelector.FeatureSwitchStateOn(settingKey)}

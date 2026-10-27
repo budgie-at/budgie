@@ -1,5 +1,6 @@
 import { AccountAssociationEnum, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
 import { SyncProviderRegistryService } from '@budgie/sync';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useRouter } from 'expo-router';
@@ -17,7 +18,8 @@ import { testID } from '../../../@generic/utils/test-id.util';
 import { AccountSyncBadge } from '../../../account/component/account-sync-badge/account-sync-badge';
 import { useAccountBalanceQuery } from '../../../account/query/use-account-balance.query';
 import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/bank-integration.selector';
-import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
+import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
 import { useBankIntegrationAccountRowState } from '../../hook/use-bank-integration-account-row-state.hook';
 import { BankIntegrationAccountMenu } from '../bank-integration-account-menu/bank-integration-account-menu';
 
@@ -33,7 +35,7 @@ export const BankIntegrationAccountRow = ({ account }: Props) => {
     const router = useRouter();
     const [runEffect] = useEffectAction(t`Could not update setting`);
     const { balance } = useAccountBalanceQuery(account.id);
-    const formatDigits = useDisplayFormatDigits();
+    const formatDigits = useFormatDigits(useAtomValue(decimalPlacesAtom));
     const { sync, syncState, switchLabel, description, isToggleVisible } = useBankIntegrationAccountRowState(account);
 
     const rowTestID = BankIntegrationSelector.AccountRow(account.id);

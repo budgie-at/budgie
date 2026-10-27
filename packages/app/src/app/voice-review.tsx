@@ -1,4 +1,5 @@
 import { AITransactionInterface } from '@budgie/ai';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { useEffect, useEffectEvent } from 'react';
 import { ScrollView, Text, View } from 'react-native';
@@ -12,7 +13,7 @@ import { useVoiceReviewModal, useVoiceReviewModalParams } from '../ai/context/vo
 import { useVoiceReview } from '../ai/hook/use-voice-review.hook';
 import { VoiceReviewRowInterface } from '../ai/interface/voice-review-row.interface';
 import { useCategorySelectorModal } from '../category/context/category-selector-modal.context';
-import { useSettingsContext } from '../settings/context/settings.context';
+import { defaultAccountAtom } from '../settings/constants/settings-atoms.constant';
 import { SplitEntryRow } from '../transaction/components/split-entry-row/split-entry-row';
 
 import { VoiceReviewSelector } from './voice-review.selector';
@@ -47,7 +48,7 @@ const mapExtractedToReviewRows = (transactions: AITransactionInterface[]): Voice
 // eslint-disable-next-line max-statements, max-lines-per-function -- Form-sheet route orchestrates per-row category, save, and re-record
 export default function VoiceReviewModal() {
     const { t } = useLingui();
-    const { defaultAccount } = useSettingsContext();
+    const defaultAccount = useAtomValue(defaultAccountAtom);
     const [, resolveVoiceReview, dismissVoiceReview] = useVoiceReviewModal();
     useModalDismiss(dismissVoiceReview);
     const currentParams = useVoiceReviewModalParams();

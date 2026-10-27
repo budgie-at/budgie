@@ -1,4 +1,5 @@
 import { TransactionConsolidationTypeEnum, UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { t } from '@lingui/core/macro';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
@@ -7,7 +8,7 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 import { MetaPill } from '../../../@generic/component/meta-pill/meta-pill';
 import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { refundsTotalAtom } from '../../constant/refunds-total-atom.constant';
 import { RefundedSummaryKindEnum } from '../../enum/refunded-summary-kind.enum';
@@ -22,7 +23,7 @@ interface Props {
 }
 
 export const RefundedPill = ({ transaction, onPress, testID }: Props) => {
-    const { decimalPlaces } = useSettingsContext();
+    const decimalPlaces = useAtomValue(decimalPlacesAtom);
     const language = useSetting('language');
     const formatDigits = useFormatDigits(decimalPlaces);
     const isRefund = transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND;

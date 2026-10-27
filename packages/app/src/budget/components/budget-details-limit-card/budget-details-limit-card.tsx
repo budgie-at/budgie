@@ -1,4 +1,5 @@
 import { convertFromMicroUnits } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { StyleSheet, Text, View } from 'react-native';
 
@@ -7,7 +8,7 @@ import { isDefined } from '@rnw-community/shared';
 import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
 import { BudgetProgressBar } from '../budget-progress-bar/budget-progress-bar';
 
 import type { UserIconType } from '@budgie/contracts';
@@ -25,7 +26,7 @@ interface Props {
 
 export const BudgetDetailsLimitCard = (props: Props) => {
     const { title, icon, spent, limitAmount, currencySymbol, testID, spentTestID, onPress } = props;
-    const { decimalPlaces } = useSettingsContext();
+    const decimalPlaces = useAtomValue(decimalPlacesAtom);
     const formatDigits = useFormatDigits(decimalPlaces);
     const { t } = useLingui();
 

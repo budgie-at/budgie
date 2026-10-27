@@ -1,3 +1,4 @@
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Trans } from '@lingui/react/macro';
 import { useState } from 'react';
 import { Text, View } from 'react-native';
@@ -8,9 +9,9 @@ import { ProtectedMoney } from '../../../@generic/component/protected-money/prot
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { HomePageSelector } from '../../../app/(tabs)/home-page.selector';
 import { SecurityLockButton } from '../../../auth/components/security-lock-button/security-lock-button';
-import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { RunwayPill } from '../../../runway/component/runway-pill/runway-pill';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { decimalPlacesAtom, defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { NetWorthAssetChips } from '../net-worth-asset-chips/net-worth-asset-chips';
 
@@ -31,9 +32,9 @@ const EXPANDED_CONTENT_HORIZONTAL_PADDING = 32;
 const LOCK_BUTTON_RESERVED_WIDTH = 68;
 
 export const NetWorthCollapsibleHeader = ({ netWorth, fiatTotal, cryptoTotal, fiatCount, cryptoCount }: Props) => {
-    const { defaultInstrument } = useSettingsContext();
+    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const isRunwayPillEnabled = useSetting('isRunwayPillEnabled');
-    const formatDigits = useDisplayFormatDigits();
+    const formatDigits = useFormatDigits(useAtomValue(decimalPlacesAtom));
     const [expandedHeaderWidth, setExpandedHeaderWidth] = useState(0);
 
     const handleExpandedHeaderLayout = (event: LayoutChangeEvent) => {

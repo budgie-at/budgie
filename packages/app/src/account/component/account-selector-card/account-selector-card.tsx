@@ -1,4 +1,5 @@
 import { AccountAssociationEnum, AccountTypeEnum, AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
@@ -10,7 +11,7 @@ import { ProtectedText } from '../../../@generic/component/protected-text/protec
 import { cn } from '../../../@generic/utils/cn.util';
 import { AccountSelectorModalSelector } from '../../../app/account-selector-modal.selector';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
 import { AccountInactiveIcon } from '../account-inactive-icon/account-inactive-icon';
@@ -39,7 +40,7 @@ export const AccountSelectorCard = (props: Props) => {
     const { className, isSelected, title, onSelect, id, icon, type, instrument, isActive, debtType, targetBalance, showDebtTotal } = props;
 
     const { t } = useLingui();
-    const { decimalPlaces } = useSettingsContext();
+    const decimalPlaces = useAtomValue(decimalPlacesAtom);
     const { balance } = useAccountBalanceQuery(id);
     const formatDigits = useFormatDigits(decimalPlaces);
     const optionTestID = AccountSelectorModalSelector.Option(title);

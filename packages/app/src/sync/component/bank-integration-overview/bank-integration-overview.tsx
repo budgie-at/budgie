@@ -1,3 +1,4 @@
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -6,13 +7,13 @@ import { BankLogo } from '../../../@generic/component/bank-logo/bank-logo';
 import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
 import { useHomePageDataQuery } from '../../../account/query/use-home-page-data.query';
 import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/bank-integration.selector';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { useBankIntegration } from '../../context/bank-integration.context';
 import { BankIntegrationStatusPill } from '../bank-integration-status-pill/bank-integration-status-pill';
 
 export const BankIntegrationOverview = () => {
     const { integration, capabilities } = useBankIntegration();
-    const { defaultInstrument } = useSettingsContext();
+    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const { accounts, balanceSummary } = useHomePageDataQuery();
 
     const total = balanceSummary.bankProviderTotals.get(integration.id) ?? 0;

@@ -1,10 +1,11 @@
 import { StatisticsRepository } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
-import { useSettingsContext } from '../../settings/context/settings.context';
+import { defaultInstrumentAtom } from '../../settings/constants/settings-atoms.constant';
 import { STATISTICS_TABLES } from '../constant/statistics-tables.constant';
 
 import type { TransactionFilterInterface } from '@budgie/contracts';
@@ -20,7 +21,7 @@ export const statisticsByTagAtom = databaseQueryFamily(
 );
 
 export const useGetStatisticsByTagQuery = (filters: TransactionFilterInterface) => {
-    const { defaultInstrument } = useSettingsContext();
+    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const result = useLiveAtomValue(statisticsByTagAtom([filters, defaultInstrument.id]));
 
     return AsyncResult.getOrElse(result, () => ({ incomeByTag: [], expenseByTag: [] }));

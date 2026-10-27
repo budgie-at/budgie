@@ -1,11 +1,12 @@
 import { convertFromMicroUnits } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Text } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { formatExchangeRate } from '../../../@generic/utils/format-exchange-rate.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { decimalPlacesAtom, defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { useConvertedAmount } from '../../hook/use-converted-amount.hook';
 
 interface Props {
@@ -17,7 +18,8 @@ interface Props {
 }
 
 export const ConvertedAmountLabel = ({ instrumentId, instrumentSymbol, amount, baseAmount, shouldShowExchangeRate = false }: Props) => {
-    const { decimalPlaces, defaultInstrument } = useSettingsContext();
+    const decimalPlaces = useAtomValue(decimalPlacesAtom);
+    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const formatDigits = useFormatDigits(decimalPlaces);
     const liveConversion = useConvertedAmount(instrumentId, defaultInstrument.id, amount);
     const convertedAmount = isDefined(baseAmount) ? baseAmount : liveConversion?.amount;

@@ -1,7 +1,9 @@
+import { useAtomValue } from '@effect/atom-react/Hooks';
+
 import { AmountInput } from '../../../@generic/component/amount-input/amount-input';
 import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
 import { CreateAccountScreenSelector } from '../create-account-screen/create-account-screen.selector';
 
 interface Props {
@@ -12,7 +14,7 @@ interface Props {
 }
 
 export const AccountTargetBalanceField = ({ value, onChange, instrumentSymbol, label }: Props) => {
-    const { decimalPlaces } = useSettingsContext();
+    const decimalPlaces = useAtomValue(decimalPlacesAtom);
     const formatDigits = useFormatDigits(decimalPlaces);
 
     return (

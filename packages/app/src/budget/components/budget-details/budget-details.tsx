@@ -1,5 +1,6 @@
 import { computePeriodWindow, getInclusiveEnd } from '@budgie/budget';
 import { UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { router } from 'expo-router';
@@ -15,7 +16,7 @@ import { useToday } from '../../../@generic/hook/use-today.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
 import { BudgetSelector } from '../../budget.selector';
 import { useGetBudgetCategoryLimitsQuery } from '../../query/use-get-budget-category-limits.query';
 import { useGetBudgetSpentQuery } from '../../query/use-get-budget-spent.query';
@@ -33,7 +34,7 @@ export const BudgetDetails = ({ budget }: Props) => {
     const { spent } = useGetBudgetSpentQuery(budget);
     const { categoryLimits } = useGetBudgetCategoryLimitsQuery(budget.id);
     const { instrument } = useGetInstrumentByIdQuery(budget.instrumentId);
-    const { decimalPlaces } = useSettingsContext();
+    const decimalPlaces = useAtomValue(decimalPlacesAtom);
     const formatDigits = useFormatDigits(decimalPlaces);
     const periodWindow = computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, useToday());
     const periodEnd = getInclusiveEnd(periodWindow.nextPeriodStart);

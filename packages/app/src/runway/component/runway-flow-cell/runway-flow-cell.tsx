@@ -1,3 +1,4 @@
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Text, View } from 'react-native';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
@@ -7,7 +8,7 @@ import { cn } from '../../../@generic/utils/cn.util';
 import { HUNDRED_THOUSAND } from '../../../i18n/constant/compact-thresholds.constant';
 import { useFormatCompactDigits } from '../../../i18n/hook/use-format-compact-digits.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 
 interface Props {
     readonly label: string;
@@ -16,7 +17,7 @@ interface Props {
 }
 
 export const RunwayFlowCell = ({ label, amount, variant }: Props) => {
-    const { defaultInstrument } = useSettingsContext();
+    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const formatDigits = useFormatDigits(0);
     const formatCompactDigits = useFormatCompactDigits();
 

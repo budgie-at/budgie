@@ -1,5 +1,6 @@
 import { AccountTypeEnum } from '@budgie/contracts';
 import { AccountService, TransactionTransferService } from '@budgie/ledger';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 
@@ -8,13 +9,14 @@ import { isDefined } from '@rnw-community/shared';
 import { useEffectAction } from '../../../@generic/hook/use-effect-action.hook';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { dismissAllOrReplace } from '../../../@generic/utils/dismiss-all-or-replace.util';
-import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
+import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
 import { useAccountSelectorModal } from '../../context/account-selector-modal.context';
 
 export const useDepositCloseAction = (accountId: number, balance: number, instrumentSymbol: string) => {
     const { t } = useLingui();
     const [openAccountSelector] = useAccountSelectorModal();
-    const formatDigits = useDisplayFormatDigits();
+    const formatDigits = useFormatDigits(useAtomValue(decimalPlacesAtom));
     const [run, isLoading] = useEffectAction(t`Could not close deposit`);
 
     const closeDeposit = Effect.gen(function* () {

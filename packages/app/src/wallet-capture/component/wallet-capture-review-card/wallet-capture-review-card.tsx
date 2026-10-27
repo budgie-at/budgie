@@ -1,4 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
@@ -9,7 +10,7 @@ import { Button } from '../../../@generic/component/button/button';
 import { Card } from '../../../@generic/component/card/card';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
 import { WalletCaptureReviewReasonEnum } from '../../enum/wallet-capture-review-reason.enum';
 import { WalletCaptureReviewDetailRow } from '../wallet-capture-review-detail-row/wallet-capture-review-detail-row';
 import { WalletCaptureReviewReasonIcon } from '../wallet-capture-review-reason-icon/wallet-capture-review-reason-icon';
@@ -29,7 +30,7 @@ interface Props {
 
 export const WalletCaptureReviewCard = ({ item, accountTitle, instrumentSymbol, isMutating, onImport, onDismiss }: Props) => {
     const { t } = useLingui();
-    const { decimalPlaces } = useSettingsContext();
+    const decimalPlaces = useAtomValue(decimalPlacesAtom);
     const formatDigits = useFormatDigits(decimalPlaces);
     const { formatDayAndMonthAndYearWithTime } = useFormatDate();
 

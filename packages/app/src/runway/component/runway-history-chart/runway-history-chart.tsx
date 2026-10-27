@@ -1,4 +1,5 @@
 import { convertFromMicroUnits } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Trans } from '@lingui/react/macro';
 import { Text } from 'react-native';
 import Svg from 'react-native-svg';
@@ -10,7 +11,7 @@ import { StyledLine } from '../../../@generic/component/styled-line/styled-line'
 import { StyledSvgText } from '../../../@generic/component/styled-svg-text/styled-svg-text';
 import { useI18nContext } from '../../../i18n/context/i18n.context';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import {
     RUNWAY_HISTORY_BAR_AREA_HEIGHT,
     RUNWAY_HISTORY_BAR_GAP,
@@ -40,7 +41,7 @@ const SPIKE_MULTIPLIER = 1.5;
 
 export const RunwayHistoryChart = ({ series, burn }: Props) => {
     const { intl } = useI18nContext();
-    const { defaultInstrument } = useSettingsContext();
+    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const formatDigits = useFormatDigits(0);
 
     const peakRow = series.reduce<RunwaySeriesRowInterface | null>(
