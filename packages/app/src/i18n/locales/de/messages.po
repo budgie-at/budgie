@@ -329,7 +329,7 @@ msgstr "{source}-Fehler · {message}"
 msgid "{spikeLabel} had a one-off {spikeAmount}. The estimate uses a typical month instead."
 msgstr "{spikeLabel} hatte eine Einmalausgabe von {spikeAmount}. Die Schätzung nutzt stattdessen einen typischen Monat."
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
+#: src/transaction/components/transaction-split-field-icon/transaction-split-field-icon.tsx
 msgid "{splitEntryCount, plural, one {# item} other {# items}}"
 msgstr "{splitEntryCount, plural, one {# Element} other {# Elemente}}"
 
@@ -1151,7 +1151,7 @@ msgstr "Als {categoryTitle} kategorisieren"
 #: src/app/(tabs)/settings/import.tsx
 #: src/budget/service/budget-alert-monitor.service.ts
 #: src/category/components/category-form-selector/category-form-selector.tsx
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
+#: src/transaction/components/transaction-category-field-icon/transaction-category-field-icon.tsx
 #: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Category"
@@ -1577,7 +1577,7 @@ msgstr "Anleitung konnte nicht geöffnet werden"
 msgid "Could not open Shortcuts"
 msgstr "Shortcuts konnte nicht geöffnet werden"
 
-#: src/app/(tabs)/settings/import.tsx
+#: src/import/constant/import-csv-atom.constant.ts
 msgid "Could not read CSV file"
 msgstr "CSV-Datei konnte nicht gelesen werden"
 
@@ -1881,7 +1881,7 @@ msgstr "Datenverwaltung"
 
 #: src/@generic/component/date-filter/date-filter.tsx
 #: src/app/(tabs)/settings/import.tsx
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
+#: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "Date"
 msgstr "Datum"
@@ -3576,8 +3576,8 @@ msgstr "nicht gesetzt"
 msgid "Not yet"
 msgstr "Noch keins"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
 #: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
+#: src/transaction/components/transaction-note-field-icon/transaction-note-field-icon.tsx
 msgid "Note"
 msgstr "Notiz"
 
@@ -4690,6 +4690,7 @@ msgstr "Einige Transaktionen können auf mehrere Regeln zutreffen. Die erste pas
 
 #: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
 #: src/@generic/hook/use-show-error.hook.ts
+#: src/account/hooks/use-account-entity-form.hook.ts
 #: src/ai/component/voice-input-error/voice-input-error.tsx
 msgid "Something went wrong"
 msgstr "Etwas ist schief gelaufen"
@@ -4709,7 +4710,7 @@ msgstr "Sortiert Buchungen in Kategorien und schlägt Tags vor"
 msgid "Source"
 msgstr "Quelle"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
+#: src/transaction/components/transaction-sources-field-icon/transaction-sources-field-icon.tsx
 msgid "Sources"
 msgstr "Quellen"
 
@@ -4734,7 +4735,7 @@ msgstr "Ausgaben nach Tag"
 msgid "Spent"
 msgstr "Ausgegeben"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
+#: src/transaction/components/transaction-split-field-icon/transaction-split-field-icon.tsx
 msgid "Split"
 msgstr "Aufteilen"
 
@@ -4902,9 +4903,9 @@ msgstr "Tag-Name"
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx
 #: src/app/(tabs)/settings/tags.tsx
 #: src/runway/component/runway-drivers/runway-drivers.tsx
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
 #: src/transaction/components/transaction-info-tags-section/transaction-info-tags-section.tsx
+#: src/transaction/components/transaction-tags-field-icon/transaction-tags-field-icon.tsx
 msgid "Tags"
 msgstr "Tags"
 
@@ -5184,7 +5185,7 @@ msgstr "Zu zahlen"
 
 #: src/@generic/constant/date-period.constant.ts
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
+#: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
 msgid "Today"
 msgstr "Heute"
 
@@ -5632,7 +5633,7 @@ msgstr "Falsches oder fehlendes Konto"
 msgid "XLSX export"
 msgstr "XLSX-Export"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
+#: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
 msgid "Yesterday"
 msgstr "Gestern"
 

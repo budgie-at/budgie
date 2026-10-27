@@ -45,11 +45,7 @@ export default function CreateIncomeTransactionPage() {
         <FormProvider {...form}>
             <FullPage header={<PageHeader title={t`New Income`} onGoBack={handleGoBack} />}>
                 <SimpleQuickForm
-                    variant="positive"
                     transactionType={TransactionTypeEnum.INCOME}
-                    accountFieldName="toAccountId"
-                    transactionTitle=""
-                    mccCategoryId={null}
                     isNewTransaction
                     onSubmit={handleSubmit}
                     onCancel={handleGoBack}

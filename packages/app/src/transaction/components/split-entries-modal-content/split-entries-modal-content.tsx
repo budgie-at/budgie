@@ -39,6 +39,7 @@ import {
 } from '../../utils/entry-with-local-id.util';
 import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 import { SplitEntriesAddItemFooter } from '../split-entries-add-item-footer/split-entries-add-item-footer';
+import { SplitEntryDeleteButton } from '../split-entry-delete-button/split-entry-delete-button';
 import { SplitEntryRow } from '../split-entry-row/split-entry-row';
 
 import { SplitEntriesModalContentSelector } from './split-entries-modal-content.selector';
@@ -167,16 +168,15 @@ export const SplitEntriesModalContent = (props: Props) => {
         return (
             <SplitEntryRow
                 index={index}
-                categoryId={item.categoryId ?? 0}
-                amount={item.amount}
+                entry={item}
                 currencySymbol={currencySymbol}
                 variant={variant}
-                canDelete={canDelete}
                 autoFocus={index === autoFocusIndex}
                 onAmountChange={handleAmount}
                 onCategoryPress={handleCategory}
-                onDelete={handleDelete}
-            />
+            >
+                {canDelete ? <SplitEntryDeleteButton index={index} onPress={handleDelete} /> : null}
+            </SplitEntryRow>
         );
     };
 

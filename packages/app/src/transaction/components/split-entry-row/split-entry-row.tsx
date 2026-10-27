@@ -1,5 +1,6 @@
-import { UserIconNameEnum } from '@budgie/contracts';
+import { TransactionEntryCreateInputInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import { ReactNode } from 'react';
 import { Text, View } from 'react-native';
 import Animated, { FadeIn, FadeOutDown, LinearTransition } from 'react-native-reanimated';
 
@@ -17,26 +18,23 @@ import { SplitEntryRowSelector } from './split-entry-row.selector';
 
 interface Props {
     readonly index: number;
-    readonly categoryId: number;
-    readonly amount: number;
+    readonly entry: Pick<TransactionEntryCreateInputInterface, 'categoryId' | 'amount'>;
     readonly currencySymbol: string;
     readonly variant: ColorPaletteVariant;
-    readonly canDelete: boolean;
     readonly autoFocus: boolean;
     readonly onAmountChange: (amount: number) => void;
     readonly onCategoryPress: () => void;
-    readonly onDelete: () => void;
+    readonly children?: ReactNode;
 }
 
 const CIRCLE_ICON_SIZE = 44;
 const CIRCLE_ICON_INNER_SIZE = 22;
-const DELETE_ICON_SIZE = 28;
-const DELETE_ICON_INNER_SIZE = 14;
 const AMOUNT_INPUT_WIDTH = 90;
 const amountInputStyle = { width: AMOUNT_INPUT_WIDTH, textAlign: 'right' as const, fontSize: 15, fontWeight: '600' as const };
 
 export const SplitEntryRow = (props: Props) => {
-    const { index, categoryId, amount, currencySymbol, variant, canDelete, autoFocus, onAmountChange, onCategoryPress, onDelete } = props;
+    const { index, entry, currencySymbol, variant, autoFocus, onAmountChange, onCategoryPress, children } = props;
+    const categoryId = entry.categoryId ?? 0;
 
     const { t } = useLingui();
 
@@ -68,7 +66,7 @@ export const SplitEntryRow = (props: Props) => {
                 </HapticPressable>
 
                 <AmountInput
-                    value={amount}
+                    value={entry.amount}
                     onChangeValue={onAmountChange}
                     inputClassName="text-primary border-0 h-auto"
                     borderless
@@ -81,17 +79,7 @@ export const SplitEntryRow = (props: Props) => {
                     testID={SplitEntryRowSelector.Amount(index)}
                 />
 
-                {canDelete ? (
-                    <HapticPressable onPress={onDelete} testID={SplitEntryRowSelector.Delete(index)}>
-                        <CircleIcon
-                            icon={UserIconNameEnum.X}
-                            size={DELETE_ICON_SIZE}
-                            iconSize={DELETE_ICON_INNER_SIZE}
-                            border={false}
-                            variant="ghost"
-                        />
-                    </HapticPressable>
-                ) : null}
+                {children}
             </View>
         </Animated.View>
     );

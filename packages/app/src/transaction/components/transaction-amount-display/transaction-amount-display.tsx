@@ -2,14 +2,13 @@ import { AmountField, AmountFieldText } from '@budgie/amount-input';
 import { cva } from 'class-variance-authority';
 import { ReactNode, RefObject, useEffect, useImperativeHandle, useRef } from 'react';
 import { Pressable, View } from 'react-native';
-import Animated, { FadeIn, FadeInDown, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import Animated, { FadeIn, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-import { CurrencyModePill } from '../currency-mode-pill/currency-mode-pill';
 
 export interface TransactionAmountDisplayRef {
     shake: () => void;
@@ -20,14 +19,10 @@ interface Props {
     readonly amount: string;
     readonly currencySymbol: string;
     readonly variant: ColorPaletteVariant;
-    readonly label?: string | null;
-    readonly isLabelFlipped?: boolean;
-    readonly secondaryAmount?: string | null;
-    readonly bottomContent?: ReactNode;
     readonly topContent?: ReactNode;
-    readonly onLabelPress?: () => void;
-    readonly onSecondaryAmountPress?: () => void;
+    readonly onPress?: () => void;
     readonly testID?: string;
+    readonly children?: ReactNode;
 }
 
 const textVariants = cva('text-center font-semibold', {
@@ -40,24 +35,7 @@ const BOUNCE_SCALE = 1.04;
 const BOUNCE_SPRING = { damping: 12, mass: 0.8, stiffness: 200 };
 const RETURN_SPRING = { damping: 15, mass: 1, stiffness: 150 };
 
-const SECONDARY_ANIMATION_DELAY = 50;
-const SECONDARY_ANIMATION_DURATION = 200;
-const SECONDARY_ENTERING_ANIMATION = FadeInDown.delay(SECONDARY_ANIMATION_DELAY).duration(SECONDARY_ANIMATION_DURATION);
-
-export const TransactionAmountDisplay = ({
-    ref,
-    amount,
-    currencySymbol,
-    variant,
-    label,
-    isLabelFlipped = false,
-    bottomContent,
-    onLabelPress,
-    secondaryAmount,
-    topContent,
-    onSecondaryAmountPress,
-    testID
-}: Props) => {
+export const TransactionAmountDisplay = ({ ref, amount, currencySymbol, variant, topContent, onPress, testID, children }: Props) => {
     const { shake, animatedStyle: shakeStyle } = useShakeAnimation();
     const scale = useSharedValue(1);
     const previousAmount = useRef(amount);
@@ -87,7 +65,7 @@ export const TransactionAmountDisplay = ({
         <Animated.View entering={FadeIn.duration(200)} className="flex-1 items-center justify-center">
             <View className="items-center self-stretch">
                 {isDefined(topContent) ? <View className="absolute bottom-full mb-sm items-center z-10">{topContent}</View> : null}
-                <Pressable className="self-stretch" onPress={onSecondaryAmountPress} disabled={!isDefined(onSecondaryAmountPress)}>
+                <Pressable className="self-stretch" onPress={onPress} disabled={!isDefined(onPress)}>
                     <Animated.View style={shakeStyle} className="w-full">
                         <Animated.View style={scaleStyle}>
                             <AmountField fontSize={52}>
@@ -98,18 +76,7 @@ export const TransactionAmountDisplay = ({
                         </Animated.View>
                     </Animated.View>
                 </Pressable>
-                {isDefined(label) ? <CurrencyModePill label={label} isFlipped={isLabelFlipped} onPress={onLabelPress} /> : null}
-                {isDefined(secondaryAmount) ? (
-                    <Pressable onPress={onSecondaryAmountPress} disabled={!isDefined(onSecondaryAmountPress)}>
-                        <Animated.Text
-                            entering={SECONDARY_ENTERING_ANIMATION}
-                            className="text-lg text-secondary-foreground font-medium mt-xs"
-                        >
-                            {secondaryAmount}
-                        </Animated.Text>
-                    </Pressable>
-                ) : null}
-                {isDefined(bottomContent) ? <View className="mt-lg items-center">{bottomContent}</View> : null}
+                {children}
             </View>
         </Animated.View>
     );

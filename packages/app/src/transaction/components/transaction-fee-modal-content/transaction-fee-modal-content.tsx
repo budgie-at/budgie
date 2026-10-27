@@ -87,15 +87,12 @@ export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, v
         <View className="px-xl pt-3xl pb-xl gap-lg">
             <SplitEntryRow
                 index={ROW_INDEX}
-                categoryId={feeEntry.categoryId ?? 0}
-                amount={feeEntry.amount}
+                entry={feeEntry}
                 currencySymbol={currencySymbol}
                 variant={variant}
-                canDelete={false}
                 autoFocus={!isDefined(entry)}
                 onAmountChange={handleAmountChange}
                 onCategoryPress={handleCategoryPress}
-                onDelete={handleRemove}
             />
 
             <View className="flex-row gap-x-md">

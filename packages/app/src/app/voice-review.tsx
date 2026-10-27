@@ -14,6 +14,7 @@ import { useVoiceReview } from '../ai/hook/use-voice-review.hook';
 import { VoiceReviewRowInterface } from '../ai/interface/voice-review-row.interface';
 import { useCategorySelectorModal } from '../category/context/category-selector-modal.context';
 import { defaultAccountAtom } from '../settings/constants/settings-atoms.constant';
+import { SplitEntryDeleteButton } from '../transaction/components/split-entry-delete-button/split-entry-delete-button';
 import { SplitEntryRow } from '../transaction/components/split-entry-row/split-entry-row';
 
 import { VoiceReviewSelector } from './voice-review.selector';
@@ -133,16 +134,15 @@ export default function VoiceReviewModal() {
                                 <SplitEntryRow
                                     key={row.id}
                                     index={index}
-                                    categoryId={row.categoryId ?? 0}
-                                    amount={row.amount}
+                                    entry={row}
                                     currencySymbol={currencySymbol}
                                     variant="destructive"
-                                    canDelete={canDelete}
                                     autoFocus={false}
                                     onAmountChange={handleAmount}
                                     onCategoryPress={handleCategory}
-                                    onDelete={handleDelete}
-                                />
+                                >
+                                    {canDelete ? <SplitEntryDeleteButton index={index} onPress={handleDelete} /> : null}
+                                </SplitEntryRow>
                             );
                         })}
                     </View>
