@@ -81,7 +81,7 @@ const CURRENCY_ALIASES: ReadonlyMap<string, CurrencyEnum> = new Map([
 
 const CURRENCY_CODES = new Map<string, CurrencyEnum>(Object.values(CurrencyEnum).map(code => [code, code]));
 const CURRENCY_TOKEN_PATTERN = /\p{L}+|[$£€₴]/gu;
-const CURRENCY_CODE_PATTERN = /(?<!\p{L})([A-Za-z]{3})(?!\p{L})\s?(?=\d)|(?<=\d)\s?([A-Za-z]{3})(?!\p{L})/gu;
+const CURRENCY_CODE_PATTERN = /(?<!\p{L})([A-Za-z]{3})(?!\p{L})\s*(?=\d)|(?<=\d)\s*([A-Za-z]{3})(?!\p{L})/gu;
 const AMOUNT_PATTERN = /(?<![\d.,])([-−])?(\d{1,3}(?:[.,'\s]\d{3})+|\d+)[.,](\d{2})(?!\d|[.,]\d)(?!\s?%)/gu;
 const PARENTHESIZED_PATTERN = /\([^)]*\)/gu;
 const INCLUSIVE_MARKER_PATTERN = buildReceiptKeywordPattern(Object.values(INCLUSIVE_MARKERS).flat(), 'iu');
@@ -265,7 +265,18 @@ const RECEIPT_NUMBER_LABELS: Record<LanguageEnum, readonly string[]> = {
     [LanguageEnum.EN]: ['invoice no', 'invoice', 'receipt no', 'receipt', 'check', 'order no'],
     [LanguageEnum.FR]: ['facture', 'ticket', 'reçu'],
     [LanguageEnum.UK]: ['чек', 'номер чека'],
-    [LanguageEnum.DE]: ['rechnungsnr', 'rechnungsnummer', 'beleg-nr', 'belegnr', 'bon-nr', 'bonnr', 'bon'],
+    [LanguageEnum.DE]: [
+        'rechnungsnr',
+        'rechnungsnummer',
+        'rechnung nr',
+        'beleg-nr',
+        'belegnr',
+        'beleg nr',
+        'bon-nr',
+        'bonnr',
+        'bon nr',
+        'bon'
+    ],
     [LanguageEnum.ES]: ['factura', 'ticket', 'recibo']
 };
 

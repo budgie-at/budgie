@@ -36,6 +36,8 @@ describe('parseReceipt hardening', () => {
         ['lowercase currency code', rowsOf('Total 12.50 eur'), { currency: CurrencyEnum.EUR }],
         ['currency code away from an amount', rowsOf('ALL PRICES INCL', 'Total 12.50'), { currency: null }],
         ['currency code next to an amount', rowsOf('Total 12.50 USD'), { currency: CurrencyEnum.USD }],
+        ['column-aligned currency code', rowsOf('Total USD           62.10'), total(62.1, CurrencyEnum.USD)],
+        ['spaced receipt number label', rowsOf('Rechnung Nr. 2026-0042', 'Total 62.10'), { receiptNumber: '2026-0042' }],
         [
             'vertically offset label and value',
             [receiptLine('Total', 0.06, 0.1), receiptLine('12.50 EUR', 0.7, 0.107)],
