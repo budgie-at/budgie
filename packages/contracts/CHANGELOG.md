@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.121.2](https://github.com/budgie-at/budgie/compare/v6.121.1...v6.121.2) (2026-10-27)
+
+### Bug Fixes
+
+* **app:** prevent analytics from showing incomplete history ([#1689](https://github.com/budgie-at/budgie/issues/1689)) ([6514cc9](https://github.com/budgie-at/budgie/commit/6514cc9fb9a4606adddf7cb73204a77a1b200443))
+
+
 # [6.121.0](https://github.com/budgie-at/budgie/compare/v6.120.0...v6.121.0) (2026-10-27)
 
 ### Bug Fixes
