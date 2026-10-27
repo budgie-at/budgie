@@ -8,7 +8,6 @@ env:
       file: subflows/import/import-database-from-settings.flow.yaml
       env:
           FIXTURE_ROW_ID_MATCH: ${FIXTURE_ROW_ID_MATCH}
-- launchApp: com.apple.DocumentsApp
 - openLink: ${E2E_FIXTURES_URI.replace('file://', 'shareddocuments://')}
 - scrollUntilVisible:
       element:
@@ -16,11 +15,20 @@ env:
       timeout: 20000
 - longPressOn:
       id: ${FILE_ROW_ID_MATCH}
-- tapOn: 'Share'
+- tapOn:
+      text: 'Share'
+      below:
+          id: 'BackButton'
 - extendedWaitUntil:
-      visible: 'budgie \(E2E\)'
+      visible:
+          text: 'budgie \(E2E\)'
+          below:
+              id: 'BackButton'
       timeout: 5000
-- tapOn: 'budgie \(E2E\)'
+- tapOn:
+      text: 'budgie \(E2E\)'
+      below:
+          id: 'BackButton'
 - extendedWaitUntil:
       visible:
           id: 'ReceiptScanToast.DONE'
