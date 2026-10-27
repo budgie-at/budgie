@@ -9,6 +9,7 @@
         "types": ["node"],
         "paths": {
             "@app/*": ["../../packages/app/src/*"],
+            "expo-app-intents": ["../../packages/app/node_modules/expo-app-intents/build/index.d.ts"],
             "whisper.rn": ["../../packages/app/node_modules/whisper.rn/lib/typescript/index.d.ts"]
         }
     },

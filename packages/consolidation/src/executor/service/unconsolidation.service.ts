@@ -1,5 +1,7 @@
 import {
     CategorySourceEnum,
+    MccCategoryRepository,
+    SettingsRepository,
     DebtEventRepository,
     TransactionConsolidationTypeEnum,
     TransactionEntryRepository,
@@ -13,7 +15,7 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import type { TransactionEntityInterface } from '@budgie/contracts';
+import type { TransactionEntityInterface, TransactionEntryEntityInterface } from '@budgie/contracts';
 
 export class UnconsolidationService extends Context.Service<UnconsolidationService>()('@budgie/consolidation/UnconsolidationService', {
     make: Effect.gen(function* () {
@@ -21,6 +23,21 @@ export class UnconsolidationService extends Context.Service<UnconsolidationServi
         const transactionRepository = yield* TransactionRepository;
         const transactionConsolidationRepository = yield* TransactionConsolidationRepository;
         const transactionTagsRepository = yield* TransactionTagsRepository;
+        const mccCategoryRepository = yield* MccCategoryRepository;
+        const settingsRepository = yield* SettingsRepository;
+
+        const restoreSyncedCategory = Effect.fnUntraced(function* (entry: Pick<TransactionEntryEntityInterface, 'id' | 'mccCategoryId'>) {
+            const mccCategory = isDefined(entry.mccCategoryId) ? yield* mccCategoryRepository.findById(entry.mccCategoryId) : null;
+            const settings = yield* settingsRepository.getSettings();
+            const defaultCategoryId = settings.applyMccDefaultCategory ? mccCategory?.defaultCategoryId : null;
+
+            yield* transactionEntryRepository.updateById(
+                entry.id,
+                isDefined(defaultCategoryId)
+                    ? { categoryId: defaultCategoryId, categorySource: CategorySourceEnum.MCC_DEFAULT }
+                    : { categoryId: null, categorySource: CategorySourceEnum.USER }
+            );
+        });
         const debtEventRepository = yield* DebtEventRepository;
 
         const isPreExistingCanonical = (transaction: TransactionEntityInterface | undefined): boolean => {
@@ -69,10 +86,7 @@ export class UnconsolidationService extends Context.Service<UnconsolidationServi
             }
 
             if (isDefined(copiedCategoryEntry)) {
-                yield* transactionEntryRepository.updateById(copiedCategoryEntry.id, {
-                    categoryId: null,
-                    categorySource: CategorySourceEnum.USER
-                });
+                yield* restoreSyncedCategory(copiedCategoryEntry);
             }
 
             yield* transactionTagsRepository.deleteByTransactionIdAndTagIds(
@@ -115,6 +129,8 @@ export class UnconsolidationService extends Context.Service<UnconsolidationServi
             TransactionRepository.layer,
             TransactionConsolidationRepository.layer,
             TransactionTagsRepository.layer,
+            MccCategoryRepository.layer,
+            SettingsRepository.layer,
             DebtEventRepository.layer
         ])
     );

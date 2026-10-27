@@ -118,6 +118,12 @@ export class ConsolidationCoordinatorService extends Context.Service<Consolidati
 
             const families: ConsolidationFamilyStrategyInterface[] = [
                 makeConsolidationFamilyStrategy({
+                    findCandidates: scope => consolidationCandidateRepository.findApplePayCaptureDuplicateCandidates(scope),
+                    consolidateCandidate: candidate => consolidationRepairExecutorService.consolidateManualExpenseDuplicate(candidate),
+                    getSourceTransactionIds: candidate => [candidate.syncedTransactionId, candidate.manualTransactionId],
+                    shouldRepeatAfterSuccessfulPass: true
+                }),
+                makeConsolidationFamilyStrategy({
                     findCandidates: scope => consolidationCandidateRepository.findIbanBridgeChainTransferCandidates(scope),
                     consolidateCandidate: candidate =>
                         consolidationExecutorService.consolidateTransfer({
