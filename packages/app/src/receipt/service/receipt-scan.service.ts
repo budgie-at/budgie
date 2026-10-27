@@ -11,6 +11,7 @@ import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import * as Option from 'effect/Option';
 import * as Schema from 'effect/Schema';
+import * as Semaphore from 'effect/Semaphore';
 import { File } from 'expo-file-system';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
@@ -40,6 +41,7 @@ export class ReceiptScanService extends Context.Service<ReceiptScanService>()('@
         const settingsRepository = yield* SettingsRepository;
         const syncFileReader = yield* SyncFileReader;
         const nativeModule = ReceiptScannerModule;
+        const processLock = yield* Semaphore.make(1);
 
         const AI_SUBSYSTEMS = [AiSubsystemNameEnum.CHAT, AiSubsystemNameEnum.EMBEDDING] as const;
         const PDF_PATTERN = /\.pdf$/iu;
@@ -148,27 +150,30 @@ export class ReceiptScanService extends Context.Service<ReceiptScanService>()('@
 
         return {
             scan: () => (isDefined(nativeModule) ? Effect.promise(() => nativeModule.scan()) : Effect.succeed([])),
-            process: Effect.fn('ReceiptScanService.process')(function* (uris: readonly string[]) {
-                const settings = yield* settingsRepository.findSettings();
-                const baseCurrency = Option.getOrElse(decodeCurrency(settings?.defaultInstrument?.code), () => CurrencyEnum.EUR);
-                const allCategories = yield* categoryRepository.findAllNonSystemLocalized(settings?.language ?? LanguageEnum.EN);
+            process: Effect.fn('ReceiptScanService.process')(
+                function* (uris: readonly string[]) {
+                    const settings = yield* settingsRepository.findSettings();
+                    const baseCurrency = Option.getOrElse(decodeCurrency(settings?.defaultInstrument?.code), () => CurrencyEnum.EUR);
+                    const allCategories = yield* categoryRepository.findAllNonSystemLocalized(settings?.language ?? LanguageEnum.EN);
 
-                return yield* Effect.acquireUseRelease(
-                    Effect.forEach(AI_SUBSYSTEMS, subsystem => aiModelResidencyService.acquire(subsystem)),
-                    ([isChatReady, isEmbeddingReady]) =>
-                        Effect.forEach(uris, (uri, index) =>
-                            Effect.sync(
-                                () => void appAtomRegistry.set(receiptScanProgressAtom, { current: index + 1, total: uris.length })
-                            ).pipe(
-                                Effect.andThen(processReceipt(uri, isChatReady, isEmbeddingReady ? allCategories : [], baseCurrency)),
-                                Effect.catchCause(cause => Effect.as(Effect.logError(cause), failure(ReceiptScanFailureEnum.FAILED))),
-                                Effect.ensuring(Effect.ignore(Effect.try(() => void new File(uri).delete()))),
-                                Effect.tap(() => waitForIdle)
-                            )
-                        ),
-                    () => Effect.forEach(AI_SUBSYSTEMS, subsystem => aiModelResidencyService.release(subsystem), { discard: true })
-                );
-            })
+                    return yield* Effect.acquireUseRelease(
+                        Effect.forEach(AI_SUBSYSTEMS, subsystem => aiModelResidencyService.acquire(subsystem)),
+                        ([isChatReady, isEmbeddingReady]) =>
+                            Effect.forEach(uris, (uri, index) =>
+                                Effect.sync(
+                                    () => void appAtomRegistry.set(receiptScanProgressAtom, { current: index + 1, total: uris.length })
+                                ).pipe(
+                                    Effect.andThen(processReceipt(uri, isChatReady, isEmbeddingReady ? allCategories : [], baseCurrency)),
+                                    Effect.catchCause(cause => Effect.as(Effect.logError(cause), failure(ReceiptScanFailureEnum.FAILED))),
+                                    Effect.ensuring(Effect.ignore(Effect.try(() => void new File(uri).delete()))),
+                                    Effect.tap(() => waitForIdle)
+                                )
+                            ),
+                        () => Effect.forEach(AI_SUBSYSTEMS, subsystem => aiModelResidencyService.release(subsystem), { discard: true })
+                    );
+                },
+                effect => processLock.withPermit(effect)
+            )
         };
     })
 }) {
