@@ -1,0 +1,31 @@
+import { UserIconNameEnum } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
+import { router } from 'expo-router';
+import { Platform } from 'react-native';
+
+import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
+
+interface Props {
+    readonly testID: string;
+}
+
+export const ApplePayCaptureSettingsCard = ({ testID }: Props) => {
+    const { t } = useLingui();
+
+    const handleNavigate = () => void router.push('/settings/apple-pay-capture');
+
+    if (Platform.OS !== 'ios') {
+        return null;
+    }
+
+    return (
+        <SettingsCard
+            onPress={handleNavigate}
+            title={t`Apple Pay capture`}
+            description={t`Automatically record eligible card taps using Shortcuts`}
+            icon={UserIconNameEnum.WalletCards}
+            variant="positive"
+            testID={testID}
+        />
+    );
+};

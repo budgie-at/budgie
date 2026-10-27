@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.121.0](https://github.com/budgie-at/budgie/compare/v6.120.0...v6.121.0) (2026-10-27)
+
+### Bug Fixes
+
+* **app:** adapt Wallet shortcuts to main ([308d906](https://github.com/budgie-at/budgie/commit/308d9066308fadec72bc29e6f11e31928c0b4661))
+* **app:** keep Wallet duplicates parked after the first capture merges ([8d4fdd8](https://github.com/budgie-at/budgie/commit/8d4fdd8cdbb1e5c3157299ae0501efdeef0d2109))
+* **contracts:** ignore moved duplicate entries ([d95e945](https://github.com/budgie-at/budgie/commit/d95e945a0f4ea822ced2c79e0f27905a15d74abf))
+
+### Features
+
+* **consolidation:** let bank rows replace Apple Pay captures ([e7e2d24](https://github.com/budgie-at/budgie/commit/e7e2d240129e33f2fddf8937b20d9159315b05d7))
+* **contracts:** identify Apple Pay automation captures ([e6377d7](https://github.com/budgie-at/budgie/commit/e6377d788749d973a6ca9bb97e0ec5d5d6e60b1a))
+
+
 # [6.120.0](https://github.com/budgie-at/budgie/compare/v6.119.1...v6.120.0) (2026-10-27)
 
 ### Features

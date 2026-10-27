@@ -3,6 +3,32 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.121.0](https://github.com/budgie-at/budgie/compare/v6.120.0...v6.121.0) (2026-10-27)
+
+### Bug Fixes
+
+* **app:** adapt Wallet shortcuts to main ([308d906](https://github.com/budgie-at/budgie/commit/308d9066308fadec72bc29e6f11e31928c0b4661))
+* **app:** drain Wallet captures on every App Intent invocation ([1211c75](https://github.com/budgie-at/budgie/commit/1211c7524719b135f04f6bd9bd87283b46a88df3))
+* **app:** keep background task Info.plist keys next to the Shortcuts scheme ([a4301f9](https://github.com/budgie-at/budgie/commit/a4301f9594c9e7a6cfd71231a04e8dac2411d3c6))
+* **app:** keep Wallet duplicates parked after the first capture merges ([8d4fdd8](https://github.com/budgie-at/budgie/commit/8d4fdd8cdbb1e5c3157299ae0501efdeef0d2109))
+* **app:** label Apple Pay automation source ([1288091](https://github.com/budgie-at/budgie/commit/1288091cf7306b4b16b9ae37400c37576d1d3baa))
+* **contracts:** ignore moved duplicate entries ([d95e945](https://github.com/budgie-at/budgie/commit/d95e945a0f4ea822ced2c79e0f27905a15d74abf))
+* import blog utils from the renamed utils folder ([2b51d65](https://github.com/budgie-at/budgie/commit/2b51d6554b63504278affec83e73bf1aa06ad555))
+
+### Features
+
+* add Apple Pay Shortcuts setup guide ([c3c34a1](https://github.com/budgie-at/budgie/commit/c3c34a11f2616d97e941fffefe39815d6b48af18))
+* **app:** drain Wallet captures on activation ([f95cab4](https://github.com/budgie-at/budgie/commit/f95cab4a8f5cae99de707848715801ae5f925820))
+* **app:** guide Wallet automation setup and review ([3a5b1b1](https://github.com/budgie-at/budgie/commit/3a5b1b1b63edfa7d3660517ce10d48d7de3c1588))
+* **app:** import Wallet captures through transaction rules ([042b2d3](https://github.com/budgie-at/budgie/commit/042b2d3086e2f729c6f9f17394783462f3feb4a6))
+* **app:** persist Wallet automation captures natively ([c31e9d6](https://github.com/budgie-at/budgie/commit/c31e9d6b55850b1b8e8ac0497584380a547213ec))
+* **app:** pick the Apple Pay capture account automatically ([d5d26b4](https://github.com/budgie-at/budgie/commit/d5d26b4533d1083b25ee5c0123aa321d14594115))
+* **app:** redesign the Apple Pay capture screen ([86555be](https://github.com/budgie-at/budgie/commit/86555bec33a222a6e0d757c1152e2eabf160dd6b))
+* **app:** validate Wallet capture native records ([37949bd](https://github.com/budgie-at/budgie/commit/37949bd16fcbeb2328ebd01c144fcffa14603cb1))
+* **consolidation:** let bank rows replace Apple Pay captures ([e7e2d24](https://github.com/budgie-at/budgie/commit/e7e2d240129e33f2fddf8937b20d9159315b05d7))
+* **contracts:** identify Apple Pay automation captures ([e6377d7](https://github.com/budgie-at/budgie/commit/e6377d788749d973a6ca9bb97e0ec5d5d6e60b1a))
+
+
 # [6.120.0](https://github.com/budgie-at/budgie/compare/v6.119.1...v6.120.0) (2026-10-27)
 
 ### Bug Fixes

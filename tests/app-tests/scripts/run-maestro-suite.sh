@@ -32,6 +32,7 @@ DATABASE_FIXTURE_SEEDED="false"
 APP_DATA_CONTAINER="${APP_DATA_CONTAINER:-}"
 APP_DATA_CONTAINER_OVERRIDE="$APP_DATA_CONTAINER"
 PRIME_FLOW_PATH="${MAESTRO_PRIME_FLOW_PATH:-$WORKSPACE_DIR/flows/setup/prime-deep-links.flow.yaml}"
+SKIP_FIXTURE_REFRESH="${MAESTRO_SKIP_FIXTURE_REFRESH:-false}"
 
 if [ -n "$APP_DATA_CONTAINER_OVERRIDE" ] && [ ! -d "$APP_DATA_CONTAINER_OVERRIDE" ]; then
     echo "App data container override is not a directory: $APP_DATA_CONTAINER_OVERRIDE" >&2
@@ -500,7 +501,19 @@ run_flow_with_driver_retries() {
 }
 
 collect_flow_paths
-refresh_ios_fixture_state
+
+if [ "$SKIP_FIXTURE_REFRESH" != true ]; then
+    refresh_ios_fixture_state
+else
+    DETECTED_SIMULATOR_UDID="$(detect_booted_simulator_udid || true)"
+
+    if [ -n "$DETECTED_SIMULATOR_UDID" ]; then
+        APP_DATA_CONTAINER="$(resolve_app_data_container "$DETECTED_SIMULATOR_UDID" || true)"
+    fi
+
+    E2E_CSV_FIXTURES_URI="$(compute_csv_fixtures_uri "$DETECTED_SIMULATOR_UDID" || true)"
+    E2E_DB_FIXTURES_URI="$(compute_db_fixtures_uri "$DETECTED_SIMULATOR_UDID" || true)"
+fi
 
 DETECTED_SIMULATOR_UDID="${DETECTED_SIMULATOR_UDID:-$(detect_booted_simulator_udid || true)}"
 

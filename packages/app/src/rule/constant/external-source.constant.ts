@@ -11,6 +11,7 @@ export const EXTERNAL_SOURCE: Record<ExternalSourceEnum, MessageDescriptor> = {
     [ExternalSourceEnum.BINANCE]: msg`Binance`,
     [ExternalSourceEnum.COINBASE]: msg`Coinbase`,
     [ExternalSourceEnum.WISE]: msg`Wise`,
+    [ExternalSourceEnum.APPLE_PAY_AUTOMATION]: msg`Apple Pay automation`,
     [ExternalSourceEnum.CSV]: msg`CSV`,
     [ExternalSourceEnum.RECEIPT]: msg`Receipt`
 };

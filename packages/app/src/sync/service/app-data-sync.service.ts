@@ -3,10 +3,13 @@ import { BinanceSyncService, MonobankSyncService } from '@budgie/sync';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
+import * as Stream from 'effect/Stream';
 
 import { Workload } from '../../@generic/service/workload.service';
 import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { ExchangeRateBackgroundService } from '../../exchange-rate/service/exchange-rate-background.service';
+import { WalletCaptureImportService } from '../../wallet-capture/service/wallet-capture-import.service';
+import { WalletCaptureNativeService } from '../../wallet-capture/service/wallet-capture-native.service';
 
 export class AppDataSyncService extends Context.Service<AppDataSyncService>()('@budgie/app/AppDataSyncService', {
     make: Effect.gen(function* () {
@@ -15,10 +18,14 @@ export class AppDataSyncService extends Context.Service<AppDataSyncService>()('@
         const exchangeRateBackgroundService = yield* ExchangeRateBackgroundService;
         const monobankSyncService = yield* MonobankSyncService;
         const binanceSyncService = yield* BinanceSyncService;
+        const walletCaptureNativeService = yield* WalletCaptureNativeService;
+        const walletCaptureImportService = yield* WalletCaptureImportService;
 
         return {
             sync: Effect.fn('AppDataSyncService.sync')(function* () {
                 yield* logAndContinue(accountBalanceIncrementalService.updateAllBalances(false));
+                yield* logAndContinue(walletCaptureNativeService.refreshAccounts());
+                yield* logAndContinue(walletCaptureImportService.drain());
                 yield* logAndContinue(exchangeRateBackgroundService.sync());
                 if (yield* workload.hasQueuedUserWork) {
                     return false;
@@ -32,7 +39,10 @@ export class AppDataSyncService extends Context.Service<AppDataSyncService>()('@
                 yield* logAndContinue(binanceSyncService.sync());
 
                 return true;
-            })
+            }),
+            drainWalletCapturesOnInvocation: Stream.runForEach(walletCaptureNativeService.captureInvocations, () =>
+                logAndContinue(walletCaptureImportService.drain())
+            )
         };
     })
 }) {
@@ -42,7 +52,9 @@ export class AppDataSyncService extends Context.Service<AppDataSyncService>()('@
             AccountBalanceIncrementalService.layer,
             ExchangeRateBackgroundService.layer,
             MonobankSyncService.layer,
-            BinanceSyncService.layer
+            BinanceSyncService.layer,
+            WalletCaptureImportService.layer,
+            WalletCaptureNativeService.layer
         ])
     );
 }

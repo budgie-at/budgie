@@ -3,6 +3,7 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
+import { APPLE_PAY_CAPTURE_DUPLICATE_CANDIDATES_SQL } from './sql-factory/apple-pay-capture-duplicate-candidate-sql.factory';
 import { MANUAL_EXPENSE_DUPLICATE_CANDIDATES_SQL } from './sql-factory/manual-expense-duplicate-candidate-sql.factory';
 import { buildP2pFiatAtomicCandidateSql } from './sql-factory/p2p-fiat-atomic-candidate-sql.factory';
 import { buildP2pFiatAuthoritativeCandidateSql } from './sql-factory/p2p-fiat-authoritative-candidate-sql.factory';
@@ -76,6 +77,8 @@ export class ConsolidationCandidateRepository extends Context.Service<Consolidat
                     find<IbanBridgeChainTransferCandidateInterface>(IBAN_BRIDGE_CHAIN_TRANSFER_CANDIDATES_SQL(scope)),
                 findManualExpenseDuplicateCandidates: (scope: ConsolidationScanScopeInterface | null) =>
                     find<ManualExpenseDuplicateCandidateInterface>(MANUAL_EXPENSE_DUPLICATE_CANDIDATES_SQL(scope)),
+                findApplePayCaptureDuplicateCandidates: (scope: ConsolidationScanScopeInterface | null) =>
+                    find<ManualExpenseDuplicateCandidateInterface>(APPLE_PAY_CAPTURE_DUPLICATE_CANDIDATES_SQL(scope)),
                 findTransferPairCandidates: (scope: ConsolidationScanScopeInterface | null) =>
                     find<TransferPairCandidateInterface>(buildTransferPairCandidatesSql(scope)),
                 findP2pFiatAtomicCandidates: (scope: ConsolidationScanScopeInterface | null) =>

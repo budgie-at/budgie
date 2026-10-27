@@ -107,7 +107,8 @@ const getExpoConfig = ({ config }) => ({
         infoPlist: {
             BGTaskSchedulerPermittedIdentifiers: ['$(PRODUCT_BUNDLE_IDENTIFIER).sync.*'],
             UIBackgroundModes: ['processing'],
-            NSCameraUsageDescription: 'Allow $(PRODUCT_NAME) to use the camera to scan receipts. Receipts are read on this device and never uploaded.'
+            NSCameraUsageDescription: 'Allow $(PRODUCT_NAME) to use the camera to scan receipts. Receipts are read on this device and never uploaded.',
+            LSApplicationQueriesSchemes: ['shortcuts']
         },
         associatedDomains: ['applinks:budgie.at'],
         entitlements: {
@@ -190,6 +191,7 @@ const getExpoConfig = ({ config }) => ({
                 }
             }
         ],
+        'expo-app-intents',
         [
             'expo-widgets',
             {
@@ -323,7 +325,10 @@ const getExpoConfig = ({ config }) => ({
     ],
     experiments: {
         typedRoutes: true,
-        reactCompiler: true
+        reactCompiler: true,
+        inlineModules: {
+            watchedDirectories: ['app-intents']
+        }
     },
     runtimeVersion: {
         policy: 'fingerprint'

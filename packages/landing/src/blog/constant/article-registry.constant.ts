@@ -1,3 +1,4 @@
+import { ARTICLE_METADATA as ApplePayShortcutsInstructionsArticleMetadata } from '../../app/[lang]/blog/apple-pay-shortcuts-instructions/metadata';
 import { ARTICLE_METADATA as CloudBudgetingPrivacyRisksArticleMetadata } from '../../app/[lang]/blog/cloud-budgeting-privacy-risks/metadata';
 import { ARTICLE_METADATA as ErsteGeorgePdfStatementImportArticleMetadata } from '../../app/[lang]/blog/erste-george-pdf-statement-import/metadata';
 import { ARTICLE_METADATA as HistoricalExchangeRatesBudgetAnalyticsArticleMetadata } from '../../app/[lang]/blog/historical-exchange-rates-budget-analytics/metadata';
@@ -16,6 +17,7 @@ import { ARTICLE_METADATA as YnabAlternativesPrivacyArticleMetadata } from '../.
 import type { ArticleRegistryEntryInterface } from '../interface/article-registry-entry.interface';
 
 export const ARTICLE_REGISTRY: readonly ArticleRegistryEntryInterface[] = [
+    ApplePayShortcutsInstructionsArticleMetadata,
     CloudBudgetingPrivacyRisksArticleMetadata,
     LocalFirstMovementDevelopersArticleMetadata,
     OpenSourceBudgetingTransparencyArticleMetadata,
