@@ -3,8 +3,6 @@ import { cva } from 'class-variance-authority';
 import { ReactNode } from 'react';
 import { Text, View } from 'react-native';
 
-import { emptyFn } from '@rnw-community/shared';
-
 import { cn } from '../../utils/cn.util';
 import { HorizontalCell } from '../horizontal-cell/horizontal-cell';
 import { Icon } from '../icon/icon';
@@ -36,7 +34,6 @@ const cardVariants = cva(`rounded-3xl p-3xl border-2 border-secondary-corner gap
 
 export const SelectorCard = (props: Props) => {
     const { className, verticalAlign = 'middle', isSelected, title, subtitle, onPress, iconSlot, testID } = props;
-    const handleSelect = isSelected ? emptyFn : onPress;
 
     const right = isSelected ? (
         <View className="bg-primary rounded-full p-xs">
@@ -49,7 +46,7 @@ export const SelectorCard = (props: Props) => {
             right={right}
             left={iconSlot}
             className={cn(cardVariants({ isSelected, verticalAlign }), className)}
-            onPress={handleSelect}
+            onPress={onPress}
             testID={testID}
         >
             <View className="gap-y-xxs flex-1 justify-center">
