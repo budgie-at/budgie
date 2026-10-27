@@ -7,7 +7,7 @@ module.exports = function (api) {
             '@babel/plugin-transform-class-static-block',
             'react-native-worklets/plugin',
             '@lingui/babel-plugin-lingui-macro',
-            ['inline-import', { extensions: ['.sql'] }]
+            './babel-plugin-inline-sql'
         ]
     };
 };
