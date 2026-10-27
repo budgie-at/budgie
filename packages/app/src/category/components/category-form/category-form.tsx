@@ -13,13 +13,13 @@ import { PageHeader } from '../../../@generic/component/page-header/page-header'
 import { ModalPage } from '../../../@generic/component/page/modal-page';
 import { useIconSelectorModal } from '../../../@generic/context/icon-selector-modal.context';
 import { useAiTranslationFields } from '../../../@generic/hook/use-ai-translation-fields.hook';
+import { useRegenerateTranslation } from '../../../@generic/hook/use-regenerate-translation.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { useChatModelStatus } from '../../../ai/hook/use-chat-model-status.hook';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { useCategorySelectorModal } from '../../context/category-selector-modal.context';
 import { useCategoryForm } from '../../hooks/use-category-form.hook';
-import { useRegenerateCategoryTranslation } from '../../hooks/use-regenerate-category-translation.hook';
 import { createCategory } from '../../utils/create-category.util';
 import { getCategoryIconTerms } from '../../utils/get-category-icon-terms.util';
 import { updateCategory } from '../../utils/update-category.util';
@@ -49,7 +49,9 @@ export const CategoryForm = (props: Props) => {
     const language = useSetting('language');
     const [openCategorySelector] = useCategorySelectorModal();
     const [openIconSelector] = useIconSelectorModal();
-    const { regenerate, isRegenerating } = useRegenerateCategoryTranslation();
+    const { regenerate, isRegenerating } = useRegenerateTranslation((id, titleEn, titleTags) =>
+        Effect.flatMap(CategoryRepository, categoryRepository => categoryRepository.updateTranslation(id, titleEn, titleTags))
+    );
     const isTranslationsEnabled = useSetting('isAiTranslationsEnabled');
     const { isChatReady, modelStatus } = useChatModelStatus();
 

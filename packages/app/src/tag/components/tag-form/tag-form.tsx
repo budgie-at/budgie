@@ -1,4 +1,4 @@
-import { TAG_TITLE_MAX_LENGTH, TagCreateEntityInterface, TagEntityInterface } from '@budgie/contracts';
+import { TAG_TITLE_MAX_LENGTH, TagCreateEntityInterface, TagEntityInterface, TagRepository } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
@@ -14,12 +14,12 @@ import { ModalFormMergeButton } from '../../../@generic/component/modal-form-mer
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { ModalPage } from '../../../@generic/component/page/modal-page';
 import { useAiTranslationFields } from '../../../@generic/hook/use-ai-translation-fields.hook';
+import { useRegenerateTranslation } from '../../../@generic/hook/use-regenerate-translation.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { useChatModelStatus } from '../../../ai/hook/use-chat-model-status.hook';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { useTagsSelectorModal } from '../../context/tags-selector-modal.context';
-import { useRegenerateTagTranslation } from '../../hooks/use-regenerate-tag-translation.hook';
 import { useTagForm } from '../../hooks/use-tag-form.hook';
 import { TagService } from '../../service/tag.service';
 
@@ -46,7 +46,9 @@ export const TagForm = (props: Props) => {
     const { tag, defaultTitle, onSuccess, onCancel } = props;
     const { t } = useLingui();
     const [openTagsSelector] = useTagsSelectorModal();
-    const { regenerate, isRegenerating } = useRegenerateTagTranslation();
+    const { regenerate, isRegenerating } = useRegenerateTranslation((id, titleEn, titleTags) =>
+        Effect.flatMap(TagRepository, tagRepository => tagRepository.updateTranslation(id, titleEn, titleTags))
+    );
     const isTranslationsEnabled = useSetting('isAiTranslationsEnabled');
     const { isChatReady, modelStatus } = useChatModelStatus();
 
