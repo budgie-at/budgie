@@ -18,12 +18,14 @@ if ! jq -e '.streams[0] | .width == 1320 and .height == 2868 and (.duration | to
     exit 1
 fi
 
+clip_seconds="$(jq -r '[(.streams[0].duration | tonumber), 29.5] | min' <<< "$source_metadata")"
+
 work_root="$(mktemp -d "${TMPDIR:-/tmp}/budgie-preview.XXXXXX")"
 trap 'rm -rf "$work_root"' EXIT
 
 ffmpeg -nostdin -y -hide_banner -loglevel error -i "$source_path" \
     -f lavfi -i anullsrc=channel_layout=stereo:sample_rate=48000 \
-    -t 20 -map 0:v:0 -map 1:a:0 \
+    -t "$clip_seconds" -map 0:v:0 -map 1:a:0 \
     -vf 'scale=886:1920:force_original_aspect_ratio=increase:flags=lanczos,crop=886:1920,setsar=1,fps=30' \
     -c:v libx264 -profile:v high -level:v 4.0 -preset slow -pix_fmt yuv420p \
     -b:v 10M -maxrate 12M -bufsize 20M -g 60 \
