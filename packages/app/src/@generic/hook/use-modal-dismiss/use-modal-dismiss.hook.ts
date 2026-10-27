@@ -1,15 +1,11 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useEffectEvent } from 'react';
 
 export const useModalDismiss = (dismiss: () => void) => {
-    const dismissRef = useRef(dismiss);
-
-    useEffect(() => {
-        dismissRef.current = dismiss;
-    });
+    const handleDismiss = useEffectEvent(dismiss);
 
     useEffect(
         () => () => {
-            dismissRef.current();
+            handleDismiss();
         },
         []
     );
