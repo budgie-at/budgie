@@ -240,7 +240,7 @@ def ensure_app_store_review_detail
   )
   missing = contact.reject { |attribute, value| value.to_s.empty? || !detail.public_send(attribute).to_s.empty? }
   missing[:demo_account_required] = false unless detail.demo_account_required == false
-  UI.important("App Review contact phone is empty; set ASC_REVIEW_CONTACT_PHONE") if detail.contact_phone.to_s.empty? && !missing.key?(:contact_phone)
+  UI.user_error!("App Review contact phone is empty; set ASC_REVIEW_CONTACT_PHONE") if detail.contact_phone.to_s.empty? && !missing.key?(:contact_phone)
   return if missing.empty?
 
   detail.update(attributes: missing)
