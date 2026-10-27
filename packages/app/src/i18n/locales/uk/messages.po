@@ -318,6 +318,10 @@ msgstr "{selectedCount, plural, =0 {Показати всі категорії} 
 msgid "{selectedCount, plural, =0 {Show all tags} one {Show # tag} other {Show # tags}}"
 msgstr "{selectedCount, plural, =0 {Показати всі теги} one {Показати # тег} few {Показати # теги} many {Показати # тегів} other {Показати # тега}}"
 
+#: src/account/component/accounts-group/accounts-group.tsx
+msgid "{selectedInGroupCount} of {accountsCount} selected"
+msgstr "Вибрано {selectedInGroupCount} з {accountsCount}"
+
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "{similarCount, plural, one {# similar transaction} other {# similar transactions}}"
 msgstr "{similarCount, plural, one {# схожа транзакція} other {# схожих транзакцій}}"
