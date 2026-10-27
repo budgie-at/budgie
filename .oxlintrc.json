@@ -679,20 +679,7 @@
                 "budgie/max-component-props": [
                     "error",
                     {
-                        "max": 8,
-                        "allow": [
-                            "packages/landing/src/blog/component/blog-posting-json-ld/blog-posting-json-ld.tsx",
-                            "packages/app/src/@generic/component/ai-translation-fields/ai-translation-fields.tsx",
-                            "packages/app/src/@generic/component/selector-grid-content/selector-grid-content.tsx",
-                            "packages/app/src/account/component/account-action-card/account-action-card.tsx",
-                            "packages/app/src/ai/component/voice-review-footer/voice-review-footer.tsx",
-                            "packages/app/src/auth/components/pin-form/pin-form.tsx",
-                            "packages/app/src/budget/components/budget-progress-bar/budget-progress-bar.tsx",
-                            "packages/app/src/category/components/category-select-content/category-select-content.tsx",
-                            "packages/app/src/rule/components/swipeable-rule-card/swipeable-rule-card.tsx",
-                            "packages/app/src/settings/components/budget-setting-card/budget-setting-card.tsx",
-                            "packages/app/src/tag/components/tags-select-content/tags-select-content.tsx",
-                        ]
+                        "max": 8
                     }
                 ],
                 "react/capitalized-calls": "off",

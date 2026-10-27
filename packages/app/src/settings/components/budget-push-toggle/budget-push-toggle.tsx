@@ -6,7 +6,8 @@ import Toast from 'react-native-toast-message';
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
 import { useSettingToggle } from '../../hook/use-setting-toggle.hook';
 import { useSetting } from '../../hook/use-setting.hook';
-import { BudgetSettingCard } from '../budget-setting-card/budget-setting-card';
+import { SettingSwitch } from '../setting-switch/setting-switch';
+import { SettingsCard } from '../settings-card/settings-card';
 
 export const BudgetPushToggle = () => {
     const { t } = useLingui();
@@ -35,17 +36,21 @@ export const BudgetPushToggle = () => {
     };
 
     return (
-        <BudgetSettingCard
+        <SettingsCard
             testID={SettingsPageSelector.BudgetPushCard}
             title={t`Budget alerts`}
             description={t`Get notified when a budget threshold is crossed`}
             icon={UserIconNameEnum.Bell}
-            value={isBudgetPushEnabled}
             variant="warning"
-            onValueChange={handleChange}
-            switchTestID={SettingsPageSelector.BudgetPushSwitch}
-            stateOnTestID={SettingsPageSelector.BudgetPushSwitchStateOn}
-            stateOffTestID={SettingsPageSelector.BudgetPushSwitchStateOff}
+            right={
+                <SettingSwitch
+                    value={isBudgetPushEnabled}
+                    onValueChange={handleChange}
+                    testID={SettingsPageSelector.BudgetPushSwitch}
+                    stateOnTestID={SettingsPageSelector.BudgetPushSwitchStateOn}
+                    stateOffTestID={SettingsPageSelector.BudgetPushSwitchStateOff}
+                />
+            }
         />
     );
 };

@@ -1,12 +1,13 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import React from 'react';
+import { ReactNode } from 'react';
 import { Text, View } from 'react-native';
 
-import { EmptyFn, emptyFn, isNotEmptyString } from '@rnw-community/shared';
+import { EmptyFn, isNotEmptyString } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { Shake } from '../../../@generic/component/shake/shake';
+import { PinFormBiometricButton } from '../pin-form-biometric-button/pin-form-biometric-button';
 import { PinFormButton } from '../pin-form-button/pin-form-button';
 import { PinFormDots } from '../pin-form-dots/pin-form-dots';
 
@@ -20,9 +21,7 @@ interface Props {
     readonly isLoading: boolean;
     readonly onDigitPress: (digit: string) => void;
     readonly onDeletePress: EmptyFn;
-    readonly onScanPress?: EmptyFn;
-    readonly canScan?: boolean;
-    readonly isFaceIdAvailable?: boolean;
+    readonly children?: ReactNode;
 }
 
 export const PinForm = (props: Props) => {
@@ -34,12 +33,9 @@ export const PinForm = (props: Props) => {
         isLoading,
         onDigitPress,
         onDeletePress,
-        canScan,
-        isFaceIdAvailable,
-        onScanPress = emptyFn
+        children = <PinFormBiometricButton />
     } = props;
     const canDelete = isNotEmptyString(currentInput) && !isLoading;
-    const biometricIcon = isFaceIdAvailable === true ? UserIconNameEnum.ScanFace : UserIconNameEnum.Fingerprint;
 
     return (
         <View className="flex-1 justify-center" testID={PinFormSelector.Container}>
@@ -82,14 +78,7 @@ export const PinForm = (props: Props) => {
                 </View>
 
                 <View className="flex-row gap-x-lg items-center">
-                    <HapticPressable
-                        disabled={!canScan}
-                        onPress={onScanPress}
-                        testID={PinFormSelector.BiometricButton}
-                        className="flex-1 aspect-square rounded-3xl justify-center items-center max-w-23"
-                    >
-                        {canScan ? <Icon icon={biometricIcon} className="text-primary" size={16} /> : null}
-                    </HapticPressable>
+                    {children}
 
                     <PinFormButton digit="0" onPress={onDigitPress} disabled={isLoading} />
 

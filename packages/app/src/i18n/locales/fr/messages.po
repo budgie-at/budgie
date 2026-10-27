@@ -1061,9 +1061,9 @@ msgstr "Peut prendre des heures"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx
-#: src/account/component/account-action-card/account-action-card.tsx
 #: src/account/component/archived-account-card/archived-account-card.tsx
 #: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
+#: src/account/component/inactive-account-card/inactive-account-card.tsx
 #: src/account/hooks/use-archive-account.hook.ts
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
@@ -2252,7 +2252,7 @@ msgid "Enter a {PIN_LENGTH}-digit PIN"
 msgstr "Entrez un code PIN à {PIN_LENGTH} chiffres"
 
 #: src/account/utils/get-debt-opening-messages.util.ts
-#: src/ai/component/voice-review-footer/voice-review-footer.tsx
+#: src/ai/component/voice-review-save-button/voice-review-save-button.tsx
 msgid "Enter all amounts"
 msgstr "Saisissez tous les montants"
 
@@ -2977,7 +2977,7 @@ msgid "left"
 msgstr "restant"
 
 #: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
-#: src/budget/components/budget-progress-bar/budget-progress-bar.tsx
+#: src/budget/hooks/use-budget-progress-labels.hook.ts
 msgid "Left"
 msgstr "Restant"
 
@@ -3795,7 +3795,7 @@ msgid "over"
 msgstr "de trop"
 
 #: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
-#: src/budget/components/budget-progress-bar/budget-progress-bar.tsx
+#: src/budget/hooks/use-budget-progress-labels.hook.ts
 msgid "Over budget"
 msgstr "Budget dépassé"
 
@@ -4329,7 +4329,7 @@ msgstr "L'autonomie nécessite au moins 3 mois complets de transactions. Vous en
 msgid "Save"
 msgstr "Enregistrer"
 
-#: src/ai/component/voice-review-footer/voice-review-footer.tsx
+#: src/ai/component/voice-review-save-button/voice-review-save-button.tsx
 msgid "Save {count}"
 msgstr "Enregistrer {count}"
 
@@ -4495,7 +4495,7 @@ msgstr "Sélectionner le type d'action"
 msgid "Select all"
 msgstr "Tout sélectionner"
 
-#: src/ai/component/voice-review-footer/voice-review-footer.tsx
+#: src/ai/component/voice-review-save-button/voice-review-save-button.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 msgid "Select all categories"
 msgstr "Sélectionner toutes les catégories"
@@ -4695,8 +4695,8 @@ msgstr "Certaines transactions peuvent correspondre à plusieurs règles. La pre
 msgid "Something went wrong"
 msgstr "Quelque chose s'est mal passé"
 
-#: src/account/component/account-action-card/account-action-card.tsx
 #: src/account/component/archived-account-card/archived-account-card.tsx
+#: src/account/component/inactive-account-card/inactive-account-card.tsx
 #: src/account/hooks/use-delete-account.hook.ts
 msgid "Something went wrong. Please try again later."
 msgstr "Quelque chose s'est mal passé. Veuillez réessayer plus tard."

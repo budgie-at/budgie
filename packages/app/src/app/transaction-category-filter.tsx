@@ -54,7 +54,6 @@ export default function TransactionCategoryFilterModal() {
             <CategorySelectContent
                 data={data}
                 variant="cta"
-                initialCategoryId={null}
                 selectedCategoryIds={selectedCategoryIds}
                 isLoading={isLoading}
                 additionalBottomPadding={FOOTER_BOTTOM_SPACE}

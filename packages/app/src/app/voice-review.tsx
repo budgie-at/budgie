@@ -9,6 +9,7 @@ import { isDefined, isEmptyArray, isNotEmptyString, isPositiveNumber } from '@rn
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { useGetAccountByIdQuery } from '../account/query/use-get-account-by-id.query';
 import { VoiceReviewFooter } from '../ai/component/voice-review-footer/voice-review-footer';
+import { VoiceReviewSaveButton } from '../ai/component/voice-review-save-button/voice-review-save-button';
 import { useVoiceReviewModal, useVoiceReviewModalParams } from '../ai/context/voice-review-modal.context';
 import { useVoiceReview } from '../ai/hook/use-voice-review.hook';
 import { VoiceReviewRowInterface } from '../ai/interface/voice-review-row.interface';
@@ -153,14 +154,18 @@ export default function VoiceReviewModal() {
                 count={rows.length}
                 totalAmount={totalAmount}
                 currencySymbol={currencySymbol}
-                canSave={canSave}
-                hasInvalidAmounts={hasInvalidAmounts}
-                hasMissingCategories={hasMissingCategories}
-                isSaving={isSaving}
                 onCancel={handleCancel}
                 onReRecord={handleReRecord}
-                onSave={handleSave}
-            />
+            >
+                <VoiceReviewSaveButton
+                    count={rows.length}
+                    canSave={canSave}
+                    hasInvalidAmounts={hasInvalidAmounts}
+                    hasMissingCategories={hasMissingCategories}
+                    isSaving={isSaving}
+                    onSave={handleSave}
+                />
+            </VoiceReviewFooter>
         </View>
     );
 }

@@ -9,7 +9,7 @@ import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
-import { BudgetProgressBar } from '../budget-progress-bar/budget-progress-bar';
+import { BudgetProgressTrack } from '../budget-progress-track/budget-progress-track';
 
 import type { UserIconType } from '@budgie/contracts';
 
@@ -44,7 +44,7 @@ export const BudgetDetailsLimitCard = (props: Props) => {
                     </Text>
                 </View>
 
-                <BudgetProgressBar isSummaryVisible={false} spent={spent} limit={limitAmount} />
+                <BudgetProgressTrack spent={spent} limit={limitAmount} />
 
                 <View className="flex-row justify-between gap-x-md">
                     <View className="flex-1">

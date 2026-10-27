@@ -8,21 +8,19 @@ interface Props {
     readonly itemHeight: number;
     readonly additionalBottomPadding?: number;
     readonly topOffset?: number;
-    readonly alignToBottom?: boolean;
 }
 
 const COLUMN_COUNT = 3;
 const ROW_KEYS = ['first', 'second', 'third', 'fourth'];
 const COLUMN_KEYS = ['left', 'center', 'right'];
 
-export const SelectorGridSkeleton = ({ itemHeight, additionalBottomPadding = 0, topOffset, alignToBottom = false }: Props) => {
+export const SelectorGridSkeleton = ({ itemHeight, additionalBottomPadding = 0, topOffset }: Props) => {
     const pulseStyle = useSkeletonPulseStyle();
     const contentContainerStyle = useFormsheetListContentStyle(additionalBottomPadding, topOffset);
     const cardStyle: ViewStyle = { height: itemHeight };
     const contentStyle: ViewStyle = {
         ...contentContainerStyle,
-        flex: 1,
-        ...(alignToBottom && { justifyContent: 'flex-end' })
+        flex: 1
     };
 
     return (
