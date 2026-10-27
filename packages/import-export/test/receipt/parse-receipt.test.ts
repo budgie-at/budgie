@@ -4,6 +4,7 @@ import { describe, expect, it } from '@effect/vitest';
 import { parseReceipt } from '../../src/receipt/utils/parse-receipt.util';
 
 import { BILLA_RECEIPT } from './fixture/billa-receipt.fixture';
+import { CORD_RECEIPTS } from './fixture/cord-receipts.fixture';
 import { E2E_SHARED_RECEIPT } from './fixture/e2e-shared-receipt.fixture';
 import { IHR_LABOR_LEGAL_NAME, IHR_LABOR_RECEIPT } from './fixture/ihr-labor-receipt.fixture';
 import { UKRAINIAN_FISCAL_RECEIPT } from './fixture/ukrainian-fiscal-receipt.fixture';
@@ -88,5 +89,23 @@ describe('parseReceipt', () => {
         ]
     ])('reads %s', (_name, lines, expected) => {
         expect(parseReceipt(lines)).toEqual(expected);
+    });
+
+    it.each([
+        ['comma thousands confirmed by cash and change', CORD_RECEIPTS.commaThousandsWithChange, convertToMicroUnits(174600), null],
+        ['the grand total after a tax row', CORD_RECEIPTS.grandTotalAfterTax, convertToMicroUnits(51300), null],
+        ['rupiah decimals beside a tax-included row', CORD_RECEIPTS.rupiahDecimals, convertToMicroUnits(165000), CurrencyEnum.IDR],
+        ['the total after rounding rows', CORD_RECEIPTS.roundingRows, convertToMicroUnits(334000), null],
+        ['comma-decimal thousands', CORD_RECEIPTS.europeanDecimals, convertToMicroUnits(9500), null],
+        ['a dotted rupiah prefix', CORD_RECEIPTS.rupiahPrefix, convertToMicroUnits(118000), CurrencyEnum.IDR]
+    ])('reads CORD receipt with %s', (_name, lines, expectedTotal, expectedCurrency) => {
+        expect(parseReceipt(lines)).toMatchObject({ total: expectedTotal, currency: expectedCurrency });
+    });
+
+    it.each([
+        ['an ungrouped integer total', CORD_RECEIPTS.ungroupedInteger],
+        ['a quantity total row', CORD_RECEIPTS.quantityTotalRow]
+    ])('rejects CORD receipt with %s', (_name, lines) => {
+        expect(parseReceipt(lines)).toBeNull();
     });
 });

@@ -50,7 +50,43 @@ describe('parseReceipt hardening', () => {
             { occurredAt: new Date(2026, 9, 27, 14, 32, 0) }
         ],
         ['two-digit year', rowsOf('Date 27.10.26', 'Total 12,50 EUR'), { occurredAt: new Date(2026, 9, 27) }],
-        ['payment block above the total', rowsOf('Karte akzeptiert', 'Gesamt 10,00', 'Summe 12,50', 'Bankomat 10,00'), total(10)]
+        ['payment block above the total', rowsOf('Karte akzeptiert', 'Gesamt 10,00', 'Summe 12,50', 'Bankomat 10,00'), total(10)],
+        ['grand total after tax', rowsOf('SUBTOTAL 56.00', 'TAX 10% 5.60', 'GRAND TOTAL 61.60'), total(61.6)],
+        ['amount due label', rowsOf('Subtotal 23.50', 'Amount due 25.00'), total(25)],
+        ['dot-grouped rupiah total', rowsOf('TOTAL Rp 25.000'), total(25000, CurrencyEnum.IDR)],
+        ['comma-grouped integer total', rowsOf('SUBTOTAL 194,000', 'TOTAL 174,600'), total(174600)],
+        ['ringgit symbol', rowsOf('TOTAL RM 12.50'), total(12.5, CurrencyEnum.MYR)],
+        ['koruna symbol', rowsOf('Total 125,00 Kč'), total(125, CurrencyEnum.CZK)],
+        [
+            'rounding confirmed by cash and change',
+            rowsOf('TOTAL AMT 60.31', 'ROUNDING ADJ -0.01', 'CASH 70.30', 'CHANGE 10.00'),
+            total(60.3)
+        ],
+        ['total after the rounding row', rowsOf('TOTAL INCL. GST 23.26', 'ROUNDING ADJ -0.01', 'TOTAL 23.25'), total(23.25)],
+        [
+            'total matching cash minus change',
+            rowsOf('TOTAL 11.60', 'TOTAL INCLUSIVE GST: 10.45', 'CASH 20.00', 'CHANGE 9.55'),
+            total(10.45)
+        ],
+        [
+            'tax summary after the payment row',
+            rowsOf('Total excl. GST 15.00', 'Total incl. GST 15.90', 'PAYMENT 50.00', 'GST 15.00 0.90'),
+            total(15.9)
+        ],
+        ['excluding phrase in parentheses', rowsOf('TOTAL (EXCLUDING GST): 21.30', 'TOTAL (INCLUSIVE OF GST): 23.26'), total(23.26)],
+        ['cash after the total amount', rowsOf('Total: 20,000  Cash: 100,000'), total(20000)],
+        ['paid amount row', rowsOf('TOTAL AMT PAYABLE: 79.50', 'PAID AMOUNT: 100.00', 'CHANGE: 20.50'), total(79.5)],
+        ['savings total row', rowsOf('TOTAL 100.60', 'TOTAL SAVING 150.00'), total(100.6)],
+        ['percent tax breakdown row', rowsOf('TOTAL 0% SUPPLIES: 39.01', 'TOTAL PAYABLE: 20.21'), total(20.21)],
+        ['punctuated subtotal label', rowsOf('Sub. Total 150.00', 'Total 145.90'), total(145.9)],
+        ['includes tax phrase', rowsOf('TOTAL INCLUDES GST 6% 9.00'), total(9)],
+        ['day month-name date', rowsOf('05 MAR 2018 18:24', 'Total 8.20'), { occurredAt: new Date(2018, 2, 5, 18, 24, 0) }],
+        ['month-name day date', rowsOf('Oct 27, 2026', 'Total 8.20'), { occurredAt: new Date(2026, 9, 27) }],
+        ['localized month-name date', rowsOf('27. Okt. 2026', 'Summe 8,20'), { occurredAt: new Date(2026, 9, 27) }],
+        ['hyphenated date', rowsOf('DATE: 19-03-2018 18:08:38', 'Total 8.20'), { occurredAt: new Date(2018, 2, 19, 18, 8, 38) }],
+        ['year-first slash date', rowsOf('2026/10/27', 'Total 8.20'), { occurredAt: new Date(2026, 9, 27) }],
+        ['product code shaped like a date', rowsOf('CK 11-22-31', 'Total 8.20'), { occurredAt: null }],
+        ['dotted phone number', rowsOf('TEL 05.22.95.66.66', 'Total 8.20'), { occurredAt: null }]
     ])('reads %s', (_name, lines, expected) => {
         expect(parseReceipt(lines)).toMatchObject(expected);
     });
@@ -67,6 +103,10 @@ describe('parseReceipt hardening', () => {
         ['cash word before the total label', rowsOf('Bar Summe 20,00')],
         ['negative total with currency', rowsOf('Refund', 'Total -5,00 EUR')],
         ['negative total', rowsOf('Summe -5,00')],
+        ['unconfirmed rounding', rowsOf('TOTAL 60.31', 'ROUNDING ADJ -0.01')],
+        ['cash and change disagreeing with the total', rowsOf('TOTAL 20.00', 'CASH 50.00', 'CHANGE 20.00')],
+        ['ungrouped integer total', rowsOf('TOTAL 91000')],
+        ['quantity beside an amount', [receiptLine('TOTAL QTY: 9', 0.06, 0.1), receiptLine('327.00', 0.7, 0.1)]],
         [
             'text without a labelled total',
             rowsOf(

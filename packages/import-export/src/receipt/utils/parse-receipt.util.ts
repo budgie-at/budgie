@@ -7,30 +7,65 @@ import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '
 import type { ReceiptDraftInterface } from '../interface/receipt-draft.interface';
 import type { ReceiptTextLineInterface } from '../interface/receipt-text-line.interface';
 import type { ReceiptTimestampInterface } from '../interface/receipt-timestamp.interface';
+import type { ReceiptTotalCandidateInterface } from '../interface/receipt-total-candidate.interface';
 
 const buildReceiptKeywordPattern = (keywords: readonly string[], flags: string): RegExp => {
     const alternation = [...keywords]
         .sort((left, right) => right.length - left.length)
-        .map(keyword => keyword.replaceAll(/[.*+?^${}()|[\]\\]/gu, '\\$&'))
+        .map(keyword => keyword.replaceAll(/[.*+?^${}()|[\]\\]/gu, '\\$&').replaceAll(' ', String.raw`[\s.,-]+`))
         .join('|');
 
     return new RegExp(String.raw`(?<!\p{L})(?:${alternation})(?!\p{L})`, flags);
 };
 
 const TOTAL_LABELS: Record<LanguageEnum, readonly string[]> = {
-    [LanguageEnum.EN]: ['total', 'amount'],
+    [LanguageEnum.EN]: ['total', 'amount', 'due'],
     [LanguageEnum.FR]: ['total', 'montant', 'à payer'],
     [LanguageEnum.UK]: ['сума', 'разом', 'до сплати', 'всього'],
     [LanguageEnum.DE]: ['gesamt', 'summe', 'gesamtbetrag', 'betrag', 'zu zahlen', 'endsumme'],
     [LanguageEnum.ES]: ['total', 'importe', 'a pagar']
 };
 
+const CHANGE_LABELS: Record<LanguageEnum, readonly string[]> = {
+    [LanguageEnum.EN]: ['change'],
+    [LanguageEnum.FR]: ['rendu'],
+    [LanguageEnum.UK]: ['решта'],
+    [LanguageEnum.DE]: ['rückgeld'],
+    [LanguageEnum.ES]: ['cambio']
+};
+
+const ROUNDING_LABELS: Record<LanguageEnum, readonly string[]> = {
+    [LanguageEnum.EN]: ['rounding', 'round off'],
+    [LanguageEnum.FR]: ['arrondi'],
+    [LanguageEnum.UK]: ['заокруглення'],
+    [LanguageEnum.DE]: ['rundung'],
+    [LanguageEnum.ES]: ['redondeo']
+};
+
 const EXCLUDED_LABELS: Record<LanguageEnum, readonly string[]> = {
-    [LanguageEnum.EN]: ['subtotal', 'sub total', 'tax', 'vat', 'tip', 'gratuity', 'change', 'tendered', 'given'],
-    [LanguageEnum.FR]: ['sous-total', 'tva', 'pourboire', 'rendu', 'donné'],
-    [LanguageEnum.UK]: ['пдв', 'решта'],
-    [LanguageEnum.DE]: ['zwischensumme', 'ust', 'mwst', 'netto', 'trinkgeld', 'rückgeld', 'gegeben'],
-    [LanguageEnum.ES]: ['subtotal', 'iva', 'propina', 'cambio', 'entregado']
+    [LanguageEnum.EN]: [
+        'subtotal',
+        'sub total',
+        'tax',
+        'vat',
+        'gst',
+        'tip',
+        'gratuity',
+        'tendered',
+        'given',
+        'paid',
+        'qty',
+        'quantity',
+        'excl',
+        'excluding',
+        'discount',
+        'saving',
+        'savings'
+    ],
+    [LanguageEnum.FR]: ['sous-total', 'tva', 'pourboire', 'donné', 'hors taxes', 'remise'],
+    [LanguageEnum.UK]: ['пдв', 'знижка'],
+    [LanguageEnum.DE]: ['zwischensumme', 'ust', 'mwst', 'netto', 'trinkgeld', 'gegeben', 'rabatt'],
+    [LanguageEnum.ES]: ['subtotal', 'iva', 'propina', 'entregado', 'descuento']
 };
 
 const CASH_LABELS: Record<LanguageEnum, readonly string[]> = {
@@ -52,7 +87,7 @@ const PAYMENT_LABELS: Record<LanguageEnum, readonly string[]> = {
 };
 
 const INCLUSIVE_MARKERS: Record<LanguageEnum, readonly string[]> = {
-    [LanguageEnum.EN]: ['incl', 'including', 'included', 'inclusive'],
+    [LanguageEnum.EN]: ['inc', 'incl', 'includes', 'including', 'included', 'inclusive'],
     [LanguageEnum.FR]: ['incl', 'inclus', 'dont'],
     [LanguageEnum.UK]: ['включно', 'в т.ч'],
     [LanguageEnum.DE]: ['inkl', 'einschl', 'davon'],
@@ -63,7 +98,10 @@ const CURRENCY_SYMBOLS: readonly (readonly [string, CurrencyEnum])[] = [
     ['€', CurrencyEnum.EUR],
     ['$', CurrencyEnum.USD],
     ['£', CurrencyEnum.GBP],
-    ['₴', CurrencyEnum.UAH]
+    ['₴', CurrencyEnum.UAH],
+    ['rm', CurrencyEnum.MYR],
+    ['rp', CurrencyEnum.IDR],
+    ['kč', CurrencyEnum.CZK]
 ];
 
 const CURRENCY_WORDS: Record<LanguageEnum, Readonly<Record<string, CurrencyEnum>>> = {
@@ -82,19 +120,35 @@ const CURRENCY_ALIASES: ReadonlyMap<string, CurrencyEnum> = new Map([
 const CURRENCY_CODES = new Map<string, CurrencyEnum>(Object.values(CurrencyEnum).map(code => [code, code]));
 const CURRENCY_TOKEN_PATTERN = /\p{L}+|[$£€₴]/gu;
 const CURRENCY_CODE_PATTERN = /(?<!\p{L})([A-Za-z]{3})(?!\p{L})\s*(?=\d)|(?<=\d)\s*([A-Za-z]{3})(?!\p{L})/gu;
-const AMOUNT_PATTERN = /(?<![\d.,])([-−])?(\d{1,3}(?:[.,'\s]\d{3})+|\d+)[.,](\d{2})(?!\d|[.,]\d)(?!\s?%)/gu;
+const AMOUNT_PATTERN = /(?<![\d.,])(?<sign>[-−])?(?<integer>\d{1,3}(?:[.,'\p{Zs}]\d{3})+|\d+)[.,](?<fraction>\d{2})(?!\d|[.,]\d)(?!\s?%)/gu;
+const GROUPED_INTEGER_PATTERN =
+    /(?<!\d[.,]?)(?<sign>[-−])?(?<integer>[1-9]\d{0,2}(?<separator>[.,])\d{3}(?:\k<separator>\d{3})*)(?![\d.,]|\s?%)/gu;
 const PARENTHESIZED_PATTERN = /\([^()]*\)/gu;
 const INCLUSIVE_MARKER_PATTERN = buildReceiptKeywordPattern(Object.values(INCLUSIVE_MARKERS).flat(), 'iu');
 const CASH_LABEL_PATTERN = buildReceiptKeywordPattern(Object.values(CASH_LABELS).flat(), 'iu');
 const PAYMENT_PATTERN = buildReceiptKeywordPattern([...PAYMENT_BRANDS, ...Object.values(PAYMENT_LABELS).flat()], 'iu');
 const TOTAL_LABEL_PATTERN = buildReceiptKeywordPattern(Object.values(TOTAL_LABELS).flat(), 'iu');
-const EXCLUDED_LABEL_PATTERN = buildReceiptKeywordPattern(Object.values(EXCLUDED_LABELS).flat(), 'iu');
+const CHANGE_LABEL_PATTERN = buildReceiptKeywordPattern(Object.values(CHANGE_LABELS).flat(), 'iu');
+const ROUNDING_LABEL_PATTERN = buildReceiptKeywordPattern(Object.values(ROUNDING_LABELS).flat(), 'iu');
+const EXCLUDED_LABEL_PATTERN = buildReceiptKeywordPattern(
+    [...Object.values(EXCLUDED_LABELS), ...Object.values(CHANGE_LABELS)].flat(),
+    'iu'
+);
+const OTHER_LABEL_PATTERN = new RegExp(`${EXCLUDED_LABEL_PATTERN.source}|${CASH_LABEL_PATTERN.source}`, 'iu');
+const PERCENT_PATTERN = /\d\s?%/u;
+const SIGNED_DIGIT_PATTERN = /[-−]?\d/u;
 
-const findAmounts = (text: string): number[] =>
-    [...text.matchAll(AMOUNT_PATTERN)]
-        .filter(([, sign]) => !isDefined(sign))
-        .map(([, , integerPart, fractionPart]) => convertToMicroUnits(Number(`${integerPart.replaceAll(/\D/gu, '')}.${fractionPart}`)))
-        .filter(isPositiveNumber);
+const findSignedAmounts = (text: string): number[] => {
+    const centMatches = [...text.matchAll(AMOUNT_PATTERN)];
+
+    return (isNotEmptyArray(centMatches) ? centMatches : [...text.matchAll(GROUPED_INTEGER_PATTERN)]).map(
+        ({ groups }) =>
+            (isDefined(groups?.['sign']) ? -1 : 1) *
+            convertToMicroUnits(Number(`${(groups?.['integer'] ?? '').replaceAll(/\D/gu, '')}.${groups?.['fraction'] ?? '0'}`))
+    );
+};
+
+const findAmounts = (text: string): number[] => findSignedAmounts(text).filter(isPositiveNumber);
 
 const findCurrencies = (text: string): CurrencyEnum[] =>
     [
@@ -115,45 +169,106 @@ const findMostFrequentCurrency = (rows: readonly string[]): CurrencyEnum | null 
     return [...counts.entries()].sort(([, left], [, right]) => right - left).at(0)?.[0] ?? null;
 };
 
-const findTotalCandidate = (rawRow: string, rowIndex: number) => {
-    const row = rawRow.replaceAll(PARENTHESIZED_PATTERN, ' ');
+const findLabelAmount = (head: string, tail: string, label: RegExpExecArray): number | null => {
+    const valueStart = label.index + label[0].length;
+    const values = head.slice(valueStart);
+    const firstDigit = Math.max(values.search(SIGNED_DIGIT_PATTERN), 0);
+    const labelZone = head.slice(0, valueStart + firstDigit);
+    const amountZone = values.slice(firstDigit);
+    const cash = CASH_LABEL_PATTERN.exec(labelZone);
+    const nextLabel = amountZone.search(OTHER_LABEL_PATTERN);
+
+    if (EXCLUDED_LABEL_PATTERN.test(labelZone) || PERCENT_PATTERN.test(values) || (isDefined(cash) && cash.index < label.index)) {
+        return null;
+    }
+
+    return findAmounts(nextLabel < 0 ? amountZone : amountZone.slice(0, nextLabel)).at(-1) ?? findAmounts(tail).at(0) ?? null;
+};
+
+const findTotalCandidate = (rawRow: string, rowIndex: number): ReceiptTotalCandidateInterface | null => {
+    const row = rawRow.replaceAll(PARENTHESIZED_PATTERN, group => (INCLUSIVE_MARKER_PATTERN.test(group) ? ' ' : group));
     const marker = INCLUSIVE_MARKER_PATTERN.exec(row);
     const head = isDefined(marker) ? row.slice(0, marker.index) : row;
     const tail = isDefined(marker) ? row.slice(marker.index + marker[0].length) : '';
     const label = TOTAL_LABEL_PATTERN.exec(head);
-    const cash = CASH_LABEL_PATTERN.exec(head);
+    const amount = isDefined(label) ? findLabelAmount(head, tail, label) : null;
 
-    if (!isDefined(label) || EXCLUDED_LABEL_PATTERN.test(head) || (isDefined(cash) && cash.index < label.index)) {
+    return isDefined(amount) ? { amount, row, rowIndex } : null;
+};
+
+const findLastLabelledAmount = (rows: readonly string[], pattern: RegExp): number | null =>
+    rows
+        .filter(row => pattern.test(row))
+        .map(row => findSignedAmounts(row).at(-1))
+        .filter(isDefined)
+        .at(-1) ?? null;
+
+const findTenderedTotal = (rows: readonly string[]): number | null => {
+    const cash = findLastLabelledAmount(
+        rows.filter(row => !TOTAL_LABEL_PATTERN.test(row)),
+        CASH_LABEL_PATTERN
+    );
+    const change = findLastLabelledAmount(rows, CHANGE_LABEL_PATTERN);
+
+    return isDefined(cash) && isDefined(change) && change >= 0 && cash > change ? cash - change : null;
+};
+
+const resolveTotal = (
+    rows: readonly string[],
+    candidates: readonly ReceiptTotalCandidateInterface[],
+    evidence: ReadonlySet<number | null>
+): ReceiptTotalCandidateInterface | null => {
+    const confirmed = candidates.filter(candidate => evidence.has(candidate.amount));
+    const pool = isNotEmptyArray(confirmed) ? confirmed : candidates;
+    const roundingIndex = rows.findLastIndex(row => ROUNDING_LABEL_PATTERN.test(row) && !TOTAL_LABEL_PATTERN.test(row));
+    const rounded = pool.filter(candidate => candidate.rowIndex > roundingIndex);
+    const best = [...(isNotEmptyArray(rounded) ? rounded : pool)].sort((left, right) => right.amount - left.amount).at(0);
+    const adjustment = isDefined(best) && roundingIndex > best.rowIndex ? (findSignedAmounts(rows.at(roundingIndex) ?? '').at(-1) ?? 0) : 0;
+
+    if (!isDefined(best) || (adjustment !== 0 && !evidence.has(best.amount + adjustment))) {
         return null;
     }
 
-    const amount = findAmounts(head.slice(label.index + label[0].length)).at(-1) ?? findAmounts(tail).at(0);
-
-    return isDefined(amount) ? { amount, row, rowIndex } : null;
+    return { ...best, amount: best.amount + adjustment };
 };
 
 const extractReceiptTotal = (rows: readonly string[]) => {
     const candidates = rows.map(findTotalCandidate).filter(isDefined);
     const paymentStart = rows.findIndex((row, index) => index >= (candidates.at(0)?.rowIndex ?? 0) && PAYMENT_PATTERN.test(row));
     const paymentRows = paymentStart < 0 ? [] : rows.slice(paymentStart);
-    const paymentAmounts = new Set(paymentRows.flatMap(findAmounts));
-    const confirmed = candidates.filter(candidate => paymentAmounts.has(candidate.amount));
-    const best = [...(isNotEmptyArray(confirmed) ? confirmed : candidates)].sort((left, right) => right.amount - left.amount).at(0);
+    const tendered = findTenderedTotal(rows);
+    const total = resolveTotal(
+        rows,
+        candidates,
+        new Set([...paymentRows.filter(row => PAYMENT_PATTERN.test(row)).flatMap(findAmounts), tendered])
+    );
 
-    if (!isDefined(best)) {
+    if (!isDefined(total) || (isDefined(tendered) && tendered !== total.amount)) {
         return null;
     }
 
-    return { amount: best.amount, currency: findCurrencies(best.row).at(0) ?? findMostFrequentCurrency(rows), paymentRows };
+    return { amount: total.amount, currency: findCurrencies(total.row).at(0) ?? findMostFrequentCurrency(rows), paymentRows };
 };
 
-const ISO_DATE_PATTERN = /(?<!\d)(\d{4})-(\d{2})-(\d{2})(?!\d)/u;
-const DAY_FIRST_DATE_PATTERN = /(?<!\d)(\d{1,2})[./](\d{1,2})[./](\d{4}|\d{2})(?!\d)/u;
+const MONTH_NAMES: Record<LanguageEnum, readonly string[]> = {
+    [LanguageEnum.EN]: ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'],
+    [LanguageEnum.FR]: ['janv', 'févr', 'mars', 'avr', 'mai', 'juin', 'juil', 'août', 'sept', 'oct', 'nov', 'déc'],
+    [LanguageEnum.UK]: ['січ', 'лют', 'бер', 'кві', 'тра', 'чер', 'лип', 'сер', 'вер', 'жов', 'лис', 'гру'],
+    [LanguageEnum.DE]: ['jan', 'feb', 'mär', 'apr', 'mai', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dez'],
+    [LanguageEnum.ES]: ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
+};
+
+const MONTH_PREFIXES = Object.values(MONTH_NAMES).flatMap(names => names.map((name, index) => ({ name, month: index + 1 })));
+const ISO_DATE_PATTERN = /(?<![\p{L}\d]|\d[./-])(\d{4})([-/.])(\d{1,2})\2(\d{1,2})(?![\p{L}\d]|[./-]\d)/u;
+const DAY_FIRST_DATE_PATTERN = /(?<![\p{L}\d]|\d[./-])(\d{1,2})([./-])(\d{1,2})\2(\d{4}|\d{2})(?![\p{L}\d]|[./-]\d)/u;
+const DAY_MONTH_NAME_DATE_PATTERN = /(?<![\p{L}\d])(?<day>\d{1,2})\.?[\s-]?(?<month>\p{L}{3,})\.?,?[\s-]?(?<year>\d{4}|\d{2})(?![\d:])/u;
+const MONTH_NAME_DAY_DATE_PATTERN = /(?<![\p{L}\d])(?<month>\p{L}{3,})\.?\s?(?<day>\d{1,2}),?\s(?<year>\d{4})(?!\d)/u;
 const TIME_PATTERN = /(?<![\d:])([01]?\d|2[0-3]):([0-5]\d)(?::([0-5]\d))?(?:\s?([AaPp])\.?[Mm]\.?)?(?![\d:])/u;
 const MONTHS_IN_YEAR = 12;
 const HOURS_IN_HALF_DAY = 12;
 const TWO_DIGIT_YEAR_LIMIT = 100;
 const TWO_DIGIT_YEAR_BASE = 2000;
+const FULL_YEAR_LENGTH = 4;
 
 const buildDate = (year: number, month: number, day: number): Date | null => {
     const date = new Date(year, month - 1, day);
@@ -161,23 +276,34 @@ const buildDate = (year: number, month: number, day: number): Date | null => {
     return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day ? date : null;
 };
 
+const toFullYear = (rawYear: number): number => (rawYear < TWO_DIGIT_YEAR_LIMIT ? rawYear + TWO_DIGIT_YEAR_BASE : rawYear);
+
+const findMonthNameDate = (text: string): Date | null => {
+    const groups = (DAY_MONTH_NAME_DATE_PATTERN.exec(text) ?? MONTH_NAME_DAY_DATE_PATTERN.exec(text))?.groups;
+    const monthName = groups?.['month'].toLocaleLowerCase() ?? '';
+    const month = MONTH_PREFIXES.find(({ name }) => monthName.startsWith(name))?.month;
+
+    return isDefined(groups) && isDefined(month) ? buildDate(toFullYear(Number(groups['year'])), month, Number(groups['day'])) : null;
+};
+
 const findDate = (text: string): Date | null => {
     const isoMatch = ISO_DATE_PATTERN.exec(text);
 
     if (isDefined(isoMatch)) {
-        return buildDate(Number(isoMatch[1]), Number(isoMatch[2]), Number(isoMatch[3]));
+        return buildDate(Number(isoMatch[1]), Number(isoMatch[3]), Number(isoMatch[4]));
     }
 
     const dayFirstMatch = DAY_FIRST_DATE_PATTERN.exec(text);
 
     if (!isDefined(dayFirstMatch)) {
-        return null;
+        return findMonthNameDate(text);
     }
 
-    const [, first, second, rawYear] = dayFirstMatch.map(Number);
-    const year = rawYear < TWO_DIGIT_YEAR_LIMIT ? rawYear + TWO_DIGIT_YEAR_BASE : rawYear;
+    const [, first, separator, second, rawYear] = dayFirstMatch;
+    const year = toFullYear(Number(rawYear));
+    const isMonthFirst = Number(second) > MONTHS_IN_YEAR && (separator === '/' || rawYear.length === FULL_YEAR_LENGTH);
 
-    return second > MONTHS_IN_YEAR ? buildDate(year, first, second) : buildDate(year, second, first);
+    return isMonthFirst ? buildDate(year, Number(first), Number(second)) : buildDate(year, Number(second), Number(first));
 };
 
 const toHour = (hours: string, meridiem: string): number => {
@@ -315,7 +441,7 @@ const groupRows = (lines: readonly ReceiptTextLineInterface[]): string[] =>
             [...row]
                 .sort((left, right) => left.x - right.x)
                 .map(line => line.text.trim())
-                .join(' ')
+                .join('  ')
         );
 
 const findReceiptNumber = (rows: readonly string[]): string | null =>
