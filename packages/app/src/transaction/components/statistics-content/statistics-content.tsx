@@ -9,8 +9,10 @@ import { AnalyticsTabType } from '../../../@generic/type/analytics-tab.type';
 import { getDateFilterByPeriod } from '../../../@generic/utils/date/get-date-filter-by-period.util';
 import { useNetWorthQuery } from '../../../account/query/use-net-worth.query';
 import { RunwayContent } from '../../../runway/component/runway-content/runway-content';
+import { AnalyticsHistoryBoundary } from '../../../sync/component/analytics-history-boundary/analytics-history-boundary';
 import { useGetTotalIncomeAndExpensesQuery } from '../../query/use-get-total-income-and-expenses.query';
 import { checkIfFiltersSelected } from '../../utils/check-if-filters-selected.util';
+import { AnalyticsChooseAccounts } from '../analytics-choose-accounts/analytics-choose-accounts';
 import { StatisticsCategoriesActivityContent } from '../statistics-categories-activity-content/statistics-categories-activity-content';
 import { StatisticsTagsActivityContent } from '../statistics-tags-activity-content/statistics-tags-activity-content';
 import { TransactionAnalyticsCard } from '../transaction-analytics-card/transaction-analytics-card';
@@ -49,30 +51,41 @@ export const StatisticsContent = ({ activeTab }: Props) => {
                 hasFiltersSelected={checkIfFiltersSelected(null, filters)}
             />
 
-            <View className="gap-y-lg">
-                <Text className="uppercase text-secondary-foreground text-xs">
-                    <Trans>Overview</Trans>
-                </Text>
+            <AnalyticsHistoryBoundary
+                accountIds={filters.accountIds}
+                description={t`We’re still importing transaction history. Wait for these accounts to finish, or select only accounts whose history is ready.`}
+                action={<AnalyticsChooseAccounts filters={filters} onChange={setFilters} />}
+            >
+                <View className="gap-y-lg">
+                    <Text className="uppercase text-secondary-foreground text-xs">
+                        <Trans>Overview</Trans>
+                    </Text>
 
-                <View className="flex-row gap-x-xl">
-                    <TransactionAnalyticsCard
-                        amount={expense}
-                        label={t`Spent`}
-                        icon={UserIconNameEnum.TrendingDown}
-                        variant="destructive"
-                    />
-                    <TransactionAnalyticsCard amount={income} label={t`Income`} icon={UserIconNameEnum.TrendingUp} variant="positive" />
-                    <TransactionAnalyticsCard amount={netWorth} label={t`Balance`} icon={UserIconNameEnum.Wallet} variant="warning" />
+                    <View className="flex-row gap-x-xl">
+                        <TransactionAnalyticsCard
+                            amount={expense}
+                            label={t`Spent`}
+                            icon={UserIconNameEnum.TrendingDown}
+                            variant="destructive"
+                        />
+                        <TransactionAnalyticsCard amount={income} label={t`Income`} icon={UserIconNameEnum.TrendingUp} variant="positive" />
+                        <TransactionAnalyticsCard
+                            amount={netWorth}
+                            label={t`Total balance`}
+                            icon={UserIconNameEnum.Wallet}
+                            variant="warning"
+                        />
+                    </View>
                 </View>
-            </View>
 
-            <Activity mode={categoriesActivityMode}>
-                <StatisticsCategoriesActivityContent filters={filters} income={income} expense={expense} />
-            </Activity>
+                <Activity mode={categoriesActivityMode}>
+                    <StatisticsCategoriesActivityContent filters={filters} income={income} expense={expense} />
+                </Activity>
 
-            <Activity mode={tagsActivityMode}>
-                <StatisticsTagsActivityContent filters={filters} income={income} expense={expense} />
-            </Activity>
+                <Activity mode={tagsActivityMode}>
+                    <StatisticsTagsActivityContent filters={filters} income={income} expense={expense} />
+                </Activity>
+            </AnalyticsHistoryBoundary>
 
             <MenuSpacer />
         </ChromeScrollFrame>
