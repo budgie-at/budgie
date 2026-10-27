@@ -120,9 +120,8 @@ const CURRENCY_ALIASES: ReadonlyMap<string, CurrencyEnum> = new Map([
 const CURRENCY_CODES = new Map<string, CurrencyEnum>(Object.values(CurrencyEnum).map(code => [code, code]));
 const CURRENCY_TOKEN_PATTERN = /\p{L}+|[$£€₴]/gu;
 const CURRENCY_CODE_PATTERN = /(?<!\p{L})([A-Za-z]{3})(?!\p{L})\s*(?=\d)|(?<=\d)\s*([A-Za-z]{3})(?!\p{L})/gu;
-const AMOUNT_PATTERN = /(?<![\d.,])(?<sign>[-−])?(?<integer>\d{1,3}(?:[.,'\p{Zs}]\d{3})+|\d+)[.,](?<fraction>\d{2})(?!\d|[.,]\d)(?!\s?%)/gu;
-const GROUPED_INTEGER_PATTERN =
-    /(?<!\d[.,]?)(?<sign>[-−])?(?<integer>[1-9]\d{0,2}(?<separator>[.,])\d{3}(?:\k<separator>\d{3})*)(?![\d.,]|\s?%)/gu;
+const AMOUNT_PATTERN = /(?<![\d.,])([-−])?(\d{1,3}(?:[.,'\p{Zs}]\d{3})+|\d+)[.,](\d{2})(?!\d|[.,]\d)(?!\s?%)/gu;
+const GROUPED_INTEGER_PATTERN = /(?<!\d[.,]?)([-−])?([1-9]\d{0,2}([.,])\d{3}(?:\3\d{3})*)(?![\d.,]|\s?%)/gu;
 const ZERO_MINOR_UNIT_CURRENCIES: ReadonlySet<CurrencyEnum> = new Set([
     CurrencyEnum.BIF,
     CurrencyEnum.CLP,
@@ -156,13 +155,12 @@ const SIGNED_DIGIT_PATTERN = /[-−]?\d/u;
 
 const findSignedAmounts = (text: string): number[] =>
     [...text.matchAll(AMOUNT_PATTERN)].map(
-        ({ groups }) =>
-            (isDefined(groups?.['sign']) ? -1 : 1) *
-            convertToMicroUnits(Number(`${(groups?.['integer'] ?? '').replaceAll(/\D/gu, '')}.${groups?.['fraction'] ?? ''}`))
+        ([, sign, integer = '', fraction = '']) =>
+            (isDefined(sign) ? -1 : 1) * convertToMicroUnits(Number(`${integer.replaceAll(/\D/gu, '')}.${fraction}`))
     );
 
 const expandGroupedIntegers = (row: string): string =>
-    row.search(AMOUNT_PATTERN) < 0 ? row.replaceAll(GROUPED_INTEGER_PATTERN, ' $<sign>$<integer>.00') : row;
+    row.search(AMOUNT_PATTERN) < 0 ? row.replaceAll(GROUPED_INTEGER_PATTERN, ' $1$2.00') : row;
 
 const findAmounts = (text: string): number[] => findSignedAmounts(text).filter(isPositiveNumber);
 
@@ -277,8 +275,8 @@ const MONTH_NAMES: Record<LanguageEnum, readonly string[]> = {
 const MONTH_PREFIXES = Object.values(MONTH_NAMES).flatMap(names => names.map((name, index) => ({ name, month: index + 1 })));
 const ISO_DATE_PATTERN = /(?<![\p{L}\d]|\d[./-])(\d{4})([-/.])(\d{1,2})\2(\d{1,2})(?![\p{L}\d]|[./-]\d)/u;
 const DAY_FIRST_DATE_PATTERN = /(?<![\p{L}\d]|\d[./-])(\d{1,2})([./-])(\d{1,2})\2(\d{4}|\d{2})(?![\p{L}\d]|[./-]\d)/u;
-const DAY_MONTH_NAME_DATE_PATTERN = /(?<![\p{L}\d])(?<day>\d{1,2})\.?[\s-]?(?<month>\p{L}{3,})\.?,?[\s-]?(?<year>\d{4}|\d{2})(?![\d:])/u;
-const MONTH_NAME_DAY_DATE_PATTERN = /(?<![\p{L}\d])(?<month>\p{L}{3,})\.?\s?(?<day>\d{1,2}),?\s(?<year>\d{4})(?!\d)/u;
+const DAY_MONTH_NAME_DATE_PATTERN = /(?<![\p{L}\d])(\d{1,2})\.?[\s-]?(\p{L}{3,})\.?,?[\s-]?(\d{4}|\d{2})(?![\d:])/u;
+const MONTH_NAME_DAY_DATE_PATTERN = /(?<![\p{L}\d])(\p{L}{3,})\.?\s?(\d{1,2}),?\s(\d{4})(?!\d)/u;
 const TIME_PATTERN = /(?<![\d:])([01]?\d|2[0-3]):([0-5]\d)(?::([0-5]\d))?(?:\s?([AaPp])\.?[Mm]\.?)?(?![\d:])/u;
 const MONTHS_IN_YEAR = 12;
 const HOURS_IN_HALF_DAY = 12;
@@ -295,11 +293,13 @@ const buildDate = (year: number, month: number, day: number): Date | null => {
 const toFullYear = (rawYear: number): number => (rawYear < TWO_DIGIT_YEAR_LIMIT ? rawYear + TWO_DIGIT_YEAR_BASE : rawYear);
 
 const findMonthNameDate = (text: string): Date | null => {
-    const groups = (DAY_MONTH_NAME_DATE_PATTERN.exec(text) ?? MONTH_NAME_DAY_DATE_PATTERN.exec(text))?.groups;
-    const monthName = groups?.['month'].toLocaleLowerCase() ?? '';
-    const month = MONTH_PREFIXES.find(({ name }) => monthName.startsWith(name))?.month;
+    const dayFirst = DAY_MONTH_NAME_DATE_PATTERN.exec(text);
+    const monthFirst = MONTH_NAME_DAY_DATE_PATTERN.exec(text);
+    const parts = isDefined(dayFirst) ? [dayFirst[1], dayFirst[2], dayFirst[3]] : [monthFirst?.[2], monthFirst?.[1], monthFirst?.[3]];
+    const [day, monthName = '', year] = parts;
+    const month = MONTH_PREFIXES.find(({ name }) => monthName.toLocaleLowerCase().startsWith(name))?.month;
 
-    return isDefined(groups) && isDefined(month) ? buildDate(toFullYear(Number(groups['year'])), month, Number(groups['day'])) : null;
+    return isDefined(day) && isDefined(year) && isDefined(month) ? buildDate(toFullYear(Number(year)), month, Number(day)) : null;
 };
 
 const findDate = (text: string): Date | null => {
