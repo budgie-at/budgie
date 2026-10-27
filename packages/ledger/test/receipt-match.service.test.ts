@@ -140,18 +140,36 @@ describe('ReceiptMatchService', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('creates a new expense when the top candidates tie on every key', () =>
+    it.effect('matches one of the tied candidates instead of double-counting the expense', () =>
         Effect.gen(function* () {
             const testSeedService = yield* seed;
             const firstAccount = yield* testSeedService.account({ title: 'First' });
             const secondAccount = yield* testSeedService.account({ title: 'Second' });
             const first = yield* seedExpense(firstAccount.id, BANK_TITLE);
-            const second = yield* seedExpense(secondAccount.id, BANK_TITLE);
+            yield* seedExpense(secondAccount.id, BANK_TITLE);
 
-            const result = yield* match(buildReceipt());
+            expect(yield* match(buildReceipt())).toEqual({ kind: ReceiptMatchResultKindEnum.MATCHED, transactionId: first.id });
+            yield* assertStoredBalancesMatchLedger(yield* Db);
+        }).pipe(Effect.provide(TestLayer))
+    );
 
-            expect(result.kind).toBe(ReceiptMatchResultKindEnum.CREATED);
-            expect([first.id, second.id]).not.toContain(result.transactionId);
+    it.effect('keeps the account learned for the card when the receipt matches another account by amount', () =>
+        Effect.gen(function* () {
+            const testSeedService = yield* seed;
+            const cardAccount = yield* testSeedService.account({ title: 'Card' });
+            const otherAccount = yield* testSeedService.account({ title: 'Other' });
+            const otherTransaction = yield* seedExpense(otherAccount.id, BANK_TITLE);
+            const accountRepository = yield* AccountRepository;
+
+            yield* linkCard(cardAccount.id);
+
+            expect(yield* match(buildReceipt({ cardLast4: '4242' }))).toEqual({
+                kind: ReceiptMatchResultKindEnum.MATCHED,
+                transactionId: otherTransaction.id
+            });
+            expect((yield* accountRepository.findExternalIdAliases([CARD_EXTERNAL_ID])).map(alias => alias.account.id)).toEqual([
+                cardAccount.id
+            ]);
         }).pipe(Effect.provide(TestLayer))
     );
 

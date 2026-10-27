@@ -17,7 +17,7 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { TransactionService } from '../../transaction/service/transaction.service';
 import { createTransactionInput } from '../../transaction/utils/create-transaction-input.util';
@@ -64,23 +64,26 @@ export class ReceiptMatchService extends Context.Service<ReceiptMatchService>()(
         const rankKeys = (candidate: ReceiptMatchCandidateInterface, input: ReceiptMatchInputInterface): readonly number[] => [
             candidate.isCardMatch ? 1 : 0,
             measureSimilarity([input.title, ...input.merchantCandidates], candidate.title),
-            -Math.abs(candidate.operatedAt.getTime() - input.occurredAt.getTime())
+            -Math.abs(candidate.operatedAt.getTime() - input.occurredAt.getTime()),
+            -candidate.transactionId
         ];
 
         const compareKeys = (left: readonly number[], right: readonly number[]): number =>
             left.reduce((result, value, index) => (result === 0 ? right[index] - value : result), 0);
 
-        const pickCandidate = (candidates: readonly ReceiptMatchCandidateInterface[], input: ReceiptMatchInputInterface) => {
-            const [best, runnerUp] = candidates
+        const pickCandidate = (candidates: readonly ReceiptMatchCandidateInterface[], input: ReceiptMatchInputInterface) =>
+            candidates
                 .map(candidate => ({ candidate, keys: rankKeys(candidate, input) }))
-                .sort((left, right) => compareKeys(left.keys, right.keys));
+                .sort((left, right) => compareKeys(left.keys, right.keys))
+                .at(0)?.candidate ?? null;
 
-            if (!isDefined(best) || (isDefined(runnerUp) && compareKeys(best.keys, runnerUp.keys) === 0)) {
-                return null;
+        const learnCardAccount = Effect.fnUntraced(function* (cardExternalId: string, accountId: number) {
+            const aliases = yield* accountRepository.findExternalIdAliases([cardExternalId]);
+
+            if (!isNotEmptyArray(aliases)) {
+                yield* accountRepository.addExternalIdAlias(cardExternalId, accountId);
             }
-
-            return best.candidate;
-        };
+        });
 
         const insertReceipt = (transactionId: number, input: ReceiptMatchInputInterface) =>
             transactionReceiptRepository.insert({
@@ -114,7 +117,7 @@ export class ReceiptMatchService extends Context.Service<ReceiptMatchService>()(
             }
 
             if (isDefined(cardExternalId)) {
-                yield* accountRepository.addExternalIdAlias(cardExternalId, candidate.accountId);
+                yield* learnCardAccount(cardExternalId, candidate.accountId);
             }
 
             yield* insertReceipt(candidate.transactionId, input);
