@@ -1,4 +1,5 @@
 import { AnimatedLegendList } from '@legendapp/list/reanimated';
+import * as Effect from 'effect/Effect';
 import { NotificationFeedbackType } from 'expo-haptics';
 import { ReactElement, ReactNode } from 'react';
 import { View } from 'react-native';
@@ -16,14 +17,17 @@ import {
 import { SCREEN_CHROME_CONTENT_INSET_TOP } from '../../constant/screen-chrome-content-inset.constant';
 import { useVibration } from '../../hook/use-vibration.hook';
 import { IdInterface } from '../../interface/id.interface';
+import { appRuntime } from '../../runtime/app.runtime';
+import { logAndContinue } from '../../utils/log-and-continue.util';
 import { DeletableRow } from '../deletable-row/deletable-row';
 
 import type { LegendListSizingInterface } from '../../interface/legend-list-sizing.interface';
+import type { DeleteItemEffectType } from '../../type/delete-item-effect.type';
 import type { DeleteConfirmation } from '../deletable-row/deletable-row';
 
 interface Props<T extends IdInterface> {
     data: T[];
-    onDelete?: (id: number) => Promise<void>;
+    onDelete?: DeleteItemEffectType;
     renderCard: (item: T, index: number) => ReactNode;
     getDeleteConfirmation?: (item: T) => DeleteConfirmation | undefined;
     listHeader?: ReactElement | null;
@@ -56,18 +60,14 @@ export const SearchablePageList = <T extends IdInterface>({
         paddingBottom: 220
     };
 
-    const handleDeleteItem = async (id: number) => {
+    const handleDeleteItem = (id: number) => {
         if (!isDefined(onDelete)) {
             return;
         }
 
-        const isDeleted = await onDelete(id)
-            .then(() => true)
-            .catch(() => false);
-
-        if (isDeleted) {
-            notify(NotificationFeedbackType.Success);
-        }
+        appRuntime.runFork(
+            logAndContinue(onDelete(id).pipe(Effect.tap(() => Effect.sync(() => void notify(NotificationFeedbackType.Success)))))
+        );
     };
 
     const renderItem = ({ item, index }: { item: T; index: number }) => {

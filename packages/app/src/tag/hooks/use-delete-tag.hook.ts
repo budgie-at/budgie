@@ -4,8 +4,7 @@ import * as Effect from 'effect/Effect';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { appRuntime } from '../../@generic/runtime/app.runtime';
-import { showErrorToast } from '../../@generic/utils/show-error-toast/show-error-toast';
+import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 import { type TagsSelectorResult, useTagsSelectorModal } from '../context/tags-selector-modal.context';
 import { TagService } from '../service/tag.service';
 
@@ -18,10 +17,7 @@ export const useDeleteTag = () => {
         const count = yield* tagService.countTransactions(id);
 
         if (!isPositiveNumber(count)) {
-            return yield* tagService.deleteById(id).pipe(
-                Effect.tapCause(cause => Effect.logError(cause)),
-                Effect.tapError(() => Effect.sync(() => void showErrorToast(t`Could not delete tag`, t`Please try again later`)))
-            );
+            return yield* tagService.deleteById(id).pipe(toastOnFailure(t`Could not delete tag`, t`Please try again later`));
         }
 
         const description = t({
@@ -38,12 +34,9 @@ export const useDeleteTag = () => {
         const targetTagId = isNotEmptyArray(targetTagIds) ? targetTagIds[0] : null;
 
         if (isDefined(targetTagId)) {
-            yield* tagService.mergeInto(id, targetTagId).pipe(
-                Effect.tapCause(cause => Effect.logError(cause)),
-                Effect.catch(() => Effect.sync(() => void showErrorToast(t`Could not reassign tag`, t`Please try again later`)))
-            );
+            yield* tagService.mergeInto(id, targetTagId).pipe(toastOnFailure(t`Could not reassign tag`, t`Please try again later`));
         }
     });
 
-    return (id: number): Promise<void> => appRuntime.runPromise(deleteTag(id));
+    return deleteTag;
 };

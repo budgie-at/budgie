@@ -3,13 +3,14 @@ import { useReducer, useState } from 'react';
 
 import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { VoiceReviewActionTypeEnum } from '../enum/voice-review-action-type.enum';
 import { UseVoiceReviewReturnInterface } from '../interface/use-voice-review-return.interface';
 import { VoiceReviewActionInterface } from '../interface/voice-review-action.interface';
 import { VoiceReviewCreateResultInterface } from '../interface/voice-review-create-result.interface';
 import { VoiceReviewRowInterface } from '../interface/voice-review-row.interface';
 import { VoiceReviewBatchCreateService } from '../service/voice-review-batch-create.service';
+
+import type { AppServices } from '../../@generic/runtime/app.runtime';
 
 const reducer = (state: VoiceReviewRowInterface[], action: VoiceReviewActionInterface): VoiceReviewRowInterface[] => {
     if (action.type === VoiceReviewActionTypeEnum.EDIT_AMOUNT) {
@@ -40,21 +41,16 @@ export const useVoiceReview = (initialRows: VoiceReviewRowInterface[]): UseVoice
     const hasMissingCategories = rows.some(row => !isPositiveNumber(row.categoryId));
     const canSave = isNotEmptyArray(rows) && !hasInvalidAmounts && !hasMissingCategories;
 
-    const saveAll = (accountId: number): Promise<VoiceReviewCreateResultInterface | null> => {
-        setIsSaving(true);
-
-        return appRuntime
-            .runPromise(
+    const saveAll = (accountId: number): Effect.Effect<VoiceReviewCreateResultInterface | null, never, AppServices> =>
+        Effect.sync(() => void setIsSaving(true)).pipe(
+            Effect.andThen(
                 Effect.flatMap(VoiceReviewBatchCreateService, voiceReviewBatchCreateService =>
                     voiceReviewBatchCreateService.create(rows, accountId)
                 )
-            )
-            .catch(() => {
-                setIsSaving(false);
-
-                return null;
-            });
-    };
+            ),
+            Effect.tapCause(Effect.logError),
+            Effect.catchCause(() => Effect.sync(() => void setIsSaving(false)).pipe(Effect.as(null)))
+        );
 
     return { rows, isSaving, canSave, hasInvalidAmounts, hasMissingCategories, editAmount, setCategory, deleteRow, saveAll };
 };

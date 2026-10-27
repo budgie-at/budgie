@@ -1,5 +1,5 @@
-export const reloadApp = async () => {
-    const updatesModule = await import('expo-updates/build/Updates');
+import * as Effect from 'effect/Effect';
 
-    await updatesModule.reloadAsync();
-};
+export const reloadApp = Effect.promise(() => import('expo-updates/build/Updates')).pipe(
+    Effect.flatMap(updatesModule => Effect.promise(() => updatesModule.reloadAsync()))
+);

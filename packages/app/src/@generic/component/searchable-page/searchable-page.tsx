@@ -16,6 +16,7 @@ import { SearchablePageList } from '../searchable-page-list/searchable-page-list
 import { SEARCH_BLUR_OFFSET, SEARCH_BLUR_Z_INDEX, SEARCH_INPUT_VERTICAL_OFFSET, SEARCH_KEYBOARD_GAP } from './searchable-page.constant';
 
 import type { LegendListSizingInterface } from '../../interface/legend-list-sizing.interface';
+import type { DeleteItemEffectType } from '../../type/delete-item-effect.type';
 import type { DeleteConfirmation } from '../deletable-row/deletable-row';
 
 interface Props<T extends IdInterface> {
@@ -26,7 +27,7 @@ interface Props<T extends IdInterface> {
     searchPlaceholder: string;
     emptyState: ReactNode;
     onSearchChange: (search: string) => void;
-    onDelete?: (id: number) => Promise<void>;
+    onDelete?: DeleteItemEffectType;
     renderCard: (item: T, index: number) => ReactNode;
     getDeleteConfirmation?: (item: T) => DeleteConfirmation | undefined;
     searchInputTestID?: string;

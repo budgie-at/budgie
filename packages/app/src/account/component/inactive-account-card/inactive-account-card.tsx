@@ -3,7 +3,6 @@ import { AccountService } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { AccountActionCard } from '../account-action-card/account-action-card';
 
 import { InactiveAccountCardSelector } from './inactive-account-card.selector';
@@ -14,10 +13,6 @@ interface Props {
 
 export const InactiveAccountCard = ({ account }: Props) => {
     const { t } = useLingui();
-
-    const handleActivate = async () => {
-        await appRuntime.runPromise(Effect.flatMap(AccountService, accountService => accountService.activateById(account.id)));
-    };
 
     const accountTitle = account.title;
 
@@ -30,7 +25,7 @@ export const InactiveAccountCard = ({ account }: Props) => {
             confirmDescription={t`${accountTitle} will be restored to your main view.`}
             errorText={t`Could not activate account.`}
             currencySymbol={account.instrument.symbol}
-            onAction={handleActivate}
+            onAction={Effect.flatMap(AccountService, accountService => accountService.activateById(account.id))}
             testID={InactiveAccountCardSelector.Card(accountTitle)}
             actionButtonTestID={InactiveAccountCardSelector.ActivateButton(accountTitle)}
         />

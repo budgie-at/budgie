@@ -1,10 +1,12 @@
 import { type AITransactionInterface } from '@budgie/ai';
+import * as Effect from 'effect/Effect';
 import { router } from 'expo-router';
 import { useEffect, useRef } from 'react';
 import { useSharedValue } from 'react-native-reanimated';
 
 import { emptyFn, isNotEmptyArray } from '@rnw-community/shared';
 
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useVoiceReviewModal } from '../../context/voice-review-modal.context';
 import { VoiceInputStateEnum } from '../../enum/voice-input-state.enum';
 import { useVoiceInput } from '../../hook/use-voice-input.hook';
@@ -64,11 +66,18 @@ export const VoiceInputOverlay = ({ onClose }: { readonly onClose: () => void })
                 openVoiceReview({ transactions, originalText }, handleReviewResult);
             };
 
-            startAndCollect(handleCollected).catch(() => {
-                if (isLiveRef.current) {
-                    onClose();
-                }
-            });
+            appRuntime.runFork(
+                startAndCollect(handleCollected).pipe(
+                    Effect.tapCause(Effect.logError),
+                    Effect.catchCause(() =>
+                        Effect.sync(() => {
+                            if (isLiveRef.current) {
+                                onClose();
+                            }
+                        })
+                    )
+                )
+            );
         };
 
         runOnce();

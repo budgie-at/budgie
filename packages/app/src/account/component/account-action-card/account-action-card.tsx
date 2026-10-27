@@ -2,16 +2,21 @@ import { AccountEntityInterface, AccountWithInstrumentEntityInterface, UserIconN
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { Alert, View } from 'react-native';
-import Toast from 'react-native-toast-message';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
+import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
+import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
+
+import type { AppServices } from '../../../@generic/runtime/app.runtime';
+import type * as Effect from 'effect/Effect';
 
 interface Props {
     readonly account: AccountEntityInterface | AccountWithInstrumentEntityInterface;
@@ -21,7 +26,7 @@ interface Props {
     readonly confirmDescription: string;
     readonly errorText: string;
     readonly currencySymbol: string;
-    readonly onAction: () => Promise<void>;
+    readonly onAction: Effect.Effect<unknown, unknown, AppServices>;
     readonly testID?: string;
     readonly actionButtonTestID?: string;
 }
@@ -52,13 +57,9 @@ export const AccountActionCard = (props: Props) => {
             {
                 text: actionButtonText,
                 onPress: () =>
-                    void onAction().catch(() => {
-                        Toast.show({
-                            type: 'error',
-                            text1: errorText,
-                            text2: t`Something went wrong. Please try again later.`
-                        });
-                    })
+                    void appRuntime.runFork(
+                        logAndContinue(onAction.pipe(toastOnFailure(errorText, t`Something went wrong. Please try again later.`)))
+                    )
             }
         ]);
     };
