@@ -5,6 +5,8 @@ import * as Effect from 'effect/Effect';
 import { useRouter } from 'expo-router';
 import { View } from 'react-native';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
@@ -12,6 +14,7 @@ import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-s
 import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
 import { useEffectAction } from '../../../@generic/hook/use-effect-action.hook';
 import { testID } from '../../../@generic/utils/test-id.util';
+import { AccountSyncBadge } from '../../../account/component/account-sync-badge/account-sync-badge';
 import { useAccountBalanceQuery } from '../../../account/query/use-account-balance.query';
 import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/bank-integration.selector';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
@@ -19,7 +22,10 @@ import { useBankIntegrationAccountRowState } from '../../hook/use-bank-integrati
 import { BankIntegrationAccountMenu } from '../bank-integration-account-menu/bank-integration-account-menu';
 
 interface Props {
-    readonly account: Pick<AccountWithInstrumentEntityInterface, 'id' | 'title' | 'icon' | 'isActive' | AccountAssociationEnum.INSTRUMENT>;
+    readonly account: Pick<
+        AccountWithInstrumentEntityInterface,
+        'id' | 'title' | 'icon' | 'isActive' | 'iban' | AccountAssociationEnum.INSTRUMENT
+    >;
 }
 
 export const BankIntegrationAccountRow = ({ account }: Props) => {
@@ -28,7 +34,7 @@ export const BankIntegrationAccountRow = ({ account }: Props) => {
     const [runEffect] = useEffectAction(t`Could not update setting`);
     const { balance } = useAccountBalanceQuery(account.id);
     const formatDigits = useDisplayFormatDigits();
-    const { sync, switchLabel, description, isToggleVisible } = useBankIntegrationAccountRowState(account);
+    const { sync, syncState, switchLabel, description, isToggleVisible } = useBankIntegrationAccountRowState(account);
 
     const rowTestID = BankIntegrationSelector.AccountRow(account.id);
     const handleToggle = (enabled: boolean) =>
@@ -51,7 +57,12 @@ export const BankIntegrationAccountRow = ({ account }: Props) => {
             onPress={handlePress}
             accessible={false}
             onTitlePress={handlePress}
-            left={<CircleIcon icon={account.icon} variant="ghost" size={46} iconSize={20} border={false} />}
+            left={
+                <View className="relative">
+                    <CircleIcon icon={account.icon} variant="ghost" size={46} iconSize={20} border={false} />
+                    {isDefined(syncState) ? <AccountSyncBadge state={syncState} /> : null}
+                </View>
+            }
             title={account.title}
             description={description}
             right={

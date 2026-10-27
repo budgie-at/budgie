@@ -1,6 +1,6 @@
 export interface BankIntegrationCapabilitiesInterface {
     readonly supportsLiveSync: boolean;
     readonly supportsFileImport: boolean;
-    readonly supportsAddAccounts: boolean;
+    readonly supportsAccountDiscovery: boolean;
     readonly supportsDeposit: boolean;
 }
