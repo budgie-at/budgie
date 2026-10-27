@@ -34,7 +34,7 @@ describe('parseReceipt hardening', () => {
         ['quantity total row', rowsOf('Total 2 x 6,25 12,50'), total(12.5)],
         ['cash word after the total label', rowsOf('Summe bar EUR 12,50'), total(12.5)],
         ['lowercase currency code', rowsOf('Total 12.50 eur'), { currency: CurrencyEnum.EUR }],
-        ['currency code away from an amount', rowsOf('ALL PRICES INCL', 'Total 12.50'), { currency: null }],
+        ['currency code away from an amount', rowsOf('ALL PRICES INCL', 'Total 12.50'), { currency: CurrencyEnum.EUR }],
         ['currency code next to an amount', rowsOf('Total 12.50 USD'), { currency: CurrencyEnum.USD }],
         ['column-aligned currency code', rowsOf('Total USD           62.10'), total(62.1, CurrencyEnum.USD)],
         ['spaced receipt number label', rowsOf('Rechnung Nr. 2026-0042', 'Total 62.10'), { receiptNumber: '2026-0042' }],
@@ -53,8 +53,6 @@ describe('parseReceipt hardening', () => {
         ['payment block above the total', rowsOf('Karte akzeptiert', 'Gesamt 10,00', 'Summe 12,50', 'Bankomat 10,00'), total(10)],
         ['grand total after tax', rowsOf('SUBTOTAL 56.00', 'TAX 10% 5.60', 'GRAND TOTAL 61.60'), total(61.6)],
         ['amount due label', rowsOf('Subtotal 23.50', 'Amount due 25.00'), total(25)],
-        ['dot-grouped rupiah total', rowsOf('TOTAL Rp 25.000'), total(25000, CurrencyEnum.IDR)],
-        ['comma-grouped integer total', rowsOf('SUBTOTAL 194,000', 'TOTAL 174,600'), total(174600)],
         ['ringgit symbol', rowsOf('TOTAL RM 12.50'), total(12.5, CurrencyEnum.MYR)],
         ['koruna symbol', rowsOf('Total 125,00 Kč'), total(125, CurrencyEnum.CZK)],
         [
@@ -74,7 +72,6 @@ describe('parseReceipt hardening', () => {
             total(15.9)
         ],
         ['excluding phrase in parentheses', rowsOf('TOTAL (EXCLUDING GST): 21.30', 'TOTAL (INCLUSIVE OF GST): 23.26'), total(23.26)],
-        ['cash after the total amount', rowsOf('Total: 20,000  Cash: 100,000'), total(20000)],
         ['paid amount row', rowsOf('TOTAL AMT PAYABLE: 79.50', 'PAID AMOUNT: 100.00', 'CHANGE: 20.50'), total(79.5)],
         ['savings total row', rowsOf('TOTAL 100.60', 'TOTAL SAVING 150.00'), total(100.6)],
         ['percent tax breakdown row', rowsOf('TOTAL 0% SUPPLIES: 39.01', 'TOTAL PAYABLE: 20.21'), total(20.21)],
@@ -88,12 +85,28 @@ describe('parseReceipt hardening', () => {
         ['product code shaped like a date', rowsOf('CK 11-22-31', 'Total 8.20'), { occurredAt: null }],
         ['dotted phone number', rowsOf('TEL 05.22.95.66.66', 'Total 8.20'), { occurredAt: null }]
     ])('reads %s', (_name, lines, expected) => {
-        expect(parseReceipt(lines)).toMatchObject(expected);
+        expect(parseReceipt(lines, CurrencyEnum.EUR)).toMatchObject(expected);
+    });
+
+    it.each([
+        ['dot-grouped rupiah total', rowsOf('TOTAL Rp 25.000'), CurrencyEnum.EUR, total(25000, CurrencyEnum.IDR)],
+        ['comma-grouped integer total', rowsOf('SUBTOTAL 194,000', 'TOTAL 174,600'), CurrencyEnum.IDR, total(174600, CurrencyEnum.IDR)],
+        ['cash after the total amount', rowsOf('Total: 20,000  Cash: 100,000'), CurrencyEnum.JPY, total(20000, CurrencyEnum.JPY)]
+    ])('reads %s in a currency without minor units', (_name, lines, defaultCurrency, expected) => {
+        expect(parseReceipt(lines, defaultCurrency)).toMatchObject(expected);
+    });
+
+    it.each([
+        ['dinar total', rowsOf('TOTAL KWD 1.250'), CurrencyEnum.EUR],
+        ['euro total', rowsOf('Summe 1.250 EUR'), CurrencyEnum.IDR],
+        ['grouped total in the default currency', rowsOf('TOTAL 174,600'), CurrencyEnum.USD]
+    ])('rejects a grouped integer %s', (_name, lines, defaultCurrency) => {
+        expect(parseReceipt(lines, defaultCurrency)).toBeNull();
     });
 
     it('keeps two undated receipts with different numbers apart', () => {
-        expect(parseReceipt(rowsOf('CAFE', 'Bon 101', 'Total 4.50'))?.fingerprint).not.toBe(
-            parseReceipt(rowsOf('CAFE', 'Bon 102', 'Total 4.50'))?.fingerprint
+        expect(parseReceipt(rowsOf('CAFE', 'Bon 101', 'Total 4.50'), CurrencyEnum.EUR)?.fingerprint).not.toBe(
+            parseReceipt(rowsOf('CAFE', 'Bon 102', 'Total 4.50'), CurrencyEnum.EUR)?.fingerprint
         );
     });
 
@@ -119,6 +132,6 @@ describe('parseReceipt hardening', () => {
         ],
         ['no lines', []]
     ])('rejects %s', (_name, lines) => {
-        expect(parseReceipt(lines)).toBeNull();
+        expect(parseReceipt(lines, CurrencyEnum.EUR)).toBeNull();
     });
 });

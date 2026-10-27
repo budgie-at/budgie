@@ -123,6 +123,22 @@ const CURRENCY_CODE_PATTERN = /(?<!\p{L})([A-Za-z]{3})(?!\p{L})\s*(?=\d)|(?<=\d)
 const AMOUNT_PATTERN = /(?<![\d.,])(?<sign>[-−])?(?<integer>\d{1,3}(?:[.,'\p{Zs}]\d{3})+|\d+)[.,](?<fraction>\d{2})(?!\d|[.,]\d)(?!\s?%)/gu;
 const GROUPED_INTEGER_PATTERN =
     /(?<!\d[.,]?)(?<sign>[-−])?(?<integer>[1-9]\d{0,2}(?<separator>[.,])\d{3}(?:\k<separator>\d{3})*)(?![\d.,]|\s?%)/gu;
+const ZERO_MINOR_UNIT_CURRENCIES: ReadonlySet<CurrencyEnum> = new Set([
+    CurrencyEnum.BIF,
+    CurrencyEnum.CLP,
+    CurrencyEnum.DJF,
+    CurrencyEnum.GNF,
+    CurrencyEnum.HUF,
+    CurrencyEnum.IDR,
+    CurrencyEnum.ISK,
+    CurrencyEnum.JPY,
+    CurrencyEnum.KRW,
+    CurrencyEnum.PYG,
+    CurrencyEnum.UGX,
+    CurrencyEnum.VND,
+    CurrencyEnum.XAF,
+    CurrencyEnum.XOF
+]);
 const PARENTHESIZED_PATTERN = /\([^()]*\)/gu;
 const INCLUSIVE_MARKER_PATTERN = buildReceiptKeywordPattern(Object.values(INCLUSIVE_MARKERS).flat(), 'iu');
 const CASH_LABEL_PATTERN = buildReceiptKeywordPattern(Object.values(CASH_LABELS).flat(), 'iu');
@@ -138,15 +154,15 @@ const OTHER_LABEL_PATTERN = new RegExp(`${EXCLUDED_LABEL_PATTERN.source}|${CASH_
 const PERCENT_PATTERN = /\d\s?%/u;
 const SIGNED_DIGIT_PATTERN = /[-−]?\d/u;
 
-const findSignedAmounts = (text: string): number[] => {
-    const centMatches = [...text.matchAll(AMOUNT_PATTERN)];
-
-    return (isNotEmptyArray(centMatches) ? centMatches : [...text.matchAll(GROUPED_INTEGER_PATTERN)]).map(
+const findSignedAmounts = (text: string): number[] =>
+    [...text.matchAll(AMOUNT_PATTERN)].map(
         ({ groups }) =>
             (isDefined(groups?.['sign']) ? -1 : 1) *
-            convertToMicroUnits(Number(`${(groups?.['integer'] ?? '').replaceAll(/\D/gu, '')}.${groups?.['fraction'] ?? '0'}`))
+            convertToMicroUnits(Number(`${(groups?.['integer'] ?? '').replaceAll(/\D/gu, '')}.${groups?.['fraction'] ?? ''}`))
     );
-};
+
+const expandGroupedIntegers = (row: string): string =>
+    row.search(AMOUNT_PATTERN) < 0 ? row.replaceAll(GROUPED_INTEGER_PATTERN, ' $<sign>$<integer>.00') : row;
 
 const findAmounts = (text: string): number[] => findSignedAmounts(text).filter(isPositiveNumber);
 
@@ -232,7 +248,7 @@ const resolveTotal = (
     return { ...best, amount: best.amount + adjustment };
 };
 
-const extractReceiptTotal = (rows: readonly string[]) => {
+const extractReceiptTotal = (rows: readonly string[], receiptCurrency: CurrencyEnum) => {
     const candidates = rows.map(findTotalCandidate).filter(isDefined);
     const paymentStart = rows.findIndex((row, index) => index >= (candidates.at(0)?.rowIndex ?? 0) && PAYMENT_PATTERN.test(row));
     const paymentRows = paymentStart < 0 ? [] : rows.slice(paymentStart);
@@ -247,7 +263,7 @@ const extractReceiptTotal = (rows: readonly string[]) => {
         return null;
     }
 
-    return { amount: total.amount, currency: findCurrencies(total.row).at(0) ?? findMostFrequentCurrency(rows), paymentRows };
+    return { amount: total.amount, currency: findCurrencies(total.row).at(0) ?? receiptCurrency, paymentRows };
 };
 
 const MONTH_NAMES: Record<LanguageEnum, readonly string[]> = {
@@ -468,9 +484,13 @@ const buildFingerprint = (draft: Omit<ReceiptDraftInterface, 'fingerprint'>, tim
     return [merchant, draft.total, date, time, draft.receiptNumber].filter(isDefined).join('|');
 };
 
-export const parseReceipt = (lines: readonly ReceiptTextLineInterface[]): ReceiptDraftInterface | null => {
+export const parseReceipt = (lines: readonly ReceiptTextLineInterface[], defaultCurrency: CurrencyEnum): ReceiptDraftInterface | null => {
     const rows = groupRows(lines);
-    const total = extractReceiptTotal(rows);
+    const receiptCurrency = findMostFrequentCurrency(rows) ?? defaultCurrency;
+    const total = extractReceiptTotal(
+        ZERO_MINOR_UNIT_CURRENCIES.has(receiptCurrency) ? rows.map(expandGroupedIntegers) : rows,
+        receiptCurrency
+    );
 
     if (!isDefined(total)) {
         return null;

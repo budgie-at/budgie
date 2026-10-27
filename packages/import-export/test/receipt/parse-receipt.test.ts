@@ -88,24 +88,29 @@ describe('parseReceipt', () => {
             }
         ]
     ])('reads %s', (_name, lines, expected) => {
-        expect(parseReceipt(lines)).toEqual(expected);
+        expect(parseReceipt(lines, CurrencyEnum.EUR)).toEqual(expected);
     });
 
     it.each([
-        ['comma thousands confirmed by cash and change', CORD_RECEIPTS.commaThousandsWithChange, convertToMicroUnits(174600), null],
-        ['the grand total after a tax row', CORD_RECEIPTS.grandTotalAfterTax, convertToMicroUnits(51300), null],
-        ['rupiah decimals beside a tax-included row', CORD_RECEIPTS.rupiahDecimals, convertToMicroUnits(165000), CurrencyEnum.IDR],
-        ['the total after rounding rows', CORD_RECEIPTS.roundingRows, convertToMicroUnits(334000), null],
-        ['comma-decimal thousands', CORD_RECEIPTS.europeanDecimals, convertToMicroUnits(9500), null],
-        ['a dotted rupiah prefix', CORD_RECEIPTS.rupiahPrefix, convertToMicroUnits(118000), CurrencyEnum.IDR]
-    ])('reads CORD receipt with %s', (_name, lines, expectedTotal, expectedCurrency) => {
-        expect(parseReceipt(lines)).toMatchObject({ total: expectedTotal, currency: expectedCurrency });
+        ['comma thousands confirmed by cash and change', CORD_RECEIPTS.commaThousandsWithChange, 174600],
+        ['the grand total after a tax row', CORD_RECEIPTS.grandTotalAfterTax, 51300],
+        ['rupiah decimals beside a tax-included row', CORD_RECEIPTS.rupiahDecimals, 165000],
+        ['the total after rounding rows', CORD_RECEIPTS.roundingRows, 334000],
+        ['comma-decimal thousands', CORD_RECEIPTS.europeanDecimals, 9500],
+        ['a dotted rupiah prefix', CORD_RECEIPTS.rupiahPrefix, 118000]
+    ])('reads CORD receipt with %s', (_name, lines, expectedTotal) => {
+        expect(parseReceipt(lines, CurrencyEnum.IDR)).toMatchObject({
+            total: convertToMicroUnits(expectedTotal),
+            currency: CurrencyEnum.IDR
+        });
     });
 
     it.each([
-        ['an ungrouped integer total', CORD_RECEIPTS.ungroupedInteger],
-        ['a quantity total row', CORD_RECEIPTS.quantityTotalRow]
-    ])('rejects CORD receipt with %s', (_name, lines) => {
-        expect(parseReceipt(lines)).toBeNull();
+        ['an ungrouped integer total', CORD_RECEIPTS.ungroupedInteger, CurrencyEnum.IDR],
+        ['a quantity total row', CORD_RECEIPTS.quantityTotalRow, CurrencyEnum.IDR],
+        ['grouped integers in a currency with minor units', CORD_RECEIPTS.commaThousandsWithChange, CurrencyEnum.EUR],
+        ['grouped integers in a three-decimal currency', CORD_RECEIPTS.grandTotalAfterTax, CurrencyEnum.KWD]
+    ])('rejects CORD receipt with %s', (_name, lines, defaultCurrency) => {
+        expect(parseReceipt(lines, defaultCurrency)).toBeNull();
     });
 });

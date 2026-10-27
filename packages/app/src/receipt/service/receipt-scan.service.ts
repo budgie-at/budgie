@@ -115,7 +115,7 @@ export class ReceiptScanService extends Context.Service<ReceiptScanService>()('@
                 return failure(ReceiptScanFailureEnum.NO_TEXT);
             }
 
-            const draft = parseReceipt(lines);
+            const draft = parseReceipt(lines, baseCurrency);
 
             if (!isDefined(draft)) {
                 return { ...failure(ReceiptScanFailureEnum.MANUAL), fallback: { amount: null, aiContext: toContext(lines) } };
@@ -129,7 +129,6 @@ export class ReceiptScanService extends Context.Service<ReceiptScanService>()('@
             return yield* receiptMatchService
                 .match({
                     ...draft,
-                    currency: draft.currency ?? baseCurrency,
                     occurredAt: draft.occurredAt ?? new Date(now),
                     title,
                     description,
