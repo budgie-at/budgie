@@ -3,6 +3,8 @@ import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import * as Exit from 'effect/Exit';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { seed, TestLayer } from './ledger-test-layer';
 
 const OPERATED_AT = new Date(2026, 9, 27, 7, 52, 7);
@@ -22,6 +24,26 @@ const receipt = (transactionId: number, fingerprint: string) => ({
     merchantVatId: 'ATU71427716',
     merchantLegalName: 'IHR LABOR - Ordinationsgemeinschaft für Labordiagnostik und Mikrobiologie GesbR'
 });
+
+const moveSourceReceiptToTarget = (targetFingerprint?: string) =>
+    Effect.gen(function* () {
+        const transactionReceiptRepository = yield* TransactionReceiptRepository;
+        const source = yield* seedExpense;
+        const target = yield* seedExpense;
+
+        yield* transactionReceiptRepository.insert(receipt(source.id, FINGERPRINT));
+
+        if (isDefined(targetFingerprint)) {
+            yield* transactionReceiptRepository.insert(receipt(target.id, targetFingerprint));
+        }
+
+        yield* transactionReceiptRepository.moveToTransaction(source.id, target.id);
+
+        return {
+            atSource: yield* transactionReceiptRepository.findByTransactionId(source.id),
+            atTarget: yield* transactionReceiptRepository.findByTransactionId(target.id)
+        };
+    });
 
 describe('TransactionReceiptRepository', () => {
     it.effect('finds an inserted receipt by fingerprint and by transaction', () =>
@@ -55,30 +77,19 @@ describe('TransactionReceiptRepository', () => {
 
     it.effect('moves a receipt to the surviving transaction', () =>
         Effect.gen(function* () {
-            const transactionReceiptRepository = yield* TransactionReceiptRepository;
-            const source = yield* seedExpense;
-            const target = yield* seedExpense;
+            const { atSource, atTarget } = yield* moveSourceReceiptToTarget();
 
-            yield* transactionReceiptRepository.insert(receipt(source.id, FINGERPRINT));
-            yield* transactionReceiptRepository.moveToTransaction(source.id, target.id);
-
-            expect(yield* transactionReceiptRepository.findByTransactionId(source.id)).toBeUndefined();
-            expect((yield* transactionReceiptRepository.findByTransactionId(target.id))?.fingerprint).toBe(FINGERPRINT);
+            expect(atSource).toBeUndefined();
+            expect(atTarget?.fingerprint).toBe(FINGERPRINT);
         }).pipe(Effect.provide(TestLayer))
     );
 
     it.effect('keeps both receipts when the surviving transaction already has one', () =>
         Effect.gen(function* () {
-            const transactionReceiptRepository = yield* TransactionReceiptRepository;
-            const source = yield* seedExpense;
-            const target = yield* seedExpense;
+            const { atSource, atTarget } = yield* moveSourceReceiptToTarget('other-fingerprint');
 
-            yield* transactionReceiptRepository.insert(receipt(source.id, FINGERPRINT));
-            yield* transactionReceiptRepository.insert(receipt(target.id, 'other-fingerprint'));
-            yield* transactionReceiptRepository.moveToTransaction(source.id, target.id);
-
-            expect((yield* transactionReceiptRepository.findByTransactionId(source.id))?.fingerprint).toBe(FINGERPRINT);
-            expect((yield* transactionReceiptRepository.findByTransactionId(target.id))?.fingerprint).toBe('other-fingerprint');
+            expect(atSource?.fingerprint).toBe(FINGERPRINT);
+            expect(atTarget?.fingerprint).toBe('other-fingerprint');
         }).pipe(Effect.provide(TestLayer))
     );
 
