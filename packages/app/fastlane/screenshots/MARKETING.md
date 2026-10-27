@@ -78,20 +78,80 @@ Outputs are committed in `marketing/headers/<asc-locale>/` for `en-US`, `de-DE`,
 - `header-universal-5244x2950.png`: usable for both Header and Search Results.
 - `header-3840x1646.png`: dedicated Header alternative; do not use it as Search Results art.
 
-The script uses committed localized, transparent, framed captures from
-`packages/landing/public/media/{net-worth-tracker,spending-analytics}/<app-locale>/dark/`.
-Those were produced with the existing `frame-device.sh` / mobile-ci framing system.
-It reuses the app icon mark, FixelDisplay-Bold, and the screenshot palette
-`#003B25 → #00140C`. No ASO captions are read or changed. The universal composition
-keeps its mark, wordmark and both phones in the central region; the wide export
-uses a center crop. The surrounding canvas allows placement cropping. Review the
-actual device/orientation crops in ASC's Preview tool before approval.
+### Header v2: localized benefits and healthy seed data
 
-Both exports are flattened 8-bit sRGB PNGs with no alpha. Apple's
-[creative specifications](https://developer.apple.com/help/app-store-connect/reference/app-information/creative-assets-specifications)
-accept these exact dimensions. Its [asset guidance](https://developer.apple.com/app-store/asset-best-practices/)
-calls for central focal content, readable artwork, localized text and consistent
-branding. This design adds only the brand wordmark; visible app UI is localized.
+The committed `compose-app-store-headers.sh` generates all ten files without a
+simulator, network access or frame downloads. It extracts the existing framed
+phone from `variants/dark/ios/<asc-locale>/01_iphone_home.png`, removing only the
+connected exterior green background. It never edits the captured UI or its
+numbers. These are fictional showcase fixtures: the English hero has a positive
+**$91,358.63** total balance, a green **62%** budget, and **$2,871 left**. German,
+Spanish and French show **63%**, and Ukrainian **59%**, all with positive balances
+and money remaining. A healthy capture already exists in every locale; no
+Maestro/seed change or macmini recapture is needed for these headers. Raw capture
+directories are absent in this checkout, so the committed screenshot variants
+are the reproducible source rather than untracked raw images.
+
+The secondary phone uses the localized, transparent framed analytics capture in
+`packages/landing/public/media/spending-analytics/<app-locale>/dark/`. Both frames
+come from the existing `frame-device.sh` / mobile-ci system. The home screenshot
+already bleeds off its lower edge; v2 retains that real capture boundary and
+fades its lower tail into the universal background instead of inventing UI or a
+missing bottom bezel. The universal hero is 1350 pixels wide; the rear phone is
+2600 pixels tall and tilted 8 degrees. Together they fill the lower canvas.
+
+The art reuses the app icon mark, FixelDisplay-Bold / FixelDisplay-SemiBold,
+`#54EAA6` highlight and screenshot palette `#003B25 → #00140C`. The localized
+headlines reuse PR [#1691](https://github.com/budgie-at/budgie/pull/1691)'s analytics
+caption voice; the wide layout also carries its offline/no-account/no-subscription
+trust message. No ASO metadata or screenshot captions are changed here.
+
+| Locale | Headline |
+| --- | --- |
+| en-US | See where money goes. |
+| de-DE | Verstehe deine Ausgaben. |
+| es-ES | Descubre en qué gastas. |
+| fr-FR | Comprenez vos dépenses. |
+| uk | Знайте, куди йдуть гроші. |
+
+### Safe areas and independent layouts
+
+Apple's [creative specifications](https://developer.apple.com/help/app-store-connect/reference/app-information/creative-assets-specifications)
+accept both exact export sizes. Both outputs are flattened 8-bit sRGB PNGs with
+three RGB channels and no alpha. The wide PNG is composed independently at
+3840×1646, with two headline lines, a compact brand row, one supporting line and
+individually resized/repositioned phones; it is not a crop of the universal PNG.
+
+The rectangles below were measured from the pixel-layer bounds named **Art Safe
+Area** in Apple's official Photoshop templates downloaded on 2026-10-27. Bounds
+use `(left, top, right, bottom)`, with exclusive right/bottom edges:
+
+| Export | Official template | Safe rectangle | Size |
+| --- | --- | --- | --- |
+| Universal / Search Results | [Universal PSD](https://devimages-cdn.apple.com/design/resources/download/app-store/creative_assets-universal_asset_template-static.psd) | `(1921, 660, 3323, 1622)` | 1402×962 |
+| Wide Header | [Header PSD](https://devimages-cdn.apple.com/design/resources/download/app-store/creative_assets-product_page_header_template-static.psd) | `(1097, 493, 2743, 1154)` | 1646×661 |
+
+These are deliberately tighter than a guessed central 16:9 or 21:9 crop. As
+approved for v2, **the headline, healthy balance amount and green budget card are
+the critical content** kept inside these bounds. Device frames, lower account
+rows, the secondary analytics phone, background glow and the universal brand
+lockup extend outside and may be cropped. This preserves large devices without
+shrinking the entire composition into the small universal safe rectangle.
+
+The universal uses a 1310-pixel maximum headline width at `(1960, 1480)`, a dark
+backing for contrast, and the healthy phone at `(1940, 320)`. The wide uses a
+690-pixel maximum headline line width at `(1125, 670)` / `(1125, 800)` and the
+healthy phone at `(1850, 270)`. Inspecting the safe-rectangle crop at 350 pixels
+wide provides a conservative small-format readability check; it is a local design
+check, not a claim about the precise rendered ASC viewport.
+
+Apple's [asset guidance](https://developer.apple.com/app-store/asset-best-practices/)
+asks for localized, short, legible text and focal content within template safe
+areas. Before approval, use [ASC Preview](https://developer.apple.com/help/app-store-connect/manage-app-information/manage-your-app-store-assets)
+for both Product Page and Search Results, iPhone/iPad, orientations and all five
+languages. Confirm the headline and positive budget remain legible, and that
+cropping only removes decorative device tails. This task did not access ASC,
+upload assets or dispatch workflows; live placement crops remain an owner check.
 
 ## Record and encode app previews
 
@@ -237,3 +297,12 @@ short input; it is not a production preview and is not committed. Offline mock
 checks verified ten header reservations/uploads/commits, idempotent re-runs,
 catalog rejection, preview validation and the version override. Live API behavior,
 App Review acceptance and the macmini recording remain unverified.
+
+Header v2 re-ran the six required repository gates, `pnpm build`,
+`pnpm test --concurrency=2`, `pnpm i18n:check`, selector/shard validation, Bash syntax, metadata budgets,
+store preflight and the existing composition/capture self-tests. ImageMagick
+`identify` and PNG IHDR inspection confirmed all ten exact dimensions and 8-bit
+RGB without alpha; regenerating the final set matched all ten SHA-256 hashes.
+All five universal and wide safe-area crops were visually inspected, including
+small-format headline readability and the Ukrainian glyphs. Existing store
+screenshots and their fictional seed values are unchanged.
