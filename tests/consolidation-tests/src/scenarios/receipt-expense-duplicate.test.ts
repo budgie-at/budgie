@@ -83,7 +83,7 @@ layer(TestLayer)('consolidation/receipt-expense-duplicate', it => {
             const receiptMatchService = yield* ReceiptMatchService;
             const transactionReceiptRepository = yield* TransactionReceiptRepository;
 
-            const receipt = yield* receiptMatchService.match(buildReceipt(FINGERPRINT, 'K2310000301/26-010863'));
+            const receipt = yield* receiptMatchService.match(buildReceipt(FINGERPRINT, 'K2310000301/26-010863'), () => Effect.void);
             const bankExpense = yield* importBankExpense(account.id);
 
             expect(receipt.kind).toBe(ReceiptMatchResultKindEnum.CREATED);
@@ -105,8 +105,8 @@ layer(TestLayer)('consolidation/receipt-expense-duplicate', it => {
             const transactionReceiptRepository = yield* TransactionReceiptRepository;
 
             const firstBankExpense = yield* importBankExpense(account.id, 'erste-first-payment', RECEIPT_OCCURRED_AT);
-            const firstReceipt = yield* receiptMatchService.match(buildReceipt('first-receipt', '0001'));
-            const secondReceipt = yield* receiptMatchService.match(buildReceipt('second-receipt', '0002'));
+            const firstReceipt = yield* receiptMatchService.match(buildReceipt('first-receipt', '0001'), () => Effect.void);
+            const secondReceipt = yield* receiptMatchService.match(buildReceipt('second-receipt', '0002'), () => Effect.void);
             const secondBankExpense = yield* importBankExpense(account.id, 'erste-second-payment');
 
             expect(firstReceipt).toEqual({ kind: ReceiptMatchResultKindEnum.MATCHED, transactionId: firstBankExpense.id });

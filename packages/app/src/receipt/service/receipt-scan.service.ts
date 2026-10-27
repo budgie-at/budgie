@@ -3,6 +3,7 @@ import { EmbeddingSuggestionService } from '@budgie/categorization';
 import { CategoryRepository, CurrencyEnum, LanguageEnum, SettingsRepository, convertFromMicroUnits } from '@budgie/contracts';
 import { parseReceipt } from '@budgie/import-export';
 import { ReceiptMatchService } from '@budgie/ledger';
+import { RuleEngineService } from '@budgie/rules';
 import { SyncFileReader } from '@budgie/sync';
 import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
@@ -38,6 +39,7 @@ export class ReceiptScanService extends Context.Service<ReceiptScanService>()('@
         const embeddingSuggestionService = yield* EmbeddingSuggestionService;
         const receiptMatchService = yield* ReceiptMatchService;
         const receiptMerchantLlmService = yield* ReceiptMerchantLlmService;
+        const ruleEngineService = yield* RuleEngineService;
         const settingsRepository = yield* SettingsRepository;
         const syncFileReader = yield* SyncFileReader;
         const nativeModule = ReceiptScannerModule;
@@ -129,13 +131,9 @@ export class ReceiptScanService extends Context.Service<ReceiptScanService>()('@
             const now = yield* Clock.currentTimeMillis;
 
             return yield* receiptMatchService
-                .match({
-                    ...draft,
-                    occurredAt: draft.occurredAt ?? new Date(now),
-                    title,
-                    description,
-                    categoryId
-                })
+                .match({ ...draft, occurredAt: draft.occurredAt ?? new Date(now), title, description, categoryId }, transactionId =>
+                    ruleEngineService.applyRulesToTransactionIds([transactionId])
+                )
                 .pipe(
                     Effect.map((result): ReceiptScanResultInterface => ({
                         ...result,
@@ -191,6 +189,7 @@ export class ReceiptScanService extends Context.Service<ReceiptScanService>()('@
             EmbeddingSuggestionService.layer.pipe(Layer.provide(LocalEmbeddingService.invokerLayer)),
             ReceiptMatchService.layer,
             ReceiptMerchantLlmService.layer.pipe(Layer.provide(ChatService.invokerLayer)),
+            RuleEngineService.layer,
             SettingsRepository.layer
         ])
     );

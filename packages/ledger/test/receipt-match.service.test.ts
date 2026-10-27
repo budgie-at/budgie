@@ -45,7 +45,8 @@ const buildReceipt = (overrides: Partial<ReceiptMatchInputInterface> = {}): Rece
     ...overrides
 });
 
-const match = (input: ReceiptMatchInputInterface) => Effect.flatMap(ReceiptMatchService, service => service.match(input));
+const match = (input: ReceiptMatchInputInterface) =>
+    Effect.flatMap(ReceiptMatchService, service => service.match(input, () => Effect.void));
 
 const seedExpense = Effect.fnUntraced(function* (accountId: number, title: string) {
     const testSeedService = yield* seed;
