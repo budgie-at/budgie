@@ -9,7 +9,12 @@ import * as Schema from 'effect/Schema';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_TOO_MANY_REQUESTS, HTTP_STATUS_UNAUTHORIZED } from '../constant/http-status.constant';
+import {
+    HTTP_STATUS_BAD_REQUEST,
+    HTTP_STATUS_FORBIDDEN,
+    HTTP_STATUS_TOO_MANY_REQUESTS,
+    HTTP_STATUS_UNAUTHORIZED
+} from '../constant/http-status.constant';
 import { SYNC_RETRY_STATUS_CODES } from '../constant/sync-retry-status-codes.constant';
 import { SYNC_TIMEOUT_MS } from '../constant/sync-timeout-ms.constant';
 import { SyncInvalidResponseError } from '../error/sync-invalid-response.error';
@@ -21,8 +26,6 @@ import type { SyncProviderEnum } from '../enum/sync-provider.enum';
 import type * as Headers from 'effect/http/Headers';
 import type * as HttpClientError from 'effect/http/HttpClientError';
 import type { HttpMethod } from 'effect/http/HttpMethod';
-
-const HTTP_STATUS_FORBIDDEN = 403;
 
 export abstract class BaseSyncProviderClient {
     private static readonly RETRY_LIMIT = 3;

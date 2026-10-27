@@ -1,9 +1,9 @@
 /* Headlines: \n breaks the line, *text* is set in the highlight colour. See README.md. */
 
-"01-home" = "Your money.\n*Offline.*";
-"05-add-expense" = "Logged in\n*3 seconds.*";
-"03-analytics" = "See where\n*it goes.*";
-"04-budget" = "Budgets that\n*warn early.*";
-"09-inbox" = "Sort a month\n*in a minute.*";
-"06-account" = "Every currency,\n*one total.*";
-"07-settings" = "Private\n*by design.*";
+"01-home" = "Your money.\n*Your control.*";
+"05-add-expense" = "Less typing.\n*More living.*";
+"03-analytics" = "See where\n*money goes.*";
+"04-budget" = "Spend within\n*your limits.*";
+"09-inbox" = "Clear your\n*expense inbox.*";
+"06-account" = "Your accounts.\n*One total.*";
+"07-settings" = "Your finances.\n*Kept private.*";

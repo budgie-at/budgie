@@ -16,6 +16,7 @@ import { LIQUID_ACCOUNT_TYPES } from '../../account/constant/liquid-account-type
 import { AccountDebtTypeEnum } from '../../account/enum/account-debt-type.enum';
 import { AccountTypeEnum } from '../../account/enum/account-type.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
+import { BankIntegrationEntityTable } from '../../bank-integration/table/bank-integration-entity.table';
 import { DebtEventDirectionEnum } from '../../debt-event/enum/debt-event-direction.enum';
 import { DebtEventEntityTable } from '../../debt-event/table/debt-event-entity.table';
 import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.table';
@@ -231,11 +232,19 @@ export class AccountBalanceRepository extends Context.Service<AccountBalanceRepo
                         debtProgressPercentage: debtProgressSql.percentage,
                         debtTotalAmount: debtProgressSql.totalAmount,
                         hasLedgerHistory: sql<number>`EXISTS (SELECT 1 FROM ${TransactionEntryEntityTable} WHERE ${TransactionEntryEntityTable.accountId} = ${AccountEntityTable.id} AND ${TransactionEntryEntityTable.deletedAt} IS NULL)`,
-                        instrument: InstrumentEntityTable
+                        instrument: InstrumentEntityTable,
+                        integrationLabel: BankIntegrationEntityTable.label
                     })
                     .from(AccountEntityTable)
                     .innerJoin(InstrumentEntityTable, eq(InstrumentEntityTable.id, AccountEntityTable.instrumentId))
                     .leftJoin(SyncEntityTable, and(eq(SyncEntityTable.accountId, AccountEntityTable.id), isNull(SyncEntityTable.deletedAt)))
+                    .leftJoin(
+                        BankIntegrationEntityTable,
+                        and(
+                            eq(BankIntegrationEntityTable.id, AccountEntityTable.integrationId),
+                            isNull(BankIntegrationEntityTable.deletedAt)
+                        )
+                    )
                     .where(isNull(AccountEntityTable.deletedAt))
             );
         },

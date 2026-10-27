@@ -169,7 +169,7 @@ export class TestSeedService {
 
             const rows = yield* this.database
                 .insert(BankIntegrationEntityTable)
-                .values({ provider, token } satisfies BankIntegrationCreateEntityInterface)
+                .values({ provider, token, label: input.label ?? null } satisfies BankIntegrationCreateEntityInterface)
                 .returning();
 
             return TestSeedService.requireInserted(rows, 'bank_integrations');

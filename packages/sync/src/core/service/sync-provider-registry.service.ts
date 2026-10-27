@@ -1,4 +1,4 @@
-import { ExternalSourceEnum, SyncRepository } from '@budgie/contracts';
+import { BankIntegrationRepository, ExternalSourceEnum, SyncRepository } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -15,6 +15,7 @@ export class SyncProviderRegistryService extends Context.Service<SyncProviderReg
     {
         make: Effect.gen(function* () {
             const syncRepository = yield* SyncRepository;
+            const bankIntegrationRepository = yield* BankIntegrationRepository;
             const monobankSyncService = yield* MonobankSyncService;
             const binanceSyncService = yield* BinanceSyncService;
             const ersteSyncService = yield* ErsteSyncService;
@@ -61,6 +62,15 @@ export class SyncProviderRegistryService extends Context.Service<SyncProviderReg
                     if (isDefined(service)) {
                         yield* service.updateAccountToken(accountId, token);
                     }
+                }),
+                updateIntegrationToken: Effect.fn('SyncProviderRegistryService.updateIntegrationToken')(function* (
+                    integrationId: number,
+                    token: string
+                ) {
+                    const integration = yield* bankIntegrationRepository.findById(integrationId);
+                    if (integration?.provider === ExternalSourceEnum.MONOBANK) {
+                        yield* monobankSyncService.updateIntegrationToken(integrationId, token);
+                    }
                 })
             };
         })
@@ -69,6 +79,7 @@ export class SyncProviderRegistryService extends Context.Service<SyncProviderReg
     static readonly layer = Layer.effect(SyncProviderRegistryService, SyncProviderRegistryService.make).pipe(
         Layer.provide([
             SyncRepository.layer,
+            BankIntegrationRepository.layer,
             MonobankSyncService.layer,
             BinanceSyncService.layer,
             ErsteSyncService.layer,

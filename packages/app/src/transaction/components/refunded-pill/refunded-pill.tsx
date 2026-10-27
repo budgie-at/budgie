@@ -4,6 +4,7 @@ import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { MetaPill } from '../../../@generic/component/meta-pill/meta-pill';
 import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
@@ -11,7 +12,6 @@ import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { refundsTotalAtom } from '../../constant/refunds-total-atom.constant';
 import { RefundedSummaryKindEnum } from '../../enum/refunded-summary-kind.enum';
 import { computeRefundedSummary } from '../../utils/compute-refunded-summary.util';
-import { TransactionMetaPill } from '../transaction-meta-pill/transaction-meta-pill';
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
@@ -42,5 +42,5 @@ export const RefundedPill = ({ transaction, onPress, testID }: Props) => {
             : null;
     const label = isNotEmptyString(formattedRefundedAmount) ? t`Refunded ${formattedRefundedAmount}` : t`Refunded`;
 
-    return <TransactionMetaPill label={label} icon={UserIconNameEnum.RotateCcw} onPress={onPress} testID={testID} />;
+    return <MetaPill label={label} icon={UserIconNameEnum.RotateCcw} onPress={onPress} testID={testID} />;
 };

@@ -1,12 +1,19 @@
 import { ComponentProps } from 'react';
-import { Switch } from 'react-native';
+import { Switch, View } from 'react-native';
 
-export const ThemedSwitch = (props: Omit<ComponentProps<typeof Switch>, 'thumbColor' | 'ios_backgroundColor' | 'trackColor'>) => (
-    <Switch
-        {...props}
-        thumbColorClassName="accent-primary"
-        trackColorOnClassName="accent-secondary-foreground"
-        trackColorOffClassName="accent-secondary-corner"
-        ios_backgroundColorClassName="accent-secondary-corner"
-    />
+import { cn } from '../../utils/cn.util';
+
+export const ThemedSwitch = ({
+    className,
+    ...props
+}: Omit<ComponentProps<typeof Switch>, 'thumbColor' | 'ios_backgroundColor' | 'trackColor'>) => (
+    <View className={cn('ios:h-[28px] ios:justify-start', className)}>
+        <Switch
+            {...props}
+            thumbColorClassName="accent-primary"
+            trackColorOnClassName="accent-secondary-foreground"
+            trackColorOffClassName="accent-secondary-corner"
+            ios_backgroundColorClassName="accent-secondary-corner"
+        />
+    </View>
 );

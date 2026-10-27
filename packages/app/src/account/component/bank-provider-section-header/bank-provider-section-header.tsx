@@ -10,6 +10,7 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { Icon } from '../../../@generic/component/icon/icon';
 import { SyncImportProgress } from '../../../sync/component/sync-import-progress/sync-import-progress';
 import { BANK_PROVIDER_TITLE } from '../../constant/bank-provider-title.constant';
+import { getBankIntegrationTitle } from '../../utils/get-bank-integration-title.util';
 import { AccountSectionHeaderFrame } from '../account-section-header-frame/account-section-header-frame';
 
 import { BankProviderSectionHeaderSelector } from './bank-provider-section-header.selector';
@@ -19,15 +20,18 @@ import type { InitialSyncProgressInterface } from '@budgie/sync';
 interface Props {
     readonly provider: ExternalSourceEnum;
     readonly integrationId: number;
+    readonly label: string | null;
+    readonly groupNumber: number | null;
     readonly total: number;
     readonly importProgress: InitialSyncProgressInterface | null;
 }
 
-export const BankProviderSectionHeader = ({ provider, integrationId, total, importProgress }: Props) => {
+export const BankProviderSectionHeader = ({ provider, integrationId, label, groupNumber, total, importProgress }: Props) => {
     const { t } = useLingui();
 
     const titleDescriptor = BANK_PROVIDER_TITLE[provider];
-    const title = isDefined(titleDescriptor) ? t(titleDescriptor) : provider;
+    const providerTitle = isDefined(titleDescriptor) ? t(titleDescriptor) : provider;
+    const title = getBankIntegrationTitle(providerTitle, label, groupNumber);
 
     const footer = isDefined(importProgress) ? <SyncImportProgress progress={importProgress} /> : null;
 

@@ -1,0 +1,72 @@
+# Pushes the App Store listing (metadata, age rating, content rights, price, review contact) without building a binary.
+name: Push App Store metadata
+
+on:
+    workflow_dispatch:
+        inputs:
+            ios_version:
+                description: 'App Store version to edit (empty reads packages/app/package.json; set it to the uploaded build version when OTA bumps moved package.json past it)'
+                type: string
+                default: ''
+
+permissions:
+    contents: read
+
+concurrency:
+    group: budgie-store-metadata
+    cancel-in-progress: false
+
+jobs:
+    ios-metadata:
+        name: iOS metadata
+        runs-on: [self-hosted, trf-linux-amd64-2x4]
+        timeout-minutes: 20
+        env:
+            LANG: C.UTF-8
+            LC_ALL: C.UTF-8
+            FASTLANE_SKIP_UPDATE_CHECK: '1'
+            FASTLANE_HIDE_CHANGELOG: '1'
+            FASTLANE_OPT_OUT_USAGE: '1'
+            APP_STORE_VERSION: ${{ inputs.ios_version }}
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+              with:
+                  persist-credentials: false
+
+            - name: Install fastlane
+              timeout-minutes: 8
+              run: |
+                  set -euo pipefail
+                  if ! command -v ruby || ! command -v make; then
+                    timeout 90 sudo apt-get -o Acquire::Retries=3 update -qq
+                    timeout 180 sudo apt-get install -y --no-install-recommends ruby ruby-dev build-essential
+                  fi
+                  gem install --install-dir "$RUNNER_TEMP/gems" --no-document fastlane -v 2.241.2
+                  echo "GEM_HOME=$RUNNER_TEMP/gems" >> "$GITHUB_ENV"
+                  echo "$RUNNER_TEMP/gems/bin" >> "$GITHUB_PATH"
+
+            - name: Write ASC API key
+              env:
+                  ASC_API_KEY: ${{ secrets.EXPO_IOS_ASC_API_KEY }}
+              run: |
+                  set -euo pipefail
+                  key_path="$RUNNER_TEMP/store-metadata/asc_api_key.p8"
+                  mkdir -p "$(dirname "$key_path")"
+                  printf '%s' "$ASC_API_KEY" > "$key_path"
+                  chmod 600 "$key_path"
+                  echo "ASC_API_KEY_PATH=$key_path" >> "$GITHUB_ENV"
+
+            - name: Push iOS metadata
+              working-directory: packages/app
+              env:
+                  ASC_KEY_ID: ${{ secrets.EXPO_IOS_ASC_KEY_ID }}
+                  ASC_ISSUER_ID: ${{ secrets.EXPO_IOS_ASC_ISSUER_ID }}
+                  ASC_REVIEW_CONTACT_PHONE: ${{ secrets.ASC_REVIEW_CONTACT_PHONE }}
+              run: |
+                  fastlane store_preflight
+                  fastlane ios ios_metadata
+
+            - name: Remove ASC key
+              if: always()
+              run: rm -rf "$RUNNER_TEMP/store-metadata"

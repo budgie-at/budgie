@@ -11,7 +11,8 @@ export const BankIntegrationEntityTable = sqliteTable(
         provider: text('provider', { enum: convertEnumToDrizzleEnum(ExternalSourceEnum) })
             .$type<ExternalSourceEnum>()
             .notNull(),
-        token: text('token').notNull()
+        token: text('token').notNull(),
+        label: text('label')
     }),
     table => [
         uniqueIndex('bank_integrations_provider_token_unq')

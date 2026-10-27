@@ -1,33 +1,37 @@
-Budgie is an expense tracker that works the way your money actually moves: offline, instantly, and without asking anyone's permission. Open it on the platform, in the queue, on a plane — every expense lands in under five seconds, and nothing waits for a signal. No account to create, no bank credentials to hand over, no subscription clock ticking in the background.
+Your money is personal. Keep it that way.
 
-WORKS WITHOUT A CONNECTION
-Every transaction lives on your phone. Add expenses, browse your history, and review your analytics with no internet connection at all — nothing has to reach a server first.
+Budgie helps you track expenses, stay within your budget and see your whole financial picture, without creating an account. Your spending history lives on your device, ready when you need it, even without a connection.
 
-EVERY EXPENSE IN SECONDS
-Say an expense out loud or type it, and Budgie fills in the category on its own, right there on your device. Split a purchase across categories in the same flow.
+SPEND WITH A CLEARER PICTURE
+• Log expenses, income and transfers across cash, cards and accounts.
+• Make categories and tags your own, and split purchases across categories.
+• See where your money goes with spending charts, category breakdowns and date filters.
 
-SEE WHERE THE MONEY GOES
-Spending analytics break down every category and tag, so a pattern shows up before it becomes a problem. Track your net worth across every account, card, and currency in one place.
+PLAN WHAT COMES NEXT
+• Set a monthly budget with category limits and see what is left.
+• Enable budget alerts as you approach or reach your limits.
+• Estimate how long your money could last with runway, based on your transaction history.
+• See detected recurring charges and subscriptions in a calendar.
 
-BUDGETS AND RUNWAY
-Set a budget that matches your payday, not the calendar month, and watch your runway update as you spend, so you always know how far your money will stretch.
+LESS TYPING, MORE CONTROL
+• Use suggestions from past transactions to log familiar expenses.
+• Apply rules to organize transactions and review uncategorized spending together.
+• Enable on-device AI for category and tag suggestions, plus voice entry. Speech recognition and AI processing run locally after the models download.
 
-ACCOUNTS, CARDS AND CRYPTO
-Track cash, cards, and crypto holdings side by side in whatever currency they're actually in — Budgie converts on the fly. Where your bank supports it, import statements directly instead of typing every line by hand.
+ONE VIEW, MANY CURRENCIES
+• Track cash, bank accounts, crypto, deposits and debts.
+• View balances and net worth in your base currency using exchange rates.
+• Keep budget and net worth summaries close with Home Screen widgets.
 
-DEBTS AND SHARED MONEY
-Keep a running ledger of who owes who, log repayments, and see the real remaining balance at a glance.
+BRING YOUR HISTORY WITH YOU
+• Import transactions from CSV files and supported bank statements, including Erste PDFs and PrivatBank exports.
+• Connect Monobank or Binance with your own API credentials if you choose. Manual tracking needs no bank connection.
+• Export transactions to CSV and create database backups you control.
 
-LOCKED DOWN
-Unlock with a PIN, your face, or your fingerprint, and hide your balances from the app switcher and screenshots. Back up your data on your own terms, protected the whole time.
+PRIVATE BY DESIGN
+Your ledger stays on your device. Enable a PIN to encrypt the database with SQLCipher, add biometric unlock and turn on screenshot protection. Backups retain the database encryption when a PIN is set.
 
-EVERYTHING ELSE YOU'D WANT
-• Multi-currency accounts and automatic conversion
-• Recurring payments calendar so nothing sneaks up on you
-• Import bank statements as CSV or PDF, where supported
-• Tags for spending you track your own way
-• Voice entry when typing isn't convenient
-• PIN, biometric lock, and screenshot protection
-• No account, no bank login, no subscription
+Everyday tracking, budgets and analytics work offline. Bank sync, exchange-rate updates and AI model downloads need internet access. AI is optional and requires device storage for its models.
 
-Learn more at budgie.at.
+Free to use. No Budgie account. No subscription.
+Start with your next expense.

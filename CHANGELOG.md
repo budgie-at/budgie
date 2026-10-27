@@ -3,6 +3,40 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.119.1](https://github.com/budgie-at/budgie/compare/v6.119.0...v6.119.1) (2026-10-27)
+
+### Bug Fixes
+
+* **app:** let the metadata push target the uploaded App Store version ([0e10272](https://github.com/budgie-at/budgie/commit/0e10272337c98ae002991c32ea9a94e8ff61c3f4))
+
+
+# [6.119.0](https://github.com/budgie-at/budgie/compare/v6.118.0...v6.119.0) (2026-10-27)
+
+### Bug Fixes
+
+* **app:** keep the whole recorded preview flow up to Apple's 30 second limit ([fbae38f](https://github.com/budgie-at/budgie/commit/fbae38f147fa5e005d03bcb7a329f3a1766f4f77))
+* **app:** lay out the universal header without covering the device ([a0db3ee](https://github.com/budgie-at/budgie/commit/a0db3ee0de042d1d4db3e45743d7a57583ca2acc))
+
+### Features
+
+* **app:** add App Store header asset and missing marketing surfaces ([3250073](https://github.com/budgie-at/budgie/commit/3250073c5759c186510593faf7ed3ced9600a9d0))
+* **app:** header asset v2 with localized headline and healthy hero ([71d3bdc](https://github.com/budgie-at/budgie/commit/71d3bdc60d3d4481dd32794b4c00acaa4c5be231))
+
+
+# [6.118.0](https://github.com/budgie-at/budgie/compare/v6.117.2...v6.118.0) (2026-10-27)
+
+### Features
+
+* **app:** ASO store listing copy and screenshot captions for all locales ([d4c676c](https://github.com/budgie-at/budgie/commit/d4c676c9c153ec888861d3f19c8db293f8445925))
+
+
+## [6.117.2](https://github.com/budgie-at/budgie/compare/v6.117.1...v6.117.2) (2026-10-27)
+
+### Bug Fixes
+
+* **app:** fail the metadata lane when the App Review phone is missing ([604ee1d](https://github.com/budgie-at/budgie/commit/604ee1d30cf8970d523e4d59c0a20e4f306a2000))
+
+
 ## [6.117.1](https://github.com/budgie-at/budgie/compare/v6.117.0...v6.117.1) (2026-10-26)
 
 ### Bug Fixes

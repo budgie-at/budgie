@@ -1,9 +1,9 @@
 /* Second line under each headline, at 70% of its size. See README.md. */
 
-"01-home" = "Ohne Konto, Bank-Login und Abo.";
-"05-add-expense" = "Die Kategorie setzt sich selbst.";
-"03-analytics" = "Jede Kategorie, jeder Monat.";
-"04-budget" = "Hinweise bei 80 % und 100 %.";
-"09-inbox" = "Vorschläge mit einem Tipp übernehmen.";
+"01-home" = "Ausgaben im Blick, auch offline.";
+"05-add-expense" = "Vorschläge für bekannte Ausgaben.";
+"03-analytics" = "Erkenne Muster je Kategorie.";
+"04-budget" = "Sieh, wie viel dir noch bleibt.";
+"09-inbox" = "Kategorievorschläge gesammelt prüfen.";
 "06-account" = "Bargeld, Karten, Krypto und Schulden.";
-"07-settings" = "Deine Daten bleiben auf deinem Gerät.";
+"07-settings" = "Lokale Daten. PIN-Schutz.";

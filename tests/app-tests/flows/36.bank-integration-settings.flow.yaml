@@ -136,7 +136,7 @@ appId: ${APP_ID}
           id: 'BankIntegration.Page'
       timeout: 10000
 
-# 11. Add-deposit row sits after the account rows; live Monobank footer offers Add accounts, not Import file
+# 11. Add-deposit row sits after the account rows; live Monobank offers no Import file
 - scrollUntilVisible:
       element:
           id: 'BankIntegration.AddDepositButton'
@@ -145,12 +145,10 @@ appId: ${APP_ID}
       id: 'BankIntegration.AccountRow.15'
 - assertVisible:
       id: 'BankIntegration.AddDepositButton'
-- assertVisible:
-      id: 'BankIntegration.AddAccountsButton'
 - assertNotVisible:
       id: 'BankIntegration.ImportFileButton'
 
-# 12. Privatbank is a file-import integration: toggle shown per account, footer offers Import file, not Add accounts
+# 12. Privatbank is a file-import integration: toggle shown per account, footer offers Import file
 - runFlow:
       file: subflows/navigation/open-deep-link.flow.yaml
       env:
@@ -171,8 +169,6 @@ appId: ${APP_ID}
       checked: false
 - assertVisible:
       id: 'BankIntegration.ImportFileButton'
-- assertNotVisible:
-      id: 'BankIntegration.AddAccountsButton'
 
 # 13. Add deposit is offered for the file-import integration too
 - scrollUntilVisible:

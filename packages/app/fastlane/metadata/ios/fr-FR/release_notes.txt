@@ -1,1 +1,5 @@
-Cette mise à jour fiabilise la synchronisation des transactions crypto Binance après une interruption, et corrige la réparation des virements entre cartes propres après la restauration d'une carte archivée. De nombreuses corrections de traduction et de stabilité complètent cette version.
+Bienvenue sur Budgie, désormais sur l’App Store !
+
+Notez vos dépenses hors ligne, préparez vos budgets mensuels et comprenez où va votre argent. Regroupez vos comptes et devises, consultez les paiements récurrents et essayez l’IA en option sur votre appareil pour le classement et la saisie vocale.
+
+Sans inscription. Sans abonnement. Votre argent, vos choix.

@@ -1,1 +1,1 @@
-argent,finances,épargne,compte,facture,abonnement,dette,crypto,devise,revenus,portefeuille,solde
+argent,gestion,comptes,revenus,épargne,abonnements,devises,patrimoine,portefeuille,crypto,csv
