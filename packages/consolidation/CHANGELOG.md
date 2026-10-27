@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.121.0](https://github.com/budgie-at/budgie/compare/v6.120.0...v6.121.0) (2026-10-27)
+
+### Features
+
+* **consolidation:** let bank rows replace Apple Pay captures ([e7e2d24](https://github.com/budgie-at/budgie/commit/e7e2d240129e33f2fddf8937b20d9159315b05d7))
+
+
 # [6.120.0](https://github.com/budgie-at/budgie/compare/v6.119.1...v6.120.0) (2026-10-27)
 
 **Note:** Version bump only for package @budgie/consolidation

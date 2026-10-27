@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.121.0](https://github.com/budgie-at/budgie/compare/v6.120.0...v6.121.0) (2026-10-27)
+
+### Bug Fixes
+
+* **app:** adapt Wallet shortcuts to main ([308d906](https://github.com/budgie-at/budgie/commit/308d9066308fadec72bc29e6f11e31928c0b4661))
+* import blog utils from the renamed utils folder ([2b51d65](https://github.com/budgie-at/budgie/commit/2b51d6554b63504278affec83e73bf1aa06ad555))
+
+### Features
+
+* add Apple Pay Shortcuts setup guide ([c3c34a1](https://github.com/budgie-at/budgie/commit/c3c34a11f2616d97e941fffefe39815d6b48af18))
+* **app:** pick the Apple Pay capture account automatically ([d5d26b4](https://github.com/budgie-at/budgie/commit/d5d26b4533d1083b25ee5c0123aa321d14594115))
+* **consolidation:** let bank rows replace Apple Pay captures ([e7e2d24](https://github.com/budgie-at/budgie/commit/e7e2d240129e33f2fddf8937b20d9159315b05d7))
+
+
 ## [6.115.9](https://github.com/budgie-at/budgie/compare/v6.115.8...v6.115.9) (2026-10-25)
 
 **Note:** Version bump only for package @budgie-at/landing
