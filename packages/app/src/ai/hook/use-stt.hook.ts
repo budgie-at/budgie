@@ -2,8 +2,11 @@ import { filterTranscriptionTokens } from '@budgie/ai';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
+import * as Fiber from 'effect/Fiber';
 import * as Atom from 'effect/reactivity/Atom';
 import { useRef, useState } from 'react';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
@@ -46,36 +49,44 @@ export const useStt = (): UseSttReturn => {
 
     const [status, setStatus] = useState<SttStatus>('idle');
     const [baseTranscription, setBaseTranscription] = useState('');
-    const streamGenerationRef = useRef(0);
+    const startFiberRef = useRef<Fiber.Fiber<unknown, unknown> | null>(null);
     const { acquireSttResidency, releaseSttResidency } = useSttResidency();
 
     const startStream = () =>
         Effect.gen(function* () {
-            streamGenerationRef.current += 1;
-            const generation = streamGenerationRef.current;
+            const previousStartFiber = startFiberRef.current;
+
+            if (isDefined(previousStartFiber)) {
+                yield* Fiber.interrupt(previousStartFiber);
+            }
+
+            startFiberRef.current = yield* Effect.fiber;
             const language = isSpeechToTextLanguage(locale.languageCode) ? locale.languageCode : null;
 
-            if (!(yield* acquireSttResidency()) || generation !== streamGenerationRef.current) {
+            if (!(yield* acquireSttResidency())) {
                 return false;
             }
 
             yield* Effect.ignore(Effect.flatMap(SttService, sttService => sttService.stopStream(false)));
             setBaseTranscription(appAtomRegistry.get(sttSnapshotAtom).committedTranscription);
             const isStreaming = yield* Effect.isSuccess(Effect.flatMap(SttService, sttService => sttService.streamStart(language)));
-            const isCurrentGeneration = generation === streamGenerationRef.current;
 
-            if (!isStreaming && isCurrentGeneration) {
+            if (!isStreaming) {
                 releaseSttResidency();
-            }
 
-            if (!isStreaming || !isCurrentGeneration) {
                 return false;
             }
 
             setStatus('streaming');
 
             return true;
-        });
+        }).pipe(
+            Effect.ensuring(
+                Effect.sync(() => {
+                    startFiberRef.current = null;
+                })
+            )
+        );
 
     const insertAudio = (samples: Float32Array) => {
         if (status !== 'streaming') {
@@ -93,8 +104,6 @@ export const useStt = (): UseSttReturn => {
 
     const stopStream = () =>
         Effect.suspend(() => {
-            const generation = streamGenerationRef.current;
-
             setStatus('processing');
 
             return Effect.flatMap(SttService, sttService => sttService.stopStream(true)).pipe(
@@ -103,16 +112,17 @@ export const useStt = (): UseSttReturn => {
                 Effect.ensuring(
                     Effect.sync(() => {
                         releaseSttResidency();
-                        if (generation === streamGenerationRef.current) {
-                            setStatus('idle');
-                        }
+                        setStatus(currentStatus => (currentStatus === 'processing' ? 'idle' : currentStatus));
                     })
                 )
             );
         });
 
     const cancelStream = () => {
-        streamGenerationRef.current += 1;
+        if (isDefined(startFiberRef.current)) {
+            appRuntime.runFork(Fiber.interrupt(startFiberRef.current));
+        }
+
         setStatus('idle');
         appRuntime.runFork(Effect.ignore(Effect.flatMap(SttService, sttService => sttService.stopStream(false))));
         releaseSttResidency();
