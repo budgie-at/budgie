@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.118.0](https://github.com/budgie-at/budgie/compare/v6.117.2...v6.118.0) (2026-10-27)
+
+### Features
+
+* **app:** ASO store listing copy and screenshot captions for all locales ([d4c676c](https://github.com/budgie-at/budgie/commit/d4c676c9c153ec888861d3f19c8db293f8445925))
+
+
 ## [6.117.2](https://github.com/budgie-at/budgie/compare/v6.117.1...v6.117.2) (2026-10-27)
 
 ### Bug Fixes
