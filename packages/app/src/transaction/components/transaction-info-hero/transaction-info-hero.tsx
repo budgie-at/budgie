@@ -14,6 +14,7 @@ import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
 import { getTransactionDisplayTitle } from '../../utils/get-transaction-display-title.util';
 import { getTransactionIcon } from '../../utils/get-transaction-icon.util';
 import { getTransactionType } from '../../utils/get-transaction-type.util';
+import { ReceiptPill } from '../receipt-pill/receipt-pill';
 import { RefundedPill } from '../refunded-pill/refunded-pill';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
 import { TransactionMetaPill } from '../transaction-meta-pill/transaction-meta-pill';
@@ -71,7 +72,9 @@ export const TransactionInfoHero = ({ transaction, matchingRuleIds, onOpenRefund
     const secondaryAmount = isDefined(secondaryEntry)
         ? formatDigits(convertFromMicroUnits(secondaryEntry.amount), secondaryEntry.account.instrument.symbol)
         : null;
-    const showMetaPills = transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND;
+    const showRefundedPill = transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND;
+    const hasReceipt = isDefined(transaction.receipt);
+    const hasPills = showRefundedPill || hasReceipt;
 
     return (
         <View className="items-center gap-y-xl py-4xl">
@@ -103,14 +106,17 @@ export const TransactionInfoHero = ({ transaction, matchingRuleIds, onOpenRefund
                 </Text>
             ) : null}
 
-            {showMetaPills ? (
+            {hasPills ? (
                 <View className="flex-row flex-wrap justify-center gap-xs">
-                    <RefundedPill
-                        key={`${transaction.id}-${transaction.consolidationType}`}
-                        transaction={transaction}
-                        onPress={onOpenRefundSources}
-                        testID={TransactionInfoPageSelector.RefundedPill}
-                    />
+                    {showRefundedPill ? (
+                        <RefundedPill
+                            key={`${transaction.id}-${transaction.consolidationType}`}
+                            transaction={transaction}
+                            onPress={onOpenRefundSources}
+                            testID={TransactionInfoPageSelector.RefundedPill}
+                        />
+                    ) : null}
+                    {hasReceipt ? <ReceiptPill testID={TransactionInfoPageSelector.ReceiptPill} /> : null}
                 </View>
             ) : null}
 

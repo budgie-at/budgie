@@ -37,6 +37,7 @@ import { AuthGuard } from '../auth/provider/auth.guard';
 import { AuthProvider } from '../auth/provider/auth.provider';
 import { I18nProvider } from '../i18n/provider/i18n.provider';
 import { HistoricalMarketDataDrainerService } from '../market-data/service/historical-market-data-drainer.service';
+import { ReceiptLaunchHandler } from '../receipt/components/receipt-launch-handler/receipt-launch-handler';
 import { AppDataSyncService } from '../sync/service/app-data-sync.service';
 import { ThemeProvider } from '../theme/provider/theme.provider';
 
@@ -62,6 +63,8 @@ const STACKED_FILTER_OPTIONS: NativeStackNavigationOptions = {
 const PIN_OPTIONS: NativeStackNavigationOptions = { ...MODAL_OPTIONS, gestureEnabled: false };
 
 const LOCK_SCREEN_OPTIONS: NativeStackNavigationOptions = { presentation: 'fullScreenModal', animation: 'none' };
+
+const SCAN_RECEIPT_OPTIONS: NativeStackNavigationOptions = { presentation: 'transparentModal', animation: 'none', headerShown: false };
 
 const SELECTOR_OPTIONS = formSheetOptions([DETENT_40, DETENT_70], 0);
 
@@ -159,6 +162,10 @@ export const RootLayoutContent = () => {
                                                                     <Stack.Screen name="(main)/transactions/[id]/income" />
                                                                     <Stack.Screen name="(main)/transactions/[id]/transfer" />
                                                                     <Stack.Screen name="(main)/analytics/transactions" />
+                                                                    <Stack.Screen
+                                                                        name="(main)/scan-receipt"
+                                                                        options={SCAN_RECEIPT_OPTIONS}
+                                                                    />
                                                                     <Stack.Screen name="category-selector" options={SELECTOR_OPTIONS} />
                                                                     <Stack.Screen name="account-selector" options={SELECTOR_OPTIONS} />
                                                                     <Stack.Screen name="currency-selector" options={SELECTOR_OPTIONS} />
@@ -245,6 +252,7 @@ export const RootLayoutContent = () => {
                                                             </VoiceInputProvider>
                                                         </ModalProvider>
                                                         <AppToastHost />
+                                                        <ReceiptLaunchHandler />
                                                     </AiProvider>
                                                 </CreateActionProvider>
                                             </AuthGuard>

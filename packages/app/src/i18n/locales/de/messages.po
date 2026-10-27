@@ -125,6 +125,10 @@ msgstr "{count, plural, one {Diese Kategorie hat # Transaktion. Wählen Sie eine
 msgid "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
 msgstr "{count, plural, one {Dieser Tag hat # Transaktion. Wählen Sie einen anderen Tag aus, dem sie neu zugewiesen wird.} other {Dieser Tag hat # Transaktionen. Wählen Sie einen anderen Tag aus, dem sie neu zugewiesen werden.}}"
 
+#: src/receipt/hook/use-receipt-scan.hook.ts
+msgid "{createdCount, plural, one {# added} other {# added}}"
+msgstr "{createdCount, plural, one {# hinzugefügt} other {# hinzugefügt}}"
+
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
 msgid "{days, plural, one {In # day} other {In # days}}"
 msgstr "{days, plural, one {In # Tag} other {In # Tagen}}"
@@ -213,6 +217,14 @@ msgstr "{loadedDays}/{totalDays} Tage"
 #: src/app/transaction-type-filter.tsx
 msgid "{localSelectedCount, plural, =0 {Show all types} one {Show # type} other {Show # types}}"
 msgstr "{localSelectedCount, plural, =0 {Alle Typen anzeigen} one {# Typ anzeigen} other {# Typen anzeigen}}"
+
+#: src/receipt/hook/use-receipt-scan.hook.ts
+msgid "{matchedCount, plural, one {# matched} other {# matched}}"
+msgstr "{matchedCount, plural, one {# zugeordnet} other {# zugeordnet}}"
+
+#: src/receipt/hook/use-receipt-scan.hook.ts
+msgid "{matchedLabel} · {addedLabel}"
+msgstr "{matchedLabel} · {addedLabel}"
 
 #: src/rule/components/matching-rules-pill/matching-rules-pill.tsx
 #: src/rule/components/rules-list-page/rules-list-page.tsx
@@ -345,6 +357,10 @@ msgstr "{statusLabel} · {downloaded} von {total} GB"
 msgid "{taggedCount, plural, one {# tagged this session} other {# tagged this session}}"
 msgstr "{taggedCount, plural, one {# in dieser Sitzung getaggt} other {# in dieser Sitzung getaggt}}"
 
+#: src/receipt/hook/use-receipt-scan.hook.ts
+msgid "{title} · nothing changed"
+msgstr "{title} · nichts geändert"
+
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "{total} GB on this phone"
 msgstr "{total} GB auf diesem Telefon"
@@ -356,6 +372,10 @@ msgstr "{totalSize} GB"
 #: src/transaction/components/transaction-list/transaction-list.tsx
 msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{transactionCount, plural, one {# Transaktion} other {# Transaktionen}}"
+
+#: src/receipt/hook/use-receipt-scan.hook.ts
+msgid "{unreadableCount, plural, one {Couldn't read # receipt} other {Couldn't read # receipts}}"
+msgstr "{unreadableCount, plural, one {# Beleg nicht lesbar} other {# Belege nicht lesbar}}"
 
 #: src/runway/component/runway-pill/runway-pill.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
@@ -687,6 +707,10 @@ msgstr "Bereits zurückgezahlt"
 #: src/account/component/update-debt-account/update-debt-account.tsx
 msgid "Already returned"
 msgstr "Bereits erhalten"
+
+#: src/receipt/hook/use-receipt-scan.hook.ts
+msgid "Already scanned"
+msgstr "Bereits gescannt"
 
 #: src/sync/component/bank-account-preview-card/bank-account-preview-card.tsx
 msgid "Already syncing"
@@ -3333,6 +3357,10 @@ msgstr "Keine MCC-Codes gefunden"
 msgid "No new transactions"
 msgstr "Keine neuen Transaktionen"
 
+#: src/receipt/hook/use-receipt-scan.hook.ts
+msgid "No receipt found"
+msgstr "Kein Beleg gefunden"
+
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
 msgid "No recurring payments detected"
@@ -3449,6 +3477,10 @@ msgstr "Noch keins"
 msgid "Note"
 msgstr "Notiz"
 
+#: src/receipt/hook/use-receipt-scan.hook.ts
+msgid "Nothing changed"
+msgstr "Nichts geändert"
+
 #: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
 msgid "Nothing from the past is imported"
 msgstr "Nichts aus der Vergangenheit wird importiert"
@@ -3485,6 +3517,10 @@ msgstr "An · PIN"
 #: src/settings/components/app-lock-row/app-lock-row.tsx
 msgid "On · PIN and {biometricLabel}"
 msgstr "An · PIN und {biometricLabel}"
+
+#: src/receipt/hook/use-receipt-scan.hook.ts
+msgid "On device · works offline"
+msgstr "Auf dem Gerät · funktioniert offline"
 
 #: src/settings/components/your-data-card/your-data-card.tsx
 msgid "On this iPhone"
@@ -3920,6 +3956,14 @@ msgstr "Auf diesem Telefon gelesen"
 msgid "Read on this phone, then you can delete it."
 msgstr "Wird auf diesem Telefon gelesen, danach kannst du ihn löschen."
 
+#: src/receipt/components/receipt-scan-toast/receipt-scan-toast.tsx
+msgid "Reading receipt"
+msgstr "Beleg wird gelesen"
+
+#: src/receipt/components/receipt-scan-toast/receipt-scan-toast.tsx
+msgid "Reading receipts · {current} of {total}"
+msgstr "Belege werden gelesen · {current} von {total}"
+
 #: src/ai/constant/ai-download-card-visuals.constant.ts
 msgid "Ready"
 msgstr "Bereit"
@@ -3961,6 +4005,8 @@ msgid "Recalculating balances"
 msgstr "Salden werden neu berechnet"
 
 #: src/rule/constant/external-source.constant.ts
+#: src/transaction/components/receipt-pill/receipt-pill.tsx
+#: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
 msgid "Receipt"
 msgstr "Beleg"
 
@@ -4200,6 +4246,10 @@ msgstr "Ersparnisse"
 #: src/app/(main)/create-account/index.tsx
 msgid "Savings Account"
 msgstr "Sparkonto"
+
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
+msgid "Scan receipt"
+msgstr "Beleg scannen"
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Scan the QR code with the Monobank app"
@@ -4754,6 +4804,10 @@ msgstr "Tippen zum Leeren"
 msgid "Tap to continue"
 msgstr "Tippen zum Fortfahren"
 
+#: src/receipt/hook/use-receipt-scan.hook.ts
+msgid "Tap to open"
+msgstr "Zum Öffnen tippen"
+
 #: src/sync/component/file-upload-step/file-upload-step.tsx
 msgid "Tap to select"
 msgstr "Zum Auswählen tippen"
@@ -4834,6 +4888,10 @@ msgstr "Damit werden {DB_NAME} und alles darin von diesem Telefon gelöscht. Das
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "This doesn't look like a Monobank token yet"
 msgstr "Das sieht noch nicht nach einem Monobank-Token aus"
+
+#: src/receipt/hook/use-receipt-scan.hook.ts
+msgid "This image has no readable text"
+msgstr "Dieses Bild enthält keinen lesbaren Text"
 
 #: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
 msgid "This is where your data lives and who can read it. You can find it again in Settings › Your data."

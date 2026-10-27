@@ -9,6 +9,7 @@ import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 import { DebtSettlementPill } from '../debt-settlement-pill/debt-settlement-pill';
+import { ReceiptPill } from '../receipt-pill/receipt-pill';
 import { RefundedPill } from '../refunded-pill/refunded-pill';
 import { TransactionMetadataRow } from '../transaction-metadata-row/transaction-metadata-row';
 
@@ -17,11 +18,12 @@ import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts'
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly refundedPillTestID: string;
+    readonly receiptPillTestID: string;
     readonly feeTestID: string;
     readonly debtSettlementTestID: string;
 }
 
-export const TransactionMetadataRows = ({ transaction, refundedPillTestID, feeTestID, debtSettlementTestID }: Props) => {
+export const TransactionMetadataRows = ({ transaction, refundedPillTestID, receiptPillTestID, feeTestID, debtSettlementTestID }: Props) => {
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
     const feeEntries = getTransactionFeeEntries(transaction.entries);
@@ -32,10 +34,10 @@ export const TransactionMetadataRows = ({ transaction, refundedPillTestID, feeTe
     const formattedFeeAmount = formatDigits(feeAmount, feeCurrencySymbol);
     const feeLabel = t`Fee · ${formattedFeeAmount}`;
     const debtSettlementAccount = transaction.debtEvents.at(0)?.[DebtEventAssociationEnum.DEBT_ACCOUNT] ?? null;
-    const hasDebtSettlement = isDefined(debtSettlementAccount);
     const isRefundTransaction = transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND;
+    const hasReceipt = isDefined(transaction.receipt);
 
-    if (!isRefundTransaction && !hasFee && !hasDebtSettlement) {
+    if (!isRefundTransaction && !hasReceipt && !hasFee && !isDefined(debtSettlementAccount)) {
         return null;
     }
 
@@ -46,6 +48,8 @@ export const TransactionMetadataRows = ({ transaction, refundedPillTestID, feeTe
                 transaction={transaction}
                 testID={refundedPillTestID}
             />
+
+            {hasReceipt ? <ReceiptPill testID={receiptPillTestID} /> : null}
 
             {hasFee ? <TransactionMetadataRow label={feeLabel} testID={feeTestID} /> : null}
 
