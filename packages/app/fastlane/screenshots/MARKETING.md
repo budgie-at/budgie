@@ -97,13 +97,14 @@ The secondary phone uses the localized, transparent framed analytics capture in
 come from the existing `frame-device.sh` / mobile-ci system. The home screenshot
 already bleeds off its lower edge; v2 retains that real capture boundary and
 fades its lower tail into the universal background instead of inventing UI or a
-missing bottom bezel. The universal hero is 1350 pixels wide; the rear phone is
-2600 pixels tall and tilted 8 degrees. Together they fill the lower canvas.
+missing bottom bezel. The universal hero is 780 pixels wide; the rear phone is
+1650 pixels tall before its 8-degree tilt. Their placement leaves the text column
+clear of both screens.
 
 The art reuses the app icon mark, FixelDisplay-Bold / FixelDisplay-SemiBold,
 `#54EAA6` highlight and screenshot palette `#003B25 → #00140C`. The localized
 headlines reuse PR [#1691](https://github.com/budgie-at/budgie/pull/1691)'s analytics
-caption voice; the wide layout also carries its offline/no-account/no-subscription
+caption voice; both layouts carry their offline/no-account/no-subscription
 trust message. No ASO metadata or screenshot captions are changed here.
 
 | Locale | Headline |
@@ -133,17 +134,31 @@ use `(left, top, right, bottom)`, with exclusive right/bottom edges:
 
 These are deliberately tighter than a guessed central 16:9 or 21:9 crop. As
 approved for v2, **the headline, healthy balance amount and green budget card are
-the critical content** kept inside these bounds. Device frames, lower account
-rows, the secondary analytics phone, background glow and the universal brand
-lockup extend outside and may be cropped. This preserves large devices without
-shrinking the entire composition into the small universal safe rectangle.
+the critical content** kept inside these bounds. The universal brand lockup and
+localized supporting line are also inside its safe rectangle. Device frames,
+lower account rows, the secondary analytics phone and background glow extend
+outside and may be cropped.
 
-The universal uses a 1310-pixel maximum headline width at `(1960, 1480)`, a dark
-backing for contrast, and the healthy phone at `(1940, 320)`. The wide uses a
-690-pixel maximum headline line width at `(1125, 670)` / `(1125, 800)` and the
-healthy phone at `(1850, 270)`. Inspecting the safe-rectangle crop at 350 pixels
+The universal uses a left text column with a compact brand row at `(1950, 780)`,
+two 560-pixel maximum headline lines at `(1950, 950)` / `(1950, 1080)`, and the
+supporting line at `(1950, 1270)`. Its first headline line is white and its second
+is green, matching the wide typography and localized meaning. The healthy phone
+starts at `(2540, 650)`, to the right of the text, with its positive balance and
+complete green budget card inside the safe area. The secondary phone starts at
+`(3230, 740)` behind the hero's right edge. No text or backing band covers either
+screen. The wide uses a 690-pixel maximum headline line width at `(1125, 670)` /
+`(1125, 800)` and the healthy phone at `(1850, 270)`. Inspecting the safe-rectangle
+crop at 600 pixels
 wide provides a conservative small-format readability check; it is a local design
-check, not a claim about the precise rendered ASC viewport.
+check, not a claim about the precise rendered ASC viewport. To inspect the
+universal composition at the exact safe crop and a search-sized downscale:
+
+```bash
+header=packages/app/fastlane/screenshots/marketing/headers/en-US/header-universal-5244x2950.png
+magick "$header" +repage -crop 1402x962+1921+660 +repage /tmp/budgie-header-en-US-safe-area.png
+magick /tmp/budgie-header-en-US-safe-area.png -resize 600x /tmp/budgie-header-en-US-safe-area-600.png
+magick "$header" -resize 600x /tmp/budgie-header-en-US-universal-600.png
+```
 
 Apple's [asset guidance](https://developer.apple.com/app-store/asset-best-practices/)
 asks for localized, short, legible text and focal content within template safe

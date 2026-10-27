@@ -26,31 +26,26 @@ render_text() {
 for locale in en-US de-DE es-ES fr-FR uk; do
     case "$locale" in
         en-US)
-            headline='See where money goes.'
             headline_first='See where'
             headline_second='money goes.'
             support='Offline · No sign-up · No subscription'
             ;;
         de-DE)
-            headline='Verstehe deine Ausgaben.'
             headline_first='Verstehe deine'
             headline_second='Ausgaben.'
             support='Offline · Ohne Anmeldung · Ohne Abo'
             ;;
         es-ES)
-            headline='Descubre en qué gastas.'
             headline_first='Descubre'
             headline_second='en qué gastas.'
             support='Sin conexión · Sin cuenta · Sin suscripción'
             ;;
         fr-FR)
-            headline='Comprenez vos dépenses.'
             headline_first='Comprenez'
             headline_second='vos dépenses.'
             support='Hors ligne · Sans compte · Sans abonnement'
             ;;
         uk)
-            headline='Знайте, куди йдуть гроші.'
             headline_first='Знайте, куди'
             headline_second='йдуть гроші.'
             support='Офлайн · Без реєстрації · Без підписки'
@@ -75,23 +70,28 @@ for locale in en-US de-DE es-ES fr-FR uk; do
         -alpha off -compose CopyOpacity -composite -trim +repage "$WORK_ROOT/home.png"
     magick "$REPO_ROOT/packages/app/assets/icons/ios-dark.png" \
         -fuzz 8% -transparent black -trim +repage -resize x250 "$WORK_ROOT/mark.png"
-    render_text Budgie 210 900 white "$WORK_ROOT/wordmark.png"
-    magick "$WORK_ROOT/home.png" -resize 1350x "$WORK_ROOT/hero-universal.png"
+    magick "$WORK_ROOT/home.png" -resize 780x "$WORK_ROOT/hero-universal.png"
     magick "$WORK_ROOT/hero-universal.png" -channel A \
         -fx 'u * min(1,(h-1-j)/300)' +channel "$WORK_ROOT/hero-universal.png"
-    magick "$analytics" -trim +repage -resize x2600 -background none -rotate 8 "$WORK_ROOT/analytics-universal.png"
-    render_text "$headline" 145 1310 '#54EAA6' "$WORK_ROOT/headline-universal.png"
+    magick "$analytics" -trim +repage -resize x1650 -background none -rotate 8 "$WORK_ROOT/analytics-universal.png"
+    magick "$WORK_ROOT/mark.png" -resize x75 "$WORK_ROOT/mark-universal.png"
+    render_text Budgie 80 400 white "$WORK_ROOT/wordmark-universal.png"
+    render_text "$headline_first" 110 560 white "$WORK_ROOT/headline-first-universal.png"
+    render_text "$headline_second" 110 560 '#54EAA6' "$WORK_ROOT/headline-second-universal.png"
+    magick -background none -fill '#DFFBEE' -font "$SUBLINE_FONT" -pointsize 28 \
+        label:"$support" -trim +repage -resize '560x>' "$WORK_ROOT/support-universal.png"
     magick -size 5244x2950 'gradient:#003B25-#00140C' \
         \( -size 4200x3400 'radial-gradient:rgba(0,119,80,0.55)-rgba(0,119,80,0)' \) \
         -geometry +1000+0 -compose Over -composite \
-        "$WORK_ROOT/analytics-universal.png" -geometry +3070+150 -compose Over -composite \
-        "$WORK_ROOT/hero-universal.png" -geometry +1940+320 -compose Over -composite \
+        "$WORK_ROOT/analytics-universal.png" -geometry +3230+740 -compose Over -composite \
+        "$WORK_ROOT/hero-universal.png" -geometry +2540+650 -compose Over -composite \
         \( -size 5244x480 'gradient:rgba(0,20,12,0)-#00140C' \) \
         -geometry +0+2470 -compose Over -composite \
-        -fill 'rgba(0,32,20,0.98)' -draw 'rectangle 1880,1450 3375,1650' \
-        "$WORK_ROOT/headline-universal.png" -geometry +1960+1480 -compose Over -composite \
-        "$WORK_ROOT/mark.png" -geometry +940+970 -compose Over -composite \
-        "$WORK_ROOT/wordmark.png" -geometry +750+1300 -compose Over -composite \
+        "$WORK_ROOT/mark-universal.png" -geometry +1950+780 -compose Over -composite \
+        "$WORK_ROOT/wordmark-universal.png" -geometry +2055+780 -compose Over -composite \
+        "$WORK_ROOT/headline-first-universal.png" -geometry +1950+950 -compose Over -composite \
+        "$WORK_ROOT/headline-second-universal.png" -geometry +1950+1080 -compose Over -composite \
+        "$WORK_ROOT/support-universal.png" -geometry +1950+1270 -compose Over -composite \
         -alpha off -colorspace sRGB -depth 8 -strip \
         -define png:color-type=2 -define png:exclude-chunk=date,time \
         "$WORK_ROOT/universal.png"
