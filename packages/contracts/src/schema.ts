@@ -14,6 +14,7 @@ export { MccGroupEntityTable } from './mcc-group/table/mcc-group-entity.table';
 export { MccCategoryEntityTable } from './mcc-category/table/mcc-category-entity.table';
 export { TransactionEntityTable } from './transaction/table/transaction-entity.table';
 export { TransactionTagsEntityTable } from './transaction-tags/table/transaction-tags-entity.table';
+export { TransactionReceiptEntityTable } from './transaction-receipt/table/transaction-receipt-entity.table';
 export { TransactionEntryEntityTable } from './transaction-entry/table/transaction-entry-entity.table';
 export { ExchangeRateEntityTable } from './exchange-rate/table/exchange-rate-entity.table';
 export { HistoricalExchangeRateEntityTable } from './historical-exchange-rate/table/historical-exchange-rate-entity.table';
