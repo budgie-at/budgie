@@ -1,9 +1,10 @@
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { ReactNode, useRef } from 'react';
 import { ScrollView, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
+import { aiSystemStatusAtom } from '../../../ai/constant/ai-system-status-atom.constant';
 import { EMBEDDING_COMPLETENESS_THRESHOLD } from '../../../ai/constant/embedding-completeness-threshold.constant';
-import { useAiSystemStatus } from '../../../ai/hook/use-ai-system-status.hook';
 import { SuggestionLoadingIndicator } from '../suggestion-loading-indicator/suggestion-loading-indicator';
 
 interface Props {
@@ -18,7 +19,7 @@ const ENTER_DELAY = 400;
 
 export const SuggestionRowLayout = (props: Props) => {
     const { showContent, showLoading, isProcessing = false, children } = props;
-    const snapshot = useAiSystemStatus();
+    const snapshot = useAtomValue(aiSystemStatusAtom);
     const isIncomplete = snapshot.percent < EMBEDDING_COMPLETENESS_THRESHOLD;
     const scrollRef = useRef<ScrollView | null>(null);
 

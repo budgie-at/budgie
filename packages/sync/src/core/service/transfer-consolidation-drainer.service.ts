@@ -1,4 +1,4 @@
-import { consolidationScopeService } from '@budgie/consolidation';
+import { mergeConsolidationScopes } from '@budgie/consolidation';
 import * as Context from 'effect/Context';
 import * as Duration from 'effect/Duration';
 import * as Effect from 'effect/Effect';
@@ -39,7 +39,7 @@ export class TransferConsolidationDrainerService extends Context.Service<Transfe
                 }
 
                 yield* Ref.update(pendingScope, currentScope =>
-                    isDefined(currentScope) ? consolidationScopeService.merge(currentScope, scope) : currentScope
+                    isDefined(currentScope) ? mergeConsolidationScopes(currentScope, scope) : currentScope
                 );
             });
 

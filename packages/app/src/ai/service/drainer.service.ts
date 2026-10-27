@@ -4,7 +4,6 @@ import * as Effect from 'effect/Effect';
 import * as Exit from 'effect/Exit';
 import * as FiberHandle from 'effect/FiberHandle';
 import * as Option from 'effect/Option';
-import * as Scope from 'effect/Scope';
 import * as Semaphore from 'effect/Semaphore';
 import { AppState } from 'react-native';
 
@@ -24,6 +23,16 @@ import type * as Context from 'effect/Context';
 import type * as Atom from 'effect/reactivity/Atom';
 
 export class DrainerService<E> {
+    static readonly make = Effect.fn('DrainerService.make')(function* <E>(
+        config: DrainerConfigInterface<E>,
+        modelResidency: Context.Service.Shape<typeof AiModelResidencyService>
+    ) {
+        const loop = yield* FiberHandle.make();
+        const retryTimer = yield* FiberHandle.make();
+
+        return new DrainerService(config, modelResidency, loop, retryTimer);
+    });
+
     private static readonly MAX_CONSECUTIVE_FAILURES = 5;
     private static readonly PROGRESS_REFRESH_EVERY = 25;
     private static readonly IDLE_INTERVAL_MS = 10_000;
@@ -224,14 +233,12 @@ export class DrainerService<E> {
     private started = false;
     private isForegroundBusy = false;
     private consecutiveFailures = 0;
-    // eslint-disable-next-line budgie/effect-no-run -- legacy class service builds its FiberHandles synchronously at construction
-    private readonly loop = Effect.runSync(Scope.provide(FiberHandle.make(), Scope.makeUnsafe()));
-    // eslint-disable-next-line budgie/effect-no-run -- legacy class service builds its FiberHandles synchronously at construction
-    private readonly retryTimer = Effect.runSync(Scope.provide(FiberHandle.make(), Scope.makeUnsafe()));
 
-    constructor(
+    private constructor(
         private readonly config: DrainerConfigInterface<E>,
-        private readonly modelResidency: Context.Service.Shape<typeof AiModelResidencyService>
+        private readonly modelResidency: Context.Service.Shape<typeof AiModelResidencyService>,
+        private readonly loop: FiberHandle.FiberHandle,
+        private readonly retryTimer: FiberHandle.FiberHandle
     ) {
         this.snapshot = config.snapshot;
     }
