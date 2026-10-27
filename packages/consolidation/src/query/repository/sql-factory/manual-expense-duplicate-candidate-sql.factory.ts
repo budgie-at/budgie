@@ -28,7 +28,8 @@ const MANUAL_EXPENSE_DUPLICATE_PAIRS_SQL = `
             synced_tx.external_source AS externalSource,
             synced_entry.account_id AS accountId,
             synced_entry.amount AS amount,
-            synced_account.instrument_id AS instrumentId
+            synced_account.instrument_id AS instrumentId,
+            EXISTS (SELECT 1 FROM transaction_receipts synced_receipt WHERE synced_receipt.transaction_id = synced_tx.id) AS hasReceipt
         FROM transactions synced_tx INDEXED BY transactions_visible_type_operated_idx
         INNER JOIN transaction_entries synced_entry INDEXED BY transaction_entries_live_transaction_account_amount_idx
             ON synced_entry.transaction_id = synced_tx.id
@@ -116,6 +117,7 @@ const MANUAL_EXPENSE_DUPLICATE_PAIRS_SQL = `
         INNER JOIN manual_rows manual
             ON manual.instrumentId = synced.instrumentId
             AND manual.transactionType = synced.transactionType
+            AND NOT (manual.isReceipt AND synced.hasReceipt)
             AND manual.operatedAt BETWEEN synced.operatedAt - ${MANUAL_EXPENSE_DUPLICATE_TIME_WINDOW_SECONDS}
                 AND synced.operatedAt + ${MANUAL_EXPENSE_DUPLICATE_TIME_WINDOW_SECONDS}
             AND (
