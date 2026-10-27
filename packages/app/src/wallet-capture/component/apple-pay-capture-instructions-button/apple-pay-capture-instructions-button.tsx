@@ -4,8 +4,10 @@ import * as Effect from 'effect/Effect';
 import { Linking } from 'react-native';
 
 import { Button } from '../../../@generic/component/button/button';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
+import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
+import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
-import { runWithErrorToast } from '../../utils/run-with-error-toast.util';
 
 interface Props {
     readonly testID: string;
@@ -16,11 +18,12 @@ export const ApplePayCaptureInstructionsButton = ({ testID }: Props) => {
     const language = useSetting('language');
 
     const handlePressInstructionsGuide = () =>
-        void runWithErrorToast(
-            Effect.promise(() => Linking.openURL(`https://budgie.at/${language}/blog/apple-pay-shortcuts-instructions`)).pipe(
-                Effect.asVoid
-            ),
-            t`Could not open instructions`
+        void appRuntime.runFork(
+            logAndContinue(
+                Effect.promise(() => Linking.openURL(`https://budgie.at/${language}/blog/apple-pay-shortcuts-instructions`)).pipe(
+                    toastOnFailure(t`Could not open instructions`)
+                )
+            )
         );
 
     return (
