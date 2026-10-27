@@ -1,1 +1,1 @@
-finance,spending,savings,bills,receipt,cash,crypto,debt,wallet,income,currency,planner,personal
+spending,planner,offline,private,bills,subscriptions,savings,net,worth,currency,crypto,csv,voice
