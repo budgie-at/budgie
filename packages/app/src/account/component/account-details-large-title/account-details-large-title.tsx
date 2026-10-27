@@ -15,7 +15,7 @@ interface Props {
     readonly account: Pick<AccountEntityInterface, 'debtType' | 'icon' | 'title' | 'type'>;
 }
 
-const descriptionVariants = cva('text-xs uppercase', {
+const descriptionVariants = cva('text-xs uppercase text-center', {
     variants: { variant: FOREGROUND_COLOR_PALETTE }
 });
 
@@ -27,17 +27,18 @@ export const AccountDetailsLargeTitle = ({ account }: Props) => {
         account.debtType === AccountDebtTypeEnum.INSTALLMENT ? t(ACCOUNT_DEBT_TYPE[account.debtType]) : t(ACCOUNT_TYPE[account.type]);
 
     return (
-        <View className="flex-row items-center gap-x-md">
-            <CircleIcon icon={account.icon} variant={variant} size={44} iconSize={22} radius={14} />
+        <View className="items-center gap-y-xs">
+            <View className="max-w-full flex-row items-center gap-x-sm">
+                <CircleIcon icon={account.icon} variant={variant} size={28} iconSize={14} radius={8} border={false} />
 
-            <View className="min-w-0 flex-1 gap-y-xs">
-                <Text className="text-primary font-medium text-3xl" numberOfLines={1}>
+                <Text className="shrink text-primary font-medium text-2xl" numberOfLines={1}>
                     {account.title}
                 </Text>
-                <Text className={descriptionVariants({ variant })} numberOfLines={1}>
-                    {description}
-                </Text>
             </View>
+
+            <Text className={descriptionVariants({ variant })} numberOfLines={1}>
+                {description}
+            </Text>
         </View>
     );
 };

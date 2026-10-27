@@ -10,11 +10,12 @@ import { HeaderBackButton } from '../../../../@generic/component/header-back-but
 import { LoadingScreen } from '../../../../@generic/component/loading-screen/loading-screen';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
 import { ScreenChromeThemeProvider } from '../../../../@generic/provider/screen-chrome-theme.provider';
-import { AccountBalance } from '../../../../account/component/account-balance/account-balance';
 import { AccountDetailsEditButton } from '../../../../account/component/account-details-edit-button/account-details-edit-button';
 import { AccountDetailsHeaderBackdrop } from '../../../../account/component/account-details-header-backdrop/account-details-header-backdrop';
+import { AccountDetailsHero } from '../../../../account/component/account-details-hero/account-details-hero';
 import { AccountDetailsLargeTitle } from '../../../../account/component/account-details-large-title/account-details-large-title';
 import { AccountDetailsMenuControls } from '../../../../account/component/account-details-menu-controls/account-details-menu-controls';
+import { AccountDetailsMonthSummary } from '../../../../account/component/account-details-month-summary/account-details-month-summary';
 import { AccountDetailsSmallTitle } from '../../../../account/component/account-details-small-title/account-details-small-title';
 import { DebtAccountBalance } from '../../../../account/component/debt-account-balance/debt-account-balance';
 import { DepositAccountActionsMenu } from '../../../../account/component/deposit-account-actions-menu/deposit-account-actions-menu';
@@ -57,28 +58,34 @@ export default function AccountDetails() {
                     <View className="flex-1">
                         <CollapsibleChromeTransactionList accountId={id}>
                             {account.type === AccountTypeEnum.DEBT ? (
-                                <DebtAccountBalance
-                                    accountId={id}
-                                    debtType={account.debtType}
-                                    instrumentSymbol={instrumentSymbol}
-                                    summary={debtProgressSummary}
-                                />
+                                <View className="gap-y-md">
+                                    <DebtAccountBalance
+                                        accountId={id}
+                                        debtType={account.debtType}
+                                        instrumentSymbol={instrumentSymbol}
+                                        summary={debtProgressSummary}
+                                    />
+
+                                    {account.debtType === AccountDebtTypeEnum.INSTALLMENT ? (
+                                        <InstallmentPlanScheduleSummary accountId={id} instrumentSymbol={instrumentSymbol} />
+                                    ) : null}
+                                </View>
                             ) : (
-                                <AccountBalance instrumentSymbol={instrumentSymbol} balance={balance} />
+                                <View className="gap-y-4xl">
+                                    <AccountDetailsHero account={account} balance={balance} />
+
+                                    {account.type === AccountTypeEnum.DEPOSIT ? (
+                                        <DepositDetailsCard
+                                            balance={balance}
+                                            instrumentSymbol={instrumentSymbol}
+                                            interestRate={account.interestRate}
+                                            deadline={account.deadline}
+                                        />
+                                    ) : null}
+
+                                    <AccountDetailsMonthSummary accountId={id} />
+                                </View>
                             )}
-
-                            {account.debtType === AccountDebtTypeEnum.INSTALLMENT ? (
-                                <InstallmentPlanScheduleSummary accountId={id} instrumentSymbol={instrumentSymbol} />
-                            ) : null}
-
-                            {account.type === AccountTypeEnum.DEPOSIT ? (
-                                <DepositDetailsCard
-                                    balance={balance}
-                                    instrumentSymbol={instrumentSymbol}
-                                    interestRate={account.interestRate}
-                                    deadline={account.deadline}
-                                />
-                            ) : null}
                         </CollapsibleChromeTransactionList>
                     </View>
 

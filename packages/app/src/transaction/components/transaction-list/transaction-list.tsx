@@ -2,8 +2,9 @@ import { View } from 'react-native';
 
 import { useTransactionList } from '../../hook/use-transaction-list.hook';
 import { TransactionFilters } from '../transaction-filters/transaction-filters';
+import { TransactionListCount } from '../transaction-list-count/transaction-list-count';
 import { TransactionListEmptyState } from '../transaction-list-empty-state/transaction-list-empty-state';
-import { TransactionListMeta } from '../transaction-list-meta/transaction-list-meta';
+import { TransactionListUncategorizedPill } from '../transaction-list-uncategorized-pill/transaction-list-uncategorized-pill';
 import { TransactionSectionsList } from '../transaction-sections-list/transaction-sections-list';
 
 export const TransactionList = () => {
@@ -18,7 +19,10 @@ export const TransactionList = () => {
                 hasFiltersSelected={hasFiltersSelected}
             />
 
-            <TransactionListMeta filters={activeFilters} />
+            <View className="flex-row items-center gap-x-md">
+                <TransactionListUncategorizedPill filters={activeFilters} />
+                <TransactionListCount filters={activeFilters} className="ml-auto pt-2 pb-1" />
+            </View>
 
             <TransactionSectionsList
                 sections={sections}

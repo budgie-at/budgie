@@ -353,7 +353,7 @@ msgstr "{total} GB en este teléfono"
 msgid "{totalSize} GB"
 msgstr "{totalSize} GB"
 
-#: src/transaction/components/transaction-list-meta/transaction-list-meta.tsx
+#: src/transaction/components/transaction-list-count/transaction-list-count.tsx
 msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{transactionCount, plural, one {# transacción} other {# transacciones}}"
 
@@ -871,6 +871,10 @@ msgstr "Ajuste de saldo"
 #: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
 msgid "Balance forecast"
 msgstr "Previsión de saldo"
+
+#: src/account/component/account-details-hero/account-details-hero.tsx
+msgid "Balance: {formattedBalance}"
+msgstr "Saldo: {formattedBalance}"
 
 #: src/account/constant/account-type.constant.ts
 msgid "Bank"
@@ -1872,14 +1876,6 @@ msgstr "CSV exportado"
 msgid "Currency"
 msgstr "Moneda"
 
-#: src/account/component/account-balance/account-balance.tsx
-msgid "Current Balance"
-msgstr "Saldo actual"
-
-#: src/account/component/account-balance/account-balance.tsx
-msgid "Current Balance: {formattedBalance}"
-msgstr "Saldo actual: {formattedBalance}"
-
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "Custom categories you create will appear here"
 msgstr "Las categorías personalizadas que crees aparecerán aquí"
@@ -2841,6 +2837,7 @@ msgstr "Incluye criptomonedas"
 msgid "includes fee {formattedFeeAmount}"
 msgstr "incluye comisión {formattedFeeAmount}"
 
+#: src/account/component/account-details-month-summary/account-details-month-summary.tsx
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/components/statistics-content/statistics-content.tsx
@@ -4763,6 +4760,7 @@ msgstr "Gastos por categoría"
 msgid "Spending by Tag"
 msgstr "Gastos por etiqueta"
 
+#: src/account/component/account-details-month-summary/account-details-month-summary.tsx
 #: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Spent"
@@ -4876,13 +4874,13 @@ msgstr "Datos de sincronización reparados"
 msgid "Sync data repairs"
 msgstr "Reparaciones de datos de sincronización"
 
-#: src/account/component/account-card-base/account-card-base.tsx
+#: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Sync Failed"
 msgstr "Sincronización fallida"
 
-#: src/account/component/account-card-base/account-card-base.tsx
+#: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Sync paused"
 msgstr "Sincronización pausada"
@@ -4895,7 +4893,7 @@ msgstr "Reparaciones de sincronización"
 msgid "Sync your Binance balances and transactions"
 msgstr "Sincroniza tus saldos y transacciones de Binance"
 
-#: src/account/component/account-card-base/account-card-base.tsx
+#: src/account/constant/account-sync-state-label.constant.ts
 msgid "Syncing"
 msgstr "Sincronizando"
 
@@ -5081,6 +5079,7 @@ msgstr "Esta clave ya sincroniza otra de tus secciones de Monobank."
 msgid "This key is for a different Monobank client."
 msgstr "Esta clave es de otro cliente de Monobank."
 
+#: src/account/component/account-details-month-summary/account-details-month-summary.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "This month"
 msgstr "Este mes"
@@ -5290,6 +5289,7 @@ msgid "Transaction not found"
 msgstr "Transacción no encontrada"
 
 #: src/@generic/component/transactions-page-header/transactions-page-header.tsx
+#: src/transaction/components/collapsible-chrome-transaction-list/collapsible-chrome-transaction-list.tsx
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Transactions"
 msgstr "Transacciones"
@@ -5470,7 +5470,7 @@ msgstr "PyG no realizada"
 msgid "Untagged"
 msgstr "Sin etiqueta"
 
-#: src/account/component/account-card-base/account-card-base.tsx
+#: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
 msgid "Up to date"
@@ -5578,7 +5578,7 @@ msgstr "Notas de voz"
 msgid "Volume"
 msgstr "Volumen"
 
-#: src/account/component/account-card-base/account-card-base.tsx
+#: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Waiting"
 msgstr "Esperando"

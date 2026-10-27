@@ -353,7 +353,7 @@ msgstr "{total} ГБ на цьому телефоні"
 msgid "{totalSize} GB"
 msgstr "{totalSize} ГБ"
 
-#: src/transaction/components/transaction-list-meta/transaction-list-meta.tsx
+#: src/transaction/components/transaction-list-count/transaction-list-count.tsx
 msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{transactionCount, plural, one {# транзакція} few {# транзакції} many {# транзакцій} other {# транзакцій}}"
 
@@ -871,6 +871,10 @@ msgstr "Коригування балансу"
 #: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
 msgid "Balance forecast"
 msgstr "Прогноз балансу"
+
+#: src/account/component/account-details-hero/account-details-hero.tsx
+msgid "Balance: {formattedBalance}"
+msgstr "Баланс: {formattedBalance}"
 
 #: src/account/constant/account-type.constant.ts
 msgid "Bank"
@@ -1872,14 +1876,6 @@ msgstr "CSV експортовано"
 msgid "Currency"
 msgstr "Валюта"
 
-#: src/account/component/account-balance/account-balance.tsx
-msgid "Current Balance"
-msgstr "Поточний баланс"
-
-#: src/account/component/account-balance/account-balance.tsx
-msgid "Current Balance: {formattedBalance}"
-msgstr "Поточний баланс: {formattedBalance}"
-
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "Custom categories you create will appear here"
 msgstr "Власні категорії, які ви створите, з'являться тут"
@@ -2841,6 +2837,7 @@ msgstr "Включно з криптовалютою"
 msgid "includes fee {formattedFeeAmount}"
 msgstr "включно з комісією {formattedFeeAmount}"
 
+#: src/account/component/account-details-month-summary/account-details-month-summary.tsx
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/components/statistics-content/statistics-content.tsx
@@ -4763,6 +4760,7 @@ msgstr "Витрати за категоріями"
 msgid "Spending by Tag"
 msgstr "Витрати за тегами"
 
+#: src/account/component/account-details-month-summary/account-details-month-summary.tsx
 #: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Spent"
@@ -4876,13 +4874,13 @@ msgstr "Дані синхронізації виправлено"
 msgid "Sync data repairs"
 msgstr "Виправлення даних синхронізації"
 
-#: src/account/component/account-card-base/account-card-base.tsx
+#: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Sync Failed"
 msgstr "Синхронізація не вдалась"
 
-#: src/account/component/account-card-base/account-card-base.tsx
+#: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Sync paused"
 msgstr "Синхронізацію призупинено"
@@ -4895,7 +4893,7 @@ msgstr "Виправлення синхронізації"
 msgid "Sync your Binance balances and transactions"
 msgstr "Синхронізуйте свої баланси та транзакції Binance"
 
-#: src/account/component/account-card-base/account-card-base.tsx
+#: src/account/constant/account-sync-state-label.constant.ts
 msgid "Syncing"
 msgstr "Синхронізація"
 
@@ -5081,6 +5079,7 @@ msgstr "Цей ключ уже синхронізує інший ваш розд
 msgid "This key is for a different Monobank client."
 msgstr "Цей ключ належить іншому клієнту Monobank."
 
+#: src/account/component/account-details-month-summary/account-details-month-summary.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "This month"
 msgstr "Цього місяця"
@@ -5290,6 +5289,7 @@ msgid "Transaction not found"
 msgstr "Транзакцію не знайдено"
 
 #: src/@generic/component/transactions-page-header/transactions-page-header.tsx
+#: src/transaction/components/collapsible-chrome-transaction-list/collapsible-chrome-transaction-list.tsx
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Transactions"
 msgstr "Транзакції"
@@ -5470,7 +5470,7 @@ msgstr "Нереаліз. приб./збиток"
 msgid "Untagged"
 msgstr "Без тегу"
 
-#: src/account/component/account-card-base/account-card-base.tsx
+#: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
 msgid "Up to date"
@@ -5578,7 +5578,7 @@ msgstr "Голосові нотатки"
 msgid "Volume"
 msgstr "Обсяг"
 
-#: src/account/component/account-card-base/account-card-base.tsx
+#: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Waiting"
 msgstr "Очікування"
