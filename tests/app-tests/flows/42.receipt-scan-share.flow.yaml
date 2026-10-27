@@ -9,17 +9,17 @@ env:
       env:
           FIXTURE_ROW_ID_MATCH: ${FIXTURE_ROW_ID_MATCH}
 - openLink: ${E2E_FIXTURES_URI.replace('file://', 'shareddocuments://')}
-- extendedWaitUntil:
-      visible:
+- scrollUntilVisible:
+      element:
           id: ${FILE_ROW_ID_MATCH}
-      timeout: 10000
+      timeout: 20000
 - longPressOn:
       id: ${FILE_ROW_ID_MATCH}
 - tapOn: 'Share'
 - extendedWaitUntil:
-      visible: 'Budgie Receipt'
+      visible: 'budgie \(E2E\)'
       timeout: 5000
-- tapOn: 'Budgie Receipt'
+- tapOn: 'budgie \(E2E\)'
 - extendedWaitUntil:
       visible:
           id: 'ReceiptScanToast.DONE'
