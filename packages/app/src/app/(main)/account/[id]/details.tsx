@@ -2,7 +2,7 @@ import { AccountDebtTypeEnum, AccountTypeEnum } from '@budgie/contracts';
 import { Redirect, useLocalSearchParams } from 'expo-router';
 import { View } from 'react-native';
 
-import { CollapsibleHeaderBackdrop, ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
+import { ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
 import { isDefined } from '@rnw-community/shared';
 
 import { CollapsibleChromeHeader } from '../../../../@generic/component/collapsible-chrome-header/collapsible-chrome-header';
@@ -12,6 +12,7 @@ import { IdParamInterface } from '../../../../@generic/interface/id-param.interf
 import { ScreenChromeThemeProvider } from '../../../../@generic/provider/screen-chrome-theme.provider';
 import { AccountBalance } from '../../../../account/component/account-balance/account-balance';
 import { AccountDetailsEditButton } from '../../../../account/component/account-details-edit-button/account-details-edit-button';
+import { AccountDetailsHeaderBackdrop } from '../../../../account/component/account-details-header-backdrop/account-details-header-backdrop';
 import { AccountDetailsLargeTitle } from '../../../../account/component/account-details-large-title/account-details-large-title';
 import { AccountDetailsMenuControls } from '../../../../account/component/account-details-menu-controls/account-details-menu-controls';
 import { AccountDetailsSmallTitle } from '../../../../account/component/account-details-small-title/account-details-small-title';
@@ -53,7 +54,7 @@ export default function AccountDetails() {
         <View className="flex-1" testID={AccountDetailsSelector.Page} collapsable={false}>
             <ScreenChromeThemeProvider>
                 <ScreenChromeFrame>
-                    <View className="flex-1 px-5xl">
+                    <View className="flex-1">
                         <CollapsibleChromeTransactionList accountId={id}>
                             {account.type === AccountTypeEnum.DEBT ? (
                                 <DebtAccountBalance
@@ -81,7 +82,7 @@ export default function AccountDetails() {
                         </CollapsibleChromeTransactionList>
                     </View>
 
-                    <CollapsibleHeaderBackdrop />
+                    <AccountDetailsHeaderBackdrop />
 
                     <CollapsibleChromeHeader
                         leading={<HeaderBackButton />}

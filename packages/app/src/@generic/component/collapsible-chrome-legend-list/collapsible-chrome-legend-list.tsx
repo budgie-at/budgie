@@ -1,5 +1,6 @@
 import { AnimatedLegendList } from '@legendapp/list/reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useResolveClassNames } from 'uniwind';
 
 import { useCollapsibleHeaderScroll } from '@rnw-community/react-native-collapsible-header';
 import {
@@ -18,9 +19,10 @@ export const CollapsibleChromeLegendList = <TItem,>({ contentContainerStyle, ...
     const { scrollY } = useCollapsibleHeaderScroll();
     const { config } = useScreenChrome();
     const { top } = useSafeAreaInsets();
+    const horizontalInset = useResolveClassNames('px-5xl');
 
     const sharedValues = { scrollOffset: scrollY };
-    const contentContainerStyleWithInset = [{ paddingTop: top + SCREEN_CHROME_CONTENT_INSET_TOP }, contentContainerStyle];
+    const contentContainerStyleWithInset = [{ paddingTop: top + SCREEN_CHROME_CONTENT_INSET_TOP }, horizontalInset, contentContainerStyle];
     const stickyHeaderConfig = {
         offset: getScreenChromeHeaderMetrics(
             Math.max(config.collapsedHeaderHeight ?? config.headerHeight, SCREEN_CHROME_HEADER_LAYOUT_METRICS.slotSize),

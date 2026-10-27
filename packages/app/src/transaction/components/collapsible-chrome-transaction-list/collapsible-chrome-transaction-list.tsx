@@ -21,7 +21,7 @@ export const CollapsibleChromeTransactionList = ({ accountId, children }: Props)
 
     const listHeader = (
         <View>
-            <View className="gap-y-md pb-md">{children}</View>
+            <View className="gap-y-md pb-xl">{children}</View>
 
             <TransactionFilters
                 filters={activeFilters}

@@ -8,13 +8,14 @@ import { Ticker } from '../ticker/ticker';
 interface Props extends Omit<ComponentProps<typeof Ticker>, 'number' | 'children'> {
     readonly children: number;
     readonly className?: string;
+    readonly containerClassName?: string;
     readonly protectedText?: string;
     readonly instrumentSymbol: string;
     readonly accessory?: ReactNode;
 }
 
 export const ProtectedMoney = (props: Props) => {
-    const { children, className, instrumentSymbol, accessory, protectedText = '$999.99', ...rest } = props;
+    const { children, className, containerClassName, instrumentSymbol, accessory, protectedText = '$999.99', ...rest } = props;
 
     const isAmountProtected = useIsAmountProtected();
     const formatDigits = useDisplayFormatDigits();
@@ -25,6 +26,7 @@ export const ProtectedMoney = (props: Props) => {
         <Ticker
             hasAnimation={!isAmountProtected}
             number={formatted}
+            className={containerClassName}
             textClassName={cn('font-extralight text-primary', className)}
             {...rest}
         >

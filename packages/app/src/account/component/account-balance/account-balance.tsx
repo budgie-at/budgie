@@ -25,7 +25,7 @@ export const AccountBalance = ({ balance, instrumentSymbol }: Props) => {
                 <Trans>Current Balance</Trans>
             </Text>
 
-            <ProtectedMoney className="justify-start" minFontSize={10} maxFontSize={36} instrumentSymbol={instrumentSymbol}>
+            <ProtectedMoney containerClassName="justify-start" minFontSize={10} maxFontSize={36} instrumentSymbol={instrumentSymbol}>
                 {balance}
             </ProtectedMoney>
         </View>
