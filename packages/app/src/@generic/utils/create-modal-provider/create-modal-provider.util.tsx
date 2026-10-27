@@ -1,7 +1,7 @@
 import { type Href, router } from 'expo-router';
 import { type Context, type PropsWithChildren, useRef, useState } from 'react';
 
-import { isDefined } from '@rnw-community/shared';
+import { emptyFn, isDefined } from '@rnw-community/shared';
 
 import type { ModalContextTuple } from '../create-modal-context/create-modal-context.util';
 
@@ -15,18 +15,18 @@ export const createModalProvider = <TParams, TResult>(
 ) => {
     const ModalProvider = ({ children }: PropsWithChildren) => {
         const [params, setParams] = useState<TParams | null>(null);
-        const pendingResultRef = useRef<{ readonly onResult?: (result: TResult) => void } | null>(null);
+        const pendingResultRef = useRef<((result: TResult) => void) | null>(null);
 
         const settle = (result: TResult) => {
-            const pendingResult = pendingResultRef.current;
+            const onResult = pendingResultRef.current;
 
             pendingResultRef.current = null;
             setParams(null);
-            pendingResult?.onResult?.(result);
+            onResult?.(result);
         };
 
         const open: ModalContextTuple<TParams, TResult>[0] = (nextParams, onResult) => {
-            pendingResultRef.current = { onResult };
+            pendingResultRef.current = onResult ?? emptyFn;
             setParams(nextParams ?? null);
             router.push(route);
         };
