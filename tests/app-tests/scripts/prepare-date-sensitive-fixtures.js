@@ -1002,7 +1002,7 @@ const generateRefundConsolidationFixture = () => {
 
         INSERT INTO bank_syncs (account_id, provider, enabled, mode, status, created_at, updated_at)
         VALUES
-            (1, 'MONOBANK', 0, 'BACKWARD', 'IDLE', ${now}, ${now});
+            (1, 'MONOBANK', 0, 'FORWARD', 'IDLE', ${now}, ${now});
 
         INSERT INTO transactions (id, created_at, updated_at, type, title, comment, operated_at, exchange_rate, from_account_id, to_account_id, external_source, external_id)
         VALUES

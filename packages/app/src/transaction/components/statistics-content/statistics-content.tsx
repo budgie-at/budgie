@@ -3,12 +3,17 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { Activity, useState } from 'react';
 import { Text, View } from 'react-native';
 
+import { isDefined } from '@rnw-community/shared';
+
+import { Button } from '../../../@generic/component/button/button';
 import { ChromeScrollFrame } from '../../../@generic/component/chrome-scroll-frame/chrome-scroll-frame';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { AnalyticsTabType } from '../../../@generic/type/analytics-tab.type';
 import { getDateFilterByPeriod } from '../../../@generic/utils/date/get-date-filter-by-period.util';
 import { useNetWorthQuery } from '../../../account/query/use-net-worth.query';
 import { RunwayContent } from '../../../runway/component/runway-content/runway-content';
+import { AnalyticsHistoryBoundary } from '../../../sync/component/analytics-history-boundary/analytics-history-boundary';
+import { useTransactionAccountFilterModal } from '../../context/transaction-account-filter-modal.context';
 import { useGetTotalIncomeAndExpensesQuery } from '../../query/use-get-total-income-and-expenses.query';
 import { checkIfFiltersSelected } from '../../utils/check-if-filters-selected.util';
 import { StatisticsCategoriesActivityContent } from '../statistics-categories-activity-content/statistics-categories-activity-content';
@@ -29,6 +34,15 @@ export const StatisticsContent = ({ activeTab }: Props) => {
 
     const { expense, income } = useGetTotalIncomeAndExpensesQuery(filters);
     const netWorth = useNetWorthQuery();
+    const [openAccountFilter] = useTransactionAccountFilterModal();
+
+    const handleChooseAccounts = () => {
+        openAccountFilter({ value: filters.accountIds }, result => {
+            if (isDefined(result)) {
+                setFilters(current => ({ ...current, accountIds: result.value }));
+            }
+        });
+    };
 
     const isRunwayTab = activeTab === 'runway';
     const isCategoriesTab = activeTab === 'categories';
@@ -49,30 +63,48 @@ export const StatisticsContent = ({ activeTab }: Props) => {
                 hasFiltersSelected={checkIfFiltersSelected(null, filters)}
             />
 
-            <View className="gap-y-lg">
-                <Text className="uppercase text-secondary-foreground text-xs">
-                    <Trans>Overview</Trans>
-                </Text>
-
-                <View className="flex-row gap-x-xl">
-                    <TransactionAnalyticsCard
-                        amount={expense}
-                        label={t`Spent`}
-                        icon={UserIconNameEnum.TrendingDown}
-                        variant="destructive"
+            <AnalyticsHistoryBoundary
+                accountIds={filters.accountIds}
+                description={t`We’re still importing transaction history. Wait for these accounts to finish, or select only accounts whose history is ready.`}
+                action={
+                    <Button
+                        content={t`Choose accounts`}
+                        leftIcon={UserIconNameEnum.Wallet}
+                        onPress={handleChooseAccounts}
+                        variant="primary"
                     />
-                    <TransactionAnalyticsCard amount={income} label={t`Income`} icon={UserIconNameEnum.TrendingUp} variant="positive" />
-                    <TransactionAnalyticsCard amount={netWorth} label={t`Balance`} icon={UserIconNameEnum.Wallet} variant="warning" />
+                }
+            >
+                <View className="gap-y-lg">
+                    <Text className="uppercase text-secondary-foreground text-xs">
+                        <Trans>Overview</Trans>
+                    </Text>
+
+                    <View className="flex-row gap-x-xl">
+                        <TransactionAnalyticsCard
+                            amount={expense}
+                            label={t`Spent`}
+                            icon={UserIconNameEnum.TrendingDown}
+                            variant="destructive"
+                        />
+                        <TransactionAnalyticsCard amount={income} label={t`Income`} icon={UserIconNameEnum.TrendingUp} variant="positive" />
+                        <TransactionAnalyticsCard
+                            amount={netWorth}
+                            label={t`Total balance`}
+                            icon={UserIconNameEnum.Wallet}
+                            variant="warning"
+                        />
+                    </View>
                 </View>
-            </View>
 
-            <Activity mode={categoriesActivityMode}>
-                <StatisticsCategoriesActivityContent filters={filters} income={income} expense={expense} />
-            </Activity>
+                <Activity mode={categoriesActivityMode}>
+                    <StatisticsCategoriesActivityContent filters={filters} income={income} expense={expense} />
+                </Activity>
 
-            <Activity mode={tagsActivityMode}>
-                <StatisticsTagsActivityContent filters={filters} income={income} expense={expense} />
-            </Activity>
+                <Activity mode={tagsActivityMode}>
+                    <StatisticsTagsActivityContent filters={filters} income={income} expense={expense} />
+                </Activity>
+            </AnalyticsHistoryBoundary>
 
             <MenuSpacer />
         </ChromeScrollFrame>
