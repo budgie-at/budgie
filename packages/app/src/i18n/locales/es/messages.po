@@ -1061,9 +1061,8 @@ msgstr "Puede tardar horas"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx
-#: src/account/component/archived-account-card/archived-account-card.tsx
+#: src/account/component/account-action-button/account-action-button.tsx
 #: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
-#: src/account/component/inactive-account-card/inactive-account-card.tsx
 #: src/account/hooks/use-archive-account.hook.ts
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
@@ -1577,7 +1576,7 @@ msgstr "No se pudieron abrir las instrucciones"
 msgid "Could not open Shortcuts"
 msgstr "No se pudo abrir Shortcuts"
 
-#: src/import/constant/import-csv-atom.constant.ts
+#: src/app/(tabs)/settings/import.tsx
 msgid "Could not read CSV file"
 msgstr "No se pudo leer el archivo CSV"
 
@@ -4695,8 +4694,7 @@ msgstr "Algunas transacciones pueden coincidir con varias reglas. La primera reg
 msgid "Something went wrong"
 msgstr "Algo salió mal"
 
-#: src/account/component/archived-account-card/archived-account-card.tsx
-#: src/account/component/inactive-account-card/inactive-account-card.tsx
+#: src/account/component/account-action-button/account-action-button.tsx
 #: src/account/hooks/use-delete-account.hook.ts
 msgid "Something went wrong. Please try again later."
 msgstr "Algo salió mal. Por favor, inténtalo de nuevo más tarde."
