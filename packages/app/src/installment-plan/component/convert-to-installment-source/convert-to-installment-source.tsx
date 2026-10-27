@@ -1,11 +1,9 @@
 import { convertFromMicroUnits } from '@budgie/contracts';
-import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Text } from 'react-native';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
 
 import type { ConvertToInstallmentModalParamsInterface } from '../../interface/convert-to-installment-modal-params.interface';
 
@@ -14,7 +12,7 @@ interface Props {
 }
 
 export const ConvertToInstallmentSource = ({ params }: Props) => {
-    const formatDigits = useFormatDigits(useAtomValue(decimalPlacesAtom));
+    const formatDigits = useDisplayFormatDigits();
     const { formatDayAndMonthAndYear } = useFormatDate();
 
     return (

@@ -1,5 +1,4 @@
 import { AccountEntityInterface } from '@budgie/contracts';
-import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { ReactNode } from 'react';
 import { View } from 'react-native';
@@ -7,8 +6,7 @@ import { View } from 'react-native';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 
 interface Props {
@@ -21,8 +19,7 @@ interface Props {
 
 export const AccountActionCard = ({ account, balance, currencySymbol, testID, children }: Props) => {
     const { t } = useLingui();
-    const decimalPlaces = useAtomValue(decimalPlacesAtom);
-    const formatDigits = useFormatDigits(decimalPlaces);
+    const formatDigits = useDisplayFormatDigits();
 
     return (
         <SimpleHorizontalCell

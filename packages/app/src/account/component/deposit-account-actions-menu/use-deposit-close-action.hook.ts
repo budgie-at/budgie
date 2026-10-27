@@ -1,6 +1,5 @@
 import { AccountTypeEnum } from '@budgie/contracts';
 import { AccountService, TransactionTransferService } from '@budgie/ledger';
-import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 
@@ -10,14 +9,13 @@ import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { dismissAllOrReplace } from '../../../@generic/utils/dismiss-all-or-replace.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useAccountSelectorModal } from '../../context/account-selector-modal.context';
 
 export const useDepositCloseAction = (accountId: number, balance: number, instrumentSymbol: string) => {
     const { t } = useLingui();
     const [openAccountSelector] = useAccountSelectorModal();
-    const formatDigits = useFormatDigits(useAtomValue(decimalPlacesAtom));
+    const formatDigits = useDisplayFormatDigits();
     const { isLoading, run } = useSingleFlight();
 
     const closeDeposit = Effect.gen(function* () {

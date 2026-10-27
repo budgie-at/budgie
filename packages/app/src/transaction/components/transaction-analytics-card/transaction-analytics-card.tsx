@@ -7,9 +7,9 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { HUNDRED_THOUSAND } from '../../../i18n/constant/compact-thresholds.constant';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useFormatCompactDigits } from '../../../i18n/hook/use-format-compact-digits.hook';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { decimalPlacesAtom, defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
+import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 
 import { TransactionAnalyticsCardSelector } from './transaction-analytics-card.selector';
 
@@ -23,9 +23,8 @@ interface Props {
 const TABULAR_NUMS_STYLE = { fontVariant: ['tabular-nums' as const] };
 
 export const TransactionAnalyticsCard = ({ label, icon, variant, amount }: Props) => {
-    const decimalPlaces = useAtomValue(decimalPlacesAtom);
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
-    const formatDigits = useFormatDigits(decimalPlaces);
+    const formatDigits = useDisplayFormatDigits();
     const formatCompactDigits = useFormatCompactDigits();
 
     const fullAmount = formatDigits(amount, defaultInstrument.symbol);

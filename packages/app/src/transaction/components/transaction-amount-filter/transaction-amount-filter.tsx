@@ -1,11 +1,9 @@
 import { AmountRangeInterface, UserIconNameEnum } from '@budgie/contracts';
-import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useTransactionAmountFilterModal } from '../../context/transaction-amount-filter-modal.context';
 import { TransactionFilterChip } from '../transaction-filter-chip/transaction-filter-chip';
 import { TransactionFiltersSelector } from '../transaction-filters/transaction-filters.selector';
@@ -17,8 +15,7 @@ interface Props {
 
 export const TransactionAmountFilter = ({ value, onChange }: Props) => {
     const { t } = useLingui();
-    const decimalPlaces = useAtomValue(decimalPlacesAtom);
-    const formatDigits = useFormatDigits(decimalPlaces);
+    const formatDigits = useDisplayFormatDigits();
     const [openTransactionAmountFilter] = useTransactionAmountFilterModal();
 
     const handleOpen = () => {

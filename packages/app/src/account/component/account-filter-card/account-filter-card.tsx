@@ -1,5 +1,4 @@
 import { AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
-import { useAtomValue } from '@effect/atom-react/Hooks';
 import { cva } from 'class-variance-authority';
 import { Text } from 'react-native';
 
@@ -7,8 +6,7 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { TransactionFiltersSelector } from '../../../transaction/components/transaction-filters/transaction-filters.selector';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
 
@@ -28,8 +26,7 @@ const accountVariants = cva('pl-[40px] flex-row items-center py-lg gap-x-xl pr-3
 });
 
 export const AccountFilterCard = ({ selectedAccountIds, account, onSelect }: Props) => {
-    const decimalPlaces = useAtomValue(decimalPlacesAtom);
-    const formatDigits = useFormatDigits(decimalPlaces);
+    const formatDigits = useDisplayFormatDigits();
 
     const { balance } = useAccountBalanceQuery(account.id);
 

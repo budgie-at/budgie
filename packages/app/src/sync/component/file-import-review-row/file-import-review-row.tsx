@@ -1,9 +1,7 @@
-import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Text, View } from 'react-native';
 
 import { useI18nContext } from '../../../i18n/context/i18n.context';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 
 import type { FileBankSyncReviewTransactionInterface } from '@budgie/sync';
 
@@ -13,7 +11,7 @@ interface Props {
 
 export const FileImportReviewRow = ({ transaction }: Props) => {
     const { intl } = useI18nContext();
-    const formatDigits = useFormatDigits(useAtomValue(decimalPlacesAtom));
+    const formatDigits = useDisplayFormatDigits();
 
     const operatedOn = intl.formatDate(transaction.operatedAt, { day: '2-digit', month: '2-digit' });
     const signPrefix = transaction.signedAmount > 0 ? '+' : '';

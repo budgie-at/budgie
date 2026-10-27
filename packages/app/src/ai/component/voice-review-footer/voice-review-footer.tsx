@@ -1,5 +1,4 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { ReactNode } from 'react';
 import { Text, View } from 'react-native';
@@ -7,8 +6,7 @@ import { Text, View } from 'react-native';
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 
 import { VoiceReviewFooterSelector } from './voice-review-footer.selector';
 
@@ -26,8 +24,7 @@ interface Props {
 export const VoiceReviewFooter = (props: Props) => {
     const { count, totalAmount, currencySymbol, onCancel, onReRecord, children } = props;
     const { t } = useLingui();
-    const decimalPlaces = useAtomValue(decimalPlacesAtom);
-    const formatDigits = useFormatDigits(decimalPlaces);
+    const formatDigits = useDisplayFormatDigits();
     const totalLabel = formatDigits(totalAmount, `${currencySymbol} `);
 
     return (

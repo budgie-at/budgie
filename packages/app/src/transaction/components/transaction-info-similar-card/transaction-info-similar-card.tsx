@@ -1,5 +1,4 @@
 import { convertFromMicroUnits } from '@budgie/contracts';
-import { useAtomValue } from '@effect/atom-react/Hooks';
 import { plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
@@ -9,9 +8,8 @@ import { isDefined } from '@rnw-community/shared';
 import { Card } from '../../../@generic/component/card/card';
 import { cn } from '../../../@generic/utils/cn.util';
 import { THOUSAND } from '../../../i18n/constant/compact-thresholds.constant';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useFormatCompactDigits } from '../../../i18n/hook/use-format-compact-digits.hook';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
 import { TransactionInfoSimilarMonthBar } from '../transaction-info-similar-month-bar/transaction-info-similar-month-bar';
 
@@ -25,8 +23,7 @@ interface Props {
 
 export const TransactionInfoSimilarCard = ({ stats, title, isLoading }: Props) => {
     const { t } = useLingui();
-    const decimalPlaces = useAtomValue(decimalPlacesAtom);
-    const formatDigits = useFormatDigits(decimalPlaces);
+    const formatDigits = useDisplayFormatDigits();
     const formatCompactDigits = useFormatCompactDigits(THOUSAND);
 
     const hasStats = isDefined(stats) && stats.count > 1;

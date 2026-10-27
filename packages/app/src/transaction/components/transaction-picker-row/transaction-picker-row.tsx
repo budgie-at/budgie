@@ -1,5 +1,4 @@
 import { TransactionTypeEnum, UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
-import { useAtomValue } from '@effect/atom-react/Hooks';
 import { t } from '@lingui/core/macro';
 import { Text, View } from 'react-native';
 
@@ -8,9 +7,8 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
 
 import type { TransactionPickerItemInterface } from '../../interface/transaction-picker-item.interface';
@@ -23,9 +21,8 @@ interface Props {
 }
 
 export const TransactionPickerRow = ({ item, isSelected = false, onPress, testID }: Props) => {
-    const decimalPlaces = useAtomValue(decimalPlacesAtom);
     const { formatMonthAndDay } = useFormatDate();
-    const formatDigits = useFormatDigits(decimalPlaces);
+    const formatDigits = useDisplayFormatDigits();
 
     const isIncome = item.type === TransactionTypeEnum.INCOME;
     const signedAmount = isIncome

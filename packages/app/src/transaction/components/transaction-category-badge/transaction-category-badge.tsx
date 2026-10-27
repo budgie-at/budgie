@@ -5,14 +5,12 @@ import {
     convertFromMicroUnits
 } from '@budgie/contracts';
 import { getTransactionCategoryEntries } from '@budgie/ledger';
-import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { TransactionCardSelector } from '../transaction-card/transaction-card.selector';
 
 interface Props {
@@ -23,8 +21,7 @@ const wrapperClassName = 'self-start rounded-sm py-xxs px-sm bg-primary/10 borde
 const textClassName = 'text-secondary-foreground text-xxs font-medium';
 
 export const TransactionCategoryBadge = ({ transaction }: Props) => {
-    const decimalPlaces = useAtomValue(decimalPlacesAtom);
-    const formatDigits = useFormatDigits(decimalPlaces);
+    const formatDigits = useDisplayFormatDigits();
     const { t } = useLingui();
 
     const categoryEntries = getTransactionCategoryEntries(transaction.entries);

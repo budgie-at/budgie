@@ -5,8 +5,8 @@ import { Text } from 'react-native';
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { formatExchangeRate } from '../../../@generic/utils/format-exchange-rate.util';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { decimalPlacesAtom, defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
+import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { useConvertedAmount } from '../../hook/use-converted-amount.hook';
 
 interface Props {
@@ -18,9 +18,8 @@ interface Props {
 }
 
 export const ConvertedAmountLabel = ({ instrumentId, instrumentSymbol, amount, baseAmount, shouldShowExchangeRate = false }: Props) => {
-    const decimalPlaces = useAtomValue(decimalPlacesAtom);
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
-    const formatDigits = useFormatDigits(decimalPlaces);
+    const formatDigits = useDisplayFormatDigits();
     const liveConversion = useConvertedAmount(instrumentId, defaultInstrument.id, amount);
     const convertedAmount = isDefined(baseAmount) ? baseAmount : liveConversion?.amount;
     const exchangeRate =

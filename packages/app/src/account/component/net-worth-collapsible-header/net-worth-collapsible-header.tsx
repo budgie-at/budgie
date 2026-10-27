@@ -9,9 +9,9 @@ import { ProtectedMoney } from '../../../@generic/component/protected-money/prot
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { HomePageSelector } from '../../../app/(tabs)/home-page.selector';
 import { SecurityLockButton } from '../../../auth/components/security-lock-button/security-lock-button';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { RunwayPill } from '../../../runway/component/runway-pill/runway-pill';
-import { decimalPlacesAtom, defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
+import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { NetWorthAssetChips } from '../net-worth-asset-chips/net-worth-asset-chips';
 
@@ -34,7 +34,7 @@ const LOCK_BUTTON_RESERVED_WIDTH = 68;
 export const NetWorthCollapsibleHeader = ({ netWorth, fiatTotal, cryptoTotal, fiatCount, cryptoCount }: Props) => {
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const isRunwayPillEnabled = useSetting('isRunwayPillEnabled');
-    const formatDigits = useFormatDigits(useAtomValue(decimalPlacesAtom));
+    const formatDigits = useDisplayFormatDigits();
     const [expandedHeaderWidth, setExpandedHeaderWidth] = useState(0);
 
     const handleExpandedHeaderLayout = (event: LayoutChangeEvent) => {

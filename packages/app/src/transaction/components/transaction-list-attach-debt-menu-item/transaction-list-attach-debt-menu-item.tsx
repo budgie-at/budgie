@@ -7,7 +7,6 @@ import {
     convertFromMicroUnits
 } from '@budgie/contracts';
 import { AccountDebtOpeningService, TransactionDebtSettlementService, getTransactionCategoryEntries } from '@budgie/ledger';
-import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 
@@ -19,8 +18,7 @@ import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { getDebtOpeningMessages } from '../../../account/utils/get-debt-opening-messages.util';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useTransactionActionsMenu } from '../../context/transaction-actions-menu.context';
 import { TransactionListContextMenuSelector } from '../transaction-list-context-menu/transaction-list-context-menu.selector';
 
@@ -33,8 +31,7 @@ interface Props {
 
 export const TransactionListAttachDebtMenuItem = ({ transaction }: Props) => {
     const { t } = useLingui();
-    const decimalPlaces = useAtomValue(decimalPlacesAtom);
-    const formatDigits = useFormatDigits(decimalPlaces);
+    const formatDigits = useDisplayFormatDigits();
     const closeMenu = useTransactionActionsMenu();
     const [openAccountSelector] = useAccountSelectorModal();
     const categoryEntries = getTransactionCategoryEntries(transaction.entries);

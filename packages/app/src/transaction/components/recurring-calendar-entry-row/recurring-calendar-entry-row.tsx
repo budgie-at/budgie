@@ -15,8 +15,8 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { DeletableRow } from '../../../@generic/component/deletable-row/deletable-row';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { decimalPlacesAtom, defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
+import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { RecurringCalendarSelector } from '../recurring-calendar-content/recurring-calendar.selector';
 import { RecurringSeriesTitleInput } from '../recurring-series-title-input/recurring-series-title-input';
 
@@ -36,9 +36,8 @@ interface Props {
 export const RecurringCalendarEntryRow = ({ entry, index, onPress, dayLabel }: Props) => {
     const router = useRouter();
     const { t } = useLingui();
-    const decimalPlaces = useAtomValue(decimalPlacesAtom);
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
-    const formatDigits = useFormatDigits(decimalPlaces);
+    const formatDigits = useDisplayFormatDigits();
     const [isRenaming, setIsRenaming] = useState(false);
 
     const formattedAmount = formatDigits(convertFromMicroUnits(entry.latestAmount), defaultInstrument.symbol);

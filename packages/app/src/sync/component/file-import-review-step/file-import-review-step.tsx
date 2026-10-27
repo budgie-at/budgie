@@ -1,5 +1,4 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { useAtomValue } from '@effect/atom-react/Hooks';
 import { plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
@@ -9,9 +8,8 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 import { Card } from '../../../@generic/component/card/card';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { useI18nContext } from '../../../i18n/context/i18n.context';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { OnboardingReceiptCard } from '../../../onboarding/component/onboarding-receipt-card/onboarding-receipt-card';
-import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
 import { FileImportReviewRow } from '../file-import-review-row/file-import-review-row';
 
 import { FileImportReviewStepSelector } from './file-import-review-step.selector';
@@ -28,7 +26,7 @@ interface Props {
 export const FileImportReviewStep = ({ review, fileName }: Props) => {
     const { t } = useLingui();
     const { intl } = useI18nContext();
-    const formatDigits = useFormatDigits(useAtomValue(decimalPlacesAtom));
+    const formatDigits = useDisplayFormatDigits();
 
     const { parsedTransactionCount, duplicateTransactionCount, earliestOperatedAt, latestOperatedAt } = review;
     const foundLabel = t({ message: plural(parsedTransactionCount, { one: '# transaction found', other: '# transactions found' }) });

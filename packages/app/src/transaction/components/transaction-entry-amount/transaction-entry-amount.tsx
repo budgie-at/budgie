@@ -6,8 +6,8 @@ import { Text, View } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { decimalPlacesAtom, defaultInstrumentIdAtom } from '../../../settings/constants/settings-atoms.constant';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
+import { defaultInstrumentIdAtom } from '../../../settings/constants/settings-atoms.constant';
 import { ConvertedAmountLabel } from '../converted-amount-label/converted-amount-label';
 import { DebtSettlementConvertedAmountLabel } from '../debt-settlement-converted-amount-label/debt-settlement-converted-amount-label';
 
@@ -27,9 +27,8 @@ const amountVariants = cva('text-sm font-semibold text-right', {
 });
 
 export const TransactionEntryAmount = ({ debtEvent, entry, variant, testID }: Props) => {
-    const decimalPlaces = useAtomValue(decimalPlacesAtom);
     const defaultInstrumentId = useAtomValue(defaultInstrumentIdAtom);
-    const formatDigits = useFormatDigits(decimalPlaces);
+    const formatDigits = useDisplayFormatDigits();
 
     const amount = convertFromMicroUnits(entry.amount);
     const formattedAmount = formatDigits(amount, entry.account.instrument.symbol);

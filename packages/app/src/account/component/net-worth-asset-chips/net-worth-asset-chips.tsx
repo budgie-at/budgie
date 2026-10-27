@@ -6,8 +6,8 @@ import { isPositiveNumber } from '@rnw-community/shared';
 
 import { Icon } from '../../../@generic/component/icon/icon';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { decimalPlacesAtom, defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
+import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 
 import { NetWorthAssetChipsSelector } from './net-worth-asset-chips.selector';
 
@@ -20,7 +20,7 @@ interface Props {
 
 export const NetWorthAssetChips = ({ fiatTotal, cryptoTotal, fiatCount, cryptoCount }: Props) => {
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
-    const formatDigits = useFormatDigits(useAtomValue(decimalPlacesAtom));
+    const formatDigits = useDisplayFormatDigits();
 
     const shouldShowChips = isPositiveNumber(fiatCount) && isPositiveNumber(cryptoCount);
 

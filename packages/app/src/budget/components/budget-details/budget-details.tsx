@@ -1,6 +1,5 @@
 import { computePeriodWindow, getInclusiveEnd } from '@budgie/budget';
 import { UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
-import { useAtomValue } from '@effect/atom-react/Hooks';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { router } from 'expo-router';
@@ -13,10 +12,9 @@ import { CollapsibleChromePage } from '../../../@generic/component/collapsible-c
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
 import { useToday } from '../../../@generic/hook/use-today.hook';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
-import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
 import { BudgetSelector } from '../../budget.selector';
 import { useGetBudgetCategoryLimitsQuery } from '../../query/use-get-budget-category-limits.query';
 import { useGetBudgetSpentQuery } from '../../query/use-get-budget-spent.query';
@@ -34,8 +32,7 @@ export const BudgetDetails = ({ budget }: Props) => {
     const { spent } = useGetBudgetSpentQuery(budget);
     const { categoryLimits } = useGetBudgetCategoryLimitsQuery(budget.id);
     const { instrument } = useGetInstrumentByIdQuery(budget.instrumentId);
-    const decimalPlaces = useAtomValue(decimalPlacesAtom);
-    const formatDigits = useFormatDigits(decimalPlaces);
+    const formatDigits = useDisplayFormatDigits();
     const periodWindow = computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, useToday());
     const periodEnd = getInclusiveEnd(periodWindow.nextPeriodStart);
     const currencySymbol = isDefined(instrument) ? instrument.symbol : '';

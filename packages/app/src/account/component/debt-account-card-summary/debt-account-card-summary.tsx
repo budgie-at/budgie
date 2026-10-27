@@ -1,4 +1,3 @@
-import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
@@ -6,8 +5,7 @@ import { isPositiveNumber } from '@rnw-community/shared';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { cn } from '../../../@generic/utils/cn.util';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 
 import { DebtAccountCardSummarySelector } from './debt-account-card-summary.selector';
 
@@ -19,7 +17,7 @@ interface Props {
 }
 
 export const DebtAccountCardSummary = ({ instrumentSymbol, outstandingAmount, title, totalAmount }: Props) => {
-    const formatDigits = useFormatDigits(useAtomValue(decimalPlacesAtom));
+    const formatDigits = useDisplayFormatDigits();
 
     const amountColorClassName = isPositiveNumber(outstandingAmount) ? 'text-primary' : 'text-secondary-foreground';
 

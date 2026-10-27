@@ -1,13 +1,11 @@
 import { DebtEventAssociationEnum, TransactionConsolidationTypeEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { getTransactionFeeEntries } from '@budgie/ledger';
-import { useAtomValue } from '@effect/atom-react/Hooks';
 import { t } from '@lingui/core/macro';
 import { View } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 import { DebtSettlementPill } from '../debt-settlement-pill/debt-settlement-pill';
 import { RefundedPill } from '../refunded-pill/refunded-pill';
@@ -23,8 +21,7 @@ interface Props {
 }
 
 export const TransactionMetadataRows = ({ transaction, refundedPillTestID, feeTestID, debtSettlementTestID }: Props) => {
-    const decimalPlaces = useAtomValue(decimalPlacesAtom);
-    const formatDigits = useFormatDigits(decimalPlaces);
+    const formatDigits = useDisplayFormatDigits();
     const feeEntries = getTransactionFeeEntries(transaction.entries);
     const feeEntry = feeEntries.at(0);
     const feeAmount = convertFromMicroUnits(sumEntryAmounts(feeEntries));

@@ -1,4 +1,3 @@
-import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { ImpactFeedbackStyle } from 'expo-haptics';
 import { useState } from 'react';
@@ -11,8 +10,7 @@ import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-prote
 import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { ConvertToInstallmentModalSelector } from '../../../app/convert-to-installment-modal.selector';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { INSTALLMENT_TOTAL_HERO_FONT_SIZE } from '../../constant/installment-total-hero-font-size.constant';
 import { ConvertToInstallmentTotalInput } from '../convert-to-installment-total-input/convert-to-installment-total-input';
 
@@ -27,7 +25,7 @@ export const ConvertToInstallmentTotal = ({ params }: Props) => {
     const { t } = useLingui();
     const [, hapticImpact] = useVibration();
     const [isEditing, setIsEditing] = useState(false);
-    const formatDigits = useFormatDigits(useAtomValue(decimalPlacesAtom));
+    const formatDigits = useDisplayFormatDigits();
     const isAmountProtected = useIsAmountProtected();
     const reducedMotion = useReducedMotion();
     const { control } = useFormContext<ConvertToInstallmentFormValues>();

@@ -7,8 +7,8 @@ import { Text, View } from 'react-native';
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { Icon } from '../../../@generic/component/icon/icon';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { decimalPlacesAtom, defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
+import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { CurrencyMarketPageSelector } from '../currency-market-page/currency-market-page.selector';
 
 import type { InstrumentDailyMarketPriceEntityInterface, InstrumentEntityInterface } from '@budgie/contracts';
@@ -23,7 +23,7 @@ const MISSING_VALUE = '-';
 
 export const CurrencyMarketPriceCard = ({ instrument, latestPrice, previousPrice }: Props) => {
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
-    const formatDigits = useFormatDigits(useAtomValue(decimalPlacesAtom));
+    const formatDigits = useDisplayFormatDigits();
     const change =
         isDefined(latestPrice) && isDefined(previousPrice) && isPositiveNumber(previousPrice.price)
             ? ((latestPrice.price - previousPrice.price) / previousPrice.price) * 100

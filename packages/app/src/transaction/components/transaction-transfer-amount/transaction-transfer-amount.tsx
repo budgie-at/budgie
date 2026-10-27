@@ -1,10 +1,8 @@
 import { UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
-import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Text, View } from 'react-native';
 
 import { Icon } from '../../../@generic/component/icon/icon';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 
 import type { AggregatedTransactionEntryInterface } from '../../interface/aggregated-transaction-entry.interface';
 
@@ -15,8 +13,7 @@ interface Props {
 }
 
 export const TransactionTransferAmount = ({ fromEntry, toEntry, testID }: Props) => {
-    const decimalPlaces = useAtomValue(decimalPlacesAtom);
-    const formatDigits = useFormatDigits(decimalPlaces);
+    const formatDigits = useDisplayFormatDigits();
 
     const fromAmount = formatDigits(convertFromMicroUnits(fromEntry.amount), fromEntry.account.instrument.symbol);
     const toAmount = formatDigits(convertFromMicroUnits(toEntry.amount), toEntry.account.instrument.symbol);

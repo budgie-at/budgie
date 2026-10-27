@@ -7,8 +7,9 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { MICRO_UNIT_DECIMAL_PLACES } from '../../../@generic/constant/micro-unit-decimal-places.constant';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { decimalPlacesAtom, defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
+import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { useCryptoInstrumentPositionQuery } from '../../query/use-crypto-instrument-position.query';
 import { CurrencyMarketHoldingMetricRow } from '../currency-market-holding-metric-row/currency-market-holding-metric-row';
 import { CurrencyMarketPageSelector } from '../currency-market-page/currency-market-page.selector';
@@ -98,7 +99,7 @@ const formatProfitValue = (
 export const CurrencyMarketHoldingsCard = ({ instrument, balance, latestPrice }: Props) => {
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const position = useCryptoInstrumentPositionQuery(instrument.id, defaultInstrument.id);
-    const formatDigits = useFormatDigits(useAtomValue(decimalPlacesAtom));
+    const formatDigits = useDisplayFormatDigits();
     const formatCryptoDigits = useFormatDigits(0, MICRO_UNIT_DECIMAL_PLACES);
     const marketValue = isDefined(latestPrice) ? balance * latestPrice.price : null;
     const profit = getProfit(marketValue, position.costBasis);

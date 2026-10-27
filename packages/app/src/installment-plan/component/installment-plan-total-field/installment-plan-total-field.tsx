@@ -1,4 +1,3 @@
-import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { Control, Controller, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
@@ -8,8 +7,7 @@ import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { ACCOUNT_COLOR } from '../../../account/constant/account-color.constant';
 import { CreateAccountSelector } from '../../../app/(main)/create-account/create-account.selector';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 
 import type { InstallmentPlanUpdateFormValues } from '../../constant/installment-plan-update-form-schema.constant';
 import type { UseControllerReturn } from 'react-hook-form';
@@ -21,7 +19,7 @@ interface Props {
 
 export const InstallmentPlanTotalField = ({ control, instrumentSymbol }: Props) => {
     const { t } = useLingui();
-    const formatDigits = useFormatDigits(useAtomValue(decimalPlacesAtom));
+    const formatDigits = useDisplayFormatDigits();
     const [targetBalance, installmentCount] = useWatch({ control, name: ['targetBalance', 'installmentCount'] });
     const partsLabel = `${installmentCount} × ${formatDigits(targetBalance / installmentCount, instrumentSymbol)}`;
 
