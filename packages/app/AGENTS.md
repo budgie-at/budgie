@@ -52,19 +52,9 @@ src/
 
 Database-backed UI reads use `databaseQueryAtom([Tables...], Effect.flatMap(Repo, repo => repo.x(args)))` (`src/@generic/utils/database-query-atom.util.ts`), or `databaseQueryFamily([Tables...], Repo, (repo, key) => repo.x(key))` (`database-query-family.util.ts`) when parametrised, and read with `useLiveAtomValue`. List every table the SQL reads; builder writes invalidate them through the Drizzle adapter, raw writes through `Db.mutation`.
 
-### Use `isDefined` for null checks in context hooks
+### Context hooks never throw
 
-```typescript
-// Good
-if (!isDefined(context)) {
-    throw new Error('...');
-}
-
-// Bad
-if (context === null) {
-    throw new Error('...');
-}
-```
+Contexts are created with a safe default value and the hook is `use(Context)`; a context hook never throws when used outside its provider (`budgie/effect-no-imperative` covers `context/` files).
 
 ### Extract inline types to named interfaces
 

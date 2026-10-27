@@ -9,6 +9,7 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { Icon } from '../../../@generic/component/icon/icon';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
+import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
 import { PinSetupModeEnum } from '../../../auth/enum/pin-setup-mode.enum';
 import { useBiometricLabel } from '../../hook/use-biometric-label.hook';
@@ -22,8 +23,8 @@ export const PinManagementRows = () => {
     const changePinHref = { pathname: '/settings/pin', params: { mode: PinSetupModeEnum.CHANGE } } as const;
     const disablePinHref = { pathname: '/settings/pin', params: { mode: PinSetupModeEnum.DISABLE } } as const;
 
-    const handleToggleBiometric = async (value: boolean) => {
-        await appRuntime.runPromise(updateSettingsMutation({ isBiometricEnabled: value }));
+    const handleToggleBiometric = (value: boolean) => {
+        appRuntime.runFork(logAndContinue(updateSettingsMutation({ isBiometricEnabled: value })));
     };
 
     return (

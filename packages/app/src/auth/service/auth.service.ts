@@ -49,7 +49,7 @@ export class AuthService extends Context.Service<AuthService>()('@budgie/app/Aut
             const previousPin = yield* getPin();
 
             yield* databaseRekeyService.rekey(params, persistPin(params.nextKey).pipe(Effect.orDie, Effect.andThen(afterCommit))).pipe(
-                Effect.andThen(Effect.promise(() => reloadApp())),
+                Effect.andThen(reloadApp),
                 Effect.onError(() => persistPin(previousPin).pipe(Effect.orDie))
             );
         });

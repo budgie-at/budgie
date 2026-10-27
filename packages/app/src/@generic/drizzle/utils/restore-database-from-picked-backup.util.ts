@@ -73,5 +73,5 @@ export const restoreDatabaseFromPickedBackup = Effect.fn('restoreDatabaseFromPic
     }
 
     yield* replaceDatabaseFromUri(uri);
-    yield* Effect.promise(() => reloadApp());
+    yield* reloadApp;
 });

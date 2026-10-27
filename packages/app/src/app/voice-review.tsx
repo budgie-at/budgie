@@ -1,12 +1,14 @@
 import { AITransactionInterface } from '@budgie/ai';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { useEffect, useEffectEvent } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 
 import { isDefined, isEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
+import { appRuntime } from '../@generic/runtime/app.runtime';
 import { useGetAccountByIdQuery } from '../account/query/use-get-account-by-id.query';
 import { VoiceReviewFooter } from '../ai/component/voice-review-footer/voice-review-footer';
 import { VoiceReviewSaveButton } from '../ai/component/voice-review-save-button/voice-review-save-button';
@@ -92,19 +94,25 @@ export default function VoiceReviewModal() {
     const handleUnmount = useEffectEvent(() => void resolveVoiceReview({ kind: 're-record' }, { skipBack: true }));
 
     useEffect(() => () => void handleUnmount(), []);
-    const handleSave = async () => {
+    const handleSave = () => {
         if (!isPositiveNumber(accountId)) {
             return;
         }
-        const result = await saveAll(accountId);
-        if (!isDefined(result)) {
-            return;
-        }
-        resolveVoiceReview({
-            kind: 'saved',
-            transactionIds: result.transactions.map(transaction => transaction.id),
-            accountId: result.destinationAccountId
-        });
+        appRuntime.runFork(
+            saveAll(accountId).pipe(
+                Effect.tap(result =>
+                    Effect.sync(() => {
+                        if (isDefined(result)) {
+                            resolveVoiceReview({
+                                kind: 'saved',
+                                transactionIds: result.transactions.map(transaction => transaction.id),
+                                accountId: result.destinationAccountId
+                            });
+                        }
+                    })
+                )
+            )
+        );
     };
 
     return (

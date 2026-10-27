@@ -2,10 +2,7 @@ import { AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/
 import { AccountArchiveService } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { Alert } from 'react-native';
-import Toast from 'react-native-toast-message';
 
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useArchivedAccountBalanceQuery } from '../../query/use-archived-account-balance.query';
 import { AccountActionButton } from '../account-action-button/account-action-button';
 import { AccountActionCard } from '../account-action-card/account-action-card';
@@ -22,27 +19,6 @@ export const ArchivedAccountCard = ({ account }: Props) => {
 
     const accountTitle = account.title;
 
-    const handleRestore = () => {
-        Alert.alert(t`Restore Account?`, t`${accountTitle} will be restored to your main view and included in totals.`, [
-            { text: t`Cancel`, style: 'cancel' },
-            {
-                text: t`Restore`,
-                onPress: () =>
-                    void appRuntime
-                        .runPromise(
-                            Effect.flatMap(AccountArchiveService, accountArchiveService => accountArchiveService.restoreById(account.id))
-                        )
-                        .catch(() => {
-                            Toast.show({
-                                type: 'error',
-                                text1: t`Could not restore account.`,
-                                text2: t`Something went wrong. Please try again later.`
-                            });
-                        })
-            }
-        ]);
-    };
-
     return (
         <AccountActionCard
             account={account}
@@ -53,7 +29,11 @@ export const ArchivedAccountCard = ({ account }: Props) => {
             {!account.isExternal && (
                 <AccountActionButton
                     icon={UserIconNameEnum.RotateCcw}
-                    onPress={handleRestore}
+                    actionButtonText={t`Restore`}
+                    confirmTitle={t`Restore Account?`}
+                    confirmDescription={t`${accountTitle} will be restored to your main view and included in totals.`}
+                    errorText={t`Could not restore account.`}
+                    onAction={Effect.flatMap(AccountArchiveService, accountArchiveService => accountArchiveService.restoreById(account.id))}
                     testID={ArchivedAccountCardSelector.RestoreButton(accountTitle)}
                 />
             )}

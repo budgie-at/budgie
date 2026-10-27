@@ -7,12 +7,13 @@ import { useState } from 'react';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
-import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { useSearchAccountsSortedQuery } from '../../account/query/use-search-accounts-sorted.query';
 import { useNonSystemCategoriesQuery } from '../../category/query/use-non-system-categories.query';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { AiModelResidencyService } from '../service/ai-model-residency.service';
 import { getRootErrorMessage } from '../utils/get-root-error-message.util';
+
+import type { AppServices } from '../../@generic/runtime/app.runtime';
 
 type CategorizationStatus = 'idle' | 'processing' | 'done' | 'error';
 
@@ -22,7 +23,7 @@ interface UseLlmCategorizationReturnInterface {
     readonly status: CategorizationStatus;
     readonly transactions: AITransactionInterface[];
     readonly error: string | null;
-    readonly categorize: (text: string) => Promise<AITransactionInterface[]>;
+    readonly categorize: (text: string) => Effect.Effect<AITransactionInterface[], unknown, AppServices>;
     readonly reset: () => void;
 }
 
@@ -70,34 +71,36 @@ export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
     const [transactions, setTransactions] = useState<AITransactionInterface[]>([]);
     const [error, setError] = useState<string | null>(null);
 
-    const categorize = (text: string): Promise<AITransactionInterface[]> => {
-        setStatus('processing');
-        setError(null);
-        setTransactions([]);
-
-        return appRuntime.runPromise(
-            Effect.flatMap(AiModelResidencyService, aiModelResidencyService =>
-                Effect.acquireUseRelease(
-                    Effect.forEach(VOICE_SUBSYSTEMS, subsystem => aiModelResidencyService.acquire(subsystem), { concurrency: 'unbounded' }),
-                    () => extractAndMapTransactions(text, accounts, categories),
-                    () => Effect.forEach(VOICE_SUBSYSTEMS, subsystem => aiModelResidencyService.release(subsystem), { discard: true })
+    const categorize = (text: string) =>
+        Effect.sync(() => {
+            setStatus('processing');
+            setError(null);
+            setTransactions([]);
+        }).pipe(
+            Effect.andThen(
+                Effect.flatMap(AiModelResidencyService, aiModelResidencyService =>
+                    Effect.acquireUseRelease(
+                        Effect.forEach(VOICE_SUBSYSTEMS, subsystem => aiModelResidencyService.acquire(subsystem), {
+                            concurrency: 'unbounded'
+                        }),
+                        () => extractAndMapTransactions(text, accounts, categories),
+                        () => Effect.forEach(VOICE_SUBSYSTEMS, subsystem => aiModelResidencyService.release(subsystem), { discard: true })
+                    )
                 )
-            ).pipe(
-                Effect.tap(results =>
-                    Effect.sync(() => {
-                        setTransactions(results);
-                        setStatus('done');
-                    })
-                ),
-                Effect.tapCause(cause =>
-                    Effect.sync(() => {
-                        setError(getRootErrorMessage(Cause.squash(cause)));
-                        setStatus('error');
-                    })
-                )
+            ),
+            Effect.tap(results =>
+                Effect.sync(() => {
+                    setTransactions(results);
+                    setStatus('done');
+                })
+            ),
+            Effect.tapCause(cause =>
+                Effect.sync(() => {
+                    setError(getRootErrorMessage(Cause.squash(cause)));
+                    setStatus('error');
+                })
             )
         );
-    };
 
     const reset = (): void => {
         setStatus('idle');

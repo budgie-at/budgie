@@ -51,7 +51,7 @@ export const DatabaseRestoreScreen = () => {
         );
     };
 
-    const handleRetry = () => void reloadApp();
+    const handleRetry = () => void Effect.runPromise(reloadApp);
 
     return (
         <Page safeEdges={safeEdges} className="bg-primary-reverse" contentClassName="justify-center">

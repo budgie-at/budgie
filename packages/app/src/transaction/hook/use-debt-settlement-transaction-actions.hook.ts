@@ -8,6 +8,8 @@ import Toast from 'react-native-toast-message';
 import { isDefined } from '@rnw-community/shared';
 
 import { appRuntime } from '../../@generic/runtime/app.runtime';
+import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
+import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 import { useAccountSelectorModal } from '../../account/context/account-selector-modal.context';
 
 import type { DebtSettlementAccountInterface } from '../interface/debt-settlement-account.interface';
@@ -28,20 +30,16 @@ export const useDebtSettlementTransactionActions = ({
     );
     const hasDebtSettlement = isDefined(localDebtSettlementAccount);
 
-    const attachDebtSettlement = async (debtAccountId: number) => {
-        const debtAccount = await appRuntime.runPromise(
-            Effect.gen(function* () {
-                const accountService = yield* AccountService;
-                const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
-                const debtAccount = yield* accountService.findByIdOrFail(debtAccountId);
+    const attachDebtSettlement = (debtAccountId: number) =>
+        Effect.gen(function* () {
+            const accountService = yield* AccountService;
+            const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
+            const debtAccount = yield* accountService.findByIdOrFail(debtAccountId);
 
-                yield* transactionDebtSettlementService.attach({ transactionId, debtAccountId });
+            yield* transactionDebtSettlementService.attach({ transactionId, debtAccountId });
 
-                return debtAccount;
-            })
-        );
-        setLocalDebtSettlementAccount(debtAccount);
-    };
+            setLocalDebtSettlementAccount(debtAccount);
+        });
 
     const handleOpenDebtSettlement = () => {
         if (transaction.type !== TransactionTypeEnum.EXPENSE && transaction.type !== TransactionTypeEnum.INCOME) {
@@ -60,21 +58,23 @@ export const useDebtSettlementTransactionActions = ({
             },
             debtAccountId => {
                 if (isDefined(debtAccountId)) {
-                    attachDebtSettlement(debtAccountId).catch(() => void Toast.show({ type: 'error', text1: t`Could not attach debt` }));
+                    appRuntime.runFork(logAndContinue(attachDebtSettlement(debtAccountId).pipe(toastOnFailure(t`Could not attach debt`))));
                 }
             }
         );
     };
 
     const handleDetachDebtSettlement = () =>
-        void appRuntime
-            .runPromise(
+        void appRuntime.runFork(
+            logAndContinue(
                 Effect.flatMap(TransactionDebtSettlementService, transactionDebtSettlementService =>
                     transactionDebtSettlementService.detach(transactionId)
+                ).pipe(
+                    Effect.tap(() => Effect.sync(() => void setLocalDebtSettlementAccount(null))),
+                    toastOnFailure(t`Could not update transaction.`)
                 )
             )
-            .then(() => void setLocalDebtSettlementAccount(null))
-            .catch(() => void Toast.show({ type: 'error', text1: t`Could not update transaction.` }));
+        );
 
     return {
         handleOpenDebtSettlement,

@@ -1119,8 +1119,8 @@
         },
         {
             "files": [
-                "packages/app/src/**/{hook,hooks,utils}/**/*.ts",
-                "packages/app/src/**/*.{hook,util}.ts",
+                "packages/app/src/**/{hook,hooks,utils,context}/**/*.ts",
+                "packages/app/src/**/*.{hook,util,context}.ts",
                 "packages/app/src/**/*.tsx"
             ],
             "rules": {
