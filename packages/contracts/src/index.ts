@@ -227,6 +227,7 @@ export { TransactionReceiptEntityTable } from './transaction-receipt/table/trans
 
 export type { TransactionReceiptEntityInterface } from './transaction-receipt/entity/transaction-receipt-entity.interface';
 export type { TransactionReceiptCreateEntityInterface } from './transaction-receipt/entity/transaction-receipt-create-entity.interface';
+export { TransactionReceiptRepository } from './transaction-receipt/repository/transaction-receipt.repository';
 
 export { ExpenseTransactionCreateInputSchema } from './transaction/schema/expense-transaction-create-input.schema';
 

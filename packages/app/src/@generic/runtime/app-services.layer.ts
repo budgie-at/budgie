@@ -30,6 +30,7 @@ import {
     TransactionPatternRepository,
     TransactionRepository,
     TransactionConsolidationRepository,
+    TransactionReceiptRepository,
     TransactionViewRepository,
     TransactionTagsRepository
 } from '@budgie/contracts';
@@ -169,6 +170,7 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     CategoryRepository.layer,
     CategoryService.layer,
     MccCategoryRepository.layer,
+    TransactionReceiptRepository.layer,
     CommentEmbeddingRepository.layer,
     MerchantEmbeddingRepository.layer,
     TransactionEmbeddingRepository.layer,
