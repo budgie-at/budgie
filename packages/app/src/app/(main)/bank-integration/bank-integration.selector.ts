@@ -5,7 +5,6 @@ export const BankIntegrationSelector = {
     NameCard: 'BankIntegration.NameCard',
     KeyCard: 'BankIntegration.KeyCard',
     NewAccountsStatus: 'BankIntegration.NewAccountsStatus',
-    UpdateKeyButton: 'BankIntegration.UpdateKeyButton',
     RetryNewAccountsButton: 'BankIntegration.RetryNewAccountsButton',
     NewAccountRow: (externalId: string) => `BankIntegration.NewAccountRow.${externalId}` as const,
     ImportFileButton: 'BankIntegration.ImportFileButton',

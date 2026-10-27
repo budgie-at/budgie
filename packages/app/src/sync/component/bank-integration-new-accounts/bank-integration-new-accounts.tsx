@@ -5,7 +5,6 @@ import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/bank-integration.selector';
-import { useBankIntegrationKeyModal } from '../../context/bank-integration-key-modal.context';
 import { useBankIntegration } from '../../context/bank-integration.context';
 import { useBankIntegrationAccountPreviewsQuery } from '../../query/use-bank-integration-account-previews.query';
 import { BankIntegrationAccountRowSkeleton } from '../bank-integration-account-row-skeleton/bank-integration-account-row-skeleton';
@@ -19,13 +18,11 @@ interface Props {
 export const BankIntegrationNewAccounts = ({ linkedExternalIds }: Props) => {
     const { t } = useLingui();
     const { integration } = useBankIntegration();
-    const [openKeyModal] = useBankIntegrationKeyModal();
     const { previews, isLoading, isKeyRejected, hasError, refresh } = useBankIntegrationAccountPreviewsQuery(integration.id);
 
     const newAccountPreviews = previews.filter(
         preview => !isDefined(preview.existingAccountId) && !linkedExternalIds.has(preview.externalId)
     );
-    const handleUpdateKey = () => void openKeyModal(integration.id);
 
     if (isLoading) {
         return (
@@ -37,21 +34,7 @@ export const BankIntegrationNewAccounts = ({ linkedExternalIds }: Props) => {
     }
 
     if (isKeyRejected) {
-        return (
-            <BankIntegrationStatusBanner
-                variant="destructive"
-                text={t`Monobank rejected this key`}
-                testID={BankIntegrationSelector.NewAccountsStatus}
-            >
-                <Button
-                    variant="default"
-                    size="sm"
-                    onPress={handleUpdateKey}
-                    content={t`Update key`}
-                    testID={BankIntegrationSelector.UpdateKeyButton}
-                />
-            </BankIntegrationStatusBanner>
-        );
+        return null;
     }
 
     if (hasError) {

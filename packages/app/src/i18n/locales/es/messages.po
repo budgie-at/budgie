@@ -3133,10 +3133,6 @@ msgstr "Clave de Monobank actualizada"
 msgid "Monobank limits how often keys can be checked. Try again in a minute."
 msgstr "Monobank limita la frecuencia con la que se pueden comprobar las claves. Inténtalo de nuevo en un minuto."
 
-#: src/sync/component/bank-integration-new-accounts/bank-integration-new-accounts.tsx
-msgid "Monobank rejected this key"
-msgstr "Monobank rechazó esta clave"
-
 #: src/app/bank-integration-key.tsx
 msgid "Monobank rejected this key. Check it and try again."
 msgstr "Monobank rechazó esta clave. Revísala e inténtalo de nuevo."
@@ -5298,10 +5294,6 @@ msgstr "Próximos"
 #: src/account/component/update-account-page/update-account-page.tsx
 msgid "Update Account"
 msgstr "Actualizar cuenta"
-
-#: src/sync/component/bank-integration-new-accounts/bank-integration-new-accounts.tsx
-msgid "Update key"
-msgstr "Actualizar clave"
 
 #: src/rule/components/rule-update-card/rule-update-card.tsx
 msgid "Update rule?"

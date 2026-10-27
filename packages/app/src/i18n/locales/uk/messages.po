@@ -3133,10 +3133,6 @@ msgstr "Ключ Monobank оновлено"
 msgid "Monobank limits how often keys can be checked. Try again in a minute."
 msgstr "Monobank обмежує, як часто можна перевіряти ключі. Спробуйте за хвилину."
 
-#: src/sync/component/bank-integration-new-accounts/bank-integration-new-accounts.tsx
-msgid "Monobank rejected this key"
-msgstr "Monobank відхилив цей ключ"
-
 #: src/app/bank-integration-key.tsx
 msgid "Monobank rejected this key. Check it and try again."
 msgstr "Monobank відхилив цей ключ. Перевірте його та спробуйте ще раз."
@@ -5298,10 +5294,6 @@ msgstr "Незабаром"
 #: src/account/component/update-account-page/update-account-page.tsx
 msgid "Update Account"
 msgstr "Оновити рахунок"
-
-#: src/sync/component/bank-integration-new-accounts/bank-integration-new-accounts.tsx
-msgid "Update key"
-msgstr "Оновити ключ"
 
 #: src/rule/components/rule-update-card/rule-update-card.tsx
 msgid "Update rule?"
