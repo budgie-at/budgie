@@ -15,11 +15,29 @@ const TOTAL_LABELS: Record<LanguageEnum, readonly string[]> = {
 };
 
 const EXCLUDED_LABELS: Record<LanguageEnum, readonly string[]> = {
-    [LanguageEnum.EN]: ['subtotal', 'sub total', 'tax', 'vat', 'tip', 'gratuity', 'change', 'tendered', 'cash', 'given'],
-    [LanguageEnum.FR]: ['sous-total', 'tva', 'pourboire', 'rendu', 'espèces', 'donné'],
-    [LanguageEnum.UK]: ['пдв', 'решта', 'готівка', 'готівкою'],
-    [LanguageEnum.DE]: ['zwischensumme', 'ust', 'mwst', 'netto', 'trinkgeld', 'rückgeld', 'gegeben', 'bar', 'bargeld'],
-    [LanguageEnum.ES]: ['subtotal', 'iva', 'propina', 'cambio', 'entregado', 'efectivo']
+    [LanguageEnum.EN]: ['subtotal', 'sub total', 'tax', 'vat', 'tip', 'gratuity', 'change', 'tendered', 'given'],
+    [LanguageEnum.FR]: ['sous-total', 'tva', 'pourboire', 'rendu', 'donné'],
+    [LanguageEnum.UK]: ['пдв', 'решта'],
+    [LanguageEnum.DE]: ['zwischensumme', 'ust', 'mwst', 'netto', 'trinkgeld', 'rückgeld', 'gegeben'],
+    [LanguageEnum.ES]: ['subtotal', 'iva', 'propina', 'cambio', 'entregado']
+};
+
+const CASH_LABELS: Record<LanguageEnum, readonly string[]> = {
+    [LanguageEnum.EN]: ['cash'],
+    [LanguageEnum.FR]: ['espèces'],
+    [LanguageEnum.UK]: ['готівка', 'готівкою'],
+    [LanguageEnum.DE]: ['bar', 'bargeld'],
+    [LanguageEnum.ES]: ['efectivo']
+};
+
+const PAYMENT_BRANDS = ['visa', 'mastercard', 'maestro', 'amex', 'american express', 'apple pay', 'google pay', 'v pay', 'contactless'];
+
+const PAYMENT_LABELS: Record<LanguageEnum, readonly string[]> = {
+    [LanguageEnum.EN]: ['card', 'payment', 'approved'],
+    [LanguageEnum.FR]: ['carte', 'paiement', 'sans contact'],
+    [LanguageEnum.UK]: ['картка', 'оплата', 'безготівкова', 'безготівковий'],
+    [LanguageEnum.DE]: ['zahlung', 'bankomat', 'karte', 'kartenzahlung', 'bezahlt'],
+    [LanguageEnum.ES]: ['tarjeta', 'pago']
 };
 
 const INCLUSIVE_MARKERS: Record<LanguageEnum, readonly string[]> = {
@@ -52,13 +70,12 @@ const CURRENCY_ALIASES: ReadonlyMap<string, CurrencyEnum> = new Map([
 
 const CURRENCY_CODES = new Map<string, CurrencyEnum>(Object.values(CurrencyEnum).map(code => [code, code]));
 const CURRENCY_TOKEN_PATTERN = /\p{L}+|[$£€₴]/gu;
-const CURRENCY_CODE_PATTERN = /(?<!\p{L})([A-Z]{3})(?!\p{L})\s?(?=\d)|(?<=\d)\s?([A-Z]{3})(?!\p{L})/gu;
-const AMOUNT_PATTERN = /(?<![\d.,])([-−])?(\d{1,3}(?:[.,']\d{3})+|\d+)[.,](\d{2})(?!\d|[.,]\d)/gu;
+const CURRENCY_CODE_PATTERN = /(?<!\p{L})([A-Za-z]{3})(?!\p{L})\s?(?=\d)|(?<=\d)\s?([A-Za-z]{3})(?!\p{L})/gu;
+const AMOUNT_PATTERN = /(?<![\d.,])([-−])?(\d{1,3}(?:[.,'\s]\d{3})+|\d+)[.,](\d{2})(?!\d|[.,]\d)(?!\s?%)/gu;
 const PARENTHESIZED_PATTERN = /\([^)]*\)/gu;
-const INCLUSIVE_PHRASE_PATTERN = new RegExp(
-    String.raw`${buildReceiptKeywordPattern(Object.values(INCLUSIVE_MARKERS).flat(), 'iu').source}\.?(?:\s+\p{L}+)?`,
-    'giu'
-);
+const INCLUSIVE_MARKER_PATTERN = buildReceiptKeywordPattern(Object.values(INCLUSIVE_MARKERS).flat(), 'iu');
+const CASH_LABEL_PATTERN = buildReceiptKeywordPattern(Object.values(CASH_LABELS).flat(), 'iu');
+const PAYMENT_PATTERN = buildReceiptKeywordPattern([...PAYMENT_BRANDS, ...Object.values(PAYMENT_LABELS).flat()], 'iu');
 const TOTAL_LABEL_PATTERN = buildReceiptKeywordPattern(Object.values(TOTAL_LABELS).flat(), 'iu');
 const EXCLUDED_LABEL_PATTERN = buildReceiptKeywordPattern(Object.values(EXCLUDED_LABELS).flat(), 'iu');
 
@@ -68,13 +85,11 @@ const findAmounts = (text: string): number[] =>
         .map(([, , integerPart, fractionPart]) => convertToMicroUnits(Number(`${integerPart.replaceAll(/\D/gu, '')}.${fractionPart}`)))
         .filter(isPositiveNumber);
 
-const stripInclusivePhrases = (row: string): string => row.replaceAll(PARENTHESIZED_PATTERN, ' ').replaceAll(INCLUSIVE_PHRASE_PATTERN, ' ');
-
 const findCurrencies = (text: string): CurrencyEnum[] =>
     [
         ...(text.match(CURRENCY_TOKEN_PATTERN) ?? []).map(token => CURRENCY_ALIASES.get(token.toLocaleLowerCase())),
         ...[...text.matchAll(CURRENCY_CODE_PATTERN)].map(([, before, after]) =>
-            CURRENCY_CODES.get(isNotEmptyString(before) ? before : after)
+            CURRENCY_CODES.get((isNotEmptyString(before) ? before : after).toUpperCase())
         )
     ].filter(isDefined);
 
@@ -89,17 +104,30 @@ const findMostFrequentCurrency = (rows: readonly string[]): CurrencyEnum | null 
     return [...counts.entries()].sort(([, left], [, right]) => right - left).at(0)?.[0] ?? null;
 };
 
-export const hasReceiptTotalLabel = (row: string): boolean => TOTAL_LABEL_PATTERN.test(row);
+const findTotalCandidate = (
+    rawRow: string,
+    rowIndex: number
+): { readonly amount: number; readonly row: string; readonly rowIndex: number } | null => {
+    const row = rawRow.replaceAll(PARENTHESIZED_PATTERN, ' ');
+    const marker = INCLUSIVE_MARKER_PATTERN.exec(row);
+    const head = isDefined(marker) ? row.slice(0, marker.index) : row;
+    const tail = isDefined(marker) ? row.slice(marker.index + marker[0].length) : '';
+    const label = TOTAL_LABEL_PATTERN.exec(head);
+    const cash = CASH_LABEL_PATTERN.exec(head);
 
-export const extractReceiptTotal = (rows: readonly string[], paymentRows: readonly string[]): ReceiptTotalInterface | null => {
-    const candidates = rows
-        .map(row => stripInclusivePhrases(row))
-        .filter(row => TOTAL_LABEL_PATTERN.test(row) && !EXCLUDED_LABEL_PATTERN.test(row))
-        .flatMap(row =>
-            findAmounts(row)
-                .slice(-1)
-                .map(amount => ({ amount, row }))
-        );
+    if (!isDefined(label) || EXCLUDED_LABEL_PATTERN.test(head) || (isDefined(cash) && cash.index < label.index)) {
+        return null;
+    }
+
+    const amount = findAmounts(head.slice(label.index + label[0].length)).at(0) ?? findAmounts(tail).at(0);
+
+    return isDefined(amount) ? { amount, row, rowIndex } : null;
+};
+
+export const extractReceiptTotal = (rows: readonly string[]): ReceiptTotalInterface | null => {
+    const candidates = rows.map(findTotalCandidate).filter(isDefined);
+    const paymentStart = rows.findIndex((row, index) => index >= (candidates.at(0)?.rowIndex ?? 0) && PAYMENT_PATTERN.test(row));
+    const paymentRows = paymentStart < 0 ? [] : rows.slice(paymentStart);
     const paymentAmounts = new Set(paymentRows.flatMap(findAmounts));
     const confirmed = candidates.filter(candidate => paymentAmounts.has(candidate.amount));
     const best = [...(isNotEmptyArray(confirmed) ? confirmed : candidates)].sort((left, right) => right.amount - left.amount).at(0);
@@ -108,5 +136,5 @@ export const extractReceiptTotal = (rows: readonly string[], paymentRows: readon
         return null;
     }
 
-    return { amount: best.amount, currency: findCurrencies(best.row).at(0) ?? findMostFrequentCurrency(rows) };
+    return { amount: best.amount, currency: findCurrencies(best.row).at(0) ?? findMostFrequentCurrency(rows), paymentRows };
 };

@@ -39,9 +39,41 @@ describe('parseReceipt hardening', () => {
         })
     );
 
-    it.effect('does not merge a quantity into the amount through a space', () =>
+    it.effect('reads grouped thousands separated by space, NBSP and narrow NBSP', () =>
         Effect.sync(() => {
-            expect(parseReceipt(rowsOf('Total 3 100.00'))).toMatchObject({ total: convertToMicroUnits(100) });
+            expect(parseReceipt(rowsOf('СУМА 1\u00a0234,56 грн'))).toMatchObject({
+                total: convertToMicroUnits(1234.56),
+                currency: CurrencyEnum.UAH
+            });
+            expect(parseReceipt(rowsOf('Total 1 234,56 €'))).toMatchObject({
+                total: convertToMicroUnits(1234.56),
+                currency: CurrencyEnum.EUR
+            });
+            expect(parseReceipt(rowsOf('Total 1\u202f234,56 €'))).toMatchObject({ total: convertToMicroUnits(1234.56) });
+        })
+    );
+
+    it.effect('takes the amount before a VAT breakdown marker and the first amount after a leading marker', () =>
+        Effect.sync(() => {
+            expect(parseReceipt(rowsOf('Summe EUR 12,50 davon MwSt 20% 2,08'))).toMatchObject({ total: convertToMicroUnits(12.5) });
+            expect(parseReceipt(rowsOf('Total TTC 12,50 € dont TVA 2,08 €'))).toMatchObject({ total: convertToMicroUnits(12.5) });
+            expect(parseReceipt(rowsOf('Summe inkl. 20% MwSt EUR 12,50'))).toMatchObject({
+                total: convertToMicroUnits(12.5),
+                currency: CurrencyEnum.EUR
+            });
+        })
+    );
+
+    it.effect('keeps a total row when a cash word follows the total label', () =>
+        Effect.sync(() => {
+            expect(parseReceipt(rowsOf('Summe bar EUR 12,50'))).toMatchObject({ total: convertToMicroUnits(12.5) });
+            expect(parseReceipt(rowsOf('Bar Summe 20,00'))).toBeNull();
+        })
+    );
+
+    it.effect('detects lowercase currency codes next to an amount', () =>
+        Effect.sync(() => {
+            expect(parseReceipt(rowsOf('Total 12.50 eur'))).toMatchObject({ currency: CurrencyEnum.EUR });
         })
     );
 

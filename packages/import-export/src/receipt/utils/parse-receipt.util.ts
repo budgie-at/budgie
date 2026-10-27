@@ -6,21 +6,11 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 import { buildReceiptKeywordPattern } from './build-receipt-keyword-pattern.util';
 import { extractReceiptMerchant } from './extract-receipt-merchant.util';
 import { extractReceiptTimestamp } from './extract-receipt-timestamp.util';
-import { extractReceiptTotal, hasReceiptTotalLabel } from './extract-receipt-total.util';
+import { extractReceiptTotal } from './extract-receipt-total.util';
 
 import type { ReceiptDraftInterface } from '../interface/receipt-draft.interface';
 import type { ReceiptTextLineInterface } from '../interface/receipt-text-line.interface';
 import type { ReceiptTimestampInterface } from '../interface/receipt-timestamp.interface';
-
-const PAYMENT_BRANDS = ['visa', 'mastercard', 'maestro', 'amex', 'american express', 'apple pay', 'google pay', 'v pay', 'contactless'];
-
-const PAYMENT_LABELS: Record<LanguageEnum, readonly string[]> = {
-    [LanguageEnum.EN]: ['card', 'payment', 'approved'],
-    [LanguageEnum.FR]: ['carte', 'paiement', 'sans contact'],
-    [LanguageEnum.UK]: ['картка', 'оплата', 'безготівкова', 'безготівковий'],
-    [LanguageEnum.DE]: ['zahlung', 'bankomat', 'karte', 'kartenzahlung', 'bezahlt'],
-    [LanguageEnum.ES]: ['tarjeta', 'pago']
-};
 
 const RECEIPT_NUMBER_LABELS: Record<LanguageEnum, readonly string[]> = {
     [LanguageEnum.EN]: ['invoice no', 'invoice', 'receipt no', 'receipt', 'check', 'order no'],
@@ -30,7 +20,6 @@ const RECEIPT_NUMBER_LABELS: Record<LanguageEnum, readonly string[]> = {
     [LanguageEnum.ES]: ['factura', 'ticket', 'recibo']
 };
 
-const PAYMENT_PATTERN = buildReceiptKeywordPattern([...PAYMENT_BRANDS, ...Object.values(PAYMENT_LABELS).flat()], 'iu');
 const RECEIPT_NUMBER_PATTERN = new RegExp(
     String.raw`${buildReceiptKeywordPattern(Object.values(RECEIPT_NUMBER_LABELS).flat(), 'iu').source}[\s.:#№°º-]*([\p{L}\d][\p{L}\d/-]*\d[\p{L}\d/-]*)`,
     'iu'
@@ -70,12 +59,6 @@ const groupRows = (lines: readonly ReceiptTextLineInterface[]): string[] =>
                 .join(' ')
         );
 
-const findPaymentRows = (rows: readonly string[], totalRowIndex: number): readonly string[] => {
-    const paymentStart = rows.findIndex((row, index) => index >= totalRowIndex && PAYMENT_PATTERN.test(row));
-
-    return paymentStart < 0 ? [] : rows.slice(paymentStart);
-};
-
 const findReceiptNumber = (rows: readonly string[]): string | null =>
     rows
         .map(row => RECEIPT_NUMBER_PATTERN.exec(row)?.[1])
@@ -105,15 +88,13 @@ const buildFingerprint = (draft: Omit<ReceiptDraftInterface, 'fingerprint'>, tim
 
 export const parseReceipt = (lines: readonly ReceiptTextLineInterface[]): ReceiptDraftInterface | null => {
     const rows = groupRows(lines);
-    const totalRowIndex = rows.findIndex(hasReceiptTotalLabel);
-    const paymentRows = findPaymentRows(rows, totalRowIndex);
-    const total = extractReceiptTotal(rows, paymentRows);
+    const total = extractReceiptTotal(rows);
 
     if (!isDefined(total)) {
         return null;
     }
 
-    const timestamp = extractReceiptTimestamp(rows, paymentRows);
+    const timestamp = extractReceiptTimestamp(rows, total.paymentRows);
     const vatIds = rows.map(findVatId);
     const merchant = extractReceiptMerchant(lines, rows, vatIds.findIndex(isDefined));
     const draft = {
