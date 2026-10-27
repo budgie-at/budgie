@@ -1,130 +1,76 @@
 import { convertToMicroUnits, CurrencyEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
-import * as Effect from 'effect/Effect';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { parseReceipt } from '../../src/receipt/utils/parse-receipt.util';
 
 import { receiptLine } from './fixture/receipt-line';
 
 const rowsOf = (...texts: readonly string[]) => texts.map((text, index) => receiptLine(text, 0.06, 0.05 + index * 0.03));
+const total = (amount: number, currency?: CurrencyEnum) => ({
+    total: convertToMicroUnits(amount),
+    ...(isDefined(currency) && { currency })
+});
 
 describe('parseReceipt hardening', () => {
-    it.effect('keeps totals whose row mentions an inclusive tax phrase', () =>
-        Effect.sync(() => {
-            expect(parseReceipt(rowsOf('Summe inkl. MwSt EUR 12,50'))).toMatchObject({
-                total: convertToMicroUnits(12.5),
-                currency: CurrencyEnum.EUR
-            });
-            expect(parseReceipt(rowsOf('Total incl. tax 12.50 USD'))).toMatchObject({
-                total: convertToMicroUnits(12.5),
-                currency: CurrencyEnum.USD
-            });
-            expect(parseReceipt(rowsOf('TOTAL (IVA incluido) 12,50 €'))).toMatchObject({
-                total: convertToMicroUnits(12.5),
-                currency: CurrencyEnum.EUR
-            });
-        })
-    );
+    it.each([
+        ['inclusive tax phrase (de)', rowsOf('Summe inkl. MwSt EUR 12,50'), total(12.5, CurrencyEnum.EUR)],
+        ['inclusive tax phrase (en)', rowsOf('Total incl. tax 12.50 USD'), total(12.5, CurrencyEnum.USD)],
+        ['parenthesized inclusive tax phrase', rowsOf('TOTAL (IVA incluido) 12,50 €'), total(12.5, CurrencyEnum.EUR)],
+        ['tendered cash amount', rowsOf('Total 12.50', 'Amount tendered 20.00'), total(12.5)],
+        ['NBSP thousands', rowsOf('СУМА 1 234,56 грн'), total(1234.56, CurrencyEnum.UAH)],
+        ['space thousands', rowsOf('Total 1 234,56 €'), total(1234.56, CurrencyEnum.EUR)],
+        ['narrow NBSP thousands', rowsOf('Total 1 234,56 €'), total(1234.56)],
+        [
+            'dot-decimal thousands',
+            rowsOf('TOTAL 1,234.56 USD'),
+            { total: convertToMicroUnits(1234.56), currency: CurrencyEnum.USD, occurredAt: null }
+        ],
+        ['comma-decimal thousands', rowsOf('Summe 1.234,56 EUR'), total(1234.56, CurrencyEnum.EUR)],
+        ['VAT breakdown after the total (de)', rowsOf('Summe EUR 12,50 davon MwSt 20% 2,08'), total(12.5)],
+        ['VAT breakdown after the total (fr)', rowsOf('Total TTC 12,50 € dont TVA 2,08 €'), total(12.5)],
+        ['leading inclusive marker', rowsOf('Summe inkl. 20% MwSt EUR 12,50'), total(12.5, CurrencyEnum.EUR)],
+        ['quantity total row', rowsOf('Total 2 x 6,25 12,50'), total(12.5)],
+        ['cash word after the total label', rowsOf('Summe bar EUR 12,50'), total(12.5)],
+        ['lowercase currency code', rowsOf('Total 12.50 eur'), { currency: CurrencyEnum.EUR }],
+        ['currency code away from an amount', rowsOf('ALL PRICES INCL', 'Total 12.50'), { currency: null }],
+        ['currency code next to an amount', rowsOf('Total 12.50 USD'), { currency: CurrencyEnum.USD }],
+        [
+            'vertically offset label and value',
+            [receiptLine('Total', 0.06, 0.1), receiptLine('12.50 EUR', 0.7, 0.107)],
+            total(12.5, CurrencyEnum.EUR)
+        ],
+        ['date as receipt number', rowsOf('Receipt 27/10/2026', 'Total 12.50'), { receiptNumber: null }],
+        [
+            'time on the following row',
+            rowsOf('Datum: 27.10.2026', 'Zeit: 14:32', 'Total 12,50 EUR'),
+            { occurredAt: new Date(2026, 9, 27, 14, 32, 0) }
+        ],
+        ['two-digit year', rowsOf('Date 27.10.26', 'Total 12,50 EUR'), { occurredAt: new Date(2026, 9, 27) }],
+        ['payment block above the total', rowsOf('Karte akzeptiert', 'Gesamt 10,00', 'Summe 12,50', 'Bankomat 10,00'), total(10)]
+    ])('reads %s', (_name, lines, expected) => {
+        expect(parseReceipt(lines)).toMatchObject(expected);
+    });
 
-    it.effect('still excludes tax-total rows', () =>
-        Effect.sync(() => {
-            expect(parseReceipt(rowsOf('MwSt-Summe 2,00'))).toBeNull();
-            expect(parseReceipt(rowsOf('Tax total 4.18'))).toBeNull();
-        })
-    );
-
-    it.effect('ignores tendered cash amounts', () =>
-        Effect.sync(() => {
-            expect(parseReceipt(rowsOf('Total 12.50', 'Amount tendered 20.00'))).toMatchObject({ total: convertToMicroUnits(12.5) });
-        })
-    );
-
-    it.effect('reads grouped thousands separated by space, NBSP and narrow NBSP', () =>
-        Effect.sync(() => {
-            expect(parseReceipt(rowsOf('СУМА 1\u00a0234,56 грн'))).toMatchObject({
-                total: convertToMicroUnits(1234.56),
-                currency: CurrencyEnum.UAH
-            });
-            expect(parseReceipt(rowsOf('Total 1 234,56 €'))).toMatchObject({
-                total: convertToMicroUnits(1234.56),
-                currency: CurrencyEnum.EUR
-            });
-            expect(parseReceipt(rowsOf('Total 1\u202f234,56 €'))).toMatchObject({ total: convertToMicroUnits(1234.56) });
-        })
-    );
-
-    it.effect('takes the amount before a VAT breakdown marker and the first amount after a leading marker', () =>
-        Effect.sync(() => {
-            expect(parseReceipt(rowsOf('Summe EUR 12,50 davon MwSt 20% 2,08'))).toMatchObject({ total: convertToMicroUnits(12.5) });
-            expect(parseReceipt(rowsOf('Total TTC 12,50 € dont TVA 2,08 €'))).toMatchObject({ total: convertToMicroUnits(12.5) });
-            expect(parseReceipt(rowsOf('Summe inkl. 20% MwSt EUR 12,50'))).toMatchObject({
-                total: convertToMicroUnits(12.5),
-                currency: CurrencyEnum.EUR
-            });
-        })
-    );
-
-    it.effect('takes the line amount, not the unit price, on a quantity total row', () =>
-        Effect.sync(() => {
-            expect(parseReceipt(rowsOf('Total 2 x 6,25 12,50'))).toMatchObject({ total: convertToMicroUnits(12.5) });
-        })
-    );
-
-    it.effect('keeps a total row when a cash word follows the total label', () =>
-        Effect.sync(() => {
-            expect(parseReceipt(rowsOf('Summe bar EUR 12,50'))).toMatchObject({ total: convertToMicroUnits(12.5) });
-            expect(parseReceipt(rowsOf('Bar Summe 20,00'))).toBeNull();
-        })
-    );
-
-    it.effect('detects lowercase currency codes next to an amount', () =>
-        Effect.sync(() => {
-            expect(parseReceipt(rowsOf('Total 12.50 eur'))).toMatchObject({ currency: CurrencyEnum.EUR });
-        })
-    );
-
-    it.effect('detects currency codes only next to an amount', () =>
-        Effect.sync(() => {
-            expect(parseReceipt(rowsOf('ALL PRICES INCL', 'Total 12.50'))).toMatchObject({ currency: null });
-            expect(parseReceipt(rowsOf('Total 12.50 USD'))).toMatchObject({ currency: CurrencyEnum.USD });
-        })
-    );
-
-    it.effect('joins a label and value that are slightly offset vertically', () =>
-        Effect.sync(() => {
-            const draft = parseReceipt([receiptLine('Total', 0.06, 0.1), receiptLine('12.50 EUR', 0.7, 0.107)]);
-
-            expect(draft).toMatchObject({ total: convertToMicroUnits(12.5), currency: CurrencyEnum.EUR });
-        })
-    );
-
-    it.effect('rejects a date as the receipt number', () =>
-        Effect.sync(() => {
-            expect(parseReceipt(rowsOf('Receipt 27/10/2026', 'Total 12.50'))).toMatchObject({ receiptNumber: null });
-        })
-    );
-
-    it.effect('reads the time from the following row and two-digit years', () =>
-        Effect.sync(() => {
-            expect(parseReceipt(rowsOf('Datum: 27.10.2026', 'Zeit: 14:32', 'Total 12,50 EUR'))).toMatchObject({
-                occurredAt: new Date(2026, 9, 27, 14, 32, 0)
-            });
-            expect(parseReceipt(rowsOf('Date 27.10.26', 'Total 12,50 EUR'))).toMatchObject({ occurredAt: new Date(2026, 9, 27) });
-        })
-    );
-
-    it.effect('searches for the payment block only below the total row', () =>
-        Effect.sync(() => {
-            const draft = parseReceipt(rowsOf('Karte akzeptiert', 'Gesamt 10,00', 'Summe 12,50', 'Bankomat 10,00'));
-
-            expect(draft).toMatchObject({ total: convertToMicroUnits(10) });
-        })
-    );
-
-    it.effect('returns null for negative totals', () =>
-        Effect.sync(() => {
-            expect(parseReceipt(rowsOf('Refund', 'Total -5,00 EUR'))).toBeNull();
-            expect(parseReceipt(rowsOf('Summe -5,00'))).toBeNull();
-        })
-    );
+    it.each([
+        ['tax-total row (de)', rowsOf('MwSt-Summe 2,00')],
+        ['tax-total row (en)', rowsOf('Tax total 4.18')],
+        ['cash word before the total label', rowsOf('Bar Summe 20,00')],
+        ['negative total with currency', rowsOf('Refund', 'Total -5,00 EUR')],
+        ['negative total', rowsOf('Summe -5,00')],
+        [
+            'text without a labelled total',
+            rowsOf(
+                'Team meeting notes',
+                'Agenda for 27.10.2026 at 14:30',
+                'Total attendees: 42',
+                'Release 2.10 ships next week',
+                'Action items: send summary to everyone'
+            )
+        ],
+        ['no lines', []]
+    ])('rejects %s', (_name, lines) => {
+        expect(parseReceipt(lines)).toBeNull();
+    });
 });

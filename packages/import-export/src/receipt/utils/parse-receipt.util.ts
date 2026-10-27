@@ -18,8 +18,8 @@ const buildReceiptKeywordPattern = (keywords: readonly string[], flags: string):
 };
 
 const TOTAL_LABELS: Record<LanguageEnum, readonly string[]> = {
-    [LanguageEnum.EN]: ['total', 'grand total', 'amount due', 'balance due', 'amount'],
-    [LanguageEnum.FR]: ['total', 'montant', 'à payer', 'net à payer'],
+    [LanguageEnum.EN]: ['total', 'amount'],
+    [LanguageEnum.FR]: ['total', 'montant', 'à payer'],
     [LanguageEnum.UK]: ['сума', 'разом', 'до сплати', 'всього'],
     [LanguageEnum.DE]: ['gesamt', 'summe', 'gesamtbetrag', 'betrag', 'zu zahlen', 'endsumme'],
     [LanguageEnum.ES]: ['total', 'importe', 'a pagar']
@@ -261,12 +261,6 @@ const findLegalName = (rows: readonly string[], vatRowIndex: number): string | n
     );
 };
 
-const extractReceiptMerchant = (lines: readonly ReceiptTextLineInterface[], rows: readonly string[], vatRowIndex: number) => {
-    const legalName = findLegalName(rows, vatRowIndex);
-
-    return { candidates: [...new Set([...findTopCandidates(lines), legalName].filter(isDefined))], legalName };
-};
-
 const RECEIPT_NUMBER_LABELS: Record<LanguageEnum, readonly string[]> = {
     [LanguageEnum.EN]: ['invoice no', 'invoice', 'receipt no', 'receipt', 'check', 'order no'],
     [LanguageEnum.FR]: ['facture', 'ticket', 'reçu'],
@@ -288,7 +282,6 @@ const VAT_ID_PATTERNS: readonly RegExp[] = [
 ];
 
 const SAME_ROW_TOLERANCE = 0.75;
-const DATE_LIKE_PATTERN = /^\d{1,2}[./-]\d{1,2}[./-]\d{2,4}$/u;
 
 const isSameRow = (anchor: ReceiptTextLineInterface, line: ReceiptTextLineInterface): boolean =>
     Math.abs(anchor.y + anchor.height / 2 - (line.y + line.height / 2)) <= Math.min(anchor.height, line.height) * SAME_ROW_TOLERANCE;
@@ -318,10 +311,7 @@ const findReceiptNumber = (rows: readonly string[]): string | null =>
     rows
         .map(row => RECEIPT_NUMBER_PATTERN.exec(row)?.[1])
         .filter(isDefined)
-        .find(candidate => !DATE_LIKE_PATTERN.test(candidate)) ?? null;
-
-const findFirstCapture = (rows: readonly string[], pattern: RegExp): string | null =>
-    rows.map(row => pattern.exec(row)?.[1]).find(isDefined) ?? null;
+        .find(candidate => !isDefined(findDate(candidate))) ?? null;
 
 const findVatId = (row: string): string | null =>
     VAT_ID_PATTERNS.map(pattern => pattern.exec(row)?.[1])
@@ -351,16 +341,16 @@ export const parseReceipt = (lines: readonly ReceiptTextLineInterface[]): Receip
 
     const timestamp = extractReceiptTimestamp(rows, total.paymentRows);
     const vatIds = rows.map(findVatId);
-    const merchant = extractReceiptMerchant(lines, rows, vatIds.findIndex(isDefined));
+    const merchantLegalName = findLegalName(rows, vatIds.findIndex(isDefined));
     const draft = {
         total: total.amount,
         currency: total.currency,
         occurredAt: timestamp?.occurredAt ?? null,
-        cardLast4: findFirstCapture(rows, CARD_PATTERN),
+        cardLast4: rows.map(row => CARD_PATTERN.exec(row)?.[1]).find(isDefined) ?? null,
         receiptNumber: findReceiptNumber(rows),
         merchantVatId: vatIds.find(isDefined) ?? null,
-        merchantLegalName: merchant.legalName,
-        merchantCandidates: merchant.candidates
+        merchantLegalName,
+        merchantCandidates: [...new Set([...findTopCandidates(lines), merchantLegalName].filter(isDefined))]
     };
 
     return { ...draft, fingerprint: buildFingerprint(draft, timestamp) };
