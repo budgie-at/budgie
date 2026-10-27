@@ -6,8 +6,8 @@ import { Card } from '../../../@generic/component/card/card';
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
-import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { SettingsGroup } from '../../../settings/components/settings-group/settings-group';
+import { goBackToSettings } from '../../../settings/utils/go-back-to-settings.util';
 import { ApplePayCaptureHero } from '../../../wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero';
 import { ApplePayCaptureHistoryNotice } from '../../../wallet-capture/component/apple-pay-capture-history-notice/apple-pay-capture-history-notice';
 import { ApplePayCaptureInstructionsButton } from '../../../wallet-capture/component/apple-pay-capture-instructions-button/apple-pay-capture-instructions-button';
@@ -18,8 +18,6 @@ import { WalletCaptureReviewList } from '../../../wallet-capture/component/walle
 import { useWalletCaptureSettings } from '../../../wallet-capture/hook/use-wallet-capture-settings.hook';
 
 import { ApplePayCaptureSettingsSelector } from './apple-pay-capture.selector';
-
-const handleGoBack = () => void goBackOrReplace('/settings');
 
 export default function ApplePayCaptureSettingsPage() {
     const { t } = useLingui();
@@ -42,7 +40,7 @@ export default function ApplePayCaptureSettingsPage() {
     return (
         <CollapsibleChromePage
             title={t`Apple Pay capture`}
-            leading={<GoBackButton onPress={handleGoBack} />}
+            leading={<GoBackButton onPress={goBackToSettings} />}
             testID={ApplePayCaptureSettingsSelector.Container}
         >
             <View className="gap-y-xl pb-5xl">

@@ -5,7 +5,7 @@ import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useCollapsibleHeaderScroll } from '@rnw-community/react-native-collapsible-header';
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import {
     LEGEND_LIST_CONTENT_GAP,
@@ -22,13 +22,13 @@ import type { LegendListSizingInterface } from '../../interface/legend-list-sizi
 import type { DeleteConfirmation } from '../deletable-row/deletable-row';
 
 interface Props<T extends IdInterface> {
-    data: T[];
+    data: T[] | null;
+    emptyState: ReactNode;
     onDelete?: (id: number) => Promise<void>;
     renderCard: (item: T, index: number) => ReactNode;
     getDeleteConfirmation?: (item: T) => DeleteConfirmation | undefined;
     listHeader?: ReactElement | null;
     estimatedHeaderSize?: number;
-    children?: ReactNode;
     sizing?: LegendListSizingInterface<T>;
 }
 
@@ -39,17 +39,22 @@ const listFooter = <View style={FOOTER_SPACER_STYLE} />;
 
 export const SearchablePageList = <T extends IdInterface>({
     data,
+    emptyState,
     onDelete,
     renderCard,
     getDeleteConfirmation,
     listHeader: customListHeader,
     estimatedHeaderSize = LEGEND_LIST_HEADER_HEIGHT,
-    children,
     sizing
 }: Props<T>) => {
     const [notify] = useVibration();
     const { scrollY } = useCollapsibleHeaderScroll();
     const insets = useSafeAreaInsets();
+
+    if (!isNotEmptyArray(data)) {
+        return emptyState;
+    }
+
     const contentContainerStyle = {
         gap: LEGEND_LIST_CONTENT_GAP,
         paddingTop: insets.top + SCREEN_CHROME_CONTENT_INSET_TOP,
@@ -88,26 +93,22 @@ export const SearchablePageList = <T extends IdInterface>({
     const sharedValues = { scrollOffset: scrollY };
 
     return (
-        <>
-            <AnimatedLegendList
-                style={LEGEND_LIST_STYLE}
-                data={data}
-                contentContainerStyle={contentContainerStyle}
-                ListHeaderComponent={customListHeader}
-                estimatedHeaderSize={estimatedHeaderSize}
-                renderItem={renderItem}
-                keyExtractor={legendListKeyExtractor}
-                estimatedItemSize={sizing?.estimatedItemSize}
-                getItemType={sizing?.getItemType}
-                keyboardShouldPersistTaps="handled"
-                ListFooterComponent={listFooter}
-                sharedValues={sharedValues}
-                recycleItems
-                maintainVisibleContentPosition={MAINTAIN_VISIBLE_CONTENT_POSITION}
-                showsVerticalScrollIndicator={false}
-            />
-
-            {children}
-        </>
+        <AnimatedLegendList
+            style={LEGEND_LIST_STYLE}
+            data={data}
+            contentContainerStyle={contentContainerStyle}
+            ListHeaderComponent={customListHeader}
+            estimatedHeaderSize={estimatedHeaderSize}
+            renderItem={renderItem}
+            keyExtractor={legendListKeyExtractor}
+            estimatedItemSize={sizing?.estimatedItemSize}
+            getItemType={sizing?.getItemType}
+            keyboardShouldPersistTaps="handled"
+            ListFooterComponent={listFooter}
+            sharedValues={sharedValues}
+            recycleItems
+            maintainVisibleContentPosition={MAINTAIN_VISIBLE_CONTENT_POSITION}
+            showsVerticalScrollIndicator={false}
+        />
     );
 };

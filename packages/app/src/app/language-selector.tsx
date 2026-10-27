@@ -1,7 +1,8 @@
-import { LanguageEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { Text, View } from 'react-native';
+
+import { emptyFn } from '@rnw-community/shared';
 
 import { CountryFlag } from '../@generic/component/country-flag/country-flag';
 import { EmptyState } from '../@generic/component/empty-state/empty-state';
@@ -36,21 +37,25 @@ export default function LanguageSelectorModal() {
     const selectedLanguage = currentParams?.selectedLanguage;
     const data = filterLanguages(LANGUAGES, search, t);
 
-    const renderItem = ({ item }: { item: LanguageInterface }) => (
-        <SelectorCard<LanguageEnum>
-            identifier={item.code}
-            isSelected={item.code === selectedLanguage}
-            onSelect={resolveLanguageSelector}
-            testID={LanguageSelectorModalSelector.Option(item.code)}
-            iconSlot={
-                <View className="w-12 h-12 bg-secondary-background rounded-5xl items-center justify-center">
-                    <CountryFlag language={item.code} size={28} />
-                </View>
-            }
-            title={<Text className="text-primary font-medium text-md">{t(item.name)}</Text>}
-            subtitle={<Text className="text-sm text-secondary-foreground">{item.code}</Text>}
-        />
-    );
+    const renderItem = ({ item }: { item: LanguageInterface }) => {
+        const isSelected = item.code === selectedLanguage;
+        const handleSelect = isSelected ? emptyFn : () => void resolveLanguageSelector(item.code);
+
+        return (
+            <SelectorCard
+                isSelected={isSelected}
+                onPress={handleSelect}
+                testID={LanguageSelectorModalSelector.Option(item.code)}
+                iconSlot={
+                    <View className="w-12 h-12 bg-secondary-background rounded-5xl items-center justify-center">
+                        <CountryFlag language={item.code} size={28} />
+                    </View>
+                }
+                title={<Text className="text-primary font-medium text-md">{t(item.name)}</Text>}
+                subtitle={<Text className="text-sm text-secondary-foreground">{item.code}</Text>}
+            />
+        );
+    };
 
     return (
         <SearchableSelectorList

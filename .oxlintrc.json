@@ -681,14 +681,8 @@
                     {
                         "max": 8,
                         "allow": [
-                            "packages/app/src/@generic/component/page-header/page-header.tsx",
-                            "packages/app/src/@generic/component/searchable-page/searchable-page.tsx",
-                            "packages/app/src/@generic/component/selector-card/selector-card.tsx",
                             "packages/landing/src/blog/component/blog-posting-json-ld/blog-posting-json-ld.tsx",
                             "packages/app/src/@generic/component/ai-translation-fields/ai-translation-fields.tsx",
-                            "packages/app/src/@generic/component/card/card.tsx",
-                            "packages/app/src/@generic/component/circle-icon/circle-icon.tsx",
-                            "packages/app/src/@generic/component/empty-state/empty-state.tsx",
                             "packages/app/src/@generic/component/selector-grid-content/selector-grid-content.tsx",
                             "packages/app/src/account/component/account-action-card/account-action-card.tsx",
                             "packages/app/src/ai/component/voice-review-footer/voice-review-footer.tsx",

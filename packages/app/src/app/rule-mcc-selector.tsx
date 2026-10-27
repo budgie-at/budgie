@@ -3,7 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { Text, View } from 'react-native';
 
-import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { emptyFn, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { BudgieLegendList } from '../@generic/component/budgie-legend-list/budgie-legend-list';
 import { CircleIcon } from '../@generic/component/circle-icon/circle-icon';
@@ -55,15 +55,16 @@ export default function RuleMccSelectorModal() {
 
     const renderItem = ({ item }: { item: MccCategoryEntityInterface }) => {
         const testID = RuleMccSelectorModalSelector.Card(item.mcc);
+        const isSelected = item.mcc === selectedMcc;
+        const handleSelect = isSelected ? emptyFn : () => void resolveRuleMccSelector(item.mcc);
 
         return (
             <SelectorCard
                 testID={testID}
-                identifier={item.mcc}
-                isSelected={item.mcc === selectedMcc}
+                isSelected={isSelected}
                 title={formatMccDisplay(item)}
                 subtitle={<Text className="text-secondary-foreground text-sm">{item.fullDescription}</Text>}
-                onSelect={resolveRuleMccSelector}
+                onPress={handleSelect}
                 iconSlot={<CircleIcon icon={UserIconNameEnum.CreditCard} size={40} iconSize={20} variant="ghost" border={false} />}
             />
         );
