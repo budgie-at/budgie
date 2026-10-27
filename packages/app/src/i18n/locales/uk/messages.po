@@ -329,7 +329,7 @@ msgstr "Помилка {source} · {message}"
 msgid "{spikeLabel} had a one-off {spikeAmount}. The estimate uses a typical month instead."
 msgstr "{spikeLabel}: разова витрата {spikeAmount}. Для оцінки взято типовий місяць."
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
+#: src/transaction/components/transaction-split-field-icon/transaction-split-field-icon.tsx
 msgid "{splitEntryCount, plural, one {# item} other {# items}}"
 msgstr "{splitEntryCount, plural, one {# елемент} few {# елементи} many {# елементів} other {# елемента}}"
 
@@ -1061,9 +1061,9 @@ msgstr "Може тривати годинами"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx
-#: src/account/component/account-action-card/account-action-card.tsx
 #: src/account/component/archived-account-card/archived-account-card.tsx
 #: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
+#: src/account/component/inactive-account-card/inactive-account-card.tsx
 #: src/account/hooks/use-archive-account.hook.ts
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
@@ -1151,7 +1151,7 @@ msgstr "Категоризувати як {categoryTitle}"
 #: src/app/(tabs)/settings/import.tsx
 #: src/budget/service/budget-alert-monitor.service.ts
 #: src/category/components/category-form-selector/category-form-selector.tsx
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
+#: src/transaction/components/transaction-category-field-icon/transaction-category-field-icon.tsx
 #: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Category"
@@ -1577,7 +1577,7 @@ msgstr "Не вдалося відкрити інструкції"
 msgid "Could not open Shortcuts"
 msgstr "Не вдалося відкрити Shortcuts"
 
-#: src/app/(tabs)/settings/import.tsx
+#: src/import/constant/import-csv-atom.constant.ts
 msgid "Could not read CSV file"
 msgstr "Не вдалося прочитати CSV-файл"
 
@@ -1881,7 +1881,7 @@ msgstr "Управління даними"
 
 #: src/@generic/component/date-filter/date-filter.tsx
 #: src/app/(tabs)/settings/import.tsx
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
+#: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "Date"
 msgstr "Дата"
@@ -2252,7 +2252,7 @@ msgid "Enter a {PIN_LENGTH}-digit PIN"
 msgstr "Введіть {PIN_LENGTH}-значний PIN-код"
 
 #: src/account/utils/get-debt-opening-messages.util.ts
-#: src/ai/component/voice-review-footer/voice-review-footer.tsx
+#: src/ai/component/voice-review-save-button/voice-review-save-button.tsx
 msgid "Enter all amounts"
 msgstr "Введіть усі суми"
 
@@ -2977,7 +2977,7 @@ msgid "left"
 msgstr "лишилось"
 
 #: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
-#: src/budget/components/budget-progress-bar/budget-progress-bar.tsx
+#: src/budget/hooks/use-budget-progress-labels.hook.ts
 msgid "Left"
 msgstr "Залишилось"
 
@@ -3576,8 +3576,8 @@ msgstr "не встановлено"
 msgid "Not yet"
 msgstr "Ще немає"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
 #: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
+#: src/transaction/components/transaction-note-field-icon/transaction-note-field-icon.tsx
 msgid "Note"
 msgstr "Нотатка"
 
@@ -3795,7 +3795,7 @@ msgid "over"
 msgstr "перевитрата"
 
 #: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
-#: src/budget/components/budget-progress-bar/budget-progress-bar.tsx
+#: src/budget/hooks/use-budget-progress-labels.hook.ts
 msgid "Over budget"
 msgstr "Понад бюджет"
 
@@ -4329,7 +4329,7 @@ msgstr "Запас потребує щонайменше 3 повних міся
 msgid "Save"
 msgstr "Зберегти"
 
-#: src/ai/component/voice-review-footer/voice-review-footer.tsx
+#: src/ai/component/voice-review-save-button/voice-review-save-button.tsx
 msgid "Save {count}"
 msgstr "Зберегти {count}"
 
@@ -4495,7 +4495,7 @@ msgstr "Вибрати тип дії"
 msgid "Select all"
 msgstr "Вибрати всі"
 
-#: src/ai/component/voice-review-footer/voice-review-footer.tsx
+#: src/ai/component/voice-review-save-button/voice-review-save-button.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 msgid "Select all categories"
 msgstr "Оберіть усі категорії"
@@ -4690,12 +4690,13 @@ msgstr "Деякі транзакції можуть відповідати кі
 
 #: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
 #: src/@generic/hook/use-show-error.hook.ts
+#: src/account/hooks/use-account-entity-form.hook.ts
 #: src/ai/component/voice-input-error/voice-input-error.tsx
 msgid "Something went wrong"
 msgstr "Щось пішло не так"
 
-#: src/account/component/account-action-card/account-action-card.tsx
 #: src/account/component/archived-account-card/archived-account-card.tsx
+#: src/account/component/inactive-account-card/inactive-account-card.tsx
 #: src/account/hooks/use-delete-account.hook.ts
 msgid "Something went wrong. Please try again later."
 msgstr "Щось пішло не так. Будь ласка, спробуйте пізніше."
@@ -4709,7 +4710,7 @@ msgstr "Розкладає транзакції за категоріями й �
 msgid "Source"
 msgstr "Джерело"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
+#: src/transaction/components/transaction-sources-field-icon/transaction-sources-field-icon.tsx
 msgid "Sources"
 msgstr "Джерела"
 
@@ -4734,7 +4735,7 @@ msgstr "Витрати за тегами"
 msgid "Spent"
 msgstr "Витрачено"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
+#: src/transaction/components/transaction-split-field-icon/transaction-split-field-icon.tsx
 msgid "Split"
 msgstr "Розділити"
 
@@ -4902,9 +4903,9 @@ msgstr "Назва тегу"
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx
 #: src/app/(tabs)/settings/tags.tsx
 #: src/runway/component/runway-drivers/runway-drivers.tsx
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
 #: src/transaction/components/transaction-info-tags-section/transaction-info-tags-section.tsx
+#: src/transaction/components/transaction-tags-field-icon/transaction-tags-field-icon.tsx
 msgid "Tags"
 msgstr "Теги"
 
@@ -5184,7 +5185,7 @@ msgstr "До сплати"
 
 #: src/@generic/constant/date-period.constant.ts
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
+#: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
 msgid "Today"
 msgstr "Сьогодні"
 
@@ -5632,7 +5633,7 @@ msgstr "Неправильний або відсутній рахунок"
 msgid "XLSX export"
 msgstr "XLSX-експорт"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
+#: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
 msgid "Yesterday"
 msgstr "Вчора"
 

@@ -18,14 +18,10 @@ import { CategorySelectorModalSelector } from './category-selector-modal.selecto
 
 const NUM_COLUMNS = 3;
 
-const prepareCategoryData = (
-    categories: CategoryEntityInterface[] | null,
-    excludeCategoryIds: number[],
-    initialCategoryId: number | null
-) => {
+const prepareCategoryData = (categories: CategoryEntityInterface[] | null, excludeCategoryIds: number[], selectedCategoryIds: number[]) => {
     const filtered = isNotEmptyArray(categories) ? categories.filter(category => !excludeCategoryIds.includes(category.id)) : [];
 
-    return padFlatListData(sortSelectedFirst(filtered, isDefined(initialCategoryId) ? [initialCategoryId] : []), NUM_COLUMNS);
+    return padFlatListData(sortSelectedFirst(filtered, selectedCategoryIds), NUM_COLUMNS);
 };
 
 export default function CategorySelectorModal() {
@@ -38,7 +34,8 @@ export default function CategorySelectorModal() {
     const { categories, isLoading } = useSearchCategoriesQuery(search, true);
 
     const { variant = 'primary', initialCategoryId = null, description, excludeCategoryIds = [] } = currentParams ?? {};
-    const data = prepareCategoryData(categories, excludeCategoryIds, initialCategoryId);
+    const selectedCategoryIds = isDefined(initialCategoryId) ? [initialCategoryId] : [];
+    const data = prepareCategoryData(categories, excludeCategoryIds, selectedCategoryIds);
 
     const handleCreatePress = () => {
         openCategoryForm({ defaultTitle: search }, result => {
@@ -69,7 +66,7 @@ export default function CategorySelectorModal() {
             <CategorySelectContent
                 data={data}
                 variant={variant}
-                initialCategoryId={initialCategoryId}
+                selectedCategoryIds={selectedCategoryIds}
                 isLoading={isLoading}
                 onSelect={resolveCategorySelector}
                 cardTestID={CategorySelectorModalSelector.Card}

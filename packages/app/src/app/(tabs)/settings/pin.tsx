@@ -8,7 +8,6 @@ import { LoadingOverlay } from '../../../@generic/component/loading-overlay/load
 import { FullPage } from '../../../@generic/component/page/full-page';
 import { useIsSlowWork } from '../../../@generic/hook/use-is-slow-work.hook';
 import { isEnumValue } from '../../../@generic/type-guard/is-enum-value.type-guard';
-import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { BiometricConfiguration } from '../../../auth/components/biometric-configuration/biometric-configuration';
 import { PinForm } from '../../../auth/components/pin-form/pin-form';
 import { useAuthContext } from '../../../auth/context/auth.context';
@@ -16,6 +15,7 @@ import { PinSetupModeEnum } from '../../../auth/enum/pin-setup-mode.enum';
 import { PinSetupStepEnum } from '../../../auth/enum/pin-setup-step.enum';
 import { usePinSetup } from '../../../auth/hook/use-pin-setup.hook';
 import { getPinSetupMeta } from '../../../auth/utils/get-pin-setup-meta.util';
+import { goBackToSettings } from '../../../settings/utils/go-back-to-settings.util';
 
 export default function PinSetupScreen() {
     const { mode } = useLocalSearchParams<{ mode: PinSetupModeEnum }>();
@@ -29,8 +29,6 @@ export default function PinSetupScreen() {
     if (!isEnumValue(mode, PinSetupModeEnum)) {
         return <Redirect href="/settings" />;
     }
-
-    const handleGoBack = () => void goBackOrReplace('/settings');
 
     return (
         <FullPage>
@@ -50,7 +48,7 @@ export default function PinSetupScreen() {
                 )}
             </View>
 
-            <GoBackButton onPress={handleGoBack} className="absolute left-[20px] top-[20px]" />
+            <GoBackButton onPress={goBackToSettings} className="absolute left-[20px] top-[20px]" />
 
             {isSlowWork ? <LoadingOverlay /> : null}
         </FullPage>

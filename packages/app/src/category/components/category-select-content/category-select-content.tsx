@@ -2,7 +2,7 @@ import { CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
-import { emptyFn, isDefined } from '@rnw-community/shared';
+import { emptyFn } from '@rnw-community/shared';
 
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
 import { SelectorGridContent } from '../../../@generic/component/selector-grid-content/selector-grid-content';
@@ -13,10 +13,8 @@ import { CategorySelectorCard } from '../category-selector-card/category-selecto
 interface Props {
     readonly data: FlatListDataItem<CategoryEntityInterface>[];
     readonly variant: ColorPaletteVariant;
-    readonly initialCategoryId: number | null;
-    readonly selectedCategoryIds?: number[];
+    readonly selectedCategoryIds: number[];
     readonly isLoading?: boolean;
-    readonly alignToBottom?: boolean;
     readonly additionalBottomPadding?: number;
     readonly topOffset?: number;
     readonly onSelect: (categoryId: number) => void;
@@ -28,29 +26,9 @@ const CARD_HEIGHT = 72;
 const keyExtractor = (item: FlatListDataItem<CategoryEntityInterface>, index: number) =>
     item.isEmpty ? `empty-${index}` : item.id.toString();
 
-const getSelectedCategoryIds = (initialCategoryId: number | null, selectedCategoryIds?: number[]): number[] => {
-    if (isDefined(selectedCategoryIds)) {
-        return selectedCategoryIds;
-    }
-
-    return isDefined(initialCategoryId) ? [initialCategoryId] : [];
-};
-
 export const CategorySelectContent = (props: Props) => {
-    const {
-        data,
-        variant,
-        initialCategoryId,
-        selectedCategoryIds,
-        isLoading = false,
-        alignToBottom = false,
-        additionalBottomPadding = 0,
-        topOffset,
-        onSelect,
-        cardTestID
-    } = props;
+    const { data, variant, selectedCategoryIds, isLoading = false, additionalBottomPadding = 0, topOffset, onSelect, cardTestID } = props;
     const { t } = useLingui();
-    const resolvedSelectedCategoryIds = getSelectedCategoryIds(initialCategoryId, selectedCategoryIds);
 
     const renderItem = ({ item }: { item: FlatListDataItem<CategoryEntityInterface> }) =>
         item.isEmpty ? (
@@ -65,7 +43,7 @@ export const CategorySelectContent = (props: Props) => {
             />
         ) : (
             <CategorySelectorCard
-                isSelected={resolvedSelectedCategoryIds.includes(item.id)}
+                isSelected={selectedCategoryIds.includes(item.id)}
                 onSelect={onSelect}
                 title={item.title}
                 variant={variant}
@@ -89,7 +67,6 @@ export const CategorySelectContent = (props: Props) => {
             itemHeight={CARD_HEIGHT}
             listEmptyComponent={listEmptyComponent}
             isLoading={isLoading}
-            alignToBottom={alignToBottom}
             additionalBottomPadding={additionalBottomPadding}
             topOffset={topOffset}
         />

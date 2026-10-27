@@ -17,6 +17,7 @@ export const useSimpleQuickFormState = ({
 }) => {
     const { control, getValues, setValue } = useFormContext<TransactionCreateInputInterface>();
 
+    const title = useWatch({ control, name: 'title' });
     const comment = useWatch({ control, name: 'comment' });
     const tagIds = useWatch({ control, name: 'tagIds' });
     const entries = useWatch({ control, name: 'entries' });
@@ -59,11 +60,14 @@ export const useSimpleQuickFormState = ({
     return {
         accountId: watchedAccountId ?? 0,
         categoryId: categoryEntry?.categoryId ?? null,
+        mccCategoryId: categoryEntry?.mccCategoryId ?? null,
         splitEntryCount: categoryEntries.length,
+        isSplitActive: categoryEntries.length > 1,
         hasTagsSelected: isNotEmptyArray(tagIds),
         isAmountPositive: isPositiveNumber(amount),
         isCategoryUserConfirmed: !isDefined(categoryEntry) || categoryEntry.categorySource !== CategorySourceEnum.MCC_DEFAULT,
         amount,
+        title,
         comment,
         entries,
         handleSelectCategory,

@@ -7,6 +7,7 @@ import { View } from 'react-native';
 import { isEmptyArray, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { FeatureIntro } from '../@generic/component/feature-intro/feature-intro';
+import { FilterSheetBulkToggle } from '../@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle';
 import { FilterSheetList } from '../@generic/component/filter-sheet/filter-sheet-list/filter-sheet-list';
 import { FilterSheetSkeleton } from '../@generic/component/filter-sheet/filter-sheet-skeleton/filter-sheet-skeleton';
 import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
@@ -115,17 +116,20 @@ export default function TransactionAccountFilterModal() {
                 searchValue={search}
                 searchPlaceholder={t`Search accounts...`}
                 onSearchChange={setSearch}
-                onSelectAll={handleSelectAll}
-                onDeselectAll={handleDeselectAll}
-                onApply={handleApply}
-                applyLabel={applyLabel}
-                selectedCount={selectedCount}
-                isLoading={isLoading}
                 searchTestID={TransactionFiltersSelector.AccountSearchInput}
-                selectAllTestID={TransactionFiltersSelector.AccountSelectAllButton}
-                deselectAllTestID={TransactionFiltersSelector.AccountDeselectAllButton}
+                applyLabel={applyLabel}
+                onApply={handleApply}
                 applyTestID={TransactionFiltersSelector.AccountApplyButton}
-            />
+            >
+                <FilterSheetBulkToggle
+                    isLoading={isLoading}
+                    selectedCount={selectedCount}
+                    onSelectAll={handleSelectAll}
+                    onDeselectAll={handleDeselectAll}
+                    selectAllTestID={TransactionFiltersSelector.AccountSelectAllButton}
+                    deselectAllTestID={TransactionFiltersSelector.AccountDeselectAllButton}
+                />
+            </TransactionFilterSelectorFooter>
         </FilterSheet>
     );
 }

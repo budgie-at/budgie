@@ -48,11 +48,7 @@ export default function CreateExpenseTransactionPage() {
         <FormProvider {...form}>
             <FullPage header={<PageHeader title={t`New Expense`} onGoBack={handleGoBack} />}>
                 <SimpleQuickForm
-                    variant="destructive"
                     transactionType={TransactionTypeEnum.EXPENSE}
-                    accountFieldName="fromAccountId"
-                    transactionTitle=""
-                    mccCategoryId={null}
                     aiContext={normalizedAiContext}
                     isNewTransaction
                     onSubmit={handleSubmit}

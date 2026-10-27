@@ -47,7 +47,6 @@ export default function ContactSelectorModal() {
                 phoneNumbers={item.phoneNumbers?.map(entry => entry.number).filter(isNotEmptyString) ?? []}
                 onSelect={handleSelect}
                 title={item.name}
-                id={item.id}
             />
         );
     };

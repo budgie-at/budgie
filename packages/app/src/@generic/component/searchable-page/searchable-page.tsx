@@ -1,65 +1,27 @@
-import { ReactElement, ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { CollapsibleHeaderBackdrop, EdgeFade, ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
-import { EmptyFn, isNotEmptyArray } from '@rnw-community/shared';
+import { CollapsibleHeaderBackdrop, ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
+import { EmptyFn } from '@rnw-community/shared';
 
-import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../constant/floating-tab-bar.constant';
-import { IdInterface } from '../../interface/id.interface';
 import { ScreenChromeThemeProvider } from '../../provider/screen-chrome-theme.provider';
 import { CollapsibleChromeHeader } from '../collapsible-chrome-header/collapsible-chrome-header';
 import { GoBackButton } from '../go-back-button/go-back-button';
-import { KeyboardStickySearchInput } from '../keyboard-sticky-search-input/keyboard-sticky-search-input';
-import { SearchablePageList } from '../searchable-page-list/searchable-page-list';
+import { SearchablePageSearchInput } from '../searchable-page-search-input/searchable-page-search-input';
 
-import { SEARCH_BLUR_OFFSET, SEARCH_BLUR_Z_INDEX, SEARCH_INPUT_VERTICAL_OFFSET, SEARCH_KEYBOARD_GAP } from './searchable-page.constant';
-
-import type { LegendListSizingInterface } from '../../interface/legend-list-sizing.interface';
-import type { DeleteItemEffectType } from '../../type/delete-item-effect.type';
-import type { DeleteConfirmation } from '../deletable-row/deletable-row';
-
-interface Props<T extends IdInterface> {
-    title: string;
-    search: string;
-    data: T[] | null;
-    onGoBack: EmptyFn;
-    searchPlaceholder: string;
-    emptyState: ReactNode;
-    onSearchChange: (search: string) => void;
-    onDelete?: DeleteItemEffectType;
-    renderCard: (item: T, index: number) => ReactNode;
-    getDeleteConfirmation?: (item: T) => DeleteConfirmation | undefined;
-    searchInputTestID?: string;
-    testID?: string;
-    listHeader?: ReactElement | null;
-    estimatedHeaderSize?: number;
-    children?: ReactNode;
-    sizing?: LegendListSizingInterface<T>;
+interface Props {
+    readonly title: string;
+    readonly onGoBack: EmptyFn;
+    readonly search: string;
+    readonly searchPlaceholder: string;
+    readonly onSearchChange: (search: string) => void;
+    readonly searchInputTestID?: string;
+    readonly testID?: string;
+    readonly children: ReactNode;
 }
 
-export const SearchablePage = <T extends IdInterface>({
-    data,
-    onDelete,
-    search,
-    title,
-    renderCard,
-    searchPlaceholder,
-    onSearchChange,
-    emptyState,
-    onGoBack,
-    getDeleteConfirmation,
-    searchInputTestID,
-    testID,
-    listHeader,
-    estimatedHeaderSize,
-    children,
-    sizing
-}: Props<T>) => {
-    const { bottom } = useSafeAreaInsets();
-    const searchInputBottom = FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottom - SEARCH_INPUT_VERTICAL_OFFSET;
-    const searchBlurStyle = { bottom: searchInputBottom - SEARCH_BLUR_OFFSET, zIndex: SEARCH_BLUR_Z_INDEX };
-
+export const SearchablePage = (props: Props) => {
+    const { title, onGoBack, search, searchPlaceholder, onSearchChange, searchInputTestID, testID, children } = props;
     const largeTitleLayer = (
         <Text className="text-primary font-medium text-3xl" numberOfLines={1}>
             {title}
@@ -76,21 +38,7 @@ export const SearchablePage = <T extends IdInterface>({
             <ScreenChromeThemeProvider>
                 <ScreenChromeFrame>
                     <View className="flex-1 px-5xl" testID={testID}>
-                        {isNotEmptyArray(data) ? (
-                            <SearchablePageList
-                                onDelete={onDelete}
-                                data={data}
-                                renderCard={renderCard}
-                                getDeleteConfirmation={getDeleteConfirmation}
-                                listHeader={listHeader}
-                                estimatedHeaderSize={estimatedHeaderSize}
-                                sizing={sizing}
-                            >
-                                {children}
-                            </SearchablePageList>
-                        ) : (
-                            emptyState
-                        )}
+                        {children}
                     </View>
 
                     <CollapsibleHeaderBackdrop />
@@ -103,15 +51,10 @@ export const SearchablePage = <T extends IdInterface>({
                 </ScreenChromeFrame>
             </ScreenChromeThemeProvider>
 
-            <View className="absolute inset-x-0 h-[150px]" style={searchBlurStyle}>
-                <EdgeFade position="bottom" />
-            </View>
-            <KeyboardStickySearchInput
+            <SearchablePageSearchInput
                 search={search}
                 placeholder={searchPlaceholder}
                 onSearchChange={onSearchChange}
-                inputBottom={searchInputBottom}
-                keyboardGap={SEARCH_KEYBOARD_GAP}
                 testID={searchInputTestID}
             />
         </View>

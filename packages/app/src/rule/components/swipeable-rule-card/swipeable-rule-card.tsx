@@ -38,7 +38,6 @@ const PILL_CONTENT_ENTERING = FadeIn.duration(PILL_CONTENT_ENTER_MS);
 const PILL_CONTENT_EXITING = FadeOut.duration(PILL_CONTENT_EXIT_MS);
 
 type CardStatus = 'idle' | 'creating' | 'success' | 'error';
-type CardLayout = 'compact' | 'wide';
 
 interface Props {
     readonly descriptionText: string;
@@ -46,7 +45,6 @@ interface Props {
     readonly errorMessage: ReactNode;
     readonly cardTestID?: string;
     readonly buttonTestID?: string;
-    readonly layout?: CardLayout;
     readonly onYes: Effect.Effect<boolean, unknown, AppServices>;
     readonly onComplete: () => void;
     readonly onDismiss: () => void;
@@ -54,17 +52,7 @@ interface Props {
 
 // eslint-disable-next-line max-lines-per-function, max-statements -- Shared card component with gesture handling, animations, and multiple render states
 export const SwipeableRuleCard = (props: Props) => {
-    const {
-        descriptionText,
-        successMessage,
-        errorMessage,
-        cardTestID,
-        buttonTestID,
-        layout = 'compact',
-        onYes,
-        onComplete,
-        onDismiss
-    } = props;
+    const { descriptionText, successMessage, errorMessage, cardTestID, buttonTestID, onYes, onComplete, onDismiss } = props;
 
     const [status, setStatus] = useState<CardStatus>('idle');
     const [hapticNotification, hapticImpact] = useVibration();
@@ -161,12 +149,7 @@ export const SwipeableRuleCard = (props: Props) => {
         );
     };
 
-    const isWideLayout = layout === 'wide';
     const trailingContent = isCreating ? <ActivityIndicator size="small" /> : null;
-    const cardClassName = isWideLayout ? 'items-center' : 'items-start';
-    const buttonClassName = isWideLayout ? 'self-center' : 'self-start max-w-[85%]';
-    const pillClassName = isWideLayout ? 'self-center' : 'self-start';
-    const pillTextProps = isWideLayout ? { textClassName: 'shrink-0' } : {};
     const statusIcon = isSuccess ? UserIconNameEnum.CircleCheck : UserIconNameEnum.CircleAlert;
     const statusIconClassName = isSuccess ? 'text-positive-foreground' : 'text-destructive-foreground';
     const statusTextClassName = isSuccess
@@ -179,8 +162,13 @@ export const SwipeableRuleCard = (props: Props) => {
             {statusMessage}
         </RuleIndicatorPill>
     ) : (
-        <HapticPressable testID={buttonTestID} onPress={handleYesButtonPress} disabled={isCreating} className={buttonClassName}>
-            <RuleIndicatorPill icon={UserIconNameEnum.Zap} className={pillClassName} trailingContent={trailingContent} {...pillTextProps}>
+        <HapticPressable testID={buttonTestID} onPress={handleYesButtonPress} disabled={isCreating} className="self-center">
+            <RuleIndicatorPill
+                icon={UserIconNameEnum.Zap}
+                className="self-center"
+                trailingContent={trailingContent}
+                textClassName="shrink-0"
+            >
                 {descriptionText}
             </RuleIndicatorPill>
         </HapticPressable>
@@ -189,7 +177,7 @@ export const SwipeableRuleCard = (props: Props) => {
     return (
         <GestureDetector gesture={panGesture}>
             <Animated.View style={animatedStyle}>
-                <View testID={cardTestID} className={cardClassName}>
+                <View testID={cardTestID} className="items-center">
                     <Animated.View layout={PILL_LAYOUT_TRANSITION} className="items-center">
                         <Animated.View
                             key={pillContentKey}

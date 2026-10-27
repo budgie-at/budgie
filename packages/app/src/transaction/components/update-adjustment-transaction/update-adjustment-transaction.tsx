@@ -23,6 +23,7 @@ import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useEmbeddingGenerator } from '../../../ai/hook/use-embedding-generator.hook';
 import { useKeypadInput } from '../../hook/use-keypad-input.hook';
 import { AdjustmentAccountSummary } from '../adjustment-account-summary/adjustment-account-summary';
+import { CurrencyModePill } from '../currency-mode-pill/currency-mode-pill';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
 import { TransactionKeypad } from '../transaction-keypad/transaction-keypad';
 
@@ -137,8 +138,9 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
                 amount={displayValue}
                 currencySymbol={signedInstrumentSymbol}
                 variant={variant}
-                label={details.instrumentCode}
-            />
+            >
+                <CurrencyModePill label={details.instrumentCode} isFlipped={false} />
+            </TransactionAmountDisplay>
 
             <View className="gap-md">
                 <View className="items-center">

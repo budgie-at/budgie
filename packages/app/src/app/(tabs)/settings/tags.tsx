@@ -2,9 +2,10 @@ import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 
+import { SearchablePageList } from '../../../@generic/component/searchable-page-list/searchable-page-list';
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
 import { useCreateAction } from '../../../@generic/hook/use-create-action.hook';
-import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
+import { goBackToSettings } from '../../../settings/utils/go-back-to-settings.util';
 import { TagCard } from '../../../tag/components/tag-card/tag-card';
 import { TagEmptyState } from '../../../tag/components/tag-empty-state/tag-empty-state';
 import { useTagFormModal } from '../../../tag/context/tag-form-modal.context';
@@ -12,8 +13,6 @@ import { useDeleteTag } from '../../../tag/hooks/use-delete-tag.hook';
 import { useSearchTagsQuery } from '../../../tag/query/use-search-tags.query';
 
 import { TagPageSelector } from './tag-page.selector';
-
-const handleGoBack = () => void goBackOrReplace('/settings');
 
 export default function Tags() {
     const { t } = useLingui();
@@ -38,16 +37,19 @@ export default function Tags() {
 
     return (
         <SearchablePage
-            onGoBack={handleGoBack}
-            onDelete={handleDeleteTag}
             title={t`Tags`}
-            searchPlaceholder={t`Search tags...`}
-            data={tags}
-            emptyState={<TagEmptyState search={search} />}
-            renderCard={renderCard}
+            onGoBack={goBackToSettings}
             search={search}
+            searchPlaceholder={t`Search tags...`}
             onSearchChange={setSearch}
             searchInputTestID={TagPageSelector.SearchInput}
-        />
+        >
+            <SearchablePageList
+                data={tags}
+                emptyState={<TagEmptyState search={search} />}
+                onDelete={handleDeleteTag}
+                renderCard={renderCard}
+            />
+        </SearchablePage>
     );
 }

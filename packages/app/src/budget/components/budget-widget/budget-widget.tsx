@@ -13,8 +13,8 @@ import { useGetActiveBudgetQuery } from '../../query/use-get-active-budget.query
 import { useGetBudgetCategoryLimitsQuery } from '../../query/use-get-budget-category-limits.query';
 import { useGetBudgetSpentQuery } from '../../query/use-get-budget-spent.query';
 import { formatBudgetPeriodLabel } from '../../utils/format-budget-period-label.util';
+import { BudgetCompactProgressBar } from '../budget-compact-progress-bar/budget-compact-progress-bar';
 import { BudgetEmptyState } from '../budget-empty-state/budget-empty-state';
-import { BudgetProgressBar } from '../budget-progress-bar/budget-progress-bar';
 import { BudgetWidgetCategoryList } from '../budget-widget-category-list/budget-widget-category-list';
 
 export const BudgetWidget = () => {
@@ -47,11 +47,8 @@ export const BudgetWidget = () => {
                 <Text className="text-secondary-foreground text-sm">{dateLabel}</Text>
             </View>
 
-            <BudgetProgressBar
-                amountDecimalPlaces={0}
+            <BudgetCompactProgressBar
                 currencySymbol={currencySymbol}
-                isAmountLight
-                isCompact
                 spent={spent.spentOverall}
                 limit={budget.overallLimit}
                 spentTestID={BudgetSelector.WidgetSpentLabel}

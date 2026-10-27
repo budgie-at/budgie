@@ -4,6 +4,7 @@ import { ReactNode } from 'react';
 import { Text, View } from 'react-native';
 
 import { Card } from '../../../@generic/component/card/card';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { AccountCardBaseSelector } from '../account-card-base/account-card-base.selector';
 import { DebtProgressRing } from '../debt-progress-ring/debt-progress-ring';
 
@@ -19,28 +20,30 @@ export const DebtAccountCardFrame = ({ id, title, accessibilityLabel, debtType, 
     const handleOpenDetails = () => void router.push({ pathname: '/account/[id]/details', params: { id: String(id) } });
 
     return (
-        <Card
-            accessible
+        <HapticPressable
             accessibilityRole="button"
             testID={AccountCardBaseSelector.Card(title)}
             accessibilityLabel={accessibilityLabel}
             onPress={handleOpenDetails}
-            className="mb-3 px-xl py-lg"
+            className="mb-3"
+            collapsable={false}
         >
-            <View className="flex-row items-center gap-x-lg">
-                <DebtProgressRing debtType={debtType} percentage={percentage}>
-                    <View className="h-9 w-9 items-center justify-center rounded-full bg-ghost-background">
-                        <Text className="text-base font-semibold text-primary">{title.trim().charAt(0).toLocaleUpperCase()}</Text>
+            <Card className="px-xl py-lg">
+                <View className="flex-row items-center gap-x-lg">
+                    <DebtProgressRing debtType={debtType} percentage={percentage}>
+                        <View className="h-9 w-9 items-center justify-center rounded-full bg-ghost-background">
+                            <Text className="text-base font-semibold text-primary">{title.trim().charAt(0).toLocaleUpperCase()}</Text>
+                        </View>
+                    </DebtProgressRing>
+                    <View className="min-w-0 flex-1 items-start gap-y-xxs">
+                        <Text className="text-base font-semibold text-primary" ellipsizeMode="tail" numberOfLines={1}>
+                            {title}
+                        </Text>
+                        {subtitle}
                     </View>
-                </DebtProgressRing>
-                <View className="min-w-0 flex-1 items-start gap-y-xxs">
-                    <Text className="text-base font-semibold text-primary" ellipsizeMode="tail" numberOfLines={1}>
-                        {title}
-                    </Text>
-                    {subtitle}
+                    {trailing}
                 </View>
-                {trailing}
-            </View>
-        </Card>
+            </Card>
+        </HapticPressable>
     );
 };

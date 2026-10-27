@@ -161,9 +161,8 @@ export default function TagsSelectorModal() {
                 data={data}
                 selectedTagIds={selected}
                 primaryTagId={primaryTagId}
-                enablePrimarySelection={enablePrimarySelection}
                 onSelect={handleSelectTag}
-                onPrimarySelect={handlePrimarySelect}
+                {...(enablePrimarySelection && { onPrimarySelect: handlePrimarySelect })}
             />
 
             {dirty && !singleSelect ? (

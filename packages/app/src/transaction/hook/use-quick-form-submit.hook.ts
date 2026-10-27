@@ -7,18 +7,18 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { TransactionAccountRowRef } from '../components/transaction-account-row/transaction-account-row';
 import { TransactionAmountDisplayRef } from '../components/transaction-amount-display/transaction-amount-display';
+import { TransactionFieldIconRef } from '../components/transaction-field-icon/transaction-field-icon';
 import { buildPrimaryEntry } from '../utils/build-primary-entry.util';
 import { sumEntryAmounts } from '../utils/sum-entry-amounts.util';
 
 import { useQuickFormValidation } from './use-quick-form-validation.hook';
 
 import type { QuickFormAccountFieldName } from '../interface/quick-form-account-field-name.type';
-import type { TransactionFieldIconsRefInterface } from '../interface/transaction-field-icons-ref.interface';
 
 interface UseQuickFormSubmitConfig {
     readonly accountFieldName: QuickFormAccountFieldName;
     readonly amountDisplayRef: RefObject<TransactionAmountDisplayRef | null>;
-    readonly fieldIconsRef: RefObject<TransactionFieldIconsRefInterface | null>;
+    readonly categoryIconRef: RefObject<TransactionFieldIconRef | null>;
     readonly accountRowRef: RefObject<TransactionAccountRowRef | null>;
     readonly entryType: TransactionEntryTypeEnum;
     readonly isSplitActive: boolean;
@@ -34,7 +34,7 @@ interface UseQuickFormSubmitResult {
 export const useQuickFormSubmit = ({
     accountFieldName,
     amountDisplayRef,
-    fieldIconsRef,
+    categoryIconRef,
     accountRowRef,
     entryType,
     isSplitActive,
@@ -64,7 +64,7 @@ export const useQuickFormSubmit = ({
         const isValid = validateAndShake([
             { isValid: isPositiveNumber(amount), shake: () => amountDisplayRef.current?.shake() },
             { isValid: isPositiveNumber(categoryAmount), shake: () => amountDisplayRef.current?.shake() },
-            { isValid: isPositiveNumber(formCategoryId), shake: () => fieldIconsRef.current?.shakeCategory() },
+            { isValid: isPositiveNumber(formCategoryId), shake: () => categoryIconRef.current?.shake() },
             { isValid: isPositiveNumber(accountId), shake: () => accountRowRef.current?.shake() }
         ]);
 

@@ -12,6 +12,7 @@ interface Props extends Pick<InstrumentEntityInterface, 'id' | 'code' | 'symbol'
 }
 
 export const CurrencySelectorCard = ({ className, isSelected, name, onSelect, code, symbol, id, type }: Props) => {
+    const handleSelect = () => void onSelect(id);
     const isCrypto = type === InstrumentTypeEnum.CRYPTO;
     const iconSlot = <CurrencySelectorInstrumentIcon code={code} symbol={symbol} type={type} size={42} />;
     const title = isCrypto ? (
@@ -25,11 +26,9 @@ export const CurrencySelectorCard = ({ className, isSelected, name, onSelect, co
 
     return (
         <SelectorCard
-            identifier={id}
             isSelected={isSelected}
-            onSelect={onSelect}
+            onPress={handleSelect}
             className={className}
-            allowReselect
             testID={CreateAccountScreenSelector.CurrencyOption(code)}
             iconSlot={iconSlot}
             title={title}
