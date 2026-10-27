@@ -5,7 +5,6 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
 import { router } from 'expo-router';
-import { useEffect } from 'react';
 import { FieldErrors, useForm, useWatch } from 'react-hook-form';
 import { Text } from 'react-native';
 
@@ -40,8 +39,9 @@ export const StartDepositForm = ({ transactionId, sourceEntry }: Props) => {
     const { t } = useLingui();
     const showError = useShowError();
     const sourceAmount = convertFromMicroUnits(sourceEntry.amount);
-    const { operationInstrumentId, operationAmount } = sourceEntry;
+    const { operationInstrumentId, operationAmount, account } = sourceEntry;
     const hasOperationCurrency = isDefined(operationInstrumentId) && isDefined(operationAmount);
+    const hasForeignOperationCurrency = hasOperationCurrency && operationInstrumentId !== account.instrumentId;
 
     const form = useForm<DepositAccountFormValues>({
         resolver: standardSchemaResolver(Schema.toStandardSchemaV1(StartDepositFormSchema)),
@@ -51,12 +51,12 @@ export const StartDepositForm = ({ transactionId, sourceEntry }: Props) => {
             title: t`Deposit`,
             deadline: null,
             interestRate: null,
-            currentBalance: hasOperationCurrency ? convertFromMicroUnits(operationAmount) : sourceAmount,
+            currentBalance: hasForeignOperationCurrency ? convertFromMicroUnits(operationAmount) : sourceAmount,
             icon: ACCOUNT_ICON[AccountTypeEnum.DEPOSIT],
             includeInNetWorth: true,
             type: AccountTypeEnum.DEPOSIT,
-            instrumentId: hasOperationCurrency ? operationInstrumentId : sourceEntry.account.instrumentId,
-            integrationId: sourceEntry.account.integrationId
+            instrumentId: hasOperationCurrency ? operationInstrumentId : account.instrumentId,
+            integrationId: account.integrationId
         }
     });
     const startDeposit = (values: DepositAccountFormValues) =>
@@ -92,14 +92,11 @@ export const StartDepositForm = ({ transactionId, sourceEntry }: Props) => {
 
     const instrumentId = useWatch({ control: form.control, name: 'instrumentId' });
     const { instrument } = useGetInstrumentByIdQuery(instrumentId);
-
-    const { setValue } = form;
-
-    useEffect(() => {
-        if (instrumentId === sourceEntry.account.instrumentId) {
-            setValue('currentBalance', sourceAmount);
+    const handleInstrumentChange = (nextInstrumentId: number) => {
+        if (nextInstrumentId === account.instrumentId && nextInstrumentId !== instrumentId) {
+            form.setValue('currentBalance', sourceAmount);
         }
-    }, [instrumentId, sourceEntry.account.instrumentId, sourceAmount, setValue]);
+    };
 
     const destinationCode = instrument?.code ?? '';
 
@@ -111,13 +108,14 @@ export const StartDepositForm = ({ transactionId, sourceEntry }: Props) => {
             onSubmit={handleSubmit}
             isSubmitting={form.formState.isSubmitting}
             balanceFieldLabel={t`Receiving amount`}
+            onInstrumentChange={handleInstrumentChange}
         >
             <StartDepositFundingSummary
                 control={form.control}
-                sourceAccountTitle={sourceEntry.account.title}
+                sourceAccountTitle={account.title}
                 sourceAmount={sourceAmount}
-                sourceSymbol={sourceEntry.account.instrument.symbol}
-                sourceCode={sourceEntry.account.instrument.code}
+                sourceSymbol={account.instrument.symbol}
+                sourceCode={account.instrument.code}
                 destinationCode={destinationCode}
             />
 

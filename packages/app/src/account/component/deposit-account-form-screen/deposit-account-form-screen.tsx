@@ -24,9 +24,11 @@ interface Props {
     readonly isSubmitting: boolean;
     readonly balanceFieldLabel?: string;
     readonly children?: ReactNode;
+    readonly onInstrumentChange?: (instrumentId: number) => void;
 }
 
-export const DepositAccountFormScreen = ({ title, control, instrument, onSubmit, isSubmitting, balanceFieldLabel, children }: Props) => {
+export const DepositAccountFormScreen = (props: Props) => {
+    const { title, control, instrument, onSubmit, isSubmitting, balanceFieldLabel, children, onInstrumentChange } = props;
     const fields = useAccountCreateBindings(control, {
         title: 'title',
         icon: 'icon',
@@ -50,6 +52,7 @@ export const DepositAccountFormScreen = ({ title, control, instrument, onSubmit,
                 fields={fields}
                 instrumentSymbol={stickyInstrument.symbol}
                 balanceFieldLabel={balanceFieldLabel}
+                onInstrumentChange={onInstrumentChange}
             >
                 <DepositInterestRateField control={control} />
 

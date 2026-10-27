@@ -15,31 +15,39 @@ interface Props {
     readonly instrumentSymbol: string;
     readonly balanceFieldLabel?: string;
     readonly children?: ReactNode;
+    readonly onInstrumentChange?: (instrumentId: number) => void;
 }
 
-export const CreateAccountCoreFields = ({ fields, variant, instrumentSymbol, balanceFieldLabel, children }: Props) => (
-    <>
-        <AccountBalanceField
-            variant={variant}
-            instrumentSymbol={instrumentSymbol}
-            value={fields.currentBalance.field.value}
-            onChange={fields.currentBalance.field.onChange}
-            label={balanceFieldLabel}
-        />
+export const CreateAccountCoreFields = ({ fields, variant, instrumentSymbol, balanceFieldLabel, children, onInstrumentChange }: Props) => {
+    const handleInstrumentChange = (instrumentId: number) => {
+        fields.instrumentId.field.onChange(instrumentId);
+        onInstrumentChange?.(instrumentId);
+    };
 
-        <FormLayoutGroup>
-            <AccountDetailsField
+    return (
+        <>
+            <AccountBalanceField
                 variant={variant}
-                titleBinding={fields.title}
-                iconBinding={fields.icon}
-                nameInputTestID={CreateAccountScreenSelector.NameInput}
+                instrumentSymbol={instrumentSymbol}
+                value={fields.currentBalance.field.value}
+                onChange={fields.currentBalance.field.onChange}
+                label={balanceFieldLabel}
             />
 
-            <CreateAccountCurrencyField value={fields.instrumentId.field.value} onChange={fields.instrumentId.field.onChange} />
+            <FormLayoutGroup>
+                <AccountDetailsField
+                    variant={variant}
+                    titleBinding={fields.title}
+                    iconBinding={fields.icon}
+                    nameInputTestID={CreateAccountScreenSelector.NameInput}
+                />
 
-            {children}
+                <CreateAccountCurrencyField value={fields.instrumentId.field.value} onChange={handleInstrumentChange} />
 
-            <IncludeInNetWorthField value={fields.includeInNetWorth.field.value} onChange={fields.includeInNetWorth.field.onChange} />
-        </FormLayoutGroup>
-    </>
-);
+                {children}
+
+                <IncludeInNetWorthField value={fields.includeInNetWorth.field.value} onChange={fields.includeInNetWorth.field.onChange} />
+            </FormLayoutGroup>
+        </>
+    );
+};
