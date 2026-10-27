@@ -6,7 +6,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { PopoverMenu } from '../../../@generic/component/popover-menu/popover-menu';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
-import { TransactionListContextMenuContext } from '../../context/transaction-list-context-menu.context';
+import { TransactionActionsMenuContext } from '../../context/transaction-actions-menu.context';
 import { useTransactionListContextMenuClose } from '../../hook/use-transaction-list-context-menu-close.hook';
 import { TransactionListAttachDebtMenuItem } from '../transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item';
 import { TransactionListConvertToInstallmentMenuItem } from '../transaction-list-convert-to-installment-menu-item/transaction-list-convert-to-installment-menu-item';
@@ -55,22 +55,22 @@ export const TransactionListContextMenu = ({ ref }: Props) => {
         return null;
     }
 
-    const contextValue = { transaction: menuState.transaction, closeMenu };
+    const { transaction } = menuState;
 
     return (
         <PopoverMenu isOpen={isOpen} onClose={closeMenu} onCloseComplete={handleCloseComplete} anchor={menuState.anchor}>
-            <TransactionListContextMenuContext.Provider value={contextValue}>
+            <TransactionActionsMenuContext.Provider value={closeMenu}>
                 <View className="py-sm">
-                    <TransactionListEditMenuItem />
-                    <TransactionListConvertToRefundMenuItem />
-                    <TransactionListConvertToTransferMenuItem />
-                    <TransactionListStartDepositMenuItem />
-                    <TransactionListConvertToInstallmentMenuItem />
-                    <TransactionListAttachDebtMenuItem />
-                    <TransactionListDeleteMenuItem />
-                    <TransactionListRevertMenuItem />
+                    <TransactionListEditMenuItem transaction={transaction} />
+                    <TransactionListConvertToRefundMenuItem transaction={transaction} />
+                    <TransactionListConvertToTransferMenuItem transaction={transaction} />
+                    <TransactionListStartDepositMenuItem transaction={transaction} />
+                    <TransactionListConvertToInstallmentMenuItem transaction={transaction} />
+                    <TransactionListAttachDebtMenuItem transaction={transaction} />
+                    <TransactionListDeleteMenuItem transaction={transaction} />
+                    <TransactionListRevertMenuItem transaction={transaction} />
                 </View>
-            </TransactionListContextMenuContext.Provider>
+            </TransactionActionsMenuContext.Provider>
         </PopoverMenu>
     );
 };

@@ -23,7 +23,7 @@ export const CategorizeInboxAlreadyTrackedChip = ({ cluster }: Props) => {
 
     const handlePress = (): void => void assignCluster(cluster, CASH_WITHDRAWAL_TRACKED_CATEGORY_ID);
 
-    if (strategy.labelKind !== CategorizeInboxLabelKindEnum.CATEGORY) {
+    if (strategy?.labelKind !== CategorizeInboxLabelKindEnum.CATEGORY) {
         return null;
     }
 

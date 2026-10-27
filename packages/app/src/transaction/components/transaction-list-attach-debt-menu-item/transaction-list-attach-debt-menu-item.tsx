@@ -21,16 +21,21 @@ import { useAccountSelectorModal } from '../../../account/context/account-select
 import { getDebtOpeningMessages } from '../../../account/utils/get-debt-opening-messages.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
-import { useTransactionListContextMenu } from '../../context/transaction-list-context-menu.context';
+import { useTransactionActionsMenu } from '../../context/transaction-actions-menu.context';
 import { TransactionListContextMenuSelector } from '../transaction-list-context-menu/transaction-list-context-menu.selector';
 
 import type { AccountSelectorCreateActionInterface } from '../../../account/interface/account-selector-create-action.interface';
+import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
-export const TransactionListAttachDebtMenuItem = () => {
+interface Props {
+    readonly transaction: TransactionWithRelationsEntityInterface;
+}
+
+export const TransactionListAttachDebtMenuItem = ({ transaction }: Props) => {
     const { t } = useLingui();
     const decimalPlaces = useAtomValue(decimalPlacesAtom);
     const formatDigits = useFormatDigits(decimalPlaces);
-    const { transaction, closeMenu } = useTransactionListContextMenu();
+    const closeMenu = useTransactionActionsMenu();
     const [openAccountSelector] = useAccountSelectorModal();
     const categoryEntries = getTransactionCategoryEntries(transaction.entries);
     if (

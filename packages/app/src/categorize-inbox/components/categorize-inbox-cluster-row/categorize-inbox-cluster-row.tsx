@@ -76,7 +76,7 @@ export const CategorizeInboxClusterRow = ({ row, displayTitle }: Props) => {
                 onPress={handlePickLabelsPress}
                 className="h-11 w-11 items-center justify-center"
                 accessibilityRole="button"
-                accessibilityLabel={strategy.pickRowLabel}
+                accessibilityLabel={strategy?.pickRowLabel}
                 {...testID(CategorizeInboxClusterRowSelector.PickCategory, row.transactionId)}
             >
                 <Icon icon={UserIconNameEnum.EllipsisVertical} size={16} className="text-secondary-foreground" />
