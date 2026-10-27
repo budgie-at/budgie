@@ -9,7 +9,7 @@ on:
                 type: string
                 default: ''
             screenshots:
-                description: Upload the committed 6.117.0 screenshot set
+                description: Upload the latest committed screenshot set (variants/6.117.0-dark) to the edited version
                 type: boolean
                 default: false
 
