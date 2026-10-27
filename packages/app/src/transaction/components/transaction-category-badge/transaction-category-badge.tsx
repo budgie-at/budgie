@@ -6,7 +6,7 @@ import {
 } from '@budgie/contracts';
 import { getTransactionCategoryEntries } from '@budgie/ledger';
 import { useAtomValue } from '@effect/atom-react/Hooks';
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -17,21 +17,18 @@ import { TransactionCardSelector } from '../transaction-card/transaction-card.se
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
-    readonly categoryLabel: string | null;
 }
 
 const wrapperClassName = 'self-start rounded-sm py-xxs px-sm bg-primary/10 border border-secondary-corner';
 const textClassName = 'text-secondary-foreground text-xxs font-medium';
 
-export const TransactionCategoryBadge = ({ transaction, categoryLabel }: Props) => {
+export const TransactionCategoryBadge = ({ transaction }: Props) => {
     const decimalPlaces = useAtomValue(decimalPlacesAtom);
     const formatDigits = useFormatDigits(decimalPlaces);
     const { t } = useLingui();
 
     const categoryEntries = getTransactionCategoryEntries(transaction.entries);
-    const hasMultipleEntries = categoryEntries.length > 1;
-    const hasDebtSettlement = isDefined(transaction.debtEvents.at(0));
-    const shouldShowEntryAmounts = hasMultipleEntries || hasDebtSettlement;
+    const shouldShowEntryAmounts = categoryEntries.length > 1 || isDefined(transaction.debtEvents.at(0));
     const isAdjustment = isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction);
 
     if (shouldShowEntryAmounts) {
@@ -58,10 +55,14 @@ export const TransactionCategoryBadge = ({ transaction, categoryLabel }: Props) 
     if (isAdjustment) {
         return (
             <View className={wrapperClassName} testID={TransactionCardSelector.AdjustmentBadge}>
-                <Text className={textClassName}>{categoryLabel}</Text>
+                <Text className={textClassName}>
+                    <Trans>Balance Adjustment</Trans>
+                </Text>
             </View>
         );
     }
+
+    const categoryLabel = categoryEntries.at(0)?.category?.title;
 
     if (!isDefined(categoryLabel)) {
         return null;

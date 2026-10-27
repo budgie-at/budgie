@@ -1,4 +1,11 @@
-import { TransactionViewRepository, TransactionTypeEnum } from '@budgie/contracts';
+import {
+    AccountEntityTable,
+    InstrumentEntityTable,
+    TransactionEntityTable,
+    TransactionEntryEntityTable,
+    TransactionTypeEnum,
+    TransactionViewRepository
+} from '@budgie/contracts';
 import { getTransactionCategoryEntries } from '@budgie/ledger';
 import { format } from 'date-fns/format';
 import { startOfMonth } from 'date-fns/startOfMonth';
@@ -11,7 +18,6 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { databaseQueryAtom } from '../../@generic/utils/database-query-atom.util';
-import { TRANSACTION_LIST_TABLES } from '../constant/transaction-list-tables.constant';
 
 import type {
     SimilarTransactionMonthRowInterface,
@@ -80,7 +86,7 @@ const fillSimilarStatsMonths = (stats: SimilarTransactionStatsInterface, operate
 
 export const similarStatsAtom = Atom.family((query: SimilarTransactionStatsQueryInterface | null) =>
     databaseQueryAtom(
-        TRANSACTION_LIST_TABLES,
+        [TransactionEntityTable, TransactionEntryEntityTable, AccountEntityTable, InstrumentEntityTable],
         isDefined(query)
             ? Effect.flatMap(TransactionViewRepository, transactionViewRepository =>
                   transactionViewRepository.findSimilarStats(query)

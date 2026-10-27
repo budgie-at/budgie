@@ -1,4 +1,12 @@
-import { DEFAULT_TRANSACTION_FILTER, RUNWAY_WINDOW_MONTHS, RunwayDriverDimensionEnum, StatisticsRepository } from '@budgie/contracts';
+import {
+    CategoryEntityTable,
+    DEFAULT_TRANSACTION_FILTER,
+    DefaultCategoryTranslationEntityTable,
+    RUNWAY_WINDOW_MONTHS,
+    RunwayDriverDimensionEnum,
+    StatisticsRepository,
+    TagEntityTable
+} from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
@@ -23,7 +31,7 @@ export const runwaySeriesAtom = databaseQueryFamily(
 );
 
 export const runwayDriverSeriesAtom = databaseQueryFamily(
-    STATISTICS_TABLES,
+    [...STATISTICS_TABLES, CategoryEntityTable, DefaultCategoryTranslationEntityTable, TagEntityTable],
     StatisticsRepository,
     (
         statisticsRepository,
