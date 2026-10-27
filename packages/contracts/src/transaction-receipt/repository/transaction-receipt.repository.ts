@@ -1,4 +1,4 @@
-import { and, between, desc, eq, isNull, notInArray, or, sql } from 'drizzle-orm';
+import { and, between, desc, eq, isNull, notExists, notInArray, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -75,6 +75,23 @@ export class TransactionReceiptRepository extends Context.Service<TransactionRec
                 insert: (input: TransactionReceiptCreateEntityInterface) =>
                     Db.query(db => db.insert(TransactionReceiptEntityTable).values(input).returning()).pipe(
                         Effect.map(([receipt]) => receipt)
+                    ),
+                moveToTransaction: (fromTransactionId: number, toTransactionId: number) =>
+                    Db.query(db =>
+                        db
+                            .update(TransactionReceiptEntityTable)
+                            .set({ transactionId: toTransactionId })
+                            .where(
+                                and(
+                                    eq(TransactionReceiptEntityTable.transactionId, fromTransactionId),
+                                    notExists(
+                                        db
+                                            .select({ transactionId: TransactionReceiptEntityTable.transactionId })
+                                            .from(TransactionReceiptEntityTable)
+                                            .where(eq(TransactionReceiptEntityTable.transactionId, toTransactionId))
+                                    )
+                                )
+                            )
                     ),
                 findMatchCandidates: ({ total, currency, from, to, cardExternalId }: ReceiptMatchCandidateQueryInterface) =>
                     Db.query(db =>

@@ -89,7 +89,7 @@ layer(TestLayer)('consolidation/receipt-expense-duplicate', it => {
             );
             yield* expectConsolidationParent(receipt.transactionId, bankExpense.id);
             expect(yield* fetchLedgerBalances([account.id])).toEqual([[account.id, -convertToMicroUnits(AMOUNT)]]);
-            expect((yield* transactionReceiptRepository.findByFingerprint(FINGERPRINT))?.transactionId).toBe(receipt.transactionId);
+            expect((yield* transactionReceiptRepository.findByFingerprint(FINGERPRINT))?.transactionId).toBe(bankExpense.id);
             yield* expectSecondConsolidationRunStable();
         }).pipe(Effect.provide(Layer.mergeAll(ReceiptMatchService.layer, TransactionReceiptRepository.layer)))
     );

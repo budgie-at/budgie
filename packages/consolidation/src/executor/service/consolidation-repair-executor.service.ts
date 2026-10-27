@@ -5,6 +5,7 @@ import {
     TransactionEntryTypeEnum,
     TransactionRepository,
     TransactionConsolidationRepository,
+    TransactionReceiptRepository,
     TransactionTypeEnum
 } from '@budgie/contracts';
 import * as Context from 'effect/Context';
@@ -44,6 +45,7 @@ export class ConsolidationRepairExecutorService extends Context.Service<Consolid
             const consolidationMutationService = yield* ConsolidationMutationService;
             const unconsolidationService = yield* UnconsolidationService;
             const debtEventRepository = yield* DebtEventRepository;
+            const transactionReceiptRepository = yield* TransactionReceiptRepository;
             const millisecondsInSecond = 1000;
 
             const isUntouchedIbanBridgeCanonical = (transaction: TransactionWithEntriesEntityInterface): boolean => {
@@ -380,6 +382,7 @@ export class ConsolidationRepairExecutorService extends Context.Service<Consolid
                             candidate.syncedTransactionId,
                             manualTransaction.entries.find(entry => entry.type !== TransactionEntryTypeEnum.FEE)?.id ?? null
                         );
+                        yield* transactionReceiptRepository.moveToTransaction(candidate.manualTransactionId, candidate.syncedTransactionId);
 
                         return true;
                     },
@@ -425,7 +428,8 @@ export class ConsolidationRepairExecutorService extends Context.Service<Consolid
             ConsolidationEligibilityService.layer,
             ConsolidationMutationService.layer,
             UnconsolidationService.layer,
-            DebtEventRepository.layer
+            DebtEventRepository.layer,
+            TransactionReceiptRepository.layer
         ])
     );
 }
