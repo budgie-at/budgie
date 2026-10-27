@@ -6,7 +6,7 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 import { buildReceiptKeywordPattern } from './build-receipt-keyword-pattern.util';
 import { extractReceiptMerchant } from './extract-receipt-merchant.util';
 import { extractReceiptTimestamp } from './extract-receipt-timestamp.util';
-import { extractReceiptTotal } from './extract-receipt-total.util';
+import { extractReceiptTotal, hasReceiptTotalLabel } from './extract-receipt-total.util';
 
 import type { ReceiptDraftInterface } from '../interface/receipt-draft.interface';
 import type { ReceiptTextLineInterface } from '../interface/receipt-text-line.interface';
@@ -43,8 +43,11 @@ const VAT_ID_PATTERNS: readonly RegExp[] = [
     /(?<!\p{L})(?:ІПН|ПН|ЄДРПОУ|ЕДРПОУ)\s*[:№]?\s*(\d{12}|\d{10}|\d{8})(?!\d)/iu
 ];
 
+const SAME_ROW_TOLERANCE = 0.75;
+const DATE_LIKE_PATTERN = /^\d{1,2}[./-]\d{1,2}[./-]\d{2,4}$/u;
+
 const isSameRow = (anchor: ReceiptTextLineInterface, line: ReceiptTextLineInterface): boolean =>
-    Math.abs(anchor.y + anchor.height / 2 - (line.y + line.height / 2)) <= Math.min(anchor.height, line.height) / 2;
+    Math.abs(anchor.y + anchor.height / 2 - (line.y + line.height / 2)) <= Math.min(anchor.height, line.height) * SAME_ROW_TOLERANCE;
 
 const groupRows = (lines: readonly ReceiptTextLineInterface[]): string[] =>
     [...lines]
@@ -67,11 +70,17 @@ const groupRows = (lines: readonly ReceiptTextLineInterface[]): string[] =>
                 .join(' ')
         );
 
-const findPaymentRows = (rows: readonly string[]): readonly string[] => {
-    const paymentStart = rows.findIndex(row => PAYMENT_PATTERN.test(row));
+const findPaymentRows = (rows: readonly string[], totalRowIndex: number): readonly string[] => {
+    const paymentStart = rows.findIndex((row, index) => index >= totalRowIndex && PAYMENT_PATTERN.test(row));
 
     return paymentStart < 0 ? [] : rows.slice(paymentStart);
 };
+
+const findReceiptNumber = (rows: readonly string[]): string | null =>
+    rows
+        .map(row => RECEIPT_NUMBER_PATTERN.exec(row)?.[1])
+        .filter(isDefined)
+        .find(candidate => !DATE_LIKE_PATTERN.test(candidate)) ?? null;
 
 const findFirstCapture = (rows: readonly string[], pattern: RegExp): string | null =>
     rows.map(row => pattern.exec(row)?.[1]).find(isDefined) ?? null;
@@ -96,7 +105,8 @@ const buildFingerprint = (draft: Omit<ReceiptDraftInterface, 'fingerprint'>, tim
 
 export const parseReceipt = (lines: readonly ReceiptTextLineInterface[]): ReceiptDraftInterface | null => {
     const rows = groupRows(lines);
-    const paymentRows = findPaymentRows(rows);
+    const totalRowIndex = rows.findIndex(hasReceiptTotalLabel);
+    const paymentRows = findPaymentRows(rows, totalRowIndex);
     const total = extractReceiptTotal(rows, paymentRows);
 
     if (!isDefined(total)) {
@@ -111,7 +121,7 @@ export const parseReceipt = (lines: readonly ReceiptTextLineInterface[]): Receip
         currency: total.currency,
         occurredAt: timestamp?.occurredAt ?? null,
         cardLast4: findFirstCapture(rows, CARD_PATTERN),
-        receiptNumber: findFirstCapture(rows, RECEIPT_NUMBER_PATTERN),
+        receiptNumber: findReceiptNumber(rows),
         merchantVatId: vatIds.find(isDefined) ?? null,
         merchantLegalName: merchant.legalName,
         merchantCandidates: merchant.candidates

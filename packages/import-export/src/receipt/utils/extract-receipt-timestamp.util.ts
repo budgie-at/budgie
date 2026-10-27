@@ -3,10 +3,12 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 import type { ReceiptTimestampInterface } from '../interface/receipt-timestamp.interface';
 
 const ISO_DATE_PATTERN = /(?<!\d)(\d{4})-(\d{2})-(\d{2})(?!\d)/u;
-const DAY_FIRST_DATE_PATTERN = /(?<!\d)(\d{1,2})[./](\d{1,2})[./](\d{4})(?!\d)/u;
+const DAY_FIRST_DATE_PATTERN = /(?<!\d)(\d{1,2})[./](\d{1,2})[./](\d{4}|\d{2})(?!\d)/u;
 const TIME_PATTERN = /(?<![\d:])([01]?\d|2[0-3]):([0-5]\d)(?::([0-5]\d))?(?:\s?([AaPp])\.?[Mm]\.?)?(?![\d:])/u;
 const MONTHS_IN_YEAR = 12;
 const HOURS_IN_HALF_DAY = 12;
+const TWO_DIGIT_YEAR_LIMIT = 100;
+const TWO_DIGIT_YEAR_BASE = 2000;
 
 const buildDate = (year: number, month: number, day: number): Date | null => {
     const date = new Date(year, month - 1, day);
@@ -27,7 +29,8 @@ const findDate = (text: string): Date | null => {
         return null;
     }
 
-    const [, first, second, year] = dayFirstMatch.map(Number);
+    const [, first, second, rawYear] = dayFirstMatch.map(Number);
+    const year = rawYear < TWO_DIGIT_YEAR_LIMIT ? rawYear + TWO_DIGIT_YEAR_BASE : rawYear;
 
     return second > MONTHS_IN_YEAR ? buildDate(year, first, second) : buildDate(year, second, first);
 };
@@ -59,17 +62,18 @@ const withTime = (date: Date, text: string): Date | null => {
     );
 };
 
-const findTimestamp = (text: string): ReceiptTimestampInterface | null => {
+const findTimestamp = (text: string, nextText: string | undefined): ReceiptTimestampInterface | null => {
     const date = findDate(text);
 
     if (!isDefined(date)) {
         return null;
     }
 
-    const dateTime = withTime(date, text);
+    const followingTime = isDefined(nextText) && !isDefined(findDate(nextText)) ? withTime(date, nextText) : null;
+    const dateTime = withTime(date, text) ?? followingTime;
 
     return isDefined(dateTime) ? { occurredAt: dateTime, hasTime: true } : { occurredAt: date, hasTime: false };
 };
 
 export const extractReceiptTimestamp = (rows: readonly string[], paymentRows: readonly string[]): ReceiptTimestampInterface | null =>
-    [...paymentRows, ...rows].map(findTimestamp).find(isDefined) ?? null;
+    [paymentRows, rows].flatMap(source => source.map((text, index) => findTimestamp(text, source[index + 1]))).find(isDefined) ?? null;

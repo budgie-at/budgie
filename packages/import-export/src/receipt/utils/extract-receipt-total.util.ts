@@ -1,6 +1,6 @@
 import { convertToMicroUnits, CurrencyEnum, LanguageEnum } from '@budgie/contracts';
 
-import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { buildReceiptKeywordPattern } from './build-receipt-keyword-pattern.util';
 
@@ -15,11 +15,19 @@ const TOTAL_LABELS: Record<LanguageEnum, readonly string[]> = {
 };
 
 const EXCLUDED_LABELS: Record<LanguageEnum, readonly string[]> = {
-    [LanguageEnum.EN]: ['subtotal', 'sub total', 'tax', 'vat', 'tip', 'gratuity', 'change'],
-    [LanguageEnum.FR]: ['sous-total', 'tva', 'pourboire', 'rendu'],
-    [LanguageEnum.UK]: ['пдв', 'решта'],
-    [LanguageEnum.DE]: ['zwischensumme', 'ust', 'mwst', 'netto', 'trinkgeld', 'rückgeld', 'gegeben'],
-    [LanguageEnum.ES]: ['subtotal', 'iva', 'propina', 'cambio']
+    [LanguageEnum.EN]: ['subtotal', 'sub total', 'tax', 'vat', 'tip', 'gratuity', 'change', 'tendered', 'cash', 'given'],
+    [LanguageEnum.FR]: ['sous-total', 'tva', 'pourboire', 'rendu', 'espèces', 'donné'],
+    [LanguageEnum.UK]: ['пдв', 'решта', 'готівка', 'готівкою'],
+    [LanguageEnum.DE]: ['zwischensumme', 'ust', 'mwst', 'netto', 'trinkgeld', 'rückgeld', 'gegeben', 'bar', 'bargeld'],
+    [LanguageEnum.ES]: ['subtotal', 'iva', 'propina', 'cambio', 'entregado', 'efectivo']
+};
+
+const INCLUSIVE_MARKERS: Record<LanguageEnum, readonly string[]> = {
+    [LanguageEnum.EN]: ['incl', 'including', 'included', 'inclusive'],
+    [LanguageEnum.FR]: ['incl', 'inclus', 'dont'],
+    [LanguageEnum.UK]: ['включно', 'в т.ч'],
+    [LanguageEnum.DE]: ['inkl', 'einschl', 'davon'],
+    [LanguageEnum.ES]: ['incl', 'incluido', 'incluye']
 };
 
 const CURRENCY_SYMBOLS: readonly (readonly [string, CurrencyEnum])[] = [
@@ -44,20 +52,31 @@ const CURRENCY_ALIASES: ReadonlyMap<string, CurrencyEnum> = new Map([
 
 const CURRENCY_CODES = new Map<string, CurrencyEnum>(Object.values(CurrencyEnum).map(code => [code, code]));
 const CURRENCY_TOKEN_PATTERN = /\p{L}+|[$£€₴]/gu;
-const AMOUNT_PATTERN = /(?<![\d.,])(\d{1,3}(?:[.,' ]\d{3})+|\d+)[.,](\d{2})(?!\d|[.,]\d)/gu;
+const CURRENCY_CODE_PATTERN = /(?<!\p{L})([A-Z]{3})(?!\p{L})\s?(?=\d)|(?<=\d)\s?([A-Z]{3})(?!\p{L})/gu;
+const AMOUNT_PATTERN = /(?<![\d.,])([-−])?(\d{1,3}(?:[.,']\d{3})+|\d+)[.,](\d{2})(?!\d|[.,]\d)/gu;
+const PARENTHESIZED_PATTERN = /\([^)]*\)/gu;
+const INCLUSIVE_PHRASE_PATTERN = new RegExp(
+    String.raw`${buildReceiptKeywordPattern(Object.values(INCLUSIVE_MARKERS).flat(), 'iu').source}\.?(?:\s+\p{L}+)?`,
+    'giu'
+);
 const TOTAL_LABEL_PATTERN = buildReceiptKeywordPattern(Object.values(TOTAL_LABELS).flat(), 'iu');
 const EXCLUDED_LABEL_PATTERN = buildReceiptKeywordPattern(Object.values(EXCLUDED_LABELS).flat(), 'iu');
 
 const findAmounts = (text: string): number[] =>
     [...text.matchAll(AMOUNT_PATTERN)]
-        .map(([, integerPart, fractionPart]) => convertToMicroUnits(Number(`${integerPart.replaceAll(/\D/gu, '')}.${fractionPart}`)))
+        .filter(([, sign]) => !isDefined(sign))
+        .map(([, , integerPart, fractionPart]) => convertToMicroUnits(Number(`${integerPart.replaceAll(/\D/gu, '')}.${fractionPart}`)))
         .filter(isPositiveNumber);
 
-const findTokenCurrency = (token: string): CurrencyEnum | undefined =>
-    CURRENCY_ALIASES.get(token.toLocaleLowerCase()) ?? CURRENCY_CODES.get(token);
+const stripInclusivePhrases = (row: string): string => row.replaceAll(PARENTHESIZED_PATTERN, ' ').replaceAll(INCLUSIVE_PHRASE_PATTERN, ' ');
 
 const findCurrencies = (text: string): CurrencyEnum[] =>
-    (text.match(CURRENCY_TOKEN_PATTERN) ?? []).map(findTokenCurrency).filter(isDefined);
+    [
+        ...(text.match(CURRENCY_TOKEN_PATTERN) ?? []).map(token => CURRENCY_ALIASES.get(token.toLocaleLowerCase())),
+        ...[...text.matchAll(CURRENCY_CODE_PATTERN)].map(([, before, after]) =>
+            CURRENCY_CODES.get(isNotEmptyString(before) ? before : after)
+        )
+    ].filter(isDefined);
 
 const findMostFrequentCurrency = (rows: readonly string[]): CurrencyEnum | null => {
     const counts = rows
@@ -70,8 +89,11 @@ const findMostFrequentCurrency = (rows: readonly string[]): CurrencyEnum | null 
     return [...counts.entries()].sort(([, left], [, right]) => right - left).at(0)?.[0] ?? null;
 };
 
+export const hasReceiptTotalLabel = (row: string): boolean => TOTAL_LABEL_PATTERN.test(row);
+
 export const extractReceiptTotal = (rows: readonly string[], paymentRows: readonly string[]): ReceiptTotalInterface | null => {
     const candidates = rows
+        .map(row => stripInclusivePhrases(row))
         .filter(row => TOTAL_LABEL_PATTERN.test(row) && !EXCLUDED_LABEL_PATTERN.test(row))
         .flatMap(row =>
             findAmounts(row)
