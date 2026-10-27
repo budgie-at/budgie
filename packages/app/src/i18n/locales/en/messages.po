@@ -865,7 +865,7 @@ msgid "Balance"
 msgstr "Balance"
 
 #: src/app/(main)/transactions/[id]/adjustment.tsx
-#: src/transaction/components/transaction-sections-list/transaction-sections-list.tsx
+#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx
 msgid "Balance Adjustment"
 msgstr "Balance Adjustment"
 
@@ -1121,7 +1121,6 @@ msgstr "Cash withdrawals"
 #: src/app/(tabs)/settings/categories.tsx
 #: src/runway/component/runway-drivers/runway-drivers.tsx
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
-#: src/transaction/components/transaction-sections-list/transaction-sections-list.tsx
 msgid "Categories"
 msgstr "Categories"
 

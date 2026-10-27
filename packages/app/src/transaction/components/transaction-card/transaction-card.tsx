@@ -17,23 +17,14 @@ import { TransactionCardContent } from '../transaction-card-content/transaction-
 
 import { TransactionCardSelector } from './transaction-card.selector';
 
-export interface TransactionCardProps {
+interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
-    readonly formattedDate: string;
-    readonly categoryLabel: string | null;
     readonly accountId?: number | null;
     readonly onPress?: (transaction: TransactionWithRelationsEntityInterface) => void;
     readonly onLongPress?: (transaction: TransactionWithRelationsEntityInterface, anchor: PopoverMenuAnchor) => void;
 }
 
-export const TransactionCard = ({
-    transaction,
-    formattedDate,
-    categoryLabel,
-    accountId = null,
-    onPress,
-    onLongPress
-}: TransactionCardProps) => {
+export const TransactionCard = ({ transaction, accountId = null, onPress, onLongPress }: Props) => {
     const cardRef = useRef<View>(null);
 
     const isAdjustment = isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction);
@@ -66,12 +57,7 @@ export const TransactionCard = ({
 
     const card = (
         <Card className="p-xl gap-y-8" testID={cardTestID} {...interactionProps}>
-            <TransactionCardContent
-                transaction={transaction}
-                formattedDate={formattedDate}
-                categoryLabel={categoryLabel}
-                accountId={accountId}
-            />
+            <TransactionCardContent transaction={transaction} accountId={accountId} />
         </Card>
     );
 
