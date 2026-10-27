@@ -64,6 +64,12 @@ describe('parseReceipt hardening', () => {
         })
     );
 
+    it.effect('takes the line amount, not the unit price, on a quantity total row', () =>
+        Effect.sync(() => {
+            expect(parseReceipt(rowsOf('Total 2 x 6,25 12,50'))).toMatchObject({ total: convertToMicroUnits(12.5) });
+        })
+    );
+
     it.effect('keeps a total row when a cash word follows the total label', () =>
         Effect.sync(() => {
             expect(parseReceipt(rowsOf('Summe bar EUR 12,50'))).toMatchObject({ total: convertToMicroUnits(12.5) });

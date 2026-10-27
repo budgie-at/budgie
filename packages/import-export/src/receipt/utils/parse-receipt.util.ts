@@ -1,4 +1,4 @@
-/* oxlint-disable max-lines -- approved by Vitalii Yehorov: receipt parsing is one cohesive pipeline */
+/* eslint-disable max-lines -- approved by Vitalii Yehorov: receipt parsing is one cohesive pipeline */
 import { convertToMicroUnits, CurrencyEnum, LanguageEnum } from '@budgie/contracts';
 import { format } from 'date-fns';
 
@@ -115,10 +115,7 @@ const findMostFrequentCurrency = (rows: readonly string[]): CurrencyEnum | null 
     return [...counts.entries()].sort(([, left], [, right]) => right - left).at(0)?.[0] ?? null;
 };
 
-const findTotalCandidate = (
-    rawRow: string,
-    rowIndex: number
-): { readonly amount: number; readonly row: string; readonly rowIndex: number } | null => {
+const findTotalCandidate = (rawRow: string, rowIndex: number) => {
     const row = rawRow.replaceAll(PARENTHESIZED_PATTERN, ' ');
     const marker = INCLUSIVE_MARKER_PATTERN.exec(row);
     const head = isDefined(marker) ? row.slice(0, marker.index) : row;
@@ -130,7 +127,7 @@ const findTotalCandidate = (
         return null;
     }
 
-    const amount = findAmounts(head.slice(label.index + label[0].length)).at(0) ?? findAmounts(tail).at(0);
+    const amount = findAmounts(head.slice(label.index + label[0].length)).at(-1) ?? findAmounts(tail).at(0);
 
     return isDefined(amount) ? { amount, row, rowIndex } : null;
 };
