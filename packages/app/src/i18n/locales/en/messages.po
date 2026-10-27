@@ -1269,10 +1269,6 @@ msgstr "Connect Binance"
 msgid "Connect Monobank"
 msgstr "Connect Monobank"
 
-#: src/sync/component/bank-integration-page/bank-integration-page.tsx
-msgid "Connection"
-msgstr "Connection"
-
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
 msgid "Consolidate"
 msgstr "Consolidate"
@@ -4027,6 +4023,10 @@ msgstr "Refunded"
 #: src/transaction/components/refunded-pill/refunded-pill.tsx
 msgid "Refunded {formattedRefundedAmount}"
 msgstr "Refunded {formattedRefundedAmount}"
+
+#: src/sync/component/bank-integration-key-card/bank-integration-key-card.tsx
+msgid "Rejected · tap to update"
+msgstr "Rejected · tap to update"
 
 #: src/budget/components/budget-allocation-summary/budget-allocation-summary.tsx
 msgid "Remaining"

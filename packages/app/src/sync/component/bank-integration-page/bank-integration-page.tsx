@@ -12,7 +12,6 @@ import { HeaderBackButton } from '../../../@generic/component/header-back-button
 import { getBankIntegrationTitle } from '../../../account/utils/get-bank-integration-title.util';
 import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/bank-integration.selector';
 import { EXTERNAL_SOURCE } from '../../../rule/constant/external-source.constant';
-import { SettingsGroup } from '../../../settings/components/settings-group/settings-group';
 import { BankIntegrationContext } from '../../context/bank-integration.context';
 import { BankIntegrationAccountList } from '../bank-integration-account-list/bank-integration-account-list';
 import { BankIntegrationKeyCard } from '../bank-integration-key-card/bank-integration-key-card';
@@ -49,11 +48,7 @@ export const BankIntegrationPage = ({ integration }: Props) => {
     ) : null;
     const footer = isDefined(importFileButton) ? <View className="flex-row pt-xl px-7xl">{importFileButton}</View> : null;
 
-    const connectionSection = capabilities.supportsAccountDiscovery ? (
-        <SettingsGroup title={t`Connection`}>
-            <BankIntegrationKeyCard />
-        </SettingsGroup>
-    ) : null;
+    const keyCard = capabilities.supportsAccountDiscovery ? <BankIntegrationKeyCard /> : null;
     const title = getBankIntegrationTitle(t(EXTERNAL_SOURCE[integration.provider]), integration.label, null);
 
     const contextValue = { integration, capabilities };
@@ -68,7 +63,7 @@ export const BankIntegrationPage = ({ integration }: Props) => {
         >
             <BankIntegrationContext.Provider value={contextValue}>
                 <BankIntegrationOverview />
-                {connectionSection}
+                {keyCard}
                 <BankIntegrationAccountList />
             </BankIntegrationContext.Provider>
         </CollapsibleChromePage>
