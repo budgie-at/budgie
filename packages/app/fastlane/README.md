@@ -66,6 +66,8 @@ from the spec above.
 fastlane store_preflight        # no credentials needed
 fastlane ios ios_metadata       # deliver App Store text metadata
 fastlane ios ios_screenshots    # deliver the composed screenshot set
+fastlane ios ios_marketing_assets # upload headers to Asset Library; no placements or submission
+fastlane ios ios_app_previews   # upload generated preview videos; no submission
 fastlane android android_metadata     # supply Play text metadata + changelogs
 fastlane android android_screenshots  # supply Play screenshots
 ```
@@ -289,6 +291,12 @@ since the latest `v*` tag (types `feat`, `fix`, `perf`, unscoped or scoped
 the state file was written. It only warns and never blocks a release.
 
 ## Refresh procedure
+
+Header assets, the 2026 marketing-surface audit, preview capture/encoding commands,
+and manual ASC placement steps are documented in
+[screenshots/MARKETING.md](screenshots/MARKETING.md). For a submission whose version
+differs from the package version, prefix version-bound lanes with
+`APP_STORE_VERSION=6.117.0`; otherwise they retain their package-version default.
 
 1. Build the E2E app and capture on a Mac — see
    [screenshots/README.md](screenshots/README.md).

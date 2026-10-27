@@ -1,3 +1,6 @@
+require "digest"
+require "open3"
+
 default_platform(:ios)
 
 skip_docs
@@ -12,6 +15,12 @@ COMPOSE_SCRIPT = File.join(SCREENSHOTS_DIR, "design", "compose-screenshots.sh")
 IOS_METADATA_PATH = File.join(FASTLANE_DIR, "metadata", "ios")
 ANDROID_METADATA_PATH = File.join(FASTLANE_DIR, "metadata", "android")
 IOS_COPYRIGHT_PATH = File.join(IOS_METADATA_PATH, "copyright.txt")
+MARKETING_ASSETS_PATH = File.join(SCREENSHOTS_DIR, "marketing")
+HEADER_SIZES = {
+  "header-universal-5244x2950.png" => [5244, 2950],
+  "header-3840x1646.png" => [3840, 1646]
+}.freeze
+
 IOS_APP_RATING_CONFIG_PATH = File.join(IOS_METADATA_PATH, "app_rating_config.json")
 
 REVIEW_CONTACT_NAME = { contact_first_name: "Vitalii", contact_last_name: "Yehorov" }.freeze
@@ -338,6 +347,37 @@ def verify_ios_screenshot_slots(path)
   end
 end
 
+def verify_app_store_headers
+  ASC_LOCALES.each do |locale|
+    HEADER_SIZES.each do |filename, dimensions|
+      path = File.join(MARKETING_ASSETS_PATH, "headers", locale, filename)
+      UI.user_error!("Missing App Store header: #{path}") unless File.file?(path)
+      header = File.binread(path, 26)
+      unless header.start_with?(PNG_SIGNATURE) && png_dimensions(path) == dimensions && header.getbyte(24) == 8 && header.getbyte(25) == PNG_COLOR_TYPE_RGB
+        UI.user_error!("#{path} must be #{dimensions.join('x')}, 8-bit RGB PNG without alpha")
+      end
+    end
+  end
+  UI.success("App Store headers: both sizes, opaque RGB, all #{ASC_LOCALES.length} locales")
+end
+
+def verify_app_store_previews(path)
+  ASC_LOCALES.each do |locale|
+    video_path = File.join(path, locale, "01_IPHONE_67.mp4")
+    UI.user_error!("Missing preview for #{locale}; run compose-app-store-preview.sh first") unless File.file?(video_path)
+    output, status = Open3.capture2("ffprobe", "-v", "error", "-show_streams", "-show_format", "-of", "json", video_path)
+    UI.user_error!("Cannot inspect preview #{video_path}") unless status.success?
+    metadata = JSON.parse(output)
+    video = metadata.fetch("streams").find { |stream| stream["codec_type"] == "video" } || {}
+    audio = metadata.fetch("streams").find { |stream| stream["codec_type"] == "audio" } || {}
+    unless video.values_at("width", "height", "codec_name", "pix_fmt", "r_frame_rate", "profile", "level") == [886, 1920, "h264", "yuv420p", "30/1", "High", 40] &&
+        audio.values_at("codec_name", "channels", "sample_rate") == ["aac", 2, "48000"] &&
+        metadata.fetch("format").fetch("duration").to_f.between?(15, 30) && File.size(video_path) < 500_000_000
+      UI.user_error!("#{video_path} does not meet the App Store preview contract; regenerate it")
+    end
+  end
+end
+
 lane :store_preflight do
   variant = screenshot_variant
   path = ios_screenshots_path(variant)
@@ -362,9 +402,80 @@ lane :store_preflight do
     android_images.sort.each { |label, count| UI.success("  Play #{label}: #{count}") }
   end
   verify_android_hero_images
+  verify_app_store_headers
 end
 
 platform :ios do
+  lane :ios_marketing_assets do
+    verify_app_store_headers
+    app_store_connect_api_key(**asc_api_key_settings)
+    client = Spaceship::ConnectAPI::APIClient.new(token: Spaceship::ConnectAPI.token)
+    library_id = client.get("v1/apps/6757147597/assetLibrary").body.fetch("data").fetch("id")
+    specifications = client.get("v1/appAssetLibraryRefData").body.fetch("data").flat_map { |resource| resource.fetch("attributes").fetch("imageSpecs") }
+    images = client.get("v1/appAssetLibraries/#{library_id}/images", { limit: 200 }).all_pages.flat_map { |response| response.body.fetch("data") }
+
+    ASC_LOCALES.each do |locale|
+      HEADER_SIZES.each_key do |filename|
+        path = File.join(MARKETING_ASSETS_PATH, "headers", locale, filename)
+        width, height = png_dimensions(path)
+        compatible = specifications.any? do |specification|
+          dimensions = specification.fetch("dimensions")
+          specification.fetch("compatiblePlacementTypes").include?("PRODUCT_PAGE_HEADER_ASSET") &&
+            (dimensions.fetch("minWidth")..dimensions.fetch("maxWidth")).cover?(width) &&
+            (dimensions.fetch("minHeight")..dimensions.fetch("maxHeight")).cover?(height) &&
+            specification.fetch("fileExtensions").include?(".png") && File.size(path) <= specification.fetch("maxFileSize")
+        end
+        UI.user_error!("Apple's current catalog does not accept #{filename} as a header") unless compatible
+        reference_name = "budgie-#{locale}-#{File.basename(filename, '.png')}-#{Digest::SHA256.file(path).hexdigest[0, 16]}"
+        existing = images.find { |image| image.fetch("attributes")["referenceName"] == reference_name }
+        if existing
+          unless %w[PREPARE_FOR_SUBMISSION READY_FOR_REVIEW WAITING_FOR_REVIEW IN_REVIEW ACCEPTED APPROVED].include?(existing.fetch("attributes")["state"])
+            UI.user_error!("#{reference_name}: inspect unfinished or unusable asset #{existing.fetch('id')} in Asset Library before retrying")
+          end
+          UI.message("Already reserved #{reference_name}: #{existing.fetch('id')} (#{existing.fetch('attributes')['state']})")
+          next
+        end
+        image = client.post("v1/appAssetLibraryImages", {
+          data: {
+            type: "appAssetLibraryImages",
+            attributes: { fileName: filename, fileSize: File.size(path), category: "CREATIVE_ASSETS", referenceName: reference_name },
+            relationships: { assetLibrary: { data: { type: "appAssetLibraries", id: library_id } } }
+          }
+        }).body.fetch("data")
+        Spaceship::ConnectAPI::FileUploader.upload(image.fetch("attributes").fetch("uploadOperations"), File.binread(path))
+        client.patch("v1/appAssetLibraryImages/#{image.fetch('id')}", {
+          data: { type: "appAssetLibraryImages", id: image.fetch("id"), attributes: { uploaded: true } }
+        })
+        UI.success("Uploaded #{reference_name}: #{image.fetch('id')}; check processing and choose placements in App Store Connect")
+      end
+    end
+  end
+
+  lane :ios_app_previews do
+    previews_path = File.join(MARKETING_ASSETS_PATH, "previews")
+    verify_app_store_previews(previews_path)
+    unless Deliver::Options.available_options.any? { |option| option.key == :app_previews_path }
+      UI.user_error!("This fastlane lacks app_previews_path; upgrade fastlane or use Media Manager")
+    end
+    app_store_connect_api_key(**asc_api_key_settings)
+    app = Spaceship::ConnectAPI::App.find(CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier))
+    version = app.get_edit_app_store_version(platform: Spaceship::ConnectAPI::Platform::IOS)
+    unless version && version.version_string == app_store_version
+      UI.user_error!("Expected editable iOS version #{app_store_version} before uploading previews")
+    end
+    deliver(
+      app_version: app_store_version,
+      skip_binary_upload: true,
+      skip_metadata: true,
+      skip_screenshots: true,
+      app_previews_path: previews_path,
+      overwrite_preview_videos: false,
+      run_precheck_before_submit: false,
+      submit_for_review: false,
+      force: true
+    )
+  end
+
   lane :ios_metadata do
     app_store_connect_api_key(**asc_api_key_settings)
     ensure_app_store_review_detail
