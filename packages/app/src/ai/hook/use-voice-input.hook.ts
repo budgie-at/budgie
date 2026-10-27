@@ -1,8 +1,12 @@
 import { AITransactionInterface } from '@budgie/ai';
+import * as Cause from 'effect/Cause';
+import * as Effect from 'effect/Effect';
 import { useRef, useState } from 'react';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
+import { appRuntime } from '../../@generic/runtime/app.runtime';
+import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { VoiceInputStateEnum } from '../enum/voice-input-state.enum';
 import { UseVoiceInputReturnInterface } from '../interface/use-voice-input-return.interface';
 import { getRootErrorMessage } from '../utils/get-root-error-message.util';
@@ -39,53 +43,61 @@ export const useVoiceInput = (): UseVoiceInputReturnInterface => {
         settle([], '');
     };
 
-    const runPipeline = async (): Promise<void> => {
-        setState(VoiceInputStateEnum.TRANSCRIBING);
-        const text = await stt.stopStream();
+    const runPipeline = () =>
+        Effect.gen(function* () {
+            setState(VoiceInputStateEnum.TRANSCRIBING);
+            const text = yield* stt.stopStream();
 
-        if (!isNotEmptyString(text)) {
-            setState(VoiceInputStateEnum.IDLE);
-            settle([], '');
+            if (!isNotEmptyString(text)) {
+                setState(VoiceInputStateEnum.IDLE);
+                settle([], '');
 
-            return;
-        }
+                return;
+            }
 
-        setFinalTranscription(text);
-        setState(VoiceInputStateEnum.PROCESSING);
+            setFinalTranscription(text);
+            setState(VoiceInputStateEnum.PROCESSING);
 
-        const transactions = await categorization.categorize(text);
+            const transactions = yield* categorization.categorize(text);
 
-        setState(VoiceInputStateEnum.DONE);
-        settle(transactions, text);
+            setState(VoiceInputStateEnum.DONE);
+            settle(transactions, text);
+        });
+
+    const runPipelineOnce = () => {
+        appRuntime.runFork(
+            logAndContinue(runPipeline().pipe(Effect.tapCause(cause => Effect.sync(() => void handleError(Cause.squash(cause))))))
+        );
     };
 
     const recording = useRecording({
         onAudioBuffer: stt.insertAudio,
-        onSilenceDetected: () => void runPipeline().catch(handleError)
+        onSilenceDetected: runPipelineOnce
     });
 
-    const startAndCollect: UseVoiceInputReturnInterface['startAndCollect'] = async onResult => {
-        setError(null);
-        setFinalTranscription('');
-        categorization.reset();
-        resultRef.current = onResult;
+    const startAndCollect: UseVoiceInputReturnInterface['startAndCollect'] = onResult =>
+        Effect.gen(function* () {
+            setError(null);
+            setFinalTranscription('');
+            categorization.reset();
+            resultRef.current = onResult;
 
-        if (!(await stt.startStream())) {
-            settle([], '');
+            if (!(yield* stt.startStream())) {
+                settle([], '');
 
-            return;
-        }
+                return;
+            }
 
-        recording.start();
-        setState(VoiceInputStateEnum.RECORDING);
-    };
+            recording.start();
+            setState(VoiceInputStateEnum.RECORDING);
+        });
 
     const stop = () => {
         if (state !== VoiceInputStateEnum.RECORDING) {
             return;
         }
         recording.stop();
-        runPipeline().catch(handleError);
+        runPipelineOnce();
     };
 
     const cancel = () => {

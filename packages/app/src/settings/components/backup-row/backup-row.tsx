@@ -4,7 +4,6 @@ import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { cn } from '../../../@generic/utils/cn.util';
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
 import { useExportAction } from '../../../export/hook/use-export-action.hook';
@@ -18,8 +17,7 @@ export const BackupRow = () => {
     const { intl } = useI18nContext();
     const lastBackupAt = useSetting('lastBackupAt');
     const { isLoading, handleExport } = useExportAction({
-        exportAction: () =>
-            appRuntime.runPromise(Effect.flatMap(DatabaseExportService, databaseExportService => databaseExportService.exportAndShare())),
+        exportAction: Effect.flatMap(DatabaseExportService, databaseExportService => databaseExportService.exportAndShare()),
         successTitle: t`Backup file ready`,
         successMessage: t`Save it to Files or another app.`,
         errorTitle: t`Could not create a backup`

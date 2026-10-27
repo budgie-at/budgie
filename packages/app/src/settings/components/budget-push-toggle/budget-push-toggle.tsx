@@ -1,37 +1,46 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import * as Notifications from 'expo-notifications';
 import Toast from 'react-native-toast-message';
 
+import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
+import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
-import { useSettingToggle } from '../../hook/use-setting-toggle.hook';
 import { useSetting } from '../../hook/use-setting.hook';
+import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
 import { BudgetSettingCard } from '../budget-setting-card/budget-setting-card';
 
 export const BudgetPushToggle = () => {
     const { t } = useLingui();
     const isBudgetPushEnabled = useSetting('isBudgetPushEnabled');
+    const { run } = useSingleFlight();
 
-    const persist = useSettingToggle('isBudgetPushEnabled', t`Could not update notifications`);
+    const persist = (next: boolean) =>
+        updateSettingsMutation({ isBudgetPushEnabled: next }).pipe(toastOnFailure(t`Could not update notifications`));
 
-    const handleChange = async (next: boolean) => {
-        if (!next) {
-            await persist(false);
+    const handleChange = (next: boolean) => {
+        void run(
+            Effect.gen(function* () {
+                if (!next) {
+                    yield* persist(false);
 
-            return;
-        }
+                    return;
+                }
 
-        const { status } = await Notifications.requestPermissionsAsync();
+                const { status } = yield* Effect.promise(() => Notifications.requestPermissionsAsync());
 
-        if (status === Notifications.PermissionStatus.GRANTED) {
-            await persist(true);
-        } else {
-            Toast.show({
-                type: 'error',
-                text1: t`Push notifications are disabled`,
-                text2: t`Enable them in device settings to receive budget alerts.`
-            });
-        }
+                if (status === Notifications.PermissionStatus.GRANTED) {
+                    yield* persist(true);
+                } else {
+                    Toast.show({
+                        type: 'error',
+                        text1: t`Push notifications are disabled`,
+                        text2: t`Enable them in device settings to receive budget alerts.`
+                    });
+                }
+            })
+        );
     };
 
     return (

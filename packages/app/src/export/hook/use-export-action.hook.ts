@@ -11,7 +11,7 @@ export const useExportAction = ({ exportAction, successTitle, successMessage, er
 
     const handleExport = () =>
         run(
-            Effect.promise(exportAction).pipe(
+            exportAction.pipe(
                 Effect.tap(() => Effect.sync(() => void Toast.show({ type: 'success', text1: successTitle, text2: successMessage }))),
                 toastOnFailure(errorTitle)
             )

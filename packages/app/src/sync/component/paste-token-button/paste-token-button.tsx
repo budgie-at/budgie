@@ -1,11 +1,13 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { getStringAsync } from 'expo-clipboard';
 import Toast from 'react-native-toast-message';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
+import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { isLikelyMonoToken } from '../../type-guard/is-likely-mono-token.type-guard';
 
 interface Props {
@@ -16,25 +18,30 @@ interface Props {
 export const PasteTokenButton = ({ onPaste, testID }: Props) => {
     const { t } = useLingui();
 
-    const handlePress = async () => {
-        const clipboardContent = await getStringAsync();
+    const { run } = useSingleFlight();
 
-        if (!isNotEmptyString(clipboardContent)) {
-            Toast.show({ type: 'info', text1: t`Clipboard is empty` });
+    const handlePress = () =>
+        run(
+            Effect.gen(function* () {
+                const clipboardContent = yield* Effect.promise(() => getStringAsync());
 
-            return;
-        }
+                if (!isNotEmptyString(clipboardContent)) {
+                    Toast.show({ type: 'info', text1: t`Clipboard is empty` });
 
-        const trimmedToken = clipboardContent.trim();
+                    return;
+                }
 
-        if (!isLikelyMonoToken(trimmedToken)) {
-            Toast.show({ type: 'error', text1: t`Clipboard doesn't contain a valid Monobank token` });
+                const trimmedToken = clipboardContent.trim();
 
-            return;
-        }
+                if (!isLikelyMonoToken(trimmedToken)) {
+                    Toast.show({ type: 'error', text1: t`Clipboard doesn't contain a valid Monobank token` });
 
-        onPaste(trimmedToken);
-    };
+                    return;
+                }
+
+                onPaste(trimmedToken);
+            })
+        );
 
     return (
         <Button

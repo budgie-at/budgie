@@ -11,12 +11,12 @@ import { vi } from 'vitest';
 import { testDb } from '../../harness/scenario/setup';
 import { seed } from '../../harness/seed/seed';
 
-const scheduledNotifications = vi.hoisted(() => vi.fn());
+const scheduledNotifications = vi.hoisted(() => vi.fn().mockResolvedValue(undefined));
 
 vi.mock('expo-notifications', () => ({
     AndroidImportance: { DEFAULT: 3 },
     scheduleNotificationAsync: scheduledNotifications,
-    setNotificationChannelAsync: vi.fn()
+    setNotificationChannelAsync: vi.fn().mockResolvedValue(undefined)
 }));
 
 const BudgetAlertLayer = Layer.mergeAll(BudgetAlertMonitorService.layer, BudgetService.layer, SettingsRepository.layer).pipe(

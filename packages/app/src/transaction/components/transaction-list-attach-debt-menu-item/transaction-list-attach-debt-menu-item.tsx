@@ -10,12 +10,13 @@ import { AccountDebtOpeningService, TransactionDebtSettlementService, getTransac
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import Toast from 'react-native-toast-message';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
+import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
+import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { getDebtOpeningMessages } from '../../../account/utils/get-debt-opening-messages.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
@@ -45,8 +46,8 @@ export const TransactionListAttachDebtMenuItem = () => {
     const [categoryEntry] = categoryEntries;
     const debtAttachmentErrorMessage = t`Could not attach debt`;
 
-    const createBorrowedDebtAccount = async (): Promise<number | null> => {
-        await appRuntime.runPromise(
+    const createBorrowedDebtAccount = () =>
+        appRuntime.runPromise(
             Effect.flatMap(AccountDebtOpeningService, accountDebtOpeningService =>
                 accountDebtOpeningService.createBorrowedDebtFromIncome(
                     {
@@ -64,11 +65,8 @@ export const TransactionListAttachDebtMenuItem = () => {
                     transaction.id,
                     getDebtOpeningMessages()
                 )
-            )
+            ).pipe(Effect.as(null))
         );
-
-        return null;
-    };
 
     const borrowedDebtCreateAction: AccountSelectorCreateActionInterface | null = isIncomeTransaction(transaction)
         ? {
@@ -90,15 +88,13 @@ export const TransactionListAttachDebtMenuItem = () => {
             },
             debtAccountId => {
                 if (isDefined(debtAccountId)) {
-                    appRuntime
-                        .runPromise(
+                    appRuntime.runFork(
+                        logAndContinue(
                             Effect.flatMap(TransactionDebtSettlementService, transactionDebtSettlementService =>
                                 transactionDebtSettlementService.attach({ transactionId: transaction.id, debtAccountId })
-                            )
+                            ).pipe(toastOnFailure(debtAttachmentErrorMessage))
                         )
-                        .catch(() => {
-                            Toast.show({ type: 'error', text1: debtAttachmentErrorMessage });
-                        });
+                    );
                 }
             }
         );

@@ -1,7 +1,5 @@
 import { lazy } from 'react';
 
-export const LazyVoiceInputOverlay = lazy(async () => {
-    const { VoiceInputOverlay } = await import('../voice-input-overlay/voice-input-overlay');
-
-    return { default: VoiceInputOverlay };
-});
+export const LazyVoiceInputOverlay = lazy(() =>
+    import('../voice-input-overlay/voice-input-overlay').then(module => ({ default: module.VoiceInputOverlay }))
+);
