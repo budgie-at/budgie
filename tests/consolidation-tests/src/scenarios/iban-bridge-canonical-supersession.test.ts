@@ -1,4 +1,4 @@
-import { consolidationScopeService } from '@budgie/consolidation';
+import { buildConsolidationScopeFromTransactions } from '@budgie/consolidation';
 import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { expect, layer } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
@@ -74,7 +74,7 @@ const seedIncrementalBridgeArrival = Effect.fnUntraced(function* ({
     });
     const result = yield* runConsolidation(
         scopeArrivalToSyncedTransactions
-            ? consolidationScopeService.buildFromTransactions([completeExpense, completeIncome, existingTransfer])
+            ? buildConsolidationScopeFromTransactions([completeExpense, completeIncome, existingTransfer])
             : null
     );
     const liveCanonicals = (yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.IBAN_BRIDGE_TRANSFER)).filter(
