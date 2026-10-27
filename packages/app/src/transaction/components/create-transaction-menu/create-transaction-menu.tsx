@@ -100,6 +100,17 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
             variant: 'destructive',
             onPress: handleCreateExpense
         },
+        ...(isDefined(ReceiptScannerModule)
+            ? [
+                  {
+                      icon: UserIconNameEnum.ScanText,
+                      label: t`Scan receipt`,
+                      testID: CreateTransactionMenuSelector.ScanReceipt,
+                      variant: 'violet' as const,
+                      onPress: handleScanReceipt
+                  }
+              ]
+            : []),
         {
             icon: UserIconNameEnum.TrendingUp,
             label: t`Income`,
@@ -120,18 +131,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
             testID: CreateTransactionMenuSelector.AddAccount,
             variant: 'secondary',
             onPress: handleCreateAccount
-        },
-        ...(isDefined(ReceiptScannerModule)
-            ? [
-                  {
-                      icon: UserIconNameEnum.ScanText,
-                      label: t`Scan receipt`,
-                      testID: CreateTransactionMenuSelector.ScanReceipt,
-                      variant: 'violet' as const,
-                      onPress: handleScanReceipt
-                  }
-              ]
-            : [])
+        }
     ];
 
     const actionItems: (CreateActionInterface & { testID?: string })[] = isDefined(createAction)
