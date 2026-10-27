@@ -155,6 +155,12 @@ const getExpoConfig = ({ config }) => ({
             projectId: '41569eb3-e5c7-41f2-bea0-200d87a7fc36'
         }
     },
+    locales: {
+        de: './locales/ios/de.json',
+        es: './locales/ios/es.json',
+        fr: './locales/ios/fr.json',
+        uk: './locales/ios/uk.json'
+    },
     owner: 'vitalyiegorov',
     updates: {
         enabled: !IS_E2E,
