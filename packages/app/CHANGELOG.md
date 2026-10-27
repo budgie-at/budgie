@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.119.0](https://github.com/budgie-at/budgie/compare/v6.118.0...v6.119.0) (2026-10-27)
+
+### Bug Fixes
+
+* **app:** keep the whole recorded preview flow up to Apple's 30 second limit ([fbae38f](https://github.com/budgie-at/budgie/commit/fbae38f147fa5e005d03bcb7a329f3a1766f4f77))
+* **app:** lay out the universal header without covering the device ([a0db3ee](https://github.com/budgie-at/budgie/commit/a0db3ee0de042d1d4db3e45743d7a57583ca2acc))
+
+### Features
+
+* **app:** add App Store header asset and missing marketing surfaces ([3250073](https://github.com/budgie-at/budgie/commit/3250073c5759c186510593faf7ed3ced9600a9d0))
+* **app:** header asset v2 with localized headline and healthy hero ([71d3bdc](https://github.com/budgie-at/budgie/commit/71d3bdc60d3d4481dd32794b4c00acaa4c5be231))
+
+
 # [6.118.0](https://github.com/budgie-at/budgie/compare/v6.117.2...v6.118.0) (2026-10-27)
 
 ### Features
