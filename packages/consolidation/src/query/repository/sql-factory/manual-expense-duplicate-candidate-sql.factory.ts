@@ -45,6 +45,7 @@ const MANUAL_EXPENSE_DUPLICATE_PAIRS_SQL = `
             AND synced_tx.consolidation_type IS NULL
             AND synced_tx.external_id IS NOT NULL
             AND synced_tx.external_source IS NOT NULL
+            AND synced_tx.external_source != '${ExternalSourceEnum.RECEIPT}'
             AND NOT EXISTS (
                 SELECT 1
                 FROM transaction_entries synced_sibling_entry
@@ -70,7 +71,8 @@ const MANUAL_EXPENSE_DUPLICATE_PAIRS_SQL = `
             manual_tx.operated_at AS operatedAt,
             manual_entry.account_id AS accountId,
             manual_entry.amount AS amount,
-            manual_account.instrument_id AS instrumentId
+            manual_account.instrument_id AS instrumentId,
+            COALESCE(manual_tx.external_source = '${ExternalSourceEnum.RECEIPT}', 0) AS isReceipt
         FROM transactions manual_tx INDEXED BY transactions_visible_type_operated_idx
         INNER JOIN transaction_entries manual_entry INDEXED BY transaction_entries_live_transaction_account_amount_idx
             ON manual_entry.transaction_id = manual_tx.id
@@ -79,14 +81,14 @@ const MANUAL_EXPENSE_DUPLICATE_PAIRS_SQL = `
             AND manual_entry.type = ${MANUAL_DUPLICATE_ENTRY_TYPE_SQL('manual_tx')}
         INNER JOIN accounts manual_account
             ON manual_account.id = manual_entry.account_id
-            AND manual_account.type = '${AccountTypeEnum.BANK}'
+            AND (manual_account.type = '${AccountTypeEnum.BANK}' OR manual_tx.external_source = '${ExternalSourceEnum.RECEIPT}')
         WHERE manual_tx.type IN (${MANUAL_DUPLICATE_TRANSACTION_TYPES_SQL})
             AND manual_tx.deleted_at IS NULL
             AND manual_tx.consolidation_parent_transaction_id IS NULL
             AND manual_tx.consolidation_type IS NULL
             AND (
                 (manual_tx.external_id IS NULL AND manual_tx.external_source IS NULL)
-                OR manual_tx.external_source = '${ExternalSourceEnum.CSV}'
+                OR manual_tx.external_source IN ('${ExternalSourceEnum.CSV}', '${ExternalSourceEnum.RECEIPT}')
             )
             AND NOT EXISTS (
                 SELECT 1
@@ -105,6 +107,7 @@ const MANUAL_EXPENSE_DUPLICATE_PAIRS_SQL = `
             manual.manualTransactionId AS manualTransactionId,
             manual.accountId AS manualAccountId,
             manual.amount = synced.amount AS isExactAmount,
+            manual.isReceipt AND manual.accountId = synced.accountId AS isTrustedPair,
             MAX(manual.amount = synced.amount) OVER (PARTITION BY synced.syncedTransactionId) AS syncedHasExactAmount,
             MAX(manual.amount = synced.amount) OVER (PARTITION BY manual.manualTransactionId) AS manualHasExactAmount,
             COUNT(*) OVER (PARTITION BY synced.syncedTransactionId, manual.amount = synced.amount) AS syncedMatchCount,
@@ -135,7 +138,7 @@ const MANUAL_EXPENSE_DUPLICATE_PAIRS_SQL = `
     )
     SELECT syncedTransactionId, manualTransactionId
     FROM supported_pairs
-    WHERE accountPairSupport >= ${MANUAL_EXPENSE_DUPLICATE_MIN_ACCOUNT_PAIR_SUPPORT}
+    WHERE (accountPairSupport >= ${MANUAL_EXPENSE_DUPLICATE_MIN_ACCOUNT_PAIR_SUPPORT} OR (isTrustedPair AND isExactAmount))
 `;
 
 export const MANUAL_EXPENSE_DUPLICATE_CANDIDATES_SQL = (scope: ConsolidationScanScopeInterface | null): string => `
