@@ -95,13 +95,22 @@ export class TransactionEmbeddingRepository extends Context.Service<TransactionE
                 }
             });
 
-            const clearFlagsWhere = (condition: SQL | undefined) =>
-                Db.query(db =>
-                    db
-                        .update(TransactionEntityTable)
-                        .set({ needsEmbedding: false })
-                        .where(and(eq(TransactionEntityTable.needsEmbedding, true), isNull(TransactionEntityTable.deletedAt), condition))
+            const clearFlagsWhere = Effect.fnUntraced(function* (condition: SQL | undefined) {
+                const flaggedCondition = and(
+                    sql`${TransactionEntityTable.needsEmbedding} = 1`,
+                    isNull(TransactionEntityTable.deletedAt),
+                    condition
                 );
+                const flaggedRows = yield* Db.query(db =>
+                    db.select({ id: TransactionEntityTable.id }).from(TransactionEntityTable).where(flaggedCondition).limit(1)
+                );
+
+                if (isEmptyArray(flaggedRows)) {
+                    return;
+                }
+
+                yield* Db.query(db => db.update(TransactionEntityTable).set({ needsEmbedding: false }).where(flaggedCondition));
+            });
 
             return {
                 countPending: () =>
