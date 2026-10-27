@@ -7,7 +7,6 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Alert, Text, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
-import Toast from 'react-native-toast-message';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
@@ -15,6 +14,8 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { DeletableRow } from '../../../@generic/component/deletable-row/deletable-row';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
+import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
+import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { RecurringCalendarSelector } from '../recurring-calendar-content/recurring-calendar.selector';
@@ -61,9 +62,13 @@ export const RecurringCalendarEntryRow = ({ entry, index, onPress, dayLabel }: P
     }
 
     const setUserState = (userState: RecurringSeriesUserStateEnum) =>
-        void appRuntime
-            .runPromise(Effect.flatMap(RecurringService, recurringService => recurringService.setUserState(entry.seriesId, userState)))
-            .catch(() => void Toast.show({ type: 'error', text1: t`Could not update recurring payment.` }));
+        appRuntime.runFork(
+            logAndContinue(
+                Effect.flatMap(RecurringService, recurringService => recurringService.setUserState(entry.seriesId, userState)).pipe(
+                    toastOnFailure(t`Could not update recurring payment.`)
+                )
+            )
+        );
 
     const handleDismiss = () => void setUserState(RecurringSeriesUserStateEnum.DISMISSED);
     const handleRenameDone = () => void setIsRenaming(false);

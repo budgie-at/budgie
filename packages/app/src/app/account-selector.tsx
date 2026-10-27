@@ -1,13 +1,16 @@
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { Stack } from 'expo-router';
 import { useState } from 'react';
 import { View } from 'react-native';
-import Toast from 'react-native-toast-message';
 
-import { isDefined } from '@rnw-community/shared';
+import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
 import { useModalRouteState } from '../@generic/hook/use-modal-route-state/use-modal-route-state.hook';
+import { appRuntime } from '../@generic/runtime/app.runtime';
+import { logAndContinue } from '../@generic/utils/log-and-continue.util';
+import { toastOnFailure } from '../@generic/utils/toast-on-failure.util';
 import { AccountSelectContent } from '../account/component/account-select-content/account-select-content';
 import { useAccountSelectorModal, useAccountSelectorModalParams } from '../account/context/account-selector-modal.context';
 import { useSearchAccountsSortedQuery } from '../account/query/use-search-accounts-sorted.query';
@@ -37,10 +40,14 @@ export default function AccountSelectorModal() {
             return;
         }
 
-        createAction
-            .onCreate()
-            .then(createdAccountId => void resolveAccountSelector(createdAccountId))
-            .catch(() => void Toast.show({ type: 'error', text1: createAction.errorMessage }));
+        appRuntime.runFork(
+            logAndContinue(
+                Effect.tryPromise({ try: () => createAction.onCreate(), catch: getErrorMessage }).pipe(
+                    Effect.tap(createdAccountId => Effect.sync(() => void resolveAccountSelector(createdAccountId))),
+                    toastOnFailure(createAction.errorMessage)
+                )
+            )
+        );
     };
     const contentCreateAction = isDefined(createAction)
         ? {

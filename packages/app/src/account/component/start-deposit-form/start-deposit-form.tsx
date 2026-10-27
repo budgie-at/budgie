@@ -12,6 +12,8 @@ import { isDefined } from '@rnw-community/shared';
 
 import { useShowError } from '../../../@generic/hook/use-show-error.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
+import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
+import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { ACCOUNT_ICON } from '../../constant/account-icon.constant';
 import { StartDepositFormSchema } from '../../constant/start-deposit-form-schema.constant';
@@ -21,11 +23,7 @@ import { StartDepositFundingSummary } from '../start-deposit-funding-summary/sta
 import { StartDepositFormSelector } from './start-deposit-form.selector';
 
 import type { DepositAccountFormValues } from '../../interface/deposit-account-form-values.interface';
-import type {
-    AccountEntityInterface,
-    TransactionEntryAssociationEnum,
-    TransactionEntryWithRelationsEntityInterface
-} from '@budgie/contracts';
+import type { TransactionEntryAssociationEnum, TransactionEntryWithRelationsEntityInterface } from '@budgie/contracts';
 
 interface Props {
     readonly transactionId: number;
@@ -60,8 +58,8 @@ export const StartDepositForm = ({ transactionId, sourceEntry }: Props) => {
         }
     });
     const startDeposit = (values: DepositAccountFormValues) =>
-        appRuntime
-            .runPromise(
+        appRuntime.runPromise(
+            logAndContinue(
                 Effect.flatMap(TransactionTransferService, transactionTransferService =>
                     transactionTransferService.startDepositFromExpense(transactionId, {
                         title: values.title,
@@ -72,13 +70,14 @@ export const StartDepositForm = ({ transactionId, sourceEntry }: Props) => {
                         includeInNetWorth: values.includeInNetWorth,
                         receivingAmount: values.currentBalance
                     })
+                ).pipe(
+                    Effect.tap(({ id }) =>
+                        Effect.sync(() => void router.replace({ pathname: '/account/[id]/details', params: { id: String(id) } }))
+                    ),
+                    toastOnFailure(t`Something went wrong`)
                 )
             )
-            .then(
-                (depositAccount: AccountEntityInterface) =>
-                    void router.replace({ pathname: '/account/[id]/details', params: { id: String(depositAccount.id) } }),
-                showError
-            );
+        );
 
     const handleInvalid = (errors: FieldErrors<DepositAccountFormValues>) => {
         const message = isDefined(errors.currentBalance)
