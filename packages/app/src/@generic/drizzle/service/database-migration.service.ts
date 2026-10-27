@@ -25,7 +25,9 @@ export class DatabaseMigrationService extends Context.Service<DatabaseMigrationS
             .sort()
             .map(name => ({
                 name,
-                sql: migrations.migrations[name].split(/--> statement-breakpoint/u),
+                get sql() {
+                    return migrations.migrations[name].split(/--> statement-breakpoint/u);
+                },
                 bps: true,
                 folderMillis: formatToMillis(name.slice(0, 14)),
                 hash: ''

@@ -39,17 +39,20 @@ export class NetworkService extends Context.Service<NetworkService>()('@budgie/a
             )
         );
 
-        const initialNetworkType = yield* Effect.tryPromise({
-            try: () => getNetworkStateAsync(),
-            catch: cause => new NativeCallError({ cause })
-        }).pipe(
-            Effect.map(toNetworkType),
-            Effect.timeout(Duration.seconds(1)),
-            Effect.orElseSucceed(() => NetworkTypeEnum.UNKNOWN)
-        );
-        const networkType = yield* SubscriptionRef.make(initialNetworkType);
+        const networkType = yield* SubscriptionRef.make(NetworkTypeEnum.UNKNOWN);
+        const publishNetworkState = (state: NetworkState) => SubscriptionRef.set(networkType, toNetworkType(state));
 
-        yield* Effect.forkScoped(Stream.runForEach(networkStates, state => SubscriptionRef.set(networkType, toNetworkType(state))));
+        yield* Effect.forkScoped(
+            Effect.tryPromise({
+                try: () => getNetworkStateAsync(),
+                catch: cause => new NativeCallError({ cause })
+            }).pipe(
+                Effect.flatMap(publishNetworkState),
+                Effect.timeout(Duration.seconds(1)),
+                Effect.ignore,
+                Effect.andThen(Stream.runForEach(networkStates, publishNetworkState))
+            )
+        );
 
         return {
             current: SubscriptionRef.get(networkType),
