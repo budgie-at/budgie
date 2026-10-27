@@ -32,6 +32,8 @@ export class TransactionReceiptRepository extends Context.Service<TransactionRec
                 transactionFilters.buildPrimaryLedgerEntryCondition(),
                 eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.CREDIT)
             );
+            const buildActiveAccountCondition = (currency: CurrencyEnum) =>
+                and(isNull(AccountEntityTable.deletedAt), eq(AccountEntityTable.isActive, true), eq(InstrumentEntityTable.code, currency));
 
             const findCardAccountId = (cardExternalId: string, currency: CurrencyEnum) =>
                 Db.query(db =>
@@ -40,13 +42,7 @@ export class TransactionReceiptRepository extends Context.Service<TransactionRec
                         .from(AccountExternalIdEntityTable)
                         .innerJoin(AccountEntityTable, eq(AccountEntityTable.id, AccountExternalIdEntityTable.accountId))
                         .innerJoin(InstrumentEntityTable, eq(InstrumentEntityTable.id, AccountEntityTable.instrumentId))
-                        .where(
-                            and(
-                                eq(AccountExternalIdEntityTable.externalId, cardExternalId),
-                                isNull(AccountEntityTable.deletedAt),
-                                eq(InstrumentEntityTable.code, currency)
-                            )
-                        )
+                        .where(and(eq(AccountExternalIdEntityTable.externalId, cardExternalId), buildActiveAccountCondition(currency)))
                 ).pipe(Effect.map(rows => rows.at(0)?.accountId ?? null));
 
             const findLatestExpenseAccountId = (currency: CurrencyEnum) =>
@@ -60,9 +56,8 @@ export class TransactionReceiptRepository extends Context.Service<TransactionRec
                         .where(
                             and(
                                 expenseEntryCondition,
-                                isNull(AccountEntityTable.deletedAt),
                                 transactionFilters.buildNonDebtAccountCondition(),
-                                eq(InstrumentEntityTable.code, currency)
+                                buildActiveAccountCondition(currency)
                             )
                         )
                         .orderBy(desc(TransactionEntityTable.operatedAt), desc(TransactionEntityTable.id))

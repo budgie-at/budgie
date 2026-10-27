@@ -242,4 +242,24 @@ describe('ReceiptMatchService', () => {
             yield* assertStoredBalancesMatchLedger(yield* Db);
         }).pipe(Effect.provide(TestLayer))
     );
+
+    it.effect('never creates the expense on an archived account', () =>
+        Effect.gen(function* () {
+            const testSeedService = yield* seed;
+            const activeAccount = yield* testSeedService.account({ title: 'Active' });
+            const archivedCardAccount = yield* testSeedService.account({ title: 'Archived card', isActive: false });
+            yield* testSeedService.manualExpense({ accountId: activeAccount.id, amount: convertToMicroUnits(5), operatedAt: OCCURRED_AT });
+            yield* testSeedService.manualExpense({
+                accountId: archivedCardAccount.id,
+                amount: convertToMicroUnits(5),
+                operatedAt: OPERATED_AT
+            });
+            yield* linkCard(archivedCardAccount.id);
+
+            const result = yield* match(buildReceipt({ cardLast4: '4242' }));
+
+            expect(result.kind).toBe(ReceiptMatchResultKindEnum.CREATED);
+            expect((yield* fetchTransaction(result.transactionId)).entries[0].accountId).toBe(activeAccount.id);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });
