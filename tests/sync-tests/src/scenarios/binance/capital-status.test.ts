@@ -1,5 +1,13 @@
-import { SyncEntityTable, SyncModeEnum, SyncStatusEnum } from '@budgie/contracts';
-import { BinanceSyncService } from '@budgie/sync';
+import {
+    AccountBalanceRepository,
+    AccountTypeEnum,
+    SyncEntityTable,
+    SyncModeEnum,
+    SyncStatusEnum,
+    TransactionConsolidationTypeEnum,
+    TransactionEntryEntityTable
+} from '@budgie/contracts';
+import { AtmCashMoveService, BinanceSyncService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
@@ -8,24 +16,27 @@ import {
     binanceStub,
     buildBinance,
     fetchBinanceTransactions,
+    fetchSyncById,
     resetBinanceSyncForResync,
+    seed,
     setupBinanceFixture,
     stubEmptyBinanceBalances,
     testDb,
-    TestLayer
+    TestLayer,
+    testQueryService
 } from '../../harness';
 
 const HOUR_MS = 60 * 60 * 1000;
 const DAY_MS = 24 * HOUR_MS;
 
 const depositHistory = {
-    stub: (status: number, timeMs: number): void => {
+    stub: (status: number | undefined, timeMs: number): void => {
         binanceStub.deposits([buildBinance.deposit({ id: 'dep-1', coin: 'BTC', amount: '2', insertTime: timeMs, status })]);
     }
 };
 
 const withdrawalHistory = {
-    stub: (status: number, timeMs: number): void => {
+    stub: (status: number | undefined, timeMs: number): void => {
         binanceStub.withdrawals([
             buildBinance.withdrawal({
                 id: 'wd-1',
@@ -51,11 +62,18 @@ const syncAgain = (syncId: number) =>
         yield* binanceSyncService.sync();
     });
 
-const importedCountsAfterEachStatus = (history: typeof depositHistory, ageMs: number, statuses: readonly number[]) =>
+const startForwardSync = () =>
+    Effect.gen(function* () {
+        const fixture = yield* setupBinanceFixture({ mode: SyncModeEnum.FORWARD, forwardSyncFromAt: new Date(Date.now() - HOUR_MS) });
+        stubEmptyBinanceBalances();
+
+        return fixture;
+    });
+
+const importedCountsAfterEachStatus = (history: typeof depositHistory, ageMs: number, statuses: readonly (number | undefined)[]) =>
     Effect.gen(function* () {
         const binanceSyncService = yield* BinanceSyncService;
-        const { sync } = yield* setupBinanceFixture({ mode: SyncModeEnum.FORWARD, forwardSyncFromAt: new Date(Date.now() - HOUR_MS) });
-        stubEmptyBinanceBalances();
+        const { sync } = yield* startForwardSync();
         const timeMs = Date.now() - ageMs;
         const counts: number[] = [];
 
@@ -66,6 +84,17 @@ const importedCountsAfterEachStatus = (history: typeof depositHistory, ageMs: nu
         }
 
         return counts;
+    });
+
+const pendingFloorAfterFirstSync = (history: typeof depositHistory, ageMs: number) =>
+    Effect.gen(function* () {
+        const binanceSyncService = yield* BinanceSyncService;
+        const { sync } = yield* startForwardSync();
+        history.stub(0, Date.now() - ageMs);
+
+        yield* binanceSyncService.sync();
+
+        return (yield* fetchSyncById(sync.id)).binanceCapitalPendingFromAt;
     });
 
 describe('binance/capital-status', () => {
@@ -82,7 +111,9 @@ describe('binance/capital-status', () => {
         { label: 'rejected withdrawal', history: withdrawalHistory, statuses: [3], counts: [0] },
         { label: 'processing withdrawal', history: withdrawalHistory, statuses: [4], counts: [0] },
         { label: 'failed withdrawal', history: withdrawalHistory, statuses: [5], counts: [0] },
-        { label: 'completed withdrawal', history: withdrawalHistory, statuses: [6], counts: [1] }
+        { label: 'completed withdrawal', history: withdrawalHistory, statuses: [6], counts: [1] },
+        { label: 'deposit without a status', history: depositHistory, statuses: [undefined], counts: [0] },
+        { label: 'withdrawal without a status', history: withdrawalHistory, statuses: [undefined], counts: [0] }
     ])('imports a $label only when it is final-success', ({ history, statuses, counts }) =>
         Effect.gen(function* () {
             expect(yield* importedCountsAfterEachStatus(history, HOUR_MS / 2, statuses)).toEqual(counts);
@@ -107,6 +138,64 @@ describe('binance/capital-status', () => {
     ])('removes a previously imported row that Binance now reports as a $label', ({ history, imported, failed }) =>
         Effect.gen(function* () {
             expect(yield* importedCountsAfterEachStatus(history, HOUR_MS / 2, [imported, failed])).toEqual([1, 0]);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect.each([
+        { label: 'deposit', history: depositHistory, imported: 1 },
+        { label: 'withdrawal', history: withdrawalHistory, imported: 6 }
+    ])('keeps a previously imported $label when Binance later omits its status', ({ history, imported }) =>
+        Effect.gen(function* () {
+            expect(yield* importedCountsAfterEachStatus(history, HOUR_MS / 2, [imported, undefined])).toEqual([1, 1]);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect.each([
+        { label: 'deposit', history: depositHistory },
+        { label: 'withdrawal', history: withdrawalHistory }
+    ])('anchors the capital window at a $label pending for less than 180 days', ({ history }) =>
+        Effect.gen(function* () {
+            const pendingFrom = yield* pendingFloorAfterFirstSync(history, 100 * DAY_MS);
+
+            expect(pendingFrom).toBeInstanceOf(Date);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect.each([
+        { label: 'deposit', history: depositHistory },
+        { label: 'withdrawal', history: withdrawalHistory }
+    ])('does not anchor the capital window at a $label pending for more than 180 days', ({ history }) =>
+        Effect.gen(function* () {
+            expect(yield* pendingFloorAfterFirstSync(history, 200 * DAY_MS)).toBeNull();
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('removes the ledger money of a consolidated withdrawal that Binance now reports as rejected', () =>
+        Effect.gen(function* () {
+            const binanceSyncService = yield* BinanceSyncService;
+            const atmCashMoveService = yield* AtmCashMoveService;
+            const accountBalanceRepository = yield* AccountBalanceRepository;
+            const { sync, instrument } = yield* startForwardSync();
+            const cashAccount = yield* seed.account({ title: 'Cash', type: AccountTypeEnum.CASH, instrumentId: instrument.id });
+            const timeMs = Date.now() - HOUR_MS / 2;
+
+            withdrawalHistory.stub(6, timeMs);
+            yield* binanceSyncService.sync();
+            const [withdrawal] = yield* fetchBinanceTransactions();
+            const cashWithdrawalMcc = yield* testQueryService.findMccByCode('6011');
+            yield* testDb
+                .update(TransactionEntryEntityTable)
+                .set({ mccCategoryId: cashWithdrawalMcc.id })
+                .where(eq(TransactionEntryEntityTable.transactionId, withdrawal.id));
+            expect(yield* atmCashMoveService.moveToCash([withdrawal.id])).toEqual([withdrawal.id]);
+            expect((yield* testQueryService.findTransactionById(withdrawal.id)).consolidationParentTransactionId).not.toBeNull();
+
+            withdrawalHistory.stub(3, timeMs);
+            yield* syncAgain(sync.id);
+
+            expect(yield* fetchBinanceTransactions()).toHaveLength(0);
+            expect(yield* testQueryService.fetchCanonicalsOfType(TransactionConsolidationTypeEnum.ATM_CASH_WITHDRAWAL)).toHaveLength(0);
+            expect((yield* accountBalanceRepository.getLedgerBalances([cashAccount.id])).get(cashAccount.id) ?? 0).toBe(0);
         }).pipe(Effect.provide(TestLayer))
     );
 });
