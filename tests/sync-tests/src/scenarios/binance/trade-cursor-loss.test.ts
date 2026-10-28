@@ -49,7 +49,7 @@ describe('binance/trade-cursor-loss', () => {
             const binanceSyncService = yield* BinanceSyncService;
             const { sync } = yield* setupStaleForwardFixture(['ADA', 'BNB']);
 
-            binanceStub.myTrades({ ADAUSDT: [buildAdaTrade(FIRST_TRADE_ID, Date.now())] }, new Set<string>(), [], jumpPastDeadline);
+            binanceStub.myTrades({ ADAUSDT: [buildAdaTrade(FIRST_TRADE_ID, Date.now())] }, new Set<string>(), [], { onServed: jumpPastDeadline });
 
             yield* binanceSyncService.sync(Date.now() + RUN_DEADLINE_MS).pipe(Effect.ensuring(restoreRealTimers));
 
