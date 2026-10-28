@@ -176,8 +176,8 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
                 </Animated.View>
             )}
 
-            <View className="absolute right-0 bottom-0 items-end px-lg pb-safe" pointerEvents="box-none">
-                <View className="items-end" pointerEvents="box-none">
+            <View className="absolute inset-x-0 bottom-0 items-end px-lg pb-safe" pointerEvents="box-none">
+                <View className="self-stretch items-end" pointerEvents="box-none">
                     {actionItems.map((item, index) => (
                         <ActionItem
                             key={item.label}
