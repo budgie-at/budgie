@@ -28,6 +28,34 @@ const EXCHANGE_INFO_URL = `${BASE_URL}/api/v3/exchangeInfo`;
 const EXCHANGE_INFO_BASE_ASSETS = ['ADA', 'BNB', 'BTC', 'ETH', 'EUR', 'PEPE', 'USDT'];
 const EXCHANGE_INFO_QUOTE_ASSETS = ['USDT', 'FDUSD', 'BTC', 'BNB', 'BUSD'];
 
+const EXCHANGE_INFO_TRADING_STATUS = 'TRADING';
+const EXCHANGE_INFO_SUFFIX_QUOTE_ASSETS = ['FDUSD', 'USDT', 'USDC', 'BUSD', 'BTC', 'BNB', 'EUR'];
+
+interface ExchangeInfoSymbolStub {
+    readonly baseAsset: string;
+    readonly quoteAsset: string;
+    readonly status?: string;
+}
+
+const toExchangeInfoSymbol = (entry: string | ExchangeInfoSymbolStub) => {
+    if (typeof entry !== 'string') {
+        return {
+            symbol: `${entry.baseAsset}${entry.quoteAsset}`,
+            baseAsset: entry.baseAsset,
+            quoteAsset: entry.quoteAsset,
+            status: entry.status ?? EXCHANGE_INFO_TRADING_STATUS
+        };
+    }
+    const quoteAsset = EXCHANGE_INFO_SUFFIX_QUOTE_ASSETS.find(quote => entry.endsWith(quote)) ?? '';
+
+    return {
+        symbol: entry,
+        baseAsset: entry.slice(0, entry.length - quoteAsset.length),
+        quoteAsset,
+        status: EXCHANGE_INFO_TRADING_STATUS
+    };
+};
+
 const buildAllValidSymbols = (): string[] => {
     const symbols: string[] = [];
     for (const baseAsset of EXCHANGE_INFO_BASE_ASSETS) {
@@ -201,10 +229,10 @@ export const binanceStub = {
             )
         );
     },
-    exchangeInfo: (symbols: string[]): void => {
+    exchangeInfo: (symbols: readonly (string | ExchangeInfoSymbolStub)[]): void => {
         mockServer.use(
             http.get(EXCHANGE_INFO_URL, () =>
-                HttpResponse.json({ symbols: symbols.map(symbol => ({ symbol, status: 'TRADING' })) }, { headers: WEIGHT_HEADERS })
+                HttpResponse.json({ symbols: symbols.map(toExchangeInfoSymbol) }, { headers: WEIGHT_HEADERS })
             )
         );
     },
