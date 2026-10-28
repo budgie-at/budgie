@@ -1,6 +1,7 @@
 import { StyledCircle } from '../../../@generic/component/styled-circle/styled-circle';
 import { StyledLine } from '../../../@generic/component/styled-line/styled-line';
 import { StyledSvgText } from '../../../@generic/component/styled-svg-text/styled-svg-text';
+import { RUNWAY_CHART_LABEL_FONT_SIZE } from '../../constant/runway-chart-label-font-size.constant';
 
 interface Props {
     readonly x: number;
@@ -10,7 +11,6 @@ interface Props {
     readonly anchor: 'middle' | 'end';
 }
 
-const LABEL_FONT_SIZE = 8;
 const LABEL_GAP = 4;
 const MARKER_RADIUS = 3.5;
 const RUN_OUT_DASH = '2 3';
@@ -41,7 +41,7 @@ export const RunwayForecastRunOut = ({ x, top, bottom, label, anchor }: Props) =
                 x={x}
                 y={labelY}
                 fillClassName="accent-destructive-foreground"
-                fontSize={LABEL_FONT_SIZE}
+                fontSize={RUNWAY_CHART_LABEL_FONT_SIZE}
                 fontWeight="600"
                 textAnchor={anchor}
             >

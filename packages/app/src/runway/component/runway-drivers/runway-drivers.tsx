@@ -9,21 +9,23 @@ import { SegmentedTabs } from '../../../@generic/component/segmented-tabs/segmen
 import { RunwaySelector } from '../../runway.selector';
 import { RunwayDriverRow } from '../runway-driver-row/runway-driver-row';
 
+import type { StatusToneType } from '../../../@generic/type/status-tone.type';
 import type { RunwayDriverInterface } from '../../interface/runway-driver.interface';
 
 interface Props {
     readonly drivers: readonly RunwayDriverInterface[];
     readonly dimension: RunwayDriverDimensionEnum;
+    readonly tone: StatusToneType;
     readonly onChangeDimension: (dimension: RunwayDriverDimensionEnum) => void;
 }
 
 export const RunwayDrivers = (props: Props) => {
-    const { drivers, dimension, onChangeDimension } = props;
+    const { drivers, dimension, tone, onChangeDimension } = props;
     const { t } = useLingui();
 
     const options = [
-        { value: RunwayDriverDimensionEnum.CATEGORY, label: t`Categories` },
-        { value: RunwayDriverDimensionEnum.TAG, label: t`Tags` }
+        { value: RunwayDriverDimensionEnum.CATEGORY, label: t`By category` },
+        { value: RunwayDriverDimensionEnum.TAG, label: t`By tag` }
     ];
     const maxAmount = drivers.reduce((maximum, driver) => Math.max(maximum, driver.monthlyAmount), 0);
 
@@ -35,12 +37,14 @@ export const RunwayDrivers = (props: Props) => {
 
             {isNotEmptyArray(drivers) ? (
                 <View className="gap-y-lg">
-                    {drivers.map(driver => (
+                    {drivers.map((driver, index) => (
                         <RunwayDriverRow
                             key={`${driver.id ?? ''}-${driver.foldedDriverCount}`}
                             driver={driver}
                             dimension={dimension}
                             maxAmount={maxAmount}
+                            rank={index}
+                            tone={tone}
                         />
                     ))}
                 </View>

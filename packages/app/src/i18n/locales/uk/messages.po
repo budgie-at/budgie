@@ -298,6 +298,10 @@ msgstr "{month} закрито з перевитратою {amount}"
 msgid "{month} closed {amount} under"
 msgstr "{month} закрито з економією {amount}"
 
+#: src/runway/component/runway-history-bar-label/runway-history-bar-label.tsx
+msgid "{month}, out {expenseAmount}, in {incomeAmount}"
+msgstr "{month}, витрати {expenseAmount}, доходи {incomeAmount}"
+
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "{months, plural, one {# month} other {# months}}"
 msgstr "{months, plural, one {# місяць} few {# місяці} many {# місяців} other {# місяця}}"
@@ -446,6 +450,10 @@ msgstr "{title} витрачається надто швидко. Не пере�
 #: src/budget/components/budget-pace-hint-line/budget-pace-hint-line.tsx
 msgid "{title} is running fast. Keep it under <0>{perDayAmount}/day</0>."
 msgstr "{title} витрачається надто швидко. Не перевищуйте <0>{perDayAmount}/день</0>."
+
+#: src/runway/component/runway-driver-row/runway-driver-row.tsx
+msgid "{title}, {protectedAmount} per month"
+msgstr "{title}, {protectedAmount} на місяць"
 
 #: src/budget/hooks/use-budget-limit-accessibility.hook.ts
 msgid "{title}, spent {spentAmount} of {limitAmount}, {statusLabel}"
@@ -1047,6 +1055,10 @@ msgstr "Базова валюта"
 msgid "Base instrument not found"
 msgstr "Базову валюту не знайдено"
 
+#: src/runway/component/runway-verdict-outlook/runway-verdict-outlook.tsx
+msgid "Based on your last {monthsUsed} months."
+msgstr "За вашими останніми {monthsUsed} міс."
+
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "Based on your recent spending"
 msgstr "На основі ваших нещодавніх витрат"
@@ -1193,6 +1205,14 @@ msgstr "Budgie позначить як видалені такі записи: {
 msgid "Burning"
 msgstr "Спадає"
 
+#: src/runway/component/runway-drivers/runway-drivers.tsx
+msgid "By category"
+msgstr "За категорією"
+
+#: src/runway/component/runway-drivers/runway-drivers.tsx
+msgid "By tag"
+msgstr "За тегом"
+
 #: src/ai/component/ai-model-storage/ai-model-storage.tsx
 msgid "bytes"
 msgstr "байт"
@@ -1273,7 +1293,6 @@ msgstr "Зняття готівки"
 #: src/app/(tabs)/settings/categories.tsx
 #: src/budget/components/budget-details-category-list/budget-details-category-list.tsx
 #: src/budget/components/budget-period-summary/budget-period-summary.tsx
-#: src/runway/component/runway-drivers/runway-drivers.tsx
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
 msgid "Categories"
 msgstr "Категорії"
@@ -3812,8 +3831,8 @@ msgstr "Нічого з минулого не імпортується"
 msgid "Nothing to fix here"
 msgstr "Тут нічого виправляти"
 
-#: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
-#: src/runway/component/runway-meter/runway-meter.tsx
+#: src/runway/component/runway-forecast-axis-labels/runway-forecast-axis-labels.tsx
+#: src/runway/component/runway-meter-tick/runway-meter-tick.tsx
 msgid "now"
 msgstr "зараз"
 
@@ -5221,7 +5240,6 @@ msgstr "Назва тегу"
 
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx
 #: src/app/(tabs)/settings/tags.tsx
-#: src/runway/component/runway-drivers/runway-drivers.tsx
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
 #: src/transaction/components/transaction-info-tags-section/transaction-info-tags-section.tsx
 #: src/transaction/components/transaction-tags-field-icon/transaction-tags-field-icon.tsx

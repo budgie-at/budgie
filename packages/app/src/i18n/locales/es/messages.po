@@ -298,6 +298,10 @@ msgstr "{month} cerró con {amount} de más"
 msgid "{month} closed {amount} under"
 msgstr "{month} cerró con {amount} por debajo"
 
+#: src/runway/component/runway-history-bar-label/runway-history-bar-label.tsx
+msgid "{month}, out {expenseAmount}, in {incomeAmount}"
+msgstr "{month}, gastos {expenseAmount}, ingresos {incomeAmount}"
+
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "{months, plural, one {# month} other {# months}}"
 msgstr "{months, plural, one {# mes} other {# meses}}"
@@ -446,6 +450,10 @@ msgstr "{title} va demasiado rápido. Mantenlo por debajo de {perDayAmount}/día
 #: src/budget/components/budget-pace-hint-line/budget-pace-hint-line.tsx
 msgid "{title} is running fast. Keep it under <0>{perDayAmount}/day</0>."
 msgstr "{title} va demasiado rápido. Mantenlo por debajo de <0>{perDayAmount}/día</0>."
+
+#: src/runway/component/runway-driver-row/runway-driver-row.tsx
+msgid "{title}, {protectedAmount} per month"
+msgstr "{title}, {protectedAmount} al mes"
 
 #: src/budget/hooks/use-budget-limit-accessibility.hook.ts
 msgid "{title}, spent {spentAmount} of {limitAmount}, {statusLabel}"
@@ -1047,6 +1055,10 @@ msgstr "Moneda base"
 msgid "Base instrument not found"
 msgstr "Moneda base no encontrada"
 
+#: src/runway/component/runway-verdict-outlook/runway-verdict-outlook.tsx
+msgid "Based on your last {monthsUsed} months."
+msgstr "Según tus últimos {monthsUsed} meses."
+
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "Based on your recent spending"
 msgstr "Basado en tus gastos recientes"
@@ -1193,6 +1205,14 @@ msgstr "Budgie eliminará de forma reversible {countText}. Tus transacciones man
 msgid "Burning"
 msgstr "En descenso"
 
+#: src/runway/component/runway-drivers/runway-drivers.tsx
+msgid "By category"
+msgstr "Por categoría"
+
+#: src/runway/component/runway-drivers/runway-drivers.tsx
+msgid "By tag"
+msgstr "Por etiqueta"
+
 #: src/ai/component/ai-model-storage/ai-model-storage.tsx
 msgid "bytes"
 msgstr "bytes"
@@ -1273,7 +1293,6 @@ msgstr "Retiros de efectivo"
 #: src/app/(tabs)/settings/categories.tsx
 #: src/budget/components/budget-details-category-list/budget-details-category-list.tsx
 #: src/budget/components/budget-period-summary/budget-period-summary.tsx
-#: src/runway/component/runway-drivers/runway-drivers.tsx
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
 msgid "Categories"
 msgstr "Categorías"
@@ -3812,8 +3831,8 @@ msgstr "No se importa nada del pasado"
 msgid "Nothing to fix here"
 msgstr "No hay nada que corregir"
 
-#: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
-#: src/runway/component/runway-meter/runway-meter.tsx
+#: src/runway/component/runway-forecast-axis-labels/runway-forecast-axis-labels.tsx
+#: src/runway/component/runway-meter-tick/runway-meter-tick.tsx
 msgid "now"
 msgstr "ahora"
 
@@ -5221,7 +5240,6 @@ msgstr "Nombre de la etiqueta"
 
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx
 #: src/app/(tabs)/settings/tags.tsx
-#: src/runway/component/runway-drivers/runway-drivers.tsx
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
 #: src/transaction/components/transaction-info-tags-section/transaction-info-tags-section.tsx
 #: src/transaction/components/transaction-tags-field-icon/transaction-tags-field-icon.tsx

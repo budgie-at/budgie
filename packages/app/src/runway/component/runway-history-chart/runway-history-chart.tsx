@@ -8,12 +8,14 @@ import { SectionHeader } from '../../../@generic/component/section-header/sectio
 import { StyledLine } from '../../../@generic/component/styled-line/styled-line';
 import { StyledSvgText } from '../../../@generic/component/styled-svg-text/styled-svg-text';
 import { useI18nContext } from '../../../i18n/context/i18n.context';
+import { RUNWAY_CHART_LABEL_FONT_SIZE } from '../../constant/runway-chart-label-font-size.constant';
 import {
     RUNWAY_HISTORY_BAR_AREA_HEIGHT,
     RUNWAY_HISTORY_BAR_GAP,
     RUNWAY_HISTORY_CHART_WIDTH,
     RUNWAY_HISTORY_PLOT_TOP
 } from '../../constant/runway-history.constant';
+import { RunwayHistoryBarLabel } from '../runway-history-bar-label/runway-history-bar-label';
 import { RunwayHistoryBars } from '../runway-history-bars/runway-history-bars';
 import { RunwayHistoryLegend } from '../runway-history-legend/runway-history-legend';
 import { RunwayHistoryMedianLine } from '../runway-history-median-line/runway-history-median-line';
@@ -29,8 +31,9 @@ interface Props {
 const CHART_HEIGHT = 108;
 const BASELINE_Y = RUNWAY_HISTORY_PLOT_TOP + RUNWAY_HISTORY_BAR_AREA_HEIGHT;
 const MONTH_LABEL_Y = CHART_HEIGHT - 4;
-const MONTH_LABEL_FONT_SIZE = 8;
 const MAX_MONTH_LABELS = 6;
+const VIEW_BOX = `0 0 ${RUNWAY_HISTORY_CHART_WIDTH} ${CHART_HEIGHT}`;
+const CHART_ASPECT_STYLE = { aspectRatio: RUNWAY_HISTORY_CHART_WIDTH / CHART_HEIGHT };
 const MAX_BAR_WIDTH = 16;
 const MIN_BAR_WIDTH = 3;
 const SLOT_GUTTER_RATIO = 0.3;
@@ -72,40 +75,56 @@ export const RunwayHistoryChart = ({ series, burn }: Props) => {
         <View className="gap-y-lg">
             <SectionHeader label={t`Monthly history`} />
 
-            <Svg width="100%" height={CHART_HEIGHT} viewBox={`0 0 ${RUNWAY_HISTORY_CHART_WIDTH} ${CHART_HEIGHT}`}>
-                <StyledLine x1={0} y1={BASELINE_Y} x2={RUNWAY_HISTORY_CHART_WIDTH} y2={BASELINE_Y} strokeClassName="accent-corner" />
+            <View className="relative w-full" style={CHART_ASPECT_STYLE}>
+                <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants" className="size-full">
+                    <Svg width="100%" height="100%" viewBox={VIEW_BOX}>
+                        <StyledLine
+                            x1={0}
+                            y1={BASELINE_Y}
+                            x2={RUNWAY_HISTORY_CHART_WIDTH}
+                            y2={BASELINE_Y}
+                            strokeClassName="accent-corner"
+                        />
 
-                {months.map(month => (
-                    <RunwayHistoryBars
-                        key={month.key}
-                        centerX={month.centerX}
-                        barWidth={barWidth}
-                        baselineY={BASELINE_Y}
-                        expense={month.expense}
-                        income={month.income}
-                        maxValue={maxValue}
-                        isSpike={month.isSpike}
-                    />
-                ))}
+                        {months.map(month => (
+                            <RunwayHistoryBars
+                                key={month.key}
+                                centerX={month.centerX}
+                                barWidth={barWidth}
+                                baselineY={BASELINE_Y}
+                                expense={month.expense}
+                                income={month.income}
+                                maxValue={maxValue}
+                                isSpike={month.isSpike}
+                            />
+                        ))}
 
-                <RunwayHistoryMedianLine value={burn} maxValue={maxValue} />
+                        <RunwayHistoryMedianLine value={burn} maxValue={maxValue} />
 
-                {months
-                    .filter(month => month.hasLabel)
-                    .map(month => (
-                        <StyledSvgText
-                            key={month.key}
-                            x={month.centerX}
-                            y={MONTH_LABEL_Y}
-                            fillClassName={month.labelFillClassName}
-                            fontSize={MONTH_LABEL_FONT_SIZE}
-                            fontWeight={month.labelWeight}
-                            textAnchor="middle"
-                        >
-                            {month.label}
-                        </StyledSvgText>
+                        {months
+                            .filter(month => month.hasLabel)
+                            .map(month => (
+                                <StyledSvgText
+                                    key={month.key}
+                                    x={month.centerX}
+                                    y={MONTH_LABEL_Y}
+                                    fillClassName={month.labelFillClassName}
+                                    fontSize={RUNWAY_CHART_LABEL_FONT_SIZE}
+                                    fontWeight={month.labelWeight}
+                                    textAnchor="middle"
+                                >
+                                    {month.label}
+                                </StyledSvgText>
+                            ))}
+                    </Svg>
+                </View>
+
+                <View className="absolute inset-0 flex-row">
+                    {months.map(month => (
+                        <RunwayHistoryBarLabel key={month.key} month={month.label} expense={month.expense} income={month.income} />
                     ))}
-            </Svg>
+                </View>
+            </View>
 
             <RunwayHistoryLegend hasSpike={hasSpike} typicalAmount={burn} />
 

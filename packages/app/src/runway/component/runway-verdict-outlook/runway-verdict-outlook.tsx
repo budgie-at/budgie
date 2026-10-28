@@ -1,3 +1,4 @@
+import { RUNWAY_MAX_MONTHS } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
@@ -18,13 +19,16 @@ export const RunwayVerdictOutlook = ({ computation }: Props) => {
     const isRunwayCryptoIncluded = useSetting('isRunwayCryptoIncluded');
     const { formatMonthAndYear } = useFormatDate();
 
-    const { burn, isPositive, liquid, monthsUsed, runsOutAt } = computation;
+    const { burn, isPositive, liquid, monthsUsed, runsOutAt, runwayMonths } = computation;
     const coverMonths = isPositiveNumber(burn) ? Math.round(liquid / burn) : null;
     const runOutDate = isDefined(runsOutAt) ? formatMonthAndYear(runsOutAt) : '';
     const coverLine = isDefined(coverMonths)
         ? t`Covered by ${coverMonths} months of expenses, based on your last ${monthsUsed} months.`
         : t`Covered by your liquid balance, based on your last ${monthsUsed} months.`;
-    const outlookLine = isPositive ? coverLine : t`Runs out around ${runOutDate}, based on your last ${monthsUsed} months.`;
+    const isRunOutCharted = isDefined(runwayMonths) && runwayMonths <= RUNWAY_MAX_MONTHS;
+    const basisLine = t`Based on your last ${monthsUsed} months.`;
+    const burningLine = isRunOutCharted ? basisLine : t`Runs out around ${runOutDate}, based on your last ${monthsUsed} months.`;
+    const outlookLine = isPositive ? coverLine : burningLine;
 
     return (
         <View className="gap-y-xs">
