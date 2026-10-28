@@ -1,6 +1,6 @@
 import { HttpResponse, http } from 'msw';
 
-import { isString } from '@rnw-community/shared';
+import { isDefined, isString } from '@rnw-community/shared';
 
 import { mockServer } from '../scenario/mock-server';
 
@@ -21,6 +21,7 @@ import type { JsonBodyType } from 'msw';
 
 const BASE_URL = 'https://api.binance.com';
 const SERVER_TIME_URL = `${BASE_URL}/api/v3/time`;
+const ACCOUNT_URL = `${BASE_URL}/api/v3/account`;
 const API_RESTRICTIONS_URL = `${BASE_URL}/sapi/v1/account/apiRestrictions`;
 const SPOT_BALANCE_URL = `${BASE_URL}/sapi/v3/asset/getUserAsset`;
 const FUNDING_BALANCE_URL = `${BASE_URL}/sapi/v1/asset/get-funding-asset`;
@@ -114,6 +115,24 @@ const sliceOffsetPage = <TRow>(url: URL, rows: TRow[]): TRow[] => {
 };
 
 const SERVER_ERROR_STATUS = 500;
+const UNAUTHORIZED_STATUS = 401;
+const API_KEY_HEADER = 'X-MBX-APIKEY';
+
+interface ApiKeyAccountStub {
+    readonly apiKey: string;
+    readonly uid: number;
+    readonly spotBalances: BinanceAssetBalanceApiInterface[];
+}
+
+const respondForApiKey =
+    (accounts: readonly ApiKeyAccountStub[], respond: (account: ApiKeyAccountStub) => JsonBodyType) =>
+    ({ request }: { readonly request: Request }): Response => {
+        const account = accounts.find(candidate => candidate.apiKey === request.headers.get(API_KEY_HEADER));
+
+        return isDefined(account)
+            ? HttpResponse.json(respond(account), { headers: WEIGHT_HEADERS })
+            : HttpResponse.json({ code: -2015, msg: 'Invalid API-key' }, { status: UNAUTHORIZED_STATUS });
+    };
 
 interface ServeOptions {
     readonly onServed?: () => void;
@@ -152,6 +171,18 @@ export const binanceStub = {
     serverTime: (offsetMs = 0): void => {
         mockServer.use(
             http.get(SERVER_TIME_URL, () => HttpResponse.json({ serverTime: Date.now() + offsetMs }, { headers: WEIGHT_HEADERS }))
+        );
+    },
+    accountsByApiKey: (accounts: readonly ApiKeyAccountStub[]): void => {
+        mockServer.use(
+            http.get(
+                ACCOUNT_URL,
+                respondForApiKey(accounts, account => ({ uid: account.uid }))
+            ),
+            http.post(
+                SPOT_BALANCE_URL,
+                respondForApiKey(accounts, account => account.spotBalances)
+            )
         );
     },
     apiRestrictionsBody: (body: JsonBodyType): void => {
