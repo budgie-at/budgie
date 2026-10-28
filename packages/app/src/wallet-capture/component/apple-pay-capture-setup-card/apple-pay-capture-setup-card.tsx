@@ -16,7 +16,7 @@ export const ApplePayCaptureSetupCard = ({ testID }: Props) => {
         },
         {
             title: t`Add the Budgie action`,
-            description: t`Add Capture Apple Pay transaction and set Amount, Merchant and Card from the Shortcut Input.`
+            description: t`Add Capture contactless payment and set Amount, Merchant and Card from the Shortcut Input.`
         },
         {
             title: t`Save it`,
