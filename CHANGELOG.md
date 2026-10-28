@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.125.2](https://github.com/budgie-at/budgie/compare/v6.125.1...v6.125.2) (2026-10-28)
+
+### Bug Fixes
+
+* **sync:** harden binance sync correctness, error handling and key security ([#1769](https://github.com/budgie-at/budgie/issues/1769)) ([dd07510](https://github.com/budgie-at/budgie/commit/dd0751057393fb013ad6d25b681b137d60733056))
+
+
 ## [6.125.1](https://github.com/budgie-at/budgie/compare/v6.125.0...v6.125.1) (2026-10-28)
 
 ### Bug Fixes
