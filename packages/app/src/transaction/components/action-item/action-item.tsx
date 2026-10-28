@@ -36,7 +36,8 @@ const actionItemBackgroundColorPalette: Record<ColorPaletteVariant, ClassValue> 
     secondary: 'bg-secondary-foreground/10',
     positive: 'bg-positive-foreground/30',
     warning: 'bg-warning-foreground/30',
-    destructive: 'bg-destructive-foreground/25'
+    destructive: 'bg-destructive-foreground/25',
+    violet: 'bg-violet-foreground/45'
 };
 
 const containerVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>(

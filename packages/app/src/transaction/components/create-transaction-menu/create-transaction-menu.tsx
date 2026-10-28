@@ -9,6 +9,7 @@ import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTi
 
 import { isDefined } from '@rnw-community/shared';
 
+import { ReceiptScannerModule } from '../../../../modules/receipt-scanner';
 import { CircularActionButton } from '../../../@generic/component/circular-action-button/circular-action-button';
 import { useCreateActionContext } from '../../../@generic/context/create-action.context';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
@@ -79,6 +80,11 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
         router.push('/create-account');
     };
 
+    const handleScanReceipt = () => {
+        onClose();
+        router.push('/scan-receipt');
+    };
+
     const handleAiPress = () => {
         onClose();
         openVoiceInput();
@@ -99,6 +105,17 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
             variant: 'destructive',
             onPress: handleCreateExpense
         },
+        ...(isDefined(ReceiptScannerModule)
+            ? [
+                  {
+                      icon: UserIconNameEnum.ScanText,
+                      label: t`Scan receipt`,
+                      testID: CreateTransactionMenuSelector.ScanReceipt,
+                      variant: 'violet' as const,
+                      onPress: handleScanReceipt
+                  }
+              ]
+            : []),
         {
             icon: UserIconNameEnum.TrendingUp,
             label: t`Income`,

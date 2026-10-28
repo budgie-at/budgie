@@ -8,5 +8,6 @@ export enum ExternalSourceEnum {
     COINBASE = 'COINBASE',
     WISE = 'WISE',
     APPLE_PAY_AUTOMATION = 'APPLE_PAY_AUTOMATION',
-    CSV = 'CSV'
+    CSV = 'CSV',
+    RECEIPT = 'RECEIPT'
 }

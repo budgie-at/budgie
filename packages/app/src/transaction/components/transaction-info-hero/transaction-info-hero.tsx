@@ -69,7 +69,7 @@ export const TransactionInfoHero = ({ transaction, matchingRuleIds, onOpenRefund
     const secondaryAmount = isDefined(secondaryEntry)
         ? formatDigits(convertFromMicroUnits(secondaryEntry.amount), secondaryEntry.account.instrument.symbol)
         : null;
-    const showMetaPills = transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND;
+    const showRefundedPill = transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND;
 
     return (
         <View className="items-center gap-y-xl py-4xl">
@@ -101,15 +101,13 @@ export const TransactionInfoHero = ({ transaction, matchingRuleIds, onOpenRefund
                 </Text>
             ) : null}
 
-            {showMetaPills ? (
-                <View className="flex-row flex-wrap justify-center gap-xs">
-                    <RefundedPill
-                        key={`${transaction.id}-${transaction.consolidationType}`}
-                        transaction={transaction}
-                        onPress={onOpenRefundSources}
-                        testID={TransactionInfoPageSelector.RefundedPill}
-                    />
-                </View>
+            {showRefundedPill ? (
+                <RefundedPill
+                    key={`${transaction.id}-${transaction.consolidationType}`}
+                    transaction={transaction}
+                    onPress={onOpenRefundSources}
+                    testID={TransactionInfoPageSelector.RefundedPill}
+                />
             ) : null}
 
             {isNotEmptyArray(matchingRuleIds) ? (

@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.123.0](https://github.com/budgie-at/budgie/compare/v6.122.0...v6.123.0) (2026-10-28)
+
+### Bug Fixes
+
+* **import-export:** harden receipt parsing against real POS receipts ([91849bc](https://github.com/budgie-at/budgie/commit/91849bc45c819d6c3f333687e18afad3c00d1895))
+* **import-export:** harden receipt total and date parsing ([eb3d603](https://github.com/budgie-at/budgie/commit/eb3d6032c1742e08b33817e4223c6a4b5b9301c2))
+* **import-export:** include the receipt number in the merchant fingerprint ([bda5079](https://github.com/budgie-at/budgie/commit/bda50798e57e53d9d132e89514694a0a1ece8a3f))
+* **import-export:** keep grouped thousands and VAT-safe totals ([ce576a3](https://github.com/budgie-at/budgie/commit/ce576a356f03f744c62746bc3e9fa727941a78c7))
+* **import-export:** prefer line amount on quantity total rows ([5e973c0](https://github.com/budgie-at/budgie/commit/5e973c04d84397493fbe2f8437510c98067be1c6))
+* **import-export:** read column-aligned currencies and spaced receipt labels ([602422e](https://github.com/budgie-at/budgie/commit/602422e5365a687ae66d9d16acfbcc0804292e11))
+* **import-export:** read grouped integer totals only in currencies without minor units ([46dde5f](https://github.com/budgie-at/budgie/commit/46dde5f4037d48c13e7fdddccaab2155a19da0c6))
+* **import-export:** use positional regex groups so receipts parse on Hermes ([6e26d42](https://github.com/budgie-at/budgie/commit/6e26d426ce3d831bbd5a855c3a331ee58251f00f))
+
+### Features
+
+* **import-export:** add on-device receipt parser ([4ddbe3d](https://github.com/budgie-at/budgie/commit/4ddbe3d56a352d13eeaad90d02642ab780716e6f))
+
+
 ## [6.121.2](https://github.com/budgie-at/budgie/compare/v6.121.1...v6.121.2) (2026-10-27)
 
 **Note:** Version bump only for package @budgie/import-export

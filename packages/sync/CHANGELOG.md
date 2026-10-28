@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.123.0](https://github.com/budgie-at/budgie/compare/v6.122.0...v6.123.0) (2026-10-28)
+
+### Bug Fixes
+
+* **contracts:** cover RECEIPT external source ([977241a](https://github.com/budgie-at/budgie/commit/977241a5e4884f24e037057b24ccda9a1e74a64c))
+
+
 ## [6.121.2](https://github.com/budgie-at/budgie/compare/v6.121.1...v6.121.2) (2026-10-27)
 
 ### Bug Fixes

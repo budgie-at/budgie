@@ -33,6 +33,7 @@ fi
 # every flow: the URI only points at the once-per-shard CSV fixture directory,
 # so flows that do not import a CSV simply never dereference it.
 printf 'E2E_CSV_FIXTURES_URI=file://%s/Documents/E2ECsvFixtures\n' "$APP_DATA_CONTAINER" >> "$MAESTRO_FLOW_ENV_FILE"
+printf 'E2E_FIXTURES_URI=file://%s/Documents/E2EFixtures\n' "$APP_DATA_CONTAINER" >> "$MAESTRO_FLOW_ENV_FILE"
 
 FIXTURE_NAME="$(extract_database_fixture_name "$FLOW_PATH" || true)"
 

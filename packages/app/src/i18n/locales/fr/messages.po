@@ -22,6 +22,11 @@ msgstr "Achat P2P de {assetCode} sur Binance"
 msgid "Binance P2P sell {assetCode}"
 msgstr "Vente P2P de {assetCode} sur Binance"
 
+#. placeholder {0}: changed.length
+#: src/receipt/hook/use-receipt-scan.hook.ts
+msgid "{0, plural, one {# receipt saved} other {# receipts saved}}"
+msgstr "{0, plural, one {# reçu enregistré} other {# reçus enregistrés}}"
+
 #. placeholder {0}: labels.length
 #: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
 msgid "{0, plural, one {# tag} other {# tags}}"
@@ -361,6 +366,10 @@ msgstr "{totalSize} Go"
 msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{transactionCount, plural, one {# transaction} other {# transactions}}"
 
+#: src/receipt/hook/use-receipt-scan.hook.ts
+msgid "{unreadableCount, plural, one {Couldn't read # receipt} other {Couldn't read # receipts}}"
+msgstr "{unreadableCount, plural, one {Impossible de lire # reçu} other {Impossible de lire # reçus}}"
+
 #: src/runway/component/runway-pill/runway-pill.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "+{formattedNet} / mo"
@@ -617,6 +626,10 @@ msgstr "Ajoutez l’action Budgie"
 msgid "Add your first account to start tracking your finances"
 msgstr "Ajoutez votre premier compte pour commencer à suivre vos finances"
 
+#: src/receipt/hook/use-receipt-scan.hook.ts
+msgid "Added"
+msgstr "Ajouté"
+
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
 msgid "Adds the fee of the plan"
 msgstr "Ajoute les frais du plan"
@@ -704,6 +717,10 @@ msgstr "Déjà remboursé"
 #: src/account/component/update-debt-account/update-debt-account.tsx
 msgid "Already returned"
 msgstr "Déjà reçu"
+
+#: src/receipt/hook/use-receipt-scan.hook.ts
+msgid "Already scanned"
+msgstr "Déjà scanné"
 
 #: src/sync/component/bank-account-preview-card/bank-account-preview-card.tsx
 msgid "Already syncing"
@@ -3138,6 +3155,10 @@ msgstr "Les dépenses correspondantes sont converties en virement vers ce compte
 msgid "Matched income is converted into a transfer from this account."
 msgstr "Les revenus correspondants sont convertis en virement depuis ce compte."
 
+#: src/receipt/hook/use-receipt-scan.hook.ts
+msgid "Matched to existing"
+msgstr "Associé à l'existante"
+
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "matches"
 msgstr "correspond"
@@ -3492,6 +3513,10 @@ msgstr "Aucun code MCC trouvé"
 msgid "No new transactions"
 msgstr "Aucune nouvelle transaction"
 
+#: src/receipt/hook/use-receipt-scan.hook.ts
+msgid "No receipt found"
+msgstr "Aucun reçu trouvé"
+
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
 msgid "No recurring payments detected"
@@ -3762,6 +3787,10 @@ msgstr "Ouvrir les paramètres"
 #: src/wallet-capture/component/apple-pay-capture-open-shortcuts-button/apple-pay-capture-open-shortcuts-button.tsx
 msgid "Open Shortcuts"
 msgstr "Ouvrir Shortcuts"
+
+#: src/receipt/components/receipt-scan-toast/receipt-scan-toast.tsx
+msgid "Opens the transaction"
+msgstr "Ouvre la transaction"
 
 #: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
 msgid "Opens with"
@@ -4100,6 +4129,14 @@ msgstr "Lu sur ce téléphone"
 msgid "Read on this phone, then you can delete it."
 msgstr "Lu sur ce téléphone, tu peux ensuite le supprimer."
 
+#: src/receipt/components/receipt-scan-toast/receipt-scan-toast.tsx
+msgid "Reading receipt"
+msgstr "Lecture du reçu"
+
+#: src/receipt/components/receipt-scan-toast/receipt-scan-toast.tsx
+msgid "Reading receipts · {current} of {total}"
+msgstr "Lecture des reçus · {current} sur {total}"
+
 #: src/ai/constant/ai-download-card-visuals.constant.ts
 msgid "Ready"
 msgstr "Prêt"
@@ -4139,6 +4176,13 @@ msgstr "Recalculer les soldes"
 #: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
 msgid "Recalculating balances"
 msgstr "Recalcul des soldes"
+
+#: src/receipt/hook/use-receipt-scan.hook.ts
+#: src/rule/constant/external-source.constant.ts
+#: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
+#: src/transaction/components/transaction-metadata-rows/transaction-metadata-rows.tsx
+msgid "Receipt"
+msgstr "Reçu"
 
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 msgid "Receiving {toCode}"
@@ -4389,6 +4433,14 @@ msgstr "Épargne"
 #: src/app/(main)/create-account/index.tsx
 msgid "Savings Account"
 msgstr "Compte d'épargne"
+
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "Scan"
+msgstr "Scanner"
+
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
+msgid "Scan receipt"
+msgstr "Scanner un reçu"
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Scan the QR code with the Monobank app"

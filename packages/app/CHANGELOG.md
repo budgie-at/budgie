@@ -3,6 +3,32 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.123.0](https://github.com/budgie-at/budgie/compare/v6.122.0...v6.123.0) (2026-10-28)
+
+### Bug Fixes
+
+* apply receipt rules after the receipt transaction commits ([d573893](https://github.com/budgie-at/budgie/commit/d573893df132c045e4d1f8ac8f9bbfd8c9425a40))
+* **app:** serialize receipt scan batches so a share waits for a running scan ([d5aac09](https://github.com/budgie-at/budgie/commit/d5aac09c64f365aaa94956b8c517e9bb7c7e2fb4))
+* **import-export:** read grouped integer totals only in currencies without minor units ([46dde5f](https://github.com/budgie-at/budgie/commit/46dde5f4037d48c13e7fdddccaab2155a19da0c6))
+* never convert a scanned receipt's transaction to a transfer ([c9b7dfb](https://github.com/budgie-at/budgie/commit/c9b7dfbfef428bf68b270bd921a6b655d217a6a1))
+
+### Features
+
+* **app:** accept shared receipts and camera access ([66c80ef](https://github.com/budgie-at/budgie/commit/66c80efb90d725c7e6f33c627d3171f2287dab5e))
+* **app:** add on-device receipt scanner module ([71331f4](https://github.com/budgie-at/budgie/commit/71331f448f588ff5afee07d946cee39a45d0846f))
+* **app:** add scan receipt quick action and widget tile ([e918c2a](https://github.com/budgie-at/budgie/commit/e918c2afb7e14ea11d7248716cb13cee2a66cc5c))
+* **app:** localize receipt camera and quick action copy ([e1eb9db](https://github.com/budgie-at/budgie/commit/e1eb9db3ab17df2dccf2247ce82b9051fe7150f1))
+* apply user rules to scanned receipts ([cec3e3b](https://github.com/budgie-at/budgie/commit/cec3e3b6092ee40b3b1ad2ffda475f45a45d7393))
+* **app:** process scanned and shared receipts ([87acfca](https://github.com/budgie-at/budgie/commit/87acfcaa0ee9c93a46907effe363309346cf41f9))
+* **app:** put Scan receipt next to Expense in the create menu ([6c526af](https://github.com/budgie-at/budgie/commit/6c526afe77fb3c362cb2845b84a36c98aec0df83))
+* **app:** say what a receipt scan did instead of counting it ([2c3e045](https://github.com/budgie-at/budgie/commit/2c3e045be9859fcc4f2162010effe4e489b47544))
+* **app:** show receipt scan feedback and receipt details ([5fbb385](https://github.com/budgie-at/budgie/commit/5fbb385be93d18b001b4a40eb6ac475c52571265))
+* **contracts:** add RECEIPT external source ([dae6908](https://github.com/budgie-at/budgie/commit/dae6908303230e0fda9ecad124503994d9b3a23a))
+* **contracts:** add transaction_receipts table ([f769024](https://github.com/budgie-at/budgie/commit/f76902402a1c0f015047d80da72e7ef38782f2fe))
+* **contracts:** add TransactionReceiptRepository ([deb9299](https://github.com/budgie-at/budgie/commit/deb9299410bd88982b39d2b3c5ae7676a6d59a51))
+* **contracts:** expose transaction receipt relation ([a829b5b](https://github.com/budgie-at/budgie/commit/a829b5b2d68918a8e22718ba26dabd938720730e))
+
+
 # [6.122.0](https://github.com/budgie-at/budgie/compare/v6.121.2...v6.122.0) (2026-10-27)
 
 ### Features

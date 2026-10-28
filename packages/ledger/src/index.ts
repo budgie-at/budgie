@@ -12,6 +12,10 @@ export { BalanceAdjustmentService } from './account/service/balance-adjustment.s
 export { AccountTransferConversionService } from './account/service/account-transfer-conversion.service';
 export { DebtAccountService } from './account/service/debt-account.service';
 
+export { ReceiptAccountNotFoundError } from './receipt/error/receipt-account-not-found.error';
+export { ReceiptMatchResultKindEnum } from './receipt/enum/receipt-match-result-kind.enum';
+export { ReceiptMatchService } from './receipt/service/receipt-match.service';
+
 export { CategoryService } from './category/service/category.service';
 
 export { MoneyDataUpgradeService } from './money-data/service/money-data-upgrade.service';
@@ -40,3 +44,4 @@ export type { MoneyDataUpgradeRuntimeSnapshotInterface } from './money-data/inte
 export type { ImportedBatchPreparationInterface } from './transaction/interface/imported-batch-preparation.interface';
 export type { InstallmentPlanConvertInputInterface } from './installment/interface/installment-plan-convert-input.interface';
 export type { StartDepositInputInterface } from './transaction/interface/start-deposit-input.interface';
+export type { ReceiptMatchInputInterface } from './receipt/interface/receipt-match-input.interface';

@@ -29,6 +29,7 @@ export const TransactionCardContent = ({ transaction, accountId = null }: Props)
     const title = getTransactionDisplayTitle(transaction);
     const comment = isNotEmptyString(transaction.title) ? transaction.comment : null;
     const refundedPillTestID = TransactionCardSelector.RefundedPill(transaction.id);
+    const receiptPillTestID = TransactionCardSelector.ReceiptPill(transaction.id);
     const feeTestID = TransactionCardSelector.FeeMetadata(transaction.id);
     const debtSettlementTestID = TransactionCardSelector.DebtSettlementMetadata(transaction.id);
 
@@ -53,6 +54,7 @@ export const TransactionCardContent = ({ transaction, accountId = null }: Props)
                     <TransactionMetadataRows
                         transaction={transaction}
                         refundedPillTestID={refundedPillTestID}
+                        receiptPillTestID={receiptPillTestID}
                         feeTestID={feeTestID}
                         debtSettlementTestID={debtSettlementTestID}
                     />
