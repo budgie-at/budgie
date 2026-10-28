@@ -225,7 +225,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     private c2cUnavailableThisRun = false;
     private readonly c2cHistoryFloorTimeMs = subMonths(new Date(), BinanceSignedClient.C2C_HISTORY_MONTHS).getTime();
     private serverTimeOffsetMs: number | undefined;
-    private exchangeSymbols: BinanceTradeSymbolInterface[] | undefined;
+    private exchangeSymbols: readonly BinanceTradeSymbolInterface[] | undefined;
 
     private readonly fetchCapitalSources = Effect.fn('BinanceSignedClient.fetchCapitalSources')(function* (
         this: BinanceSignedClient,
@@ -287,7 +287,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             return null;
         }
 
-        this.exchangeSymbols = exchangeInfo.value.symbols.map(({ symbol, baseAsset, quoteAsset }) => ({ symbol, baseAsset, quoteAsset }));
+        this.exchangeSymbols = exchangeInfo.value.symbols;
 
         return this.exchangeSymbols;
     });
@@ -413,7 +413,6 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     ) {
         return Effect.gen({ self: this }, function* (this: BinanceSignedClient) {
             const balances = yield* this.signedRequest(BinanceAssetBalanceListApiSchema, SPOT_BALANCE_ENDPOINT, 'POST');
-            this.collectTouchedAssets(balances, convertTransfers).forEach(asset => this.runTouchedAssets.add(asset));
             const deposits = yield* this.fetchCapitalHistory(this.depositSource, BinanceWalletEnum.SPOT, startTimeMs, endTimeMs).pipe(
                 Effect.catchTag('SyncUnauthorizedError', this.recoverMissingPermission)
             );
@@ -423,9 +422,9 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             const c2cOrders = yield* this.fetchC2cOrders(startTimeMs, endTimeMs).pipe(
                 Effect.catchTag('SyncUnauthorizedError', this.recoverMissingPermission)
             );
-            const fiatDeposits = yield* this.fetchFiatOrders(FIAT_DEPOSIT_TRANSACTION_TYPE, startTimeMs, endTimeMs);
-            const fiatWithdrawals = yield* this.fetchFiatOrders(FIAT_WITHDRAW_TRANSACTION_TYPE, startTimeMs, endTimeMs);
+            const { fiatDeposits, fiatWithdrawals } = yield* this.fetchFiatSources(startTimeMs, endTimeMs);
             [
+                ...this.collectTouchedAssets(balances, convertTransfers),
                 ...deposits.map(deposit => deposit.coin),
                 ...withdrawals.map(withdrawal => withdrawal.coin),
                 ...c2cOrders.map(order => order.asset),
@@ -758,15 +757,16 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
 
     private buildTradeSymbolCandidates(
         touchedAssets: Set<string>,
-        exchangeSymbols: BinanceTradeSymbolInterface[] | null,
+        exchangeSymbols: readonly BinanceTradeSymbolInterface[] | null,
         eligibleSoldOffBaseAssets: Set<string>
     ): BinanceTradeSymbolInterface[] {
         if (isDefined(exchangeSymbols)) {
             return exchangeSymbols.filter(({ baseAsset, quoteAsset }) => {
+                const isTouchedBase = touchedAssets.has(baseAsset);
                 const isTouchedQuote = touchedAssets.has(quoteAsset);
-                const isEligibleBase = touchedAssets.has(baseAsset) || eligibleSoldOffBaseAssets.has(baseAsset);
+                const isEligibleBase = isTouchedBase || eligibleSoldOffBaseAssets.has(baseAsset);
 
-                return (isTouchedQuote && isEligibleBase) || (touchedAssets.has(baseAsset) && MAJOR_QUOTE_ASSETS.includes(quoteAsset));
+                return (isTouchedQuote && isEligibleBase) || (isTouchedBase && MAJOR_QUOTE_ASSETS.includes(quoteAsset));
             });
         }
 
