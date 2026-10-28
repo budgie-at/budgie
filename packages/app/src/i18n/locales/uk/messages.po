@@ -1213,6 +1213,10 @@ msgstr "Змінити валюту"
 msgid "Change PIN"
 msgstr "Змінити PIN-код"
 
+#: src/sync/utils/toast-binance-key-permissions-error.util.ts
+msgid "Check the key and secret, then try again."
+msgstr "Перевірте ключ і секрет та спробуйте ще раз."
+
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Checking"
 msgstr "Перевірка"
@@ -1757,6 +1761,10 @@ msgstr "Не вдалося оновити токен"
 #: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "Could not update transaction."
 msgstr "Не вдалося оновити транзакцію."
+
+#: src/sync/utils/toast-binance-key-permissions-error.util.ts
+msgid "Could not verify the API key permissions"
+msgstr "Не вдалося перевірити дозволи API-ключа"
 
 #: src/sync/component/bank-integration-new-accounts/bank-integration-new-accounts.tsx
 msgid "Couldn’t check Monobank for new accounts"
@@ -2939,8 +2947,7 @@ msgstr "Користуйтеся Budgie тим часом. Поки модель
 msgid "Kept inside Budgie's file on this phone. Sent only to Monobank, never to us."
 msgstr "Зберігається у файлі Budgie на цьому телефоні. Надсилається лише в Monobank, ніколи нам."
 
-#: src/sync/component/binance-sync-token-section/binance-sync-token-section.tsx
-#: src/sync/component/create-binance-account/create-binance-account.tsx
+#: src/sync/utils/toast-binance-key-permissions-error.util.ts
 msgid "Key has too many permissions"
 msgstr "Ключ має забагато дозволів"
 
@@ -5089,8 +5096,7 @@ msgstr "Цей рахунок буде приховано з головного 
 msgid "This action cannot be undone."
 msgstr "Цю дію неможливо скасувати."
 
-#: src/sync/component/binance-sync-token-section/binance-sync-token-section.tsx
-#: src/sync/component/create-binance-account/create-binance-account.tsx
+#: src/sync/utils/toast-binance-key-permissions-error.util.ts
 msgid "This API key can trade, withdraw or transfer funds. Create a key with only \"Enable Reading\" and try again."
 msgstr "Цей API-ключ може торгувати, виводити або переказувати кошти. Створіть ключ лише з «Enable Reading» і спробуйте ще раз."
 

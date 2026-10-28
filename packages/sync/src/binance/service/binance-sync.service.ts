@@ -135,8 +135,6 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             return yield* binanceAccountService.buildAccountResolver(exchangeAccounts, integration.id);
         });
 
-        const assertReadOnlyKey = (token: string) => new BinanceSignedClient(token).assertReadOnlyKey();
-
         const anchorAllBalances = Effect.fnUntraced(function* (token: string) {
             const integration = yield* syncIntegrationTokenService.getOrCreateIntegration(provider, token);
 
@@ -426,7 +424,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                               run = { ...run, balancesAnchored: true };
                           })
                       ).pipe(Effect.catchTag('SyncDeferredError', () => markRunDeferred)),
-            validateToken: token => Effect.andThen(decodeCredentials(token), assertReadOnlyKey(token)),
+            validateToken: token => Effect.andThen(decodeCredentials(token), new BinanceSignedClient(token).assertReadOnlyKey()),
             afterSyncRun: () => {
                 run = freshRunState(Number.POSITIVE_INFINITY);
             },
@@ -447,9 +445,10 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
         return {
             ...pollingSyncService,
             fetchAccountsPreview: Effect.fn('BinanceSyncService.fetchAccountsPreview')(function* (token: string) {
-                yield* assertReadOnlyKey(token);
+                const previewClient = new BinanceSignedClient(token);
+                yield* previewClient.assertReadOnlyKey();
 
-                const exchangeAccounts = yield* new BinanceSignedClient(token).getAccounts();
+                const exchangeAccounts = yield* previewClient.getAccounts();
                 const supportedIds = new Set(
                     (yield* binanceAccountService.findResolvableAccounts(exchangeAccounts)).map(
                         resolvableAccount => resolvableAccount.exchangeAccount.id

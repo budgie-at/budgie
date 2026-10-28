@@ -1213,6 +1213,10 @@ msgstr "Cambiar moneda"
 msgid "Change PIN"
 msgstr "Cambiar PIN"
 
+#: src/sync/utils/toast-binance-key-permissions-error.util.ts
+msgid "Check the key and secret, then try again."
+msgstr "Comprueba la clave y el secreto e inténtalo de nuevo."
+
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Checking"
 msgstr "Comprobando"
@@ -1757,6 +1761,10 @@ msgstr "No se pudo actualizar el token"
 #: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "Could not update transaction."
 msgstr "No se pudo actualizar la transacción."
+
+#: src/sync/utils/toast-binance-key-permissions-error.util.ts
+msgid "Could not verify the API key permissions"
+msgstr "No se pudieron verificar los permisos de la clave de API"
 
 #: src/sync/component/bank-integration-new-accounts/bank-integration-new-accounts.tsx
 msgid "Couldn’t check Monobank for new accounts"
@@ -2939,8 +2947,7 @@ msgstr "Sigue usando Budgie mientras tanto. Hasta que el modelo esté listo, las
 msgid "Kept inside Budgie's file on this phone. Sent only to Monobank, never to us."
 msgstr "Se guarda en el archivo de Budgie en este teléfono. Solo se envía a Monobank, nunca a nosotros."
 
-#: src/sync/component/binance-sync-token-section/binance-sync-token-section.tsx
-#: src/sync/component/create-binance-account/create-binance-account.tsx
+#: src/sync/utils/toast-binance-key-permissions-error.util.ts
 msgid "Key has too many permissions"
 msgstr "La clave tiene demasiados permisos"
 
@@ -5089,8 +5096,7 @@ msgstr "Esta cuenta se ocultará de tu vista principal y no se incluirá en los 
 msgid "This action cannot be undone."
 msgstr "Esta acción no se puede deshacer."
 
-#: src/sync/component/binance-sync-token-section/binance-sync-token-section.tsx
-#: src/sync/component/create-binance-account/create-binance-account.tsx
+#: src/sync/utils/toast-binance-key-permissions-error.util.ts
 msgid "This API key can trade, withdraw or transfer funds. Create a key with only \"Enable Reading\" and try again."
 msgstr "Esta clave de API puede operar, retirar o transferir fondos. Crea una clave solo con «Enable Reading» e inténtalo de nuevo."
 

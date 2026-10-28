@@ -9,6 +9,7 @@ import { Button } from '../../../@generic/component/button/button';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { SetupStepEnum } from '../../enum/setup-step.enum';
 import { useSyncAccountSetupFlow } from '../../hook/use-sync-account-setup-flow.hook';
+import { toastBinanceKeyPermissionsError } from '../../utils/toast-binance-key-permissions-error.util';
 import { AccountSelectionStep } from '../account-selection-step/account-selection-step';
 import { BinanceParkedAssetsNotice } from '../binance-parked-assets-notice/binance-parked-assets-notice';
 import { KeySecretInputStep } from '../key-secret-input-step/key-secret-input-step';
@@ -44,15 +45,7 @@ export const CreateBinanceAccount = () => {
             binanceSyncService =>
                 binanceSyncService.fetchAccountsPreview(buildToken()).pipe(
                     Effect.catchTags({
-                        BinanceKeyPermissionsError: () =>
-                            Effect.sync(() => {
-                                showErrorToast(
-                                    t`Key has too many permissions`,
-                                    t`This API key can trade, withdraw or transfer funds. Create a key with only "Enable Reading" and try again.`
-                                );
-
-                                return null;
-                            })
+                        BinanceKeyPermissionsError: error => Effect.as(toastBinanceKeyPermissionsError(error), null)
                     })
                 ),
             previews => {
