@@ -10,10 +10,10 @@ interface Props {
 }
 
 export const HairlineStatRow = ({ stats }: Props) => (
-    <View className="flex-row border-y border-secondary-corner py-lg">
+    <View className="flex-row border-y-hairline border-secondary-corner py-lg">
         {stats.map((stat, index) => (
             <Fragment key={stat.label}>
-                {index > 0 ? <View className="w-px self-stretch bg-secondary-corner" /> : null}
+                {index > 0 ? <View className="w-hairline self-stretch bg-secondary-corner" /> : null}
                 <StatCell appearance="editorial" label={stat.label} value={stat.value} variant={stat.variant} testID={stat.testID} />
             </Fragment>
         ))}

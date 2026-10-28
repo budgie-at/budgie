@@ -9,6 +9,6 @@ export const SectionHeader = ({ label }: Props) => (
         <Text accessibilityRole="header" className="text-xxs uppercase tracking-widest text-secondary-foreground">
             {label}
         </Text>
-        <View className="h-px flex-1 bg-secondary-corner" />
+        <View className="h-hairline flex-1 bg-secondary-corner" />
     </View>
 );

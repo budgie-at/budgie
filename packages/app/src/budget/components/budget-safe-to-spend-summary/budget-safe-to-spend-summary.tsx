@@ -32,7 +32,7 @@ export const BudgetSafeToSpendSummary = ({ projection, currencySymbol }: Props) 
             <BudgetBreakdownRow label={t`Limit`} amount={formatAmount(overall.limit)} />
             <BudgetBreakdownRow label={t`Spent so far`} amount={spentAmount} />
             <BudgetBreakdownRow label={t`Upcoming this period`} amount={upcomingAmount} />
-            <View className="h-px bg-secondary-corner" />
+            <View className="h-hairline bg-secondary-corner" />
             <BudgetBreakdownRow label={t`Free to spend`} amount={freeAmount} className="font-semibold text-primary" />
             <Text className="text-xs tabular-nums text-secondary-foreground">{t`${freeAmount} ÷ ${daysLabel}`}</Text>
             <HeroFigure

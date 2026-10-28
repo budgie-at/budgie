@@ -50,7 +50,7 @@ export const BudgetPeriodRecapCard = ({ snapshot, currencySymbol }: Props) => {
     return (
         <View
             collapsable={false}
-            className="flex-row items-start gap-x-md border-b border-secondary-corner pb-lg"
+            className="flex-row items-start gap-x-md border-b-hairline border-secondary-corner pb-lg"
             testID={BudgetSelector.DetailsRecapCard}
         >
             <View className="flex-1 gap-y-xs">
