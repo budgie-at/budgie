@@ -28,7 +28,7 @@
         "@budgie/consolidation": "workspace:*",
         "@budgie/contracts": "workspace:^",
         "@budgie/market": "workspace:*",
-        "@lingui/core": "6.10.0",
+        "@lingui/core": "6.10.1",
         "@rnw-community/shared": "^2.28.0",
         "date-fns": "^4.4.0",
         "effect": "4.0.6"
