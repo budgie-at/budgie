@@ -1,3 +1,4 @@
+import * as Clock from 'effect/Clock';
 import * as Effect from 'effect/Effect';
 import * as Semaphore from 'effect/Semaphore';
 
@@ -25,7 +26,7 @@ export class BinanceWeightThrottle {
     readonly waitIfNeeded = Effect.fn('BinanceWeightThrottle.waitIfNeeded')(
         function* (this: BinanceWeightThrottle) {
             if (this.shouldCoolDown()) {
-                if (Date.now() + WEIGHT_WINDOW_MS >= this.deadlineAtMs) {
+                if ((yield* Clock.currentTimeMillis) + WEIGHT_WINDOW_MS >= this.deadlineAtMs) {
                     return yield* new SyncDeferredError({
                         provider: SyncProviderEnum.BINANCE,
                         message: 'Weight cool-down exceeds deadline'
@@ -38,14 +39,14 @@ export class BinanceWeightThrottle {
                 this.sapiUidWeight = 0;
             }
 
-            const windowStart = Date.now() - REQUEST_RATE_WINDOW_MS;
+            const windowStart = (yield* Clock.currentTimeMillis) - REQUEST_RATE_WINDOW_MS;
             this.requestTimestamps = this.requestTimestamps.filter(timestamp => timestamp > windowStart);
 
             if (this.requestTimestamps.length >= REQUEST_RATE_CEILING) {
                 yield* Effect.sleep(REQUEST_RATE_PACING_MS);
             }
 
-            this.requestTimestamps.push(Date.now());
+            this.requestTimestamps.push(yield* Clock.currentTimeMillis);
         },
         effect => this.semaphore.withPermit(effect)
     );
