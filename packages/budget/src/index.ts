@@ -35,3 +35,5 @@ export type { BudgetProjectionScopeInterface } from './projection/interface/budg
 export type { BudgetProjectionInterface } from './projection/interface/budget-projection.interface';
 export type { BudgetUpcomingChargeInterface } from './projection/interface/budget-upcoming-charge.interface';
 export type { BudgetCommittedSourceInterface } from './projection/interface/budget-committed-source.interface';
+export { BudgetPeriodSnapshotRepository } from './history/repository/budget-period-snapshot.repository';
+export { BudgetPeriodCloseService } from './history/service/budget-period-close.service';

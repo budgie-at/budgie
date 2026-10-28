@@ -94,6 +94,10 @@ msgstr "{categorizedCount, plural, one {# in dieser Sitzung kategorisiert} other
 msgid "{categorizedCount, plural, one {# done} other {# done}}"
 msgstr "{categorizedCount, plural, one {# erledigt} other {# erledigt}}"
 
+#: src/budget/components/budget-period-recap-card/budget-period-recap-card.tsx
+msgid "{categoryCount, plural, one {On budget in {onBudgetCategoryCount} of # category} other {On budget in {onBudgetCategoryCount} of # categories}}"
+msgstr "{categoryCount, plural, one {Im Budget in {onBudgetCategoryCount} von # Kategorie} other {Im Budget in {onBudgetCategoryCount} von # Kategorien}}"
+
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "{categoryName}: {threshold}% spent"
 msgstr "{categoryName}: {threshold}% ausgegeben"
@@ -270,6 +274,14 @@ msgstr "{minutesLeft, plural, one {Noch etwa # Minute} other {Noch etwa # Minute
 msgid "{monobankAccountCount, plural, one {# account. Balances come straight from the bank.} other {# accounts. Balances come straight from the bank.}}"
 msgstr "{monobankAccountCount, plural, one {# Konto. Salden kommen direkt von der Bank.} other {# Konten. Salden kommen direkt von der Bank.}}"
 
+#: src/budget/components/budget-period-recap-card/budget-period-recap-card.tsx
+msgid "{month} closed {amount} over"
+msgstr "{month} mit {amount} Überschreitung abgeschlossen"
+
+#: src/budget/components/budget-period-recap-card/budget-period-recap-card.tsx
+msgid "{month} closed {amount} under"
+msgstr "{month} mit {amount} unter dem Limit abgeschlossen"
+
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "{months, plural, one {# month} other {# months}}"
 msgstr "{months, plural, one {# Monat} other {# Monate}}"
@@ -388,6 +400,10 @@ msgstr "{spikeLabel} hatte eine Einmalausgabe von {spikeAmount}. Die Schätzung 
 msgid "{splitEntryCount, plural, one {# item} other {# items}}"
 msgstr "{splitEntryCount, plural, one {# Element} other {# Elemente}}"
 
+#: src/budget/components/budget-period-summary/budget-period-summary.tsx
+msgid "{startLabel} - {endLabel}"
+msgstr "{startLabel} - {endLabel}"
+
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "{statementAccountCount, plural, one {# account. Balances come from the statement.} other {# accounts. Balances come from the statement.}}"
 msgstr "{statementAccountCount, plural, one {# Konto. Die Salden stammen aus dem Kontoauszug.} other {# Konten. Die Salden stammen aus dem Kontoauszug.}}"
@@ -412,6 +428,10 @@ msgstr "{title} liegt über dem Tempo"
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "{total} GB on this phone"
 msgstr "{total} GB auf diesem Telefon"
+
+#: src/budget/components/budget-history-section/budget-history-section.tsx
+msgid "{totalCount, plural, one {On budget {onBudgetCount} of # month} other {On budget {onBudgetCount} of # months}}"
+msgstr "{totalCount, plural, one {Im Budget {onBudgetCount} von # Monat} other {Im Budget {onBudgetCount} von # Monaten}}"
 
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "{totalSize} GB"
@@ -933,6 +953,10 @@ msgstr "Verfügbar, sobald der Import abgeschlossen ist"
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "Average"
 msgstr "Durchschnitt"
+
+#: src/budget/components/budget-history-section/budget-history-section.tsx
+msgid "Avg {averageAmount}"
+msgstr "Ø {averageAmount}"
 
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Avg cost"
@@ -2121,6 +2145,7 @@ msgstr "Stimmte nicht überein"
 msgid "Disable App Lock"
 msgstr "App-Sperre deaktivieren"
 
+#: src/budget/components/budget-period-recap-card/budget-period-recap-card.tsx
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 #: src/wallet-capture/hook/use-wallet-capture-settings.hook.ts
@@ -2459,6 +2484,10 @@ msgstr "Erste Bank"
 msgid "Erste Bank (PDF)"
 msgstr "Erste Bank (PDF)"
 
+#: src/budget/components/budget-period-summary/budget-period-summary.tsx
+msgid "Estimated from your past transactions using your current limits."
+msgstr "Geschätzt aus deinen früheren Transaktionen mit deinen aktuellen Limits."
+
 #: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
 msgid "Every tap, recorded"
 msgstr "Jede Zahlung erfasst"
@@ -2554,6 +2583,10 @@ msgstr "Face ID im Alltag"
 #: src/settings/hook/use-biometric-label.hook.ts
 msgid "Facial recognition"
 msgstr "Gesichtserkennung"
+
+#: src/budget/components/budget-history-section/budget-history-section.tsx
+msgid "Faded bars are estimated from your past transactions using your current limits."
+msgstr "Blasse Balken sind aus deinen früheren Transaktionen mit deinen aktuellen Limits geschätzt."
 
 #: src/@generic/hook/use-contacts.hook.ts
 msgid "Failed to load contacts."
@@ -3380,6 +3413,7 @@ msgstr "Monobank hat diesen Schlüssel abgelehnt. Prüfe ihn und versuche es ern
 msgid "Monobank sends about one month of history per minute, for each account you selected."
 msgstr "Monobank sendet etwa einen Monat Verlauf pro Minute, für jedes ausgewählte Konto."
 
+#: src/budget/components/budget-period-summary/budget-period-summary.tsx
 #: src/budget/components/budget-widget-card/budget-widget-card.tsx
 msgid "Monthly budget"
 msgstr "Monatsbudget"
@@ -3940,6 +3974,7 @@ msgstr "Ursprüngliche Transaktion"
 #: src/budget/components/budget-details-other-category-row/budget-details-other-category-row.tsx
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
 #: src/budget/components/budget-pace-banner/budget-pace-banner.tsx
+#: src/budget/components/budget-period-summary/budget-period-summary.tsx
 #: src/budget/service/budget-alert-monitor.service.ts
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Other"
@@ -4003,6 +4038,10 @@ msgstr "Schuldet Ihnen"
 #: src/installment-plan/component/installment-plan-paid-summary/installment-plan-paid-summary.tsx
 msgid "Paid {paidAmount} · {paidCount} of {installmentCount}"
 msgstr "Bezahlt {paidAmount} · {paidCount} von {installmentCount}"
+
+#: src/budget/components/budget-history-section/budget-history-section.tsx
+msgid "Past months"
+msgstr "Vergangene Monate"
 
 #: src/app/bank-integration-key.tsx
 msgid "Paste the key from api.monobank.ua"

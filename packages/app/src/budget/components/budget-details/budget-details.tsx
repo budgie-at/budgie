@@ -24,6 +24,8 @@ import { BudgetHighlightContext } from '../../context/budget-highlight.context';
 import { useGetBudgetProjectionQuery } from '../../query/use-get-budget-projection.query';
 import { formatBudgetPeriodLabel } from '../../utils/format-budget-period-label.util';
 import { BudgetDetailsCategoryList } from '../budget-details-category-list/budget-details-category-list';
+import { BudgetHistorySection } from '../budget-history-section/budget-history-section';
+import { BudgetPeriodRecap } from '../budget-period-recap/budget-period-recap';
 import { BudgetVerdict } from '../budget-verdict/budget-verdict';
 
 import type { BudgetHighlightTargetInterface } from '../../interface/budget-highlight-target.interface';
@@ -121,6 +123,8 @@ export const BudgetDetails = ({ budget }: Props) => {
         >
             <BudgetHighlightContext value={highlightContextValue}>
                 <View ref={contentRef} collapsable={false} className="gap-y-7xl">
+                    <BudgetPeriodRecap budgetId={budget.id} currencySymbol={currencySymbol} />
+
                     <LoadingContent isLoading={isLoading}>
                         <BudgetVerdict
                             projection={projection}
@@ -139,6 +143,15 @@ export const BudgetDetails = ({ budget }: Props) => {
                             {categoryLimitsContent}
                         </LoadingContent>
                     </View>
+
+                    <BudgetHistorySection
+                        budgetId={budget.id}
+                        overallLimit={projection.overall.limit}
+                        currentSpent={projection.overall.spent}
+                        currentPeriodStart={periodWindow.periodStart}
+                        currentPeriodEnd={periodEnd}
+                        currencySymbol={currencySymbol}
+                    />
                 </View>
             </BudgetHighlightContext>
         </CollapsibleChromePage>

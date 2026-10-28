@@ -4,6 +4,7 @@ import { AccountBalanceEntityRelations } from './account-balance/relations/accou
 import { AccountEntityRelations } from './account/relations/account-entity.relations';
 import { BankIntegrationEntityRelations } from './bank-integration/relations/bank-integration-entity.relations';
 import { BudgetCategoryLimitEntityRelations } from './budget-category-limit/relations/budget-category-limit-entity.relations';
+import { BudgetPeriodSnapshotEntityRelations } from './budget-period-snapshot/relations/budget-period-snapshot-entity.relations';
 import { BudgetEntityRelations } from './budget/relations/budget-entity.relations';
 import { DefaultCategoryTranslationEntityRelations } from './category-translation/relations/default-category-translation-entity.relations';
 import { CategoryEntityRelations } from './category/relations/category-entity.relations';
@@ -51,5 +52,6 @@ export const relations = {
     ...RuleConditionEntityRelations,
     ...RuleActionEntityRelations,
     ...BudgetEntityRelations,
-    ...BudgetCategoryLimitEntityRelations
+    ...BudgetCategoryLimitEntityRelations,
+    ...BudgetPeriodSnapshotEntityRelations
 };

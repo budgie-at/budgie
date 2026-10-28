@@ -352,6 +352,15 @@ export type { BudgetCategoryLimitEntityInterface } from './budget-category-limit
 export type { BudgetCategoryLimitCreateEntityInterface } from './budget-category-limit/entity/budget-category-limit-create-entity.interface';
 export type { BudgetCategoryLimitBulkUpdateInputInterface } from './budget-category-limit/input/budget-category-limit-bulk-update-input.interface';
 
+export { BudgetPeriodSnapshotEntityTable } from './budget-period-snapshot/table/budget-period-snapshot-entity.table';
+export type { BudgetPeriodSnapshotEntityInterface } from './budget-period-snapshot/entity/budget-period-snapshot-entity.interface';
+export type { BudgetPeriodSnapshotCreateEntityInterface } from './budget-period-snapshot/entity/budget-period-snapshot-create-entity.interface';
+export type { BudgetPeriodSnapshotWithCategoriesEntityInterface } from './budget-period-snapshot/entity/budget-period-snapshot-with-categories-entity.interface';
+
+export { BudgetPeriodCategorySnapshotEntityTable } from './budget-period-category-snapshot/table/budget-period-category-snapshot-entity.table';
+export type { BudgetPeriodCategorySnapshotEntityInterface } from './budget-period-category-snapshot/entity/budget-period-category-snapshot-entity.interface';
+export type { BudgetPeriodCategorySnapshotCreateEntityInterface } from './budget-period-category-snapshot/entity/budget-period-category-snapshot-create-entity.interface';
+
 export { RecurringSeriesKindEnum } from './recurring-series/enum/recurring-series-kind.enum';
 export { RecurringSeriesStatusEnum } from './recurring-series/enum/recurring-series-status.enum';
 export { RecurringSeriesUserStateEnum } from './recurring-series/enum/recurring-series-user-state.enum';

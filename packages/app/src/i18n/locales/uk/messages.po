@@ -94,6 +94,10 @@ msgstr "{categorizedCount, plural, one {# категоризовано за це
 msgid "{categorizedCount, plural, one {# done} other {# done}}"
 msgstr "{categorizedCount, plural, one {# готово} few {# готово} many {# готово} other {# готово}}"
 
+#: src/budget/components/budget-period-recap-card/budget-period-recap-card.tsx
+msgid "{categoryCount, plural, one {On budget in {onBudgetCategoryCount} of # category} other {On budget in {onBudgetCategoryCount} of # categories}}"
+msgstr "{categoryCount, plural, one {У межах бюджету {onBudgetCategoryCount} з # категорії} few {У межах бюджету {onBudgetCategoryCount} з # категорій} many {У межах бюджету {onBudgetCategoryCount} з # категорій} other {У межах бюджету {onBudgetCategoryCount} з # категорії}}"
+
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "{categoryName}: {threshold}% spent"
 msgstr "{categoryName}: {threshold}% витрачено"
@@ -270,6 +274,14 @@ msgstr "{minutesLeft, plural, one {Залишилася приблизно # х�
 msgid "{monobankAccountCount, plural, one {# account. Balances come straight from the bank.} other {# accounts. Balances come straight from the bank.}}"
 msgstr "{monobankAccountCount, plural, one {# рахунок. Баланси надходять безпосередньо з банку.} few {# рахунки. Баланси надходять безпосередньо з банку.} many {# рахунків. Баланси надходять безпосередньо з банку.} other {# рахунку. Баланси надходять безпосередньо з банку.}}"
 
+#: src/budget/components/budget-period-recap-card/budget-period-recap-card.tsx
+msgid "{month} closed {amount} over"
+msgstr "{month} закрито з перевитратою {amount}"
+
+#: src/budget/components/budget-period-recap-card/budget-period-recap-card.tsx
+msgid "{month} closed {amount} under"
+msgstr "{month} закрито з економією {amount}"
+
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "{months, plural, one {# month} other {# months}}"
 msgstr "{months, plural, one {# місяць} few {# місяці} many {# місяців} other {# місяця}}"
@@ -388,6 +400,10 @@ msgstr "{spikeLabel}: разова витрата {spikeAmount}. Для оцін
 msgid "{splitEntryCount, plural, one {# item} other {# items}}"
 msgstr "{splitEntryCount, plural, one {# елемент} few {# елементи} many {# елементів} other {# елемента}}"
 
+#: src/budget/components/budget-period-summary/budget-period-summary.tsx
+msgid "{startLabel} - {endLabel}"
+msgstr "{startLabel} - {endLabel}"
+
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "{statementAccountCount, plural, one {# account. Balances come from the statement.} other {# accounts. Balances come from the statement.}}"
 msgstr "{statementAccountCount, plural, one {# рахунок. Баланси взято з виписки.} few {# рахунки. Баланси взято з виписки.} many {# рахунків. Баланси взято з виписки.} other {# рахунків. Баланси взято з виписки.}}"
@@ -412,6 +428,10 @@ msgstr "{title} випереджає темп"
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "{total} GB on this phone"
 msgstr "{total} ГБ на цьому телефоні"
+
+#: src/budget/components/budget-history-section/budget-history-section.tsx
+msgid "{totalCount, plural, one {On budget {onBudgetCount} of # month} other {On budget {onBudgetCount} of # months}}"
+msgstr "{totalCount, plural, one {У межах бюджету {onBudgetCount} з # місяця} few {У межах бюджету {onBudgetCount} з # місяців} many {У межах бюджету {onBudgetCount} з # місяців} other {У межах бюджету {onBudgetCount} з # місяця}}"
 
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "{totalSize} GB"
@@ -933,6 +953,10 @@ msgstr "Стане доступним після завершення імпор
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "Average"
 msgstr "Середнє"
+
+#: src/budget/components/budget-history-section/budget-history-section.tsx
+msgid "Avg {averageAmount}"
+msgstr "Сер. {averageAmount}"
 
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Avg cost"
@@ -2121,6 +2145,7 @@ msgstr "Не збігається"
 msgid "Disable App Lock"
 msgstr "Вимкнути блокування"
 
+#: src/budget/components/budget-period-recap-card/budget-period-recap-card.tsx
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 #: src/wallet-capture/hook/use-wallet-capture-settings.hook.ts
@@ -2459,6 +2484,10 @@ msgstr "Erste Bank"
 msgid "Erste Bank (PDF)"
 msgstr "Erste Bank (PDF)"
 
+#: src/budget/components/budget-period-summary/budget-period-summary.tsx
+msgid "Estimated from your past transactions using your current limits."
+msgstr "Оцінено за твоїми минулими транзакціями з поточними лімітами."
+
 #: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
 msgid "Every tap, recorded"
 msgstr "Кожна оплата — записана"
@@ -2554,6 +2583,10 @@ msgstr "Face ID щодня"
 #: src/settings/hook/use-biometric-label.hook.ts
 msgid "Facial recognition"
 msgstr "Розпізнавання обличчя"
+
+#: src/budget/components/budget-history-section/budget-history-section.tsx
+msgid "Faded bars are estimated from your past transactions using your current limits."
+msgstr "Бліді стовпчики оцінено за твоїми минулими транзакціями з поточними лімітами."
 
 #: src/@generic/hook/use-contacts.hook.ts
 msgid "Failed to load contacts."
@@ -3380,6 +3413,7 @@ msgstr "Monobank відхилив цей ключ. Перевірте його �
 msgid "Monobank sends about one month of history per minute, for each account you selected."
 msgstr "Monobank надсилає близько одного місяця історії за хвилину для кожного вибраного рахунку."
 
+#: src/budget/components/budget-period-summary/budget-period-summary.tsx
 #: src/budget/components/budget-widget-card/budget-widget-card.tsx
 msgid "Monthly budget"
 msgstr "Місячний бюджет"
@@ -3940,6 +3974,7 @@ msgstr "Початкова транзакція"
 #: src/budget/components/budget-details-other-category-row/budget-details-other-category-row.tsx
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
 #: src/budget/components/budget-pace-banner/budget-pace-banner.tsx
+#: src/budget/components/budget-period-summary/budget-period-summary.tsx
 #: src/budget/service/budget-alert-monitor.service.ts
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Other"
@@ -4003,6 +4038,10 @@ msgstr "Винен вам"
 #: src/installment-plan/component/installment-plan-paid-summary/installment-plan-paid-summary.tsx
 msgid "Paid {paidAmount} · {paidCount} of {installmentCount}"
 msgstr "Сплачено {paidAmount} · {paidCount} з {installmentCount}"
+
+#: src/budget/components/budget-history-section/budget-history-section.tsx
+msgid "Past months"
+msgstr "Попередні місяці"
 
 #: src/app/bank-integration-key.tsx
 msgid "Paste the key from api.monobank.ua"
