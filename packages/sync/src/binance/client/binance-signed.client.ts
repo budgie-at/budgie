@@ -28,6 +28,7 @@ import { SyncUnauthorizedError } from '../../core/error/sync-unauthorized.error'
 import { BinanceCredentialsSchema } from '../constant/binance-credentials.schema';
 import { BinanceCapitalOutcomeEnum } from '../enum/binance-capital-outcome.enum';
 import { BinanceEarnRewardKindEnum } from '../enum/binance-earn-reward-kind.enum';
+import { BinanceHistorySourceEnum } from '../enum/binance-history-source.enum';
 import { BinanceWalletEnum } from '../enum/binance-wallet.enum';
 import { BinanceKeyPermissionsError } from '../error/binance-key-permissions.error';
 import { BinanceAccountApiSchema } from '../interface/binance-account-api.schema';
@@ -267,7 +268,8 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return yield* this.getRewardTransactions(
             from,
             to,
-            (startTimeMs, endTimeMs) => this.fetchLockedEarnRewards(startTimeMs, endTimeMs),
+            (startTimeMs, endTimeMs) =>
+                this.skipWhenUnavailable(BinanceHistorySourceEnum.LOCKED_EARN, [], this.fetchLockedEarnRewards(startTimeMs, endTimeMs)),
             lockedEarnRewards => ({ lockedEarnRewards })
         );
     });
@@ -281,13 +283,17 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             from,
             to,
             (startTimeMs, endTimeMs) =>
-                this.fetchRewardRecords(
-                    ETH_STAKING_REWARDS_ENDPOINT,
-                    BinanceStakingRewardListApiSchema,
-                    {},
-                    row => ({ asset: row.asset ?? ETH_STAKING_REWARD_ASSET, rewards: row.amount, time: row.time }),
-                    startTimeMs,
-                    endTimeMs
+                this.skipWhenUnavailable(
+                    BinanceHistorySourceEnum.ETH_STAKING,
+                    [],
+                    this.fetchRewardRecords(
+                        ETH_STAKING_REWARDS_ENDPOINT,
+                        BinanceStakingRewardListApiSchema,
+                        {},
+                        row => ({ asset: row.asset ?? ETH_STAKING_REWARD_ASSET, rewards: row.amount, time: row.time }),
+                        startTimeMs,
+                        endTimeMs
+                    )
                 ),
             ethStakingRewards => ({ ethStakingRewards })
         );
@@ -302,13 +308,17 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             from,
             to,
             (startTimeMs, endTimeMs) =>
-                this.fetchRewardRecords(
-                    SOL_STAKING_REWARDS_ENDPOINT,
-                    BinanceStakingRewardListApiSchema,
-                    {},
-                    row => ({ asset: row.asset ?? SOL_STAKING_REWARD_ASSET, rewards: row.amount, time: row.time }),
-                    startTimeMs,
-                    endTimeMs
+                this.skipWhenUnavailable(
+                    BinanceHistorySourceEnum.SOL_STAKING,
+                    [],
+                    this.fetchRewardRecords(
+                        SOL_STAKING_REWARDS_ENDPOINT,
+                        BinanceStakingRewardListApiSchema,
+                        {},
+                        row => ({ asset: row.asset ?? SOL_STAKING_REWARD_ASSET, rewards: row.amount, time: row.time }),
+                        startTimeMs,
+                        endTimeMs
+                    )
                 ),
             solStakingRewards => ({ solStakingRewards })
         );
@@ -320,11 +330,14 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         to: number | null = null
     ) {
         return yield* this.getSourceTransactions(BinanceWalletEnum.SPOT, from, to, (startTimeMs, endTimeMs) =>
-            Effect.map(this.fetchDividends(startTimeMs, endTimeMs), dividends => {
-                dividends.forEach(dividend => this.runTouchedAssets.add(dividend.asset));
+            Effect.map(
+                this.skipWhenUnavailable(BinanceHistorySourceEnum.DIVIDEND, [], this.fetchDividends(startTimeMs, endTimeMs)),
+                dividends => {
+                    dividends.forEach(dividend => this.runTouchedAssets.add(dividend.asset));
 
-                return this.emptySources({ dividends });
-            })
+                    return this.emptySources({ dividends });
+                }
+            )
         );
     });
 
@@ -364,7 +377,8 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         to: number | null = null
     ) {
         const { startTimeMs, endTimeMs } = yield* this.resolveSourceWindow(from, to);
-        const dustTransfers = (yield* this.fetchDustLogs(startTimeMs, endTimeMs)).flatMap(dustLog => mapBinanceDustLogToTransfers(dustLog));
+        const dustLogs = yield* this.skipWhenUnavailable(BinanceHistorySourceEnum.DUST, [], this.fetchDustLogs(startTimeMs, endTimeMs));
+        const dustTransfers = dustLogs.flatMap(dustLog => mapBinanceDustLogToTransfers(dustLog));
         this.collectTransferAssets(dustTransfers).forEach(asset => this.runTouchedAssets.add(asset));
 
         return dustTransfers;
@@ -422,7 +436,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     private capitalPendingFromMs: number | null = null;
     private arePartialWalksAllowed = false;
     private deferredFrontierMs: number | null = null;
-    private c2cUnavailableThisRun = false;
+    private readonly unavailableSources = new Set<BinanceHistorySourceEnum>();
     private readonly limitedHistoryFloorTimeMs = subMonths(new Date(), BinanceSignedClient.LIMITED_HISTORY_MONTHS).getTime();
     private readonly capitalPendingFloorTimeMs = subDays(new Date(), BinanceSignedClient.CAPITAL_PENDING_MAX_AGE_DAYS).getTime();
     private serverTimeOffsetMs: number | null = null;
@@ -605,7 +619,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     }
 
     isC2cUnavailable(): boolean {
-        return this.c2cUnavailableThisRun;
+        return this.unavailableSources.has(BinanceHistorySourceEnum.C2C);
     }
 
     withPartialWalks<A, E, R>(effect: Effect.Effect<A, E, R>): Effect.Effect<A, E, R> {
@@ -709,7 +723,11 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
                 .map(flow => mapBinanceConvertToTransfer(flow))
                 .filter(isDefined);
             this.collectTransferAssets(convertTransfers).forEach(asset => this.runTouchedAssets.add(asset));
-            const universalTransfers = yield* this.fetchUniversalTransfers(startTimeMs, endTimeMs);
+            const universalTransfers = yield* this.skipWhenUnavailable(
+                BinanceHistorySourceEnum.UNIVERSAL_TRANSFER,
+                [],
+                this.fetchUniversalTransfers(startTimeMs, endTimeMs)
+            );
 
             return [...new Map([...convertTransfers, ...universalTransfers].map(transfer => [transfer.externalId, transfer])).values()];
         });
@@ -989,14 +1007,43 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
                 rows: response.data.filter(order => order.orderStatus === C2C_COMPLETED_STATUS),
                 hasMore: response.data.length === C2C_ROWS_PER_PAGE
             })),
-            Effect.catchTag('SyncUnauthorizedError', () =>
-                Effect.sync(() => {
-                    this.c2cUnavailableThisRun = true;
-
-                    return { rows: [], hasMore: false };
-                })
-            )
+            effect => this.skipWhenUnavailable(BinanceHistorySourceEnum.C2C, { rows: [], hasMore: false }, effect)
         );
+    }
+
+    private skipWhenUnavailable<A, R>(
+        source: BinanceHistorySourceEnum,
+        fallback: A,
+        effect: Effect.Effect<A, SyncError, R>
+    ): Effect.Effect<A, SyncError, R> {
+        return Effect.suspend(() =>
+            this.unavailableSources.has(source)
+                ? Effect.succeed(fallback)
+                : effect.pipe(
+                      Effect.catch(error =>
+                          this.isSourceUnavailable(source, error)
+                              ? Effect.sync(() => {
+                                    this.unavailableSources.add(source);
+
+                                    return fallback;
+                                })
+                              : Effect.fail(error)
+                      )
+                  )
+        );
+    }
+
+    private isSourceUnavailable(source: BinanceHistorySourceEnum, error: SyncError): boolean {
+        switch (error._tag) {
+            case 'SyncRegionUnavailableError':
+                return true;
+            case 'SyncInvalidResponseError':
+                return isDefined(error.apiCode);
+            case 'SyncUnauthorizedError':
+                return source === BinanceHistorySourceEnum.C2C;
+            default:
+                return false;
+        }
     }
 
     private fetchEarnRewards(startTimeMs: number, endTimeMs: number) {
