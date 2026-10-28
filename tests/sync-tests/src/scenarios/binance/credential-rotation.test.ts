@@ -4,7 +4,7 @@ import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { fetchAccountIntegrationToken, fetchSyncById, seed, seedCryptoInstrument, testDb, TestLayer } from '../../harness';
+import { binanceStub, fetchAccountIntegrationToken, fetchSyncById, seed, seedCryptoInstrument, testDb, TestLayer } from '../../harness';
 
 import type { AccountEntityInterface, SyncEntityInterface } from '@budgie/contracts';
 
@@ -304,6 +304,8 @@ describe('Binance credential rotation', () => {
 
             const scenario = yield* seedBinanceCredentialRotationScenario();
 
+            binanceStub.serverTime();
+            binanceStub.apiRestrictions();
             yield* markSyncDeleted(scenario.syncs.deletedSync.id);
             yield* binanceSyncService.updateAccountToken(scenario.accounts.selectedAccount.id, NEW_TOKEN);
             yield* expectBinanceCredentialRotationScenario(scenario);

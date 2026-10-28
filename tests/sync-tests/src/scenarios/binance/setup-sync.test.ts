@@ -3,7 +3,7 @@ import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import { vi } from 'vitest';
 
-import { BINANCE_TEST_TOKEN, binanceStub, buildBinance, seedCryptoInstrument, TestLayer } from '../../harness';
+import { BINANCE_TEST_TOKEN, buildBinance, seedCryptoInstrument, stubBinanceAccountEndpoints, TestLayer } from '../../harness';
 import { mockServer } from '../../harness/scenario/mock-server';
 
 const SYNC_ONLY_PATH = '/sapi/v1/c2c/orderMatch/listUserOrderHistory';
@@ -11,11 +11,7 @@ const SYNC_ONLY_PATH = '/sapi/v1/c2c/orderMatch/listUserOrderHistory';
 const stubSelectedBtcAccount = () =>
     Effect.gen(function* () {
         yield* seedCryptoInstrument('BTC');
-        binanceStub.serverTime();
-        binanceStub.spotBalances([buildBinance.balance({ asset: 'BTC', free: '1' })]);
-        binanceStub.fundingBalances([]);
-        binanceStub.earnPositions([]);
-        binanceStub.lockedEarnPositions([]);
+        stubBinanceAccountEndpoints([buildBinance.balance({ asset: 'BTC', free: '1' })]);
     });
 
 describe('binance/setup-sync', () => {

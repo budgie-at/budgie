@@ -5,6 +5,7 @@ import { isString } from '@rnw-community/shared';
 import { mockServer } from '../scenario/mock-server';
 
 import type {
+    BinanceApiRestrictionsApiInterface,
     BinanceAssetBalanceApiInterface,
     BinanceC2cOrderApiInterface,
     BinanceConvertFlowApiInterface,
@@ -19,6 +20,7 @@ import type {
 
 const BASE_URL = 'https://api.binance.com';
 const SERVER_TIME_URL = `${BASE_URL}/api/v3/time`;
+const API_RESTRICTIONS_URL = `${BASE_URL}/sapi/v1/account/apiRestrictions`;
 const SPOT_BALANCE_URL = `${BASE_URL}/sapi/v3/asset/getUserAsset`;
 const FUNDING_BALANCE_URL = `${BASE_URL}/sapi/v1/asset/get-funding-asset`;
 const DEPOSIT_URL = `${BASE_URL}/sapi/v1/capital/deposit/hisrec`;
@@ -132,6 +134,28 @@ export const binanceStub = {
     serverTime: (offsetMs = 0): void => {
         mockServer.use(
             http.get(SERVER_TIME_URL, () => HttpResponse.json({ serverTime: Date.now() + offsetMs }, { headers: WEIGHT_HEADERS }))
+        );
+    },
+    apiRestrictions: (restrictions: Partial<BinanceApiRestrictionsApiInterface> = {}): void => {
+        mockServer.use(
+            http.get(API_RESTRICTIONS_URL, () =>
+                HttpResponse.json(
+                    {
+                        ipRestrict: false,
+                        createTime: 1_700_000_000_000,
+                        enableReading: true,
+                        enableWithdrawals: false,
+                        enableInternalTransfer: false,
+                        permitsUniversalTransfer: false,
+                        enableVanillaOptions: false,
+                        enableFutures: false,
+                        enableMargin: false,
+                        enableSpotAndMarginTrading: false,
+                        ...restrictions
+                    },
+                    { headers: WEIGHT_HEADERS }
+                )
+            )
         );
     },
     spotBalances: (balances: BinanceAssetBalanceApiInterface[], options?: ServeOptions): void => {
