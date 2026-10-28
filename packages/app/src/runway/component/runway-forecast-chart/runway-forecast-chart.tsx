@@ -1,15 +1,14 @@
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
-import { withUniwind } from 'uniwind';
+import Svg from 'react-native-svg';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { StyledCircle } from '../../../@generic/component/styled-circle/styled-circle';
 import { StyledLine } from '../../../@generic/component/styled-line/styled-line';
+import { StyledPath } from '../../../@generic/component/styled-path/styled-path';
 import { StyledSvgText } from '../../../@generic/component/styled-svg-text/styled-svg-text';
-import { SVG_COLOR_CLASS_NAME_MAPPING } from '../../../@generic/constant/svg-color-class-name-mapping.constant';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { RUNWAY_HORIZON_MONTHS } from '../../constant/runway-horizon-months.constant';
@@ -36,8 +35,6 @@ const RUN_OUT_ANCHOR_RATIO = 0.82;
 const CHART_RIGHT = CHART_WIDTH - CHART_PADDING_RIGHT;
 const CHART_BOTTOM = CHART_HEIGHT - CHART_PADDING_BOTTOM;
 const RUN_OUT_LABEL_Y = CHART_PADDING_TOP - LABEL_GAP;
-
-const StyledPath = withUniwind(Path, SVG_COLOR_CLASS_NAME_MAPPING);
 
 export const RunwayForecastChart = ({ computation }: Props) => {
     const { t } = useLingui();

@@ -14,6 +14,7 @@ import { searchAccountsSortedAtom } from '@app/account/query/use-search-accounts
 import { genericBudgetTemplateAtom, suggestedBudgetTemplateAtom } from '@app/budget/hooks/use-budget-template-draft.hook';
 import { activeBudgetAtom } from '@app/budget/query/use-get-active-budget.query';
 import { budgetCategoryLimitsAtom } from '@app/budget/query/use-get-budget-category-limits.query';
+import { budgetProjectionAtom } from '@app/budget/query/use-get-budget-projection.query';
 import { budgetSpentAtom } from '@app/budget/query/use-get-budget-spent.query';
 import {
     atmCashWithdrawalTransactionIdsAtom,
@@ -146,6 +147,15 @@ const liveAtoms = ({
     genericBudgetTemplate: genericBudgetTemplateAtom('USD'),
     activeBudget: activeBudgetAtom,
     budgetCategoryLimits: budgetCategoryLimitsAtom(1),
+    budgetProjection: budgetProjectionAtom({
+        id: 1,
+        periodStartDay: 1,
+        useLastDayOfMonth: false,
+        instrumentId: BASE_INSTRUMENT_ID,
+        overallLimit: 100_000_000,
+        otherLimit: 0,
+        dayStart: NOW
+    }),
     budgetSpent: budgetSpentAtom({ periodStartDay: 1, useLastDayOfMonth: false, instrumentId: BASE_INSTRUMENT_ID, dayStart: NOW }),
     uncategorizedRows: uncategorizedRowsAtom(DEFAULT_TRANSACTION_FILTER),
     untaggedRows: untaggedRowsAtom(DEFAULT_TRANSACTION_FILTER),

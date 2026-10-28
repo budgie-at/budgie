@@ -1,5 +1,8 @@
 import {
+    AccountDebtTypeEnum,
     AccountEntityTable,
+    DebtEventDirectionEnum,
+    DebtEventEntityTable,
     transactionFilters,
     BudgetEntityTable,
     Db,
@@ -83,7 +86,8 @@ export class BudgetRepository extends Context.Service<BudgetRepository>()('@budg
                             categoryId: TransactionEntryEntityTable.categoryId,
                             instrumentId: AccountEntityTable.instrumentId,
                             rate: ExchangeRateEntityTable.rate,
-                            operatedAt: TransactionEntityTable.operatedAt
+                            operatedAt: TransactionEntityTable.operatedAt,
+                            transactionId: TransactionEntityTable.id
                         })
                         .from(TransactionEntryEntityTable)
                         .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
@@ -97,6 +101,22 @@ export class BudgetRepository extends Context.Service<BudgetRepository>()('@budg
                             )
                         )
                         .where(buildSpentWhere(periodStart, nextPeriodStart))
+                ),
+            findInstallmentPayments: (periodStart: Date, nextPeriodStart: Date) =>
+                Db.query(db =>
+                    db
+                        .select({ transactionId: TransactionEntityTable.id, installmentAccountId: DebtEventEntityTable.debtAccountId })
+                        .from(DebtEventEntityTable)
+                        .innerJoin(TransactionEntityTable, eq(DebtEventEntityTable.transactionId, TransactionEntityTable.id))
+                        .innerJoin(AccountEntityTable, eq(DebtEventEntityTable.debtAccountId, AccountEntityTable.id))
+                        .where(
+                            and(
+                                eq(DebtEventEntityTable.direction, DebtEventDirectionEnum.CLOSE),
+                                eq(AccountEntityTable.debtType, AccountDebtTypeEnum.INSTALLMENT),
+                                isNull(DebtEventEntityTable.deletedAt),
+                                between(TransactionEntityTable.operatedAt, periodStart, new Date(nextPeriodStart.getTime() - 1))
+                            )
+                        )
                 )
         };
     })

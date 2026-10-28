@@ -6,10 +6,11 @@ import { isDefined } from '@rnw-community/shared';
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 import { BudgetDetailsLimitCard } from '../budget-details-limit-card/budget-details-limit-card';
 
+import type { BudgetProjectionScopeInterface } from '@budgie/budget';
+
 interface Props {
     readonly categoryId: number;
-    readonly limitAmount: number;
-    readonly spent: number;
+    readonly scope: BudgetProjectionScopeInterface;
     readonly periodStart: Date;
     readonly periodEnd: Date;
     readonly currencySymbol: string;
@@ -18,7 +19,7 @@ interface Props {
 }
 
 export const BudgetDetailsCategoryRow = (props: Props) => {
-    const { categoryId, limitAmount, spent, periodStart, periodEnd, currencySymbol, testID, spentTestID } = props;
+    const { categoryId, scope, periodStart, periodEnd, currencySymbol, testID, spentTestID } = props;
     const { category } = useGetCategoryByIdQuery(categoryId);
     const title = isDefined(category) ? category.title : '';
     const icon = isDefined(category) ? category.icon : null;
@@ -39,8 +40,7 @@ export const BudgetDetailsCategoryRow = (props: Props) => {
         <BudgetDetailsLimitCard
             title={title}
             icon={icon}
-            spent={spent}
-            limitAmount={limitAmount}
+            scope={scope}
             currencySymbol={currencySymbol}
             testID={testID}
             spentTestID={spentTestID}

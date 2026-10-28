@@ -7,6 +7,8 @@ export const BudgetSelector = {
     WidgetCategorySpentLabel: (categoryId: number) => `BudgetWidget.CategorySpentLabel.${categoryId}` as const,
     WidgetMoreCategoriesLabel: 'BudgetWidget.MoreCategoriesLabel',
     DetailsEditButton: 'BudgetDetails.EditButton',
+    DetailsVerdict: 'BudgetDetails.Verdict',
+    DetailsVerdictStatus: 'BudgetDetails.VerdictStatus',
     DetailsSpentLabel: 'BudgetDetails.SpentLabel',
     DetailsRemainingLabel: 'BudgetDetails.RemainingLabel',
     DetailsCategoryRow: (categoryId: number) => `BudgetDetails.CategoryRow.${categoryId}` as const,

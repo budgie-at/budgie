@@ -6,16 +6,18 @@ import { isDefined } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
-import { BudgetProgressTrack } from '../budget-progress-track/budget-progress-track';
+import { BudgetCategoryForecast } from '../budget-category-forecast/budget-category-forecast';
+import { BudgetPaceTrack } from '../budget-pace-track/budget-pace-track';
 
+import type { BudgetProjectionScopeInterface } from '@budgie/budget';
 import type { UserIconType } from '@budgie/contracts';
 
 interface Props {
     readonly title: string;
     readonly icon: UserIconType | null;
-    readonly spent: number;
-    readonly limitAmount: number;
+    readonly scope: BudgetProjectionScopeInterface;
     readonly currencySymbol: string;
     readonly testID: string;
     readonly spentTestID: string;
@@ -23,11 +25,11 @@ interface Props {
 }
 
 export const BudgetDetailsLimitCard = (props: Props) => {
-    const { title, icon, spent, limitAmount, currencySymbol, testID, spentTestID, onPress } = props;
+    const { title, icon, scope, currencySymbol, testID, spentTestID, onPress } = props;
     const formatDigits = useDisplayFormatDigits();
     const { t } = useLingui();
 
-    const remainingAmount = limitAmount - spent;
+    const remainingAmount = scope.limit - scope.spent;
     const remainingLabel = remainingAmount < 0 ? t`Over budget` : t`Left`;
 
     return (
@@ -36,31 +38,34 @@ export const BudgetDetailsLimitCard = (props: Props) => {
                 <View className="flex-row items-center gap-x-md">
                     {isDefined(icon) ? <CircleIcon icon={icon} variant="ghost" size={40} iconSize={18} /> : null}
 
-                    <Text className="text-primary text-md font-semibold flex-1" numberOfLines={1}>
-                        {title}
-                    </Text>
+                    <View className="flex-1 gap-y-xs">
+                        <Text className="text-primary text-md font-semibold" numberOfLines={1}>
+                            {title}
+                        </Text>
+                        <BudgetCategoryForecast scope={scope} currencySymbol={currencySymbol} />
+                    </View>
                 </View>
 
-                <BudgetProgressTrack spent={spent} limit={limitAmount} />
+                <BudgetPaceTrack scope={scope} />
 
                 <View className="flex-row justify-between gap-x-md">
                     <View className="flex-1">
                         <Text className="text-secondary-foreground text-xs">{t`Spent`}</Text>
-                        <Text testID={spentTestID} className="text-primary text-sm font-semibold">
-                            {formatDigits(convertFromMicroUnits(spent), currencySymbol)}
-                        </Text>
+                        <ProtectedText testID={spentTestID} className="text-primary text-sm font-semibold tabular-nums">
+                            {formatDigits(convertFromMicroUnits(scope.spent), currencySymbol)}
+                        </ProtectedText>
                     </View>
                     <View className="flex-1 items-center">
                         <Text className="text-secondary-foreground text-xs">{remainingLabel}</Text>
-                        <Text className="text-primary text-sm font-semibold">
+                        <ProtectedText className="text-primary text-sm font-semibold tabular-nums">
                             {formatDigits(convertFromMicroUnits(Math.abs(remainingAmount)), currencySymbol)}
-                        </Text>
+                        </ProtectedText>
                     </View>
                     <View className="flex-1 items-end">
                         <Text className="text-secondary-foreground text-xs">{t`Limit`}</Text>
-                        <Text className="text-primary text-sm font-semibold">
-                            {formatDigits(convertFromMicroUnits(limitAmount), currencySymbol)}
-                        </Text>
+                        <ProtectedText className="text-primary text-sm font-semibold tabular-nums">
+                            {formatDigits(convertFromMicroUnits(scope.limit), currencySymbol)}
+                        </ProtectedText>
                     </View>
                 </View>
             </Card>
