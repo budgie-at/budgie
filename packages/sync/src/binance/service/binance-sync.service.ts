@@ -62,6 +62,13 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
         const createOnly = { enqueueExistingConsolidation: false, updateExistingAmounts: false };
         const updateExisting = { enqueueExistingConsolidation: false, updateExistingAmounts: true };
         const consolidateExisting = { enqueueExistingConsolidation: true, updateExistingAmounts: false };
+        const newHistorySources = new Set([
+            BinanceHistorySourceEnum.LOCKED_EARN,
+            BinanceHistorySourceEnum.ETH_STAKING,
+            BinanceHistorySourceEnum.SOL_STAKING,
+            BinanceHistorySourceEnum.DIVIDEND,
+            BinanceHistorySourceEnum.DUST
+        ]);
         const decodeCredentials = Schema.decodeUnknownEffect(Schema.fromJsonString(BinanceCredentialsSchema));
         const transferLookbackYears = 5;
         const fiatBackfillChunkSeconds = 365 * 24 * 60 * 60;
@@ -237,7 +244,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             const lookbackSeconds = getUnixTime(resolveLookbackStart(sync));
             const isBackfillPending = isDefined(progress)
                 ? Math.floor(progress.tailAt / 1000) > lookbackSeconds
-                : isFiat || sync.mode === SyncModeEnum.BACKWARD || !isDefined(sync.forwardSyncedAt);
+                : isFiat || newHistorySources.has(source) || sync.mode === SyncModeEnum.BACKWARD || !isDefined(sync.forwardSyncedAt);
 
             if (!isBackfillPending) {
                 return isFiat && !isFiatRefreshDue(token) ? 0 : yield* fetchRange(getUnixTime(resolveWindowStart(sync)), null);
