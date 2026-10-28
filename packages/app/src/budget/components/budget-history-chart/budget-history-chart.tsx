@@ -36,10 +36,11 @@ export const BudgetHistoryChart = ({ bars, currencySymbol }: Props) => {
     const centerXs = bars.map((_bar, index) => slotWidth * (index + 0.5));
 
     const buildBarLabel = (bar: BudgetHistoryBarInterface) => {
+        const periodLabel = bar.label;
         const spentAmount = formatProtectedAmount(convertFromMicroUnits(bar.spent), currencySymbol);
         const limitAmount = formatProtectedAmount(convertFromMicroUnits(bar.limit), currencySymbol);
 
-        return t`${bar.label}, spent ${spentAmount} of ${limitAmount}`;
+        return t`${periodLabel}, spent ${spentAmount} of ${limitAmount}`;
     };
 
     return (

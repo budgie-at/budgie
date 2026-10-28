@@ -150,6 +150,7 @@ msgstr "{dateLabel} · {kindLabel}"
 msgid "{days, plural, one {In # day} other {In # days}}"
 msgstr "{days, plural, one {Dans # jour} other {Dans # jours}}"
 
+#: src/budget/components/budget-day-strip/budget-day-strip.tsx
 #: src/budget/components/budget-verdict-header/budget-verdict-header.tsx
 msgid "{daysLeft, plural, one {# day left} other {# days left}}"
 msgstr "{daysLeft, plural, one {# jour restant} other {# jours restants}}"
@@ -244,10 +245,6 @@ msgstr "{freeAmount} ÷ {daysLabel}"
 msgid "{freeAmount} free · {daysLabel}"
 msgstr "{freeAmount} disponibles · {daysLabel}"
 
-#: src/budget/components/budget-verdict-outlook/budget-verdict-outlook.tsx
-msgid "{freeAmount} free until {periodEndLabel}."
-msgstr "{freeAmount} disponibles jusqu'au {periodEndLabel}."
-
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "{freeSize} GB free on this phone"
 msgstr "{freeSize} Go libres sur ce téléphone"
@@ -326,6 +323,10 @@ msgstr "{paidCount} sur {installmentCount} payées"
 msgid "{parsedTransactionCount, plural, one {# transaction found} other {# transactions found}}"
 msgstr "{parsedTransactionCount, plural, one {# transaction trouvée} other {# transactions trouvées}}"
 
+#: src/budget/hooks/use-budget-limit-accessibility.hook.ts
+msgid "{percent}% used"
+msgstr "{percent} % utilisé"
+
 #: src/@generic/component/statistics-card/statistics-card.tsx
 msgid "{percentage}% of expenses"
 msgstr "{percentage}% des dépenses"
@@ -333,6 +334,10 @@ msgstr "{percentage}% des dépenses"
 #: src/@generic/component/statistics-card/statistics-card.tsx
 msgid "{percentage}% of income"
 msgstr "{percentage}% des revenus"
+
+#: src/budget/components/budget-history-chart/budget-history-chart.tsx
+msgid "{periodLabel}, spent {spentAmount} of {limitAmount}"
+msgstr "{periodLabel}, {spentAmount} dépensés sur {limitAmount}"
 
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "{remaining} GB one-time download"
@@ -430,6 +435,10 @@ msgstr "{title} dépasse le rythme prévu"
 #: src/budget/components/budget-pace-hint-line/budget-pace-hint-line.tsx
 msgid "{title} is running fast — keep it under {perDayAmount}/day."
 msgstr "{title} va trop vite : restez sous {perDayAmount}/jour."
+
+#: src/budget/hooks/use-budget-limit-accessibility.hook.ts
+msgid "{title}, spent {spentAmount} of {limitAmount}, {statusLabel}"
+msgstr "{title}, {spentAmount} dépensés sur {limitAmount}, {statusLabel}"
 
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "{total} GB on this phone"
@@ -2037,8 +2046,8 @@ msgid "Date"
 msgstr "Date"
 
 #: src/budget/components/budget-day-strip/budget-day-strip.tsx
-msgid "Day {elapsedDays} of {totalDays}"
-msgstr "Jour {elapsedDays} sur {totalDays}"
+msgid "Day {elapsedDays} of {totalDays}, {daysLeftLabel}"
+msgstr "Jour {elapsedDays} sur {totalDays}, {daysLeftLabel}"
 
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "Day {selectedDay}"
@@ -3829,6 +3838,14 @@ msgstr "Activé · PIN"
 msgid "On · PIN and {biometricLabel}"
 msgstr "Activé · PIN et {biometricLabel}"
 
+#: src/budget/components/budget-verdict-outlook/budget-verdict-outlook.tsx
+msgid "On pace to finish {differenceAmount} under."
+msgstr "À ce rythme, vous finirez {differenceAmount} sous la limite."
+
+#: src/budget/components/budget-verdict-outlook/budget-verdict-outlook.tsx
+msgid "On pace to go {differenceAmount} over."
+msgstr "À ce rythme, vous dépasserez la limite de {differenceAmount}."
+
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "On pace to run out by {runOutDate}. Keeping under {perDayAmount}/day keeps it on track."
 msgstr "À ce rythme, il sera épuisé d'ici le {runOutDate}. Rester sous {perDayAmount}/jour te garde dans les clous."
@@ -4256,10 +4273,6 @@ msgstr "Privatbank (XLSX)"
 #: src/budget/components/budget-category-forecast/budget-category-forecast.tsx
 msgid "Projected {overAmount} over"
 msgstr "Prévision : {overAmount} de dépassement"
-
-#: src/budget/components/budget-verdict-outlook/budget-verdict-outlook.tsx
-msgid "Projected {projectedOverAmount} over by {periodEndLabel}."
-msgstr "{projectedOverAmount} de dépassement prévu d'ici le {periodEndLabel}."
 
 #: src/budget/components/budget-forecast-summary/budget-forecast-summary.tsx
 msgid "Projected <0>{projectedAmount}</0> by {periodEndLabel} · {differenceAmount} under"
