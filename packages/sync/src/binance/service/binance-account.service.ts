@@ -4,13 +4,13 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { SyncAccountBalanceStateEnum } from '../../core/enum/sync-account-balance-state.enum';
 import { mapSyncAccountToCreateInput } from '../../core/utils/map-sync-account-to-create-input.util';
 import { BINANCE_ACCOUNT_DEFINITION } from '../constant/binance-account-definition.constant';
 import { mapBinanceBalanceToAccount } from '../mapper/binance.mapper';
-import { decodeBinanceAccountId } from '../utils/binance-account-id.util';
+import { decodeBinanceAccountId, encodeBinanceAccountId } from '../utils/binance-account-id.util';
 
 import { BinanceAssetCodeService } from './binance-asset-code.service';
 
@@ -51,21 +51,22 @@ export class BinanceAccountService extends Context.Service<BinanceAccountService
             yield* accountBalanceRepository.upsert({ accountId, amount: convertToMicroUnits(balance) });
         });
 
-        const findIntegrationAccount = Effect.fnUntraced(function* (externalId: string, integrationId: number) {
-            return (yield* accountRepository.findByExternalIds([externalId])).find(
-                account => account.integrationId === integrationId || !isDefined(account.integrationId)
+        const canonicalizeAccountId = (codecAccountId: string): string => {
+            const decoded = decodeBinanceAccountId(codecAccountId);
+
+            return isDefined(decoded)
+                ? encodeBinanceAccountId({ wallet: decoded.wallet, asset: binanceAssetCodeService.resolveInstrumentCode(decoded.asset) })
+                : codecAccountId;
+        };
+
+        const findIntegrationAccounts = Effect.fnUntraced(function* (externalId: string, integrationId: number) {
+            return (yield* accountRepository.findIncludingArchivedByExternalKeys([externalId])).filter(
+                account =>
+                    account.externalId === externalId && (account.integrationId === integrationId || !isDefined(account.integrationId))
             );
         });
 
-        const getOrCreateAccount = Effect.fnUntraced(function* (
-            resolvableAccount: BinanceResolvableAccountInterface,
-            integrationId: number
-        ) {
-            const existingAccount = yield* findIntegrationAccount(resolvableAccount.exchangeAccount.id, integrationId);
-            if (isDefined(existingAccount)) {
-                return existingAccount;
-            }
-
+        const createAccount = Effect.fnUntraced(function* (resolvableAccount: BinanceResolvableAccountInterface, integrationId: number) {
             const createdAccount = Object.values(
                 yield* accountService.bulkCreate([
                     {
@@ -86,16 +87,19 @@ export class BinanceAccountService extends Context.Service<BinanceAccountService
         });
 
         const resolveTransferAccount = Effect.fnUntraced(function* (
-            codecAccountId: string,
+            canonicalAccountId: string,
             resolvableAccount: BinanceResolvableAccountInterface | null,
             integrationId: number
         ) {
-            const existingAccount = yield* findIntegrationAccount(codecAccountId, integrationId);
-            if (isDefined(existingAccount)) {
-                return existingAccount;
+            const knownAccounts = yield* findIntegrationAccounts(canonicalAccountId, integrationId);
+            const activeAccount = knownAccounts.find(account => !isDefined(account.deletedAt));
+            if (isDefined(activeAccount)) {
+                return activeAccount;
             }
 
-            return isDefined(resolvableAccount) ? yield* getOrCreateAccount(resolvableAccount, integrationId) : null;
+            return isNotEmptyArray(knownAccounts) || !isDefined(resolvableAccount)
+                ? null
+                : yield* createAccount(resolvableAccount, integrationId);
         });
 
         return {
@@ -114,10 +118,11 @@ export class BinanceAccountService extends Context.Service<BinanceAccountService
                 const instruments = yield* instrumentRepository.getAll();
 
                 return (codecAccountId: string) => {
-                    const exchangeAccount = exchangeAccountById.get(codecAccountId) ?? decodeExchangeAccount(codecAccountId);
+                    const canonicalAccountId = canonicalizeAccountId(codecAccountId);
+                    const exchangeAccount = exchangeAccountById.get(canonicalAccountId) ?? decodeExchangeAccount(canonicalAccountId);
                     const resolvableAccount = isDefined(exchangeAccount) ? toResolvableAccount(exchangeAccount, instruments) : null;
 
-                    return resolveTransferAccount(codecAccountId, resolvableAccount, integrationId);
+                    return resolveTransferAccount(canonicalAccountId, resolvableAccount, integrationId);
                 };
             }),
             attachOrphanAccounts: Effect.fn('BinanceAccountService.attachOrphanAccounts')(function* (integrationId: number) {
@@ -140,7 +145,12 @@ export class BinanceAccountService extends Context.Service<BinanceAccountService
                     const exchangeAccount = isNotEmptyString(account.externalId)
                         ? exchangeAccountByExternalId.get(account.externalId)
                         : null;
-                    if (!isDefined(exchangeAccount) || exchangeAccount.balanceState === SyncAccountBalanceStateEnum.REPRESENTABLE) {
+                    const isAliasedAccount =
+                        isNotEmptyString(account.externalId) && canonicalizeAccountId(account.externalId) !== account.externalId;
+                    if (
+                        !isAliasedAccount &&
+                        (!isDefined(exchangeAccount) || exchangeAccount.balanceState === SyncAccountBalanceStateEnum.REPRESENTABLE)
+                    ) {
                         yield* anchorAccountBalance(account.id, exchangeAccount?.balance ?? 0);
                     }
                 }
@@ -149,7 +159,10 @@ export class BinanceAccountService extends Context.Service<BinanceAccountService
                 resolvableAccount: BinanceResolvableAccountInterface,
                 integrationId: number
             ) {
-                const account = yield* getOrCreateAccount(resolvableAccount, integrationId);
+                const account =
+                    (yield* findIntegrationAccounts(resolvableAccount.exchangeAccount.id, integrationId)).find(
+                        knownAccount => !isDefined(knownAccount.deletedAt)
+                    ) ?? (yield* createAccount(resolvableAccount, integrationId));
                 if (resolvableAccount.exchangeAccount.balanceState === SyncAccountBalanceStateEnum.REPRESENTABLE) {
                     yield* anchorAccountBalance(account.id, resolvableAccount.exchangeAccount.balance);
                 }

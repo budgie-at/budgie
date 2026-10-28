@@ -167,15 +167,21 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             patchTokenRun(token, { balancesAnchored: true });
         });
 
-        const findIntegrationIdMap = Effect.fnUntraced(function* (token: string) {
+        const findIntegrationAccountIds = Effect.fnUntraced(function* (token: string) {
             const integration = yield* syncIntegrationTokenService.getOrCreateIntegration(provider, token);
-            const integrationAccounts = (yield* accountRepository.findByExternalSource(provider)).filter(
-                account => account.integrationId === integration.id
-            );
 
-            return yield* transactionService.findIdMapByExternalSource(
-                provider,
-                integrationAccounts.map(account => account.id)
+            return (yield* accountRepository.findByExternalSource(provider))
+                .filter(account => account.integrationId === integration.id)
+                .map(account => account.id);
+        });
+
+        const findIntegrationIdMap = Effect.fnUntraced(function* (token: string) {
+            return yield* transactionService.findIdMapByExternalSource(provider, yield* findIntegrationAccountIds(token));
+        });
+
+        const findDeletedExternalIds = Effect.fnUntraced(function* (token: string) {
+            return new Set(
+                yield* transactionRepository.findDeletedExternalIdsByExternalSource(provider, yield* findIntegrationAccountIds(token))
             );
         });
 
@@ -311,7 +317,10 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 yield* enqueueExistingSourceConsolidation(existingTransactions, existingIdMap);
             }
 
-            const newTransactions = transactions.filter(sourceTransaction => !existingIdMap.has(sourceTransaction.id));
+            const deletedExternalIds = yield* findDeletedExternalIds(token);
+            const newTransactions = transactions.filter(
+                sourceTransaction => !existingIdMap.has(sourceTransaction.id) && !deletedExternalIds.has(sourceTransaction.id)
+            );
 
             return isNotEmptyArray(newTransactions)
                 ? reconciledCount + (yield* createSyncedSources(newTransactions, token))
@@ -364,10 +373,15 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 eligibleSoldOffBaseAssets: yield* binanceAssetCodeService.resolveEligibleSoldOffBaseAssets(provider)
             });
             const existingIdMap = yield* findIntegrationIdMap(token);
+            const deletedExternalIds = yield* findDeletedExternalIds(token);
             const newTransfers = transfers.filter(
                 transfer =>
                     !existingIdMap.has(transfer.externalId) &&
-                    !(isDefined(transfer.legacyExternalId) && existingIdMap.has(transfer.legacyExternalId))
+                    !deletedExternalIds.has(transfer.externalId) &&
+                    !(
+                        isDefined(transfer.legacyExternalId) &&
+                        (existingIdMap.has(transfer.legacyExternalId) || deletedExternalIds.has(transfer.legacyExternalId))
+                    )
             );
             const createdCount = isNotEmptyArray(newTransfers) ? yield* createSyncedTransfers(newTransfers, token) : 0;
             yield* binanceTradeCursorService.persistTradeCursors(sync, client);

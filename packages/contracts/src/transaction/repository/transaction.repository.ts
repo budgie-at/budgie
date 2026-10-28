@@ -326,6 +326,34 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                     )
                 ),
 
+            findDeletedExternalIdsByExternalSource: Effect.fn('TransactionRepository.findDeletedExternalIdsByExternalSource')(function* (
+                externalSource: ExternalSourceEnum,
+                accountIds: readonly number[]
+            ) {
+                if (isEmptyArray(accountIds)) {
+                    return [];
+                }
+
+                const results = yield* Db.query(db =>
+                    db
+                        .select({ externalId: TransactionEntityTable.externalId })
+                        .from(TransactionEntityTable)
+                        .where(
+                            and(
+                                eq(TransactionEntityTable.externalSource, externalSource),
+                                isNotNull(TransactionEntityTable.externalId),
+                                isNotNull(TransactionEntityTable.deletedAt),
+                                or(
+                                    inArray(TransactionEntityTable.fromAccountId, [...accountIds]),
+                                    inArray(TransactionEntityTable.toAccountId, [...accountIds])
+                                )
+                            )
+                        )
+                );
+
+                return results.map(row => row.externalId).filter(isDefined);
+            }),
+
             findExternalIdsByExternalSource: (externalSource: ExternalSourceEnum) =>
                 Db.query(db =>
                     db
