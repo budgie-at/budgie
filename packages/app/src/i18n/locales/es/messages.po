@@ -142,12 +142,12 @@ msgstr "{dateLabel} · {kindLabel}"
 msgid "{days, plural, one {In # day} other {In # days}}"
 msgstr "{days, plural, one {En # día} other {En # días}}"
 
-#: src/budget/components/budget-verdict/budget-verdict.tsx
+#: src/budget/components/budget-verdict-header/budget-verdict-header.tsx
 msgid "{daysLeft, plural, one {# day left} other {# days left}}"
 msgstr "{daysLeft, plural, one {Queda # día} other {Quedan # días}}"
 
-#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
-#: src/budget/components/budget-widget-card/budget-widget-card.tsx
+#: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
+#: src/budget/components/budget-widget-footer-row/budget-widget-footer-row.tsx
 msgid "{daysLeft, plural, one {# day} other {# days}}"
 msgstr "{daysLeft, plural, one {# día} other {# días}}"
 
@@ -220,15 +220,15 @@ msgstr "{free} GB libres en este teléfono."
 msgid "{free} GB is free right now. Your money data isn't affected."
 msgstr "Ahora mismo hay {free} GB libres. Tus datos financieros no se ven afectados."
 
-#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+#: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "{freeAmount} ÷ {daysLabel}"
 msgstr "{freeAmount} ÷ {daysLabel}"
 
-#: src/budget/components/budget-widget-card/budget-widget-card.tsx
+#: src/budget/components/budget-widget-footer-row/budget-widget-footer-row.tsx
 msgid "{freeAmount} free · {daysLabel}"
 msgstr "{freeAmount} libres · {daysLabel}"
 
-#: src/budget/components/budget-verdict/budget-verdict.tsx
+#: src/budget/components/budget-verdict-outlook/budget-verdict-outlook.tsx
 msgid "{freeAmount} free until {periodEndLabel}"
 msgstr "{freeAmount} libres hasta el {periodEndLabel}"
 
@@ -286,7 +286,8 @@ msgstr "{newTransactionCount, plural, one {Importar # transacción} other {Impor
 msgid "{newTransactionCount} new, {existingTransactionCount} already imported, {parsedTransactionCount} checked"
 msgstr "{newTransactionCount} nuevas, {existingTransactionCount} ya importadas, {parsedTransactionCount} comprobadas"
 
-#: src/budget/components/budget-verdict/budget-verdict.tsx
+#: src/budget/components/budget-verdict-figure/budget-verdict-figure.tsx
+#: src/budget/components/budget-verdict-header/budget-verdict-header.tsx
 msgid "{overAmount} over"
 msgstr "{overAmount} de más"
 
@@ -339,11 +340,11 @@ msgstr "{rowCount, plural, one {# transacción categorizada} other {# transaccio
 msgid "{rowCount, plural, one {Tagged # transaction} other {Tagged # transactions}}"
 msgstr "{rowCount, plural, one {# transacción etiquetada} other {# transacciones etiquetadas}}"
 
-#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+#: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "{safePerDayAmount} / day"
 msgstr "{safePerDayAmount} / día"
 
-#: src/budget/components/budget-verdict/budget-verdict.tsx
+#: src/budget/components/budget-verdict-header/budget-verdict-header.tsx
 msgid "{safePerDayAmount} per day"
 msgstr "{safePerDayAmount} por día"
 
@@ -395,7 +396,7 @@ msgstr "{statementAccountCount, plural, one {# cuenta. Los saldos vienen del ext
 msgid "{statusLabel} · {downloaded} of {total} GB"
 msgstr "{statusLabel} · {downloaded} de {total} GB"
 
-#: src/budget/components/budget-verdict/budget-verdict.tsx
+#: src/budget/components/budget-verdict-header/budget-verdict-header.tsx
 msgid "{statusLabel}. {figureAccessibilityLabel}, {daysLeftLabel}."
 msgstr "{statusLabel}. {figureAccessibilityLabel}, {daysLeftLabel}."
 
@@ -419,8 +420,8 @@ msgstr "{transactionCount, plural, one {# transacción} other {# transacciones}}
 msgid "{unreadableCount, plural, one {Couldn't read # receipt} other {Couldn't read # receipts}}"
 msgstr "{unreadableCount, plural, one {No se pudo leer # recibo} other {No se pudieron leer # recibos}}"
 
-#: src/budget/components/budget-verdict/budget-verdict.tsx
-#: src/budget/components/budget-widget-card/budget-widget-card.tsx
+#: src/budget/components/budget-verdict-figure/budget-verdict-figure.tsx
+#: src/budget/components/budget-widget-headline/budget-widget-headline.tsx
 msgid "/ day"
 msgstr "/ día"
 
@@ -2630,7 +2631,7 @@ msgstr "¿Olvidaste el PIN?"
 msgid "Found an issue or have an idea? Open GitHub issue templates."
 msgstr "¿Encontraste un problema o tienes una idea? Abre las plantillas de incidencias de GitHub."
 
-#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+#: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "Free to spend"
 msgstr "Libre para gastar"
 
@@ -3105,7 +3106,7 @@ msgstr "Menor que"
 
 #: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
 #: src/budget/components/budget-pace-legend/budget-pace-legend.tsx
-#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+#: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "Limit"
 msgstr "Límite"
 
@@ -4165,7 +4166,7 @@ msgstr "Previsión: {overAmount} por encima"
 msgid "Projected {overAmount} over · Runs out ~{runOutDate}"
 msgstr "Previsión: {overAmount} por encima · Se agota ~{runOutDate}"
 
-#: src/budget/components/budget-verdict/budget-verdict.tsx
+#: src/budget/components/budget-verdict-outlook/budget-verdict-outlook.tsx
 msgid "Projected {projectedOverAmount} over by {periodEndLabel}"
 msgstr "Se prevén {projectedOverAmount} de más para el {periodEndLabel}"
 
@@ -4933,7 +4934,7 @@ msgstr "Gastos por etiqueta"
 msgid "Spent"
 msgstr "Gastado"
 
-#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+#: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "Spent so far"
 msgstr "Gastado hasta ahora"
 
@@ -5668,6 +5669,7 @@ msgid "Upcoming"
 msgstr "Próximos"
 
 #: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+#: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "Upcoming this period"
 msgstr "Próximo en este periodo"
 

@@ -143,12 +143,12 @@ msgstr "{dateLabel} · {kindLabel}"
 msgid "{days, plural, one {In # day} other {In # days}}"
 msgstr "{days, plural, one {In # day} other {In # days}}"
 
-#: src/budget/components/budget-verdict/budget-verdict.tsx
+#: src/budget/components/budget-verdict-header/budget-verdict-header.tsx
 msgid "{daysLeft, plural, one {# day left} other {# days left}}"
 msgstr "{daysLeft, plural, one {# day left} other {# days left}}"
 
-#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
-#: src/budget/components/budget-widget-card/budget-widget-card.tsx
+#: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
+#: src/budget/components/budget-widget-footer-row/budget-widget-footer-row.tsx
 msgid "{daysLeft, plural, one {# day} other {# days}}"
 msgstr "{daysLeft, plural, one {# day} other {# days}}"
 
@@ -221,15 +221,15 @@ msgstr "{free} GB free on this phone."
 msgid "{free} GB is free right now. Your money data isn't affected."
 msgstr "{free} GB is free right now. Your money data isn't affected."
 
-#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+#: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "{freeAmount} ÷ {daysLabel}"
 msgstr "{freeAmount} ÷ {daysLabel}"
 
-#: src/budget/components/budget-widget-card/budget-widget-card.tsx
+#: src/budget/components/budget-widget-footer-row/budget-widget-footer-row.tsx
 msgid "{freeAmount} free · {daysLabel}"
 msgstr "{freeAmount} free · {daysLabel}"
 
-#: src/budget/components/budget-verdict/budget-verdict.tsx
+#: src/budget/components/budget-verdict-outlook/budget-verdict-outlook.tsx
 msgid "{freeAmount} free until {periodEndLabel}"
 msgstr "{freeAmount} free until {periodEndLabel}"
 
@@ -287,7 +287,8 @@ msgstr "{newTransactionCount, plural, one {Import # transaction} other {Import #
 msgid "{newTransactionCount} new, {existingTransactionCount} already imported, {parsedTransactionCount} checked"
 msgstr "{newTransactionCount} new, {existingTransactionCount} already imported, {parsedTransactionCount} checked"
 
-#: src/budget/components/budget-verdict/budget-verdict.tsx
+#: src/budget/components/budget-verdict-figure/budget-verdict-figure.tsx
+#: src/budget/components/budget-verdict-header/budget-verdict-header.tsx
 msgid "{overAmount} over"
 msgstr "{overAmount} over"
 
@@ -340,11 +341,11 @@ msgstr "{rowCount, plural, one {Categorized # transaction} other {Categorized # 
 msgid "{rowCount, plural, one {Tagged # transaction} other {Tagged # transactions}}"
 msgstr "{rowCount, plural, one {Tagged # transaction} other {Tagged # transactions}}"
 
-#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+#: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "{safePerDayAmount} / day"
 msgstr "{safePerDayAmount} / day"
 
-#: src/budget/components/budget-verdict/budget-verdict.tsx
+#: src/budget/components/budget-verdict-header/budget-verdict-header.tsx
 msgid "{safePerDayAmount} per day"
 msgstr "{safePerDayAmount} per day"
 
@@ -396,7 +397,7 @@ msgstr "{statementAccountCount, plural, one {# account. Balances come from the s
 msgid "{statusLabel} · {downloaded} of {total} GB"
 msgstr "{statusLabel} · {downloaded} of {total} GB"
 
-#: src/budget/components/budget-verdict/budget-verdict.tsx
+#: src/budget/components/budget-verdict-header/budget-verdict-header.tsx
 msgid "{statusLabel}. {figureAccessibilityLabel}, {daysLeftLabel}."
 msgstr "{statusLabel}. {figureAccessibilityLabel}, {daysLeftLabel}."
 
@@ -420,8 +421,8 @@ msgstr "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgid "{unreadableCount, plural, one {Couldn't read # receipt} other {Couldn't read # receipts}}"
 msgstr "{unreadableCount, plural, one {Couldn't read # receipt} other {Couldn't read # receipts}}"
 
-#: src/budget/components/budget-verdict/budget-verdict.tsx
-#: src/budget/components/budget-widget-card/budget-widget-card.tsx
+#: src/budget/components/budget-verdict-figure/budget-verdict-figure.tsx
+#: src/budget/components/budget-widget-headline/budget-widget-headline.tsx
 msgid "/ day"
 msgstr "/ day"
 
@@ -2631,7 +2632,7 @@ msgstr "Forgot PIN?"
 msgid "Found an issue or have an idea? Open GitHub issue templates."
 msgstr "Found an issue or have an idea? Open GitHub issue templates."
 
-#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+#: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "Free to spend"
 msgstr "Free to spend"
 
@@ -3106,7 +3107,7 @@ msgstr "Less Than"
 
 #: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
 #: src/budget/components/budget-pace-legend/budget-pace-legend.tsx
-#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+#: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "Limit"
 msgstr "Limit"
 
@@ -4166,7 +4167,7 @@ msgstr "Projected {overAmount} over"
 msgid "Projected {overAmount} over · Runs out ~{runOutDate}"
 msgstr "Projected {overAmount} over · Runs out ~{runOutDate}"
 
-#: src/budget/components/budget-verdict/budget-verdict.tsx
+#: src/budget/components/budget-verdict-outlook/budget-verdict-outlook.tsx
 msgid "Projected {projectedOverAmount} over by {periodEndLabel}"
 msgstr "Projected {projectedOverAmount} over by {periodEndLabel}"
 
@@ -4934,7 +4935,7 @@ msgstr "Spending by Tag"
 msgid "Spent"
 msgstr "Spent"
 
-#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+#: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "Spent so far"
 msgstr "Spent so far"
 
@@ -5669,6 +5670,7 @@ msgid "Upcoming"
 msgstr "Upcoming"
 
 #: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+#: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "Upcoming this period"
 msgstr "Upcoming this period"
 
