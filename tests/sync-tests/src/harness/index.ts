@@ -43,6 +43,7 @@ export {
     seedCryptoInstrument,
     setupAdaUsdtFixture,
     setupUsdtSpotFixtureWithBalances,
+    stubBinanceAccountEndpoints,
     stubEmptyBinanceBalances
 } from './binance/binance-scenario';
 export {

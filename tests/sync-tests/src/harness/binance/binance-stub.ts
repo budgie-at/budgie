@@ -3,6 +3,7 @@ import { HttpResponse, http } from 'msw';
 import { mockServer } from '../scenario/mock-server';
 
 import type {
+    BinanceApiRestrictionsApiInterface,
     BinanceAssetBalanceApiInterface,
     BinanceC2cOrderApiInterface,
     BinanceConvertFlowApiInterface,
@@ -17,6 +18,7 @@ import type {
 
 const BASE_URL = 'https://api.binance.com';
 const SERVER_TIME_URL = `${BASE_URL}/api/v3/time`;
+const API_RESTRICTIONS_URL = `${BASE_URL}/sapi/v1/account/apiRestrictions`;
 const SPOT_BALANCE_URL = `${BASE_URL}/sapi/v3/asset/getUserAsset`;
 const FUNDING_BALANCE_URL = `${BASE_URL}/sapi/v1/asset/get-funding-asset`;
 const DEPOSIT_URL = `${BASE_URL}/sapi/v1/capital/deposit/hisrec`;
@@ -90,6 +92,28 @@ const sliceOffsetPage = <TRow>(url: URL, rows: TRow[]): TRow[] => {
 export const binanceStub = {
     serverTime: (): void => {
         mockServer.use(http.get(SERVER_TIME_URL, () => HttpResponse.json({ serverTime: Date.now() }, { headers: WEIGHT_HEADERS })));
+    },
+    apiRestrictions: (restrictions: Partial<BinanceApiRestrictionsApiInterface> = {}): void => {
+        mockServer.use(
+            http.get(API_RESTRICTIONS_URL, () =>
+                HttpResponse.json(
+                    {
+                        ipRestrict: false,
+                        createTime: 1_700_000_000_000,
+                        enableReading: true,
+                        enableWithdrawals: false,
+                        enableInternalTransfer: false,
+                        permitsUniversalTransfer: false,
+                        enableVanillaOptions: false,
+                        enableFutures: false,
+                        enableMargin: false,
+                        enableSpotAndMarginTrading: false,
+                        ...restrictions
+                    },
+                    { headers: WEIGHT_HEADERS }
+                )
+            )
+        );
     },
     spotBalances: (balances: BinanceAssetBalanceApiInterface[]): void => {
         mockServer.use(http.post(SPOT_BALANCE_URL, () => HttpResponse.json(balances, { headers: WEIGHT_HEADERS })));

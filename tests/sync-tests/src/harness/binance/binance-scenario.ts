@@ -18,6 +18,8 @@ import { binanceStub } from './binance-stub';
 import { buildBinance } from './build-binance';
 import { setupBinanceFixture } from './setup-binance-fixture';
 
+import type { BinanceAssetBalanceApiInterface } from '@budgie/sync';
+
 const EARN_DAY_KEY_LENGTH = 10;
 const DEFAULT_RECENT_DAY_OF_MONTH = 15;
 const SPOT_QUOTE_FREE = '100';
@@ -83,6 +85,14 @@ export const recentDayInMonthsAgo = (monthsAgo: number): number => {
     const dayInMonth = monthsAgo === 0 ? 1 : DEFAULT_RECENT_DAY_OF_MONTH;
 
     return Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - monthsAgo, dayInMonth);
+};
+
+export const stubBinanceAccountEndpoints = (spotBalances: BinanceAssetBalanceApiInterface[]): void => {
+    binanceStub.serverTime();
+    binanceStub.spotBalances(spotBalances);
+    binanceStub.fundingBalances([]);
+    binanceStub.earnPositions([]);
+    binanceStub.lockedEarnPositions([]);
 };
 
 export const stubEmptyBinanceBalances = (): void => {
