@@ -1,7 +1,4 @@
-import { cva } from 'class-variance-authority';
-import { useState } from 'react';
-import { View } from 'react-native';
-import { runOnJS, useAnimatedReaction } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useCollapsibleHeaderScroll } from '@rnw-community/react-native-collapsible-header';
@@ -18,48 +15,26 @@ interface Props extends Omit<ComponentProps<typeof TransactionFilters>, 'showTyp
     readonly onHeightChange: (height: number) => void;
 }
 
-const barVariants = cva('absolute inset-x-0 bg-primary-reverse px-5xl pt-5xl pb-md', {
-    variants: { isPinned: { true: 'opacity-100', false: 'opacity-0' } }
-});
-
 export const PinnedTransactionFilters = ({ anchorY, onHeightChange, ...filtersProps }: Props) => {
     const { scrollY } = useCollapsibleHeaderScroll();
     const { top } = useSafeAreaInsets();
-    const [chipsY, setChipsY] = useState(0);
-    const [isPinned, setIsPinned] = useState(false);
 
-    const barTop = getScreenChromeHeaderMetrics(SCREEN_CHROME_HEADER_LAYOUT_METRICS.slotSize, top);
-    const pinThreshold = anchorY + SCREEN_CHROME_CONTENT_INSET_TOP - SCREEN_CHROME_HEADER_LAYOUT_METRICS.slotSize - chipsY;
+    const restingTop = top + SCREEN_CHROME_CONTENT_INSET_TOP + anchorY;
+    const pinnedTop = getScreenChromeHeaderMetrics(SCREEN_CHROME_HEADER_LAYOUT_METRICS.slotSize, top);
 
-    useAnimatedReaction(
-        () => scrollY.value >= pinThreshold,
-        (shouldPin, wasPinned) => {
-            if (shouldPin !== wasPinned) {
-                runOnJS(setIsPinned)(shouldPin);
-            }
-        },
-        [pinThreshold]
-    );
+    const animatedStyle = useAnimatedStyle(() => ({
+        transform: [{ translateY: Math.max(restingTop - scrollY.value, pinnedTop) }]
+    }));
 
-    const handleBarLayout = (event: LayoutChangeEvent) => void onHeightChange(event.nativeEvent.layout.height);
-    const handleChipsLayout = (event: LayoutChangeEvent) => void setChipsY(event.nativeEvent.layout.y);
-
-    const barStyle = { top: barTop };
-    const barPointerEvents = isPinned ? 'auto' : 'none';
-    const barAccessibility = isPinned ? 'auto' : 'no-hide-descendants';
+    const handleLayout = (event: LayoutChangeEvent) => void onHeightChange(event.nativeEvent.layout.height);
 
     return (
-        <View
-            className={barVariants({ isPinned })}
-            style={barStyle}
-            pointerEvents={barPointerEvents}
-            accessibilityElementsHidden={!isPinned}
-            importantForAccessibility={barAccessibility}
-            onLayout={handleBarLayout}
+        <Animated.View
+            className="absolute inset-x-0 top-0 bg-primary-reverse px-5xl pt-xl pb-sm"
+            style={animatedStyle}
+            onLayout={handleLayout}
         >
-            <View onLayout={handleChipsLayout}>
-                <TransactionFilters {...filtersProps} />
-            </View>
-        </View>
+            <TransactionFilters {...filtersProps} />
+        </Animated.View>
     );
 };

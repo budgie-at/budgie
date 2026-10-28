@@ -8,7 +8,6 @@ import { CollapsibleChromeLegendList } from '../../../@generic/component/collaps
 import { useTransactionList } from '../../hook/use-transaction-list.hook';
 import { useGetTransactionCountQuery } from '../../query/use-get-transaction-count.query';
 import { PinnedTransactionFilters } from '../pinned-transaction-filters/pinned-transaction-filters';
-import { TransactionFilters } from '../transaction-filters/transaction-filters';
 import { TransactionListEmptyState } from '../transaction-list-empty-state/transaction-list-empty-state';
 import { TransactionListUncategorizedPill } from '../transaction-list-uncategorized-pill/transaction-list-uncategorized-pill';
 import { TransactionSectionsList } from '../transaction-sections-list/transaction-sections-list';
@@ -32,24 +31,18 @@ export const CollapsibleChromeTransactionList = ({ accountId, children }: Props)
     const handleFiltersLayout = (event: LayoutChangeEvent) => void setFiltersY(event.nativeEvent.layout.y);
 
     const countLabel = isPositiveNumber(count) ? ` ${count}` : '';
+    const filtersSpacerStyle = { height: pinnedFiltersHeight };
 
     const listHeader = (
         <View>
             <View className="pb-5xl">{children}</View>
 
-            <Text className="text-primary text-lg font-semibold pb-md">
+            <Text className="text-primary text-lg font-semibold">
                 <Trans>Transactions</Trans>
                 <Text className="text-secondary-foreground font-normal">{countLabel}</Text>
             </Text>
 
-            <View onLayout={handleFiltersLayout}>
-                <TransactionFilters
-                    filters={activeFilters}
-                    onChange={setInternalFilters}
-                    accountId={accountId}
-                    hasFiltersSelected={hasFiltersSelected}
-                />
-            </View>
+            <View style={filtersSpacerStyle} onLayout={handleFiltersLayout} />
 
             <TransactionListUncategorizedPill filters={activeFilters} />
         </View>
