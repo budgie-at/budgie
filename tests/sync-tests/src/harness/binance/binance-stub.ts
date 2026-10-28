@@ -5,7 +5,6 @@ import { isDefined, isString } from '@rnw-community/shared';
 import { mockServer } from '../scenario/mock-server';
 
 import { binanceErrorResponse } from './binance-error-response';
-import { C2C_PAGING, EARN_PAGING, FIAT_PAGING, parseLimit, slicePage } from './binance-stub-page';
 
 import type {
     BinanceApiRestrictionsApiInterface,
@@ -62,6 +61,20 @@ const EXCHANGE_INFO_BASE_ASSETS = ['ADA', 'BNB', 'BTC', 'ETH', 'EUR', 'PEPE', 'U
 const EXCHANGE_INFO_QUOTE_ASSETS = ['USDT', 'FDUSD', 'BTC', 'BNB', 'BUSD'];
 const EXCHANGE_INFO_TRADING_STATUS = 'TRADING';
 const EXCHANGE_INFO_SUFFIX_QUOTE_ASSETS = [...EXCHANGE_INFO_QUOTE_ASSETS, 'USDC', 'EUR'];
+
+const EARN_PAGING = { pageParam: 'current', sizeParam: 'size', defaultSize: 10, maxSize: 100 };
+const FIAT_PAGING = { pageParam: 'page', sizeParam: 'rows', defaultSize: 100, maxSize: 500 };
+const C2C_PAGING = { pageParam: 'page', sizeParam: 'rows', defaultSize: 10, maxSize: 100 };
+
+const parseLimit = (url: URL, defaultLimit: number, maxLimit: number): number =>
+    Math.min(Number(url.searchParams.get('limit') ?? String(defaultLimit)), maxLimit);
+
+const slicePage = <TRow>(url: URL, rows: readonly TRow[], paging: typeof EARN_PAGING): TRow[] => {
+    const page = Number(url.searchParams.get(paging.pageParam) ?? '1');
+    const size = Math.min(Number(url.searchParams.get(paging.sizeParam) ?? String(paging.defaultSize)), paging.maxSize);
+
+    return rows.slice((page - 1) * size, page * size);
+};
 
 interface ExchangeInfoSymbolStub {
     readonly baseAsset: string;
