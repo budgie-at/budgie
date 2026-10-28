@@ -18,5 +18,7 @@ export const BudgetHistoryLegend = ({ bars }: Props) => {
         : [];
     const limitItems = [{ label: t`Limit`, swatchClassName: 'h-0.5 w-4 rounded-full bg-primary' }];
 
-    return <ChartLegend items={[...underItems, ...overItems, ...limitItems]} />;
+    const items = [...underItems, ...overItems, ...limitItems];
+
+    return <ChartLegend items={items} />;
 };

@@ -18,11 +18,13 @@ const HALO_OPACITY = 0.18;
 const HALO_DURATION = 600;
 const DOT_RADIUS = 3.5;
 
+const RADIUS_PROP = 'r';
+
 export const BudgetForecastTodayMarker = ({ point, accentClassName }: Props) => {
     const reducedMotion = useReducedMotion();
     const pulse = useSharedValue(0);
     const haloProps = useAnimatedProps(() => ({
-        r: HALO_RADIUS * (1 + (HALO_PEAK_SCALE - 1) * pulse.get()),
+        [RADIUS_PROP]: HALO_RADIUS * (1 + (HALO_PEAK_SCALE - 1) * pulse.get()),
         opacity: HALO_OPACITY * (1 - pulse.get())
     }));
 
