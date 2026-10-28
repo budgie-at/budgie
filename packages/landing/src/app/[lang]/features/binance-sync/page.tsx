@@ -274,7 +274,8 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
                     answer={
                         <Trans>
                             Auto-Invest, Binance Pay, Binance Card, gift cards, sub-account transfers, margin and futures are not synced
-                            yet. Spot, Funding, Simple Earn, P2P, Convert, deposits and withdrawals are.
+                            yet. Spot, Funding, Simple Earn (including locked rewards), P2P, Convert, dust to BNB conversions, deposits,
+                            withdrawals, dividends, airdrops, Launchpool, ETH and SOL staking rewards and Spot to Funding transfers are.
                         </Trans>
                     }
                 />

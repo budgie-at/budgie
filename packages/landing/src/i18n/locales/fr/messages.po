@@ -3178,8 +3178,8 @@ msgid "Auto-detection scans transaction history for amount + cadence patterns �
 msgstr "La détection automatique analyse l’historique des transactions pour trouver des schémas montant + cadence — sans configuration manuelle"
 
 #: src/app/[lang]/features/binance-sync/page.tsx
-msgid "Auto-Invest, Binance Pay, Binance Card, gift cards, sub-account transfers, margin and futures are not synced yet. Spot, Funding, Simple Earn, P2P, Convert, deposits and withdrawals are."
-msgstr "Auto-Invest, Binance Pay, Binance Card, les cartes cadeaux, les transferts entre sous-comptes, la marge et les contrats à terme ne sont pas encore synchronisés. Spot, Funding, Simple Earn, P2P, Convert, les dépôts et les retraits le sont."
+msgid "Auto-Invest, Binance Pay, Binance Card, gift cards, sub-account transfers, margin and futures are not synced yet. Spot, Funding, Simple Earn (including locked rewards), P2P, Convert, dust to BNB conversions, deposits, withdrawals, dividends, airdrops, Launchpool, ETH and SOL staking rewards and Spot to Funding transfers are."
+msgstr "Auto-Invest, Binance Pay, Binance Card, les cartes cadeaux, les transferts entre sous-comptes, la marge et les contrats à terme ne sont pas encore synchronisés. Spot, Funding, Simple Earn (y compris les récompenses verrouillées), P2P, Convert, les conversions de poussière en BNB, les dépôts, les retraits, les dividendes, les airdrops, Launchpool, les récompenses de staking ETH et SOL et les transferts entre Spot et Funding le sont."
 
 #: src/app/[lang]/bank-sync/metadata.ts
 msgid "automatic bank sync"
