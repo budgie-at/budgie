@@ -1,5 +1,8 @@
 export enum BudgetDayStateEnum {
-    ELAPSED = 'ELAPSED',
+    FUTURE = 'FUTURE',
     TODAY = 'TODAY',
-    FUTURE = 'FUTURE'
+    QUIET = 'QUIET',
+    WITHIN = 'WITHIN',
+    OVER = 'OVER',
+    FAR_OVER = 'FAR_OVER'
 }

@@ -90,7 +90,7 @@ export const BudgetDetails = ({ budget }: Props) => {
                     </LoadingContent>
 
                     <LoadingContent isLoading={isLoading}>
-                        <BudgetDayStrip projection={projection} />
+                        <BudgetDayStrip projection={projection} currencySymbol={currencySymbol} />
                     </LoadingContent>
 
                     <LoadingContent isLoading={isLoading}>
