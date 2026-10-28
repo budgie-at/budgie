@@ -15,6 +15,7 @@ import type {
     BinanceTradeApiInterface,
     BinanceWithdrawalApiInterface
 } from '@budgie/sync';
+import type { JsonBodyType } from 'msw';
 
 const BASE_URL = 'https://api.binance.com';
 const SERVER_TIME_URL = `${BASE_URL}/api/v3/time`;
@@ -93,7 +94,7 @@ export const binanceStub = {
     serverTime: (): void => {
         mockServer.use(http.get(SERVER_TIME_URL, () => HttpResponse.json({ serverTime: Date.now() }, { headers: WEIGHT_HEADERS })));
     },
-    apiRestrictionsBody: (body: unknown): void => {
+    apiRestrictionsBody: (body: JsonBodyType): void => {
         mockServer.use(http.get(API_RESTRICTIONS_URL, () => HttpResponse.json(body, { headers: WEIGHT_HEADERS })));
     },
     apiRestrictions: (restrictions: Partial<BinanceApiRestrictionsApiInterface> = {}): void => {
