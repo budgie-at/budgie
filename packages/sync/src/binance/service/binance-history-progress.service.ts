@@ -7,10 +7,10 @@ import * as Schema from 'effect/Schema';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { BinanceHistoryProgressMapSchema } from '../constant/binance-history-progress.schema';
-
-import type { BinanceHistoryProgressInterface, BinanceHistoryProgressMapInterface } from '../constant/binance-history-progress.schema';
 import type { BinanceHistorySourceEnum } from '../enum/binance-history-source.enum';
+
+const BinanceHistoryProgressSchema = Schema.Struct({ headAt: Schema.Number, tailAt: Schema.Number });
+const BinanceHistoryProgressMapSchema = Schema.Record(Schema.String, BinanceHistoryProgressSchema);
 
 export class BinanceHistoryProgressService extends Context.Service<BinanceHistoryProgressService>()(
     '@budgie/sync/BinanceHistoryProgressService',
@@ -23,7 +23,7 @@ export class BinanceHistoryProgressService extends Context.Service<BinanceHistor
                 const historyProgress = (yield* bankIntegrationRepository.findById(integrationId))?.historyProgress ?? null;
 
                 return isNotEmptyString(historyProgress)
-                    ? Result.getOrElse(decodeProgressMap(historyProgress), (): BinanceHistoryProgressMapInterface => ({}))
+                    ? Result.getOrElse(decodeProgressMap(historyProgress), (): typeof BinanceHistoryProgressMapSchema.Type => ({}))
                     : {};
             });
 
@@ -34,7 +34,7 @@ export class BinanceHistoryProgressService extends Context.Service<BinanceHistor
                 save: Effect.fn('BinanceHistoryProgressService.save')(function* (
                     integrationId: number,
                     source: BinanceHistorySourceEnum,
-                    progress: BinanceHistoryProgressInterface
+                    progress: typeof BinanceHistoryProgressSchema.Type
                 ) {
                     yield* bankIntegrationRepository.updateById(integrationId, {
                         historyProgress: JSON.stringify({ ...(yield* load(integrationId)), [source]: progress })

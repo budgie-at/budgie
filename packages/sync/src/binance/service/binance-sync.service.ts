@@ -1,11 +1,5 @@
-import { P2P_ORDER_EXTERNAL_ID_MARKER, buildConsolidationScopeFromTransactions } from '@budgie/consolidation';
-import { AccountRepository, SyncModeEnum, SyncRepository, TransactionRepository } from '@budgie/contracts';
-import {
-    AccountBalanceIncrementalService,
-    ImportedTransactionEntryUpdateService,
-    TransactionService,
-    TransferCreationService
-} from '@budgie/ledger';
+import { AccountRepository, SyncModeEnum, SyncRepository } from '@budgie/contracts';
+import { AccountBalanceIncrementalService } from '@budgie/ledger';
 import { getUnixTime } from 'date-fns/getUnixTime';
 import { subHours } from 'date-fns/subHours';
 import { subYears } from 'date-fns/subYears';
@@ -18,7 +12,6 @@ import * as Schema from 'effect/Schema';
 import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
-import { SyncTransactionTypeEnum } from '../../core/enum/sync-transaction-type.enum';
 import { SyncDeferredError } from '../../core/error/sync-deferred.error';
 import { SyncInvalidResponseError } from '../../core/error/sync-invalid-response.error';
 import { SyncRegionUnavailableError } from '../../core/error/sync-region-unavailable.error';
@@ -29,51 +22,46 @@ import { SyncWorkload } from '../../core/port/sync-workload.port';
 import { SyncIntegrationTokenService } from '../../core/service/sync-integration-token.service';
 import { makePollingSyncAccountSetup } from '../../core/utils/make-polling-sync-account-setup.util';
 import { makePollingSyncService } from '../../core/utils/make-polling-sync-service.util';
-import { mapBankTransactionToCreateInput } from '../../core/utils/map-bank-transaction-to-create-input.util';
 import { BinanceSignedClient } from '../client/binance-signed.client';
 import { BINANCE_ACCOUNT_DEFINITION } from '../constant/binance-account-definition.constant';
 import { BinanceCredentialsSchema } from '../constant/binance-credentials.schema';
 import { BinanceRateLimitMs } from '../constant/binance-rate-limit-ms.constant';
 import { BinanceHistorySourceEnum } from '../enum/binance-history-source.enum';
-import { mapBinanceTransfersToInputs } from '../mapper/binance-transfer-input.mapper';
-import { decodeBinanceAccountId } from '../utils/binance-account-id.util';
 
 import { BinanceAccountService } from './binance-account.service';
 import { BinanceAssetCodeService } from './binance-asset-code.service';
 import { BinanceHistoryProgressService } from './binance-history-progress.service';
-import { BinanceSourceQuoteService } from './binance-source-quote.service';
+import { BinanceSourceCommitService } from './binance-source-commit.service';
 import { BinanceTradeCursorService } from './binance-trade-cursor.service';
 
 import type { SyncError } from '../../core/interface/sync-error.type';
 import type { SyncTransactionInterface } from '../../core/interface/sync-transaction.interface';
 import type { BinanceRunStateInterface } from '../interface/binance-run-state.interface';
+import type { BinanceSourceCommitOptionsInterface } from '../interface/binance-source-commit-options.interface';
 import type { BinanceTokenRunStateInterface } from '../interface/binance-token-run-state.interface';
 import type { BinanceTransferInterface } from '../interface/binance-transfer.interface';
-import type { AccountEntityInterface, SyncEntityInterface, TransactionCreateInputInterface } from '@budgie/contracts';
+import type { SyncEntityInterface } from '@budgie/contracts';
 import type * as HttpClient from 'effect/http/HttpClient';
 
 export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@budgie/sync/BinanceSyncService', {
     make: Effect.gen(function* () {
         const accountRepository = yield* AccountRepository;
         const syncRepository = yield* SyncRepository;
-        const transactionRepository = yield* TransactionRepository;
-        const importedTransactionEntryUpdateService = yield* ImportedTransactionEntryUpdateService;
         const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
-        const transactionService = yield* TransactionService;
-        const transferCreationService = yield* TransferCreationService;
         const binanceAccountService = yield* BinanceAccountService;
         const binanceAssetCodeService = yield* BinanceAssetCodeService;
         const binanceHistoryProgressService = yield* BinanceHistoryProgressService;
-        const binanceSourceQuoteService = yield* BinanceSourceQuoteService;
+        const binanceSourceCommitService = yield* BinanceSourceCommitService;
         const binanceTradeCursorService = yield* BinanceTradeCursorService;
         const syncIntegrationTokenService = yield* SyncIntegrationTokenService;
         const syncWorkload = yield* SyncWorkload;
         const { provider } = BINANCE_ACCOUNT_DEFINITION;
         const createOrUpdateSync = yield* makePollingSyncAccountSetup(provider);
-        const transferChunkSize = 50;
-        const sourceInputYieldInterval = 50;
         const forwardOverlapHours = 24;
         const fiatRefreshIntervalMs = 23 * 60 * 60 * 1000;
+        const createOnly = { enqueueExistingConsolidation: false, updateExistingAmounts: false };
+        const updateExisting = { enqueueExistingConsolidation: false, updateExistingAmounts: true };
+        const consolidateExisting = { enqueueExistingConsolidation: true, updateExistingAmounts: false };
         const decodeCredentials = Schema.decodeUnknownEffect(Schema.fromJsonString(BinanceCredentialsSchema));
         const transferLookbackYears = 5;
         const fiatBackfillChunkSeconds = 365 * 24 * 60 * 60;
@@ -151,13 +139,6 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             return exchangeAccounts;
         });
 
-        const buildRunAccountResolver = Effect.fnUntraced(function* (token: string) {
-            const exchangeAccounts = yield* fetchExchangeAccounts(token);
-            const integration = yield* syncIntegrationTokenService.getOrCreateIntegration(provider, token);
-
-            return yield* binanceAccountService.buildAccountResolver(exchangeAccounts, integration.id);
-        });
-
         const anchorAllBalances = Effect.fnUntraced(function* (token: string) {
             const integration = yield* syncIntegrationTokenService.getOrCreateIntegration(provider, token);
 
@@ -166,142 +147,10 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             patchTokenRun(token, { balancesAnchored: true });
         });
 
-        const findIntegrationAccounts = Effect.fnUntraced(function* (token: string) {
-            const integration = yield* syncIntegrationTokenService.getOrCreateIntegration(provider, token);
-
-            return (yield* accountRepository.findByExternalSource(provider)).filter(account => account.integrationId === integration.id);
-        });
-
-        const findIntegrationAccountIds = Effect.fnUntraced(function* (token: string) {
-            return (yield* findIntegrationAccounts(token)).map(account => account.id);
-        });
-
-        const findIntegrationAssets = Effect.fnUntraced(function* (token: string) {
-            return (yield* findIntegrationAccounts(token))
-                .map(account => (isNotEmptyString(account.externalId) ? decodeBinanceAccountId(account.externalId)?.asset : null))
-                .filter(isDefined);
-        });
-
-        const findIntegrationIdMap = Effect.fnUntraced(function* (token: string) {
-            return yield* transactionService.findIdMapByExternalSource(provider, yield* findIntegrationAccountIds(token));
-        });
-
-        const findDeletedExternalIds = Effect.fnUntraced(function* (token: string) {
-            return new Set(
-                yield* transactionRepository.findDeletedExternalIdsByExternalSource(provider, yield* findIntegrationAccountIds(token))
-            );
-        });
-
-        const enqueueExistingSourceConsolidation = Effect.fnUntraced(function* (
-            sourceTransactions: SyncTransactionInterface[],
-            existingIdMap: ReadonlyMap<string, number>
-        ) {
-            const transactionIds = sourceTransactions
-                .filter(transaction => transaction.id.includes(P2P_ORDER_EXTERNAL_ID_MARKER))
-                .map(transaction => existingIdMap.get(transaction.id))
-                .filter(isDefined);
-            if (!isNotEmptyArray(transactionIds)) {
-                return;
-            }
-
-            const consolidationScope = buildConsolidationScopeFromTransactions(yield* transactionRepository.findByIds(transactionIds));
-            if (isDefined(consolidationScope)) {
-                yield* syncWorkload.enqueueTransferConsolidation(consolidationScope);
-            }
-        });
-
-        const reconcileSourceAccount = Effect.fnUntraced(function* <E, R>(
-            transaction: SyncTransactionInterface,
-            resolveAccount: (codecAccountId: string) => Effect.Effect<AccountEntityInterface | null, E, R>,
-            existingIdMap: ReadonlyMap<string, number>
-        ) {
-            const account = yield* resolveAccount(transaction.accountId);
-            const transactionId = existingIdMap.get(transaction.id);
-            if (!isDefined(account) || !isDefined(transactionId)) {
-                return 0;
-            }
-
-            const accountChanged = yield* transactionService.moveExternalEntryToAccount(
-                transactionId,
-                transaction.id,
-                account.id,
-                transaction.type === SyncTransactionTypeEnum.INCOME
-            );
-            const quote = yield* binanceSourceQuoteService.resolve(transaction);
-            const quoteChanged =
-                isDefined(quote) &&
-                (yield* importedTransactionEntryUpdateService.updateExternalEntryQuote(transactionId, transaction.id, quote));
-
-            return accountChanged || quoteChanged ? 1 : 0;
-        });
-
-        const reconcileSourceAccounts = Effect.fnUntraced(function* (
-            transactions: SyncTransactionInterface[],
-            token: string,
-            existingIdMap: ReadonlyMap<string, number>
-        ) {
-            const resolveAccount = yield* buildRunAccountResolver(token);
-            let reconciledCount = 0;
-            for (const transaction of transactions) {
-                reconciledCount += yield* reconcileSourceAccount(transaction, resolveAccount, existingIdMap);
-            }
-
-            return reconciledCount;
-        });
-
-        const buildSourceInputs = Effect.fnUntraced(function* (transactions: SyncTransactionInterface[], token: string) {
-            const resolveAccount = yield* buildRunAccountResolver(token);
-            const inputs: TransactionCreateInputInterface[] = [];
-            for (const [index, transaction] of transactions.entries()) {
-                if (isPositiveNumber(index) && index % sourceInputYieldInterval === 0) {
-                    yield* Effect.yieldNow;
-                }
-                const account = yield* resolveAccount(transaction.accountId);
-                if (isDefined(account)) {
-                    inputs.push(
-                        yield* binanceSourceQuoteService.applyToInput(
-                            mapBankTransactionToCreateInput(transaction, account.id, null, provider),
-                            transaction
-                        )
-                    );
-                }
-            }
-
-            return inputs;
-        });
-
-        const createSyncedSources = Effect.fnUntraced(function* (transactions: SyncTransactionInterface[], token: string) {
-            const inputs = yield* buildSourceInputs(transactions, token);
-
-            return isNotEmptyArray(inputs) ? (yield* transactionService.bulkCreate(inputs)).length : 0;
-        });
-
-        const updateSyncedSources = Effect.fnUntraced(function* (transactions: SyncTransactionInterface[], token: string) {
-            const inputs = yield* buildSourceInputs(transactions, token);
-            if (isNotEmptyArray(inputs)) {
-                yield* transactionService.bulkUpdateImported(inputs);
-                yield* accountBalanceIncrementalService.updateAllBalances(true);
-            }
-        });
-
-        const createSyncedTransfers = Effect.fnUntraced(function* (transfers: BinanceTransferInterface[], token: string) {
-            const inputs = yield* mapBinanceTransfersToInputs(transfers, yield* buildRunAccountResolver(token));
-
-            let createdCount = 0;
-            for (let index = 0; index < inputs.length; index += transferChunkSize) {
-                createdCount += (yield* transferCreationService.createSyncedTransfers(inputs.slice(index, index + transferChunkSize)))
-                    .length;
-                yield* Effect.yieldNow;
-            }
-
-            return createdCount;
-        });
-
         const commitSourceType = Effect.fnUntraced(function* (
             token: string,
             fetchSourceType: Effect.Effect<SyncTransactionInterface[], SyncError, HttpClient.HttpClient>,
-            enqueueExistingConsolidation: boolean,
-            updateExistingAmounts = false
+            options: BinanceSourceCommitOptionsInterface
         ) {
             const transactions = yield* getRunSignedClient(token)
                 .withPartialWalks(fetchSourceType)
@@ -313,47 +162,14 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                     )
                 );
             yield* deferIfWalkDeferred(token);
-            if (!isNotEmptyArray(transactions)) {
-                return 0;
-            }
 
-            const existingIdMap = yield* findIntegrationIdMap(token);
-            const existingTransactions = transactions.filter(sourceTransaction => existingIdMap.has(sourceTransaction.id));
-            const reconciledCount = yield* reconcileSourceAccounts(existingTransactions, token, existingIdMap);
-            if (updateExistingAmounts && isNotEmptyArray(existingTransactions)) {
-                yield* updateSyncedSources(existingTransactions, token);
-            }
-            if (enqueueExistingConsolidation) {
-                yield* enqueueExistingSourceConsolidation(existingTransactions, existingIdMap);
-            }
-
-            const deletedExternalIds = yield* findDeletedExternalIds(token);
-            const newTransactions = transactions.filter(
-                sourceTransaction => !existingIdMap.has(sourceTransaction.id) && !deletedExternalIds.has(sourceTransaction.id)
-            );
-
-            return isNotEmptyArray(newTransactions)
-                ? reconciledCount + (yield* createSyncedSources(newTransactions, token))
-                : reconciledCount;
+            return isNotEmptyArray(transactions)
+                ? yield* binanceSourceCommitService.commitSources(token, yield* fetchExchangeAccounts(token), transactions, options)
+                : 0;
         });
 
-        const removeRejectedCapitalTransactions = Effect.fnUntraced(function* (token: string, client: BinanceSignedClient) {
-            const rejectedExternalIds = client.getRejectedCapitalExternalIds();
-            if (rejectedExternalIds.size === 0) {
-                return 0;
-            }
-
-            const existingIdMap = yield* findIntegrationIdMap(token);
-            const removableTransactionIds = [...rejectedExternalIds].map(externalId => existingIdMap.get(externalId)).filter(isDefined);
-            for (const transactionId of removableTransactionIds) {
-                const consolidationParentId = (yield* transactionRepository.getByIdRaw(transactionId))?.consolidationParentTransactionId;
-                if (isDefined(consolidationParentId)) {
-                    yield* transactionService.unconsolidateById(consolidationParentId);
-                }
-                yield* transactionService.deleteById(transactionId);
-            }
-
-            return removableTransactionIds.length;
+        const commitTransfers = Effect.fnUntraced(function* (transfers: BinanceTransferInterface[], token: string) {
+            return yield* binanceSourceCommitService.commitTransfers(token, yield* fetchExchangeAccounts(token), transfers);
         });
 
         const commitCapitalRange = Effect.fnUntraced(function* (
@@ -366,8 +182,12 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             const pendingFromAt = sync.binanceCapitalPendingFromAt;
             const rangeStartUnixTime =
                 !isDefined(toUnixTime) && isDefined(pendingFromAt) ? Math.min(fromUnixTime, getUnixTime(pendingFromAt)) : fromUnixTime;
-            const committedCount = yield* commitSourceType(token, client.getCapitalTransactions(rangeStartUnixTime, toUnixTime), false);
-            const removedCount = yield* removeRejectedCapitalTransactions(token, client);
+            const committedCount = yield* commitSourceType(
+                token,
+                client.getCapitalTransactions(rangeStartUnixTime, toUnixTime),
+                createOnly
+            );
+            const removedCount = yield* binanceSourceCommitService.removeByExternalIds(token, client.getRejectedCapitalExternalIds());
             if (!run.isDeferred) {
                 const pendingFromMs = client.getCapitalPendingFromMs();
                 yield* syncRepository.update(sync.id, {
@@ -376,22 +196,6 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             }
 
             return committedCount + removedCount;
-        });
-
-        const commitTransfers = Effect.fnUntraced(function* (transfers: BinanceTransferInterface[], token: string) {
-            const existingIdMap = yield* findIntegrationIdMap(token);
-            const deletedExternalIds = yield* findDeletedExternalIds(token);
-            const newTransfers = transfers.filter(
-                transfer =>
-                    !existingIdMap.has(transfer.externalId) &&
-                    !deletedExternalIds.has(transfer.externalId) &&
-                    !(
-                        isDefined(transfer.legacyExternalId) &&
-                        (existingIdMap.has(transfer.legacyExternalId) || deletedExternalIds.has(transfer.legacyExternalId))
-                    )
-            );
-
-            return isNotEmptyArray(newTransfers) ? yield* createSyncedTransfers(newTransfers, token) : 0;
         });
 
         const commitTransferRange = Effect.fnUntraced(function* (
@@ -408,8 +212,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             const committedCount = yield* commitSourceType(
                 token,
                 getRunSignedClient(token).getFiatTransactions(fromUnixTime, toUnixTime),
-                false,
-                true
+                updateExisting
             );
             if (!run.isDeferred) {
                 fiatSyncedAtMsByToken.set(token, yield* Clock.currentTimeMillis);
@@ -486,7 +289,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             }
 
             const client = getRunSignedClient(token);
-            client.noteTouchedAssets(yield* findIntegrationAssets(token));
+            client.noteTouchedAssets(yield* binanceSourceCommitService.findAssetCodes(token));
             const transfers = yield* binanceTradeCursorService.fetchTransferBatch(client, sync, externalAccountId, {
                 fromUnixTime: getUnixTime(resolveWindowStart(sync)),
                 eligibleSoldOffBaseAssets: yield* binanceAssetCodeService.resolveEligibleSoldOffBaseAssets(provider)
@@ -507,22 +310,22 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
 
             return (
                 (yield* syncHistorySource(sync, token, BinanceHistorySourceEnum.C2C, (fromUnixTime, toUnixTime) =>
-                    commitSourceType(token, client.getC2cTransactions(fromUnixTime, toUnixTime), true)
+                    commitSourceType(token, client.getC2cTransactions(fromUnixTime, toUnixTime), consolidateExisting)
                 )) +
                 (yield* syncHistorySource(sync, token, BinanceHistorySourceEnum.EARN, (fromUnixTime, toUnixTime) =>
-                    commitSourceType(token, client.getEarnTransactions(fromUnixTime, toUnixTime), false, true)
+                    commitSourceType(token, client.getEarnTransactions(fromUnixTime, toUnixTime), updateExisting)
                 )) +
                 (yield* syncHistorySource(sync, token, BinanceHistorySourceEnum.LOCKED_EARN, (fromUnixTime, toUnixTime) =>
-                    commitSourceType(token, client.getLockedEarnTransactions(fromUnixTime, toUnixTime), false, true)
+                    commitSourceType(token, client.getLockedEarnTransactions(fromUnixTime, toUnixTime), updateExisting)
                 )) +
                 (yield* syncHistorySource(sync, token, BinanceHistorySourceEnum.ETH_STAKING, (fromUnixTime, toUnixTime) =>
-                    commitSourceType(token, client.getEthStakingTransactions(fromUnixTime, toUnixTime), false, true)
+                    commitSourceType(token, client.getEthStakingTransactions(fromUnixTime, toUnixTime), updateExisting)
                 )) +
                 (yield* syncHistorySource(sync, token, BinanceHistorySourceEnum.SOL_STAKING, (fromUnixTime, toUnixTime) =>
-                    commitSourceType(token, client.getSolStakingTransactions(fromUnixTime, toUnixTime), false, true)
+                    commitSourceType(token, client.getSolStakingTransactions(fromUnixTime, toUnixTime), updateExisting)
                 )) +
                 (yield* syncHistorySource(sync, token, BinanceHistorySourceEnum.DIVIDEND, (fromUnixTime, toUnixTime) =>
-                    commitSourceType(token, client.getDividendTransactions(fromUnixTime, toUnixTime), false)
+                    commitSourceType(token, client.getDividendTransactions(fromUnixTime, toUnixTime), createOnly)
                 )) +
                 (yield* syncHistorySource(sync, token, BinanceHistorySourceEnum.CAPITAL, (fromUnixTime, toUnixTime) =>
                     commitCapitalRange(sync, token, fromUnixTime, toUnixTime)
@@ -716,12 +519,10 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
         Layer.provide([
             pollingSyncDependenciesLayer,
             AccountBalanceIncrementalService.layer,
-            ImportedTransactionEntryUpdateService.layer,
-            TransferCreationService.layer,
             BinanceAccountService.layer,
             BinanceAssetCodeService.layer,
             BinanceHistoryProgressService.layer,
-            BinanceSourceQuoteService.layer,
+            BinanceSourceCommitService.layer,
             BinanceTradeCursorService.layer
         ])
     );
