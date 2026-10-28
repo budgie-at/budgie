@@ -3177,6 +3177,10 @@ msgstr "Beim ersten Start automatisch aus dem Gerätestandard erkannt. Jederzeit
 msgid "Auto-detection scans transaction history for amount + cadence patterns — no manual setup"
 msgstr "Automatische Erkennung durchsucht die Transaktionshistorie nach Betrags- und Rhythmusmustern – kein manuelles Einrichten"
 
+#: src/app/[lang]/features/binance-sync/page.tsx
+msgid "Auto-Invest, Binance Pay, Binance Card, gift cards, sub-account transfers, margin and futures are not synced yet. Spot, Funding, Simple Earn, P2P, Convert, deposits and withdrawals are."
+msgstr "Auto-Invest, Binance Pay, Binance Card, Geschenkkarten, Subkonto-Überweisungen, Margin und Futures werden noch nicht synchronisiert. Spot, Funding, Simple Earn, P2P, Convert, Ein- und Auszahlungen schon."
+
 #: src/app/[lang]/bank-sync/metadata.ts
 msgid "automatic bank sync"
 msgstr "automatische Banksynchronisierung"
@@ -20224,6 +20228,10 @@ msgstr "Welche Banken unterstützt Budgie?"
 #: src/app/[lang]/privacy/page.tsx
 msgid "Which banks have direct API support?"
 msgstr "Welche Banken haben direkte API-Unterstützung?"
+
+#: src/app/[lang]/features/binance-sync/page.tsx
+msgid "Which Binance sources are not synced?"
+msgstr "Welche Binance-Quellen werden nicht synchronisiert?"
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Which budget periods are supported?"

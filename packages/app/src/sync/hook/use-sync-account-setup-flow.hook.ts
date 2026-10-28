@@ -1,3 +1,4 @@
+import { resolveSyncErrorCode } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { router } from 'expo-router';
@@ -10,6 +11,7 @@ import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 import { useOnboardingRedirect } from '../../onboarding/hook/use-onboarding-redirect.hook';
 
 import { useAccountSelection } from './use-account-selection.hook';
+import { useSyncErrorLabels } from './use-sync-error-labels.hook';
 
 import type { AppServices } from '../../@generic/runtime/app.runtime';
 import type { SyncAccountPreviewInterface } from '@budgie/sync';
@@ -23,8 +25,15 @@ export const useSyncAccountSetupFlow = <Identifier extends AppServices, Shape>(
     const { isLoading, run } = useSingleFlight();
     const accountSelection = useAccountSelection();
     const onboardingHref = useOnboardingRedirect();
+    const syncErrorLabels = useSyncErrorLabels();
 
     const exitHref = onboardingHref ?? '/';
+
+    const explainError = (error: unknown) => {
+        const errorCode = resolveSyncErrorCode(error);
+
+        return isDefined(errorCode) ? new Error(syncErrorLabels[errorCode]) : error;
+    };
 
     const handleGoBack = () => void goBackOrReplace(exitHref);
 
@@ -34,7 +43,7 @@ export const useSyncAccountSetupFlow = <Identifier extends AppServices, Shape>(
                 const syncService = yield* service;
                 yield* setupSync(syncService, [...accountSelection.selectedAccounts]);
                 router.dismissTo(exitHref);
-            }).pipe(toastOnFailure(t`Could not set up sync`))
+            }).pipe(Effect.mapError(explainError), toastOnFailure(t`Could not set up sync`))
         );
 
     const fetchAccountPreviews = (
@@ -47,7 +56,7 @@ export const useSyncAccountSetupFlow = <Identifier extends AppServices, Shape>(
                 if (isDefined(previews)) {
                     onLoaded(previews);
                 }
-            }).pipe(toastOnFailure(t`Could not fetch accounts`))
+            }).pipe(Effect.mapError(explainError), toastOnFailure(t`Could not fetch accounts`))
         );
 
     const isStartSyncDisabled = isLoading || accountSelection.selectedAccounts.size === 0;

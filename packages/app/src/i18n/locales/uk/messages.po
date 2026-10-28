@@ -953,6 +953,14 @@ msgstr "Дати списання"
 msgid "Binance"
 msgstr "Binance"
 
+#: src/sync/component/binance-parked-assets-notice/binance-parked-assets-notice.tsx
+msgid "Binance has no market price for these assets, so they are not added as accounts and are skipped from your balance."
+msgstr "Binance не має ринкової ціни для цих активів, тому вони не додаються як рахунки й пропускаються у вашому балансі."
+
+#: src/sync/hook/use-sync-error-labels.hook.ts
+msgid "Binance is not available in your region, so this account cannot sync."
+msgstr "Binance недоступний у вашому регіоні, тому цей рахунок не можна синхронізувати."
+
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Binance P2P orders are unavailable: the API key is missing P2P read permission."
 msgstr "Ордери Binance P2P недоступні: API-ключу бракує дозволу на читання P2P."
@@ -1614,6 +1622,10 @@ msgstr "Не вдалося відкрити інструкції"
 #: src/wallet-capture/component/apple-pay-capture-open-shortcuts-button/apple-pay-capture-open-shortcuts-button.tsx
 msgid "Could not open Shortcuts"
 msgstr "Не вдалося відкрити Shortcuts"
+
+#: src/sync/hook/use-sync-error-labels.hook.ts
+msgid "Could not reach the server. Check your connection; sync will retry automatically."
+msgstr "Не вдалося зв'язатися із сервером. Перевірте з'єднання; синхронізація повторить спробу автоматично."
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "Could not read CSV file"
@@ -3643,6 +3655,10 @@ msgstr "Не зараз"
 msgid "not set"
 msgstr "не встановлено"
 
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Not synced: Auto-Invest, Binance Pay, Binance Card, gift cards, sub-account transfers, margin and futures."
+msgstr "Не синхронізуються: Auto-Invest, Binance Pay, Binance Card, подарункові картки, перекази між субрахунками, маржа та ф'ючерси."
+
 #: src/settings/components/backup-row/backup-row.tsx
 msgid "Not yet"
 msgstr "Ще немає"
@@ -5054,6 +5070,14 @@ msgstr "Торкніться, щоб продовжити"
 msgid "Tap to select"
 msgstr "Торкніться для вибору"
 
+#: src/sync/hook/use-sync-error-labels.hook.ts
+msgid "The API key has the wrong permissions. Use a key with only \"Enable Reading\"."
+msgstr "Ключ API має неправильні дозволи. Використовуйте ключ лише з «Enable Reading»."
+
+#: src/sync/hook/use-sync-error-labels.hook.ts
+msgid "The API key or token was rejected. Check that it is correct, read-only and not restricted to other IP addresses."
+msgstr "Ключ API або токен відхилено. Перевірте, що він правильний, лише для читання та не обмежений іншими IP-адресами."
+
 #: src/account/component/start-deposit-form/start-deposit-form.tsx
 msgid "The bank did not report the deposit currency. Confirm the currency and the receiving amount."
 msgstr "Банк не передав валюту депозиту. Підтвердіть валюту та суму зарахування."
@@ -5081,6 +5105,10 @@ msgstr "Правило збережено, але жодна наявна тра
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "The selected Budgie account is archived or no longer exists."
 msgstr "Вибраний рахунок Budgie заархівовано або більше не існує."
+
+#: src/sync/hook/use-sync-error-labels.hook.ts
+msgid "The service is limiting requests. Sync will retry automatically in a few minutes."
+msgstr "Сервіс обмежує кількість запитів. Синхронізація автоматично повторить спробу за кілька хвилин."
 
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "There is no \"forgot PIN\"."
@@ -5858,6 +5886,10 @@ msgstr "Ваші дані залишаються недоторканими на
 #: src/onboarding/component/onboarding-file-strip/onboarding-file-strip.tsx
 msgid "Your data: {state}"
 msgstr "Ваші дані: {state}"
+
+#: src/sync/hook/use-sync-error-labels.hook.ts
+msgid "Your device clock is out of sync. Enable automatic date and time, then try again."
+msgstr "Годинник вашого пристрою не синхронізований. Увімкніть автоматичні дату й час і спробуйте ще раз."
 
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Your holdings"

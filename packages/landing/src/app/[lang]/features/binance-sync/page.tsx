@@ -268,6 +268,16 @@ export default async function BinanceSyncFeaturePage(props: PageLangParam) {
                         </Trans>
                     }
                 />
+                <FeatureFaq.Item
+                    index={5}
+                    question={<Trans>Which Binance sources are not synced?</Trans>}
+                    answer={
+                        <Trans>
+                            Auto-Invest, Binance Pay, Binance Card, gift cards, sub-account transfers, margin and futures are not synced
+                            yet. Spot, Funding, Simple Earn, P2P, Convert, deposits and withdrawals are.
+                        </Trans>
+                    }
+                />
             </FeatureFaq>
         </FeaturePageShell>
     );

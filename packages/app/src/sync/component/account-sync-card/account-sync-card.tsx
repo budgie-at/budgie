@@ -1,4 +1,4 @@
-import { ExternalSourceEnum, SyncModeEnum, SyncStatusEnum, SyncWarningEnum } from '@budgie/contracts';
+import { ExternalSourceEnum, SyncErrorCodeEnum, SyncModeEnum, SyncStatusEnum, SyncWarningEnum } from '@budgie/contracts';
 import { SyncProviderRegistryService, SYNC_PROVIDER_CAPABILITIES } from '@budgie/sync';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
@@ -14,6 +14,7 @@ import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useAccountSync } from '../../hook/use-account-sync.hook';
+import { useSyncErrorLabels } from '../../hook/use-sync-error-labels.hook';
 import { BinanceSyncTokenSection } from '../binance-sync-token-section/binance-sync-token-section';
 import { ResyncAccount } from '../resync-account/resync-account';
 import { SyncDataRow } from '../sync-data-row/sync-data-row';
@@ -37,6 +38,7 @@ const statusTextVariants = cva('text-xs font-medium', {
 export const AccountSyncCard = ({ accountId }: Props) => {
     const { t } = useLingui();
     const { sync } = useAccountSync(accountId);
+    const syncErrorLabels = useSyncErrorLabels();
     const { formatDayAndMonthAndYearWithTime } = useFormatDate();
 
     if (!isDefined(sync)) {
@@ -63,8 +65,12 @@ export const AccountSyncCard = ({ accountId }: Props) => {
     const { supportsFileImport } = SYNC_PROVIDER_CAPABILITIES[sync.provider];
     const syncLabel = supportsFileImport ? t`Include in file imports` : t`Sync`;
     const warningLabels: Record<SyncWarningEnum, string> = {
-        [SyncWarningEnum.C2C_UNAVAILABLE]: t`Binance P2P orders are unavailable: the API key is missing P2P read permission.`
+        [SyncWarningEnum.C2C_UNAVAILABLE]: t`Binance P2P orders are unavailable: the API key is missing P2P read permission.`,
+        [SyncWarningEnum.REGION_UNAVAILABLE]: syncErrorLabels[SyncErrorCodeEnum.REGION_UNAVAILABLE]
     };
+    const isRegionBlocked = sync.lastWarning === SyncWarningEnum.REGION_UNAVAILABLE;
+    const hasLastError = isNotEmptyString(sync.lastError);
+    const lastErrorText = hasLastError && isDefined(sync.lastErrorCode) ? syncErrorLabels[sync.lastErrorCode] : sync.lastError;
     const tokenSection = sync.provider === ExternalSourceEnum.BINANCE ? <BinanceSyncTokenSection accountId={accountId} /> : null;
 
     return (
@@ -98,13 +104,17 @@ export const AccountSyncCard = ({ accountId }: Props) => {
 
                 {sync.errorCount > 0 && <SyncDataRow label={t`Errors`} value={String(sync.errorCount)} />}
 
-                {isNotEmptyString(sync.lastError) && (
+                {isNotEmptyString(lastErrorText) && !isRegionBlocked && (
                     <View className="gap-y-xs">
                         <Text className="text-xs text-secondary-foreground">
                             <Trans>Last error</Trans>
                         </Text>
-                        <Text className="text-secondary-foreground text-destructive text-xs" numberOfLines={2}>
-                            {sync.lastError}
+                        <Text
+                            className="text-secondary-foreground text-destructive text-xs"
+                            numberOfLines={4}
+                            testID={AccountSyncCardSelector.LastError}
+                        >
+                            {lastErrorText}
                         </Text>
                     </View>
                 )}
@@ -114,7 +124,7 @@ export const AccountSyncCard = ({ accountId }: Props) => {
                         <Text className="text-xs text-secondary-foreground">
                             <Trans>Warning</Trans>
                         </Text>
-                        <Text className="text-warning-foreground text-xs" numberOfLines={2}>
+                        <Text className="text-warning-foreground text-xs" numberOfLines={3} testID={AccountSyncCardSelector.Warning}>
                             {warningLabels[sync.lastWarning]}
                         </Text>
                     </View>

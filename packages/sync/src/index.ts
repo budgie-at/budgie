@@ -62,6 +62,7 @@ export { SyncWorkload } from './core/port/sync-workload.port';
 export { TransferConsolidationWorkload } from './core/port/transfer-consolidation-workload.port';
 export { SyncFileReader } from './core/port/sync-file-reader.port';
 export { SYNC_PROVIDER_CAPABILITIES } from './core/constant/sync-provider-capabilities.constant';
+export { resolveSyncErrorCode } from './core/utils/resolve-sync-error-code.util';
 export { resolveInitialSyncProgress } from './core/utils/resolve-initial-sync-progress.util';
 export { isInitialSyncIncomplete } from './core/utils/is-initial-sync-incomplete.util';
 export type { InitialSyncProgressInterface } from './core/interface/initial-sync-progress.interface';
