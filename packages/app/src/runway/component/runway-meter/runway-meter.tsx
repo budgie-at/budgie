@@ -1,4 +1,5 @@
 import { RUNWAY_MAX_MONTHS } from '@budgie/contracts';
+import { useState } from 'react';
 import { View } from 'react-native';
 import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 import { useResolveClassNames } from 'uniwind';
@@ -8,6 +9,7 @@ import { RUNWAY_HORIZON_MONTHS } from '../../constant/runway-horizon-months.cons
 import { RunwayMeterTick } from '../runway-meter-tick/runway-meter-tick';
 
 import type { StatusToneType } from '../../../@generic/type/status-tone.type';
+import type { LayoutChangeEvent } from 'react-native';
 
 interface Props {
     readonly months: number | null;
@@ -25,13 +27,18 @@ export const RunwayMeter = ({ months, tone }: Props) => {
     const { backgroundColor: fromColor } = useResolveClassNames(from);
     const { backgroundColor: toColor } = useResolveClassNames(to);
 
+    const [trackWidth, setTrackWidth] = useState(0);
     const ratio = Math.min(Math.max(months ?? 0, 0), RUNWAY_MAX_MONTHS) / RUNWAY_MAX_MONTHS;
+
+    const handleTrackLayout = (event: LayoutChangeEvent) => {
+        setTrackWidth(event.nativeEvent.layout.width);
+    };
 
     return (
         <View>
-            <View className="h-[14px] overflow-hidden rounded-[3px] bg-secondary-corner">
+            <View className="h-[14px] overflow-hidden rounded-[3px] bg-secondary-corner" onLayout={handleTrackLayout}>
                 <GrowBar ratio={ratio} className="h-full overflow-hidden rounded-[3px]">
-                    <Svg width="100%" height="100%">
+                    <Svg width={trackWidth} height="100%">
                         <Defs>
                             <LinearGradient id={GRADIENT_ID} x1="0" y1="0" x2="1" y2="0">
                                 <Stop offset="0" stopColor={fromColor} stopOpacity={fromOpacity} />
