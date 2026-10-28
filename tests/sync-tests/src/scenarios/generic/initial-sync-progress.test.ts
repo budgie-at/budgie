@@ -33,6 +33,7 @@ const makeSync = (overrides: Partial<SyncEntityInterface>): SyncEntityInterface 
     transactionCount: 0,
     errorCount: 0,
     lastError: null,
+    lastErrorCode: null,
     lastWarning: null,
     binanceTradeCursor: null,
     binanceCapitalPendingFromAt: null,

@@ -120,7 +120,7 @@ describe('binance/fiat-history', () => {
             yield* binanceSyncService.sync(Date.now() + RUN_DEADLINE_MS).pipe(Effect.ensuring(restoreRealTimers));
 
             expect(yield* fetchExternalIds()).toEqual([]);
-            expect((yield* fetchHistoryProgress(token)).FIAT.tailAt).toBeLessThan(Date.now() - 300 * DAY_MS);
+            expect((yield* fetchHistoryProgress(token))['FIAT'].tailAt).toBeLessThan(Date.now() - 300 * DAY_MS);
 
             const resumedWindows: TimeWindow[] = [];
             binanceStub.fiatOrders([order], [], resumedWindows);

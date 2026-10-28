@@ -89,11 +89,13 @@ export const setupStaleForwardFixture = (baseAssets: readonly string[] = ['ADA']
 
 export const setupUsdtSpotFixtureWithBalances = (baseAsset: string, baseFree: string) =>
     Effect.gen(function* () {
-        yield* setupBinanceFixture({ asset: 'USDT' });
+        const fixture = yield* setupBinanceFixture({ asset: 'USDT' });
         binanceStub.spotBalances([
             buildBinance.balance({ asset: 'USDT', free: SPOT_QUOTE_FREE }),
             buildBinance.balance({ asset: baseAsset, free: baseFree })
         ]);
+
+        return fixture;
     });
 
 export const expectSingleBinanceTransaction = (transactionType: TransactionTypeEnum, externalId: string) =>
