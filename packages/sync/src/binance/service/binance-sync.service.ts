@@ -162,6 +162,18 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             patchTokenRun(token, { balancesAnchored: true });
         });
 
+        const findIntegrationIdMap = Effect.fnUntraced(function* (token: string) {
+            const integration = yield* syncIntegrationTokenService.getOrCreateIntegration(provider, token);
+            const integrationAccounts = (yield* accountRepository.findByExternalSource(provider)).filter(
+                account => account.integrationId === integration.id
+            );
+
+            return yield* transactionService.findIdMapByExternalSource(
+                provider,
+                integrationAccounts.map(account => account.id)
+            );
+        });
+
         const enqueueExistingSourceConsolidation = Effect.fnUntraced(function* (
             sourceTransactions: SyncTransactionInterface[],
             existingIdMap: ReadonlyMap<string, number>
@@ -219,7 +231,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             return reconciledCount;
         });
 
-        const createSyncedSources = Effect.fnUntraced(function* (transactions: SyncTransactionInterface[], token: string) {
+        const buildSourceInputs = Effect.fnUntraced(function* (transactions: SyncTransactionInterface[], token: string) {
             const resolveAccount = yield* buildRunAccountResolver(token);
             const inputs: TransactionCreateInputInterface[] = [];
             for (const [index, transaction] of transactions.entries()) {
@@ -237,7 +249,21 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 }
             }
 
+            return inputs;
+        });
+
+        const createSyncedSources = Effect.fnUntraced(function* (transactions: SyncTransactionInterface[], token: string) {
+            const inputs = yield* buildSourceInputs(transactions, token);
+
             return isNotEmptyArray(inputs) ? (yield* transactionService.bulkCreate(inputs)).length : 0;
+        });
+
+        const updateSyncedSources = Effect.fnUntraced(function* (transactions: SyncTransactionInterface[], token: string) {
+            const inputs = yield* buildSourceInputs(transactions, token);
+            if (isNotEmptyArray(inputs)) {
+                yield* transactionService.bulkUpdateImported(inputs);
+                yield* accountBalanceIncrementalService.updateAllBalances(true);
+            }
         });
 
         const createSyncedTransfers = Effect.fnUntraced(function* (transfers: BinanceTransferInterface[], token: string) {
@@ -256,7 +282,8 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
         const commitSourceType = Effect.fnUntraced(function* (
             token: string,
             fetchSourceType: Effect.Effect<SyncTransactionInterface[], SyncError, HttpClient.HttpClient>,
-            enqueueExistingConsolidation: boolean
+            enqueueExistingConsolidation: boolean,
+            updateExistingAmounts = false
         ) {
             const transactions = yield* fetchSourceType.pipe(
                 Effect.tapError(() =>
@@ -269,9 +296,12 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 return 0;
             }
 
-            const existingIdMap = yield* transactionService.findIdMapByExternalSource(provider);
+            const existingIdMap = yield* findIntegrationIdMap(token);
             const existingTransactions = transactions.filter(sourceTransaction => existingIdMap.has(sourceTransaction.id));
             const reconciledCount = yield* reconcileSourceAccounts(existingTransactions, token, existingIdMap);
+            if (updateExistingAmounts && isNotEmptyArray(existingTransactions)) {
+                yield* updateSyncedSources(existingTransactions, token);
+            }
             if (enqueueExistingConsolidation) {
                 yield* enqueueExistingSourceConsolidation(existingTransactions, existingIdMap);
             }
@@ -283,13 +313,13 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 : reconciledCount;
         });
 
-        const removeRejectedCapitalTransactions = Effect.fnUntraced(function* (client: BinanceSignedClient) {
+        const removeRejectedCapitalTransactions = Effect.fnUntraced(function* (token: string, client: BinanceSignedClient) {
             const rejectedExternalIds = client.getRejectedCapitalExternalIds();
             if (rejectedExternalIds.size === 0) {
                 return 0;
             }
 
-            const existingIdMap = yield* transactionService.findIdMapByExternalSource(provider);
+            const existingIdMap = yield* findIntegrationIdMap(token);
             const removableTransactionIds = [...rejectedExternalIds].map(externalId => existingIdMap.get(externalId)).filter(isDefined);
             for (const transactionId of removableTransactionIds) {
                 const consolidationParentId = (yield* transactionRepository.getByIdRaw(transactionId))?.consolidationParentTransactionId;
@@ -309,7 +339,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 client.getCapitalTransactions(getUnixTime(resolveCapitalWindowStart(sync))),
                 false
             );
-            const removedCount = yield* removeRejectedCapitalTransactions(client);
+            const removedCount = yield* removeRejectedCapitalTransactions(token, client);
             const pendingFromMs = client.getCapitalPendingFromMs();
             yield* syncRepository.update(sync.id, {
                 binanceCapitalPendingFromAt: isDefined(pendingFromMs) ? new Date(pendingFromMs) : null
@@ -328,8 +358,12 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 fromUnixTime: getUnixTime(resolveWindowStart(sync)),
                 eligibleSoldOffBaseAssets: yield* binanceAssetCodeService.resolveEligibleSoldOffBaseAssets(provider)
             });
-            const existingIds = yield* transactionService.findByExternalSource(provider);
-            const newTransfers = transfers.filter(transfer => !existingIds.has(transfer.externalId));
+            const existingIdMap = yield* findIntegrationIdMap(token);
+            const newTransfers = transfers.filter(
+                transfer =>
+                    !existingIdMap.has(transfer.externalId) &&
+                    !(isDefined(transfer.legacyExternalId) && existingIdMap.has(transfer.legacyExternalId))
+            );
             const createdCount = isNotEmptyArray(newTransfers) ? yield* createSyncedTransfers(newTransfers, token) : 0;
             yield* binanceTradeCursorService.persistTradeCursors(sync, client);
             patchTokenRun(token, { transfersSynced: true });
@@ -347,7 +381,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
 
             return (
                 (yield* commitSourceType(token, client.getC2cTransactions(fromUnixTime), true)) +
-                (yield* commitSourceType(token, client.getEarnTransactions(fromUnixTime), false)) +
+                (yield* commitSourceType(token, client.getEarnTransactions(fromUnixTime), false, true)) +
                 (yield* commitCapitalSource(sync, token))
             );
         });

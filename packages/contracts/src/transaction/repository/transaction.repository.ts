@@ -4,7 +4,7 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { transactionFilters } from '../../@generic/repository/base-transaction-filter.repository';
 import { Db } from '../../@generic/service/db.service';
@@ -204,8 +204,13 @@ export class TransactionRepository extends Context.Service<TransactionRepository
             findByIdsWithRefundConsolidationHistory: (ids: number[]) => findByIdsWithEntriesWhere(ids, NOT_DELETED_ENTRY_RELATION_WHERE),
 
             findIdMapByExternalSource: Effect.fn('TransactionRepository.findIdMapByExternalSource')(function* (
-                externalSource: ExternalSourceEnum
+                externalSource: ExternalSourceEnum,
+                accountIds?: readonly number[]
             ) {
+                if (isDefined(accountIds) && isEmptyArray(accountIds)) {
+                    return new Map<string, number>();
+                }
+
                 const results = yield* Db.query(db =>
                     db
                         .select({ id: TransactionEntityTable.id, externalId: TransactionEntityTable.externalId })
@@ -214,7 +219,15 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                             and(
                                 eq(TransactionEntityTable.externalSource, externalSource),
                                 isNotNull(TransactionEntityTable.externalId),
-                                isNull(TransactionEntityTable.deletedAt)
+                                isNull(TransactionEntityTable.deletedAt),
+                                ...(isDefined(accountIds)
+                                    ? [
+                                          or(
+                                              inArray(TransactionEntityTable.fromAccountId, [...accountIds]),
+                                              inArray(TransactionEntityTable.toAccountId, [...accountIds])
+                                          )
+                                      ]
+                                    : [])
                             )
                         )
                 );

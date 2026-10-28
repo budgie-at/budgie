@@ -62,6 +62,7 @@ import {
     parseBinanceAmount
 } from '../mapper/binance.mapper';
 import { decodeBinanceAccountId, encodeBinanceAccountId } from '../utils/binance-account-id.util';
+import { parseBinanceApplyTimeMs } from '../utils/parse-binance-apply-time.util';
 
 import { BinanceWeightThrottle } from './binance-weight-throttle';
 
@@ -112,6 +113,7 @@ const SERVER_TIME_ENDPOINT = '/api/v3/time';
 const EXCHANGE_INFO_ENDPOINT = '/api/v3/exchangeInfo';
 const SIGNATURE_RECV_WINDOW_MS = 60000;
 const MILLISECONDS_PER_SECOND = 1000;
+const MILLISECONDS_PER_DAY = 86_400_000;
 const MAX_TRANSACTIONS_PER_WINDOW = 500;
 const FIAT_ROWS_PER_PAGE = 500;
 const FIAT_DEPOSIT_TRANSACTION_TYPE = 0;
@@ -228,7 +230,9 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         to?: number
     ) {
         return yield* this.getSourceTransactions(BinanceWalletEnum.SPOT, from, to, (startTimeMs, endTimeMs) =>
-            Effect.map(this.fetchEarnRewards(startTimeMs, endTimeMs), earnRewards => this.emptySources({ earnRewards }))
+            Effect.map(this.fetchEarnRewards(startTimeMs - (startTimeMs % MILLISECONDS_PER_DAY), endTimeMs), earnRewards =>
+                this.emptySources({ earnRewards })
+            )
         );
     });
 
@@ -321,7 +325,11 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
                 this.recordCapitalOutcome(buildBinanceDepositExternalId(deposit), deposit.insertTime, getBinanceDepositOutcome(deposit))
             ),
             withdrawals: withdrawals.filter(withdrawal =>
-                this.recordCapitalOutcome(withdrawal.id, new Date(withdrawal.applyTime).getTime(), getBinanceWithdrawalOutcome(withdrawal))
+                this.recordCapitalOutcome(
+                    withdrawal.id,
+                    parseBinanceApplyTimeMs(withdrawal.applyTime),
+                    getBinanceWithdrawalOutcome(withdrawal)
+                )
             )
         });
     });
@@ -420,12 +428,12 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         let windowEndMs = config.endTimeMs;
         let consecutiveEmptyWindows = 0;
 
-        while (consecutiveEmptyWindows < config.dormancyWindowCount && windowEndMs > config.startTimeMs) {
+        while (consecutiveEmptyWindows < config.dormancyWindowCount && windowEndMs >= config.startTimeMs) {
             const windowStartMs = Math.max(config.startTimeMs, windowEndMs - config.periodMs);
             const windowRecords = yield* fetchOneWindow(windowStartMs, windowEndMs);
             records.push(...windowRecords);
             consecutiveEmptyWindows = isNotEmptyArray(windowRecords) ? 0 : consecutiveEmptyWindows + 1;
-            windowEndMs = windowStartMs;
+            windowEndMs = windowStartMs - 1;
         }
 
         return records;
@@ -612,7 +620,16 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
                 const lastWindowTrade = windowTrades.at(-1);
 
                 transfers.push(
-                    ...windowTrades.map(trade => mapBinanceTradeToTransfer(trade, symbol.baseAsset, symbol.quoteAsset)).filter(isDefined)
+                    ...windowTrades
+                        .map(trade =>
+                            mapBinanceTradeToTransfer(
+                                trade,
+                                symbol.baseAsset,
+                                symbol.quoteAsset,
+                                !trade.isBuyer && windowTrades.some(sibling => sibling.id === trade.id && sibling.isBuyer)
+                            )
+                        )
+                        .filter(isDefined)
                 );
                 lastWindowTradeId = lastWindowTrade?.id ?? lastWindowTradeId;
                 fromId = trades.length === TRADES_PER_SYMBOL_LIMIT && isDefined(lastTrade) ? lastTrade.id + 1 : null;
