@@ -28,6 +28,8 @@ import { SyncUnauthorizedError } from '../../core/error/sync-unauthorized.error'
 import { BinanceCredentialsSchema } from '../constant/binance-credentials.schema';
 import { BinanceCapitalOutcomeEnum } from '../enum/binance-capital-outcome.enum';
 import { BinanceWalletEnum } from '../enum/binance-wallet.enum';
+import { BinanceKeyPermissionsError } from '../error/binance-key-permissions.error';
+import { BinanceApiRestrictionsApiSchema } from '../interface/binance-api-restrictions-api.schema';
 import { BinanceAssetBalanceListApiSchema } from '../interface/binance-asset-balance-api.schema';
 import { BinanceC2cOrderListApiSchema } from '../interface/binance-c2c-order-api.schema';
 import { BinanceConvertTradeFlowApiSchema } from '../interface/binance-convert-api.schema';
@@ -64,6 +66,7 @@ import type { SyncTransactionInterface } from '../../core/interface/sync-transac
 import type { BinanceCredentialsInterface } from '../constant/binance-credentials.schema';
 import type { BinanceTradeCursorMapInterface } from '../constant/binance-trade-cursor-map.schema';
 import type { BinanceAccountIdInterface } from '../interface/binance-account-id.interface';
+import type { BinanceApiRestrictionsApiInterface } from '../interface/binance-api-restrictions-api.schema';
 import type { BinanceAssetBalanceApiInterface } from '../interface/binance-asset-balance-api.schema';
 import type { BinanceC2cOrderApiInterface } from '../interface/binance-c2c-order-api.schema';
 import type { BinanceCapitalHistorySourceInterface } from '../interface/binance-capital-history-source.interface';
@@ -95,6 +98,7 @@ const MY_TRADES_ENDPOINT = '/api/v3/myTrades';
 const EARN_POSITION_ENDPOINT = '/sapi/v1/simple-earn/flexible/position';
 const LOCKED_EARN_POSITION_ENDPOINT = '/sapi/v1/simple-earn/locked/position';
 const EARN_REWARDS_ENDPOINT = '/sapi/v1/simple-earn/flexible/history/rewardsRecord';
+const API_RESTRICTIONS_ENDPOINT = '/sapi/v1/account/apiRestrictions';
 const SERVER_TIME_ENDPOINT = '/api/v3/time';
 const EXCHANGE_INFO_ENDPOINT = '/api/v3/exchangeInfo';
 const SIGNATURE_RECV_WINDOW_MS = 60000;
@@ -136,6 +140,16 @@ const RETRY_AFTER_HEADER = 'retry-after';
 export class BinanceSignedClient extends BaseSyncProviderClient {
     private static readonly C2C_HISTORY_MONTHS = 6;
     private static readonly CAPITAL_PENDING_MAX_AGE_DAYS = 180;
+
+    private static readonly FORBIDDEN_KEY_PERMISSIONS = [
+        'enableSpotAndMarginTrading',
+        'enableWithdrawals',
+        'enableInternalTransfer',
+        'permitsUniversalTransfer',
+        'enableMargin',
+        'enableFutures'
+    ] as const satisfies readonly (keyof BinanceApiRestrictionsApiInterface)[];
+
     private static readonly decodeCredentials = Schema.decodeUnknownOption(Schema.fromJsonString(BinanceCredentialsSchema));
 
     readonly getAccounts = Effect.fn('BinanceSignedClient.getAccounts')(function* (this: BinanceSignedClient) {
@@ -162,6 +176,17 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             ...this.buildSpotAccounts(balanceByAsset),
             ...fundingBalances.map(balance => this.mapBalance(balance, BinanceWalletEnum.FUNDING)).filter(isDefined)
         ];
+    });
+
+    readonly assertReadOnlyKey = Effect.fn('BinanceSignedClient.assertReadOnlyKey')(function* (this: BinanceSignedClient) {
+        const restrictions = yield* this.signedRequest(BinanceApiRestrictionsApiSchema, API_RESTRICTIONS_ENDPOINT, 'GET');
+        const permissions = BinanceSignedClient.FORBIDDEN_KEY_PERMISSIONS.filter(permission => restrictions[permission]);
+        if (isNotEmptyArray(permissions)) {
+            return yield* new BinanceKeyPermissionsError({
+                permissions,
+                message: `Binance API key must be read-only, but has: ${permissions.join(', ')}`
+            });
+        }
     });
 
     readonly getC2cTransactions = Effect.fn('BinanceSignedClient.getC2cTransactions')(function* (

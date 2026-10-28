@@ -1,4 +1,4 @@
-import { BinanceCredentialsSchema, SyncProviderRegistryService } from '@budgie/sync';
+import { BinanceCredentialsSchema, BinanceKeyPermissionsError, SyncProviderRegistryService } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Option from 'effect/Option';
@@ -63,6 +63,14 @@ export const BinanceSyncTokenSection = ({ accountId }: Props) => {
                         setIsEditing(false);
                         setApiKey('');
                         setApiSecret('');
+                    })
+                ),
+                Effect.catchIf(Schema.is(BinanceKeyPermissionsError), () =>
+                    Effect.sync(() => {
+                        showErrorToast(
+                            t`Key has too many permissions`,
+                            t`This API key can trade, withdraw or transfer funds. Create a key with only "Enable Reading" and try again.`
+                        );
                     })
                 ),
                 toastOnFailure(t`Could not update token`)

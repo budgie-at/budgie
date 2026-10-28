@@ -1,5 +1,6 @@
 import { BinanceSyncService } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { useState } from 'react';
 
 import { isNotEmptyString } from '@rnw-community/shared';
@@ -40,7 +41,20 @@ export const CreateBinanceAccount = () => {
         }
 
         void fetchAccountPreviews(
-            binanceSyncService => binanceSyncService.fetchAccountsPreview(buildToken()),
+            binanceSyncService =>
+                binanceSyncService.fetchAccountsPreview(buildToken()).pipe(
+                    Effect.catchTags({
+                        BinanceKeyPermissionsError: () =>
+                            Effect.sync(() => {
+                                showErrorToast(
+                                    t`Key has too many permissions`,
+                                    t`This API key can trade, withdraw or transfer funds. Create a key with only "Enable Reading" and try again.`
+                                );
+
+                                return null;
+                            })
+                    })
+                ),
             previews => {
                 accountSelection.setPreviews(previews.filter(preview => !preview.isParked));
                 setParkedPreviews(previews.filter(preview => preview.isParked));
