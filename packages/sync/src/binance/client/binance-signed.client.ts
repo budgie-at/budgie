@@ -8,7 +8,7 @@ import * as Effect from 'effect/Effect';
 import * as Option from 'effect/Option';
 import * as Schema from 'effect/Schema';
 
-import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { BaseSyncProviderClient } from '../../core/client/base-sync-provider.client';
 import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
@@ -69,7 +69,7 @@ import type { HttpMethod } from 'effect/http/HttpMethod';
 const API_BASE_URL = 'https://api.binance.com';
 const DORMANCY_PERIOD_MS = 7_776_000_000;
 const FIAT_MAX_PERIOD_MS = 2592000000;
-const MAJOR_QUOTE_ASSETS = ['USDT', 'FDUSD', 'BTC', 'BNB', 'BUSD'] as const;
+const MAJOR_QUOTE_ASSETS: readonly string[] = ['USDT', 'FDUSD', 'BTC', 'BNB', 'BUSD'];
 const SPOT_BALANCE_ENDPOINT = '/sapi/v3/asset/getUserAsset';
 const FUNDING_BALANCE_ENDPOINT = '/sapi/v1/asset/get-funding-asset';
 const DEPOSIT_HISTORY_ENDPOINT = '/sapi/v1/capital/deposit/hisrec';
@@ -83,7 +83,6 @@ const LOCKED_EARN_POSITION_ENDPOINT = '/sapi/v1/simple-earn/locked/position';
 const EARN_REWARDS_ENDPOINT = '/sapi/v1/simple-earn/flexible/history/rewardsRecord';
 const SERVER_TIME_ENDPOINT = '/api/v3/time';
 const EXCHANGE_INFO_ENDPOINT = '/api/v3/exchangeInfo';
-const EXCHANGE_INFO_TRADING_STATUS = 'TRADING';
 const SIGNATURE_RECV_WINDOW_MS = 60000;
 const MILLISECONDS_PER_SECOND = 1000;
 const MAX_TRANSACTIONS_PER_WINDOW = 500;
@@ -225,7 +224,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     private c2cUnavailableThisRun = false;
     private readonly c2cHistoryFloorTimeMs = subMonths(new Date(), BinanceSignedClient.C2C_HISTORY_MONTHS).getTime();
     private serverTimeOffsetMs: number | undefined;
-    private validSymbols: Set<string> | undefined;
+    private exchangeSymbols: BinanceTradeSymbolInterface[] | undefined;
 
     private readonly fetchCapitalSources = Effect.fn('BinanceSignedClient.fetchCapitalSources')(function* (
         this: BinanceSignedClient,
@@ -273,9 +272,11 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return [...older, ...newer];
     });
 
-    private readonly resolveValidSymbols = Effect.fn('BinanceSignedClient.resolveValidSymbols')(function* (this: BinanceSignedClient) {
-        if (isDefined(this.validSymbols)) {
-            return this.validSymbols;
+    private readonly resolveExchangeSymbols = Effect.fn('BinanceSignedClient.resolveExchangeSymbols')(function* (
+        this: BinanceSignedClient
+    ) {
+        if (isDefined(this.exchangeSymbols)) {
+            return this.exchangeSymbols;
         }
 
         yield* this.throttle.waitIfNeeded();
@@ -285,11 +286,9 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             return null;
         }
 
-        this.validSymbols = new Set(
-            exchangeInfo.value.symbols.filter(symbol => symbol.status === EXCHANGE_INFO_TRADING_STATUS).map(symbol => symbol.symbol)
-        );
+        this.exchangeSymbols = exchangeInfo.value.symbols.map(({ symbol, baseAsset, quoteAsset }) => ({ symbol, baseAsset, quoteAsset }));
 
-        return this.validSymbols;
+        return this.exchangeSymbols;
     });
 
     private readonly resolveTimestamp = Effect.fn('BinanceSignedClient.resolveTimestamp')(function* (this: BinanceSignedClient) {
@@ -413,7 +412,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     ) {
         return Effect.gen({ self: this }, function* (this: BinanceSignedClient) {
             const balances = yield* this.signedRequest(BinanceAssetBalanceListApiSchema, SPOT_BALANCE_ENDPOINT, 'POST');
-            const baseAssets = this.collectBaseAssets(balances, convertTransfers);
+            const touchedAssets = this.collectTouchedAssets(balances, convertTransfers);
             const deposits = yield* this.fetchCapitalHistory(this.depositSource, BinanceWalletEnum.SPOT, startTimeMs, endTimeMs).pipe(
                 Effect.catchTag('SyncUnauthorizedError', this.recoverMissingPermission)
             );
@@ -423,15 +422,22 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             const c2cOrders = yield* this.fetchC2cOrders(startTimeMs, endTimeMs).pipe(
                 Effect.catchTag('SyncUnauthorizedError', this.recoverMissingPermission)
             );
+            const fiatDeposits = yield* this.fetchFiatOrders(FIAT_DEPOSIT_TRANSACTION_TYPE, startTimeMs, endTimeMs).pipe(
+                Effect.catchTag('SyncUnauthorizedError', this.recoverMissingPermission)
+            );
+            const fiatWithdrawals = yield* this.fetchFiatOrders(FIAT_WITHDRAW_TRANSACTION_TYPE, startTimeMs, endTimeMs).pipe(
+                Effect.catchTag('SyncUnauthorizedError', this.recoverMissingPermission)
+            );
             [
                 ...deposits.map(deposit => deposit.coin),
                 ...withdrawals.map(withdrawal => withdrawal.coin),
-                ...c2cOrders.map(order => order.asset)
-            ].forEach(asset => baseAssets.add(asset));
-            const validSymbols = yield* this.resolveValidSymbols();
-            const candidates = this.buildTradeSymbolCandidates(baseAssets, validSymbols, new Set(eligibleSoldOffBaseAssets));
+                ...c2cOrders.map(order => order.asset),
+                ...fiatDeposits.map(order => order.fiatCurrency),
+                ...fiatWithdrawals.map(order => order.fiatCurrency)
+            ].forEach(asset => touchedAssets.add(asset));
+            const exchangeSymbols = yield* this.resolveExchangeSymbols();
 
-            return isDefined(validSymbols) ? candidates.filter(candidate => validSymbols.has(candidate.symbol)) : candidates;
+            return this.buildTradeSymbolCandidates(touchedAssets, exchangeSymbols, new Set(eligibleSoldOffBaseAssets));
         });
     }
 
@@ -727,15 +733,15 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return [...byId.values()];
     }
 
-    private collectBaseAssets(
+    private collectTouchedAssets(
         balances: readonly BinanceAssetBalanceApiInterface[],
         convertTransfers: BinanceTransferInterface[]
     ): Set<string> {
-        const baseAssets = new Set<string>();
+        const touchedAssets = new Set<string>();
         for (const balance of balances) {
             const total = this.computeRawTotalBalance(balance);
             if (isDefined(total) && total > 0) {
-                baseAssets.add(balance.asset);
+                touchedAssets.add(balance.asset);
             }
         }
 
@@ -745,55 +751,38 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
                 decodeBinanceAccountId(transfer.toAssetAccountId)
             ]) {
                 if (isDefined(decoded)) {
-                    baseAssets.add(decoded.asset);
+                    touchedAssets.add(decoded.asset);
                 }
             }
         }
 
-        return baseAssets;
+        return touchedAssets;
     }
 
     private buildTradeSymbolCandidates(
-        baseAssets: Set<string>,
-        validSymbols: Set<string> | null,
+        touchedAssets: Set<string>,
+        exchangeSymbols: BinanceTradeSymbolInterface[] | null,
         eligibleSoldOffBaseAssets: Set<string>
     ): BinanceTradeSymbolInterface[] {
-        const symbolsById = new Map<string, BinanceTradeSymbolInterface>();
-        for (const baseAsset of baseAssets) {
+        if (isDefined(exchangeSymbols)) {
+            return exchangeSymbols.filter(({ baseAsset, quoteAsset }) => {
+                const isTouchedQuote = touchedAssets.has(quoteAsset);
+                const isEligibleBase = touchedAssets.has(baseAsset) || eligibleSoldOffBaseAssets.has(baseAsset);
+
+                return (isTouchedQuote && isEligibleBase) || (touchedAssets.has(baseAsset) && MAJOR_QUOTE_ASSETS.includes(quoteAsset));
+            });
+        }
+
+        const fallbackSymbols: BinanceTradeSymbolInterface[] = [];
+        for (const baseAsset of touchedAssets) {
             for (const quoteAsset of MAJOR_QUOTE_ASSETS) {
                 if (baseAsset !== quoteAsset) {
-                    const symbol = `${baseAsset}${quoteAsset}`;
-                    symbolsById.set(symbol, { symbol, baseAsset, quoteAsset });
+                    fallbackSymbols.push({ symbol: `${baseAsset}${quoteAsset}`, baseAsset, quoteAsset });
                 }
             }
         }
 
-        for (const symbol of validSymbols ?? []) {
-            const tradeSymbol = this.parseSelectedQuoteTradeSymbol(symbol, baseAssets, eligibleSoldOffBaseAssets);
-            if (isDefined(tradeSymbol)) {
-                symbolsById.set(tradeSymbol.symbol, tradeSymbol);
-            }
-        }
-
-        return [...symbolsById.values()];
-    }
-
-    private parseSelectedQuoteTradeSymbol(
-        symbol: string,
-        baseAssets: Set<string>,
-        eligibleSoldOffBaseAssets: Set<string>
-    ): BinanceTradeSymbolInterface | null {
-        for (const quoteAsset of MAJOR_QUOTE_ASSETS) {
-            const isSelectedQuotePair = baseAssets.has(quoteAsset) && symbol.endsWith(quoteAsset) && symbol !== quoteAsset;
-            if (isSelectedQuotePair) {
-                const baseAsset = symbol.slice(0, -quoteAsset.length);
-                const isSpotTradeable = isNotEmptyString(baseAsset) && eligibleSoldOffBaseAssets.has(baseAsset);
-
-                return isSpotTradeable ? { symbol, baseAsset, quoteAsset } : null;
-            }
-        }
-
-        return null;
+        return fallbackSymbols;
     }
 
     private buildSpotBalanceMap(balances: readonly BinanceAssetBalanceApiInterface[]): Map<string, number | null> {
