@@ -4,6 +4,8 @@ import { useEffect, useEffectEvent, useRef } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withDelay, withSequence, withTiming } from 'react-native-reanimated';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { Card } from '../../../@generic/component/card/card';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
