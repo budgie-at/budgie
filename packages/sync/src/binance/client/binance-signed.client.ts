@@ -89,7 +89,6 @@ import type * as HttpClient from 'effect/http/HttpClient';
 import type { HttpMethod } from 'effect/http/HttpMethod';
 
 const API_BASE_URL = 'https://api.binance.com';
-const DORMANCY_PERIOD_MS = 7_776_000_000;
 const FIAT_MAX_PERIOD_MS = 2592000000;
 const MAJOR_QUOTE_ASSETS: readonly string[] = ['USDT', 'FDUSD', 'BTC', 'BNB', 'BUSD'];
 const SPOT_BALANCE_ENDPOINT = '/sapi/v3/asset/getUserAsset';
@@ -118,7 +117,8 @@ const MAX_TRANSACTIONS_PER_WINDOW = 500;
 const FIAT_ROWS_PER_PAGE = 500;
 const FIAT_DEPOSIT_TRANSACTION_TYPE = 0;
 const FIAT_WITHDRAW_TRANSACTION_TYPE = 1;
-const FIAT_SUCCESSFUL_STATUS = 'Successful';
+const FIAT_ACCEPTED_STATUSES: readonly string[] = ['Successful', 'Finished'];
+const FIAT_DISCOVERY_DORMANCY_WINDOW_COUNT = 3;
 const C2C_BUY_TRADE_TYPE = 'BUY';
 const C2C_SELL_TRADE_TYPE = 'SELL';
 const C2C_COMPLETED_STATUS = 'COMPLETED';
@@ -249,10 +249,10 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     readonly getFiatTransactions = Effect.fn('BinanceSignedClient.getFiatTransactions')(function* (
         this: BinanceSignedClient,
         from: number,
-        to?: number
+        to: number | null = null
     ) {
         return yield* this.getSourceTransactions(BinanceWalletEnum.SPOT, from, to, (startTimeMs, endTimeMs) =>
-            this.fetchFiatSources(startTimeMs, endTimeMs)
+            this.fetchFiatSources(startTimeMs, endTimeMs, UNBOUNDED_DORMANCY_WINDOW_COUNT)
         );
     });
 
@@ -337,10 +337,11 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     private readonly fetchFiatSources = Effect.fn('BinanceSignedClient.fetchFiatSources')(function* (
         this: BinanceSignedClient,
         startTimeMs: number,
-        endTimeMs: number
+        endTimeMs: number,
+        dormancyWindowCount: number
     ) {
-        const fiatDeposits = yield* this.fetchFiatOrders(FIAT_DEPOSIT_TRANSACTION_TYPE, startTimeMs, endTimeMs);
-        const fiatWithdrawals = yield* this.fetchFiatOrders(FIAT_WITHDRAW_TRANSACTION_TYPE, startTimeMs, endTimeMs);
+        const fiatDeposits = yield* this.fetchFiatOrders(FIAT_DEPOSIT_TRANSACTION_TYPE, startTimeMs, endTimeMs, dormancyWindowCount);
+        const fiatWithdrawals = yield* this.fetchFiatOrders(FIAT_WITHDRAW_TRANSACTION_TYPE, startTimeMs, endTimeMs, dormancyWindowCount);
 
         return this.emptySources({ fiatDeposits, fiatWithdrawals });
     });
@@ -583,7 +584,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             const { deposits, withdrawals } = yield* this.fetchCapitalSources(BinanceWalletEnum.SPOT, startTimeMs, endTimeMs);
             const c2cOrders = yield* this.fetchC2cOrders(startTimeMs, endTimeMs);
             const { fiatDeposits, fiatWithdrawals } = this.isFiatDiscoveryEnabled
-                ? yield* this.fetchFiatSources(startTimeMs, endTimeMs)
+                ? yield* this.fetchFiatSources(startTimeMs, endTimeMs, FIAT_DISCOVERY_DORMANCY_WINDOW_COUNT)
                 : this.emptySources({});
             [
                 ...this.collectTouchedAssets(balances, convertTransfers),
@@ -707,16 +708,16 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         );
     }
 
-    private fetchFiatOrders(transactionType: number, startTimeMs: number, endTimeMs: number) {
+    private fetchFiatOrders(transactionType: number, startTimeMs: number, endTimeMs: number, dormancyWindowCount: number) {
         return this.cached(
             this.fiatOrderCache,
-            `${transactionType}:${FIAT_ORDERS_ENDPOINT}:${startTimeMs}-${endTimeMs}`,
+            `${transactionType}:${FIAT_ORDERS_ENDPOINT}:${startTimeMs}-${endTimeMs}:${dormancyWindowCount}`,
             this.walkWindowsBackward(
                 {
                     startTimeMs,
                     endTimeMs,
                     periodMs: FIAT_MAX_PERIOD_MS,
-                    dormancyWindowCount: Math.max(1, Math.ceil(DORMANCY_PERIOD_MS / FIAT_MAX_PERIOD_MS))
+                    dormancyWindowCount
                 },
                 (windowStartMs, windowEndMs) =>
                     this.collectPages(page =>
@@ -728,7 +729,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
                             rows: FIAT_ROWS_PER_PAGE
                         }).pipe(
                             Effect.map(response => ({
-                                rows: response.data.filter(order => order.status === FIAT_SUCCESSFUL_STATUS),
+                                rows: response.data.filter(order => FIAT_ACCEPTED_STATUSES.includes(order.status)),
                                 hasMore: response.data.length === FIAT_ROWS_PER_PAGE
                             }))
                         )
@@ -873,7 +874,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     private getSourceTransactions(
         wallet: BinanceWalletEnum,
         from: number,
-        to: number | undefined,
+        to: number | null | undefined,
         fetchSources: (
             startTimeMs: number,
             endTimeMs: number

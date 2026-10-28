@@ -137,6 +137,11 @@ export class SyncIntegrationTokenService extends Context.Service<SyncIntegration
                 ) {
                     return (yield* bankIntegrationRepository.findById(integrationId))?.externalClientId ?? null;
                 }),
+                findFiatHistoryFromAt: Effect.fn('SyncIntegrationTokenService.findFiatHistoryFromAt')(function* (integrationId: number) {
+                    return (yield* bankIntegrationRepository.findById(integrationId))?.fiatHistoryFromAt ?? null;
+                }),
+                setFiatHistoryFromAt: (integrationId: number, fiatHistoryFromAt: Date) =>
+                    bankIntegrationRepository.updateById(integrationId, { fiatHistoryFromAt }),
                 findIntegrationByClientId: (provider: ExternalSourceEnum, externalClientId: string) =>
                     bankIntegrationRepository.findByProviderAndClientId(provider, externalClientId),
                 getOrCreateIntegration,

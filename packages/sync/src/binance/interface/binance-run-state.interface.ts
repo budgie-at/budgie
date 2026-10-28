@@ -2,6 +2,7 @@ import type { BinanceTokenRunStateInterface } from './binance-token-run-state.in
 
 export interface BinanceRunStateInterface {
     readonly deadlineAtMs: number;
+    readonly startedAtMs: number;
     readonly isDeferred: boolean;
     readonly providerSourceFailed: boolean;
     readonly tokenRuns: ReadonlyMap<string, BinanceTokenRunStateInterface>;

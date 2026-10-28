@@ -9,6 +9,7 @@ import {
 import { getUnixTime } from 'date-fns/getUnixTime';
 import { subHours } from 'date-fns/subHours';
 import { subYears } from 'date-fns/subYears';
+import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -71,30 +72,34 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
         const fiatRefreshIntervalMs = 23 * 60 * 60 * 1000;
         const decodeCredentials = Schema.decodeUnknownEffect(Schema.fromJsonString(BinanceCredentialsSchema));
         const transferLookbackYears = 5;
-        const freshRunState = (deadlineAtMs: number): BinanceRunStateInterface => ({
+        const fiatBackfillChunkSeconds = 365 * 24 * 60 * 60;
+        const fiatBackfillHeadSeconds = 30 * 24 * 60 * 60;
+        const freshRunState = (deadlineAtMs: number, startedAtMs: number): BinanceRunStateInterface => ({
             deadlineAtMs,
+            startedAtMs,
             isDeferred: false,
             providerSourceFailed: false,
             tokenRuns: new Map()
         });
-        let run = freshRunState(Number.POSITIVE_INFINITY);
+        let run = freshRunState(Number.POSITIVE_INFINITY, 0);
         const fiatSyncedAtMsByToken = new Map<string, number>();
 
         const markRunDeferred = Effect.sync(() => {
             run = { ...run, isDeferred: true };
         });
 
-        const resolveWindowStart = (sync: SyncEntityInterface): Date => {
-            if (sync.mode === SyncModeEnum.BACKWARD) {
-                return subYears(sync.backwardSyncFromAt ?? sync.forwardSyncFromAt ?? new Date(), transferLookbackYears);
-            }
+        const resolveLookbackStart = (sync: SyncEntityInterface): Date =>
+            subYears(
+                sync.mode === SyncModeEnum.BACKWARD
+                    ? (sync.backwardSyncFromAt ?? sync.forwardSyncFromAt ?? new Date())
+                    : (sync.forwardSyncFromAt ?? new Date()),
+                transferLookbackYears
+            );
 
-            if (isDefined(sync.forwardSyncedAt)) {
-                return subHours(sync.forwardSyncedAt, forwardOverlapHours);
-            }
-
-            return subYears(sync.forwardSyncFromAt ?? new Date(), transferLookbackYears);
-        };
+        const resolveWindowStart = (sync: SyncEntityInterface): Date =>
+            sync.mode !== SyncModeEnum.BACKWARD && isDefined(sync.forwardSyncedAt)
+                ? subHours(sync.forwardSyncedAt, forwardOverlapHours)
+                : resolveLookbackStart(sync);
 
         const resolveCapitalWindowStart = (sync: SyncEntityInterface): Date => {
             const windowStart = resolveWindowStart(sync);
@@ -107,7 +112,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
         const isFiatRefreshDue = (token: string): boolean => {
             const fiatSyncedAtMs = fiatSyncedAtMsByToken.get(token);
 
-            return !isDefined(fiatSyncedAtMs) || Date.now() - fiatSyncedAtMs >= fiatRefreshIntervalMs;
+            return !isDefined(fiatSyncedAtMs) || run.startedAtMs - fiatSyncedAtMs >= fiatRefreshIntervalMs;
         };
 
         const getTokenRun = (token: string): BinanceTokenRunStateInterface => {
@@ -386,29 +391,53 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             );
         });
 
+        const commitFiatRange = (token: string, fromUnixTime: number, toUnixTime: number | null) =>
+            commitSourceType(token, getRunSignedClient(token).getFiatTransactions(fromUnixTime, toUnixTime), false, true);
+
+        const backfillFiat = Effect.fnUntraced(function* (
+            token: string,
+            integrationId: number,
+            walkedFromAt: Date | null,
+            lookbackStartSeconds: number
+        ) {
+            const startedAtSeconds = Math.floor(run.startedAtMs / 1000);
+            let committedCount = isDefined(walkedFromAt)
+                ? yield* commitFiatRange(token, Math.max(lookbackStartSeconds, startedAtSeconds - fiatBackfillHeadSeconds), null)
+                : 0;
+            let chunkEndSeconds = isDefined(walkedFromAt) ? getUnixTime(walkedFromAt) : null;
+            let chunkStartSeconds = Number.POSITIVE_INFINITY;
+
+            while (chunkStartSeconds > lookbackStartSeconds) {
+                chunkStartSeconds = Math.max(lookbackStartSeconds, (chunkEndSeconds ?? startedAtSeconds) - fiatBackfillChunkSeconds);
+                committedCount += yield* commitFiatRange(token, chunkStartSeconds, chunkEndSeconds);
+                yield* syncIntegrationTokenService.setFiatHistoryFromAt(integrationId, new Date(chunkStartSeconds * 1000));
+                chunkEndSeconds = chunkStartSeconds;
+            }
+
+            return committedCount;
+        });
+
         const processFiatSource = Effect.fnUntraced(function* (sync: SyncEntityInterface, token: string) {
             if (getTokenRun(token).sourcesSynced) {
                 return 0;
             }
 
-            const createdCount = isFiatRefreshDue(token)
-                ? yield* commitSourceType(
-                      token,
-                      getRunSignedClient(token).getFiatTransactions(getUnixTime(resolveWindowStart(sync))),
-                      false
-                  ).pipe(
-                      Effect.tap(() =>
-                          Effect.sync(() => {
-                              fiatSyncedAtMsByToken.set(token, Date.now());
-                          })
-                      )
-                  )
-                : 0;
-            yield* Effect.sync(() => {
-                patchTokenRun(token, { sourcesSynced: true });
-            });
+            const integration = yield* syncIntegrationTokenService.getOrCreateIntegration(provider, token);
+            const walkedFromAt = yield* syncIntegrationTokenService.findFiatHistoryFromAt(integration.id);
+            const lookbackStartSeconds = getUnixTime(resolveLookbackStart(sync));
+            const isBackfillPending = !isDefined(walkedFromAt) || getUnixTime(walkedFromAt) > lookbackStartSeconds;
+            let changedCount = 0;
 
-            return createdCount;
+            if (isBackfillPending || isFiatRefreshDue(token)) {
+                changedCount = isBackfillPending
+                    ? yield* backfillFiat(token, integration.id, walkedFromAt, lookbackStartSeconds)
+                    : yield* commitFiatRange(token, getUnixTime(resolveWindowStart(sync)), null);
+                const completedAtMs = yield* Clock.currentTimeMillis;
+                fiatSyncedAtMsByToken.set(token, completedAtMs);
+            }
+            patchTokenRun(token, { sourcesSynced: true });
+
+            return changedCount;
         });
 
         const runSyncPhases = Effect.fn('BinanceSyncService.runSyncPhases')(function* (
@@ -496,11 +525,11 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 };
             }),
             beforeSyncRun: (deadlineAtMs: number) =>
-                Effect.sync(() => {
-                    run = freshRunState(deadlineAtMs);
+                Effect.map(Clock.currentTimeMillis, startedAtMs => {
+                    run = freshRunState(deadlineAtMs, startedAtMs);
                 }),
             afterSyncRun: () => {
-                run = freshRunState(Number.POSITIVE_INFINITY);
+                run = freshRunState(Number.POSITIVE_INFINITY, 0);
             },
             isRunWorkComplete: () =>
                 run.tokenRuns.size > 0 && [...run.tokenRuns.values()].every(tokenRun => tokenRun.sourcesSynced && tokenRun.transfersSynced),
