@@ -6,9 +6,7 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { SectionHeader } from '../../../@generic/component/section-header/section-header';
 import { StyledLine } from '../../../@generic/component/styled-line/styled-line';
-import { StyledSvgText } from '../../../@generic/component/styled-svg-text/styled-svg-text';
 import { useI18nContext } from '../../../i18n/context/i18n.context';
-import { RUNWAY_CHART_LABEL_FONT_SIZE } from '../../constant/runway-chart-label-font-size.constant';
 import {
     RUNWAY_HISTORY_BAR_AREA_HEIGHT,
     RUNWAY_HISTORY_BAR_GAP,
@@ -19,6 +17,7 @@ import { RunwayHistoryBarLabel } from '../runway-history-bar-label/runway-histor
 import { RunwayHistoryBars } from '../runway-history-bars/runway-history-bars';
 import { RunwayHistoryLegend } from '../runway-history-legend/runway-history-legend';
 import { RunwayHistoryMedianLine } from '../runway-history-median-line/runway-history-median-line';
+import { RunwayHistoryMonthLabel } from '../runway-history-month-label/runway-history-month-label';
 import { RunwayHistorySpikeNote } from '../runway-history-spike-note/runway-history-spike-note';
 
 import type { RunwaySeriesRowInterface } from '@budgie/contracts';
@@ -63,9 +62,7 @@ export const RunwayHistoryChart = ({ series, burn }: Props) => {
             expense: row.expense,
             income: row.income,
             isSpike,
-            hasLabel: (series.length - 1 - index) % labelStep === 0,
-            labelFillClassName: isSpike ? 'accent-warning-foreground' : 'accent-secondary-foreground',
-            labelWeight: isSpike ? '600' : '400'
+            hasLabel: (series.length - 1 - index) % labelStep === 0
         };
     });
     const spikeExpense = isDefined(peakRow) ? peakRow.expense : 0;
@@ -74,7 +71,6 @@ export const RunwayHistoryChart = ({ series, burn }: Props) => {
     return (
         <View className="gap-y-lg">
             <SectionHeader label={t`Monthly history`} />
-
             <View className="relative w-full" style={CHART_ASPECT_STYLE}>
                 <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants" className="size-full">
                     <Svg width="100%" height="100%" viewBox={VIEW_BOX}>
@@ -85,7 +81,6 @@ export const RunwayHistoryChart = ({ series, burn }: Props) => {
                             y2={BASELINE_Y}
                             strokeClassName="accent-corner"
                         />
-
                         {months.map(month => (
                             <RunwayHistoryBars
                                 key={month.key}
@@ -98,36 +93,26 @@ export const RunwayHistoryChart = ({ series, burn }: Props) => {
                                 isSpike={month.isSpike}
                             />
                         ))}
-
                         <RunwayHistoryMedianLine value={burn} maxValue={maxValue} />
-
-                        {months
-                            .filter(month => month.hasLabel)
-                            .map(month => (
-                                <StyledSvgText
-                                    key={month.key}
-                                    x={month.centerX}
-                                    y={MONTH_LABEL_Y}
-                                    fillClassName={month.labelFillClassName}
-                                    fontSize={RUNWAY_CHART_LABEL_FONT_SIZE}
-                                    fontWeight={month.labelWeight}
-                                    textAnchor="middle"
-                                >
-                                    {month.label}
-                                </StyledSvgText>
-                            ))}
+                        {months.map(month => (
+                            <RunwayHistoryMonthLabel
+                                key={month.key}
+                                x={month.centerX}
+                                y={MONTH_LABEL_Y}
+                                label={month.label}
+                                isSpike={month.isSpike}
+                                hasLabel={month.hasLabel}
+                            />
+                        ))}
                     </Svg>
                 </View>
-
                 <View className="absolute inset-0 flex-row">
                     {months.map(month => (
                         <RunwayHistoryBarLabel key={month.key} month={month.label} expense={month.expense} income={month.income} />
                     ))}
                 </View>
             </View>
-
             <RunwayHistoryLegend hasSpike={hasSpike} typicalAmount={burn} />
-
             {hasSpike ? <RunwayHistorySpikeNote spikeLabel={spikeLabel} expense={spikeExpense} /> : null}
         </View>
     );
