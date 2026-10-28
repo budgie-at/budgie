@@ -22,6 +22,7 @@ import type { BinanceEarnRewardApiInterface } from '../interface/binance-earn-re
 import type { BinanceFiatOrderApiInterface } from '../interface/binance-fiat-order-api.schema';
 import type { BinanceTradeApiInterface } from '../interface/binance-trade-api.schema';
 import type { BinanceTransferInterface } from '../interface/binance-transfer.interface';
+import type { BinanceUniversalTransferApiInterface } from '../interface/binance-universal-transfer-api.schema';
 import type { BinanceWithdrawalApiInterface } from '../interface/binance-withdrawal-api.schema';
 
 const NO_NUMERIC_CODE = 0;
@@ -30,6 +31,8 @@ const DECIMAL_DIGITS_PATTERN = /^\d+$/u;
 const MILLISECONDS_PER_SECOND = 1000;
 const C2C_BUY_TRADE_TYPE = 'BUY';
 const EARN_DATE_PART_DIGITS = 2;
+const FUNDING_WALLET_TYPE = 1;
+const SPOT_TO_FUNDING_TRANSFER_TYPE = 'MAIN_FUNDING';
 
 const DEPOSIT_OUTCOME_BY_STATUS = new Map<number | undefined, BinanceCapitalOutcomeEnum>([
     [0, BinanceCapitalOutcomeEnum.PENDING],
@@ -73,6 +76,9 @@ const toSyncTransaction = (
             : transaction.amount - transaction.feeAmount,
     ...transaction
 });
+
+export const getBinanceCapitalWallet = (record: { readonly walletType?: number }): BinanceWalletEnum =>
+    record.walletType === FUNDING_WALLET_TYPE ? BinanceWalletEnum.FUNDING : BinanceWalletEnum.SPOT;
 
 export const parseBinanceAmount = (value: string): number | null => {
     if (!isNotEmptyString(value)) {
@@ -255,6 +261,30 @@ export const mapBinanceConvertToTransfer = (flow: BinanceConvertFlowApiInterface
               source: BinanceTransferSourceEnum.CONVERT
           }
         : null;
+};
+
+export const mapBinanceUniversalTransferToTransfer = (transfer: BinanceUniversalTransferApiInterface): BinanceTransferInterface | null => {
+    const amount = parseBinanceAmount(transfer.amount);
+    if (!isDefined(amount)) {
+        return null;
+    }
+
+    const spotAccountId = encodeSpotAccountId(transfer.asset);
+    const fundingAccountId = encodeBinanceAccountId({ wallet: BinanceWalletEnum.FUNDING, asset: transfer.asset });
+    const isSpotToFunding = transfer.type === SPOT_TO_FUNDING_TRANSFER_TYPE;
+
+    return {
+        externalId: `binance:universal-transfer:${transfer.tranId}`,
+        fromAssetAccountId: isSpotToFunding ? spotAccountId : fundingAccountId,
+        toAssetAccountId: isSpotToFunding ? fundingAccountId : spotAccountId,
+        fromAmount: amount,
+        toAmount: amount,
+        feeAssetAccountId: null,
+        feeAmount: 0,
+        time: toUnixSeconds(transfer.timestamp),
+        description: isSpotToFunding ? `Binance ${transfer.asset} Spot to Funding` : `Binance ${transfer.asset} Funding to Spot`,
+        source: BinanceTransferSourceEnum.UNIVERSAL_TRANSFER
+    };
 };
 
 const buildEarnDayKey = (timeMs: number): string => {

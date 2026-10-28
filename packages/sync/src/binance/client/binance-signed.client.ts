@@ -42,9 +42,11 @@ import { BinanceFiatOrderListApiSchema } from '../interface/binance-fiat-order-a
 import { BinanceLockedEarnPositionListApiSchema } from '../interface/binance-locked-earn-position-api.schema';
 import { BinanceServerTimeApiSchema } from '../interface/binance-server-time-api.schema';
 import { BinanceTradeListApiSchema } from '../interface/binance-trade-api.schema';
+import { BinanceUniversalTransferListApiSchema } from '../interface/binance-universal-transfer-api.schema';
 import { BinanceWithdrawalListApiSchema } from '../interface/binance-withdrawal-api.schema';
 import {
     buildBinanceDepositExternalId,
+    getBinanceCapitalWallet,
     getBinanceDepositOutcome,
     getBinanceWithdrawalOutcome,
     mapBinanceBalanceToAccount,
@@ -54,6 +56,7 @@ import {
     mapBinanceEarnRewardsToTransactions,
     mapBinanceFiatOrderToTransaction,
     mapBinanceTradeToTransfer,
+    mapBinanceUniversalTransferToTransfer,
     mapBinanceUnrepresentableBalanceToAccount,
     mapBinanceWithdrawalToTransaction,
     parseBinanceAmount
@@ -96,6 +99,10 @@ const FIAT_ORDERS_ENDPOINT = '/sapi/v1/fiat/orders';
 const C2C_ORDERS_ENDPOINT = '/sapi/v1/c2c/orderMatch/listUserOrderHistory';
 const CONVERT_TRADE_FLOW_ENDPOINT = '/sapi/v1/convert/tradeFlow';
 const MY_TRADES_ENDPOINT = '/api/v3/myTrades';
+const UNIVERSAL_TRANSFER_ENDPOINT = '/sapi/v1/asset/transfer';
+const UNIVERSAL_TRANSFER_TYPES = ['MAIN_FUNDING', 'FUNDING_MAIN'];
+const UNIVERSAL_TRANSFER_CONFIRMED_STATUS = 'CONFIRMED';
+const UNIVERSAL_TRANSFER_MAX_PERIOD_MS = 2592000000;
 const EARN_POSITION_ENDPOINT = '/sapi/v1/simple-earn/flexible/position';
 const LOCKED_EARN_POSITION_ENDPOINT = '/sapi/v1/simple-earn/locked/position';
 const EARN_REWARDS_ENDPOINT = '/sapi/v1/simple-earn/flexible/history/rewardsRecord';
@@ -140,7 +147,7 @@ const BINANCE_BLOCK_BACKOFF_MS = 120_000;
 const RETRY_AFTER_HEADER = 'retry-after';
 
 export class BinanceSignedClient extends BaseSyncProviderClient {
-    private static readonly C2C_HISTORY_MONTHS = 6;
+    private static readonly LIMITED_HISTORY_MONTHS = 6;
     private static readonly CAPITAL_PENDING_MAX_AGE_DAYS = 180;
 
     private static readonly FORBIDDEN_KEY_PERMISSIONS = [
@@ -294,7 +301,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     private readonly rejectedCapitalExternalIds = new Set<string>();
     private capitalPendingFromMs: number | null = null;
     private c2cUnavailableThisRun = false;
-    private readonly c2cHistoryFloorTimeMs = subMonths(new Date(), BinanceSignedClient.C2C_HISTORY_MONTHS).getTime();
+    private readonly limitedHistoryFloorTimeMs = subMonths(new Date(), BinanceSignedClient.LIMITED_HISTORY_MONTHS).getTime();
     private readonly capitalPendingFloorTimeMs = subDays(new Date(), BinanceSignedClient.CAPITAL_PENDING_MAX_AGE_DAYS).getTime();
     private serverTimeOffsetMs: number | null = null;
     private runEndTimeMs: number | undefined;
@@ -533,6 +540,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
                 .filter(flow => flow.orderStatus === CONVERT_SUCCESS_STATUS)
                 .map(flow => mapBinanceConvertToTransfer(flow))
                 .filter(isDefined);
+            const universalTransfers = yield* this.fetchUniversalTransfers(startTimeMs, endTimeMs);
             const symbols = yield* this.deriveTradeSymbols(startTimeMs, endTimeMs, convertTransfers, eligibleSoldOffBaseAssets);
             const symbolFetches = yield* Effect.forEach(symbols, symbol => {
                 const resumeFromId = initialSymbolTradeCursors[symbol.symbol];
@@ -540,7 +548,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
                 return this.fetchSymbolTrades(symbol, startTimeMs, endTimeMs, isDefined(resumeFromId) ? resumeFromId + 1 : null);
             });
             const byExternalId = new Map(
-                [...symbolFetches.flatMap(({ transfers }) => transfers), ...convertTransfers].map(transfer => [
+                [...symbolFetches.flatMap(({ transfers }) => transfers), ...convertTransfers, ...universalTransfers].map(transfer => [
                     transfer.externalId,
                     transfer
                 ])
@@ -713,7 +721,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     }
 
     private fetchC2cOrders(startTimeMs: number, endTimeMs: number) {
-        const availableStartTimeMs = Math.max(startTimeMs, this.c2cHistoryFloorTimeMs);
+        const availableStartTimeMs = Math.max(startTimeMs, this.limitedHistoryFloorTimeMs);
 
         if (availableStartTimeMs >= endTimeMs) {
             return Effect.succeed<readonly BinanceC2cOrderApiInterface[]>([]);
@@ -734,6 +742,43 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
                         this.collectPages(page => this.fetchC2cOrderPage(tradeType, windowStartMs, windowEndMs, page))
                 )
             ).pipe(Effect.map(ordersByType => ordersByType.flat()))
+        );
+    }
+
+    private fetchUniversalTransfers(startTimeMs: number, endTimeMs: number) {
+        const availableStartTimeMs = Math.max(startTimeMs, this.limitedHistoryFloorTimeMs);
+
+        if (availableStartTimeMs >= endTimeMs) {
+            return Effect.succeed<BinanceTransferInterface[]>([]);
+        }
+
+        return Effect.forEach(UNIVERSAL_TRANSFER_TYPES, type =>
+            this.walkWindowsBackward(
+                {
+                    startTimeMs: availableStartTimeMs,
+                    endTimeMs,
+                    periodMs: UNIVERSAL_TRANSFER_MAX_PERIOD_MS,
+                    dormancyWindowCount: UNBOUNDED_DORMANCY_WINDOW_COUNT
+                },
+                (windowStartMs, windowEndMs) =>
+                    this.collectPages(current =>
+                        this.fetchEarnPage(BinanceUniversalTransferListApiSchema, UNIVERSAL_TRANSFER_ENDPOINT, {
+                            type,
+                            startTime: windowStartMs,
+                            endTime: windowEndMs,
+                            current,
+                            size: EARN_PAGE_SIZE
+                        })
+                    )
+            )
+        ).pipe(
+            Effect.map(transfersByType =>
+                transfersByType
+                    .flat()
+                    .filter(transfer => transfer.status === UNIVERSAL_TRANSFER_CONFIRMED_STATUS)
+                    .map(transfer => mapBinanceUniversalTransferToTransfer(transfer))
+                    .filter(isDefined)
+            )
         );
     }
 
@@ -842,28 +887,35 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         };
     }
 
-    private buildTransactions(accountId: string, asset: string, sources: BinanceTransactionSourcesInterface): SyncTransactionInterface[] {
+    private buildTransactions(
+        wallet: BinanceWalletEnum,
+        defaultWallet: BinanceWalletEnum,
+        asset: string,
+        sources: BinanceTransactionSourcesInterface
+    ): SyncTransactionInterface[] {
+        const accountId = encodeBinanceAccountId({ wallet, asset });
+        const isDefaultWallet = wallet === defaultWallet;
         const depositTransactions = sources.deposits
-            .filter(deposit => deposit.coin === asset)
+            .filter(deposit => deposit.coin === asset && getBinanceCapitalWallet(deposit) === wallet)
             .map(deposit => mapBinanceDepositToTransaction(deposit, accountId))
             .filter(isDefined);
         const withdrawalTransactions = sources.withdrawals
-            .filter(withdrawal => withdrawal.coin === asset)
+            .filter(withdrawal => withdrawal.coin === asset && getBinanceCapitalWallet(withdrawal) === wallet)
             .map(withdrawal => mapBinanceWithdrawalToTransaction(withdrawal, accountId))
             .filter(isDefined);
         const fiatDepositTransactions = sources.fiatDeposits
-            .filter(order => order.fiatCurrency === asset)
+            .filter(order => isDefaultWallet && order.fiatCurrency === asset)
             .map(order => mapBinanceFiatOrderToTransaction(order, accountId, true))
             .filter(isDefined);
         const fiatWithdrawalTransactions = sources.fiatWithdrawals
-            .filter(order => order.fiatCurrency === asset)
+            .filter(order => isDefaultWallet && order.fiatCurrency === asset)
             .map(order => mapBinanceFiatOrderToTransaction(order, accountId, false))
             .filter(isDefined);
         const c2cTransactions = sources.c2cOrders
-            .filter(order => order.asset === asset)
+            .filter(order => isDefaultWallet && order.asset === asset)
             .map(order => mapBinanceC2cOrderToTransaction(order, accountId))
             .filter(isDefined);
-        const assetEarnRewards = sources.earnRewards.filter(reward => reward.asset === asset);
+        const assetEarnRewards = sources.earnRewards.filter(reward => isDefaultWallet && reward.asset === asset);
         const earnRewardTransactions = mapBinanceEarnRewardsToTransactions(asset, accountId, assetEarnRewards);
 
         return [
@@ -876,7 +928,10 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         ].sort((left, right) => right.time - left.time);
     }
 
-    private buildSourceTransactions(wallet: BinanceWalletEnum, sources: BinanceTransactionSourcesInterface): SyncTransactionInterface[] {
+    private buildSourceTransactions(
+        defaultWallet: BinanceWalletEnum,
+        sources: BinanceTransactionSourcesInterface
+    ): SyncTransactionInterface[] {
         const byId = new Map<string, SyncTransactionInterface>();
         const assets = new Set([
             ...sources.deposits.map(deposit => deposit.coin),
@@ -888,8 +943,10 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         ]);
 
         for (const asset of assets) {
-            for (const transaction of this.buildTransactions(encodeBinanceAccountId({ wallet, asset }), asset, sources)) {
-                byId.set(transaction.id, transaction);
+            for (const wallet of Object.values(BinanceWalletEnum)) {
+                for (const transaction of this.buildTransactions(wallet, defaultWallet, asset, sources)) {
+                    byId.set(transaction.id, transaction);
+                }
             }
         }
 
@@ -991,11 +1048,12 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     private computeRawTotalBalance(balance: BinanceAssetBalanceApiInterface): number | null {
         const free = parseBinanceAmount(balance.free);
         const locked = parseBinanceAmount(balance.locked);
-        if (!isDefined(free) || !isDefined(locked)) {
+        const freeze = isDefined(balance.freeze) ? parseBinanceAmount(balance.freeze) : 0;
+        if (!isDefined(free) || !isDefined(locked) || !isDefined(freeze)) {
             return null;
         }
 
-        return free + locked;
+        return free + locked + freeze;
     }
 
     private mapBalance(balance: BinanceAssetBalanceApiInterface, wallet: BinanceWalletEnum) {

@@ -39,6 +39,7 @@ export { BinanceCredentialsSchema } from './binance/constant/binance-credentials
 export type { BinanceApiRestrictionsApiInterface } from './binance/interface/binance-api-restrictions-api.schema';
 export type { BinanceAssetBalanceApiInterface } from './binance/interface/binance-asset-balance-api.schema';
 export type { BinanceDepositApiInterface } from './binance/interface/binance-deposit-api.schema';
+export type { BinanceUniversalTransferApiInterface } from './binance/interface/binance-universal-transfer-api.schema';
 export type { BinanceWithdrawalApiInterface } from './binance/interface/binance-withdrawal-api.schema';
 export type { BinanceFiatOrderApiInterface } from './binance/interface/binance-fiat-order-api.schema';
 export type { BinanceC2cOrderApiInterface } from './binance/interface/binance-c2c-order-api.schema';
