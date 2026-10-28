@@ -2,8 +2,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 import { BudgetSelector } from '../../budget.selector';
-import { BudgetDetailsLimitHeading } from '../budget-details-limit-heading/budget-details-limit-heading';
-import { BudgetPeriodSummaryLimitCard } from '../budget-period-summary-limit-card/budget-period-summary-limit-card';
+import { BudgetPeriodSummaryLimitRow } from '../budget-period-summary-limit-row/budget-period-summary-limit-row';
 
 interface Props {
     readonly categoryId: number;
@@ -17,19 +16,14 @@ export const BudgetPeriodSummaryCategoryRow = ({ categoryId, limitAmount, carrie
     const { category } = useGetCategoryByIdQuery(categoryId);
 
     return (
-        <BudgetPeriodSummaryLimitCard
+        <BudgetPeriodSummaryLimitRow
+            title={isDefined(category) ? category.title : ''}
+            carriedAmount={carriedAmount}
             spent={spent}
             limit={limitAmount + carriedAmount}
             currencySymbol={currencySymbol}
             testID={BudgetSelector.PeriodSummaryCategoryRow(categoryId)}
             spentTestID={BudgetSelector.PeriodSummaryCategorySpentLabel(categoryId)}
-        >
-            <BudgetDetailsLimitHeading
-                title={isDefined(category) ? category.title : ''}
-                icon={isDefined(category) ? category.icon : null}
-                carriedAmount={carriedAmount}
-                currencySymbol={currencySymbol}
-            />
-        </BudgetPeriodSummaryLimitCard>
+        />
     );
 };

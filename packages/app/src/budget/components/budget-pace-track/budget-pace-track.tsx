@@ -25,16 +25,16 @@ export const BudgetPaceTrack = ({ scope }: Props) => {
     const { spentStyle, upcomingStyle, todayStyle, ringStyle } = buildBudgetPaceTrackMetrics(scope);
 
     return (
-        <View className="h-5 justify-center" importantForAccessibility="no-hide-descendants">
-            <View className="h-3 flex-row overflow-hidden rounded-full bg-secondary-corner">
+        <View className="h-4 justify-center" importantForAccessibility="no-hide-descendants">
+            <View className="h-2 flex-row overflow-hidden rounded-full bg-secondary-corner">
                 <View className={cn('h-full', BUDGET_PACE_FILL_CLASS_NAME[variant])} style={spentStyle} />
                 <View className={cn('h-full', BUDGET_PACE_RESERVED_CLASS_NAME[variant])} style={upcomingStyle} />
             </View>
-            <View className="absolute top-0 h-5 w-0.5 -ml-px rounded-full bg-primary" style={todayStyle} />
+            <View className="absolute top-0 h-4 w-0.5 -ml-px rounded-full bg-primary" style={todayStyle} />
             {isDefined(ringStyle) ? (
                 <View
                     className={cn(
-                        'absolute top-0.5 h-4 w-4 -ml-2 rounded-full border-2 bg-primary-reverse dark:bg-secondary-background',
+                        'absolute top-0.5 h-3 w-3 -ml-1.5 rounded-full border-2 bg-primary-reverse dark:bg-secondary-background',
                         RING_BORDER_CLASS_NAME[variant]
                     )}
                     style={ringStyle}

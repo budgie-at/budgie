@@ -1,9 +1,9 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { ScrollView, Text } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { Card } from '../../../@generic/component/card/card';
 import { FormsheetHeader } from '../../../@generic/component/formsheet-header/formsheet-header';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
@@ -11,9 +11,8 @@ import { BudgetSelector } from '../../budget.selector';
 import { useGetActiveBudgetQuery } from '../../query/use-get-active-budget.query';
 import { useGetBudgetPeriodSnapshotQuery } from '../../query/use-get-budget-period-snapshot.query';
 import { getBudgetPeriodLabelDate } from '../../utils/get-budget-period-label-date.util';
-import { BudgetDetailsLimitHeading } from '../budget-details-limit-heading/budget-details-limit-heading';
 import { BudgetPeriodSummaryCategoryRow } from '../budget-period-summary-category-row/budget-period-summary-category-row';
-import { BudgetPeriodSummaryLimitCard } from '../budget-period-summary-limit-card/budget-period-summary-limit-card';
+import { BudgetPeriodSummaryLimitRow } from '../budget-period-summary-limit-row/budget-period-summary-limit-row';
 
 interface Props {
     readonly snapshotId: number;
@@ -48,46 +47,38 @@ export const BudgetPeriodSummary = ({ snapshotId }: Props) => {
                     </Text>
                 ) : null}
 
-                <BudgetPeriodSummaryLimitCard
-                    spent={snapshot.overallSpent}
-                    limit={snapshot.overallLimit + totalCarriedIn}
-                    currencySymbol={currencySymbol}
-                    testID={BudgetSelector.PeriodSummaryOverall}
-                    spentTestID={BudgetSelector.PeriodSummaryOverallSpentLabel}
-                >
-                    <BudgetDetailsLimitHeading
+                <Card className="gap-y-xl">
+                    <BudgetPeriodSummaryLimitRow
                         title={t`Monthly budget`}
-                        icon={null}
                         carriedAmount={totalCarriedIn}
+                        spent={snapshot.overallSpent}
+                        limit={snapshot.overallLimit + totalCarriedIn}
                         currencySymbol={currencySymbol}
+                        testID={BudgetSelector.PeriodSummaryOverall}
+                        spentTestID={BudgetSelector.PeriodSummaryOverallSpentLabel}
                     />
-                </BudgetPeriodSummaryLimitCard>
 
-                {snapshot.categories.map(category => (
-                    <BudgetPeriodSummaryCategoryRow
-                        key={category.id}
-                        categoryId={category.categoryId}
-                        limitAmount={category.limitAmount}
-                        carriedAmount={category.carriedIn}
-                        spent={category.spent}
-                        currencySymbol={currencySymbol}
-                    />
-                ))}
+                    {snapshot.categories.map(category => (
+                        <BudgetPeriodSummaryCategoryRow
+                            key={category.id}
+                            categoryId={category.categoryId}
+                            limitAmount={category.limitAmount}
+                            carriedAmount={category.carriedIn}
+                            spent={category.spent}
+                            currencySymbol={currencySymbol}
+                        />
+                    ))}
 
-                <BudgetPeriodSummaryLimitCard
-                    spent={snapshot.otherSpent}
-                    limit={snapshot.otherLimit + snapshot.otherCarriedIn}
-                    currencySymbol={currencySymbol}
-                    testID={BudgetSelector.PeriodSummaryOther}
-                    spentTestID={BudgetSelector.PeriodSummaryOtherSpentLabel}
-                >
-                    <BudgetDetailsLimitHeading
+                    <BudgetPeriodSummaryLimitRow
                         title={t`Other`}
-                        icon={UserIconNameEnum.CircleEllipsis}
                         carriedAmount={snapshot.otherCarriedIn}
+                        spent={snapshot.otherSpent}
+                        limit={snapshot.otherLimit + snapshot.otherCarriedIn}
                         currencySymbol={currencySymbol}
+                        testID={BudgetSelector.PeriodSummaryOther}
+                        spentTestID={BudgetSelector.PeriodSummaryOtherSpentLabel}
                     />
-                </BudgetPeriodSummaryLimitCard>
+                </Card>
             </ScrollView>
         </>
     );

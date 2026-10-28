@@ -7,7 +7,6 @@ import { isPositiveNumber } from '@rnw-community/shared';
 
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
-import { BudgetSelector } from '../../budget.selector';
 
 import type { BudgetProjectionScopeInterface } from '@budgie/budget';
 
@@ -33,9 +32,5 @@ export const BudgetVerdictOutlook = ({ scope, currencySymbol, periodEnd }: Props
         return null;
     }
 
-    return (
-        <Text testID={BudgetSelector.DetailsRemainingLabel} className="text-sm text-secondary-foreground">
-            {outlookLabel}
-        </Text>
-    );
+    return <Text className="text-xs text-secondary-foreground">{outlookLabel}</Text>;
 };

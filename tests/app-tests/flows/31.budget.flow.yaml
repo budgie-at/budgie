@@ -134,7 +134,10 @@ env:
 - assertNotVisible: 'Edit budget'
 - assertVisible:
       id: 'BudgetDetails.SpentLabel'
-      text: '€42 / €1,000'
+      text: '€42'
+- assertVisible:
+      id: 'BudgetDetails.LimitLabel'
+      text: '€1,000'
 
 - tapOn:
       id: 'PageHeader.BackButton'
@@ -181,7 +184,10 @@ env:
       timeout: 3000
 - assertVisible:
       id: 'BudgetDetails.SpentLabel'
-      text: '€42 / €1,500'
+      text: '€42'
+- assertVisible:
+      id: 'BudgetDetails.LimitLabel'
+      text: '€1,500'
 
 - tapOn:
       id: 'BudgetDetails.EditButton'
@@ -209,7 +215,10 @@ env:
 - assertNotVisible: 'Edit budget'
 - assertVisible:
       id: 'BudgetDetails.SpentLabel'
-      text: '€42 / €1,500'
+      text: '€42'
+- assertVisible:
+      id: 'BudgetDetails.LimitLabel'
+      text: '€1,500'
 
 - tapOn:
       id: 'BudgetDetails.EditButton'

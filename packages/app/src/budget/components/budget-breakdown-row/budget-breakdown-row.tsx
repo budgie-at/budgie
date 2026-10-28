@@ -11,7 +11,7 @@ interface Props {
 
 export const BudgetBreakdownRow = ({ label, amount, className = 'text-secondary-foreground' }: Props) => (
     <View className="flex-row items-baseline justify-between gap-x-md">
-        <Text className={cn('shrink text-md', className)}>{label}</Text>
-        <ProtectedText className={cn('text-md tabular-nums', className)}>{amount}</ProtectedText>
+        <Text className={cn('shrink text-sm', className)}>{label}</Text>
+        <ProtectedText className={cn('text-sm tabular-nums', className)}>{amount}</ProtectedText>
     </View>
 );

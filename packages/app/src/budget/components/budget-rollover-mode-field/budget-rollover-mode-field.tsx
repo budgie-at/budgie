@@ -25,7 +25,7 @@ export const BudgetRolloverModeField = ({ name }: Props) => {
 
     return (
         <View className="gap-y-xs">
-            <Text className="text-secondary-foreground text-xs">
+            <Text className="text-xxs uppercase tracking-wider text-secondary-foreground">
                 <Trans>Unspent money at period end</Trans>
             </Text>
             <Controller control={control} name={name} render={render} />

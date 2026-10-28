@@ -310,11 +310,6 @@ msgstr "{newTransactionCount, plural, one {Імпортувати # транза
 msgid "{newTransactionCount} new, {existingTransactionCount} already imported, {parsedTransactionCount} checked"
 msgstr "{newTransactionCount} нових, {existingTransactionCount} вже імпортовано, {parsedTransactionCount} перевірено"
 
-#: src/budget/components/budget-verdict-figure/budget-verdict-figure.tsx
-#: src/budget/components/budget-verdict-header/budget-verdict-header.tsx
-msgid "{overAmount} over"
-msgstr "{overAmount} перевитрата"
-
 #: src/budget/components/budget-category-forecast/budget-category-forecast.tsx
 msgid "{overAmount} over budget"
 msgstr "{overAmount} понад бюджет"
@@ -367,10 +362,6 @@ msgstr "{rowCount, plural, one {Тег додано до # транзакції}
 #: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "{safePerDayAmount} / day"
 msgstr "{safePerDayAmount} / день"
-
-#: src/budget/components/budget-verdict-header/budget-verdict-header.tsx
-msgid "{safePerDayAmount} per day"
-msgstr "{safePerDayAmount} на день"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "{selectedAccountCount, plural, one {Add # account} other {Add # accounts}}"
@@ -425,14 +416,14 @@ msgid "{statusLabel} · {downloaded} of {total} GB"
 msgstr "{statusLabel} · {downloaded} з {total} ГБ"
 
 #: src/budget/components/budget-verdict-header/budget-verdict-header.tsx
-msgid "{statusLabel}. {figureAccessibilityLabel}, {daysLeftLabel}."
-msgstr "{statusLabel}. {figureAccessibilityLabel}, {daysLeftLabel}."
+msgid "{statusLabel}, {daysLeftLabel}."
+msgstr "{statusLabel}, {daysLeftLabel}."
 
 #: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
 msgid "{taggedCount, plural, one {# tagged this session} other {# tagged this session}}"
 msgstr "{taggedCount, plural, one {# з тегом за цей сеанс} few {# з тегами за цей сеанс} many {# з тегами за цей сеанс} other {# з тегами за цей сеанс}}"
 
-#: src/budget/components/budget-pace-banner-card/budget-pace-banner-card.tsx
+#: src/budget/components/budget-pace-hint-line/budget-pace-hint-line.tsx
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "{title} is ahead of pace"
 msgstr "{title} випереджає темп"
@@ -462,9 +453,9 @@ msgstr "{unreadableCount, plural, one {Не вдалося прочитати # 
 msgid "/ day"
 msgstr "/ день"
 
-#: src/budget/components/budget-details-limit-heading/budget-details-limit-heading.tsx
-msgid "+{formattedAmount} rolled over"
-msgstr "+{formattedAmount} перенесено"
+#: src/budget/components/budget-limit-row/budget-limit-row.tsx
+msgid "+{carriedLabel} rolled over"
+msgstr "+{carriedLabel} перенесено"
 
 #: src/runway/component/runway-pill/runway-pill.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
@@ -483,9 +474,9 @@ msgstr "<"
 msgid ">"
 msgstr ">"
 
-#: src/budget/components/budget-details-limit-heading/budget-details-limit-heading.tsx
-msgid "−{formattedAmount} carried"
-msgstr "−{formattedAmount} перенесено"
+#: src/budget/components/budget-limit-row/budget-limit-row.tsx
+msgid "−{carriedLabel} carried"
+msgstr "−{carriedLabel} перенесено"
 
 #: src/runway/component/runway-pill/runway-pill.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
@@ -974,10 +965,6 @@ msgstr "Стане доступним після завершення імпор
 msgid "Average"
 msgstr "Середнє"
 
-#: src/budget/components/budget-history-section/budget-history-section.tsx
-msgid "Avg {averageAmount}"
-msgstr "Сер. {averageAmount}"
-
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Avg cost"
 msgstr "Сер. ціна"
@@ -1078,6 +1065,10 @@ msgstr "Позичено"
 #: src/account/utils/get-debt-opening-messages.util.ts
 msgid "Borrowed debt account expected"
 msgstr "Очікувався рахунок позиченого боргу"
+
+#: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
+msgid "Breakdown"
+msgstr "Розбивка"
 
 #: src/app/(tabs)/settings/index.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
@@ -1260,6 +1251,7 @@ msgstr "Зняття готівки"
 
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx
 #: src/app/(tabs)/settings/categories.tsx
+#: src/budget/components/budget-details-category-list/budget-details-category-list.tsx
 #: src/runway/component/runway-drivers/runway-drivers.tsx
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
 msgid "Categories"
@@ -1307,7 +1299,6 @@ msgstr "Категорія → {categoryTitle}"
 msgid "Category Icons"
 msgstr "Іконки категорій"
 
-#: src/budget/components/budget-details/budget-details.tsx
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
 msgid "Category limits"
 msgstr "Ліміти за категоріями"
@@ -3072,9 +3063,9 @@ msgstr "Залишити як уже враховану готівку, не в�
 msgid "Keep only \"Enable Reading\" on — never allow trading or withdrawals"
 msgstr "Залиште увімкненим лише \"Дозволити читання\" — ніколи не дозволяйте торгівлю чи виведення"
 
-#: src/budget/components/budget-pace-banner-card/budget-pace-banner-card.tsx
-msgid "Keep under {perDayAmount}/day to stay within {limitAmount}"
-msgstr "Витрачай менше {perDayAmount}/день, щоб вкластися в {limitAmount}"
+#: src/budget/components/budget-pace-hint-line/budget-pace-hint-line.tsx
+msgid "keep under {perDayAmount}/day"
+msgstr "тримайтесь у межах {perDayAmount}/день"
 
 #: src/app/(tabs)/settings/ai.tsx
 msgid "Keep using Budgie meanwhile. Until the model is ready, categories come from simple rules on the phone."
@@ -3172,7 +3163,7 @@ msgstr "Поки залишити порожнім"
 msgid "left"
 msgstr "лишилось"
 
-#: src/budget/components/budget-limit-amounts-row/budget-limit-amounts-row.tsx
+#: src/budget/components/budget-stat-row/budget-stat-row.tsx
 #: src/budget/hooks/use-budget-progress-labels.hook.ts
 msgid "Left"
 msgstr "Залишилось"
@@ -3186,9 +3177,9 @@ msgstr "Позичено"
 msgid "Less Than"
 msgstr "Менше ніж"
 
-#: src/budget/components/budget-limit-amounts-row/budget-limit-amounts-row.tsx
-#: src/budget/components/budget-pace-legend/budget-pace-legend.tsx
+#: src/budget/components/budget-history-legend/budget-history-legend.tsx
 #: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
+#: src/budget/components/budget-stat-row/budget-stat-row.tsx
 msgid "Limit"
 msgstr "Ліміт"
 
@@ -3248,7 +3239,7 @@ msgstr "Основна валюта: <0>{currencyName}</0>, за регіоно�
 msgid "Make a PIN after all"
 msgstr "Усе ж створити PIN-код"
 
-#: src/budget/components/budget-details/budget-details.tsx
+#: src/budget/components/budget-details-edit-button/budget-details-edit-button.tsx
 #: src/settings/components/budget-management-card/budget-management-card.tsx
 msgid "Manage budget"
 msgstr "Керувати бюджетом"
@@ -3590,7 +3581,7 @@ msgid "No categories match your search"
 msgstr "Жодна категорія не відповідає вашому пошуку"
 
 #: src/budget/components/budget-category-limits-empty-state/budget-category-limits-empty-state.tsx
-#: src/budget/components/budget-details/budget-details.tsx
+#: src/budget/components/budget-details-category-list/budget-details-category-list.tsx
 msgid "No category limits yet"
 msgstr "Лімітів за категоріями немає"
 
@@ -3841,14 +3832,9 @@ msgstr "На цьому iPhone"
 msgid "On this phone"
 msgstr "На цьому телефоні"
 
-#: src/budget/components/budget-category-forecast/budget-category-forecast.tsx
 #: src/budget/constant/budget-pace-status-label.constant.ts
 msgid "On track"
 msgstr "За планом"
-
-#: src/budget/components/budget-category-forecast/budget-category-forecast.tsx
-msgid "On track · Too early to forecast"
-msgstr "За планом · Зарано для прогнозу"
 
 #: src/app/(tabs)/settings/ai.tsx
 msgid "On-device AI"
@@ -4002,7 +3988,7 @@ msgstr "Початкова транзакція"
 
 #: src/budget/components/budget-details-other-category-row/budget-details-other-category-row.tsx
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
-#: src/budget/components/budget-pace-banner/budget-pace-banner.tsx
+#: src/budget/components/budget-pace-hint/budget-pace-hint.tsx
 #: src/budget/components/budget-period-recap-rollover/budget-period-recap-rollover.tsx
 #: src/budget/components/budget-period-summary/budget-period-summary.tsx
 #: src/budget/service/budget-alert-monitor.service.ts
@@ -4022,11 +4008,15 @@ msgstr "Бюджет «Інше»: використано {threshold}%"
 msgid "Other budget: limit reached"
 msgstr "Бюджет «Інше»: ліміт досягнуто"
 
+#: src/budget/components/budget-verdict-figure/budget-verdict-figure.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "over"
 msgstr "перевитрата"
 
-#: src/budget/components/budget-limit-amounts-row/budget-limit-amounts-row.tsx
+#: src/budget/components/budget-history-legend/budget-history-legend.tsx
+msgid "Over"
+msgstr "Перевищено"
+
 #: src/budget/constant/budget-pace-status-label.constant.ts
 #: src/budget/hooks/use-budget-progress-labels.hook.ts
 msgid "Over budget"
@@ -4254,13 +4244,13 @@ msgstr "ПриватБанк"
 msgid "Privatbank (XLSX)"
 msgstr "Приватбанк (XLSX)"
 
+#: src/budget/components/budget-forecast-legend/budget-forecast-legend.tsx
+msgid "Projected · {projectedAmount} by {periodEndLabel}"
+msgstr "Прогноз · {projectedAmount} до {periodEndLabel}"
+
 #: src/budget/components/budget-category-forecast/budget-category-forecast.tsx
 msgid "Projected {overAmount} over"
 msgstr "Прогноз: перевищення на {overAmount}"
-
-#: src/budget/components/budget-category-forecast/budget-category-forecast.tsx
-msgid "Projected {overAmount} over · Runs out ~{runOutDate}"
-msgstr "Прогноз: перевищення на {overAmount} · Закінчиться ~{runOutDate}"
 
 #: src/budget/components/budget-verdict-outlook/budget-verdict-outlook.tsx
 msgid "Projected {projectedOverAmount} over by {periodEndLabel}"
@@ -4587,6 +4577,7 @@ msgstr "Працює на"
 msgid "Runs on this phone. Nothing it reads is sent anywhere."
 msgstr "Працює на цьому телефоні. Нічого з прочитаного нікуди не надсилається."
 
+#: src/budget/components/budget-category-forecast/budget-category-forecast.tsx
 #: src/budget/components/budget-forecast-run-out/budget-forecast-run-out.tsx
 msgid "Runs out ~{runOutDate}"
 msgstr "Закінчиться ~{runOutDate}"
@@ -5023,13 +5014,17 @@ msgstr "Витрати за категоріями"
 msgid "Spending by Tag"
 msgstr "Витрати за тегами"
 
+#: src/budget/components/budget-forecast-card/budget-forecast-card.tsx
+msgid "Spending forecast"
+msgstr "Прогноз витрат"
+
 #: src/account/component/account-details-month-chips/account-details-month-chips.tsx
-#: src/budget/components/budget-limit-amounts-row/budget-limit-amounts-row.tsx
-#: src/budget/components/budget-pace-legend/budget-pace-legend.tsx
+#: src/budget/components/budget-stat-row/budget-stat-row.tsx
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Spent"
 msgstr "Витрачено"
 
+#: src/budget/components/budget-forecast-legend/budget-forecast-legend.tsx
 #: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "Spent so far"
 msgstr "Витрачено досі"
@@ -5490,6 +5485,10 @@ msgstr "До отримання"
 msgid "To repay"
 msgstr "До сплати"
 
+#: src/budget/components/budget-pace-ticks/budget-pace-ticks.tsx
+msgid "today"
+msgstr "сьогодні"
+
 #: src/@generic/constant/date-period.constant.ts
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
 #: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
@@ -5727,6 +5726,10 @@ msgstr "Розконсолідувати"
 msgid "Unconsolidate transaction?"
 msgstr "Розконсолідувати транзакцію?"
 
+#: src/budget/components/budget-history-legend/budget-history-legend.tsx
+msgid "Under limit"
+msgstr "У межах ліміту"
+
 #: src/categorize-inbox/components/categorize-inbox-undo-layout/categorize-inbox-undo-layout.tsx
 msgid "Undo"
 msgstr "Скасувати"
@@ -5767,7 +5770,6 @@ msgstr "Актуальний"
 msgid "Up to date · {lastSyncedLabel}"
 msgstr "Актуально · {lastSyncedLabel}"
 
-#: src/budget/components/budget-pace-legend/budget-pace-legend.tsx
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "Upcoming"
 msgstr "Незабаром"

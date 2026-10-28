@@ -1,12 +1,11 @@
 import { BudgetAlertScopeEnum } from '@budgie/budget';
-import { TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 
 import { AnalyticsTransactionsModeEnum } from '../../../transaction/enum/analytics-transactions-mode.enum';
 import { BudgetSelector } from '../../budget.selector';
-import { BudgetDetailsLimitCard } from '../budget-details-limit-card/budget-details-limit-card';
-import { BudgetDetailsLimitHeading } from '../budget-details-limit-heading/budget-details-limit-heading';
+import { BudgetDetailsLimitRow } from '../budget-details-limit-row/budget-details-limit-row';
 
 import type { BudgetProjectionScopeInterface } from '@budgie/budget';
 
@@ -39,20 +38,15 @@ export const BudgetDetailsOtherCategoryRow = (props: Props) => {
     };
 
     return (
-        <BudgetDetailsLimitCard
+        <BudgetDetailsLimitRow
+            title={t`Other`}
+            carriedAmount={carriedAmount}
             scope={scope}
             currencySymbol={currencySymbol}
             testID={BudgetSelector.DetailsOtherCategoryRow}
             spentTestID={BudgetSelector.DetailsOtherCategorySpentLabel}
             onPress={handlePress}
             highlightTarget={{ scope: BudgetAlertScopeEnum.OTHER }}
-        >
-            <BudgetDetailsLimitHeading
-                title={t`Other`}
-                icon={UserIconNameEnum.CircleEllipsis}
-                carriedAmount={carriedAmount}
-                currencySymbol={currencySymbol}
-            />
-        </BudgetDetailsLimitCard>
+        />
     );
 };

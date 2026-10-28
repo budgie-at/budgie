@@ -1,11 +1,10 @@
 import { BudgetPaceStatusEnum } from '@budgie/budget';
 import { convertFromMicroUnits } from '@budgie/contracts';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
-import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
-import { cn } from '../../../@generic/utils/cn.util';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 
 import type { BudgetProjectionScopeInterface } from '@budgie/budget';
 
@@ -15,22 +14,22 @@ interface Props {
 }
 
 export const BudgetVerdictFigure = ({ scope, currencySymbol }: Props) => {
-    const { t } = useLingui();
-    const formatProtectedAmount = useProtectedAmountLabel();
+    const formatDigits = useDisplayFormatDigits();
     const isOver = scope.status === BudgetPaceStatusEnum.OVER;
-    const safePerDayAmount = formatProtectedAmount(convertFromMicroUnits(scope.safePerDay), currencySymbol);
-    const overAmount = formatProtectedAmount(convertFromMicroUnits(scope.spent - scope.limit), currencySymbol);
-    const mainLabel = isOver ? t`${overAmount} over` : safePerDayAmount;
-    const mainClassName = isOver ? 'text-destructive-foreground' : 'text-primary';
+    const figureAmount = isOver ? scope.spent - scope.limit : scope.safePerDay;
+    const figure = formatDigits(convertFromMicroUnits(figureAmount), currencySymbol);
 
     return (
         <View className="flex-row items-baseline gap-x-sm">
-            <ProtectedText className={cn('text-3xl font-bold tabular-nums', mainClassName)}>{mainLabel}</ProtectedText>
-            {isOver ? null : (
-                <Text className="text-md text-secondary-foreground">
-                    <Trans>/ day</Trans>
-                </Text>
-            )}
+            <ProtectedText
+                adjustsFontSizeToFit
+                numberOfLines={1}
+                minimumFontScale={0.6}
+                className="text-4xl font-bold tabular-nums text-primary"
+            >
+                {figure}
+            </ProtectedText>
+            <Text className="text-md font-medium text-secondary-foreground">{isOver ? <Trans>over</Trans> : <Trans>/ day</Trans>}</Text>
         </View>
     );
 };

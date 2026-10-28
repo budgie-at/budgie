@@ -4,6 +4,7 @@ import { ScrollView, Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { Card } from '../../../@generic/component/card/card';
 import { FormsheetHeader } from '../../../@generic/component/formsheet-header/formsheet-header';
 import { useToday } from '../../../@generic/hook/use-today.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
@@ -32,8 +33,8 @@ export const BudgetSafeToSpendSheet = ({ budget }: Props) => {
     const periodEndLabel = formatMonthAndDay(periodEnd);
 
     const upcomingSection = isNotEmptyArray(upcomingCharges) ? (
-        <View className="gap-y-md">
-            <Text className="text-lg font-semibold text-primary">
+        <Card className="gap-y-lg">
+            <Text className="text-xxs uppercase tracking-wider text-secondary-foreground">
                 <Trans>Upcoming this period</Trans>
             </Text>
             {upcomingCharges.map(charge => (
@@ -43,19 +44,19 @@ export const BudgetSafeToSpendSheet = ({ budget }: Props) => {
                     currencySymbol={currencySymbol}
                 />
             ))}
-        </View>
+        </Card>
     ) : null;
 
     return (
         <View className="flex-1 bg-primary-reverse" collapsable={false} testID={BudgetSelector.SafeToSpendSheet}>
             <FormsheetHeader size="md" title={t`Safe to spend`} description={t`Until ${periodEndLabel}`} />
 
-            <ScrollView contentContainerClassName="px-3xl pt-md gap-y-3xl pb-5xl" showsVerticalScrollIndicator={false}>
+            <ScrollView contentContainerClassName="px-3xl pt-md gap-y-lg pb-5xl" showsVerticalScrollIndicator={false}>
                 <BudgetSafeToSpendSummary projection={projection} currencySymbol={currencySymbol} />
 
                 {upcomingSection}
 
-                <Text className="text-center text-sm text-secondary-foreground">
+                <Text className="text-xxs text-secondary-foreground">
                     <Trans>Recalculates every day. Spend less today and tomorrow&apos;s amount grows.</Trans>
                 </Text>
             </ScrollView>

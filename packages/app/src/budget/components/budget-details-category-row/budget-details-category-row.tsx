@@ -6,8 +6,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 import { BudgetSelector } from '../../budget.selector';
-import { BudgetDetailsLimitCard } from '../budget-details-limit-card/budget-details-limit-card';
-import { BudgetDetailsLimitHeading } from '../budget-details-limit-heading/budget-details-limit-heading';
+import { BudgetDetailsLimitRow } from '../budget-details-limit-row/budget-details-limit-row';
 
 import type { BudgetProjectionScopeInterface } from '@budgie/budget';
 
@@ -23,8 +22,6 @@ interface Props {
 export const BudgetDetailsCategoryRow = (props: Props) => {
     const { categoryId, scope, periodStart, periodEnd, currencySymbol, carriedAmount } = props;
     const { category } = useGetCategoryByIdQuery(categoryId);
-    const title = isDefined(category) ? category.title : '';
-    const icon = isDefined(category) ? category.icon : null;
 
     const handlePress = () => {
         router.push({
@@ -39,15 +36,15 @@ export const BudgetDetailsCategoryRow = (props: Props) => {
     };
 
     return (
-        <BudgetDetailsLimitCard
+        <BudgetDetailsLimitRow
+            title={isDefined(category) ? category.title : ''}
+            carriedAmount={carriedAmount}
             scope={scope}
             currencySymbol={currencySymbol}
             testID={BudgetSelector.DetailsCategoryRow(categoryId)}
             spentTestID={BudgetSelector.DetailsCategorySpentLabel(categoryId)}
             onPress={handlePress}
             highlightTarget={{ scope: BudgetAlertScopeEnum.CATEGORY, categoryId }}
-        >
-            <BudgetDetailsLimitHeading title={title} icon={icon} carriedAmount={carriedAmount} currencySymbol={currencySymbol} />
-        </BudgetDetailsLimitCard>
+        />
     );
 };

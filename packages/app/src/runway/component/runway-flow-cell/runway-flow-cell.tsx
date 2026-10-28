@@ -1,10 +1,7 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
-import { Text, View } from 'react-native';
 
-import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
-import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
+import { StatCell } from '../../../@generic/component/stat-cell/stat-cell';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-import { cn } from '../../../@generic/utils/cn.util';
 import { HUNDRED_THOUSAND } from '../../../i18n/constant/compact-thresholds.constant';
 import { useFormatCompactDigits } from '../../../i18n/hook/use-format-compact-digits.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
@@ -24,19 +21,5 @@ export const RunwayFlowCell = ({ label, amount, variant }: Props) => {
     const isAbbreviated = Math.abs(amount) >= HUNDRED_THOUSAND;
     const value = isAbbreviated ? formatCompactDigits(amount, defaultInstrument.symbol) : formatDigits(amount, defaultInstrument.symbol);
 
-    return (
-        <View className="flex-1 items-center gap-y-xs px-sm">
-            <Text numberOfLines={1} className="text-xxs uppercase tracking-wider text-secondary-foreground">
-                {label}
-            </Text>
-            <ProtectedText
-                adjustsFontSizeToFit
-                numberOfLines={1}
-                minimumFontScale={0.7}
-                className={cn('text-md font-semibold tabular-nums', FOREGROUND_COLOR_PALETTE[variant])}
-            >
-                {value}
-            </ProtectedText>
-        </View>
-    );
+    return <StatCell label={label} value={value} variant={variant} />;
 };

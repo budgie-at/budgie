@@ -1,6 +1,6 @@
 import { convertFromMicroUnits } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { Card } from '../../../@generic/component/card/card';
@@ -30,12 +30,15 @@ export const BudgetSafeToSpendSummary = ({ projection, currencySymbol }: Props) 
 
     return (
         <Card className="gap-y-md">
+            <Text className="text-xxs uppercase tracking-wider text-secondary-foreground">
+                <Trans>Breakdown</Trans>
+            </Text>
             <BudgetBreakdownRow label={t`Limit`} amount={formatAmount(overall.limit)} />
             <BudgetBreakdownRow label={t`Spent so far`} amount={spentAmount} />
             <BudgetBreakdownRow label={t`Upcoming this period`} amount={upcomingAmount} />
             <View className="h-px bg-secondary-corner" />
             <BudgetBreakdownRow label={t`Free to spend`} amount={freeAmount} className="font-semibold text-primary" />
-            <Text className="text-sm tabular-nums text-secondary-foreground">{t`${freeAmount} ÷ ${daysLabel}`}</Text>
+            <Text className="text-xs tabular-nums text-secondary-foreground">{t`${freeAmount} ÷ ${daysLabel}`}</Text>
             <ProtectedText testID={BudgetSelector.SafeToSpendPerDay} className="text-xl font-bold tabular-nums text-positive-foreground">
                 {perDayLabel}
             </ProtectedText>

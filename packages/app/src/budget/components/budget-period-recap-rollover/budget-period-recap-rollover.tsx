@@ -42,5 +42,5 @@ export const BudgetPeriodRecapRollover = ({ snapshot, currencySymbol }: Props) =
                   })
               });
 
-    return <Text className="text-secondary-foreground text-sm">{message}</Text>;
+    return <Text className="text-secondary-foreground text-xs">{message}</Text>;
 };

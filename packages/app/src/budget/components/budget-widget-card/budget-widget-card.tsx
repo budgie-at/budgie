@@ -37,10 +37,10 @@ export const BudgetWidgetCard = ({ budget }: Props) => {
     return (
         <Card testID={BudgetSelector.WidgetCard} variant="ghost" size="md" onPress={handleNavigate} className="gap-y-md">
             <View className="flex-row items-center justify-between">
-                <Text className="text-primary font-medium text-md">
+                <Text className="text-primary font-medium text-sm">
                     <Trans>Monthly budget</Trans>
                 </Text>
-                <Text className="text-secondary-foreground text-sm">{formatBudgetPeriodLabel(budget, formatMonthAndDay)}</Text>
+                <Text className="text-secondary-foreground text-xs">{formatBudgetPeriodLabel(budget, formatMonthAndDay)}</Text>
             </View>
 
             <LoadingContent isLoading={isLoading} className="gap-y-md">

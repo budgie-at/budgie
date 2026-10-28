@@ -3,8 +3,8 @@ import { useLingui } from '@lingui/react/macro';
 import { isDefined } from '@rnw-community/shared';
 
 import { findRiskiestAheadScope } from '../../utils/find-riskiest-ahead-scope.util';
-import { BudgetPaceBannerCard } from '../budget-pace-banner-card/budget-pace-banner-card';
-import { BudgetPaceCategoryBanner } from '../budget-pace-category-banner/budget-pace-category-banner';
+import { BudgetPaceHintCategory } from '../budget-pace-hint-category/budget-pace-hint-category';
+import { BudgetPaceHintLine } from '../budget-pace-hint-line/budget-pace-hint-line';
 
 import type { BudgetHighlightTargetInterface } from '../../interface/budget-highlight-target.interface';
 import type { BudgetProjectionInterface } from '@budgie/budget';
@@ -15,7 +15,7 @@ interface Props {
     readonly onPress: (target: BudgetHighlightTargetInterface) => void;
 }
 
-export const BudgetPaceBanner = ({ projection, currencySymbol, onPress }: Props) => {
+export const BudgetPaceHint = ({ projection, currencySymbol, onPress }: Props) => {
     const { t } = useLingui();
     const aheadScope = findRiskiestAheadScope(projection);
 
@@ -31,9 +31,9 @@ export const BudgetPaceBanner = ({ projection, currencySymbol, onPress }: Props)
 
     if (isDefined(target.categoryId)) {
         return (
-            <BudgetPaceCategoryBanner categoryId={target.categoryId} scope={scope} currencySymbol={currencySymbol} onPress={handlePress} />
+            <BudgetPaceHintCategory categoryId={target.categoryId} scope={scope} currencySymbol={currencySymbol} onPress={handlePress} />
         );
     }
 
-    return <BudgetPaceBannerCard title={t`Other`} scope={scope} currencySymbol={currencySymbol} onPress={handlePress} />;
+    return <BudgetPaceHintLine title={t`Other`} scope={scope} currencySymbol={currencySymbol} onPress={handlePress} />;
 };

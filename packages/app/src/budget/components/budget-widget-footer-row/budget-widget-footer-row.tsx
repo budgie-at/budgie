@@ -26,10 +26,10 @@ export const BudgetWidgetFooterRow = ({ projection, currencySymbol }: Props) => 
 
     return (
         <View className="flex-row items-center justify-between gap-x-md">
-            <ProtectedText testID={BudgetSelector.WidgetSpentLabel} className="text-secondary-foreground text-sm tabular-nums">
+            <ProtectedText testID={BudgetSelector.WidgetSpentLabel} className="text-secondary-foreground text-xs tabular-nums">
                 {labels.amountLabel}
             </ProtectedText>
-            <Text testID={BudgetSelector.WidgetRemainingLabel} className="text-secondary-foreground text-sm tabular-nums">
+            <Text testID={BudgetSelector.WidgetRemainingLabel} className="text-secondary-foreground text-xs tabular-nums">
                 {freeLabel}
             </Text>
         </View>

@@ -9,6 +9,7 @@ import { StyledPath } from '../../../@generic/component/styled-path/styled-path'
 import { StyledSvgText } from '../../../@generic/component/styled-svg-text/styled-svg-text';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
+import { BUDGET_PACE_VARIANT } from '../../constant/budget-pace-variant.constant';
 import { buildBudgetForecastGeometry } from '../../utils/build-budget-forecast-geometry.util';
 import { BudgetForecastBills } from '../budget-forecast-bills/budget-forecast-bills';
 import { BudgetForecastRunOut } from '../budget-forecast-run-out/budget-forecast-run-out';
@@ -31,6 +32,12 @@ const DASH = '4 3';
 const CHART_BOTTOM = CHART_HEIGHT - CHART_PADDING_BOTTOM;
 const AXIS_LABEL_Y = CHART_HEIGHT - 4;
 const CHART_RIGHT = CHART_WIDTH - CHART_PADDING_X;
+const PROJECTION_OPACITY = 0.5;
+const TODAY_ACCENT_CLASS_NAME = {
+    positive: 'accent-positive-foreground',
+    warning: 'accent-warning-foreground',
+    destructive: 'accent-destructive-foreground'
+} as const;
 const VIEW_BOX = `0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`;
 
 export const BudgetForecastChart = ({ projection, currencySymbol }: Props) => {
@@ -49,7 +56,9 @@ export const BudgetForecastChart = ({ projection, currencySymbol }: Props) => {
     });
     const limitAmount = formatProtectedAmount(convertFromMicroUnits(projection.overall.limit), currencySymbol);
     const limitLabelY = limitY - LIMIT_LABEL_GAP;
-    const { runOutAt } = projection.overall;
+    const { runOutAt, status } = projection.overall;
+    const { days } = projection;
+    const midDate = days[Math.floor((days.length - 1) / 2)].date;
 
     return (
         <Svg width="100%" height={CHART_HEIGHT} viewBox={VIEW_BOX}>
@@ -71,13 +80,21 @@ export const BudgetForecastChart = ({ projection, currencySymbol }: Props) => {
             >
                 {t`Limit ${limitAmount}`}
             </StyledSvgText>
-            <StyledLine x1={todayX} y1={CHART_PADDING_TOP} x2={todayX} y2={CHART_BOTTOM} strokeClassName="accent-secondary-corner" />
+            <StyledLine
+                x1={todayX}
+                y1={CHART_PADDING_TOP}
+                x2={todayX}
+                y2={CHART_BOTTOM}
+                strokeClassName={TODAY_ACCENT_CLASS_NAME[BUDGET_PACE_VARIANT[status]]}
+                strokeWidth={1.5}
+            />
 
             <StyledPath
                 d={projectedPath}
                 fill="none"
-                strokeClassName="accent-secondary-foreground"
+                strokeClassName="accent-primary"
                 strokeDasharray={DASH}
+                strokeOpacity={PROJECTION_OPACITY}
                 strokeWidth={2}
                 strokeLinecap="round"
             />
@@ -90,7 +107,7 @@ export const BudgetForecastChart = ({ projection, currencySymbol }: Props) => {
                 strokeLinejoin="round"
             />
 
-            <BudgetForecastBills bills={bills} fontSize={LABEL_FONT_SIZE} />
+            <BudgetForecastBills bills={bills} />
 
             {isDefined(runOutX) && isDefined(runOutAt) ? (
                 <BudgetForecastRunOut
@@ -104,7 +121,16 @@ export const BudgetForecastChart = ({ projection, currencySymbol }: Props) => {
             ) : null}
 
             <StyledSvgText x={CHART_PADDING_X} y={AXIS_LABEL_Y} fillClassName="accent-secondary-foreground" fontSize={LABEL_FONT_SIZE}>
-                {formatMonthAndDay(projection.days[0].date)}
+                {formatMonthAndDay(days[0].date)}
+            </StyledSvgText>
+            <StyledSvgText
+                x={CHART_WIDTH / 2}
+                y={AXIS_LABEL_Y}
+                fillClassName="accent-secondary-foreground"
+                fontSize={LABEL_FONT_SIZE}
+                textAnchor="middle"
+            >
+                {formatMonthAndDay(midDate)}
             </StyledSvgText>
             <StyledSvgText
                 x={CHART_RIGHT}
@@ -113,7 +139,7 @@ export const BudgetForecastChart = ({ projection, currencySymbol }: Props) => {
                 fontSize={LABEL_FONT_SIZE}
                 textAnchor="end"
             >
-                {formatMonthAndDay(projection.days[projection.days.length - 1].date)}
+                {formatMonthAndDay(days[days.length - 1].date)}
             </StyledSvgText>
         </Svg>
     );

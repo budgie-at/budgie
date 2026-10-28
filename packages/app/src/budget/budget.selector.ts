@@ -13,6 +13,7 @@ export const BudgetSelector = {
     DetailsPaceBanner: 'BudgetDetails.PaceBanner',
     DetailsSpentLabel: 'BudgetDetails.SpentLabel',
     DetailsRemainingLabel: 'BudgetDetails.RemainingLabel',
+    DetailsLimitLabel: 'BudgetDetails.LimitLabel',
     SafeToSpendSheet: 'BudgetSafeToSpend.Sheet',
     SafeToSpendPerDay: 'BudgetSafeToSpend.PerDay',
     DetailsCategoryRow: (categoryId: number) => `BudgetDetails.CategoryRow.${categoryId}` as const,

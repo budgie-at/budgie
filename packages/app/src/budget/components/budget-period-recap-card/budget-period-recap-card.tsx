@@ -37,7 +37,6 @@ export const BudgetPeriodRecapCard = ({ snapshot, currencySymbol }: Props) => {
     const onBudgetCategoryCount = snapshot.categories.filter(category => category.spent <= category.limitAmount).length;
     const categoryCount = snapshot.categories.length;
     const toneClassName = isUnder ? 'text-positive-foreground' : 'text-destructive-foreground';
-    const cardVariant = isUnder ? 'positive' : 'destructive';
 
     const handleDismiss = () => {
         appRuntime.runFork(
@@ -50,12 +49,12 @@ export const BudgetPeriodRecapCard = ({ snapshot, currencySymbol }: Props) => {
     };
 
     return (
-        <Card variant={cardVariant} size="md" testID={BudgetSelector.DetailsRecapCard}>
+        <Card size="md" testID={BudgetSelector.DetailsRecapCard}>
             <View className="flex-row items-start gap-x-md">
                 <View className="flex-1 gap-y-xs">
                     <Text className={`${toneClassName} text-md font-semibold`}>{title}</Text>
                     {isNotEmptyArray(snapshot.categories) ? (
-                        <Text className="text-secondary-foreground text-sm">
+                        <Text className="text-secondary-foreground text-xs">
                             {t({
                                 message: plural(categoryCount, {
                                     one: `On budget in ${onBudgetCategoryCount} of # category`,
@@ -74,7 +73,7 @@ export const BudgetPeriodRecapCard = ({ snapshot, currencySymbol }: Props) => {
                     testID={BudgetSelector.DetailsRecapDismissButton}
                     onPress={handleDismiss}
                 >
-                    <Icon icon={UserIconNameEnum.X} size={18} className="text-secondary-foreground" />
+                    <Icon icon={UserIconNameEnum.X} size={16} className="text-secondary-foreground" />
                 </HapticPressable>
             </View>
         </Card>

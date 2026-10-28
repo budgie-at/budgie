@@ -1,7 +1,7 @@
 import { isDefined } from '@rnw-community/shared';
 
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
-import { BudgetPaceBannerCard } from '../budget-pace-banner-card/budget-pace-banner-card';
+import { BudgetPaceHintLine } from '../budget-pace-hint-line/budget-pace-hint-line';
 
 import type { BudgetProjectionScopeInterface } from '@budgie/budget';
 
@@ -12,9 +12,15 @@ interface Props {
     readonly onPress: () => void;
 }
 
-export const BudgetPaceCategoryBanner = ({ categoryId, scope, currencySymbol, onPress }: Props) => {
+export const BudgetPaceHintCategory = ({ categoryId, scope, currencySymbol, onPress }: Props) => {
     const { category } = useGetCategoryByIdQuery(categoryId);
-    const title = isDefined(category) ? category.title : '';
 
-    return <BudgetPaceBannerCard title={title} scope={scope} currencySymbol={currencySymbol} onPress={onPress} />;
+    return (
+        <BudgetPaceHintLine
+            title={isDefined(category) ? category.title : ''}
+            scope={scope}
+            currencySymbol={currencySymbol}
+            onPress={onPress}
+        />
+    );
 };

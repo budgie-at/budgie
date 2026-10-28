@@ -1,3 +1,9 @@
+import { Trans } from '@lingui/react/macro';
+import { Text } from 'react-native';
+
+import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+
+import { Card } from '../../../@generic/component/card/card';
 import { useGetBudgetEffectiveLimitsQuery } from '../../query/use-get-budget-effective-limits.query';
 import { BudgetDetailsCategoryRow } from '../budget-details-category-row/budget-details-category-row';
 import { BudgetDetailsOtherCategoryRow } from '../budget-details-other-category-row/budget-details-other-category-row';
@@ -17,22 +23,21 @@ export const BudgetDetailsCategoryList = ({ budget, projection, periodStart, per
     const effectiveLimits = useGetBudgetEffectiveLimitsQuery(budget);
     const categoryIds = projection.categories.map(category => category.categoryId);
     const carriedAmountByCategory = new Map(effectiveLimits.categoryLimits.map(limit => [limit.categoryId, limit.carriedAmount]));
+    const hasCategoryLimits = isNotEmptyArray(projection.categories) || isPositiveNumber(budget.otherLimit);
 
-    const categoryLimitCards = projection.categories.map(category => (
-        <BudgetDetailsCategoryRow
-            key={category.categoryId}
-            categoryId={category.categoryId}
-            scope={category}
-            carriedAmount={carriedAmountByCategory.get(category.categoryId) ?? 0}
-            periodStart={periodStart}
-            periodEnd={periodEnd}
-            currencySymbol={currencySymbol}
-        />
-    ));
-
-    return (
+    const rows = hasCategoryLimits ? (
         <>
-            {categoryLimitCards}
+            {projection.categories.map(category => (
+                <BudgetDetailsCategoryRow
+                    key={category.categoryId}
+                    categoryId={category.categoryId}
+                    scope={category}
+                    carriedAmount={carriedAmountByCategory.get(category.categoryId) ?? 0}
+                    periodStart={periodStart}
+                    periodEnd={periodEnd}
+                    currencySymbol={currencySymbol}
+                />
+            ))}
             <BudgetDetailsOtherCategoryRow
                 categoryIds={categoryIds}
                 scope={projection.other}
@@ -42,5 +47,19 @@ export const BudgetDetailsCategoryList = ({ budget, projection, periodStart, per
                 currencySymbol={currencySymbol}
             />
         </>
+    ) : (
+        <Text className="text-sm text-secondary-foreground">
+            <Trans>No category limits yet</Trans>
+        </Text>
+    );
+
+    return (
+        <Card className="gap-y-xl">
+            <Text className="text-xxs uppercase tracking-wider text-secondary-foreground">
+                <Trans>Categories</Trans>
+            </Text>
+
+            {rows}
+        </Card>
     );
 };

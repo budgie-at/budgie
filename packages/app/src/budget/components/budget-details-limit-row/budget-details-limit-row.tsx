@@ -4,19 +4,20 @@ import Animated, { useAnimatedStyle, useSharedValue, withDelay, withSequence, wi
 
 import { isDefined } from '@rnw-community/shared';
 
-import { Card } from '../../../@generic/component/card/card';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
+import { BUDGET_PACE_VARIANT } from '../../constant/budget-pace-variant.constant';
 import { useBudgetHighlightContext } from '../../context/budget-highlight.context';
 import { BudgetCategoryForecast } from '../budget-category-forecast/budget-category-forecast';
-import { BudgetLimitAmountsRow } from '../budget-limit-amounts-row/budget-limit-amounts-row';
-import { BudgetPaceTrack } from '../budget-pace-track/budget-pace-track';
+import { BudgetLimitBar } from '../budget-limit-bar/budget-limit-bar';
+import { BudgetLimitRow } from '../budget-limit-row/budget-limit-row';
 
 import type { BudgetHighlightTargetInterface } from '../../interface/budget-highlight-target.interface';
 import type { BudgetProjectionScopeInterface } from '@budgie/budget';
-import type { ReactNode } from 'react';
 
 interface Props {
-    readonly children: ReactNode;
+    readonly title: string;
+    readonly carriedAmount: number;
     readonly scope: BudgetProjectionScopeInterface;
     readonly currencySymbol: string;
     readonly testID: string;
@@ -28,11 +29,11 @@ interface Props {
 const HIGHLIGHT_FADE_DURATION = 240;
 const HIGHLIGHT_HOLD_DURATION = 1200;
 
-export const BudgetDetailsLimitCard = (props: Props) => {
-    const { children, scope, currencySymbol, testID, spentTestID, onPress, highlightTarget } = props;
+export const BudgetDetailsLimitRow = (props: Props) => {
+    const { title, carriedAmount, scope, currencySymbol, testID, spentTestID, onPress, highlightTarget } = props;
     const { target, reveal } = useBudgetHighlightContext();
     const reducedMotion = useReducedMotion();
-    const cardRef = useRef<View>(null);
+    const rowRef = useRef<View>(null);
     const highlightProgress = useSharedValue(0);
     const highlightStyle = useAnimatedStyle(() => ({ opacity: highlightProgress.value }));
     const isHighlighted = isDefined(target) && target.scope === highlightTarget.scope && target.categoryId === highlightTarget.categoryId;
@@ -47,8 +48,8 @@ export const BudgetDetailsLimitCard = (props: Props) => {
             )
         );
 
-        if (isDefined(cardRef.current)) {
-            reveal(cardRef.current);
+        if (isDefined(rowRef.current)) {
+            reveal(rowRef.current);
         }
     });
 
@@ -59,22 +60,30 @@ export const BudgetDetailsLimitCard = (props: Props) => {
     }, [target, isHighlighted]);
 
     return (
-        <View ref={cardRef} className="relative" collapsable={false}>
-            <Card variant="ghost" size="md" onPress={onPress} className="gap-y-md">
-                <View className="gap-y-xs">
-                    <View className="flex-row items-center gap-x-md">{children}</View>
-                    <BudgetCategoryForecast scope={scope} currencySymbol={currencySymbol} />
-                </View>
-
-                <BudgetPaceTrack scope={scope} />
-
-                <BudgetLimitAmountsRow spent={scope.spent} limit={scope.limit} currencySymbol={currencySymbol} spentTestID={spentTestID} />
-            </Card>
+        <View ref={rowRef} className="relative" collapsable={false}>
             <Animated.View
                 pointerEvents="none"
-                style={[StyleSheet.absoluteFill, highlightStyle]}
-                className="rounded-5xl border-2 border-warning-corner"
+                style={highlightStyle}
+                className="absolute -inset-x-2 -inset-y-1.5 rounded-2xl border border-warning-corner bg-warning-background"
             />
+            <HapticPressable accessibilityRole="button" onPress={onPress}>
+                <BudgetLimitRow
+                    title={title}
+                    carriedAmount={carriedAmount}
+                    spent={scope.spent}
+                    limit={scope.limit}
+                    currencySymbol={currencySymbol}
+                    spentTestID={spentTestID}
+                >
+                    <BudgetLimitBar
+                        spent={scope.spent}
+                        limit={scope.limit}
+                        tone={BUDGET_PACE_VARIANT[scope.status]}
+                        elapsedFraction={scope.elapsedFraction}
+                    />
+                    <BudgetCategoryForecast scope={scope} currencySymbol={currencySymbol} />
+                </BudgetLimitRow>
+            </HapticPressable>
             <View collapsable={false} nativeID={testID} pointerEvents="none" style={StyleSheet.absoluteFill} testID={testID} />
         </View>
     );
