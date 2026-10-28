@@ -10,6 +10,7 @@ export interface BudgetProjectionInterface {
     readonly overall: BudgetProjectionScopeInterface;
     readonly categories: readonly BudgetCategoryProjectionInterface[];
     readonly other: BudgetProjectionScopeInterface;
+    readonly dailyAllowance: number;
     readonly days: readonly BudgetProjectionDayInterface[];
     readonly upcomingCharges: readonly BudgetUpcomingChargeInterface[];
 }

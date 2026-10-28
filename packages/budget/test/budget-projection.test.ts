@@ -138,6 +138,48 @@ it.effect('does not extrapolate fixed rent posted on the first day', () =>
     })
 );
 
+it.effect('tracks variable spend per elapsed day without counting fixed rent', () =>
+    Effect.sync(() => {
+        const projection = computeBudgetProjection(
+            octoberInput({
+                now: october(10),
+                overallLimit: 1500,
+                entries: [recurringEntry(october(1), 800, 1), ...variableRun([2, 4, 6, 8, 10], 10)]
+            })
+        );
+        const variableSpentByDay = projection.days.map(day => day.variableSpent);
+
+        expect(variableSpentByDay.slice(0, 10)).toEqual([0, 10, 0, 10, 0, 10, 0, 10, 0, 10]);
+        expect(variableSpentByDay.slice(10).every(value => value === null)).toBe(true);
+        expect(projection.days[0]?.actual).toBe(800);
+    })
+);
+
+it.effect('derives the daily allowance from the limit minus posted and upcoming committed charges', () =>
+    Effect.sync(() => {
+        const projection = computeBudgetProjection(
+            octoberInput({
+                now: october(10),
+                overallLimit: 1500,
+                entries: [recurringEntry(october(1), 800, 1), ...variableRun([2, 4, 6, 8, 10], 10)],
+                upcomingCharges: [upcomingRecurring(october(20), 100, 2)]
+            })
+        );
+        const withoutCommitted = computeBudgetProjection(octoberInput({ overallLimit: 3100 }));
+
+        expect(projection.dailyAllowance).toBeCloseTo((1500 - 800 - 100) / 31);
+        expect(withoutCommitted.dailyAllowance).toBe(100);
+    })
+);
+
+it.effect('never reports a negative daily allowance when committed charges exceed the limit', () =>
+    Effect.sync(() => {
+        const projection = computeBudgetProjection(octoberInput({ overallLimit: 100, upcomingCharges: [upcomingRecurring(october(20), 500, 3)] }));
+
+        expect(projection.dailyAllowance).toBe(0);
+    })
+);
+
 it.effect('reserves upcoming charges and never counts a posted recurring charge again', () =>
     Effect.sync(() => {
         const projection = computeBudgetProjection(

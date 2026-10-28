@@ -139,32 +139,57 @@ const computeScope = (
     };
 };
 
+const sumByDay = (
+    entries: readonly BudgetProjectionEntryInterface[],
+    timeline: BudgetProjectionTimelineInterface
+): ReadonlyMap<number, number> => {
+    const totals = new Map<number, number>();
+
+    for (const entry of entries) {
+        const dayIndex = Math.min(toDayIndex(entry.operatedAt, timeline), Math.max(timeline.elapsedDays, 1));
+        totals.set(dayIndex, (totals.get(dayIndex) ?? 0) + entry.amount);
+    }
+
+    return totals;
+};
+
 const buildDays = (
     entries: readonly BudgetProjectionEntryInterface[],
     charges: readonly BudgetUpcomingChargeInterface[],
     timeline: BudgetProjectionTimelineInterface
 ): BudgetProjectionDayInterface[] => {
-    const spentByDay = new Map<number, number>();
-
-    for (const entry of entries) {
-        const dayIndex = Math.min(toDayIndex(entry.operatedAt, timeline), Math.max(timeline.elapsedDays, 1));
-        spentByDay.set(dayIndex, (spentByDay.get(dayIndex) ?? 0) + entry.amount);
-    }
-
+    const spentByDay = sumByDay(entries, timeline);
+    const variableByDay = sumByDay(
+        entries.filter(entry => !isDefined(entry.committedSource)),
+        timeline
+    );
     const dailyPace = resolveDailyPace(entries, timeline);
     const projected = isDefined(dailyPace) ? buildProjectedCumulative(sumAmounts(entries), dailyPace, charges, timeline) : [];
     let actualTotal = 0;
 
     return Array.from({ length: timeline.totalDays }, (_, offset) => {
         const dayIndex = offset + 1;
+        const isElapsed = dayIndex <= timeline.elapsedDays;
         actualTotal += spentByDay.get(dayIndex) ?? 0;
 
         return {
             date: addDays(timeline.periodStart, offset),
-            actual: dayIndex <= timeline.elapsedDays ? actualTotal : null,
+            actual: isElapsed ? actualTotal : null,
+            variableSpent: isElapsed ? (variableByDay.get(dayIndex) ?? 0) : null,
             projected: dayIndex >= timeline.elapsedDays ? (projected[dayIndex - timeline.elapsedDays] ?? null) : null
         };
     });
+};
+
+const computeDailyAllowance = (
+    entries: readonly BudgetProjectionEntryInterface[],
+    charges: readonly BudgetUpcomingChargeInterface[],
+    limit: number,
+    timeline: BudgetProjectionTimelineInterface
+): number => {
+    const postedCommitted = sumAmounts(entries.filter(entry => isDefined(entry.committedSource)));
+
+    return Math.max(limit - postedCommitted - sumAmounts(charges), 0) / timeline.totalDays;
 };
 
 const compareByRisk = (first: BudgetProjectionScopeInterface, second: BudgetProjectionScopeInterface): number => {
@@ -215,6 +240,7 @@ export const computeBudgetProjection = (input: BudgetProjectionInputInterface): 
             input.otherLimit,
             timeline
         ),
+        dailyAllowance: computeDailyAllowance(input.entries, upcomingCharges, input.overallLimit, timeline),
         days: buildDays(input.entries, upcomingCharges, timeline),
         upcomingCharges
     };
