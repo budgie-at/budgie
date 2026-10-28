@@ -1,4 +1,4 @@
-import { SyncModeEnum, InstrumentTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { SyncModeEnum, InstrumentTypeEnum, PRECISION, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { BinanceSyncService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
@@ -7,6 +7,7 @@ import {
     binanceStub,
     buildBinance,
     expectSingleBinanceTransaction,
+    fetchBinanceEntriesByExternalId,
     fetchBinanceTransactions,
     setupBinanceFixture,
     stubEmptyBinanceBalances,
@@ -19,6 +20,18 @@ const setupFiatScenario = () =>
         stubEmptyBinanceBalances();
         binanceStub.deposits([]);
         binanceStub.withdrawals([]);
+    });
+
+const EUR_100 = 100 * PRECISION;
+const EUR_102 = 102 * PRECISION;
+const EUR_2 = 2 * PRECISION;
+
+const fetchOrderEntries = (orderNo: string) =>
+    Effect.gen(function* () {
+        const mainEntries = yield* fetchBinanceEntriesByExternalId(orderNo);
+        const feeEntries = yield* fetchBinanceEntriesByExternalId(`${orderNo}:fee`);
+
+        return { mainEntries, feeEntries };
     });
 
 describe('binance/fiat-orders', () => {
@@ -66,6 +79,30 @@ describe('binance/fiat-orders', () => {
             const transactions = yield* fetchBinanceTransactions();
             expect(transactions).toHaveLength(1);
             expect(transactions[0].externalId).toBe('fiat-eur');
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect.each([
+        { name: 'deposit', orderNo: 'fiat-dep-fee', isDeposit: true, mainType: TransactionEntryTypeEnum.DEBIT, mainAmount: EUR_102 },
+        { name: 'withdrawal', orderNo: 'fiat-wd-fee', isDeposit: false, mainType: TransactionEntryTypeEnum.CREDIT, mainAmount: EUR_100 }
+    ])('books a fiat $name of 100 EUR with a 2 EUR fee as the principal plus a fee entry', ({ orderNo, isDeposit, mainType, mainAmount }) =>
+        Effect.gen(function* () {
+            const binanceSyncService = yield* BinanceSyncService;
+            const order = [buildBinance.fiatOrder({ orderNo, fiatCurrency: 'EUR', amount: '100', totalFee: '2' })];
+
+            yield* setupFiatScenario();
+            binanceStub.fiatOrders(isDeposit ? order : [], isDeposit ? [] : order);
+
+            yield* binanceSyncService.sync();
+
+            const { mainEntries, feeEntries } = yield* fetchOrderEntries(orderNo);
+            expect(mainEntries).toHaveLength(1);
+            expect(feeEntries).toHaveLength(1);
+            expect(mainEntries[0].type).toBe(mainType);
+            expect(mainEntries[0].amount).toBe(mainAmount);
+            expect(mainEntries[0].exchangeRate).toBe(1);
+            expect(feeEntries[0].type).toBe(TransactionEntryTypeEnum.FEE);
+            expect(feeEntries[0].amount).toBe(EUR_2);
         }).pipe(Effect.provide(TestLayer))
     );
 });

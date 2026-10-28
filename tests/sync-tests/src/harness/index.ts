@@ -2,6 +2,7 @@ export { testDb } from './scenario/setup';
 export { setupMonobankFixture } from './monobank/setup-monobank-fixture';
 export { setupBackwardSweepFixture } from './monobank/setup-backward-sweep-fixture';
 export { setupTransientFailureFixture } from './monobank/setup-transient-failure-fixture';
+export { seedMonobankTokenAccount } from './monobank/seed-monobank-token-account';
 export { seed } from './seed/seed';
 export { seedBankPair } from './seed/seed-bank-pair';
 export { seedBitcoinCryptoAccount } from './seed/seed-bitcoin-crypto-account';
@@ -30,6 +31,7 @@ export { subtractMonths } from './scenario/subtract-months';
 export { binanceStub } from './binance/binance-stub';
 export type { TimeWindow } from './binance/binance-stub';
 export { buildBinance } from './binance/build-binance';
+export { STALE_SYNC_AGE_MS, RUN_DEADLINE_MS, advanceClock, jumpPastDeadline, restoreRealTimers } from './binance/binance-clock';
 export { setupBinanceFixture } from './binance/setup-binance-fixture';
 export {
     buildEarnDayKey,
@@ -42,7 +44,9 @@ export {
     resetBinanceSyncForResync,
     seedCryptoInstrument,
     setupAdaUsdtFixture,
+    setupStaleForwardFixture,
     setupUsdtSpotFixtureWithBalances,
+    stubBinanceAccountEndpoints,
     stubEmptyBinanceBalances
 } from './binance/binance-scenario';
 export {

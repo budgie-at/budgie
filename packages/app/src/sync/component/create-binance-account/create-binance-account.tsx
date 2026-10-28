@@ -1,5 +1,6 @@
 import { BinanceSyncService } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { useState } from 'react';
 
 import { isNotEmptyString } from '@rnw-community/shared';
@@ -8,6 +9,7 @@ import { Button } from '../../../@generic/component/button/button';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { SetupStepEnum } from '../../enum/setup-step.enum';
 import { useSyncAccountSetupFlow } from '../../hook/use-sync-account-setup-flow.hook';
+import { toastBinanceKeyPermissionsError } from '../../utils/toast-binance-key-permissions-error.util';
 import { AccountSelectionStep } from '../account-selection-step/account-selection-step';
 import { BinanceParkedAssetsNotice } from '../binance-parked-assets-notice/binance-parked-assets-notice';
 import { KeySecretInputStep } from '../key-secret-input-step/key-secret-input-step';
@@ -40,7 +42,12 @@ export const CreateBinanceAccount = () => {
         }
 
         void fetchAccountPreviews(
-            binanceSyncService => binanceSyncService.fetchAccountsPreview(buildToken()),
+            binanceSyncService =>
+                binanceSyncService
+                    .fetchAccountsPreview(buildToken())
+                    .pipe(
+                        Effect.catchTags({ BinanceKeyPermissionsError: error => Effect.as(toastBinanceKeyPermissionsError(error), null) })
+                    ),
             previews => {
                 accountSelection.setPreviews(previews.filter(preview => !preview.isParked));
                 setParkedPreviews(previews.filter(preview => preview.isParked));

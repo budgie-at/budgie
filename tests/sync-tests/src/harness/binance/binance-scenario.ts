@@ -14,9 +14,12 @@ import { expect } from 'vitest';
 import { testDb } from '../scenario/setup';
 import { seed } from '../seed/seed';
 
+import { STALE_SYNC_AGE_MS } from './binance-clock';
 import { binanceStub } from './binance-stub';
 import { buildBinance } from './build-binance';
 import { setupBinanceFixture } from './setup-binance-fixture';
+
+import type { BinanceAssetBalanceApiInterface } from '@budgie/sync';
 
 const EARN_DAY_KEY_LENGTH = 10;
 const DEFAULT_RECENT_DAY_OF_MONTH = 15;
@@ -45,17 +48,29 @@ export const seedCryptoInstrument = (code: string) =>
         return yield* seed.instrument({ code, name: code, symbol: code, type: InstrumentTypeEnum.CRYPTO });
     });
 
-export const setupAdaUsdtFixture = (mode: SyncModeEnum, forwardSyncedAt?: Date, binanceTradeCursor?: string) =>
+export const setupAdaUsdtFixture = (
+    mode: SyncModeEnum,
+    forwardSyncedAt?: Date,
+    binanceTradeCursor?: string,
+    baseAssets: readonly string[] = ['ADA']
+) =>
     Effect.gen(function* () {
         const fixture = yield* setupBinanceFixture({ asset: 'USDT', mode, forwardSyncedAt, binanceTradeCursor });
 
-        binanceStub.exchangeInfo(['ADAUSDT']);
+        binanceStub.exchangeInfo(baseAssets.map(baseAsset => `${baseAsset}USDT`));
         binanceStub.spotBalances([
-            buildBinance.balance({ asset: 'ADA', free: '200' }),
+            ...baseAssets.map(baseAsset => buildBinance.balance({ asset: baseAsset, free: '200' })),
             buildBinance.balance({ asset: 'USDT', free: '100' })
         ]);
 
         return fixture;
+    });
+
+export const setupStaleForwardFixture = (baseAssets: readonly string[] = ['ADA']) =>
+    Effect.gen(function* () {
+        yield* Effect.forEach(baseAssets, seedCryptoInstrument);
+
+        return yield* setupAdaUsdtFixture(SyncModeEnum.FORWARD, new Date(Date.now() - STALE_SYNC_AGE_MS), undefined, baseAssets);
     });
 
 export const setupUsdtSpotFixtureWithBalances = (baseAsset: string, baseFree: string) =>
@@ -83,6 +98,14 @@ export const recentDayInMonthsAgo = (monthsAgo: number): number => {
     const dayInMonth = monthsAgo === 0 ? 1 : DEFAULT_RECENT_DAY_OF_MONTH;
 
     return Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - monthsAgo, dayInMonth);
+};
+
+export const stubBinanceAccountEndpoints = (spotBalances: BinanceAssetBalanceApiInterface[]): void => {
+    binanceStub.serverTime();
+    binanceStub.spotBalances(spotBalances);
+    binanceStub.fundingBalances([]);
+    binanceStub.earnPositions([]);
+    binanceStub.lockedEarnPositions([]);
 };
 
 export const stubEmptyBinanceBalances = (): void => {

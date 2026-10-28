@@ -5,11 +5,14 @@ import * as Layer from 'effect/Layer';
 
 import { SyncWorkload } from '../port/sync-workload.port';
 
+const MAX_INLINE_WAIT_MS = 60_000;
+
 export class PollingSyncRateGate extends Context.Service<PollingSyncRateGate>()('@budgie/sync/PollingSyncRateGate', {
     make: Effect.gen(function* () {
         const syncWorkload = yield* SyncWorkload;
         const nextRequestAtMsByToken = new Map<string, number>();
         let lastRequestReadyAtMs = 0;
+        let backOffUntilMs = 0;
 
         return {
             requestReadyAtMs: (token: string) => Effect.sync(() => nextRequestAtMsByToken.get(token) ?? 0),
@@ -40,11 +43,15 @@ export class PollingSyncRateGate extends Context.Service<PollingSyncRateGate>()(
                 deadlineAtMs: number,
                 rateLimitMs: number
             ) {
-                if (yield* syncWorkload.hasQueuedWork) {
+                const nowMs = yield* Clock.currentTimeMillis;
+                if (rateLimitMs > MAX_INLINE_WAIT_MS) {
+                    backOffUntilMs = nowMs + rateLimitMs;
+                    lastRequestReadyAtMs = backOffUntilMs;
+
                     return true;
                 }
 
-                if ((yield* Clock.currentTimeMillis) + rateLimitMs > deadlineAtMs) {
+                if ((yield* syncWorkload.hasQueuedWork) || nowMs + rateLimitMs > deadlineAtMs) {
                     return true;
                 }
 
@@ -53,7 +60,8 @@ export class PollingSyncRateGate extends Context.Service<PollingSyncRateGate>()(
                     Effect.as(syncWorkload.awaitQueuedUserWork, true)
                 );
             }),
-            lastRequestReadyAtMs: Effect.sync(() => lastRequestReadyAtMs)
+            lastRequestReadyAtMs: Effect.sync(() => lastRequestReadyAtMs),
+            isBackedOff: (nowMs: number) => nowMs < backOffUntilMs
         };
     })
 }) {

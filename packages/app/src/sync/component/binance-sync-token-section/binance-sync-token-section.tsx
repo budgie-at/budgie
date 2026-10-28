@@ -12,6 +12,7 @@ import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useSyncToken } from '../../hook/use-sync-token.hook';
+import { toastBinanceKeyPermissionsError } from '../../utils/toast-binance-key-permissions-error.util';
 import { BinanceSyncTokenInputs } from '../binance-sync-token-inputs/binance-sync-token-inputs';
 import { BinanceSyncTokenSummary } from '../binance-sync-token-summary/binance-sync-token-summary';
 import { SyncTokenSectionActions } from '../sync-token-section-actions/sync-token-section-actions';
@@ -65,6 +66,7 @@ export const BinanceSyncTokenSection = ({ accountId }: Props) => {
                         setApiSecret('');
                     })
                 ),
+                Effect.catchTags({ BinanceKeyPermissionsError: toastBinanceKeyPermissionsError }),
                 toastOnFailure(t`Could not update token`)
             )
         );

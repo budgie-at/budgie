@@ -160,13 +160,20 @@ and supply `provider`, `baseUrl` and `headers`.
 One tagged union, `SyncError`, of `Schema.TaggedError` classes in `core/error/`. Every error carries
 `provider` and `message`. Branch with `Effect.catchTag` or on `error._tag`.
 
-| Error                      | Source                                                        | Extra fields |
-| -------------------------- | ------------------------------------------------------------- | ------------ |
-| `SyncUnauthorizedError`    | HTTP 401/403, Monobank 401                                    |              |
-| `SyncRateLimitedError`     | HTTP 429                                                      |              |
-| `SyncDeferredError`        | Binance run deadline reached or weight cool-down past it      |              |
-| `SyncNetworkError`         | transport failure, timeout, other HTTP statuses               |              |
-| `SyncInvalidResponseError` | HTTP 400, schema decode failure, unparsable file, bad account | `apiCode?`   |
+| Error                        | Source                                                                          | Extra fields    |
+| ---------------------------- | ------------------------------------------------------------------------------- | --------------- |
+| `SyncUnauthorizedError`      | HTTP 401/403 (base client), Monobank 401, Binance codes -2015/-2014/-1022/-2008 |                 |
+| `SyncRateLimitedError`       | HTTP 429, Binance 418 and code-less 403 (WAF)                                   | `retryAfterMs?` |
+| `SyncRegionUnavailableError` | Binance HTTP 451                                                                |                 |
+| `SyncDeferredError`          | Binance run deadline reached or weight cool-down past it                        |                 |
+| `SyncNetworkError`           | transport failure, timeout, other HTTP statuses                                 |                 |
+| `SyncInvalidResponseError`   | HTTP 400, schema decode failure, unparsable file, bad account                   | `apiCode?`      |
+
+Binance classifies by error code first, HTTP status second (`BinanceSignedClient.classifyApiError`). A 403, 418 or 429 becomes
+`SyncRateLimitedError` carrying `retryAfterMs` from `Retry-After` (120 s default for 403/418): it cools the weight throttle, and a
+back-off longer than 60 s ends the run with a continuation after that time and pauses later runs until it expires, without disabling
+any sync. `-1021` refreshes the server-time offset and retries the request once. 451 is terminal and not retried, and keeps every
+Binance sync enabled (status `FAILED` with `lastError`): a region block is neither per-account nor a bad key.
 
 `SyncInvalidResponseError` is meaningful: a Monobank backward window treats it as an empty batch, while a
 forward batch fails and keeps its cursor so no window is skipped; Binance treats `apiCode -1121` (unknown

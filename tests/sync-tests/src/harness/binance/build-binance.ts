@@ -44,12 +44,14 @@ export const buildBinance = {
         id: `dep-${overrides.coin}-${overrides.amount}`,
         txId: `txid-${overrides.coin}-${overrides.amount}`,
         insertTime: Date.now(),
+        status: 1,
         ...overrides
     }),
     withdrawal: (overrides: WithdrawalOverrides): BinanceWithdrawalApiInterface => ({
         txId: `txid-${overrides.id}`,
         transactionFee: '0',
         applyTime: new Date().toISOString(),
+        status: 6,
         ...overrides
     }),
     fiatOrder: (overrides: FiatOrderOverrides): BinanceFiatOrderApiInterface => ({
@@ -76,6 +78,8 @@ export const buildBinance = {
         isMaker: false,
         ...overrides
     }),
+    fill: (symbol: string, id: number, overrides: Partial<BinanceTradeApiInterface> = {}): BinanceTradeApiInterface =>
+        buildBinance.trade({ symbol, id, qty: '1', quoteQty: '1', isBuyer: true, ...overrides }),
     convertFlow: (overrides: ConvertFlowOverrides): BinanceConvertFlowApiInterface => ({
         quoteId: `quote-${overrides.orderId}`,
         orderStatus: 'SUCCESS',

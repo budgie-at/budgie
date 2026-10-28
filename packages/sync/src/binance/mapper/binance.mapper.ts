@@ -7,6 +7,7 @@ import { SyncAccountBalanceStateEnum } from '../../core/enum/sync-account-balanc
 import { SyncAccountTypeEnum } from '../../core/enum/sync-account-type.enum';
 import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { SyncTransactionTypeEnum } from '../../core/enum/sync-transaction-type.enum';
+import { BinanceCapitalOutcomeEnum } from '../enum/binance-capital-outcome.enum';
 import { BinanceTransferSourceEnum } from '../enum/binance-transfer-source.enum';
 import { BinanceWalletEnum } from '../enum/binance-wallet.enum';
 import { encodeBinanceAccountId } from '../utils/binance-account-id.util';
@@ -30,6 +31,24 @@ const MILLISECONDS_PER_SECOND = 1000;
 const C2C_BUY_TRADE_TYPE = 'BUY';
 const EARN_DATE_PART_DIGITS = 2;
 
+const DEPOSIT_OUTCOME_BY_STATUS = new Map<number | undefined, BinanceCapitalOutcomeEnum>([
+    [0, BinanceCapitalOutcomeEnum.PENDING],
+    [1, BinanceCapitalOutcomeEnum.COMPLETED],
+    [2, BinanceCapitalOutcomeEnum.REJECTED],
+    [6, BinanceCapitalOutcomeEnum.COMPLETED],
+    [7, BinanceCapitalOutcomeEnum.REJECTED],
+    [8, BinanceCapitalOutcomeEnum.PENDING]
+]);
+const WITHDRAWAL_OUTCOME_BY_STATUS = new Map<number | undefined, BinanceCapitalOutcomeEnum>([
+    [0, BinanceCapitalOutcomeEnum.PENDING],
+    [1, BinanceCapitalOutcomeEnum.REJECTED],
+    [2, BinanceCapitalOutcomeEnum.PENDING],
+    [3, BinanceCapitalOutcomeEnum.REJECTED],
+    [4, BinanceCapitalOutcomeEnum.PENDING],
+    [5, BinanceCapitalOutcomeEnum.REJECTED],
+    [6, BinanceCapitalOutcomeEnum.COMPLETED]
+]);
+
 const toUnixSeconds = (timeMs: number): number => Math.floor(timeMs / MILLISECONDS_PER_SECOND);
 
 const encodeSpotAccountId = (asset: string): string => encodeBinanceAccountId({ wallet: BinanceWalletEnum.SPOT, asset });
@@ -48,7 +67,10 @@ const toSyncTransaction = (
     cashbackAmount: 0,
     balance: 0,
     hold: false,
-    operationAmount: transaction.amount - transaction.feeAmount,
+    operationAmount:
+        transaction.type === SyncTransactionTypeEnum.INCOME
+            ? transaction.amount + transaction.feeAmount
+            : transaction.amount - transaction.feeAmount,
     ...transaction
 });
 
@@ -93,20 +115,21 @@ export const mapBinanceUnrepresentableBalanceToAccount = (asset: string, wallet:
     balanceState: SyncAccountBalanceStateEnum.UNREPRESENTABLE
 });
 
-const buildDepositExternalId = (deposit: BinanceDepositApiInterface): string => {
-    if (isNotEmptyString(deposit.id)) {
-        return deposit.id;
-    }
+export const getBinanceDepositOutcome = (deposit: Pick<BinanceDepositApiInterface, 'status'>): BinanceCapitalOutcomeEnum =>
+    DEPOSIT_OUTCOME_BY_STATUS.get(deposit.status) ?? BinanceCapitalOutcomeEnum.PENDING;
 
-    return isNotEmptyString(deposit.txId) ? deposit.txId : `${deposit.coin}-${deposit.insertTime}-${deposit.amount}`;
-};
+export const getBinanceWithdrawalOutcome = (withdrawal: Pick<BinanceWithdrawalApiInterface, 'status'>): BinanceCapitalOutcomeEnum =>
+    WITHDRAWAL_OUTCOME_BY_STATUS.get(withdrawal.status) ?? BinanceCapitalOutcomeEnum.PENDING;
+
+export const buildBinanceDepositExternalId = (deposit: BinanceDepositApiInterface): string =>
+    [deposit.id, deposit.txId].find(isNotEmptyString) ?? `${deposit.coin}-${deposit.insertTime}-${deposit.amount}`;
 
 export const mapBinanceDepositToTransaction = (deposit: BinanceDepositApiInterface, accountId: string): SyncTransactionInterface | null => {
     const amount = parseBinanceAmount(deposit.amount);
 
     return isDefined(amount)
         ? toSyncTransaction({
-              id: buildDepositExternalId(deposit),
+              id: buildBinanceDepositExternalId(deposit),
               accountId,
               category: deposit.coin,
               time: toUnixSeconds(deposit.insertTime),
@@ -143,9 +166,10 @@ export const mapBinanceFiatOrderToTransaction = (
     accountId: string,
     isDeposit: boolean
 ): SyncTransactionInterface | null => {
-    const parsed = parseAmountAndClampedFee(order.amount, order.totalFee);
+    const amount = parseBinanceAmount(order.amount);
+    const feeAmount = parseBinanceAmount(order.totalFee);
 
-    return isDefined(parsed)
+    return isDefined(amount) && isDefined(feeAmount)
         ? toSyncTransaction({
               id: order.orderNo,
               accountId,
@@ -153,8 +177,8 @@ export const mapBinanceFiatOrderToTransaction = (
               time: toUnixSeconds(order.createTime),
               type: isDeposit ? SyncTransactionTypeEnum.INCOME : SyncTransactionTypeEnum.EXPENSE,
               description: isDeposit ? `Binance ${order.fiatCurrency} deposit` : `Binance ${order.fiatCurrency} withdrawal`,
-              amount: parsed[0],
-              feeAmount: parsed[1]
+              amount: isDeposit ? amount : amount + feeAmount,
+              feeAmount
           })
         : null;
 };

@@ -19,7 +19,7 @@ const getTransactionType = (amount: number): SyncTransactionTypeEnum =>
     isPositiveNumber(amount) ? SyncTransactionTypeEnum.INCOME : SyncTransactionTypeEnum.EXPENSE;
 
 const getFeeAmount = (row: PrivatbankRowInterface): number => {
-    if (row.cardCurrency !== row.operationCurrency) {
+    if (row.cardCurrency !== row.operationCurrency || isPositiveNumber(row.cardAmount)) {
         return 0;
     }
 

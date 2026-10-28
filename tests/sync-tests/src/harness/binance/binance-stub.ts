@@ -1,8 +1,11 @@
 import { HttpResponse, http } from 'msw';
 
+import { isString } from '@rnw-community/shared';
+
 import { mockServer } from '../scenario/mock-server';
 
 import type {
+    BinanceApiRestrictionsApiInterface,
     BinanceAssetBalanceApiInterface,
     BinanceC2cOrderApiInterface,
     BinanceConvertFlowApiInterface,
@@ -14,9 +17,11 @@ import type {
     BinanceTradeApiInterface,
     BinanceWithdrawalApiInterface
 } from '@budgie/sync';
+import type { JsonBodyType } from 'msw';
 
 const BASE_URL = 'https://api.binance.com';
 const SERVER_TIME_URL = `${BASE_URL}/api/v3/time`;
+const API_RESTRICTIONS_URL = `${BASE_URL}/sapi/v1/account/apiRestrictions`;
 const SPOT_BALANCE_URL = `${BASE_URL}/sapi/v3/asset/getUserAsset`;
 const FUNDING_BALANCE_URL = `${BASE_URL}/sapi/v1/asset/get-funding-asset`;
 const DEPOSIT_URL = `${BASE_URL}/sapi/v1/capital/deposit/hisrec`;
@@ -25,8 +30,32 @@ const FIAT_ORDERS_URL = `${BASE_URL}/sapi/v1/fiat/orders`;
 const C2C_ORDERS_URL = `${BASE_URL}/sapi/v1/c2c/orderMatch/listUserOrderHistory`;
 const MY_TRADES_URL = `${BASE_URL}/api/v3/myTrades`;
 const EXCHANGE_INFO_URL = `${BASE_URL}/api/v3/exchangeInfo`;
+const CONVERT_TRADE_FLOW_URL = `${BASE_URL}/sapi/v1/convert/tradeFlow`;
+const EARN_POSITION_URL = `${BASE_URL}/sapi/v1/simple-earn/flexible/position`;
+const LOCKED_EARN_POSITION_URL = `${BASE_URL}/sapi/v1/simple-earn/locked/position`;
+const EARN_REWARDS_URL = `${BASE_URL}/sapi/v1/simple-earn/flexible/history/rewardsRecord`;
 const EXCHANGE_INFO_BASE_ASSETS = ['ADA', 'BNB', 'BTC', 'ETH', 'EUR', 'PEPE', 'USDT'];
 const EXCHANGE_INFO_QUOTE_ASSETS = ['USDT', 'FDUSD', 'BTC', 'BNB', 'BUSD'];
+const EXCHANGE_INFO_TRADING_STATUS = 'TRADING';
+const EXCHANGE_INFO_SUFFIX_QUOTE_ASSETS = [...EXCHANGE_INFO_QUOTE_ASSETS, 'USDC', 'EUR'];
+
+interface ExchangeInfoSymbolStub {
+    readonly baseAsset: string;
+    readonly quoteAsset: string;
+    readonly status?: string;
+}
+
+const splitSymbolBySuffix = (symbol: string): ExchangeInfoSymbolStub => {
+    const quoteAsset = EXCHANGE_INFO_SUFFIX_QUOTE_ASSETS.find(quote => symbol.endsWith(quote)) ?? '';
+
+    return { baseAsset: symbol.slice(0, symbol.length - quoteAsset.length), quoteAsset };
+};
+
+const toExchangeInfoSymbol = (entry: string | ExchangeInfoSymbolStub) => {
+    const { baseAsset, quoteAsset, status = EXCHANGE_INFO_TRADING_STATUS } = isString(entry) ? splitSymbolBySuffix(entry) : entry;
+
+    return { symbol: `${baseAsset}${quoteAsset}`, baseAsset, quoteAsset, status };
+};
 
 const buildAllValidSymbols = (): string[] => {
     const symbols: string[] = [];
@@ -40,10 +69,7 @@ const buildAllValidSymbols = (): string[] => {
 
     return symbols;
 };
-const CONVERT_TRADE_FLOW_URL = `${BASE_URL}/sapi/v1/convert/tradeFlow`;
-const EARN_POSITION_URL = `${BASE_URL}/sapi/v1/simple-earn/flexible/position`;
-const LOCKED_EARN_POSITION_URL = `${BASE_URL}/sapi/v1/simple-earn/locked/position`;
-const EARN_REWARDS_URL = `${BASE_URL}/sapi/v1/simple-earn/flexible/history/rewardsRecord`;
+
 const FIAT_DEPOSIT_TRANSACTION_TYPE = '0';
 const FIRST_PAGE = '1';
 const C2C_BUY_TRADE_TYPE = 'BUY';
@@ -87,37 +113,91 @@ const sliceOffsetPage = <TRow>(url: URL, rows: TRow[]): TRow[] => {
     return rows.slice(offset, offset + limit);
 };
 
+const SERVER_ERROR_STATUS = 500;
+
+interface ServeOptions {
+    readonly onServed?: () => void;
+    readonly failTimes?: number;
+}
+
+const serveWith = (options: ServeOptions | undefined, respond: (info: { readonly request: Request }) => Response) => {
+    let servedCount = 0;
+
+    return (info: { readonly request: Request }): Response => {
+        servedCount += 1;
+        options?.onServed?.();
+
+        return servedCount <= (options?.failTimes ?? 0) ? new HttpResponse(null, { status: SERVER_ERROR_STATUS }) : respond(info);
+    };
+};
+
+const buildPagedEnvelope = <TRow>(data: TRow[]) => ({ code: '000000', message: 'success', data, total: data.length, success: true });
+
+const serveCapitalHistory = <TRow>(
+    rows: TRow[],
+    getTimeMs: (row: TRow) => number,
+    requestedWindows: TimeWindow[] | undefined,
+    options: ServeOptions | undefined
+) =>
+    serveWith(options, ({ request }) => {
+        const url = new URL(request.url);
+        const window = parseTimeWindow(url, 'startTime', 'endTime');
+        requestedWindows?.push(window);
+        const matched = rows.filter(row => isWithinWindow(getTimeMs(row), window));
+
+        return HttpResponse.json(sliceOffsetPage(url, matched), { headers: WEIGHT_HEADERS });
+    });
+
 export const binanceStub = {
-    serverTime: (): void => {
-        mockServer.use(http.get(SERVER_TIME_URL, () => HttpResponse.json({ serverTime: Date.now() }, { headers: WEIGHT_HEADERS })));
+    serverTime: (offsetMs = 0): void => {
+        mockServer.use(
+            http.get(SERVER_TIME_URL, () => HttpResponse.json({ serverTime: Date.now() + offsetMs }, { headers: WEIGHT_HEADERS }))
+        );
     },
-    spotBalances: (balances: BinanceAssetBalanceApiInterface[]): void => {
-        mockServer.use(http.post(SPOT_BALANCE_URL, () => HttpResponse.json(balances, { headers: WEIGHT_HEADERS })));
+    apiRestrictionsBody: (body: JsonBodyType): void => {
+        mockServer.use(http.get(API_RESTRICTIONS_URL, () => HttpResponse.json(body, { headers: WEIGHT_HEADERS })));
+    },
+    apiRestrictions: (restrictions: Partial<BinanceApiRestrictionsApiInterface> = {}): void => {
+        binanceStub.apiRestrictionsBody({
+            ipRestrict: false,
+            createTime: 1_700_000_000_000,
+            enableReading: true,
+            enableWithdrawals: false,
+            enableInternalTransfer: false,
+            permitsUniversalTransfer: false,
+            enableVanillaOptions: false,
+            enablePortfolioMarginTrading: false,
+            enableFutures: false,
+            enableMargin: false,
+            enableSpotAndMarginTrading: false,
+            ...restrictions
+        });
+    },
+    spotBalances: (balances: BinanceAssetBalanceApiInterface[], options?: ServeOptions): void => {
+        mockServer.use(
+            http.post(
+                SPOT_BALANCE_URL,
+                serveWith(options, () => HttpResponse.json(balances, { headers: WEIGHT_HEADERS }))
+            )
+        );
     },
     fundingBalances: (balances: BinanceAssetBalanceApiInterface[]): void => {
         mockServer.use(http.post(FUNDING_BALANCE_URL, () => HttpResponse.json(balances, { headers: WEIGHT_HEADERS })));
     },
-    deposits: (deposits: BinanceDepositApiInterface[], requestedWindows?: TimeWindow[]): void => {
+    deposits: (deposits: BinanceDepositApiInterface[], requestedWindows?: TimeWindow[], options?: ServeOptions): void => {
         mockServer.use(
-            http.get(DEPOSIT_URL, ({ request }) => {
-                const url = new URL(request.url);
-                const window = parseTimeWindow(url, 'startTime', 'endTime');
-                requestedWindows?.push(window);
-                const matched = deposits.filter(deposit => isWithinWindow(deposit.insertTime, window));
-
-                return HttpResponse.json(sliceOffsetPage(url, matched), { headers: WEIGHT_HEADERS });
-            })
+            http.get(
+                DEPOSIT_URL,
+                serveCapitalHistory(deposits, deposit => deposit.insertTime, requestedWindows, options)
+            )
         );
     },
-    withdrawals: (withdrawals: BinanceWithdrawalApiInterface[]): void => {
+    withdrawals: (withdrawals: BinanceWithdrawalApiInterface[], requestedWindows?: TimeWindow[], options?: ServeOptions): void => {
         mockServer.use(
-            http.get(WITHDRAW_URL, ({ request }) => {
-                const url = new URL(request.url);
-                const window = parseTimeWindow(url, 'startTime', 'endTime');
-                const matched = withdrawals.filter(withdrawal => isWithinWindow(new Date(withdrawal.applyTime).getTime(), window));
-
-                return HttpResponse.json(sliceOffsetPage(url, matched), { headers: WEIGHT_HEADERS });
-            })
+            http.get(
+                WITHDRAW_URL,
+                serveCapitalHistory(withdrawals, withdrawal => new Date(withdrawal.applyTime).getTime(), requestedWindows, options)
+            )
         );
     },
     fiatOrders: (
@@ -138,10 +218,7 @@ export const binanceStub = {
                 const windowOrders = typeOrders.filter(order => isWithinWindow(order.createTime, window));
                 const orders = isFirstPage ? windowOrders : [];
 
-                return HttpResponse.json(
-                    { code: '000000', message: 'success', data: orders, total: orders.length, success: true },
-                    { headers: WEIGHT_HEADERS }
-                );
+                return HttpResponse.json(buildPagedEnvelope(orders), { headers: WEIGHT_HEADERS });
             })
         );
     },
@@ -161,10 +238,7 @@ export const binanceStub = {
                 const windowOrders = typeOrders.filter(order => isWithinWindow(order.createTime, window));
                 const data = isFirstPage ? windowOrders : [];
 
-                return HttpResponse.json(
-                    { code: '000000', message: 'success', data, total: data.length, success: true },
-                    { headers: WEIGHT_HEADERS }
-                );
+                return HttpResponse.json(buildPagedEnvelope(data), { headers: WEIGHT_HEADERS });
             })
         );
     },
@@ -178,30 +252,41 @@ export const binanceStub = {
             )
         );
     },
-    exchangeInfo: (symbols: string[]): void => {
+    exchangeInfo: (symbols: readonly (string | ExchangeInfoSymbolStub)[]): void => {
         mockServer.use(
             http.get(EXCHANGE_INFO_URL, () =>
-                HttpResponse.json({ symbols: symbols.map(symbol => ({ symbol, status: 'TRADING' })) }, { headers: WEIGHT_HEADERS })
+                HttpResponse.json({ symbols: symbols.map(toExchangeInfoSymbol) }, { headers: WEIGHT_HEADERS })
             )
         );
     },
     exchangeInfoAllValid: (): void => {
         binanceStub.exchangeInfo(buildAllValidSymbols());
     },
-    myTrades: (tradesBySymbol: Record<string, BinanceTradeApiInterface[]>, requestedSymbols?: Set<string>, requestedUrls?: URL[]): void => {
+    myTrades: (
+        tradesBySymbol: Record<string, BinanceTradeApiInterface[]>,
+        requestedSymbols?: Set<string>,
+        requestedUrls?: URL[],
+        options?: ServeOptions
+    ): void => {
         mockServer.use(
-            http.get(MY_TRADES_URL, ({ request }) => {
-                const url = new URL(request.url);
-                const symbol = url.searchParams.get('symbol') ?? '';
-                const fromId = Number(url.searchParams.get('fromId') ?? '0');
-                requestedSymbols?.add(symbol);
-                requestedUrls?.push(url);
-                const symbolTrades = tradesBySymbol[symbol] ?? [];
-                const window = parseTimeWindow(url, 'startTime', 'endTime');
-                const trades = fromId === 0 ? symbolTrades.filter(trade => isWithinWindow(trade.time, window)) : [];
+            http.get(
+                MY_TRADES_URL,
+                serveWith(options, ({ request }) => {
+                    const url = new URL(request.url);
+                    const symbol = url.searchParams.get('symbol') ?? '';
+                    const fromId = url.searchParams.get('fromId');
+                    requestedSymbols?.add(symbol);
+                    requestedUrls?.push(url);
+                    const symbolTrades = tradesBySymbol[symbol] ?? [];
+                    const window = parseTimeWindow(url, 'startTime', 'endTime');
+                    const trades =
+                        fromId === null
+                            ? symbolTrades.filter(trade => isWithinWindow(trade.time, window))
+                            : symbolTrades.filter(trade => trade.id >= Number(fromId));
 
-                return HttpResponse.json(trades, { headers: WEIGHT_HEADERS });
-            })
+                    return HttpResponse.json(trades, { headers: WEIGHT_HEADERS });
+                })
+            )
         );
     },
     myTradesFailure: (status: number, body: { readonly code: number; readonly msg: string }): void => {

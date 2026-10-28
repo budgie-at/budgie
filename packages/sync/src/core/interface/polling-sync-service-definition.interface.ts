@@ -3,7 +3,6 @@ import type { SyncServiceDefinitionInterface } from './sync-service-definition.i
 import type { Db, SyncEntityInterface } from '@budgie/contracts';
 import type * as Effect from 'effect/Effect';
 import type * as HttpClient from 'effect/http/HttpClient';
-import type * as Schema from 'effect/Schema';
 
 export interface PollingSyncServiceDefinitionInterface extends SyncServiceDefinitionInterface {
     readonly rateLimitMs: number;
@@ -21,7 +20,6 @@ export interface PollingSyncServiceDefinitionInterface extends SyncServiceDefini
     readonly afterSyncRun?: () => void;
     readonly isRunWorkComplete?: () => boolean;
     readonly isRunDeferred?: () => boolean;
-    readonly validateToken?: (token: string) => Effect.Effect<unknown, Schema.SchemaError>;
     readonly isRetryableError?: (error: unknown) => boolean;
     readonly isCredentialWideError?: (error: unknown) => boolean;
     readonly shouldKeepFailedSyncEnabledAfterError?: (error: unknown) => boolean;

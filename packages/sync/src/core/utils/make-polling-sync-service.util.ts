@@ -42,7 +42,7 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
 
     const shouldStopProcessing = Effect.map(
         Clock.currentTimeMillis,
-        nowMs => definition.isRunDeferred?.() === true || nowMs >= runDeadlineAtMs
+        nowMs => definition.isRunDeferred?.() === true || nowMs >= runDeadlineAtMs || rateGate.isBackedOff(nowMs)
     );
 
     const sleepWithinDeadline = Effect.flatMap(Clock.currentTimeMillis, nowMs =>
@@ -174,7 +174,7 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
 
     const handleError = Effect.fnUntraced(function* (error: unknown) {
         if (error instanceof SyncRateLimitedError) {
-            return (yield* shouldYieldAfterBatch()) ? true : null;
+            return (yield* shouldYieldAfterBatch(error.retryAfterMs)) ? true : null;
         }
 
         const errorMessage = getErrorMessage(error, UNKNOWN_SYNC_ERROR);
@@ -293,7 +293,6 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
         sync,
         requestSync,
         updateAccountToken: Effect.fn('AbstractPollingSyncService.updateAccountToken')(function* (accountId: number, token: string) {
-            yield* (definition.validateToken ?? (() => Effect.void))(token);
             yield* syncIntegrationTokenService.updateAccountToken(definition.provider, accountId, token);
         })
     };

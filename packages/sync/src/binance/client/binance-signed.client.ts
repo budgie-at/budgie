@@ -3,20 +3,33 @@ import { PRECISION } from '@budgie/contracts';
 import { hmac } from '@noble/hashes/hmac.js';
 import { sha256 } from '@noble/hashes/sha2.js';
 import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils.js';
+import { subDays } from 'date-fns/subDays';
 import { subMonths } from 'date-fns/subMonths';
+import * as Clock from 'effect/Clock';
 import * as Effect from 'effect/Effect';
 import * as Option from 'effect/Option';
 import * as Schema from 'effect/Schema';
 
-import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { BaseSyncProviderClient } from '../../core/client/base-sync-provider.client';
+import {
+    HTTP_STATUS_FORBIDDEN,
+    HTTP_STATUS_IM_A_TEAPOT,
+    HTTP_STATUS_TOO_MANY_REQUESTS,
+    HTTP_STATUS_UNAVAILABLE_FOR_LEGAL_REASONS
+} from '../../core/constant/http-status.constant';
 import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { SyncDeferredError } from '../../core/error/sync-deferred.error';
 import { SyncInvalidResponseError } from '../../core/error/sync-invalid-response.error';
+import { SyncRateLimitedError } from '../../core/error/sync-rate-limited.error';
+import { SyncRegionUnavailableError } from '../../core/error/sync-region-unavailable.error';
 import { SyncUnauthorizedError } from '../../core/error/sync-unauthorized.error';
 import { BinanceCredentialsSchema } from '../constant/binance-credentials.schema';
+import { BinanceCapitalOutcomeEnum } from '../enum/binance-capital-outcome.enum';
 import { BinanceWalletEnum } from '../enum/binance-wallet.enum';
+import { BinanceKeyPermissionsError } from '../error/binance-key-permissions.error';
+import { BinanceApiRestrictionsApiSchema } from '../interface/binance-api-restrictions-api.schema';
 import { BinanceAssetBalanceListApiSchema } from '../interface/binance-asset-balance-api.schema';
 import { BinanceC2cOrderListApiSchema } from '../interface/binance-c2c-order-api.schema';
 import { BinanceConvertTradeFlowApiSchema } from '../interface/binance-convert-api.schema';
@@ -30,6 +43,9 @@ import { BinanceServerTimeApiSchema } from '../interface/binance-server-time-api
 import { BinanceTradeListApiSchema } from '../interface/binance-trade-api.schema';
 import { BinanceWithdrawalListApiSchema } from '../interface/binance-withdrawal-api.schema';
 import {
+    buildBinanceDepositExternalId,
+    getBinanceDepositOutcome,
+    getBinanceWithdrawalOutcome,
     mapBinanceBalanceToAccount,
     mapBinanceC2cOrderToTransaction,
     mapBinanceConvertToTransfer,
@@ -50,6 +66,7 @@ import type { SyncTransactionInterface } from '../../core/interface/sync-transac
 import type { BinanceCredentialsInterface } from '../constant/binance-credentials.schema';
 import type { BinanceTradeCursorMapInterface } from '../constant/binance-trade-cursor-map.schema';
 import type { BinanceAccountIdInterface } from '../interface/binance-account-id.interface';
+import type { BinanceApiRestrictionsApiInterface } from '../interface/binance-api-restrictions-api.schema';
 import type { BinanceAssetBalanceApiInterface } from '../interface/binance-asset-balance-api.schema';
 import type { BinanceC2cOrderApiInterface } from '../interface/binance-c2c-order-api.schema';
 import type { BinanceCapitalHistorySourceInterface } from '../interface/binance-capital-history-source.interface';
@@ -69,7 +86,7 @@ import type { HttpMethod } from 'effect/http/HttpMethod';
 const API_BASE_URL = 'https://api.binance.com';
 const DORMANCY_PERIOD_MS = 7_776_000_000;
 const FIAT_MAX_PERIOD_MS = 2592000000;
-const MAJOR_QUOTE_ASSETS = ['USDT', 'FDUSD', 'BTC', 'BNB', 'BUSD'] as const;
+const MAJOR_QUOTE_ASSETS: readonly string[] = ['USDT', 'FDUSD', 'BTC', 'BNB', 'BUSD'];
 const SPOT_BALANCE_ENDPOINT = '/sapi/v3/asset/getUserAsset';
 const FUNDING_BALANCE_ENDPOINT = '/sapi/v1/asset/get-funding-asset';
 const DEPOSIT_HISTORY_ENDPOINT = '/sapi/v1/capital/deposit/hisrec';
@@ -81,9 +98,9 @@ const MY_TRADES_ENDPOINT = '/api/v3/myTrades';
 const EARN_POSITION_ENDPOINT = '/sapi/v1/simple-earn/flexible/position';
 const LOCKED_EARN_POSITION_ENDPOINT = '/sapi/v1/simple-earn/locked/position';
 const EARN_REWARDS_ENDPOINT = '/sapi/v1/simple-earn/flexible/history/rewardsRecord';
+const API_RESTRICTIONS_ENDPOINT = '/sapi/v1/account/apiRestrictions';
 const SERVER_TIME_ENDPOINT = '/api/v3/time';
 const EXCHANGE_INFO_ENDPOINT = '/api/v3/exchangeInfo';
-const EXCHANGE_INFO_TRADING_STATUS = 'TRADING';
 const SIGNATURE_RECV_WINDOW_MS = 60000;
 const MILLISECONDS_PER_SECOND = 1000;
 const MAX_TRANSACTIONS_PER_WINDOW = 500;
@@ -106,9 +123,35 @@ const EARN_REWARD_TYPE_ALL = 'ALL';
 const EARN_PAGE_SIZE = 100;
 const TRADES_PER_SYMBOL_LIMIT = 1000;
 const BINANCE_INVALID_SYMBOL_CODE = -1121;
+const BINANCE_TIMESTAMP_OUTSIDE_WINDOW_CODE = -1021;
+const BINANCE_REJECTED_MBX_KEY_CODE = -2015;
+const BINANCE_INVALID_API_KEY_FORMAT_CODE = -2014;
+const BINANCE_INVALID_SIGNATURE_CODE = -1022;
+const BINANCE_INVALID_API_KEY_ID_CODE = -2008;
+const BINANCE_AUTH_ERROR_CODES = new Set([
+    BINANCE_REJECTED_MBX_KEY_CODE,
+    BINANCE_INVALID_API_KEY_FORMAT_CODE,
+    BINANCE_INVALID_SIGNATURE_CODE,
+    BINANCE_INVALID_API_KEY_ID_CODE
+]);
+const BINANCE_BLOCK_BACKOFF_MS = 120_000;
+const RETRY_AFTER_HEADER = 'retry-after';
 
 export class BinanceSignedClient extends BaseSyncProviderClient {
     private static readonly C2C_HISTORY_MONTHS = 6;
+    private static readonly CAPITAL_PENDING_MAX_AGE_DAYS = 180;
+
+    private static readonly FORBIDDEN_KEY_PERMISSIONS = [
+        'enableSpotAndMarginTrading',
+        'enableWithdrawals',
+        'enableInternalTransfer',
+        'permitsUniversalTransfer',
+        'enableMargin',
+        'enableFutures',
+        'enableVanillaOptions',
+        'enablePortfolioMarginTrading'
+    ] as const satisfies readonly (keyof BinanceApiRestrictionsApiInterface)[];
+
     private static readonly decodeCredentials = Schema.decodeUnknownOption(Schema.fromJsonString(BinanceCredentialsSchema));
 
     readonly getAccounts = Effect.fn('BinanceSignedClient.getAccounts')(function* (this: BinanceSignedClient) {
@@ -135,6 +178,23 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             ...this.buildSpotAccounts(balanceByAsset),
             ...fundingBalances.map(balance => this.mapBalance(balance, BinanceWalletEnum.FUNDING)).filter(isDefined)
         ];
+    });
+
+    readonly assertReadOnlyKey = Effect.fn('BinanceSignedClient.assertReadOnlyKey')(function* (this: BinanceSignedClient) {
+        const restrictions = yield* this.signedRequest(BinanceApiRestrictionsApiSchema, API_RESTRICTIONS_ENDPOINT, 'GET').pipe(
+            Effect.catchTag('SyncInvalidResponseError', () =>
+                Effect.fail(
+                    new BinanceKeyPermissionsError({ permissions: [], message: 'Could not verify the Binance API key permissions' })
+                )
+            )
+        );
+        const permissions = BinanceSignedClient.FORBIDDEN_KEY_PERMISSIONS.filter(permission => restrictions[permission] === true);
+        if (isNotEmptyArray(permissions)) {
+            return yield* new BinanceKeyPermissionsError({
+                permissions,
+                message: `Binance API key must be read-only, but has: ${permissions.join(', ')}`
+            });
+        }
     });
 
     readonly getC2cTransactions = Effect.fn('BinanceSignedClient.getC2cTransactions')(function* (
@@ -188,7 +248,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             initialSymbolTradeCursors: BinanceTradeCursorMapInterface = {}
         ) {
             yield* this.decodeAccountId(accountId);
-            const { startTimeMs, endTimeMs } = this.resolveSourceWindow(from, to);
+            const { startTimeMs, endTimeMs } = yield* this.resolveSourceWindow(from, to);
 
             return yield* this.cached(
                 this.transferCache,
@@ -222,10 +282,15 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     private readonly earnRewardCache = new Map<string, readonly BinanceEarnRewardApiInterface[]>();
     private readonly transferCache = new Map<string, BinanceTransferInterface[]>();
     private readonly runSymbolTradeCursors = new Map<string, number>();
+    private readonly runTouchedAssets = new Set<string>();
+    private readonly rejectedCapitalExternalIds = new Set<string>();
+    private capitalPendingFromMs: number | null = null;
     private c2cUnavailableThisRun = false;
     private readonly c2cHistoryFloorTimeMs = subMonths(new Date(), BinanceSignedClient.C2C_HISTORY_MONTHS).getTime();
-    private serverTimeOffsetMs: number | undefined;
-    private validSymbols: Set<string> | undefined;
+    private readonly capitalPendingFloorTimeMs = subDays(new Date(), BinanceSignedClient.CAPITAL_PENDING_MAX_AGE_DAYS).getTime();
+    private serverTimeOffsetMs: number | null = null;
+    private runEndTimeMs: number | undefined;
+    private exchangeSymbols: readonly BinanceTradeSymbolInterface[] | undefined;
 
     private readonly fetchCapitalSources = Effect.fn('BinanceSignedClient.fetchCapitalSources')(function* (
         this: BinanceSignedClient,
@@ -236,7 +301,14 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         const deposits = yield* this.fetchCapitalHistory(this.depositSource, wallet, startTimeMs, endTimeMs);
         const withdrawals = yield* this.fetchCapitalHistory(this.withdrawalSource, wallet, startTimeMs, endTimeMs);
 
-        return this.emptySources({ deposits, withdrawals });
+        return this.emptySources({
+            deposits: deposits.filter(deposit =>
+                this.recordCapitalOutcome(buildBinanceDepositExternalId(deposit), deposit.insertTime, getBinanceDepositOutcome(deposit))
+            ),
+            withdrawals: withdrawals.filter(withdrawal =>
+                this.recordCapitalOutcome(withdrawal.id, new Date(withdrawal.applyTime).getTime(), getBinanceWithdrawalOutcome(withdrawal))
+            )
+        });
     });
 
     private readonly fetchFiatSources = Effect.fn('BinanceSignedClient.fetchFiatSources')(function* (
@@ -273,9 +345,11 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return [...older, ...newer];
     });
 
-    private readonly resolveValidSymbols = Effect.fn('BinanceSignedClient.resolveValidSymbols')(function* (this: BinanceSignedClient) {
-        if (isDefined(this.validSymbols)) {
-            return this.validSymbols;
+    private readonly resolveExchangeSymbols = Effect.fn('BinanceSignedClient.resolveExchangeSymbols')(function* (
+        this: BinanceSignedClient
+    ) {
+        if (isDefined(this.exchangeSymbols)) {
+            return this.exchangeSymbols;
         }
 
         yield* this.throttle.waitIfNeeded();
@@ -285,20 +359,42 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             return null;
         }
 
-        this.validSymbols = new Set(
-            exchangeInfo.value.symbols.filter(symbol => symbol.status === EXCHANGE_INFO_TRADING_STATUS).map(symbol => symbol.symbol)
-        );
+        this.exchangeSymbols = exchangeInfo.value.symbols;
 
-        return this.validSymbols;
+        return this.exchangeSymbols;
     });
 
     private readonly resolveTimestamp = Effect.fn('BinanceSignedClient.resolveTimestamp')(function* (this: BinanceSignedClient) {
         if (!isDefined(this.serverTimeOffsetMs)) {
             const serverTime = yield* this.fetchJson(BinanceServerTimeApiSchema, SERVER_TIME_ENDPOINT).pipe(Effect.option);
-            this.serverTimeOffsetMs = Option.isSome(serverTime) ? serverTime.value.serverTime - Date.now() : 0;
+            const now = yield* Clock.currentTimeMillis;
+
+            if (Option.isNone(serverTime)) {
+                return now;
+            }
+
+            this.serverTimeOffsetMs = serverTime.value.serverTime - now;
         }
 
-        return Date.now() + this.serverTimeOffsetMs;
+        return (yield* Clock.currentTimeMillis) + this.serverTimeOffsetMs;
+    });
+
+    private readonly resolveSourceWindow = Effect.fn('BinanceSignedClient.resolveSourceWindow')(function* (
+        this: BinanceSignedClient,
+        from: number,
+        to?: number | null
+    ) {
+        const startTimeMs = from * MILLISECONDS_PER_SECOND;
+
+        if (isDefined(to)) {
+            return { startTimeMs, endTimeMs: to * MILLISECONDS_PER_SECOND };
+        }
+
+        if (!isDefined(this.runEndTimeMs)) {
+            this.runEndTimeMs = yield* this.resolveTimestamp();
+        }
+
+        return { startTimeMs, endTimeMs: this.runEndTimeMs };
     });
 
     private readonly walkWindowsBackward = Effect.fnUntraced(function* <T>(
@@ -340,7 +436,8 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
 
     constructor(
         token: string,
-        private readonly deadlineAtMs = Number.POSITIVE_INFINITY
+        private readonly deadlineAtMs = Number.POSITIVE_INFINITY,
+        private readonly isFiatDiscoveryEnabled = true
     ) {
         super();
         this.credentials = BinanceSignedClient.decodeCredentials(token);
@@ -359,8 +456,58 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return this.c2cUnavailableThisRun;
     }
 
+    getCapitalPendingFromMs(): number | null {
+        return this.capitalPendingFromMs;
+    }
+
+    getRejectedCapitalExternalIds(): ReadonlySet<string> {
+        return this.rejectedCapitalExternalIds;
+    }
+
     protected override onResponseHeaders(headers: Headers.Headers): void {
         this.throttle.recordHeaders(headers);
+    }
+
+    protected override fetchJson<S extends Schema.ConstraintDecoder<unknown>>(schema: S, endpoint: string, method: HttpMethod = 'GET') {
+        return super.fetchJson(schema, endpoint, method).pipe(
+            Effect.catchTag('SyncRateLimitedError', error => {
+                const coolDown = isDefined(error.retryAfterMs) ? this.throttle.coolDownFor(error.retryAfterMs) : Effect.void;
+
+                return coolDown.pipe(Effect.andThen(Effect.fail(error)));
+            })
+        );
+    }
+
+    protected override classifyApiError(
+        status: number,
+        message: string,
+        apiCode: string | number | undefined,
+        headers: Headers.Headers
+    ): SyncError {
+        const { provider } = this;
+
+        if (BINANCE_AUTH_ERROR_CODES.has(Number(apiCode))) {
+            return new SyncUnauthorizedError({ provider, message });
+        }
+
+        switch (status) {
+            case HTTP_STATUS_UNAVAILABLE_FOR_LEGAL_REASONS:
+                return new SyncRegionUnavailableError({ provider, message });
+            case HTTP_STATUS_FORBIDDEN:
+            case HTTP_STATUS_IM_A_TEAPOT:
+                return this.buildRateLimitedError(message, headers, BINANCE_BLOCK_BACKOFF_MS);
+            case HTTP_STATUS_TOO_MANY_REQUESTS:
+                return this.buildRateLimitedError(message, headers, null);
+            default:
+                return super.classifyApiError(status, message, apiCode, headers);
+        }
+    }
+
+    private buildRateLimitedError(message: string, headers: Headers.Headers, fallbackRetryAfterMs: number | null): SyncRateLimitedError {
+        const retryAfterSeconds = Number.parseInt(headers[RETRY_AFTER_HEADER] ?? '', 10);
+        const retryAfterMs = Number.isNaN(retryAfterSeconds) ? fallbackRetryAfterMs : retryAfterSeconds * MILLISECONDS_PER_SECOND;
+
+        return new SyncRateLimitedError({ provider: this.provider, message, ...(isDefined(retryAfterMs) && { retryAfterMs }) });
     }
 
     private fetchTradesAndConverts(
@@ -379,31 +526,27 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
                 .map(flow => mapBinanceConvertToTransfer(flow))
                 .filter(isDefined);
             const symbols = yield* this.deriveTradeSymbols(startTimeMs, endTimeMs, convertTransfers, eligibleSoldOffBaseAssets);
-            const byExternalId = new Map<string, BinanceTransferInterface>();
-
-            for (const symbol of symbols) {
+            const symbolFetches = yield* Effect.forEach(symbols, symbol => {
                 const resumeFromId = initialSymbolTradeCursors[symbol.symbol];
-                const symbolTransfers = yield* this.fetchSymbolTrades(
-                    symbol,
-                    startTimeMs,
-                    endTimeMs,
-                    isDefined(resumeFromId) ? resumeFromId + 1 : null
-                );
-                for (const transfer of symbolTransfers) {
-                    byExternalId.set(transfer.externalId, transfer);
-                }
-            }
 
-            for (const transfer of convertTransfers) {
-                byExternalId.set(transfer.externalId, transfer);
+                return this.fetchSymbolTrades(symbol, startTimeMs, endTimeMs, isDefined(resumeFromId) ? resumeFromId + 1 : null);
+            });
+            const byExternalId = new Map(
+                [...symbolFetches.flatMap(({ transfers }) => transfers), ...convertTransfers].map(transfer => [
+                    transfer.externalId,
+                    transfer
+                ])
+            );
+
+            for (const { symbol, lastWindowTradeId } of symbolFetches) {
+                if (isDefined(lastWindowTradeId)) {
+                    this.runSymbolTradeCursors.set(symbol, lastWindowTradeId);
+                }
             }
 
             return [...byExternalId.values()];
         });
     }
-
-    private readonly recoverMissingPermission = (error: SyncUnauthorizedError) =>
-        Effect.as(Effect.logWarning(`Binance history skipped: ${error.message}`), []);
 
     private deriveTradeSymbols(
         startTimeMs: number,
@@ -413,25 +556,22 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     ) {
         return Effect.gen({ self: this }, function* (this: BinanceSignedClient) {
             const balances = yield* this.signedRequest(BinanceAssetBalanceListApiSchema, SPOT_BALANCE_ENDPOINT, 'POST');
-            const baseAssets = this.collectBaseAssets(balances, convertTransfers);
-            const deposits = yield* this.fetchCapitalHistory(this.depositSource, BinanceWalletEnum.SPOT, startTimeMs, endTimeMs).pipe(
-                Effect.catchTag('SyncUnauthorizedError', this.recoverMissingPermission)
-            );
-            const withdrawals = yield* this.fetchCapitalHistory(this.withdrawalSource, BinanceWalletEnum.SPOT, startTimeMs, endTimeMs).pipe(
-                Effect.catchTag('SyncUnauthorizedError', this.recoverMissingPermission)
-            );
-            const c2cOrders = yield* this.fetchC2cOrders(startTimeMs, endTimeMs).pipe(
-                Effect.catchTag('SyncUnauthorizedError', this.recoverMissingPermission)
-            );
+            const { deposits, withdrawals } = yield* this.fetchCapitalSources(BinanceWalletEnum.SPOT, startTimeMs, endTimeMs);
+            const c2cOrders = yield* this.fetchC2cOrders(startTimeMs, endTimeMs);
+            const { fiatDeposits, fiatWithdrawals } = this.isFiatDiscoveryEnabled
+                ? yield* this.fetchFiatSources(startTimeMs, endTimeMs)
+                : this.emptySources({});
             [
+                ...this.collectTouchedAssets(balances, convertTransfers),
                 ...deposits.map(deposit => deposit.coin),
                 ...withdrawals.map(withdrawal => withdrawal.coin),
-                ...c2cOrders.map(order => order.asset)
-            ].forEach(asset => baseAssets.add(asset));
-            const validSymbols = yield* this.resolveValidSymbols();
-            const candidates = this.buildTradeSymbolCandidates(baseAssets, validSymbols, new Set(eligibleSoldOffBaseAssets));
+                ...c2cOrders.map(order => order.asset),
+                ...fiatDeposits.map(order => order.fiatCurrency),
+                ...fiatWithdrawals.map(order => order.fiatCurrency)
+            ].forEach(asset => this.runTouchedAssets.add(asset));
+            const exchangeSymbols = yield* this.resolveExchangeSymbols();
 
-            return isDefined(validSymbols) ? candidates.filter(candidate => validSymbols.has(candidate.symbol)) : candidates;
+            return this.buildTradeSymbolCandidates(this.runTouchedAssets, exchangeSymbols, new Set(eligibleSoldOffBaseAssets));
         });
     }
 
@@ -439,6 +579,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return Effect.gen({ self: this }, function* (this: BinanceSignedClient) {
             const transfers: BinanceTransferInterface[] = [];
             let fromId = initialFromId;
+            let lastWindowTradeId: number | null = null;
 
             do {
                 const trades = yield* this.signedRequest(BinanceTradeListApiSchema, MY_TRADES_ENDPOINT, 'GET', {
@@ -451,20 +592,17 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
                     )
                 );
                 const lastTrade = trades.at(-1);
+                const windowTrades = trades.filter(trade => trade.time >= startTimeMs && trade.time <= endTimeMs);
+                const lastWindowTrade = windowTrades.at(-1);
 
                 transfers.push(
-                    ...trades
-                        .filter(trade => trade.time >= startTimeMs && trade.time <= endTimeMs)
-                        .map(trade => mapBinanceTradeToTransfer(trade, symbol.baseAsset, symbol.quoteAsset))
-                        .filter(isDefined)
+                    ...windowTrades.map(trade => mapBinanceTradeToTransfer(trade, symbol.baseAsset, symbol.quoteAsset)).filter(isDefined)
                 );
-                if (isDefined(lastTrade)) {
-                    this.runSymbolTradeCursors.set(symbol.symbol, lastTrade.id);
-                }
+                lastWindowTradeId = lastWindowTrade?.id ?? lastWindowTradeId;
                 fromId = trades.length === TRADES_PER_SYMBOL_LIMIT && isDefined(lastTrade) ? lastTrade.id + 1 : null;
             } while (isDefined(fromId));
 
-            return transfers;
+            return { symbol: symbol.symbol, transfers, lastWindowTradeId };
         });
     }
 
@@ -474,8 +612,27 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         method: HttpMethod,
         params: Record<string, string | number> = {}
     ): Effect.Effect<S['Type'], SyncError, HttpClient.HttpClient> {
+        return this.sendSignedRequest(schema, endpoint, method, params).pipe(
+            Effect.catchTag('SyncInvalidResponseError', error => {
+                if (Number(error.apiCode) !== BINANCE_TIMESTAMP_OUTSIDE_WINDOW_CODE) {
+                    return Effect.fail(error);
+                }
+
+                this.serverTimeOffsetMs = null;
+
+                return this.sendSignedRequest(schema, endpoint, method, params);
+            })
+        );
+    }
+
+    private sendSignedRequest<S extends Schema.ConstraintDecoder<unknown>>(
+        schema: S,
+        endpoint: string,
+        method: HttpMethod,
+        params: Record<string, string | number>
+    ): Effect.Effect<S['Type'], SyncError, HttpClient.HttpClient> {
         return Effect.gen({ self: this }, function* (this: BinanceSignedClient) {
-            if (Date.now() >= this.deadlineAtMs) {
+            if ((yield* Clock.currentTimeMillis) >= this.deadlineAtMs) {
                 return yield* new SyncDeferredError({ provider: this.provider, message: 'Sync deadline reached' });
             }
 
@@ -624,6 +781,17 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         );
     }
 
+    private recordCapitalOutcome(externalId: string, timeMs: number, outcome: BinanceCapitalOutcomeEnum): boolean {
+        if (outcome === BinanceCapitalOutcomeEnum.REJECTED) {
+            this.rejectedCapitalExternalIds.add(externalId);
+        }
+        if (outcome === BinanceCapitalOutcomeEnum.PENDING && timeMs >= this.capitalPendingFloorTimeMs) {
+            this.capitalPendingFromMs = Math.min(this.capitalPendingFromMs ?? timeMs, timeMs);
+        }
+
+        return outcome === BinanceCapitalOutcomeEnum.COMPLETED;
+    }
+
     private cached<T, E, R>(cache: Map<string, T>, key: string, effect: Effect.Effect<T, E, R>): Effect.Effect<T, E, R> {
         return Effect.suspend(() => {
             const hit = cache.get(key);
@@ -641,9 +809,9 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             endTimeMs: number
         ) => Effect.Effect<BinanceTransactionSourcesInterface, SyncError, HttpClient.HttpClient>
     ): Effect.Effect<SyncTransactionInterface[], SyncError, HttpClient.HttpClient> {
-        const { startTimeMs, endTimeMs } = this.resolveSourceWindow(from, to);
-
-        return Effect.map(fetchSources(startTimeMs, endTimeMs), sources => this.buildSourceTransactions(wallet, sources));
+        return Effect.flatMap(this.resolveSourceWindow(from, to), ({ startTimeMs, endTimeMs }) =>
+            Effect.map(fetchSources(startTimeMs, endTimeMs), sources => this.buildSourceTransactions(wallet, sources))
+        );
     }
 
     private decodeAccountId(accountId: string): Effect.Effect<BinanceAccountIdInterface, SyncInvalidResponseError> {
@@ -652,13 +820,6 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return isDefined(decoded)
             ? Effect.succeed(decoded)
             : Effect.fail(new SyncInvalidResponseError({ provider: this.provider, message: `Invalid Binance account id "${accountId}"` }));
-    }
-
-    private resolveSourceWindow(from: number, to?: number | null): { startTimeMs: number; endTimeMs: number } {
-        const startTimeMs = from * MILLISECONDS_PER_SECOND;
-        const endTimeMs = isDefined(to) ? to * MILLISECONDS_PER_SECOND : Date.now();
-
-        return { startTimeMs, endTimeMs };
     }
 
     private emptySources(overrides: Partial<BinanceTransactionSourcesInterface>): BinanceTransactionSourcesInterface {
@@ -727,15 +888,15 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return [...byId.values()];
     }
 
-    private collectBaseAssets(
+    private collectTouchedAssets(
         balances: readonly BinanceAssetBalanceApiInterface[],
         convertTransfers: BinanceTransferInterface[]
     ): Set<string> {
-        const baseAssets = new Set<string>();
+        const touchedAssets = new Set<string>();
         for (const balance of balances) {
             const total = this.computeRawTotalBalance(balance);
             if (isDefined(total) && total > 0) {
-                baseAssets.add(balance.asset);
+                touchedAssets.add(balance.asset);
             }
         }
 
@@ -745,55 +906,39 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
                 decodeBinanceAccountId(transfer.toAssetAccountId)
             ]) {
                 if (isDefined(decoded)) {
-                    baseAssets.add(decoded.asset);
+                    touchedAssets.add(decoded.asset);
                 }
             }
         }
 
-        return baseAssets;
+        return touchedAssets;
     }
 
     private buildTradeSymbolCandidates(
-        baseAssets: Set<string>,
-        validSymbols: Set<string> | null,
+        touchedAssets: Set<string>,
+        exchangeSymbols: readonly BinanceTradeSymbolInterface[] | null,
         eligibleSoldOffBaseAssets: Set<string>
     ): BinanceTradeSymbolInterface[] {
-        const symbolsById = new Map<string, BinanceTradeSymbolInterface>();
-        for (const baseAsset of baseAssets) {
+        if (isDefined(exchangeSymbols)) {
+            return exchangeSymbols.filter(({ baseAsset, quoteAsset }) => {
+                const isTouchedBase = touchedAssets.has(baseAsset);
+                const isTouchedQuote = touchedAssets.has(quoteAsset);
+                const isEligibleBase = isTouchedBase || eligibleSoldOffBaseAssets.has(baseAsset);
+
+                return (isTouchedQuote && isEligibleBase) || (isTouchedBase && MAJOR_QUOTE_ASSETS.includes(quoteAsset));
+            });
+        }
+
+        const fallbackSymbols: BinanceTradeSymbolInterface[] = [];
+        for (const baseAsset of touchedAssets) {
             for (const quoteAsset of MAJOR_QUOTE_ASSETS) {
                 if (baseAsset !== quoteAsset) {
-                    const symbol = `${baseAsset}${quoteAsset}`;
-                    symbolsById.set(symbol, { symbol, baseAsset, quoteAsset });
+                    fallbackSymbols.push({ symbol: `${baseAsset}${quoteAsset}`, baseAsset, quoteAsset });
                 }
             }
         }
 
-        for (const symbol of validSymbols ?? []) {
-            const tradeSymbol = this.parseSelectedQuoteTradeSymbol(symbol, baseAssets, eligibleSoldOffBaseAssets);
-            if (isDefined(tradeSymbol)) {
-                symbolsById.set(tradeSymbol.symbol, tradeSymbol);
-            }
-        }
-
-        return [...symbolsById.values()];
-    }
-
-    private parseSelectedQuoteTradeSymbol(
-        symbol: string,
-        baseAssets: Set<string>,
-        eligibleSoldOffBaseAssets: Set<string>
-    ): BinanceTradeSymbolInterface | null {
-        for (const quoteAsset of MAJOR_QUOTE_ASSETS) {
-            const isSelectedQuotePair = baseAssets.has(quoteAsset) && symbol.endsWith(quoteAsset) && symbol !== quoteAsset;
-            if (isSelectedQuotePair) {
-                const baseAsset = symbol.slice(0, -quoteAsset.length);
-                const isSpotTradeable = isNotEmptyString(baseAsset) && eligibleSoldOffBaseAssets.has(baseAsset);
-
-                return isSpotTradeable ? { symbol, baseAsset, quoteAsset } : null;
-            }
-        }
-
-        return null;
+        return fallbackSymbols;
     }
 
     private buildSpotBalanceMap(balances: readonly BinanceAssetBalanceApiInterface[]): Map<string, number | null> {

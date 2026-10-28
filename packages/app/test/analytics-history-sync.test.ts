@@ -34,6 +34,7 @@ const historySync = (accountId: number, type = AccountTypeEnum.BANK_SYNC, isActi
         lastError: null,
         lastWarning: null,
         binanceTradeCursor: null,
+        binanceCapitalPendingFromAt: null,
         createdAt: new Date('2026-10-01'),
         updatedAt: new Date('2026-10-01'),
         deletedAt: null

@@ -1213,6 +1213,10 @@ msgstr "Währung ändern"
 msgid "Change PIN"
 msgstr "PIN ändern"
 
+#: src/sync/utils/toast-binance-key-permissions-error.util.ts
+msgid "Check the key and secret, then try again."
+msgstr "Prüfe Schlüssel und Secret und versuche es erneut."
+
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Checking"
 msgstr "Prüfen"
@@ -1757,6 +1761,10 @@ msgstr "Token konnte nicht aktualisiert werden"
 #: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "Could not update transaction."
 msgstr "Transaktion konnte nicht aktualisiert werden."
+
+#: src/sync/utils/toast-binance-key-permissions-error.util.ts
+msgid "Could not verify the API key permissions"
+msgstr "Die Berechtigungen des API-Schlüssels konnten nicht überprüft werden"
 
 #: src/sync/component/bank-integration-new-accounts/bank-integration-new-accounts.tsx
 msgid "Couldn’t check Monobank for new accounts"
@@ -2938,6 +2946,10 @@ msgstr "Nutze Budgie in der Zwischenzeit weiter. Bis das Modell bereit ist, komm
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Kept inside Budgie's file on this phone. Sent only to Monobank, never to us."
 msgstr "Wird in Budgies Datei auf diesem Telefon gespeichert. Nur an Monobank gesendet, nie an uns."
+
+#: src/sync/utils/toast-binance-key-permissions-error.util.ts
+msgid "Key has too many permissions"
+msgstr "Schlüssel hat zu viele Berechtigungen"
 
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
 msgid "Key rejected"
@@ -5083,6 +5095,10 @@ msgstr "Dieses Konto wird in Ihrer Hauptansicht ausgeblendet und nicht in den Ge
 #: src/transaction/hook/use-delete-transaction.hook.ts
 msgid "This action cannot be undone."
 msgstr "Diese Aktion kann nicht rückgängig gemacht werden."
+
+#: src/sync/utils/toast-binance-key-permissions-error.util.ts
+msgid "This API key can trade, withdraw or transfer funds. Create a key with only \"Enable Reading\" and try again."
+msgstr "Dieser API-Schlüssel kann handeln, Auszahlungen vornehmen oder Gelder übertragen. Erstelle einen Schlüssel nur mit „Enable Reading“ und versuche es erneut."
 
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
 #: src/import/component/import-backup-pin/import-backup-pin.tsx

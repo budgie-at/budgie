@@ -2,6 +2,7 @@ import { UnconsolidationService } from '@budgie/consolidation';
 import {
     ACCOUNT_DELETED_TRANSFER_CATEGORY_ID,
     AccountRepository,
+    BankIntegrationRepository,
     DebtEventRepository,
     Db,
     SettingsRepository,
@@ -25,6 +26,7 @@ import { AccountTransferConversionService } from './account-transfer-conversion.
 export class AccountArchiveService extends Context.Service<AccountArchiveService>()('@budgie/ledger/AccountArchiveService', {
     make: Effect.gen(function* () {
         const accountRepository = yield* AccountRepository;
+        const bankIntegrationRepository = yield* BankIntegrationRepository;
         const debtEventRepository = yield* DebtEventRepository;
         const settingsRepository = yield* SettingsRepository;
         const transactionEntryRepository = yield* TransactionEntryRepository;
@@ -115,6 +117,8 @@ export class AccountArchiveService extends Context.Service<AccountArchiveService
             }),
             deleteById: Effect.fn('AccountArchiveService.deleteById')(
                 function* (id: number) {
+                    const integrationId = (yield* accountRepository.findByIdIncludingArchived(id))?.integrationId;
+
                     yield* unconsolidateActiveAutoByAccountId(id);
                     yield* accountTransferConversionService.convertAccountTransfers(id, ACCOUNT_DELETED_TRANSFER_CATEGORY_ID);
                     yield* transactionRepository.detachTransfersFromAccount(id);
@@ -128,6 +132,10 @@ export class AccountArchiveService extends Context.Service<AccountArchiveService
                     }
 
                     yield* accountRepository.deleteById(id);
+                    if (isDefined(integrationId)) {
+                        yield* bankIntegrationRepository.deleteIfUnreferenced(integrationId);
+                    }
+
                     yield* accountBalanceIncrementalService.updateAllBalances(true);
                 },
                 effect => Db.transaction(effect)
@@ -139,6 +147,7 @@ export class AccountArchiveService extends Context.Service<AccountArchiveService
     static readonly layer = Layer.effect(AccountArchiveService, AccountArchiveService.make).pipe(
         Layer.provide([
             AccountRepository.layer,
+            BankIntegrationRepository.layer,
             DebtEventRepository.layer,
             SettingsRepository.layer,
             TransactionEntryRepository.layer,
