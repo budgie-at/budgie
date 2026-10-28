@@ -270,20 +270,16 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             }
 
             const existingIdMap = yield* transactionService.findIdMapByExternalSource(provider);
-            let removedCount = 0;
-            for (const externalId of rejectedExternalIds) {
-                const transactionId = existingIdMap.get(externalId);
-                if (isDefined(transactionId)) {
-                    const consolidationParentId = (yield* transactionRepository.getByIdRaw(transactionId))?.consolidationParentTransactionId;
-                    if (isDefined(consolidationParentId)) {
-                        yield* transactionService.unconsolidateById(consolidationParentId);
-                    }
-                    yield* transactionService.deleteById(transactionId);
-                    removedCount += 1;
+            const removableTransactionIds = [...rejectedExternalIds].map(externalId => existingIdMap.get(externalId)).filter(isDefined);
+            for (const transactionId of removableTransactionIds) {
+                const consolidationParentId = (yield* transactionRepository.getByIdRaw(transactionId))?.consolidationParentTransactionId;
+                if (isDefined(consolidationParentId)) {
+                    yield* transactionService.unconsolidateById(consolidationParentId);
                 }
+                yield* transactionService.deleteById(transactionId);
             }
 
-            return removedCount;
+            return removableTransactionIds.length;
         });
 
         const commitCapitalSource = Effect.fnUntraced(function* (sync: SyncEntityInterface, token: string) {
