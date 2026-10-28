@@ -1,6 +1,7 @@
 import { convertFromMicroUnits } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
+import { EntranceReveal } from '../../../@generic/component/entrance-reveal/entrance-reveal';
 import { HairlineStatRow } from '../../../@generic/component/hairline-stat-row/hairline-stat-row';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { BudgetSelector } from '../../budget.selector';
@@ -25,5 +26,9 @@ export const BudgetStatRow = ({ scope, currencySymbol }: Props) => {
         { label: t`Limit`, value: formatAmount(scope.limit), variant: 'primary', testID: BudgetSelector.DetailsLimitLabel }
     ] as const;
 
-    return <HairlineStatRow stats={stats} />;
+    return (
+        <EntranceReveal step={2}>
+            <HairlineStatRow stats={stats} />
+        </EntranceReveal>
+    );
 };

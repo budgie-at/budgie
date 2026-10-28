@@ -2,9 +2,8 @@ import { convertFromMicroUnits } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
-import { Text } from 'react-native';
 
-import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { ChevronLinkRow } from '../../../@generic/component/chevron-link-row/chevron-link-row';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { BudgetSelector } from '../../budget.selector';
 
@@ -24,14 +23,12 @@ export const BudgetVerdictFooter = ({ upcoming, count, currencySymbol }: Props) 
     const handlePress = () => void router.push('/budget-safe-to-spend');
 
     return (
-        <HapticPressable
-            accessibilityLabel={label}
-            accessibilityRole="button"
-            className="self-start"
+        <ChevronLinkRow
+            label={label}
+            variant="secondary"
+            textSizeClassName="text-xs"
             testID={BudgetSelector.DetailsReservedLink}
             onPress={handlePress}
-        >
-            <Text className="text-xs text-secondary-foreground">{label} ›</Text>
-        </HapticPressable>
+        />
     );
 };

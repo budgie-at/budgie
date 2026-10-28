@@ -1,7 +1,7 @@
 import { convertFromMicroUnits } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { Text } from 'react-native';
 
+import { ChevronLinkRow } from '../../../@generic/component/chevron-link-row/chevron-link-row';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { BudgetSelector } from '../../budget.selector';
 
@@ -21,14 +21,12 @@ export const BudgetPaceHintLine = ({ title, scope, currencySymbol, onPress }: Pr
     const label = t`${title} is running fast — keep it under ${perDayAmount}/day.`;
 
     return (
-        <Text
-            accessibilityLabel={label}
-            accessibilityRole="button"
-            className="text-warning-foreground"
+        <ChevronLinkRow
+            label={label}
+            variant="warning"
+            textSizeClassName="text-sm"
             testID={BudgetSelector.DetailsPaceBanner}
             onPress={onPress}
-        >
-            {label}
-        </Text>
+        />
     );
 };

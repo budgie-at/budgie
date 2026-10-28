@@ -38,7 +38,7 @@ export const BudgetSafeToSpendSummary = ({ projection, currencySymbol }: Props) 
             <HeroFigure
                 amount={convertFromMicroUnits(overall.safePerDay)}
                 currencySymbol={currencySymbol}
-                variant="positive"
+                variant="primary"
                 unit={t`/ day`}
                 testID={BudgetSelector.SafeToSpendPerDay}
             />

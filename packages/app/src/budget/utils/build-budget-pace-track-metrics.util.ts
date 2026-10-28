@@ -15,10 +15,10 @@ export const buildBudgetPaceTrackMetrics = (scope: BudgetProjectionScopeInterfac
     return {
         spentStyle: { width: toPercent(spentRatio) },
         upcomingStyle: { width: toPercent(upcomingRatio) },
-        todayStyle: { left: toPercent(scope.elapsedFraction) },
+        todayStyle: { start: toPercent(scope.elapsedFraction) },
         ringStyle:
             isDefined(scope.projectedRatio) && scope.status !== BudgetPaceStatusEnum.TOO_EARLY
-                ? { left: toPercent(scope.projectedRatio) }
+                ? { start: toPercent(scope.projectedRatio) }
                 : null
     };
 };

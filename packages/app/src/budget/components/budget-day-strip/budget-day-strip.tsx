@@ -1,8 +1,9 @@
+import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
-import { isSameDay } from 'date-fns/isSameDay';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
-import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
+import { EntranceReveal } from '../../../@generic/component/entrance-reveal/entrance-reveal';
+import { BUDGET_DAY_STRIP_STAGGER_SPAN } from '../../constant/budget-day-strip-motion.constant';
 import { BUDGET_PACE_VARIANT } from '../../constant/budget-pace-variant.constant';
 import { BudgetDayStateEnum } from '../../enum/budget-day-state.enum';
 import { BudgetDayStripCell } from '../budget-day-strip-cell/budget-day-strip-cell';
@@ -15,13 +16,12 @@ interface Props {
 
 export const BudgetDayStrip = ({ projection }: Props) => {
     const { t } = useLingui();
-    const { formatMonthAndDay } = useFormatDate();
-    const { days, elapsedDays, totalDays, upcomingCharges, overall } = projection;
+    const { days, elapsedDays, totalDays, daysLeft, overall } = projection;
     const tone = BUDGET_PACE_VARIANT[overall.status];
     const todayIndex = elapsedDays - 1;
-    const accessibilityLabel = t`Day ${elapsedDays} of ${totalDays}`;
-
-    const hasBillOn = (date: Date) => upcomingCharges.some(charge => isSameDay(charge.date, date));
+    const daysLeftLabel = t({ message: plural(daysLeft, { one: '# day left', other: '# days left' }) });
+    const accessibilityLabel = t`Day ${elapsedDays} of ${totalDays}, ${daysLeftLabel}`;
+    const accessibilityValue = { min: 1, max: totalDays, now: elapsedDays };
 
     const resolveDayState = (index: number) => {
         if (index < todayIndex) {
@@ -32,21 +32,22 @@ export const BudgetDayStrip = ({ projection }: Props) => {
     };
 
     return (
-        <View accessible accessibilityLabel={accessibilityLabel} className="gap-y-sm">
-            <View className="flex-row gap-x-[3px]" importantForAccessibility="no-hide-descendants">
-                {days.map((day, index) => (
-                    <BudgetDayStripCell
-                        key={day.date.getTime()}
-                        dayState={resolveDayState(index)}
-                        tone={tone}
-                        hasBill={hasBillOn(day.date)}
-                    />
-                ))}
+        <EntranceReveal step={1}>
+            <View
+                accessible
+                accessibilityRole="progressbar"
+                accessibilityLabel={accessibilityLabel}
+                accessibilityValue={accessibilityValue}
+                className="flex-row gap-x-[3px]"
+            >
+                {days.map((day, index) => {
+                    const fillDelay = (index / Math.max(todayIndex, 1)) * BUDGET_DAY_STRIP_STAGGER_SPAN;
+
+                    return (
+                        <BudgetDayStripCell key={day.date.getTime()} dayState={resolveDayState(index)} tone={tone} fillDelay={fillDelay} />
+                    );
+                })}
             </View>
-            <View className="flex-row justify-between">
-                <Text className="text-xxs text-secondary-foreground">{formatMonthAndDay(days[0].date)}</Text>
-                <Text className="text-xxs text-secondary-foreground">{formatMonthAndDay(days[days.length - 1].date)}</Text>
-            </View>
-        </View>
+        </EntranceReveal>
     );
 };

@@ -16,12 +16,14 @@ interface Props {
     readonly periodEnd: Date;
     readonly currencySymbol: string;
     readonly carriedAmount: number;
+    readonly staggerIndex: number;
 }
 
 const HIGHLIGHT_TARGET = { scope: BudgetAlertScopeEnum.OTHER };
+const TEST_IDS = { row: BudgetSelector.DetailsOtherCategoryRow, spent: BudgetSelector.DetailsOtherCategorySpentLabel };
 
 export const BudgetDetailsOtherCategoryRow = (props: Props) => {
-    const { categoryIds, scope, periodStart, periodEnd, currencySymbol, carriedAmount } = props;
+    const { categoryIds, scope, periodStart, periodEnd, currencySymbol, carriedAmount, staggerIndex } = props;
     const { t } = useLingui();
 
     const excludedCategoryIds = categoryIds.join(',');
@@ -45,10 +47,10 @@ export const BudgetDetailsOtherCategoryRow = (props: Props) => {
             carriedAmount={carriedAmount}
             scope={scope}
             currencySymbol={currencySymbol}
-            testID={BudgetSelector.DetailsOtherCategoryRow}
-            spentTestID={BudgetSelector.DetailsOtherCategorySpentLabel}
+            testIDs={TEST_IDS}
             onPress={handlePress}
             highlightTarget={HIGHLIGHT_TARGET}
+            staggerIndex={staggerIndex}
         />
     );
 };

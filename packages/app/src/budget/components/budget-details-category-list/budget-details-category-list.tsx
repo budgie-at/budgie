@@ -1,9 +1,11 @@
 import { Trans, useLingui } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
+import { Text } from 'react-native';
 
 import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
+import { EntranceReveal } from '../../../@generic/component/entrance-reveal/entrance-reveal';
 import { SectionHeader } from '../../../@generic/component/section-header/section-header';
+import { useNonSystemCategoriesQuery } from '../../../category/query/use-non-system-categories.query';
 import { useGetBudgetEffectiveLimitsQuery } from '../../query/use-get-budget-effective-limits.query';
 import { BudgetDetailsCategoryRow } from '../budget-details-category-row/budget-details-category-row';
 import { BudgetDetailsOtherCategoryRow } from '../budget-details-other-category-row/budget-details-other-category-row';
@@ -21,22 +23,26 @@ interface Props {
 
 export const BudgetDetailsCategoryList = ({ budget, projection, periodStart, periodEnd, currencySymbol }: Props) => {
     const { t } = useLingui();
+    const { categories } = useNonSystemCategoriesQuery();
     const effectiveLimits = useGetBudgetEffectiveLimitsQuery(budget);
+    const titleByCategoryId = new Map(categories.map(category => [category.id, category.title]));
     const categoryIds = projection.categories.map(category => category.categoryId);
     const carriedAmountByCategory = new Map(effectiveLimits.categoryLimits.map(limit => [limit.categoryId, limit.carriedAmount]));
     const hasCategoryLimits = isNotEmptyArray(projection.categories) || isPositiveNumber(budget.otherLimit);
 
     const rows = hasCategoryLimits ? (
         <>
-            {projection.categories.map(category => (
+            {projection.categories.map((category, index) => (
                 <BudgetDetailsCategoryRow
                     key={category.categoryId}
                     categoryId={category.categoryId}
+                    title={titleByCategoryId.get(category.categoryId) ?? ''}
                     scope={category}
                     carriedAmount={carriedAmountByCategory.get(category.categoryId) ?? 0}
                     periodStart={periodStart}
                     periodEnd={periodEnd}
                     currencySymbol={currencySymbol}
+                    staggerIndex={index}
                 />
             ))}
             <BudgetDetailsOtherCategoryRow
@@ -46,6 +52,7 @@ export const BudgetDetailsCategoryList = ({ budget, projection, periodStart, per
                 periodStart={periodStart}
                 periodEnd={periodEnd}
                 currencySymbol={currencySymbol}
+                staggerIndex={categoryIds.length}
             />
         </>
     ) : (
@@ -55,10 +62,10 @@ export const BudgetDetailsCategoryList = ({ budget, projection, periodStart, per
     );
 
     return (
-        <View className="gap-y-lg">
+        <EntranceReveal step={4} className="gap-y-lg">
             <SectionHeader label={t`Categories`} />
 
             {rows}
-        </View>
+        </EntranceReveal>
     );
 };

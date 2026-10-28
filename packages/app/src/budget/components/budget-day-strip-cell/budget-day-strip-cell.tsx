@@ -1,8 +1,16 @@
 import { View } from 'react-native';
+import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { STATUS_TONE_FILL_CLASS_NAME } from '../../../@generic/constant/status-tone-fill-class-name.constant';
+import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { BUDGET_DAY_STATE_CLASS_NAME } from '../../constant/budget-day-state-class-name.constant';
+import {
+    BUDGET_DAY_STRIP_FILL_DURATION,
+    BUDGET_DAY_STRIP_REDUCED_DURATION,
+    BUDGET_DAY_STRIP_TODAY_DELAY,
+    BUDGET_DAY_STRIP_TODAY_DURATION
+} from '../../constant/budget-day-strip-motion.constant';
 import { BudgetDayStateEnum } from '../../enum/budget-day-state.enum';
 
 import type { BudgetPaceVariant } from '../../type/budget-pace-variant.type';
@@ -10,24 +18,30 @@ import type { BudgetPaceVariant } from '../../type/budget-pace-variant.type';
 interface Props {
     readonly dayState: BudgetDayStateEnum;
     readonly tone: BudgetPaceVariant;
-    readonly hasBill: boolean;
+    readonly fillDelay: number;
 }
 
-export const BudgetDayStripCell = ({ dayState, tone, hasBill }: Props) => {
-    const isElapsed = dayState === BudgetDayStateEnum.ELAPSED;
-    const cellClassName = cn(
-        'h-[14px]',
-        'w-full',
-        'rounded-[3px]',
-        BUDGET_DAY_STATE_CLASS_NAME[dayState],
-        isElapsed && STATUS_TONE_FILL_CLASS_NAME[tone]
-    );
-    const billClassName = cn('h-[3px]', 'w-[3px]', 'rounded-full', hasBill ? 'bg-secondary-foreground' : 'bg-transparent');
+export const BudgetDayStripCell = ({ dayState, tone, fillDelay }: Props) => {
+    const reducedMotion = useReducedMotion();
+    const cellClassName = cn('h-[14px]', 'flex-1', 'rounded-[3px]', BUDGET_DAY_STATE_CLASS_NAME[dayState]);
+    const motionFillEntering = FadeIn.delay(fillDelay).duration(BUDGET_DAY_STRIP_FILL_DURATION);
+    const motionTodayEntering = FadeIn.delay(BUDGET_DAY_STRIP_TODAY_DELAY).duration(BUDGET_DAY_STRIP_TODAY_DURATION);
+    const reducedEntering = FadeIn.duration(BUDGET_DAY_STRIP_REDUCED_DURATION);
+    const fillEntering = reducedMotion ? reducedEntering : motionFillEntering;
+    const todayEntering = reducedMotion ? reducedEntering : motionTodayEntering;
+
+    if (dayState === BudgetDayStateEnum.TODAY) {
+        return <Animated.View entering={todayEntering} className={cellClassName} />;
+    }
 
     return (
-        <View className="flex-1 items-center gap-y-xs">
-            <View className={cellClassName} />
-            <View className={billClassName} />
+        <View className={cellClassName}>
+            {dayState === BudgetDayStateEnum.ELAPSED ? (
+                <Animated.View
+                    entering={fillEntering}
+                    className={cn('absolute inset-0 rounded-[3px]', STATUS_TONE_FILL_CLASS_NAME[tone])}
+                />
+            ) : null}
         </View>
     );
 };

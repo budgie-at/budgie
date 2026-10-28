@@ -18,13 +18,7 @@ export const HairlineStatRow = ({ stats }: Props) => (
             return (
                 <Fragment key={stat.label}>
                     {isLeading ? null : <View className="my-xl w-hairline bg-secondary-corner" />}
-                    <StatCell
-                        appearance={appearance}
-                        label={stat.label}
-                        value={stat.value}
-                        variant={stat.variant}
-                        testID={stat.testID}
-                    />
+                    <StatCell appearance={appearance} label={stat.label} value={stat.value} variant={stat.variant} testID={stat.testID} />
                 </Fragment>
             );
         })}

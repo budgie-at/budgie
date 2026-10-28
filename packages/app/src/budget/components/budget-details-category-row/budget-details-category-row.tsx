@@ -2,9 +2,6 @@ import { BudgetAlertScopeEnum } from '@budgie/budget';
 import { TransactionTypeEnum } from '@budgie/contracts';
 import { router } from 'expo-router';
 
-import { isDefined } from '@rnw-community/shared';
-
-import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 import { BudgetSelector } from '../../budget.selector';
 import { BudgetDetailsLimitRow } from '../budget-details-limit-row/budget-details-limit-row';
 
@@ -12,17 +9,18 @@ import type { BudgetProjectionScopeInterface } from '@budgie/budget';
 
 interface Props {
     readonly categoryId: number;
+    readonly title: string;
     readonly scope: BudgetProjectionScopeInterface;
     readonly periodStart: Date;
     readonly periodEnd: Date;
     readonly currencySymbol: string;
     readonly carriedAmount: number;
+    readonly staggerIndex: number;
 }
 
 export const BudgetDetailsCategoryRow = (props: Props) => {
-    const { categoryId, scope, periodStart, periodEnd, currencySymbol, carriedAmount } = props;
-    const { category } = useGetCategoryByIdQuery(categoryId);
-    const title = isDefined(category) ? category.title : '';
+    const { categoryId, title, scope, periodStart, periodEnd, currencySymbol, carriedAmount, staggerIndex } = props;
+    const testIDs = { row: BudgetSelector.DetailsCategoryRow(categoryId), spent: BudgetSelector.DetailsCategorySpentLabel(categoryId) };
     const highlightTarget = { scope: BudgetAlertScopeEnum.CATEGORY, categoryId };
 
     const handlePress = () => {
@@ -43,10 +41,10 @@ export const BudgetDetailsCategoryRow = (props: Props) => {
             carriedAmount={carriedAmount}
             scope={scope}
             currencySymbol={currencySymbol}
-            testID={BudgetSelector.DetailsCategoryRow(categoryId)}
-            spentTestID={BudgetSelector.DetailsCategorySpentLabel(categoryId)}
+            testIDs={testIDs}
             onPress={handlePress}
             highlightTarget={highlightTarget}
+            staggerIndex={staggerIndex}
         />
     );
 };

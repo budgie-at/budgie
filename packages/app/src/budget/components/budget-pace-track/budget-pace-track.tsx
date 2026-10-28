@@ -15,9 +15,9 @@ interface Props {
 }
 
 const RING_BORDER_CLASS_NAME = {
-    positive: 'border-positive-foreground',
-    warning: 'border-warning-foreground',
-    destructive: 'border-destructive-foreground'
+    positive: 'border-positive-fill',
+    warning: 'border-warning-fill',
+    destructive: 'border-destructive-fill'
 } as const;
 
 export const BudgetPaceTrack = ({ scope }: Props) => {
@@ -30,11 +30,11 @@ export const BudgetPaceTrack = ({ scope }: Props) => {
                 <View className={cn('h-full', STATUS_TONE_FILL_CLASS_NAME[variant])} style={spentStyle} />
                 <View className={cn('h-full', BUDGET_PACE_RESERVED_CLASS_NAME[variant])} style={upcomingStyle} />
             </View>
-            <View className="absolute top-0 h-4 w-0.5 -ml-px rounded-full bg-primary" style={todayStyle} />
+            <View className="absolute top-0 h-4 w-0.5 -ms-px rounded-full bg-primary" style={todayStyle} />
             {isDefined(ringStyle) ? (
                 <View
                     className={cn(
-                        'absolute top-0.5 h-3 w-3 -ml-1.5 rounded-full border-2 bg-primary-reverse dark:bg-secondary-background',
+                        'absolute top-0.5 h-3 w-3 -ms-1.5 rounded-full border-2 bg-primary-reverse dark:bg-secondary-background',
                         RING_BORDER_CLASS_NAME[variant]
                     )}
                     style={ringStyle}
