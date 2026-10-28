@@ -65,7 +65,7 @@ it.effect('keeps a steady month on track with free money reduced only by spent',
 
         expect(projection.totalDays).toBe(31);
         expect(projection.elapsedDays).toBe(15);
-        expect(projection.daysLeft).toBe(16);
+        expect(projection.daysLeft).toBe(17);
         expect(projection.overall.status).toBe(BudgetPaceStatusEnum.ON_TRACK);
         expect(projection.overall.spent).toBe(100);
         expect(projection.overall.free).toBe(900);
@@ -174,7 +174,7 @@ it.effect('projects a period that crosses a month boundary', () =>
 
         expect(projection.totalDays).toBe(31);
         expect(projection.elapsedDays).toBe(20);
-        expect(projection.daysLeft).toBe(11);
+        expect(projection.daysLeft).toBe(12);
         expect(projection.days.at(-1)?.date).toEqual(new Date(2026, NOVEMBER, 14));
         expect(projection.upcomingCharges.map(charge => charge.source.id)).toEqual([2]);
         expect(projection.overall.projectedEnd).toBeCloseTo(150 + 60 + (150 / 20) * 11);
@@ -216,5 +216,35 @@ it.effect('splits limited categories from Other and sorts categories by risk', (
         expect(projection.other.free).toBe(260);
         expect(projection.overall.spent).toBe(390);
         expect(projection.overall.upcoming).toBe(100);
+    })
+);
+
+it.effect('spreads free money over the days left including today, rounded down', () =>
+    Effect.sync(() => {
+        const projection = computeBudgetProjection(
+            octoberInput({ entries: variableRun([1, 3, 5], 100), upcomingCharges: [upcomingRecurring(october(20), 100, 1)] })
+        );
+
+        expect(projection.daysLeft).toBe(17);
+        expect(projection.overall.free).toBe(600);
+        expect(projection.overall.safePerDay).toBe(35);
+    })
+);
+
+it.effect('gives the whole free amount on the last day of the period', () =>
+    Effect.sync(() => {
+        const projection = computeBudgetProjection(octoberInput({ now: october(31), entries: variableRun([1, 3, 5], 100) }));
+
+        expect(projection.daysLeft).toBe(1);
+        expect(projection.overall.safePerDay).toBe(700);
+    })
+);
+
+it.effect('never reports a negative safe per day when free money is negative', () =>
+    Effect.sync(() => {
+        const projection = computeBudgetProjection(octoberInput({ entries: variableRun([1, 2, 3, 4, 5, 6], 200) }));
+
+        expect(projection.overall.free).toBe(-200);
+        expect(projection.overall.safePerDay).toBe(0);
     })
 );

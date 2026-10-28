@@ -26,6 +26,7 @@ export { BudgetCategoryLimitRepository } from './query/repository/budget-categor
 export { BudgetCommittedSourceKindEnum } from './projection/enum/budget-committed-source-kind.enum';
 export { BudgetPaceStatusEnum } from './projection/enum/budget-pace-status.enum';
 export { computeBudgetProjection } from './projection/utils/budget-projection.util';
+export { computeSafePerDay } from './projection/utils/budget-safe-per-day.util';
 export type { BudgetCategoryProjectionInterface } from './projection/interface/budget-category-projection.interface';
 export type { BudgetProjectionDayInterface } from './projection/interface/budget-projection-day.interface';
 export type { BudgetProjectionEntryInterface } from './projection/interface/budget-projection-entry.interface';

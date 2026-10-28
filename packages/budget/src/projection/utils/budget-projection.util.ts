@@ -6,6 +6,8 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { BudgetPaceStatusEnum } from '../enum/budget-pace-status.enum';
 
+import { computeSafePerDay } from './budget-safe-per-day.util';
+
 import type { BudgetCategoryProjectionInterface } from '../interface/budget-category-projection.interface';
 import type { BudgetProjectionDayInterface } from '../interface/budget-projection-day.interface';
 import type { BudgetProjectionEntryInterface } from '../interface/budget-projection-entry.interface';
@@ -116,6 +118,7 @@ const computeScope = (
 ): BudgetProjectionScopeInterface => {
     const spent = sumAmounts(entries);
     const upcoming = sumAmounts(charges);
+    const free = limit - spent - upcoming;
     const dailyPace = resolveDailyPace(entries, timeline);
     const cumulative = isDefined(dailyPace) ? buildProjectedCumulative(spent, dailyPace, charges, timeline) : [];
     const projectedEnd = isDefined(dailyPace) ? (cumulative.at(-1) ?? spent + upcoming) : null;
@@ -125,7 +128,8 @@ const computeScope = (
         limit,
         spent,
         upcoming,
-        free: limit - spent - upcoming,
+        free,
+        safePerDay: computeSafePerDay(free, timeline.daysLeft),
         elapsedFraction: timeline.elapsedDays / timeline.totalDays,
         projectedEnd,
         projectedOver: isDefined(projectedEnd) ? projectedEnd - limit : null,
@@ -179,7 +183,8 @@ const buildTimeline = (input: BudgetProjectionInputInterface): BudgetProjectionT
     return {
         periodStart: input.periodStart,
         totalDays,
-        elapsedDays: Math.min(Math.max(differenceInCalendarDays(input.now, input.periodStart) + 1, 0), totalDays)
+        elapsedDays: Math.min(Math.max(differenceInCalendarDays(input.now, input.periodStart) + 1, 0), totalDays),
+        daysLeft: Math.min(Math.max(totalDays - differenceInCalendarDays(input.now, input.periodStart), 0), totalDays)
     };
 };
 
@@ -201,7 +206,7 @@ export const computeBudgetProjection = (input: BudgetProjectionInputInterface): 
     return {
         totalDays: timeline.totalDays,
         elapsedDays: timeline.elapsedDays,
-        daysLeft: timeline.totalDays - timeline.elapsedDays,
+        daysLeft: timeline.daysLeft,
         overall: computeScope(input.entries, upcomingCharges, input.overallLimit, timeline),
         categories: categories.sort(compareByRisk),
         other: computeScope(

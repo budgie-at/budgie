@@ -84,7 +84,7 @@ export const BudgetDetails = ({ budget }: Props) => {
             contentClassName="gap-y-7xl"
         >
             <LoadingContent isLoading={isLoading}>
-                <BudgetVerdict projection={projection} currencySymbol={currencySymbol} />
+                <BudgetVerdict projection={projection} currencySymbol={currencySymbol} periodEnd={periodEnd} />
             </LoadingContent>
 
             <View className="gap-y-md">

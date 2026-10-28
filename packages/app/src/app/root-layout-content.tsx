@@ -177,6 +177,10 @@ export const RootLayoutContent = () => {
                                                                         name="voice-review"
                                                                         options={formSheetOptions([0.65, DETENT_95], 0)}
                                                                     />
+                                                                    <Stack.Screen
+                                                                        name="budget-safe-to-spend"
+                                                                        options={formSheetOptions([DETENT_70, DETENT_95], 0)}
+                                                                    />
                                                                     <Stack.Screen name="category-form" options={MODAL_OPTIONS} />
                                                                     <Stack.Screen name="tag-form" options={MODAL_OPTIONS} />
                                                                     <Stack.Screen
