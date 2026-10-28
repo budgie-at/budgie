@@ -30,6 +30,7 @@ export { subtractMonths } from './scenario/subtract-months';
 export { binanceStub } from './binance/binance-stub';
 export type { TimeWindow } from './binance/binance-stub';
 export { buildBinance } from './binance/build-binance';
+export { STALE_SYNC_AGE_MS, RUN_DEADLINE_MS, advanceClock, jumpPastDeadline, restoreRealTimers } from './binance/binance-clock';
 export { setupBinanceFixture } from './binance/setup-binance-fixture';
 export {
     buildEarnDayKey,
@@ -42,6 +43,7 @@ export {
     resetBinanceSyncForResync,
     seedCryptoInstrument,
     setupAdaUsdtFixture,
+    setupStaleForwardFixture,
     setupUsdtSpotFixtureWithBalances,
     stubEmptyBinanceBalances
 } from './binance/binance-scenario';
