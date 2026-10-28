@@ -404,6 +404,11 @@ msgstr "{statusLabel}. {figureAccessibilityLabel}, {daysLeftLabel}."
 msgid "{taggedCount, plural, one {# tagged this session} other {# tagged this session}}"
 msgstr "{taggedCount, plural, one {# з тегом за цей сеанс} few {# з тегами за цей сеанс} many {# з тегами за цей сеанс} other {# з тегами за цей сеанс}}"
 
+#: src/budget/components/budget-pace-banner-card/budget-pace-banner-card.tsx
+#: src/budget/service/budget-alert-monitor.service.ts
+msgid "{title} is ahead of pace"
+msgstr "{title} випереджає темп"
+
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "{total} GB on this phone"
 msgstr "{total} ГБ на цьому телефоні"
@@ -3006,6 +3011,10 @@ msgstr "Залишити як уже враховану готівку, не в�
 msgid "Keep only \"Enable Reading\" on — never allow trading or withdrawals"
 msgstr "Залиште увімкненим лише \"Дозволити читання\" — ніколи не дозволяйте торгівлю чи виведення"
 
+#: src/budget/components/budget-pace-banner-card/budget-pace-banner-card.tsx
+msgid "Keep under {perDayAmount}/day to stay within {limitAmount}"
+msgstr "Витрачай менше {perDayAmount}/день, щоб вкластися в {limitAmount}"
+
 #: src/app/(tabs)/settings/ai.tsx
 msgid "Keep using Budgie meanwhile. Until the model is ready, categories come from simple rules on the phone."
 msgstr "Користуйтеся Budgie тим часом. Поки модель не готова, категорії визначаються простими правилами на телефоні."
@@ -3757,6 +3766,10 @@ msgstr "Увімкнено · PIN-код"
 msgid "On · PIN and {biometricLabel}"
 msgstr "Увімкнено · PIN-код і {biometricLabel}"
 
+#: src/budget/service/budget-alert-monitor.service.ts
+msgid "On pace to run out by {runOutDate}. Keeping under {perDayAmount}/day keeps it on track."
+msgstr "За поточного темпу кошти закінчаться до {runOutDate}. Якщо витрачати менше {perDayAmount}/день, ви залишитеся в межах плану."
+
 #: src/settings/components/your-data-card/your-data-card.tsx
 msgid "On this iPhone"
 msgstr "На цьому iPhone"
@@ -3926,6 +3939,8 @@ msgstr "Початкова транзакція"
 
 #: src/budget/components/budget-details-other-category-row/budget-details-other-category-row.tsx
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
+#: src/budget/components/budget-pace-banner/budget-pace-banner.tsx
+#: src/budget/service/budget-alert-monitor.service.ts
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Other"
 msgstr "Інше"
@@ -5964,6 +5979,10 @@ msgstr "Ваші рахунки й надалі синхронізуються �
 #: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
 msgid "Your analytics are taking shape"
 msgstr "Ваша аналітика набуває форми"
+
+#: src/budget/service/budget-alert-monitor.service.ts
+msgid "Your budget is ahead of pace"
+msgstr "Ваш бюджет випереджає темп"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Your data"

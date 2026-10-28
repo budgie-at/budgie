@@ -6,6 +6,7 @@ import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { BudgetForecastChart } from '../budget-forecast-chart/budget-forecast-chart';
+import { BudgetPaceBanner } from '../budget-pace-banner/budget-pace-banner';
 import { BudgetPaceLegend } from '../budget-pace-legend/budget-pace-legend';
 import { BudgetPaceTrack } from '../budget-pace-track/budget-pace-track';
 import { BudgetVerdictFigure } from '../budget-verdict-figure/budget-verdict-figure';
@@ -14,24 +15,28 @@ import { BudgetVerdictHeader } from '../budget-verdict-header/budget-verdict-hea
 import { BudgetVerdictOutlook } from '../budget-verdict-outlook/budget-verdict-outlook';
 import { BudgetVerdictSpent } from '../budget-verdict-spent/budget-verdict-spent';
 
+import type { BudgetHighlightTargetInterface } from '../../interface/budget-highlight-target.interface';
 import type { BudgetProjectionInterface } from '@budgie/budget';
 
 interface Props {
     readonly projection: BudgetProjectionInterface;
     readonly currencySymbol: string;
     readonly periodEnd: Date;
+    readonly onPaceBannerPress: (target: BudgetHighlightTargetInterface) => void;
 }
 
 const ENTERING_DURATION = 240;
 const ENTERING = FadeIn.duration(ENTERING_DURATION);
 
-export const BudgetVerdict = ({ projection, currencySymbol, periodEnd }: Props) => {
+export const BudgetVerdict = ({ projection, currencySymbol, periodEnd, onPaceBannerPress }: Props) => {
     const { overall, upcomingCharges } = projection;
 
     return (
         <Animated.View entering={ENTERING}>
             <Card className="gap-y-lg">
                 <BudgetVerdictHeader scope={overall} daysLeft={projection.daysLeft} currencySymbol={currencySymbol} />
+
+                <BudgetPaceBanner projection={projection} currencySymbol={currencySymbol} onPress={onPaceBannerPress} />
 
                 <View className="gap-y-xs">
                     <BudgetVerdictFigure scope={overall} currencySymbol={currencySymbol} />

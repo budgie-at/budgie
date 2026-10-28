@@ -1,4 +1,4 @@
-import { BudgetAlertScopeEnum, computeBudgetAlertTriggers } from '@budgie/budget';
+import { BudgetAlertKindEnum, BudgetAlertScopeEnum, computeBudgetAlertTriggers } from '@budgie/budget';
 import { describe, expect, it } from '@effect/vitest';
 
 describe('computeBudgetAlertTriggers', () => {
@@ -16,11 +16,11 @@ describe('computeBudgetAlertTriggers', () => {
         );
 
         expect(triggers).toEqual([
-            { scope: BudgetAlertScopeEnum.OVERALL, categoryId: null, threshold: 80 },
-            { scope: BudgetAlertScopeEnum.CATEGORY, categoryId: 11, threshold: 80 },
-            { scope: BudgetAlertScopeEnum.CATEGORY, categoryId: 11, threshold: 100 },
-            { scope: BudgetAlertScopeEnum.OTHER, categoryId: null, threshold: 80 },
-            { scope: BudgetAlertScopeEnum.OTHER, categoryId: null, threshold: 100 }
+            { kind: BudgetAlertKindEnum.WARNING, scope: BudgetAlertScopeEnum.OVERALL, categoryId: null, threshold: 80 },
+            { kind: BudgetAlertKindEnum.WARNING, scope: BudgetAlertScopeEnum.CATEGORY, categoryId: 11, threshold: 80 },
+            { kind: BudgetAlertKindEnum.LIMIT, scope: BudgetAlertScopeEnum.CATEGORY, categoryId: 11, threshold: 100 },
+            { kind: BudgetAlertKindEnum.WARNING, scope: BudgetAlertScopeEnum.OTHER, categoryId: null, threshold: 80 },
+            { kind: BudgetAlertKindEnum.LIMIT, scope: BudgetAlertScopeEnum.OTHER, categoryId: null, threshold: 100 }
         ]);
     });
 });
