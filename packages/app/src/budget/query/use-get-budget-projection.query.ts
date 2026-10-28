@@ -1,6 +1,8 @@
 import { computeBudgetProjection, computePeriodWindow } from '@budgie/budget';
 import {
     BudgetCategoryLimitEntityTable,
+    BudgetPeriodCategorySnapshotEntityTable,
+    BudgetPeriodSnapshotEntityTable,
     ExchangeRateEntityTable,
     HistoricalExchangeRateEntityTable,
     RecurringSeriesEntityTable,
@@ -32,7 +34,9 @@ export const budgetProjectionAtom = databaseQueryFamily(
         HistoricalExchangeRateEntityTable,
         SettingsEntityTable,
         RecurringSeriesEntityTable,
-        BudgetCategoryLimitEntityTable
+        BudgetCategoryLimitEntityTable,
+        BudgetPeriodSnapshotEntityTable,
+        BudgetPeriodCategorySnapshotEntityTable
     ],
     BudgetProjectionService,
     (budgetProjectionService, key: BudgetProjectionKeyInterface) => budgetProjectionService.project(key, new Date(key.dayStart))
