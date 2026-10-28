@@ -9,7 +9,7 @@ import {
     fetchBinanceTransactions,
     fetchSortedBinanceExternalIds,
     seedCryptoInstrument,
-    setupBinanceFixture,
+    setupUsdtSpotFixtureWithBalances,
     testDb,
     TestLayer
 } from '../../harness';
@@ -39,11 +39,7 @@ describe('binance/convert-order-id', () => {
 
             expect(SIBLING_ORDER_ID).toBe(UNSAFE_ORDER_ID);
             yield* seedCryptoInstrument('BTC');
-            yield* setupBinanceFixture({ asset: 'USDT' });
-            binanceStub.spotBalances([
-                buildBinance.balance({ asset: 'USDT', free: '100' }),
-                buildBinance.balance({ asset: 'BTC', free: '1' })
-            ]);
+            yield* setupUsdtSpotFixtureWithBalances('BTC', '1');
             stubUnsafeConverts(['quote-a', 'quote-b']);
 
             yield* binanceSyncService.sync();
@@ -57,11 +53,7 @@ describe('binance/convert-order-id', () => {
             const binanceSyncService = yield* BinanceSyncService;
 
             yield* seedCryptoInstrument('BTC');
-            const { account } = yield* setupBinanceFixture({ asset: 'USDT' });
-            binanceStub.spotBalances([
-                buildBinance.balance({ asset: 'USDT', free: '100' }),
-                buildBinance.balance({ asset: 'BTC', free: '1' })
-            ]);
+            const { account } = yield* setupUsdtSpotFixtureWithBalances('BTC', '1');
             yield* testDb.insert(TransactionEntityTable).values({
                 type: TransactionTypeEnum.TRANSFER,
                 title: 'Binance convert USDT to BTC',

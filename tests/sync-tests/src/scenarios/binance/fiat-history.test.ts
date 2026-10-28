@@ -8,8 +8,8 @@ import {
     binanceStub,
     buildBinance,
     buildBinanceToken,
-    fetchBinanceTransactions,
     fetchHistoryProgress,
+    fetchSortedBinanceExternalIds,
     jumpPastDeadline,
     restoreRealTimers,
     resyncBinance,
@@ -25,9 +25,6 @@ import type { TimeWindow } from '../../harness';
 const DAY_MS = 86_400_000;
 const KEY_B = 'key-b';
 const SECOND_CHUNK_REQUEST = 40;
-
-const fetchExternalIds = () =>
-    Effect.map(fetchBinanceTransactions(), transactions => transactions.map(transaction => transaction.externalId));
 
 describe('binance/fiat-history', () => {
     it.effect.each([
@@ -52,7 +49,7 @@ describe('binance/fiat-history', () => {
 
             yield* binanceSyncService.sync();
 
-            expect(yield* fetchExternalIds()).toEqual(['fiat-old']);
+            expect(yield* fetchSortedBinanceExternalIds()).toEqual(['fiat-old']);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -70,7 +67,7 @@ describe('binance/fiat-history', () => {
 
             yield* binanceSyncService.sync();
 
-            expect(yield* fetchExternalIds()).toHaveLength(isImported ? 1 : 0);
+            expect(yield* fetchSortedBinanceExternalIds()).toHaveLength(isImported ? 1 : 0);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -119,14 +116,14 @@ describe('binance/fiat-history', () => {
             });
             yield* binanceSyncService.sync(Date.now() + RUN_DEADLINE_MS).pipe(Effect.ensuring(restoreRealTimers));
 
-            expect(yield* fetchExternalIds()).toEqual([]);
+            expect(yield* fetchSortedBinanceExternalIds()).toEqual([]);
             expect((yield* fetchHistoryProgress(token))['FIAT'].tailAt).toBeLessThan(Date.now() - 300 * DAY_MS);
 
             const resumedWindows: TimeWindow[] = [];
             binanceStub.fiatOrders([order], [], resumedWindows);
             yield* resyncBinance(sync.id);
 
-            expect(yield* fetchExternalIds()).toEqual(['fiat-deep']);
+            expect(yield* fetchSortedBinanceExternalIds()).toEqual(['fiat-deep']);
             expect(
                 resumedWindows.filter(window => window.endMs < Date.now() - 100 * DAY_MS && window.endMs > Date.now() - 340 * DAY_MS)
             ).toEqual([]);

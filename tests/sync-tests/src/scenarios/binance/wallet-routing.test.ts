@@ -3,15 +3,7 @@ import { BinanceSignedClient, BinanceSyncService, BinanceWalletEnum, encodeBinan
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import {
-    binanceStub,
-    buildBinance,
-    fetchBinanceTransactions,
-    seedCryptoInstrument,
-    setupBinanceFixture,
-    stubEmptyBinanceBalances,
-    TestLayer
-} from '../../harness';
+import { binanceStub, buildBinance, fetchBinanceTransactions, seedCryptoInstrument, setupBinanceFixture, TestLayer } from '../../harness';
 
 const HOUR_MS = 60 * 60 * 1000;
 const FUNDING_WALLET_TYPE = 1;
@@ -36,7 +28,6 @@ describe('binance/wallet-routing', () => {
 
             yield* seedCryptoInstrument('BTC');
             yield* setupBinanceFixture({ asset: 'USDT', mode: SyncModeEnum.FORWARD });
-            stubEmptyBinanceBalances();
             binanceStub.spotBalances([buildBinance.balance({ asset: 'BTC', free: '0.01' })]);
             binanceStub.c2cOrders(
                 [
@@ -78,7 +69,6 @@ describe('binance/wallet-routing', () => {
             const binanceSyncService = yield* BinanceSyncService;
 
             yield* setupBinanceFixture({ asset: 'USDT', mode: SyncModeEnum.FORWARD });
-            stubEmptyBinanceBalances();
             binanceStub.universalTransfers([
                 buildBinance.universalTransfer({
                     asset: 'USDT',

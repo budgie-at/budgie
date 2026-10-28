@@ -5,14 +5,7 @@ import * as Effect from 'effect/Effect';
 
 import { isDefined } from '@rnw-community/shared';
 
-import {
-    binanceStub,
-    buildBinance,
-    fetchBinanceTransactions,
-    setupBinanceFixture,
-    stubEmptyBinanceBalances,
-    TestLayer
-} from '../../harness';
+import { binanceStub, buildBinance, fetchBinanceTransactions, setupBinanceFixture, TestLayer } from '../../harness';
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 const DATE_PART_LENGTH = 10;
@@ -45,7 +38,6 @@ describe('binance/withdrawal-time', () => {
                 const binanceSyncService = yield* BinanceSyncService;
                 const utcDay = new Date(Date.now() - 3 * DAY_MS).toISOString().slice(0, DATE_PART_LENGTH);
                 yield* setupBinanceFixture({ mode: SyncModeEnum.FORWARD });
-                stubEmptyBinanceBalances();
                 binanceStub.withdrawals([
                     buildBinance.withdrawal({ id: 'wd-utc', coin: 'BTC', amount: '1', applyTime: `${utcDay} 23:30:00` })
                 ]);

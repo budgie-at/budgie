@@ -204,4 +204,20 @@ describe('binance/history-backfill', () => {
             expect(yield* countTransactions()).toBe(1);
         }).pipe(Effect.provide(TestLayer))
     );
+
+    it.effect('requests adjacent history windows without sharing a boundary millisecond', () =>
+        Effect.gen(function* () {
+            const binanceSyncService = yield* BinanceSyncService;
+            const requestedWindows: TimeWindow[] = [];
+            yield* setupBinanceFixture();
+            binanceStub.deposits([], requestedWindows);
+
+            yield* binanceSyncService.sync();
+
+            expect(requestedWindows.length).toBeGreaterThan(1);
+            for (const [index, window] of requestedWindows.slice(1).entries()) {
+                expect(window.endMs).toBe(requestedWindows[index].startMs - 1);
+            }
+        }).pipe(Effect.provide(TestLayer))
+    );
 });

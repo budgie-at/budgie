@@ -10,6 +10,7 @@ import {
     seedCryptoInstrument,
     setupBinanceFixture,
     setupFiatScenario,
+    setupUsdtSpotFixtureWithBalances,
     TestLayer
 } from '../../harness';
 
@@ -54,11 +55,7 @@ describe('binance/stub-fidelity', () => {
             const binanceSyncService = yield* BinanceSyncService;
 
             yield* seedCryptoInstrument('ADA');
-            yield* setupBinanceFixture({ asset: 'USDT' });
-            binanceStub.spotBalances([
-                buildBinance.balance({ asset: 'USDT', free: '100' }),
-                buildBinance.balance({ asset: 'ADA', free: String(TRADE_COUNT) })
-            ]);
+            yield* setupUsdtSpotFixtureWithBalances('ADA', String(TRADE_COUNT));
             const requestedUrls: URL[] = [];
             binanceStub.myTrades({ ADAUSDT: buildAdaFills() }, new Set<string>(), requestedUrls);
 

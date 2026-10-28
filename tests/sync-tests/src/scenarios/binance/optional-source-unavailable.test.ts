@@ -11,7 +11,6 @@ import {
     fetchHistoryProgress,
     resyncBinance,
     setupBinanceFixture,
-    stubEmptyBinanceBalances,
     TestLayer
 } from '../../harness';
 
@@ -72,7 +71,6 @@ const CREDENTIAL_ERROR_CODES = [-2014, -2015, -1022];
 
 const setupUsdtDepositScenario = Effect.gen(function* () {
     const fixture = yield* setupBinanceFixture({ asset: 'USDT' });
-    stubEmptyBinanceBalances();
     binanceStub.deposits([buildBinance.deposit({ id: 'dep-survives', coin: 'USDT', amount: '5' })]);
 
     return fixture;
@@ -110,7 +108,6 @@ describe('binance/optional-source-unavailable', () => {
             const binanceSyncService = yield* BinanceSyncService;
             const oldRowTimeMs = Date.now() - OLD_ROW_AGE_MS;
             const { sync, token } = yield* setupBinanceFixture({ asset: 'USDT' });
-            stubEmptyBinanceBalances();
             binanceStub.failEndpoint(source.endpoint, source.respond);
 
             yield* binanceSyncService.sync();

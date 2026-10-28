@@ -148,9 +148,6 @@ export const expectNoDuplicateAfterResync = Effect.fnUntraced(function* (restubF
 export const setupFiatScenario = (mode = SyncModeEnum.FORWARD) =>
     Effect.gen(function* () {
         const fixture = yield* setupBinanceFixture({ mode, asset: 'EUR', instrumentType: InstrumentTypeEnum.FIAT });
-        stubEmptyBinanceBalances();
-        binanceStub.deposits([]);
-        binanceStub.withdrawals([]);
 
         return fixture;
     });

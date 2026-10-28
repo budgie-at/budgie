@@ -61,13 +61,11 @@ const expectTradeOnCurrentAccount = (retiredAsset: string, currentAsset: string)
     });
 
 describe('binance/asset-aliases', () => {
-    it.effect('lands historical MATIC trades on the POL account without a duplicate', () =>
-        expectTradeOnCurrentAccount('MATIC', 'POL').pipe(Effect.provide(TestLayer))
+    it.effect.each([
+        { retiredAsset: 'MATIC', currentAsset: 'POL' },
+        { retiredAsset: 'RNDR', currentAsset: 'RENDER' },
+        { retiredAsset: 'FTM', currentAsset: 'S' }
+    ])('lands historical $retiredAsset trades on the $currentAsset account without a duplicate', ({ retiredAsset, currentAsset }) =>
+        expectTradeOnCurrentAccount(retiredAsset, currentAsset).pipe(Effect.provide(TestLayer))
     );
-
-    it.effect('imports RNDR trades onto the RENDER account', () =>
-        expectTradeOnCurrentAccount('RNDR', 'RENDER').pipe(Effect.provide(TestLayer))
-    );
-
-    it.effect('imports FTM trades onto the S account', () => expectTradeOnCurrentAccount('FTM', 'S').pipe(Effect.provide(TestLayer)));
 });
