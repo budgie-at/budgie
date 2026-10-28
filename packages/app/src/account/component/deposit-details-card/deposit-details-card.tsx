@@ -24,7 +24,7 @@ const DAYS_PER_YEAR = 365;
 const PERCENT_DIVISOR = 100;
 const RATE_DECIMAL_PLACES = 2;
 
-const containerVariants = cva('p-5xl border gap-y-lg rounded-3xl mt-md', {
+const containerVariants = cva('p-5xl border gap-y-lg rounded-3xl', {
     variants: { variant: BACKGROUND_COLOR_PALETTE }
 });
 

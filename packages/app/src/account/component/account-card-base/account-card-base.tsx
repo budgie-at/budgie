@@ -9,7 +9,7 @@ import { EmptyFn, isDefined } from '@rnw-community/shared';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
-import { AccountSyncStateEnum } from '../../enum/account-sync-state.enum';
+import { ACCOUNT_SYNC_STATE_LABEL } from '../../constant/account-sync-state-label.constant';
 import { useAccountCardMenu } from '../../hook/use-account-card-menu.hook';
 import { getAccountSyncState } from '../../utils/get-account-sync-state.util';
 import { AccountCardBalance } from '../account-card-balance/account-card-balance';
@@ -41,14 +41,7 @@ export const AccountCardBase = ({ account, balance, amountLabel, onImport, child
     const navigateToEdit = () => void router.push({ pathname: '/account/[id]/update', params: { id: String(id) } });
 
     const syncState = getAccountSyncState(sync);
-    const syncStateLabels: Record<AccountSyncStateEnum, string> = {
-        [AccountSyncStateEnum.SYNCED]: t`Up to date`,
-        [AccountSyncStateEnum.SYNCING]: t`Syncing`,
-        [AccountSyncStateEnum.WAITING]: t`Waiting`,
-        [AccountSyncStateEnum.FAILED]: t`Sync Failed`,
-        [AccountSyncStateEnum.DISABLED]: t`Sync paused`
-    };
-    const syncStateLabel = isDefined(syncState) ? syncStateLabels[syncState] : null;
+    const syncStateLabel = isDefined(syncState) ? t(ACCOUNT_SYNC_STATE_LABEL[syncState]) : null;
     const accessibilityLabel = [title, amountLabel ?? protectAmount(balance, instrument.symbol), syncStateLabel]
         .filter(isDefined)
         .join(', ');

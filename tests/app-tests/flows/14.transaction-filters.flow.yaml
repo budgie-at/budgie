@@ -569,14 +569,16 @@ appId: ${APP_ID}
       env:
           ACCOUNT_NAME: 'E2E Filter Cash A'
 
-- extendedWaitUntil:
-      visible:
-          id: 'TransactionCard.Label.E2E_Filter_Expense'
-      timeout: 5000
-
 # Counter on the account screen reflects only this account's transactions
 # (original expense + transfer + native amount transfer + the expense created earlier in this flow)
-- assertVisible: '4 transactions'
+- extendedWaitUntil:
+      visible: 'Transactions 4'
+      timeout: 5000
+
+- scrollUntilVisible:
+      element:
+          id: 'TransactionCard.Label.E2E_Filter_Expense'
+      direction: DOWN
 
 - tapOn:
       id: 'TransactionFilters.TypeChip'
@@ -585,10 +587,14 @@ appId: ${APP_ID}
 - tapOn:
       id: 'TransactionFilters.TypeApplyButton'
 
-- assertVisible:
-      id: 'TransactionCard.Label.E2E_Filter_Expense'
+- scrollUntilVisible:
+      element:
+          id: 'TransactionCard.Label.E2E_Filter_Expense'
+      direction: DOWN
 - assertNotVisible:
       id: 'TransactionCard.Label.E2E_Filter_Transfer'
 
 # Counter on the account screen also respects an applied filter
-- assertVisible: '2 transactions'
+- scrollUntilVisible:
+      element: 'Transactions 2'
+      direction: UP

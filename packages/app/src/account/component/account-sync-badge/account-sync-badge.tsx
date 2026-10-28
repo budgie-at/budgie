@@ -1,6 +1,7 @@
 import { cva } from 'class-variance-authority';
 import { View } from 'react-native';
 
+import { ACCOUNT_SYNC_STATE_COLOR } from '../../constant/account-sync-state-color.constant';
 import { AccountSyncStateEnum } from '../../enum/account-sync-state.enum';
 
 interface Props {
@@ -8,15 +9,7 @@ interface Props {
 }
 
 const syncBadgeVariants = cva('absolute -bottom-[2px] -right-[2px] size-[12px] rounded-full border-2 border-primary-reverse', {
-    variants: {
-        state: {
-            [AccountSyncStateEnum.SYNCED]: 'bg-positive-foreground',
-            [AccountSyncStateEnum.SYNCING]: 'bg-warning-foreground animate-pulse',
-            [AccountSyncStateEnum.WAITING]: 'bg-warning-foreground',
-            [AccountSyncStateEnum.FAILED]: 'bg-destructive-foreground',
-            [AccountSyncStateEnum.DISABLED]: 'bg-secondary-foreground'
-        }
-    }
+    variants: { state: ACCOUNT_SYNC_STATE_COLOR }
 });
 
 export const AccountSyncBadge = ({ state }: Props) => <View className={syncBadgeVariants({ state })} />;

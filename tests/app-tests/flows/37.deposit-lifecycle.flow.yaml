@@ -311,13 +311,13 @@ appId: ${APP_ID}
           ACCOUNT_NAME: 'Deposit'
 
 - tapOn:
-      id: 'DepositAccountActionsMenu.TriggerButton'
+      id: 'AccountDetails.ActionsButton'
 - extendedWaitUntil:
       visible:
-          id: 'DepositAccountActionsMenu.EditButton'
+          id: 'AccountDetails.EditButton'
       timeout: 3000
 - tapOn:
-      id: 'DepositAccountActionsMenu.EditButton'
+      id: 'AccountDetails.EditButton'
 - extendedWaitUntil:
       visible:
           id: 'AccountForm.NameInput'
@@ -387,13 +387,13 @@ appId: ${APP_ID}
           ACCOUNT_NAME: 'E2E Deposit Account'
 
 - tapOn:
-      id: 'DepositAccountActionsMenu.TriggerButton'
+      id: 'AccountDetails.ActionsButton'
 - extendedWaitUntil:
       visible:
-          id: 'DepositAccountActionsMenu.CloseDepositButton'
+          id: 'AccountDetails.CloseDepositButton'
       timeout: 3000
 - tapOn:
-      id: 'DepositAccountActionsMenu.CloseDepositButton'
+      id: 'AccountDetails.CloseDepositButton'
 - extendedWaitUntil:
       visible:
           id: 'AccountPickerBottomSheet.Input'

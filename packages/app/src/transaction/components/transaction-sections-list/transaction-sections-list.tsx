@@ -1,10 +1,10 @@
 import { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import { useRouter } from 'expo-router';
-import { ReactElement, useRef } from 'react';
+import { ComponentType, ReactElement, useRef } from 'react';
 import { Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { isEmptyArray } from '@rnw-community/shared';
+import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { BudgieLegendList } from '../../../@generic/component/budgie-legend-list/budgie-legend-list';
 import { PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
@@ -18,12 +18,17 @@ import { getTransactionHref } from '../../utils/get-transaction-href.util';
 import { TransactionCard } from '../transaction-card/transaction-card';
 import { TransactionListContextMenu } from '../transaction-list-context-menu/transaction-list-context-menu';
 
+import type { LegendListProps } from '@legendapp/list/react-native';
+
 interface Props {
     readonly sections: TransactionsByMonthSection[];
     readonly onEndReached: () => void;
     readonly listEmptyState: ReactElement;
     readonly accountId?: number | null;
     readonly footerSpacerMultiplier?: number;
+    readonly listHeader?: ReactElement;
+    readonly listComponent?: ComponentType<LegendListProps<TransactionListItemType>>;
+    readonly stickyHeaderOffset?: number;
 }
 
 const keyExtractor = (item: TransactionListItemType) => item.id;
@@ -37,7 +42,10 @@ export const TransactionSectionsList = ({
     onEndReached,
     listEmptyState,
     accountId = null,
-    footerSpacerMultiplier = 1
+    footerSpacerMultiplier = 1,
+    listHeader,
+    listComponent: ListComponent = BudgieLegendList,
+    stickyHeaderOffset
 }: Props) => {
     const router = useRouter();
     const { bottom } = useSafeAreaInsets();
@@ -77,18 +85,19 @@ export const TransactionSectionsList = ({
         );
     }
 
-    const isEmpty = isEmptyArray(flatData);
     const paddingBottom = footerSpacerMultiplier * (FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN) + bottom;
     const contentContainerStyle = {
         gap: 16,
         paddingBottom,
-        ...(isEmpty && { flexGrow: 1, justifyContent: 'center' as const })
+        ...(isEmptyArray(flatData) && !isDefined(listHeader) && { flexGrow: 1, justifyContent: 'center' as const })
     };
+
+    const stickyHeaderProps = isDefined(stickyHeaderOffset) ? { stickyHeaderConfig: { offset: stickyHeaderOffset } } : {};
 
     return (
         <>
             <View className="flex-1">
-                <BudgieLegendList
+                <ListComponent
                     style={LIST_STYLE}
                     data={flatData}
                     keyExtractor={keyExtractor}
@@ -98,8 +107,10 @@ export const TransactionSectionsList = ({
                     onEndReached={onEndReached}
                     onEndReachedThreshold={0.3}
                     contentContainerStyle={contentContainerStyle}
+                    ListHeaderComponent={listHeader}
                     ListEmptyComponent={listEmptyState}
                     getItemType={getItemType}
+                    {...stickyHeaderProps}
                 />
             </View>
             <TransactionListContextMenu ref={menuRef} />

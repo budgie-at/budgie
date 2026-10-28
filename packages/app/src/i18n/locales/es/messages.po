@@ -175,7 +175,7 @@ msgstr "{formattedAmount} · {detail}"
 msgid "{formattedAmount} / mo"
 msgstr "{formattedAmount} / mes"
 
-#: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
+#: src/account/component/account-actions-menu/use-deposit-close-action.hook.ts
 msgid "{formattedBalance} will be transferred to {destinationAccountTitle} and this deposit will be archived. You can restore it anytime from Settings → Archived Accounts."
 msgstr "{formattedBalance} se transferirá a {destinationAccountTitle} y este depósito se archivará. Puedes restaurarlo en cualquier momento desde Configuración → Cuentas archivadas."
 
@@ -362,7 +362,7 @@ msgstr "{total} GB en este teléfono"
 msgid "{totalSize} GB"
 msgstr "{totalSize} GB"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx
+#: src/transaction/components/transaction-list-count/transaction-list-count.tsx
 msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{transactionCount, plural, one {# transacción} other {# transacciones}}"
 
@@ -480,6 +480,7 @@ msgstr "Cuenta {accountId}"
 msgid "Account {accountId} not found"
 msgstr "Cuenta {accountId} no encontrada"
 
+#: src/account/component/account-actions-menu/account-actions-menu.tsx
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Account actions"
 msgstr "Acciones de la cuenta"
@@ -806,6 +807,7 @@ msgstr "Aplicar categorías predeterminadas según los códigos de categoría de
 msgid "Apply to existing transactions?"
 msgstr "¿Aplicar a transacciones existentes?"
 
+#: src/account/component/account-actions-menu/account-actions-menu.tsx
 #: src/account/component/debt-account-paid-off/debt-account-paid-off.tsx
 #: src/account/hooks/use-archive-account.hook.ts
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
@@ -892,6 +894,10 @@ msgstr "Ajuste de saldo"
 #: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
 msgid "Balance forecast"
 msgstr "Previsión de saldo"
+
+#: src/account/component/account-details-hero/account-details-hero.tsx
+msgid "Balance: {formattedBalance}"
+msgstr "Saldo: {formattedBalance}"
 
 #: src/account/constant/account-type.constant.ts
 msgid "Bank"
@@ -1083,7 +1089,7 @@ msgstr "Puede tardar horas"
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx
 #: src/account/component/account-action-button/account-action-button.tsx
-#: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
+#: src/account/component/account-actions-menu/use-deposit-close-action.hook.ts
 #: src/account/hooks/use-archive-account.hook.ts
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
@@ -1285,12 +1291,12 @@ msgstr "El portapapeles está vacío"
 msgid "Close"
 msgstr "Cerrar"
 
-#: src/account/component/deposit-account-actions-menu/deposit-account-actions-menu.tsx
-#: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
+#: src/account/component/account-actions-menu/account-actions-menu.tsx
+#: src/account/component/account-actions-menu/use-deposit-close-action.hook.ts
 msgid "Close Deposit"
 msgstr "Cerrar depósito"
 
-#: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
+#: src/account/component/account-actions-menu/use-deposit-close-action.hook.ts
 msgid "Close Deposit?"
 msgstr "¿Cerrar depósito?"
 
@@ -1476,7 +1482,7 @@ msgstr "No se pudieron verificar los datos de sincronización"
 msgid "Could not clear data"
 msgstr "No se pudieron borrar los datos"
 
-#: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
+#: src/account/component/account-actions-menu/use-deposit-close-action.hook.ts
 msgid "Could not close deposit"
 msgstr "No se pudo cerrar el depósito"
 
@@ -1891,10 +1897,6 @@ msgstr "CSV exportado"
 msgid "Currency"
 msgstr "Moneda"
 
-#: src/account/component/account-balance/account-balance.tsx
-msgid "Current Balance"
-msgstr "Saldo actual"
-
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "Custom categories you create will appear here"
 msgstr "Las categorías personalizadas que crees aparecerán aquí"
@@ -2172,11 +2174,11 @@ msgstr "ej. Cuenta de ahorros"
 msgid "Each one becomes an account. Rename or remove them later."
 msgstr "Cada uno se convierte en una cuenta. Puedes renombrarlas o eliminarlas después."
 
-#: src/account/component/deposit-account-actions-menu/deposit-account-actions-menu.tsx
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Edit"
 msgstr "Editar"
 
+#: src/account/component/account-actions-menu/account-actions-menu.tsx
 #: src/account/component/account-card-base/account-card-base.tsx
 #: src/account/component/account-card-menu/account-card-menu.tsx
 msgid "Edit account"
@@ -2855,6 +2857,7 @@ msgstr "Incluye criptomonedas"
 msgid "includes fee {formattedFeeAmount}"
 msgstr "incluye comisión {formattedFeeAmount}"
 
+#: src/account/component/account-details-month-chips/account-details-month-chips.tsx
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/components/statistics-content/statistics-content.tsx
@@ -3497,7 +3500,7 @@ msgid "No matching expenses"
 msgstr "No hay gastos coincidentes"
 
 #: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx
-#: src/transaction/components/transaction-list/transaction-list.tsx
+#: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
 msgid "No matching transactions"
 msgstr "No hay transacciones coincidentes"
 
@@ -3566,7 +3569,7 @@ msgstr "Sin título"
 msgid "No transactions matched"
 msgstr "Ninguna transacción coincidió"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx
+#: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
 msgid "No transactions yet"
 msgstr "Aún no hay transacciones"
 
@@ -4813,6 +4816,7 @@ msgstr "Gastos por categoría"
 msgid "Spending by Tag"
 msgstr "Gastos por etiqueta"
 
+#: src/account/component/account-details-month-chips/account-details-month-chips.tsx
 #: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Spent"
@@ -4849,7 +4853,7 @@ msgstr "Iniciar importación"
 msgid "Start Sync"
 msgstr "Iniciar sincronización"
 
-#: src/transaction/components/transaction-list/transaction-list.tsx
+#: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Comienza a rastrear tus gastos usando el botón de micrófono o agregando transacciones manualmente"
 
@@ -4926,13 +4930,13 @@ msgstr "Datos de sincronización reparados"
 msgid "Sync data repairs"
 msgstr "Reparaciones de datos de sincronización"
 
-#: src/account/component/account-card-base/account-card-base.tsx
+#: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Sync Failed"
 msgstr "Sincronización fallida"
 
-#: src/account/component/account-card-base/account-card-base.tsx
+#: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Sync paused"
 msgstr "Sincronización pausada"
@@ -4945,7 +4949,7 @@ msgstr "Reparaciones de sincronización"
 msgid "Sync your Binance balances and transactions"
 msgstr "Sincroniza tus saldos y transacciones de Binance"
 
-#: src/account/component/account-card-base/account-card-base.tsx
+#: src/account/constant/account-sync-state-label.constant.ts
 msgid "Syncing"
 msgstr "Sincronizando"
 
@@ -5138,6 +5142,10 @@ msgstr "Este mes"
 #: src/@generic/constant/date-period.constant.ts
 msgid "This Month"
 msgstr "Este mes"
+
+#: src/account/component/account-details-month-chips/account-details-month-chips.tsx
+msgid "This month: spent {formattedExpense}, income {formattedIncome}"
+msgstr "Este mes: gastado {formattedExpense}, ingresos {formattedIncome}"
 
 #: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
 msgid "This phone"
@@ -5340,6 +5348,7 @@ msgid "Transaction not found"
 msgstr "Transacción no encontrada"
 
 #: src/@generic/component/transactions-page-header/transactions-page-header.tsx
+#: src/transaction/components/collapsible-chrome-transaction-list/collapsible-chrome-transaction-list.tsx
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Transactions"
 msgstr "Transacciones"
@@ -5422,7 +5431,7 @@ msgid "Try a different search term or create a new tag"
 msgstr "Prueba un término de búsqueda diferente o crea una nueva etiqueta"
 
 #: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx
-#: src/transaction/components/transaction-list/transaction-list.tsx
+#: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
 msgid "Try adjusting your filters to see more results"
 msgstr "Intenta ajustar tus filtros para ver más resultados"
 
@@ -5520,7 +5529,7 @@ msgstr "PyG no realizada"
 msgid "Untagged"
 msgstr "Sin etiqueta"
 
-#: src/account/component/account-card-base/account-card-base.tsx
+#: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
 msgid "Up to date"
@@ -5628,7 +5637,7 @@ msgstr "Notas de voz"
 msgid "Volume"
 msgstr "Volumen"
 
-#: src/account/component/account-card-base/account-card-base.tsx
+#: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Waiting"
 msgstr "Esperando"

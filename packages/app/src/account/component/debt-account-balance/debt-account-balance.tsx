@@ -80,7 +80,7 @@ export const DebtAccountBalance = ({ accountId, debtType, instrumentSymbol, summ
 
             <ProtectedMoney
                 accessible
-                className="justify-start"
+                containerClassName="justify-start"
                 minFontSize={10}
                 maxFontSize={36}
                 instrumentSymbol={instrumentSymbol}

@@ -7,15 +7,15 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
       visible:
-          id: 'DepositAccountActionsMenu.TriggerButton'
+          id: 'AccountDetails.ActionsButton'
       timeout: 15000
 
 - tapOn:
-      id: 'DepositAccountActionsMenu.TriggerButton'
+      id: 'AccountDetails.ActionsButton'
 
 - extendedWaitUntil:
       visible:
-          id: 'DepositAccountActionsMenu.CloseDepositButton'
+          id: 'AccountDetails.CloseDepositButton'
       timeout: 5000
 
 - waitForAnimationToEnd

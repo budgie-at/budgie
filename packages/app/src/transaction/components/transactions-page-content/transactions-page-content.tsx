@@ -25,7 +25,7 @@ export const TransactionsPageContent = ({ activeTab, tabs, onChangeTab }: Props)
         <GestureDetector gesture={swipeGesture}>
             <View className="flex-1">
                 <Activity mode={transactionsActivityMode}>
-                    <TransactionList accountId={null} />
+                    <TransactionList />
                 </Activity>
 
                 <Activity mode={recurringActivityMode}>
