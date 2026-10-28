@@ -53,6 +53,7 @@ describe('binance/deadline-handling', () => {
 
             const { token } = yield* setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.BACKWARD });
             binanceStub.spotBalances([buildBinance.balance({ asset: 'BTC', free: '1' })]);
+            binanceStub.apiRestrictions();
 
             const preview = yield* Effect.gen(function* () {
                 yield* binanceSyncService.sync(Date.now() + RUN_DEADLINE_MS);
