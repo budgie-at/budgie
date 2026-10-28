@@ -1,4 +1,4 @@
-import { SyncModeEnum, SyncStatusEnum } from '@budgie/contracts';
+import { SyncModeEnum } from '@budgie/contracts';
 import { BinanceSignedClient, BinanceSyncService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
@@ -32,67 +32,75 @@ const errorBody = (code: number, msg: string) => ({ code, msg });
 const respondWith = (status: number, body: JsonBodyType, headers: Record<string, string> = {}) =>
     HttpResponse.json(body, { status, headers });
 
-const countDepositRequests = (respond: () => Response) => {
+const respondBanned = () =>
+    respondWith(418, errorBody(-1003, 'Way too many requests; IP banned.'), { 'retry-after': String(RETRY_AFTER_SECONDS) });
+
+const respondRegionBlocked = () => new HttpResponse(null, { status: 451 });
+
+const countRequests = (method: 'get' | 'post', url: string, respond: (requestNumber: number) => Response) => {
     const requests: string[] = [];
     mockServer.use(
-        http.get(DEPOSIT_URL, () => {
-            requests.push('deposit');
+        http[method](url, () => {
+            requests.push(url);
 
-            return respond();
+            return respond(requests.length);
         })
     );
 
     return requests;
 };
 
-const setupGroupedForwardSyncs = () =>
-    Effect.gen(function* () {
-        const btcFixture = yield* setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.FORWARD });
-        const ethFixture = yield* setupBinanceFixture({ asset: 'ETH', mode: SyncModeEnum.FORWARD });
-
-        return { btcFixture, ethFixture };
-    });
+const countDepositRequests = (respond: (requestNumber: number) => Response) => countRequests('get', DEPOSIT_URL, respond);
 
 const flipCapitalFailure = (client: BinanceSignedClient) =>
     Effect.flip(client.getCapitalTransactions(BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO));
 
+const BLOCKED_SYNC_CASES = [
+    { label: '403 WAF block without an auth code', respond: () => new HttpResponse('<html>Forbidden</html>', { status: 403 }) },
+    { label: '418 IP ban with Retry-After', respond: respondBanned },
+    { label: '451 region block', respond: respondRegionBlocked }
+];
+
+const CLIENT_ERROR_CASES = [
+    { label: '418 ban', respond: respondBanned, expected: { _tag: 'SyncRateLimitedError', retryAfterMs: RETRY_AFTER_MS } },
+    { label: '451 region block', respond: respondRegionBlocked, expected: { _tag: 'SyncRegionUnavailableError' } },
+    {
+        label: 'code -2014',
+        respond: () => respondWith(400, errorBody(-2014, 'API-key format invalid.')),
+        expected: { _tag: 'SyncUnauthorizedError' }
+    },
+    {
+        label: 'code -2008',
+        respond: () => respondWith(400, errorBody(-2008, 'Invalid Api-Key ID.')),
+        expected: { _tag: 'SyncUnauthorizedError' }
+    }
+];
+
 describe('binance/http-error-classification', () => {
-    it.effect('keeps every sync enabled after a 403 WAF block without a Binance auth code', () =>
+    it.effect.each(BLOCKED_SYNC_CASES)('keeps every sync enabled and sends one request after a $label', ({ respond }) =>
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
-            const { btcFixture, ethFixture } = yield* setupGroupedForwardSyncs();
-            countDepositRequests(() => new HttpResponse('<html>Forbidden</html>', { status: 403 }));
+            const btcFixture = yield* setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.FORWARD });
+            const ethFixture = yield* setupBinanceFixture({ asset: 'ETH', mode: SyncModeEnum.FORWARD });
+            const requests = countDepositRequests(respond);
 
             yield* binanceSyncService.sync(Date.now() + RUN_DEADLINE_MS);
 
+            expect(requests).toHaveLength(1);
             expect((yield* fetchSyncById(btcFixture.sync.id)).enabled).toBe(true);
             expect((yield* fetchSyncById(ethFixture.sync.id)).enabled).toBe(true);
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('backs off a 418 IP ban with the Retry-After time instead of retrying', () =>
-        Effect.gen(function* () {
-            const binanceSyncService = yield* BinanceSyncService;
-            const { sync } = yield* setupBinanceFixture({ mode: SyncModeEnum.FORWARD });
-            const requests = countDepositRequests(() =>
-                respondWith(418, errorBody(-1003, 'Way too many requests; IP banned.'), { 'retry-after': String(RETRY_AFTER_SECONDS) })
-            );
-
-            yield* binanceSyncService.sync(Date.now() + RUN_DEADLINE_MS);
-
-            expect(requests).toHaveLength(1);
-            expect((yield* fetchSyncById(sync.id)).enabled).toBe(true);
-        }).pipe(Effect.provide(TestLayer))
-    );
-
-    it.effect('exposes the Retry-After time on a 418 rate-limited error', () =>
+    it.effect.each(CLIENT_ERROR_CASES)('maps a $label to a typed error after one request', ({ respond, expected }) =>
         Effect.gen(function* () {
             stubEmptyBinanceSources();
-            countDepositRequests(() => respondWith(418, errorBody(-1003, 'banned'), { 'retry-after': String(RETRY_AFTER_SECONDS) }));
+            const requests = countDepositRequests(respond);
 
             const error = yield* flipCapitalFailure(new BinanceSignedClient(BINANCE_TEST_TOKEN));
 
-            expect(error).toMatchObject({ _tag: 'SyncRateLimitedError', retryAfterMs: RETRY_AFTER_MS });
+            expect(error).toMatchObject(expected);
+            expect(requests).toHaveLength(1);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -111,61 +119,26 @@ describe('binance/http-error-classification', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('maps a 451 region block to a terminal region-unavailable error', () =>
-        Effect.gen(function* () {
-            stubEmptyBinanceSources();
-            const requests = countDepositRequests(() => new HttpResponse(null, { status: 451 }));
-
-            const error = yield* flipCapitalFailure(new BinanceSignedClient(BINANCE_TEST_TOKEN));
-
-            expect(error._tag).toBe('SyncRegionUnavailableError');
-            expect(requests).toHaveLength(1);
-        }).pipe(Effect.provide(TestLayer))
-    );
-
-    it.effect('keeps every sync enabled after a 451 region block without retrying', () =>
-        Effect.gen(function* () {
-            const binanceSyncService = yield* BinanceSyncService;
-            const { btcFixture, ethFixture } = yield* setupGroupedForwardSyncs();
-            const requests = countDepositRequests(() => new HttpResponse(null, { status: 451 }));
-
-            yield* binanceSyncService.sync(Date.now() + RUN_DEADLINE_MS);
-
-            expect(requests).toHaveLength(1);
-            for (const fixture of [btcFixture, ethFixture]) {
-                expect(yield* fetchSyncById(fixture.sync.id)).toMatchObject({ enabled: true, status: SyncStatusEnum.FAILED });
-            }
-        }).pipe(Effect.provide(TestLayer))
-    );
-
     it.effect('does not call Binance in a later run while a 418 Retry-After ban is active', () =>
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
             yield* setupBinanceFixture({ mode: SyncModeEnum.FORWARD });
-            const requests = countDepositRequests(() =>
-                respondWith(418, errorBody(-1003, 'banned'), { 'retry-after': String(RETRY_AFTER_SECONDS) })
-            );
-            const balanceRequests: string[] = [];
-            mockServer.use(
-                http.post(SPOT_BALANCE_URL, () => {
-                    balanceRequests.push('balance');
-
-                    return HttpResponse.json([]);
-                })
-            );
+            const depositRequests = countDepositRequests(respondBanned);
+            const balanceRequests = countRequests('post', SPOT_BALANCE_URL, () => HttpResponse.json([]));
 
             yield* binanceSyncService.sync(Date.now() + RUN_DEADLINE_MS);
-            const requestsAfterBan = requests.length + balanceRequests.length;
+            const requestsAfterBan = depositRequests.length + balanceRequests.length;
             yield* binanceSyncService.sync(Date.now() + RUN_DEADLINE_MS);
 
-            expect(requests.length + balanceRequests.length).toBe(requestsAfterBan);
+            expect(depositRequests.length + balanceRequests.length).toBe(requestsAfterBan);
         }).pipe(Effect.provide(TestLayer))
     );
 
     it.effect('disables every sync in the credential group after a -1022 bad signature', () =>
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
-            const { btcFixture, ethFixture } = yield* setupGroupedForwardSyncs();
+            const btcFixture = yield* setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.FORWARD });
+            const ethFixture = yield* setupBinanceFixture({ asset: 'ETH', mode: SyncModeEnum.FORWARD });
             countDepositRequests(() => respondWith(400, errorBody(-1022, 'Signature for this request is not valid.')));
 
             yield* binanceSyncService.sync(Date.now() + RUN_DEADLINE_MS);
@@ -175,37 +148,14 @@ describe('binance/http-error-classification', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect.each([-2014, -2008])('maps Binance auth code %i to an unauthorized error', code =>
-        Effect.gen(function* () {
-            stubEmptyBinanceSources();
-            countDepositRequests(() => respondWith(400, errorBody(code, 'API-key format invalid.')));
-
-            const error = yield* flipCapitalFailure(new BinanceSignedClient(BINANCE_TEST_TOKEN));
-
-            expect(error._tag).toBe('SyncUnauthorizedError');
-        }).pipe(Effect.provide(TestLayer))
-    );
-
     it.effect('refreshes the server-time offset and retries once after a -1021 timestamp error', () =>
         Effect.gen(function* () {
             stubEmptyBinanceSources();
-            const timeRequests: string[] = [];
-            mockServer.use(
-                http.get(SERVER_TIME_URL, () => {
-                    timeRequests.push('time');
-
-                    return HttpResponse.json({ serverTime: Date.now() });
-                })
-            );
-            const depositRequests: string[] = [];
-            mockServer.use(
-                http.get(DEPOSIT_URL, () => {
-                    depositRequests.push('deposit');
-
-                    return depositRequests.length === 1
-                        ? respondWith(400, errorBody(-1021, 'Timestamp for this request is outside of the recvWindow.'))
-                        : HttpResponse.json([buildBinance.deposit({ id: 'dep-1', coin: 'BTC', amount: '1' })]);
-                })
+            const timeRequests = countRequests('get', SERVER_TIME_URL, () => HttpResponse.json({ serverTime: Date.now() }));
+            const depositRequests = countDepositRequests(requestNumber =>
+                requestNumber === 1
+                    ? respondWith(400, errorBody(-1021, 'Timestamp for this request is outside of the recvWindow.'))
+                    : HttpResponse.json([buildBinance.deposit({ id: 'dep-1', coin: 'BTC', amount: '1' })])
             );
 
             const transactions = yield* new BinanceSignedClient(BINANCE_TEST_TOKEN).getCapitalTransactions(
@@ -222,15 +172,8 @@ describe('binance/http-error-classification', () => {
     it.effect('retries a failed server-time fetch on the next signed request instead of fixing the offset at zero', () =>
         Effect.gen(function* () {
             stubEmptyBinanceSources();
-            const timeRequests: string[] = [];
-            mockServer.use(
-                http.get(SERVER_TIME_URL, () => {
-                    timeRequests.push('time');
-
-                    return timeRequests.length === 1
-                        ? respondWith(400, errorBody(-1100, 'bad'))
-                        : HttpResponse.json({ serverTime: Date.now() });
-                })
+            const timeRequests = countRequests('get', SERVER_TIME_URL, requestNumber =>
+                requestNumber === 1 ? respondWith(400, errorBody(-1100, 'bad')) : HttpResponse.json({ serverTime: Date.now() })
             );
 
             yield* new BinanceSignedClient(BINANCE_TEST_TOKEN).getCapitalTransactions(BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO);
