@@ -185,4 +185,23 @@ describe('binance/history-backfill', () => {
             expect(yield* countTransactions()).toBe(3);
         }).pipe(Effect.provide(TestLayer))
     );
+
+    it.effect('backfills a source added after the integration last synced, which has no stored progress', () =>
+        Effect.gen(function* () {
+            const binanceSyncService = yield* BinanceSyncService;
+
+            yield* setupBinanceFixture({
+                asset: 'USDT',
+                mode: SyncModeEnum.FORWARD,
+                forwardSyncedAt: new Date(Date.now() - 5 * 60 * 1000)
+            });
+            binanceStub.dividends([
+                buildBinance.dividend({ tranId: 8001, asset: 'USDT', amount: '1', divTime: Date.now() - 365 * DAY_MS })
+            ]);
+
+            yield* binanceSyncService.sync();
+
+            expect(yield* countTransactions()).toBe(1);
+        }).pipe(Effect.provide(TestLayer))
+    );
 });
