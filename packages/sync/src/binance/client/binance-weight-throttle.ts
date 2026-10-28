@@ -25,18 +25,14 @@ const SAPI_UID_WEIGHT_HEADER = 'x-sapi-used-uid-weight-1m';
 export class BinanceWeightThrottle {
     readonly waitIfNeeded = Effect.fn('BinanceWeightThrottle.waitIfNeeded')(
         function* (this: BinanceWeightThrottle) {
-            if (this.shouldCoolDown()) {
-                if ((yield* Clock.currentTimeMillis) + WEIGHT_WINDOW_MS >= this.deadlineAtMs) {
-                    return yield* new SyncDeferredError({
-                        provider: SyncProviderEnum.BINANCE,
-                        message: 'Weight cool-down exceeds deadline'
-                    });
-                }
+            const retryAfterRemainingMs = this.retryAfterUntilMs - (yield* Clock.currentTimeMillis);
+            if (retryAfterRemainingMs > 0) {
+                yield* this.sleepWithinDeadline(retryAfterRemainingMs, 'Retry-After back-off exceeds deadline');
+            }
 
-                yield* Effect.sleep(WEIGHT_WINDOW_MS);
-                this.rawIpWeight = 0;
-                this.sapiIpWeight = 0;
-                this.sapiUidWeight = 0;
+            if (this.shouldCoolDown()) {
+                yield* this.sleepWithinDeadline(WEIGHT_WINDOW_MS, 'Weight cool-down exceeds deadline');
+                this.resetWeights();
             }
 
             const windowStart = (yield* Clock.currentTimeMillis) - REQUEST_RATE_WINDOW_MS;
@@ -51,10 +47,19 @@ export class BinanceWeightThrottle {
         effect => this.semaphore.withPermit(effect)
     );
 
+    private readonly sleepWithinDeadline = Effect.fnUntraced(function* (this: BinanceWeightThrottle, durationMs: number, message: string) {
+        if ((yield* Clock.currentTimeMillis) + durationMs >= this.deadlineAtMs) {
+            return yield* new SyncDeferredError({ provider: SyncProviderEnum.BINANCE, message });
+        }
+
+        yield* Effect.sleep(durationMs);
+    });
+
     private rawIpWeight = 0;
     private sapiIpWeight = 0;
     private sapiUidWeight = 0;
     private requestTimestamps: number[] = [];
+    private retryAfterUntilMs = 0;
     private readonly semaphore = Semaphore.makeUnsafe(1);
 
     constructor(private readonly deadlineAtMs: number) {}
@@ -63,6 +68,16 @@ export class BinanceWeightThrottle {
         this.rawIpWeight = this.readWeight(headers, RAW_IP_WEIGHT_HEADER, this.rawIpWeight);
         this.sapiIpWeight = this.readWeight(headers, SAPI_IP_WEIGHT_HEADER, this.sapiIpWeight);
         this.sapiUidWeight = this.readWeight(headers, SAPI_UID_WEIGHT_HEADER, this.sapiUidWeight);
+    }
+
+    readonly coolDownFor = Effect.fnUntraced(function* (this: BinanceWeightThrottle, retryAfterMs: number) {
+        this.retryAfterUntilMs = Math.max(this.retryAfterUntilMs, (yield* Clock.currentTimeMillis) + retryAfterMs);
+    });
+
+    private resetWeights(): void {
+        this.rawIpWeight = 0;
+        this.sapiIpWeight = 0;
+        this.sapiUidWeight = 0;
     }
 
     private shouldCoolDown(): boolean {

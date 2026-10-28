@@ -3,6 +3,7 @@ export { SyncAccountBalanceStateEnum } from './core/enum/sync-account-balance-st
 export { SyncProviderEnum } from './core/enum/sync-provider.enum';
 export { SyncRateLimitedError } from './core/error/sync-rate-limited.error';
 export { SyncUnauthorizedError } from './core/error/sync-unauthorized.error';
+export { SyncRegionUnavailableError } from './core/error/sync-region-unavailable.error';
 export { SyncDeferredError } from './core/error/sync-deferred.error';
 export { SyncInvalidResponseError } from './core/error/sync-invalid-response.error';
 export { SyncTokenAlreadyConnectedError } from './core/error/sync-token-already-connected.error';

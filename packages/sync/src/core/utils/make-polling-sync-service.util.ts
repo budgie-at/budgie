@@ -174,7 +174,7 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
 
     const handleError = Effect.fnUntraced(function* (error: unknown) {
         if (error instanceof SyncRateLimitedError) {
-            return (yield* shouldYieldAfterBatch()) ? true : null;
+            return (yield* shouldYieldAfterBatch(error.retryAfterMs)) ? true : null;
         }
 
         const errorMessage = getErrorMessage(error, UNKNOWN_SYNC_ERROR);
