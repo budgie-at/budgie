@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 
 import { isEmptyArray } from '@rnw-community/shared';
 
+import { EntranceReveal } from '../../../@generic/component/entrance-reveal/entrance-reveal';
 import { SectionHeader } from '../../../@generic/component/section-header/section-header';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { BudgetSelector } from '../../budget.selector';
@@ -19,9 +20,13 @@ interface Props {
     readonly currentSpent: number;
     readonly currentPeriodStart: Date;
     readonly currentPeriodEnd: Date;
+    readonly currencySymbol: string;
 }
 
-export const BudgetHistorySection = ({ budgetId, overallLimit, currentSpent, currentPeriodStart, currentPeriodEnd }: Props) => {
+const MIN_CHART_PERIODS = 2;
+
+export const BudgetHistorySection = (props: Props) => {
+    const { budgetId, overallLimit, currentSpent, currentPeriodStart, currentPeriodEnd, currencySymbol } = props;
     const { snapshots } = useGetBudgetPeriodSnapshotsQuery(budgetId);
     const { formatShortMonth } = useFormatDate();
     const { t } = useLingui();
@@ -43,29 +48,32 @@ export const BudgetHistorySection = ({ budgetId, overallLimit, currentSpent, cur
     };
     const bars = buildBudgetHistoryBars(snapshots, currentBar, formatShortMonth);
     const hasEstimatedPeriods = snapshots.some(snapshot => snapshot.isReconstructed);
+    const hasChart = totalCount >= MIN_CHART_PERIODS;
 
     return (
-        <View collapsable={false} className="gap-y-lg" testID={BudgetSelector.DetailsHistorySection}>
-            <SectionHeader label={t`Past months`} />
+        <EntranceReveal step={5}>
+            <View collapsable={false} className="gap-y-lg" testID={BudgetSelector.DetailsHistorySection}>
+                <SectionHeader label={t`Past months`} />
 
-            <BudgetHistoryChart bars={bars} />
+                {hasChart ? <BudgetHistoryChart bars={bars} currencySymbol={currencySymbol} /> : null}
 
-            <BudgetHistoryLegend />
+                {hasChart ? <BudgetHistoryLegend bars={bars} /> : null}
 
-            <Text className="text-xs text-secondary-foreground">
-                {t({
-                    message: plural(totalCount, {
-                        one: `On budget ${onBudgetCount} of # month`,
-                        other: `On budget ${onBudgetCount} of # months`
-                    })
-                })}
-            </Text>
-
-            {hasEstimatedPeriods ? (
-                <Text className="text-xxs text-secondary-foreground">
-                    {t`Faded bars are estimated from your past transactions using your current limits.`}
+                <Text className="text-xs text-secondary-foreground">
+                    {t({
+                        message: plural(totalCount, {
+                            one: `On budget ${onBudgetCount} of # month`,
+                            other: `On budget ${onBudgetCount} of # months`
+                        })
+                    })}
                 </Text>
-            ) : null}
-        </View>
+
+                {hasChart && hasEstimatedPeriods ? (
+                    <Text className="text-xxs text-secondary-foreground">
+                        {t`Faded bars are estimated from your past transactions using your current limits.`}
+                    </Text>
+                ) : null}
+            </View>
+        </EntranceReveal>
     );
 };

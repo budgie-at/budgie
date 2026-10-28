@@ -1,5 +1,6 @@
 import { convertFromMicroUnits } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import { View } from 'react-native';
 import Svg from 'react-native-svg';
 
 import { isDefined } from '@rnw-community/shared';
@@ -24,29 +25,29 @@ interface Props {
 
 const CHART_WIDTH = 300;
 const CHART_HEIGHT = 150;
-const CHART_PADDING_X = 8;
-const CHART_PADDING_TOP = 22;
-const CHART_PADDING_BOTTOM = 18;
-const LABEL_FONT_SIZE = 8;
+const CHART_PADDING_X = 4;
+const CHART_PADDING_TOP = 26;
+const CHART_PADDING_BOTTOM = 24;
+const LABEL_FONT_SIZE = 10;
 const DASH = '4 3';
 const CHART_BOTTOM = CHART_HEIGHT - CHART_PADDING_BOTTOM;
 const AXIS_LABEL_Y = CHART_HEIGHT - 4;
-const AXIS_LABEL_CLEARANCE = 32;
 const CHART_RIGHT = CHART_WIDTH - CHART_PADDING_X;
 const PROJECTION_OPACITY = 0.55;
 const GRADIENT_ID = 'budget-forecast-fill';
 const TODAY_ACCENT_CLASS_NAME = {
-    positive: 'accent-positive-foreground',
-    warning: 'accent-warning-foreground',
-    destructive: 'accent-destructive-foreground'
+    positive: 'accent-positive-fill',
+    warning: 'accent-warning-fill',
+    destructive: 'accent-destructive-fill'
 } as const;
 const GRADIENT_CLASS_NAME = {
-    positive: 'bg-positive-foreground',
-    warning: 'bg-warning-foreground',
-    destructive: 'bg-destructive-foreground'
+    positive: 'bg-positive-fill',
+    warning: 'bg-warning-fill',
+    destructive: 'bg-destructive-fill'
 } as const;
 const AREA_FILL = `url(#${GRADIENT_ID})`;
 const VIEW_BOX = `0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`;
+const CHART_ASPECT_STYLE = { aspectRatio: CHART_WIDTH / CHART_HEIGHT };
 
 export const BudgetForecastChart = ({ projection, currencySymbol }: Props) => {
     const { t } = useLingui();
@@ -66,63 +67,65 @@ export const BudgetForecastChart = ({ projection, currencySymbol }: Props) => {
     const accentClassName = TODAY_ACCENT_CLASS_NAME[BUDGET_PACE_VARIANT[status]];
     const gradientClassName = GRADIENT_CLASS_NAME[BUDGET_PACE_VARIANT[status]];
     const todayIndex = projection.elapsedDays - 1;
-    const labelTodayX = Math.min(Math.max(todayX, CHART_PADDING_X + AXIS_LABEL_CLEARANCE), CHART_RIGHT - AXIS_LABEL_CLEARANCE);
 
     return (
-        <Svg width="100%" height={CHART_HEIGHT} viewBox={VIEW_BOX}>
-            <BudgetForecastGradient id={GRADIENT_ID} colorClassName={gradientClassName} />
-            <BudgetForecastLimit
-                y={limitY}
-                left={CHART_PADDING_X}
-                right={CHART_RIGHT}
-                label={t`Limit ${limitAmount}`}
-                fontSize={LABEL_FONT_SIZE}
-                dash={DASH}
-            />
-
-            <StyledPath d={actualAreaPath} fill={AREA_FILL} />
-            <StyledPath
-                d={projectedPath}
-                fill="none"
-                strokeClassName="accent-primary"
-                strokeDasharray={DASH}
-                strokeOpacity={PROJECTION_OPACITY}
-                strokeWidth={2}
-                strokeLinecap="round"
-            />
-            <StyledPath
-                d={actualPath}
-                fill="none"
-                strokeClassName="accent-primary"
-                strokeWidth={2}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-            />
-
-            <BudgetForecastBills bills={bills} />
-
-            {isDefined(runOutX) && isDefined(runOutAt) ? (
-                <BudgetForecastRunOut
-                    x={runOutX}
-                    top={CHART_PADDING_TOP}
-                    bottom={CHART_BOTTOM}
-                    runOutAt={runOutAt}
+        <View className="w-full" style={CHART_ASPECT_STYLE}>
+            <Svg width="100%" height="100%" viewBox={VIEW_BOX}>
+                <BudgetForecastGradient id={GRADIENT_ID} colorClassName={gradientClassName} />
+                <BudgetForecastLimit
+                    y={limitY}
+                    left={CHART_PADDING_X}
+                    right={CHART_RIGHT}
+                    label={t`Limit ${limitAmount}`}
                     fontSize={LABEL_FONT_SIZE}
                     dash={DASH}
                 />
-            ) : null}
 
-            {isDefined(todayPoint) ? <BudgetForecastTodayMarker point={todayPoint} accentClassName={accentClassName} /> : null}
+                <StyledPath d={actualAreaPath} fill={AREA_FILL} />
+                <StyledPath
+                    d={projectedPath}
+                    fill="none"
+                    strokeClassName="accent-primary"
+                    strokeDasharray={DASH}
+                    strokeOpacity={PROJECTION_OPACITY}
+                    strokeWidth={2}
+                    strokeLinecap="round"
+                />
+                <StyledPath
+                    d={actualPath}
+                    fill="none"
+                    strokeClassName="accent-primary"
+                    strokeWidth={2}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                />
 
-            <BudgetForecastAxisLabels
-                days={projection.days}
-                todayIndex={todayIndex}
-                leftX={CHART_PADDING_X}
-                todayX={labelTodayX}
-                rightX={CHART_RIGHT}
-                y={AXIS_LABEL_Y}
-                fontSize={LABEL_FONT_SIZE}
-            />
-        </Svg>
+                <BudgetForecastBills bills={bills} />
+
+                {isDefined(runOutX) && isDefined(runOutAt) ? (
+                    <BudgetForecastRunOut
+                        x={runOutX}
+                        top={CHART_PADDING_TOP}
+                        bottom={CHART_BOTTOM}
+                        width={CHART_WIDTH}
+                        runOutAt={runOutAt}
+                        fontSize={LABEL_FONT_SIZE}
+                        dash={DASH}
+                    />
+                ) : null}
+
+                {isDefined(todayPoint) ? <BudgetForecastTodayMarker point={todayPoint} accentClassName={accentClassName} /> : null}
+
+                <BudgetForecastAxisLabels
+                    days={projection.days}
+                    todayIndex={todayIndex}
+                    leftX={CHART_PADDING_X}
+                    todayX={todayX}
+                    rightX={CHART_RIGHT}
+                    y={AXIS_LABEL_Y}
+                    fontSize={LABEL_FONT_SIZE}
+                />
+            </Svg>
+        </View>
     );
 };

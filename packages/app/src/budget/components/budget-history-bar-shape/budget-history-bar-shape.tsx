@@ -16,34 +16,31 @@ interface Props {
 }
 
 const MIN_BAR_HEIGHT = 1.5;
-const OUTLINE_WIDTH = 1.5;
-const OUTLINE_DASH = '3 2';
-const LIMIT_DASH = '2 2';
+const CAP_WIDTH = 2;
 const ESTIMATED_OPACITY = 0.5;
+const CURRENT_OPACITY = 0.35;
 
 export const BudgetHistoryBarShape = ({ centerX, barWidth, spent, limit, scaleMax, isCurrent, isEstimated }: Props) => {
     const scale = BUDGET_HISTORY_BAR_AREA_HEIGHT / scaleMax;
     const barHeight = isPositiveNumber(spent) ? Math.max(spent * scale, MIN_BAR_HEIGHT) : 0;
     const limitY = BUDGET_HISTORY_BASELINE_Y - limit * scale;
-    const toneClassName = spent > limit ? 'accent-destructive-foreground' : 'accent-positive-foreground';
-    const outlineProps = { fill: 'none', strokeWidth: OUTLINE_WIDTH, strokeDasharray: OUTLINE_DASH, strokeClassName: toneClassName };
-    const barPath = buildBudgetHistoryBarPath(centerX - barWidth / 2, BUDGET_HISTORY_BASELINE_Y, barWidth, barHeight);
-    const limitStartX = centerX - barWidth;
-    const limitEndX = centerX + barWidth;
-    const solidProps = { fillClassName: toneClassName, opacity: isEstimated ? ESTIMATED_OPACITY : 1 };
+    const capY = BUDGET_HISTORY_BASELINE_Y - barHeight;
+    const isOver = spent > limit;
+    const fillClassName = isOver ? 'accent-destructive-fill' : 'accent-positive-fill';
+    const settledOpacity = isEstimated ? ESTIMATED_OPACITY : 1;
+    const barOpacity = isCurrent ? CURRENT_OPACITY : settledOpacity;
+    const barLeft = centerX - barWidth / 2;
+    const barRight = centerX + barWidth / 2;
+    const barPath = buildBudgetHistoryBarPath(barLeft, BUDGET_HISTORY_BASELINE_Y, barWidth, barHeight);
+    const cap = isCurrent ? (
+        <StyledLine x1={barLeft} y1={capY} x2={barRight} y2={capY} strokeClassName={fillClassName} strokeWidth={CAP_WIDTH} />
+    ) : null;
 
     return (
         <>
-            <StyledPath d={barPath} {...(isCurrent ? outlineProps : solidProps)} />
-            <StyledLine
-                x1={limitStartX}
-                y1={limitY}
-                x2={limitEndX}
-                y2={limitY}
-                strokeClassName="accent-primary"
-                strokeDasharray={LIMIT_DASH}
-                strokeWidth={1}
-            />
+            <StyledPath d={barPath} fillClassName={fillClassName} opacity={barOpacity} />
+            {cap}
+            <StyledLine x1={barLeft} y1={limitY} x2={barRight} y2={limitY} strokeClassName="accent-primary" strokeWidth={1} />
         </>
     );
 };

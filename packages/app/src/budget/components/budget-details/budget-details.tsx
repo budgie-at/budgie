@@ -1,4 +1,4 @@
-import { BudgetAlertScopeEnum, BudgetPaceStatusEnum, computePeriodWindow, getInclusiveEnd } from '@budgie/budget';
+import { BudgetAlertScopeEnum, computePeriodWindow, getInclusiveEnd } from '@budgie/budget';
 import { t } from '@lingui/core/macro';
 import * as Option from 'effect/Option';
 import * as Schema from 'effect/Schema';
@@ -21,7 +21,7 @@ import { formatBudgetPeriodLabel } from '../../utils/format-budget-period-label.
 import { BudgetDayStrip } from '../budget-day-strip/budget-day-strip';
 import { BudgetDetailsCategoryList } from '../budget-details-category-list/budget-details-category-list';
 import { BudgetDetailsEditButton } from '../budget-details-edit-button/budget-details-edit-button';
-import { BudgetForecastCard } from '../budget-forecast-card/budget-forecast-card';
+import { BudgetDetailsForecast } from '../budget-details-forecast/budget-details-forecast';
 import { BudgetHistorySection } from '../budget-history-section/budget-history-section';
 import { BudgetPeriodRecap } from '../budget-period-recap/budget-period-recap';
 import { BudgetStatRow } from '../budget-stat-row/budget-stat-row';
@@ -86,12 +86,7 @@ export const BudgetDetails = ({ budget }: Props) => {
                     <BudgetPeriodRecap budgetId={budget.id} currencySymbol={currencySymbol} />
 
                     <LoadingContent isLoading={isLoading}>
-                        <BudgetVerdict
-                            projection={projection}
-                            currencySymbol={currencySymbol}
-                            periodEnd={periodEnd}
-                            onPaceHintPress={setHighlightTarget}
-                        />
+                        <BudgetVerdict projection={projection} currencySymbol={currencySymbol} onPaceHintPress={setHighlightTarget} />
                     </LoadingContent>
 
                     <LoadingContent isLoading={isLoading}>
@@ -102,9 +97,7 @@ export const BudgetDetails = ({ budget }: Props) => {
                         <BudgetStatRow scope={projection.overall} currencySymbol={currencySymbol} />
                     </LoadingContent>
 
-                    {projection.overall.status === BudgetPaceStatusEnum.TOO_EARLY ? null : (
-                        <BudgetForecastCard projection={projection} currencySymbol={currencySymbol} />
-                    )}
+                    <BudgetDetailsForecast projection={projection} currencySymbol={currencySymbol} isLoading={isLoading} />
 
                     <LoadingContent isLoading={isLoading}>
                         <BudgetDetailsCategoryList
@@ -122,6 +115,7 @@ export const BudgetDetails = ({ budget }: Props) => {
                         currentSpent={projection.overall.spent}
                         currentPeriodStart={periodWindow.periodStart}
                         currentPeriodEnd={periodEnd}
+                        currencySymbol={currencySymbol}
                     />
                 </View>
             </BudgetHighlightContext>

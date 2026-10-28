@@ -15,7 +15,7 @@ export const BudgetForecastBills = ({ bills }: Props) =>
             cx={bill.x}
             cy={bill.y}
             r={BILL_RADIUS}
-            fillClassName="accent-warning-foreground"
+            fillClassName="accent-warning-fill"
             strokeClassName="accent-primary-reverse dark:accent-secondary-background"
             strokeWidth={1.5}
         />

@@ -1,41 +1,45 @@
-import { router } from 'expo-router';
+import { convertFromMicroUnits } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 import Svg from 'react-native-svg';
 
-import { isDefined } from '@rnw-community/shared';
-
-import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { StyledLine } from '../../../@generic/component/styled-line/styled-line';
 import { StyledSvgText } from '../../../@generic/component/styled-svg-text/styled-svg-text';
+import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import {
     BUDGET_HISTORY_BASELINE_Y,
     BUDGET_HISTORY_CHART_HEIGHT,
     BUDGET_HISTORY_CHART_WIDTH
 } from '../../constant/budget-history-chart.constant';
+import { BudgetHistoryBarButton } from '../budget-history-bar-button/budget-history-bar-button';
 import { BudgetHistoryBarShape } from '../budget-history-bar-shape/budget-history-bar-shape';
 
 import type { BudgetHistoryBarInterface } from '../../interface/budget-history-bar.interface';
 
 interface Props {
     readonly bars: readonly BudgetHistoryBarInterface[];
+    readonly currencySymbol: string;
 }
 
 const MAX_BAR_WIDTH = 24;
 const SLOT_BAR_RATIO = 0.5;
 const LABEL_Y = BUDGET_HISTORY_CHART_HEIGHT - 4;
-const LABEL_FONT_SIZE = 9;
+const LABEL_FONT_SIZE = 10;
 const CHART_ASPECT_STYLE = { aspectRatio: BUDGET_HISTORY_CHART_WIDTH / BUDGET_HISTORY_CHART_HEIGHT };
 
-export const BudgetHistoryChart = ({ bars }: Props) => {
+export const BudgetHistoryChart = ({ bars, currencySymbol }: Props) => {
+    const { t } = useLingui();
+    const formatProtectedAmount = useProtectedAmountLabel();
     const scaleMax = Math.max(1, ...bars.map(bar => Math.max(bar.spent, bar.limit)));
     const slotWidth = BUDGET_HISTORY_CHART_WIDTH / bars.length;
     const barWidth = Math.min(MAX_BAR_WIDTH, slotWidth * SLOT_BAR_RATIO);
     const centerXs = bars.map((_bar, index) => slotWidth * (index + 0.5));
 
-    const handleBarPress = (snapshotId: number | null) => () => {
-        if (isDefined(snapshotId)) {
-            router.push({ pathname: '/budget-period-summary', params: { snapshotId: String(snapshotId) } });
-        }
+    const buildBarLabel = (bar: BudgetHistoryBarInterface) => {
+        const spentAmount = formatProtectedAmount(convertFromMicroUnits(bar.spent), currencySymbol);
+        const limitAmount = formatProtectedAmount(convertFromMicroUnits(bar.limit), currencySymbol);
+
+        return t`${bar.label}, spent ${spentAmount} of ${limitAmount}`;
     };
 
     return (
@@ -78,14 +82,7 @@ export const BudgetHistoryChart = ({ bars }: Props) => {
 
             <View className="absolute inset-0 flex-row">
                 {bars.map(bar => (
-                    <HapticPressable
-                        key={bar.key}
-                        accessibilityLabel={bar.label}
-                        accessibilityRole="button"
-                        className="flex-1"
-                        disabled={!isDefined(bar.snapshotId)}
-                        onPress={handleBarPress(bar.snapshotId)}
-                    />
+                    <BudgetHistoryBarButton key={bar.key} label={buildBarLabel(bar)} snapshotId={bar.snapshotId} />
                 ))}
             </View>
         </View>
