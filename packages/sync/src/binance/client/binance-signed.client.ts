@@ -243,6 +243,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     private readonly earnRewardCache = new Map<string, readonly BinanceEarnRewardApiInterface[]>();
     private readonly transferCache = new Map<string, BinanceTransferInterface[]>();
     private readonly runSymbolTradeCursors = new Map<string, number>();
+    private readonly runTouchedAssets = new Set<string>();
     private c2cUnavailableThisRun = false;
     private readonly c2cHistoryFloorTimeMs = subMonths(new Date(), BinanceSignedClient.C2C_HISTORY_MONTHS).getTime();
     private serverTimeOffsetMs: number | undefined;
@@ -492,7 +493,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     ) {
         return Effect.gen({ self: this }, function* (this: BinanceSignedClient) {
             const balances = yield* this.signedRequest(BinanceAssetBalanceListApiSchema, SPOT_BALANCE_ENDPOINT, 'POST');
-            const touchedAssets = this.collectTouchedAssets(balances, convertTransfers);
+            this.collectTouchedAssets(balances, convertTransfers).forEach(asset => this.runTouchedAssets.add(asset));
             const deposits = yield* this.fetchCapitalHistory(this.depositSource, BinanceWalletEnum.SPOT, startTimeMs, endTimeMs);
             const withdrawals = yield* this.fetchCapitalHistory(this.withdrawalSource, BinanceWalletEnum.SPOT, startTimeMs, endTimeMs);
             const c2cOrders = yield* this.fetchC2cOrders(startTimeMs, endTimeMs);
@@ -504,10 +505,10 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
                 ...c2cOrders.map(order => order.asset),
                 ...fiatDeposits.map(order => order.fiatCurrency),
                 ...fiatWithdrawals.map(order => order.fiatCurrency)
-            ].forEach(asset => touchedAssets.add(asset));
+            ].forEach(asset => this.runTouchedAssets.add(asset));
             const exchangeSymbols = yield* this.resolveExchangeSymbols();
 
-            return this.buildTradeSymbolCandidates(touchedAssets, exchangeSymbols, new Set(eligibleSoldOffBaseAssets));
+            return this.buildTradeSymbolCandidates(this.runTouchedAssets, exchangeSymbols, new Set(eligibleSoldOffBaseAssets));
         });
     }
 
