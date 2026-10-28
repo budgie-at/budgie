@@ -15,11 +15,12 @@ const LABEL_GAP = 3;
 export const RunwayForecastZeroLabel = ({ x, y }: Props) => {
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const formatDigits = useFormatDigits(0);
+    const labelY = y - LABEL_GAP;
 
     return (
         <StyledSvgText
             x={x}
-            y={y - LABEL_GAP}
+            y={labelY}
             fillClassName="accent-secondary-foreground"
             fontSize={RUNWAY_CHART_LABEL_FONT_SIZE}
             textAnchor="start"
