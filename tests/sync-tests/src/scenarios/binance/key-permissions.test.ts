@@ -14,31 +14,20 @@ import {
 
 const ROTATED_TOKEN = JSON.stringify({ apiKey: 'rotated-key', apiSecret: 'rotated-secret' });
 
+const stubConnectAccounts = () => stubBinanceAccountEndpoints([buildBinance.balance({ asset: 'BTC', free: '1' })]);
+
+const expectPreviewAccepted = (stubRestrictions: () => void) =>
+    Effect.gen(function* () {
+        const binanceSyncService = yield* BinanceSyncService;
+        stubConnectAccounts();
+        stubRestrictions();
+
+        const previews = yield* binanceSyncService.fetchAccountsPreview(BINANCE_TEST_TOKEN);
+
+        expect(previews.length).toBeGreaterThan(0);
+    }).pipe(Effect.provide(TestLayer));
+
 describe('binance/key-permissions', () => {
-    it.effect('accepts a read-only key on connect', () =>
-        Effect.gen(function* () {
-            const binanceSyncService = yield* BinanceSyncService;
-            stubBinanceAccountEndpoints([buildBinance.balance({ asset: 'BTC', free: '1' })]);
-            binanceStub.apiRestrictions();
-
-            const previews = yield* binanceSyncService.fetchAccountsPreview(BINANCE_TEST_TOKEN);
-
-            expect(previews.length).toBeGreaterThan(0);
-        }).pipe(Effect.provide(TestLayer))
-    );
-
-    it.effect('rejects a key with trading rights on connect', () =>
-        Effect.gen(function* () {
-            const binanceSyncService = yield* BinanceSyncService;
-            stubBinanceAccountEndpoints([buildBinance.balance({ asset: 'BTC', free: '1' })]);
-            binanceStub.apiRestrictions({ enableSpotAndMarginTrading: true });
-
-            const error = yield* Effect.flip(binanceSyncService.fetchAccountsPreview(BINANCE_TEST_TOKEN));
-
-            expect(error).toMatchObject({ _tag: 'BinanceKeyPermissionsError', permissions: ['enableSpotAndMarginTrading'] });
-        }).pipe(Effect.provide(TestLayer))
-    );
-
     it.effect.each([
         'enableSpotAndMarginTrading',
         'enableWithdrawals',
@@ -51,7 +40,7 @@ describe('binance/key-permissions', () => {
     ] as const)('rejects a key with %s on connect', permission =>
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
-            stubBinanceAccountEndpoints([buildBinance.balance({ asset: 'BTC', free: '1' })]);
+            stubConnectAccounts();
             binanceStub.apiRestrictions({ [permission]: true });
 
             const error = yield* Effect.flip(binanceSyncService.fetchAccountsPreview(BINANCE_TEST_TOKEN));
@@ -60,22 +49,16 @@ describe('binance/key-permissions', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
+    it.effect('accepts a read-only key on connect', () => expectPreviewAccepted(() => binanceStub.apiRestrictions()));
+
     it.effect('treats flags missing from the response as not granted', () =>
-        Effect.gen(function* () {
-            const binanceSyncService = yield* BinanceSyncService;
-            stubBinanceAccountEndpoints([buildBinance.balance({ asset: 'BTC', free: '1' })]);
-            binanceStub.apiRestrictionsBody({ ipRestrict: false, enableReading: true });
-
-            const previews = yield* binanceSyncService.fetchAccountsPreview(BINANCE_TEST_TOKEN);
-
-            expect(previews.length).toBeGreaterThan(0);
-        }).pipe(Effect.provide(TestLayer))
+        expectPreviewAccepted(() => binanceStub.apiRestrictionsBody({ ipRestrict: false, enableReading: true }))
     );
 
     it.effect('reports an undecodable permissions response as an unverifiable key', () =>
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
-            stubBinanceAccountEndpoints([buildBinance.balance({ asset: 'BTC', free: '1' })]);
+            stubConnectAccounts();
             binanceStub.apiRestrictionsBody({ enableWithdrawals: 'yes' });
 
             const error = yield* Effect.flip(binanceSyncService.fetchAccountsPreview(BINANCE_TEST_TOKEN));

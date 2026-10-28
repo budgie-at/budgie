@@ -10,7 +10,7 @@ import { seed, seedCryptoInstrument, testDb, TestLayer } from '../../harness';
 const BINANCE_TOKEN = JSON.stringify({ apiKey: 'cleanup-key', apiSecret: 'cleanup-secret' });
 const MONOBANK_TOKEN = 'cleanup-monobank-token';
 
-const seedBinanceAccount = (asset: string, token: string = BINANCE_TOKEN) =>
+const seedBinanceAccount = (asset: string) =>
     Effect.gen(function* () {
         const instrument = yield* seedCryptoInstrument(asset);
         const account = yield* seed.account({
@@ -19,7 +19,7 @@ const seedBinanceAccount = (asset: string, token: string = BINANCE_TOKEN) =>
             type: AccountTypeEnum.CRYPTO_SYNC,
             instrumentId: instrument.id
         });
-        yield* seed.sync({ accountId: account.id, provider: ExternalSourceEnum.BINANCE, token });
+        yield* seed.sync({ accountId: account.id, provider: ExternalSourceEnum.BINANCE, token: BINANCE_TOKEN });
 
         return account;
     });
@@ -61,7 +61,7 @@ describe('binance/integration-cleanup', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('leaves other integrations untouched', () =>
+    it.effect('removes each provider integration only with its own last account', () =>
         Effect.gen(function* () {
             const accountArchiveService = yield* AccountArchiveService;
             const bitcoin = yield* seedBinanceAccount('BTC');
@@ -76,6 +76,10 @@ describe('binance/integration-cleanup', () => {
 
             expect(yield* fetchIntegrationTokens(ExternalSourceEnum.BINANCE)).toEqual([]);
             expect(yield* fetchIntegrationTokens(ExternalSourceEnum.MONOBANK)).toEqual([MONOBANK_TOKEN]);
+
+            yield* accountArchiveService.deleteById(monobankAccount.id);
+
+            expect(yield* fetchIntegrationTokens(ExternalSourceEnum.MONOBANK)).toEqual([]);
         }).pipe(Effect.provide(TestLayer))
     );
 });
