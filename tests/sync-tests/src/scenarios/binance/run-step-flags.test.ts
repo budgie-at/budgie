@@ -9,13 +9,12 @@ import {
     fetchCachedBalanceAmount,
     fetchSortedBinanceExternalIds,
     fetchSyncById,
-    seedCryptoInstrument,
-    setupAdaUsdtFixture,
     setupBinanceFixture,
+    setupStaleForwardFixture,
+    STALE_SYNC_AGE_MS,
     TestLayer
 } from '../../harness';
 
-const STALE_SYNC_AGE_MS = 5 * 60 * 1000;
 const FAILURES_EXHAUSTING_CLIENT_RETRIES = 4;
 const RETRY_BACKOFF_TIMEOUT_MS = 30000;
 
@@ -25,19 +24,19 @@ describe('binance/run-step-flags', () => {
         () =>
             Effect.gen(function* () {
                 const binanceSyncService = yield* BinanceSyncService;
-                const forwardSyncedAt = new Date(Date.now() - STALE_SYNC_AGE_MS);
+                const { sync } = yield* setupStaleForwardFixture();
 
-                yield* seedCryptoInstrument('ADA');
-                const { sync } = yield* setupAdaUsdtFixture(SyncModeEnum.FORWARD, forwardSyncedAt);
-                binanceStub.myTradesAfterFailures(
-                    [buildBinance.trade({ symbol: 'ADAUSDT', id: 10, qty: '10', quoteQty: '5', commission: '0', isBuyer: true })],
-                    FAILURES_EXHAUSTING_CLIENT_RETRIES
+                binanceStub.myTrades(
+                    { ADAUSDT: [buildBinance.trade({ symbol: 'ADAUSDT', id: 10, qty: '10', quoteQty: '5', commission: '0', isBuyer: true })] },
+                    new Set<string>(),
+                    [],
+                    { failTimes: FAILURES_EXHAUSTING_CLIENT_RETRIES }
                 );
 
                 yield* binanceSyncService.sync();
 
                 expect(yield* fetchSortedBinanceExternalIds()).toEqual(['binance:trade:ADAUSDT:10']);
-                expect((yield* fetchSyncById(sync.id)).forwardSyncedAt?.getTime()).toBeGreaterThan(forwardSyncedAt.getTime());
+                expect((yield* fetchSyncById(sync.id)).forwardSyncedAt?.getTime()).toBeGreaterThan(Date.now() - STALE_SYNC_AGE_MS);
             }).pipe(Effect.provide(TestLayer)),
         RETRY_BACKOFF_TIMEOUT_MS
     );
@@ -49,10 +48,7 @@ describe('binance/run-step-flags', () => {
                 const binanceSyncService = yield* BinanceSyncService;
 
                 const { account } = yield* setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.BACKWARD });
-                binanceStub.spotBalancesAfterFailures(
-                    [buildBinance.balance({ asset: 'BTC', free: '1' })],
-                    FAILURES_EXHAUSTING_CLIENT_RETRIES
-                );
+                binanceStub.spotBalances([buildBinance.balance({ asset: 'BTC', free: '1' })], { failTimes: FAILURES_EXHAUSTING_CLIENT_RETRIES });
 
                 yield* binanceSyncService.sync();
 
