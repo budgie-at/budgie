@@ -1,8 +1,10 @@
 import {
     BudgetCategoryLimitRepository,
     BudgetCommittedSourceKindEnum,
+    BudgetPeriodSnapshotRepository,
     BudgetRepository,
     computeBudgetProjection,
+    computeEffectiveLimits,
     computePeriodWindow,
     convertEntryAmount,
     getInclusiveEnd
@@ -26,6 +28,7 @@ export class BudgetProjectionService extends Context.Service<BudgetProjectionSer
     make: Effect.gen(function* () {
         const accountRepository = yield* AccountRepository;
         const budgetCategoryLimitRepository = yield* BudgetCategoryLimitRepository;
+        const budgetPeriodSnapshotRepository = yield* BudgetPeriodSnapshotRepository;
         const budgetRepository = yield* BudgetRepository;
         const exchangeRateRepository = yield* ExchangeRateRepository;
         const installmentPlanRepository = yield* InstallmentPlanRepository;
@@ -137,6 +140,8 @@ export class BudgetProjectionService extends Context.Service<BudgetProjectionSer
             ) {
                 const { periodStart, nextPeriodStart } = computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, now);
                 const categoryLimits = yield* budgetCategoryLimitRepository.getByBudget(budget.id);
+                const [latestSnapshot] = yield* budgetPeriodSnapshotRepository.findRecent(budget.id, 1);
+                const effectiveLimits = computeEffectiveLimits(latestSnapshot, budget, categoryLimits);
                 const spentEntries = yield* budgetRepository.findBudgetSpentEntries(periodStart, nextPeriodStart, budget.instrumentId);
                 const installmentPayments = yield* budgetRepository.findInstallmentPayments(periodStart, nextPeriodStart);
                 const installmentAccountIdByTransactionId = new Map(
@@ -149,9 +154,9 @@ export class BudgetProjectionService extends Context.Service<BudgetProjectionSer
                     periodStart,
                     nextPeriodStart,
                     now,
-                    overallLimit: budget.overallLimit,
-                    otherLimit: budget.otherLimit,
-                    categoryLimits,
+                    overallLimit: effectiveLimits.overallLimit,
+                    otherLimit: effectiveLimits.otherLimit,
+                    categoryLimits: effectiveLimits.categoryLimits,
                     entries: spentEntries.map(entry => ({
                         amount: convertEntryAmount(entry, budget.instrumentId),
                         categoryId: entry.categoryId,
@@ -171,6 +176,7 @@ export class BudgetProjectionService extends Context.Service<BudgetProjectionSer
         Layer.provide([
             AccountRepository.layer,
             BudgetCategoryLimitRepository.layer,
+            BudgetPeriodSnapshotRepository.layer,
             BudgetRepository.layer,
             ExchangeRateRepository.layer,
             InstallmentPlanRepository.layer,

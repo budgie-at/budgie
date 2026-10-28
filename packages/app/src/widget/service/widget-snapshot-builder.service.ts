@@ -1,11 +1,4 @@
-import {
-    BudgetCategoryLimitRepository,
-    BudgetRepository,
-    computePeriodWindow,
-    computeSafePerDay,
-    computeSpent,
-    getInclusiveEnd
-} from '@budgie/budget';
+import { BudgetRepository, computePeriodWindow, computeSafePerDay, getInclusiveEnd } from '@budgie/budget';
 import {
     AccountBalanceRepository,
     AccountTypeEnum,
@@ -50,8 +43,8 @@ import type { WidgetRunwaySnapshotInterface } from '../interface/widget-runway-s
 import type { WidgetSnapshotContextInterface } from '../interface/widget-snapshot-context.interface';
 import type { WidgetSnapshotStringsInterface } from '../interface/widget-snapshot-strings.interface';
 import type { WidgetSnapshotInterface } from '../interface/widget-snapshot.interface';
-import type { BudgetCategorySpentInterface } from '@budgie/budget';
-import type { BudgetCategoryLimitEntityInterface, InstrumentEntityInterface } from '@budgie/contracts';
+import type { BudgetCategoryProjectionInterface } from '@budgie/budget';
+import type { InstrumentEntityInterface } from '@budgie/contracts';
 import type { I18n } from '@lingui/core';
 
 export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshotBuilderService>()(
@@ -64,7 +57,6 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
             const instrumentRepository = yield* InstrumentRepository;
             const categoryRepository = yield* CategoryRepository;
             const budgetRepository = yield* BudgetRepository;
-            const budgetCategoryLimitRepository = yield* BudgetCategoryLimitRepository;
             const budgetProjectionService = yield* BudgetProjectionService;
             const emptyRunway: WidgetRunwaySnapshotInterface = { isPositive: true, label: '' };
             const topCategoryCount = 3;
@@ -185,17 +177,14 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
             });
 
             const buildBudgetCategories = Effect.fn('WidgetSnapshotBuilderService.buildBudgetCategories')(function* (
-                limits: BudgetCategoryLimitEntityInterface[],
-                spentByCategory: readonly BudgetCategorySpentInterface[],
+                categoryProjections: readonly BudgetCategoryProjectionInterface[],
                 context: WidgetSnapshotContextInterface
             ) {
-                const ranked = limits
-                    .filter(limit => isPositiveNumber(limit.limitAmount))
-                    .map(limit => ({
-                        categoryId: limit.categoryId,
-                        progressRatio:
-                            convertFromMicroUnits(spentByCategory.find(entry => entry.categoryId === limit.categoryId)?.spent ?? 0) /
-                            convertFromMicroUnits(limit.limitAmount)
+                const ranked = categoryProjections
+                    .filter(category => isPositiveNumber(category.limit))
+                    .map(category => ({
+                        categoryId: category.categoryId,
+                        progressRatio: convertFromMicroUnits(category.spent) / convertFromMicroUnits(category.limit)
                     }))
                     .sort((first, second) => second.progressRatio - first.progressRatio)
                     .slice(0, topCategoryCount);
@@ -295,22 +284,16 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
                 }
 
                 const now = new Date();
-                const { periodStart, nextPeriodStart } = computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, now);
-                const [entries, limits, instrument, projection] = yield* Effect.all(
-                    [
-                        budgetRepository.findBudgetSpentEntries(periodStart, nextPeriodStart, budget.instrumentId),
-                        budgetCategoryLimitRepository.getByBudget(budget.id),
-                        instrumentRepository.findById(budget.instrumentId),
-                        budgetProjectionService.project(budget, now)
-                    ],
+                const { nextPeriodStart } = computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, now);
+                const [instrument, projection] = yield* Effect.all(
+                    [instrumentRepository.findById(budget.instrumentId), budgetProjectionService.project(budget, now)],
                     { concurrency: 'unbounded' }
                 );
-                const spent = computeSpent(entries, budget.instrumentId);
                 const symbol = instrument?.symbol ?? DEFAULT_INSTRUMENT.symbol;
-                const spentAmount = convertFromMicroUnits(spent.spentOverall);
-                const limitAmount = convertFromMicroUnits(budget.overallLimit);
+                const spentAmount = convertFromMicroUnits(projection.overall.spent);
+                const limitAmount = convertFromMicroUnits(projection.overall.limit);
                 const periodEnd = getInclusiveEnd(nextPeriodStart);
-                const categories = yield* buildBudgetCategories(limits, spent.spentByCategory, context);
+                const categories = yield* buildBudgetCategories(projection.categories, context);
 
                 const daysCount = Math.max(differenceInCalendarDays(periodEnd, new Date()) + 1, 1);
                 const sharedFields = {
@@ -374,7 +357,6 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
             InstrumentRepository.layer,
             CategoryRepository.layer,
             BudgetRepository.layer,
-            BudgetCategoryLimitRepository.layer,
             BudgetProjectionService.layer
         ])
     );
