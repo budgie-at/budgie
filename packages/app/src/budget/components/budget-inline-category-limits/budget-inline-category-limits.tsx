@@ -8,15 +8,12 @@ import { StyleSheet, Text, View } from 'react-native';
 import { isEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
 import { BudgetSelector } from '../../budget.selector';
 import { BudgetFormValues } from '../../constant/budget-form-schema.constant';
-import { BudgetCategoryLimitCompactRowLayout } from '../budget-category-limit-compact-row-layout/budget-category-limit-compact-row-layout';
 import { BudgetCategoryLimitCompactRow } from '../budget-category-limit-compact-row/budget-category-limit-compact-row';
 import { BudgetCategoryLimitsEmptyState } from '../budget-category-limits-empty-state/budget-category-limits-empty-state';
-import { BudgetLimitAmountInput } from '../budget-limit-amount-input/budget-limit-amount-input';
-import { BudgetRolloverModeField } from '../budget-rollover-mode-field/budget-rollover-mode-field';
+import { BudgetInlineOtherLimitRow } from '../budget-inline-other-limit-row/budget-inline-other-limit-row';
 
 const BOTTOM_ADD_BUTTON_THRESHOLD = 5;
 
@@ -88,20 +85,7 @@ export const BudgetInlineCategoryLimits = ({ currencySymbol, onCategoryAdded }: 
                     />
                 </View>
             </View>
-            <BudgetCategoryLimitCompactRowLayout
-                amountInput={
-                    <BudgetLimitAmountInput
-                        currencySymbol={currencySymbol}
-                        name="otherLimit"
-                        testID={BudgetSelector.SetupOtherLimitAmountInput}
-                    />
-                }
-                icon={<CircleIcon icon={UserIconNameEnum.CircleEllipsis} variant="ghost" size={32} iconSize={16} />}
-                testID={BudgetSelector.SetupOtherLimitRow}
-                title={t`Other`}
-            >
-                <BudgetRolloverModeField name="otherRolloverMode" />
-            </BudgetCategoryLimitCompactRowLayout>
+            <BudgetInlineOtherLimitRow currencySymbol={currencySymbol} />
             {isCategoryLimitsEmpty ? (
                 <BudgetCategoryLimitsEmptyState onPress={handleAddPress} />
             ) : (

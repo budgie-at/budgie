@@ -18,6 +18,8 @@ interface Props {
     readonly carriedAmount: number;
 }
 
+const HIGHLIGHT_TARGET = { scope: BudgetAlertScopeEnum.OTHER };
+
 export const BudgetDetailsOtherCategoryRow = (props: Props) => {
     const { categoryIds, scope, periodStart, periodEnd, currencySymbol, carriedAmount } = props;
     const { t } = useLingui();
@@ -46,7 +48,7 @@ export const BudgetDetailsOtherCategoryRow = (props: Props) => {
             testID={BudgetSelector.DetailsOtherCategoryRow}
             spentTestID={BudgetSelector.DetailsOtherCategorySpentLabel}
             onPress={handlePress}
-            highlightTarget={{ scope: BudgetAlertScopeEnum.OTHER }}
+            highlightTarget={HIGHLIGHT_TARGET}
         />
     );
 };

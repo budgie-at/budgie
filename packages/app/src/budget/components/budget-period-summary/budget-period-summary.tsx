@@ -52,7 +52,7 @@ export const BudgetPeriodSummary = ({ snapshotId }: Props) => {
                         title={t`Monthly budget`}
                         carriedAmount={totalCarriedIn}
                         spent={snapshot.overallSpent}
-                        limit={snapshot.overallLimit + totalCarriedIn}
+                        baseLimit={snapshot.overallLimit}
                         currencySymbol={currencySymbol}
                         testID={BudgetSelector.PeriodSummaryOverall}
                         spentTestID={BudgetSelector.PeriodSummaryOverallSpentLabel}
@@ -73,7 +73,7 @@ export const BudgetPeriodSummary = ({ snapshotId }: Props) => {
                         title={t`Other`}
                         carriedAmount={snapshot.otherCarriedIn}
                         spent={snapshot.otherSpent}
-                        limit={snapshot.otherLimit + snapshot.otherCarriedIn}
+                        baseLimit={snapshot.otherLimit}
                         currencySymbol={currencySymbol}
                         testID={BudgetSelector.PeriodSummaryOther}
                         spentTestID={BudgetSelector.PeriodSummaryOtherSpentLabel}

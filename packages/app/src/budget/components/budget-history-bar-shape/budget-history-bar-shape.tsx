@@ -27,22 +27,26 @@ export const BudgetHistoryBarShape = ({ centerX, barWidth, spent, limit, scaleMa
     const limitY = BUDGET_HISTORY_BASELINE_Y - limit * scale;
     const toneClassName = spent > limit ? 'accent-destructive-foreground' : 'accent-positive-foreground';
     const outlineProps = { fill: 'none', strokeWidth: OUTLINE_WIDTH, strokeDasharray: OUTLINE_DASH, strokeClassName: toneClassName };
+    const barX = centerX - barWidth / 2;
+    const barY = BUDGET_HISTORY_BASELINE_Y - barHeight;
+    const limitStartX = centerX - barWidth;
+    const limitEndX = centerX + barWidth;
     const solidProps = { fillClassName: toneClassName, opacity: isEstimated ? ESTIMATED_OPACITY : 1 };
 
     return (
         <>
             <StyledRect
-                x={centerX - barWidth / 2}
-                y={BUDGET_HISTORY_BASELINE_Y - barHeight}
+                x={barX}
+                y={barY}
                 width={barWidth}
                 height={barHeight}
                 rx={BAR_RADIUS}
                 {...(isCurrent ? outlineProps : solidProps)}
             />
             <StyledLine
-                x1={centerX - barWidth}
+                x1={limitStartX}
                 y1={limitY}
-                x2={centerX + barWidth}
+                x2={limitEndX}
                 y2={limitY}
                 strokeClassName="accent-primary"
                 strokeDasharray={LIMIT_DASH}

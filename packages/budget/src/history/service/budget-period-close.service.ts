@@ -35,36 +35,39 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
             byCategory: new Map(snapshot.categories.map(category => [category.categoryId, category.carriedIn]))
         });
 
-        const snapshotPeriod = Effect.fnUntraced(function* (
+        const makeSnapshotPeriod = (
             budget: Pick<BudgetEntityInterface, 'id' | 'instrumentId' | 'overallLimit' | 'otherLimit' | 'otherRolloverMode'>,
             categoryLimits: readonly BudgetCategoryLimitEntityInterface[],
-            window: BudgetPeriodWindowInterface,
-            carryIn: BudgetCarryOutsInterface,
             isReconstructed: boolean
-        ) {
-            const entries = yield* budgetRepository.findBudgetSpentEntries(window.periodStart, window.nextPeriodStart, budget.instrumentId);
-            const spent = computeSpent(entries, budget.instrumentId);
-            const limits = isReconstructed
-                ? categoryLimits.map(limit => ({ ...limit, rolloverMode: BudgetRolloverModeEnum.NONE }))
-                : categoryLimits;
-            const rows = buildPeriodSnapshotRows(limits, spent, carryIn);
-            const snapshot = {
-                budgetId: budget.id,
-                periodStart: window.periodStart,
-                periodEnd: getInclusiveEnd(window.nextPeriodStart),
-                overallLimit: budget.overallLimit,
-                overallSpent: spent.spentOverall,
-                otherLimit: budget.otherLimit,
-                otherSpent: rows.otherSpent,
-                otherCarriedIn: rows.otherCarriedIn,
-                otherRolloverMode: isReconstructed ? BudgetRolloverModeEnum.NONE : budget.otherRolloverMode,
-                isReconstructed
-            };
+        ) =>
+            Effect.fnUntraced(function* (window: BudgetPeriodWindowInterface, carryIn: BudgetCarryOutsInterface) {
+                const entries = yield* budgetRepository.findBudgetSpentEntries(
+                    window.periodStart,
+                    window.nextPeriodStart,
+                    budget.instrumentId
+                );
+                const spent = computeSpent(entries, budget.instrumentId);
+                const limits = isReconstructed
+                    ? categoryLimits.map(limit => ({ ...limit, rolloverMode: BudgetRolloverModeEnum.NONE }))
+                    : categoryLimits;
+                const rows = buildPeriodSnapshotRows(limits, spent, carryIn);
+                const snapshot = {
+                    budgetId: budget.id,
+                    periodStart: window.periodStart,
+                    periodEnd: getInclusiveEnd(window.nextPeriodStart),
+                    overallLimit: budget.overallLimit,
+                    overallSpent: spent.spentOverall,
+                    otherLimit: budget.otherLimit,
+                    otherSpent: rows.otherSpent,
+                    otherCarriedIn: rows.otherCarriedIn,
+                    otherRolloverMode: isReconstructed ? BudgetRolloverModeEnum.NONE : budget.otherRolloverMode,
+                    isReconstructed
+                };
 
-            yield* budgetPeriodSnapshotRepository.create(snapshot, rows.categories);
+                yield* budgetPeriodSnapshotRepository.create(snapshot, rows.categories);
 
-            return computeSnapshotCarryOuts({ ...snapshot, categories: rows.categories });
-        });
+                return computeSnapshotCarryOuts({ ...snapshot, categories: rows.categories });
+            });
 
         const refreshPeriod = Effect.fnUntraced(function* (
             budget: Pick<BudgetEntityInterface, 'instrumentId'>,
@@ -121,7 +124,7 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
             yield* Db.transaction(
                 Effect.reduce(
                     refreshable,
-                    (): BudgetCarryOutsInterface | undefined => undefined,
+                    (): BudgetCarryOutsInterface | null => null,
                     (previousCarryOuts, snapshot) => refreshPeriod(budget, snapshot, previousCarryOuts ?? computeStoredCarryIn(snapshot))
                 )
             );
@@ -141,10 +144,12 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
                 const windows = computeClosedPeriods(budget, now, latestPeriodStart, earliestOperatedAt);
                 const categoryLimits = yield* budgetCategoryLimitRepository.getByBudget(budget.id);
 
+                const snapshotPeriod = makeSnapshotPeriod(budget, categoryLimits, !isDefined(latestSnapshot));
+
                 yield* Effect.reduce(
                     windows,
                     () => computeSnapshotCarryOuts(latestSnapshot),
-                    (carryIn, window) => snapshotPeriod(budget, categoryLimits, window, carryIn, !isDefined(latestSnapshot))
+                    (carryIn, window) => snapshotPeriod(window, carryIn)
                 );
                 yield* refreshRecentPeriods(budget);
             })

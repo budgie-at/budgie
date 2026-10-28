@@ -84,7 +84,7 @@ export class BudgetRepository extends Context.Service<BudgetRepository>()('@budg
                         .select({ earliest: min(TransactionEntityTable.operatedAt) })
                         .from(TransactionEntityTable)
                         .where(isNull(TransactionEntityTable.deletedAt))
-                ).pipe(Effect.map(([row]) => row?.earliest ?? null)),
+                ).pipe(Effect.map(([row]) => row.earliest ?? null)),
             findBudgetSpentEntries: (periodStart: Date, nextPeriodStart: Date, baseInstrumentId: number) =>
                 Db.query(db =>
                     db

@@ -30,6 +30,7 @@ export const BudgetHistoryChart = ({ bars }: Props) => {
     const scaleMax = Math.max(1, ...bars.map(bar => Math.max(bar.spent, bar.limit)));
     const slotWidth = BUDGET_HISTORY_CHART_WIDTH / bars.length;
     const barWidth = Math.min(MAX_BAR_WIDTH, slotWidth * SLOT_BAR_RATIO);
+    const centerXs = bars.map((_bar, index) => slotWidth * (index + 0.5));
 
     const handleBarPress = (snapshotId: number | null) => () => {
         if (isDefined(snapshotId)) {
@@ -51,7 +52,7 @@ export const BudgetHistoryChart = ({ bars }: Props) => {
                 {bars.map((bar, index) => (
                     <BudgetHistoryBarShape
                         key={bar.key}
-                        centerX={slotWidth * (index + 0.5)}
+                        centerX={centerXs[index]}
                         barWidth={barWidth}
                         spent={bar.spent}
                         limit={bar.limit}
@@ -64,7 +65,7 @@ export const BudgetHistoryChart = ({ bars }: Props) => {
                 {bars.map((bar, index) => (
                     <StyledSvgText
                         key={bar.key}
-                        x={slotWidth * (index + 0.5)}
+                        x={centerXs[index]}
                         y={LABEL_Y}
                         fillClassName="accent-secondary-foreground"
                         fontSize={LABEL_FONT_SIZE}

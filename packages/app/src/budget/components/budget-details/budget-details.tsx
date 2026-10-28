@@ -69,7 +69,7 @@ export const BudgetDetails = ({ budget }: Props) => {
         );
     };
 
-    const isTooEarly = projection.overall.status === BudgetPaceStatusEnum.TOO_EARLY;
+    const scrollViewProps = { ref: scrollRef };
     const highlightContextValue = { target: isLoading ? null : highlightTarget, reveal: handleReveal };
 
     return (
@@ -78,7 +78,7 @@ export const BudgetDetails = ({ budget }: Props) => {
             subtitle={dateLabel}
             leading={<HeaderBackButton />}
             trailing={<BudgetDetailsEditButton budgetId={budget.id} />}
-            scrollViewProps={{ ref: scrollRef }}
+            scrollViewProps={scrollViewProps}
         >
             <BudgetHighlightContext value={highlightContextValue}>
                 <View ref={contentRef} collapsable={false} className="gap-y-lg">
@@ -98,7 +98,9 @@ export const BudgetDetails = ({ budget }: Props) => {
                         <BudgetStatRow scope={projection.overall} currencySymbol={currencySymbol} />
                     </LoadingContent>
 
-                    {isTooEarly ? null : <BudgetForecastCard projection={projection} currencySymbol={currencySymbol} />}
+                    {projection.overall.status === BudgetPaceStatusEnum.TOO_EARLY ? null : (
+                        <BudgetForecastCard projection={projection} currencySymbol={currencySymbol} />
+                    )}
 
                     <LoadingContent isLoading={isLoading}>
                         <BudgetDetailsCategoryList

@@ -14,13 +14,14 @@ interface Props {
 
 export const BudgetPeriodSummaryCategoryRow = ({ categoryId, limitAmount, carriedAmount, spent, currencySymbol }: Props) => {
     const { category } = useGetCategoryByIdQuery(categoryId);
+    const title = isDefined(category) ? category.title : '';
 
     return (
         <BudgetPeriodSummaryLimitRow
-            title={isDefined(category) ? category.title : ''}
+            title={title}
             carriedAmount={carriedAmount}
             spent={spent}
-            limit={limitAmount + carriedAmount}
+            baseLimit={limitAmount}
             currencySymbol={currencySymbol}
             testID={BudgetSelector.PeriodSummaryCategoryRow(categoryId)}
             spentTestID={BudgetSelector.PeriodSummaryCategorySpentLabel(categoryId)}

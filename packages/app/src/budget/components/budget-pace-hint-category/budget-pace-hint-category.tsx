@@ -14,13 +14,7 @@ interface Props {
 
 export const BudgetPaceHintCategory = ({ categoryId, scope, currencySymbol, onPress }: Props) => {
     const { category } = useGetCategoryByIdQuery(categoryId);
+    const title = isDefined(category) ? category.title : '';
 
-    return (
-        <BudgetPaceHintLine
-            title={isDefined(category) ? category.title : ''}
-            scope={scope}
-            currencySymbol={currencySymbol}
-            onPress={onPress}
-        />
-    );
+    return <BudgetPaceHintLine title={title} scope={scope} currencySymbol={currencySymbol} onPress={onPress} />;
 };

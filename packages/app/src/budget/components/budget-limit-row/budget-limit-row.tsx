@@ -26,7 +26,8 @@ export const BudgetLimitRow = ({ children, title, carriedAmount, spent, limit, c
     const carriedLabel = formatDigits(convertFromMicroUnits(Math.abs(carriedAmount)), currencySymbol);
     const isSurplus = isPositiveNumber(carriedAmount);
     const pillLabel = isSurplus ? t`+${carriedLabel} rolled over` : t`−${carriedLabel} carried`;
-    const pill = carriedAmount === 0 ? null : <MetaPill variant={isSurplus ? 'positive' : 'destructive'} label={pillLabel} />;
+    const pillVariant = isSurplus ? 'positive' : 'destructive';
+    const pill = carriedAmount === 0 ? null : <MetaPill variant={pillVariant} label={pillLabel} />;
     const spentLabel = formatDigits(convertFromMicroUnits(spent), currencySymbol);
     const limitLabel = formatDigits(convertFromMicroUnits(limit), currencySymbol);
 

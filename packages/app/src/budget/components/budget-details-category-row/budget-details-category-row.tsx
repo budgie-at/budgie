@@ -22,6 +22,8 @@ interface Props {
 export const BudgetDetailsCategoryRow = (props: Props) => {
     const { categoryId, scope, periodStart, periodEnd, currencySymbol, carriedAmount } = props;
     const { category } = useGetCategoryByIdQuery(categoryId);
+    const title = isDefined(category) ? category.title : '';
+    const highlightTarget = { scope: BudgetAlertScopeEnum.CATEGORY, categoryId };
 
     const handlePress = () => {
         router.push({
@@ -37,14 +39,14 @@ export const BudgetDetailsCategoryRow = (props: Props) => {
 
     return (
         <BudgetDetailsLimitRow
-            title={isDefined(category) ? category.title : ''}
+            title={title}
             carriedAmount={carriedAmount}
             scope={scope}
             currencySymbol={currencySymbol}
             testID={BudgetSelector.DetailsCategoryRow(categoryId)}
             spentTestID={BudgetSelector.DetailsCategorySpentLabel(categoryId)}
             onPress={handlePress}
-            highlightTarget={{ scope: BudgetAlertScopeEnum.CATEGORY, categoryId }}
+            highlightTarget={highlightTarget}
         />
     );
 };
