@@ -5,7 +5,7 @@ import { NextResponse } from 'next/server';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { indexnowSubmitter } from '../../../generic/service/indexnow-submitter.service';
+import { IndexnowSubmitter } from '../../../generic/service/indexnow-submitter.service';
 
 // eslint-disable-next-line func-style -- Next.js route handlers must be exported functions
 export async function POST(request: Request): Promise<NextResponse> {
@@ -20,7 +20,12 @@ export async function POST(request: Request): Promise<NextResponse> {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const result = await Effect.runPromise(indexnowSubmitter.submit().pipe(Effect.provide(FetchHttpClient.layer)));
+    const result = await Effect.runPromise(
+        Effect.flatMap(IndexnowSubmitter, submitter => submitter.submit()).pipe(
+            Effect.provide(IndexnowSubmitter.layer),
+            Effect.provide(FetchHttpClient.layer)
+        )
+    );
 
     return NextResponse.json(result, { status: result.status });
 }

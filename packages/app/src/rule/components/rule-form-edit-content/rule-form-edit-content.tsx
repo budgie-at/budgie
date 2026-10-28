@@ -1,10 +1,13 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { FormProvider } from 'react-hook-form';
 
 import { Button } from '../../../@generic/component/button/button';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
+import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { RuleFormResultType } from '../../context/rule-form-modal.context';
 import { useRuleForm } from '../../hooks/use-rule-form.hook';
 import { RuleFormButtons } from '../rule-form-buttons/rule-form-buttons';
@@ -40,18 +43,24 @@ export const RuleFormEditContent = ({ rule, onSuccess, onCancel }: Props) => {
 
     const { form, handleSubmit, handleDelete, isSubmitting } = useRuleForm({ ruleId: rule.id, defaultValues, onSuccess });
 
-    const handleDeleteConfirm = async () => {
-        const confirmed = await confirmAlert({
-            title: t`Are you sure you want to delete this rule?`,
-            message: t`This action cannot be undone.`,
-            confirmText: t`Delete`,
-            cancelText: t`Cancel`,
-            isDestructive: true
-        });
+    const handleDeleteConfirm = () => {
+        appRuntime.runFork(
+            logAndContinue(
+                Effect.gen(function* () {
+                    const confirmed = yield* confirmAlert({
+                        title: t`Are you sure you want to delete this rule?`,
+                        message: t`This action cannot be undone.`,
+                        confirmText: t`Delete`,
+                        cancelText: t`Cancel`,
+                        isDestructive: true
+                    });
 
-        if (confirmed) {
-            handleDelete();
-        }
+                    if (confirmed) {
+                        handleDelete();
+                    }
+                })
+            )
+        );
     };
 
     const header = <PageHeader title={t`Edit Rule`} onGoBack={onCancel} />;

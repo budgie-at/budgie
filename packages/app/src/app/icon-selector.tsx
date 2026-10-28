@@ -1,14 +1,16 @@
 import { isEmojiIcon, UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
-import { FlatList, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { emptyFn, isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
+import { BudgieLegendList } from '../@generic/component/budgie-legend-list/budgie-legend-list';
 import { EmptyState } from '../@generic/component/empty-state/empty-state';
 import { IconSelectorCard } from '../@generic/component/icon-selector-card/icon-selector-card';
 import { IconSuggestions } from '../@generic/component/icon-suggestions/icon-suggestions';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
+import { LEGEND_LIST_STYLE } from '../@generic/constant/legend-list.constant';
 import { useIconSelectorModal, useIconSelectorModalParams } from '../@generic/context/icon-selector-modal.context';
 import { useFormsheetListContentStyle } from '../@generic/hook/use-formsheet-list-content-style/use-formsheet-list-content-style.hook';
 import { useIconSearchEntries } from '../@generic/hook/use-icon-search-entries.hook';
@@ -21,6 +23,9 @@ import { resolveReiconIcon } from '../@generic/utils/resolve-reicon-icon.util';
 import { IconSelectorModalSelector } from './icon-selector-modal.selector';
 
 const NUM_COLUMNS = 4;
+const COLUMN_WRAPPER_STYLE = { columnGap: 10, rowGap: 10 };
+const LIST_HEADER_STYLE = { marginBottom: 12 };
+const ESTIMATED_ROW_HEIGHT = 110;
 
 const keyExtractor = (item: FlatListDataItem<IconSearchEntryInterface>, index: number) => (item.isEmpty ? `empty-${index}` : item.icon);
 
@@ -93,22 +98,22 @@ export default function IconSelectorModal() {
                 testID={IconSelectorModalSelector.SearchInput}
             />
 
-            <FlatList
-                className="absolute inset-0 bg-primary-reverse"
-                data={data}
-                keyExtractor={keyExtractor}
-                renderItem={renderItem}
-                numColumns={NUM_COLUMNS}
-                keyboardShouldPersistTaps="handled"
-                showsVerticalScrollIndicator={false}
-                columnWrapperClassName="gap-x-lg mb-lg"
-                contentContainerStyle={contentContainerStyle}
-                ListHeaderComponent={listHeader}
-                ListHeaderComponentClassName="mb-xl"
-                ListEmptyComponent={listEmptyComponent}
-                initialNumToRender={24}
-                windowSize={5}
-            />
+            <View className="absolute inset-0 bg-primary-reverse">
+                <BudgieLegendList
+                    style={LEGEND_LIST_STYLE}
+                    data={data}
+                    keyExtractor={keyExtractor}
+                    renderItem={renderItem}
+                    numColumns={NUM_COLUMNS}
+                    estimatedItemSize={ESTIMATED_ROW_HEIGHT}
+                    keyboardShouldPersistTaps="handled"
+                    columnWrapperStyle={COLUMN_WRAPPER_STYLE}
+                    contentContainerStyle={contentContainerStyle}
+                    ListHeaderComponent={listHeader}
+                    ListHeaderComponentStyle={LIST_HEADER_STYLE}
+                    ListEmptyComponent={listEmptyComponent}
+                />
+            </View>
         </View>
     );
 }

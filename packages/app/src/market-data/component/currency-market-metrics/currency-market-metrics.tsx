@@ -1,11 +1,12 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { useFormatCompactDigits } from '../../../i18n/hook/use-format-compact-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { CurrencyMarketPageSelector } from '../currency-market-page/currency-market-page.selector';
 import { MarketDataMetricCard } from '../market-data-metric-card/market-data-metric-card';
 
@@ -20,7 +21,7 @@ const MISSING_VALUE = '-';
 
 export const CurrencyMarketMetrics = ({ instrumentCode, latestPrice }: Props) => {
     const { t } = useLingui();
-    const { defaultInstrument } = useSettingsContext();
+    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const formatCompactDigits = useFormatCompactDigits();
     const marketCap = latestPrice?.marketCap;
     const volume = latestPrice?.volume;

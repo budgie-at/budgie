@@ -7,9 +7,8 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { Card } from '../../../@generic/component/card/card';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
 import { WalletCaptureReviewReasonEnum } from '../../enum/wallet-capture-review-reason.enum';
 import { WalletCaptureReviewDetailRow } from '../wallet-capture-review-detail-row/wallet-capture-review-detail-row';
 import { WalletCaptureReviewReasonIcon } from '../wallet-capture-review-reason-icon/wallet-capture-review-reason-icon';
@@ -29,8 +28,7 @@ interface Props {
 
 export const WalletCaptureReviewCard = ({ item, accountTitle, instrumentSymbol, isMutating, onImport, onDismiss }: Props) => {
     const { t } = useLingui();
-    const { decimalPlaces } = useSettingsContext();
-    const formatDigits = useFormatDigits(decimalPlaces);
+    const formatDigits = useDisplayFormatDigits();
     const { formatDayAndMonthAndYearWithTime } = useFormatDate();
 
     const getReasonText = (reason: WalletCaptureReviewReasonEnum) => {

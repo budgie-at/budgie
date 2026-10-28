@@ -1,7 +1,9 @@
-import { RuleConditionFieldEnum } from '@budgie/contracts';
+import { RuleConditionFieldEnum, RuleCreateInputInterface } from '@budgie/contracts';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
+import { useFormContext } from 'react-hook-form';
 
+import { RULE_FIELD_OPERATORS } from '../../constant/rule-field-operators.constant';
 import { RuleConditionFormFieldEnum } from '../../enum/rule-condition-form-field.enum';
 import { RuleConditionEnumSelector } from '../rule-condition-enum-selector/rule-condition-enum-selector';
 
@@ -22,6 +24,15 @@ const FIELD_OPTIONS = [
 
 export const RuleConditionFieldSelector = ({ index, testID }: Props) => {
     const { t } = useLingui();
+    const { getValues, setValue } = useFormContext<RuleCreateInputInterface>();
+
+    const handleFieldChange = (field: RuleConditionFieldEnum) => {
+        const validOperators = RULE_FIELD_OPERATORS[field];
+
+        if (!validOperators.includes(getValues(`conditions.${index}.operator`))) {
+            setValue(`conditions.${index}.operator`, validOperators[0]);
+        }
+    };
 
     return (
         <RuleConditionEnumSelector
@@ -32,6 +43,7 @@ export const RuleConditionFieldSelector = ({ index, testID }: Props) => {
             sheetTitle={t`Select Field`}
             defaultLabel={t`Select Field`}
             testID={testID}
+            onValueChange={handleFieldChange}
         />
     );
 };

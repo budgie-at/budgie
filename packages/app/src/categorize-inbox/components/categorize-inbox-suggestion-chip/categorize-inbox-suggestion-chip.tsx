@@ -28,13 +28,13 @@ export const CategorizeInboxSuggestionChip = ({ cluster, labelId, index }: Props
 
     const handlePress = (): void => void assignCluster(cluster, labelId);
 
-    const label = strategy.labelsById.get(labelId);
+    const label = strategy?.labelsById.get(labelId);
     const isTopCandidate = index === 0;
     const isConfident = cluster.section === CategorizeInboxSectionEnum.CONFIDENT && isTopCandidate;
     const topVariant: ColorPaletteVariant = isConfident ? 'positive' : 'ghost';
     const variant: ColorPaletteVariant = isTopCandidate ? topVariant : 'primary';
 
-    if (!isDefined(label)) {
+    if (!isDefined(strategy) || !isDefined(label)) {
         return null;
     }
 

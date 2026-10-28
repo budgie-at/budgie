@@ -1,5 +1,5 @@
 import { ExchangeRateEntityTable, HistoricalExchangeRateEntityTable } from '@budgie/contracts';
 
-import { TRANSACTION_LIST_TABLES } from './transaction-list-tables.constant';
+import { TRANSACTION_FILTER_TABLES } from './transaction-filter-tables.constant';
 
-export const STATISTICS_TABLES = [...TRANSACTION_LIST_TABLES, ExchangeRateEntityTable, HistoricalExchangeRateEntityTable];
+export const STATISTICS_TABLES = [...TRANSACTION_FILTER_TABLES, ExchangeRateEntityTable, HistoricalExchangeRateEntityTable];

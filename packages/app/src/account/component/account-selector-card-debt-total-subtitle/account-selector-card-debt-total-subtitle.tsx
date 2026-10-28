@@ -8,8 +8,7 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { AccountSelectorModalSelector } from '../../../app/account-selector-modal.selector';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useDebtAccountProgressSummaryQuery } from '../../query/use-debt-account-progress-summary.query';
 
 const DEBT_TOTAL_LABEL: Record<AccountDebtTypeEnum, MessageDescriptor> = {
@@ -28,8 +27,7 @@ interface Props {
 
 export const AccountSelectorCardDebtTotalSubtitle = ({ accountId, debtType, instrumentSymbol, targetBalance, title }: Props) => {
     const { t } = useLingui();
-    const { decimalPlaces } = useSettingsContext();
-    const formatDigits = useFormatDigits(decimalPlaces);
+    const formatDigits = useDisplayFormatDigits();
     const summary = useDebtAccountProgressSummaryQuery(accountId);
     const fallbackTotalAmount = convertFromMicroUnits(targetBalance);
     const totalAmount = isDefined(summary) && isPositiveNumber(summary.totalAmount) ? summary.totalAmount : fallbackTotalAmount;

@@ -1,11 +1,12 @@
 import { AccountWithSyncEntityInterface } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { SectionList, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { useScreenChromeScrollProps } from '@rnw-community/react-native-screen-chrome';
 
 import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../../@generic/constant/floating-tab-bar.constant';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { decimalPlacesAtom, defaultInstrumentIdAtom } from '../../../settings/constants/settings-atoms.constant';
 import { COLLAPSIBLE_NET_WORTH_HEADER_SCROLL_SPACER_MIN_ACCOUNT_COUNT } from '../../constant/collapsible-net-worth-header-scroll-spacer.constant';
 import { AccountRowInterface } from '../../interface/account-row.interface';
 import { CryptoCurrencyGroupInterface } from '../../interface/crypto-currency-group.interface';
@@ -32,13 +33,14 @@ interface Props {
 }
 
 export const HomeSectionsList = ({ sections, activeAccountCount, bottomInset, balanceSummary, listHeaderComponent }: Props) => {
-    const { decimalPlaces, defaultInstrument } = useSettingsContext();
+    const decimalPlaces = useAtomValue(decimalPlacesAtom);
+    const defaultInstrumentId = useAtomValue(defaultInstrumentIdAtom);
     const bottomPadding = FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottomInset;
     const scrollProps = useScreenChromeScrollProps({
         includeTopSafeArea: false,
         contentContainerStyle: { paddingBottom: bottomPadding, paddingHorizontal: LIST_HORIZONTAL_PADDING, flexGrow: 1 }
     });
-    const listFormatKey = `${defaultInstrument.id}-${decimalPlaces}`;
+    const listFormatKey = `${defaultInstrumentId}-${decimalPlaces}`;
     const listFooterComponent =
         activeAccountCount > COLLAPSIBLE_NET_WORTH_HEADER_SCROLL_SPACER_MIN_ACCOUNT_COUNT ? (
             <CollapsibleNetWorthHeaderScrollSpacer />

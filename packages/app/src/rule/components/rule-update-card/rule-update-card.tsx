@@ -3,7 +3,6 @@ import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { UpdateRuleDataInterface } from '../../interface/update-rule-data.interface';
 import { RuleApplicationDrainerService } from '../../service/rule-application-drainer.service';
 import { showRuleApplicationToast } from '../../utils/show-rule-application-toast.util';
@@ -28,15 +27,12 @@ export const RuleUpdateCard = (props: Props) => {
         return true;
     });
 
-    const handleYes = (): Promise<boolean> => appRuntime.runPromise(updateRule);
-
     return (
         <SwipeableRuleCard
             descriptionText={t`Update rule?`}
             successMessage={<Trans>Rule updated</Trans>}
             errorMessage={<Trans>Could not update rule</Trans>}
-            layout="wide"
-            onYes={handleYes}
+            onYes={updateRule}
             onComplete={onRuleUpdated}
             onDismiss={onDismiss}
         />

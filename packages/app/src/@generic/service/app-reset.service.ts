@@ -81,7 +81,7 @@ export class AppResetService extends Context.Service<AppResetService>()('@budgie
                         authService.persistPin(null)
                     ])
                 );
-                yield* Effect.promise(() => reloadApp());
+                yield* reloadApp;
             })
         };
     })

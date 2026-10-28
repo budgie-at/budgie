@@ -1,10 +1,19 @@
-import { DEFAULT_TRANSACTION_FILTER, RUNWAY_WINDOW_MONTHS, RunwayDriverDimensionEnum, StatisticsRepository } from '@budgie/contracts';
+import {
+    CategoryEntityTable,
+    DEFAULT_TRANSACTION_FILTER,
+    DefaultCategoryTranslationEntityTable,
+    RUNWAY_WINDOW_MONTHS,
+    RunwayDriverDimensionEnum,
+    StatisticsRepository,
+    TagEntityTable
+} from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { useToday } from '../../@generic/hook/use-today.hook';
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
-import { useSettingsContext } from '../../settings/context/settings.context';
+import { defaultInstrumentIdAtom } from '../../settings/constants/settings-atoms.constant';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 import { STATISTICS_TABLES } from '../../transaction/constant/statistics-tables.constant';
 import { aggregateRunwayDrivers } from '../utils/aggregate-runway-drivers.util';
@@ -22,7 +31,7 @@ export const runwaySeriesAtom = databaseQueryFamily(
 );
 
 export const runwayDriverSeriesAtom = databaseQueryFamily(
-    STATISTICS_TABLES,
+    [...STATISTICS_TABLES, CategoryEntityTable, DefaultCategoryTranslationEntityTable, TagEntityTable],
     StatisticsRepository,
     (
         statisticsRepository,
@@ -42,11 +51,11 @@ export const useRunwayQuery = (params: UseRunwayQueryParams) => {
     const { dimension, liquid, isAllIn } = params;
     const language = useSetting('language');
     const isCryptoIncluded = useSetting('isRunwayCryptoIncluded');
-    const { defaultInstrument } = useSettingsContext();
-    const seriesResult = useLiveAtomValue(runwaySeriesAtom([defaultInstrument.id, isCryptoIncluded]));
-    const driverResult = useLiveAtomValue(runwayDriverSeriesAtom([defaultInstrument.id, dimension, language, isCryptoIncluded]));
+    const defaultInstrumentId = useAtomValue(defaultInstrumentIdAtom);
+    const seriesResult = useLiveAtomValue(runwaySeriesAtom([defaultInstrumentId, isCryptoIncluded]));
+    const driverResult = useLiveAtomValue(runwayDriverSeriesAtom([defaultInstrumentId, dimension, language, isCryptoIncluded]));
     const categoryDriverResult = useLiveAtomValue(
-        runwayDriverSeriesAtom([defaultInstrument.id, RunwayDriverDimensionEnum.CATEGORY, language, isCryptoIncluded])
+        runwayDriverSeriesAtom([defaultInstrumentId, RunwayDriverDimensionEnum.CATEGORY, language, isCryptoIncluded])
     );
     const today = useToday();
     const seriesRows = fillRunwaySeriesMonths(

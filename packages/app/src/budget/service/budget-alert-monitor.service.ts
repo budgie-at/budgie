@@ -21,7 +21,6 @@ import * as TaskManager from 'expo-task-manager';
 
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { NativeCallError } from '../../@generic/error/native-call.error';
 import { postLocalNotification } from '../../@generic/utils/post-local-notification.util';
 import { BudgetBackgroundTaskNameEnum } from '../enum/budget-background-task-name.enum';
 
@@ -79,9 +78,6 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
             return Option.getOrElse(Schema.decodeUnknownOption(firedTriggersSchema)(raw), () => []);
         });
 
-        const postNotification = (title: string, body: string) =>
-            Effect.tryPromise({ try: () => postLocalNotification(title, body), catch: cause => new NativeCallError({ cause }) });
-
         const postOverallAlert = Effect.fn('BudgetAlertMonitorService.postOverallAlert')(function* (
             threshold: number,
             overallLimit: number,
@@ -91,14 +87,14 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
             const title = threshold >= 100 ? i18n._(msg`Budget limit reached`) : i18n._(msg`Overall budget: ${threshold}% spent`);
             const body = i18n._(msg`You have used ${spentPercent}% of your overall budget.`);
 
-            yield* postNotification(title, body);
+            yield* postLocalNotification(title, body);
         });
 
         const postOtherAlert = Effect.fn('BudgetAlertMonitorService.postOtherAlert')(function* (threshold: number) {
             const title = threshold >= 100 ? i18n._(msg`Other budget: limit reached`) : i18n._(msg`Other budget: ${threshold}% spent`);
             const body = i18n._(msg`You have used ${threshold}% of your budget for spending outside category limits.`);
 
-            yield* postNotification(title, body);
+            yield* postLocalNotification(title, body);
         });
 
         const postCategoryAlert = Effect.fn('BudgetAlertMonitorService.postCategoryAlert')(function* (
@@ -113,7 +109,7 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
                 threshold >= 100 ? i18n._(msg`${categoryName}: limit reached`) : i18n._(msg`${categoryName}: ${threshold}% spent`);
             const body = i18n._(msg`You have used ${threshold}% of the limit for ${categoryName}.`);
 
-            yield* postNotification(title, body);
+            yield* postLocalNotification(title, body);
         });
 
         const postTrigger = Effect.fn('BudgetAlertMonitorService.postTrigger')(function* (

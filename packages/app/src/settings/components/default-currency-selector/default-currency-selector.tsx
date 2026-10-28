@@ -1,3 +1,4 @@
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
@@ -7,12 +8,12 @@ import { useCurrencySelectorModal } from '../../../@generic/context/currency-sel
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
-import { useSettingsContext } from '../../context/settings.context';
+import { defaultInstrumentAtom } from '../../constants/settings-atoms.constant';
 import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
 import { SettingsCard } from '../settings-card/settings-card';
 
 export const DefaultCurrencySelector = () => {
-    const { defaultInstrument } = useSettingsContext();
+    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const [openCurrencySelector] = useCurrencySelectorModal();
     const { t } = useLingui();
 

@@ -27,11 +27,8 @@ export class EmbeddingDrainerService extends Context.Service<EmbeddingDrainerSer
             Effect.forkDetach(Effect.ignore(embeddingIndexService.clearStaleFlags, { log: true }))
         );
 
-        const createDrainer = (
-            index: typeof embeddingIndexService.merchant,
-            snapshot: Atom.Writable<DrainerSnapshotInterface>
-        ): DrainerService<DbError | AiInvokeError> =>
-            new DrainerService(
+        const createDrainer = (index: typeof embeddingIndexService.merchant, snapshot: Atom.Writable<DrainerSnapshotInterface>) =>
+            DrainerService.make<DbError | AiInvokeError>(
                 {
                     subsystem: AiSubsystemNameEnum.EMBEDDING,
                     relaxedIntervalMs: 2500,
@@ -46,8 +43,8 @@ export class EmbeddingDrainerService extends Context.Service<EmbeddingDrainerSer
                 aiModelResidencyService
             );
 
-        const merchant = createDrainer(embeddingIndexService.merchant, merchantEmbeddingDrainerSnapshotAtom);
-        const comment = createDrainer(embeddingIndexService.comment, commentEmbeddingDrainerSnapshotAtom);
+        const merchant = yield* createDrainer(embeddingIndexService.merchant, merchantEmbeddingDrainerSnapshotAtom);
+        const comment = yield* createDrainer(embeddingIndexService.comment, commentEmbeddingDrainerSnapshotAtom);
         const drainers = [merchant, comment];
 
         return {

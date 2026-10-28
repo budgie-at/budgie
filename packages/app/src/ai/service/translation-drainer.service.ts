@@ -32,7 +32,7 @@ export class TranslationDrainerService extends Context.Service<TranslationDraine
                 .translate(row.title)
                 .pipe(Effect.flatMap(result => updateTranslation(row.id, result.titleEn, result.titleTags)));
 
-        return new DrainerService<DbError | AiInvokeError>(
+        return yield* DrainerService.make<DbError | AiInvokeError>(
             {
                 subsystem: AiSubsystemNameEnum.CHAT,
                 relaxedIntervalMs: 5000,

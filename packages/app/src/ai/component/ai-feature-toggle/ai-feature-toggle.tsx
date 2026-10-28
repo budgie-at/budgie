@@ -1,14 +1,12 @@
 import { useLingui } from '@lingui/react/macro';
-import * as Effect from 'effect/Effect';
-
-import { getErrorMessage } from '@rnw-community/shared';
 
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
+import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
+import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { AiFeaturesPageSelector } from '../../../app/(tabs)/settings/ai-features-page.selector';
 import { SettingSwitch } from '../../../settings/components/setting-switch/setting-switch';
 import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { updateAiFeatureMutation } from '../../../settings/mutation/update-settings.mutation';
 
 import type { AiFeatureSettingsInterface } from '../../interface/ai-feature-settings.interface';
@@ -23,20 +21,15 @@ interface Props {
 
 export const AiFeatureToggle = ({ settingKey, title, description, icon }: Props) => {
     const { t } = useLingui();
-    const { settings } = useSettingsContext();
+    const isFeatureEnabled = useSetting(settingKey);
 
     const handleValueChange = (next: boolean) => {
-        appRuntime.runFork(
-            updateAiFeatureMutation(settingKey, next).pipe(
-                Effect.tapCause(Effect.logError),
-                Effect.catch(error => Effect.sync(() => void showErrorToast(t`Could not update AI feature`, getErrorMessage(error))))
-            )
-        );
+        appRuntime.runFork(logAndContinue(updateAiFeatureMutation(settingKey, next).pipe(toastOnFailure(t`Could not update AI feature`))));
     };
 
     const switchSlot = (
         <SettingSwitch
-            value={settings[settingKey]}
+            value={isFeatureEnabled}
             onValueChange={handleValueChange}
             testID={AiFeaturesPageSelector.FeatureSwitch(settingKey)}
             stateOnTestID={AiFeaturesPageSelector.FeatureSwitchStateOn(settingKey)}

@@ -4,6 +4,7 @@ import { useLingui } from '@lingui/react/macro';
 import { useConsolidationSourceModal } from '../../context/consolidation-source-modal.context';
 import { useUpdateSimpleTransaction } from '../../hook/use-update-simple-transaction.hook';
 import { RefundedPill } from '../refunded-pill/refunded-pill';
+import { RulePillSlot } from '../rule-pill-slot/rule-pill-slot';
 import { SimpleQuickForm } from '../simple-quick-form/simple-quick-form';
 import { TransactionCardSelector } from '../transaction-card/transaction-card.selector';
 import { UpdateSimpleTransactionPage } from '../update-simple-transaction-page/update-simple-transaction-page';
@@ -30,25 +31,19 @@ export const UpdateExpenseTransaction = ({ transaction, openFeeOnMount }: Update
         >
             <SimpleQuickForm
                 ref={formRef}
-                variant="destructive"
                 transactionType={TransactionTypeEnum.EXPENSE}
-                accountFieldName="fromAccountId"
-                transactionTitle={transaction.title}
-                mccCategoryId={simpleTransaction.mccCategoryId}
                 debtSettlementAccount={simpleTransaction.debtSettlementAccount}
-                amountTopContent={
-                    <RefundedPill
-                        key={`${transaction.id}-${transaction.consolidationType}`}
-                        transaction={transaction}
-                        onPress={handleOpenRefundSources}
-                        testID={TransactionCardSelector.RefundedPill(transaction.id)}
-                    />
-                }
                 onSubmit={simpleTransaction.handleSubmit}
                 onCancel={simpleTransaction.handleGoBack}
-                ruleDetection={simpleTransaction.ruleDetection}
-                showInlineFeeAction={false}
-            />
+            >
+                <RulePillSlot ruleDetection={simpleTransaction.ruleDetection} />
+                <RefundedPill
+                    key={`${transaction.id}-${transaction.consolidationType}`}
+                    transaction={transaction}
+                    onPress={handleOpenRefundSources}
+                    testID={TransactionCardSelector.RefundedPill(transaction.id)}
+                />
+            </SimpleQuickForm>
         </UpdateSimpleTransactionPage>
     );
 };

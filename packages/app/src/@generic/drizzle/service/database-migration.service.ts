@@ -4,7 +4,6 @@ import { migrate } from 'drizzle-orm/sqlite-core/effect';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
-import * as Schema from 'effect/Schema';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -17,15 +16,15 @@ import type { MigrationMeta } from 'drizzle-orm/migrator';
 import type * as SqlClient from 'effect/sql/SqlClient';
 
 export class DatabaseMigrationService extends Context.Service<DatabaseMigrationService>()('@budgie/app/DatabaseMigrationService', {
-    make: Effect.gen(function* () {
-        const migrations = yield* Schema.decodeUnknownEffect(Schema.Struct({ migrations: Schema.Record(Schema.String, Schema.String) }))(
-            bundledMigrations
-        ).pipe(Effect.orDie);
-        const localMigrations: MigrationMeta[] = Object.keys(migrations.migrations)
+    make: Effect.sync(() => {
+        const migrations: Readonly<Record<string, () => string[]>> = bundledMigrations.migrations;
+        const localMigrations: MigrationMeta[] = Object.keys(migrations)
             .sort()
             .map(name => ({
                 name,
-                sql: migrations.migrations[name].split(/--> statement-breakpoint/u),
+                get sql() {
+                    return migrations[name]();
+                },
                 bps: true,
                 folderMillis: formatToMillis(name.slice(0, 14)),
                 hash: ''

@@ -1,3 +1,4 @@
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
@@ -7,12 +8,12 @@ import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useAccountSelector } from '../../../account/hooks/use-account-selector.hook';
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
-import { useSettingsContext } from '../../context/settings.context';
+import { defaultAccountAtom } from '../../constants/settings-atoms.constant';
 import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
 import { SettingsCard } from '../settings-card/settings-card';
 
 export const DefaultAccountSelector = () => {
-    const { defaultAccount } = useSettingsContext();
+    const defaultAccount = useAtomValue(defaultAccountAtom);
     const { t } = useLingui();
     const [openAccountSelector] = useAccountSelectorModal();
 

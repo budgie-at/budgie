@@ -4,7 +4,7 @@ import React from 'react';
 import { Text, View } from 'react-native';
 import { withUniwind } from 'uniwind';
 
-import { EmptyFn, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { EmptyFn, emptyFn, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { CreateAccountScreenSelector } from '../../../account/component/create-account-screen/create-account-screen.selector';
 import { CircleIcon } from '../circle-icon/circle-icon';
@@ -15,7 +15,6 @@ interface Props {
     readonly onSelect: EmptyFn;
     readonly isSelected: boolean;
     readonly title: string;
-    readonly id: string;
     readonly image: string | null;
     readonly emails: string[];
     readonly phoneNumbers: string[];
@@ -28,8 +27,9 @@ const blurhash =
 const placeholder = { blurhash };
 
 export const ContactSelectorCard = (props: Props) => {
-    const { isSelected, onSelect, title, id, image, emails, phoneNumbers } = props;
+    const { isSelected, onSelect, title, image, emails, phoneNumbers } = props;
 
+    const handleSelect = isSelected ? emptyFn : onSelect;
     const icon = isNotEmptyString(image) ? (
         <StyledImage className="w-8 h-8 rounded-full" source={image} placeholder={placeholder} contentFit="cover" transition={1000} />
     ) : (
@@ -59,9 +59,8 @@ export const ContactSelectorCard = (props: Props) => {
 
     return (
         <SelectorCard
-            identifier={id}
             isSelected={isSelected}
-            onSelect={onSelect}
+            onPress={handleSelect}
             verticalAlign="top"
             testID={CreateAccountScreenSelector.ContactOption(title)}
             iconSlot={icon}

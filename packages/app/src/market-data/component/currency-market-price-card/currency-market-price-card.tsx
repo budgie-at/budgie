@@ -1,5 +1,6 @@
 import { AmountField, AmountFieldText } from '@budgie/amount-input';
 import { UserIconNameEnum } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
@@ -7,7 +8,7 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { Icon } from '../../../@generic/component/icon/icon';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { CurrencyMarketPageSelector } from '../currency-market-page/currency-market-page.selector';
 
 import type { InstrumentDailyMarketPriceEntityInterface, InstrumentEntityInterface } from '@budgie/contracts';
@@ -21,7 +22,7 @@ interface Props {
 const MISSING_VALUE = '-';
 
 export const CurrencyMarketPriceCard = ({ instrument, latestPrice, previousPrice }: Props) => {
-    const { defaultInstrument } = useSettingsContext();
+    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const formatDigits = useDisplayFormatDigits();
     const change =
         isDefined(latestPrice) && isDefined(previousPrice) && isPositiveNumber(previousPrice.price)

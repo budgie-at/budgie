@@ -5,7 +5,6 @@ import { ScrollView, Text } from 'react-native';
 
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { Page } from '../../../@generic/component/page/page';
-import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { AiDownloadSelector } from '../../../ai/ai-download.selector';
 import { AiDownloadStatusCard } from '../../../ai/component/ai-download-status-card/ai-download-status-card';
 import { aiModelDownloadSummaryAtom } from '../../../ai/constant/ai-model-download-summary-atom.constant';
@@ -14,8 +13,7 @@ import { SettingSwitch } from '../../../settings/components/setting-switch/setti
 import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
 import { useSettingToggle } from '../../../settings/hook/use-setting-toggle.hook';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
-
-const handleGoBack = () => void goBackOrReplace('/settings');
+import { goBackToSettings } from '../../../settings/utils/go-back-to-settings.util';
 
 export default function AiSettingsPage() {
     const { t } = useLingui();
@@ -42,7 +40,7 @@ export default function AiSettingsPage() {
     );
 
     return (
-        <Page testID={AiDownloadSelector.Page} header={<PageHeader title={t`On-device AI`} onGoBack={handleGoBack} />}>
+        <Page testID={AiDownloadSelector.Page} header={<PageHeader title={t`On-device AI`} onGoBack={goBackToSettings} />}>
             <ScrollView className="flex-1" contentContainerClassName="gap-y-xl pb-5xl pt-3xl" showsVerticalScrollIndicator={false}>
                 <AiDownloadStatusCard />
 

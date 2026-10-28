@@ -1,4 +1,5 @@
 import { InstrumentTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
@@ -7,7 +8,7 @@ import { isDefined } from '@rnw-community/shared';
 import { CreateAccountScreenSelector } from '../../../account/component/create-account-screen/create-account-screen.selector';
 import { useGetRatesByBaseAndQuoteIdsQuery } from '../../../exchange-rate/query/use-get-rates-by-base-and-quote-ids.query';
 import { useGetInstrumentsByTypeQuery } from '../../../instrument/query/use-get-instruments-by-type.query';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { useCurrencySelectorModal } from '../../context/currency-selector-modal.context';
 import { formatExchangeRate } from '../../utils/format-exchange-rate.util';
 import { CurrencySelectorInstrumentIcon } from '../currency-selector-instrument-icon/currency-selector-instrument-icon';
@@ -22,7 +23,7 @@ interface Props {
 }
 
 export const CurrencySelector = ({ instrumentId, instrumentType = InstrumentTypeEnum.FIAT, onChange, testID }: Props) => {
-    const { defaultInstrument } = useSettingsContext();
+    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const { instruments } = useGetInstrumentsByTypeQuery(instrumentType);
     const { rate } = useGetRatesByBaseAndQuoteIdsQuery(instrumentId ?? 0, defaultInstrument.id);
     const [openCurrencySelector] = useCurrencySelectorModal();

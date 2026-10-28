@@ -1,16 +1,13 @@
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as DocumentPicker from 'expo-document-picker';
-import Toast from 'react-native-toast-message';
 
-import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isNotEmptyString } from '@rnw-community/shared';
 
-import { BackupArchiveMissingDatabaseError } from '../../@generic/drizzle/error/backup-archive-missing-database.error';
-import { InsufficientStorageError } from '../../@generic/drizzle/error/insufficient-storage.error';
-import { UnsupportedBackupError } from '../../@generic/drizzle/error/unsupported-backup.error';
 import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
-import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
+import { showErrorToast } from '../../@generic/utils/show-error-toast/show-error-toast';
+import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 import { useImportBackupPinModal } from '../context/import-backup-pin-modal.context';
 import { DatabaseImportService } from '../service/database-import.service';
 
@@ -19,90 +16,76 @@ export const useRestoreBackup = () => {
     const [openImportBackupPin] = useImportBackupPinModal();
     const { isLoading, run } = useSingleFlight();
 
-    const showImportError = (error: unknown) => {
-        let errorMessage = getErrorMessage(error);
-
-        if (error instanceof UnsupportedBackupError) {
-            errorMessage = t`This backup was made by an older Budgie version and cannot be imported.`;
-        } else if (error instanceof BackupArchiveMissingDatabaseError) {
-            errorMessage = t`This backup archive does not contain a Budgie database.`;
-        } else if (error instanceof InsufficientStorageError) {
-            errorMessage = t`Not enough free storage to extract this backup.`;
-        }
-        Toast.show({ type: 'error', text1: t`Could not select database backup`, text2: errorMessage });
+    const importErrorHandlers = {
+        UnsupportedBackupError: () =>
+            Effect.sync(
+                () =>
+                    void showErrorToast(
+                        t`Could not select database backup`,
+                        t`This backup was made by an older Budgie version and cannot be imported.`
+                    )
+            ),
+        BackupArchiveMissingDatabaseError: () =>
+            Effect.sync(
+                () => void showErrorToast(t`Could not select database backup`, t`This backup archive does not contain a Budgie database.`)
+            ),
+        InsufficientStorageError: () =>
+            Effect.sync(() => void showErrorToast(t`Could not select database backup`, t`Not enough free storage to extract this backup.`))
     };
 
     const importFromUri = (uri: string, backupPin: string | null) =>
-        run(async () => {
-            try {
-                await appRuntime.runPromise(
-                    Effect.flatMap(DatabaseImportService, databaseImportService => databaseImportService.importFromUri(uri, backupPin))
-                );
-            } catch (error) {
-                showImportError(error);
-            }
-        });
+        run(
+            Effect.flatMap(DatabaseImportService, databaseImportService => databaseImportService.importFromUri(uri, backupPin)).pipe(
+                Effect.catchTags(importErrorHandlers),
+                toastOnFailure(t`Could not select database backup`)
+            )
+        );
 
-    const pickBackup = () =>
-        run(async () => {
-            try {
-                const result = await DocumentPicker.getDocumentAsync({
-                    type: ['application/x-sqlite3', 'application/zip', 'application/octet-stream', '*/*'],
-                    copyToCacheDirectory: true
-                });
+    const handleSelectAndConfirm = () =>
+        run(
+            Effect.gen(function* () {
+                const result = yield* Effect.promise(() =>
+                    DocumentPicker.getDocumentAsync({
+                        type: ['application/x-sqlite3', 'application/zip', 'application/octet-stream', '*/*'],
+                        copyToCacheDirectory: true
+                    })
+                );
                 const { uri } = result.assets?.at(0) ?? {};
 
                 if (result.canceled || !isNotEmptyString(uri)) {
-                    return null;
+                    return;
                 }
 
-                const isBackupUnencrypted = await appRuntime.runPromise(
-                    Effect.flatMap(DatabaseImportService, databaseImportService => databaseImportService.canOpenBackup(uri, null))
-                );
+                const databaseImportService = yield* DatabaseImportService;
+                const isBackupUnencrypted = yield* databaseImportService.canOpenBackup(uri, null);
+                const confirmMessage = isBackupUnencrypted
+                    ? t`Importing a database will replace all current data. The app will restart after import. This action cannot be undone.`
+                    : t`This backup is protected by a PIN. Importing it will replace all current data and its PIN becomes your app PIN. The app will restart after import. This action cannot be undone.`;
+                const confirmed = yield* confirmAlert({
+                    title: t`Import Database`,
+                    message: confirmMessage,
+                    confirmText: t`Import Database`,
+                    cancelText: t`Cancel`,
+                    isDestructive: true
+                });
 
-                return { uri, isBackupUnencrypted };
-            } catch (error) {
-                showImportError(error);
+                if (!confirmed) {
+                    return;
+                }
 
-                return null;
-            }
-        });
+                if (isBackupUnencrypted) {
+                    yield* databaseImportService.importFromUri(uri, null);
 
-    const handleSelectAndConfirm = async () => {
-        const pickedBackup = await pickBackup();
+                    return;
+                }
 
-        if (!isDefined(pickedBackup)) {
-            return;
-        }
-
-        const { uri, isBackupUnencrypted } = pickedBackup;
-        const confirmMessage = isBackupUnencrypted
-            ? t`Importing a database will replace all current data. The app will restart after import. This action cannot be undone.`
-            : t`This backup is protected by a PIN. Importing it will replace all current data and its PIN becomes your app PIN. The app will restart after import. This action cannot be undone.`;
-        const confirmed = await confirmAlert({
-            title: t`Import Database`,
-            message: confirmMessage,
-            confirmText: t`Import Database`,
-            cancelText: t`Cancel`,
-            isDestructive: true
-        });
-
-        if (!confirmed) {
-            return;
-        }
-
-        if (isBackupUnencrypted) {
-            await importFromUri(uri, null);
-
-            return;
-        }
-
-        openImportBackupPin(uri, backupPin => {
-            if (isNotEmptyString(backupPin)) {
-                void importFromUri(uri, backupPin);
-            }
-        });
-    };
+                openImportBackupPin(uri, backupPin => {
+                    if (isNotEmptyString(backupPin)) {
+                        void importFromUri(uri, backupPin);
+                    }
+                });
+            }).pipe(Effect.catchTags(importErrorHandlers), toastOnFailure(t`Could not select database backup`))
+        );
 
     return { selectAndRestore: handleSelectAndConfirm, isLoading };
 };

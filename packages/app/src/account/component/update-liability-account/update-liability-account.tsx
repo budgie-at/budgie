@@ -13,7 +13,6 @@ import { CreateAccountCurrencyField } from '../../../@generic/component/create-a
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
 import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { AccountSyncCard } from '../../../sync/component/account-sync-card/account-sync-card';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { ACCOUNT_ICON } from '../../constant/account-icon.constant';
@@ -38,9 +37,7 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
     };
 
     const { control, handleSubmit, instrument, isSubmitting } = useLiabilityAccountForm(formValues, values =>
-        appRuntime.runPromise(
-            Effect.flatMap(AccountService, accountService => accountService.updateById(account.id, Struct.omit(values, ['type'])))
-        )
+        Effect.flatMap(AccountService, accountService => accountService.updateById(account.id, Struct.omit(values, ['type'])))
     );
 
     const fields = {

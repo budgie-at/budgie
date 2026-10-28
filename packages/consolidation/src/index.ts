@@ -1,5 +1,6 @@
 export { ConsolidationCoordinatorService } from './auto/service/consolidation-coordinator.service';
-export { consolidationScopeService } from './auto/service/consolidation-scope.service';
+export { buildConsolidationScopeFromTransactions } from './auto/utils/build-consolidation-scope-from-transactions.util';
+export { mergeConsolidationScopes } from './auto/utils/merge-consolidation-scopes.util';
 export { P2pFiatDirectionEnum } from './auto/enum/p2p-fiat-direction.enum';
 export { P2P_ORDER_EXTERNAL_ID_MARKER } from './shared/constant/transfer-pair-p2p-fiat.constant';
 export { ConsolidationExecutorService } from './executor/service/consolidation-executor.service';

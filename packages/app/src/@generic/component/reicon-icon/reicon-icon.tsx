@@ -4,7 +4,7 @@ import { withUniwind } from 'uniwind';
 
 import { isDefined } from '@rnw-community/shared';
 
-import REICON_GLYPHS from '../../constant/reicon-glyphs.json';
+import { REICON_FILLED_GLYPHS, REICON_GLYPH_STYLES, REICON_GLYPHS } from '../../constant/reicon-glyphs.constant';
 import { resolveReiconIcon } from '../../utils/resolve-reicon-icon.util';
 import { IconSelector } from '../icon/icon.selector';
 
@@ -19,22 +19,29 @@ type Props = ApplyUniwind<Omit<IconProps, 'secondaryColor' | 'weight'>> &
     );
 
 const StyledSvg = withUniwind(Svg);
-const OUTLINE_GLYPHS: Partial<Record<ReiconIconNameEnum, readonly Readonly<Record<string, string | undefined>>[]>> = REICON_GLYPHS.outline;
-const FILLED_GLYPHS: Partial<Record<ReiconIconNameEnum, readonly Readonly<Record<string, string | undefined>>[]>> = REICON_GLYPHS.filled;
-const FALLBACK_GLYPH = OUTLINE_GLYPHS[ReiconIconNameEnum.HELP_CIRCLE] ?? [];
+const FALLBACK_GLYPH = REICON_GLYPHS[ReiconIconNameEnum.HELP_CIRCLE] ?? (() => []);
 
 export const ReiconIcon = ({ icon, size = 24, weight, strokeWidth, testID, ...rest }: Props) => {
     const reiconIcon = resolveReiconIcon(icon);
-    const filledGlyph = weight === 'Filled' ? FILLED_GLYPHS[reiconIcon] : null;
-    const glyph = filledGlyph ?? OUTLINE_GLYPHS[reiconIcon];
-    const paths = glyph ?? FALLBACK_GLYPH;
+    const filledGlyph = weight === 'Filled' ? REICON_FILLED_GLYPHS[reiconIcon] : null;
+    const glyph = filledGlyph ?? REICON_GLYPHS[reiconIcon];
+    const paths = (glyph ?? FALLBACK_GLYPH)();
     const svgTestID = isDefined(glyph) ? testID : IconSelector.Fallback;
 
     return (
         <StyledSvg width={size} height={size} viewBox="0 0 24 24" fill="none" {...rest} testID={svgTestID}>
-            {paths.map((path, index) => (
-                <Path key={index} {...path} {...(isDefined(strokeWidth) && isDefined(path['strokeWidth']) && { strokeWidth })} />
-            ))}
+            {paths.map(([styleIndex, pathData], index) => {
+                const style = REICON_GLYPH_STYLES[styleIndex];
+
+                return (
+                    <Path
+                        key={index}
+                        {...style}
+                        d={pathData}
+                        {...(isDefined(strokeWidth) && isDefined(style['strokeWidth']) && { strokeWidth })}
+                    />
+                );
+            })}
         </StyledSvg>
     );
 };

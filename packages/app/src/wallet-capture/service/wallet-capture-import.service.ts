@@ -1,4 +1,4 @@
-import { consolidationScopeService } from '@budgie/consolidation';
+import { buildConsolidationScopeFromTransactions } from '@budgie/consolidation';
 import {
     AccountRepository,
     AccountTypeEnum,
@@ -135,7 +135,7 @@ export class WalletCaptureImportService extends Context.Service<WalletCaptureImp
         });
 
         const enqueueConsolidation = (importedCaptures: readonly Pick<TransactionEntityInterface, 'id' | 'operatedAt'>[]) => {
-            const scope = consolidationScopeService.buildFromTransactions([...importedCaptures]);
+            const scope = buildConsolidationScopeFromTransactions([...importedCaptures]);
 
             return isDefined(scope) ? transferConsolidationDrainerService.enqueue(scope) : Effect.void;
         };

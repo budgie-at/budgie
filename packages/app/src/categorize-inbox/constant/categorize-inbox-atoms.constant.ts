@@ -1,37 +1,57 @@
 import { TransactionCategorizeInboxRepository } from '@budgie/categorization';
 import { ConsolidationCoordinatorService } from '@budgie/consolidation';
+import {
+    AccountEntityTable,
+    CategoryEntityTable,
+    DebtEventEntityTable,
+    InstrumentEntityTable,
+    MccCategoryEntityTable,
+    TransactionEntityTable,
+    TransactionEntryEntityTable,
+    TransactionTagsEntityTable
+} from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 
 import { databaseQueryAtom } from '../../@generic/utils/database-query-atom.util';
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
-import { TRANSACTION_LIST_TABLES } from '../../transaction/constant/transaction-list-tables.constant';
 
 import type { TransactionFilterInterface } from '@budgie/contracts';
 
+const INBOX_ROWS_TABLES = [
+    TransactionEntityTable,
+    TransactionEntryEntityTable,
+    TransactionTagsEntityTable,
+    AccountEntityTable,
+    InstrumentEntityTable,
+    MccCategoryEntityTable,
+    CategoryEntityTable,
+    DebtEventEntityTable
+];
+
 export const uncategorizedRowsAtom = databaseQueryFamily(
-    TRANSACTION_LIST_TABLES,
+    INBOX_ROWS_TABLES,
     TransactionCategorizeInboxRepository,
     (repository, filters: TransactionFilterInterface) => repository.findUncategorizedRows(filters)
 );
 
 export const untaggedRowsAtom = databaseQueryFamily(
-    TRANSACTION_LIST_TABLES,
+    INBOX_ROWS_TABLES,
     TransactionCategorizeInboxRepository,
     (repository, filters: TransactionFilterInterface) => repository.findUntaggedRows(filters)
 );
 
 export const categoryEvidenceAtom = databaseQueryAtom(
-    TRANSACTION_LIST_TABLES,
+    [TransactionEntityTable, TransactionEntryEntityTable, CategoryEntityTable],
     Effect.flatMap(TransactionCategorizeInboxRepository, repository => repository.findCategoryEvidence())
 );
 
 export const tagEvidenceAtom = databaseQueryAtom(
-    TRANSACTION_LIST_TABLES,
+    [TransactionEntityTable, TransactionEntryEntityTable, TransactionTagsEntityTable],
     Effect.flatMap(TransactionCategorizeInboxRepository, repository => repository.findTagEvidence())
 );
 
 export const atmCashWithdrawalTransactionIdsAtom = databaseQueryFamily(
-    TRANSACTION_LIST_TABLES,
+    [TransactionEntityTable, TransactionEntryEntityTable, AccountEntityTable, InstrumentEntityTable, MccCategoryEntityTable],
     ConsolidationCoordinatorService,
     (consolidationCoordinatorService, transactionIds: readonly number[]) =>
         consolidationCoordinatorService.findAtmCashWithdrawalTransactionIds(transactionIds)

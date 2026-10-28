@@ -20,22 +20,30 @@ interface Props<T extends RuleConditionFormFieldEnum> {
     readonly sheetTitle: string;
     readonly defaultLabel: string;
     readonly testID?: string;
+    readonly onValueChange?: (value: RuleFieldValueType<T>) => void;
 }
 
 export const RuleConditionEnumSelector = <T extends RuleConditionFormFieldEnum>(props: Props<T>) => {
-    const { index, options, fieldName, label, sheetTitle, defaultLabel, testID } = props;
+    const { index, options, fieldName, label, sheetTitle, defaultLabel, testID, onValueChange } = props;
     const { control } = useFormContext<RuleCreateInputInterface>();
 
-    const renderSelector = ({ field: { value, onChange } }: UseControllerReturn<RuleCreateInputInterface, `conditions.${number}.${T}`>) => (
-        <RuleOptionPicker
-            value={value}
-            onChange={onChange}
-            options={options}
-            sheetTitle={sheetTitle}
-            defaultLabel={defaultLabel}
-            testID={testID}
-        />
-    );
+    const renderSelector = ({ field: { value, onChange } }: UseControllerReturn<RuleCreateInputInterface, `conditions.${number}.${T}`>) => {
+        const handleChange = (selectedValue: RuleFieldValueType<T>) => {
+            onChange(selectedValue);
+            onValueChange?.(selectedValue);
+        };
+
+        return (
+            <RuleOptionPicker
+                value={value}
+                onChange={handleChange}
+                options={options}
+                sheetTitle={sheetTitle}
+                defaultLabel={defaultLabel}
+                testID={testID}
+            />
+        );
+    };
 
     return (
         <FormItem className="flex-1" label={label}>

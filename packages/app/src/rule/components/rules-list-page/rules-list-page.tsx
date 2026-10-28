@@ -6,6 +6,7 @@ import { View } from 'react-native';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
+import { SearchablePageList } from '../../../@generic/component/searchable-page-list/searchable-page-list';
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
 import { LEGEND_LIST_HEADER_HEIGHT } from '../../../@generic/constant/legend-list.constant';
 import { RULES_LIST_SIZING } from '../../constant/rules-list-sizing.constant';
@@ -150,19 +151,22 @@ export const RulesListPage = ({ matchingRuleIds = [], onGoBack }: Props) => {
     return (
         <SearchablePage
             testID={RulesPageSelector.Page}
-            onGoBack={onGoBack}
-            onDelete={handleDeleteRule}
             title={t`Rules`}
-            searchPlaceholder={t`Search...`}
-            data={searchedRules}
-            renderCard={renderCard}
+            onGoBack={onGoBack}
             search={search}
+            searchPlaceholder={t`Search...`}
             onSearchChange={setSearch}
             searchInputTestID={RulesPageSelector.SearchInput}
-            emptyState={<RuleEmptyState search={search} />}
-            listHeader={listHeaderComponent}
-            estimatedHeaderSize={LEGEND_LIST_HEADER_HEIGHT}
-            sizing={RULES_LIST_SIZING}
-        />
+        >
+            <SearchablePageList
+                data={searchedRules}
+                emptyState={<RuleEmptyState search={search} />}
+                onDelete={handleDeleteRule}
+                renderCard={renderCard}
+                listHeader={listHeaderComponent}
+                estimatedHeaderSize={LEGEND_LIST_HEADER_HEIGHT}
+                sizing={RULES_LIST_SIZING}
+            />
+        </SearchablePage>
     );
 };

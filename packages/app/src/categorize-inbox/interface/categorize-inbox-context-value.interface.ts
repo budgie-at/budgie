@@ -5,7 +5,7 @@ import { CategorizeInboxStrategyInterface } from './categorize-inbox-strategy.in
 import { CategorizeInboxVisibilityInterface } from './categorize-inbox-visibility.interface';
 
 export interface CategorizeInboxContextValueInterface extends CategorizeInboxVisibilityInterface {
-    readonly strategy: CategorizeInboxStrategyInterface;
+    readonly strategy: CategorizeInboxStrategyInterface | null;
     readonly remainingCount: number;
     readonly categorizedCount: number;
     readonly acceptableAssignments: CategorizeInboxAssignmentInterface[];

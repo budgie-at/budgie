@@ -1,116 +1,44 @@
-import { useLingui } from '@lingui/react/macro';
-import { cva } from 'class-variance-authority';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Text, View } from 'react-native';
 
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
-import { buildBudgetProgressBarMetrics } from '../../utils/build-budget-progress-bar-metrics.util';
-import { BudgetBarTone, resolveBudgetBarTone } from '../../utils/resolve-budget-bar-tone.util';
+import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
+import { useBudgetProgressLabels } from '../../hooks/use-budget-progress-labels.hook';
+import { BudgetProgressTrack } from '../budget-progress-track/budget-progress-track';
 
 interface Props {
-    readonly amountDecimalPlaces?: number;
-    readonly currencySymbol?: string;
-    readonly isAmountLight?: boolean;
-    readonly isCompact?: boolean;
-    readonly isSummaryVisible?: boolean;
+    readonly currencySymbol: string;
     readonly spent: number;
     readonly limit: number;
-    readonly testID?: string;
-    readonly spentTestID?: string;
-    readonly remainingTestID?: string;
+    readonly spentTestID: string;
+    readonly remainingTestID: string;
 }
 
-const barVariants = cva<{ tone: Record<BudgetBarTone, string> }>('h-full rounded-full', {
-    variants: {
-        tone: {
-            green: 'bg-positive-foreground',
-            yellow: 'bg-warning-foreground',
-            red: 'bg-destructive-foreground'
-        }
-    }
-});
-
-const amountTextVariants = cva('text-primary text-md', {
-    variants: {
-        isAmountLight: {
-            false: 'font-semibold',
-            true: 'font-medium'
-        }
-    }
-});
-
-export const BudgetProgressBar = (props: Props) => {
-    const {
-        amountDecimalPlaces,
-        currencySymbol = '',
-        isAmountLight = false,
-        isCompact = false,
-        isSummaryVisible = true,
+export const BudgetProgressBar = ({ currencySymbol, spent, limit, spentTestID, remainingTestID }: Props) => {
+    const decimalPlaces = useAtomValue(decimalPlacesAtom);
+    const { amountLabel, percentLabel, remainingLabel, remainingAmountLabel } = useBudgetProgressLabels(
         spent,
         limit,
-        testID,
-        spentTestID,
-        remainingTestID
-    } = props;
-    const { t } = useLingui();
-    const { decimalPlaces } = useSettingsContext();
-    const effectiveDecimalPlaces = amountDecimalPlaces ?? decimalPlaces;
-    const formatDigits = useFormatDigits(effectiveDecimalPlaces);
-    const metrics = buildBudgetProgressBarMetrics(spent, limit);
-    const amountLabel = `${formatDigits(metrics.displaySpent, currencySymbol)} / ${formatDigits(metrics.displayLimit, currencySymbol)}`;
-
-    const bar = (
-        <View className="h-3 bg-secondary-corner rounded-full overflow-hidden">
-            <View className={barVariants({ tone: resolveBudgetBarTone(metrics.ratio) })} style={metrics.widthStyle} />
-        </View>
+        currencySymbol,
+        decimalPlaces
     );
-
-    const spentText = (
-        <Text className={amountTextVariants({ isAmountLight })} testID={spentTestID} accessible accessibilityLabel={amountLabel}>
-            {amountLabel}
-        </Text>
-    );
-
-    const percentText = <Text className="text-secondary-foreground text-sm">{metrics.percentLabel}</Text>;
-
-    const remainingTexts = (
-        <>
-            <Text className="text-secondary-foreground text-sm">{metrics.isOverBudget ? t`Over budget` : t`Left`}</Text>
-            <Text testID={remainingTestID} className={amountTextVariants({ isAmountLight })}>
-                {formatDigits(metrics.displayRemaining, currencySymbol)}
-            </Text>
-        </>
-    );
-
-    if (isCompact) {
-        return (
-            <View testID={testID} className="gap-y-md">
-                {bar}
-
-                <View className="flex-row items-center justify-between">
-                    <View className="flex-row items-center gap-x-sm">
-                        {spentText}
-                        {percentText}
-                    </View>
-
-                    <View className="flex-row items-center gap-x-xs">{remainingTexts}</View>
-                </View>
-            </View>
-        );
-    }
 
     return (
-        <View testID={testID} className="gap-y-md">
-            {isSummaryVisible ? (
-                <View className="flex-row items-center justify-between">
-                    {spentText}
-                    {percentText}
-                </View>
-            ) : null}
+        <View className="gap-y-md">
+            <View className="flex-row items-center justify-between">
+                <Text className="text-primary text-md font-semibold" testID={spentTestID} accessible accessibilityLabel={amountLabel}>
+                    {amountLabel}
+                </Text>
+                <Text className="text-secondary-foreground text-sm">{percentLabel}</Text>
+            </View>
 
-            {bar}
+            <BudgetProgressTrack spent={spent} limit={limit} />
 
-            {isSummaryVisible ? <View className="flex-row items-center justify-between">{remainingTexts}</View> : null}
+            <View className="flex-row items-center justify-between">
+                <Text className="text-secondary-foreground text-sm">{remainingLabel}</Text>
+                <Text testID={remainingTestID} className="text-primary text-md font-semibold">
+                    {remainingAmountLabel}
+                </Text>
+            </View>
         </View>
     );
 };

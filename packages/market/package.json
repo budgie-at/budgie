@@ -1,6 +1,6 @@
 {
     "name": "@budgie/market",
-    "version": "6.123.0",
+    "version": "6.124.0",
     "private": true,
     "description": "Exchange rates, market data and base valuation services",
     "sideEffects": false,
@@ -29,12 +29,12 @@
         "@rnw-community/shared": "^2.28.0",
         "date-fns": "^4.4.0",
         "drizzle-orm": "1.0.0-rc.4",
-        "effect": "4.0.5"
+        "effect": "4.0.6"
     },
     "devDependencies": {
         "@budgie-at/test-kit": "workspace:*",
-        "@effect/sql-sqlite-node": "4.0.5",
-        "@effect/vitest": "4.0.5",
+        "@effect/sql-sqlite-node": "4.0.6",
+        "@effect/vitest": "4.0.6",
         "@types/node": "26.6.5",
         "vitest": "^5.0.5"
     }

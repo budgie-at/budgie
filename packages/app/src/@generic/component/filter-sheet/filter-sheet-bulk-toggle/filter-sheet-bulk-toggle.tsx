@@ -9,7 +9,7 @@ interface Props {
     readonly selectedCount: number;
     readonly onSelectAll: EmptyFn;
     readonly onDeselectAll: EmptyFn;
-    readonly disabled?: boolean;
+    readonly isLoading: boolean;
     readonly selectAllTestID?: string;
     readonly deselectAllTestID?: string;
 }
@@ -21,8 +21,9 @@ const LAYOUT = LinearTransition.duration(ANIMATION_DURATION);
 const TOGGLE_WIDTH = 116;
 
 export const FilterSheetBulkToggle = (props: Props) => {
-    const { selectedCount, onSelectAll, onDeselectAll, disabled = false, selectAllTestID, deselectAllTestID } = props;
+    const { selectedCount, onSelectAll, onDeselectAll, isLoading, selectAllTestID, deselectAllTestID } = props;
     const hasSelection = isPositiveNumber(selectedCount);
+    const disabled = isLoading && !hasSelection;
     const handlePress = hasSelection ? onDeselectAll : onSelectAll;
     const testID = hasSelection ? deselectAllTestID : selectAllTestID;
     const pressableStyle = { width: TOGGLE_WIDTH };

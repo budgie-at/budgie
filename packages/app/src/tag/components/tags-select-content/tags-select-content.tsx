@@ -14,9 +14,7 @@ interface Props {
     readonly data: FlatListDataItem<TagEntityInterface>[];
     readonly selectedTagIds: number[];
     readonly primaryTagId?: number | null;
-    readonly enablePrimarySelection?: boolean;
     readonly isLoading?: boolean;
-    readonly alignToBottom?: boolean;
     readonly additionalBottomPadding?: number;
     readonly topOffset?: number;
     readonly onSelect: (tagId: number) => void;
@@ -33,9 +31,7 @@ export const TagsSelectContent = (props: Props) => {
         data,
         selectedTagIds,
         primaryTagId = null,
-        enablePrimarySelection = false,
         isLoading = false,
-        alignToBottom = false,
         additionalBottomPadding = FLOATING_DONE_BUTTON_BOTTOM_SPACE,
         topOffset,
         onSelect,
@@ -43,24 +39,21 @@ export const TagsSelectContent = (props: Props) => {
     } = props;
     const { t } = useLingui();
 
-    const renderItem = ({ item }: { item: FlatListDataItem<TagEntityInterface> }) => {
-        const handlePrimarySelect = enablePrimarySelection ? onPrimarySelect : void 0;
-
-        return item.isEmpty ? (
+    const renderItem = ({ item }: { item: FlatListDataItem<TagEntityInterface> }) =>
+        item.isEmpty ? (
             <TagsSelectorCard className="opacity-0" isSelected={false} onSelect={emptyFn} variant="static" title="" id={0} />
         ) : (
             <TagsSelectorCard
                 isSelected={selectedTagIds.includes(item.id)}
                 isPrimary={primaryTagId === item.id}
                 onSelect={onSelect}
-                onPrimarySelect={handlePrimarySelect}
+                onPrimarySelect={onPrimarySelect}
                 variant="static"
                 title={item.title}
                 id={item.id}
                 testID={TagsSelectorModalSelector.Card(item.title)}
             />
         );
-    };
 
     const listEmptyComponent = (
         <View className="flex-1 justify-center">
@@ -80,7 +73,6 @@ export const TagsSelectContent = (props: Props) => {
             itemHeight={TAG_CARD_HEIGHT}
             listEmptyComponent={listEmptyComponent}
             isLoading={isLoading}
-            alignToBottom={alignToBottom}
             additionalBottomPadding={additionalBottomPadding}
             topOffset={topOffset}
         />

@@ -1,14 +1,16 @@
 import { MccCategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
-import { FlatList, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
-import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { emptyFn, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
+import { BudgieLegendList } from '../@generic/component/budgie-legend-list/budgie-legend-list';
 import { CircleIcon } from '../@generic/component/circle-icon/circle-icon';
 import { EmptyState } from '../@generic/component/empty-state/empty-state';
 import { SelectorCard } from '../@generic/component/selector-card/selector-card';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
+import { LEGEND_LIST_STYLE } from '../@generic/constant/legend-list.constant';
 import { useFormsheetListContentStyle } from '../@generic/hook/use-formsheet-list-content-style/use-formsheet-list-content-style.hook';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { useGetAllMccCategoriesQuery } from '../mcc-category/query/use-get-all-mcc-categories.query';
@@ -41,7 +43,7 @@ export default function RuleMccSelectorModal() {
     const [, resolveRuleMccSelector, dismissRuleMccSelector] = useRuleMccSelectorModal();
     useModalDismiss(dismissRuleMccSelector);
     const currentParams = useRuleMccSelectorModalParams();
-    const contentContainerStyle = useFormsheetListContentStyle();
+    const contentContainerStyle = { ...useFormsheetListContentStyle(), gap: 10 };
     const [search, setSearch] = useState('');
     const { mccCategories } = useGetAllMccCategoriesQuery();
 
@@ -52,15 +54,16 @@ export default function RuleMccSelectorModal() {
 
     const renderItem = ({ item }: { item: MccCategoryEntityInterface }) => {
         const testID = RuleMccSelectorModalSelector.Card(item.mcc);
+        const isSelected = item.mcc === selectedMcc;
+        const handleSelect = isSelected ? emptyFn : () => void resolveRuleMccSelector(item.mcc);
 
         return (
             <SelectorCard
                 testID={testID}
-                identifier={item.mcc}
-                isSelected={item.mcc === selectedMcc}
+                isSelected={isSelected}
                 title={formatMccDisplay(item)}
                 subtitle={<Text className="text-secondary-foreground text-sm">{item.fullDescription}</Text>}
-                onSelect={resolveRuleMccSelector}
+                onPress={handleSelect}
                 iconSlot={<CircleIcon icon={UserIconNameEnum.CreditCard} size={40} iconSize={20} variant="ghost" border={false} />}
             />
         );
@@ -71,15 +74,16 @@ export default function RuleMccSelectorModal() {
             <SelectorModalSearchHeader search={search} onSearchChange={setSearch} placeholder={t`Search by code or description...`} />
 
             {isNotEmptyArray(filteredCategories) ? (
-                <FlatList
-                    contentContainerStyle={contentContainerStyle}
-                    keyboardShouldPersistTaps="handled"
-                    data={filteredCategories}
-                    keyExtractor={keyExtractor}
-                    renderItem={renderItem}
-                    className="absolute inset-0 bg-primary-reverse pt-3 px-xl"
-                    contentContainerClassName="gap-y-lg"
-                />
+                <View className="absolute inset-0 bg-primary-reverse pt-3 px-xl">
+                    <BudgieLegendList
+                        style={LEGEND_LIST_STYLE}
+                        contentContainerStyle={contentContainerStyle}
+                        keyboardShouldPersistTaps="handled"
+                        data={filteredCategories}
+                        keyExtractor={keyExtractor}
+                        renderItem={renderItem}
+                    />
+                </View>
             ) : (
                 <EmptyState circleIcon={getEmptyIcon(search)} title={emptyTitle} description={emptyDescription} />
             )}

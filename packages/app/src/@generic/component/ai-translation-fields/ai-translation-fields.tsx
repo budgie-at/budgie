@@ -25,7 +25,6 @@ interface Props {
     readonly onRegenerate: () => void;
     readonly onTitleEnPress?: () => void;
     readonly onTitleTagsPress?: () => void;
-    readonly animationDelay?: number;
     readonly modelStatus: ModelStatusInterface;
 }
 
@@ -35,24 +34,14 @@ const FULL_ROTATION = 360;
 const ROTATION_DURATION = 1000;
 
 export const AiTranslationFields = (props: Props) => {
-    const {
-        titleEn,
-        titleTags,
-        isRegenerating,
-        disabled = false,
-        onRegenerate,
-        onTitleEnPress,
-        onTitleTagsPress,
-        animationDelay = DEFAULT_ANIMATION_DELAY,
-        modelStatus
-    } = props;
+    const { titleEn, titleTags, isRegenerating, disabled = false, onRegenerate, onTitleEnPress, onTitleTagsPress, modelStatus } = props;
     const { t } = useLingui();
     const rotation = useSharedValue(0);
 
     const englishValue = titleEn ?? t`Not generated`;
     const tagsValue = titleTags ?? t`Not generated`;
 
-    const tagsDelay = animationDelay + FIELD_DELAY_OFFSET;
+    const tagsDelay = DEFAULT_ANIMATION_DELAY + FIELD_DELAY_OFFSET;
 
     useEffect(() => {
         if (isRegenerating) {
@@ -89,7 +78,7 @@ export const AiTranslationFields = (props: Props) => {
                     icon={UserIconNameEnum.Globe}
                     onPress={onTitleEnPress}
                     disabled={isTitleEnPressDisabled}
-                    delay={animationDelay}
+                    delay={DEFAULT_ANIMATION_DELAY}
                     containerClassName={`px-xl py-lg border-b border-secondary-corner ${fieldOpacity}`}
                     testID={AiTranslationFieldsSelector.EnglishField}
                 >

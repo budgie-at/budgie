@@ -144,7 +144,7 @@ export const createTestInlineShimPlugin = (): TestInlineShimPluginInterface => (
         }
 
         if (id.endsWith('.sql')) {
-            return `export default ${JSON.stringify(readFileSync(id, 'utf8'))};`;
+            return `export default () => ${JSON.stringify(readFileSync(id, 'utf8').split('--> statement-breakpoint'))};`;
         }
 
         return null;

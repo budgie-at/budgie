@@ -1,4 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import * as Effect from 'effect/Effect';
 import { ReactNode } from 'react';
 import { SharedValue } from 'react-native-reanimated';
 
@@ -6,6 +7,8 @@ import { AI_SUBSYSTEM_CARD_VISUALS } from '../../constant/ai-subsystem-card-visu
 import { AiSubsystemStatusSnapshotInterface } from '../../interface/ai-subsystem-status-snapshot.interface';
 import { AiSubsystemIcon } from '../ai-subsystem-icon/ai-subsystem-icon';
 import { AiSubsystemStatusCardLayout } from '../ai-subsystem-status-card-layout/ai-subsystem-status-card-layout';
+
+import type { AppServices } from '../../../@generic/runtime/app.runtime';
 
 const ICON_SIZE = 20;
 const CIRCLE_SIZE = 36;
@@ -17,7 +20,7 @@ interface Props {
     readonly rebuildAlertTitle: string;
     readonly rebuildAlertMessage: string;
     readonly rebuildLogKey: string;
-    readonly onRebuild: () => Promise<void>;
+    readonly onRebuild: Effect.Effect<void, unknown, AppServices>;
 }
 
 export const AiSubsystemCard = ({ snapshot, icon, title, rebuildAlertTitle, rebuildAlertMessage, rebuildLogKey, onRebuild }: Props) => {

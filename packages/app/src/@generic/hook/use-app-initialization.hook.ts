@@ -1,5 +1,4 @@
 import * as Effect from 'effect/Effect';
-import * as Fiber from 'effect/Fiber';
 import * as BackgroundTask from 'expo-background-task';
 import * as SplashScreen from 'expo-splash-screen';
 import * as TaskManager from 'expo-task-manager';
@@ -89,18 +88,21 @@ const scheduleAppServicesInitialization = Effect.sleep(STARTUP_SERVICE_DELAY_MS)
     Effect.andThen(Effect.forkDetach(logAndContinue(initializeAppServices)))
 );
 
+const hideSplashScreen = Effect.sleep(SPLASH_HIDE_DELAY_MS).pipe(Effect.andThen(Effect.promise(() => SplashScreen.hideAsync())));
+
+const startup = Effect.all([logAndContinue(scheduleAppServicesInitialization), logAndContinue(hideSplashScreen)], {
+    concurrency: 'unbounded',
+    discard: true
+});
+
 export const useAppInitialization = (success: boolean) => {
     useEffect(() => {
         if (!success) {
             return emptyFn;
         }
 
-        const appServicesInitialization = appRuntime.runFork(scheduleAppServicesInitialization);
-        const splashHideTimer = setTimeout(() => void SplashScreen.hideAsync(), SPLASH_HIDE_DELAY_MS);
+        const startupFiber = appRuntime.runFork(startup);
 
-        return () => {
-            appRuntime.runFork(Fiber.interrupt(appServicesInitialization));
-            clearTimeout(splashHideTimer);
-        };
+        return () => void startupFiber.interruptUnsafe();
     }, [success]);
 };

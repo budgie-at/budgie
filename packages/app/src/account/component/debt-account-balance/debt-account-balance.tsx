@@ -1,4 +1,5 @@
 import { AccountDebtTypeEnum, UserIconNameEnum, isBorrowLikeDebtType } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
@@ -8,7 +9,7 @@ import { Icon } from '../../../@generic/component/icon/icon';
 import { ProgressTrack } from '../../../@generic/component/progress-track/progress-track';
 import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
 import { DEBT_REMAINING_LABEL } from '../../constant/debt-remaining-label.constant';
 import { DEBT_SETTLED_LABEL } from '../../constant/debt-settled-label.constant';
 import { getDebtProgressDisplayState } from '../../utils/get-debt-progress-display-state.util';
@@ -29,7 +30,7 @@ interface Props {
 export const DebtAccountBalance = ({ accountId, debtType, instrumentSymbol, summary }: Props) => {
     const { t } = useLingui();
     const protectAmount = useProtectedAmountLabel();
-    const { decimalPlaces } = useSettingsContext();
+    const decimalPlaces = useAtomValue(decimalPlacesAtom);
 
     if (!isDefined(summary)) {
         return <DebtAccountBalanceSkeleton />;

@@ -7,7 +7,7 @@ import type { DeleteTransactionOptionsInterface } from '../interface/delete-tran
 export const useDeleteTransaction = () => {
     const { t } = useLingui();
 
-    const deleteTransaction = async (transactionId: number, options?: DeleteTransactionOptionsInterface) => {
+    const deleteTransaction = (transactionId: number, options?: DeleteTransactionOptionsInterface) => {
         const isConsolidated = options?.isConsolidated === true;
         const title = isConsolidated ? t`Unconsolidate transaction?` : t`Are you sure?`;
         const message = isConsolidated

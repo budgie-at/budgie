@@ -6,13 +6,14 @@ import {
     InstrumentEntityTable,
     convertFromMicroUnits
 } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
-import { useSettingsContext } from '../../settings/context/settings.context';
+import { decimalPlacesAtom, defaultInstrumentIdAtom } from '../../settings/constants/settings-atoms.constant';
 import { ACCOUNT_CONVERTED_BALANCE_TABLES } from '../constant/account-balance-tables.constant';
 import { HomeSectionKindEnum } from '../enum/home-section-kind.enum';
 import { buildIntegrationProviderMap } from '../utils/build-integration-provider-map.util';
@@ -184,8 +185,9 @@ const isSettledDebtAccount = (
 };
 
 export const useHomePageDataQuery = () => {
-    const { decimalPlaces, defaultInstrument } = useSettingsContext();
-    const result = useLiveAtomValue(homeAccountRowsAtom(defaultInstrument.id));
+    const decimalPlaces = useAtomValue(decimalPlacesAtom);
+    const defaultInstrumentId = useAtomValue(defaultInstrumentIdAtom);
+    const result = useLiveAtomValue(homeAccountRowsAtom(defaultInstrumentId));
     const data = AsyncResult.getOrElse(result, () => []);
     const accounts = data.map(row => {
         const account: AccountWithSyncEntityInterface = {

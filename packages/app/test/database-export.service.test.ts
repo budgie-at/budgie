@@ -47,6 +47,7 @@ const makeExportLayer = Effect.fnUntraced(function* (settingsRef: Ref.Ref<Settin
     const client = yield* SqlClient.make({
         acquirer: Effect.succeed(recordingConnection),
         compiler: Statement.makeCompilerSqlite(),
+        driver: 'recording',
         spanAttributes: []
     }).pipe(Effect.provide(Reactivity.layer));
 

@@ -9,8 +9,7 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { FilterSheetCheckbox } from '../../../@generic/component/filter-sheet/filter-sheet-checkbox/filter-sheet-checkbox';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useAnalyticsHistorySyncsQuery } from '../../../sync/query/use-analytics-history-syncs.query';
 import { getHistoryImportStatusMessage } from '../../../sync/utils/get-history-import-status-message.util';
 import { TransactionFiltersSelector } from '../../../transaction/components/transaction-filters/transaction-filters.selector';
@@ -35,8 +34,7 @@ export const AccountFilterCard = ({ isSelected, account, onSelect }: Props) => {
     const { t } = useLingui();
     const { syncs } = useAnalyticsHistorySyncsQuery();
     const history = syncs.find(row => row.account.id === account.id);
-    const { decimalPlaces } = useSettingsContext();
-    const formatDigits = useFormatDigits(decimalPlaces);
+    const formatDigits = useDisplayFormatDigits();
 
     const { balance } = useAccountBalanceQuery(account.id);
 

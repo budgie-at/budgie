@@ -3,13 +3,11 @@ import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Trans, useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { aiTranslationStatusAtom } from '../../constant/ai-translation-status-atom.constant';
 import { AiTranslationStatusService } from '../../service/ai-translation-status.service';
 import { AiSubsystemCard } from '../ai-subsystem-card/ai-subsystem-card';
 
-const handleRebuild = () =>
-    appRuntime.runPromise(Effect.flatMap(AiTranslationStatusService, aiTranslationStatusService => aiTranslationStatusService.rebuild()));
+const rebuildEffect = Effect.flatMap(AiTranslationStatusService, aiTranslationStatusService => aiTranslationStatusService.rebuild());
 
 export const AiTranslationStatusCard = () => {
     const snapshot = useAtomValue(aiTranslationStatusAtom);
@@ -23,7 +21,7 @@ export const AiTranslationStatusCard = () => {
             rebuildAlertTitle={t`Rebuild translations`}
             rebuildAlertMessage={t`This re-translates every category and tag. Continue?`}
             rebuildLogKey="system:action:translation:rebuild:user-throw"
-            onRebuild={handleRebuild}
+            onRebuild={rebuildEffect}
         />
     );
 };

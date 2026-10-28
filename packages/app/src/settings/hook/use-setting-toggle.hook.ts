@@ -1,11 +1,9 @@
 import { SettingsCreateEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import * as Effect from 'effect/Effect';
-
-import { getErrorMessage } from '@rnw-community/shared';
 
 import { appRuntime } from '../../@generic/runtime/app.runtime';
-import { showErrorToast } from '../../@generic/utils/show-error-toast/show-error-toast';
+import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
+import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 import { updateSettingsMutation } from '../mutation/update-settings.mutation';
 
 import type { SettingToggleKey } from '../type/setting-toggle-key.type';
@@ -17,12 +15,7 @@ export const useSettingToggle = (settingKey: SettingToggleKey, errorTitle?: stri
         const input: Partial<Pick<SettingsCreateEntityInterface, SettingToggleKey>> = { [settingKey]: next };
 
         return appRuntime.runPromise(
-            updateSettingsMutation(input).pipe(
-                Effect.tapCause(Effect.logError),
-                Effect.catch(error =>
-                    Effect.sync(() => void showErrorToast(errorTitle ?? t`Could not update setting`, getErrorMessage(error)))
-                )
-            )
+            logAndContinue(updateSettingsMutation(input).pipe(toastOnFailure(errorTitle ?? t`Could not update setting`)))
         );
     };
 };

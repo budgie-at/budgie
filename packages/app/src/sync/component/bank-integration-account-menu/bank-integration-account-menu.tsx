@@ -10,9 +10,10 @@ import { ActionsMenuItem } from '../../../@generic/component/actions-menu-item/a
 import { ActionsMenu } from '../../../@generic/component/actions-menu/actions-menu';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
-import { useEffectAction } from '../../../@generic/hook/use-effect-action.hook';
+import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { testID } from '../../../@generic/utils/test-id.util';
+import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useArchiveAccount } from '../../../account/hooks/use-archive-account.hook';
 
 interface Props {
@@ -27,27 +28,31 @@ export const BankIntegrationAccountMenu = ({ accountId, rowTestID }: Props) => {
     const { t } = useLingui();
     const router = useRouter();
     const { handleArchive, isLoading } = useArchiveAccount(accountId, emptyFn);
-    const [runMarkExternal, isMarkingExternal] = useEffectAction(t`Could not mark account as external`);
+    const { isLoading: isMarkingExternal, run: runMarkExternal } = useSingleFlight();
 
     const handleDetails = () => void router.navigate({ pathname: '/account/[id]/details', params: { id: String(accountId) } });
     const handleEdit = () => void router.navigate({ pathname: '/account/[id]/update', params: { id: String(accountId) } });
     const handleArchivePress = () => void handleArchive();
-    const handleMarkExternal = async () => {
-        const confirmed = await confirmAlert({
-            title: t`Mark as External?`,
-            message: t`This account will be archived and its transfers will become income and expenses on your other accounts. This cannot be undone.`,
-            confirmText: t`Mark External`,
-            cancelText: t`Cancel`,
-            isDestructive: true
-        });
+    const handleMarkExternal = () =>
+        void runMarkExternal(
+            Effect.gen(function* () {
+                const confirmed = yield* confirmAlert({
+                    title: t`Mark as External?`,
+                    message: t`This account will be archived and its transfers will become income and expenses on your other accounts. This cannot be undone.`,
+                    confirmText: t`Mark External`,
+                    cancelText: t`Cancel`,
+                    isDestructive: true
+                });
 
-        if (!confirmed) {
-            return;
-        }
+                if (!confirmed) {
+                    return;
+                }
 
-        runMarkExternal(Effect.flatMap(ExternalAccountService, externalAccountService => externalAccountService.markExternal(accountId)));
-    };
-    const handleExternalPress = () => void handleMarkExternal();
+                const externalAccountService = yield* ExternalAccountService;
+
+                yield* externalAccountService.markExternal(accountId);
+            }).pipe(toastOnFailure(t`Could not mark account as external`))
+        );
 
     const isBusy = isLoading || isMarkingExternal;
     const triggerTestID = testID(rowTestID, TestIDPartEnum.MENU).testID;
@@ -83,7 +88,7 @@ export const BankIntegrationAccountMenu = ({ accountId, rowTestID }: Props) => {
             <ActionsMenuItem
                 icon={UserIconNameEnum.ArrowUpRight}
                 label={t`External account`}
-                onPress={handleExternalPress}
+                onPress={handleMarkExternal}
                 {...testID(rowTestID, TestIDPartEnum.MENU, TestIDPartEnum.EXTERNAL)}
             />
             <ActionsMenuItem

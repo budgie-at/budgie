@@ -1,4 +1,3 @@
-import { UserIconType } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { ClassValue } from 'cn';
 import { ReactNode } from 'react';
@@ -6,24 +5,19 @@ import { Text, View } from 'react-native';
 
 import { EmptyFn, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { PageHeaderSize } from '../../type/page-header-size.type';
 import { cn } from '../../utils/cn.util';
-import { CircleIcon } from '../circle-icon/circle-icon';
 import { GoBackButton } from '../go-back-button/go-back-button';
 
 interface Props {
     readonly title: string;
-    readonly icon?: UserIconType;
+    readonly left?: ReactNode;
     readonly right?: ReactNode;
     readonly bottom?: ReactNode;
     readonly onGoBack?: EmptyFn;
     readonly className?: string;
-    readonly description?: string;
     readonly size?: PageHeaderSize;
-    readonly titleClassName?: string;
-    readonly descriptionClassName?: string;
-    readonly iconVariant?: ColorPaletteVariant;
+    readonly children?: ReactNode;
 }
 
 const headerVariant = cva<{ size: Record<PageHeaderSize, ClassValue> }>('px-5xl gap-y-3xl', {
@@ -35,37 +29,21 @@ const headerVariant = cva<{ size: Record<PageHeaderSize, ClassValue> }>('px-5xl 
     }
 });
 
-export const PageHeader = ({
-    size = 'lg',
-    bottom,
-    title,
-    className,
-    description,
-    iconVariant = 'default',
-    descriptionClassName,
-    titleClassName,
-    icon,
-    onGoBack,
-    right
-}: Props) => (
+export const PageHeader = ({ size = 'lg', bottom, title, className, left, onGoBack, right, children }: Props) => (
     <View className={cn(headerVariant({ size }), className)}>
         <View className="flex-row items-center gap-x-xl">
             {isDefined(onGoBack) ? <GoBackButton onPress={onGoBack} /> : null}
 
-            {isNotEmptyString(icon) ? (
-                <CircleIcon icon={icon} variant={iconVariant} size={50} iconSize={24} radius={16} className="rounded-3xl" />
-            ) : null}
+            {left}
 
             <View className="gap-y-xs mr-auto flex-1">
                 {isNotEmptyString(title) ? (
-                    <Text className={cn('text-primary font-medium text-3xl', titleClassName)} numberOfLines={1}>
+                    <Text className="text-primary font-medium text-3xl" numberOfLines={1}>
                         {title}
                     </Text>
                 ) : null}
 
-                {isNotEmptyString(description) ? (
-                    <Text className={cn('text-xs text-secondary-foreground', descriptionClassName)}>{description}</Text>
-                ) : null}
+                {children}
             </View>
 
             {right}

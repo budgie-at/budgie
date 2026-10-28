@@ -1,7 +1,8 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import * as Cause from 'effect/Cause';
 import * as Effect from 'effect/Effect';
 import { ImpactFeedbackStyle, NotificationFeedbackType } from 'expo-haptics';
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
@@ -14,12 +15,13 @@ import Animated, {
     withSpring
 } from 'react-native-reanimated';
 
-import { getErrorMessage } from '@rnw-community/shared';
-
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { RuleIndicatorPill } from '../rule-indicator-pill/rule-indicator-pill';
+
+import type { AppServices } from '../../../@generic/runtime/app.runtime';
+import type * as Fiber from 'effect/Fiber';
 
 const ENTRY_SPRING_CONFIG = { damping: 20, stiffness: 80 };
 const SWIPE_THRESHOLD = 80;
@@ -36,7 +38,6 @@ const PILL_CONTENT_ENTERING = FadeIn.duration(PILL_CONTENT_ENTER_MS);
 const PILL_CONTENT_EXITING = FadeOut.duration(PILL_CONTENT_EXIT_MS);
 
 type CardStatus = 'idle' | 'creating' | 'success' | 'error';
-type CardLayout = 'compact' | 'wide';
 
 interface Props {
     readonly descriptionText: string;
@@ -44,28 +45,18 @@ interface Props {
     readonly errorMessage: ReactNode;
     readonly cardTestID?: string;
     readonly buttonTestID?: string;
-    readonly layout?: CardLayout;
-    readonly onYes: () => Promise<boolean>;
+    readonly onYes: Effect.Effect<boolean, unknown, AppServices>;
     readonly onComplete: () => void;
     readonly onDismiss: () => void;
 }
 
 // eslint-disable-next-line max-lines-per-function, max-statements -- Shared card component with gesture handling, animations, and multiple render states
 export const SwipeableRuleCard = (props: Props) => {
-    const {
-        descriptionText,
-        successMessage,
-        errorMessage,
-        cardTestID,
-        buttonTestID,
-        layout = 'compact',
-        onYes,
-        onComplete,
-        onDismiss
-    } = props;
+    const { descriptionText, successMessage, errorMessage, cardTestID, buttonTestID, onYes, onComplete, onDismiss } = props;
 
     const [status, setStatus] = useState<CardStatus>('idle');
     const [hapticNotification, hapticImpact] = useVibration();
+    const fiberRef = useRef<Fiber.Fiber<void> | null>(null);
 
     const translateX = useSharedValue(0);
     const translateY = useSharedValue(ENTRY_TRANSLATE_Y);
@@ -76,6 +67,13 @@ export const SwipeableRuleCard = (props: Props) => {
         translateY.set(withSpring(0, ENTRY_SPRING_CONFIG));
         opacity.set(withSpring(1, ENTRY_SPRING_CONFIG));
     }, [opacity, translateY]);
+
+    useEffect(
+        () => () => {
+            fiberRef.current?.interruptUnsafe();
+        },
+        []
+    );
 
     const handleSwipeThresholdReached = () => {
         hapticImpact(ImpactFeedbackStyle.Light);
@@ -120,38 +118,38 @@ export const SwipeableRuleCard = (props: Props) => {
         opacity: opacity.get()
     }));
 
-    const handleYesPress = async () => {
-        setStatus('creating');
-
-        try {
-            const isCompleted = await onYes();
-
-            if (!isCompleted) {
-                setStatus('idle');
-
-                return;
-            }
-
-            setStatus('success');
-            hapticNotification(NotificationFeedbackType.Success);
-            setTimeout(onComplete, SUCCESS_AUTO_DISMISS_MS);
-        } catch (error) {
-            appRuntime.runFork(Effect.logError('handleYesPress:onYes:throw', { errorMessage: getErrorMessage(error) }));
-            setStatus('error');
-            setTimeout(onDismiss, ERROR_AUTO_DISMISS_MS);
-        }
-    };
-
     const handleYesButtonPress = () => {
-        void handleYesPress();
+        fiberRef.current = appRuntime.runFork(
+            Effect.gen(function* () {
+                setStatus('creating');
+                const isCompleted = yield* Effect.uninterruptible(onYes);
+
+                if (!isCompleted) {
+                    setStatus('idle');
+
+                    return;
+                }
+
+                setStatus('success');
+                hapticNotification(NotificationFeedbackType.Success);
+                yield* Effect.sleep(SUCCESS_AUTO_DISMISS_MS);
+                onComplete();
+            }).pipe(
+                Effect.catchCause(cause =>
+                    Cause.hasInterruptsOnly(cause)
+                        ? Effect.void
+                        : Effect.gen(function* () {
+                              yield* Effect.logError(cause);
+                              setStatus('error');
+                              yield* Effect.sleep(ERROR_AUTO_DISMISS_MS);
+                              onDismiss();
+                          })
+                )
+            )
+        );
     };
 
-    const isWideLayout = layout === 'wide';
     const trailingContent = isCreating ? <ActivityIndicator size="small" /> : null;
-    const cardClassName = isWideLayout ? 'items-center' : 'items-start';
-    const buttonClassName = isWideLayout ? 'self-center' : 'self-start max-w-[85%]';
-    const pillClassName = isWideLayout ? 'self-center' : 'self-start';
-    const pillTextProps = isWideLayout ? { textClassName: 'shrink-0' } : {};
     const statusIcon = isSuccess ? UserIconNameEnum.CircleCheck : UserIconNameEnum.CircleAlert;
     const statusIconClassName = isSuccess ? 'text-positive-foreground' : 'text-destructive-foreground';
     const statusTextClassName = isSuccess
@@ -164,8 +162,13 @@ export const SwipeableRuleCard = (props: Props) => {
             {statusMessage}
         </RuleIndicatorPill>
     ) : (
-        <HapticPressable testID={buttonTestID} onPress={handleYesButtonPress} disabled={isCreating} className={buttonClassName}>
-            <RuleIndicatorPill icon={UserIconNameEnum.Zap} className={pillClassName} trailingContent={trailingContent} {...pillTextProps}>
+        <HapticPressable testID={buttonTestID} onPress={handleYesButtonPress} disabled={isCreating} className="self-center">
+            <RuleIndicatorPill
+                icon={UserIconNameEnum.Zap}
+                className="self-center"
+                trailingContent={trailingContent}
+                textClassName="shrink-0"
+            >
                 {descriptionText}
             </RuleIndicatorPill>
         </HapticPressable>
@@ -174,7 +177,7 @@ export const SwipeableRuleCard = (props: Props) => {
     return (
         <GestureDetector gesture={panGesture}>
             <Animated.View style={animatedStyle}>
-                <View testID={cardTestID} className={cardClassName}>
+                <View testID={cardTestID} className="items-center">
                     <Animated.View layout={PILL_LAYOUT_TRANSITION} className="items-center">
                         <Animated.View
                             key={pillContentKey}

@@ -44,7 +44,7 @@ export const CategorizeInboxSuggestionChips = ({ cluster }: Props) => {
                 >
                     <Icon icon={UserIconNameEnum.Tag} size={14} className="text-secondary-foreground" />
                     <Text className="text-xs font-medium text-secondary-foreground" numberOfLines={1}>
-                        {strategy.selectLabel}
+                        {strategy?.selectLabel}
                     </Text>
                 </HapticPressable>
             ) : null}
@@ -54,7 +54,7 @@ export const CategorizeInboxSuggestionChips = ({ cluster }: Props) => {
                 hitSlop={CATEGORIZE_INBOX_RAIL_HIT_SLOP}
                 className="ml-auto h-10 w-10 items-center justify-center rounded-xl border border-secondary-corner"
                 accessibilityRole="button"
-                accessibilityLabel={strategy.moreLabels}
+                accessibilityLabel={strategy?.moreLabels}
                 {...testID(CategorizeInboxSuggestionChipsSelector.More, cluster.key)}
             >
                 <Icon icon={UserIconNameEnum.Ellipsis} size={16} className="text-secondary-foreground" />

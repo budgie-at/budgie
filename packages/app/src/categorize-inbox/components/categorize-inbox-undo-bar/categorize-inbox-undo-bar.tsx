@@ -37,7 +37,7 @@ export const CategorizeInboxUndoBar = () => {
     const { strategy, lastWrite, undo } = useCategorizeInboxContext();
     const [openRuleForm] = useRuleFormModal();
 
-    if (!isDefined(lastWrite)) {
+    if (!isDefined(lastWrite) || !isDefined(strategy)) {
         return null;
     }
 

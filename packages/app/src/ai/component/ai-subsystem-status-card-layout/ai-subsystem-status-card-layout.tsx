@@ -1,19 +1,21 @@
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Haptics from 'expo-haptics';
-import { ReactNode, useState } from 'react';
+import { ReactNode } from 'react';
 import { Alert, Pressable, Text } from 'react-native';
 import Animated, { SharedValue, useAnimatedStyle } from 'react-native-reanimated';
 
 import { emptyFn, getErrorMessage } from '@rnw-community/shared';
 
 import { HorizontalCell } from '../../../@generic/component/horizontal-cell/horizontal-cell';
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
+import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { AiProgressBar } from '../../../settings/components/ai-progress-bar/ai-progress-bar';
 import { AI_SUBSYSTEM_CARD_VISUALS } from '../../constant/ai-subsystem-card-visuals.constant';
 import { AiSubsystemCardStateEnum } from '../../enum/ai-subsystem-card-state.enum';
 import { useLongPressHold } from '../../hook/use-long-press-hold.hook';
 import { AiSubsystemStatusSnapshotInterface } from '../../interface/ai-subsystem-status-snapshot.interface';
+
+import type { AppServices } from '../../../@generic/runtime/app.runtime';
 
 interface Props {
     readonly snapshot: AiSubsystemStatusSnapshotInterface;
@@ -22,24 +24,19 @@ interface Props {
     readonly rebuildAlertTitle: string;
     readonly rebuildAlertMessage: string;
     readonly rebuildLogKey: string;
-    readonly onRebuild: () => Promise<void>;
+    readonly onRebuild: Effect.Effect<void, unknown, AppServices>;
 }
 
 export const AiSubsystemStatusCardLayout = (props: Props) => {
     const { snapshot, title, renderLeftIcon, rebuildAlertTitle, rebuildAlertMessage, rebuildLogKey, onRebuild } = props;
     const { t } = useLingui();
-    const [isRebuilding, setIsRebuilding] = useState(false);
+    const { isLoading: isRebuilding, run } = useSingleFlight();
 
     const isHidden = snapshot.state === AiSubsystemCardStateEnum.HIDDEN;
 
     const handleRebuildConfirm = (): void => {
-        setIsRebuilding(true);
         void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-        void onRebuild()
-            .catch((error: unknown) => appRuntime.runFork(Effect.logError(rebuildLogKey, { errorMessage: getErrorMessage(error) })))
-            .finally(() => {
-                setIsRebuilding(false);
-            });
+        void run(onRebuild.pipe(Effect.catch(error => Effect.logError(rebuildLogKey, { errorMessage: getErrorMessage(error) }))));
     };
 
     const handleLongPressComplete = () => {

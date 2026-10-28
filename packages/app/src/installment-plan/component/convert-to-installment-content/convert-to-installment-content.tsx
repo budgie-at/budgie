@@ -6,12 +6,13 @@ import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { Text, View } from 'react-native';
-import Toast from 'react-native-toast-message';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
+import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
+import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { ConvertToInstallmentModalSelector } from '../../../app/convert-to-installment-modal.selector';
 import { ConvertToInstallmentFormSchema } from '../../constant/convert-to-installment-form-schema.constant';
 import { ConvertToInstallmentFee } from '../convert-to-installment-fee/convert-to-installment-fee';
@@ -56,8 +57,8 @@ export const ConvertToInstallmentContent = ({ params, onResolve }: Props) => {
 
     const handleCreate = () =>
         void form.handleSubmit(values =>
-            appRuntime
-                .runPromise(
+            appRuntime.runPromise(
+                logAndContinue(
                     Effect.flatMap(InstallmentPlanService, installmentPlanService =>
                         installmentPlanService.convertExpense({
                             transactionId: params.transactionId,
@@ -65,12 +66,12 @@ export const ConvertToInstallmentContent = ({ params, onResolve }: Props) => {
                             totalAmount: convertToMicroUnits(values.totalAmount),
                             title: values.title
                         })
+                    ).pipe(
+                        Effect.tap(({ accountId }) => Effect.sync(() => void onResolve(accountId))),
+                        toastOnFailure(t`Could not create plan`, t`Please try again`)
                     )
                 )
-                .then(
-                    ({ accountId }) => void onResolve(accountId),
-                    () => void Toast.show({ type: 'error', text1: t`Could not create plan`, text2: t`Please try again` })
-                )
+            )
         )();
 
     return (

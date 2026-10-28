@@ -6,9 +6,8 @@ import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
-import { useSettingsContext } from '../../../settings/context/settings.context';
 import { BudgetSelector } from '../../budget.selector';
 import { BudgetFormValues } from '../../constant/budget-form-schema.constant';
 
@@ -43,8 +42,7 @@ export const BudgetAllocationSummary = () => {
         name: ['overallLimit', 'otherLimit', 'categoryLimits', 'instrumentId']
     });
     const { instrument } = useGetInstrumentByIdQuery(instrumentId);
-    const { decimalPlaces } = useSettingsContext();
-    const formatDigits = useFormatDigits(decimalPlaces);
+    const formatDigits = useDisplayFormatDigits();
 
     const allocation = budgetComputeAllocation({ overallLimit, otherLimit, categoryLimits });
     const status: AllocationStatus = allocation.isOverAllocated ? 'over' : 'normal';

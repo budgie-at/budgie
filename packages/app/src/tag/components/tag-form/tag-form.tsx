@@ -1,4 +1,4 @@
-import { TAG_TITLE_MAX_LENGTH, TagCreateEntityInterface, TagEntityInterface } from '@budgie/contracts';
+import { TAG_TITLE_MAX_LENGTH, TagCreateEntityInterface, TagEntityInterface, TagRepository } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
@@ -14,12 +14,12 @@ import { ModalFormMergeButton } from '../../../@generic/component/modal-form-mer
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { ModalPage } from '../../../@generic/component/page/modal-page';
 import { useAiTranslationFields } from '../../../@generic/hook/use-ai-translation-fields.hook';
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
+import { useRegenerateTranslation } from '../../../@generic/hook/use-regenerate-translation.hook';
+import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
+import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useChatModelStatus } from '../../../ai/hook/use-chat-model-status.hook';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { useTagsSelectorModal } from '../../context/tags-selector-modal.context';
-import { useRegenerateTagTranslation } from '../../hooks/use-regenerate-tag-translation.hook';
 import { useTagForm } from '../../hooks/use-tag-form.hook';
 import { TagService } from '../../service/tag.service';
 
@@ -46,7 +46,10 @@ export const TagForm = (props: Props) => {
     const { tag, defaultTitle, onSuccess, onCancel } = props;
     const { t } = useLingui();
     const [openTagsSelector] = useTagsSelectorModal();
-    const { regenerate, isRegenerating } = useRegenerateTagTranslation();
+    const { run } = useSingleFlight();
+    const { regenerate, isRegenerating } = useRegenerateTranslation((id, titleEn, titleTags) =>
+        Effect.flatMap(TagRepository, tagRepository => tagRepository.updateTranslation(id, titleEn, titleTags))
+    );
     const isTranslationsEnabled = useSetting('isAiTranslationsEnabled');
     const { isChatReady, modelStatus } = useChatModelStatus();
 
@@ -77,19 +80,15 @@ export const TagForm = (props: Props) => {
 
         const sourceTagId = tag.id;
 
-        const mergeIntoTarget = async (targetTagId: number) => {
-            try {
-                const targetTag = await appRuntime.runPromise(
-                    Effect.flatMap(TagService, tagService => tagService.mergeInto(sourceTagId, targetTagId))
-                );
+        const mergeIntoTarget = (targetTagId: number) =>
+            Effect.gen(function* () {
+                const tagService = yield* TagService;
+                const targetTag = yield* tagService.mergeInto(sourceTagId, targetTagId);
 
                 if (isDefined(targetTag)) {
                     onSuccess({ tag: targetTag, action: 'merged' });
                 }
-            } catch {
-                showErrorToast(t`Could not merge tag`, t`Please try again later`);
-            }
-        };
+            }).pipe(toastOnFailure(t`Could not merge tag`, t`Please try again later`));
 
         openTagsSelector(
             {
@@ -100,40 +99,26 @@ export const TagForm = (props: Props) => {
             targetTagIds => {
                 const targetTagId = isNotEmptyArray(targetTagIds) ? targetTagIds[0] : null;
                 if (isDefined(targetTagId)) {
-                    void mergeIntoTarget(targetTagId);
+                    void run(mergeIntoTarget(targetTagId));
                 }
             }
         );
     };
 
-    const handleEditSubmit = async (tagId: number, values: TagCreateEntityInterface): Promise<void> => {
-        const savedTag = await appRuntime.runPromise(
-            Effect.flatMap(TagService, tagService => tagService.update(tagId, values, titleEn, titleTags))
-        );
+    const submitTag = (values: TagCreateEntityInterface) =>
+        Effect.gen(function* () {
+            const tagService = yield* TagService;
 
-        onSuccess({ tag: savedTag, action: 'updated' });
-    };
-
-    const handleCreateSubmit = async (values: TagCreateEntityInterface): Promise<void> => {
-        const savedTag = await appRuntime.runPromise(
-            Effect.flatMap(TagService, tagService => tagService.create(values, titleEn, titleTags))
-        );
-
-        onSuccess({ tag: savedTag, action: 'created' });
-    };
-
-    const handleFormSubmit = handleSubmit(async values => {
-        try {
             if (isDefined(tag)) {
-                await handleEditSubmit(tag.id, values);
+                const updatedTag = yield* tagService.update(tag.id, values, titleEn, titleTags);
+                onSuccess({ tag: updatedTag, action: 'updated' });
             } else {
-                await handleCreateSubmit(values);
+                const createdTag = yield* tagService.create(values, titleEn, titleTags);
+                onSuccess({ tag: createdTag, action: 'created' });
             }
-        } catch {
-            const errorMessage = isEditing ? t`Could not save tag` : t`Could not create tag`;
-            showErrorToast(errorMessage, t`Please try again later`);
-        }
-    });
+        }).pipe(toastOnFailure(isEditing ? t`Could not save tag` : t`Could not create tag`, t`Please try again later`));
+
+    const handleFormSubmit = handleSubmit(values => run(submitTag(values)));
 
     return (
         <ModalPage header={<PageHeader title={headerTitle} onGoBack={onCancel} />}>

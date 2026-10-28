@@ -3,6 +3,39 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.124.0](https://github.com/budgie-at/budgie/compare/v6.123.1...v6.124.0) (2026-10-28)
+
+### Bug Fixes
+
+* **app:** keep currency selector reselect after SelectorCard onPress change ([c21e37c](https://github.com/budgie-at/budgie/commit/c21e37c173953f229deb41bc4f97a0007b6d83ba))
+* **app:** keep screen marks out of the navigator hook list ([ebf2730](https://github.com/budgie-at/budgie/commit/ebf2730640d6c9a966764b9f85e982a5b1857814))
+* **app:** re-render LegendList rows when renderItem changes ([545013d](https://github.com/budgie-at/budgie/commit/545013dca733c3fc0eea0cdb2c96d2d461a9ebfb))
+* **app:** restore MCC selector row gap and list padding ([6168be2](https://github.com/budgie-at/budgie/commit/6168be248fcbce352b37834642bbcb059f3c6b8c))
+
+### Features
+
+* **contracts:** add narrow settings reads for default instrument and account ([b0e5893](https://github.com/budgie-at/budgie/commit/b0e58931453f8f7acf362eb7cc6ab9bb2f207c3a))
+
+### Performance Improvements
+
+* **app:** add boot and per-screen performance marks ([15432e3](https://github.com/budgie-at/budgie/commit/15432e3402c6c1cea781f2afdf39d4d765076fa0))
+* **app:** batch crypto valuation rates on Home ([a4779b3](https://github.com/budgie-at/budgie/commit/a4779b3c36eca0b155d30a4e2ec3e66574f472ef))
+* **app:** build the service layer graph once for atoms and the runtime ([f9e66ef](https://github.com/budgie-at/budgie/commit/f9e66ef364315163fdff728316179c5f6ab37628))
+* **app:** derive both SQLCipher keys in parallel off the JS thread ([a2373ba](https://github.com/budgie-at/budgie/commit/a2373ba66fd593296b49ffc4d5d31bbe4e987b2e))
+* **app:** double transaction list pages and format month headers once per section ([73e5efc](https://github.com/budgie-at/budgie/commit/73e5efcc2ca8c4fb22becb62685fd5494c9aa882))
+* **app:** give categorize-inbox atoms exact table lists ([8f3e958](https://github.com/budgie-at/budgie/commit/8f3e958b70b15994f38b7f49278f80b92096e5f8))
+* **app:** inline migration SQL as lazy per-statement thunks ([428051c](https://github.com/budgie-at/budgie/commit/428051cc4e6af605a57815ad8c16ddae64ad67f0))
+* **app:** invalidate transaction live queries only on tables their SQL reads ([84ca8c7](https://github.com/budgie-at/budgie/commit/84ca8c73433cb290867cbb0fd8abd191f2815428))
+* **app:** keep native network probe and migration SQL split off the boot path ([eeccdac](https://github.com/budgie-at/budgie/commit/eeccdac0944ca6b35df91acc0d84074e97923fbe))
+* **app:** keep row formatting and context menu state out of the transaction list ([b6741a8](https://github.com/budgie-at/budgie/commit/b6741a8ffbd40b725588fcd80a418b6cbe144199))
+* **app:** materialise Reicon glyphs per icon instead of at startup ([eaee425](https://github.com/budgie-at/budgie/commit/eaee425ecb1248c7f950907ea35b4a7ea52d56ed))
+* **app:** migrate selector and modal lists to BudgieLegendList ([5efa535](https://github.com/budgie-at/budgie/commit/5efa5358999aab1943fc7ea301effaefc4822b8d))
+* **app:** mount Statistics tab panels on first visit ([d8e6b22](https://github.com/budgie-at/budgie/commit/d8e6b223eac0d5fec5411e59be13ba6d74c1646a))
+* **app:** skip the transaction query when there is no parent ([b738ba8](https://github.com/budgie-at/budgie/commit/b738ba858b3a360d918a52a27a5b0e058b802c45))
+* **app:** split settings into granular atoms with per-table dependencies ([fa7f777](https://github.com/budgie-at/budgie/commit/fa7f77708db0c74b8b57f665449e66704aea2f56))
+* memoize layer composition by upgrading effect to 4.0.6 ([02a76c6](https://github.com/budgie-at/budgie/commit/02a76c64e302ab39db47954f8e6cad612736691d))
+
+
 ## [6.123.1](https://github.com/budgie-at/budgie/compare/v6.123.0...v6.123.1) (2026-10-28)
 
 ### Bug Fixes

@@ -1,4 +1,4 @@
-import { consolidationScopeService } from '@budgie/consolidation';
+import { buildConsolidationScopeFromTransactions } from '@budgie/consolidation';
 import { AccountRepository, BankIntegrationRepository, Db, SyncModeEnum, SyncRepository } from '@budgie/contracts';
 import { AccountBalanceIncrementalService, TransactionImportService, TransactionService } from '@budgie/ledger';
 import { RuleEngineService } from '@budgie/rules';
@@ -185,7 +185,7 @@ export const makeFileSyncService = Effect.fnUntraced(function* (definition: File
             accountImportResults.flatMap(result => result.deferredRuleTransactionIds),
             accountImportResults.flatMap(result => result.deferredRuleTransactionInputs)
         );
-        const scope = consolidationScopeService.buildFromTransactions(transactionsToProcess);
+        const scope = buildConsolidationScopeFromTransactions(transactionsToProcess);
         if (isDefined(scope)) {
             yield* syncWorkload.enqueueTransferConsolidation(scope);
         }

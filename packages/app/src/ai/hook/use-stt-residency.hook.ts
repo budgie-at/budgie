@@ -6,30 +6,32 @@ import { isDefined } from '@rnw-community/shared';
 
 import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
+import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
 import { sttSnapshotAtom } from '../constant/ai-snapshot-atoms.constant';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
 import { AiSubsystemStatusEnum } from '../enum/ai-subsystem-status.enum';
 import { AiModelResidencyService } from '../service/ai-model-residency.service';
 
+import type { AppServices } from '../../@generic/runtime/app.runtime';
+
 interface UseSttResidencyReturn {
-    readonly acquireSttResidency: () => Promise<boolean>;
+    readonly acquireSttResidency: () => Effect.Effect<boolean, unknown, AppServices>;
     readonly releaseSttResidency: () => void;
 }
 
 export const useSttResidency = (): UseSttResidencyReturn => {
     const acquireFiberRef = useRef<Fiber.Fiber<boolean> | null>(null);
 
-    const acquireSttResidency = (): Promise<boolean> => {
-        acquireFiberRef.current ??= appRuntime.runFork(
-            Effect.flatMap(AiModelResidencyService, aiModelResidencyService => aiModelResidencyService.acquire(AiSubsystemNameEnum.STT))
-        );
+    const acquireSttResidency = () =>
+        Effect.suspend(() => {
+            acquireFiberRef.current ??= appRuntime.runFork(
+                Effect.flatMap(AiModelResidencyService, aiModelResidencyService => aiModelResidencyService.acquire(AiSubsystemNameEnum.STT))
+            );
 
-        return appRuntime.runPromise(
-            Fiber.join(acquireFiberRef.current).pipe(
+            return Fiber.join(acquireFiberRef.current).pipe(
                 Effect.map(() => appAtomRegistry.get(sttSnapshotAtom).status === AiSubsystemStatusEnum.READY)
-            )
-        );
-    };
+            );
+        });
 
     const releaseSttResidency = (): void => {
         if (isDefined(acquireFiberRef.current)) {
@@ -43,7 +45,7 @@ export const useSttResidency = (): UseSttResidencyReturn => {
     };
 
     useEffect(() => {
-        void acquireSttResidency();
+        appRuntime.runFork(logAndContinue(acquireSttResidency()));
 
         return releaseSttResidency;
     }, []);

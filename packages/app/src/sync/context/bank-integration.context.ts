@@ -1,17 +1,24 @@
+import { ExternalSourceEnum } from '@budgie/contracts';
 import { createContext, use } from 'react';
-
-import { isDefined } from '@rnw-community/shared';
 
 import type { BankIntegrationContextValueInterface } from '../interface/bank-integration-context-value.interface';
 
-export const BankIntegrationContext = createContext<BankIntegrationContextValueInterface | null>(null);
-
-export const useBankIntegration = (): BankIntegrationContextValueInterface => {
-    const context = use(BankIntegrationContext);
-
-    if (!isDefined(context)) {
-        throw new Error('useBankIntegrationCalledOutsideProvider');
+export const BankIntegrationContext = createContext<BankIntegrationContextValueInterface>({
+    integration: {
+        id: 0,
+        createdAt: new Date(0),
+        updatedAt: new Date(0),
+        deletedAt: null,
+        provider: ExternalSourceEnum.MANUAL,
+        token: '',
+        label: null
+    },
+    capabilities: {
+        supportsLiveSync: false,
+        supportsFileImport: false,
+        supportsAccountDiscovery: false,
+        supportsDeposit: false
     }
+});
 
-    return context;
-};
+export const useBankIntegration = () => use(BankIntegrationContext);

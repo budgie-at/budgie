@@ -1,4 +1,4 @@
-import { P2P_ORDER_EXTERNAL_ID_MARKER, consolidationScopeService } from '@budgie/consolidation';
+import { P2P_ORDER_EXTERNAL_ID_MARKER, buildConsolidationScopeFromTransactions } from '@budgie/consolidation';
 import { AccountRepository, SyncModeEnum, TransactionRepository } from '@budgie/contracts';
 import {
     AccountBalanceIncrementalService,
@@ -140,9 +140,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 return;
             }
 
-            const consolidationScope = consolidationScopeService.buildFromTransactions(
-                yield* transactionRepository.findByIds(transactionIds)
-            );
+            const consolidationScope = buildConsolidationScopeFromTransactions(yield* transactionRepository.findByIds(transactionIds));
             if (isDefined(consolidationScope)) {
                 yield* syncWorkload.enqueueTransferConsolidation(consolidationScope);
             }

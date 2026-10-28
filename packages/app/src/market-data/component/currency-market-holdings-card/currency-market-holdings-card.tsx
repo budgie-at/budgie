@@ -1,3 +1,4 @@
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
@@ -8,7 +9,7 @@ import { ProtectedText } from '../../../@generic/component/protected-text/protec
 import { MICRO_UNIT_DECIMAL_PLACES } from '../../../@generic/constant/micro-unit-decimal-places.constant';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { useCryptoInstrumentPositionQuery } from '../../query/use-crypto-instrument-position.query';
 import { CurrencyMarketHoldingMetricRow } from '../currency-market-holding-metric-row/currency-market-holding-metric-row';
 import { CurrencyMarketPageSelector } from '../currency-market-page/currency-market-page.selector';
@@ -64,7 +65,7 @@ const getProfitClassName = (profit: number | null) => {
     return 'text-secondary-foreground';
 };
 
-const formatOptionalValue = (value: number | null, symbol: string, formatDigits: ReturnType<typeof useDisplayFormatDigits>) => {
+const formatOptionalValue = (value: number | null, symbol: string, formatDigits: ReturnType<typeof useFormatDigits>) => {
     if (isDefined(value)) {
         return formatDigits(value, symbol);
     }
@@ -72,7 +73,7 @@ const formatOptionalValue = (value: number | null, symbol: string, formatDigits:
     return MISSING_VALUE;
 };
 
-const formatPercentValue = (value: number | null, formatDigits: ReturnType<typeof useDisplayFormatDigits>) => {
+const formatPercentValue = (value: number | null, formatDigits: ReturnType<typeof useFormatDigits>) => {
     if (isDefined(value)) {
         return `${formatDigits(value)}%`;
     }
@@ -84,7 +85,7 @@ const formatProfitValue = (
     profit: number | null,
     profitPercent: number | null,
     symbol: string,
-    formatDigits: ReturnType<typeof useDisplayFormatDigits>
+    formatDigits: ReturnType<typeof useFormatDigits>
 ) => {
     const formattedProfit = formatOptionalValue(profit, symbol, formatDigits);
 
@@ -96,7 +97,7 @@ const formatProfitValue = (
 };
 
 export const CurrencyMarketHoldingsCard = ({ instrument, balance, latestPrice }: Props) => {
-    const { defaultInstrument } = useSettingsContext();
+    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const position = useCryptoInstrumentPositionQuery(instrument.id, defaultInstrument.id);
     const formatDigits = useDisplayFormatDigits();
     const formatCryptoDigits = useFormatDigits(0, MICRO_UNIT_DECIMAL_PLACES);

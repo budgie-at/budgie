@@ -1,4 +1,5 @@
 import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { ImpactFeedbackStyle } from 'expo-haptics';
 import { router } from 'expo-router';
@@ -13,9 +14,9 @@ import { CircularActionButton } from '../../../@generic/component/circular-actio
 import { useCreateActionContext } from '../../../@generic/context/create-action.context';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { CreateActionInterface } from '../../../@generic/interface/create-action.interface';
+import { aiSystemStatusAtom } from '../../../ai/constant/ai-system-status-atom.constant';
 import { useVoiceInputContext } from '../../../ai/context/voice-input.context';
 import { AiSystemStateEnum } from '../../../ai/enum/ai-system-state.enum';
-import { useAiSystemStatus } from '../../../ai/hook/use-ai-system-status.hook';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { ActionItem } from '../action-item/action-item';
 import { AiButton } from '../ai-button/ai-button';
@@ -43,10 +44,14 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
     const [isVisible, setIsVisible] = useState(false);
 
     const isVoiceInputEnabled = useSetting('isAiVoiceInputEnabled');
-    const isAiAvailable = useAiSystemStatus().state !== AiSystemStateEnum.DISABLED;
+    const isAiAvailable = useAtomValue(aiSystemStatusAtom).state !== AiSystemStateEnum.DISABLED;
 
     const rotation = useSharedValue(0);
     const menuScale = useSharedValue(0);
+
+    if (isOpen && !isVisible) {
+        setIsVisible(true);
+    }
 
     const handleClose = () => {
         hapticImpact(ImpactFeedbackStyle.Light);
@@ -140,8 +145,6 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
 
     useEffect(() => {
         if (isOpen) {
-            // oxlint-disable-next-line react/set-state-in-effect -- Animation mount/unmount pattern: visibility deferred until close animation completes
-            setIsVisible(true);
             rotation.set(withSpring(BUTTON_ROTATION_ACTIVE, SPRING_CONFIG));
             menuScale.set(withSpring(1, SPRING_CONFIG));
         } else if (isVisible) {

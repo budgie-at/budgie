@@ -1,12 +1,12 @@
 import { RecurringSeriesUserStateEnum, UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { RecurringAlertEnum, RecurringService } from '@budgie/recurring';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Alert, Text, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
-import Toast from 'react-native-toast-message';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
@@ -14,8 +14,10 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { DeletableRow } from '../../../@generic/component/deletable-row/deletable-row';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
+import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
+import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { RecurringCalendarSelector } from '../recurring-calendar-content/recurring-calendar.selector';
 import { RecurringSeriesTitleInput } from '../recurring-series-title-input/recurring-series-title-input';
 
@@ -35,8 +37,8 @@ interface Props {
 export const RecurringCalendarEntryRow = ({ entry, index, onPress, dayLabel }: Props) => {
     const router = useRouter();
     const { t } = useLingui();
-    const { decimalPlaces, defaultInstrument } = useSettingsContext();
-    const formatDigits = useFormatDigits(decimalPlaces);
+    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
+    const formatDigits = useDisplayFormatDigits();
     const [isRenaming, setIsRenaming] = useState(false);
 
     const formattedAmount = formatDigits(convertFromMicroUnits(entry.latestAmount), defaultInstrument.symbol);
@@ -60,9 +62,13 @@ export const RecurringCalendarEntryRow = ({ entry, index, onPress, dayLabel }: P
     }
 
     const setUserState = (userState: RecurringSeriesUserStateEnum) =>
-        void appRuntime
-            .runPromise(Effect.flatMap(RecurringService, recurringService => recurringService.setUserState(entry.seriesId, userState)))
-            .catch(() => void Toast.show({ type: 'error', text1: t`Could not update recurring payment.` }));
+        appRuntime.runFork(
+            logAndContinue(
+                Effect.flatMap(RecurringService, recurringService => recurringService.setUserState(entry.seriesId, userState)).pipe(
+                    toastOnFailure(t`Could not update recurring payment.`)
+                )
+            )
+        );
 
     const handleDismiss = () => void setUserState(RecurringSeriesUserStateEnum.DISMISSED);
     const handleRenameDone = () => void setIsRenaming(false);

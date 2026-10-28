@@ -5,6 +5,7 @@ import { View } from 'react-native';
 import { Button } from '../../../@generic/component/button/button';
 import { LoadingOverlay } from '../../../@generic/component/loading-overlay/loading-overlay';
 import { usePinAuthentication } from '../../hook/use-pin-authentication.hook';
+import { PinFormBiometricButton } from '../pin-form-biometric-button/pin-form-biometric-button';
 import { PinForm } from '../pin-form/pin-form';
 
 import { PinUnlockSelector } from './pin-unlock.selector';
@@ -40,10 +41,12 @@ export const PinUnlock = ({ onForgotPin }: Props) => {
                     isLoading={isInputDisabled}
                     onDigitPress={addDigit}
                     onDeletePress={deleteDigit}
-                    onScanPress={handleBiometricAuth}
-                    canScan={canUseBiometric}
-                    isFaceIdAvailable={isFaceIdAvailable}
-                />
+                >
+                    <PinFormBiometricButton
+                        isFaceIdAvailable={isFaceIdAvailable}
+                        {...(canUseBiometric && { onPress: handleBiometricAuth })}
+                    />
+                </PinForm>
 
                 <Button
                     testID={PinUnlockSelector.ForgotPinButton}

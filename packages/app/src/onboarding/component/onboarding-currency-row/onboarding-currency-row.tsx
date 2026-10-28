@@ -1,3 +1,4 @@
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Pressable, Text, View } from 'react-native';
 
@@ -6,14 +7,14 @@ import { isDefined } from '@rnw-community/shared';
 import { useCurrencySelectorModal } from '../../../@generic/context/currency-selector-modal.context';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { updateSettingsMutation } from '../../../settings/mutation/update-settings.mutation';
 
 import { OnboardingCurrencyRowSelector } from './onboarding-currency-row.selector';
 
 export const OnboardingCurrencyRow = () => {
     const { t } = useLingui();
-    const { defaultInstrument } = useSettingsContext();
+    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const [openCurrencySelector] = useCurrencySelectorModal();
 
     const handleChangePress = () => {

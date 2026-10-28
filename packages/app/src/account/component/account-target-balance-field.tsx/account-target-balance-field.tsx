@@ -1,7 +1,6 @@
 import { AmountInput } from '../../../@generic/component/amount-input/amount-input';
 import { FormItem } from '../../../@generic/component/form-item/form-item';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { CreateAccountScreenSelector } from '../create-account-screen/create-account-screen.selector';
 
 interface Props {
@@ -12,8 +11,7 @@ interface Props {
 }
 
 export const AccountTargetBalanceField = ({ value, onChange, instrumentSymbol, label }: Props) => {
-    const { decimalPlaces } = useSettingsContext();
-    const formatDigits = useFormatDigits(decimalPlaces);
+    const formatDigits = useDisplayFormatDigits();
 
     return (
         <FormItem label={label}>

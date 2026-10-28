@@ -1,4 +1,4 @@
-import { consolidationScopeService } from '@budgie/consolidation';
+import { buildConsolidationScopeFromTransactions } from '@budgie/consolidation';
 import {
     AccountBalanceRepository,
     TransactionConsolidationTypeEnum,
@@ -111,7 +111,7 @@ const seedBridgeReclaimFixture = (consolidationType: TransactionConsolidationTyp
     });
 
 const buildBridgeScope = (transactions: Pick<TransactionEntityInterface, 'id' | 'operatedAt'>[]) => {
-    const scope = consolidationScopeService.buildFromTransactions(transactions);
+    const scope = buildConsolidationScopeFromTransactions(transactions);
 
     if (!isDefined(scope)) {
         throw new Error('Expected bridge rows to build a consolidation scope');
