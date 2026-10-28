@@ -45,7 +45,9 @@ export const CreateBinanceAccount = () => {
             binanceSyncService =>
                 binanceSyncService
                     .fetchAccountsPreview(buildToken())
-                    .pipe(Effect.catchTag('BinanceKeyPermissionsError', error => Effect.as(toastBinanceKeyPermissionsError(error), null))),
+                    .pipe(
+                        Effect.catchTags({ BinanceKeyPermissionsError: error => Effect.as(toastBinanceKeyPermissionsError(error), null) })
+                    ),
             previews => {
                 accountSelection.setPreviews(previews.filter(preview => !preview.isParked));
                 setParkedPreviews(previews.filter(preview => preview.isParked));

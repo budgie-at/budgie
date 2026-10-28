@@ -14,7 +14,7 @@ import {
 
 const ROTATED_TOKEN = JSON.stringify({ apiKey: 'rotated-key', apiSecret: 'rotated-secret' });
 
-const stubConnectAccounts = () => stubBinanceAccountEndpoints([buildBinance.balance({ asset: 'BTC', free: '1' })]);
+const stubConnectAccounts = () => void stubBinanceAccountEndpoints([buildBinance.balance({ asset: 'BTC', free: '1' })]);
 
 const expectPreviewAccepted = (stubRestrictions: () => void) =>
     Effect.gen(function* () {
@@ -49,10 +49,10 @@ describe('binance/key-permissions', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('accepts a read-only key on connect', () => expectPreviewAccepted(() => binanceStub.apiRestrictions()));
+    it.effect('accepts a read-only key on connect', () => expectPreviewAccepted(() => void binanceStub.apiRestrictions()));
 
     it.effect('treats flags missing from the response as not granted', () =>
-        expectPreviewAccepted(() => binanceStub.apiRestrictionsBody({ ipRestrict: false, enableReading: true }))
+        expectPreviewAccepted(() => void binanceStub.apiRestrictionsBody({ ipRestrict: false, enableReading: true }))
     );
 
     it.effect('reports an undecodable permissions response as an unverifiable key', () =>

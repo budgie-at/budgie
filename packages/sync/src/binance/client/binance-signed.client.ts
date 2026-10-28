@@ -288,7 +288,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     private c2cUnavailableThisRun = false;
     private readonly c2cHistoryFloorTimeMs = subMonths(new Date(), BinanceSignedClient.C2C_HISTORY_MONTHS).getTime();
     private readonly capitalPendingFloorTimeMs = subDays(new Date(), BinanceSignedClient.CAPITAL_PENDING_MAX_AGE_DAYS).getTime();
-    private serverTimeOffsetMs: number | undefined;
+    private serverTimeOffsetMs: number | null = null;
     private runEndTimeMs: number | undefined;
     private exchangeSymbols: readonly BinanceTradeSymbolInterface[] | undefined;
 
@@ -618,7 +618,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
                     return Effect.fail(error);
                 }
 
-                this.serverTimeOffsetMs = undefined;
+                this.serverTimeOffsetMs = null;
 
                 return this.sendSignedRequest(schema, endpoint, method, params);
             })

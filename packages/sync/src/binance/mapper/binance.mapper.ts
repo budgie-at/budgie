@@ -121,13 +121,8 @@ export const getBinanceDepositOutcome = (deposit: Pick<BinanceDepositApiInterfac
 export const getBinanceWithdrawalOutcome = (withdrawal: Pick<BinanceWithdrawalApiInterface, 'status'>): BinanceCapitalOutcomeEnum =>
     WITHDRAWAL_OUTCOME_BY_STATUS.get(withdrawal.status) ?? BinanceCapitalOutcomeEnum.PENDING;
 
-export const buildBinanceDepositExternalId = (deposit: BinanceDepositApiInterface): string => {
-    if (isNotEmptyString(deposit.id)) {
-        return deposit.id;
-    }
-
-    return isNotEmptyString(deposit.txId) ? deposit.txId : `${deposit.coin}-${deposit.insertTime}-${deposit.amount}`;
-};
+export const buildBinanceDepositExternalId = (deposit: BinanceDepositApiInterface): string =>
+    [deposit.id, deposit.txId].find(isNotEmptyString) ?? `${deposit.coin}-${deposit.insertTime}-${deposit.amount}`;
 
 export const mapBinanceDepositToTransaction = (deposit: BinanceDepositApiInterface, accountId: string): SyncTransactionInterface | null => {
     const amount = parseBinanceAmount(deposit.amount);

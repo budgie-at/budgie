@@ -66,7 +66,7 @@ export const BinanceSyncTokenSection = ({ accountId }: Props) => {
                         setApiSecret('');
                     })
                 ),
-                Effect.catchTag('BinanceKeyPermissionsError', toastBinanceKeyPermissionsError),
+                Effect.catchTags({ BinanceKeyPermissionsError: toastBinanceKeyPermissionsError }),
                 toastOnFailure(t`Could not update token`)
             )
         );
