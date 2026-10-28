@@ -40,6 +40,11 @@ const TODAY_ACCENT_CLASS_NAME = {
     warning: 'accent-warning-foreground',
     destructive: 'accent-destructive-foreground'
 } as const;
+const GRADIENT_CLASS_NAME = {
+    positive: 'bg-positive-foreground',
+    warning: 'bg-warning-foreground',
+    destructive: 'bg-destructive-foreground'
+} as const;
 const AREA_FILL = `url(#${GRADIENT_ID})`;
 const VIEW_BOX = `0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`;
 
@@ -59,11 +64,12 @@ export const BudgetForecastChart = ({ projection, currencySymbol }: Props) => {
     const limitAmount = formatProtectedAmount(convertFromMicroUnits(projection.overall.limit), currencySymbol);
     const { runOutAt, status } = projection.overall;
     const accentClassName = TODAY_ACCENT_CLASS_NAME[BUDGET_PACE_VARIANT[status]];
+    const gradientClassName = GRADIENT_CLASS_NAME[BUDGET_PACE_VARIANT[status]];
     const labelTodayX = Math.min(Math.max(todayX, CHART_PADDING_X + AXIS_LABEL_CLEARANCE), CHART_RIGHT - AXIS_LABEL_CLEARANCE);
 
     return (
         <Svg width="100%" height={CHART_HEIGHT} viewBox={VIEW_BOX}>
-            <BudgetForecastGradient id={GRADIENT_ID} accentClassName={accentClassName} />
+            <BudgetForecastGradient id={GRADIENT_ID} colorClassName={gradientClassName} />
             <BudgetForecastLimit
                 y={limitY}
                 left={CHART_PADDING_X}

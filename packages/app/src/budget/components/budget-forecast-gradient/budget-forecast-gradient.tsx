@@ -1,17 +1,20 @@
-import { Defs, LinearGradient } from 'react-native-svg';
-
-import { StyledStop } from '../../../@generic/component/styled-stop/styled-stop';
+import { Defs, LinearGradient, Stop } from 'react-native-svg';
+import { useResolveClassNames } from 'uniwind';
 
 interface Props {
     readonly id: string;
-    readonly accentClassName: string;
+    readonly colorClassName: string;
 }
 
-export const BudgetForecastGradient = ({ id, accentClassName }: Props) => (
-    <Defs>
-        <LinearGradient id={id} x1="0" y1="0" x2="0" y2="1">
-            <StyledStop offset="0" stopClassName={accentClassName} stopOpacity={0.28} />
-            <StyledStop offset="1" stopClassName={accentClassName} stopOpacity={0} />
-        </LinearGradient>
-    </Defs>
-);
+export const BudgetForecastGradient = ({ id, colorClassName }: Props) => {
+    const { backgroundColor } = useResolveClassNames(colorClassName);
+
+    return (
+        <Defs>
+            <LinearGradient id={id} x1="0" y1="0" x2="0" y2="1">
+                <Stop offset="0" stopColor={backgroundColor} stopOpacity={0.28} />
+                <Stop offset="1" stopColor={backgroundColor} stopOpacity={0} />
+            </LinearGradient>
+        </Defs>
+    );
+};
