@@ -1,17 +1,15 @@
 import { Text, View } from 'react-native';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
-import { cn } from '../../../@generic/utils/cn.util';
 
 interface Props {
     readonly label: string;
     readonly amount: string;
-    readonly className?: string;
 }
 
-export const BudgetBreakdownRow = ({ label, amount, className = 'text-secondary-foreground' }: Props) => (
+export const BudgetBreakdownRow = ({ label, amount }: Props) => (
     <View className="flex-row items-baseline justify-between gap-x-md">
-        <Text className={cn('shrink text-sm', className)}>{label}</Text>
-        <ProtectedText className={cn('text-sm tabular-nums', className)}>{amount}</ProtectedText>
+        <Text className="shrink text-sm text-secondary-foreground">{label}</Text>
+        <ProtectedText className="text-sm tabular-nums text-secondary-foreground">{amount}</ProtectedText>
     </View>
 );

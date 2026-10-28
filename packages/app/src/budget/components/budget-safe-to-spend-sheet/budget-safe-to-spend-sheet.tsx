@@ -46,7 +46,7 @@ export const BudgetSafeToSpendSheet = ({ budget }: Props) => {
     ) : null;
 
     return (
-        <View className="flex-1 bg-primary-reverse" collapsable={false} testID={BudgetSelector.SafeToSpendSheet}>
+        <View className="flex-1 border-t-hairline border-secondary-corner bg-secondary-background" collapsable={false} testID={BudgetSelector.SafeToSpendSheet}>
             <FormsheetHeader size="md" title={t`Safe to spend`} description={t`Until ${periodEndLabel}`} />
 
             <ScrollView contentContainerClassName="px-5xl pt-md gap-y-3xl pb-5xl" showsVerticalScrollIndicator={false}>

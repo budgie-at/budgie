@@ -18,7 +18,7 @@ export const BudgetStatRow = ({ scope, currencySymbol }: Props) => {
     const formatDigits = useDisplayFormatDigits();
     const leftVariant = scope.free < 0 ? 'destructive' : 'positive';
 
-    const formatAmount = (amount: number) => formatDigits(convertFromMicroUnits(amount), currencySymbol);
+    const formatAmount = (amount: number) => formatDigits(convertFromMicroUnits(amount), currencySymbol).replace('-', '−');
 
     const stats = [
         { label: t`Spent`, value: formatAmount(scope.spent), variant: 'primary', testID: BudgetSelector.DetailsSpentLabel },
