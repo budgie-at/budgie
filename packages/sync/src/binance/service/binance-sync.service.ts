@@ -253,7 +253,6 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             if (run.transfersSynced) {
                 return 0;
             }
-            run = { ...run, transfersSynced: true };
 
             const client = getRunSignedClient(token);
             const transfers = yield* binanceTradeCursorService.fetchTransferBatch(client, sync, externalAccountId, {
@@ -264,6 +263,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             const newTransfers = transfers.filter(transfer => !existingIds.has(transfer.externalId));
             const createdCount = isNotEmptyArray(newTransfers) ? yield* createSyncedTransfers(newTransfers, token) : 0;
             yield* binanceTradeCursorService.persistTradeCursors(sync, client);
+            run = { ...run, transfersSynced: true };
 
             return createdCount;
         });
@@ -372,14 +372,15 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 Effect.sync(() => {
                     run = freshRunState(deadlineAtMs);
                 }),
-            beforeProcessRun: (firstSyncToken: string) => {
-                if (run.balancesAnchored) {
-                    return Effect.void;
-                }
-                run = { ...run, balancesAnchored: true };
-
-                return anchorAllBalances(firstSyncToken);
-            },
+            beforeProcessRun: (firstSyncToken: string) =>
+                run.balancesAnchored
+                    ? Effect.void
+                    : Effect.andThen(
+                          anchorAllBalances(firstSyncToken),
+                          Effect.sync(() => {
+                              run = { ...run, balancesAnchored: true };
+                          })
+                      ),
             validateToken: token => decodeCredentials(token),
             afterSyncRun: () => {
                 run = freshRunState(run.deadlineAtMs);
