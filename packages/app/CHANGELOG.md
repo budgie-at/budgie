@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.125.3](https://github.com/budgie-at/budgie/compare/v6.125.2...v6.125.3) (2026-10-28)
+
+### Bug Fixes
+
+* **app:** present the receipt scanner once the modal settles and keep menu labels on one line ([b95193e](https://github.com/budgie-at/budgie/commit/b95193e36ab48432b040383aa5c7571fc2dcae41))
+
+
 ## [6.125.2](https://github.com/budgie-at/budgie/compare/v6.125.1...v6.125.2) (2026-10-28)
 
 ### Bug Fixes
