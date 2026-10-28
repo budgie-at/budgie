@@ -135,7 +135,7 @@
 
         @variant dark {
             --color-primary: rgb(255, 255, 255);
-            --color-primary-reverse: rgb(0, 0, 0);
+            --color-primary-reverse: rgb(14, 14, 16);
 
             --color-cta-foreground: rgb(0, 0, 0);
             --color-cta-background: rgb(255, 255, 255);
@@ -145,26 +145,26 @@
 
             --color-secondary-foreground: rgba(136, 136, 136, 1);
             --color-secondary-corner: rgba(56, 56, 58, 1);
-            --color-secondary-background: rgba(10, 10, 10, 1);
+            --color-secondary-background: rgba(23, 23, 26, 1);
 
             --color-secondary-reverse-foreground: rgba(115, 115, 115, 1);
             --color-secondary-reverse-corner: rgba(229, 229, 229, 1);
             --color-secondary-reverse-background: rgba(248, 248, 248, 1);
 
-            --color-positive-foreground: rgba(0, 255, 136, 1);
-            --color-positive-fill: rgba(0, 255, 136, 1);
-            --color-positive-corner: rgba(1, 255, 136, 0.2);
-            --color-positive-background: rgba(1, 255, 136, 0.1);
+            --color-positive-foreground: rgba(63, 192, 122, 1);
+            --color-positive-fill: rgba(63, 192, 122, 1);
+            --color-positive-corner: rgba(63, 192, 122, 0.2);
+            --color-positive-background: rgba(63, 192, 122, 0.1);
 
-            --color-destructive-foreground: rgba(255, 68, 68, 1);
-            --color-destructive-fill: rgba(255, 68, 68, 1);
-            --color-destructive-corner: rgba(255, 107, 107, 0.2);
-            --color-destructive-background: rgba(255, 68, 68, 0.2);
+            --color-destructive-foreground: rgba(229, 86, 111, 1);
+            --color-destructive-fill: rgba(229, 86, 111, 1);
+            --color-destructive-corner: rgba(229, 86, 111, 0.2);
+            --color-destructive-background: rgba(229, 86, 111, 0.15);
 
-            --color-warning-foreground: rgba(240, 177, 0, 1);
-            --color-warning-fill: rgba(240, 177, 0, 1);
-            --color-warning-corner: rgba(240, 177, 0, 0.2);
-            --color-warning-background: rgba(240, 177, 0, 0.1);
+            --color-warning-foreground: rgba(224, 165, 38, 1);
+            --color-warning-fill: rgba(224, 165, 38, 1);
+            --color-warning-corner: rgba(224, 165, 38, 0.2);
+            --color-warning-background: rgba(224, 165, 38, 0.1);
 
             --color-dark-warning-foreground: rgba(255, 105, 0, 1);
             --color-dark-warning-corner: rgba(255, 105, 0, 0.2);

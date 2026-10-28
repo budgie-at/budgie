@@ -42,7 +42,7 @@ export const GetTokenCard = ({ provider, url, title, description, modalTitle }: 
             />
 
             <Modal animationType="slide" visible={isWebViewVisible} onRequestClose={handleCloseWebView}>
-                <View className="flex-1 pt-14 bg-black">
+                <View className="flex-1 pt-14 bg-primary-reverse">
                     <View className="flex-row items-center justify-between p-md ">
                         <Text className="text-primary">{modalTitle}</Text>
                         <Button variant="ghost" onPress={handleCloseWebView} content={t`Close`} />

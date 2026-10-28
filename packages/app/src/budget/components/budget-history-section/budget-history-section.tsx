@@ -2,8 +2,6 @@ import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
-import { isEmptyArray } from '@rnw-community/shared';
-
 import { EntranceReveal } from '../../../@generic/component/entrance-reveal/entrance-reveal';
 import { SectionHeader } from '../../../@generic/component/section-header/section-header';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
@@ -23,7 +21,7 @@ interface Props {
     readonly currencySymbol: string;
 }
 
-const MIN_CHART_PERIODS = 2;
+const MIN_CLOSED_PERIODS = 2;
 
 export const BudgetHistorySection = (props: Props) => {
     const { budgetId, overallLimit, currentSpent, currentPeriodStart, currentPeriodEnd, currencySymbol } = props;
@@ -31,7 +29,7 @@ export const BudgetHistorySection = (props: Props) => {
     const { formatShortMonth } = useFormatDate();
     const { t } = useLingui();
 
-    if (isEmptyArray(snapshots)) {
+    if (snapshots.length < MIN_CLOSED_PERIODS) {
         return null;
     }
 
@@ -48,16 +46,15 @@ export const BudgetHistorySection = (props: Props) => {
     };
     const bars = buildBudgetHistoryBars(snapshots, currentBar, formatShortMonth);
     const hasEstimatedPeriods = snapshots.some(snapshot => snapshot.isReconstructed);
-    const hasChart = totalCount >= MIN_CHART_PERIODS;
 
     return (
         <EntranceReveal step={5}>
             <View collapsable={false} className="gap-y-lg" testID={BudgetSelector.DetailsHistorySection}>
                 <SectionHeader label={t`Past months`} />
 
-                {hasChart ? <BudgetHistoryChart bars={bars} currencySymbol={currencySymbol} /> : null}
+                <BudgetHistoryChart bars={bars} currencySymbol={currencySymbol} />
 
-                {hasChart ? <BudgetHistoryLegend bars={bars} /> : null}
+                <BudgetHistoryLegend bars={bars} />
 
                 <Text className="text-xs text-secondary-foreground">
                     {t({
@@ -68,7 +65,7 @@ export const BudgetHistorySection = (props: Props) => {
                     })}
                 </Text>
 
-                {hasChart && hasEstimatedPeriods ? (
+                {hasEstimatedPeriods ? (
                     <Text className="text-xxs text-secondary-foreground">
                         {t`Faded bars are estimated from your past transactions using your current limits.`}
                     </Text>

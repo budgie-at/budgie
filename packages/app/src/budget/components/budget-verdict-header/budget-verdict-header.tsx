@@ -19,12 +19,16 @@ export const BudgetVerdictHeader = ({ scope, daysLeft }: Props) => {
     const { t } = useLingui();
     const statusLabel = t(BUDGET_PACE_STATUS_LABEL[scope.status]);
     const daysLeftLabel = t({ message: plural(daysLeft, { one: '# day left', other: '# days left' }) });
-    const headline = t`${statusLabel} · ${daysLeftLabel}`;
     const accessibilityLabel = t`${statusLabel}, ${daysLeftLabel}.`;
 
     return (
         <View accessible accessibilityLabel={accessibilityLabel} className="gap-y-sm" testID={BudgetSelector.DetailsVerdict}>
-            <StatusLabel label={headline} tone={BUDGET_PACE_VARIANT[scope.status]} testID={BudgetSelector.DetailsVerdictStatus} />
+            <StatusLabel
+                label={statusLabel}
+                trailing={daysLeftLabel}
+                tone={BUDGET_PACE_VARIANT[scope.status]}
+                testID={BudgetSelector.DetailsVerdictStatus}
+            />
 
             {scope.status === BudgetPaceStatusEnum.TOO_EARLY ? (
                 <Text className="text-xs text-secondary-foreground">

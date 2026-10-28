@@ -10,6 +10,7 @@ import { cn } from '../../utils/cn.util';
 import { testID as testIDProps } from '../../utils/test-id.util';
 import { ChromeKeyboardScrollView } from '../chrome-keyboard-scroll-view/chrome-keyboard-scroll-view';
 import { CollapsibleChromeHeader } from '../collapsible-chrome-header/collapsible-chrome-header';
+import { CollapsibleChromeHeaderScrim } from '../collapsible-chrome-header-scrim/collapsible-chrome-header-scrim';
 import { StickyFooterBand } from '../sticky-footer-band/sticky-footer-band';
 
 import type { ComponentProps, ReactNode } from 'react';
@@ -90,6 +91,8 @@ export const CollapsibleChromePage = ({
                 </ChromeKeyboardScrollView>
 
                 <CollapsibleHeaderBackdrop />
+
+                <CollapsibleChromeHeaderScrim />
 
                 <CollapsibleChromeHeader
                     {...testIDProps(testID, TestIDPartEnum.HEADER)}

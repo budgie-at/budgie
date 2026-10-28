@@ -17,7 +17,7 @@ interface Props {
 }
 
 export const StatCell = ({ label, value, variant, appearance = 'centered', testID }: Props) => {
-    const { container, value: valueClassName } = STAT_CELL_APPEARANCE_CLASS_NAME[appearance];
+    const { container, label: labelClassName, value: valueClassName } = STAT_CELL_APPEARANCE_CLASS_NAME[appearance];
 
     return (
         <View className={cn(container)}>
@@ -26,7 +26,7 @@ export const StatCell = ({ label, value, variant, appearance = 'centered', testI
                 numberOfLines={1}
                 minimumFontScale={0.8}
                 maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
-                className="shrink text-xxs uppercase tracking-wider text-secondary-foreground"
+                className={cn(labelClassName)}
             >
                 {label}
             </Text>
