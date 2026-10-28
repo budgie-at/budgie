@@ -154,8 +154,6 @@ export class TransactionService extends Context.Service<TransactionService>()('@
                 },
                 effect => Db.transaction(effect)
             ),
-            findByExternalSource: (externalSource: ExternalSourceEnum) =>
-                Effect.map(transactionRepository.findExternalIdsByExternalSource(externalSource), externalIds => new Set(externalIds)),
             findIdMapByExternalSource: (externalSource: ExternalSourceEnum, accountIds?: readonly number[]) =>
                 transactionRepository.findIdMapByExternalSource(externalSource, accountIds),
             moveExternalEntryToAccount: Effect.fn('TransactionService.moveExternalEntryToAccount')(
