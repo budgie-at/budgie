@@ -61,6 +61,11 @@ export const setupBinanceFixture = (options: SetupBinanceFixtureOptions = {}) =>
         binanceStub.earnPositions([]);
         binanceStub.lockedEarnPositions([]);
         binanceStub.earnRewards([]);
+        binanceStub.lockedEarnRewards([]);
+        binanceStub.ethStakingRewards([]);
+        binanceStub.solStakingRewards([]);
+        binanceStub.dividends([]);
+        binanceStub.dustLogs([]);
 
         return { account, sync, instrument, externalId, token: BINANCE_TOKEN, asset, wallet };
     });

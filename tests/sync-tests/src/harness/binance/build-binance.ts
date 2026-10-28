@@ -3,10 +3,14 @@ import type {
     BinanceC2cOrderApiInterface,
     BinanceConvertFlowApiInterface,
     BinanceDepositApiInterface,
+    BinanceDividendApiInterface,
+    BinanceDustLogApiInterface,
     BinanceEarnPositionApiInterface,
     BinanceEarnRewardApiInterface,
     BinanceFiatOrderApiInterface,
     BinanceLockedEarnPositionApiInterface,
+    BinanceLockedEarnRewardApiInterface,
+    BinanceStakingRewardApiInterface,
     BinanceTradeApiInterface,
     BinanceUniversalTransferApiInterface,
     BinanceWithdrawalApiInterface
@@ -37,6 +41,9 @@ type UniversalTransferOverrides = Partial<BinanceUniversalTransferApiInterface> 
     Pick<BinanceUniversalTransferApiInterface, 'asset' | 'amount' | 'type' | 'tranId'>;
 
 type EarnRewardOverrides = Partial<BinanceEarnRewardApiInterface> & Pick<BinanceEarnRewardApiInterface, 'asset' | 'rewards' | 'time'>;
+
+type DividendOverrides = Partial<BinanceDividendApiInterface> &
+    Pick<BinanceDividendApiInterface, 'tranId' | 'asset' | 'amount' | 'divTime'>;
 
 export const buildBinance = {
     balance: (overrides: BalanceOverrides): BinanceAssetBalanceApiInterface => ({
@@ -97,5 +104,9 @@ export const buildBinance = {
     }),
     earnPosition: (overrides: EarnPositionOverrides): BinanceEarnPositionApiInterface => ({ ...overrides }),
     lockedEarnPosition: (overrides: LockedEarnPositionOverrides): BinanceLockedEarnPositionApiInterface => ({ ...overrides }),
-    earnReward: (overrides: EarnRewardOverrides): BinanceEarnRewardApiInterface => ({ ...overrides })
+    earnReward: (overrides: EarnRewardOverrides): BinanceEarnRewardApiInterface => ({ ...overrides }),
+    lockedEarnReward: (overrides: BinanceLockedEarnRewardApiInterface): BinanceLockedEarnRewardApiInterface => ({ ...overrides }),
+    stakingReward: (overrides: BinanceStakingRewardApiInterface): BinanceStakingRewardApiInterface => ({ ...overrides }),
+    dividend: (overrides: DividendOverrides): BinanceDividendApiInterface => ({ id: overrides.tranId, direction: 1, ...overrides }),
+    dustLog: (overrides: BinanceDustLogApiInterface): BinanceDustLogApiInterface => ({ ...overrides })
 };

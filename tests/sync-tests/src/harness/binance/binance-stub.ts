@@ -10,10 +10,14 @@ import type {
     BinanceC2cOrderApiInterface,
     BinanceConvertFlowApiInterface,
     BinanceDepositApiInterface,
+    BinanceDividendApiInterface,
+    BinanceDustLogApiInterface,
     BinanceEarnPositionApiInterface,
     BinanceEarnRewardApiInterface,
     BinanceFiatOrderApiInterface,
     BinanceLockedEarnPositionApiInterface,
+    BinanceLockedEarnRewardApiInterface,
+    BinanceStakingRewardApiInterface,
     BinanceTradeApiInterface,
     BinanceUniversalTransferApiInterface,
     BinanceWithdrawalApiInterface
@@ -36,6 +40,11 @@ const CONVERT_TRADE_FLOW_URL = `${BASE_URL}/sapi/v1/convert/tradeFlow`;
 const EARN_POSITION_URL = `${BASE_URL}/sapi/v1/simple-earn/flexible/position`;
 const LOCKED_EARN_POSITION_URL = `${BASE_URL}/sapi/v1/simple-earn/locked/position`;
 const EARN_REWARDS_URL = `${BASE_URL}/sapi/v1/simple-earn/flexible/history/rewardsRecord`;
+const LOCKED_EARN_REWARDS_URL = `${BASE_URL}/sapi/v1/simple-earn/locked/history/rewardsRecord`;
+const ETH_STAKING_REWARDS_URL = `${BASE_URL}/sapi/v1/eth-staking/eth/history/rewardsHistory`;
+const SOL_STAKING_REWARDS_URL = `${BASE_URL}/sapi/v1/sol-staking/sol/history/rewardsHistory`;
+const DUST_LOG_URL = `${BASE_URL}/sapi/v1/asset/dribblet`;
+const DIVIDEND_URL = `${BASE_URL}/sapi/v1/asset/assetDividend`;
 const UNIVERSAL_TRANSFER_URL = `${BASE_URL}/sapi/v1/asset/transfer`;
 const EXCHANGE_INFO_BASE_ASSETS = ['ADA', 'BNB', 'BTC', 'ETH', 'EUR', 'PEPE', 'USDT'];
 const EXCHANGE_INFO_QUOTE_ASSETS = ['USDT', 'FDUSD', 'BTC', 'BNB', 'BUSD'];
@@ -116,6 +125,18 @@ const sliceOffsetPage = <TRow>(url: URL, rows: TRow[]): TRow[] => {
     const limit = Number(url.searchParams.get('limit') ?? String(rows.length));
 
     return rows.slice(offset, offset + limit);
+};
+
+const stubPagedRows = <TRow extends { readonly time: number }>(url: string, rows: TRow[]): void => {
+    mockServer.use(
+        http.get(url, ({ request }) => {
+            const requestUrl = new URL(request.url);
+            const window = parseTimeWindow(requestUrl, 'startTime', 'endTime');
+            const windowRows = rows.filter(row => isWithinWindow(row.time, window));
+
+            return HttpResponse.json(buildPagedEarnResponse(requestUrl, windowRows), { headers: WEIGHT_HEADERS });
+        })
+    );
 };
 
 const SERVER_ERROR_STATUS = 500;
@@ -397,6 +418,35 @@ export const binanceStub = {
                 const rows = isFirstPage ? windowRewards : [];
 
                 return HttpResponse.json({ rows, total: rows.length }, { headers: WEIGHT_HEADERS });
+            })
+        );
+    },
+    lockedEarnRewards: (rewards: BinanceLockedEarnRewardApiInterface[]): void => {
+        stubPagedRows(LOCKED_EARN_REWARDS_URL, rewards);
+    },
+    ethStakingRewards: (rewards: BinanceStakingRewardApiInterface[]): void => {
+        stubPagedRows(ETH_STAKING_REWARDS_URL, rewards);
+    },
+    solStakingRewards: (rewards: BinanceStakingRewardApiInterface[]): void => {
+        stubPagedRows(SOL_STAKING_REWARDS_URL, rewards);
+    },
+    dividends: (dividends: BinanceDividendApiInterface[]): void => {
+        mockServer.use(
+            http.get(DIVIDEND_URL, ({ request }) => {
+                const window = parseTimeWindow(new URL(request.url), 'startTime', 'endTime');
+                const rows = dividends.filter(dividend => isWithinWindow(dividend.divTime, window));
+
+                return HttpResponse.json({ rows, total: rows.length }, { headers: WEIGHT_HEADERS });
+            })
+        );
+    },
+    dustLogs: (dustLogs: BinanceDustLogApiInterface[]): void => {
+        mockServer.use(
+            http.get(DUST_LOG_URL, ({ request }) => {
+                const window = parseTimeWindow(new URL(request.url), 'startTime', 'endTime');
+                const userAssetDribblets = dustLogs.filter(dustLog => isWithinWindow(dustLog.operateTime, window));
+
+                return HttpResponse.json({ total: userAssetDribblets.length, userAssetDribblets }, { headers: WEIGHT_HEADERS });
             })
         );
     }
