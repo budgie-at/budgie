@@ -87,6 +87,18 @@ const sliceOffsetPage = <TRow>(url: URL, rows: TRow[]): TRow[] => {
     return rows.slice(offset, offset + limit);
 };
 
+const SERVER_ERROR_STATUS = 500;
+
+const respondAfterFailures = (failureCount: number, respond: () => Response): (() => Response) => {
+    let servedCount = 0;
+
+    return () => {
+        servedCount += 1;
+
+        return servedCount <= failureCount ? new HttpResponse(null, { status: SERVER_ERROR_STATUS }) : respond();
+    };
+};
+
 export const binanceStub = {
     serverTime: (offsetMs = 0): void => {
         mockServer.use(
@@ -95,6 +107,14 @@ export const binanceStub = {
     },
     spotBalances: (balances: BinanceAssetBalanceApiInterface[]): void => {
         mockServer.use(http.post(SPOT_BALANCE_URL, () => HttpResponse.json(balances, { headers: WEIGHT_HEADERS })));
+    },
+    spotBalancesAfterFailures: (balances: BinanceAssetBalanceApiInterface[], failureCount: number): void => {
+        mockServer.use(
+            http.post(
+                SPOT_BALANCE_URL,
+                respondAfterFailures(failureCount, () => HttpResponse.json(balances, { headers: WEIGHT_HEADERS }))
+            )
+        );
     },
     fundingBalances: (balances: BinanceAssetBalanceApiInterface[]): void => {
         mockServer.use(http.post(FUNDING_BALANCE_URL, () => HttpResponse.json(balances, { headers: WEIGHT_HEADERS })));
@@ -213,6 +233,14 @@ export const binanceStub = {
 
                 return HttpResponse.json(trades, { headers: WEIGHT_HEADERS });
             })
+        );
+    },
+    myTradesAfterFailures: (trades: BinanceTradeApiInterface[], failureCount: number): void => {
+        mockServer.use(
+            http.get(
+                MY_TRADES_URL,
+                respondAfterFailures(failureCount, () => HttpResponse.json(trades, { headers: WEIGHT_HEADERS }))
+            )
         );
     },
     myTradesFailure: (status: number, body: { readonly code: number; readonly msg: string }): void => {
