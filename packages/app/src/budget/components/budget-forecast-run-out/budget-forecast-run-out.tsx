@@ -34,7 +34,7 @@ export const BudgetForecastRunOut = ({ x, top, bottom, width, runOutAt, fontSize
                 fontWeight="600"
                 textAnchor={textAnchor}
             >
-                {t`Runs out ~${runOutDate}`}
+                {t`Runs out about ${runOutDate}`}
             </StyledSvgText>
         </>
     );

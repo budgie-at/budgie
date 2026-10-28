@@ -31,18 +31,14 @@ export const buildBudgetForecastGeometry = (params: BudgetForecastGeometryParams
         });
 
     const actualPoints = pointsOf(index => days[index].actual);
-    const baselineY = height - paddingBottom;
-    const [firstActual] = actualPoints;
+    const projectedPoints = pointsOf(index => days[index].projected);
     const lastActual = actualPoints[actualPoints.length - 1];
-    const actualAreaPath = isDefined(lastActual)
-        ? [buildLinePath(actualPoints), 'L', lastActual.x, baselineY, 'L', firstActual.x, baselineY, 'Z'].join(' ')
-        : '';
 
     return {
         actualPath: buildLinePath(actualPoints),
-        actualAreaPath,
         todayPoint: isDefined(lastActual) ? lastActual : null,
-        projectedPath: buildLinePath(pointsOf(index => days[index].projected)),
+        projectedPath: buildLinePath(projectedPoints),
+        projectedEndPoint: projectedPoints[projectedPoints.length - 1] ?? null,
         limitY: yAt(overall.limit),
         todayX: xAt(Math.max(elapsedDays - 1, 0)),
         runOutX: isDefined(overall.runOutAt) ? xAt(indexOf(overall.runOutAt)) : null,

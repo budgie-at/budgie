@@ -3,7 +3,6 @@ import { View } from 'react-native';
 
 import { SectionHeader } from '../../../@generic/component/section-header/section-header';
 import { BudgetForecastChart } from '../budget-forecast-chart/budget-forecast-chart';
-import { BudgetForecastSummary } from '../budget-forecast-summary/budget-forecast-summary';
 
 import type { BudgetProjectionInterface } from '@budgie/budget';
 
@@ -22,8 +21,6 @@ export const BudgetForecastCard = ({ projection, currencySymbol }: Props) => {
             <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
                 <BudgetForecastChart projection={projection} currencySymbol={currencySymbol} />
             </View>
-
-            <BudgetForecastSummary projection={projection} currencySymbol={currencySymbol} />
         </View>
     );
 };
