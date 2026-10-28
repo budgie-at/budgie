@@ -12,7 +12,7 @@ jobs:
         permissions:
             contents: read
             pull-requests: read
-        uses: rnw-community/mobile-ci/.github/workflows/expo-fingerprint-guard.yml@44653c11f370b8f4c861cc99891ebaebf8a09ba3 # validate/v4.5.1 fleet-validation pin
+        uses: rnw-community/mobile-ci/.github/workflows/expo-fingerprint-guard.yml@0f6e84313fbcf06de38d6495b11d7cca0bf849d1 # validate/v4.5.1 fleet-validation pin
         with:
             working-directory: packages/app
             platforms: ios,android
@@ -34,25 +34,3 @@ jobs:
                   ACKNOWLEDGED: ${{ needs.fingerprint-guard.outputs.acknowledged }}
                   GUARD_RESULT: ${{ needs.fingerprint-guard.result }}
               run: echo "guard=${GUARD_RESULT} acknowledged=${ACKNOWLEDGED}"
-
-    diagnose:
-        runs-on: [self-hosted, linux-portable-4x8]
-        timeout-minutes: 5
-        permissions:
-            contents: read
-            pull-requests: read
-        steps:
-            - name: Probe gh and both label routes
-              env:
-                  GH_TOKEN: ${{ github.token }}
-                  PR_NUMBER: ${{ github.event.pull_request.number }}
-                  REPOSITORY: ${{ github.repository }}
-              run: |
-                  echo "runner=${RUNNER_NAME} arch=$(uname -m)"
-                  command -v gh || echo "gh: not on PATH"
-                  command -v jq || echo "jq: not on PATH"
-                  gh --version || true
-                  echo "--- pulls route"
-                  gh api "repos/${REPOSITORY}/pulls/${PR_NUMBER}" --jq '.labels[].name'; echo "exit=$?"
-                  echo "--- issues route"
-                  gh api "repos/${REPOSITORY}/issues/${PR_NUMBER}/labels" --paginate --jq '.[].name'; echo "exit=$?"
