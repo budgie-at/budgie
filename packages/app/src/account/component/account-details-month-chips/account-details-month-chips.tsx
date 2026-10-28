@@ -5,11 +5,11 @@ import { View } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
+import { StatChip } from '../../../@generic/component/stat-chip/stat-chip';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { getDateFilterByPeriod } from '../../../@generic/utils/date/get-date-filter-by-period.util';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { useGetTotalIncomeAndExpensesQuery } from '../../../transaction/query/use-get-total-income-and-expenses.query';
-import { AccountDetailsMonthChip } from '../account-details-month-chip/account-details-month-chip';
 
 interface Props {
     readonly accountId: number;
@@ -38,17 +38,17 @@ export const AccountDetailsMonthChips = ({ accountId }: Props) => {
             accessibilityLabel={t`This month: spent ${formattedExpense}, income ${formattedIncome}`}
             className="flex-row flex-wrap justify-center gap-sm"
         >
-            <AccountDetailsMonthChip
+            <StatChip
                 icon={UserIconNameEnum.TrendingDown}
                 iconClassName="text-destructive-foreground"
                 label={t`Spent`}
-                amount={formattedExpense}
+                value={formattedExpense}
             />
-            <AccountDetailsMonthChip
+            <StatChip
                 icon={UserIconNameEnum.TrendingUp}
                 iconClassName="text-positive-foreground"
                 label={t`Income`}
-                amount={formattedIncome}
+                value={formattedIncome}
             />
         </View>
     );

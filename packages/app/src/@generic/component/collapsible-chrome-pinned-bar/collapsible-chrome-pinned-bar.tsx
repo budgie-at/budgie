@@ -4,18 +4,18 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useCollapsibleHeaderScroll } from '@rnw-community/react-native-collapsible-header';
 import { SCREEN_CHROME_HEADER_LAYOUT_METRICS, getScreenChromeHeaderMetrics } from '@rnw-community/react-native-screen-chrome';
 
-import { SCREEN_CHROME_CONTENT_INSET_TOP } from '../../../@generic/constant/screen-chrome-content-inset.constant';
-import { TransactionFilters } from '../transaction-filters/transaction-filters';
+import { SCREEN_CHROME_CONTENT_INSET_TOP } from '../../constant/screen-chrome-content-inset.constant';
 
-import type { ComponentProps } from 'react';
+import type { ReactNode } from 'react';
 import type { LayoutChangeEvent } from 'react-native';
 
-interface Props extends Omit<ComponentProps<typeof TransactionFilters>, 'showTypeFilter'> {
+interface Props {
     readonly anchorY: number;
     readonly onHeightChange: (height: number) => void;
+    readonly children: ReactNode;
 }
 
-export const PinnedTransactionFilters = ({ anchorY, onHeightChange, ...filtersProps }: Props) => {
+export const CollapsibleChromePinnedBar = ({ anchorY, onHeightChange, children }: Props) => {
     const { scrollY } = useCollapsibleHeaderScroll();
     const { top } = useSafeAreaInsets();
 
@@ -34,7 +34,7 @@ export const PinnedTransactionFilters = ({ anchorY, onHeightChange, ...filtersPr
             style={animatedStyle}
             onLayout={handleLayout}
         >
-            <TransactionFilters {...filtersProps} />
+            {children}
         </Animated.View>
     );
 };

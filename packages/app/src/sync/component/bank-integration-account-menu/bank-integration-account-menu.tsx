@@ -32,7 +32,6 @@ export const BankIntegrationAccountMenu = ({ accountId, rowTestID }: Props) => {
 
     const handleDetails = () => void router.navigate({ pathname: '/account/[id]/details', params: { id: String(accountId) } });
     const handleEdit = () => void router.navigate({ pathname: '/account/[id]/update', params: { id: String(accountId) } });
-    const handleArchivePress = () => void handleArchive();
     const handleMarkExternal = () =>
         void runMarkExternal(
             Effect.gen(function* () {
@@ -94,7 +93,7 @@ export const BankIntegrationAccountMenu = ({ accountId, rowTestID }: Props) => {
             <ActionsMenuItem
                 icon={UserIconNameEnum.Archive}
                 label={t`Archive`}
-                onPress={handleArchivePress}
+                onPress={handleArchive}
                 variant="destructive"
                 {...testID(rowTestID, TestIDPartEnum.MENU, TestIDPartEnum.ARCHIVE)}
             />

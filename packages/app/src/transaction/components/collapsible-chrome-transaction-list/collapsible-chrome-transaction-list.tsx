@@ -5,9 +5,10 @@ import { Text, View } from 'react-native';
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { CollapsibleChromeLegendList } from '../../../@generic/component/collapsible-chrome-legend-list/collapsible-chrome-legend-list';
+import { CollapsibleChromePinnedBar } from '../../../@generic/component/collapsible-chrome-pinned-bar/collapsible-chrome-pinned-bar';
 import { useTransactionList } from '../../hook/use-transaction-list.hook';
 import { useGetTransactionCountQuery } from '../../query/use-get-transaction-count.query';
-import { PinnedTransactionFilters } from '../pinned-transaction-filters/pinned-transaction-filters';
+import { TransactionFilters } from '../transaction-filters/transaction-filters';
 import { TransactionListEmptyState } from '../transaction-list-empty-state/transaction-list-empty-state';
 import { TransactionListUncategorizedPill } from '../transaction-list-uncategorized-pill/transaction-list-uncategorized-pill';
 import { TransactionSectionsList } from '../transaction-sections-list/transaction-sections-list';
@@ -61,14 +62,14 @@ export const CollapsibleChromeTransactionList = ({ accountId, children }: Props)
                 stickyHeaderOffset={pinnedFiltersHeight}
             />
 
-            <PinnedTransactionFilters
-                filters={activeFilters}
-                onChange={setInternalFilters}
-                accountId={accountId}
-                hasFiltersSelected={hasFiltersSelected}
-                anchorY={filtersY}
-                onHeightChange={setPinnedFiltersHeight}
-            />
+            <CollapsibleChromePinnedBar anchorY={filtersY} onHeightChange={setPinnedFiltersHeight}>
+                <TransactionFilters
+                    filters={activeFilters}
+                    onChange={setInternalFilters}
+                    accountId={accountId}
+                    hasFiltersSelected={hasFiltersSelected}
+                />
+            </CollapsibleChromePinnedBar>
         </>
     );
 };

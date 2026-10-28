@@ -25,7 +25,6 @@ export const AccountActionsMenu = ({ accountId, accountType, balance, instrument
     const archiveAction = useArchiveAccount(accountId, () => void dismissAllOrReplace('/'));
 
     const handleEdit = () => void router.navigate({ pathname: '/account/[id]/update', params: { id: String(accountId) } });
-    const handleArchive = () => void archiveAction.handleArchive();
 
     const isBusy = closeAction.isLoading || archiveAction.isLoading;
 
@@ -42,7 +41,7 @@ export const AccountActionsMenu = ({ accountId, accountType, balance, instrument
             <ActionsMenuItem
                 icon={UserIconNameEnum.Archive}
                 label={t`Archive`}
-                onPress={handleArchive}
+                onPress={archiveAction.handleArchive}
                 testID={AccountDetailsSelector.ArchiveMenuButton}
             />
         );
