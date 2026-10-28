@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.123.1](https://github.com/budgie-at/budgie/compare/v6.123.0...v6.123.1) (2026-10-28)
+
+### Bug Fixes
+
+* **app:** enlarge and deepen the top and bottom screen chrome bands ([d07ff30](https://github.com/budgie-at/budgie/commit/d07ff30d4490759b3e652f14b3708f1844806b5b))
+
+
 # [6.123.0](https://github.com/budgie-at/budgie/compare/v6.122.0...v6.123.0) (2026-10-28)
 
 ### Bug Fixes
