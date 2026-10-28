@@ -18,9 +18,11 @@ appId: ${APP_ID}
 - waitForAnimationToEnd
 - extendedWaitUntil:
       visible:
-          id: 'AccountDetails.EditButton'
+          id: 'AccountDetails.ActionsButton'
       timeout: 20000
 
+- tapOn:
+      id: 'AccountDetails.ActionsButton'
 - tapOn:
       id: 'AccountDetails.EditButton'
 - extendedWaitUntil:

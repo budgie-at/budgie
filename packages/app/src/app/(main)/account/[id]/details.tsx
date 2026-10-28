@@ -10,14 +10,13 @@ import { HeaderBackButton } from '../../../../@generic/component/header-back-but
 import { LoadingScreen } from '../../../../@generic/component/loading-screen/loading-screen';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
 import { ScreenChromeThemeProvider } from '../../../../@generic/provider/screen-chrome-theme.provider';
-import { AccountDetailsEditButton } from '../../../../account/component/account-details-edit-button/account-details-edit-button';
+import { AccountActionsMenu } from '../../../../account/component/account-actions-menu/account-actions-menu';
 import { AccountDetailsHeaderBackdrop } from '../../../../account/component/account-details-header-backdrop/account-details-header-backdrop';
 import { AccountDetailsHero } from '../../../../account/component/account-details-hero/account-details-hero';
 import { AccountDetailsLargeTitle } from '../../../../account/component/account-details-large-title/account-details-large-title';
 import { AccountDetailsMenuControls } from '../../../../account/component/account-details-menu-controls/account-details-menu-controls';
 import { AccountDetailsSmallTitle } from '../../../../account/component/account-details-small-title/account-details-small-title';
 import { DebtAccountBalance } from '../../../../account/component/debt-account-balance/debt-account-balance';
-import { DepositAccountActionsMenu } from '../../../../account/component/deposit-account-actions-menu/deposit-account-actions-menu';
 import { DepositDetailsCard } from '../../../../account/component/deposit-details-card/deposit-details-card';
 import { useAccountBalanceQuery } from '../../../../account/query/use-account-balance.query';
 import { useDebtAccountProgressSummaryQuery } from '../../../../account/query/use-debt-account-progress-summary.query';
@@ -43,12 +42,9 @@ export default function AccountDetails() {
     }
 
     const instrumentSymbol = account.instrument.symbol;
-    const headerTrailing =
-        account.type === AccountTypeEnum.DEPOSIT ? (
-            <DepositAccountActionsMenu accountId={id} balance={balance} instrumentSymbol={instrumentSymbol} />
-        ) : (
-            <AccountDetailsEditButton accountId={id} />
-        );
+    const headerTrailing = (
+        <AccountActionsMenu accountId={id} accountType={account.type} balance={balance} instrumentSymbol={instrumentSymbol} />
+    );
 
     return (
         <View className="flex-1" testID={AccountDetailsSelector.Page} collapsable={false}>

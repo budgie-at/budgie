@@ -231,7 +231,7 @@ appId: ${APP_ID}
       id: 'AccountCard.Balance.E2E_Crypto_Vault.2_BTC'
 - extendedWaitUntil:
       visible:
-          id: 'AccountDetails.EditButton'
+          id: 'AccountDetails.ActionsButton'
       timeout: 10000
 - extendedWaitUntil:
       visible:
@@ -263,7 +263,7 @@ appId: ${APP_ID}
       id: 'TransactionForm.SubmitButton'
 - extendedWaitUntil:
       visible:
-          id: 'AccountDetails.EditButton'
+          id: 'AccountDetails.ActionsButton'
       timeout: 10000
 
 - extendedWaitUntil:

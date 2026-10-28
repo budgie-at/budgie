@@ -43,7 +43,7 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
       visible:
-          id: 'AccountDetails.EditButton'
+          id: 'AccountDetails.ActionsButton'
       timeout: 10000
 
 - extendedWaitUntil:
@@ -134,7 +134,7 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
       visible:
-          id: 'AccountDetails.EditButton'
+          id: 'AccountDetails.ActionsButton'
       timeout: 10000
 
 - scrollUntilVisible:
@@ -170,7 +170,7 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
       visible:
-          id: 'AccountDetails.EditButton'
+          id: 'AccountDetails.ActionsButton'
       timeout: 10000
 
 - tapOn:

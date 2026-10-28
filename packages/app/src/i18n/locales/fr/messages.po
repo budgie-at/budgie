@@ -175,7 +175,7 @@ msgstr "{formattedAmount} · {detail}"
 msgid "{formattedAmount} / mo"
 msgstr "{formattedAmount} / mois"
 
-#: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
+#: src/account/component/account-actions-menu/use-deposit-close-action.hook.ts
 msgid "{formattedBalance} will be transferred to {destinationAccountTitle} and this deposit will be archived. You can restore it anytime from Settings → Archived Accounts."
 msgstr "{formattedBalance} sera transféré vers {destinationAccountTitle} et ce dépôt sera archivé. Vous pouvez le restaurer à tout moment depuis Paramètres → Comptes archivés."
 
@@ -480,6 +480,7 @@ msgstr "Compte {accountId}"
 msgid "Account {accountId} not found"
 msgstr "Compte {accountId} introuvable"
 
+#: src/account/component/account-actions-menu/account-actions-menu.tsx
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Account actions"
 msgstr "Actions du compte"
@@ -806,6 +807,7 @@ msgstr "Appliquer les catégories par défaut selon les codes de catégorie des 
 msgid "Apply to existing transactions?"
 msgstr "Appliquer aux transactions existantes ?"
 
+#: src/account/component/account-actions-menu/account-actions-menu.tsx
 #: src/account/component/debt-account-paid-off/debt-account-paid-off.tsx
 #: src/account/hooks/use-archive-account.hook.ts
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
@@ -1087,8 +1089,8 @@ msgstr "Peut prendre des heures"
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx
 #: src/account/component/account-action-card/account-action-card.tsx
+#: src/account/component/account-actions-menu/use-deposit-close-action.hook.ts
 #: src/account/component/archived-account-card/archived-account-card.tsx
-#: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
 #: src/account/hooks/use-archive-account.hook.ts
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
@@ -1291,12 +1293,12 @@ msgstr "Le presse-papiers est vide"
 msgid "Close"
 msgstr "Fermer"
 
-#: src/account/component/deposit-account-actions-menu/deposit-account-actions-menu.tsx
-#: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
+#: src/account/component/account-actions-menu/account-actions-menu.tsx
+#: src/account/component/account-actions-menu/use-deposit-close-action.hook.ts
 msgid "Close Deposit"
 msgstr "Clôturer le dépôt"
 
-#: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
+#: src/account/component/account-actions-menu/use-deposit-close-action.hook.ts
 msgid "Close Deposit?"
 msgstr "Clôturer le dépôt ?"
 
@@ -1482,7 +1484,7 @@ msgstr "Impossible de vérifier les données de synchronisation"
 msgid "Could not clear data"
 msgstr "Impossible d'effacer les données"
 
-#: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
+#: src/account/component/account-actions-menu/use-deposit-close-action.hook.ts
 msgid "Could not close deposit"
 msgstr "Impossible de clôturer le dépôt"
 
@@ -2174,14 +2176,13 @@ msgstr "ex. Compte d'épargne"
 msgid "Each one becomes an account. Rename or remove them later."
 msgstr "Chacun devient un compte. Tu peux les renommer ou les supprimer plus tard."
 
-#: src/account/component/deposit-account-actions-menu/deposit-account-actions-menu.tsx
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Edit"
 msgstr "Modifier"
 
+#: src/account/component/account-actions-menu/account-actions-menu.tsx
 #: src/account/component/account-card-base/account-card-base.tsx
 #: src/account/component/account-card-menu/account-card-menu.tsx
-#: src/account/component/account-details-edit-button/account-details-edit-button.tsx
 msgid "Edit account"
 msgstr "Modifier le compte"
 

@@ -175,7 +175,7 @@ msgstr "{formattedAmount} · {detail}"
 msgid "{formattedAmount} / mo"
 msgstr "{formattedAmount} / міс."
 
-#: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
+#: src/account/component/account-actions-menu/use-deposit-close-action.hook.ts
 msgid "{formattedBalance} will be transferred to {destinationAccountTitle} and this deposit will be archived. You can restore it anytime from Settings → Archived Accounts."
 msgstr "{formattedBalance} буде переведено на {destinationAccountTitle}, а цей депозит буде архівовано. Ви можете відновити його в будь-який час у Налаштуваннях → Архівовані рахунки."
 
@@ -480,6 +480,7 @@ msgstr "Рахунок {accountId}"
 msgid "Account {accountId} not found"
 msgstr "Рахунок {accountId} не знайдено"
 
+#: src/account/component/account-actions-menu/account-actions-menu.tsx
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Account actions"
 msgstr "Дії з рахунком"
@@ -806,6 +807,7 @@ msgstr "Застосовувати типові категорії на осно
 msgid "Apply to existing transactions?"
 msgstr "Застосувати до наявних транзакцій?"
 
+#: src/account/component/account-actions-menu/account-actions-menu.tsx
 #: src/account/component/debt-account-paid-off/debt-account-paid-off.tsx
 #: src/account/hooks/use-archive-account.hook.ts
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
@@ -1087,8 +1089,8 @@ msgstr "Може тривати годинами"
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx
 #: src/account/component/account-action-card/account-action-card.tsx
+#: src/account/component/account-actions-menu/use-deposit-close-action.hook.ts
 #: src/account/component/archived-account-card/archived-account-card.tsx
-#: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
 #: src/account/hooks/use-archive-account.hook.ts
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
@@ -1291,12 +1293,12 @@ msgstr "Буфер обміну порожній"
 msgid "Close"
 msgstr "Закрити"
 
-#: src/account/component/deposit-account-actions-menu/deposit-account-actions-menu.tsx
-#: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
+#: src/account/component/account-actions-menu/account-actions-menu.tsx
+#: src/account/component/account-actions-menu/use-deposit-close-action.hook.ts
 msgid "Close Deposit"
 msgstr "Закрити депозит"
 
-#: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
+#: src/account/component/account-actions-menu/use-deposit-close-action.hook.ts
 msgid "Close Deposit?"
 msgstr "Закрити депозит?"
 
@@ -1482,7 +1484,7 @@ msgstr "Не вдалося перевірити дані синхронізац
 msgid "Could not clear data"
 msgstr "Не вдалося очистити дані"
 
-#: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
+#: src/account/component/account-actions-menu/use-deposit-close-action.hook.ts
 msgid "Could not close deposit"
 msgstr "Не вдалося закрити депозит"
 
@@ -2174,14 +2176,13 @@ msgstr "напр. Ощадний рахунок"
 msgid "Each one becomes an account. Rename or remove them later."
 msgstr "Кожен стане рахунком. Перейменувати чи видалити їх можна пізніше."
 
-#: src/account/component/deposit-account-actions-menu/deposit-account-actions-menu.tsx
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Edit"
 msgstr "Редагувати"
 
+#: src/account/component/account-actions-menu/account-actions-menu.tsx
 #: src/account/component/account-card-base/account-card-base.tsx
 #: src/account/component/account-card-menu/account-card-menu.tsx
-#: src/account/component/account-details-edit-button/account-details-edit-button.tsx
 msgid "Edit account"
 msgstr "Редагувати рахунок"
 

@@ -7,8 +7,10 @@ appId: ${APP_ID}
     timeout: 10000
 - extendedWaitUntil:
     visible:
-      id: 'AccountDetails.EditButton'
+      id: 'AccountDetails.ActionsButton'
     timeout: 10000
+- tapOn:
+    id: 'AccountDetails.ActionsButton'
 - tapOn:
     id: 'AccountDetails.EditButton'
 - extendedWaitUntil:

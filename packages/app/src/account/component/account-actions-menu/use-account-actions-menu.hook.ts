@@ -1,8 +1,10 @@
 import { useRouter } from 'expo-router';
 
+import { EmptyFn } from '@rnw-community/shared';
+
 import { usePopoverMenuAnchor } from '../../../@generic/hook/use-popover-menu-anchor.hook';
 
-export const useDepositAccountActionsMenu = (accountId: number, handleCloseDeposit: () => void) => {
+export const useAccountActionsMenu = (accountId: number, handleCloseDeposit: EmptyFn, handleArchive: EmptyFn) => {
     const router = useRouter();
     const { anchor, closeMenu, handleCloseComplete, handleToggleMenu, isMenuOpen } = usePopoverMenuAnchor();
 
@@ -14,9 +16,14 @@ export const useDepositAccountActionsMenu = (accountId: number, handleCloseDepos
         closeMenu(handleCloseDeposit);
     };
 
+    const handleArchivePress = () => {
+        closeMenu(handleArchive);
+    };
+
     return {
         anchor,
         closeMenu,
+        handleArchivePress,
         handleCloseComplete,
         handleCloseDepositPress,
         handleEditPress,
