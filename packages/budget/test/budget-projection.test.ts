@@ -59,6 +59,16 @@ const octoberInput = (overrides: Partial<BudgetProjectionInputInterface>): Budge
     ...overrides
 });
 
+const rentMonthProjection = (upcomingCharges: BudgetProjectionInputInterface['upcomingCharges']) =>
+    computeBudgetProjection(
+        octoberInput({
+            now: october(10),
+            overallLimit: 1500,
+            entries: [recurringEntry(october(1), 800, 1), ...variableRun([2, 4, 6, 8, 10], 10)],
+            upcomingCharges
+        })
+    );
+
 it.effect('keeps a steady month on track with free money reduced only by spent', () =>
     Effect.sync(() => {
         const projection = computeBudgetProjection(octoberInput({ entries: variableRun([1, 3, 5, 6, 8, 9, 11, 12, 14, 15], 10) }));
@@ -125,13 +135,7 @@ it.effect('stays too early in the first days and with too few variable entries',
 
 it.effect('does not extrapolate fixed rent posted on the first day', () =>
     Effect.sync(() => {
-        const projection = computeBudgetProjection(
-            octoberInput({
-                now: october(10),
-                overallLimit: 1500,
-                entries: [recurringEntry(october(1), 800, 1), ...variableRun([2, 4, 6, 8, 10], 10)]
-            })
-        );
+        const projection = rentMonthProjection([]);
 
         expect(projection.overall.status).toBe(BudgetPaceStatusEnum.ON_TRACK);
         expect(projection.overall.projectedEnd).toBe(850 + 5 * 21);
@@ -140,13 +144,7 @@ it.effect('does not extrapolate fixed rent posted on the first day', () =>
 
 it.effect('tracks variable spend per elapsed day without counting fixed rent', () =>
     Effect.sync(() => {
-        const projection = computeBudgetProjection(
-            octoberInput({
-                now: october(10),
-                overallLimit: 1500,
-                entries: [recurringEntry(october(1), 800, 1), ...variableRun([2, 4, 6, 8, 10], 10)]
-            })
-        );
+        const projection = rentMonthProjection([]);
         const variableSpentByDay = projection.days.map(day => day.variableSpent);
 
         expect(variableSpentByDay.slice(0, 10)).toEqual([0, 10, 0, 10, 0, 10, 0, 10, 0, 10]);
@@ -157,14 +155,7 @@ it.effect('tracks variable spend per elapsed day without counting fixed rent', (
 
 it.effect('derives the daily allowance from the limit minus posted and upcoming committed charges', () =>
     Effect.sync(() => {
-        const projection = computeBudgetProjection(
-            octoberInput({
-                now: october(10),
-                overallLimit: 1500,
-                entries: [recurringEntry(october(1), 800, 1), ...variableRun([2, 4, 6, 8, 10], 10)],
-                upcomingCharges: [upcomingRecurring(october(20), 100, 2)]
-            })
-        );
+        const projection = rentMonthProjection([upcomingRecurring(october(20), 100, 2)]);
         const withoutCommitted = computeBudgetProjection(octoberInput({ overallLimit: 3100 }));
 
         expect(projection.dailyAllowance).toBeCloseTo((1500 - 800 - 100) / 31);
