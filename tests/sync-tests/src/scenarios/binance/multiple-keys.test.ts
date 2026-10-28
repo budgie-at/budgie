@@ -1,5 +1,5 @@
-import { AccountEntityTable, AccountTypeEnum, ExternalSourceEnum, PRECISION, SyncModeEnum, SyncStatusEnum } from '@budgie/contracts';
-import { BinanceSyncService, BinanceWalletEnum, encodeBinanceAccountId } from '@budgie/sync';
+import { AccountEntityTable, ExternalSourceEnum, PRECISION, SyncModeEnum } from '@budgie/contracts';
+import { BinanceSyncService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
@@ -7,26 +7,25 @@ import * as Effect from 'effect/Effect';
 import {
     binanceStub,
     buildBinance,
+    buildBinanceToken,
     fetchAccountIntegrationToken,
     fetchCachedBalanceAmount,
     fetchSyncById,
-    seed,
     seedCryptoInstrument,
+    seedSecondKeyAccount,
     setupBinanceFixture,
     skipRequestedSync,
     TestLayer,
     testDb
 } from '../../harness';
 
-const buildToken = (apiKey: string) => JSON.stringify({ apiKey, apiSecret: `${apiKey}-secret` });
-
 const KEY_A = 'test-api-key';
 const KEY_B = 'key-b';
 const KEY_ROTATED = 'key-a-rotated';
 const KEY_OTHER_ACCOUNT = 'key-other-account';
-const KEY_B_TOKEN = buildToken(KEY_B);
-const ROTATED_TOKEN = buildToken(KEY_ROTATED);
-const OTHER_ACCOUNT_TOKEN = buildToken(KEY_OTHER_ACCOUNT);
+const KEY_B_TOKEN = buildBinanceToken(KEY_B);
+const ROTATED_TOKEN = buildBinanceToken(KEY_ROTATED);
+const OTHER_ACCOUNT_TOKEN = buildBinanceToken(KEY_OTHER_ACCOUNT);
 const KEY_A_UID = 1001;
 const KEY_B_UID = 1002;
 const OTHER_ACCOUNT_UID = 1003;
@@ -35,26 +34,6 @@ const STORED_TRADE_CURSOR = JSON.stringify({ ADAUSDT: 5 });
 
 const fetchBinanceAccounts = () =>
     testDb.select().from(AccountEntityTable).where(eq(AccountEntityTable.externalSource, ExternalSourceEnum.BINANCE));
-
-const seedSecondKeyAccount = (asset: string, instrumentId: number) =>
-    Effect.gen(function* () {
-        const account = yield* seed.account({
-            externalId: encodeBinanceAccountId({ wallet: BinanceWalletEnum.SPOT, asset }),
-            externalSource: ExternalSourceEnum.BINANCE,
-            type: AccountTypeEnum.CRYPTO_SYNC,
-            instrumentId
-        });
-        yield* seed.sync({
-            accountId: account.id,
-            token: KEY_B_TOKEN,
-            provider: ExternalSourceEnum.BINANCE,
-            mode: SyncModeEnum.BACKWARD,
-            status: SyncStatusEnum.SYNCING,
-            backwardSyncFromAt: new Date()
-        });
-
-        return account;
-    });
 
 const connectKey = (token: string, externalIds: string[]) =>
     Effect.gen(function* () {
@@ -68,7 +47,7 @@ describe('binance/multiple-keys', () => {
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
             const { account: accountA } = yield* setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.BACKWARD });
-            const accountB = yield* seedSecondKeyAccount('ETH', (yield* seedCryptoInstrument('ETH')).id);
+            const accountB = yield* seedSecondKeyAccount('ETH', (yield* seedCryptoInstrument('ETH')).id, KEY_B_TOKEN);
             binanceStub.accountsByApiKey([
                 { apiKey: KEY_A, uid: KEY_A_UID, spotBalances: [buildBinance.balance({ asset: 'BTC', free: '1' })] },
                 { apiKey: KEY_B, uid: KEY_B_UID, spotBalances: [buildBinance.balance({ asset: 'ETH', free: '2' })] }

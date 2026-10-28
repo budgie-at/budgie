@@ -100,6 +100,8 @@ const parseTimeWindow = (url: URL, startParam: string, endParam: string): TimeWi
     };
 };
 
+const parseApplyTimeMs = (applyTime: string): number => Date.parse(applyTime.includes('T') ? applyTime : `${applyTime.replace(' ', 'T')}Z`);
+
 const isWithinWindow = (timeMs: number, window: TimeWindow): boolean => timeMs >= window.startMs && timeMs <= window.endMs;
 
 const buildPagedEarnResponse = <TRow>(url: URL, rows: TRow[]): { rows: TRow[]; total: number } => {
@@ -229,7 +231,7 @@ export const binanceStub = {
         mockServer.use(
             http.get(
                 WITHDRAW_URL,
-                serveCapitalHistory(withdrawals, withdrawal => new Date(withdrawal.applyTime).getTime(), requestedWindows, options)
+                serveCapitalHistory(withdrawals, withdrawal => parseApplyTimeMs(withdrawal.applyTime), requestedWindows, options)
             )
         );
     },

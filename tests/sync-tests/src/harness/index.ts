@@ -86,6 +86,7 @@ export { expectForwardSyncWithoutHistory } from './db/expect-forward-sync-withou
 export { explainQueryPlan } from './db/explain-query-plan';
 export { fetchCachedBalanceAmount } from './db/fetch-cached-balance-amount';
 export { seedUsdtFundingAccount } from './binance/seed-usdt-funding-account';
+export { buildBinanceToken, seedSecondKeyAccount } from './binance/seed-second-key-account';
 export { expectParentedToCanonical } from './consolidation/expect-parented-to-canonical';
 export * as Clock from 'effect/Clock';
 export * as Fiber from 'effect/Fiber';
