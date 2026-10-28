@@ -3172,7 +3172,7 @@ msgstr "Поки залишити порожнім"
 msgid "left"
 msgstr "лишилось"
 
-#: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
+#: src/budget/components/budget-limit-amounts-row/budget-limit-amounts-row.tsx
 #: src/budget/hooks/use-budget-progress-labels.hook.ts
 msgid "Left"
 msgstr "Залишилось"
@@ -3186,7 +3186,7 @@ msgstr "Позичено"
 msgid "Less Than"
 msgstr "Менше ніж"
 
-#: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
+#: src/budget/components/budget-limit-amounts-row/budget-limit-amounts-row.tsx
 #: src/budget/components/budget-pace-legend/budget-pace-legend.tsx
 #: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "Limit"
@@ -4026,7 +4026,7 @@ msgstr "Бюджет «Інше»: ліміт досягнуто"
 msgid "over"
 msgstr "перевитрата"
 
-#: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
+#: src/budget/components/budget-limit-amounts-row/budget-limit-amounts-row.tsx
 #: src/budget/constant/budget-pace-status-label.constant.ts
 #: src/budget/hooks/use-budget-progress-labels.hook.ts
 msgid "Over budget"
@@ -5024,7 +5024,7 @@ msgid "Spending by Tag"
 msgstr "Витрати за тегами"
 
 #: src/account/component/account-details-month-chips/account-details-month-chips.tsx
-#: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
+#: src/budget/components/budget-limit-amounts-row/budget-limit-amounts-row.tsx
 #: src/budget/components/budget-pace-legend/budget-pace-legend.tsx
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Spent"

@@ -2,8 +2,8 @@ import { isDefined } from '@rnw-community/shared';
 
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 import { BudgetSelector } from '../../budget.selector';
-import { BudgetDetailsLimitCard } from '../budget-details-limit-card/budget-details-limit-card';
 import { BudgetDetailsLimitHeading } from '../budget-details-limit-heading/budget-details-limit-heading';
+import { BudgetPeriodSummaryLimitCard } from '../budget-period-summary-limit-card/budget-period-summary-limit-card';
 
 interface Props {
     readonly categoryId: number;
@@ -17,9 +17,9 @@ export const BudgetPeriodSummaryCategoryRow = ({ categoryId, limitAmount, carrie
     const { category } = useGetCategoryByIdQuery(categoryId);
 
     return (
-        <BudgetDetailsLimitCard
+        <BudgetPeriodSummaryLimitCard
             spent={spent}
-            limitAmount={limitAmount + carriedAmount}
+            limit={limitAmount + carriedAmount}
             currencySymbol={currencySymbol}
             testID={BudgetSelector.PeriodSummaryCategoryRow(categoryId)}
             spentTestID={BudgetSelector.PeriodSummaryCategorySpentLabel(categoryId)}
@@ -30,6 +30,6 @@ export const BudgetPeriodSummaryCategoryRow = ({ categoryId, limitAmount, carrie
                 carriedAmount={carriedAmount}
                 currencySymbol={currencySymbol}
             />
-        </BudgetDetailsLimitCard>
+        </BudgetPeriodSummaryLimitCard>
     );
 };

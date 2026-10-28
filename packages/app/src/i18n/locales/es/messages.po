@@ -3172,7 +3172,7 @@ msgstr "Dejarlo vacío por ahora"
 msgid "left"
 msgstr "restante"
 
-#: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
+#: src/budget/components/budget-limit-amounts-row/budget-limit-amounts-row.tsx
 #: src/budget/hooks/use-budget-progress-labels.hook.ts
 msgid "Left"
 msgstr "Restante"
@@ -3186,7 +3186,7 @@ msgstr "Prestado"
 msgid "Less Than"
 msgstr "Menor que"
 
-#: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
+#: src/budget/components/budget-limit-amounts-row/budget-limit-amounts-row.tsx
 #: src/budget/components/budget-pace-legend/budget-pace-legend.tsx
 #: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "Limit"
@@ -4026,7 +4026,7 @@ msgstr "Presupuesto de otros: límite alcanzado"
 msgid "over"
 msgstr "de más"
 
-#: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
+#: src/budget/components/budget-limit-amounts-row/budget-limit-amounts-row.tsx
 #: src/budget/constant/budget-pace-status-label.constant.ts
 #: src/budget/hooks/use-budget-progress-labels.hook.ts
 msgid "Over budget"
@@ -5024,7 +5024,7 @@ msgid "Spending by Tag"
 msgstr "Gastos por etiqueta"
 
 #: src/account/component/account-details-month-chips/account-details-month-chips.tsx
-#: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
+#: src/budget/components/budget-limit-amounts-row/budget-limit-amounts-row.tsx
 #: src/budget/components/budget-pace-legend/budget-pace-legend.tsx
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Spent"

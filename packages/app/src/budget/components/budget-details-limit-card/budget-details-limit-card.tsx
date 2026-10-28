@@ -1,17 +1,14 @@
-import { convertFromMicroUnits } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
 import { useEffect, useEffectEvent, useRef } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withDelay, withSequence, withTiming } from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
-import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
-import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useBudgetHighlightContext } from '../../context/budget-highlight.context';
 import { BudgetCategoryForecast } from '../budget-category-forecast/budget-category-forecast';
+import { BudgetLimitAmountsRow } from '../budget-limit-amounts-row/budget-limit-amounts-row';
 import { BudgetPaceTrack } from '../budget-pace-track/budget-pace-track';
 
 import type { BudgetHighlightTargetInterface } from '../../interface/budget-highlight-target.interface';
@@ -39,8 +36,6 @@ export const BudgetDetailsLimitCard = (props: Props) => {
     const highlightProgress = useSharedValue(0);
     const highlightStyle = useAnimatedStyle(() => ({ opacity: highlightProgress.value }));
     const isHighlighted = isDefined(target) && target.scope === highlightTarget.scope && target.categoryId === highlightTarget.categoryId;
-    const formatDigits = useDisplayFormatDigits();
-    const { t } = useLingui();
 
     const handleHighlight = useEffectEvent(() => {
         const fadeDuration = reducedMotion ? 0 : HIGHLIGHT_FADE_DURATION;
@@ -63,9 +58,6 @@ export const BudgetDetailsLimitCard = (props: Props) => {
         }
     }, [target, isHighlighted]);
 
-    const remainingAmount = scope.limit - scope.spent;
-    const remainingLabel = remainingAmount < 0 ? t`Over budget` : t`Left`;
-
     return (
         <View ref={cardRef} className="relative" collapsable={false}>
             <Card variant="ghost" size="md" onPress={onPress} className="gap-y-md">
@@ -76,26 +68,7 @@ export const BudgetDetailsLimitCard = (props: Props) => {
 
                 <BudgetPaceTrack scope={scope} />
 
-                <View className="flex-row justify-between gap-x-md">
-                    <View className="flex-1">
-                        <Text className="text-secondary-foreground text-xs">{t`Spent`}</Text>
-                        <ProtectedText testID={spentTestID} className="text-primary text-sm font-semibold tabular-nums">
-                            {formatDigits(convertFromMicroUnits(scope.spent), currencySymbol)}
-                        </ProtectedText>
-                    </View>
-                    <View className="flex-1 items-center">
-                        <Text className="text-secondary-foreground text-xs">{remainingLabel}</Text>
-                        <ProtectedText className="text-primary text-sm font-semibold tabular-nums">
-                            {formatDigits(convertFromMicroUnits(Math.abs(remainingAmount)), currencySymbol)}
-                        </ProtectedText>
-                    </View>
-                    <View className="flex-1 items-end">
-                        <Text className="text-secondary-foreground text-xs">{t`Limit`}</Text>
-                        <ProtectedText className="text-primary text-sm font-semibold tabular-nums">
-                            {formatDigits(convertFromMicroUnits(scope.limit), currencySymbol)}
-                        </ProtectedText>
-                    </View>
-                </View>
+                <BudgetLimitAmountsRow spent={scope.spent} limit={scope.limit} currencySymbol={currencySymbol} spentTestID={spentTestID} />
             </Card>
             <Animated.View
                 pointerEvents="none"
