@@ -51,11 +51,17 @@ export class BinanceAccountService extends Context.Service<BinanceAccountService
             yield* accountBalanceRepository.upsert({ accountId, amount: convertToMicroUnits(balance) });
         });
 
+        const findIntegrationAccount = Effect.fnUntraced(function* (externalId: string, integrationId: number) {
+            return (yield* accountRepository.findByExternalIds([externalId])).find(
+                account => account.integrationId === integrationId || !isDefined(account.integrationId)
+            );
+        });
+
         const getOrCreateAccount = Effect.fnUntraced(function* (
             resolvableAccount: BinanceResolvableAccountInterface,
             integrationId: number
         ) {
-            const existingAccount = (yield* accountRepository.findByExternalIds([resolvableAccount.exchangeAccount.id])).at(0);
+            const existingAccount = yield* findIntegrationAccount(resolvableAccount.exchangeAccount.id, integrationId);
             if (isDefined(existingAccount)) {
                 return existingAccount;
             }
@@ -84,7 +90,7 @@ export class BinanceAccountService extends Context.Service<BinanceAccountService
             resolvableAccount: BinanceResolvableAccountInterface | null,
             integrationId: number
         ) {
-            const existingAccount = (yield* accountRepository.findByExternalIds([codecAccountId])).at(0);
+            const existingAccount = yield* findIntegrationAccount(codecAccountId, integrationId);
             if (isDefined(existingAccount)) {
                 return existingAccount;
             }
@@ -122,8 +128,13 @@ export class BinanceAccountService extends Context.Service<BinanceAccountService
                     { concurrency: 'unbounded', discard: true }
                 );
             }),
-            anchorAllBalances: Effect.fn('BinanceAccountService.anchorAllBalances')(function* (exchangeAccounts: SyncAccountInterface[]) {
-                const accounts = yield* accountRepository.findByExternalSource(BINANCE_ACCOUNT_DEFINITION.provider);
+            anchorAllBalances: Effect.fn('BinanceAccountService.anchorAllBalances')(function* (
+                exchangeAccounts: SyncAccountInterface[],
+                integrationId: number
+            ) {
+                const accounts = (yield* accountRepository.findByExternalSource(BINANCE_ACCOUNT_DEFINITION.provider)).filter(
+                    account => account.integrationId === integrationId
+                );
                 const exchangeAccountByExternalId = new Map(exchangeAccounts.map(exchangeAccount => [exchangeAccount.id, exchangeAccount]));
                 for (const account of accounts) {
                     const exchangeAccount = isNotEmptyString(account.externalId)

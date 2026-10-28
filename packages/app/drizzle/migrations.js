@@ -16,6 +16,7 @@ import m0012 from './20261025062922_account_external_ids/migration.sql';
 import m0013 from './20261026092451_bank_integration_label/migration.sql';
 import m0014 from './20261027125204_transaction_receipts/migration.sql';
 import m0015 from './20261028124502_binance_capital_pending_from/migration.sql';
+import m0016 from './20261028194031_bank_integration_external_client_id/migration.sql';
 
 export default {
     migrations: {
@@ -34,6 +35,7 @@ export default {
         '20261025062922_account_external_ids': m0012,
         '20261026092451_bank_integration_label': m0013,
         '20261027125204_transaction_receipts': m0014,
-        '20261028124502_binance_capital_pending_from': m0015
+        '20261028124502_binance_capital_pending_from': m0015,
+        '20261028194031_bank_integration_external_client_id': m0016
     }
 };

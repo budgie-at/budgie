@@ -1,0 +1,1 @@
+ALTER TABLE `bank_integrations` ADD `external_client_id` text;

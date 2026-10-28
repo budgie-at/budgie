@@ -29,6 +29,7 @@ import { BinanceCredentialsSchema } from '../constant/binance-credentials.schema
 import { BinanceCapitalOutcomeEnum } from '../enum/binance-capital-outcome.enum';
 import { BinanceWalletEnum } from '../enum/binance-wallet.enum';
 import { BinanceKeyPermissionsError } from '../error/binance-key-permissions.error';
+import { BinanceAccountApiSchema } from '../interface/binance-account-api.schema';
 import { BinanceApiRestrictionsApiSchema } from '../interface/binance-api-restrictions-api.schema';
 import { BinanceAssetBalanceListApiSchema } from '../interface/binance-asset-balance-api.schema';
 import { BinanceC2cOrderListApiSchema } from '../interface/binance-c2c-order-api.schema';
@@ -99,6 +100,7 @@ const EARN_POSITION_ENDPOINT = '/sapi/v1/simple-earn/flexible/position';
 const LOCKED_EARN_POSITION_ENDPOINT = '/sapi/v1/simple-earn/locked/position';
 const EARN_REWARDS_ENDPOINT = '/sapi/v1/simple-earn/flexible/history/rewardsRecord';
 const API_RESTRICTIONS_ENDPOINT = '/sapi/v1/account/apiRestrictions';
+const ACCOUNT_ENDPOINT = '/api/v3/account';
 const SERVER_TIME_ENDPOINT = '/api/v3/time';
 const EXCHANGE_INFO_ENDPOINT = '/api/v3/exchangeInfo';
 const SIGNATURE_RECV_WINDOW_MS = 60000;
@@ -178,6 +180,12 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             ...this.buildSpotAccounts(balanceByAsset),
             ...fundingBalances.map(balance => this.mapBalance(balance, BinanceWalletEnum.FUNDING)).filter(isDefined)
         ];
+    });
+
+    readonly getAccountUid = Effect.fn('BinanceSignedClient.getAccountUid')(function* (this: BinanceSignedClient) {
+        const account = yield* this.signedRequest(BinanceAccountApiSchema, ACCOUNT_ENDPOINT, 'GET', { omitZeroBalances: 'true' });
+
+        return String(account.uid);
     });
 
     readonly assertReadOnlyKey = Effect.fn('BinanceSignedClient.assertReadOnlyKey')(function* (this: BinanceSignedClient) {

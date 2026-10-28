@@ -2053,6 +2053,10 @@ msgstr "Détails"
 msgid "Didn't match"
 msgstr "Ne correspond pas"
 
+#: src/sync/component/binance-sync-token-section/binance-sync-token-section.tsx
+msgid "Different Binance account"
+msgstr "Autre compte Binance"
+
 #: src/settings/components/pin-management-rows/pin-management-rows.tsx
 msgid "Disable App Lock"
 msgstr "Désactiver le verrouillage"
@@ -5095,6 +5099,10 @@ msgstr "Ce compte sera masqué de votre vue principale et ne sera pas inclus dan
 #: src/transaction/hook/use-delete-transaction.hook.ts
 msgid "This action cannot be undone."
 msgstr "Cette action ne peut pas être annulée."
+
+#: src/sync/component/binance-sync-token-section/binance-sync-token-section.tsx
+msgid "This API key belongs to a different Binance account."
+msgstr "Cette clé API appartient à un autre compte Binance."
 
 #: src/sync/utils/toast-binance-key-permissions-error.util.ts
 msgid "This API key can trade, withdraw or transfer funds. Create a key with only \"Enable Reading\" and try again."

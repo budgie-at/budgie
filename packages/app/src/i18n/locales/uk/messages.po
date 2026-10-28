@@ -2053,6 +2053,10 @@ msgstr "Деталі"
 msgid "Didn't match"
 msgstr "Не збігається"
 
+#: src/sync/component/binance-sync-token-section/binance-sync-token-section.tsx
+msgid "Different Binance account"
+msgstr "Інший акаунт Binance"
+
 #: src/settings/components/pin-management-rows/pin-management-rows.tsx
 msgid "Disable App Lock"
 msgstr "Вимкнути блокування"
@@ -5095,6 +5099,10 @@ msgstr "Цей рахунок буде приховано з головного 
 #: src/transaction/hook/use-delete-transaction.hook.ts
 msgid "This action cannot be undone."
 msgstr "Цю дію неможливо скасувати."
+
+#: src/sync/component/binance-sync-token-section/binance-sync-token-section.tsx
+msgid "This API key belongs to a different Binance account."
+msgstr "Цей API-ключ належить іншому акаунту Binance."
 
 #: src/sync/utils/toast-binance-key-permissions-error.util.ts
 msgid "This API key can trade, withdraw or transfer funds. Create a key with only \"Enable Reading\" and try again."
