@@ -19,15 +19,12 @@ const buildPrivatbankRow = (cardAmount: number, operationAmount: number) => ({
 });
 
 describe('privatbank/fee-amount', () => {
-    it('derives the fee of an expense from the card amount exceeding the operation amount', () => {
-        const transaction = privatbankTransactionMapper(buildPrivatbankRow(-100.5, -100));
+    it.each([
+        { name: 'an expense takes the card amount exceeding the operation amount as the fee', cardAmount: -100.5, expectedFee: 0.5 },
+        { name: 'an income reports no fee', cardAmount: 100.5, expectedFee: 0 }
+    ])('$name', ({ cardAmount, expectedFee }) => {
+        const transaction = privatbankTransactionMapper(buildPrivatbankRow(cardAmount, Math.sign(cardAmount) * 100));
 
-        expect(transaction.feeAmount).toBeCloseTo(0.5, 10);
-    });
-
-    it('reports no fee for an income whose card amount exceeds the operation amount', () => {
-        const transaction = privatbankTransactionMapper(buildPrivatbankRow(100.5, 100));
-
-        expect(transaction.feeAmount).toBe(0);
+        expect(transaction.feeAmount).toBeCloseTo(expectedFee, 10);
     });
 });

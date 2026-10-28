@@ -82,51 +82,27 @@ describe('binance/fiat-orders', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('books a fiat deposit of 100 EUR net with a 2 EUR fee as +102 gross income and a 2 fee entry (net +100)', () =>
+    it.effect.each([
+        { name: 'deposit', orderNo: 'fiat-dep-fee', isDeposit: true, mainType: TransactionEntryTypeEnum.DEBIT, mainAmount: EUR_102 },
+        { name: 'withdrawal', orderNo: 'fiat-wd-fee', isDeposit: false, mainType: TransactionEntryTypeEnum.CREDIT, mainAmount: EUR_100 }
+    ])('books a fiat $name of 100 EUR with a 2 EUR fee as the principal plus a fee entry', ({ orderNo, isDeposit, mainType, mainAmount }) =>
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
+            const order = [buildBinance.fiatOrder({ orderNo, fiatCurrency: 'EUR', amount: '100', totalFee: '2' })];
 
             yield* setupFiatScenario();
-            binanceStub.fiatOrders(
-                [buildBinance.fiatOrder({ orderNo: 'fiat-dep-fee', fiatCurrency: 'EUR', amount: '100', totalFee: '2' })],
-                []
-            );
+            binanceStub.fiatOrders(isDeposit ? order : [], isDeposit ? [] : order);
 
             yield* binanceSyncService.sync();
 
-            const { mainEntries, feeEntries } = yield* fetchOrderEntries('fiat-dep-fee');
+            const { mainEntries, feeEntries } = yield* fetchOrderEntries(orderNo);
             expect(mainEntries).toHaveLength(1);
             expect(feeEntries).toHaveLength(1);
-            expect(mainEntries[0].type).toBe(TransactionEntryTypeEnum.DEBIT);
-            expect(mainEntries[0].amount).toBe(EUR_102);
+            expect(mainEntries[0].type).toBe(mainType);
+            expect(mainEntries[0].amount).toBe(mainAmount);
             expect(mainEntries[0].exchangeRate).toBe(1);
             expect(feeEntries[0].type).toBe(TransactionEntryTypeEnum.FEE);
             expect(feeEntries[0].amount).toBe(EUR_2);
-            expect(mainEntries[0].amount - feeEntries[0].amount).toBe(EUR_100);
-        }).pipe(Effect.provide(TestLayer))
-    );
-
-    it.effect('books a fiat withdrawal of 100 EUR with a 2 EUR fee as a 100 principal plus a 2 fee entry (net -102)', () =>
-        Effect.gen(function* () {
-            const binanceSyncService = yield* BinanceSyncService;
-
-            yield* setupFiatScenario();
-            binanceStub.fiatOrders(
-                [],
-                [buildBinance.fiatOrder({ orderNo: 'fiat-wd-fee', fiatCurrency: 'EUR', amount: '100', totalFee: '2' })]
-            );
-
-            yield* binanceSyncService.sync();
-
-            const { mainEntries, feeEntries } = yield* fetchOrderEntries('fiat-wd-fee');
-            expect(mainEntries).toHaveLength(1);
-            expect(feeEntries).toHaveLength(1);
-            expect(mainEntries[0].type).toBe(TransactionEntryTypeEnum.CREDIT);
-            expect(mainEntries[0].amount).toBe(EUR_100);
-            expect(mainEntries[0].exchangeRate).toBe(1);
-            expect(feeEntries[0].type).toBe(TransactionEntryTypeEnum.FEE);
-            expect(feeEntries[0].amount).toBe(EUR_2);
-            expect(mainEntries[0].amount + feeEntries[0].amount).toBe(EUR_102);
         }).pipe(Effect.provide(TestLayer))
     );
 });
