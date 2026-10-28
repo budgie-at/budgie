@@ -174,13 +174,23 @@ export const binanceStub = {
         });
     },
     spotBalances: (balances: BinanceAssetBalanceApiInterface[], options?: ServeOptions): void => {
-        mockServer.use(http.post(SPOT_BALANCE_URL, serveWith(options, () => HttpResponse.json(balances, { headers: WEIGHT_HEADERS }))));
+        mockServer.use(
+            http.post(
+                SPOT_BALANCE_URL,
+                serveWith(options, () => HttpResponse.json(balances, { headers: WEIGHT_HEADERS }))
+            )
+        );
     },
     fundingBalances: (balances: BinanceAssetBalanceApiInterface[]): void => {
         mockServer.use(http.post(FUNDING_BALANCE_URL, () => HttpResponse.json(balances, { headers: WEIGHT_HEADERS })));
     },
     deposits: (deposits: BinanceDepositApiInterface[], requestedWindows?: TimeWindow[], options?: ServeOptions): void => {
-        mockServer.use(http.get(DEPOSIT_URL, serveCapitalHistory(deposits, deposit => deposit.insertTime, requestedWindows, options)));
+        mockServer.use(
+            http.get(
+                DEPOSIT_URL,
+                serveCapitalHistory(deposits, deposit => deposit.insertTime, requestedWindows, options)
+            )
+        );
     },
     withdrawals: (withdrawals: BinanceWithdrawalApiInterface[], requestedWindows?: TimeWindow[], options?: ServeOptions): void => {
         mockServer.use(

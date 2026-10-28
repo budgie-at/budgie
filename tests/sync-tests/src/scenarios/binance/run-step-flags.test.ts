@@ -27,7 +27,11 @@ describe('binance/run-step-flags', () => {
                 const { sync } = yield* setupStaleForwardFixture();
 
                 binanceStub.myTrades(
-                    { ADAUSDT: [buildBinance.trade({ symbol: 'ADAUSDT', id: 10, qty: '10', quoteQty: '5', commission: '0', isBuyer: true })] },
+                    {
+                        ADAUSDT: [
+                            buildBinance.trade({ symbol: 'ADAUSDT', id: 10, qty: '10', quoteQty: '5', commission: '0', isBuyer: true })
+                        ]
+                    },
                     new Set<string>(),
                     [],
                     { failTimes: FAILURES_EXHAUSTING_CLIENT_RETRIES }
@@ -48,7 +52,9 @@ describe('binance/run-step-flags', () => {
                 const binanceSyncService = yield* BinanceSyncService;
 
                 const { account } = yield* setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.BACKWARD });
-                binanceStub.spotBalances([buildBinance.balance({ asset: 'BTC', free: '1' })], { failTimes: FAILURES_EXHAUSTING_CLIENT_RETRIES });
+                binanceStub.spotBalances([buildBinance.balance({ asset: 'BTC', free: '1' })], {
+                    failTimes: FAILURES_EXHAUSTING_CLIENT_RETRIES
+                });
 
                 yield* binanceSyncService.sync();
 

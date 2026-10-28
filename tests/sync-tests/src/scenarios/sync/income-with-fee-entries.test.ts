@@ -33,7 +33,12 @@ describe('sync/income-with-fee-entries', () => {
         { type: SyncTransactionTypeEnum.INCOME, expectedNet: 100 },
         { type: SyncTransactionTypeEnum.EXPENSE, expectedNet: -100 }
     ])('nets a $type to its provider-reported amount when the provider reports a fee', ({ type, expectedNet }) => {
-        const input = mapBankTransactionToCreateInput(buildMonobankTransaction(type, 100, 2), ACCOUNT_ID, null, ExternalSourceEnum.MONOBANK);
+        const input = mapBankTransactionToCreateInput(
+            buildMonobankTransaction(type, 100, 2),
+            ACCOUNT_ID,
+            null,
+            ExternalSourceEnum.MONOBANK
+        );
 
         expect(netEffect(input.entries)).toBe(expectedNet);
     });
