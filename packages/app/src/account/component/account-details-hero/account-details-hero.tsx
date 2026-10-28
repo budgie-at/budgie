@@ -5,6 +5,7 @@ import { View } from 'react-native';
 import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { AccountDetailsSelector } from '../../../app/(main)/account/[id]/account-details.selector';
+import { AccountDetailsMonthChips } from '../account-details-month-chips/account-details-month-chips';
 import { AccountDetailsStatusLine } from '../account-details-status-line/account-details-status-line';
 
 interface Props {
@@ -33,6 +34,8 @@ export const AccountDetailsHero = ({ account, balance }: Props) => {
             </View>
 
             <AccountDetailsStatusLine account={account} />
+
+            <AccountDetailsMonthChips accountId={account.id} />
         </View>
     );
 };

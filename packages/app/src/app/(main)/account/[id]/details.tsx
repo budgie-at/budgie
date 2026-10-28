@@ -15,7 +15,6 @@ import { AccountDetailsHeaderBackdrop } from '../../../../account/component/acco
 import { AccountDetailsHero } from '../../../../account/component/account-details-hero/account-details-hero';
 import { AccountDetailsLargeTitle } from '../../../../account/component/account-details-large-title/account-details-large-title';
 import { AccountDetailsMenuControls } from '../../../../account/component/account-details-menu-controls/account-details-menu-controls';
-import { AccountDetailsMonthSummary } from '../../../../account/component/account-details-month-summary/account-details-month-summary';
 import { AccountDetailsSmallTitle } from '../../../../account/component/account-details-small-title/account-details-small-title';
 import { DebtAccountBalance } from '../../../../account/component/debt-account-balance/debt-account-balance';
 import { DepositAccountActionsMenu } from '../../../../account/component/deposit-account-actions-menu/deposit-account-actions-menu';
@@ -82,8 +81,6 @@ export default function AccountDetails() {
                                             deadline={account.deadline}
                                         />
                                     ) : null}
-
-                                    <AccountDetailsMonthSummary accountId={id} />
                                 </View>
                             )}
                         </CollapsibleChromeTransactionList>

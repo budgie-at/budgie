@@ -2837,7 +2837,7 @@ msgstr "Incluye criptomonedas"
 msgid "includes fee {formattedFeeAmount}"
 msgstr "incluye comisión {formattedFeeAmount}"
 
-#: src/account/component/account-details-month-summary/account-details-month-summary.tsx
+#: src/account/component/account-details-month-chips/account-details-month-chips.tsx
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/components/statistics-content/statistics-content.tsx
@@ -4760,7 +4760,7 @@ msgstr "Gastos por categoría"
 msgid "Spending by Tag"
 msgstr "Gastos por etiqueta"
 
-#: src/account/component/account-details-month-summary/account-details-month-summary.tsx
+#: src/account/component/account-details-month-chips/account-details-month-chips.tsx
 #: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Spent"
@@ -5079,7 +5079,6 @@ msgstr "Esta clave ya sincroniza otra de tus secciones de Monobank."
 msgid "This key is for a different Monobank client."
 msgstr "Esta clave es de otro cliente de Monobank."
 
-#: src/account/component/account-details-month-summary/account-details-month-summary.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "This month"
 msgstr "Este mes"
@@ -5087,6 +5086,10 @@ msgstr "Este mes"
 #: src/@generic/constant/date-period.constant.ts
 msgid "This Month"
 msgstr "Este mes"
+
+#: src/account/component/account-details-month-chips/account-details-month-chips.tsx
+msgid "This month: spent {formattedExpense}, income {formattedIncome}"
+msgstr "Este mes: gastado {formattedExpense}, ingresos {formattedIncome}"
 
 #: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
 msgid "This phone"
