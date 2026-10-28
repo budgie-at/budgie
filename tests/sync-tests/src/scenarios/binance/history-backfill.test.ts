@@ -27,6 +27,7 @@ const OLD_AGE_MS = 1500 * DAY_MS;
 const RECENT_AGE_MS = 5 * DAY_MS;
 const LONG_PAUSE_MS = 45 * DAY_MS;
 const DEFER_AT_REQUEST = 4;
+const THREE_RUN_BACKFILL_TIMEOUT_MS = 30_000;
 
 interface BackfillSource {
     readonly name: string;
@@ -117,37 +118,42 @@ const setupBackfillFixture = (needsBtcAccount: boolean) =>
 const countTransactions = () => Effect.map(fetchBinanceTransactions(), transactions => transactions.length);
 
 describe('binance/history-backfill', () => {
-    it.effect.each(SOURCES)('completes a $name backfill split across several deferred runs', source =>
-        Effect.gen(function* () {
-            const binanceSyncService = yield* BinanceSyncService;
-            const nowMs = Date.now();
-            const timesMs = [nowMs - OLD_AGE_MS, nowMs - RECENT_AGE_MS];
+    it.effect.each(SOURCES)(
+        'completes a $name backfill split across several deferred runs',
+        source =>
+            Effect.gen(function* () {
+                const binanceSyncService = yield* BinanceSyncService;
+                const nowMs = Date.now();
+                const timesMs = [nowMs - OLD_AGE_MS, nowMs - RECENT_AGE_MS];
 
-            const { sync, token } = yield* setupBackfillFixture(source.needsBtcAccount);
-            source.stub(timesMs, [], deferAtRequest(DEFER_AT_REQUEST));
-            yield* binanceSyncService.sync(Date.now() + RUN_DEADLINE_MS).pipe(Effect.ensuring(restoreRealTimers));
+                const { sync, token } = yield* setupBackfillFixture(source.needsBtcAccount);
+                source.stub(timesMs, [], deferAtRequest(DEFER_AT_REQUEST));
+                yield* binanceSyncService.sync(Date.now() + RUN_DEADLINE_MS).pipe(Effect.ensuring(restoreRealTimers));
 
-            const firstTailAt = (yield* fetchHistoryProgress(token))[source.key].tailAt;
-            expect(yield* countTransactions()).toBe(1);
-            expect(firstTailAt).toBeLessThan(Date.now() - 60 * DAY_MS);
+                const firstTailAt = (yield* fetchHistoryProgress(token))[source.key].tailAt;
+                expect(yield* countTransactions()).toBe(1);
+                expect(firstTailAt).toBeLessThan(Date.now() - 60 * DAY_MS);
 
-            jumpPastDeadline();
-            source.stub(timesMs, [], deferAtRequest(DEFER_AT_REQUEST));
-            yield* resyncBinance(sync.id, true).pipe(Effect.ensuring(restoreRealTimers));
+                jumpPastDeadline();
+                source.stub(timesMs, [], deferAtRequest(DEFER_AT_REQUEST));
+                yield* resyncBinance(sync.id, true).pipe(Effect.ensuring(restoreRealTimers));
 
-            const secondTailAt = (yield* fetchHistoryProgress(token))[source.key].tailAt;
-            expect(yield* countTransactions()).toBe(1);
-            expect(secondTailAt).toBeLessThan(firstTailAt - 30 * DAY_MS);
+                const secondTailAt = (yield* fetchHistoryProgress(token))[source.key].tailAt;
+                expect(yield* countTransactions()).toBe(1);
+                expect(secondTailAt).toBeLessThan(firstTailAt - 30 * DAY_MS);
 
-            const finalWindows: TimeWindow[] = [];
-            jumpPastDeadline();
-            source.stub(timesMs, finalWindows, emptyFn);
-            yield* resyncBinance(sync.id).pipe(Effect.ensuring(restoreRealTimers));
+                const finalWindows: TimeWindow[] = [];
+                jumpPastDeadline();
+                source.stub(timesMs, finalWindows, emptyFn);
+                yield* resyncBinance(sync.id).pipe(Effect.ensuring(restoreRealTimers));
 
-            expect(yield* countTransactions()).toBe(2);
-            expect((yield* fetchHistoryProgress(token))[source.key].tailAt).toBeLessThan(Date.now() - 1800 * DAY_MS);
-            expect(finalWindows.filter(window => window.endMs < Date.now() - 2 * DAY_MS && window.endMs > secondTailAt + 1000)).toEqual([]);
-        }).pipe(Effect.provide(TestLayer))
+                expect(yield* countTransactions()).toBe(2);
+                expect((yield* fetchHistoryProgress(token))[source.key].tailAt).toBeLessThan(Date.now() - 1800 * DAY_MS);
+                expect(finalWindows.filter(window => window.endMs < Date.now() - 2 * DAY_MS && window.endMs > secondTailAt + 1000)).toEqual(
+                    []
+                );
+            }).pipe(Effect.provide(TestLayer)),
+        THREE_RUN_BACKFILL_TIMEOUT_MS
     );
 
     it.effect.each(SOURCES)('does not walk a finished $name backfill again', source =>
