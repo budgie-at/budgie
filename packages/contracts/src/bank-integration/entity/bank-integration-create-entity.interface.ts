@@ -3,6 +3,6 @@ import type { BankIntegrationEntityInterface } from './bank-integration-entity.i
 
 export type BankIntegrationCreateEntityInterface = Omit<
     BankIntegrationEntityInterface,
-    BaseEntityKeyType | 'label' | 'externalClientId' | 'fiatHistoryFromAt'
+    BaseEntityKeyType | 'label' | 'externalClientId' | 'historyProgress'
 > &
-    Partial<Pick<BankIntegrationEntityInterface, 'label' | 'externalClientId' | 'fiatHistoryFromAt'>>;
+    Partial<Pick<BankIntegrationEntityInterface, 'label' | 'externalClientId' | 'historyProgress'>>;

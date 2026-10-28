@@ -1,1 +1,0 @@
-ALTER TABLE `bank_integrations` ADD `fiat_history_from_at` integer;

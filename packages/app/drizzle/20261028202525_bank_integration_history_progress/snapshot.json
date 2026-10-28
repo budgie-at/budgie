@@ -1,7 +1,7 @@
 {
   "version": "7",
   "dialect": "sqlite",
-  "id": "65c51ecc-807a-4fda-b50c-ce829fec8f1f",
+  "id": "a2880b08-2e76-4855-b50e-61bd10387e6c",
   "prevIds": [
     "0a48bf70-02b9-47c7-b675-435395ea042e"
   ],
@@ -571,12 +571,12 @@
       "table": "bank_integrations"
     },
     {
-      "type": "integer",
+      "type": "text",
       "notNull": false,
       "autoincrement": false,
       "default": null,
       "generated": null,
-      "name": "fiat_history_from_at",
+      "name": "history_progress",
       "entityType": "columns",
       "table": "bank_integrations"
     },

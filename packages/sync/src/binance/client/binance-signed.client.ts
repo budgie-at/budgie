@@ -217,7 +217,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     readonly getC2cTransactions = Effect.fn('BinanceSignedClient.getC2cTransactions')(function* (
         this: BinanceSignedClient,
         from: number,
-        to?: number
+        to: number | null = null
     ) {
         return yield* this.getSourceTransactions(BinanceWalletEnum.FUNDING, from, to, (startTimeMs, endTimeMs) =>
             Effect.map(this.fetchC2cOrders(startTimeMs, endTimeMs), c2cOrders => this.emptySources({ c2cOrders }))
@@ -227,7 +227,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     readonly getEarnTransactions = Effect.fn('BinanceSignedClient.getEarnTransactions')(function* (
         this: BinanceSignedClient,
         from: number,
-        to?: number
+        to: number | null = null
     ) {
         return yield* this.getSourceTransactions(BinanceWalletEnum.SPOT, from, to, (startTimeMs, endTimeMs) =>
             Effect.map(this.fetchEarnRewards(startTimeMs - (startTimeMs % MILLISECONDS_PER_DAY), endTimeMs), earnRewards =>
@@ -239,7 +239,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     readonly getCapitalTransactions = Effect.fn('BinanceSignedClient.getCapitalTransactions')(function* (
         this: BinanceSignedClient,
         from: number,
-        to?: number
+        to: number | null = null
     ) {
         return yield* this.getSourceTransactions(BinanceWalletEnum.SPOT, from, to, (startTimeMs, endTimeMs) =>
             this.fetchCapitalSources(BinanceWalletEnum.SPOT, startTimeMs, endTimeMs)
@@ -254,6 +254,16 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return yield* this.getSourceTransactions(BinanceWalletEnum.SPOT, from, to, (startTimeMs, endTimeMs) =>
             this.fetchFiatSources(startTimeMs, endTimeMs, UNBOUNDED_DORMANCY_WINDOW_COUNT)
         );
+    });
+
+    readonly getConvertTransfers = Effect.fn('BinanceSignedClient.getConvertTransfers')(function* (
+        this: BinanceSignedClient,
+        from: number,
+        to: number | null = null
+    ) {
+        const { startTimeMs, endTimeMs } = yield* this.resolveSourceWindow(from, to);
+
+        return yield* this.fetchConvertTransfers(startTimeMs, endTimeMs);
     });
 
     readonly getTransfers = Effect.fn('BinanceSignedClient.getTransfers')(
@@ -272,7 +282,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             return yield* this.cached(
                 this.transferCache,
                 `${startTimeMs}-${endTimeMs}:${[...eligibleSoldOffBaseAssets].sort().join(',')}`,
-                this.fetchTradesAndConverts(startTimeMs, endTimeMs, eligibleSoldOffBaseAssets, initialSymbolTradeCursors)
+                this.fetchTrades(startTimeMs, endTimeMs, eligibleSoldOffBaseAssets, initialSymbolTradeCursors)
             );
         }
     );
@@ -304,6 +314,8 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     private readonly runTouchedAssets = new Set<string>();
     private readonly rejectedCapitalExternalIds = new Set<string>();
     private capitalPendingFromMs: number | null = null;
+    private arePartialWalksAllowed = false;
+    private deferredFrontierMs: number | null = null;
     private c2cUnavailableThisRun = false;
     private readonly limitedHistoryFloorTimeMs = subMonths(new Date(), BinanceSignedClient.LIMITED_HISTORY_MONTHS).getTime();
     private readonly capitalPendingFloorTimeMs = subDays(new Date(), BinanceSignedClient.CAPITAL_PENDING_MAX_AGE_DAYS).getTime();
@@ -422,18 +434,22 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     });
 
     private readonly walkWindowsBackward = Effect.fnUntraced(function* <T>(
+        this: BinanceSignedClient,
         config: BinanceWindowWalkConfigInterface,
         fetchOneWindow: (windowStartMs: number, windowEndMs: number) => Effect.Effect<readonly T[], SyncError, HttpClient.HttpClient>
     ): Effect.fn.Return<T[], SyncError, HttpClient.HttpClient> {
         const records: T[] = [];
         let windowEndMs = config.endTimeMs;
         let consecutiveEmptyWindows = 0;
+        let isWalkDeferred = false;
 
-        while (consecutiveEmptyWindows < config.dormancyWindowCount && windowEndMs >= config.startTimeMs) {
+        while (!isWalkDeferred && consecutiveEmptyWindows < config.dormancyWindowCount && windowEndMs >= config.startTimeMs) {
             const windowStartMs = Math.max(config.startTimeMs, windowEndMs - config.periodMs);
-            const windowRecords = yield* fetchOneWindow(windowStartMs, windowEndMs);
-            records.push(...windowRecords);
-            consecutiveEmptyWindows = isNotEmptyArray(windowRecords) ? 0 : consecutiveEmptyWindows + 1;
+            const windowRecords = yield* this.fetchWindowOrDefer(fetchOneWindow, windowStartMs, windowEndMs);
+            isWalkDeferred = !isDefined(windowRecords);
+            const fetchedRecords = windowRecords ?? [];
+            records.push(...fetchedRecords);
+            consecutiveEmptyWindows = isNotEmptyArray(fetchedRecords) ? 0 : consecutiveEmptyWindows + 1;
             windowEndMs = windowStartMs - 1;
         }
 
@@ -478,6 +494,24 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
 
     isC2cUnavailable(): boolean {
         return this.c2cUnavailableThisRun;
+    }
+
+    withPartialWalks<A, E, R>(effect: Effect.Effect<A, E, R>): Effect.Effect<A, E, R> {
+        return Effect.suspend(() => {
+            this.arePartialWalksAllowed = true;
+
+            return effect;
+        }).pipe(
+            Effect.ensuring(
+                Effect.sync(() => {
+                    this.arePartialWalksAllowed = false;
+                })
+            )
+        );
+    }
+
+    getDeferredFrontierMs(): number | null {
+        return this.deferredFrontierMs;
     }
 
     getCapitalPendingFromMs(): number | null {
@@ -534,12 +568,25 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return new SyncRateLimitedError({ provider: this.provider, message, ...(isDefined(retryAfterMs) && { retryAfterMs }) });
     }
 
-    private fetchTradesAndConverts(
-        startTimeMs: number,
-        endTimeMs: number,
-        eligibleSoldOffBaseAssets: readonly string[],
-        initialSymbolTradeCursors: BinanceTradeCursorMapInterface
-    ) {
+    private fetchWindowOrDefer<T>(
+        fetchOneWindow: (windowStartMs: number, windowEndMs: number) => Effect.Effect<readonly T[], SyncError, HttpClient.HttpClient>,
+        windowStartMs: number,
+        windowEndMs: number
+    ): Effect.Effect<readonly T[] | null, SyncError, HttpClient.HttpClient> {
+        return fetchOneWindow(windowStartMs, windowEndMs).pipe(
+            Effect.catchTag('SyncDeferredError', error =>
+                this.arePartialWalksAllowed
+                    ? Effect.sync(() => {
+                          this.deferredFrontierMs = Math.max(this.deferredFrontierMs ?? windowEndMs, windowEndMs);
+
+                          return null;
+                      })
+                    : Effect.fail(error)
+            )
+        );
+    }
+
+    private fetchConvertTransfers(startTimeMs: number, endTimeMs: number) {
         return Effect.gen({ self: this }, function* (this: BinanceSignedClient) {
             const convertFlows = yield* this.walkWindowsBackward(
                 { startTimeMs, endTimeMs, periodMs: CONVERT_MAX_PERIOD_MS, dormancyWindowCount: UNBOUNDED_DORMANCY_WINDOW_COUNT },
@@ -549,18 +596,28 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
                 .filter(flow => flow.orderStatus === CONVERT_SUCCESS_STATUS)
                 .map(flow => mapBinanceConvertToTransfer(flow))
                 .filter(isDefined);
+            this.collectConvertAssets(convertTransfers).forEach(asset => this.runTouchedAssets.add(asset));
             const universalTransfers = yield* this.fetchUniversalTransfers(startTimeMs, endTimeMs);
-            const symbols = yield* this.deriveTradeSymbols(startTimeMs, endTimeMs, convertTransfers, eligibleSoldOffBaseAssets);
+
+            return [...new Map([...convertTransfers, ...universalTransfers].map(transfer => [transfer.externalId, transfer])).values()];
+        });
+    }
+
+    private fetchTrades(
+        startTimeMs: number,
+        endTimeMs: number,
+        eligibleSoldOffBaseAssets: readonly string[],
+        initialSymbolTradeCursors: BinanceTradeCursorMapInterface
+    ) {
+        return Effect.gen({ self: this }, function* (this: BinanceSignedClient) {
+            const symbols = yield* this.deriveTradeSymbols(startTimeMs, endTimeMs, eligibleSoldOffBaseAssets);
             const symbolFetches = yield* Effect.forEach(symbols, symbol => {
                 const resumeFromId = initialSymbolTradeCursors[symbol.symbol];
 
                 return this.fetchSymbolTrades(symbol, startTimeMs, endTimeMs, isDefined(resumeFromId) ? resumeFromId + 1 : null);
             });
             const byExternalId = new Map(
-                [...symbolFetches.flatMap(({ transfers }) => transfers), ...convertTransfers, ...universalTransfers].map(transfer => [
-                    transfer.externalId,
-                    transfer
-                ])
+                symbolFetches.flatMap(({ transfers }) => transfers).map(transfer => [transfer.externalId, transfer])
             );
 
             for (const { symbol, lastWindowTradeId } of symbolFetches) {
@@ -573,12 +630,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         });
     }
 
-    private deriveTradeSymbols(
-        startTimeMs: number,
-        endTimeMs: number,
-        convertTransfers: BinanceTransferInterface[],
-        eligibleSoldOffBaseAssets: readonly string[]
-    ) {
+    private deriveTradeSymbols(startTimeMs: number, endTimeMs: number, eligibleSoldOffBaseAssets: readonly string[]) {
         return Effect.gen({ self: this }, function* (this: BinanceSignedClient) {
             const balances = yield* this.signedRequest(BinanceAssetBalanceListApiSchema, SPOT_BALANCE_ENDPOINT, 'POST');
             const { deposits, withdrawals } = yield* this.fetchCapitalSources(BinanceWalletEnum.SPOT, startTimeMs, endTimeMs);
@@ -587,7 +639,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
                 ? yield* this.fetchFiatSources(startTimeMs, endTimeMs, FIAT_DISCOVERY_DORMANCY_WINDOW_COUNT)
                 : this.emptySources({});
             [
-                ...this.collectTouchedAssets(balances, convertTransfers),
+                ...this.collectTouchedAssets(balances),
                 ...deposits.map(deposit => deposit.coin),
                 ...withdrawals.map(withdrawal => withdrawal.coin),
                 ...c2cOrders.map(order => order.asset),
@@ -971,10 +1023,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return [...byId.values()];
     }
 
-    private collectTouchedAssets(
-        balances: readonly BinanceAssetBalanceApiInterface[],
-        convertTransfers: BinanceTransferInterface[]
-    ): Set<string> {
+    private collectTouchedAssets(balances: readonly BinanceAssetBalanceApiInterface[]): Set<string> {
         const touchedAssets = new Set<string>();
         for (const balance of balances) {
             const total = this.computeRawTotalBalance(balance);
@@ -983,6 +1032,11 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             }
         }
 
+        return touchedAssets;
+    }
+
+    private collectConvertAssets(convertTransfers: BinanceTransferInterface[]): Set<string> {
+        const touchedAssets = new Set<string>();
         for (const transfer of convertTransfers) {
             for (const decoded of [
                 decodeBinanceAccountId(transfer.fromAssetAccountId),

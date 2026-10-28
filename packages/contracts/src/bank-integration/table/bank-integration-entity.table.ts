@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm';
-import { int, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
+import { sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
 
 import { convertEnumToDrizzleEnum } from '../../@generic/utils/convert-enum-to-drizzle-enum.util';
 import { withBaseEntityTableColumns } from '../../@generic/utils/with-base-entity-table-columns.util';
@@ -14,7 +14,7 @@ export const BankIntegrationEntityTable = sqliteTable(
         token: text('token').notNull(),
         label: text('label'),
         externalClientId: text('external_client_id'),
-        fiatHistoryFromAt: int('fiat_history_from_at', { mode: 'timestamp_ms' })
+        historyProgress: text('history_progress')
     }),
     table => [
         uniqueIndex('bank_integrations_provider_token_unq')
