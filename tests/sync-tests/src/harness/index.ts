@@ -40,6 +40,7 @@ export {
     fetchBinanceEntriesByExternalId,
     fetchBinanceTransactions,
     fetchFiatOrderEntries,
+    fetchHistoryProgress,
     fetchSortedBinanceExternalIds,
     recentDayInMonthsAgo,
     resetBinanceSyncForResync,

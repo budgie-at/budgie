@@ -19,7 +19,7 @@ const importAsPreviousVersion = (isDeposit: boolean) =>
         const { sync } = yield* setupFiatScenario();
         binanceStub.fiatOrders(isDeposit ? [REPAIR_ORDER] : [], isDeposit ? [] : [REPAIR_ORDER]);
         yield* binanceSyncService.sync();
-        yield* testDb.update(BankIntegrationEntityTable).set({ fiatHistoryFromAt: null });
+        yield* testDb.update(BankIntegrationEntityTable).set({ historyProgress: null });
 
         return sync;
     });

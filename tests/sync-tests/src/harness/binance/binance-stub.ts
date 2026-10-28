@@ -333,10 +333,12 @@ export const binanceStub = {
         flows: BinanceConvertFlowApiInterface[],
         requestedWindows?: TimeWindow[],
         forceMoreData = false,
-        requestOrder?: string[]
+        requestOrder?: string[],
+        options?: ServeOptions
     ): void => {
         mockServer.use(
             http.get(CONVERT_TRADE_FLOW_URL, ({ request }) => {
+                options?.onServed?.();
                 const url = new URL(request.url);
                 const startTime = Number(url.searchParams.get('startTime') ?? '0');
                 const endTime = Number(url.searchParams.get('endTime') ?? '0');
@@ -383,12 +385,14 @@ export const binanceStub = {
             )
         );
     },
-    earnRewards: (rewards: BinanceEarnRewardApiInterface[]): void => {
+    earnRewards: (rewards: BinanceEarnRewardApiInterface[], requestedWindows?: TimeWindow[], options?: ServeOptions): void => {
         mockServer.use(
             http.get(EARN_REWARDS_URL, ({ request }) => {
+                options?.onServed?.();
                 const url = new URL(request.url);
                 const isFirstPage = url.searchParams.get('current') === FIRST_PAGE;
                 const window = parseTimeWindow(url, 'startTime', 'endTime');
+                requestedWindows?.push(window);
                 const windowRewards = rewards.filter(reward => isWithinWindow(reward.time, window));
                 const rows = isFirstPage ? windowRewards : [];
 

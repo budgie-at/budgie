@@ -1,4 +1,4 @@
-import { BankIntegrationEntityTable, TransactionEntryEntityTable } from '@budgie/contracts';
+import { TransactionEntryEntityTable } from '@budgie/contracts';
 import { BinanceSyncService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
@@ -9,6 +9,7 @@ import {
     buildBinance,
     buildBinanceToken,
     fetchBinanceTransactions,
+    fetchHistoryProgress,
     jumpPastDeadline,
     restoreRealTimers,
     resyncBinance,
@@ -118,12 +119,8 @@ describe('binance/fiat-history', () => {
             });
             yield* binanceSyncService.sync(Date.now() + RUN_DEADLINE_MS).pipe(Effect.ensuring(restoreRealTimers));
 
-            const [integration] = yield* testDb
-                .select()
-                .from(BankIntegrationEntityTable)
-                .where(eq(BankIntegrationEntityTable.token, token));
             expect(yield* fetchExternalIds()).toEqual([]);
-            expect(integration.fiatHistoryFromAt?.getTime()).toBeLessThan(Date.now() - 300 * DAY_MS);
+            expect((yield* fetchHistoryProgress(token)).FIAT.tailAt).toBeLessThan(Date.now() - 300 * DAY_MS);
 
             const resumedWindows: TimeWindow[] = [];
             binanceStub.fiatOrders([order], [], resumedWindows);
