@@ -1,4 +1,4 @@
-import { SyncEntityTable, SyncModeEnum, SyncStatusEnum } from '@budgie/contracts';
+import { SyncEntityTable, SyncStatusEnum } from '@budgie/contracts';
 import { BinanceSyncService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { eq, sql } from 'drizzle-orm';
