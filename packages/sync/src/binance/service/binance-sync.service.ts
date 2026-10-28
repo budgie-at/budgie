@@ -312,36 +312,41 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             }
 
             const client = getRunSignedClient(token);
+            const transactionSources = [
+                [BinanceHistorySourceEnum.C2C, consolidateExisting],
+                [BinanceHistorySourceEnum.EARN, updateExisting],
+                [BinanceHistorySourceEnum.LOCKED_EARN, updateExisting],
+                [BinanceHistorySourceEnum.ETH_STAKING, updateExisting],
+                [BinanceHistorySourceEnum.SOL_STAKING, updateExisting],
+                [BinanceHistorySourceEnum.DIVIDEND, createOnly]
+            ] as const;
+            const historySources = [
+                ...transactionSources.map(([source, options]) => ({
+                    source,
+                    run: (fromUnixTime: number, toUnixTime: number | null) =>
+                        commitSourceType(token, client.getTransactions(source, fromUnixTime, toUnixTime), options)
+                })),
+                {
+                    source: BinanceHistorySourceEnum.CAPITAL,
+                    run: (fromUnixTime: number, toUnixTime: number | null) => commitCapitalRange(sync, token, fromUnixTime, toUnixTime)
+                },
+                {
+                    source: BinanceHistorySourceEnum.CONVERT,
+                    run: (fromUnixTime: number, toUnixTime: number | null) =>
+                        commitTransferRange(token, client.getConvertTransfers(fromUnixTime, toUnixTime))
+                },
+                {
+                    source: BinanceHistorySourceEnum.DUST,
+                    run: (fromUnixTime: number, toUnixTime: number | null) =>
+                        commitTransferRange(token, client.getDustTransfers(fromUnixTime, toUnixTime))
+                }
+            ];
+            let committedCount = 0;
+            for (const { source, run: runSource } of historySources) {
+                committedCount += yield* syncHistorySource(sync, token, source, runSource);
+            }
 
-            return (
-                (yield* syncHistorySource(sync, token, BinanceHistorySourceEnum.C2C, (fromUnixTime, toUnixTime) =>
-                    commitSourceType(token, client.getC2cTransactions(fromUnixTime, toUnixTime), consolidateExisting)
-                )) +
-                (yield* syncHistorySource(sync, token, BinanceHistorySourceEnum.EARN, (fromUnixTime, toUnixTime) =>
-                    commitSourceType(token, client.getEarnTransactions(fromUnixTime, toUnixTime), updateExisting)
-                )) +
-                (yield* syncHistorySource(sync, token, BinanceHistorySourceEnum.LOCKED_EARN, (fromUnixTime, toUnixTime) =>
-                    commitSourceType(token, client.getLockedEarnTransactions(fromUnixTime, toUnixTime), updateExisting)
-                )) +
-                (yield* syncHistorySource(sync, token, BinanceHistorySourceEnum.ETH_STAKING, (fromUnixTime, toUnixTime) =>
-                    commitSourceType(token, client.getEthStakingTransactions(fromUnixTime, toUnixTime), updateExisting)
-                )) +
-                (yield* syncHistorySource(sync, token, BinanceHistorySourceEnum.SOL_STAKING, (fromUnixTime, toUnixTime) =>
-                    commitSourceType(token, client.getSolStakingTransactions(fromUnixTime, toUnixTime), updateExisting)
-                )) +
-                (yield* syncHistorySource(sync, token, BinanceHistorySourceEnum.DIVIDEND, (fromUnixTime, toUnixTime) =>
-                    commitSourceType(token, client.getDividendTransactions(fromUnixTime, toUnixTime), createOnly)
-                )) +
-                (yield* syncHistorySource(sync, token, BinanceHistorySourceEnum.CAPITAL, (fromUnixTime, toUnixTime) =>
-                    commitCapitalRange(sync, token, fromUnixTime, toUnixTime)
-                )) +
-                (yield* syncHistorySource(sync, token, BinanceHistorySourceEnum.CONVERT, (fromUnixTime, toUnixTime) =>
-                    commitTransferRange(token, client.getConvertTransfers(fromUnixTime, toUnixTime))
-                )) +
-                (yield* syncHistorySource(sync, token, BinanceHistorySourceEnum.DUST, (fromUnixTime, toUnixTime) =>
-                    commitTransferRange(token, client.getDustTransfers(fromUnixTime, toUnixTime))
-                ))
-            );
+            return committedCount;
         });
 
         const processFiatSource = Effect.fnUntraced(function* (sync: SyncEntityInterface, token: string) {

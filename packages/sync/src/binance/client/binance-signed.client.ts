@@ -90,6 +90,7 @@ import type { BinanceDividendApiInterface } from '../interface/binance-dividend-
 import type { BinanceDustLogApiInterface } from '../interface/binance-dust-api.schema';
 import type { BinanceEarnRewardApiInterface } from '../interface/binance-earn-reward-api.schema';
 import type { BinanceFiatOrderApiInterface } from '../interface/binance-fiat-order-api.schema';
+import type { BinanceRewardHistorySourceType, BinanceTransactionHistorySourceType } from '../interface/binance-history-source-groups.type';
 import type { BinanceTradeSymbolInterface } from '../interface/binance-trade-symbol.interface';
 import type { BinanceTransactionSourcesInterface } from '../interface/binance-transaction-sources.interface';
 import type { BinanceTransferInterface } from '../interface/binance-transfer.interface';
@@ -234,115 +235,22 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         }
     });
 
-    readonly getC2cTransactions = Effect.fn('BinanceSignedClient.getC2cTransactions')(function* (
+    readonly getTransactions = Effect.fn('BinanceSignedClient.getTransactions')(function* (
         this: BinanceSignedClient,
+        source: BinanceTransactionHistorySourceType,
         from: number,
         to: number | null = null
     ) {
-        return yield* this.getSourceTransactions(BinanceWalletEnum.FUNDING, from, to, (startTimeMs, endTimeMs) =>
-            Effect.map(this.fetchC2cOrders(startTimeMs, endTimeMs), c2cOrders => this.emptySources({ c2cOrders }))
-        );
+        const { wallet, fetch } = this.transactionSources[source];
+
+        return yield* this.getSourceTransactions(wallet, from, to, fetch);
     });
 
-    readonly getEarnTransactions = Effect.fn('BinanceSignedClient.getEarnTransactions')(function* (
-        this: BinanceSignedClient,
-        from: number,
-        to: number | null = null
-    ) {
-        return yield* this.getRewardTransactions(
-            from,
-            to,
-            (startTimeMs, endTimeMs) => this.fetchEarnRewards(startTimeMs, endTimeMs),
-            earnRewards => ({ earnRewards })
-        );
-    });
+    readonly getCapitalTransactions = (from: number, to: number | null = null) =>
+        this.getTransactions(BinanceHistorySourceEnum.CAPITAL, from, to);
 
-    readonly getLockedEarnTransactions = Effect.fn('BinanceSignedClient.getLockedEarnTransactions')(function* (
-        this: BinanceSignedClient,
-        from: number,
-        to: number | null = null
-    ) {
-        return yield* this.getRewardTransactions(
-            from,
-            to,
-            (startTimeMs, endTimeMs) =>
-                this.skipWhenUnavailable(BinanceHistorySourceEnum.LOCKED_EARN, [], this.fetchLockedEarnRewards(startTimeMs, endTimeMs)),
-            lockedEarnRewards => ({ lockedEarnRewards })
-        );
-    });
-
-    readonly getEthStakingTransactions = Effect.fn('BinanceSignedClient.getEthStakingTransactions')(function* (
-        this: BinanceSignedClient,
-        from: number,
-        to: number | null = null
-    ) {
-        return yield* this.getRewardTransactions(
-            from,
-            to,
-            (startTimeMs, endTimeMs) =>
-                this.fetchStakingRewards(
-                    BinanceHistorySourceEnum.ETH_STAKING,
-                    ETH_STAKING_REWARDS_ENDPOINT,
-                    ETH_STAKING_REWARD_ASSET,
-                    startTimeMs,
-                    endTimeMs
-                ),
-            ethStakingRewards => ({ ethStakingRewards })
-        );
-    });
-
-    readonly getSolStakingTransactions = Effect.fn('BinanceSignedClient.getSolStakingTransactions')(function* (
-        this: BinanceSignedClient,
-        from: number,
-        to: number | null = null
-    ) {
-        return yield* this.getRewardTransactions(
-            from,
-            to,
-            (startTimeMs, endTimeMs) =>
-                this.fetchStakingRewards(
-                    BinanceHistorySourceEnum.SOL_STAKING,
-                    SOL_STAKING_REWARDS_ENDPOINT,
-                    SOL_STAKING_REWARD_ASSET,
-                    startTimeMs,
-                    endTimeMs
-                ),
-            solStakingRewards => ({ solStakingRewards })
-        );
-    });
-
-    readonly getDividendTransactions = Effect.fn('BinanceSignedClient.getDividendTransactions')(function* (
-        this: BinanceSignedClient,
-        from: number,
-        to: number | null = null
-    ) {
-        return yield* this.getSourceTransactions(BinanceWalletEnum.SPOT, from, to, (startTimeMs, endTimeMs) =>
-            Effect.map(
-                this.skipWhenUnavailable(BinanceHistorySourceEnum.DIVIDEND, [], this.fetchDividends(startTimeMs, endTimeMs)),
-                dividends => this.emptySources({ dividends })
-            )
-        );
-    });
-
-    readonly getCapitalTransactions = Effect.fn('BinanceSignedClient.getCapitalTransactions')(function* (
-        this: BinanceSignedClient,
-        from: number,
-        to: number | null = null
-    ) {
-        return yield* this.getSourceTransactions(BinanceWalletEnum.SPOT, from, to, (startTimeMs, endTimeMs) =>
-            this.fetchCapitalSources(BinanceWalletEnum.SPOT, startTimeMs, endTimeMs)
-        );
-    });
-
-    readonly getFiatTransactions = Effect.fn('BinanceSignedClient.getFiatTransactions')(function* (
-        this: BinanceSignedClient,
-        from: number,
-        to: number | null = null
-    ) {
-        return yield* this.getSourceTransactions(BinanceWalletEnum.SPOT, from, to, (startTimeMs, endTimeMs) =>
-            this.fetchFiatSources(startTimeMs, endTimeMs)
-        );
-    });
+    readonly getFiatTransactions = (from: number, to: number | null = null) =>
+        this.getTransactions(BinanceHistorySourceEnum.FIAT, from, to);
 
     readonly getConvertTransfers = Effect.fn('BinanceSignedClient.getConvertTransfers')(function* (
         this: BinanceSignedClient,
@@ -425,6 +333,93 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     private serverTimeOffsetMs: number | null = null;
     private runEndTimeMs: number | undefined;
     private exchangeSymbols: readonly BinanceTradeSymbolInterface[] | undefined;
+
+    private readonly rewardSources: Record<
+        BinanceRewardHistorySourceType,
+        {
+            readonly kind: BinanceEarnRewardKindEnum;
+            readonly isOptional: boolean;
+            readonly fetchPage: (
+                current: number,
+                windowStartMs: number,
+                windowEndMs: number
+            ) => Effect.Effect<
+                { readonly rows: readonly BinanceEarnRewardApiInterface[]; readonly hasMore: boolean },
+                SyncError,
+                HttpClient.HttpClient
+            >;
+        }
+    > = {
+        [BinanceHistorySourceEnum.EARN]: this.defineRewardSource({
+            kind: BinanceEarnRewardKindEnum.FLEXIBLE,
+            isOptional: false,
+            endpoint: EARN_REWARDS_ENDPOINT,
+            schema: BinanceEarnRewardListApiSchema,
+            params: { type: EARN_REWARD_TYPE_ALL },
+            normalize: row => row
+        }),
+        [BinanceHistorySourceEnum.LOCKED_EARN]: this.defineRewardSource({
+            kind: BinanceEarnRewardKindEnum.LOCKED,
+            isOptional: true,
+            endpoint: LOCKED_EARN_REWARDS_ENDPOINT,
+            schema: BinanceLockedEarnRewardListApiSchema,
+            params: {},
+            normalize: row => ({ asset: row.asset, rewards: row.amount, time: row.time })
+        }),
+        [BinanceHistorySourceEnum.ETH_STAKING]: this.defineRewardSource({
+            kind: BinanceEarnRewardKindEnum.ETH_STAKING,
+            isOptional: true,
+            endpoint: ETH_STAKING_REWARDS_ENDPOINT,
+            schema: BinanceStakingRewardListApiSchema,
+            params: {},
+            normalize: row => ({ asset: row.asset ?? ETH_STAKING_REWARD_ASSET, rewards: row.amount, time: row.time })
+        }),
+        [BinanceHistorySourceEnum.SOL_STAKING]: this.defineRewardSource({
+            kind: BinanceEarnRewardKindEnum.SOL_STAKING,
+            isOptional: true,
+            endpoint: SOL_STAKING_REWARDS_ENDPOINT,
+            schema: BinanceStakingRewardListApiSchema,
+            params: {},
+            normalize: row => ({ asset: row.asset ?? SOL_STAKING_REWARD_ASSET, rewards: row.amount, time: row.time })
+        })
+    };
+
+    private readonly transactionSources: Record<
+        BinanceTransactionHistorySourceType,
+        {
+            readonly wallet: BinanceWalletEnum;
+            readonly fetch: (
+                startTimeMs: number,
+                endTimeMs: number
+            ) => Effect.Effect<BinanceTransactionSourcesInterface, SyncError, HttpClient.HttpClient>;
+        }
+    > = {
+        [BinanceHistorySourceEnum.C2C]: {
+            wallet: BinanceWalletEnum.FUNDING,
+            fetch: (startTimeMs, endTimeMs) =>
+                Effect.map(this.fetchC2cOrders(startTimeMs, endTimeMs), c2cOrders => this.emptySources({ c2cOrders }))
+        },
+        [BinanceHistorySourceEnum.DIVIDEND]: {
+            wallet: BinanceWalletEnum.SPOT,
+            fetch: (startTimeMs, endTimeMs) =>
+                Effect.map(
+                    this.skipWhenUnavailable(BinanceHistorySourceEnum.DIVIDEND, [], this.fetchDividends(startTimeMs, endTimeMs)),
+                    dividends => this.emptySources({ dividends })
+                )
+        },
+        [BinanceHistorySourceEnum.CAPITAL]: {
+            wallet: BinanceWalletEnum.SPOT,
+            fetch: (startTimeMs, endTimeMs) => this.fetchCapitalSources(BinanceWalletEnum.SPOT, startTimeMs, endTimeMs)
+        },
+        [BinanceHistorySourceEnum.FIAT]: {
+            wallet: BinanceWalletEnum.SPOT,
+            fetch: (startTimeMs, endTimeMs) => this.fetchFiatSources(startTimeMs, endTimeMs)
+        },
+        [BinanceHistorySourceEnum.EARN]: this.defineRewardTransactions(BinanceHistorySourceEnum.EARN),
+        [BinanceHistorySourceEnum.LOCKED_EARN]: this.defineRewardTransactions(BinanceHistorySourceEnum.LOCKED_EARN),
+        [BinanceHistorySourceEnum.ETH_STAKING]: this.defineRewardTransactions(BinanceHistorySourceEnum.ETH_STAKING),
+        [BinanceHistorySourceEnum.SOL_STAKING]: this.defineRewardTransactions(BinanceHistorySourceEnum.SOL_STAKING)
+    };
 
     private readonly fetchCapitalSources = Effect.fn('BinanceSignedClient.fetchCapitalSources')(function* (
         this: BinanceSignedClient,
@@ -1014,70 +1009,54 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         }
     }
 
-    private fetchEarnRewards(startTimeMs: number, endTimeMs: number) {
-        return this.fetchRewardRecords(
-            EARN_REWARDS_ENDPOINT,
-            BinanceEarnRewardListApiSchema,
-            { type: EARN_REWARD_TYPE_ALL },
-            reward => reward,
-            startTimeMs,
-            endTimeMs
-        );
-    }
-
-    private fetchLockedEarnRewards(startTimeMs: number, endTimeMs: number) {
-        return this.fetchRewardRecords(
-            LOCKED_EARN_REWARDS_ENDPOINT,
-            BinanceLockedEarnRewardListApiSchema,
-            {},
-            row => ({ asset: row.asset, rewards: row.amount, time: row.time }),
-            startTimeMs,
-            endTimeMs
-        );
-    }
-
-    private fetchStakingRewards(
-        source: BinanceHistorySourceEnum,
-        endpoint: string,
-        defaultAsset: string,
-        startTimeMs: number,
-        endTimeMs: number
-    ) {
-        return this.skipWhenUnavailable(
-            source,
-            [],
-            this.fetchRewardRecords(
-                endpoint,
-                BinanceStakingRewardListApiSchema,
-                {},
-                row => ({ asset: row.asset ?? defaultAsset, rewards: row.amount, time: row.time }),
-                startTimeMs,
-                endTimeMs
-            )
-        );
-    }
-
-    private fetchRewardRecords<T>(
-        endpoint: string,
-        schema: Schema.ConstraintDecoder<{ readonly rows: readonly T[] }>,
-        params: Record<string, string | number>,
-        normalizeRow: (row: T) => BinanceEarnRewardApiInterface,
-        startTimeMs: number,
-        endTimeMs: number
-    ) {
-        return this.cached(
-            this.earnRewardCache,
-            `${endpoint}:${startTimeMs}-${endTimeMs}`,
-            this.walkPagedWindows(EARN_REWARD_MAX_PERIOD_MS, startTimeMs, endTimeMs, (current, windowStartMs, windowEndMs) =>
+    private defineRewardSource<T>({
+        kind,
+        isOptional,
+        endpoint,
+        schema,
+        params,
+        normalize
+    }: {
+        readonly kind: BinanceEarnRewardKindEnum;
+        readonly isOptional: boolean;
+        readonly endpoint: string;
+        readonly schema: Schema.ConstraintDecoder<{ readonly rows: readonly T[] }>;
+        readonly params: Record<string, string | number>;
+        readonly normalize: (row: T) => BinanceEarnRewardApiInterface;
+    }) {
+        return {
+            kind,
+            isOptional,
+            fetchPage: (current: number, windowStartMs: number, windowEndMs: number) =>
                 this.fetchEarnPage(schema, endpoint, {
                     ...params,
                     startTime: windowStartMs,
                     endTime: windowEndMs,
                     current,
                     size: EARN_PAGE_SIZE
-                }).pipe(Effect.map(({ rows, hasMore }) => ({ rows: rows.map(normalizeRow), hasMore })))
-            )
+                }).pipe(Effect.map(({ rows, hasMore }) => ({ rows: rows.map(normalize), hasMore })))
+        };
+    }
+
+    private defineRewardTransactions(source: BinanceRewardHistorySourceType) {
+        return {
+            wallet: BinanceWalletEnum.SPOT,
+            fetch: (startTimeMs: number, endTimeMs: number) =>
+                Effect.map(this.fetchRewards(source, startTimeMs - (startTimeMs % MILLISECONDS_PER_DAY), endTimeMs), rewards =>
+                    this.emptySources({ rewards: [{ kind: this.rewardSources[source].kind, rewards }] })
+                )
+        };
+    }
+
+    private fetchRewards(source: BinanceRewardHistorySourceType, startTimeMs: number, endTimeMs: number) {
+        const { isOptional, fetchPage } = this.rewardSources[source];
+        const rewards = this.cached(
+            this.earnRewardCache,
+            `${source}:${startTimeMs}-${endTimeMs}`,
+            this.walkPagedWindows(EARN_REWARD_MAX_PERIOD_MS, startTimeMs, endTimeMs, fetchPage)
         );
+
+        return isOptional ? this.skipWhenUnavailable(source, [], rewards) : rewards;
     }
 
     private fetchDividends(startTimeMs: number, endTimeMs: number) {
@@ -1142,31 +1121,6 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         });
     }
 
-    private getRewardTransactions(
-        from: number,
-        to: number | null,
-        fetchRewards: (
-            startTimeMs: number,
-            endTimeMs: number
-        ) => Effect.Effect<readonly BinanceEarnRewardApiInterface[], SyncError, HttpClient.HttpClient>,
-        toSources: (rewards: readonly BinanceEarnRewardApiInterface[]) => Partial<BinanceTransactionSourcesInterface>
-    ) {
-        return this.getSourceTransactions(BinanceWalletEnum.SPOT, from, to, (startTimeMs, endTimeMs) =>
-            Effect.map(fetchRewards(startTimeMs - (startTimeMs % MILLISECONDS_PER_DAY), endTimeMs), rewards =>
-                this.emptySources(toSources(rewards))
-            )
-        );
-    }
-
-    private getEarnRewardGroups(sources: BinanceTransactionSourcesInterface) {
-        return [
-            { kind: BinanceEarnRewardKindEnum.FLEXIBLE, rewards: sources.earnRewards },
-            { kind: BinanceEarnRewardKindEnum.LOCKED, rewards: sources.lockedEarnRewards },
-            { kind: BinanceEarnRewardKindEnum.ETH_STAKING, rewards: sources.ethStakingRewards },
-            { kind: BinanceEarnRewardKindEnum.SOL_STAKING, rewards: sources.solStakingRewards }
-        ];
-    }
-
     private getSourceTransactions(
         wallet: BinanceWalletEnum,
         from: number,
@@ -1196,10 +1150,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             fiatDeposits: [],
             fiatWithdrawals: [],
             c2cOrders: [],
-            earnRewards: [],
-            lockedEarnRewards: [],
-            ethStakingRewards: [],
-            solStakingRewards: [],
+            rewards: [],
             dividends: [],
             ...overrides
         };
@@ -1233,7 +1184,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             .filter(order => isDefaultWallet && order.asset === asset)
             .map(order => mapBinanceC2cOrderToTransaction(order, accountId))
             .filter(isDefined);
-        const earnRewardTransactions = this.getEarnRewardGroups(sources).flatMap(({ kind, rewards }) =>
+        const earnRewardTransactions = sources.rewards.flatMap(({ kind, rewards }) =>
             mapBinanceEarnRewardsToTransactions(
                 asset,
                 accountId,
@@ -1268,7 +1219,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             ...sources.fiatDeposits.map(order => order.fiatCurrency),
             ...sources.fiatWithdrawals.map(order => order.fiatCurrency),
             ...sources.c2cOrders.map(order => order.asset),
-            ...this.getEarnRewardGroups(sources).flatMap(({ rewards }) => rewards.map(reward => reward.asset)),
+            ...sources.rewards.flatMap(({ rewards }) => rewards.map(reward => reward.asset)),
             ...sources.dividends.map(dividend => dividend.asset)
         ]);
 
