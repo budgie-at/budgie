@@ -18,13 +18,18 @@ interface Props {
     readonly className?: string;
 }
 
-const INITIAL_VALUES = { opacity: 0, transform: [{ translateY: ENTRANCE_DISTANCE }] };
 const REDUCED_ENTERING = FadeIn.duration(ENTRANCE_REDUCED_DURATION);
 
 export const EntranceReveal = ({ step, children, className }: Props) => {
     const reducedMotion = useReducedMotion();
     const delay = Math.min(step, ENTRANCE_MAX_STEP) * ENTRANCE_STAGGER;
-    const motionEntering = FadeInDown.delay(delay).duration(ENTRANCE_DURATION).easing(ENTRANCE_EASING).withInitialValues(INITIAL_VALUES);
+    const motionEntering = FadeInDown.delay(delay)
+        .duration(ENTRANCE_DURATION)
+        .easing(ENTRANCE_EASING)
+        .withInitialValues({
+            opacity: 0,
+            transform: [{ translateY: ENTRANCE_DISTANCE }]
+        });
     const entering = reducedMotion ? REDUCED_ENTERING : motionEntering;
 
     return (
