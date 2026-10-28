@@ -76,8 +76,8 @@ msgid "{applied, plural, one {# matching transaction updated} other {# matching 
 msgstr "{applied, plural, one {# matching transaction updated} other {# matching transactions updated}}"
 
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
-msgid "{approxTransactions, plural, one {~# transaction} other {~# transactions}}"
-msgstr "{approxTransactions, plural, one {~# transaction} other {~# transactions}}"
+msgid "{approxTransactions, plural, one {about # transaction} other {about # transactions}}"
+msgstr "{approxTransactions, plural, one {about # transaction} other {about # transactions}}"
 
 #: src/app/import-column-mapper.tsx
 msgid "{availableCount, plural, one {# column available} other {# columns available}}"
@@ -144,14 +144,13 @@ msgid "{count, plural, one {This tag has # transaction. Select another tag to re
 msgstr "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
 
 #: src/budget/components/budget-upcoming-charge-row/budget-upcoming-charge-row.tsx
-msgid "{dateLabel} · {kindLabel}"
-msgstr "{dateLabel} · {kindLabel}"
+msgid "{dateLabel}, {kindLabel}"
+msgstr "{dateLabel}, {kindLabel}"
 
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
 msgid "{days, plural, one {In # day} other {In # days}}"
 msgstr "{days, plural, one {In # day} other {In # days}}"
 
-#: src/budget/components/budget-day-strip/budget-day-strip.tsx
 #: src/budget/components/budget-verdict-header/budget-verdict-header.tsx
 msgid "{daysLeft, plural, one {# day left} other {# days left}}"
 msgstr "{daysLeft, plural, one {# day left} other {# days left}}"
@@ -243,12 +242,20 @@ msgid "{freeAmount} ÷ {daysLabel}"
 msgstr "{freeAmount} ÷ {daysLabel}"
 
 #: src/budget/components/budget-widget-footer-row/budget-widget-footer-row.tsx
-msgid "{freeAmount} free · {daysLabel}"
-msgstr "{freeAmount} free · {daysLabel}"
+msgid "{freeAmount} free for {daysLabel}"
+msgstr "{freeAmount} free for {daysLabel}"
 
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "{freeSize} GB free on this phone"
 msgstr "{freeSize} GB free on this phone"
+
+#: src/budget/components/budget-forecast-chart/budget-forecast-chart.tsx
+msgid "{gapAmount} over"
+msgstr "{gapAmount} over"
+
+#: src/budget/components/budget-forecast-chart/budget-forecast-chart.tsx
+msgid "{gapAmount} under"
+msgstr "{gapAmount} under"
 
 #: src/@generic/hook/use-format-file-size.hook.ts
 msgid "{gigabytes} GB"
@@ -311,6 +318,10 @@ msgstr "{newTransactionCount} new, {existingTransactionCount} already imported, 
 #: src/budget/components/budget-category-forecast/budget-category-forecast.tsx
 msgid "{overAmount} over budget"
 msgstr "{overAmount} over budget"
+
+#: src/budget/components/budget-day-strip/budget-day-strip.tsx
+msgid "{overDays, plural, one {# day over your daily allowance} other {# days over your daily allowance}}"
+msgstr "{overDays, plural, one {# day over your daily allowance} other {# days over your daily allowance}}"
 
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
 msgid "{overdueDays, plural, one {Overdue # day} other {Overdue # days}}"
@@ -413,10 +424,6 @@ msgstr "{startLabel} - {endLabel}"
 msgid "{statementAccountCount, plural, one {# account. Balances come from the statement.} other {# accounts. Balances come from the statement.}}"
 msgstr "{statementAccountCount, plural, one {# account. Balances come from the statement.} other {# accounts. Balances come from the statement.}}"
 
-#: src/budget/components/budget-verdict-header/budget-verdict-header.tsx
-msgid "{statusLabel} · {daysLeftLabel}"
-msgstr "{statusLabel} · {daysLeftLabel}"
-
 #: src/ai/component/ai-on-device-link-card/ai-on-device-link-card.tsx
 msgid "{statusLabel} · {downloaded} of {total} GB"
 msgstr "{statusLabel} · {downloaded} of {total} GB"
@@ -434,8 +441,12 @@ msgid "{title} is ahead of pace"
 msgstr "{title} is ahead of pace"
 
 #: src/budget/components/budget-pace-hint-line/budget-pace-hint-line.tsx
-msgid "{title} is running fast — keep it under {perDayAmount}/day."
-msgstr "{title} is running fast — keep it under {perDayAmount}/day."
+msgid "{title} is running fast. Keep it under {perDayAmount}/day."
+msgstr "{title} is running fast. Keep it under {perDayAmount}/day."
+
+#: src/budget/components/budget-pace-hint-line/budget-pace-hint-line.tsx
+msgid "{title} is running fast. Keep it under <0>{perDayAmount}/day</0>."
+msgstr "{title} is running fast. Keep it under <0>{perDayAmount}/day</0>."
 
 #: src/budget/hooks/use-budget-limit-accessibility.hook.ts
 msgid "{title}, spent {spentAmount} of {limitAmount}, {statusLabel}"
@@ -1079,10 +1090,6 @@ msgstr "Borrowed"
 #: src/account/utils/get-debt-opening-messages.util.ts
 msgid "Borrowed debt account expected"
 msgstr "Borrowed debt account expected"
-
-#: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
-msgid "Breakdown"
-msgstr "Breakdown"
 
 #: src/app/(tabs)/settings/index.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
@@ -2047,8 +2054,8 @@ msgid "Date"
 msgstr "Date"
 
 #: src/budget/components/budget-day-strip/budget-day-strip.tsx
-msgid "Day {elapsedDays} of {totalDays}, {daysLeftLabel}"
-msgstr "Day {elapsedDays} of {totalDays}, {daysLeftLabel}"
+msgid "Day {elapsedDays} of {totalDays}. {overLabel}."
+msgstr "Day {elapsedDays} of {totalDays}. {overLabel}."
 
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "Day {selectedDay}"
@@ -2304,6 +2311,10 @@ msgstr "e.g. Groceries, Entertainment"
 #: src/@generic/component/account-details-field/account-details-field.tsx
 msgid "e.g. Savings Account"
 msgstr "e.g. Savings Account"
+
+#: src/budget/components/budget-day-strip/budget-day-strip.tsx
+msgid "Each day against your {allowanceLabel} daily allowance"
+msgstr "Each day against your {allowanceLabel} daily allowance"
 
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "Each one becomes an account. Rename or remove them later."
@@ -2718,10 +2729,6 @@ msgstr "Forgot PIN?"
 #: src/app/(tabs)/settings/index.tsx
 msgid "Found an issue or have an idea? Open GitHub issue templates."
 msgstr "Found an issue or have an idea? Open GitHub issue templates."
-
-#: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
-msgid "Free to spend"
-msgstr "Free to spend"
 
 #: src/i18n/constant/languages.constant.ts
 msgid "French"
@@ -3196,15 +3203,12 @@ msgstr "Lent"
 msgid "Less Than"
 msgstr "Less Than"
 
+#: src/budget/components/budget-forecast-chart/budget-forecast-chart.tsx
 #: src/budget/components/budget-history-legend/budget-history-legend.tsx
 #: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx
 msgid "Limit"
 msgstr "Limit"
-
-#: src/budget/components/budget-forecast-chart/budget-forecast-chart.tsx
-msgid "Limit {limitAmount}"
-msgstr "Limit {limitAmount}"
 
 #: src/ai/component/voice-input-bubble/voice-input-bubble.tsx
 msgid "Listening..."
@@ -4275,14 +4279,6 @@ msgstr "Privatbank (XLSX)"
 msgid "Projected {overAmount} over"
 msgstr "Projected {overAmount} over"
 
-#: src/budget/components/budget-forecast-summary/budget-forecast-summary.tsx
-msgid "Projected <0>{projectedAmount}</0> by {periodEndLabel} · {differenceAmount} under"
-msgstr "Projected <0>{projectedAmount}</0> by {periodEndLabel} · {differenceAmount} under"
-
-#: src/budget/components/budget-forecast-summary/budget-forecast-summary.tsx
-msgid "Projected <0>{projectedAmount}</0> by {periodEndLabel} · <1>{differenceAmount} over</1>"
-msgstr "Projected <0>{projectedAmount}</0> by {periodEndLabel} · <1>{differenceAmount} over</1>"
-
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Push notifications are disabled"
 msgstr "Push notifications are disabled"
@@ -4606,8 +4602,8 @@ msgstr "Runs on this phone. Nothing it reads is sent anywhere."
 
 #: src/budget/components/budget-category-forecast/budget-category-forecast.tsx
 #: src/budget/components/budget-forecast-run-out/budget-forecast-run-out.tsx
-msgid "Runs out ~{runOutDate}"
-msgstr "Runs out ~{runOutDate}"
+msgid "Runs out about {runOutDate}"
+msgstr "Runs out about {runOutDate}"
 
 #: src/runway/component/runway-verdict/runway-verdict.tsx
 msgid "Runs out around {runOutDate}"
