@@ -10,7 +10,7 @@ import {
     TransactionEntryTypeEnum,
     buildSpendingEntryCondition
 } from '@budgie/contracts';
-import { and, between, eq, isNull, sql } from 'drizzle-orm';
+import { and, between, eq, isNull, min, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -75,6 +75,13 @@ export class BudgetRepository extends Context.Service<BudgetRepository>()('@budg
                         orderBy: { updatedAt: 'desc' }
                     })
                 ),
+            findEarliestOperatedAt: () =>
+                Db.query(db =>
+                    db
+                        .select({ earliest: min(TransactionEntityTable.operatedAt) })
+                        .from(TransactionEntityTable)
+                        .where(isNull(TransactionEntityTable.deletedAt))
+                ).pipe(Effect.map(([row]) => row?.earliest ?? null)),
             findBudgetSpentEntries: (periodStart: Date, nextPeriodStart: Date, baseInstrumentId: number) =>
                 Db.query(db =>
                     db

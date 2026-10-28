@@ -1,9 +1,6 @@
-import { Rect } from 'react-native-svg';
-import { withUniwind } from 'uniwind';
-
 import { isPositiveNumber } from '@rnw-community/shared';
 
-import { SVG_COLOR_CLASS_NAME_MAPPING } from '../../../@generic/constant/svg-color-class-name-mapping.constant';
+import { StyledRect } from '../../../@generic/component/styled-rect/styled-rect';
 import { RUNWAY_HISTORY_BAR_AREA_HEIGHT, RUNWAY_HISTORY_BAR_GAP } from '../../constant/runway-history.constant';
 
 interface Props {
@@ -18,8 +15,6 @@ interface Props {
 
 const BAR_RADIUS = 2;
 const MIN_BAR_HEIGHT = 1.5;
-
-const StyledRect = withUniwind(Rect, SVG_COLOR_CLASS_NAME_MAPPING);
 
 export const RunwayHistoryBars = ({ centerX, barWidth, baselineY, expense, income, maxValue, isSpike }: Props) => {
     const scale = isPositiveNumber(maxValue) ? RUNWAY_HISTORY_BAR_AREA_HEIGHT / maxValue : 0;

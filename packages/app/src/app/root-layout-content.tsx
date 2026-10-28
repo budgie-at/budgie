@@ -1,4 +1,5 @@
 /* eslint-disable react/jsx-max-depth */
+import { BudgetPeriodCloseService } from '@budgie/budget';
 import { I18nProvider as LinguiProvider } from '@lingui/react';
 import * as Effect from 'effect/Effect';
 import { Stack, type NativeStackNavigationOptions } from 'expo-router';
@@ -94,6 +95,7 @@ const handleAppStateChange = (isActive: boolean): void => {
 
             const appDataSyncService = yield* AppDataSyncService;
             const historicalMarketDataDrainerService = yield* HistoricalMarketDataDrainerService;
+            const budgetPeriodCloseService = yield* BudgetPeriodCloseService;
 
             yield* logAndContinue(
                 workload.run(
@@ -104,6 +106,7 @@ const handleAppStateChange = (isActive: boolean): void => {
                     })
                 )
             );
+            yield* logAndContinue(workload.run(budgetPeriodCloseService.closeDuePeriods(new Date())));
         })
     );
 };
@@ -248,6 +251,10 @@ export const RootLayoutContent = () => {
                                                                     <Stack.Screen
                                                                         name="transaction-tag-filter"
                                                                         options={STACKED_FILTER_OPTIONS}
+                                                                    />
+                                                                    <Stack.Screen
+                                                                        name="budget-period-summary"
+                                                                        options={formSheetOptions([0.6, DETENT_90])}
                                                                     />
                                                                     <Stack.Screen name="rule-form" options={MODAL_OPTIONS} />
                                                                     <Stack.Screen name="rule-selector" options={formSheetOptions([0.75])} />

@@ -15,6 +15,7 @@ import m0011 from './20261025051229_account_is_external/migration.sql';
 import m0012 from './20261025062922_account_external_ids/migration.sql';
 import m0013 from './20261026092451_bank_integration_label/migration.sql';
 import m0014 from './20261027125204_transaction_receipts/migration.sql';
+import m0015 from './20261028143254_budget_period_snapshots/migration.sql';
 
   export default {
     migrations: {
@@ -32,7 +33,8 @@ import m0014 from './20261027125204_transaction_receipts/migration.sql';
 "20261025051229_account_is_external": m0011,
 "20261025062922_account_external_ids": m0012,
 "20261026092451_bank_integration_label": m0013,
-"20261027125204_transaction_receipts": m0014
+"20261027125204_transaction_receipts": m0014,
+"20261028143254_budget_period_snapshots": m0015
 }
   }
   

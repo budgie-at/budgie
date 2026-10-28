@@ -22,3 +22,6 @@ export type { BudgetTemplateResolutionInterface } from './template/interface/bud
 export { BudgetService } from './mutation/service/budget.service';
 export { BudgetRepository } from './query/repository/budget.repository';
 export { BudgetCategoryLimitRepository } from './query/repository/budget-category-limit.repository';
+
+export { BudgetPeriodSnapshotRepository } from './history/repository/budget-period-snapshot.repository';
+export { BudgetPeriodCloseService } from './history/service/budget-period-close.service';

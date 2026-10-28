@@ -8,10 +8,7 @@ import { startOfDay } from 'date-fns/startOfDay';
 import { startOfMonth } from 'date-fns/startOfMonth';
 import { subMonths } from 'date-fns/subMonths';
 
-interface PeriodWindow {
-    readonly periodStart: Date;
-    readonly nextPeriodStart: Date;
-}
+import type { BudgetPeriodWindowInterface } from '../interface/budget-period-window.interface';
 
 const buildMonthKey = (date: Date): string => `${getYear(date)}-${getMonth(date)}`;
 
@@ -32,7 +29,7 @@ const buildCountsByMonth = (operatedAtDates: readonly Date[]): Map<string, numbe
     return countsByMonth;
 };
 
-const computeEndOfMonthWindow = (now: Date): PeriodWindow => {
+const computeEndOfMonthWindow = (now: Date): BudgetPeriodWindowInterface => {
     const currentMonthEnd = startOfDay(endOfMonth(now));
 
     if (now.getTime() >= currentMonthEnd.getTime()) {
@@ -42,7 +39,7 @@ const computeEndOfMonthWindow = (now: Date): PeriodWindow => {
     return { periodStart: startOfDay(endOfMonth(subMonths(now, 1))), nextPeriodStart: currentMonthEnd };
 };
 
-const computeStartDayWindow = (periodStartDay: number, now: Date): PeriodWindow => {
+const computeStartDayWindow = (periodStartDay: number, now: Date): BudgetPeriodWindowInterface => {
     const year = now.getFullYear();
     const monthIndex = now.getMonth();
     const startThisMonth = clampDayToMonth(year, monthIndex, periodStartDay);
@@ -64,7 +61,7 @@ const computeStartDayWindow = (periodStartDay: number, now: Date): PeriodWindow 
     };
 };
 
-export const computePeriodWindow = (periodStartDay: number, useLastDayOfMonth: boolean, now: Date): PeriodWindow => {
+export const computePeriodWindow = (periodStartDay: number, useLastDayOfMonth: boolean, now: Date): BudgetPeriodWindowInterface => {
     if (useLastDayOfMonth) {
         return computeEndOfMonthWindow(now);
     }

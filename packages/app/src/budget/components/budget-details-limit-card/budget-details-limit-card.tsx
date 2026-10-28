@@ -19,7 +19,7 @@ interface Props {
     readonly currencySymbol: string;
     readonly testID: string;
     readonly spentTestID: string;
-    readonly onPress: () => void;
+    readonly onPress?: () => void;
 }
 
 export const BudgetDetailsLimitCard = (props: Props) => {

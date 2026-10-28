@@ -20,6 +20,8 @@ import { useGetBudgetCategoryLimitsQuery } from '../../query/use-get-budget-cate
 import { useGetBudgetSpentQuery } from '../../query/use-get-budget-spent.query';
 import { formatBudgetPeriodLabel } from '../../utils/format-budget-period-label.util';
 import { BudgetDetailsCategoryList } from '../budget-details-category-list/budget-details-category-list';
+import { BudgetHistorySection } from '../budget-history-section/budget-history-section';
+import { BudgetPeriodRecap } from '../budget-period-recap/budget-period-recap';
 import { BudgetProgressBar } from '../budget-progress-bar/budget-progress-bar';
 
 import type { BudgetEntityInterface } from '@budgie/contracts';
@@ -90,6 +92,8 @@ export const BudgetDetails = ({ budget }: Props) => {
             trailing={headerAction}
             contentClassName="gap-y-7xl"
         >
+            <BudgetPeriodRecap budgetId={budget.id} currencySymbol={currencySymbol} />
+
             <View className="gap-y-md">
                 <View className="flex-row items-center justify-between">
                     <Text className="text-primary text-lg font-semibold">
@@ -114,6 +118,15 @@ export const BudgetDetails = ({ budget }: Props) => {
 
                 {categoryLimitsContent}
             </View>
+
+            <BudgetHistorySection
+                budgetId={budget.id}
+                overallLimit={budget.overallLimit}
+                currentSpent={spent.spentOverall}
+                currentPeriodStart={periodWindow.periodStart}
+                currentPeriodEnd={periodEnd}
+                currencySymbol={currencySymbol}
+            />
         </CollapsibleChromePage>
     );
 };

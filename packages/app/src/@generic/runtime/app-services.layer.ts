@@ -1,5 +1,11 @@
 import { TranslationLlmService, VoiceLlmService } from '@budgie/ai';
-import { BudgetCategoryLimitRepository, BudgetRepository, BudgetService } from '@budgie/budget';
+import {
+    BudgetCategoryLimitRepository,
+    BudgetPeriodCloseService,
+    BudgetPeriodSnapshotRepository,
+    BudgetRepository,
+    BudgetService
+} from '@budgie/budget';
 import {
     CategorizeInboxService,
     CommentEmbeddingRepository,
@@ -150,6 +156,8 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     BudgetRepository.layer,
     BudgetCategoryLimitRepository.layer,
     BudgetService.layer,
+    BudgetPeriodSnapshotRepository.layer,
+    BudgetPeriodCloseService.layer,
     RecurringService.layer,
     AccountBalanceIncrementalService.layer,
     AccountTransferConversionService.layer,
