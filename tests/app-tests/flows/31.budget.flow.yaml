@@ -253,12 +253,14 @@ env:
           id: 'BudgetSetup.CategoryLimit.0.AmountInput'
           text: '200'
       timeout: 3000
+- tapOn:
+      id: 'BudgetSetup.CategoryLimit.0.Row'
+- waitForAnimationToEnd
 - scrollUntilVisible:
       element:
-          text: 'Category limits'
+          id: 'BudgetSetup.CategoryLimitAddButton'
       direction: UP
 - waitForAnimationToEnd
-- tapOn: 'Category limits'
 - waitForAnimationToEnd
 - retry:
       maxRetries: 3
@@ -287,12 +289,14 @@ env:
           id: 'BudgetSetup.CategoryLimit.1.AmountInput'
           text: '100'
       timeout: 3000
+- tapOn:
+      id: 'BudgetSetup.CategoryLimit.1.Row'
+- waitForAnimationToEnd
 - scrollUntilVisible:
       element:
-          text: 'Category limits'
+          id: 'BudgetSetup.CategoryLimitAddButton'
       direction: UP
 - waitForAnimationToEnd
-- tapOn: 'Category limits'
 - waitForAnimationToEnd
 - retry:
       maxRetries: 3
@@ -321,12 +325,14 @@ env:
           id: 'BudgetSetup.CategoryLimit.2.AmountInput'
           text: '150'
       timeout: 3000
+- tapOn:
+      id: 'BudgetSetup.CategoryLimit.2.Row'
+- waitForAnimationToEnd
 - scrollUntilVisible:
       element:
-          text: 'Category limits'
+          id: 'BudgetSetup.CategoryLimitAddButton'
       direction: UP
 - waitForAnimationToEnd
-- tapOn: 'Category limits'
 - waitForAnimationToEnd
 - retry:
       maxRetries: 3
@@ -355,12 +361,14 @@ env:
           id: 'BudgetSetup.CategoryLimit.3.AmountInput'
           text: '75'
       timeout: 3000
+- tapOn:
+      id: 'BudgetSetup.CategoryLimit.3.Row'
+- waitForAnimationToEnd
 - scrollUntilVisible:
       element:
-          text: 'Category limits'
+          id: 'BudgetSetup.CategoryLimitAddButton'
       direction: UP
 - waitForAnimationToEnd
-- tapOn: 'Category limits'
 - waitForAnimationToEnd
 - extendedWaitUntil:
       visible:
@@ -556,12 +564,14 @@ env:
           id: 'BudgetSetup.CategoryLimit.3.AmountInput'
           text: '300'
       timeout: 3000
+- tapOn:
+      id: 'BudgetSetup.CategoryLimit.3.Row'
+- waitForAnimationToEnd
 - scrollUntilVisible:
       element:
-          text: 'Category limits'
+          id: 'BudgetSetup.CategoryLimitAddButton'
       direction: UP
 - waitForAnimationToEnd
-- tapOn: 'Category limits'
 - waitForAnimationToEnd
 - tapOn:
       id: 'BudgetSetup.SaveButton'
@@ -742,12 +752,14 @@ env:
           id: 'BudgetSetup.CategoryLimit.0.AmountInput'
           text: '150'
       timeout: 3000
+- tapOn:
+      id: 'BudgetSetup.CategoryLimit.0.Row'
+- waitForAnimationToEnd
 - scrollUntilVisible:
       element:
-          text: 'Category limits'
+          id: 'BudgetSetup.CategoryLimitAddButton'
       direction: UP
 - waitForAnimationToEnd
-- tapOn: 'Category limits'
 - waitForAnimationToEnd
 - extendedWaitUntil:
       visible:
@@ -768,12 +780,14 @@ env:
           id: 'BudgetSetup.CategoryLimit.0.AmountInput'
           text: '80'
       timeout: 3000
+- tapOn:
+      id: 'BudgetSetup.CategoryLimit.0.Row'
+- waitForAnimationToEnd
 - scrollUntilVisible:
       element:
-          text: 'Category limits'
+          id: 'BudgetSetup.CategoryLimitAddButton'
       direction: UP
 - waitForAnimationToEnd
-- tapOn: 'Category limits'
 - waitForAnimationToEnd
 - assertNotVisible:
       id: 'BudgetSetup.AllocationSummary.OverBy'
