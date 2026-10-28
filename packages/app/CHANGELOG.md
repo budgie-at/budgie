@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.125.0](https://github.com/budgie-at/budgie/compare/v6.124.0...v6.125.0) (2026-10-28)
+
+### Bug Fixes
+
+* **app:** polish account details header, balance and filters ([eb5ad27](https://github.com/budgie-at/budgie/commit/eb5ad2735e31a627b75494ac41e7b9f8d44dc8d6))
+
+### Features
+
+* **app:** account actions menu on every account details screen ([dce7b42](https://github.com/budgie-at/budgie/commit/dce7b42d9cb97cd1af60f02cf04e5e3d4e448d3d))
+* **app:** centred balance hero on account details ([327843b](https://github.com/budgie-at/budgie/commit/327843b193229d9c5113c3b506a6f9a2a65bfe96))
+* **app:** pin transaction filters under the account details header ([9ba1203](https://github.com/budgie-at/budgie/commit/9ba120378f3aa5abd3eab5f0151618cba4580bd6))
+* **app:** redesign account details screen ([8cfbbd4](https://github.com/budgie-at/budgie/commit/8cfbbd4667686b844db43480421b6925be1a279c)), closes [#1706](https://github.com/budgie-at/budgie/issues/1706)
+* **app:** show this month's totals as chips under the account balance ([8996c02](https://github.com/budgie-at/budgie/commit/8996c023377104e48a85500796c5039d0dc03671))
+
+
 # [6.124.0](https://github.com/budgie-at/budgie/compare/v6.123.1...v6.124.0) (2026-10-28)
 
 ### Bug Fixes
