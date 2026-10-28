@@ -94,7 +94,7 @@ it.effect('flags a fast month as ahead of pace with the day the projection cross
         expect(projection.overall.projectedRatio).toBe(1.55);
         expect(projection.overall.runOutAt).toEqual(new Date(2026, OCTOBER, 21));
         expect(projection.days).toHaveLength(31);
-        expect(projection.days[9]).toEqual({ date: new Date(2026, OCTOBER, 10), actual: 500, projected: 500 });
+        expect(projection.days[9]).toEqual({ date: new Date(2026, OCTOBER, 10), actual: 500, projected: 500, variableSpent: 100 });
         expect(projection.days[10].actual).toBeNull();
         expect(projection.days[30].projected).toBe(1550);
         expect(projection.days[8].projected).toBeNull();
