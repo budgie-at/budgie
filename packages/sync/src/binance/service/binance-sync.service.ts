@@ -36,6 +36,7 @@ import { BinanceCredentialsSchema } from '../constant/binance-credentials.schema
 import { BinanceRateLimitMs } from '../constant/binance-rate-limit-ms.constant';
 import { BinanceHistorySourceEnum } from '../enum/binance-history-source.enum';
 import { mapBinanceTransfersToInputs } from '../mapper/binance-transfer-input.mapper';
+import { decodeBinanceAccountId } from '../utils/binance-account-id.util';
 
 import { BinanceAccountService } from './binance-account.service';
 import { BinanceAssetCodeService } from './binance-asset-code.service';
@@ -120,7 +121,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 transfersSynced: false,
                 sourcesSynced: false,
                 balancesAnchored: false,
-                signedClient: new BinanceSignedClient(token, run.deadlineAtMs, isFiatRefreshDue(token)),
+                signedClient: new BinanceSignedClient(token, run.deadlineAtMs),
                 exchangeAccounts: null
             };
             run = { ...run, tokenRuns: new Map(run.tokenRuns).set(token, tokenRun) };
@@ -165,12 +166,20 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             patchTokenRun(token, { balancesAnchored: true });
         });
 
-        const findIntegrationAccountIds = Effect.fnUntraced(function* (token: string) {
+        const findIntegrationAccounts = Effect.fnUntraced(function* (token: string) {
             const integration = yield* syncIntegrationTokenService.getOrCreateIntegration(provider, token);
 
-            return (yield* accountRepository.findByExternalSource(provider))
-                .filter(account => account.integrationId === integration.id)
-                .map(account => account.id);
+            return (yield* accountRepository.findByExternalSource(provider)).filter(account => account.integrationId === integration.id);
+        });
+
+        const findIntegrationAccountIds = Effect.fnUntraced(function* (token: string) {
+            return (yield* findIntegrationAccounts(token)).map(account => account.id);
+        });
+
+        const findIntegrationAssets = Effect.fnUntraced(function* (token: string) {
+            return (yield* findIntegrationAccounts(token))
+                .map(account => (isNotEmptyString(account.externalId) ? decodeBinanceAccountId(account.externalId)?.asset : null))
+                .filter(isDefined);
         });
 
         const findIntegrationIdMap = Effect.fnUntraced(function* (token: string) {
@@ -471,23 +480,13 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             return committedCount;
         });
 
-        const processTransfers = Effect.fnUntraced(function* (sync: SyncEntityInterface, externalAccountId: string, token: string) {
-            if (getTokenRun(token).transfersSynced) {
+        const processTrades = Effect.fnUntraced(function* (sync: SyncEntityInterface, externalAccountId: string, token: string) {
+            if (run.isDeferred || getTokenRun(token).transfersSynced) {
                 return 0;
             }
 
-            const convertCount =
-                (yield* syncHistorySource(sync, token, BinanceHistorySourceEnum.CONVERT, (fromUnixTime, toUnixTime) =>
-                    commitTransferRange(token, getRunSignedClient(token).getConvertTransfers(fromUnixTime, toUnixTime))
-                )) +
-                (yield* syncHistorySource(sync, token, BinanceHistorySourceEnum.DUST, (fromUnixTime, toUnixTime) =>
-                    commitTransferRange(token, getRunSignedClient(token).getDustTransfers(fromUnixTime, toUnixTime))
-                ));
-            if (run.isDeferred) {
-                return convertCount;
-            }
-
             const client = getRunSignedClient(token);
+            client.noteTouchedAssets(yield* findIntegrationAssets(token));
             const transfers = yield* binanceTradeCursorService.fetchTransferBatch(client, sync, externalAccountId, {
                 fromUnixTime: getUnixTime(resolveWindowStart(sync)),
                 eligibleSoldOffBaseAssets: yield* binanceAssetCodeService.resolveEligibleSoldOffBaseAssets(provider)
@@ -496,7 +495,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             yield* binanceTradeCursorService.persistTradeCursors(sync, client);
             patchTokenRun(token, { transfersSynced: true });
 
-            return convertCount + createdCount;
+            return createdCount;
         });
 
         const processSources = Effect.fnUntraced(function* (sync: SyncEntityInterface, token: string) {
@@ -527,6 +526,12 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 )) +
                 (yield* syncHistorySource(sync, token, BinanceHistorySourceEnum.CAPITAL, (fromUnixTime, toUnixTime) =>
                     commitCapitalRange(sync, token, fromUnixTime, toUnixTime)
+                )) +
+                (yield* syncHistorySource(sync, token, BinanceHistorySourceEnum.CONVERT, (fromUnixTime, toUnixTime) =>
+                    commitTransferRange(token, client.getConvertTransfers(fromUnixTime, toUnixTime))
+                )) +
+                (yield* syncHistorySource(sync, token, BinanceHistorySourceEnum.DUST, (fromUnixTime, toUnixTime) =>
+                    commitTransferRange(token, client.getDustTransfers(fromUnixTime, toUnixTime))
                 ))
             );
         });
@@ -559,10 +564,10 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             yield* processSources(sync, token).pipe(
                 Effect.map(addChangedCount),
                 Effect.andThen(Effect.yieldNow),
-                Effect.andThen(() => processTransfers(sync, externalAccountId, token)),
+                Effect.andThen(() => processFiatSource(sync, token)),
                 Effect.map(addChangedCount),
                 Effect.andThen(Effect.yieldNow),
-                Effect.andThen(() => processFiatSource(sync, token)),
+                Effect.andThen(() => processTrades(sync, externalAccountId, token)),
                 Effect.map(addChangedCount),
                 Effect.catchTag('SyncDeferredError', () => markRunDeferred)
             );
