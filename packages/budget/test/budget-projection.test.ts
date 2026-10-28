@@ -174,7 +174,9 @@ it.effect('derives the daily allowance from the limit minus posted and upcoming 
 
 it.effect('never reports a negative daily allowance when committed charges exceed the limit', () =>
     Effect.sync(() => {
-        const projection = computeBudgetProjection(octoberInput({ overallLimit: 100, upcomingCharges: [upcomingRecurring(october(20), 500, 3)] }));
+        const projection = computeBudgetProjection(
+            octoberInput({ overallLimit: 100, upcomingCharges: [upcomingRecurring(october(20), 500, 3)] })
+        );
 
         expect(projection.dailyAllowance).toBe(0);
     })

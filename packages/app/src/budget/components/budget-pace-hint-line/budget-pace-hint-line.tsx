@@ -22,12 +22,7 @@ export const BudgetPaceHintLine = ({ title, scope, currencySymbol, onPress }: Pr
     const label = t`${title} is running fast. Keep it under ${perDayAmount}/day.`;
 
     return (
-        <ChevronLinkRow
-            label={label}
-            textClassName="text-sm text-primary"
-            testID={BudgetSelector.DetailsPaceBanner}
-            onPress={onPress}
-        >
+        <ChevronLinkRow label={label} textClassName="text-sm text-primary" testID={BudgetSelector.DetailsPaceBanner} onPress={onPress}>
             <Trans>
                 {title} is running fast. Keep it under <Text className="text-warning-foreground">{perDayAmount}/day</Text>.
             </Trans>

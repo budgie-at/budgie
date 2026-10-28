@@ -26,8 +26,12 @@ export const BudgetDayStrip = ({ projection, currencySymbol }: Props) => {
         key: day.date.getTime(),
         dayState: resolveBudgetDayState(day, index, todayIndex, dailyAllowance)
     }));
-    const overDays = dayCells.filter(({ dayState }) => dayState === BudgetDayStateEnum.OVER || dayState === BudgetDayStateEnum.FAR_OVER).length;
-    const overLabel = t({ message: plural(overDays, { one: '# day over your daily allowance', other: '# days over your daily allowance' }) });
+    const overDays = dayCells.filter(
+        ({ dayState }) => dayState === BudgetDayStateEnum.OVER || dayState === BudgetDayStateEnum.FAR_OVER
+    ).length;
+    const overLabel = t({
+        message: plural(overDays, { one: '# day over your daily allowance', other: '# days over your daily allowance' })
+    });
     const accessibilityLabel = t`Day ${elapsedDays} of ${totalDays}. ${overLabel}.`;
     const accessibilityValue = { min: 1, max: totalDays, now: elapsedDays };
     const allowanceLabel = formatWholeAmount(convertFromMicroUnits(dailyAllowance), currencySymbol);

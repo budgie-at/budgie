@@ -59,7 +59,10 @@ export const BudgetForecastChart = ({ projection, currencySymbol }: Props) => {
     const { t } = useLingui();
     const formatWholeAmount = useProtectedWholeAmountLabel();
 
-    const { actualPath, projectedPath, projectedEndPoint, limitY, todayX, todayPoint, runOutX, bills } = buildBudgetForecastGeometry({ projection, ...GEOMETRY_LAYOUT });
+    const { actualPath, projectedPath, projectedEndPoint, limitY, todayX, todayPoint, runOutX, bills } = buildBudgetForecastGeometry({
+        projection,
+        ...GEOMETRY_LAYOUT
+    });
     const { runOutAt, status, limit, projectedEnd } = projection.overall;
     const tone = BUDGET_PACE_VARIANT[status];
     const accentClassName = TONE_STROKE_CLASS_NAME[tone];

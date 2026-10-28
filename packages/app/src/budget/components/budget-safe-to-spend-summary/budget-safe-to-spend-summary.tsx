@@ -24,7 +24,9 @@ export const BudgetSafeToSpendSummary = ({ projection, currencySymbol }: Props) 
     const formatAmount = (amount: number) => formatProtectedAmount(convertFromMicroUnits(amount), currencySymbol);
     const freeAmount = formatAmount(Math.max(overall.free, 0));
     const daysLabel = t({ message: plural(daysLeft, { one: '# day', other: '# days' }) });
-    const spentRow = isPositiveNumber(overall.spent) ? <BudgetBreakdownRow label={t`Spent so far`} amount={`−${formatAmount(overall.spent)}`} /> : null;
+    const spentRow = isPositiveNumber(overall.spent) ? (
+        <BudgetBreakdownRow label={t`Spent so far`} amount={`−${formatAmount(overall.spent)}`} />
+    ) : null;
     const upcomingRow = isPositiveNumber(overall.upcoming) ? (
         <BudgetBreakdownRow label={t`Upcoming this period`} amount={`−${formatAmount(overall.upcoming)}`} />
     ) : null;
