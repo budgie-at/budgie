@@ -1252,11 +1252,11 @@ msgstr "Зберігає нові відповідні оплати через A
 msgid "Card"
 msgstr "Картка"
 
-#: src/budget/components/budget-rollover-mode-field/budget-rollover-mode-field.tsx
+#: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
 msgid "Carry all"
 msgstr "Переносити все"
 
-#: src/budget/components/budget-rollover-mode-field/budget-rollover-mode-field.tsx
+#: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
 msgid "Carry savings"
 msgstr "Переносити заощадження"
 
@@ -3825,7 +3825,7 @@ msgstr "з"
 msgid "of {total} GB"
 msgstr "з {total} ГБ"
 
-#: src/budget/components/budget-rollover-mode-field/budget-rollover-mode-field.tsx
+#: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
 #: src/settings/components/your-data-card/your-data-card.tsx
 msgid "Off"
 msgstr "Вимкнено"
@@ -4558,6 +4558,14 @@ msgstr "Revolut"
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 msgid "Right now anyone who can unlock your phone can open Budgie. With a PIN, the file itself is encrypted and only opens with it."
 msgstr "Зараз будь-хто, хто може розблокувати ваш телефон, може відкрити Budgie. З PIN-кодом сам файл шифрується й відкривається лише ним."
+
+#: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
+msgid "Rollover, {currentLabel}. Double tap to change."
+msgstr "Перенесення, {currentLabel}. Двічі торкніться, щоб змінити."
+
+#: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
+msgid "Rollover: {currentLabel}"
+msgstr "Перенесення: {currentLabel}"
 
 #: src/rule/hooks/use-rules-list-page-actions.hook.ts
 msgid "Rule"
@@ -5758,10 +5766,6 @@ msgstr "Невідома картка"
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Unrealized P&L"
 msgstr "Нереаліз. приб./збиток"
-
-#: src/budget/components/budget-rollover-mode-field/budget-rollover-mode-field.tsx
-msgid "Unspent money at period end"
-msgstr "Невитрачені гроші наприкінці періоду"
 
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
 #: src/tag/components/stats-by-tags/stats-by-tags.tsx

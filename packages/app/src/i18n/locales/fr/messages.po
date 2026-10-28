@@ -1252,11 +1252,11 @@ msgstr "Capture les nouveaux paiements Apple Pay admissibles. L’historique Wal
 msgid "Card"
 msgstr "Carte"
 
-#: src/budget/components/budget-rollover-mode-field/budget-rollover-mode-field.tsx
+#: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
 msgid "Carry all"
 msgstr "Tout reporter"
 
-#: src/budget/components/budget-rollover-mode-field/budget-rollover-mode-field.tsx
+#: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
 msgid "Carry savings"
 msgstr "Reporter les économies"
 
@@ -3825,7 +3825,7 @@ msgstr "sur"
 msgid "of {total} GB"
 msgstr "sur {total} Go"
 
-#: src/budget/components/budget-rollover-mode-field/budget-rollover-mode-field.tsx
+#: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
 #: src/settings/components/your-data-card/your-data-card.tsx
 msgid "Off"
 msgstr "Désactivé"
@@ -4558,6 +4558,14 @@ msgstr "Revolut"
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 msgid "Right now anyone who can unlock your phone can open Budgie. With a PIN, the file itself is encrypted and only opens with it."
 msgstr "Pour l'instant, toute personne qui peut déverrouiller ton téléphone peut ouvrir Budgie. Avec un code PIN, le fichier lui-même est chiffré et ne s'ouvre qu'avec lui."
+
+#: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
+msgid "Rollover, {currentLabel}. Double tap to change."
+msgstr "Report, {currentLabel}. Touchez deux fois pour modifier."
+
+#: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
+msgid "Rollover: {currentLabel}"
+msgstr "Report : {currentLabel}"
 
 #: src/rule/hooks/use-rules-list-page-actions.hook.ts
 msgid "Rule"
@@ -5758,10 +5766,6 @@ msgstr "Carte inconnue"
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Unrealized P&L"
 msgstr "Gain/perte latent"
-
-#: src/budget/components/budget-rollover-mode-field/budget-rollover-mode-field.tsx
-msgid "Unspent money at period end"
-msgstr "Argent non dépensé en fin de période"
 
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
 #: src/tag/components/stats-by-tags/stats-by-tags.tsx

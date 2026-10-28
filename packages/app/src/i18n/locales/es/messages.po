@@ -1252,11 +1252,11 @@ msgstr "Captura nuevos pagos compatibles con Apple Pay. No puede importar el his
 msgid "Card"
 msgstr "Tarjeta"
 
-#: src/budget/components/budget-rollover-mode-field/budget-rollover-mode-field.tsx
+#: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
 msgid "Carry all"
 msgstr "Trasladar todo"
 
-#: src/budget/components/budget-rollover-mode-field/budget-rollover-mode-field.tsx
+#: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
 msgid "Carry savings"
 msgstr "Trasladar ahorros"
 
@@ -3825,7 +3825,7 @@ msgstr "de"
 msgid "of {total} GB"
 msgstr "de {total} GB"
 
-#: src/budget/components/budget-rollover-mode-field/budget-rollover-mode-field.tsx
+#: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
 #: src/settings/components/your-data-card/your-data-card.tsx
 msgid "Off"
 msgstr "Desactivado"
@@ -4558,6 +4558,14 @@ msgstr "Revolut"
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 msgid "Right now anyone who can unlock your phone can open Budgie. With a PIN, the file itself is encrypted and only opens with it."
 msgstr "Ahora mismo, cualquiera que pueda desbloquear tu teléfono puede abrir Budgie. Con un PIN, el propio archivo se cifra y solo se abre con él."
+
+#: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
+msgid "Rollover, {currentLabel}. Double tap to change."
+msgstr "Traspaso, {currentLabel}. Toca dos veces para cambiar."
+
+#: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
+msgid "Rollover: {currentLabel}"
+msgstr "Traspaso: {currentLabel}"
 
 #: src/rule/hooks/use-rules-list-page-actions.hook.ts
 msgid "Rule"
@@ -5758,10 +5766,6 @@ msgstr "Tarjeta desconocida"
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Unrealized P&L"
 msgstr "PyG no realizada"
-
-#: src/budget/components/budget-rollover-mode-field/budget-rollover-mode-field.tsx
-msgid "Unspent money at period end"
-msgstr "Dinero sin gastar al final del periodo"
 
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
 #: src/tag/components/stats-by-tags/stats-by-tags.tsx

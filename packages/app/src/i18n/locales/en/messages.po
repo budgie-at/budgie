@@ -1253,11 +1253,11 @@ msgstr "Captures new eligible Apple Pay taps. It cannot import Wallet history or
 msgid "Card"
 msgstr "Card"
 
-#: src/budget/components/budget-rollover-mode-field/budget-rollover-mode-field.tsx
+#: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
 msgid "Carry all"
 msgstr "Carry all"
 
-#: src/budget/components/budget-rollover-mode-field/budget-rollover-mode-field.tsx
+#: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
 msgid "Carry savings"
 msgstr "Carry savings"
 
@@ -3826,7 +3826,7 @@ msgstr "of"
 msgid "of {total} GB"
 msgstr "of {total} GB"
 
-#: src/budget/components/budget-rollover-mode-field/budget-rollover-mode-field.tsx
+#: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
 #: src/settings/components/your-data-card/your-data-card.tsx
 msgid "Off"
 msgstr "Off"
@@ -4559,6 +4559,14 @@ msgstr "Revolut"
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 msgid "Right now anyone who can unlock your phone can open Budgie. With a PIN, the file itself is encrypted and only opens with it."
 msgstr "Right now anyone who can unlock your phone can open Budgie. With a PIN, the file itself is encrypted and only opens with it."
+
+#: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
+msgid "Rollover, {currentLabel}. Double tap to change."
+msgstr "Rollover, {currentLabel}. Double tap to change."
+
+#: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
+msgid "Rollover: {currentLabel}"
+msgstr "Rollover: {currentLabel}"
 
 #: src/rule/hooks/use-rules-list-page-actions.hook.ts
 msgid "Rule"
@@ -5759,10 +5767,6 @@ msgstr "Unknown card"
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Unrealized P&L"
 msgstr "Unrealized P&L"
-
-#: src/budget/components/budget-rollover-mode-field/budget-rollover-mode-field.tsx
-msgid "Unspent money at period end"
-msgstr "Unspent money at period end"
 
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
 #: src/tag/components/stats-by-tags/stats-by-tags.tsx

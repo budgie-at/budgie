@@ -1252,11 +1252,11 @@ msgstr "Erfasst neue geeignete Apple Pay-Zahlungen. Wallet-Verlauf oder endgült
 msgid "Card"
 msgstr "Karte"
 
-#: src/budget/components/budget-rollover-mode-field/budget-rollover-mode-field.tsx
+#: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
 msgid "Carry all"
 msgstr "Alles übertragen"
 
-#: src/budget/components/budget-rollover-mode-field/budget-rollover-mode-field.tsx
+#: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
 msgid "Carry savings"
 msgstr "Ersparnis übertragen"
 
@@ -3825,7 +3825,7 @@ msgstr "von"
 msgid "of {total} GB"
 msgstr "von {total} GB"
 
-#: src/budget/components/budget-rollover-mode-field/budget-rollover-mode-field.tsx
+#: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
 #: src/settings/components/your-data-card/your-data-card.tsx
 msgid "Off"
 msgstr "Aus"
@@ -4558,6 +4558,14 @@ msgstr "Revolut"
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 msgid "Right now anyone who can unlock your phone can open Budgie. With a PIN, the file itself is encrypted and only opens with it."
 msgstr "Im Moment kann jeder, der dein Telefon entsperren kann, Budgie öffnen. Mit einer PIN wird die Datei selbst verschlüsselt und öffnet sich nur damit."
+
+#: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
+msgid "Rollover, {currentLabel}. Double tap to change."
+msgstr "Übertrag, {currentLabel}. Doppeltippen zum Ändern."
+
+#: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
+msgid "Rollover: {currentLabel}"
+msgstr "Übertrag: {currentLabel}"
 
 #: src/rule/hooks/use-rules-list-page-actions.hook.ts
 msgid "Rule"
@@ -5758,10 +5766,6 @@ msgstr "Unbekannte Karte"
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Unrealized P&L"
 msgstr "Unrealisierte GuV"
-
-#: src/budget/components/budget-rollover-mode-field/budget-rollover-mode-field.tsx
-msgid "Unspent money at period end"
-msgstr "Nicht ausgegebenes Geld am Periodenende"
 
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
 #: src/tag/components/stats-by-tags/stats-by-tags.tsx
