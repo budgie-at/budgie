@@ -27,8 +27,7 @@ const SECOND_TRADE_ID = 11;
 const firstTradeExternalId = `binance:trade:ADAUSDT:${FIRST_TRADE_ID}`;
 const secondTradeExternalId = `binance:trade:ADAUSDT:${SECOND_TRADE_ID}`;
 
-const buildAdaTrade = (id: number, time: number) =>
-    buildBinance.trade({ symbol: 'ADAUSDT', id, qty: '10', quoteQty: '5', commission: '0', isBuyer: true, time });
+const buildAdaTrade = (id: number, time: number) => buildBinance.fill('ADAUSDT', id, { qty: '10', quoteQty: '5', time });
 
 const makeSyncDueAgain = (syncId: number) =>
     testDb

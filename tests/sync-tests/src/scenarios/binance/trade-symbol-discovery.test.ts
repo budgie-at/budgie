@@ -16,9 +16,6 @@ import {
 const SECONDS_PER_DAY = 86_400;
 const MILLISECONDS_PER_SECOND = 1000;
 
-const buildFillStub = (symbol: string, id: number) =>
-    buildBinance.trade({ symbol, id, qty: '1', quoteQty: '1', commission: '0', isBuyer: true });
-
 describe('binance/trade-symbol-discovery', () => {
     it.effect('fetches BTCEUR trades once EUR is touched through a fiat deposit', () =>
         Effect.gen(function* () {
@@ -29,7 +26,7 @@ describe('binance/trade-symbol-discovery', () => {
             binanceStub.exchangeInfo(['BTCEUR']);
             binanceStub.spotBalances([buildBinance.balance({ asset: 'BTC', free: '1' })]);
             binanceStub.fiatOrders([buildBinance.fiatOrder({ orderNo: 'fiat-dep-eur', fiatCurrency: 'EUR', amount: '100' })], []);
-            binanceStub.myTrades({ BTCEUR: [buildFillStub('BTCEUR', 31)] });
+            binanceStub.myTrades({ BTCEUR: [buildBinance.fill('BTCEUR', 31)] });
 
             yield* binanceSyncService.sync();
 
@@ -45,7 +42,7 @@ describe('binance/trade-symbol-discovery', () => {
             yield* setupBinanceFixture({ asset: 'BUSD' });
             binanceStub.exchangeInfo([{ baseAsset: 'BTC', quoteAsset: 'BUSD', status: 'BREAK' }]);
             binanceStub.spotBalances([buildBinance.balance({ asset: 'BTC', free: '1' })]);
-            binanceStub.myTrades({ BTCBUSD: [buildFillStub('BTCBUSD', 32)] });
+            binanceStub.myTrades({ BTCBUSD: [buildBinance.fill('BTCBUSD', 32)] });
 
             yield* binanceSyncService.sync();
 
@@ -64,7 +61,7 @@ describe('binance/trade-symbol-discovery', () => {
                 buildBinance.balance({ asset: 'ETH', free: '1' }),
                 buildBinance.balance({ asset: 'USDC', free: '100' })
             ]);
-            binanceStub.myTrades({ ETHUSDC: [buildFillStub('ETHUSDC', 33)] });
+            binanceStub.myTrades({ ETHUSDC: [buildBinance.fill('ETHUSDC', 33)] });
 
             yield* binanceSyncService.sync();
 
@@ -112,7 +109,7 @@ describe('binance/trade-symbol-discovery', () => {
                 []
             );
             binanceStub.myTrades({
-                BTCEUR: [{ ...buildFillStub('BTCEUR', 34), time: atDaysAgo(5) * MILLISECONDS_PER_SECOND }]
+                BTCEUR: [buildBinance.fill('BTCEUR', 34, { time: atDaysAgo(5) * MILLISECONDS_PER_SECOND })]
             });
             const client = new BinanceSignedClient(BINANCE_TEST_TOKEN);
             const accountId = encodeBinanceAccountId({ wallet: BinanceWalletEnum.SPOT, asset: 'USDT' });

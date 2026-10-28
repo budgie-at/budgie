@@ -78,6 +78,8 @@ export const buildBinance = {
         isMaker: false,
         ...overrides
     }),
+    fill: (symbol: string, id: number, overrides: Partial<BinanceTradeApiInterface> = {}): BinanceTradeApiInterface =>
+        buildBinance.trade({ symbol, id, qty: '1', quoteQty: '1', isBuyer: true, ...overrides }),
     convertFlow: (overrides: ConvertFlowOverrides): BinanceConvertFlowApiInterface => ({
         quoteId: `quote-${overrides.orderId}`,
         orderStatus: 'SUCCESS',

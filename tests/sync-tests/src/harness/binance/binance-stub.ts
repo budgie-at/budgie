@@ -30,9 +30,12 @@ const FIAT_ORDERS_URL = `${BASE_URL}/sapi/v1/fiat/orders`;
 const C2C_ORDERS_URL = `${BASE_URL}/sapi/v1/c2c/orderMatch/listUserOrderHistory`;
 const MY_TRADES_URL = `${BASE_URL}/api/v3/myTrades`;
 const EXCHANGE_INFO_URL = `${BASE_URL}/api/v3/exchangeInfo`;
+const CONVERT_TRADE_FLOW_URL = `${BASE_URL}/sapi/v1/convert/tradeFlow`;
+const EARN_POSITION_URL = `${BASE_URL}/sapi/v1/simple-earn/flexible/position`;
+const LOCKED_EARN_POSITION_URL = `${BASE_URL}/sapi/v1/simple-earn/locked/position`;
+const EARN_REWARDS_URL = `${BASE_URL}/sapi/v1/simple-earn/flexible/history/rewardsRecord`;
 const EXCHANGE_INFO_BASE_ASSETS = ['ADA', 'BNB', 'BTC', 'ETH', 'EUR', 'PEPE', 'USDT'];
 const EXCHANGE_INFO_QUOTE_ASSETS = ['USDT', 'FDUSD', 'BTC', 'BNB', 'BUSD'];
-
 const EXCHANGE_INFO_TRADING_STATUS = 'TRADING';
 const EXCHANGE_INFO_SUFFIX_QUOTE_ASSETS = [...EXCHANGE_INFO_QUOTE_ASSETS, 'USDC', 'EUR'];
 
@@ -66,10 +69,7 @@ const buildAllValidSymbols = (): string[] => {
 
     return symbols;
 };
-const CONVERT_TRADE_FLOW_URL = `${BASE_URL}/sapi/v1/convert/tradeFlow`;
-const EARN_POSITION_URL = `${BASE_URL}/sapi/v1/simple-earn/flexible/position`;
-const LOCKED_EARN_POSITION_URL = `${BASE_URL}/sapi/v1/simple-earn/locked/position`;
-const EARN_REWARDS_URL = `${BASE_URL}/sapi/v1/simple-earn/flexible/history/rewardsRecord`;
+
 const FIAT_DEPOSIT_TRANSACTION_TYPE = '0';
 const FIRST_PAGE = '1';
 const C2C_BUY_TRADE_TYPE = 'BUY';
@@ -131,6 +131,23 @@ const serveWith = (options: ServeOptions | undefined, respond: (info: { readonly
     };
 };
 
+const buildPagedEnvelope = <TRow>(data: TRow[]) => ({ code: '000000', message: 'success', data, total: data.length, success: true });
+
+const serveCapitalHistory = <TRow>(
+    rows: TRow[],
+    getTimeMs: (row: TRow) => number,
+    requestedWindows: TimeWindow[] | undefined,
+    options: ServeOptions | undefined
+) =>
+    serveWith(options, ({ request }) => {
+        const url = new URL(request.url);
+        const window = parseTimeWindow(url, 'startTime', 'endTime');
+        requestedWindows?.push(window);
+        const matched = rows.filter(row => isWithinWindow(getTimeMs(row), window));
+
+        return HttpResponse.json(sliceOffsetPage(url, matched), { headers: WEIGHT_HEADERS });
+    });
+
 export const binanceStub = {
     serverTime: (offsetMs = 0): void => {
         mockServer.use(
@@ -163,29 +180,14 @@ export const binanceStub = {
         mockServer.use(http.post(FUNDING_BALANCE_URL, () => HttpResponse.json(balances, { headers: WEIGHT_HEADERS })));
     },
     deposits: (deposits: BinanceDepositApiInterface[], requestedWindows?: TimeWindow[], options?: ServeOptions): void => {
+        mockServer.use(http.get(DEPOSIT_URL, serveCapitalHistory(deposits, deposit => deposit.insertTime, requestedWindows, options)));
+    },
+    withdrawals: (withdrawals: BinanceWithdrawalApiInterface[], requestedWindows?: TimeWindow[], options?: ServeOptions): void => {
         mockServer.use(
             http.get(
-                DEPOSIT_URL,
-                serveWith(options, ({ request }) => {
-                    const url = new URL(request.url);
-                    const window = parseTimeWindow(url, 'startTime', 'endTime');
-                    requestedWindows?.push(window);
-                    const matched = deposits.filter(deposit => isWithinWindow(deposit.insertTime, window));
-
-                    return HttpResponse.json(sliceOffsetPage(url, matched), { headers: WEIGHT_HEADERS });
-                })
+                WITHDRAW_URL,
+                serveCapitalHistory(withdrawals, withdrawal => new Date(withdrawal.applyTime).getTime(), requestedWindows, options)
             )
-        );
-    },
-    withdrawals: (withdrawals: BinanceWithdrawalApiInterface[]): void => {
-        mockServer.use(
-            http.get(WITHDRAW_URL, ({ request }) => {
-                const url = new URL(request.url);
-                const window = parseTimeWindow(url, 'startTime', 'endTime');
-                const matched = withdrawals.filter(withdrawal => isWithinWindow(new Date(withdrawal.applyTime).getTime(), window));
-
-                return HttpResponse.json(sliceOffsetPage(url, matched), { headers: WEIGHT_HEADERS });
-            })
         );
     },
     fiatOrders: (
@@ -206,10 +208,7 @@ export const binanceStub = {
                 const windowOrders = typeOrders.filter(order => isWithinWindow(order.createTime, window));
                 const orders = isFirstPage ? windowOrders : [];
 
-                return HttpResponse.json(
-                    { code: '000000', message: 'success', data: orders, total: orders.length, success: true },
-                    { headers: WEIGHT_HEADERS }
-                );
+                return HttpResponse.json(buildPagedEnvelope(orders), { headers: WEIGHT_HEADERS });
             })
         );
     },
@@ -229,10 +228,7 @@ export const binanceStub = {
                 const windowOrders = typeOrders.filter(order => isWithinWindow(order.createTime, window));
                 const data = isFirstPage ? windowOrders : [];
 
-                return HttpResponse.json(
-                    { code: '000000', message: 'success', data, total: data.length, success: true },
-                    { headers: WEIGHT_HEADERS }
-                );
+                return HttpResponse.json(buildPagedEnvelope(data), { headers: WEIGHT_HEADERS });
             })
         );
     },

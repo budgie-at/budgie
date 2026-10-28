@@ -373,23 +373,22 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return (yield* Clock.currentTimeMillis) + this.serverTimeOffsetMs;
     });
 
-    private readonly resolveRunEndTimeMs = Effect.fn('BinanceSignedClient.resolveRunEndTimeMs')(function* (this: BinanceSignedClient) {
-        if (!isDefined(this.runEndTimeMs)) {
-            this.runEndTimeMs = yield* this.resolveTimestamp();
-        }
-
-        return this.runEndTimeMs;
-    });
-
     private readonly resolveSourceWindow = Effect.fn('BinanceSignedClient.resolveSourceWindow')(function* (
         this: BinanceSignedClient,
         from: number,
         to?: number | null
     ) {
-        return {
-            startTimeMs: from * MILLISECONDS_PER_SECOND,
-            endTimeMs: isDefined(to) ? to * MILLISECONDS_PER_SECOND : yield* this.resolveRunEndTimeMs()
-        };
+        const startTimeMs = from * MILLISECONDS_PER_SECOND;
+
+        if (isDefined(to)) {
+            return { startTimeMs, endTimeMs: to * MILLISECONDS_PER_SECOND };
+        }
+
+        if (!isDefined(this.runEndTimeMs)) {
+            this.runEndTimeMs = yield* this.resolveTimestamp();
+        }
+
+        return { startTimeMs, endTimeMs: this.runEndTimeMs };
     });
 
     private readonly walkWindowsBackward = Effect.fnUntraced(function* <T>(
@@ -550,8 +549,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     ) {
         return Effect.gen({ self: this }, function* (this: BinanceSignedClient) {
             const balances = yield* this.signedRequest(BinanceAssetBalanceListApiSchema, SPOT_BALANCE_ENDPOINT, 'POST');
-            const deposits = yield* this.fetchCapitalHistory(this.depositSource, BinanceWalletEnum.SPOT, startTimeMs, endTimeMs);
-            const withdrawals = yield* this.fetchCapitalHistory(this.withdrawalSource, BinanceWalletEnum.SPOT, startTimeMs, endTimeMs);
+            const { deposits, withdrawals } = yield* this.fetchCapitalSources(BinanceWalletEnum.SPOT, startTimeMs, endTimeMs);
             const c2cOrders = yield* this.fetchC2cOrders(startTimeMs, endTimeMs);
             const { fiatDeposits, fiatWithdrawals } = yield* this.fetchFiatSources(startTimeMs, endTimeMs);
             [
