@@ -29,25 +29,12 @@ const netEffect = (entries: readonly { readonly type: TransactionEntryTypeEnum; 
     entries.reduce((sum, entry) => sum + (entry.type === TransactionEntryTypeEnum.DEBIT ? entry.amount : -entry.amount), 0);
 
 describe('sync/income-with-fee-entries', () => {
-    it('nets an income to its provider-reported amount when the provider reports a fee', () => {
-        const input = mapBankTransactionToCreateInput(
-            buildMonobankTransaction(SyncTransactionTypeEnum.INCOME, 100, 2),
-            ACCOUNT_ID,
-            null,
-            ExternalSourceEnum.MONOBANK
-        );
+    it.each([
+        { type: SyncTransactionTypeEnum.INCOME, expectedNet: 100 },
+        { type: SyncTransactionTypeEnum.EXPENSE, expectedNet: -100 }
+    ])('nets a $type to its provider-reported amount when the provider reports a fee', ({ type, expectedNet }) => {
+        const input = mapBankTransactionToCreateInput(buildMonobankTransaction(type, 100, 2), ACCOUNT_ID, null, ExternalSourceEnum.MONOBANK);
 
-        expect(netEffect(input.entries)).toBe(100);
-    });
-
-    it('nets an expense to its provider-reported amount when the provider reports a fee', () => {
-        const input = mapBankTransactionToCreateInput(
-            buildMonobankTransaction(SyncTransactionTypeEnum.EXPENSE, 100, 2),
-            ACCOUNT_ID,
-            null,
-            ExternalSourceEnum.MONOBANK
-        );
-
-        expect(netEffect(input.entries)).toBe(-100);
+        expect(netEffect(input.entries)).toBe(expectedNet);
     });
 });
