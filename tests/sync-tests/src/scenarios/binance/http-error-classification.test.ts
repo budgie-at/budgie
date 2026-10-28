@@ -1,4 +1,4 @@
-import { SyncModeEnum } from '@budgie/contracts';
+import { SyncModeEnum, SyncStatusEnum } from '@budgie/contracts';
 import { BinanceSignedClient, BinanceSyncService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
@@ -21,6 +21,7 @@ import { mockServer } from '../../harness/scenario/mock-server';
 import type { JsonBodyType } from 'msw';
 
 const SERVER_TIME_URL = 'https://api.binance.com/api/v3/time';
+const SPOT_BALANCE_URL = 'https://api.binance.com/sapi/v3/asset/getUserAsset';
 const RETRY_AFTER_SECONDS = 120;
 const RETRY_AFTER_MS = 120_000;
 const RUN_DEADLINE_MS = 30_000;
@@ -122,7 +123,7 @@ describe('binance/http-error-classification', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('does not retry or treat a 451 region block as a bad key', () =>
+    it.effect('keeps every sync enabled after a 451 region block without retrying', () =>
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
             const { btcFixture, ethFixture } = yield* setupGroupedForwardSyncs();
@@ -131,8 +132,33 @@ describe('binance/http-error-classification', () => {
             yield* binanceSyncService.sync(Date.now() + RUN_DEADLINE_MS);
 
             expect(requests).toHaveLength(1);
-            expect((yield* fetchSyncById(btcFixture.sync.id)).enabled).toBe(false);
-            expect((yield* fetchSyncById(ethFixture.sync.id)).enabled).toBe(true);
+            for (const fixture of [btcFixture, ethFixture]) {
+                expect(yield* fetchSyncById(fixture.sync.id)).toMatchObject({ enabled: true, status: SyncStatusEnum.FAILED });
+            }
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('does not call Binance in a later run while a 418 Retry-After ban is active', () =>
+        Effect.gen(function* () {
+            const binanceSyncService = yield* BinanceSyncService;
+            yield* setupBinanceFixture({ mode: SyncModeEnum.FORWARD });
+            const requests = countDepositRequests(() =>
+                respondWith(418, errorBody(-1003, 'banned'), { 'retry-after': String(RETRY_AFTER_SECONDS) })
+            );
+            const balanceRequests: string[] = [];
+            mockServer.use(
+                http.post(SPOT_BALANCE_URL, () => {
+                    balanceRequests.push('balance');
+
+                    return HttpResponse.json([]);
+                })
+            );
+
+            yield* binanceSyncService.sync(Date.now() + RUN_DEADLINE_MS);
+            const requestsAfterBan = requests.length + balanceRequests.length;
+            yield* binanceSyncService.sync(Date.now() + RUN_DEADLINE_MS);
+
+            expect(requests.length + balanceRequests.length).toBe(requestsAfterBan);
         }).pipe(Effect.provide(TestLayer))
     );
 
