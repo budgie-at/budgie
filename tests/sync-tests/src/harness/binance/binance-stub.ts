@@ -88,8 +88,10 @@ const sliceOffsetPage = <TRow>(url: URL, rows: TRow[]): TRow[] => {
 };
 
 export const binanceStub = {
-    serverTime: (): void => {
-        mockServer.use(http.get(SERVER_TIME_URL, () => HttpResponse.json({ serverTime: Date.now() }, { headers: WEIGHT_HEADERS })));
+    serverTime: (offsetMs = 0): void => {
+        mockServer.use(
+            http.get(SERVER_TIME_URL, () => HttpResponse.json({ serverTime: Date.now() + offsetMs }, { headers: WEIGHT_HEADERS }))
+        );
     },
     spotBalances: (balances: BinanceAssetBalanceApiInterface[]): void => {
         mockServer.use(http.post(SPOT_BALANCE_URL, () => HttpResponse.json(balances, { headers: WEIGHT_HEADERS })));
@@ -188,17 +190,26 @@ export const binanceStub = {
     exchangeInfoAllValid: (): void => {
         binanceStub.exchangeInfo(buildAllValidSymbols());
     },
-    myTrades: (tradesBySymbol: Record<string, BinanceTradeApiInterface[]>, requestedSymbols?: Set<string>, requestedUrls?: URL[]): void => {
+    myTrades: (
+        tradesBySymbol: Record<string, BinanceTradeApiInterface[]>,
+        requestedSymbols?: Set<string>,
+        requestedUrls?: URL[],
+        onSymbolServed?: (symbol: string) => void
+    ): void => {
         mockServer.use(
             http.get(MY_TRADES_URL, ({ request }) => {
                 const url = new URL(request.url);
                 const symbol = url.searchParams.get('symbol') ?? '';
-                const fromId = Number(url.searchParams.get('fromId') ?? '0');
+                const fromId = url.searchParams.get('fromId');
                 requestedSymbols?.add(symbol);
                 requestedUrls?.push(url);
                 const symbolTrades = tradesBySymbol[symbol] ?? [];
                 const window = parseTimeWindow(url, 'startTime', 'endTime');
-                const trades = fromId === 0 ? symbolTrades.filter(trade => isWithinWindow(trade.time, window)) : [];
+                const trades =
+                    fromId === null
+                        ? symbolTrades.filter(trade => isWithinWindow(trade.time, window))
+                        : symbolTrades.filter(trade => trade.id >= Number(fromId));
+                onSymbolServed?.(symbol);
 
                 return HttpResponse.json(trades, { headers: WEIGHT_HEADERS });
             })
