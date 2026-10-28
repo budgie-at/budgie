@@ -31,7 +31,7 @@ const MILLISECONDS_PER_SECOND = 1000;
 const C2C_BUY_TRADE_TYPE = 'BUY';
 const EARN_DATE_PART_DIGITS = 2;
 
-const DEPOSIT_OUTCOME_BY_STATUS = new Map([
+const DEPOSIT_OUTCOME_BY_STATUS = new Map<number | undefined, BinanceCapitalOutcomeEnum>([
     [0, BinanceCapitalOutcomeEnum.PENDING],
     [1, BinanceCapitalOutcomeEnum.COMPLETED],
     [2, BinanceCapitalOutcomeEnum.REJECTED],
@@ -39,7 +39,7 @@ const DEPOSIT_OUTCOME_BY_STATUS = new Map([
     [7, BinanceCapitalOutcomeEnum.REJECTED],
     [8, BinanceCapitalOutcomeEnum.PENDING]
 ]);
-const WITHDRAWAL_OUTCOME_BY_STATUS = new Map([
+const WITHDRAWAL_OUTCOME_BY_STATUS = new Map<number | undefined, BinanceCapitalOutcomeEnum>([
     [0, BinanceCapitalOutcomeEnum.PENDING],
     [1, BinanceCapitalOutcomeEnum.REJECTED],
     [2, BinanceCapitalOutcomeEnum.PENDING],

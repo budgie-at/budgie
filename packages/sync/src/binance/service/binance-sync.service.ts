@@ -269,6 +269,10 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             for (const externalId of rejectedExternalIds) {
                 const transactionId = existingIdMap.get(externalId);
                 if (isDefined(transactionId)) {
+                    const consolidationParentId = (yield* transactionRepository.getByIdRaw(transactionId))?.consolidationParentTransactionId;
+                    if (isDefined(consolidationParentId)) {
+                        yield* transactionService.unconsolidateById(consolidationParentId);
+                    }
                     yield* transactionService.deleteById(transactionId);
                     removedCount += 1;
                 }
