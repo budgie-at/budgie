@@ -293,7 +293,6 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
         sync,
         requestSync,
         updateAccountToken: Effect.fn('AbstractPollingSyncService.updateAccountToken')(function* (accountId: number, token: string) {
-            yield* (definition.validateToken ?? (() => Effect.void))(token);
             yield* syncIntegrationTokenService.updateAccountToken(definition.provider, accountId, token);
         })
     };

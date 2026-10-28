@@ -424,7 +424,6 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                               run = { ...run, balancesAnchored: true };
                           })
                       ).pipe(Effect.catchTag('SyncDeferredError', () => markRunDeferred)),
-            validateToken: token => Effect.andThen(decodeCredentials(token), new BinanceSignedClient(token).assertReadOnlyKey()),
             afterSyncRun: () => {
                 run = freshRunState(Number.POSITIVE_INFINITY);
             },
@@ -459,6 +458,11 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                     exchangeAccounts,
                     exchangeAccount => !supportedIds.has(exchangeAccount.id)
                 );
+            }),
+            updateAccountToken: Effect.fn('BinanceSyncService.updateAccountToken')(function* (accountId: number, token: string) {
+                yield* decodeCredentials(token);
+                yield* new BinanceSignedClient(token).assertReadOnlyKey();
+                yield* pollingSyncService.updateAccountToken(accountId, token);
             }),
             setupAccountSyncBatch: Effect.fn('BinanceSyncService.setupAccountSyncBatch')(function* (token: string, externalIds: string[]) {
                 const resolvableAccounts = yield* binanceAccountService.findResolvableAccounts(
