@@ -221,6 +221,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     private readonly earnRewardCache = new Map<string, readonly BinanceEarnRewardApiInterface[]>();
     private readonly transferCache = new Map<string, BinanceTransferInterface[]>();
     private readonly runSymbolTradeCursors = new Map<string, number>();
+    private readonly runTouchedAssets = new Set<string>();
     private c2cUnavailableThisRun = false;
     private readonly c2cHistoryFloorTimeMs = subMonths(new Date(), BinanceSignedClient.C2C_HISTORY_MONTHS).getTime();
     private serverTimeOffsetMs: number | undefined;
@@ -412,7 +413,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     ) {
         return Effect.gen({ self: this }, function* (this: BinanceSignedClient) {
             const balances = yield* this.signedRequest(BinanceAssetBalanceListApiSchema, SPOT_BALANCE_ENDPOINT, 'POST');
-            const touchedAssets = this.collectTouchedAssets(balances, convertTransfers);
+            this.collectTouchedAssets(balances, convertTransfers).forEach(asset => this.runTouchedAssets.add(asset));
             const deposits = yield* this.fetchCapitalHistory(this.depositSource, BinanceWalletEnum.SPOT, startTimeMs, endTimeMs).pipe(
                 Effect.catchTag('SyncUnauthorizedError', this.recoverMissingPermission)
             );
@@ -422,22 +423,18 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             const c2cOrders = yield* this.fetchC2cOrders(startTimeMs, endTimeMs).pipe(
                 Effect.catchTag('SyncUnauthorizedError', this.recoverMissingPermission)
             );
-            const fiatDeposits = yield* this.fetchFiatOrders(FIAT_DEPOSIT_TRANSACTION_TYPE, startTimeMs, endTimeMs).pipe(
-                Effect.catchTag('SyncUnauthorizedError', this.recoverMissingPermission)
-            );
-            const fiatWithdrawals = yield* this.fetchFiatOrders(FIAT_WITHDRAW_TRANSACTION_TYPE, startTimeMs, endTimeMs).pipe(
-                Effect.catchTag('SyncUnauthorizedError', this.recoverMissingPermission)
-            );
+            const fiatDeposits = yield* this.fetchFiatOrders(FIAT_DEPOSIT_TRANSACTION_TYPE, startTimeMs, endTimeMs);
+            const fiatWithdrawals = yield* this.fetchFiatOrders(FIAT_WITHDRAW_TRANSACTION_TYPE, startTimeMs, endTimeMs);
             [
                 ...deposits.map(deposit => deposit.coin),
                 ...withdrawals.map(withdrawal => withdrawal.coin),
                 ...c2cOrders.map(order => order.asset),
                 ...fiatDeposits.map(order => order.fiatCurrency),
                 ...fiatWithdrawals.map(order => order.fiatCurrency)
-            ].forEach(asset => touchedAssets.add(asset));
+            ].forEach(asset => this.runTouchedAssets.add(asset));
             const exchangeSymbols = yield* this.resolveExchangeSymbols();
 
-            return this.buildTradeSymbolCandidates(touchedAssets, exchangeSymbols, new Set(eligibleSoldOffBaseAssets));
+            return this.buildTradeSymbolCandidates(this.runTouchedAssets, exchangeSymbols, new Set(eligibleSoldOffBaseAssets));
         });
     }
 
