@@ -54,9 +54,8 @@ export const RunwayDriverRow = ({ driver, dimension, maxAmount, rank, tone }: Pr
     const emptyTitle = dimension === RunwayDriverDimensionEnum.TAG ? t`Untagged` : t`Uncategorized`;
     const namedTitle = isNotEmptyString(driver.title) ? driver.title : emptyTitle;
     const title = isFolded ? foldedTitle : namedTitle;
-    const monthlyAmount = convertFromMicroUnits(driver.monthlyAmount);
-    const formattedAmount = formatDigits(monthlyAmount, defaultInstrument.symbol);
-    const protectedAmount = formatProtectedAmount(monthlyAmount, defaultInstrument.symbol);
+    const formattedAmount = formatDigits(convertFromMicroUnits(driver.monthlyAmount), defaultInstrument.symbol);
+    const protectedAmount = formatProtectedAmount(convertFromMicroUnits(driver.monthlyAmount), defaultInstrument.symbol);
     const barToneClassName = rank === 0 && !isFolded ? STATUS_TONE_FILL_CLASS_NAME[tone] : 'bg-primary/70';
     const share = isPositiveNumber(maxAmount) ? driver.monthlyAmount / maxAmount : 0;
 
