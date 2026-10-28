@@ -1,0 +1,1 @@
+ALTER TABLE `bank_syncs` ADD `binance_capital_pending_from_at` integer;

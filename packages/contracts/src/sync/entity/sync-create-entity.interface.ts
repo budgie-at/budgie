@@ -11,6 +11,7 @@ export type SyncCreateEntityInterface = PartialByKeysType<
     | 'lastError'
     | 'lastWarning'
     | 'binanceTradeCursor'
+    | 'binanceCapitalPendingFromAt'
     | 'forwardSyncFromAt'
     | 'forwardSyncedAt'
     | 'backwardSyncFromAt'

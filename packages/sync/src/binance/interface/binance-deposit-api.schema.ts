@@ -5,7 +5,8 @@ const BinanceDepositApiSchema = Schema.Struct({
     txId: Schema.optional(Schema.String),
     amount: Schema.String,
     coin: Schema.String,
-    insertTime: Schema.Number
+    insertTime: Schema.Number,
+    status: Schema.Number
 });
 
 export const BinanceDepositListApiSchema = Schema.Array(BinanceDepositApiSchema);

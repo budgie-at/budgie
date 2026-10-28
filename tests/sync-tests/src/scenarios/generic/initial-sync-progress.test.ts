@@ -35,6 +35,7 @@ const makeSync = (overrides: Partial<SyncEntityInterface>): SyncEntityInterface 
     lastError: null,
     lastWarning: null,
     binanceTradeCursor: null,
+    binanceCapitalPendingFromAt: null,
     ...overrides
 });
 
