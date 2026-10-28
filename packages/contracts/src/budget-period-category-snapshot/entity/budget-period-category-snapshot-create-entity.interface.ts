@@ -2,5 +2,5 @@ import type { BudgetPeriodCategorySnapshotEntityInterface } from './budget-perio
 
 export type BudgetPeriodCategorySnapshotCreateEntityInterface = Pick<
     BudgetPeriodCategorySnapshotEntityInterface,
-    'snapshotId' | 'categoryId' | 'limitAmount' | 'spent'
+    'snapshotId' | 'categoryId' | 'limitAmount' | 'spent' | 'carriedIn' | 'rolloverMode'
 >;

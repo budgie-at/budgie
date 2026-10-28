@@ -10,7 +10,7 @@ import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-ins
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { BudgetSelector } from '../../budget.selector';
 import { useGetActiveBudgetQuery } from '../../query/use-get-active-budget.query';
-import { useGetBudgetCategoryLimitsQuery } from '../../query/use-get-budget-category-limits.query';
+import { useGetBudgetEffectiveLimitsQuery } from '../../query/use-get-budget-effective-limits.query';
 import { useGetBudgetSpentQuery } from '../../query/use-get-budget-spent.query';
 import { formatBudgetPeriodLabel } from '../../utils/format-budget-period-label.util';
 import { BudgetCompactProgressBar } from '../budget-compact-progress-bar/budget-compact-progress-bar';
@@ -22,7 +22,7 @@ export const BudgetWidget = () => {
     const { budget, isLoading } = useGetActiveBudgetQuery();
     const { spent } = useGetBudgetSpentQuery(budget);
     const { instrument } = useGetInstrumentByIdQuery(isDefined(budget) ? budget.instrumentId : 0);
-    const { categoryLimits } = useGetBudgetCategoryLimitsQuery(isDefined(budget) ? budget.id : null);
+    const effectiveLimits = useGetBudgetEffectiveLimitsQuery(budget);
     const { formatMonthAndDay } = useFormatDate();
 
     if (!isEnabled || isLoading) {
@@ -50,12 +50,12 @@ export const BudgetWidget = () => {
             <BudgetCompactProgressBar
                 currencySymbol={currencySymbol}
                 spent={spent.spentOverall}
-                limit={budget.overallLimit}
+                limit={effectiveLimits.overallLimit}
                 spentTestID={BudgetSelector.WidgetSpentLabel}
                 remainingTestID={BudgetSelector.WidgetRemainingLabel}
             />
 
-            <BudgetWidgetCategoryList categoryLimits={categoryLimits} spentByCategory={spent.spentByCategory} />
+            <BudgetWidgetCategoryList categoryLimits={effectiveLimits.categoryLimits} spentByCategory={spent.spentByCategory} />
         </Card>
     );
 };

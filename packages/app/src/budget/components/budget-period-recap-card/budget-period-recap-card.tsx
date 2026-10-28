@@ -16,6 +16,7 @@ import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-di
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { BudgetSelector } from '../../budget.selector';
 import { getBudgetPeriodLabelDate } from '../../utils/get-budget-period-label-date.util';
+import { BudgetPeriodRecapRollover } from '../budget-period-recap-rollover/budget-period-recap-rollover';
 
 import type { BudgetPeriodSnapshotWithCategoriesEntityInterface } from '@budgie/contracts';
 
@@ -63,6 +64,7 @@ export const BudgetPeriodRecapCard = ({ snapshot, currencySymbol }: Props) => {
                             })}
                         </Text>
                     ) : null}
+                    <BudgetPeriodRecapRollover snapshot={snapshot} currencySymbol={currencySymbol} />
                 </View>
 
                 <HapticPressable

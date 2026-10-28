@@ -1,8 +1,10 @@
 import {
     BudgetAlertScopeEnum,
     BudgetCategoryLimitRepository,
+    BudgetPeriodSnapshotRepository,
     BudgetRepository,
     computeBudgetAlertTriggers,
+    computeEffectiveLimits,
     computePeriodWindow,
     computeSpent
 } from '@budgie/budget';
@@ -30,6 +32,7 @@ import type { BudgetEntityInterface } from '@budgie/contracts';
 export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonitorService>()('@budgie/app/BudgetAlertMonitorService', {
     make: Effect.gen(function* () {
         const budgetCategoryLimitRepository = yield* BudgetCategoryLimitRepository;
+        const budgetPeriodSnapshotRepository = yield* BudgetPeriodSnapshotRepository;
         const budgetRepository = yield* BudgetRepository;
         const categoryRepository = yield* CategoryRepository;
         const settingsRepository = yield* SettingsRepository;
@@ -150,13 +153,15 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
                 ).periodStart.getTime();
                 const spent = yield* loadSpent(budget);
                 const categoryLimits = yield* budgetCategoryLimitRepository.getByBudget(budget.id);
-                const triggers = computeBudgetAlertTriggers(budget, spent, categoryLimits);
+                const [latestSnapshot] = yield* budgetPeriodSnapshotRepository.findRecent(budget.id, 1);
+                const effectiveLimits = computeEffectiveLimits(latestSnapshot, budget, categoryLimits);
+                const triggers = computeBudgetAlertTriggers(effectiveLimits, spent, effectiveLimits.categoryLimits);
                 const storageKey = buildStorageKey(budget.id, periodStartMs);
                 const deliveredKeys = yield* loadDeliveredTriggerKeys(storageKey);
                 const newTriggers = triggers.filter(trigger => !deliveredKeys.includes(buildTriggerKey(trigger)));
                 const postedKeys = EffectArray.getSomes(
                     yield* Effect.forEach(newTriggers, trigger =>
-                        postTrigger(trigger, budget.overallLimit, spent).pipe(Effect.as(buildTriggerKey(trigger)), Effect.option)
+                        postTrigger(trigger, effectiveLimits.overallLimit, spent).pipe(Effect.as(buildTriggerKey(trigger)), Effect.option)
                     )
                 );
 
@@ -187,6 +192,12 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
     })
 }) {
     static readonly layer = Layer.effect(BudgetAlertMonitorService, BudgetAlertMonitorService.make).pipe(
-        Layer.provide([BudgetCategoryLimitRepository.layer, BudgetRepository.layer, CategoryRepository.layer, SettingsRepository.layer])
+        Layer.provide([
+            BudgetCategoryLimitRepository.layer,
+            BudgetPeriodSnapshotRepository.layer,
+            BudgetRepository.layer,
+            CategoryRepository.layer,
+            SettingsRepository.layer
+        ])
     );
 }

@@ -16,7 +16,7 @@ import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-di
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { BudgetSelector } from '../../budget.selector';
-import { useGetBudgetCategoryLimitsQuery } from '../../query/use-get-budget-category-limits.query';
+import { useGetBudgetEffectiveLimitsQuery } from '../../query/use-get-budget-effective-limits.query';
 import { useGetBudgetSpentQuery } from '../../query/use-get-budget-spent.query';
 import { formatBudgetPeriodLabel } from '../../utils/format-budget-period-label.util';
 import { BudgetDetailsCategoryList } from '../budget-details-category-list/budget-details-category-list';
@@ -32,7 +32,7 @@ interface Props {
 
 export const BudgetDetails = ({ budget }: Props) => {
     const { spent } = useGetBudgetSpentQuery(budget);
-    const { categoryLimits } = useGetBudgetCategoryLimitsQuery(budget.id);
+    const effectiveLimits = useGetBudgetEffectiveLimitsQuery(budget);
     const { instrument } = useGetInstrumentByIdQuery(budget.instrumentId);
     const formatDigits = useDisplayFormatDigits();
     const periodWindow = computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, useToday());
@@ -40,7 +40,7 @@ export const BudgetDetails = ({ budget }: Props) => {
     const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
     const dateLabel = formatBudgetPeriodLabel(budget, useFormatDate().formatMonthAndDay);
     const displaySpent = convertFromMicroUnits(spent.spentOverall);
-    const hasCategoryLimitsContent = isNotEmptyArray(categoryLimits) || isPositiveNumber(budget.otherLimit);
+    const hasCategoryLimitsContent = isNotEmptyArray(effectiveLimits.categoryLimits) || isPositiveNumber(budget.otherLimit);
 
     const handleEditPress = () => {
         router.push({ pathname: '/budget/edit', params: { id: String(budget.id) } });
@@ -48,10 +48,11 @@ export const BudgetDetails = ({ budget }: Props) => {
 
     const categoryLimitsContent = hasCategoryLimitsContent ? (
         <BudgetDetailsCategoryList
-            categoryLimits={categoryLimits}
+            categoryLimits={effectiveLimits.categoryLimits}
             spentByCategory={spent.spentByCategory}
             spentOverall={spent.spentOverall}
-            otherLimitAmount={budget.otherLimit}
+            otherLimitAmount={effectiveLimits.otherLimit}
+            otherCarriedAmount={effectiveLimits.otherCarriedAmount}
             periodStart={periodWindow.periodStart}
             periodEnd={periodEnd}
             currencySymbol={currencySymbol}
@@ -104,7 +105,7 @@ export const BudgetDetails = ({ budget }: Props) => {
 
                 <BudgetProgressBar
                     spent={spent.spentOverall}
-                    limit={budget.overallLimit}
+                    limit={effectiveLimits.overallLimit}
                     spentTestID={BudgetSelector.DetailsSpentLabel}
                     currencySymbol={currencySymbol}
                     remainingTestID={BudgetSelector.DetailsRemainingLabel}
@@ -121,7 +122,7 @@ export const BudgetDetails = ({ budget }: Props) => {
 
             <BudgetHistorySection
                 budgetId={budget.id}
-                overallLimit={budget.overallLimit}
+                overallLimit={effectiveLimits.overallLimit}
                 currentSpent={spent.spentOverall}
                 currentPeriodStart={periodWindow.periodStart}
                 currentPeriodEnd={periodEnd}

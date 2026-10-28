@@ -26,9 +26,12 @@ export class BudgetService extends Context.Service<BudgetService>()('@budgie/bud
                 .map(next => {
                     const existing = existingByCategory.get(next.categoryId);
 
-                    return isDefined(existing) && existing.limitAmount !== next.limitAmount
-                        ? { id: existing.id, limitAmount: next.limitAmount }
-                        : null;
+                    const hasChanged =
+                        isDefined(existing) &&
+                        (existing.limitAmount !== next.limitAmount ||
+                            (isDefined(next.rolloverMode) && existing.rolloverMode !== next.rolloverMode));
+
+                    return hasChanged ? { id: existing.id, limitAmount: next.limitAmount, rolloverMode: next.rolloverMode } : null;
                 })
                 .filter(isDefined);
 
@@ -40,9 +43,7 @@ export class BudgetService extends Context.Service<BudgetService>()('@budgie/bud
                 return;
             }
 
-            yield* budgetCategoryLimitRepository.bulkCreate(
-                categoryLimits.map(limit => ({ budgetId, categoryId: limit.categoryId, limitAmount: limit.limitAmount }))
-            );
+            yield* budgetCategoryLimitRepository.bulkCreate(categoryLimits.map(limit => ({ budgetId, ...limit })));
         });
 
         const syncCategoryLimits = Effect.fnUntraced(function* (
@@ -61,9 +62,7 @@ export class BudgetService extends Context.Service<BudgetService>()('@budgie/bud
             const toDelete = existingLimits.filter(limit => !nextCategoryIds.has(limit.categoryId)).map(limit => limit.id);
 
             if (isNotEmptyArray(toCreate)) {
-                yield* budgetCategoryLimitRepository.bulkCreate(
-                    toCreate.map(limit => ({ budgetId, categoryId: limit.categoryId, limitAmount: limit.limitAmount }))
-                );
+                yield* budgetCategoryLimitRepository.bulkCreate(toCreate.map(limit => ({ budgetId, ...limit })));
             }
 
             yield* budgetCategoryLimitRepository.bulkUpdate([...toUpdate]);

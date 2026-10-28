@@ -2,5 +2,14 @@ import type { BudgetPeriodSnapshotEntityInterface } from './budget-period-snapsh
 
 export type BudgetPeriodSnapshotCreateEntityInterface = Pick<
     BudgetPeriodSnapshotEntityInterface,
-    'budgetId' | 'periodStart' | 'periodEnd' | 'overallLimit' | 'overallSpent' | 'otherLimit' | 'otherSpent' | 'isReconstructed'
+    | 'budgetId'
+    | 'periodStart'
+    | 'periodEnd'
+    | 'overallLimit'
+    | 'overallSpent'
+    | 'otherLimit'
+    | 'otherSpent'
+    | 'otherCarriedIn'
+    | 'otherRolloverMode'
+    | 'isReconstructed'
 >;

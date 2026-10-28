@@ -1,4 +1,4 @@
-import { UserIconNameEnum } from '@budgie/contracts';
+import { BudgetRolloverModeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { useRef } from 'react';
@@ -16,6 +16,7 @@ import { BudgetCategoryLimitCompactRowLayout } from '../budget-category-limit-co
 import { BudgetCategoryLimitCompactRow } from '../budget-category-limit-compact-row/budget-category-limit-compact-row';
 import { BudgetCategoryLimitsEmptyState } from '../budget-category-limits-empty-state/budget-category-limits-empty-state';
 import { BudgetLimitAmountInput } from '../budget-limit-amount-input/budget-limit-amount-input';
+import { BudgetRolloverModeField } from '../budget-rollover-mode-field/budget-rollover-mode-field';
 
 const BOTTOM_ADD_BUTTON_THRESHOLD = 5;
 
@@ -51,7 +52,7 @@ export const BudgetInlineCategoryLimits = ({ currencySymbol, onCategoryAdded }: 
             selectedCategoryId => {
                 if (isPositiveNumber(selectedCategoryId)) {
                     shouldScrollOnNextLayoutRef.current = true;
-                    append({ categoryId: selectedCategoryId, limitAmount: 0 });
+                    append({ categoryId: selectedCategoryId, limitAmount: 0, rolloverMode: BudgetRolloverModeEnum.NONE });
                 }
             }
         );
@@ -98,7 +99,9 @@ export const BudgetInlineCategoryLimits = ({ currencySymbol, onCategoryAdded }: 
                 icon={<CircleIcon icon={UserIconNameEnum.CircleEllipsis} variant="ghost" size={32} iconSize={16} />}
                 testID={BudgetSelector.SetupOtherLimitRow}
                 title={t`Other`}
-            />
+            >
+                <BudgetRolloverModeField name="otherRolloverMode" />
+            </BudgetCategoryLimitCompactRowLayout>
             {isCategoryLimitsEmpty ? (
                 <BudgetCategoryLimitsEmptyState onPress={handleAddPress} />
             ) : (

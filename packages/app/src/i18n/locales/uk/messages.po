@@ -106,6 +106,10 @@ msgstr "{categoryName}: {threshold}% витрачено"
 msgid "{categoryName}: limit reached"
 msgstr "{categoryName}: ліміт досягнуто"
 
+#: src/budget/components/budget-period-recap-rollover/budget-period-recap-rollover.tsx
+msgid "{count, plural, one {{formattedAmount} rolled over across # category} other {{formattedAmount} rolled over across # categories}}"
+msgstr "{count, plural, one {{formattedAmount} перенесено на # категорію} few {{formattedAmount} перенесено на # категорії} many {{formattedAmount} перенесено на # категорій} other {{formattedAmount} перенесено на # категорії}}"
+
 #: src/category/components/category-default-icon-button/category-default-icon-button.tsx
 msgid "{count, plural, one {# category uses the default icon} other {# categories use the default icon}}"
 msgstr "{count, plural, one {# категорія має типову іконку} few {# категорії мають типову іконку} many {# категорій мають типову іконку} other {# категорії мають типову іконку}}"
@@ -178,6 +182,14 @@ msgstr "{formattedAmount} · {detail}"
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
 msgid "{formattedAmount} / mo"
 msgstr "{formattedAmount} / міс."
+
+#: src/budget/components/budget-period-recap-rollover/budget-period-recap-rollover.tsx
+msgid "{formattedAmount} carried into {name}"
+msgstr "{formattedAmount} перевитрати перенесено на {name}"
+
+#: src/budget/components/budget-period-recap-rollover/budget-period-recap-rollover.tsx
+msgid "{formattedAmount} rolled into {name}"
+msgstr "{formattedAmount} перенесено на {name}"
 
 #: src/account/component/account-actions-menu/use-deposit-close-action.hook.ts
 msgid "{formattedBalance} will be transferred to {destinationAccountTitle} and this deposit will be archived. You can restore it anytime from Settings → Archived Accounts."
@@ -390,6 +402,10 @@ msgstr "{transactionCount, plural, one {# транзакція} few {# тран�
 msgid "{unreadableCount, plural, one {Couldn't read # receipt} other {Couldn't read # receipts}}"
 msgstr "{unreadableCount, plural, one {Не вдалося прочитати # чек} few {Не вдалося прочитати # чеки} many {Не вдалося прочитати # чеків} other {Не вдалося прочитати # чека}}"
 
+#: src/budget/components/budget-details-limit-heading/budget-details-limit-heading.tsx
+msgid "+{formattedAmount} rolled over"
+msgstr "+{formattedAmount} перенесено"
+
 #: src/runway/component/runway-pill/runway-pill.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "+{formattedNet} / mo"
@@ -406,6 +422,10 @@ msgstr "<"
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid ">"
 msgstr ">"
+
+#: src/budget/components/budget-details-limit-heading/budget-details-limit-heading.tsx
+msgid "−{formattedAmount} carried"
+msgstr "−{formattedAmount} перенесено"
 
 #: src/runway/component/runway-pill/runway-pill.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
@@ -1156,6 +1176,14 @@ msgstr "Зберігає нові відповідні оплати через A
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "Card"
 msgstr "Картка"
+
+#: src/budget/components/budget-rollover-mode-field/budget-rollover-mode-field.tsx
+msgid "Carry all"
+msgstr "Переносити все"
+
+#: src/budget/components/budget-rollover-mode-field/budget-rollover-mode-field.tsx
+msgid "Carry savings"
+msgstr "Переносити заощадження"
 
 #: src/account/constant/account-type.constant.ts
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
@@ -3691,6 +3719,7 @@ msgstr "з"
 msgid "of {total} GB"
 msgstr "з {total} ГБ"
 
+#: src/budget/components/budget-rollover-mode-field/budget-rollover-mode-field.tsx
 #: src/settings/components/your-data-card/your-data-card.tsx
 msgid "Off"
 msgstr "Вимкнено"
@@ -3867,6 +3896,7 @@ msgstr "Початкова транзакція"
 
 #: src/budget/components/budget-details-other-category-row/budget-details-other-category-row.tsx
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
+#: src/budget/components/budget-period-recap-rollover/budget-period-recap-rollover.tsx
 #: src/budget/components/budget-period-summary/budget-period-summary.tsx
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Other"
@@ -5561,6 +5591,10 @@ msgstr "Невідома картка"
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Unrealized P&L"
 msgstr "Нереаліз. приб./збиток"
+
+#: src/budget/components/budget-rollover-mode-field/budget-rollover-mode-field.tsx
+msgid "Unspent money at period end"
+msgstr "Невитрачені гроші наприкінці періоду"
 
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
 #: src/tag/components/stats-by-tags/stats-by-tags.tsx

@@ -4,7 +4,9 @@ import { router } from 'expo-router';
 import { isDefined } from '@rnw-community/shared';
 
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
+import { BudgetSelector } from '../../budget.selector';
 import { BudgetDetailsLimitCard } from '../budget-details-limit-card/budget-details-limit-card';
+import { BudgetDetailsLimitHeading } from '../budget-details-limit-heading/budget-details-limit-heading';
 
 interface Props {
     readonly categoryId: number;
@@ -13,12 +15,11 @@ interface Props {
     readonly periodStart: Date;
     readonly periodEnd: Date;
     readonly currencySymbol: string;
-    readonly testID: string;
-    readonly spentTestID: string;
+    readonly carriedAmount: number;
 }
 
 export const BudgetDetailsCategoryRow = (props: Props) => {
-    const { categoryId, limitAmount, spent, periodStart, periodEnd, currencySymbol, testID, spentTestID } = props;
+    const { categoryId, limitAmount, spent, periodStart, periodEnd, currencySymbol, carriedAmount } = props;
     const { category } = useGetCategoryByIdQuery(categoryId);
     const title = isDefined(category) ? category.title : '';
     const icon = isDefined(category) ? category.icon : null;
@@ -37,14 +38,14 @@ export const BudgetDetailsCategoryRow = (props: Props) => {
 
     return (
         <BudgetDetailsLimitCard
-            title={title}
-            icon={icon}
             spent={spent}
             limitAmount={limitAmount}
             currencySymbol={currencySymbol}
-            testID={testID}
-            spentTestID={spentTestID}
+            testID={BudgetSelector.DetailsCategoryRow(categoryId)}
+            spentTestID={BudgetSelector.DetailsCategorySpentLabel(categoryId)}
             onPress={handlePress}
-        />
+        >
+            <BudgetDetailsLimitHeading title={title} icon={icon} carriedAmount={carriedAmount} currencySymbol={currencySymbol} />
+        </BudgetDetailsLimitCard>
     );
 };
