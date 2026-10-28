@@ -3,6 +3,7 @@ import { PRECISION } from '@budgie/contracts';
 import { hmac } from '@noble/hashes/hmac.js';
 import { sha256 } from '@noble/hashes/sha2.js';
 import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils.js';
+import { subDays } from 'date-fns/subDays';
 import { subMonths } from 'date-fns/subMonths';
 import * as Clock from 'effect/Clock';
 import * as Effect from 'effect/Effect';
@@ -134,6 +135,7 @@ const RETRY_AFTER_HEADER = 'retry-after';
 
 export class BinanceSignedClient extends BaseSyncProviderClient {
     private static readonly C2C_HISTORY_MONTHS = 6;
+    private static readonly CAPITAL_PENDING_MAX_AGE_DAYS = 180;
     private static readonly decodeCredentials = Schema.decodeUnknownOption(Schema.fromJsonString(BinanceCredentialsSchema));
 
     readonly getAccounts = Effect.fn('BinanceSignedClient.getAccounts')(function* (this: BinanceSignedClient) {
@@ -252,6 +254,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     private capitalPendingFromMs: number | null = null;
     private c2cUnavailableThisRun = false;
     private readonly c2cHistoryFloorTimeMs = subMonths(new Date(), BinanceSignedClient.C2C_HISTORY_MONTHS).getTime();
+    private readonly capitalPendingFloorTimeMs = subDays(new Date(), BinanceSignedClient.CAPITAL_PENDING_MAX_AGE_DAYS).getTime();
     private serverTimeOffsetMs: number | undefined;
     private runEndTimeMs: number | undefined;
     private exchangeSymbols: readonly BinanceTradeSymbolInterface[] | undefined;
@@ -280,7 +283,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             if (outcome === BinanceCapitalOutcomeEnum.REJECTED) {
                 this.rejectedCapitalExternalIds.add(externalId);
             }
-            if (outcome === BinanceCapitalOutcomeEnum.PENDING && Number.isFinite(timeMs)) {
+            if (outcome === BinanceCapitalOutcomeEnum.PENDING && timeMs >= this.capitalPendingFloorTimeMs) {
                 this.capitalPendingFromMs = Math.min(this.capitalPendingFromMs ?? timeMs, timeMs);
             }
         }
