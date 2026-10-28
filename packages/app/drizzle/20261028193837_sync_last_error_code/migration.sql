@@ -1,0 +1,1 @@
+ALTER TABLE `bank_syncs` ADD `last_error_code` text;

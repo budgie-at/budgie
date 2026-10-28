@@ -14,6 +14,7 @@ import { PollingSyncRateGate } from '../service/polling-sync-rate-gate.service';
 import { SyncIntegrationTokenService } from '../service/sync-integration-token.service';
 
 import { makeSyncService } from './make-sync-service.util';
+import { resolveSyncErrorCode } from './resolve-sync-error-code.util';
 import { resolveSyncProgressUpdate } from './resolve-sync-progress-update.util';
 
 import type { PollingSyncServiceDefinitionInterface } from '../interface/polling-sync-service-definition.interface';
@@ -178,6 +179,7 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
         }
 
         const errorMessage = getErrorMessage(error, UNKNOWN_SYNC_ERROR);
+        const lastErrorCode = resolveSyncErrorCode(error);
         const enabledSyncs = yield* syncRepository.getEnabledByProvider(definition.provider);
         if (!isNotEmptyArray(enabledSyncs)) {
             return false;
@@ -190,7 +192,7 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
         if (definition.shouldKeepSyncsEnabledAfterError?.(error) === true) {
             yield* Effect.forEach(
                 enabledSyncs,
-                sync => syncRepository.update(sync.id, { status: SyncStatusEnum.FAILED, lastError: errorMessage }),
+                sync => syncRepository.update(sync.id, { status: SyncStatusEnum.FAILED, lastError: errorMessage, lastErrorCode }),
                 { discard: true }
             );
 
@@ -201,7 +203,13 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
         const keepEnabled = definition.shouldKeepFailedSyncEnabledAfterError?.(error) === true;
         yield* Effect.forEach(
             failedSyncs,
-            sync => syncRepository.update(sync.id, { status: SyncStatusEnum.FAILED, lastError: errorMessage, enabled: keepEnabled }),
+            sync =>
+                syncRepository.update(sync.id, {
+                    status: SyncStatusEnum.FAILED,
+                    lastError: errorMessage,
+                    lastErrorCode,
+                    enabled: keepEnabled
+                }),
             { discard: true }
         );
 
