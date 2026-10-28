@@ -142,12 +142,12 @@ msgstr "{dateLabel} · {kindLabel}"
 msgid "{days, plural, one {In # day} other {In # days}}"
 msgstr "{days, plural, one {Через # день} few {Через # дні} many {Через # днів} other {Через # дня}}"
 
-#: src/budget/components/budget-verdict/budget-verdict.tsx
+#: src/budget/components/budget-verdict-header/budget-verdict-header.tsx
 msgid "{daysLeft, plural, one {# day left} other {# days left}}"
 msgstr "{daysLeft, plural, one {Залишився # день} few {Залишилося # дні} many {Залишилося # днів} other {Залишилося # дня}}"
 
-#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
-#: src/budget/components/budget-widget-card/budget-widget-card.tsx
+#: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
+#: src/budget/components/budget-widget-footer-row/budget-widget-footer-row.tsx
 msgid "{daysLeft, plural, one {# day} other {# days}}"
 msgstr "{daysLeft, plural, one {# день} few {# дні} many {# днів} other {# дня}}"
 
@@ -220,15 +220,15 @@ msgstr "{free} ГБ вільно на цьому телефоні."
 msgid "{free} GB is free right now. Your money data isn't affected."
 msgstr "Зараз вільно {free} ГБ. Ваші фінансові дані це не зачіпає."
 
-#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+#: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "{freeAmount} ÷ {daysLabel}"
 msgstr "{freeAmount} ÷ {daysLabel}"
 
-#: src/budget/components/budget-widget-card/budget-widget-card.tsx
+#: src/budget/components/budget-widget-footer-row/budget-widget-footer-row.tsx
 msgid "{freeAmount} free · {daysLabel}"
 msgstr "{freeAmount} вільно · {daysLabel}"
 
-#: src/budget/components/budget-verdict/budget-verdict.tsx
+#: src/budget/components/budget-verdict-outlook/budget-verdict-outlook.tsx
 msgid "{freeAmount} free until {periodEndLabel}"
 msgstr "{freeAmount} вільно до {periodEndLabel}"
 
@@ -286,7 +286,8 @@ msgstr "{newTransactionCount, plural, one {Імпортувати # транза
 msgid "{newTransactionCount} new, {existingTransactionCount} already imported, {parsedTransactionCount} checked"
 msgstr "{newTransactionCount} нових, {existingTransactionCount} вже імпортовано, {parsedTransactionCount} перевірено"
 
-#: src/budget/components/budget-verdict/budget-verdict.tsx
+#: src/budget/components/budget-verdict-figure/budget-verdict-figure.tsx
+#: src/budget/components/budget-verdict-header/budget-verdict-header.tsx
 msgid "{overAmount} over"
 msgstr "{overAmount} перевитрата"
 
@@ -339,11 +340,11 @@ msgstr "{rowCount, plural, one {Категоризовано # транзакц�
 msgid "{rowCount, plural, one {Tagged # transaction} other {Tagged # transactions}}"
 msgstr "{rowCount, plural, one {Тег додано до # транзакції} few {Тег додано до # транзакцій} many {Тег додано до # транзакцій} other {Тег додано до # транзакції}}"
 
-#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+#: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "{safePerDayAmount} / day"
 msgstr "{safePerDayAmount} / день"
 
-#: src/budget/components/budget-verdict/budget-verdict.tsx
+#: src/budget/components/budget-verdict-header/budget-verdict-header.tsx
 msgid "{safePerDayAmount} per day"
 msgstr "{safePerDayAmount} на день"
 
@@ -395,7 +396,7 @@ msgstr "{statementAccountCount, plural, one {# рахунок. Баланси в
 msgid "{statusLabel} · {downloaded} of {total} GB"
 msgstr "{statusLabel} · {downloaded} з {total} ГБ"
 
-#: src/budget/components/budget-verdict/budget-verdict.tsx
+#: src/budget/components/budget-verdict-header/budget-verdict-header.tsx
 msgid "{statusLabel}. {figureAccessibilityLabel}, {daysLeftLabel}."
 msgstr "{statusLabel}. {figureAccessibilityLabel}, {daysLeftLabel}."
 
@@ -419,8 +420,8 @@ msgstr "{transactionCount, plural, one {# транзакція} few {# тран�
 msgid "{unreadableCount, plural, one {Couldn't read # receipt} other {Couldn't read # receipts}}"
 msgstr "{unreadableCount, plural, one {Не вдалося прочитати # чек} few {Не вдалося прочитати # чеки} many {Не вдалося прочитати # чеків} other {Не вдалося прочитати # чека}}"
 
-#: src/budget/components/budget-verdict/budget-verdict.tsx
-#: src/budget/components/budget-widget-card/budget-widget-card.tsx
+#: src/budget/components/budget-verdict-figure/budget-verdict-figure.tsx
+#: src/budget/components/budget-widget-headline/budget-widget-headline.tsx
 msgid "/ day"
 msgstr "/ день"
 
@@ -2638,7 +2639,7 @@ msgstr "Забули PIN-код?"
 msgid "Found an issue or have an idea? Open GitHub issue templates."
 msgstr "Знайшли проблему або маєте ідею? Відкрийте шаблони GitHub Issues."
 
-#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+#: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "Free to spend"
 msgstr "Вільно для витрат"
 
@@ -3117,7 +3118,7 @@ msgstr "Менше ніж"
 
 #: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
 #: src/budget/components/budget-pace-legend/budget-pace-legend.tsx
-#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+#: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "Limit"
 msgstr "Ліміт"
 
@@ -4177,7 +4178,7 @@ msgstr "Прогноз: перевищення на {overAmount}"
 msgid "Projected {overAmount} over · Runs out ~{runOutDate}"
 msgstr "Прогноз: перевищення на {overAmount} · Закінчиться ~{runOutDate}"
 
-#: src/budget/components/budget-verdict/budget-verdict.tsx
+#: src/budget/components/budget-verdict-outlook/budget-verdict-outlook.tsx
 msgid "Projected {projectedOverAmount} over by {periodEndLabel}"
 msgstr "Прогноз: перевитрата {projectedOverAmount} до {periodEndLabel}"
 
@@ -4945,7 +4946,7 @@ msgstr "Витрати за тегами"
 msgid "Spent"
 msgstr "Витрачено"
 
-#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+#: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "Spent so far"
 msgstr "Витрачено досі"
 
@@ -5684,6 +5685,7 @@ msgid "Upcoming"
 msgstr "Незабаром"
 
 #: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+#: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "Upcoming this period"
 msgstr "Очікується в цьому періоді"
 

@@ -142,12 +142,12 @@ msgstr "{dateLabel} · {kindLabel}"
 msgid "{days, plural, one {In # day} other {In # days}}"
 msgstr "{days, plural, one {In # Tag} other {In # Tagen}}"
 
-#: src/budget/components/budget-verdict/budget-verdict.tsx
+#: src/budget/components/budget-verdict-header/budget-verdict-header.tsx
 msgid "{daysLeft, plural, one {# day left} other {# days left}}"
 msgstr "{daysLeft, plural, one {Noch # Tag} other {Noch # Tage}}"
 
-#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
-#: src/budget/components/budget-widget-card/budget-widget-card.tsx
+#: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
+#: src/budget/components/budget-widget-footer-row/budget-widget-footer-row.tsx
 msgid "{daysLeft, plural, one {# day} other {# days}}"
 msgstr "{daysLeft, plural, one {# Tag} other {# Tage}}"
 
@@ -220,15 +220,15 @@ msgstr "{free} GB frei auf diesem Telefon."
 msgid "{free} GB is free right now. Your money data isn't affected."
 msgstr "Gerade sind {free} GB frei. Deine Finanzdaten sind nicht betroffen."
 
-#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+#: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "{freeAmount} ÷ {daysLabel}"
 msgstr "{freeAmount} ÷ {daysLabel}"
 
-#: src/budget/components/budget-widget-card/budget-widget-card.tsx
+#: src/budget/components/budget-widget-footer-row/budget-widget-footer-row.tsx
 msgid "{freeAmount} free · {daysLabel}"
 msgstr "{freeAmount} frei · {daysLabel}"
 
-#: src/budget/components/budget-verdict/budget-verdict.tsx
+#: src/budget/components/budget-verdict-outlook/budget-verdict-outlook.tsx
 msgid "{freeAmount} free until {periodEndLabel}"
 msgstr "{freeAmount} frei bis {periodEndLabel}"
 
@@ -286,7 +286,8 @@ msgstr "{newTransactionCount, plural, one {# Buchung importieren} other {# Buchu
 msgid "{newTransactionCount} new, {existingTransactionCount} already imported, {parsedTransactionCount} checked"
 msgstr "{newTransactionCount} neu, {existingTransactionCount} bereits importiert, {parsedTransactionCount} geprüft"
 
-#: src/budget/components/budget-verdict/budget-verdict.tsx
+#: src/budget/components/budget-verdict-figure/budget-verdict-figure.tsx
+#: src/budget/components/budget-verdict-header/budget-verdict-header.tsx
 msgid "{overAmount} over"
 msgstr "{overAmount} drüber"
 
@@ -339,11 +340,11 @@ msgstr "{rowCount, plural, one {# Transaktion kategorisiert} other {# Transaktio
 msgid "{rowCount, plural, one {Tagged # transaction} other {Tagged # transactions}}"
 msgstr "{rowCount, plural, one {# Transaktion getaggt} other {# Transaktionen getaggt}}"
 
-#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+#: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "{safePerDayAmount} / day"
 msgstr "{safePerDayAmount} / Tag"
 
-#: src/budget/components/budget-verdict/budget-verdict.tsx
+#: src/budget/components/budget-verdict-header/budget-verdict-header.tsx
 msgid "{safePerDayAmount} per day"
 msgstr "{safePerDayAmount} pro Tag"
 
@@ -395,7 +396,7 @@ msgstr "{statementAccountCount, plural, one {# Konto. Die Salden stammen aus dem
 msgid "{statusLabel} · {downloaded} of {total} GB"
 msgstr "{statusLabel} · {downloaded} von {total} GB"
 
-#: src/budget/components/budget-verdict/budget-verdict.tsx
+#: src/budget/components/budget-verdict-header/budget-verdict-header.tsx
 msgid "{statusLabel}. {figureAccessibilityLabel}, {daysLeftLabel}."
 msgstr "{statusLabel}. {figureAccessibilityLabel}, {daysLeftLabel}."
 
@@ -419,8 +420,8 @@ msgstr "{transactionCount, plural, one {# Transaktion} other {# Transaktionen}}"
 msgid "{unreadableCount, plural, one {Couldn't read # receipt} other {Couldn't read # receipts}}"
 msgstr "{unreadableCount, plural, one {# Beleg nicht lesbar} other {# Belege nicht lesbar}}"
 
-#: src/budget/components/budget-verdict/budget-verdict.tsx
-#: src/budget/components/budget-widget-card/budget-widget-card.tsx
+#: src/budget/components/budget-verdict-figure/budget-verdict-figure.tsx
+#: src/budget/components/budget-widget-headline/budget-widget-headline.tsx
 msgid "/ day"
 msgstr "/ Tag"
 
@@ -2638,7 +2639,7 @@ msgstr "PIN vergessen?"
 msgid "Found an issue or have an idea? Open GitHub issue templates."
 msgstr "Ein Problem gefunden oder eine Idee? Öffne die GitHub-Issue-Vorlagen."
 
-#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+#: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "Free to spend"
 msgstr "Frei verfügbar"
 
@@ -3117,7 +3118,7 @@ msgstr "Kleiner als"
 
 #: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
 #: src/budget/components/budget-pace-legend/budget-pace-legend.tsx
-#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+#: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "Limit"
 msgstr "Limit"
 
@@ -4177,7 +4178,7 @@ msgstr "Prognose: {overAmount} drüber"
 msgid "Projected {overAmount} over · Runs out ~{runOutDate}"
 msgstr "Prognose: {overAmount} drüber · Aufgebraucht ~{runOutDate}"
 
-#: src/budget/components/budget-verdict/budget-verdict.tsx
+#: src/budget/components/budget-verdict-outlook/budget-verdict-outlook.tsx
 msgid "Projected {projectedOverAmount} over by {periodEndLabel}"
 msgstr "Voraussichtlich {projectedOverAmount} drüber bis {periodEndLabel}"
 
@@ -4945,7 +4946,7 @@ msgstr "Ausgaben nach Tag"
 msgid "Spent"
 msgstr "Ausgegeben"
 
-#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+#: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "Spent so far"
 msgstr "Bisher ausgegeben"
 
@@ -5684,6 +5685,7 @@ msgid "Upcoming"
 msgstr "Bevorstehend"
 
 #: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+#: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "Upcoming this period"
 msgstr "Anstehend in diesem Zeitraum"
 
