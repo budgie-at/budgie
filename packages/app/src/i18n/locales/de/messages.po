@@ -953,6 +953,14 @@ msgstr "Abrechnungsdaten"
 msgid "Binance"
 msgstr "Binance"
 
+#: src/sync/component/binance-parked-assets-notice/binance-parked-assets-notice.tsx
+msgid "Binance has no market price for these assets, so they are not added as accounts and are skipped from your balance."
+msgstr "Binance hat für diese Assets keinen Marktpreis, daher werden sie nicht als Konten hinzugefügt und bei deinem Saldo übersprungen."
+
+#: src/sync/hook/use-sync-error-labels.hook.ts
+msgid "Binance is not available in your region, so this account cannot sync."
+msgstr "Binance ist in deiner Region nicht verfügbar, daher kann dieses Konto nicht synchronisiert werden."
+
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Binance P2P orders are unavailable: the API key is missing P2P read permission."
 msgstr "Binance-P2P-Orders sind nicht verfügbar: dem API-Schlüssel fehlt die P2P-Leseberechtigung."
@@ -1614,6 +1622,10 @@ msgstr "Anleitung konnte nicht geöffnet werden"
 #: src/wallet-capture/component/apple-pay-capture-open-shortcuts-button/apple-pay-capture-open-shortcuts-button.tsx
 msgid "Could not open Shortcuts"
 msgstr "Shortcuts konnte nicht geöffnet werden"
+
+#: src/sync/hook/use-sync-error-labels.hook.ts
+msgid "Could not reach the server. Check your connection; sync will retry automatically."
+msgstr "Der Server ist nicht erreichbar. Prüfe deine Verbindung; die Synchronisierung versucht es automatisch erneut."
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "Could not read CSV file"
@@ -3639,6 +3651,10 @@ msgstr "Nicht jetzt"
 msgid "not set"
 msgstr "nicht gesetzt"
 
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Not synced: Auto-Invest, Binance Pay, Binance Card, gift cards, sub-account transfers, margin and futures."
+msgstr "Nicht synchronisiert: Auto-Invest, Binance Pay, Binance Card, Geschenkkarten, Subkonto-Überweisungen, Margin und Futures."
+
 #: src/settings/components/backup-row/backup-row.tsx
 msgid "Not yet"
 msgstr "Noch keins"
@@ -5050,6 +5066,14 @@ msgstr "Tippen zum Fortfahren"
 msgid "Tap to select"
 msgstr "Zum Auswählen tippen"
 
+#: src/sync/hook/use-sync-error-labels.hook.ts
+msgid "The API key has the wrong permissions. Use a key with only \"Enable Reading\"."
+msgstr "Der API-Schlüssel hat falsche Berechtigungen. Verwende einen Schlüssel nur mit „Enable Reading“."
+
+#: src/sync/hook/use-sync-error-labels.hook.ts
+msgid "The API key or token was rejected. Check that it is correct, read-only and not restricted to other IP addresses."
+msgstr "Der API-Schlüssel oder das Token wurde abgelehnt. Prüfe, ob er korrekt und schreibgeschützt ist und nicht auf andere IP-Adressen beschränkt wurde."
+
 #: src/account/component/start-deposit-form/start-deposit-form.tsx
 msgid "The bank did not report the deposit currency. Confirm the currency and the receiving amount."
 msgstr "Die Bank hat die Währung der Einlage nicht übermittelt. Bestätige die Währung und den Empfangsbetrag."
@@ -5077,6 +5101,10 @@ msgstr "Die Regel wurde gespeichert, aber keine vorhandenen Transaktionen musste
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "The selected Budgie account is archived or no longer exists."
 msgstr "Das ausgewählte Budgie-Konto ist archiviert oder existiert nicht mehr."
+
+#: src/sync/hook/use-sync-error-labels.hook.ts
+msgid "The service is limiting requests. Sync will retry automatically in a few minutes."
+msgstr "Der Dienst begrenzt Anfragen. Die Synchronisierung versucht es in wenigen Minuten automatisch erneut."
 
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "There is no \"forgot PIN\"."
@@ -5850,6 +5878,10 @@ msgstr "Deine Daten bleiben unverändert auf diesem Gerät. Versuche es erneut o
 #: src/onboarding/component/onboarding-file-strip/onboarding-file-strip.tsx
 msgid "Your data: {state}"
 msgstr "Deine Daten: {state}"
+
+#: src/sync/hook/use-sync-error-labels.hook.ts
+msgid "Your device clock is out of sync. Enable automatic date and time, then try again."
+msgstr "Die Uhr deines Geräts geht falsch. Aktiviere Datum und Uhrzeit automatisch und versuche es erneut."
 
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Your holdings"
