@@ -15,6 +15,7 @@ import type {
     BinanceFiatOrderApiInterface,
     BinanceLockedEarnPositionApiInterface,
     BinanceTradeApiInterface,
+    BinanceUniversalTransferApiInterface,
     BinanceWithdrawalApiInterface
 } from '@budgie/sync';
 import type { JsonBodyType } from 'msw';
@@ -35,6 +36,7 @@ const CONVERT_TRADE_FLOW_URL = `${BASE_URL}/sapi/v1/convert/tradeFlow`;
 const EARN_POSITION_URL = `${BASE_URL}/sapi/v1/simple-earn/flexible/position`;
 const LOCKED_EARN_POSITION_URL = `${BASE_URL}/sapi/v1/simple-earn/locked/position`;
 const EARN_REWARDS_URL = `${BASE_URL}/sapi/v1/simple-earn/flexible/history/rewardsRecord`;
+const UNIVERSAL_TRANSFER_URL = `${BASE_URL}/sapi/v1/asset/transfer`;
 const EXCHANGE_INFO_BASE_ASSETS = ['ADA', 'BNB', 'BTC', 'ETH', 'EUR', 'PEPE', 'USDT'];
 const EXCHANGE_INFO_QUOTE_ASSETS = ['USDT', 'FDUSD', 'BTC', 'BNB', 'BUSD'];
 const EXCHANGE_INFO_TRADING_STATUS = 'TRADING';
@@ -345,6 +347,21 @@ export const binanceStub = {
                     { list: hasMore ? matched.slice(0, 1) : matched, startTime, endTime, limit, moreData: hasMore },
                     { headers: WEIGHT_HEADERS }
                 );
+            })
+        );
+    },
+    universalTransfers: (transfers: BinanceUniversalTransferApiInterface[], requestedWindows?: TimeWindow[]): void => {
+        mockServer.use(
+            http.get(UNIVERSAL_TRANSFER_URL, ({ request }) => {
+                const url = new URL(request.url);
+                const window = parseTimeWindow(url, 'startTime', 'endTime');
+                requestedWindows?.push(window);
+                const matched = transfers.filter(
+                    transfer => transfer.type === url.searchParams.get('type') && isWithinWindow(transfer.timestamp, window)
+                );
+                const { rows } = buildPagedEarnResponse(url, matched);
+
+                return HttpResponse.json({ rows, total: rows.length }, { headers: WEIGHT_HEADERS });
             })
         );
     },

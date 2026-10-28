@@ -8,6 +8,7 @@ import type {
     BinanceFiatOrderApiInterface,
     BinanceLockedEarnPositionApiInterface,
     BinanceTradeApiInterface,
+    BinanceUniversalTransferApiInterface,
     BinanceWithdrawalApiInterface
 } from '@budgie/sync';
 
@@ -31,6 +32,9 @@ type EarnPositionOverrides = Partial<BinanceEarnPositionApiInterface> & Pick<Bin
 
 type LockedEarnPositionOverrides = Partial<BinanceLockedEarnPositionApiInterface> &
     Pick<BinanceLockedEarnPositionApiInterface, 'asset' | 'amount'>;
+
+type UniversalTransferOverrides = Partial<BinanceUniversalTransferApiInterface> &
+    Pick<BinanceUniversalTransferApiInterface, 'asset' | 'amount' | 'type' | 'tranId'>;
 
 type EarnRewardOverrides = Partial<BinanceEarnRewardApiInterface> & Pick<BinanceEarnRewardApiInterface, 'asset' | 'rewards' | 'time'>;
 
@@ -84,6 +88,11 @@ export const buildBinance = {
         quoteId: `quote-${overrides.orderId}`,
         orderStatus: 'SUCCESS',
         createTime: Date.now(),
+        ...overrides
+    }),
+    universalTransfer: (overrides: UniversalTransferOverrides): BinanceUniversalTransferApiInterface => ({
+        status: 'CONFIRMED',
+        timestamp: Date.now(),
         ...overrides
     }),
     earnPosition: (overrides: EarnPositionOverrides): BinanceEarnPositionApiInterface => ({ ...overrides }),
