@@ -4,7 +4,16 @@ import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { binanceStub, buildBinance, fetchFiatOrderEntries, resyncBinance, setupFiatScenario, TestLayer, testDb } from '../../harness';
+import {
+    binanceStub,
+    buildBinance,
+    expectFiatPrincipalAndFee,
+    fetchFiatOrderEntries,
+    resyncBinance,
+    setupFiatScenario,
+    TestLayer,
+    testDb
+} from '../../harness';
 
 import type { TimeWindow } from '../../harness';
 
@@ -38,12 +47,7 @@ describe('binance/fiat-repair', () => {
 
             yield* resyncBinance(sync.id);
 
-            const { mainEntries, feeEntries } = yield* fetchFiatOrderEntries(ORDER_NO);
-            expect(mainEntries).toHaveLength(1);
-            expect(feeEntries).toHaveLength(1);
-            expect(mainEntries[0].type).toBe(mainType);
-            expect(mainEntries[0].amount).toBe(mainAmount);
-            expect(feeEntries[0].amount).toBe(2 * PRECISION);
+            yield* expectFiatPrincipalAndFee(ORDER_NO, mainType, mainAmount, 2 * PRECISION);
         }).pipe(Effect.provide(TestLayer))
     );
 

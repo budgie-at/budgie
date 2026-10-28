@@ -7,6 +7,7 @@ import {
     SyncStatusEnum,
     TransactionEntityTable,
     TransactionEntryEntityTable,
+    TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
 import { BinanceSyncService } from '@budgie/sync';
@@ -168,6 +169,19 @@ export const fetchFiatOrderEntries = (orderNo: string) =>
     Effect.gen(function* () {
         const mainEntries = yield* fetchBinanceEntriesByExternalId(orderNo);
         const feeEntries = yield* fetchBinanceEntriesByExternalId(`${orderNo}:fee`);
+
+        return { mainEntries, feeEntries };
+    });
+
+export const expectFiatPrincipalAndFee = (orderNo: string, mainType: TransactionEntryTypeEnum, mainAmount: number, feeAmount: number) =>
+    Effect.gen(function* () {
+        const { mainEntries, feeEntries } = yield* fetchFiatOrderEntries(orderNo);
+
+        expect(mainEntries).toHaveLength(1);
+        expect(feeEntries).toHaveLength(1);
+        expect(mainEntries[0].type).toBe(mainType);
+        expect(mainEntries[0].amount).toBe(mainAmount);
+        expect(feeEntries[0].amount).toBe(feeAmount);
 
         return { mainEntries, feeEntries };
     });

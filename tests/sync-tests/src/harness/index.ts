@@ -36,6 +36,7 @@ export { STALE_SYNC_AGE_MS, RUN_DEADLINE_MS, advanceClock, jumpPastDeadline, res
 export { setupBinanceFixture } from './binance/setup-binance-fixture';
 export {
     buildEarnDayKey,
+    expectFiatPrincipalAndFee,
     expectNoDuplicateAfterResync,
     expectSingleBinanceTransaction,
     fetchBinanceEntriesByExternalId,

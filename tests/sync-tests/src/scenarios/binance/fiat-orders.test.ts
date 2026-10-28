@@ -6,8 +6,8 @@ import * as Effect from 'effect/Effect';
 import {
     binanceStub,
     buildBinance,
+    expectFiatPrincipalAndFee,
     expectSingleBinanceTransaction,
-    fetchFiatOrderEntries,
     fetchBinanceTransactions,
     setupFiatScenario,
     TestLayer
@@ -78,14 +78,9 @@ describe('binance/fiat-orders', () => {
 
             yield* binanceSyncService.sync();
 
-            const { mainEntries, feeEntries } = yield* fetchFiatOrderEntries(orderNo);
-            expect(mainEntries).toHaveLength(1);
-            expect(feeEntries).toHaveLength(1);
-            expect(mainEntries[0].type).toBe(mainType);
-            expect(mainEntries[0].amount).toBe(mainAmount);
+            const { mainEntries, feeEntries } = yield* expectFiatPrincipalAndFee(orderNo, mainType, mainAmount, EUR_2);
             expect(mainEntries[0].exchangeRate).toBe(1);
             expect(feeEntries[0].type).toBe(TransactionEntryTypeEnum.FEE);
-            expect(feeEntries[0].amount).toBe(EUR_2);
         }).pipe(Effect.provide(TestLayer))
     );
 });
