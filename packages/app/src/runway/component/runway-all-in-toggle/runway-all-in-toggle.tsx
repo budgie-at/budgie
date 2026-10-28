@@ -12,7 +12,7 @@ export const RunwayAllInToggle = ({ isAllIn, onToggle }: Props) => {
     const { t } = useLingui();
 
     return (
-        <View className="flex-row items-center gap-x-xl border-t border-secondary-corner pt-lg">
+        <View className="flex-row items-center gap-x-xl border-t-hairline border-secondary-corner pt-lg">
             <View className="flex-1 gap-y-xxs">
                 <Text className="text-sm font-medium text-primary">
                     <Trans>Include one-offs</Trans>
