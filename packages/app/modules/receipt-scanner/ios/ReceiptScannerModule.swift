@@ -11,9 +11,7 @@ public final class ReceiptScannerModule: Module {
     Name("ReceiptScanner")
 
     AsyncFunction("scan") { (promise: Promise) in
-      guard VNDocumentCameraViewController.isSupported,
-            self.session == nil,
-            let presenter = self.appContext?.utilities?.currentViewController() else {
+      guard VNDocumentCameraViewController.isSupported, self.session == nil else {
         promise.resolve([String]())
         return
       }
@@ -25,7 +23,7 @@ public final class ReceiptScannerModule: Module {
       let camera = VNDocumentCameraViewController()
       camera.delegate = session
       self.session = session
-      presenter.present(camera, animated: true)
+      self.present(camera, session: session, remainingAttempts: ReceiptScannerModule.presentAttempts)
     }.runOnQueue(.main)
 
     AsyncFunction("recognize") { (uri: URL) -> [[String: Any]] in
@@ -51,6 +49,35 @@ public final class ReceiptScannerModule: Module {
     }
   }
 
+  private static let presentAttempts = 40
+
+  private func present(_ camera: VNDocumentCameraViewController, session: ReceiptScanSession, remainingAttempts: Int) {
+    guard let presenter = appContext?.utilities?.currentViewController() else {
+      session.finish([])
+      return
+    }
+
+    guard presenter.presentedViewController == nil,
+          !presenter.isBeingPresented,
+          !presenter.isBeingDismissed,
+          presenter.transitionCoordinator == nil,
+          presenter.viewIfLoaded?.window != nil else {
+      guard remainingAttempts > 0 else {
+        session.finish([])
+        return
+      }
+      DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(50)) { [weak self] in
+        self?.present(camera, session: session, remainingAttempts: remainingAttempts - 1)
+      }
+      return
+    }
+
+    presenter.present(camera, animated: true)
+    if camera.presentingViewController == nil {
+      session.finish([])
+    }
+  }
+
   private static func orientation(of uri: URL) -> CGImagePropertyOrientation {
     guard let source = CGImageSourceCreateWithURL(uri as CFURL, nil),
           let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any],
@@ -68,6 +95,10 @@ private final class ReceiptScanSession: NSObject, VNDocumentCameraViewController
 
   init(completion: @escaping ([String]) -> Void) {
     self.completion = completion
+  }
+
+  func finish(_ uris: [String]) {
+    completion(uris)
   }
 
   func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFinishWith scan: VNDocumentCameraScan) {
