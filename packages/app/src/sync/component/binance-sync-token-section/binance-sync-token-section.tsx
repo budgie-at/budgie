@@ -69,9 +69,9 @@ export const BinanceSyncTokenSection = ({ accountId }: Props) => {
                 Effect.catchTags({
                     BinanceKeyPermissionsError: toastBinanceKeyPermissionsError,
                     SyncTokenClientMismatchError: () =>
-                        Effect.sync(() =>
-                            showErrorToast(t`Different Binance account`, t`This API key belongs to a different Binance account.`)
-                        )
+                        Effect.sync(() => {
+                            showErrorToast(t`Different Binance account`, t`This API key belongs to a different Binance account.`);
+                        })
                 }),
                 toastOnFailure(t`Could not update token`)
             )

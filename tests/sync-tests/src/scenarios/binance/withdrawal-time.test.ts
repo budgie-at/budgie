@@ -3,7 +3,7 @@ import { BinanceSyncService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { binanceStub, buildBinance, fetchBinanceTransactions, setupBinanceFixture, TestLayer } from '../../harness';
 
@@ -14,7 +14,7 @@ const NON_UTC_TIMEZONES = ['Pacific/Auckland', 'America/Los_Angeles'];
 const withTimezone = <A, E, R>(timezone: string, effect: Effect.Effect<A, E, R>) =>
     Effect.acquireUseRelease(
         Effect.sync(() => {
-            const previousTimezone = process.env['TZ'];
+            const previousTimezone = isNotEmptyString(process.env['TZ']) ? process.env['TZ'] : null;
             process.env['TZ'] = timezone;
 
             return previousTimezone;

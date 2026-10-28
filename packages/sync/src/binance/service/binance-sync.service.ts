@@ -83,6 +83,8 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
         let run = freshRunState(Number.POSITIVE_INFINITY, 0);
         const fiatSyncedAtMsByToken = new Map<string, number>();
 
+        const isRunDeferred = () => run.isDeferred;
+
         const markRunDeferred = Effect.sync(() => {
             run = { ...run, isDeferred: true };
         });
@@ -195,7 +197,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 createOnly
             );
             const removedCount = yield* binanceSourceCommitService.removeByExternalIds(token, client.getRejectedCapitalExternalIds());
-            if (!run.isDeferred) {
+            if (!isRunDeferred()) {
                 const pendingFromMs = client.getCapitalPendingFromMs();
                 yield* syncRepository.update(sync.id, {
                     binanceCapitalPendingFromAt: isDefined(pendingFromMs) ? new Date(pendingFromMs) : null
@@ -221,7 +223,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 getRunSignedClient(token).getTransactions(BinanceHistorySourceEnum.FIAT, fromUnixTime, toUnixTime),
                 updateExisting
             );
-            if (!run.isDeferred) {
+            if (!isRunDeferred()) {
                 fiatSyncedAtMsByToken.set(token, yield* Clock.currentTimeMillis);
             }
 
@@ -234,7 +236,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             source: BinanceHistorySourceEnum,
             fetchRange: (fromUnixTime: number, toUnixTime: number | null) => Effect.Effect<number, E, R>
         ) {
-            if (run.isDeferred) {
+            if (isRunDeferred()) {
                 return 0;
             }
 
@@ -259,7 +261,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                     Math.max(lookbackSeconds, Math.floor(progress.headAt / 1000) - headOverlapSeconds),
                     null
                 );
-                if (run.isDeferred || client.isSourceSkipped(source)) {
+                if (isRunDeferred() || client.isSourceSkipped(source)) {
                     return committedCount;
                 }
                 yield* binanceHistoryProgressService.save(integration.id, source, { ...progress, headAt: run.startedAtMs });
@@ -268,7 +270,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             let tailAt = progress?.tailAt ?? Number.POSITIVE_INFINITY;
             let chunkEndSeconds = isDefined(progress) ? Math.ceil(progress.tailAt / 1000) : null;
             let chunkStartSeconds = Number.POSITIVE_INFINITY;
-            while (chunkStartSeconds > lookbackSeconds && !run.isDeferred) {
+            while (chunkStartSeconds > lookbackSeconds && !isRunDeferred()) {
                 chunkStartSeconds = Math.max(lookbackSeconds, (chunkEndSeconds ?? startedAtSeconds) - chunkSeconds);
                 committedCount += yield* fetchRange(chunkStartSeconds, chunkEndSeconds);
                 if (client.isSourceSkipped(source)) {
@@ -279,7 +281,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
 
                     return committedCount;
                 }
-                const reachedAt = run.isDeferred ? client.getDeferredFrontierMs() : chunkStartSeconds * 1000;
+                const reachedAt = isRunDeferred() ? client.getDeferredFrontierMs() : chunkStartSeconds * 1000;
                 tailAt = Math.min(tailAt, reachedAt ?? tailAt);
                 yield* binanceHistoryProgressService.save(integration.id, source, { headAt: run.startedAtMs, tailAt });
                 chunkEndSeconds = chunkStartSeconds;
@@ -289,7 +291,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
         });
 
         const processTrades = Effect.fnUntraced(function* (sync: SyncEntityInterface, externalAccountId: string, token: string) {
-            if (run.isDeferred || getTokenRun(token).transfersSynced) {
+            if (isRunDeferred() || getTokenRun(token).transfersSynced) {
                 return 0;
             }
 
@@ -350,14 +352,14 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
         });
 
         const processFiatSource = Effect.fnUntraced(function* (sync: SyncEntityInterface, token: string) {
-            if (run.isDeferred || getTokenRun(token).sourcesSynced) {
+            if (isRunDeferred() || getTokenRun(token).sourcesSynced) {
                 return 0;
             }
 
             const changedCount = yield* syncHistorySource(sync, token, BinanceHistorySourceEnum.FIAT, (fromUnixTime, toUnixTime) =>
                 commitFiatRange(token, fromUnixTime, toUnixTime)
             );
-            if (!run.isDeferred) {
+            if (!isRunDeferred()) {
                 patchTokenRun(token, { sourcesSynced: true });
             }
 
@@ -423,7 +425,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                     return { transactions: [], nextTo: new Date(), nextFrom: new Date(), completed: true };
                 }
 
-                const changedCount = run.isDeferred
+                const changedCount = isRunDeferred()
                     ? 0
                     : yield* Effect.ensuring(
                           runSyncPhases(sync, externalAccountId, token),
@@ -434,21 +436,21 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                     yield* syncWorkload.enqueueTransferConsolidation();
                 }
 
-                const progressDate = run.isDeferred ? (sync.backwardSyncFromAt ?? sync.forwardSyncFromAt ?? new Date()) : new Date();
+                const progressDate = isRunDeferred() ? (sync.backwardSyncFromAt ?? sync.forwardSyncFromAt ?? new Date()) : new Date();
 
                 return {
                     transactions: [],
                     transactionCount: changedCount,
                     nextTo: progressDate,
                     nextFrom: progressDate,
-                    completed: !run.isDeferred
+                    completed: !isRunDeferred()
                 };
             }),
             beforeProcessRun: (tokens: readonly string[]) =>
                 Effect.forEach(
                     tokens,
                     token =>
-                        run.isDeferred || getTokenRun(token).balancesAnchored
+                        isRunDeferred() || getTokenRun(token).balancesAnchored
                             ? Effect.void
                             : anchorAllBalances(token).pipe(Effect.catchTag('SyncDeferredError', () => markRunDeferred)),
                     { discard: true }
@@ -462,7 +464,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             },
             isRunWorkComplete: () =>
                 run.tokenRuns.size > 0 && [...run.tokenRuns.values()].every(tokenRun => tokenRun.sourcesSynced && tokenRun.transfersSynced),
-            isRunDeferred: () => run.isDeferred,
+            isRunDeferred,
             isRetryableError: error =>
                 !(
                     error instanceof SyncUnauthorizedError ||

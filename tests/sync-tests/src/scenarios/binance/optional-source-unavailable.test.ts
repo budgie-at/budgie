@@ -36,34 +36,38 @@ const BACKFILLED_SOURCES = [
         key: 'LOCKED_EARN',
         endpoint: 'lockedEarnRewards',
         respond: () => binanceErrorResponse.apiError(-9000, 'Product is not enabled.'),
-        stub: (timeMs: number) =>
-            binanceStub.lockedEarnRewards([buildBinance.lockedEarnReward({ asset: 'USDT', amount: '1', time: timeMs })])
+        stub: (timeMs: number) => {
+            binanceStub.lockedEarnRewards([buildBinance.lockedEarnReward({ asset: 'USDT', amount: '1', time: timeMs })]);
+        }
     },
     {
         key: 'DIVIDEND',
         endpoint: 'dividends',
         respond: binanceErrorResponse.regionBlocked,
-        stub: (timeMs: number) =>
-            binanceStub.dividends([buildBinance.dividend({ tranId: 7001, asset: 'USDT', amount: '1', divTime: timeMs })])
+        stub: (timeMs: number) => {
+            binanceStub.dividends([buildBinance.dividend({ tranId: 7001, asset: 'USDT', amount: '1', divTime: timeMs })]);
+        }
     },
     {
         key: 'CONVERT',
         endpoint: 'universalTransfers',
         respond: () => binanceErrorResponse.apiError(-9000, 'Product is not enabled.'),
-        stub: (timeMs: number) =>
+        stub: (timeMs: number) => {
             binanceStub.universalTransfers([
                 buildBinance.universalTransfer({ asset: 'USDT', amount: '1', type: 'MAIN_FUNDING', tranId: 7002, timestamp: timeMs })
-            ])
+            ]);
+        }
     },
     {
         key: 'C2C',
         endpoint: 'c2cOrders',
         respond: () => binanceErrorResponse.unauthorized(-2015, 'Invalid API-key, IP, or permissions for action.'),
-        stub: (timeMs: number) =>
+        stub: (timeMs: number) => {
             binanceStub.c2cOrders(
                 [buildBinance.c2cOrder({ orderNumber: 'p2p-old', tradeType: 'BUY', asset: 'USDT', amount: '1', createTime: timeMs })],
                 []
-            )
+            );
+        }
     }
 ] as const;
 
@@ -113,7 +117,7 @@ describe('binance/optional-source-unavailable', () => {
             yield* binanceSyncService.sync();
 
             expect(yield* fetchBinanceTransactions()).toHaveLength(0);
-            expect((yield* fetchHistoryProgress(token))[source.key]?.tailAt ?? Date.now()).toBeGreaterThan(oldRowTimeMs + 50 * DAY_MS);
+            expect((yield* fetchHistoryProgress(token))[source.key].tailAt).toBeGreaterThan(oldRowTimeMs + 50 * DAY_MS);
 
             source.stub(oldRowTimeMs);
             yield* resyncBinance(sync.id);

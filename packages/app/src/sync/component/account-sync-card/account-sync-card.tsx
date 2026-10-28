@@ -1,6 +1,6 @@
 import { ExternalSourceEnum, SyncErrorCodeEnum, SyncModeEnum, SyncStatusEnum, SyncWarningEnum } from '@budgie/contracts';
 import { SyncProviderRegistryService, SYNC_PROVIDER_CAPABILITIES } from '@budgie/sync';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import * as Effect from 'effect/Effect';
 import { Text, View } from 'react-native';
@@ -18,6 +18,7 @@ import { useAccountSync } from '../../hook/use-account-sync.hook';
 import { BinanceSyncTokenSection } from '../binance-sync-token-section/binance-sync-token-section';
 import { ResyncAccount } from '../resync-account/resync-account';
 import { SyncDataRow } from '../sync-data-row/sync-data-row';
+import { SyncMessageRow } from '../sync-message-row/sync-message-row';
 
 import { AccountSyncCardSelector } from './account-sync-card.selector';
 
@@ -104,29 +105,23 @@ export const AccountSyncCard = ({ accountId }: Props) => {
                 {sync.errorCount > 0 && <SyncDataRow label={t`Errors`} value={String(sync.errorCount)} />}
 
                 {isNotEmptyString(lastErrorText) && !isRegionBlocked && (
-                    <View className="gap-y-xs">
-                        <Text className="text-xs text-secondary-foreground">
-                            <Trans>Last error</Trans>
-                        </Text>
-                        <Text
-                            className="text-secondary-foreground text-destructive text-xs"
-                            numberOfLines={4}
-                            testID={AccountSyncCardSelector.LastError}
-                        >
-                            {lastErrorText}
-                        </Text>
-                    </View>
+                    <SyncMessageRow
+                        title={t`Last error`}
+                        message={lastErrorText}
+                        messageClassName="text-secondary-foreground text-destructive text-xs"
+                        numberOfLines={4}
+                        testID={AccountSyncCardSelector.LastError}
+                    />
                 )}
 
                 {isDefined(sync.lastWarning) && (
-                    <View className="gap-y-xs">
-                        <Text className="text-xs text-secondary-foreground">
-                            <Trans>Warning</Trans>
-                        </Text>
-                        <Text className="text-warning-foreground text-xs" numberOfLines={3} testID={AccountSyncCardSelector.Warning}>
-                            {warningLabels[sync.lastWarning]}
-                        </Text>
-                    </View>
+                    <SyncMessageRow
+                        title={t`Warning`}
+                        message={warningLabels[sync.lastWarning]}
+                        messageClassName="text-warning-foreground text-xs"
+                        numberOfLines={3}
+                        testID={AccountSyncCardSelector.Warning}
+                    />
                 )}
 
                 {tokenSection}

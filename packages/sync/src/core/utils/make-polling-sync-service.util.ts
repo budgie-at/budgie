@@ -19,7 +19,7 @@ import { resolveSyncProgressUpdate } from './resolve-sync-progress-update.util';
 
 import type { PollingSyncServiceDefinitionInterface } from '../interface/polling-sync-service-definition.interface';
 import type { SyncBatchResultInterface } from '../interface/sync-batch-result.interface';
-import type { SyncEntityInterface } from '@budgie/contracts';
+import type { SyncEntityInterface, SyncUpdateEntityInterface } from '@budgie/contracts';
 
 export const makePollingSyncService = Effect.fnUntraced(function* (definition: PollingSyncServiceDefinitionInterface) {
     const syncWorkload = yield* SyncWorkload;
@@ -122,9 +122,7 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
             return true;
         }
 
-        yield* (definition.beforeProcessRun ?? (() => Effect.void))([
-            ...new Set(yield* Effect.forEach(enabledSyncs, sync => resolveSyncToken(sync)))
-        ]);
+        yield* (definition.beforeProcessRun ?? (() => Effect.void))([...new Set(yield* Effect.forEach(enabledSyncs, resolveSyncToken))]);
         if (yield* shouldStopProcessing) {
             return true;
         }
@@ -182,6 +180,8 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
 
         const errorMessage = getErrorMessage(error, UNKNOWN_SYNC_ERROR);
         const lastErrorCode = resolveSyncErrorCode(error);
+        const markFailed = (sync: SyncEntityInterface, patch: SyncUpdateEntityInterface) =>
+            syncRepository.update(sync.id, { status: SyncStatusEnum.FAILED, lastError: errorMessage, lastErrorCode, ...patch });
         const enabledSyncs = yield* syncRepository.getEnabledByProvider(definition.provider);
         if (!isNotEmptyArray(enabledSyncs)) {
             return false;
@@ -192,35 +192,16 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
         }
 
         if (definition.shouldKeepSyncsEnabledAfterError?.(error) === true) {
-            yield* Effect.forEach(
-                enabledSyncs,
-                sync =>
-                    syncRepository.update(sync.id, {
-                        status: SyncStatusEnum.FAILED,
-                        lastError: errorMessage,
-                        lastErrorCode,
-                        lastWarning:
-                            lastErrorCode === SyncErrorCodeEnum.REGION_UNAVAILABLE ? SyncWarningEnum.REGION_UNAVAILABLE : sync.lastWarning
-                    }),
-                { discard: true }
-            );
+            const regionWarning =
+                lastErrorCode === SyncErrorCodeEnum.REGION_UNAVAILABLE ? { lastWarning: SyncWarningEnum.REGION_UNAVAILABLE } : {};
+            yield* Effect.forEach(enabledSyncs, sync => markFailed(sync, regionWarning), { discard: true });
 
             return false;
         }
 
         const failedSyncs = yield* resolveSyncsToDisable(enabledSyncs, error);
         const keepEnabled = definition.shouldKeepFailedSyncEnabledAfterError?.(error) === true;
-        yield* Effect.forEach(
-            failedSyncs,
-            sync =>
-                syncRepository.update(sync.id, {
-                    status: SyncStatusEnum.FAILED,
-                    lastError: errorMessage,
-                    lastErrorCode,
-                    enabled: keepEnabled
-                }),
-            { discard: true }
-        );
+        yield* Effect.forEach(failedSyncs, sync => markFailed(sync, { enabled: keepEnabled }), { discard: true });
 
         if (keepEnabled && isNotEmptyArray(failedSyncs)) {
             failedSyncs.forEach(sync => exhaustedSyncIds.add(sync.id));

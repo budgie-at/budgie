@@ -227,11 +227,11 @@ const respondOffsetPage = <TRow>(matched: TRow[], url: URL): TRow[] => {
     return matched.slice(offset, offset + limit);
 };
 
-const stubUntimedEarnPage = <TRow>(url: string, rows: readonly TRow[]): void => {
+const stubUntimedEarnPage = (url: string, rows: readonly unknown[]): void => {
     stubWindowed({ url, rows, getTimeMs: () => 0, respond: respondEarnPage });
 };
 
-const stubTimedEarnPage = <TRow extends { readonly time: number }>(url: string, rows: readonly TRow[]): void => {
+const stubTimedEarnPage = (url: string, rows: readonly { readonly time: number }[]): void => {
     stubWindowed({ url, rows, getTimeMs: row => row.time, respond: respondEarnPage });
 };
 

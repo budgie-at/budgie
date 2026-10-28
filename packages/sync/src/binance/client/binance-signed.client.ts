@@ -132,7 +132,7 @@ const MAX_TRANSACTIONS_PER_WINDOW = 500;
 const FIAT_ROWS_PER_PAGE = 500;
 const FIAT_DEPOSIT_TRANSACTION_TYPE = 0;
 const FIAT_WITHDRAW_TRANSACTION_TYPE = 1;
-const FIAT_ACCEPTED_STATUSES: readonly string[] = ['Successful', 'Finished'];
+const FIAT_ACCEPTED_STATUSES: ReadonlySet<string> = new Set(['Successful', 'Finished']);
 const C2C_BUY_TRADE_TYPE = 'BUY';
 const C2C_SELL_TRADE_TYPE = 'SELL';
 const C2C_COMPLETED_STATUS = 'COMPLETED';
@@ -569,33 +569,6 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return rows;
     });
 
-    private readonly walkSplitWindows = <T>(
-        periodMs: number,
-        startTimeMs: number,
-        endTimeMs: number,
-        fetchChunk: (
-            chunkStartMs: number,
-            chunkEndMs: number
-        ) => Effect.Effect<{ readonly rows: readonly T[]; readonly isTruncated: boolean }, SyncError, HttpClient.HttpClient>
-    ) =>
-        this.walkWindowsBackward(periodMs, startTimeMs, endTimeMs, (windowStartMs, windowEndMs) =>
-            this.fetchSplittingWindow(fetchChunk, windowStartMs, windowEndMs)
-        );
-
-    private readonly walkPagedWindows = <T>(
-        periodMs: number,
-        startTimeMs: number,
-        endTimeMs: number,
-        fetchPage: (
-            page: number,
-            windowStartMs: number,
-            windowEndMs: number
-        ) => Effect.Effect<{ readonly rows: readonly T[]; readonly hasMore: boolean }, SyncError, HttpClient.HttpClient>
-    ) =>
-        this.walkWindowsBackward(periodMs, startTimeMs, endTimeMs, (windowStartMs, windowEndMs) =>
-            this.collectPages(page => fetchPage(page, windowStartMs, windowEndMs))
-        );
-
     constructor(
         token: string,
         private readonly deadlineAtMs = Number.POSITIVE_INFINITY
@@ -687,6 +660,33 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
                 return super.classifyApiError(status, message, apiCode, headers);
         }
     }
+
+    private readonly walkSplitWindows = <T>(
+        periodMs: number,
+        startTimeMs: number,
+        endTimeMs: number,
+        fetchChunk: (
+            chunkStartMs: number,
+            chunkEndMs: number
+        ) => Effect.Effect<{ readonly rows: readonly T[]; readonly isTruncated: boolean }, SyncError, HttpClient.HttpClient>
+    ) =>
+        this.walkWindowsBackward(periodMs, startTimeMs, endTimeMs, (windowStartMs, windowEndMs) =>
+            this.fetchSplittingWindow(fetchChunk, windowStartMs, windowEndMs)
+        );
+
+    private readonly walkPagedWindows = <T>(
+        periodMs: number,
+        startTimeMs: number,
+        endTimeMs: number,
+        fetchPage: (
+            page: number,
+            windowStartMs: number,
+            windowEndMs: number
+        ) => Effect.Effect<{ readonly rows: readonly T[]; readonly hasMore: boolean }, SyncError, HttpClient.HttpClient>
+    ) =>
+        this.walkWindowsBackward(periodMs, startTimeMs, endTimeMs, (windowStartMs, windowEndMs) =>
+            this.collectPages(page => fetchPage(page, windowStartMs, windowEndMs))
+        );
 
     private buildRateLimitedError(message: string, headers: Headers.Headers, fallbackRetryAfterMs: number | null): SyncRateLimitedError {
         const retryAfterSeconds = Number.parseInt(headers[RETRY_AFTER_HEADER] ?? '', 10);
@@ -901,7 +901,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
                     rows: FIAT_ROWS_PER_PAGE
                 }).pipe(
                     Effect.map(response => ({
-                        rows: response.data.filter(order => FIAT_ACCEPTED_STATUSES.includes(order.status)),
+                        rows: response.data.filter(order => FIAT_ACCEPTED_STATUSES.has(order.status)),
                         hasMore: response.data.length === FIAT_ROWS_PER_PAGE
                     }))
                 )
@@ -994,16 +994,15 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     }
 
     private isSourceUnavailable(source: BinanceHistorySourceEnum, error: SyncError): boolean {
-        switch (error._tag) {
-            case 'SyncRegionUnavailableError':
-                return true;
-            case 'SyncInvalidResponseError':
-                return isDefined(error.apiCode);
-            case 'SyncUnauthorizedError':
-                return source === BinanceHistorySourceEnum.C2C;
-            default:
-                return false;
+        if (error instanceof SyncRegionUnavailableError) {
+            return true;
         }
+
+        if (error instanceof SyncInvalidResponseError) {
+            return isDefined(error.apiCode);
+        }
+
+        return error instanceof SyncUnauthorizedError && source === BinanceHistorySourceEnum.C2C;
     }
 
     private defineRewardSource<T>({
