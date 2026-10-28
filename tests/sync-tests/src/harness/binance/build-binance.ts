@@ -56,6 +56,7 @@ export const buildBinance = {
         txId: `txid-${overrides.coin}-${overrides.amount}`,
         insertTime: Date.now(),
         status: 1,
+        walletType: 0,
         ...overrides
     }),
     withdrawal: (overrides: WithdrawalOverrides): BinanceWithdrawalApiInterface => ({
@@ -63,6 +64,7 @@ export const buildBinance = {
         transactionFee: '0',
         applyTime: new Date().toISOString(),
         status: 6,
+        walletType: 0,
         ...overrides
     }),
     fiatOrder: (overrides: FiatOrderOverrides): BinanceFiatOrderApiInterface => ({

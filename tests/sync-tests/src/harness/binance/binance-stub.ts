@@ -4,6 +4,9 @@ import { isDefined, isString } from '@rnw-community/shared';
 
 import { mockServer } from '../scenario/mock-server';
 
+import { binanceErrorResponse } from './binance-error-response';
+import { C2C_PAGING, EARN_PAGING, FIAT_PAGING, parseLimit, slicePage } from './binance-stub-page';
+
 import type {
     BinanceApiRestrictionsApiInterface,
     BinanceAssetBalanceApiInterface,
@@ -46,6 +49,15 @@ const SOL_STAKING_REWARDS_URL = `${BASE_URL}/sapi/v1/sol-staking/sol/history/rew
 const DUST_LOG_URL = `${BASE_URL}/sapi/v1/asset/dribblet`;
 const DIVIDEND_URL = `${BASE_URL}/sapi/v1/asset/assetDividend`;
 const UNIVERSAL_TRANSFER_URL = `${BASE_URL}/sapi/v1/asset/transfer`;
+const FAILABLE_ENDPOINT_URLS = {
+    c2cOrders: C2C_ORDERS_URL,
+    lockedEarnRewards: LOCKED_EARN_REWARDS_URL,
+    ethStakingRewards: ETH_STAKING_REWARDS_URL,
+    solStakingRewards: SOL_STAKING_REWARDS_URL,
+    dividends: DIVIDEND_URL,
+    dustLogs: DUST_LOG_URL,
+    universalTransfers: UNIVERSAL_TRANSFER_URL
+};
 const EXCHANGE_INFO_BASE_ASSETS = ['ADA', 'BNB', 'BTC', 'ETH', 'EUR', 'PEPE', 'USDT'];
 const EXCHANGE_INFO_QUOTE_ASSETS = ['USDT', 'FDUSD', 'BTC', 'BNB', 'BUSD'];
 const EXCHANGE_INFO_TRADING_STATUS = 'TRADING';
@@ -83,10 +95,13 @@ const buildAllValidSymbols = (): string[] => {
 };
 
 const FIAT_DEPOSIT_TRANSACTION_TYPE = '0';
-const FIRST_PAGE = '1';
 const C2C_BUY_TRADE_TYPE = 'BUY';
-const C2C_UNAUTHORIZED_STATUS = 401;
 const FIRST_OFFSET = 0;
+const MY_TRADES_DEFAULT_LIMIT = 500;
+const MY_TRADES_MAX_LIMIT = 1000;
+const DIVIDEND_DEFAULT_LIMIT = 20;
+const DIVIDEND_MAX_LIMIT = 500;
+const DUST_MAX_ROWS = 100;
 
 const WEIGHT_HEADERS = {
     'x-mbx-used-weight-1m': '10',
@@ -113,12 +128,10 @@ const parseApplyTimeMs = (applyTime: string): number => Date.parse(applyTime.inc
 
 const isWithinWindow = (timeMs: number, window: TimeWindow): boolean => timeMs >= window.startMs && timeMs <= window.endMs;
 
-const buildPagedEarnResponse = <TRow>(url: URL, rows: TRow[]): { rows: TRow[]; total: number } => {
-    const isFirstPage = url.searchParams.get('current') === FIRST_PAGE;
-    const pageRows = isFirstPage ? rows : [];
-
-    return { rows: pageRows, total: pageRows.length };
-};
+const buildPagedEarnResponse = <TRow>(url: URL, rows: TRow[]): { rows: TRow[]; total: number } => ({
+    rows: slicePage(url, rows, EARN_PAGING),
+    total: rows.length
+});
 
 const sliceOffsetPage = <TRow>(url: URL, rows: TRow[]): TRow[] => {
     const offset = Number(url.searchParams.get('offset') ?? String(FIRST_OFFSET));
@@ -175,7 +188,7 @@ const serveWith = (options: ServeOptions | undefined, respond: (info: { readonly
     };
 };
 
-const buildPagedEnvelope = <TRow>(data: TRow[]) => ({ code: '000000', message: 'success', data, total: data.length, success: true });
+const buildPagedEnvelope = <TRow>(data: TRow[], total: number) => ({ code: '000000', message: 'success', data, total, success: true });
 
 const serveCapitalHistory = <TRow>(
     rows: TRow[],
@@ -268,15 +281,15 @@ export const binanceStub = {
                 options?.onServed?.();
                 const url = new URL(request.url);
                 const isDeposit = url.searchParams.get('transactionType') === FIAT_DEPOSIT_TRANSACTION_TYPE;
-                const isFirstPage = url.searchParams.get('page') === FIRST_PAGE;
                 const window = parseTimeWindow(url, 'beginTime', 'endTime');
                 requestedWindows?.push(window);
                 requestOrder?.push('fiat');
                 const typeOrders = isDeposit ? fiatDeposits : fiatWithdrawals;
                 const windowOrders = typeOrders.filter(order => isWithinWindow(order.createTime, window));
-                const orders = isFirstPage ? windowOrders : [];
 
-                return HttpResponse.json(buildPagedEnvelope(orders), { headers: WEIGHT_HEADERS });
+                return HttpResponse.json(buildPagedEnvelope(slicePage(url, windowOrders, FIAT_PAGING), windowOrders.length), {
+                    headers: WEIGHT_HEADERS
+                });
             })
         );
     },
@@ -289,25 +302,23 @@ export const binanceStub = {
             http.get(C2C_ORDERS_URL, ({ request }) => {
                 const url = new URL(request.url);
                 const isBuy = url.searchParams.get('tradeType') === C2C_BUY_TRADE_TYPE;
-                const isFirstPage = url.searchParams.get('page') === FIRST_PAGE;
                 const window = parseTimeWindow(url, 'startTimestamp', 'endTimestamp');
                 requestedWindows?.push(window);
                 const typeOrders = isBuy ? buyOrders : sellOrders;
                 const windowOrders = typeOrders.filter(order => isWithinWindow(order.createTime, window));
-                const data = isFirstPage ? windowOrders : [];
 
-                return HttpResponse.json(buildPagedEnvelope(data), { headers: WEIGHT_HEADERS });
+                return HttpResponse.json(buildPagedEnvelope(slicePage(url, windowOrders, C2C_PAGING), windowOrders.length), {
+                    headers: WEIGHT_HEADERS
+                });
             })
         );
     },
+    failEndpoint: (endpoint: keyof typeof FAILABLE_ENDPOINT_URLS, respond: () => Response): void => {
+        mockServer.use(http.get(FAILABLE_ENDPOINT_URLS[endpoint], respond));
+    },
     c2cUnavailable: (): void => {
-        mockServer.use(
-            http.get(C2C_ORDERS_URL, () =>
-                HttpResponse.json(
-                    { code: '-2015', msg: 'Invalid API-key, IP, or permissions for action.' },
-                    { status: C2C_UNAUTHORIZED_STATUS }
-                )
-            )
+        binanceStub.failEndpoint('c2cOrders', () =>
+            binanceErrorResponse.unauthorized(-2015, 'Invalid API-key, IP, or permissions for action.')
         );
     },
     exchangeInfo: (symbols: readonly (string | ExchangeInfoSymbolStub)[]): void => {
@@ -337,12 +348,14 @@ export const binanceStub = {
                     requestedUrls?.push(url);
                     const symbolTrades = tradesBySymbol[symbol] ?? [];
                     const window = parseTimeWindow(url, 'startTime', 'endTime');
-                    const trades =
+                    const matchedTrades =
                         fromId === null
                             ? symbolTrades.filter(trade => isWithinWindow(trade.time, window))
                             : symbolTrades.filter(trade => trade.id >= Number(fromId));
 
-                    return HttpResponse.json(trades, { headers: WEIGHT_HEADERS });
+                    return HttpResponse.json(matchedTrades.slice(0, parseLimit(url, MY_TRADES_DEFAULT_LIMIT, MY_TRADES_MAX_LIMIT)), {
+                        headers: WEIGHT_HEADERS
+                    });
                 })
             )
         );
@@ -386,9 +399,8 @@ export const binanceStub = {
                 const matched = transfers.filter(
                     transfer => transfer.type === url.searchParams.get('type') && isWithinWindow(transfer.timestamp, window)
                 );
-                const { rows } = buildPagedEarnResponse(url, matched);
 
-                return HttpResponse.json({ rows, total: rows.length }, { headers: WEIGHT_HEADERS });
+                return HttpResponse.json(buildPagedEarnResponse(url, matched), { headers: WEIGHT_HEADERS });
             })
         );
     },
@@ -411,13 +423,11 @@ export const binanceStub = {
             http.get(EARN_REWARDS_URL, ({ request }) => {
                 options?.onServed?.();
                 const url = new URL(request.url);
-                const isFirstPage = url.searchParams.get('current') === FIRST_PAGE;
                 const window = parseTimeWindow(url, 'startTime', 'endTime');
                 requestedWindows?.push(window);
                 const windowRewards = rewards.filter(reward => isWithinWindow(reward.time, window));
-                const rows = isFirstPage ? windowRewards : [];
 
-                return HttpResponse.json({ rows, total: rows.length }, { headers: WEIGHT_HEADERS });
+                return HttpResponse.json(buildPagedEarnResponse(url, windowRewards), { headers: WEIGHT_HEADERS });
             })
         );
     },
@@ -433,10 +443,12 @@ export const binanceStub = {
     dividends: (dividends: BinanceDividendApiInterface[]): void => {
         mockServer.use(
             http.get(DIVIDEND_URL, ({ request }) => {
-                const window = parseTimeWindow(new URL(request.url), 'startTime', 'endTime');
-                const rows = dividends.filter(dividend => isWithinWindow(dividend.divTime, window));
+                const url = new URL(request.url);
+                const window = parseTimeWindow(url, 'startTime', 'endTime');
+                const matched = dividends.filter(dividend => isWithinWindow(dividend.divTime, window));
+                const rows = matched.slice(0, parseLimit(url, DIVIDEND_DEFAULT_LIMIT, DIVIDEND_MAX_LIMIT));
 
-                return HttpResponse.json({ rows, total: rows.length }, { headers: WEIGHT_HEADERS });
+                return HttpResponse.json({ rows, total: matched.length }, { headers: WEIGHT_HEADERS });
             })
         );
     },
@@ -444,9 +456,12 @@ export const binanceStub = {
         mockServer.use(
             http.get(DUST_LOG_URL, ({ request }) => {
                 const window = parseTimeWindow(new URL(request.url), 'startTime', 'endTime');
-                const userAssetDribblets = dustLogs.filter(dustLog => isWithinWindow(dustLog.operateTime, window));
+                const matched = dustLogs.filter(dustLog => isWithinWindow(dustLog.operateTime, window));
 
-                return HttpResponse.json({ total: userAssetDribblets.length, userAssetDribblets }, { headers: WEIGHT_HEADERS });
+                return HttpResponse.json(
+                    { total: matched.length, userAssetDribblets: matched.slice(0, DUST_MAX_ROWS) },
+                    { headers: WEIGHT_HEADERS }
+                );
             })
         );
     }

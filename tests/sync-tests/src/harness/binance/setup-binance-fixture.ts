@@ -17,6 +17,7 @@ interface SetupBinanceFixtureOptions {
     readonly forwardSyncedAt?: Date;
     readonly instrumentType?: InstrumentTypeEnum;
     readonly binanceTradeCursor?: string;
+    readonly serverTimeOffsetMs?: number;
 }
 
 export const setupBinanceFixture = (options: SetupBinanceFixtureOptions = {}) =>
@@ -47,7 +48,7 @@ export const setupBinanceFixture = (options: SetupBinanceFixtureOptions = {}) =>
             binanceTradeCursor: options.binanceTradeCursor ?? null
         });
 
-        binanceStub.serverTime();
+        binanceStub.serverTime(options.serverTimeOffsetMs);
         binanceStub.exchangeInfoAllValid();
         binanceStub.spotBalances([]);
         binanceStub.fundingBalances([]);
