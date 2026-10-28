@@ -30,6 +30,7 @@ export type { PrivatbankRowInterface } from './privatbank/interface/privatbank-r
 export { BinanceSignedClient } from './binance/client/binance-signed.client';
 export { mapBinanceDepositToTransaction, mapBinanceWithdrawalToTransaction, parseBinanceAmount } from './binance/mapper/binance.mapper';
 export { encodeBinanceAccountId, decodeBinanceAccountId } from './binance/utils/binance-account-id.util';
+export { BinanceHistorySourceEnum } from './binance/enum/binance-history-source.enum';
 export { BinanceWalletEnum } from './binance/enum/binance-wallet.enum';
 export { BinanceRateLimitMs } from './binance/constant/binance-rate-limit-ms.constant';
 export { BINANCE_API_MANAGEMENT_URL } from './binance/constant/binance-api-management-url.constant';

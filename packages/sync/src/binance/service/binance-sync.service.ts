@@ -191,7 +191,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 !isDefined(toUnixTime) && isDefined(pendingFromAt) ? Math.min(fromUnixTime, getUnixTime(pendingFromAt)) : fromUnixTime;
             const committedCount = yield* commitSourceType(
                 token,
-                client.getCapitalTransactions(rangeStartUnixTime, toUnixTime),
+                client.getTransactions(BinanceHistorySourceEnum.CAPITAL, rangeStartUnixTime, toUnixTime),
                 createOnly
             );
             const removedCount = yield* binanceSourceCommitService.removeByExternalIds(token, client.getRejectedCapitalExternalIds());
@@ -218,7 +218,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
         const commitFiatRange = Effect.fnUntraced(function* (token: string, fromUnixTime: number, toUnixTime: number | null) {
             const committedCount = yield* commitSourceType(
                 token,
-                getRunSignedClient(token).getFiatTransactions(fromUnixTime, toUnixTime),
+                getRunSignedClient(token).getTransactions(BinanceHistorySourceEnum.FIAT, fromUnixTime, toUnixTime),
                 updateExisting
             );
             if (!run.isDeferred) {

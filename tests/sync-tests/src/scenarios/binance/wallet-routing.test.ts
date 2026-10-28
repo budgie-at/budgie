@@ -1,5 +1,5 @@
 import { AccountBalanceRepository, AccountRepository, PRECISION, SyncModeEnum } from '@budgie/contracts';
-import { BinanceSignedClient, BinanceSyncService, BinanceWalletEnum, encodeBinanceAccountId } from '@budgie/sync';
+import { BinanceHistorySourceEnum, BinanceSignedClient, BinanceSyncService, BinanceWalletEnum, encodeBinanceAccountId } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -94,7 +94,7 @@ describe('binance/wallet-routing', () => {
             const { token } = yield* setupBinanceFixture({ asset: 'USDT', mode: SyncModeEnum.FORWARD });
             binanceStub.deposits([buildBinance.deposit({ id: 'dep-wallet', coin: 'USDT', amount: '10', ...walletOverrides })]);
 
-            const transactions = yield* new BinanceSignedClient(token).getCapitalTransactions(CAPITAL_FROM_UNIX);
+            const transactions = yield* new BinanceSignedClient(token).getTransactions(BinanceHistorySourceEnum.CAPITAL, CAPITAL_FROM_UNIX);
 
             expect(transactions.map(transaction => transaction.accountId)).toEqual([expectedAccountId]);
         }).pipe(Effect.provide(TestLayer))

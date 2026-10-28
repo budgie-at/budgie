@@ -246,12 +246,6 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return yield* this.getSourceTransactions(wallet, from, to, fetch);
     });
 
-    readonly getCapitalTransactions = (from: number, to: number | null = null) =>
-        this.getTransactions(BinanceHistorySourceEnum.CAPITAL, from, to);
-
-    readonly getFiatTransactions = (from: number, to: number | null = null) =>
-        this.getTransactions(BinanceHistorySourceEnum.FIAT, from, to);
-
     readonly getConvertTransfers = Effect.fn('BinanceSignedClient.getConvertTransfers')(function* (
         this: BinanceSignedClient,
         from: number,

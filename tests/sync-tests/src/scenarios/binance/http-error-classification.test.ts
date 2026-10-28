@@ -1,5 +1,5 @@
 import { SyncModeEnum } from '@budgie/contracts';
-import { BinanceSignedClient, BinanceSyncService } from '@budgie/sync';
+import { BinanceHistorySourceEnum, BinanceSignedClient, BinanceSyncService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import { HttpResponse, http } from 'msw';
@@ -44,7 +44,7 @@ const countRequests = (method: 'get' | 'post', url: string, respond: (requestNum
 const countDepositRequests = (respond: (requestNumber: number) => Response) => countRequests('get', DEPOSIT_URL, respond);
 
 const flipCapitalFailure = (client: BinanceSignedClient) =>
-    Effect.flip(client.getCapitalTransactions(BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO));
+    Effect.flip(client.getTransactions(BinanceHistorySourceEnum.CAPITAL, BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO));
 
 const BLOCKED_SYNC_CASES = [
     { label: '403 WAF block without an auth code', respond: binanceErrorResponse.wafBlock },
@@ -152,7 +152,8 @@ describe('binance/http-error-classification', () => {
                     : HttpResponse.json([buildBinance.deposit({ id: 'dep-1', coin: 'BTC', amount: '1' })])
             );
 
-            const transactions = yield* new BinanceSignedClient(BINANCE_TEST_TOKEN).getCapitalTransactions(
+            const transactions = yield* new BinanceSignedClient(BINANCE_TEST_TOKEN).getTransactions(
+                BinanceHistorySourceEnum.CAPITAL,
                 BINANCE_WINDOW_FROM,
                 BINANCE_WINDOW_TO
             );
@@ -170,7 +171,11 @@ describe('binance/http-error-classification', () => {
                 requestNumber === 1 ? binanceErrorResponse.apiError(-1100, 'bad') : HttpResponse.json({ serverTime: Date.now() })
             );
 
-            yield* new BinanceSignedClient(BINANCE_TEST_TOKEN).getCapitalTransactions(BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO);
+            yield* new BinanceSignedClient(BINANCE_TEST_TOKEN).getTransactions(
+                BinanceHistorySourceEnum.CAPITAL,
+                BINANCE_WINDOW_FROM,
+                BINANCE_WINDOW_TO
+            );
 
             expect(timeRequests).toHaveLength(2);
         }).pipe(Effect.provide(TestLayer))
