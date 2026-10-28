@@ -1,5 +1,7 @@
 import { HttpResponse, http } from 'msw';
 
+import { isString } from '@rnw-community/shared';
+
 import { mockServer } from '../scenario/mock-server';
 
 import type {
@@ -29,7 +31,7 @@ const EXCHANGE_INFO_BASE_ASSETS = ['ADA', 'BNB', 'BTC', 'ETH', 'EUR', 'PEPE', 'U
 const EXCHANGE_INFO_QUOTE_ASSETS = ['USDT', 'FDUSD', 'BTC', 'BNB', 'BUSD'];
 
 const EXCHANGE_INFO_TRADING_STATUS = 'TRADING';
-const EXCHANGE_INFO_SUFFIX_QUOTE_ASSETS = ['FDUSD', 'USDT', 'USDC', 'BUSD', 'BTC', 'BNB', 'EUR'];
+const EXCHANGE_INFO_SUFFIX_QUOTE_ASSETS = [...EXCHANGE_INFO_QUOTE_ASSETS, 'USDC', 'EUR'];
 
 interface ExchangeInfoSymbolStub {
     readonly baseAsset: string;
@@ -37,23 +39,16 @@ interface ExchangeInfoSymbolStub {
     readonly status?: string;
 }
 
-const toExchangeInfoSymbol = (entry: string | ExchangeInfoSymbolStub) => {
-    if (typeof entry !== 'string') {
-        return {
-            symbol: `${entry.baseAsset}${entry.quoteAsset}`,
-            baseAsset: entry.baseAsset,
-            quoteAsset: entry.quoteAsset,
-            status: entry.status ?? EXCHANGE_INFO_TRADING_STATUS
-        };
-    }
-    const quoteAsset = EXCHANGE_INFO_SUFFIX_QUOTE_ASSETS.find(quote => entry.endsWith(quote)) ?? '';
+const splitSymbolBySuffix = (symbol: string): ExchangeInfoSymbolStub => {
+    const quoteAsset = EXCHANGE_INFO_SUFFIX_QUOTE_ASSETS.find(quote => symbol.endsWith(quote)) ?? '';
 
-    return {
-        symbol: entry,
-        baseAsset: entry.slice(0, entry.length - quoteAsset.length),
-        quoteAsset,
-        status: EXCHANGE_INFO_TRADING_STATUS
-    };
+    return { baseAsset: symbol.slice(0, symbol.length - quoteAsset.length), quoteAsset };
+};
+
+const toExchangeInfoSymbol = (entry: string | ExchangeInfoSymbolStub) => {
+    const { baseAsset, quoteAsset, status = EXCHANGE_INFO_TRADING_STATUS } = isString(entry) ? splitSymbolBySuffix(entry) : entry;
+
+    return { symbol: `${baseAsset}${quoteAsset}`, baseAsset, quoteAsset, status };
 };
 
 const buildAllValidSymbols = (): string[] => {
