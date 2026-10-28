@@ -10,7 +10,7 @@ const VALUE_HEADROOM = 1.1;
 const BILL_LABEL_OFFSET = 12;
 
 const buildLinePath = (points: readonly BudgetForecastPointInterface[]): string =>
-    points.map((point, index) => `${index === 0 ? 'M' : 'L'}${point.x},${point.y}`).join(' ');
+    points.map((point, index) => [index === 0 ? 'M' : 'L', point.x, point.y].join(' ')).join(' ');
 
 export const buildBudgetForecastGeometry = (params: BudgetForecastGeometryParamsInterface): BudgetForecastGeometryInterface => {
     const { projection, width, height, paddingLeft, paddingRight, paddingTop, paddingBottom } = params;
@@ -32,10 +32,10 @@ export const buildBudgetForecastGeometry = (params: BudgetForecastGeometryParams
 
     const actualPoints = pointsOf(index => days[index].actual);
     const baselineY = height - paddingBottom;
-    const firstActual = actualPoints[0];
+    const [firstActual] = actualPoints;
     const lastActual = actualPoints[actualPoints.length - 1];
     const actualAreaPath = isDefined(lastActual)
-        ? `${buildLinePath(actualPoints)} L${lastActual.x},${baselineY} L${firstActual.x},${baselineY} Z`
+        ? [buildLinePath(actualPoints), 'L', lastActual.x, baselineY, 'L', firstActual.x, baselineY, 'Z'].join(' ')
         : '';
 
     return {

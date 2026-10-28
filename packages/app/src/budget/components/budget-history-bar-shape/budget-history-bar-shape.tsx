@@ -15,7 +15,6 @@ interface Props {
     readonly isEstimated: boolean;
 }
 
-const BAR_RADIUS = 3;
 const MIN_BAR_HEIGHT = 1.5;
 const OUTLINE_WIDTH = 1.5;
 const OUTLINE_DASH = '3 2';
@@ -28,7 +27,7 @@ export const BudgetHistoryBarShape = ({ centerX, barWidth, spent, limit, scaleMa
     const limitY = BUDGET_HISTORY_BASELINE_Y - limit * scale;
     const toneClassName = spent > limit ? 'accent-destructive-foreground' : 'accent-positive-foreground';
     const outlineProps = { fill: 'none', strokeWidth: OUTLINE_WIDTH, strokeDasharray: OUTLINE_DASH, strokeClassName: toneClassName };
-    const barPath = buildBudgetHistoryBarPath(centerX - barWidth / 2, BUDGET_HISTORY_BASELINE_Y, barWidth, barHeight, BAR_RADIUS);
+    const barPath = buildBudgetHistoryBarPath(centerX - barWidth / 2, BUDGET_HISTORY_BASELINE_Y, barWidth, barHeight);
     const limitStartX = centerX - barWidth;
     const limitEndX = centerX + barWidth;
     const solidProps = { fillClassName: toneClassName, opacity: isEstimated ? ESTIMATED_OPACITY : 1 };

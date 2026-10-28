@@ -65,6 +65,7 @@ export const BudgetForecastChart = ({ projection, currencySymbol }: Props) => {
     const { runOutAt, status } = projection.overall;
     const accentClassName = TODAY_ACCENT_CLASS_NAME[BUDGET_PACE_VARIANT[status]];
     const gradientClassName = GRADIENT_CLASS_NAME[BUDGET_PACE_VARIANT[status]];
+    const todayIndex = projection.elapsedDays - 1;
     const labelTodayX = Math.min(Math.max(todayX, CHART_PADDING_X + AXIS_LABEL_CLEARANCE), CHART_RIGHT - AXIS_LABEL_CLEARANCE);
 
     return (
@@ -115,7 +116,7 @@ export const BudgetForecastChart = ({ projection, currencySymbol }: Props) => {
 
             <BudgetForecastAxisLabels
                 days={projection.days}
-                todayIndex={projection.elapsedDays - 1}
+                todayIndex={todayIndex}
                 leftX={CHART_PADDING_X}
                 todayX={labelTodayX}
                 rightX={CHART_RIGHT}

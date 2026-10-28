@@ -16,11 +16,13 @@ interface Props {
 export const BudgetDayStripCell = ({ dayState, tone, hasBill }: Props) => {
     const isElapsed = dayState === BudgetDayStateEnum.ELAPSED;
     const cellClassName = cn(
-        'h-[14px] w-full rounded-[3px]',
+        'h-[14px]',
+        'w-full',
+        'rounded-[3px]',
         BUDGET_DAY_STATE_CLASS_NAME[dayState],
         isElapsed && STATUS_TONE_FILL_CLASS_NAME[tone]
     );
-    const billClassName = cn('h-[3px] w-[3px] rounded-full', hasBill ? 'bg-secondary-foreground' : 'bg-transparent');
+    const billClassName = cn('h-[3px]', 'w-[3px]', 'rounded-full', hasBill ? 'bg-secondary-foreground' : 'bg-transparent');
 
     return (
         <View className="flex-1 items-center gap-y-xs">

@@ -19,7 +19,7 @@ export const StatCell = ({ label, value, variant, appearance = 'centered', testI
     const { container, value: valueClassName } = STAT_CELL_APPEARANCE_CLASS_NAME[appearance];
 
     return (
-        <View className={container}>
+        <View className={cn(container)}>
             <Text numberOfLines={1} className="text-xxs uppercase tracking-wider text-secondary-foreground">
                 {label}
             </Text>
