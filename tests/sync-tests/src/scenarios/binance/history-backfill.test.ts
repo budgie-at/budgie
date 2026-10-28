@@ -26,7 +26,7 @@ const DAY_MS = 86_400_000;
 const OLD_AGE_MS = 1500 * DAY_MS;
 const RECENT_AGE_MS = 5 * DAY_MS;
 const LONG_PAUSE_MS = 45 * DAY_MS;
-const DEFER_AT_REQUEST = 3;
+const DEFER_AT_REQUEST = 4;
 
 interface BackfillSource {
     readonly name: string;
@@ -131,6 +131,7 @@ describe('binance/history-backfill', () => {
             expect(yield* countTransactions()).toBe(1);
             expect(firstTailAt).toBeLessThan(Date.now() - 60 * DAY_MS);
 
+            jumpPastDeadline();
             source.stub(timesMs, [], deferAtRequest(DEFER_AT_REQUEST));
             yield* resyncBinance(sync.id, true).pipe(Effect.ensuring(restoreRealTimers));
 
@@ -139,8 +140,9 @@ describe('binance/history-backfill', () => {
             expect(secondTailAt).toBeLessThan(firstTailAt - 30 * DAY_MS);
 
             const finalWindows: TimeWindow[] = [];
+            jumpPastDeadline();
             source.stub(timesMs, finalWindows, emptyFn);
-            yield* resyncBinance(sync.id);
+            yield* resyncBinance(sync.id).pipe(Effect.ensuring(restoreRealTimers));
 
             expect(yield* countTransactions()).toBe(2);
             expect((yield* fetchHistoryProgress(token))[source.key].tailAt).toBeLessThan(Date.now() - 1800 * DAY_MS);

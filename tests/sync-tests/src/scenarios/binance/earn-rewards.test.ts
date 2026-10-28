@@ -11,7 +11,7 @@ import {
     fetchBinanceEntriesByExternalId,
     fetchBinanceTransactions,
     recentDayInMonthsAgo,
-    resetBinanceSyncForResync,
+    resyncBinance,
     setupBinanceFixture,
     skipRequestedSync,
     TestLayer
@@ -40,17 +40,16 @@ describe('binance/earn-rewards', () => {
     it.effect('updates the open day total when a later reward arrives in a second sync', () =>
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
-            const dayStartMs = recentDayInMonthsAgo(1);
+            const dayStartMs = Math.floor(Date.now() / DAY_MS) * DAY_MS - DAY_MS;
             const morningReward = earnReward('0.5', dayStartMs + 10 * MINUTE_MS);
-            yield* setupBinanceFixture({ asset: 'USDT' });
+            const { sync } = yield* setupBinanceFixture({ asset: 'USDT' });
             binanceStub.earnRewards([morningReward]);
 
             yield* binanceSyncService.sync();
             yield* expectEarnEntryMicroUnits(dayStartMs, MICRO_UNITS / 2);
 
-            resetBinanceSyncForResync();
             binanceStub.earnRewards([morningReward, earnReward('0.25', dayStartMs + 8 * HOUR_MS)]);
-            yield* binanceSyncService.sync();
+            yield* resyncBinance(sync.id);
 
             expect(yield* fetchBinanceTransactions()).toHaveLength(1);
             yield* expectEarnEntryMicroUnits(dayStartMs, (MICRO_UNITS * 3) / 4);

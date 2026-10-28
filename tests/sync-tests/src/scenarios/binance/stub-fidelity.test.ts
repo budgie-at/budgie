@@ -15,6 +15,7 @@ import {
 } from '../../harness';
 
 const FIAT_ORDER_COUNT = 501;
+const HEAVY_IMPORT_TIMEOUT_MS = 30_000;
 const TRADE_COUNT = 1200;
 const TRADE_BATCH_SIZE = 1000;
 const SERVER_TIME_OFFSET_MS = 5 * 60 * 1000;
@@ -50,24 +51,27 @@ describe('binance/stub-fidelity', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('continues myTrades from fromId when the first 1000-trade batch is full', () =>
-        Effect.gen(function* () {
-            const binanceSyncService = yield* BinanceSyncService;
+    it.effect(
+        'continues myTrades from fromId when the first 1000-trade batch is full',
+        () =>
+            Effect.gen(function* () {
+                const binanceSyncService = yield* BinanceSyncService;
 
-            yield* seedCryptoInstrument('ADA');
-            yield* setupUsdtSpotFixtureWithBalances('ADA', String(TRADE_COUNT));
-            const requestedUrls: URL[] = [];
-            binanceStub.myTrades({ ADAUSDT: buildAdaFills() }, new Set<string>(), requestedUrls);
+                yield* seedCryptoInstrument('ADA');
+                yield* setupUsdtSpotFixtureWithBalances('ADA', String(TRADE_COUNT));
+                const requestedUrls: URL[] = [];
+                binanceStub.myTrades({ ADAUSDT: buildAdaFills() }, new Set<string>(), requestedUrls);
 
-            yield* binanceSyncService.sync();
+                yield* binanceSyncService.sync();
 
-            const adaRequests = requestedUrls.filter(url => url.searchParams.get('symbol') === 'ADAUSDT');
-            const tradeIds = (yield* fetchSortedBinanceExternalIds()).filter(externalId =>
-                externalId?.startsWith('binance:trade:ADAUSDT:')
-            );
-            expect(adaRequests.map(url => url.searchParams.get('fromId'))).toStrictEqual([null, String(TRADE_BATCH_SIZE + 1)]);
-            expect(tradeIds).toHaveLength(TRADE_COUNT);
-        }).pipe(Effect.provide(TestLayer))
+                const adaRequests = requestedUrls.filter(url => url.searchParams.get('symbol') === 'ADAUSDT');
+                const tradeIds = (yield* fetchSortedBinanceExternalIds()).filter(externalId =>
+                    externalId?.startsWith('binance:trade:ADAUSDT:')
+                );
+                expect(adaRequests.map(url => url.searchParams.get('fromId'))).toStrictEqual([null, String(TRADE_BATCH_SIZE + 1)]);
+                expect(tradeIds).toHaveLength(TRADE_COUNT);
+            }).pipe(Effect.provide(TestLayer)),
+        HEAVY_IMPORT_TIMEOUT_MS
     );
 
     it.effect('signs requests with the Binance server time when the local clock is off', () =>

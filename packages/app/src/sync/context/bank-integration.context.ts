@@ -11,7 +11,9 @@ export const BankIntegrationContext = createContext<BankIntegrationContextValueI
         deletedAt: null,
         provider: ExternalSourceEnum.MANUAL,
         token: '',
-        label: null
+        label: null,
+        externalClientId: null,
+        historyProgress: null
     },
     capabilities: {
         supportsLiveSync: false,

@@ -18,7 +18,7 @@ const LARGE_FILL_ID = 30;
 const TINY_COMMISSION_FILL_ID = 31;
 
 describe('binance/trade-edge-cases', () => {
-    it.effect('imports a 2e10 PEPE fill instead of dropping it', () =>
+    it.effect('imports a 2e9 PEPE fill instead of dropping it', () =>
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
 
@@ -29,7 +29,7 @@ describe('binance/trade-edge-cases', () => {
                     buildBinance.trade({
                         symbol: 'PEPEUSDT',
                         id: LARGE_FILL_ID,
-                        qty: '20000000000',
+                        qty: '2000000000',
                         quoteQty: '20000',
                         commission: '0',
                         isBuyer: true

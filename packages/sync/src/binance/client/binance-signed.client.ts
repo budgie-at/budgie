@@ -113,7 +113,6 @@ const MY_TRADES_ENDPOINT = '/api/v3/myTrades';
 const UNIVERSAL_TRANSFER_ENDPOINT = '/sapi/v1/asset/transfer';
 const UNIVERSAL_TRANSFER_TYPES = ['MAIN_FUNDING', 'FUNDING_MAIN'];
 const UNIVERSAL_TRANSFER_CONFIRMED_STATUS = 'CONFIRMED';
-const UNIVERSAL_TRANSFER_MAX_PERIOD_MS = 2592000000;
 const EARN_POSITION_ENDPOINT = '/sapi/v1/simple-earn/flexible/position';
 const LOCKED_EARN_POSITION_ENDPOINT = '/sapi/v1/simple-earn/locked/position';
 const EARN_REWARDS_ENDPOINT = '/sapi/v1/simple-earn/flexible/history/rewardsRecord';
@@ -715,27 +714,35 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     }
 
     private fetchConvertTransfers(startTimeMs: number, endTimeMs: number) {
-        return Effect.gen({ self: this }, function* (this: BinanceSignedClient) {
-            const convertFlows = yield* this.walkSplitWindows(CONVERT_MAX_PERIOD_MS, startTimeMs, endTimeMs, (chunkStartMs, chunkEndMs) =>
-                this.signedRequest(BinanceConvertTradeFlowApiSchema, CONVERT_TRADE_FLOW_ENDPOINT, 'GET', {
-                    startTime: chunkStartMs,
-                    endTime: chunkEndMs,
-                    limit: CONVERT_ROWS_PER_PAGE
-                }).pipe(Effect.map(chunk => ({ rows: chunk.list, isTruncated: chunk.moreData })))
-            );
-            const convertTransfers = convertFlows
-                .filter(flow => flow.orderStatus === CONVERT_SUCCESS_STATUS)
-                .map(flow => mapBinanceConvertToTransfer(flow))
-                .filter(isDefined);
-            this.noteTouchedAssets(this.collectTransferAssets(convertTransfers));
-            const universalTransfers = yield* this.skipWhenUnavailable(
-                BinanceHistorySourceEnum.CONVERT,
-                [],
-                this.fetchUniversalTransfers(startTimeMs, endTimeMs)
-            );
+        return Effect.map(
+            this.walkWindowsBackward(CONVERT_MAX_PERIOD_MS, startTimeMs, endTimeMs, (windowStartMs, windowEndMs) =>
+                Effect.gen({ self: this }, function* (this: BinanceSignedClient) {
+                    const convertFlows = yield* this.fetchSplittingWindow(
+                        (chunkStartMs, chunkEndMs) =>
+                            this.signedRequest(BinanceConvertTradeFlowApiSchema, CONVERT_TRADE_FLOW_ENDPOINT, 'GET', {
+                                startTime: chunkStartMs,
+                                endTime: chunkEndMs,
+                                limit: CONVERT_ROWS_PER_PAGE
+                            }).pipe(Effect.map(chunk => ({ rows: chunk.list, isTruncated: chunk.moreData }))),
+                        windowStartMs,
+                        windowEndMs
+                    );
+                    const convertTransfers = convertFlows
+                        .filter(flow => flow.orderStatus === CONVERT_SUCCESS_STATUS)
+                        .map(flow => mapBinanceConvertToTransfer(flow))
+                        .filter(isDefined);
+                    this.noteTouchedAssets(this.collectTransferAssets(convertTransfers));
+                    const universalTransfers = yield* this.skipWhenUnavailable(
+                        BinanceHistorySourceEnum.CONVERT,
+                        [],
+                        this.fetchUniversalTransferWindow(windowStartMs, windowEndMs)
+                    );
 
-            return [...new Map([...convertTransfers, ...universalTransfers].map(transfer => [transfer.externalId, transfer])).values()];
-        });
+                    return [...convertTransfers, ...universalTransfers];
+                })
+            ),
+            transfers => [...new Map(transfers.map(transfer => [transfer.externalId, transfer])).values()]
+        );
     }
 
     private fetchTrades(
@@ -920,26 +927,22 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         );
     }
 
-    private fetchUniversalTransfers(startTimeMs: number, endTimeMs: number) {
-        const availableStartTimeMs = Math.max(startTimeMs, this.limitedHistoryFloorTimeMs);
+    private fetchUniversalTransferWindow(windowStartMs: number, windowEndMs: number) {
+        const availableStartTimeMs = Math.max(windowStartMs, this.limitedHistoryFloorTimeMs);
 
-        if (availableStartTimeMs >= endTimeMs) {
+        if (availableStartTimeMs >= windowEndMs) {
             return Effect.succeed<BinanceTransferInterface[]>([]);
         }
 
         return Effect.forEach(UNIVERSAL_TRANSFER_TYPES, type =>
-            this.walkPagedWindows(
-                UNIVERSAL_TRANSFER_MAX_PERIOD_MS,
-                availableStartTimeMs,
-                endTimeMs,
-                (current, windowStartMs, windowEndMs) =>
-                    this.fetchEarnPage(BinanceUniversalTransferListApiSchema, UNIVERSAL_TRANSFER_ENDPOINT, {
-                        type,
-                        startTime: windowStartMs,
-                        endTime: windowEndMs,
-                        current,
-                        size: EARN_PAGE_SIZE
-                    })
+            this.collectPages(current =>
+                this.fetchEarnPage(BinanceUniversalTransferListApiSchema, UNIVERSAL_TRANSFER_ENDPOINT, {
+                    type,
+                    startTime: availableStartTimeMs,
+                    endTime: windowEndMs,
+                    current,
+                    size: EARN_PAGE_SIZE
+                })
             )
         ).pipe(
             Effect.map(transfersByType =>

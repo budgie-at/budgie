@@ -80,8 +80,11 @@ export const getBinanceCapitalWallet = (record: { readonly walletType?: number }
 
 export const parseBinanceAmount = (value: string): number | null => {
     const totalMicroUnits = parseBinanceScaledDecimal(value, MICRO_UNITS_DECIMALS);
+    const maxSafeMicroUnits = BigInt(Number.MAX_SAFE_INTEGER);
 
-    return isDefined(totalMicroUnits) ? convertFromMicroUnits(Number(totalMicroUnits)) : null;
+    return isDefined(totalMicroUnits) && totalMicroUnits <= maxSafeMicroUnits && totalMicroUnits >= -maxSafeMicroUnits
+        ? convertFromMicroUnits(Number(totalMicroUnits))
+        : null;
 };
 
 export const parseUnsignedAmount = (value: string): number | null => {

@@ -22,8 +22,8 @@ describe('binance/parse-amount', () => {
         expect(parseBinanceAmount('')).toBeNull();
     });
 
-    it('parses an amount whose microunit value exceeds MAX_SAFE_INTEGER', () => {
-        expect(parseBinanceAmount('20000000000')).toBe(20_000_000_000);
+    it('rejects an amount whose microunit value exceeds MAX_SAFE_INTEGER', () => {
+        expect(parseBinanceAmount('20000000000')).toBeNull();
     });
 
     it('parses scientific notation', () => {
