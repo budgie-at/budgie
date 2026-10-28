@@ -12,6 +12,7 @@ export class PollingSyncRateGate extends Context.Service<PollingSyncRateGate>()(
         const syncWorkload = yield* SyncWorkload;
         const nextRequestAtMsByToken = new Map<string, number>();
         let lastRequestReadyAtMs = 0;
+        let backOffUntilMs = 0;
 
         return {
             requestReadyAtMs: (token: string) => Effect.sync(() => nextRequestAtMsByToken.get(token) ?? 0),
@@ -42,18 +43,15 @@ export class PollingSyncRateGate extends Context.Service<PollingSyncRateGate>()(
                 deadlineAtMs: number,
                 rateLimitMs: number
             ) {
-                if (yield* syncWorkload.hasQueuedWork) {
-                    return true;
-                }
-
                 const nowMs = yield* Clock.currentTimeMillis;
-                if (nowMs + rateLimitMs > deadlineAtMs) {
+                if (rateLimitMs > MAX_INLINE_WAIT_MS) {
+                    backOffUntilMs = nowMs + rateLimitMs;
+                    lastRequestReadyAtMs = backOffUntilMs;
+
                     return true;
                 }
 
-                if (rateLimitMs > MAX_INLINE_WAIT_MS) {
-                    lastRequestReadyAtMs = nowMs + rateLimitMs;
-
+                if ((yield* syncWorkload.hasQueuedWork) || nowMs + rateLimitMs > deadlineAtMs) {
                     return true;
                 }
 
@@ -62,7 +60,8 @@ export class PollingSyncRateGate extends Context.Service<PollingSyncRateGate>()(
                     Effect.as(syncWorkload.awaitQueuedUserWork, true)
                 );
             }),
-            lastRequestReadyAtMs: Effect.sync(() => lastRequestReadyAtMs)
+            lastRequestReadyAtMs: Effect.sync(() => lastRequestReadyAtMs),
+            isBackedOff: (nowMs: number) => nowMs < backOffUntilMs
         };
     })
 }) {

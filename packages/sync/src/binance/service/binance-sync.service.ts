@@ -396,7 +396,8 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                     error instanceof SyncDeferredError
                 ),
             isCredentialWideError: error => error instanceof SyncUnauthorizedError,
-            shouldKeepSyncsEnabledAfterError: error => run.providerSourceFailed && error instanceof SyncInvalidResponseError
+            shouldKeepSyncsEnabledAfterError: error =>
+                error instanceof SyncRegionUnavailableError || (run.providerSourceFailed && error instanceof SyncInvalidResponseError)
         });
 
         return {

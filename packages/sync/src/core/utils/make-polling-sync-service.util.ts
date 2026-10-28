@@ -42,7 +42,7 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
 
     const shouldStopProcessing = Effect.map(
         Clock.currentTimeMillis,
-        nowMs => definition.isRunDeferred?.() === true || nowMs >= runDeadlineAtMs
+        nowMs => definition.isRunDeferred?.() === true || nowMs >= runDeadlineAtMs || rateGate.isBackedOff(nowMs)
     );
 
     const sleepWithinDeadline = Effect.flatMap(Clock.currentTimeMillis, nowMs =>

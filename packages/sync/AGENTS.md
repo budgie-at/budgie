@@ -172,7 +172,7 @@ One tagged union, `SyncError`, of `Schema.TaggedError` classes in `core/error/`.
 Binance classifies by error code first, HTTP status second (`BinanceSignedClient.classifyApiError`). A 403, 418 or 429 becomes
 `SyncRateLimitedError` carrying `retryAfterMs` from `Retry-After` (120 s default for 403/418), which cools the weight throttle and
 ends the run with a continuation after that time without disabling any sync. `-1021` refreshes the server-time offset and retries
-the request once. 451 is terminal and not retried.
+the request once. 451 is terminal and not retried: it keeps every Binance sync enabled (status `FAILED` with `lastError`), because a region block is neither per-account nor a bad key. A back-off longer than 60 s also pauses later runs of the service until it expires.
 
 `SyncInvalidResponseError` is meaningful: a Monobank backward window treats it as an empty batch, while a
 forward batch fails and keeps its cursor so no window is skipped; Binance treats `apiCode -1121` (unknown
