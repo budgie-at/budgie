@@ -1,5 +1,5 @@
 import { computePeriodWindow, getInclusiveEnd } from '@budgie/budget';
-import { UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
+import { UserIconNameEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { Trans } from '@lingui/react/macro';
 import { router } from 'expo-router';
@@ -11,16 +11,15 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
+import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { useToday } from '../../../@generic/hook/use-today.hook';
-import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { BudgetSelector } from '../../budget.selector';
-import { useGetBudgetCategoryLimitsQuery } from '../../query/use-get-budget-category-limits.query';
-import { useGetBudgetSpentQuery } from '../../query/use-get-budget-spent.query';
+import { useGetBudgetProjectionQuery } from '../../query/use-get-budget-projection.query';
 import { formatBudgetPeriodLabel } from '../../utils/format-budget-period-label.util';
 import { BudgetDetailsCategoryList } from '../budget-details-category-list/budget-details-category-list';
-import { BudgetProgressBar } from '../budget-progress-bar/budget-progress-bar';
+import { BudgetVerdict } from '../budget-verdict/budget-verdict';
 
 import type { BudgetEntityInterface } from '@budgie/contracts';
 
@@ -29,16 +28,13 @@ interface Props {
 }
 
 export const BudgetDetails = ({ budget }: Props) => {
-    const { spent } = useGetBudgetSpentQuery(budget);
-    const { categoryLimits } = useGetBudgetCategoryLimitsQuery(budget.id);
+    const { projection, isLoading } = useGetBudgetProjectionQuery(budget);
     const { instrument } = useGetInstrumentByIdQuery(budget.instrumentId);
-    const formatDigits = useDisplayFormatDigits();
     const periodWindow = computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, useToday());
     const periodEnd = getInclusiveEnd(periodWindow.nextPeriodStart);
     const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
     const dateLabel = formatBudgetPeriodLabel(budget, useFormatDate().formatMonthAndDay);
-    const displaySpent = convertFromMicroUnits(spent.spentOverall);
-    const hasCategoryLimitsContent = isNotEmptyArray(categoryLimits) || isPositiveNumber(budget.otherLimit);
+    const hasCategoryLimitsContent = isNotEmptyArray(projection.categories) || isPositiveNumber(budget.otherLimit);
 
     const handleEditPress = () => {
         router.push({ pathname: '/budget/edit', params: { id: String(budget.id) } });
@@ -46,10 +42,7 @@ export const BudgetDetails = ({ budget }: Props) => {
 
     const categoryLimitsContent = hasCategoryLimitsContent ? (
         <BudgetDetailsCategoryList
-            categoryLimits={categoryLimits}
-            spentByCategory={spent.spentByCategory}
-            spentOverall={spent.spentOverall}
-            otherLimitAmount={budget.otherLimit}
+            projection={projection}
             periodStart={periodWindow.periodStart}
             periodEnd={periodEnd}
             currencySymbol={currencySymbol}
@@ -90,29 +83,18 @@ export const BudgetDetails = ({ budget }: Props) => {
             trailing={headerAction}
             contentClassName="gap-y-7xl"
         >
-            <View className="gap-y-md">
-                <View className="flex-row items-center justify-between">
-                    <Text className="text-primary text-lg font-semibold">
-                        <Trans>Monthly budget</Trans>
-                    </Text>
-                    <Text className="text-secondary-foreground text-sm">{formatDigits(displaySpent, currencySymbol)}</Text>
-                </View>
-
-                <BudgetProgressBar
-                    spent={spent.spentOverall}
-                    limit={budget.overallLimit}
-                    spentTestID={BudgetSelector.DetailsSpentLabel}
-                    currencySymbol={currencySymbol}
-                    remainingTestID={BudgetSelector.DetailsRemainingLabel}
-                />
-            </View>
+            <LoadingContent isLoading={isLoading}>
+                <BudgetVerdict projection={projection} currencySymbol={currencySymbol} />
+            </LoadingContent>
 
             <View className="gap-y-md">
                 <Text className="text-primary text-lg font-semibold">
                     <Trans>Category limits</Trans>
                 </Text>
 
-                {categoryLimitsContent}
+                <LoadingContent isLoading={isLoading} className="gap-y-md">
+                    {categoryLimitsContent}
+                </LoadingContent>
             </View>
         </CollapsibleChromePage>
     );

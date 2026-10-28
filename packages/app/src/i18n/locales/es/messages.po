@@ -134,6 +134,10 @@ msgstr "{count, plural, one {Esta etiqueta tiene # transacción. Selecciona otra
 msgid "{days, plural, one {In # day} other {In # days}}"
 msgstr "{days, plural, one {En # día} other {En # días}}"
 
+#: src/budget/components/budget-verdict/budget-verdict.tsx
+msgid "{daysLeft, plural, one {# day left} other {# days left}}"
+msgstr "{daysLeft, plural, one {Queda # día} other {Quedan # días}}"
+
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "{daysRemaining, plural, one {# day left} other {# days left}}"
 msgstr "{daysRemaining, plural, one {Queda # día} other {Quedan # días}}"
@@ -257,6 +261,10 @@ msgstr "{newTransactionCount, plural, one {Importar # transacción} other {Impor
 msgid "{newTransactionCount} new, {existingTransactionCount} already imported, {parsedTransactionCount} checked"
 msgstr "{newTransactionCount} nuevas, {existingTransactionCount} ya importadas, {parsedTransactionCount} comprobadas"
 
+#: src/budget/components/budget-category-forecast/budget-category-forecast.tsx
+msgid "{overAmount} over budget"
+msgstr "{overAmount} por encima del presupuesto"
+
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
 msgid "{overdueDays, plural, one {Overdue # day} other {Overdue # days}}"
 msgstr "{overdueDays, plural, one {Vencido hace # día} other {Vencido hace # días}}"
@@ -349,6 +357,10 @@ msgstr "{statementAccountCount, plural, one {# cuenta. Los saldos vienen del ext
 #: src/ai/component/ai-on-device-link-card/ai-on-device-link-card.tsx
 msgid "{statusLabel} · {downloaded} of {total} GB"
 msgstr "{statusLabel} · {downloaded} de {total} GB"
+
+#: src/budget/components/budget-verdict/budget-verdict.tsx
+msgid "{statusLabel}: spent {spentAmount} of {limitAmount}, {upcomingAmount} reserved for upcoming bills, {daysLeftLabel}."
+msgstr "{statusLabel}: has gastado {spentAmount} de {limitAmount}, {upcomingAmount} reservado para próximos pagos, {daysLeftLabel}."
 
 #: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
 msgid "{taggedCount, plural, one {# tagged this session} other {# tagged this session}}"
@@ -642,6 +654,10 @@ msgstr "Ajuste"
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 msgid "After 5 wrong tries, Budgie waits a little longer between attempts."
 msgstr "Tras 5 intentos fallidos, Budgie espera un poco más entre intentos."
+
+#: src/budget/components/budget-verdict/budget-verdict.tsx
+msgid "Ahead of pace"
+msgstr "Por encima del ritmo"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "AI"
@@ -3050,8 +3066,13 @@ msgid "Less Than"
 msgstr "Menor que"
 
 #: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
+#: src/budget/components/budget-pace-legend/budget-pace-legend.tsx
 msgid "Limit"
 msgstr "Límite"
+
+#: src/budget/components/budget-forecast-chart/budget-forecast-chart.tsx
+msgid "Limit {limitAmount}"
+msgstr "Límite {limitAmount}"
 
 #: src/ai/component/voice-input-bubble/voice-input-bubble.tsx
 msgid "Listening..."
@@ -3298,7 +3319,6 @@ msgstr "Monobank rechazó esta clave. Revísala e inténtalo de nuevo."
 msgid "Monobank sends about one month of history per minute, for each account you selected."
 msgstr "Monobank envía alrededor de un mes de historial por minuto, por cada cuenta seleccionada."
 
-#: src/budget/components/budget-details/budget-details.tsx
 #: src/budget/components/budget-widget/budget-widget.tsx
 msgid "Monthly budget"
 msgstr "Presupuesto mensual"
@@ -3693,6 +3713,15 @@ msgstr "En este iPhone"
 msgid "On this phone"
 msgstr "En este teléfono"
 
+#: src/budget/components/budget-category-forecast/budget-category-forecast.tsx
+#: src/budget/components/budget-verdict/budget-verdict.tsx
+msgid "On track"
+msgstr "Vas bien"
+
+#: src/budget/components/budget-category-forecast/budget-category-forecast.tsx
+msgid "On track · Too early to forecast"
+msgstr "Vas bien · Aún es pronto para prever"
+
 #: src/app/(tabs)/settings/ai.tsx
 msgid "On-device AI"
 msgstr "IA en el dispositivo"
@@ -3866,6 +3895,7 @@ msgid "over"
 msgstr "de más"
 
 #: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
+#: src/budget/components/budget-verdict/budget-verdict.tsx
 #: src/budget/hooks/use-budget-progress-labels.hook.ts
 msgid "Over budget"
 msgstr "Por encima del presupuesto"
@@ -4087,6 +4117,14 @@ msgstr "PrivatBank"
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Privatbank (XLSX)"
 msgstr "Privatbank (XLSX)"
+
+#: src/budget/components/budget-category-forecast/budget-category-forecast.tsx
+msgid "Projected {overAmount} over"
+msgstr "Previsión: {overAmount} por encima"
+
+#: src/budget/components/budget-category-forecast/budget-category-forecast.tsx
+msgid "Projected {overAmount} over · Runs out ~{runOutDate}"
+msgstr "Previsión: {overAmount} por encima · Se agota ~{runOutDate}"
 
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Push notifications are disabled"
@@ -4399,6 +4437,10 @@ msgstr "Funciona en"
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "Runs on this phone. Nothing it reads is sent anywhere."
 msgstr "Funciona en este teléfono. Nada de lo que lee se envía a ningún sitio."
+
+#: src/budget/components/budget-forecast-run-out/budget-forecast-run-out.tsx
+msgid "Runs out ~{runOutDate}"
+msgstr "Se agota ~{runOutDate}"
 
 #: src/runway/component/runway-verdict/runway-verdict.tsx
 msgid "Runs out around {runOutDate}"
@@ -4830,6 +4872,7 @@ msgstr "Gastos por etiqueta"
 
 #: src/account/component/account-details-month-chips/account-details-month-chips.tsx
 #: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
+#: src/budget/components/budget-pace-legend/budget-pace-legend.tsx
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Spent"
 msgstr "Gastado"
@@ -5304,6 +5347,10 @@ msgstr "Token ya conectado"
 msgid "Token required"
 msgstr "Token requerido"
 
+#: src/budget/components/budget-verdict-header/budget-verdict-header.tsx
+msgid "Too early to forecast"
+msgstr "Aún es pronto para prever"
+
 #: src/auth/hook/use-pin-error.hook.ts
 msgid "Too many attempts. Try again in {time}"
 msgstr "Demasiados intentos. Vuelve a intentarlo en {time}"
@@ -5555,6 +5602,7 @@ msgstr "Actualizado"
 msgid "Up to date · {lastSyncedLabel}"
 msgstr "Al día · {lastSyncedLabel}"
 
+#: src/budget/components/budget-pace-legend/budget-pace-legend.tsx
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "Upcoming"
 msgstr "Próximos"

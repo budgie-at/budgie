@@ -6,17 +6,18 @@ import { AnalyticsTransactionsModeEnum } from '../../../transaction/enum/analyti
 import { BudgetSelector } from '../../budget.selector';
 import { BudgetDetailsLimitCard } from '../budget-details-limit-card/budget-details-limit-card';
 
+import type { BudgetProjectionScopeInterface } from '@budgie/budget';
+
 interface Props {
     readonly categoryIds: readonly number[];
-    readonly spent: number;
-    readonly limitAmount: number;
+    readonly scope: BudgetProjectionScopeInterface;
     readonly periodStart: Date;
     readonly periodEnd: Date;
     readonly currencySymbol: string;
 }
 
 export const BudgetDetailsOtherCategoryRow = (props: Props) => {
-    const { categoryIds, spent, limitAmount, periodStart, periodEnd, currencySymbol } = props;
+    const { categoryIds, scope, periodStart, periodEnd, currencySymbol } = props;
     const { t } = useLingui();
 
     const excludedCategoryIds = categoryIds.join(',');
@@ -38,8 +39,7 @@ export const BudgetDetailsOtherCategoryRow = (props: Props) => {
         <BudgetDetailsLimitCard
             title={t`Other`}
             icon={UserIconNameEnum.CircleEllipsis}
-            spent={spent}
-            limitAmount={limitAmount}
+            scope={scope}
             currencySymbol={currencySymbol}
             testID={BudgetSelector.DetailsOtherCategoryRow}
             spentTestID={BudgetSelector.DetailsOtherCategorySpentLabel}

@@ -71,6 +71,7 @@ const toEntry = (
         latestAmount,
         latestTransactionId: event?.transactionId ?? null,
         dayOfMonth,
+        periodDays: series.periodDays,
         isForecast
     };
 };
