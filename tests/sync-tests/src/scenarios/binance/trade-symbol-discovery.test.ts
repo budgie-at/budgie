@@ -1,9 +1,10 @@
 import { InstrumentTypeEnum, SyncModeEnum } from '@budgie/contracts';
-import { BinanceSyncService } from '@budgie/sync';
+import { BinanceSignedClient, BinanceSyncService, BinanceWalletEnum, encodeBinanceAccountId } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
 import {
+    BINANCE_TEST_TOKEN,
     binanceStub,
     buildBinance,
     fetchSortedBinanceExternalIds,
@@ -11,6 +12,9 @@ import {
     setupBinanceFixture,
     TestLayer
 } from '../../harness';
+
+const SECONDS_PER_DAY = 86_400;
+const MILLISECONDS_PER_SECOND = 1000;
 
 const buildFillStub = (symbol: string, id: number) =>
     buildBinance.trade({ symbol, id, qty: '1', quoteQty: '1', commission: '0', isBuyer: true });
@@ -86,6 +90,38 @@ describe('binance/trade-symbol-discovery', () => {
             yield* binanceSyncService.sync();
 
             expect([...requestedSymbols]).toEqual(['ETHUSDC']);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('keeps a fiat asset touched in an earlier window for trades fetched in a later window', () =>
+        Effect.gen(function* () {
+            yield* setupBinanceFixture({ asset: 'USDT' });
+            const nowSeconds = Math.floor(Date.now() / MILLISECONDS_PER_SECOND);
+            const atDaysAgo = (days: number) => nowSeconds - days * SECONDS_PER_DAY;
+            binanceStub.exchangeInfo(['BTCEUR']);
+            binanceStub.spotBalances([buildBinance.balance({ asset: 'BTC', free: '1' })]);
+            binanceStub.fiatOrders(
+                [
+                    buildBinance.fiatOrder({
+                        orderNo: 'fiat-dep-eur-early',
+                        fiatCurrency: 'EUR',
+                        amount: '100',
+                        createTime: atDaysAgo(15) * MILLISECONDS_PER_SECOND
+                    })
+                ],
+                []
+            );
+            binanceStub.myTrades({
+                BTCEUR: [{ ...buildFillStub('BTCEUR', 34), time: atDaysAgo(5) * MILLISECONDS_PER_SECOND }]
+            });
+            const client = new BinanceSignedClient(BINANCE_TEST_TOKEN);
+            const accountId = encodeBinanceAccountId({ wallet: BinanceWalletEnum.SPOT, asset: 'USDT' });
+
+            const earlierWindow = yield* client.getTransfers(accountId, atDaysAgo(20), atDaysAgo(10));
+            const laterWindow = yield* client.getTransfers(accountId, atDaysAgo(9), atDaysAgo(1));
+
+            expect(earlierWindow).toHaveLength(0);
+            expect(laterWindow.map(transfer => transfer.externalId)).toEqual(['binance:trade:BTCEUR:34']);
         }).pipe(Effect.provide(TestLayer))
     );
 });
