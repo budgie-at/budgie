@@ -80,8 +80,6 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
         let run = freshRunState(Number.POSITIVE_INFINITY);
         let fiatSyncedAtMs: number | null = null;
 
-        const isDeferredError = (error: unknown): boolean => error instanceof SyncDeferredError;
-
         const markRunDeferred = Effect.sync(() => {
             run = { ...run, isDeferred: true };
         });
@@ -333,7 +331,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 Effect.andThen(Effect.yieldNow),
                 Effect.andThen(() => processFiatSource(sync, token)),
                 Effect.map(addChangedCount),
-                Effect.catchIf(isDeferredError, () => markRunDeferred)
+                Effect.catchTag('SyncDeferredError', () => markRunDeferred)
             );
 
             return changedCount;
@@ -380,7 +378,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                           Effect.sync(() => {
                               run = { ...run, balancesAnchored: true };
                           })
-                      ).pipe(Effect.catchIf(isDeferredError, () => markRunDeferred)),
+                      ).pipe(Effect.catchTag('SyncDeferredError', () => markRunDeferred)),
             validateToken: token => decodeCredentials(token),
             afterSyncRun: () => {
                 run = freshRunState(Number.POSITIVE_INFINITY);
