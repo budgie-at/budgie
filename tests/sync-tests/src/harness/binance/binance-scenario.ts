@@ -1,7 +1,9 @@
 import {
     ExternalSourceEnum,
     InstrumentTypeEnum,
+    SyncEntityTable,
     SyncModeEnum,
+    SyncStatusEnum,
     TransactionEntityTable,
     TransactionEntryEntityTable,
     TransactionTypeEnum
@@ -128,3 +130,33 @@ export const expectNoDuplicateAfterResync = Effect.fnUntraced(function* (restubF
 
     expect(yield* fetchBinanceTransactions()).toHaveLength(1);
 });
+
+export const setupFiatScenario = (mode = SyncModeEnum.FORWARD) =>
+    Effect.gen(function* () {
+        const fixture = yield* setupBinanceFixture({ mode, asset: 'EUR', instrumentType: InstrumentTypeEnum.FIAT });
+        stubEmptyBinanceBalances();
+        binanceStub.deposits([]);
+        binanceStub.withdrawals([]);
+
+        return fixture;
+    });
+
+export const resyncBinance = (syncId: number) =>
+    Effect.gen(function* () {
+        const binanceSyncService = yield* BinanceSyncService;
+
+        resetBinanceSyncForResync();
+        yield* testDb
+            .update(SyncEntityTable)
+            .set({ forwardSyncedAt: new Date(Date.now() - STALE_SYNC_AGE_MS), status: SyncStatusEnum.IDLE })
+            .where(eq(SyncEntityTable.id, syncId));
+        yield* binanceSyncService.sync();
+    });
+
+export const fetchFiatOrderEntries = (orderNo: string) =>
+    Effect.gen(function* () {
+        const mainEntries = yield* fetchBinanceEntriesByExternalId(orderNo);
+        const feeEntries = yield* fetchBinanceEntriesByExternalId(`${orderNo}:fee`);
+
+        return { mainEntries, feeEntries };
+    });

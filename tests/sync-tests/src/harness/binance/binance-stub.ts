@@ -239,10 +239,12 @@ export const binanceStub = {
         fiatDeposits: BinanceFiatOrderApiInterface[],
         fiatWithdrawals: BinanceFiatOrderApiInterface[],
         requestedWindows?: TimeWindow[],
-        requestOrder?: string[]
+        requestOrder?: string[],
+        options?: ServeOptions
     ): void => {
         mockServer.use(
             http.get(FIAT_ORDERS_URL, ({ request }) => {
+                options?.onServed?.();
                 const url = new URL(request.url);
                 const isDeposit = url.searchParams.get('transactionType') === FIAT_DEPOSIT_TRANSACTION_TYPE;
                 const isFirstPage = url.searchParams.get('page') === FIRST_PAGE;

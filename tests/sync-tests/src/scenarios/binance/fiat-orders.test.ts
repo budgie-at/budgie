@@ -1,4 +1,4 @@
-import { SyncModeEnum, InstrumentTypeEnum, PRECISION, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { PRECISION, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { BinanceSyncService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
@@ -7,32 +7,15 @@ import {
     binanceStub,
     buildBinance,
     expectSingleBinanceTransaction,
-    fetchBinanceEntriesByExternalId,
+    fetchFiatOrderEntries,
     fetchBinanceTransactions,
-    setupBinanceFixture,
-    stubEmptyBinanceBalances,
+    setupFiatScenario,
     TestLayer
 } from '../../harness';
-
-const setupFiatScenario = () =>
-    Effect.gen(function* () {
-        yield* setupBinanceFixture({ mode: SyncModeEnum.FORWARD, asset: 'EUR', instrumentType: InstrumentTypeEnum.FIAT });
-        stubEmptyBinanceBalances();
-        binanceStub.deposits([]);
-        binanceStub.withdrawals([]);
-    });
 
 const EUR_100 = 100 * PRECISION;
 const EUR_102 = 102 * PRECISION;
 const EUR_2 = 2 * PRECISION;
-
-const fetchOrderEntries = (orderNo: string) =>
-    Effect.gen(function* () {
-        const mainEntries = yield* fetchBinanceEntriesByExternalId(orderNo);
-        const feeEntries = yield* fetchBinanceEntriesByExternalId(`${orderNo}:fee`);
-
-        return { mainEntries, feeEntries };
-    });
 
 describe('binance/fiat-orders', () => {
     it.effect('maps a fiat deposit to an INCOME transaction on the FIAT instrument account', () =>
@@ -95,7 +78,7 @@ describe('binance/fiat-orders', () => {
 
             yield* binanceSyncService.sync();
 
-            const { mainEntries, feeEntries } = yield* fetchOrderEntries(orderNo);
+            const { mainEntries, feeEntries } = yield* fetchFiatOrderEntries(orderNo);
             expect(mainEntries).toHaveLength(1);
             expect(feeEntries).toHaveLength(1);
             expect(mainEntries[0].type).toBe(mainType);
