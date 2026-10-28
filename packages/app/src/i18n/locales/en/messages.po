@@ -958,7 +958,7 @@ msgstr "Binance"
 msgid "Binance has no market price for these assets, so they are not added as accounts and are skipped from your balance."
 msgstr "Binance has no market price for these assets, so they are not added as accounts and are skipped from your balance."
 
-#: src/sync/hook/use-sync-error-labels.hook.ts
+#: src/sync/constant/sync-error-label.constant.ts
 msgid "Binance is not available in your region, so this account cannot sync."
 msgstr "Binance is not available in your region, so this account cannot sync."
 
@@ -1624,7 +1624,7 @@ msgstr "Could not open instructions"
 msgid "Could not open Shortcuts"
 msgstr "Could not open Shortcuts"
 
-#: src/sync/hook/use-sync-error-labels.hook.ts
+#: src/sync/constant/sync-error-label.constant.ts
 msgid "Could not reach the server. Check your connection; sync will retry automatically."
 msgstr "Could not reach the server. Check your connection; sync will retry automatically."
 
@@ -5071,11 +5071,11 @@ msgstr "Tap to continue"
 msgid "Tap to select"
 msgstr "Tap to select"
 
-#: src/sync/hook/use-sync-error-labels.hook.ts
+#: src/sync/constant/sync-error-label.constant.ts
 msgid "The API key has the wrong permissions. Use a key with only \"Enable Reading\"."
 msgstr "The API key has the wrong permissions. Use a key with only \"Enable Reading\"."
 
-#: src/sync/hook/use-sync-error-labels.hook.ts
+#: src/sync/constant/sync-error-label.constant.ts
 msgid "The API key or token was rejected. Check that it is correct, read-only and not restricted to other IP addresses."
 msgstr "The API key or token was rejected. Check that it is correct, read-only and not restricted to other IP addresses."
 
@@ -5107,7 +5107,7 @@ msgstr "The rule was saved but no existing transactions needed updating."
 msgid "The selected Budgie account is archived or no longer exists."
 msgstr "The selected Budgie account is archived or no longer exists."
 
-#: src/sync/hook/use-sync-error-labels.hook.ts
+#: src/sync/constant/sync-error-label.constant.ts
 msgid "The service is limiting requests. Sync will retry automatically in a few minutes."
 msgstr "The service is limiting requests. Sync will retry automatically in a few minutes."
 
@@ -5888,7 +5888,7 @@ msgstr "Your data stays on this device untouched. Try again, or restore a backup
 msgid "Your data: {state}"
 msgstr "Your data: {state}"
 
-#: src/sync/hook/use-sync-error-labels.hook.ts
+#: src/sync/constant/sync-error-label.constant.ts
 msgid "Your device clock is out of sync. Enable automatic date and time, then try again."
 msgstr "Your device clock is out of sync. Enable automatic date and time, then try again."
 

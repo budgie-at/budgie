@@ -957,7 +957,7 @@ msgstr "Binance"
 msgid "Binance has no market price for these assets, so they are not added as accounts and are skipped from your balance."
 msgstr "Binance не має ринкової ціни для цих активів, тому вони не додаються як рахунки й пропускаються у вашому балансі."
 
-#: src/sync/hook/use-sync-error-labels.hook.ts
+#: src/sync/constant/sync-error-label.constant.ts
 msgid "Binance is not available in your region, so this account cannot sync."
 msgstr "Binance недоступний у вашому регіоні, тому цей рахунок не можна синхронізувати."
 
@@ -1623,7 +1623,7 @@ msgstr "Не вдалося відкрити інструкції"
 msgid "Could not open Shortcuts"
 msgstr "Не вдалося відкрити Shortcuts"
 
-#: src/sync/hook/use-sync-error-labels.hook.ts
+#: src/sync/constant/sync-error-label.constant.ts
 msgid "Could not reach the server. Check your connection; sync will retry automatically."
 msgstr "Не вдалося зв'язатися із сервером. Перевірте з'єднання; синхронізація повторить спробу автоматично."
 
@@ -5070,11 +5070,11 @@ msgstr "Торкніться, щоб продовжити"
 msgid "Tap to select"
 msgstr "Торкніться для вибору"
 
-#: src/sync/hook/use-sync-error-labels.hook.ts
+#: src/sync/constant/sync-error-label.constant.ts
 msgid "The API key has the wrong permissions. Use a key with only \"Enable Reading\"."
 msgstr "Ключ API має неправильні дозволи. Використовуйте ключ лише з «Enable Reading»."
 
-#: src/sync/hook/use-sync-error-labels.hook.ts
+#: src/sync/constant/sync-error-label.constant.ts
 msgid "The API key or token was rejected. Check that it is correct, read-only and not restricted to other IP addresses."
 msgstr "Ключ API або токен відхилено. Перевірте, що він правильний, лише для читання та не обмежений іншими IP-адресами."
 
@@ -5106,7 +5106,7 @@ msgstr "Правило збережено, але жодна наявна тра
 msgid "The selected Budgie account is archived or no longer exists."
 msgstr "Вибраний рахунок Budgie заархівовано або більше не існує."
 
-#: src/sync/hook/use-sync-error-labels.hook.ts
+#: src/sync/constant/sync-error-label.constant.ts
 msgid "The service is limiting requests. Sync will retry automatically in a few minutes."
 msgstr "Сервіс обмежує кількість запитів. Синхронізація автоматично повторить спробу за кілька хвилин."
 
@@ -5887,7 +5887,7 @@ msgstr "Ваші дані залишаються недоторканими на
 msgid "Your data: {state}"
 msgstr "Ваші дані: {state}"
 
-#: src/sync/hook/use-sync-error-labels.hook.ts
+#: src/sync/constant/sync-error-label.constant.ts
 msgid "Your device clock is out of sync. Enable automatic date and time, then try again."
 msgstr "Годинник вашого пристрою не синхронізований. Увімкніть автоматичні дату й час і спробуйте ще раз."
 

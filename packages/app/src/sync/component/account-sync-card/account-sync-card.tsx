@@ -13,8 +13,8 @@ import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
+import { SYNC_ERROR_LABEL } from '../../constant/sync-error-label.constant';
 import { useAccountSync } from '../../hook/use-account-sync.hook';
-import { useSyncErrorLabels } from '../../hook/use-sync-error-labels.hook';
 import { BinanceSyncTokenSection } from '../binance-sync-token-section/binance-sync-token-section';
 import { ResyncAccount } from '../resync-account/resync-account';
 import { SyncDataRow } from '../sync-data-row/sync-data-row';
@@ -38,7 +38,6 @@ const statusTextVariants = cva('text-xs font-medium', {
 export const AccountSyncCard = ({ accountId }: Props) => {
     const { t } = useLingui();
     const { sync } = useAccountSync(accountId);
-    const syncErrorLabels = useSyncErrorLabels();
     const { formatDayAndMonthAndYearWithTime } = useFormatDate();
 
     if (!isDefined(sync)) {
@@ -66,11 +65,11 @@ export const AccountSyncCard = ({ accountId }: Props) => {
     const syncLabel = supportsFileImport ? t`Include in file imports` : t`Sync`;
     const warningLabels: Record<SyncWarningEnum, string> = {
         [SyncWarningEnum.C2C_UNAVAILABLE]: t`Binance P2P orders are unavailable: the API key is missing P2P read permission.`,
-        [SyncWarningEnum.REGION_UNAVAILABLE]: syncErrorLabels[SyncErrorCodeEnum.REGION_UNAVAILABLE]
+        [SyncWarningEnum.REGION_UNAVAILABLE]: t(SYNC_ERROR_LABEL[SyncErrorCodeEnum.REGION_UNAVAILABLE])
     };
     const isRegionBlocked = sync.lastWarning === SyncWarningEnum.REGION_UNAVAILABLE;
     const hasLastError = isNotEmptyString(sync.lastError);
-    const lastErrorText = hasLastError && isDefined(sync.lastErrorCode) ? syncErrorLabels[sync.lastErrorCode] : sync.lastError;
+    const lastErrorText = hasLastError && isDefined(sync.lastErrorCode) ? t(SYNC_ERROR_LABEL[sync.lastErrorCode]) : sync.lastError;
     const tokenSection = sync.provider === ExternalSourceEnum.BINANCE ? <BinanceSyncTokenSection accountId={accountId} /> : null;
 
     return (

@@ -9,9 +9,9 @@ import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
 import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 import { useOnboardingRedirect } from '../../onboarding/hook/use-onboarding-redirect.hook';
+import { SYNC_ERROR_LABEL } from '../constant/sync-error-label.constant';
 
 import { useAccountSelection } from './use-account-selection.hook';
-import { useSyncErrorLabels } from './use-sync-error-labels.hook';
 
 import type { AppServices } from '../../@generic/runtime/app.runtime';
 import type { SyncAccountPreviewInterface } from '@budgie/sync';
@@ -25,14 +25,13 @@ export const useSyncAccountSetupFlow = <Identifier extends AppServices, Shape>(
     const { isLoading, run } = useSingleFlight();
     const accountSelection = useAccountSelection();
     const onboardingHref = useOnboardingRedirect();
-    const syncErrorLabels = useSyncErrorLabels();
 
     const exitHref = onboardingHref ?? '/';
 
     const explainError = (error: unknown) => {
         const errorCode = resolveSyncErrorCode(error);
 
-        return isDefined(errorCode) ? new Error(syncErrorLabels[errorCode]) : error;
+        return isDefined(errorCode) ? new Error(t(SYNC_ERROR_LABEL[errorCode])) : error;
     };
 
     const handleGoBack = () => void goBackOrReplace(exitHref);

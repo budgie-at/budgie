@@ -957,7 +957,7 @@ msgstr "Binance"
 msgid "Binance has no market price for these assets, so they are not added as accounts and are skipped from your balance."
 msgstr "Binance hat für diese Assets keinen Marktpreis, daher werden sie nicht als Konten hinzugefügt und bei deinem Saldo übersprungen."
 
-#: src/sync/hook/use-sync-error-labels.hook.ts
+#: src/sync/constant/sync-error-label.constant.ts
 msgid "Binance is not available in your region, so this account cannot sync."
 msgstr "Binance ist in deiner Region nicht verfügbar, daher kann dieses Konto nicht synchronisiert werden."
 
@@ -1623,7 +1623,7 @@ msgstr "Anleitung konnte nicht geöffnet werden"
 msgid "Could not open Shortcuts"
 msgstr "Shortcuts konnte nicht geöffnet werden"
 
-#: src/sync/hook/use-sync-error-labels.hook.ts
+#: src/sync/constant/sync-error-label.constant.ts
 msgid "Could not reach the server. Check your connection; sync will retry automatically."
 msgstr "Der Server ist nicht erreichbar. Prüfe deine Verbindung; die Synchronisierung versucht es automatisch erneut."
 
@@ -5070,11 +5070,11 @@ msgstr "Tippen zum Fortfahren"
 msgid "Tap to select"
 msgstr "Zum Auswählen tippen"
 
-#: src/sync/hook/use-sync-error-labels.hook.ts
+#: src/sync/constant/sync-error-label.constant.ts
 msgid "The API key has the wrong permissions. Use a key with only \"Enable Reading\"."
 msgstr "Der API-Schlüssel hat falsche Berechtigungen. Verwende einen Schlüssel nur mit „Enable Reading“."
 
-#: src/sync/hook/use-sync-error-labels.hook.ts
+#: src/sync/constant/sync-error-label.constant.ts
 msgid "The API key or token was rejected. Check that it is correct, read-only and not restricted to other IP addresses."
 msgstr "Der API-Schlüssel oder das Token wurde abgelehnt. Prüfe, ob er korrekt und schreibgeschützt ist und nicht auf andere IP-Adressen beschränkt wurde."
 
@@ -5106,7 +5106,7 @@ msgstr "Die Regel wurde gespeichert, aber keine vorhandenen Transaktionen musste
 msgid "The selected Budgie account is archived or no longer exists."
 msgstr "Das ausgewählte Budgie-Konto ist archiviert oder existiert nicht mehr."
 
-#: src/sync/hook/use-sync-error-labels.hook.ts
+#: src/sync/constant/sync-error-label.constant.ts
 msgid "The service is limiting requests. Sync will retry automatically in a few minutes."
 msgstr "Der Dienst begrenzt Anfragen. Die Synchronisierung versucht es in wenigen Minuten automatisch erneut."
 
@@ -5887,7 +5887,7 @@ msgstr "Deine Daten bleiben unverändert auf diesem Gerät. Versuche es erneut o
 msgid "Your data: {state}"
 msgstr "Deine Daten: {state}"
 
-#: src/sync/hook/use-sync-error-labels.hook.ts
+#: src/sync/constant/sync-error-label.constant.ts
 msgid "Your device clock is out of sync. Enable automatic date and time, then try again."
 msgstr "Die Uhr deines Geräts geht falsch. Aktiviere Datum und Uhrzeit automatisch und versuche es erneut."
 
