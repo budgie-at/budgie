@@ -12,6 +12,7 @@ export interface PollingSyncServiceDefinitionInterface extends SyncServiceDefini
         token: string
     ) => Effect.Effect<SyncBatchResultInterface, unknown, Db | HttpClient.HttpClient>;
     readonly beforeSyncRun: (deadlineAtMs: number) => Effect.Effect<void, unknown, Db>;
+    readonly beforeProcessRun?: (tokens: readonly string[]) => Effect.Effect<void, unknown, Db | HttpClient.HttpClient>;
     readonly applyProgressUpdate?: (
         sync: SyncEntityInterface,
         result: SyncBatchResultInterface

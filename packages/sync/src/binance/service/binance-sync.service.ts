@@ -423,10 +423,6 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                     return { transactions: [], nextTo: new Date(), nextFrom: new Date(), completed: true };
                 }
 
-                if (!getTokenRun(token).balancesAnchored) {
-                    yield* anchorAllBalances(token).pipe(Effect.catchTag('SyncDeferredError', () => markRunDeferred));
-                }
-
                 const changedCount = run.isDeferred
                     ? 0
                     : yield* Effect.ensuring(
@@ -448,6 +444,15 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                     completed: !run.isDeferred
                 };
             }),
+            beforeProcessRun: (tokens: readonly string[]) =>
+                Effect.forEach(
+                    tokens,
+                    token =>
+                        run.isDeferred || getTokenRun(token).balancesAnchored
+                            ? Effect.void
+                            : anchorAllBalances(token).pipe(Effect.catchTag('SyncDeferredError', () => markRunDeferred)),
+                    { discard: true }
+                ),
             beforeSyncRun: (deadlineAtMs: number) =>
                 Effect.map(Clock.currentTimeMillis, startedAtMs => {
                     run = freshRunState(deadlineAtMs, startedAtMs);

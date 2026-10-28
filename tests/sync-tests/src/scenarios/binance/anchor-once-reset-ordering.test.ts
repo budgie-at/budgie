@@ -12,7 +12,15 @@ import { describe, expect, it, vi } from '@effect/vitest';
 import {} from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { binanceStub, buildBinance, fetchCachedBalanceAmount, resyncBinance, seed, setupBinanceFixture, TestLayer } from '../../harness';
+import {
+    binanceStub,
+    buildBinance,
+    fetchCachedBalanceAmount,
+    resetBinanceSyncForResync,
+    seed,
+    setupBinanceFixture,
+    TestLayer
+} from '../../harness';
 
 describe('binance/anchor-once-reset-ordering', () => {
     it.effect('anchors every Binance account exactly once per run across a multi-pass loop', () =>
@@ -57,7 +65,7 @@ describe('binance/anchor-once-reset-ordering', () => {
             const accountBalanceRepository = yield* AccountBalanceRepository;
             const binanceSyncService = yield* BinanceSyncService;
 
-            const { account, sync } = yield* setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.BACKWARD });
+            const { account } = yield* setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.BACKWARD });
 
             binanceStub.spotBalances([buildBinance.balance({ asset: 'BTC', free: '1' })]);
 
@@ -65,10 +73,11 @@ describe('binance/anchor-once-reset-ordering', () => {
 
             expect(yield* fetchCachedBalanceAmount(account.id)).toBe(PRECISION);
 
+            resetBinanceSyncForResync();
             binanceStub.spotBalances([buildBinance.balance({ asset: 'BTC', free: '5' })]);
 
             const upsertSpy = vi.spyOn(accountBalanceRepository, 'upsert');
-            yield* resyncBinance(sync.id);
+            yield* binanceSyncService.sync();
 
             expect(upsertSpy).toHaveBeenCalled();
             expect(yield* fetchCachedBalanceAmount(account.id)).toBe(5 * PRECISION);
