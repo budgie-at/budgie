@@ -120,7 +120,9 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         'enableInternalTransfer',
         'permitsUniversalTransfer',
         'enableMargin',
-        'enableFutures'
+        'enableFutures',
+        'enableVanillaOptions',
+        'enablePortfolioMarginTrading'
     ] as const satisfies readonly (keyof BinanceApiRestrictionsApiInterface)[];
 
     private static readonly decodeCredentials = Schema.decodeUnknownOption(Schema.fromJsonString(BinanceCredentialsSchema));
@@ -152,8 +154,14 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     });
 
     readonly assertReadOnlyKey = Effect.fn('BinanceSignedClient.assertReadOnlyKey')(function* (this: BinanceSignedClient) {
-        const restrictions = yield* this.signedRequest(BinanceApiRestrictionsApiSchema, API_RESTRICTIONS_ENDPOINT, 'GET');
-        const permissions = BinanceSignedClient.FORBIDDEN_KEY_PERMISSIONS.filter(permission => restrictions[permission]);
+        const restrictions = yield* this.signedRequest(BinanceApiRestrictionsApiSchema, API_RESTRICTIONS_ENDPOINT, 'GET').pipe(
+            Effect.catchTag('SyncInvalidResponseError', () =>
+                Effect.fail(
+                    new BinanceKeyPermissionsError({ permissions: [], message: 'Could not verify the Binance API key permissions' })
+                )
+            )
+        );
+        const permissions = BinanceSignedClient.FORBIDDEN_KEY_PERMISSIONS.filter(permission => restrictions[permission] === true);
         if (isNotEmptyArray(permissions)) {
             return yield* new BinanceKeyPermissionsError({
                 permissions,

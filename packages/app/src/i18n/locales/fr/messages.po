@@ -1207,6 +1207,10 @@ msgstr "Changer de devise"
 msgid "Change PIN"
 msgstr "Modifier le code PIN"
 
+#: src/sync/utils/toast-binance-key-permissions-error.util.ts
+msgid "Check the key and secret, then try again."
+msgstr "Vérifiez la clé et le secret, puis réessayez."
+
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Checking"
 msgstr "Vérification"
@@ -1751,6 +1755,10 @@ msgstr "Impossible de mettre à jour le jeton"
 #: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "Could not update transaction."
 msgstr "Impossible de mettre à jour la transaction."
+
+#: src/sync/utils/toast-binance-key-permissions-error.util.ts
+msgid "Could not verify the API key permissions"
+msgstr "Impossible de vérifier les autorisations de la clé API"
 
 #: src/sync/component/bank-integration-new-accounts/bank-integration-new-accounts.tsx
 msgid "Couldn’t check Monobank for new accounts"
@@ -2936,8 +2944,7 @@ msgstr "Continuez à utiliser Budgie en attendant. Tant que le modèle n'est pas
 msgid "Kept inside Budgie's file on this phone. Sent only to Monobank, never to us."
 msgstr "Conservé dans le fichier de Budgie sur ce téléphone. Envoyé uniquement à Monobank, jamais à nous."
 
-#: src/sync/component/binance-sync-token-section/binance-sync-token-section.tsx
-#: src/sync/component/create-binance-account/create-binance-account.tsx
+#: src/sync/utils/toast-binance-key-permissions-error.util.ts
 msgid "Key has too many permissions"
 msgstr "La clé a trop d'autorisations"
 
@@ -5085,8 +5092,7 @@ msgstr "Ce compte sera masqué de votre vue principale et ne sera pas inclus dan
 msgid "This action cannot be undone."
 msgstr "Cette action ne peut pas être annulée."
 
-#: src/sync/component/binance-sync-token-section/binance-sync-token-section.tsx
-#: src/sync/component/create-binance-account/create-binance-account.tsx
+#: src/sync/utils/toast-binance-key-permissions-error.util.ts
 msgid "This API key can trade, withdraw or transfer funds. Create a key with only \"Enable Reading\" and try again."
 msgstr "Cette clé API peut trader, retirer ou transférer des fonds. Créez une clé avec uniquement « Enable Reading » et réessayez."
 

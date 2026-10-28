@@ -1208,6 +1208,10 @@ msgstr "Change currency"
 msgid "Change PIN"
 msgstr "Change PIN"
 
+#: src/sync/utils/toast-binance-key-permissions-error.util.ts
+msgid "Check the key and secret, then try again."
+msgstr "Check the key and secret, then try again."
+
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Checking"
 msgstr "Checking"
@@ -1752,6 +1756,10 @@ msgstr "Could not update token"
 #: src/transaction/hook/use-update-transaction-form.hook.ts
 msgid "Could not update transaction."
 msgstr "Could not update transaction."
+
+#: src/sync/utils/toast-binance-key-permissions-error.util.ts
+msgid "Could not verify the API key permissions"
+msgstr "Could not verify the API key permissions"
 
 #: src/sync/component/bank-integration-new-accounts/bank-integration-new-accounts.tsx
 msgid "Couldn’t check Monobank for new accounts"
@@ -2937,8 +2945,7 @@ msgstr "Keep using Budgie meanwhile. Until the model is ready, categories come f
 msgid "Kept inside Budgie's file on this phone. Sent only to Monobank, never to us."
 msgstr "Kept inside Budgie's file on this phone. Sent only to Monobank, never to us."
 
-#: src/sync/component/binance-sync-token-section/binance-sync-token-section.tsx
-#: src/sync/component/create-binance-account/create-binance-account.tsx
+#: src/sync/utils/toast-binance-key-permissions-error.util.ts
 msgid "Key has too many permissions"
 msgstr "Key has too many permissions"
 
@@ -5086,8 +5093,7 @@ msgstr "This account will be hidden from your main view and won't be included in
 msgid "This action cannot be undone."
 msgstr "This action cannot be undone."
 
-#: src/sync/component/binance-sync-token-section/binance-sync-token-section.tsx
-#: src/sync/component/create-binance-account/create-binance-account.tsx
+#: src/sync/utils/toast-binance-key-permissions-error.util.ts
 msgid "This API key can trade, withdraw or transfer funds. Create a key with only \"Enable Reading\" and try again."
 msgstr "This API key can trade, withdraw or transfer funds. Create a key with only \"Enable Reading\" and try again."
 
