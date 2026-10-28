@@ -5,7 +5,15 @@ import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { fetchAccountIntegrationToken, fetchSyncById, seed, seedCryptoInstrument, testDb, TestLayer } from '../../harness';
+import {
+    fetchAccountIntegrationToken,
+    fetchSyncById,
+    seed,
+    seedCryptoInstrument,
+    seedMonobankTokenAccount,
+    testDb,
+    TestLayer
+} from '../../harness';
 
 const BINANCE_TOKEN = JSON.stringify({ apiKey: 'cleanup-key', apiSecret: 'cleanup-secret' });
 const MONOBANK_TOKEN = 'cleanup-monobank-token';
@@ -20,19 +28,6 @@ const seedBinanceAccount = (asset: string) =>
             instrumentId: instrument.id
         });
         const sync = yield* seed.sync({ accountId: account.id, provider: ExternalSourceEnum.BINANCE, token: BINANCE_TOKEN });
-
-        return { account, sync };
-    });
-
-const seedMonobankCard = (externalId: string) =>
-    Effect.gen(function* () {
-        const account = yield* seed.account({
-            externalId,
-            externalSource: ExternalSourceEnum.MONOBANK,
-            type: AccountTypeEnum.BANK_SYNC,
-            instrumentId: 1
-        });
-        const sync = yield* seed.sync({ accountId: account.id, provider: ExternalSourceEnum.MONOBANK, token: MONOBANK_TOKEN });
 
         return { account, sync };
     });
@@ -53,7 +48,10 @@ const providerCases = [
     {
         provider: ExternalSourceEnum.MONOBANK,
         token: MONOBANK_TOKEN,
-        seedPair: Effect.all([seedMonobankCard('cleanup-card-first'), seedMonobankCard('cleanup-card-second')])
+        seedPair: Effect.all([
+            seedMonobankTokenAccount('cleanup-card-first', MONOBANK_TOKEN),
+            seedMonobankTokenAccount('cleanup-card-second', MONOBANK_TOKEN)
+        ])
     }
 ];
 
@@ -94,7 +92,7 @@ describe('sync/integration-cleanup', () => {
         Effect.gen(function* () {
             const accountArchiveService = yield* AccountArchiveService;
             const bitcoin = yield* seedBinanceAccount('BTC');
-            yield* seedMonobankCard('cleanup-card-other');
+            yield* seedMonobankTokenAccount('cleanup-card-other', MONOBANK_TOKEN);
 
             yield* accountArchiveService.deleteById(bitcoin.account.id);
 

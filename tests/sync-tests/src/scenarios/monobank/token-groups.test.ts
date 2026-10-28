@@ -1,4 +1,4 @@
-import { AccountTypeEnum, BankIntegrationEntityTable, ExternalSourceEnum, SyncModeEnum, SyncStatusEnum } from '@budgie/contracts';
+import { BankIntegrationEntityTable, ExternalSourceEnum, SyncStatusEnum } from '@budgie/contracts';
 import { MonobankConnectionResultEnum, SyncProviderRegistryService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
@@ -13,13 +13,12 @@ import {
     MonobankSyncService,
     monobankStub,
     seed,
+    seedMonobankTokenAccount,
     skipRequestedSync,
     TestLayer,
     testDb
 } from '../../harness';
 import { mockServer } from '../../harness/scenario/mock-server';
-
-import type { SyncCreateEntityInterface } from '@budgie/contracts';
 
 const GROUP_A_TOKEN = 'group-a-token';
 const GROUP_B_TOKEN = 'group-b-token';
@@ -35,25 +34,6 @@ const fetchIntegration = (integrationId: number) =>
         ([integration]) => integration
     );
 
-const seedGroupAccount = (externalId: string, token: string, syncState: Partial<SyncCreateEntityInterface> = {}) =>
-    Effect.gen(function* () {
-        const account = yield* seed.account({
-            externalId,
-            externalSource: ExternalSourceEnum.MONOBANK,
-            type: AccountTypeEnum.BANK_SYNC,
-            instrumentId: 1
-        });
-        const sync = yield* seed.sync({
-            accountId: account.id,
-            token,
-            provider: ExternalSourceEnum.MONOBANK,
-            mode: SyncModeEnum.FORWARD,
-            ...syncState
-        });
-
-        return { account, sync };
-    });
-
 const seedTwoTokenGroups = () =>
     Effect.gen(function* () {
         const groupA = yield* seed.bankIntegration({ provider: ExternalSourceEnum.MONOBANK, token: GROUP_A_TOKEN });
@@ -63,9 +43,9 @@ const seedTwoTokenGroups = () =>
         return {
             groupA,
             groupB,
-            failedInGroupA: yield* seedGroupAccount('group-a-failed', GROUP_A_TOKEN, failedState),
-            pausedInGroupA: yield* seedGroupAccount('group-a-paused', GROUP_A_TOKEN, { enabled: false }),
-            failedInGroupB: yield* seedGroupAccount('group-b-failed', GROUP_B_TOKEN, failedState)
+            failedInGroupA: yield* seedMonobankTokenAccount('group-a-failed', GROUP_A_TOKEN, failedState),
+            pausedInGroupA: yield* seedMonobankTokenAccount('group-a-paused', GROUP_A_TOKEN, { enabled: false }),
+            failedInGroupB: yield* seedMonobankTokenAccount('group-b-failed', GROUP_B_TOKEN, failedState)
         };
     });
 
@@ -118,7 +98,7 @@ describe('monobank/token-groups', () => {
     it.effect('stores the Monobank client name as the label of a group created on setup', () =>
         Effect.gen(function* () {
             const monobankSyncService = yield* MonobankSyncService;
-            const { account } = yield* seedGroupAccount('group-a-failed', GROUP_A_TOKEN);
+            const { account } = yield* seedMonobankTokenAccount('group-a-failed', GROUP_A_TOKEN);
             monobankStub.clientInfo({ ...buildMonobank.clientInfoWith(['setup-card']), name: CLIENT_NAME });
 
             yield* skipRequestedSync(monobankSyncService.setupAccountSyncBatch(NEW_CONNECTION_TOKEN, ['setup-card']));
@@ -219,9 +199,9 @@ describe('monobank/token-groups', () => {
     it.effect('disables every sync of a group on 401 and keeps another Monobank group enabled', () =>
         Effect.gen(function* () {
             const monobankSyncService = yield* MonobankSyncService;
-            const first = yield* seedGroupAccount('group-a-first', GROUP_A_TOKEN);
-            const second = yield* seedGroupAccount('group-a-second', GROUP_A_TOKEN);
-            const other = yield* seedGroupAccount('group-b-only', GROUP_B_TOKEN);
+            const first = yield* seedMonobankTokenAccount('group-a-first', GROUP_A_TOKEN);
+            const second = yield* seedMonobankTokenAccount('group-a-second', GROUP_A_TOKEN);
+            const other = yield* seedMonobankTokenAccount('group-b-only', GROUP_B_TOKEN);
             mockServer.use(
                 http.get('https://api.monobank.ua/personal/statement/:account/:from/:to', ({ request }) =>
                     request.headers.get('X-Token') === GROUP_A_TOKEN ? new HttpResponse(null, { status: 401 }) : HttpResponse.json([])

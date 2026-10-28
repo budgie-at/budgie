@@ -2,6 +2,7 @@ export { testDb } from './scenario/setup';
 export { setupMonobankFixture } from './monobank/setup-monobank-fixture';
 export { setupBackwardSweepFixture } from './monobank/setup-backward-sweep-fixture';
 export { setupTransientFailureFixture } from './monobank/setup-transient-failure-fixture';
+export { seedMonobankTokenAccount } from './monobank/seed-monobank-token-account';
 export { seed } from './seed/seed';
 export { seedBankPair } from './seed/seed-bank-pair';
 export { seedBitcoinCryptoAccount } from './seed/seed-bitcoin-crypto-account';

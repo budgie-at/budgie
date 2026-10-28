@@ -76,12 +76,16 @@ const CLIENT_ERROR_CASES = [
     }
 ];
 
+const setupBtcAndEthForwardSyncs = Effect.all({
+    btcFixture: setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.FORWARD }),
+    ethFixture: setupBinanceFixture({ asset: 'ETH', mode: SyncModeEnum.FORWARD })
+});
+
 describe('binance/http-error-classification', () => {
     it.effect.each(BLOCKED_SYNC_CASES)('keeps every sync enabled and sends one request after a $label', ({ respond }) =>
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
-            const btcFixture = yield* setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.FORWARD });
-            const ethFixture = yield* setupBinanceFixture({ asset: 'ETH', mode: SyncModeEnum.FORWARD });
+            const { btcFixture, ethFixture } = yield* setupBtcAndEthForwardSyncs;
             const requests = countDepositRequests(respond);
 
             yield* binanceSyncService.sync(Date.now() + RUN_DEADLINE_MS);
@@ -137,8 +141,7 @@ describe('binance/http-error-classification', () => {
     it.effect('disables every sync in the credential group after a -1022 bad signature', () =>
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
-            const btcFixture = yield* setupBinanceFixture({ asset: 'BTC', mode: SyncModeEnum.FORWARD });
-            const ethFixture = yield* setupBinanceFixture({ asset: 'ETH', mode: SyncModeEnum.FORWARD });
+            const { btcFixture, ethFixture } = yield* setupBtcAndEthForwardSyncs;
             countDepositRequests(() => respondWith(400, errorBody(-1022, 'Signature for this request is not valid.')));
 
             yield* binanceSyncService.sync(Date.now() + RUN_DEADLINE_MS);
