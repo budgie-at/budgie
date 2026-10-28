@@ -121,6 +121,8 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             return yield* binanceAccountService.buildAccountResolver(exchangeAccounts, integration.id);
         });
 
+        const assertReadOnlyKey = (token: string) => new BinanceSignedClient(token).assertReadOnlyKey();
+
         const anchorAllBalances = Effect.fnUntraced(function* (token: string) {
             const integration = yield* syncIntegrationTokenService.getOrCreateIntegration(provider, token);
 
@@ -381,7 +383,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
 
                 return anchorAllBalances(firstSyncToken);
             },
-            validateToken: token => decodeCredentials(token),
+            validateToken: token => Effect.andThen(decodeCredentials(token), assertReadOnlyKey(token)),
             afterSyncRun: () => {
                 run = freshRunState(run.deadlineAtMs);
             },
@@ -400,6 +402,8 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
         return {
             ...pollingSyncService,
             fetchAccountsPreview: Effect.fn('BinanceSyncService.fetchAccountsPreview')(function* (token: string) {
+                yield* assertReadOnlyKey(token);
+
                 const exchangeAccounts = yield* fetchExchangeAccounts(token);
                 const supportedIds = new Set(
                     (yield* binanceAccountService.findResolvableAccounts(exchangeAccounts)).map(

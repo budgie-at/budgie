@@ -2936,6 +2936,11 @@ msgstr "Continuez à utiliser Budgie en attendant. Tant que le modèle n'est pas
 msgid "Kept inside Budgie's file on this phone. Sent only to Monobank, never to us."
 msgstr "Conservé dans le fichier de Budgie sur ce téléphone. Envoyé uniquement à Monobank, jamais à nous."
 
+#: src/sync/component/binance-sync-token-section/binance-sync-token-section.tsx
+#: src/sync/component/create-binance-account/create-binance-account.tsx
+msgid "Key has too many permissions"
+msgstr "La clé a trop d'autorisations"
+
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
 msgid "Key rejected"
 msgstr "Clé refusée"
@@ -5079,6 +5084,11 @@ msgstr "Ce compte sera masqué de votre vue principale et ne sera pas inclus dan
 #: src/transaction/hook/use-delete-transaction.hook.ts
 msgid "This action cannot be undone."
 msgstr "Cette action ne peut pas être annulée."
+
+#: src/sync/component/binance-sync-token-section/binance-sync-token-section.tsx
+#: src/sync/component/create-binance-account/create-binance-account.tsx
+msgid "This API key can trade, withdraw or transfer funds. Create a key with only \"Enable Reading\" and try again."
+msgstr "Cette clé API peut trader, retirer ou transférer des fonds. Créez une clé avec uniquement « Enable Reading » et réessayez."
 
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
 #: src/import/component/import-backup-pin/import-backup-pin.tsx

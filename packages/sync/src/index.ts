@@ -32,8 +32,10 @@ export { encodeBinanceAccountId, decodeBinanceAccountId } from './binance/utils/
 export { BinanceWalletEnum } from './binance/enum/binance-wallet.enum';
 export { BinanceRateLimitMs } from './binance/constant/binance-rate-limit-ms.constant';
 export { BINANCE_API_MANAGEMENT_URL } from './binance/constant/binance-api-management-url.constant';
+export { BinanceKeyPermissionsError } from './binance/error/binance-key-permissions.error';
 export { BinanceCredentialsSchema } from './binance/constant/binance-credentials.schema';
 
+export type { BinanceApiRestrictionsApiInterface } from './binance/interface/binance-api-restrictions-api.schema';
 export type { BinanceAssetBalanceApiInterface } from './binance/interface/binance-asset-balance-api.schema';
 export type { BinanceDepositApiInterface } from './binance/interface/binance-deposit-api.schema';
 export type { BinanceWithdrawalApiInterface } from './binance/interface/binance-withdrawal-api.schema';

@@ -1,9 +1,10 @@
-import { and, count, eq, isNull } from 'drizzle-orm';
+import { and, count, eq, isNull, notExists } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import { Db } from '../../@generic/service/db.service';
+import { AccountEntityTable } from '../../account/table/account-entity.table';
 import { BankIntegrationEntityTable } from '../table/bank-integration-entity.table';
 
 import type { ExternalSourceEnum } from '../../account/enum/external-source.enum';
@@ -34,6 +35,22 @@ export class BankIntegrationRepository extends Context.Service<BankIntegrationRe
                         .where(and(eq(BankIntegrationEntityTable.id, id), isNull(BankIntegrationEntityTable.deletedAt)))
                         .returning()
                 ).pipe(Effect.map(bankIntegrations => bankIntegrations.at(0))),
+            deleteIfUnreferenced: (id: number) =>
+                Db.query(db =>
+                    db
+                        .delete(BankIntegrationEntityTable)
+                        .where(
+                            and(
+                                eq(BankIntegrationEntityTable.id, id),
+                                notExists(
+                                    db
+                                        .select({ id: AccountEntityTable.id })
+                                        .from(AccountEntityTable)
+                                        .where(eq(AccountEntityTable.integrationId, id))
+                                )
+                            )
+                        )
+                ),
             findById: (id: number) =>
                 Db.query(db =>
                     db.query.BankIntegrationEntityTable.findFirst({
