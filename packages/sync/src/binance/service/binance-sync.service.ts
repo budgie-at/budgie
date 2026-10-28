@@ -80,6 +80,12 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
         let run = freshRunState(Number.POSITIVE_INFINITY);
         let fiatSyncedAtMs: number | null = null;
 
+        const isDeferredError = (error: unknown): boolean => error instanceof SyncDeferredError;
+
+        const markRunDeferred = Effect.sync(() => {
+            run = { ...run, isDeferred: true };
+        });
+
         const resolveWindowStart = (sync: SyncEntityInterface): Date => {
             if (sync.mode === SyncModeEnum.BACKWARD) {
                 return subYears(sync.backwardSyncFromAt ?? sync.forwardSyncFromAt ?? new Date(), transferLookbackYears);
@@ -327,13 +333,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 Effect.andThen(Effect.yieldNow),
                 Effect.andThen(() => processFiatSource(sync, token)),
                 Effect.map(addChangedCount),
-                Effect.catchIf(
-                    error => error instanceof SyncDeferredError,
-                    () =>
-                        Effect.sync(() => {
-                            run = { ...run, isDeferred: true };
-                        })
-                )
+                Effect.catchIf(isDeferredError, () => markRunDeferred)
             );
 
             return changedCount;
@@ -380,10 +380,10 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                           Effect.sync(() => {
                               run = { ...run, balancesAnchored: true };
                           })
-                      ),
+                      ).pipe(Effect.catchIf(isDeferredError, () => markRunDeferred)),
             validateToken: token => decodeCredentials(token),
             afterSyncRun: () => {
-                run = freshRunState(run.deadlineAtMs);
+                run = freshRunState(Number.POSITIVE_INFINITY);
             },
             isRunWorkComplete: () => run.sourcesSynced && run.transfersSynced,
             isRunDeferred: () => run.isDeferred,
@@ -400,7 +400,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
         return {
             ...pollingSyncService,
             fetchAccountsPreview: Effect.fn('BinanceSyncService.fetchAccountsPreview')(function* (token: string) {
-                const exchangeAccounts = yield* fetchExchangeAccounts(token);
+                const exchangeAccounts = yield* new BinanceSignedClient(token).getAccounts();
                 const supportedIds = new Set(
                     (yield* binanceAccountService.findResolvableAccounts(exchangeAccounts)).map(
                         resolvableAccount => resolvableAccount.exchangeAccount.id
@@ -414,7 +414,9 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             }),
             setupAccountSyncBatch: Effect.fn('BinanceSyncService.setupAccountSyncBatch')(function* (token: string, externalIds: string[]) {
                 const resolvableAccounts = yield* binanceAccountService.findResolvableAccounts(
-                    (yield* fetchExchangeAccounts(token)).filter(exchangeAccount => externalIds.includes(exchangeAccount.id))
+                    (yield* new BinanceSignedClient(token).getAccounts()).filter(exchangeAccount =>
+                        externalIds.includes(exchangeAccount.id)
+                    )
                 );
                 const integration = yield* syncIntegrationTokenService.getOrCreateIntegration(provider, token);
 

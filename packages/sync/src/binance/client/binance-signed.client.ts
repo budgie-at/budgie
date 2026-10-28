@@ -4,6 +4,7 @@ import { hmac } from '@noble/hashes/hmac.js';
 import { sha256 } from '@noble/hashes/sha2.js';
 import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils.js';
 import { subMonths } from 'date-fns/subMonths';
+import * as Clock from 'effect/Clock';
 import * as Effect from 'effect/Effect';
 import * as Option from 'effect/Option';
 import * as Schema from 'effect/Schema';
@@ -225,6 +226,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     private c2cUnavailableThisRun = false;
     private readonly c2cHistoryFloorTimeMs = subMonths(new Date(), BinanceSignedClient.C2C_HISTORY_MONTHS).getTime();
     private serverTimeOffsetMs: number | undefined;
+    private runEndTimeMs: number | undefined;
     private validSymbols: Set<string> | undefined;
 
     private readonly fetchCapitalSources = Effect.fn('BinanceSignedClient.fetchCapitalSources')(function* (
@@ -295,10 +297,18 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     private readonly resolveTimestamp = Effect.fn('BinanceSignedClient.resolveTimestamp')(function* (this: BinanceSignedClient) {
         if (!isDefined(this.serverTimeOffsetMs)) {
             const serverTime = yield* this.fetchJson(BinanceServerTimeApiSchema, SERVER_TIME_ENDPOINT).pipe(Effect.option);
-            this.serverTimeOffsetMs = Option.isSome(serverTime) ? serverTime.value.serverTime - Date.now() : 0;
+            this.serverTimeOffsetMs = Option.isSome(serverTime) ? serverTime.value.serverTime - (yield* Clock.currentTimeMillis) : 0;
         }
 
-        return Date.now() + this.serverTimeOffsetMs;
+        return (yield* Clock.currentTimeMillis) + this.serverTimeOffsetMs;
+    });
+
+    private readonly resolveRunEndTimeMs = Effect.fn('BinanceSignedClient.resolveRunEndTimeMs')(function* (this: BinanceSignedClient) {
+        if (!isDefined(this.runEndTimeMs)) {
+            this.runEndTimeMs = yield* this.resolveTimestamp();
+        }
+
+        return this.runEndTimeMs;
     });
 
     private readonly resolveSourceWindow = Effect.fn('BinanceSignedClient.resolveSourceWindow')(function* (
@@ -308,7 +318,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     ) {
         return {
             startTimeMs: from * MILLISECONDS_PER_SECOND,
-            endTimeMs: isDefined(to) ? to * MILLISECONDS_PER_SECOND : yield* this.resolveTimestamp()
+            endTimeMs: isDefined(to) ? to * MILLISECONDS_PER_SECOND : yield* this.resolveRunEndTimeMs()
         };
     });
 
@@ -483,7 +493,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         params: Record<string, string | number> = {}
     ): Effect.Effect<S['Type'], SyncError, HttpClient.HttpClient> {
         return Effect.gen({ self: this }, function* (this: BinanceSignedClient) {
-            if (Date.now() >= this.deadlineAtMs) {
+            if ((yield* Clock.currentTimeMillis) >= this.deadlineAtMs) {
                 return yield* new SyncDeferredError({ provider: this.provider, message: 'Sync deadline reached' });
             }
 
