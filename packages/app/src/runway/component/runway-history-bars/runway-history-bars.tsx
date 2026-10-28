@@ -15,13 +15,13 @@ interface Props {
 }
 
 const MIN_BAR_HEIGHT = 1.5;
-const INCOME_OPACITY = 0.55;
+const INCOME_OPACITY = 0.35;
 
 export const RunwayHistoryBars = ({ centerX, barWidth, baselineY, expense, income, maxValue, isSpike }: Props) => {
     const scale = isPositiveNumber(maxValue) ? RUNWAY_HISTORY_BAR_AREA_HEIGHT / maxValue : 0;
     const expenseHeight = isPositiveNumber(expense) ? Math.max(expense * scale, MIN_BAR_HEIGHT) : 0;
     const incomeHeight = isPositiveNumber(income) ? Math.max(income * scale, MIN_BAR_HEIGHT) : 0;
-    const expenseFillClassName = isSpike ? 'accent-warning-fill' : 'accent-destructive-fill';
+    const expenseFillClassName = isSpike ? 'accent-warning-fill' : 'accent-primary';
     const expenseX = centerX - RUNWAY_HISTORY_BAR_GAP / 2 - barWidth;
     const incomeX = centerX + RUNWAY_HISTORY_BAR_GAP / 2;
     const expensePath = buildRoundedTopBarPath(expenseX, baselineY, barWidth, expenseHeight);

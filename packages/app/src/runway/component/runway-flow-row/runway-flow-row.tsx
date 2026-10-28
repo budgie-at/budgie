@@ -26,10 +26,14 @@ export const RunwayFlowRow = ({ computation }: Props) => {
     const negativeOrNeutralVariant = Math.abs(net) <= 1 ? 'warning' : 'destructive';
     const netVariant = net > 1 ? 'positive' : negativeOrNeutralVariant;
 
-    const formatFlow = (amount: number) =>
-        Math.abs(amount) >= HUNDRED_THOUSAND
-            ? formatCompactDigits(amount, defaultInstrument.symbol)
-            : formatDigits(amount, defaultInstrument.symbol);
+    const formatFlow = (amount: number) => {
+        const formatted =
+            Math.abs(amount) >= HUNDRED_THOUSAND
+                ? formatCompactDigits(amount, defaultInstrument.symbol)
+                : formatDigits(amount, defaultInstrument.symbol);
+
+        return formatted.replaceAll('-', '−');
+    };
 
     const stats = [
         { label: t`Expenses`, value: formatFlow(convertFromMicroUnits(computation.burn)), variant: 'primary' },

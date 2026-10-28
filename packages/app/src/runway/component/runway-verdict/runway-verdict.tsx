@@ -16,14 +16,15 @@ interface Props {
 export const RunwayVerdict = ({ computation }: Props) => {
     const { t } = useLingui();
 
-    const { isPositive, runwayMonths } = computation;
+    const { isPositive, monthsUsed, runwayMonths } = computation;
     const tone = isPositive ? 'positive' : 'destructive';
     const statusLabel = isPositive ? t`Growing` : t`Burning`;
+    const basisLabel = t`Based on ${monthsUsed} months`;
     const meterMonths = isPositive ? RUNWAY_MAX_MONTHS : runwayMonths;
 
     return (
         <EntranceReveal step={0} className="gap-y-md">
-            <StatusLabel label={statusLabel} tone={tone} />
+            <StatusLabel label={statusLabel} tone={tone} trailing={basisLabel} />
 
             <RunwayVerdictFigure computation={computation} />
 

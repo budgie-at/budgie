@@ -12,7 +12,6 @@ interface Props {
     readonly maxValue: number;
 }
 
-const MEDIAN_DASH = '3 3';
 const MEDIAN_OPACITY = 0.35;
 
 export const RunwayHistoryMedianLine = ({ value, maxValue }: Props) => {
@@ -26,7 +25,6 @@ export const RunwayHistoryMedianLine = ({ value, maxValue }: Props) => {
             x2={RUNWAY_HISTORY_CHART_WIDTH}
             y2={medianY}
             strokeClassName="accent-primary"
-            strokeDasharray={MEDIAN_DASH}
             strokeOpacity={MEDIAN_OPACITY}
             strokeWidth={1}
         />

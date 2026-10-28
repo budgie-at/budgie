@@ -33,7 +33,7 @@ export const RunwayVerdictFigure = ({ computation }: Props) => {
     const burningProps = {
         amount: monthsLeft,
         currencySymbol: '',
-        prefix: '≈ ',
+        prefix: '≈',
         decimalPlaces: 0,
         unit: t`months left`,
         testID: burningTestID

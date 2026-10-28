@@ -30,10 +30,18 @@ export const HeroFigure = ({ amount, currencySymbol, variant, unit = '', prefix 
     const { decimalSeparator } = useLocaleInfo();
     const formatWhole = useFormatDigits(0);
     const { sign, whole, fraction } = splitHeroAmount(amount, decimalPlaces ?? settingDecimalPlaces, decimalSeparator);
-    const wholeLabel = `${prefix}${sign}${formatWhole(whole, currencySymbol)}`;
+    const wholeLabel = `${sign}${formatWhole(whole, currencySymbol)}`;
 
     return (
         <View className="flex-row items-baseline" style={LTR_STYLE}>
+            {isNotEmptyString(prefix) ? (
+                <Text
+                    maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
+                    className="mr-xs text-[32px] font-medium tabular-nums text-secondary-foreground"
+                >
+                    {prefix}
+                </Text>
+            ) : null}
             <ProtectedText
                 adjustsFontSizeToFit
                 numberOfLines={1}
@@ -52,7 +60,7 @@ export const HeroFigure = ({ amount, currencySymbol, variant, unit = '', prefix 
                 {fraction}
             </ProtectedText>
             {isNotEmptyString(unit) ? (
-                <Text maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER} className="ml-sm text-lg text-secondary-foreground">
+                <Text maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER} className="ml-sm text-xl font-medium text-secondary-foreground">
                     {unit}
                 </Text>
             ) : null}

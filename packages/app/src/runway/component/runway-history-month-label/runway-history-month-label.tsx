@@ -14,7 +14,7 @@ export const RunwayHistoryMonthLabel = ({ x, y, label, isSpike, hasLabel }: Prop
         return null;
     }
 
-    const fillClassName = isSpike ? 'accent-warning-foreground' : 'accent-secondary-foreground';
+    const fillClassName = isSpike ? 'accent-primary' : 'accent-secondary-foreground';
     const fontWeight = isSpike ? '600' : '400';
 
     return (

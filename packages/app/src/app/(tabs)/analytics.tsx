@@ -36,7 +36,7 @@ export default function AnalyticsPage() {
                 </View>
             </GestureDetector>
 
-            <View className="absolute top-0 right-0 left-0 z-10 pt-safe" pointerEvents="box-none">
+            <View className="absolute top-0 right-0 left-0 z-10 bg-primary-reverse pt-safe" pointerEvents="box-none">
                 <AnalyticsPageHeader activeTab={activeTab} onChangeTab={handleChangeTab} />
             </View>
         </View>

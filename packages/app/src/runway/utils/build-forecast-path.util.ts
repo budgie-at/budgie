@@ -13,7 +13,6 @@ interface RunwayForecastPointInterface {
 
 interface RunwayForecastGeometryInterface {
     readonly likelyPath: string;
-    readonly likelyAreaPath: string;
     readonly bandPath: string;
     readonly zeroY: number;
     readonly runOutX: number | null;
@@ -59,15 +58,10 @@ export const buildRunwayForecastPath = (params: BuildRunwayForecastPathParamsInt
     const xTicks = RUNWAY_HORIZON_MONTHS.map(months => xAt(months));
     const p25Points = p25Values.map((value, index) => ({ x: xTicks[index], y: yAt(value) }));
     const likelyPoints = likelyValues.map((value, index) => ({ x: xTicks[index], y: yAt(value) }));
-    const areaBottom = paddingTop + drawableHeight;
     const p75Points = p75Values.map((value, index) => ({ x: xTicks[index], y: yAt(value) }));
 
     return {
         likelyPath: buildForecastPath(likelyPoints, false),
-        likelyAreaPath: buildForecastPath(
-            [...likelyPoints, { x: xTicks[xTicks.length - 1], y: areaBottom }, { x: xTicks[0], y: areaBottom }],
-            true
-        ),
         bandPath: buildForecastPath([...p75Points, ...[...p25Points].reverse()], true),
         zeroY: yAt(ZERO_VALUE),
         runOutX: isDefined(runwayMonths) && runwayMonths <= RUNWAY_MAX_MONTHS ? xAt(Math.max(runwayMonths, ZERO_VALUE)) : null,

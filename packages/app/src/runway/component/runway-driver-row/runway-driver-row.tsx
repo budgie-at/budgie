@@ -1,5 +1,6 @@
 import { RunwayDriverDimensionEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
+import { plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
@@ -10,8 +11,8 @@ import { GrowBar } from '../../../@generic/component/grow-bar/grow-bar';
 import { STATUS_TONE_FILL_CLASS_NAME } from '../../../@generic/constant/status-tone-fill-class-name.constant';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { cn } from '../../../@generic/utils/cn.util';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
+import { RunwayDriverAmount } from '../runway-driver-amount/runway-driver-amount';
 
 import type { StatusToneType } from '../../../@generic/type/status-tone.type';
 import type { RunwayDriverInterface } from '../../interface/runway-driver.interface';
@@ -33,28 +34,20 @@ const titleVariants = cva('shrink text-sm', {
     }
 });
 
-const amountVariants = cva('text-sm tabular-nums', {
-    variants: {
-        isFolded: {
-            true: 'font-medium text-secondary-foreground',
-            false: 'font-semibold text-primary'
-        }
-    }
-});
-
 export const RunwayDriverRow = ({ driver, dimension, maxAmount, rank, tone }: Props) => {
     const { t } = useLingui();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
-    const formatDigits = useFormatDigits(0);
     const formatProtectedAmount = useProtectedAmountLabel();
 
     const { foldedDriverCount } = driver;
     const isFolded = isPositiveNumber(foldedDriverCount);
-    const foldedTitle = t`Other · ${foldedDriverCount}`;
+    const foldedTitle =
+        dimension === RunwayDriverDimensionEnum.TAG
+            ? t({ message: plural(foldedDriverCount, { one: 'Other (# tag)', other: 'Other (# tags)' }) })
+            : t({ message: plural(foldedDriverCount, { one: 'Other (# category)', other: 'Other (# categories)' }) });
     const emptyTitle = dimension === RunwayDriverDimensionEnum.TAG ? t`Untagged` : t`Uncategorized`;
     const namedTitle = isNotEmptyString(driver.title) ? driver.title : emptyTitle;
     const title = isFolded ? foldedTitle : namedTitle;
-    const formattedAmount = formatDigits(convertFromMicroUnits(driver.monthlyAmount), defaultInstrument.symbol);
     const protectedAmount = formatProtectedAmount(convertFromMicroUnits(driver.monthlyAmount), defaultInstrument.symbol);
     const barToneClassName = rank === 0 && !isFolded ? STATUS_TONE_FILL_CLASS_NAME[tone] : 'bg-primary/70';
     const share = isPositiveNumber(maxAmount) ? driver.monthlyAmount / maxAmount : 0;
@@ -76,9 +69,7 @@ export const RunwayDriverRow = ({ driver, dimension, maxAmount, rank, tone }: Pr
                     ) : null}
                 </View>
 
-                <Text numberOfLines={1} className={amountVariants({ isFolded })}>
-                    <Trans>{formattedAmount} / mo</Trans>
-                </Text>
+                <RunwayDriverAmount monthlyAmount={driver.monthlyAmount} isFolded={isFolded} />
             </View>
 
             <View className="h-[3px] overflow-hidden rounded-full bg-secondary-corner">
