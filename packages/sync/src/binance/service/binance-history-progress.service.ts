@@ -2,6 +2,8 @@ import { BankIntegrationRepository } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
+import * as Option from 'effect/Option';
+import * as Record from 'effect/Record';
 import * as Result from 'effect/Result';
 import * as Schema from 'effect/Schema';
 
@@ -29,9 +31,7 @@ export class BinanceHistoryProgressService extends Context.Service<BinanceHistor
 
             return {
                 find: Effect.fn('BinanceHistoryProgressService.find')(function* (integrationId: number, source: BinanceHistorySourceEnum) {
-                    const progress: typeof BinanceHistoryProgressSchema.Type | undefined = (yield* load(integrationId))[source];
-
-                    return progress ?? null;
+                    return Option.getOrNull(Record.get(yield* load(integrationId), source));
                 }),
                 save: Effect.fn('BinanceHistoryProgressService.save')(function* (
                     integrationId: number,
