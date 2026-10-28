@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.125.1](https://github.com/budgie-at/budgie/compare/v6.125.0...v6.125.1) (2026-10-28)
+
+### Bug Fixes
+
+* **app:** drop Apple from the capture App Intent metadata ([27b39f2](https://github.com/budgie-at/budgie/commit/27b39f24f22c4c921ca0e6517a404db151c0bd2a))
+
+
 # [6.125.0](https://github.com/budgie-at/budgie/compare/v6.124.0...v6.125.0) (2026-10-28)
 
 ### Bug Fixes
