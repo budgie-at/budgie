@@ -136,27 +136,24 @@ export const binanceStub = {
             http.get(SERVER_TIME_URL, () => HttpResponse.json({ serverTime: Date.now() + offsetMs }, { headers: WEIGHT_HEADERS }))
         );
     },
+    apiRestrictionsBody: (body: unknown): void => {
+        mockServer.use(http.get(API_RESTRICTIONS_URL, () => HttpResponse.json(body, { headers: WEIGHT_HEADERS })));
+    },
     apiRestrictions: (restrictions: Partial<BinanceApiRestrictionsApiInterface> = {}): void => {
-        mockServer.use(
-            http.get(API_RESTRICTIONS_URL, () =>
-                HttpResponse.json(
-                    {
-                        ipRestrict: false,
-                        createTime: 1_700_000_000_000,
-                        enableReading: true,
-                        enableWithdrawals: false,
-                        enableInternalTransfer: false,
-                        permitsUniversalTransfer: false,
-                        enableVanillaOptions: false,
-                        enableFutures: false,
-                        enableMargin: false,
-                        enableSpotAndMarginTrading: false,
-                        ...restrictions
-                    },
-                    { headers: WEIGHT_HEADERS }
-                )
-            )
-        );
+        binanceStub.apiRestrictionsBody({
+            ipRestrict: false,
+            createTime: 1_700_000_000_000,
+            enableReading: true,
+            enableWithdrawals: false,
+            enableInternalTransfer: false,
+            permitsUniversalTransfer: false,
+            enableVanillaOptions: false,
+            enablePortfolioMarginTrading: false,
+            enableFutures: false,
+            enableMargin: false,
+            enableSpotAndMarginTrading: false,
+            ...restrictions
+        });
     },
     spotBalances: (balances: BinanceAssetBalanceApiInterface[], options?: ServeOptions): void => {
         mockServer.use(http.post(SPOT_BALANCE_URL, serveWith(options, () => HttpResponse.json(balances, { headers: WEIGHT_HEADERS }))));
