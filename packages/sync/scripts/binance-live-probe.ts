@@ -264,17 +264,12 @@ const probeDust = Effect.gen(function* () {
 
         return;
     }
-    const transferedSumMatches = logs.every(row =>
-        isClose(sum(details(row).map(detail => numberOf(detail['transferedAmount']))), numberOf(row['totalTransferedAmount']))
-    );
-    const serviceSumMatches = logs.every(row =>
-        isClose(sum(details(row).map(detail => numberOf(detail['serviceChargeAmount']))), numberOf(row['totalServiceChargeAmount']))
-    );
-    const grossSumMatches = logs.every(row =>
-        isClose(
-            sum(details(row).map(detail => numberOf(detail['transferedAmount']) + numberOf(detail['serviceChargeAmount']))),
-            numberOf(row['totalTransferedAmount'])
-        )
+    const sumMatches = (getAmount, totalKey) => logs.every(row => isClose(sum(details(row).map(getAmount)), numberOf(row[totalKey])));
+    const transferedSumMatches = sumMatches(detail => numberOf(detail['transferedAmount']), 'totalTransferedAmount');
+    const serviceSumMatches = sumMatches(detail => numberOf(detail['serviceChargeAmount']), 'totalServiceChargeAmount');
+    const grossSumMatches = sumMatches(
+        detail => numberOf(detail['transferedAmount']) + numberOf(detail['serviceChargeAmount']),
+        'totalTransferedAmount'
     );
     yield* log(
         `Q6 dust: sum(transferedAmount)==totalTransferedAmount: ${yesNo(transferedSumMatches)}; sum(serviceChargeAmount)==totalServiceChargeAmount: ${yesNo(serviceSumMatches)}; sum(transferedAmount+serviceChargeAmount)==totalTransferedAmount: ${yesNo(grossSumMatches)}`
@@ -290,7 +285,7 @@ const probeP2p = Effect.gen(function* () {
             THIRTY_DAYS_MS,
             REWARD_LOOKBACK_WINDOWS,
             true
-        ).pipe(Effect.map(collected => ({ ...collected, rows: collected.rows })));
+        );
         if (result.errorCode !== null) {
             yield* log(`Q7 p2p ${tradeType}: error ${result.errorCode}`);
         }

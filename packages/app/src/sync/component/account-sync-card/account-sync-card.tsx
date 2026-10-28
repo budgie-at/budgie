@@ -68,8 +68,8 @@ export const AccountSyncCard = ({ accountId }: Props) => {
         [SyncWarningEnum.REGION_UNAVAILABLE]: t(SYNC_ERROR_LABEL[SyncErrorCodeEnum.REGION_UNAVAILABLE])
     };
     const isRegionBlocked = sync.lastWarning === SyncWarningEnum.REGION_UNAVAILABLE;
-    const hasLastError = isNotEmptyString(sync.lastError);
-    const lastErrorText = hasLastError && isDefined(sync.lastErrorCode) ? t(SYNC_ERROR_LABEL[sync.lastErrorCode]) : sync.lastError;
+    const lastErrorText =
+        isNotEmptyString(sync.lastError) && isDefined(sync.lastErrorCode) ? t(SYNC_ERROR_LABEL[sync.lastErrorCode]) : sync.lastError;
     const tokenSection = sync.provider === ExternalSourceEnum.BINANCE ? <BinanceSyncTokenSection accountId={accountId} /> : null;
 
     return (

@@ -93,7 +93,6 @@ import type { BinanceFiatOrderApiInterface } from '../interface/binance-fiat-ord
 import type { BinanceTradeSymbolInterface } from '../interface/binance-trade-symbol.interface';
 import type { BinanceTransactionSourcesInterface } from '../interface/binance-transaction-sources.interface';
 import type { BinanceTransferInterface } from '../interface/binance-transfer.interface';
-import type { BinanceWindowWalkConfigInterface } from '../interface/binance-window-walk-config.interface';
 import type { BinanceWithdrawalApiInterface } from '../interface/binance-withdrawal-api.schema';
 import type * as Headers from 'effect/http/Headers';
 import type * as HttpClient from 'effect/http/HttpClient';
@@ -544,15 +543,17 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
 
     private readonly walkWindowsBackward = Effect.fnUntraced(function* <T>(
         this: BinanceSignedClient,
-        config: BinanceWindowWalkConfigInterface,
+        periodMs: number,
+        startTimeMs: number,
+        endTimeMs: number,
         fetchOneWindow: (windowStartMs: number, windowEndMs: number) => Effect.Effect<readonly T[], SyncError, HttpClient.HttpClient>
     ): Effect.fn.Return<T[], SyncError, HttpClient.HttpClient> {
         const records: T[] = [];
-        let windowEndMs = config.endTimeMs;
+        let windowEndMs = endTimeMs;
         let isWalkDeferred = false;
 
-        while (!isWalkDeferred && windowEndMs >= config.startTimeMs) {
-            const windowStartMs = Math.max(config.startTimeMs, windowEndMs - config.periodMs);
+        while (!isWalkDeferred && windowEndMs >= startTimeMs) {
+            const windowStartMs = Math.max(startTimeMs, windowEndMs - periodMs);
             const windowRecords = yield* this.fetchWindowOrDefer(fetchOneWindow, windowStartMs, windowEndMs);
             isWalkDeferred = !isDefined(windowRecords);
             records.push(...(windowRecords ?? []));
@@ -579,6 +580,33 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
 
         return rows;
     });
+
+    private readonly walkSplitWindows = <T>(
+        periodMs: number,
+        startTimeMs: number,
+        endTimeMs: number,
+        fetchChunk: (
+            chunkStartMs: number,
+            chunkEndMs: number
+        ) => Effect.Effect<{ readonly rows: readonly T[]; readonly isTruncated: boolean }, SyncError, HttpClient.HttpClient>
+    ) =>
+        this.walkWindowsBackward(periodMs, startTimeMs, endTimeMs, (windowStartMs, windowEndMs) =>
+            this.fetchSplittingWindow(fetchChunk, windowStartMs, windowEndMs)
+        );
+
+    private readonly walkPagedWindows = <T>(
+        periodMs: number,
+        startTimeMs: number,
+        endTimeMs: number,
+        fetchPage: (
+            page: number,
+            windowStartMs: number,
+            windowEndMs: number
+        ) => Effect.Effect<{ readonly rows: readonly T[]; readonly hasMore: boolean }, SyncError, HttpClient.HttpClient>
+    ) =>
+        this.walkWindowsBackward(periodMs, startTimeMs, endTimeMs, (windowStartMs, windowEndMs) =>
+            this.collectPages(page => fetchPage(page, windowStartMs, windowEndMs))
+        );
 
     constructor(
         token: string,
@@ -699,9 +727,12 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
 
     private fetchConvertTransfers(startTimeMs: number, endTimeMs: number) {
         return Effect.gen({ self: this }, function* (this: BinanceSignedClient) {
-            const convertFlows = yield* this.walkWindowsBackward(
-                { startTimeMs, endTimeMs, periodMs: CONVERT_MAX_PERIOD_MS },
-                (windowStartMs, windowEndMs) => this.fetchConvertWindow(windowStartMs, windowEndMs)
+            const convertFlows = yield* this.walkSplitWindows(CONVERT_MAX_PERIOD_MS, startTimeMs, endTimeMs, (chunkStartMs, chunkEndMs) =>
+                this.signedRequest(BinanceConvertTradeFlowApiSchema, CONVERT_TRADE_FLOW_ENDPOINT, 'GET', {
+                    startTime: chunkStartMs,
+                    endTime: chunkEndMs,
+                    limit: CONVERT_ROWS_PER_PAGE
+                }).pipe(Effect.map(chunk => ({ rows: chunk.list, isTruncated: chunk.moreData })))
             );
             const convertTransfers = convertFlows
                 .filter(flow => flow.orderStatus === CONVERT_SUCCESS_STATUS)
@@ -716,19 +747,6 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
 
             return [...new Map([...convertTransfers, ...universalTransfers].map(transfer => [transfer.externalId, transfer])).values()];
         });
-    }
-
-    private fetchConvertWindow(startTimeMs: number, endTimeMs: number) {
-        return this.fetchSplittingWindow(
-            (chunkStartMs, chunkEndMs) =>
-                this.signedRequest(BinanceConvertTradeFlowApiSchema, CONVERT_TRADE_FLOW_ENDPOINT, 'GET', {
-                    startTime: chunkStartMs,
-                    endTime: chunkEndMs,
-                    limit: CONVERT_ROWS_PER_PAGE
-                }).pipe(Effect.map(chunk => ({ rows: chunk.list, isTruncated: chunk.moreData }))),
-            startTimeMs,
-            endTimeMs
-        );
     }
 
     private fetchTrades(
@@ -858,7 +876,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         startTimeMs: number,
         endTimeMs: number
     ): Effect.Effect<T[], SyncError, HttpClient.HttpClient> {
-        return this.walkWindowsBackward({ startTimeMs, endTimeMs, periodMs: CAPITAL_HISTORY_MAX_PERIOD_MS }, (windowStartMs, windowEndMs) =>
+        return this.walkWindowsBackward(CAPITAL_HISTORY_MAX_PERIOD_MS, startTimeMs, endTimeMs, (windowStartMs, windowEndMs) =>
             this.cached(
                 cache,
                 `${wallet}:${endpoint}:${windowStartMs}-${windowEndMs}`,
@@ -878,20 +896,18 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return this.cached(
             this.fiatOrderCache,
             `${transactionType}:${FIAT_ORDERS_ENDPOINT}:${startTimeMs}-${endTimeMs}`,
-            this.walkWindowsBackward({ startTimeMs, endTimeMs, periodMs: FIAT_MAX_PERIOD_MS }, (windowStartMs, windowEndMs) =>
-                this.collectPages(page =>
-                    this.signedRequest(BinanceFiatOrderListApiSchema, FIAT_ORDERS_ENDPOINT, 'GET', {
-                        transactionType,
-                        beginTime: windowStartMs,
-                        endTime: windowEndMs,
-                        page,
-                        rows: FIAT_ROWS_PER_PAGE
-                    }).pipe(
-                        Effect.map(response => ({
-                            rows: response.data.filter(order => FIAT_ACCEPTED_STATUSES.includes(order.status)),
-                            hasMore: response.data.length === FIAT_ROWS_PER_PAGE
-                        }))
-                    )
+            this.walkPagedWindows(FIAT_MAX_PERIOD_MS, startTimeMs, endTimeMs, (page, windowStartMs, windowEndMs) =>
+                this.signedRequest(BinanceFiatOrderListApiSchema, FIAT_ORDERS_ENDPOINT, 'GET', {
+                    transactionType,
+                    beginTime: windowStartMs,
+                    endTime: windowEndMs,
+                    page,
+                    rows: FIAT_ROWS_PER_PAGE
+                }).pipe(
+                    Effect.map(response => ({
+                        rows: response.data.filter(order => FIAT_ACCEPTED_STATUSES.includes(order.status)),
+                        hasMore: response.data.length === FIAT_ROWS_PER_PAGE
+                    }))
                 )
             )
         );
@@ -908,14 +924,8 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             this.c2cOrderCache,
             `${availableStartTimeMs}-${endTimeMs}`,
             Effect.forEach([C2C_BUY_TRADE_TYPE, C2C_SELL_TRADE_TYPE], tradeType =>
-                this.walkWindowsBackward(
-                    {
-                        startTimeMs: availableStartTimeMs,
-                        endTimeMs,
-                        periodMs: C2C_MAX_PERIOD_MS
-                    },
-                    (windowStartMs, windowEndMs) =>
-                        this.collectPages(page => this.fetchC2cOrderPage(tradeType, windowStartMs, windowEndMs, page))
+                this.walkPagedWindows(C2C_MAX_PERIOD_MS, availableStartTimeMs, endTimeMs, (page, windowStartMs, windowEndMs) =>
+                    this.fetchC2cOrderPage(tradeType, windowStartMs, windowEndMs, page)
                 )
             ).pipe(Effect.map(ordersByType => ordersByType.flat()))
         );
@@ -929,22 +939,18 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         }
 
         return Effect.forEach(UNIVERSAL_TRANSFER_TYPES, type =>
-            this.walkWindowsBackward(
-                {
-                    startTimeMs: availableStartTimeMs,
-                    endTimeMs,
-                    periodMs: UNIVERSAL_TRANSFER_MAX_PERIOD_MS
-                },
-                (windowStartMs, windowEndMs) =>
-                    this.collectPages(current =>
-                        this.fetchEarnPage(BinanceUniversalTransferListApiSchema, UNIVERSAL_TRANSFER_ENDPOINT, {
-                            type,
-                            startTime: windowStartMs,
-                            endTime: windowEndMs,
-                            current,
-                            size: EARN_PAGE_SIZE
-                        })
-                    )
+            this.walkPagedWindows(
+                UNIVERSAL_TRANSFER_MAX_PERIOD_MS,
+                availableStartTimeMs,
+                endTimeMs,
+                (current, windowStartMs, windowEndMs) =>
+                    this.fetchEarnPage(BinanceUniversalTransferListApiSchema, UNIVERSAL_TRANSFER_ENDPOINT, {
+                        type,
+                        startTime: windowStartMs,
+                        endTime: windowEndMs,
+                        current,
+                        size: EARN_PAGE_SIZE
+                    })
             )
         ).pipe(
             Effect.map(transfersByType =>
@@ -1062,16 +1068,14 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return this.cached(
             this.earnRewardCache,
             `${endpoint}:${startTimeMs}-${endTimeMs}`,
-            this.walkWindowsBackward({ startTimeMs, endTimeMs, periodMs: EARN_REWARD_MAX_PERIOD_MS }, (windowStartMs, windowEndMs) =>
-                this.collectPages(current =>
-                    this.fetchEarnPage(schema, endpoint, {
-                        ...params,
-                        startTime: windowStartMs,
-                        endTime: windowEndMs,
-                        current,
-                        size: EARN_PAGE_SIZE
-                    })
-                ).pipe(Effect.map(rows => rows.map(normalizeRow)))
+            this.walkPagedWindows(EARN_REWARD_MAX_PERIOD_MS, startTimeMs, endTimeMs, (current, windowStartMs, windowEndMs) =>
+                this.fetchEarnPage(schema, endpoint, {
+                    ...params,
+                    startTime: windowStartMs,
+                    endTime: windowEndMs,
+                    current,
+                    size: EARN_PAGE_SIZE
+                }).pipe(Effect.map(({ rows, hasMore }) => ({ rows: rows.map(normalizeRow), hasMore })))
             )
         );
     }
@@ -1080,17 +1084,12 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return this.cached(
             this.dividendCache,
             `${startTimeMs}-${endTimeMs}`,
-            this.walkWindowsBackward({ startTimeMs, endTimeMs, periodMs: DIVIDEND_MAX_PERIOD_MS }, (windowStartMs, windowEndMs) =>
-                this.fetchSplittingWindow(
-                    (chunkStartMs, chunkEndMs) =>
-                        this.signedRequest(BinanceDividendListApiSchema, DIVIDEND_ENDPOINT, 'GET', {
-                            startTime: chunkStartMs,
-                            endTime: chunkEndMs,
-                            limit: DIVIDEND_ROWS_LIMIT
-                        }).pipe(Effect.map(({ rows }) => ({ rows, isTruncated: rows.length === DIVIDEND_ROWS_LIMIT }))),
-                    windowStartMs,
-                    windowEndMs
-                )
+            this.walkSplitWindows(DIVIDEND_MAX_PERIOD_MS, startTimeMs, endTimeMs, (chunkStartMs, chunkEndMs) =>
+                this.signedRequest(BinanceDividendListApiSchema, DIVIDEND_ENDPOINT, 'GET', {
+                    startTime: chunkStartMs,
+                    endTime: chunkEndMs,
+                    limit: DIVIDEND_ROWS_LIMIT
+                }).pipe(Effect.map(({ rows }) => ({ rows, isTruncated: rows.length === DIVIDEND_ROWS_LIMIT })))
             )
         );
     }
@@ -1099,21 +1098,16 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return this.cached(
             this.dustCache,
             `${startTimeMs}-${endTimeMs}`,
-            this.walkWindowsBackward({ startTimeMs, endTimeMs, periodMs: DUST_MAX_PERIOD_MS }, (windowStartMs, windowEndMs) =>
-                this.fetchSplittingWindow(
-                    (chunkStartMs, chunkEndMs) =>
-                        this.signedRequest(BinanceDustListApiSchema, DUST_LOG_ENDPOINT, 'GET', {
-                            accountType: DUST_ACCOUNT_TYPE,
-                            startTime: chunkStartMs,
-                            endTime: chunkEndMs
-                        }).pipe(
-                            Effect.map(({ userAssetDribblets }) => ({
-                                rows: userAssetDribblets,
-                                isTruncated: userAssetDribblets.length >= DUST_ROWS_LIMIT
-                            }))
-                        ),
-                    windowStartMs,
-                    windowEndMs
+            this.walkSplitWindows(DUST_MAX_PERIOD_MS, startTimeMs, endTimeMs, (chunkStartMs, chunkEndMs) =>
+                this.signedRequest(BinanceDustListApiSchema, DUST_LOG_ENDPOINT, 'GET', {
+                    accountType: DUST_ACCOUNT_TYPE,
+                    startTime: chunkStartMs,
+                    endTime: chunkEndMs
+                }).pipe(
+                    Effect.map(({ userAssetDribblets }) => ({
+                        rows: userAssetDribblets,
+                        isTruncated: userAssetDribblets.length >= DUST_ROWS_LIMIT
+                    }))
                 )
             )
         );
