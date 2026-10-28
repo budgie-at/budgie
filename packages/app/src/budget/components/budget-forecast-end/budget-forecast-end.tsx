@@ -16,7 +16,7 @@ interface Props {
 const RING_RADIUS = 4;
 const RING_STROKE_WIDTH = 2;
 const LABEL_ABOVE_OFFSET = -10;
-const LABEL_BELOW_OFFSET = 16;
+const LABEL_BELOW_OFFSET = 28;
 
 export const BudgetForecastEnd = ({ point, label, isOver, right, strokeClassName, labelClassName, fontSize }: Props) => {
     const labelY = point.y + (isOver ? LABEL_ABOVE_OFFSET : LABEL_BELOW_OFFSET);
