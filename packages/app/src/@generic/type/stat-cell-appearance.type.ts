@@ -1,1 +1,1 @@
-export type StatCellAppearance = 'centered' | 'editorial';
+export type StatCellAppearance = 'centered' | 'editorial' | 'editorial-leading';

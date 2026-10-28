@@ -40,7 +40,7 @@
     --gap-6xl: 1.571rem; /* 22px */
     --gap-7xl: 1.714rem; /* 24px */
     --text-xxxs: 0.571rem; /* 8px */
-    --text-xxs: 0.714rem; /* 10px */
+    --text-xxs: 0.786rem; /* 11px */
     --text-xs: 0.857rem; /* 12px */
     --text-sm: 1rem; /* 14px */
     --text-md: 1.143rem; /* 16px */
@@ -91,15 +91,18 @@
             --color-secondary-reverse-corner: rgba(34, 34, 34, 1);
             --color-secondary-reverse-background: rgba(10, 10, 10, 1);
 
-            --color-positive-foreground: rgba(16, 185, 129, 1);
+            --color-positive-foreground: rgba(4, 120, 87, 1);
+            --color-positive-fill: rgba(16, 185, 129, 1);
             --color-positive-corner: rgba(16, 185, 129, 0.2);
             --color-positive-background: rgba(16, 185, 129, 0.1);
 
-            --color-destructive-foreground: rgba(239, 68, 68, 1);
+            --color-destructive-foreground: rgba(198, 40, 40, 1);
+            --color-destructive-fill: rgba(239, 68, 68, 1);
             --color-destructive-corner: rgba(239, 68, 68, 0.2);
             --color-destructive-background: rgba(239, 68, 68, 0.1);
 
-            --color-warning-foreground: rgba(240, 177, 0, 1);
+            --color-warning-foreground: rgba(154, 91, 0, 1);
+            --color-warning-fill: rgba(240, 177, 0, 1);
             --color-warning-corner: rgba(240, 177, 0, 0.2);
             --color-warning-background: rgba(240, 177, 0, 0.1);
 
@@ -141,7 +144,7 @@
             --color-seal-background: rgb(12, 80, 57);
 
             --color-secondary-foreground: rgba(136, 136, 136, 1);
-            --color-secondary-corner: rgba(34, 34, 34, 1);
+            --color-secondary-corner: rgba(56, 56, 58, 1);
             --color-secondary-background: rgba(10, 10, 10, 1);
 
             --color-secondary-reverse-foreground: rgba(115, 115, 115, 1);
@@ -149,14 +152,17 @@
             --color-secondary-reverse-background: rgba(248, 248, 248, 1);
 
             --color-positive-foreground: rgba(0, 255, 136, 1);
+            --color-positive-fill: rgba(0, 255, 136, 1);
             --color-positive-corner: rgba(1, 255, 136, 0.2);
             --color-positive-background: rgba(1, 255, 136, 0.1);
 
             --color-destructive-foreground: rgba(255, 68, 68, 1);
+            --color-destructive-fill: rgba(255, 68, 68, 1);
             --color-destructive-corner: rgba(255, 107, 107, 0.2);
             --color-destructive-background: rgba(255, 68, 68, 0.2);
 
             --color-warning-foreground: rgba(240, 177, 0, 1);
+            --color-warning-fill: rgba(240, 177, 0, 1);
             --color-warning-corner: rgba(240, 177, 0, 0.2);
             --color-warning-background: rgba(240, 177, 0, 0.1);
 

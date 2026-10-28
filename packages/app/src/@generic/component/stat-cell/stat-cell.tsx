@@ -1,6 +1,7 @@
 import { Text, View } from 'react-native';
 
 import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
+import { MAX_FONT_SIZE_MULTIPLIER } from '../../constant/max-font-size-multiplier.constant';
 import { STAT_CELL_APPEARANCE_CLASS_NAME } from '../../constant/stat-cell-appearance-class-name.constant';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { StatCellAppearance } from '../../type/stat-cell-appearance.type';
@@ -20,13 +21,20 @@ export const StatCell = ({ label, value, variant, appearance = 'centered', testI
 
     return (
         <View className={cn(container)}>
-            <Text numberOfLines={1} className="text-xxs uppercase tracking-wider text-secondary-foreground">
+            <Text
+                adjustsFontSizeToFit
+                numberOfLines={1}
+                minimumFontScale={0.8}
+                maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
+                className="shrink text-xxs uppercase tracking-wider text-secondary-foreground"
+            >
                 {label}
             </Text>
             <ProtectedText
                 adjustsFontSizeToFit
                 numberOfLines={1}
                 minimumFontScale={0.7}
+                maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
                 testID={testID}
                 className={cn(valueClassName, FOREGROUND_COLOR_PALETTE[variant])}
             >

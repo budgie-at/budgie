@@ -3,6 +3,7 @@ export const splitHeroAmount = (amount: number, decimalPlaces: number, decimalSe
     const scaledAmount = Math.round(Math.abs(amount) * scale);
     const whole = Math.floor(scaledAmount / scale);
     const fractionDigits = String(scaledAmount - whole * scale).padStart(decimalPlaces, '0');
+    const sign = amount < 0 && scaledAmount > 0 ? '-' : '';
 
-    return { whole, fraction: decimalPlaces > 0 ? `${decimalSeparator}${fractionDigits}` : '' };
+    return { sign, whole, fraction: decimalPlaces > 0 ? `${decimalSeparator}${fractionDigits}` : '' };
 };
