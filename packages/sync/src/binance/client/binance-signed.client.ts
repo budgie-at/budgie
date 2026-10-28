@@ -367,7 +367,13 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     private readonly resolveTimestamp = Effect.fn('BinanceSignedClient.resolveTimestamp')(function* (this: BinanceSignedClient) {
         if (!isDefined(this.serverTimeOffsetMs)) {
             const serverTime = yield* this.fetchJson(BinanceServerTimeApiSchema, SERVER_TIME_ENDPOINT).pipe(Effect.option);
-            this.serverTimeOffsetMs = Option.isSome(serverTime) ? serverTime.value.serverTime - (yield* Clock.currentTimeMillis) : 0;
+            const now = yield* Clock.currentTimeMillis;
+
+            if (Option.isNone(serverTime)) {
+                return now;
+            }
+
+            this.serverTimeOffsetMs = serverTime.value.serverTime - now;
         }
 
         return (yield* Clock.currentTimeMillis) + this.serverTimeOffsetMs;
@@ -430,7 +436,8 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
 
     constructor(
         token: string,
-        private readonly deadlineAtMs = Number.POSITIVE_INFINITY
+        private readonly deadlineAtMs = Number.POSITIVE_INFINITY,
+        private readonly isFiatDiscoveryEnabled = true
     ) {
         super();
         this.credentials = BinanceSignedClient.decodeCredentials(token);
@@ -551,7 +558,9 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             const balances = yield* this.signedRequest(BinanceAssetBalanceListApiSchema, SPOT_BALANCE_ENDPOINT, 'POST');
             const { deposits, withdrawals } = yield* this.fetchCapitalSources(BinanceWalletEnum.SPOT, startTimeMs, endTimeMs);
             const c2cOrders = yield* this.fetchC2cOrders(startTimeMs, endTimeMs);
-            const { fiatDeposits, fiatWithdrawals } = yield* this.fetchFiatSources(startTimeMs, endTimeMs);
+            const { fiatDeposits, fiatWithdrawals } = this.isFiatDiscoveryEnabled
+                ? yield* this.fetchFiatSources(startTimeMs, endTimeMs)
+                : this.emptySources({});
             [
                 ...this.collectTouchedAssets(balances, convertTransfers),
                 ...deposits.map(deposit => deposit.coin),

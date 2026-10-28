@@ -106,12 +106,14 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 : windowStart;
         };
 
+        const isFiatRefreshDue = (): boolean => !isDefined(fiatSyncedAtMs) || Date.now() - fiatSyncedAtMs >= fiatRefreshIntervalMs;
+
         const getRunSignedClient = (token: string): BinanceSignedClient => {
             if (isDefined(run.signedClient) && run.clientToken === token) {
                 return run.signedClient;
             }
 
-            const signedClient = new BinanceSignedClient(token, run.deadlineAtMs);
+            const signedClient = new BinanceSignedClient(token, run.deadlineAtMs, isFiatRefreshDue());
             run = { ...run, signedClient, clientToken: token, exchangeAccounts: null };
 
             return signedClient;
@@ -337,8 +339,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 return 0;
             }
 
-            const isFiatRefreshDue = !isDefined(fiatSyncedAtMs) || Date.now() - fiatSyncedAtMs >= fiatRefreshIntervalMs;
-            const createdCount = isFiatRefreshDue
+            const createdCount = isFiatRefreshDue()
                 ? yield* commitSourceType(
                       token,
                       getRunSignedClient(token).getFiatTransactions(getUnixTime(resolveWindowStart(sync))),
