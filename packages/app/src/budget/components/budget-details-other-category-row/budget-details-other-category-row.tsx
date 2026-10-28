@@ -1,3 +1,4 @@
+import { BudgetAlertScopeEnum } from '@budgie/budget';
 import { TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
@@ -44,6 +45,7 @@ export const BudgetDetailsOtherCategoryRow = (props: Props) => {
             testID={BudgetSelector.DetailsOtherCategoryRow}
             spentTestID={BudgetSelector.DetailsOtherCategorySpentLabel}
             onPress={handlePress}
+            highlightTarget={{ scope: BudgetAlertScopeEnum.OTHER }}
         />
     );
 };

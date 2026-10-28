@@ -10,6 +10,7 @@ export const BudgetSelector = {
     DetailsVerdict: 'BudgetDetails.Verdict',
     DetailsVerdictStatus: 'BudgetDetails.VerdictStatus',
     DetailsReservedLink: 'BudgetDetails.ReservedLink',
+    DetailsPaceBanner: 'BudgetDetails.PaceBanner',
     DetailsSpentLabel: 'BudgetDetails.SpentLabel',
     DetailsRemainingLabel: 'BudgetDetails.RemainingLabel',
     SafeToSpendSheet: 'BudgetSafeToSpend.Sheet',

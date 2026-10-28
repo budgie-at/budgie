@@ -35,6 +35,7 @@ import { AiProvider } from '../ai/provider/ai.provider';
 import { VoiceInputProvider } from '../ai/provider/voice-input.provider';
 import { AuthGuard } from '../auth/provider/auth.guard';
 import { AuthProvider } from '../auth/provider/auth.provider';
+import { BudgetNotificationLaunchHandler } from '../budget/components/budget-notification-launch-handler/budget-notification-launch-handler';
 import { I18nProvider } from '../i18n/provider/i18n.provider';
 import { HistoricalMarketDataDrainerService } from '../market-data/service/historical-market-data-drainer.service';
 import { ReceiptLaunchHandler } from '../receipt/components/receipt-launch-handler/receipt-launch-handler';
@@ -261,6 +262,7 @@ export const RootLayoutContent = () => {
                                                         </ModalProvider>
                                                         <AppToastHost />
                                                         <ReceiptLaunchHandler />
+                                                        <BudgetNotificationLaunchHandler />
                                                     </AiProvider>
                                                 </CreateActionProvider>
                                             </AuthGuard>

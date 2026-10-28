@@ -1,7 +1,8 @@
 export { budgetComputeAllocation } from './allocation/utils/budget-compute-allocation.util';
 
+export { BudgetAlertKindEnum } from './alert/enum/budget-alert-kind.enum';
 export { BudgetAlertScopeEnum } from './alert/enum/budget-alert-scope.enum';
-export { computeBudgetAlertTriggers } from './alert/utils/budget-alert-threshold.util';
+export { computeBudgetAlertTriggers, computeBudgetPaceTriggers } from './alert/utils/budget-alert-threshold.util';
 export type { BudgetAlertTriggerInterface } from './alert/interface/budget-alert-trigger.interface';
 
 export { computePeriodWindow, computeTrailingMonthsWindow, getInclusiveEnd } from './period/utils/budget-period.util';

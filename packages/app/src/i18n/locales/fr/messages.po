@@ -404,6 +404,11 @@ msgstr "{statusLabel}. {figureAccessibilityLabel}, {daysLeftLabel}."
 msgid "{taggedCount, plural, one {# tagged this session} other {# tagged this session}}"
 msgstr "{taggedCount, plural, one {# étiquetée pendant cette session} other {# étiquetées pendant cette session}}"
 
+#: src/budget/components/budget-pace-banner-card/budget-pace-banner-card.tsx
+#: src/budget/service/budget-alert-monitor.service.ts
+msgid "{title} is ahead of pace"
+msgstr "{title} dépasse le rythme prévu"
+
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "{total} GB on this phone"
 msgstr "{total} Go sur ce téléphone"
@@ -2998,6 +3003,10 @@ msgstr "Garder comme espèces déjà suivies, pas une dépense"
 msgid "Keep only \"Enable Reading\" on — never allow trading or withdrawals"
 msgstr "Activez uniquement \"Activer la lecture\" — n'autorisez jamais le trading ni les retraits"
 
+#: src/budget/components/budget-pace-banner-card/budget-pace-banner-card.tsx
+msgid "Keep under {perDayAmount}/day to stay within {limitAmount}"
+msgstr "Reste sous {perDayAmount}/jour pour rester dans {limitAmount}"
+
 #: src/app/(tabs)/settings/ai.tsx
 msgid "Keep using Budgie meanwhile. Until the model is ready, categories come from simple rules on the phone."
 msgstr "Continuez à utiliser Budgie en attendant. Tant que le modèle n'est pas prêt, les catégories viennent de règles simples sur le téléphone."
@@ -3745,6 +3754,10 @@ msgstr "Activé · PIN"
 msgid "On · PIN and {biometricLabel}"
 msgstr "Activé · PIN et {biometricLabel}"
 
+#: src/budget/service/budget-alert-monitor.service.ts
+msgid "On pace to run out by {runOutDate}. Keeping under {perDayAmount}/day keeps it on track."
+msgstr "À ce rythme, il sera épuisé d'ici le {runOutDate}. Rester sous {perDayAmount}/jour te garde dans les clous."
+
 #: src/settings/components/your-data-card/your-data-card.tsx
 msgid "On this iPhone"
 msgstr "Sur cet iPhone"
@@ -3914,6 +3927,8 @@ msgstr "Transaction d’origine"
 
 #: src/budget/components/budget-details-other-category-row/budget-details-other-category-row.tsx
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
+#: src/budget/components/budget-pace-banner/budget-pace-banner.tsx
+#: src/budget/service/budget-alert-monitor.service.ts
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Other"
 msgstr "Autre"
@@ -5948,6 +5963,10 @@ msgstr "Vos comptes continuent de se synchroniser avec la nouvelle clé."
 #: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
 msgid "Your analytics are taking shape"
 msgstr "Vos analyses prennent forme"
+
+#: src/budget/service/budget-alert-monitor.service.ts
+msgid "Your budget is ahead of pace"
+msgstr "Ton budget dépasse le rythme prévu"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Your data"
