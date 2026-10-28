@@ -265,12 +265,10 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 chunkStartSeconds = Math.max(lookbackSeconds, (chunkEndSeconds ?? startedAtSeconds) - chunkSeconds);
                 committedCount += yield* fetchRange(chunkStartSeconds, chunkEndSeconds);
                 if (client.isSourceSkipped(source)) {
-                    if (!Number.isFinite(tailAt)) {
-                        yield* binanceHistoryProgressService.save(integration.id, source, {
-                            headAt: run.startedAtMs,
-                            tailAt: run.startedAtMs
-                        });
-                    }
+                    yield* binanceHistoryProgressService.save(integration.id, source, {
+                        headAt: run.startedAtMs,
+                        tailAt: Math.min(tailAt, run.startedAtMs)
+                    });
 
                     return committedCount;
                 }

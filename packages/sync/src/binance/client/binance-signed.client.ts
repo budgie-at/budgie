@@ -281,17 +281,12 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             from,
             to,
             (startTimeMs, endTimeMs) =>
-                this.skipWhenUnavailable(
+                this.fetchStakingRewards(
                     BinanceHistorySourceEnum.ETH_STAKING,
-                    [],
-                    this.fetchRewardRecords(
-                        ETH_STAKING_REWARDS_ENDPOINT,
-                        BinanceStakingRewardListApiSchema,
-                        {},
-                        row => ({ asset: row.asset ?? ETH_STAKING_REWARD_ASSET, rewards: row.amount, time: row.time }),
-                        startTimeMs,
-                        endTimeMs
-                    )
+                    ETH_STAKING_REWARDS_ENDPOINT,
+                    ETH_STAKING_REWARD_ASSET,
+                    startTimeMs,
+                    endTimeMs
                 ),
             ethStakingRewards => ({ ethStakingRewards })
         );
@@ -306,17 +301,12 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             from,
             to,
             (startTimeMs, endTimeMs) =>
-                this.skipWhenUnavailable(
+                this.fetchStakingRewards(
                     BinanceHistorySourceEnum.SOL_STAKING,
-                    [],
-                    this.fetchRewardRecords(
-                        SOL_STAKING_REWARDS_ENDPOINT,
-                        BinanceStakingRewardListApiSchema,
-                        {},
-                        row => ({ asset: row.asset ?? SOL_STAKING_REWARD_ASSET, rewards: row.amount, time: row.time }),
-                        startTimeMs,
-                        endTimeMs
-                    )
+                    SOL_STAKING_REWARDS_ENDPOINT,
+                    SOL_STAKING_REWARD_ASSET,
+                    startTimeMs,
+                    endTimeMs
                 ),
             solStakingRewards => ({ solStakingRewards })
         );
@@ -1037,6 +1027,27 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             row => ({ asset: row.asset, rewards: row.amount, time: row.time }),
             startTimeMs,
             endTimeMs
+        );
+    }
+
+    private fetchStakingRewards(
+        source: BinanceHistorySourceEnum,
+        endpoint: string,
+        defaultAsset: string,
+        startTimeMs: number,
+        endTimeMs: number
+    ) {
+        return this.skipWhenUnavailable(
+            source,
+            [],
+            this.fetchRewardRecords(
+                endpoint,
+                BinanceStakingRewardListApiSchema,
+                {},
+                row => ({ asset: row.asset ?? defaultAsset, rewards: row.amount, time: row.time }),
+                startTimeMs,
+                endTimeMs
+            )
         );
     }
 
