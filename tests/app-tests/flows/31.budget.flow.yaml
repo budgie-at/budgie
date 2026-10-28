@@ -253,6 +253,11 @@ env:
           id: 'BudgetSetup.CategoryLimit.0.AmountInput'
           text: '200'
       timeout: 3000
+- scrollUntilVisible:
+      element:
+          text: 'Category limits'
+      direction: UP
+- waitForAnimationToEnd
 - tapOn: 'Category limits'
 - waitForAnimationToEnd
 - retry:
@@ -282,6 +287,11 @@ env:
           id: 'BudgetSetup.CategoryLimit.1.AmountInput'
           text: '100'
       timeout: 3000
+- scrollUntilVisible:
+      element:
+          text: 'Category limits'
+      direction: UP
+- waitForAnimationToEnd
 - tapOn: 'Category limits'
 - waitForAnimationToEnd
 - retry:
@@ -311,6 +321,11 @@ env:
           id: 'BudgetSetup.CategoryLimit.2.AmountInput'
           text: '150'
       timeout: 3000
+- scrollUntilVisible:
+      element:
+          text: 'Category limits'
+      direction: UP
+- waitForAnimationToEnd
 - tapOn: 'Category limits'
 - waitForAnimationToEnd
 - retry:
@@ -340,6 +355,11 @@ env:
           id: 'BudgetSetup.CategoryLimit.3.AmountInput'
           text: '75'
       timeout: 3000
+- scrollUntilVisible:
+      element:
+          text: 'Category limits'
+      direction: UP
+- waitForAnimationToEnd
 - tapOn: 'Category limits'
 - waitForAnimationToEnd
 - extendedWaitUntil:
@@ -536,6 +556,11 @@ env:
           id: 'BudgetSetup.CategoryLimit.3.AmountInput'
           text: '300'
       timeout: 3000
+- scrollUntilVisible:
+      element:
+          text: 'Category limits'
+      direction: UP
+- waitForAnimationToEnd
 - tapOn: 'Category limits'
 - waitForAnimationToEnd
 - tapOn:
@@ -717,6 +742,11 @@ env:
           id: 'BudgetSetup.CategoryLimit.0.AmountInput'
           text: '150'
       timeout: 3000
+- scrollUntilVisible:
+      element:
+          text: 'Category limits'
+      direction: UP
+- waitForAnimationToEnd
 - tapOn: 'Category limits'
 - waitForAnimationToEnd
 - extendedWaitUntil:
@@ -738,6 +768,11 @@ env:
           id: 'BudgetSetup.CategoryLimit.0.AmountInput'
           text: '80'
       timeout: 3000
+- scrollUntilVisible:
+      element:
+          text: 'Category limits'
+      direction: UP
+- waitForAnimationToEnd
 - tapOn: 'Category limits'
 - waitForAnimationToEnd
 - assertNotVisible:

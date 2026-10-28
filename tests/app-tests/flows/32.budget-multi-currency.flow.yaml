@@ -62,6 +62,11 @@ env:
           id: 'BudgetSetup.CategoryLimit.0.AmountInput'
           text: '80'
       timeout: 3000
+- scrollUntilVisible:
+      element:
+          text: 'Category limits'
+      direction: UP
+- waitForAnimationToEnd
 - tapOn: 'Category limits'
 - waitForAnimationToEnd
 - tapOn:
