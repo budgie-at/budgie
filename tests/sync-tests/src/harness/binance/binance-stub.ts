@@ -109,7 +109,6 @@ const buildAllValidSymbols = (): string[] => {
 
 const FIAT_DEPOSIT_TRANSACTION_TYPE = '0';
 const C2C_BUY_TRADE_TYPE = 'BUY';
-const FIRST_OFFSET = 0;
 const MY_TRADES_DEFAULT_LIMIT = 500;
 const MY_TRADES_MAX_LIMIT = 1000;
 const DIVIDEND_DEFAULT_LIMIT = 20;
@@ -140,30 +139,6 @@ const parseTimeWindow = (url: URL, startParam: string, endParam: string): TimeWi
 const parseApplyTimeMs = (applyTime: string): number => Date.parse(applyTime.includes('T') ? applyTime : `${applyTime.replace(' ', 'T')}Z`);
 
 const isWithinWindow = (timeMs: number, window: TimeWindow): boolean => timeMs >= window.startMs && timeMs <= window.endMs;
-
-const buildPagedEarnResponse = <TRow>(url: URL, rows: TRow[]): { rows: TRow[]; total: number } => ({
-    rows: slicePage(url, rows, EARN_PAGING),
-    total: rows.length
-});
-
-const sliceOffsetPage = <TRow>(url: URL, rows: TRow[]): TRow[] => {
-    const offset = Number(url.searchParams.get('offset') ?? String(FIRST_OFFSET));
-    const limit = Number(url.searchParams.get('limit') ?? String(rows.length));
-
-    return rows.slice(offset, offset + limit);
-};
-
-const stubPagedRows = <TRow extends { readonly time: number }>(url: string, rows: TRow[]): void => {
-    mockServer.use(
-        http.get(url, ({ request }) => {
-            const requestUrl = new URL(request.url);
-            const window = parseTimeWindow(requestUrl, 'startTime', 'endTime');
-            const windowRows = rows.filter(row => isWithinWindow(row.time, window));
-
-            return HttpResponse.json(buildPagedEarnResponse(requestUrl, windowRows), { headers: WEIGHT_HEADERS });
-        })
-    );
-};
 
 const SERVER_ERROR_STATUS = 500;
 const UNAUTHORIZED_STATUS = 401;
@@ -201,22 +176,64 @@ const serveWith = (options: ServeOptions | undefined, respond: (info: { readonly
     };
 };
 
-const buildPagedEnvelope = <TRow>(data: TRow[], total: number) => ({ code: '000000', message: 'success', data, total, success: true });
+interface WindowedStubConfig<TRow> {
+    readonly url: string;
+    readonly rows: readonly TRow[];
+    readonly getTimeMs: (row: TRow) => number;
+    readonly respond: (matched: TRow[], url: URL) => JsonBodyType;
+    readonly windowParams?: readonly [string, string];
+    readonly isSelected?: (row: TRow, url: URL) => boolean;
+    readonly requestedWindows?: TimeWindow[];
+    readonly options?: ServeOptions;
+    readonly requestOrder?: { readonly list: string[]; readonly label: string };
+}
 
-const serveCapitalHistory = <TRow>(
-    rows: TRow[],
-    getTimeMs: (row: TRow) => number,
-    requestedWindows: TimeWindow[] | undefined,
-    options: ServeOptions | undefined
-) =>
-    serveWith(options, ({ request }) => {
-        const url = new URL(request.url);
-        const window = parseTimeWindow(url, 'startTime', 'endTime');
-        requestedWindows?.push(window);
-        const matched = rows.filter(row => isWithinWindow(getTimeMs(row), window));
+const stubWindowed = <TRow>(config: WindowedStubConfig<TRow>): void => {
+    const [startParam, endParam] = config.windowParams ?? ['startTime', 'endTime'];
+    mockServer.use(
+        http.get(
+            config.url,
+            serveWith(config.options, ({ request }) => {
+                const url = new URL(request.url);
+                const window = parseTimeWindow(url, startParam, endParam);
+                config.requestedWindows?.push(window);
+                config.requestOrder?.list.push(config.requestOrder.label);
+                const matched = config.rows.filter(
+                    row => (config.isSelected?.(row, url) ?? true) && isWithinWindow(config.getTimeMs(row), window)
+                );
 
-        return HttpResponse.json(sliceOffsetPage(url, matched), { headers: WEIGHT_HEADERS });
+                return HttpResponse.json(config.respond(matched, url), { headers: WEIGHT_HEADERS });
+            })
+        )
+    );
+};
+
+const respondEarnPage = <TRow>(matched: TRow[], url: URL) => ({ rows: slicePage(url, matched, EARN_PAGING), total: matched.length });
+
+const respondEnvelopePage =
+    (paging: typeof EARN_PAGING) =>
+    <TRow>(matched: TRow[], url: URL) => ({
+        code: '000000',
+        message: 'success',
+        data: slicePage(url, matched, paging),
+        total: matched.length,
+        success: true
     });
+
+const respondOffsetPage = <TRow>(matched: TRow[], url: URL): TRow[] => {
+    const offset = Number(url.searchParams.get('offset') ?? '0');
+    const limit = Number(url.searchParams.get('limit') ?? String(matched.length));
+
+    return matched.slice(offset, offset + limit);
+};
+
+const stubUntimedEarnPage = <TRow>(url: string, rows: readonly TRow[]): void => {
+    stubWindowed({ url, rows, getTimeMs: () => 0, respond: respondEarnPage });
+};
+
+const stubTimedEarnPage = <TRow extends { readonly time: number }>(url: string, rows: readonly TRow[]): void => {
+    stubWindowed({ url, rows, getTimeMs: row => row.time, respond: respondEarnPage });
+};
 
 export const binanceStub = {
     serverTime: (offsetMs = 0): void => {
@@ -267,20 +284,24 @@ export const binanceStub = {
         mockServer.use(http.post(FUNDING_BALANCE_URL, () => HttpResponse.json(balances, { headers: WEIGHT_HEADERS })));
     },
     deposits: (deposits: BinanceDepositApiInterface[], requestedWindows?: TimeWindow[], options?: ServeOptions): void => {
-        mockServer.use(
-            http.get(
-                DEPOSIT_URL,
-                serveCapitalHistory(deposits, deposit => deposit.insertTime, requestedWindows, options)
-            )
-        );
+        stubWindowed({
+            url: DEPOSIT_URL,
+            rows: deposits,
+            getTimeMs: deposit => deposit.insertTime,
+            respond: respondOffsetPage,
+            requestedWindows,
+            options
+        });
     },
     withdrawals: (withdrawals: BinanceWithdrawalApiInterface[], requestedWindows?: TimeWindow[], options?: ServeOptions): void => {
-        mockServer.use(
-            http.get(
-                WITHDRAW_URL,
-                serveCapitalHistory(withdrawals, withdrawal => parseApplyTimeMs(withdrawal.applyTime), requestedWindows, options)
-            )
-        );
+        stubWindowed({
+            url: WITHDRAW_URL,
+            rows: withdrawals,
+            getTimeMs: withdrawal => parseApplyTimeMs(withdrawal.applyTime),
+            respond: respondOffsetPage,
+            requestedWindows,
+            options
+        });
     },
     fiatOrders: (
         fiatDeposits: BinanceFiatOrderApiInterface[],
@@ -289,42 +310,33 @@ export const binanceStub = {
         requestOrder?: string[],
         options?: ServeOptions
     ): void => {
-        mockServer.use(
-            http.get(FIAT_ORDERS_URL, ({ request }) => {
-                options?.onServed?.();
-                const url = new URL(request.url);
-                const isDeposit = url.searchParams.get('transactionType') === FIAT_DEPOSIT_TRANSACTION_TYPE;
-                const window = parseTimeWindow(url, 'beginTime', 'endTime');
-                requestedWindows?.push(window);
-                requestOrder?.push('fiat');
-                const typeOrders = isDeposit ? fiatDeposits : fiatWithdrawals;
-                const windowOrders = typeOrders.filter(order => isWithinWindow(order.createTime, window));
-
-                return HttpResponse.json(buildPagedEnvelope(slicePage(url, windowOrders, FIAT_PAGING), windowOrders.length), {
-                    headers: WEIGHT_HEADERS
-                });
-            })
-        );
+        stubWindowed({
+            url: FIAT_ORDERS_URL,
+            rows: [...fiatDeposits, ...fiatWithdrawals],
+            getTimeMs: order => order.createTime,
+            windowParams: ['beginTime', 'endTime'],
+            isSelected: (order, url) =>
+                (url.searchParams.get('transactionType') === FIAT_DEPOSIT_TRANSACTION_TYPE) === fiatDeposits.includes(order),
+            respond: respondEnvelopePage(FIAT_PAGING),
+            requestedWindows,
+            ...(isDefined(requestOrder) && { requestOrder: { list: requestOrder, label: 'fiat' } }),
+            options
+        });
     },
     c2cOrders: (
         buyOrders: BinanceC2cOrderApiInterface[],
         sellOrders: BinanceC2cOrderApiInterface[],
         requestedWindows?: TimeWindow[]
     ): void => {
-        mockServer.use(
-            http.get(C2C_ORDERS_URL, ({ request }) => {
-                const url = new URL(request.url);
-                const isBuy = url.searchParams.get('tradeType') === C2C_BUY_TRADE_TYPE;
-                const window = parseTimeWindow(url, 'startTimestamp', 'endTimestamp');
-                requestedWindows?.push(window);
-                const typeOrders = isBuy ? buyOrders : sellOrders;
-                const windowOrders = typeOrders.filter(order => isWithinWindow(order.createTime, window));
-
-                return HttpResponse.json(buildPagedEnvelope(slicePage(url, windowOrders, C2C_PAGING), windowOrders.length), {
-                    headers: WEIGHT_HEADERS
-                });
-            })
-        );
+        stubWindowed({
+            url: C2C_ORDERS_URL,
+            rows: [...buyOrders, ...sellOrders],
+            getTimeMs: order => order.createTime,
+            windowParams: ['startTimestamp', 'endTimestamp'],
+            isSelected: (order, url) => (url.searchParams.get('tradeType') === C2C_BUY_TRADE_TYPE) === buyOrders.includes(order),
+            respond: respondEnvelopePage(C2C_PAGING),
+            requestedWindows
+        });
     },
     failEndpoint: (endpoint: keyof typeof FAILABLE_ENDPOINT_URLS, respond: () => Response): void => {
         mockServer.use(http.get(FAILABLE_ENDPOINT_URLS[endpoint], respond));
@@ -384,98 +396,79 @@ export const binanceStub = {
         options?: ServeOptions
     ): void => {
         mockServer.use(
-            http.get(CONVERT_TRADE_FLOW_URL, ({ request }) => {
-                options?.onServed?.();
-                const url = new URL(request.url);
-                const startTime = Number(url.searchParams.get('startTime') ?? '0');
-                const endTime = Number(url.searchParams.get('endTime') ?? '0');
-                const limit = Number(url.searchParams.get('limit') ?? '0');
-                const window = { startMs: startTime, endMs: endTime };
-                const matched = flows.filter(flow => isWithinWindow(flow.createTime, window));
-                const hasMore = forceMoreData && matched.length > 1;
-                requestedWindows?.push(window);
-                requestOrder?.push('convert');
+            http.get(
+                CONVERT_TRADE_FLOW_URL,
+                serveWith(options, ({ request }) => {
+                    const url = new URL(request.url);
+                    const startTime = Number(url.searchParams.get('startTime') ?? '0');
+                    const endTime = Number(url.searchParams.get('endTime') ?? '0');
+                    const limit = Number(url.searchParams.get('limit') ?? '0');
+                    const window = { startMs: startTime, endMs: endTime };
+                    const matched = flows.filter(flow => isWithinWindow(flow.createTime, window));
+                    const hasMore = forceMoreData && matched.length > 1;
+                    requestedWindows?.push(window);
+                    requestOrder?.push('convert');
 
-                return HttpResponse.json(
-                    { list: hasMore ? matched.slice(0, 1) : matched, startTime, endTime, limit, moreData: hasMore },
-                    { headers: WEIGHT_HEADERS }
-                );
-            })
+                    return HttpResponse.json(
+                        { list: hasMore ? matched.slice(0, 1) : matched, startTime, endTime, limit, moreData: hasMore },
+                        { headers: WEIGHT_HEADERS }
+                    );
+                })
+            )
         );
     },
     universalTransfers: (transfers: BinanceUniversalTransferApiInterface[], requestedWindows?: TimeWindow[]): void => {
-        mockServer.use(
-            http.get(UNIVERSAL_TRANSFER_URL, ({ request }) => {
-                const url = new URL(request.url);
-                const window = parseTimeWindow(url, 'startTime', 'endTime');
-                requestedWindows?.push(window);
-                const matched = transfers.filter(
-                    transfer => transfer.type === url.searchParams.get('type') && isWithinWindow(transfer.timestamp, window)
-                );
-
-                return HttpResponse.json(buildPagedEarnResponse(url, matched), { headers: WEIGHT_HEADERS });
-            })
-        );
+        stubWindowed({
+            url: UNIVERSAL_TRANSFER_URL,
+            rows: transfers,
+            getTimeMs: transfer => transfer.timestamp,
+            isSelected: (transfer, url) => transfer.type === url.searchParams.get('type'),
+            respond: respondEarnPage,
+            requestedWindows
+        });
     },
     earnPositions: (positions: BinanceEarnPositionApiInterface[]): void => {
-        mockServer.use(
-            http.get(EARN_POSITION_URL, ({ request }) =>
-                HttpResponse.json(buildPagedEarnResponse(new URL(request.url), positions), { headers: WEIGHT_HEADERS })
-            )
-        );
+        stubUntimedEarnPage(EARN_POSITION_URL, positions);
     },
     lockedEarnPositions: (positions: BinanceLockedEarnPositionApiInterface[]): void => {
-        mockServer.use(
-            http.get(LOCKED_EARN_POSITION_URL, ({ request }) =>
-                HttpResponse.json(buildPagedEarnResponse(new URL(request.url), positions), { headers: WEIGHT_HEADERS })
-            )
-        );
+        stubUntimedEarnPage(LOCKED_EARN_POSITION_URL, positions);
     },
     earnRewards: (rewards: BinanceEarnRewardApiInterface[], requestedWindows?: TimeWindow[], options?: ServeOptions): void => {
-        mockServer.use(
-            http.get(EARN_REWARDS_URL, ({ request }) => {
-                options?.onServed?.();
-                const url = new URL(request.url);
-                const window = parseTimeWindow(url, 'startTime', 'endTime');
-                requestedWindows?.push(window);
-                const windowRewards = rewards.filter(reward => isWithinWindow(reward.time, window));
-
-                return HttpResponse.json(buildPagedEarnResponse(url, windowRewards), { headers: WEIGHT_HEADERS });
-            })
-        );
+        stubWindowed({
+            url: EARN_REWARDS_URL,
+            rows: rewards,
+            getTimeMs: reward => reward.time,
+            respond: respondEarnPage,
+            requestedWindows,
+            options
+        });
     },
     lockedEarnRewards: (rewards: BinanceLockedEarnRewardApiInterface[]): void => {
-        stubPagedRows(LOCKED_EARN_REWARDS_URL, rewards);
+        stubTimedEarnPage(LOCKED_EARN_REWARDS_URL, rewards);
     },
     ethStakingRewards: (rewards: BinanceStakingRewardApiInterface[]): void => {
-        stubPagedRows(ETH_STAKING_REWARDS_URL, rewards);
+        stubTimedEarnPage(ETH_STAKING_REWARDS_URL, rewards);
     },
     solStakingRewards: (rewards: BinanceStakingRewardApiInterface[]): void => {
-        stubPagedRows(SOL_STAKING_REWARDS_URL, rewards);
+        stubTimedEarnPage(SOL_STAKING_REWARDS_URL, rewards);
     },
     dividends: (dividends: BinanceDividendApiInterface[]): void => {
-        mockServer.use(
-            http.get(DIVIDEND_URL, ({ request }) => {
-                const url = new URL(request.url);
-                const window = parseTimeWindow(url, 'startTime', 'endTime');
-                const matched = dividends.filter(dividend => isWithinWindow(dividend.divTime, window));
-                const rows = matched.slice(0, parseLimit(url, DIVIDEND_DEFAULT_LIMIT, DIVIDEND_MAX_LIMIT));
-
-                return HttpResponse.json({ rows, total: matched.length }, { headers: WEIGHT_HEADERS });
+        stubWindowed({
+            url: DIVIDEND_URL,
+            rows: dividends,
+            getTimeMs: dividend => dividend.divTime,
+            respond: (matched, url) => ({
+                rows: matched.slice(0, parseLimit(url, DIVIDEND_DEFAULT_LIMIT, DIVIDEND_MAX_LIMIT)),
+                total: matched.length
             })
-        );
+        });
     },
     dustLogs: (dustLogs: BinanceDustLogApiInterface[]): void => {
-        mockServer.use(
-            http.get(DUST_LOG_URL, ({ request }) => {
-                const window = parseTimeWindow(new URL(request.url), 'startTime', 'endTime');
-                const matched = dustLogs.filter(dustLog => isWithinWindow(dustLog.operateTime, window));
-
-                return HttpResponse.json(
-                    { total: matched.length, userAssetDribblets: matched.slice(0, DUST_MAX_ROWS) },
-                    { headers: WEIGHT_HEADERS }
-                );
-            })
-        );
+        stubWindowed({
+            url: DUST_LOG_URL,
+            rows: dustLogs,
+            getTimeMs: dustLog => dustLog.operateTime,
+            respond: matched => ({ total: matched.length, userAssetDribblets: matched.slice(0, DUST_MAX_ROWS) })
+        });
     }
 };
