@@ -5,6 +5,8 @@ import * as Layer from 'effect/Layer';
 
 import { SyncWorkload } from '../port/sync-workload.port';
 
+const MAX_INLINE_WAIT_MS = 60_000;
+
 export class PollingSyncRateGate extends Context.Service<PollingSyncRateGate>()('@budgie/sync/PollingSyncRateGate', {
     make: Effect.gen(function* () {
         const syncWorkload = yield* SyncWorkload;
@@ -44,7 +46,14 @@ export class PollingSyncRateGate extends Context.Service<PollingSyncRateGate>()(
                     return true;
                 }
 
-                if ((yield* Clock.currentTimeMillis) + rateLimitMs > deadlineAtMs) {
+                const nowMs = yield* Clock.currentTimeMillis;
+                if (nowMs + rateLimitMs > deadlineAtMs) {
+                    return true;
+                }
+
+                if (rateLimitMs > MAX_INLINE_WAIT_MS) {
+                    lastRequestReadyAtMs = nowMs + rateLimitMs;
+
                     return true;
                 }
 

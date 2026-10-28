@@ -11,9 +11,17 @@ import * as Schema from 'effect/Schema';
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { BaseSyncProviderClient } from '../../core/client/base-sync-provider.client';
+import {
+    HTTP_STATUS_FORBIDDEN,
+    HTTP_STATUS_IM_A_TEAPOT,
+    HTTP_STATUS_TOO_MANY_REQUESTS,
+    HTTP_STATUS_UNAVAILABLE_FOR_LEGAL_REASONS
+} from '../../core/constant/http-status.constant';
 import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { SyncDeferredError } from '../../core/error/sync-deferred.error';
 import { SyncInvalidResponseError } from '../../core/error/sync-invalid-response.error';
+import { SyncRateLimitedError } from '../../core/error/sync-rate-limited.error';
+import { SyncRegionUnavailableError } from '../../core/error/sync-region-unavailable.error';
 import { SyncUnauthorizedError } from '../../core/error/sync-unauthorized.error';
 import { BinanceCredentialsSchema } from '../constant/binance-credentials.schema';
 import { BinanceWalletEnum } from '../enum/binance-wallet.enum';
@@ -106,6 +114,19 @@ const EARN_REWARD_TYPE_ALL = 'ALL';
 const EARN_PAGE_SIZE = 100;
 const TRADES_PER_SYMBOL_LIMIT = 1000;
 const BINANCE_INVALID_SYMBOL_CODE = -1121;
+const BINANCE_TIMESTAMP_OUTSIDE_WINDOW_CODE = -1021;
+const BINANCE_REJECTED_MBX_KEY_CODE = -2015;
+const BINANCE_INVALID_API_KEY_FORMAT_CODE = -2014;
+const BINANCE_INVALID_SIGNATURE_CODE = -1022;
+const BINANCE_INVALID_API_KEY_ID_CODE = -2008;
+const BINANCE_AUTH_ERROR_CODES = new Set([
+    BINANCE_REJECTED_MBX_KEY_CODE,
+    BINANCE_INVALID_API_KEY_FORMAT_CODE,
+    BINANCE_INVALID_SIGNATURE_CODE,
+    BINANCE_INVALID_API_KEY_ID_CODE
+]);
+const BINANCE_BLOCK_BACKOFF_MS = 120_000;
+const RETRY_AFTER_HEADER = 'retry-after';
 
 export class BinanceSignedClient extends BaseSyncProviderClient {
     private static readonly C2C_HISTORY_MONTHS = 6;
@@ -224,7 +245,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     private readonly runSymbolTradeCursors = new Map<string, number>();
     private c2cUnavailableThisRun = false;
     private readonly c2cHistoryFloorTimeMs = subMonths(new Date(), BinanceSignedClient.C2C_HISTORY_MONTHS).getTime();
-    private serverTimeOffsetMs: number | undefined;
+    private serverTimeOffsetMs: number | null = null;
     private validSymbols: Set<string> | undefined;
 
     private readonly fetchCapitalSources = Effect.fn('BinanceSignedClient.fetchCapitalSources')(function* (
@@ -295,10 +316,10 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     private readonly resolveTimestamp = Effect.fn('BinanceSignedClient.resolveTimestamp')(function* (this: BinanceSignedClient) {
         if (!isDefined(this.serverTimeOffsetMs)) {
             const serverTime = yield* this.fetchJson(BinanceServerTimeApiSchema, SERVER_TIME_ENDPOINT).pipe(Effect.option);
-            this.serverTimeOffsetMs = Option.isSome(serverTime) ? serverTime.value.serverTime - Date.now() : 0;
+            this.serverTimeOffsetMs = Option.isSome(serverTime) ? serverTime.value.serverTime - Date.now() : null;
         }
 
-        return Date.now() + this.serverTimeOffsetMs;
+        return Date.now() + (this.serverTimeOffsetMs ?? 0);
     });
 
     private readonly walkWindowsBackward = Effect.fnUntraced(function* <T>(
@@ -363,6 +384,41 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         this.throttle.recordHeaders(headers);
     }
 
+    protected override classifyApiError(
+        status: number,
+        message: string,
+        apiCode: string | number | undefined,
+        headers: Headers.Headers
+    ): SyncError {
+        const { provider } = this;
+
+        if (BINANCE_AUTH_ERROR_CODES.has(Number(apiCode))) {
+            return new SyncUnauthorizedError({ provider, message });
+        }
+
+        switch (status) {
+            case HTTP_STATUS_UNAVAILABLE_FOR_LEGAL_REASONS:
+                return new SyncRegionUnavailableError({ provider, message });
+            case HTTP_STATUS_FORBIDDEN:
+            case HTTP_STATUS_IM_A_TEAPOT:
+                return this.buildRateLimitedError(message, headers, BINANCE_BLOCK_BACKOFF_MS);
+            case HTTP_STATUS_TOO_MANY_REQUESTS:
+                return this.buildRateLimitedError(message, headers, null);
+            default:
+                return super.classifyApiError(status, message, apiCode, headers);
+        }
+    }
+
+    private buildRateLimitedError(message: string, headers: Headers.Headers, fallbackRetryAfterMs: number | null): SyncRateLimitedError {
+        const retryAfterSeconds = Number.parseInt(headers[RETRY_AFTER_HEADER] ?? '', 10);
+        const retryAfterMs = Number.isNaN(retryAfterSeconds) ? fallbackRetryAfterMs : retryAfterSeconds * MILLISECONDS_PER_SECOND;
+        if (isDefined(retryAfterMs)) {
+            this.throttle.coolDownFor(retryAfterMs);
+        }
+
+        return new SyncRateLimitedError({ provider: this.provider, message, ...(isDefined(retryAfterMs) && { retryAfterMs }) });
+    }
+
     private fetchTradesAndConverts(
         startTimeMs: number,
         endTimeMs: number,
@@ -402,9 +458,6 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         });
     }
 
-    private readonly recoverMissingPermission = (error: SyncUnauthorizedError) =>
-        Effect.as(Effect.logWarning(`Binance history skipped: ${error.message}`), []);
-
     private deriveTradeSymbols(
         startTimeMs: number,
         endTimeMs: number,
@@ -414,15 +467,9 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return Effect.gen({ self: this }, function* (this: BinanceSignedClient) {
             const balances = yield* this.signedRequest(BinanceAssetBalanceListApiSchema, SPOT_BALANCE_ENDPOINT, 'POST');
             const baseAssets = this.collectBaseAssets(balances, convertTransfers);
-            const deposits = yield* this.fetchCapitalHistory(this.depositSource, BinanceWalletEnum.SPOT, startTimeMs, endTimeMs).pipe(
-                Effect.catchTag('SyncUnauthorizedError', this.recoverMissingPermission)
-            );
-            const withdrawals = yield* this.fetchCapitalHistory(this.withdrawalSource, BinanceWalletEnum.SPOT, startTimeMs, endTimeMs).pipe(
-                Effect.catchTag('SyncUnauthorizedError', this.recoverMissingPermission)
-            );
-            const c2cOrders = yield* this.fetchC2cOrders(startTimeMs, endTimeMs).pipe(
-                Effect.catchTag('SyncUnauthorizedError', this.recoverMissingPermission)
-            );
+            const deposits = yield* this.fetchCapitalHistory(this.depositSource, BinanceWalletEnum.SPOT, startTimeMs, endTimeMs);
+            const withdrawals = yield* this.fetchCapitalHistory(this.withdrawalSource, BinanceWalletEnum.SPOT, startTimeMs, endTimeMs);
+            const c2cOrders = yield* this.fetchC2cOrders(startTimeMs, endTimeMs);
             [
                 ...deposits.map(deposit => deposit.coin),
                 ...withdrawals.map(withdrawal => withdrawal.coin),
@@ -473,6 +520,25 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         endpoint: string,
         method: HttpMethod,
         params: Record<string, string | number> = {}
+    ): Effect.Effect<S['Type'], SyncError, HttpClient.HttpClient> {
+        return this.sendSignedRequest(schema, endpoint, method, params).pipe(
+            Effect.catchTag('SyncInvalidResponseError', error => {
+                if (Number(error.apiCode) !== BINANCE_TIMESTAMP_OUTSIDE_WINDOW_CODE) {
+                    return Effect.fail(error);
+                }
+
+                this.serverTimeOffsetMs = null;
+
+                return this.sendSignedRequest(schema, endpoint, method, params);
+            })
+        );
+    }
+
+    private sendSignedRequest<S extends Schema.ConstraintDecoder<unknown>>(
+        schema: S,
+        endpoint: string,
+        method: HttpMethod,
+        params: Record<string, string | number>
     ): Effect.Effect<S['Type'], SyncError, HttpClient.HttpClient> {
         return Effect.gen({ self: this }, function* (this: BinanceSignedClient) {
             if (Date.now() >= this.deadlineAtMs) {

@@ -23,6 +23,7 @@ import { SyncRateLimitedError } from '../error/sync-rate-limited.error';
 import { SyncUnauthorizedError } from '../error/sync-unauthorized.error';
 
 import type { SyncProviderEnum } from '../enum/sync-provider.enum';
+import type { SyncError } from '../interface/sync-error.type';
 import type * as Headers from 'effect/http/Headers';
 import type * as HttpClientError from 'effect/http/HttpClientError';
 import type { HttpMethod } from 'effect/http/HttpMethod';
@@ -78,17 +79,7 @@ export abstract class BaseSyncProviderClient {
         );
         const message = apiError?.msg ?? apiError?.message ?? `HTTP ${response.status}`;
 
-        switch (response.status) {
-            case HTTP_STATUS_UNAUTHORIZED:
-            case HTTP_STATUS_FORBIDDEN:
-                return yield* new SyncUnauthorizedError({ provider, message });
-            case HTTP_STATUS_TOO_MANY_REQUESTS:
-                return yield* new SyncRateLimitedError({ provider, message });
-            case HTTP_STATUS_BAD_REQUEST:
-                return yield* new SyncInvalidResponseError({ provider, message, apiCode: apiError?.code });
-            default:
-                return yield* new SyncNetworkError({ provider, message });
-        }
+        return yield* this.classifyApiError(response.status, message, apiError?.code, response.headers);
     });
 
     protected abstract readonly provider: SyncProviderEnum;
@@ -109,5 +100,26 @@ export abstract class BaseSyncProviderClient {
 
     protected onResponseHeaders(_headers: Headers.Headers): void {
         return void 0;
+    }
+
+    protected classifyApiError(
+        status: number,
+        message: string,
+        apiCode: string | number | undefined,
+        _headers: Headers.Headers
+    ): SyncError {
+        const { provider } = this;
+
+        switch (status) {
+            case HTTP_STATUS_UNAUTHORIZED:
+            case HTTP_STATUS_FORBIDDEN:
+                return new SyncUnauthorizedError({ provider, message });
+            case HTTP_STATUS_TOO_MANY_REQUESTS:
+                return new SyncRateLimitedError({ provider, message });
+            case HTTP_STATUS_BAD_REQUEST:
+                return new SyncInvalidResponseError({ provider, message, apiCode });
+            default:
+                return new SyncNetworkError({ provider, message });
+        }
     }
 }

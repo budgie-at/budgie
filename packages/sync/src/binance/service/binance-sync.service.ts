@@ -19,6 +19,7 @@ import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '
 import { SyncTransactionTypeEnum } from '../../core/enum/sync-transaction-type.enum';
 import { SyncDeferredError } from '../../core/error/sync-deferred.error';
 import { SyncInvalidResponseError } from '../../core/error/sync-invalid-response.error';
+import { SyncRegionUnavailableError } from '../../core/error/sync-region-unavailable.error';
 import { SyncUnauthorizedError } from '../../core/error/sync-unauthorized.error';
 import { pollingSyncDependenciesLayer } from '../../core/layer/polling-sync-dependencies.layer';
 import { SyncWorkload } from '../../core/port/sync-workload.port';
@@ -391,6 +392,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 !(
                     error instanceof SyncUnauthorizedError ||
                     error instanceof SyncInvalidResponseError ||
+                    error instanceof SyncRegionUnavailableError ||
                     error instanceof SyncDeferredError
                 ),
             isCredentialWideError: error => error instanceof SyncUnauthorizedError,
