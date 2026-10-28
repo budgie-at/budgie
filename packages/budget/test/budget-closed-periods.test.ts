@@ -65,8 +65,8 @@ it.effect('clamps a start day beyond the month length', () =>
         );
         const last = windows[windows.length - 1];
 
-        expect(last?.periodStart).toEqual(new Date(2026, 0, 31));
-        expect(last?.nextPeriodStart).toEqual(new Date(2026, 1, 28));
+        expect(last.periodStart).toEqual(new Date(2026, 0, 31));
+        expect(last.nextPeriodStart).toEqual(new Date(2026, 1, 28));
     })
 );
 

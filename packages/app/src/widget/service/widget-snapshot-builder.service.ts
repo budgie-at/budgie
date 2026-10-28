@@ -292,6 +292,7 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
                 const symbol = instrument?.symbol ?? DEFAULT_INSTRUMENT.symbol;
                 const spentAmount = convertFromMicroUnits(projection.overall.spent);
                 const limitAmount = convertFromMicroUnits(projection.overall.limit);
+                const progressRatio = isPositiveNumber(limitAmount) ? spentAmount / limitAmount : 1;
                 const periodEnd = getInclusiveEnd(nextPeriodStart);
                 const categories = yield* buildBudgetCategories(projection.categories, context);
 
@@ -300,8 +301,8 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
                     formattedSpent: formatWithSymbol(spentAmount, symbol, context),
                     formattedLimit: formatWithSymbol(limitAmount, symbol, context),
                     formattedRemaining: formatWithSymbol(Math.abs(limitAmount - spentAmount), symbol, context),
-                    progressRatio: spentAmount / limitAmount,
-                    formattedProgress: formatPercent(spentAmount / limitAmount, context),
+                    progressRatio,
+                    formattedProgress: formatPercent(progressRatio, context),
                     isOverLimit: spentAmount > limitAmount,
                     categories
                 };
