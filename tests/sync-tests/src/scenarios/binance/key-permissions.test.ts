@@ -45,7 +45,9 @@ describe('binance/key-permissions', () => {
         'enableInternalTransfer',
         'permitsUniversalTransfer',
         'enableMargin',
-        'enableFutures'
+        'enableFutures',
+        'enableVanillaOptions',
+        'enablePortfolioMarginTrading'
     ] as const)('rejects a key with %s on connect', permission =>
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
@@ -55,6 +57,30 @@ describe('binance/key-permissions', () => {
             const error = yield* Effect.flip(binanceSyncService.fetchAccountsPreview(BINANCE_TEST_TOKEN));
 
             expect(error).toMatchObject({ _tag: 'BinanceKeyPermissionsError', permissions: [permission] });
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('treats flags missing from the response as not granted', () =>
+        Effect.gen(function* () {
+            const binanceSyncService = yield* BinanceSyncService;
+            stubBinanceAccountEndpoints([buildBinance.balance({ asset: 'BTC', free: '1' })]);
+            binanceStub.apiRestrictionsBody({ ipRestrict: false, enableReading: true });
+
+            const previews = yield* binanceSyncService.fetchAccountsPreview(BINANCE_TEST_TOKEN);
+
+            expect(previews.length).toBeGreaterThan(0);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('reports an undecodable permissions response as an unverifiable key', () =>
+        Effect.gen(function* () {
+            const binanceSyncService = yield* BinanceSyncService;
+            stubBinanceAccountEndpoints([buildBinance.balance({ asset: 'BTC', free: '1' })]);
+            binanceStub.apiRestrictionsBody({ enableWithdrawals: 'yes' });
+
+            const error = yield* Effect.flip(binanceSyncService.fetchAccountsPreview(BINANCE_TEST_TOKEN));
+
+            expect(error).toMatchObject({ _tag: 'BinanceKeyPermissionsError', permissions: [] });
         }).pipe(Effect.provide(TestLayer))
     );
 
