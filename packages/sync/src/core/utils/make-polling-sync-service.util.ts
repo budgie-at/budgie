@@ -1,4 +1,4 @@
-import { AccountRepository, SyncModeEnum, SyncRepository, SyncStatusEnum } from '@budgie/contracts';
+import { AccountRepository, SyncErrorCodeEnum, SyncModeEnum, SyncRepository, SyncStatusEnum, SyncWarningEnum } from '@budgie/contracts';
 import * as Cause from 'effect/Cause';
 import * as Clock from 'effect/Clock';
 import * as Effect from 'effect/Effect';
@@ -192,7 +192,14 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
         if (definition.shouldKeepSyncsEnabledAfterError?.(error) === true) {
             yield* Effect.forEach(
                 enabledSyncs,
-                sync => syncRepository.update(sync.id, { status: SyncStatusEnum.FAILED, lastError: errorMessage, lastErrorCode }),
+                sync =>
+                    syncRepository.update(sync.id, {
+                        status: SyncStatusEnum.FAILED,
+                        lastError: errorMessage,
+                        lastErrorCode,
+                        lastWarning:
+                            lastErrorCode === SyncErrorCodeEnum.REGION_UNAVAILABLE ? SyncWarningEnum.REGION_UNAVAILABLE : sync.lastWarning
+                    }),
                 { discard: true }
             );
 

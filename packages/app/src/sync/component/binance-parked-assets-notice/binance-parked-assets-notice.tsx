@@ -25,6 +25,12 @@ export const BinanceParkedAssetsNotice = ({ parkedPreviews }: Props) => {
                 <Trans>Valuation unavailable</Trans>
             </Text>
 
+            <Text className="text-secondary-foreground text-xs px-md">
+                <Trans>
+                    Binance has no market price for these assets, so they are not added as accounts and are skipped from your balance.
+                </Trans>
+            </Text>
+
             <SimpleHorizontalCell
                 left={<CircleIcon icon={UserIconNameEnum.TriangleAlert} variant="warning" size={15} iconSize={15} />}
                 size="lg"
