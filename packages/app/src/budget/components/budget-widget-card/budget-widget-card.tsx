@@ -9,7 +9,7 @@ import { LoadingContent } from '../../../@generic/component/loading-content/load
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { BudgetSelector } from '../../budget.selector';
-import { useGetBudgetCategoryLimitsQuery } from '../../query/use-get-budget-category-limits.query';
+import { useGetBudgetEffectiveLimitsQuery } from '../../query/use-get-budget-effective-limits.query';
 import { useGetBudgetProjectionQuery } from '../../query/use-get-budget-projection.query';
 import { useGetBudgetSpentQuery } from '../../query/use-get-budget-spent.query';
 import { formatBudgetPeriodLabel } from '../../utils/format-budget-period-label.util';
@@ -28,7 +28,7 @@ export const BudgetWidgetCard = ({ budget }: Props) => {
     const { projection, isLoading } = useGetBudgetProjectionQuery(budget);
     const { spent } = useGetBudgetSpentQuery(budget);
     const { instrument } = useGetInstrumentByIdQuery(budget.instrumentId);
-    const { categoryLimits } = useGetBudgetCategoryLimitsQuery(budget.id);
+    const effectiveLimits = useGetBudgetEffectiveLimitsQuery(budget);
     const { formatMonthAndDay } = useFormatDate();
     const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
 
@@ -51,7 +51,7 @@ export const BudgetWidgetCard = ({ budget }: Props) => {
                 <BudgetWidgetFooterRow projection={projection} currencySymbol={currencySymbol} />
             </LoadingContent>
 
-            <BudgetWidgetCategoryList categoryLimits={categoryLimits} spentByCategory={spent.spentByCategory} />
+            <BudgetWidgetCategoryList categoryLimits={effectiveLimits.categoryLimits} spentByCategory={spent.spentByCategory} />
         </Card>
     );
 };

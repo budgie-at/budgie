@@ -37,3 +37,10 @@ export type { BudgetUpcomingChargeInterface } from './projection/interface/budge
 export type { BudgetCommittedSourceInterface } from './projection/interface/budget-committed-source.interface';
 export { BudgetPeriodSnapshotRepository } from './history/repository/budget-period-snapshot.repository';
 export { BudgetPeriodCloseService } from './history/service/budget-period-close.service';
+
+export { computeSnapshotCarryOuts } from './rollover/utils/budget-snapshot-carry-outs.util';
+export { computeEffectiveLimits } from './rollover/utils/budget-effective-limits.util';
+export type {
+    BudgetEffectiveCategoryLimitInterface,
+    BudgetEffectiveLimitsInterface
+} from './rollover/interface/budget-effective-limits.interface';

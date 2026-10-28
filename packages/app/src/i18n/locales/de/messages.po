@@ -106,6 +106,10 @@ msgstr "{categoryName}: {threshold}% ausgegeben"
 msgid "{categoryName}: limit reached"
 msgstr "{categoryName}: Limit erreicht"
 
+#: src/budget/components/budget-period-recap-rollover/budget-period-recap-rollover.tsx
+msgid "{count, plural, one {{formattedAmount} rolled over across # category} other {{formattedAmount} rolled over across # categories}}"
+msgstr "{count, plural, one {{formattedAmount} auf # Kategorie übertragen} other {{formattedAmount} auf # Kategorien übertragen}}"
+
 #: src/category/components/category-default-icon-button/category-default-icon-button.tsx
 msgid "{count, plural, one {# category uses the default icon} other {# categories use the default icon}}"
 msgstr "{count, plural, one {# Kategorie nutzt das Standardsymbol} other {# Kategorien nutzen das Standardsymbol}}"
@@ -195,6 +199,14 @@ msgstr "{formattedAmount} · {detail}"
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
 msgid "{formattedAmount} / mo"
 msgstr "{formattedAmount} / Mon."
+
+#: src/budget/components/budget-period-recap-rollover/budget-period-recap-rollover.tsx
+msgid "{formattedAmount} carried into {name}"
+msgstr "{formattedAmount} Mehrausgabe auf {name} übertragen"
+
+#: src/budget/components/budget-period-recap-rollover/budget-period-recap-rollover.tsx
+msgid "{formattedAmount} rolled into {name}"
+msgstr "{formattedAmount} auf {name} übertragen"
 
 #: src/account/component/account-actions-menu/use-deposit-close-action.hook.ts
 msgid "{formattedBalance} will be transferred to {destinationAccountTitle} and this deposit will be archived. You can restore it anytime from Settings → Archived Accounts."
@@ -450,6 +462,10 @@ msgstr "{unreadableCount, plural, one {# Beleg nicht lesbar} other {# Belege nic
 msgid "/ day"
 msgstr "/ Tag"
 
+#: src/budget/components/budget-details-limit-heading/budget-details-limit-heading.tsx
+msgid "+{formattedAmount} rolled over"
+msgstr "+{formattedAmount} übertragen"
+
 #: src/runway/component/runway-pill/runway-pill.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "+{formattedNet} / mo"
@@ -466,6 +482,10 @@ msgstr "<"
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid ">"
 msgstr ">"
+
+#: src/budget/components/budget-details-limit-heading/budget-details-limit-heading.tsx
+msgid "−{formattedAmount} carried"
+msgstr "−{formattedAmount} übertragen"
 
 #: src/runway/component/runway-pill/runway-pill.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
@@ -1220,6 +1240,14 @@ msgstr "Erfasst neue geeignete Apple Pay-Zahlungen. Wallet-Verlauf oder endgült
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "Card"
 msgstr "Karte"
+
+#: src/budget/components/budget-rollover-mode-field/budget-rollover-mode-field.tsx
+msgid "Carry all"
+msgstr "Alles übertragen"
+
+#: src/budget/components/budget-rollover-mode-field/budget-rollover-mode-field.tsx
+msgid "Carry savings"
+msgstr "Ersparnis übertragen"
 
 #: src/account/constant/account-type.constant.ts
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
@@ -3784,6 +3812,7 @@ msgstr "von"
 msgid "of {total} GB"
 msgstr "von {total} GB"
 
+#: src/budget/components/budget-rollover-mode-field/budget-rollover-mode-field.tsx
 #: src/settings/components/your-data-card/your-data-card.tsx
 msgid "Off"
 msgstr "Aus"
@@ -3974,6 +4003,7 @@ msgstr "Ursprüngliche Transaktion"
 #: src/budget/components/budget-details-other-category-row/budget-details-other-category-row.tsx
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
 #: src/budget/components/budget-pace-banner/budget-pace-banner.tsx
+#: src/budget/components/budget-period-recap-rollover/budget-period-recap-rollover.tsx
 #: src/budget/components/budget-period-summary/budget-period-summary.tsx
 #: src/budget/service/budget-alert-monitor.service.ts
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
@@ -5712,6 +5742,10 @@ msgstr "Unbekannte Karte"
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Unrealized P&L"
 msgstr "Unrealisierte GuV"
+
+#: src/budget/components/budget-rollover-mode-field/budget-rollover-mode-field.tsx
+msgid "Unspent money at period end"
+msgstr "Nicht ausgegebenes Geld am Periodenende"
 
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
 #: src/tag/components/stats-by-tags/stats-by-tags.tsx

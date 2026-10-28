@@ -12,6 +12,7 @@ import { useGetActiveBudgetQuery } from '../../query/use-get-active-budget.query
 import { useGetBudgetPeriodSnapshotQuery } from '../../query/use-get-budget-period-snapshot.query';
 import { getBudgetPeriodLabelDate } from '../../utils/get-budget-period-label-date.util';
 import { BudgetDetailsLimitCard } from '../budget-details-limit-card/budget-details-limit-card';
+import { BudgetDetailsLimitHeading } from '../budget-details-limit-heading/budget-details-limit-heading';
 import { BudgetPeriodSummaryCategoryRow } from '../budget-period-summary-category-row/budget-period-summary-category-row';
 
 interface Props {
@@ -34,6 +35,7 @@ export const BudgetPeriodSummary = ({ snapshotId }: Props) => {
     const startLabel = formatMonthAndDay(snapshot.periodStart);
     const endLabel = formatMonthAndDay(snapshot.periodEnd);
     const dateRange = t`${startLabel} - ${endLabel}`;
+    const totalCarriedIn = snapshot.categories.reduce((total, category) => total + category.carriedIn, snapshot.otherCarriedIn);
 
     return (
         <>
@@ -47,34 +49,45 @@ export const BudgetPeriodSummary = ({ snapshotId }: Props) => {
                 ) : null}
 
                 <BudgetDetailsLimitCard
-                    title={t`Monthly budget`}
-                    icon={null}
                     spent={snapshot.overallSpent}
-                    limitAmount={snapshot.overallLimit}
+                    limitAmount={snapshot.overallLimit + totalCarriedIn}
                     currencySymbol={currencySymbol}
                     testID={BudgetSelector.PeriodSummaryOverall}
                     spentTestID={BudgetSelector.PeriodSummaryOverallSpentLabel}
-                />
+                >
+                    <BudgetDetailsLimitHeading
+                        title={t`Monthly budget`}
+                        icon={null}
+                        carriedAmount={totalCarriedIn}
+                        currencySymbol={currencySymbol}
+                    />
+                </BudgetDetailsLimitCard>
 
                 {snapshot.categories.map(category => (
                     <BudgetPeriodSummaryCategoryRow
                         key={category.id}
                         categoryId={category.categoryId}
                         limitAmount={category.limitAmount}
+                        carriedAmount={category.carriedIn}
                         spent={category.spent}
                         currencySymbol={currencySymbol}
                     />
                 ))}
 
                 <BudgetDetailsLimitCard
-                    title={t`Other`}
-                    icon={UserIconNameEnum.CircleEllipsis}
                     spent={snapshot.otherSpent}
-                    limitAmount={snapshot.otherLimit}
+                    limitAmount={snapshot.otherLimit + snapshot.otherCarriedIn}
                     currencySymbol={currencySymbol}
                     testID={BudgetSelector.PeriodSummaryOther}
                     spentTestID={BudgetSelector.PeriodSummaryOtherSpentLabel}
-                />
+                >
+                    <BudgetDetailsLimitHeading
+                        title={t`Other`}
+                        icon={UserIconNameEnum.CircleEllipsis}
+                        carriedAmount={snapshot.otherCarriedIn}
+                        currencySymbol={currencySymbol}
+                    />
+                </BudgetDetailsLimitCard>
             </ScrollView>
         </>
     );

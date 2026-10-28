@@ -6,6 +6,8 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import type { BudgetPeriodCategorySnapshotUpdateInterface } from '../interface/budget-period-category-snapshot-update.interface';
+import type { BudgetPeriodSnapshotUpdateInterface } from '../interface/budget-period-snapshot-update.interface';
 import type { BudgetPeriodCategorySnapshotCreateEntityInterface, BudgetPeriodSnapshotCreateEntityInterface } from '@budgie/contracts';
 
 export class BudgetPeriodSnapshotRepository extends Context.Service<BudgetPeriodSnapshotRepository>()(
@@ -35,13 +37,6 @@ export class BudgetPeriodSnapshotRepository extends Context.Service<BudgetPeriod
                 },
                 effect => Db.transaction(effect)
             ),
-            findLatestPeriodStart: (budgetId: number) =>
-                Db.query(db =>
-                    db.query.BudgetPeriodSnapshotEntityTable.findFirst({
-                        where: { budgetId, deletedAt: { isNull: true } },
-                        orderBy: { periodStart: 'desc' }
-                    })
-                ).pipe(Effect.map(snapshot => (isDefined(snapshot) ? snapshot.periodStart : null))),
             findRecent: (budgetId: number, limit: number) =>
                 Db.query(db =>
                     db.query.BudgetPeriodSnapshotEntityTable.findMany({
@@ -57,6 +52,12 @@ export class BudgetPeriodSnapshotRepository extends Context.Service<BudgetPeriod
                         where: { id, deletedAt: { isNull: true } },
                         with: { categories: { where: { deletedAt: { isNull: true } } } }
                     })
+                ),
+            updateSnapshot: (id: number, input: BudgetPeriodSnapshotUpdateInterface) =>
+                Db.query(db => db.update(BudgetPeriodSnapshotEntityTable).set(input).where(eq(BudgetPeriodSnapshotEntityTable.id, id))),
+            updateCategorySnapshot: (id: number, input: BudgetPeriodCategorySnapshotUpdateInterface) =>
+                Db.query(db =>
+                    db.update(BudgetPeriodCategorySnapshotEntityTable).set(input).where(eq(BudgetPeriodCategorySnapshotEntityTable.id, id))
                 ),
             markRecapsSeen: (budgetId: number) =>
                 Db.query(db =>

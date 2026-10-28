@@ -1,7 +1,9 @@
 import { sql } from 'drizzle-orm';
-import { int, sqliteTable, uniqueIndex } from 'drizzle-orm/sqlite-core';
+import { int, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
 
+import { convertEnumToDrizzleEnum } from '../../@generic/utils/convert-enum-to-drizzle-enum.util';
 import { withBaseEntityTableColumns } from '../../@generic/utils/with-base-entity-table-columns.util';
+import { BudgetRolloverModeEnum } from '../../budget/enum/budget-rollover-mode.enum';
 import { BudgetEntityTable } from '../../budget/table/budget-entity.table';
 import { CategoryEntityTable } from '../../category/table/category-entity.table';
 
@@ -14,7 +16,11 @@ export const BudgetCategoryLimitEntityTable = sqliteTable(
         categoryId: int('category_id', { mode: 'number' })
             .notNull()
             .references(() => CategoryEntityTable.id, { onDelete: 'cascade' }),
-        limitAmount: int('limit_amount').notNull()
+        limitAmount: int('limit_amount').notNull(),
+        rolloverMode: text('rollover_mode', { enum: convertEnumToDrizzleEnum(BudgetRolloverModeEnum) })
+            .$type<BudgetRolloverModeEnum>()
+            .notNull()
+            .default(BudgetRolloverModeEnum.NONE)
     }),
     table => [
         uniqueIndex('budget_category_limit_budget_category_unq')

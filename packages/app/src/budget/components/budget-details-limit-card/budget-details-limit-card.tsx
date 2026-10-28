@@ -4,10 +4,7 @@ import { useEffect, useEffectEvent, useRef } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withDelay, withSequence, withTiming } from 'react-native-reanimated';
 
-import { isDefined } from '@rnw-community/shared';
-
 import { Card } from '../../../@generic/component/card/card';
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
@@ -17,11 +14,10 @@ import { BudgetPaceTrack } from '../budget-pace-track/budget-pace-track';
 
 import type { BudgetHighlightTargetInterface } from '../../interface/budget-highlight-target.interface';
 import type { BudgetProjectionScopeInterface } from '@budgie/budget';
-import type { UserIconType } from '@budgie/contracts';
+import type { ReactNode } from 'react';
 
 interface Props {
-    readonly title: string;
-    readonly icon: UserIconType | null;
+    readonly children: ReactNode;
     readonly scope: BudgetProjectionScopeInterface;
     readonly currencySymbol: string;
     readonly testID: string;
@@ -34,7 +30,7 @@ const HIGHLIGHT_FADE_DURATION = 240;
 const HIGHLIGHT_HOLD_DURATION = 1200;
 
 export const BudgetDetailsLimitCard = (props: Props) => {
-    const { title, icon, scope, currencySymbol, testID, spentTestID, onPress, highlightTarget } = props;
+    const { children, scope, currencySymbol, testID, spentTestID, onPress, highlightTarget } = props;
     const { target, reveal } = useBudgetHighlightContext();
     const reducedMotion = useReducedMotion();
     const cardRef = useRef<View>(null);
@@ -71,15 +67,9 @@ export const BudgetDetailsLimitCard = (props: Props) => {
     return (
         <View ref={cardRef} className="relative" collapsable={false}>
             <Card variant="ghost" size="md" onPress={onPress} className="gap-y-md">
-                <View className="flex-row items-center gap-x-md">
-                    {isDefined(icon) ? <CircleIcon icon={icon} variant="ghost" size={40} iconSize={18} /> : null}
-
-                    <View className="flex-1 gap-y-xs">
-                        <Text className="text-primary text-md font-semibold" numberOfLines={1}>
-                            {title}
-                        </Text>
-                        <BudgetCategoryForecast scope={scope} currencySymbol={currencySymbol} />
-                    </View>
+                <View className="gap-y-xs">
+                    <View className="flex-row items-center gap-x-md">{children}</View>
+                    <BudgetCategoryForecast scope={scope} currencySymbol={currencySymbol} />
                 </View>
 
                 <BudgetPaceTrack scope={scope} />

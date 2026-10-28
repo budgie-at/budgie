@@ -2,9 +2,11 @@ import {
     BudgetAlertKindEnum,
     BudgetAlertScopeEnum,
     BudgetCategoryLimitRepository,
+    BudgetPeriodSnapshotRepository,
     BudgetRepository,
     computeBudgetAlertTriggers,
     computeBudgetPaceTriggers,
+    computeEffectiveLimits,
     computePeriodWindow,
     computeSpent
 } from '@budgie/budget';
@@ -42,6 +44,7 @@ import type { BudgetEntityInterface } from '@budgie/contracts';
 export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonitorService>()('@budgie/app/BudgetAlertMonitorService', {
     make: Effect.gen(function* () {
         const budgetCategoryLimitRepository = yield* BudgetCategoryLimitRepository;
+        const budgetPeriodSnapshotRepository = yield* BudgetPeriodSnapshotRepository;
         const budgetRepository = yield* BudgetRepository;
         const budgetProjectionService = yield* BudgetProjectionService;
         const categoryRepository = yield* CategoryRepository;
@@ -247,7 +250,12 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
                 const spent = yield* loadSpent(budget);
                 const categoryLimits = yield* budgetCategoryLimitRepository.getByBudget(budget.id);
                 const projection = yield* budgetProjectionService.project(budget, new Date());
-                const triggers = [...computeBudgetAlertTriggers(budget, spent, categoryLimits), ...computeBudgetPaceTriggers(projection)];
+                const [latestSnapshot] = yield* budgetPeriodSnapshotRepository.findRecent(budget.id, 1);
+                const effectiveLimits = computeEffectiveLimits(latestSnapshot, budget, categoryLimits);
+                const triggers = [
+                    ...computeBudgetAlertTriggers(effectiveLimits, spent, effectiveLimits.categoryLimits),
+                    ...computeBudgetPaceTriggers(projection)
+                ];
                 const storageKey = buildStorageKey(budget.id, periodStartMs);
                 const deliveredKeys = yield* loadDeliveredTriggerKeys(storageKey);
                 const newTriggers = selectTriggersToPost(triggers, deliveredKeys);
@@ -255,7 +263,7 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
                     yield* Effect.forEach(newTriggers, trigger =>
                         (trigger.kind === BudgetAlertKindEnum.PACE
                             ? postPaceAlert(trigger, projection, budget.instrumentId)
-                            : postTrigger(trigger, budget.overallLimit, spent)
+                            : postTrigger(trigger, effectiveLimits.overallLimit, spent)
                         ).pipe(Effect.as(buildTriggerKey(trigger)), Effect.option)
                     )
                 );
@@ -289,6 +297,7 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
     static readonly layer = Layer.effect(BudgetAlertMonitorService, BudgetAlertMonitorService.make).pipe(
         Layer.provide([
             BudgetCategoryLimitRepository.layer,
+            BudgetPeriodSnapshotRepository.layer,
             BudgetProjectionService.layer,
             BudgetRepository.layer,
             CategoryRepository.layer,

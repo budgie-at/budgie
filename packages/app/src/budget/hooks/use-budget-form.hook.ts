@@ -1,5 +1,5 @@
 import { BudgetService, budgetComputeAllocation } from '@budgie/budget';
-import { BudgetPeriodEnum, convertFromMicroUnits, convertToMicroUnits } from '@budgie/contracts';
+import { BudgetPeriodEnum, BudgetRolloverModeEnum, convertFromMicroUnits, convertToMicroUnits } from '@budgie/contracts';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -41,9 +41,11 @@ const buildBudgetFormValues = (
     useLastDayOfMonth: budget.useLastDayOfMonth,
     overallLimit: convertFromMicroUnits(budget.overallLimit),
     otherLimit: convertFromMicroUnits(budget.otherLimit),
+    otherRolloverMode: budget.otherRolloverMode,
     categoryLimits: categoryLimits.map(limit => ({
         categoryId: limit.categoryId,
-        limitAmount: convertFromMicroUnits(limit.limitAmount)
+        limitAmount: convertFromMicroUnits(limit.limitAmount),
+        rolloverMode: limit.rolloverMode
     })),
     instrumentId: budget.instrumentId
 });
@@ -54,6 +56,7 @@ const buildDefaultBudgetFormValues = (name: string, instrumentId: number): Budge
     useLastDayOfMonth: false,
     overallLimit: 0,
     otherLimit: 0,
+    otherRolloverMode: BudgetRolloverModeEnum.NONE,
     categoryLimits: [],
     instrumentId
 });
@@ -76,7 +79,8 @@ const buildTemplateBudgetFormValues = (
         useLastDayOfMonth: false,
         overallLimit: templateDraft.overallLimit,
         otherLimit,
-        categoryLimits: templateDraft.categoryLimits.map(limit => ({ ...limit })),
+        otherRolloverMode: BudgetRolloverModeEnum.NONE,
+        categoryLimits: templateDraft.categoryLimits.map(limit => ({ ...limit, rolloverMode: BudgetRolloverModeEnum.NONE })),
         instrumentId: defaultInstrumentId
     };
 };
@@ -89,7 +93,12 @@ const areBudgetCategoryLimitsEqual = (left: BudgetFormValues['categoryLimits'], 
     return left.every((leftLimit, index) => {
         const rightLimit = right[index];
 
-        return isDefined(rightLimit) && leftLimit.categoryId === rightLimit.categoryId && leftLimit.limitAmount === rightLimit.limitAmount;
+        return (
+            isDefined(rightLimit) &&
+            leftLimit.categoryId === rightLimit.categoryId &&
+            leftLimit.limitAmount === rightLimit.limitAmount &&
+            leftLimit.rolloverMode === rightLimit.rolloverMode
+        );
     });
 };
 
@@ -99,6 +108,7 @@ const areBudgetFormValuesEqual = (left: BudgetFormValues, right: BudgetFormValue
     left.useLastDayOfMonth === right.useLastDayOfMonth &&
     left.overallLimit === right.overallLimit &&
     left.otherLimit === right.otherLimit &&
+    left.otherRolloverMode === right.otherRolloverMode &&
     left.instrumentId === right.instrumentId &&
     areBudgetCategoryLimitsEqual(left.categoryLimits, right.categoryLimits);
 
@@ -186,10 +196,12 @@ export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = n
                         useLastDayOfMonth: values.useLastDayOfMonth,
                         overallLimit: convertToMicroUnits(values.overallLimit),
                         otherLimit: convertToMicroUnits(values.otherLimit),
+                        otherRolloverMode: values.otherRolloverMode,
                         instrumentId: values.instrumentId,
                         categoryLimits: values.categoryLimits.map(limit => ({
                             categoryId: limit.categoryId,
-                            limitAmount: convertToMicroUnits(limit.limitAmount)
+                            limitAmount: convertToMicroUnits(limit.limitAmount),
+                            rolloverMode: limit.rolloverMode
                         }))
                     };
                     const budgetService = yield* BudgetService;

@@ -80,6 +80,7 @@ export const BudgetDetails = ({ budget }: Props) => {
 
     const categoryLimitsContent = hasCategoryLimitsContent ? (
         <BudgetDetailsCategoryList
+            budget={budget}
             projection={projection}
             periodStart={periodWindow.periodStart}
             periodEnd={periodEnd}
