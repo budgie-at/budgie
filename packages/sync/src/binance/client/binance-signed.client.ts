@@ -618,8 +618,8 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return Object.fromEntries(this.runSymbolTradeCursors);
     }
 
-    isC2cUnavailable(): boolean {
-        return this.unavailableSources.has(BinanceHistorySourceEnum.C2C);
+    isSourceSkipped(source: BinanceHistorySourceEnum): boolean {
+        return this.unavailableSources.has(source);
     }
 
     withPartialWalks<A, E, R>(effect: Effect.Effect<A, E, R>): Effect.Effect<A, E, R> {
@@ -724,7 +724,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
                 .filter(isDefined);
             this.collectTransferAssets(convertTransfers).forEach(asset => this.runTouchedAssets.add(asset));
             const universalTransfers = yield* this.skipWhenUnavailable(
-                BinanceHistorySourceEnum.UNIVERSAL_TRANSFER,
+                BinanceHistorySourceEnum.CONVERT,
                 [],
                 this.fetchUniversalTransfers(startTimeMs, endTimeMs)
             );

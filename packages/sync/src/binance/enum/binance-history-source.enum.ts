@@ -8,6 +8,5 @@ export enum BinanceHistorySourceEnum {
     CAPITAL = 'CAPITAL',
     CONVERT = 'CONVERT',
     DUST = 'DUST',
-    UNIVERSAL_TRANSFER = 'UNIVERSAL_TRANSFER',
     FIAT = 'FIAT'
 }

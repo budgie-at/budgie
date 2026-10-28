@@ -433,13 +433,14 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
 
             const chunkSeconds = isFiat ? fiatBackfillChunkSeconds : Number.POSITIVE_INFINITY;
             const startedAtSeconds = Math.floor(run.startedAtMs / 1000);
+            const client = getRunSignedClient(token);
             let committedCount = 0;
             if (isDefined(progress)) {
                 committedCount += yield* fetchRange(
                     Math.max(lookbackSeconds, Math.floor(progress.headAt / 1000) - headOverlapSeconds),
                     null
                 );
-                if (run.isDeferred) {
+                if (run.isDeferred || client.isSourceSkipped(source)) {
                     return committedCount;
                 }
                 yield* binanceHistoryProgressService.save(integration.id, source, { ...progress, headAt: run.startedAtMs });
@@ -451,7 +452,17 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             while (chunkStartSeconds > lookbackSeconds && !run.isDeferred) {
                 chunkStartSeconds = Math.max(lookbackSeconds, (chunkEndSeconds ?? startedAtSeconds) - chunkSeconds);
                 committedCount += yield* fetchRange(chunkStartSeconds, chunkEndSeconds);
-                const reachedAt = run.isDeferred ? getRunSignedClient(token).getDeferredFrontierMs() : chunkStartSeconds * 1000;
+                if (client.isSourceSkipped(source)) {
+                    if (!Number.isFinite(tailAt)) {
+                        yield* binanceHistoryProgressService.save(integration.id, source, {
+                            headAt: run.startedAtMs,
+                            tailAt: run.startedAtMs
+                        });
+                    }
+
+                    return committedCount;
+                }
+                const reachedAt = run.isDeferred ? client.getDeferredFrontierMs() : chunkStartSeconds * 1000;
                 tailAt = Math.min(tailAt, reachedAt ?? tailAt);
                 yield* binanceHistoryProgressService.save(integration.id, source, { headAt: run.startedAtMs, tailAt });
                 chunkEndSeconds = chunkStartSeconds;
