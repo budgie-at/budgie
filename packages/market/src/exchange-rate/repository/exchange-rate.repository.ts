@@ -1,5 +1,11 @@
-import { Db, ExchangeRateEntityTable } from '@budgie/contracts';
-import { isNull, sql } from 'drizzle-orm';
+import {
+    AccountEntityTable,
+    CRYPTO_ACCOUNT_TYPES,
+    Db,
+    ExchangeRateEntityTable,
+    InstrumentDailyMarketPriceEntityTable
+} from '@budgie/contracts';
+import { and, inArray, isNull, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -29,6 +35,21 @@ export class ExchangeRateRepository extends Context.Service<ExchangeRateReposito
                 db.query.ExchangeRateEntityTable.findFirst({
                     where: { baseInstrumentId, quoteInstrumentId }
                 })
+            ),
+        findCryptoAccountValuationRates: (quoteInstrumentId: number) =>
+            Db.query(db =>
+                db
+                    .selectDistinct({
+                        instrumentId: AccountEntityTable.instrumentId,
+                        rate: sql<
+                            number | null
+                        >`(SELECT ${ExchangeRateEntityTable.rate} FROM ${ExchangeRateEntityTable} WHERE ${ExchangeRateEntityTable.baseInstrumentId} = ${AccountEntityTable.instrumentId} AND ${ExchangeRateEntityTable.quoteInstrumentId} = ${quoteInstrumentId} LIMIT 1)`,
+                        price: sql<
+                            number | null
+                        >`(SELECT ${InstrumentDailyMarketPriceEntityTable.price} FROM ${InstrumentDailyMarketPriceEntityTable} WHERE ${InstrumentDailyMarketPriceEntityTable.instrumentId} = ${AccountEntityTable.instrumentId} AND ${InstrumentDailyMarketPriceEntityTable.quoteInstrumentId} = ${quoteInstrumentId} AND ${InstrumentDailyMarketPriceEntityTable.deletedAt} IS NULL ORDER BY ${InstrumentDailyMarketPriceEntityTable.priceDate} DESC LIMIT 1)`
+                    })
+                    .from(AccountEntityTable)
+                    .where(and(inArray(AccountEntityTable.type, CRYPTO_ACCOUNT_TYPES), isNull(AccountEntityTable.deletedAt)))
             )
     })
 }) {
