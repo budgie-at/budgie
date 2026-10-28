@@ -33,6 +33,7 @@ interface Props {
     readonly footerSpacerMultiplier?: number;
     readonly listHeader?: ReactElement;
     readonly listComponent?: ComponentType<LegendListProps<TransactionListItemType>>;
+    readonly stickyHeaderOffset?: number;
 }
 
 const keyExtractor = (item: TransactionListItemType) => item.id;
@@ -49,7 +50,8 @@ export const TransactionSectionsList = ({
     accountId = null,
     footerSpacerMultiplier = 1,
     listHeader,
-    listComponent: ListComponent = BudgieLegendList
+    listComponent: ListComponent = BudgieLegendList,
+    stickyHeaderOffset
 }: Props) => {
     const router = useRouter();
     const { t } = useLingui();
@@ -125,6 +127,8 @@ export const TransactionSectionsList = ({
         ...(isEmpty && !isDefined(listHeader) && { flexGrow: 1, justifyContent: 'center' as const })
     };
 
+    const stickyHeaderProps = isDefined(stickyHeaderOffset) ? { stickyHeaderConfig: { offset: stickyHeaderOffset } } : {};
+
     return (
         <>
             <View className="flex-1">
@@ -141,6 +145,7 @@ export const TransactionSectionsList = ({
                     ListHeaderComponent={listHeader}
                     ListEmptyComponent={listEmptyState}
                     getItemType={getItemType}
+                    {...stickyHeaderProps}
                 />
             </View>
             <TransactionListContextMenu

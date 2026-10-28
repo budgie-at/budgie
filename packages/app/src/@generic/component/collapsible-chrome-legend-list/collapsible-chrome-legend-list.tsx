@@ -15,7 +15,7 @@ import type { LegendListProps } from '@legendapp/list/react-native';
 
 const MAINTAIN_VISIBLE_CONTENT_POSITION = { data: false, size: true };
 
-export const CollapsibleChromeLegendList = <TItem,>({ contentContainerStyle, ...props }: LegendListProps<TItem>) => {
+export const CollapsibleChromeLegendList = <TItem,>({ contentContainerStyle, stickyHeaderConfig, ...props }: LegendListProps<TItem>) => {
     const { scrollY } = useCollapsibleHeaderScroll();
     const { config } = useScreenChrome();
     const { top } = useSafeAreaInsets();
@@ -23,11 +23,12 @@ export const CollapsibleChromeLegendList = <TItem,>({ contentContainerStyle, ...
 
     const sharedValues = { scrollOffset: scrollY };
     const contentContainerStyleWithInset = [{ paddingTop: top + SCREEN_CHROME_CONTENT_INSET_TOP }, horizontalInset, contentContainerStyle];
-    const stickyHeaderConfig = {
-        offset: getScreenChromeHeaderMetrics(
-            Math.max(config.collapsedHeaderHeight ?? config.headerHeight, SCREEN_CHROME_HEADER_LAYOUT_METRICS.slotSize),
-            top
-        )
+    const chromeStickyHeaderConfig = {
+        offset:
+            getScreenChromeHeaderMetrics(
+                Math.max(config.collapsedHeaderHeight ?? config.headerHeight, SCREEN_CHROME_HEADER_LAYOUT_METRICS.slotSize),
+                top
+            ) + (stickyHeaderConfig?.offset ?? 0)
     };
 
     return (
@@ -35,7 +36,7 @@ export const CollapsibleChromeLegendList = <TItem,>({ contentContainerStyle, ...
             {...props}
             contentContainerStyle={contentContainerStyleWithInset}
             sharedValues={sharedValues}
-            stickyHeaderConfig={stickyHeaderConfig}
+            stickyHeaderConfig={chromeStickyHeaderConfig}
             maintainVisibleContentPosition={MAINTAIN_VISIBLE_CONTENT_POSITION}
             recycleItems
             showsVerticalScrollIndicator={false}
