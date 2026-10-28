@@ -1,6 +1,6 @@
 import { DEFAULT_TRANSACTION_FILTER, DatePeriodEnum, TransactionFilterInterface, UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { Activity, useState } from 'react';
+import { useState } from 'react';
 import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -16,8 +16,7 @@ import { AnalyticsHistoryBoundary } from '../../../sync/component/analytics-hist
 import { useTransactionAccountFilterModal } from '../../context/transaction-account-filter-modal.context';
 import { useGetTotalIncomeAndExpensesQuery } from '../../query/use-get-total-income-and-expenses.query';
 import { checkIfFiltersSelected } from '../../utils/check-if-filters-selected.util';
-import { StatisticsCategoriesActivityContent } from '../statistics-categories-activity-content/statistics-categories-activity-content';
-import { StatisticsTagsActivityContent } from '../statistics-tags-activity-content/statistics-tags-activity-content';
+import { StatisticsActivityPanels } from '../statistics-activity-panels/statistics-activity-panels';
 import { TransactionAnalyticsCard } from '../transaction-analytics-card/transaction-analytics-card';
 import { TransactionFilters } from '../transaction-filters/transaction-filters';
 
@@ -45,9 +44,6 @@ export const StatisticsContent = ({ activeTab }: Props) => {
     };
 
     const isRunwayTab = activeTab === 'runway';
-    const isCategoriesTab = activeTab === 'categories';
-    const categoriesActivityMode = isCategoriesTab ? 'visible' : 'hidden';
-    const tagsActivityMode = isCategoriesTab ? 'hidden' : 'visible';
 
     if (isRunwayTab) {
         return <RunwayContent />;
@@ -97,13 +93,7 @@ export const StatisticsContent = ({ activeTab }: Props) => {
                     </View>
                 </View>
 
-                <Activity mode={categoriesActivityMode}>
-                    <StatisticsCategoriesActivityContent filters={filters} income={income} expense={expense} />
-                </Activity>
-
-                <Activity mode={tagsActivityMode}>
-                    <StatisticsTagsActivityContent filters={filters} income={income} expense={expense} />
-                </Activity>
+                <StatisticsActivityPanels activeTab={activeTab} filters={filters} income={income} expense={expense} />
             </AnalyticsHistoryBoundary>
 
             <MenuSpacer />

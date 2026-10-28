@@ -1,5 +1,6 @@
 import { TransactionViewRepository } from '@budgie/contracts';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
+import * as Atom from 'effect/reactivity/Atom';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
@@ -17,11 +18,12 @@ export const transactionByIdAtom = databaseQueryFamily(
         transactionViewRepository.getById(transactionId, language)
 );
 
+const noTransactionAtom = Atom.make(AsyncResult.success(null));
+
 export const useGetTransactionByIdQuery = (id: number | null) => {
     const language = useSetting('language');
     const shouldQuery = isPositiveNumber(id);
-    const transactionId = shouldQuery ? id : 0;
-    const result = useLiveAtomValue(transactionByIdAtom([transactionId, language]));
+    const result = useLiveAtomValue(shouldQuery ? transactionByIdAtom([id, language]) : noTransactionAtom);
 
     if (!shouldQuery) {
         return { transaction: null, isLoading: false };
