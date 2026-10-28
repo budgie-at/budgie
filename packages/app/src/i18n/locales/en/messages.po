@@ -123,6 +123,10 @@ msgstr "{count, plural, one {# payment} other {# payments}}"
 msgid "{count, plural, one {# sync repair} other {# sync repairs}}"
 msgstr "{count, plural, one {# sync repair} other {# sync repairs}}"
 
+#: src/budget/components/budget-verdict-footer/budget-verdict-footer.tsx
+msgid "{count, plural, one {# upcoming bill} other {# upcoming bills}}"
+msgstr "{count, plural, one {# upcoming bill} other {# upcoming bills}}"
+
 #: src/category/hooks/use-delete-category.hook.ts
 msgid "{count, plural, one {This category has # transaction. Select another category to reassign it to.} other {This category has # transactions. Select another category to reassign them to.}}"
 msgstr "{count, plural, one {This category has # transaction. Select another category to reassign it to.} other {This category has # transactions. Select another category to reassign them to.}}"
@@ -131,6 +135,10 @@ msgstr "{count, plural, one {This category has # transaction. Select another cat
 msgid "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
 msgstr "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
 
+#: src/budget/components/budget-upcoming-charge-row/budget-upcoming-charge-row.tsx
+msgid "{dateLabel} · {kindLabel}"
+msgstr "{dateLabel} · {kindLabel}"
+
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
 msgid "{days, plural, one {In # day} other {In # days}}"
 msgstr "{days, plural, one {In # day} other {In # days}}"
@@ -138,6 +146,11 @@ msgstr "{days, plural, one {In # day} other {In # days}}"
 #: src/budget/components/budget-verdict/budget-verdict.tsx
 msgid "{daysLeft, plural, one {# day left} other {# days left}}"
 msgstr "{daysLeft, plural, one {# day left} other {# days left}}"
+
+#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+#: src/budget/components/budget-widget-card/budget-widget-card.tsx
+msgid "{daysLeft, plural, one {# day} other {# days}}"
+msgstr "{daysLeft, plural, one {# day} other {# days}}"
 
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "{daysRemaining, plural, one {# day left} other {# days left}}"
@@ -208,6 +221,18 @@ msgstr "{free} GB free on this phone."
 msgid "{free} GB is free right now. Your money data isn't affected."
 msgstr "{free} GB is free right now. Your money data isn't affected."
 
+#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+msgid "{freeAmount} ÷ {daysLabel}"
+msgstr "{freeAmount} ÷ {daysLabel}"
+
+#: src/budget/components/budget-widget-card/budget-widget-card.tsx
+msgid "{freeAmount} free · {daysLabel}"
+msgstr "{freeAmount} free · {daysLabel}"
+
+#: src/budget/components/budget-verdict/budget-verdict.tsx
+msgid "{freeAmount} free until {periodEndLabel}"
+msgstr "{freeAmount} free until {periodEndLabel}"
+
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "{freeSize} GB free on this phone"
 msgstr "{freeSize} GB free on this phone"
@@ -262,6 +287,10 @@ msgstr "{newTransactionCount, plural, one {Import # transaction} other {Import #
 msgid "{newTransactionCount} new, {existingTransactionCount} already imported, {parsedTransactionCount} checked"
 msgstr "{newTransactionCount} new, {existingTransactionCount} already imported, {parsedTransactionCount} checked"
 
+#: src/budget/components/budget-verdict/budget-verdict.tsx
+msgid "{overAmount} over"
+msgstr "{overAmount} over"
+
 #: src/budget/components/budget-category-forecast/budget-category-forecast.tsx
 msgid "{overAmount} over budget"
 msgstr "{overAmount} over budget"
@@ -310,6 +339,14 @@ msgstr "{rowCount, plural, one {Categorized # transaction} other {Categorized # 
 #: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
 msgid "{rowCount, plural, one {Tagged # transaction} other {Tagged # transactions}}"
 msgstr "{rowCount, plural, one {Tagged # transaction} other {Tagged # transactions}}"
+
+#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+msgid "{safePerDayAmount} / day"
+msgstr "{safePerDayAmount} / day"
+
+#: src/budget/components/budget-verdict/budget-verdict.tsx
+msgid "{safePerDayAmount} per day"
+msgstr "{safePerDayAmount} per day"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "{selectedAccountCount, plural, one {Add # account} other {Add # accounts}}"
@@ -360,8 +397,8 @@ msgid "{statusLabel} · {downloaded} of {total} GB"
 msgstr "{statusLabel} · {downloaded} of {total} GB"
 
 #: src/budget/components/budget-verdict/budget-verdict.tsx
-msgid "{statusLabel}: spent {spentAmount} of {limitAmount}, {upcomingAmount} reserved for upcoming bills, {daysLeftLabel}."
-msgstr "{statusLabel}: spent {spentAmount} of {limitAmount}, {upcomingAmount} reserved for upcoming bills, {daysLeftLabel}."
+msgid "{statusLabel}. {figureAccessibilityLabel}, {daysLeftLabel}."
+msgstr "{statusLabel}. {figureAccessibilityLabel}, {daysLeftLabel}."
 
 #: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
 msgid "{taggedCount, plural, one {# tagged this session} other {# tagged this session}}"
@@ -382,6 +419,11 @@ msgstr "{transactionCount, plural, one {# transaction} other {# transactions}}"
 #: src/receipt/hook/use-receipt-scan.hook.ts
 msgid "{unreadableCount, plural, one {Couldn't read # receipt} other {Couldn't read # receipts}}"
 msgstr "{unreadableCount, plural, one {Couldn't read # receipt} other {Couldn't read # receipts}}"
+
+#: src/budget/components/budget-verdict/budget-verdict.tsx
+#: src/budget/components/budget-widget-card/budget-widget-card.tsx
+msgid "/ day"
+msgstr "/ day"
 
 #: src/runway/component/runway-pill/runway-pill.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
@@ -656,7 +698,7 @@ msgstr "Adjustment"
 msgid "After 5 wrong tries, Budgie waits a little longer between attempts."
 msgstr "After 5 wrong tries, Budgie waits a little longer between attempts."
 
-#: src/budget/components/budget-verdict/budget-verdict.tsx
+#: src/budget/constant/budget-pace-status-label.constant.ts
 msgid "Ahead of pace"
 msgstr "Ahead of pace"
 
@@ -2589,6 +2631,10 @@ msgstr "Forgot PIN?"
 msgid "Found an issue or have an idea? Open GitHub issue templates."
 msgstr "Found an issue or have an idea? Open GitHub issue templates."
 
+#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+msgid "Free to spend"
+msgstr "Free to spend"
+
 #: src/i18n/constant/languages.constant.ts
 msgid "French"
 msgstr "French"
@@ -2901,6 +2947,10 @@ msgstr "Income by Tag"
 msgid "Incorrect PIN"
 msgstr "Incorrect PIN"
 
+#: src/budget/components/budget-upcoming-charge-row/budget-upcoming-charge-row.tsx
+msgid "Installment"
+msgstr "Installment"
+
 #: src/account/constant/account-debt-type.constant.ts
 #: src/installment-plan/component/convert-to-installment-content/convert-to-installment-content.tsx
 #: src/installment-plan/component/convert-to-installment-title-field/convert-to-installment-title-field.tsx
@@ -3056,6 +3106,7 @@ msgstr "Less Than"
 
 #: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
 #: src/budget/components/budget-pace-legend/budget-pace-legend.tsx
+#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
 msgid "Limit"
 msgstr "Limit"
 
@@ -3308,7 +3359,7 @@ msgstr "Monobank rejected this key. Check it and try again."
 msgid "Monobank sends about one month of history per minute, for each account you selected."
 msgstr "Monobank sends about one month of history per minute, for each account you selected."
 
-#: src/budget/components/budget-widget/budget-widget.tsx
+#: src/budget/components/budget-widget-card/budget-widget-card.tsx
 msgid "Monthly budget"
 msgstr "Monthly budget"
 
@@ -3703,7 +3754,7 @@ msgid "On this phone"
 msgstr "On this phone"
 
 #: src/budget/components/budget-category-forecast/budget-category-forecast.tsx
-#: src/budget/components/budget-verdict/budget-verdict.tsx
+#: src/budget/constant/budget-pace-status-label.constant.ts
 msgid "On track"
 msgstr "On track"
 
@@ -3884,7 +3935,7 @@ msgid "over"
 msgstr "over"
 
 #: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
-#: src/budget/components/budget-verdict/budget-verdict.tsx
+#: src/budget/constant/budget-pace-status-label.constant.ts
 #: src/budget/hooks/use-budget-progress-labels.hook.ts
 msgid "Over budget"
 msgstr "Over budget"
@@ -4115,6 +4166,10 @@ msgstr "Projected {overAmount} over"
 msgid "Projected {overAmount} over · Runs out ~{runOutDate}"
 msgstr "Projected {overAmount} over · Runs out ~{runOutDate}"
 
+#: src/budget/components/budget-verdict/budget-verdict.tsx
+msgid "Projected {projectedOverAmount} over by {periodEndLabel}"
+msgstr "Projected {projectedOverAmount} over by {periodEndLabel}"
+
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Push notifications are disabled"
 msgstr "Push notifications are disabled"
@@ -4215,6 +4270,10 @@ msgstr "Recalculate"
 msgid "Recalculate Balances"
 msgstr "Recalculate Balances"
 
+#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+msgid "Recalculates every day. Spend less today and tomorrow's amount grows."
+msgstr "Recalculates every day. Spend less today and tomorrow's amount grows."
+
 #: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
 msgid "Recalculating balances"
 msgstr "Recalculating balances"
@@ -4240,6 +4299,7 @@ msgid "Receiving amount must be greater than zero"
 msgstr "Receiving amount must be greater than zero"
 
 #: src/@generic/component/transactions-page-header/transactions-page-header.tsx
+#: src/budget/components/budget-upcoming-charge-row/budget-upcoming-charge-row.tsx
 msgid "Recurring"
 msgstr "Recurring"
 
@@ -4317,6 +4377,10 @@ msgstr "Repair Sync Data"
 #: src/app/(tabs)/settings/index.tsx
 msgid "Report a Bug"
 msgstr "Report a Bug"
+
+#: src/budget/components/budget-verdict-footer/budget-verdict-footer.tsx
+msgid "Reserving {upcomingAmount} for {billsLabel}"
+msgstr "Reserving {upcomingAmount} for {billsLabel}"
 
 #: src/app/resync-window-picker.tsx
 msgid "Resets all sync state"
@@ -4444,6 +4508,10 @@ msgstr "Runway"
 #: src/runway/component/runway-empty-state/runway-empty-state.tsx
 msgid "Runway needs at least 3 complete months of transactions. You have {monthsUsed}."
 msgstr "Runway needs at least 3 complete months of transactions. You have {monthsUsed}."
+
+#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+msgid "Safe to spend"
+msgstr "Safe to spend"
 
 #: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
@@ -4865,6 +4933,10 @@ msgstr "Spending by Tag"
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Spent"
 msgstr "Spent"
+
+#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+msgid "Spent so far"
+msgstr "Spent so far"
 
 #: src/transaction/components/transaction-split-field-icon/transaction-split-field-icon.tsx
 msgid "Split"
@@ -5577,6 +5649,10 @@ msgstr "Unrealized P&L"
 msgid "Untagged"
 msgstr "Untagged"
 
+#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+msgid "Until {periodEndLabel}"
+msgstr "Until {periodEndLabel}"
+
 #: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
@@ -5591,6 +5667,10 @@ msgstr "Up to date · {lastSyncedLabel}"
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "Upcoming"
 msgstr "Upcoming"
+
+#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+msgid "Upcoming this period"
+msgstr "Upcoming this period"
 
 #: src/account/component/update-account-page/update-account-page.tsx
 msgid "Update Account"

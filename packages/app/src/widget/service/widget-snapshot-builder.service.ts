@@ -1,4 +1,11 @@
-import { BudgetCategoryLimitRepository, BudgetRepository, computePeriodWindow, computeSpent, getInclusiveEnd } from '@budgie/budget';
+import {
+    BudgetCategoryLimitRepository,
+    BudgetRepository,
+    computePeriodWindow,
+    computeSafePerDay,
+    computeSpent,
+    getInclusiveEnd
+} from '@budgie/budget';
 import {
     AccountBalanceRepository,
     AccountTypeEnum,
@@ -25,6 +32,7 @@ import * as Layer from 'effect/Layer';
 import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { ACCOUNT_TYPE } from '../../account/constant/account-type.constant';
+import { BudgetProjectionService } from '../../budget/service/budget-projection.service';
 import { DEFAULT_DECIMAL_PLACES } from '../../i18n/constant/default-decimal-places.constant';
 import { formatSymbolAmount } from '../../i18n/utils/format-symbol-amount.util';
 import { i18nLoadLanguageMessages } from '../../i18n/utils/i18n.util';
@@ -57,6 +65,7 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
             const categoryRepository = yield* CategoryRepository;
             const budgetRepository = yield* BudgetRepository;
             const budgetCategoryLimitRepository = yield* BudgetCategoryLimitRepository;
+            const budgetProjectionService = yield* BudgetProjectionService;
             const emptyRunway: WidgetRunwaySnapshotInterface = { isPositive: true, label: '' };
             const topCategoryCount = 3;
             const topAccountTypeCount = 4;
@@ -285,12 +294,14 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
                     return null;
                 }
 
-                const { periodStart, nextPeriodStart } = computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, new Date());
-                const [entries, limits, instrument] = yield* Effect.all(
+                const now = new Date();
+                const { periodStart, nextPeriodStart } = computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, now);
+                const [entries, limits, instrument, projection] = yield* Effect.all(
                     [
                         budgetRepository.findBudgetSpentEntries(periodStart, nextPeriodStart, budget.instrumentId),
                         budgetCategoryLimitRepository.getByBudget(budget.id),
-                        instrumentRepository.findById(budget.instrumentId)
+                        instrumentRepository.findById(budget.instrumentId),
+                        budgetProjectionService.project(budget, now)
                     ],
                     { concurrency: 'unbounded' }
                 );
@@ -322,7 +333,11 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
                             formattedDaysLeft: context.i18n._(
                                 msg({ message: plural(daysRemaining, { one: '# day left', other: '# days left' }) })
                             ),
-                            formattedSafePerDay: formatWithSymbol(Math.max(limitAmount - spentAmount, 0) / daysRemaining, symbol, context)
+                            formattedSafePerDay: formatWithSymbol(
+                                convertFromMicroUnits(computeSafePerDay(projection.overall.free, daysRemaining)),
+                                symbol,
+                                context
+                            )
                         }
                     };
                 });
@@ -359,7 +374,8 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
             InstrumentRepository.layer,
             CategoryRepository.layer,
             BudgetRepository.layer,
-            BudgetCategoryLimitRepository.layer
+            BudgetCategoryLimitRepository.layer,
+            BudgetProjectionService.layer
         ])
     );
 }
