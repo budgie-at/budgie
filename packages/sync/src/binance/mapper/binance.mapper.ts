@@ -18,8 +18,6 @@ import type { SyncTransactionInterface } from '../../core/interface/sync-transac
 import type { BinanceC2cOrderApiInterface } from '../interface/binance-c2c-order-api.schema';
 import type { BinanceConvertFlowApiInterface } from '../interface/binance-convert-api.schema';
 import type { BinanceDepositApiInterface } from '../interface/binance-deposit-api.schema';
-import type { BinanceEarnDailyTotalInterface } from '../interface/binance-earn-daily-total.interface';
-import type { BinanceEarnRewardApiInterface } from '../interface/binance-earn-reward-api.schema';
 import type { BinanceFiatOrderApiInterface } from '../interface/binance-fiat-order-api.schema';
 import type { BinanceTradeApiInterface } from '../interface/binance-trade-api.schema';
 import type { BinanceTransferInterface } from '../interface/binance-transfer.interface';
@@ -28,12 +26,8 @@ import type { BinanceWithdrawalApiInterface } from '../interface/binance-withdra
 
 const NO_NUMERIC_CODE = 0;
 const MICRO_UNITS_DECIMALS = 6;
-const EARN_RAW_DECIMALS = 18;
-const EARN_RAW_PER_MICRO_UNIT = BigInt(10) ** BigInt(EARN_RAW_DECIMALS - MICRO_UNITS_DECIMALS);
-const EARN_ROUNDING_HALF = EARN_RAW_PER_MICRO_UNIT / BigInt(2);
 const MILLISECONDS_PER_SECOND = 1000;
 const C2C_BUY_TRADE_TYPE = 'BUY';
-const EARN_DATE_PART_DIGITS = 2;
 const SELF_TRADE_SELLER_ID_SUFFIX = ':sell';
 const FUNDING_WALLET_TYPE = 1;
 const SPOT_TO_FUNDING_TRANSFER_TYPE = 'MAIN_FUNDING';
@@ -56,11 +50,11 @@ const WITHDRAWAL_OUTCOME_BY_STATUS = new Map<number | undefined, BinanceCapitalO
     [6, BinanceCapitalOutcomeEnum.COMPLETED]
 ]);
 
-const toUnixSeconds = (timeMs: number): number => Math.floor(timeMs / MILLISECONDS_PER_SECOND);
+export const toUnixSeconds = (timeMs: number): number => Math.floor(timeMs / MILLISECONDS_PER_SECOND);
 
-const encodeSpotAccountId = (asset: string): string => encodeBinanceAccountId({ wallet: BinanceWalletEnum.SPOT, asset });
+export const encodeSpotAccountId = (asset: string): string => encodeBinanceAccountId({ wallet: BinanceWalletEnum.SPOT, asset });
 
-const toSyncTransaction = (
+export const toSyncTransaction = (
     transaction: Omit<
         SyncTransactionInterface,
         'provider' | 'mcc' | 'originalMcc' | 'currencyCode' | 'commissionRate' | 'cashbackAmount' | 'balance' | 'hold' | 'operationAmount'
@@ -90,7 +84,7 @@ export const parseBinanceAmount = (value: string): number | null => {
     return isDefined(totalMicroUnits) ? convertFromMicroUnits(Number(totalMicroUnits)) : null;
 };
 
-const parseUnsignedAmount = (value: string): number | null => {
+export const parseUnsignedAmount = (value: string): number | null => {
     const amount = parseBinanceAmount(value);
 
     return isDefined(amount) && amount >= 0 ? amount : null;
@@ -289,49 +283,4 @@ export const mapBinanceUniversalTransferToTransfer = (transfer: BinanceUniversal
         description: isSpotToFunding ? `Binance ${transfer.asset} Spot to Funding` : `Binance ${transfer.asset} Funding to Spot`,
         source: BinanceTransferSourceEnum.UNIVERSAL_TRANSFER
     };
-};
-
-const buildEarnDayKey = (timeMs: number): string => {
-    const date = new Date(timeMs);
-    const month = `${date.getUTCMonth() + 1}`.padStart(EARN_DATE_PART_DIGITS, '0');
-    const day = `${date.getUTCDate()}`.padStart(EARN_DATE_PART_DIGITS, '0');
-
-    return `${date.getUTCFullYear()}-${month}-${day}`;
-};
-
-export const mapBinanceEarnRewardsToTransactions = (
-    asset: string,
-    accountId: string,
-    rewards: readonly BinanceEarnRewardApiInterface[]
-): SyncTransactionInterface[] => {
-    const dailyTotals = new Map<string, BinanceEarnDailyTotalInterface>();
-    for (const reward of rewards) {
-        const dayKey = buildEarnDayKey(reward.time);
-        const rawAmount = parseBinanceScaledDecimal(reward.rewards, EARN_RAW_DECIMALS);
-        const dailyTotal = dailyTotals.get(dayKey) ?? { totalRaw: BigInt(0), lastRewardTime: 0 };
-        dailyTotals.set(dayKey, {
-            totalRaw: isDefined(rawAmount) && rawAmount > BigInt(0) ? dailyTotal.totalRaw + rawAmount : dailyTotal.totalRaw,
-            lastRewardTime: Math.max(dailyTotal.lastRewardTime, reward.time)
-        });
-    }
-
-    return [...dailyTotals.entries()]
-        .map(([dayKey, dailyTotal]) => ({
-            dayKey,
-            lastRewardTime: dailyTotal.lastRewardTime,
-            totalMicroUnits: (dailyTotal.totalRaw + EARN_ROUNDING_HALF) / EARN_RAW_PER_MICRO_UNIT
-        }))
-        .filter(({ totalMicroUnits }) => totalMicroUnits > BigInt(0))
-        .map(({ dayKey, lastRewardTime, totalMicroUnits }) =>
-            toSyncTransaction({
-                id: `binance:earn:${asset}:${dayKey}`,
-                accountId,
-                category: asset,
-                time: toUnixSeconds(lastRewardTime),
-                type: SyncTransactionTypeEnum.INCOME,
-                description: `Binance Earn reward ${asset}`,
-                amount: convertFromMicroUnits(Number(totalMicroUnits)),
-                feeAmount: 0
-            })
-        );
 };

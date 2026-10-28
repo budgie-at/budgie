@@ -1,5 +1,6 @@
 import type { BinanceC2cOrderApiInterface } from './binance-c2c-order-api.schema';
 import type { BinanceDepositApiInterface } from './binance-deposit-api.schema';
+import type { BinanceDividendApiInterface } from './binance-dividend-api.schema';
 import type { BinanceEarnRewardApiInterface } from './binance-earn-reward-api.schema';
 import type { BinanceFiatOrderApiInterface } from './binance-fiat-order-api.schema';
 import type { BinanceWithdrawalApiInterface } from './binance-withdrawal-api.schema';
@@ -11,4 +12,8 @@ export interface BinanceTransactionSourcesInterface {
     readonly fiatWithdrawals: readonly BinanceFiatOrderApiInterface[];
     readonly c2cOrders: readonly BinanceC2cOrderApiInterface[];
     readonly earnRewards: readonly BinanceEarnRewardApiInterface[];
+    readonly lockedEarnRewards: readonly BinanceEarnRewardApiInterface[];
+    readonly ethStakingRewards: readonly BinanceEarnRewardApiInterface[];
+    readonly solStakingRewards: readonly BinanceEarnRewardApiInterface[];
+    readonly dividends: readonly BinanceDividendApiInterface[];
 }

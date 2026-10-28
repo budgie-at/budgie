@@ -385,9 +385,11 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             return isNotEmptyArray(newTransfers) ? yield* createSyncedTransfers(newTransfers, token) : 0;
         });
 
-        const commitConvertRange = Effect.fnUntraced(function* (token: string, fromUnixTime: number, toUnixTime: number | null) {
-            const client = getRunSignedClient(token);
-            const transfers = yield* client.withPartialWalks(client.getConvertTransfers(fromUnixTime, toUnixTime));
+        const commitTransferRange = Effect.fnUntraced(function* (
+            token: string,
+            fetchTransfers: Effect.Effect<BinanceTransferInterface[], SyncError, HttpClient.HttpClient>
+        ) {
+            const transfers = yield* getRunSignedClient(token).withPartialWalks(fetchTransfers);
             yield* deferIfWalkDeferred(token);
 
             return yield* commitTransfers(transfers, token);
@@ -463,9 +465,13 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 return 0;
             }
 
-            const convertCount = yield* syncHistorySource(sync, token, BinanceHistorySourceEnum.CONVERT, (fromUnixTime, toUnixTime) =>
-                commitConvertRange(token, fromUnixTime, toUnixTime)
-            );
+            const convertCount =
+                (yield* syncHistorySource(sync, token, BinanceHistorySourceEnum.CONVERT, (fromUnixTime, toUnixTime) =>
+                    commitTransferRange(token, getRunSignedClient(token).getConvertTransfers(fromUnixTime, toUnixTime))
+                )) +
+                (yield* syncHistorySource(sync, token, BinanceHistorySourceEnum.DUST, (fromUnixTime, toUnixTime) =>
+                    commitTransferRange(token, getRunSignedClient(token).getDustTransfers(fromUnixTime, toUnixTime))
+                ));
             if (run.isDeferred) {
                 return convertCount;
             }
@@ -495,6 +501,18 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 )) +
                 (yield* syncHistorySource(sync, token, BinanceHistorySourceEnum.EARN, (fromUnixTime, toUnixTime) =>
                     commitSourceType(token, client.getEarnTransactions(fromUnixTime, toUnixTime), false, true)
+                )) +
+                (yield* syncHistorySource(sync, token, BinanceHistorySourceEnum.LOCKED_EARN, (fromUnixTime, toUnixTime) =>
+                    commitSourceType(token, client.getLockedEarnTransactions(fromUnixTime, toUnixTime), false, true)
+                )) +
+                (yield* syncHistorySource(sync, token, BinanceHistorySourceEnum.ETH_STAKING, (fromUnixTime, toUnixTime) =>
+                    commitSourceType(token, client.getEthStakingTransactions(fromUnixTime, toUnixTime), false, true)
+                )) +
+                (yield* syncHistorySource(sync, token, BinanceHistorySourceEnum.SOL_STAKING, (fromUnixTime, toUnixTime) =>
+                    commitSourceType(token, client.getSolStakingTransactions(fromUnixTime, toUnixTime), false, true)
+                )) +
+                (yield* syncHistorySource(sync, token, BinanceHistorySourceEnum.DIVIDEND, (fromUnixTime, toUnixTime) =>
+                    commitSourceType(token, client.getDividendTransactions(fromUnixTime, toUnixTime), false)
                 )) +
                 (yield* syncHistorySource(sync, token, BinanceHistorySourceEnum.CAPITAL, (fromUnixTime, toUnixTime) =>
                     commitCapitalRange(sync, token, fromUnixTime, toUnixTime)

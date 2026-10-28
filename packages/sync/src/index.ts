@@ -48,6 +48,10 @@ export type { BinanceConvertFlowApiInterface } from './binance/interface/binance
 export type { BinanceEarnPositionApiInterface } from './binance/interface/binance-earn-position-api.schema';
 export type { BinanceLockedEarnPositionApiInterface } from './binance/interface/binance-locked-earn-position-api.schema';
 export type { BinanceEarnRewardApiInterface } from './binance/interface/binance-earn-reward-api.schema';
+export type { BinanceLockedEarnRewardApiInterface } from './binance/interface/binance-locked-earn-reward-api.schema';
+export type { BinanceStakingRewardApiInterface } from './binance/interface/binance-staking-reward-api.schema';
+export type { BinanceDividendApiInterface } from './binance/interface/binance-dividend-api.schema';
+export type { BinanceDustLogApiInterface } from './binance/interface/binance-dust-api.schema';
 
 export { mapErsteTransaction } from './erste/mapper/erste.mapper';
 
