@@ -245,29 +245,13 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         const deposits = yield* this.fetchCapitalHistory(this.depositSource, wallet, startTimeMs, endTimeMs);
         const withdrawals = yield* this.fetchCapitalHistory(this.withdrawalSource, wallet, startTimeMs, endTimeMs);
 
-        for (const { externalId, timeMs, outcome } of [
-            ...deposits.map(deposit => ({
-                externalId: buildBinanceDepositExternalId(deposit),
-                timeMs: deposit.insertTime,
-                outcome: getBinanceDepositOutcome(deposit)
-            })),
-            ...withdrawals.map(withdrawal => ({
-                externalId: withdrawal.id,
-                timeMs: new Date(withdrawal.applyTime).getTime(),
-                outcome: getBinanceWithdrawalOutcome(withdrawal)
-            }))
-        ]) {
-            if (outcome === BinanceCapitalOutcomeEnum.REJECTED) {
-                this.rejectedCapitalExternalIds.add(externalId);
-            }
-            if (outcome === BinanceCapitalOutcomeEnum.PENDING && timeMs >= this.capitalPendingFloorTimeMs) {
-                this.capitalPendingFromMs = Math.min(this.capitalPendingFromMs ?? timeMs, timeMs);
-            }
-        }
-
         return this.emptySources({
-            deposits: deposits.filter(deposit => getBinanceDepositOutcome(deposit) === BinanceCapitalOutcomeEnum.COMPLETED),
-            withdrawals: withdrawals.filter(withdrawal => getBinanceWithdrawalOutcome(withdrawal) === BinanceCapitalOutcomeEnum.COMPLETED)
+            deposits: deposits.filter(deposit =>
+                this.recordCapitalOutcome(buildBinanceDepositExternalId(deposit), deposit.insertTime, getBinanceDepositOutcome(deposit))
+            ),
+            withdrawals: withdrawals.filter(withdrawal =>
+                this.recordCapitalOutcome(withdrawal.id, new Date(withdrawal.applyTime).getTime(), getBinanceWithdrawalOutcome(withdrawal))
+            )
         });
     });
 
@@ -662,6 +646,17 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return this.signedRequest(schema, endpoint, 'GET', params).pipe(
             Effect.map(response => ({ rows: response.rows, hasMore: response.rows.length === EARN_PAGE_SIZE }))
         );
+    }
+
+    private recordCapitalOutcome(externalId: string, timeMs: number, outcome: BinanceCapitalOutcomeEnum): boolean {
+        if (outcome === BinanceCapitalOutcomeEnum.REJECTED) {
+            this.rejectedCapitalExternalIds.add(externalId);
+        }
+        if (outcome === BinanceCapitalOutcomeEnum.PENDING && timeMs >= this.capitalPendingFloorTimeMs) {
+            this.capitalPendingFromMs = Math.min(this.capitalPendingFromMs ?? timeMs, timeMs);
+        }
+
+        return outcome === BinanceCapitalOutcomeEnum.COMPLETED;
     }
 
     private cached<T, E, R>(cache: Map<string, T>, key: string, effect: Effect.Effect<T, E, R>): Effect.Effect<T, E, R> {
