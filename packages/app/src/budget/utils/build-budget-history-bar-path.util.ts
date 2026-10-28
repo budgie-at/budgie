@@ -6,12 +6,28 @@ export const buildBudgetHistoryBarPath = (x: number, baselineY: number, width: n
     const right = x + width;
 
     return [
-        ...['M', x, baselineY],
-        ...['L', x, top + cornerRadius],
-        ...['Q', x, top, x + cornerRadius, top],
-        ...['L', right - cornerRadius, top],
-        ...['Q', right, top, right, top + cornerRadius],
-        ...['L', right, baselineY],
+        'M',
+        x,
+        baselineY,
+        'L',
+        x,
+        top + cornerRadius,
+        'Q',
+        x,
+        top,
+        x + cornerRadius,
+        top,
+        'L',
+        right - cornerRadius,
+        top,
+        'Q',
+        right,
+        top,
+        right,
+        top + cornerRadius,
+        'L',
+        right,
+        baselineY,
         'Z'
     ].join(' ');
 };
