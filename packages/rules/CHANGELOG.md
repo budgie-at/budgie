@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.123.0](https://github.com/budgie-at/budgie/compare/v6.122.0...v6.123.0) (2026-10-28)
+
+### Bug Fixes
+
+* apply receipt rules after the receipt transaction commits ([d573893](https://github.com/budgie-at/budgie/commit/d573893df132c045e4d1f8ac8f9bbfd8c9425a40))
+* never convert a scanned receipt's transaction to a transfer ([c9b7dfb](https://github.com/budgie-at/budgie/commit/c9b7dfbfef428bf68b270bd921a6b655d217a6a1))
+
+### Features
+
+* apply user rules to scanned receipts ([cec3e3b](https://github.com/budgie-at/budgie/commit/cec3e3b6092ee40b3b1ad2ffda475f45a45d7393))
+
+
 ## [6.121.2](https://github.com/budgie-at/budgie/compare/v6.121.1...v6.121.2) (2026-10-27)
 
 **Note:** Version bump only for package @budgie/rules
