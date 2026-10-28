@@ -194,7 +194,7 @@ export const binanceStub = {
         tradesBySymbol: Record<string, BinanceTradeApiInterface[]>,
         requestedSymbols?: Set<string>,
         requestedUrls?: URL[],
-        onSymbolServed?: (symbol: string) => void
+        onServed?: () => void
     ): void => {
         mockServer.use(
             http.get(MY_TRADES_URL, ({ request }) => {
@@ -209,7 +209,7 @@ export const binanceStub = {
                     fromId === null
                         ? symbolTrades.filter(trade => isWithinWindow(trade.time, window))
                         : symbolTrades.filter(trade => trade.id >= Number(fromId));
-                onSymbolServed?.(symbol);
+                onServed?.();
 
                 return HttpResponse.json(trades, { headers: WEIGHT_HEADERS });
             })

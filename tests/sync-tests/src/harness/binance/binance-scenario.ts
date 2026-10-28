@@ -14,6 +14,7 @@ import { expect } from 'vitest';
 import { testDb } from '../scenario/setup';
 import { seed } from '../seed/seed';
 
+import { STALE_SYNC_AGE_MS } from './binance-clock';
 import { binanceStub } from './binance-stub';
 import { buildBinance } from './build-binance';
 import { setupBinanceFixture } from './setup-binance-fixture';
@@ -45,17 +46,29 @@ export const seedCryptoInstrument = (code: string) =>
         return yield* seed.instrument({ code, name: code, symbol: code, type: InstrumentTypeEnum.CRYPTO });
     });
 
-export const setupAdaUsdtFixture = (mode: SyncModeEnum, forwardSyncedAt?: Date, binanceTradeCursor?: string) =>
+export const setupAdaUsdtFixture = (
+    mode: SyncModeEnum,
+    forwardSyncedAt?: Date,
+    binanceTradeCursor?: string,
+    baseAssets: readonly string[] = ['ADA']
+) =>
     Effect.gen(function* () {
         const fixture = yield* setupBinanceFixture({ asset: 'USDT', mode, forwardSyncedAt, binanceTradeCursor });
 
-        binanceStub.exchangeInfo(['ADAUSDT']);
+        binanceStub.exchangeInfo(baseAssets.map(baseAsset => `${baseAsset}USDT`));
         binanceStub.spotBalances([
-            buildBinance.balance({ asset: 'ADA', free: '200' }),
+            ...baseAssets.map(baseAsset => buildBinance.balance({ asset: baseAsset, free: '200' })),
             buildBinance.balance({ asset: 'USDT', free: '100' })
         ]);
 
         return fixture;
+    });
+
+export const setupStaleForwardFixture = (baseAssets: readonly string[] = ['ADA']) =>
+    Effect.gen(function* () {
+        yield* Effect.forEach(baseAssets, seedCryptoInstrument);
+
+        return yield* setupAdaUsdtFixture(SyncModeEnum.FORWARD, new Date(Date.now() - STALE_SYNC_AGE_MS), undefined, baseAssets);
     });
 
 export const setupUsdtSpotFixtureWithBalances = (baseAsset: string, baseFree: string) =>

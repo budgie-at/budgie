@@ -301,6 +301,17 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return Date.now() + this.serverTimeOffsetMs;
     });
 
+    private readonly resolveSourceWindow = Effect.fn('BinanceSignedClient.resolveSourceWindow')(function* (
+        this: BinanceSignedClient,
+        from: number,
+        to?: number | null
+    ) {
+        return {
+            startTimeMs: from * MILLISECONDS_PER_SECOND,
+            endTimeMs: isDefined(to) ? to * MILLISECONDS_PER_SECOND : yield* this.resolveTimestamp()
+        };
+    });
+
     private readonly walkWindowsBackward = Effect.fnUntraced(function* <T>(
         config: BinanceWindowWalkConfigInterface,
         fetchOneWindow: (windowStartMs: number, windowEndMs: number) => Effect.Effect<readonly T[], SyncError, HttpClient.HttpClient>
@@ -649,15 +660,6 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return isDefined(decoded)
             ? Effect.succeed(decoded)
             : Effect.fail(new SyncInvalidResponseError({ provider: this.provider, message: `Invalid Binance account id "${accountId}"` }));
-    }
-
-    private resolveSourceWindow(from: number, to?: number | null) {
-        const startTimeMs = from * MILLISECONDS_PER_SECOND;
-
-        return Effect.map(isDefined(to) ? Effect.succeed(to * MILLISECONDS_PER_SECOND) : this.resolveTimestamp(), endTimeMs => ({
-            startTimeMs,
-            endTimeMs
-        }));
     }
 
     private emptySources(overrides: Partial<BinanceTransactionSourcesInterface>): BinanceTransactionSourcesInterface {

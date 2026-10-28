@@ -3,7 +3,6 @@ import { BinanceSyncService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { eq, sql } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
-import { vi } from 'vitest';
 
 import {
     binanceStub,
@@ -11,15 +10,15 @@ import {
     fetchBinanceTransactions,
     fetchSortedBinanceExternalIds,
     fetchSyncById,
-    seedCryptoInstrument,
-    setupBinanceFixture,
+    jumpPastDeadline,
+    restoreRealTimers,
+    RUN_DEADLINE_MS,
+    setupStaleForwardFixture,
+    STALE_SYNC_AGE_MS,
     testDb,
     TestLayer
 } from '../../harness';
 
-const STALE_SYNC_AGE_MS = 5 * 60 * 1000;
-const RUN_DEADLINE_MS = 2 * 1000;
-const DEADLINE_JUMP_MS = 4 * 1000;
 const FUTURE_TRADE_OFFSET_MS = 30 * 1000;
 const SERVER_AHEAD_MS = 2 * 60 * 1000;
 const FIRST_TRADE_ID = 10;
@@ -30,25 +29,6 @@ const secondTradeExternalId = `binance:trade:ADAUSDT:${SECOND_TRADE_ID}`;
 
 const buildAdaTrade = (id: number, time: number) =>
     buildBinance.trade({ symbol: 'ADAUSDT', id, qty: '10', quoteQty: '5', commission: '0', isBuyer: true, time });
-
-const setupAdaBnbFixture = Effect.fnUntraced(function* () {
-    yield* seedCryptoInstrument('ADA');
-    yield* seedCryptoInstrument('BNB');
-    const { sync } = yield* setupBinanceFixture({
-        asset: 'USDT',
-        mode: SyncModeEnum.FORWARD,
-        forwardSyncedAt: new Date(Date.now() - STALE_SYNC_AGE_MS)
-    });
-
-    binanceStub.exchangeInfo(['ADAUSDT', 'BNBUSDT']);
-    binanceStub.spotBalances([
-        buildBinance.balance({ asset: 'USDT', free: '100' }),
-        buildBinance.balance({ asset: 'ADA', free: '200' }),
-        buildBinance.balance({ asset: 'BNB', free: '1' })
-    ]);
-
-    return sync.id;
-});
 
 const makeSyncDueAgain = (syncId: number) =>
     testDb
@@ -67,18 +47,14 @@ describe('binance/trade-cursor-loss', () => {
     it.effect('imports the trades of a symbol fetched before a deadline deferral on the next run', () =>
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
-            const syncId = yield* setupAdaBnbFixture();
+            const { sync } = yield* setupStaleForwardFixture(['ADA', 'BNB']);
 
-            binanceStub.myTrades({ ADAUSDT: [buildAdaTrade(FIRST_TRADE_ID, Date.now())] }, new Set<string>(), [], symbol => {
-                if (symbol === 'ADAUSDT') {
-                    vi.setSystemTime(Date.now() + DEADLINE_JUMP_MS);
-                }
-            });
+            binanceStub.myTrades({ ADAUSDT: [buildAdaTrade(FIRST_TRADE_ID, Date.now())] }, new Set<string>(), [], jumpPastDeadline);
 
-            yield* binanceSyncService.sync(Date.now() + RUN_DEADLINE_MS).pipe(Effect.ensuring(Effect.sync(() => vi.useRealTimers())));
+            yield* binanceSyncService.sync(Date.now() + RUN_DEADLINE_MS).pipe(Effect.ensuring(restoreRealTimers));
 
             expect(yield* fetchBinanceTransactions()).toHaveLength(0);
-            expect(yield* readStoredCursor(syncId)).toBeNull();
+            expect(yield* readStoredCursor(sync.id)).toBeNull();
 
             binanceStub.myTrades({ ADAUSDT: [buildAdaTrade(FIRST_TRADE_ID, Date.now())] });
             yield* binanceSyncService.sync();
@@ -90,7 +66,7 @@ describe('binance/trade-cursor-loss', () => {
     it.effect('imports a trade that landed after the run started on the next run', () =>
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
-            const syncId = yield* setupAdaBnbFixture();
+            const { sync } = yield* setupStaleForwardFixture();
             const trades = [
                 buildAdaTrade(FIRST_TRADE_ID, Date.now() - FUTURE_TRADE_OFFSET_MS),
                 buildAdaTrade(SECOND_TRADE_ID, Date.now() + FUTURE_TRADE_OFFSET_MS)
@@ -100,9 +76,9 @@ describe('binance/trade-cursor-loss', () => {
             yield* binanceSyncService.sync();
 
             expect(yield* fetchSortedBinanceExternalIds()).toEqual([firstTradeExternalId]);
-            expect(yield* readStoredCursor(syncId)).toBe(JSON.stringify({ ADAUSDT: FIRST_TRADE_ID }));
+            expect(yield* readStoredCursor(sync.id)).toBe(JSON.stringify({ ADAUSDT: FIRST_TRADE_ID }));
 
-            yield* makeSyncDueAgain(syncId);
+            yield* makeSyncDueAgain(sync.id);
             binanceStub.serverTime(SERVER_AHEAD_MS);
             yield* binanceSyncService.sync();
 
@@ -114,7 +90,7 @@ describe('binance/trade-cursor-loss', () => {
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
 
-            yield* setupAdaBnbFixture();
+            yield* setupStaleForwardFixture();
             binanceStub.serverTime(SERVER_AHEAD_MS);
             binanceStub.myTrades({ ADAUSDT: [buildAdaTrade(FIRST_TRADE_ID, Date.now() + FUTURE_TRADE_OFFSET_MS)] });
 
@@ -127,7 +103,7 @@ describe('binance/trade-cursor-loss', () => {
     it.effect('keeps the cursor in place when writing the fetched transfers fails partway', () =>
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
-            const syncId = yield* setupAdaBnbFixture();
+            const { sync } = yield* setupStaleForwardFixture();
 
             binanceStub.myTrades({
                 ADAUSDT: [buildAdaTrade(FIRST_TRADE_ID, Date.now()), buildAdaTrade(SECOND_TRADE_ID, Date.now())]
@@ -140,14 +116,14 @@ describe('binance/trade-cursor-loss', () => {
 
             yield* binanceSyncService.sync();
 
-            expect(yield* readStoredCursor(syncId)).toBeNull();
+            expect(yield* readStoredCursor(sync.id)).toBeNull();
 
             yield* testDb.run(sql.raw('DROP TRIGGER fail_second_trade'));
-            yield* makeSyncDueAgain(syncId);
+            yield* makeSyncDueAgain(sync.id);
             yield* binanceSyncService.sync();
 
             expect(yield* fetchSortedBinanceExternalIds()).toEqual([firstTradeExternalId, secondTradeExternalId]);
-            expect(yield* readStoredCursor(syncId)).toBe(JSON.stringify({ ADAUSDT: SECOND_TRADE_ID }));
+            expect(yield* readStoredCursor(sync.id)).toBe(JSON.stringify({ ADAUSDT: SECOND_TRADE_ID }));
         }).pipe(Effect.provide(TestLayer))
     );
 });
