@@ -249,13 +249,6 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 : reconciledCount;
         });
 
-        const createNewSyncedTransfers = Effect.fnUntraced(function* (transfers: BinanceTransferInterface[], token: string) {
-            const existingIds = yield* transactionService.findByExternalSource(provider);
-            const newTransfers = transfers.filter(transfer => !existingIds.has(transfer.externalId));
-
-            return isNotEmptyArray(newTransfers) ? yield* createSyncedTransfers(newTransfers, token) : 0;
-        });
-
         const processTransfers = Effect.fnUntraced(function* (sync: SyncEntityInterface, externalAccountId: string, token: string) {
             if (run.transfersSynced) {
                 return 0;
@@ -267,7 +260,9 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 fromUnixTime: getUnixTime(resolveWindowStart(sync)),
                 eligibleSoldOffBaseAssets: yield* binanceAssetCodeService.resolveEligibleSoldOffBaseAssets(provider)
             });
-            const createdCount = isNotEmptyArray(transfers) ? yield* createNewSyncedTransfers(transfers, token) : 0;
+            const existingIds = yield* transactionService.findByExternalSource(provider);
+            const newTransfers = transfers.filter(transfer => !existingIds.has(transfer.externalId));
+            const createdCount = isNotEmptyArray(newTransfers) ? yield* createSyncedTransfers(newTransfers, token) : 0;
             yield* binanceTradeCursorService.persistTradeCursors(sync, client);
 
             return createdCount;
