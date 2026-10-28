@@ -16,6 +16,7 @@ import { SyncDeferredError } from '../../core/error/sync-deferred.error';
 import { SyncInvalidResponseError } from '../../core/error/sync-invalid-response.error';
 import { SyncUnauthorizedError } from '../../core/error/sync-unauthorized.error';
 import { BinanceCredentialsSchema } from '../constant/binance-credentials.schema';
+import { BinanceCapitalOutcomeEnum } from '../enum/binance-capital-outcome.enum';
 import { BinanceWalletEnum } from '../enum/binance-wallet.enum';
 import { BinanceAssetBalanceListApiSchema } from '../interface/binance-asset-balance-api.schema';
 import { BinanceC2cOrderListApiSchema } from '../interface/binance-c2c-order-api.schema';
@@ -30,6 +31,9 @@ import { BinanceServerTimeApiSchema } from '../interface/binance-server-time-api
 import { BinanceTradeListApiSchema } from '../interface/binance-trade-api.schema';
 import { BinanceWithdrawalListApiSchema } from '../interface/binance-withdrawal-api.schema';
 import {
+    buildBinanceDepositExternalId,
+    getBinanceDepositOutcome,
+    getBinanceWithdrawalOutcome,
     mapBinanceBalanceToAccount,
     mapBinanceC2cOrderToTransaction,
     mapBinanceConvertToTransfer,
@@ -222,6 +226,8 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     private readonly earnRewardCache = new Map<string, readonly BinanceEarnRewardApiInterface[]>();
     private readonly transferCache = new Map<string, BinanceTransferInterface[]>();
     private readonly runSymbolTradeCursors = new Map<string, number>();
+    private readonly rejectedCapitalExternalIds = new Set<string>();
+    private capitalPendingFromMs: number | null = null;
     private c2cUnavailableThisRun = false;
     private readonly c2cHistoryFloorTimeMs = subMonths(new Date(), BinanceSignedClient.C2C_HISTORY_MONTHS).getTime();
     private serverTimeOffsetMs: number | undefined;
@@ -236,7 +242,30 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         const deposits = yield* this.fetchCapitalHistory(this.depositSource, wallet, startTimeMs, endTimeMs);
         const withdrawals = yield* this.fetchCapitalHistory(this.withdrawalSource, wallet, startTimeMs, endTimeMs);
 
-        return this.emptySources({ deposits, withdrawals });
+        for (const { externalId, timeMs, outcome } of [
+            ...deposits.map(deposit => ({
+                externalId: buildBinanceDepositExternalId(deposit),
+                timeMs: deposit.insertTime,
+                outcome: getBinanceDepositOutcome(deposit)
+            })),
+            ...withdrawals.map(withdrawal => ({
+                externalId: withdrawal.id,
+                timeMs: new Date(withdrawal.applyTime).getTime(),
+                outcome: getBinanceWithdrawalOutcome(withdrawal)
+            }))
+        ]) {
+            if (outcome === BinanceCapitalOutcomeEnum.REJECTED) {
+                this.rejectedCapitalExternalIds.add(externalId);
+            }
+            if (outcome === BinanceCapitalOutcomeEnum.PENDING && Number.isFinite(timeMs)) {
+                this.capitalPendingFromMs = Math.min(this.capitalPendingFromMs ?? timeMs, timeMs);
+            }
+        }
+
+        return this.emptySources({
+            deposits: deposits.filter(deposit => getBinanceDepositOutcome(deposit) === BinanceCapitalOutcomeEnum.COMPLETED),
+            withdrawals: withdrawals.filter(withdrawal => getBinanceWithdrawalOutcome(withdrawal) === BinanceCapitalOutcomeEnum.COMPLETED)
+        });
     });
 
     private readonly fetchFiatSources = Effect.fn('BinanceSignedClient.fetchFiatSources')(function* (
@@ -357,6 +386,14 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
 
     isC2cUnavailable(): boolean {
         return this.c2cUnavailableThisRun;
+    }
+
+    getCapitalPendingFromMs(): number | null {
+        return this.capitalPendingFromMs;
+    }
+
+    getRejectedCapitalExternalIds(): ReadonlySet<string> {
+        return this.rejectedCapitalExternalIds;
     }
 
     protected override onResponseHeaders(headers: Headers.Headers): void {

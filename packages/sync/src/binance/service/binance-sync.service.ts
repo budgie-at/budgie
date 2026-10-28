@@ -1,5 +1,5 @@
 import { P2P_ORDER_EXTERNAL_ID_MARKER, buildConsolidationScopeFromTransactions } from '@budgie/consolidation';
-import { AccountRepository, SyncModeEnum, TransactionRepository } from '@budgie/contracts';
+import { AccountRepository, SyncModeEnum, SyncRepository, TransactionRepository } from '@budgie/contracts';
 import {
     AccountBalanceIncrementalService,
     ImportedTransactionEntryUpdateService,
@@ -47,6 +47,7 @@ import type * as HttpClient from 'effect/http/HttpClient';
 export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@budgie/sync/BinanceSyncService', {
     make: Effect.gen(function* () {
         const accountRepository = yield* AccountRepository;
+        const syncRepository = yield* SyncRepository;
         const transactionRepository = yield* TransactionRepository;
         const importedTransactionEntryUpdateService = yield* ImportedTransactionEntryUpdateService;
         const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
@@ -90,6 +91,14 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             }
 
             return subYears(sync.forwardSyncFromAt ?? new Date(), transferLookbackYears);
+        };
+
+        const resolveCapitalWindowStart = (sync: SyncEntityInterface): Date => {
+            const windowStart = resolveWindowStart(sync);
+
+            return isDefined(sync.binanceCapitalPendingFromAt) && sync.binanceCapitalPendingFromAt < windowStart
+                ? sync.binanceCapitalPendingFromAt
+                : windowStart;
         };
 
         const getRunSignedClient = (token: string): BinanceSignedClient => {
@@ -249,6 +258,41 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 : reconciledCount;
         });
 
+        const removeRejectedCapitalTransactions = Effect.fnUntraced(function* (client: BinanceSignedClient) {
+            const rejectedExternalIds = client.getRejectedCapitalExternalIds();
+            if (rejectedExternalIds.size === 0) {
+                return 0;
+            }
+
+            const existingIdMap = yield* transactionService.findIdMapByExternalSource(provider);
+            let removedCount = 0;
+            for (const externalId of rejectedExternalIds) {
+                const transactionId = existingIdMap.get(externalId);
+                if (isDefined(transactionId)) {
+                    yield* transactionService.deleteById(transactionId);
+                    removedCount += 1;
+                }
+            }
+
+            return removedCount;
+        });
+
+        const commitCapitalSource = Effect.fnUntraced(function* (sync: SyncEntityInterface, token: string) {
+            const client = getRunSignedClient(token);
+            const committedCount = yield* commitSourceType(
+                token,
+                client.getCapitalTransactions(getUnixTime(resolveCapitalWindowStart(sync))),
+                false
+            );
+            const removedCount = yield* removeRejectedCapitalTransactions(client);
+            const pendingFromMs = client.getCapitalPendingFromMs();
+            yield* syncRepository.update(sync.id, {
+                binanceCapitalPendingFromAt: isDefined(pendingFromMs) ? new Date(pendingFromMs) : null
+            });
+
+            return committedCount + removedCount;
+        });
+
         const processTransfers = Effect.fnUntraced(function* (sync: SyncEntityInterface, externalAccountId: string, token: string) {
             if (run.transfersSynced) {
                 return 0;
@@ -280,7 +324,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             return (
                 (yield* commitSourceType(token, client.getC2cTransactions(fromUnixTime), true)) +
                 (yield* commitSourceType(token, client.getEarnTransactions(fromUnixTime), false)) +
-                (yield* commitSourceType(token, client.getCapitalTransactions(fromUnixTime), false))
+                (yield* commitCapitalSource(sync, token))
             );
         });
 

@@ -76,7 +76,8 @@ const buildBinanceWithdrawalTransaction = (input: ApplePayBankExpenseInputInterf
             amount: String(input.amount),
             transactionFee: '0',
             coin: 'USDT',
-            applyTime: input.operatedAt.toISOString()
+            applyTime: input.operatedAt.toISOString(),
+            status: 6
         },
         `account-${input.accountId}`
     );

@@ -42,6 +42,7 @@ export const SyncEntityTable = sqliteTable(
         errorCount: int('error_count', { mode: 'number' }).default(0).notNull(),
         lastError: text('last_error'),
         lastWarning: text('last_warning', { enum: convertEnumToDrizzleEnum(SyncWarningEnum) }).$type<SyncWarningEnum>(),
-        binanceTradeCursor: text('binance_trade_cursor')
+        binanceTradeCursor: text('binance_trade_cursor'),
+        binanceCapitalPendingFromAt: int('binance_capital_pending_from_at', { mode: 'timestamp_ms' })
     })
 );
