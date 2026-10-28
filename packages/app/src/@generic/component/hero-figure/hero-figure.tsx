@@ -18,17 +18,19 @@ interface Props {
     readonly currencySymbol: string;
     readonly variant: ColorPaletteVariant;
     readonly unit?: string;
+    readonly prefix?: string;
+    readonly decimalPlaces?: number;
     readonly testID?: string;
 }
 
 const LTR_STYLE = { direction: 'ltr' } as const;
 
-export const HeroFigure = ({ amount, currencySymbol, variant, unit = '', testID }: Props) => {
-    const decimalPlaces = useAtomValue(decimalPlacesAtom);
+export const HeroFigure = ({ amount, currencySymbol, variant, unit = '', prefix = '', decimalPlaces, testID }: Props) => {
+    const settingDecimalPlaces = useAtomValue(decimalPlacesAtom);
     const { decimalSeparator } = useLocaleInfo();
     const formatWhole = useFormatDigits(0);
-    const { sign, whole, fraction } = splitHeroAmount(amount, decimalPlaces, decimalSeparator);
-    const wholeLabel = `${sign}${formatWhole(whole, currencySymbol)}`;
+    const { sign, whole, fraction } = splitHeroAmount(amount, decimalPlaces ?? settingDecimalPlaces, decimalSeparator);
+    const wholeLabel = `${prefix}${sign}${formatWhole(whole, currencySymbol)}`;
 
     return (
         <View className="flex-row items-baseline" style={LTR_STYLE}>

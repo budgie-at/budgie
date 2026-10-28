@@ -84,7 +84,7 @@ export const RunwayDriverRow = ({ driver, dimension, maxAmount }: Props) => {
                 </Text>
             </View>
 
-            <View className="h-1 overflow-hidden rounded-full bg-secondary-corner">
+            <View className="h-[3px] overflow-hidden rounded-full bg-secondary-corner">
                 <View className={barClassName} style={shareStyle} />
             </View>
         </View>

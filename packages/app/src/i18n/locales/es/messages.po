@@ -407,7 +407,7 @@ msgstr "{skippedCount, plural, one {# omitida} other {# omitidas}}"
 msgid "{source} error · {message}"
 msgstr "Error de {source} · {message}"
 
-#: src/runway/component/runway-history-chart/runway-history-chart.tsx
+#: src/runway/component/runway-history-spike-note/runway-history-spike-note.tsx
 msgid "{spikeLabel} had a one-off {spikeAmount}. The estimate uses a typical month instead."
 msgstr "{spikeLabel} tuvo un gasto puntual de {spikeAmount}. La estimación usa un mes típico."
 
@@ -1047,13 +1047,13 @@ msgstr "Moneda base"
 msgid "Base instrument not found"
 msgstr "Moneda base no encontrada"
 
-#: src/runway/component/runway-verdict/runway-verdict.tsx
-msgid "Based on your last {monthsUsed} months"
-msgstr "Según tus últimos {monthsUsed} meses"
-
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "Based on your recent spending"
 msgstr "Basado en tus gastos recientes"
+
+#: src/runway/component/runway-forecast-legend/runway-forecast-legend.tsx
+msgid "Better and worse months"
+msgstr "Meses mejores y peores"
 
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "between"
@@ -1910,13 +1910,13 @@ msgstr "Cuenta las criptomonedas a su valor de mercado actual"
 msgid "Counts irregular costs like insurance or holidays as a monthly expense."
 msgstr "Cuenta los gastos irregulares, como seguros o vacaciones, como gasto mensual."
 
-#: src/runway/component/runway-verdict/runway-verdict.tsx
-msgid "Covered by {coverMonths} months of expenses"
-msgstr "Cubierto por {coverMonths} meses de gastos"
+#: src/runway/component/runway-verdict-outlook/runway-verdict-outlook.tsx
+msgid "Covered by {coverMonths} months of expenses, based on your last {monthsUsed} months."
+msgstr "Cubierto por {coverMonths} meses de gastos, según tus últimos {monthsUsed} meses."
 
-#: src/runway/component/runway-verdict/runway-verdict.tsx
-msgid "Covered by your liquid balance"
-msgstr "Cubierto por tu saldo líquido"
+#: src/runway/component/runway-verdict-outlook/runway-verdict-outlook.tsx
+msgid "Covered by your liquid balance, based on your last {monthsUsed} months."
+msgstr "Cubierto por tu saldo líquido, según tus últimos {monthsUsed} meses."
 
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-debt-settlement-transaction-actions.hook.ts
@@ -3006,7 +3006,7 @@ msgstr "Incluir en patrimonio neto"
 msgid "Include one-offs"
 msgstr "Incluir gastos únicos"
 
-#: src/runway/component/runway-verdict/runway-verdict.tsx
+#: src/runway/component/runway-verdict-outlook/runway-verdict-outlook.tsx
 msgid "Includes crypto"
 msgstr "Incluye criptomonedas"
 
@@ -3475,7 +3475,7 @@ msgstr "Historial mensual"
 msgid "Monthly Total"
 msgstr "Total mensual"
 
-#: src/runway/component/runway-verdict/runway-verdict.tsx
+#: src/runway/component/runway-verdict-figure/runway-verdict-figure.tsx
 msgid "months left"
 msgstr "meses restantes"
 
@@ -3488,8 +3488,8 @@ msgid "More tags"
 msgstr "Más etiquetas"
 
 #: src/runway/component/runway-forecast-legend/runway-forecast-legend.tsx
-msgid "Most likely balance"
-msgstr "Saldo más probable"
+msgid "Most likely"
+msgstr "Más probable"
 
 #: src/categorize-inbox/components/categorize-inbox-move-to-cash-chip/categorize-inbox-move-to-cash-chip.tsx
 msgid "Move to cash"
@@ -4150,7 +4150,7 @@ msgstr "Extracto PDF"
 msgid "per day"
 msgstr "por día"
 
-#: src/runway/component/runway-verdict/runway-verdict.tsx
+#: src/runway/component/runway-verdict-figure/runway-verdict-figure.tsx
 msgid "per month"
 msgstr "al mes"
 
@@ -4285,10 +4285,6 @@ msgstr "Las notificaciones push están desactivadas"
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 msgid "Quick rule"
 msgstr "Regla rápida"
-
-#: src/runway/component/runway-forecast-legend/runway-forecast-legend.tsx
-msgid "Range across better and worse months"
-msgstr "Rango entre meses mejores y peores"
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Re-enter your PIN to confirm"
@@ -4607,14 +4603,18 @@ msgstr "Funciona en"
 msgid "Runs on this phone. Nothing it reads is sent anywhere."
 msgstr "Funciona en este teléfono. Nada de lo que lee se envía a ningún sitio."
 
+#: src/runway/component/runway-forecast-legend/runway-forecast-legend.tsx
+msgid "Runs out"
+msgstr "Se agota"
+
 #: src/budget/components/budget-category-forecast/budget-category-forecast.tsx
 #: src/budget/components/budget-forecast-run-out/budget-forecast-run-out.tsx
 msgid "Runs out about {runOutDate}"
 msgstr "Se agota alrededor del {runOutDate}"
 
-#: src/runway/component/runway-verdict/runway-verdict.tsx
-msgid "Runs out around {runOutDate}"
-msgstr "Se agota alrededor de {runOutDate}"
+#: src/runway/component/runway-verdict-outlook/runway-verdict-outlook.tsx
+msgid "Runs out around {runOutDate}, based on your last {monthsUsed} months."
+msgstr "Se agota hacia {runOutDate}, según tus últimos {monthsUsed} meses."
 
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx
 #: src/app/(tabs)/settings/index.tsx

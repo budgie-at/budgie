@@ -1,17 +1,13 @@
-import { convertFromMicroUnits } from '@budgie/contracts';
-import { useAtomValue } from '@effect/atom-react/Hooks';
-import { Trans } from '@lingui/react/macro';
-import { Text } from 'react-native';
+import { useLingui } from '@lingui/react/macro';
+import { View } from 'react-native';
 import Svg from 'react-native-svg';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { Card } from '../../../@generic/component/card/card';
+import { SectionHeader } from '../../../@generic/component/section-header/section-header';
 import { StyledLine } from '../../../@generic/component/styled-line/styled-line';
 import { StyledSvgText } from '../../../@generic/component/styled-svg-text/styled-svg-text';
 import { useI18nContext } from '../../../i18n/context/i18n.context';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import {
     RUNWAY_HISTORY_BAR_AREA_HEIGHT,
     RUNWAY_HISTORY_BAR_GAP,
@@ -21,6 +17,7 @@ import {
 import { RunwayHistoryBars } from '../runway-history-bars/runway-history-bars';
 import { RunwayHistoryLegend } from '../runway-history-legend/runway-history-legend';
 import { RunwayHistoryMedianLine } from '../runway-history-median-line/runway-history-median-line';
+import { RunwayHistorySpikeNote } from '../runway-history-spike-note/runway-history-spike-note';
 
 import type { RunwaySeriesRowInterface } from '@budgie/contracts';
 
@@ -40,9 +37,8 @@ const SLOT_GUTTER_RATIO = 0.3;
 const SPIKE_MULTIPLIER = 1.5;
 
 export const RunwayHistoryChart = ({ series, burn }: Props) => {
+    const { t } = useLingui();
     const { intl } = useI18nContext();
-    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
-    const formatDigits = useFormatDigits(0);
 
     const peakRow = series.reduce<RunwaySeriesRowInterface | null>(
         (peak, row) => (isDefined(peak) && peak.expense >= row.expense ? peak : row),
@@ -69,14 +65,12 @@ export const RunwayHistoryChart = ({ series, burn }: Props) => {
             labelWeight: isSpike ? '600' : '400'
         };
     });
-    const spikeAmount = isDefined(peakRow) ? formatDigits(convertFromMicroUnits(peakRow.expense), defaultInstrument.symbol) : '';
+    const spikeExpense = isDefined(peakRow) ? peakRow.expense : 0;
     const spikeLabel = months.find(month => month.isSpike)?.label ?? '';
 
     return (
-        <Card className="gap-y-xl">
-            <Text className="text-xxs uppercase tracking-wider text-secondary-foreground">
-                <Trans>Monthly history</Trans>
-            </Text>
+        <View className="gap-y-lg">
+            <SectionHeader label={t`Monthly history`} />
 
             <Svg width="100%" height={CHART_HEIGHT} viewBox={`0 0 ${RUNWAY_HISTORY_CHART_WIDTH} ${CHART_HEIGHT}`}>
                 <StyledLine x1={0} y1={BASELINE_Y} x2={RUNWAY_HISTORY_CHART_WIDTH} y2={BASELINE_Y} strokeClassName="accent-corner" />
@@ -115,13 +109,7 @@ export const RunwayHistoryChart = ({ series, burn }: Props) => {
 
             <RunwayHistoryLegend hasSpike={hasSpike} typicalAmount={burn} />
 
-            {hasSpike ? (
-                <Text className="text-xs tabular-nums text-secondary-foreground">
-                    <Trans>
-                        {spikeLabel} had a one-off {spikeAmount}. The estimate uses a typical month instead.
-                    </Trans>
-                </Text>
-            ) : null}
-        </Card>
+            {hasSpike ? <RunwayHistorySpikeNote spikeLabel={spikeLabel} expense={spikeExpense} /> : null}
+        </View>
     );
 };

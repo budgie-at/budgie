@@ -1,19 +1,21 @@
-import { Trans, useLingui } from '@lingui/react/macro';
-import { Text } from 'react-native';
+import { useLingui } from '@lingui/react/macro';
+import { View } from 'react-native';
 import Svg from 'react-native-svg';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { Card } from '../../../@generic/component/card/card';
-import { StyledCircle } from '../../../@generic/component/styled-circle/styled-circle';
+import { AreaGradient } from '../../../@generic/component/area-gradient/area-gradient';
+import { SectionHeader } from '../../../@generic/component/section-header/section-header';
 import { StyledLine } from '../../../@generic/component/styled-line/styled-line';
 import { StyledPath } from '../../../@generic/component/styled-path/styled-path';
 import { StyledSvgText } from '../../../@generic/component/styled-svg-text/styled-svg-text';
+import { STATUS_TONE_FILL_CLASS_NAME } from '../../../@generic/constant/status-tone-fill-class-name.constant';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { RUNWAY_HORIZON_MONTHS } from '../../constant/runway-horizon-months.constant';
 import { buildRunwayForecastPath } from '../../utils/build-forecast-path.util';
 import { RunwayForecastLegend } from '../runway-forecast-legend/runway-forecast-legend';
+import { RunwayForecastRunOut } from '../runway-forecast-run-out/runway-forecast-run-out';
 
 import type { RunwayComputationInterface } from '../../interface/runway-computation.interface';
 
@@ -28,20 +30,20 @@ const CHART_PADDING_RIGHT = 6;
 const CHART_PADDING_TOP = 18;
 const CHART_PADDING_BOTTOM = 20;
 const LABEL_FONT_SIZE = 8;
-const LABEL_GAP = 4;
-const MARKER_RADIUS = 3.5;
-const RUN_OUT_DASH = '2 3';
 const RUN_OUT_ANCHOR_RATIO = 0.82;
+const BAND_OPACITY = 0.5;
+const GRADIENT_ID = 'runway-forecast-fill';
+const AREA_FILL = `url(#${GRADIENT_ID})`;
+const VIEW_BOX = `0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`;
 const CHART_RIGHT = CHART_WIDTH - CHART_PADDING_RIGHT;
 const CHART_BOTTOM = CHART_HEIGHT - CHART_PADDING_BOTTOM;
-const RUN_OUT_LABEL_Y = CHART_PADDING_TOP - LABEL_GAP;
 
 export const RunwayForecastChart = ({ computation }: Props) => {
     const { t } = useLingui();
     const { formatMonthAndYear } = useFormatDate();
     const formatDigits = useFormatDigits(0);
 
-    const { bandPath, likelyPath, runOutX, tickXs, zeroY } = buildRunwayForecastPath({
+    const { bandPath, likelyAreaPath, likelyPath, runOutX, tickXs, zeroY } = buildRunwayForecastPath({
         computation,
         width: CHART_WIDTH,
         height: CHART_HEIGHT,
@@ -53,16 +55,24 @@ export const RunwayForecastChart = ({ computation }: Props) => {
     const tickLabels = RUNWAY_HORIZON_MONTHS.map((months, index) => (index === 0 ? t`now` : formatDigits(months)));
     const runOutLabel = isDefined(computation.runsOutAt) ? formatMonthAndYear(computation.runsOutAt) : '';
     const runOutAnchor = isDefined(runOutX) && runOutX > CHART_WIDTH * RUN_OUT_ANCHOR_RATIO ? 'end' : 'middle';
+    const gradientClassName = STATUS_TONE_FILL_CLASS_NAME[computation.isPositive ? 'positive' : 'destructive'];
 
     return (
-        <Card className="gap-y-xl">
-            <Text className="text-xxs uppercase tracking-wider text-secondary-foreground">
-                <Trans>Balance forecast</Trans>
-            </Text>
+        <View className="gap-y-lg">
+            <SectionHeader label={t`Balance forecast`} />
 
-            <Svg width="100%" height={CHART_HEIGHT} viewBox={`0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`}>
+            <Svg width="100%" height={CHART_HEIGHT} viewBox={VIEW_BOX}>
+                <AreaGradient id={GRADIENT_ID} colorClassName={gradientClassName} />
                 <StyledLine x1={CHART_PADDING_LEFT} y1={zeroY} x2={CHART_RIGHT} y2={zeroY} strokeClassName="accent-corner" />
-                <StyledPath d={bandPath} fillClassName="accent-ghost-background" strokeClassName="accent-ghost-corner" strokeWidth={1} />
+                <StyledPath
+                    d={bandPath}
+                    fillClassName="accent-ghost-background"
+                    fillOpacity={BAND_OPACITY}
+                    strokeClassName="accent-ghost-corner"
+                    strokeOpacity={BAND_OPACITY}
+                    strokeWidth={1}
+                />
+                <StyledPath d={likelyAreaPath} fill={AREA_FILL} />
                 <StyledPath
                     d={likelyPath}
                     fill="none"
@@ -73,35 +83,7 @@ export const RunwayForecastChart = ({ computation }: Props) => {
                 />
 
                 {isDefined(runOutX) && isNotEmptyString(runOutLabel) ? (
-                    <>
-                        <StyledLine
-                            x1={runOutX}
-                            y1={CHART_PADDING_TOP}
-                            x2={runOutX}
-                            y2={zeroY}
-                            strokeClassName="accent-destructive-foreground"
-                            strokeDasharray={RUN_OUT_DASH}
-                            strokeWidth={1}
-                        />
-                        <StyledCircle
-                            cx={runOutX}
-                            cy={zeroY}
-                            r={MARKER_RADIUS}
-                            fillClassName="accent-destructive-foreground"
-                            strokeClassName="accent-primary-reverse dark:accent-secondary-background"
-                            strokeWidth={1.5}
-                        />
-                        <StyledSvgText
-                            x={runOutX}
-                            y={RUN_OUT_LABEL_Y}
-                            fillClassName="accent-destructive-foreground"
-                            fontSize={LABEL_FONT_SIZE}
-                            fontWeight="600"
-                            textAnchor={runOutAnchor}
-                        >
-                            {runOutLabel}
-                        </StyledSvgText>
-                    </>
+                    <RunwayForecastRunOut x={runOutX} top={CHART_PADDING_TOP} bottom={zeroY} label={runOutLabel} anchor={runOutAnchor} />
                 ) : null}
 
                 {tickXs.map((x, index) => (
@@ -119,6 +101,6 @@ export const RunwayForecastChart = ({ computation }: Props) => {
             </Svg>
 
             <RunwayForecastLegend />
-        </Card>
+        </View>
     );
 };

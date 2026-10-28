@@ -4,7 +4,7 @@ import { Text, View } from 'react-native';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
-import { Card } from '../../../@generic/component/card/card';
+import { SectionHeader } from '../../../@generic/component/section-header/section-header';
 import { SegmentedTabs } from '../../../@generic/component/segmented-tabs/segmented-tabs';
 import { RunwaySelector } from '../../runway.selector';
 import { RunwayDriverRow } from '../runway-driver-row/runway-driver-row';
@@ -28,15 +28,13 @@ export const RunwayDrivers = (props: Props) => {
     const maxAmount = drivers.reduce((maximum, driver) => Math.max(maximum, driver.monthlyAmount), 0);
 
     return (
-        <Card testID={RunwaySelector.Drivers} className="gap-y-xl">
-            <View className="gap-y-lg">
-                <Text className="text-xxs uppercase tracking-wider text-secondary-foreground">{t`What's driving it`}</Text>
+        <View collapsable={false} testID={RunwaySelector.Drivers} className="gap-y-lg">
+            <SectionHeader label={t`What's driving it`} />
 
-                <SegmentedTabs options={options} value={dimension} onChange={onChangeDimension} />
-            </View>
+            <SegmentedTabs options={options} value={dimension} onChange={onChangeDimension} />
 
             {isNotEmptyArray(drivers) ? (
-                <View className="gap-y-xl">
+                <View className="gap-y-lg">
                     {drivers.map(driver => (
                         <RunwayDriverRow
                             key={`${driver.id ?? ''}-${driver.foldedDriverCount}`}
@@ -51,6 +49,6 @@ export const RunwayDrivers = (props: Props) => {
                     <Trans>No spending in this window.</Trans>
                 </Text>
             )}
-        </Card>
+        </View>
     );
 };

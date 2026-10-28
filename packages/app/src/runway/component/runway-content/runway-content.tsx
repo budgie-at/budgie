@@ -41,7 +41,7 @@ export const RunwayContent = () => {
                 description={t`We’re still importing transaction history for your Runway accounts. Your forecast will appear when their history is ready.`}
             >
                 {hasEnoughHistory ? (
-                    <>
+                    <View className="gap-y-3xl">
                         <View className="gap-y-lg">
                             <RunwayVerdict computation={computation} />
                             <RunwayAllInToggle isAllIn={isAllIn} onToggle={handleToggleAllIn} />
@@ -50,7 +50,7 @@ export const RunwayContent = () => {
                         <RunwayForecastChart computation={computation} />
                         <RunwayHistoryChart series={series} burn={computation.burn} />
                         <RunwayDrivers drivers={drivers} dimension={dimension} onChangeDimension={setDimension} />
-                    </>
+                    </View>
                 ) : (
                     <RunwayEmptyState monthsUsed={computation.monthsUsed} />
                 )}

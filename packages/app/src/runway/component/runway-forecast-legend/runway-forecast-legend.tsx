@@ -1,20 +1,15 @@
-import { Trans } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
+import { useLingui } from '@lingui/react/macro';
 
-export const RunwayForecastLegend = () => (
-    <View className="gap-y-xs">
-        <View className="flex-row items-center gap-x-sm">
-            <View className="h-0.5 w-4 rounded-full bg-primary" />
-            <Text className="text-xxs text-secondary-foreground">
-                <Trans>Most likely balance</Trans>
-            </Text>
-        </View>
+import { ChartLegend } from '../../../@generic/component/chart-legend/chart-legend';
 
-        <View className="flex-row items-center gap-x-sm">
-            <View className="h-3 w-4 rounded-sm border border-ghost-corner bg-ghost-background" />
-            <Text className="text-xxs text-secondary-foreground">
-                <Trans>Range across better and worse months</Trans>
-            </Text>
-        </View>
-    </View>
-);
+export const RunwayForecastLegend = () => {
+    const { t } = useLingui();
+
+    const items = [
+        { label: t`Most likely`, swatchClassName: 'h-0.5 w-4 rounded-full bg-primary' },
+        { label: t`Better and worse months`, swatchClassName: 'h-2 w-4 rounded-xxs border border-ghost-corner bg-ghost-background' },
+        { label: t`Runs out`, swatchClassName: 'h-2 w-2 rounded-full bg-destructive-foreground' }
+    ];
+
+    return <ChartLegend items={items} />;
+};

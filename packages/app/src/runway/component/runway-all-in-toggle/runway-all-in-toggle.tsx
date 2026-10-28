@@ -1,7 +1,6 @@
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
-import { Card } from '../../../@generic/component/card/card';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 
 interface Props {
@@ -13,7 +12,7 @@ export const RunwayAllInToggle = ({ isAllIn, onToggle }: Props) => {
     const { t } = useLingui();
 
     return (
-        <Card size="md" className="flex-row items-center gap-x-xl">
+        <View className="flex-row items-center gap-x-xl border-t border-secondary-corner pt-lg">
             <View className="flex-1 gap-y-xxs">
                 <Text className="text-sm font-medium text-primary">
                     <Trans>Include one-offs</Trans>
@@ -24,6 +23,6 @@ export const RunwayAllInToggle = ({ isAllIn, onToggle }: Props) => {
             </View>
 
             <ThemedSwitch accessibilityLabel={t`Include one-offs`} value={isAllIn} onValueChange={onToggle} />
-        </Card>
+        </View>
     );
 };

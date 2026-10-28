@@ -407,7 +407,7 @@ msgstr "{skippedCount, plural, one {# пропущено} few {# пропуще�
 msgid "{source} error · {message}"
 msgstr "Помилка {source} · {message}"
 
-#: src/runway/component/runway-history-chart/runway-history-chart.tsx
+#: src/runway/component/runway-history-spike-note/runway-history-spike-note.tsx
 msgid "{spikeLabel} had a one-off {spikeAmount}. The estimate uses a typical month instead."
 msgstr "{spikeLabel}: разова витрата {spikeAmount}. Для оцінки взято типовий місяць."
 
@@ -1047,13 +1047,13 @@ msgstr "Базова валюта"
 msgid "Base instrument not found"
 msgstr "Базову валюту не знайдено"
 
-#: src/runway/component/runway-verdict/runway-verdict.tsx
-msgid "Based on your last {monthsUsed} months"
-msgstr "За останні {monthsUsed} місяців"
-
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "Based on your recent spending"
 msgstr "На основі ваших нещодавніх витрат"
+
+#: src/runway/component/runway-forecast-legend/runway-forecast-legend.tsx
+msgid "Better and worse months"
+msgstr "Кращі та гірші місяці"
 
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "between"
@@ -1910,13 +1910,13 @@ msgstr "Враховує криптовалюту за сьогоднішньо�
 msgid "Counts irregular costs like insurance or holidays as a monthly expense."
 msgstr "Враховує нерегулярні витрати, як-от страхування чи відпустку, як щомісячні."
 
-#: src/runway/component/runway-verdict/runway-verdict.tsx
-msgid "Covered by {coverMonths} months of expenses"
-msgstr "Покрито {coverMonths} місяцями витрат"
+#: src/runway/component/runway-verdict-outlook/runway-verdict-outlook.tsx
+msgid "Covered by {coverMonths} months of expenses, based on your last {monthsUsed} months."
+msgstr "Покрито {coverMonths} міс. витрат, за вашими останніми {monthsUsed} міс."
 
-#: src/runway/component/runway-verdict/runway-verdict.tsx
-msgid "Covered by your liquid balance"
-msgstr "Покрито вашим ліквідним балансом"
+#: src/runway/component/runway-verdict-outlook/runway-verdict-outlook.tsx
+msgid "Covered by your liquid balance, based on your last {monthsUsed} months."
+msgstr "Покрито вашим ліквідним балансом, за вашими останніми {monthsUsed} міс."
 
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-debt-settlement-transaction-actions.hook.ts
@@ -3006,7 +3006,7 @@ msgstr "Включити в чисту вартість"
 msgid "Include one-offs"
 msgstr "Включити разові витрати"
 
-#: src/runway/component/runway-verdict/runway-verdict.tsx
+#: src/runway/component/runway-verdict-outlook/runway-verdict-outlook.tsx
 msgid "Includes crypto"
 msgstr "Включно з криптовалютою"
 
@@ -3475,7 +3475,7 @@ msgstr "Місячна історія"
 msgid "Monthly Total"
 msgstr "Місячний підсумок"
 
-#: src/runway/component/runway-verdict/runway-verdict.tsx
+#: src/runway/component/runway-verdict-figure/runway-verdict-figure.tsx
 msgid "months left"
 msgstr "місяців залишилось"
 
@@ -3488,8 +3488,8 @@ msgid "More tags"
 msgstr "Інші теги"
 
 #: src/runway/component/runway-forecast-legend/runway-forecast-legend.tsx
-msgid "Most likely balance"
-msgstr "Найімовірніший баланс"
+msgid "Most likely"
+msgstr "Найімовірніше"
 
 #: src/categorize-inbox/components/categorize-inbox-move-to-cash-chip/categorize-inbox-move-to-cash-chip.tsx
 msgid "Move to cash"
@@ -4150,7 +4150,7 @@ msgstr "PDF-виписка"
 msgid "per day"
 msgstr "на день"
 
-#: src/runway/component/runway-verdict/runway-verdict.tsx
+#: src/runway/component/runway-verdict-figure/runway-verdict-figure.tsx
 msgid "per month"
 msgstr "на місяць"
 
@@ -4285,10 +4285,6 @@ msgstr "Push-сповіщення вимкнено"
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 msgid "Quick rule"
 msgstr "Швидке правило"
-
-#: src/runway/component/runway-forecast-legend/runway-forecast-legend.tsx
-msgid "Range across better and worse months"
-msgstr "Діапазон кращих і гірших місяців"
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Re-enter your PIN to confirm"
@@ -4607,14 +4603,18 @@ msgstr "Працює на"
 msgid "Runs on this phone. Nothing it reads is sent anywhere."
 msgstr "Працює на цьому телефоні. Нічого з прочитаного нікуди не надсилається."
 
+#: src/runway/component/runway-forecast-legend/runway-forecast-legend.tsx
+msgid "Runs out"
+msgstr "Закінчиться"
+
 #: src/budget/components/budget-category-forecast/budget-category-forecast.tsx
 #: src/budget/components/budget-forecast-run-out/budget-forecast-run-out.tsx
 msgid "Runs out about {runOutDate}"
 msgstr "Закінчиться приблизно {runOutDate}"
 
-#: src/runway/component/runway-verdict/runway-verdict.tsx
-msgid "Runs out around {runOutDate}"
-msgstr "Закінчиться близько {runOutDate}"
+#: src/runway/component/runway-verdict-outlook/runway-verdict-outlook.tsx
+msgid "Runs out around {runOutDate}, based on your last {monthsUsed} months."
+msgstr "Закінчиться приблизно у {runOutDate}, за вашими останніми {monthsUsed} міс."
 
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx
 #: src/app/(tabs)/settings/index.tsx
