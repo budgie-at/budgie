@@ -1,5 +1,6 @@
 import { convertFromMicroUnits } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
+import { Text } from 'react-native';
 
 import { ChevronLinkRow } from '../../../@generic/component/chevron-link-row/chevron-link-row';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
@@ -18,15 +19,18 @@ export const BudgetPaceHintLine = ({ title, scope, currencySymbol, onPress }: Pr
     const { t } = useLingui();
     const formatProtectedAmount = useProtectedAmountLabel();
     const perDayAmount = formatProtectedAmount(convertFromMicroUnits(scope.safePerDay), currencySymbol);
-    const label = t`${title} is running fast — keep it under ${perDayAmount}/day.`;
+    const label = t`${title} is running fast. Keep it under ${perDayAmount}/day.`;
 
     return (
         <ChevronLinkRow
             label={label}
-            variant="warning"
-            textSizeClassName="text-sm"
+            textClassName="text-sm text-primary"
             testID={BudgetSelector.DetailsPaceBanner}
             onPress={onPress}
-        />
+        >
+            <Trans>
+                {title} is running fast. Keep it under <Text className="text-warning-foreground">{perDayAmount}/day</Text>.
+            </Trans>
+        </ChevronLinkRow>
     );
 };

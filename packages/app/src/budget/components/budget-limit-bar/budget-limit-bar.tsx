@@ -4,7 +4,6 @@ import Animated, { useAnimatedStyle, useSharedValue, withDelay, withSpring } fro
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { STATUS_TONE_FILL_CLASS_NAME } from '../../../@generic/constant/status-tone-fill-class-name.constant';
 import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { BUDGET_LIMIT_BAR_SPRING, BUDGET_LIMIT_BAR_STAGGER } from '../../constant/budget-limit-bar-motion.constant';
@@ -20,6 +19,11 @@ interface Props {
 }
 
 const PERCENT_MULTIPLIER = 100;
+const BAR_FILL_CLASS_NAME: Record<BudgetPaceVariant, string> = {
+    positive: 'bg-primary/85',
+    warning: 'bg-warning-fill',
+    destructive: 'bg-destructive-fill'
+};
 
 export const BudgetLimitBar = ({ spent, limit, tone, elapsedFraction, staggerIndex = 0 }: Props) => {
     const reducedMotion = useReducedMotion();
@@ -38,7 +42,7 @@ export const BudgetLimitBar = ({ spent, limit, tone, elapsedFraction, staggerInd
     return (
         <View className="h-[11px] justify-center">
             <View className="h-[3px] overflow-hidden rounded-full bg-secondary-corner">
-                <Animated.View className={cn('h-full rounded-full', STATUS_TONE_FILL_CLASS_NAME[tone])} style={fillStyle} />
+                <Animated.View className={cn('h-full rounded-full', BAR_FILL_CLASS_NAME[tone])} style={fillStyle} />
             </View>
             {isDefined(elapsedFraction) ? (
                 <View className="absolute top-0 h-[11px] w-[1.5px] -ms-[0.75px] rounded-full bg-primary" style={todayStyle} />

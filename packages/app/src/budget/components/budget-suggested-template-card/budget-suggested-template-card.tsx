@@ -26,9 +26,9 @@ export const BudgetSuggestedTemplateCard = ({ onPress }: Props) => {
     const approxTransactions = Math.round((stats?.transactionsCount ?? 0) / 10) * 10;
     const categoriesCount = stats?.categoriesCount ?? 0;
     const monthsText = t({ message: plural(months, { one: '# month', other: '# months' }) });
-    const transactionsText = t({ message: plural(approxTransactions, { one: '~# transaction', other: '~# transactions' }) });
+    const transactionsText = t({ message: plural(approxTransactions, { one: 'about # transaction', other: 'about # transactions' }) });
     const categoriesText = t({ message: plural(categoriesCount, { one: '# category', other: '# categories' }) });
-    const statsSummary = `${monthsText} · ${transactionsText} · ${categoriesText}`;
+    const statsSummary = `${monthsText}, ${transactionsText}, ${categoriesText}`;
     const description = isHistorySyncing ? t`Not all of your bank history is imported yet` : t`Based on your recent spending`;
     const summary = isHistorySyncing ? t`Available once the import finishes` : statsSummary;
 

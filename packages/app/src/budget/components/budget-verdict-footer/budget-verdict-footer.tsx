@@ -25,8 +25,7 @@ export const BudgetVerdictFooter = ({ upcoming, count, currencySymbol }: Props) 
     return (
         <ChevronLinkRow
             label={label}
-            variant="secondary"
-            textSizeClassName="text-xs"
+            textClassName="text-xs text-secondary-foreground"
             testID={BudgetSelector.DetailsReservedLink}
             onPress={handlePress}
         />

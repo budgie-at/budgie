@@ -1,5 +1,4 @@
 import { Trans } from '@lingui/react/macro';
-import { Fragment } from 'react';
 import { Text, View } from 'react-native';
 
 import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
@@ -34,18 +33,16 @@ export const BudgetWidgetCategoryList = ({ categoryLimits, spentByCategory }: Pr
     }
 
     return (
-        <View className="flex-row flex-wrap items-center gap-x-sm gap-y-xs">
-            {visibleCategoryLimits.map((limit, index) => (
-                <Fragment key={limit.categoryId}>
-                    {isPositiveNumber(index) && <Text className="text-secondary-foreground text-xs">·</Text>}
-                    <BudgetWidgetCategoryChip
-                        categoryId={limit.categoryId}
-                        limitAmount={limit.limitAmount}
-                        spent={getBudgetCategorySpent(spentByCategoryMap, limit.categoryId)}
-                        testID={BudgetSelector.WidgetCategoryRow(limit.categoryId)}
-                        spentTestID={BudgetSelector.WidgetCategorySpentLabel(limit.categoryId)}
-                    />
-                </Fragment>
+        <View className="flex-row flex-wrap items-center gap-x-lg gap-y-xs">
+            {visibleCategoryLimits.map(limit => (
+                <BudgetWidgetCategoryChip
+                    key={limit.categoryId}
+                    categoryId={limit.categoryId}
+                    limitAmount={limit.limitAmount}
+                    spent={getBudgetCategorySpent(spentByCategoryMap, limit.categoryId)}
+                    testID={BudgetSelector.WidgetCategoryRow(limit.categoryId)}
+                    spentTestID={BudgetSelector.WidgetCategorySpentLabel(limit.categoryId)}
+                />
             ))}
             {isPositiveNumber(hiddenCategoryCount) && (
                 <Text testID={BudgetSelector.WidgetMoreCategoriesLabel} className="text-secondary-foreground text-xs">

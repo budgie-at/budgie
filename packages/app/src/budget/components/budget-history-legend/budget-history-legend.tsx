@@ -11,7 +11,7 @@ interface Props {
 export const BudgetHistoryLegend = ({ bars }: Props) => {
     const { t } = useLingui();
     const underItems = bars.some(bar => bar.spent <= bar.limit)
-        ? [{ label: t`Under limit`, swatchClassName: 'h-2 w-2 rounded-xxs bg-positive-fill' }]
+        ? [{ label: t`Under limit`, swatchClassName: 'h-2 w-2 rounded-xxs bg-primary' }]
         : [];
     const overItems = bars.some(bar => bar.spent > bar.limit)
         ? [{ label: t`Over`, swatchClassName: 'h-2 w-2 rounded-xxs bg-destructive-fill' }]

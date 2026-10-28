@@ -6,7 +6,7 @@ import { isPositiveNumber } from '@rnw-community/shared';
 
 import { MetaPill } from '../../../@generic/component/meta-pill/meta-pill';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
-import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 
 import type { ReactNode } from 'react';
 
@@ -22,7 +22,7 @@ interface Props {
 
 export const BudgetLimitRow = ({ children, title, carriedAmount, spent, limit, currencySymbol, spentTestID }: Props) => {
     const { t } = useLingui();
-    const formatDigits = useDisplayFormatDigits();
+    const formatDigits = useFormatDigits(0);
     const carriedLabel = formatDigits(convertFromMicroUnits(Math.abs(carriedAmount)), currencySymbol);
     const isSurplus = isPositiveNumber(carriedAmount);
     const pillLabel = isSurplus ? t`+${carriedLabel} rolled over` : t`−${carriedLabel} carried`;

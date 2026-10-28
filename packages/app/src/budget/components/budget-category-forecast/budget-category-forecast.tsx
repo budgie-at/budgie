@@ -30,7 +30,7 @@ export const BudgetCategoryForecast = ({ scope, currencySymbol }: Props) => {
     const runOutDate = isDefined(scope.runOutAt) ? formatMonthAndDay(scope.runOutAt) : '';
     const overLabel = isDefined(scope.projectedOver) ? t`Projected ${overAmount} over` : t`${overAmount} over budget`;
     const noteByStatus: Partial<Record<BudgetPaceStatusEnum, string>> = {
-        [BudgetPaceStatusEnum.AHEAD]: t`Runs out ~${runOutDate}`,
+        [BudgetPaceStatusEnum.AHEAD]: t`Runs out about ${runOutDate}`,
         [BudgetPaceStatusEnum.OVER]: overLabel
     };
     const note = noteByStatus[scope.status];

@@ -44,7 +44,7 @@ export const BudgetUpcomingChargeRow = ({ charge, currencySymbol }: Props) => {
                 <Text className="text-sm font-medium text-primary" numberOfLines={1}>
                     {charge.title}
                 </Text>
-                <Text className="text-xs text-secondary-foreground">{t`${dateLabel} · ${kindLabel}`}</Text>
+                <Text className="text-xs text-secondary-foreground">{t`${dateLabel}, ${kindLabel}`}</Text>
             </View>
             <ProtectedText className="text-sm font-semibold tabular-nums text-primary">
                 {formatProtectedAmount(convertFromMicroUnits(charge.amount), currencySymbol)}
