@@ -1,8 +1,11 @@
 import type { BudgetForecastBillPointInterface } from './budget-forecast-bill-point.interface';
+import type { BudgetForecastPointInterface } from './budget-forecast-point.interface';
 
 export interface BudgetForecastGeometryInterface {
     readonly actualPath: string;
+    readonly actualAreaPath: string;
     readonly projectedPath: string;
+    readonly todayPoint: BudgetForecastPointInterface | null;
     readonly limitY: number;
     readonly todayX: number;
     readonly runOutX: number | null;

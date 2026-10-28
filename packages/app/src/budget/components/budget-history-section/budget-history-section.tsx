@@ -1,10 +1,10 @@
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { isEmptyArray } from '@rnw-community/shared';
 
-import { Card } from '../../../@generic/component/card/card';
+import { SectionHeader } from '../../../@generic/component/section-header/section-header';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { BudgetSelector } from '../../budget.selector';
 import { useGetBudgetPeriodSnapshotsQuery } from '../../query/use-get-budget-period-snapshots.query';
@@ -45,8 +45,8 @@ export const BudgetHistorySection = ({ budgetId, overallLimit, currentSpent, cur
     const hasEstimatedPeriods = snapshots.some(snapshot => snapshot.isReconstructed);
 
     return (
-        <Card className="gap-y-lg" testID={BudgetSelector.DetailsHistorySection}>
-            <Text className="text-xxs uppercase tracking-wider text-secondary-foreground">{t`Past months`}</Text>
+        <View collapsable={false} className="gap-y-lg" testID={BudgetSelector.DetailsHistorySection}>
+            <SectionHeader label={t`Past months`} />
 
             <BudgetHistoryChart bars={bars} />
 
@@ -66,6 +66,6 @@ export const BudgetHistorySection = ({ budgetId, overallLimit, currentSpent, cur
                     {t`Faded bars are estimated from your past transactions using your current limits.`}
                 </Text>
             ) : null}
-        </Card>
+        </View>
     );
 };

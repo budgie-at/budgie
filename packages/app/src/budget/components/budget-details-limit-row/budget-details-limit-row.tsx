@@ -64,7 +64,7 @@ export const BudgetDetailsLimitRow = (props: Props) => {
             <Animated.View
                 pointerEvents="none"
                 style={highlightStyle}
-                className="absolute -inset-x-2 -inset-y-1.5 rounded-2xl border border-warning-corner bg-warning-background"
+                className="absolute -inset-x-2 -inset-y-1.5 rounded-2xl bg-warning-background"
             />
             <HapticPressable accessibilityRole="button" onPress={onPress}>
                 <BudgetLimitRow

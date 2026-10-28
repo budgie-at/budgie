@@ -4,15 +4,16 @@ import Svg from 'react-native-svg';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { StyledLine } from '../../../@generic/component/styled-line/styled-line';
 import { StyledPath } from '../../../@generic/component/styled-path/styled-path';
-import { StyledSvgText } from '../../../@generic/component/styled-svg-text/styled-svg-text';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { BUDGET_PACE_VARIANT } from '../../constant/budget-pace-variant.constant';
 import { buildBudgetForecastGeometry } from '../../utils/build-budget-forecast-geometry.util';
 import { BudgetForecastAxisLabels } from '../budget-forecast-axis-labels/budget-forecast-axis-labels';
 import { BudgetForecastBills } from '../budget-forecast-bills/budget-forecast-bills';
+import { BudgetForecastGradient } from '../budget-forecast-gradient/budget-forecast-gradient';
+import { BudgetForecastLimit } from '../budget-forecast-limit/budget-forecast-limit';
 import { BudgetForecastRunOut } from '../budget-forecast-run-out/budget-forecast-run-out';
+import { BudgetForecastTodayMarker } from '../budget-forecast-today-marker/budget-forecast-today-marker';
 
 import type { BudgetProjectionInterface } from '@budgie/budget';
 
@@ -27,25 +28,26 @@ const CHART_PADDING_X = 8;
 const CHART_PADDING_TOP = 22;
 const CHART_PADDING_BOTTOM = 18;
 const LABEL_FONT_SIZE = 8;
-const LIMIT_LABEL_GAP = 4;
 const DASH = '4 3';
 const CHART_BOTTOM = CHART_HEIGHT - CHART_PADDING_BOTTOM;
 const AXIS_LABEL_Y = CHART_HEIGHT - 4;
+const AXIS_LABEL_CLEARANCE = 32;
 const CHART_RIGHT = CHART_WIDTH - CHART_PADDING_X;
-const CHART_MID_X = CHART_WIDTH / 2;
-const PROJECTION_OPACITY = 0.5;
+const PROJECTION_OPACITY = 0.55;
+const GRADIENT_ID = 'budget-forecast-fill';
 const TODAY_ACCENT_CLASS_NAME = {
     positive: 'accent-positive-foreground',
     warning: 'accent-warning-foreground',
     destructive: 'accent-destructive-foreground'
 } as const;
+const AREA_FILL = `url(#${GRADIENT_ID})`;
 const VIEW_BOX = `0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`;
 
 export const BudgetForecastChart = ({ projection, currencySymbol }: Props) => {
     const { t } = useLingui();
     const formatProtectedAmount = useProtectedAmountLabel();
 
-    const { actualPath, projectedPath, limitY, todayX, runOutX, bills } = buildBudgetForecastGeometry({
+    const { actualPath, actualAreaPath, projectedPath, limitY, todayX, todayPoint, runOutX, bills } = buildBudgetForecastGeometry({
         projection,
         width: CHART_WIDTH,
         height: CHART_HEIGHT,
@@ -55,38 +57,23 @@ export const BudgetForecastChart = ({ projection, currencySymbol }: Props) => {
         paddingBottom: CHART_PADDING_BOTTOM
     });
     const limitAmount = formatProtectedAmount(convertFromMicroUnits(projection.overall.limit), currencySymbol);
-    const limitLabelY = limitY - LIMIT_LABEL_GAP;
     const { runOutAt, status } = projection.overall;
+    const accentClassName = TODAY_ACCENT_CLASS_NAME[BUDGET_PACE_VARIANT[status]];
+    const labelTodayX = Math.min(Math.max(todayX, CHART_PADDING_X + AXIS_LABEL_CLEARANCE), CHART_RIGHT - AXIS_LABEL_CLEARANCE);
 
     return (
         <Svg width="100%" height={CHART_HEIGHT} viewBox={VIEW_BOX}>
-            <StyledLine
-                x1={CHART_PADDING_X}
-                y1={limitY}
-                x2={CHART_RIGHT}
-                y2={limitY}
-                strokeClassName="accent-secondary-foreground"
-                strokeDasharray={DASH}
-                strokeWidth={1}
-            />
-            <StyledSvgText
-                x={CHART_RIGHT}
-                y={limitLabelY}
-                fillClassName="accent-secondary-foreground"
+            <BudgetForecastGradient id={GRADIENT_ID} accentClassName={accentClassName} />
+            <BudgetForecastLimit
+                y={limitY}
+                left={CHART_PADDING_X}
+                right={CHART_RIGHT}
+                label={t`Limit ${limitAmount}`}
                 fontSize={LABEL_FONT_SIZE}
-                textAnchor="end"
-            >
-                {t`Limit ${limitAmount}`}
-            </StyledSvgText>
-            <StyledLine
-                x1={todayX}
-                y1={CHART_PADDING_TOP}
-                x2={todayX}
-                y2={CHART_BOTTOM}
-                strokeClassName={TODAY_ACCENT_CLASS_NAME[BUDGET_PACE_VARIANT[status]]}
-                strokeWidth={1.5}
+                dash={DASH}
             />
 
+            <StyledPath d={actualAreaPath} fill={AREA_FILL} />
             <StyledPath
                 d={projectedPath}
                 fill="none"
@@ -118,10 +105,13 @@ export const BudgetForecastChart = ({ projection, currencySymbol }: Props) => {
                 />
             ) : null}
 
+            {isDefined(todayPoint) ? <BudgetForecastTodayMarker point={todayPoint} accentClassName={accentClassName} /> : null}
+
             <BudgetForecastAxisLabels
                 days={projection.days}
+                todayIndex={projection.elapsedDays - 1}
                 leftX={CHART_PADDING_X}
-                midX={CHART_MID_X}
+                todayX={labelTodayX}
                 rightX={CHART_RIGHT}
                 y={AXIS_LABEL_Y}
                 fontSize={LABEL_FONT_SIZE}

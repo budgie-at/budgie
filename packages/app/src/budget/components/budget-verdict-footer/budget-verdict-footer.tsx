@@ -31,7 +31,7 @@ export const BudgetVerdictFooter = ({ upcoming, count, currencySymbol }: Props) 
             testID={BudgetSelector.DetailsReservedLink}
             onPress={handlePress}
         >
-            <Text className="text-xxs text-secondary-foreground">{label} ›</Text>
+            <Text className="text-xs text-secondary-foreground">{label} ›</Text>
         </HapticPressable>
     );
 };

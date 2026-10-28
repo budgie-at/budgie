@@ -9,14 +9,16 @@ import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-am
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 
 import type { BudgetProjectionScopeInterface } from '@budgie/budget';
+import type { ReactNode } from 'react';
 
 interface Props {
     readonly scope: BudgetProjectionScopeInterface;
     readonly currencySymbol: string;
     readonly periodEnd: Date;
+    readonly children: ReactNode;
 }
 
-export const BudgetVerdictOutlook = ({ scope, currencySymbol, periodEnd }: Props) => {
+export const BudgetVerdictOutlook = ({ scope, currencySymbol, periodEnd, children }: Props) => {
     const { t } = useLingui();
     const formatProtectedAmount = useProtectedAmountLabel();
     const { formatMonthAndDay } = useFormatDate();
@@ -24,13 +26,15 @@ export const BudgetVerdictOutlook = ({ scope, currencySymbol, periodEnd }: Props
     const periodEndLabel = formatMonthAndDay(periodEnd);
     const freeAmount = formatProtectedAmount(convertFromMicroUnits(Math.max(scope.free, 0)), currencySymbol);
     const projectedOverAmount = formatProtectedAmount(convertFromMicroUnits(scope.projectedOver ?? 0), currencySymbol);
-    const outlookLabel = isOver
-        ? t`Projected ${projectedOverAmount} over by ${periodEndLabel}`
-        : t`${freeAmount} free until ${periodEndLabel}`;
+    const overLabel = t`Projected ${projectedOverAmount} over by ${periodEndLabel}.`;
+    const freeLabel = t`${freeAmount} free until ${periodEndLabel}.`;
+    const hasOutlook = !isOver || isPositiveNumber(scope.projectedOver ?? 0);
+    const outlookLabel = isOver ? overLabel : freeLabel;
+    const visibleLabel = hasOutlook ? outlookLabel : '';
 
-    if (isOver && !isPositiveNumber(scope.projectedOver ?? 0)) {
-        return null;
-    }
-
-    return <Text className="text-xs text-secondary-foreground">{outlookLabel}</Text>;
+    return (
+        <Text className="text-sm text-secondary-foreground">
+            {visibleLabel} {children}
+        </Text>
+    );
 };

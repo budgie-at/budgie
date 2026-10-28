@@ -245,8 +245,8 @@ msgid "{freeAmount} free · {daysLabel}"
 msgstr "{freeAmount} frei · {daysLabel}"
 
 #: src/budget/components/budget-verdict-outlook/budget-verdict-outlook.tsx
-msgid "{freeAmount} free until {periodEndLabel}"
-msgstr "{freeAmount} frei bis {periodEndLabel}"
+msgid "{freeAmount} free until {periodEndLabel}."
+msgstr "{freeAmount} frei bis {periodEndLabel}."
 
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "{freeSize} GB free on this phone"
@@ -359,10 +359,6 @@ msgstr "{rowCount, plural, one {# Transaktion kategorisiert} other {# Transaktio
 msgid "{rowCount, plural, one {Tagged # transaction} other {Tagged # transactions}}"
 msgstr "{rowCount, plural, one {# Transaktion getaggt} other {# Transaktionen getaggt}}"
 
-#: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
-msgid "{safePerDayAmount} / day"
-msgstr "{safePerDayAmount} / Tag"
-
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "{selectedAccountCount, plural, one {Add # account} other {Add # accounts}}"
 msgstr "{selectedAccountCount, plural, one {# Konto hinzufügen} other {# Konten hinzufügen}}"
@@ -411,6 +407,10 @@ msgstr "{startLabel} - {endLabel}"
 msgid "{statementAccountCount, plural, one {# account. Balances come from the statement.} other {# accounts. Balances come from the statement.}}"
 msgstr "{statementAccountCount, plural, one {# Konto. Die Salden stammen aus dem Kontoauszug.} other {# Konten. Die Salden stammen aus dem Kontoauszug.}}"
 
+#: src/budget/components/budget-verdict-header/budget-verdict-header.tsx
+msgid "{statusLabel} · {daysLeftLabel}"
+msgstr "{statusLabel} · {daysLeftLabel}"
+
 #: src/ai/component/ai-on-device-link-card/ai-on-device-link-card.tsx
 msgid "{statusLabel} · {downloaded} of {total} GB"
 msgstr "{statusLabel} · {downloaded} von {total} GB"
@@ -423,10 +423,13 @@ msgstr "{statusLabel}, {daysLeftLabel}."
 msgid "{taggedCount, plural, one {# tagged this session} other {# tagged this session}}"
 msgstr "{taggedCount, plural, one {# in dieser Sitzung getaggt} other {# in dieser Sitzung getaggt}}"
 
-#: src/budget/components/budget-pace-hint-line/budget-pace-hint-line.tsx
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "{title} is ahead of pace"
 msgstr "{title} liegt über dem Tempo"
+
+#: src/budget/components/budget-pace-hint-line/budget-pace-hint-line.tsx
+msgid "{title} is running fast — keep it under {perDayAmount}/day."
+msgstr "{title} läuft zu schnell – bleib unter {perDayAmount}/Tag."
 
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "{total} GB on this phone"
@@ -448,6 +451,7 @@ msgstr "{transactionCount, plural, one {# Transaktion} other {# Transaktionen}}"
 msgid "{unreadableCount, plural, one {Couldn't read # receipt} other {Couldn't read # receipts}}"
 msgstr "{unreadableCount, plural, one {# Beleg nicht lesbar} other {# Belege nicht lesbar}}"
 
+#: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 #: src/budget/components/budget-verdict-figure/budget-verdict-figure.tsx
 #: src/budget/components/budget-widget-headline/budget-widget-headline.tsx
 msgid "/ day"
@@ -1252,6 +1256,7 @@ msgstr "Bargeldabhebungen"
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx
 #: src/app/(tabs)/settings/categories.tsx
 #: src/budget/components/budget-details-category-list/budget-details-category-list.tsx
+#: src/budget/components/budget-period-summary/budget-period-summary.tsx
 #: src/runway/component/runway-drivers/runway-drivers.tsx
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
 msgid "Categories"
@@ -2031,6 +2036,10 @@ msgstr "Datenverwaltung"
 msgid "Date"
 msgstr "Datum"
 
+#: src/budget/components/budget-day-strip/budget-day-strip.tsx
+msgid "Day {elapsedDays} of {totalDays}"
+msgstr "Tag {elapsedDays} von {totalDays}"
+
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "Day {selectedDay}"
 msgstr "Tag {selectedDay}"
@@ -2688,6 +2697,10 @@ msgstr "Fehler beheben"
 msgid "Fixed-term savings with an interest rate"
 msgstr "Festgeld mit einem Zinssatz"
 
+#: src/budget/components/budget-forecast-card/budget-forecast-card.tsx
+msgid "Forecast"
+msgstr "Prognose"
+
 #: src/auth/components/pin-unlock/pin-unlock.tsx
 msgid "Forgot PIN?"
 msgstr "PIN vergessen?"
@@ -3062,10 +3075,6 @@ msgstr "Als bereits erfasstes Bargeld behalten, keine Ausgabe"
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Keep only \"Enable Reading\" on — never allow trading or withdrawals"
 msgstr "Aktivieren Sie nur \"Lesen aktivieren\" — erlauben Sie niemals Handel oder Auszahlungen"
-
-#: src/budget/components/budget-pace-hint-line/budget-pace-hint-line.tsx
-msgid "keep under {perDayAmount}/day"
-msgstr "bleib unter {perDayAmount}/Tag"
 
 #: src/app/(tabs)/settings/ai.tsx
 msgid "Keep using Budgie meanwhile. Until the model is ready, categories come from simple rules on the phone."
@@ -4244,17 +4253,21 @@ msgstr "PrivatBank"
 msgid "Privatbank (XLSX)"
 msgstr "Privatbank (XLSX)"
 
-#: src/budget/components/budget-forecast-legend/budget-forecast-legend.tsx
-msgid "Projected · {projectedAmount} by {periodEndLabel}"
-msgstr "Prognose · {projectedAmount} bis {periodEndLabel}"
-
 #: src/budget/components/budget-category-forecast/budget-category-forecast.tsx
 msgid "Projected {overAmount} over"
 msgstr "Prognose: {overAmount} drüber"
 
 #: src/budget/components/budget-verdict-outlook/budget-verdict-outlook.tsx
-msgid "Projected {projectedOverAmount} over by {periodEndLabel}"
-msgstr "Voraussichtlich {projectedOverAmount} drüber bis {periodEndLabel}"
+msgid "Projected {projectedOverAmount} over by {periodEndLabel}."
+msgstr "Voraussichtlich {projectedOverAmount} drüber bis {periodEndLabel}."
+
+#: src/budget/components/budget-forecast-summary/budget-forecast-summary.tsx
+msgid "Projected <0>{projectedAmount}</0> by {periodEndLabel} · {differenceAmount} under"
+msgstr "Prognose <0>{projectedAmount}</0> bis {periodEndLabel} · {differenceAmount} darunter"
+
+#: src/budget/components/budget-forecast-summary/budget-forecast-summary.tsx
+msgid "Projected <0>{projectedAmount}</0> by {periodEndLabel} · <1>{differenceAmount} over</1>"
+msgstr "Prognose <0>{projectedAmount}</0> bis {periodEndLabel} · <1>{differenceAmount} darüber</1>"
 
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Push notifications are disabled"
@@ -5014,17 +5027,12 @@ msgstr "Ausgaben nach Kategorie"
 msgid "Spending by Tag"
 msgstr "Ausgaben nach Tag"
 
-#: src/budget/components/budget-forecast-card/budget-forecast-card.tsx
-msgid "Spending forecast"
-msgstr "Ausgabenprognose"
-
 #: src/account/component/account-details-month-chips/account-details-month-chips.tsx
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Spent"
 msgstr "Ausgegeben"
 
-#: src/budget/components/budget-forecast-legend/budget-forecast-legend.tsx
 #: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "Spent so far"
 msgstr "Bisher ausgegeben"
@@ -5484,10 +5492,6 @@ msgstr "Zu erhalten"
 #: src/account/constant/debt-remaining-label.constant.ts
 msgid "To repay"
 msgstr "Zu zahlen"
-
-#: src/budget/components/budget-pace-ticks/budget-pace-ticks.tsx
-msgid "today"
-msgstr "heute"
 
 #: src/@generic/constant/date-period.constant.ts
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx

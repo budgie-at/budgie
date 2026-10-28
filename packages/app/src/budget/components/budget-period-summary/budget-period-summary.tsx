@@ -1,10 +1,10 @@
 import { useLingui } from '@lingui/react/macro';
-import { ScrollView, Text } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { Card } from '../../../@generic/component/card/card';
 import { FormsheetHeader } from '../../../@generic/component/formsheet-header/formsheet-header';
+import { SectionHeader } from '../../../@generic/component/section-header/section-header';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { BudgetSelector } from '../../budget.selector';
@@ -47,7 +47,7 @@ export const BudgetPeriodSummary = ({ snapshotId }: Props) => {
                     </Text>
                 ) : null}
 
-                <Card className="gap-y-xl">
+                <View className="gap-y-xl">
                     <BudgetPeriodSummaryLimitRow
                         title={t`Monthly budget`}
                         carriedAmount={totalCarriedIn}
@@ -57,6 +57,8 @@ export const BudgetPeriodSummary = ({ snapshotId }: Props) => {
                         testID={BudgetSelector.PeriodSummaryOverall}
                         spentTestID={BudgetSelector.PeriodSummaryOverallSpentLabel}
                     />
+
+                    <SectionHeader label={t`Categories`} />
 
                     {snapshot.categories.map(category => (
                         <BudgetPeriodSummaryCategoryRow
@@ -78,7 +80,7 @@ export const BudgetPeriodSummary = ({ snapshotId }: Props) => {
                         testID={BudgetSelector.PeriodSummaryOther}
                         spentTestID={BudgetSelector.PeriodSummaryOtherSpentLabel}
                     />
-                </Card>
+                </View>
             </ScrollView>
         </>
     );

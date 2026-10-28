@@ -18,6 +18,7 @@ import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-ins
 import { BudgetHighlightContext } from '../../context/budget-highlight.context';
 import { useGetBudgetProjectionQuery } from '../../query/use-get-budget-projection.query';
 import { formatBudgetPeriodLabel } from '../../utils/format-budget-period-label.util';
+import { BudgetDayStrip } from '../budget-day-strip/budget-day-strip';
 import { BudgetDetailsCategoryList } from '../budget-details-category-list/budget-details-category-list';
 import { BudgetDetailsEditButton } from '../budget-details-edit-button/budget-details-edit-button';
 import { BudgetForecastCard } from '../budget-forecast-card/budget-forecast-card';
@@ -81,17 +82,20 @@ export const BudgetDetails = ({ budget }: Props) => {
             scrollViewProps={scrollViewProps}
         >
             <BudgetHighlightContext value={highlightContextValue}>
-                <View ref={contentRef} collapsable={false} className="gap-y-lg">
+                <View ref={contentRef} collapsable={false} className="gap-y-3xl">
                     <BudgetPeriodRecap budgetId={budget.id} currencySymbol={currencySymbol} />
 
                     <LoadingContent isLoading={isLoading}>
                         <BudgetVerdict
                             projection={projection}
                             currencySymbol={currencySymbol}
-                            periodStart={periodWindow.periodStart}
                             periodEnd={periodEnd}
                             onPaceHintPress={setHighlightTarget}
                         />
+                    </LoadingContent>
+
+                    <LoadingContent isLoading={isLoading}>
+                        <BudgetDayStrip projection={projection} />
                     </LoadingContent>
 
                     <LoadingContent isLoading={isLoading}>

@@ -1,8 +1,9 @@
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { StyledLine } from '../../../@generic/component/styled-line/styled-line';
-import { StyledRect } from '../../../@generic/component/styled-rect/styled-rect';
+import { StyledPath } from '../../../@generic/component/styled-path/styled-path';
 import { BUDGET_HISTORY_BAR_AREA_HEIGHT, BUDGET_HISTORY_BASELINE_Y } from '../../constant/budget-history-chart.constant';
+import { buildBudgetHistoryBarPath } from '../../utils/build-budget-history-bar-path.util';
 
 interface Props {
     readonly centerX: number;
@@ -14,7 +15,7 @@ interface Props {
     readonly isEstimated: boolean;
 }
 
-const BAR_RADIUS = 2;
+const BAR_RADIUS = 3;
 const MIN_BAR_HEIGHT = 1.5;
 const OUTLINE_WIDTH = 1.5;
 const OUTLINE_DASH = '3 2';
@@ -27,22 +28,14 @@ export const BudgetHistoryBarShape = ({ centerX, barWidth, spent, limit, scaleMa
     const limitY = BUDGET_HISTORY_BASELINE_Y - limit * scale;
     const toneClassName = spent > limit ? 'accent-destructive-foreground' : 'accent-positive-foreground';
     const outlineProps = { fill: 'none', strokeWidth: OUTLINE_WIDTH, strokeDasharray: OUTLINE_DASH, strokeClassName: toneClassName };
-    const barX = centerX - barWidth / 2;
-    const barY = BUDGET_HISTORY_BASELINE_Y - barHeight;
+    const barPath = buildBudgetHistoryBarPath(centerX - barWidth / 2, BUDGET_HISTORY_BASELINE_Y, barWidth, barHeight, BAR_RADIUS);
     const limitStartX = centerX - barWidth;
     const limitEndX = centerX + barWidth;
     const solidProps = { fillClassName: toneClassName, opacity: isEstimated ? ESTIMATED_OPACITY : 1 };
 
     return (
         <>
-            <StyledRect
-                x={barX}
-                y={barY}
-                width={barWidth}
-                height={barHeight}
-                rx={BAR_RADIUS}
-                {...(isCurrent ? outlineProps : solidProps)}
-            />
+            <StyledPath d={barPath} {...(isCurrent ? outlineProps : solidProps)} />
             <StyledLine
                 x1={limitStartX}
                 y1={limitY}

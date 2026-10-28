@@ -5,24 +5,25 @@ import type { BudgetProjectionInterface } from '@budgie/budget';
 
 interface Props {
     readonly days: BudgetProjectionInterface['days'];
+    readonly todayIndex: number;
     readonly leftX: number;
-    readonly midX: number;
+    readonly todayX: number;
     readonly rightX: number;
     readonly y: number;
     readonly fontSize: number;
 }
 
-export const BudgetForecastAxisLabels = ({ days, leftX, midX, rightX, y, fontSize }: Props) => {
+export const BudgetForecastAxisLabels = ({ days, todayIndex, leftX, todayX, rightX, y, fontSize }: Props) => {
     const { formatMonthAndDay } = useFormatDate();
-    const midDate = days[Math.floor((days.length - 1) / 2)].date;
+    const todayDate = days[Math.min(Math.max(todayIndex, 0), days.length - 1)].date;
 
     return (
         <>
             <StyledSvgText x={leftX} y={y} fillClassName="accent-secondary-foreground" fontSize={fontSize}>
                 {formatMonthAndDay(days[0].date)}
             </StyledSvgText>
-            <StyledSvgText x={midX} y={y} fillClassName="accent-secondary-foreground" fontSize={fontSize} textAnchor="middle">
-                {formatMonthAndDay(midDate)}
+            <StyledSvgText x={todayX} y={y} fillClassName="accent-primary" fontSize={fontSize} fontWeight="600" textAnchor="middle">
+                {formatMonthAndDay(todayDate)}
             </StyledSvgText>
             <StyledSvgText x={rightX} y={y} fillClassName="accent-secondary-foreground" fontSize={fontSize} textAnchor="end">
                 {formatMonthAndDay(days[days.length - 1].date)}

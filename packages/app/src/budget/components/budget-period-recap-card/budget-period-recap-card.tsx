@@ -7,7 +7,6 @@ import { Text, View } from 'react-native';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
-import { Card } from '../../../@generic/component/card/card';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
@@ -49,33 +48,35 @@ export const BudgetPeriodRecapCard = ({ snapshot, currencySymbol }: Props) => {
     };
 
     return (
-        <Card size="md" testID={BudgetSelector.DetailsRecapCard}>
-            <View className="flex-row items-start gap-x-md">
-                <View className="flex-1 gap-y-xs">
-                    <Text className={`${toneClassName} text-md font-semibold`}>{title}</Text>
-                    {isNotEmptyArray(snapshot.categories) ? (
-                        <Text className="text-secondary-foreground text-xs">
-                            {t({
-                                message: plural(categoryCount, {
-                                    one: `On budget in ${onBudgetCategoryCount} of # category`,
-                                    other: `On budget in ${onBudgetCategoryCount} of # categories`
-                                })
-                            })}
-                        </Text>
-                    ) : null}
-                    <BudgetPeriodRecapRollover snapshot={snapshot} currencySymbol={currencySymbol} />
-                </View>
-
-                <HapticPressable
-                    accessibilityLabel={t`Dismiss`}
-                    accessibilityRole="button"
-                    hitSlop={12}
-                    testID={BudgetSelector.DetailsRecapDismissButton}
-                    onPress={handleDismiss}
-                >
-                    <Icon icon={UserIconNameEnum.X} size={16} className="text-secondary-foreground" />
-                </HapticPressable>
+        <View
+            collapsable={false}
+            className="flex-row items-start gap-x-md border-b border-secondary-corner pb-lg"
+            testID={BudgetSelector.DetailsRecapCard}
+        >
+            <View className="flex-1 gap-y-xs">
+                <Text className={`${toneClassName} text-md font-semibold`}>{title}</Text>
+                {isNotEmptyArray(snapshot.categories) ? (
+                    <Text className="text-secondary-foreground text-xs">
+                        {t({
+                            message: plural(categoryCount, {
+                                one: `On budget in ${onBudgetCategoryCount} of # category`,
+                                other: `On budget in ${onBudgetCategoryCount} of # categories`
+                            })
+                        })}
+                    </Text>
+                ) : null}
+                <BudgetPeriodRecapRollover snapshot={snapshot} currencySymbol={currencySymbol} />
             </View>
-        </Card>
+
+            <HapticPressable
+                accessibilityLabel={t`Dismiss`}
+                accessibilityRole="button"
+                hitSlop={12}
+                testID={BudgetSelector.DetailsRecapDismissButton}
+                onPress={handleDismiss}
+            >
+                <Icon icon={UserIconNameEnum.X} size={16} className="text-secondary-foreground" />
+            </HapticPressable>
+        </View>
     );
 };

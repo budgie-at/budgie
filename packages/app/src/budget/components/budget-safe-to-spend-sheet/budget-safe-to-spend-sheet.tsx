@@ -4,8 +4,8 @@ import { ScrollView, Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { Card } from '../../../@generic/component/card/card';
 import { FormsheetHeader } from '../../../@generic/component/formsheet-header/formsheet-header';
+import { SectionHeader } from '../../../@generic/component/section-header/section-header';
 import { useToday } from '../../../@generic/hook/use-today.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
@@ -33,10 +33,8 @@ export const BudgetSafeToSpendSheet = ({ budget }: Props) => {
     const periodEndLabel = formatMonthAndDay(periodEnd);
 
     const upcomingSection = isNotEmptyArray(upcomingCharges) ? (
-        <Card className="gap-y-lg">
-            <Text className="text-xxs uppercase tracking-wider text-secondary-foreground">
-                <Trans>Upcoming this period</Trans>
-            </Text>
+        <View className="gap-y-lg">
+            <SectionHeader label={t`Upcoming this period`} />
             {upcomingCharges.map(charge => (
                 <BudgetUpcomingChargeRow
                     key={`${charge.source.kind}-${charge.source.id}-${charge.date.getTime()}`}
@@ -44,14 +42,14 @@ export const BudgetSafeToSpendSheet = ({ budget }: Props) => {
                     currencySymbol={currencySymbol}
                 />
             ))}
-        </Card>
+        </View>
     ) : null;
 
     return (
         <View className="flex-1 bg-primary-reverse" collapsable={false} testID={BudgetSelector.SafeToSpendSheet}>
             <FormsheetHeader size="md" title={t`Safe to spend`} description={t`Until ${periodEndLabel}`} />
 
-            <ScrollView contentContainerClassName="px-3xl pt-md gap-y-lg pb-5xl" showsVerticalScrollIndicator={false}>
+            <ScrollView contentContainerClassName="px-3xl pt-md gap-y-3xl pb-5xl" showsVerticalScrollIndicator={false}>
                 <BudgetSafeToSpendSummary projection={projection} currencySymbol={currencySymbol} />
 
                 {upcomingSection}

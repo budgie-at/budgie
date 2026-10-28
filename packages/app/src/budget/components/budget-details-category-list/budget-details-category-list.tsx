@@ -1,9 +1,9 @@
-import { Trans } from '@lingui/react/macro';
-import { Text } from 'react-native';
+import { Trans, useLingui } from '@lingui/react/macro';
+import { Text, View } from 'react-native';
 
 import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { Card } from '../../../@generic/component/card/card';
+import { SectionHeader } from '../../../@generic/component/section-header/section-header';
 import { useGetBudgetEffectiveLimitsQuery } from '../../query/use-get-budget-effective-limits.query';
 import { BudgetDetailsCategoryRow } from '../budget-details-category-row/budget-details-category-row';
 import { BudgetDetailsOtherCategoryRow } from '../budget-details-other-category-row/budget-details-other-category-row';
@@ -20,6 +20,7 @@ interface Props {
 }
 
 export const BudgetDetailsCategoryList = ({ budget, projection, periodStart, periodEnd, currencySymbol }: Props) => {
+    const { t } = useLingui();
     const effectiveLimits = useGetBudgetEffectiveLimitsQuery(budget);
     const categoryIds = projection.categories.map(category => category.categoryId);
     const carriedAmountByCategory = new Map(effectiveLimits.categoryLimits.map(limit => [limit.categoryId, limit.carriedAmount]));
@@ -54,12 +55,10 @@ export const BudgetDetailsCategoryList = ({ budget, projection, periodStart, per
     );
 
     return (
-        <Card className="gap-y-xl">
-            <Text className="text-xxs uppercase tracking-wider text-secondary-foreground">
-                <Trans>Categories</Trans>
-            </Text>
+        <View className="gap-y-lg">
+            <SectionHeader label={t`Categories`} />
 
             {rows}
-        </Card>
+        </View>
     );
 };

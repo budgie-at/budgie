@@ -2,7 +2,6 @@ import { convertFromMicroUnits } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
-import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { BudgetSelector } from '../../budget.selector';
 
@@ -19,19 +18,17 @@ export const BudgetPaceHintLine = ({ title, scope, currencySymbol, onPress }: Pr
     const { t } = useLingui();
     const formatProtectedAmount = useProtectedAmountLabel();
     const perDayAmount = formatProtectedAmount(convertFromMicroUnits(scope.safePerDay), currencySymbol);
-    const headline = t`${title} is ahead of pace`;
-    const advice = t`keep under ${perDayAmount}/day`;
+    const label = t`${title} is running fast — keep it under ${perDayAmount}/day.`;
 
     return (
-        <HapticPressable
-            accessibilityLabel={`${headline} · ${advice}`}
+        <Text
+            accessibilityLabel={label}
             accessibilityRole="button"
+            className="text-warning-foreground"
             testID={BudgetSelector.DetailsPaceBanner}
             onPress={onPress}
         >
-            <Text className="text-xs text-secondary-foreground">
-                {headline} · <Text className="text-warning-foreground">{advice}</Text>
-            </Text>
-        </HapticPressable>
+            {label}
+        </Text>
     );
 };

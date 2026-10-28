@@ -1,9 +1,9 @@
-import { Trans } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
+import { useLingui } from '@lingui/react/macro';
+import { View } from 'react-native';
 
-import { Card } from '../../../@generic/component/card/card';
+import { SectionHeader } from '../../../@generic/component/section-header/section-header';
 import { BudgetForecastChart } from '../budget-forecast-chart/budget-forecast-chart';
-import { BudgetForecastLegend } from '../budget-forecast-legend/budget-forecast-legend';
+import { BudgetForecastSummary } from '../budget-forecast-summary/budget-forecast-summary';
 
 import type { BudgetProjectionInterface } from '@budgie/budget';
 
@@ -12,15 +12,18 @@ interface Props {
     readonly currencySymbol: string;
 }
 
-export const BudgetForecastCard = ({ projection, currencySymbol }: Props) => (
-    <Card className="gap-y-lg">
-        <Text className="text-xxs uppercase tracking-wider text-secondary-foreground">
-            <Trans>Spending forecast</Trans>
-        </Text>
+export const BudgetForecastCard = ({ projection, currencySymbol }: Props) => {
+    const { t } = useLingui();
 
-        <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants" className="gap-y-lg">
-            <BudgetForecastChart projection={projection} currencySymbol={currencySymbol} />
-            <BudgetForecastLegend projection={projection} currencySymbol={currencySymbol} />
+    return (
+        <View className="gap-y-lg">
+            <SectionHeader label={t`Forecast`} />
+
+            <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+                <BudgetForecastChart projection={projection} currencySymbol={currencySymbol} />
+            </View>
+
+            <BudgetForecastSummary projection={projection} currencySymbol={currencySymbol} />
         </View>
-    </Card>
-);
+    );
+};
