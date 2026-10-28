@@ -1,6 +1,7 @@
 import { AccountEntityInterface } from '../../account/entity/account-entity.interface';
 import { DebtEventWithRelationsEntityInterface } from '../../debt-event/entity/debt-event-with-relations-entity.interface';
 import { TransactionEntryWithRelationsEntityInterface } from '../../transaction-entry/entity/transaction-entry-with-relations-entity.interface';
+import { TransactionReceiptEntityInterface } from '../../transaction-receipt/entity/transaction-receipt-entity.interface';
 import { TransactionTagsWithTagEntityInterface } from '../../transaction-tags/entity/transaction-tags-with-tag-entity.interface';
 import { TransactionAssociationEnum } from '../enum/transaction-association.enum';
 
@@ -11,5 +12,6 @@ export interface TransactionWithRelationsEntityInterface extends TransactionEnti
     readonly [TransactionAssociationEnum.DEBT_EVENTS]: DebtEventWithRelationsEntityInterface[];
     readonly [TransactionAssociationEnum.FROM_ACCOUNT]: AccountEntityInterface | null;
     readonly [TransactionAssociationEnum.TO_ACCOUNT]: AccountEntityInterface | null;
+    readonly [TransactionAssociationEnum.RECEIPT]: TransactionReceiptEntityInterface | null;
     readonly [TransactionAssociationEnum.TRANSACTION_TAGS]: TransactionTagsWithTagEntityInterface[];
 }

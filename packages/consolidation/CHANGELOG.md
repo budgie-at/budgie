@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.123.0](https://github.com/budgie-at/budgie/compare/v6.122.0...v6.123.0) (2026-10-28)
+
+### Bug Fixes
+
+* **consolidation:** keep receipt on surviving transaction ([a554e4a](https://github.com/budgie-at/budgie/commit/a554e4a1cb900d42066358ea640e35420924a200))
+* **consolidation:** never pair a receipt expense with a bank row that already carries a receipt ([0381ee0](https://github.com/budgie-at/budgie/commit/0381ee0b7acb030040bafe6047040fe6ad262d56))
+
+### Features
+
+* **consolidation:** trust receipt expenses as duplicate candidates ([7e6f209](https://github.com/budgie-at/budgie/commit/7e6f20976dba0e382c18516672278f40e14e461f))
+
+
 ## [6.121.2](https://github.com/budgie-at/budgie/compare/v6.121.1...v6.121.2) (2026-10-27)
 
 **Note:** Version bump only for package @budgie/consolidation

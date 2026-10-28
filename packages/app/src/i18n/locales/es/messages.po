@@ -22,6 +22,11 @@ msgstr "Compra P2P de {assetCode} en Binance"
 msgid "Binance P2P sell {assetCode}"
 msgstr "Venta P2P de {assetCode} en Binance"
 
+#. placeholder {0}: changed.length
+#: src/receipt/hook/use-receipt-scan.hook.ts
+msgid "{0, plural, one {# receipt saved} other {# receipts saved}}"
+msgstr "{0, plural, one {# recibo guardado} other {# recibos guardados}}"
+
 #. placeholder {0}: labels.length
 #: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
 msgid "{0, plural, one {# tag} other {# tags}}"
@@ -313,6 +318,10 @@ msgstr "{selectedCount, plural, =0 {Mostrar todas las categorías} one {Mostrar 
 msgid "{selectedCount, plural, =0 {Show all tags} one {Show # tag} other {Show # tags}}"
 msgstr "{selectedCount, plural, =0 {Mostrar todas las etiquetas} one {Mostrar # etiqueta} other {Mostrar # etiquetas}}"
 
+#: src/account/component/accounts-group/accounts-group.tsx
+msgid "{selectedInGroupCount} of {accountsCount} selected"
+msgstr "{selectedInGroupCount} de {accountsCount} seleccionadas"
+
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "{similarCount, plural, one {# similar transaction} other {# similar transactions}}"
 msgstr "{similarCount, plural, one {# transacción similar} other {# transacciones similares}}"
@@ -356,6 +365,10 @@ msgstr "{totalSize} GB"
 #: src/transaction/components/transaction-list-count/transaction-list-count.tsx
 msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{transactionCount, plural, one {# transacción} other {# transacciones}}"
+
+#: src/receipt/hook/use-receipt-scan.hook.ts
+msgid "{unreadableCount, plural, one {Couldn't read # receipt} other {Couldn't read # receipts}}"
+msgstr "{unreadableCount, plural, one {No se pudo leer # recibo} other {No se pudieron leer # recibos}}"
 
 #: src/runway/component/runway-pill/runway-pill.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
@@ -613,6 +626,10 @@ msgstr "Añade la acción de Budgie"
 msgid "Add your first account to start tracking your finances"
 msgstr "Agrega tu primera cuenta para comenzar a rastrear tus finanzas"
 
+#: src/receipt/hook/use-receipt-scan.hook.ts
+msgid "Added"
+msgstr "Añadido"
+
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
 msgid "Adds the fee of the plan"
 msgstr "Añade la comisión del plan"
@@ -700,6 +717,10 @@ msgstr "Ya devuelto"
 #: src/account/component/update-debt-account/update-debt-account.tsx
 msgid "Already returned"
 msgstr "Ya recibido"
+
+#: src/receipt/hook/use-receipt-scan.hook.ts
+msgid "Already scanned"
+msgstr "Ya escaneado"
 
 #: src/sync/component/bank-account-preview-card/bank-account-preview-card.tsx
 msgid "Already syncing"
@@ -3138,6 +3159,10 @@ msgstr "Los gastos coincidentes se convierten en una transferencia a esta cuenta
 msgid "Matched income is converted into a transfer from this account."
 msgstr "Los ingresos coincidentes se convierten en una transferencia desde esta cuenta."
 
+#: src/receipt/hook/use-receipt-scan.hook.ts
+msgid "Matched to existing"
+msgstr "Vinculado a existente"
+
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "matches"
 msgstr "coincide"
@@ -3492,6 +3517,10 @@ msgstr "No se encontraron códigos MCC"
 msgid "No new transactions"
 msgstr "No hay transacciones nuevas"
 
+#: src/receipt/hook/use-receipt-scan.hook.ts
+msgid "No receipt found"
+msgstr "No se encontró ningún recibo"
+
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
 msgid "No recurring payments detected"
@@ -3762,6 +3791,10 @@ msgstr "Abrir configuración"
 #: src/wallet-capture/component/apple-pay-capture-open-shortcuts-button/apple-pay-capture-open-shortcuts-button.tsx
 msgid "Open Shortcuts"
 msgstr "Abrir Shortcuts"
+
+#: src/receipt/components/receipt-scan-toast/receipt-scan-toast.tsx
+msgid "Opens the transaction"
+msgstr "Abre la transacción"
 
 #: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
 msgid "Opens with"
@@ -4100,6 +4133,14 @@ msgstr "Leído en este teléfono"
 msgid "Read on this phone, then you can delete it."
 msgstr "Se lee en este teléfono y después puedes borrarlo."
 
+#: src/receipt/components/receipt-scan-toast/receipt-scan-toast.tsx
+msgid "Reading receipt"
+msgstr "Leyendo recibo"
+
+#: src/receipt/components/receipt-scan-toast/receipt-scan-toast.tsx
+msgid "Reading receipts · {current} of {total}"
+msgstr "Leyendo recibos · {current} de {total}"
+
 #: src/ai/constant/ai-download-card-visuals.constant.ts
 msgid "Ready"
 msgstr "Listo"
@@ -4139,6 +4180,13 @@ msgstr "Recalcular saldos"
 #: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
 msgid "Recalculating balances"
 msgstr "Recalculando saldos"
+
+#: src/receipt/hook/use-receipt-scan.hook.ts
+#: src/rule/constant/external-source.constant.ts
+#: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
+#: src/transaction/components/transaction-metadata-rows/transaction-metadata-rows.tsx
+msgid "Receipt"
+msgstr "Recibo"
 
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 msgid "Receiving {toCode}"
@@ -4389,6 +4437,14 @@ msgstr "Ahorros"
 #: src/app/(main)/create-account/index.tsx
 msgid "Savings Account"
 msgstr "Cuenta de ahorros"
+
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "Scan"
+msgstr "Escanear"
+
+#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
+msgid "Scan receipt"
+msgstr "Escanear recibo"
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Scan the QR code with the Monobank app"

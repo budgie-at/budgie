@@ -30,6 +30,7 @@ import {
     TransactionPatternRepository,
     TransactionRepository,
     TransactionConsolidationRepository,
+    TransactionReceiptRepository,
     TransactionViewRepository,
     TransactionTagsRepository
 } from '@budgie/contracts';
@@ -110,6 +111,7 @@ import { DatabaseExportService } from '../../export/service/database-export.serv
 import { DatabaseImportService } from '../../import/service/database-import.service';
 import { HistoricalMarketDataDrainerService } from '../../market-data/service/historical-market-data-drainer.service';
 import { OnboardingService } from '../../onboarding/service/onboarding.service';
+import { ReceiptScanService } from '../../receipt/service/receipt-scan.service';
 import { RuleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
 import { p2pTransferTitleResolverLayer } from '../../sync/layer/p2p-transfer-title-resolver.layer';
 import { syncFileReaderLayer } from '../../sync/layer/sync-file-reader.layer';
@@ -172,6 +174,7 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     CategoryRepository.layer,
     CategoryService.layer,
     MccCategoryRepository.layer,
+    TransactionReceiptRepository.layer,
     CommentEmbeddingRepository.layer,
     MerchantEmbeddingRepository.layer,
     TransactionEmbeddingRepository.layer,
@@ -200,6 +203,7 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     AiEmbeddingStatusService.layer,
     AiTranslationStatusService.layer,
     VoiceReviewBatchCreateService.layer,
+    ReceiptScanService.layer,
     TranslationLlmService.layer.pipe(Layer.provide(ChatService.invokerLayer)),
     VoiceLlmService.layer.pipe(Layer.provide(ChatService.invokerLayer)),
     EmbeddingSuggestionService.layer.pipe(Layer.provide(LocalEmbeddingService.invokerLayer)),

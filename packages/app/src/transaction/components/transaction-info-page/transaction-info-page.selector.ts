@@ -17,6 +17,7 @@ export const TransactionInfoPageSelector = {
         FromAccount: 'TransactionInfo.Row.FromAccount',
         MerchantCode: 'TransactionInfo.Row.MerchantCode',
         Note: 'TransactionInfo.Row.Note',
+        Receipt: 'TransactionInfo.Row.Receipt',
         Tags: 'TransactionInfo.Row.Tags',
         ToAccount: 'TransactionInfo.Row.ToAccount'
     }

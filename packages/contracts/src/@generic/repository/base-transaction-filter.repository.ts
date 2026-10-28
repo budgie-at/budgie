@@ -71,6 +71,7 @@ class BaseTransactionFilterRepository {
 
     buildFullTransactionRelations(language: LanguageEnum) {
         return {
+            [TransactionAssociationEnum.RECEIPT]: true,
             [TransactionAssociationEnum.ENTRIES]: {
                 where: this.ledgerEntryFilter,
                 with: {

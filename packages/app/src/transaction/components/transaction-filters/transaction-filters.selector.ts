@@ -34,7 +34,6 @@ export const TransactionFiltersSelector = {
     AccountSelectAllButton: 'TransactionFilters.AccountSelectAllButton',
     AccountDeselectAllButton: 'TransactionFilters.AccountDeselectAllButton',
     AccountApplyButton: 'TransactionFilters.AccountApplyButton',
-    AccountGroupToggle: (type: AccountTypeEnum) => `TransactionFilters.AccountGroupToggle.${type}` as const,
     AccountGroupSelectAll: (type: AccountTypeEnum) => `TransactionFilters.AccountGroupSelectAll.${type}` as const,
     AccountOption: (title: string) => `TransactionFilters.AccountOption.${title.trim()}` as const,
     AccountOptionSelected: (title: string) => `TransactionFilters.AccountOptionSelected.${title.trim()}` as const,

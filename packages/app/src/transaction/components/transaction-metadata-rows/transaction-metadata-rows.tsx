@@ -1,10 +1,11 @@
-import { DebtEventAssociationEnum, TransactionConsolidationTypeEnum, convertFromMicroUnits } from '@budgie/contracts';
+import { DebtEventAssociationEnum, TransactionConsolidationTypeEnum, UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { getTransactionFeeEntries } from '@budgie/ledger';
 import { t } from '@lingui/core/macro';
 import { View } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { MetaPill } from '../../../@generic/component/meta-pill/meta-pill';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useSettingsContext } from '../../../settings/context/settings.context';
 import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
@@ -17,11 +18,12 @@ import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts'
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly refundedPillTestID: string;
+    readonly receiptPillTestID: string;
     readonly feeTestID: string;
     readonly debtSettlementTestID: string;
 }
 
-export const TransactionMetadataRows = ({ transaction, refundedPillTestID, feeTestID, debtSettlementTestID }: Props) => {
+export const TransactionMetadataRows = ({ transaction, refundedPillTestID, receiptPillTestID, feeTestID, debtSettlementTestID }: Props) => {
     const { decimalPlaces } = useSettingsContext();
     const formatDigits = useFormatDigits(decimalPlaces);
     const feeEntries = getTransactionFeeEntries(transaction.entries);
@@ -32,10 +34,10 @@ export const TransactionMetadataRows = ({ transaction, refundedPillTestID, feeTe
     const formattedFeeAmount = formatDigits(feeAmount, feeCurrencySymbol);
     const feeLabel = t`Fee · ${formattedFeeAmount}`;
     const debtSettlementAccount = transaction.debtEvents.at(0)?.[DebtEventAssociationEnum.DEBT_ACCOUNT] ?? null;
-    const hasDebtSettlement = isDefined(debtSettlementAccount);
     const isRefundTransaction = transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND;
+    const hasReceipt = isDefined(transaction.receipt);
 
-    if (!isRefundTransaction && !hasFee && !hasDebtSettlement) {
+    if (!isRefundTransaction && !hasReceipt && !hasFee && !isDefined(debtSettlementAccount)) {
         return null;
     }
 
@@ -46,6 +48,8 @@ export const TransactionMetadataRows = ({ transaction, refundedPillTestID, feeTe
                 transaction={transaction}
                 testID={refundedPillTestID}
             />
+
+            {hasReceipt ? <MetaPill icon={UserIconNameEnum.Receipt} label={t`Receipt`} testID={receiptPillTestID} /> : null}
 
             {hasFee ? <TransactionMetadataRow label={feeLabel} testID={feeTestID} /> : null}
 

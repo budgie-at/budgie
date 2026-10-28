@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.123.0](https://github.com/budgie-at/budgie/compare/v6.122.0...v6.123.0) (2026-10-28)
+
+### Bug Fixes
+
+* **consolidation:** keep receipt on surviving transaction ([a554e4a](https://github.com/budgie-at/budgie/commit/a554e4a1cb900d42066358ea640e35420924a200))
+* **ledger:** never create a receipt expense on an archived account ([9a82850](https://github.com/budgie-at/budgie/commit/9a828509c8cbe076033be6b3372e2a05a684e5b9))
+* **ledger:** rescan a receipt whose transaction was deleted ([51cbe58](https://github.com/budgie-at/budgie/commit/51cbe583a316d07d48de39a5bcfd54576fa823a0))
+
+### Features
+
+* **contracts:** add RECEIPT external source ([dae6908](https://github.com/budgie-at/budgie/commit/dae6908303230e0fda9ecad124503994d9b3a23a))
+* **contracts:** add transaction_receipts table ([f769024](https://github.com/budgie-at/budgie/commit/f76902402a1c0f015047d80da72e7ef38782f2fe))
+* **contracts:** add TransactionReceiptRepository ([deb9299](https://github.com/budgie-at/budgie/commit/deb9299410bd88982b39d2b3c5ae7676a6d59a51))
+* **contracts:** expose transaction receipt relation ([a829b5b](https://github.com/budgie-at/budgie/commit/a829b5b2d68918a8e22718ba26dabd938720730e))
+* **ledger:** match scanned receipts to transactions ([22ee1c2](https://github.com/budgie-at/budgie/commit/22ee1c23fc9e9df91c217971e440d1c8a728e340))
+
+
 ## [6.121.2](https://github.com/budgie-at/budgie/compare/v6.121.1...v6.121.2) (2026-10-27)
 
 ### Bug Fixes

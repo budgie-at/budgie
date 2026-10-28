@@ -114,6 +114,7 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
                 expense: i18n._(msg`Expense`),
                 income: i18n._(msg`Income`),
                 transfer: i18n._(msg`Transfer`),
+                scan: i18n._(msg`Scan`),
                 empty: i18n._(msg`Open Budgie to see your finances`)
             });
 

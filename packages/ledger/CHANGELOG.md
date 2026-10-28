@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.123.0](https://github.com/budgie-at/budgie/compare/v6.122.0...v6.123.0) (2026-10-28)
+
+### Bug Fixes
+
+* apply receipt rules after the receipt transaction commits ([d573893](https://github.com/budgie-at/budgie/commit/d573893df132c045e4d1f8ac8f9bbfd8c9425a40))
+* **contracts:** cover RECEIPT external source ([977241a](https://github.com/budgie-at/budgie/commit/977241a5e4884f24e037057b24ccda9a1e74a64c))
+* **ledger:** never create a receipt expense on an archived account ([9a82850](https://github.com/budgie-at/budgie/commit/9a828509c8cbe076033be6b3372e2a05a684e5b9))
+* **ledger:** never double-count tied receipt matches or move a learned card alias ([73db1cc](https://github.com/budgie-at/budgie/commit/73db1cc1da9db5faeb277abd8e55eb767496ba28))
+* **ledger:** rescan a receipt whose transaction was deleted ([51cbe58](https://github.com/budgie-at/budgie/commit/51cbe583a316d07d48de39a5bcfd54576fa823a0))
+
+### Features
+
+* apply user rules to scanned receipts ([cec3e3b](https://github.com/budgie-at/budgie/commit/cec3e3b6092ee40b3b1ad2ffda475f45a45d7393))
+* **contracts:** add TransactionReceiptRepository ([deb9299](https://github.com/budgie-at/budgie/commit/deb9299410bd88982b39d2b3c5ae7676a6d59a51))
+* **ledger:** match scanned receipts to transactions ([22ee1c2](https://github.com/budgie-at/budgie/commit/22ee1c23fc9e9df91c217971e440d1c8a728e340))
+
+
 ## [6.121.2](https://github.com/budgie-at/budgie/compare/v6.121.1...v6.121.2) (2026-10-27)
 
 **Note:** Version bump only for package @budgie/ledger

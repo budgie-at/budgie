@@ -1,6 +1,6 @@
 {
     "name": "@budgie-at/app",
-    "version": "6.121.2",
+    "version": "6.123.1",
     "private": true,
     "scripts": {
         "android": "expo run:android",
@@ -77,9 +77,11 @@
         "expo-network": "~58.0.3",
         "expo-notifications": "~58.1.5",
         "expo-pdf-text-extract": "~1.1.0",
+        "expo-quick-actions": "~6.0.2",
         "expo-router": "~58.0.23",
         "expo-screen-capture": "~58.0.5",
         "expo-secure-store": "~58.0.2",
+        "expo-share-intent": "~9.0.0",
         "expo-sharing": "~58.0.19",
         "expo-splash-screen": "~58.0.10",
         "expo-system-ui": "~58.0.6",
