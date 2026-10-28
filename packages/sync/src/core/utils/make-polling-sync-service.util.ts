@@ -122,9 +122,11 @@ export const makePollingSyncService = Effect.fnUntraced(function* (definition: P
             return true;
         }
 
-        yield* (definition.beforeProcessRun ?? (() => Effect.void))([...new Set(yield* Effect.forEach(enabledSyncs, resolveSyncToken))]);
-        if (yield* shouldStopProcessing) {
-            return true;
+        if (isDefined(definition.beforeProcessRun)) {
+            yield* definition.beforeProcessRun([...new Set(yield* Effect.forEach(enabledSyncs, resolveSyncToken))]);
+            if (yield* shouldStopProcessing) {
+                return true;
+            }
         }
 
         const pendingSync = yield* getNextPendingSync();
