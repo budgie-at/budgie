@@ -29,8 +29,8 @@ export const mapBankTransactionToCreateInput = (
     const entryType = isIncome ? TransactionEntryTypeEnum.DEBIT : TransactionEntryTypeEnum.CREDIT;
 
     const { feeAmount } = bankTransaction;
-    const hasFee = isPositiveNumber(feeAmount) && feeAmount < amount;
-    const mainAmount = hasFee ? amount - feeAmount : amount;
+    const hasFee = isPositiveNumber(feeAmount) && (isIncome || feeAmount < amount);
+    const mainAmount = hasFee ? amount + (isIncome ? feeAmount : -feeAmount) : amount;
     const exchangeRate = getExchangeRate(mainAmount, Math.abs(bankTransaction.operationAmount));
     const externalIdAliases = bankTransaction.legacyExternalIds ?? [];
 
@@ -59,7 +59,7 @@ export const mapBankTransactionToCreateInput = (
     };
 
     return {
-        amount,
+        amount: isIncome ? mainAmount : amount,
         title: bankTransaction.description,
         comment: bankTransaction.comment ?? '',
         type: isIncome ? TransactionTypeEnum.INCOME : TransactionTypeEnum.EXPENSE,

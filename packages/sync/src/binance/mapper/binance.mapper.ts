@@ -67,7 +67,10 @@ const toSyncTransaction = (
     cashbackAmount: 0,
     balance: 0,
     hold: false,
-    operationAmount: transaction.amount - transaction.feeAmount,
+    operationAmount:
+        transaction.type === SyncTransactionTypeEnum.INCOME
+            ? transaction.amount + transaction.feeAmount
+            : transaction.amount - transaction.feeAmount,
     ...transaction
 });
 
@@ -168,9 +171,10 @@ export const mapBinanceFiatOrderToTransaction = (
     accountId: string,
     isDeposit: boolean
 ): SyncTransactionInterface | null => {
-    const parsed = parseAmountAndClampedFee(order.amount, order.totalFee);
+    const amount = parseBinanceAmount(order.amount);
+    const feeAmount = parseBinanceAmount(order.totalFee);
 
-    return isDefined(parsed)
+    return isDefined(amount) && isDefined(feeAmount)
         ? toSyncTransaction({
               id: order.orderNo,
               accountId,
@@ -178,8 +182,8 @@ export const mapBinanceFiatOrderToTransaction = (
               time: toUnixSeconds(order.createTime),
               type: isDeposit ? SyncTransactionTypeEnum.INCOME : SyncTransactionTypeEnum.EXPENSE,
               description: isDeposit ? `Binance ${order.fiatCurrency} deposit` : `Binance ${order.fiatCurrency} withdrawal`,
-              amount: parsed[0],
-              feeAmount: parsed[1]
+              amount: isDeposit ? amount : amount + feeAmount,
+              feeAmount
           })
         : null;
 };
