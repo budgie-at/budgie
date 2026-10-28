@@ -1,4 +1,4 @@
-import { SyncModeEnum, SyncStatusEnum } from '@budgie/contracts';
+import { PRECISION, SyncModeEnum, SyncStatusEnum } from '@budgie/contracts';
 import { BinanceSyncService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
@@ -7,6 +7,7 @@ import { vi } from 'vitest';
 import {
     binanceStub,
     buildBinance,
+    fetchCachedBalanceAmount,
     fetchSyncById,
     seedCryptoInstrument,
     setupAdaUsdtFixture,
@@ -19,9 +20,18 @@ import type { TimeWindow } from '../../harness';
 const STALE_SYNC_AGE_MS = 5 * 60 * 1000;
 const RUN_DEADLINE_MS = 2 * 1000;
 const DEADLINE_JUMP_MS = 4 * 1000;
+const BETWEEN_FETCHES_JUMP_MS = 1000;
+
+const advanceClock = (durationMs: number): void => {
+    vi.setSystemTime(Date.now() + durationMs);
+};
 
 const jumpPastDeadline = (): void => {
-    vi.setSystemTime(Date.now() + DEADLINE_JUMP_MS);
+    advanceClock(DEADLINE_JUMP_MS);
+};
+
+const advanceClockBetweenFetches = (): void => {
+    advanceClock(BETWEEN_FETCHES_JUMP_MS);
 };
 
 const restoreRealTimers = Effect.sync(() => vi.useRealTimers());
@@ -31,7 +41,7 @@ describe('binance/deadline-handling', () => {
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
 
-            const { sync } = yield* setupBinanceFixture({
+            const { sync, account } = yield* setupBinanceFixture({
                 asset: 'BTC',
                 mode: SyncModeEnum.FORWARD,
                 forwardSyncedAt: new Date(Date.now() - STALE_SYNC_AGE_MS)
@@ -43,6 +53,11 @@ describe('binance/deadline-handling', () => {
             const storedSync = yield* fetchSyncById(sync.id);
             expect(storedSync.enabled).toBe(true);
             expect(storedSync.status).not.toBe(SyncStatusEnum.FAILED);
+
+            binanceStub.spotBalances([buildBinance.balance({ asset: 'BTC', free: '1' })]);
+            yield* binanceSyncService.sync();
+
+            expect(yield* fetchCachedBalanceAmount(account.id)).toBe(PRECISION);
         }).pipe(Effect.provide(TestLayer))
     );
 
@@ -72,10 +87,10 @@ describe('binance/deadline-handling', () => {
 
             yield* seedCryptoInstrument('ADA');
             yield* setupAdaUsdtFixture(SyncModeEnum.FORWARD, new Date(Date.now() - STALE_SYNC_AGE_MS));
-            binanceStub.deposits([], depositWindows);
+            binanceStub.deposits([], depositWindows, advanceClockBetweenFetches);
             binanceStub.c2cOrders([], [], c2cWindows);
 
-            yield* binanceSyncService.sync();
+            yield* binanceSyncService.sync().pipe(Effect.ensuring(restoreRealTimers));
 
             expect(depositWindows).toHaveLength(1);
             expect(c2cWindows).toHaveLength(2);
