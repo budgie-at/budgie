@@ -249,24 +249,28 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 : reconciledCount;
         });
 
+        const createNewSyncedTransfers = Effect.fnUntraced(function* (transfers: BinanceTransferInterface[], token: string) {
+            const existingIds = yield* transactionService.findByExternalSource(provider);
+            const newTransfers = transfers.filter(transfer => !existingIds.has(transfer.externalId));
+
+            return isNotEmptyArray(newTransfers) ? yield* createSyncedTransfers(newTransfers, token) : 0;
+        });
+
         const processTransfers = Effect.fnUntraced(function* (sync: SyncEntityInterface, externalAccountId: string, token: string) {
             if (run.transfersSynced) {
                 return 0;
             }
             run = { ...run, transfersSynced: true };
 
-            const transfers = yield* binanceTradeCursorService.fetchTransferBatch(getRunSignedClient(token), sync, externalAccountId, {
+            const client = getRunSignedClient(token);
+            const transfers = yield* binanceTradeCursorService.fetchTransferBatch(client, sync, externalAccountId, {
                 fromUnixTime: getUnixTime(resolveWindowStart(sync)),
                 eligibleSoldOffBaseAssets: yield* binanceAssetCodeService.resolveEligibleSoldOffBaseAssets(provider)
             });
-            if (!isNotEmptyArray(transfers)) {
-                return 0;
-            }
+            const createdCount = isNotEmptyArray(transfers) ? yield* createNewSyncedTransfers(transfers, token) : 0;
+            yield* binanceTradeCursorService.persistTradeCursors(sync, client);
 
-            const existingIds = yield* transactionService.findByExternalSource(provider);
-            const newTransfers = transfers.filter(transfer => !existingIds.has(transfer.externalId));
-
-            return isNotEmptyArray(newTransfers) ? yield* createSyncedTransfers(newTransfers, token) : 0;
+            return createdCount;
         });
 
         const processSources = Effect.fnUntraced(function* (sync: SyncEntityInterface, token: string) {
@@ -352,7 +356,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
 
                 const changedCount = yield* Effect.ensuring(
                     runSyncPhases(sync, externalAccountId, token),
-                    Effect.orDie(Effect.suspend(() => binanceTradeCursorService.persistRunSideEffects(sync, run.signedClient)))
+                    Effect.orDie(Effect.suspend(() => binanceTradeCursorService.persistRunWarning(sync, run.signedClient)))
                 );
                 if (isPositiveNumber(changedCount)) {
                     yield* accountBalanceIncrementalService.updateAllBalances(true);

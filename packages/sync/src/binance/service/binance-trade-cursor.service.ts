@@ -54,19 +54,28 @@ export class BinanceTradeCursorService extends Context.Service<BinanceTradeCurso
                     resolveResumeCursors(sync)
                 );
             }),
-            persistRunSideEffects: Effect.fn('BinanceTradeCursorService.persistRunSideEffects')(function* (
+            persistTradeCursors: Effect.fn('BinanceTradeCursorService.persistTradeCursors')(function* (
                 sync: SyncEntityInterface,
-                client: BinanceSignedClient | null
+                client: BinanceSignedClient
             ) {
-                if (!isDefined(client)) {
+                const runCursors = client.getSymbolTradeCursors();
+                if (!isNotEmptyArray(Object.keys(runCursors))) {
                     return;
                 }
 
-                const mergedCursors = merge(parse(sync.binanceTradeCursor), client.getSymbolTradeCursors());
                 yield* syncRepository.update(sync.id, {
-                    binanceTradeCursor: isNotEmptyArray(Object.keys(mergedCursors)) ? JSON.stringify(mergedCursors) : null,
-                    lastWarning: client.isC2cUnavailable() ? SyncWarningEnum.C2C_UNAVAILABLE : null
+                    binanceTradeCursor: JSON.stringify(merge(parse(sync.binanceTradeCursor), runCursors))
                 });
+            }),
+            persistRunWarning: Effect.fn('BinanceTradeCursorService.persistRunWarning')(function* (
+                sync: SyncEntityInterface,
+                client: BinanceSignedClient | null
+            ) {
+                if (isDefined(client)) {
+                    yield* syncRepository.update(sync.id, {
+                        lastWarning: client.isC2cUnavailable() ? SyncWarningEnum.C2C_UNAVAILABLE : null
+                    });
+                }
             })
         };
     })

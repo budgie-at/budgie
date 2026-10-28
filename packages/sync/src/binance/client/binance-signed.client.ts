@@ -188,7 +188,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             initialSymbolTradeCursors: BinanceTradeCursorMapInterface = {}
         ) {
             yield* this.decodeAccountId(accountId);
-            const { startTimeMs, endTimeMs } = this.resolveSourceWindow(from, to);
+            const { startTimeMs, endTimeMs } = yield* this.resolveSourceWindow(from, to);
 
             return yield* this.cached(
                 this.transferCache,
@@ -379,23 +379,22 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
                 .map(flow => mapBinanceConvertToTransfer(flow))
                 .filter(isDefined);
             const symbols = yield* this.deriveTradeSymbols(startTimeMs, endTimeMs, convertTransfers, eligibleSoldOffBaseAssets);
-            const byExternalId = new Map<string, BinanceTransferInterface>();
-
-            for (const symbol of symbols) {
+            const symbolFetches = yield* Effect.forEach(symbols, symbol => {
                 const resumeFromId = initialSymbolTradeCursors[symbol.symbol];
-                const symbolTransfers = yield* this.fetchSymbolTrades(
-                    symbol,
-                    startTimeMs,
-                    endTimeMs,
-                    isDefined(resumeFromId) ? resumeFromId + 1 : null
-                );
-                for (const transfer of symbolTransfers) {
-                    byExternalId.set(transfer.externalId, transfer);
-                }
-            }
 
-            for (const transfer of convertTransfers) {
-                byExternalId.set(transfer.externalId, transfer);
+                return this.fetchSymbolTrades(symbol, startTimeMs, endTimeMs, isDefined(resumeFromId) ? resumeFromId + 1 : null);
+            });
+            const byExternalId = new Map(
+                [...symbolFetches.flatMap(({ transfers }) => transfers), ...convertTransfers].map(transfer => [
+                    transfer.externalId,
+                    transfer
+                ])
+            );
+
+            for (const { symbol, lastWindowTradeId } of symbolFetches) {
+                if (isDefined(lastWindowTradeId)) {
+                    this.runSymbolTradeCursors.set(symbol, lastWindowTradeId);
+                }
             }
 
             return [...byExternalId.values()];
@@ -439,6 +438,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return Effect.gen({ self: this }, function* (this: BinanceSignedClient) {
             const transfers: BinanceTransferInterface[] = [];
             let fromId = initialFromId;
+            let lastWindowTradeId: number | null = null;
 
             do {
                 const trades = yield* this.signedRequest(BinanceTradeListApiSchema, MY_TRADES_ENDPOINT, 'GET', {
@@ -451,20 +451,17 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
                     )
                 );
                 const lastTrade = trades.at(-1);
+                const windowTrades = trades.filter(trade => trade.time >= startTimeMs && trade.time <= endTimeMs);
+                const lastWindowTrade = windowTrades.at(-1);
 
                 transfers.push(
-                    ...trades
-                        .filter(trade => trade.time >= startTimeMs && trade.time <= endTimeMs)
-                        .map(trade => mapBinanceTradeToTransfer(trade, symbol.baseAsset, symbol.quoteAsset))
-                        .filter(isDefined)
+                    ...windowTrades.map(trade => mapBinanceTradeToTransfer(trade, symbol.baseAsset, symbol.quoteAsset)).filter(isDefined)
                 );
-                if (isDefined(lastTrade)) {
-                    this.runSymbolTradeCursors.set(symbol.symbol, lastTrade.id);
-                }
+                lastWindowTradeId = lastWindowTrade?.id ?? lastWindowTradeId;
                 fromId = trades.length === TRADES_PER_SYMBOL_LIMIT && isDefined(lastTrade) ? lastTrade.id + 1 : null;
             } while (isDefined(fromId));
 
-            return transfers;
+            return { symbol: symbol.symbol, transfers, lastWindowTradeId };
         });
     }
 
@@ -641,9 +638,9 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             endTimeMs: number
         ) => Effect.Effect<BinanceTransactionSourcesInterface, SyncError, HttpClient.HttpClient>
     ): Effect.Effect<SyncTransactionInterface[], SyncError, HttpClient.HttpClient> {
-        const { startTimeMs, endTimeMs } = this.resolveSourceWindow(from, to);
-
-        return Effect.map(fetchSources(startTimeMs, endTimeMs), sources => this.buildSourceTransactions(wallet, sources));
+        return Effect.flatMap(this.resolveSourceWindow(from, to), ({ startTimeMs, endTimeMs }) =>
+            Effect.map(fetchSources(startTimeMs, endTimeMs), sources => this.buildSourceTransactions(wallet, sources))
+        );
     }
 
     private decodeAccountId(accountId: string): Effect.Effect<BinanceAccountIdInterface, SyncInvalidResponseError> {
@@ -654,11 +651,13 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             : Effect.fail(new SyncInvalidResponseError({ provider: this.provider, message: `Invalid Binance account id "${accountId}"` }));
     }
 
-    private resolveSourceWindow(from: number, to?: number | null): { startTimeMs: number; endTimeMs: number } {
+    private resolveSourceWindow(from: number, to?: number | null) {
         const startTimeMs = from * MILLISECONDS_PER_SECOND;
-        const endTimeMs = isDefined(to) ? to * MILLISECONDS_PER_SECOND : Date.now();
 
-        return { startTimeMs, endTimeMs };
+        return Effect.map(isDefined(to) ? Effect.succeed(to * MILLISECONDS_PER_SECOND) : this.resolveTimestamp(), endTimeMs => ({
+            startTimeMs,
+            endTimeMs
+        }));
     }
 
     private emptySources(overrides: Partial<BinanceTransactionSourcesInterface>): BinanceTransactionSourcesInterface {
