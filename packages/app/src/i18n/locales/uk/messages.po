@@ -592,8 +592,8 @@ msgid "Add balances later"
 msgstr "Додати баланси пізніше"
 
 #: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
-msgid "Add Capture Apple Pay transaction and set Amount, Merchant and Card from the Shortcut Input."
-msgstr "Додайте Capture Apple Pay transaction і задайте Суму, Продавця та Картку з вхідних даних швидкої команди."
+msgid "Add Capture contactless payment and set Amount, Merchant and Card from the Shortcut Input."
+msgstr "Додайте Capture contactless payment і задайте Суму, Продавця та Картку з вхідних даних швидкої команди."
 
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
 msgid "Add category"

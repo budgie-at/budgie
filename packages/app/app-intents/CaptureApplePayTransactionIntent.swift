@@ -61,8 +61,8 @@ enum AppleWalletCaptureIntentError: Error, CustomLocalizedStringResourceConverti
 
 @available(iOS 17.0, *)
 struct CaptureApplePayTransactionIntent: AppIntent {
-  static let title: LocalizedStringResource = "Capture Apple Pay transaction"
-  static let description = IntentDescription("Save an Apple Pay tap for import into Budgie.")
+  static let title: LocalizedStringResource = "Capture contactless payment"
+  static let description = IntentDescription("Save a contactless payment tap for import into Budgie.")
   static let openAppWhenRun = false
 
   @Parameter(title: "Amount")
