@@ -8,15 +8,19 @@ import {
 import { createTransactionInput } from '@budgie/ledger';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
 import { router } from 'expo-router';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import Toast from 'react-native-toast-message';
+import { useForm } from 'react-hook-form';
 
+import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
+import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 import { buildPrimaryEntry } from '../utils/build-primary-entry.util';
 
+import type { AppServices } from '../../@generic/runtime/app.runtime';
+
 interface UseTransactionFormConfig {
-    readonly onSubmit: (data: TransactionCreateInputInterface) => Promise<TransactionEntityInterface>;
+    readonly onSubmit: (data: TransactionCreateInputInterface) => Effect.Effect<TransactionEntityInterface, unknown, AppServices>;
     readonly fromAccountId: number | null;
     readonly toAccountId: number | null;
     readonly type: TransactionTypeEnum;
@@ -37,6 +41,7 @@ export const useCreateTransactionForm = ({
     comment = ''
 }: UseTransactionFormConfig) => {
     const { t } = useLingui();
+    const { run } = useSingleFlight();
 
     const form = useForm({
         mode: 'onSubmit',
@@ -52,18 +57,17 @@ export const useCreateTransactionForm = ({
         })
     });
 
-    const handleSubmit: SubmitHandler<TransactionCreateInputInterface> = async data => {
-        try {
-            await onSubmit(data);
-            router.back();
-        } catch {
-            Toast.show({
-                type: 'error',
-                text1: t`Could not create transaction`,
-                text2: t`Could not create transaction. Please try again later.`
-            });
-        }
-    };
+    const handleSubmit = (data: TransactionCreateInputInterface) =>
+        run(
+            onSubmit(data).pipe(
+                Effect.tap(() =>
+                    Effect.sync(() => {
+                        router.back();
+                    })
+                ),
+                toastOnFailure(t`Could not create transaction`, t`Could not create transaction. Please try again later.`)
+            )
+        );
 
     const wrappedHandleSubmit = () => form.handleSubmit(handleSubmit)();
 

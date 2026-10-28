@@ -6,9 +6,8 @@ import { isDefined } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
-import { BudgetProgressBar } from '../budget-progress-bar/budget-progress-bar';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
+import { BudgetProgressTrack } from '../budget-progress-track/budget-progress-track';
 
 import type { UserIconType } from '@budgie/contracts';
 
@@ -25,8 +24,7 @@ interface Props {
 
 export const BudgetDetailsLimitCard = (props: Props) => {
     const { title, icon, spent, limitAmount, currencySymbol, testID, spentTestID, onPress } = props;
-    const { decimalPlaces } = useSettingsContext();
-    const formatDigits = useFormatDigits(decimalPlaces);
+    const formatDigits = useDisplayFormatDigits();
     const { t } = useLingui();
 
     const remainingAmount = limitAmount - spent;
@@ -43,7 +41,7 @@ export const BudgetDetailsLimitCard = (props: Props) => {
                     </Text>
                 </View>
 
-                <BudgetProgressBar isSummaryVisible={false} spent={spent} limit={limitAmount} />
+                <BudgetProgressTrack spent={spent} limit={limitAmount} />
 
                 <View className="flex-row justify-between gap-x-md">
                     <View className="flex-1">

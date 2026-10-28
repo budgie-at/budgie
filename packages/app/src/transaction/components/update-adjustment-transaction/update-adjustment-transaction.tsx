@@ -13,17 +13,17 @@ import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useReducer, useRef } from 'react';
 import { View } from 'react-native';
-import Toast from 'react-native-toast-message';
 
-import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { AmountSignPill } from '../../../@generic/component/amount-sign-pill/amount-sign-pill';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
+import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useEmbeddingGenerator } from '../../../ai/hook/use-embedding-generator.hook';
 import { useKeypadInput } from '../../hook/use-keypad-input.hook';
 import { AdjustmentAccountSummary } from '../adjustment-account-summary/adjustment-account-summary';
+import { CurrencyModePill } from '../currency-mode-pill/currency-mode-pill';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
 import { TransactionKeypad } from '../transaction-keypad/transaction-keypad';
 
@@ -117,26 +117,18 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
             return;
         }
 
-        return run(async () => {
-            try {
-                await appRuntime.runPromise(
-                    Effect.flatMap(TransactionService, transactionService =>
-                        transactionService.updateById(
-                            transactionId,
-                            buildAdjustmentUpdateInput(transaction, details, numericValue, isIncrease)
-                        )
-                    )
+        return run(
+            Effect.gen(function* () {
+                const transactionService = yield* TransactionService;
+
+                yield* transactionService.updateById(
+                    transactionId,
+                    buildAdjustmentUpdateInput(transaction, details, numericValue, isIncrease)
                 );
-                void markForEmbedding(transactionId);
+                markForEmbedding(transactionId);
                 goBackOrReplace('/');
-            } catch (error: unknown) {
-                Toast.show({
-                    type: 'error',
-                    text1: t`Could not update transaction.`,
-                    text2: getErrorMessage(error)
-                });
-            }
-        });
+            }).pipe(toastOnFailure(t`Could not update transaction.`))
+        );
     };
 
     return (
@@ -146,8 +138,9 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
                 amount={displayValue}
                 currencySymbol={signedInstrumentSymbol}
                 variant={variant}
-                label={details.instrumentCode}
-            />
+            >
+                <CurrencyModePill label={details.instrumentCode} isFlipped={false} />
+            </TransactionAmountDisplay>
 
             <View className="gap-md">
                 <View className="items-center">

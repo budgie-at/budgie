@@ -1,28 +1,7 @@
-import * as Duration from 'effect/Duration';
-import * as Effect from 'effect/Effect';
-import { useEffect, useState } from 'react';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 
-import { emptyFn } from '@rnw-community/shared';
+import { delayedFlagAtom } from '../constant/delayed-flag-atom.constant';
 
-import { appRuntime } from '../runtime/app.runtime';
+const SLOW_WORK_DELAY_MS = 1_000;
 
-const SLOW_WORK_DELAY = Duration.seconds(1);
-
-export const useIsSlowWork = (isWorking: boolean): boolean => {
-    const [hasBeenSlow, setHasBeenSlow] = useState(false);
-
-    useEffect(() => {
-        if (!isWorking) {
-            return emptyFn;
-        }
-
-        const fiber = appRuntime.runFork(Effect.sleep(SLOW_WORK_DELAY).pipe(Effect.andThen(Effect.sync(() => void setHasBeenSlow(true)))));
-
-        return () => {
-            fiber.interruptUnsafe();
-            setHasBeenSlow(false);
-        };
-    }, [isWorking]);
-
-    return isWorking && hasBeenSlow;
-};
+export const useIsSlowWork = (isWorking: boolean): boolean => useAtomValue(delayedFlagAtom([isWorking, SLOW_WORK_DELAY_MS]));

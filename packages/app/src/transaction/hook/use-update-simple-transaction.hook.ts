@@ -51,7 +51,6 @@ export const useUpdateSimpleTransaction = ({ transaction, transactionType, openF
         formRef,
         actionsMenuProps,
         debtSettlementAccount,
-        mccCategoryId: categoryEntries.at(0)?.mccCategoryId ?? null,
         handleSubmit,
         handleDelete,
         handleGoBack,

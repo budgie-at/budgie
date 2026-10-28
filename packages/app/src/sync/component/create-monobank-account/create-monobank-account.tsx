@@ -44,7 +44,7 @@ export const CreateMonobankAccount = () => {
         router.dismissTo({ pathname: '/bank-integration/[id]', params: { id: String(integrationId) } });
     };
 
-    const handleFetchAccounts = async () => {
+    const handleFetchAccounts = () => {
         const trimmedToken = token.trim();
 
         if (!isNotEmptyString(trimmedToken)) {
@@ -53,7 +53,7 @@ export const CreateMonobankAccount = () => {
             return;
         }
 
-        await fetchAccountPreviews(
+        void fetchAccountPreviews(
             monobankSyncService =>
                 monobankSyncService.fetchNewConnectionAccountsPreview(trimmedToken).pipe(
                     Effect.flatMap(result =>

@@ -338,7 +338,7 @@ msgstr "Error de {source} · {message}"
 msgid "{spikeLabel} had a one-off {spikeAmount}. The estimate uses a typical month instead."
 msgstr "{spikeLabel} tuvo un gasto puntual de {spikeAmount}. La estimación usa un mes típico."
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
+#: src/transaction/components/transaction-split-field-icon/transaction-split-field-icon.tsx
 msgid "{splitEntryCount, plural, one {# item} other {# items}}"
 msgstr "{splitEntryCount, plural, one {# elemento} other {# elementos}}"
 
@@ -885,7 +885,7 @@ msgid "Backup file ready"
 msgstr "Archivo de copia listo"
 
 #: src/app/(main)/transactions/[id]/adjustment.tsx
-#: src/transaction/components/transaction-sections-list/transaction-sections-list.tsx
+#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx
 msgid "Balance Adjustment"
 msgstr "Ajuste de saldo"
 
@@ -1082,8 +1082,7 @@ msgstr "Puede tardar horas"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx
-#: src/account/component/account-action-card/account-action-card.tsx
-#: src/account/component/archived-account-card/archived-account-card.tsx
+#: src/account/component/account-action-button/account-action-button.tsx
 #: src/account/component/deposit-account-actions-menu/use-deposit-close-action.hook.ts
 #: src/account/hooks/use-archive-account.hook.ts
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
@@ -1141,7 +1140,6 @@ msgstr "Retiros de efectivo"
 #: src/app/(tabs)/settings/categories.tsx
 #: src/runway/component/runway-drivers/runway-drivers.tsx
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
-#: src/transaction/components/transaction-sections-list/transaction-sections-list.tsx
 msgid "Categories"
 msgstr "Categorías"
 
@@ -1173,7 +1171,7 @@ msgstr "Categorizar como {categoryTitle}"
 #: src/app/(tabs)/settings/import.tsx
 #: src/budget/service/budget-alert-monitor.service.ts
 #: src/category/components/category-form-selector/category-form-selector.tsx
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
+#: src/transaction/components/transaction-category-field-icon/transaction-category-field-icon.tsx
 #: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Category"
@@ -1911,7 +1909,7 @@ msgstr "Gestión de datos"
 
 #: src/@generic/component/date-filter/date-filter.tsx
 #: src/app/(tabs)/settings/import.tsx
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
+#: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "Date"
 msgstr "Fecha"
@@ -2282,7 +2280,7 @@ msgid "Enter a {PIN_LENGTH}-digit PIN"
 msgstr "Ingresa un PIN de {PIN_LENGTH} dígitos"
 
 #: src/account/utils/get-debt-opening-messages.util.ts
-#: src/ai/component/voice-review-footer/voice-review-footer.tsx
+#: src/ai/component/voice-review-save-button/voice-review-save-button.tsx
 msgid "Enter all amounts"
 msgstr "Introduce todos los importes"
 
@@ -3023,7 +3021,7 @@ msgid "left"
 msgstr "restante"
 
 #: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
-#: src/budget/components/budget-progress-bar/budget-progress-bar.tsx
+#: src/budget/hooks/use-budget-progress-labels.hook.ts
 msgid "Left"
 msgstr "Restante"
 
@@ -3630,8 +3628,8 @@ msgstr "no establecido"
 msgid "Not yet"
 msgstr "Aún no"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
 #: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
+#: src/transaction/components/transaction-note-field-icon/transaction-note-field-icon.tsx
 msgid "Note"
 msgstr "Nota"
 
@@ -3853,7 +3851,7 @@ msgid "over"
 msgstr "de más"
 
 #: src/budget/components/budget-details-limit-card/budget-details-limit-card.tsx
-#: src/budget/components/budget-progress-bar/budget-progress-bar.tsx
+#: src/budget/hooks/use-budget-progress-labels.hook.ts
 msgid "Over budget"
 msgstr "Por encima del presupuesto"
 
@@ -4406,7 +4404,7 @@ msgstr "La autonomía necesita al menos 3 meses completos de transacciones. Tien
 msgid "Save"
 msgstr "Guardar"
 
-#: src/ai/component/voice-review-footer/voice-review-footer.tsx
+#: src/ai/component/voice-review-save-button/voice-review-save-button.tsx
 msgid "Save {count}"
 msgstr "Guardar {count}"
 
@@ -4580,7 +4578,7 @@ msgstr "Seleccionar tipo de acción"
 msgid "Select all"
 msgstr "Seleccionar todo"
 
-#: src/ai/component/voice-review-footer/voice-review-footer.tsx
+#: src/ai/component/voice-review-save-button/voice-review-save-button.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 msgid "Select all categories"
 msgstr "Seleccionar todas las categorías"
@@ -4775,12 +4773,13 @@ msgstr "Algunas transacciones pueden coincidir con varias reglas. La primera reg
 
 #: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
 #: src/@generic/hook/use-show-error.hook.ts
+#: src/account/component/start-deposit-form/start-deposit-form.tsx
+#: src/account/hooks/use-account-entity-form.hook.ts
 #: src/ai/component/voice-input-error/voice-input-error.tsx
 msgid "Something went wrong"
 msgstr "Algo salió mal"
 
-#: src/account/component/account-action-card/account-action-card.tsx
-#: src/account/component/archived-account-card/archived-account-card.tsx
+#: src/account/component/account-action-button/account-action-button.tsx
 #: src/account/hooks/use-delete-account.hook.ts
 msgid "Something went wrong. Please try again later."
 msgstr "Algo salió mal. Por favor, inténtalo de nuevo más tarde."
@@ -4794,7 +4793,7 @@ msgstr "Clasifica las transacciones en categorías y sugiere etiquetas"
 msgid "Source"
 msgstr "Fuente"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
+#: src/transaction/components/transaction-sources-field-icon/transaction-sources-field-icon.tsx
 msgid "Sources"
 msgstr "Fuentes"
 
@@ -4819,7 +4818,7 @@ msgstr "Gastos por etiqueta"
 msgid "Spent"
 msgstr "Gastado"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
+#: src/transaction/components/transaction-split-field-icon/transaction-split-field-icon.tsx
 msgid "Split"
 msgstr "Dividir"
 
@@ -4987,9 +4986,9 @@ msgstr "Nombre de la etiqueta"
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx
 #: src/app/(tabs)/settings/tags.tsx
 #: src/runway/component/runway-drivers/runway-drivers.tsx
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
 #: src/transaction/components/transaction-info-tags-section/transaction-info-tags-section.tsx
+#: src/transaction/components/transaction-tags-field-icon/transaction-tags-field-icon.tsx
 msgid "Tags"
 msgstr "Etiquetas"
 
@@ -5269,7 +5268,7 @@ msgstr "Por pagar"
 
 #: src/@generic/constant/date-period.constant.ts
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
+#: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
 msgid "Today"
 msgstr "Hoy"
 
@@ -5734,7 +5733,7 @@ msgstr "Cuenta incorrecta o ausente"
 msgid "XLSX export"
 msgstr "Exportación XLSX"
 
-#: src/transaction/components/transaction-field-icons/transaction-field-icons.tsx
+#: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
 msgid "Yesterday"
 msgstr "Ayer"
 

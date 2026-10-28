@@ -1,24 +1,23 @@
 import { UserIconNameEnum, YIELD_TO_UI } from '@budgie/contracts';
 import {
-    countCsvRows,
     IMPORT_PRESETS,
     ImportColumnMapFormValues,
     ImportColumnMapSchema,
     ImporterColumnMapInterface,
     ImporterService,
-    ImportPresetEnum,
-    parseCsvHeaders
+    ImportPresetEnum
 } from '@budgie/import-export';
+import { useAtomSubscribe, useAtomValue } from '@effect/atom-react/Hooks';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import * as Cause from 'effect/Cause';
 import * as Effect from 'effect/Effect';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import * as Schema from 'effect/Schema';
-import { File } from 'expo-file-system';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { ActivityIndicator, Text, View } from 'react-native';
 
@@ -27,10 +26,12 @@ import { getErrorMessage, isNotEmptyArray, isNotEmptyString } from '@rnw-communi
 import { Button } from '../../../@generic/component/button/button';
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
+import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { ImportColumnMapField } from '../../../import/components/import-column-map-field/import-column-map-field';
 import { ImportPresetPicker } from '../../../import/components/import-preset-picker/import-preset-picker';
+import { EMPTY_IMPORT_CSV } from '../../../import/constant/empty-import-csv.constant';
+import { importCsvAtom } from '../../../import/constant/import-csv-atom.constant';
 import { RuleApplicationDrainerService } from '../../../rule/service/rule-application-drainer.service';
 
 import { ImportScreenSelector } from './import-screen.selector';
@@ -59,13 +60,24 @@ export default function ImportScreen() {
 
     const { t } = useLingui();
 
-    const [csvText, setCsvText] = useState('');
-    const [headers, setHeaders] = useState<string[]>([]);
-    const [rowCount, setRowCount] = useState(0);
-    const [isReadingFile, setIsReadingFile] = useState(false);
+    const csvAtom = importCsvAtom(isNotEmptyString(fileUri) ? fileUri : null);
+    const importCsvResult = useAtomValue(csvAtom);
+    const { csvText, headers, rowCount } = AsyncResult.getOrElse(importCsvResult, () => EMPTY_IMPORT_CSV);
+    const isReadingFile = AsyncResult.isWaiting(importCsvResult);
     const { isLoading: isImporting, run } = useSingleFlight();
     const isLoading = isReadingFile || isImporting;
     const [selectedPreset, setSelectedPreset] = useState<ImportPresetEnum | undefined>();
+
+    useAtomSubscribe(
+        csvAtom,
+        result => {
+            if (AsyncResult.isFailure(result)) {
+                showErrorToast(t`Could not read CSV file`, getErrorMessage(Cause.squash(result.cause)));
+                router.back();
+            }
+        },
+        { immediate: true }
+    );
 
     const headersSet = new Set(headers);
 
@@ -109,46 +121,18 @@ export default function ImportScreen() {
         reset(IMPORT_PRESETS[preset]);
     };
 
-    useEffect(() => {
-        if (!isNotEmptyString(fileUri)) {
-            return;
-        }
-
-        appRuntime.runFork(
-            Effect.gen(function* () {
-                setIsReadingFile(true);
-                const text = yield* Effect.promise(() => new File(fileUri).text());
-                const [parsedHeaders, count] = yield* Effect.all([parseCsvHeaders(text), countCsvRows(text)]);
-
-                setCsvText(text);
-                setHeaders(parsedHeaders);
-                setRowCount(count);
-            }).pipe(
-                Effect.catchCause(cause =>
-                    Effect.sync(() => {
-                        showErrorToast(t`Could not read CSV file`, getErrorMessage(Cause.squash(cause)));
-                        router.back();
-                    })
-                ),
-                Effect.ensuring(Effect.sync(() => void setIsReadingFile(false)))
-            )
-        );
-    }, [fileUri, t]);
-
     const handleStartImport = (columnMap: ImporterColumnMapInterface) =>
-        run(() =>
-            appRuntime.runPromise(
-                Effect.gen(function* () {
-                    const importerService = yield* ImporterService;
-                    const ruleApplicationDrainerService = yield* RuleApplicationDrainerService;
+        run(
+            Effect.gen(function* () {
+                const importerService = yield* ImporterService;
+                const ruleApplicationDrainerService = yield* RuleApplicationDrainerService;
 
-                    yield* YIELD_TO_UI;
-                    const { transactionIds, transactions } = yield* importerService.replaceAll(columnMap, csvText);
-                    yield* ruleApplicationDrainerService.enqueueTransactions(transactionIds, transactions);
+                yield* YIELD_TO_UI;
+                const { transactionIds, transactions } = yield* importerService.replaceAll(columnMap, csvText);
+                yield* ruleApplicationDrainerService.enqueueTransactions(transactionIds, transactions);
 
-                    router.back();
-                }).pipe(Effect.catch(error => Effect.sync(() => void showErrorToast(t`Could not import CSV file`, getErrorMessage(error)))))
-            )
+                router.back();
+            }).pipe(toastOnFailure(t`Could not import CSV file`))
         );
     const handleCancel = () => void router.back();
 

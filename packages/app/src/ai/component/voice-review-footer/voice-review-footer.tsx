@@ -1,13 +1,12 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import { ReactNode } from 'react';
 import { Text, View } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
-import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 
 import { VoiceReviewFooterSelector } from './voice-review-footer.selector';
 
@@ -17,26 +16,15 @@ interface Props {
     readonly count: number;
     readonly totalAmount: number;
     readonly currencySymbol: string;
-    readonly canSave: boolean;
-    readonly hasInvalidAmounts: boolean;
-    readonly hasMissingCategories: boolean;
-    readonly isSaving: boolean;
     readonly onCancel: () => void;
     readonly onReRecord: () => void;
-    readonly onSave: () => void;
+    readonly children: ReactNode;
 }
 
 export const VoiceReviewFooter = (props: Props) => {
-    const { count, totalAmount, currencySymbol, canSave, hasInvalidAmounts, hasMissingCategories, isSaving, onCancel, onReRecord, onSave } =
-        props;
+    const { count, totalAmount, currencySymbol, onCancel, onReRecord, children } = props;
     const { t } = useLingui();
-    const { decimalPlaces } = useSettingsContext();
-    const formatDigits = useFormatDigits(decimalPlaces);
-    const validSaveLabel = t`Save ${count}`;
-    const amountAwareSaveLabel = hasInvalidAmounts ? t`Enter all amounts` : validSaveLabel;
-    const saveLabel = hasMissingCategories ? t`Select all categories` : amountAwareSaveLabel;
-    const saveVariant: ColorPaletteVariant = canSave ? 'cta' : 'secondary';
-    const isSaveDisabled = !canSave || isSaving;
+    const formatDigits = useDisplayFormatDigits();
     const totalLabel = formatDigits(totalAmount, `${currencySymbol} `);
 
     return (
@@ -68,18 +56,7 @@ export const VoiceReviewFooter = (props: Props) => {
                 />
             </View>
 
-            {isPositiveNumber(count) ? (
-                <View className="mt-md">
-                    <Button
-                        variant={saveVariant}
-                        content={saveLabel}
-                        onPress={onSave}
-                        disabled={isSaveDisabled}
-                        isLoading={isSaving}
-                        testID={VoiceReviewFooterSelector.SaveButton}
-                    />
-                </View>
-            ) : null}
+            {isPositiveNumber(count) ? <View className="mt-md">{children}</View> : null}
         </View>
     );
 };

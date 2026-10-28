@@ -1,6 +1,7 @@
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 
+import { FilterSheetBulkToggle } from '../@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle';
 import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { useSearchableFilterState } from '../@generic/hook/use-searchable-filter-state/use-searchable-filter-state.hook';
@@ -53,7 +54,6 @@ export default function TransactionCategoryFilterModal() {
             <CategorySelectContent
                 data={data}
                 variant="cta"
-                initialCategoryId={null}
                 selectedCategoryIds={selectedCategoryIds}
                 isLoading={isLoading}
                 additionalBottomPadding={FOOTER_BOTTOM_SPACE}
@@ -66,17 +66,20 @@ export default function TransactionCategoryFilterModal() {
                 searchValue={search}
                 searchPlaceholder={t`Search categories...`}
                 onSearchChange={setSearch}
-                isLoading={isLoading}
-                selectedCount={selectedCount}
-                applyLabel={applyLabel}
-                onSelectAll={handleSelectAll}
-                onDeselectAll={handleDeselectAll}
-                onApply={handleApply}
                 searchTestID={TransactionFiltersSelector.CategorySearchInput}
-                selectAllTestID={TransactionFiltersSelector.CategorySelectAllButton}
-                deselectAllTestID={TransactionFiltersSelector.CategoryDeselectAllButton}
+                applyLabel={applyLabel}
+                onApply={handleApply}
                 applyTestID={TransactionFiltersSelector.CategoryApplyButton}
-            />
+            >
+                <FilterSheetBulkToggle
+                    isLoading={isLoading}
+                    selectedCount={selectedCount}
+                    onSelectAll={handleSelectAll}
+                    onDeselectAll={handleDeselectAll}
+                    selectAllTestID={TransactionFiltersSelector.CategorySelectAllButton}
+                    deselectAllTestID={TransactionFiltersSelector.CategoryDeselectAllButton}
+                />
+            </TransactionFilterSelectorFooter>
         </FilterSheet>
     );
 }

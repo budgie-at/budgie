@@ -47,10 +47,13 @@ The admin-guarded API route lives at `src/app/api/indexnow/route.ts`:
 
 ```ts
 // src/app/api/indexnow/route.ts
-import { isNotEmptyString } from '@rnw-community/shared';
+import * as Effect from 'effect/Effect';
+import * as FetchHttpClient from 'effect/http/FetchHttpClient';
 import { NextResponse } from 'next/server';
 
-import { indexnowSubmitter } from '../../../generic/service/indexnow-submitter.service';
+import { isNotEmptyString } from '@rnw-community/shared';
+
+import { IndexnowSubmitter } from '../../../generic/service/indexnow-submitter.service';
 
 export async function POST(request: Request): Promise<NextResponse> {
     const authHeader = request.headers.get('authorization');
@@ -64,7 +67,12 @@ export async function POST(request: Request): Promise<NextResponse> {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const result = await indexnowSubmitter.submit();
+    const result = await Effect.runPromise(
+        Effect.flatMap(IndexnowSubmitter, submitter => submitter.submit()).pipe(
+            Effect.provide(IndexnowSubmitter.layer),
+            Effect.provide(FetchHttpClient.layer)
+        )
+    );
 
     return NextResponse.json(result, { status: result.status });
 }

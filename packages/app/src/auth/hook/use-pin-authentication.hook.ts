@@ -1,3 +1,4 @@
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useEffect, useEffectEvent, useState } from 'react';
@@ -5,6 +6,7 @@ import { AppState } from 'react-native';
 
 import { emptyFn } from '@rnw-community/shared';
 
+import { appStateAtom } from '../../@generic/constant/app-state-atom.constant';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 import { PIN_LENGTH } from '../constant/pin-length.constant';
@@ -13,25 +15,20 @@ import { useAuthContext } from '../context/auth.context';
 import { useAuthAttempt } from './use-auth-attempt.hook';
 import { usePinError } from './use-pin-error.hook';
 
-import type { AppStateStatus } from 'react-native';
-
 const useIsAppActive = (onBackground: () => void) => {
-    const [isAppActive, setIsAppActive] = useState(AppState.currentState === 'active');
-    const handleInvalidate = useEffectEvent(onBackground);
-    const handleAppStateChange = useEffectEvent((nextAppState: AppStateStatus) => {
-        setIsAppActive(nextAppState === 'active');
-
-        if (nextAppState === 'background') {
-            onBackground();
-        }
-    });
+    const isAppActive = useAtomValue(appStateAtom) === 'active';
+    const handleBackground = useEffectEvent(onBackground);
 
     useEffect(() => {
-        const appStateSubscription = AppState.addEventListener('change', handleAppStateChange);
+        const appStateSubscription = AppState.addEventListener('change', nextAppState => {
+            if (nextAppState === 'background') {
+                handleBackground();
+            }
+        });
 
         return () => {
             appStateSubscription.remove();
-            handleInvalidate();
+            handleBackground();
         };
     }, []);
 

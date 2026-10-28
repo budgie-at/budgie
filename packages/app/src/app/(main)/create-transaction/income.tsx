@@ -1,3 +1,4 @@
+import { useAtomValue } from '@effect/atom-react/Hooks';
 /* jscpd:ignore-start */
 import { IncomeTransactionCreateInputSchema, TransactionTypeEnum } from '@budgie/contracts';
 import { TransactionService } from '@budgie/ledger';
@@ -8,11 +9,10 @@ import { FormProvider } from 'react-hook-form';
 
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { FullPage } from '../../../@generic/component/page/full-page';
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { parsePositiveRouteParam } from '../../../@generic/utils/parse-positive-route-param.util';
 import { useEmbeddingGenerator } from '../../../ai/hook/use-embedding-generator.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { defaultAccountAtom } from '../../../settings/constants/settings-atoms.constant';
 import { SimpleQuickForm } from '../../../transaction/components/simple-quick-form/simple-quick-form';
 import { useCreateTransactionForm } from '../../../transaction/hook/use-create-transaction-form.hook';
 /* jscpd:ignore-end */
@@ -20,19 +20,19 @@ import { useCreateTransactionForm } from '../../../transaction/hook/use-create-t
 /* jscpd:ignore-start */
 export default function CreateIncomeTransactionPage() {
     const { t } = useLingui();
-    const { defaultAccount } = useSettingsContext();
+    const defaultAccount = useAtomValue(defaultAccountAtom);
     const { markForEmbedding } = useEmbeddingGenerator();
     const { accountId } = useLocalSearchParams<{ accountId?: string | string[] }>();
 
     const { form, handleSubmit } = useCreateTransactionForm({
-        onSubmit: async data => {
-            const result = await appRuntime.runPromise(
-                Effect.flatMap(TransactionService, transactionService => transactionService.createInternal(data))
-            );
-            markForEmbedding(result.id);
-
-            return result;
-        },
+        onSubmit: data =>
+            Effect.flatMap(TransactionService, transactionService => transactionService.createInternal(data)).pipe(
+                Effect.tap(result =>
+                    Effect.sync(() => {
+                        markForEmbedding(result.id);
+                    })
+                )
+            ),
         schema: IncomeTransactionCreateInputSchema,
         toAccountId: parsePositiveRouteParam(accountId) ?? defaultAccount?.id ?? 0,
         type: TransactionTypeEnum.INCOME,
@@ -45,11 +45,7 @@ export default function CreateIncomeTransactionPage() {
         <FormProvider {...form}>
             <FullPage header={<PageHeader title={t`New Income`} onGoBack={handleGoBack} />}>
                 <SimpleQuickForm
-                    variant="positive"
                     transactionType={TransactionTypeEnum.INCOME}
-                    accountFieldName="toAccountId"
-                    transactionTitle=""
-                    mccCategoryId={null}
                     isNewTransaction
                     onSubmit={handleSubmit}
                     onCancel={handleGoBack}

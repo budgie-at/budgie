@@ -1,5 +1,8 @@
+import { isSameMonth } from 'date-fns/isSameMonth';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { useState } from 'react';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { useFormatDate } from '../../i18n/hook/use-format-date.hook';
@@ -18,13 +21,13 @@ const groupTransactionsByMonth = (
     const sections: TransactionsByMonthSection[] = [];
 
     for (const transaction of transactions) {
-        const month = formatMonthAndYear(transaction.operatedAt);
         const last = sections.at(-1);
+        const previous = last?.transactions.at(-1);
 
-        if (last?.date === month) {
+        if (isDefined(last) && isDefined(previous) && isSameMonth(previous.operatedAt, transaction.operatedAt)) {
             last.transactions.push(transaction);
         } else {
-            sections.push({ date: month, transactions: [transaction] });
+            sections.push({ date: formatMonthAndYear(transaction.operatedAt), transactions: [transaction] });
         }
     }
 
@@ -49,7 +52,7 @@ export const useGetTransactionSectionsQuery = <Transaction extends TransactionWi
 
     const loadMore = () => {
         if (hasMore) {
-            setPagination({ queryKey, loadedCount: loadedCount + DEFAULT_LIMIT });
+            setPagination({ queryKey, loadedCount: loadedCount * 2 });
         }
     };
 

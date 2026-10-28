@@ -1,5 +1,6 @@
 import { AccountDebtTypeEnum, AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { AccountDebtOpeningService, DebtAccountService } from '@budgie/ledger';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useState } from 'react';
@@ -9,8 +10,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
 import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { defaultInstrumentIdAtom } from '../../../settings/constants/settings-atoms.constant';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { useAccountCreateBindings } from '../../hooks/use-account-create-bindings.hook';
 import { useDebtAccountForm } from '../../hooks/use-debt-account-form.hook';
@@ -26,7 +26,7 @@ import { DebtOpeningAccountField } from '../debt-opening-account-field/debt-open
 const DEFAULT_ICON = UserIconNameEnum.HandCoins;
 
 export const CreateDebtAccount = () => {
-    const { defaultInstrument } = useSettingsContext();
+    const defaultInstrumentId = useAtomValue(defaultInstrumentIdAtom);
     const { t } = useLingui();
     const [openingAccountId, setOpeningAccountId] = useState<number | null>(null);
     const initialValues = {
@@ -40,20 +40,16 @@ export const CreateDebtAccount = () => {
         includeInNetWorth: false,
         type: AccountTypeEnum.DEBT,
         debtType: AccountDebtTypeEnum.LENT,
-        instrumentId: defaultInstrument.id
+        instrumentId: defaultInstrumentId
     };
 
-    const { control, handleSubmit, instrument, debtType, isSubmitting } = useDebtAccountForm(initialValues, async values => {
-        if (isDefined(openingAccountId)) {
-            return appRuntime.runPromise(
-                Effect.flatMap(AccountDebtOpeningService, accountDebtOpeningService =>
-                    accountDebtOpeningService.openDebtWithFundingAccount(values, openingAccountId, getDebtOpeningMessages())
-                )
-            );
-        }
-
-        return appRuntime.runPromise(Effect.flatMap(DebtAccountService, debtAccountService => debtAccountService.createDebt(values)));
-    });
+    const { control, handleSubmit, instrument, debtType, isSubmitting } = useDebtAccountForm(initialValues, values =>
+        isDefined(openingAccountId)
+            ? Effect.flatMap(AccountDebtOpeningService, accountDebtOpeningService =>
+                  accountDebtOpeningService.openDebtWithFundingAccount(values, openingAccountId, getDebtOpeningMessages())
+              )
+            : Effect.flatMap(DebtAccountService, debtAccountService => debtAccountService.createDebt(values))
+    );
     const isLentDebt = debtType === AccountDebtTypeEnum.LENT;
     const variant = ACCOUNT_COLOR.DEBT;
     const fields = {

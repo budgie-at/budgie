@@ -12,10 +12,11 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
 import { PopoverMenu } from '../../../@generic/component/popover-menu/popover-menu';
 import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
-import { useEffectAction } from '../../../@generic/hook/use-effect-action.hook';
 import { usePopoverMenuAnchor } from '../../../@generic/hook/use-popover-menu-anchor.hook';
+import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { testID } from '../../../@generic/utils/test-id.util';
+import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useArchiveAccount } from '../../../account/hooks/use-archive-account.hook';
 
 interface Props {
@@ -31,28 +32,33 @@ export const BankIntegrationAccountMenu = ({ accountId, rowTestID }: Props) => {
     const router = useRouter();
     const { anchor, closeMenu, handleCloseComplete, handleToggleMenu, isMenuOpen } = usePopoverMenuAnchor();
     const { handleArchive, isLoading } = useArchiveAccount(accountId, emptyFn);
-    const [runMarkExternal, isMarkingExternal] = useEffectAction(t`Could not mark account as external`);
+    const { isLoading: isMarkingExternal, run: runMarkExternal } = useSingleFlight();
 
     const handleDetailsPress = () =>
         void closeMenu(() => void router.navigate({ pathname: '/account/[id]/details', params: { id: String(accountId) } }));
     const handleEditPress = () =>
         void closeMenu(() => void router.navigate({ pathname: '/account/[id]/update', params: { id: String(accountId) } }));
     const handleArchivePress = () => void closeMenu(() => void handleArchive());
-    const handleMarkExternal = async () => {
-        const confirmed = await confirmAlert({
-            title: t`Mark as External?`,
-            message: t`This account will be archived and its transfers will become income and expenses on your other accounts. This cannot be undone.`,
-            confirmText: t`Mark External`,
-            cancelText: t`Cancel`,
-            isDestructive: true
-        });
+    const handleMarkExternal = () =>
+        void runMarkExternal(
+            Effect.gen(function* () {
+                const confirmed = yield* confirmAlert({
+                    title: t`Mark as External?`,
+                    message: t`This account will be archived and its transfers will become income and expenses on your other accounts. This cannot be undone.`,
+                    confirmText: t`Mark External`,
+                    cancelText: t`Cancel`,
+                    isDestructive: true
+                });
 
-        if (!confirmed) {
-            return;
-        }
+                if (!confirmed) {
+                    return;
+                }
 
-        runMarkExternal(Effect.flatMap(ExternalAccountService, externalAccountService => externalAccountService.markExternal(accountId)));
-    };
+                const externalAccountService = yield* ExternalAccountService;
+
+                yield* externalAccountService.markExternal(accountId);
+            }).pipe(toastOnFailure(t`Could not mark account as external`))
+        );
     const handleExternalPress = () => void closeMenu(() => void handleMarkExternal());
 
     const isBusy = isLoading || isMarkingExternal;

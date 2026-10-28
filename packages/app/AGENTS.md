@@ -52,19 +52,9 @@ src/
 
 Database-backed UI reads use `databaseQueryAtom([Tables...], Effect.flatMap(Repo, repo => repo.x(args)))` (`src/@generic/utils/database-query-atom.util.ts`), or `databaseQueryFamily([Tables...], Repo, (repo, key) => repo.x(key))` (`database-query-family.util.ts`) when parametrised, and read with `useLiveAtomValue`. List every table the SQL reads; builder writes invalidate them through the Drizzle adapter, raw writes through `Db.mutation`.
 
-### Use `isDefined` for null checks in context hooks
+### Context hooks never throw
 
-```typescript
-// Good
-if (!isDefined(context)) {
-    throw new Error('...');
-}
-
-// Bad
-if (context === null) {
-    throw new Error('...');
-}
-```
+Contexts are created with a safe default value and the hook is `use(Context)`; a context hook never throws when used outside its provider (`budgie/effect-no-imperative` covers `context/` files).
 
 ### Extract inline types to named interfaces
 
@@ -297,7 +287,7 @@ Valid cases for `max-statements` disable:
 
 ## Component Patterns
 
-> Composition rules (prop budget, compound components, explicit variants, hook chains) live in [docs/component-composition.md](../../docs/component-composition.md). Oxlint loads the `budgie/max-component-props` rule through its JavaScript-plugin bridge and errors above 8 props; refactor with composition instead of growing the `.oxlintrc.json` grandfather list.
+> Composition rules (prop budget, compound components, explicit variants, hook chains) live in [docs/component-composition.md](../../docs/component-composition.md). Oxlint loads the `budgie/max-component-props` rule through its JavaScript-plugin bridge and errors above 8 props with no allow list; refactor with composition instead.
 
 ### File Organization
 
@@ -596,7 +586,7 @@ Toast.show({
 
 ## Provider Architecture
 
-Root layout has 14 nested providers in this order (settings are not a provider: `useSettingsContext` reads `settingsContextAtom`, so screens frozen by `react-native-screens` still see setting changes on reveal). The outermost element is `RegistryContext.Provider` with `appAtomRegistry` (`@generic/constant/app-atom-registry.constant.ts`): the whole tree and the services that write atoms share one registry. Never provide a second registry for a subtree, because every atom read inside it gets its own node and starts from `Initial` again:
+Root layout has 14 nested providers in this order (settings are not a provider: components read the granular atoms in `settings/constants/settings-atoms.constant.ts` (or `useSetting(key)`), so screens frozen by `react-native-screens` still see setting changes on reveal). The outermost element is `RegistryContext.Provider` with `appAtomRegistry` (`@generic/constant/app-atom-registry.constant.ts`): the whole tree and the services that write atoms share one registry. Never provide a second registry for a subtree, because every atom read inside it gets its own node and starts from `Initial` again:
 
 1. SafeAreaProvider
 2. SQLiteProvider

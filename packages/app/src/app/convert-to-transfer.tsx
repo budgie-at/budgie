@@ -6,13 +6,13 @@ import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
 import { router } from 'expo-router';
 import { FormProvider, useForm } from 'react-hook-form';
-import Toast from 'react-native-toast-message';
 
 import { PageHeader } from '../@generic/component/page-header/page-header';
 import { ModalPage } from '../@generic/component/page/modal-page';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
-import { appRuntime } from '../@generic/runtime/app.runtime';
+import { useSingleFlight } from '../@generic/hook/use-single-flight.hook';
 import { confirmAlert } from '../@generic/utils/confirm-alert/confirm-alert.util';
+import { toastOnFailure } from '../@generic/utils/toast-on-failure.util';
 import { TransferQuickForm } from '../transaction/components/transfer-quick-form/transfer-quick-form';
 import { useConvertToTransferModal, useConvertToTransferModalParams } from '../transaction/context/convert-to-transfer-modal.context';
 
@@ -26,6 +26,7 @@ export default function ConvertToTransferModal() {
     const [, resolveConvertToTransfer, dismissConvertToTransfer] = useConvertToTransferModal();
     useModalDismiss(dismissConvertToTransfer);
     const currentParams = useConvertToTransferModalParams();
+    const { run } = useSingleFlight();
 
     const transactionId = currentParams?.transactionId ?? 0;
     const transactionType = currentParams?.transactionType ?? TransactionTypeEnum.EXPENSE;
@@ -64,56 +65,49 @@ export default function ConvertToTransferModal() {
         resolveConvertToTransfer(false);
     };
 
-    // eslint-disable-next-line max-statements -- Conversion flow with confirmation dialog and error handling
-    const handleSubmit = async () => {
-        const confirmed = await confirmAlert({
-            title: t`Convert to Transfer?`,
-            message: description,
-            confirmText: t`Convert`,
-            cancelText: t`Cancel`,
-            isDestructive: false
-        });
+    const handleSubmit = () =>
+        run(
+            Effect.gen(function* () {
+                const confirmed = yield* confirmAlert({
+                    title: t`Convert to Transfer?`,
+                    message: description,
+                    confirmText: t`Convert`,
+                    cancelText: t`Cancel`,
+                    isDestructive: false
+                });
 
-        if (!confirmed) {
-            return;
-        }
-
-        try {
-            const formValues = form.getValues();
-            const selectedAccountId = isExpense ? (formValues.toAccountId ?? 0) : (formValues.fromAccountId ?? 0);
-            const customRate = formValues.exchangeRate === 1 ? 0 : formValues.exchangeRate;
-            const convertParams = {
-                id: transactionId,
-                accountId: selectedAccountId,
-                customExchangeRate: customRate,
-                feeEntries: getTransactionFeeEntries(formValues.entries)
-            };
-
-            await appRuntime.runPromise(
-                Effect.flatMap(TransactionTransferService, transactionTransferService =>
-                    isExpense
-                        ? transactionTransferService.convertExpenseToTransfer(convertParams)
-                        : transactionTransferService.convertIncomeToTransfer(convertParams)
-                )
-            );
-
-            if (skipPostConvertNavigation) {
-                resolveConvertToTransfer(true);
-            } else {
-                resolveConvertToTransfer(true, { skipBack: true });
-                if (router.canDismiss()) {
-                    router.dismiss();
-                }
-                if (router.canGoBack()) {
-                    router.back();
+                if (!confirmed) {
+                    return;
                 }
 
-                router.push({ pathname: '/transactions/[id]/transfer', params: { id: String(transactionId) } });
-            }
-        } catch {
-            Toast.show({ type: 'error', text1: t`Conversion failed`, text2: t`Please try again` });
-        }
-    };
+                const formValues = form.getValues();
+                const convertParams = {
+                    id: transactionId,
+                    accountId: isExpense ? (formValues.toAccountId ?? 0) : (formValues.fromAccountId ?? 0),
+                    customExchangeRate: formValues.exchangeRate === 1 ? 0 : formValues.exchangeRate,
+                    feeEntries: getTransactionFeeEntries(formValues.entries)
+                };
+                const transactionTransferService = yield* TransactionTransferService;
+
+                yield* isExpense
+                    ? transactionTransferService.convertExpenseToTransfer(convertParams)
+                    : transactionTransferService.convertIncomeToTransfer(convertParams);
+
+                if (skipPostConvertNavigation) {
+                    resolveConvertToTransfer(true);
+                } else {
+                    resolveConvertToTransfer(true, { skipBack: true });
+                    if (router.canDismiss()) {
+                        router.dismiss();
+                    }
+                    if (router.canGoBack()) {
+                        router.back();
+                    }
+
+                    router.push({ pathname: '/transactions/[id]/transfer', params: { id: String(transactionId) } });
+                }
+            }).pipe(toastOnFailure(t`Conversion failed`, t`Please try again`))
+        );
 
     return (
         <FormProvider {...form}>

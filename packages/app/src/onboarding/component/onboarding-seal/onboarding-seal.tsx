@@ -5,7 +5,7 @@ import { Redirect } from 'expo-router';
 import { useState } from 'react';
 import { Text, View } from 'react-native';
 
-import { getErrorMessage, isNotEmptyString } from '@rnw-community/shared';
+import { isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { Card } from '../../../@generic/component/card/card';
@@ -13,7 +13,8 @@ import { Icon } from '../../../@generic/component/icon/icon';
 import { LoadingOverlay } from '../../../@generic/component/loading-overlay/loading-overlay';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
+import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
+import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useAuthContext } from '../../../auth/context/auth.context';
 import { AuthService } from '../../../auth/service/auth.service';
 import { ONBOARDING_STEP_ORDER } from '../../constant/onboarding-step-order.constant';
@@ -46,9 +47,13 @@ export const OnboardingSeal = () => {
             return;
         }
 
-        void appRuntime
-            .runPromise(Effect.flatMap(AuthService, authService => authService.authenticateWithBiometrics()))
-            .then(setIsBiometricEnabled);
+        appRuntime.runFork(
+            logAndContinue(
+                Effect.flatMap(AuthService, authService => authService.authenticateWithBiometrics()).pipe(
+                    Effect.tap(isAuthenticated => Effect.sync(() => void setIsBiometricEnabled(isAuthenticated)))
+                )
+            )
+        );
     };
 
     const handleSeal = () => {
@@ -57,16 +62,16 @@ export const OnboardingSeal = () => {
         }
 
         setIsSealing(true);
-        appRuntime
-            .runPromise(
+        appRuntime.runFork(
+            logAndContinue(
                 Effect.flatMap(AuthService, authService =>
                     authService.sealOnboarding(pin, isBiometricEnabled, ONBOARDING_STEP_ORDER.indexOf(OnboardingStepEnum.SEALED))
+                ).pipe(
+                    toastOnFailure(t`Could not seal the file`),
+                    Effect.tapCause(() => Effect.sync(() => void setIsSealing(false)))
                 )
             )
-            .catch((error: unknown) => {
-                setIsSealing(false);
-                showErrorToast(t`Could not seal the file`, getErrorMessage(error));
-            });
+        );
     };
 
     if (!isNotEmptyString(pin)) {

@@ -8,7 +8,6 @@ import { isDefined } from '@rnw-community/shared';
 
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
 import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { useAccountUpdateBindings } from '../../hooks/use-account-update-bindings.hook';
 import { useDebtAccountForm } from '../../hooks/use-debt-account-form.hook';
@@ -43,9 +42,7 @@ export const UpdateDebtAccount = ({ account }: Props) => {
     };
 
     const { control, handleSubmit, instrument, debtType, isSubmitting } = useDebtAccountForm(initialValues, values =>
-        appRuntime.runPromise(
-            Effect.flatMap(DebtAccountService, debtAccountService => debtAccountService.updateDebtById(account.id, values))
-        )
+        Effect.flatMap(DebtAccountService, debtAccountService => debtAccountService.updateDebtById(account.id, values))
     );
 
     const fields = {

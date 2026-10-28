@@ -3,6 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
+import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
 import { useSetting } from '../../hook/use-setting.hook';
 import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
@@ -12,8 +13,8 @@ export const ScreenshotProtectionRow = () => {
     const { t } = useLingui();
     const isScreenshotProtectionEnabled = useSetting('isScreenshotProtectionEnabled');
 
-    const handleToggle = async (value: boolean) => {
-        await appRuntime.runPromise(updateSettingsMutation({ isScreenshotProtectionEnabled: value }));
+    const handleToggle = (value: boolean) => {
+        appRuntime.runFork(logAndContinue(updateSettingsMutation({ isScreenshotProtectionEnabled: value })));
     };
 
     return (

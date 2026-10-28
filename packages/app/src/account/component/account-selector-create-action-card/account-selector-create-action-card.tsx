@@ -15,10 +15,8 @@ interface Props {
 
 export const AccountSelectorCreateActionCard = ({ title, subtitle, onCreate }: Props) => (
     <SelectorCard
-        identifier={0}
         isSelected={false}
-        allowReselect
-        onSelect={onCreate}
+        onPress={onCreate}
         className="mb-sm"
         testID={AccountSelectorModalSelector.CreateAction}
         iconSlot={

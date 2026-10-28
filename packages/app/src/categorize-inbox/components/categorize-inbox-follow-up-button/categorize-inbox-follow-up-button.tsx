@@ -23,7 +23,7 @@ export const CategorizeInboxFollowUpButton = ({ lastWrite }: Props) => {
     const isApplied = isNotEmptyArray(lastWrite.followUpAssignments);
     const accessibilityState = { disabled: isApplied };
 
-    if (!isDefined(strategy.pickFollowUpTagIds)) {
+    if (!isDefined(strategy?.pickFollowUpTagIds)) {
         return null;
     }
 

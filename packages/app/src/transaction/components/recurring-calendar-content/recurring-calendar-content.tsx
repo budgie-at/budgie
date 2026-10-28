@@ -1,4 +1,5 @@
 import { convertFromMicroUnits } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
@@ -8,8 +9,8 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { useToday } from '../../../@generic/hook/use-today.hook';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
+import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { useRecurringCalendar } from '../../hook/use-recurring-calendar.hook';
 import { RecurringCalendarEmptyState } from '../recurring-calendar-empty-state/recurring-calendar-empty-state';
 import { RecurringCalendarEntryList } from '../recurring-calendar-entry-list/recurring-calendar-entry-list';
@@ -24,8 +25,8 @@ const EMPTY_ENTRIES_BY_DAY: ReadonlyMap<number, readonly RecurringCalendarEntryI
 // eslint-disable-next-line complexity, max-statements, max-lines-per-function -- Page orchestration component with multiple hooks, state, and forecast logic
 export const RecurringCalendarContent = () => {
     const { t } = useLingui();
-    const { decimalPlaces, defaultInstrument } = useSettingsContext();
-    const formatDigits = useFormatDigits(decimalPlaces);
+    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
+    const formatDigits = useDisplayFormatDigits();
 
     const now = useToday();
     const [displayMonth, setDisplayMonth] = useState(now.getMonth());

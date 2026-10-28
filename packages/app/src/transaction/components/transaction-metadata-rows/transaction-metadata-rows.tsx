@@ -6,8 +6,7 @@ import { View } from 'react-native';
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { MetaPill } from '../../../@generic/component/meta-pill/meta-pill';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 import { DebtSettlementPill } from '../debt-settlement-pill/debt-settlement-pill';
 import { RefundedPill } from '../refunded-pill/refunded-pill';
@@ -24,8 +23,7 @@ interface Props {
 }
 
 export const TransactionMetadataRows = ({ transaction, refundedPillTestID, receiptPillTestID, feeTestID, debtSettlementTestID }: Props) => {
-    const { decimalPlaces } = useSettingsContext();
-    const formatDigits = useFormatDigits(decimalPlaces);
+    const formatDigits = useDisplayFormatDigits();
     const feeEntries = getTransactionFeeEntries(transaction.entries);
     const feeEntry = feeEntries.at(0);
     const feeAmount = convertFromMicroUnits(sumEntryAmounts(feeEntries));

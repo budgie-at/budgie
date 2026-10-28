@@ -8,7 +8,8 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { IconSuggestions } from '../../../@generic/component/icon-suggestions/icon-suggestions';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
+import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
+import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useCategoryFormModal } from '../../context/category-form-modal.context';
 import { getCategoryIconTerms } from '../../utils/get-category-icon-terms.util';
 
@@ -27,9 +28,13 @@ export const CategoryIconFixRow = ({ category }: Props) => {
     };
 
     const handleSelect = (icon: UserIconType) => {
-        appRuntime
-            .runPromise(Effect.flatMap(CategoryService, categoryService => categoryService.updateIcon(category.id, icon)))
-            .catch(() => void showErrorToast(t`Could not update category icon`, t`Please try again later`));
+        appRuntime.runFork(
+            logAndContinue(
+                Effect.flatMap(CategoryService, categoryService => categoryService.updateIcon(category.id, icon)).pipe(
+                    toastOnFailure(t`Could not update category icon`, t`Please try again later`)
+                )
+            )
+        );
     };
 
     return (

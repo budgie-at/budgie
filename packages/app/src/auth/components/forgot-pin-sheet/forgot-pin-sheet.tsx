@@ -4,8 +4,6 @@ import * as Effect from 'effect/Effect';
 import { useState } from 'react';
 import { Text, View } from 'react-native';
 
-import { getErrorMessage } from '@rnw-community/shared';
-
 import { Button } from '../../../@generic/component/button/button';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
@@ -13,7 +11,8 @@ import { DB_NAME } from '../../../@generic/drizzle/constant/db-name.constant';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { AppResetService } from '../../../@generic/service/app-reset.service';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
-import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
+import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
+import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useRestoreBackup } from '../../../import/hook/use-restore-backup.hook';
 import { PinSheetLayout } from '../pin-sheet-layout/pin-sheet-layout';
 
@@ -30,26 +29,31 @@ export const ForgotPinSheet = ({ onTryAgain }: Props) => {
 
     const { selectAndRestore, isLoading: isRestoring } = useRestoreBackup();
 
-    const handleErasePress = async () => {
-        const isConfirmed = await confirmAlert({
-            title: t`Erase and start fresh?`,
-            message: t`This deletes ${DB_NAME} and everything in it from this phone. It can't be undone.`,
-            confirmText: t`Erase`,
-            cancelText: t`Cancel`,
-            isDestructive: true
-        });
+    const handleErasePress = () => {
+        appRuntime.runFork(
+            logAndContinue(
+                Effect.gen(function* () {
+                    const isConfirmed = yield* confirmAlert({
+                        title: t`Erase and start fresh?`,
+                        message: t`This deletes ${DB_NAME} and everything in it from this phone. It can't be undone.`,
+                        confirmText: t`Erase`,
+                        cancelText: t`Cancel`,
+                        isDestructive: true
+                    });
 
-        if (!isConfirmed) {
-            return;
-        }
+                    if (!isConfirmed) {
+                        return;
+                    }
 
-        setIsErasing(true);
-        appRuntime
-            .runPromise(Effect.flatMap(AppResetService, appResetService => appResetService.clearAllDataAndRestart()))
-            .catch((error: unknown) => {
-                setIsErasing(false);
-                showErrorToast(t`Could not erase the data`, getErrorMessage(error));
-            });
+                    setIsErasing(true);
+                    const appResetService = yield* AppResetService;
+                    yield* appResetService.clearAllDataAndRestart().pipe(
+                        Effect.tapCause(() => Effect.sync(() => void setIsErasing(false))),
+                        toastOnFailure(t`Could not erase the data`)
+                    );
+                })
+            )
+        );
     };
 
     const isBusy = isRestoring || isErasing;

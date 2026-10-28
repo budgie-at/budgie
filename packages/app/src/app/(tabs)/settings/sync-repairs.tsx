@@ -7,7 +7,6 @@ import { isDefined, isEmptyArray, isPositiveNumber } from '@rnw-community/shared
 import { Button } from '../../../@generic/component/button/button';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { Page } from '../../../@generic/component/page/page';
-import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { SyncRepairSourceRow } from '../../../settings/components/sync-repair-source-row/sync-repair-source-row';
 import { SyncRepairsConfirmationCard } from '../../../settings/components/sync-repairs-confirmation-card/sync-repairs-confirmation-card';
 import { SyncRepairsEmptyStateCard } from '../../../settings/components/sync-repairs-empty-state-card/sync-repairs-empty-state-card';
@@ -15,11 +14,10 @@ import { SyncRepairsErrorCard } from '../../../settings/components/sync-repairs-
 import { SyncRepairsIntroCard } from '../../../settings/components/sync-repairs-intro-card/sync-repairs-intro-card';
 import { useSyncRepairsAction } from '../../../settings/hooks/use-sync-repairs-action.hook';
 import { getSyncRepairText } from '../../../settings/utils/get-sync-repair-text.util';
+import { goBackToSettings } from '../../../settings/utils/go-back-to-settings.util';
 import { useSyncDuplicateRepairPreviewQuery } from '../../../sync/query/use-sync-duplicate-repair-preview.query';
 
 import { SyncRepairsPageSelector } from './sync-repairs-page.selector';
-
-const handleGoBack = () => void goBackOrReplace('/settings');
 
 export default function SyncRepairsPage() {
     const { t } = useLingui();
@@ -38,7 +36,7 @@ export default function SyncRepairsPage() {
     const confirmationCountText = getSyncRepairText(duplicateTransactionCount, t);
 
     return (
-        <Page testID={SyncRepairsPageSelector.Container} header={<PageHeader title={t`Sync Repairs`} onGoBack={handleGoBack} />}>
+        <Page testID={SyncRepairsPageSelector.Container} header={<PageHeader title={t`Sync Repairs`} onGoBack={goBackToSettings} />}>
             <ScrollView className="flex-1" contentContainerClassName="gap-y-xl pb-5xl pt-3xl" showsVerticalScrollIndicator={false}>
                 <SyncRepairsIntroCard />
 

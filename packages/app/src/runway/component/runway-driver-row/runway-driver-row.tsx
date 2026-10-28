@@ -1,4 +1,5 @@
 import { RunwayDriverDimensionEnum, convertFromMicroUnits } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { Text, View, ViewStyle } from 'react-native';
@@ -6,7 +7,7 @@ import { Text, View, ViewStyle } from 'react-native';
 import { isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 
 import type { RunwayDriverInterface } from '../../interface/runway-driver.interface';
 
@@ -47,7 +48,7 @@ const barVariants = cva('h-full rounded-full', {
 
 export const RunwayDriverRow = ({ driver, dimension, maxAmount }: Props) => {
     const { t } = useLingui();
-    const { defaultInstrument } = useSettingsContext();
+    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const formatDigits = useFormatDigits(0);
 
     const { foldedDriverCount } = driver;

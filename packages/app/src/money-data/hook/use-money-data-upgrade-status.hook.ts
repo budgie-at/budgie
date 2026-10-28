@@ -6,11 +6,12 @@ import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import * as Stream from 'effect/Stream';
 import { useEffect } from 'react';
 
-import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { appAtomRuntime, appRuntime } from '../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
-import { showErrorToast } from '../../@generic/utils/show-error-toast/show-error-toast';
+import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
+import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 import { MoneyDataUpgradeProgressStateEnum } from '../enum/money-data-upgrade-progress-state.enum';
 import { MoneyDataUpgradeStatusSnapshotInterface } from '../interface/money-data-upgrade-status-snapshot.interface';
 import { buildMoneyDataUpgradeStatusText } from '../utils/build-money-data-upgrade-status-text.util';
@@ -57,15 +58,15 @@ export const useMoneyDataUpgradeStatus = () => {
     const runtimeSnapshot = AsyncResult.getOrElse(useAtomValue(moneyDataUpgradeProgressAtom), () => EMPTY_RUNTIME_SNAPSHOT);
 
     useEffect(() => {
-        void appRuntime
-            .runPromise(
+        const fiber = appRuntime.runFork(
+            logAndContinue(
                 Effect.flatMap(MoneyDataUpgradeService, moneyDataUpgradeService =>
                     moneyDataUpgradeService.refreshSnapshot(t`Base instrument not found`)
-                )
+                ).pipe(toastOnFailure(t`Historical valuation failed`))
             )
-            .catch((error: unknown) => {
-                showErrorToast(t`Historical valuation failed`, getErrorMessage(error));
-            });
+        );
+
+        return () => void fiber.interruptUnsafe();
     }, [t]);
 
     const snapshot: MoneyDataUpgradeStatusSnapshotInterface = {
@@ -75,28 +76,27 @@ export const useMoneyDataUpgradeStatus = () => {
         state: getState(runtimeSnapshot)
     };
 
-    const handlePrimaryAction = async () => {
-        const confirmed = await confirmAlert({
-            title: t`Value historical entries?`,
-            message: t`Budgie will fill missing base-currency values from historical exchange rates. Analytics may be unavailable until this finishes.`,
-            confirmText: t`Value entries`,
-            cancelText: t`Cancel`
-        });
+    const handlePrimaryAction = () =>
+        void appRuntime.runFork(
+            logAndContinue(
+                Effect.gen(function* () {
+                    const confirmed = yield* confirmAlert({
+                        title: t`Value historical entries?`,
+                        message: t`Budgie will fill missing base-currency values from historical exchange rates. Analytics may be unavailable until this finishes.`,
+                        confirmText: t`Value entries`,
+                        cancelText: t`Cancel`
+                    });
 
-        if (!confirmed) {
-            return;
-        }
+                    if (!confirmed) {
+                        return;
+                    }
 
-        try {
-            await appRuntime.runPromise(
-                Effect.flatMap(MoneyDataUpgradeService, moneyDataUpgradeService =>
-                    moneyDataUpgradeService.run(t`Base instrument not found`)
-                )
-            );
-        } catch (error: unknown) {
-            showErrorToast(t`Historical valuation failed`, getErrorMessage(error));
-        }
-    };
+                    const moneyDataUpgradeService = yield* MoneyDataUpgradeService;
+
+                    yield* moneyDataUpgradeService.run(t`Base instrument not found`);
+                }).pipe(toastOnFailure(t`Historical valuation failed`))
+            )
+        );
 
     return { snapshot, handlePrimaryAction };
 };

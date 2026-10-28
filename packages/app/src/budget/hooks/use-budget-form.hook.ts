@@ -5,13 +5,13 @@ import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
 import { useForm } from 'react-hook-form';
-import Toast from 'react-native-toast-message';
 
-import { getErrorMessage, isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { appRuntime } from '../../@generic/runtime/app.runtime';
+import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
+import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 import { BudgetFormSchema, BudgetFormValues } from '../constant/budget-form-schema.constant';
 import { BudgetTemplateKindEnum } from '../enum/budget-template-kind.enum';
 import { useGetActiveBudgetQuery } from '../query/use-get-active-budget.query';
@@ -105,6 +105,7 @@ const areBudgetFormValuesEqual = (left: BudgetFormValues, right: BudgetFormValue
 // eslint-disable-next-line max-lines-per-function -- Form orchestration hook owns edit/template seeding, delete confirmation, and submit lifecycle
 export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = null }: UseBudgetFormOptionsInterface) => {
     const { t } = useLingui();
+    const { run } = useSingleFlight();
     const isEditing = isPositiveNumber(editingId);
     const hasAsyncTemplate = isDefined(templateKind) && templateKind !== BudgetTemplateKindEnum.EMPTY;
     const { budget, isLoading: isBudgetLoading } = useGetActiveBudgetQuery();
@@ -112,8 +113,6 @@ export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = n
         isEditing && isDefined(budget) ? budget.id : null
     );
     const { draft: templateDraft, isReady: isTemplateReady } = useBudgetTemplateDraft(isEditing ? null : templateKind);
-
-    const defaultFormValues = buildDefaultBudgetFormValues(t`Monthly Budget`, defaultInstrumentId);
 
     const resolveFormValues = (): BudgetFormValues => {
         if (isEditing && isDefined(budget) && !isCategoryLimitsLoading) {
@@ -124,7 +123,7 @@ export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = n
             return buildTemplateBudgetFormValues(t`Monthly Budget`, defaultInstrumentId, templateDraft);
         }
 
-        return defaultFormValues;
+        return buildDefaultBudgetFormValues(t`Monthly Budget`, defaultInstrumentId);
     };
 
     const formValues = resolveFormValues();
@@ -132,7 +131,7 @@ export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = n
     const form = useForm<BudgetFormValues>({
         mode: 'onChange',
         resolver: standardSchemaResolver(Schema.toStandardSchemaV1(BudgetFormSchema)),
-        defaultValues: defaultFormValues,
+        defaultValues: buildDefaultBudgetFormValues(t`Monthly Budget`, defaultInstrumentId),
         values: formValues,
         resetOptions: {
             keepDirtyValues: true,
@@ -142,27 +141,27 @@ export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = n
     const isFormSyncing =
         (isEditing || hasAsyncTemplate) && !form.formState.isDirty && !areBudgetFormValuesEqual(form.getValues(), formValues);
 
-    const handleDelete = async () => {
-        if (!isDefined(budget)) {
-            return;
-        }
-        const confirmed = await confirmAlert({
-            title: t`Delete budget?`,
-            message: t`This will remove your monthly budget. You can create a new one anytime.`,
-            confirmText: t`Delete`,
-            cancelText: t`Cancel`,
-            isDestructive: true
-        });
-        if (!confirmed) {
-            return;
-        }
-        try {
-            await appRuntime.runPromise(Effect.flatMap(BudgetService, budgetService => budgetService.deleteBudget(budget.id)));
-            goBackOrReplace('/');
-        } catch (error: unknown) {
-            Toast.show({ type: 'error', text1: t`Could not delete budget`, text2: getErrorMessage(error) });
-        }
-    };
+    const handleDelete = () =>
+        run(
+            Effect.gen(function* () {
+                const confirmed = yield* confirmAlert({
+                    title: t`Delete budget?`,
+                    message: t`This will remove your monthly budget. You can create a new one anytime.`,
+                    confirmText: t`Delete`,
+                    cancelText: t`Cancel`,
+                    isDestructive: true
+                });
+
+                if (!confirmed || !isDefined(budget)) {
+                    return;
+                }
+
+                const budgetService = yield* BudgetService;
+
+                yield* budgetService.deleteBudget(budget.id);
+                goBackOrReplace('/');
+            }).pipe(toastOnFailure(t`Could not delete budget`))
+        );
 
     const handleCancel = () => {
         if (isEditing && isDefined(budget)) {
@@ -177,37 +176,35 @@ export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = n
             form.setValue('instrumentId', defaultInstrumentId, { shouldDirty: false, shouldTouch: false, shouldValidate: true });
         }
 
-        void form.handleSubmit(async values => {
-            try {
-                const basePayload = {
-                    name: values.name,
-                    period: BudgetPeriodEnum.MONTHLY,
-                    periodStartDay: values.periodStartDay,
-                    useLastDayOfMonth: values.useLastDayOfMonth,
-                    overallLimit: convertToMicroUnits(values.overallLimit),
-                    otherLimit: convertToMicroUnits(values.otherLimit),
-                    instrumentId: values.instrumentId,
-                    categoryLimits: values.categoryLimits.map(limit => ({
-                        categoryId: limit.categoryId,
-                        limitAmount: convertToMicroUnits(limit.limitAmount)
-                    }))
-                };
+        void form.handleSubmit(values =>
+            run(
+                Effect.gen(function* () {
+                    const basePayload = {
+                        name: values.name,
+                        period: BudgetPeriodEnum.MONTHLY,
+                        periodStartDay: values.periodStartDay,
+                        useLastDayOfMonth: values.useLastDayOfMonth,
+                        overallLimit: convertToMicroUnits(values.overallLimit),
+                        otherLimit: convertToMicroUnits(values.otherLimit),
+                        instrumentId: values.instrumentId,
+                        categoryLimits: values.categoryLimits.map(limit => ({
+                            categoryId: limit.categoryId,
+                            limitAmount: convertToMicroUnits(limit.limitAmount)
+                        }))
+                    };
+                    const budgetService = yield* BudgetService;
 
-                if (isPositiveNumber(editingId)) {
-                    await appRuntime.runPromise(
-                        Effect.flatMap(BudgetService, budgetService => budgetService.updateBudget(editingId, basePayload))
-                    );
-                } else {
-                    await appRuntime.runPromise(Effect.flatMap(BudgetService, budgetService => budgetService.createBudget(basePayload)));
-                }
+                    if (isPositiveNumber(editingId)) {
+                        yield* budgetService.updateBudget(editingId, basePayload);
+                    } else {
+                        yield* budgetService.createBudget(basePayload);
+                    }
 
-                const fallbackRoute = isEditing ? EDITING_FALLBACK_ROUTE : DEFAULT_FALLBACK_ROUTE;
-                goBackOrReplace(fallbackRoute);
-            } catch (error: unknown) {
-                const errorMessage = isEditing ? t`Could not save budget` : t`Could not create budget`;
-                Toast.show({ type: 'error', text1: errorMessage, text2: getErrorMessage(error) });
-            }
-        })();
+                    const fallbackRoute = isEditing ? EDITING_FALLBACK_ROUTE : DEFAULT_FALLBACK_ROUTE;
+                    goBackOrReplace(fallbackRoute);
+                }).pipe(toastOnFailure(isEditing ? t`Could not save budget` : t`Could not create budget`))
+            )
+        )();
     };
 
     return {

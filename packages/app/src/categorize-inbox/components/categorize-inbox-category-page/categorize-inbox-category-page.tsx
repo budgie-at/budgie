@@ -1,4 +1,5 @@
 import { CategorizeInboxLabelKindEnum, CategorizeInboxService } from '@budgie/categorization';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -8,7 +9,7 @@ import { isDefined } from '@rnw-community/shared';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
 import { useNonSystemCategoriesQuery } from '../../../category/query/use-non-system-categories.query';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { defaultInstrumentIdAtom } from '../../../settings/constants/settings-atoms.constant';
 import { useTagsSelectorModal } from '../../../tag/context/tags-selector-modal.context';
 import { AnalyticsTransactionsModeEnum } from '../../../transaction/enum/analytics-transactions-mode.enum';
 import { buildUncategorizedRouteParams } from '../../../transaction/utils/build-uncategorized-route-params.util';
@@ -26,7 +27,7 @@ interface Props {
 
 export const CategorizeInboxCategoryPage = ({ params }: Props) => {
     const { t } = useLingui();
-    const { defaultInstrument } = useSettingsContext();
+    const defaultInstrumentId = useAtomValue(defaultInstrumentIdAtom);
     const [openCategorySelector] = useCategorySelectorModal();
     const [openTagsSelector] = useTagsSelectorModal();
     const { categories } = useNonSystemCategoriesQuery();
@@ -44,7 +45,7 @@ export const CategorizeInboxCategoryPage = ({ params }: Props) => {
     ): void => {
         void appRuntime.runPromise(
             Effect.flatMap(CategorizeInboxService, categorizeInboxService =>
-                categorizeInboxService.suggestFollowUpTagIds(assignment.rows, defaultInstrument.id)
+                categorizeInboxService.suggestFollowUpTagIds(assignment.rows, defaultInstrumentId)
             ).pipe(
                 Effect.flatMap(suggestedTagIds =>
                     Effect.sync(() => {

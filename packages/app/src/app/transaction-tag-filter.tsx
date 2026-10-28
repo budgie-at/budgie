@@ -1,6 +1,7 @@
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 
+import { FilterSheetBulkToggle } from '../@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle';
 import { FilterSheet } from '../@generic/component/filter-sheet/filter-sheet/filter-sheet';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { useSearchableFilterState } from '../@generic/hook/use-searchable-filter-state/use-searchable-filter-state.hook';
@@ -63,17 +64,20 @@ export default function TransactionTagFilterModal() {
                 searchValue={search}
                 searchPlaceholder={t`Search tags...`}
                 onSearchChange={setSearch}
-                isLoading={isLoading}
-                selectedCount={selectedCount}
-                applyLabel={applyLabel}
-                onSelectAll={handleSelectAll}
-                onDeselectAll={handleDeselectAll}
-                onApply={handleApply}
                 searchTestID={TransactionFiltersSelector.TagSearchInput}
-                selectAllTestID={TransactionFiltersSelector.TagSelectAllButton}
-                deselectAllTestID={TransactionFiltersSelector.TagDeselectAllButton}
+                applyLabel={applyLabel}
+                onApply={handleApply}
                 applyTestID={TransactionFiltersSelector.TagApplyButton}
-            />
+            >
+                <FilterSheetBulkToggle
+                    isLoading={isLoading}
+                    selectedCount={selectedCount}
+                    onSelectAll={handleSelectAll}
+                    onDeselectAll={handleDeselectAll}
+                    selectAllTestID={TransactionFiltersSelector.TagSelectAllButton}
+                    deselectAllTestID={TransactionFiltersSelector.TagDeselectAllButton}
+                />
+            </TransactionFilterSelectorFooter>
         </FilterSheet>
     );
 }

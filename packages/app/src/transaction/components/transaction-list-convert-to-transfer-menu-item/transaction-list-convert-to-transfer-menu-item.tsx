@@ -6,12 +6,18 @@ import { isDefined } from '@rnw-community/shared';
 
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
 import { useConvertToTransferModal } from '../../context/convert-to-transfer-modal.context';
-import { useTransactionListContextMenu } from '../../context/transaction-list-context-menu.context';
+import { useTransactionActionsMenu } from '../../context/transaction-actions-menu.context';
 import { TransactionListContextMenuSelector } from '../transaction-list-context-menu/transaction-list-context-menu.selector';
 
-export const TransactionListConvertToTransferMenuItem = () => {
+import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+
+interface Props {
+    readonly transaction: TransactionWithRelationsEntityInterface;
+}
+
+export const TransactionListConvertToTransferMenuItem = ({ transaction }: Props) => {
     const { t } = useLingui();
-    const { transaction, closeMenu } = useTransactionListContextMenu();
+    const closeMenu = useTransactionActionsMenu();
     const [openConvertToTransfer] = useConvertToTransferModal();
 
     const isConsolidated = isDefined(transaction.consolidationType);

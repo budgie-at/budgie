@@ -1,4 +1,4 @@
-import { AccountEntityInterface, LiabilityAccountCreateInputInterface, LiabilityAccountCreateInputSchema } from '@budgie/contracts';
+import { LiabilityAccountCreateInputInterface, LiabilityAccountCreateInputSchema } from '@budgie/contracts';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import * as Schema from 'effect/Schema';
 import { useWatch } from 'react-hook-form';
@@ -9,7 +9,7 @@ import { useAccountEntityForm } from './use-account-entity-form.hook';
 
 export const useLiabilityAccountForm = (
     values: LiabilityAccountCreateInputInterface,
-    onSubmit: (values: LiabilityAccountCreateInputInterface) => Promise<AccountEntityInterface>
+    onSubmit: Parameters<typeof useAccountEntityForm<LiabilityAccountCreateInputInterface>>[2]
 ): ReturnType<typeof useAccountEntityForm<LiabilityAccountCreateInputInterface>> & {
     readonly instrument: ReturnType<typeof useGetInstrumentByIdQuery>['instrument'];
 } => {

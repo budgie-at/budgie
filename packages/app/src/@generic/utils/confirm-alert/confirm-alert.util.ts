@@ -1,3 +1,4 @@
+import * as Effect from 'effect/Effect';
 import { Alert } from 'react-native';
 
 interface ConfirmAlertOptions {
@@ -8,14 +9,14 @@ interface ConfirmAlertOptions {
     readonly isDestructive?: boolean;
 }
 
-export const confirmAlert = (options: ConfirmAlertOptions): Promise<boolean> =>
-    new Promise(resolve => {
+export const confirmAlert = (options: ConfirmAlertOptions): Effect.Effect<boolean> =>
+    Effect.callback(resume => {
         Alert.alert(options.title, options.message, [
-            { text: options.cancelText, style: 'cancel', onPress: () => void resolve(false) },
+            { text: options.cancelText, style: 'cancel', onPress: () => void resume(Effect.succeed(false)) },
             {
                 text: options.confirmText,
                 style: options.isDestructive ? 'destructive' : 'default',
-                onPress: () => void resolve(true)
+                onPress: () => void resume(Effect.succeed(true))
             }
         ]);
     });

@@ -4,16 +4,15 @@ import Constants from 'expo-constants';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Text, View } from 'react-native';
 import Animated from 'react-native-reanimated';
-import Toast from 'react-native-toast-message';
-
-import { getErrorMessage } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
+import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { openGithubIssueCreation } from '../../../@generic/utils/open-github-issue-creation.util';
+import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { AiFeaturesSettingsCard } from '../../../ai/component/ai-features-settings-card/ai-features-settings-card';
 import { ExportCsv } from '../../../export/components/export-csv/export-csv';
 import { ImportCsv } from '../../../import/components/import-csv/import-csv';
@@ -56,17 +55,15 @@ export default function SettingsPage() {
     const handleNavigateToTags = () => void router.push('/settings/tags');
     const handleNavigateToRules = () => void router.push('/settings/rules');
     const handleReportBug = () =>
-        void openGithubIssueCreation().catch((error: unknown) => {
-            Toast.show({ type: 'error', text1: t`Could not open GitHub`, text2: getErrorMessage(error) });
-        });
+        void appRuntime.runFork(logAndContinue(openGithubIssueCreation.pipe(toastOnFailure(t`Could not open GitHub`))));
 
-    const handleToggle = (key: keyof SettingsEntityInterface) => async (checked: boolean) => {
-        await appRuntime.runPromise(updateSettingsMutation({ [key]: checked }));
+    const handleToggle = (key: keyof SettingsEntityInterface) => (checked: boolean) => {
+        appRuntime.runFork(logAndContinue(updateSettingsMutation({ [key]: checked })));
     };
     const handleToggleShowCents = () =>
-        void appRuntime.runPromise(updateSettingsMutation({ showCents: !showCents })).catch((error: unknown) => {
-            Toast.show({ type: 'error', text1: t`Could not update settings`, text2: getErrorMessage(error) });
-        });
+        void appRuntime.runFork(
+            logAndContinue(updateSettingsMutation({ showCents: !showCents }).pipe(toastOnFailure(t`Could not update settings`)))
+        );
     const appVersion = Constants.expoConfig?.version ?? '1.0.0';
     const scrollViewProps = { ref: scrollViewRef, onLayout: onScrollViewLayout };
 

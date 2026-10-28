@@ -12,8 +12,9 @@ import { FormItem } from '../@generic/component/form-item/form-item';
 import { FormsheetHeader } from '../@generic/component/formsheet-header/formsheet-header';
 import { Input } from '../@generic/component/input/input';
 import { ModalFormFooter } from '../@generic/component/modal-form-footer/modal-form-footer';
-import { useEffectAction } from '../@generic/hook/use-effect-action.hook';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
+import { useSingleFlight } from '../@generic/hook/use-single-flight.hook';
+import { toastOnFailure } from '../@generic/utils/toast-on-failure.util';
 import { PasteTokenButton } from '../sync/component/paste-token-button/paste-token-button';
 import { SyncTokenSectionSelector } from '../sync/component/sync-token-section/sync-token-section.selector';
 import { useBankIntegrationKeyModal, useBankIntegrationKeyModalParams } from '../sync/context/bank-integration-key-modal.context';
@@ -29,7 +30,7 @@ export default function BankIntegrationKeyModal() {
     const refreshAccountPreviews = useAtomRefresh(bankIntegrationAccountPreviewsAtom(integrationId));
     const [key, setKey] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const [runEffect, isSaving] = useEffectAction(t`Could not update key`);
+    const { isLoading: isSaving, run } = useSingleFlight();
 
     const isSaveDisabled = isSaving || !isNotEmptyString(key.trim());
     const showError = (message: string) => Effect.sync(() => void setErrorMessage(message));
@@ -40,7 +41,7 @@ export default function BankIntegrationKeyModal() {
         setErrorMessage('');
     };
     const handleSave = () =>
-        void runEffect(
+        void run(
             Effect.flatMap(SyncProviderRegistryService, registry => registry.updateIntegrationToken(integrationId, key.trim())).pipe(
                 Effect.tap(() =>
                     Effect.sync(() => {
@@ -55,7 +56,8 @@ export default function BankIntegrationKeyModal() {
                     SyncTokenAlreadyConnectedError: () => showError(t`This key already syncs another of your Monobank sections.`),
                     SyncRateLimitedError: () => showError(t`Monobank limits how often keys can be checked. Try again in a minute.`)
                 }),
-                Effect.catch(() => showError(t`Could not update the key. Try again.`))
+                Effect.catch(() => showError(t`Could not update the key. Try again.`)),
+                toastOnFailure(t`Could not update key`)
             )
         );
 

@@ -1,9 +1,11 @@
+import { useAtomValue } from '@effect/atom-react/Hooks';
+
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
 import { useCryptoInstrumentBalanceQuery } from '../../../account/query/use-crypto-instrument-balance.query';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { defaultInstrumentIdAtom } from '../../../settings/constants/settings-atoms.constant';
 import { useInstrumentMarketDataProgressQuery } from '../../query/use-instrument-market-data-progress.query';
 import { useInstrumentMarketDataQuery } from '../../query/use-instrument-market-data.query';
 import { CurrencyMarketHoldingsCard } from '../currency-market-holdings-card/currency-market-holdings-card';
@@ -38,10 +40,10 @@ const isMarketMovePositive = (
 };
 
 export const CurrencyMarketPage = ({ instrument }: Props) => {
-    const { defaultInstrument } = useSettingsContext();
+    const defaultInstrumentId = useAtomValue(defaultInstrumentIdAtom);
     const { balance } = useCryptoInstrumentBalanceQuery(instrument.id);
-    const { latestPrice, previousPrice, prices } = useInstrumentMarketDataQuery(instrument.id, defaultInstrument.id);
-    const progress = useInstrumentMarketDataProgressQuery(instrument.id, defaultInstrument.id);
+    const { latestPrice, previousPrice, prices } = useInstrumentMarketDataQuery(instrument.id, defaultInstrumentId);
+    const progress = useInstrumentMarketDataProgressQuery(instrument.id, defaultInstrumentId);
     const isPositiveChange = isMarketMovePositive(latestPrice, previousPrice);
     const shouldShowProgress = prices.length < 2 && !progress.isComplete;
 

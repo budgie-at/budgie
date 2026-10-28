@@ -1,18 +1,23 @@
 import { AITransactionInterface } from '@budgie/ai';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
-import { useEffect, useRef } from 'react';
+import * as Effect from 'effect/Effect';
+import { useEffect, useEffectEvent } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 
 import { isDefined, isEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
+import { appRuntime } from '../@generic/runtime/app.runtime';
 import { useGetAccountByIdQuery } from '../account/query/use-get-account-by-id.query';
 import { VoiceReviewFooter } from '../ai/component/voice-review-footer/voice-review-footer';
+import { VoiceReviewSaveButton } from '../ai/component/voice-review-save-button/voice-review-save-button';
 import { useVoiceReviewModal, useVoiceReviewModalParams } from '../ai/context/voice-review-modal.context';
 import { useVoiceReview } from '../ai/hook/use-voice-review.hook';
 import { VoiceReviewRowInterface } from '../ai/interface/voice-review-row.interface';
 import { useCategorySelectorModal } from '../category/context/category-selector-modal.context';
-import { useSettingsContext } from '../settings/context/settings.context';
+import { defaultAccountAtom } from '../settings/constants/settings-atoms.constant';
+import { SplitEntryDeleteButton } from '../transaction/components/split-entry-delete-button/split-entry-delete-button';
 import { SplitEntryRow } from '../transaction/components/split-entry-row/split-entry-row';
 
 import { VoiceReviewSelector } from './voice-review.selector';
@@ -47,7 +52,7 @@ const mapExtractedToReviewRows = (transactions: AITransactionInterface[]): Voice
 // eslint-disable-next-line max-statements, max-lines-per-function -- Form-sheet route orchestrates per-row category, save, and re-record
 export default function VoiceReviewModal() {
     const { t } = useLingui();
-    const { defaultAccount } = useSettingsContext();
+    const defaultAccount = useAtomValue(defaultAccountAtom);
     const [, resolveVoiceReview, dismissVoiceReview] = useVoiceReviewModal();
     useModalDismiss(dismissVoiceReview);
     const currentParams = useVoiceReviewModalParams();
@@ -86,25 +91,28 @@ export default function VoiceReviewModal() {
     const handleCancel = () => void resolveVoiceReview({ kind: 'cancelled' });
     const handleReRecord = () => void resolveVoiceReview({ kind: 're-record' });
 
-    const resolveRef = useRef(resolveVoiceReview);
-    useEffect(() => {
-        resolveRef.current = resolveVoiceReview;
-    });
+    const handleUnmount = useEffectEvent(() => void resolveVoiceReview({ kind: 're-record' }, { skipBack: true }));
 
-    useEffect(() => () => void resolveRef.current({ kind: 're-record' }, { skipBack: true }), []);
-    const handleSave = async () => {
+    useEffect(() => () => void handleUnmount(), []);
+    const handleSave = () => {
         if (!isPositiveNumber(accountId)) {
             return;
         }
-        const result = await saveAll(accountId);
-        if (!isDefined(result)) {
-            return;
-        }
-        resolveVoiceReview({
-            kind: 'saved',
-            transactionIds: result.transactions.map(transaction => transaction.id),
-            accountId: result.destinationAccountId
-        });
+        appRuntime.runFork(
+            saveAll(accountId).pipe(
+                Effect.tap(result =>
+                    Effect.sync(() => {
+                        if (isDefined(result)) {
+                            resolveVoiceReview({
+                                kind: 'saved',
+                                transactionIds: result.transactions.map(transaction => transaction.id),
+                                accountId: result.destinationAccountId
+                            });
+                        }
+                    })
+                )
+            )
+        );
     };
 
     return (
@@ -135,16 +143,15 @@ export default function VoiceReviewModal() {
                                 <SplitEntryRow
                                     key={row.id}
                                     index={index}
-                                    categoryId={row.categoryId ?? 0}
-                                    amount={row.amount}
+                                    entry={row}
                                     currencySymbol={currencySymbol}
                                     variant="destructive"
-                                    canDelete={canDelete}
                                     autoFocus={false}
                                     onAmountChange={handleAmount}
                                     onCategoryPress={handleCategory}
-                                    onDelete={handleDelete}
-                                />
+                                >
+                                    {canDelete ? <SplitEntryDeleteButton index={index} onPress={handleDelete} /> : null}
+                                </SplitEntryRow>
                             );
                         })}
                     </View>
@@ -155,14 +162,18 @@ export default function VoiceReviewModal() {
                 count={rows.length}
                 totalAmount={totalAmount}
                 currencySymbol={currencySymbol}
-                canSave={canSave}
-                hasInvalidAmounts={hasInvalidAmounts}
-                hasMissingCategories={hasMissingCategories}
-                isSaving={isSaving}
                 onCancel={handleCancel}
                 onReRecord={handleReRecord}
-                onSave={handleSave}
-            />
+            >
+                <VoiceReviewSaveButton
+                    count={rows.length}
+                    canSave={canSave}
+                    hasInvalidAmounts={hasInvalidAmounts}
+                    hasMissingCategories={hasMissingCategories}
+                    isSaving={isSaving}
+                    onSave={handleSave}
+                />
+            </VoiceReviewFooter>
         </View>
     );
 }

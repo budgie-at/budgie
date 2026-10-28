@@ -1,4 +1,14 @@
-import { TransactionEntryTypeEnum, TransactionConsolidationRepository } from '@budgie/contracts';
+import {
+    AccountEntityTable,
+    CategoryEntityTable,
+    DefaultCategoryTranslationEntityTable,
+    InstrumentEntityTable,
+    MccCategoryEntityTable,
+    TransactionConsolidationRepository,
+    TransactionEntityTable,
+    TransactionEntryEntityTable,
+    TransactionEntryTypeEnum
+} from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 import * as Atom from 'effect/reactivity/Atom';
 
@@ -6,13 +16,19 @@ import { isDefined } from '@rnw-community/shared';
 
 import { databaseQueryAtom } from '../../@generic/utils/database-query-atom.util';
 
-import { TRANSACTION_LIST_TABLES } from './transaction-list-tables.constant';
-
 import type { LanguageEnum } from '@budgie/contracts';
 
 export const refundsTotalAtom = Atom.family(([transactionId, language]: readonly [number | null, LanguageEnum]) =>
     databaseQueryAtom(
-        TRANSACTION_LIST_TABLES,
+        [
+            TransactionEntryEntityTable,
+            TransactionEntityTable,
+            AccountEntityTable,
+            InstrumentEntityTable,
+            CategoryEntityTable,
+            DefaultCategoryTranslationEntityTable,
+            MccCategoryEntityTable
+        ],
         isDefined(transactionId)
             ? Effect.flatMap(TransactionConsolidationRepository, transactionConsolidationRepository =>
                   transactionConsolidationRepository.findConsolidationSources(transactionId, language)

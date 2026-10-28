@@ -336,7 +336,7 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
                         where: {
                             RAW: (transactionTable, { inArray: inTransactionIds }) => inTransactionIds(transactionTable.id, transactionIds)
                         },
-                        orderBy: (transaction, { desc: descFn }) => [descFn(transaction.operatedAt)],
+                        orderBy: (transaction, { desc: descFn }) => [descFn(transaction.operatedAt), descFn(transaction.id)],
                         limit
                     });
                 }),

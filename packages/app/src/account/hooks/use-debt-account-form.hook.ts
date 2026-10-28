@@ -1,4 +1,4 @@
-import { AccountEntityInterface, DebtAccountCreateInputInterface, DebtAccountCreateInputSchema } from '@budgie/contracts';
+import { DebtAccountCreateInputInterface, DebtAccountCreateInputSchema } from '@budgie/contracts';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import * as Schema from 'effect/Schema';
 import { useWatch } from 'react-hook-form';
@@ -15,7 +15,7 @@ interface DebtAccountFormValues extends Omit<DebtAccountCreateInputInterface, 'c
 
 export const useDebtAccountForm = (
     initialValues: DebtAccountFormValues,
-    onSubmit: (values: DebtAccountFormValues) => Promise<AccountEntityInterface>
+    onSubmit: Parameters<typeof useAccountEntityForm<DebtAccountFormValues>>[2]
 ): ReturnType<typeof useAccountEntityForm<DebtAccountFormValues>> & {
     readonly debtType: DebtAccountFormValues['debtType'];
     readonly instrument: ReturnType<typeof useGetInstrumentByIdQuery>['instrument'];

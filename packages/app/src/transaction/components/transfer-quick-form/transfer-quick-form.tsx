@@ -1,14 +1,15 @@
 import { TransactionCreateInputInterface, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { buildTransferEntries, getTransactionFeeEntries } from '@budgie/ledger';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { Ref, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
-import { isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { useCurrencyConversion } from '../../hook/use-currency-conversion.hook';
 import { useKeypadInput } from '../../hook/use-keypad-input.hook';
 import { useQuickFormFee } from '../../hook/use-quick-form-fee.hook';
@@ -17,11 +18,16 @@ import { useQuickFormValidation } from '../../hook/use-quick-form-validation.hoo
 import { useTransferAccounts } from '../../hook/use-transfer-accounts.hook';
 import { computeTransferDisplay } from '../../utils/compute-transfer-display.util';
 import { ConversionRow } from '../conversion-row/conversion-row';
+import { CurrencyModePill } from '../currency-mode-pill/currency-mode-pill';
 import { SimpleQuickFormSelector } from '../simple-quick-form/simple-quick-form.selector';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
+import { TransactionDateFieldIcon } from '../transaction-date-field-icon/transaction-date-field-icon';
 import { TransactionFeePill } from '../transaction-fee-pill/transaction-fee-pill';
 import { TransactionFieldIcons } from '../transaction-field-icons/transaction-field-icons';
 import { TransactionKeypad } from '../transaction-keypad/transaction-keypad';
+import { TransactionNoteFieldIcon } from '../transaction-note-field-icon/transaction-note-field-icon';
+import { TransactionSecondaryAmount } from '../transaction-secondary-amount/transaction-secondary-amount';
+import { TransactionSourcesFieldIcon } from '../transaction-sources-field-icon/transaction-sources-field-icon';
 import {
     TransactionTransferAccountsRow,
     TransactionTransferAccountsRowRef
@@ -54,7 +60,7 @@ export const TransferQuickForm = (props: Props) => {
     } = props;
 
     const { t } = useLingui();
-    const { defaultInstrument } = useSettingsContext();
+    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const { control, setValue, getValues } = useFormContext<TransactionCreateInputInterface>();
     const { validateAndShake } = useQuickFormValidation();
     const { handleCommentPress, handleDatePress } = useQuickFormModals();
@@ -160,15 +166,7 @@ export const TransferQuickForm = (props: Props) => {
     };
 
     useImperativeHandle(ref, () => ({ openFee: handleFeePress }));
-    const amountBottomContent = showInlineFeeAction ? (
-        <TransactionFeePill
-            amount={feeAmount}
-            currencySymbol={feeCurrencySymbol}
-            instrumentType={feeInstrumentType}
-            showEmptyState
-            onPress={handleFeePress}
-        />
-    ) : null;
+    const conversionPress = conversion.isCrossCurrency ? handleConversionRowPress : void 0;
 
     const handleConfirm = () => {
         if (isEditingDestination) {
@@ -218,25 +216,33 @@ export const TransferQuickForm = (props: Props) => {
                 amount={display.displayAmount}
                 currencySymbol={display.displaySymbol}
                 variant={variant}
-                secondaryAmount={display.secondaryAmountText}
-                label={display.amountLabel}
-                bottomContent={amountBottomContent}
-                isLabelFlipped={isEditingDestination}
+                onPress={conversionPress}
                 testID={SimpleQuickFormSelector.AmountInput}
-                {...(conversion.isCrossCurrency && {
-                    onLabelPress: handleConversionRowPress,
-                    onSecondaryAmountPress: handleConversionRowPress
-                })}
-            />
+            >
+                {isDefined(display.amountLabel) ? (
+                    <CurrencyModePill label={display.amountLabel} isFlipped={isEditingDestination} onPress={conversionPress} />
+                ) : null}
+                {isDefined(display.secondaryAmountText) ? (
+                    <TransactionSecondaryAmount amount={display.secondaryAmountText} onPress={conversionPress} />
+                ) : null}
+                {showInlineFeeAction ? (
+                    <View className="mt-lg items-center">
+                        <TransactionFeePill
+                            amount={feeAmount}
+                            currencySymbol={feeCurrencySymbol}
+                            instrumentType={feeInstrumentType}
+                            showEmptyState
+                            onPress={handleFeePress}
+                        />
+                    </View>
+                ) : null}
+            </TransactionAmountDisplay>
 
-            <TransactionFieldIcons
-                variant={variant}
-                transactionType={TransactionTypeEnum.TRANSFER}
-                onCommentPress={handleCommentPress}
-                onDatePress={handleDatePress}
-                onConsolidationPress={onConsolidationPress}
-                commentTestID={SimpleQuickFormSelector.CommentInput}
-            />
+            <TransactionFieldIcons>
+                <TransactionDateFieldIcon variant={variant} onPress={handleDatePress} />
+                <TransactionNoteFieldIcon variant={variant} onPress={handleCommentPress} />
+                {isDefined(onConsolidationPress) ? <TransactionSourcesFieldIcon variant={variant} onPress={onConsolidationPress} /> : null}
+            </TransactionFieldIcons>
 
             <View className="mb-xl gap-sm">
                 <TransactionTransferAccountsRow ref={transferAccountsRef} variant={variant} />

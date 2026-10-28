@@ -17,7 +17,8 @@ const KEYWORDS_DIR = join(SCRIPT_DIR, 'icon-keywords');
 const EXTRA_TAGS_FILE = join(SCRIPT_DIR, 'icon-tags.json');
 const LEGACY_MAPPING_FILE = join(SCRIPT_DIR, 'icon-legacy-mapping.json');
 const SEARCH_KEYWORDS_FILE = join(SCRIPT_DIR, 'icon-search-keywords.json');
-const GLYPHS_FILE = join(APP_DIR, 'src', '@generic', 'constant', 'reicon-glyphs.json');
+const GLYPHS_FILE = join(APP_DIR, 'src', '@generic', 'constant', 'reicon-glyphs.constant.ts');
+const GLYPHS_TYPE = 'Readonly<Partial<Record<ReiconIconNameEnum, () => readonly (readonly [number, string])[]>>>';
 const CONTRACTS_DIR = resolve(APP_DIR, '../contracts/src/@generic');
 const REICON_DIR = join(APP_DIR, 'node_modules', 'reicon-react-native');
 const REICON_INDEX_FILE = join(REICON_DIR, 'index.d.ts');
@@ -225,6 +226,38 @@ const buildGlyphs = (names: readonly string[], weight: 'F' | 'O'): Record<string
         })
     );
 
+const generateGlyphs = (names: readonly string[]): void => {
+    const styles: string[] = [];
+    const serializeGlyphs = (glyphs: Record<string, Record<string, string>[]>): string =>
+        `{${Object.entries(glyphs)
+            .map(
+                ([name, elements]) =>
+                    `${JSON.stringify(name)}:()=>[${elements
+                        .map(({ d, ...attributes }) => {
+                            const style = JSON.stringify(
+                                Object.fromEntries(
+                                    Object.entries(attributes).sort(([first], [second]) => first.localeCompare(second, 'en'))
+                                )
+                            );
+
+                            if (!styles.includes(style)) {
+                                styles.push(style);
+                            }
+
+                            return `[${styles.indexOf(style)},${JSON.stringify(d)}]`;
+                        })
+                        .join(',')}]`
+            )
+            .join(',')}}`;
+    const outline = serializeGlyphs(buildGlyphs(names, 'O'));
+    const filled = serializeGlyphs(buildGlyphs(FILLED_ICON_NAMES, 'F'));
+
+    writeFileSync(
+        GLYPHS_FILE,
+        `import type { ReiconIconNameEnum } from '@budgie/contracts';\n\nexport const REICON_GLYPH_STYLES: readonly Readonly<Partial<Record<string, string>>>[] = [${styles.join(',')}];\n\nexport const REICON_GLYPHS: ${GLYPHS_TYPE} = ${outline};\n\nexport const REICON_FILLED_GLYPHS: ${GLYPHS_TYPE} = ${filled};\n`
+    );
+};
+
 const buildWordIndex = (iconIndex: readonly [string, string][]): Record<string, string> => {
     const wordTranslations = readWordTranslations();
     const words = [...new Set(iconIndex.flatMap(([, keywords]) => keywords.split(/[^a-z]+/u)))].filter(
@@ -285,7 +318,7 @@ const main = (): void => {
 
     generateCatalog(names, legacyMapping);
 
-    writeFileSync(GLYPHS_FILE, `${JSON.stringify({ outline: buildGlyphs(names, 'O'), filled: buildGlyphs(FILLED_ICON_NAMES, 'F') })}\n`);
+    generateGlyphs(names);
 
     writeFileSync(
         SEARCH_INDEX_FILE,

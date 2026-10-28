@@ -2,8 +2,7 @@ import { UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { Text, View } from 'react-native';
 
 import { Icon } from '../../../@generic/component/icon/icon';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 
 import type { AggregatedTransactionEntryInterface } from '../../interface/aggregated-transaction-entry.interface';
 
@@ -14,8 +13,7 @@ interface Props {
 }
 
 export const TransactionTransferAmount = ({ fromEntry, toEntry, testID }: Props) => {
-    const { decimalPlaces } = useSettingsContext();
-    const formatDigits = useFormatDigits(decimalPlaces);
+    const formatDigits = useDisplayFormatDigits();
 
     const fromAmount = formatDigits(convertFromMicroUnits(fromEntry.amount), fromEntry.account.instrument.symbol);
     const toAmount = formatDigits(convertFromMicroUnits(toEntry.amount), toEntry.account.instrument.symbol);

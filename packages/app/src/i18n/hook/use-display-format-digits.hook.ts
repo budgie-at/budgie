@@ -1,9 +1,7 @@
-import { useSettingsContext } from '../../settings/context/settings.context';
+import { useAtomValue } from '@effect/atom-react/Hooks';
+
+import { decimalPlacesAtom } from '../../settings/constants/settings-atoms.constant';
 
 import { useFormatDigits } from './use-format-digits.hook';
 
-export const useDisplayFormatDigits = () => {
-    const { decimalPlaces } = useSettingsContext();
-
-    return useFormatDigits(decimalPlaces);
-};
+export const useDisplayFormatDigits = () => useFormatDigits(useAtomValue(decimalPlacesAtom));

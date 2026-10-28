@@ -1,4 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { t } from '@lingui/core/macro';
 import { useRouter } from 'expo-router';
 import { Pressable, Text, View } from 'react-native';
@@ -6,8 +7,8 @@ import { useSharedValue } from 'react-native-reanimated';
 
 import { Icon } from '../../../@generic/component/icon/icon';
 import { AiSystemBrain } from '../../../ai/component/ai-system-brain/ai-system-brain';
+import { aiSystemStatusAtom } from '../../../ai/constant/ai-system-status-atom.constant';
 import { AiSystemStateEnum } from '../../../ai/enum/ai-system-state.enum';
-import { useAiSystemStatus } from '../../../ai/hook/use-ai-system-status.hook';
 
 interface Props {
     readonly showArrow?: boolean;
@@ -20,7 +21,7 @@ const HIT_SLOP = 8;
 
 export const SuggestionLoadingIndicator = ({ showArrow = true }: Props) => {
     const router = useRouter();
-    const snapshot = useAiSystemStatus();
+    const snapshot = useAtomValue(aiSystemStatusAtom);
     const holdProgress = useSharedValue(0);
 
     const isBootingOrTranslating = snapshot.state === AiSystemStateEnum.BOOTING || snapshot.state === AiSystemStateEnum.TRANSLATING;

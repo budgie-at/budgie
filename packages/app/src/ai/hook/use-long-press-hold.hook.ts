@@ -1,3 +1,5 @@
+import * as Effect from 'effect/Effect';
+import * as Schedule from 'effect/Schedule';
 import { ImpactFeedbackStyle, NotificationFeedbackType } from 'expo-haptics';
 import { useRef } from 'react';
 import { Easing, SharedValue, runOnJS, useAnimatedReaction, useSharedValue, withTiming } from 'react-native-reanimated';
@@ -5,6 +7,7 @@ import { Easing, SharedValue, runOnJS, useAnimatedReaction, useSharedValue, with
 import { isDefined } from '@rnw-community/shared';
 
 import { useVibration } from '../../@generic/hook/use-vibration.hook';
+import { appRuntime } from '../../@generic/runtime/app.runtime';
 import {
     LONG_PRESS_DURATION,
     LONG_PRESS_HAPTIC_INTERVAL,
@@ -12,6 +15,8 @@ import {
     LONG_PRESS_SCALE_ON_PRESS,
     LONG_PRESS_SCALE_RESTORE_DURATION
 } from '../constant/long-press-brain.constant';
+
+import type * as Fiber from 'effect/Fiber';
 
 const COMPLETION_THRESHOLD = 0.99;
 
@@ -30,7 +35,7 @@ interface UseLongPressHoldParams {
 
 export const useLongPressHold = ({ onPress, onLongPressComplete, disabled = false }: UseLongPressHoldParams): UseLongPressHoldReturn => {
     const [hapticNotification, hapticImpact] = useVibration();
-    const hapticIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    const hapticIntervalRef = useRef<Fiber.Fiber<unknown> | null>(null);
     const completedRef = useRef(false);
 
     const holdProgress = useSharedValue(0);
@@ -38,16 +43,18 @@ export const useLongPressHold = ({ onPress, onLongPressComplete, disabled = fals
 
     const stopHapticInterval = () => {
         if (isDefined(hapticIntervalRef.current)) {
-            clearInterval(hapticIntervalRef.current);
+            hapticIntervalRef.current.interruptUnsafe();
             hapticIntervalRef.current = null;
         }
     };
 
     const startHapticInterval = () => {
-        hapticImpact(ImpactFeedbackStyle.Light);
-        hapticIntervalRef.current = setInterval(() => {
-            hapticImpact(ImpactFeedbackStyle.Light);
-        }, LONG_PRESS_HAPTIC_INTERVAL);
+        hapticIntervalRef.current = appRuntime.runFork(
+            Effect.repeat(
+                Effect.sync(() => void hapticImpact(ImpactFeedbackStyle.Light)),
+                Schedule.spaced(LONG_PRESS_HAPTIC_INTERVAL)
+            )
+        );
     };
 
     const handleComplete = () => {

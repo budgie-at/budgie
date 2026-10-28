@@ -2,17 +2,16 @@ import { AccountWithInstrumentEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useDeferredValue, useState } from 'react';
 
+import { SearchablePageList } from '../../../@generic/component/searchable-page-list/searchable-page-list';
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
-import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { ArchivedAccountCard } from '../../../account/component/archived-account-card/archived-account-card';
 import { ArchivedAccountsEmptyState } from '../../../account/component/archived-accounts-empty-state/archived-accounts-empty-state';
 import { useDeleteAccount } from '../../../account/hooks/use-delete-account.hook';
 import { useArchivedAccountsQuery } from '../../../account/query/use-archived-accounts.query';
 import { filterAccountsBySearchQuery } from '../../../account/utils/filter-accounts-by-search-query.util';
+import { goBackToSettings } from '../../../settings/utils/go-back-to-settings.util';
 
 import { ArchivedAccountsPageSelector } from './archived-accounts-page.selector';
-
-const handleGoBack = () => void goBackOrReplace('/settings');
 
 export default function Archived() {
     const { t } = useLingui();
@@ -37,17 +36,20 @@ export default function Archived() {
     return (
         <SearchablePage
             testID={ArchivedAccountsPageSelector.Container}
-            onGoBack={handleGoBack}
-            onDelete={deleteAccount}
-            getDeleteConfirmation={getDeleteConfirmation}
             title={t`Archived Accounts`}
-            searchPlaceholder={t`Search archived accounts...`}
-            data={filteredAccounts}
-            emptyState={<ArchivedAccountsEmptyState search={search} />}
-            renderCard={renderCard}
+            onGoBack={goBackToSettings}
             search={search}
+            searchPlaceholder={t`Search archived accounts...`}
             onSearchChange={setSearch}
             searchInputTestID={ArchivedAccountsPageSelector.SearchInput}
-        />
+        >
+            <SearchablePageList
+                data={filteredAccounts}
+                emptyState={<ArchivedAccountsEmptyState search={search} />}
+                onDelete={deleteAccount}
+                getDeleteConfirmation={getDeleteConfirmation}
+                renderCard={renderCard}
+            />
+        </SearchablePage>
     );
 }

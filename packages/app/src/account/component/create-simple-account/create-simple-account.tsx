@@ -1,5 +1,6 @@
 import { AccountTypeEnum, InstrumentTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { AccountService } from '@budgie/ledger';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
@@ -13,10 +14,9 @@ import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-scre
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
 import { MICRO_UNIT_DECIMAL_PLACES } from '../../../@generic/constant/micro-unit-decimal-places.constant';
 import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useGetInstrumentsByTypeQuery } from '../../../instrument/query/use-get-instruments-by-type.query';
 import { HistoricalMarketDataDrainerService } from '../../../market-data/service/historical-market-data-drainer.service';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { defaultInstrumentIdAtom } from '../../../settings/constants/settings-atoms.constant';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { useAccountCreateBindings } from '../../hooks/use-account-create-bindings.hook';
 import { useLiabilityAccountForm } from '../../hooks/use-liability-account-form.hook';
@@ -39,7 +39,7 @@ export const CreateSimpleAccount = ({ type }: Props) => {
     const { t } = useLingui();
     const isCrypto = type === AccountTypeEnum.CRYPTO;
     const instrumentType = isCrypto ? InstrumentTypeEnum.CRYPTO : InstrumentTypeEnum.FIAT;
-    const { defaultInstrument } = useSettingsContext();
+    const defaultInstrumentId = useAtomValue(defaultInstrumentIdAtom);
     const { instruments } = useGetInstrumentsByTypeQuery(instrumentType);
     const cryptoInstrumentId = instruments.at(0)?.id;
 
@@ -49,23 +49,19 @@ export const CreateSimpleAccount = ({ type }: Props) => {
         currentBalance: 0,
         icon: isCrypto ? UserIconNameEnum.Coins : UserIconNameEnum.Home,
         includeInNetWorth: true,
-        instrumentId: isDefined(cryptoInstrumentId) ? cryptoInstrumentId : defaultInstrument.id
+        instrumentId: isDefined(cryptoInstrumentId) ? cryptoInstrumentId : defaultInstrumentId
     };
 
     const { control, handleSubmit, instrument, isSubmitting } = useLiabilityAccountForm(formValues, values =>
-        appRuntime.runPromise(
-            Effect.gen(function* () {
-                const accountService = yield* AccountService;
-                const historicalMarketDataDrainerService = yield* HistoricalMarketDataDrainerService;
-                const account = yield* accountService.create(values);
+        Effect.gen(function* () {
+            const accountService = yield* AccountService;
+            const historicalMarketDataDrainerService = yield* HistoricalMarketDataDrainerService;
+            const account = yield* accountService.create(values);
 
-                yield* Effect.forkDetach(
-                    historicalMarketDataDrainerService.enqueueAccounts([account]).pipe(Effect.tapCause(Effect.logError))
-                );
+            yield* Effect.forkDetach(historicalMarketDataDrainerService.enqueueAccounts([account]).pipe(Effect.tapCause(Effect.logError)));
 
-                return account;
-            })
-        )
+            return account;
+        })
     );
 
     const fields = useAccountCreateBindings(control, {

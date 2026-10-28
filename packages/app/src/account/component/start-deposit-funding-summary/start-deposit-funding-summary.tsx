@@ -6,8 +6,8 @@ import { isPositiveNumber } from '@rnw-community/shared';
 
 import { BACKGROUND_COLOR_PALETTE } from '../../../@generic/constant/background-color-palette.constant';
 import { cn } from '../../../@generic/utils/cn.util';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
 import { START_DEPOSIT_RATE_MAXIMUM_DECIMAL_PLACES } from '../../constant/start-deposit-rate-maximum-decimal-places.constant';
 import { DepositDetailsRow } from '../deposit-details-row/deposit-details-row';
 
@@ -32,8 +32,7 @@ export const StartDepositFundingSummary = ({
     sourceCode,
     destinationCode
 }: Props) => {
-    const { decimalPlaces } = useSettingsContext();
-    const formatAmountDigits = useFormatDigits(decimalPlaces);
+    const formatAmountDigits = useDisplayFormatDigits();
     const formatRateDigits = useFormatDigits(0, START_DEPOSIT_RATE_MAXIMUM_DECIMAL_PLACES);
     const receivingAmount = useWatch({ control, name: 'currentBalance' });
 

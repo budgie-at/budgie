@@ -1,4 +1,5 @@
 import { AccountTypeEnum, ExternalSourceEnum, UserIconNameEnum } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -13,7 +14,7 @@ import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { MANUAL_BALANCE_ACCOUNT_TYPES } from '../../../account/constant/manual-balance-account-types.constant';
 import { useSearchAccountsSortedQuery } from '../../../account/query/use-search-accounts-sorted.query';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { OnboardingStepEnum } from '../../enum/onboarding-step.enum';
 import { useOnboardingFileState } from '../../hook/use-onboarding-file-state.hook';
 import { useOnboardingNavigation } from '../../hook/use-onboarding-navigation.hook';
@@ -34,7 +35,7 @@ export const OnboardingBalances = () => {
 
     const { goToStep } = useOnboardingNavigation();
     const { accounts } = useSearchAccountsSortedQuery();
-    const { defaultInstrument } = useSettingsContext();
+    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const { state, isSealed } = useOnboardingFileState();
 
     const manualAccounts = accounts.filter(account => MANUAL_BALANCE_ACCOUNT_TYPES.has(account.type));

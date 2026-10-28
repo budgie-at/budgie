@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 import { isNotEmptyString } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
 import { getTransactionDisplayTitle } from '../../utils/get-transaction-display-title.util';
 import { getTransactionIcon } from '../../utils/get-transaction-icon.util';
@@ -17,12 +18,11 @@ import { TransactionMetadataRows } from '../transaction-metadata-rows/transactio
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
-    readonly formattedDate: string;
-    readonly categoryLabel: string | null;
     readonly accountId?: number | null;
 }
 
-export const TransactionCardContent = ({ transaction, formattedDate, categoryLabel, accountId = null }: Props) => {
+export const TransactionCardContent = ({ transaction, accountId = null }: Props) => {
+    const { formatMonthAndDayWithTime } = useFormatDate();
     const categoryIcon = getTransactionIcon(transaction);
     const type = getTransactionType(transaction);
 
@@ -60,7 +60,7 @@ export const TransactionCardContent = ({ transaction, formattedDate, categoryLab
                     />
 
                     {transaction.type === TransactionTypeEnum.TRANSFER || transaction.type === TransactionTypeEnum.DEBT ? null : (
-                        <TransactionCategoryBadge transaction={transaction} categoryLabel={categoryLabel} />
+                        <TransactionCategoryBadge transaction={transaction} />
                     )}
                 </View>
 
@@ -74,7 +74,7 @@ export const TransactionCardContent = ({ transaction, formattedDate, categoryLab
 
                 <View className="items-end gap-y-xs shrink-0">
                     <TransactionCardTags transaction={transaction} />
-                    <Text className="text-xs text-secondary-foreground">{formattedDate}</Text>
+                    <Text className="text-xs text-secondary-foreground">{formatMonthAndDayWithTime(transaction.operatedAt)}</Text>
                 </View>
             </View>
         </>

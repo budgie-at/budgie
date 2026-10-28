@@ -1,9 +1,12 @@
-import { TranslationResultInterface } from '@budgie/ai';
+import * as Effect from 'effect/Effect';
 import { useRef, useState } from 'react';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { useNoteInputModal } from '../../transaction/context/note-input-modal.context';
+import { appRuntime } from '../runtime/app.runtime';
+
+import type { UseRegenerateTranslationReturn } from './use-regenerate-translation.hook';
 
 interface AiTranslationEntity {
     title: string;
@@ -11,13 +14,11 @@ interface AiTranslationEntity {
     titleTags: string | null;
 }
 
-type RegenerateFn = (entityId: number, title: string) => Promise<TranslationResultInterface | null>;
-
 interface UseAiTranslationFieldsParams {
     entity: AiTranslationEntity | null;
     entityId: number;
     currentTitle: string;
-    regenerate: RegenerateFn;
+    regenerate: UseRegenerateTranslationReturn['regenerate'];
     isRegenerating: boolean;
     isModelReady: boolean;
 }
@@ -30,7 +31,7 @@ interface UseAiTranslationFieldsReturn {
         titleEn: string | null;
         titleTags: string | null;
         disabled: boolean;
-        onRegenerate: () => Promise<void>;
+        onRegenerate: () => void;
         onTitleEnPress: () => void;
         onTitleTagsPress: () => void;
     };
@@ -47,18 +48,24 @@ export const useAiTranslationFields = (params: UseAiTranslationFieldsParams): Us
 
     const isGenerateDisabled = !isNotEmptyString(currentTitle);
 
-    const handleRegenerate = async (): Promise<void> => {
+    const handleRegenerate = (): void => {
         if (!isModelReady) {
             return;
         }
 
-        const result = await regenerate(entityId, currentTitle);
-
-        if (isDefined(result)) {
-            setTitleEn(result.titleEn);
-            setTitleTags(result.titleTags);
-            lastRegeneratedTitle.current = currentTitle;
-        }
+        appRuntime.runFork(
+            regenerate(entityId, currentTitle).pipe(
+                Effect.tap(result =>
+                    Effect.sync(() => {
+                        if (isDefined(result)) {
+                            setTitleEn(result.titleEn);
+                            setTitleTags(result.titleTags);
+                            lastRegeneratedTitle.current = currentTitle;
+                        }
+                    })
+                )
+            )
+        );
     };
 
     const handleTitleBlur = (): void => {
@@ -66,7 +73,7 @@ export const useAiTranslationFields = (params: UseAiTranslationFieldsParams): Us
         const hasValidTitle = isNotEmptyString(currentTitle);
 
         if (titleChanged && hasValidTitle && !isRegenerating && isModelReady) {
-            void handleRegenerate();
+            handleRegenerate();
         }
     };
 

@@ -5,7 +5,6 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
 import { router } from 'expo-router';
-import { useEffect } from 'react';
 import { FieldErrors, useForm, useWatch } from 'react-hook-form';
 import { Text } from 'react-native';
 
@@ -13,6 +12,8 @@ import { isDefined } from '@rnw-community/shared';
 
 import { useShowError } from '../../../@generic/hook/use-show-error.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
+import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
+import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { ACCOUNT_ICON } from '../../constant/account-icon.constant';
 import { StartDepositFormSchema } from '../../constant/start-deposit-form-schema.constant';
@@ -22,11 +23,7 @@ import { StartDepositFundingSummary } from '../start-deposit-funding-summary/sta
 import { StartDepositFormSelector } from './start-deposit-form.selector';
 
 import type { DepositAccountFormValues } from '../../interface/deposit-account-form-values.interface';
-import type {
-    AccountEntityInterface,
-    TransactionEntryAssociationEnum,
-    TransactionEntryWithRelationsEntityInterface
-} from '@budgie/contracts';
+import type { TransactionEntryAssociationEnum, TransactionEntryWithRelationsEntityInterface } from '@budgie/contracts';
 
 interface Props {
     readonly transactionId: number;
@@ -40,8 +37,9 @@ export const StartDepositForm = ({ transactionId, sourceEntry }: Props) => {
     const { t } = useLingui();
     const showError = useShowError();
     const sourceAmount = convertFromMicroUnits(sourceEntry.amount);
-    const { operationInstrumentId, operationAmount } = sourceEntry;
+    const { operationInstrumentId, operationAmount, account } = sourceEntry;
     const hasOperationCurrency = isDefined(operationInstrumentId) && isDefined(operationAmount);
+    const hasForeignOperationCurrency = hasOperationCurrency && operationInstrumentId !== account.instrumentId;
 
     const form = useForm<DepositAccountFormValues>({
         resolver: standardSchemaResolver(Schema.toStandardSchemaV1(StartDepositFormSchema)),
@@ -51,17 +49,17 @@ export const StartDepositForm = ({ transactionId, sourceEntry }: Props) => {
             title: t`Deposit`,
             deadline: null,
             interestRate: null,
-            currentBalance: hasOperationCurrency ? convertFromMicroUnits(operationAmount) : sourceAmount,
+            currentBalance: hasForeignOperationCurrency ? convertFromMicroUnits(operationAmount) : sourceAmount,
             icon: ACCOUNT_ICON[AccountTypeEnum.DEPOSIT],
             includeInNetWorth: true,
             type: AccountTypeEnum.DEPOSIT,
-            instrumentId: hasOperationCurrency ? operationInstrumentId : sourceEntry.account.instrumentId,
-            integrationId: sourceEntry.account.integrationId
+            instrumentId: hasOperationCurrency ? operationInstrumentId : account.instrumentId,
+            integrationId: account.integrationId
         }
     });
     const startDeposit = (values: DepositAccountFormValues) =>
-        appRuntime
-            .runPromise(
+        appRuntime.runPromise(
+            logAndContinue(
                 Effect.flatMap(TransactionTransferService, transactionTransferService =>
                     transactionTransferService.startDepositFromExpense(transactionId, {
                         title: values.title,
@@ -72,13 +70,14 @@ export const StartDepositForm = ({ transactionId, sourceEntry }: Props) => {
                         includeInNetWorth: values.includeInNetWorth,
                         receivingAmount: values.currentBalance
                     })
+                ).pipe(
+                    Effect.tap(({ id }) =>
+                        Effect.sync(() => void router.replace({ pathname: '/account/[id]/details', params: { id: String(id) } }))
+                    ),
+                    toastOnFailure(t`Something went wrong`)
                 )
             )
-            .then(
-                (depositAccount: AccountEntityInterface) =>
-                    void router.replace({ pathname: '/account/[id]/details', params: { id: String(depositAccount.id) } }),
-                showError
-            );
+        );
 
     const handleInvalid = (errors: FieldErrors<DepositAccountFormValues>) => {
         const message = isDefined(errors.currentBalance)
@@ -92,14 +91,11 @@ export const StartDepositForm = ({ transactionId, sourceEntry }: Props) => {
 
     const instrumentId = useWatch({ control: form.control, name: 'instrumentId' });
     const { instrument } = useGetInstrumentByIdQuery(instrumentId);
-
-    const { setValue } = form;
-
-    useEffect(() => {
-        if (instrumentId === sourceEntry.account.instrumentId) {
-            setValue('currentBalance', sourceAmount);
+    const handleInstrumentChange = (nextInstrumentId: number) => {
+        if (nextInstrumentId === account.instrumentId && nextInstrumentId !== instrumentId) {
+            form.setValue('currentBalance', sourceAmount);
         }
-    }, [instrumentId, sourceEntry.account.instrumentId, sourceAmount, setValue]);
+    };
 
     const destinationCode = instrument?.code ?? '';
 
@@ -111,13 +107,14 @@ export const StartDepositForm = ({ transactionId, sourceEntry }: Props) => {
             onSubmit={handleSubmit}
             isSubmitting={form.formState.isSubmitting}
             balanceFieldLabel={t`Receiving amount`}
+            onInstrumentChange={handleInstrumentChange}
         >
             <StartDepositFundingSummary
                 control={form.control}
-                sourceAccountTitle={sourceEntry.account.title}
+                sourceAccountTitle={account.title}
                 sourceAmount={sourceAmount}
-                sourceSymbol={sourceEntry.account.instrument.symbol}
-                sourceCode={sourceEntry.account.instrument.code}
+                sourceSymbol={account.instrument.symbol}
+                sourceCode={account.instrument.code}
                 destinationCode={destinationCode}
             />
 

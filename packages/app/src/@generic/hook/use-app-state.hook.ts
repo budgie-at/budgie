@@ -1,12 +1,10 @@
-import { useEffect, useEffectEvent, useRef, useState } from 'react';
+import { useEffect, useEffectEvent, useRef } from 'react';
 import { AppState } from 'react-native';
 
 import type { AppStateStatus } from 'react-native';
 
-export const useAppState = (onChange?: (isActive: boolean) => void) => {
-    const currentAppState = AppState.currentState;
-    const appStateRef = useRef<AppStateStatus>(currentAppState);
-    const [appState, setAppState] = useState<AppStateStatus>(currentAppState);
+export const useAppState = (onChange: (isActive: boolean) => void) => {
+    const appStateRef = useRef<AppStateStatus>(AppState.currentState);
 
     const handleAppStateChange = useEffectEvent((nextAppState: AppStateStatus) => {
         const previousAppState = appStateRef.current;
@@ -14,16 +12,15 @@ export const useAppState = (onChange?: (isActive: boolean) => void) => {
         const movedFromActive = previousAppState === 'active' && nextAppState !== 'active';
 
         appStateRef.current = nextAppState;
-        setAppState(nextAppState);
 
         if (movedToActive) {
-            onChange?.(true);
+            onChange(true);
 
             return;
         }
 
         if (movedFromActive) {
-            onChange?.(false);
+            onChange(false);
         }
     });
 
@@ -32,11 +29,4 @@ export const useAppState = (onChange?: (isActive: boolean) => void) => {
 
         return () => void subscription.remove();
     }, []);
-
-    return {
-        appState,
-        isActive: appState === 'active',
-        isBackground: appState === 'background',
-        isInactive: appState === 'inactive'
-    };
 };

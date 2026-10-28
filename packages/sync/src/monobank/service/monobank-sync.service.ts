@@ -1,4 +1,4 @@
-import { consolidationScopeService } from '@budgie/consolidation';
+import { buildConsolidationScopeFromTransactions } from '@budgie/consolidation';
 import {
     loadMccCategoryLookupMap,
     AccountBalanceRepository,
@@ -176,7 +176,7 @@ export class MonobankSyncService extends Context.Service<MonobankSyncService>()(
         const reconcileChangedTransactions = Effect.fnUntraced(function* (
             changedTransactions: Array<Pick<TransactionEntityInterface, 'id' | 'operatedAt'>>
         ) {
-            const consolidationScope = consolidationScopeService.buildFromTransactions(changedTransactions);
+            const consolidationScope = buildConsolidationScopeFromTransactions(changedTransactions);
             if (!isDefined(consolidationScope)) {
                 return;
             }

@@ -1,16 +1,17 @@
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import * as DocumentPicker from 'expo-document-picker';
 import { router } from 'expo-router';
 import { ReactElement, useState } from 'react';
-import Toast from 'react-native-toast-message';
 
-import { getErrorMessage, isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
+import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useOnboardingRedirect } from '../../../onboarding/hook/use-onboarding-redirect.hook';
 import { FileImportStepEnum } from '../../enum/file-import-step.enum';
 import { useAccountSelection } from '../../hook/use-account-selection.hook';
@@ -39,44 +40,43 @@ export const CreateFileBankAccount = ({ config }: CreateFileBankAccountProps) =>
     const { selectedAccounts, setPreviews } = accountSelection;
     const onboardingHref = useOnboardingRedirect();
 
-    const runStep = (errorTitle: string, action: () => Promise<void>) =>
-        run(async () => {
-            try {
-                await action();
-            } catch (error) {
-                Toast.show({ type: 'error', text1: errorTitle, text2: getErrorMessage(error) });
-            }
-        });
-
     const handleSelectFile = () =>
-        runStep(t`Invalid file`, async () => {
-            const result = await DocumentPicker.getDocumentAsync({ type: config.mimeType, copyToCacheDirectory: true });
-            const asset = result.assets?.at(0);
+        run(
+            Effect.gen(function* () {
+                const result = yield* Effect.promise(() =>
+                    DocumentPicker.getDocumentAsync({ type: config.mimeType, copyToCacheDirectory: true })
+                );
+                const asset = result.assets?.at(0);
 
-            if (result.canceled || !isDefined(asset) || !isNotEmptyString(asset.uri)) {
-                return;
-            }
+                if (result.canceled || !isDefined(asset) || !isNotEmptyString(asset.uri)) {
+                    return;
+                }
 
-            setPreviews(await config.importPreview(asset.uri));
-            setSelectedFile(asset);
-            setStep(FileImportStepEnum.ACCOUNTS);
-        });
+                setPreviews(yield* config.importPreview(asset.uri));
+                setSelectedFile(asset);
+                setStep(FileImportStepEnum.ACCOUNTS);
+            }).pipe(toastOnFailure(t`Invalid file`))
+        );
 
     const handleReview = () =>
-        runStep(t`Invalid file`, async () => {
-            if (isDefined(selectedFile)) {
-                setReview(await config.reviewImport(selectedFile.uri, [...selectedAccounts]));
-                setStep(FileImportStepEnum.REVIEW);
-            }
-        });
+        run(
+            Effect.gen(function* () {
+                if (isDefined(selectedFile)) {
+                    setReview(yield* config.reviewImport(selectedFile.uri, [...selectedAccounts]));
+                    setStep(FileImportStepEnum.REVIEW);
+                }
+            }).pipe(toastOnFailure(t`Invalid file`))
+        );
 
     const handleImport = () =>
-        runStep(t`Import failed`, async () => {
-            if (isDefined(selectedFile)) {
-                await config.executeImportForSelectedAccounts(selectedFile.uri, [...selectedAccounts]);
-                router.dismissTo(onboardingHref ?? '/');
-            }
-        });
+        run(
+            Effect.gen(function* () {
+                if (isDefined(selectedFile)) {
+                    yield* config.executeImportForSelectedAccounts(selectedFile.uri, [...selectedAccounts]);
+                    router.dismissTo(onboardingHref ?? '/');
+                }
+            }).pipe(toastOnFailure(t`Import failed`))
+        );
 
     const newTransactionCount = isDefined(review) ? review.parsedTransactionCount - review.duplicateTransactionCount : 0;
     const importLabel = t({ message: plural(newTransactionCount, { one: 'Import # transaction', other: 'Import # transactions' }) });

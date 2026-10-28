@@ -32,7 +32,6 @@ export class DatabaseConnectionService extends Context.Service<DatabaseConnectio
             Effect.all(
                 [
                     ...pragmas,
-                    client`PRAGMA busy_timeout = 5000`.raw,
                     client`PRAGMA cache_size = -20000`.raw,
                     client`PRAGMA mmap_size = 268435456`.raw,
                     client`PRAGMA temp_store = MEMORY`.raw
@@ -40,7 +39,7 @@ export class DatabaseConnectionService extends Context.Service<DatabaseConnectio
                 { discard: true }
             ).pipe(Effect.mapError(cause => new DatabaseOpenError({ cause })));
         const openConnection = openSqliteClient(DB_NAME, yield* readDatabaseKey).pipe(Scope.provide(scope));
-        const writer = yield* openConnection;
+        const [writer, reader] = yield* Effect.all([openConnection, openConnection], { concurrency: 'unbounded' });
 
         yield* applyPragmas(writer, [
             writer`PRAGMA journal_mode = WAL`.raw,
@@ -52,8 +51,6 @@ export class DatabaseConnectionService extends Context.Service<DatabaseConnectio
             tableName => writer`CREATE VIRTUAL TABLE IF NOT EXISTS ${writer(tableName)} USING vec0(embedding float[768])`.raw,
             { discard: true }
         ).pipe(Effect.catch(vecError => Effect.logError('sqlite:vec-init-error', { errorMessage: getErrorMessage(vecError) })));
-
-        const reader = yield* openConnection;
 
         yield* applyPragmas(reader, [reader`PRAGMA query_only = 1`.raw]);
 

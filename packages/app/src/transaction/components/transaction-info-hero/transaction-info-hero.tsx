@@ -8,9 +8,8 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { MetaPill } from '../../../@generic/component/meta-pill/meta-pill';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { cn } from '../../../@generic/utils/cn.util';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { MatchingRulesPill } from '../../../rule/components/matching-rules-pill/matching-rules-pill';
-import { useSettingsContext } from '../../../settings/context/settings.context';
 import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
 import { getTransactionDisplayTitle } from '../../utils/get-transaction-display-title.util';
 import { getTransactionIcon } from '../../utils/get-transaction-icon.util';
@@ -59,8 +58,7 @@ const getFormattedAmount = (
 ): string => `${getAmountPrefix(transaction.type)}${formatDigits(amount, currencySymbol)}`;
 
 export const TransactionInfoHero = ({ transaction, matchingRuleIds, onOpenRefundSources }: Props) => {
-    const { decimalPlaces } = useSettingsContext();
-    const formatDigits = useFormatDigits(decimalPlaces);
+    const formatDigits = useDisplayFormatDigits();
     const variant = TRANSACTION_COLOR[getTransactionType(transaction)];
     const primaryEntry = getPrimaryEntry(transaction);
     const secondaryEntry = getSecondaryTransferEntry(transaction);

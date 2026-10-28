@@ -1,5 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import * as Effect from 'effect/Effect';
 import { ImpactFeedbackStyle } from 'expo-haptics';
 import { AccessibilityActionEvent, Text, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
@@ -11,6 +12,7 @@ import { Button } from '../../../@generic/component/button/button';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 
 const HOLD_DURATION_MS = 1200;
@@ -37,17 +39,26 @@ export const OnboardingHoldToSealButton = ({ label, confirmMessage, isDisabled, 
 
     const handleTick = () => void hapticImpact(ImpactFeedbackStyle.Soft);
 
-    const handleConfirmPress = async () => {
-        const isConfirmed = await confirmAlert({ title: label, message: confirmMessage, confirmText: t`Seal`, cancelText: t`Cancel` });
+    const handleConfirmPress = () => {
+        appRuntime.runFork(
+            Effect.gen(function* () {
+                const isConfirmed = yield* confirmAlert({
+                    title: label,
+                    message: confirmMessage,
+                    confirmText: t`Seal`,
+                    cancelText: t`Cancel`
+                });
 
-        if (isConfirmed) {
-            onComplete();
-        }
+                if (isConfirmed) {
+                    onComplete();
+                }
+            })
+        );
     };
 
     const handleAccessibilityAction = (event: AccessibilityActionEvent) => {
         if (event.nativeEvent.actionName === ACCESSIBILITY_ACTIVATE) {
-            void handleConfirmPress();
+            handleConfirmPress();
         }
     };
 

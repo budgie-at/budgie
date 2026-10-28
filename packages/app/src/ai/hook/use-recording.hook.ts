@@ -65,9 +65,13 @@ export const useRecording = (callbacks: RecordingCallbacks = {}): UseRecordingRe
     const stopRecorder = () => {
         const recorder = recorderRef.current;
         recorderRef.current = null;
-        recorder?.stop().catch((error: unknown) => {
-            appRuntime.runFork(Effect.logError('recorder:stop', { errorMessage: getErrorMessage(error) }));
-        });
+        if (isDefined(recorder)) {
+            appRuntime.runFork(
+                Effect.tryPromise({ try: () => recorder.stop(), catch: getErrorMessage }).pipe(
+                    Effect.catch(error => Effect.logError('recorder:stop', { errorMessage: error }))
+                )
+            );
+        }
     };
 
     const cleanup = () => {
@@ -148,13 +152,19 @@ export const useRecording = (callbacks: RecordingCallbacks = {}): UseRecordingRe
                     handleAudioBuffer(samples, sessionId);
                 }
             });
-            recorder.start().catch((error: unknown) => {
-                appRuntime.runFork(Effect.logError('recorder:start', { errorMessage: getErrorMessage(error) }));
+            appRuntime.runFork(
+                Effect.tryPromise({ try: () => recorder.start(), catch: getErrorMessage }).pipe(
+                    Effect.catch(error =>
+                        Effect.gen(function* () {
+                            yield* Effect.logError('recorder:start', { errorMessage: error });
 
-                if (sessionId === sessionIdRef.current) {
-                    cleanup();
-                }
-            });
+                            if (sessionId === sessionIdRef.current) {
+                                cleanup();
+                            }
+                        })
+                    )
+                )
+            );
 
             resetSilenceTimeout(sessionId);
         });

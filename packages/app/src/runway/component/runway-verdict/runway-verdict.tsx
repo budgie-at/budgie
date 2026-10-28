@@ -1,4 +1,5 @@
 import { convertFromMicroUnits } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
@@ -11,7 +12,7 @@ import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-
 import { cn } from '../../../@generic/utils/cn.util';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { RunwaySelector } from '../../runway.selector';
 import { RunwayMeter } from '../runway-meter/runway-meter';
@@ -27,7 +28,7 @@ const ENTERING = FadeIn.duration(ENTERING_DURATION);
 
 export const RunwayVerdict = ({ computation }: Props) => {
     const { t } = useLingui();
-    const { defaultInstrument } = useSettingsContext();
+    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const isRunwayCryptoIncluded = useSetting('isRunwayCryptoIncluded');
     const formatWholeDigits = useFormatDigits(0);
     const { formatMonthAndYear } = useFormatDate();

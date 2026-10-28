@@ -1,3 +1,4 @@
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { View } from 'react-native';
@@ -7,11 +8,10 @@ import { isDefined } from '@rnw-community/shared';
 import { Card } from '../../../@generic/component/card/card';
 import { MICRO_UNIT_DECIMAL_PLACES } from '../../../@generic/constant/micro-unit-decimal-places.constant';
 import { formatExchangeRate } from '../../../@generic/utils/format-exchange-rate.util';
-import { useGetRatesByBaseAndQuoteIdsQuery } from '../../../exchange-rate/query/use-get-rates-by-base-and-quote-ids.query';
+import { useCryptoValuationRateQuery } from '../../../exchange-rate/query/use-crypto-valuation-rate.query';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useInstrumentMarketDataQuery } from '../../../market-data/query/use-instrument-market-data.query';
-import { useSettingsContext } from '../../../settings/context/settings.context';
+import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { CryptoCurrencyGroupInterface } from '../../interface/crypto-currency-group.interface';
 import { HomeAccountBalanceInterface } from '../../interface/home-account-balance.interface';
 import { CryptoCurrencyGroupAccounts } from '../crypto-currency-group-accounts/crypto-currency-group-accounts';
@@ -28,16 +28,13 @@ interface Props {
 
 export const CryptoCurrencyGroupCard = ({ group, balance, balancesByAccountId }: Props) => {
     const [isOpen, setIsOpen] = useState(false);
-    const { defaultInstrument } = useSettingsContext();
+    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const formatDigits = useDisplayFormatDigits();
     const formatCryptoDigits = useFormatDigits(0, MICRO_UNIT_DECIMAL_PLACES);
-    const { rate } = useGetRatesByBaseAndQuoteIdsQuery(group.instrument.id, defaultInstrument.id);
-    const { latestPrice } = useInstrumentMarketDataQuery(group.instrument.id, defaultInstrument.id);
+    const valuationRate = useCryptoValuationRateQuery(group.instrument.id, defaultInstrument.id);
 
     const toggleOpen = () => void setIsOpen(value => !value);
     const navigateToMarket = () => void router.push({ pathname: '/currency/[id]', params: { id: String(group.instrument.id) } });
-    const rateValue = rate?.rate;
-    const valuationRate = isDefined(rateValue) ? rateValue : latestPrice?.price;
     const formattedBalance = `${formatCryptoDigits(balance)} ${group.instrument.code}`;
     const formattedValue = isDefined(valuationRate) ? formatDigits(balance * valuationRate, defaultInstrument.symbol) : null;
     const formattedRate = isDefined(valuationRate) ? formatExchangeRate(valuationRate) : null;

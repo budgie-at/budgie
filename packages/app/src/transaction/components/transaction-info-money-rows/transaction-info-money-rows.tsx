@@ -4,8 +4,8 @@ import { useLingui } from '@lingui/react/macro';
 
 import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
+import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { useSettingsContext } from '../../../settings/context/settings.context';
 import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
 import { TransactionInfoRow } from '../transaction-info-row/transaction-info-row';
@@ -61,8 +61,7 @@ const getTransferExchangeRateLabel = (
 
 export const TransactionInfoMoneyRows = ({ transaction }: Props) => {
     const { t } = useLingui();
-    const { decimalPlaces } = useSettingsContext();
-    const formatDigits = useFormatDigits(decimalPlaces);
+    const formatDigits = useDisplayFormatDigits();
     const formatRate = useFormatDigits(0, 4);
     const feeDisplay = getFeeDisplay(transaction, formatDigits);
     const transferDestinationAmount = getTransferDestinationAmount(transaction, formatDigits);
