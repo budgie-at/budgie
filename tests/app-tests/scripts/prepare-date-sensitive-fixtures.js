@@ -1389,6 +1389,39 @@ const generateCategorizeInboxFixture = () => {
     );
 };
 
+const generateReceiptScanFixture = () => {
+    const sourcePath = path.join(fixturesDirectoryPath, '12.db');
+    const targetPath = path.join(outputDirectoryPath, '42-receipt-scan.db');
+    const now = Math.floor(Date.now() / 1000);
+    const operatedAt = now - 3600;
+    const expenseSourceAccountId = 1;
+    const receiptTransactionId = 4242;
+    const receiptAmount = 62_100_000;
+
+    copyFixture(sourcePath, targetPath);
+    runSqlite(
+        targetPath,
+        `
+        BEGIN;
+
+        INSERT INTO transactions (id, created_at, updated_at, type, title, operated_at, comment, from_account_id, exchange_rate)
+        VALUES (${receiptTransactionId}, ${operatedAt}, ${operatedAt}, 'EXPENSE', '', ${operatedAt}, 'E2E Receipt Target', ${expenseSourceAccountId}, 1.0);
+
+        INSERT INTO transaction_entries (created_at, updated_at, type, account_id, category_id, transaction_id, amount)
+        VALUES (${operatedAt}, ${operatedAt}, 'CREDIT', ${expenseSourceAccountId}, NULL, ${receiptTransactionId}, ${receiptAmount});
+
+        UPDATE account_balances
+        SET amount = amount - ${receiptAmount}, updated_at = ${now}
+        WHERE account_id = ${expenseSourceAccountId};
+
+        UPDATE transactions SET needs_embedding = 1;
+
+        COMMIT;
+        VACUUM;
+        `
+    );
+};
+
 generateRunwayCryptoFixture();
 generateBudgetMultiCurrencyFixture();
 generateRecurringFixture();
@@ -1398,6 +1431,7 @@ generateLongPressActionsFixture();
 generateMatchingRulesFixture();
 generateDebtSettlementFixture();
 generateCategorizeInboxFixture();
+generateReceiptScanFixture();
 
 const balanceMismatches = generatedFixturePaths.flatMap(findBalanceMismatches);
 

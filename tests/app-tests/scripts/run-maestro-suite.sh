@@ -219,6 +219,7 @@ refresh_ios_fixture_state() {
 
     DETECTED_SIMULATOR_UDID="$(detect_booted_simulator_udid || true)"
     E2E_CSV_FIXTURES_URI=""
+    E2E_FIXTURES_URI=""
 
     if [ -z "$DETECTED_SIMULATOR_UDID" ]; then
         return 0
@@ -242,6 +243,7 @@ refresh_ios_fixture_state() {
 
     if [ -d "$app_data_container" ]; then
         E2E_CSV_FIXTURES_URI="file://$app_data_container/Documents/E2ECsvFixtures"
+        E2E_FIXTURES_URI="file://$app_data_container/Documents/E2EFixtures"
     fi
 }
 
@@ -441,6 +443,7 @@ run_maestro_flow() {
         -e APP_ID="$APP_ID" \
         -e E2E_RUN_TOKEN="$E2E_RUN_TOKEN" \
         -e E2E_CSV_FIXTURES_URI="$E2E_CSV_FIXTURES_URI" \
+        -e E2E_FIXTURES_URI="$E2E_FIXTURES_URI" \
         -e DATABASE_FIXTURE_SEEDED="$DATABASE_FIXTURE_SEEDED" \
         "${args[@]}"
 }

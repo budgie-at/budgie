@@ -18,6 +18,7 @@ export const TransactionInfoSourceRows = ({ transaction, onOpenConsolidationSour
     const { t } = useLingui();
     const isConsolidated = isDefined(transaction.consolidationType);
     const handleOpenSources = onOpenConsolidationSources ?? onOpenRefundSources;
+    const { receipt } = transaction;
 
     return (
         <>
@@ -28,6 +29,15 @@ export const TransactionInfoSourceRows = ({ transaction, onOpenConsolidationSour
                     value={t`View source transactions`}
                     testID={TransactionInfoPageSelector.Row.Consolidation}
                     onPress={handleOpenSources}
+                />
+            ) : null}
+            {isDefined(receipt) ? (
+                <TransactionInfoRow
+                    icon={UserIconNameEnum.Receipt}
+                    label={t`Receipt`}
+                    value={receipt.receiptNumber}
+                    description={receipt.merchantLegalName}
+                    testID={TransactionInfoPageSelector.Row.Receipt}
                 />
             ) : null}
         </>

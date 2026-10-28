@@ -38,6 +38,7 @@ export class WidgetSnapshotService extends Context.Service<WidgetSnapshotService
             expenseUrl: 'budgie://create-transaction/expense',
             incomeUrl: 'budgie://create-transaction/income',
             transferUrl: 'budgie://create-transaction/transfer',
+            scanUrl: 'budgie://scan-receipt',
             homeUrl: 'budgie://'
         };
         const emptyNetWorth: WidgetNetWorthSnapshotInterface = {

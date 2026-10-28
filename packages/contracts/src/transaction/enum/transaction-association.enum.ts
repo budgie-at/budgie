@@ -3,5 +3,6 @@ export enum TransactionAssociationEnum {
     TO_ACCOUNT = 'toAccount',
     FROM_ACCOUNT = 'fromAccount',
     TRANSACTION_TAGS = 'transactionTags',
-    DEBT_EVENTS = 'debtEvents'
+    DEBT_EVENTS = 'debtEvents',
+    RECEIPT = 'receipt'
 }

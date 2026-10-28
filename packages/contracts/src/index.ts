@@ -224,6 +224,12 @@ export type { TransactionTagsEntityInterface } from './transaction-tags/entity/t
 export type { TransactionTagsCreateEntityInterface } from './transaction-tags/entity/transaction-tags-create-entity.interface';
 
 export { TransactionTagsRepository } from './transaction-tags/repository/transaction-tags.repository';
+export { TransactionReceiptEntityTable } from './transaction-receipt/table/transaction-receipt-entity.table';
+
+export type { TransactionReceiptEntityInterface } from './transaction-receipt/entity/transaction-receipt-entity.interface';
+export type { TransactionReceiptCreateEntityInterface } from './transaction-receipt/entity/transaction-receipt-create-entity.interface';
+export { TransactionReceiptRepository } from './transaction-receipt/repository/transaction-receipt.repository';
+export type { ReceiptMatchCandidateInterface } from './transaction-receipt/interface/receipt-match-candidate.interface';
 
 export { ExpenseTransactionCreateInputSchema } from './transaction/schema/expense-transaction-create-input.schema';
 

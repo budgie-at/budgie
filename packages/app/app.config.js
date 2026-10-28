@@ -87,6 +87,9 @@ const withStrippedIosFrameworks = config =>
         return mod;
     });
 
+const RECEIPT_SHARE_ACTIVATION_RULE =
+    'SUBQUERY (extensionItems, $extensionItem, SUBQUERY ($extensionItem.attachments, $attachment, ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "public.image" || ANY $attachment.registeredTypeIdentifiers UTI-CONFORMS-TO "com.adobe.pdf").@count == $extensionItem.attachments.@count AND $extensionItem.attachments.@count <= 10).@count == 1';
+
 const getExpoConfig = ({ config }) => ({
     ...config,
     name: getAppName(),
@@ -104,6 +107,7 @@ const getExpoConfig = ({ config }) => ({
         infoPlist: {
             BGTaskSchedulerPermittedIdentifiers: ['$(PRODUCT_BUNDLE_IDENTIFIER).sync.*'],
             UIBackgroundModes: ['processing'],
+            NSCameraUsageDescription: 'Allow $(PRODUCT_NAME) to use the camera to scan receipts. Receipts are read on this device and never uploaded.',
             LSApplicationQueriesSchemes: ['shortcuts']
         },
         associatedDomains: ['applinks:budgie.at'],
@@ -151,6 +155,12 @@ const getExpoConfig = ({ config }) => ({
         eas: {
             projectId: '41569eb3-e5c7-41f2-bea0-200d87a7fc36'
         }
+    },
+    locales: {
+        de: './locales/ios/de.json',
+        es: './locales/ios/es.json',
+        fr: './locales/ios/fr.json',
+        uk: './locales/ios/uk.json'
     },
     owner: 'vitalyiegorov',
     updates: {
@@ -206,6 +216,23 @@ const getExpoConfig = ({ config }) => ({
                         description: 'Expense, income and transfer in one tap.',
                         ios: { supportedFamilies: ['systemMedium'] }
                     }
+                ]
+            }
+        ],
+        [
+            'expo-share-intent',
+            {
+                iosActivationRules: RECEIPT_SHARE_ACTIVATION_RULE,
+                iosAppGroupIdentifier: getAppGroup(),
+                iosShareExtensionName: 'Budgie Receipt',
+                disableAndroid: true
+            }
+        ],
+        [
+            'expo-quick-actions',
+            {
+                iosActions: [
+                    { id: 'scan-receipt', title: 'Scan receipt', icon: 'symbol:doc.text.viewfinder', params: { href: '/scan-receipt' } }
                 ]
             }
         ],

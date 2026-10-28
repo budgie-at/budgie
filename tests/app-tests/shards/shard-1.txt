@@ -20,3 +20,4 @@
 37.deposit-lifecycle.flow.yaml
 40.installment-plan.flow.yaml
 41.security-backup-and-pin-cancel.flow.yaml
+42.receipt-scan-share.flow.yaml

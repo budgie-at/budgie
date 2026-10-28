@@ -4,6 +4,7 @@ export {
     TransactionEntityTable,
     TransactionEntryEntityTable,
     TransactionTagsEntityTable,
+    TransactionReceiptEntityTable,
     TagEntityTable,
     CategoryEntityTable,
     DefaultCategoryTranslationEntityTable,
