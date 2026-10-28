@@ -6,6 +6,9 @@ import { computeClosedPeriods } from '../src/history/utils/budget-closed-periods
 const CALENDAR_MONTH = { periodStartDay: 1, useLastDayOfMonth: false };
 const LAST_DAY_OF_MONTH = { periodStartDay: 1, useLastDayOfMonth: true };
 
+const closedPeriodStarts = (now: Date, latestSnapshotStart: Date | null, earliestOperatedAt: Date | null) =>
+    computeClosedPeriods(CALENDAR_MONTH, now, latestSnapshotStart, earliestOperatedAt).map(window => window.periodStart);
+
 it.effect('backfills the last six closed periods when no snapshot exists', () =>
     Effect.sync(() => {
         const windows = computeClosedPeriods(CALENDAR_MONTH, new Date(2026, 2, 15), null, new Date(2025, 0, 1));
@@ -19,9 +22,10 @@ it.effect('backfills the last six closed periods when no snapshot exists', () =>
 
 it.effect('does not backfill periods that end before the first transaction', () =>
     Effect.sync(() => {
-        const windows = computeClosedPeriods(CALENDAR_MONTH, new Date(2026, 2, 15), null, new Date(2026, 0, 20));
-
-        expect(windows.map(window => window.periodStart)).toEqual([new Date(2026, 0, 1), new Date(2026, 1, 1)]);
+        expect(closedPeriodStarts(new Date(2026, 2, 15), null, new Date(2026, 0, 20))).toEqual([
+            new Date(2026, 0, 1),
+            new Date(2026, 1, 1)
+        ]);
     })
 );
 
@@ -33,9 +37,10 @@ it.effect('returns nothing without snapshots and without transactions', () =>
 
 it.effect('returns only periods closed after the latest snapshot', () =>
     Effect.sync(() => {
-        const windows = computeClosedPeriods(CALENDAR_MONTH, new Date(2026, 3, 15), new Date(2026, 0, 1), new Date(2025, 0, 1));
-
-        expect(windows.map(window => window.periodStart)).toEqual([new Date(2026, 1, 1), new Date(2026, 2, 1)]);
+        expect(closedPeriodStarts(new Date(2026, 3, 15), new Date(2026, 0, 1), new Date(2025, 0, 1))).toEqual([
+            new Date(2026, 1, 1),
+            new Date(2026, 2, 1)
+        ]);
     })
 );
 
@@ -49,9 +54,10 @@ it.effect('returns no duplicates once the latest closed period is snapshotted', 
 
 it.effect('treats the exact period boundary as the start of the next period', () =>
     Effect.sync(() => {
-        const windows = computeClosedPeriods(CALENDAR_MONTH, new Date(2026, 2, 1), new Date(2025, 11, 1), new Date(2025, 0, 1));
-
-        expect(windows.map(window => window.periodStart)).toEqual([new Date(2026, 0, 1), new Date(2026, 1, 1)]);
+        expect(closedPeriodStarts(new Date(2026, 2, 1), new Date(2025, 11, 1), new Date(2025, 0, 1))).toEqual([
+            new Date(2026, 0, 1),
+            new Date(2026, 1, 1)
+        ]);
     })
 );
 

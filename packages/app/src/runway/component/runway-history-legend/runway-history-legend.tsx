@@ -1,8 +1,8 @@
 import { convertFromMicroUnits } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
 
+import { ChartLegend } from '../../../@generic/component/chart-legend/chart-legend';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 
@@ -24,14 +24,5 @@ export const RunwayHistoryLegend = ({ hasSpike, typicalAmount }: Props) => {
         { label: t`typical month ${amount}`, swatchClassName: 'h-0.5 w-4 rounded-full bg-primary' }
     ];
 
-    return (
-        <View className="flex-row flex-wrap items-center gap-x-lg gap-y-xs">
-            {items.map(item => (
-                <View key={item.label} className="flex-row items-center gap-x-sm">
-                    <View className={item.swatchClassName} />
-                    <Text className="text-xxs text-secondary-foreground">{item.label}</Text>
-                </View>
-            ))}
-        </View>
-    );
+    return <ChartLegend items={items} />;
 };

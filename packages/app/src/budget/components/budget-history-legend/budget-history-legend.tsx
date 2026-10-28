@@ -1,5 +1,6 @@
 import { useLingui } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
+
+import { ChartLegend } from '../../../@generic/component/chart-legend/chart-legend';
 
 export const BudgetHistoryLegend = () => {
     const { t } = useLingui();
@@ -10,14 +11,5 @@ export const BudgetHistoryLegend = () => {
         { label: t`Limit`, swatchClassName: 'h-0.5 w-4 rounded-full bg-primary' }
     ];
 
-    return (
-        <View className="flex-row flex-wrap items-center gap-x-lg gap-y-xs">
-            {items.map(item => (
-                <View key={item.label} className="flex-row items-center gap-x-sm">
-                    <View className={item.swatchClassName} />
-                    <Text className="text-xxs text-secondary-foreground">{item.label}</Text>
-                </View>
-            ))}
-        </View>
-    );
+    return <ChartLegend items={items} />;
 };
