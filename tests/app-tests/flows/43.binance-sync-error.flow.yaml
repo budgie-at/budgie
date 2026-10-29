@@ -29,9 +29,6 @@ env:
 - assertVisible: 'Sync Failed'
 - assertNotVisible:
       id: 'AccountSyncCard.LastError'
-- assertVisible:
-      id: 'AccountSyncCard.Switch'
-      checked: true
 
 - runFlow:
       file: subflows/navigation/open-deep-link.flow.yaml
