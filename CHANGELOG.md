@@ -3,6 +3,48 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.126.0](https://github.com/budgie-at/budgie/compare/v6.125.3...v6.126.0) (2026-10-29)
+
+### Bug Fixes
+
+* **app:** size the runway meter gradient to the track width ([723fe37](https://github.com/budgie-at/budgie/commit/723fe3715f36c1630d2ed925f0845dfbe2ed88e7))
+* **app:** type the entrance reveal initial transform as a tuple ([0cd7be3](https://github.com/budgie-at/budgie/commit/0cd7be3d8cde2510e6cc1642487309b040dbeea1))
+* **budget:** give the period summary its own limit card after the merge ([7d37aaf](https://github.com/budgie-at/budgie/commit/7d37aaf2f76ee2336b6ab85f543cf790723833ff))
+* **budget:** guard widget progress against non-positive effective limit ([a9e2aa3](https://github.com/budgie-at/budgie/commit/a9e2aa39a227cc3b7845d263b988b485a8b732c8))
+* **budget:** keep category limit rows swipeable with the rollover menu ([5fab6b6](https://github.com/budgie-at/budgie/commit/5fab6b65e02440cb11011dd764a9f65d5d742f8a))
+* **budget:** keep the forecast gap label clear of the projection line ([85cbb86](https://github.com/budgie-at/budgie/commit/85cbb8631339c190fe5c19069094eb37f9f93bc5))
+* **budget:** keep the safe-to-spend sheet white in light mode ([b9a8db4](https://github.com/budgie-at/budgie/commit/b9a8db425eb3925721ad668b48304db65c1eeb0a))
+* **budget:** refresh the projection when period snapshots change ([9ef9ae9](https://github.com/budgie-at/budgie/commit/9ef9ae9ef97aa1477440efc1c1d45037c973386c))
+* **budget:** resolve the forecast gradient colour from the theme ([5a5df65](https://github.com/budgie-at/budgie/commit/5a5df65b5b21934b594384fc9260e87ed4dc7c64))
+* **budget:** restore isDefined import in the details limit card ([c9783c6](https://github.com/budgie-at/budgie/commit/c9783c69cb262924776671df02aa763d8a0ab0b8))
+
+### Features
+
+* **app:** align runway with the refined budget screen ([7f4bf98](https://github.com/budgie-at/budgie/commit/7f4bf9860ac6ab1cc57864ff0c4c126838febd2c))
+* **app:** desaturate dark tone tokens, lift dark page surface and solidify collapsed header ([83db8e0](https://github.com/budgie-at/budgie/commit/83db8e0e9f2f3bcdfd99db4b734d521cec724831))
+* **app:** draw section separators as device hairlines ([1556404](https://github.com/budgie-at/budgie/commit/1556404674ef47fbb7006ac32df743615ee621e6))
+* **app:** draw the runway toggle separator as a device hairline ([2850916](https://github.com/budgie-at/budgie/commit/2850916081d6f55dba0472e95cd91d05ed69d40a))
+* **app:** drop cards for an editorial runway screen ([497e5ec](https://github.com/budgie-at/budgie/commit/497e5ece10657e903a50660e702dcd0803b60588)), closes [#1784](https://github.com/budgie-at/budgie/issues/1784)
+* **app:** improve status contrast and cardless primitive resilience ([b640c2d](https://github.com/budgie-at/budgie/commit/b640c2d5ce8569c4962f5bd9361f4d7399b88737))
+* **app:** refine runway visuals to match the budget screen ([03f2bb3](https://github.com/budgie-at/budgie/commit/03f2bb3b05861b44401a7a9e8d4ded67a4869f83))
+* **budget:** add per-day variable spend and daily allowance to the projection ([c81e35a](https://github.com/budgie-at/budgie/commit/c81e35a13be87f2962f36f26932033481ec9c5e5))
+* **budget:** add spending projection engine with pace forecast ([c1066ff](https://github.com/budgie-at/budgie/commit/c1066ffc64adfd36a957602c0c37b40ec13d40bf)), closes [#1716](https://github.com/budgie-at/budgie/issues/1716)
+* **budget:** alert when a budget scope is ahead of pace ([8ab21af](https://github.com/budgie-at/budgie/commit/8ab21af1d553a2554dab71a44b8361d735e5988b)), closes [#1718](https://github.com/budgie-at/budgie/issues/1718)
+* **budget:** carry leftover budget into the next period per category ([3f20c92](https://github.com/budgie-at/budgie/commit/3f20c9220881d7733ff52cdbb4b2f0d7e2dcc63b)), closes [#1720](https://github.com/budgie-at/budgie/issues/1720)
+* **budget:** drop cards for an editorial budget details layout ([29694a9](https://github.com/budgie-at/budgie/commit/29694a9c14216324a7c18550e169598a089430ac))
+* **budget:** encode each day against the daily allowance in the day strip ([266087c](https://github.com/budgie-at/budgie/commit/266087c1e80d23b56996080833141a39e4bc1abe))
+* **budget:** fit charts to the page width and tidy history bars ([c507621](https://github.com/budgie-at/budgie/commit/c507621f811aed7b2000f0b067923e0fd0b0c494))
+* **budget:** flatten the forecast chart and label the end gap ([e032c10](https://github.com/budgie-at/budgie/commit/e032c109fc4743fc31fefd060e2f76894e1199d8))
+* **budget:** make the rollover choice a compact inline menu ([bdf22e8](https://github.com/budgie-at/budgie/commit/bdf22e8ddc30dbf090eabb1f19ed4d8005d6307a))
+* **budget:** project spending against rollover-adjusted limits ([366fb56](https://github.com/budgie-at/budgie/commit/366fb56404f4c09f0a67d0af276cda2a7428626a))
+* **budget:** record closed-period history with past months chart ([04ea9a9](https://github.com/budgie-at/budgie/commit/04ea9a9cd1025bbea2afac73ef9180e28c6f7a96)), closes [#1719](https://github.com/budgie-at/budgie/issues/1719)
+* **budget:** refine details content, accessibility and motion ([a0fcd65](https://github.com/budgie-at/budgie/commit/a0fcd6565edd25d5d946e2c4a2a5a25a90f0d2f7))
+* **budget:** restyle budget screens after the runway screen ([3ee5cd0](https://github.com/budgie-at/budgie/commit/3ee5cd060a8b2cbbf4773f951d7d2413fce34073))
+* **budget:** show safe-to-spend per day with breakdown sheet ([bb9c5b0](https://github.com/budgie-at/budgie/commit/bb9c5b0bee52f094be1765a42bf070e0d6cb2b59)), closes [#1717](https://github.com/budgie-at/budgie/issues/1717)
+* **budget:** show the safe-to-spend maths once on an elevated sheet ([501e0d8](https://github.com/budgie-at/budgie/commit/501e0d8eecbf9e7fec72652941c59dc6f102b911))
+* **budget:** use colour as signal and clean up copy ([221dae6](https://github.com/budgie-at/budgie/commit/221dae630d443724c14045d47d44ab50c12154c6))
+
+
 ## [6.125.3](https://github.com/budgie-at/budgie/compare/v6.125.2...v6.125.3) (2026-10-28)
 
 ### Bug Fixes
