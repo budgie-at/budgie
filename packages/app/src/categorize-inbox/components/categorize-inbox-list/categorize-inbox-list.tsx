@@ -54,7 +54,6 @@ export const CategorizeInboxList = ({ items }: Props) => {
         return <CategorizeInboxGroupRow cluster={item} />;
     };
 
-    const stickyHeaderIndices = data.flatMap((item, index) => ('rows' in item || 'oneOffs' in item ? [] : [index]));
     const contentContainerStyle = { paddingBottom: chromeHeight + LIST_BOTTOM_CLEARANCE };
 
     return (
@@ -65,7 +64,6 @@ export const CategorizeInboxList = ({ items }: Props) => {
             renderItem={renderItem}
             estimatedItemSize={64}
             getItemType={getItemType}
-            stickyHeaderIndices={stickyHeaderIndices}
             drawDistance={600}
             contentContainerStyle={contentContainerStyle}
             ListHeaderComponent={<CategorizeInboxHero />}

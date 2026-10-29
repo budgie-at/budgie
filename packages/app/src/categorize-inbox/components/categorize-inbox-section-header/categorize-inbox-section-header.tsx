@@ -6,7 +6,6 @@ import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { StickySectionHeaderBackdrop } from '../../../@generic/component/sticky-section-header-backdrop/sticky-section-header-backdrop';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { testID } from '../../../@generic/utils/test-id.util';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
@@ -50,7 +49,6 @@ export const CategorizeInboxSectionHeader = ({ section, rowCount }: Props) => {
             accessibilityRole="header"
             {...testID(CategorizeInboxSectionHeaderSelector.Header, section)}
         >
-            <StickySectionHeaderBackdrop />
             <View className="shrink flex-row items-center gap-x-sm">
                 <CategorizeInboxDot className={CATEGORIZE_INBOX_SECTION_COLOR[section]} />
                 <Text className="shrink text-xs font-medium uppercase tracking-wider text-secondary-foreground" numberOfLines={1}>
