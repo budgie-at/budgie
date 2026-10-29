@@ -1,5 +1,5 @@
 import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
-import { useAtomValue } from '@effect/atom-react/Hooks';
+import { useAtomSet, useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { ImpactFeedbackStyle } from 'expo-haptics';
 import { router } from 'expo-router';
@@ -17,6 +17,7 @@ import { CreateActionInterface } from '../../../@generic/interface/create-action
 import { aiSystemStatusAtom } from '../../../ai/constant/ai-system-status-atom.constant';
 import { useVoiceInputContext } from '../../../ai/context/voice-input.context';
 import { AiSystemStateEnum } from '../../../ai/enum/ai-system-state.enum';
+import { receiptScanRequestAtom } from '../../../receipt/constant/receipt-scan-request-atom.constant';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { ActionItem } from '../action-item/action-item';
 import { AiButton } from '../ai-button/ai-button';
@@ -41,6 +42,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
     const [, hapticImpact] = useVibration();
     const { createAction } = useCreateActionContext();
     const { open: openVoiceInput } = useVoiceInputContext();
+    const requestReceiptScan = useAtomSet(receiptScanRequestAtom);
     const [isVisible, setIsVisible] = useState(false);
 
     const isVoiceInputEnabled = useSetting('isAiVoiceInputEnabled');
@@ -82,7 +84,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
 
     const handleScanReceipt = () => {
         onClose();
-        router.push('/scan-receipt');
+        requestReceiptScan(true);
     };
 
     const handleAiPress = () => {
