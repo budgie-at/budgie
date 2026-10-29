@@ -1,6 +1,5 @@
 import { DEFAULT_TRANSACTION_FILTER, TransactionFilterInterface, UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
-import React from 'react';
 import { ScrollView, Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -17,15 +16,18 @@ import { TransactionTypeFilter } from '../transaction-type-filter/transaction-ty
 
 import { TransactionFiltersSelector } from './transaction-filters.selector';
 
+import type { ReactNode } from 'react';
+
 interface Props {
     readonly showTypeFilter?: boolean;
     readonly accountId: number | null;
     readonly hasFiltersSelected: boolean;
     readonly filters: TransactionFilterInterface;
     readonly onChange: (cb: TransactionFilterInterface | ((prev: TransactionFilterInterface) => TransactionFilterInterface)) => void;
+    readonly leading?: ReactNode;
 }
 
-export const TransactionFilters = ({ filters, onChange, accountId, showTypeFilter = true, hasFiltersSelected }: Props) => {
+export const TransactionFilters = ({ filters, onChange, accountId, showTypeFilter = true, hasFiltersSelected, leading }: Props) => {
     const { t } = useLingui();
     const [openTransactionAccountFilter] = useTransactionAccountFilterModal();
     const [openTransactionCategoryFilter] = useTransactionCategoryFilterModal();
@@ -57,6 +59,8 @@ export const TransactionFilters = ({ filters, onChange, accountId, showTypeFilte
                         </Text>
                     </HapticPressable>
                 ) : null}
+
+                {leading}
 
                 <DateFilter value={filters.date} onChange={createFilterHandler('date')} />
                 {showTypeFilter ? <TransactionTypeFilter value={filters.types} onChange={createFilterHandler('types')} /> : null}

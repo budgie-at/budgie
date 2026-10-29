@@ -6,6 +6,7 @@ import { isPositiveNumber } from '@rnw-community/shared';
 
 import { CollapsibleChromeLegendList } from '../../../@generic/component/collapsible-chrome-legend-list/collapsible-chrome-legend-list';
 import { CollapsibleChromePinnedBar } from '../../../@generic/component/collapsible-chrome-pinned-bar/collapsible-chrome-pinned-bar';
+import { CollapsibleChromeScrollFade } from '../../../@generic/component/collapsible-chrome-scroll-fade/collapsible-chrome-scroll-fade';
 import { useTransactionList } from '../../hook/use-transaction-list.hook';
 import { useGetTransactionCountQuery } from '../../query/use-get-transaction-count.query';
 import { TransactionFilters } from '../transaction-filters/transaction-filters';
@@ -36,16 +37,16 @@ export const CollapsibleChromeTransactionList = ({ accountId, children }: Props)
 
     const listHeader = (
         <View>
-            <View className="pb-5xl">{children}</View>
+            <CollapsibleChromeScrollFade>
+                <View className="pb-5xl">{children}</View>
 
-            <Text className="text-primary text-lg font-semibold">
-                <Trans>Transactions</Trans>
-                <Text className="text-secondary-foreground font-normal">{countLabel}</Text>
-            </Text>
+                <Text className="text-primary text-lg font-semibold">
+                    <Trans>Transactions</Trans>
+                    <Text className="text-secondary-foreground font-normal">{countLabel}</Text>
+                </Text>
+            </CollapsibleChromeScrollFade>
 
             <View style={filtersSpacerStyle} onLayout={handleFiltersLayout} />
-
-            <TransactionListUncategorizedPill filters={activeFilters} />
         </View>
     );
 
@@ -68,6 +69,7 @@ export const CollapsibleChromeTransactionList = ({ accountId, children }: Props)
                     onChange={setInternalFilters}
                     accountId={accountId}
                     hasFiltersSelected={hasFiltersSelected}
+                    leading={<TransactionListUncategorizedPill filters={activeFilters} />}
                 />
             </CollapsibleChromePinnedBar>
         </>

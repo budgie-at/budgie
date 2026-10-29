@@ -12,7 +12,7 @@ appId: ${APP_ID}
       visible:
           id: 'UncategorizedTransactionsPill.Button'
       timeout: 5000
-- assertVisible: '3 missing categories'
+- assertVisible: '3 uncategorized'
 - tapOn:
       id: 'UncategorizedTransactionsPill.Button'
 - extendedWaitUntil:

@@ -67,14 +67,14 @@ export const TransactionCardContent = ({ transaction, accountId = null }: Props)
                 <TransactionAmount transaction={transaction} accountId={accountId} />
             </View>
 
-            <View className="flex-row items-end flex-1 gap-x-lg">
+            <View className="flex-row items-end gap-x-lg">
                 <View className="flex-1 min-w-0">
                     <TransactionCardAccountInfo transaction={transaction} accountId={accountId} />
                 </View>
 
-                <View className="items-end gap-y-xs shrink-0">
+                <View className="flex-row items-center gap-x-sm shrink min-w-0">
                     <TransactionCardTags transaction={transaction} />
-                    <Text className="text-xs text-secondary-foreground">{formatMonthAndDayWithTime(transaction.operatedAt)}</Text>
+                    <Text className="text-xs text-secondary-foreground shrink-0">{formatMonthAndDayWithTime(transaction.operatedAt)}</Text>
                 </View>
             </View>
         </>

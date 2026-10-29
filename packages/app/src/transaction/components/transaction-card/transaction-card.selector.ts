@@ -18,5 +18,6 @@ export const TransactionCardSelector = {
     ToAccount: (value: string) => `TransactionCard.ToAccount.${normalizePart(value)}` as const,
     AdjustmentCard: (id: number) => `TransactionCard.Adjustment.${id}` as const,
     AdjustmentBadge: 'TransactionCard.Badge.Adjustment',
+    UncategorizedBadge: 'TransactionCard.Badge.Uncategorized',
     AdjustmentAmount: (amount: number | string) => `TransactionCard.AdjustmentAmount.${normalizePart(amount)}` as const
 } as const;

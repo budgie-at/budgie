@@ -56,7 +56,7 @@ export const TransactionCard = ({ transaction, accountId = null, onPress, onLong
     };
 
     const card = (
-        <Card className="p-xl gap-y-8" testID={cardTestID} {...interactionProps}>
+        <Card className="p-xl gap-y-xl" testID={cardTestID} {...interactionProps}>
             <TransactionCardContent transaction={transaction} accountId={accountId} />
         </Card>
     );

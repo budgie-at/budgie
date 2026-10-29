@@ -1,9 +1,8 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
-import { useEffect } from 'react';
-import { Text, View } from 'react-native';
-import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { Text } from 'react-native';
+import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
@@ -15,50 +14,29 @@ interface Props {
     readonly onPress: () => void;
 }
 
-const ANIMATION_DURATION_MS = 180;
-const PILL_ENTER_TRANSLATE_Y = -4;
-const PILL_ENTER_SCALE = 0.98;
-const PILL_SCALE_DELTA = 0.02;
+const ENTERING_ANIMATION = FadeIn.duration(180);
 
 export const UncategorizedTransactionsPill = ({ count, onPress }: Props) => {
     const { t } = useLingui();
-    const animationProgress = useSharedValue(0);
 
     const pillText = t({
         message: plural(count, {
-            one: '# missing category',
-            other: '# missing categories'
+            one: '# uncategorized',
+            other: '# uncategorized'
         })
     });
-    const pillAnimatedStyle = useAnimatedStyle(() => ({
-        opacity: animationProgress.value,
-        transform: [
-            {
-                translateY: PILL_ENTER_TRANSLATE_Y - animationProgress.value * PILL_ENTER_TRANSLATE_Y
-            },
-            {
-                scale: PILL_ENTER_SCALE + animationProgress.value * PILL_SCALE_DELTA
-            }
-        ]
-    }));
-
-    useEffect(() => {
-        animationProgress.set(withTiming(1, { duration: ANIMATION_DURATION_MS, easing: Easing.out(Easing.cubic) }));
-    }, [animationProgress]);
 
     return (
-        <Animated.View style={pillAnimatedStyle} className="self-start">
+        <Animated.View entering={ENTERING_ANIMATION}>
             <HapticPressable
                 onPress={onPress}
                 accessibilityRole="button"
                 accessibilityLabel={pillText}
                 testID={UncategorizedTransactionsPillSelector.Button}
-                className="h-9 min-w-48 px-lg rounded-full border border-warning-corner bg-warning-background flex-row items-center justify-center gap-x-sm"
+                className="rounded-2xl border border-warning-corner bg-warning-background px-xl py-sm flex-row items-center gap-x-sm"
             >
-                <View className="h-5 w-5 rounded-full bg-warning-corner items-center justify-center">
-                    <Icon icon={UserIconNameEnum.BadgeQuestionMark} className="text-warning-foreground" size={14} />
-                </View>
-                <Text className="text-warning-foreground text-sm font-semibold" numberOfLines={1}>
+                <Icon icon={UserIconNameEnum.BadgeQuestionMark} className="text-warning-foreground" size={14} />
+                <Text className="text-warning-foreground text-sm font-medium" numberOfLines={1}>
                     {pillText}
                 </Text>
             </HapticPressable>

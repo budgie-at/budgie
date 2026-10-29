@@ -65,7 +65,7 @@ appId: ${APP_ID}
 - extendedWaitUntil:
       visible:
           id: 'UncategorizedTransactionsPill.Button'
-- assertVisible: '2 missing categories'
+- assertVisible: '2 uncategorized'
 - tapOn:
       id: 'UncategorizedTransactionsPill.Button'
 - extendedWaitUntil:
@@ -301,7 +301,7 @@ appId: ${APP_ID}
       visible:
           id: 'UncategorizedTransactionsPill.Button'
       timeout: 5000
-- assertVisible: '1 missing category'
+- assertVisible: '1 uncategorized'
 - tapOn:
       id: 'UncategorizedTransactionsPill.Button'
 - extendedWaitUntil:

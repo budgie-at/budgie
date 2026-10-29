@@ -19,14 +19,14 @@ export const TransactionCardTags = ({ transaction }: Props) => {
     }
 
     return (
-        <View className="flex-row items-center gap-x-xs">
+        <View className="flex-row items-center gap-x-xs shrink min-w-0">
             <TransactionCardTagChip
                 title={primaryTag.title}
                 isPrimary={hasMultipleTags}
                 testID={TransactionCardSelector.Tag(primaryTag.title)}
             />
             {hasMultipleTags ? (
-                <View className="rounded-full border border-secondary-corner px-sm py-[2px]">
+                <View className="rounded-full border border-secondary-corner px-sm py-[2px] shrink-0">
                     <Text
                         className="text-xs text-secondary-foreground"
                         testID={TransactionCardSelector.TagSiblingsCount(primaryTag.title)}

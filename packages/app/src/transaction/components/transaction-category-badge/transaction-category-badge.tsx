@@ -1,4 +1,6 @@
 import {
+    AccountTypeEnum,
+    TransactionTypeEnum,
     TransactionWithRelationsEntityInterface,
     isNegativeAdjustmentTransaction,
     isPositiveAdjustmentTransaction,
@@ -19,6 +21,8 @@ interface Props {
 
 const wrapperClassName = 'self-start rounded-sm py-xxs px-sm bg-primary/10 border border-secondary-corner';
 const textClassName = 'text-secondary-foreground text-xxs font-medium';
+const CATEGORIZABLE_TYPES = new Set([TransactionTypeEnum.EXPENSE, TransactionTypeEnum.INCOME]);
+const uncategorizedWrapperClassName = 'self-start rounded-sm py-xxs px-sm bg-warning-background border border-warning-corner';
 
 export const TransactionCategoryBadge = ({ transaction }: Props) => {
     const formatDigits = useDisplayFormatDigits();
@@ -59,10 +63,19 @@ export const TransactionCategoryBadge = ({ transaction }: Props) => {
         );
     }
 
-    const categoryLabel = categoryEntries.at(0)?.category?.title;
+    const primaryEntry = categoryEntries.at(0);
+    const categoryLabel = primaryEntry?.category?.title;
+    const isCategorizable =
+        CATEGORIZABLE_TYPES.has(transaction.type) && isDefined(primaryEntry) && primaryEntry.account.type !== AccountTypeEnum.DEBT;
 
     if (!isDefined(categoryLabel)) {
-        return null;
+        return isCategorizable ? (
+            <View className={uncategorizedWrapperClassName} testID={TransactionCardSelector.UncategorizedBadge}>
+                <Text className="text-warning-foreground text-xxs font-medium">
+                    <Trans>Uncategorized</Trans>
+                </Text>
+            </View>
+        ) : null;
     }
 
     return (

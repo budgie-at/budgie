@@ -118,10 +118,6 @@ msgstr "{count, plural, one {# catégorie utilise l'icône par défaut} other {#
 msgid "{count, plural, one {# existing transaction matches this rule.} other {# existing transactions match this rule.}}"
 msgstr "{count, plural, one {# transaction existante correspond à cette règle.} other {# transactions existantes correspondent à cette règle.}}"
 
-#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx
-msgid "{count, plural, one {# missing category} other {# missing categories}}"
-msgstr "{count, plural, one {# catégorie manquante} other {# catégories manquantes}}"
-
 #: src/installment-plan/component/installment-count-chip/installment-count-chip.tsx
 msgid "{count, plural, one {# payment} other {# payments}}"
 msgstr "{count, plural, one {# paiement} other {# paiements}}"
@@ -129,6 +125,10 @@ msgstr "{count, plural, one {# paiement} other {# paiements}}"
 #: src/settings/utils/get-sync-repair-text.util.ts
 msgid "{count, plural, one {# sync repair} other {# sync repairs}}"
 msgstr "{count, plural, one {# réparation de synchronisation} other {# réparations de synchronisation}}"
+
+#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx
+msgid "{count, plural, one {# uncategorized} other {# uncategorized}}"
+msgstr "{count, plural, one {# sans catégorie} other {# sans catégorie}}"
 
 #: src/budget/components/budget-verdict-footer/budget-verdict-footer.tsx
 msgid "{count, plural, one {# upcoming bill} other {# upcoming bills}}"
@@ -5749,6 +5749,7 @@ msgstr "Indisponible"
 
 #: src/category/components/stats-by-categories/stats-by-categories.tsx
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
+#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx
 msgid "Uncategorized"
 msgstr "Non catégorisé"
 

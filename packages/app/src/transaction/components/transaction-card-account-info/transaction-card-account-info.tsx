@@ -1,4 +1,3 @@
-import { isOutflowEntryType } from '@budgie/contracts';
 import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -15,65 +14,35 @@ interface Props {
 
 export const TransactionCardAccountInfo = ({ transaction, accountId = null }: Props) => {
     const { toAccount, fromAccount } = transaction;
-    const selectedAccountEntry = transaction.entries.find(entry => entry.accountId === accountId);
+    const isTransfer = isDefined(fromAccount) && isDefined(toAccount);
+    const visibleFromAccount = accountId === transaction.fromAccountId ? null : fromAccount;
+    const visibleToAccount = accountId === transaction.toAccountId ? null : toAccount;
+    const fromAccountTestID = isTransfer ? TransactionCardSelector.FromAccount : TransactionCardSelector.Account;
+    const toAccountTestID = isTransfer ? TransactionCardSelector.ToAccount : TransactionCardSelector.Account;
 
-    if (
-        isDefined(selectedAccountEntry) &&
-        selectedAccountEntry.accountId !== transaction.fromAccountId &&
-        selectedAccountEntry.accountId !== transaction.toAccountId
-    ) {
-        const selectedAccountDirection = isOutflowEntryType(selectedAccountEntry.type) ? 'from' : 'to';
-
-        return (
-            <TransactionAccountLine
-                direction={selectedAccountDirection}
-                icon={selectedAccountEntry.account.icon}
-                title={selectedAccountEntry.account.title}
-                testID={TransactionCardSelector.Account(selectedAccountEntry.account.title)}
-            />
-        );
+    if (!isDefined(visibleFromAccount) && !isDefined(visibleToAccount)) {
+        return null;
     }
 
-    if (isDefined(fromAccount) && isDefined(toAccount)) {
-        return (
-            <View className="gap-y-xs flex-1">
+    return (
+        <View className="gap-y-xs">
+            {isDefined(visibleFromAccount) ? (
                 <TransactionAccountLine
                     direction="from"
-                    icon={fromAccount.icon}
-                    title={fromAccount.title}
-                    testID={TransactionCardSelector.FromAccount(fromAccount.title)}
+                    icon={visibleFromAccount.icon}
+                    title={visibleFromAccount.title}
+                    testID={fromAccountTestID(visibleFromAccount.title)}
                 />
+            ) : null}
+
+            {isDefined(visibleToAccount) ? (
                 <TransactionAccountLine
                     direction="to"
-                    icon={toAccount.icon}
-                    title={toAccount.title}
-                    testID={TransactionCardSelector.ToAccount(toAccount.title)}
+                    icon={visibleToAccount.icon}
+                    title={visibleToAccount.title}
+                    testID={toAccountTestID(visibleToAccount.title)}
                 />
-            </View>
-        );
-    }
-
-    if (isDefined(fromAccount)) {
-        return (
-            <TransactionAccountLine
-                direction="from"
-                icon={fromAccount.icon}
-                title={fromAccount.title}
-                testID={TransactionCardSelector.Account(fromAccount.title)}
-            />
-        );
-    }
-
-    if (isDefined(toAccount)) {
-        return (
-            <TransactionAccountLine
-                direction="to"
-                icon={toAccount.icon}
-                title={toAccount.title}
-                testID={TransactionCardSelector.Account(toAccount.title)}
-            />
-        );
-    }
-
-    return null;
+            ) : null}
+        </View>
+    );
 };

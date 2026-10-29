@@ -272,8 +272,6 @@ appId: ${APP_ID}
       timeout: 10000
 - assertVisible:
       id: 'TransactionCard.Category.E2E_Crypto_Buy'
-- assertVisible:
-      id: 'TransactionCard.Account.E2E_Crypto_Vault.Label'
 
 - tapOn:
       id: 'PageHeader.BackButton'

@@ -19,9 +19,9 @@ export const TransactionList = () => {
                 hasFiltersSelected={hasFiltersSelected}
             />
 
-            <View className="flex-row items-center gap-x-md">
+            <View className="flex-row items-center gap-x-md pt-2 pb-1">
                 <TransactionListUncategorizedPill filters={activeFilters} />
-                <TransactionListCount filters={activeFilters} className="ml-auto pt-2 pb-1" />
+                <TransactionListCount filters={activeFilters} className="ml-auto" />
             </View>
 
             <TransactionSectionsList

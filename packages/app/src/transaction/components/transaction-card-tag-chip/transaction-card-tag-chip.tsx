@@ -6,6 +6,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { cn } from '../../../@generic/utils/cn.util';
 
 interface Props {
     readonly title: string;
@@ -16,7 +17,7 @@ interface Props {
     readonly testID?: string;
 }
 
-const chipVariants = cva('flex-row items-center gap-x-xs rounded-full px-sm py-[2px] border', {
+const chipVariants = cva('flex-row items-center gap-x-xs rounded-full px-sm py-[2px] border shrink min-w-0', {
     variants: {
         isPrimary: {
             true: 'border-primary/40 bg-primary/10',
@@ -45,8 +46,8 @@ export const TransactionCardTagChip = ({ title, isPrimary = false, isDimmed = fa
 
     const body = (
         <View className={chipVariants({ isPrimary, isDimmed })} testID={testID}>
-            <Icon icon={UserIconNameEnum.Tag} size={12} className={labelClassName} />
-            <Text className={labelClassName} numberOfLines={1} ellipsizeMode="tail">
+            <Icon icon={UserIconNameEnum.Hash} size={12} className={labelClassName} />
+            <Text className={cn(labelClassName, 'shrink')} numberOfLines={1} ellipsizeMode="tail">
                 {title}
             </Text>
         </View>

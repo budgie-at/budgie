@@ -64,7 +64,7 @@ export const TransactionSectionsList = ({
         item.type === TransactionListItemKindEnum.HEADER ? (
             <View className="py-sm">
                 <StickySectionHeaderBackdrop />
-                <Text className="text-secondary-foreground uppercase text-xs">{item.title}</Text>
+                <Text className="text-secondary-foreground uppercase text-xs font-semibold tracking-wide">{item.title}</Text>
             </View>
         ) : (
             <TransactionCard transaction={item.transaction} accountId={accountId} onPress={handlePress} onLongPress={handleLongPress} />

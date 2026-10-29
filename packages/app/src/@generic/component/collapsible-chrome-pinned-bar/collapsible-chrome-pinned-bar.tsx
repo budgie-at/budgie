@@ -1,4 +1,5 @@
-import Animated, { useAnimatedStyle } from 'react-native-reanimated';
+import { StyleSheet } from 'react-native';
+import Animated, { Extrapolation, interpolate, useAnimatedStyle } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useCollapsibleHeaderScroll } from '@rnw-community/react-native-collapsible-header';
@@ -15,26 +16,32 @@ interface Props {
     readonly children: ReactNode;
 }
 
+const HAIRLINE_FADE_DISTANCE = 12;
+const HAIRLINE_HEIGHT = StyleSheet.hairlineWidth;
+
 export const CollapsibleChromePinnedBar = ({ anchorY, onHeightChange, children }: Props) => {
     const { scrollY } = useCollapsibleHeaderScroll();
     const { top } = useSafeAreaInsets();
 
     const restingTop = top + SCREEN_CHROME_CONTENT_INSET_TOP + anchorY;
     const pinnedTop = getScreenChromeHeaderMetrics(SCREEN_CHROME_HEADER_LAYOUT_METRICS.slotSize, top);
+    const pinScrollY = restingTop - pinnedTop;
 
     const animatedStyle = useAnimatedStyle(() => ({
         transform: [{ translateY: Math.max(restingTop - scrollY.value, pinnedTop) }]
+    }));
+    const hairlineAnimatedStyle = useAnimatedStyle(() => ({
+        height: HAIRLINE_HEIGHT,
+        opacity: interpolate(scrollY.value, [pinScrollY - HAIRLINE_FADE_DISTANCE, pinScrollY], [0, 1], Extrapolation.CLAMP)
     }));
 
     const handleLayout = (event: LayoutChangeEvent) => void onHeightChange(event.nativeEvent.layout.height);
 
     return (
-        <Animated.View
-            className="absolute inset-x-0 top-0 bg-primary-reverse px-5xl pt-xl pb-sm"
-            style={animatedStyle}
-            onLayout={handleLayout}
-        >
+        <Animated.View className="absolute inset-x-0 top-0 bg-primary-reverse px-5xl py-md" style={animatedStyle} onLayout={handleLayout}>
             {children}
+
+            <Animated.View className="absolute inset-x-0 bottom-0 bg-secondary-corner" style={hairlineAnimatedStyle} pointerEvents="none" />
         </Animated.View>
     );
 };
