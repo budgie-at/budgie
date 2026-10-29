@@ -3,6 +3,7 @@ import type { CategorizeInboxFindingKindEnum } from '../enum/categorize-inbox-fi
 export interface CategorizeInboxFindingInterface {
     readonly kind: CategorizeInboxFindingKindEnum;
     readonly jarName: string | null;
+    readonly accountTitle: string | null;
     readonly count: number;
     readonly rate: number;
     readonly isPerDay: boolean;

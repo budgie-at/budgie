@@ -1,12 +1,11 @@
 import { useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { useSearchAccountsSortedQuery } from '../../../account/query/use-search-accounts-sorted.query';
 import { CATEGORIZE_INBOX_TRANSFER_ACCOUNT_FILTER } from '../../constant/categorize-inbox-transfer-account-filter.constant';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
-import { getCategorizeInboxJarName } from '../../utils/get-categorize-inbox-jar-name.util';
 import { isCategorizeInboxAccountNameMatch } from '../../utils/is-categorize-inbox-account-name-match.util';
 import { CategorizeInboxTransferAccountSection } from '../categorize-inbox-transfer-account-section/categorize-inbox-transfer-account-section';
 
@@ -30,8 +29,7 @@ export const CategorizeInboxTransferAccounts = ({ cluster, search, isRuleEnabled
         router.dismissTo('/categorize');
     };
 
-    const jarName = getCategorizeInboxJarName(cluster.displayTitle);
-    const matches = isDefined(jarName) ? accounts.filter(account => isCategorizeInboxAccountNameMatch(account.title, jarName)) : [];
+    const matches = accounts.filter(account => isCategorizeInboxAccountNameMatch(account.title, cluster.displayTitle));
     const others = accounts.filter(account => !matches.includes(account));
     const hasMatches = isNotEmptyArray(matches);
     const othersTitle = hasMatches ? t`Other accounts` : t`Your accounts`;

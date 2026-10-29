@@ -5,6 +5,7 @@ import { Text, View } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
+import { useCategorizeInboxMatchedAccount } from '../../hook/use-categorize-inbox-matched-account.hook';
 import { getCategorizeInboxJarName } from '../../utils/get-categorize-inbox-jar-name.util';
 import { CategorizeInboxGroupAlreadyTrackedOption } from '../categorize-inbox-group-already-tracked-option/categorize-inbox-group-already-tracked-option';
 import { CategorizeInboxGroupChoosePaymentsOption } from '../categorize-inbox-group-choose-payments-option/categorize-inbox-group-choose-payments-option';
@@ -21,9 +22,12 @@ interface Props {
 }
 
 export const CategorizeInboxGroupOptions = ({ cluster }: Props) => {
-    const { strategy } = useCategorizeInboxContext();
+    const { strategy, learnedTransferAccountIds } = useCategorizeInboxContext();
+    const matchedAccount = useCategorizeInboxMatchedAccount(cluster);
 
-    const isJar = isDefined(getCategorizeInboxJarName(cluster.displayTitle));
+    const jarName = getCategorizeInboxJarName(cluster.displayTitle);
+    const isLearnedMatch = isDefined(matchedAccount) && learnedTransferAccountIds.get(jarName ?? '') === matchedAccount.id;
+    const isLeadTransfer = !isLearnedMatch && (isDefined(jarName) || isDefined(matchedAccount));
     const isCash = cluster.section === CategorizeInboxSectionEnum.CASH_WITHDRAWALS;
     const isConfident = cluster.section === CategorizeInboxSectionEnum.CONFIDENT;
     const labelOptions = cluster.candidateLabelIds
@@ -31,8 +35,8 @@ export const CategorizeInboxGroupOptions = ({ cluster }: Props) => {
         .filter(isDefined)
         .map((label, index) => ({ label, isBestMatch: isConfident && index === 0 }));
 
-    const leadTransfer = isJar ? <CategorizeInboxGroupTransferOption cluster={cluster} isLead /> : null;
-    const trailingTransfer = isJar ? null : <CategorizeInboxGroupTransferOption cluster={cluster} isLead={false} />;
+    const leadTransfer = isLeadTransfer ? <CategorizeInboxGroupTransferOption cluster={cluster} isLead /> : null;
+    const trailingTransfer = isLeadTransfer ? null : <CategorizeInboxGroupTransferOption cluster={cluster} isLead={false} />;
     const cashOptions = isCash ? (
         <>
             <CategorizeInboxGroupMoveToCashOption cluster={cluster} />

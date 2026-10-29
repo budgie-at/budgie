@@ -62,7 +62,12 @@ class CategorizeInboxEngineService {
     private static readonly NOISE_PATTERN = /(?<![\p{L}\p{N}])\p{L}{2,8}:\S+|https?:\/\/\S+|\bwww\.|\d{4,6}\*+\d{2,4}|\+?\d[\d\s-]{6,}\d/gu;
     private static readonly DIACRITIC_PATTERN = /\p{Diacritic}/gu;
     private static readonly TOKEN_SEPARATOR_PATTERN = /[^\p{L}]+/u;
-    private static readonly SECTION_ORDER = Object.values(CategorizeInboxSectionEnum);
+    private static readonly SECTION_ORDER = [
+        CategorizeInboxSectionEnum.CONFIDENT,
+        CategorizeInboxSectionEnum.CASH_WITHDRAWALS,
+        CategorizeInboxSectionEnum.REVIEW,
+        CategorizeInboxSectionEnum.ONE_OFFS
+    ];
 
     buildContext(
         evidence: LabelEvidenceRowInterface[],

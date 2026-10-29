@@ -15,11 +15,10 @@ const DAYS_PER_WEEK = 7;
 const MONTHLY_TOLERANCE = 1;
 const MONTHLY_MIN_COUNT = 3;
 
-export const getCategorizeInboxFinding = ({
-    displayTitle,
-    rows,
-    section
-}: CategorizeInboxClusterInterface): CategorizeInboxFindingInterface => {
+export const getCategorizeInboxFinding = (
+    { displayTitle, rows, section }: CategorizeInboxClusterInterface,
+    accountTitle: string | null
+): CategorizeInboxFindingInterface => {
     const jarName = getCategorizeInboxJarName(displayTitle);
     const count = rows.length;
     const times = rows.map(row => row.operatedAt.getTime());
@@ -32,13 +31,13 @@ export const getCategorizeInboxFinding = ({
     const isMonthly =
         count >= MONTHLY_MIN_COUNT && distinctMonths >= MONTHLY_MIN_COUNT && Math.abs(count - distinctMonths) <= MONTHLY_TOLERANCE;
     const isExpense = rows.at(0)?.type === TransactionTypeEnum.EXPENSE;
-    const base = { jarName, count, rate, isPerDay, maxAmount };
+    const base = { jarName, accountTitle, count, rate, isPerDay, maxAmount };
 
     if (section === CategorizeInboxSectionEnum.CASH_WITHDRAWALS) {
         return { ...base, kind: CategorizeInboxFindingKindEnum.CASH };
     }
 
-    if (isDefined(jarName)) {
+    if (isDefined(jarName) || isDefined(accountTitle)) {
         return { ...base, kind: isExpense ? CategorizeInboxFindingKindEnum.JAR_TOP_UP : CategorizeInboxFindingKindEnum.JAR_RETURN };
     }
 

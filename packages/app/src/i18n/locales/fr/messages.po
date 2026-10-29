@@ -624,12 +624,12 @@ msgid "About"
 msgstr "À propos"
 
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
-msgid "About {rate} a day, every one under {maxAmountLabel}. <0>Looks like a jar top-up.</0>"
-msgstr "Environ {rate} par jour, chacun sous {maxAmountLabel}. <0>On dirait une recharge de tirelire.</0>"
+msgid "About {rate} a day, every one under {maxAmountLabel}."
+msgstr "Environ {rate} par jour, chacun sous {maxAmountLabel}."
 
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
-msgid "About {rate} a week, every one under {maxAmountLabel}. <0>Looks like a jar top-up.</0>"
-msgstr "Environ {rate} par semaine, chacun sous {maxAmountLabel}. <0>On dirait une recharge de tirelire.</0>"
+msgid "About {rate} a week, every one under {maxAmountLabel}."
+msgstr "Environ {rate} par semaine, chacun sous {maxAmountLabel}."
 
 #: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
 msgid "About 12 minutes"
@@ -3368,6 +3368,14 @@ msgstr "Chargement…"
 msgid "Lock Budgie with your own PIN"
 msgstr "Verrouille Budgie avec ton propre code PIN"
 
+#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
+msgid "Looks like a jar top-up."
+msgstr "On dirait une recharge de cagnotte."
+
+#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
+msgid "Looks like a top-up of «{account}»."
+msgstr "On dirait une recharge de «{account}»."
+
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "Looks right"
 msgstr "Ça a l'air bon"
@@ -3529,6 +3537,10 @@ msgstr "Modèles et téléchargements"
 #: src/app/(tabs)/settings/ai-features.tsx
 msgid "Models download once, best on Wi-Fi"
 msgstr "Les modèles se téléchargent une fois, idéalement en Wi-Fi"
+
+#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
+msgid "Money coming back from «{account}»."
+msgstr "De l'argent qui revient de «{account}»."
 
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
 msgid "Money coming back from your «{jar}» jar."

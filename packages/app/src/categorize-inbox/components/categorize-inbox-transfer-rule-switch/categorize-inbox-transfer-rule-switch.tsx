@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
+import { useCategorizeInboxMatchedAccount } from '../../hook/use-categorize-inbox-matched-account.hook';
 import { getCategorizeInboxJarName } from '../../utils/get-categorize-inbox-jar-name.util';
 import { CategorizeInboxTransferScreenSelector } from '../categorize-inbox-transfer-screen/categorize-inbox-transfer-screen.selector';
 
@@ -18,8 +19,10 @@ interface Props {
 export const CategorizeInboxTransferRuleSwitch = ({ cluster, value, onValueChange }: Props) => {
     const { t } = useLingui();
 
-    const jarName = getCategorizeInboxJarName(cluster.displayTitle);
+    const matchedAccount = useCategorizeInboxMatchedAccount(cluster);
+
     const { displayTitle } = cluster;
+    const jarName = getCategorizeInboxJarName(displayTitle) ?? (isDefined(matchedAccount) ? displayTitle : null);
     const label = isDefined(jarName) ? t`Also for new «${jarName}» payments` : t`Also for new “${displayTitle}” payments`;
 
     return (
