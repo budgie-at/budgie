@@ -178,9 +178,12 @@ export class TransactionDebtSettlementService extends Context.Service<Transactio
                 };
             });
 
-            const derivedCategorySources: ReadonlySet<CategorySourceEnum | null> = new Set([
+            const machineGuessedCategorySources: ReadonlySet<CategorySourceEnum> = new Set([
                 CategorySourceEnum.MCC_DEFAULT,
-                CategorySourceEnum.AI,
+                CategorySourceEnum.AI
+            ]);
+            const derivedCategorySources: ReadonlySet<CategorySourceEnum> = new Set([
+                ...machineGuessedCategorySources,
                 CategorySourceEnum.DEBT_SETTLEMENT
             ]);
 
@@ -215,16 +218,13 @@ export class TransactionDebtSettlementService extends Context.Service<Transactio
                 primaryEntry: TransactionEntryEntityInterface,
                 debtAccount: Pick<AccountEntityInterface, 'id' | 'debtType'>
             ) {
-                const hasMachineGuessedCategory =
-                    primaryEntry.categorySource === CategorySourceEnum.MCC_DEFAULT || primaryEntry.categorySource === CategorySourceEnum.AI;
-
                 if (debtAccount.debtType === AccountDebtTypeEnum.INSTALLMENT) {
                     yield* inheritInstallmentCategory(debtAccount.id);
 
                     return false;
                 }
 
-                if (isDefined(primaryEntry.categoryId) && !hasMachineGuessedCategory) {
+                if (isDefined(primaryEntry.categoryId) && !machineGuessedCategorySources.has(primaryEntry.categorySource)) {
                     return false;
                 }
 
