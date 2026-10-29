@@ -24,11 +24,11 @@ export const TransactionSectionHeader = ({ title, netAmount }: Props) => {
 
     return (
         <View className="h-[32px] flex-row items-center justify-between gap-x-md px-3xl">
-            <Text className="shrink text-secondary-foreground text-[13px] leading-[16px] font-semibold" numberOfLines={1}>
+            <Text className="shrink text-primary text-[13px] leading-[16px] font-semibold" numberOfLines={1}>
                 {title}
             </Text>
             {isDefined(netAmountLabel) ? (
-                <Text className="text-secondary-foreground text-[13px] leading-[16px] font-medium tabular-nums" numberOfLines={1}>
+                <Text className="shrink-0 text-secondary-foreground text-[13px] leading-[16px] tabular-nums" numberOfLines={1}>
                     {netAmountLabel}
                 </Text>
             ) : null}

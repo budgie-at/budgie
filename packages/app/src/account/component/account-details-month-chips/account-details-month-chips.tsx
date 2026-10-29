@@ -36,9 +36,11 @@ export const AccountDetailsMonthChips = ({ accountId }: Props) => {
             accessibilityLabel={t`This month: spent ${formattedExpense}, income ${formattedIncome}`}
             className="text-[15px] text-secondary-foreground text-center tabular-nums"
             numberOfLines={1}
+            adjustsFontSizeToFit
+            minimumFontScale={0.85}
         >
             <Trans>
-                Spent <Text className="text-primary font-semibold">{formattedExpense}</Text> · Income{' '}
+                This month · Spent <Text className="text-primary font-semibold">{formattedExpense}</Text> · Income{' '}
                 <Text className="text-primary font-semibold">{formattedIncome}</Text>
             </Trans>
         </Text>

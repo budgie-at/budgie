@@ -45,7 +45,7 @@ export const TransactionCardContent = ({ transaction, accountId = null }: Props)
                 iconClassName={iconForegroundClassName}
             />
 
-            <View className="flex-1 min-w-0 min-h-[38px] justify-center gap-y-xxs">
+            <View className="flex-1 min-w-0 min-h-[38px] justify-center gap-y-xxs mr-xs">
                 {isAdjustment ? (
                     <Text
                         className="text-primary text-[15px] font-semibold"

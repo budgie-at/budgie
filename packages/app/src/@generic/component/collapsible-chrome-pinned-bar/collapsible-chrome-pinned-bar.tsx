@@ -47,7 +47,7 @@ export const CollapsibleChromePinnedBar = ({ anchorY, onHeightChange, pinnedFoot
 
             <Animated.View className="absolute inset-x-0" style={pinnedEdgeStyle} pointerEvents="none">
                 <View className="overflow-hidden">{pinnedFooter}</View>
-                <View className="h-[12px] bg-linear-to-b from-surface via-surface/90 to-surface/0" />
+                <View className="h-hairline bg-primary/10" />
             </Animated.View>
         </Animated.View>
     );

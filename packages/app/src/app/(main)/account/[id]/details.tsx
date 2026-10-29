@@ -9,6 +9,7 @@ import { CollapsibleChromeHeader } from '../../../../@generic/component/collapsi
 import { GroupedSurface } from '../../../../@generic/component/grouped-surface/grouped-surface';
 import { HeaderBackButton } from '../../../../@generic/component/header-back-button/header-back-button';
 import { RevealGate } from '../../../../@generic/component/reveal-gate/reveal-gate';
+import { SCREEN_CHROME_CONFIG } from '../../../../@generic/constant/screen-chrome-config.constant';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
 import { ScreenChromeThemeProvider } from '../../../../@generic/provider/screen-chrome-theme.provider';
 import { AccountActionsMenu } from '../../../../account/component/account-actions-menu/account-actions-menu';
@@ -26,6 +27,14 @@ import { InstallmentPlanScheduleSummary } from '../../../../installment-plan/com
 import { CollapsibleChromeTransactionList } from '../../../../transaction/components/collapsible-chrome-transaction-list/collapsible-chrome-transaction-list';
 
 import { AccountDetailsSelector } from './account-details.selector';
+
+const TITLE_HANDOFF_DISTANCE = 24;
+const ACCOUNT_DETAILS_SCREEN_CHROME_CONFIG = {
+    ...SCREEN_CHROME_CONFIG,
+    smallTitleStart: 0,
+    largeTitleEnd: TITLE_HANDOFF_DISTANCE,
+    collapseEnd: TITLE_HANDOFF_DISTANCE
+};
 
 export default function AccountDetails() {
     const id = Number(useLocalSearchParams<IdParamInterface>().id);
@@ -81,7 +90,7 @@ export default function AccountDetails() {
     return (
         <GroupedSurface testID={AccountDetailsSelector.Page}>
             <RevealGate isLoading={false}>
-                <ScreenChromeThemeProvider>
+                <ScreenChromeThemeProvider config={ACCOUNT_DETAILS_SCREEN_CHROME_CONFIG}>
                     <ScreenChromeFrame>
                         <View className="flex-1">
                             <CollapsibleChromeTransactionList accountId={id}>{accountSummary}</CollapsibleChromeTransactionList>

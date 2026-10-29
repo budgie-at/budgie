@@ -5071,10 +5071,6 @@ msgstr "Ausgaben nach Tag"
 msgid "Spent"
 msgstr "Ausgegeben"
 
-#: src/account/component/account-details-month-chips/account-details-month-chips.tsx
-msgid "Spent <0>{formattedExpense}</0> · Income <1>{formattedIncome}</1>"
-msgstr "Ausgaben <0>{formattedExpense}</0> · Einnahmen <1>{formattedIncome}</1>"
-
 #: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "Spent so far"
 msgstr "Bisher ausgegeben"
@@ -5406,6 +5402,10 @@ msgstr "Diesen Monat"
 #: src/@generic/constant/date-period.constant.ts
 msgid "This Month"
 msgstr "Dieser Monat"
+
+#: src/account/component/account-details-month-chips/account-details-month-chips.tsx
+msgid "This month · Spent <0>{formattedExpense}</0> · Income <1>{formattedIncome}</1>"
+msgstr "Diesen Monat · Ausgaben <0>{formattedExpense}</0> · Einnahmen <1>{formattedIncome}</1>"
 
 #: src/account/component/account-details-month-chips/account-details-month-chips.tsx
 msgid "This month: spent {formattedExpense}, income {formattedIncome}"
