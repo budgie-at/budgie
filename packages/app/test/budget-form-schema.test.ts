@@ -9,6 +9,8 @@ import { BudgetFundFormSchema } from '../src/budget/constant/budget-fund-form-sc
 
 import type { BudgetFormValues } from '../src/budget/constant/budget-form-schema.constant';
 
+const DAY_MS = 86_400_000;
+
 const FORM: BudgetFormValues = {
     name: 'Budget',
     period: BudgetPeriodEnum.MONTHLY,
@@ -28,7 +30,7 @@ it.effect('accepts a fixed budget whose allocation fits the limit', () =>
     Effect.sync(() => {
         expect(Schema.is(BudgetFormSchema.from)(FORM)).toBe(true);
         expect(Schema.is(BudgetFormSchema.from)({ ...FORM, overallLimit: 0 })).toBe(false);
-        expect(Schema.is(BudgetFormSchema.from)({ ...FORM, overallLimit: 350 })).toBe(true);
+        expect(Schema.is(BudgetFormSchema.from)({ ...FORM, overallLimit: 400 })).toBe(true);
     })
 );
 
@@ -90,15 +92,15 @@ it.effect('validates the event form dates, tag and allocation', () =>
         const event = {
             name: 'Japan',
             tagId: 4,
-            startsAtMs: 1_000,
-            endsAtMs: 2_000,
+            startsAtMs: 5 * DAY_MS,
+            endsAtMs: 6 * DAY_MS,
             overallLimit: 3000,
             categoryLimits: [{ categoryId: 1, limitAmount: 1100, rolloverMode: BudgetRolloverModeEnum.NONE }],
             instrumentId: 2
         };
 
         expect(Schema.decodeUnknownExit(BudgetEventFormSchema)(event)._tag).toBe('Success');
-        expect(Schema.decodeUnknownExit(BudgetEventFormSchema)({ ...event, endsAtMs: 500 })._tag).toBe('Failure');
+        expect(Schema.decodeUnknownExit(BudgetEventFormSchema)({ ...event, endsAtMs: 4 * DAY_MS })._tag).toBe('Failure');
         expect(Schema.decodeUnknownExit(BudgetEventFormSchema)({ ...event, tagId: 0 })._tag).toBe('Failure');
         expect(Schema.decodeUnknownExit(BudgetEventFormSchema)({ ...event, overallLimit: 1000 })._tag).toBe('Failure');
     })
