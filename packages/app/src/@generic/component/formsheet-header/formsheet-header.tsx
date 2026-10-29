@@ -19,7 +19,7 @@ interface Props {
     readonly align?: FormsheetHeaderAlign;
 }
 
-const headerVariant = cva('gap-y-1 py-3xl px-lg', {
+const headerVariant = cva('shrink-0 gap-y-1 py-3xl px-lg', {
     variants: {
         align: {
             center: 'justify-center',
