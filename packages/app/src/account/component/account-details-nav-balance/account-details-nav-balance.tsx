@@ -1,12 +1,11 @@
-import { View } from 'react-native';
+import { View, useWindowDimensions } from 'react-native';
 import Animated, { Extrapolation, interpolate, useAnimatedStyle } from 'react-native-reanimated';
 
 import { useCollapsibleHeaderScroll } from '@rnw-community/react-native-collapsible-header';
 import { useScreenChrome } from '@rnw-community/react-native-screen-chrome';
 
-import { SCREEN_CHROME_CONTENT_INSET_TOP } from '../../../@generic/constant/screen-chrome-content-inset.constant';
-import { SCREEN_CHROME_HEADER_BAND_HEIGHT } from '../../../@generic/constant/screen-chrome-header-band-height.constant';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
+import { ACCOUNT_DETAILS_NAV_BALANCE_FADE_START } from '../../constant/account-details-nav-balance-fade-start.constant';
 import { ACCOUNT_DETAILS_NAV_BALANCE_OFFSET } from '../../constant/account-details-nav-balance-offset.constant';
 
 interface Props {
@@ -14,7 +13,6 @@ interface Props {
     readonly instrumentSymbol: string;
 }
 
-const FADE_IN_START = SCREEN_CHROME_CONTENT_INSET_TOP - SCREEN_CHROME_HEADER_BAND_HEIGHT;
 const FADE_IN_DISTANCE = 16;
 const Z_INDEX_STYLE = { zIndex: 4 };
 
@@ -22,12 +20,18 @@ export const AccountDetailsNavBalance = ({ balance, instrumentSymbol }: Props) =
     const protectAmount = useProtectedAmountLabel();
     const { config } = useScreenChrome();
     const { scrollY } = useCollapsibleHeaderScroll();
+    const { fontScale } = useWindowDimensions();
 
-    const collapsedHeaderCenter = (config.collapsedHeaderHeight ?? config.headerHeight) / 2;
+    const navBalanceTop = (config.collapsedHeaderHeight ?? config.headerHeight) / 2 + ACCOUNT_DETAILS_NAV_BALANCE_OFFSET * fontScale;
 
     const animatedStyle = useAnimatedStyle(() => ({
-        opacity: interpolate(scrollY.get(), [FADE_IN_START, FADE_IN_START + FADE_IN_DISTANCE], [0, 1], Extrapolation.CLAMP),
-        transform: [{ translateY: collapsedHeaderCenter + ACCOUNT_DETAILS_NAV_BALANCE_OFFSET }]
+        opacity: interpolate(
+            scrollY.get(),
+            [ACCOUNT_DETAILS_NAV_BALANCE_FADE_START, ACCOUNT_DETAILS_NAV_BALANCE_FADE_START + FADE_IN_DISTANCE],
+            [0, 1],
+            Extrapolation.CLAMP
+        ),
+        transform: [{ translateY: navBalanceTop }]
     }));
 
     return (

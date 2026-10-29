@@ -19,9 +19,11 @@ import { AccountDetailsHeroBalance } from '../../../../account/component/account
 import { AccountDetailsHero } from '../../../../account/component/account-details-hero/account-details-hero';
 import { AccountDetailsMenuControls } from '../../../../account/component/account-details-menu-controls/account-details-menu-controls';
 import { AccountDetailsNavBalance } from '../../../../account/component/account-details-nav-balance/account-details-nav-balance';
+import { AccountDetailsStaticTitle } from '../../../../account/component/account-details-static-title/account-details-static-title';
 import { AccountDetailsTitle } from '../../../../account/component/account-details-title/account-details-title';
 import { DebtAccountBalance } from '../../../../account/component/debt-account-balance/debt-account-balance';
 import { DepositDetailsCard } from '../../../../account/component/deposit-details-card/deposit-details-card';
+import { useIsStaticAccountDetailsHeader } from '../../../../account/hook/use-is-static-account-details-header.hook';
 import { useAccountBalanceQuery } from '../../../../account/query/use-account-balance.query';
 import { useDebtAccountProgressSummaryQuery } from '../../../../account/query/use-debt-account-progress-summary.query';
 import { useGetAccountByIdQuery } from '../../../../account/query/use-get-account-by-id.query';
@@ -44,6 +46,7 @@ export default function AccountDetails() {
     const { account, isLoading } = useGetAccountByIdQuery(id);
     const { balance } = useAccountBalanceQuery(id);
     const debtProgressSummary = useDebtAccountProgressSummaryQuery(id);
+    const isStaticHeader = useIsStaticAccountDetailsHeader();
 
     if (!isDefined(account)) {
         return isLoading ? (
@@ -93,12 +96,19 @@ export default function AccountDetails() {
             </View>
         );
 
-    const navBalance =
-        account.type === AccountTypeEnum.DEBT ? (
-            <AccountDetailsNavBalance balance={balance} instrumentSymbol={instrumentSymbol} />
-        ) : (
-            <AccountDetailsHeroBalance balance={balance} instrumentSymbol={instrumentSymbol} />
-        );
+    const isDebt = account.type === AccountTypeEnum.DEBT;
+    const animatedTitle = (
+        <>
+            <AccountDetailsTitle title={account.title} />
+
+            {isDebt ? <AccountDetailsNavBalance balance={balance} instrumentSymbol={instrumentSymbol} /> : null}
+        </>
+    );
+    const headerTitle = isStaticHeader ? (
+        <AccountDetailsStaticTitle title={account.title} balance={balance} instrumentSymbol={instrumentSymbol} />
+    ) : (
+        animatedTitle
+    );
 
     return (
         <GroupedSurface testID={AccountDetailsSelector.Page}>
@@ -118,9 +128,9 @@ export default function AccountDetails() {
                             collapsedTitle={null}
                         />
 
-                        <AccountDetailsTitle title={account.title} />
+                        {headerTitle}
 
-                        {navBalance}
+                        {isDebt ? null : <AccountDetailsHeroBalance balance={balance} instrumentSymbol={instrumentSymbol} />}
                     </ScreenChromeFrame>
                 </ScreenChromeThemeProvider>
             </RevealGate>
