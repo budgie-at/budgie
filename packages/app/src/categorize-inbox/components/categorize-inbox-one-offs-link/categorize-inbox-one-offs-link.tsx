@@ -1,27 +1,22 @@
-import { CategorizeInboxSectionEnum } from '@budgie/categorization';
 import { UserIconNameEnum } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { Link } from 'expo-router';
 import { Text, View } from 'react-native';
 
-import { isEmptyArray } from '@rnw-community/shared';
-
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
-import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 
 import { CategorizeInboxOneOffsLinkSelector } from './categorize-inbox-one-offs-link.selector';
 
-export const CategorizeInboxOneOffsLink = () => {
+import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
+
+interface Props {
+    readonly oneOffs: CategorizeInboxClusterInterface[];
+}
+
+export const CategorizeInboxOneOffsLink = ({ oneOffs }: Props) => {
     const { t } = useLingui();
-    const { items } = useCategorizeInboxContext();
-
-    const oneOffs = items.flatMap(item => ('rows' in item && item.section === CategorizeInboxSectionEnum.ONE_OFFS ? [item] : []));
-
-    if (isEmptyArray(oneOffs)) {
-        return null;
-    }
 
     const groupsText = t({ message: plural(oneOffs.length, { one: '# smaller group', other: '# smaller groups' }) });
     const paymentsText = t({
@@ -40,7 +35,7 @@ export const CategorizeInboxOneOffsLink = () => {
                 accessibilityRole="link"
                 testID={CategorizeInboxOneOffsLinkSelector.Link}
             >
-                <Text className="shrink text-sm text-secondary-foreground" numberOfLines={1}>
+                <Text className="shrink text-sm font-medium text-primary" numberOfLines={1}>
                     {groupsText}
                 </Text>
                 <View className="shrink-0 flex-row items-center gap-x-xs">

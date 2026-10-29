@@ -11,7 +11,7 @@ export const CategorizeInboxPileBar = () => {
 
     return (
         <View
-            className="h-[10px] overflow-hidden rounded-full bg-secondary-background"
+            className="h-[10px] overflow-hidden rounded-full bg-secondary-corner"
             accessibilityElementsHidden
             importantForAccessibility="no-hide-descendants"
         >

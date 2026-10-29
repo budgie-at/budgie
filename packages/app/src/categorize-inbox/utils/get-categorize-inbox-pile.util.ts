@@ -20,10 +20,10 @@ export const getCategorizeInboxPile = (items: CategorizeInboxListItemType[], tot
         { className: 'bg-positive-fill', rowCount: readyCount },
         { className: 'bg-primary', rowCount: largestCount },
         {
-            className: 'bg-secondary-corner',
+            className: 'bg-secondary-foreground',
             rowCount: countOf(CategorizeInboxSectionEnum.REVIEW) - largestCount + countOf(CategorizeInboxSectionEnum.CASH_WITHDRAWALS)
         },
-        { className: 'bg-secondary-corner/50', rowCount: countOf(CategorizeInboxSectionEnum.ONE_OFFS) }
+        { className: 'bg-secondary-foreground opacity-50', rowCount: countOf(CategorizeInboxSectionEnum.ONE_OFFS) }
     ];
     const shares = counts.map(({ rowCount }) => (isPositiveNumber(totalCount) ? rowCount / totalCount : 0));
     const segments = counts.map(({ className }, index) => ({
