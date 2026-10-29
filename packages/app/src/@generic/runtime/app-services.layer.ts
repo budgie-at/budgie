@@ -115,6 +115,7 @@ import { TranslationProgressStore } from '../../ai/store/translation-progress.st
 import { AuthService } from '../../auth/service/auth.service';
 import { PinAttemptService } from '../../auth/service/pin-attempt.service';
 import { BudgetAlertMonitorService } from '../../budget/service/budget-alert-monitor.service';
+import { BudgetFundSuggestionService } from '../../budget/service/budget-fund-suggestion.service';
 import { BudgetProjectionService } from '../../budget/service/budget-projection.service';
 import { ExchangeRateBackgroundService } from '../../exchange-rate/service/exchange-rate-background.service';
 import { DatabaseExportService } from '../../export/service/database-export.service';
@@ -254,6 +255,7 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     AuthService.layer,
     BudgetAlertMonitorService.layer,
     BudgetProjectionService.layer,
+    BudgetFundSuggestionService.layer,
     OnboardingService.layer,
     TransactionRepository.layer,
     TransactionConsolidationRepository.layer,
