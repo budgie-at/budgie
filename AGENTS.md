@@ -92,6 +92,10 @@ Use the repo package scopes without the npm namespace prefix:
 3. Keep the description short, imperative, and specific to the user-visible or developer-visible outcome.
 4. Prefer `refactor`, `feat`, `fix`, `chore`, `docs`, `test`, or `build` as the type.
 
+### Pull Request Media
+
+Attach screenshots and videos with the GitHub CLI's `--attach` flag (gh ≥ 2.99): `gh pr create`, `gh pr edit` and `gh pr comment` all accept repeatable `--attach './before.png#Alt text'` uploads. Reference the local path in the body (`![Before](./before.png)`) and `gh` swaps it for the uploaded URL; unreferenced attachments are appended. Do not push media to `media/*` or `pr-assets/*` branches or commit it to the repo, and never upload real user data (account names, balances) — fixtures only.
+
 ### Native Runtime Fingerprint
 
 The `Native runtime fingerprint` check fails any PR that moves the app's Expo fingerprint (`runtimeVersion: { policy: 'fingerprint' }`), because OTA updates published after such a PR merges target a runtime no shipped binary has: a fingerprint change requires a store build via `native-publish.yml` before OTA resumes, and the `native-change-acknowledged` label is how you acknowledge that and let the PR through.
