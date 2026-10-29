@@ -2,7 +2,6 @@ import { BudgetSinkingFundRepository } from '@budgie/budget';
 import { convertFromMicroUnits } from '@budgie/contracts';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useLingui } from '@lingui/react/macro';
-import { addMonths } from 'date-fns/addMonths';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
 import { useForm, useWatch } from 'react-hook-form';
@@ -10,25 +9,21 @@ import { useForm, useWatch } from 'react-hook-form';
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
-import { useToday } from '../../@generic/hook/use-today.hook';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 import { BudgetFundFormSchema, BudgetFundFormValues } from '../constant/budget-fund-form-schema.constant';
-import { FUND_YEARLY_MONTHS } from '../constant/budget-fund-repeat-months.constant';
 import { useGetBudgetFundSuggestionsQuery } from '../query/use-get-budget-fund-suggestions.query';
 import { useGetBudgetFundsQuery } from '../query/use-get-budget-funds.query';
 import { buildBudgetFundPayload } from '../utils/build-budget-fund-payload.util';
 
+import { useBudgetFundDefaultValues } from './use-budget-fund-default-values.hook';
+
 import type { BudgetFundSuggestionInterface } from '../interface/budget-fund-suggestion.interface';
-import type { BudgetEntityInterface, BudgetSinkingFundEntityInterface } from '@budgie/contracts';
+import type { UseBudgetFundFormOptionsInterface } from '../interface/use-budget-fund-form-options.interface';
+import type { BudgetSinkingFundEntityInterface } from '@budgie/contracts';
 
 const FALLBACK_ROUTE = '/budget' as const;
-
-interface UseBudgetFundFormOptionsInterface {
-    readonly budget: Pick<BudgetEntityInterface, 'id' | 'instrumentId'>;
-    readonly editingId: number | null;
-}
 
 const buildFundFormValues = (fund: BudgetSinkingFundEntityInterface): BudgetFundFormValues => ({
     name: fund.name,
@@ -42,20 +37,12 @@ const buildFundFormValues = (fund: BudgetSinkingFundEntityInterface): BudgetFund
 export const useBudgetFundForm = ({ budget, editingId }: UseBudgetFundFormOptionsInterface) => {
     const { t } = useLingui();
     const { run } = useSingleFlight();
-    const today = useToday();
     const isEditing = isPositiveNumber(editingId);
     const { funds } = useGetBudgetFundsQuery(budget.id);
     const editingFund = funds.find(fund => fund.id === editingId);
     const suggestions = useGetBudgetFundSuggestionsQuery(budget.id, budget.instrumentId);
 
-    const defaultValues: BudgetFundFormValues = {
-        name: '',
-        categoryId: 0,
-        targetAmount: 0,
-        dueAtMs: addMonths(today, FUND_YEARLY_MONTHS).getTime(),
-        repeatEveryMonths: FUND_YEARLY_MONTHS,
-        recurringSeriesId: null
-    };
+    const defaultValues = useBudgetFundDefaultValues();
 
     const form = useForm<BudgetFundFormValues>({
         mode: 'onChange',

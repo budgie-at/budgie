@@ -7,9 +7,11 @@ import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { Input } from '../../../@generic/component/input/input';
 import { SegmentedTabs } from '../../../@generic/component/segmented-tabs/segmented-tabs';
 import { BudgetFundFormValues } from '../../constant/budget-fund-form-schema.constant';
-import { FUND_DEFAULT_CUSTOM_MONTHS, FUND_YEARLY_MONTHS } from '../../constant/budget-fund-repeat-months.constant';
+import { FUND_YEARLY_MONTHS } from '../../constant/budget-fund-repeat-months.constant';
 import { BudgetFundRepeatEnum } from '../../enum/budget-fund-repeat.enum';
 import { resolveFundRepeat } from '../../utils/resolve-fund-repeat.util';
+
+const FUND_DEFAULT_CUSTOM_MONTHS = 6;
 
 export const BudgetFundRepeatField = () => {
     const { t } = useLingui();

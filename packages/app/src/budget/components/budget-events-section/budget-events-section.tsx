@@ -1,15 +1,13 @@
 import { Trans, useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
-import { Text, View } from 'react-native';
+import { Text } from 'react-native';
 
 import { isEmptyArray } from '@rnw-community/shared';
 
-import { EntranceReveal } from '../../../@generic/component/entrance-reveal/entrance-reveal';
-import { HeaderTextAction } from '../../../@generic/component/header-text-action/header-text-action';
-import { SectionHeader } from '../../../@generic/component/section-header/section-header';
 import { BudgetSelector } from '../../budget.selector';
 import { useGetBudgetEventsQuery } from '../../query/use-get-budget-events.query';
 import { BudgetEventRow } from '../budget-event-row/budget-event-row';
+import { BudgetListSection } from '../budget-list-section/budget-list-section';
 
 export const BudgetEventsSection = () => {
     const { t } = useLingui();
@@ -26,19 +24,16 @@ export const BudgetEventsSection = () => {
     ) : null;
 
     return (
-        <EntranceReveal step={5} className="gap-y-lg">
-            <View collapsable={false} testID={BudgetSelector.DetailsEventsSection}>
-                <SectionHeader
-                    label={t`Events`}
-                    trailing={<HeaderTextAction label={t`Add`} onPress={handleAddPress} testID={BudgetSelector.DetailsEventAddButton} />}
-                />
-                <View className="gap-y-xl">
-                    {events.map(event => (
-                        <BudgetEventRow key={event.budget.id} event={event} />
-                    ))}
-                </View>
-                {emptyHint}
-            </View>
-        </EntranceReveal>
+        <BudgetListSection
+            label={t`Events`}
+            testID={BudgetSelector.DetailsEventsSection}
+            addTestID={BudgetSelector.DetailsEventAddButton}
+            onAddPress={handleAddPress}
+            emptyHint={emptyHint}
+        >
+            {events.map(event => (
+                <BudgetEventRow key={event.budget.id} event={event} />
+            ))}
+        </BudgetListSection>
     );
 };

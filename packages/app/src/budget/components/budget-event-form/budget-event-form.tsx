@@ -13,12 +13,12 @@ import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-ins
 import { BudgetSelector } from '../../budget.selector';
 import { BudgetEventFormSchema } from '../../constant/budget-event-form-schema.constant';
 import { useBudgetEventForm } from '../../hooks/use-budget-event-form.hook';
+import { BudgetDeleteButton } from '../budget-delete-button/budget-delete-button';
 import { BudgetEventCategoryLimits } from '../budget-event-category-limits/budget-event-category-limits';
 import { BudgetEventDatesField } from '../budget-event-dates-field/budget-event-dates-field';
-import { BudgetEventDeleteButton } from '../budget-event-delete-button/budget-event-delete-button';
 import { BudgetEventLimitField } from '../budget-event-limit-field/budget-event-limit-field';
-import { BudgetEventNameField } from '../budget-event-name-field/budget-event-name-field';
 import { BudgetEventTagField } from '../budget-event-tag-field/budget-event-tag-field';
+import { BudgetNameField } from '../budget-name-field/budget-name-field';
 
 interface Props {
     readonly defaultInstrumentId: number;
@@ -39,6 +39,8 @@ export const BudgetEventForm = ({ defaultInstrumentId, editingId }: Props) => {
         return <LoadingScreen />;
     }
 
+    const deleteButton = isEditing ? <BudgetDeleteButton testID={BudgetSelector.EventDeleteButton} onDelete={handleDelete} /> : null;
+
     return (
         <FormProvider {...form}>
             <CollapsibleChromePage
@@ -47,13 +49,18 @@ export const BudgetEventForm = ({ defaultInstrumentId, editingId }: Props) => {
                 contentClassName="gap-y-4xl"
                 footer={
                     <View className="flex-row gap-x-md pt-xl px-7xl">
-                        <BudgetEventDeleteButton isEditing={isEditing} onDelete={handleDelete} />
+                        {deleteButton}
                         <ModalFormSaveButton testID={BudgetSelector.EventSaveButton} onPress={handleSubmit} disabled={isSaveDisabled} />
                     </View>
                 }
             >
                 <View className="gap-y-lg">
-                    <BudgetEventNameField />
+                    <BudgetNameField
+                        control={form.control}
+                        name="name"
+                        placeholder={t`e.g. Japan trip`}
+                        testID={BudgetSelector.EventNameInput}
+                    />
                     <BudgetEventTagField />
                     <BudgetEventDatesField />
                     <BudgetEventLimitField currencySymbol={currencySymbol} />

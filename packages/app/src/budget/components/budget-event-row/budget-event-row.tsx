@@ -4,13 +4,14 @@ import { Text } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
+import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query';
 import { BudgetSelector } from '../../budget.selector';
 import { BUDGET_PACE_VARIANT } from '../../constant/budget-pace-variant.constant';
-import { BudgetEventRowHeader } from '../budget-event-row-header/budget-event-row-header';
 import { BudgetLimitBar } from '../budget-limit-bar/budget-limit-bar';
+import { BudgetListRow } from '../budget-list-row/budget-list-row';
+import { BudgetNamedProgressRowHeader } from '../budget-named-progress-row-header/budget-named-progress-row-header';
 
 import type { BudgetEventProjectionInterface } from '../../interface/budget-event-projection.interface';
 
@@ -22,6 +23,8 @@ export const BudgetEventRow = ({ event }: Props) => {
     const { t } = useLingui();
     const { budget, projection } = event;
     const { formatMonthAndDay } = useFormatDate();
+    const { instrument } = useGetInstrumentByIdQuery(budget.instrumentId);
+    const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
     const { tags } = useGetTagByIdsQuery(isDefined(budget.tagId) ? [budget.tagId] : []);
     const tagTitle = isNotEmptyArray(tags) ? tags[0].title : '';
     const tagLabel = t`Tag ${tagTitle}`;
@@ -34,13 +37,14 @@ export const BudgetEventRow = ({ event }: Props) => {
     };
 
     return (
-        <HapticPressable
-            accessibilityRole="button"
-            className="min-h-[44px] gap-y-sm active:opacity-70"
-            testID={BudgetSelector.DetailsEventRow(budget.id)}
-            onPress={handlePress}
-        >
-            <BudgetEventRowHeader event={event} />
+        <BudgetListRow testID={BudgetSelector.DetailsEventRow(budget.id)} onPress={handlePress}>
+            <BudgetNamedProgressRowHeader
+                name={budget.name}
+                amount={projection.overall.spent}
+                limit={projection.overall.limit}
+                currencySymbol={currencySymbol}
+                amountTestID={BudgetSelector.DetailsEventSpentLabel(budget.id)}
+            />
             <Text className="text-xs text-secondary-foreground">{tagLabel}</Text>
             <Text className="text-xs text-secondary-foreground">{datesLabel}</Text>
             <BudgetLimitBar
@@ -48,6 +52,6 @@ export const BudgetEventRow = ({ event }: Props) => {
                 limit={projection.overall.limit}
                 tone={BUDGET_PACE_VARIANT[projection.overall.status]}
             />
-        </HapticPressable>
+        </BudgetListRow>
     );
 };

@@ -15,11 +15,11 @@ import { BudgetFundFormSchema } from '../../constant/budget-fund-form-schema.con
 import { useBudgetFundForm } from '../../hooks/use-budget-fund-form.hook';
 import { BudgetFundCategoryField } from '../budget-fund-category-field/budget-fund-category-field';
 import { BudgetFundDueField } from '../budget-fund-due-field/budget-fund-due-field';
-import { BudgetFundNameField } from '../budget-fund-name-field/budget-fund-name-field';
 import { BudgetFundPreview } from '../budget-fund-preview/budget-fund-preview';
 import { BudgetFundRepeatField } from '../budget-fund-repeat-field/budget-fund-repeat-field';
 import { BudgetFundSuggestionBanner } from '../budget-fund-suggestion-banner/budget-fund-suggestion-banner';
 import { BudgetFundTargetField } from '../budget-fund-target-field/budget-fund-target-field';
+import { BudgetNameField } from '../budget-name-field/budget-name-field';
 
 import type { BudgetEntityInterface } from '@budgie/contracts';
 
@@ -56,7 +56,12 @@ export const BudgetFundForm = ({ budget, editingId }: Props) => {
                     showsVerticalScrollIndicator={false}
                 >
                     {suggestionBanner}
-                    <BudgetFundNameField />
+                    <BudgetNameField
+                        control={form.control}
+                        name="name"
+                        placeholder={t`e.g. Car insurance`}
+                        testID={BudgetSelector.FundNameInput}
+                    />
                     <BudgetFundCategoryField />
                     <BudgetFundTargetField currencySymbol={currencySymbol} />
                     <BudgetFundDueField />

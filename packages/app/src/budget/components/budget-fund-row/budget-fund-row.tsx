@@ -2,15 +2,15 @@ import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { Text } from 'react-native';
 
-import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { useToday } from '../../../@generic/hook/use-today.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { BudgetSelector } from '../../budget.selector';
 import { computeFundTimeFraction } from '../../utils/compute-fund-time-fraction.util';
 import { isFundBehind } from '../../utils/is-fund-behind.util';
-import { BudgetFundRowHeader } from '../budget-fund-row-header/budget-fund-row-header';
 import { BudgetFundRowStatus } from '../budget-fund-row-status/budget-fund-row-status';
 import { BudgetLimitBar } from '../budget-limit-bar/budget-limit-bar';
+import { BudgetListRow } from '../budget-list-row/budget-list-row';
+import { BudgetNamedProgressRowHeader } from '../budget-named-progress-row-header/budget-named-progress-row-header';
 
 import type { BudgetEntityInterface, BudgetSinkingFundEntityInterface } from '@budgie/contracts';
 
@@ -33,13 +33,13 @@ export const BudgetFundRow = ({ fund, budget, currencySymbol }: Props) => {
     };
 
     return (
-        <HapticPressable
-            accessibilityRole="button"
-            className="min-h-[44px] gap-y-sm active:opacity-70"
-            testID={BudgetSelector.DetailsFundRow(fund.id)}
-            onPress={handlePress}
-        >
-            <BudgetFundRowHeader fund={fund} currencySymbol={currencySymbol} />
+        <BudgetListRow testID={BudgetSelector.DetailsFundRow(fund.id)} onPress={handlePress}>
+            <BudgetNamedProgressRowHeader
+                name={fund.name}
+                amount={fund.fundedAmount}
+                limit={fund.targetAmount}
+                currencySymbol={currencySymbol}
+            />
             <Text className="text-xs text-secondary-foreground">{dueLabel}</Text>
             <BudgetLimitBar
                 spent={fund.fundedAmount}
@@ -48,6 +48,6 @@ export const BudgetFundRow = ({ fund, budget, currencySymbol }: Props) => {
                 elapsedFraction={computeFundTimeFraction(fund, today)}
             />
             <BudgetFundRowStatus fund={fund} budget={budget} currencySymbol={currencySymbol} />
-        </HapticPressable>
+        </BudgetListRow>
     );
 };

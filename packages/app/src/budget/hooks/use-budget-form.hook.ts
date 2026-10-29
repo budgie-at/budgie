@@ -21,18 +21,13 @@ import { buildBudgetPayload } from '../utils/build-budget-payload.util';
 
 import { useBudgetTemplateDraft } from './use-budget-template-draft.hook';
 
+import type { UseBudgetFormOptionsInterface } from '../interface/use-budget-form-options.interface';
 import type { BudgetTemplateDraftInterface } from '@budgie/budget';
 import type { BudgetCategoryLimitEntityInterface, BudgetEntityInterface } from '@budgie/contracts';
 
 const DEFAULT_PERIOD_START_DAY = 1;
 const EDITING_FALLBACK_ROUTE = '/budget' as const;
 const DEFAULT_FALLBACK_ROUTE = '/' as const;
-
-interface UseBudgetFormOptionsInterface {
-    readonly defaultInstrumentId: number;
-    readonly editingId: number | null;
-    readonly templateKind?: BudgetTemplateKindEnum | null;
-}
 
 const buildBudgetFormValues = (
     budget: BudgetEntityInterface,

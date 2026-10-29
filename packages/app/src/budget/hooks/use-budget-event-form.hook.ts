@@ -2,8 +2,6 @@ import { BudgetService } from '@budgie/budget';
 import { convertFromMicroUnits } from '@budgie/contracts';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useLingui } from '@lingui/react/macro';
-import { addDays } from 'date-fns/addDays';
-import { startOfDay } from 'date-fns/startOfDay';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
 import { router } from 'expo-router';
@@ -12,7 +10,6 @@ import { useForm } from 'react-hook-form';
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
-import { useToday } from '../../@generic/hook/use-today.hook';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
@@ -21,15 +18,12 @@ import { useGetBudgetCategoryLimitsQuery } from '../query/use-get-budget-categor
 import { useGetEventBudgetQuery } from '../query/use-get-event-budget.query';
 import { buildBudgetEventPayload } from '../utils/build-budget-event-payload.util';
 
+import { useBudgetEventDefaultValues } from './use-budget-event-default-values.hook';
+
+import type { UseBudgetEventFormOptionsInterface } from '../interface/use-budget-event-form-options.interface';
 import type { BudgetCategoryLimitEntityInterface, BudgetEntityInterface } from '@budgie/contracts';
 
-const EVENT_DEFAULT_LENGTH_DAYS = 13;
 const FALLBACK_ROUTE = '/budget' as const;
-
-interface UseBudgetEventFormOptionsInterface {
-    readonly defaultInstrumentId: number;
-    readonly editingId: number | null;
-}
 
 const buildEventFormValues = (
     event: BudgetEntityInterface,
@@ -51,21 +45,10 @@ const buildEventFormValues = (
 export const useBudgetEventForm = ({ defaultInstrumentId, editingId }: UseBudgetEventFormOptionsInterface) => {
     const { t } = useLingui();
     const { run } = useSingleFlight();
-    const today = useToday();
     const isEditing = isPositiveNumber(editingId);
     const { budget: event, isLoading: isEventLoading } = useGetEventBudgetQuery(isEditing ? editingId : 0);
     const { categoryLimits, isLoading: isCategoryLimitsLoading } = useGetBudgetCategoryLimitsQuery(isEditing ? editingId : null);
-    const startOfToday = startOfDay(today);
-
-    const defaultValues: BudgetEventFormValues = {
-        name: '',
-        tagId: 0,
-        startsAtMs: startOfToday.getTime(),
-        endsAtMs: addDays(startOfToday, EVENT_DEFAULT_LENGTH_DAYS).getTime(),
-        overallLimit: 0,
-        categoryLimits: [],
-        instrumentId: defaultInstrumentId
-    };
+    const defaultValues = useBudgetEventDefaultValues(defaultInstrumentId);
 
     const form = useForm<BudgetEventFormValues>({
         mode: 'onChange',

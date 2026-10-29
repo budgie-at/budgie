@@ -1,2 +1,1 @@
 export const FUND_YEARLY_MONTHS = 12;
-export const FUND_DEFAULT_CUSTOM_MONTHS = 6;
