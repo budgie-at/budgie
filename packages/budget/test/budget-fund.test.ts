@@ -217,7 +217,7 @@ it.effect('converts spent rows to the budget currency and marks them as converte
 
 it.effect('reserves the set-aside of funds that still need money and skips funded ones', () =>
     Effect.sync(() => {
-        const {reservations} = computeFundReservations(
+        const { reservations } = computeFundReservations(
             [
                 { id: 1, categoryId: INSURANCE_CATEGORY, ...scheduleOf() },
                 { id: 2, categoryId: 6, ...scheduleOf({ fundedAmount: 1200 }) }
