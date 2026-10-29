@@ -52,6 +52,20 @@ const seedCharges = Effect.fnUntraced(function* (accountInput: Partial<AccountCr
 const seedMonthly = (seed: Effect.Success<ReturnType<typeof seedCharges>>, title: string, day: number, amount: number) =>
     Effect.forEach([6, 5, 4, 3, 2, 1], monthsAgo => seed(title, monthsAgo, day, amount), { discard: true });
 
+const seedVariableUtilityBills = Effect.fnUntraced(function* () {
+    const seed = yield* seedCharges();
+    yield* Effect.forEach(
+        [
+            [7, 80],
+            [5, 95],
+            [3, 110],
+            [1, 120]
+        ],
+        ([monthsAgo, amount]) => seed('STADTWERKE WIEN', monthsAgo, 20, amount),
+        { discard: true }
+    );
+});
+
 const calendar = (month: number) => Effect.flatMap(RecurringService, service => service.calendar(2026, month, NOW));
 
 const calendarAsOf = (month: number, now: Date) => Effect.flatMap(RecurringService, service => service.calendar(2026, month, now));
@@ -730,23 +744,24 @@ layer(TestLayer)('recurringService', it => {
 
     it.effect('forecasts variable utility bills with a proven bimonthly cadence', () =>
         Effect.gen(function* () {
-            const seed = yield* seedCharges();
-            yield* Effect.forEach(
-                [
-                    [7, 80],
-                    [5, 95],
-                    [3, 110],
-                    [1, 120]
-                ],
-                ([monthsAgo, amount]) => seed('STADTWERKE WIEN', monthsAgo, 20, amount),
-                { discard: true }
-            );
+            yield* seedVariableUtilityBills();
 
             const june = yield* calendar(JUNE);
             const july = yield* calendar(JULY);
 
             expect(forecastedAmounts(june, 20)).toEqual([]);
             expect(forecastedAmounts(july, 20)).toEqual([110 * PRECISION]);
+        })
+    );
+
+    it.effect('stores a variable-amount series once across repeated calendar reads', () =>
+        Effect.gen(function* () {
+            yield* seedVariableUtilityBills();
+
+            yield* Effect.repeat(calendar(JULY), { times: 2 });
+            const rows = yield* Effect.flatMap(RecurringRepository, repository => repository.findSeries());
+
+            expect(rows).toHaveLength(1);
         })
     );
 
