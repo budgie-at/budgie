@@ -1,13 +1,9 @@
 import { BudgetPeriodCloseService, BudgetPeriodSnapshotRepository, BudgetRepository, computeSpent } from '@budgie/budget';
-import { AccountTypeEnum, BudgetKindEnum, PRECISION } from '@budgie/contracts';
+import { AccountTypeEnum, BudgetKindEnum } from '@budgie/contracts';
 import { expect, layer } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { createTestBudget } from '../harness/create-test-budget';
-import { seedCategorizedExpense } from '../harness/seed-categorized-expense';
-import { TestLayer, testSeedService } from '../harness/test-context';
-
-const units = (amount: number): number => amount * PRECISION;
+import { createTestBudget, seedCategorizedExpense, TestLayer, testSeedService, units } from '../harness';
 
 const EVENT_STARTS_AT = new Date(2026, 5, 10);
 const EVENT_ENDS_AT = new Date(2026, 5, 14);

@@ -1,13 +1,13 @@
 import { BudgetCategoryLimitRepository, BudgetLimitChangeRepository, BudgetPeriodCloseService, BudgetRepository } from '@budgie/budget';
-import { BudgetCategoryLimitEntityTable, BudgetEntityTable, BudgetLimitChangeReasonEnum, PRECISION } from '@budgie/contracts';
+import { BudgetCategoryLimitEntityTable, BudgetEntityTable, BudgetLimitChangeReasonEnum } from '@budgie/contracts';
 import { expect, layer } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { HISTORY_NOW, seedBudgetHistory } from '../harness/seed-budget-history';
-import { testDb, TestLayer } from '../harness/test-context';
+import { HISTORY_NOW, seedBudgetHistory, testDb, TestLayer, units } from '../harness';
 
-const units = (amount: number): number => amount * PRECISION;
+const seedUnderSpentHistory = (budget: Parameters<typeof seedBudgetHistory>[0]['budget'] = {}) =>
+    seedBudgetHistory({ limitAmount: units(300), monthlySpent: units(150), budget });
 
 const closeAndRead = Effect.fnUntraced(function* (budgetId: number) {
     const closeService = yield* BudgetPeriodCloseService;
@@ -22,10 +22,17 @@ const closeAndRead = Effect.fnUntraced(function* (budgetId: number) {
     };
 });
 
+const expectLimitsUntouched = Effect.fnUntraced(function* (budgetId: number) {
+    const { limitAmounts, changes } = yield* closeAndRead(budgetId);
+
+    expect(limitAmounts).toEqual([units(300)]);
+    expect(changes).toEqual([]);
+});
+
 layer(TestLayer)('BudgetPeriodCloseService limit tuning', it => {
     it.effect('lowers an under-spent category by 10 percent and logs the change', () =>
         Effect.gen(function* () {
-            const { budget, category } = yield* seedBudgetHistory({ limitAmount: units(300), monthlySpent: units(150) });
+            const { budget, category } = yield* seedUnderSpentHistory();
             const { limitAmounts, changes } = yield* closeAndRead(budget.id);
 
             expect(limitAmounts).toEqual([units(270)]);
@@ -77,42 +84,28 @@ layer(TestLayer)('BudgetPeriodCloseService limit tuning', it => {
 
     it.effect('does not tune when auto-tuning is switched off', () =>
         Effect.gen(function* () {
-            const { budget } = yield* seedBudgetHistory({
-                limitAmount: units(300),
-                monthlySpent: units(150),
-                budget: { isAutoTuneEnabled: false }
-            });
-            const { limitAmounts, changes } = yield* closeAndRead(budget.id);
-
-            expect(limitAmounts).toEqual([units(300)]);
-            expect(changes).toEqual([]);
+            const { budget } = yield* seedUnderSpentHistory({ isAutoTuneEnabled: false });
+            yield* expectLimitsUntouched(budget.id);
         })
     );
 
     it.effect('skips a limit the user edited in the current period', () =>
         Effect.gen(function* () {
-            const { budget } = yield* seedBudgetHistory({ limitAmount: units(300), monthlySpent: units(150) });
+            const { budget } = yield* seedUnderSpentHistory();
 
             yield* testDb
                 .update(BudgetCategoryLimitEntityTable)
                 .set({ userEditedAt: new Date(2026, 4, 2) })
                 .where(eq(BudgetCategoryLimitEntityTable.budgetId, budget.id));
 
-            const { limitAmounts, changes } = yield* closeAndRead(budget.id);
-
-            expect(limitAmounts).toEqual([units(300)]);
-            expect(changes).toEqual([]);
+            yield* expectLimitsUntouched(budget.id);
         })
     );
 
     it.effect('lowers the Other limit by 10 percent', () =>
         Effect.gen(function* () {
             const budgetRepository = yield* BudgetRepository;
-            const { budget } = yield* seedBudgetHistory({
-                limitAmount: units(300),
-                monthlySpent: units(150),
-                budget: { otherLimit: units(100) }
-            });
+            const { budget } = yield* seedUnderSpentHistory({ otherLimit: units(100) });
 
             yield* closeAndRead(budget.id);
 
@@ -123,11 +116,7 @@ layer(TestLayer)('BudgetPeriodCloseService limit tuning', it => {
     it.effect('skips the Other limit the user edited in the current period', () =>
         Effect.gen(function* () {
             const budgetRepository = yield* BudgetRepository;
-            const { budget } = yield* seedBudgetHistory({
-                limitAmount: units(300),
-                monthlySpent: units(150),
-                budget: { otherLimit: units(100) }
-            });
+            const { budget } = yield* seedUnderSpentHistory({ otherLimit: units(100) });
 
             yield* testDb
                 .update(BudgetEntityTable)
@@ -144,7 +133,7 @@ layer(TestLayer)('BudgetPeriodCloseService limit tuning', it => {
             const closeService = yield* BudgetPeriodCloseService;
             const categoryLimitRepository = yield* BudgetCategoryLimitRepository;
             const changeRepository = yield* BudgetLimitChangeRepository;
-            const { budget } = yield* seedBudgetHistory({ limitAmount: units(300), monthlySpent: units(150) });
+            const { budget } = yield* seedUnderSpentHistory();
 
             yield* closeService.closeDuePeriods(HISTORY_NOW);
             yield* closeService.closeDuePeriods(new Date(2026, 5, 15, 12));
@@ -156,7 +145,7 @@ layer(TestLayer)('BudgetPeriodCloseService limit tuning', it => {
 
     it.effect('does not tune again when no new period closed', () =>
         Effect.gen(function* () {
-            const { budget } = yield* seedBudgetHistory({ limitAmount: units(300), monthlySpent: units(150) });
+            const { budget } = yield* seedUnderSpentHistory();
 
             yield* closeAndRead(budget.id);
 

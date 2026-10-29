@@ -1,19 +1,22 @@
 import { BudgetPeriodCloseService, BudgetPeriodSnapshotRepository, BudgetSinkingFundRepository } from '@budgie/budget';
-import { AccountTypeEnum, BudgetRolloverModeEnum, BudgetSinkingFundEntityTable, PRECISION } from '@budgie/contracts';
+import { AccountTypeEnum, BudgetSinkingFundEntityTable } from '@budgie/contracts';
 import { expect, layer } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { createTestBudget } from '../harness/create-test-budget';
-import { HISTORY_NOW } from '../harness/seed-budget-history';
-import { seedCategorizedExpense } from '../harness/seed-categorized-expense';
-import { testDb, TestLayer, testSeedService } from '../harness/test-context';
-
-const units = (amount: number): number => amount * PRECISION;
+import {
+    createTestBudget,
+    HISTORY_NOW,
+    seedInsurancePayment,
+    seedMonthSnapshot,
+    testDb,
+    TestLayer,
+    testSeedService,
+    units
+} from '../harness';
 
 const seedInsuranceScenario = (isInsuranceLimited: boolean) =>
     Effect.gen(function* () {
-        const snapshotRepository = yield* BudgetPeriodSnapshotRepository;
         const fundRepository = yield* BudgetSinkingFundRepository;
         const insurance = yield* testSeedService.category('Insurance');
         const account = yield* testSeedService.account({ type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
@@ -32,28 +35,8 @@ const seedInsuranceScenario = (isInsuranceLimited: boolean) =>
             .update(BudgetSinkingFundEntityTable)
             .set({ createdAt: new Date(2026, 0, 15) })
             .where(eq(BudgetSinkingFundEntityTable.id, fund.id));
-        yield* seedCategorizedExpense({
-            accountId: account.id,
-            categoryId: insurance.id,
-            operatedAt: new Date(2026, 2, 10, 12),
-            amount: units(400),
-            externalId: 'insurance-payment'
-        });
-        yield* snapshotRepository.create(
-            {
-                budgetId: budget.id,
-                periodStart: new Date(2026, 0, 1),
-                periodEnd: new Date(2026, 0, 31, 23, 59, 59, 999),
-                overallLimit: budget.overallLimit,
-                overallSpent: 0,
-                otherLimit: budget.otherLimit,
-                otherSpent: 0,
-                otherCarriedIn: 0,
-                otherRolloverMode: BudgetRolloverModeEnum.NONE,
-                isReconstructed: false
-            },
-            []
-        );
+        yield* seedInsurancePayment(account.id, insurance.id, new Date(2026, 2, 10, 12));
+        yield* seedMonthSnapshot(budget, new Date(2026, 0, 1), 0);
 
         return { budget, fund };
     });

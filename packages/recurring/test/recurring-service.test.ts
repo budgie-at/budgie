@@ -52,6 +52,15 @@ const seedCharges = Effect.fnUntraced(function* (accountInput: Partial<AccountCr
 const seedMonthly = (seed: Effect.Success<ReturnType<typeof seedCharges>>, title: string, day: number, amount: number) =>
     Effect.forEach([6, 5, 4, 3, 2, 1], monthsAgo => seed(title, monthsAgo, day, amount), { discard: true });
 
+const seedSalaryAndNetflix = Effect.fnUntraced(function* () {
+    const seed = yield* seedCharges();
+
+    yield* Effect.forEach([6, 5, 4, 3, 2, 1], monthsAgo => seed('ACME SALARY', monthsAgo, 1, 3000, true), { discard: true });
+    yield* seedMonthly(seed, 'NETFLIX', 20, 12);
+
+    return seed;
+});
+
 const calendar = (month: number) => Effect.flatMap(RecurringService, service => service.calendar(2026, month, NOW));
 
 const calendarAsOf = (month: number, now: Date) => Effect.flatMap(RecurringService, service => service.calendar(2026, month, now));
@@ -1480,9 +1489,7 @@ layer(TestLayer)('recurringService', it => {
 
     it.effect('ignores income and sums only active expense commitments', () =>
         Effect.gen(function* () {
-            const seed = yield* seedCharges();
-            yield* Effect.forEach([6, 5, 4, 3, 2, 1], monthsAgo => seed('ACME SALARY', monthsAgo, 1, 3000, true), { discard: true });
-            yield* seedMonthly(seed, 'NETFLIX', 20, 12);
+            const seed = yield* seedSalaryAndNetflix();
             yield* Effect.forEach([9, 6, 3], monthsAgo => seed('INSURANCE CO', monthsAgo, 20, 30), { discard: true });
             yield* Effect.forEach([10, 9, 8, 7, 6, 5], monthsAgo => seed('OLD GYM', monthsAgo, 20, 40), { discard: true });
 
@@ -1495,9 +1502,7 @@ layer(TestLayer)('recurringService', it => {
 
     it.effect('projects recurring income through the income calendar and keeps it out of the expense calendar', () =>
         Effect.gen(function* () {
-            const seed = yield* seedCharges();
-            yield* Effect.forEach([6, 5, 4, 3, 2, 1], monthsAgo => seed('ACME SALARY', monthsAgo, 1, 3000, true), { discard: true });
-            yield* seedMonthly(seed, 'NETFLIX', 20, 12);
+            yield* seedSalaryAndNetflix();
 
             const incomeData = yield* Effect.flatMap(RecurringService, service => service.incomeCalendar(2026, JULY, NOW));
             const expenseData = yield* calendar(JULY);
@@ -1512,9 +1517,7 @@ layer(TestLayer)('recurringService', it => {
 
     it.effect('persists income series separately and keeps the expense repository view expense-only', () =>
         Effect.gen(function* () {
-            const seed = yield* seedCharges();
-            yield* Effect.forEach([6, 5, 4, 3, 2, 1], monthsAgo => seed('ACME SALARY', monthsAgo, 1, 3000, true), { discard: true });
-            yield* seedMonthly(seed, 'NETFLIX', 20, 12);
+            yield* seedSalaryAndNetflix();
 
             const expenseData = yield* calendar(JULY);
             const repository = yield* RecurringRepository;

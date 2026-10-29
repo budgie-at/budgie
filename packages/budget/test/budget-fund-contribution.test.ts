@@ -33,12 +33,14 @@ const contributionFund = (overrides: Partial<BudgetFundContributionSourceInterfa
     ...overrides
 });
 
+const contributeThroughOctober = (fund: BudgetFundContributionSourceInterface) =>
+    contributeToFund(fund, [SEPTEMBER_WINDOW, OCTOBER_WINDOW], MONTHLY_SPEC);
+
+const fundedThroughOctober = (fundedAmount: number) => ({ fundedAmount, lastFundedPeriodStart: new Date(2026, OCTOBER, 1) });
+
 it.effect('funds each closed period with that period set-aside', () =>
     Effect.sync(() => {
-        expect(contributeToFund(contributionFund(), [SEPTEMBER_WINDOW, OCTOBER_WINDOW], MONTHLY_SPEC)).toEqual({
-            fundedAmount: 600,
-            lastFundedPeriodStart: new Date(2026, OCTOBER, 1)
-        });
+        expect(contributeThroughOctober(contributionFund())).toEqual(fundedThroughOctober(600));
     })
 );
 
@@ -46,10 +48,7 @@ it.effect('does not fund a period twice', () =>
     Effect.sync(() => {
         const funded = contributionFund({ fundedAmount: 600, lastFundedPeriodStart: new Date(2026, OCTOBER, 1) });
 
-        expect(contributeToFund(funded, [SEPTEMBER_WINDOW, OCTOBER_WINDOW], MONTHLY_SPEC)).toEqual({
-            fundedAmount: 600,
-            lastFundedPeriodStart: new Date(2026, OCTOBER, 1)
-        });
+        expect(contributeThroughOctober(funded)).toEqual(fundedThroughOctober(600));
     })
 );
 
@@ -57,10 +56,7 @@ it.effect('continues from the last funded period', () =>
     Effect.sync(() => {
         const funded = contributionFund({ fundedAmount: 300, lastFundedPeriodStart: new Date(2026, SEPTEMBER, 1) });
 
-        expect(contributeToFund(funded, [SEPTEMBER_WINDOW, OCTOBER_WINDOW], MONTHLY_SPEC)).toEqual({
-            fundedAmount: 600,
-            lastFundedPeriodStart: new Date(2026, OCTOBER, 1)
-        });
+        expect(contributeThroughOctober(funded)).toEqual(fundedThroughOctober(600));
     })
 );
 
@@ -68,10 +64,7 @@ it.effect('skips periods that ended before the fund was created', () =>
     Effect.sync(() => {
         const created = contributionFund({ createdAt: new Date(2026, OCTOBER, 20) });
 
-        expect(contributeToFund(created, [SEPTEMBER_WINDOW, OCTOBER_WINDOW], MONTHLY_SPEC)).toEqual({
-            fundedAmount: 400,
-            lastFundedPeriodStart: new Date(2026, OCTOBER, 1)
-        });
+        expect(contributeThroughOctober(created)).toEqual(fundedThroughOctober(400));
     })
 );
 

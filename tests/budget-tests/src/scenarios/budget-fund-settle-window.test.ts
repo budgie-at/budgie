@@ -1,14 +1,10 @@
 import { BudgetPeriodCloseService, BudgetPeriodSnapshotRepository, BudgetSinkingFundRepository } from '@budgie/budget';
-import { AccountTypeEnum, BudgetRolloverModeEnum, BudgetSinkingFundEntityTable, PRECISION } from '@budgie/contracts';
+import { AccountTypeEnum, BudgetSinkingFundEntityTable } from '@budgie/contracts';
 import { expect, layer } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { createTestBudget } from '../harness/create-test-budget';
-import { seedCategorizedExpense } from '../harness/seed-categorized-expense';
-import { testDb, TestLayer, testSeedService } from '../harness/test-context';
-
-const units = (amount: number): number => amount * PRECISION;
+import { createTestBudget, seedInsurancePayment, seedMonthSnapshot, testDb, TestLayer, testSeedService, units } from '../harness';
 
 const JANUARY_CLOSE = new Date(2027, 0, 16, 12);
 const FEBRUARY_CLOSE = new Date(2027, 1, 2, 12);
@@ -38,28 +34,8 @@ layer(TestLayer)('sinking fund settlement waits for its due window to close', it
                 .update(BudgetSinkingFundEntityTable)
                 .set({ createdAt: new Date(2027, 0, 10) })
                 .where(eq(BudgetSinkingFundEntityTable.id, fund.id));
-            yield* snapshotRepository.create(
-                {
-                    budgetId: budget.id,
-                    periodStart: new Date(2026, 11, 1),
-                    periodEnd: new Date(2026, 11, 31, 23, 59, 59, 999),
-                    overallLimit: budget.overallLimit,
-                    overallSpent: 0,
-                    otherLimit: budget.otherLimit,
-                    otherSpent: 0,
-                    otherCarriedIn: 0,
-                    otherRolloverMode: BudgetRolloverModeEnum.NONE,
-                    isReconstructed: false
-                },
-                []
-            );
-            yield* seedCategorizedExpense({
-                accountId: account.id,
-                categoryId: insurance.id,
-                operatedAt: new Date(2027, 0, 5, 12),
-                amount: units(400),
-                externalId: 'insurance-payment'
-            });
+            yield* seedMonthSnapshot(budget, new Date(2026, 11, 1), 0);
+            yield* seedInsurancePayment(account.id, insurance.id, new Date(2027, 0, 5, 12));
 
             yield* closeService.closeDuePeriods(JANUARY_CLOSE);
 

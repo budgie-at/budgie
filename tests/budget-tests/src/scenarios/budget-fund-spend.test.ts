@@ -1,13 +1,9 @@
 import { BudgetFundSpendService, BudgetSinkingFundRepository } from '@budgie/budget';
-import { AccountTypeEnum, PRECISION } from '@budgie/contracts';
+import { AccountTypeEnum } from '@budgie/contracts';
 import { expect, layer } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
-import { createTestBudget } from '../harness/create-test-budget';
-import { seedCategorizedExpense } from '../harness/seed-categorized-expense';
-import { TestLayer, testSeedService } from '../harness/test-context';
-
-const units = (amount: number): number => amount * PRECISION;
+import { createTestBudget, seedCategorizedExpense, TestLayer, testSeedService, units } from '../harness';
 
 const seedExpenses = Effect.fnUntraced(function* () {
     const groceries = yield* testSeedService.category('Groceries');
@@ -24,21 +20,25 @@ const seedExpenses = Effect.fnUntraced(function* () {
     return { budget, groceries, insurance };
 });
 
+const createInsuranceFund = (budgetId: number, categoryId: number) =>
+    Effect.flatMap(BudgetSinkingFundRepository, fundRepository =>
+        fundRepository.create({
+            budgetId,
+            name: 'Insurance',
+            categoryId,
+            targetAmount: units(1200),
+            dueAt: new Date(2026, 11, 15),
+            fundedAmount: units(500)
+        })
+    );
+
 layer(TestLayer)('BudgetFundSpendService', it => {
     it.effect('removes the part of spending covered by a sinking fund and keeps the excess', () =>
         Effect.gen(function* () {
             const fundSpendService = yield* BudgetFundSpendService;
-            const fundRepository = yield* BudgetSinkingFundRepository;
             const { budget, groceries, insurance } = yield* seedExpenses();
 
-            yield* fundRepository.create({
-                budgetId: budget.id,
-                name: 'Insurance',
-                categoryId: insurance.id,
-                targetAmount: units(1200),
-                dueAt: new Date(2026, 11, 15),
-                fundedAmount: units(500)
-            });
+            yield* createInsuranceFund(budget.id, insurance.id);
 
             const entries = yield* fundSpendService.findSpentEntries(budget, new Date(2026, 11, 1), new Date(2027, 0, 1));
             const sorted = [...entries].sort((first, second) => first.operatedAt.getTime() - second.operatedAt.getTime());
@@ -53,16 +53,8 @@ layer(TestLayer)('BudgetFundSpendService', it => {
     it.effect('returns the gross entries and the draws separately for period close', () =>
         Effect.gen(function* () {
             const fundSpendService = yield* BudgetFundSpendService;
-            const fundRepository = yield* BudgetSinkingFundRepository;
             const { budget, insurance } = yield* seedExpenses();
-            const fund = yield* fundRepository.create({
-                budgetId: budget.id,
-                name: 'Insurance',
-                categoryId: insurance.id,
-                targetAmount: units(1200),
-                dueAt: new Date(2026, 11, 15),
-                fundedAmount: units(500)
-            });
+            const fund = yield* createInsuranceFund(budget.id, insurance.id);
             const { entries, draws } = yield* fundSpendService.findSpentWithDraws(budget, new Date(2026, 11, 1), new Date(2027, 0, 1));
 
             expect(entries.map(entry => entry.amount).sort((first, second) => first - second)).toEqual([units(50), units(300), units(400)]);

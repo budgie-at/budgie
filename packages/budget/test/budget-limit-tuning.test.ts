@@ -80,6 +80,10 @@ it.effect('lowers only down to the mean spend when it is above the step bound', 
     })
 );
 
+const underSpentSnapshot = (id: number) => snapshotOf(id, [category(GROCERIES, units(300), units(150))]);
+
+const proposeForGroceries = (history: ReturnType<typeof threePeriods>) => propose(history, limitsOf([limit(GROCERIES, units(300))]));
+
 it.effect('raises an over-spent limit by the 10 percent step', () =>
     Effect.sync(() => {
         expect(propose(threePeriods([category(GROCERIES, units(100), units(200))]), limitsOf([limit(GROCERIES, units(100))]))).toEqual([
@@ -104,13 +108,9 @@ it.effect('raises only up to the mean spend when it is below the step bound', ()
 
 it.effect('proposes nothing for a mixed history', () =>
     Effect.sync(() => {
-        const history = [
-            snapshotOf(1, [category(GROCERIES, units(300), units(150))]),
-            snapshotOf(2, [category(GROCERIES, units(300), units(150))]),
-            snapshotOf(3, [category(GROCERIES, units(300), units(260))])
-        ];
+        const history = [underSpentSnapshot(1), underSpentSnapshot(2), snapshotOf(3, [category(GROCERIES, units(300), units(260))])];
 
-        expect(propose(history, limitsOf([limit(GROCERIES, units(300))]))).toEqual([]);
+        expect(proposeForGroceries(history)).toEqual([]);
     })
 );
 
@@ -235,13 +235,9 @@ it.effect('never lowers a limit below one currency unit and drops unchanged resu
 
 it.effect('skips a category that is missing from one of the snapshots', () =>
     Effect.sync(() => {
-        const history = [
-            snapshotOf(1, [category(GROCERIES, units(300), units(150))]),
-            snapshotOf(2, [category(GROCERIES, units(300), units(150))]),
-            snapshotOf(3, [])
-        ];
+        const history = [underSpentSnapshot(1), underSpentSnapshot(2), snapshotOf(3, [])];
 
-        expect(propose(history, limitsOf([limit(GROCERIES, units(300))]))).toEqual([]);
+        expect(proposeForGroceries(history)).toEqual([]);
     })
 );
 

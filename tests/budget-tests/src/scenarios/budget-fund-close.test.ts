@@ -1,14 +1,10 @@
 import { BudgetPeriodCloseService, BudgetSinkingFundRepository } from '@budgie/budget';
-import { BudgetSinkingFundEntityTable, PRECISION } from '@budgie/contracts';
+import { BudgetSinkingFundEntityTable } from '@budgie/contracts';
 import { expect, layer } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import { HISTORY_NOW, seedBudgetHistory } from '../harness/seed-budget-history';
-import { seedCategorizedExpense } from '../harness/seed-categorized-expense';
-import { testDb, TestLayer, testSeedService } from '../harness/test-context';
-
-const units = (amount: number): number => amount * PRECISION;
+import { HISTORY_NOW, seedBudgetHistory, seedInsurancePayment, testDb, TestLayer, testSeedService, units } from '../harness';
 
 const seedFundScenario = Effect.fnUntraced(function* (dueAt: Date, targetAmount: number, repeatEveryMonths: number | null) {
     const fundRepository = yield* BudgetSinkingFundRepository;
@@ -63,13 +59,7 @@ layer(TestLayer)('BudgetPeriodCloseService sinking funds', it => {
             const fundRepository = yield* BudgetSinkingFundRepository;
             const { budget, account, insurance } = yield* seedFundScenario(new Date(2026, 2, 20), units(600), null);
 
-            yield* seedCategorizedExpense({
-                accountId: account.id,
-                categoryId: insurance.id,
-                operatedAt: new Date(2026, 2, 10, 12),
-                amount: units(400),
-                externalId: 'insurance-payment'
-            });
+            yield* seedInsurancePayment(account.id, insurance.id, new Date(2026, 2, 10, 12));
             yield* close;
 
             expect(yield* fundRepository.getByBudget(budget.id)).toEqual([]);
@@ -81,13 +71,7 @@ layer(TestLayer)('BudgetPeriodCloseService sinking funds', it => {
             const fundRepository = yield* BudgetSinkingFundRepository;
             const { budget, account, insurance } = yield* seedFundScenario(new Date(2026, 2, 20), units(600), 12);
 
-            yield* seedCategorizedExpense({
-                accountId: account.id,
-                categoryId: insurance.id,
-                operatedAt: new Date(2026, 2, 10, 12),
-                amount: units(400),
-                externalId: 'insurance-payment'
-            });
+            yield* seedInsurancePayment(account.id, insurance.id, new Date(2026, 2, 10, 12));
             yield* close;
 
             const [rolled] = yield* fundRepository.getByBudget(budget.id);
