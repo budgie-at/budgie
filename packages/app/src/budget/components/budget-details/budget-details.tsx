@@ -1,119 +1,124 @@
-import { computePeriodWindow, getInclusiveEnd } from '@budgie/budget';
-import { UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
+import { BudgetAlertScopeEnum, computePeriodWindow, getInclusiveEnd } from '@budgie/budget';
 import { t } from '@lingui/core/macro';
-import { Trans } from '@lingui/react/macro';
-import { router } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
+import * as Option from 'effect/Option';
+import * as Schema from 'effect/Schema';
+import { useLocalSearchParams } from 'expo-router';
+import { useRef, useState } from 'react';
+import { View } from 'react-native';
 
-import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { emptyFn, isDefined } from '@rnw-community/shared';
 
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
-import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
+import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
+import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 import { useToday } from '../../../@generic/hook/use-today.hook';
-import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
-import { BudgetSelector } from '../../budget.selector';
-import { useGetBudgetCategoryLimitsQuery } from '../../query/use-get-budget-category-limits.query';
-import { useGetBudgetSpentQuery } from '../../query/use-get-budget-spent.query';
+import { BudgetHighlightContext } from '../../context/budget-highlight.context';
+import { useGetBudgetProjectionQuery } from '../../query/use-get-budget-projection.query';
 import { formatBudgetPeriodLabel } from '../../utils/format-budget-period-label.util';
+import { BudgetDayStrip } from '../budget-day-strip/budget-day-strip';
 import { BudgetDetailsCategoryList } from '../budget-details-category-list/budget-details-category-list';
-import { BudgetProgressBar } from '../budget-progress-bar/budget-progress-bar';
+import { BudgetDetailsEditButton } from '../budget-details-edit-button/budget-details-edit-button';
+import { BudgetDetailsForecast } from '../budget-details-forecast/budget-details-forecast';
+import { BudgetHistorySection } from '../budget-history-section/budget-history-section';
+import { BudgetPeriodRecap } from '../budget-period-recap/budget-period-recap';
+import { BudgetStatRow } from '../budget-stat-row/budget-stat-row';
+import { BudgetVerdict } from '../budget-verdict/budget-verdict';
 
+import type { BudgetHighlightTargetInterface } from '../../interface/budget-highlight-target.interface';
 import type { BudgetEntityInterface } from '@budgie/contracts';
+import type { KeyboardAwareScrollViewRef } from 'react-native-keyboard-controller';
 
 interface Props {
     readonly budget: BudgetEntityInterface;
 }
 
+const REVEAL_TOP_MARGIN = 16;
+const decodeHighlightParams = Schema.decodeUnknownOption(
+    Schema.Struct({ scope: Schema.Enum(BudgetAlertScopeEnum), categoryId: Schema.optionalKey(Schema.NumberFromString) })
+);
+
 export const BudgetDetails = ({ budget }: Props) => {
-    const { spent } = useGetBudgetSpentQuery(budget);
-    const { categoryLimits } = useGetBudgetCategoryLimitsQuery(budget.id);
+    const { projection, isLoading } = useGetBudgetProjectionQuery(budget);
     const { instrument } = useGetInstrumentByIdQuery(budget.instrumentId);
-    const formatDigits = useDisplayFormatDigits();
     const periodWindow = computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, useToday());
     const periodEnd = getInclusiveEnd(periodWindow.nextPeriodStart);
     const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
     const dateLabel = formatBudgetPeriodLabel(budget, useFormatDate().formatMonthAndDay);
-    const displaySpent = convertFromMicroUnits(spent.spentOverall);
-    const hasCategoryLimitsContent = isNotEmptyArray(categoryLimits) || isPositiveNumber(budget.otherLimit);
+    const reducedMotion = useReducedMotion();
+    const searchParams = useLocalSearchParams();
+    const scrollRef = useRef<KeyboardAwareScrollViewRef>(null);
+    const contentRef = useRef<View>(null);
+    const [highlightTarget, setHighlightTarget] = useState<BudgetHighlightTargetInterface | null>(() =>
+        Option.getOrNull(decodeHighlightParams(searchParams))
+    );
 
-    const handleEditPress = () => {
-        router.push({ pathname: '/budget/edit', params: { id: String(budget.id) } });
+    const handleReveal = (view: View) => {
+        if (!isDefined(contentRef.current)) {
+            return;
+        }
+
+        view.measureLayout(
+            contentRef.current,
+            (_left, top) => {
+                scrollRef.current?.scrollTo({ y: Math.max(top - REVEAL_TOP_MARGIN, 0), animated: !reducedMotion });
+                setHighlightTarget(null);
+            },
+            emptyFn
+        );
     };
 
-    const categoryLimitsContent = hasCategoryLimitsContent ? (
-        <BudgetDetailsCategoryList
-            categoryLimits={categoryLimits}
-            spentByCategory={spent.spentByCategory}
-            spentOverall={spent.spentOverall}
-            otherLimitAmount={budget.otherLimit}
-            periodStart={periodWindow.periodStart}
-            periodEnd={periodEnd}
-            currencySymbol={currencySymbol}
-        />
-    ) : (
-        <Text className="text-secondary-foreground text-sm">
-            <Trans>No category limits yet</Trans>
-        </Text>
-    );
-
-    const headerAction = (
-        <HapticPressable
-            accessible
-            accessibilityLabel={t`Manage budget`}
-            accessibilityRole="button"
-            className="relative h-[40px] w-[40px]"
-            collapsable={false}
-            nativeID={BudgetSelector.DetailsEditButton}
-            testID={BudgetSelector.DetailsEditButton}
-            onPress={handleEditPress}
-        >
-            <View
-                collapsable={false}
-                nativeID={BudgetSelector.DetailsEditButton}
-                pointerEvents="none"
-                style={StyleSheet.absoluteFill}
-                testID={BudgetSelector.DetailsEditButton}
-            />
-            <CircleIcon icon={UserIconNameEnum.EllipsisVertical} variant="ghost" size={40} iconSize={24} border={false} />
-        </HapticPressable>
-    );
+    const scrollViewProps = { ref: scrollRef };
+    const highlightContextValue = { target: isLoading ? null : highlightTarget, reveal: handleReveal };
 
     return (
         <CollapsibleChromePage
             title={t`Budget details`}
             subtitle={dateLabel}
             leading={<HeaderBackButton />}
-            trailing={headerAction}
-            contentClassName="gap-y-7xl"
+            trailing={<BudgetDetailsEditButton budgetId={budget.id} />}
+            scrollViewProps={scrollViewProps}
         >
-            <View className="gap-y-md">
-                <View className="flex-row items-center justify-between">
-                    <Text className="text-primary text-lg font-semibold">
-                        <Trans>Monthly budget</Trans>
-                    </Text>
-                    <Text className="text-secondary-foreground text-sm">{formatDigits(displaySpent, currencySymbol)}</Text>
+            <BudgetHighlightContext value={highlightContextValue}>
+                <View ref={contentRef} collapsable={false} className="gap-y-3xl">
+                    <BudgetPeriodRecap budgetId={budget.id} currencySymbol={currencySymbol} />
+
+                    <LoadingContent isLoading={isLoading}>
+                        <BudgetVerdict projection={projection} currencySymbol={currencySymbol} onPaceHintPress={setHighlightTarget} />
+                    </LoadingContent>
+
+                    <LoadingContent isLoading={isLoading}>
+                        <BudgetDayStrip projection={projection} currencySymbol={currencySymbol} />
+                    </LoadingContent>
+
+                    <LoadingContent isLoading={isLoading}>
+                        <BudgetStatRow scope={projection.overall} currencySymbol={currencySymbol} />
+                    </LoadingContent>
+
+                    <BudgetDetailsForecast projection={projection} currencySymbol={currencySymbol} isLoading={isLoading} />
+
+                    <LoadingContent isLoading={isLoading}>
+                        <BudgetDetailsCategoryList
+                            budget={budget}
+                            projection={projection}
+                            periodStart={periodWindow.periodStart}
+                            periodEnd={periodEnd}
+                            currencySymbol={currencySymbol}
+                        />
+                    </LoadingContent>
+
+                    <BudgetHistorySection
+                        budgetId={budget.id}
+                        overallLimit={projection.overall.limit}
+                        currentSpent={projection.overall.spent}
+                        currentPeriodStart={periodWindow.periodStart}
+                        currentPeriodEnd={periodEnd}
+                        currencySymbol={currencySymbol}
+                    />
                 </View>
-
-                <BudgetProgressBar
-                    spent={spent.spentOverall}
-                    limit={budget.overallLimit}
-                    spentTestID={BudgetSelector.DetailsSpentLabel}
-                    currencySymbol={currencySymbol}
-                    remainingTestID={BudgetSelector.DetailsRemainingLabel}
-                />
-            </View>
-
-            <View className="gap-y-md">
-                <Text className="text-primary text-lg font-semibold">
-                    <Trans>Category limits</Trans>
-                </Text>
-
-                {categoryLimitsContent}
-            </View>
+            </BudgetHighlightContext>
         </CollapsibleChromePage>
     );
 };

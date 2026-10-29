@@ -4,45 +4,47 @@ import { Text, View } from 'react-native';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
-import { Card } from '../../../@generic/component/card/card';
+import { SectionHeader } from '../../../@generic/component/section-header/section-header';
 import { SegmentedTabs } from '../../../@generic/component/segmented-tabs/segmented-tabs';
 import { RunwaySelector } from '../../runway.selector';
 import { RunwayDriverRow } from '../runway-driver-row/runway-driver-row';
 
+import type { StatusToneType } from '../../../@generic/type/status-tone.type';
 import type { RunwayDriverInterface } from '../../interface/runway-driver.interface';
 
 interface Props {
     readonly drivers: readonly RunwayDriverInterface[];
     readonly dimension: RunwayDriverDimensionEnum;
+    readonly tone: StatusToneType;
     readonly onChangeDimension: (dimension: RunwayDriverDimensionEnum) => void;
 }
 
 export const RunwayDrivers = (props: Props) => {
-    const { drivers, dimension, onChangeDimension } = props;
+    const { drivers, dimension, tone, onChangeDimension } = props;
     const { t } = useLingui();
 
     const options = [
-        { value: RunwayDriverDimensionEnum.CATEGORY, label: t`Categories` },
-        { value: RunwayDriverDimensionEnum.TAG, label: t`Tags` }
+        { value: RunwayDriverDimensionEnum.CATEGORY, label: t`By category` },
+        { value: RunwayDriverDimensionEnum.TAG, label: t`By tag` }
     ];
     const maxAmount = drivers.reduce((maximum, driver) => Math.max(maximum, driver.monthlyAmount), 0);
 
     return (
-        <Card testID={RunwaySelector.Drivers} className="gap-y-xl">
-            <View className="gap-y-lg">
-                <Text className="text-xxs uppercase tracking-wider text-secondary-foreground">{t`What's driving it`}</Text>
+        <View collapsable={false} testID={RunwaySelector.Drivers} className="gap-y-lg">
+            <SectionHeader label={t`What's driving it`} />
 
-                <SegmentedTabs options={options} value={dimension} onChange={onChangeDimension} />
-            </View>
+            <SegmentedTabs options={options} value={dimension} onChange={onChangeDimension} />
 
             {isNotEmptyArray(drivers) ? (
-                <View className="gap-y-xl">
-                    {drivers.map(driver => (
+                <View className="gap-y-lg">
+                    {drivers.map((driver, index) => (
                         <RunwayDriverRow
                             key={`${driver.id ?? ''}-${driver.foldedDriverCount}`}
                             driver={driver}
                             dimension={dimension}
                             maxAmount={maxAmount}
+                            rank={index}
+                            tone={tone}
                         />
                     ))}
                 </View>
@@ -51,6 +53,6 @@ export const RunwayDrivers = (props: Props) => {
                     <Trans>No spending in this window.</Trans>
                 </Text>
             )}
-        </Card>
+        </View>
     );
 };

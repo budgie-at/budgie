@@ -1,61 +1,71 @@
-import { BudgetSelector } from '../../budget.selector';
-import { getBudgetCategorySpent } from '../../utils/get-budget-category-spent.util';
+import { Trans, useLingui } from '@lingui/react/macro';
+import { Text } from 'react-native';
+
+import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+
+import { EntranceReveal } from '../../../@generic/component/entrance-reveal/entrance-reveal';
+import { SectionHeader } from '../../../@generic/component/section-header/section-header';
+import { useNonSystemCategoriesQuery } from '../../../category/query/use-non-system-categories.query';
+import { useGetBudgetEffectiveLimitsQuery } from '../../query/use-get-budget-effective-limits.query';
 import { BudgetDetailsCategoryRow } from '../budget-details-category-row/budget-details-category-row';
 import { BudgetDetailsOtherCategoryRow } from '../budget-details-other-category-row/budget-details-other-category-row';
 
-import type { BudgetCategorySpentInterface } from '@budgie/budget';
-import type { BudgetCategoryLimitEntityInterface } from '@budgie/contracts';
+import type { BudgetProjectionInterface } from '@budgie/budget';
+import type { BudgetEntityInterface } from '@budgie/contracts';
 
 interface Props {
-    readonly categoryLimits: readonly BudgetCategoryLimitEntityInterface[];
-    readonly spentByCategory: readonly BudgetCategorySpentInterface[];
-    readonly spentOverall: number;
-    readonly otherLimitAmount: number;
+    readonly budget: BudgetEntityInterface;
+    readonly projection: BudgetProjectionInterface;
     readonly periodStart: Date;
     readonly periodEnd: Date;
     readonly currencySymbol: string;
 }
 
-export const BudgetDetailsCategoryList = (props: Props) => {
-    const { categoryLimits, spentByCategory, spentOverall, otherLimitAmount, periodStart, periodEnd, currencySymbol } = props;
-    const spentByCategoryMap = new Map(spentByCategory.map(entry => [entry.categoryId, entry.spent]));
+export const BudgetDetailsCategoryList = ({ budget, projection, periodStart, periodEnd, currencySymbol }: Props) => {
+    const { t } = useLingui();
+    const { categories } = useNonSystemCategoriesQuery();
+    const effectiveLimits = useGetBudgetEffectiveLimitsQuery(budget);
+    const titleByCategoryId = new Map(categories.map(category => [category.id, category.title]));
+    const categoryIds = projection.categories.map(category => category.categoryId);
+    const carriedAmountByCategory = new Map(effectiveLimits.categoryLimits.map(limit => [limit.categoryId, limit.carriedAmount]));
+    const hasCategoryLimits = isNotEmptyArray(projection.categories) || isPositiveNumber(budget.otherLimit);
 
-    const categoryIds = categoryLimits.map(limit => limit.categoryId);
-    const limitedCategorySpent = categoryLimits.reduce(
-        (total, limit) => total + getBudgetCategorySpent(spentByCategoryMap, limit.categoryId),
-        0
-    );
-    const otherSpent = Math.max(0, spentOverall - limitedCategorySpent);
-
-    const categoryLimitCards = categoryLimits.map(limit => {
-        const spent = getBudgetCategorySpent(spentByCategoryMap, limit.categoryId);
-
-        return (
-            <BudgetDetailsCategoryRow
-                key={limit.id}
-                categoryId={limit.categoryId}
-                limitAmount={limit.limitAmount}
-                spent={spent}
-                periodStart={periodStart}
-                periodEnd={periodEnd}
-                currencySymbol={currencySymbol}
-                testID={BudgetSelector.DetailsCategoryRow(limit.categoryId)}
-                spentTestID={BudgetSelector.DetailsCategorySpentLabel(limit.categoryId)}
-            />
-        );
-    });
-
-    return (
+    const rows = hasCategoryLimits ? (
         <>
-            {categoryLimitCards}
+            {projection.categories.map((category, index) => (
+                <BudgetDetailsCategoryRow
+                    key={category.categoryId}
+                    categoryId={category.categoryId}
+                    title={titleByCategoryId.get(category.categoryId) ?? ''}
+                    scope={category}
+                    carriedAmount={carriedAmountByCategory.get(category.categoryId) ?? 0}
+                    periodStart={periodStart}
+                    periodEnd={periodEnd}
+                    currencySymbol={currencySymbol}
+                    staggerIndex={index}
+                />
+            ))}
             <BudgetDetailsOtherCategoryRow
                 categoryIds={categoryIds}
-                spent={otherSpent}
-                limitAmount={otherLimitAmount}
+                scope={projection.other}
+                carriedAmount={effectiveLimits.otherCarriedAmount}
                 periodStart={periodStart}
                 periodEnd={periodEnd}
                 currencySymbol={currencySymbol}
+                staggerIndex={categoryIds.length}
             />
         </>
+    ) : (
+        <Text className="text-sm text-secondary-foreground">
+            <Trans>No category limits yet</Trans>
+        </Text>
+    );
+
+    return (
+        <EntranceReveal step={4} className="gap-y-lg">
+            <SectionHeader label={t`Categories`} />
+
+            {rows}
+        </EntranceReveal>
     );
 };

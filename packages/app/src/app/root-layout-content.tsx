@@ -1,4 +1,5 @@
 /* eslint-disable react/jsx-max-depth */
+import { BudgetPeriodCloseService } from '@budgie/budget';
 import { I18nProvider as LinguiProvider } from '@lingui/react';
 import * as Effect from 'effect/Effect';
 import { Stack, type NativeStackNavigationOptions } from 'expo-router';
@@ -35,6 +36,7 @@ import { AiProvider } from '../ai/provider/ai.provider';
 import { VoiceInputProvider } from '../ai/provider/voice-input.provider';
 import { AuthGuard } from '../auth/provider/auth.guard';
 import { AuthProvider } from '../auth/provider/auth.provider';
+import { BudgetNotificationLaunchHandler } from '../budget/components/budget-notification-launch-handler/budget-notification-launch-handler';
 import { I18nProvider } from '../i18n/provider/i18n.provider';
 import { HistoricalMarketDataDrainerService } from '../market-data/service/historical-market-data-drainer.service';
 import { ReceiptLaunchHandler } from '../receipt/components/receipt-launch-handler/receipt-launch-handler';
@@ -94,6 +96,7 @@ const handleAppStateChange = (isActive: boolean): void => {
 
             const appDataSyncService = yield* AppDataSyncService;
             const historicalMarketDataDrainerService = yield* HistoricalMarketDataDrainerService;
+            const budgetPeriodCloseService = yield* BudgetPeriodCloseService;
 
             yield* logAndContinue(
                 workload.run(
@@ -104,6 +107,7 @@ const handleAppStateChange = (isActive: boolean): void => {
                     })
                 )
             );
+            yield* logAndContinue(workload.run(budgetPeriodCloseService.closeDuePeriods(new Date())));
         })
     );
 };
@@ -177,6 +181,10 @@ export const RootLayoutContent = () => {
                                                                         name="voice-review"
                                                                         options={formSheetOptions([0.65, DETENT_95], 0)}
                                                                     />
+                                                                    <Stack.Screen
+                                                                        name="budget-safe-to-spend"
+                                                                        options={formSheetOptions([DETENT_55, DETENT_95], 0)}
+                                                                    />
                                                                     <Stack.Screen name="category-form" options={MODAL_OPTIONS} />
                                                                     <Stack.Screen name="tag-form" options={MODAL_OPTIONS} />
                                                                     <Stack.Screen
@@ -249,6 +257,10 @@ export const RootLayoutContent = () => {
                                                                         name="transaction-tag-filter"
                                                                         options={STACKED_FILTER_OPTIONS}
                                                                     />
+                                                                    <Stack.Screen
+                                                                        name="budget-period-summary"
+                                                                        options={formSheetOptions([0.6, DETENT_90])}
+                                                                    />
                                                                     <Stack.Screen name="rule-form" options={MODAL_OPTIONS} />
                                                                     <Stack.Screen name="rule-selector" options={formSheetOptions([0.75])} />
                                                                     <Stack.Screen name="rule-mcc-selector" options={SELECTOR_OPTIONS} />
@@ -257,6 +269,7 @@ export const RootLayoutContent = () => {
                                                         </ModalProvider>
                                                         <AppToastHost />
                                                         <ReceiptLaunchHandler />
+                                                        <BudgetNotificationLaunchHandler />
                                                     </AiProvider>
                                                 </CreateActionProvider>
                                             </AuthGuard>

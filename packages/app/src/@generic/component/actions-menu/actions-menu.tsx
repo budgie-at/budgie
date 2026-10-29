@@ -6,6 +6,7 @@ import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { PopoverMenu } from '../popover-menu/popover-menu';
 
 import type { ReactNode } from 'react';
+import type { Insets } from 'react-native';
 
 interface Props {
     readonly trigger: ReactNode;
@@ -14,9 +15,20 @@ interface Props {
     readonly triggerClassName?: string;
     readonly triggerTestID?: string;
     readonly children: ReactNode;
+    readonly hitSlop?: Insets | number;
 }
 
-export const ActionsMenu = ({ trigger, accessibilityLabel, isDisabled = false, triggerClassName, triggerTestID, children }: Props) => {
+const DEFAULT_HIT_SLOP = 12;
+
+export const ActionsMenu = ({
+    trigger,
+    accessibilityLabel,
+    isDisabled = false,
+    triggerClassName,
+    triggerTestID,
+    children,
+    hitSlop = DEFAULT_HIT_SLOP
+}: Props) => {
     const { anchor, closeMenu, handleCloseComplete, handleToggleMenu, isMenuOpen } = usePopoverMenuAnchor();
 
     return (
@@ -25,7 +37,7 @@ export const ActionsMenu = ({ trigger, accessibilityLabel, isDisabled = false, t
                 <HapticPressable
                     className={triggerClassName}
                     onPress={handleToggleMenu}
-                    hitSlop={12}
+                    hitSlop={hitSlop}
                     disabled={isDisabled}
                     accessibilityRole="button"
                     accessibilityLabel={accessibilityLabel}

@@ -1,27 +1,27 @@
+import { BudgetAlertScopeEnum } from '@budgie/budget';
 import { TransactionTypeEnum } from '@budgie/contracts';
 import { router } from 'expo-router';
 
-import { isDefined } from '@rnw-community/shared';
+import { BudgetSelector } from '../../budget.selector';
+import { BudgetDetailsLimitRow } from '../budget-details-limit-row/budget-details-limit-row';
 
-import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
-import { BudgetDetailsLimitCard } from '../budget-details-limit-card/budget-details-limit-card';
+import type { BudgetProjectionScopeInterface } from '@budgie/budget';
 
 interface Props {
     readonly categoryId: number;
-    readonly limitAmount: number;
-    readonly spent: number;
+    readonly title: string;
+    readonly scope: BudgetProjectionScopeInterface;
     readonly periodStart: Date;
     readonly periodEnd: Date;
     readonly currencySymbol: string;
-    readonly testID: string;
-    readonly spentTestID: string;
+    readonly carriedAmount: number;
+    readonly staggerIndex: number;
 }
 
 export const BudgetDetailsCategoryRow = (props: Props) => {
-    const { categoryId, limitAmount, spent, periodStart, periodEnd, currencySymbol, testID, spentTestID } = props;
-    const { category } = useGetCategoryByIdQuery(categoryId);
-    const title = isDefined(category) ? category.title : '';
-    const icon = isDefined(category) ? category.icon : null;
+    const { categoryId, title, scope, periodStart, periodEnd, currencySymbol, carriedAmount, staggerIndex } = props;
+    const testIDs = { row: BudgetSelector.DetailsCategoryRow(categoryId), spent: BudgetSelector.DetailsCategorySpentLabel(categoryId) };
+    const highlightTarget = { scope: BudgetAlertScopeEnum.CATEGORY, categoryId };
 
     const handlePress = () => {
         router.push({
@@ -36,15 +36,15 @@ export const BudgetDetailsCategoryRow = (props: Props) => {
     };
 
     return (
-        <BudgetDetailsLimitCard
+        <BudgetDetailsLimitRow
             title={title}
-            icon={icon}
-            spent={spent}
-            limitAmount={limitAmount}
+            carriedAmount={carriedAmount}
+            scope={scope}
             currencySymbol={currencySymbol}
-            testID={testID}
-            spentTestID={spentTestID}
+            testIDs={testIDs}
             onPress={handlePress}
+            highlightTarget={highlightTarget}
+            staggerIndex={staggerIndex}
         />
     );
 };

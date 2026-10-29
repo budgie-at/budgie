@@ -1,26 +1,24 @@
-import { convertFromMicroUnits } from '@budgie/contracts';
-import { useAtomValue } from '@effect/atom-react/Hooks';
-import { Trans } from '@lingui/react/macro';
-import { Text } from 'react-native';
+import { useLingui } from '@lingui/react/macro';
+import { View } from 'react-native';
 import Svg from 'react-native-svg';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { Card } from '../../../@generic/component/card/card';
+import { SectionHeader } from '../../../@generic/component/section-header/section-header';
 import { StyledLine } from '../../../@generic/component/styled-line/styled-line';
-import { StyledSvgText } from '../../../@generic/component/styled-svg-text/styled-svg-text';
 import { useI18nContext } from '../../../i18n/context/i18n.context';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import {
     RUNWAY_HISTORY_BAR_AREA_HEIGHT,
     RUNWAY_HISTORY_BAR_GAP,
     RUNWAY_HISTORY_CHART_WIDTH,
     RUNWAY_HISTORY_PLOT_TOP
 } from '../../constant/runway-history.constant';
+import { RunwayHistoryBarLabel } from '../runway-history-bar-label/runway-history-bar-label';
 import { RunwayHistoryBars } from '../runway-history-bars/runway-history-bars';
 import { RunwayHistoryLegend } from '../runway-history-legend/runway-history-legend';
 import { RunwayHistoryMedianLine } from '../runway-history-median-line/runway-history-median-line';
+import { RunwayHistoryMonthLabel } from '../runway-history-month-label/runway-history-month-label';
+import { RunwayHistorySpikeNote } from '../runway-history-spike-note/runway-history-spike-note';
 
 import type { RunwaySeriesRowInterface } from '@budgie/contracts';
 
@@ -32,17 +30,17 @@ interface Props {
 const CHART_HEIGHT = 108;
 const BASELINE_Y = RUNWAY_HISTORY_PLOT_TOP + RUNWAY_HISTORY_BAR_AREA_HEIGHT;
 const MONTH_LABEL_Y = CHART_HEIGHT - 4;
-const MONTH_LABEL_FONT_SIZE = 8;
 const MAX_MONTH_LABELS = 6;
+const VIEW_BOX = `0 0 ${RUNWAY_HISTORY_CHART_WIDTH} ${CHART_HEIGHT}`;
+const CHART_ASPECT_STYLE = { aspectRatio: RUNWAY_HISTORY_CHART_WIDTH / CHART_HEIGHT };
 const MAX_BAR_WIDTH = 16;
 const MIN_BAR_WIDTH = 3;
 const SLOT_GUTTER_RATIO = 0.3;
 const SPIKE_MULTIPLIER = 1.5;
 
 export const RunwayHistoryChart = ({ series, burn }: Props) => {
+    const { t } = useLingui();
     const { intl } = useI18nContext();
-    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
-    const formatDigits = useFormatDigits(0);
 
     const peakRow = series.reduce<RunwaySeriesRowInterface | null>(
         (peak, row) => (isDefined(peak) && peak.expense >= row.expense ? peak : row),
@@ -64,64 +62,58 @@ export const RunwayHistoryChart = ({ series, burn }: Props) => {
             expense: row.expense,
             income: row.income,
             isSpike,
-            hasLabel: (series.length - 1 - index) % labelStep === 0,
-            labelFillClassName: isSpike ? 'accent-warning-foreground' : 'accent-secondary-foreground',
-            labelWeight: isSpike ? '600' : '400'
+            hasLabel: (series.length - 1 - index) % labelStep === 0
         };
     });
-    const spikeAmount = isDefined(peakRow) ? formatDigits(convertFromMicroUnits(peakRow.expense), defaultInstrument.symbol) : '';
+    const spikeExpense = isDefined(peakRow) ? peakRow.expense : 0;
     const spikeLabel = months.find(month => month.isSpike)?.label ?? '';
 
     return (
-        <Card className="gap-y-xl">
-            <Text className="text-xxs uppercase tracking-wider text-secondary-foreground">
-                <Trans>Monthly history</Trans>
-            </Text>
-
-            <Svg width="100%" height={CHART_HEIGHT} viewBox={`0 0 ${RUNWAY_HISTORY_CHART_WIDTH} ${CHART_HEIGHT}`}>
-                <StyledLine x1={0} y1={BASELINE_Y} x2={RUNWAY_HISTORY_CHART_WIDTH} y2={BASELINE_Y} strokeClassName="accent-corner" />
-
-                {months.map(month => (
-                    <RunwayHistoryBars
-                        key={month.key}
-                        centerX={month.centerX}
-                        barWidth={barWidth}
-                        baselineY={BASELINE_Y}
-                        expense={month.expense}
-                        income={month.income}
-                        maxValue={maxValue}
-                        isSpike={month.isSpike}
-                    />
-                ))}
-
-                <RunwayHistoryMedianLine value={burn} maxValue={maxValue} />
-
-                {months
-                    .filter(month => month.hasLabel)
-                    .map(month => (
-                        <StyledSvgText
-                            key={month.key}
-                            x={month.centerX}
-                            y={MONTH_LABEL_Y}
-                            fillClassName={month.labelFillClassName}
-                            fontSize={MONTH_LABEL_FONT_SIZE}
-                            fontWeight={month.labelWeight}
-                            textAnchor="middle"
-                        >
-                            {month.label}
-                        </StyledSvgText>
+        <View className="gap-y-lg">
+            <SectionHeader label={t`Monthly history`} />
+            <View className="relative w-full" style={CHART_ASPECT_STYLE}>
+                <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants" className="size-full">
+                    <Svg width="100%" height="100%" viewBox={VIEW_BOX}>
+                        <StyledLine
+                            x1={0}
+                            y1={BASELINE_Y}
+                            x2={RUNWAY_HISTORY_CHART_WIDTH}
+                            y2={BASELINE_Y}
+                            strokeClassName="accent-corner"
+                        />
+                        {months.map(month => (
+                            <RunwayHistoryBars
+                                key={month.key}
+                                centerX={month.centerX}
+                                barWidth={barWidth}
+                                baselineY={BASELINE_Y}
+                                expense={month.expense}
+                                income={month.income}
+                                maxValue={maxValue}
+                                isSpike={month.isSpike}
+                            />
+                        ))}
+                        <RunwayHistoryMedianLine value={burn} maxValue={maxValue} />
+                        {months.map(month => (
+                            <RunwayHistoryMonthLabel
+                                key={month.key}
+                                x={month.centerX}
+                                y={MONTH_LABEL_Y}
+                                label={month.label}
+                                isSpike={month.isSpike}
+                                hasLabel={month.hasLabel}
+                            />
+                        ))}
+                    </Svg>
+                </View>
+                <View className="absolute inset-0 flex-row">
+                    {months.map(month => (
+                        <RunwayHistoryBarLabel key={month.key} month={month.label} expense={month.expense} income={month.income} />
                     ))}
-            </Svg>
-
+                </View>
+            </View>
             <RunwayHistoryLegend hasSpike={hasSpike} typicalAmount={burn} />
-
-            {hasSpike ? (
-                <Text className="text-xs tabular-nums text-secondary-foreground">
-                    <Trans>
-                        {spikeLabel} had a one-off {spikeAmount}. The estimate uses a typical month instead.
-                    </Trans>
-                </Text>
-            ) : null}
-        </Card>
+            {hasSpike ? <RunwayHistorySpikeNote spikeLabel={spikeLabel} expense={spikeExpense} /> : null}
+        </View>
     );
 };

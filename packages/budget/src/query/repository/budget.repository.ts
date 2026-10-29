@@ -1,5 +1,8 @@
 import {
+    AccountDebtTypeEnum,
     AccountEntityTable,
+    DebtEventDirectionEnum,
+    DebtEventEntityTable,
     transactionFilters,
     BudgetEntityTable,
     Db,
@@ -10,7 +13,7 @@ import {
     TransactionEntryTypeEnum,
     buildSpendingEntryCondition
 } from '@budgie/contracts';
-import { and, between, eq, isNull, sql } from 'drizzle-orm';
+import { and, between, eq, isNull, min, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -75,6 +78,13 @@ export class BudgetRepository extends Context.Service<BudgetRepository>()('@budg
                         orderBy: { updatedAt: 'desc' }
                     })
                 ),
+            findEarliestOperatedAt: () =>
+                Db.query(db =>
+                    db
+                        .select({ earliest: min(TransactionEntityTable.operatedAt) })
+                        .from(TransactionEntityTable)
+                        .where(isNull(TransactionEntityTable.deletedAt))
+                ).pipe(Effect.map(([row]) => row.earliest ?? null)),
             findBudgetSpentEntries: (periodStart: Date, nextPeriodStart: Date, baseInstrumentId: number) =>
                 Db.query(db =>
                     db
@@ -83,7 +93,8 @@ export class BudgetRepository extends Context.Service<BudgetRepository>()('@budg
                             categoryId: TransactionEntryEntityTable.categoryId,
                             instrumentId: AccountEntityTable.instrumentId,
                             rate: ExchangeRateEntityTable.rate,
-                            operatedAt: TransactionEntityTable.operatedAt
+                            operatedAt: TransactionEntityTable.operatedAt,
+                            transactionId: TransactionEntityTable.id
                         })
                         .from(TransactionEntryEntityTable)
                         .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
@@ -97,6 +108,22 @@ export class BudgetRepository extends Context.Service<BudgetRepository>()('@budg
                             )
                         )
                         .where(buildSpentWhere(periodStart, nextPeriodStart))
+                ),
+            findInstallmentPayments: (periodStart: Date, nextPeriodStart: Date) =>
+                Db.query(db =>
+                    db
+                        .select({ transactionId: TransactionEntityTable.id, installmentAccountId: DebtEventEntityTable.debtAccountId })
+                        .from(DebtEventEntityTable)
+                        .innerJoin(TransactionEntityTable, eq(DebtEventEntityTable.transactionId, TransactionEntityTable.id))
+                        .innerJoin(AccountEntityTable, eq(DebtEventEntityTable.debtAccountId, AccountEntityTable.id))
+                        .where(
+                            and(
+                                eq(DebtEventEntityTable.direction, DebtEventDirectionEnum.CLOSE),
+                                eq(AccountEntityTable.debtType, AccountDebtTypeEnum.INSTALLMENT),
+                                isNull(DebtEventEntityTable.deletedAt),
+                                between(TransactionEntityTable.operatedAt, periodStart, new Date(nextPeriodStart.getTime() - 1))
+                            )
+                        )
                 )
         };
     })

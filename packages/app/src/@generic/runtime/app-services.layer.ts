@@ -1,5 +1,11 @@
 import { TranslationLlmService, VoiceLlmService } from '@budgie/ai';
-import { BudgetCategoryLimitRepository, BudgetRepository, BudgetService } from '@budgie/budget';
+import {
+    BudgetCategoryLimitRepository,
+    BudgetPeriodCloseService,
+    BudgetPeriodSnapshotRepository,
+    BudgetRepository,
+    BudgetService
+} from '@budgie/budget';
 import {
     CategorizeInboxService,
     CommentEmbeddingRepository,
@@ -106,6 +112,7 @@ import { TranslationProgressStore } from '../../ai/store/translation-progress.st
 import { AuthService } from '../../auth/service/auth.service';
 import { PinAttemptService } from '../../auth/service/pin-attempt.service';
 import { BudgetAlertMonitorService } from '../../budget/service/budget-alert-monitor.service';
+import { BudgetProjectionService } from '../../budget/service/budget-projection.service';
 import { ExchangeRateBackgroundService } from '../../exchange-rate/service/exchange-rate-background.service';
 import { DatabaseExportService } from '../../export/service/database-export.service';
 import { DatabaseImportService } from '../../import/service/database-import.service';
@@ -150,6 +157,8 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     BudgetRepository.layer,
     BudgetCategoryLimitRepository.layer,
     BudgetService.layer,
+    BudgetPeriodSnapshotRepository.layer,
+    BudgetPeriodCloseService.layer,
     RecurringService.layer,
     AccountBalanceIncrementalService.layer,
     AccountTransferConversionService.layer,
@@ -238,6 +247,7 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     PinAttemptService.layer,
     AuthService.layer,
     BudgetAlertMonitorService.layer,
+    BudgetProjectionService.layer,
     OnboardingService.layer,
     TransactionRepository.layer,
     TransactionConsolidationRepository.layer,

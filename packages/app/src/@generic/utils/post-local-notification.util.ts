@@ -6,7 +6,7 @@ import { NativeCallError } from '../error/native-call.error';
 
 const toNativeCallError = (cause: unknown) => new NativeCallError({ cause });
 
-export const postLocalNotification = Effect.fnUntraced(function* (title: string, body: string) {
+export const postLocalNotification = Effect.fnUntraced(function* (title: string, body: string, data: Record<string, unknown> = {}) {
     if (Platform.OS === 'android') {
         yield* Effect.tryPromise({
             try: () =>
@@ -19,7 +19,7 @@ export const postLocalNotification = Effect.fnUntraced(function* (title: string,
     }
 
     yield* Effect.tryPromise({
-        try: () => Notifications.scheduleNotificationAsync({ content: { title, body }, trigger: null }),
+        try: () => Notifications.scheduleNotificationAsync({ content: { title, body, data }, trigger: null }),
         catch: toNativeCallError
     });
 });
