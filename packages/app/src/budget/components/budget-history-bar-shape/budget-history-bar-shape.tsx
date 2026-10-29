@@ -2,8 +2,8 @@ import { isPositiveNumber } from '@rnw-community/shared';
 
 import { StyledLine } from '../../../@generic/component/styled-line/styled-line';
 import { StyledPath } from '../../../@generic/component/styled-path/styled-path';
+import { buildRoundedTopBarPath } from '../../../@generic/utils/build-rounded-top-bar-path.util';
 import { BUDGET_HISTORY_BAR_AREA_HEIGHT, BUDGET_HISTORY_BASELINE_Y } from '../../constant/budget-history-chart.constant';
-import { buildBudgetHistoryBarPath } from '../../utils/build-budget-history-bar-path.util';
 
 interface Props {
     readonly centerX: number;
@@ -31,7 +31,7 @@ export const BudgetHistoryBarShape = ({ centerX, barWidth, spent, limit, scaleMa
     const barOpacity = isCurrent ? CURRENT_OPACITY : settledOpacity;
     const barLeft = centerX - barWidth / 2;
     const barRight = centerX + barWidth / 2;
-    const barPath = buildBudgetHistoryBarPath(barLeft, BUDGET_HISTORY_BASELINE_Y, barWidth, barHeight);
+    const barPath = buildRoundedTopBarPath(barLeft, BUDGET_HISTORY_BASELINE_Y, barWidth, barHeight);
     const cap = isCurrent ? (
         <StyledLine x1={barLeft} y1={capY} x2={barRight} y2={capY} strokeClassName={fillClassName} strokeWidth={CAP_WIDTH} />
     ) : null;

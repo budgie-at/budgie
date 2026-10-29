@@ -18,20 +18,30 @@ interface Props {
     readonly currencySymbol: string;
     readonly variant: ColorPaletteVariant;
     readonly unit?: string;
+    readonly prefix?: string;
+    readonly decimalPlaces?: number;
     readonly testID?: string;
 }
 
 const LTR_STYLE = { direction: 'ltr' } as const;
 
-export const HeroFigure = ({ amount, currencySymbol, variant, unit = '', testID }: Props) => {
-    const decimalPlaces = useAtomValue(decimalPlacesAtom);
+export const HeroFigure = ({ amount, currencySymbol, variant, unit = '', prefix = '', decimalPlaces, testID }: Props) => {
+    const settingDecimalPlaces = useAtomValue(decimalPlacesAtom);
     const { decimalSeparator } = useLocaleInfo();
     const formatWhole = useFormatDigits(0);
-    const { sign, whole, fraction } = splitHeroAmount(amount, decimalPlaces, decimalSeparator);
+    const { sign, whole, fraction } = splitHeroAmount(amount, decimalPlaces ?? settingDecimalPlaces, decimalSeparator);
     const wholeLabel = `${sign}${formatWhole(whole, currencySymbol)}`;
 
     return (
         <View className="flex-row items-baseline" style={LTR_STYLE}>
+            {isNotEmptyString(prefix) ? (
+                <Text
+                    maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
+                    className="mr-xs text-[32px] font-medium tabular-nums text-secondary-foreground"
+                >
+                    {prefix}
+                </Text>
+            ) : null}
             <ProtectedText
                 adjustsFontSizeToFit
                 numberOfLines={1}
@@ -50,7 +60,7 @@ export const HeroFigure = ({ amount, currencySymbol, variant, unit = '', testID 
                 {fraction}
             </ProtectedText>
             {isNotEmptyString(unit) ? (
-                <Text maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER} className="ml-sm text-lg text-secondary-foreground">
+                <Text maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER} className="ml-sm text-xl font-medium text-secondary-foreground">
                     {unit}
                 </Text>
             ) : null}

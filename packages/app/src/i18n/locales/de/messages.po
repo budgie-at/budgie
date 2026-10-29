@@ -192,13 +192,17 @@ msgstr "{duplicateTransactionCount, plural, one {# übersprungen} other {# über
 msgid "{fileSize} · no Budgie servers"
 msgstr "{fileSize} · keine Budgie-Server"
 
+#: src/runway/component/runway-driver-row/runway-driver-row.tsx
+msgid "{foldedDriverCount, plural, one {Other (# category)} other {Other (# categories)}}"
+msgstr "{foldedDriverCount, plural, one {Andere (# Kategorie)} other {Andere (# Kategorien)}}"
+
+#: src/runway/component/runway-driver-row/runway-driver-row.tsx
+msgid "{foldedDriverCount, plural, one {Other (# tag)} other {Other (# tags)}}"
+msgstr "{foldedDriverCount, plural, one {Andere (# Tag)} other {Andere (# Tags)}}"
+
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "{formattedAmount} · {detail}"
 msgstr "{formattedAmount} · {detail}"
-
-#: src/runway/component/runway-driver-row/runway-driver-row.tsx
-msgid "{formattedAmount} / mo"
-msgstr "{formattedAmount} / Mon."
 
 #: src/budget/components/budget-period-recap-rollover/budget-period-recap-rollover.tsx
 msgid "{formattedAmount} carried into {name}"
@@ -298,9 +302,17 @@ msgstr "{month} mit {amount} Überschreitung abgeschlossen"
 msgid "{month} closed {amount} under"
 msgstr "{month} mit {amount} unter dem Limit abgeschlossen"
 
+#: src/runway/component/runway-history-bar-label/runway-history-bar-label.tsx
+msgid "{month}, out {expenseAmount}, in {incomeAmount}"
+msgstr "{month}, Ausgaben {expenseAmount}, Einnahmen {incomeAmount}"
+
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "{months, plural, one {# month} other {# months}}"
 msgstr "{months, plural, one {# Monat} other {# Monate}}"
+
+#: src/runway/hook/use-runway-tick-label.hook.ts
+msgid "{monthsLabel} mo"
+msgstr "{monthsLabel} Mon."
 
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "{newAccountCount, plural, one {Add # account} other {Add # accounts}}"
@@ -407,7 +419,7 @@ msgstr "{skippedCount, plural, one {# übersprungen} other {# übersprungen}}"
 msgid "{source} error · {message}"
 msgstr "{source}-Fehler · {message}"
 
-#: src/runway/component/runway-history-chart/runway-history-chart.tsx
+#: src/runway/component/runway-history-spike-note/runway-history-spike-note.tsx
 msgid "{spikeLabel} had a one-off {spikeAmount}. The estimate uses a typical month instead."
 msgstr "{spikeLabel} hatte eine Einmalausgabe von {spikeAmount}. Die Schätzung nutzt stattdessen einen typischen Monat."
 
@@ -447,6 +459,10 @@ msgstr "{title} läuft zu schnell. Bleib unter {perDayAmount}/Tag."
 msgid "{title} is running fast. Keep it under <0>{perDayAmount}/day</0>."
 msgstr "{title} läuft zu schnell. Bleib unter <0>{perDayAmount}/Tag</0>."
 
+#: src/runway/component/runway-driver-row/runway-driver-row.tsx
+msgid "{title}, {protectedAmount} per month"
+msgstr "{title}, {protectedAmount} pro Monat"
+
 #: src/budget/hooks/use-budget-limit-accessibility.hook.ts
 msgid "{title}, spent {spentAmount} of {limitAmount}, {statusLabel}"
 msgstr "{title}, {spentAmount} von {limitAmount} ausgegeben, {statusLabel}"
@@ -476,6 +492,10 @@ msgstr "{unreadableCount, plural, one {# Beleg nicht lesbar} other {# Belege nic
 #: src/budget/components/budget-widget-headline/budget-widget-headline.tsx
 msgid "/ day"
 msgstr "/ Tag"
+
+#: src/runway/component/runway-driver-amount/runway-driver-amount.tsx
+msgid "/ mo"
+msgstr "/ Mon."
 
 #: src/budget/components/budget-limit-row/budget-limit-row.tsx
 msgid "+{carriedLabel} rolled over"
@@ -1048,12 +1068,16 @@ msgid "Base instrument not found"
 msgstr "Basiswährung nicht gefunden"
 
 #: src/runway/component/runway-verdict/runway-verdict.tsx
-msgid "Based on your last {monthsUsed} months"
-msgstr "Basierend auf Ihren letzten {monthsUsed} Monaten"
+msgid "Based on {monthsUsed} months"
+msgstr "Basierend auf {monthsUsed} Monaten"
 
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "Based on your recent spending"
 msgstr "Basierend auf deinen letzten Ausgaben"
+
+#: src/runway/component/runway-forecast-legend/runway-forecast-legend.tsx
+msgid "Better and worse months"
+msgstr "Bessere und schlechtere Monate"
 
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "between"
@@ -1193,6 +1217,14 @@ msgstr "Budgie markiert {countText} als gelöscht. Ihre manuellen Transaktionen 
 msgid "Burning"
 msgstr "Cash-Burn"
 
+#: src/runway/component/runway-drivers/runway-drivers.tsx
+msgid "By category"
+msgstr "Nach Kategorie"
+
+#: src/runway/component/runway-drivers/runway-drivers.tsx
+msgid "By tag"
+msgstr "Nach Tag"
+
 #: src/ai/component/ai-model-storage/ai-model-storage.tsx
 msgid "bytes"
 msgstr "Bytes"
@@ -1273,7 +1305,6 @@ msgstr "Bargeldabhebungen"
 #: src/app/(tabs)/settings/categories.tsx
 #: src/budget/components/budget-details-category-list/budget-details-category-list.tsx
 #: src/budget/components/budget-period-summary/budget-period-summary.tsx
-#: src/runway/component/runway-drivers/runway-drivers.tsx
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
 msgid "Categories"
 msgstr "Kategorien"
@@ -1910,13 +1941,13 @@ msgstr "Rechnet Krypto zum heutigen Marktwert"
 msgid "Counts irregular costs like insurance or holidays as a monthly expense."
 msgstr "Rechnet unregelmäßige Kosten wie Versicherungen oder Urlaube als monatliche Ausgabe."
 
-#: src/runway/component/runway-verdict/runway-verdict.tsx
-msgid "Covered by {coverMonths} months of expenses"
-msgstr "Gedeckt durch {coverMonths} Monate Ausgaben"
+#: src/runway/component/runway-verdict-outlook/runway-verdict-outlook.tsx
+msgid "Covered by {coverMonths} months of expenses."
+msgstr "Deckt {coverMonths} Monate an Ausgaben ab."
 
-#: src/runway/component/runway-verdict/runway-verdict.tsx
-msgid "Covered by your liquid balance"
-msgstr "Gedeckt durch dein liquides Guthaben"
+#: src/runway/component/runway-verdict-outlook/runway-verdict-outlook.tsx
+msgid "Covered by your liquid balance."
+msgstr "Durch dein liquides Guthaben gedeckt."
 
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-debt-settlement-transaction-actions.hook.ts
@@ -3006,7 +3037,7 @@ msgstr "In Nettovermögen einbeziehen"
 msgid "Include one-offs"
 msgstr "Einmalige Ausgaben einbeziehen"
 
-#: src/runway/component/runway-verdict/runway-verdict.tsx
+#: src/runway/component/runway-verdict-outlook/runway-verdict-outlook.tsx
 msgid "Includes crypto"
 msgstr "Inklusive Krypto"
 
@@ -3475,7 +3506,7 @@ msgstr "Monatsverlauf"
 msgid "Monthly Total"
 msgstr "Monatssumme"
 
-#: src/runway/component/runway-verdict/runway-verdict.tsx
+#: src/runway/component/runway-verdict-figure/runway-verdict-figure.tsx
 msgid "months left"
 msgstr "Monate übrig"
 
@@ -3488,8 +3519,8 @@ msgid "More tags"
 msgstr "Weitere Tags"
 
 #: src/runway/component/runway-forecast-legend/runway-forecast-legend.tsx
-msgid "Most likely balance"
-msgstr "Wahrscheinlichster Kontostand"
+msgid "Most likely"
+msgstr "Am wahrscheinlichsten"
 
 #: src/categorize-inbox/components/categorize-inbox-move-to-cash-chip/categorize-inbox-move-to-cash-chip.tsx
 msgid "Move to cash"
@@ -3812,8 +3843,7 @@ msgstr "Nichts aus der Vergangenheit wird importiert"
 msgid "Nothing to fix here"
 msgstr "Hier gibt es nichts zu korrigieren"
 
-#: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
-#: src/runway/component/runway-meter/runway-meter.tsx
+#: src/runway/hook/use-runway-tick-label.hook.ts
 msgid "now"
 msgstr "jetzt"
 
@@ -4026,10 +4056,6 @@ msgstr "Ursprüngliche Transaktion"
 msgid "Other"
 msgstr "Sonstige"
 
-#: src/runway/component/runway-driver-row/runway-driver-row.tsx
-msgid "Other · {foldedDriverCount}"
-msgstr "Sonstige · {foldedDriverCount}"
-
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "Other budget: {threshold}% spent"
 msgstr "Sonstiges Budget: {threshold}% verbraucht"
@@ -4150,7 +4176,7 @@ msgstr "PDF-Kontoauszug"
 msgid "per day"
 msgstr "pro Tag"
 
-#: src/runway/component/runway-verdict/runway-verdict.tsx
+#: src/runway/component/runway-verdict-figure/runway-verdict-figure.tsx
 msgid "per month"
 msgstr "pro Monat"
 
@@ -4285,10 +4311,6 @@ msgstr "Push-Benachrichtigungen sind deaktiviert"
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 msgid "Quick rule"
 msgstr "Schnellregel"
-
-#: src/runway/component/runway-forecast-legend/runway-forecast-legend.tsx
-msgid "Range across better and worse months"
-msgstr "Bereich über bessere und schlechtere Monate"
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Re-enter your PIN to confirm"
@@ -4607,14 +4629,18 @@ msgstr "Läuft auf"
 msgid "Runs on this phone. Nothing it reads is sent anywhere."
 msgstr "Läuft auf diesem Telefon. Nichts, was sie liest, wird irgendwohin gesendet."
 
+#: src/runway/component/runway-forecast-legend/runway-forecast-legend.tsx
+msgid "Runs out"
+msgstr "Geht aus"
+
 #: src/budget/components/budget-category-forecast/budget-category-forecast.tsx
 #: src/budget/components/budget-forecast-run-out/budget-forecast-run-out.tsx
 msgid "Runs out about {runOutDate}"
 msgstr "Reicht bis etwa {runOutDate}"
 
-#: src/runway/component/runway-verdict/runway-verdict.tsx
-msgid "Runs out around {runOutDate}"
-msgstr "Reicht etwa bis {runOutDate}"
+#: src/runway/component/runway-verdict-outlook/runway-verdict-outlook.tsx
+msgid "Runs out around {runOutDate}."
+msgstr "Reicht bis etwa {runOutDate}."
 
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx
 #: src/app/(tabs)/settings/index.tsx
@@ -5221,7 +5247,6 @@ msgstr "Tag-Name"
 
 #: src/@generic/component/analytics-page-header/analytics-page-header.tsx
 #: src/app/(tabs)/settings/tags.tsx
-#: src/runway/component/runway-drivers/runway-drivers.tsx
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
 #: src/transaction/components/transaction-info-tags-section/transaction-info-tags-section.tsx
 #: src/transaction/components/transaction-tags-field-icon/transaction-tags-field-icon.tsx

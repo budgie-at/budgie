@@ -57,13 +57,11 @@ export const buildRunwayForecastPath = (params: BuildRunwayForecastPathParamsInt
             : paddingTop + drawableHeight / 2;
     const xTicks = RUNWAY_HORIZON_MONTHS.map(months => xAt(months));
     const p25Points = p25Values.map((value, index) => ({ x: xTicks[index], y: yAt(value) }));
+    const likelyPoints = likelyValues.map((value, index) => ({ x: xTicks[index], y: yAt(value) }));
     const p75Points = p75Values.map((value, index) => ({ x: xTicks[index], y: yAt(value) }));
 
     return {
-        likelyPath: buildForecastPath(
-            likelyValues.map((value, index) => ({ x: xTicks[index], y: yAt(value) })),
-            false
-        ),
+        likelyPath: buildForecastPath(likelyPoints, false),
         bandPath: buildForecastPath([...p75Points, ...[...p25Points].reverse()], true),
         zeroY: yAt(ZERO_VALUE),
         runOutX: isDefined(runwayMonths) && runwayMonths <= RUNWAY_MAX_MONTHS ? xAt(Math.max(runwayMonths, ZERO_VALUE)) : null,
