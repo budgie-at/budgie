@@ -9,7 +9,7 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
 
 interface Props {
-    readonly parkedPreviews: SyncAccountPreviewInterface[];
+    readonly parkedPreviews: readonly SyncAccountPreviewInterface[];
 }
 
 export const BinanceParkedAssetsNotice = ({ parkedPreviews }: Props) => {

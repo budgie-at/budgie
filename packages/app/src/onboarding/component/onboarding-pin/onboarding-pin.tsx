@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react/macro';
 import { ImpactFeedbackStyle, NotificationFeedbackType } from 'expo-haptics';
-import { useState } from 'react';
+import { useReducer } from 'react';
 import { View } from 'react-native';
 
 import { Button } from '../../../@generic/component/button/button';
@@ -9,9 +9,11 @@ import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { PinForm } from '../../../auth/components/pin-form/pin-form';
 import { PIN_LENGTH } from '../../../auth/constant/pin-length.constant';
 import { useOnboardingPinContext } from '../../context/onboarding-pin.context';
+import { OnboardingPinActionTypeEnum } from '../../enum/onboarding-pin-action-type.enum';
 import { OnboardingPinPhaseEnum } from '../../enum/onboarding-pin-phase.enum';
 import { OnboardingStepEnum } from '../../enum/onboarding-step.enum';
 import { useOnboardingNavigation } from '../../hook/use-onboarding-navigation.hook';
+import { onboardingPinReducer } from '../../utils/onboarding-pin-reducer.util';
 import { OnboardingStepHeader } from '../onboarding-step-header/onboarding-step-header';
 
 import { OnboardingPinSelector } from './onboarding-pin.selector';
@@ -20,18 +22,18 @@ import { OnboardingPinSelector } from './onboarding-pin.selector';
 export const OnboardingPin = () => {
     const { t } = useLingui();
 
-    const [phase, setPhase] = useState(OnboardingPinPhaseEnum.CREATE);
-    const [input, setInput] = useState('');
-    const [firstPin, setFirstPin] = useState('');
+    const [{ phase, input, firstPin }, dispatch] = useReducer(onboardingPinReducer, {
+        phase: OnboardingPinPhaseEnum.CREATE,
+        input: '',
+        firstPin: ''
+    });
 
     const { setPin } = useOnboardingPinContext();
     const { goToStep, goBack } = useOnboardingNavigation();
     const [hapticNotification, hapticImpact] = useVibration();
 
     const restartEntry = (nextPhase: OnboardingPinPhaseEnum, nextFirstPin: string) => {
-        setPhase(nextPhase);
-        setFirstPin(nextFirstPin);
-        setInput('');
+        dispatch({ type: OnboardingPinActionTypeEnum.ENTRY_RESTARTED, phase: nextPhase, firstPin: nextFirstPin });
     };
 
     const submit = (pin: string) => {
@@ -61,14 +63,14 @@ export const OnboardingPin = () => {
 
         hapticImpact(ImpactFeedbackStyle.Light);
         const nextInput = input + digit;
-        setInput(nextInput);
+        dispatch({ type: OnboardingPinActionTypeEnum.DIGIT_ENTERED, digit });
 
         if (nextInput.length === PIN_LENGTH) {
             submit(nextInput);
         }
     };
 
-    const handleDeletePress = () => void setInput(input.slice(0, -1));
+    const handleDeletePress = () => void dispatch({ type: OnboardingPinActionTypeEnum.DIGIT_DELETED });
     const handleContinueWithoutPinPress = () => void goToStep(OnboardingStepEnum.PHONE_LOCK);
 
     const isMismatch = phase === OnboardingPinPhaseEnum.MISMATCH;

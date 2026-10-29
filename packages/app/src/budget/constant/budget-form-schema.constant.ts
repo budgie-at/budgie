@@ -1,3 +1,4 @@
+import { BudgetRolloverModeEnum } from '@budgie/contracts';
 import * as Schema from 'effect/Schema';
 import * as SchemaGetter from 'effect/SchemaGetter';
 
@@ -8,7 +9,8 @@ const MAX_PERIOD_START_DAY = 28;
 
 const BudgetCategoryLimitFormSchema = Schema.Struct({
     categoryId: Schema.Finite.check(Schema.isInt(), Schema.isGreaterThan(0)),
-    limitAmount: Schema.Finite.check(Schema.isGreaterThan(0))
+    limitAmount: Schema.Finite.check(Schema.isGreaterThan(0)),
+    rolloverMode: Schema.Enum(BudgetRolloverModeEnum)
 });
 
 const budgetFormFields = {
@@ -17,6 +19,7 @@ const budgetFormFields = {
     useLastDayOfMonth: Schema.Boolean,
     overallLimit: Schema.Finite.check(Schema.isGreaterThan(0)),
     otherLimit: Schema.Finite.check(Schema.isGreaterThanOrEqualTo(0)),
+    otherRolloverMode: Schema.Enum(BudgetRolloverModeEnum),
     categoryLimits: Schema.mutable(Schema.Array(BudgetCategoryLimitFormSchema)),
     instrumentId: Schema.Finite.check(Schema.isInt(), Schema.isGreaterThan(0))
 };

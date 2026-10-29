@@ -20,8 +20,10 @@
         "format": "oxfmt --write src",
         "lint": "oxlint --type-aware src",
         "lint:fix": "oxlint --type-aware --fix src",
-        "ts": "node ../../scripts/typecheck.cjs --noEmit -p tsconfig.json",
-        "ts:native": "node ../../scripts/typecheck.cjs --native --noEmit -p tsconfig.json"
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "ts": "node ../../scripts/typecheck.cjs --noEmit -p tsconfig.json && node ../../scripts/typecheck.cjs --noEmit -p tsconfig.test.json",
+        "ts:native": "node ../../scripts/typecheck.cjs --native --noEmit -p tsconfig.json && node ../../scripts/typecheck.cjs --native --noEmit -p tsconfig.test.json"
     },
     "dependencies": {
         "@budgie/contracts": "workspace:^",
@@ -29,5 +31,11 @@
         "date-fns": "^4.4.0",
         "drizzle-orm": "1.0.0-rc.4",
         "effect": "4.0.6"
+    },
+    "devDependencies": {
+        "@effect/vitest": "4.0.6",
+        "@types/node": "26.6.5",
+        "typescript": "npm:@typescript/typescript6@6.0.2",
+        "vitest": "^5.0.5"
     }
 }

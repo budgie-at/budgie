@@ -29,5 +29,7 @@ export {
     RuleActionEntityTable,
     BudgetEntityTable,
     BudgetCategoryLimitEntityTable,
+    BudgetPeriodSnapshotEntityTable,
+    BudgetPeriodCategorySnapshotEntityTable,
     RecurringSeriesEntityTable
 } from '@budgie/contracts/schema';

@@ -1,37 +1,23 @@
-import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useReducer, useRef, useState } from 'react';
 import { Text, View } from 'react-native';
 
-import { isDefined, isEmptyArray, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
-import { padFlatListData } from '../@generic/utils/map-to-flatlist-data.util';
-import { sortSelectedFirst } from '../@generic/utils/sort-selected-first.util';
+import { prepareSelectorGridData } from '../@generic/utils/prepare-selector-grid-data.util';
 import { TagsSelectContent } from '../tag/components/tags-select-content/tags-select-content';
 import { TagsSelectorDoneButton } from '../tag/components/tags-selector-done-button/tags-selector-done-button';
 import { useTagFormModal } from '../tag/context/tag-form-modal.context';
 import { useTagsSelectorModal, useTagsSelectorModalParams } from '../tag/context/tags-selector-modal.context';
+import { TagsSelectorActionTypeEnum } from '../tag/enum/tags-selector-action-type.enum';
 import { useSearchTagsQuery } from '../tag/query/use-search-tags.query';
+import { reorderTagIdsByPrimary } from '../tag/utils/reorder-tag-ids-by-primary.util';
+import { tagsSelectorReducer } from '../tag/utils/tags-selector-reducer.util';
 
 import { TagsSelectorModalSelector } from './tags-selector-modal.selector';
-
-const NUM_COLUMNS = 3;
-
-const reorderTagIdsByPrimary = (tagIds: number[], primaryTagId: number | null): number[] => {
-    if (!isDefined(primaryTagId) || !tagIds.includes(primaryTagId)) {
-        return tagIds;
-    }
-
-    return [primaryTagId, ...tagIds.filter(tagId => tagId !== primaryTagId)];
-};
-
-const prepareTagData = (tags: TagEntityInterface[] | null, excludeTagIds: number[], selectedTagIds: number[]) => {
-    const filtered = isNotEmptyArray(tags) ? tags.filter(tag => !excludeTagIds.includes(tag.id)) : [];
-
-    return padFlatListData(sortSelectedFirst(filtered, selectedTagIds), NUM_COLUMNS);
-};
 
 const isSelectionDirty = (selected: number[], initial: number[]): boolean => {
     if (selected.length !== initial.length) {
@@ -41,15 +27,7 @@ const isSelectionDirty = (selected: number[], initial: number[]): boolean => {
     return selected.some((id, index) => id !== initial[index]);
 };
 
-const resolvePrimaryTagId = (selectedTagIds: number[], primaryTagId: number | null): number | null => {
-    if (isEmptyArray(selectedTagIds)) {
-        return null;
-    }
-
-    return isDefined(primaryTagId) && selectedTagIds.includes(primaryTagId) ? primaryTagId : selectedTagIds[0];
-};
-
-// eslint-disable-next-line max-lines-per-function, max-statements -- Form orchestration component with multiple hooks and handlers
+// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export default function TagsSelectorModal() {
     const { t } = useLingui();
     const [openTagForm] = useTagFormModal();
@@ -69,18 +47,15 @@ export default function TagsSelectorModal() {
     const initialSelectedTagIds = [...initialTagIds, ...suggestedTagIds.filter(tagId => !initialTagIds.includes(tagId))];
 
     const [search, setSearch] = useState('');
-    const [selected, setSelected] = useState<number[]>(initialSelectedTagIds);
-    const [primaryTagId, setPrimaryTagId] = useState<number | null>(initialPrimaryTagId);
+    const [{ selected, primaryTagId }, dispatch] = useReducer(tagsSelectorReducer, {
+        selected: initialSelectedTagIds,
+        primaryTagId: initialPrimaryTagId
+    });
     const { tags } = useSearchTagsQuery(search);
 
-    const primaryTagIdRef = useRef(primaryTagId);
     const hasResolvedRef = useRef(false);
 
-    useEffect(() => {
-        primaryTagIdRef.current = primaryTagId;
-    });
-
-    const data = prepareTagData(tags, excludeTagIds, selected);
+    const data = prepareSelectorGridData(tags, excludeTagIds, selected);
     const dirty = isSelectionDirty(selected, initialTagIds) || primaryTagId !== initialPrimaryTagId;
 
     const handleSelectTag = (tagId: number) => {
@@ -91,36 +66,17 @@ export default function TagsSelectorModal() {
             return;
         }
 
-        setSelected(previous => {
-            const selectedTagIds = previous.includes(tagId) ? previous.filter(id => id !== tagId) : [...previous, tagId];
-            const nextPrimaryTagId = resolvePrimaryTagId(selectedTagIds, primaryTagIdRef.current);
-
-            setPrimaryTagId(nextPrimaryTagId);
-
-            return reorderTagIdsByPrimary(selectedTagIds, nextPrimaryTagId);
-        });
+        dispatch({ type: TagsSelectorActionTypeEnum.TAG_TOGGLED, tagId });
     };
 
     const handlePrimarySelect = (tagId: number) => {
-        setPrimaryTagId(tagId);
-        setSelected(previous => {
-            const selectedTagIds = previous.includes(tagId) ? previous : [...previous, tagId];
-
-            return reorderTagIdsByPrimary(selectedTagIds, tagId);
-        });
+        dispatch({ type: TagsSelectorActionTypeEnum.PRIMARY_SELECTED, tagId });
     };
 
     const handleCreatePress = () => {
         openTagForm({ defaultTitle: search }, result => {
             if (isDefined(result)) {
-                setSelected(previous => {
-                    const selectedTagIds = [...previous, result.tag.id];
-                    const nextPrimaryTagId = resolvePrimaryTagId(selectedTagIds, primaryTagIdRef.current);
-
-                    setPrimaryTagId(nextPrimaryTagId);
-
-                    return reorderTagIdsByPrimary(selectedTagIds, nextPrimaryTagId);
-                });
+                dispatch({ type: TagsSelectorActionTypeEnum.TAG_ADDED, tagId: result.tag.id });
             }
         });
     };

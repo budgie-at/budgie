@@ -1,21 +1,11 @@
-import { convertFromMicroUnits } from '@budgie/contracts';
-import { useAtomValue } from '@effect/atom-react/Hooks';
-import { Trans, useLingui } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
-import Animated, { FadeIn } from 'react-native-reanimated';
+import { RUNWAY_MAX_MONTHS } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
-
-import { Card } from '../../../@generic/component/card/card';
-import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
-import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
-import { cn } from '../../../@generic/utils/cn.util';
-import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
-import { useSetting } from '../../../settings/hook/use-setting.hook';
-import { RunwaySelector } from '../../runway.selector';
+import { EntranceReveal } from '../../../@generic/component/entrance-reveal/entrance-reveal';
+import { StatusLabel } from '../../../@generic/component/status-label/status-label';
 import { RunwayMeter } from '../runway-meter/runway-meter';
+import { RunwayVerdictFigure } from '../runway-verdict-figure/runway-verdict-figure';
+import { RunwayVerdictOutlook } from '../runway-verdict-outlook/runway-verdict-outlook';
 
 import type { RunwayComputationInterface } from '../../interface/runway-computation.interface';
 
@@ -23,60 +13,24 @@ interface Props {
     readonly computation: RunwayComputationInterface;
 }
 
-const ENTERING_DURATION = 240;
-const ENTERING = FadeIn.duration(ENTERING_DURATION);
-
 export const RunwayVerdict = ({ computation }: Props) => {
     const { t } = useLingui();
-    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
-    const isRunwayCryptoIncluded = useSetting('isRunwayCryptoIncluded');
-    const formatWholeDigits = useFormatDigits(0);
-    const { formatMonthAndYear } = useFormatDate();
 
-    const { burn, isPositive, liquid, monthsUsed, net, runsOutAt, runwayMonths } = computation;
-    const variant = isPositive ? 'positive' : 'destructive';
-    const formattedNet = formatWholeDigits(convertFromMicroUnits(net), defaultInstrument.symbol);
-    const coverMonths = isPositiveNumber(burn) ? Math.round(liquid / burn) : null;
-    const runOutDate = isDefined(runsOutAt) ? formatMonthAndYear(runsOutAt) : '';
-    const figure = isPositive ? `+${formattedNet}` : `≈ ${formatWholeDigits(Math.round(runwayMonths ?? 0))}`;
-    const figureUnit = isPositive ? t`per month` : t`months left`;
-    const coverLine = isDefined(coverMonths) ? t`Covered by ${coverMonths} months of expenses` : t`Covered by your liquid balance`;
-    const outlookLine = isPositive ? coverLine : t`Runs out around ${runOutDate}`;
+    const { isPositive, monthsUsed, runwayMonths } = computation;
+    const tone = isPositive ? 'positive' : 'destructive';
+    const statusLabel = isPositive ? t`Growing` : t`Burning`;
+    const basisLabel = t`Based on ${monthsUsed} months`;
+    const meterMonths = isPositive ? RUNWAY_MAX_MONTHS : runwayMonths;
 
     return (
-        <Animated.View entering={ENTERING}>
-            <Card className="gap-y-lg">
-                <Text className={cn('text-md font-semibold', FOREGROUND_COLOR_PALETTE[variant])}>
-                    {isPositive ? <Trans>Growing</Trans> : <Trans>Burning</Trans>}
-                </Text>
+        <EntranceReveal step={0} className="gap-y-md">
+            <StatusLabel label={statusLabel} tone={tone} trailing={basisLabel} />
 
-                <View className="flex-row items-baseline gap-x-sm">
-                    <ProtectedText
-                        adjustsFontSizeToFit
-                        numberOfLines={1}
-                        minimumFontScale={0.6}
-                        testID={RunwaySelector.VerdictFigure(figure)}
-                        className="text-4xl font-bold tabular-nums text-primary"
-                    >
-                        {figure}
-                    </ProtectedText>
-                    <Text className="text-md font-medium text-secondary-foreground">{figureUnit}</Text>
-                </View>
+            <RunwayVerdictFigure computation={computation} />
 
-                <Text className="text-xs text-secondary-foreground">{outlookLine}</Text>
+            <RunwayVerdictOutlook computation={computation} />
 
-                {isPositive ? null : <RunwayMeter months={runwayMonths} />}
-
-                <Text className="text-xxs text-secondary-foreground">
-                    <Trans>Based on your last {monthsUsed} months</Trans>
-                </Text>
-
-                {isRunwayCryptoIncluded ? (
-                    <Text testID={RunwaySelector.VerdictCryptoNote} className="text-xxs text-secondary-foreground">
-                        <Trans>Includes crypto</Trans>
-                    </Text>
-                ) : null}
-            </Card>
-        </Animated.View>
+            <RunwayMeter months={meterMonths} tone={tone} />
+        </EntranceReveal>
     );
 };

@@ -1,4 +1,6 @@
-export interface BudgetCategoryLimitInputInterface {
-    readonly categoryId: number;
-    readonly limitAmount: number;
-}
+import type { BudgetCategoryLimitCreateEntityInterface } from '@budgie/contracts';
+
+export type BudgetCategoryLimitInputInterface = Pick<
+    BudgetCategoryLimitCreateEntityInterface,
+    'categoryId' | 'limitAmount' | 'rolloverMode'
+>;

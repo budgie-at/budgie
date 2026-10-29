@@ -1,7 +1,7 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { useEffect, useEffectEvent, useState } from 'react';
+import { useEffect, useEffectEvent, useReducer, useState } from 'react';
 import { AppState } from 'react-native';
 
 import { emptyFn } from '@rnw-community/shared';
@@ -11,9 +11,26 @@ import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 import { PIN_LENGTH } from '../constant/pin-length.constant';
 import { useAuthContext } from '../context/auth.context';
+import { PinAuthenticationActionTypeEnum } from '../enum/pin-authentication-action-type.enum';
+import { PinAuthenticationActionInterface } from '../interface/pin-authentication-action.interface';
+import { PinAuthenticationStateInterface } from '../interface/pin-authentication-state.interface';
 
 import { useAuthAttempt } from './use-auth-attempt.hook';
 import { usePinError } from './use-pin-error.hook';
+
+const reducer = (state: PinAuthenticationStateInterface, action: PinAuthenticationActionInterface): PinAuthenticationStateInterface => {
+    if (action.type === PinAuthenticationActionTypeEnum.DIGIT_ENTERED) {
+        return { ...state, input: (state.input + action.digit).slice(0, PIN_LENGTH) };
+    }
+    if (action.type === PinAuthenticationActionTypeEnum.DIGIT_DELETED) {
+        return { ...state, input: state.input.slice(0, -1) };
+    }
+    if (action.type === PinAuthenticationActionTypeEnum.ATTEMPT_STARTED) {
+        return { ...state, isLoading: true };
+    }
+
+    return { input: action.shouldClearInput ? '' : state.input, isLoading: false };
+};
 
 const useIsAppActive = (onBackground: () => void) => {
     const isAppActive = useAtomValue(appStateAtom) === 'active';
@@ -59,29 +76,21 @@ export const usePinAuthentication = () => {
     const { t } = useLingui();
     const { isFaceIdAvailable, isSomeAvailable, setIsUnlocked } = useAuthContext();
     const canUseBiometric = useSetting('isBiometricEnabled') && isSomeAvailable;
-    const [input, setInput] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
+    const [{ input, isLoading }, dispatch] = useReducer(reducer, { input: '', isLoading: false });
     const { invalidate, startBiometricAttempt, startPinAttempt } = useAuthAttempt();
     const { clearError, error, isLockedOut, reportIncorrectPin } = usePinError();
 
     const invalidateAuthAttempts = () => {
-        const shouldClearPinInput = invalidate();
-
-        setIsLoading(false);
-
-        if (shouldClearPinInput) {
-            setInput('');
-        }
+        dispatch({ type: PinAuthenticationActionTypeEnum.ATTEMPT_ENDED, shouldClearInput: invalidate() });
     };
     const isAppActive = useIsAppActive(invalidateAuthAttempts);
 
     const acceptAttempt = (isPinAttempt: boolean) => (success: boolean) => {
-        setIsLoading(false);
+        dispatch({ type: PinAuthenticationActionTypeEnum.ATTEMPT_ENDED, shouldClearInput: !success && isPinAttempt });
 
         if (success) {
             setIsUnlocked(true);
         } else if (isPinAttempt) {
-            setInput('');
             reportIncorrectPin();
         }
     };
@@ -91,7 +100,7 @@ export const usePinAuthentication = () => {
             return false;
         }
 
-        setIsLoading(true);
+        dispatch({ type: PinAuthenticationActionTypeEnum.ATTEMPT_STARTED });
 
         return true;
     });
@@ -103,21 +112,21 @@ export const usePinAuthentication = () => {
 
         const nextInput = (input + digit).slice(0, PIN_LENGTH);
 
-        setInput(nextInput);
+        dispatch({ type: PinAuthenticationActionTypeEnum.DIGIT_ENTERED, digit });
         clearError();
 
         if (input.length === PIN_LENGTH - 1 && isAppActive) {
-            setIsLoading(true);
+            dispatch({ type: PinAuthenticationActionTypeEnum.ATTEMPT_STARTED });
             startPinAttempt(nextInput, acceptAttempt(true));
         }
     };
     const deleteDigit = () => {
-        setInput(input.slice(0, -1));
+        dispatch({ type: PinAuthenticationActionTypeEnum.DIGIT_DELETED });
         clearError();
     };
     const handleBiometricAuth = () => {
         if (canUseBiometric && AppState.currentState === 'active' && startBiometricAttempt(acceptAttempt(false))) {
-            setIsLoading(true);
+            dispatch({ type: PinAuthenticationActionTypeEnum.ATTEMPT_STARTED });
         }
     };
 

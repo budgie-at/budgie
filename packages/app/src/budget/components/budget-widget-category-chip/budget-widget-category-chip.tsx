@@ -8,7 +8,7 @@ import { BudgetBarTone, resolveBudgetBarTone } from '../../utils/resolve-budget-
 
 const PERCENT_MULTIPLIER = 100;
 
-const percentTextVariants = cva<{ tone: Record<BudgetBarTone, string> }>('text-sm font-medium', {
+const percentTextVariants = cva<{ tone: Record<BudgetBarTone, string> }>('text-xs font-medium', {
     variants: {
         tone: {
             green: 'text-primary',
@@ -35,7 +35,7 @@ export const BudgetWidgetCategoryChip = ({ categoryId, limitAmount, spent, testI
 
     return (
         <View testID={testID} collapsable={false} className="flex-row items-center gap-x-xs">
-            <Text className="text-secondary-foreground text-sm">{title}</Text>
+            <Text className="text-secondary-foreground text-xs">{title}</Text>
             <Text testID={spentTestID} className={percentTextVariants({ tone: resolveBudgetBarTone(ratio) })}>
                 {percentLabel}
             </Text>

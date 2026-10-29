@@ -9,6 +9,6 @@ export const SCREEN_CHROME_CONFIG: ScreenChromeConfigOverridesInterface = {
     maxBlurIntensity: 24,
     colors: {
         light: { solid: 'rgba(255,255,255,0.7)', wash: 'rgba(255,255,255,0.05)' },
-        dark: { solid: 'rgba(0,0,0,0.65)', wash: 'rgba(0,0,0,0.05)' }
+        dark: { solid: 'rgba(14,14,16,0.65)', wash: 'rgba(14,14,16,0.05)' }
     }
 };

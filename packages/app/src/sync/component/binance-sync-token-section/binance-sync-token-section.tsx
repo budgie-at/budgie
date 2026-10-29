@@ -3,7 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Option from 'effect/Option';
 import * as Schema from 'effect/Schema';
-import { useState } from 'react';
+import { useReducer } from 'react';
 import { View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
@@ -11,7 +11,9 @@ import { isNotEmptyString } from '@rnw-community/shared';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
+import { BinanceSyncTokenSectionActionTypeEnum } from '../../enum/binance-sync-token-section-action-type.enum';
 import { useSyncToken } from '../../hook/use-sync-token.hook';
+import { binanceSyncTokenSectionReducer } from '../../utils/binance-sync-token-section-reducer.util';
 import { toastBinanceKeyPermissionsError } from '../../utils/toast-binance-key-permissions-error.util';
 import { BinanceSyncTokenInputs } from '../binance-sync-token-inputs/binance-sync-token-inputs';
 import { BinanceSyncTokenSummary } from '../binance-sync-token-summary/binance-sync-token-summary';
@@ -26,23 +28,33 @@ export const BinanceSyncTokenSection = ({ accountId }: Props) => {
 
     const token = useSyncToken(accountId);
 
-    const [isEditing, setIsEditing] = useState(false);
-    const [apiKey, setApiKey] = useState('');
-    const [apiSecret, setApiSecret] = useState('');
+    const [{ isEditing, apiKey, apiSecret }, dispatch] = useReducer(binanceSyncTokenSectionReducer, {
+        isEditing: false,
+        apiKey: '',
+        apiSecret: ''
+    });
     const { isLoading: isSaving, run } = useSingleFlight();
 
     const handleEdit = () => {
         const credentials = Option.getOrNull(Schema.decodeUnknownOption(Schema.fromJsonString(BinanceCredentialsSchema))(token));
 
-        setApiKey(credentials?.apiKey ?? '');
-        setApiSecret(credentials?.apiSecret ?? '');
-        setIsEditing(true);
+        dispatch({
+            type: BinanceSyncTokenSectionActionTypeEnum.EDIT_STARTED,
+            apiKey: credentials?.apiKey ?? '',
+            apiSecret: credentials?.apiSecret ?? ''
+        });
     };
 
     const handleCancel = () => {
-        setIsEditing(false);
-        setApiKey('');
-        setApiSecret('');
+        dispatch({ type: BinanceSyncTokenSectionActionTypeEnum.EDIT_FINISHED });
+    };
+
+    const handleApiKeyChange = (value: string) => {
+        dispatch({ type: BinanceSyncTokenSectionActionTypeEnum.API_KEY_CHANGED, apiKey: value });
+    };
+
+    const handleApiSecretChange = (value: string) => {
+        dispatch({ type: BinanceSyncTokenSectionActionTypeEnum.API_SECRET_CHANGED, apiSecret: value });
     };
 
     const handleSave = () => {
@@ -59,13 +71,7 @@ export const BinanceSyncTokenSection = ({ accountId }: Props) => {
             Effect.flatMap(SyncProviderRegistryService, registry =>
                 registry.updateAccountToken(accountId, JSON.stringify({ apiKey: trimmedApiKey, apiSecret: trimmedApiSecret }))
             ).pipe(
-                Effect.tap(() =>
-                    Effect.sync(() => {
-                        setIsEditing(false);
-                        setApiKey('');
-                        setApiSecret('');
-                    })
-                ),
+                Effect.tap(() => Effect.sync(() => void handleCancel())),
                 Effect.catchTags({
                     BinanceKeyPermissionsError: toastBinanceKeyPermissionsError,
                     SyncTokenClientMismatchError: () =>
@@ -85,8 +91,8 @@ export const BinanceSyncTokenSection = ({ accountId }: Props) => {
                     <BinanceSyncTokenInputs
                         apiKey={apiKey}
                         apiSecret={apiSecret}
-                        onApiKeyChange={setApiKey}
-                        onApiSecretChange={setApiSecret}
+                        onApiKeyChange={handleApiKeyChange}
+                        onApiSecretChange={handleApiSecretChange}
                     />
 
                     <SyncTokenSectionActions onCancel={handleCancel} onSave={handleSave} isSaving={isSaving} />

@@ -11,6 +11,7 @@ import { BudgetSelector } from '../../budget.selector';
 import { BudgetFormValues } from '../../constant/budget-form-schema.constant';
 import { BudgetCategoryLimitCompactRowLayout } from '../budget-category-limit-compact-row-layout/budget-category-limit-compact-row-layout';
 import { BudgetLimitAmountInput } from '../budget-limit-amount-input/budget-limit-amount-input';
+import { BudgetRolloverModeMenu } from '../budget-rollover-mode-menu/budget-rollover-mode-menu';
 
 const ICON_PLACEHOLDER_STYLE: ViewStyle = { width: 32, height: 32 };
 
@@ -52,6 +53,7 @@ export const BudgetCategoryLimitCompactRow = ({ currencySymbol, index, onRemove 
                 }
                 icon={icon}
                 testID={BudgetSelector.SetupCategoryLimitRow(index)}
+                subtitle={<BudgetRolloverModeMenu name={`categoryLimits.${index}.rolloverMode`} />}
                 title={title}
             />
         </DeletableRow>

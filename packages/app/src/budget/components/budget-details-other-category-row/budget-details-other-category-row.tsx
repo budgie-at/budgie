@@ -1,22 +1,29 @@
-import { TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { BudgetAlertScopeEnum } from '@budgie/budget';
+import { TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 
 import { AnalyticsTransactionsModeEnum } from '../../../transaction/enum/analytics-transactions-mode.enum';
 import { BudgetSelector } from '../../budget.selector';
-import { BudgetDetailsLimitCard } from '../budget-details-limit-card/budget-details-limit-card';
+import { BudgetDetailsLimitRow } from '../budget-details-limit-row/budget-details-limit-row';
+
+import type { BudgetProjectionScopeInterface } from '@budgie/budget';
 
 interface Props {
     readonly categoryIds: readonly number[];
-    readonly spent: number;
-    readonly limitAmount: number;
+    readonly scope: BudgetProjectionScopeInterface;
     readonly periodStart: Date;
     readonly periodEnd: Date;
     readonly currencySymbol: string;
+    readonly carriedAmount: number;
+    readonly staggerIndex: number;
 }
 
+const HIGHLIGHT_TARGET = { scope: BudgetAlertScopeEnum.OTHER };
+const TEST_IDS = { row: BudgetSelector.DetailsOtherCategoryRow, spent: BudgetSelector.DetailsOtherCategorySpentLabel };
+
 export const BudgetDetailsOtherCategoryRow = (props: Props) => {
-    const { categoryIds, spent, limitAmount, periodStart, periodEnd, currencySymbol } = props;
+    const { categoryIds, scope, periodStart, periodEnd, currencySymbol, carriedAmount, staggerIndex } = props;
     const { t } = useLingui();
 
     const excludedCategoryIds = categoryIds.join(',');
@@ -35,15 +42,15 @@ export const BudgetDetailsOtherCategoryRow = (props: Props) => {
     };
 
     return (
-        <BudgetDetailsLimitCard
+        <BudgetDetailsLimitRow
             title={t`Other`}
-            icon={UserIconNameEnum.CircleEllipsis}
-            spent={spent}
-            limitAmount={limitAmount}
+            carriedAmount={carriedAmount}
+            scope={scope}
             currencySymbol={currencySymbol}
-            testID={BudgetSelector.DetailsOtherCategoryRow}
-            spentTestID={BudgetSelector.DetailsOtherCategorySpentLabel}
+            testIDs={TEST_IDS}
             onPress={handlePress}
+            highlightTarget={HIGHLIGHT_TARGET}
+            staggerIndex={staggerIndex}
         />
     );
 };

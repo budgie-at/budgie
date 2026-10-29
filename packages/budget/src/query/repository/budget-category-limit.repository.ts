@@ -28,7 +28,10 @@ export class BudgetCategoryLimitRepository extends Context.Service<BudgetCategor
                     Db.query(db =>
                         db
                             .update(BudgetCategoryLimitEntityTable)
-                            .set({ limitAmount: update.limitAmount })
+                            .set({
+                                limitAmount: update.limitAmount,
+                                ...(isDefined(update.rolloverMode) && { rolloverMode: update.rolloverMode })
+                            })
                             .where(eq(BudgetCategoryLimitEntityTable.id, update.id))
                             .returning()
                     )

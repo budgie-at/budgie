@@ -81,7 +81,10 @@ env:
       timeout: 3000
 - assertVisible:
       id: 'BudgetDetails.SpentLabel'
-      text: '€136 / €200'
+      text: '€136'
+- assertVisible:
+      id: 'BudgetDetails.LimitLabel'
+      text: '€200'
 - tapOn:
       id: 'PageHeader.BackButton'
 - extendedWaitUntil:

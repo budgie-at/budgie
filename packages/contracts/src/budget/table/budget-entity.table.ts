@@ -4,6 +4,7 @@ import { convertEnumToDrizzleEnum } from '../../@generic/utils/convert-enum-to-d
 import { withBaseEntityTableColumns } from '../../@generic/utils/with-base-entity-table-columns.util';
 import { InstrumentEntityTable } from '../../instrument/table/instrument-entity.table';
 import { BudgetPeriodEnum } from '../enum/budget-period.enum';
+import { BudgetRolloverModeEnum } from '../enum/budget-rollover-mode.enum';
 
 export const BudgetEntityTable = sqliteTable(
     'budgets',
@@ -16,6 +17,10 @@ export const BudgetEntityTable = sqliteTable(
         useLastDayOfMonth: int('use_last_day_of_month', { mode: 'boolean' }).notNull(),
         overallLimit: int('overall_limit').notNull(),
         otherLimit: int('other_limit').notNull(),
+        otherRolloverMode: text('other_rollover_mode', { enum: convertEnumToDrizzleEnum(BudgetRolloverModeEnum) })
+            .$type<BudgetRolloverModeEnum>()
+            .notNull()
+            .default(BudgetRolloverModeEnum.NONE),
         instrumentId: int('instrument_id')
             .notNull()
             .references(() => InstrumentEntityTable.id)

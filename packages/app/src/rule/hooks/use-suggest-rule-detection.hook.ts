@@ -8,15 +8,17 @@ import {
     extractRuleActionOutcomes,
     hasConflictWithRuleOutcomes
 } from '@budgie/rules';
-import { useState } from 'react';
+import { useReducer } from 'react';
 import { useWatch } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { convertTransactionToInput } from '../../transaction/utils/convert-transaction-to-input.util';
 import { getTransactionDisplayTitle } from '../../transaction/utils/get-transaction-display-title.util';
+import { SuggestRuleDetectionActionTypeEnum } from '../enum/suggest-rule-detection-action-type.enum';
 import { useGetEnabledRulesQuery } from '../query/use-get-enabled-rules.query';
 
+import type { SuggestRuleDetectionStateInterface } from '../interface/suggest-rule-detection-state.interface';
 import type { UpdateRuleDataInterface } from '../interface/update-rule-data.interface';
 import type { TransactionCreateInputInterface, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import type { SuggestRuleDataInterface } from '@budgie/rules';
@@ -40,11 +42,28 @@ type UseSuggestRuleDetectionResultType = {
 
 const dismissedSuggestions = new Set<string>();
 
+const INITIAL_STATE: SuggestRuleDetectionStateInterface = { isRuleCreationStarted: false, isDismissed: false, isCreating: false };
+
+const reducer = (
+    state: SuggestRuleDetectionStateInterface,
+    action: SuggestRuleDetectionActionTypeEnum
+): SuggestRuleDetectionStateInterface => {
+    if (action === SuggestRuleDetectionActionTypeEnum.RULE_CREATED) {
+        return { ...state, isRuleCreationStarted: true, isCreating: false };
+    }
+    if (action === SuggestRuleDetectionActionTypeEnum.DISMISSED) {
+        return { ...state, isDismissed: true, isCreating: false };
+    }
+    if (action === SuggestRuleDetectionActionTypeEnum.CREATION_STARTED) {
+        return { ...state, isRuleCreationStarted: true, isCreating: true };
+    }
+
+    return { ...state, isCreating: false };
+};
+
 // eslint-disable-next-line max-statements -- Detection hook with multiple derived values and dismiss tracking
 export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRuleDetectionParamsType): UseSuggestRuleDetectionResultType => {
-    const [isRuleCreationStarted, setIsRuleCreationStarted] = useState(false);
-    const [isDismissed, setIsDismissed] = useState(false);
-    const [isCreating, setIsCreating] = useState(false);
+    const [{ isRuleCreationStarted, isDismissed, isCreating }, dispatch] = useReducer(reducer, INITIAL_STATE);
     const entries = useWatch({ control, name: 'entries' });
     const tagIds = useWatch({ control, name: 'tagIds' });
     const { enabledRules } = useGetEnabledRulesQuery();
@@ -106,22 +125,16 @@ export const useSuggestRuleDetection = ({ transaction, control }: UseSuggestRule
         canUpdateRule && isDefined(singleMatchingRule) ? { ruleId: singleMatchingRule.id, categoryId, tagIds } : null;
 
     const onRuleCreated = () => {
-        setIsRuleCreationStarted(true);
-        setIsCreating(false);
+        dispatch(SuggestRuleDetectionActionTypeEnum.RULE_CREATED);
     };
 
     const onDismiss = () => {
         dismissedSuggestions.add(dismissKey);
-        setIsDismissed(true);
-        setIsCreating(false);
+        dispatch(SuggestRuleDetectionActionTypeEnum.DISMISSED);
     };
 
     const onCreatingChange = (next: boolean) => {
-        if (next) {
-            setIsRuleCreationStarted(true);
-        }
-
-        setIsCreating(next);
+        dispatch(next ? SuggestRuleDetectionActionTypeEnum.CREATION_STARTED : SuggestRuleDetectionActionTypeEnum.CREATION_ENDED);
     };
 
     return { mode, suggestRuleData, updateRuleData, matchingRulesCount, matchingRuleIds, onRuleCreated, onDismiss, onCreatingChange };

@@ -3,29 +3,47 @@ import { EmbeddingSuggestionService } from '@budgie/categorization';
 import { AccountWithInstrumentEntityInterface, CategoryEntityInterface, TransactionTypeEnum } from '@budgie/contracts';
 import * as Cause from 'effect/Cause';
 import * as Effect from 'effect/Effect';
-import { useState } from 'react';
+import { useReducer } from 'react';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { useSearchAccountsSortedQuery } from '../../account/query/use-search-accounts-sorted.query';
 import { useNonSystemCategoriesQuery } from '../../category/query/use-non-system-categories.query';
 import { AiSubsystemNameEnum } from '../enum/ai-subsystem-name.enum';
+import { LlmCategorizationActionTypeEnum } from '../enum/llm-categorization-action-type.enum';
+import { VoiceInputStateEnum } from '../enum/voice-input-state.enum';
+import { LlmCategorizationActionInterface } from '../interface/llm-categorization-action.interface';
+import { LlmCategorizationStateInterface } from '../interface/llm-categorization-state.interface';
 import { AiModelResidencyService } from '../service/ai-model-residency.service';
 import { getRootErrorMessage } from '../utils/get-root-error-message.util';
 
 import type { AppServices } from '../../@generic/runtime/app.runtime';
 
-type CategorizationStatus = 'idle' | 'processing' | 'done' | 'error';
-
 const VOICE_SUBSYSTEMS = [AiSubsystemNameEnum.CHAT, AiSubsystemNameEnum.EMBEDDING] as const;
 
 interface UseLlmCategorizationReturnInterface {
-    readonly status: CategorizationStatus;
+    readonly status: VoiceInputStateEnum;
     readonly transactions: AITransactionInterface[];
     readonly error: string | null;
     readonly categorize: (text: string) => Effect.Effect<AITransactionInterface[], unknown, AppServices>;
     readonly reset: () => void;
 }
+
+const INITIAL_STATE: LlmCategorizationStateInterface = { status: VoiceInputStateEnum.IDLE, transactions: [], error: null };
+
+const reducer = (state: LlmCategorizationStateInterface, action: LlmCategorizationActionInterface): LlmCategorizationStateInterface => {
+    if (action.type === LlmCategorizationActionTypeEnum.CATEGORIZATION_STARTED) {
+        return { status: VoiceInputStateEnum.PROCESSING, transactions: [], error: null };
+    }
+    if (action.type === LlmCategorizationActionTypeEnum.CATEGORIZATION_SUCCEEDED) {
+        return { ...state, status: VoiceInputStateEnum.DONE, transactions: action.transactions };
+    }
+    if (action.type === LlmCategorizationActionTypeEnum.CATEGORIZATION_FAILED) {
+        return { ...state, status: VoiceInputStateEnum.ERROR, error: action.error };
+    }
+
+    return INITIAL_STATE;
+};
 
 const suggestCategoryFor = (description: string, categories: CategoryEntityInterface[]) =>
     isNotEmptyArray(categories)
@@ -67,16 +85,10 @@ const extractAndMapTransactions = Effect.fn('useLlmCategorization.extractAndMapT
 export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
     const { accounts } = useSearchAccountsSortedQuery();
     const { categories } = useNonSystemCategoriesQuery();
-    const [status, setStatus] = useState<CategorizationStatus>('idle');
-    const [transactions, setTransactions] = useState<AITransactionInterface[]>([]);
-    const [error, setError] = useState<string | null>(null);
+    const [{ status, transactions, error }, dispatch] = useReducer(reducer, INITIAL_STATE);
 
     const categorize = (text: string) =>
-        Effect.sync(() => {
-            setStatus('processing');
-            setError(null);
-            setTransactions([]);
-        }).pipe(
+        Effect.sync(() => void dispatch({ type: LlmCategorizationActionTypeEnum.CATEGORIZATION_STARTED })).pipe(
             Effect.andThen(
                 Effect.flatMap(AiModelResidencyService, aiModelResidencyService =>
                     Effect.acquireUseRelease(
@@ -89,23 +101,21 @@ export const useLlmCategorization = (): UseLlmCategorizationReturnInterface => {
                 )
             ),
             Effect.tap(results =>
-                Effect.sync(() => {
-                    setTransactions(results);
-                    setStatus('done');
-                })
+                Effect.sync(() => void dispatch({ type: LlmCategorizationActionTypeEnum.CATEGORIZATION_SUCCEEDED, transactions: results }))
             ),
             Effect.tapCause(cause =>
-                Effect.sync(() => {
-                    setError(getRootErrorMessage(Cause.squash(cause)));
-                    setStatus('error');
-                })
+                Effect.sync(
+                    () =>
+                        void dispatch({
+                            type: LlmCategorizationActionTypeEnum.CATEGORIZATION_FAILED,
+                            error: getRootErrorMessage(Cause.squash(cause))
+                        })
+                )
             )
         );
 
     const reset = (): void => {
-        setStatus('idle');
-        setTransactions([]);
-        setError(null);
+        dispatch({ type: LlmCategorizationActionTypeEnum.RESET });
     };
 
     return {
