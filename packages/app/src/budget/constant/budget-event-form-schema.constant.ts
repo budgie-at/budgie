@@ -1,3 +1,4 @@
+import { startOfDay } from 'date-fns/startOfDay';
 import * as Schema from 'effect/Schema';
 
 import { BudgetCategoryLimitFormSchema } from './budget-form-schema.constant';
@@ -13,7 +14,7 @@ export const BudgetEventFormSchema = Schema.Struct({
     categoryLimits: Schema.mutable(Schema.Array(BudgetCategoryLimitFormSchema)),
     instrumentId: Schema.Finite.check(Schema.isInt(), Schema.isGreaterThan(0))
 }).check(
-    Schema.makeFilter(values => values.endsAtMs >= values.startsAtMs || { path: ['endsAtMs'], issue: '' }),
+    Schema.makeFilter(values => startOfDay(values.endsAtMs) >= startOfDay(values.startsAtMs) || { path: ['endsAtMs'], issue: '' }),
     Schema.makeFilter(
         values =>
             values.categoryLimits.reduce((sum, limit) => sum + limit.limitAmount, 0) <= values.overallLimit || {

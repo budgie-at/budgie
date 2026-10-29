@@ -48,6 +48,16 @@ it.effect('does not require a fixed amount or a fitting allocation when the limi
     })
 );
 
+it.effect('requires an anchor date for non-monthly periods', () =>
+    Effect.sync(() => {
+        const weekly = { ...FORM, period: BudgetPeriodEnum.WEEKLY };
+
+        expect(Schema.is(BudgetFormSchema.from)(weekly)).toBe(false);
+        expect(Schema.is(BudgetFormSchema.from)({ ...weekly, periodAnchorMs: 1_000 })).toBe(true);
+        expect(Schema.is(BudgetFormSchema.from)(FORM)).toBe(true);
+    })
+);
+
 it.effect('forces the start day to 1 when the last day of the month is used', () =>
     Effect.sync(() => {
         const decoded = Schema.decodeUnknownSync(BudgetFormSchema)({ ...FORM, useLastDayOfMonth: true });

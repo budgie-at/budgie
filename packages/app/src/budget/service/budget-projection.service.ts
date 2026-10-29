@@ -12,7 +12,6 @@ import {
     computeExpectedIncome,
     computeFundReservations,
     computeIncomeReceived,
-    computePeriodWindow,
     computeSpent,
     resolveBudgetOverallLimit,
     toBudgetCurrencyEntries
@@ -160,6 +159,20 @@ export class BudgetProjectionService extends Context.Service<BudgetProjectionSer
             return { entries: applyFundDraws(grossEntries, draws), grossEntries };
         });
 
+        const loadExpectedIncome = Effect.fnUntraced(function* (
+            window: BudgetPeriodWindowInterface,
+            now: Date,
+            budgetInstrumentId: number
+        ) {
+            const { defaultInstrumentId } = yield* settingsRepository.getSettings();
+            const rate = yield* findRate(defaultInstrumentId, budgetInstrumentId);
+            const months = yield* Effect.forEach(buildPeriodMonths(window), month =>
+                Effect.map(recurringService.incomeCalendar(month.getFullYear(), month.getMonth(), now), calendar => ({ month, calendar }))
+            );
+
+            return computeExpectedIncome(months, window, rate);
+        });
+
         const loadIncome = Effect.fnUntraced(function* (
             budget: BudgetProjectionSourceInterface,
             window: BudgetPeriodWindowInterface,
@@ -180,13 +193,7 @@ export class BudgetProjectionService extends Context.Service<BudgetProjectionSer
                 return { received, expected: 0 };
             }
 
-            const { defaultInstrumentId } = yield* settingsRepository.getSettings();
-            const rate = yield* findRate(defaultInstrumentId, budget.instrumentId);
-            const months = yield* Effect.forEach(buildPeriodMonths(window), month =>
-                Effect.map(recurringService.incomeCalendar(month.getFullYear(), month.getMonth(), now), calendar => ({ month, calendar }))
-            );
-
-            return { received, expected: computeExpectedIncome(months, window, rate) };
+            return { received, expected: yield* loadExpectedIncome(window, now, budget.instrumentId) };
         });
 
         const project = Effect.fn('BudgetProjectionService.project')(function* (budget: BudgetProjectionSourceInterface, now: Date) {
@@ -258,13 +265,7 @@ export class BudgetProjectionService extends Context.Service<BudgetProjectionSer
                 budget: BudgetProjectionSourceInterface,
                 now: Date
             ) {
-                const income = yield* loadIncome(
-                    { ...budget, limitSource: BudgetLimitSourceEnum.INCOME_EXPECTED },
-                    computePeriodWindow(budget, now),
-                    now
-                );
-
-                return income.expected;
+                return yield* loadExpectedIncome(resolveBudgetWindow(budget, now), now, budget.instrumentId);
             })
         };
     })

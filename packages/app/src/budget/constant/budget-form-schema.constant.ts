@@ -30,6 +30,10 @@ const budgetFormFields = {
 
 export const BudgetFormSchema = Schema.Struct(budgetFormFields)
     .check(
+        Schema.makeFilter(
+            values =>
+                values.period === BudgetPeriodEnum.MONTHLY || values.periodAnchorMs !== null || { path: ['periodAnchorMs'], issue: '' }
+        ),
         Schema.makeFilter(values => {
             if (values.limitSource !== BudgetLimitSourceEnum.FIXED) {
                 return true;
