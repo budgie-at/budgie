@@ -85,7 +85,13 @@ export class RecurringRepository extends Context.Service<RecurringRepository>()(
             findHistoricalCharges: (defaultInstrumentId: number | null, language: LanguageEnum, since: Date) =>
                 findCharges(defaultInstrumentId, language, since, true),
             findSeries: () =>
-                Db.query(db => db.select().from(RecurringSeriesEntityTable).where(isNull(RecurringSeriesEntityTable.deletedAt))),
+                Db.query(db =>
+                    db
+                        .select()
+                        .from(RecurringSeriesEntityTable)
+                        .where(isNull(RecurringSeriesEntityTable.deletedAt))
+                        .orderBy(RecurringSeriesEntityTable.id)
+                ),
             createSeries: (input: RecurringSeriesCreateEntityInterface) =>
                 Db.query(db => db.insert(RecurringSeriesEntityTable).values([input]).returning()).pipe(Effect.map(([series]) => series)),
             updateSeries: (id: number, input: Partial<RecurringSeriesCreateEntityInterface>) =>

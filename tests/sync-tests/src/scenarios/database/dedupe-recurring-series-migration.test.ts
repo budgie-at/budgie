@@ -54,7 +54,12 @@ const scenarios: readonly Scenario[] = [
     {
         name: 'keeps a renamed row and drops its untouched duplicates',
         seeded: [{}, { title: 'Streaming', isUpdated: true }, {}],
-        expected: ['30|12000|SUGGESTED|Streaming']
+        expected: ['30|12000|SUGGESTED|NETFLIX', '30|12000|SUGGESTED|Streaming']
+    },
+    {
+        name: 'keeps a row renamed within its creation second',
+        seeded: [{}, { title: 'Streaming' }],
+        expected: ['30|12000|SUGGESTED|NETFLIX', '30|12000|SUGGESTED|Streaming']
     },
     {
         name: 'drops untouched duplicates of a confirmed row',
