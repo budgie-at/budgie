@@ -1221,6 +1221,39 @@ layer(TestLayer)('recurringService', it => {
         }).pipe(withFirstLaunchService)
     );
 
+    it.effect('tracks the lowest id without inserting when several touched rows share one identity', () =>
+        Effect.gen(function* () {
+            const seed = yield* seedCharges();
+            yield* seedMonthly(seed, 'NETFLIX', 20, 12);
+            const [created] = allEntries(yield* calendar(JULY));
+            const [confirmed] = (yield* Effect.flatMap(RecurringRepository, repository => repository.findSeries())).filter(
+                row => row.id === created.seriesId
+            );
+            yield* Effect.flatMap(RecurringService, service => service.setUserState(confirmed.id, RecurringSeriesUserStateEnum.CONFIRMED));
+            const dismissed = yield* seedSavedSeries({
+                merchantKey: confirmed.merchantKey,
+                periodDays: confirmed.periodDays,
+                amount: confirmed.amount,
+                lastSeenAt: confirmed.lastSeenAt,
+                title: 'Renamed twin',
+                userState: RecurringSeriesUserStateEnum.DISMISSED
+            });
+
+            const reads = yield* Effect.forEach([1, 2, 3], () =>
+                Effect.gen(function* () {
+                    const [entry] = allEntries(yield* calendar(JULY));
+                    const rows = yield* Effect.flatMap(RecurringRepository, repository => repository.findSeries());
+
+                    return { entry, rowIds: rows.map(row => row.id) };
+                })
+            );
+            for (const { entry, rowIds } of reads) {
+                expect(entry).toMatchObject({ seriesId: confirmed.id, userState: RecurringSeriesUserStateEnum.CONFIRMED });
+                expect(rowIds).toEqual([confirmed.id, dismissed.id]);
+            }
+        })
+    );
+
     it.effect('preserves a dismissed legacy identity after qualified detection', () =>
         Effect.gen(function* () {
             const seed = yield* seedCharges();
