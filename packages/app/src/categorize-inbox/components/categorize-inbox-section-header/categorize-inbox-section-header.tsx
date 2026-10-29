@@ -1,9 +1,20 @@
 import { CategorizeInboxSectionEnum } from '@budgie/categorization';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { convertFromMicroUnits } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
+import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { StickySectionHeaderBackdrop } from '../../../@generic/component/sticky-section-header-backdrop/sticky-section-header-backdrop';
+import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { testID } from '../../../@generic/utils/test-id.util';
+import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
+import { CATEGORIZE_INBOX_SECTION_COLOR } from '../../constant/categorize-inbox-section-dot.constant';
+import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
+import { isCategorizeInboxCluster } from '../../type-guard/is-categorize-inbox-cluster.type-guard';
+import { getCategorizeInboxDefaultAmount } from '../../utils/get-categorize-inbox-default-amount.util';
+import { CategorizeInboxDot } from '../categorize-inbox-dot/categorize-inbox-dot';
 
 import { CategorizeInboxSectionHeaderSelector } from './categorize-inbox-section-header.selector';
 
@@ -14,6 +25,9 @@ interface Props {
 
 export const CategorizeInboxSectionHeader = ({ section, rowCount }: Props) => {
     const { t } = useLingui();
+    const protectAmount = useProtectedAmountLabel();
+    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
+    const { items } = useCategorizeInboxContext();
 
     const sectionTitles: Record<CategorizeInboxSectionEnum, string> = {
         [CategorizeInboxSectionEnum.CASH_WITHDRAWALS]: t`Cash withdrawals`,
@@ -21,25 +35,32 @@ export const CategorizeInboxSectionHeader = ({ section, rowCount }: Props) => {
         [CategorizeInboxSectionEnum.REVIEW]: t`Your call`,
         [CategorizeInboxSectionEnum.ONE_OFFS]: t`Smaller groups`
     };
-    const trailing =
-        section === CategorizeInboxSectionEnum.REVIEW ? (
-            <Text className="text-xs text-secondary-foreground">
-                <Trans>Largest first</Trans>
-            </Text>
-        ) : null;
+    const totalAmount = getCategorizeInboxDefaultAmount(
+        items
+            .filter(isCategorizeInboxCluster)
+            .filter(cluster => cluster.section === section)
+            .flatMap(cluster => cluster.rows),
+        defaultInstrument
+    );
+    const totalText = isDefined(totalAmount) ? protectAmount(convertFromMicroUnits(totalAmount), defaultInstrument.symbol) : '';
 
     return (
         <View
-            className="flex-row items-baseline justify-between gap-x-md pb-sm pt-4xl"
+            className="flex-row items-center justify-between gap-x-md pb-sm pt-4xl"
             accessibilityRole="header"
             {...testID(CategorizeInboxSectionHeaderSelector.Header, section)}
         >
             <StickySectionHeaderBackdrop />
-            <Text className="shrink text-md font-semibold text-primary" numberOfLines={1}>
-                {sectionTitles[section]}
-                <Text className="font-normal text-secondary-foreground tabular-nums">{` ${rowCount}`}</Text>
+            <View className="shrink flex-row items-center gap-x-sm">
+                <CategorizeInboxDot className={CATEGORIZE_INBOX_SECTION_COLOR[section]} />
+                <Text className="shrink text-xs font-medium uppercase tracking-wider text-secondary-foreground" numberOfLines={1}>
+                    {`${sectionTitles[section]} `}
+                    <Text className="tabular-nums">{rowCount}</Text>
+                </Text>
+            </View>
+            <Text className="text-xs font-medium text-secondary-foreground tabular-nums" numberOfLines={1}>
+                {totalText}
             </Text>
-            {trailing}
         </View>
     );
 };

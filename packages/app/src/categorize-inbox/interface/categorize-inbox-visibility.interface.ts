@@ -4,6 +4,7 @@ export interface CategorizeInboxVisibilityInterface {
     readonly excludedTransactionIds: ReadonlySet<number>;
     readonly includedRows: (cluster: CategorizeInboxClusterInterface) => CategorizeInboxRowInterface[];
     readonly toggleExcluded: (transactionId: number) => void;
+    readonly setExcluded: (transactionIds: readonly number[], isExcluded: boolean) => void;
     readonly hideTransactions: (transactionIds: readonly number[]) => void;
     readonly showTransactions: (transactionIds: readonly number[]) => void;
 }

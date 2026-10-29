@@ -25,6 +25,11 @@ const keepPresentTransactionIds = (transactionIds: Set<number>, rows: Categorize
     return keptTransactionIds.size === transactionIds.size ? transactionIds : keptTransactionIds;
 };
 
+const setExclusion = (excluded: Set<number>, transactionIds: readonly number[], isExcluded: boolean): Set<number> =>
+    isExcluded
+        ? new Set([...excluded, ...transactionIds])
+        : new Set([...excluded].filter(transactionId => !transactionIds.includes(transactionId)));
+
 const reducer = (state: CategorizeInboxStateInterface, action: CategorizeInboxActionInterface): CategorizeInboxStateInterface => {
     if (action.type === CategorizeInboxActionTypeEnum.EXCLUSION_TOGGLED) {
         const excluded = new Set(state.excluded);
@@ -34,6 +39,9 @@ const reducer = (state: CategorizeInboxStateInterface, action: CategorizeInboxAc
         }
 
         return { ...state, excluded };
+    }
+    if (action.type === CategorizeInboxActionTypeEnum.EXCLUSION_SET) {
+        return { ...state, excluded: setExclusion(state.excluded, action.transactionIds, action.isExcluded) };
     }
     if (action.type === CategorizeInboxActionTypeEnum.TRANSACTIONS_HIDDEN) {
         return { ...state, hidden: new Set([...state.hidden, ...action.transactionIds]) };
@@ -73,6 +81,8 @@ export const useCategorizeInbox = (
         excludedTransactionIds: state.excluded,
         includedRows: cluster => cluster.rows.filter(row => !state.excluded.has(row.transactionId)),
         toggleExcluded: transactionId => void dispatch({ type: CategorizeInboxActionTypeEnum.EXCLUSION_TOGGLED, transactionId }),
+        setExcluded: (transactionIds, isExcluded) =>
+            void dispatch({ type: CategorizeInboxActionTypeEnum.EXCLUSION_SET, transactionIds, isExcluded }),
         hideTransactions: transactionIds => void dispatch({ type: CategorizeInboxActionTypeEnum.TRANSACTIONS_HIDDEN, transactionIds }),
         showTransactions: transactionIds => void dispatch({ type: CategorizeInboxActionTypeEnum.TRANSACTIONS_SHOWN, transactionIds })
     };

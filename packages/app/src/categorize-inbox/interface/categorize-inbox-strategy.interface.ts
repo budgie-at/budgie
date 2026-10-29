@@ -19,7 +19,10 @@ export interface CategorizeInboxStrategyInterface {
     readonly evidenceAtom: typeof categoryEvidenceAtom;
     readonly pickLabels: (description: string, suggestedLabelIds: number[], onPicked: (labelIds: number[] | null) => void) => void;
     readonly pickFollowUpTagIds:
-        | ((assignment: CategorizeInboxAssignmentInterface, onPicked: (tagIds: number[] | null) => void) => void)
+        | ((
+              assignment: Pick<CategorizeInboxAssignmentInterface, 'displayTitle' | 'rows'>,
+              onPicked: (tagIds: number[] | null) => void
+          ) => void)
         | null;
     readonly buildRuleActions: (labelIds: number[]) => Pick<RulePrefillDataInterface, 'categoryId' | 'tagIds'>;
     readonly buildListRouteParams: (filters: TransactionFilterInterface) => UnknownInputParams;

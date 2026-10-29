@@ -23,10 +23,6 @@ msgstr "Binance P2P buy {assetCode}"
 msgid "Binance P2P sell {assetCode}"
 msgstr "Binance P2P sell {assetCode}"
 
-#: src/categorize-inbox/components/categorize-inbox-pile-legend/categorize-inbox-pile-legend.tsx
-msgid "«{largestName}» alone is {largestPercent}%"
-msgstr "«{largestName}» alone is {largestPercent}%"
-
 #. placeholder {0}: rows.length
 #: src/categorize-inbox/components/categorize-inbox-group-row/categorize-inbox-group-row.tsx
 msgid "{0, plural, one {# ATM withdrawal} other {# ATM withdrawals}}"
@@ -101,8 +97,8 @@ msgid "{categorizedCount, plural, one {# categorized this session} other {# cate
 msgstr "{categorizedCount, plural, one {# categorized this session} other {# categorized this session}}"
 
 #: src/categorize-inbox/components/categorize-inbox-pile-legend/categorize-inbox-pile-legend.tsx
-msgid "{categorizedCount} sorted"
-msgstr "{categorizedCount} sorted"
+msgid "{categorizedCount, plural, one {# sorted} other {# sorted}}"
+msgstr "{categorizedCount, plural, one {# sorted} other {# sorted}}"
 
 #: src/budget/components/budget-period-recap-card/budget-period-recap-card.tsx
 msgid "{categoryCount, plural, one {On budget in {onBudgetCategoryCount} of # category} other {On budget in {onBudgetCategoryCount} of # categories}}"
@@ -120,6 +116,10 @@ msgstr "{categoryName}: limit reached"
 msgid "{count, plural, one {{formattedAmount} rolled over across # category} other {{formattedAmount} rolled over across # categories}}"
 msgstr "{count, plural, one {{formattedAmount} rolled over across # category} other {{formattedAmount} rolled over across # categories}}"
 
+#: src/categorize-inbox/components/categorize-inbox-pile-legend/categorize-inbox-pile-legend.tsx
+msgid "{count, plural, one {# cash} other {# cash}}"
+msgstr "{count, plural, one {# cash} other {# cash}}"
+
 #: src/category/components/category-default-icon-button/category-default-icon-button.tsx
 msgid "{count, plural, one {# category uses the default icon} other {# categories use the default icon}}"
 msgstr "{count, plural, one {# category uses the default icon} other {# categories use the default icon}}"
@@ -136,6 +136,14 @@ msgstr "{count, plural, one {# missing category} other {# missing categories}}"
 msgid "{count, plural, one {# payment} other {# payments}}"
 msgstr "{count, plural, one {# payment} other {# payments}}"
 
+#: src/categorize-inbox/components/categorize-inbox-pile-legend/categorize-inbox-pile-legend.tsx
+msgid "{count, plural, one {# ready} other {# ready}}"
+msgstr "{count, plural, one {# ready} other {# ready}}"
+
+#: src/categorize-inbox/components/categorize-inbox-pile-legend/categorize-inbox-pile-legend.tsx
+msgid "{count, plural, one {# smaller} other {# smaller}}"
+msgstr "{count, plural, one {# smaller} other {# smaller}}"
+
 #: src/settings/utils/get-sync-repair-text.util.ts
 msgid "{count, plural, one {# sync repair} other {# sync repairs}}"
 msgstr "{count, plural, one {# sync repair} other {# sync repairs}}"
@@ -143,6 +151,10 @@ msgstr "{count, plural, one {# sync repair} other {# sync repairs}}"
 #: src/budget/components/budget-verdict-footer/budget-verdict-footer.tsx
 msgid "{count, plural, one {# upcoming bill} other {# upcoming bills}}"
 msgstr "{count, plural, one {# upcoming bill} other {# upcoming bills}}"
+
+#: src/categorize-inbox/components/categorize-inbox-pile-legend/categorize-inbox-pile-legend.tsx
+msgid "{count, plural, one {# your call} other {# your call}}"
+msgstr "{count, plural, one {# your call} other {# your call}}"
 
 #: src/category/hooks/use-delete-category.hook.ts
 msgid "{count, plural, one {This category has # transaction. Select another category to reassign it to.} other {This category has # transactions. Select another category to reassign them to.}}"
@@ -282,10 +294,6 @@ msgstr "{gapAmount} under"
 msgid "{gigabytes} GB"
 msgstr "{gigabytes} GB"
 
-#: src/categorize-inbox/components/categorize-inbox-pile-legend/categorize-inbox-pile-legend.tsx
-msgid "{groupCount, plural, one {# group left} other {# groups left}}"
-msgstr "{groupCount, plural, one {# group left} other {# groups left}}"
-
 #: src/categorize-inbox/components/categorize-inbox-one-offs-list/categorize-inbox-one-offs-list.tsx
 msgid "{groupCount} groups, {paymentCount} payments"
 msgstr "{groupCount} groups, {paymentCount} payments"
@@ -399,14 +407,6 @@ msgstr "{percentage}% of income"
 #: src/budget/components/budget-history-chart/budget-history-chart.tsx
 msgid "{periodLabel}, spent {spentAmount} of {limitAmount}"
 msgstr "{periodLabel}, spent {spentAmount} of {limitAmount}"
-
-#: src/categorize-inbox/components/categorize-inbox-group-position/categorize-inbox-group-position.tsx
-msgid "{position} of {total}"
-msgstr "{position} of {total}"
-
-#: src/categorize-inbox/components/categorize-inbox-pile-legend/categorize-inbox-pile-legend.tsx
-msgid "{readyCount} ready"
-msgstr "{readyCount} ready"
 
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "{remaining} GB one-time download"
@@ -803,6 +803,7 @@ msgstr "Add item"
 msgid "Add Tag"
 msgstr "Add Tag"
 
+#: src/categorize-inbox/components/categorize-inbox-group-tags-option/categorize-inbox-group-tags-option.tsx
 #: src/categorize-inbox/components/categorize-inbox-tag-provider/categorize-inbox-tag-provider.tsx
 msgid "Add tags"
 msgstr "Add tags"
@@ -2801,6 +2802,10 @@ msgstr "Field"
 msgid "File"
 msgstr "File"
 
+#: src/categorize-inbox/components/categorize-inbox-group-row-file-button/categorize-inbox-group-row-file-button.tsx
+msgid "File as {candidateTitle}"
+msgstr "File as {candidateTitle}"
+
 #: src/app/transaction-account-filter.tsx
 msgid "Filter accounts"
 msgstr "Filter accounts"
@@ -3228,10 +3233,6 @@ msgstr "Key updated"
 msgid "Language"
 msgstr "Language"
 
-#: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
-msgid "Largest first"
-msgstr "Largest first"
-
 #: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
 msgid "Last 1 month"
 msgstr "Last 1 month"
@@ -3627,8 +3628,12 @@ msgstr "More categories"
 msgid "More tags"
 msgstr "More tags"
 
+#: src/categorize-inbox/components/categorize-inbox-group-row-cash-button/categorize-inbox-group-row-cash-button.tsx
+msgid "Move {displayTitle} to cash"
+msgstr "Move {displayTitle} to cash"
+
 #: src/categorize-inbox/components/categorize-inbox-group-move-to-cash-option/categorize-inbox-group-move-to-cash-option.tsx
-#: src/categorize-inbox/components/categorize-inbox-group-row-hint/categorize-inbox-group-row-hint.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-row-cash-button/categorize-inbox-group-row-cash-button.tsx
 msgid "Move to cash"
 msgstr "Move to cash"
 
@@ -3695,10 +3700,6 @@ msgstr "New Transfer"
 #: src/installment-plan/component/installment-plan-next-payment/installment-plan-next-payment.tsx
 msgid "Next {formattedNextAmount} · {nextDate}"
 msgstr "Next {formattedNextAmount} · {nextDate}"
-
-#: src/categorize-inbox/components/categorize-inbox-group-next-button/categorize-inbox-group-next-button.tsx
-msgid "Next group"
-msgstr "Next group"
 
 #: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
 msgid "No account needed · Takes about a minute"
@@ -4945,6 +4946,7 @@ msgstr "Select Account"
 msgid "Select Action Type"
 msgstr "Select Action Type"
 
+#: src/categorize-inbox/components/categorize-inbox-payments-select-all/categorize-inbox-payments-select-all.tsx
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Select all"
 msgstr "Select all"
@@ -4985,6 +4987,10 @@ msgstr "Select Import Preset"
 #: src/rule/components/rule-condition-mcc-selector-content/rule-condition-mcc-selector-content.tsx
 msgid "Select MCC code"
 msgstr "Select MCC code"
+
+#: src/categorize-inbox/components/categorize-inbox-payments-select-all/categorize-inbox-payments-select-all.tsx
+msgid "Select none"
+msgstr "Select none"
 
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Select Operator"

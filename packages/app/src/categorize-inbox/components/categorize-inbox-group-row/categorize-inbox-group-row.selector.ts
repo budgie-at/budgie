@@ -1,3 +1,5 @@
 export const CategorizeInboxGroupRowSelector = {
-    Row: 'CategorizeInboxGroupRow'
+    Row: 'CategorizeInboxGroupRow',
+    FileButton: 'CategorizeInboxGroupRowFileButton',
+    MoveToCashButton: 'CategorizeInboxGroupRowMoveToCashButton'
 } as const;

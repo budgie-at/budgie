@@ -1,12 +1,12 @@
-import { TransactionTypeEnum, convertFromMicroUnits } from '@budgie/contracts';
+import { TransactionTypeEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
+import { useCategorizeInboxAmountLabel } from '../../hook/use-categorize-inbox-amount-label.hook';
 import { CategorizeInboxGroupStat } from '../categorize-inbox-group-stat/categorize-inbox-group-stat';
 
 import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
@@ -17,7 +17,7 @@ interface Props {
 
 export const CategorizeInboxGroupStats = ({ cluster }: Props) => {
     const { t } = useLingui();
-    const protectAmount = useProtectedAmountLabel();
+    const protectAmount = useCategorizeInboxAmountLabel();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
 
     const count = cluster.rows.length;
@@ -26,8 +26,8 @@ export const CategorizeInboxGroupStats = ({ cluster }: Props) => {
     const total = cluster.totalBaseAmount ?? fallbackTotal;
     const symbol = hasBaseTotal ? defaultInstrument.symbol : (cluster.rows.at(0)?.instrumentSymbol ?? '');
     const sign = cluster.rows.at(0)?.type === TransactionTypeEnum.INCOME ? '+' : '';
-    const totalLabel = `${sign}${protectAmount(convertFromMicroUnits(total), symbol)}`;
-    const averageLabel = `${sign}${protectAmount(convertFromMicroUnits(total / Math.max(1, count)), symbol)}`;
+    const totalLabel = `${sign}${protectAmount(total, symbol)}`;
+    const averageLabel = `${sign}${protectAmount(total / Math.max(1, count), symbol)}`;
 
     return (
         <View className="flex-row items-start justify-between">

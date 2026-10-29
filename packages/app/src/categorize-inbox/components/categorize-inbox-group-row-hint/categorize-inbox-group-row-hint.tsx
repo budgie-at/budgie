@@ -1,4 +1,3 @@
-import { CategorizeInboxSectionEnum } from '@budgie/categorization';
 import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
@@ -12,36 +11,16 @@ import { getCategorizeInboxTransferKey } from '../../utils/get-categorize-inbox-
 import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
 
 interface Props {
-    readonly cluster: Pick<CategorizeInboxClusterInterface, 'section' | 'displayTitle' | 'candidateLabelIds'>;
+    readonly cluster: Pick<CategorizeInboxClusterInterface, 'displayTitle' | 'candidateLabelIds'>;
 }
 
 export const CategorizeInboxGroupRowHint = ({ cluster }: Props) => {
     const { strategy, learnedTransferAccountIds } = useCategorizeInboxContext();
 
-    const { section, displayTitle, candidateLabelIds } = cluster;
+    const { displayTitle, candidateLabelIds } = cluster;
     const candidateId = candidateLabelIds.at(0);
     const candidateTitle = isDefined(candidateId) ? strategy?.labelsById.get(candidateId)?.title : null;
     const transferKey = getCategorizeInboxTransferKey(displayTitle);
-
-    if (section === CategorizeInboxSectionEnum.CASH_WITHDRAWALS) {
-        return (
-            <View className="shrink-0 rounded-full bg-warning-background px-sm py-xxs">
-                <Text className="text-xs font-medium text-warning-foreground">
-                    <Trans>Move to cash</Trans>
-                </Text>
-            </View>
-        );
-    }
-
-    if (section === CategorizeInboxSectionEnum.CONFIDENT) {
-        return isNotEmptyString(candidateTitle) ? (
-            <View className="shrink rounded-full bg-positive-background px-sm py-xxs">
-                <Text className="text-xs font-medium text-positive-foreground" numberOfLines={1}>
-                    {candidateTitle}
-                </Text>
-            </View>
-        ) : null;
-    }
 
     if (learnedTransferAccountIds.has(transferKey)) {
         return (

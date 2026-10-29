@@ -13,6 +13,7 @@ import { CategorizeInboxGroupLabelOption } from '../categorize-inbox-group-label
 import { CategorizeInboxGroupLearnedTransferOption } from '../categorize-inbox-group-learned-transfer-option/categorize-inbox-group-learned-transfer-option';
 import { CategorizeInboxGroupMoreLabelsOption } from '../categorize-inbox-group-more-labels-option/categorize-inbox-group-more-labels-option';
 import { CategorizeInboxGroupMoveToCashOption } from '../categorize-inbox-group-move-to-cash-option/categorize-inbox-group-move-to-cash-option';
+import { CategorizeInboxGroupTagsOption } from '../categorize-inbox-group-tags-option/categorize-inbox-group-tags-option';
 import { CategorizeInboxGroupTransferOption } from '../categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option';
 
 import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
@@ -58,6 +59,7 @@ export const CategorizeInboxGroupOptions = ({ cluster }: Props) => {
             ))}
             <CategorizeInboxGroupMoreLabelsOption cluster={cluster} />
             {trailingTransfer}
+            <CategorizeInboxGroupTagsOption cluster={cluster} />
             <CategorizeInboxGroupChoosePaymentsOption cluster={cluster} />
         </View>
     );

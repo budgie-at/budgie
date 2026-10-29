@@ -1,4 +1,3 @@
-import { CategorizeInboxSectionEnum } from '@budgie/categorization';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 
@@ -7,9 +6,9 @@ import { isDefined } from '@rnw-community/shared';
 import { useCategorizeInboxContext } from '../context/categorize-inbox.context';
 import { isCategorizeInboxCluster } from '../type-guard/is-categorize-inbox-cluster.type-guard';
 
-import type { CategorizeInboxClusterPositionInterface } from '../interface/categorize-inbox-cluster-position.interface';
+import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
 
-export const useCategorizeInboxCluster = (clusterKey: string): CategorizeInboxClusterPositionInterface => {
+export const useCategorizeInboxCluster = (clusterKey: string): CategorizeInboxClusterInterface | null => {
     const router = useRouter();
     const { items, isLoading } = useCategorizeInboxContext();
 
@@ -22,11 +21,6 @@ export const useCategorizeInboxCluster = (clusterKey: string): CategorizeInboxCl
     }
 
     const cluster = liveCluster ?? lastCluster;
-    const navigableClusters = clusters.filter(candidate => candidate.section !== CategorizeInboxSectionEnum.ONE_OFFS);
-    const index = navigableClusters.findIndex(candidate => candidate.key === clusterKey);
-    const hasSiblings = index >= 0 && navigableClusters.length > 1;
-    const nextKey = hasSiblings ? (navigableClusters[(index + 1) % navigableClusters.length]?.key ?? null) : null;
-    const position = index >= 0 ? index + 1 : null;
 
     useEffect(() => {
         if (!isLoading && !isDefined(cluster)) {
@@ -34,5 +28,5 @@ export const useCategorizeInboxCluster = (clusterKey: string): CategorizeInboxCl
         }
     }, [cluster, isLoading, router]);
 
-    return { cluster, position, total: navigableClusters.length, nextKey };
+    return cluster;
 };

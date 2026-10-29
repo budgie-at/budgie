@@ -16,11 +16,7 @@ interface Props {
 }
 
 export const CategorizeInboxUndoLayout = ({ title, description, onUndo, children }: Props) => (
-    <View
-        className="h-14 flex-row items-center gap-x-md rounded-4xl bg-secondary-background pl-3xl pr-md"
-        accessibilityLiveRegion="polite"
-        testID={CategorizeInboxUndoBarSelector.Bar}
-    >
+    <View className="h-14 flex-row items-center gap-x-md" accessibilityLiveRegion="polite" testID={CategorizeInboxUndoBarSelector.Bar}>
         <View className="flex-1" accessible>
             <Text className="text-sm font-semibold text-primary" numberOfLines={1}>
                 {title}

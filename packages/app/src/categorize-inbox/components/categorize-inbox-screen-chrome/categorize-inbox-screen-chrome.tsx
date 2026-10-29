@@ -9,11 +9,9 @@ import type { ReactNode } from 'react';
 
 interface Props {
     readonly children: ReactNode;
-    readonly headerCenter?: ReactNode;
-    readonly headerTrailing?: ReactNode;
 }
 
-export const CategorizeInboxScreenChrome = ({ children, headerCenter, headerTrailing }: Props) => {
+export const CategorizeInboxScreenChrome = ({ children }: Props) => {
     const router = useRouter();
 
     const handleGoBack = () => void router.back();
@@ -28,8 +26,6 @@ export const CategorizeInboxScreenChrome = ({ children, headerCenter, headerTrai
 
                     <ScreenChromeHeader>
                         <GoBackButton onPress={handleGoBack} />
-                        {headerCenter}
-                        {headerTrailing}
                     </ScreenChromeHeader>
                 </ScreenChromeFrame>
             </BottomChromeInsetProvider>

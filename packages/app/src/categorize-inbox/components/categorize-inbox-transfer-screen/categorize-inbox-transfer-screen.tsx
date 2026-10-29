@@ -23,7 +23,7 @@ interface Props {
 
 export const CategorizeInboxTransferScreen = ({ clusterKey }: Props) => {
     const { t } = useLingui();
-    const { cluster } = useCategorizeInboxCluster(clusterKey);
+    const cluster = useCategorizeInboxCluster(clusterKey);
     const { includedRows } = useCategorizeInboxContext();
     const [search, setSearch] = useState('');
     const [isRuleEnabled, setIsRuleEnabled] = useState(true);

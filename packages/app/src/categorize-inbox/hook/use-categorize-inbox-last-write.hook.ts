@@ -13,6 +13,7 @@ import type { CategorizeInboxLastWriteInterface } from '../interface/categorize-
 import type { CategorizeInboxStrategyInterface } from '../interface/categorize-inbox-strategy.interface';
 import type { CategorizeInboxVisibilityInterface } from '../interface/categorize-inbox-visibility.interface';
 import type { CategorizeInboxEnqueueWriteType } from '../type/categorize-inbox-enqueue-write.type';
+import type { CategorizeInboxClusterInterface, CategorizeInboxRowInterface } from '@budgie/categorization';
 import type { Dispatch, SetStateAction } from 'react';
 
 export const useCategorizeInboxLastWrite = (
@@ -63,5 +64,26 @@ export const useCategorizeInboxLastWrite = (
         });
     };
 
-    return { undo, applyFollowUp };
+    const addClusterTags = (cluster: CategorizeInboxClusterInterface, rows: CategorizeInboxRowInterface[]): void => {
+        strategy.pickFollowUpTagIds?.({ displayTitle: cluster.displayTitle, rows }, tagIds => {
+            if (isNotEmptyArray(tagIds) && isNotEmptyArray(rows)) {
+                enqueueWrite(
+                    Effect.gen(function* () {
+                        const categorizeInboxService = yield* CategorizeInboxService;
+                        yield* categorizeInboxService.assign(
+                            CategorizeInboxLabelKindEnum.TAG,
+                            tagIds.map(labelId => ({ ...cluster, rows, labelId })),
+                            TagSourceEnum.USER
+                        );
+
+                        hapticNotification(NotificationFeedbackType.Success);
+                    }),
+                    emptyFn,
+                    t`Could not tag transactions`
+                );
+            }
+        });
+    };
+
+    return { undo, applyFollowUp, addClusterTags };
 };

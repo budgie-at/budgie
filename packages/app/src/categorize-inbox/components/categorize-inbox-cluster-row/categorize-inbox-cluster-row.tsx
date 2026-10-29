@@ -1,6 +1,6 @@
 import { TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { Link } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -24,56 +24,46 @@ interface Props {
 
 export const CategorizeInboxClusterRow = ({ row, displayTitle }: Props) => {
     const { t } = useLingui();
-    const { formatDayAndMonthAndYear } = useFormatDate();
+    const router = useRouter();
+    const { formatWeekdayMonthAndDay } = useFormatDate();
     const { excludedTransactionIds, toggleExcluded } = useCategorizeInboxContext();
 
     const handleTogglePress = (): void => void toggleExcluded(row.transactionId);
+    const handleOpenLongPress = (): void => void router.push(getCategorizeInboxRowHref(row));
 
     const isIncluded = !excludedTransactionIds.has(row.transactionId);
-    const rowClassName = isIncluded ? 'flex-row items-center gap-x-xs' : 'flex-row items-center gap-x-xs opacity-40';
-    const checkboxIcon = isIncluded ? UserIconNameEnum.SquareCheck : UserIconNameEnum.Square;
+    const rowClassName = isIncluded
+        ? 'border-t-hairline border-secondary-corner flex-row items-center gap-x-md py-md'
+        : 'border-t-hairline border-secondary-corner flex-row items-center gap-x-md py-md opacity-40';
+    const selectionIcon = isIncluded ? UserIconNameEnum.CircleCheck : UserIconNameEnum.Circle;
+    const selectionClassName = isIncluded ? 'text-primary' : 'text-secondary-foreground';
     const accessibilityState = { checked: isIncluded };
     const ownTitle = row.title === displayTitle ? null : row.title;
 
     return (
-        <View className={rowClassName} {...testID(CategorizeInboxClusterRowSelector.Row, row.transactionId)}>
-            <HapticPressable
-                onPress={handleTogglePress}
-                className="h-11 w-11 items-center justify-center"
-                accessibilityRole="checkbox"
-                accessibilityState={accessibilityState}
-                accessibilityLabel={t`Include in bulk action`}
-                {...testID(CategorizeInboxClusterRowSelector.Checkbox, row.transactionId)}
-            >
-                <Icon icon={checkboxIcon} size={20} className="text-primary" />
-            </HapticPressable>
+        <HapticPressable
+            onPress={handleTogglePress}
+            onLongPress={handleOpenLongPress}
+            className={rowClassName}
+            accessibilityRole="checkbox"
+            accessibilityState={accessibilityState}
+            accessibilityLabel={t`Include in bulk action`}
+            {...testID(CategorizeInboxClusterRowSelector.Row, row.transactionId)}
+        >
+            <View className="flex-1 gap-y-xxs">
+                <Text className="text-primary text-sm tabular-nums" numberOfLines={1}>
+                    {formatWeekdayMonthAndDay(row.operatedAt)}
+                </Text>
+                {isDefined(ownTitle) ? (
+                    <Text className="text-secondary-foreground text-xs" numberOfLines={1}>
+                        {ownTitle}
+                    </Text>
+                ) : null}
+            </View>
 
-            <Link href={getCategorizeInboxRowHref(row)} asChild>
-                <HapticPressable
-                    className="flex-1 flex-row items-center gap-x-md"
-                    hitSlop={0}
-                    accessibilityRole="link"
-                    {...testID(CategorizeInboxClusterRowSelector.Open, row.transactionId)}
-                >
-                    <View className="flex-1 gap-y-xxs">
-                        <Text className="text-primary text-xs font-medium tabular-nums" numberOfLines={1}>
-                            {formatDayAndMonthAndYear(row.operatedAt)}
-                        </Text>
-                        {isDefined(ownTitle) ? (
-                            <Text className="text-secondary-foreground text-xs" numberOfLines={1}>
-                                {ownTitle}
-                            </Text>
-                        ) : null}
-                    </View>
+            <CategorizeInboxAmount amount={row.amount} symbol={row.instrumentSymbol} isIncome={row.type === TransactionTypeEnum.INCOME} />
 
-                    <CategorizeInboxAmount
-                        amount={row.amount}
-                        symbol={row.instrumentSymbol}
-                        isIncome={row.type === TransactionTypeEnum.INCOME}
-                        className="font-medium"
-                    />
-                </HapticPressable>
-            </Link>
-        </View>
+            <Icon icon={selectionIcon} size={22} className={selectionClassName} />
+        </HapticPressable>
     );
 };

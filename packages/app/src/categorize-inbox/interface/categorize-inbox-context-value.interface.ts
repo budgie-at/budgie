@@ -17,6 +17,7 @@ export interface CategorizeInboxContextValueInterface extends CategorizeInboxVis
     readonly movedToCashTransactionIds: number[];
     readonly assign: (assignments: CategorizeInboxAssignmentInterface[]) => void;
     readonly assignCluster: (cluster: CategorizeInboxClusterInterface, labelId: number) => void;
+    readonly addClusterTags: (cluster: CategorizeInboxClusterInterface) => void;
     readonly pickClusterLabels: (cluster: CategorizeInboxClusterInterface) => void;
     readonly pendingTransfer: CategorizeInboxPendingTransferInterface | null;
     readonly learnedTransferAccountIds: ReadonlyMap<string, number>;

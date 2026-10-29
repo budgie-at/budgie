@@ -14,6 +14,7 @@ import { CategorizeInboxUndoBar } from '../categorize-inbox-undo-bar/categorize-
 
 import { CategorizeInboxPanelSelector } from './categorize-inbox-panel.selector';
 
+const HIDDEN_EDGE_FADE_PROPS = { style: { display: 'none' } } as const;
 const SLOT_DURATION = 220;
 const SLOT_REDUCED_DURATION = 150;
 const SLOT_DISTANCE = 8;
@@ -41,8 +42,11 @@ export const CategorizeInboxPanel = () => {
     }
 
     return (
-        <ScreenChromeFooter>
-            <View className="px-5xl pb-md pt-xl" testID={CategorizeInboxPanelSelector.Panel}>
+        <ScreenChromeFooter includeBottomSafeArea={false} edgeFadeProps={HIDDEN_EDGE_FADE_PROPS}>
+            <View
+                className="border-t-hairline border-secondary-corner bg-primary-reverse px-3xl pb-safe pt-md"
+                testID={CategorizeInboxPanelSelector.Panel}
+            >
                 <View className="h-14">
                     <Animated.View key={slot.key} entering={entering} exiting={exiting} className="absolute inset-0 justify-center">
                         {slot}

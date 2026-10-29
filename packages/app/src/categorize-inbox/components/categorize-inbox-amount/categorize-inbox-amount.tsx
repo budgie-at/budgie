@@ -1,8 +1,7 @@
-import { convertFromMicroUnits } from '@budgie/contracts';
 import { Text } from 'react-native';
 
-import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { cn } from '../../../@generic/utils/cn.util';
+import { useCategorizeInboxAmountLabel } from '../../hook/use-categorize-inbox-amount-label.hook';
 
 interface Props {
     readonly amount: number;
@@ -12,13 +11,13 @@ interface Props {
 }
 
 export const CategorizeInboxAmount = ({ amount, symbol, isIncome, className }: Props) => {
-    const protectAmount = useProtectedAmountLabel();
+    const protectAmount = useCategorizeInboxAmountLabel();
 
     const colorClassName = isIncome ? 'text-positive-foreground' : 'text-primary';
 
     return (
         <Text className={cn('text-sm font-semibold tabular-nums', colorClassName, className)} numberOfLines={1}>
-            {protectAmount(convertFromMicroUnits(amount), symbol)}
+            {protectAmount(amount, symbol)}
         </Text>
     );
 };

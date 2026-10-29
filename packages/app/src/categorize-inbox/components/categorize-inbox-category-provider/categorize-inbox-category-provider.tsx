@@ -42,7 +42,7 @@ export const CategorizeInboxCategoryProvider = ({ params, children }: Props) => 
     };
 
     const handlePickFollowUpTagIds = (
-        assignment: CategorizeInboxAssignmentInterface,
+        assignment: Pick<CategorizeInboxAssignmentInterface, 'displayTitle' | 'rows'>,
         onPicked: (tagIds: number[] | null) => void
     ): void => {
         void appRuntime.runPromise(

@@ -22,10 +22,6 @@ msgstr "Achat P2P de {assetCode} sur Binance"
 msgid "Binance P2P sell {assetCode}"
 msgstr "Vente P2P de {assetCode} sur Binance"
 
-#: src/categorize-inbox/components/categorize-inbox-pile-legend/categorize-inbox-pile-legend.tsx
-msgid "«{largestName}» alone is {largestPercent}%"
-msgstr "«{largestName}» représente à lui seul {largestPercent} %"
-
 #. placeholder {0}: rows.length
 #: src/categorize-inbox/components/categorize-inbox-group-row/categorize-inbox-group-row.tsx
 msgid "{0, plural, one {# ATM withdrawal} other {# ATM withdrawals}}"
@@ -100,8 +96,8 @@ msgid "{categorizedCount, plural, one {# categorized this session} other {# cate
 msgstr "{categorizedCount, plural, one {# catégorisée pendant cette session} other {# catégorisées pendant cette session}}"
 
 #: src/categorize-inbox/components/categorize-inbox-pile-legend/categorize-inbox-pile-legend.tsx
-msgid "{categorizedCount} sorted"
-msgstr "{categorizedCount} triés"
+msgid "{categorizedCount, plural, one {# sorted} other {# sorted}}"
+msgstr "{categorizedCount, plural, one {# trié} other {# triés}}"
 
 #: src/budget/components/budget-period-recap-card/budget-period-recap-card.tsx
 msgid "{categoryCount, plural, one {On budget in {onBudgetCategoryCount} of # category} other {On budget in {onBudgetCategoryCount} of # categories}}"
@@ -119,6 +115,10 @@ msgstr "{categoryName}: limite atteinte"
 msgid "{count, plural, one {{formattedAmount} rolled over across # category} other {{formattedAmount} rolled over across # categories}}"
 msgstr "{count, plural, one {{formattedAmount} reportés sur # catégorie} other {{formattedAmount} reportés sur # catégories}}"
 
+#: src/categorize-inbox/components/categorize-inbox-pile-legend/categorize-inbox-pile-legend.tsx
+msgid "{count, plural, one {# cash} other {# cash}}"
+msgstr "{count, plural, one {# espèces} other {# espèces}}"
+
 #: src/category/components/category-default-icon-button/category-default-icon-button.tsx
 msgid "{count, plural, one {# category uses the default icon} other {# categories use the default icon}}"
 msgstr "{count, plural, one {# catégorie utilise l'icône par défaut} other {# catégories utilisent l'icône par défaut}}"
@@ -135,6 +135,14 @@ msgstr "{count, plural, one {# catégorie manquante} other {# catégories manqua
 msgid "{count, plural, one {# payment} other {# payments}}"
 msgstr "{count, plural, one {# paiement} other {# paiements}}"
 
+#: src/categorize-inbox/components/categorize-inbox-pile-legend/categorize-inbox-pile-legend.tsx
+msgid "{count, plural, one {# ready} other {# ready}}"
+msgstr "{count, plural, one {# prêt} other {# prêts}}"
+
+#: src/categorize-inbox/components/categorize-inbox-pile-legend/categorize-inbox-pile-legend.tsx
+msgid "{count, plural, one {# smaller} other {# smaller}}"
+msgstr "{count, plural, one {# petit} other {# petits}}"
+
 #: src/settings/utils/get-sync-repair-text.util.ts
 msgid "{count, plural, one {# sync repair} other {# sync repairs}}"
 msgstr "{count, plural, one {# réparation de synchronisation} other {# réparations de synchronisation}}"
@@ -142,6 +150,10 @@ msgstr "{count, plural, one {# réparation de synchronisation} other {# réparat
 #: src/budget/components/budget-verdict-footer/budget-verdict-footer.tsx
 msgid "{count, plural, one {# upcoming bill} other {# upcoming bills}}"
 msgstr "{count, plural, one {# facture à venir} other {# factures à venir}}"
+
+#: src/categorize-inbox/components/categorize-inbox-pile-legend/categorize-inbox-pile-legend.tsx
+msgid "{count, plural, one {# your call} other {# your call}}"
+msgstr "{count, plural, one {# à vous de voir} other {# à vous de voir}}"
 
 #: src/category/hooks/use-delete-category.hook.ts
 msgid "{count, plural, one {This category has # transaction. Select another category to reassign it to.} other {This category has # transactions. Select another category to reassign them to.}}"
@@ -281,10 +293,6 @@ msgstr "{gapAmount} de marge"
 msgid "{gigabytes} GB"
 msgstr "{gigabytes} Go"
 
-#: src/categorize-inbox/components/categorize-inbox-pile-legend/categorize-inbox-pile-legend.tsx
-msgid "{groupCount, plural, one {# group left} other {# groups left}}"
-msgstr "{groupCount, plural, one {# groupe restant} other {# groupes restants}}"
-
 #: src/categorize-inbox/components/categorize-inbox-one-offs-list/categorize-inbox-one-offs-list.tsx
 msgid "{groupCount} groups, {paymentCount} payments"
 msgstr "{groupCount} groupes, {paymentCount} paiements"
@@ -398,14 +406,6 @@ msgstr "{percentage}% des revenus"
 #: src/budget/components/budget-history-chart/budget-history-chart.tsx
 msgid "{periodLabel}, spent {spentAmount} of {limitAmount}"
 msgstr "{periodLabel}, {spentAmount} dépensés sur {limitAmount}"
-
-#: src/categorize-inbox/components/categorize-inbox-group-position/categorize-inbox-group-position.tsx
-msgid "{position} of {total}"
-msgstr "{position} sur {total}"
-
-#: src/categorize-inbox/components/categorize-inbox-pile-legend/categorize-inbox-pile-legend.tsx
-msgid "{readyCount} ready"
-msgstr "{readyCount} prêts"
 
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "{remaining} GB one-time download"
@@ -802,6 +802,7 @@ msgstr "Ajouter un élément"
 msgid "Add Tag"
 msgstr "Ajouter un tag"
 
+#: src/categorize-inbox/components/categorize-inbox-group-tags-option/categorize-inbox-group-tags-option.tsx
 #: src/categorize-inbox/components/categorize-inbox-tag-provider/categorize-inbox-tag-provider.tsx
 msgid "Add tags"
 msgstr "Ajouter des étiquettes"
@@ -2800,6 +2801,10 @@ msgstr "Champ"
 msgid "File"
 msgstr "Fichier"
 
+#: src/categorize-inbox/components/categorize-inbox-group-row-file-button/categorize-inbox-group-row-file-button.tsx
+msgid "File as {candidateTitle}"
+msgstr "Classer dans {candidateTitle}"
+
 #: src/app/transaction-account-filter.tsx
 msgid "Filter accounts"
 msgstr "Filtrer les comptes"
@@ -3227,10 +3232,6 @@ msgstr "Clé mise à jour"
 msgid "Language"
 msgstr "Langue"
 
-#: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
-msgid "Largest first"
-msgstr "Les plus gros d’abord"
-
 #: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
 msgid "Last 1 month"
 msgstr "1 dernier mois"
@@ -3626,8 +3627,12 @@ msgstr "Autres catégories"
 msgid "More tags"
 msgstr "Plus d'étiquettes"
 
+#: src/categorize-inbox/components/categorize-inbox-group-row-cash-button/categorize-inbox-group-row-cash-button.tsx
+msgid "Move {displayTitle} to cash"
+msgstr "Déplacer {displayTitle} vers les espèces"
+
 #: src/categorize-inbox/components/categorize-inbox-group-move-to-cash-option/categorize-inbox-group-move-to-cash-option.tsx
-#: src/categorize-inbox/components/categorize-inbox-group-row-hint/categorize-inbox-group-row-hint.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-row-cash-button/categorize-inbox-group-row-cash-button.tsx
 msgid "Move to cash"
 msgstr "Vers les espèces"
 
@@ -3694,10 +3699,6 @@ msgstr "Nouveau transfert"
 #: src/installment-plan/component/installment-plan-next-payment/installment-plan-next-payment.tsx
 msgid "Next {formattedNextAmount} · {nextDate}"
 msgstr "Prochain paiement : {formattedNextAmount} · {nextDate}"
-
-#: src/categorize-inbox/components/categorize-inbox-group-next-button/categorize-inbox-group-next-button.tsx
-msgid "Next group"
-msgstr "Groupe suivant"
 
 #: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
 msgid "No account needed · Takes about a minute"
@@ -4944,6 +4945,7 @@ msgstr "Sélectionner un compte"
 msgid "Select Action Type"
 msgstr "Sélectionner le type d'action"
 
+#: src/categorize-inbox/components/categorize-inbox-payments-select-all/categorize-inbox-payments-select-all.tsx
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Select all"
 msgstr "Tout sélectionner"
@@ -4984,6 +4986,10 @@ msgstr "Sélectionner un modèle d'importation"
 #: src/rule/components/rule-condition-mcc-selector-content/rule-condition-mcc-selector-content.tsx
 msgid "Select MCC code"
 msgstr "Sélectionner un code MCC"
+
+#: src/categorize-inbox/components/categorize-inbox-payments-select-all/categorize-inbox-payments-select-all.tsx
+msgid "Select none"
+msgstr "Tout désélectionner"
 
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Select Operator"

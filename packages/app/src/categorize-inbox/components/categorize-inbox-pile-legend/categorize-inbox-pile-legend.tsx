@@ -1,40 +1,38 @@
+import { CategorizeInboxSectionEnum } from '@budgie/categorization';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isPositiveNumber } from '@rnw-community/shared';
 
-import { cn } from '../../../@generic/utils/cn.util';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
-import { isCategorizeInboxCluster } from '../../type-guard/is-categorize-inbox-cluster.type-guard';
-import { getCategorizeInboxJarName } from '../../utils/get-categorize-inbox-jar-name.util';
 import { getCategorizeInboxPile } from '../../utils/get-categorize-inbox-pile.util';
+import { CategorizeInboxPileLegendItem } from '../categorize-inbox-pile-legend-item/categorize-inbox-pile-legend-item';
 
 export const CategorizeInboxPileLegend = () => {
     const { t } = useLingui();
     const { items, remainingCount, categorizedCount } = useCategorizeInboxContext();
 
-    const { readyCount, largestReview } = getCategorizeInboxPile(items, remainingCount + categorizedCount);
-    const largestName = isDefined(largestReview)
-        ? (getCategorizeInboxJarName(largestReview.displayTitle) ?? largestReview.displayTitle)
-        : '';
-    const largestPercent = isPositiveNumber(remainingCount) ? Math.round(((largestReview?.rows.length ?? 0) / remainingCount) * 100) : 0;
+    const { segments } = getCategorizeInboxPile(items, remainingCount + categorizedCount);
 
-    const groupCount = items.filter(isCategorizeInboxCluster).length;
-    const groupsText = t({ message: plural(groupCount, { one: '# group left', other: '# groups left' }) });
-    const readyText = isPositiveNumber(readyCount) ? t`${readyCount} ready` : null;
-    const leadingClassName = isDefined(readyText) ? 'text-positive-foreground' : 'text-secondary-foreground';
-    const aloneText = isDefined(largestReview) ? t`«${largestName}» alone is ${largestPercent}%` : null;
-    const sortedText = isPositiveNumber(categorizedCount) ? t`${categorizedCount} sorted` : aloneText;
+    const sectionTexts: Record<CategorizeInboxSectionEnum, (count: number) => string> = {
+        [CategorizeInboxSectionEnum.CONFIDENT]: count => t({ message: plural(count, { one: '# ready', other: '# ready' }) }),
+        [CategorizeInboxSectionEnum.CASH_WITHDRAWALS]: count => t({ message: plural(count, { one: '# cash', other: '# cash' }) }),
+        [CategorizeInboxSectionEnum.REVIEW]: count => t({ message: plural(count, { one: '# your call', other: '# your call' }) }),
+        [CategorizeInboxSectionEnum.ONE_OFFS]: count => t({ message: plural(count, { one: '# smaller', other: '# smaller' }) })
+    };
+    const sortedText = t({ message: plural(categorizedCount, { one: '# sorted', other: '# sorted' }) });
 
     return (
-        <View className="flex-row justify-between gap-x-xl">
-            <Text className={cn('text-xs font-medium tabular-nums', leadingClassName)} numberOfLines={1}>
-                {readyText ?? groupsText}
-            </Text>
-            <Text className="shrink text-xs text-secondary-foreground tabular-nums" numberOfLines={1}>
-                {sortedText}
-            </Text>
+        <View className="flex-row flex-wrap gap-x-lg gap-y-xs">
+            {segments
+                .filter(({ count }) => isPositiveNumber(count))
+                .map(({ section, className, count }) => (
+                    <CategorizeInboxPileLegendItem key={section} dotClassName={className} text={sectionTexts[section](count)} />
+                ))}
+            {isPositiveNumber(categorizedCount) ? (
+                <CategorizeInboxPileLegendItem dotClassName="border border-secondary-foreground bg-secondary-corner" text={sortedText} />
+            ) : null}
         </View>
     );
 };

@@ -35,7 +35,7 @@ export const useCategorizeInboxActions = (
         resetMovedToCash
     );
 
-    const { undo, applyFollowUp } = useCategorizeInboxLastWrite(strategy, visibility, enqueueWrite, setLastWrite);
+    const { undo, applyFollowUp, addClusterTags } = useCategorizeInboxLastWrite(strategy, visibility, enqueueWrite, setLastWrite);
 
     const assign = (assignments: CategorizeInboxAssignmentInterface[]): void => {
         commitPendingTransfer();
@@ -75,6 +75,7 @@ export const useCategorizeInboxActions = (
         lastWrite,
         assign,
         assignCluster: (cluster, labelId) => void assignLabels({ ...cluster, rows: visibility.includedRows(cluster) }, [labelId]),
+        addClusterTags: cluster => void addClusterTags(cluster, visibility.includedRows(cluster)),
         pickClusterLabels: cluster => void pickLabels({ ...cluster, rows: visibility.includedRows(cluster) }, cluster.candidateLabelIds),
         ...transferActions,
         ...moveToCashActions,
