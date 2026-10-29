@@ -115,8 +115,7 @@ const capRaises = (
     const capped: BudgetLimitProposalInterface[] = [];
 
     for (const proposal of raised) {
-        const grant = Math.min(proposal.newAmount - proposal.previousAmount, roundDownToUnit(Math.max(room, 0)));
-
+        const grant = Math.min(proposal.newAmount - proposal.previousAmount, Math.max(room, 0));
         const newAmount = roundDownToUnit(proposal.previousAmount + grant);
 
         if (newAmount > proposal.previousAmount) {
