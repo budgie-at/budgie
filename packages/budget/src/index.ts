@@ -82,3 +82,6 @@ export { computeFundReservations } from './fund/utils/compute-fund-reservations.
 export type { BudgetReservationInterface } from './projection/interface/budget-reservation.interface';
 export type { BudgetFundReservationSourceInterface } from './fund/interface/budget-fund-reservation-source.interface';
 export { BudgetFundSpendService } from './fund/service/budget-fund-spend.service';
+export { computeFundCovered } from './fund/utils/compute-fund-covered.util';
+export { NO_FUND_COVERED } from './fund/constant/no-fund-covered.constant';
+export type { BudgetFundCoveredInterface } from './fund/interface/budget-fund-covered.interface';

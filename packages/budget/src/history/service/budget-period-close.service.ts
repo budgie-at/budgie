@@ -5,6 +5,9 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
+import { NO_FUND_COVERED } from '../../fund/constant/no-fund-covered.constant';
+import { BudgetFundSpendService } from '../../fund/service/budget-fund-spend.service';
+import { computeFundCovered } from '../../fund/utils/compute-fund-covered.util';
 import { computeIncomeReceived } from '../../income/utils/compute-income-received.util';
 import { resolveBudgetOverallLimit } from '../../income/utils/resolve-budget-overall-limit.util';
 import { computePeriodWindow, getInclusiveEnd } from '../../period/utils/budget-period.util';
@@ -35,6 +38,7 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
         const budgetCategoryLimitRepository = yield* BudgetCategoryLimitRepository;
         const budgetPeriodSnapshotRepository = yield* BudgetPeriodSnapshotRepository;
         const budgetLimitChangeRepository = yield* BudgetLimitChangeRepository;
+        const budgetFundSpendService = yield* BudgetFundSpendService;
 
         const computeStoredCarryIn = (snapshot: BudgetPeriodSnapshotWithCategoriesEntityInterface): BudgetCarryOutsInterface => ({
             other: snapshot.otherCarriedIn,
@@ -59,6 +63,30 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
             return resolveBudgetOverallLimit(budget.limitSource, budget.overallLimit, incomeReceived, incomeReceived);
         });
 
+        const loadClosedSpend = Effect.fnUntraced(function* (
+            budget: Pick<BudgetEntityInterface, 'id' | 'instrumentId'>,
+            limitedCategoryIds: ReadonlySet<number>,
+            window: BudgetPeriodWindowInterface,
+            isReconstructed: boolean
+        ) {
+            if (isReconstructed) {
+                const rows = yield* budgetRepository.findBudgetSpentEntries(
+                    window.periodStart,
+                    window.nextPeriodStart,
+                    budget.instrumentId
+                );
+
+                return { spent: computeSpent(rows, budget.instrumentId), fundCovered: NO_FUND_COVERED };
+            }
+
+            const { entries, draws } = yield* budgetFundSpendService.findSpentWithDraws(budget, window.periodStart, window.nextPeriodStart);
+
+            return {
+                spent: computeSpent(entries, budget.instrumentId),
+                fundCovered: computeFundCovered(entries, draws, limitedCategoryIds)
+            };
+        });
+
         const makeSnapshotPeriod = (
             budget: Pick<
                 BudgetEntityInterface,
@@ -68,26 +96,27 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
             isReconstructed: boolean
         ) =>
             Effect.fnUntraced(function* (window: BudgetPeriodWindowInterface, carryIn: BudgetCarryOutsInterface) {
-                const entries = yield* budgetRepository.findBudgetSpentEntries(
-                    window.periodStart,
-                    window.nextPeriodStart,
-                    budget.instrumentId
+                const { spent, fundCovered } = yield* loadClosedSpend(
+                    budget,
+                    new Set(categoryLimits.map(limit => limit.categoryId)),
+                    window,
+                    isReconstructed
                 );
-                const spent = computeSpent(entries, budget.instrumentId);
                 const overallLimit = yield* resolveOverallLimit(budget, window);
                 const limits = isReconstructed
                     ? categoryLimits.map(limit => ({ ...limit, rolloverMode: BudgetRolloverModeEnum.NONE }))
                     : categoryLimits;
-                const rows = buildPeriodSnapshotRows(limits, spent, carryIn);
+                const rows = buildPeriodSnapshotRows(limits, spent, carryIn, fundCovered);
                 const snapshot = {
                     budgetId: budget.id,
                     periodStart: window.periodStart,
                     periodEnd: getInclusiveEnd(window.nextPeriodStart),
                     overallLimit,
-                    overallSpent: spent.spentOverall,
+                    overallSpent: rows.overallSpent,
                     otherLimit: budget.otherLimit,
                     otherSpent: rows.otherSpent,
                     otherCarriedIn: rows.otherCarriedIn,
+                    otherFundCovered: rows.otherFundCovered,
                     otherRolloverMode: isReconstructed ? BudgetRolloverModeEnum.NONE : budget.otherRolloverMode,
                     isReconstructed
                 };
@@ -108,7 +137,11 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
                 budget.instrumentId
             );
             const spent = computeSpent(entries, budget.instrumentId);
-            const rows = buildPeriodSnapshotRows(snapshot.categories, spent, carryIn);
+            const storedFundCovered = {
+                byCategory: new Map(snapshot.categories.map(category => [category.categoryId, category.fundCovered])),
+                other: snapshot.otherFundCovered
+            };
+            const rows = buildPeriodSnapshotRows(snapshot.categories, spent, carryIn, storedFundCovered);
 
             const categoryChanges = snapshot.categories.flatMap((category, index) => {
                 const row = rows.categories[index];
@@ -119,12 +152,12 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
             });
 
             if (
-                snapshot.overallSpent !== spent.spentOverall ||
+                snapshot.overallSpent !== rows.overallSpent ||
                 snapshot.otherSpent !== rows.otherSpent ||
                 snapshot.otherCarriedIn !== rows.otherCarriedIn
             ) {
                 yield* budgetPeriodSnapshotRepository.updateSnapshot(snapshot.id, {
-                    overallSpent: spent.spentOverall,
+                    overallSpent: rows.overallSpent,
                     otherSpent: rows.otherSpent,
                     otherCarriedIn: rows.otherCarriedIn
                 });
@@ -262,7 +295,8 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
             BudgetRepository.layer,
             BudgetCategoryLimitRepository.layer,
             BudgetPeriodSnapshotRepository.layer,
-            BudgetLimitChangeRepository.layer
+            BudgetLimitChangeRepository.layer,
+            BudgetFundSpendService.layer
         ])
     );
 }

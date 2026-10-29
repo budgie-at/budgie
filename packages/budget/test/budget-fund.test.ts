@@ -3,6 +3,7 @@ import { expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
 import { applyFundDraws } from '../src/fund/utils/apply-fund-draws.util';
+import { computeFundCovered } from '../src/fund/utils/compute-fund-covered.util';
 import { computeFundDueWindow } from '../src/fund/utils/compute-fund-due-window.util';
 import { computeFundReservations } from '../src/fund/utils/compute-fund-reservations.util';
 import { computeFundSetAside } from '../src/fund/utils/compute-fund-set-aside.util';
@@ -239,5 +240,28 @@ it.effect('keeps reserving when the posted spend is another category or outside 
 
         expect(computeFundReservations([POSTED_FUND], OCTOBER_WINDOW, MONTHLY_SPEC, [otherCategory])).toHaveLength(1);
         expect(computeFundReservations([laterFund], OCTOBER_WINDOW, MONTHLY_SPEC, [outsideWindow])).toHaveLength(1);
+    })
+);
+
+it.effect('groups draws by limited category and sums the rest as covered spend of Other', () =>
+    Effect.sync(() => {
+        const entries = [
+            { entryId: 1, categoryId: INSURANCE_CATEGORY },
+            { entryId: 2, categoryId: 9 },
+            { entryId: 3, categoryId: INSURANCE_CATEGORY }
+        ];
+        const covered = computeFundCovered(
+            entries,
+            [
+                { fundId: 1, entryId: 1, amount: 100 },
+                { fundId: 1, entryId: 3, amount: 50 },
+                { fundId: 2, entryId: 2, amount: 30 },
+                { fundId: 2, entryId: 99, amount: 5 }
+            ],
+            new Set([INSURANCE_CATEGORY])
+        );
+
+        expect([...covered.byCategory.entries()]).toEqual([[INSURANCE_CATEGORY, 150]]);
+        expect(covered.other).toBe(30);
     })
 );
