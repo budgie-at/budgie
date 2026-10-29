@@ -2,6 +2,7 @@ import { AccountAssociationEnum, AccountWithInstrumentEntityInterface } from '@b
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
+import { CollapsibleChromeScrollFade } from '../../../@generic/component/collapsible-chrome-scroll-fade/collapsible-chrome-scroll-fade';
 import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { AccountDetailsSelector } from '../../../app/(main)/account/[id]/account-details.selector';
@@ -21,22 +22,24 @@ export const AccountDetailsHero = ({ account, balance }: Props) => {
 
     return (
         <View className="items-center gap-y-lg pb-md">
-            <View
-                accessible
-                accessibilityLabel={t`Balance: ${formattedBalance}`}
-                testID={AccountDetailsSelector.Balance}
-                collapsable={false}
-                className="w-full"
-            >
-                <ProtectedMoney
-                    className="font-semibold tracking-[-1px]"
-                    minFontSize={24}
-                    maxFontSize={48}
-                    instrumentSymbol={account.instrument.symbol}
+            <CollapsibleChromeScrollFade>
+                <View
+                    accessible
+                    accessibilityLabel={t`Balance: ${formattedBalance}`}
+                    testID={AccountDetailsSelector.Balance}
+                    collapsable={false}
+                    className="w-full"
                 >
-                    {balance}
-                </ProtectedMoney>
-            </View>
+                    <ProtectedMoney
+                        className="font-semibold tracking-[-1px]"
+                        minFontSize={24}
+                        maxFontSize={48}
+                        instrumentSymbol={account.instrument.symbol}
+                    >
+                        {balance}
+                    </ProtectedMoney>
+                </View>
+            </CollapsibleChromeScrollFade>
 
             <AccountDetailsStatusLine account={account} />
 

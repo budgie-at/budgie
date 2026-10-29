@@ -1,11 +1,11 @@
 import { View } from 'react-native';
 
-import { CollapsibleHeaderBackdrop, SCREEN_CHROME_HEADER_LAYOUT_METRICS } from '@rnw-community/react-native-screen-chrome';
+import { CollapsibleHeaderBackdrop } from '@rnw-community/react-native-screen-chrome';
 
 import { SCREEN_CHROME_CONTENT_INSET_TOP } from '../../../@generic/constant/screen-chrome-content-inset.constant';
+import { SCREEN_CHROME_HEADER_BAND_HEIGHT } from '../../../@generic/constant/screen-chrome-header-band-height.constant';
 
-const BAND_HEIGHT = SCREEN_CHROME_HEADER_LAYOUT_METRICS.slotSize + 12;
-const SCROLL_ANIMATION = { opacityInputRange: [0, SCREEN_CHROME_CONTENT_INSET_TOP - BAND_HEIGHT] } as const;
+const SCROLL_ANIMATION = { opacityInputRange: [0, SCREEN_CHROME_CONTENT_INSET_TOP - SCREEN_CHROME_HEADER_BAND_HEIGHT] } as const;
 
 const renderSolidBand = () => (
     <View className="flex-1">
@@ -15,5 +15,5 @@ const renderSolidBand = () => (
 );
 
 export const AccountDetailsHeaderBackdrop = () => (
-    <CollapsibleHeaderBackdrop height={BAND_HEIGHT} scrollAnimation={SCROLL_ANIMATION} renderBand={renderSolidBand} />
+    <CollapsibleHeaderBackdrop height={SCREEN_CHROME_HEADER_BAND_HEIGHT} scrollAnimation={SCROLL_ANIMATION} renderBand={renderSolidBand} />
 );

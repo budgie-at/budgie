@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { CollapsibleChromeScrollFade } from '../../../@generic/component/collapsible-chrome-scroll-fade/collapsible-chrome-scroll-fade';
 import { cn } from '../../../@generic/utils/cn.util';
 import { useAccountSync } from '../../../sync/hook/use-account-sync.hook';
 import { ACCOUNT_SYNC_STATE_COLOR } from '../../constant/account-sync-state-color.constant';
@@ -28,21 +29,25 @@ export const AccountDetailsStatusLine = ({ account }: Props) => {
 
     if (!isDefined(syncState)) {
         return isNotEmptyString(details) ? (
-            <Text className="text-sm text-secondary-foreground text-center" numberOfLines={1}>
-                {details}
-            </Text>
+            <CollapsibleChromeScrollFade>
+                <Text className="text-sm text-secondary-foreground text-center" numberOfLines={1}>
+                    {details}
+                </Text>
+            </CollapsibleChromeScrollFade>
         ) : null;
     }
 
     const labelClassName = syncState === AccountSyncStateEnum.FAILED ? 'text-destructive-foreground' : 'text-secondary-foreground';
 
     return (
-        <View className="max-w-full flex-row items-center justify-center gap-x-sm">
-            <View className={cn('size-[8px] rounded-full', ACCOUNT_SYNC_STATE_COLOR[syncState])} />
-            <Text className="shrink text-sm text-secondary-foreground" numberOfLines={1}>
-                <Text className={labelClassName}>{t(ACCOUNT_SYNC_STATE_LABEL[syncState])}</Text>
-                {detailsSuffix}
-            </Text>
-        </View>
+        <CollapsibleChromeScrollFade>
+            <View className="max-w-full flex-row items-center justify-center gap-x-sm">
+                <View className={cn('size-[8px] rounded-full', ACCOUNT_SYNC_STATE_COLOR[syncState])} />
+                <Text className="shrink text-sm text-secondary-foreground" numberOfLines={1}>
+                    <Text className={labelClassName}>{t(ACCOUNT_SYNC_STATE_LABEL[syncState])}</Text>
+                    {detailsSuffix}
+                </Text>
+            </View>
+        </CollapsibleChromeScrollFade>
     );
 };

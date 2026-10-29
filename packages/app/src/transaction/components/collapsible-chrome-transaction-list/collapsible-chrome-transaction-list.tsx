@@ -4,7 +4,6 @@ import { useSharedValue } from 'react-native-reanimated';
 
 import { CollapsibleChromeLegendList } from '../../../@generic/component/collapsible-chrome-legend-list/collapsible-chrome-legend-list';
 import { CollapsibleChromePinnedBar } from '../../../@generic/component/collapsible-chrome-pinned-bar/collapsible-chrome-pinned-bar';
-import { CollapsibleChromeScrollFade } from '../../../@generic/component/collapsible-chrome-scroll-fade/collapsible-chrome-scroll-fade';
 import { useTransactionList } from '../../hook/use-transaction-list.hook';
 import { TransactionFilters } from '../transaction-filters/transaction-filters';
 import { TransactionListEmptyState } from '../transaction-list-empty-state/transaction-list-empty-state';
@@ -35,9 +34,7 @@ export const CollapsibleChromeTransactionList = ({ accountId, children }: Props)
 
     const listHeader = (
         <View>
-            <CollapsibleChromeScrollFade>
-                <View className="pb-md">{children}</View>
-            </CollapsibleChromeScrollFade>
+            <View className="pb-md">{children}</View>
 
             <View style={filtersSpacerStyle} onLayout={handleFiltersLayout} />
         </View>

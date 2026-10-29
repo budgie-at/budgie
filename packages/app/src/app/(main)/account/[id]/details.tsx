@@ -6,6 +6,7 @@ import { ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
 import { isDefined } from '@rnw-community/shared';
 
 import { CollapsibleChromeHeader } from '../../../../@generic/component/collapsible-chrome-header/collapsible-chrome-header';
+import { CollapsibleChromeScrollFade } from '../../../../@generic/component/collapsible-chrome-scroll-fade/collapsible-chrome-scroll-fade';
 import { GroupedSurface } from '../../../../@generic/component/grouped-surface/grouped-surface';
 import { HeaderBackButton } from '../../../../@generic/component/header-back-button/header-back-button';
 import { RevealGate } from '../../../../@generic/component/reveal-gate/reveal-gate';
@@ -15,9 +16,8 @@ import { ScreenChromeThemeProvider } from '../../../../@generic/provider/screen-
 import { AccountActionsMenu } from '../../../../account/component/account-actions-menu/account-actions-menu';
 import { AccountDetailsHeaderBackdrop } from '../../../../account/component/account-details-header-backdrop/account-details-header-backdrop';
 import { AccountDetailsHero } from '../../../../account/component/account-details-hero/account-details-hero';
-import { AccountDetailsLargeTitle } from '../../../../account/component/account-details-large-title/account-details-large-title';
 import { AccountDetailsMenuControls } from '../../../../account/component/account-details-menu-controls/account-details-menu-controls';
-import { AccountDetailsSmallTitle } from '../../../../account/component/account-details-small-title/account-details-small-title';
+import { AccountDetailsTitle } from '../../../../account/component/account-details-title/account-details-title';
 import { DebtAccountBalance } from '../../../../account/component/debt-account-balance/debt-account-balance';
 import { DepositDetailsCard } from '../../../../account/component/deposit-details-card/deposit-details-card';
 import { useAccountBalanceQuery } from '../../../../account/query/use-account-balance.query';
@@ -60,29 +60,33 @@ export default function AccountDetails() {
 
     const accountSummary =
         account.type === AccountTypeEnum.DEBT ? (
-            <View className="gap-y-md">
-                <DebtAccountBalance
-                    accountId={id}
-                    debtType={account.debtType}
-                    instrumentSymbol={instrumentSymbol}
-                    summary={debtProgressSummary}
-                />
+            <CollapsibleChromeScrollFade>
+                <View className="gap-y-md">
+                    <DebtAccountBalance
+                        accountId={id}
+                        debtType={account.debtType}
+                        instrumentSymbol={instrumentSymbol}
+                        summary={debtProgressSummary}
+                    />
 
-                {account.debtType === AccountDebtTypeEnum.INSTALLMENT ? (
-                    <InstallmentPlanScheduleSummary accountId={id} instrumentSymbol={instrumentSymbol} />
-                ) : null}
-            </View>
+                    {account.debtType === AccountDebtTypeEnum.INSTALLMENT ? (
+                        <InstallmentPlanScheduleSummary accountId={id} instrumentSymbol={instrumentSymbol} />
+                    ) : null}
+                </View>
+            </CollapsibleChromeScrollFade>
         ) : (
             <View className="gap-y-4xl">
                 <AccountDetailsHero account={account} balance={balance} />
 
                 {account.type === AccountTypeEnum.DEPOSIT ? (
-                    <DepositDetailsCard
-                        balance={balance}
-                        instrumentSymbol={instrumentSymbol}
-                        interestRate={account.interestRate}
-                        deadline={account.deadline}
-                    />
+                    <CollapsibleChromeScrollFade>
+                        <DepositDetailsCard
+                            balance={balance}
+                            instrumentSymbol={instrumentSymbol}
+                            interestRate={account.interestRate}
+                            deadline={account.deadline}
+                        />
+                    </CollapsibleChromeScrollFade>
                 ) : null}
             </View>
         );
@@ -101,11 +105,11 @@ export default function AccountDetails() {
                         <CollapsibleChromeHeader
                             leading={<HeaderBackButton />}
                             trailing={headerTrailing}
-                            expandedTitle={<AccountDetailsLargeTitle account={account} />}
-                            collapsedTitle={
-                                <AccountDetailsSmallTitle title={account.title} balance={balance} instrumentSymbol={instrumentSymbol} />
-                            }
+                            expandedTitle={null}
+                            collapsedTitle={null}
                         />
+
+                        <AccountDetailsTitle title={account.title} balance={balance} instrumentSymbol={instrumentSymbol} />
                     </ScreenChromeFrame>
                 </ScreenChromeThemeProvider>
             </RevealGate>

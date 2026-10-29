@@ -5,6 +5,7 @@ import { Text } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
+import { CollapsibleChromeScrollFade } from '../../../@generic/component/collapsible-chrome-scroll-fade/collapsible-chrome-scroll-fade';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { getDateFilterByPeriod } from '../../../@generic/utils/date/get-date-filter-by-period.util';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
@@ -32,17 +33,19 @@ export const AccountDetailsMonthChips = ({ accountId }: Props) => {
     const formattedIncome = protectAmount(income, defaultInstrument.symbol);
 
     return (
-        <Text
-            accessibilityLabel={t`This month: spent ${formattedExpense}, income ${formattedIncome}`}
-            className="text-[15px] text-secondary-foreground text-center tabular-nums"
-            numberOfLines={1}
-            adjustsFontSizeToFit
-            minimumFontScale={0.85}
-        >
-            <Trans>
-                This month · Spent <Text className="text-primary font-semibold">{formattedExpense}</Text> · Income{' '}
-                <Text className="text-primary font-semibold">{formattedIncome}</Text>
-            </Trans>
-        </Text>
+        <CollapsibleChromeScrollFade>
+            <Text
+                accessibilityLabel={t`This month: spent ${formattedExpense}, income ${formattedIncome}`}
+                className="text-[15px] text-secondary-foreground text-center tabular-nums"
+                numberOfLines={1}
+                adjustsFontSizeToFit
+                minimumFontScale={0.85}
+            >
+                <Trans>
+                    This month · Spent <Text className="text-primary font-semibold">{formattedExpense}</Text> · Income{' '}
+                    <Text className="text-primary font-semibold">{formattedIncome}</Text>
+                </Trans>
+            </Text>
+        </CollapsibleChromeScrollFade>
     );
 };
