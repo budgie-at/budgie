@@ -11,14 +11,16 @@ import {
     TransactionEntityTable,
     TransactionEntryEntityTable,
     TransactionEntryTypeEnum,
+    TransactionTypeEnum,
     buildSpendingEntryCondition
 } from '@budgie/contracts';
-import { and, between, eq, isNull, min, sql } from 'drizzle-orm';
+import { and, between, eq, isNull, min, ne, or, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import type { BudgetCreateEntityInterface, BudgetUpdateEntityInterface } from '@budgie/contracts';
+import type { SQL } from 'drizzle-orm';
 
 export class BudgetRepository extends Context.Service<BudgetRepository>()('@budgie/budget/BudgetRepository', {
     make: Effect.sync(() => {
@@ -57,6 +59,47 @@ export class BudgetRepository extends Context.Service<BudgetRepository>()('@budg
                 between(TransactionEntityTable.operatedAt, periodStart, new Date(nextPeriodStart.getTime() - 1))
             );
 
+        const buildIncomeWhere = (periodStart: Date, nextPeriodStart: Date) =>
+            and(
+                transactionFilters.buildVisibleTransactionCondition(),
+                transactionFilters.buildPrimaryLedgerEntryCondition(),
+                transactionFilters.buildNonDebtAccountCondition(),
+                buildSpendingEntryCondition(),
+                eq(TransactionEntityTable.type, TransactionTypeEnum.INCOME),
+                eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.DEBIT),
+                or(
+                    isNull(TransactionEntityTable.consolidationType),
+                    ne(TransactionEntityTable.consolidationType, TransactionConsolidationTypeEnum.REFUND)
+                ),
+                between(TransactionEntityTable.operatedAt, periodStart, new Date(nextPeriodStart.getTime() - 1))
+            );
+
+        const findEntries = (amountSql: SQL<number>, where: SQL | undefined, baseInstrumentId: number) =>
+            Db.query(db =>
+                db
+                    .select({
+                        amount: amountSql,
+                        categoryId: TransactionEntryEntityTable.categoryId,
+                        instrumentId: AccountEntityTable.instrumentId,
+                        rate: ExchangeRateEntityTable.rate,
+                        operatedAt: TransactionEntityTable.operatedAt,
+                        transactionId: TransactionEntityTable.id,
+                        entryId: TransactionEntryEntityTable.id
+                    })
+                    .from(TransactionEntryEntityTable)
+                    .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+                    .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
+                    .leftJoin(
+                        ExchangeRateEntityTable,
+                        and(
+                            eq(ExchangeRateEntityTable.baseInstrumentId, AccountEntityTable.instrumentId),
+                            eq(ExchangeRateEntityTable.quoteInstrumentId, baseInstrumentId),
+                            isNull(ExchangeRateEntityTable.deletedAt)
+                        )
+                    )
+                    .where(where)
+            );
+
         return {
             create: (input: BudgetCreateEntityInterface) =>
                 Db.query(db => db.insert(BudgetEntityTable).values([input]).returning()).pipe(Effect.map(([budget]) => budget)),
@@ -86,28 +129,12 @@ export class BudgetRepository extends Context.Service<BudgetRepository>()('@budg
                         .where(isNull(TransactionEntityTable.deletedAt))
                 ).pipe(Effect.map(([row]) => row.earliest ?? null)),
             findBudgetSpentEntries: (periodStart: Date, nextPeriodStart: Date, baseInstrumentId: number) =>
-                Db.query(db =>
-                    db
-                        .select({
-                            amount: buildRefundAdjustedAmountSql(),
-                            categoryId: TransactionEntryEntityTable.categoryId,
-                            instrumentId: AccountEntityTable.instrumentId,
-                            rate: ExchangeRateEntityTable.rate,
-                            operatedAt: TransactionEntityTable.operatedAt,
-                            transactionId: TransactionEntityTable.id
-                        })
-                        .from(TransactionEntryEntityTable)
-                        .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-                        .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-                        .leftJoin(
-                            ExchangeRateEntityTable,
-                            and(
-                                eq(ExchangeRateEntityTable.baseInstrumentId, AccountEntityTable.instrumentId),
-                                eq(ExchangeRateEntityTable.quoteInstrumentId, baseInstrumentId),
-                                isNull(ExchangeRateEntityTable.deletedAt)
-                            )
-                        )
-                        .where(buildSpentWhere(periodStart, nextPeriodStart))
+                findEntries(buildRefundAdjustedAmountSql(), buildSpentWhere(periodStart, nextPeriodStart), baseInstrumentId),
+            findIncomeReceivedEntries: (periodStart: Date, nextPeriodStart: Date, baseInstrumentId: number) =>
+                findEntries(
+                    sql<number>`${TransactionEntryEntityTable.amount}`,
+                    buildIncomeWhere(periodStart, nextPeriodStart),
+                    baseInstrumentId
                 ),
             findInstallmentPayments: (periodStart: Date, nextPeriodStart: Date) =>
                 Db.query(db =>
