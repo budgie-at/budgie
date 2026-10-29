@@ -1,6 +1,6 @@
 import { CategorizeInboxSectionEnum } from '@budgie/categorization';
 import { useRouter } from 'expo-router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -14,7 +14,14 @@ export const useCategorizeInboxCluster = (clusterKey: string): CategorizeInboxCl
     const { items, isLoading } = useCategorizeInboxContext();
 
     const clusters = items.filter(isCategorizeInboxCluster);
-    const cluster = clusters.find(candidate => candidate.key === clusterKey) ?? null;
+    const liveCluster = clusters.find(candidate => candidate.key === clusterKey) ?? null;
+    const [lastCluster, setLastCluster] = useState(liveCluster);
+
+    if (isDefined(liveCluster) && liveCluster !== lastCluster) {
+        setLastCluster(liveCluster);
+    }
+
+    const cluster = liveCluster ?? lastCluster;
     const navigableClusters = clusters.filter(candidate => candidate.section !== CategorizeInboxSectionEnum.ONE_OFFS);
     const index = navigableClusters.findIndex(candidate => candidate.key === clusterKey);
     const hasSiblings = index >= 0 && navigableClusters.length > 1;
