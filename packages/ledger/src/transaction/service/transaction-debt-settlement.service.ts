@@ -9,6 +9,7 @@ import {
     DebtEventDirectionEnum,
     DebtEventRepository,
     DebtEventSourceEnum,
+    InstallmentPlanRepository,
     LENDING_CATEGORY_ID,
     MccCategoryRepository,
     SettingsRepository,
@@ -41,6 +42,7 @@ export class TransactionDebtSettlementService extends Context.Service<Transactio
             const mccCategoryRepository = yield* MccCategoryRepository;
             const settingsRepository = yield* SettingsRepository;
             const debtEventRepository = yield* DebtEventRepository;
+            const installmentPlanRepository = yield* InstallmentPlanRepository;
             const transactionEntryRepository = yield* TransactionEntryRepository;
             const transactionRepository = yield* TransactionRepository;
             const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
@@ -176,17 +178,53 @@ export class TransactionDebtSettlementService extends Context.Service<Transactio
                 };
             });
 
+            const machineGuessedCategorySources: ReadonlySet<CategorySourceEnum> = new Set([
+                CategorySourceEnum.MCC_DEFAULT,
+                CategorySourceEnum.AI
+            ]);
+            const derivedCategorySources: ReadonlySet<CategorySourceEnum> = new Set([
+                ...machineGuessedCategorySources,
+                CategorySourceEnum.DEBT_SETTLEMENT
+            ]);
+
+            const inheritInstallmentCategory = Effect.fn('TransactionDebtSettlementService.inheritInstallmentCategory')(function* (
+                debtAccountId: number
+            ) {
+                const parts = yield* installmentPlanRepository.findParts(debtAccountId);
+                const sourcePart = parts.findLast(part => isDefined(part.categoryId) && !derivedCategorySources.has(part.categorySource));
+
+                if (!isDefined(sourcePart)) {
+                    return;
+                }
+
+                const targetParts = parts.filter(
+                    part =>
+                        part.categoryId !== sourcePart.categoryId &&
+                        (!isDefined(part.categoryId) || derivedCategorySources.has(part.categorySource))
+                );
+
+                yield* Effect.forEach(
+                    targetParts,
+                    part =>
+                        transactionEntryRepository.updateById(part.entryId, {
+                            categoryId: sourcePart.categoryId,
+                            categorySource: CategorySourceEnum.DEBT_SETTLEMENT
+                        }),
+                    { discard: true }
+                );
+            });
+
             const assignDebtPaymentCategory = Effect.fn('TransactionDebtSettlementService.assignDebtPaymentCategory')(function* (
                 primaryEntry: TransactionEntryEntityInterface,
                 debtAccount: Pick<AccountEntityInterface, 'id' | 'debtType'>
             ) {
-                const hasMachineGuessedCategory =
-                    primaryEntry.categorySource === CategorySourceEnum.MCC_DEFAULT || primaryEntry.categorySource === CategorySourceEnum.AI;
+                if (debtAccount.debtType === AccountDebtTypeEnum.INSTALLMENT) {
+                    yield* inheritInstallmentCategory(debtAccount.id);
 
-                if (
-                    (isDefined(primaryEntry.categoryId) && !hasMachineGuessedCategory) ||
-                    debtAccount.debtType === AccountDebtTypeEnum.INSTALLMENT
-                ) {
+                    return false;
+                }
+
+                if (isDefined(primaryEntry.categoryId) && !machineGuessedCategorySources.has(primaryEntry.categorySource)) {
                     return false;
                 }
 
@@ -269,6 +307,7 @@ export class TransactionDebtSettlementService extends Context.Service<Transactio
                     },
                     effect => Db.transaction(effect)
                 ),
+                inheritInstallmentCategory,
                 resyncInTransaction: Effect.fn('TransactionDebtSettlementService.resyncInTransaction')(function* (transactionId: number) {
                     const debtEvent = yield* debtEventRepository.findByTransactionId(transactionId);
 
@@ -286,6 +325,7 @@ export class TransactionDebtSettlementService extends Context.Service<Transactio
                     const fields = yield* buildSettlementEventFields(transaction, debtAccount, primaryEntry);
 
                     yield* debtEventRepository.updateById(debtEvent.id, fields);
+                    yield* assignDebtPaymentCategory(primaryEntry, debtAccount);
                     yield* accountBalanceIncrementalService.updateBalancesByAccountIds([primaryEntry.accountId, debtAccount.id]);
                 })
             };
@@ -299,6 +339,7 @@ export class TransactionDebtSettlementService extends Context.Service<Transactio
             MccCategoryRepository.layer,
             SettingsRepository.layer,
             DebtEventRepository.layer,
+            InstallmentPlanRepository.layer,
             TransactionEntryRepository.layer,
             TransactionRepository.layer,
             AccountBalanceIncrementalService.layer,

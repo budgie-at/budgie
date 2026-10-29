@@ -1,3 +1,4 @@
+import { TransactionCategorizeInboxRepository } from '@budgie/categorization';
 import {
     AccountDebtTypeEnum,
     AccountTypeEnum,
@@ -392,6 +393,49 @@ describe('debt settlement categorization', () => {
             expect(progress.overpaidAmount).toBe(OVERPAID_AMOUNT - OPENED_AMOUNT);
             expect(progress.percentage).toBe(100);
             expect(yield* fetchAccountBalance(debtAccount.id)).toBe(0);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('restores the borrowing category on resync after it was cleared', () =>
+        Effect.gen(function* () {
+            const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
+            const cashAccount = yield* createCashAccount();
+            const debtAccount = yield* createDebtAccount(AccountDebtTypeEnum.BORROW);
+            const transaction = yield* createSettlementTransaction(TransactionTypeEnum.EXPENSE, cashAccount.id, null);
+
+            yield* attachAndReadEntry(transaction.id, debtAccount.id);
+            yield* testDb
+                .update(TransactionEntryEntityTable)
+                .set({ categoryId: null, categorySource: CategorySourceEnum.USER })
+                .where(eq(TransactionEntryEntityTable.transactionId, transaction.id));
+            yield* transactionDebtSettlementService.resyncInTransaction(transaction.id);
+
+            const entry = yield* fetchPrimaryEntry(transaction.id);
+
+            expect(entry.categoryId).toBe(BORROWING_CATEGORY_ID);
+            expect(entry.categorySource).toBe(CategorySourceEnum.DEBT_SETTLEMENT);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('keeps an uncategorized borrow payment out of the categorize inbox', () =>
+        Effect.gen(function* () {
+            const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
+            const inboxRepository = yield* TransactionCategorizeInboxRepository;
+            const cashAccount = yield* createCashAccount();
+            const debtAccount = yield* createDebtAccount(AccountDebtTypeEnum.BORROW);
+            const attached = yield* createSettlementTransaction(TransactionTypeEnum.EXPENSE, cashAccount.id, null);
+            const plain = yield* createSettlementTransaction(TransactionTypeEnum.EXPENSE, cashAccount.id, null);
+
+            yield* transactionDebtSettlementService.attach({ transactionId: attached.id, debtAccountId: debtAccount.id });
+            yield* testDb
+                .update(TransactionEntryEntityTable)
+                .set({ categoryId: null, categorySource: CategorySourceEnum.USER })
+                .where(eq(TransactionEntryEntityTable.transactionId, attached.id));
+
+            const transactionIds = (yield* inboxRepository.findUncategorizedRows(DEFAULT_TRANSACTION_FILTER)).map(row => row.transactionId);
+
+            expect(transactionIds).toContain(plain.id);
+            expect(transactionIds).not.toContain(attached.id);
         }).pipe(Effect.provide(TestLayer))
     );
 });

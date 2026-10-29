@@ -31,7 +31,10 @@ export class InstallmentPlanRepository extends Context.Service<InstallmentPlanRe
                 db
                     .select({
                         transactionId: TransactionEntityTable.id,
+                        entryId: TransactionEntryEntityTable.id,
                         accountId: TransactionEntryEntityTable.accountId,
+                        categoryId: TransactionEntryEntityTable.categoryId,
+                        categorySource: TransactionEntryEntityTable.categorySource,
                         operatedAt: TransactionEntityTable.operatedAt,
                         title: TransactionEntityTable.title,
                         externalSource: TransactionEntityTable.externalSource,
