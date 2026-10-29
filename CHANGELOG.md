@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.126.5](https://github.com/budgie-at/budgie/compare/v6.126.4...v6.126.5) (2026-10-29)
+
+### Bug Fixes
+
+* **app:** unlock immediately after Face ID success ([fa048b2](https://github.com/budgie-at/budgie/commit/fa048b2baec47ed3fb0a41e22257be1ace59be14))
+* keep debt-linked payments out of the categorize inbox ([8e9a0a6](https://github.com/budgie-at/budgie/commit/8e9a0a6fe2188a14250dc827be4f99870444a1ec))
+
+
 ## [6.126.4](https://github.com/budgie-at/budgie/compare/v6.126.3...v6.126.4) (2026-10-29)
 
 ### Bug Fixes
