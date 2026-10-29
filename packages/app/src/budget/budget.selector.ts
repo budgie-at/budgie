@@ -74,6 +74,7 @@ export const BudgetSelector = {
     EventDatesField: 'BudgetEvent.DatesField',
     EventLimitInput: 'BudgetEvent.LimitInput',
     EventCategoryLimitAddButton: 'BudgetEvent.CategoryLimitAddButton',
+    EventCategoryLimitRow: (index: number) => `BudgetEvent.CategoryLimit.${index}.Row` as const,
     EventSaveButton: 'BudgetEvent.SaveButton',
     EventDeleteButton: 'BudgetEvent.DeleteButton',
     CreateTemplateSuggestedCard: 'BudgetCreate.Template.Suggested',
