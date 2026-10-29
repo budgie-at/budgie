@@ -20,7 +20,7 @@ export const useBudgetDayStripLabels = (
     const formatWholeAmount = useProtectedWholeAmountLabel();
     const { elapsedDays, totalDays, dailyAllowance } = projection;
     const isYearly = period === BudgetPeriodEnum.YEARLY;
-    const overCount = dayCells.filter(
+    const overDays = dayCells.filter(
         ({ dayState }) => dayState === BudgetDayStateEnum.OVER || dayState === BudgetDayStateEnum.FAR_OVER
     ).length;
     const currentWeek = Math.ceil(elapsedDays / DAYS_PER_WEEK);
@@ -28,16 +28,18 @@ export const useBudgetDayStripLabels = (
     const periodAllowance = isYearly ? dailyAllowance * DAYS_PER_WEEK : dailyAllowance;
     const allowanceLabel = formatWholeAmount(convertFromMicroUnits(periodAllowance), currencySymbol);
     const dayOverLabel = t({
-        message: plural(overCount, { one: '# day over your daily allowance', other: '# days over your daily allowance' })
+        message: plural(overDays, { one: '# day over your daily allowance', other: '# days over your daily allowance' })
     });
     const weekOverLabel = t({
-        message: plural(overCount, { one: '# week over your weekly allowance', other: '# weeks over your weekly allowance' })
+        message: plural(overDays, { one: '# week over your weekly allowance', other: '# weeks over your weekly allowance' })
     });
+
+    const overLabel = isYearly ? weekOverLabel : dayOverLabel;
 
     return {
         accessibilityLabel: isYearly
-            ? t`Week ${currentWeek} of ${totalWeeks}. ${weekOverLabel}.`
-            : t`Day ${elapsedDays} of ${totalDays}. ${dayOverLabel}.`,
+            ? t`Week ${currentWeek} of ${totalWeeks}. ${overLabel}.`
+            : t`Day ${elapsedDays} of ${totalDays}. ${overLabel}.`,
         captionLabel: isYearly
             ? t`Each week against your ${allowanceLabel} weekly allowance`
             : t`Each day against your ${allowanceLabel} daily allowance`

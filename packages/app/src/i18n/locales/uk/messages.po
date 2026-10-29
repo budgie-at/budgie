@@ -326,9 +326,13 @@ msgstr "{newTransactionCount} нових, {existingTransactionCount} вже ім
 msgid "{overAmount} over budget"
 msgstr "{overAmount} понад бюджет"
 
-#: src/budget/components/budget-day-strip/budget-day-strip.tsx
+#: src/budget/hooks/use-budget-day-strip-labels.hook.ts
 msgid "{overDays, plural, one {# day over your daily allowance} other {# days over your daily allowance}}"
 msgstr "{overDays, plural, one {# день з перевищенням денної норми} few {# дні з перевищенням денної норми} many {# днів з перевищенням денної норми} other {# дня з перевищенням денної норми}}"
+
+#: src/budget/hooks/use-budget-day-strip-labels.hook.ts
+msgid "{overDays, plural, one {# week over your weekly allowance} other {# weeks over your weekly allowance}}"
+msgstr "{overDays, plural, one {# тиждень з перевищенням тижневої норми} few {# тижні з перевищенням тижневої норми} many {# тижнів з перевищенням тижневої норми} other {# тижня з перевищенням тижневої норми}}"
 
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
 msgid "{overdueDays, plural, one {Overdue # day} other {Overdue # days}}"
@@ -718,8 +722,7 @@ msgstr "Активувати рахунок?"
 msgid "Active"
 msgstr "Активний"
 
-#: src/budget/components/budget-events-section/budget-events-section.tsx
-#: src/budget/components/budget-funds-section/budget-funds-section.tsx
+#: src/budget/components/budget-list-section/budget-list-section.tsx
 msgid "Add"
 msgstr "Додати"
 
@@ -1178,7 +1181,7 @@ msgstr "Деталі бюджету"
 msgid "Budget limit reached"
 msgstr "Ліміт бюджету досягнуто"
 
-#: src/budget/components/budget-name-field/budget-name-field.tsx
+#: src/budget/components/budget-setup-form/budget-setup-form.tsx
 msgid "Budget name"
 msgstr "Назва бюджету"
 
@@ -2175,7 +2178,7 @@ msgstr "Дата"
 msgid "Dates"
 msgstr "Дати"
 
-#: src/budget/components/budget-day-strip/budget-day-strip.tsx
+#: src/budget/hooks/use-budget-day-strip-labels.hook.ts
 msgid "Day {elapsedDays} of {totalDays}. {overLabel}."
 msgstr "День {elapsedDays} з {totalDays}. {overLabel}."
 
@@ -2454,7 +2457,7 @@ msgstr "напр. 900"
 msgid "e.g. Business, Personal, Vacation"
 msgstr "напр. Бізнес, Особисте, Відпустка"
 
-#: src/budget/components/budget-fund-name-field/budget-fund-name-field.tsx
+#: src/budget/components/budget-fund-form/budget-fund-form.tsx
 msgid "e.g. Car insurance"
 msgstr "напр. Автострахування"
 
@@ -2462,7 +2465,7 @@ msgstr "напр. Автострахування"
 msgid "e.g. Groceries, Entertainment"
 msgstr "напр. Продукти, Розваги"
 
-#: src/budget/components/budget-event-name-field/budget-event-name-field.tsx
+#: src/budget/components/budget-event-form/budget-event-form.tsx
 msgid "e.g. Japan trip"
 msgstr "напр. Поїздка до Японії"
 
@@ -2470,7 +2473,7 @@ msgstr "напр. Поїздка до Японії"
 msgid "e.g. Savings Account"
 msgstr "напр. Ощадний рахунок"
 
-#: src/budget/components/budget-day-strip/budget-day-strip.tsx
+#: src/budget/hooks/use-budget-day-strip-labels.hook.ts
 msgid "Each day against your {allowanceLabel} daily allowance"
 msgstr "Кожен день порівняно з вашою денною нормою {allowanceLabel}"
 
@@ -2478,7 +2481,7 @@ msgstr "Кожен день порівняно з вашою денною нор
 msgid "Each one becomes an account. Rename or remove them later."
 msgstr "Кожен стане рахунком. Перейменувати чи видалити їх можна пізніше."
 
-#: src/budget/components/budget-day-strip/budget-day-strip.tsx
+#: src/budget/hooks/use-budget-day-strip-labels.hook.ts
 msgid "Each week against your {allowanceLabel} weekly allowance"
 msgstr "Кожен тиждень порівняно з вашим тижневим бюджетом {allowanceLabel}"
 
@@ -3729,8 +3732,6 @@ msgstr "У готівку"
 msgid "Moved to cash"
 msgstr "Перенесено в готівку"
 
-#: src/budget/components/budget-event-name-field/budget-event-name-field.tsx
-#: src/budget/components/budget-fund-name-field/budget-fund-name-field.tsx
 #: src/budget/components/budget-name-field/budget-name-field.tsx
 msgid "Name"
 msgstr "Назва"
@@ -4698,13 +4699,11 @@ msgid "Remaining"
 msgstr "Залишок"
 
 #: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
-#: src/budget/components/budget-category-limit-compact-row/budget-category-limit-compact-row.tsx
-#: src/budget/components/budget-event-category-limit-row/budget-event-category-limit-row.tsx
+#: src/budget/components/budget-category-limit-deletable-row/budget-category-limit-deletable-row.tsx
 msgid "Remove"
 msgstr "Видалити"
 
-#: src/budget/components/budget-category-limit-compact-row/budget-category-limit-compact-row.tsx
-#: src/budget/components/budget-event-category-limit-row/budget-event-category-limit-row.tsx
+#: src/budget/components/budget-category-limit-deletable-row/budget-category-limit-deletable-row.tsx
 msgid "Remove category limit?"
 msgstr "Видалити ліміт категорії?"
 
@@ -5438,8 +5437,7 @@ msgstr "Проведіть вліво"
 msgid "Swipe left to dismiss this recurring payment."
 msgstr "Проведіть ліворуч, щоб приховати цей регулярний платіж."
 
-#: src/budget/components/budget-category-limit-compact-row/budget-category-limit-compact-row.tsx
-#: src/budget/components/budget-event-category-limit-row/budget-event-category-limit-row.tsx
+#: src/budget/components/budget-category-limit-deletable-row/budget-category-limit-deletable-row.tsx
 msgid "Swipe to remove this per-category cap from your budget."
 msgstr "Проведіть, щоб видалити цей ліміт категорії з вашого бюджету."
 
@@ -6289,6 +6287,10 @@ msgstr "Ми ще імпортуємо історію транзакцій. До
 #: src/budget/components/budget-period-field/budget-period-field.tsx
 msgid "Week"
 msgstr "Тиждень"
+
+#: src/budget/hooks/use-budget-day-strip-labels.hook.ts
+msgid "Week {currentWeek} of {totalWeeks}. {overLabel}."
+msgstr "Тиждень {currentWeek} з {totalWeeks}. {overLabel}."
 
 #: src/budget/constant/budget-period-title-label.constant.ts
 msgid "Weekly budget"

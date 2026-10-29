@@ -326,9 +326,13 @@ msgstr "{newTransactionCount} nouvelles, {existingTransactionCount} déjà impor
 msgid "{overAmount} over budget"
 msgstr "{overAmount} au-dessus du budget"
 
-#: src/budget/components/budget-day-strip/budget-day-strip.tsx
+#: src/budget/hooks/use-budget-day-strip-labels.hook.ts
 msgid "{overDays, plural, one {# day over your daily allowance} other {# days over your daily allowance}}"
 msgstr "{overDays, plural, one {# jour au-dessus de votre plafond quotidien} other {# jours au-dessus de votre plafond quotidien}}"
+
+#: src/budget/hooks/use-budget-day-strip-labels.hook.ts
+msgid "{overDays, plural, one {# week over your weekly allowance} other {# weeks over your weekly allowance}}"
+msgstr "{overDays, plural, one {# semaine au-dessus de votre plafond hebdomadaire} other {# semaines au-dessus de votre plafond hebdomadaire}}"
 
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
 msgid "{overdueDays, plural, one {Overdue # day} other {Overdue # days}}"
@@ -718,8 +722,7 @@ msgstr "Activer le compte ?"
 msgid "Active"
 msgstr "Actif"
 
-#: src/budget/components/budget-events-section/budget-events-section.tsx
-#: src/budget/components/budget-funds-section/budget-funds-section.tsx
+#: src/budget/components/budget-list-section/budget-list-section.tsx
 msgid "Add"
 msgstr "Ajouter"
 
@@ -1178,7 +1181,7 @@ msgstr "Détails du budget"
 msgid "Budget limit reached"
 msgstr "Limite de budget atteinte"
 
-#: src/budget/components/budget-name-field/budget-name-field.tsx
+#: src/budget/components/budget-setup-form/budget-setup-form.tsx
 msgid "Budget name"
 msgstr "Nom du budget"
 
@@ -2175,7 +2178,7 @@ msgstr "Date"
 msgid "Dates"
 msgstr "Dates"
 
-#: src/budget/components/budget-day-strip/budget-day-strip.tsx
+#: src/budget/hooks/use-budget-day-strip-labels.hook.ts
 msgid "Day {elapsedDays} of {totalDays}. {overLabel}."
 msgstr "Jour {elapsedDays} sur {totalDays}. {overLabel}."
 
@@ -2454,7 +2457,7 @@ msgstr "p. ex. 900"
 msgid "e.g. Business, Personal, Vacation"
 msgstr "p. ex. Affaires, Personnel, Vacances"
 
-#: src/budget/components/budget-fund-name-field/budget-fund-name-field.tsx
+#: src/budget/components/budget-fund-form/budget-fund-form.tsx
 msgid "e.g. Car insurance"
 msgstr "p. ex. Assurance auto"
 
@@ -2462,7 +2465,7 @@ msgstr "p. ex. Assurance auto"
 msgid "e.g. Groceries, Entertainment"
 msgstr "p. ex. Courses, Divertissement"
 
-#: src/budget/components/budget-event-name-field/budget-event-name-field.tsx
+#: src/budget/components/budget-event-form/budget-event-form.tsx
 msgid "e.g. Japan trip"
 msgstr "p. ex. Voyage au Japon"
 
@@ -2470,7 +2473,7 @@ msgstr "p. ex. Voyage au Japon"
 msgid "e.g. Savings Account"
 msgstr "ex. Compte d'épargne"
 
-#: src/budget/components/budget-day-strip/budget-day-strip.tsx
+#: src/budget/hooks/use-budget-day-strip-labels.hook.ts
 msgid "Each day against your {allowanceLabel} daily allowance"
 msgstr "Chaque jour par rapport à votre plafond quotidien de {allowanceLabel}"
 
@@ -2478,7 +2481,7 @@ msgstr "Chaque jour par rapport à votre plafond quotidien de {allowanceLabel}"
 msgid "Each one becomes an account. Rename or remove them later."
 msgstr "Chacun devient un compte. Tu peux les renommer ou les supprimer plus tard."
 
-#: src/budget/components/budget-day-strip/budget-day-strip.tsx
+#: src/budget/hooks/use-budget-day-strip-labels.hook.ts
 msgid "Each week against your {allowanceLabel} weekly allowance"
 msgstr "Chaque semaine par rapport à votre allocation hebdomadaire de {allowanceLabel}"
 
@@ -3729,8 +3732,6 @@ msgstr "Vers les espèces"
 msgid "Moved to cash"
 msgstr "Déplacé vers les espèces"
 
-#: src/budget/components/budget-event-name-field/budget-event-name-field.tsx
-#: src/budget/components/budget-fund-name-field/budget-fund-name-field.tsx
 #: src/budget/components/budget-name-field/budget-name-field.tsx
 msgid "Name"
 msgstr "Nom"
@@ -4698,13 +4699,11 @@ msgid "Remaining"
 msgstr "Restant"
 
 #: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
-#: src/budget/components/budget-category-limit-compact-row/budget-category-limit-compact-row.tsx
-#: src/budget/components/budget-event-category-limit-row/budget-event-category-limit-row.tsx
+#: src/budget/components/budget-category-limit-deletable-row/budget-category-limit-deletable-row.tsx
 msgid "Remove"
 msgstr "Supprimer"
 
-#: src/budget/components/budget-category-limit-compact-row/budget-category-limit-compact-row.tsx
-#: src/budget/components/budget-event-category-limit-row/budget-event-category-limit-row.tsx
+#: src/budget/components/budget-category-limit-deletable-row/budget-category-limit-deletable-row.tsx
 msgid "Remove category limit?"
 msgstr "Supprimer le plafond de catégorie ?"
 
@@ -5438,8 +5437,7 @@ msgstr "Faites glisser vers la gauche"
 msgid "Swipe left to dismiss this recurring payment."
 msgstr "Balayez vers la gauche pour ignorer ce paiement récurrent."
 
-#: src/budget/components/budget-category-limit-compact-row/budget-category-limit-compact-row.tsx
-#: src/budget/components/budget-event-category-limit-row/budget-event-category-limit-row.tsx
+#: src/budget/components/budget-category-limit-deletable-row/budget-category-limit-deletable-row.tsx
 msgid "Swipe to remove this per-category cap from your budget."
 msgstr "Balayez pour supprimer ce plafond par catégorie de votre budget."
 
@@ -6289,6 +6287,10 @@ msgstr "Nous importons encore l’historique des transactions. Attendez la fin d
 #: src/budget/components/budget-period-field/budget-period-field.tsx
 msgid "Week"
 msgstr "Semaine"
+
+#: src/budget/hooks/use-budget-day-strip-labels.hook.ts
+msgid "Week {currentWeek} of {totalWeeks}. {overLabel}."
+msgstr "Semaine {currentWeek} sur {totalWeeks}. {overLabel}."
 
 #: src/budget/constant/budget-period-title-label.constant.ts
 msgid "Weekly budget"
