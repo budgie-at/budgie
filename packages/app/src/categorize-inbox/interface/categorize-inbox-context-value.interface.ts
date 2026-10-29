@@ -16,6 +16,8 @@ export interface CategorizeInboxContextValueInterface extends CategorizeInboxVis
     readonly assignCluster: (cluster: CategorizeInboxClusterInterface, labelId: number) => void;
     readonly pickClusterLabels: (cluster: CategorizeInboxClusterInterface) => void;
     readonly pickRowLabels: (row: CategorizeInboxRowInterface) => void;
+    readonly convertClusterToTransfer: (cluster: CategorizeInboxClusterInterface) => void;
+    readonly convertRowToTransfer: (row: CategorizeInboxRowInterface) => void;
     readonly moveToCash: (transactionIds: number[]) => void;
     readonly undo: (lastWrite: CategorizeInboxLastWriteInterface) => void;
     readonly applyFollowUp: (lastWrite: CategorizeInboxLastWriteInterface) => void;

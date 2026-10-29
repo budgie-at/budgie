@@ -34,7 +34,7 @@ msgstr "{0, plural, one {# etiqueta} other {# etiquetas}}"
 
 #. placeholder {0}: movedToCashTransactionIds.length
 #. placeholder {0}: rows.length
-#: src/categorize-inbox/components/categorize-inbox-cluster-card/categorize-inbox-cluster-card.tsx
+#: src/categorize-inbox/components/categorize-inbox-cluster-meta/categorize-inbox-cluster-meta.tsx
 #: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
 msgid "{0, plural, one {# transaction} other {# transactions}}"
 msgstr "{0, plural, one {# transacción} other {# transacciones}}"
@@ -90,7 +90,7 @@ msgstr "{categoriesCount, plural, one {# categoría} other {# categorías}}"
 msgid "{categorizedCount, plural, one {# categorized this session} other {# categorized this session}}"
 msgstr "{categorizedCount, plural, one {# categorizada en esta sesión} other {# categorizadas en esta sesión}}"
 
-#: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
+#: src/categorize-inbox/components/categorize-inbox-progress/categorize-inbox-progress.tsx
 msgid "{categorizedCount, plural, one {# done} other {# done}}"
 msgstr "{categorizedCount, plural, one {# hecha} other {# hechas}}"
 
@@ -362,7 +362,7 @@ msgstr "{periodLabel}, gastado {spentAmount} de {limitAmount}"
 msgid "{remaining} GB one-time download"
 msgstr "Descarga única de {remaining} GB"
 
-#: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
+#: src/categorize-inbox/components/categorize-inbox-progress/categorize-inbox-progress.tsx
 msgid "{remainingCount, plural, one {# left} other {# left}}"
 msgstr "{remainingCount, plural, one {Queda #} other {Quedan #}}"
 
@@ -407,7 +407,7 @@ msgstr "{selectedInGroupCount} de {accountsCount} seleccionadas"
 msgid "{similarCount, plural, one {# similar transaction} other {# similar transactions}}"
 msgstr "{similarCount, plural, one {# transacción similar} other {# transacciones similares}}"
 
-#: src/categorize-inbox/components/categorize-inbox-cluster-card/categorize-inbox-cluster-card.tsx
+#: src/categorize-inbox/components/categorize-inbox-cluster-meta/categorize-inbox-cluster-meta.tsx
 msgid "{skippedCount, plural, one {# skipped} other {# skipped}}"
 msgstr "{skippedCount, plural, one {# omitida} other {# omitidas}}"
 
@@ -816,7 +816,7 @@ msgstr "Todos"
 msgid "All categories have icons"
 msgstr "Todas las categorías tienen iconos"
 
-#: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
+#: src/categorize-inbox/components/categorize-inbox-empty-state/categorize-inbox-empty-state.tsx
 msgid "All caught up"
 msgstr "Todo al día"
 
@@ -1289,7 +1289,7 @@ msgstr "Trasladar ahorros"
 msgid "Cash"
 msgstr "Efectivo"
 
-#: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
+#: src/categorize-inbox/components/categorize-inbox-section-title/categorize-inbox-section-title.tsx
 msgid "Cash withdrawals"
 msgstr "Retiros de efectivo"
 
@@ -1585,6 +1585,8 @@ msgid "Convert to Refund?"
 msgstr "¿Convertir en reembolso?"
 
 #: src/app/convert-to-transfer.tsx
+#: src/categorize-inbox/components/categorize-inbox-cluster-menu/categorize-inbox-cluster-menu.tsx
+#: src/categorize-inbox/components/categorize-inbox-row-menu/categorize-inbox-row-menu.tsx
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 #: src/transaction/components/transaction-list-convert-to-transfer-menu-item/transaction-list-convert-to-transfer-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
@@ -1648,6 +1650,10 @@ msgstr "No se pudieron consolidar las coincidencias"
 #: src/transaction/hook/use-convert-to-refund-action.hook.ts
 msgid "Could not convert to refund"
 msgstr "No se pudo convertir en reembolso"
+
+#: src/categorize-inbox/hook/use-categorize-inbox-convert-to-transfer.hook.ts
+msgid "Could not convert to transfers"
+msgstr "No se pudieron convertir en transferencias"
 
 #: src/settings/components/backup-row/backup-row.tsx
 msgid "Could not create a backup"
@@ -2236,7 +2242,7 @@ msgid "Do not sync history"
 msgstr "No sincronizar el historial"
 
 #: src/app/import-column-mapper.tsx
-#: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
+#: src/categorize-inbox/components/categorize-inbox-empty-state/categorize-inbox-empty-state.tsx
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 msgid "Done"
@@ -2858,7 +2864,7 @@ msgstr "Oculta en Inicio"
 msgid "Hide in screenshots"
 msgstr "Ocultar en capturas"
 
-#: src/categorize-inbox/components/categorize-inbox-cluster-card/categorize-inbox-cluster-card.tsx
+#: src/categorize-inbox/components/categorize-inbox-cluster-meta/categorize-inbox-cluster-meta.tsx
 msgid "Hide transactions for {displayTitle}"
 msgstr "Ocultar transacciones de {displayTitle}"
 
@@ -3523,7 +3529,7 @@ msgid "Needs attention"
 msgstr "Requiere atención"
 
 #: src/app/(tabs)/settings/apple-pay-capture.tsx
-#: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
+#: src/categorize-inbox/components/categorize-inbox-section-title/categorize-inbox-section-title.tsx
 msgid "Needs review"
 msgstr "Por revisar"
 
@@ -3896,7 +3902,7 @@ msgstr "Único"
 msgid "One-off spike"
 msgstr "Gasto puntual"
 
-#: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
+#: src/categorize-inbox/components/categorize-inbox-section-title/categorize-inbox-section-title.tsx
 msgid "One-offs"
 msgstr "Movimientos únicos"
 
@@ -4352,7 +4358,7 @@ msgstr "Leyendo recibos · {current} de {total}"
 msgid "Ready"
 msgstr "Listo"
 
-#: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
+#: src/categorize-inbox/components/categorize-inbox-section-title/categorize-inbox-section-title.tsx
 msgid "Ready to accept"
 msgstr "Listas para aceptar"
 
@@ -4967,7 +4973,7 @@ msgstr "Mostrar presupuesto en el inicio"
 msgid "Show Cents"
 msgstr "Mostrar centavos"
 
-#: src/categorize-inbox/components/categorize-inbox-page/categorize-inbox-page.tsx
+#: src/categorize-inbox/components/categorize-inbox-page-content/categorize-inbox-page-content.tsx
 msgid "Show list"
 msgstr "Mostrar lista"
 
@@ -4984,7 +4990,7 @@ msgstr "Mostrar rango seleccionado"
 msgid "Show this account on the main page"
 msgstr "Mostrar esta cuenta en la página principal"
 
-#: src/categorize-inbox/components/categorize-inbox-cluster-card/categorize-inbox-cluster-card.tsx
+#: src/categorize-inbox/components/categorize-inbox-cluster-meta/categorize-inbox-cluster-meta.tsx
 msgid "Show transactions for {displayTitle}"
 msgstr "Mostrar transacciones de {displayTitle}"
 
@@ -5522,6 +5528,10 @@ msgstr "Por recibir"
 #: src/account/constant/debt-remaining-label.constant.ts
 msgid "To repay"
 msgstr "Por pagar"
+
+#: src/categorize-inbox/components/categorize-inbox-hero/categorize-inbox-hero.tsx
+msgid "to sort"
+msgstr "por clasificar"
 
 #: src/@generic/constant/date-period.constant.ts
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx

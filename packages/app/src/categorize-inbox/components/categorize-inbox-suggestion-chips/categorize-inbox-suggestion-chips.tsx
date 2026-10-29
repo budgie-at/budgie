@@ -48,17 +48,6 @@ export const CategorizeInboxSuggestionChips = ({ cluster }: Props) => {
                     </Text>
                 </HapticPressable>
             ) : null}
-
-            <HapticPressable
-                onPress={handlePickLabelsPress}
-                hitSlop={CATEGORIZE_INBOX_RAIL_HIT_SLOP}
-                className="ml-auto h-10 w-10 items-center justify-center rounded-xl border border-secondary-corner"
-                accessibilityRole="button"
-                accessibilityLabel={strategy?.moreLabels}
-                {...testID(CategorizeInboxSuggestionChipsSelector.More, cluster.key)}
-            >
-                <Icon icon={UserIconNameEnum.Ellipsis} size={16} className="text-secondary-foreground" />
-            </HapticPressable>
         </>
     );
 };

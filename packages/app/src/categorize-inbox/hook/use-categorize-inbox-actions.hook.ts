@@ -9,6 +9,7 @@ import { emptyFn, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useVibration } from '../../@generic/hook/use-vibration.hook';
 
+import { useCategorizeInboxConvertToTransfer } from './use-categorize-inbox-convert-to-transfer.hook';
 import { useCategorizeInboxMoveToCash } from './use-categorize-inbox-move-to-cash.hook';
 import { useCategorizeInboxWriteQueue } from './use-categorize-inbox-write-queue.hook';
 
@@ -30,7 +31,8 @@ export const useCategorizeInboxActions = (
     const [hapticNotification] = useVibration();
     const [lastWrite, setLastWrite] = useState<CategorizeInboxLastWriteInterface | null>(null);
     const enqueueWrite = useCategorizeInboxWriteQueue();
-    const moveToCashActions = useCategorizeInboxMoveToCash(visibility, enqueueWrite, setLastWrite);
+    const { resetMovedToCash, ...moveToCashActions } = useCategorizeInboxMoveToCash(visibility, enqueueWrite, setLastWrite);
+    const transferActions = useCategorizeInboxConvertToTransfer(visibility, enqueueWrite);
 
     const assign = (assignments: CategorizeInboxAssignmentInterface[]): void => {
         visibility.hideTransactions(toTransactionIds(assignments));
@@ -40,7 +42,7 @@ export const useCategorizeInboxActions = (
                 const applied = yield* categorizeInboxService.assign(strategy.labelKind, assignments);
 
                 if (isNotEmptyArray(applied)) {
-                    moveToCashActions.resetMovedToCash();
+                    resetMovedToCash();
                     setLastWrite({ assignments: applied, followUpAssignments: [] });
                     hapticNotification(NotificationFeedbackType.Success);
                 }
@@ -103,15 +105,14 @@ export const useCategorizeInboxActions = (
         ...visibility,
         ...inboxSummary,
         lastWrite,
-        movedToCashTransactionIds: moveToCashActions.movedToCashTransactionIds,
         assign,
         assignCluster: (cluster, labelId) => void assignLabels({ ...cluster, rows: visibility.includedRows(cluster) }, [labelId]),
         pickClusterLabels: cluster => void pickLabels({ ...cluster, rows: visibility.includedRows(cluster) }, cluster.candidateLabelIds),
         pickRowLabels: row =>
             void pickLabels({ key: String(row.transactionId), displayTitle: row.title, rows: [row], ruleConditionValue: '' }, []),
-        moveToCash: moveToCashActions.moveToCash,
+        ...transferActions,
+        ...moveToCashActions,
         undo,
-        applyFollowUp,
-        undoMoveToCash: moveToCashActions.undoMoveToCash
+        applyFollowUp
     };
 };

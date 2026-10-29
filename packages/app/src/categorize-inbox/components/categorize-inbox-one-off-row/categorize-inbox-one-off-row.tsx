@@ -1,16 +1,15 @@
-import { convertFromMicroUnits } from '@budgie/contracts';
 import { Link } from 'expo-router';
-import { Text, View } from 'react-native';
+import { Text } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { Card } from '../../../@generic/component/card/card';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { testID } from '../../../@generic/utils/test-id.util';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { getCategorizeInboxRowHref } from '../../utils/get-categorize-inbox-row-href.util';
-import { CategorizeInboxSuggestionChips } from '../categorize-inbox-suggestion-chips/categorize-inbox-suggestion-chips';
+import { CategorizeInboxClusterRail } from '../categorize-inbox-cluster-rail/categorize-inbox-cluster-rail';
+import { CategorizeInboxClusterSummary } from '../categorize-inbox-cluster-summary/categorize-inbox-cluster-summary';
 
 import { CategorizeInboxOneOffRowSelector } from './categorize-inbox-one-off-row.selector';
 
@@ -21,7 +20,6 @@ interface Props {
 }
 
 export const CategorizeInboxOneOffRow = ({ cluster }: Props) => {
-    const protectAmount = useProtectedAmountLabel();
     const { formatDayAndMonthAndYear } = useFormatDate();
 
     const [row] = cluster.rows;
@@ -31,28 +29,18 @@ export const CategorizeInboxOneOffRow = ({ cluster }: Props) => {
     }
 
     return (
-        <Card size="sm" className="gap-y-md" {...testID(CategorizeInboxOneOffRowSelector.Row, cluster.key)}>
+        <Card size="sm" className="gap-y-xl p-3xl" {...testID(CategorizeInboxOneOffRowSelector.Row, cluster.key)}>
             <Link href={getCategorizeInboxRowHref(row)} asChild>
-                <HapticPressable
-                    className="flex-row items-center gap-x-xl"
-                    accessibilityRole="link"
-                    {...testID(CategorizeInboxOneOffRowSelector.Open, cluster.key)}
-                >
-                    <Text className="text-primary text-sm font-semibold flex-1" numberOfLines={1}>
-                        {cluster.displayTitle}
-                    </Text>
-                    <Text className="text-primary text-sm font-semibold">
-                        {protectAmount(convertFromMicroUnits(row.amount), row.instrumentSymbol)}
-                    </Text>
+                <HapticPressable accessibilityRole="link" {...testID(CategorizeInboxOneOffRowSelector.Open, cluster.key)}>
+                    <CategorizeInboxClusterSummary cluster={cluster}>
+                        <Text className="text-secondary-foreground text-xs tabular-nums" numberOfLines={1}>
+                            {formatDayAndMonthAndYear(row.operatedAt)}
+                        </Text>
+                    </CategorizeInboxClusterSummary>
                 </HapticPressable>
             </Link>
 
-            <View className="flex-row items-center gap-x-sm">
-                <CategorizeInboxSuggestionChips cluster={cluster} />
-                <Text className="text-secondary-foreground text-xs flex-1 text-right" numberOfLines={1}>
-                    {formatDayAndMonthAndYear(row.operatedAt)}
-                </Text>
-            </View>
+            <CategorizeInboxClusterRail cluster={cluster} />
         </Card>
     );
 };

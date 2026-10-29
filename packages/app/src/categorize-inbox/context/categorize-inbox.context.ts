@@ -24,6 +24,8 @@ export const CategorizeInboxContext = createContext<CategorizeInboxContextValueI
     pickClusterLabels: emptyFn,
     pickRowLabels: emptyFn,
     moveToCash: emptyFn,
+    convertClusterToTransfer: emptyFn,
+    convertRowToTransfer: emptyFn,
     undo: emptyFn,
     applyFollowUp: emptyFn,
     undoMoveToCash: emptyFn
