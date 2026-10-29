@@ -1,0 +1,178 @@
+appId: ${APP_ID}
+env:
+    ACCOUNT_NAME: Rules Test Account
+    CATEGORY_NAME: Rules Test Category
+    TAG_NAME: Rules Test Tag
+    EVENT_NAME: E2E Trip
+    EXPENSE_COMMENT: E2E Budget Event Match
+---
+- runFlow:
+      file: setup/setup-budget-test.flow.yaml
+
+- runFlow:
+      file: subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://budget'
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetWidget.EmptyState'
+      timeout: 3000
+- tapOn:
+      id: 'BudgetWidget.EmptyState'
+- runFlow:
+      file: subflows/budget/choose-empty-canvas.flow.yaml
+
+- tapOn: 'Week'
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetSetup.StartsOnRow'
+      timeout: 3000
+- tapOn:
+      id: 'BudgetSetup.OverallLimitInput'
+- inputText: '1000'
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetSetup.OverallLimitInput'
+          text: '1000'
+      timeout: 3000
+- scrollUntilVisible:
+      element:
+          id: 'BudgetSetup.CategoryLimitsHeader'
+      direction: DOWN
+      centerElement: true
+- tapOn:
+      id: 'BudgetSetup.CategoryLimitsHeader'
+- waitForAnimationToEnd
+- tapOn:
+      id: 'BudgetSetup.SaveButton'
+
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetWidget.Card'
+      timeout: 3000
+- tapOn:
+      id: 'BudgetWidget.Card'
+- extendedWaitUntil:
+      visible: 'Budget details'
+      timeout: 3000
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetDetails.Verdict'
+          text: '.*[1-7] days? left.*'
+      timeout: 3000
+- tapOn:
+      id: 'BudgetDetails.EditButton'
+- extendedWaitUntil:
+      visible: 'Edit budget'
+      timeout: 3000
+- assertVisible:
+      text: 'Week'
+      selected: true
+- tapOn:
+      id: 'PageHeader.BackButton'
+- extendedWaitUntil:
+      visible: 'Budget details'
+      timeout: 3000
+
+- runFlow:
+      file: subflows/navigation/navigate-to-transactions.flow.yaml
+- runFlow:
+      file: subflows/transactions/open-transaction-form.flow.yaml
+      env:
+          ACTION_ITEM_ID: 'ActionItem.Expense'
+          FORM_TITLE: 'New Expense'
+- tapOn:
+      id: 'TransactionKeypad.Digit.4'
+- tapOn:
+      id: 'TransactionKeypad.Digit.2'
+- runFlow:
+      file: subflows/transactions/select-account.flow.yaml
+      env:
+          ACCOUNT_NAME: ${ACCOUNT_NAME}
+- tapOn:
+      id: 'TransactionForm.CategorySelector'
+- runFlow:
+      file: subflows/shared/select-category-by-search.flow.yaml
+      env:
+          CATEGORY_NAME: ${CATEGORY_NAME}
+- runFlow:
+      file: subflows/transactions/select-existing-tag.flow.yaml
+      env:
+          TAG_NAME: ${TAG_NAME}
+- scrollUntilVisible:
+      element:
+          id: 'TransactionForm.CommentInput'
+      direction: DOWN
+      centerElement: true
+- runFlow:
+      file: subflows/transactions/enter-comment.flow.yaml
+      env:
+          COMMENT: ${EXPENSE_COMMENT}
+- runFlow: subflows/transactions/submit-transaction-and-wait.flow.yaml
+
+- runFlow:
+      file: subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://budget'
+- extendedWaitUntil:
+      visible: 'Budget details'
+      timeout: 3000
+- assertVisible:
+      id: 'BudgetDetails.SpentLabel'
+      text: '€42'
+
+- scrollUntilVisible:
+      element:
+          id: 'BudgetDetails.EventAddButton'
+      direction: DOWN
+      centerElement: true
+- waitForAnimationToEnd
+- tapOn:
+      id: 'BudgetDetails.EventAddButton'
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetEvent.NameInput'
+      timeout: 3000
+- tapOn:
+      id: 'BudgetEvent.NameInput'
+- inputText: ${EVENT_NAME}
+- tapOn:
+      id: 'BudgetEvent.TagField'
+- runFlow:
+      file: subflows/shared/select-tag-by-search.flow.yaml
+      env:
+          TAG_NAME: ${TAG_NAME}
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetEvent.LimitInput'
+      timeout: 3000
+- tapOn:
+      id: 'BudgetEvent.LimitInput'
+- inputText: '500'
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetEvent.LimitInput'
+          text: '500'
+      timeout: 3000
+- tapOn: 'Category limits'
+- waitForAnimationToEnd
+- tapOn:
+      id: 'BudgetEvent.SaveButton'
+
+- extendedWaitUntil:
+      visible: 'Budget details'
+      timeout: 3000
+- scrollUntilVisible:
+      element: ${EVENT_NAME}
+      direction: DOWN
+      centerElement: true
+- tapOn: ${EVENT_NAME}
+- extendedWaitUntil:
+      visible: 'Tagged expenses also count in your main budget.'
+      timeout: 3000
+- assertVisible:
+      id: 'BudgetDetails.SpentLabel'
+      text: '€42'
+- assertVisible:
+      id: 'BudgetDetails.LimitLabel'
+      text: '€500'
