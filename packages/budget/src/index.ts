@@ -57,3 +57,7 @@ export { scaleBudgetTemplateDraft } from './template/utils/scale-budget-template
 export { BUDGET_NOMINAL_PERIOD_DAYS } from './period/constant/budget-nominal-period-days.constant';
 export { resolveBudgetOverallLimit } from './income/utils/resolve-budget-overall-limit.util';
 export { computeIncomeReceived } from './income/utils/compute-income-received.util';
+export { computeExpectedIncome } from './income/utils/compute-expected-income.util';
+export type { BudgetIncomeCalendarEntryInterface } from './income/interface/budget-income-calendar-entry.interface';
+export type { BudgetIncomeCalendarInterface } from './income/interface/budget-income-calendar.interface';
+export type { BudgetIncomeMonthInterface } from './income/interface/budget-income-month.interface';
