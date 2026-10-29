@@ -23,10 +23,11 @@ interface Props {
 }
 
 export const BudgetEventDetails = ({ budget }: Props) => {
+    const today = useToday();
     const { projection, isLoading } = useGetBudgetProjectionQuery(budget);
     const { instrument } = useGetInstrumentByIdQuery(budget.instrumentId);
     const { formatMonthAndDay } = useFormatDate();
-    const periodWindow = resolveBudgetWindow(budget, useToday());
+    const periodWindow = resolveBudgetWindow(budget, today);
     const periodEnd = getInclusiveEnd(periodWindow.nextPeriodStart);
     const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
     const dateLabel = formatBudgetPeriodLabel(budget, formatMonthAndDay);
