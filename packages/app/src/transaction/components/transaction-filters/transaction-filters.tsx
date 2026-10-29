@@ -7,6 +7,8 @@ import { isDefined } from '@rnw-community/shared';
 import { DateFilter } from '../../../@generic/component/date-filter/date-filter';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { cn } from '../../../@generic/utils/cn.util';
+import { FILTER_CHIP_CLASS_NAME } from '../../constant/filter-chip-class-name.constant';
 import { useTransactionAccountFilterModal } from '../../context/transaction-account-filter-modal.context';
 import { useTransactionCategoryFilterModal } from '../../context/transaction-category-filter-modal.context';
 import { useTransactionTagFilterModal } from '../../context/transaction-tag-filter-modal.context';
@@ -50,11 +52,11 @@ export const TransactionFilters = ({ filters, onChange, accountId, showTypeFilte
                 {hasFiltersSelected ? (
                     <HapticPressable
                         onPress={handleClear}
-                        className="bg-destructive-background border border-destructive-corner rounded-2xl px-xl py-sm flex-row items-center gap-x-xs"
+                        className={cn(FILTER_CHIP_CLASS_NAME, 'bg-destructive-background border-destructive-corner')}
                         testID={TransactionFiltersSelector.ClearAllButton}
                     >
-                        <Icon icon={UserIconNameEnum.X} className="text-destructive-foreground" size={14} />
-                        <Text className="text-destructive-foreground text-sm">
+                        <Icon icon={UserIconNameEnum.X} className="text-destructive-foreground" size={13} />
+                        <Text className="text-destructive-foreground text-[13px] font-medium">
                             <Trans>Clear All</Trans>
                         </Text>
                     </HapticPressable>

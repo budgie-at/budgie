@@ -1,8 +1,9 @@
-import { View } from 'react-native';
+import { UserIconNameEnum } from '@budgie/contracts';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { TransactionAccountLine } from '../transaction-account-line/transaction-account-line';
+import { TransactionCardSeparator } from '../transaction-card-separator/transaction-card-separator';
 import { TransactionCardSelector } from '../transaction-card/transaction-card.selector';
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
@@ -17,32 +18,33 @@ export const TransactionCardAccountInfo = ({ transaction, accountId = null }: Pr
     const isTransfer = isDefined(fromAccount) && isDefined(toAccount);
     const visibleFromAccount = accountId === transaction.fromAccountId ? null : fromAccount;
     const visibleToAccount = accountId === transaction.toAccountId ? null : toAccount;
-    const fromAccountTestID = isTransfer ? TransactionCardSelector.FromAccount : TransactionCardSelector.Account;
-    const toAccountTestID = isTransfer ? TransactionCardSelector.ToAccount : TransactionCardSelector.Account;
 
     if (!isDefined(visibleFromAccount) && !isDefined(visibleToAccount)) {
         return null;
     }
 
+    const fromAccountTestID = isTransfer ? TransactionCardSelector.FromAccount : TransactionCardSelector.Account;
+    const toAccountTestID = isTransfer ? TransactionCardSelector.ToAccount : TransactionCardSelector.Account;
+
     return (
-        <View className="gap-y-xs">
+        <>
             {isDefined(visibleFromAccount) ? (
                 <TransactionAccountLine
-                    direction="from"
-                    icon={visibleFromAccount.icon}
                     title={visibleFromAccount.title}
                     testID={fromAccountTestID(visibleFromAccount.title)}
+                    {...(isTransfer && !isDefined(visibleToAccount) && { arrowIcon: UserIconNameEnum.ArrowLeft })}
                 />
             ) : null}
 
             {isDefined(visibleToAccount) ? (
                 <TransactionAccountLine
-                    direction="to"
-                    icon={visibleToAccount.icon}
                     title={visibleToAccount.title}
                     testID={toAccountTestID(visibleToAccount.title)}
+                    {...(isTransfer && { arrowIcon: UserIconNameEnum.ArrowRight })}
                 />
             ) : null}
-        </View>
+
+            <TransactionCardSeparator />
+        </>
     );
 };

@@ -2,6 +2,8 @@ import type { ScreenChromeConfigOverridesInterface } from '@rnw-community/react-
 
 export const SCREEN_CHROME_CONFIG: ScreenChromeConfigOverridesInterface = {
     collapsedHeaderHeight: 32,
+    smallTitleStart: 40,
+    largeTitleEnd: 40,
     topFadeHeight: 130,
     bottomFadeHeight: 150,
     headerBackdropHeight: 130,

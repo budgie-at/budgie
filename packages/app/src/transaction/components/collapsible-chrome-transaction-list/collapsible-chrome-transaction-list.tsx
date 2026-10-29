@@ -2,11 +2,12 @@ import { Trans } from '@lingui/react/macro';
 import { useState } from 'react';
 import { Text, View } from 'react-native';
 
-import { isPositiveNumber } from '@rnw-community/shared';
+import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { CollapsibleChromeLegendList } from '../../../@generic/component/collapsible-chrome-legend-list/collapsible-chrome-legend-list';
 import { CollapsibleChromePinnedBar } from '../../../@generic/component/collapsible-chrome-pinned-bar/collapsible-chrome-pinned-bar';
 import { CollapsibleChromeScrollFade } from '../../../@generic/component/collapsible-chrome-scroll-fade/collapsible-chrome-scroll-fade';
+import { TRANSACTION_SECTION_HEADER_HEIGHT } from '../../constant/transaction-section-header-height.constant';
 import { useTransactionList } from '../../hook/use-transaction-list.hook';
 import { useGetTransactionCountQuery } from '../../query/use-get-transaction-count.query';
 import { TransactionFilters } from '../transaction-filters/transaction-filters';
@@ -34,11 +35,12 @@ export const CollapsibleChromeTransactionList = ({ accountId, children }: Props)
 
     const countLabel = isPositiveNumber(count) ? ` ${count}` : '';
     const filtersSpacerStyle = { height: pinnedFiltersHeight };
+    const stackedHeaderHeight = isNotEmptyArray(sections) ? TRANSACTION_SECTION_HEADER_HEIGHT : 0;
 
     const listHeader = (
         <View>
             <CollapsibleChromeScrollFade>
-                <View className="pb-5xl">{children}</View>
+                <View className="pb-xl">{children}</View>
 
                 <Text className="text-primary text-lg font-semibold">
                     <Trans>Transactions</Trans>
@@ -63,7 +65,11 @@ export const CollapsibleChromeTransactionList = ({ accountId, children }: Props)
                 stickyHeaderOffset={pinnedFiltersHeight}
             />
 
-            <CollapsibleChromePinnedBar anchorY={filtersY} onHeightChange={setPinnedFiltersHeight}>
+            <CollapsibleChromePinnedBar
+                anchorY={filtersY}
+                stackedHeaderHeight={stackedHeaderHeight}
+                onHeightChange={setPinnedFiltersHeight}
+            >
                 <TransactionFilters
                     filters={activeFilters}
                     onChange={setInternalFilters}

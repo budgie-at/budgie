@@ -14,7 +14,7 @@ export const DebtSettlementConvertedAmountLabel = ({ debtEvent }: Props) => {
     const debtInstrument = debtEvent[DebtEventAssociationEnum.DEBT_ACCOUNT].instrument;
 
     return (
-        <Text className="text-xxs text-secondary-foreground text-right">
+        <Text className="text-[13px] text-secondary-foreground text-right tabular-nums">
             → {formatDigits(convertFromMicroUnits(debtEvent.amount), debtInstrument.symbol)}
         </Text>
     );

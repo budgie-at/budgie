@@ -36,7 +36,7 @@ export const ConvertedAmountLabel = ({ instrumentId, instrumentSymbol, amount, b
             : '';
 
     return (
-        <Text className="text-xxs text-secondary-foreground text-right">
+        <Text className="text-[13px] text-secondary-foreground text-right tabular-nums">
             {formattedConvertedAmount}
             {formattedExchangeRate}
         </Text>

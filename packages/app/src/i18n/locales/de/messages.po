@@ -1022,7 +1022,7 @@ msgid "Backup file ready"
 msgstr "Backup-Datei bereit"
 
 #: src/app/(main)/transactions/[id]/adjustment.tsx
-#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx
+#: src/transaction/components/transaction-card-content/transaction-card-content.tsx
 msgid "Balance Adjustment"
 msgstr "Saldoanpassung"
 
@@ -2668,10 +2668,7 @@ msgstr "PIN konnte nicht gespeichert werden. Bitte versuchen Sie es erneut."
 msgid "Fee"
 msgstr "Gebühr"
 
-#: src/transaction/components/transaction-metadata-rows/transaction-metadata-rows.tsx
-msgid "Fee · {formattedFeeAmount}"
-msgstr "Gebühr · {formattedFeeAmount}"
-
+#: src/transaction/components/transaction-card-fee/transaction-card-fee.tsx
 #: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
 msgid "Fee {formattedAmount}"
 msgstr "Gebühr {formattedAmount}"
@@ -2751,10 +2748,6 @@ msgstr "Ein Problem gefunden oder eine Idee? Öffne die GitHub-Issue-Vorlagen."
 #: src/i18n/constant/languages.constant.ts
 msgid "French"
 msgstr "Französisch"
-
-#: src/transaction/components/transaction-account-line/transaction-account-line.tsx
-msgid "from"
-msgstr "von"
 
 #: src/app/transaction-amount-filter.tsx
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
@@ -4395,7 +4388,6 @@ msgstr "Salden werden neu berechnet"
 #: src/receipt/hook/use-receipt-scan.hook.ts
 #: src/rule/constant/external-source.constant.ts
 #: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
-#: src/transaction/components/transaction-metadata-rows/transaction-metadata-rows.tsx
 msgid "Receipt"
 msgstr "Beleg"
 
@@ -4421,11 +4413,11 @@ msgstr "Wiederkehrend"
 msgid "Recurring payments will appear here once patterns are detected from your transactions"
 msgstr "Wiederkehrende Zahlungen erscheinen hier, sobald Muster in deinen Transaktionen erkannt werden"
 
-#: src/transaction/components/refunded-pill/refunded-pill.tsx
+#: src/transaction/hook/use-refunded-label.hook.ts
 msgid "Refunded"
 msgstr "Erstattet"
 
-#: src/transaction/components/refunded-pill/refunded-pill.tsx
+#: src/transaction/hook/use-refunded-label.hook.ts
 msgid "Refunded {formattedRefundedAmount}"
 msgstr "Erstattet {formattedRefundedAmount}"
 
@@ -5489,10 +5481,6 @@ msgstr "Die stimmten nicht überein"
 msgid "Title"
 msgstr "Titel"
 
-#: src/transaction/components/transaction-account-line/transaction-account-line.tsx
-msgid "to"
-msgstr "nach"
-
 #: src/app/transaction-amount-filter.tsx
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 msgid "To"
@@ -5749,7 +5737,7 @@ msgstr "Nicht verfügbar"
 
 #: src/category/components/stats-by-categories/stats-by-categories.tsx
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
-#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx
+#: src/transaction/components/transaction-card-category/transaction-card-category.tsx
 msgid "Uncategorized"
 msgstr "Nicht kategorisiert"
 
@@ -5769,7 +5757,7 @@ msgstr "Unter dem Limit"
 msgid "Undo"
 msgstr "Rückgängig"
 
-#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx
+#: src/transaction/components/transaction-card-category/transaction-card-category.tsx
 msgid "Unknown"
 msgstr "Unbekannt"
 

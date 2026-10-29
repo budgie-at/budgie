@@ -4,7 +4,7 @@ import { Text, View } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { derivePrimaryTagView } from '../../utils/derive-primary-tag-view.util';
-import { TransactionCardTagChip } from '../transaction-card-tag-chip/transaction-card-tag-chip';
+import { TransactionCardSeparator } from '../transaction-card-separator/transaction-card-separator';
 import { TransactionCardSelector } from '../transaction-card/transaction-card.selector';
 
 interface Props {
@@ -19,20 +19,23 @@ export const TransactionCardTags = ({ transaction }: Props) => {
     }
 
     return (
-        <View className="flex-row items-center gap-x-xs shrink min-w-0">
-            <TransactionCardTagChip
-                title={primaryTag.title}
-                isPrimary={hasMultipleTags}
-                testID={TransactionCardSelector.Tag(primaryTag.title)}
-            />
-            {hasMultipleTags ? (
-                <View className="rounded-full border border-secondary-corner px-sm py-[2px] shrink-0">
+        <>
+            <TransactionCardSeparator />
+            <View className="flex-1 flex-row items-center min-w-[56px]">
+                <Text
+                    className="text-[13px] text-secondary-foreground/70 shrink"
+                    numberOfLines={1}
+                    testID={TransactionCardSelector.Tag(primaryTag.title)}
+                >
+                    {`#${primaryTag.title}`}
+                </Text>
+                {hasMultipleTags ? (
                     <Text
-                        className="text-xs text-secondary-foreground"
+                        className="text-[13px] text-secondary-foreground/70 ml-xs shrink-0"
                         testID={TransactionCardSelector.TagSiblingsCount(primaryTag.title)}
                     >{`+${siblingsCount}`}</Text>
-                </View>
-            ) : null}
-        </View>
+                ) : null}
+            </View>
+        </>
     );
 };

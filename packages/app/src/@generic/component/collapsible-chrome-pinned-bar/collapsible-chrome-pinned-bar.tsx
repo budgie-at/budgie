@@ -12,6 +12,7 @@ import type { LayoutChangeEvent } from 'react-native';
 
 interface Props {
     readonly anchorY: number;
+    readonly stackedHeaderHeight: number;
     readonly onHeightChange: (height: number) => void;
     readonly children: ReactNode;
 }
@@ -19,7 +20,7 @@ interface Props {
 const HAIRLINE_FADE_DISTANCE = 12;
 const HAIRLINE_HEIGHT = StyleSheet.hairlineWidth;
 
-export const CollapsibleChromePinnedBar = ({ anchorY, onHeightChange, children }: Props) => {
+export const CollapsibleChromePinnedBar = ({ anchorY, stackedHeaderHeight, onHeightChange, children }: Props) => {
     const { scrollY } = useCollapsibleHeaderScroll();
     const { top } = useSafeAreaInsets();
 
@@ -32,6 +33,7 @@ export const CollapsibleChromePinnedBar = ({ anchorY, onHeightChange, children }
     }));
     const hairlineAnimatedStyle = useAnimatedStyle(() => ({
         height: HAIRLINE_HEIGHT,
+        bottom: -stackedHeaderHeight,
         opacity: interpolate(scrollY.value, [pinScrollY - HAIRLINE_FADE_DISTANCE, pinScrollY], [0, 1], Extrapolation.CLAMP)
     }));
 
@@ -41,7 +43,7 @@ export const CollapsibleChromePinnedBar = ({ anchorY, onHeightChange, children }
         <Animated.View className="absolute inset-x-0 top-0 bg-primary-reverse px-5xl py-md" style={animatedStyle} onLayout={handleLayout}>
             {children}
 
-            <Animated.View className="absolute inset-x-0 bottom-0 bg-secondary-corner" style={hairlineAnimatedStyle} pointerEvents="none" />
+            <Animated.View className="absolute inset-x-0 bg-secondary-corner" style={hairlineAnimatedStyle} pointerEvents="none" />
         </Animated.View>
     );
 };

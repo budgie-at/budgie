@@ -1022,7 +1022,7 @@ msgid "Backup file ready"
 msgstr "Файл резервної копії готовий"
 
 #: src/app/(main)/transactions/[id]/adjustment.tsx
-#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx
+#: src/transaction/components/transaction-card-content/transaction-card-content.tsx
 msgid "Balance Adjustment"
 msgstr "Коригування балансу"
 
@@ -2668,10 +2668,7 @@ msgstr "Не вдалося зберегти PIN-код. Спробуйте ще
 msgid "Fee"
 msgstr "Комісія"
 
-#: src/transaction/components/transaction-metadata-rows/transaction-metadata-rows.tsx
-msgid "Fee · {formattedFeeAmount}"
-msgstr "Комісія · {formattedFeeAmount}"
-
+#: src/transaction/components/transaction-card-fee/transaction-card-fee.tsx
 #: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
 msgid "Fee {formattedAmount}"
 msgstr "Комісія {formattedAmount}"
@@ -2751,10 +2748,6 @@ msgstr "Знайшли проблему або маєте ідею? Відкри
 #: src/i18n/constant/languages.constant.ts
 msgid "French"
 msgstr "Французька"
-
-#: src/transaction/components/transaction-account-line/transaction-account-line.tsx
-msgid "from"
-msgstr "від"
 
 #: src/app/transaction-amount-filter.tsx
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
@@ -4395,7 +4388,6 @@ msgstr "Перерахунок балансів"
 #: src/receipt/hook/use-receipt-scan.hook.ts
 #: src/rule/constant/external-source.constant.ts
 #: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
-#: src/transaction/components/transaction-metadata-rows/transaction-metadata-rows.tsx
 msgid "Receipt"
 msgstr "Чек"
 
@@ -4421,11 +4413,11 @@ msgstr "Регулярні"
 msgid "Recurring payments will appear here once patterns are detected from your transactions"
 msgstr "Повторювані платежі з’являться тут, щойно в ваших транзакціях буде виявлено закономірності"
 
-#: src/transaction/components/refunded-pill/refunded-pill.tsx
+#: src/transaction/hook/use-refunded-label.hook.ts
 msgid "Refunded"
 msgstr "Повернено"
 
-#: src/transaction/components/refunded-pill/refunded-pill.tsx
+#: src/transaction/hook/use-refunded-label.hook.ts
 msgid "Refunded {formattedRefundedAmount}"
 msgstr "Повернено {formattedRefundedAmount}"
 
@@ -5489,10 +5481,6 @@ msgstr "Вони не збіглися"
 msgid "Title"
 msgstr "Назва"
 
-#: src/transaction/components/transaction-account-line/transaction-account-line.tsx
-msgid "to"
-msgstr "до"
-
 #: src/app/transaction-amount-filter.tsx
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 msgid "To"
@@ -5749,7 +5737,7 @@ msgstr "Недоступно"
 
 #: src/category/components/stats-by-categories/stats-by-categories.tsx
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
-#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx
+#: src/transaction/components/transaction-card-category/transaction-card-category.tsx
 msgid "Uncategorized"
 msgstr "Без категорії"
 
@@ -5769,7 +5757,7 @@ msgstr "У межах ліміту"
 msgid "Undo"
 msgstr "Скасувати"
 
-#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx
+#: src/transaction/components/transaction-card-category/transaction-card-category.tsx
 msgid "Unknown"
 msgstr "Невідомо"
 

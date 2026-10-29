@@ -22,7 +22,7 @@ interface Props {
     readonly testID: string;
 }
 
-const amountVariants = cva('text-sm font-semibold text-right', {
+const amountVariants = cva('text-[15px] font-semibold text-right tabular-nums', {
     variants: { variant: FOREGROUND_COLOR_PALETTE }
 });
 
@@ -61,7 +61,7 @@ export const TransactionEntryAmount = ({ debtEvent, entry, variant, testID }: Pr
 
     return (
         <View
-            className="items-end"
+            className="items-end gap-y-xxs"
             testID={testID}
             {...(isDefined(debtConversionAccessibilityLabel) && {
                 accessibilityLabel: debtConversionAccessibilityLabel,

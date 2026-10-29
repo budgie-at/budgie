@@ -19,11 +19,11 @@ export const TransactionTransferAmount = ({ fromEntry, toEntry, testID }: Props)
     const toAmount = formatDigits(convertFromMicroUnits(toEntry.amount), toEntry.account.instrument.symbol);
 
     return (
-        <View className="gap-y-xxl items-end" testID={testID}>
-            <Text className="text-sm font-semibold text-right text-default-foreground">{fromAmount}</Text>
+        <View className="gap-y-xxs items-end" testID={testID}>
+            <Text className="text-[15px] font-semibold text-right text-default-foreground tabular-nums">{fromAmount}</Text>
             <View className="flex-row items-center gap-x-xs">
                 <Icon icon={UserIconNameEnum.ArrowRight} className="text-secondary-foreground" size={12} />
-                <Text className="text-secondary-foreground text-xxs">{toAmount}</Text>
+                <Text className="text-secondary-foreground text-[13px] tabular-nums">{toAmount}</Text>
             </View>
         </View>
     );

@@ -1,33 +1,30 @@
-import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { Icon } from '../../../@generic/component/icon/icon';
 import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
+import { cn } from '../../../@generic/utils/cn.util';
 import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
+import { TRANSACTION_CARD_META_TEXT_CLASS_NAME } from '../../constant/transaction-card-meta-text-class-name.constant';
 
-import type { UserIconType } from '@budgie/contracts';
+import type { UserIconNameEnum } from '@budgie/contracts';
 
 interface Props {
-    readonly direction: 'from' | 'to';
-    readonly icon: UserIconType;
     readonly title: string;
-    readonly testID?: string;
+    readonly testID: string;
+    readonly arrowIcon?: UserIconNameEnum;
 }
 
-export const TransactionAccountLine = ({ direction, icon, title, testID }: Props) => {
-    const directionLabel = direction === 'from' ? <Trans>from</Trans> : <Trans>to</Trans>;
-
-    return (
-        <View className="flex-row items-center gap-x-sm" testID={testID}>
-            <Text className="text-xs text-secondary-foreground">{directionLabel}</Text>
-            <Icon icon={icon} className="text-secondary-foreground" size={12} />
-            <Text
-                className="text-xs font-medium text-secondary-foreground flex-1"
-                numberOfLines={1}
-                {...testIDProps(testID, TestIDPartEnum.LABEL)}
-            >
-                {title}
-            </Text>
-        </View>
-    );
-};
+export const TransactionAccountLine = ({ title, testID, arrowIcon }: Props) => (
+    <View className="flex-row items-center gap-x-xxs shrink min-w-0" testID={testID}>
+        {isDefined(arrowIcon) ? <Icon icon={arrowIcon} className="text-secondary-foreground" size={12} /> : null}
+        <Text
+            className={cn(TRANSACTION_CARD_META_TEXT_CLASS_NAME, 'shrink')}
+            numberOfLines={1}
+            {...testIDProps(testID, TestIDPartEnum.LABEL)}
+        >
+            {title}
+        </Text>
+    </View>
+);
