@@ -20,6 +20,8 @@ export const BudgetLimitSourceField = ({ currencySymbol }: Props) => {
     const render = ({ field: { value, onChange } }: UseControllerReturn<BudgetFormValues, 'limitSource'>) => {
         const handleFixedPress = () => void onChange(BudgetLimitSourceEnum.FIXED);
         const handleReceivedPress = () => void onChange(BudgetLimitSourceEnum.INCOME_RECEIVED);
+        const fixedLimitField =
+            value === BudgetLimitSourceEnum.FIXED ? <BudgetOverallLimitField control={control} currencySymbol={currencySymbol} /> : null;
         const handleExpectedPress = () => void onChange(BudgetLimitSourceEnum.INCOME_EXPECTED);
 
         return (
@@ -33,7 +35,7 @@ export const BudgetLimitSourceField = ({ currencySymbol }: Props) => {
                     onPress={handleFixedPress}
                     testID={BudgetSelector.SetupLimitSourceRow(BudgetLimitSourceEnum.FIXED)}
                 >
-                    <BudgetOverallLimitField control={control} currencySymbol={currencySymbol} />
+                    {fixedLimitField}
                 </RadioOptionRow>
                 <RadioOptionRow
                     label={t`Income received`}

@@ -5,7 +5,7 @@ import { useLingui } from '@lingui/react/macro';
 import { addMonths } from 'date-fns/addMonths';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -64,6 +64,8 @@ export const useBudgetFundForm = ({ budget, editingId }: UseBudgetFundFormOption
         values: isDefined(editingFund) ? buildFundFormValues(editingFund) : defaultValues,
         resetOptions: { keepDirtyValues: true, keepErrors: true }
     });
+
+    const recurringSeriesId = useWatch({ control: form.control, name: 'recurringSeriesId' });
 
     const handleUseSuggestion = (suggestion: BudgetFundSuggestionInterface) => {
         form.reset({
@@ -127,7 +129,7 @@ export const useBudgetFundForm = ({ budget, editingId }: UseBudgetFundFormOption
     return {
         form,
         editingFund,
-        suggestion: isEditing ? null : (suggestions[0] ?? null),
+        suggestion: isEditing || isDefined(recurringSeriesId) ? null : (suggestions[0] ?? null),
         handleUseSuggestion,
         handleSubmit,
         handleDelete,

@@ -41,6 +41,7 @@ export const BudgetEventCategoryLimitRow = ({ currencySymbol, index, onRemove }:
         field: { value, onChange }
     }: UseControllerReturn<BudgetEventFormValues, `categoryLimits.${number}.limitAmount`>) => (
         <AmountInput
+            testID={BudgetSelector.EventCategoryLimitAmountInput(index)}
             value={value}
             onChangeValue={onChange}
             placeholder={t`e.g. 200`}

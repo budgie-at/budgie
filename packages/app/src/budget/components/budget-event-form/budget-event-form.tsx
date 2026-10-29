@@ -3,7 +3,7 @@ import * as Schema from 'effect/Schema';
 import { FormProvider, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
@@ -29,7 +29,8 @@ export const BudgetEventForm = ({ defaultInstrumentId, editingId }: Props) => {
     const { t } = useLingui();
     const { form, handleCancel, handleSubmit, handleDelete, isEditing, isLoading } = useBudgetEventForm({ defaultInstrumentId, editingId });
     const values = useWatch({ control: form.control });
-    const { instrument } = useGetInstrumentByIdQuery(defaultInstrumentId);
+    const instrumentId = useWatch({ control: form.control, name: 'instrumentId' });
+    const { instrument } = useGetInstrumentByIdQuery(isPositiveNumber(instrumentId) ? instrumentId : defaultInstrumentId);
     const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
     const isSaveDisabled = !Schema.is(BudgetEventFormSchema)({ ...form.getValues(), ...values });
     const headerTitle = isEditing ? t`Edit event` : t`New event`;

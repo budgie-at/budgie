@@ -74,6 +74,7 @@ export const BudgetSelector = {
     EventDatesField: 'BudgetEvent.DatesField',
     EventLimitInput: 'BudgetEvent.LimitInput',
     EventCategoryLimitAddButton: 'BudgetEvent.CategoryLimitAddButton',
+    EventCategoryLimitAmountInput: (index: number) => `BudgetEvent.CategoryLimit.${index}.AmountInput` as const,
     EventCategoryLimitRow: (index: number) => `BudgetEvent.CategoryLimit.${index}.Row` as const,
     EventSaveButton: 'BudgetEvent.SaveButton',
     EventDeleteButton: 'BudgetEvent.DeleteButton',
