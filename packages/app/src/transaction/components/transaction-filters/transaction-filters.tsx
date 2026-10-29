@@ -52,11 +52,11 @@ export const TransactionFilters = ({ filters, onChange, accountId, showTypeFilte
                 {hasFiltersSelected ? (
                     <HapticPressable
                         onPress={handleClear}
-                        className={cn(FILTER_CHIP_CLASS_NAME, 'bg-destructive-background')}
+                        className={cn(FILTER_CHIP_CLASS_NAME, 'bg-surface-fill')}
                         testID={TransactionFiltersSelector.ClearAllButton}
                     >
-                        <Icon icon={UserIconNameEnum.X} className="text-destructive-foreground" size={13} />
-                        <Text className="text-destructive-foreground text-[13px] font-medium">
+                        <Icon icon={UserIconNameEnum.X} className="text-secondary-foreground" size={13} />
+                        <Text className="text-primary text-[13px] font-medium">
                             <Trans>Clear All</Trans>
                         </Text>
                     </HapticPressable>
@@ -68,7 +68,6 @@ export const TransactionFilters = ({ filters, onChange, accountId, showTypeFilte
                 {showTypeFilter ? <TransactionTypeFilter value={filters.types} onChange={createFilterHandler('types')} /> : null}
                 <TransactionAmountFilter value={filters.amount} onChange={createFilterHandler('amount')} />
                 <TransactionIdsFilterChip
-                    icon={UserIconNameEnum.Tag}
                     label={t`Categories`}
                     activeLabel={t`Categories (${selectedCategoriesCount})`}
                     testID={TransactionFiltersSelector.CategoryChip}
@@ -77,7 +76,6 @@ export const TransactionFilters = ({ filters, onChange, accountId, showTypeFilte
                     onChange={createFilterHandler('categoryIds')}
                 />
                 <TransactionIdsFilterChip
-                    icon={UserIconNameEnum.Hash}
                     label={t`Tags`}
                     activeLabel={t`Tags (${selectedTagsCount})`}
                     testID={TransactionFiltersSelector.TagChip}
@@ -88,7 +86,6 @@ export const TransactionFilters = ({ filters, onChange, accountId, showTypeFilte
 
                 {isDefined(accountId) ? null : (
                     <TransactionIdsFilterChip
-                        icon={UserIconNameEnum.Wallet}
                         label={t`Accounts`}
                         activeLabel={t`Accounts (${selectedAccountsCount})`}
                         testID={TransactionFiltersSelector.AccountChip}
@@ -99,6 +96,7 @@ export const TransactionFilters = ({ filters, onChange, accountId, showTypeFilte
                     />
                 )}
             </ScrollView>
+            <View className="absolute inset-y-0 right-0 w-[24px] bg-linear-to-r from-surface/0 to-surface" pointerEvents="none" />
         </View>
     );
 };

@@ -1,4 +1,4 @@
-import { AmountRangeInterface, UserIconNameEnum } from '@budgie/contracts';
+import { AmountRangeInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
@@ -52,13 +52,5 @@ export const TransactionAmountFilter = ({ value, onChange }: Props) => {
     const label = getLabel();
     const chipTestID = hasAmountFilterSelected ? TransactionFiltersSelector.AmountChipActive : TransactionFiltersSelector.AmountChip;
 
-    return (
-        <TransactionFilterChip
-            isActive={hasAmountFilterSelected}
-            icon={UserIconNameEnum.Coins}
-            label={label}
-            onPress={handleOpen}
-            testID={chipTestID}
-        />
-    );
+    return <TransactionFilterChip isActive={hasAmountFilterSelected} label={label} onPress={handleOpen} testID={chipTestID} />;
 };

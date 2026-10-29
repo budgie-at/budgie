@@ -45,7 +45,7 @@ export const TransactionListEmptyState = ({ isLoading, hasFiltersSelected, onCle
                     className="mt-xl px-xl py-sm"
                     testID={TransactionsPageSelector.ClearFiltersButton}
                 >
-                    <Text className="text-default-foreground text-[15px] font-semibold">
+                    <Text className="text-primary text-[15px] font-semibold">
                         <Trans>Clear filters</Trans>
                     </Text>
                 </HapticPressable>

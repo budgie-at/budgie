@@ -1,4 +1,4 @@
-import { Text, View } from 'react-native';
+import { Text } from 'react-native';
 import Animated, { Extrapolation, interpolate, useAnimatedStyle } from 'react-native-reanimated';
 
 import { useCollapsibleHeaderScroll } from '@rnw-community/react-native-collapsible-header';
@@ -16,7 +16,7 @@ export const AccountDetailsSmallTitle = ({ title, balance, instrumentSymbol }: P
     const protectAmount = useProtectedAmountLabel();
     const { scrollY } = useCollapsibleHeaderScroll();
 
-    const balanceAnimatedStyle = useAnimatedStyle(() => ({
+    const animatedStyle = useAnimatedStyle(() => ({
         opacity: interpolate(
             scrollY.value,
             [SCREEN_CHROME_CONTENT_INSET_TOP, SCREEN_CHROME_CONTENT_INSET_TOP + 24],
@@ -26,13 +26,13 @@ export const AccountDetailsSmallTitle = ({ title, balance, instrumentSymbol }: P
     }));
 
     return (
-        <View className="items-center">
+        <Animated.View className="items-center" style={animatedStyle}>
             <Text className="text-primary text-lg font-semibold text-center" numberOfLines={1}>
                 {title}
             </Text>
-            <Animated.Text className="text-secondary-foreground text-xs text-center" numberOfLines={1} style={balanceAnimatedStyle}>
+            <Text className="text-secondary-foreground text-xs text-center" numberOfLines={1}>
                 {protectAmount(balance, instrumentSymbol)}
-            </Animated.Text>
-        </View>
+            </Text>
+        </Animated.View>
     );
 };

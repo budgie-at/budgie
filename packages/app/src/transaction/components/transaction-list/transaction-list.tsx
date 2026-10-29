@@ -20,19 +20,19 @@ export const TransactionList = () => {
                 leading={<TransactionListUncategorizedPill filters={activeFilters} />}
             />
 
-            <TransactionListCount filters={activeFilters} />
-
-            <TransactionSectionsList
-                sections={sections}
-                onEndReached={loadMore}
-                listEmptyState={
-                    <TransactionListEmptyState
-                        isLoading={isLoading}
-                        hasFiltersSelected={hasFiltersSelected}
-                        onClearFilters={clearFilters}
-                    />
-                }
-            />
+            <TransactionListCount filters={activeFilters}>
+                <TransactionSectionsList
+                    sections={sections}
+                    onEndReached={loadMore}
+                    listEmptyState={
+                        <TransactionListEmptyState
+                            isLoading={isLoading}
+                            hasFiltersSelected={hasFiltersSelected}
+                            onClearFilters={clearFilters}
+                        />
+                    }
+                />
+            </TransactionListCount>
         </View>
     );
 };

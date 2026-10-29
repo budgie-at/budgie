@@ -1,6 +1,7 @@
 import {
     TransactionTypeEnum,
     TransactionWithRelationsEntityInterface,
+    UserIconNameEnum,
     isNegativeAdjustmentTransaction,
     isPositiveAdjustmentTransaction
 } from '@budgie/contracts';
@@ -28,21 +29,21 @@ export const TransactionCardContent = ({ transaction, accountId = null }: Props)
     const isUncategorized = isUncategorizedTransaction(transaction);
     const iconVariant = isEarnedIncomeTransaction(transaction) && !isUncategorized ? 'positive' : neutralIconVariant;
     const iconClassName = iconVariant === 'secondary' ? 'bg-secondary-foreground/15' : '';
+    const icon = isUncategorized ? UserIconNameEnum.CircleDashed : getTransactionIcon(transaction);
+    const iconForegroundClassName = isUncategorized ? 'text-attention-foreground' : '';
 
     return (
         <View className="flex-row items-center gap-x-xl">
-            <View>
-                <CircleIcon
-                    size={36}
-                    iconSize={18}
-                    radius={18}
-                    border={false}
-                    icon={getTransactionIcon(transaction)}
-                    variant={iconVariant}
-                    className={iconClassName}
-                />
-                {isUncategorized ? <View className="absolute -top-px -right-px size-[9px] rounded-full bg-warning-fill" /> : null}
-            </View>
+            <CircleIcon
+                size={36}
+                iconSize={18}
+                radius={18}
+                border={false}
+                icon={icon}
+                variant={iconVariant}
+                className={iconClassName}
+                iconClassName={iconForegroundClassName}
+            />
 
             <View className="flex-1 min-w-0 min-h-[38px] justify-center gap-y-xxs">
                 {isAdjustment ? (

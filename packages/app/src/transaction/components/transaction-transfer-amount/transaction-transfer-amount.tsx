@@ -25,7 +25,7 @@ export const TransactionTransferAmount = ({ fromEntry, toEntry, accountId, testI
     const isCrossCurrency = primaryEntry.account.instrument.id !== secondaryEntry.account.instrument.id;
 
     return (
-        <View className="gap-y-xxs items-end" testID={testID}>
+        <View className="shrink-0 gap-y-xxs items-end" testID={testID}>
             <Text className="text-[15px] font-semibold text-right text-primary tabular-nums">{`${sign}${primaryAmount}`}</Text>
             {isCrossCurrency ? (
                 <Text className="text-secondary-foreground/70 text-[13px] text-right tabular-nums">{secondaryAmount}</Text>

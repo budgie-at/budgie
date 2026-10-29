@@ -55,7 +55,7 @@ export const TransactionEntryAmount = ({ debtEvent, entry, variant, sign, testID
 
     return (
         <View
-            className="items-end gap-y-xxs"
+            className="shrink-0 items-end gap-y-xxs"
             testID={testID}
             {...(isDefined(debtConversionAccessibilityLabel) && {
                 accessibilityLabel: debtConversionAccessibilityLabel,

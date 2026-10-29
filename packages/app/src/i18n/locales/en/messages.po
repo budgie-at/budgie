@@ -2674,7 +2674,7 @@ msgid "Fee"
 msgstr "Fee"
 
 #: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
-#: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
+#: src/transaction/hook/use-transaction-fee-label.hook.ts
 msgid "Fee {formattedAmount}"
 msgstr "Fee {formattedAmount}"
 
@@ -3500,8 +3500,8 @@ msgid "Monthly history"
 msgstr "Monthly history"
 
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
-msgid "Monthly Total"
-msgstr "Monthly Total"
+msgid "Monthly total"
+msgstr "Monthly total"
 
 #: src/runway/component/runway-verdict-figure/runway-verdict-figure.tsx
 msgid "months left"

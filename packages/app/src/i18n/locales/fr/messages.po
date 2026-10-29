@@ -2673,7 +2673,7 @@ msgid "Fee"
 msgstr "Frais"
 
 #: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
-#: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
+#: src/transaction/hook/use-transaction-fee-label.hook.ts
 msgid "Fee {formattedAmount}"
 msgstr "Frais {formattedAmount}"
 
@@ -3499,7 +3499,7 @@ msgid "Monthly history"
 msgstr "Historique mensuel"
 
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
-msgid "Monthly Total"
+msgid "Monthly total"
 msgstr "Total mensuel"
 
 #: src/runway/component/runway-verdict-figure/runway-verdict-figure.tsx
