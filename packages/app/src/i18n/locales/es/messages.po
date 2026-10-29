@@ -281,6 +281,10 @@ msgstr "{gapAmount} de margen"
 msgid "{gigabytes} GB"
 msgstr "{gigabytes} GB"
 
+#: src/categorize-inbox/components/categorize-inbox-pile-legend/categorize-inbox-pile-legend.tsx
+msgid "{groupCount, plural, one {# group left} other {# groups left}}"
+msgstr "{groupCount, plural, one {Queda # grupo} other {Quedan # grupos}}"
+
 #: src/categorize-inbox/components/categorize-inbox-one-offs-list/categorize-inbox-one-offs-list.tsx
 msgid "{groupCount} groups, {paymentCount} payments"
 msgstr "{groupCount} grupos, {paymentCount} pagos"

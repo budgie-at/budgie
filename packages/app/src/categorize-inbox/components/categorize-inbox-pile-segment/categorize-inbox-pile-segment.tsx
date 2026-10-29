@@ -13,6 +13,7 @@ interface Props {
 
 const PERCENT_MULTIPLIER = 100;
 const PILE_DURATION = 520;
+const SEGMENT_GAP = 0.006;
 
 export const CategorizeInboxPileSegment = ({ className, offset, share }: Props) => {
     const reducedMotion = useReducedMotion();
@@ -21,7 +22,10 @@ export const CategorizeInboxPileSegment = ({ className, offset, share }: Props) 
 
     const style = useAnimatedStyle(() => ({
         transformOrigin: 'left',
-        transform: [{ translateX: `${animatedOffset.get() * PERCENT_MULTIPLIER}%` }, { scaleX: animatedShare.get() }]
+        transform: [
+            { translateX: `${animatedOffset.get() * PERCENT_MULTIPLIER}%` },
+            { scaleX: Math.max(animatedShare.get() - SEGMENT_GAP, 0) }
+        ]
     }));
 
     useEffect(() => {

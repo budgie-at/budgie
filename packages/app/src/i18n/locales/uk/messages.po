@@ -281,6 +281,10 @@ msgstr "Запас {gapAmount}"
 msgid "{gigabytes} GB"
 msgstr "{gigabytes} ГБ"
 
+#: src/categorize-inbox/components/categorize-inbox-pile-legend/categorize-inbox-pile-legend.tsx
+msgid "{groupCount, plural, one {# group left} other {# groups left}}"
+msgstr "{groupCount, plural, one {Залишилась # група} few {Залишилось # групи} many {Залишилось # груп} other {Залишилось # групи}}"
+
 #: src/categorize-inbox/components/categorize-inbox-one-offs-list/categorize-inbox-one-offs-list.tsx
 msgid "{groupCount} groups, {paymentCount} payments"
 msgstr "Груп: {groupCount}, платежів: {paymentCount}"
