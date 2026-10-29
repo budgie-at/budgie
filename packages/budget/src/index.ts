@@ -52,3 +52,4 @@ export { BudgetLimitChangeRepository } from './tuning/repository/budget-limit-ch
 export type { BudgetCreateInputInterface } from './mutation/interface/budget-create-input.interface';
 export type { BudgetUpdateInputInterface } from './mutation/interface/budget-update-input.interface';
 export { buildPeriodMonths } from './period/utils/budget-period-months.util';
+export { defaultPeriodAnchorDate } from './period/utils/default-period-anchor-date.util';

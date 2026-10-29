@@ -3,6 +3,7 @@ import { BudgetPeriodEnum } from '@budgie/contracts';
 import { expect, layer } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
+import { createTestBudget } from '../harness/create-test-budget';
 import { TestLayer } from '../harness/test-context';
 
 const INITIAL_OVERALL_LIMIT = 100_000_000;
@@ -57,6 +58,16 @@ layer(TestLayer)('BudgetService', it => {
                 { categoryId: FIRST_CATEGORY_ID, limitAmount: FIRST_UPDATED_LIMIT },
                 { categoryId: THIRD_CATEGORY_ID, limitAmount: THIRD_UPDATED_LIMIT }
             ]);
+        })
+    );
+
+    it.effect('defaults the anchor of a weekly budget to a Monday and leaves monthly budgets without one', () =>
+        Effect.gen(function* () {
+            const weekly = yield* createTestBudget({ period: BudgetPeriodEnum.WEEKLY });
+            const monthly = yield* createTestBudget();
+
+            expect(weekly.periodAnchorDate?.getDay()).toBe(1);
+            expect(monthly.periodAnchorDate).toBeNull();
         })
     );
 });

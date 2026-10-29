@@ -5,6 +5,7 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
+import { defaultPeriodAnchorDate } from '../../period/utils/default-period-anchor-date.util';
 import { BudgetCategoryLimitRepository } from '../../query/repository/budget-category-limit.repository';
 import { BudgetRepository } from '../../query/repository/budget.repository';
 
@@ -73,7 +74,8 @@ export class BudgetService extends Context.Service<BudgetService>()('@budgie/bud
             createBudget: Effect.fn('BudgetService.createBudget')(
                 function* (input: BudgetCreateInputInterface) {
                     const { categoryLimits, ...budgetFields } = input;
-                    const createdBudget = yield* budgetRepository.create(budgetFields);
+                    const periodAnchorDate = budgetFields.periodAnchorDate ?? defaultPeriodAnchorDate(budgetFields.period, new Date());
+                    const createdBudget = yield* budgetRepository.create({ ...budgetFields, periodAnchorDate });
 
                     yield* createCategoryLimits(createdBudget.id, categoryLimits);
 
