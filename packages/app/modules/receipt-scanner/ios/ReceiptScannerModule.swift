@@ -164,14 +164,14 @@ private final class ReceiptScanSession: NSObject, VNDocumentCameraViewController
         self.saving.leave()
       }
     }
-    controller.dismiss(animated: true)
+    camera.dismiss(animated: true)
   }
 
   func documentCameraViewControllerDidCancel(_ controller: VNDocumentCameraViewController) {
-    controller.dismiss(animated: true)
+    camera.dismiss(animated: true)
   }
 
   func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFailWithError error: Error) {
-    controller.dismiss(animated: true)
+    camera.dismiss(animated: true)
   }
 }
