@@ -1,4 +1,4 @@
-import { BudgetRepository, computePeriodWindow, computeSafePerDay, getInclusiveEnd } from '@budgie/budget';
+import { BudgetRepository, computeSafePerDay, getInclusiveEnd } from '@budgie/budget';
 import {
     AccountBalanceRepository,
     AccountTypeEnum,
@@ -26,6 +26,7 @@ import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/sha
 
 import { ACCOUNT_TYPE } from '../../account/constant/account-type.constant';
 import { BudgetProjectionService } from '../../budget/service/budget-projection.service';
+import { resolveBudgetWindow } from '../../budget/utils/resolve-budget-window.util';
 import { DEFAULT_DECIMAL_PLACES } from '../../i18n/constant/default-decimal-places.constant';
 import { formatSymbolAmount } from '../../i18n/utils/format-symbol-amount.util';
 import { i18nLoadLanguageMessages } from '../../i18n/utils/i18n.util';
@@ -279,16 +280,21 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
             const buildBudget = Effect.fn('WidgetSnapshotBuilderService.buildBudget')(function* (context: WidgetSnapshotContextInterface) {
                 const budget = yield* budgetRepository.findMain();
 
-                if (!isDefined(budget) || !isPositiveNumber(budget.instrumentId) || !isPositiveNumber(budget.overallLimit)) {
+                if (!isDefined(budget) || !isPositiveNumber(budget.instrumentId)) {
                     return null;
                 }
 
                 const now = new Date();
-                const { nextPeriodStart } = computePeriodWindow(budget, now);
+                const { nextPeriodStart } = resolveBudgetWindow(budget, now);
                 const [instrument, projection] = yield* Effect.all(
                     [instrumentRepository.findById(budget.instrumentId), budgetProjectionService.project(budget, now)],
                     { concurrency: 'unbounded' }
                 );
+
+                if (!isPositiveNumber(projection.overall.limit)) {
+                    return null;
+                }
+
                 const symbol = instrument?.symbol ?? DEFAULT_INSTRUMENT.symbol;
                 const spentAmount = convertFromMicroUnits(projection.overall.spent);
                 const limitAmount = convertFromMicroUnits(projection.overall.limit);
