@@ -1,4 +1,5 @@
 import { BudgetLimitSourceEnum, BudgetRolloverModeEnum, Db } from '@budgie/contracts';
+import { addMonths } from 'date-fns/addMonths';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -11,7 +12,7 @@ import { BudgetFundSpendService } from '../../fund/service/budget-fund-spend.ser
 import { computeFundCovered } from '../../fund/utils/compute-fund-covered.util';
 import { computeFundDueWindow } from '../../fund/utils/compute-fund-due-window.util';
 import { contributeToFund } from '../../fund/utils/contribute-to-fund.util';
-import { settleFund } from '../../fund/utils/settle-fund.util';
+import { matchFundSpend } from '../../fund/utils/match-fund-spend.util';
 import { computeIncomeReceived } from '../../income/utils/compute-income-received.util';
 import { resolveBudgetOverallLimit } from '../../income/utils/resolve-budget-overall-limit.util';
 import { computePeriodWindow, getInclusiveEnd } from '../../period/utils/budget-period.util';
@@ -27,6 +28,9 @@ import { BudgetPeriodSnapshotRepository } from '../repository/budget-period-snap
 import { computeClosedPeriods } from '../utils/budget-closed-periods.util';
 import { buildPeriodSnapshotRows } from '../utils/build-period-snapshot-rows.util';
 
+import type { BudgetFundCloseStateInterface } from '../../fund/interface/budget-fund-close-state.interface';
+import type { BudgetFundDrawInterface } from '../../fund/interface/budget-fund-draw.interface';
+import type { BudgetFundMatchInterface } from '../../fund/interface/budget-fund-match.interface';
 import type { BudgetPeriodWindowInterface } from '../../period/interface/budget-period-window.interface';
 import type { BudgetCarryOutsInterface } from '../../rollover/interface/budget-carry-outs.interface';
 import type {
@@ -71,29 +75,35 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
             return resolveBudgetOverallLimit(budget.limitSource, budget.overallLimit, incomeReceived, incomeReceived);
         });
 
-        const loadClosedSpend = Effect.fnUntraced(function* (
+        const loadClosedSpend = (
             budget: Pick<BudgetEntityInterface, 'id' | 'instrumentId'>,
             limitedCategoryIds: ReadonlySet<number>,
-            window: BudgetPeriodWindowInterface,
             isReconstructed: boolean
-        ) {
-            if (isReconstructed) {
-                const rows = yield* budgetRepository.findBudgetSpentEntries(
+        ) =>
+            Effect.fnUntraced(function* (window: BudgetPeriodWindowInterface, funds: readonly BudgetFundMatchInterface[]) {
+                if (isReconstructed) {
+                    const rows = yield* budgetRepository.findBudgetSpentEntries(
+                        window.periodStart,
+                        window.nextPeriodStart,
+                        budget.instrumentId
+                    );
+
+                    return { spent: computeSpent(rows, budget.instrumentId), fundCovered: NO_FUND_COVERED, draws: [] };
+                }
+
+                const { entries, draws } = yield* budgetFundSpendService.findSpentWithDrawsAgainst(
+                    budget,
+                    funds,
                     window.periodStart,
-                    window.nextPeriodStart,
-                    budget.instrumentId
+                    window.nextPeriodStart
                 );
 
-                return { spent: computeSpent(rows, budget.instrumentId), fundCovered: NO_FUND_COVERED };
-            }
-
-            const { entries, draws } = yield* budgetFundSpendService.findSpentWithDraws(budget, window.periodStart, window.nextPeriodStart);
-
-            return {
-                spent: computeSpent(entries, budget.instrumentId),
-                fundCovered: computeFundCovered(entries, draws, limitedCategoryIds)
-            };
-        });
+                return {
+                    spent: computeSpent(entries, budget.instrumentId),
+                    fundCovered: computeFundCovered(entries, draws, limitedCategoryIds),
+                    draws
+                };
+            });
 
         const makeSnapshotPeriod = (
             budget: Pick<
@@ -102,14 +112,15 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
             >,
             categoryLimits: readonly BudgetCategoryLimitEntityInterface[],
             isReconstructed: boolean
-        ) =>
-            Effect.fnUntraced(function* (window: BudgetPeriodWindowInterface, carryIn: BudgetCarryOutsInterface) {
-                const { spent, fundCovered } = yield* loadClosedSpend(
-                    budget,
-                    new Set(categoryLimits.map(limit => limit.categoryId)),
-                    window,
-                    isReconstructed
-                );
+        ) => {
+            const loadSpend = loadClosedSpend(budget, new Set(categoryLimits.map(limit => limit.categoryId)), isReconstructed);
+
+            return Effect.fnUntraced(function* (
+                window: BudgetPeriodWindowInterface,
+                carryIn: BudgetCarryOutsInterface,
+                funds: readonly BudgetFundMatchInterface[]
+            ) {
+                const { spent, fundCovered, draws } = yield* loadSpend(window, funds);
                 const overallLimit = yield* resolveOverallLimit(budget, window);
                 const limits = isReconstructed
                     ? categoryLimits.map(limit => ({ ...limit, rolloverMode: BudgetRolloverModeEnum.NONE }))
@@ -131,8 +142,9 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
 
                 yield* budgetPeriodSnapshotRepository.create(snapshot, rows.categories);
 
-                return computeSnapshotCarryOuts({ ...snapshot, categories: rows.categories });
+                return { carryOuts: computeSnapshotCarryOuts({ ...snapshot, categories: rows.categories }), draws };
             });
+        };
 
         const refreshPeriod = Effect.fnUntraced(function* (
             budget: Pick<BudgetEntityInterface, 'instrumentId'>,
@@ -199,73 +211,100 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
             );
         });
 
-        const settleDueFund = Effect.fnUntraced(function* (
+        const loadPriorConsumption = Effect.fnUntraced(function* (
             budget: Pick<BudgetEntityInterface, 'instrumentId'>,
-            initialFund: Pick<BudgetSinkingFundEntityInterface, 'id' | 'categoryId' | 'fundedAmount' | 'dueAt' | 'repeatEveryMonths'>,
-            recordedBalance: number,
-            closedThrough: Date | null
+            fund: BudgetSinkingFundEntityInterface,
+            firstWindow: BudgetPeriodWindowInterface
         ) {
-            let { fundedAmount, dueAt } = initialFund;
-            let matchedBalance = recordedBalance;
-            let isFinished = false;
+            const dueWindow = computeFundDueWindow(fund.dueAt);
 
-            for (let settlement = 0; settlement < maxFundSettlements && !isFinished; settlement += 1) {
-                const dueWindow = computeFundDueWindow(dueAt);
+            if (dueWindow.periodStart.getTime() >= firstWindow.periodStart.getTime()) {
+                return 0;
+            }
 
-                if (!isDefined(closedThrough) || dueWindow.nextPeriodStart.getTime() > closedThrough.getTime()) {
+            const rows = yield* budgetRepository.findBudgetSpentEntries(
+                dueWindow.periodStart,
+                new Date(Math.min(dueWindow.nextPeriodStart.getTime(), firstWindow.periodStart.getTime())),
+                budget.instrumentId
+            );
+
+            return matchFundSpend(toBudgetCurrencyEntries(rows, budget.instrumentId), [fund]).reduce(
+                (total, draw) => total + draw.amount,
+                0
+            );
+        });
+
+        const settleClosedFund = (state: BudgetFundCloseStateInterface, closedThrough: Date): BudgetFundCloseStateInterface => {
+            let { fundedAmount, dueAt } = state.fund;
+            let { consumed } = state;
+
+            for (let settlement = 0; settlement < maxFundSettlements; settlement += 1) {
+                if (computeFundDueWindow(dueAt).nextPeriodStart.getTime() > closedThrough.getTime()) {
                     break;
                 }
 
-                const rows = yield* budgetRepository.findBudgetSpentEntries(
-                    dueWindow.periodStart,
-                    dueWindow.nextPeriodStart,
-                    budget.instrumentId
-                );
-                const settled = settleFund(
-                    { ...initialFund, fundedAmount: matchedBalance, dueAt },
-                    toBudgetCurrencyEntries(rows, budget.instrumentId)
-                );
+                fundedAmount = Math.max(fundedAmount - consumed, 0);
+                consumed = 0;
 
-                fundedAmount = Math.max(fundedAmount - (matchedBalance - settled.fundedAmount), 0);
-                matchedBalance = fundedAmount;
-                ({ dueAt, isFinished } = settled);
+                if (!isDefined(state.fund.repeatEveryMonths)) {
+                    return { fund: { ...state.fund, fundedAmount, dueAt }, consumed, isFinished: true };
+                }
+
+                dueAt = addMonths(dueAt, state.fund.repeatEveryMonths);
             }
 
-            return { fund: { ...initialFund, fundedAmount, dueAt }, isFinished };
-        });
+            return { fund: { ...state.fund, fundedAmount, dueAt }, consumed, isFinished: false };
+        };
 
-        const advanceFunds = Effect.fnUntraced(function* (budget: BudgetEntityInterface, windows: readonly BudgetPeriodWindowInterface[]) {
-            const funds = yield* budgetSinkingFundRepository.getByBudget(budget.id);
-            const [latestSnapshot] = yield* budgetPeriodSnapshotRepository.findRecent(budget.id, 1);
-            const closedThrough = isDefined(latestSnapshot) ? new Date(latestSnapshot.periodEnd.getTime() + 1) : null;
+        const advanceFundsThroughWindow = (
+            states: readonly BudgetFundCloseStateInterface[],
+            budget: BudgetEntityInterface,
+            window: BudgetPeriodWindowInterface,
+            draws: readonly BudgetFundDrawInterface[]
+        ) =>
+            states.map(state => {
+                if (state.isFinished) {
+                    return state;
+                }
 
+                const contribution = contributeToFund(state.fund, [window], budget);
+                const drawn = draws.filter(draw => draw.fundId === state.fund.id).reduce((total, draw) => total + draw.amount, 0);
+
+                return settleClosedFund(
+                    {
+                        fund: { ...state.fund, ...contribution },
+                        consumed: state.consumed + drawn,
+                        isFinished: false
+                    },
+                    window.nextPeriodStart
+                );
+            });
+
+        const persistFunds = Effect.fnUntraced(function* (
+            originals: readonly BudgetSinkingFundEntityInterface[],
+            states: readonly BudgetFundCloseStateInterface[]
+        ) {
             yield* Effect.forEach(
-                funds,
-                Effect.fnUntraced(function* (fund) {
-                    const contribution = contributeToFund(fund, windows, budget);
-                    const settlement = yield* settleDueFund(
-                        budget,
-                        { ...fund, fundedAmount: contribution.fundedAmount },
-                        fund.fundedAmount,
-                        closedThrough
-                    );
+                states,
+                Effect.fnUntraced(function* ({ fund, isFinished }) {
+                    const original = originals.find(candidate => candidate.id === fund.id);
 
-                    if (settlement.isFinished) {
+                    if (isFinished) {
                         yield* budgetSinkingFundRepository.delete(fund.id);
 
                         return;
                     }
 
                     const hasChanged =
-                        settlement.fund.fundedAmount !== fund.fundedAmount ||
-                        settlement.fund.dueAt.getTime() !== fund.dueAt.getTime() ||
-                        contribution.lastFundedPeriodStart?.getTime() !== fund.lastFundedPeriodStart?.getTime();
+                        fund.fundedAmount !== original?.fundedAmount ||
+                        fund.dueAt.getTime() !== original.dueAt.getTime() ||
+                        fund.lastFundedPeriodStart?.getTime() !== original.lastFundedPeriodStart?.getTime();
 
                     if (hasChanged) {
                         yield* budgetSinkingFundRepository.update(fund.id, {
-                            fundedAmount: settlement.fund.fundedAmount,
-                            dueAt: settlement.fund.dueAt,
-                            lastFundedPeriodStart: contribution.lastFundedPeriodStart
+                            fundedAmount: fund.fundedAmount,
+                            dueAt: fund.dueAt,
+                            lastFundedPeriodStart: fund.lastFundedPeriodStart
                         });
                     }
                 }),
@@ -353,14 +392,34 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
                     const categoryLimits = yield* budgetCategoryLimitRepository.getByBudget(budget.id);
 
                     const snapshotPeriod = makeSnapshotPeriod(budget, categoryLimits, !isDefined(latestSnapshot));
-
-                    yield* Effect.reduce(
-                        windows,
-                        () => computeSnapshotCarryOuts(latestSnapshot),
-                        (carryIn, window) => snapshotPeriod(window, carryIn)
+                    const originalFunds = yield* budgetSinkingFundRepository.getByBudget(budget.id);
+                    const [firstWindow] = windows;
+                    const initialStates = yield* Effect.forEach(originalFunds, fund =>
+                        Effect.map(
+                            isDefined(firstWindow) ? loadPriorConsumption(budget, fund, firstWindow) : Effect.succeed(0),
+                            consumed => ({ fund, consumed, isFinished: false })
+                        )
                     );
+
+                    const closed = yield* Effect.reduce(
+                        windows,
+                        () => ({ carryIn: computeSnapshotCarryOuts(latestSnapshot), states: initialStates }),
+                        (accumulator, window) =>
+                            Effect.map(
+                                snapshotPeriod(
+                                    window,
+                                    accumulator.carryIn,
+                                    accumulator.states.filter(state => !state.isFinished).map(state => state.fund)
+                                ),
+                                ({ carryOuts, draws }) => ({
+                                    carryIn: carryOuts,
+                                    states: advanceFundsThroughWindow(accumulator.states, budget, window, draws)
+                                })
+                            )
+                    );
+
                     yield* refreshRecentPeriods(budget);
-                    yield* advanceFunds(budget, windows);
+                    yield* persistFunds(originalFunds, closed.states);
 
                     const lastClosedWindow = windows.at(-1);
 

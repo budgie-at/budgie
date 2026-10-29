@@ -11,6 +11,7 @@ import { applyFundDraws } from '../utils/apply-fund-draws.util';
 import { computeFundDueWindow } from '../utils/compute-fund-due-window.util';
 import { matchFundSpend } from '../utils/match-fund-spend.util';
 
+import type { BudgetFundMatchInterface } from '../interface/budget-fund-match.interface';
 import type { BudgetEntityInterface } from '@budgie/contracts';
 
 export class BudgetFundSpendService extends Context.Service<BudgetFundSpendService>()('@budgie/budget/BudgetFundSpendService', {
@@ -18,12 +19,12 @@ export class BudgetFundSpendService extends Context.Service<BudgetFundSpendServi
         const budgetRepository = yield* BudgetRepository;
         const budgetSinkingFundRepository = yield* BudgetSinkingFundRepository;
 
-        const findSpentWithDraws = Effect.fn('BudgetFundSpendService.findSpentWithDraws')(function* (
-            budget: Pick<BudgetEntityInterface, 'id' | 'instrumentId'>,
+        const findSpentWithDrawsAgainst = Effect.fn('BudgetFundSpendService.findSpentWithDrawsAgainst')(function* (
+            budget: Pick<BudgetEntityInterface, 'instrumentId'>,
+            funds: readonly BudgetFundMatchInterface[],
             periodStart: Date,
             nextPeriodStart: Date
         ) {
-            const funds = yield* budgetSinkingFundRepository.getByBudget(budget.id);
             const dueWindows = funds.map(fund => computeFundDueWindow(fund.dueAt));
             const rangeStart = Math.min(periodStart.getTime(), ...dueWindows.map(dueWindow => dueWindow.periodStart.getTime()));
             const rangeEnd = Math.max(nextPeriodStart.getTime(), ...dueWindows.map(dueWindow => dueWindow.nextPeriodStart.getTime()));
@@ -42,8 +43,19 @@ export class BudgetFundSpendService extends Context.Service<BudgetFundSpendServi
             return { entries, draws: matchFundSpend(rangeEntries, funds).filter(draw => periodEntryIds.has(draw.entryId)) };
         });
 
+        const findSpentWithDraws = Effect.fn('BudgetFundSpendService.findSpentWithDraws')(function* (
+            budget: Pick<BudgetEntityInterface, 'id' | 'instrumentId'>,
+            periodStart: Date,
+            nextPeriodStart: Date
+        ) {
+            const funds = yield* budgetSinkingFundRepository.getByBudget(budget.id);
+
+            return yield* findSpentWithDrawsAgainst(budget, funds, periodStart, nextPeriodStart);
+        });
+
         return {
             findSpentWithDraws,
+            findSpentWithDrawsAgainst,
             findSpentEntries: Effect.fn('BudgetFundSpendService.findSpentEntries')(function* (
                 budget: Pick<BudgetEntityInterface, 'id' | 'instrumentId'>,
                 periodStart: Date,
