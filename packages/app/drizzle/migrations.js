@@ -18,7 +18,8 @@ import m0014 from './20261027125204_transaction_receipts/migration.sql';
 import m0015 from './20261028124502_binance_capital_pending_from/migration.sql';
 import m0016 from './20261028143254_budget_period_snapshots/migration.sql';
 import m0017 from './20261028144701_budget_rollover/migration.sql';
-import m0018 from './20261029095013_binance_multi_account_and_sync_error_code/migration.sql';
+import m0018 from './20261029131908_dedupe_recurring_series/migration.sql';
+import m0019 from './20261029185813_binance_multi_account_and_sync_error_code/migration.sql';
 
 export default {
     migrations: {
@@ -40,6 +41,7 @@ export default {
         '20261028124502_binance_capital_pending_from': m0015,
         '20261028143254_budget_period_snapshots': m0016,
         '20261028144701_budget_rollover': m0017,
-        '20261029095013_binance_multi_account_and_sync_error_code': m0018
+        '20261029131908_dedupe_recurring_series': m0018,
+        '20261029185813_binance_multi_account_and_sync_error_code': m0019
     }
 };

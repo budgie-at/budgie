@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.126.3](https://github.com/budgie-at/budgie/compare/v6.126.2...v6.126.3) (2026-10-29)
+
+### Bug Fixes
+
+* **app:** restore the global colour tokens changed in v6.126.0 ([6198cb7](https://github.com/budgie-at/budgie/commit/6198cb7d4b72c4df78730f870ebf433a1ef4ac84))
+
+
 ## [6.126.2](https://github.com/budgie-at/budgie/compare/v6.126.1...v6.126.2) (2026-10-29)
 
 ### Bug Fixes
