@@ -6,7 +6,7 @@ name: Retry infra failures
 
 on:
     workflow_run: # zizmor: ignore[dangerous-triggers] the job reads the triggering run through the API only and checks out or runs none of its code
-        workflows: ["Pull Request", "Media smoke", "Warm the iOS e2e base binary"]
+        workflows: ['Pull Request', 'Media smoke', 'Warm the iOS e2e base binary']
         types: [completed]
 
 permissions:
