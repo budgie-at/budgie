@@ -75,7 +75,8 @@ const useAutomaticBiometric = (canStart: boolean, attempt: () => boolean) => {
 export const usePinAuthentication = () => {
     const { t } = useLingui();
     const { isFaceIdAvailable, isSomeAvailable, setIsUnlocked } = useAuthContext();
-    const canUseBiometric = useSetting('isBiometricEnabled') && isSomeAvailable;
+    const isBiometricEnabled = useSetting('isBiometricEnabled');
+    const canUseBiometric = isBiometricEnabled && isSomeAvailable;
     const [{ input, isLoading }, dispatch] = useReducer(reducer, { input: '', isLoading: false });
     const { invalidate, startBiometricAttempt, startPinAttempt } = useAuthAttempt();
     const { clearError, error, isLockedOut, reportIncorrectPin } = usePinError();
@@ -95,7 +96,7 @@ export const usePinAuthentication = () => {
         }
     };
 
-    useAutomaticBiometric(canUseBiometric && isAppActive, () => {
+    useAutomaticBiometric(isBiometricEnabled && isAppActive, () => {
         if (AppState.currentState !== 'active' || !startBiometricAttempt(acceptAttempt(false))) {
             return false;
         }
