@@ -8,13 +8,11 @@ import { Text, View } from 'react-native';
 import { isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { GrowBar } from '../../../@generic/component/grow-bar/grow-bar';
-import { STATUS_TONE_FILL_CLASS_NAME } from '../../../@generic/constant/status-tone-fill-class-name.constant';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { RunwayDriverAmount } from '../runway-driver-amount/runway-driver-amount';
 
-import type { StatusToneType } from '../../../@generic/type/status-tone.type';
 import type { RunwayDriverInterface } from '../../interface/runway-driver.interface';
 
 interface Props {
@@ -22,7 +20,6 @@ interface Props {
     readonly dimension: RunwayDriverDimensionEnum;
     readonly maxAmount: number;
     readonly rank: number;
-    readonly tone: StatusToneType;
 }
 
 const titleVariants = cva('shrink text-sm', {
@@ -34,7 +31,7 @@ const titleVariants = cva('shrink text-sm', {
     }
 });
 
-export const RunwayDriverRow = ({ driver, dimension, maxAmount, rank, tone }: Props) => {
+export const RunwayDriverRow = ({ driver, dimension, maxAmount, rank }: Props) => {
     const { t } = useLingui();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const formatProtectedAmount = useProtectedAmountLabel();
@@ -49,7 +46,7 @@ export const RunwayDriverRow = ({ driver, dimension, maxAmount, rank, tone }: Pr
     const namedTitle = isNotEmptyString(driver.title) ? driver.title : emptyTitle;
     const title = isFolded ? foldedTitle : namedTitle;
     const protectedAmount = formatProtectedAmount(convertFromMicroUnits(driver.monthlyAmount), defaultInstrument.symbol);
-    const barToneClassName = rank === 0 && !isFolded ? STATUS_TONE_FILL_CLASS_NAME[tone] : 'bg-primary/70';
+    const barToneClassName = isFolded ? 'bg-primary/35' : 'bg-primary';
     const share = isPositiveNumber(maxAmount) ? driver.monthlyAmount / maxAmount : 0;
 
     return (
@@ -61,11 +58,9 @@ export const RunwayDriverRow = ({ driver, dimension, maxAmount, rank, tone }: Pr
                     </Text>
 
                     {driver.isIrregular ? (
-                        <View className="shrink-0 rounded-full border border-warning-corner bg-warning-background px-xs py-xxs">
-                            <Text className="text-xxs font-semibold text-warning-foreground">
-                                <Trans>One-off</Trans>
-                            </Text>
-                        </View>
+                        <Text className="shrink-0 text-xs text-warning-foreground">
+                            <Trans>One-off</Trans>
+                        </Text>
                     ) : null}
                 </View>
 

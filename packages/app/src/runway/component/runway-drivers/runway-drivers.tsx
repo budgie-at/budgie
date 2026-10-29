@@ -9,18 +9,16 @@ import { SegmentedTabs } from '../../../@generic/component/segmented-tabs/segmen
 import { RunwaySelector } from '../../runway.selector';
 import { RunwayDriverRow } from '../runway-driver-row/runway-driver-row';
 
-import type { StatusToneType } from '../../../@generic/type/status-tone.type';
 import type { RunwayDriverInterface } from '../../interface/runway-driver.interface';
 
 interface Props {
     readonly drivers: readonly RunwayDriverInterface[];
     readonly dimension: RunwayDriverDimensionEnum;
-    readonly tone: StatusToneType;
     readonly onChangeDimension: (dimension: RunwayDriverDimensionEnum) => void;
 }
 
 export const RunwayDrivers = (props: Props) => {
-    const { drivers, dimension, tone, onChangeDimension } = props;
+    const { drivers, dimension, onChangeDimension } = props;
     const { t } = useLingui();
 
     const options = [
@@ -44,7 +42,6 @@ export const RunwayDrivers = (props: Props) => {
                             dimension={dimension}
                             maxAmount={maxAmount}
                             rank={index}
-                            tone={tone}
                         />
                     ))}
                 </View>
