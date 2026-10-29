@@ -1,0 +1,6 @@
+export enum BinanceSyncTokenSectionActionTypeEnum {
+    EDIT_STARTED = 'EDIT_STARTED',
+    API_KEY_CHANGED = 'API_KEY_CHANGED',
+    API_SECRET_CHANGED = 'API_SECRET_CHANGED',
+    EDIT_FINISHED = 'EDIT_FINISHED'
+}

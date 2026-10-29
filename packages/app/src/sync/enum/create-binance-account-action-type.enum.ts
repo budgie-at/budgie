@@ -1,0 +1,5 @@
+export enum CreateBinanceAccountActionTypeEnum {
+    API_KEY_CHANGED = 'API_KEY_CHANGED',
+    API_SECRET_CHANGED = 'API_SECRET_CHANGED',
+    ACCOUNTS_FETCHED = 'ACCOUNTS_FETCHED'
+}

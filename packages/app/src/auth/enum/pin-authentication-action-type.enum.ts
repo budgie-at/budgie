@@ -1,0 +1,6 @@
+export enum PinAuthenticationActionTypeEnum {
+    DIGIT_ENTERED = 'DIGIT_ENTERED',
+    DIGIT_DELETED = 'DIGIT_DELETED',
+    ATTEMPT_STARTED = 'ATTEMPT_STARTED',
+    ATTEMPT_ENDED = 'ATTEMPT_ENDED'
+}

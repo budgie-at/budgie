@@ -1,0 +1,5 @@
+export enum OnboardingPinActionTypeEnum {
+    DIGIT_ENTERED = 'DIGIT_ENTERED',
+    DIGIT_DELETED = 'DIGIT_DELETED',
+    ENTRY_RESTARTED = 'ENTRY_RESTARTED'
+}
