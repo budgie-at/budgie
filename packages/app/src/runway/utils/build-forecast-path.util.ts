@@ -1,6 +1,6 @@
 import { RUNWAY_MAX_MONTHS } from '@budgie/contracts';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isPositiveNumber } from '@rnw-community/shared';
 
 import { RUNWAY_HORIZON_MONTHS } from '../constant/runway-horizon-months.constant';
 
@@ -64,7 +64,7 @@ export const buildRunwayForecastPath = (params: BuildRunwayForecastPathParamsInt
         likelyPath: buildForecastPath(likelyPoints, false),
         bandPath: buildForecastPath([...p75Points, ...[...p25Points].reverse()], true),
         zeroY: yAt(ZERO_VALUE),
-        runOutX: isDefined(runwayMonths) && runwayMonths <= RUNWAY_MAX_MONTHS ? xAt(Math.max(runwayMonths, ZERO_VALUE)) : null,
+        runOutX: isPositiveNumber(runwayMonths) && runwayMonths <= RUNWAY_MAX_MONTHS ? xAt(runwayMonths) : null,
         tickXs: xTicks
     };
 };

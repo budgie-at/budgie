@@ -33,7 +33,6 @@ export const RunwayContent = () => {
         setIsAllIn(current => !current);
     };
 
-    const tone = computation.isPositive ? 'positive' : 'destructive';
     const hasEnoughHistory = computation.monthsUsed >= RUNWAY_MINIMUM_MONTHS;
 
     return (
@@ -60,7 +59,7 @@ export const RunwayContent = () => {
                             <RunwayHistoryChart series={series} burn={computation.burn} />
                         </EntranceReveal>
                         <EntranceReveal step={5}>
-                            <RunwayDrivers drivers={drivers} dimension={dimension} tone={tone} onChangeDimension={setDimension} />
+                            <RunwayDrivers drivers={drivers} dimension={dimension} onChangeDimension={setDimension} />
                         </EntranceReveal>
                     </View>
                 ) : (

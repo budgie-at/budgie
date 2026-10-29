@@ -21,7 +21,7 @@ export const RunwayHistoryLegend = ({ hasSpike, typicalAmount }: Props) => {
         { label: t`Money out`, swatchClassName: 'h-2 w-2 rounded-xxs bg-primary' },
         { label: t`Money in`, swatchClassName: 'h-2 w-2 rounded-xxs bg-primary/35' },
         ...(hasSpike ? [{ label: t`One-off spike`, swatchClassName: 'h-2 w-2 rounded-xxs bg-warning-fill' }] : []),
-        { label: t`typical month ${amount}`, swatchClassName: 'h-px w-4 rounded-full bg-primary/35' }
+        { label: t`Typical month ${amount}`, swatchClassName: 'h-px w-4 rounded-full bg-primary/35' }
     ];
 
     return <ChartLegend items={items} />;

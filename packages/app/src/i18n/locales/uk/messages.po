@@ -310,10 +310,6 @@ msgstr "{month}, витрати {expenseAmount}, доходи {incomeAmount}"
 msgid "{months, plural, one {# month} other {# months}}"
 msgstr "{months, plural, one {# місяць} few {# місяці} many {# місяців} other {# місяця}}"
 
-#: src/runway/hook/use-runway-tick-label.hook.ts
-msgid "{monthsLabel} mo"
-msgstr "{monthsLabel} міс."
-
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "{newAccountCount, plural, one {Add # account} other {Add # accounts}}"
 msgstr "{newAccountCount, plural, one {Додати # рахунок} few {Додати # рахунки} many {Додати # рахунків} other {Додати # рахунку}}"
@@ -1074,10 +1070,6 @@ msgstr "На основі {monthsUsed} міс."
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "Based on your recent spending"
 msgstr "На основі ваших нещодавніх витрат"
-
-#: src/runway/component/runway-forecast-legend/runway-forecast-legend.tsx
-msgid "Better and worse months"
-msgstr "Кращі та гірші місяці"
 
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "between"
@@ -1948,10 +1940,6 @@ msgstr "Враховувати цей рахунок у розрахунку ч�
 #: src/runway/component/runway-settings-section/runway-settings-section.tsx
 msgid "Counts crypto at today's market value"
 msgstr "Враховує криптовалюту за сьогоднішньою ринковою вартістю"
-
-#: src/runway/component/runway-all-in-toggle/runway-all-in-toggle.tsx
-msgid "Counts irregular costs like insurance or holidays as a monthly expense."
-msgstr "Враховує нерегулярні витрати, як-от страхування чи відпустку, як щомісячні."
 
 #: src/runway/component/runway-verdict-outlook/runway-verdict-outlook.tsx
 msgid "Covered by {coverMonths} months of expenses."
@@ -3534,10 +3522,6 @@ msgstr "Інші категорії"
 msgid "More tags"
 msgstr "Інші теги"
 
-#: src/runway/component/runway-forecast-legend/runway-forecast-legend.tsx
-msgid "Most likely"
-msgstr "Найімовірніше"
-
 #: src/categorize-inbox/components/categorize-inbox-move-to-cash-chip/categorize-inbox-move-to-cash-chip.tsx
 msgid "Move to cash"
 msgstr "У готівку"
@@ -3864,8 +3848,8 @@ msgid "Nothing to fix here"
 msgstr "Тут нічого виправляти"
 
 #: src/runway/hook/use-runway-tick-label.hook.ts
-msgid "now"
-msgstr "зараз"
+msgid "Now"
+msgstr "Зараз"
 
 #: src/account/component/debt-account-card-summary/debt-account-card-summary.tsx
 msgid "of"
@@ -4649,10 +4633,6 @@ msgstr "Працює на"
 msgid "Runs on this phone. Nothing it reads is sent anywhere."
 msgstr "Працює на цьому телефоні. Нічого з прочитаного нікуди не надсилається."
 
-#: src/runway/component/runway-forecast-legend/runway-forecast-legend.tsx
-msgid "Runs out"
-msgstr "Закінчиться"
-
 #: src/budget/components/budget-category-forecast/budget-category-forecast.tsx
 #: src/budget/components/budget-forecast-run-out/budget-forecast-run-out.tsx
 msgid "Runs out about {runOutDate}"
@@ -4975,6 +4955,10 @@ msgstr "Налаштування"
 msgid "Setup"
 msgstr "Налаштування"
 
+#: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
+msgid "Shaded area shows your better and worse months."
+msgstr "Затінена область показує ваші кращі та гірші місяці."
+
 #: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
 msgid "Shortcuts"
 msgstr "Швидкі команди"
@@ -5103,6 +5087,10 @@ msgstr "Витрачено досі"
 #: src/transaction/components/transaction-split-field-icon/transaction-split-field-icon.tsx
 msgid "Split"
 msgstr "Розділити"
+
+#: src/runway/component/runway-all-in-toggle/runway-all-in-toggle.tsx
+msgid "Spreads irregular costs like insurance across the months."
+msgstr "Розподіляє нерегулярні витрати, як-от страховку, по місяцях."
 
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "Start again with your new PIN"
@@ -5780,8 +5768,8 @@ msgid "Type the same PIN again to make sure it's the one you meant."
 msgstr "Введіть той самий PIN-код ще раз, щоб переконатися, що це саме він."
 
 #: src/runway/component/runway-history-legend/runway-history-legend.tsx
-msgid "typical month {amount}"
-msgstr "типовий місяць {amount}"
+msgid "Typical month {amount}"
+msgstr "Типовий місяць {amount}"
 
 #: src/i18n/constant/languages.constant.ts
 msgid "Ukrainian"
@@ -6132,6 +6120,10 @@ msgstr "Ваші рахунки й надалі синхронізуються �
 #: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
 msgid "Your analytics are taking shape"
 msgstr "Ваша аналітика набуває форми"
+
+#: src/runway/component/runway-verdict-outlook/runway-verdict-outlook.tsx
+msgid "Your balance is already below zero."
+msgstr "Ваш баланс уже нижче нуля."
 
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "Your budget is ahead of pace"

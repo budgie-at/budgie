@@ -310,10 +310,6 @@ msgstr "{month}, dépenses {expenseAmount}, revenus {incomeAmount}"
 msgid "{months, plural, one {# month} other {# months}}"
 msgstr "{months, plural, one {# mois} other {# mois}}"
 
-#: src/runway/hook/use-runway-tick-label.hook.ts
-msgid "{monthsLabel} mo"
-msgstr "{monthsLabel} mois"
-
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "{newAccountCount, plural, one {Add # account} other {Add # accounts}}"
 msgstr "{newAccountCount, plural, one {Ajouter # compte} other {Ajouter # comptes}}"
@@ -1074,10 +1070,6 @@ msgstr "Basé sur {monthsUsed} mois"
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "Based on your recent spending"
 msgstr "D'après vos dépenses récentes"
-
-#: src/runway/component/runway-forecast-legend/runway-forecast-legend.tsx
-msgid "Better and worse months"
-msgstr "Meilleurs et pires mois"
 
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "between"
@@ -1948,10 +1940,6 @@ msgstr "Comptabiliser ce compte dans le calcul de votre valeur nette"
 #: src/runway/component/runway-settings-section/runway-settings-section.tsx
 msgid "Counts crypto at today's market value"
 msgstr "Compte les cryptos à leur valeur de marché actuelle"
-
-#: src/runway/component/runway-all-in-toggle/runway-all-in-toggle.tsx
-msgid "Counts irregular costs like insurance or holidays as a monthly expense."
-msgstr "Compte les dépenses irrégulières, comme les assurances ou les vacances, comme une dépense mensuelle."
 
 #: src/runway/component/runway-verdict-outlook/runway-verdict-outlook.tsx
 msgid "Covered by {coverMonths} months of expenses."
@@ -3534,10 +3522,6 @@ msgstr "Autres catégories"
 msgid "More tags"
 msgstr "Plus d'étiquettes"
 
-#: src/runway/component/runway-forecast-legend/runway-forecast-legend.tsx
-msgid "Most likely"
-msgstr "Le plus probable"
-
 #: src/categorize-inbox/components/categorize-inbox-move-to-cash-chip/categorize-inbox-move-to-cash-chip.tsx
 msgid "Move to cash"
 msgstr "Vers les espèces"
@@ -3864,8 +3848,8 @@ msgid "Nothing to fix here"
 msgstr "Rien à corriger ici"
 
 #: src/runway/hook/use-runway-tick-label.hook.ts
-msgid "now"
-msgstr "maintenant"
+msgid "Now"
+msgstr "Maintenant"
 
 #: src/account/component/debt-account-card-summary/debt-account-card-summary.tsx
 msgid "of"
@@ -4649,10 +4633,6 @@ msgstr "Fonctionne sur"
 msgid "Runs on this phone. Nothing it reads is sent anywhere."
 msgstr "Fonctionne sur ce téléphone. Rien de ce qu'elle lit n'est envoyé ailleurs."
 
-#: src/runway/component/runway-forecast-legend/runway-forecast-legend.tsx
-msgid "Runs out"
-msgstr "Épuisement"
-
 #: src/budget/components/budget-category-forecast/budget-category-forecast.tsx
 #: src/budget/components/budget-forecast-run-out/budget-forecast-run-out.tsx
 msgid "Runs out about {runOutDate}"
@@ -4975,6 +4955,10 @@ msgstr "Paramètres"
 msgid "Setup"
 msgstr "Configuration"
 
+#: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
+msgid "Shaded area shows your better and worse months."
+msgstr "La zone ombrée montre vos meilleurs et pires mois."
+
 #: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
 msgid "Shortcuts"
 msgstr "Raccourcis"
@@ -5103,6 +5087,10 @@ msgstr "Dépensé jusqu'ici"
 #: src/transaction/components/transaction-split-field-icon/transaction-split-field-icon.tsx
 msgid "Split"
 msgstr "Diviser"
+
+#: src/runway/component/runway-all-in-toggle/runway-all-in-toggle.tsx
+msgid "Spreads irregular costs like insurance across the months."
+msgstr "Répartit les coûts irréguliers comme l'assurance sur les mois."
 
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "Start again with your new PIN"
@@ -5780,8 +5768,8 @@ msgid "Type the same PIN again to make sure it's the one you meant."
 msgstr "Saisis le même code PIN une nouvelle fois pour t'assurer que c'est bien celui-là."
 
 #: src/runway/component/runway-history-legend/runway-history-legend.tsx
-msgid "typical month {amount}"
-msgstr "mois typique {amount}"
+msgid "Typical month {amount}"
+msgstr "Mois type {amount}"
 
 #: src/i18n/constant/languages.constant.ts
 msgid "Ukrainian"
@@ -6132,6 +6120,10 @@ msgstr "Vos comptes continuent de se synchroniser avec la nouvelle clé."
 #: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
 msgid "Your analytics are taking shape"
 msgstr "Vos analyses prennent forme"
+
+#: src/runway/component/runway-verdict-outlook/runway-verdict-outlook.tsx
+msgid "Your balance is already below zero."
+msgstr "Votre solde est déjà en dessous de zéro."
 
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "Your budget is ahead of pace"

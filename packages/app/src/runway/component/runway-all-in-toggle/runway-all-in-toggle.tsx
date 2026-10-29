@@ -12,13 +12,13 @@ export const RunwayAllInToggle = ({ isAllIn, onToggle }: Props) => {
     const { t } = useLingui();
 
     return (
-        <View className="flex-row items-center gap-x-xl border-t-hairline border-secondary-corner pt-lg">
+        <View className="flex-row items-center gap-x-xl">
             <View className="flex-1 gap-y-xxs">
                 <Text className="text-sm font-medium text-primary">
                     <Trans>Include one-offs</Trans>
                 </Text>
                 <Text className="text-xs text-secondary-foreground">
-                    <Trans>Counts irregular costs like insurance or holidays as a monthly expense.</Trans>
+                    <Trans>Spreads irregular costs like insurance across the months.</Trans>
                 </Text>
             </View>
 

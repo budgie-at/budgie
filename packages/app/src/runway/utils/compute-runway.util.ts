@@ -25,7 +25,7 @@ export const computeRunway = (params: ComputeRunwayParams): RunwayComputationInt
     const income = mean(rows.map(row => row.income));
     const net = income - burn;
     const netSeries = rows.map((row, index) => row.income - typicalExpenses[index]);
-    const runwayMonths = net < 0 ? liquid / Math.abs(net) : null;
+    const runwayMonths = net < 0 ? Math.max(liquid, 0) / Math.abs(net) : null;
 
     return {
         burn,
