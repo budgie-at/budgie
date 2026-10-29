@@ -3,11 +3,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useResolveClassNames } from 'uniwind';
 
 import { useCollapsibleHeaderScroll } from '@rnw-community/react-native-collapsible-header';
-import {
-    SCREEN_CHROME_HEADER_LAYOUT_METRICS,
-    getScreenChromeHeaderMetrics,
-    useScreenChrome
-} from '@rnw-community/react-native-screen-chrome';
+import { getScreenChromeHeaderMetrics, useScreenChrome } from '@rnw-community/react-native-screen-chrome';
 
 import { SCREEN_CHROME_CONTENT_INSET_TOP } from '../../constant/screen-chrome-content-inset.constant';
 
@@ -24,11 +20,7 @@ export const CollapsibleChromeLegendList = <TItem,>({ contentContainerStyle, sti
     const sharedValues = { scrollOffset: scrollY };
     const contentContainerStyleWithInset = [{ paddingTop: top + SCREEN_CHROME_CONTENT_INSET_TOP }, horizontalInset, contentContainerStyle];
     const chromeStickyHeaderConfig = {
-        offset:
-            getScreenChromeHeaderMetrics(
-                Math.max(config.collapsedHeaderHeight ?? config.headerHeight, SCREEN_CHROME_HEADER_LAYOUT_METRICS.slotSize),
-                top
-            ) + (stickyHeaderConfig?.offset ?? 0)
+        offset: getScreenChromeHeaderMetrics(config.collapsedHeaderHeight ?? config.headerHeight, top) + (stickyHeaderConfig?.offset ?? 0)
     };
 
     return (
