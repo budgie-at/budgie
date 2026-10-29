@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { View } from 'react-native';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -45,9 +44,8 @@ export const CollapsibleChromePinnedBar = ({ anchorY, onHeightChange, pinnedFoot
         <Animated.View className="absolute inset-x-0 top-0 bg-surface px-5xl py-md" style={animatedStyle} onLayout={handleLayout}>
             {children}
 
-            <Animated.View className="absolute inset-x-0" style={pinnedEdgeStyle} pointerEvents="none">
-                <View className="overflow-hidden">{pinnedFooter}</View>
-                <View className="h-hairline bg-primary/10" />
+            <Animated.View className="absolute inset-x-0 -mt-px" style={pinnedEdgeStyle} pointerEvents="none">
+                {pinnedFooter}
             </Animated.View>
         </Animated.View>
     );

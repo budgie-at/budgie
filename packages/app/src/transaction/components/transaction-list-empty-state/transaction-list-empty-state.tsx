@@ -2,6 +2,7 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { ActivityIndicator, Text, View } from 'react-native';
 
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { TransactionsPageSelector } from '../../../app/(tabs)/transactions-page.selector';
@@ -27,9 +28,21 @@ export const TransactionListEmptyState = ({ isLoading, hasFiltersSelected, onCle
           };
 
     return (
-        <View className="flex-1 items-center justify-center py-[48px]">
+        <View className="flex-1 items-center py-[48px]">
+            <View className="flex-2" />
+
+            <CircleIcon
+                icon={UserIconNameEnum.Receipt}
+                size={56}
+                iconSize={26}
+                radius={28}
+                border={false}
+                variant="secondary"
+                className="mb-xl bg-secondary-foreground/15"
+                iconClassName="text-secondary-foreground"
+            />
+
             <EmptyState
-                circleIcon={UserIconNameEnum.Receipt}
                 title={emptyStateText.title}
                 titleClassName="text-md text-primary font-semibold"
                 description={emptyStateText.description}
@@ -50,6 +63,8 @@ export const TransactionListEmptyState = ({ isLoading, hasFiltersSelected, onCle
                     </Text>
                 </HapticPressable>
             ) : null}
+
+            <View className="flex-3" />
         </View>
     );
 };
