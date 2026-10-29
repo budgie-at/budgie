@@ -274,3 +274,39 @@ it.effect('lets a lowered limit free room for a raise under the overall limit', 
         ]);
     })
 );
+
+it.effect('lands a capped raise of a fractional limit on a whole currency unit', () =>
+    Effect.sync(() => {
+        const fractionalLimit = units(300) + 500_000;
+        const history = threePeriods([category(GROCERIES, fractionalLimit, units(400))]);
+        const [proposal] = propose(history, limitsOf([limit(GROCERIES, fractionalLimit)], units(310)));
+
+        expect(proposal.newAmount).toBe(units(310));
+        expect(proposal.newAmount % PRECISION).toBe(0);
+    })
+);
+
+it.effect('drops a capped raise that cannot reach the next whole unit', () =>
+    Effect.sync(() => {
+        const fractionalLimit = units(300) + 500_000;
+        const history = threePeriods([category(GROCERIES, fractionalLimit, units(400))]);
+
+        expect(propose(history, limitsOf([limit(GROCERIES, fractionalLimit)], fractionalLimit + 400_000))).toEqual([]);
+    })
+);
+
+const historyEndingAt = (lastMonthIndex: number) =>
+    [lastMonthIndex - 2, lastMonthIndex - 1, lastMonthIndex].map(monthIndex =>
+        snapshotOf(monthIndex, [category(GROCERIES, units(300), units(150))])
+    );
+
+it.effect('locks a line at the two closes after its change and frees it at the third', () =>
+    Effect.sync(() => {
+        const changedAtClose = [change(GROCERIES, new Date(2026, 0, 1))];
+        const limits = limitsOf([limit(GROCERIES, units(300))]);
+
+        expect(propose(historyEndingAt(1), limits, changedAtClose)).toEqual([]);
+        expect(propose(historyEndingAt(2), limits, changedAtClose)).toEqual([]);
+        expect(propose(historyEndingAt(3), limits, changedAtClose)).toHaveLength(1);
+    })
+);

@@ -117,9 +117,11 @@ const capRaises = (
     for (const proposal of raised) {
         const grant = Math.min(proposal.newAmount - proposal.previousAmount, roundDownToUnit(Math.max(room, 0)));
 
-        if (grant >= PRECISION) {
-            capped.push({ ...proposal, newAmount: proposal.previousAmount + grant });
-            room -= grant;
+        const newAmount = roundDownToUnit(proposal.previousAmount + grant);
+
+        if (newAmount > proposal.previousAmount) {
+            capped.push({ ...proposal, newAmount });
+            room -= newAmount - proposal.previousAmount;
         }
     }
 
