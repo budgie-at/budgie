@@ -18,7 +18,6 @@ import { getTransactionListRowPosition } from '../../utils/get-transaction-list-
 import { TransactionCard } from '../transaction-card/transaction-card';
 import { TransactionListContextMenu } from '../transaction-list-context-menu/transaction-list-context-menu';
 import { TransactionSectionHeader } from '../transaction-section-header/transaction-section-header';
-// from '../transaction-list-context-menu/transaction-list-context-menu';
 
 import type { LegendListProps } from '@legendapp/list/react-native';
 
@@ -64,7 +63,7 @@ export const TransactionSectionsList = ({
 
     const renderItem = ({ item }: { item: TransactionListItemType }) =>
         item.type === TransactionListItemKindEnum.HEADER ? (
-            <TransactionSectionHeader title={item.title} />
+            <TransactionSectionHeader title={item.title} netAmount={item.netAmount} />
         ) : (
             <TransactionCard
                 transaction={item.transaction}
@@ -78,10 +77,10 @@ export const TransactionSectionsList = ({
     const stickyHeaderIndices: number[] = [];
     const flatData: TransactionListItemType[] = [];
 
-    for (const { title, transactions } of sections) {
+    for (const { title, netAmount, transactions } of sections) {
         stickyHeaderIndices.push(flatData.length);
         flatData.push(
-            { type: TransactionListItemKindEnum.HEADER, title, id: `header-${title}` },
+            { type: TransactionListItemKindEnum.HEADER, title, netAmount, id: `header-${title}` },
             ...transactions.map((transaction, index) => ({
                 type: TransactionListItemKindEnum.TRANSACTION as const,
                 id: `transaction-${transaction.id}`,

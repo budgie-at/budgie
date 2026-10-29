@@ -38,7 +38,8 @@ export const AccountDetailsMonthChips = ({ accountId }: Props) => {
             numberOfLines={1}
         >
             <Trans>
-                Spent {formattedExpense} · Income {formattedIncome}
+                Spent <Text className="text-primary font-semibold">{formattedExpense}</Text> · Income{' '}
+                <Text className="text-primary font-semibold">{formattedIncome}</Text>
             </Trans>
         </Text>
     );

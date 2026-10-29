@@ -8,9 +8,9 @@ const DOT_FADE_MS = 200;
 const dotVariants = cva('h-1 w-1 rounded-full', {
     variants: {
         kind: {
-            actual: 'bg-warning-foreground',
+            actual: 'bg-primary',
             actualSelected: 'bg-primary-reverse',
-            forecasted: 'border border-warning-foreground',
+            forecasted: 'border border-primary',
             forecastedSelected: 'border border-primary-reverse'
         }
     }

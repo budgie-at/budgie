@@ -5073,8 +5073,8 @@ msgid "Spent"
 msgstr "Spent"
 
 #: src/account/component/account-details-month-chips/account-details-month-chips.tsx
-msgid "Spent {formattedExpense} · Income {formattedIncome}"
-msgstr "Spent {formattedExpense} · Income {formattedIncome}"
+msgid "Spent <0>{formattedExpense}</0> · Income <1>{formattedIncome}</1>"
+msgstr "Spent <0>{formattedExpense}</0> · Income <1>{formattedIncome}</1>"
 
 #: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "Spent so far"

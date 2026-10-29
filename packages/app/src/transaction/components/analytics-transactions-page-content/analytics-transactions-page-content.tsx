@@ -15,9 +15,10 @@ interface Props {
     readonly sections: TransactionsByDaySectionInterface[];
     readonly isLoading: boolean;
     readonly onLoadMore: () => void;
+    readonly accountId: number | null;
 }
 
-export const AnalyticsTransactionsPageContent = ({ headerProps, sections, isLoading, onLoadMore }: Props) => {
+export const AnalyticsTransactionsPageContent = ({ headerProps, sections, isLoading, onLoadMore, accountId }: Props) => {
     const { t } = useLingui();
 
     const listEmptyState = isLoading ? (
@@ -38,6 +39,7 @@ export const AnalyticsTransactionsPageContent = ({ headerProps, sections, isLoad
                 sections={sections}
                 onEndReached={onLoadMore}
                 listEmptyState={listEmptyState}
+                accountId={accountId}
                 footerSpacerMultiplier={0}
             />
         </Page>

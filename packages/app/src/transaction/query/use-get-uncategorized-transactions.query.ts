@@ -18,5 +18,6 @@ export const uncategorizedTransactionsAtom = databaseQueryFamily(
 export const useGetUncategorizedTransactionsQuery = (filters: TransactionFilterInterface) =>
     useGetTransactionSectionsQuery(
         (limit, language) => uncategorizedTransactionsAtom([filters, language, limit]),
-        buildTransactionFilterKey(filters)
+        buildTransactionFilterKey(filters),
+        null
     );

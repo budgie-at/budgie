@@ -42,7 +42,7 @@ export const TransactionListEmptyState = ({ isLoading, hasFiltersSelected, onCle
                 <HapticPressable
                     onPress={onClearFilters}
                     accessibilityRole="button"
-                    className="mt-xl px-xl py-sm"
+                    className="mt-3xl min-h-[44px] justify-center rounded-full bg-surface-fill px-7xl"
                     testID={TransactionsPageSelector.ClearFiltersButton}
                 >
                     <Text className="text-primary text-[15px] font-semibold">

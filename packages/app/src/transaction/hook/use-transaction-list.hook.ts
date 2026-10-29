@@ -9,7 +9,7 @@ import { checkIfFiltersSelected } from '../utils/check-if-filters-selected.util'
 export const useTransactionList = (accountId: number | null) => {
     const [internalFilters, setInternalFilters] = useState<TransactionFilterInterface>(DEFAULT_TRANSACTION_FILTER);
     const activeFilters = isDefined(accountId) ? { ...internalFilters, accountIds: [accountId] } : internalFilters;
-    const { sections, loadMore, isLoading } = useGetTransactionsQuery(activeFilters);
+    const { sections, loadMore, isLoading } = useGetTransactionsQuery(activeFilters, accountId);
 
     return {
         activeFilters,

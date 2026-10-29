@@ -12,13 +12,15 @@ export const TransactionList = () => {
 
     return (
         <View className="flex-1">
-            <TransactionFilters
-                filters={activeFilters}
-                onChange={setInternalFilters}
-                accountId={null}
-                hasFiltersSelected={hasFiltersSelected}
-                leading={<TransactionListUncategorizedPill filters={activeFilters} />}
-            />
+            <View className="pb-md">
+                <TransactionFilters
+                    filters={activeFilters}
+                    onChange={setInternalFilters}
+                    accountId={null}
+                    hasFiltersSelected={hasFiltersSelected}
+                    leading={<TransactionListUncategorizedPill filters={activeFilters} />}
+                />
+            </View>
 
             <TransactionListCount filters={activeFilters}>
                 <TransactionSectionsList

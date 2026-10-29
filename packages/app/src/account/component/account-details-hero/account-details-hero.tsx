@@ -20,7 +20,7 @@ export const AccountDetailsHero = ({ account, balance }: Props) => {
     const formattedBalance = protectAmount(balance, account.instrument.symbol);
 
     return (
-        <View className="items-center gap-y-lg pt-xl pb-md">
+        <View className="items-center gap-y-lg pb-md">
             <View
                 accessible
                 accessibilityLabel={t`Balance: ${formattedBalance}`}

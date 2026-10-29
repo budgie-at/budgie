@@ -1,3 +1,4 @@
+import { isOutflowEntryType } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { isSameDay } from 'date-fns/isSameDay';
 import { isToday } from 'date-fns/isToday';
@@ -5,41 +6,56 @@ import { isYesterday } from 'date-fns/isYesterday';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { useState } from 'react';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { useFormatDate } from '../../i18n/hook/use-format-date.hook';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 
 import type { TransactionsByDaySectionInterface } from '../interface/transactions-by-day-section.interface';
+import type { TransactionsDayNetAmountInterface } from '../interface/transactions-day-net-amount.interface';
 import type { LanguageEnum, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import type * as Atom from 'effect/reactivity/Atom';
 
 const DEFAULT_LIMIT = 20;
 
-const groupTransactionsByDay = (
+const getDayNetAmount = (
     transactions: TransactionWithRelationsEntityInterface[],
-    formatDayTitle: (date: Date | string) => string
-): TransactionsByDaySectionInterface[] => {
-    const sections: TransactionsByDaySectionInterface[] = [];
+    accountId: number | null
+): TransactionsDayNetAmountInterface | null => {
+    const accountEntries = transactions.flatMap(transaction => transaction.entries.filter(entry => entry.accountId === accountId));
+
+    if (isEmptyArray(accountEntries)) {
+        return null;
+    }
+
+    return {
+        amount: accountEntries.reduce((sum, entry) => sum + (isOutflowEntryType(entry.type) ? -entry.amount : entry.amount), 0),
+        instrumentSymbol: accountEntries[0].account.instrument.symbol
+    };
+};
+
+const groupTransactionsByDay = (transactions: TransactionWithRelationsEntityInterface[]): TransactionWithRelationsEntityInterface[][] => {
+    const days: TransactionWithRelationsEntityInterface[][] = [];
 
     for (const transaction of transactions) {
-        const last = sections.at(-1);
-        const previous = last?.transactions.at(-1);
+        const last = days.at(-1);
+        const previous = last?.at(-1);
 
         if (isDefined(last) && isDefined(previous) && isSameDay(previous.operatedAt, transaction.operatedAt)) {
-            last.transactions.push(transaction);
+            last.push(transaction);
         } else {
-            sections.push({ title: formatDayTitle(transaction.operatedAt), transactions: [transaction] });
+            days.push([transaction]);
         }
     }
 
-    return sections;
+    return days;
 };
 
 export const useGetTransactionSectionsQuery = <Transaction extends TransactionWithRelationsEntityInterface, Failure>(
     getQueryAtom: (limit: number, language: LanguageEnum) => Atom.Atom<AsyncResult.AsyncResult<Transaction[], Failure>>,
-    filterKey: string
+    filterKey: string,
+    accountId: number | null
 ) => {
     const { t } = useLingui();
     const { formatWeekdayAndDay } = useFormatDate();
@@ -59,7 +75,11 @@ export const useGetTransactionSectionsQuery = <Transaction extends TransactionWi
 
         return isYesterday(date) ? t`Yesterday` : formatWeekdayAndDay(date);
     };
-    const sections = groupTransactionsByDay(transactions, formatDayTitle);
+    const sections: TransactionsByDaySectionInterface[] = groupTransactionsByDay(transactions).map(dayTransactions => ({
+        title: formatDayTitle(dayTransactions[0].operatedAt),
+        transactions: dayTransactions,
+        netAmount: getDayNetAmount(dayTransactions, accountId)
+    }));
 
     const loadMore = () => {
         if (hasMore) {

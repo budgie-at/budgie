@@ -1,4 +1,4 @@
-import { DEFAULT_TRANSACTION_FILTER, TransactionViewRepository } from '@budgie/contracts';
+import { TransactionViewRepository } from '@budgie/contracts';
 
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
 import { TRANSACTION_LIST_TABLES } from '../constant/transaction-list-tables.constant';
@@ -15,8 +15,9 @@ export const transactionsAtom = databaseQueryFamily(
         transactionViewRepository.getAll(limit, filters, language)
 );
 
-export const useGetTransactionsQuery = (filters?: TransactionFilterInterface) =>
+export const useGetTransactionsQuery = (filters: TransactionFilterInterface, accountId: number | null) =>
     useGetTransactionSectionsQuery(
-        (limit, language) => transactionsAtom([filters ?? DEFAULT_TRANSACTION_FILTER, language, limit]),
-        buildTransactionFilterKey(filters)
+        (limit, language) => transactionsAtom([filters, language, limit]),
+        buildTransactionFilterKey(filters),
+        accountId
     );
