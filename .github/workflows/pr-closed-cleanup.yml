@@ -17,7 +17,7 @@ jobs:
         permissions:
             actions: write
             contents: write
-        uses: rnw-community/mobile-ci/.github/workflows/pr-closed-cleanup-reusable.yml@a9fac576ef1c8a9a565d03851f2624502a868214 # v4.4.1
+        uses: rnw-community/mobile-ci/.github/workflows/pr-closed-cleanup-reusable.yml@443067982b184fe16ceef20a8ff2e36d5af286b6 # v4.6.0
         with:
             control-runner-labels: '["self-hosted","trf-linux-amd64-2x4"]'
             ota-preview-cleanup-runner-labels: '["self-hosted","trf-linux-amd64-2x4"]'
