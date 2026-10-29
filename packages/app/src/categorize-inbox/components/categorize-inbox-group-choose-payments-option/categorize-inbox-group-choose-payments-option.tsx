@@ -5,7 +5,7 @@ import { Text, View } from 'react-native';
 
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 import { CategorizeInboxOptionChevron } from '../categorize-inbox-option-chevron/categorize-inbox-option-chevron';
-import { CategorizeInboxOptionRow } from '../categorize-inbox-option-row/categorize-inbox-option-row';
+import { CategorizeInboxSecondaryOptionRow } from '../categorize-inbox-secondary-option-row/categorize-inbox-secondary-option-row';
 
 import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
 
@@ -32,7 +32,7 @@ export const CategorizeInboxGroupChoosePaymentsOption = ({ cluster }: Props) => 
     );
 
     return (
-        <CategorizeInboxOptionRow
+        <CategorizeInboxSecondaryOptionRow
             icon={UserIconNameEnum.List}
             title={t`Choose which payments`}
             accessory={accessory}

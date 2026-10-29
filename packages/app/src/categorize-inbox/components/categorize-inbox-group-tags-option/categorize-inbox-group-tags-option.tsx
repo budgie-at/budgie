@@ -5,7 +5,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 import { CategorizeInboxOptionChevron } from '../categorize-inbox-option-chevron/categorize-inbox-option-chevron';
-import { CategorizeInboxOptionRow } from '../categorize-inbox-option-row/categorize-inbox-option-row';
+import { CategorizeInboxSecondaryOptionRow } from '../categorize-inbox-secondary-option-row/categorize-inbox-secondary-option-row';
 
 import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
 
@@ -24,7 +24,7 @@ export const CategorizeInboxGroupTagsOption = ({ cluster }: Props) => {
     }
 
     return (
-        <CategorizeInboxOptionRow
+        <CategorizeInboxSecondaryOptionRow
             icon={UserIconNameEnum.Tag}
             title={t`Add tags`}
             accessory={<CategorizeInboxOptionChevron />}

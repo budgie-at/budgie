@@ -59,6 +59,10 @@ export const CategorizeInboxGroupOptions = ({ cluster }: Props) => {
             ))}
             <CategorizeInboxGroupMoreLabelsOption cluster={cluster} />
             {trailingTransfer}
+
+            <Text className="pb-xs pt-6xl text-xs font-medium uppercase tracking-wider text-secondary-foreground">
+                <Trans>Refine</Trans>
+            </Text>
             <CategorizeInboxGroupTagsOption cluster={cluster} />
             <CategorizeInboxGroupChoosePaymentsOption cluster={cluster} />
         </View>

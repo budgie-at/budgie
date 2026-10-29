@@ -25,5 +25,5 @@ export const CategorizeInboxGroupLabelOption = ({ cluster, label, isBestMatch }:
         router.dismissTo('/categorize');
     };
 
-    return <CategorizeInboxOptionRow icon={label.icon} title={label.title} {...subtitleProps} onPress={handlePress} />;
+    return <CategorizeInboxOptionRow icon={label.icon} title={label.title} isLead={isBestMatch} {...subtitleProps} onPress={handlePress} />;
 };
