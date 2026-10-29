@@ -121,15 +121,15 @@ const sumCommitted = (series: readonly RecurringTrackedSeriesInterface[], now: D
         .filter(item => isSeriesActive(item, now))
         .reduce((total, item) => total + item.predictedAmount / (item.periodMonths ?? item.periodDays / DAYS_PER_MONTH), 0) / PRECISION;
 
+// eslint-disable-next-line @typescript-eslint/max-params -- Existing public API keeps positional arguments, kind extends them
 export const projectRecurringMonth = (
     series: readonly RecurringTrackedSeriesInterface[],
     year: number,
     month: number,
-    now: Date
+    now: Date,
+    kind: RecurringSeriesKindEnum
 ): RecurringCalendarDataInterface => {
-    const eligible = series.filter(
-        item => item.kind === RecurringSeriesKindEnum.EXPENSE && item.userState !== RecurringSeriesUserStateEnum.DISMISSED
-    );
+    const eligible = series.filter(item => item.kind === kind && item.userState !== RecurringSeriesUserStateEnum.DISMISSED);
     const entries = eligible.flatMap(item => projectSeries(item, year, month, now));
     const actuals = entries.filter(entry => !entry.isForecast);
     const forecasts = entries.filter(entry => entry.isForecast);

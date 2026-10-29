@@ -1,4 +1,10 @@
-import { Db, RecurringSeriesStatusEnum, RecurringSeriesUserStateEnum, SettingsRepository } from '@budgie/contracts';
+import {
+    Db,
+    RecurringSeriesKindEnum,
+    RecurringSeriesStatusEnum,
+    RecurringSeriesUserStateEnum,
+    SettingsRepository
+} from '@budgie/contracts';
 import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
 import { startOfDay } from 'date-fns/startOfDay';
 import * as Context from 'effect/Context';
@@ -284,7 +290,10 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
 
         return {
             calendar: Effect.fn('RecurringService.calendar')(function* (year: number, month: number, now: Date) {
-                return projectRecurringMonth(yield* syncSeriesAdoptingLegacyOnce(now), year, month, now);
+                return projectRecurringMonth(yield* syncSeriesAdoptingLegacyOnce(now), year, month, now, RecurringSeriesKindEnum.EXPENSE);
+            }),
+            incomeCalendar: Effect.fn('RecurringService.incomeCalendar')(function* (year: number, month: number, now: Date) {
+                return projectRecurringMonth(yield* syncSeriesAdoptingLegacyOnce(now), year, month, now, RecurringSeriesKindEnum.INCOME);
             }),
             setUserState: (seriesId: number, userState: RecurringSeriesUserStateEnum) =>
                 recurringRepository.updateSeries(seriesId, { userState }),

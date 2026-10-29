@@ -1492,4 +1492,21 @@ layer(TestLayer)('recurringService', it => {
             expect(allEntries(data).every(entry => entry.title !== 'ACME SALARY')).toBe(true);
         })
     );
+
+    it.effect('projects recurring income through the income calendar and keeps it out of the expense calendar', () =>
+        Effect.gen(function* () {
+            const seed = yield* seedCharges();
+            yield* Effect.forEach([6, 5, 4, 3, 2, 1], monthsAgo => seed('ACME SALARY', monthsAgo, 1, 3000, true), { discard: true });
+            yield* seedMonthly(seed, 'NETFLIX', 20, 12);
+
+            const incomeData = yield* Effect.flatMap(RecurringService, service => service.incomeCalendar(2026, JULY, NOW));
+            const expenseData = yield* calendar(JULY);
+            const incomeTitles = allEntries(incomeData).map(entry => entry.title);
+
+            expect(incomeTitles).toContain('ACME SALARY');
+            expect(incomeTitles).not.toContain('NETFLIX');
+            expect(allEntries(expenseData).map(entry => entry.title)).not.toContain('ACME SALARY');
+            expect(forecastedAmounts(incomeData, 1)).toEqual([3000 * PRECISION]);
+        })
+    );
 });
