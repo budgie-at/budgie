@@ -20,11 +20,12 @@ interface Props {
     readonly currencySymbol: string;
     readonly periodStart: Date;
     readonly periodEnd: Date;
-    readonly onPaceHintPress: (target: BudgetHighlightTargetInterface) => void;
+    readonly onFigurePress?: () => void;
+    readonly onPaceHintPress?: (target: BudgetHighlightTargetInterface) => void;
 }
 
 export const BudgetDetailsOverview = (props: Props) => {
-    const { budget, projection, isLoading, currencySymbol, periodStart, periodEnd, onPaceHintPress } = props;
+    const { budget, projection, isLoading, currencySymbol, periodStart, periodEnd, onFigurePress, onPaceHintPress } = props;
     const allocationBlock =
         budget.limitSource === BudgetLimitSourceEnum.FIXED ? null : (
             <BudgetAllocationBlock projection={projection} limitSource={budget.limitSource} currencySymbol={currencySymbol} />
@@ -33,7 +34,12 @@ export const BudgetDetailsOverview = (props: Props) => {
     return (
         <Fragment>
             <LoadingContent isLoading={isLoading}>
-                <BudgetVerdict projection={projection} currencySymbol={currencySymbol} onPaceHintPress={onPaceHintPress} />
+                <BudgetVerdict
+                    projection={projection}
+                    currencySymbol={currencySymbol}
+                    onFigurePress={onFigurePress}
+                    onPaceHintPress={onPaceHintPress}
+                />
             </LoadingContent>
 
             <LoadingContent isLoading={isLoading}>

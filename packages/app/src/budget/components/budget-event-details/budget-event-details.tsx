@@ -3,7 +3,7 @@ import { Trans } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
 
-import { emptyFn, isDefined } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
@@ -50,7 +50,6 @@ export const BudgetEventDetails = ({ budget }: Props) => {
                     currencySymbol={currencySymbol}
                     periodStart={periodWindow.periodStart}
                     periodEnd={periodEnd}
-                    onPaceHintPress={emptyFn}
                 />
                 <Text className="text-xs text-secondary-foreground">
                     <Trans>Tagged expenses also count in your main budget.</Trans>

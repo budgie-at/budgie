@@ -74,6 +74,10 @@ export const BudgetDetails = ({ budget }: Props) => {
         router.push({ pathname: '/budget/edit', params: { id: String(budget.id) } });
     };
 
+    const handleFigurePress = () => {
+        router.push('/budget-safe-to-spend');
+    };
+
     const scrollViewProps = { ref: scrollRef };
     const highlightContextValue = { target: isLoading ? null : highlightTarget, reveal: handleReveal };
 
@@ -96,6 +100,7 @@ export const BudgetDetails = ({ budget }: Props) => {
                         currencySymbol={currencySymbol}
                         periodStart={periodWindow.periodStart}
                         periodEnd={periodEnd}
+                        onFigurePress={handleFigurePress}
                         onPaceHintPress={setHighlightTarget}
                     />
 

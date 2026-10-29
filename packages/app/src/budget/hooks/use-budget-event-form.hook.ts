@@ -6,6 +6,7 @@ import { addDays } from 'date-fns/addDays';
 import { startOfDay } from 'date-fns/startOfDay';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
+import { router } from 'expo-router';
 import { useForm } from 'react-hook-form';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
@@ -115,7 +116,7 @@ export const useBudgetEventForm = ({ defaultInstrumentId, editingId }: UseBudget
                 const budgetService = yield* BudgetService;
 
                 yield* budgetService.deleteBudget(editingId);
-                goBackOrReplace(FALLBACK_ROUTE);
+                router.dismissTo(FALLBACK_ROUTE);
             }).pipe(toastOnFailure(t`Could not delete event`))
         );
 
