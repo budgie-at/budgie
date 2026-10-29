@@ -37,7 +37,6 @@ import type {
 } from '@budgie/contracts';
 
 const REFRESH_PERIOD_COUNT = 3;
-const MAX_FUND_SETTLEMENTS = 12;
 
 export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseService>()('@budgie/budget/BudgetPeriodCloseService', {
     make: Effect.gen(function* () {
@@ -47,6 +46,7 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
         const budgetLimitChangeRepository = yield* BudgetLimitChangeRepository;
         const budgetFundSpendService = yield* BudgetFundSpendService;
         const budgetSinkingFundRepository = yield* BudgetSinkingFundRepository;
+        const maxFundSettlements = 12;
 
         const computeStoredCarryIn = (snapshot: BudgetPeriodSnapshotWithCategoriesEntityInterface): BudgetCarryOutsInterface => ({
             other: snapshot.otherCarriedIn,
@@ -202,15 +202,17 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
         const settleDueFund = Effect.fnUntraced(function* (
             budget: Pick<BudgetEntityInterface, 'instrumentId'>,
             initialFund: Pick<BudgetSinkingFundEntityInterface, 'id' | 'categoryId' | 'fundedAmount' | 'dueAt' | 'repeatEveryMonths'>,
-            now: Date
+            recordedBalance: number,
+            closedThrough: Date | null
         ) {
             let { fundedAmount, dueAt } = initialFund;
+            let matchedBalance = recordedBalance;
             let isFinished = false;
 
-            for (let settlement = 0; settlement < MAX_FUND_SETTLEMENTS && !isFinished; settlement += 1) {
+            for (let settlement = 0; settlement < maxFundSettlements && !isFinished; settlement += 1) {
                 const dueWindow = computeFundDueWindow(dueAt);
 
-                if (dueWindow.nextPeriodStart.getTime() > now.getTime()) {
+                if (!isDefined(closedThrough) || dueWindow.nextPeriodStart.getTime() > closedThrough.getTime()) {
                     break;
                 }
 
@@ -219,26 +221,34 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
                     dueWindow.nextPeriodStart,
                     budget.instrumentId
                 );
-                const settled = settleFund({ ...initialFund, fundedAmount, dueAt }, toBudgetCurrencyEntries(rows, budget.instrumentId));
+                const settled = settleFund(
+                    { ...initialFund, fundedAmount: matchedBalance, dueAt },
+                    toBudgetCurrencyEntries(rows, budget.instrumentId)
+                );
 
-                ({ fundedAmount, dueAt, isFinished } = settled);
+                fundedAmount = Math.max(fundedAmount - (matchedBalance - settled.fundedAmount), 0);
+                matchedBalance = fundedAmount;
+                ({ dueAt, isFinished } = settled);
             }
 
             return { fund: { ...initialFund, fundedAmount, dueAt }, isFinished };
         });
 
-        const advanceFunds = Effect.fnUntraced(function* (
-            budget: BudgetEntityInterface,
-            windows: readonly BudgetPeriodWindowInterface[],
-            now: Date
-        ) {
+        const advanceFunds = Effect.fnUntraced(function* (budget: BudgetEntityInterface, windows: readonly BudgetPeriodWindowInterface[]) {
             const funds = yield* budgetSinkingFundRepository.getByBudget(budget.id);
+            const [latestSnapshot] = yield* budgetPeriodSnapshotRepository.findRecent(budget.id, 1);
+            const closedThrough = isDefined(latestSnapshot) ? new Date(latestSnapshot.periodEnd.getTime() + 1) : null;
 
             yield* Effect.forEach(
                 funds,
                 Effect.fnUntraced(function* (fund) {
                     const contribution = contributeToFund(fund, windows, budget);
-                    const settlement = yield* settleDueFund(budget, { ...fund, fundedAmount: contribution.fundedAmount }, now);
+                    const settlement = yield* settleDueFund(
+                        budget,
+                        { ...fund, fundedAmount: contribution.fundedAmount },
+                        fund.fundedAmount,
+                        closedThrough
+                    );
 
                     if (settlement.isFinished) {
                         yield* budgetSinkingFundRepository.delete(fund.id);
@@ -350,7 +360,7 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
                         (carryIn, window) => snapshotPeriod(window, carryIn)
                     );
                     yield* refreshRecentPeriods(budget);
-                    yield* advanceFunds(budget, windows, now);
+                    yield* advanceFunds(budget, windows);
 
                     const lastClosedWindow = windows.at(-1);
 
