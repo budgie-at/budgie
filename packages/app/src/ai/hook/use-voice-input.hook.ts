@@ -32,8 +32,14 @@ const reducer = (state: VoiceInputReducerStateInterface, action: VoiceInputActio
     if (action.type === VoiceInputActionTypeEnum.SESSION_STARTED) {
         return { ...state, error: null, finalTranscription: '' };
     }
-    if (action.type === VoiceInputActionTypeEnum.STATUS_CHANGED) {
-        return { ...state, status: action.status };
+    if (action.type === VoiceInputActionTypeEnum.RECORDING_STARTED) {
+        return { ...state, status: VoiceInputStateEnum.RECORDING };
+    }
+    if (action.type === VoiceInputActionTypeEnum.TRANSCRIBING_STARTED) {
+        return { ...state, status: VoiceInputStateEnum.TRANSCRIBING };
+    }
+    if (action.type === VoiceInputActionTypeEnum.PIPELINE_COMPLETED) {
+        return { ...state, status: VoiceInputStateEnum.DONE };
     }
     if (action.type === VoiceInputActionTypeEnum.PROCESSING_STARTED) {
         return { ...state, status: VoiceInputStateEnum.PROCESSING, finalTranscription: action.transcription };
@@ -71,11 +77,11 @@ export const useVoiceInput = (): UseVoiceInputReturnInterface => {
 
     const runPipeline = () =>
         Effect.gen(function* () {
-            dispatch({ type: VoiceInputActionTypeEnum.STATUS_CHANGED, status: VoiceInputStateEnum.TRANSCRIBING });
+            dispatch({ type: VoiceInputActionTypeEnum.TRANSCRIBING_STARTED });
             const text = yield* stt.stopStream();
 
             if (!isNotEmptyString(text)) {
-                dispatch({ type: VoiceInputActionTypeEnum.STATUS_CHANGED, status: VoiceInputStateEnum.IDLE });
+                dispatch({ type: VoiceInputActionTypeEnum.RESET });
                 settle([], '');
 
                 return;
@@ -85,7 +91,7 @@ export const useVoiceInput = (): UseVoiceInputReturnInterface => {
 
             const transactions = yield* categorization.categorize(text);
 
-            dispatch({ type: VoiceInputActionTypeEnum.STATUS_CHANGED, status: VoiceInputStateEnum.DONE });
+            dispatch({ type: VoiceInputActionTypeEnum.PIPELINE_COMPLETED });
             settle(transactions, text);
         });
 
@@ -113,7 +119,7 @@ export const useVoiceInput = (): UseVoiceInputReturnInterface => {
             }
 
             recording.start();
-            dispatch({ type: VoiceInputActionTypeEnum.STATUS_CHANGED, status: VoiceInputStateEnum.RECORDING });
+            dispatch({ type: VoiceInputActionTypeEnum.RECORDING_STARTED });
         });
 
     const stop = () => {
@@ -129,7 +135,7 @@ export const useVoiceInput = (): UseVoiceInputReturnInterface => {
         stt.cancelStream();
         categorization.reset();
         resultRef.current = null;
-        dispatch({ type: VoiceInputActionTypeEnum.CANCELLED });
+        dispatch({ type: VoiceInputActionTypeEnum.RESET });
     };
 
     const transcription =
