@@ -74,3 +74,7 @@ export { toBudgetCurrencyEntries } from './spent/utils/to-budget-currency-entrie
 export type { BudgetFundDrawInterface } from './fund/interface/budget-fund-draw.interface';
 export type { BudgetFundMatchInterface } from './fund/interface/budget-fund-match.interface';
 export type { BudgetSpentLedgerEntryInterface } from './spent/interface/budget-spent-ledger-entry.interface';
+export { contributeToFund } from './fund/utils/contribute-to-fund.util';
+export { settleFund } from './fund/utils/settle-fund.util';
+export type { BudgetFundContributionInterface } from './fund/interface/budget-fund-contribution.interface';
+export type { BudgetFundSettlementInterface } from './fund/interface/budget-fund-settlement.interface';
