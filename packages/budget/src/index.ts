@@ -53,6 +53,8 @@ export type { BudgetCreateInputInterface } from './mutation/interface/budget-cre
 export type { BudgetUpdateInputInterface } from './mutation/interface/budget-update-input.interface';
 export { buildPeriodMonths } from './period/utils/budget-period-months.util';
 export { defaultPeriodAnchorDate } from './period/utils/default-period-anchor-date.util';
+export { computeEventWindow } from './period/utils/budget-event-window.util';
+export type { BudgetEventRangeInterface } from './period/interface/budget-event-range.interface';
 export { scaleBudgetTemplateDraft } from './template/utils/scale-budget-template-draft.util';
 export { resolveBudgetOverallLimit } from './income/utils/resolve-budget-overall-limit.util';
 export { computeIncomeReceived } from './income/utils/compute-income-received.util';
