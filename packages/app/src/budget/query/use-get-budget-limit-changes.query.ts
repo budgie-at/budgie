@@ -15,7 +15,7 @@ interface UseGetBudgetLimitChangesResult {
 const LIMIT_CHANGE_HISTORY_SIZE = 50;
 const EMPTY_LIMIT_CHANGES: readonly BudgetLimitChangeEntityInterface[] = [];
 
-export const budgetLimitChangesAtom = databaseQueryFamily(
+const budgetLimitChangesAtom = databaseQueryFamily(
     [BudgetLimitChangeEntityTable],
     BudgetLimitChangeRepository,
     (budgetLimitChangeRepository, budgetId: number) => budgetLimitChangeRepository.findByBudget(budgetId, LIMIT_CHANGE_HISTORY_SIZE)

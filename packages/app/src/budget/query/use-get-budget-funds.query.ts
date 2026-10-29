@@ -14,7 +14,7 @@ interface UseGetBudgetFundsResult {
 
 const EMPTY_FUNDS: readonly BudgetSinkingFundEntityInterface[] = [];
 
-export const budgetFundsAtom = databaseQueryFamily(
+const budgetFundsAtom = databaseQueryFamily(
     [BudgetSinkingFundEntityTable],
     BudgetSinkingFundRepository,
     (budgetSinkingFundRepository, budgetId: number) => budgetSinkingFundRepository.getByBudget(budgetId)

@@ -7,7 +7,7 @@ import { resolveBudgetQueryResult } from '../utils/resolve-budget-query-result.u
 
 import type { BudgetQueryResultInterface } from '../interface/budget-query-result.interface';
 
-export const eventBudgetAtom = databaseQueryFamily([BudgetEntityTable], BudgetRepository, (budgetRepository, id: number) =>
+const eventBudgetAtom = databaseQueryFamily([BudgetEntityTable], BudgetRepository, (budgetRepository, id: number) =>
     budgetRepository.findEvent(id)
 );
 

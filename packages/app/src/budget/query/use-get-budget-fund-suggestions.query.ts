@@ -10,7 +10,7 @@ import type { BudgetFundSuggestionInterface } from '../interface/budget-fund-sug
 
 const EMPTY_SUGGESTIONS: readonly BudgetFundSuggestionInterface[] = [];
 
-export const budgetFundSuggestionsAtom = databaseQueryFamily(
+const budgetFundSuggestionsAtom = databaseQueryFamily(
     [RecurringSeriesEntityTable, BudgetSinkingFundEntityTable, ExchangeRateEntityTable, SettingsEntityTable],
     BudgetFundSuggestionService,
     (budgetFundSuggestionService, key: readonly [number, number, number]) =>

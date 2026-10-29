@@ -15,7 +15,7 @@ interface UseGetBudgetEventsResult {
 
 const EMPTY_EVENTS: readonly BudgetEventProjectionInterface[] = [];
 
-export const budgetEventsAtom = databaseQueryFamily(
+const budgetEventsAtom = databaseQueryFamily(
     BUDGET_PROJECTION_TABLES,
     BudgetProjectionService,
     (budgetProjectionService, dayStart: number) => budgetProjectionService.projectEvents(new Date(dayStart))

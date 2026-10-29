@@ -15,7 +15,7 @@ import { fromBudgetProjectionKey } from '../utils/from-budget-projection-key.uti
 
 import type { BudgetProjectionKeyInterface } from '../interface/budget-projection-key.interface';
 
-export const budgetExpectedIncomeAtom = databaseQueryFamily(
+const budgetExpectedIncomeAtom = databaseQueryFamily(
     [
         ...TRANSACTION_LIST_TABLES,
         ExchangeRateEntityTable,
