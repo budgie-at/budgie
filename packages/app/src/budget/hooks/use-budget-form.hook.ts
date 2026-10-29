@@ -1,4 +1,4 @@
-import { BudgetService, budgetComputeAllocation } from '@budgie/budget';
+import { BudgetService, budgetComputeAllocation, defaultPeriodAnchorDate, scaleBudgetTemplateDraft } from '@budgie/budget';
 import { BudgetLimitSourceEnum, BudgetPeriodEnum, BudgetRolloverModeEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useLingui } from '@lingui/react/macro';
@@ -9,6 +9,7 @@ import { useForm } from 'react-hook-form';
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
+import { useToday } from '../../@generic/hook/use-today.hook';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
@@ -80,21 +81,12 @@ const buildTemplateBudgetFormValues = (
         otherLimit: 0,
         categoryLimits: templateDraft.categoryLimits
     });
-    const otherLimit = Math.max(0, allocation.remaining);
 
     return {
-        name,
-        period: BudgetPeriodEnum.MONTHLY,
-        periodStartDay: DEFAULT_PERIOD_START_DAY,
-        useLastDayOfMonth: false,
-        periodAnchorMs: null,
-        limitSource: BudgetLimitSourceEnum.FIXED,
-        isAutoTuneEnabled: true,
+        ...buildDefaultBudgetFormValues(name, defaultInstrumentId),
         overallLimit: templateDraft.overallLimit,
-        otherLimit,
-        otherRolloverMode: BudgetRolloverModeEnum.NONE,
-        categoryLimits: templateDraft.categoryLimits.map(limit => ({ ...limit, rolloverMode: BudgetRolloverModeEnum.NONE })),
-        instrumentId: defaultInstrumentId
+        otherLimit: Math.max(0, allocation.remaining),
+        categoryLimits: templateDraft.categoryLimits.map(limit => ({ ...limit, rolloverMode: BudgetRolloverModeEnum.NONE }))
     };
 };
 
@@ -129,10 +121,11 @@ const areBudgetFormValuesEqual = (left: BudgetFormValues, right: BudgetFormValue
     left.instrumentId === right.instrumentId &&
     areBudgetCategoryLimitsEqual(left.categoryLimits, right.categoryLimits);
 
-// eslint-disable-next-line max-lines-per-function -- Form orchestration hook owns edit/template seeding, delete confirmation, and submit lifecycle
+// eslint-disable-next-line max-lines-per-function, max-statements -- Form orchestration hook with multiple hooks and handlers owns seeding, cadence rescaling, delete and submit
 export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = null }: UseBudgetFormOptionsInterface) => {
     const { t } = useLingui();
     const { run } = useSingleFlight();
+    const today = useToday();
     const isEditing = isPositiveNumber(editingId);
     const hasAsyncTemplate = isDefined(templateKind) && templateKind !== BudgetTemplateKindEnum.EMPTY;
     const { budget, isLoading: isBudgetLoading } = useGetActiveBudgetQuery();
@@ -147,10 +140,10 @@ export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = n
         }
 
         if (!isEditing && hasAsyncTemplate && isTemplateReady) {
-            return buildTemplateBudgetFormValues(t`Monthly Budget`, defaultInstrumentId, templateDraft);
+            return buildTemplateBudgetFormValues(t`Budget`, defaultInstrumentId, templateDraft);
         }
 
-        return buildDefaultBudgetFormValues(t`Monthly Budget`, defaultInstrumentId);
+        return buildDefaultBudgetFormValues(t`Budget`, defaultInstrumentId);
     };
 
     const formValues = resolveFormValues();
@@ -158,7 +151,7 @@ export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = n
     const form = useForm<BudgetFormValues>({
         mode: 'onChange',
         resolver: standardSchemaResolver(Schema.toStandardSchemaV1(BudgetFormSchema)),
-        defaultValues: buildDefaultBudgetFormValues(t`Monthly Budget`, defaultInstrumentId),
+        defaultValues: buildDefaultBudgetFormValues(t`Budget`, defaultInstrumentId),
         values: formValues,
         resetOptions: {
             keepDirtyValues: true,
@@ -168,12 +161,36 @@ export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = n
     const isFormSyncing =
         (isEditing || hasAsyncTemplate) && !form.formState.isDirty && !areBudgetFormValuesEqual(form.getValues(), formValues);
 
+    const handlePeriodChange = (period: BudgetPeriodEnum) => {
+        const anchor = defaultPeriodAnchorDate(period, today);
+        const hasEditedLimits =
+            form.getFieldState('overallLimit').isDirty ||
+            form.getFieldState('otherLimit').isDirty ||
+            form.getFieldState('categoryLimits').isDirty;
+
+        form.setValue('periodAnchorMs', isDefined(anchor) ? anchor.getTime() : null, { shouldDirty: true });
+
+        if (isEditing || !hasAsyncTemplate || !isTemplateReady || hasEditedLimits) {
+            return;
+        }
+
+        const scaled = buildTemplateBudgetFormValues(
+            form.getValues('name'),
+            defaultInstrumentId,
+            scaleBudgetTemplateDraft(templateDraft, period)
+        );
+
+        form.setValue('overallLimit', scaled.overallLimit);
+        form.setValue('otherLimit', scaled.otherLimit);
+        form.setValue('categoryLimits', scaled.categoryLimits);
+    };
+
     const handleDelete = () =>
         run(
             Effect.gen(function* () {
                 const confirmed = yield* confirmAlert({
                     title: t`Delete budget?`,
-                    message: t`This will remove your monthly budget. You can create a new one anytime.`,
+                    message: t`This will remove your budget. You can create a new one anytime.`,
                     confirmText: t`Delete`,
                     cancelText: t`Cancel`,
                     isDestructive: true
@@ -227,6 +244,7 @@ export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = n
         handleCancel,
         handleSubmit,
         handleDelete,
+        handlePeriodChange,
         isEditing,
         budget,
         isLoading:
