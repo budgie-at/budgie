@@ -49,12 +49,13 @@ export const BudgetFundForm = ({ budget, editingId }: Props) => {
     return (
         <FormProvider {...form}>
             <View className="flex-1 border-t-hairline border-secondary-corner bg-primary-reverse dark:bg-secondary-background">
-                <FormsheetHeader size="md" title={t`Set aside for`} />
                 <ScrollView
-                    contentContainerClassName="px-5xl pt-md gap-y-xl pb-5xl"
+                    contentContainerClassName="px-5xl gap-y-xl pb-5xl"
+                    contentInsetAdjustmentBehavior="never"
                     keyboardShouldPersistTaps="handled"
                     showsVerticalScrollIndicator={false}
                 >
+                    <FormsheetHeader size="md" title={t`Set aside for`} />
                     {suggestionBanner}
                     <BudgetNameField
                         control={form.control}
