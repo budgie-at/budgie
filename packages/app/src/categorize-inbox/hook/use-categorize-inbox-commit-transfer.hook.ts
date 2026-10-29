@@ -1,6 +1,6 @@
 import { Db, RuleActionTypeEnum, RuleConditionFieldEnum, RuleConditionMatchTypeEnum, RuleConditionOperatorEnum } from '@budgie/contracts';
 import { TransactionTransferService } from '@budgie/ledger';
-import { RuleService } from '@budgie/rules';
+import { RuleRepository, RuleService } from '@budgie/rules';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { NotificationFeedbackType } from 'expo-haptics';
@@ -27,22 +27,41 @@ export const useCategorizeInboxCommitTransfer = (
                     const transactionTransferService = yield* TransactionTransferService;
                     const convertedIds = yield* transactionTransferService.convertManyToTransferAccount(transactionIds, accountId);
 
-                    if (isRuleEnabled) {
-                        const ruleService = yield* RuleService;
+                    if (isRuleEnabled && isNotEmptyArray(convertedIds)) {
+                        const ruleRepository = yield* RuleRepository;
+                        const existingRules = yield* ruleRepository.findEnabledWithRelations();
+                        const normalizedValue = ruleConditionValue.toLowerCase();
+                        const hasDuplicateRule = existingRules.some(
+                            rule =>
+                                rule.conditions.length === 1 &&
+                                rule.conditions.every(
+                                    condition =>
+                                        condition.field === RuleConditionFieldEnum.TITLE &&
+                                        condition.operator === RuleConditionOperatorEnum.EQUALS &&
+                                        condition.value.toLowerCase() === normalizedValue
+                                ) &&
+                                rule.actions.some(
+                                    action => action.type === RuleActionTypeEnum.CONVERT_TO_TRANSFER && action.accountId === accountId
+                                )
+                        );
 
-                        yield* ruleService.create({
-                            enabled: true,
-                            conditionMatchType: RuleConditionMatchTypeEnum.ALL,
-                            conditions: [
-                                {
-                                    field: RuleConditionFieldEnum.TITLE,
-                                    operator: RuleConditionOperatorEnum.EQUALS,
-                                    value: ruleConditionValue,
-                                    secondaryValue: null
-                                }
-                            ],
-                            actions: [{ type: RuleActionTypeEnum.CONVERT_TO_TRANSFER, categoryId: null, tagId: null, accountId }]
-                        });
+                        if (!hasDuplicateRule) {
+                            const ruleService = yield* RuleService;
+
+                            yield* ruleService.create({
+                                enabled: true,
+                                conditionMatchType: RuleConditionMatchTypeEnum.ALL,
+                                conditions: [
+                                    {
+                                        field: RuleConditionFieldEnum.TITLE,
+                                        operator: RuleConditionOperatorEnum.EQUALS,
+                                        value: ruleConditionValue,
+                                        secondaryValue: null
+                                    }
+                                ],
+                                actions: [{ type: RuleActionTypeEnum.CONVERT_TO_TRANSFER, categoryId: null, tagId: null, accountId }]
+                            });
+                        }
                     }
 
                     visibility.showTransactions(transactionIds.filter(transactionId => !convertedIds.includes(transactionId)));

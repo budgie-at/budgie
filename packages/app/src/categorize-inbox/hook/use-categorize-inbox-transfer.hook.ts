@@ -1,4 +1,5 @@
 import { useEffect, useEffectEvent, useRef, useState } from 'react';
+import { AppState } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -48,7 +49,16 @@ export const useCategorizeInboxTransfer = (
         if (isNotEmptyArray(transactionIds)) {
             const jarName = getCategorizeInboxJarName(cluster.displayTitle);
 
-            commitPendingTransfer();
+            const existing = pendingTransferRef.current;
+            const isSameCluster = isDefined(existing) && existing.clusterKey === cluster.key;
+            const previousLearnedAccountIds = isSameCluster ? existing.previousLearnedAccountIds : learnedTransferAccountIds;
+
+            if (isSameCluster) {
+                storePendingTransfer(null);
+            } else {
+                commitPendingTransfer();
+            }
+
             visibility.hideTransactions(transactionIds);
 
             if (isDefined(jarName)) {
@@ -64,7 +74,8 @@ export const useCategorizeInboxTransfer = (
                 accountId,
                 accountTitle,
                 transactionIds,
-                isRuleEnabled
+                isRuleEnabled,
+                previousLearnedAccountIds
             });
         }
     };
@@ -73,20 +84,28 @@ export const useCategorizeInboxTransfer = (
         const pending = pendingTransferRef.current;
 
         if (isDefined(pending)) {
-            const jarName = getCategorizeInboxJarName(pending.clusterTitle);
-
             storePendingTransfer(null);
             visibility.showTransactions(pending.transactionIds);
 
-            if (isDefined(jarName)) {
-                setLearnedTransferAccountIds(previous => new Map([...previous].filter(([name]) => name !== jarName)));
-            }
+            setLearnedTransferAccountIds(pending.previousLearnedAccountIds);
         }
     };
 
     const handleUnmount = useEffectEvent(commitPendingTransfer);
 
     useEffect(() => () => void handleUnmount(), []);
+
+    const handleBackground = useEffectEvent(commitPendingTransfer);
+
+    useEffect(() => {
+        const subscription = AppState.addEventListener('change', state => {
+            if (state === 'background') {
+                handleBackground();
+            }
+        });
+
+        return () => void subscription.remove();
+    }, []);
 
     return { pendingTransfer, learnedTransferAccountIds, transferCluster, undoTransfer, commitPendingTransfer };
 };

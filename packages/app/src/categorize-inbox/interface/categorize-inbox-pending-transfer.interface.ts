@@ -6,4 +6,5 @@ export interface CategorizeInboxPendingTransferInterface {
     readonly accountTitle: string;
     readonly transactionIds: number[];
     readonly isRuleEnabled: boolean;
+    readonly previousLearnedAccountIds: ReadonlyMap<string, number>;
 }
