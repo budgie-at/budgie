@@ -12,7 +12,7 @@ import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../../@gene
 import { TRANSACTION_SECTION_HEADER_HEIGHT } from '../../constant/transaction-section-header-height.constant';
 import { TransactionListItemKindEnum } from '../../enum/transaction-list-item-kind.enum';
 import { TransactionListContextMenuRefInterface } from '../../interface/transaction-list-context-menu-ref.interface';
-import { TransactionsByMonthSection } from '../../interface/transactions-by-month-section.type';
+import { TransactionsByDaySectionInterface } from '../../interface/transactions-by-day-section.interface';
 import { TransactionListItemType } from '../../type/transaction-list-item.type';
 import { getTransactionHref } from '../../utils/get-transaction-href.util';
 import { getTransactionListRowPosition } from '../../utils/get-transaction-list-row-position.util';
@@ -22,7 +22,7 @@ import { TransactionListContextMenu } from '../transaction-list-context-menu/tra
 import type { LegendListProps } from '@legendapp/list/react-native';
 
 interface Props {
-    readonly sections: TransactionsByMonthSection[];
+    readonly sections: TransactionsByDaySectionInterface[];
     readonly onEndReached: () => void;
     readonly listEmptyState: ReactElement;
     readonly accountId?: number | null;
@@ -64,8 +64,10 @@ export const TransactionSectionsList = ({
 
     const renderItem = ({ item }: { item: TransactionListItemType }) =>
         item.type === TransactionListItemKindEnum.HEADER ? (
-            <View className="-mx-5xl px-5xl justify-center bg-primary-reverse" style={SECTION_HEADER_STYLE}>
-                <Text className="text-secondary-foreground uppercase text-xs font-semibold tracking-[0.5px]">{item.title}</Text>
+            <View className="-mx-5xl px-5xl justify-center bg-surface" style={SECTION_HEADER_STYLE}>
+                <Text className="px-3xl text-secondary-foreground text-[13px] font-semibold" numberOfLines={1}>
+                    {item.title}
+                </Text>
             </View>
         ) : (
             <TransactionCard
@@ -80,10 +82,10 @@ export const TransactionSectionsList = ({
     const stickyHeaderIndices: number[] = [];
     const flatData: TransactionListItemType[] = [];
 
-    for (const { date, transactions } of sections) {
+    for (const { title, transactions } of sections) {
         stickyHeaderIndices.push(flatData.length);
         flatData.push(
-            { type: TransactionListItemKindEnum.HEADER, title: date, id: `header-${date}` },
+            { type: TransactionListItemKindEnum.HEADER, title, id: `header-${title}` },
             ...transactions.map((transaction, index) => ({
                 type: TransactionListItemKindEnum.TRANSACTION as const,
                 id: `transaction-${transaction.id}`,

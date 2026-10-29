@@ -25,7 +25,7 @@ interface Props {
     readonly onLongPress: (transaction: TransactionWithRelationsEntityInterface, anchor: PopoverMenuAnchor) => void;
 }
 
-const rowVariants = cva('bg-ghost-background px-3xl py-xl active:scale-100 active:opacity-70', {
+const rowVariants = cva('bg-surface-row px-3xl py-xl active:scale-100 active:opacity-70', {
     variants: {
         position: {
             [TransactionListRowPositionEnum.FIRST]: 'rounded-t-3xl',
@@ -73,7 +73,7 @@ export const TransactionCard = ({ transaction, position, accountId = null, onPre
             onLongPress={handleLongPress}
         >
             {SEPARATED_POSITIONS.has(position) ? (
-                <View className="absolute top-0 right-0 left-[64px] h-hairline bg-secondary-corner" pointerEvents="none" />
+                <View className="absolute top-0 right-0 left-[64px] h-hairline bg-surface-separator" pointerEvents="none" />
             ) : null}
             <TransactionCardContent transaction={transaction} accountId={accountId} />
         </HapticPressable>

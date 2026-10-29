@@ -52,7 +52,7 @@ export const TransactionFilters = ({ filters, onChange, accountId, showTypeFilte
                 {hasFiltersSelected ? (
                     <HapticPressable
                         onPress={handleClear}
-                        className={cn(FILTER_CHIP_CLASS_NAME, 'bg-destructive-background border-destructive-corner')}
+                        className={cn(FILTER_CHIP_CLASS_NAME, 'bg-destructive-background')}
                         testID={TransactionFiltersSelector.ClearAllButton}
                     >
                         <Icon icon={UserIconNameEnum.X} className="text-destructive-foreground" size={13} />

@@ -657,6 +657,5 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
       visible:
-          id: 'TransactionCard.EntryCategoryAmount.Lending.100'
+          text: 'From E2E Txn Account to E2E Lent Debt'
       timeout: 10000
-- assertVisible: 'Debt · E2E Lent Debt'

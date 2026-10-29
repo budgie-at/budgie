@@ -6,6 +6,7 @@ import { ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
 import { isDefined } from '@rnw-community/shared';
 
 import { CollapsibleChromeHeader } from '../../../../@generic/component/collapsible-chrome-header/collapsible-chrome-header';
+import { GroupedSurface } from '../../../../@generic/component/grouped-surface/grouped-surface';
 import { HeaderBackButton } from '../../../../@generic/component/header-back-button/header-back-button';
 import { LoadingScreen } from '../../../../@generic/component/loading-screen/loading-screen';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
@@ -47,7 +48,7 @@ export default function AccountDetails() {
     );
 
     return (
-        <View className="flex-1" testID={AccountDetailsSelector.Page} collapsable={false}>
+        <GroupedSurface testID={AccountDetailsSelector.Page}>
             <ScreenChromeThemeProvider>
                 <ScreenChromeFrame>
                     <View className="flex-1">
@@ -96,6 +97,6 @@ export default function AccountDetails() {
             </ScreenChromeThemeProvider>
 
             <AccountDetailsMenuControls accountId={id} accountType={account.type} />
-        </View>
+        </GroupedSurface>
     );
 }

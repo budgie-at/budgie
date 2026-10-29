@@ -3,13 +3,13 @@ import {
     TransactionWithRelationsEntityInterface,
     isNegativeAdjustmentTransaction,
     isPositiveAdjustmentTransaction,
-    convertFromMicroUnits
+    convertFromMicroUnits,
+    TransactionTypeEnum
 } from '@budgie/contracts';
 import { useContext } from 'react';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
 import { StatisticsCategoryIdsContext } from '../../context/statistics-category-ids.context';
 import { getTransactionType } from '../../utils/get-transaction-type.util';
 import { selectStatisticsAmountTransaction } from '../../utils/select-statistics-amount-transaction.util';
@@ -78,7 +78,7 @@ export const TransactionAmount = ({ transaction: fullTransaction, accountId = nu
     const amountTestID = TransactionCardSelector.Amount(transaction.id);
 
     if (isDefined(fromEntry) && isDefined(toEntry)) {
-        return <TransactionTransferAmount fromEntry={fromEntry} toEntry={toEntry} testID={amountTestID} />;
+        return <TransactionTransferAmount fromEntry={fromEntry} toEntry={toEntry} accountId={accountId} testID={amountTestID} />;
     }
 
     const sideEntry = isDefined(fromEntry) ? fromEntry : toEntry;
@@ -88,8 +88,18 @@ export const TransactionAmount = ({ transaction: fullTransaction, accountId = nu
     }
 
     const isAdjustment = isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction);
-    const sideVariant = TRANSACTION_COLOR[getTransactionType(transaction)];
+    const isIncome = getTransactionType(transaction) === TransactionTypeEnum.INCOME;
+    const sideVariant = isIncome ? 'positive' : 'primary';
+    const sign = isIncome ? '+' : '';
     const sideTestID = isAdjustment ? TransactionCardSelector.AdjustmentAmount(convertFromMicroUnits(sideEntry.amount)) : amountTestID;
 
-    return <TransactionEntryAmount debtEvent={transaction.debtEvents.at(0)} entry={sideEntry} variant={sideVariant} testID={sideTestID} />;
+    return (
+        <TransactionEntryAmount
+            debtEvent={transaction.debtEvents.at(0)}
+            entry={sideEntry}
+            variant={sideVariant}
+            sign={sign}
+            testID={sideTestID}
+        />
+    );
 };

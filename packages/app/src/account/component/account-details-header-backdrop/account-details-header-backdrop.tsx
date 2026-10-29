@@ -9,8 +9,8 @@ const SCROLL_ANIMATION = { opacityInputRange: [0, SCREEN_CHROME_CONTENT_INSET_TO
 
 const renderSolidBand = () => (
     <View className="flex-1">
-        <View className="flex-1 bg-primary-reverse" />
-        <View className="h-[12px] bg-linear-to-b from-primary-reverse via-primary-reverse/25 to-transparent" />
+        <View className="flex-1 bg-surface" />
+        <View className="h-[12px] bg-linear-to-b from-surface via-surface/25 to-transparent" />
     </View>
 );
 

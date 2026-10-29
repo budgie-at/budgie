@@ -8,11 +8,11 @@ import { TransactionSectionsList } from '../transaction-sections-list/transactio
 import { TransactionFilterPageHeader } from '../transactions-page-header/transaction-filter-page-header';
 
 import type { TransactionFilterPageHeaderPropsInterface } from '../../interface/transaction-filter-page-header-props.interface';
-import type { TransactionsByMonthSection } from '../../interface/transactions-by-month-section.type';
+import type { TransactionsByDaySectionInterface } from '../../interface/transactions-by-day-section.interface';
 
 interface Props {
     readonly headerProps: TransactionFilterPageHeaderPropsInterface;
-    readonly sections: TransactionsByMonthSection[];
+    readonly sections: TransactionsByDaySectionInterface[];
     readonly isLoading: boolean;
     readonly onLoadMore: () => void;
 }

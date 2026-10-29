@@ -2668,8 +2668,8 @@ msgstr "PIN konnte nicht gespeichert werden. Bitte versuchen Sie es erneut."
 msgid "Fee"
 msgstr "Gebühr"
 
-#: src/transaction/components/transaction-card-fee/transaction-card-fee.tsx
 #: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
+#: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
 msgid "Fee {formattedAmount}"
 msgstr "Gebühr {formattedAmount}"
 
@@ -2757,6 +2757,14 @@ msgstr "Von"
 #: src/transaction/components/transaction-amount-filter/transaction-amount-filter.tsx
 msgid "From {fromText}"
 msgstr "Ab {fromText}"
+
+#: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
+msgid "From {source}"
+msgstr "Von {source}"
+
+#: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
+msgid "From {source} to {destination}"
+msgstr "Von {source} an {destination}"
 
 #: src/account/component/create-debt-account/create-debt-account.tsx
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
@@ -3026,7 +3034,6 @@ msgstr "Inklusive Krypto"
 msgid "includes fee {formattedFeeAmount}"
 msgstr "inkl. Gebühr {formattedFeeAmount}"
 
-#: src/account/component/account-details-month-chips/account-details-month-chips.tsx
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/components/statistics-content/statistics-content.tsx
@@ -4388,6 +4395,7 @@ msgstr "Salden werden neu berechnet"
 #: src/receipt/hook/use-receipt-scan.hook.ts
 #: src/rule/constant/external-source.constant.ts
 #: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
+#: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
 msgid "Receipt"
 msgstr "Beleg"
 
@@ -5046,11 +5054,14 @@ msgstr "Ausgaben nach Kategorie"
 msgid "Spending by Tag"
 msgstr "Ausgaben nach Tag"
 
-#: src/account/component/account-details-month-chips/account-details-month-chips.tsx
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Spent"
 msgstr "Ausgegeben"
+
+#: src/account/component/account-details-month-chips/account-details-month-chips.tsx
+msgid "Spent {formattedExpense} · Income {formattedIncome}"
+msgstr "Ausgaben {formattedExpense} · Einnahmen {formattedIncome}"
 
 #: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "Spent so far"
@@ -5486,6 +5497,10 @@ msgstr "Titel"
 msgid "To"
 msgstr "Nach"
 
+#: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
+msgid "To {destination}"
+msgstr "An {destination}"
+
 #: src/transaction/components/transaction-amount-filter/transaction-amount-filter.tsx
 msgid "To {toText}"
 msgstr "Bis {toText}"
@@ -5514,6 +5529,7 @@ msgstr "Zu zahlen"
 #: src/@generic/constant/date-period.constant.ts
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
 #: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
+#: src/transaction/query/use-get-transaction-sections.query.ts
 msgid "Today"
 msgstr "Heute"
 
@@ -5589,7 +5605,6 @@ msgid "Transaction not found"
 msgstr "Transaktion nicht gefunden"
 
 #: src/@generic/component/transactions-page-header/transactions-page-header.tsx
-#: src/transaction/components/collapsible-chrome-transaction-list/collapsible-chrome-transaction-list.tsx
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Transactions"
 msgstr "Transaktionen"
@@ -5737,7 +5752,7 @@ msgstr "Nicht verfügbar"
 
 #: src/category/components/stats-by-categories/stats-by-categories.tsx
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
-#: src/transaction/components/transaction-card-category/transaction-card-category.tsx
+#: src/transaction/components/transaction-card-subtitle/transaction-card-subtitle.tsx
 msgid "Uncategorized"
 msgstr "Nicht kategorisiert"
 
@@ -5756,10 +5771,6 @@ msgstr "Unter dem Limit"
 #: src/categorize-inbox/components/categorize-inbox-undo-layout/categorize-inbox-undo-layout.tsx
 msgid "Undo"
 msgstr "Rückgängig"
-
-#: src/transaction/components/transaction-card-category/transaction-card-category.tsx
-msgid "Unknown"
-msgstr "Unbekannt"
 
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "Unknown card"
@@ -5998,6 +6009,7 @@ msgid "XLSX export"
 msgstr "XLSX-Export"
 
 #: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
+#: src/transaction/query/use-get-transaction-sections.query.ts
 msgid "Yesterday"
 msgstr "Gestern"
 

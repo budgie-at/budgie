@@ -139,11 +139,13 @@ appId: ${APP_ID}
     id: 'TransactionCard.Label.E2E_Refund_Localized'
 - scrollUntilVisible:
     element:
-      id: 'TransactionCard.RefundedPill.4'
+      id: 'TransactionCard.Label.E2E_Refund_Full'
+      text: 'E2E Refund Full, Refunded.*'
     direction: DOWN
     centerElement: true
 - assertVisible:
-    id: 'TransactionCard.RefundedPill.4'
+    id: 'TransactionCard.Label.E2E_Refund_Full'
+    text: 'E2E Refund Full, Refunded.*'
 - assertNotVisible:
     id: 'TransactionCard.Amount.3'
 - assertNotVisible:

@@ -1,4 +1,3 @@
-import { StyleSheet } from 'react-native';
 import Animated, { Extrapolation, interpolate, useAnimatedStyle } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -17,8 +16,8 @@ interface Props {
     readonly children: ReactNode;
 }
 
-const HAIRLINE_FADE_DISTANCE = 12;
-const HAIRLINE_HEIGHT = StyleSheet.hairlineWidth;
+const EDGE_FADE_DISTANCE = 12;
+const EDGE_FADE_HEIGHT = 8;
 
 export const CollapsibleChromePinnedBar = ({ anchorY, stackedHeaderHeight, onHeightChange, children }: Props) => {
     const { scrollY } = useCollapsibleHeaderScroll();
@@ -31,19 +30,23 @@ export const CollapsibleChromePinnedBar = ({ anchorY, stackedHeaderHeight, onHei
     const animatedStyle = useAnimatedStyle(() => ({
         transform: [{ translateY: Math.max(restingTop - scrollY.value, pinnedTop) }]
     }));
-    const hairlineAnimatedStyle = useAnimatedStyle(() => ({
-        height: HAIRLINE_HEIGHT,
-        bottom: -stackedHeaderHeight,
-        opacity: interpolate(scrollY.value, [pinScrollY - HAIRLINE_FADE_DISTANCE, pinScrollY], [0, 1], Extrapolation.CLAMP)
+    const edgeFadeAnimatedStyle = useAnimatedStyle(() => ({
+        height: EDGE_FADE_HEIGHT,
+        bottom: -stackedHeaderHeight - EDGE_FADE_HEIGHT,
+        opacity: interpolate(scrollY.value, [pinScrollY - EDGE_FADE_DISTANCE, pinScrollY], [0, 1], Extrapolation.CLAMP)
     }));
 
     const handleLayout = (event: LayoutChangeEvent) => void onHeightChange(event.nativeEvent.layout.height);
 
     return (
-        <Animated.View className="absolute inset-x-0 top-0 bg-primary-reverse px-5xl py-md" style={animatedStyle} onLayout={handleLayout}>
+        <Animated.View className="absolute inset-x-0 top-0 bg-surface px-5xl py-md" style={animatedStyle} onLayout={handleLayout}>
             {children}
 
-            <Animated.View className="absolute inset-x-0 bg-secondary-corner" style={hairlineAnimatedStyle} pointerEvents="none" />
+            <Animated.View
+                className="absolute inset-x-0 bg-linear-to-b from-surface to-transparent"
+                style={edgeFadeAnimatedStyle}
+                pointerEvents="none"
+            />
         </Animated.View>
     );
 };

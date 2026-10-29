@@ -1,7 +1,6 @@
-import { UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
+import { convertFromMicroUnits } from '@budgie/contracts';
 import { Text, View } from 'react-native';
 
-import { Icon } from '../../../@generic/component/icon/icon';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 
 import type { AggregatedTransactionEntryInterface } from '../../interface/aggregated-transaction-entry.interface';
@@ -9,22 +8,27 @@ import type { AggregatedTransactionEntryInterface } from '../../interface/aggreg
 interface Props {
     readonly fromEntry: AggregatedTransactionEntryInterface;
     readonly toEntry: AggregatedTransactionEntryInterface;
+    readonly accountId: number | null;
     readonly testID: string;
 }
 
-export const TransactionTransferAmount = ({ fromEntry, toEntry, testID }: Props) => {
+export const TransactionTransferAmount = ({ fromEntry, toEntry, accountId, testID }: Props) => {
     const formatDigits = useDisplayFormatDigits();
 
-    const fromAmount = formatDigits(convertFromMicroUnits(fromEntry.amount), fromEntry.account.instrument.symbol);
-    const toAmount = formatDigits(convertFromMicroUnits(toEntry.amount), toEntry.account.instrument.symbol);
+    const isIncoming = accountId === toEntry.account.id;
+    const primaryEntry = isIncoming ? toEntry : fromEntry;
+    const secondaryEntry = isIncoming ? fromEntry : toEntry;
+
+    const primaryAmount = formatDigits(convertFromMicroUnits(primaryEntry.amount), primaryEntry.account.instrument.symbol);
+    const secondaryAmount = formatDigits(convertFromMicroUnits(secondaryEntry.amount), secondaryEntry.account.instrument.symbol);
+    const isCrossCurrency = primaryEntry.account.instrument.id !== secondaryEntry.account.instrument.id;
 
     return (
         <View className="gap-y-xxs items-end" testID={testID}>
-            <Text className="text-[15px] font-semibold text-right text-default-foreground tabular-nums">{fromAmount}</Text>
-            <View className="flex-row items-center gap-x-xs">
-                <Icon icon={UserIconNameEnum.ArrowRight} className="text-secondary-foreground" size={12} />
-                <Text className="text-secondary-foreground text-[13px] tabular-nums">{toAmount}</Text>
-            </View>
+            <Text className="text-[15px] font-semibold text-right text-primary tabular-nums">{primaryAmount}</Text>
+            {isCrossCurrency ? (
+                <Text className="text-secondary-foreground/70 text-[13px] text-right tabular-nums">{secondaryAmount}</Text>
+            ) : null}
         </View>
     );
 };

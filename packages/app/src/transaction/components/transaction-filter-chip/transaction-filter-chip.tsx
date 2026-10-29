@@ -19,8 +19,8 @@ interface Props {
 const chipVariants = cva(FILTER_CHIP_CLASS_NAME, {
     variants: {
         isActive: {
-            true: 'border-primary bg-primary',
-            false: 'border-secondary-corner'
+            true: 'bg-primary',
+            false: 'bg-surface-fill'
         }
     }
 });
@@ -29,7 +29,7 @@ const textVariants = cva('text-[13px] font-medium', {
     variants: {
         isActive: {
             true: 'text-primary-reverse',
-            false: 'text-secondary-foreground'
+            false: 'text-primary'
         }
     }
 });

@@ -102,9 +102,7 @@ appId: ${APP_ID}
 - assertVisible:
       id: 'TransactionCard.Label.E2E_Convert_Income'
 - assertVisible:
-      id: 'TransactionCard.FromAccount.E2E_Income_Source.Label'
-- assertVisible:
-      id: 'TransactionCard.ToAccount.E2E_Income_Target.Label'
+      text: 'From E2E Income Source to E2E Income Target.*'
 
 - tapOn:
       id: 'TabBar.Home'

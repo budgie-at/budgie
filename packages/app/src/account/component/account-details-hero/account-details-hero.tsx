@@ -28,7 +28,7 @@ export const AccountDetailsHero = ({ account, balance }: Props) => {
                 collapsable={false}
                 className="w-full"
             >
-                <ProtectedMoney minFontSize={24} maxFontSize={52} instrumentSymbol={account.instrument.symbol}>
+                <ProtectedMoney className="font-semibold" minFontSize={24} maxFontSize={48} instrumentSymbol={account.instrument.symbol}>
                     {balance}
                 </ProtectedMoney>
             </View>
