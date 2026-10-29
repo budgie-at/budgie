@@ -41,19 +41,17 @@ export const CategorizeInboxGroupRow = ({ cluster }: Props) => {
                     {...testID(CategorizeInboxGroupRowSelector.Row, key)}
                 >
                     <View className="flex-1 gap-y-xxs">
-                        <View className="flex-row items-baseline justify-between gap-x-xl">
-                            <Text className="shrink text-md font-semibold text-primary" numberOfLines={1}>
-                                {displayTitle}
-                            </Text>
-                            <CategorizeInboxGroupRowAmount cluster={cluster} />
-                        </View>
+                        <Text className="text-md font-semibold text-primary" numberOfLines={1}>
+                            {displayTitle}
+                        </Text>
+                        <Text className="text-xs text-secondary-foreground tabular-nums" numberOfLines={1}>
+                            {countText}
+                        </Text>
+                    </View>
 
-                        <View className="min-h-[22px] flex-row items-center justify-between gap-x-xl">
-                            <Text className="text-xs text-secondary-foreground tabular-nums" numberOfLines={1}>
-                                {countText}
-                            </Text>
-                            {isCash || isConfident ? null : <CategorizeInboxGroupRowHint cluster={cluster} />}
-                        </View>
+                    <View className="max-w-[55%] items-end gap-y-xxs">
+                        <CategorizeInboxGroupRowAmount cluster={cluster} />
+                        {isCash || isConfident ? <View className="h-[22px]" /> : <CategorizeInboxGroupRowHint cluster={cluster} />}
                     </View>
                     <CategorizeInboxOptionChevron />
                 </HapticPressable>
