@@ -11,11 +11,7 @@ WHERE `deleted_at` IS NULL
             AND `twin`.`kind` = `recurring_series`.`kind`
             AND `twin`.`merchant_key` = `recurring_series`.`merchant_key`
             AND `twin`.`period_days` = `recurring_series`.`period_days`
-            AND `twin`.`amount` = `recurring_series`.`amount`
             AND `twin`.`title` = `recurring_series`.`title`
-            AND `twin`.`status` = `recurring_series`.`status`
-            AND `twin`.`category_id` IS `recurring_series`.`category_id`
-            AND `twin`.`last_seen_at` = `recurring_series`.`last_seen_at`
             AND (
                 `twin`.`user_state` <> 'SUGGESTED'
                 OR `twin`.`updated_at` <> `twin`.`created_at`

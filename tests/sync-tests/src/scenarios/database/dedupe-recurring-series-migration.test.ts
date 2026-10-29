@@ -17,16 +17,24 @@ const { SUGGESTED } = RecurringSeriesUserStateEnum;
 
 interface SeedRow {
     readonly amount?: number;
+    readonly lastSeenAt?: number;
     readonly periodDays?: number;
     readonly title?: string;
     readonly userState?: RecurringSeriesUserStateEnum;
     readonly isUpdated?: boolean;
 }
 
-const insertSeries = ({ amount = 12_000, periodDays = 30, title = 'NETFLIX', userState = SUGGESTED, isUpdated = false }: SeedRow) =>
+const insertSeries = ({
+    amount = 12_000,
+    lastSeenAt = CREATED_AT,
+    periodDays = 30,
+    title = 'NETFLIX',
+    userState = SUGGESTED,
+    isUpdated = false
+}: SeedRow) =>
     testDb.$client.unsafe(
         `INSERT INTO recurring_series (merchant_key, kind, period_days, amount, status, user_state, title, last_seen_at, created_at, updated_at)
-         VALUES ('NETFLIX', 'EXPENSE', ${periodDays}, ${amount}, 'ACTIVE', '${userState}', '${title}', ${CREATED_AT}, ${CREATED_AT}, ${CREATED_AT + Number(isUpdated)})`
+         VALUES ('NETFLIX', 'EXPENSE', ${periodDays}, ${amount}, 'ACTIVE', '${userState}', '${title}', ${lastSeenAt}, ${CREATED_AT}, ${CREATED_AT + Number(isUpdated)})`
     ).raw;
 
 const survivingTitles = () =>
@@ -67,9 +75,13 @@ const scenarios: readonly Scenario[] = [
         expected: ['30|12000|CONFIRMED|NETFLIX']
     },
     {
-        name: 'keeps legacy rows with different amounts',
-        seeded: [{ amount: 5000 }, { amount: 15_000 }],
-        expected: ['30|5000|SUGGESTED|NETFLIX', '30|15000|SUGGESTED|NETFLIX']
+        name: 'drops untouched duplicates whose amount or last charge drifted',
+        seeded: [
+            {},
+            { amount: 15_000, lastSeenAt: CREATED_AT + 2_592_000 },
+            { userState: RecurringSeriesUserStateEnum.DISMISSED, isUpdated: true }
+        ],
+        expected: ['30|12000|DISMISSED|NETFLIX']
     },
     {
         name: 'keeps rows with a different period',
