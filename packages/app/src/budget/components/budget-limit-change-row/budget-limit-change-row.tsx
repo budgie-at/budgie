@@ -24,7 +24,7 @@ export const BudgetLimitChangeRow = ({ change, currencySymbol }: Props) => {
     const previousLabel = formatDigits(convertFromMicroUnits(change.previousAmount), currencySymbol);
     const newLabel = formatDigits(convertFromMicroUnits(change.newAmount), currencySymbol);
     const count = change.periodsObserved;
-    const dateLabel = formatMonthAndDay(change.createdAt);
+    const dateLabel = formatMonthAndDay(change.periodStart);
     const raisedLabel = t`Raised. Over the limit ${count} periods in a row. ${dateLabel}`;
     const loweredLabel = t`Lowered. Under 80% for ${count} periods. ${dateLabel}`;
     const reasonLabel = change.reason === BudgetLimitChangeReasonEnum.OVER_SPENT ? raisedLabel : loweredLabel;

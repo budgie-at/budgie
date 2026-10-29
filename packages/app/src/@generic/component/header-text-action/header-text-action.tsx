@@ -9,11 +9,13 @@ interface Props {
     readonly testID?: string;
 }
 
+const HIT_SLOP = { left: 12, right: 12 } as const;
+
 export const HeaderTextAction = ({ label, onPress, testID }: Props) => (
     <HapticPressable
         accessibilityRole="button"
-        className="min-h-[44px] justify-center px-md active:opacity-70"
-        hitSlop={8}
+        className="min-h-[44px] justify-center active:opacity-70"
+        hitSlop={HIT_SLOP}
         testID={testID}
         onPress={onPress}
     >

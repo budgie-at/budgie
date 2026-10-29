@@ -31,7 +31,7 @@ export const BudgetFundRowStatus = ({ fund, budget, currencySymbol }: Props) => 
     if (isFundBehind(fund, today)) {
         return (
             <Text className="text-xs text-secondary-foreground">
-                <Text className="text-dark-warning-foreground">{t`Behind.`}</Text> {t`Setting aside ${setAsideLabel} ${rate} to catch up`}
+                <Text className="text-warning-foreground">{t`Behind.`}</Text> {t`Setting aside ${setAsideLabel} ${rate} to catch up`}
             </Text>
         );
     }

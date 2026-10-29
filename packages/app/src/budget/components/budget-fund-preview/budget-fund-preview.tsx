@@ -29,6 +29,10 @@ export const BudgetFundPreview = ({ budget, fundedAmount, currencySymbol }: Prop
         resolveBudgetWindow(budget, today),
         budget
     );
+    if (setAside <= 0) {
+        return null;
+    }
+
     const amountLabel = formatDigits(convertFromMicroUnits(setAside), currencySymbol);
     const rate = t(BUDGET_PERIOD_RATE_LABEL[budget.period]);
 
