@@ -89,6 +89,7 @@ export class TransactionCategorizeInboxRepository extends Context.Service<Transa
                                 (tagIds: string) => tagIds.split(',').filter(isNotEmptyString).map(Number)
                             ),
                             mcc: MccCategoryEntityTable.mcc,
+                            toIban: TransactionEntryEntityTable.toIban,
                             instrumentSymbol: InstrumentEntityTable.symbol
                         })
                         .from(TransactionEntryEntityTable)

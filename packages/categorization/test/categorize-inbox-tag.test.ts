@@ -24,7 +24,8 @@ const buildRow = (transactionId: number, type: TransactionTypeEnum, title: strin
     mccCategoryId: null,
     categoryId: null,
     tagIds: [],
-    mcc: null
+    mcc: null,
+    toIban: null
 });
 
 const buildEvidence = (type: TransactionTypeEnum, title: string) => [{ title, type, mccCategoryId: null, labelId: 7, count: 5 }];
@@ -146,8 +147,58 @@ describe('categorization/inbox-tag', () => {
             ],
             categorizeInboxEngineService.buildContext([], 1, CategorizeInboxLabelKindEnum.TAG)
         );
-        const cashWithdrawals = clusters.find(cluster => cluster.section === CategorizeInboxSectionEnum.CASH_WITHDRAWALS);
+        const cashWithdrawals = clusters.filter(cluster => cluster.section === CategorizeInboxSectionEnum.CASH_WITHDRAWALS);
 
-        expect(cashWithdrawals?.rows.map(row => row.transactionId)).toEqual([1, 2]);
+        expect(
+            cashWithdrawals.flatMap(cluster => cluster.rows.map(row => row.transactionId)).toSorted((left, right) => left - right)
+        ).toEqual([1, 2]);
+    });
+
+    describe('exact requisite clustering', () => {
+        const buildClusters = (rows: CategorizeInboxRowInterface[]) =>
+            categorizeInboxEngineService.buildClusters(
+                rows,
+                categorizeInboxEngineService.buildContext([], 1, CategorizeInboxLabelKindEnum.TAG)
+            );
+
+        it('separates titles that only share their first words', () => {
+            const clusters = buildClusters([
+                buildRow(1, TransactionTypeEnum.EXPENSE, 'На марс'),
+                buildRow(2, TransactionTypeEnum.EXPENSE, 'На марс і назад')
+            ]);
+
+            expect(clusters).toHaveLength(2);
+        });
+
+        it('merges titles differing only by case and whitespace', () => {
+            const clusters = buildClusters([
+                buildRow(1, TransactionTypeEnum.EXPENSE, 'Blue Bottle'),
+                buildRow(2, TransactionTypeEnum.EXPENSE, '  blue   BOTTLE ')
+            ]);
+
+            expect(clusters).toHaveLength(1);
+            expect(clusters[0].rows).toHaveLength(2);
+        });
+
+        it('separates identical titles with a different mcc or iban', () => {
+            const clusters = buildClusters([
+                { ...buildRow(1, TransactionTypeEnum.EXPENSE, 'Blue Bottle'), mcc: '5812' },
+                { ...buildRow(2, TransactionTypeEnum.EXPENSE, 'Blue Bottle'), mcc: '5814' },
+                { ...buildRow(3, TransactionTypeEnum.EXPENSE, 'Blue Bottle'), toIban: 'AT611904300234573201' },
+                buildRow(4, TransactionTypeEnum.EXPENSE, 'Blue Bottle')
+            ]);
+
+            expect(clusters).toHaveLength(4);
+        });
+
+        it('keeps different ATM titles in separate cash withdrawal clusters', () => {
+            const clusters = buildClusters([
+                buildRow(1, TransactionTypeEnum.EXPENSE, 'Банкомат Erste Bank'),
+                buildRow(2, TransactionTypeEnum.EXPENSE, 'BANKOMAT QUELLENSTRAS WIENFAVORITEN 1100 040')
+            ]);
+
+            expect(clusters).toHaveLength(2);
+            expect(clusters.every(cluster => cluster.section === CategorizeInboxSectionEnum.CASH_WITHDRAWALS)).toBe(true);
+        });
     });
 });
