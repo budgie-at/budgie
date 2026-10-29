@@ -66,7 +66,7 @@ layer(TestLayer)('BudgetPeriodCloseService sinking funds', it => {
         })
     );
 
-    it.effect('rolls a repeating fund to the next year and keeps the leftover balance', () =>
+    it.effect('rolls a repeating fund to the next year and keeps the balance the closed snapshots did not cover', () =>
         Effect.gen(function* () {
             const fundRepository = yield* BudgetSinkingFundRepository;
             const { budget, account, insurance } = yield* seedFundScenario(new Date(2026, 2, 20), units(600), 12);
@@ -76,7 +76,7 @@ layer(TestLayer)('BudgetPeriodCloseService sinking funds', it => {
 
             const [rolled] = yield* fundRepository.getByBudget(budget.id);
 
-            expect(rolled.fundedAmount).toBe(units(200));
+            expect(rolled.fundedAmount).toBe(units(600));
             expect(rolled.dueAt).toEqual(new Date(2027, 2, 20));
         })
     );
