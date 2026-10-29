@@ -8,7 +8,7 @@ import { isDefined } from '@rnw-community/shared';
 import { CollapsibleChromeHeader } from '../../../../@generic/component/collapsible-chrome-header/collapsible-chrome-header';
 import { GroupedSurface } from '../../../../@generic/component/grouped-surface/grouped-surface';
 import { HeaderBackButton } from '../../../../@generic/component/header-back-button/header-back-button';
-import { LoadingScreen } from '../../../../@generic/component/loading-screen/loading-screen';
+import { RevealGate } from '../../../../@generic/component/reveal-gate/reveal-gate';
 import { IdParamInterface } from '../../../../@generic/interface/id-param.interface';
 import { ScreenChromeThemeProvider } from '../../../../@generic/provider/screen-chrome-theme.provider';
 import { AccountActionsMenu } from '../../../../account/component/account-actions-menu/account-actions-menu';
@@ -34,12 +34,14 @@ export default function AccountDetails() {
     const { balance } = useAccountBalanceQuery(id);
     const debtProgressSummary = useDebtAccountProgressSummaryQuery(id);
 
-    if (isLoading) {
-        return <LoadingScreen />;
-    }
-
     if (!isDefined(account)) {
-        return <Redirect href="/" />;
+        return isLoading ? (
+            <GroupedSurface testID={AccountDetailsSelector.Page}>
+                <RevealGate isLoading>{null}</RevealGate>
+            </GroupedSurface>
+        ) : (
+            <Redirect href="/" />
+        );
     }
 
     const instrumentSymbol = account.instrument.symbol;
@@ -47,54 +49,57 @@ export default function AccountDetails() {
         <AccountActionsMenu accountId={id} accountType={account.type} balance={balance} instrumentSymbol={instrumentSymbol} />
     );
 
+    const accountSummary =
+        account.type === AccountTypeEnum.DEBT ? (
+            <View className="gap-y-md">
+                <DebtAccountBalance
+                    accountId={id}
+                    debtType={account.debtType}
+                    instrumentSymbol={instrumentSymbol}
+                    summary={debtProgressSummary}
+                />
+
+                {account.debtType === AccountDebtTypeEnum.INSTALLMENT ? (
+                    <InstallmentPlanScheduleSummary accountId={id} instrumentSymbol={instrumentSymbol} />
+                ) : null}
+            </View>
+        ) : (
+            <View className="gap-y-4xl">
+                <AccountDetailsHero account={account} balance={balance} />
+
+                {account.type === AccountTypeEnum.DEPOSIT ? (
+                    <DepositDetailsCard
+                        balance={balance}
+                        instrumentSymbol={instrumentSymbol}
+                        interestRate={account.interestRate}
+                        deadline={account.deadline}
+                    />
+                ) : null}
+            </View>
+        );
+
     return (
         <GroupedSurface testID={AccountDetailsSelector.Page}>
-            <ScreenChromeThemeProvider>
-                <ScreenChromeFrame>
-                    <View className="flex-1">
-                        <CollapsibleChromeTransactionList accountId={id}>
-                            {account.type === AccountTypeEnum.DEBT ? (
-                                <View className="gap-y-md">
-                                    <DebtAccountBalance
-                                        accountId={id}
-                                        debtType={account.debtType}
-                                        instrumentSymbol={instrumentSymbol}
-                                        summary={debtProgressSummary}
-                                    />
+            <RevealGate isLoading={false}>
+                <ScreenChromeThemeProvider>
+                    <ScreenChromeFrame>
+                        <View className="flex-1">
+                            <CollapsibleChromeTransactionList accountId={id}>{accountSummary}</CollapsibleChromeTransactionList>
+                        </View>
 
-                                    {account.debtType === AccountDebtTypeEnum.INSTALLMENT ? (
-                                        <InstallmentPlanScheduleSummary accountId={id} instrumentSymbol={instrumentSymbol} />
-                                    ) : null}
-                                </View>
-                            ) : (
-                                <View className="gap-y-4xl">
-                                    <AccountDetailsHero account={account} balance={balance} />
+                        <AccountDetailsHeaderBackdrop />
 
-                                    {account.type === AccountTypeEnum.DEPOSIT ? (
-                                        <DepositDetailsCard
-                                            balance={balance}
-                                            instrumentSymbol={instrumentSymbol}
-                                            interestRate={account.interestRate}
-                                            deadline={account.deadline}
-                                        />
-                                    ) : null}
-                                </View>
-                            )}
-                        </CollapsibleChromeTransactionList>
-                    </View>
-
-                    <AccountDetailsHeaderBackdrop />
-
-                    <CollapsibleChromeHeader
-                        leading={<HeaderBackButton />}
-                        trailing={headerTrailing}
-                        expandedTitle={<AccountDetailsLargeTitle account={account} />}
-                        collapsedTitle={
-                            <AccountDetailsSmallTitle title={account.title} balance={balance} instrumentSymbol={instrumentSymbol} />
-                        }
-                    />
-                </ScreenChromeFrame>
-            </ScreenChromeThemeProvider>
+                        <CollapsibleChromeHeader
+                            leading={<HeaderBackButton />}
+                            trailing={headerTrailing}
+                            expandedTitle={<AccountDetailsLargeTitle account={account} />}
+                            collapsedTitle={
+                                <AccountDetailsSmallTitle title={account.title} balance={balance} instrumentSymbol={instrumentSymbol} />
+                            }
+                        />
+                    </ScreenChromeFrame>
+                </ScreenChromeThemeProvider>
+            </RevealGate>
 
             <AccountDetailsMenuControls accountId={id} accountType={account.type} />
         </GroupedSurface>
