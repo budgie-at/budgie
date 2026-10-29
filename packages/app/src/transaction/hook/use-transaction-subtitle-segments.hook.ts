@@ -55,7 +55,9 @@ export const useTransactionSubtitleSegments = (
     const { relationSegments, ownAccountTitle } = isDefined(repaidDebtAccount)
         ? { relationSegments: [t`Repayment`, repaidDebtTitle], ownAccountTitle: null }
         : {
-              relationSegments: [counterpartyLabel ?? categoryLabels.join(', ')],
+              relationSegments: [
+                  counterpartyLabel ?? (transaction.type === TransactionTypeEnum.TRANSFER ? t`Transfer` : categoryLabels.join(', '))
+              ],
               ownAccountTitle:
                   !isDefined(counterparty) && isDefined(moneyAccount) && moneyAccount.id !== accountId ? moneyAccount.title : null
           };
@@ -63,12 +65,12 @@ export const useTransactionSubtitleSegments = (
     return {
         segments: [
             refundedLabel,
-            isDefined(transaction.receipt) ? t`Receipt` : null,
             isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction) ? t`Manual adjustment` : null,
             isUncategorizedTransaction(transaction) ? t`Uncategorized` : null,
             ...relationSegments
         ].filter(isNotEmptyString),
-        trailingSegments: [feeLabel, ownAccountTitle].filter(isNotEmptyString),
+        feeLabel,
+        accountTitle: ownAccountTitle,
         categoryLabel: !isDefined(counterparty) && categoryLabels.length === 1 ? (categoryLabels.at(0) ?? null) : null
     };
 };

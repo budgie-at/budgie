@@ -3690,7 +3690,6 @@ msgstr "Немає відповідних рахунків"
 msgid "No matching expenses"
 msgstr "Немає відповідних витрат"
 
-#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx
 #: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
 msgid "No matching transactions"
 msgstr "Немає відповідних транзакцій"
@@ -4402,8 +4401,8 @@ msgstr "Перерахунок балансів"
 
 #: src/receipt/hook/use-receipt-scan.hook.ts
 #: src/rule/constant/external-source.constant.ts
+#: src/transaction/components/transaction-card-subtitle/transaction-card-subtitle.tsx
 #: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
-#: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
 msgid "Receipt"
 msgstr "Чек"
 
@@ -5640,6 +5639,7 @@ msgstr "Помилка транскрипції"
 
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/constant/transaction-type.constant.ts
+#: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Transfer"
 msgstr "Переказ"
@@ -5699,7 +5699,6 @@ msgstr "Спробуйте інший пошуковий запит"
 msgid "Try a different search term or create a new tag"
 msgstr "Спробуйте інший пошуковий запит або створіть новий тег"
 
-#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx
 #: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
 msgid "Try adjusting your filters to see more results"
 msgstr "Спробуйте налаштувати фільтри, щоб побачити більше результатів"

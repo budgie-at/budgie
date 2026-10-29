@@ -2,6 +2,8 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { ActivityIndicator, Text, View } from 'react-native';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -10,7 +12,7 @@ import { TransactionsPageSelector } from '../../../app/(tabs)/transactions-page.
 interface Props {
     readonly isLoading: boolean;
     readonly hasFiltersSelected: boolean;
-    readonly onClearFilters: () => void;
+    readonly onClearFilters?: () => void;
 }
 
 export const TransactionListEmptyState = ({ isLoading, hasFiltersSelected, onClearFilters }: Props) => {
@@ -51,7 +53,7 @@ export const TransactionListEmptyState = ({ isLoading, hasFiltersSelected, onCle
                 testID={TransactionsPageSelector.EmptyState}
             />
 
-            {hasFiltersSelected ? (
+            {hasFiltersSelected && isDefined(onClearFilters) ? (
                 <HapticPressable
                     onPress={onClearFilters}
                     accessibilityRole="button"

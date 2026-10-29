@@ -46,6 +46,7 @@ env:
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
 - extendedWaitUntil:
       visible:
-          id: 'TransactionCard.Label.E2E_Receipt_Target'
-          text: 'E2E Receipt Target, .*Receipt.*'
+          id: 'TransactionCard.ReceiptMarker'
+          childOf:
+              id: 'TransactionCard.Label.E2E_Receipt_Target'
       timeout: 5000

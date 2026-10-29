@@ -3690,7 +3690,6 @@ msgstr "No hay cuentas coincidentes"
 msgid "No matching expenses"
 msgstr "No hay gastos coincidentes"
 
-#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx
 #: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
 msgid "No matching transactions"
 msgstr "No hay transacciones coincidentes"
@@ -4402,8 +4401,8 @@ msgstr "Recalculando saldos"
 
 #: src/receipt/hook/use-receipt-scan.hook.ts
 #: src/rule/constant/external-source.constant.ts
+#: src/transaction/components/transaction-card-subtitle/transaction-card-subtitle.tsx
 #: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
-#: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
 msgid "Receipt"
 msgstr "Recibo"
 
@@ -5640,6 +5639,7 @@ msgstr "Error de transcripción"
 
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/constant/transaction-type.constant.ts
+#: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Transfer"
 msgstr "Transferencia"
@@ -5699,7 +5699,6 @@ msgstr "Prueba con un término de búsqueda diferente"
 msgid "Try a different search term or create a new tag"
 msgstr "Prueba un término de búsqueda diferente o crea una nueva etiqueta"
 
-#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx
 #: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
 msgid "Try adjusting your filters to see more results"
 msgstr "Intenta ajustar tus filtros para ver más resultados"

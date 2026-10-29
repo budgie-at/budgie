@@ -1,9 +1,5 @@
-import { UserIconNameEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
-import { ActivityIndicator } from 'react-native';
-
-import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
 import { Page } from '../../../@generic/component/page/page';
+import { TransactionListEmptyState } from '../transaction-list-empty-state/transaction-list-empty-state';
 import { TransactionSectionsList } from '../transaction-sections-list/transaction-sections-list';
 import { TransactionFilterPageHeader } from '../transactions-page-header/transaction-filter-page-header';
 
@@ -18,30 +14,14 @@ interface Props {
     readonly accountId: number | null;
 }
 
-export const AnalyticsTransactionsPageContent = ({ headerProps, sections, isLoading, onLoadMore, accountId }: Props) => {
-    const { t } = useLingui();
-
-    const listEmptyState = isLoading ? (
-        <ActivityIndicator size="large" />
-    ) : (
-        <EmptyState
-            circleIcon={UserIconNameEnum.Receipt}
-            title={t`No matching transactions`}
-            titleClassName="text-md text-primary font-semibold"
-            description={t`Try adjusting your filters to see more results`}
-            descriptionClassName="text-center max-w-[250px]"
+export const AnalyticsTransactionsPageContent = ({ headerProps, sections, isLoading, onLoadMore, accountId }: Props) => (
+    <Page header={<TransactionFilterPageHeader {...headerProps} />}>
+        <TransactionSectionsList
+            sections={sections}
+            onEndReached={onLoadMore}
+            listEmptyState={<TransactionListEmptyState isLoading={isLoading} hasFiltersSelected />}
+            accountId={accountId}
+            footerSpacerMultiplier={0}
         />
-    );
-
-    return (
-        <Page header={<TransactionFilterPageHeader {...headerProps} />}>
-            <TransactionSectionsList
-                sections={sections}
-                onEndReached={onLoadMore}
-                listEmptyState={listEmptyState}
-                accountId={accountId}
-                footerSpacerMultiplier={0}
-            />
-        </Page>
-    );
-};
+    </Page>
+);
