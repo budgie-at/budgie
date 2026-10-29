@@ -23,10 +23,31 @@ msgstr "Binance P2P buy {assetCode}"
 msgid "Binance P2P sell {assetCode}"
 msgstr "Binance P2P sell {assetCode}"
 
+#: src/categorize-inbox/components/categorize-inbox-pile-legend/categorize-inbox-pile-legend.tsx
+msgid "«{largestName}» alone is {largestPercent}%"
+msgstr "«{largestName}» alone is {largestPercent}%"
+
+#. placeholder {0}: rows.length
+#: src/categorize-inbox/components/categorize-inbox-group-row/categorize-inbox-group-row.tsx
+msgid "{0, plural, one {# ATM withdrawal} other {# ATM withdrawals}}"
+msgstr "{0, plural, one {# ATM withdrawal} other {# ATM withdrawals}}"
+
+#. placeholder {0}: oneOffs.reduce((total, cluster) => total + cluster.rows.length, 0)
+#. placeholder {0}: rows.length
+#: src/categorize-inbox/components/categorize-inbox-group-row/categorize-inbox-group-row.tsx
+#: src/categorize-inbox/components/categorize-inbox-one-offs-link/categorize-inbox-one-offs-link.tsx
+msgid "{0, plural, one {# payment} other {# payments}}"
+msgstr "{0, plural, one {# payment} other {# payments}}"
+
 #. placeholder {0}: changed.length
 #: src/receipt/hook/use-receipt-scan.hook.ts
 msgid "{0, plural, one {# receipt saved} other {# receipts saved}}"
 msgstr "{0, plural, one {# receipt saved} other {# receipts saved}}"
+
+#. placeholder {0}: oneOffs.length
+#: src/categorize-inbox/components/categorize-inbox-one-offs-link/categorize-inbox-one-offs-link.tsx
+msgid "{0, plural, one {# smaller group} other {# smaller groups}}"
+msgstr "{0, plural, one {# smaller group} other {# smaller groups}}"
 
 #. placeholder {0}: labels.length
 #: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
@@ -34,21 +55,9 @@ msgid "{0, plural, one {# tag} other {# tags}}"
 msgstr "{0, plural, one {# tag} other {# tags}}"
 
 #. placeholder {0}: movedToCashTransactionIds.length
-#. placeholder {0}: rows.length
-#: src/categorize-inbox/components/categorize-inbox-cluster-meta/categorize-inbox-cluster-meta.tsx
-#: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
+#: src/categorize-inbox/components/categorize-inbox-moved-to-cash-undo/categorize-inbox-moved-to-cash-undo.tsx
 msgid "{0, plural, one {# transaction} other {# transactions}}"
 msgstr "{0, plural, one {# transaction} other {# transactions}}"
-
-#. placeholder {0}: acceptableAssignments.length
-#: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
-msgid "{0, plural, one {Accept # suggestion} other {Accept # suggestions}}"
-msgstr "{0, plural, one {Accept # suggestion} other {Accept # suggestions}}"
-
-#. placeholder {0}: transactionIds.length
-#: src/categorize-inbox/components/categorize-inbox-move-to-cash-chip/categorize-inbox-move-to-cash-chip.tsx
-msgid "{0, plural, one {Move # withdrawal to cash} other {Move # withdrawals to cash}}"
-msgstr "{0, plural, one {Move # withdrawal to cash} other {Move # withdrawals to cash}}"
 
 #: src/onboarding/hook/use-onboarding-file-state.hook.ts
 msgid "{accountCount, plural, one {# account} other {# accounts}}"
@@ -87,13 +96,13 @@ msgstr "{availableCount, plural, one {# column available} other {# columns avail
 msgid "{categoriesCount, plural, one {# category} other {# categories}}"
 msgstr "{categoriesCount, plural, one {# category} other {# categories}}"
 
-#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
+#: src/categorize-inbox/components/categorize-inbox-category-provider/categorize-inbox-category-provider.tsx
 msgid "{categorizedCount, plural, one {# categorized this session} other {# categorized this session}}"
 msgstr "{categorizedCount, plural, one {# categorized this session} other {# categorized this session}}"
 
-#: src/categorize-inbox/components/categorize-inbox-progress/categorize-inbox-progress.tsx
-msgid "{categorizedCount, plural, one {# done} other {# done}}"
-msgstr "{categorizedCount, plural, one {# done} other {# done}}"
+#: src/categorize-inbox/components/categorize-inbox-pile-legend/categorize-inbox-pile-legend.tsx
+msgid "{categorizedCount} sorted"
+msgstr "{categorizedCount} sorted"
 
 #: src/budget/components/budget-period-recap-card/budget-period-recap-card.tsx
 msgid "{categoryCount, plural, one {On budget in {onBudgetCategoryCount} of # category} other {On budget in {onBudgetCategoryCount} of # categories}}"
@@ -142,6 +151,10 @@ msgstr "{count, plural, one {This category has # transaction. Select another cat
 #: src/tag/hooks/use-delete-tag.hook.ts
 msgid "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
 msgstr "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
+
+#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
+msgid "{count} payments with exactly this title."
+msgstr "{count} payments with exactly this title."
 
 #: src/budget/components/budget-upcoming-charge-row/budget-upcoming-charge-row.tsx
 msgid "{dateLabel}, {kindLabel}"
@@ -192,6 +205,10 @@ msgstr "{duplicateTransactionCount, plural, one {# skipped} other {# skipped}}"
 #: src/settings/components/your-data-card/your-data-card.tsx
 msgid "{fileSize} · no Budgie servers"
 msgstr "{fileSize} · no Budgie servers"
+
+#: src/categorize-inbox/components/categorize-inbox-group-panel/categorize-inbox-group-panel.tsx
+msgid "{firstMonth} to {lastMonth}"
+msgstr "{firstMonth} to {lastMonth}"
 
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
 msgid "{foldedDriverCount, plural, one {Other (# category)} other {Other (# categories)}}"
@@ -264,6 +281,18 @@ msgstr "{gapAmount} under"
 #: src/@generic/hook/use-format-file-size.hook.ts
 msgid "{gigabytes} GB"
 msgstr "{gigabytes} GB"
+
+#: src/categorize-inbox/components/categorize-inbox-one-offs-list/categorize-inbox-one-offs-list.tsx
+msgid "{groupCount} groups, {paymentCount} payments"
+msgstr "{groupCount} groups, {paymentCount} payments"
+
+#: src/categorize-inbox/components/categorize-inbox-group-choose-payments-option/categorize-inbox-group-choose-payments-option.tsx
+msgid "{included} of {total}"
+msgstr "{included} of {total}"
+
+#: src/categorize-inbox/components/categorize-inbox-payments-screen/categorize-inbox-payments-screen.tsx
+msgid "{includedCount} of {rowCount} selected"
+msgstr "{includedCount} of {rowCount} selected"
 
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "{loadedDays}/{totalDays} days"
@@ -343,6 +372,14 @@ msgstr "{paidCount} of {installmentCount} paid"
 msgid "{parsedTransactionCount, plural, one {# transaction found} other {# transactions found}}"
 msgstr "{parsedTransactionCount, plural, one {# transaction found} other {# transactions found}}"
 
+#: src/categorize-inbox/components/categorize-inbox-transfer-screen/categorize-inbox-transfer-screen.tsx
+msgid "{paymentCount} payments become transfers and leave your expenses."
+msgstr "{paymentCount} payments become transfers and leave your expenses."
+
+#: src/categorize-inbox/components/categorize-inbox-transfer-screen/categorize-inbox-transfer-screen.tsx
+msgid "{paymentCount} payments become transfers and leave your income."
+msgstr "{paymentCount} payments become transfers and leave your income."
+
 #: src/budget/hooks/use-budget-limit-accessibility.hook.ts
 msgid "{percent}% used"
 msgstr "{percent}% used"
@@ -359,28 +396,35 @@ msgstr "{percentage}% of income"
 msgid "{periodLabel}, spent {spentAmount} of {limitAmount}"
 msgstr "{periodLabel}, spent {spentAmount} of {limitAmount}"
 
+#: src/categorize-inbox/components/categorize-inbox-group-position/categorize-inbox-group-position.tsx
+msgid "{position} of {total}"
+msgstr "{position} of {total}"
+
+#: src/categorize-inbox/components/categorize-inbox-pile-legend/categorize-inbox-pile-legend.tsx
+msgid "{readyCount} ready"
+msgstr "{readyCount} ready"
+
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "{remaining} GB one-time download"
 msgstr "{remaining} GB one-time download"
-
-#: src/categorize-inbox/components/categorize-inbox-progress/categorize-inbox-progress.tsx
-msgid "{remainingCount, plural, one {# left} other {# left}}"
-msgstr "{remainingCount, plural, one {# left} other {# left}}"
 
 #: src/settings/hooks/use-sync-repairs-action.hook.ts
 msgid "{repairedTransactionCount, plural, one {# sync item repaired} other {# sync items repaired}}"
 msgstr "{repairedTransactionCount, plural, one {# sync item repaired} other {# sync items repaired}}"
 
-#: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
 #: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
 msgid "{rowCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{rowCount, plural, one {# transaction} other {# transactions}}"
 
-#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
+#: src/categorize-inbox/components/categorize-inbox-category-provider/categorize-inbox-category-provider.tsx
 msgid "{rowCount, plural, one {Categorized # transaction} other {Categorized # transactions}}"
 msgstr "{rowCount, plural, one {Categorized # transaction} other {Categorized # transactions}}"
 
-#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
+#: src/categorize-inbox/components/categorize-inbox-accept-all-button/categorize-inbox-accept-all-button.tsx
+msgid "{rowCount, plural, one {File # ready payment} other {File # ready payments}}"
+msgstr "{rowCount, plural, one {File # ready payment} other {File # ready payments}}"
+
+#: src/categorize-inbox/components/categorize-inbox-tag-provider/categorize-inbox-tag-provider.tsx
 msgid "{rowCount, plural, one {Tagged # transaction} other {Tagged # transactions}}"
 msgstr "{rowCount, plural, one {Tagged # transaction} other {Tagged # transactions}}"
 
@@ -407,10 +451,6 @@ msgstr "{selectedInGroupCount} of {accountsCount} selected"
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "{similarCount, plural, one {# similar transaction} other {# similar transactions}}"
 msgstr "{similarCount, plural, one {# similar transaction} other {# similar transactions}}"
-
-#: src/categorize-inbox/components/categorize-inbox-cluster-meta/categorize-inbox-cluster-meta.tsx
-msgid "{skippedCount, plural, one {# skipped} other {# skipped}}"
-msgstr "{skippedCount, plural, one {# skipped} other {# skipped}}"
 
 #: src/ai/constant/ai-umbrella-status-atom.constant.ts
 msgid "{source} error · {message}"
@@ -440,7 +480,7 @@ msgstr "{statusLabel} · {downloaded} of {total} GB"
 msgid "{statusLabel}, {daysLeftLabel}."
 msgstr "{statusLabel}, {daysLeftLabel}."
 
-#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
+#: src/categorize-inbox/components/categorize-inbox-tag-provider/categorize-inbox-tag-provider.tsx
 msgid "{taggedCount, plural, one {# tagged this session} other {# tagged this session}}"
 msgstr "{taggedCount, plural, one {# tagged this session} other {# tagged this session}}"
 
@@ -480,6 +520,10 @@ msgstr "{totalSize} GB"
 msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{transactionCount, plural, one {# transaction} other {# transactions}}"
 
+#: src/categorize-inbox/components/categorize-inbox-transfer-undo/categorize-inbox-transfer-undo.tsx
+msgid "{transferCount} now transfers"
+msgstr "{transferCount} now transfers"
+
 #: src/receipt/hook/use-receipt-scan.hook.ts
 msgid "{unreadableCount, plural, one {Couldn't read # receipt} other {Couldn't read # receipts}}"
 msgstr "{unreadableCount, plural, one {Couldn't read # receipt} other {Couldn't read # receipts}}"
@@ -510,6 +554,10 @@ msgstr "+{hiddenCategoryCount} more"
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "<"
 msgstr "<"
+
+#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
+msgid "<0>Cash from an ATM.</0> Move it to your cash wallet or mark it tracked."
+msgstr "<0>Cash from an ATM.</0> Move it to your cash wallet or mark it tracked."
 
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid ">"
@@ -571,6 +619,14 @@ msgstr "A rule with the same conditions already exists."
 #: src/app/(tabs)/settings/index.tsx
 msgid "About"
 msgstr "About"
+
+#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
+msgid "About {rate} a day, every one under {maxAmountLabel}. <0>Looks like a jar top-up.</0>"
+msgstr "About {rate} a day, every one under {maxAmountLabel}. <0>Looks like a jar top-up.</0>"
+
+#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
+msgid "About {rate} a week, every one under {maxAmountLabel}. <0>Looks like a jar top-up.</0>"
+msgstr "About {rate} a week, every one under {maxAmountLabel}. <0>Looks like a jar top-up.</0>"
 
 #: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
 msgid "About 12 minutes"
@@ -743,7 +799,7 @@ msgstr "Add item"
 msgid "Add Tag"
 msgstr "Add Tag"
 
-#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
+#: src/categorize-inbox/components/categorize-inbox-tag-provider/categorize-inbox-tag-provider.tsx
 msgid "Add tags"
 msgstr "Add tags"
 
@@ -813,6 +869,10 @@ msgstr "AI-powered budgeting app with complete privacy. All data processing happ
 msgid "All"
 msgstr "All"
 
+#: src/categorize-inbox/components/categorize-inbox-group-choose-payments-option/categorize-inbox-group-choose-payments-option.tsx
+msgid "All {total}"
+msgstr "All {total}"
+
 #: src/app/(tabs)/settings/category-icons.tsx
 msgid "All categories have icons"
 msgstr "All categories have icons"
@@ -863,9 +923,17 @@ msgstr "Already scanned"
 msgid "Already syncing"
 msgstr "Already syncing"
 
-#: src/categorize-inbox/components/categorize-inbox-already-tracked-chip/categorize-inbox-already-tracked-chip.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-already-tracked-option/categorize-inbox-group-already-tracked-option.tsx
 msgid "Already tracked"
 msgstr "Already tracked"
+
+#: src/categorize-inbox/components/categorize-inbox-transfer-rule-switch/categorize-inbox-transfer-rule-switch.tsx
+msgid "Also for new “{displayTitle}” payments"
+msgstr "Also for new “{displayTitle}” payments"
+
+#: src/categorize-inbox/components/categorize-inbox-transfer-rule-switch/categorize-inbox-transfer-rule-switch.tsx
+msgid "Also for new «{jarName}» payments"
+msgstr "Also for new «{jarName}» payments"
 
 #: src/app/(tabs)/settings/import.tsx
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
@@ -973,6 +1041,10 @@ msgstr "Are you sure you want to delete this rule?"
 msgid "Are you sure?"
 msgstr "Are you sure?"
 
+#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
+msgid "Arrives once a month."
+msgstr "Arrives once a month."
+
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Attach debt"
@@ -1001,6 +1073,10 @@ msgstr "Available Columns"
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "Available once the import finishes"
 msgstr "Available once the import finishes"
+
+#: src/categorize-inbox/components/categorize-inbox-group-stats/categorize-inbox-group-stats.tsx
+msgid "average"
+msgstr "average"
 
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "Average"
@@ -1071,6 +1147,14 @@ msgstr "Based on {monthsUsed} months"
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "Based on your recent spending"
 msgstr "Based on your recent spending"
+
+#: src/categorize-inbox/components/categorize-inbox-group-move-to-cash-option/categorize-inbox-group-move-to-cash-option.tsx
+msgid "Becomes a transfer to your cash wallet"
+msgstr "Becomes a transfer to your cash wallet"
+
+#: src/categorize-inbox/components/categorize-inbox-group-label-option/categorize-inbox-group-label-option.tsx
+msgid "Best match"
+msgstr "Best match"
 
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "between"
@@ -1290,7 +1374,7 @@ msgstr "Carry savings"
 msgid "Cash"
 msgstr "Cash"
 
-#: src/categorize-inbox/components/categorize-inbox-section-title/categorize-inbox-section-title.tsx
+#: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
 msgid "Cash withdrawals"
 msgstr "Cash withdrawals"
 
@@ -1318,11 +1402,11 @@ msgstr "Categories, tags and voice notes are handled on this phone."
 msgid "Categorise imports automatically"
 msgstr "Categorise imports automatically"
 
-#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
+#: src/categorize-inbox/components/categorize-inbox-category-provider/categorize-inbox-category-provider.tsx
 msgid "Categorize"
 msgstr "Categorize"
 
-#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
+#: src/categorize-inbox/components/categorize-inbox-category-provider/categorize-inbox-category-provider.tsx
 msgid "Categorize as {categoryTitle}"
 msgstr "Categorize as {categoryTitle}"
 
@@ -1411,6 +1495,10 @@ msgstr "Choose and confirm a PIN"
 msgid "Choose features and free space from unused downloads"
 msgstr "Choose features and free space from unused downloads"
 
+#: src/categorize-inbox/components/categorize-inbox-payments-screen/categorize-inbox-payments-screen.tsx
+msgid "Choose payments"
+msgstr "Choose payments"
+
 #: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
 msgid "Choose what goes inside"
 msgstr "Choose what goes inside"
@@ -1418,6 +1506,10 @@ msgstr "Choose what goes inside"
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Choose what to track. Balances and history come straight from the bank."
 msgstr "Choose what to track. Balances and history come straight from the bank."
+
+#: src/categorize-inbox/components/categorize-inbox-group-choose-payments-option/categorize-inbox-group-choose-payments-option.tsx
+msgid "Choose which payments"
+msgstr "Choose which payments"
 
 #: src/@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle.tsx
 msgid "Clear"
@@ -1586,8 +1678,6 @@ msgid "Convert to Refund?"
 msgstr "Convert to Refund?"
 
 #: src/app/convert-to-transfer.tsx
-#: src/categorize-inbox/components/categorize-inbox-cluster-menu/categorize-inbox-cluster-menu.tsx
-#: src/categorize-inbox/components/categorize-inbox-row-menu/categorize-inbox-row-menu.tsx
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 #: src/transaction/components/transaction-list-convert-to-transfer-menu-item/transaction-list-convert-to-transfer-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
@@ -1628,7 +1718,7 @@ msgstr "Could not archive account"
 msgid "Could not attach debt"
 msgstr "Could not attach debt"
 
-#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
+#: src/categorize-inbox/components/categorize-inbox-category-provider/categorize-inbox-category-provider.tsx
 msgid "Could not categorize transactions"
 msgstr "Could not categorize transactions"
 
@@ -1652,7 +1742,7 @@ msgstr "Could not consolidate matches"
 msgid "Could not convert to refund"
 msgstr "Could not convert to refund"
 
-#: src/categorize-inbox/hook/use-categorize-inbox-convert-to-transfer.hook.ts
+#: src/categorize-inbox/hook/use-categorize-inbox-commit-transfer.hook.ts
 msgid "Could not convert to transfers"
 msgstr "Could not convert to transfers"
 
@@ -1849,8 +1939,8 @@ msgstr "Could not set up sync"
 msgid "Could not start syncing"
 msgstr "Could not start syncing"
 
-#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
-#: src/categorize-inbox/hook/use-categorize-inbox-actions.hook.ts
+#: src/categorize-inbox/components/categorize-inbox-tag-provider/categorize-inbox-tag-provider.tsx
+#: src/categorize-inbox/hook/use-categorize-inbox-last-write.hook.ts
 msgid "Could not tag transactions"
 msgstr "Could not tag transactions"
 
@@ -2566,11 +2656,11 @@ msgstr "Estimated from your past transactions using your current limits."
 msgid "Every tap, recorded"
 msgstr "Every tap, recorded"
 
-#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
+#: src/categorize-inbox/components/categorize-inbox-category-provider/categorize-inbox-category-provider.tsx
 msgid "Every transaction has a category."
 msgstr "Every transaction has a category."
 
-#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
+#: src/categorize-inbox/components/categorize-inbox-tag-provider/categorize-inbox-tag-provider.tsx
 msgid "Every transaction has a tag."
 msgstr "Every transaction has a tag."
 
@@ -2865,10 +2955,6 @@ msgstr "Hidden from Home"
 msgid "Hide in screenshots"
 msgstr "Hide in screenshots"
 
-#: src/categorize-inbox/components/categorize-inbox-cluster-meta/categorize-inbox-cluster-meta.tsx
-msgid "Hide transactions for {displayTitle}"
-msgstr "Hide transactions for {displayTitle}"
-
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Historical valuation failed"
 msgstr "Historical valuation failed"
@@ -3110,10 +3196,6 @@ msgstr "Jars"
 msgid "Keep"
 msgstr "Keep"
 
-#: src/categorize-inbox/components/categorize-inbox-already-tracked-chip/categorize-inbox-already-tracked-chip.tsx
-msgid "Keep as already tracked cash, not spending"
-msgstr "Keep as already tracked cash, not spending"
-
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Keep only \"Enable Reading\" on — never allow trading or withdrawals"
 msgstr "Keep only \"Enable Reading\" on — never allow trading or withdrawals"
@@ -3141,6 +3223,10 @@ msgstr "Key updated"
 #: src/settings/components/language-selector/language-selector.tsx
 msgid "Language"
 msgstr "Language"
+
+#: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
+msgid "Largest first"
+msgstr "Largest first"
 
 #: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
 msgid "Last 1 month"
@@ -3209,6 +3295,14 @@ msgstr "Learning up to date"
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "Leave it empty for now"
 msgstr "Leave it empty for now"
+
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+msgid "Leaves your expenses"
+msgstr "Leaves your expenses"
+
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+msgid "Leaves your income"
+msgstr "Leaves your income"
 
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "left"
@@ -3433,6 +3527,10 @@ msgstr "Models and downloads"
 msgid "Models download once, best on Wi-Fi"
 msgstr "Models download once, best on Wi-Fi"
 
+#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
+msgid "Money coming back from your «{jar}» jar."
+msgstr "Money coming back from your «{jar}» jar."
+
 #: src/runway/component/runway-history-legend/runway-history-legend.tsx
 msgid "Money in"
 msgstr "Money in"
@@ -3505,21 +3603,26 @@ msgstr "Monthly Total"
 msgid "months left"
 msgstr "months left"
 
-#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
+#: src/categorize-inbox/components/categorize-inbox-category-provider/categorize-inbox-category-provider.tsx
 msgid "More categories"
 msgstr "More categories"
 
-#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
+#: src/categorize-inbox/components/categorize-inbox-tag-provider/categorize-inbox-tag-provider.tsx
 msgid "More tags"
 msgstr "More tags"
 
-#: src/categorize-inbox/components/categorize-inbox-move-to-cash-chip/categorize-inbox-move-to-cash-chip.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-move-to-cash-option/categorize-inbox-group-move-to-cash-option.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-row-hint/categorize-inbox-group-row-hint.tsx
 msgid "Move to cash"
 msgstr "Move to cash"
 
-#: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
+#: src/categorize-inbox/components/categorize-inbox-moved-to-cash-undo/categorize-inbox-moved-to-cash-undo.tsx
 msgid "Moved to cash"
 msgstr "Moved to cash"
+
+#: src/categorize-inbox/components/categorize-inbox-transfer-accounts/categorize-inbox-transfer-accounts.tsx
+msgid "Name matches"
+msgstr "Name matches"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Navigate to Account → Statements"
@@ -3530,7 +3633,6 @@ msgid "Needs attention"
 msgstr "Needs attention"
 
 #: src/app/(tabs)/settings/apple-pay-capture.tsx
-#: src/categorize-inbox/components/categorize-inbox-section-title/categorize-inbox-section-title.tsx
 msgid "Needs review"
 msgstr "Needs review"
 
@@ -3577,6 +3679,10 @@ msgstr "New Transfer"
 #: src/installment-plan/component/installment-plan-next-payment/installment-plan-next-payment.tsx
 msgid "Next {formattedNextAmount} · {nextDate}"
 msgstr "Next {formattedNextAmount} · {nextDate}"
+
+#: src/categorize-inbox/components/categorize-inbox-group-next-button/categorize-inbox-group-next-button.tsx
+msgid "Next group"
+msgstr "Next group"
 
 #: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
 msgid "No account needed · Takes about a minute"
@@ -3903,10 +4009,6 @@ msgstr "One-off"
 msgid "One-off spike"
 msgstr "One-off spike"
 
-#: src/categorize-inbox/components/categorize-inbox-section-title/categorize-inbox-section-title.tsx
-msgid "One-offs"
-msgstr "One-offs"
-
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "one-time download"
 msgstr "one-time download"
@@ -4047,6 +4149,10 @@ msgstr "Original transaction"
 msgid "Other"
 msgstr "Other"
 
+#: src/categorize-inbox/components/categorize-inbox-transfer-accounts/categorize-inbox-transfer-accounts.tsx
+msgid "Other accounts"
+msgstr "Other accounts"
+
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "Other budget: {threshold}% spent"
 msgstr "Other budget: {threshold}% spent"
@@ -4151,6 +4257,10 @@ msgstr "Paused. {downloaded} of {total} GB is kept."
 msgid "Pay in parts"
 msgstr "Pay in parts"
 
+#: src/categorize-inbox/components/categorize-inbox-group-stats/categorize-inbox-group-stats.tsx
+msgid "payments"
+msgstr "payments"
+
 #: src/installment-plan/component/installment-plan-count-field/installment-plan-count-field.tsx
 msgid "Payments"
 msgstr "Payments"
@@ -4158,6 +4268,10 @@ msgstr "Payments"
 #: src/installment-plan/component/installment-timeline/installment-timeline.tsx
 msgid "Payments from {firstPaymentLabel} to {lastPaymentLabel}"
 msgstr "Payments from {firstPaymentLabel} to {lastPaymentLabel}"
+
+#: src/categorize-inbox/components/categorize-inbox-group-panel/categorize-inbox-group-panel.tsx
+msgid "Payments per month"
+msgstr "Payments per month"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "PDF statement"
@@ -4187,10 +4301,6 @@ msgstr "Phone lock only · {contents}"
 msgid "Phone lock only. Make a PIN to encrypt your data."
 msgstr "Phone lock only. Make a PIN to encrypt your data."
 
-#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
-msgid "Pick a category for this transaction"
-msgstr "Pick a category for this transaction"
-
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
 msgid "Pick a category to set a limit"
 msgstr "Pick a category to set a limit"
@@ -4198,10 +4308,6 @@ msgstr "Pick a category to set a limit"
 #: src/app/resync-window-picker.tsx
 msgid "Pick a window. Existing data is preserved."
 msgstr "Pick a window. Existing data is preserved."
-
-#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
-msgid "Pick tags for this transaction"
-msgstr "Pick tags for this transaction"
 
 #: src/settings/components/app-lock-row/app-lock-row.tsx
 msgid "PIN and {biometricLabel}. Encrypts your data."
@@ -4359,9 +4465,9 @@ msgstr "Reading receipts · {current} of {total}"
 msgid "Ready"
 msgstr "Ready"
 
-#: src/categorize-inbox/components/categorize-inbox-section-title/categorize-inbox-section-title.tsx
-msgid "Ready to accept"
-msgstr "Ready to accept"
+#: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
+msgid "Ready to file"
+msgstr "Ready to file"
 
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
 msgid "Rebuild"
@@ -4668,6 +4774,10 @@ msgstr "Save it"
 msgid "Save it to Files or another app."
 msgstr "Save it to Files or another app."
 
+#: src/categorize-inbox/components/categorize-inbox-transfer-rule-switch/categorize-inbox-transfer-rule-switch.tsx
+msgid "Saved as a rule"
+msgstr "Saved as a rule"
+
 #: src/account/constant/account-type.constant.ts
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "Savings"
@@ -4712,6 +4822,7 @@ msgstr "Sealed. Only your PIN opens this file."
 
 #: src/app/account-selector.tsx
 #: src/app/transaction-account-filter.tsx
+#: src/categorize-inbox/components/categorize-inbox-transfer-screen/categorize-inbox-transfer-screen.tsx
 msgid "Search accounts..."
 msgstr "Search accounts..."
 
@@ -4827,7 +4938,6 @@ msgstr "Select all"
 msgid "Select all categories"
 msgstr "Select all categories"
 
-#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
 #: src/transaction/components/split-entry-row/split-entry-row.tsx
 msgid "Select category"
 msgstr "Select category"
@@ -4871,10 +4981,6 @@ msgstr "Select source"
 #: src/rule/components/rule-action-tag-selector/rule-action-tag-selector.tsx
 msgid "Select Tag"
 msgstr "Select Tag"
-
-#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
-msgid "Select tags"
-msgstr "Select tags"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Select the downloaded PDF file"
@@ -4991,10 +5097,6 @@ msgstr "Show selected range"
 msgid "Show this account on the main page"
 msgstr "Show this account on the main page"
 
-#: src/categorize-inbox/components/categorize-inbox-cluster-meta/categorize-inbox-cluster-meta.tsx
-msgid "Show transactions for {displayTitle}"
-msgstr "Show transactions for {displayTitle}"
-
 #: src/app/transaction-amount-filter.tsx
 msgid "Show transactions when any main amount is inside this range, regardless of currency."
 msgstr "Show transactions when any main amount is inside this range, regardless of currency."
@@ -5006,6 +5108,11 @@ msgstr "Similar transactions"
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Skip"
 msgstr "Skip"
+
+#: src/categorize-inbox/components/categorize-inbox-one-offs-list/categorize-inbox-one-offs-list.tsx
+#: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
+msgid "Smaller groups"
+msgstr "Smaller groups"
 
 #: src/ai/component/ai-settings-section/ai-settings-section.tsx
 msgid "Smart suggestions"
@@ -5232,7 +5339,7 @@ msgstr "Tag → {tagTitle}"
 msgid "Tag a transaction"
 msgstr "Tag a transaction"
 
-#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
+#: src/categorize-inbox/components/categorize-inbox-tag-provider/categorize-inbox-tag-provider.tsx
 msgid "Tag as {tagTitle}"
 msgstr "Tag as {tagTitle}"
 
@@ -5268,10 +5375,6 @@ msgstr "Tap \"Get API Key\" above and sign in to Binance"
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Tap \"Get API Token\" above to open api.monobank.ua"
 msgstr "Tap \"Get API Token\" above to open api.monobank.ua"
-
-#: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
-msgid "Tap a suggestion to accept it"
-msgstr "Tap a suggestion to accept it"
 
 #: src/app/voice-review.tsx
 msgid "Tap re-record to try again"
@@ -5505,6 +5608,14 @@ msgstr "to"
 msgid "To"
 msgstr "To"
 
+#: src/categorize-inbox/components/categorize-inbox-transfer-undo/categorize-inbox-transfer-undo.tsx
+msgid "To {accountTitle}"
+msgstr "To {accountTitle}"
+
+#: src/categorize-inbox/components/categorize-inbox-transfer-undo/categorize-inbox-transfer-undo.tsx
+msgid "To {accountTitle}, rule saved"
+msgstr "To {accountTitle}, rule saved"
+
 #: src/transaction/components/transaction-amount-filter/transaction-amount-filter.tsx
 msgid "To {toText}"
 msgstr "To {toText}"
@@ -5534,6 +5645,10 @@ msgstr "To repay"
 msgid "to sort"
 msgstr "to sort"
 
+#: src/categorize-inbox/components/categorize-inbox-hero/categorize-inbox-hero.tsx
+msgid "to sort, worth {worthText}"
+msgstr "to sort, worth {worthText}"
+
 #: src/@generic/constant/date-period.constant.ts
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
 #: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
@@ -5555,6 +5670,10 @@ msgstr "Too early to forecast"
 #: src/auth/hook/use-pin-error.hook.ts
 msgid "Too many attempts. Try again in {time}"
 msgstr "Too many attempts. Try again in {time}"
+
+#: src/categorize-inbox/components/categorize-inbox-group-stats/categorize-inbox-group-stats.tsx
+msgid "total"
+msgstr "total"
 
 #: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
@@ -5633,6 +5752,7 @@ msgstr "Transactions synced"
 msgid "Transcription failed"
 msgstr "Transcription failed"
 
+#: src/categorize-inbox/components/categorize-inbox-group-row-hint/categorize-inbox-group-row-hint.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/constant/transaction-type.constant.ts
 #: src/widget/service/widget-snapshot-builder.service.ts
@@ -5651,9 +5771,21 @@ msgstr "Transfer Account"
 msgid "Transfer From Account"
 msgstr "Transfer From Account"
 
+#: src/categorize-inbox/components/categorize-inbox-transfer-screen/categorize-inbox-transfer-screen.tsx
+msgid "Transfer to"
+msgstr "Transfer to"
+
+#: src/categorize-inbox/components/categorize-inbox-group-learned-transfer-option/categorize-inbox-group-learned-transfer-option.tsx
+msgid "Transfer to {title}"
+msgstr "Transfer to {title}"
+
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Transfer To Account"
 msgstr "Transfer To Account"
+
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+msgid "Transfer to an account"
+msgstr "Transfer to an account"
 
 #: src/ai/component/ai-settings-section/ai-settings-section.tsx
 msgid "Translate categories and tags"
@@ -5951,6 +6083,10 @@ msgstr "We’re still importing transaction history. Wait for these accounts to 
 msgid "What goes inside?"
 msgstr "What goes inside?"
 
+#: src/categorize-inbox/components/categorize-inbox-group-options/categorize-inbox-group-options.tsx
+msgid "What is it?"
+msgstr "What is it?"
+
 #: src/runway/component/runway-drivers/runway-drivers.tsx
 msgid "What's driving it"
 msgstr "What's driving it"
@@ -6088,6 +6224,10 @@ msgstr "You're on Wi-Fi"
 msgid "You're on Wi-Fi."
 msgstr "You're on Wi-Fi."
 
+#: src/categorize-inbox/components/categorize-inbox-transfer-accounts/categorize-inbox-transfer-accounts.tsx
+msgid "Your accounts"
+msgstr "Your accounts"
+
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Your accounts keep syncing with the new key."
 msgstr "Your accounts keep syncing with the new key."
@@ -6103,6 +6243,10 @@ msgstr "Your balance is already below zero."
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "Your budget is ahead of pace"
 msgstr "Your budget is ahead of pace"
+
+#: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
+msgid "Your call"
+msgstr "Your call"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Your data"

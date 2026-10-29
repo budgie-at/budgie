@@ -9,15 +9,22 @@ import { seed, TestLayer } from './ledger-test-layer';
 const operatedAt = new Date(2026, 0, 15, 12, 0, 0);
 const amount = convertToMicroUnits(25);
 
+const seedExpenseWithTarget = (targetType: AccountTypeEnum) =>
+    Effect.gen(function* () {
+        const testSeedService = yield* seed;
+        const source = yield* testSeedService.account({ type: AccountTypeEnum.BANK });
+        const target = yield* testSeedService.account({ type: targetType });
+        const expense = yield* testSeedService.manualExpense({ accountId: source.id, amount, operatedAt });
+
+        return { testSeedService, source, target, expense };
+    });
+
 describe('TransactionTransferService account conversion', () => {
     it.effect('converts an expense into a transfer to the picked account', () =>
         Effect.gen(function* () {
             const transactionTransferService = yield* TransactionTransferService;
             const transactionRepository = yield* TransactionRepository;
-            const testSeedService = yield* seed;
-            const source = yield* testSeedService.account({ type: AccountTypeEnum.BANK });
-            const target = yield* testSeedService.account({ type: AccountTypeEnum.BANK });
-            const expense = yield* testSeedService.manualExpense({ accountId: source.id, amount, operatedAt });
+            const { source, target, expense } = yield* seedExpenseWithTarget(AccountTypeEnum.BANK);
 
             const converted = yield* transactionTransferService.convertToTransferAccount(expense.id, target.id);
             const transaction = yield* transactionRepository.getByIdWithEntries(expense.id);
@@ -33,10 +40,7 @@ describe('TransactionTransferService account conversion', () => {
         Effect.gen(function* () {
             const transactionTransferService = yield* TransactionTransferService;
             const transactionRepository = yield* TransactionRepository;
-            const testSeedService = yield* seed;
-            const source = yield* testSeedService.account({ type: AccountTypeEnum.BANK });
-            const debt = yield* testSeedService.account({ type: AccountTypeEnum.DEBT });
-            const expense = yield* testSeedService.manualExpense({ accountId: source.id, amount, operatedAt });
+            const { target: debt, expense } = yield* seedExpenseWithTarget(AccountTypeEnum.DEBT);
 
             const converted = yield* transactionTransferService.convertToTransferAccount(expense.id, debt.id);
             const transaction = yield* transactionRepository.getByIdWithEntries(expense.id);
@@ -49,10 +53,7 @@ describe('TransactionTransferService account conversion', () => {
     it.effect('returns only the ids that were converted', () =>
         Effect.gen(function* () {
             const transactionTransferService = yield* TransactionTransferService;
-            const testSeedService = yield* seed;
-            const source = yield* testSeedService.account({ type: AccountTypeEnum.BANK });
-            const target = yield* testSeedService.account({ type: AccountTypeEnum.BANK });
-            const expense = yield* testSeedService.manualExpense({ accountId: source.id, amount, operatedAt });
+            const { testSeedService, source, target, expense } = yield* seedExpenseWithTarget(AccountTypeEnum.BANK);
             const income = yield* testSeedService.manualExpense({
                 accountId: source.id,
                 amount,

@@ -180,6 +180,18 @@ describe('categorization/inbox-tag', () => {
             expect(clusters[0].rows).toHaveLength(2);
         });
 
+        it('orders the review section by row count descending regardless of amount', () => {
+            const clusters = buildClusters([
+                { ...buildRow(1, TransactionTypeEnum.EXPENSE, 'Small Shop'), amount: 900_000_000 },
+                { ...buildRow(2, TransactionTypeEnum.EXPENSE, 'Small Shop'), amount: 900_000_000 },
+                buildRow(3, TransactionTypeEnum.EXPENSE, 'Big Shop'),
+                buildRow(4, TransactionTypeEnum.EXPENSE, 'Big Shop'),
+                buildRow(5, TransactionTypeEnum.EXPENSE, 'Big Shop')
+            ]);
+
+            expect(clusters.map(cluster => cluster.displayTitle)).toEqual(['Big Shop', 'Small Shop']);
+        });
+
         it('separates identical titles with a different mcc or iban', () => {
             const clusters = buildClusters([
                 { ...buildRow(1, TransactionTypeEnum.EXPENSE, 'Blue Bottle'), mcc: '5812' },

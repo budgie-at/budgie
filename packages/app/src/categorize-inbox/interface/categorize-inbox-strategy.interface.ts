@@ -10,9 +10,7 @@ export interface CategorizeInboxStrategyInterface {
     readonly labelsById: ReadonlyMap<number, CategorizeInboxLabelInterface>;
     readonly pageTitle: string;
     readonly emptyDescription: string;
-    readonly selectLabel: string;
     readonly moreLabels: string;
-    readonly pickRowLabel: string;
     readonly writeFailed: string;
     readonly assignAs: (labelTitle: string) => string;
     readonly assignedCount: (count: number) => string;

@@ -2,7 +2,6 @@ import type { CategorizeInboxRowInterface, CategorizeInboxSessionInterface } fro
 
 export interface CategorizeInboxStateInterface {
     readonly session: CategorizeInboxSessionInterface;
-    readonly expandedClusterKey: string | null;
     readonly rows: CategorizeInboxRowInterface[];
     readonly hidden: Set<number>;
     readonly excluded: Set<number>;

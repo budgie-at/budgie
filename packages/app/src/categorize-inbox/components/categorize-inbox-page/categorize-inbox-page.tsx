@@ -4,17 +4,15 @@ import { ScreenChromeThemeProvider } from '../../../@generic/provider/screen-chr
 import { CategorizeInboxPageContent } from '../categorize-inbox-page-content/categorize-inbox-page-content';
 
 import type { AnalyticsTransactionsRouteParamsInterface } from '../../../transaction/interface/analytics-transactions-route-params.interface';
-import type { CategorizeInboxStrategyInterface } from '../../interface/categorize-inbox-strategy.interface';
 
 interface Props {
     readonly params: AnalyticsTransactionsRouteParamsInterface;
-    readonly strategy: CategorizeInboxStrategyInterface;
 }
 
-export const CategorizeInboxPage = ({ params, strategy }: Props) => (
+export const CategorizeInboxPage = ({ params }: Props) => (
     <ScreenChromeThemeProvider>
         <BottomChromeInsetProvider>
-            <CategorizeInboxPageContent params={params} strategy={strategy} />
+            <CategorizeInboxPageContent params={params} />
         </BottomChromeInsetProvider>
     </ScreenChromeThemeProvider>
 );

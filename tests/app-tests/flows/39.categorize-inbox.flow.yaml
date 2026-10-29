@@ -20,11 +20,9 @@ appId: ${APP_ID}
           id: 'CategorizeInboxPage.ShowListButton'
       timeout: 5000
 
-- assertVisible: '3 left.*'
+- assertVisible: '3 to sort.*'
 - assertVisible:
-      id: 'CategorizeInboxPanel.Progress'
-- assertVisible:
-      id: 'CategorizeInboxClusterCard.EXPENSE\|e2e confident coffee\|\|'
+      id: 'CategorizeInboxGroupRow.EXPENSE\|e2e confident coffee\|\|'
 - assertVisible:
       id: 'CategorizeInboxAcceptAllButton.Button'
 
@@ -34,24 +32,24 @@ appId: ${APP_ID}
       visible:
           id: 'CategorizeInboxUndoBar'
       timeout: 5000
-- assertVisible: '1 left.*'
-- assertVisible: '1 left · 2 done'
+- assertVisible: '1 to sort.*'
+- assertVisible: '2 sorted'
 - assertNotVisible:
-      id: 'CategorizeInboxClusterCard.EXPENSE\|e2e confident coffee\|\|'
+      id: 'CategorizeInboxGroupRow.EXPENSE\|e2e confident coffee\|\|'
 
 - tapOn:
       id: 'CategorizeInboxUndoBar.UndoButton'
-- assertVisible: '3 left.*'
+- assertVisible: '3 to sort.*'
 - assertVisible:
-      id: 'CategorizeInboxClusterCard.EXPENSE\|e2e confident coffee\|\|'
+      id: 'CategorizeInboxGroupRow.EXPENSE\|e2e confident coffee\|\|'
 - assertVisible:
       id: 'CategorizeInboxAcceptAllButton.Button'
 
 - tapOn:
-      id: 'CategorizeInboxOneOffRow.Open.EXPENSE\|e2e categorize filler\|\|'
+      id: 'CategorizeInboxOneOffsLink'
 - extendedWaitUntil:
       visible:
-          id: 'TransactionInfo.Page'
+          id: 'CategorizeInboxGroupRow.EXPENSE\|e2e categorize filler\|\|'
       timeout: 5000
 - tapOn:
       id: 'PageHeader.BackButton'
@@ -61,7 +59,7 @@ appId: ${APP_ID}
       timeout: 5000
 
 - tapOn:
-      id: 'CategorizeInboxClusterCard.Toggle.EXPENSE\|e2e confident coffee\|\|'
+      id: 'CategorizeInboxGroupRow.EXPENSE\|e2e confident coffee\|\|'
 - extendedWaitUntil:
       visible:
           id: 'CategorizeInboxClusterRow.Open.3'
@@ -76,14 +74,14 @@ appId: ${APP_ID}
       id: 'PageHeader.BackButton'
 - extendedWaitUntil:
       visible:
-          id: 'CategorizeInboxPage.ShowListButton'
+          id: 'CategorizeInboxGroupScreen.Option.Restaurants & Cafes'
       timeout: 5000
 
 - tapOn:
-      id: 'CategorizeInboxSuggestionChip.EXPENSE\|e2e confident coffee\|\|.0'
-- assertVisible: '1 left.*'
+      id: 'CategorizeInboxGroupScreen.Option.Restaurants & Cafes'
+- assertVisible: '1 to sort.*'
 - assertNotVisible:
-      id: 'CategorizeInboxClusterCard.EXPENSE\|e2e confident coffee\|\|'
+      id: 'CategorizeInboxGroupRow.EXPENSE\|e2e confident coffee\|\|'
 
 - tapOn:
       id: 'CategorizeInboxUndoBar.FollowUpButton'
@@ -138,7 +136,7 @@ appId: ${APP_ID}
       visible:
           id: 'CategorizeInboxPage.ShowListButton'
       timeout: 5000
-- assertVisible: '1 left.*'
+- assertVisible: '1 to sort.*'
 
 - tapOn:
       id: 'PageHeader.BackButton'
@@ -161,7 +159,7 @@ appId: ${APP_ID}
       visible:
           id: 'CategorizeInboxPage.ShowListButton'
       timeout: 5000
-- assertVisible: '1 left.*'
+- assertVisible: '1 to sort.*'
 - tapOn:
       id: 'PageHeader.BackButton'
 - extendedWaitUntil:
@@ -177,11 +175,11 @@ appId: ${APP_ID}
       visible:
           id: 'CategorizeInboxPage.ShowListButton'
       timeout: 5000
-- assertVisible: '3 left.*'
+- assertVisible: '3 to sort.*'
 - assertVisible:
-      id: 'CategorizeInboxClusterCard.EXPENSE\|e2e tagged grocer\|\|'
+      id: 'CategorizeInboxGroupRow.EXPENSE\|e2e tagged grocer\|\|'
 - assertNotVisible:
-      id: 'CategorizeInboxClusterCard.EXPENSE\|e2e confident coffee\|\|'
+      id: 'CategorizeInboxGroupRow.EXPENSE\|e2e confident coffee\|\|'
 
 - tapOn:
       id: 'CategorizeInboxAcceptAllButton.Button'
@@ -189,16 +187,18 @@ appId: ${APP_ID}
       visible:
           id: 'CategorizeInboxUndoBar'
       timeout: 5000
-- assertVisible: '1 left · 2 done'
+- assertVisible: '2 sorted'
 - assertNotVisible:
-      id: 'CategorizeInboxClusterCard.EXPENSE\|e2e tagged grocer\|\|'
+      id: 'CategorizeInboxGroupRow.EXPENSE\|e2e tagged grocer\|\|'
 
 - tapOn:
       id: 'CategorizeInboxUndoBar.UndoButton'
-- assertVisible: '3 left.*'
+- assertVisible: '3 to sort.*'
 - tapOn:
-      id: 'CategorizeInboxSuggestionChip.EXPENSE\|e2e tagged grocer\|\|.0'
-- assertVisible: '1 left.*'
+      id: 'CategorizeInboxGroupRow.EXPENSE\|e2e tagged grocer\|\|'
+- tapOn:
+      id: 'CategorizeInboxGroupScreen.Option.Groceries'
+- assertVisible: '1 to sort.*'
 
 - tapOn:
       id: 'CategorizeInboxUndoBar.RuleButton'

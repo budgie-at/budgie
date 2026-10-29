@@ -1,64 +1,53 @@
-import { UserIconNameEnum } from '@budgie/contracts';
-import { plural } from '@lingui/core/macro';
-import { Trans, useLingui } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
+import Animated, { FadeIn, FadeInDown, FadeOut, FadeOutDown } from 'react-native-reanimated';
 
 import { ScreenChromeFooter } from '@rnw-community/react-native-screen-chrome';
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
-import { Button } from '../../../@generic/component/button/button';
+import { ENTRANCE_EASING } from '../../../@generic/constant/entrance-motion.constant';
+import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
-import { CategorizeInboxProgress } from '../categorize-inbox-progress/categorize-inbox-progress';
+import { CategorizeInboxAcceptAllButton } from '../categorize-inbox-accept-all-button/categorize-inbox-accept-all-button';
+import { CategorizeInboxMovedToCashUndo } from '../categorize-inbox-moved-to-cash-undo/categorize-inbox-moved-to-cash-undo';
+import { CategorizeInboxTransferUndo } from '../categorize-inbox-transfer-undo/categorize-inbox-transfer-undo';
 import { CategorizeInboxUndoBar } from '../categorize-inbox-undo-bar/categorize-inbox-undo-bar';
-import { CategorizeInboxUndoLayout } from '../categorize-inbox-undo-layout/categorize-inbox-undo-layout';
 
 import { CategorizeInboxPanelSelector } from './categorize-inbox-panel.selector';
 
+const SLOT_DURATION = 220;
+const SLOT_REDUCED_DURATION = 150;
+const SLOT_DISTANCE = 8;
+const SLOT_ENTERING = FadeInDown.duration(SLOT_DURATION)
+    .easing(ENTRANCE_EASING)
+    .withInitialValues({ opacity: 0, transform: [{ translateY: SLOT_DISTANCE }] });
+const SLOT_EXITING = FadeOutDown.duration(SLOT_DURATION).easing(ENTRANCE_EASING);
+const SLOT_REDUCED_ENTERING = FadeIn.duration(SLOT_REDUCED_DURATION);
+const SLOT_REDUCED_EXITING = FadeOut.duration(SLOT_REDUCED_DURATION);
+
 export const CategorizeInboxPanel = () => {
-    const { t } = useLingui();
-    const { assign, acceptableAssignments, lastWrite, movedToCashTransactionIds, undoMoveToCash } = useCategorizeInboxContext();
+    const reducedMotion = useReducedMotion();
+    const { acceptableAssignments, lastWrite, movedToCashTransactionIds, pendingTransfer } = useCategorizeInboxContext();
 
-    const handleAcceptAllPress = (): void => void assign(acceptableAssignments);
-    const handleUndoMoveToCashPress = (): void => void undoMoveToCash(movedToCashTransactionIds);
+    const transferUndo = isDefined(pendingTransfer) ? <CategorizeInboxTransferUndo key="transfer-undo" /> : null;
+    const labelUndo = isDefined(lastWrite) ? <CategorizeInboxUndoBar key="label-undo" /> : null;
+    const movedToCashUndo = isNotEmptyArray(movedToCashTransactionIds) ? <CategorizeInboxMovedToCashUndo key="moved-to-cash-undo" /> : null;
+    const acceptAll = isNotEmptyArray(acceptableAssignments) ? <CategorizeInboxAcceptAllButton key="accept-all" /> : null;
+    const slot = transferUndo ?? labelUndo ?? movedToCashUndo ?? acceptAll;
+    const entering = reducedMotion ? SLOT_REDUCED_ENTERING : SLOT_ENTERING;
+    const exiting = reducedMotion ? SLOT_REDUCED_EXITING : SLOT_EXITING;
 
-    const rowCount = acceptableAssignments.reduce((total, assignment) => total + assignment.rows.length, 0);
-    const acceptAllText = [
-        t({ message: plural(acceptableAssignments.length, { one: 'Accept # suggestion', other: 'Accept # suggestions' }) }),
-        t({ message: plural(rowCount, { one: '# transaction', other: '# transactions' }) })
-    ].join(' · ');
-    const movedToCashDescription = t({
-        message: plural(movedToCashTransactionIds.length, { one: '# transaction', other: '# transactions' })
-    });
-    const movedToCashUndo = isNotEmptyArray(movedToCashTransactionIds) ? (
-        <CategorizeInboxUndoLayout
-            icon={UserIconNameEnum.Banknote}
-            title={t`Moved to cash`}
-            description={movedToCashDescription}
-            onUndo={handleUndoMoveToCashPress}
-        />
-    ) : null;
-    const labelUndo = isDefined(lastWrite) ? <CategorizeInboxUndoBar /> : null;
-    const acceptAll = isNotEmptyArray(acceptableAssignments) ? (
-        <Button
-            variant="cta"
-            size="md"
-            leftIcon={UserIconNameEnum.CheckCheck}
-            content={acceptAllText}
-            onPress={handleAcceptAllPress}
-            testID={CategorizeInboxPanelSelector.AcceptAllButton}
-        />
-    ) : (
-        <Text className="text-center text-sm font-medium text-secondary-foreground" numberOfLines={1}>
-            <Trans>Tap a suggestion to accept it</Trans>
-        </Text>
-    );
+    if (!isDefined(slot)) {
+        return null;
+    }
 
     return (
         <ScreenChromeFooter>
-            <View className="gap-y-xl px-5xl pb-md pt-xl" testID={CategorizeInboxPanelSelector.Panel}>
-                <CategorizeInboxProgress />
-
-                <View className="h-14 justify-center">{labelUndo ?? movedToCashUndo ?? acceptAll}</View>
+            <View className="px-5xl pb-md pt-xl" testID={CategorizeInboxPanelSelector.Panel}>
+                <View className="h-14">
+                    <Animated.View key={slot.key} entering={entering} exiting={exiting} className="absolute inset-0 justify-center">
+                        {slot}
+                    </Animated.View>
+                </View>
             </View>
         </ScreenChromeFooter>
     );

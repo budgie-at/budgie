@@ -22,10 +22,31 @@ msgstr "P2P-купівля {assetCode} на Binance"
 msgid "Binance P2P sell {assetCode}"
 msgstr "P2P-продаж {assetCode} на Binance"
 
+#: src/categorize-inbox/components/categorize-inbox-pile-legend/categorize-inbox-pile-legend.tsx
+msgid "«{largestName}» alone is {largestPercent}%"
+msgstr "Лише «{largestName}» — це {largestPercent}%"
+
+#. placeholder {0}: rows.length
+#: src/categorize-inbox/components/categorize-inbox-group-row/categorize-inbox-group-row.tsx
+msgid "{0, plural, one {# ATM withdrawal} other {# ATM withdrawals}}"
+msgstr "{0, plural, one {# зняття в банкоматі} few {# зняття в банкоматі} many {# знять у банкоматі} other {# зняття в банкоматі}}"
+
+#. placeholder {0}: oneOffs.reduce((total, cluster) => total + cluster.rows.length, 0)
+#. placeholder {0}: rows.length
+#: src/categorize-inbox/components/categorize-inbox-group-row/categorize-inbox-group-row.tsx
+#: src/categorize-inbox/components/categorize-inbox-one-offs-link/categorize-inbox-one-offs-link.tsx
+msgid "{0, plural, one {# payment} other {# payments}}"
+msgstr "{0, plural, one {# платіж} few {# платежі} many {# платежів} other {# платежу}}"
+
 #. placeholder {0}: changed.length
 #: src/receipt/hook/use-receipt-scan.hook.ts
 msgid "{0, plural, one {# receipt saved} other {# receipts saved}}"
 msgstr "{0, plural, one {# чек збережено} few {# чеки збережено} many {# чеків збережено} other {# чека збережено}}"
+
+#. placeholder {0}: oneOffs.length
+#: src/categorize-inbox/components/categorize-inbox-one-offs-link/categorize-inbox-one-offs-link.tsx
+msgid "{0, plural, one {# smaller group} other {# smaller groups}}"
+msgstr "{0, plural, one {# менша група} few {# менші групи} many {# менших груп} other {# меншої групи}}"
 
 #. placeholder {0}: labels.length
 #: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
@@ -33,21 +54,9 @@ msgid "{0, plural, one {# tag} other {# tags}}"
 msgstr "{0, plural, one {# тег} few {# теги} many {# тегів} other {# тегів}}"
 
 #. placeholder {0}: movedToCashTransactionIds.length
-#. placeholder {0}: rows.length
-#: src/categorize-inbox/components/categorize-inbox-cluster-meta/categorize-inbox-cluster-meta.tsx
-#: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
+#: src/categorize-inbox/components/categorize-inbox-moved-to-cash-undo/categorize-inbox-moved-to-cash-undo.tsx
 msgid "{0, plural, one {# transaction} other {# transactions}}"
 msgstr "{0, plural, one {# транзакція} few {# транзакції} many {# транзакцій} other {# транзакцій}}"
-
-#. placeholder {0}: acceptableAssignments.length
-#: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
-msgid "{0, plural, one {Accept # suggestion} other {Accept # suggestions}}"
-msgstr "{0, plural, one {Прийняти # пропозицію} few {Прийняти # пропозиції} many {Прийняти # пропозицій} other {Прийняти # пропозиції}}"
-
-#. placeholder {0}: transactionIds.length
-#: src/categorize-inbox/components/categorize-inbox-move-to-cash-chip/categorize-inbox-move-to-cash-chip.tsx
-msgid "{0, plural, one {Move # withdrawal to cash} other {Move # withdrawals to cash}}"
-msgstr "{0, plural, one {Перенести # зняття в готівку} few {Перенести # зняття в готівку} many {Перенести # знять у готівку} other {Перенести # зняття в готівку}}"
 
 #: src/onboarding/hook/use-onboarding-file-state.hook.ts
 msgid "{accountCount, plural, one {# account} other {# accounts}}"
@@ -86,13 +95,13 @@ msgstr "{availableCount, plural, one {# стовпець доступний} few
 msgid "{categoriesCount, plural, one {# category} other {# categories}}"
 msgstr "{categoriesCount, plural, one {# категорія} few {# категорії} many {# категорій} other {# категорії}}"
 
-#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
+#: src/categorize-inbox/components/categorize-inbox-category-provider/categorize-inbox-category-provider.tsx
 msgid "{categorizedCount, plural, one {# categorized this session} other {# categorized this session}}"
 msgstr "{categorizedCount, plural, one {# категоризовано за цей сеанс} few {# категоризовано за цей сеанс} many {# категоризовано за цей сеанс} other {# категоризовано за цей сеанс}}"
 
-#: src/categorize-inbox/components/categorize-inbox-progress/categorize-inbox-progress.tsx
-msgid "{categorizedCount, plural, one {# done} other {# done}}"
-msgstr "{categorizedCount, plural, one {# готово} few {# готово} many {# готово} other {# готово}}"
+#: src/categorize-inbox/components/categorize-inbox-pile-legend/categorize-inbox-pile-legend.tsx
+msgid "{categorizedCount} sorted"
+msgstr "{categorizedCount} розподілено"
 
 #: src/budget/components/budget-period-recap-card/budget-period-recap-card.tsx
 msgid "{categoryCount, plural, one {On budget in {onBudgetCategoryCount} of # category} other {On budget in {onBudgetCategoryCount} of # categories}}"
@@ -141,6 +150,10 @@ msgstr "{count, plural, one {Ця категорія має # транзакці
 #: src/tag/hooks/use-delete-tag.hook.ts
 msgid "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
 msgstr "{count, plural, one {Цей тег має # транзакцію. Виберіть інший тег, щоб перепризначити її.} few {Цей тег має # транзакції. Виберіть інший тег, щоб перепризначити їх.} many {Цей тег має # транзакцій. Виберіть інший тег, щоб перепризначити їх.} other {Цей тег має # транзакції. Виберіть інший тег, щоб перепризначити їх.}}"
+
+#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
+msgid "{count} payments with exactly this title."
+msgstr "{count} платежів із точно такою назвою."
 
 #: src/budget/components/budget-upcoming-charge-row/budget-upcoming-charge-row.tsx
 msgid "{dateLabel}, {kindLabel}"
@@ -191,6 +204,10 @@ msgstr "{duplicateTransactionCount, plural, one {# пропущено} few {# п
 #: src/settings/components/your-data-card/your-data-card.tsx
 msgid "{fileSize} · no Budgie servers"
 msgstr "{fileSize} · без серверів Budgie"
+
+#: src/categorize-inbox/components/categorize-inbox-group-panel/categorize-inbox-group-panel.tsx
+msgid "{firstMonth} to {lastMonth}"
+msgstr "З {firstMonth} по {lastMonth}"
 
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
 msgid "{foldedDriverCount, plural, one {Other (# category)} other {Other (# categories)}}"
@@ -263,6 +280,18 @@ msgstr "Запас {gapAmount}"
 #: src/@generic/hook/use-format-file-size.hook.ts
 msgid "{gigabytes} GB"
 msgstr "{gigabytes} ГБ"
+
+#: src/categorize-inbox/components/categorize-inbox-one-offs-list/categorize-inbox-one-offs-list.tsx
+msgid "{groupCount} groups, {paymentCount} payments"
+msgstr "Груп: {groupCount}, платежів: {paymentCount}"
+
+#: src/categorize-inbox/components/categorize-inbox-group-choose-payments-option/categorize-inbox-group-choose-payments-option.tsx
+msgid "{included} of {total}"
+msgstr "{included} з {total}"
+
+#: src/categorize-inbox/components/categorize-inbox-payments-screen/categorize-inbox-payments-screen.tsx
+msgid "{includedCount} of {rowCount} selected"
+msgstr "Вибрано {includedCount} з {rowCount}"
 
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "{loadedDays}/{totalDays} days"
@@ -342,6 +371,14 @@ msgstr "Сплачено {paidCount} з {installmentCount}"
 msgid "{parsedTransactionCount, plural, one {# transaction found} other {# transactions found}}"
 msgstr "{parsedTransactionCount, plural, one {Знайдено # транзакцію} few {Знайдено # транзакції} many {Знайдено # транзакцій} other {Знайдено # транзакції}}"
 
+#: src/categorize-inbox/components/categorize-inbox-transfer-screen/categorize-inbox-transfer-screen.tsx
+msgid "{paymentCount} payments become transfers and leave your expenses."
+msgstr "{paymentCount} платежів стануть переказами й зникнуть з ваших витрат."
+
+#: src/categorize-inbox/components/categorize-inbox-transfer-screen/categorize-inbox-transfer-screen.tsx
+msgid "{paymentCount} payments become transfers and leave your income."
+msgstr "{paymentCount} платежів стануть переказами й зникнуть з ваших доходів."
+
 #: src/budget/hooks/use-budget-limit-accessibility.hook.ts
 msgid "{percent}% used"
 msgstr "використано {percent}%"
@@ -358,28 +395,35 @@ msgstr "{percentage}% доходів"
 msgid "{periodLabel}, spent {spentAmount} of {limitAmount}"
 msgstr "{periodLabel}, витрачено {spentAmount} із {limitAmount}"
 
+#: src/categorize-inbox/components/categorize-inbox-group-position/categorize-inbox-group-position.tsx
+msgid "{position} of {total}"
+msgstr "{position} з {total}"
+
+#: src/categorize-inbox/components/categorize-inbox-pile-legend/categorize-inbox-pile-legend.tsx
+msgid "{readyCount} ready"
+msgstr "Готово: {readyCount}"
+
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "{remaining} GB one-time download"
 msgstr "Одноразове завантаження {remaining} ГБ"
-
-#: src/categorize-inbox/components/categorize-inbox-progress/categorize-inbox-progress.tsx
-msgid "{remainingCount, plural, one {# left} other {# left}}"
-msgstr "{remainingCount, plural, one {Залишилася #} few {Залишилося #} many {Залишилося #} other {Залишилося #}}"
 
 #: src/settings/hooks/use-sync-repairs-action.hook.ts
 msgid "{repairedTransactionCount, plural, one {# sync item repaired} other {# sync items repaired}}"
 msgstr "{repairedTransactionCount, plural, one {# елемент синхронізації виправлено} few {# елементи синхронізації виправлено} many {# елементів синхронізації виправлено} other {# елемента синхронізації виправлено}}"
 
-#: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
 #: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
 msgid "{rowCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{rowCount, plural, one {# транзакція} few {# транзакції} many {# транзакцій} other {# транзакцій}}"
 
-#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
+#: src/categorize-inbox/components/categorize-inbox-category-provider/categorize-inbox-category-provider.tsx
 msgid "{rowCount, plural, one {Categorized # transaction} other {Categorized # transactions}}"
 msgstr "{rowCount, plural, one {Категоризовано # транзакцію} few {Категоризовано # транзакції} many {Категоризовано # транзакцій} other {Категоризовано # транзакції}}"
 
-#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
+#: src/categorize-inbox/components/categorize-inbox-accept-all-button/categorize-inbox-accept-all-button.tsx
+msgid "{rowCount, plural, one {File # ready payment} other {File # ready payments}}"
+msgstr "{rowCount, plural, one {Розподілити # готовий платіж} few {Розподілити # готові платежі} many {Розподілити # готових платежів} other {Розподілити # готового платежу}}"
+
+#: src/categorize-inbox/components/categorize-inbox-tag-provider/categorize-inbox-tag-provider.tsx
 msgid "{rowCount, plural, one {Tagged # transaction} other {Tagged # transactions}}"
 msgstr "{rowCount, plural, one {Тег додано до # транзакції} few {Тег додано до # транзакцій} many {Тег додано до # транзакцій} other {Тег додано до # транзакції}}"
 
@@ -406,10 +450,6 @@ msgstr "Вибрано {selectedInGroupCount} з {accountsCount}"
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "{similarCount, plural, one {# similar transaction} other {# similar transactions}}"
 msgstr "{similarCount, plural, one {# схожа транзакція} other {# схожих транзакцій}}"
-
-#: src/categorize-inbox/components/categorize-inbox-cluster-meta/categorize-inbox-cluster-meta.tsx
-msgid "{skippedCount, plural, one {# skipped} other {# skipped}}"
-msgstr "{skippedCount, plural, one {# пропущено} few {# пропущено} many {# пропущено} other {# пропущено}}"
 
 #: src/ai/constant/ai-umbrella-status-atom.constant.ts
 msgid "{source} error · {message}"
@@ -439,7 +479,7 @@ msgstr "{statusLabel} · {downloaded} з {total} ГБ"
 msgid "{statusLabel}, {daysLeftLabel}."
 msgstr "{statusLabel}, {daysLeftLabel}."
 
-#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
+#: src/categorize-inbox/components/categorize-inbox-tag-provider/categorize-inbox-tag-provider.tsx
 msgid "{taggedCount, plural, one {# tagged this session} other {# tagged this session}}"
 msgstr "{taggedCount, plural, one {# з тегом за цей сеанс} few {# з тегами за цей сеанс} many {# з тегами за цей сеанс} other {# з тегами за цей сеанс}}"
 
@@ -479,6 +519,10 @@ msgstr "{totalSize} ГБ"
 msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{transactionCount, plural, one {# транзакція} few {# транзакції} many {# транзакцій} other {# транзакцій}}"
 
+#: src/categorize-inbox/components/categorize-inbox-transfer-undo/categorize-inbox-transfer-undo.tsx
+msgid "{transferCount} now transfers"
+msgstr "Тепер переказів: {transferCount}"
+
 #: src/receipt/hook/use-receipt-scan.hook.ts
 msgid "{unreadableCount, plural, one {Couldn't read # receipt} other {Couldn't read # receipts}}"
 msgstr "{unreadableCount, plural, one {Не вдалося прочитати # чек} few {Не вдалося прочитати # чеки} many {Не вдалося прочитати # чеків} other {Не вдалося прочитати # чека}}"
@@ -509,6 +553,10 @@ msgstr "+{hiddenCategoryCount} ще"
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "<"
 msgstr "<"
+
+#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
+msgid "<0>Cash from an ATM.</0> Move it to your cash wallet or mark it tracked."
+msgstr "<0>Готівка з банкомата.</0> Перемістіть її до гаманця готівки або позначте як відстежену."
 
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid ">"
@@ -570,6 +618,14 @@ msgstr "Правило з такими ж умовами вже існує."
 #: src/app/(tabs)/settings/index.tsx
 msgid "About"
 msgstr "Про застосунок"
+
+#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
+msgid "About {rate} a day, every one under {maxAmountLabel}. <0>Looks like a jar top-up.</0>"
+msgstr "Приблизно {rate} на день, кожен менший за {maxAmountLabel}. <0>Схоже на поповнення банки.</0>"
+
+#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
+msgid "About {rate} a week, every one under {maxAmountLabel}. <0>Looks like a jar top-up.</0>"
+msgstr "Приблизно {rate} на тиждень, кожен менший за {maxAmountLabel}. <0>Схоже на поповнення банки.</0>"
 
 #: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
 msgid "About 12 minutes"
@@ -742,7 +798,7 @@ msgstr "Додати запис"
 msgid "Add Tag"
 msgstr "Додати тег"
 
-#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
+#: src/categorize-inbox/components/categorize-inbox-tag-provider/categorize-inbox-tag-provider.tsx
 msgid "Add tags"
 msgstr "Додати теги"
 
@@ -812,6 +868,10 @@ msgstr "Бюджетний застосунок на базі ШІ з повно
 msgid "All"
 msgstr "Усі"
 
+#: src/categorize-inbox/components/categorize-inbox-group-choose-payments-option/categorize-inbox-group-choose-payments-option.tsx
+msgid "All {total}"
+msgstr "Усі ({total})"
+
 #: src/app/(tabs)/settings/category-icons.tsx
 msgid "All categories have icons"
 msgstr "Усі категорії мають іконки"
@@ -862,9 +922,17 @@ msgstr "Уже відскановано"
 msgid "Already syncing"
 msgstr "Вже синхронізується"
 
-#: src/categorize-inbox/components/categorize-inbox-already-tracked-chip/categorize-inbox-already-tracked-chip.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-already-tracked-option/categorize-inbox-group-already-tracked-option.tsx
 msgid "Already tracked"
 msgstr "Уже враховано"
+
+#: src/categorize-inbox/components/categorize-inbox-transfer-rule-switch/categorize-inbox-transfer-rule-switch.tsx
+msgid "Also for new “{displayTitle}” payments"
+msgstr "Також для нових платежів «{displayTitle}»"
+
+#: src/categorize-inbox/components/categorize-inbox-transfer-rule-switch/categorize-inbox-transfer-rule-switch.tsx
+msgid "Also for new «{jarName}» payments"
+msgstr "Також для нових платежів у «{jarName}»"
 
 #: src/app/(tabs)/settings/import.tsx
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
@@ -972,6 +1040,10 @@ msgstr "Ви впевнені, що хочете видалити це прав�
 msgid "Are you sure?"
 msgstr "Ви впевнені?"
 
+#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
+msgid "Arrives once a month."
+msgstr "Надходить раз на місяць."
+
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Attach debt"
@@ -1000,6 +1072,10 @@ msgstr "Доступні стовпці"
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "Available once the import finishes"
 msgstr "Стане доступним після завершення імпорту"
+
+#: src/categorize-inbox/components/categorize-inbox-group-stats/categorize-inbox-group-stats.tsx
+msgid "average"
+msgstr "у середньому"
 
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "Average"
@@ -1070,6 +1146,14 @@ msgstr "На основі {monthsUsed} міс."
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "Based on your recent spending"
 msgstr "На основі ваших нещодавніх витрат"
+
+#: src/categorize-inbox/components/categorize-inbox-group-move-to-cash-option/categorize-inbox-group-move-to-cash-option.tsx
+msgid "Becomes a transfer to your cash wallet"
+msgstr "Стане переказом до вашого гаманця готівки"
+
+#: src/categorize-inbox/components/categorize-inbox-group-label-option/categorize-inbox-group-label-option.tsx
+msgid "Best match"
+msgstr "Найкращий збіг"
 
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "between"
@@ -1289,7 +1373,7 @@ msgstr "Переносити заощадження"
 msgid "Cash"
 msgstr "Готівка"
 
-#: src/categorize-inbox/components/categorize-inbox-section-title/categorize-inbox-section-title.tsx
+#: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
 msgid "Cash withdrawals"
 msgstr "Зняття готівки"
 
@@ -1317,11 +1401,11 @@ msgstr "Категорії, теги та голосові нотатки обр
 msgid "Categorise imports automatically"
 msgstr "Автоматична категоризація імпортів"
 
-#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
+#: src/categorize-inbox/components/categorize-inbox-category-provider/categorize-inbox-category-provider.tsx
 msgid "Categorize"
 msgstr "Категоризувати"
 
-#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
+#: src/categorize-inbox/components/categorize-inbox-category-provider/categorize-inbox-category-provider.tsx
 msgid "Categorize as {categoryTitle}"
 msgstr "Категоризувати як {categoryTitle}"
 
@@ -1410,6 +1494,10 @@ msgstr "Виберіть і підтвердьте PIN-код"
 msgid "Choose features and free space from unused downloads"
 msgstr "Вибирайте функції та звільняйте місце від невикористаних завантажень"
 
+#: src/categorize-inbox/components/categorize-inbox-payments-screen/categorize-inbox-payments-screen.tsx
+msgid "Choose payments"
+msgstr "Обрати платежі"
+
 #: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
 msgid "Choose what goes inside"
 msgstr "Вибрати, що буде всередині"
@@ -1417,6 +1505,10 @@ msgstr "Вибрати, що буде всередині"
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Choose what to track. Balances and history come straight from the bank."
 msgstr "Оберіть, що відстежувати. Баланси й історія надходять безпосередньо з банку."
+
+#: src/categorize-inbox/components/categorize-inbox-group-choose-payments-option/categorize-inbox-group-choose-payments-option.tsx
+msgid "Choose which payments"
+msgstr "Оберіть, які платежі"
 
 #: src/@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle.tsx
 msgid "Clear"
@@ -1585,8 +1677,6 @@ msgid "Convert to Refund?"
 msgstr "Перетворити на повернення?"
 
 #: src/app/convert-to-transfer.tsx
-#: src/categorize-inbox/components/categorize-inbox-cluster-menu/categorize-inbox-cluster-menu.tsx
-#: src/categorize-inbox/components/categorize-inbox-row-menu/categorize-inbox-row-menu.tsx
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 #: src/transaction/components/transaction-list-convert-to-transfer-menu-item/transaction-list-convert-to-transfer-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
@@ -1627,7 +1717,7 @@ msgstr "Не вдалося архівувати рахунок"
 msgid "Could not attach debt"
 msgstr "Не вдалося прив’язати борг"
 
-#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
+#: src/categorize-inbox/components/categorize-inbox-category-provider/categorize-inbox-category-provider.tsx
 msgid "Could not categorize transactions"
 msgstr "Не вдалося категоризувати транзакції"
 
@@ -1651,7 +1741,7 @@ msgstr "Не вдалося консолідувати збіги"
 msgid "Could not convert to refund"
 msgstr "Не вдалося перетворити на повернення"
 
-#: src/categorize-inbox/hook/use-categorize-inbox-convert-to-transfer.hook.ts
+#: src/categorize-inbox/hook/use-categorize-inbox-commit-transfer.hook.ts
 msgid "Could not convert to transfers"
 msgstr "Не вдалося перетворити на перекази"
 
@@ -1848,8 +1938,8 @@ msgstr "Не вдалося налаштувати синхронізацію"
 msgid "Could not start syncing"
 msgstr "Не вдалося почати синхронізацію"
 
-#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
-#: src/categorize-inbox/hook/use-categorize-inbox-actions.hook.ts
+#: src/categorize-inbox/components/categorize-inbox-tag-provider/categorize-inbox-tag-provider.tsx
+#: src/categorize-inbox/hook/use-categorize-inbox-last-write.hook.ts
 msgid "Could not tag transactions"
 msgstr "Не вдалося додати теги до транзакцій"
 
@@ -2565,11 +2655,11 @@ msgstr "Оцінено за твоїми минулими транзакціям
 msgid "Every tap, recorded"
 msgstr "Кожна оплата — записана"
 
-#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
+#: src/categorize-inbox/components/categorize-inbox-category-provider/categorize-inbox-category-provider.tsx
 msgid "Every transaction has a category."
 msgstr "Кожна транзакція має категорію."
 
-#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
+#: src/categorize-inbox/components/categorize-inbox-tag-provider/categorize-inbox-tag-provider.tsx
 msgid "Every transaction has a tag."
 msgstr "Кожна транзакція має тег."
 
@@ -2864,10 +2954,6 @@ msgstr "Приховано з Головної"
 msgid "Hide in screenshots"
 msgstr "Приховувати на скріншотах"
 
-#: src/categorize-inbox/components/categorize-inbox-cluster-meta/categorize-inbox-cluster-meta.tsx
-msgid "Hide transactions for {displayTitle}"
-msgstr "Сховати транзакції {displayTitle}"
-
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Historical valuation failed"
 msgstr "Не вдалося виконати історичну оцінку"
@@ -3109,10 +3195,6 @@ msgstr "Банки"
 msgid "Keep"
 msgstr "Залишити"
 
-#: src/categorize-inbox/components/categorize-inbox-already-tracked-chip/categorize-inbox-already-tracked-chip.tsx
-msgid "Keep as already tracked cash, not spending"
-msgstr "Залишити як уже враховану готівку, не витрату"
-
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Keep only \"Enable Reading\" on — never allow trading or withdrawals"
 msgstr "Залиште увімкненим лише \"Дозволити читання\" — ніколи не дозволяйте торгівлю чи виведення"
@@ -3140,6 +3222,10 @@ msgstr "Ключ оновлено"
 #: src/settings/components/language-selector/language-selector.tsx
 msgid "Language"
 msgstr "Мова"
+
+#: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
+msgid "Largest first"
+msgstr "Спочатку найбільші"
 
 #: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
 msgid "Last 1 month"
@@ -3208,6 +3294,14 @@ msgstr "Навчання актуальне"
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "Leave it empty for now"
 msgstr "Поки залишити порожнім"
+
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+msgid "Leaves your expenses"
+msgstr "Зникне з ваших витрат"
+
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+msgid "Leaves your income"
+msgstr "Зникне з ваших доходів"
 
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "left"
@@ -3432,6 +3526,10 @@ msgstr "Моделі та завантаження"
 msgid "Models download once, best on Wi-Fi"
 msgstr "Моделі завантажуються один раз, краще через Wi-Fi"
 
+#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
+msgid "Money coming back from your «{jar}» jar."
+msgstr "Гроші, що повертаються з вашої банки «{jar}»."
+
 #: src/runway/component/runway-history-legend/runway-history-legend.tsx
 msgid "Money in"
 msgstr "Надходження"
@@ -3504,21 +3602,26 @@ msgstr "Місячний підсумок"
 msgid "months left"
 msgstr "місяців залишилось"
 
-#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
+#: src/categorize-inbox/components/categorize-inbox-category-provider/categorize-inbox-category-provider.tsx
 msgid "More categories"
 msgstr "Інші категорії"
 
-#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
+#: src/categorize-inbox/components/categorize-inbox-tag-provider/categorize-inbox-tag-provider.tsx
 msgid "More tags"
 msgstr "Інші теги"
 
-#: src/categorize-inbox/components/categorize-inbox-move-to-cash-chip/categorize-inbox-move-to-cash-chip.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-move-to-cash-option/categorize-inbox-group-move-to-cash-option.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-row-hint/categorize-inbox-group-row-hint.tsx
 msgid "Move to cash"
 msgstr "У готівку"
 
-#: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
+#: src/categorize-inbox/components/categorize-inbox-moved-to-cash-undo/categorize-inbox-moved-to-cash-undo.tsx
 msgid "Moved to cash"
 msgstr "Перенесено в готівку"
+
+#: src/categorize-inbox/components/categorize-inbox-transfer-accounts/categorize-inbox-transfer-accounts.tsx
+msgid "Name matches"
+msgstr "Збігаються назви"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Navigate to Account → Statements"
@@ -3529,7 +3632,6 @@ msgid "Needs attention"
 msgstr "Потребує уваги"
 
 #: src/app/(tabs)/settings/apple-pay-capture.tsx
-#: src/categorize-inbox/components/categorize-inbox-section-title/categorize-inbox-section-title.tsx
 msgid "Needs review"
 msgstr "Потребують перевірки"
 
@@ -3576,6 +3678,10 @@ msgstr "Новий переказ"
 #: src/installment-plan/component/installment-plan-next-payment/installment-plan-next-payment.tsx
 msgid "Next {formattedNextAmount} · {nextDate}"
 msgstr "Наступний {formattedNextAmount} · {nextDate}"
+
+#: src/categorize-inbox/components/categorize-inbox-group-next-button/categorize-inbox-group-next-button.tsx
+msgid "Next group"
+msgstr "Наступна група"
 
 #: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
 msgid "No account needed · Takes about a minute"
@@ -3902,10 +4008,6 @@ msgstr "Разово"
 msgid "One-off spike"
 msgstr "Разовий стрибок"
 
-#: src/categorize-inbox/components/categorize-inbox-section-title/categorize-inbox-section-title.tsx
-msgid "One-offs"
-msgstr "Разові операції"
-
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "one-time download"
 msgstr "одноразове завантаження"
@@ -4046,6 +4148,10 @@ msgstr "Початкова транзакція"
 msgid "Other"
 msgstr "Інше"
 
+#: src/categorize-inbox/components/categorize-inbox-transfer-accounts/categorize-inbox-transfer-accounts.tsx
+msgid "Other accounts"
+msgstr "Інші рахунки"
+
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "Other budget: {threshold}% spent"
 msgstr "Бюджет «Інше»: використано {threshold}%"
@@ -4150,6 +4256,10 @@ msgstr "Призупинено. {downloaded} з {total} ГБ збережено.
 msgid "Pay in parts"
 msgstr "Оплата частинами"
 
+#: src/categorize-inbox/components/categorize-inbox-group-stats/categorize-inbox-group-stats.tsx
+msgid "payments"
+msgstr "платежів"
+
 #: src/installment-plan/component/installment-plan-count-field/installment-plan-count-field.tsx
 msgid "Payments"
 msgstr "Платежі"
@@ -4157,6 +4267,10 @@ msgstr "Платежі"
 #: src/installment-plan/component/installment-timeline/installment-timeline.tsx
 msgid "Payments from {firstPaymentLabel} to {lastPaymentLabel}"
 msgstr "Платежі з {firstPaymentLabel} по {lastPaymentLabel}"
+
+#: src/categorize-inbox/components/categorize-inbox-group-panel/categorize-inbox-group-panel.tsx
+msgid "Payments per month"
+msgstr "Платежів на місяць"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "PDF statement"
@@ -4186,10 +4300,6 @@ msgstr "Лише блокування телефона · {contents}"
 msgid "Phone lock only. Make a PIN to encrypt your data."
 msgstr "Лише блокування телефона. Створіть PIN-код, щоб зашифрувати дані."
 
-#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
-msgid "Pick a category for this transaction"
-msgstr "Вибрати категорію для цієї транзакції"
-
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
 msgid "Pick a category to set a limit"
 msgstr "Оберіть категорію для встановлення ліміту"
@@ -4197,10 +4307,6 @@ msgstr "Оберіть категорію для встановлення лім
 #: src/app/resync-window-picker.tsx
 msgid "Pick a window. Existing data is preserved."
 msgstr "Виберіть період. Наявні дані зберігаються."
-
-#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
-msgid "Pick tags for this transaction"
-msgstr "Вибрати теги для цієї транзакції"
 
 #: src/settings/components/app-lock-row/app-lock-row.tsx
 msgid "PIN and {biometricLabel}. Encrypts your data."
@@ -4358,9 +4464,9 @@ msgstr "Читаю чеки · {current} з {total}"
 msgid "Ready"
 msgstr "Готово"
 
-#: src/categorize-inbox/components/categorize-inbox-section-title/categorize-inbox-section-title.tsx
-msgid "Ready to accept"
-msgstr "Готові прийняти"
+#: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
+msgid "Ready to file"
+msgstr "Готово до розподілу"
 
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
 msgid "Rebuild"
@@ -4667,6 +4773,10 @@ msgstr "Збережіть її"
 msgid "Save it to Files or another app."
 msgstr "Збережіть його у Файлах або іншому застосунку."
 
+#: src/categorize-inbox/components/categorize-inbox-transfer-rule-switch/categorize-inbox-transfer-rule-switch.tsx
+msgid "Saved as a rule"
+msgstr "Збережено як правило"
+
 #: src/account/constant/account-type.constant.ts
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "Savings"
@@ -4711,6 +4821,7 @@ msgstr "Запечатано. Лише ваш PIN-код відкриває це
 
 #: src/app/account-selector.tsx
 #: src/app/transaction-account-filter.tsx
+#: src/categorize-inbox/components/categorize-inbox-transfer-screen/categorize-inbox-transfer-screen.tsx
 msgid "Search accounts..."
 msgstr "Пошук рахунків..."
 
@@ -4826,7 +4937,6 @@ msgstr "Вибрати всі"
 msgid "Select all categories"
 msgstr "Оберіть усі категорії"
 
-#: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
 #: src/transaction/components/split-entry-row/split-entry-row.tsx
 msgid "Select category"
 msgstr "Обрати категорію"
@@ -4870,10 +4980,6 @@ msgstr "Вибрати джерело"
 #: src/rule/components/rule-action-tag-selector/rule-action-tag-selector.tsx
 msgid "Select Tag"
 msgstr "Вибрати тег"
-
-#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
-msgid "Select tags"
-msgstr "Вибрати теги"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Select the downloaded PDF file"
@@ -4990,10 +5096,6 @@ msgstr "Показати вибраний діапазон"
 msgid "Show this account on the main page"
 msgstr "Показати цей рахунок на головній сторінці"
 
-#: src/categorize-inbox/components/categorize-inbox-cluster-meta/categorize-inbox-cluster-meta.tsx
-msgid "Show transactions for {displayTitle}"
-msgstr "Показати транзакції {displayTitle}"
-
 #: src/app/transaction-amount-filter.tsx
 msgid "Show transactions when any main amount is inside this range, regardless of currency."
 msgstr "Показувати транзакції, коли будь-яка основна сума потрапляє в цей діапазон, незалежно від валюти."
@@ -5005,6 +5107,11 @@ msgstr "Схожі транзакції"
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Skip"
 msgstr "Пропустити"
+
+#: src/categorize-inbox/components/categorize-inbox-one-offs-list/categorize-inbox-one-offs-list.tsx
+#: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
+msgid "Smaller groups"
+msgstr "Менші групи"
 
 #: src/ai/component/ai-settings-section/ai-settings-section.tsx
 msgid "Smart suggestions"
@@ -5231,7 +5338,7 @@ msgstr "Тег → {tagTitle}"
 msgid "Tag a transaction"
 msgstr "Позначити транзакцію"
 
-#: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
+#: src/categorize-inbox/components/categorize-inbox-tag-provider/categorize-inbox-tag-provider.tsx
 msgid "Tag as {tagTitle}"
 msgstr "Додати тег {tagTitle}"
 
@@ -5267,10 +5374,6 @@ msgstr "Натисніть \"Отримати API-ключ\" вгорі та у�
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Tap \"Get API Token\" above to open api.monobank.ua"
 msgstr "Торкніться «Get API Token» вище, щоб відкрити api.monobank.ua"
-
-#: src/categorize-inbox/components/categorize-inbox-panel/categorize-inbox-panel.tsx
-msgid "Tap a suggestion to accept it"
-msgstr "Натисніть пропозицію, щоб прийняти її"
 
 #: src/app/voice-review.tsx
 msgid "Tap re-record to try again"
@@ -5504,6 +5607,14 @@ msgstr "до"
 msgid "To"
 msgstr "На"
 
+#: src/categorize-inbox/components/categorize-inbox-transfer-undo/categorize-inbox-transfer-undo.tsx
+msgid "To {accountTitle}"
+msgstr "До {accountTitle}"
+
+#: src/categorize-inbox/components/categorize-inbox-transfer-undo/categorize-inbox-transfer-undo.tsx
+msgid "To {accountTitle}, rule saved"
+msgstr "До {accountTitle}, правило збережено"
+
 #: src/transaction/components/transaction-amount-filter/transaction-amount-filter.tsx
 msgid "To {toText}"
 msgstr "До {toText}"
@@ -5533,6 +5644,10 @@ msgstr "До сплати"
 msgid "to sort"
 msgstr "до розбору"
 
+#: src/categorize-inbox/components/categorize-inbox-hero/categorize-inbox-hero.tsx
+msgid "to sort, worth {worthText}"
+msgstr "до розподілу, на суму {worthText}"
+
 #: src/@generic/constant/date-period.constant.ts
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
 #: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
@@ -5554,6 +5669,10 @@ msgstr "Зарано для прогнозу"
 #: src/auth/hook/use-pin-error.hook.ts
 msgid "Too many attempts. Try again in {time}"
 msgstr "Забагато спроб. Спробуйте ще раз через {time}"
+
+#: src/categorize-inbox/components/categorize-inbox-group-stats/categorize-inbox-group-stats.tsx
+msgid "total"
+msgstr "разом"
 
 #: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
@@ -5632,6 +5751,7 @@ msgstr "Транзакції синхронізовано"
 msgid "Transcription failed"
 msgstr "Помилка транскрипції"
 
+#: src/categorize-inbox/components/categorize-inbox-group-row-hint/categorize-inbox-group-row-hint.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/constant/transaction-type.constant.ts
 #: src/widget/service/widget-snapshot-builder.service.ts
@@ -5650,8 +5770,20 @@ msgstr "Рахунок переказу"
 msgid "Transfer From Account"
 msgstr "Переказ з рахунку"
 
+#: src/categorize-inbox/components/categorize-inbox-transfer-screen/categorize-inbox-transfer-screen.tsx
+msgid "Transfer to"
+msgstr "Переказ до"
+
+#: src/categorize-inbox/components/categorize-inbox-group-learned-transfer-option/categorize-inbox-group-learned-transfer-option.tsx
+msgid "Transfer to {title}"
+msgstr "Переказ до {title}"
+
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Transfer To Account"
+msgstr "Переказ на рахунок"
+
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+msgid "Transfer to an account"
 msgstr "Переказ на рахунок"
 
 #: src/ai/component/ai-settings-section/ai-settings-section.tsx
@@ -5950,6 +6082,10 @@ msgstr "Ми ще імпортуємо історію транзакцій. До
 msgid "What goes inside?"
 msgstr "Що буде всередині?"
 
+#: src/categorize-inbox/components/categorize-inbox-group-options/categorize-inbox-group-options.tsx
+msgid "What is it?"
+msgstr "Що це?"
+
 #: src/runway/component/runway-drivers/runway-drivers.tsx
 msgid "What's driving it"
 msgstr "Що на це впливає"
@@ -6087,6 +6223,10 @@ msgstr "Ви підключені до Wi-Fi"
 msgid "You're on Wi-Fi."
 msgstr "Ви підключені до Wi-Fi."
 
+#: src/categorize-inbox/components/categorize-inbox-transfer-accounts/categorize-inbox-transfer-accounts.tsx
+msgid "Your accounts"
+msgstr "Ваші рахунки"
+
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Your accounts keep syncing with the new key."
 msgstr "Ваші рахунки й надалі синхронізуються з новим ключем."
@@ -6102,6 +6242,10 @@ msgstr "Ваш баланс уже нижче нуля."
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "Your budget is ahead of pace"
 msgstr "Ваш бюджет випереджає темп"
+
+#: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
+msgid "Your call"
+msgstr "Ваш вибір"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Your data"

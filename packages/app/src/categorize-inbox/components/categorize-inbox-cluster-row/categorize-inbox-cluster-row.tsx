@@ -12,7 +12,6 @@ import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 import { getCategorizeInboxRowHref } from '../../utils/get-categorize-inbox-row-href.util';
 import { CategorizeInboxAmount } from '../categorize-inbox-amount/categorize-inbox-amount';
-import { CategorizeInboxRowMenu } from '../categorize-inbox-row-menu/categorize-inbox-row-menu';
 
 import { CategorizeInboxClusterRowSelector } from './categorize-inbox-cluster-row.selector';
 
@@ -75,8 +74,6 @@ export const CategorizeInboxClusterRow = ({ row, displayTitle }: Props) => {
                     />
                 </HapticPressable>
             </Link>
-
-            <CategorizeInboxRowMenu row={row} />
         </View>
     );
 };
