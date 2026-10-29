@@ -1,15 +1,20 @@
-import { BudgetRolloverModeEnum, Db } from '@budgie/contracts';
+import { BudgetLimitSourceEnum, BudgetRolloverModeEnum, Db } from '@budgie/contracts';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { getInclusiveEnd } from '../../period/utils/budget-period.util';
+import { computeIncomeReceived } from '../../income/utils/compute-income-received.util';
+import { resolveBudgetOverallLimit } from '../../income/utils/resolve-budget-overall-limit.util';
+import { computePeriodWindow, getInclusiveEnd } from '../../period/utils/budget-period.util';
 import { BudgetCategoryLimitRepository } from '../../query/repository/budget-category-limit.repository';
 import { BudgetRepository } from '../../query/repository/budget.repository';
 import { computeSnapshotCarryOuts } from '../../rollover/utils/budget-snapshot-carry-outs.util';
 import { computeSpent } from '../../spent/utils/budget-spent.util';
+import { BUDGET_TUNING_PERIOD_COUNT } from '../../tuning/constant/budget-tuning-period-count.constant';
+import { BudgetLimitChangeRepository } from '../../tuning/repository/budget-limit-change.repository';
+import { proposeLimitChanges } from '../../tuning/utils/propose-limit-changes.util';
 import { BudgetPeriodSnapshotRepository } from '../repository/budget-period-snapshot.repository';
 import { computeClosedPeriods } from '../utils/budget-closed-periods.util';
 import { buildPeriodSnapshotRows } from '../utils/build-period-snapshot-rows.util';
@@ -29,14 +34,36 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
         const budgetRepository = yield* BudgetRepository;
         const budgetCategoryLimitRepository = yield* BudgetCategoryLimitRepository;
         const budgetPeriodSnapshotRepository = yield* BudgetPeriodSnapshotRepository;
+        const budgetLimitChangeRepository = yield* BudgetLimitChangeRepository;
 
         const computeStoredCarryIn = (snapshot: BudgetPeriodSnapshotWithCategoriesEntityInterface): BudgetCarryOutsInterface => ({
             other: snapshot.otherCarriedIn,
             byCategory: new Map(snapshot.categories.map(category => [category.categoryId, category.carriedIn]))
         });
 
+        const resolveOverallLimit = Effect.fnUntraced(function* (
+            budget: Pick<BudgetEntityInterface, 'instrumentId' | 'overallLimit' | 'limitSource'>,
+            window: BudgetPeriodWindowInterface
+        ) {
+            if (budget.limitSource === BudgetLimitSourceEnum.FIXED) {
+                return budget.overallLimit;
+            }
+
+            const entries = yield* budgetRepository.findIncomeReceivedEntries(
+                window.periodStart,
+                window.nextPeriodStart,
+                budget.instrumentId
+            );
+            const incomeReceived = computeIncomeReceived(entries, budget.instrumentId);
+
+            return resolveBudgetOverallLimit(budget.limitSource, budget.overallLimit, incomeReceived, incomeReceived);
+        });
+
         const makeSnapshotPeriod = (
-            budget: Pick<BudgetEntityInterface, 'id' | 'instrumentId' | 'overallLimit' | 'otherLimit' | 'otherRolloverMode'>,
+            budget: Pick<
+                BudgetEntityInterface,
+                'id' | 'instrumentId' | 'overallLimit' | 'otherLimit' | 'otherRolloverMode' | 'limitSource'
+            >,
             categoryLimits: readonly BudgetCategoryLimitEntityInterface[],
             isReconstructed: boolean
         ) =>
@@ -47,6 +74,7 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
                     budget.instrumentId
                 );
                 const spent = computeSpent(entries, budget.instrumentId);
+                const overallLimit = yield* resolveOverallLimit(budget, window);
                 const limits = isReconstructed
                     ? categoryLimits.map(limit => ({ ...limit, rolloverMode: BudgetRolloverModeEnum.NONE }))
                     : categoryLimits;
@@ -55,7 +83,7 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
                     budgetId: budget.id,
                     periodStart: window.periodStart,
                     periodEnd: getInclusiveEnd(window.nextPeriodStart),
-                    overallLimit: budget.overallLimit,
+                    overallLimit,
                     overallSpent: spent.spentOverall,
                     otherLimit: budget.otherLimit,
                     otherSpent: rows.otherSpent,
@@ -130,33 +158,111 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
             );
         });
 
+        const tuneLimits = Effect.fnUntraced(function* (
+            budget: BudgetEntityInterface,
+            categoryLimits: readonly BudgetCategoryLimitEntityInterface[],
+            lastClosedWindow: BudgetPeriodWindowInterface,
+            now: Date
+        ) {
+            if (!budget.isAutoTuneEnabled) {
+                return;
+            }
+
+            const overallLimit = yield* resolveOverallLimit(budget, lastClosedWindow);
+            const history = yield* budgetPeriodSnapshotRepository.findRecent(budget.id, BUDGET_TUNING_PERIOD_COUNT);
+
+            if (isEmptyArray(history)) {
+                return;
+            }
+
+            const recentChanges = yield* budgetLimitChangeRepository.findSince(
+                budget.id,
+                new Date(Math.min(...history.map(snapshot => snapshot.periodStart.getTime())))
+            );
+            const proposals = proposeLimitChanges(
+                history,
+                {
+                    overallLimit,
+                    otherLimit: budget.otherLimit,
+                    otherLimitUserEditedAt: budget.otherLimitUserEditedAt,
+                    categories: categoryLimits
+                },
+                computePeriodWindow(budget, now).periodStart,
+                recentChanges
+            );
+
+            if (isEmptyArray(proposals)) {
+                return;
+            }
+
+            const limitIdByCategoryId = new Map(categoryLimits.map(limit => [limit.categoryId, limit.id]));
+            const categoryUpdates = proposals.flatMap(proposal => {
+                const id = isDefined(proposal.categoryId) ? limitIdByCategoryId.get(proposal.categoryId) : null;
+
+                return isDefined(id) ? [{ id, limitAmount: proposal.newAmount }] : [];
+            });
+            const otherProposal = proposals.find(proposal => !isDefined(proposal.categoryId));
+
+            yield* budgetCategoryLimitRepository.applyTunedLimits(categoryUpdates);
+
+            if (isDefined(otherProposal)) {
+                yield* budgetRepository.update(budget.id, { otherLimit: otherProposal.newAmount });
+            }
+
+            yield* budgetLimitChangeRepository.bulkCreate(
+                proposals.map(proposal => ({
+                    budgetId: budget.id,
+                    categoryId: proposal.categoryId,
+                    previousAmount: proposal.previousAmount,
+                    newAmount: proposal.newAmount,
+                    reason: proposal.reason,
+                    periodsObserved: proposal.periodsObserved,
+                    periodStart: lastClosedWindow.periodStart
+                }))
+            );
+        });
+
         return {
-            closeDuePeriods: Effect.fn('BudgetPeriodCloseService.closeDuePeriods')(function* (now: Date) {
-                const budget = yield* budgetRepository.findActive();
+            closeDuePeriods: Effect.fn('BudgetPeriodCloseService.closeDuePeriods')(
+                function* (now: Date) {
+                    const budget = yield* budgetRepository.findActive();
 
-                if (!isDefined(budget) || !isPositiveNumber(budget.instrumentId)) {
-                    return;
-                }
+                    if (!isDefined(budget) || !isPositiveNumber(budget.instrumentId)) {
+                        return;
+                    }
 
-                const [latestSnapshot] = yield* budgetPeriodSnapshotRepository.findRecent(budget.id, 1);
-                const latestPeriodStart = isDefined(latestSnapshot) ? latestSnapshot.periodStart : null;
-                const earliestOperatedAt = yield* budgetRepository.findEarliestOperatedAt();
-                const windows = computeClosedPeriods(budget, now, latestPeriodStart, earliestOperatedAt);
-                const categoryLimits = yield* budgetCategoryLimitRepository.getByBudget(budget.id);
+                    const [latestSnapshot] = yield* budgetPeriodSnapshotRepository.findRecent(budget.id, 1);
+                    const latestPeriodStart = isDefined(latestSnapshot) ? latestSnapshot.periodStart : null;
+                    const earliestOperatedAt = yield* budgetRepository.findEarliestOperatedAt();
+                    const windows = computeClosedPeriods(budget, now, latestPeriodStart, earliestOperatedAt);
+                    const categoryLimits = yield* budgetCategoryLimitRepository.getByBudget(budget.id);
 
-                const snapshotPeriod = makeSnapshotPeriod(budget, categoryLimits, !isDefined(latestSnapshot));
+                    const snapshotPeriod = makeSnapshotPeriod(budget, categoryLimits, !isDefined(latestSnapshot));
 
-                yield* Effect.reduce(
-                    windows,
-                    () => computeSnapshotCarryOuts(latestSnapshot),
-                    (carryIn, window) => snapshotPeriod(window, carryIn)
-                );
-                yield* refreshRecentPeriods(budget);
-            })
+                    yield* Effect.reduce(
+                        windows,
+                        () => computeSnapshotCarryOuts(latestSnapshot),
+                        (carryIn, window) => snapshotPeriod(window, carryIn)
+                    );
+                    yield* refreshRecentPeriods(budget);
+
+                    const lastClosedWindow = windows.at(-1);
+
+                    if (isDefined(lastClosedWindow)) {
+                        yield* tuneLimits(budget, categoryLimits, lastClosedWindow, now);
+                    }
+                },
+                effect => Db.transaction(effect)
+            )
         };
     })
 }) {
     static readonly layer = Layer.effect(BudgetPeriodCloseService, BudgetPeriodCloseService.make).pipe(
-        Layer.provide([BudgetRepository.layer, BudgetCategoryLimitRepository.layer, BudgetPeriodSnapshotRepository.layer])
+        Layer.provide([
+            BudgetRepository.layer,
+            BudgetCategoryLimitRepository.layer,
+            BudgetPeriodSnapshotRepository.layer,
+            BudgetLimitChangeRepository.layer
+        ])
     );
 }
