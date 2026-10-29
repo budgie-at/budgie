@@ -70,4 +70,15 @@ layer(TestLayer)('BudgetService', it => {
             expect(monthly.periodAnchorDate).toBeNull();
         })
     );
+
+    it.effect('defaults the anchor when an update changes the cadence without one', () =>
+        Effect.gen(function* () {
+            const budgetService = yield* BudgetService;
+            const monthly = yield* createTestBudget();
+
+            const biweekly = yield* budgetService.updateBudget(monthly.id, { period: BudgetPeriodEnum.BIWEEKLY });
+
+            expect(biweekly.periodAnchorDate?.getDay()).toBe(1);
+        })
+    );
 });

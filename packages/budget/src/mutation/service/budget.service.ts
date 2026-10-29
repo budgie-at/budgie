@@ -86,7 +86,14 @@ export class BudgetService extends Context.Service<BudgetService>()('@budgie/bud
             updateBudget: Effect.fn('BudgetService.updateBudget')(
                 function* (id: number, input: BudgetUpdateInputInterface) {
                     const { categoryLimits, ...budgetFields } = input;
-                    const updatedBudget = yield* budgetRepository.update(id, budgetFields);
+                    const periodAnchorDate =
+                        isDefined(budgetFields.period) && !isDefined(budgetFields.periodAnchorDate)
+                            ? defaultPeriodAnchorDate(budgetFields.period, new Date())
+                            : budgetFields.periodAnchorDate;
+                    const updatedBudget = yield* budgetRepository.update(id, {
+                        ...budgetFields,
+                        ...(isDefined(periodAnchorDate) && { periodAnchorDate })
+                    });
 
                     yield* syncCategoryLimits(id, categoryLimits);
 
