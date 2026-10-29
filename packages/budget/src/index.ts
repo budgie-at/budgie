@@ -44,3 +44,8 @@ export type {
     BudgetEffectiveCategoryLimitInterface,
     BudgetEffectiveLimitsInterface
 } from './rollover/interface/budget-effective-limits.interface';
+
+export { BudgetSinkingFundRepository } from './fund/repository/budget-sinking-fund.repository';
+export { BudgetLimitChangeRepository } from './tuning/repository/budget-limit-change.repository';
+export type { BudgetCreateInputInterface } from './mutation/interface/budget-create-input.interface';
+export type { BudgetUpdateInputInterface } from './mutation/interface/budget-update-input.interface';

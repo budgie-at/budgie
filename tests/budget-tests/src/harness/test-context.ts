@@ -1,5 +1,5 @@
 import { buildTestDb, makeTestPlatformLayer, TestSeedService } from '@budgie-at/test-kit';
-import { BudgetCategoryLimitRepository, BudgetRepository, BudgetService } from '@budgie/budget';
+import { BudgetCategoryLimitRepository, BudgetRepository, BudgetService, BudgetSinkingFundRepository } from '@budgie/budget';
 import { StatisticsRepository } from '@budgie/contracts';
 import * as Clock from 'effect/Clock';
 import * as Layer from 'effect/Layer';
@@ -14,5 +14,6 @@ export const TestLayer = Layer.mergeAll(
     BudgetService.layer,
     BudgetRepository.layer,
     BudgetCategoryLimitRepository.layer,
+    BudgetSinkingFundRepository.layer,
     StatisticsRepository.layer
 ).pipe(Layer.provideMerge(makeTestPlatformLayer(testDb)), Layer.provideMerge(Layer.succeed(Clock.Clock, Clock.Clock.defaultValue())));
