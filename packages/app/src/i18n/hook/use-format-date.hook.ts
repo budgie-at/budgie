@@ -13,6 +13,8 @@ export const useFormatDate = () => {
 
     const formatShortMonth = (date: Date | string) => intl.formatDate(date, { month: 'short' });
 
+    const formatYear = (date: Date | string) => intl.formatDate(date, { year: 'numeric' });
+
     const formatWeekday = (date: Date | string) => intl.formatDate(date, { weekday: 'long' });
 
     const formatFullMonth = (date: Date | string) => intl.formatDate(date, { month: 'long' });
@@ -29,6 +31,7 @@ export const useFormatDate = () => {
     return {
         formatMonthAndDay,
         formatShortMonth,
+        formatYear,
         formatWeekday,
         formatFullMonth,
         formatMonthAndYear,

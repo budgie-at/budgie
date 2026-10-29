@@ -83,14 +83,14 @@ export const BudgetDetails = ({ budget }: Props) => {
         >
             <BudgetHighlightContext value={highlightContextValue}>
                 <View ref={contentRef} collapsable={false} className="gap-y-3xl">
-                    <BudgetPeriodRecap budgetId={budget.id} currencySymbol={currencySymbol} />
+                    <BudgetPeriodRecap budgetId={budget.id} period={budget.period} currencySymbol={currencySymbol} />
 
                     <LoadingContent isLoading={isLoading}>
                         <BudgetVerdict projection={projection} currencySymbol={currencySymbol} onPaceHintPress={setHighlightTarget} />
                     </LoadingContent>
 
                     <LoadingContent isLoading={isLoading}>
-                        <BudgetDayStrip projection={projection} currencySymbol={currencySymbol} />
+                        <BudgetDayStrip projection={projection} period={budget.period} currencySymbol={currencySymbol} />
                     </LoadingContent>
 
                     <LoadingContent isLoading={isLoading}>
@@ -111,6 +111,7 @@ export const BudgetDetails = ({ budget }: Props) => {
 
                     <BudgetHistorySection
                         budgetId={budget.id}
+                        period={budget.period}
                         overallLimit={projection.overall.limit}
                         currentSpent={projection.overall.spent}
                         currentPeriodStart={periodWindow.periodStart}

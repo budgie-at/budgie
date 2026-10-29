@@ -12,27 +12,27 @@ import { Icon } from '../../../@generic/component/icon/icon';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
-import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { BudgetSelector } from '../../budget.selector';
-import { getBudgetPeriodLabelDate } from '../../utils/get-budget-period-label-date.util';
+import { useFormatBudgetPeriod } from '../../hooks/use-format-budget-period.hook';
 import { BudgetPeriodRecapRollover } from '../budget-period-recap-rollover/budget-period-recap-rollover';
 
-import type { BudgetPeriodSnapshotWithCategoriesEntityInterface } from '@budgie/contracts';
+import type { BudgetPeriodEnum, BudgetPeriodSnapshotWithCategoriesEntityInterface } from '@budgie/contracts';
 
 interface Props {
     readonly snapshot: BudgetPeriodSnapshotWithCategoriesEntityInterface;
+    readonly period: BudgetPeriodEnum;
     readonly currencySymbol: string;
 }
 
-export const BudgetPeriodRecapCard = ({ snapshot, currencySymbol }: Props) => {
-    const { formatFullMonth } = useFormatDate();
+export const BudgetPeriodRecapCard = ({ snapshot, period, currencySymbol }: Props) => {
+    const { formatFullPeriod } = useFormatBudgetPeriod();
     const formatDigits = useDisplayFormatDigits();
     const { t } = useLingui();
 
     const isUnder = snapshot.overallSpent <= snapshot.overallLimit;
-    const month = formatFullMonth(getBudgetPeriodLabelDate(snapshot.periodStart, snapshot.periodEnd));
+    const periodLabel = formatFullPeriod(period, snapshot.periodStart, snapshot.periodEnd);
     const amount = formatDigits(convertFromMicroUnits(Math.abs(snapshot.overallLimit - snapshot.overallSpent)), currencySymbol);
-    const title = isUnder ? t`${month} closed ${amount} under` : t`${month} closed ${amount} over`;
+    const title = isUnder ? t`${periodLabel} closed ${amount} under` : t`${periodLabel} closed ${amount} over`;
     const onBudgetCategoryCount = snapshot.categories.filter(category => category.spent <= category.limitAmount).length;
     const categoryCount = snapshot.categories.length;
     const toneClassName = isUnder ? 'text-positive-foreground' : 'text-destructive-foreground';
