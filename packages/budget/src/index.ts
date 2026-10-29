@@ -65,3 +65,6 @@ export { BUDGET_TUNING_PERIOD_COUNT } from './tuning/constant/budget-tuning-peri
 export type { BudgetLimitProposalInterface } from './tuning/interface/budget-limit-proposal.interface';
 export type { BudgetTuneLimitsInterface } from './tuning/interface/budget-tune-limits.interface';
 export type { BudgetTuneSnapshotInterface } from './tuning/interface/budget-tune-snapshot.interface';
+export { computeFundDueWindow } from './fund/utils/compute-fund-due-window.util';
+export { computeFundSetAside } from './fund/utils/compute-fund-set-aside.util';
+export type { BudgetFundScheduleInterface } from './fund/interface/budget-fund-schedule.interface';
