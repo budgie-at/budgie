@@ -68,3 +68,9 @@ export type { BudgetTuneSnapshotInterface } from './tuning/interface/budget-tune
 export { computeFundDueWindow } from './fund/utils/compute-fund-due-window.util';
 export { computeFundSetAside } from './fund/utils/compute-fund-set-aside.util';
 export type { BudgetFundScheduleInterface } from './fund/interface/budget-fund-schedule.interface';
+export { matchFundSpend } from './fund/utils/match-fund-spend.util';
+export { applyFundDraws } from './fund/utils/apply-fund-draws.util';
+export { toBudgetCurrencyEntries } from './spent/utils/to-budget-currency-entries.util';
+export type { BudgetFundDrawInterface } from './fund/interface/budget-fund-draw.interface';
+export type { BudgetFundMatchInterface } from './fund/interface/budget-fund-match.interface';
+export type { BudgetSpentLedgerEntryInterface } from './spent/interface/budget-spent-ledger-entry.interface';
