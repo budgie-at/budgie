@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.126.5](https://github.com/budgie-at/budgie/compare/v6.126.4...v6.126.5) (2026-10-29)
+
+**Note:** Version bump only for package @budgie/recurring
+
+
+
+
+
+## [6.126.4](https://github.com/budgie-at/budgie/compare/v6.126.3...v6.126.4) (2026-10-29)
+
+### Bug Fixes
+
+* **app,recurring:** keep same-second renames when deduping, read series in id order ([34d2184](https://github.com/budgie-at/budgie/commit/34d2184deb2ddb42cdc647d10053128d10f9b100))
+* **app:** keep user-touched recurring series when deduping ([78de8a7](https://github.com/budgie-at/budgie/commit/78de8a75a379372600cb58961565979139fb236f))
+* **recurring:** stop re-inserting variable-amount recurring series ([db1d6d2](https://github.com/budgie-at/budgie/commit/db1d6d284777dc020a7132e888298fbaa38b7b4b))
+
+
 # [6.126.0](https://github.com/budgie-at/budgie/compare/v6.125.3...v6.126.0) (2026-10-29)
 
 ### Features

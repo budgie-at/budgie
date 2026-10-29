@@ -1,4 +1,8 @@
+import { TransactionCategorizeInboxRepository } from '@budgie/categorization';
 import {
+    CategoryEntityTable,
+    CategorySourceEnum,
+    DEFAULT_TRANSACTION_FILTER,
     DebtEventDirectionEnum,
     DebtEventEntityTable,
     DebtEventSourceEnum,
@@ -98,7 +102,80 @@ const fetchManualDebtEventDates = Effect.fnUntraced(function* (debtAccountId: nu
     return rows;
 });
 
+const fetchEntryCategory = Effect.fnUntraced(function* (transactionId: number) {
+    const [entry] = yield* testDb
+        .select({ categoryId: TransactionEntryEntityTable.categoryId, categorySource: TransactionEntryEntityTable.categorySource })
+        .from(TransactionEntryEntityTable)
+        .where(eq(TransactionEntryEntityTable.transactionId, transactionId));
+
+    return entry;
+});
+
+const setEntryCategory = (transactionId: number, categoryId: number | null, categorySource: CategorySourceEnum) =>
+    testDb
+        .update(TransactionEntryEntityTable)
+        .set({ categoryId, categorySource })
+        .where(eq(TransactionEntryEntityTable.transactionId, transactionId));
+
 describe('installment plan', () => {
+    it.effect('propagates the user category of one part to uncategorized and machine-guessed siblings and to later parts', () =>
+        Effect.gen(function* () {
+            const installmentPlanService = yield* InstallmentPlanService;
+            const inboxRepository = yield* TransactionCategorizeInboxRepository;
+            const categories = yield* testDb.select({ id: CategoryEntityTable.id }).from(CategoryEntityTable);
+            const [userCategory, aiCategory, otherUserCategory] = categories.map(category => category.id);
+            const card = yield* seedBankSyncAccount('Black', ExternalSourceEnum.MONOBANK, 'UA-category');
+            const first = yield* seedPart(card.id, 'Платіж Tech Shop', 100, new Date(2026, 7, 12, 10));
+            const second = yield* seedPart(card.id, 'Щомісячний платіж Tech Shop', 100, new Date(2026, 8, 12, 10));
+            const third = yield* seedPart(card.id, 'Щомісячний платіж Tech Shop', 100, new Date(2026, 9, 12, 10));
+            const { accountId } = yield* convert(first.id, 4, 400);
+
+            yield* setEntryCategory(first.id, aiCategory, CategorySourceEnum.AI);
+            yield* setEntryCategory(second.id, userCategory, CategorySourceEnum.USER);
+            yield* installmentPlanService.attachDueParts();
+
+            expect(yield* fetchEntryCategory(first.id)).toEqual({
+                categoryId: userCategory,
+                categorySource: CategorySourceEnum.DEBT_SETTLEMENT
+            });
+            expect(yield* fetchEntryCategory(second.id)).toEqual({ categoryId: userCategory, categorySource: CategorySourceEnum.USER });
+            expect(yield* fetchEntryCategory(third.id)).toEqual({
+                categoryId: userCategory,
+                categorySource: CategorySourceEnum.DEBT_SETTLEMENT
+            });
+
+            yield* setEntryCategory(third.id, otherUserCategory, CategorySourceEnum.USER);
+            yield* installmentPlanService.attachDueParts();
+
+            expect(yield* fetchEntryCategory(third.id)).toEqual({ categoryId: otherUserCategory, categorySource: CategorySourceEnum.USER });
+
+            const fourth = yield* seedPart(card.id, 'Щомісячний платіж Tech Shop', 100, new Date(2026, 10, 12, 10));
+
+            yield* installmentPlanService.attachDueParts();
+
+            expect(yield* fetchAttachedTransactionIds(accountId)).toContain(fourth.id);
+            expect((yield* fetchEntryCategory(fourth.id)).categoryId).toBe(otherUserCategory);
+
+            const inboxIds = (yield* inboxRepository.findUncategorizedRows(DEFAULT_TRANSACTION_FILTER)).map(row => row.transactionId);
+
+            expect(inboxIds).not.toContain(fourth.id);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('keeps an uncategorized installment part in the categorize inbox while no sibling is categorized', () =>
+        Effect.gen(function* () {
+            const inboxRepository = yield* TransactionCategorizeInboxRepository;
+            const card = yield* seedBankSyncAccount('Black', ExternalSourceEnum.MONOBANK, 'UA-inbox');
+            const first = yield* seedPart(card.id, 'Платіж Tech Shop', 100, new Date(2026, 7, 12, 10));
+
+            yield* convert(first.id, 3, 300);
+
+            const inboxIds = (yield* inboxRepository.findUncategorizedRows(DEFAULT_TRANSACTION_FILTER)).map(row => row.transactionId);
+
+            expect(inboxIds).toContain(first.id);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
     it.effect('converts the itbox first part, attaches existing and synced parts and keeps their category', () =>
         Effect.gen(function* () {
             const card = yield* seedBankSyncAccount('Black', ExternalSourceEnum.MONOBANK, 'UA-itbox');

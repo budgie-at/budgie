@@ -355,7 +355,11 @@ export class InstallmentPlanService extends Context.Service<InstallmentPlanServi
 
                     yield* Effect.forEach(
                         activePlanIds,
-                        planId => Effect.andThen(cancelRefundedPlan(planId), attachPlanDueParts(planId, activePlanIds)),
+                        planId =>
+                            cancelRefundedPlan(planId).pipe(
+                                Effect.andThen(attachPlanDueParts(planId, activePlanIds)),
+                                Effect.andThen(transactionDebtSettlementService.inheritInstallmentCategory(planId))
+                            ),
                         { discard: true }
                     );
                 },

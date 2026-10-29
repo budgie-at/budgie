@@ -3,6 +3,32 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.126.5](https://github.com/budgie-at/budgie/compare/v6.126.4...v6.126.5) (2026-10-29)
+
+### Bug Fixes
+
+* **app:** unlock immediately after Face ID success ([fa048b2](https://github.com/budgie-at/budgie/commit/fa048b2baec47ed3fb0a41e22257be1ace59be14))
+
+
+## [6.126.4](https://github.com/budgie-at/budgie/compare/v6.126.3...v6.126.4) (2026-10-29)
+
+### Bug Fixes
+
+* **app,recurring:** keep same-second renames when deduping, read series in id order ([34d2184](https://github.com/budgie-at/budgie/commit/34d2184deb2ddb42cdc647d10053128d10f9b100))
+* **app:** dismiss the presented scanner container from the delegate callbacks ([9e88e6b](https://github.com/budgie-at/budgie/commit/9e88e6b6284559010eac8c6a54491c3b66b9970f))
+* **app:** drop drifted burst copies when deduping recurring series ([70a23f1](https://github.com/budgie-at/budgie/commit/70a23f179aa6b8431030493aa48056bcbf52a3b1))
+* **app:** host the document camera in a container instead of subclassing it ([011a227](https://github.com/budgie-at/budgie/commit/011a22776ca0b826f4ece5cf71e6854b674ac1b3))
+* **app:** keep user-touched recurring series when deduping ([78de8a7](https://github.com/budgie-at/budgie/commit/78de8a75a379372600cb58961565979139fb236f))
+* **recurring:** stop re-inserting variable-amount recurring series ([db1d6d2](https://github.com/budgie-at/budgie/commit/db1d6d284777dc020a7132e888298fbaa38b7b4b))
+
+
+## [6.126.3](https://github.com/budgie-at/budgie/compare/v6.126.2...v6.126.3) (2026-10-29)
+
+### Bug Fixes
+
+* **app:** restore the global colour tokens changed in v6.126.0 ([6198cb7](https://github.com/budgie-at/budgie/commit/6198cb7d4b72c4df78730f870ebf433a1ef4ac84))
+
+
 ## [6.126.2](https://github.com/budgie-at/budgie/compare/v6.126.1...v6.126.2) (2026-10-29)
 
 ### Bug Fixes

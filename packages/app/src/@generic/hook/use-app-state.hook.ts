@@ -7,21 +7,12 @@ export const useAppState = (onChange: (isActive: boolean) => void) => {
     const appStateRef = useRef<AppStateStatus>(AppState.currentState);
 
     const handleAppStateChange = useEffectEvent((nextAppState: AppStateStatus) => {
-        const previousAppState = appStateRef.current;
-        const movedToActive = previousAppState !== 'active' && nextAppState === 'active';
-        const movedFromActive = previousAppState === 'active' && nextAppState !== 'active';
-
-        appStateRef.current = nextAppState;
-
-        if (movedToActive) {
-            onChange(true);
-
+        if (nextAppState === 'inactive' || nextAppState === appStateRef.current) {
             return;
         }
 
-        if (movedFromActive) {
-            onChange(false);
-        }
+        appStateRef.current = nextAppState;
+        onChange(nextAppState === 'active');
     });
 
     useEffect(() => {
