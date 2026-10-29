@@ -81,3 +81,4 @@ export type { BudgetFundSettlementInterface } from './fund/interface/budget-fund
 export { computeFundReservations } from './fund/utils/compute-fund-reservations.util';
 export type { BudgetReservationInterface } from './projection/interface/budget-reservation.interface';
 export type { BudgetFundReservationSourceInterface } from './fund/interface/budget-fund-reservation-source.interface';
+export { BudgetFundSpendService } from './fund/service/budget-fund-spend.service';

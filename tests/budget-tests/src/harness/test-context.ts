@@ -1,6 +1,7 @@
 import { buildTestDb, makeTestPlatformLayer, TestSeedService } from '@budgie-at/test-kit';
 import {
     BudgetCategoryLimitRepository,
+    BudgetFundSpendService,
     BudgetLimitChangeRepository,
     BudgetPeriodCloseService,
     BudgetPeriodSnapshotRepository,
@@ -26,5 +27,6 @@ export const TestLayer = Layer.mergeAll(
     BudgetPeriodCloseService.layer,
     BudgetSinkingFundRepository.layer,
     BudgetLimitChangeRepository.layer,
+    BudgetFundSpendService.layer,
     StatisticsRepository.layer
 ).pipe(Layer.provideMerge(makeTestPlatformLayer(testDb)), Layer.provideMerge(Layer.succeed(Clock.Clock, Clock.Clock.defaultValue())));

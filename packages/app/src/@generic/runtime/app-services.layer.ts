@@ -1,6 +1,7 @@
 import { TranslationLlmService, VoiceLlmService } from '@budgie/ai';
 import {
     BudgetCategoryLimitRepository,
+    BudgetFundSpendService,
     BudgetLimitChangeRepository,
     BudgetPeriodCloseService,
     BudgetPeriodSnapshotRepository,
@@ -163,6 +164,7 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     BudgetPeriodCloseService.layer,
     BudgetSinkingFundRepository.layer,
     BudgetLimitChangeRepository.layer,
+    BudgetFundSpendService.layer,
     RecurringService.layer,
     AccountBalanceIncrementalService.layer,
     AccountTransferConversionService.layer,
