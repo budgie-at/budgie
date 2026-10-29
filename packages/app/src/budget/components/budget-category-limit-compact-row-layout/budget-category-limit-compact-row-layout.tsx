@@ -14,7 +14,7 @@ export const BudgetCategoryLimitCompactRowLayout = ({ amountInput, icon, subtitl
     <View collapsable={false} className="flex-row items-center gap-x-md bg-primary-reverse px-md py-sm rounded-2xl">
         {icon}
         <View className="flex-1 items-start">
-            <Text className="text-primary text-md" numberOfLines={1} testID={testID}>
+            <Text className="self-stretch text-primary text-md" numberOfLines={1} testID={testID}>
                 {title}
             </Text>
             {subtitle}

@@ -9,6 +9,9 @@ import { cn } from '../../../@generic/utils/cn.util';
 import { BudgetFormValues } from '../../constant/budget-form-schema.constant';
 import { BudgetRolloverModeMenuItem } from '../budget-rollover-mode-menu-item/budget-rollover-mode-menu-item';
 
+const TRIGGER_SLOP = 12;
+const TRIGGER_HIT_SLOP = { top: 0, bottom: TRIGGER_SLOP, left: TRIGGER_SLOP, right: TRIGGER_SLOP };
+
 const ROLLOVER_MODE_ICONS: Record<BudgetRolloverModeEnum, UserIconNameEnum> = {
     [BudgetRolloverModeEnum.NONE]: UserIconNameEnum.Ban,
     [BudgetRolloverModeEnum.SURPLUS]: UserIconNameEnum.PiggyBank,
@@ -42,6 +45,7 @@ export const BudgetRolloverModeMenu = ({ name }: Props) => {
 
         return (
             <ActionsMenu
+                hitSlop={TRIGGER_HIT_SLOP}
                 trigger={trigger}
                 triggerClassName={TRIGGER_CLASS_NAME}
                 accessibilityLabel={t`Rollover, ${currentLabel}. Double tap to change.`}
