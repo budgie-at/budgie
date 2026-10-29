@@ -118,11 +118,15 @@ export class BudgetService extends Context.Service<BudgetService>()('@budgie/bud
                         isDefined(existingBudget) &&
                         isDefined(budgetFields.otherLimit) &&
                         existingBudget.otherLimit !== budgetFields.otherLimit;
-                    const updatedBudget = yield* budgetRepository.update(id, {
+                    const budgetUpdate = {
                         ...budgetFields,
                         ...(hasOtherLimitChanged && { otherLimitUserEditedAt: editedAt }),
                         ...(isDefined(periodAnchorDate) && { periodAnchorDate })
-                    });
+                    };
+                    const updatedBudget =
+                        isEmptyArray(Object.keys(budgetUpdate)) && isDefined(existingBudget)
+                            ? existingBudget
+                            : yield* budgetRepository.update(id, budgetUpdate);
 
                     yield* syncCategoryLimits(id, categoryLimits, editedAt);
 
