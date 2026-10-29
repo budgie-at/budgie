@@ -107,6 +107,7 @@ export class BudgetRepository extends Context.Service<BudgetRepository>()('@budg
                 Db.query(db => db.update(BudgetEntityTable).set(input).where(eq(BudgetEntityTable.id, id)).returning()).pipe(
                     Effect.map(([budget]) => budget)
                 ),
+            findById: (id: number) => Db.query(db => db.query.BudgetEntityTable.findFirst({ where: { id, deletedAt: { isNull: true } } })),
             delete: (id: number) =>
                 Db.query(db =>
                     db

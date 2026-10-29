@@ -32,7 +32,9 @@ export class BudgetService extends Context.Service<BudgetService>()('@budgie/bud
                         (existing.limitAmount !== next.limitAmount ||
                             (isDefined(next.rolloverMode) && existing.rolloverMode !== next.rolloverMode));
 
-                    return hasChanged ? { id: existing.id, limitAmount: next.limitAmount, rolloverMode: next.rolloverMode } : null;
+                    return hasChanged
+                        ? { id: existing.id, limitAmount: next.limitAmount, rolloverMode: next.rolloverMode, userEditedAt: new Date() }
+                        : null;
                 })
                 .filter(isDefined);
 
@@ -44,7 +46,9 @@ export class BudgetService extends Context.Service<BudgetService>()('@budgie/bud
                 return;
             }
 
-            yield* budgetCategoryLimitRepository.bulkCreate(categoryLimits.map(limit => ({ budgetId, ...limit })));
+            yield* budgetCategoryLimitRepository.bulkCreate(
+                categoryLimits.map(limit => ({ budgetId, ...limit, userEditedAt: new Date() }))
+            );
         });
 
         const syncCategoryLimits = Effect.fnUntraced(function* (
@@ -63,7 +67,7 @@ export class BudgetService extends Context.Service<BudgetService>()('@budgie/bud
             const toDelete = existingLimits.filter(limit => !nextCategoryIds.has(limit.categoryId)).map(limit => limit.id);
 
             if (isNotEmptyArray(toCreate)) {
-                yield* budgetCategoryLimitRepository.bulkCreate(toCreate.map(limit => ({ budgetId, ...limit })));
+                yield* budgetCategoryLimitRepository.bulkCreate(toCreate.map(limit => ({ budgetId, ...limit, userEditedAt: new Date() })));
             }
 
             yield* budgetCategoryLimitRepository.bulkUpdate([...toUpdate]);
@@ -75,7 +79,11 @@ export class BudgetService extends Context.Service<BudgetService>()('@budgie/bud
                 function* (input: BudgetCreateInputInterface) {
                     const { categoryLimits, ...budgetFields } = input;
                     const periodAnchorDate = budgetFields.periodAnchorDate ?? defaultPeriodAnchorDate(budgetFields.period, new Date());
-                    const createdBudget = yield* budgetRepository.create({ ...budgetFields, periodAnchorDate });
+                    const createdBudget = yield* budgetRepository.create({
+                        ...budgetFields,
+                        periodAnchorDate,
+                        otherLimitUserEditedAt: new Date()
+                    });
 
                     yield* createCategoryLimits(createdBudget.id, categoryLimits);
 
@@ -90,8 +98,14 @@ export class BudgetService extends Context.Service<BudgetService>()('@budgie/bud
                         isDefined(budgetFields.period) && !isDefined(budgetFields.periodAnchorDate)
                             ? defaultPeriodAnchorDate(budgetFields.period, new Date())
                             : budgetFields.periodAnchorDate;
+                    const existingBudget = yield* budgetRepository.findById(id);
+                    const hasOtherLimitChanged =
+                        isDefined(existingBudget) &&
+                        isDefined(budgetFields.otherLimit) &&
+                        existingBudget.otherLimit !== budgetFields.otherLimit;
                     const updatedBudget = yield* budgetRepository.update(id, {
                         ...budgetFields,
+                        ...(hasOtherLimitChanged && { otherLimitUserEditedAt: new Date() }),
                         ...(isDefined(periodAnchorDate) && { periodAnchorDate })
                     });
 

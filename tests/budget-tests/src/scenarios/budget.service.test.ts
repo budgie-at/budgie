@@ -4,7 +4,7 @@ import { expect, layer } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
 import { createTestBudget } from '../harness/create-test-budget';
-import { TestLayer } from '../harness/test-context';
+import { TestLayer, testSeedService } from '../harness/test-context';
 
 const INITIAL_OVERALL_LIMIT = 100_000_000;
 const INITIAL_OTHER_LIMIT = 20_000_000;
@@ -79,6 +79,43 @@ layer(TestLayer)('BudgetService', it => {
             const biweekly = yield* budgetService.updateBudget(monthly.id, { period: BudgetPeriodEnum.BIWEEKLY });
 
             expect(biweekly.periodAnchorDate?.getDay()).toBe(1);
+        })
+    );
+
+    it.effect('stamps userEditedAt on the form save path and leaves it untouched when tuning', () =>
+        Effect.gen(function* () {
+            const budgetCategoryLimitRepository = yield* BudgetCategoryLimitRepository;
+            const category = yield* testSeedService.category('Groceries');
+            const budget = yield* createTestBudget({ categoryLimits: [{ categoryId: category.id, limitAmount: FIRST_INITIAL_LIMIT }] });
+            const created = (yield* budgetCategoryLimitRepository.getByBudget(budget.id)).at(0);
+
+            expect(created?.userEditedAt).toBeInstanceOf(Date);
+
+            yield* budgetCategoryLimitRepository.applyTunedLimits([{ id: created?.id ?? 0, limitAmount: FIRST_UPDATED_LIMIT }]);
+
+            const tuned = (yield* budgetCategoryLimitRepository.getByBudget(budget.id)).at(0);
+
+            expect(tuned?.limitAmount).toBe(FIRST_UPDATED_LIMIT);
+            expect(tuned?.userEditedAt?.getTime()).toBe(created?.userEditedAt?.getTime());
+        })
+    );
+
+    it.effect('stamps otherLimitUserEditedAt only when the form changes the Other limit', () =>
+        Effect.gen(function* () {
+            const budgetRepository = yield* BudgetRepository;
+            const budgetService = yield* BudgetService;
+            const budget = yield* createTestBudget({ otherLimit: FIRST_INITIAL_LIMIT });
+
+            expect(budget.otherLimitUserEditedAt).toBeInstanceOf(Date);
+
+            yield* budgetRepository.update(budget.id, { otherLimitUserEditedAt: null });
+            yield* budgetService.updateBudget(budget.id, { name: 'Renamed' });
+
+            expect((yield* budgetRepository.findById(budget.id))?.otherLimitUserEditedAt).toBeNull();
+
+            yield* budgetService.updateBudget(budget.id, { otherLimit: FIRST_UPDATED_LIMIT });
+
+            expect((yield* budgetRepository.findById(budget.id))?.otherLimitUserEditedAt).toBeInstanceOf(Date);
         })
     );
 });
