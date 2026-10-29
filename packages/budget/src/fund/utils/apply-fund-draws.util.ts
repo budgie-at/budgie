@@ -1,3 +1,5 @@
+import { isDefined } from '@rnw-community/shared';
+
 import type { BudgetSpentLedgerEntryInterface } from '../../spent/interface/budget-spent-ledger-entry.interface';
 import type { BudgetFundDrawInterface } from '../interface/budget-fund-draw.interface';
 
@@ -11,7 +13,15 @@ export const applyFundDraws = <T extends Pick<BudgetSpentLedgerEntryInterface, '
         drawnByEntry.set(draw.entryId, (drawnByEntry.get(draw.entryId) ?? 0) + draw.amount);
     }
 
-    return entries
-        .map(entry => ({ ...entry, amount: entry.amount - (drawnByEntry.get(entry.entryId) ?? 0) }))
-        .filter(entry => entry.amount > 0);
+    return entries.flatMap(entry => {
+        const drawn = drawnByEntry.get(entry.entryId);
+
+        if (!isDefined(drawn)) {
+            return [entry];
+        }
+
+        const remaining = entry.amount - drawn;
+
+        return remaining > 0 ? [{ ...entry, amount: remaining }] : [];
+    });
 };

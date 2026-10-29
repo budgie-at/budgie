@@ -23,9 +23,12 @@ export const buildPeriodSnapshotRows = (
             spent: Math.max((spentByCategory.get(limit.categoryId) ?? 0) - covered, 0)
         };
     });
-    const limitedCovered = categories.reduce((total, category) => total + category.fundCovered, 0);
+    const limitedCovered = categoryLimits.reduce(
+        (total, limit) => total + Math.min(fundCovered.byCategory.get(limit.categoryId) ?? 0, spentByCategory.get(limit.categoryId) ?? 0),
+        0
+    );
     const limitedSpent = categories.reduce((total, category) => total + category.spent, 0);
-    const overallSpent = spent.spentOverall - limitedCovered - fundCovered.other;
+    const overallSpent = Math.max(0, spent.spentOverall - limitedCovered - fundCovered.other);
 
     return {
         categories,

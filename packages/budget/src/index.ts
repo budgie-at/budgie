@@ -82,6 +82,8 @@ export { settleFund } from './fund/utils/settle-fund.util';
 export type { BudgetFundContributionInterface } from './fund/interface/budget-fund-contribution.interface';
 export type { BudgetFundSettlementInterface } from './fund/interface/budget-fund-settlement.interface';
 export { computeFundReservations } from './fund/utils/compute-fund-reservations.util';
+export type { BudgetFundReservationsInputInterface } from './fund/interface/budget-fund-reservations-input.interface';
+export type { BudgetFundReservationsInterface } from './fund/interface/budget-fund-reservations.interface';
 export type { BudgetReservationInterface } from './projection/interface/budget-reservation.interface';
 export type { BudgetFundReservationSourceInterface } from './fund/interface/budget-fund-reservation-source.interface';
 export { BudgetFundSpendService } from './fund/service/budget-fund-spend.service';

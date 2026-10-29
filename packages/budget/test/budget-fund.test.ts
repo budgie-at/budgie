@@ -188,6 +188,21 @@ it.effect('removes the drawn part of an entry and drops entries that are fully c
     })
 );
 
+it.effect('keeps entries without a draw unchanged, even when they are zero or negative', () =>
+    Effect.sync(() => {
+        const entries = [
+            { entryId: 1, amount: 0 },
+            { entryId: 2, amount: -50 },
+            { entryId: 3, amount: 100 }
+        ];
+
+        expect(applyFundDraws(entries, [{ fundId: 1, entryId: 3, amount: 100 }])).toEqual([
+            { entryId: 1, amount: 0 },
+            { entryId: 2, amount: -50 }
+        ]);
+    })
+);
+
 it.effect('converts spent rows to the budget currency and marks them as converted', () =>
     Effect.sync(() => {
         const operatedAt = new Date(2026, OCTOBER, 3);
@@ -202,14 +217,14 @@ it.effect('converts spent rows to the budget currency and marks them as converte
 
 it.effect('reserves the set-aside of funds that still need money and skips funded ones', () =>
     Effect.sync(() => {
-        const reservations = computeFundReservations(
+        const {reservations} = computeFundReservations(
             [
                 { id: 1, categoryId: INSURANCE_CATEGORY, ...scheduleOf() },
                 { id: 2, categoryId: 6, ...scheduleOf({ fundedAmount: 1200 }) }
             ],
             OCTOBER_WINDOW,
             MONTHLY_SPEC,
-            []
+            { periodEntries: [], upcomingCharges: [] }
         );
 
         expect(reservations).toEqual([{ fundId: 1, categoryId: INSURANCE_CATEGORY, amount: 400 }]);
@@ -223,10 +238,13 @@ it.effect('reserves nothing once the expense posted inside the due window; the f
     Effect.sync(() => {
         const draws = matchFundSpend([POSTED_EXPENSE], [POSTED_FUND]);
 
-        expect(computeFundReservations([POSTED_FUND], OCTOBER_WINDOW, MONTHLY_SPEC, [])).toEqual([
-            { fundId: 1, categoryId: INSURANCE_CATEGORY, amount: 300 }
-        ]);
-        expect(computeFundReservations([POSTED_FUND], OCTOBER_WINDOW, MONTHLY_SPEC, [POSTED_EXPENSE])).toEqual([]);
+        expect(
+            computeFundReservations([POSTED_FUND], OCTOBER_WINDOW, MONTHLY_SPEC, { periodEntries: [], upcomingCharges: [] }).reservations
+        ).toEqual([{ fundId: 1, categoryId: INSURANCE_CATEGORY, amount: 300 }]);
+        expect(
+            computeFundReservations([POSTED_FUND], OCTOBER_WINDOW, MONTHLY_SPEC, { periodEntries: [POSTED_EXPENSE], upcomingCharges: [] })
+                .reservations
+        ).toEqual([]);
         expect(draws).toEqual([{ fundId: 1, entryId: 1, amount: 600 }]);
         expect(applyFundDraws([POSTED_EXPENSE], draws)).toEqual([{ ...POSTED_EXPENSE, amount: 300 }]);
     })
@@ -238,8 +256,65 @@ it.effect('keeps reserving when the posted spend is another category or outside 
         const outsideWindow = { ...POSTED_EXPENSE, operatedAt: new Date(2026, OCTOBER, 18, 12) };
         const laterFund = { ...POSTED_FUND, dueAt: new Date(2026, DECEMBER, 15) };
 
-        expect(computeFundReservations([POSTED_FUND], OCTOBER_WINDOW, MONTHLY_SPEC, [otherCategory])).toHaveLength(1);
-        expect(computeFundReservations([laterFund], OCTOBER_WINDOW, MONTHLY_SPEC, [outsideWindow])).toHaveLength(1);
+        expect(
+            computeFundReservations([POSTED_FUND], OCTOBER_WINDOW, MONTHLY_SPEC, { periodEntries: [otherCategory], upcomingCharges: [] })
+                .reservations
+        ).toHaveLength(1);
+        expect(
+            computeFundReservations([laterFund], OCTOBER_WINDOW, MONTHLY_SPEC, { periodEntries: [outsideWindow], upcomingCharges: [] })
+                .reservations
+        ).toHaveLength(1);
+    })
+);
+
+it.effect('keeps reserving when an unfunded fund has nothing to draw from the entry in its window', () =>
+    Effect.sync(() => {
+        const unfundedFund = { ...POSTED_FUND, fundedAmount: 0 };
+
+        expect(
+            computeFundReservations([unfundedFund], OCTOBER_WINDOW, MONTHLY_SPEC, { periodEntries: [POSTED_EXPENSE], upcomingCharges: [] })
+                .reservations
+        ).toEqual([{ fundId: 1, categoryId: INSURANCE_CATEGORY, amount: 900 }]);
+    })
+);
+
+const INSURANCE_CHARGE = { date: new Date(2026, OCTOBER, 25), amount: 900, categoryId: INSURANCE_CATEGORY, title: 'Insurance' };
+
+it.effect('lets a fund cover the upcoming charge of the same bill and reserves nothing for it', () =>
+    Effect.sync(() => {
+        const result = computeFundReservations([POSTED_FUND], OCTOBER_WINDOW, MONTHLY_SPEC, {
+            periodEntries: [],
+            upcomingCharges: [INSURANCE_CHARGE]
+        });
+
+        expect(result.upcomingCharges).toEqual([{ ...INSURANCE_CHARGE, amount: 300 }]);
+        expect(result.reservations).toEqual([]);
+    })
+);
+
+it.effect('subtracts the draws of posted entries from the balance a fund can give to upcoming charges', () =>
+    Effect.sync(() => {
+        const posted = { ...POSTED_EXPENSE, amount: 400 };
+        const result = computeFundReservations([POSTED_FUND], OCTOBER_WINDOW, MONTHLY_SPEC, {
+            periodEntries: [posted],
+            upcomingCharges: [INSURANCE_CHARGE]
+        });
+
+        expect(result.upcomingCharges).toEqual([{ ...INSURANCE_CHARGE, amount: 700 }]);
+    })
+);
+
+it.effect('drops a charge the fund covers fully and ignores charges of other categories or outside the due window', () =>
+    Effect.sync(() => {
+        const farCharge = { ...INSURANCE_CHARGE, date: new Date(2026, DECEMBER, 25) };
+        const otherCharge = { ...INSURANCE_CHARGE, categoryId: 6 };
+        const smallCharge = { ...INSURANCE_CHARGE, amount: 500 };
+        const result = computeFundReservations([POSTED_FUND], OCTOBER_WINDOW, MONTHLY_SPEC, {
+            periodEntries: [],
+            upcomingCharges: [smallCharge, otherCharge, farCharge]
+        });
+
+        expect(result.upcomingCharges).toEqual([otherCharge, farCharge]);
     })
 );
 

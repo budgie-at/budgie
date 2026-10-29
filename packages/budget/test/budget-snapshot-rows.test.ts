@@ -42,6 +42,7 @@ it.effect('never lets a category spend go negative when covered exceeds the reco
         });
 
         expect(rows.categories[0]?.spent).toBe(0);
+        expect(rows.overallSpent).toBe(0);
         expect(rows.otherSpent).toBe(0);
     })
 );

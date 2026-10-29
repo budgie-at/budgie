@@ -23,25 +23,23 @@ export class BudgetFundSpendService extends Context.Service<BudgetFundSpendServi
             periodStart: Date,
             nextPeriodStart: Date
         ) {
-            const periodRows = yield* budgetRepository.findBudgetSpentEntries(periodStart, nextPeriodStart, budget.instrumentId);
-            const entries = toBudgetCurrencyEntries(periodRows, budget.instrumentId);
             const funds = yield* budgetSinkingFundRepository.getByBudget(budget.id);
+            const dueWindows = funds.map(fund => computeFundDueWindow(fund.dueAt));
+            const rangeStart = Math.min(periodStart.getTime(), ...dueWindows.map(dueWindow => dueWindow.periodStart.getTime()));
+            const rangeEnd = Math.max(nextPeriodStart.getTime(), ...dueWindows.map(dueWindow => dueWindow.nextPeriodStart.getTime()));
+            const rangeRows = yield* budgetRepository.findBudgetSpentEntries(new Date(rangeStart), new Date(rangeEnd), budget.instrumentId);
+            const rangeEntries = toBudgetCurrencyEntries(rangeRows, budget.instrumentId);
+            const entries = rangeEntries.filter(
+                entry => entry.operatedAt.getTime() >= periodStart.getTime() && entry.operatedAt.getTime() < nextPeriodStart.getTime()
+            );
 
             if (isEmptyArray(funds)) {
                 return { entries, draws: [] };
             }
 
-            const dueWindowRows = yield* Effect.forEach(funds, fund => {
-                const dueWindow = computeFundDueWindow(fund.dueAt);
-
-                return budgetRepository.findBudgetSpentEntries(dueWindow.periodStart, dueWindow.nextPeriodStart, budget.instrumentId);
-            });
-            const dueWindowEntries = [
-                ...new Map(toBudgetCurrencyEntries(dueWindowRows.flat(), budget.instrumentId).map(entry => [entry.entryId, entry])).values()
-            ];
             const periodEntryIds = new Set(entries.map(entry => entry.entryId));
 
-            return { entries, draws: matchFundSpend(dueWindowEntries, funds).filter(draw => periodEntryIds.has(draw.entryId)) };
+            return { entries, draws: matchFundSpend(rangeEntries, funds).filter(draw => periodEntryIds.has(draw.entryId)) };
         });
 
         return {
