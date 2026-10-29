@@ -48,8 +48,10 @@ export const useGetBudgetProjectionQuery = (budget: BudgetEntityInterface): UseG
     const result = useLiveAtomValue(
         budgetProjectionAtom({
             id: budget.id,
+            period: budget.period,
             periodStartDay: budget.periodStartDay,
             useLastDayOfMonth: budget.useLastDayOfMonth,
+            periodAnchorDate: budget.periodAnchorDate,
             instrumentId: budget.instrumentId,
             overallLimit: budget.overallLimit,
             otherLimit: budget.otherLimit,
@@ -63,7 +65,7 @@ export const useGetBudgetProjectionQuery = (budget: BudgetEntityInterface): UseG
 
     return {
         projection: computeBudgetProjection({
-            ...computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, today),
+            ...computePeriodWindow(budget, today),
             now: today,
             overallLimit: budget.overallLimit,
             otherLimit: budget.otherLimit,

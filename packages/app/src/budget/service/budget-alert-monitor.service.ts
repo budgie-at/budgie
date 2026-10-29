@@ -100,9 +100,9 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
         };
 
         const loadSpent = Effect.fn('BudgetAlertMonitorService.loadSpent')(function* (
-            budget: Pick<BudgetEntityInterface, 'periodStartDay' | 'useLastDayOfMonth' | 'instrumentId'>
+            budget: Pick<BudgetEntityInterface, 'period' | 'periodStartDay' | 'useLastDayOfMonth' | 'periodAnchorDate' | 'instrumentId'>
         ) {
-            const { periodStart, nextPeriodStart } = computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, new Date());
+            const { periodStart, nextPeriodStart } = computePeriodWindow(budget, new Date());
             const entries = yield* budgetRepository.findBudgetSpentEntries(periodStart, nextPeriodStart, budget.instrumentId);
 
             return computeSpent(entries, budget.instrumentId);
@@ -242,11 +242,7 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
                     return;
                 }
 
-                const periodStartMs = computePeriodWindow(
-                    budget.periodStartDay,
-                    budget.useLastDayOfMonth,
-                    new Date()
-                ).periodStart.getTime();
+                const periodStartMs = computePeriodWindow(budget, new Date()).periodStart.getTime();
                 const spent = yield* loadSpent(budget);
                 const categoryLimits = yield* budgetCategoryLimitRepository.getByBudget(budget.id);
                 const projection = yield* budgetProjectionService.project(budget, new Date());

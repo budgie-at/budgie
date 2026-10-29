@@ -134,11 +134,18 @@ export class BudgetProjectionService extends Context.Service<BudgetProjectionSer
             project: Effect.fn('BudgetProjectionService.project')(function* (
                 budget: Pick<
                     BudgetEntityInterface,
-                    'id' | 'periodStartDay' | 'useLastDayOfMonth' | 'instrumentId' | 'overallLimit' | 'otherLimit'
+                    | 'id'
+                    | 'period'
+                    | 'periodStartDay'
+                    | 'useLastDayOfMonth'
+                    | 'periodAnchorDate'
+                    | 'instrumentId'
+                    | 'overallLimit'
+                    | 'otherLimit'
                 >,
                 now: Date
             ) {
-                const { periodStart, nextPeriodStart } = computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, now);
+                const { periodStart, nextPeriodStart } = computePeriodWindow(budget, now);
                 const categoryLimits = yield* budgetCategoryLimitRepository.getByBudget(budget.id);
                 const [latestSnapshot] = yield* budgetPeriodSnapshotRepository.findRecent(budget.id, 1);
                 const effectiveLimits = computeEffectiveLimits(latestSnapshot, budget, categoryLimits);

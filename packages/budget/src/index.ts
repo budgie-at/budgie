@@ -6,6 +6,8 @@ export { computeBudgetAlertTriggers, computeBudgetPaceTriggers } from './alert/u
 export type { BudgetAlertTriggerInterface } from './alert/interface/budget-alert-trigger.interface';
 
 export { computePeriodWindow, computeTrailingMonthsWindow, getInclusiveEnd } from './period/utils/budget-period.util';
+export type { BudgetPeriodSpecInterface } from './period/interface/budget-period-spec.interface';
+export type { BudgetPeriodWindowInterface } from './period/interface/budget-period-window.interface';
 
 export { computeSpent, convertEntryAmount } from './spent/utils/budget-spent.util';
 export type { BudgetCategorySpentInterface } from './spent/interface/budget-category-spent.interface';

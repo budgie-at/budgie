@@ -284,7 +284,7 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
                 }
 
                 const now = new Date();
-                const { nextPeriodStart } = computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, now);
+                const { nextPeriodStart } = computePeriodWindow(budget, now);
                 const [instrument, projection] = yield* Effect.all(
                     [instrumentRepository.findById(budget.instrumentId), budgetProjectionService.project(budget, now)],
                     { concurrency: 'unbounded' }

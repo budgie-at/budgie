@@ -1,5 +1,11 @@
 import { BudgetRepository, computePeriodWindow, computeSpent } from '@budgie/budget';
-import { AccountEntityTable, ExchangeRateEntityTable, TransactionEntityTable, TransactionEntryEntityTable } from '@budgie/contracts';
+import {
+    AccountEntityTable,
+    BudgetPeriodEnum,
+    ExchangeRateEntityTable,
+    TransactionEntityTable,
+    TransactionEntryEntityTable
+} from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import * as Atom from 'effect/reactivity/Atom';
@@ -21,16 +27,16 @@ interface UseGetBudgetSpentResult {
 const EMPTY_SPENT: BudgetSpentInterface = { spentOverall: 0, spentByCategory: [] };
 
 export const budgetSpentAtom = Atom.family(
-    (key: Pick<BudgetEntityInterface, 'periodStartDay' | 'useLastDayOfMonth' | 'instrumentId'> & { readonly dayStart: number }) =>
+    (
+        key: Pick<BudgetEntityInterface, 'period' | 'periodStartDay' | 'useLastDayOfMonth' | 'periodAnchorDate' | 'instrumentId'> & {
+            readonly dayStart: number;
+        }
+    ) =>
         databaseQueryAtom(
             [TransactionEntryEntityTable, TransactionEntityTable, AccountEntityTable, ExchangeRateEntityTable],
             Effect.gen(function* () {
                 const budgetRepository = yield* BudgetRepository;
-                const { periodStart, nextPeriodStart } = computePeriodWindow(
-                    key.periodStartDay,
-                    key.useLastDayOfMonth,
-                    new Date(key.dayStart)
-                );
+                const { periodStart, nextPeriodStart } = computePeriodWindow(key, new Date(key.dayStart));
                 const entries = yield* budgetRepository.findBudgetSpentEntries(periodStart, nextPeriodStart, key.instrumentId);
 
                 return computeSpent(entries, key.instrumentId);
@@ -42,8 +48,10 @@ export const useGetBudgetSpentQuery = (budget: BudgetEntityInterface | null): Us
     const today = useToday();
     const result = useLiveAtomValue(
         budgetSpentAtom({
+            period: isDefined(budget) ? budget.period : BudgetPeriodEnum.MONTHLY,
             periodStartDay: isDefined(budget) ? budget.periodStartDay : 1,
             useLastDayOfMonth: isDefined(budget) ? budget.useLastDayOfMonth : false,
+            periodAnchorDate: isDefined(budget) ? budget.periodAnchorDate : null,
             instrumentId: isDefined(budget) ? budget.instrumentId : 0,
             dayStart: new Date(today).setHours(0, 0, 0, 0)
         })

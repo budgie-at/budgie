@@ -29,7 +29,7 @@ export const BudgetSafeToSpendSheet = ({ budget }: Props) => {
     const { upcomingCharges } = projection;
 
     const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
-    const periodEnd = getInclusiveEnd(computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, today).nextPeriodStart);
+    const periodEnd = getInclusiveEnd(computePeriodWindow(budget, today).nextPeriodStart);
     const periodEndLabel = formatMonthAndDay(periodEnd);
 
     const upcomingSection = isNotEmptyArray(upcomingCharges) ? (

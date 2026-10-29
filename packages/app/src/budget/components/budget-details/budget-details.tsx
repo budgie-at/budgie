@@ -43,7 +43,7 @@ const decodeHighlightParams = Schema.decodeUnknownOption(
 export const BudgetDetails = ({ budget }: Props) => {
     const { projection, isLoading } = useGetBudgetProjectionQuery(budget);
     const { instrument } = useGetInstrumentByIdQuery(budget.instrumentId);
-    const periodWindow = computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, useToday());
+    const periodWindow = computePeriodWindow(budget, useToday());
     const periodEnd = getInclusiveEnd(periodWindow.nextPeriodStart);
     const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
     const dateLabel = formatBudgetPeriodLabel(budget, useFormatDate().formatMonthAndDay);

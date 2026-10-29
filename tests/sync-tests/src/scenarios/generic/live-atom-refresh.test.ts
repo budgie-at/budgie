@@ -68,6 +68,7 @@ import {
     AccountDebtTypeEnum,
     AccountEntityTable,
     AccountTypeEnum,
+    BudgetPeriodEnum,
     DEFAULT_TRANSACTION_FILTER,
     Db,
     InstrumentEntityTable,
@@ -149,14 +150,23 @@ const liveAtoms = ({
     budgetCategoryLimits: budgetCategoryLimitsAtom(1),
     budgetProjection: budgetProjectionAtom({
         id: 1,
+        period: BudgetPeriodEnum.MONTHLY,
         periodStartDay: 1,
         useLastDayOfMonth: false,
+        periodAnchorDate: null,
         instrumentId: BASE_INSTRUMENT_ID,
         overallLimit: 100_000_000,
         otherLimit: 0,
         dayStart: NOW
     }),
-    budgetSpent: budgetSpentAtom({ periodStartDay: 1, useLastDayOfMonth: false, instrumentId: BASE_INSTRUMENT_ID, dayStart: NOW }),
+    budgetSpent: budgetSpentAtom({
+        period: BudgetPeriodEnum.MONTHLY,
+        periodStartDay: 1,
+        useLastDayOfMonth: false,
+        periodAnchorDate: null,
+        instrumentId: BASE_INSTRUMENT_ID,
+        dayStart: NOW
+    }),
     uncategorizedRows: uncategorizedRowsAtom(DEFAULT_TRANSACTION_FILTER),
     untaggedRows: untaggedRowsAtom(DEFAULT_TRANSACTION_FILTER),
     categoryEvidence: categoryEvidenceAtom,
