@@ -3,17 +3,15 @@ import {
     BudgetCommittedSourceKindEnum,
     BudgetPeriodSnapshotRepository,
     BudgetRepository,
+    buildPeriodMonths,
     computeBudgetProjection,
     computeEffectiveLimits,
     computePeriodWindow,
-    convertEntryAmount,
-    getInclusiveEnd
+    convertEntryAmount
 } from '@budgie/budget';
 import { AccountDebtTypeEnum, AccountRepository, InstallmentPlanRepository, SettingsRepository } from '@budgie/contracts';
 import { ExchangeRateRepository } from '@budgie/market';
 import { RecurringService } from '@budgie/recurring';
-import { addMonths } from 'date-fns/addMonths';
-import { startOfMonth } from 'date-fns/startOfMonth';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -47,17 +45,6 @@ export class BudgetProjectionService extends Context.Service<BudgetProjectionSer
             return isDefined(exchangeRate) ? exchangeRate.rate : 1;
         });
 
-        const buildPeriodMonths = (periodStart: Date, nextPeriodStart: Date): Date[] => {
-            const lastMonth = startOfMonth(getInclusiveEnd(nextPeriodStart));
-            const months = [startOfMonth(periodStart)];
-
-            while (months[months.length - 1].getTime() < lastMonth.getTime()) {
-                months.push(addMonths(months[months.length - 1], 1));
-            }
-
-            return months;
-        };
-
         const toRecurringCharges = (month: Date, calendar: RecurringCalendarDataInterface, rate: number): BudgetUpcomingChargeInterface[] =>
             [...calendar.forecastedEntriesByDay.values()].flat().map(entry => ({
                 date: new Date(month.getFullYear(), month.getMonth(), entry.dayOfMonth),
@@ -76,7 +63,7 @@ export class BudgetProjectionService extends Context.Service<BudgetProjectionSer
         ) {
             const { defaultInstrumentId } = yield* settingsRepository.getSettings();
             const rate = yield* findRate(defaultInstrumentId, budgetInstrumentId);
-            const calendars = yield* Effect.forEach(buildPeriodMonths(periodStart, nextPeriodStart), month =>
+            const calendars = yield* Effect.forEach(buildPeriodMonths({ periodStart, nextPeriodStart }), month =>
                 Effect.map(recurringService.calendar(month.getFullYear(), month.getMonth(), now), calendar => ({ month, calendar }))
             );
             const postedEntries = calendars.flatMap(({ calendar }) => [...calendar.entriesByDay.values()].flat());
