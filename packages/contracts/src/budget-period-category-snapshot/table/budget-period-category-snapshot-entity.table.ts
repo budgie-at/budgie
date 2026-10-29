@@ -13,6 +13,7 @@ export const BudgetPeriodCategorySnapshotEntityTable = sqliteTable(
             .references(() => BudgetPeriodSnapshotEntityTable.id, { onDelete: 'cascade' }),
         spent: int('spent').notNull(),
         carriedIn: int('carried_in').notNull().default(0),
+        fundCovered: int('fund_covered').notNull().default(0),
         ...getBudgetCategoryLimitColumns()
     }),
     table => [

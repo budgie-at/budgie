@@ -343,6 +343,8 @@ export type { RuleActionCreateEntityInterface } from './rule-action/entity/rule-
 
 export { BudgetPeriodEnum } from './budget/enum/budget-period.enum';
 export { BudgetRolloverModeEnum } from './budget/enum/budget-rollover-mode.enum';
+export { BudgetKindEnum } from './budget/enum/budget-kind.enum';
+export { BudgetLimitSourceEnum } from './budget/enum/budget-limit-source.enum';
 export { BudgetEntityTable } from './budget/table/budget-entity.table';
 export type { BudgetEntityInterface } from './budget/entity/budget-entity.interface';
 export type { BudgetCreateEntityInterface } from './budget/entity/budget-create-entity.interface';
