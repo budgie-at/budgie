@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.126.0](https://github.com/budgie-at/budgie/compare/v6.125.3...v6.126.0) (2026-10-29)
+
+### Bug Fixes
+
+* **budget:** guard widget progress against non-positive effective limit ([a9e2aa3](https://github.com/budgie-at/budgie/commit/a9e2aa39a227cc3b7845d263b988b485a8b732c8))
+
+### Features
+
+* **budget:** add per-day variable spend and daily allowance to the projection ([c81e35a](https://github.com/budgie-at/budgie/commit/c81e35a13be87f2962f36f26932033481ec9c5e5))
+* **budget:** add spending projection engine with pace forecast ([c1066ff](https://github.com/budgie-at/budgie/commit/c1066ffc64adfd36a957602c0c37b40ec13d40bf)), closes [#1716](https://github.com/budgie-at/budgie/issues/1716)
+* **budget:** alert when a budget scope is ahead of pace ([8ab21af](https://github.com/budgie-at/budgie/commit/8ab21af1d553a2554dab71a44b8361d735e5988b)), closes [#1718](https://github.com/budgie-at/budgie/issues/1718)
+* **budget:** carry leftover budget into the next period per category ([3f20c92](https://github.com/budgie-at/budgie/commit/3f20c9220881d7733ff52cdbb4b2f0d7e2dcc63b)), closes [#1720](https://github.com/budgie-at/budgie/issues/1720)
+* **budget:** record closed-period history with past months chart ([04ea9a9](https://github.com/budgie-at/budgie/commit/04ea9a9cd1025bbea2afac73ef9180e28c6f7a96)), closes [#1719](https://github.com/budgie-at/budgie/issues/1719)
+* **budget:** show safe-to-spend per day with breakdown sheet ([bb9c5b0](https://github.com/budgie-at/budgie/commit/bb9c5b0bee52f094be1765a42bf070e0d6cb2b59)), closes [#1717](https://github.com/budgie-at/budgie/issues/1717)
+
+
 ## [6.125.2](https://github.com/budgie-at/budgie/compare/v6.125.1...v6.125.2) (2026-10-28)
 
 **Note:** Version bump only for package @budgie/budget

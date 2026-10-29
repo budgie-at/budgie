@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.126.0](https://github.com/budgie-at/budgie/compare/v6.125.3...v6.126.0) (2026-10-29)
+
+### Features
+
+* **budget:** add spending projection engine with pace forecast ([c1066ff](https://github.com/budgie-at/budgie/commit/c1066ffc64adfd36a957602c0c37b40ec13d40bf)), closes [#1716](https://github.com/budgie-at/budgie/issues/1716)
+
+
 ## [6.125.2](https://github.com/budgie-at/budgie/compare/v6.125.1...v6.125.2) (2026-10-28)
 
 **Note:** Version bump only for package @budgie/recurring
