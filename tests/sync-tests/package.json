@@ -28,7 +28,7 @@
         "vitest": "^5.0.5"
     },
     "devDependencies": {
-        "@lingui/core": "6.10.0",
+        "@lingui/core": "6.10.1",
         "@types/node": "26.6.5",
         "effect": "4.0.6",
         "typescript": "npm:@typescript/typescript6@6.0.2",
