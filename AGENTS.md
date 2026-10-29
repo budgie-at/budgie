@@ -550,7 +550,7 @@ export class RefundService extends Context.Service<RefundService>()('@budgie/app
 
 ### Every simulator runs slim (canonical rule)
 
-Every iOS simulator this repo touches — local Mac, remote Mac fleet, or CI — runs slim, in the order **boot → slim → install → drive**. The rule, the reasoning, and the `profiles/ci.json` profile are owned by mobile-ci: [docs/self-hosted-runners.md#every-simulator-runs-slim](https://github.com/rnw-community/mobile-ci/blob/v4.4.1/docs/self-hosted-runners.md#every-simulator-runs-slim). Budgie commits no profile and no copy of the helper.
+Every iOS simulator this repo touches — local Mac, remote Mac fleet, or CI — runs slim, in the order **boot → slim → install → drive**. The rule, the reasoning, and the `profiles/ci.json` profile are owned by mobile-ci: [docs/self-hosted-runners.md#every-simulator-runs-slim](https://github.com/rnw-community/mobile-ci/blob/v4.6.0/docs/self-hosted-runners.md#every-simulator-runs-slim). Budgie commits no profile and no copy of the helper.
 
 How to invoke it here:
 
