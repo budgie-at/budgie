@@ -47,7 +47,7 @@ layer(TestLayer)('BudgetService', it => {
                     { categoryId: THIRD_CATEGORY_ID, limitAmount: THIRD_UPDATED_LIMIT }
                 ]
             });
-            const activeBudget = yield* budgetRepository.findActive();
+            const activeBudget = yield* budgetRepository.findMain();
             const categoryLimits = yield* budgetCategoryLimitRepository.getByBudget(budget.id);
 
             expect(updatedBudget.name).toBe('Updated Budget');

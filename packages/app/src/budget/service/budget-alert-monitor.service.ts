@@ -233,7 +233,7 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
 
         return {
             run: Effect.fn('BudgetAlertMonitorService.run')(function* () {
-                const [budget, settings] = yield* Effect.all([budgetRepository.findActive(), settingsRepository.findSettings()], {
+                const [budget, settings] = yield* Effect.all([budgetRepository.findMain(), settingsRepository.findSettings()], {
                     concurrency: 'unbounded'
                 });
                 const isBudgetPushEnabled = isDefined(settings) ? settings.isBudgetPushEnabled : false;

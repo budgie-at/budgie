@@ -5,19 +5,24 @@ import {
     DebtEventEntityTable,
     transactionFilters,
     BudgetEntityTable,
+    BudgetKindEnum,
     Db,
     ExchangeRateEntityTable,
     TransactionConsolidationTypeEnum,
     TransactionEntityTable,
     TransactionEntryEntityTable,
     TransactionEntryTypeEnum,
+    TransactionTagsEntityTable,
     TransactionTypeEnum,
     buildSpendingEntryCondition
 } from '@budgie/contracts';
-import { and, between, eq, isNull, min, ne, or, sql } from 'drizzle-orm';
+import { startOfDay } from 'date-fns/startOfDay';
+import { and, asc, between, eq, gte, isNull, min, ne, or, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
+
+import { isDefined } from '@rnw-community/shared';
 
 import type { BudgetCreateEntityInterface, BudgetUpdateEntityInterface } from '@budgie/contracts';
 import type { SQL } from 'drizzle-orm';
@@ -74,6 +79,12 @@ export class BudgetRepository extends Context.Service<BudgetRepository>()('@budg
                 between(TransactionEntityTable.operatedAt, periodStart, new Date(nextPeriodStart.getTime() - 1))
             );
 
+        const buildEventWhere = (periodStart: Date, nextPeriodStart: Date, tagId: number) =>
+            and(
+                buildSpentWhere(periodStart, nextPeriodStart),
+                sql`${TransactionEntityTable.id} IN (SELECT ${TransactionTagsEntityTable.transactionId} FROM ${TransactionTagsEntityTable} WHERE ${TransactionTagsEntityTable.tagId} = ${tagId})`
+            );
+
         const findEntries = (amountSql: SQL<number>, where: SQL | undefined, baseInstrumentId: number) =>
             Db.query(db =>
                 db
@@ -115,11 +126,31 @@ export class BudgetRepository extends Context.Service<BudgetRepository>()('@budg
                         .set({ deletedAt: new Date() })
                         .where(and(eq(BudgetEntityTable.id, id), isNull(BudgetEntityTable.deletedAt)))
                 ),
-            findActive: () =>
+            findMain: () =>
                 Db.query(db =>
                     db.query.BudgetEntityTable.findFirst({
-                        where: { deletedAt: { isNull: true } },
+                        where: { deletedAt: { isNull: true }, kind: BudgetKindEnum.MAIN },
                         orderBy: { updatedAt: 'desc' }
+                    })
+                ),
+            findActiveEvents: (now: Date) =>
+                Db.query(db =>
+                    db
+                        .select()
+                        .from(BudgetEntityTable)
+                        .where(
+                            and(
+                                isNull(BudgetEntityTable.deletedAt),
+                                eq(BudgetEntityTable.kind, BudgetKindEnum.EVENT),
+                                gte(BudgetEntityTable.endsAt, startOfDay(now))
+                            )
+                        )
+                        .orderBy(asc(BudgetEntityTable.startsAt))
+                ),
+            findEvent: (id: number) =>
+                Db.query(db =>
+                    db.query.BudgetEntityTable.findFirst({
+                        where: { id, deletedAt: { isNull: true }, kind: BudgetKindEnum.EVENT }
                     })
                 ),
             findEarliestOperatedAt: () =>
@@ -137,6 +168,10 @@ export class BudgetRepository extends Context.Service<BudgetRepository>()('@budg
                     buildIncomeWhere(periodStart, nextPeriodStart),
                     baseInstrumentId
                 ),
+            findEventSpentEntries: (periodStart: Date, nextPeriodStart: Date, baseInstrumentId: number, tagId: number | null) =>
+                isDefined(tagId)
+                    ? findEntries(buildRefundAdjustedAmountSql(), buildEventWhere(periodStart, nextPeriodStart, tagId), baseInstrumentId)
+                    : Effect.succeed([]),
             findInstallmentPayments: (periodStart: Date, nextPeriodStart: Date) =>
                 Db.query(db =>
                     db

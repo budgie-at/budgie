@@ -330,7 +330,7 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
         return {
             closeDuePeriods: Effect.fn('BudgetPeriodCloseService.closeDuePeriods')(
                 function* (now: Date) {
-                    const budget = yield* budgetRepository.findActive();
+                    const budget = yield* budgetRepository.findMain();
 
                     if (!isDefined(budget) || !isPositiveNumber(budget.instrumentId)) {
                         return;

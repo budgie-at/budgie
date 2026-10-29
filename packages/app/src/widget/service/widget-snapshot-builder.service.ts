@@ -277,7 +277,7 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
             });
 
             const buildBudget = Effect.fn('WidgetSnapshotBuilderService.buildBudget')(function* (context: WidgetSnapshotContextInterface) {
-                const budget = yield* budgetRepository.findActive();
+                const budget = yield* budgetRepository.findMain();
 
                 if (!isDefined(budget) || !isPositiveNumber(budget.instrumentId) || !isPositiveNumber(budget.overallLimit)) {
                     return null;

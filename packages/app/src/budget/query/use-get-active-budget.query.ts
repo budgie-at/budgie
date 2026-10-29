@@ -17,7 +17,7 @@ interface UseGetActiveBudgetResult {
 
 export const activeBudgetAtom = databaseQueryAtom(
     [BudgetEntityTable],
-    Effect.flatMap(BudgetRepository, budgetRepository => budgetRepository.findActive())
+    Effect.flatMap(BudgetRepository, budgetRepository => budgetRepository.findMain())
 );
 
 export const useGetActiveBudgetQuery = (): UseGetActiveBudgetResult => {
