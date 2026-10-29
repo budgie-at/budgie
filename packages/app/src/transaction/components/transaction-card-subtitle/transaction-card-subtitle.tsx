@@ -70,7 +70,7 @@ export const TransactionCardSubtitle = ({ transaction, accountId }: Props) => {
             ) : null}
             {isDefined(accountTitle) ? (
                 <Text
-                    className="min-w-[56px] shrink-100 text-[13px] text-secondary-foreground/60"
+                    className="min-w-[56px] shrink-100 text-[13px] text-secondary-foreground"
                     style={trailingStyle}
                     numberOfLines={1}
                     ellipsizeMode="tail"

@@ -47,8 +47,12 @@ export const TransactionFilters = ({ filters, onChange, accountId, showTypeFilte
     const handleClear = () => void onChange({ ...DEFAULT_TRANSACTION_FILTER, accountIds: isDefined(accountId) ? [accountId] : null });
 
     return (
-        <View className="-mx-7xl">
-            <ScrollView horizontal contentContainerClassName="flex-row items-center gap-x-md px-7xl" showsHorizontalScrollIndicator={false}>
+        <View className="-mx-7xl -my-[6px]">
+            <ScrollView
+                horizontal
+                contentContainerClassName="flex-row items-center gap-x-md px-7xl py-[6px]"
+                showsHorizontalScrollIndicator={false}
+            >
                 {isClearAllVisible ? (
                     <HapticPressable
                         onPress={handleClear}
@@ -97,7 +101,7 @@ export const TransactionFilters = ({ filters, onChange, accountId, showTypeFilte
                 )}
             </ScrollView>
             <View
-                className="absolute inset-y-0 right-0 w-[32px] bg-linear-to-r from-surface/0 via-surface/80 to-surface"
+                className="absolute inset-y-[6px] right-0 w-[32px] bg-linear-to-r from-surface/0 via-surface/80 to-surface"
                 pointerEvents="none"
             />
         </View>

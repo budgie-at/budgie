@@ -29,7 +29,7 @@ export const UncategorizedTransactionsPill = ({ count, onPress }: Props) => {
     });
 
     return (
-        <Animated.View entering={ENTERING_ANIMATION}>
+        <Animated.View entering={ENTERING_ANIMATION} className="-my-[6px] py-[6px]">
             <HapticPressable
                 onPress={onPress}
                 accessibilityRole="button"

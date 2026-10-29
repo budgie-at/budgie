@@ -28,7 +28,7 @@ export const TransactionTransferAmount = ({ fromEntry, toEntry, accountId, testI
         <View className="shrink-0 gap-y-xxs items-end" testID={testID}>
             <Text className="text-[15px] font-semibold text-right text-primary tabular-nums">{`${sign}${primaryAmount}`}</Text>
             {isCrossCurrency ? (
-                <Text className="text-secondary-foreground/70 text-[13px] text-right tabular-nums">{secondaryAmount}</Text>
+                <Text className="text-secondary-foreground text-[13px] text-right tabular-nums">{secondaryAmount}</Text>
             ) : null}
         </View>
     );
