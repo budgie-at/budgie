@@ -242,7 +242,7 @@ install_database_fixture "$DYNAMIC_FIXTURES_DIR/uncategorized-inbox.db" "uncateg
 install_database_fixture "$SCRIPT_DIR/../fixtures/budget-base.db" "budget-base.db"
 install_database_fixture "$DYNAMIC_FIXTURES_DIR/budget-multi-currency.db" "budget-multi-currency.db"
 install_database_fixture "$DYNAMIC_FIXTURES_DIR/42-receipt-scan.db" "42-receipt-scan.db"
-install_database_fixture "$DYNAMIC_FIXTURES_DIR/43-binance-sync-error.db" "43-binance-sync-error.db"
+install_database_fixture "$DYNAMIC_FIXTURES_DIR/43-binance-sync-error.db" "sync-binance-error.db"
 install_fixture_file "$SCRIPT_DIR/../fixtures/e2e-budgie-import.csv" "e2e-budgie-import.csv"
 
 for CSV_FIXTURE_NAME in $CSV_FIXTURE_NAMES; do
