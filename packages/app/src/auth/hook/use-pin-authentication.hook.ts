@@ -96,7 +96,7 @@ export const usePinAuthentication = () => {
         }
     };
 
-    useAutomaticBiometric(isBiometricEnabled && isAppActive, () => {
+    const startBiometric = () => {
         if (AppState.currentState !== 'active' || !startBiometricAttempt(acceptAttempt(false))) {
             return false;
         }
@@ -104,7 +104,9 @@ export const usePinAuthentication = () => {
         dispatch({ type: PinAuthenticationActionTypeEnum.ATTEMPT_STARTED });
 
         return true;
-    });
+    };
+
+    useAutomaticBiometric(isBiometricEnabled && isAppActive, startBiometric);
 
     const addDigit = (digit: string) => {
         if (isLockedOut) {
@@ -125,11 +127,6 @@ export const usePinAuthentication = () => {
         dispatch({ type: PinAuthenticationActionTypeEnum.DIGIT_DELETED });
         clearError();
     };
-    const handleBiometricAuth = () => {
-        if (canUseBiometric && AppState.currentState === 'active' && startBiometricAttempt(acceptAttempt(false))) {
-            dispatch({ type: PinAuthenticationActionTypeEnum.ATTEMPT_STARTED });
-        }
-    };
 
     return {
         addDigit,
@@ -137,7 +134,7 @@ export const usePinAuthentication = () => {
         description: t`Enter your ${PIN_LENGTH}-digit PIN to unlock`,
         deleteDigit,
         error,
-        handleBiometricAuth,
+        handleBiometricAuth: startBiometric,
         input,
         isFaceIdAvailable,
         isInputDisabled: isLoading || isLockedOut,

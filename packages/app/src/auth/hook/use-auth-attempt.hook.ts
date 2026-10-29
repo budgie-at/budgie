@@ -55,11 +55,7 @@ export const useAuthAttempt = () => {
     };
 
     const startPinAttempt = (pin: string, accept: (success: boolean) => void) => {
-        start(
-            Effect.flatMap(AuthService, authService => authService.verifyPin(pin)).pipe(Effect.tap(() => waitUntilAppActive)),
-            true,
-            accept
-        );
+        start(Effect.flatMap(AuthService, authService => authService.verifyPin(pin)).pipe(Effect.tap(waitUntilAppActive)), true, accept);
     };
 
     const startBiometricAttempt = (accept: (success: boolean) => void) => {
