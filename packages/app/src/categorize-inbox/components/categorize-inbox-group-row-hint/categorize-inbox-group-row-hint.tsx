@@ -7,7 +7,7 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { Icon } from '../../../@generic/component/icon/icon';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
-import { getCategorizeInboxJarName } from '../../utils/get-categorize-inbox-jar-name.util';
+import { getCategorizeInboxTransferKey } from '../../utils/get-categorize-inbox-transfer-key.util';
 
 import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
 
@@ -21,7 +21,7 @@ export const CategorizeInboxGroupRowHint = ({ cluster }: Props) => {
     const { section, displayTitle, candidateLabelIds } = cluster;
     const candidateId = candidateLabelIds.at(0);
     const candidateTitle = isDefined(candidateId) ? strategy?.labelsById.get(candidateId)?.title : null;
-    const jarName = getCategorizeInboxJarName(displayTitle);
+    const transferKey = getCategorizeInboxTransferKey(displayTitle);
 
     if (section === CategorizeInboxSectionEnum.CASH_WITHDRAWALS) {
         return (
@@ -43,7 +43,7 @@ export const CategorizeInboxGroupRowHint = ({ cluster }: Props) => {
         ) : null;
     }
 
-    if (isNotEmptyString(jarName) && learnedTransferAccountIds.has(jarName)) {
+    if (learnedTransferAccountIds.has(transferKey)) {
         return (
             <View className="shrink-0 flex-row items-center gap-x-xs">
                 <Icon icon={UserIconNameEnum.ArrowLeftRight} size={13} className="text-secondary-foreground" />

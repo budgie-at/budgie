@@ -1,9 +1,9 @@
 import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { AppState } from 'react-native';
 
-import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { getCategorizeInboxJarName } from '../utils/get-categorize-inbox-jar-name.util';
+import { getCategorizeInboxTransferKey } from '../utils/get-categorize-inbox-transfer-key.util';
 
 import { useCategorizeInboxCommitTransfer } from './use-categorize-inbox-commit-transfer.hook';
 
@@ -47,7 +47,7 @@ export const useCategorizeInboxTransfer = (
         const transactionIds = visibility.includedRows(cluster).map(row => row.transactionId);
 
         if (isNotEmptyArray(transactionIds)) {
-            const jarName = getCategorizeInboxJarName(cluster.displayTitle);
+            const transferKey = getCategorizeInboxTransferKey(cluster.displayTitle);
 
             const existing = pendingTransferRef.current;
             const isSameCluster = isDefined(existing) && existing.clusterKey === cluster.key;
@@ -61,8 +61,8 @@ export const useCategorizeInboxTransfer = (
 
             visibility.hideTransactions(transactionIds);
 
-            if (isDefined(jarName)) {
-                setLearnedTransferAccountIds(previous => new Map(previous).set(jarName, accountId));
+            if (isNotEmptyString(transferKey)) {
+                setLearnedTransferAccountIds(previous => new Map(previous).set(transferKey, accountId));
             }
 
             setLastWrite(null);
