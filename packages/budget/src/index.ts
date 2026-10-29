@@ -60,3 +60,8 @@ export { computeExpectedIncome } from './income/utils/compute-expected-income.ut
 export type { BudgetIncomeCalendarEntryInterface } from './income/interface/budget-income-calendar-entry.interface';
 export type { BudgetIncomeCalendarInterface } from './income/interface/budget-income-calendar.interface';
 export type { BudgetIncomeMonthInterface } from './income/interface/budget-income-month.interface';
+export { proposeLimitChanges } from './tuning/utils/propose-limit-changes.util';
+export { BUDGET_TUNING_PERIOD_COUNT } from './tuning/constant/budget-tuning-period-count.constant';
+export type { BudgetLimitProposalInterface } from './tuning/interface/budget-limit-proposal.interface';
+export type { BudgetTuneLimitsInterface } from './tuning/interface/budget-tune-limits.interface';
+export type { BudgetTuneSnapshotInterface } from './tuning/interface/budget-tune-snapshot.interface';
