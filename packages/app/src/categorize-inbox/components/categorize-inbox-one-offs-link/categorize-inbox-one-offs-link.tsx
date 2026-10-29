@@ -18,7 +18,7 @@ interface Props {
 export const CategorizeInboxOneOffsLink = ({ oneOffs }: Props) => {
     const { t } = useLingui();
 
-    const groupsText = t({ message: plural(oneOffs.length, { one: '# smaller group', other: '# smaller groups' }) });
+    const groupsText = t({ message: plural(oneOffs.length, { one: 'Show # more group', other: 'Show # more groups' }) });
     const paymentsText = t({
         message: plural(
             oneOffs.reduce((total, cluster) => total + cluster.rows.length, 0),

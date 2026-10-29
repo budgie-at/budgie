@@ -43,11 +43,6 @@ msgstr "{0, plural, one {# Zahlung} other {# Zahlungen}}"
 msgid "{0, plural, one {# receipt saved} other {# receipts saved}}"
 msgstr "{0, plural, one {# Beleg gespeichert} other {# Belege gespeichert}}"
 
-#. placeholder {0}: oneOffs.length
-#: src/categorize-inbox/components/categorize-inbox-one-offs-link/categorize-inbox-one-offs-link.tsx
-msgid "{0, plural, one {# smaller group} other {# smaller groups}}"
-msgstr "{0, plural, one {# kleinere Gruppe} other {# kleinere Gruppen}}"
-
 #. placeholder {0}: labels.length
 #: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
 msgid "{0, plural, one {# tag} other {# tags}}"
@@ -57,6 +52,11 @@ msgstr "{0, plural, one {# Tag} other {# Tags}}"
 #: src/categorize-inbox/components/categorize-inbox-moved-to-cash-undo/categorize-inbox-moved-to-cash-undo.tsx
 msgid "{0, plural, one {# transaction} other {# transactions}}"
 msgstr "{0, plural, one {# Transaktion} other {# Transaktionen}}"
+
+#. placeholder {0}: oneOffs.length
+#: src/categorize-inbox/components/categorize-inbox-one-offs-link/categorize-inbox-one-offs-link.tsx
+msgid "{0, plural, one {Show # more group} other {Show # more groups}}"
+msgstr "{0, plural, one {# weitere Gruppe anzeigen} other {# weitere Gruppen anzeigen}}"
 
 #: src/onboarding/hook/use-onboarding-file-state.hook.ts
 msgid "{accountCount, plural, one {# account} other {# accounts}}"

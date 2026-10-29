@@ -20,13 +20,18 @@ interface Props {
 }
 
 const LIST_BOTTOM_CLEARANCE = 24;
+const INLINE_ONE_OFF_LIMIT = 5;
 
 export const CategorizeInboxList = ({ items }: Props) => {
     const { chromeHeight } = useBottomChromeInset();
 
     const oneOffs = items.filter(isCategorizeInboxCluster).filter(cluster => cluster.section === CategorizeInboxSectionEnum.ONE_OFFS);
-    const oneOffsLink: CategorizeInboxOneOffsLinkItemInterface[] = isNotEmptyArray(oneOffs) ? [{ key: 'one-offs-link', oneOffs }] : [];
-    const data = [...items.filter(item => item.section !== CategorizeInboxSectionEnum.ONE_OFFS), ...oneOffsLink];
+    const hiddenOneOffs = oneOffs.slice(INLINE_ONE_OFF_LIMIT);
+    const hiddenKeys = new Set(hiddenOneOffs.map(cluster => cluster.key));
+    const oneOffsLink: CategorizeInboxOneOffsLinkItemInterface[] = isNotEmptyArray(hiddenOneOffs)
+        ? [{ key: 'one-offs-link', oneOffs: hiddenOneOffs }]
+        : [];
+    const data = [...items.filter(item => !hiddenKeys.has(item.key)), ...oneOffsLink];
 
     const keyExtractor = (item: (typeof data)[number]): string => item.key;
     const getItemType = (item: (typeof data)[number]): string => {

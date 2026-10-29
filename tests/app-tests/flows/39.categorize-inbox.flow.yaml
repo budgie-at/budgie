@@ -45,18 +45,8 @@ appId: ${APP_ID}
 - assertVisible:
       id: 'CategorizeInboxAcceptAllButton.Button'
 
-- tapOn:
-      id: 'CategorizeInboxOneOffsLink'
-- extendedWaitUntil:
-      visible:
-          id: 'CategorizeInboxGroupRow.EXPENSE\|e2e categorize filler\|\|'
-      timeout: 5000
-- tapOn:
-      id: 'PageHeader.BackButton'
-- extendedWaitUntil:
-      visible:
-          id: 'CategorizeInboxPage.ShowListButton'
-      timeout: 5000
+- assertVisible:
+      id: 'CategorizeInboxGroupRow.EXPENSE\|e2e categorize filler\|\|'
 
 - tapOn:
       id: 'CategorizeInboxGroupRow.EXPENSE\|e2e confident coffee\|\|'
