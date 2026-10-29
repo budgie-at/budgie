@@ -20,10 +20,8 @@ public final class ReceiptScannerModule: Module {
         self?.session = nil
         promise.resolve(uris)
       }
-      let camera = VNDocumentCameraViewController()
-      camera.delegate = session
       self.session = session
-      self.present(camera, session: session, remainingAttempts: ReceiptScannerModule.presentAttempts)
+      self.present(session, remainingAttempts: ReceiptScannerModule.presentAttempts)
     }.runOnQueue(.main)
 
     AsyncFunction("recognize") { (uri: URL) -> [[String: Any]] in
@@ -51,7 +49,7 @@ public final class ReceiptScannerModule: Module {
 
   private static let presentAttempts = 40
 
-  private func present(_ camera: VNDocumentCameraViewController, session: ReceiptScanSession, remainingAttempts: Int) {
+  private func present(_ session: ReceiptScanSession, remainingAttempts: Int) {
     guard let presenter = appContext?.utilities?.currentViewController() else {
       session.finish([])
       return
@@ -67,13 +65,13 @@ public final class ReceiptScannerModule: Module {
         return
       }
       DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(50)) { [weak self] in
-        self?.present(camera, session: session, remainingAttempts: remainingAttempts - 1)
+        self?.present(session, remainingAttempts: remainingAttempts - 1)
       }
       return
     }
 
-    presenter.present(camera, animated: true)
-    if camera.presentingViewController == nil {
+    presenter.present(session.camera, animated: true)
+    if session.camera.presentingViewController == nil {
       session.finish([])
     }
   }
@@ -90,19 +88,47 @@ public final class ReceiptScannerModule: Module {
   }
 }
 
+private final class ReceiptScanCameraViewController: VNDocumentCameraViewController {
+  var onDismiss: (() -> Void)?
+
+  override func viewDidDisappear(_ animated: Bool) {
+    super.viewDidDisappear(animated)
+    if isBeingDismissed || presentingViewController == nil {
+      onDismiss?()
+    }
+  }
+}
+
 private final class ReceiptScanSession: NSObject, VNDocumentCameraViewControllerDelegate {
-  private let completion: ([String]) -> Void
+  let camera = ReceiptScanCameraViewController()
+  private let saving = DispatchGroup()
+  private var uris: [String] = []
+  private var completion: (([String]) -> Void)?
 
   init(completion: @escaping ([String]) -> Void) {
     self.completion = completion
+    super.init()
+    camera.delegate = self
+    camera.onDismiss = { [weak self] in
+      guard let self else {
+        return
+      }
+      self.saving.notify(queue: .main) {
+        self.finish(self.uris)
+      }
+    }
   }
 
   func finish(_ uris: [String]) {
+    guard let completion else {
+      return
+    }
+    self.completion = nil
     completion(uris)
   }
 
   func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFinishWith scan: VNDocumentCameraScan) {
-    controller.dismiss(animated: true)
+    saving.enter()
     DispatchQueue.global(qos: .userInitiated).async {
       let directory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
         .appendingPathComponent("ReceiptScans", isDirectory: true)
@@ -119,18 +145,18 @@ private final class ReceiptScanSession: NSObject, VNDocumentCameraViewController
         }
       }
       DispatchQueue.main.async {
-        self.completion(uris)
+        self.uris = uris
+        self.saving.leave()
       }
     }
+    controller.dismiss(animated: true)
   }
 
   func documentCameraViewControllerDidCancel(_ controller: VNDocumentCameraViewController) {
     controller.dismiss(animated: true)
-    completion([])
   }
 
   func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFailWithError error: Error) {
     controller.dismiss(animated: true)
-    completion([])
   }
 }

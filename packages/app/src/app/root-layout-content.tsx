@@ -66,8 +66,6 @@ const PIN_OPTIONS: NativeStackNavigationOptions = { ...MODAL_OPTIONS, gestureEna
 
 const LOCK_SCREEN_OPTIONS: NativeStackNavigationOptions = { presentation: 'fullScreenModal', animation: 'none' };
 
-const SCAN_RECEIPT_OPTIONS: NativeStackNavigationOptions = { presentation: 'transparentModal', animation: 'none', headerShown: false };
-
 const SELECTOR_OPTIONS = formSheetOptions([DETENT_40, DETENT_70], 0);
 
 enableScreens();
@@ -166,10 +164,6 @@ export const RootLayoutContent = () => {
                                                                     <Stack.Screen name="(main)/transactions/[id]/income" />
                                                                     <Stack.Screen name="(main)/transactions/[id]/transfer" />
                                                                     <Stack.Screen name="(main)/analytics/transactions" />
-                                                                    <Stack.Screen
-                                                                        name="(main)/scan-receipt"
-                                                                        options={SCAN_RECEIPT_OPTIONS}
-                                                                    />
                                                                     <Stack.Screen name="category-selector" options={SELECTOR_OPTIONS} />
                                                                     <Stack.Screen name="account-selector" options={SELECTOR_OPTIONS} />
                                                                     <Stack.Screen name="currency-selector" options={SELECTOR_OPTIONS} />
