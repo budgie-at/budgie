@@ -1,5 +1,6 @@
 import {
     AccountBalanceRepository,
+    AccountRepository,
     AccountTypeEnum,
     CategorySourceEnum,
     Db,
@@ -47,6 +48,7 @@ import type { EntryBaseValuationInterface } from '@budgie/market';
 export class TransactionTransferService extends Context.Service<TransactionTransferService>()('@budgie/ledger/TransactionTransferService', {
     make: Effect.gen(function* () {
         const accountBalanceRepository = yield* AccountBalanceRepository;
+        const accountRepository = yield* AccountRepository;
         const debtEventRepository = yield* DebtEventRepository;
         const transactionEntryRepository = yield* TransactionEntryRepository;
         const transactionRepository = yield* TransactionRepository;
@@ -326,7 +328,69 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
             });
         });
 
+        const isTransferAccount = Effect.fnUntraced(function* (accountId: number) {
+            const account = yield* accountRepository.findById(accountId);
+
+            return isDefined(account) && account.type !== AccountTypeEnum.DEBT;
+        });
+
+        const convertToTransferAccount = Effect.fn('TransactionTransferService.convertToTransferAccount')(function* (
+            transactionId: number,
+            targetAccountId: number
+        ) {
+            const transaction = yield* transactionRepository.getByIdWithEntries(transactionId);
+
+            if (!isDefined(transaction) || isDefined(transaction.consolidationType)) {
+                return false;
+            }
+
+            const isExpense = transaction.type === TransactionTypeEnum.EXPENSE;
+            const sourceAccountId = isExpense ? transaction.fromAccountId : transaction.toAccountId;
+            const isConvertible =
+                (isExpense || transaction.type === TransactionTypeEnum.INCOME) &&
+                isDefined(sourceAccountId) &&
+                sourceAccountId !== targetAccountId &&
+                getTransactionCategoryEntries(transaction.entries).length === 1;
+
+            if (!isConvertible) {
+                return false;
+            }
+
+            const [isSourceTransferAccount, isTargetTransferAccount, debtEvent] = yield* Effect.all([
+                isTransferAccount(sourceAccountId),
+                isTransferAccount(targetAccountId),
+                debtEventRepository.findByTransactionId(transactionId)
+            ]);
+
+            if (!isSourceTransferAccount || !isTargetTransferAccount || isDefined(debtEvent)) {
+                return false;
+            }
+
+            yield* convertToTransfer(
+                { id: transactionId, accountId: targetAccountId, customExchangeRate: 0, feeEntries: [] },
+                isExpense ? 'expense' : 'income',
+                null
+            );
+
+            return true;
+        });
+
         return {
+            convertToTransferAccount,
+            convertManyToTransferAccount: Effect.fn('TransactionTransferService.convertManyToTransferAccount')(
+                function* (transactionIds: readonly number[], targetAccountId: number) {
+                    const convertedIds: number[] = [];
+
+                    for (const transactionId of transactionIds) {
+                        if (yield* convertToTransferAccount(transactionId, targetAccountId)) {
+                            convertedIds.push(transactionId);
+                        }
+                    }
+
+                    return convertedIds;
+                },
+                effect => Db.transaction(effect)
+            ),
             convertExpenseToTransfer: Effect.fn('TransactionTransferService.convertExpenseToTransfer')(function* (
                 params: ConvertToTransferParamsInterface
             ) {
@@ -410,6 +474,7 @@ export class TransactionTransferService extends Context.Service<TransactionTrans
     static readonly layer = Layer.effect(TransactionTransferService, TransactionTransferService.make).pipe(
         Layer.provide([
             AccountBalanceRepository.layer,
+            AccountRepository.layer,
             DebtEventRepository.layer,
             TransactionEntryRepository.layer,
             TransactionRepository.layer,
