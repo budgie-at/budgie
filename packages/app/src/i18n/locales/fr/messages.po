@@ -3373,8 +3373,8 @@ msgid "Looks like a jar top-up."
 msgstr "On dirait une recharge de cagnotte."
 
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
-msgid "Looks like a top-up of «{account}»."
-msgstr "On dirait une recharge de «{account}»."
+msgid "Looks like a top-up of {account}."
+msgstr "On dirait une recharge de {account}."
 
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "Looks right"
@@ -3539,8 +3539,8 @@ msgid "Models download once, best on Wi-Fi"
 msgstr "Les modèles se téléchargent une fois, idéalement en Wi-Fi"
 
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
-msgid "Money coming back from «{account}»."
-msgstr "De l'argent qui revient de «{account}»."
+msgid "Money coming back from {account}."
+msgstr "De l'argent qui revient de {account}."
 
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
 msgid "Money coming back from your «{jar}» jar."

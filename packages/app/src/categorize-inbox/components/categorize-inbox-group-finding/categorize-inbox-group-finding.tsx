@@ -42,13 +42,13 @@ export const CategorizeInboxGroupFinding = ({ cluster }: Props) => {
     );
 
     const topUpEmphasis = isDefined(accountTitle) ? (
-        <Trans>Looks like a top-up of «{account}».</Trans>
+        <Trans>Looks like a top-up of {account}.</Trans>
     ) : (
         <Trans>Looks like a jar top-up.</Trans>
     );
 
     const returnEmphasis = isDefined(accountTitle) ? (
-        <Trans>Money coming back from «{account}».</Trans>
+        <Trans>Money coming back from {account}.</Trans>
     ) : (
         <Trans>Money coming back from your «{jar}» jar.</Trans>
     );
