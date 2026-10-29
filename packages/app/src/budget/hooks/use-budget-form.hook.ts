@@ -1,5 +1,5 @@
 import { BudgetService, budgetComputeAllocation } from '@budgie/budget';
-import { BudgetPeriodEnum, BudgetRolloverModeEnum, convertFromMicroUnits, convertToMicroUnits } from '@budgie/contracts';
+import { BudgetLimitSourceEnum, BudgetPeriodEnum, BudgetRolloverModeEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -16,6 +16,7 @@ import { BudgetFormSchema, BudgetFormValues } from '../constant/budget-form-sche
 import { BudgetTemplateKindEnum } from '../enum/budget-template-kind.enum';
 import { useGetActiveBudgetQuery } from '../query/use-get-active-budget.query';
 import { useGetBudgetCategoryLimitsQuery } from '../query/use-get-budget-category-limits.query';
+import { buildBudgetPayload } from '../utils/build-budget-payload.util';
 
 import { useBudgetTemplateDraft } from './use-budget-template-draft.hook';
 
@@ -37,8 +38,12 @@ const buildBudgetFormValues = (
     categoryLimits: readonly BudgetCategoryLimitEntityInterface[]
 ): BudgetFormValues => ({
     name: budget.name,
+    period: budget.period,
     periodStartDay: budget.periodStartDay,
     useLastDayOfMonth: budget.useLastDayOfMonth,
+    periodAnchorMs: isDefined(budget.periodAnchorDate) ? budget.periodAnchorDate.getTime() : null,
+    limitSource: budget.limitSource,
+    isAutoTuneEnabled: budget.isAutoTuneEnabled,
     overallLimit: convertFromMicroUnits(budget.overallLimit),
     otherLimit: convertFromMicroUnits(budget.otherLimit),
     otherRolloverMode: budget.otherRolloverMode,
@@ -52,8 +57,12 @@ const buildBudgetFormValues = (
 
 const buildDefaultBudgetFormValues = (name: string, instrumentId: number): BudgetFormValues => ({
     name,
+    period: BudgetPeriodEnum.MONTHLY,
     periodStartDay: DEFAULT_PERIOD_START_DAY,
     useLastDayOfMonth: false,
+    periodAnchorMs: null,
+    limitSource: BudgetLimitSourceEnum.FIXED,
+    isAutoTuneEnabled: true,
     overallLimit: 0,
     otherLimit: 0,
     otherRolloverMode: BudgetRolloverModeEnum.NONE,
@@ -75,8 +84,12 @@ const buildTemplateBudgetFormValues = (
 
     return {
         name,
+        period: BudgetPeriodEnum.MONTHLY,
         periodStartDay: DEFAULT_PERIOD_START_DAY,
         useLastDayOfMonth: false,
+        periodAnchorMs: null,
+        limitSource: BudgetLimitSourceEnum.FIXED,
+        isAutoTuneEnabled: true,
         overallLimit: templateDraft.overallLimit,
         otherLimit,
         otherRolloverMode: BudgetRolloverModeEnum.NONE,
@@ -104,6 +117,10 @@ const areBudgetCategoryLimitsEqual = (left: BudgetFormValues['categoryLimits'], 
 
 const areBudgetFormValuesEqual = (left: BudgetFormValues, right: BudgetFormValues): boolean =>
     left.name === right.name &&
+    left.period === right.period &&
+    left.periodAnchorMs === right.periodAnchorMs &&
+    left.limitSource === right.limitSource &&
+    left.isAutoTuneEnabled === right.isAutoTuneEnabled &&
     left.periodStartDay === right.periodStartDay &&
     left.useLastDayOfMonth === right.useLastDayOfMonth &&
     left.overallLimit === right.overallLimit &&
@@ -189,21 +206,7 @@ export const useBudgetForm = ({ defaultInstrumentId, editingId, templateKind = n
         void form.handleSubmit(values =>
             run(
                 Effect.gen(function* () {
-                    const basePayload = {
-                        name: values.name,
-                        period: BudgetPeriodEnum.MONTHLY,
-                        periodStartDay: values.periodStartDay,
-                        useLastDayOfMonth: values.useLastDayOfMonth,
-                        overallLimit: convertToMicroUnits(values.overallLimit),
-                        otherLimit: convertToMicroUnits(values.otherLimit),
-                        otherRolloverMode: values.otherRolloverMode,
-                        instrumentId: values.instrumentId,
-                        categoryLimits: values.categoryLimits.map(limit => ({
-                            categoryId: limit.categoryId,
-                            limitAmount: convertToMicroUnits(limit.limitAmount),
-                            rolloverMode: limit.rolloverMode
-                        }))
-                    };
+                    const basePayload = buildBudgetPayload(values);
                     const budgetService = yield* BudgetService;
 
                     if (isPositiveNumber(editingId)) {
