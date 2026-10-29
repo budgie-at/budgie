@@ -1,4 +1,7 @@
 import { TransactionViewRepository } from '@budgie/contracts';
+import * as Option from 'effect/Option';
+
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
 import { TRANSACTION_LIST_TABLES } from '../constant/transaction-list-tables.constant';
@@ -15,9 +18,14 @@ export const transactionsAtom = databaseQueryFamily(
         transactionViewRepository.getAll(limit, filters, language)
 );
 
-export const useGetTransactionsQuery = (filters: TransactionFilterInterface, accountId: number | null) =>
+const getDayTotalsAccountIds = ({ types, categoryIds, tagIds, amount, accountIds }: TransactionFilterInterface) =>
+    isNotEmptyArray(types) || isDefined(categoryIds) || isDefined(tagIds) || isDefined(amount)
+        ? Option.none()
+        : Option.some(isNotEmptyArray(accountIds) ? accountIds : null);
+
+export const useGetTransactionsQuery = (filters: TransactionFilterInterface) =>
     useGetTransactionSectionsQuery(
         (limit, language) => transactionsAtom([filters, language, limit]),
         buildTransactionFilterKey(filters),
-        accountId
+        getDayTotalsAccountIds(filters)
     );
