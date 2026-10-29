@@ -88,8 +88,22 @@ public final class ReceiptScannerModule: Module {
   }
 }
 
-private final class ReceiptScanCameraViewController: VNDocumentCameraViewController {
+private final class ReceiptScanCameraViewController: UIViewController {
+  let scanner = VNDocumentCameraViewController()
   var onDismiss: (() -> Void)?
+
+  override var childForStatusBarStyle: UIViewController? { scanner }
+  override var childForStatusBarHidden: UIViewController? { scanner }
+  override var childForHomeIndicatorAutoHidden: UIViewController? { scanner }
+
+  override func viewDidLoad() {
+    super.viewDidLoad()
+    addChild(scanner)
+    scanner.view.frame = view.bounds
+    scanner.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+    view.addSubview(scanner.view)
+    scanner.didMove(toParent: self)
+  }
 
   override func viewDidDisappear(_ animated: Bool) {
     super.viewDidDisappear(animated)
@@ -108,7 +122,8 @@ private final class ReceiptScanSession: NSObject, VNDocumentCameraViewController
   init(completion: @escaping ([String]) -> Void) {
     self.completion = completion
     super.init()
-    camera.delegate = self
+    camera.modalPresentationStyle = .fullScreen
+    camera.scanner.delegate = self
     camera.onDismiss = { [weak self] in
       guard let self else {
         return
