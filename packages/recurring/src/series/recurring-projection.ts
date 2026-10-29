@@ -121,7 +121,7 @@ const sumCommitted = (series: readonly RecurringTrackedSeriesInterface[], now: D
         .filter(item => isSeriesActive(item, now))
         .reduce((total, item) => total + item.predictedAmount / (item.periodMonths ?? item.periodDays / DAYS_PER_MONTH), 0) / PRECISION;
 
-// eslint-disable-next-line @typescript-eslint/max-params -- Existing public API keeps positional arguments, kind extends them
+// eslint-disable-next-line @typescript-eslint/max-params -- Existing public API intentionally keeps positional arguments; kind is appended
 export const projectRecurringMonth = (
     series: readonly RecurringTrackedSeriesInterface[],
     year: number,

@@ -1509,4 +1509,37 @@ layer(TestLayer)('recurringService', it => {
             expect(forecastedAmounts(incomeData, 1)).toEqual([3000 * PRECISION]);
         })
     );
+
+    it.effect('persists income series separately and keeps the expense repository view expense-only', () =>
+        Effect.gen(function* () {
+            const seed = yield* seedCharges();
+            yield* Effect.forEach([6, 5, 4, 3, 2, 1], monthsAgo => seed('ACME SALARY', monthsAgo, 1, 3000, true), { discard: true });
+            yield* seedMonthly(seed, 'NETFLIX', 20, 12);
+
+            const expenseData = yield* calendar(JULY);
+            const repository = yield* RecurringRepository;
+            const incomeRows = yield* repository.findSeries(RecurringSeriesKindEnum.INCOME);
+            const expenseRows = yield* repository.findSeries();
+
+            expect(incomeRows.map(row => row.kind)).toEqual([RecurringSeriesKindEnum.INCOME]);
+            expect(incomeRows[0].amount).toBe(3000 * PRECISION);
+            expect(expenseRows.every(row => row.kind === RecurringSeriesKindEnum.EXPENSE)).toBe(true);
+            expect(expenseData.committedMonthlyExpense).toBeCloseTo(12);
+            expect(allEntries(expenseData).every(entry => entry.title === 'NETFLIX')).toBe(true);
+        })
+    );
+
+    it.effect('does not duplicate income series across repeated syncs', () =>
+        Effect.gen(function* () {
+            const seed = yield* seedCharges();
+            yield* Effect.forEach([6, 5, 4, 3, 2, 1], monthsAgo => seed('ACME SALARY', monthsAgo, 1, 3000, true), { discard: true });
+            const service = yield* RecurringService;
+
+            yield* service.incomeCalendar(2026, JULY, NOW);
+            yield* service.incomeCalendar(2026, JULY, NOW);
+            const repository = yield* RecurringRepository;
+
+            expect(yield* repository.findSeries(RecurringSeriesKindEnum.INCOME)).toHaveLength(1);
+        })
+    );
 });
