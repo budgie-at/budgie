@@ -1,0 +1,6 @@
+export enum SuggestRuleDetectionActionTypeEnum {
+    RULE_CREATED = 'RULE_CREATED',
+    DISMISSED = 'DISMISSED',
+    CREATION_STARTED = 'CREATION_STARTED',
+    CREATION_ENDED = 'CREATION_ENDED'
+}

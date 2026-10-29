@@ -5,16 +5,18 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import * as Effect from 'effect/Effect';
 import * as Option from 'effect/Option';
-import { useId, useState } from 'react';
+import { useId, useReducer } from 'react';
 import { ArrowRight, Loader } from 'reicon-react';
 
 import { isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { Button } from '../../../ui/button';
 import { joinWaitlist } from '../../action/waitlist.action';
+import { WaitlistFormActionTypeEnum } from '../../enum/waitlist-form-action-type.enum';
 import { WaitlistMessageKeyEnum } from '../../enum/waitlist-message-key.enum';
 import { WaitlistVariantEnum } from '../../enum/waitlist-variant.enum';
 import { useWaitlistCount } from '../../hook/use-waitlist-count.hook';
+import { waitlistFormReducer } from '../../utils/waitlist-form-reducer.util';
 
 import { WaitlistCount } from './waitlist-count';
 import { WaitlistSuccess } from './waitlist-success';
@@ -111,39 +113,35 @@ export const WaitlistForm = ({ variant = WaitlistVariantEnum.HERO, showCount = t
     const { i18n, t } = useLingui();
     const inputId = useId();
 
-    const [email, setEmail] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
-    const [position, setPosition] = useState<number | undefined>();
-    const [error, setError] = useState('');
+    const [{ email, isLoading, position, error }, dispatch] = useReducer(waitlistFormReducer, { email: '', isLoading: false, error: '' });
     const initialCount = useWaitlistCount(showCount);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setError('');
-        setIsLoading(true);
+        dispatch({ type: WaitlistFormActionTypeEnum.SUBMIT_STARTED });
 
         const outcome = await Effect.runPromise(
             Effect.tryPromise(async () => await joinWaitlist(email)).pipe(Effect.timeout(WAITLIST_CONFIRMATION_DEADLINE_MS), Effect.option)
         );
 
         if (Option.isNone(outcome)) {
-            setError(i18n._(WAITLIST_CONFIRMATION_ERROR_MESSAGE));
+            dispatch({ type: WaitlistFormActionTypeEnum.SUBMIT_FAILED, error: i18n._(WAITLIST_CONFIRMATION_ERROR_MESSAGE) });
         } else if (
             (outcome.value.messageKey === WaitlistMessageKeyEnum.SUCCESS ||
                 outcome.value.messageKey === WaitlistMessageKeyEnum.ALREADY_REGISTERED) &&
             isPositiveNumber(outcome.value.position)
         ) {
-            setPosition(outcome.value.position);
+            dispatch({ type: WaitlistFormActionTypeEnum.SUBMIT_SUCCEEDED, position: outcome.value.position });
         } else {
-            setError(i18n._(WAITLIST_ERROR_MESSAGES[outcome.value.messageKey] ?? WAITLIST_CONFIRMATION_ERROR_MESSAGE));
+            dispatch({
+                type: WaitlistFormActionTypeEnum.SUBMIT_FAILED,
+                error: i18n._(WAITLIST_ERROR_MESSAGES[outcome.value.messageKey] ?? WAITLIST_CONFIRMATION_ERROR_MESSAGE)
+            });
         }
-
-        setIsLoading(false);
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setEmail(e.target.value);
-        setError('');
+        dispatch({ type: WaitlistFormActionTypeEnum.EMAIL_CHANGED, email: e.target.value });
     };
 
     if (isPositiveNumber(position)) {

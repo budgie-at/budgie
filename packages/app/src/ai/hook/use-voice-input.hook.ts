@@ -1,26 +1,53 @@
 import { AITransactionInterface } from '@budgie/ai';
 import * as Cause from 'effect/Cause';
 import * as Effect from 'effect/Effect';
-import { useRef, useState } from 'react';
+import { useReducer, useRef } from 'react';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { logAndContinue } from '../../@generic/utils/log-and-continue.util';
+import { VoiceInputActionTypeEnum } from '../enum/voice-input-action-type.enum';
 import { VoiceInputStateEnum } from '../enum/voice-input-state.enum';
 import { UseVoiceInputReturnInterface } from '../interface/use-voice-input-return.interface';
+import { VoiceInputActionInterface } from '../interface/voice-input-action.interface';
+import { VoiceInputReducerStateInterface } from '../interface/voice-input-reducer-state.interface';
 import { getRootErrorMessage } from '../utils/get-root-error-message.util';
 
 import { useLlmCategorization } from './use-llm-categorization.hook';
 import { useRecording } from './use-recording.hook';
 import { useStt } from './use-stt.hook';
 
-// eslint-disable-next-line max-statements, max-lines-per-function -- Hook orchestrates the full record-transcribe-categorize lifecycle as a single awaitable
+const INITIAL_STATE: VoiceInputReducerStateInterface = {
+    status: VoiceInputStateEnum.IDLE,
+    error: null,
+    finalTranscription: '',
+    hasBeenReady: false
+};
+
+const reducer = (state: VoiceInputReducerStateInterface, action: VoiceInputActionInterface): VoiceInputReducerStateInterface => {
+    if (action.type === VoiceInputActionTypeEnum.STT_BECAME_READY) {
+        return { ...state, hasBeenReady: true };
+    }
+    if (action.type === VoiceInputActionTypeEnum.SESSION_STARTED) {
+        return { ...state, error: null, finalTranscription: '' };
+    }
+    if (action.type === VoiceInputActionTypeEnum.STATUS_CHANGED) {
+        return { ...state, status: action.status };
+    }
+    if (action.type === VoiceInputActionTypeEnum.PROCESSING_STARTED) {
+        return { ...state, status: VoiceInputStateEnum.PROCESSING, finalTranscription: action.transcription };
+    }
+    if (action.type === VoiceInputActionTypeEnum.PIPELINE_FAILED) {
+        return { ...state, status: VoiceInputStateEnum.ERROR, error: action.error };
+    }
+
+    return { ...state, status: VoiceInputStateEnum.IDLE, error: null, finalTranscription: '' };
+};
+
+// eslint-disable-next-line max-statements -- Hook orchestrates the full record-transcribe-categorize lifecycle as a single awaitable
 export const useVoiceInput = (): UseVoiceInputReturnInterface => {
-    const [state, setState] = useState<VoiceInputStateEnum>(VoiceInputStateEnum.IDLE);
-    const [error, setError] = useState<string | null>(null);
-    const [finalTranscription, setFinalTranscription] = useState('');
-    const [hasBeenReady, setHasBeenReady] = useState(false);
+    const [{ status: state, error, finalTranscription, hasBeenReady }, dispatch] = useReducer(reducer, INITIAL_STATE);
 
     const resultRef = useRef<Parameters<UseVoiceInputReturnInterface['startAndCollect']>[0] | null>(null);
 
@@ -28,7 +55,7 @@ export const useVoiceInput = (): UseVoiceInputReturnInterface => {
     const categorization = useLlmCategorization();
 
     if (stt.isReady && !hasBeenReady) {
-        setHasBeenReady(true);
+        dispatch({ type: VoiceInputActionTypeEnum.STT_BECAME_READY });
     }
 
     const settle = (transactions: AITransactionInterface[], originalText: string) => {
@@ -38,29 +65,27 @@ export const useVoiceInput = (): UseVoiceInputReturnInterface => {
     };
 
     const handleError = (e: unknown) => {
-        setError(getRootErrorMessage(e));
-        setState(VoiceInputStateEnum.ERROR);
+        dispatch({ type: VoiceInputActionTypeEnum.PIPELINE_FAILED, error: getRootErrorMessage(e) });
         settle([], '');
     };
 
     const runPipeline = () =>
         Effect.gen(function* () {
-            setState(VoiceInputStateEnum.TRANSCRIBING);
+            dispatch({ type: VoiceInputActionTypeEnum.STATUS_CHANGED, status: VoiceInputStateEnum.TRANSCRIBING });
             const text = yield* stt.stopStream();
 
             if (!isNotEmptyString(text)) {
-                setState(VoiceInputStateEnum.IDLE);
+                dispatch({ type: VoiceInputActionTypeEnum.STATUS_CHANGED, status: VoiceInputStateEnum.IDLE });
                 settle([], '');
 
                 return;
             }
 
-            setFinalTranscription(text);
-            setState(VoiceInputStateEnum.PROCESSING);
+            dispatch({ type: VoiceInputActionTypeEnum.PROCESSING_STARTED, transcription: text });
 
             const transactions = yield* categorization.categorize(text);
 
-            setState(VoiceInputStateEnum.DONE);
+            dispatch({ type: VoiceInputActionTypeEnum.STATUS_CHANGED, status: VoiceInputStateEnum.DONE });
             settle(transactions, text);
         });
 
@@ -77,8 +102,7 @@ export const useVoiceInput = (): UseVoiceInputReturnInterface => {
 
     const startAndCollect: UseVoiceInputReturnInterface['startAndCollect'] = onResult =>
         Effect.gen(function* () {
-            setError(null);
-            setFinalTranscription('');
+            dispatch({ type: VoiceInputActionTypeEnum.SESSION_STARTED });
             categorization.reset();
             resultRef.current = onResult;
 
@@ -89,7 +113,7 @@ export const useVoiceInput = (): UseVoiceInputReturnInterface => {
             }
 
             recording.start();
-            setState(VoiceInputStateEnum.RECORDING);
+            dispatch({ type: VoiceInputActionTypeEnum.STATUS_CHANGED, status: VoiceInputStateEnum.RECORDING });
         });
 
     const stop = () => {
@@ -105,9 +129,7 @@ export const useVoiceInput = (): UseVoiceInputReturnInterface => {
         stt.cancelStream();
         categorization.reset();
         resultRef.current = null;
-        setState(VoiceInputStateEnum.IDLE);
-        setError(null);
-        setFinalTranscription('');
+        dispatch({ type: VoiceInputActionTypeEnum.CANCELLED });
     };
 
     const transcription =

@@ -1,14 +1,16 @@
 import { BinanceSyncService } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { useState } from 'react';
+import { useReducer } from 'react';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
+import { CreateBinanceAccountActionTypeEnum } from '../../enum/create-binance-account-action-type.enum';
 import { SetupStepEnum } from '../../enum/setup-step.enum';
 import { useSyncAccountSetupFlow } from '../../hook/use-sync-account-setup-flow.hook';
+import { createBinanceAccountReducer } from '../../utils/create-binance-account-reducer.util';
 import { toastBinanceKeyPermissionsError } from '../../utils/toast-binance-key-permissions-error.util';
 import { AccountSelectionStep } from '../account-selection-step/account-selection-step';
 import { BinanceParkedAssetsNotice } from '../binance-parked-assets-notice/binance-parked-assets-notice';
@@ -17,15 +19,23 @@ import { SyncAccountSetupPage } from '../sync-account-setup-page/sync-account-se
 
 import { CreateBinanceAccountSelector } from './create-binance-account.selector';
 
-import type { SyncAccountPreviewInterface } from '@budgie/sync';
-
 export const CreateBinanceAccount = () => {
     const { t } = useLingui();
 
-    const [step, setStep] = useState(SetupStepEnum.TOKEN);
-    const [apiKey, setApiKey] = useState('');
-    const [apiSecret, setApiSecret] = useState('');
-    const [parkedPreviews, setParkedPreviews] = useState<SyncAccountPreviewInterface[]>([]);
+    const [{ step, apiKey, apiSecret, parkedPreviews }, dispatch] = useReducer(createBinanceAccountReducer, {
+        step: SetupStepEnum.TOKEN,
+        apiKey: '',
+        apiSecret: '',
+        parkedPreviews: []
+    });
+
+    const handleApiKeyChange = (value: string) => {
+        dispatch({ type: CreateBinanceAccountActionTypeEnum.API_KEY_CHANGED, apiKey: value });
+    };
+
+    const handleApiSecretChange = (value: string) => {
+        dispatch({ type: CreateBinanceAccountActionTypeEnum.API_SECRET_CHANGED, apiSecret: value });
+    };
 
     const buildToken = () => JSON.stringify({ apiKey: apiKey.trim(), apiSecret: apiSecret.trim() });
 
@@ -50,8 +60,10 @@ export const CreateBinanceAccount = () => {
                     ),
             previews => {
                 accountSelection.setPreviews(previews.filter(preview => !preview.isParked));
-                setParkedPreviews(previews.filter(preview => preview.isParked));
-                setStep(SetupStepEnum.ACCOUNTS);
+                dispatch({
+                    type: CreateBinanceAccountActionTypeEnum.ACCOUNTS_FETCHED,
+                    parkedPreviews: previews.filter(preview => preview.isParked)
+                });
             }
         );
     };
@@ -66,7 +78,12 @@ export const CreateBinanceAccount = () => {
 
     if (step === SetupStepEnum.TOKEN) {
         pageContent = (
-            <KeySecretInputStep apiKey={apiKey} apiSecret={apiSecret} onApiKeyChange={setApiKey} onApiSecretChange={setApiSecret} />
+            <KeySecretInputStep
+                apiKey={apiKey}
+                apiSecret={apiSecret}
+                onApiKeyChange={handleApiKeyChange}
+                onApiSecretChange={handleApiSecretChange}
+            />
         );
         footer = <Button onPress={handleFetchAccounts} disabled={isLoading} content={t`Fetch Accounts`} />;
     }

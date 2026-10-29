@@ -4,18 +4,20 @@ import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { router } from 'expo-router';
-import { useState } from 'react';
+import { useReducer } from 'react';
 import Toast from 'react-native-toast-message';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { showErrorToast } from '../../../@generic/utils/show-error-toast/show-error-toast';
 import { OnboardingNote } from '../../../onboarding/component/onboarding-note/onboarding-note';
 import { useIsOnboardingActive } from '../../../onboarding/hook/use-is-onboarding-active.hook';
 import { DEFAULT_SYNC_HISTORY_DEPTH } from '../../constant/sync-history-depth-options.constant';
+import { CreateMonobankAccountActionTypeEnum } from '../../enum/create-monobank-account-action-type.enum';
 import { SetupStepEnum } from '../../enum/setup-step.enum';
 import { useSyncAccountSetupFlow } from '../../hook/use-sync-account-setup-flow.hook';
+import { createMonobankAccountReducer } from '../../utils/create-monobank-account-reducer.util';
 import { AccountSelectionStep } from '../account-selection-step/account-selection-step';
 import { SyncAccountSetupPage } from '../sync-account-setup-page/sync-account-setup-page';
 import { SyncHistoryDepthStep } from '../sync-history-depth-step/sync-history-depth-step';
@@ -29,9 +31,11 @@ export const CreateMonobankAccount = () => {
 
     const isOnboardingActive = useIsOnboardingActive();
 
-    const [step, setStep] = useState(SetupStepEnum.TOKEN);
-    const [token, setToken] = useState('');
-    const [historyDepth, setHistoryDepth] = useState(DEFAULT_SYNC_HISTORY_DEPTH);
+    const [{ step, token, historyDepth }, dispatch] = useReducer(createMonobankAccountReducer, {
+        step: SetupStepEnum.TOKEN,
+        token: '',
+        historyDepth: DEFAULT_SYNC_HISTORY_DEPTH
+    });
     const effectiveHistoryDepth = isOnboardingActive ? SyncHistoryDepthEnum.MONTH_1 : historyDepth;
 
     const { accountSelection, isLoading, fetchAccountPreviews, handleGoBack, handleSetupSync, isStartSyncDisabled } =
@@ -78,31 +82,31 @@ export const CreateMonobankAccount = () => {
                 ),
             previews => {
                 accountSelection.setPreviews(previews);
-                setStep(SetupStepEnum.ACCOUNTS);
+                dispatch({ type: CreateMonobankAccountActionTypeEnum.ACCOUNTS_FETCHED });
             }
         );
     };
 
-    const previousStep: Record<SetupStepEnum, SetupStepEnum | null> = {
-        [SetupStepEnum.TOKEN]: null,
-        [SetupStepEnum.ACCOUNTS]: SetupStepEnum.TOKEN,
-        [SetupStepEnum.HISTORY]: SetupStepEnum.ACCOUNTS
-    };
-
     const handleStepAwareGoBack = () => {
-        const stepBefore = previousStep[step];
-
-        if (!isDefined(stepBefore)) {
+        if (step === SetupStepEnum.TOKEN) {
             handleGoBack();
 
             return;
         }
 
-        setStep(stepBefore);
+        dispatch({ type: CreateMonobankAccountActionTypeEnum.STEP_BACK });
     };
 
     const handleContinueToHistory = () => {
-        setStep(SetupStepEnum.HISTORY);
+        dispatch({ type: CreateMonobankAccountActionTypeEnum.CONTINUED_TO_HISTORY });
+    };
+
+    const handleTokenChange = (value: string) => {
+        dispatch({ type: CreateMonobankAccountActionTypeEnum.TOKEN_CHANGED, token: value });
+    };
+
+    const handleHistoryDepthSelect = (value: SyncHistoryDepthEnum) => {
+        dispatch({ type: CreateMonobankAccountActionTypeEnum.HISTORY_DEPTH_SELECTED, historyDepth: value });
     };
 
     const selectedAccountCount = accountSelection.selectedAccounts.size;
@@ -126,7 +130,7 @@ export const CreateMonobankAccount = () => {
         />
     );
 
-    let stepContent = <TokenInputStep token={token} onTokenChange={setToken} />;
+    let stepContent = <TokenInputStep token={token} onTokenChange={handleTokenChange} />;
     let footer = <Button onPress={handleFetchAccounts} disabled={isLoading} isLoading={isLoading} content={t`Connect`} />;
 
     switch (step) {
@@ -140,7 +144,7 @@ export const CreateMonobankAccount = () => {
             footer = accountsFooter;
             break;
         case SetupStepEnum.HISTORY:
-            stepContent = <SyncHistoryDepthStep selectedDepth={historyDepth} onSelect={setHistoryDepth} />;
+            stepContent = <SyncHistoryDepthStep selectedDepth={historyDepth} onSelect={handleHistoryDepthSelect} />;
             footer = <Button onPress={handleSetupSync} disabled={isStartSyncDisabled} content={t`Start Sync`} />;
             break;
         case SetupStepEnum.TOKEN:

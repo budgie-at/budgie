@@ -1,7 +1,7 @@
 import { convertFromMicroUnits } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { useState } from 'react';
+import { useReducer } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
@@ -11,7 +11,9 @@ import { ProtectedText } from '../../../@generic/component/protected-text/protec
 import { useToday } from '../../../@generic/hook/use-today.hook';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
+import { RecurringCalendarActionTypeEnum } from '../../enum/recurring-calendar-action-type.enum';
 import { useRecurringCalendar } from '../../hook/use-recurring-calendar.hook';
+import { recurringCalendarReducer } from '../../utils/recurring-calendar-reducer.util';
 import { RecurringCalendarEmptyState } from '../recurring-calendar-empty-state/recurring-calendar-empty-state';
 import { RecurringCalendarEntryList } from '../recurring-calendar-entry-list/recurring-calendar-entry-list';
 import { RecurringCalendarGrid } from '../recurring-calendar-grid/recurring-calendar-grid';
@@ -29,10 +31,11 @@ export const RecurringCalendarContent = () => {
     const formatDigits = useDisplayFormatDigits();
 
     const now = useToday();
-    const [displayMonth, setDisplayMonth] = useState(now.getMonth());
-    const [displayYear, setDisplayYear] = useState(now.getFullYear());
+    const [{ displayMonth, displayYear, selectedDay }, dispatch] = useReducer(recurringCalendarReducer, {
+        displayMonth: now.getMonth(),
+        displayYear: now.getFullYear()
+    });
     const data = useRecurringCalendar(displayYear, displayMonth);
-    const [selectedDay, setSelectedDay] = useState<number | undefined>();
 
     const entriesByDay = data?.entriesByDay ?? EMPTY_ENTRIES_BY_DAY;
     const forecastedEntriesByDay = data?.forecastedEntriesByDay ?? EMPTY_ENTRIES_BY_DAY;
@@ -54,13 +57,11 @@ export const RecurringCalendarContent = () => {
     const showMonthlyList = !isDefined(selectedDay) && !isCurrentMonth && isNotEmptyArray(allMonthlyEntries);
 
     const handleSelectDay = (day: number) => {
-        setSelectedDay(current => (current === day ? undefined : day)); // eslint-disable-line no-undefined -- Toggle selection
+        dispatch({ type: RecurringCalendarActionTypeEnum.DAY_TOGGLED, day });
     };
 
     const handleChangeMonth = (year: number, month: number) => {
-        setDisplayYear(year);
-        setDisplayMonth(month);
-        setSelectedDay(undefined); // eslint-disable-line no-undefined -- Reset selection on month change
+        dispatch({ type: RecurringCalendarActionTypeEnum.MONTH_CHANGED, year, month });
     };
 
     const hasEntries = isDefined(data) && (data.entriesByDay.size > 0 || data.forecastedEntriesByDay.size > 0);
