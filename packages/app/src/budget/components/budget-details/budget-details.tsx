@@ -1,8 +1,8 @@
-import { BudgetAlertScopeEnum, computePeriodWindow, getInclusiveEnd } from '@budgie/budget';
+import { BudgetAlertScopeEnum, getInclusiveEnd } from '@budgie/budget';
 import { t } from '@lingui/core/macro';
 import * as Option from 'effect/Option';
 import * as Schema from 'effect/Schema';
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useRef, useState } from 'react';
 import { View } from 'react-native';
 
@@ -10,7 +10,6 @@ import { emptyFn, isDefined } from '@rnw-community/shared';
 
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
-import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
 import { useToday } from '../../../@generic/hook/use-today.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
@@ -18,14 +17,14 @@ import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-ins
 import { BudgetHighlightContext } from '../../context/budget-highlight.context';
 import { useGetBudgetProjectionQuery } from '../../query/use-get-budget-projection.query';
 import { formatBudgetPeriodLabel } from '../../utils/format-budget-period-label.util';
-import { BudgetDayStrip } from '../budget-day-strip/budget-day-strip';
-import { BudgetDetailsCategoryList } from '../budget-details-category-list/budget-details-category-list';
+import { resolveBudgetWindow } from '../../utils/resolve-budget-window.util';
 import { BudgetDetailsEditButton } from '../budget-details-edit-button/budget-details-edit-button';
-import { BudgetDetailsForecast } from '../budget-details-forecast/budget-details-forecast';
+import { BudgetDetailsOverview } from '../budget-details-overview/budget-details-overview';
+import { BudgetEventsSection } from '../budget-events-section/budget-events-section';
+import { BudgetFundsSection } from '../budget-funds-section/budget-funds-section';
 import { BudgetHistorySection } from '../budget-history-section/budget-history-section';
+import { BudgetLimitChangesRow } from '../budget-limit-changes-row/budget-limit-changes-row';
 import { BudgetPeriodRecap } from '../budget-period-recap/budget-period-recap';
-import { BudgetStatRow } from '../budget-stat-row/budget-stat-row';
-import { BudgetVerdict } from '../budget-verdict/budget-verdict';
 
 import type { BudgetHighlightTargetInterface } from '../../interface/budget-highlight-target.interface';
 import type { BudgetEntityInterface } from '@budgie/contracts';
@@ -40,10 +39,11 @@ const decodeHighlightParams = Schema.decodeUnknownOption(
     Schema.Struct({ scope: Schema.Enum(BudgetAlertScopeEnum), categoryId: Schema.optionalKey(Schema.NumberFromString) })
 );
 
+// eslint-disable-next-line max-statements -- Details orchestration component with multiple hooks and handlers
 export const BudgetDetails = ({ budget }: Props) => {
     const { projection, isLoading } = useGetBudgetProjectionQuery(budget);
     const { instrument } = useGetInstrumentByIdQuery(budget.instrumentId);
-    const periodWindow = computePeriodWindow(budget, useToday());
+    const periodWindow = resolveBudgetWindow(budget, useToday());
     const periodEnd = getInclusiveEnd(periodWindow.nextPeriodStart);
     const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
     const dateLabel = formatBudgetPeriodLabel(budget, useFormatDate().formatMonthAndDay);
@@ -70,6 +70,10 @@ export const BudgetDetails = ({ budget }: Props) => {
         );
     };
 
+    const handleEditPress = () => {
+        router.push({ pathname: '/budget/edit', params: { id: String(budget.id) } });
+    };
+
     const scrollViewProps = { ref: scrollRef };
     const highlightContextValue = { target: isLoading ? null : highlightTarget, reveal: handleReveal };
 
@@ -78,36 +82,28 @@ export const BudgetDetails = ({ budget }: Props) => {
             title={t`Budget details`}
             subtitle={dateLabel}
             leading={<HeaderBackButton />}
-            trailing={<BudgetDetailsEditButton budgetId={budget.id} />}
+            trailing={<BudgetDetailsEditButton onPress={handleEditPress} />}
             scrollViewProps={scrollViewProps}
         >
             <BudgetHighlightContext value={highlightContextValue}>
                 <View ref={contentRef} collapsable={false} className="gap-y-3xl">
                     <BudgetPeriodRecap budgetId={budget.id} period={budget.period} currencySymbol={currencySymbol} />
 
-                    <LoadingContent isLoading={isLoading}>
-                        <BudgetVerdict projection={projection} currencySymbol={currencySymbol} onPaceHintPress={setHighlightTarget} />
-                    </LoadingContent>
+                    <BudgetDetailsOverview
+                        budget={budget}
+                        projection={projection}
+                        isLoading={isLoading}
+                        currencySymbol={currencySymbol}
+                        periodStart={periodWindow.periodStart}
+                        periodEnd={periodEnd}
+                        onPaceHintPress={setHighlightTarget}
+                    />
 
-                    <LoadingContent isLoading={isLoading}>
-                        <BudgetDayStrip projection={projection} period={budget.period} currencySymbol={currencySymbol} />
-                    </LoadingContent>
+                    <BudgetFundsSection budget={budget} currencySymbol={currencySymbol} />
 
-                    <LoadingContent isLoading={isLoading}>
-                        <BudgetStatRow scope={projection.overall} limitSource={budget.limitSource} currencySymbol={currencySymbol} />
-                    </LoadingContent>
+                    <BudgetEventsSection />
 
-                    <BudgetDetailsForecast projection={projection} currencySymbol={currencySymbol} isLoading={isLoading} />
-
-                    <LoadingContent isLoading={isLoading}>
-                        <BudgetDetailsCategoryList
-                            budget={budget}
-                            projection={projection}
-                            periodStart={periodWindow.periodStart}
-                            periodEnd={periodEnd}
-                            currencySymbol={currencySymbol}
-                        />
-                    </LoadingContent>
+                    <BudgetLimitChangesRow budget={budget} currencySymbol={currencySymbol} />
 
                     <BudgetHistorySection
                         budgetId={budget.id}

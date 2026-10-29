@@ -1,9 +1,11 @@
-import { computePeriodWindow, getInclusiveEnd } from '@budgie/budget';
+import { getInclusiveEnd } from '@budgie/budget';
 
-import type { BudgetPeriodSpecInterface } from '@budgie/budget';
+import { resolveBudgetWindow } from './resolve-budget-window.util';
 
-export const formatBudgetPeriodLabel = (budget: BudgetPeriodSpecInterface, formatMonthAndDay: (date: Date) => string): string => {
-    const window = computePeriodWindow(budget, new Date());
+import type { BudgetWindowSourceInterface } from '../interface/budget-window-source.interface';
+
+export const formatBudgetPeriodLabel = (budget: BudgetWindowSourceInterface, formatMonthAndDay: (date: Date) => string): string => {
+    const window = resolveBudgetWindow(budget, new Date());
     const endDate = getInclusiveEnd(window.nextPeriodStart);
 
     return `${formatMonthAndDay(window.periodStart)} – ${formatMonthAndDay(endDate)}`;

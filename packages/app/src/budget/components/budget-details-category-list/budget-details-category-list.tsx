@@ -1,3 +1,4 @@
+import { BudgetKindEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
@@ -28,6 +29,7 @@ export const BudgetDetailsCategoryList = ({ budget, projection, periodStart, per
     const titleByCategoryId = new Map(categories.map(category => [category.id, category.title]));
     const categoryIds = projection.categories.map(category => category.categoryId);
     const carriedAmountByCategory = new Map(effectiveLimits.categoryLimits.map(limit => [limit.categoryId, limit.carriedAmount]));
+    const isOtherRowVisible = budget.kind === BudgetKindEnum.MAIN || isPositiveNumber(projection.other.limit);
     const hasCategoryLimits = isNotEmptyArray(projection.categories) || isPositiveNumber(budget.otherLimit);
 
     const rows = hasCategoryLimits ? (
@@ -45,15 +47,17 @@ export const BudgetDetailsCategoryList = ({ budget, projection, periodStart, per
                     staggerIndex={index}
                 />
             ))}
-            <BudgetDetailsOtherCategoryRow
-                categoryIds={categoryIds}
-                scope={projection.other}
-                carriedAmount={effectiveLimits.otherCarriedAmount}
-                periodStart={periodStart}
-                periodEnd={periodEnd}
-                currencySymbol={currencySymbol}
-                staggerIndex={categoryIds.length}
-            />
+            {isOtherRowVisible ? (
+                <BudgetDetailsOtherCategoryRow
+                    categoryIds={categoryIds}
+                    scope={projection.other}
+                    carriedAmount={effectiveLimits.otherCarriedAmount}
+                    periodStart={periodStart}
+                    periodEnd={periodEnd}
+                    currencySymbol={currencySymbol}
+                    staggerIndex={categoryIds.length}
+                />
+            ) : null}
         </>
     ) : (
         <Text className="text-sm text-secondary-foreground">

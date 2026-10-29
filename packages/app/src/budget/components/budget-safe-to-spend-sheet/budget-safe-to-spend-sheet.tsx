@@ -1,4 +1,4 @@
-import { computePeriodWindow, getInclusiveEnd } from '@budgie/budget';
+import { getInclusiveEnd } from '@budgie/budget';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { ScrollView, Text, View } from 'react-native';
 
@@ -11,6 +11,7 @@ import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { BudgetSelector } from '../../budget.selector';
 import { useGetBudgetProjectionQuery } from '../../query/use-get-budget-projection.query';
+import { resolveBudgetWindow } from '../../utils/resolve-budget-window.util';
 import { BudgetSafeToSpendSummary } from '../budget-safe-to-spend-summary/budget-safe-to-spend-summary';
 import { BudgetUpcomingChargeRow } from '../budget-upcoming-charge-row/budget-upcoming-charge-row';
 
@@ -29,7 +30,7 @@ export const BudgetSafeToSpendSheet = ({ budget }: Props) => {
     const { upcomingCharges } = projection;
 
     const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
-    const periodEnd = getInclusiveEnd(computePeriodWindow(budget, today).nextPeriodStart);
+    const periodEnd = getInclusiveEnd(resolveBudgetWindow(budget, today).nextPeriodStart);
     const periodEndLabel = formatMonthAndDay(periodEnd);
 
     const upcomingSection = isNotEmptyArray(upcomingCharges) ? (

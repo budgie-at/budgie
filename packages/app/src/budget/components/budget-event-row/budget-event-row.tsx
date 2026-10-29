@@ -30,7 +30,7 @@ export const BudgetEventRow = ({ event }: Props) => {
     const datesLabel = `${startLabel} – ${endLabel}`;
 
     const handlePress = () => {
-        router.push({ pathname: '/budget/event/[id]/edit', params: { id: String(budget.id) } });
+        router.push({ pathname: '/budget/event/[id]', params: { id: String(budget.id) } });
     };
 
     return (
