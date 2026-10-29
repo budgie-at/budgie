@@ -594,7 +594,9 @@ appId: ${APP_ID}
 # Counter on the account screen reflects only this account's transactions
 # (original expense + transfer + native amount transfer + the expense created earlier in this flow)
 - extendedWaitUntil:
-      visible: 'Transactions 4'
+      visible:
+          id: 'TransactionsPage.TransactionCount'
+          text: '4 transactions'
       timeout: 5000
 
 - scrollUntilVisible:
@@ -617,6 +619,6 @@ appId: ${APP_ID}
       id: 'TransactionCard.Label.E2E_Filter_Transfer'
 
 # Counter on the account screen also respects an applied filter
-- scrollUntilVisible:
-      element: 'Transactions 2'
-      direction: UP
+- assertVisible:
+      id: 'TransactionsPage.TransactionCount'
+      text: '2 transactions'

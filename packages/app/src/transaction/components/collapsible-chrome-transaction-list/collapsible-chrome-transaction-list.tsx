@@ -6,6 +6,7 @@ import { CollapsibleChromeLegendList } from '../../../@generic/component/collaps
 import { CollapsibleChromePinnedBar } from '../../../@generic/component/collapsible-chrome-pinned-bar/collapsible-chrome-pinned-bar';
 import { useTransactionList } from '../../hook/use-transaction-list.hook';
 import { TransactionFilters } from '../transaction-filters/transaction-filters';
+import { TransactionListCount } from '../transaction-list-count/transaction-list-count';
 import { TransactionListEmptyState } from '../transaction-list-empty-state/transaction-list-empty-state';
 import { TransactionListPinnedDay } from '../transaction-list-pinned-day/transaction-list-pinned-day';
 import { TransactionListUncategorizedPill } from '../transaction-list-uncategorized-pill/transaction-list-uncategorized-pill';
@@ -42,22 +43,24 @@ export const CollapsibleChromeTransactionList = ({ accountId, children }: Props)
 
     return (
         <>
-            <TransactionSectionsList
-                sections={sections}
-                onEndReached={loadMore}
-                listEmptyState={
-                    <TransactionListEmptyState
-                        isLoading={isLoading}
-                        hasFiltersSelected={hasFiltersSelected}
-                        onClearFilters={clearFilters}
-                    />
-                }
-                accountId={accountId}
-                footerSpacerMultiplier={FAB_FOOTER_SPACER_MULTIPLIER}
-                listHeader={listHeader}
-                listComponent={CollapsibleChromeLegendList}
-                headerOffsets={headerOffsets}
-            />
+            <TransactionListCount filters={activeFilters}>
+                <TransactionSectionsList
+                    sections={sections}
+                    onEndReached={loadMore}
+                    listEmptyState={
+                        <TransactionListEmptyState
+                            isLoading={isLoading}
+                            hasFiltersSelected={hasFiltersSelected}
+                            onClearFilters={clearFilters}
+                        />
+                    }
+                    accountId={accountId}
+                    footerSpacerMultiplier={FAB_FOOTER_SPACER_MULTIPLIER}
+                    listHeader={listHeader}
+                    listComponent={CollapsibleChromeLegendList}
+                    headerOffsets={headerOffsets}
+                />
+            </TransactionListCount>
 
             <CollapsibleChromePinnedBar
                 anchorY={filtersY}
