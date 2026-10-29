@@ -29,6 +29,7 @@ export const useTransactionSubtitleSegments = (
     const feeLabel = useTransactionFeeLabel(transaction);
 
     const counterparty = getTransactionCounterparty(transaction, accountId);
+    const displayTitle = getTransactionDisplayTitle(transaction);
     const source = counterparty?.source;
     const destination = counterparty?.destination;
     const categoryLabels =
@@ -42,15 +43,22 @@ export const useTransactionSubtitleSegments = (
         isNotEmptyString(source) && isNotEmptyString(destination) ? t`From ${source} to ${destination}` : null,
         isNotEmptyString(destination) ? t`To ${destination}` : null,
         isNotEmptyString(source) ? t`From ${source}` : null
-    ].find(isNotEmptyString);
-    const hasOwnAccount = !isDefined(counterparty) && isDefined(moneyAccount) && moneyAccount.id !== accountId;
+    ]
+        .filter(isNotEmptyString)
+        .find(label => label.toLowerCase() !== displayTitle.toLowerCase());
     const debtEvent = transaction.debtEvents.at(0);
     const repaidDebtAccount =
         debtEvent?.direction === DebtEventDirectionEnum.CLOSE ? debtEvent[DebtEventAssociationEnum.DEBT_ACCOUNT] : null;
     const repaidDebtTitle =
-        isDefined(repaidDebtAccount) && !getTransactionDisplayTitle(transaction).includes(repaidDebtAccount.title)
-            ? repaidDebtAccount.title
-            : null;
+        isDefined(repaidDebtAccount) && !displayTitle.includes(repaidDebtAccount.title) ? repaidDebtAccount.title : null;
+
+    const { relationSegments, ownAccountTitle } = isDefined(repaidDebtAccount)
+        ? { relationSegments: [t`Repayment`, repaidDebtTitle], ownAccountTitle: null }
+        : {
+              relationSegments: [counterpartyLabel ?? categoryLabels.join(', ')],
+              ownAccountTitle:
+                  !isDefined(counterparty) && isDefined(moneyAccount) && moneyAccount.id !== accountId ? moneyAccount.title : null
+          };
 
     return {
         segments: [
@@ -58,11 +66,9 @@ export const useTransactionSubtitleSegments = (
             isDefined(transaction.receipt) ? t`Receipt` : null,
             isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction) ? t`Manual adjustment` : null,
             isUncategorizedTransaction(transaction) ? t`Uncategorized` : null,
-            feeLabel,
-            ...(isDefined(repaidDebtAccount)
-                ? [t`Repayment`, repaidDebtTitle]
-                : [counterpartyLabel ?? categoryLabels.join(', '), hasOwnAccount ? moneyAccount.title : null])
+            ...relationSegments
         ].filter(isNotEmptyString),
+        trailingSegments: [feeLabel, ownAccountTitle].filter(isNotEmptyString),
         categoryLabel: !isDefined(counterparty) && categoryLabels.length === 1 ? (categoryLabels.at(0) ?? null) : null
     };
 };

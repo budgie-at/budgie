@@ -96,7 +96,10 @@ export const TransactionFilters = ({ filters, onChange, accountId, showTypeFilte
                     />
                 )}
             </ScrollView>
-            <View className="absolute inset-y-0 right-0 w-[24px] bg-linear-to-r from-surface/0 to-surface" pointerEvents="none" />
+            <View
+                className="absolute inset-y-0 right-0 w-[32px] bg-linear-to-r from-surface/0 via-surface/80 to-surface"
+                pointerEvents="none"
+            />
         </View>
     );
 };

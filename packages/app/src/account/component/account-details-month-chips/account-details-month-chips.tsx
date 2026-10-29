@@ -1,7 +1,7 @@
 import { DEFAULT_TRANSACTION_FILTER, DatePeriodEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
@@ -34,18 +34,27 @@ export const AccountDetailsMonthChips = ({ accountId }: Props) => {
 
     return (
         <CollapsibleChromeScrollFade>
-            <Text
+            <View
+                accessible
                 accessibilityLabel={t`This month: spent ${formattedExpense}, income ${formattedIncome}`}
-                className="text-[15px] text-secondary-foreground text-center tabular-nums"
-                numberOfLines={1}
-                adjustsFontSizeToFit
-                minimumFontScale={0.85}
+                className="items-center gap-y-xs"
             >
-                <Trans>
-                    This month · Spent <Text className="text-primary font-semibold">{formattedExpense}</Text> · Income{' '}
-                    <Text className="text-primary font-semibold">{formattedIncome}</Text>
-                </Trans>
-            </Text>
+                <Text className="text-xs text-secondary-foreground text-center" numberOfLines={1}>
+                    <Trans>This month</Trans>
+                </Text>
+
+                <Text
+                    className="text-[13px] text-secondary-foreground text-center tabular-nums"
+                    numberOfLines={1}
+                    adjustsFontSizeToFit
+                    minimumFontScale={0.85}
+                >
+                    <Trans>
+                        Spent <Text className="text-primary font-semibold">{formattedExpense}</Text> · Income{' '}
+                        <Text className="text-primary font-semibold">{formattedIncome}</Text>
+                    </Trans>
+                </Text>
+            </View>
         </CollapsibleChromeScrollFade>
     );
 };

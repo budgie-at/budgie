@@ -26,7 +26,7 @@ export const ConvertedAmountLabel = ({ instrumentId, amount, baseAmount }: Props
     }
 
     return (
-        <Text className="text-[13px] text-secondary-foreground/70 text-right tabular-nums">
+        <Text className="text-[13px] text-secondary-foreground text-right tabular-nums">
             {formatDigits(convertFromMicroUnits(convertedAmount), defaultInstrument.symbol)}
         </Text>
     );

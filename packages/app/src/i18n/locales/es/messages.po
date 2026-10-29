@@ -1030,7 +1030,7 @@ msgstr "Ajuste de saldo"
 msgid "Balance forecast"
 msgstr "Previsión de saldo"
 
-#: src/account/component/account-details-hero/account-details-hero.tsx
+#: src/account/component/account-details-hero-balance/account-details-hero-balance.tsx
 msgid "Balance: {formattedBalance}"
 msgstr "Saldo: {formattedBalance}"
 
@@ -5071,6 +5071,10 @@ msgstr "Gastos por etiqueta"
 msgid "Spent"
 msgstr "Gastado"
 
+#: src/account/component/account-details-month-chips/account-details-month-chips.tsx
+msgid "Spent <0>{formattedExpense}</0> · Income <1>{formattedIncome}</1>"
+msgstr "Gastos <0>{formattedExpense}</0> · Ingresos <1>{formattedIncome}</1>"
+
 #: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "Spent so far"
 msgstr "Gastado hasta ahora"
@@ -5395,6 +5399,7 @@ msgstr "Esta clave ya sincroniza otra de tus secciones de Monobank."
 msgid "This key is for a different Monobank client."
 msgstr "Esta clave es de otro cliente de Monobank."
 
+#: src/account/component/account-details-month-chips/account-details-month-chips.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "This month"
 msgstr "Este mes"
@@ -5402,10 +5407,6 @@ msgstr "Este mes"
 #: src/@generic/constant/date-period.constant.ts
 msgid "This Month"
 msgstr "Este mes"
-
-#: src/account/component/account-details-month-chips/account-details-month-chips.tsx
-msgid "This month · Spent <0>{formattedExpense}</0> · Income <1>{formattedIncome}</1>"
-msgstr "Este mes · Gastos <0>{formattedExpense}</0> · Ingresos <1>{formattedIncome}</1>"
 
 #: src/account/component/account-details-month-chips/account-details-month-chips.tsx
 msgid "This month: spent {formattedExpense}, income {formattedIncome}"

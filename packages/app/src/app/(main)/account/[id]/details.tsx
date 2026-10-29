@@ -15,8 +15,10 @@ import { IdParamInterface } from '../../../../@generic/interface/id-param.interf
 import { ScreenChromeThemeProvider } from '../../../../@generic/provider/screen-chrome-theme.provider';
 import { AccountActionsMenu } from '../../../../account/component/account-actions-menu/account-actions-menu';
 import { AccountDetailsHeaderBackdrop } from '../../../../account/component/account-details-header-backdrop/account-details-header-backdrop';
+import { AccountDetailsHeroBalance } from '../../../../account/component/account-details-hero-balance/account-details-hero-balance';
 import { AccountDetailsHero } from '../../../../account/component/account-details-hero/account-details-hero';
 import { AccountDetailsMenuControls } from '../../../../account/component/account-details-menu-controls/account-details-menu-controls';
+import { AccountDetailsNavBalance } from '../../../../account/component/account-details-nav-balance/account-details-nav-balance';
 import { AccountDetailsTitle } from '../../../../account/component/account-details-title/account-details-title';
 import { DebtAccountBalance } from '../../../../account/component/debt-account-balance/debt-account-balance';
 import { DepositDetailsCard } from '../../../../account/component/deposit-details-card/deposit-details-card';
@@ -76,7 +78,7 @@ export default function AccountDetails() {
             </CollapsibleChromeScrollFade>
         ) : (
             <View className="gap-y-4xl">
-                <AccountDetailsHero account={account} balance={balance} />
+                <AccountDetailsHero account={account} />
 
                 {account.type === AccountTypeEnum.DEPOSIT ? (
                     <CollapsibleChromeScrollFade>
@@ -89,6 +91,13 @@ export default function AccountDetails() {
                     </CollapsibleChromeScrollFade>
                 ) : null}
             </View>
+        );
+
+    const navBalance =
+        account.type === AccountTypeEnum.DEBT ? (
+            <AccountDetailsNavBalance balance={balance} instrumentSymbol={instrumentSymbol} />
+        ) : (
+            <AccountDetailsHeroBalance balance={balance} instrumentSymbol={instrumentSymbol} />
         );
 
     return (
@@ -109,7 +118,9 @@ export default function AccountDetails() {
                             collapsedTitle={null}
                         />
 
-                        <AccountDetailsTitle title={account.title} balance={balance} instrumentSymbol={instrumentSymbol} />
+                        <AccountDetailsTitle title={account.title} />
+
+                        {navBalance}
                     </ScreenChromeFrame>
                 </ScreenChromeThemeProvider>
             </RevealGate>

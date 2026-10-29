@@ -1030,7 +1030,7 @@ msgstr "Коригування балансу"
 msgid "Balance forecast"
 msgstr "Прогноз балансу"
 
-#: src/account/component/account-details-hero/account-details-hero.tsx
+#: src/account/component/account-details-hero-balance/account-details-hero-balance.tsx
 msgid "Balance: {formattedBalance}"
 msgstr "Баланс: {formattedBalance}"
 
@@ -5071,6 +5071,10 @@ msgstr "Витрати за тегами"
 msgid "Spent"
 msgstr "Витрачено"
 
+#: src/account/component/account-details-month-chips/account-details-month-chips.tsx
+msgid "Spent <0>{formattedExpense}</0> · Income <1>{formattedIncome}</1>"
+msgstr "Витрати <0>{formattedExpense}</0> · Дохід <1>{formattedIncome}</1>"
+
 #: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "Spent so far"
 msgstr "Витрачено досі"
@@ -5395,6 +5399,7 @@ msgstr "Цей ключ уже синхронізує інший ваш розд
 msgid "This key is for a different Monobank client."
 msgstr "Цей ключ належить іншому клієнту Monobank."
 
+#: src/account/component/account-details-month-chips/account-details-month-chips.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "This month"
 msgstr "Цього місяця"
@@ -5402,10 +5407,6 @@ msgstr "Цього місяця"
 #: src/@generic/constant/date-period.constant.ts
 msgid "This Month"
 msgstr "Цього місяця"
-
-#: src/account/component/account-details-month-chips/account-details-month-chips.tsx
-msgid "This month · Spent <0>{formattedExpense}</0> · Income <1>{formattedIncome}</1>"
-msgstr "Цього місяця · Витрати <0>{formattedExpense}</0> · Дохід <1>{formattedIncome}</1>"
 
 #: src/account/component/account-details-month-chips/account-details-month-chips.tsx
 msgid "This month: spent {formattedExpense}, income {formattedIncome}"
