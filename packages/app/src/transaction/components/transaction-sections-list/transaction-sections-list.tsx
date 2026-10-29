@@ -14,8 +14,8 @@ import { TransactionListItemKindEnum } from '../../enum/transaction-list-item-ki
 import { TransactionListContextMenuRefInterface } from '../../interface/transaction-list-context-menu-ref.interface';
 import { TransactionsByDaySectionInterface } from '../../interface/transactions-by-day-section.interface';
 import { TransactionListItemType } from '../../type/transaction-list-item.type';
+import { buildTransactionListItems } from '../../utils/build-transaction-list-items.util';
 import { getTransactionHref } from '../../utils/get-transaction-href.util';
-import { getTransactionListRowPosition } from '../../utils/get-transaction-list-row-position.util';
 import { TransactionCard } from '../transaction-card/transaction-card';
 import { TransactionListContextMenu } from '../transaction-list-context-menu/transaction-list-context-menu';
 import { TransactionSectionHeader } from '../transaction-section-header/transaction-section-header';
@@ -68,7 +68,9 @@ export const TransactionSectionsList = ({
 
     const renderItem = ({ item }: { item: TransactionListItemType }) =>
         item.type === TransactionListItemKindEnum.HEADER ? (
-            <TransactionSectionHeader title={item.title} netAmount={item.netAmount} />
+            <View className="bg-surface">
+                <TransactionSectionHeader title={item.title} netAmount={item.netAmount} />
+            </View>
         ) : (
             <TransactionCard
                 transaction={item.transaction}
@@ -79,15 +81,8 @@ export const TransactionSectionsList = ({
             />
         );
 
-    const flatData: TransactionListItemType[] = sections.flatMap(({ title, netAmount, transactions }) => [
-        { type: TransactionListItemKindEnum.HEADER, title, netAmount, id: `header-${title}` },
-        ...transactions.map((transaction, index) => ({
-            type: TransactionListItemKindEnum.TRANSACTION as const,
-            id: `transaction-${transaction.id}`,
-            position: getTransactionListRowPosition(index, transactions.length),
-            transaction
-        }))
-    ]);
+    const { items: flatData, headerIndices } = buildTransactionListItems(sections);
+    const stickyHeaderIndices = isDefined(headerOffsets) ? [] : headerIndices;
 
     const handleListRef = (list: LegendListPositionSourceInterface | null) => {
         listRef.current = list;
@@ -97,17 +92,14 @@ export const TransactionSectionsList = ({
         const state = listRef.current?.getState();
 
         if (isDefined(state)) {
-            headerOffsets?.set(
-                flatData.flatMap((item, index) => (item.type === TransactionListItemKindEnum.HEADER ? [state.positionAtIndex(index)] : []))
-            );
+            headerOffsets?.set(headerIndices.map(index => state.positionAtIndex(index)));
         }
     };
 
     const handleSectionsChange = useEffectEvent(publishHeaderOffsets);
 
-    const paddingBottom = footerSpacerMultiplier * (FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN) + bottom;
     const contentContainerStyle = {
-        paddingBottom,
+        paddingBottom: footerSpacerMultiplier * (FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN) + bottom,
         ...(isEmptyArray(flatData) && { flexGrow: 1, paddingBottom: bottom }),
         ...(isEmptyArray(flatData) && !isDefined(listHeader) && { justifyContent: 'center' as const })
     };
@@ -132,6 +124,7 @@ export const TransactionSectionsList = ({
                     onItemSizeChanged={publishHeaderOffsets}
                     onViewableItemsChanged={publishHeaderOffsets}
                     ref={handleListRef}
+                    stickyHeaderIndices={stickyHeaderIndices}
                 />
             </View>
             <TransactionListContextMenu ref={menuRef} />
