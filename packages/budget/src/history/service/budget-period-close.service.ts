@@ -6,8 +6,12 @@ import * as Layer from 'effect/Layer';
 import { isDefined, isEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { NO_FUND_COVERED } from '../../fund/constant/no-fund-covered.constant';
+import { BudgetSinkingFundRepository } from '../../fund/repository/budget-sinking-fund.repository';
 import { BudgetFundSpendService } from '../../fund/service/budget-fund-spend.service';
 import { computeFundCovered } from '../../fund/utils/compute-fund-covered.util';
+import { computeFundDueWindow } from '../../fund/utils/compute-fund-due-window.util';
+import { contributeToFund } from '../../fund/utils/contribute-to-fund.util';
+import { settleFund } from '../../fund/utils/settle-fund.util';
 import { computeIncomeReceived } from '../../income/utils/compute-income-received.util';
 import { resolveBudgetOverallLimit } from '../../income/utils/resolve-budget-overall-limit.util';
 import { computePeriodWindow, getInclusiveEnd } from '../../period/utils/budget-period.util';
@@ -15,6 +19,7 @@ import { BudgetCategoryLimitRepository } from '../../query/repository/budget-cat
 import { BudgetRepository } from '../../query/repository/budget.repository';
 import { computeSnapshotCarryOuts } from '../../rollover/utils/budget-snapshot-carry-outs.util';
 import { computeSpent } from '../../spent/utils/budget-spent.util';
+import { toBudgetCurrencyEntries } from '../../spent/utils/to-budget-currency-entries.util';
 import { BUDGET_TUNING_PERIOD_COUNT } from '../../tuning/constant/budget-tuning-period-count.constant';
 import { BudgetLimitChangeRepository } from '../../tuning/repository/budget-limit-change.repository';
 import { proposeLimitChanges } from '../../tuning/utils/propose-limit-changes.util';
@@ -27,10 +32,12 @@ import type { BudgetCarryOutsInterface } from '../../rollover/interface/budget-c
 import type {
     BudgetCategoryLimitEntityInterface,
     BudgetEntityInterface,
-    BudgetPeriodSnapshotWithCategoriesEntityInterface
+    BudgetPeriodSnapshotWithCategoriesEntityInterface,
+    BudgetSinkingFundEntityInterface
 } from '@budgie/contracts';
 
 const REFRESH_PERIOD_COUNT = 3;
+const MAX_FUND_SETTLEMENTS = 12;
 
 export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseService>()('@budgie/budget/BudgetPeriodCloseService', {
     make: Effect.gen(function* () {
@@ -39,6 +46,7 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
         const budgetPeriodSnapshotRepository = yield* BudgetPeriodSnapshotRepository;
         const budgetLimitChangeRepository = yield* BudgetLimitChangeRepository;
         const budgetFundSpendService = yield* BudgetFundSpendService;
+        const budgetSinkingFundRepository = yield* BudgetSinkingFundRepository;
 
         const computeStoredCarryIn = (snapshot: BudgetPeriodSnapshotWithCategoriesEntityInterface): BudgetCarryOutsInterface => ({
             other: snapshot.otherCarriedIn,
@@ -191,6 +199,70 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
             );
         });
 
+        const settleDueFund = Effect.fnUntraced(function* (
+            budget: Pick<BudgetEntityInterface, 'instrumentId'>,
+            initialFund: Pick<BudgetSinkingFundEntityInterface, 'id' | 'categoryId' | 'fundedAmount' | 'dueAt' | 'repeatEveryMonths'>,
+            now: Date
+        ) {
+            let { fundedAmount, dueAt } = initialFund;
+            let isFinished = false;
+
+            for (let settlement = 0; settlement < MAX_FUND_SETTLEMENTS && !isFinished; settlement += 1) {
+                const dueWindow = computeFundDueWindow(dueAt);
+
+                if (dueWindow.nextPeriodStart.getTime() > now.getTime()) {
+                    break;
+                }
+
+                const rows = yield* budgetRepository.findBudgetSpentEntries(
+                    dueWindow.periodStart,
+                    dueWindow.nextPeriodStart,
+                    budget.instrumentId
+                );
+                const settled = settleFund({ ...initialFund, fundedAmount, dueAt }, toBudgetCurrencyEntries(rows, budget.instrumentId));
+
+                ({ fundedAmount, dueAt, isFinished } = settled);
+            }
+
+            return { fund: { ...initialFund, fundedAmount, dueAt }, isFinished };
+        });
+
+        const advanceFunds = Effect.fnUntraced(function* (
+            budget: BudgetEntityInterface,
+            windows: readonly BudgetPeriodWindowInterface[],
+            now: Date
+        ) {
+            const funds = yield* budgetSinkingFundRepository.getByBudget(budget.id);
+
+            yield* Effect.forEach(
+                funds,
+                Effect.fnUntraced(function* (fund) {
+                    const contribution = contributeToFund(fund, windows, budget);
+                    const settlement = yield* settleDueFund(budget, { ...fund, fundedAmount: contribution.fundedAmount }, now);
+
+                    if (settlement.isFinished) {
+                        yield* budgetSinkingFundRepository.delete(fund.id);
+
+                        return;
+                    }
+
+                    const hasChanged =
+                        settlement.fund.fundedAmount !== fund.fundedAmount ||
+                        settlement.fund.dueAt.getTime() !== fund.dueAt.getTime() ||
+                        contribution.lastFundedPeriodStart?.getTime() !== fund.lastFundedPeriodStart?.getTime();
+
+                    if (hasChanged) {
+                        yield* budgetSinkingFundRepository.update(fund.id, {
+                            fundedAmount: settlement.fund.fundedAmount,
+                            dueAt: settlement.fund.dueAt,
+                            lastFundedPeriodStart: contribution.lastFundedPeriodStart
+                        });
+                    }
+                }),
+                { discard: true }
+            );
+        });
+
         const tuneLimits = Effect.fnUntraced(function* (
             budget: BudgetEntityInterface,
             categoryLimits: readonly BudgetCategoryLimitEntityInterface[],
@@ -278,6 +350,7 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
                         (carryIn, window) => snapshotPeriod(window, carryIn)
                     );
                     yield* refreshRecentPeriods(budget);
+                    yield* advanceFunds(budget, windows, now);
 
                     const lastClosedWindow = windows.at(-1);
 
@@ -296,7 +369,8 @@ export class BudgetPeriodCloseService extends Context.Service<BudgetPeriodCloseS
             BudgetCategoryLimitRepository.layer,
             BudgetPeriodSnapshotRepository.layer,
             BudgetLimitChangeRepository.layer,
-            BudgetFundSpendService.layer
+            BudgetFundSpendService.layer,
+            BudgetSinkingFundRepository.layer
         ])
     );
 }
