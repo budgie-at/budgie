@@ -21,39 +21,49 @@ export class BudgetService extends Context.Service<BudgetService>()('@budgie/bud
 
         const buildCategoryLimitUpdates = (
             categoryLimits: readonly BudgetCategoryLimitInputInterface[],
-            existingByCategory: ReadonlyMap<number, BudgetCategoryLimitEntityInterface>
+            existingByCategory: ReadonlyMap<number, BudgetCategoryLimitEntityInterface>,
+            editedAt: Date
         ): BudgetCategoryLimitBulkUpdateInputInterface[] =>
             categoryLimits
                 .map(next => {
                     const existing = existingByCategory.get(next.categoryId);
 
-                    const hasChanged =
-                        isDefined(existing) &&
-                        (existing.limitAmount !== next.limitAmount ||
-                            (isDefined(next.rolloverMode) && existing.rolloverMode !== next.rolloverMode));
+                    if (!isDefined(existing)) {
+                        return null;
+                    }
 
-                    return hasChanged
-                        ? { id: existing.id, limitAmount: next.limitAmount, rolloverMode: next.rolloverMode, userEditedAt: new Date() }
-                        : null;
+                    const hasLimitChanged = existing.limitAmount !== next.limitAmount;
+                    const hasRolloverChanged = isDefined(next.rolloverMode) && existing.rolloverMode !== next.rolloverMode;
+
+                    if (!hasLimitChanged && !hasRolloverChanged) {
+                        return null;
+                    }
+
+                    return {
+                        id: existing.id,
+                        limitAmount: next.limitAmount,
+                        rolloverMode: next.rolloverMode,
+                        ...(hasLimitChanged && { userEditedAt: editedAt })
+                    };
                 })
                 .filter(isDefined);
 
         const createCategoryLimits = Effect.fnUntraced(function* (
             budgetId: number,
-            categoryLimits: readonly BudgetCategoryLimitInputInterface[]
+            categoryLimits: readonly BudgetCategoryLimitInputInterface[],
+            editedAt: Date
         ) {
             if (isEmptyArray(categoryLimits)) {
                 return;
             }
 
-            yield* budgetCategoryLimitRepository.bulkCreate(
-                categoryLimits.map(limit => ({ budgetId, ...limit, userEditedAt: new Date() }))
-            );
+            yield* budgetCategoryLimitRepository.bulkCreate(categoryLimits.map(limit => ({ budgetId, ...limit, userEditedAt: editedAt })));
         });
 
         const syncCategoryLimits = Effect.fnUntraced(function* (
             budgetId: number,
-            categoryLimits: readonly BudgetCategoryLimitInputInterface[] | undefined
+            categoryLimits: readonly BudgetCategoryLimitInputInterface[] | undefined,
+            editedAt: Date
         ) {
             if (!isDefined(categoryLimits)) {
                 return;
@@ -63,11 +73,11 @@ export class BudgetService extends Context.Service<BudgetService>()('@budgie/bud
             const existingByCategory = new Map(existingLimits.map(limit => [limit.categoryId, limit]));
             const nextCategoryIds = new Set(categoryLimits.map(limit => limit.categoryId));
             const toCreate = categoryLimits.filter(next => !existingByCategory.has(next.categoryId));
-            const toUpdate = buildCategoryLimitUpdates(categoryLimits, existingByCategory);
+            const toUpdate = buildCategoryLimitUpdates(categoryLimits, existingByCategory, editedAt);
             const toDelete = existingLimits.filter(limit => !nextCategoryIds.has(limit.categoryId)).map(limit => limit.id);
 
             if (isNotEmptyArray(toCreate)) {
-                yield* budgetCategoryLimitRepository.bulkCreate(toCreate.map(limit => ({ budgetId, ...limit, userEditedAt: new Date() })));
+                yield* budgetCategoryLimitRepository.bulkCreate(toCreate.map(limit => ({ budgetId, ...limit, userEditedAt: editedAt })));
             }
 
             yield* budgetCategoryLimitRepository.bulkUpdate([...toUpdate]);
@@ -78,14 +88,15 @@ export class BudgetService extends Context.Service<BudgetService>()('@budgie/bud
             createBudget: Effect.fn('BudgetService.createBudget')(
                 function* (input: BudgetCreateInputInterface) {
                     const { categoryLimits, ...budgetFields } = input;
-                    const periodAnchorDate = budgetFields.periodAnchorDate ?? defaultPeriodAnchorDate(budgetFields.period, new Date());
+                    const editedAt = new Date();
+                    const periodAnchorDate = budgetFields.periodAnchorDate ?? defaultPeriodAnchorDate(budgetFields.period, editedAt);
                     const createdBudget = yield* budgetRepository.create({
                         ...budgetFields,
                         periodAnchorDate,
-                        otherLimitUserEditedAt: new Date()
+                        otherLimitUserEditedAt: editedAt
                     });
 
-                    yield* createCategoryLimits(createdBudget.id, categoryLimits);
+                    yield* createCategoryLimits(createdBudget.id, categoryLimits, editedAt);
 
                     return createdBudget;
                 },
@@ -94,22 +105,26 @@ export class BudgetService extends Context.Service<BudgetService>()('@budgie/bud
             updateBudget: Effect.fn('BudgetService.updateBudget')(
                 function* (id: number, input: BudgetUpdateInputInterface) {
                     const { categoryLimits, ...budgetFields } = input;
-                    const periodAnchorDate =
-                        isDefined(budgetFields.period) && !isDefined(budgetFields.periodAnchorDate)
-                            ? defaultPeriodAnchorDate(budgetFields.period, new Date())
-                            : budgetFields.periodAnchorDate;
+                    const editedAt = new Date();
                     const existingBudget = yield* budgetRepository.findById(id);
+                    const periodAnchorDate =
+                        isDefined(budgetFields.period) &&
+                        isDefined(existingBudget) &&
+                        existingBudget.period !== budgetFields.period &&
+                        !isDefined(budgetFields.periodAnchorDate)
+                            ? defaultPeriodAnchorDate(budgetFields.period, editedAt)
+                            : budgetFields.periodAnchorDate;
                     const hasOtherLimitChanged =
                         isDefined(existingBudget) &&
                         isDefined(budgetFields.otherLimit) &&
                         existingBudget.otherLimit !== budgetFields.otherLimit;
                     const updatedBudget = yield* budgetRepository.update(id, {
                         ...budgetFields,
-                        ...(hasOtherLimitChanged && { otherLimitUserEditedAt: new Date() }),
+                        ...(hasOtherLimitChanged && { otherLimitUserEditedAt: editedAt }),
                         ...(isDefined(periodAnchorDate) && { periodAnchorDate })
                     });
 
-                    yield* syncCategoryLimits(id, categoryLimits);
+                    yield* syncCategoryLimits(id, categoryLimits, editedAt);
 
                     return updatedBudget;
                 },

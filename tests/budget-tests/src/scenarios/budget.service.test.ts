@@ -1,5 +1,5 @@
 import { BudgetCategoryLimitRepository, BudgetRepository, BudgetService } from '@budgie/budget';
-import { BudgetPeriodEnum } from '@budgie/contracts';
+import { BudgetPeriodEnum, BudgetRolloverModeEnum } from '@budgie/contracts';
 import { expect, layer } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -79,6 +79,41 @@ layer(TestLayer)('BudgetService', it => {
             const biweekly = yield* budgetService.updateBudget(monthly.id, { period: BudgetPeriodEnum.BIWEEKLY });
 
             expect(biweekly.periodAnchorDate?.getDay()).toBe(1);
+        })
+    );
+
+    it.effect('keeps the existing anchor when an update repeats the same cadence without one', () =>
+        Effect.gen(function* () {
+            const budgetService = yield* BudgetService;
+            const anchor = new Date(2026, 0, 5);
+            const weekly = yield* createTestBudget({ period: BudgetPeriodEnum.WEEKLY, periodAnchorDate: anchor });
+
+            const updated = yield* budgetService.updateBudget(weekly.id, { period: BudgetPeriodEnum.WEEKLY });
+
+            expect(updated.periodAnchorDate?.getTime()).toBe(anchor.getTime());
+        })
+    );
+
+    it.effect('does not stamp userEditedAt when only the rollover mode changes', () =>
+        Effect.gen(function* () {
+            const budgetCategoryLimitRepository = yield* BudgetCategoryLimitRepository;
+            const budgetService = yield* BudgetService;
+            const category = yield* testSeedService.category('Rollover');
+            const budget = yield* createTestBudget({
+                categoryLimits: [{ categoryId: category.id, limitAmount: FIRST_INITIAL_LIMIT, rolloverMode: BudgetRolloverModeEnum.NONE }]
+            });
+            const created = (yield* budgetCategoryLimitRepository.getByBudget(budget.id)).at(0);
+
+            yield* budgetService.updateBudget(budget.id, {
+                categoryLimits: [
+                    { categoryId: category.id, limitAmount: FIRST_INITIAL_LIMIT, rolloverMode: BudgetRolloverModeEnum.SURPLUS }
+                ]
+            });
+
+            const updated = (yield* budgetCategoryLimitRepository.getByBudget(budget.id)).at(0);
+
+            expect(updated?.rolloverMode).toBe(BudgetRolloverModeEnum.SURPLUS);
+            expect(updated?.userEditedAt?.getTime()).toBe(created?.userEditedAt?.getTime());
         })
     );
 
