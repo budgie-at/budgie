@@ -1,40 +1,14 @@
 import { BudgetPeriodCloseService, BudgetPeriodSnapshotRepository, BudgetSinkingFundRepository } from '@budgie/budget';
-import { AccountTypeEnum, BudgetSinkingFundEntityTable } from '@budgie/contracts';
 import { expect, layer } from '@effect/vitest';
-import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import {
-    createTestBudget,
-    HISTORY_NOW,
-    seedCategorizedExpense,
-    seedMonthSnapshot,
-    testDb,
-    TestLayer,
-    testSeedService,
-    units
-} from '../harness';
+import { HISTORY_NOW, seedCategorizedExpense, seedInsuranceFund, seedMonthSnapshot, TestLayer, testSeedService, units } from '../harness';
 
 layer(TestLayer)('catch-up close covers spend with funds accumulated earlier in the run', it => {
     it.effect('covers the third period with the contributions of the first two, capped at the spend', () =>
         Effect.gen(function* () {
             const fundRepository = yield* BudgetSinkingFundRepository;
-            const insurance = yield* testSeedService.category('Insurance');
-            const account = yield* testSeedService.account({ type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
-            const budget = yield* createTestBudget({ categoryLimits: [], isAutoTuneEnabled: false });
-            const fund = yield* fundRepository.create({
-                budgetId: budget.id,
-                name: 'Insurance',
-                categoryId: insurance.id,
-                targetAmount: units(600),
-                dueAt: new Date(2026, 2, 20),
-                repeatEveryMonths: 12
-            });
-
-            yield* testDb
-                .update(BudgetSinkingFundEntityTable)
-                .set({ createdAt: new Date(2026, 0, 15) })
-                .where(eq(BudgetSinkingFundEntityTable.id, fund.id));
+            const { account, budget, insurance } = yield* seedInsuranceFund(false, { repeatEveryMonths: 12 });
             const groceries = yield* testSeedService.category('Groceries');
 
             yield* Effect.forEach(

@@ -1,40 +1,13 @@
 import { BudgetPeriodCloseService, BudgetPeriodSnapshotRepository, BudgetSinkingFundRepository } from '@budgie/budget';
-import { AccountTypeEnum, BudgetSinkingFundEntityTable } from '@budgie/contracts';
 import { expect, layer } from '@effect/vitest';
-import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
-import {
-    createTestBudget,
-    HISTORY_NOW,
-    seedInsurancePayment,
-    seedMonthSnapshot,
-    testDb,
-    TestLayer,
-    testSeedService,
-    units
-} from '../harness';
+import { HISTORY_NOW, seedInsuranceFund, seedInsurancePayment, seedMonthSnapshot, TestLayer, units } from '../harness';
 
 const seedInsuranceScenario = (isInsuranceLimited: boolean) =>
     Effect.gen(function* () {
-        const fundRepository = yield* BudgetSinkingFundRepository;
-        const insurance = yield* testSeedService.category('Insurance');
-        const account = yield* testSeedService.account({ type: AccountTypeEnum.BANK_SYNC, instrumentId: 1 });
-        const categoryLimits = isInsuranceLimited ? [{ categoryId: insurance.id, limitAmount: units(100) }] : [];
-        const budget = yield* createTestBudget({ categoryLimits, isAutoTuneEnabled: false });
-        const fund = yield* fundRepository.create({
-            budgetId: budget.id,
-            name: 'Insurance',
-            categoryId: insurance.id,
-            targetAmount: units(600),
-            dueAt: new Date(2026, 2, 20),
-            fundedAmount: units(500)
-        });
+        const { account, budget, fund, insurance } = yield* seedInsuranceFund(isInsuranceLimited, { fundedAmount: units(500) });
 
-        yield* testDb
-            .update(BudgetSinkingFundEntityTable)
-            .set({ createdAt: new Date(2026, 0, 15) })
-            .where(eq(BudgetSinkingFundEntityTable.id, fund.id));
         yield* seedInsurancePayment(account.id, insurance.id, new Date(2026, 2, 10, 12));
         yield* seedMonthSnapshot(budget, new Date(2026, 0, 1), 0);
 

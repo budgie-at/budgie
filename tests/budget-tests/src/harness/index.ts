@@ -6,3 +6,4 @@ export { units } from './units';
 export { seedInsurancePayment } from './seed-insurance-payment';
 export { seedMonthSnapshot } from './seed-month-snapshot';
 export * from './statistics-parity-fixture';
+export { seedInsuranceFund } from './seed-insurance-fund';
