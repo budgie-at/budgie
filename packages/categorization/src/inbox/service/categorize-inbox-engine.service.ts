@@ -118,7 +118,7 @@ class CategorizeInboxEngineService {
         };
     }
 
-    suggestLabelIds(rows: CategorizeInboxRowInterface[], context: CategorizeInboxBuildContextInterface): number[] {
+    suggestLabelIds(rows: Omit<CategorizeInboxRowInterface, 'toIban'>[], context: CategorizeInboxBuildContextInterface): number[] {
         return isNotEmptyArray(rows) ? this.scoreRows(rows, context).candidateLabelIds : [];
     }
 
@@ -240,7 +240,10 @@ class CategorizeInboxEngineService {
         );
     }
 
-    private scoreRows(rows: CategorizeInboxRowInterface[], context: CategorizeInboxBuildContextInterface): CategorizeInboxScoreInterface {
+    private scoreRows(
+        rows: Omit<CategorizeInboxRowInterface, 'toIban'>[],
+        context: CategorizeInboxBuildContextInterface
+    ): CategorizeInboxScoreInterface {
         const { LIMITS } = CategorizeInboxEngineService;
         const [{ type }] = rows;
 
