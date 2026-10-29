@@ -4,6 +4,7 @@ export interface BudgetProjectionScopeInterface {
     readonly limit: number;
     readonly spent: number;
     readonly upcoming: number;
+    readonly reserved: number;
     readonly free: number;
     readonly safePerDay: number;
     readonly elapsedFraction: number;

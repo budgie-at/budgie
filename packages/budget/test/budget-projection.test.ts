@@ -56,6 +56,7 @@ const octoberInput = (overrides: Partial<BudgetProjectionInputInterface>): Budge
     categoryLimits: [],
     entries: [],
     upcomingCharges: [],
+    reservations: [],
     ...overrides
 });
 
@@ -281,5 +282,58 @@ it.effect('never reports a negative safe per day when free money is negative', (
 
         expect(projection.overall.free).toBe(-200);
         expect(projection.overall.safePerDay).toBe(0);
+    })
+);
+
+const STEADY_ENTRIES = variableRun([1, 3, 5, 6, 8, 9, 11, 12, 14, 15], 10);
+const LIMITED_CATEGORY_ID = 7;
+const UNLIMITED_CATEGORY_ID = 9;
+
+it.effect('subtracts reservations from free money and safe per day per scope like upcoming charges', () =>
+    Effect.sync(() => {
+        const projection = computeBudgetProjection(
+            octoberInput({
+                otherLimit: 500,
+                categoryLimits: [{ categoryId: LIMITED_CATEGORY_ID, limitAmount: 300 }],
+                entries: STEADY_ENTRIES,
+                reservations: [
+                    { fundId: 1, categoryId: LIMITED_CATEGORY_ID, amount: 200 },
+                    { fundId: 2, categoryId: UNLIMITED_CATEGORY_ID, amount: 150 }
+                ]
+            })
+        );
+        const limitedCategory = projection.categories.find(category => category.categoryId === LIMITED_CATEGORY_ID);
+
+        expect(projection.overall.reserved).toBe(350);
+        expect(projection.overall.free).toBe(550);
+        expect(projection.overall.safePerDay).toBe(32);
+        expect(limitedCategory?.reserved).toBe(200);
+        expect(limitedCategory?.free).toBe(100);
+        expect(projection.other.reserved).toBe(150);
+        expect(projection.other.free).toBe(250);
+        expect(projection.reservations).toHaveLength(2);
+        expect(projection.dailyAllowance).toBeCloseTo(650 / 31);
+    })
+);
+
+it.effect('now equal to periodStart yields elapsedDays 1 and daysLeft equal to totalDays', () =>
+    Effect.sync(() => {
+        const projection = computeBudgetProjection(octoberInput({ now: new Date(2026, OCTOBER, 1) }));
+
+        expect(projection.totalDays).toBe(31);
+        expect(projection.elapsedDays).toBe(1);
+        expect(projection.daysLeft).toBe(31);
+    })
+);
+
+it.effect('keeps pace status and projected end unchanged by reservations', () =>
+    Effect.sync(() => {
+        const withoutReservations = computeBudgetProjection(octoberInput({ entries: STEADY_ENTRIES }));
+        const withReservations = computeBudgetProjection(
+            octoberInput({ entries: STEADY_ENTRIES, reservations: [{ fundId: 1, categoryId: UNLIMITED_CATEGORY_ID, amount: 200 }] })
+        );
+
+        expect(withReservations.overall.status).toBe(withoutReservations.overall.status);
+        expect(withReservations.overall.projectedEnd).toBe(withoutReservations.overall.projectedEnd);
     })
 );

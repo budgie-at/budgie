@@ -160,7 +160,8 @@ export class BudgetProjectionService extends Context.Service<BudgetProjectionSer
                             recurring.seriesIdByTransactionId.get(entry.transactionId)
                         )
                     })),
-                    upcomingCharges: [...recurring.charges, ...installmentCharges]
+                    upcomingCharges: [...recurring.charges, ...installmentCharges],
+                    reservations: []
                 });
             })
         };

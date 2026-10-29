@@ -71,7 +71,8 @@ export const useGetBudgetProjectionQuery = (budget: BudgetEntityInterface): UseG
             otherLimit: budget.otherLimit,
             categoryLimits,
             entries: [],
-            upcomingCharges: []
+            upcomingCharges: [],
+            reservations: []
         }),
         isLoading: true
     };

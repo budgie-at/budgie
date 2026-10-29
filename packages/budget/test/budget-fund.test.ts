@@ -4,6 +4,7 @@ import * as Effect from 'effect/Effect';
 
 import { applyFundDraws } from '../src/fund/utils/apply-fund-draws.util';
 import { computeFundDueWindow } from '../src/fund/utils/compute-fund-due-window.util';
+import { computeFundReservations } from '../src/fund/utils/compute-fund-reservations.util';
 import { computeFundSetAside } from '../src/fund/utils/compute-fund-set-aside.util';
 import { matchFundSpend } from '../src/fund/utils/match-fund-spend.util';
 import { toBudgetCurrencyEntries } from '../src/spent/utils/to-budget-currency-entries.util';
@@ -195,5 +196,48 @@ it.effect('converts spent rows to the budget currency and marks them as converte
         );
 
         expect(converted).toEqual({ entryId: 1, transactionId: 9, categoryId: null, amount: 100, instrumentId: 1, rate: null, operatedAt });
+    })
+);
+
+it.effect('reserves the set-aside of funds that still need money and skips funded ones', () =>
+    Effect.sync(() => {
+        const reservations = computeFundReservations(
+            [
+                { id: 1, categoryId: INSURANCE_CATEGORY, ...scheduleOf() },
+                { id: 2, categoryId: 6, ...scheduleOf({ fundedAmount: 1200 }) }
+            ],
+            OCTOBER_WINDOW,
+            MONTHLY_SPEC,
+            []
+        );
+
+        expect(reservations).toEqual([{ fundId: 1, categoryId: INSURANCE_CATEGORY, amount: 400 }]);
+    })
+);
+
+const POSTED_FUND = { id: 1, categoryId: INSURANCE_CATEGORY, targetAmount: 900, fundedAmount: 600, dueAt: new Date(2026, OCTOBER, 20) };
+const POSTED_EXPENSE = { entryId: 1, categoryId: INSURANCE_CATEGORY, amount: 900, operatedAt: new Date(2026, OCTOBER, 18, 12) };
+
+it.effect('reserves nothing once the expense posted inside the due window; the fund draws its balance and the rest is spend', () =>
+    Effect.sync(() => {
+        const draws = matchFundSpend([POSTED_EXPENSE], [POSTED_FUND]);
+
+        expect(computeFundReservations([POSTED_FUND], OCTOBER_WINDOW, MONTHLY_SPEC, [])).toEqual([
+            { fundId: 1, categoryId: INSURANCE_CATEGORY, amount: 300 }
+        ]);
+        expect(computeFundReservations([POSTED_FUND], OCTOBER_WINDOW, MONTHLY_SPEC, [POSTED_EXPENSE])).toEqual([]);
+        expect(draws).toEqual([{ fundId: 1, entryId: 1, amount: 600 }]);
+        expect(applyFundDraws([POSTED_EXPENSE], draws)).toEqual([{ ...POSTED_EXPENSE, amount: 300 }]);
+    })
+);
+
+it.effect('keeps reserving when the posted spend is another category or outside the due window', () =>
+    Effect.sync(() => {
+        const otherCategory = { ...POSTED_EXPENSE, categoryId: 6 };
+        const outsideWindow = { ...POSTED_EXPENSE, operatedAt: new Date(2026, OCTOBER, 18, 12) };
+        const laterFund = { ...POSTED_FUND, dueAt: new Date(2026, DECEMBER, 15) };
+
+        expect(computeFundReservations([POSTED_FUND], OCTOBER_WINDOW, MONTHLY_SPEC, [otherCategory])).toHaveLength(1);
+        expect(computeFundReservations([laterFund], OCTOBER_WINDOW, MONTHLY_SPEC, [outsideWindow])).toHaveLength(1);
     })
 );
