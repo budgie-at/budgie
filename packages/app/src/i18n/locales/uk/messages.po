@@ -1434,6 +1434,10 @@ msgstr "Очистити всі дані"
 msgid "Clear cached balances and recalculate from transactions"
 msgstr "Очистити кешовані баланси та перерахувати з транзакцій"
 
+#: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
+msgid "Clear filters"
+msgstr "Скинути фільтри"
+
 #: src/sync/component/paste-token-button/paste-token-button.tsx
 msgid "Clipboard doesn't contain a valid Monobank token"
 msgstr "Буфер обміну не містить дійсного токена Monobank"
@@ -3301,6 +3305,10 @@ msgstr "Керування тегами"
 msgid "Manual"
 msgstr "Вручну"
 
+#: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
+msgid "Manual adjustment"
+msgstr "Ручне коригування"
+
 #: src/app/(tabs)/settings/import.tsx
 msgid "Map CSV Columns"
 msgstr "Зіставлення стовпців CSV"
@@ -4486,6 +4494,10 @@ msgstr "Виправити"
 #: src/settings/components/repair-sync-data/repair-sync-data.tsx
 msgid "Repair Sync Data"
 msgstr "Виправити дані синхронізації"
+
+#: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
+msgid "Repayment"
+msgstr "Погашення"
 
 #: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
 #: src/app/(tabs)/settings/index.tsx
@@ -5752,7 +5764,7 @@ msgstr "Недоступно"
 
 #: src/category/components/stats-by-categories/stats-by-categories.tsx
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
-#: src/transaction/components/transaction-card-subtitle/transaction-card-subtitle.tsx
+#: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
 msgid "Uncategorized"
 msgstr "Без категорії"
 

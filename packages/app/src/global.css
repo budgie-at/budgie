@@ -105,6 +105,8 @@
             --color-warning-fill: rgba(240, 177, 0, 1);
             --color-warning-corner: rgba(240, 177, 0, 0.2);
             --color-warning-background: rgba(240, 177, 0, 0.1);
+            --color-attention-foreground: rgba(180, 83, 9, 1);
+            --color-attention-background: rgba(254, 243, 199, 1);
 
             --color-dark-warning-foreground: rgba(255, 105, 0, 1);
             --color-dark-warning-corner: rgba(255, 105, 0, 0.2);
@@ -173,6 +175,8 @@
             --color-warning-fill: rgba(224, 165, 38, 1);
             --color-warning-corner: rgba(224, 165, 38, 0.2);
             --color-warning-background: rgba(224, 165, 38, 0.1);
+            --color-attention-foreground: rgba(240, 180, 60, 1);
+            --color-attention-background: rgba(224, 165, 38, 0.16);
 
             --color-dark-warning-foreground: rgba(255, 105, 0, 1);
             --color-dark-warning-corner: rgba(255, 105, 0, 0.2);

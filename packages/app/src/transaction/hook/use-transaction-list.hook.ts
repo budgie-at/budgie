@@ -14,6 +14,7 @@ export const useTransactionList = (accountId: number | null) => {
     return {
         activeFilters,
         setInternalFilters,
+        clearFilters: () => void setInternalFilters(DEFAULT_TRANSACTION_FILTER),
         hasFiltersSelected: checkIfFiltersSelected(accountId, activeFilters),
         sections,
         loadMore,

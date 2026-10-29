@@ -5,15 +5,14 @@ import { Text } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
-import { cn } from '../../../@generic/utils/cn.util';
+import { TransactionsPageSelector } from '../../../app/(tabs)/transactions-page.selector';
 import { useGetTransactionCountQuery } from '../../query/use-get-transaction-count.query';
 
 interface Props {
     readonly filters: TransactionFilterInterface;
-    readonly className?: string;
 }
 
-export const TransactionListCount = ({ filters, className }: Props) => {
+export const TransactionListCount = ({ filters }: Props) => {
     const { t } = useLingui();
     const { count: transactionCount } = useGetTransactionCountQuery(filters);
 
@@ -22,7 +21,11 @@ export const TransactionListCount = ({ filters, className }: Props) => {
     }
 
     return (
-        <Text className={cn('text-sm text-secondary-foreground', className)} numberOfLines={1}>
+        <Text
+            className="self-end pt-sm text-[13px] text-secondary-foreground"
+            numberOfLines={1}
+            testID={TransactionsPageSelector.TransactionCount}
+        >
             {t({ message: plural(transactionCount, { one: '# transaction', other: '# transactions' }) })}
         </Text>
     );

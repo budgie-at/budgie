@@ -1,4 +1,5 @@
 import {
+    TransactionTypeEnum,
     TransactionWithRelationsEntityInterface,
     isNegativeAdjustmentTransaction,
     isPositiveAdjustmentTransaction
@@ -7,10 +8,10 @@ import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
 import { getTransactionDisplayTitle } from '../../utils/get-transaction-display-title.util';
 import { getTransactionIcon } from '../../utils/get-transaction-icon.util';
 import { getTransactionType } from '../../utils/get-transaction-type.util';
+import { isEarnedIncomeTransaction } from '../../utils/is-earned-income-transaction.util';
 import { isUncategorizedTransaction } from '../../utils/is-uncategorized-transaction.util';
 import { TransactionAmount } from '../transaction-amount/transaction-amount';
 import { TransactionCardSubtitle } from '../transaction-card-subtitle/transaction-card-subtitle';
@@ -23,13 +24,27 @@ interface Props {
 
 export const TransactionCardContent = ({ transaction, accountId = null }: Props) => {
     const isAdjustment = isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction);
-    const iconVariant = isUncategorizedTransaction(transaction) ? 'secondary' : TRANSACTION_COLOR[getTransactionType(transaction)];
+    const neutralIconVariant = getTransactionType(transaction) === TransactionTypeEnum.TRANSFER ? 'default' : 'secondary';
+    const isUncategorized = isUncategorizedTransaction(transaction);
+    const iconVariant = isEarnedIncomeTransaction(transaction) && !isUncategorized ? 'positive' : neutralIconVariant;
+    const iconClassName = iconVariant === 'secondary' ? 'bg-secondary-foreground/15' : '';
 
     return (
         <View className="flex-row items-center gap-x-xl">
-            <CircleIcon size={36} iconSize={18} radius={18} border={false} icon={getTransactionIcon(transaction)} variant={iconVariant} />
+            <View>
+                <CircleIcon
+                    size={36}
+                    iconSize={18}
+                    radius={18}
+                    border={false}
+                    icon={getTransactionIcon(transaction)}
+                    variant={iconVariant}
+                    className={iconClassName}
+                />
+                {isUncategorized ? <View className="absolute -top-px -right-px size-[9px] rounded-full bg-warning-fill" /> : null}
+            </View>
 
-            <View className="flex-1 min-w-0 gap-y-xxs">
+            <View className="flex-1 min-w-0 min-h-[38px] justify-center gap-y-xxs">
                 {isAdjustment ? (
                     <Text
                         className="text-primary text-[15px] font-semibold"

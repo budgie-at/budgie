@@ -1435,6 +1435,10 @@ msgstr "Clear All Data"
 msgid "Clear cached balances and recalculate from transactions"
 msgstr "Clear cached balances and recalculate from transactions"
 
+#: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
+msgid "Clear filters"
+msgstr "Clear filters"
+
 #: src/sync/component/paste-token-button/paste-token-button.tsx
 msgid "Clipboard doesn't contain a valid Monobank token"
 msgstr "Clipboard doesn't contain a valid Monobank token"
@@ -3302,6 +3306,10 @@ msgstr "Manage Tags"
 msgid "Manual"
 msgstr "Manual"
 
+#: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
+msgid "Manual adjustment"
+msgstr "Manual adjustment"
+
 #: src/app/(tabs)/settings/import.tsx
 msgid "Map CSV Columns"
 msgstr "Map CSV Columns"
@@ -4487,6 +4495,10 @@ msgstr "Repair"
 #: src/settings/components/repair-sync-data/repair-sync-data.tsx
 msgid "Repair Sync Data"
 msgstr "Repair Sync Data"
+
+#: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
+msgid "Repayment"
+msgstr "Repayment"
 
 #: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
 #: src/app/(tabs)/settings/index.tsx
@@ -5753,7 +5765,7 @@ msgstr "Unavailable"
 
 #: src/category/components/stats-by-categories/stats-by-categories.tsx
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
-#: src/transaction/components/transaction-card-subtitle/transaction-card-subtitle.tsx
+#: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
 msgid "Uncategorized"
 msgstr "Uncategorized"
 

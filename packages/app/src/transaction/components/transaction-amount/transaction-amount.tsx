@@ -12,6 +12,7 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { StatisticsCategoryIdsContext } from '../../context/statistics-category-ids.context';
 import { getTransactionType } from '../../utils/get-transaction-type.util';
+import { isEarnedIncomeTransaction } from '../../utils/is-earned-income-transaction.util';
 import { selectStatisticsAmountTransaction } from '../../utils/select-statistics-amount-transaction.util';
 import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 import { TransactionCardSelector } from '../transaction-card/transaction-card.selector';
@@ -88,9 +89,9 @@ export const TransactionAmount = ({ transaction: fullTransaction, accountId = nu
     }
 
     const isAdjustment = isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction);
-    const isIncome = getTransactionType(transaction) === TransactionTypeEnum.INCOME;
-    const sideVariant = isIncome ? 'positive' : 'primary';
-    const sign = isIncome ? '+' : '';
+    const isInflow = getTransactionType(transaction) === TransactionTypeEnum.INCOME;
+    const sideVariant = isEarnedIncomeTransaction(transaction) ? 'positive' : 'primary';
+    const sign = isInflow ? '+' : '';
     const sideTestID = isAdjustment ? TransactionCardSelector.AdjustmentAmount(convertFromMicroUnits(sideEntry.amount)) : amountTestID;
 
     return (

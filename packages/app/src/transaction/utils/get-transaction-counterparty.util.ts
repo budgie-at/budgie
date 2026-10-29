@@ -23,7 +23,7 @@ export const getTransactionCounterparty = (
     const moneyAccount = transaction.fromAccount ?? transaction.toAccount;
     const displayTitle = getTransactionDisplayTitle(transaction);
     const getVisibleTitle = (account: Pick<AccountEntityInterface, 'id' | 'title'>) =>
-        account.id === accountId || account.title === displayTitle ? null : account.title;
+        account.id === accountId || displayTitle.includes(account.title) ? null : account.title;
     const toCounterparty = (
         source: Pick<AccountEntityInterface, 'id' | 'title'>,
         destination: Pick<AccountEntityInterface, 'id' | 'title'>

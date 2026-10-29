@@ -8,7 +8,7 @@ import { TransactionListUncategorizedPill } from '../transaction-list-uncategori
 import { TransactionSectionsList } from '../transaction-sections-list/transaction-sections-list';
 
 export const TransactionList = () => {
-    const { activeFilters, setInternalFilters, hasFiltersSelected, sections, loadMore, isLoading } = useTransactionList(null);
+    const { activeFilters, setInternalFilters, clearFilters, hasFiltersSelected, sections, loadMore, isLoading } = useTransactionList(null);
 
     return (
         <View className="flex-1">
@@ -17,17 +17,21 @@ export const TransactionList = () => {
                 onChange={setInternalFilters}
                 accountId={null}
                 hasFiltersSelected={hasFiltersSelected}
+                leading={<TransactionListUncategorizedPill filters={activeFilters} />}
             />
 
-            <View className="flex-row items-center gap-x-md pt-2 pb-1">
-                <TransactionListUncategorizedPill filters={activeFilters} />
-                <TransactionListCount filters={activeFilters} className="ml-auto" />
-            </View>
+            <TransactionListCount filters={activeFilters} />
 
             <TransactionSectionsList
                 sections={sections}
                 onEndReached={loadMore}
-                listEmptyState={<TransactionListEmptyState isLoading={isLoading} hasFiltersSelected={hasFiltersSelected} />}
+                listEmptyState={
+                    <TransactionListEmptyState
+                        isLoading={isLoading}
+                        hasFiltersSelected={hasFiltersSelected}
+                        onClearFilters={clearFilters}
+                    />
+                }
             />
         </View>
     );

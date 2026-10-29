@@ -1,5 +1,3 @@
-import { isNegativeAdjustmentTransaction, isPositiveAdjustmentTransaction } from '@budgie/contracts';
-import { Trans } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
@@ -15,23 +13,17 @@ interface Props {
     readonly accountId: number | null;
 }
 
-const SEGMENT_SEPARATOR = ' · ';
-
 export const TransactionCardSubtitle = ({ transaction, accountId }: Props) => {
     const { segments, categoryLabel } = useTransactionSubtitleSegments(transaction, accountId);
 
-    const isUncategorized = isUncategorizedTransaction(transaction);
-    const isAdjustment = isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction);
-
-    if (isAdjustment || (!isUncategorized && !isNotEmptyArray(segments))) {
+    if (!isNotEmptyArray(segments)) {
         return null;
     }
 
     const subtitleTestID = [
-        isUncategorized ? TransactionCardSelector.UncategorizedBadge : null,
+        isUncategorizedTransaction(transaction) ? TransactionCardSelector.UncategorizedBadge : null,
         isDefined(categoryLabel) ? TransactionCardSelector.Category(categoryLabel) : null
     ].find(isDefined);
-    const uncategorizedSeparator = isUncategorized && isNotEmptyArray(segments) ? SEGMENT_SEPARATOR : '';
 
     return (
         <Text
@@ -40,13 +32,7 @@ export const TransactionCardSubtitle = ({ transaction, accountId }: Props) => {
             ellipsizeMode="tail"
             {...(isDefined(subtitleTestID) && { testID: subtitleTestID })}
         >
-            {isUncategorized ? (
-                <Text className="font-medium text-warning-foreground">
-                    <Trans>Uncategorized</Trans>
-                </Text>
-            ) : null}
-            {uncategorizedSeparator}
-            {segments.join(SEGMENT_SEPARATOR)}
+            {segments.join(' · ')}
         </Text>
     );
 };

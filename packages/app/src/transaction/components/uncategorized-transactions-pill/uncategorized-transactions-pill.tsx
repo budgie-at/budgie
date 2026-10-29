@@ -35,12 +35,12 @@ export const UncategorizedTransactionsPill = ({ count, onPress }: Props) => {
                 accessibilityRole="button"
                 accessibilityLabel={pillText}
                 testID={UncategorizedTransactionsPillSelector.Button}
-                className={cn(FILTER_CHIP_CLASS_NAME, 'bg-warning-fill/15')}
+                className={cn(FILTER_CHIP_CLASS_NAME, 'bg-attention-background')}
             >
-                <Text className="text-warning-foreground text-[13px] font-semibold" numberOfLines={1}>
+                <Text className="text-attention-foreground text-[13px] font-semibold" numberOfLines={1}>
                     {pillText}
                 </Text>
-                <Icon icon={UserIconNameEnum.ChevronRight} size={13} className="text-warning-foreground" />
+                <Icon icon={UserIconNameEnum.ChevronRight} size={13} className="text-attention-foreground" />
             </HapticPressable>
         </Animated.View>
     );

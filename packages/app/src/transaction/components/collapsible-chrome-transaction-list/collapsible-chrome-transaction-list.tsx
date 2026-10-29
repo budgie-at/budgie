@@ -1,12 +1,9 @@
 import { useState } from 'react';
 import { View } from 'react-native';
 
-import { isNotEmptyArray } from '@rnw-community/shared';
-
 import { CollapsibleChromeLegendList } from '../../../@generic/component/collapsible-chrome-legend-list/collapsible-chrome-legend-list';
 import { CollapsibleChromePinnedBar } from '../../../@generic/component/collapsible-chrome-pinned-bar/collapsible-chrome-pinned-bar';
 import { CollapsibleChromeScrollFade } from '../../../@generic/component/collapsible-chrome-scroll-fade/collapsible-chrome-scroll-fade';
-import { TRANSACTION_SECTION_HEADER_HEIGHT } from '../../constant/transaction-section-header-height.constant';
 import { useTransactionList } from '../../hook/use-transaction-list.hook';
 import { TransactionFilters } from '../transaction-filters/transaction-filters';
 import { TransactionListEmptyState } from '../transaction-list-empty-state/transaction-list-empty-state';
@@ -24,14 +21,14 @@ interface Props {
 const FAB_FOOTER_SPACER_MULTIPLIER = 3;
 
 export const CollapsibleChromeTransactionList = ({ accountId, children }: Props) => {
-    const { activeFilters, setInternalFilters, hasFiltersSelected, sections, loadMore, isLoading } = useTransactionList(accountId);
+    const { activeFilters, setInternalFilters, clearFilters, hasFiltersSelected, sections, loadMore, isLoading } =
+        useTransactionList(accountId);
     const [filtersY, setFiltersY] = useState(0);
     const [pinnedFiltersHeight, setPinnedFiltersHeight] = useState(0);
 
     const handleFiltersLayout = (event: LayoutChangeEvent) => void setFiltersY(event.nativeEvent.layout.y);
 
     const filtersSpacerStyle = { height: pinnedFiltersHeight };
-    const stackedHeaderHeight = isNotEmptyArray(sections) ? TRANSACTION_SECTION_HEADER_HEIGHT : 0;
 
     const listHeader = (
         <View>
@@ -48,7 +45,13 @@ export const CollapsibleChromeTransactionList = ({ accountId, children }: Props)
             <TransactionSectionsList
                 sections={sections}
                 onEndReached={loadMore}
-                listEmptyState={<TransactionListEmptyState isLoading={isLoading} hasFiltersSelected={hasFiltersSelected} />}
+                listEmptyState={
+                    <TransactionListEmptyState
+                        isLoading={isLoading}
+                        hasFiltersSelected={hasFiltersSelected}
+                        onClearFilters={clearFilters}
+                    />
+                }
                 accountId={accountId}
                 footerSpacerMultiplier={FAB_FOOTER_SPACER_MULTIPLIER}
                 listHeader={listHeader}
@@ -56,11 +59,7 @@ export const CollapsibleChromeTransactionList = ({ accountId, children }: Props)
                 stickyHeaderOffset={pinnedFiltersHeight}
             />
 
-            <CollapsibleChromePinnedBar
-                anchorY={filtersY}
-                stackedHeaderHeight={stackedHeaderHeight}
-                onHeightChange={setPinnedFiltersHeight}
-            >
+            <CollapsibleChromePinnedBar anchorY={filtersY} onHeightChange={setPinnedFiltersHeight}>
                 <TransactionFilters
                     filters={activeFilters}
                     onChange={setInternalFilters}

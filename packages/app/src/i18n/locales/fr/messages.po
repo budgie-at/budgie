@@ -1434,6 +1434,10 @@ msgstr "Effacer toutes les données"
 msgid "Clear cached balances and recalculate from transactions"
 msgstr "Effacer les soldes mis en cache et recalculer à partir des transactions"
 
+#: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
+msgid "Clear filters"
+msgstr "Effacer les filtres"
+
 #: src/sync/component/paste-token-button/paste-token-button.tsx
 msgid "Clipboard doesn't contain a valid Monobank token"
 msgstr "Le presse-papiers ne contient pas de jeton Monobank valide"
@@ -3301,6 +3305,10 @@ msgstr "Gérer les étiquettes"
 msgid "Manual"
 msgstr "Manuel"
 
+#: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
+msgid "Manual adjustment"
+msgstr "Ajustement manuel"
+
 #: src/app/(tabs)/settings/import.tsx
 msgid "Map CSV Columns"
 msgstr "Mapper les colonnes CSV"
@@ -4486,6 +4494,10 @@ msgstr "Réparer"
 #: src/settings/components/repair-sync-data/repair-sync-data.tsx
 msgid "Repair Sync Data"
 msgstr "Réparer les données de synchronisation"
+
+#: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
+msgid "Repayment"
+msgstr "Remboursement"
 
 #: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
 #: src/app/(tabs)/settings/index.tsx
@@ -5752,7 +5764,7 @@ msgstr "Indisponible"
 
 #: src/category/components/stats-by-categories/stats-by-categories.tsx
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
-#: src/transaction/components/transaction-card-subtitle/transaction-card-subtitle.tsx
+#: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
 msgid "Uncategorized"
 msgstr "Non catégorisé"
 

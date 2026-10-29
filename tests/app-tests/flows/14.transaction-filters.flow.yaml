@@ -21,7 +21,9 @@ appId: ${APP_ID}
       id: 'TransactionCard.Label.E2E_Missing_Rate_Expense'
 
 # Total transaction counter reflects all visible transactions when no filter is applied
-- assertVisible: '9 transactions'
+- assertVisible:
+      id: 'TransactionsPage.TransactionCount'
+      text: '9 transactions'
 
 - tapOn:
       id: 'TransactionFilters.TypeChip'
@@ -40,7 +42,9 @@ appId: ${APP_ID}
       id: 'TransactionCard.Label.E2E_Filter_Transfer'
 
 # Counter is filter-aware: the expense type matches the seeded expense, the missing-rate expense, and the two historical UAH expenses
-- assertVisible: '4 transactions'
+- assertVisible:
+      id: 'TransactionsPage.TransactionCount'
+      text: '4 transactions'
 
 - tapOn:
       id: 'TransactionFilters.TypeChip'
@@ -65,7 +69,9 @@ appId: ${APP_ID}
 - extendedWaitUntil:
       visible:
           id: 'UncategorizedTransactionsPill.Button'
-- assertVisible: '2 uncategorized'
+- assertVisible:
+      id: 'UncategorizedTransactionsPill.Button'
+      text: '2 uncategorized'
 - tapOn:
       id: 'UncategorizedTransactionsPill.Button'
 - extendedWaitUntil:
@@ -99,13 +105,11 @@ appId: ${APP_ID}
 - tapOn:
       id: 'TransactionFilters.TypeApplyButton'
 
-- swipe:
-      from:
-          id: 'TransactionFilters.CategoryChip'
-      direction: LEFT
-      duration: 500
-- assertVisible:
-      id: 'TransactionFilters.AccountChip'
+- scrollUntilVisible:
+      element:
+          id: 'TransactionFilters.AccountChip'
+      direction: RIGHT
+      speed: 20
 - tapOn:
       id: 'TransactionFilters.AccountChip'
 - waitForAnimationToEnd
@@ -135,7 +139,9 @@ appId: ${APP_ID}
       id: 'TransactionCard.Label.E2E_Filter_Income'
 
 # Counter respects the account filter, including transfers into the selected account
-- assertVisible: '3 transactions'
+- assertVisible:
+      id: 'TransactionsPage.TransactionCount'
+      text: '3 transactions'
 
 - swipe:
       from:
@@ -187,7 +193,9 @@ appId: ${APP_ID}
       id: 'TransactionCard.Label.E2E_Filter_Income'
 - assertNotVisible:
       id: 'TransactionCard.Label.E2E_Filter_Transfer'
-- assertVisible: '2 transactions'
+- assertVisible:
+      id: 'TransactionsPage.TransactionCount'
+      text: '2 transactions'
 
 - tapOn:
       id: 'TransactionFilters.ClearAllButton'
@@ -265,7 +273,9 @@ appId: ${APP_ID}
       id: 'TransactionCard.Label.E2E_Filter_Transfer'
 - assertNotVisible:
       id: 'TransactionCard.Label.E2E_Missing_Rate_Expense'
-- assertVisible: '1 transaction'
+- assertVisible:
+      id: 'TransactionsPage.TransactionCount'
+      text: '1 transaction'
 
 - tapOn:
       id: 'TransactionFilters.ClearAllButton'
@@ -280,8 +290,15 @@ appId: ${APP_ID}
       id: 'TransactionCard.Label.E2E_Missing_Rate_Expense'
 - assertVisible:
       id: 'TransactionCard.Label.E2E_Native_Amount_Transfer'
-- assertVisible: '9 transactions'
+- assertVisible:
+      id: 'TransactionsPage.TransactionCount'
+      text: '9 transactions'
 
+- scrollUntilVisible:
+      element:
+          id: 'TransactionFilters.AmountChip'
+      direction: RIGHT
+      speed: 20
 - tapOn:
       id: 'TransactionFilters.AmountChip'
 - extendedWaitUntil:
@@ -297,11 +314,14 @@ appId: ${APP_ID}
 - tapOn:
       id: 'TransactionFilters.AmountApplyButton'
 
-- extendedWaitUntil:
-      visible:
+- scrollUntilVisible:
+      element:
           id: 'UncategorizedTransactionsPill.Button'
-      timeout: 5000
-- assertVisible: '1 uncategorized'
+      direction: LEFT
+      speed: 20
+- assertVisible:
+      id: 'UncategorizedTransactionsPill.Button'
+      text: '1 uncategorized'
 - tapOn:
       id: 'UncategorizedTransactionsPill.Button'
 - extendedWaitUntil:
@@ -391,7 +411,9 @@ appId: ${APP_ID}
       id: 'TransactionCard.Label.E2E_Filter_Transfer'
 
 # Counter uses the singular form for a single match (only the seeded expense carries this tag)
-- assertVisible: '1 transaction'
+- assertVisible:
+      id: 'TransactionsPage.TransactionCount'
+      text: '1 transaction'
 
 - swipe:
       from:

@@ -30,8 +30,8 @@ const rowVariants = cva('bg-surface-row px-3xl py-xl active:scale-100 active:opa
         position: {
             [TransactionListRowPositionEnum.FIRST]: 'rounded-t-3xl',
             [TransactionListRowPositionEnum.MIDDLE]: '',
-            [TransactionListRowPositionEnum.LAST]: 'rounded-b-3xl mb-3xl',
-            [TransactionListRowPositionEnum.SINGLE]: 'rounded-3xl mb-3xl'
+            [TransactionListRowPositionEnum.LAST]: 'rounded-b-3xl mb-xl',
+            [TransactionListRowPositionEnum.SINGLE]: 'rounded-3xl mb-xl'
         }
     }
 });

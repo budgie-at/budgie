@@ -99,7 +99,7 @@ appId: ${APP_ID}
 - assertVisible:
       id: 'TransactionCard.Label.E2E_LongPress_Convert_Txn'
 - assertVisible:
-      text: 'From E2E Expense Source to E2E Expense Target.*'
+      text: '.*From E2E Expense Source to E2E Expense Target.*'
 
 - tapOn:
       id: 'TabBar.Home'
