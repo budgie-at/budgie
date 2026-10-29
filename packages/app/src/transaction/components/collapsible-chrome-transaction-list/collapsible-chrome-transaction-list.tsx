@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { View } from 'react-native';
+import { useSharedValue } from 'react-native-reanimated';
 
 import { CollapsibleChromeLegendList } from '../../../@generic/component/collapsible-chrome-legend-list/collapsible-chrome-legend-list';
 import { CollapsibleChromePinnedBar } from '../../../@generic/component/collapsible-chrome-pinned-bar/collapsible-chrome-pinned-bar';
@@ -7,6 +8,7 @@ import { CollapsibleChromeScrollFade } from '../../../@generic/component/collaps
 import { useTransactionList } from '../../hook/use-transaction-list.hook';
 import { TransactionFilters } from '../transaction-filters/transaction-filters';
 import { TransactionListEmptyState } from '../transaction-list-empty-state/transaction-list-empty-state';
+import { TransactionListPinnedDay } from '../transaction-list-pinned-day/transaction-list-pinned-day';
 import { TransactionListUncategorizedPill } from '../transaction-list-uncategorized-pill/transaction-list-uncategorized-pill';
 import { TransactionSectionsList } from '../transaction-sections-list/transaction-sections-list';
 
@@ -21,10 +23,11 @@ interface Props {
 const FAB_FOOTER_SPACER_MULTIPLIER = 3;
 
 export const CollapsibleChromeTransactionList = ({ accountId, children }: Props) => {
-    const { activeFilters, setInternalFilters, clearFilters, hasFiltersSelected, sections, loadMore, isLoading } =
+    const { activeFilters, setInternalFilters, clearFilters, hasFiltersSelected, isClearAllVisible, sections, loadMore, isLoading } =
         useTransactionList(accountId);
     const [filtersY, setFiltersY] = useState(0);
     const [pinnedFiltersHeight, setPinnedFiltersHeight] = useState(0);
+    const headerOffsets = useSharedValue<number[]>([]);
 
     const handleFiltersLayout = (event: LayoutChangeEvent) => void setFiltersY(event.nativeEvent.layout.y);
 
@@ -56,15 +59,19 @@ export const CollapsibleChromeTransactionList = ({ accountId, children }: Props)
                 footerSpacerMultiplier={FAB_FOOTER_SPACER_MULTIPLIER}
                 listHeader={listHeader}
                 listComponent={CollapsibleChromeLegendList}
-                stickyHeaderOffset={pinnedFiltersHeight}
+                headerOffsets={headerOffsets}
             />
 
-            <CollapsibleChromePinnedBar anchorY={filtersY} onHeightChange={setPinnedFiltersHeight}>
+            <CollapsibleChromePinnedBar
+                anchorY={filtersY}
+                onHeightChange={setPinnedFiltersHeight}
+                pinnedFooter={<TransactionListPinnedDay sections={sections} headerOffsets={headerOffsets} anchorY={filtersY} />}
+            >
                 <TransactionFilters
                     filters={activeFilters}
                     onChange={setInternalFilters}
                     accountId={accountId}
-                    hasFiltersSelected={hasFiltersSelected}
+                    isClearAllVisible={isClearAllVisible}
                     leading={<TransactionListUncategorizedPill filters={activeFilters} />}
                 />
             </CollapsibleChromePinnedBar>

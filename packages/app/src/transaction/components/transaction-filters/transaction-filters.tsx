@@ -23,13 +23,13 @@ import type { ReactNode } from 'react';
 interface Props {
     readonly showTypeFilter?: boolean;
     readonly accountId: number | null;
-    readonly hasFiltersSelected: boolean;
+    readonly isClearAllVisible: boolean;
     readonly filters: TransactionFilterInterface;
     readonly onChange: (cb: TransactionFilterInterface | ((prev: TransactionFilterInterface) => TransactionFilterInterface)) => void;
     readonly leading?: ReactNode;
 }
 
-export const TransactionFilters = ({ filters, onChange, accountId, showTypeFilter = true, hasFiltersSelected, leading }: Props) => {
+export const TransactionFilters = ({ filters, onChange, accountId, showTypeFilter = true, isClearAllVisible, leading }: Props) => {
     const { t } = useLingui();
     const [openTransactionAccountFilter] = useTransactionAccountFilterModal();
     const [openTransactionCategoryFilter] = useTransactionCategoryFilterModal();
@@ -49,7 +49,7 @@ export const TransactionFilters = ({ filters, onChange, accountId, showTypeFilte
     return (
         <View className="-mx-7xl">
             <ScrollView horizontal contentContainerClassName="flex-row items-center gap-x-md px-7xl" showsHorizontalScrollIndicator={false}>
-                {hasFiltersSelected ? (
+                {isClearAllVisible ? (
                     <HapticPressable
                         onPress={handleClear}
                         className={cn(FILTER_CHIP_CLASS_NAME, 'bg-surface-fill')}

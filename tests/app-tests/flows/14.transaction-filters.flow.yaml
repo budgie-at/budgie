@@ -232,7 +232,7 @@ appId: ${APP_ID}
       id: 'TransactionsPage.EmptyState'
 
 - tapOn:
-      id: 'TransactionFilters.ClearAllButton'
+      id: 'TransactionsPage.ClearFiltersButton'
 
 - assertVisible:
       id: 'TransactionCard.Label.E2E_Filter_Expense'

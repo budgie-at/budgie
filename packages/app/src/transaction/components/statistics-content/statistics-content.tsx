@@ -56,7 +56,7 @@ export const StatisticsContent = ({ activeTab }: Props) => {
                 filters={filters}
                 onChange={setFilters}
                 showTypeFilter={false}
-                hasFiltersSelected={checkIfFiltersSelected(null, filters)}
+                isClearAllVisible={checkIfFiltersSelected(null, filters)}
             />
 
             <AnalyticsHistoryBoundary

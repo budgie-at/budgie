@@ -1,6 +1,6 @@
 import { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import { useRouter } from 'expo-router';
-import { ComponentType, ReactElement, useRef } from 'react';
+import { ComponentType, ReactElement, RefCallback, useEffect, useEffectEvent, useRef } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -9,6 +9,7 @@ import { isDefined, isEmptyArray } from '@rnw-community/shared';
 import { BudgieLegendList } from '../../../@generic/component/budgie-legend-list/budgie-legend-list';
 import { PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
 import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../../@generic/constant/floating-tab-bar.constant';
+import { LegendListPositionSourceInterface } from '../../../@generic/interface/legend-list-position-source.interface';
 import { TransactionListItemKindEnum } from '../../enum/transaction-list-item-kind.enum';
 import { TransactionListContextMenuRefInterface } from '../../interface/transaction-list-context-menu-ref.interface';
 import { TransactionsByDaySectionInterface } from '../../interface/transactions-by-day-section.interface';
@@ -20,6 +21,7 @@ import { TransactionListContextMenu } from '../transaction-list-context-menu/tra
 import { TransactionSectionHeader } from '../transaction-section-header/transaction-section-header';
 
 import type { LegendListProps } from '@legendapp/list/react-native';
+import type { SharedValue } from 'react-native-reanimated';
 
 interface Props {
     readonly sections: TransactionsByDaySectionInterface[];
@@ -28,8 +30,10 @@ interface Props {
     readonly accountId?: number | null;
     readonly footerSpacerMultiplier?: number;
     readonly listHeader?: ReactElement;
-    readonly listComponent?: ComponentType<LegendListProps<TransactionListItemType>>;
-    readonly stickyHeaderOffset?: number;
+    readonly listComponent?: ComponentType<
+        LegendListProps<TransactionListItemType> & { readonly ref?: RefCallback<LegendListPositionSourceInterface> }
+    >;
+    readonly headerOffsets?: SharedValue<number[]>;
 }
 
 const keyExtractor = (item: TransactionListItemType) => item.id;
@@ -46,12 +50,13 @@ export const TransactionSectionsList = ({
     footerSpacerMultiplier = 1,
     listHeader,
     listComponent: ListComponent = BudgieLegendList,
-    stickyHeaderOffset
+    headerOffsets
 }: Props) => {
     const router = useRouter();
     const { bottom } = useSafeAreaInsets();
 
     const menuRef = useRef<TransactionListContextMenuRefInterface>(null);
+    const listRef = useRef<LegendListPositionSourceInterface | null>(null);
 
     const handlePress = (transaction: TransactionWithRelationsEntityInterface) => {
         router.push(getTransactionHref(transaction));
@@ -74,21 +79,31 @@ export const TransactionSectionsList = ({
             />
         );
 
-    const stickyHeaderIndices: number[] = [];
-    const flatData: TransactionListItemType[] = [];
+    const flatData: TransactionListItemType[] = sections.flatMap(({ title, netAmount, transactions }) => [
+        { type: TransactionListItemKindEnum.HEADER, title, netAmount, id: `header-${title}` },
+        ...transactions.map((transaction, index) => ({
+            type: TransactionListItemKindEnum.TRANSACTION as const,
+            id: `transaction-${transaction.id}`,
+            position: getTransactionListRowPosition(index, transactions.length),
+            transaction
+        }))
+    ]);
 
-    for (const { title, netAmount, transactions } of sections) {
-        stickyHeaderIndices.push(flatData.length);
-        flatData.push(
-            { type: TransactionListItemKindEnum.HEADER, title, netAmount, id: `header-${title}` },
-            ...transactions.map((transaction, index) => ({
-                type: TransactionListItemKindEnum.TRANSACTION as const,
-                id: `transaction-${transaction.id}`,
-                position: getTransactionListRowPosition(index, transactions.length),
-                transaction
-            }))
-        );
-    }
+    const handleListRef = (list: LegendListPositionSourceInterface | null) => {
+        listRef.current = list;
+    };
+
+    const publishHeaderOffsets = () => {
+        const state = listRef.current?.getState();
+
+        if (isDefined(state)) {
+            headerOffsets?.set(
+                flatData.flatMap((item, index) => (item.type === TransactionListItemKindEnum.HEADER ? [state.positionAtIndex(index)] : []))
+            );
+        }
+    };
+
+    const handleSectionsChange = useEffectEvent(publishHeaderOffsets);
 
     const paddingBottom = footerSpacerMultiplier * (FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN) + bottom;
     const contentContainerStyle = {
@@ -97,7 +112,7 @@ export const TransactionSectionsList = ({
         ...(isEmptyArray(flatData) && !isDefined(listHeader) && { justifyContent: 'center' as const })
     };
 
-    const stickyHeaderProps = isDefined(stickyHeaderOffset) ? { stickyHeaderConfig: { offset: stickyHeaderOffset } } : {};
+    useEffect(() => void handleSectionsChange(), [sections]);
 
     return (
         <>
@@ -108,14 +123,15 @@ export const TransactionSectionsList = ({
                     keyExtractor={keyExtractor}
                     renderItem={renderItem}
                     estimatedItemSize={64}
-                    stickyHeaderIndices={stickyHeaderIndices}
                     onEndReached={onEndReached}
                     onEndReachedThreshold={0.3}
                     contentContainerStyle={contentContainerStyle}
                     ListHeaderComponent={listHeader}
                     ListEmptyComponent={listEmptyState}
                     getItemType={getItemType}
-                    {...stickyHeaderProps}
+                    onItemSizeChanged={publishHeaderOffsets}
+                    onViewableItemsChanged={publishHeaderOffsets}
+                    ref={handleListRef}
                 />
             </View>
             <TransactionListContextMenu ref={menuRef} />

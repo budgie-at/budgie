@@ -5,6 +5,7 @@ import { isDefined } from '@rnw-community/shared';
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
 import { TRANSACTION_LIST_TABLES } from '../constant/transaction-list-tables.constant';
 import { buildTransactionFilterKey } from '../utils/build-transaction-filter-key.util';
+import { getSingleAccountId } from '../utils/get-single-account-id.util';
 
 import { useGetTransactionSectionsQuery } from './use-get-transaction-sections.query';
 
@@ -30,5 +31,10 @@ export const useGetStatisticsTransactionsQuery = (filters: StatisticsFilterInter
     const excludedCategoryKey = filters.excludedCategoryIds?.join(',') ?? 'null';
     const filterKey = `${buildTransactionFilterKey(buildTransactionFilter(filters))}|${excludedCategoryKey}`;
 
-    return useGetTransactionSectionsQuery((limit, language) => statisticsTransactionsAtom([filters, language, limit]), filterKey, null);
+    return useGetTransactionSectionsQuery(
+        (limit, language) => statisticsTransactionsAtom([filters, language, limit]),
+        filterKey,
+        getSingleAccountId(filters.accountIds),
+        filters.categoryIds
+    );
 };

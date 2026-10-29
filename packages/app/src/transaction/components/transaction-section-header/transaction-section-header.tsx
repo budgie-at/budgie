@@ -17,12 +17,13 @@ export const TransactionSectionHeader = ({ title, netAmount }: Props) => {
 
     const hasNetAmount = isDefined(netAmount) && netAmount.amount !== 0;
     const netAmountSign = hasNetAmount && isPositiveNumber(netAmount.amount) ? '+' : '−';
+    const approximatePrefix = hasNetAmount && netAmount.isApproximate ? '≈ ' : '';
     const netAmountLabel = hasNetAmount
-        ? `${netAmountSign}${protectAmount(Math.abs(convertFromMicroUnits(netAmount.amount)), netAmount.instrumentSymbol)}`
+        ? `${approximatePrefix}${netAmountSign}${protectAmount(Math.abs(convertFromMicroUnits(netAmount.amount)), netAmount.instrumentSymbol)}`
         : null;
 
     return (
-        <View className="-mx-5xl h-[32px] flex-row items-center justify-between gap-x-md bg-surface px-[36px]">
+        <View className="h-[32px] flex-row items-center justify-between gap-x-md px-3xl">
             <Text className="shrink text-secondary-foreground text-[13px] leading-[16px] font-semibold" numberOfLines={1}>
                 {title}
             </Text>

@@ -1,4 +1,5 @@
 import { isOutflowEntryType } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { isSameDay } from 'date-fns/isSameDay';
 import { isToday } from 'date-fns/isToday';
@@ -10,28 +11,57 @@ import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { useFormatDate } from '../../i18n/hook/use-format-date.hook';
+import { defaultInstrumentAtom } from '../../settings/constants/settings-atoms.constant';
 import { useSetting } from '../../settings/hook/use-setting.hook';
+import { selectStatisticsAmountTransaction } from '../utils/select-statistics-amount-transaction.util';
 
 import type { TransactionsByDaySectionInterface } from '../interface/transactions-by-day-section.interface';
 import type { TransactionsDayNetAmountInterface } from '../interface/transactions-day-net-amount.interface';
-import type { LanguageEnum, TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import type {
+    InstrumentEntityInterface,
+    LanguageEnum,
+    TransactionEntryEntityInterface,
+    TransactionWithRelationsEntityInterface
+} from '@budgie/contracts';
 import type * as Atom from 'effect/reactivity/Atom';
 
 const DEFAULT_LIMIT = 20;
 
+const getSignedAmount = (entry: Pick<TransactionEntryEntityInterface, 'type'>, amount: number) =>
+    isOutflowEntryType(entry.type) ? -amount : amount;
+
 const getDayNetAmount = (
     transactions: TransactionWithRelationsEntityInterface[],
-    accountId: number | null
+    accountId: number | null,
+    categoryIds: number[] | null,
+    defaultInstrument: Pick<InstrumentEntityInterface, 'id' | 'symbol'>
 ): TransactionsDayNetAmountInterface | null => {
-    const accountEntries = transactions.flatMap(transaction => transaction.entries.filter(entry => entry.accountId === accountId));
+    const entries = transactions.flatMap(transaction =>
+        selectStatisticsAmountTransaction(transaction, categoryIds).entries.filter(
+            entry => !isDefined(accountId) || entry.accountId === accountId
+        )
+    );
 
-    if (isEmptyArray(accountEntries)) {
+    if (isEmptyArray(entries)) {
+        return null;
+    }
+
+    if (new Set(entries.map(entry => entry.account.instrument.id)).size === 1) {
+        return {
+            amount: entries.reduce((sum, entry) => sum + getSignedAmount(entry, entry.amount), 0),
+            instrumentSymbol: entries[0].account.instrument.symbol,
+            isApproximate: false
+        };
+    }
+
+    if (entries.some(entry => !isDefined(entry.baseAmount) || entry.baseInstrumentId !== defaultInstrument.id)) {
         return null;
     }
 
     return {
-        amount: accountEntries.reduce((sum, entry) => sum + (isOutflowEntryType(entry.type) ? -entry.amount : entry.amount), 0),
-        instrumentSymbol: accountEntries[0].account.instrument.symbol
+        amount: entries.reduce((sum, entry) => sum + getSignedAmount(entry, entry.baseAmount ?? 0), 0),
+        instrumentSymbol: defaultInstrument.symbol,
+        isApproximate: true
     };
 };
 
@@ -55,9 +85,11 @@ const groupTransactionsByDay = (transactions: TransactionWithRelationsEntityInte
 export const useGetTransactionSectionsQuery = <Transaction extends TransactionWithRelationsEntityInterface, Failure>(
     getQueryAtom: (limit: number, language: LanguageEnum) => Atom.Atom<AsyncResult.AsyncResult<Transaction[], Failure>>,
     filterKey: string,
-    accountId: number | null
+    accountId: number | null,
+    categoryIds: number[] | null = null
 ) => {
     const { t } = useLingui();
+    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const { formatWeekdayAndDay } = useFormatDate();
     const language = useSetting('language');
     const queryKey = `${filterKey}|${language}`;
@@ -78,7 +110,7 @@ export const useGetTransactionSectionsQuery = <Transaction extends TransactionWi
     const sections: TransactionsByDaySectionInterface[] = groupTransactionsByDay(transactions).map(dayTransactions => ({
         title: formatDayTitle(dayTransactions[0].operatedAt),
         transactions: dayTransactions,
-        netAmount: getDayNetAmount(dayTransactions, accountId)
+        netAmount: getDayNetAmount(dayTransactions, accountId, categoryIds, defaultInstrument)
     }));
 
     const loadMore = () => {
