@@ -2,6 +2,8 @@ import { BudgetLimitSourceEnum, BudgetPeriodEnum, BudgetRolloverModeEnum } from 
 import * as Schema from 'effect/Schema';
 import * as SchemaGetter from 'effect/SchemaGetter';
 
+import { isDefined } from '@rnw-community/shared';
+
 import type { Mutable } from 'effect/Types';
 
 const MIN_PERIOD_START_DAY = 1;
@@ -32,7 +34,7 @@ export const BudgetFormSchema = Schema.Struct(budgetFormFields)
     .check(
         Schema.makeFilter(
             values =>
-                values.period === BudgetPeriodEnum.MONTHLY || values.periodAnchorMs !== null || { path: ['periodAnchorMs'], issue: '' }
+                values.period === BudgetPeriodEnum.MONTHLY || isDefined(values.periodAnchorMs) || { path: ['periodAnchorMs'], issue: '' }
         ),
         Schema.makeFilter(values => {
             if (values.limitSource !== BudgetLimitSourceEnum.FIXED) {

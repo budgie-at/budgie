@@ -1,6 +1,6 @@
 import { BudgetPeriodEnum } from '@budgie/contracts';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { resolveBudgetDayState } from './resolve-budget-day-state.util';
 
@@ -21,7 +21,7 @@ export const buildBudgetDayStripCells = (
     return Array.from({ length: groupCount }, (_unused, groupIndex) => {
         const group = days.slice(groupIndex * groupSize, (groupIndex + 1) * groupSize);
         const spentValues = group.map(day => day.variableSpent).filter(isDefined);
-        const variableSpent = spentValues.length === 0 ? null : spentValues.reduce((sum, value) => sum + value, 0);
+        const variableSpent = isEmptyArray(spentValues) ? null : spentValues.reduce((sum, value) => sum + value, 0);
 
         return {
             key: group[0].date.getTime(),
