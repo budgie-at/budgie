@@ -54,7 +54,6 @@ export type { BudgetUpdateInputInterface } from './mutation/interface/budget-upd
 export { buildPeriodMonths } from './period/utils/budget-period-months.util';
 export { defaultPeriodAnchorDate } from './period/utils/default-period-anchor-date.util';
 export { scaleBudgetTemplateDraft } from './template/utils/scale-budget-template-draft.util';
-export { BUDGET_NOMINAL_PERIOD_DAYS } from './period/constant/budget-nominal-period-days.constant';
 export { resolveBudgetOverallLimit } from './income/utils/resolve-budget-overall-limit.util';
 export { computeIncomeReceived } from './income/utils/compute-income-received.util';
 export { computeExpectedIncome } from './income/utils/compute-expected-income.util';

@@ -11,11 +11,11 @@ import { startOfDay } from 'date-fns/startOfDay';
 import { startOfMonth } from 'date-fns/startOfMonth';
 import { subMonths } from 'date-fns/subMonths';
 
+import { BUDGET_NOMINAL_PERIOD_DAYS } from '../constant/budget-nominal-period-days.constant';
+
 import type { BudgetPeriodSpecInterface } from '../interface/budget-period-spec.interface';
 import type { BudgetPeriodWindowInterface } from '../interface/budget-period-window.interface';
 
-const WEEKLY_PERIOD_DAYS = 7;
-const BIWEEKLY_PERIOD_DAYS = 14;
 const FALLBACK_PERIOD_ANCHOR_YEAR = 2024;
 const FALLBACK_PERIOD_ANCHOR = new Date(FALLBACK_PERIOD_ANCHOR_YEAR, 0, 1);
 
@@ -102,11 +102,11 @@ export const computePeriodWindow = (spec: BudgetPeriodSpecInterface, now: Date):
     const anchorDate = spec.periodAnchorDate ?? FALLBACK_PERIOD_ANCHOR;
 
     if (spec.period === BudgetPeriodEnum.WEEKLY) {
-        return computeAnchoredWindow(anchorDate, WEEKLY_PERIOD_DAYS, now);
+        return computeAnchoredWindow(anchorDate, BUDGET_NOMINAL_PERIOD_DAYS[BudgetPeriodEnum.WEEKLY], now);
     }
 
     if (spec.period === BudgetPeriodEnum.BIWEEKLY) {
-        return computeAnchoredWindow(anchorDate, BIWEEKLY_PERIOD_DAYS, now);
+        return computeAnchoredWindow(anchorDate, BUDGET_NOMINAL_PERIOD_DAYS[BudgetPeriodEnum.BIWEEKLY], now);
     }
 
     if (spec.period === BudgetPeriodEnum.YEARLY) {
