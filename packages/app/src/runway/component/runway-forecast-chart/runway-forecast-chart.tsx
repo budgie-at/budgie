@@ -1,5 +1,5 @@
-import { useLingui } from '@lingui/react/macro';
-import { View } from 'react-native';
+import { Trans, useLingui } from '@lingui/react/macro';
+import { Text, View } from 'react-native';
 import Svg from 'react-native-svg';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
@@ -10,7 +10,6 @@ import { StyledPath } from '../../../@generic/component/styled-path/styled-path'
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { buildRunwayForecastPath } from '../../utils/build-forecast-path.util';
 import { RunwayForecastAxisLabels } from '../runway-forecast-axis-labels/runway-forecast-axis-labels';
-import { RunwayForecastLegend } from '../runway-forecast-legend/runway-forecast-legend';
 import { RunwayForecastRunOut } from '../runway-forecast-run-out/runway-forecast-run-out';
 import { RunwayForecastZeroLabel } from '../runway-forecast-zero-label/runway-forecast-zero-label';
 
@@ -83,7 +82,9 @@ export const RunwayForecastChart = ({ computation }: Props) => {
                 </View>
             </View>
 
-            <RunwayForecastLegend />
+            <Text className="text-xs text-secondary-foreground">
+                <Trans>Shaded area shows your better and worse months.</Trans>
+            </Text>
         </View>
     );
 };

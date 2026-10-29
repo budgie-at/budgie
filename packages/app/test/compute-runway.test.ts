@@ -34,6 +34,14 @@ describe('computeRunway', () => {
         expect(computation.runwayMonths).toBeCloseTo(LIQUID / Math.abs(computation.net));
     });
 
+    it('has no runway left when the liquid balance is already below zero', () => {
+        const referenceDate = new Date('2026-06-15T00:00:00.000Z');
+        const computation = computeRunway({ series: lumpySeries, liquid: -LIQUID, irregularMonthlyAmounts: [], referenceDate });
+
+        expect(computation.runwayMonths).toBe(0);
+        expect(computation.runsOutAt).toStrictEqual(referenceDate);
+    });
+
     it('removes irregular costs from the burn and the band series', () => {
         const allIn = compute(lumpySeries, []);
         const typical = compute(

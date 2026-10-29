@@ -1,4 +1,3 @@
-import { RUNWAY_MAX_MONTHS } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
@@ -20,16 +19,16 @@ export const RunwayVerdictOutlook = ({ computation }: Props) => {
     const { formatMonthAndYear } = useFormatDate();
 
     const { burn, isPositive, liquid, runsOutAt, runwayMonths } = computation;
-    const coverMonths = isPositiveNumber(burn) ? Math.round(liquid / burn) : null;
+    const coverMonths = isPositiveNumber(burn) && isPositiveNumber(liquid) ? Math.round(liquid / burn) : null;
     const runOutDate = isDefined(runsOutAt) ? formatMonthAndYear(runsOutAt) : '';
     const coverLine = isDefined(coverMonths) ? t`Covered by ${coverMonths} months of expenses.` : t`Covered by your liquid balance.`;
-    const isRunOutCharted = isDefined(runwayMonths) && runwayMonths <= RUNWAY_MAX_MONTHS;
-    const burningLine = isRunOutCharted ? '' : t`Runs out around ${runOutDate}.`;
+    const runOutLine = isNotEmptyString(runOutDate) ? t`Runs out around ${runOutDate}.` : '';
+    const burningLine = isPositiveNumber(runwayMonths) ? runOutLine : t`Your balance is already below zero.`;
     const outlookLine = isPositive ? coverLine : burningLine;
 
     return (
         <View className="gap-y-xs">
-            {isNotEmptyString(outlookLine) ? <Text className="text-sm text-secondary-foreground">{outlookLine}</Text> : null}
+            {isNotEmptyString(outlookLine) ? <Text className="text-base text-primary">{outlookLine}</Text> : null}
 
             {isRunwayCryptoIncluded ? (
                 <Text testID={RunwaySelector.VerdictCryptoNote} className="text-xs text-secondary-foreground">
