@@ -167,7 +167,7 @@ jobs:
 
       - name: Export JavaScript bundles
         working-directory: packages/app
-        run: pnpm exec expo export --output-dir dist --dump-assetmap --platform ios --platform android
+        run: pnpm exec expo export --output-dir dist --dump-assetmap --platform ios
 
       - name: Resolve runtime versions
         id: runtime
@@ -184,6 +184,6 @@ jobs:
           eas-profile: production
           auto-create-channel: 'false'
           input-dir: dist
+          platform: ios
           ios-runtime-version: ${{ steps.runtime.outputs.ios-runtime-version }}
-          android-runtime-version: ${{ steps.runtime.outputs.android-runtime-version }}
           expo-token: ${{ secrets.EXPO_TOKEN }}

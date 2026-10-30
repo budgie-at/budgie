@@ -262,7 +262,7 @@ jobs:
         with:
             app-dir: packages/app
             scheme: budgie
-            platforms: ios,android
+            platforms: ios
             package-manager: pnpm
             install-command: pnpm install --frozen-lockfile
             runner-labels: '["self-hosted","trf-linux-amd64-4x8"]'
@@ -280,7 +280,7 @@ jobs:
         uses: rnw-community/mobile-ci/.github/workflows/expo-fingerprint-guard.yml@443067982b184fe16ceef20a8ff2e36d5af286b6 # v4.6.0
         with:
             working-directory: packages/app
-            platforms: ios,android
+            platforms: ios
             app-env: |
                 APP_VARIANT=production
             package-manager: pnpm
