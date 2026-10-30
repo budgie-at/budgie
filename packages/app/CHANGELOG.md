@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.127.0](https://github.com/budgie-at/budgie/compare/v6.126.5...v6.127.0) (2026-10-30)
+
+### Bug Fixes
+
+* **sync:** fix Binance sync CI failures ([732fd76](https://github.com/budgie-at/budgie/commit/732fd7654c1aabb5e831b8f4645221471aafcf98))
+* **sync:** resolve lint errors ([9c4aae5](https://github.com/budgie-at/budgie/commit/9c4aae5beaedbc90de811f23d02ab8a54b5ff49a))
+* **sync:** resume every Binance history backfill across deferred runs ([e25ada6](https://github.com/budgie-at/budgie/commit/e25ada6f7568de03b4719b30eae9320ff457c0c9))
+* **sync:** support multiple Binance keys and verify the account on key rotation ([403c474](https://github.com/budgie-at/budgie/commit/403c4742e5535d7c36242ea2398f81d984cb9cb8))
+* **sync:** walk Binance fiat history to the lookback in resumable chunks and repair imported fiat amounts once ([e39cc9a](https://github.com/budgie-at/budgie/commit/e39cc9ac6e6625a9b6421ab0c78cf7937accd814))
+
+### Features
+
+* **app:** explain Binance sync failures with translated messages ([51e58e0](https://github.com/budgie-at/budgie/commit/51e58e09c179891d20760cea15086671c099b73f))
+* **landing:** list unsupported Binance sources and refresh app catalogs ([9aba1c1](https://github.com/budgie-at/budgie/commit/9aba1c1cb1979cacaa17e01dbd3817b40fb7552b))
+* **sync:** store a stable error code with the last sync failure ([fdb9305](https://github.com/budgie-at/budgie/commit/fdb930568472c3f4f56df40d2f4a4ca0e1862d84))
+
+
 ## [6.126.5](https://github.com/budgie-at/budgie/compare/v6.126.4...v6.126.5) (2026-10-29)
 
 ### Bug Fixes
