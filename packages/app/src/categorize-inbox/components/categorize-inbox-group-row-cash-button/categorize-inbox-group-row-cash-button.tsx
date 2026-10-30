@@ -1,8 +1,10 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
 import { isEmptyArray } from '@rnw-community/shared';
 
+import { Icon } from '../../../@generic/component/icon/icon';
 import { testID } from '../../../@generic/utils/test-id.util';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 import { CategorizeInboxGroupRowPill } from '../categorize-inbox-group-row-pill/categorize-inbox-group-row-pill';
@@ -35,7 +37,8 @@ export const CategorizeInboxGroupRowCashButton = ({ cluster }: Props) => {
             onPress={handlePress}
             {...testID(CategorizeInboxGroupRowSelector.MoveToCashButton, key)}
         >
-            <Text className="text-xs font-medium text-warning-foreground">{t`Move to cash`}</Text>
+            <Icon icon={UserIconNameEnum.Banknote} size={12} className="text-warning-foreground" />
+            <Text className="text-xs font-semibold text-warning-foreground">{t`Move to cash`}</Text>
         </CategorizeInboxGroupRowPill>
     );
 };

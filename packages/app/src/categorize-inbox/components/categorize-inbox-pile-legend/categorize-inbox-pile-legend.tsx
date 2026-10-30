@@ -19,7 +19,7 @@ export const CategorizeInboxPileLegend = () => {
         [CategorizeInboxSectionEnum.CONFIDENT]: count => t({ message: plural(count, { one: '# ready', other: '# ready' }) }),
         [CategorizeInboxSectionEnum.CASH_WITHDRAWALS]: count => t({ message: plural(count, { one: '# cash', other: '# cash' }) }),
         [CategorizeInboxSectionEnum.REVIEW]: count => t({ message: plural(count, { one: '# your call', other: '# your call' }) }),
-        [CategorizeInboxSectionEnum.ONE_OFFS]: count => t({ message: plural(count, { one: '# smaller', other: '# smaller' }) })
+        [CategorizeInboxSectionEnum.ONE_OFFS]: count => t({ message: plural(count, { one: '# other', other: '# other' }) })
     };
     const sortedText = t({ message: plural(categorizedCount, { one: '# sorted', other: '# sorted' }) });
 

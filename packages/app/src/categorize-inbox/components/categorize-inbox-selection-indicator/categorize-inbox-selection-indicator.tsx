@@ -12,14 +12,15 @@ export const CategorizeInboxSelectionIndicator = ({ selection }: Props) => {
     const isIncluded = selection === CategorizeInboxSelectionEnum.INCLUDED;
     const isPartial = selection === CategorizeInboxSelectionEnum.PARTIAL;
 
-    const circleClassName = isIncluded
-        ? 'h-[20px] w-[20px] items-center justify-center rounded-full bg-primary'
-        : 'h-[20px] w-[20px] items-center justify-center rounded-full border-[1.5px] border-secondary-foreground';
+    const circleClassName =
+        isIncluded || isPartial
+            ? 'h-[22px] w-[22px] items-center justify-center rounded-full bg-positive-fill'
+            : 'h-[22px] w-[22px] items-center justify-center rounded-full border-[1.5px] border-secondary-foreground/50';
 
     return (
         <View className={circleClassName}>
-            {isIncluded ? <Icon icon={UserIconNameEnum.Check} size={12} className="text-primary-reverse" /> : null}
-            {isPartial ? <Icon icon={UserIconNameEnum.Minus} size={12} className="text-secondary-foreground" /> : null}
+            {isIncluded ? <Icon icon={UserIconNameEnum.Check} size={14} className="text-white" /> : null}
+            {isPartial ? <Icon icon={UserIconNameEnum.Minus} size={14} className="text-white" /> : null}
         </View>
     );
 };

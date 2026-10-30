@@ -38,5 +38,13 @@ export const CategorizeInboxGroupLearnedTransferOption = ({ cluster }: Props) =>
 
     const { title } = account;
 
-    return <CategorizeInboxOptionRow icon={UserIconNameEnum.ArrowLeftRight} title={t`Transfer to ${title}`} isLead onPress={handlePress} />;
+    return (
+        <CategorizeInboxOptionRow
+            icon={UserIconNameEnum.ArrowLeftRight}
+            title={t`Transfer to ${title}`}
+            subtitle={t`Suggested`}
+            isLead
+            onPress={handlePress}
+        />
+    );
 };

@@ -10,6 +10,6 @@ export const CATEGORIZE_INBOX_SECTION_ORDER = [
 export const CATEGORIZE_INBOX_SECTION_COLOR: Record<CategorizeInboxSectionEnum, string> = {
     [CategorizeInboxSectionEnum.CONFIDENT]: 'bg-positive-fill',
     [CategorizeInboxSectionEnum.CASH_WITHDRAWALS]: 'bg-warning-fill',
-    [CategorizeInboxSectionEnum.REVIEW]: 'bg-primary',
-    [CategorizeInboxSectionEnum.ONE_OFFS]: 'bg-secondary-foreground'
+    [CategorizeInboxSectionEnum.REVIEW]: 'bg-secondary-foreground',
+    [CategorizeInboxSectionEnum.ONE_OFFS]: 'bg-secondary-foreground/40'
 };

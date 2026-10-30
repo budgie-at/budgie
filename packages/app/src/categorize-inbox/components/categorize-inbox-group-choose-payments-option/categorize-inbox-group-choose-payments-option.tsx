@@ -34,7 +34,7 @@ export const CategorizeInboxGroupChoosePaymentsOption = ({ cluster }: Props) => 
     return (
         <CategorizeInboxSecondaryOptionRow
             icon={UserIconNameEnum.List}
-            title={t`Choose which payments`}
+            title={t`Choose payments`}
             accessory={accessory}
             onPress={handlePress}
         />

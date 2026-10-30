@@ -30,7 +30,7 @@ export const CategorizeInboxPaymentsSummary = ({ cluster }: Props) => {
     return (
         <View className="flex-row items-center justify-between gap-x-md">
             <Text className="flex-1 text-secondary-foreground text-sm tabular-nums" numberOfLines={1}>
-                <Text className="text-primary font-medium">
+                <Text className="text-primary text-md font-semibold">
                     <Trans>
                         {includedCount} of {rowCount} selected
                     </Trans>

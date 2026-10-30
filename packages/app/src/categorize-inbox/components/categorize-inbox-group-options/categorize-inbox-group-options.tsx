@@ -2,7 +2,7 @@ import { CategorizeInboxSectionEnum } from '@budgie/categorization';
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 import { useCategorizeInboxMatchedAccount } from '../../hook/use-categorize-inbox-matched-account.hook';
@@ -36,6 +36,15 @@ export const CategorizeInboxGroupOptions = ({ cluster }: Props) => {
         .filter(isDefined)
         .map((label, index) => ({ label, isBestMatch: isConfident && index === 0 }));
 
+    const leadLabelOptions = labelOptions.filter(option => option.isBestMatch);
+    const otherLabelOptions = labelOptions.filter(option => !option.isBestMatch);
+    const otherOptionsHeading =
+        isLeadTransfer || isLearnedMatch || isNotEmptyArray(leadLabelOptions) ? (
+            <Text className="text-secondary-foreground pb-xs pt-3xl text-sm font-semibold">
+                <Trans>Other options</Trans>
+            </Text>
+        ) : null;
+
     const leadTransfer = isLeadTransfer ? <CategorizeInboxGroupTransferOption cluster={cluster} isLead /> : null;
     const trailingTransfer = isLeadTransfer ? null : <CategorizeInboxGroupTransferOption cluster={cluster} isLead={false} />;
     const cashOptions = isCash ? (
@@ -53,14 +62,18 @@ export const CategorizeInboxGroupOptions = ({ cluster }: Props) => {
 
             <CategorizeInboxGroupLearnedTransferOption cluster={cluster} />
             {leadTransfer}
+            {leadLabelOptions.map(option => (
+                <CategorizeInboxGroupLabelOption key={option.label.id} cluster={cluster} {...option} />
+            ))}
+            {otherOptionsHeading}
             {cashOptions}
-            {labelOptions.map(option => (
+            {otherLabelOptions.map(option => (
                 <CategorizeInboxGroupLabelOption key={option.label.id} cluster={cluster} {...option} />
             ))}
             <CategorizeInboxGroupMoreLabelsOption cluster={cluster} />
             {trailingTransfer}
 
-            <Text className="pb-xs pt-6xl text-xs font-medium uppercase tracking-wider text-secondary-foreground">
+            <Text className="text-secondary-foreground pb-xs pt-3xl text-sm font-semibold">
                 <Trans>Refine</Trans>
             </Text>
             <CategorizeInboxGroupTagsOption cluster={cluster} />

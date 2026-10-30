@@ -17,7 +17,8 @@ export const CategorizeInboxGroupTransferOption = ({ cluster, isLead }: Props) =
     const router = useRouter();
 
     const isIncome = cluster.rows.at(0)?.type === TransactionTypeEnum.INCOME;
-    const subtitle = isIncome ? t`Leaves your income` : t`Leaves your expenses`;
+    const defaultSubtitle = isIncome ? t`Leaves your income` : t`Not counted as spending`;
+    const subtitle = isLead ? t`Suggested` : defaultSubtitle;
 
     const handlePress = (): void => void router.push({ pathname: '/categorize/transfer/[key]', params: { key: cluster.key } });
 

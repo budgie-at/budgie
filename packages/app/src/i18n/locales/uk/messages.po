@@ -131,6 +131,10 @@ msgstr "{count, plural, one {# наявна транзакція відпові�
 msgid "{count, plural, one {# missing category} other {# missing categories}}"
 msgstr "{count, plural, one {# відсутня категорія} few {# відсутні категорії} many {# відсутніх категорій} other {# відсутньої категорії}}"
 
+#: src/categorize-inbox/components/categorize-inbox-pile-legend/categorize-inbox-pile-legend.tsx
+msgid "{count, plural, one {# other} other {# other}}"
+msgstr "{count, plural, one {# інший} few {# інші} many {# інших} other {# інших}}"
+
 #: src/installment-plan/component/installment-count-chip/installment-count-chip.tsx
 msgid "{count, plural, one {# payment} other {# payments}}"
 msgstr "{count, plural, one {# платіж} few {# платежі} many {# платежів} other {# платежу}}"
@@ -138,10 +142,6 @@ msgstr "{count, plural, one {# платіж} few {# платежі} many {# пл
 #: src/categorize-inbox/components/categorize-inbox-pile-legend/categorize-inbox-pile-legend.tsx
 msgid "{count, plural, one {# ready} other {# ready}}"
 msgstr "{count, plural, one {# готова} few {# готові} many {# готових} other {# готових}}"
-
-#: src/categorize-inbox/components/categorize-inbox-pile-legend/categorize-inbox-pile-legend.tsx
-msgid "{count, plural, one {# smaller} other {# smaller}}"
-msgstr "{count, plural, one {# дрібна} few {# дрібні} many {# дрібних} other {# дрібних}}"
 
 #: src/settings/utils/get-sync-repair-text.util.ts
 msgid "{count, plural, one {# sync repair} other {# sync repairs}}"
@@ -154,6 +154,10 @@ msgstr "{count, plural, one {# майбутній платіж} few {# майб�
 #: src/categorize-inbox/components/categorize-inbox-pile-legend/categorize-inbox-pile-legend.tsx
 msgid "{count, plural, one {# your call} other {# your call}}"
 msgstr "{count, plural, one {# на ваш розсуд} few {# на ваш розсуд} many {# на ваш розсуд} other {# на ваш розсуд}}"
+
+#: src/categorize-inbox/components/categorize-inbox-group-label-option/categorize-inbox-group-label-option.tsx
+msgid "{count, plural, one {File # payment as {labelTitle}} other {File # payments as {labelTitle}}}"
+msgstr "{count, plural, one {Віднести # платіж до {labelTitle}} few {Віднести # платежі до {labelTitle}} many {Віднести # платежів до {labelTitle}} other {Віднести # платежу до {labelTitle}}}"
 
 #: src/category/hooks/use-delete-category.hook.ts
 msgid "{count, plural, one {This category has # transaction. Select another category to reassign it to.} other {This category has # transactions. Select another category to reassign them to.}}"
@@ -216,10 +220,6 @@ msgstr "{duplicateTransactionCount, plural, one {# пропущено} few {# п
 #: src/settings/components/your-data-card/your-data-card.tsx
 msgid "{fileSize} · no Budgie servers"
 msgstr "{fileSize} · без серверів Budgie"
-
-#: src/categorize-inbox/components/categorize-inbox-group-panel/categorize-inbox-group-panel.tsx
-msgid "{firstMonth} to {lastMonth}"
-msgstr "З {firstMonth} по {lastMonth}"
 
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
 msgid "{foldedDriverCount, plural, one {Other (# category)} other {Other (# categories)}}"
@@ -410,6 +410,10 @@ msgstr "{periodLabel}, витрачено {spentAmount} із {limitAmount}"
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "{remaining} GB one-time download"
 msgstr "Одноразове завантаження {remaining} ГБ"
+
+#: src/categorize-inbox/components/categorize-inbox-hero/categorize-inbox-hero.tsx
+msgid "{remainingCount, plural, one {payment to sort} other {payments to sort}}"
+msgstr "{remainingCount, plural, one {платіж до сортування} few {платежі до сортування} many {платежів до сортування} other {платежу до сортування}}"
 
 #: src/settings/hooks/use-sync-repairs-action.hook.ts
 msgid "{repairedTransactionCount, plural, one {# sync item repaired} other {# sync items repaired}}"
@@ -1499,6 +1503,7 @@ msgstr "Виберіть і підтвердьте PIN-код"
 msgid "Choose features and free space from unused downloads"
 msgstr "Вибирайте функції та звільняйте місце від невикористаних завантажень"
 
+#: src/categorize-inbox/components/categorize-inbox-group-choose-payments-option/categorize-inbox-group-choose-payments-option.tsx
 #: src/categorize-inbox/components/categorize-inbox-payments-screen/categorize-inbox-payments-screen.tsx
 msgid "Choose payments"
 msgstr "Обрати платежі"
@@ -1510,10 +1515,6 @@ msgstr "Вибрати, що буде всередині"
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Choose what to track. Balances and history come straight from the bank."
 msgstr "Оберіть, що відстежувати. Баланси й історія надходять безпосередньо з банку."
-
-#: src/categorize-inbox/components/categorize-inbox-group-choose-payments-option/categorize-inbox-group-choose-payments-option.tsx
-msgid "Choose which payments"
-msgstr "Оберіть, які платежі"
 
 #: src/@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle.tsx
 msgid "Clear"
@@ -2289,6 +2290,7 @@ msgstr "Баланс депозиту не може стати відʼємни�
 msgid "Deposits"
 msgstr "Депозити"
 
+#: src/categorize-inbox/components/categorize-inbox-payments-select-all/categorize-inbox-payments-select-all.tsx
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Deselect all"
 msgstr "Скасувати вибір"
@@ -3297,10 +3299,6 @@ msgid "Leave it empty for now"
 msgstr "Поки залишити порожнім"
 
 #: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
-msgid "Leaves your expenses"
-msgstr "Зникне з ваших витрат"
-
-#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
 msgid "Leaves your income"
 msgstr "Зникне з ваших доходів"
 
@@ -3901,6 +3899,10 @@ msgstr "не містить"
 msgid "Not Contains"
 msgstr "Не містить"
 
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+msgid "Not counted as spending"
+msgstr "Не враховується у витратах"
+
 #: src/ai/constant/ai-download-card-visuals.constant.ts
 msgid "Not downloaded"
 msgstr "Не завантажено"
@@ -4172,6 +4174,10 @@ msgstr "Бюджет «Інше»: використано {threshold}%"
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "Other budget: limit reached"
 msgstr "Бюджет «Інше»: ліміт досягнуто"
+
+#: src/categorize-inbox/components/categorize-inbox-group-options/categorize-inbox-group-options.tsx
+msgid "Other options"
+msgstr "Інші варіанти"
 
 #: src/budget/components/budget-verdict-figure/budget-verdict-figure.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
@@ -4987,10 +4993,6 @@ msgstr "Вибрати шаблон імпорту"
 msgid "Select MCC code"
 msgstr "Вибрати MCC-код"
 
-#: src/categorize-inbox/components/categorize-inbox-payments-select-all/categorize-inbox-payments-select-all.tsx
-msgid "Select none"
-msgstr "Зняти всі"
-
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Select Operator"
 msgstr "Вибрати оператор"
@@ -5265,6 +5267,8 @@ msgstr "Підписки"
 
 #: src/app/icon-selector.tsx
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-learned-transfer-option/categorize-inbox-group-learned-transfer-option.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
 msgid "Suggested"
 msgstr "Запропоновані"
 
@@ -5661,14 +5665,6 @@ msgstr "До отримання"
 #: src/account/constant/debt-remaining-label.constant.ts
 msgid "To repay"
 msgstr "До сплати"
-
-#: src/categorize-inbox/components/categorize-inbox-hero/categorize-inbox-hero.tsx
-msgid "to sort"
-msgstr "до розбору"
-
-#: src/categorize-inbox/components/categorize-inbox-hero/categorize-inbox-hero.tsx
-msgid "to sort, worth {worthText}"
-msgstr "до розподілу, на суму {worthText}"
 
 #: src/@generic/constant/date-period.constant.ts
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx

@@ -1,6 +1,6 @@
 import { Text, View } from 'react-native';
 
-import { isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -16,19 +16,25 @@ interface Props {
     readonly subtitle?: string;
     readonly accessory?: ReactNode;
     readonly isLead?: boolean;
+    readonly testKey?: string;
     readonly onPress: () => void;
 }
 
-export const CategorizeInboxOptionRow = ({ icon, title, subtitle, accessory, isLead = false, onPress }: Props) => {
+export const CategorizeInboxOptionRow = ({ icon, title, subtitle, accessory, isLead = false, testKey, onPress }: Props) => {
     const iconVariant = isLead ? 'positive' : 'secondary';
-    const subtitleNode = isNotEmptyString(subtitle) ? <Text className="text-secondary-foreground text-xs">{subtitle}</Text> : null;
+    const rowClassName = isLead
+        ? 'bg-positive-fill/12 flex-row items-center gap-x-xl rounded-2xl px-xl py-xl'
+        : 'border-t-hairline border-secondary-corner flex-row items-center gap-x-xl py-lg';
+    const subtitleClassName = isLead ? 'text-positive-foreground text-xs font-medium' : 'text-secondary-foreground text-xs';
+    const subtitleNode = isNotEmptyString(subtitle) ? <Text className={subtitleClassName}>{subtitle}</Text> : null;
+    const selectorTitle = isDefined(testKey) ? testKey : title;
 
     return (
         <HapticPressable
             onPress={onPress}
-            className="border-t-hairline border-secondary-corner flex-row items-center gap-x-xl py-lg"
+            className={rowClassName}
             accessibilityRole="button"
-            {...testID(CategorizeInboxGroupScreenSelector.Option, title)}
+            {...testID(CategorizeInboxGroupScreenSelector.Option, selectorTitle)}
         >
             <CircleIcon icon={icon} variant={iconVariant} size={36} iconSize={18} border={false} />
             <View className="flex-1 gap-y-xxs">

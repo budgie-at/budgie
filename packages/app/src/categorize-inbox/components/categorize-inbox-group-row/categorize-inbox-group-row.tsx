@@ -36,7 +36,7 @@ export const CategorizeInboxGroupRow = ({ cluster }: Props) => {
         <View className="border-t-hairline border-secondary-corner">
             <Link href={href} asChild>
                 <HapticPressable
-                    className="flex-row items-center gap-x-md py-lg active:bg-secondary-background"
+                    className="flex-row items-center gap-x-md min-h-[68px] py-lg active:bg-secondary-background"
                     accessibilityRole="link"
                     {...testID(CategorizeInboxGroupRowSelector.Row, key)}
                 >
@@ -51,7 +51,7 @@ export const CategorizeInboxGroupRow = ({ cluster }: Props) => {
 
                     <View className="max-w-[55%] items-end gap-y-xxs">
                         <CategorizeInboxGroupRowAmount cluster={cluster} />
-                        {isCash || isConfident ? <View className="h-[22px]" /> : <CategorizeInboxGroupRowHint cluster={cluster} />}
+                        {isCash || isConfident ? <View className="h-[24px]" /> : <CategorizeInboxGroupRowHint cluster={cluster} />}
                     </View>
                     <CategorizeInboxOptionChevron />
                 </HapticPressable>

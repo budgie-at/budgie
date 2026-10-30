@@ -6,4 +6,4 @@ interface Props {
     readonly children: ReactNode;
 }
 
-export const CategorizeInboxFindingEmphasis = ({ children }: Props) => <Text className="text-primary font-semibold">{children}</Text>;
+export const CategorizeInboxFindingEmphasis = ({ children }: Props) => <Text className="text-primary">{children}</Text>;

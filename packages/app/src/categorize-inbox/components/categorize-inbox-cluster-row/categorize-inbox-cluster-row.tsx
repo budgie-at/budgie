@@ -46,7 +46,7 @@ export const CategorizeInboxClusterRow = ({ row, displayTitle, leading }: Props)
         <HapticPressable
             onPress={handleTogglePress}
             onLongPress={handleOpenLongPress}
-            className="flex-row items-center gap-x-md py-md active:bg-secondary-background"
+            className="flex-row items-center gap-x-md min-h-[56px] py-md active:bg-secondary-background"
             accessibilityRole="checkbox"
             accessibilityState={accessibilityState}
             accessibilityLabel={accessibilityLabel}
@@ -56,14 +56,16 @@ export const CategorizeInboxClusterRow = ({ row, displayTitle, leading }: Props)
                 <View className="w-[44px]">{leading}</View>
 
                 <View className="flex-1">
-                    <Text className="text-secondary-foreground text-sm tabular-nums" numberOfLines={1}>
-                        {time}
-                    </Text>
                     {isDefined(ownTitle) ? (
-                        <Text className="text-secondary-foreground text-xs" numberOfLines={1}>
+                        <Text className="text-primary text-sm" numberOfLines={1}>
                             {ownTitle}
+                            <Text className="text-secondary-foreground tabular-nums">{` · ${time}`}</Text>
                         </Text>
-                    ) : null}
+                    ) : (
+                        <Text className="text-secondary-foreground text-sm tabular-nums" numberOfLines={1}>
+                            {time}
+                        </Text>
+                    )}
                 </View>
 
                 <CategorizeInboxAmount

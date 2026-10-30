@@ -41,7 +41,7 @@ export const CategorizeInboxGroupRowFileButton = ({ cluster }: Props) => {
             {...testID(CategorizeInboxGroupRowSelector.FileButton, cluster.key)}
         >
             <Icon icon={UserIconNameEnum.Check} size={12} className="text-positive-foreground" />
-            <Text className="shrink text-xs font-medium text-positive-foreground" numberOfLines={1}>
+            <Text className="shrink text-xs font-semibold text-positive-foreground" numberOfLines={1}>
                 {candidateTitle}
             </Text>
         </CategorizeInboxGroupRowPill>

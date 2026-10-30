@@ -1,3 +1,4 @@
+import { CategorizeInboxSectionEnum } from '@budgie/categorization';
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
@@ -23,20 +24,21 @@ export const CategorizeInboxGroupPanel = ({ cluster }: Props) => {
     const firstMonth = isDefined(firstBucket) ? formatShortMonth(firstBucket.month) : '';
     const lastMonth = isDefined(lastBucket) ? formatShortMonth(lastBucket.month) : '';
 
+    const barClassName = cluster.section === CategorizeInboxSectionEnum.CONFIDENT ? 'bg-positive-fill' : 'bg-secondary-foreground';
+
     return (
         <View className="bg-secondary-background gap-y-xl rounded-3xl p-xl">
-            <View className="flex-row items-center justify-between">
-                <Text className="text-secondary-foreground text-xs">
-                    <Trans>Payments per month</Trans>
-                </Text>
-                <Text className="text-secondary-foreground text-xs">
-                    <Trans>
-                        {firstMonth} to {lastMonth}
-                    </Trans>
-                </Text>
-            </View>
+            <Text className="text-secondary-foreground text-xs">
+                <Trans>Payments per month</Trans>
+            </Text>
 
-            <CategorizeInboxMonthlyBars buckets={buckets} />
+            <View className="gap-y-xs">
+                <CategorizeInboxMonthlyBars buckets={buckets} barClassName={barClassName} />
+                <View className="flex-row items-center justify-between">
+                    <Text className="text-secondary-foreground text-[11px]">{firstMonth}</Text>
+                    <Text className="text-secondary-foreground text-[11px]">{lastMonth}</Text>
+                </View>
+            </View>
 
             <CategorizeInboxGroupStats cluster={cluster} />
         </View>

@@ -1,5 +1,5 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -17,6 +17,7 @@ import { CategorizeInboxSelectionIndicator } from '../categorize-inbox-selection
 import { CategorizeInboxPaymentsMonthHeaderSelector } from './categorize-inbox-payments-month-header.selector';
 
 import type { CategorizeInboxMonthGroupInterface } from '../../interface/categorize-inbox-month-group.interface';
+import type { AccessibilityState } from 'react-native';
 
 interface Props {
     readonly group: CategorizeInboxMonthGroupInterface;
@@ -34,8 +35,9 @@ export const CategorizeInboxPaymentsMonthHeader = ({ group }: Props) => {
 
     const selection = getCategorizeInboxSelection(group.rows, excludedTransactionIds);
     const isAllIncluded = selection === CategorizeInboxSelectionEnum.INCLUDED;
-    const checked: boolean | 'mixed' = selection === CategorizeInboxSelectionEnum.PARTIAL ? 'mixed' : isAllIncluded;
-    const accessibilityState = { checked };
+    const accessibilityState: AccessibilityState = {
+        checked: selection === CategorizeInboxSelectionEnum.PARTIAL ? 'mixed' : isAllIncluded
+    };
 
     const handleTogglePress = (): void =>
         void setExcluded(
@@ -43,21 +45,31 @@ export const CategorizeInboxPaymentsMonthHeader = ({ group }: Props) => {
             isAllIncluded
         );
 
-    return (
-        <HapticPressable
-            onPress={handleTogglePress}
-            className="flex-row items-center justify-between gap-x-md pb-sm pt-3xl"
-            accessibilityRole="checkbox"
-            accessibilityState={accessibilityState}
-            accessibilityLabel={`${monthLabel}, ${summary}`}
-            {...testID(CategorizeInboxPaymentsMonthHeaderSelector.Toggle, group.month.getTime())}
-        >
-            <Text className="text-secondary-foreground flex-1 text-xs font-semibold uppercase" numberOfLines={1}>
+    const headerContent = (
+        <>
+            <Text className="text-primary flex-1 text-sm font-semibold" numberOfLines={1}>
                 {monthLabel}
             </Text>
             <Text className="text-secondary-foreground text-xs tabular-nums" numberOfLines={1}>
                 {summary}
             </Text>
+        </>
+    );
+
+    if (group.rows.length < 2) {
+        return <View className="flex-row items-center justify-between gap-x-md pb-xs pt-3xl">{headerContent}</View>;
+    }
+
+    return (
+        <HapticPressable
+            onPress={handleTogglePress}
+            className="flex-row items-center justify-between gap-x-md pb-xs pt-3xl"
+            accessibilityRole="checkbox"
+            accessibilityState={accessibilityState}
+            accessibilityLabel={`${monthLabel}, ${summary}`}
+            {...testID(CategorizeInboxPaymentsMonthHeaderSelector.Toggle, group.month.getTime())}
+        >
+            {headerContent}
             <CategorizeInboxSelectionIndicator selection={selection} />
         </HapticPressable>
     );

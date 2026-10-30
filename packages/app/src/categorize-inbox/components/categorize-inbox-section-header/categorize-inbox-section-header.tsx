@@ -45,18 +45,18 @@ export const CategorizeInboxSectionHeader = ({ section, rowCount }: Props) => {
 
     return (
         <View
-            className="flex-row items-center justify-between gap-x-md pb-xl pt-4xl"
+            className="flex-row items-center justify-between gap-x-md pb-md pt-3xl"
             accessibilityRole="header"
             {...testID(CategorizeInboxSectionHeaderSelector.Header, section)}
         >
             <View className="shrink flex-row items-center gap-x-sm">
                 <CategorizeInboxDot className={CATEGORIZE_INBOX_SECTION_COLOR[section]} />
-                <Text className="shrink text-xs font-medium uppercase tracking-wider text-secondary-foreground" numberOfLines={1}>
+                <Text className="shrink text-sm font-semibold text-primary" numberOfLines={1}>
                     {`${sectionTitles[section]} `}
-                    <Text className="tabular-nums">{rowCount}</Text>
+                    <Text className="font-normal text-secondary-foreground tabular-nums">{rowCount}</Text>
                 </Text>
             </View>
-            <Text className="text-xs font-medium text-secondary-foreground tabular-nums" numberOfLines={1}>
+            <Text className="text-sm text-secondary-foreground tabular-nums" numberOfLines={1}>
                 {totalText}
             </Text>
         </View>

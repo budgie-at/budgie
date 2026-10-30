@@ -30,9 +30,9 @@ export const CategorizeInboxGroupStats = ({ cluster }: Props) => {
     const averageLabel = `${sign}${protectAmount(total / Math.max(1, count), symbol)}`;
 
     return (
-        <View className="flex-row items-start justify-between">
-            <CategorizeInboxGroupStat value={String(count)} label={t`payments`} />
-            <CategorizeInboxGroupStat value={totalLabel} label={t`total`} />
+        <View className="flex-row items-start">
+            <CategorizeInboxGroupStat value={String(count)} label={t`payments`} className="items-start" />
+            <CategorizeInboxGroupStat value={totalLabel} label={t`total`} className="items-center" />
             <CategorizeInboxGroupStat value={averageLabel} label={t`average`} className="items-end" />
         </View>
     );

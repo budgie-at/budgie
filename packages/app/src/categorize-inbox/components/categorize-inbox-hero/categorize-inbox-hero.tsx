@@ -1,5 +1,6 @@
 import { convertFromMicroUnits } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
+import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
@@ -24,14 +25,17 @@ export const CategorizeInboxHero = () => {
         defaultInstrument
     );
     const worthText = isDefined(worthAmount) ? protectAmount(convertFromMicroUnits(worthAmount), defaultInstrument.symbol) : '';
-    const subtitle = isDefined(worthAmount) ? t`to sort, worth ${worthText}` : t`to sort`;
+    const countText = t({ message: plural(remainingCount, { one: 'payment to sort', other: 'payments to sort' }) });
+    const subtitle = isDefined(worthAmount) ? `${countText} · ${worthText}` : countText;
 
     return (
-        <View className="gap-y-xl pb-5xl pt-xl">
-            <Text numberOfLines={2}>
+        <View className="gap-y-xl pb-xl pt-xl">
+            <View>
                 <Text className="text-6xl font-bold tracking-tight text-primary tabular-nums">{remainingCount}</Text>
-                <Text className="text-md text-secondary-foreground">{` ${subtitle}`}</Text>
-            </Text>
+                <Text className="text-sm text-secondary-foreground" numberOfLines={1}>
+                    {subtitle}
+                </Text>
+            </View>
 
             <View className="gap-y-md">
                 <CategorizeInboxPileBar />

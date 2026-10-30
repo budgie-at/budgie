@@ -11,10 +11,10 @@ export const CategorizeInboxDayLabel = ({ day }: Props) => {
 
     return (
         <View>
-            <Text className="text-primary text-lg font-semibold leading-tight tabular-nums" numberOfLines={1}>
+            <Text className="text-primary text-md font-semibold tabular-nums" numberOfLines={1}>
                 {intl.formatDate(day, { day: 'numeric' })}
             </Text>
-            <Text className="text-secondary-foreground text-xxs uppercase" numberOfLines={1}>
+            <Text className="text-secondary-foreground text-xs" numberOfLines={1}>
                 {intl.formatDate(day, { weekday: 'short' })}
             </Text>
         </View>
