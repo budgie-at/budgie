@@ -14,14 +14,7 @@ import {
     TestLayer
 } from '../../harness';
 
-const OPTIONAL_ENDPOINTS = [
-    'lockedEarnRewards',
-    'ethStakingRewards',
-    'solStakingRewards',
-    'dividends',
-    'dustLogs',
-    'universalTransfers'
-] as const;
+const OPTIONAL_ENDPOINTS = ['lockedEarnRewards', 'ethStakingRewards', 'dividends', 'dustLogs', 'universalTransfers'] as const;
 
 const PRODUCT_ERRORS = [
     { label: 'a product-not-enabled API error', respond: () => binanceErrorResponse.apiError(-9000, 'Product is not enabled.') },

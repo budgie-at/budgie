@@ -64,7 +64,6 @@ export const setupBinanceFixture = (options: SetupBinanceFixtureOptions = {}) =>
         binanceStub.earnRewards([]);
         binanceStub.lockedEarnRewards([]);
         binanceStub.ethStakingRewards([]);
-        binanceStub.solStakingRewards([]);
         binanceStub.dividends([]);
         binanceStub.dustLogs([]);
 

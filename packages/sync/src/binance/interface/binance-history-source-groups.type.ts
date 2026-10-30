@@ -3,8 +3,7 @@ import type { BinanceHistorySourceEnum } from '../enum/binance-history-source.en
 export type BinanceRewardHistorySourceType =
     | BinanceHistorySourceEnum.EARN
     | BinanceHistorySourceEnum.ETH_STAKING
-    | BinanceHistorySourceEnum.LOCKED_EARN
-    | BinanceHistorySourceEnum.SOL_STAKING;
+    | BinanceHistorySourceEnum.LOCKED_EARN;
 
 export type BinanceTransactionHistorySourceType = Exclude<
     BinanceHistorySourceEnum,

@@ -44,17 +44,6 @@ const rewardCases = [
                 buildBinance.stakingReward({ asset: 'BETH', amount: '0.25', time: secondTime })
             ]);
         }
-    },
-    {
-        name: 'SOL staking rewards',
-        asset: 'BNSOL',
-        idPrefix: 'binance:sol-staking',
-        stub: (firstTime: number, secondTime: number) => {
-            binanceStub.solStakingRewards([
-                buildBinance.stakingReward({ amount: '0.5', time: firstTime }),
-                buildBinance.stakingReward({ amount: '0.25', time: secondTime })
-            ]);
-        }
     }
 ];
 

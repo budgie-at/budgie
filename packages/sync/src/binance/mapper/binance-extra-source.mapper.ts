@@ -27,8 +27,7 @@ const DEBITED_DIVIDEND_DIRECTION = -1;
 const EARN_REWARD_KIND_LABELS: Record<BinanceEarnRewardKindEnum, { readonly idPrefix: string; readonly label: string }> = {
     [BinanceEarnRewardKindEnum.FLEXIBLE]: { idPrefix: 'binance:earn', label: 'Earn reward' },
     [BinanceEarnRewardKindEnum.LOCKED]: { idPrefix: 'binance:earn-locked', label: 'Locked Earn reward' },
-    [BinanceEarnRewardKindEnum.ETH_STAKING]: { idPrefix: 'binance:eth-staking', label: 'ETH staking reward' },
-    [BinanceEarnRewardKindEnum.SOL_STAKING]: { idPrefix: 'binance:sol-staking', label: 'SOL staking reward' }
+    [BinanceEarnRewardKindEnum.ETH_STAKING]: { idPrefix: 'binance:eth-staking', label: 'ETH staking reward' }
 };
 
 const buildEarnDayKey = (timeMs: number): string => {

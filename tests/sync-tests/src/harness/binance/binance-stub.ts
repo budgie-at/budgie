@@ -44,15 +44,14 @@ const LOCKED_EARN_POSITION_URL = `${BASE_URL}/sapi/v1/simple-earn/locked/positio
 const EARN_REWARDS_URL = `${BASE_URL}/sapi/v1/simple-earn/flexible/history/rewardsRecord`;
 const LOCKED_EARN_REWARDS_URL = `${BASE_URL}/sapi/v1/simple-earn/locked/history/rewardsRecord`;
 const ETH_STAKING_REWARDS_URL = `${BASE_URL}/sapi/v1/eth-staking/eth/history/rewardsHistory`;
-const SOL_STAKING_REWARDS_URL = `${BASE_URL}/sapi/v1/sol-staking/sol/history/rewardsHistory`;
 const DUST_LOG_URL = `${BASE_URL}/sapi/v1/asset/dribblet`;
 const DIVIDEND_URL = `${BASE_URL}/sapi/v1/asset/assetDividend`;
 const UNIVERSAL_TRANSFER_URL = `${BASE_URL}/sapi/v1/asset/transfer`;
 const FAILABLE_ENDPOINT_URLS = {
     c2cOrders: C2C_ORDERS_URL,
+    earnRewards: EARN_REWARDS_URL,
     lockedEarnRewards: LOCKED_EARN_REWARDS_URL,
     ethStakingRewards: ETH_STAKING_REWARDS_URL,
-    solStakingRewards: SOL_STAKING_REWARDS_URL,
     dividends: DIVIDEND_URL,
     dustLogs: DUST_LOG_URL,
     universalTransfers: UNIVERSAL_TRANSFER_URL
@@ -448,9 +447,6 @@ export const binanceStub = {
     },
     ethStakingRewards: (rewards: BinanceStakingRewardApiInterface[]): void => {
         stubTimedEarnPage(ETH_STAKING_REWARDS_URL, rewards);
-    },
-    solStakingRewards: (rewards: BinanceStakingRewardApiInterface[]): void => {
-        stubTimedEarnPage(SOL_STAKING_REWARDS_URL, rewards);
     },
     dividends: (dividends: BinanceDividendApiInterface[]): void => {
         stubWindowed({

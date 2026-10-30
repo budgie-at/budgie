@@ -16,12 +16,14 @@ import { BaseSyncProviderClient } from '../../core/client/base-sync-provider.cli
 import {
     HTTP_STATUS_FORBIDDEN,
     HTTP_STATUS_IM_A_TEAPOT,
+    HTTP_STATUS_NOT_FOUND,
     HTTP_STATUS_TOO_MANY_REQUESTS,
     HTTP_STATUS_UNAVAILABLE_FOR_LEGAL_REASONS
 } from '../../core/constant/http-status.constant';
 import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { SyncDeferredError } from '../../core/error/sync-deferred.error';
 import { SyncInvalidResponseError } from '../../core/error/sync-invalid-response.error';
+import { SyncNetworkError } from '../../core/error/sync-network.error';
 import { SyncRateLimitedError } from '../../core/error/sync-rate-limited.error';
 import { SyncRegionUnavailableError } from '../../core/error/sync-region-unavailable.error';
 import { SyncUnauthorizedError } from '../../core/error/sync-unauthorized.error';
@@ -118,7 +120,6 @@ const LOCKED_EARN_POSITION_ENDPOINT = '/sapi/v1/simple-earn/locked/position';
 const EARN_REWARDS_ENDPOINT = '/sapi/v1/simple-earn/flexible/history/rewardsRecord';
 const LOCKED_EARN_REWARDS_ENDPOINT = '/sapi/v1/simple-earn/locked/history/rewardsRecord';
 const ETH_STAKING_REWARDS_ENDPOINT = '/sapi/v1/eth-staking/eth/history/rewardsHistory';
-const SOL_STAKING_REWARDS_ENDPOINT = '/sapi/v1/sol-staking/sol/history/rewardsHistory';
 const DIVIDEND_ENDPOINT = '/sapi/v1/asset/assetDividend';
 const DUST_LOG_ENDPOINT = '/sapi/v1/asset/dribblet';
 const API_RESTRICTIONS_ENDPOINT = '/sapi/v1/account/apiRestrictions';
@@ -149,7 +150,6 @@ const DUST_MAX_PERIOD_MS = 7_776_000_000;
 const DUST_ROWS_LIMIT = 100;
 const DUST_ACCOUNT_TYPE = 'SPOT';
 const ETH_STAKING_REWARD_ASSET = 'BETH';
-const SOL_STAKING_REWARD_ASSET = 'BNSOL';
 const EARN_REWARD_TYPE_ALL = 'ALL';
 const EARN_PAGE_SIZE = 100;
 const TRADES_PER_SYMBOL_LIMIT = 1000;
@@ -321,6 +321,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     private arePartialWalksAllowed = false;
     private deferredFrontierMs: number | null = null;
     private readonly unavailableSources = new Set<BinanceHistorySourceEnum>();
+    private sourceFailure: SyncNetworkError | SyncInvalidResponseError | null = null;
     private readonly limitedHistoryFloorTimeMs = subMonths(new Date(), BinanceSignedClient.LIMITED_HISTORY_MONTHS).getTime();
     private readonly capitalPendingFloorTimeMs = subDays(new Date(), BinanceSignedClient.CAPITAL_PENDING_MAX_AGE_DAYS).getTime();
     private serverTimeOffsetMs: number | null = null;
@@ -366,14 +367,6 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             schema: BinanceStakingRewardListApiSchema,
             params: {},
             normalize: row => ({ asset: row.asset ?? ETH_STAKING_REWARD_ASSET, rewards: row.amount, time: row.time })
-        }),
-        [BinanceHistorySourceEnum.SOL_STAKING]: this.defineRewardSource({
-            kind: BinanceEarnRewardKindEnum.SOL_STAKING,
-            isOptional: true,
-            endpoint: SOL_STAKING_REWARDS_ENDPOINT,
-            schema: BinanceStakingRewardListApiSchema,
-            params: {},
-            normalize: row => ({ asset: row.asset ?? SOL_STAKING_REWARD_ASSET, rewards: row.amount, time: row.time })
         })
     };
 
@@ -410,8 +403,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         },
         [BinanceHistorySourceEnum.EARN]: this.defineRewardTransactions(BinanceHistorySourceEnum.EARN),
         [BinanceHistorySourceEnum.LOCKED_EARN]: this.defineRewardTransactions(BinanceHistorySourceEnum.LOCKED_EARN),
-        [BinanceHistorySourceEnum.ETH_STAKING]: this.defineRewardTransactions(BinanceHistorySourceEnum.ETH_STAKING),
-        [BinanceHistorySourceEnum.SOL_STAKING]: this.defineRewardTransactions(BinanceHistorySourceEnum.SOL_STAKING)
+        [BinanceHistorySourceEnum.ETH_STAKING]: this.defineRewardTransactions(BinanceHistorySourceEnum.ETH_STAKING)
     };
 
     private readonly fetchCapitalSources = Effect.fn('BinanceSignedClient.fetchCapitalSources')(function* (
@@ -592,6 +584,29 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return Object.fromEntries(this.runSymbolTradeCursors);
     }
 
+    hasSourceFailure(): boolean {
+        return isDefined(this.sourceFailure);
+    }
+
+    failWithSourceFailure(): Effect.Effect<void, SyncNetworkError | SyncInvalidResponseError> {
+        return Effect.suspend(() => {
+            const { sourceFailure } = this;
+            this.sourceFailure = null;
+
+            return isDefined(sourceFailure) ? Effect.fail(sourceFailure) : Effect.void;
+        });
+    }
+
+    isolateSourceFailure<E, R>(effect: Effect.Effect<number, E, R>) {
+        return effect.pipe(
+            Effect.catch(error =>
+                error instanceof SyncNetworkError || error instanceof SyncInvalidResponseError
+                    ? this.recordSourceFailure(error)
+                    : Effect.fail(error)
+            )
+        );
+    }
+
     isSourceSkipped(source: BinanceHistorySourceEnum): boolean {
         return this.unavailableSources.has(source);
     }
@@ -656,6 +671,8 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
                 return this.buildRateLimitedError(message, headers, BINANCE_BLOCK_BACKOFF_MS);
             case HTTP_STATUS_TOO_MANY_REQUESTS:
                 return this.buildRateLimitedError(message, headers, null);
+            case HTTP_STATUS_NOT_FOUND:
+                return new SyncInvalidResponseError({ provider, message, apiCode: status });
             default:
                 return super.classifyApiError(status, message, apiCode, headers);
         }
@@ -969,6 +986,14 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             })),
             effect => this.skipWhenUnavailable(BinanceHistorySourceEnum.C2C, { rows: [], hasMore: false }, effect)
         );
+    }
+
+    private recordSourceFailure(error: SyncNetworkError | SyncInvalidResponseError) {
+        return Effect.sync(() => {
+            this.sourceFailure ??= error;
+
+            return 0;
+        });
     }
 
     private skipWhenUnavailable<A, R>(

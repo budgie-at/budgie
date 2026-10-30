@@ -66,7 +66,6 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
         const newHistorySources = new Set([
             BinanceHistorySourceEnum.LOCKED_EARN,
             BinanceHistorySourceEnum.ETH_STAKING,
-            BinanceHistorySourceEnum.SOL_STAKING,
             BinanceHistorySourceEnum.DIVIDEND,
             BinanceHistorySourceEnum.DUST
         ]);
@@ -326,7 +325,6 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 [BinanceHistorySourceEnum.EARN, updateExisting],
                 [BinanceHistorySourceEnum.LOCKED_EARN, updateExisting],
                 [BinanceHistorySourceEnum.ETH_STAKING, updateExisting],
-                [BinanceHistorySourceEnum.SOL_STAKING, updateExisting],
                 [BinanceHistorySourceEnum.DIVIDEND, createOnly]
             ] as const;
             const historySources = [
@@ -352,7 +350,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             ];
             let committedCount = 0;
             for (const { source, run: runSource } of historySources) {
-                committedCount += yield* syncHistorySource(sync, token, source, runSource);
+                committedCount += yield* client.isolateSourceFailure(syncHistorySource(sync, token, source, runSource));
             }
 
             return committedCount;
@@ -366,7 +364,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             const changedCount = yield* syncHistorySource(sync, token, BinanceHistorySourceEnum.FIAT, (fromUnixTime, toUnixTime) =>
                 commitFiatRange(token, fromUnixTime, toUnixTime)
             );
-            if (!isRunDeferred()) {
+            if (!isRunDeferred() && !getRunSignedClient(token).hasSourceFailure()) {
                 patchTokenRun(token, { sourcesSynced: true });
             }
 
@@ -460,6 +458,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                     yield* accountBalanceIncrementalService.updateAllBalances(true);
                     yield* syncWorkload.enqueueTransferConsolidation();
                 }
+                yield* getRunSignedClient(token).failWithSourceFailure();
 
                 const progressDate = isRunDeferred() ? (sync.backwardSyncFromAt ?? sync.forwardSyncFromAt ?? new Date()) : new Date();
 

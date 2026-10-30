@@ -3,7 +3,6 @@ export enum BinanceHistorySourceEnum {
     EARN = 'EARN',
     LOCKED_EARN = 'LOCKED_EARN',
     ETH_STAKING = 'ETH_STAKING',
-    SOL_STAKING = 'SOL_STAKING',
     DIVIDEND = 'DIVIDEND',
     CAPITAL = 'CAPITAL',
     CONVERT = 'CONVERT',

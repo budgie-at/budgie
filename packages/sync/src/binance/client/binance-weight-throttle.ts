@@ -29,7 +29,6 @@ export class BinanceWeightThrottle {
         ['/sapi/v1/simple-earn/flexible/history/rewardsRecord', { ...BinanceWeightThrottle.SAPI_IP, weight: 150 }],
         ['/sapi/v1/simple-earn/locked/history/rewardsRecord', { ...BinanceWeightThrottle.SAPI_IP, weight: 150 }],
         ['/sapi/v1/eth-staking/eth/history/rewardsHistory', { ...BinanceWeightThrottle.SAPI_IP, weight: 150 }],
-        ['/sapi/v1/sol-staking/sol/history/rewardsHistory', { ...BinanceWeightThrottle.SAPI_IP, weight: 150 }],
         ['/sapi/v1/asset/assetDividend', { ...BinanceWeightThrottle.SAPI_IP, weight: 10 }]
     ]);
 

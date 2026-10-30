@@ -20,8 +20,7 @@ const AMOUNT_TOLERANCE = 1e-8;
 const WITHDRAWAL_COMPLETED_STATUS = 6;
 const REWARD_ENDPOINTS = [
     { name: 'locked-rewards', endpoint: '/sapi/v1/simple-earn/locked/history/rewardsRecord' },
-    { name: 'eth-staking-rewards', endpoint: '/sapi/v1/eth-staking/eth/history/rewardsHistory' },
-    { name: 'sol-staking-rewards', endpoint: '/sapi/v1/sol-staking/sol/history/rewardsHistory' }
+    { name: 'eth-staking-rewards', endpoint: '/sapi/v1/eth-staking/eth/history/rewardsHistory' }
 ];
 
 const apiKey = process.env['BINANCE_API_KEY'] ?? '';
