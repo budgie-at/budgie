@@ -1,30 +1,27 @@
-import Animated, { Extrapolation, interpolate, useAnimatedStyle, useReducedMotion } from 'react-native-reanimated';
+import { useState } from 'react';
+import Animated, { Extrapolation, interpolate, useAnimatedStyle } from 'react-native-reanimated';
 
-import { useScreenChromeScrollY } from '@rnw-community/react-native-screen-chrome';
+import { useScreenChrome, useScreenChromeScrollY } from '@rnw-community/react-native-screen-chrome';
 
 import type { ReactNode } from 'react';
+import type { LayoutChangeEvent } from 'react-native';
 
 interface Props {
-    readonly revealOffset: number;
     readonly children: ReactNode;
 }
 
-const HERO_COLLAPSED_SCALE = 0.96;
-
-export const TransactionInfoHeroFade = ({ revealOffset, children }: Props) => {
+export const TransactionInfoHeroFade = ({ children }: Props) => {
     const scrollY = useScreenChromeScrollY();
-    const reducedMotion = useReducedMotion();
-    const heroStyle = useAnimatedStyle(() => {
-        const progress = interpolate(scrollY.get(), [revealOffset, revealOffset + 32], [0, 1], Extrapolation.CLAMP);
-
-        return {
-            opacity: 1 - progress,
-            transform: [{ scale: reducedMotion ? 1 : interpolate(progress, [0, 1], [1, HERO_COLLAPSED_SCALE]) }]
-        };
-    });
+    const { config } = useScreenChrome();
+    const [fadeEnd, setFadeEnd] = useState(Number.MAX_SAFE_INTEGER);
+    const handleLayout = (event: LayoutChangeEvent) => void setFadeEnd(event.nativeEvent.layout.y);
+    const fadeStart = Math.max(0, fadeEnd - config.headerHeight);
+    const heroStyle = useAnimatedStyle(() => ({
+        opacity: interpolate(scrollY.get(), [fadeStart, fadeEnd], [1, 0], Extrapolation.CLAMP)
+    }));
 
     return (
-        <Animated.View className="items-center pt-3xl pb-7xl" style={heroStyle}>
+        <Animated.View onLayout={handleLayout} style={heroStyle}>
             {children}
         </Animated.View>
     );

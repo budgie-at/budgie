@@ -91,14 +91,17 @@ appId: ${APP_ID}
     id: 'TransactionActionsMenu.CreateRuleButton'
 - assertVisible:
     id: 'TransactionActionsMenu.AttachDebtSettlementButton'
+- tapOn:
+    id: 'TransactionInfo.ConvertButton'
 - assertVisible:
-    id: 'TransactionActionsMenu.ConvertToRefundButton'
+    text: 'Convert to Refund'
 - assertVisible:
-    id: 'TransactionActionsMenu.ConvertToTransferButton'
+    text: 'Convert to Transfer'
 - assertNotVisible:
-    id: 'TransactionActionsMenu.StartDepositButton'
-- assertNotVisible:
-    id: 'TransactionActionsMenu.RevertButton'
+    text: 'Start Deposit'
+
+- tapOn:
+    text: 'Cancel'
 - tapOn:
     id: 'TransactionActionsMenu.FeeButton'
 - extendedWaitUntil:

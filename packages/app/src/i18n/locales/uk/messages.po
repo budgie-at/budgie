@@ -1263,6 +1263,7 @@ msgstr "Може тривати годинами"
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+#: src/transaction/components/transaction-info-convert-row/transaction-info-convert-row.tsx
 #: src/transaction/hook/use-convert-to-refund-action.hook.ts
 #: src/transaction/hook/use-delete-transaction.hook.ts
 #: src/transaction/hook/use-revert-consolidation.hook.ts
@@ -1577,7 +1578,6 @@ msgstr "Помилка конвертації"
 
 #: src/app/convert-to-transfer.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
-#: src/transaction/components/transaction-info-actions-group/transaction-info-actions-group.tsx
 #: src/transaction/hook/use-convert-to-refund-action.hook.ts
 msgid "Convert"
 msgstr "Конвертувати"
@@ -1601,6 +1601,10 @@ msgstr "Перетворити на переказ"
 #: src/app/convert-to-transfer.tsx
 msgid "Convert to Transfer?"
 msgstr "Конвертувати у переказ?"
+
+#: src/transaction/components/transaction-info-convert-row/transaction-info-convert-row.tsx
+msgid "Convert…"
+msgstr "Перетворити…"
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Copy the API Key and Secret Key into the fields below"
@@ -3482,6 +3486,10 @@ msgstr "Monobank відхилив цей ключ. Перевірте його �
 msgid "Monobank sends about one month of history per minute, for each account you selected."
 msgstr "Monobank надсилає близько одного місяця історії за хвилину для кожного вибраного рахунку."
 
+#: src/transaction/components/transaction-info-installment-terms/transaction-info-installment-terms.tsx
+msgid "Monthly"
+msgstr "Щомісяця"
+
 #: src/budget/components/budget-period-summary/budget-period-summary.tsx
 #: src/budget/components/budget-widget-card/budget-widget-card.tsx
 msgid "Monthly budget"
@@ -3873,6 +3881,10 @@ msgstr "Увімкнено · PIN-код"
 msgid "On · PIN and {biometricLabel}"
 msgstr "Увімкнено · PIN-код і {biometricLabel}"
 
+#: src/transaction/components/transaction-info-installment-terms/transaction-info-installment-terms.tsx
+msgid "On {nextDate} · Monthly"
+msgstr "{nextDate} · Щомісяця"
+
 #: src/budget/components/budget-verdict-outlook/budget-verdict-outlook.tsx
 msgid "On pace to finish {differenceAmount} under."
 msgstr "За поточного темпу ви закінчите на {differenceAmount} нижче ліміту."
@@ -4038,10 +4050,6 @@ msgstr "Організуйте витрати по-своєму"
 #: src/app/(tabs)/settings/index.tsx
 msgid "Organization"
 msgstr "Організація"
-
-#: src/transaction/components/transaction-info-actions-group/transaction-info-actions-group.tsx
-msgid "Organize"
-msgstr "Упорядкувати"
 
 #: src/transaction/hook/use-delete-transaction.hook.ts
 msgid "Original imported transactions will be restored and the consolidated transaction will be removed."
@@ -4455,11 +4463,6 @@ msgid "Recurring payments will appear here once patterns are detected from your 
 msgstr "Повторювані платежі з’являться тут, щойно в ваших транзакціях буде виявлено закономірності"
 
 #: src/transaction/components/refund-transaction-info-content/refund-transaction-info-content.tsx
-msgid "Refund"
-msgstr "Повернення"
-
-#: src/transaction/components/refund-transaction-info-content/refund-transaction-info-content.tsx
-#: src/transaction/components/transaction-info-refund-summary/transaction-info-refund-summary.tsx
 msgid "Refund of {merchant} · {original}"
 msgstr "Повернення за {merchant} · {original}"
 
@@ -4470,6 +4473,10 @@ msgstr "Повернено"
 #: src/transaction/hook/use-refunded-label.hook.ts
 msgid "Refunded {formattedRefundedAmount}"
 msgstr "Повернено {formattedRefundedAmount}"
+
+#: src/transaction/components/transaction-info-refund-summary/transaction-info-refund-summary.tsx
+msgid "Refunds received"
+msgstr "Отримані відшкодування"
 
 #: src/sync/component/bank-integration-key-card/bank-integration-key-card.tsx
 msgid "Rejected · tap to update"
@@ -4500,6 +4507,10 @@ msgstr "Видалити комісію"
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 msgid "Remove fee?"
 msgstr "Видалити комісію?"
+
+#: src/transaction/components/transaction-info-delete-row/transaction-info-delete-row.tsx
+msgid "Remove refund"
+msgstr "Від’єднати відшкодування"
 
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 msgid "Remove split"
@@ -5818,7 +5829,7 @@ msgstr "У межах ліміту"
 msgid "Undo"
 msgstr "Скасувати"
 
-#: src/transaction/components/transaction-info-actions-group/transaction-info-actions-group.tsx
+#: src/transaction/components/transaction-info-refund-summary/transaction-info-refund-summary.tsx
 msgid "Undo refund"
 msgstr "Скасувати повернення"
 

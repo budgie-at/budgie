@@ -14,17 +14,9 @@ appId: ${APP_ID}
     visible:
       id: 'TransactionInfo.Page'
     timeout: 10000
-- scrollUntilVisible:
-    element:
-      id: 'TransactionActionsMenu.ConvertToRefundButton'
-    direction: DOWN
-    centerElement: true
-- extendedWaitUntil:
-    visible:
-      id: 'TransactionActionsMenu.ConvertToRefundButton'
-    timeout: 3000
+- runFlow: subflows/transactions/open-info-conversions.flow.yaml
 - tapOn:
-    id: 'TransactionActionsMenu.ConvertToRefundButton'
+    text: 'Convert to Refund'
 - extendedWaitUntil:
     visible:
       id: 'ConvertToRefund.Page'
@@ -65,19 +57,13 @@ appId: ${APP_ID}
     timeout: 10000
 - extendedWaitUntil:
     notVisible:
-      id: 'TransactionInfo.RefundedPill'
+      id: 'TransactionInfo.Row.RefundSummary'
     timeout: 10000
-- scrollUntilVisible:
-    element:
-      id: 'TransactionActionsMenu.ConvertToTransferButton'
-    direction: DOWN
-    centerElement: true
-- extendedWaitUntil:
-    visible:
-      id: 'TransactionActionsMenu.ConvertToTransferButton'
-    timeout: 3000
+- runFlow: subflows/transactions/open-info-conversions.flow.yaml
 - assertVisible:
-    id: 'TransactionActionsMenu.ConvertToRefundButton'
+    text: 'Convert to Refund'
+- tapOn:
+    text: 'Cancel'
 - scrollUntilVisible:
     element:
       id: 'TransactionInfo.Amount'

@@ -25,7 +25,7 @@ interface Props {
 const contentVariants = cva('flex-1 min-w-0 gap-x-xl gap-y-xs', {
     variants: {
         largeText: {
-            true: 'items-start',
+            true: 'items-start self-stretch',
             false: 'flex-row items-center'
         }
     }
@@ -34,17 +34,23 @@ const contentVariants = cva('flex-1 min-w-0 gap-x-xl gap-y-xs', {
 export const TransactionInfoRow = (props: Props) => {
     const { icon, label, value, description, trailing, valueClassName, testID, onPress } = props;
     const { fontScale } = useWindowDimensions();
+    const largeText = fontScale > TRANSACTION_INFO_STACKED_FONT_SCALE;
+    const iconSize = 22 * fontScale;
+    const chevronSize = 20 * Math.min(fontScale, TRANSACTION_INFO_STACKED_FONT_SCALE);
+    const showChevron = isDefined(onPress) && !largeText;
     const accessibilityLabel = [label, value, description, trailing].filter(isNotEmptyString).join(', ');
     const rowContent = (
         <>
             <View className="absolute top-0 right-0 left-[56px] h-hairline bg-surface-separator" pointerEvents="none" />
 
-            <View className="h-[28px] w-[28px] items-center justify-center">
-                <Icon icon={icon} size={22} className="text-secondary-foreground" />
-            </View>
+            {largeText ? null : (
+                <View className="h-[28px] w-[28px] items-center justify-center">
+                    <Icon icon={icon} size={iconSize} className="text-secondary-foreground" />
+                </View>
+            )}
 
-            <View className={contentVariants({ largeText: fontScale > TRANSACTION_INFO_STACKED_FONT_SCALE })}>
-                <View className="flex-1 min-w-0">
+            <View className={contentVariants({ largeText })}>
+                <View className="self-stretch min-w-0 shrink">
                     {isNotEmptyString(label) ? <Text className="text-[13px] leading-[18px] text-secondary-foreground">{label}</Text> : null}
                     {isNotEmptyString(value) ? (
                         <Text className={cn('text-[17px] leading-[22px] text-primary font-medium', valueClassName)} selectable>
@@ -65,7 +71,7 @@ export const TransactionInfoRow = (props: Props) => {
                 ) : null}
             </View>
 
-            {isDefined(onPress) ? <Icon icon={UserIconNameEnum.ChevronRight} size={20} className="text-secondary-foreground" /> : null}
+            {showChevron ? <Icon icon={UserIconNameEnum.ChevronRight} size={chevronSize} className="text-secondary-foreground" /> : null}
         </>
     );
     const rowClassName = 'min-h-[56px] flex-row items-center gap-x-xl px-3xl py-xl';

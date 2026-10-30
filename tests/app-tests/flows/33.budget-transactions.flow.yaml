@@ -180,17 +180,9 @@ env:
       visible:
           id: 'TransactionInfo.Page'
       timeout: 10000
-- scrollUntilVisible:
-    element:
-      id: 'TransactionActionsMenu.ConvertToRefundButton'
-    direction: DOWN
-    centerElement: true
-- extendedWaitUntil:
-      visible:
-          id: 'TransactionActionsMenu.ConvertToRefundButton'
-      timeout: 3000
+- runFlow: subflows/transactions/open-info-conversions.flow.yaml
 - tapOn:
-      id: 'TransactionActionsMenu.ConvertToRefundButton'
+    text: 'Convert to Refund'
 - extendedWaitUntil:
       visible:
           id: 'ConvertToRefund.Page'
@@ -209,7 +201,7 @@ env:
       index: 0
 - extendedWaitUntil:
       visible:
-          id: 'TransactionInfo.RefundedPill'
+          id: 'TransactionInfo.Row.RefundSummary'
       timeout: 10000
 
 - tapOn:

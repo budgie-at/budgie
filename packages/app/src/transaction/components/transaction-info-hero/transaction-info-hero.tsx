@@ -1,5 +1,5 @@
 import { AmountField, AmountFieldText } from '@budgie/amount-input';
-import { TransactionConsolidationTypeEnum, TransactionTypeEnum, convertFromMicroUnits } from '@budgie/contracts';
+import { TransactionTypeEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
@@ -18,7 +18,6 @@ import { getTransactionType } from '../../utils/get-transaction-type.util';
 import { TransactionInfoHeroFade } from '../transaction-info-hero-fade/transaction-info-hero-fade';
 import { TransactionInfoHeroIcon } from '../transaction-info-hero-icon/transaction-info-hero-icon';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
-import { TransactionInfoRefundedPill } from '../transaction-info-refunded-pill/transaction-info-refunded-pill';
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import type { LayoutChangeEvent } from 'react-native';
@@ -26,12 +25,10 @@ import type { LayoutChangeEvent } from 'react-native';
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly matchingRuleIds: readonly number[];
-    readonly onOpenRefundSources?: () => void;
-    readonly revealOffset: number;
     readonly onTitleLayout: (event: LayoutChangeEvent) => void;
 }
 
-export const TransactionInfoHero = ({ transaction, matchingRuleIds, onOpenRefundSources, onTitleLayout, revealOffset }: Props) => {
+export const TransactionInfoHero = ({ transaction, matchingRuleIds, onTitleLayout }: Props) => {
     const { t } = useLingui();
     const formatDigits = useProtectedAmountLabel();
     const { formatWeekdayAndDateWithTime } = useFormatDate();
@@ -49,22 +46,22 @@ export const TransactionInfoHero = ({ transaction, matchingRuleIds, onOpenRefund
         isCrossCurrency && isDefined(destinationEntry)
             ? `→ ${formatDigits(convertFromMicroUnits(destinationEntry.amount), destinationEntry.account.instrument.symbol)}`
             : null;
-    const showRefundedPill = transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND;
-    const showPills = showRefundedPill || isNotEmptyArray(matchingRuleIds);
 
     return (
-        <TransactionInfoHeroFade revealOffset={revealOffset}>
-            <TransactionInfoHeroIcon transaction={transaction} />
+        <View className="items-center pt-3xl pb-5xl">
+            <TransactionInfoHeroFade>
+                <TransactionInfoHeroIcon transaction={transaction} />
+            </TransactionInfoHeroFade>
 
-            <View
-                onLayout={onTitleLayout}
-                accessible
-                accessibilityLabel={formattedAmount}
-                testID={TransactionInfoPageSelector.Amount}
-                className="mt-xl self-stretch"
-            >
+            <View onLayout={onTitleLayout} className="mt-xl self-stretch">
                 <AmountField fontSize={40} className="self-stretch">
-                    <AmountFieldText className={cn('leading-[48px] font-semibold tracking-[-1px] text-center', amountClassName)} selectable>
+                    <AmountFieldText
+                        adjustsFontSizeToFit
+                        minimumFontScale={0.4}
+                        testID={TransactionInfoPageSelector.Amount}
+                        className={cn('leading-[48px] font-semibold tracking-[-1px] text-center', amountClassName)}
+                        selectable
+                    >
                         {formattedAmount}
                     </AmountFieldText>
                 </AmountField>
@@ -76,32 +73,24 @@ export const TransactionInfoHero = ({ transaction, matchingRuleIds, onOpenRefund
                 </Text>
             ) : null}
 
-            {isNotEmptyString(title) ? (
-                <Text className="mt-xs text-[20px] leading-[25px] text-primary font-semibold text-center" selectable>
-                    {title}
+            <View>
+                {isNotEmptyString(title) ? (
+                    <Text className="mt-xs text-[20px] leading-[25px] text-primary font-semibold text-center" selectable>
+                        {title}
+                    </Text>
+                ) : null}
+            </View>
+            <View>
+                <Text className="mt-sm text-[15px] leading-[20px] text-secondary-foreground text-center">
+                    {formatWeekdayAndDateWithTime(transaction.operatedAt)}
                 </Text>
-            ) : null}
+            </View>
 
-            <Text className="mt-sm text-[15px] leading-[20px] text-secondary-foreground text-center">
-                {formatWeekdayAndDateWithTime(transaction.operatedAt)}
-            </Text>
-
-            {showPills ? (
+            {isNotEmptyArray(matchingRuleIds) ? (
                 <View className="mt-xl flex-row flex-wrap items-center justify-center gap-sm">
-                    {showRefundedPill ? (
-                        <TransactionInfoRefundedPill
-                            key={`${transaction.id}-${transaction.consolidationType}`}
-                            transaction={transaction}
-                            onPress={onOpenRefundSources}
-                            testID={TransactionInfoPageSelector.RefundedPill}
-                        />
-                    ) : null}
-
-                    {isNotEmptyArray(matchingRuleIds) ? (
-                        <MatchingRulesPill matchingRulesCount={matchingRuleIds.length} matchingRuleIds={matchingRuleIds} />
-                    ) : null}
+                    <MatchingRulesPill matchingRulesCount={matchingRuleIds.length} matchingRuleIds={matchingRuleIds} />
                 </View>
             ) : null}
-        </TransactionInfoHeroFade>
+        </View>
     );
 };

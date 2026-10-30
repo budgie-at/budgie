@@ -29,7 +29,7 @@ export const TransactionInfoDebtProgress = ({ account }: Props) => {
 
     return (
         <TransactionInfoRow
-            icon={UserIconNameEnum.HandCoins}
+            icon={UserIconNameEnum.Scale}
             label={t`Outstanding`}
             value={outstanding}
             description={t`Paid to date: ${paid}`}

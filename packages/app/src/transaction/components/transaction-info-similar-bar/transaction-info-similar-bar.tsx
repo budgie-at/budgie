@@ -30,7 +30,7 @@ export const TransactionInfoSimilarBar = ({ accessibilityValue, height, label, v
             style={columnStyle}
         >
             {isNotEmptyString(value) ? (
-                <Text className="text-[11px] leading-[13px] text-secondary-foreground tabular-nums" numberOfLines={1}>
+                <Text className="text-[13px] leading-[18px] text-primary font-medium tabular-nums" numberOfLines={1}>
                     {value}
                 </Text>
             ) : null}

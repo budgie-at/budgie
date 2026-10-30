@@ -69,12 +69,9 @@ export const useSimpleTransactionActionsMenu = ({
 
     const canConvertToRefund =
         transactionType === TransactionTypeEnum.INCOME && !isConsolidated && !isDefined(transaction.consolidationParentTransactionId);
-    const canConvertToTransfer = persistedCategoryEntries.length === 1 && categoryEntryCount === 1;
+    const canConvertToTransfer = !isConsolidated && persistedCategoryEntries.length === 1 && categoryEntryCount === 1;
     const canStartDeposit =
-        canConvertToTransfer &&
-        transactionType === TransactionTypeEnum.EXPENSE &&
-        !isConsolidated &&
-        !isDefined(transaction.consolidationParentTransactionId);
+        canConvertToTransfer && transactionType === TransactionTypeEnum.EXPENSE && !isDefined(transaction.consolidationParentTransactionId);
     const { debtSettlementAccount, hasDebtSettlement } = debtSettlementActions;
 
     const allItems: readonly (TransactionActionsMenuItemInterface | false)[] = [

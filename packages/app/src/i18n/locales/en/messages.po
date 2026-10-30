@@ -1264,6 +1264,7 @@ msgstr "Can take hours"
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+#: src/transaction/components/transaction-info-convert-row/transaction-info-convert-row.tsx
 #: src/transaction/hook/use-convert-to-refund-action.hook.ts
 #: src/transaction/hook/use-delete-transaction.hook.ts
 #: src/transaction/hook/use-revert-consolidation.hook.ts
@@ -1578,7 +1579,6 @@ msgstr "Conversion failed"
 
 #: src/app/convert-to-transfer.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
-#: src/transaction/components/transaction-info-actions-group/transaction-info-actions-group.tsx
 #: src/transaction/hook/use-convert-to-refund-action.hook.ts
 msgid "Convert"
 msgstr "Convert"
@@ -1602,6 +1602,10 @@ msgstr "Convert to Transfer"
 #: src/app/convert-to-transfer.tsx
 msgid "Convert to Transfer?"
 msgstr "Convert to Transfer?"
+
+#: src/transaction/components/transaction-info-convert-row/transaction-info-convert-row.tsx
+msgid "Convert…"
+msgstr "Convert…"
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Copy the API Key and Secret Key into the fields below"
@@ -3483,6 +3487,10 @@ msgstr "Monobank rejected this key. Check it and try again."
 msgid "Monobank sends about one month of history per minute, for each account you selected."
 msgstr "Monobank sends about one month of history per minute, for each account you selected."
 
+#: src/transaction/components/transaction-info-installment-terms/transaction-info-installment-terms.tsx
+msgid "Monthly"
+msgstr "Monthly"
+
 #: src/budget/components/budget-period-summary/budget-period-summary.tsx
 #: src/budget/components/budget-widget-card/budget-widget-card.tsx
 msgid "Monthly budget"
@@ -3874,6 +3882,10 @@ msgstr "On · PIN"
 msgid "On · PIN and {biometricLabel}"
 msgstr "On · PIN and {biometricLabel}"
 
+#: src/transaction/components/transaction-info-installment-terms/transaction-info-installment-terms.tsx
+msgid "On {nextDate} · Monthly"
+msgstr "On {nextDate} · Monthly"
+
 #: src/budget/components/budget-verdict-outlook/budget-verdict-outlook.tsx
 msgid "On pace to finish {differenceAmount} under."
 msgstr "On pace to finish {differenceAmount} under."
@@ -4039,10 +4051,6 @@ msgstr "Organise spending your own way"
 #: src/app/(tabs)/settings/index.tsx
 msgid "Organization"
 msgstr "Organization"
-
-#: src/transaction/components/transaction-info-actions-group/transaction-info-actions-group.tsx
-msgid "Organize"
-msgstr "Organize"
 
 #: src/transaction/hook/use-delete-transaction.hook.ts
 msgid "Original imported transactions will be restored and the consolidated transaction will be removed."
@@ -4456,11 +4464,6 @@ msgid "Recurring payments will appear here once patterns are detected from your 
 msgstr "Recurring payments will appear here once patterns are detected from your transactions"
 
 #: src/transaction/components/refund-transaction-info-content/refund-transaction-info-content.tsx
-msgid "Refund"
-msgstr "Refund"
-
-#: src/transaction/components/refund-transaction-info-content/refund-transaction-info-content.tsx
-#: src/transaction/components/transaction-info-refund-summary/transaction-info-refund-summary.tsx
 msgid "Refund of {merchant} · {original}"
 msgstr "Refund of {merchant} · {original}"
 
@@ -4471,6 +4474,10 @@ msgstr "Refunded"
 #: src/transaction/hook/use-refunded-label.hook.ts
 msgid "Refunded {formattedRefundedAmount}"
 msgstr "Refunded {formattedRefundedAmount}"
+
+#: src/transaction/components/transaction-info-refund-summary/transaction-info-refund-summary.tsx
+msgid "Refunds received"
+msgstr "Refunds received"
 
 #: src/sync/component/bank-integration-key-card/bank-integration-key-card.tsx
 msgid "Rejected · tap to update"
@@ -4501,6 +4508,10 @@ msgstr "Remove fee"
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 msgid "Remove fee?"
 msgstr "Remove fee?"
+
+#: src/transaction/components/transaction-info-delete-row/transaction-info-delete-row.tsx
+msgid "Remove refund"
+msgstr "Remove refund"
 
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 msgid "Remove split"
@@ -5819,7 +5830,7 @@ msgstr "Under limit"
 msgid "Undo"
 msgstr "Undo"
 
-#: src/transaction/components/transaction-info-actions-group/transaction-info-actions-group.tsx
+#: src/transaction/components/transaction-info-refund-summary/transaction-info-refund-summary.tsx
 msgid "Undo refund"
 msgstr "Undo refund"
 

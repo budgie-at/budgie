@@ -59,16 +59,9 @@ appId: ${APP_ID}
 - tapOn:
       id: 'TransactionCard.Label.E2E_Convert_Income'
 
-- scrollUntilVisible:
-    element:
-      id: 'TransactionActionsMenu.ConvertToTransferButton'
-    direction: DOWN
-    centerElement: true
-- extendedWaitUntil:
-      visible:
-          id: 'TransactionActionsMenu.ConvertToTransferButton'
+- runFlow: subflows/transactions/open-info-conversions.flow.yaml
 - tapOn:
-      id: 'TransactionActionsMenu.ConvertToTransferButton'
+    text: 'Convert to Transfer'
 
 - extendedWaitUntil:
       visible:

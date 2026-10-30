@@ -28,12 +28,13 @@ export const TransactionInfoInstallmentTerms = ({ account }: Props) => {
     const { paidCount, installmentCount } = schedule;
     const remaining = formatDigits(convertFromMicroUnits(schedule.remainingAmount), account.instrument.symbol);
     const nextDate = isDefined(schedule.nextDueAt) ? formatMonthAndDay(schedule.nextDueAt) : null;
+    const cadence = isDefined(nextDate) ? t`On ${nextDate} · Monthly` : t`Monthly`;
     const nextAmount = formatDigits(convertFromMicroUnits(schedule.nextAmount ?? 0), account.instrument.symbol);
 
     return (
         <>
             <TransactionInfoRow
-                icon={UserIconNameEnum.CalendarClock}
+                icon={UserIconNameEnum.ChartPie}
                 label={t`Remaining`}
                 value={remaining}
                 description={t`${paidCount} of ${installmentCount} paid`}
@@ -44,7 +45,7 @@ export const TransactionInfoInstallmentTerms = ({ account }: Props) => {
                     icon={UserIconNameEnum.Calendar}
                     label={t`Next payment`}
                     value={nextAmount}
-                    description={nextDate}
+                    description={cadence}
                     testID={TransactionInfoPageSelector.Row.NextPayment}
                 />
             ) : null}

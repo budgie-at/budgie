@@ -271,8 +271,11 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible:
       id: 'TransactionActionsMenu.CreateRuleButton'
+- runFlow: subflows/transactions/open-info-conversions.flow.yaml
 - assertVisible:
-    id: 'TransactionActionsMenu.ConvertToTransferButton'
+    text: 'Convert to Transfer'
+- tapOn:
+    text: 'Cancel'
 - scrollUntilVisible:
     element:
       id: 'TransactionInfo.Amount'

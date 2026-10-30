@@ -34,7 +34,7 @@ export const TransactionInfoSimilarMonthBar = (props: Props) => {
     const value = hasAmount ? formatCompactDigits(amount, currencySymbol) : '0';
     const protectedValue = isAmountProtected ? PROTECTED_AMOUNT_PLACEHOLDER : value;
     const accessibilityValue = hasAmount ? formatDigits(amount, currencySymbol) : '0';
-    const barClassName = month.monthKey === currentMonthKey ? 'bg-default-foreground' : 'bg-secondary-foreground/60';
+    const barClassName = month.monthKey === currentMonthKey ? 'bg-default-foreground' : 'bg-secondary-foreground';
 
     return (
         <TransactionInfoSimilarBar

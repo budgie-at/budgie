@@ -20,8 +20,6 @@ interface Props {
     readonly horizontalInset: number;
 }
 
-const REVEAL_DISTANCE = 32;
-const COMPACT_TITLE_MAX_LENGTH = 60;
 const Z_INDEX_STYLE = { zIndex: 4 };
 
 export const TransactionInfoNavTitle = (props: Props) => {
@@ -31,19 +29,11 @@ export const TransactionInfoNavTitle = (props: Props) => {
     const scrollY = useScreenChromeScrollY();
     const formatDigits = useProtectedAmountLabel();
 
-    const displayTitle =
-        transaction.receipt?.merchantLegalName ??
-        getTransactionDisplayTitle(transaction)
-            .split(/\n| · /u)
-            .at(0) ??
-        '';
-    const title =
-        isNotEmptyString(displayTitle) && displayTitle.length <= COMPACT_TITLE_MAX_LENGTH
-            ? displayTitle
-            : t(TRANSACTION_TYPE[transaction.type]);
+    const displayTitle = getTransactionDisplayTitle(transaction);
+    const title = isNotEmptyString(displayTitle) ? displayTitle : t(TRANSACTION_TYPE[transaction.type]);
     const rowStyle = { height: config.headerHeight };
     const animatedStyle = useAnimatedStyle(() => {
-        const progress = interpolate(scrollY.get(), [revealOffset, revealOffset + REVEAL_DISTANCE], [0, 1], Extrapolation.CLAMP);
+        const progress = interpolate(scrollY.get(), [revealOffset, revealOffset + config.headerHeight], [0, 1], Extrapolation.CLAMP);
 
         return { opacity: progress };
     });

@@ -5,10 +5,12 @@ import { useLingui } from '@lingui/react/macro';
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
+import { useRevertConsolidation } from '../../hook/use-revert-consolidation.hook';
 import { useGetConsolidationSourcesQuery } from '../../query/use-get-consolidation-sources.query';
-import { getTransactionDisplayTitle } from '../../utils/get-transaction-display-title.util';
 import { getTransactionInfoPrimaryEntry } from '../../utils/get-transaction-info-primary-entry.util';
 import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
+import { TransactionActionsMenuSelector } from '../transaction-actions-menu/transaction-actions-menu.selector';
+import { TransactionInfoActionRow } from '../transaction-info-action-row/transaction-info-action-row';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
 import { TransactionInfoRow } from '../transaction-info-row/transaction-info-row';
 
@@ -20,6 +22,7 @@ interface Props {
 
 export const TransactionInfoRefundSummary = ({ transaction }: Props) => {
     const { t } = useLingui();
+    const undoRefund = useRevertConsolidation(transaction.id);
     const formatDigits = useProtectedAmountLabel();
     const { sources } = useGetConsolidationSourcesQuery(transaction.id);
     const purchase = getTransactionInfoPrimaryEntry(transaction);
@@ -35,17 +38,18 @@ export const TransactionInfoRefundSummary = ({ transaction }: Props) => {
             entry => entry.type === TransactionEntryTypeEnum.CREDIT && entry.accountId === purchase.accountId
         )
     );
-    const original = formatDigits(convertFromMicroUnits(originalAmount), purchase.account.instrument.symbol);
-    const refunded = formatDigits(-convertFromMicroUnits(refundedTotal), purchase.account.instrument.symbol);
+    const refunded = formatDigits(convertFromMicroUnits(refundedTotal), purchase.account.instrument.symbol);
     const net = formatDigits(convertFromMicroUnits(originalAmount - refundedTotal), purchase.account.instrument.symbol);
-    const merchant = getTransactionDisplayTitle(transaction);
 
     return (
-        <TransactionInfoRow
-            icon={UserIconNameEnum.RotateCcw}
-            label={t`Refund of ${merchant} · ${original}`}
-            value={t`${refunded} refunded · ${net} net`}
-            testID={TransactionInfoPageSelector.Row.RefundSummary}
-        />
+        <>
+            <TransactionInfoRow
+                icon={UserIconNameEnum.RotateCcw}
+                label={t`Refunds received`}
+                value={t`${refunded} refunded · ${net} net`}
+                testID={TransactionInfoPageSelector.Row.RefundSummary}
+            />
+            <TransactionInfoActionRow label={t`Undo refund`} onPress={undoRefund} testID={TransactionActionsMenuSelector.RevertButton} />
+        </>
     );
 };

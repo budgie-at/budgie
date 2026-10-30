@@ -1,19 +1,22 @@
 import { TransactionEntryTypeEnum, UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
 import { View } from 'react-native';
 
 import { ScreenChromeFrame, ScreenChromeScrollView, useScreenChrome } from '@rnw-community/react-native-screen-chrome';
 import { isDefined } from '@rnw-community/shared';
 
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
+import { useRevertConsolidation } from '../../hook/use-revert-consolidation.hook';
+import { useTransactionInfoHandoff } from '../../hook/use-transaction-info-handoff.hook';
 import { useGetConsolidationSourcesQuery } from '../../query/use-get-consolidation-sources.query';
 import { formatTransactionInfoAmount } from '../../utils/format-transaction-info-amount.util';
 import { getTransactionDisplayTitle } from '../../utils/get-transaction-display-title.util';
+import { getTransactionEditHref } from '../../utils/get-transaction-edit-href.util';
 import { getTransactionHref } from '../../utils/get-transaction-href.util';
 import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 import { RefundTransactionInfoHero } from '../refund-transaction-info-hero/refund-transaction-info-hero';
+import { TransactionInfoDeleteRow } from '../transaction-info-delete-row/transaction-info-delete-row';
 import { TransactionInfoGroup } from '../transaction-info-group/transaction-info-group';
 import { TransactionInfoHeader } from '../transaction-info-header/transaction-info-header';
 import { TransactionInfoNavBand } from '../transaction-info-nav-band/transaction-info-nav-band';
@@ -22,27 +25,24 @@ import { TransactionInfoPageSelector } from '../transaction-info-page/transactio
 import { TransactionInfoRow } from '../transaction-info-row/transaction-info-row';
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
-import type { LayoutChangeEvent } from 'react-native';
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly parentTransaction: TransactionWithRelationsEntityInterface;
 }
 
-const HERO_TITLE_DEFAULT_OFFSET = 64;
-
 export const RefundTransactionInfoContent = ({ transaction, parentTransaction }: Props) => {
     const { t } = useLingui();
     const router = useRouter();
+    const removeRefund = useRevertConsolidation(parentTransaction.id, router.back);
     const formatDigits = useProtectedAmountLabel();
     const { config } = useScreenChrome();
-    const [revealOffset, setRevealOffset] = useState(HERO_TITLE_DEFAULT_OFFSET);
+    const { revealOffset, onAmountLayout } = useTransactionInfoHandoff();
     const { sources } = useGetConsolidationSourcesQuery(parentTransaction.id);
     const source = sources.find(row => row.sourceTransactionId === transaction.id);
     const original = formatTransactionInfoAmount(parentTransaction, formatDigits);
     const merchant = getTransactionDisplayTitle(parentTransaction);
     const handleOpenPurchase = () => void router.push(getTransactionHref(parentTransaction));
-    const handleAmountLayout = (event: LayoutChangeEvent) => void setRevealOffset(Math.max(0, event.nativeEvent.layout.y - 48));
 
     if (!isDefined(source)) {
         return null;
@@ -58,8 +58,7 @@ export const RefundTransactionInfoContent = ({ transaction, parentTransaction }:
                         amount={amount}
                         title={t`Refund of ${merchant} · ${original}`}
                         operatedAt={transaction.operatedAt}
-                        revealOffset={revealOffset}
-                        onAmountLayout={handleAmountLayout}
+                        onAmountLayout={onAmountLayout}
                     />
                     <View className="gap-y-5xl">
                         <TransactionInfoGroup>
@@ -78,16 +77,17 @@ export const RefundTransactionInfoContent = ({ transaction, parentTransaction }:
                             />
                         </TransactionInfoGroup>
                         <TransactionInfoNoteGroup transaction={transaction} />
+                        <TransactionInfoDeleteRow transaction={transaction} onDelete={removeRefund} />
                     </View>
                 </View>
             </ScreenChromeScrollView>
             <TransactionInfoNavBand />
             <TransactionInfoHeader
                 transaction={transaction}
-                editHref={null}
+                editHref={getTransactionEditHref(parentTransaction)}
                 revealOffset={revealOffset}
                 onGoBack={router.back}
-                compactTitle={t`Refund`}
+                compactTitle={t`Refund of ${merchant} · ${original}`}
                 compactAmount={amount}
             />
         </ScreenChromeFrame>

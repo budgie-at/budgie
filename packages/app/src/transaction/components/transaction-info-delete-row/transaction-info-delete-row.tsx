@@ -1,3 +1,4 @@
+import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
@@ -10,13 +11,17 @@ import { TransactionInfoPageSelector } from '../transaction-info-page/transactio
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
 interface Props {
-    readonly transaction: Pick<TransactionWithRelationsEntityInterface, 'consolidationType'>;
+    readonly transaction: Pick<TransactionWithRelationsEntityInterface, 'consolidationType' | 'consolidationParentTransactionId'>;
     readonly onDelete: () => unknown;
 }
 
 export const TransactionInfoDeleteRow = ({ transaction, onDelete }: Props) => {
     const { t } = useLingui();
-    const label = isDefined(transaction.consolidationType) ? t`Unconsolidate` : t`Delete Transaction`;
+    const isRefundSource =
+        transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND &&
+        isDefined(transaction.consolidationParentTransactionId);
+    const deleteLabel = isDefined(transaction.consolidationType) ? t`Unconsolidate` : t`Delete Transaction`;
+    const label = isRefundSource ? t`Remove refund` : deleteLabel;
     const handleDelete = () => void onDelete();
 
     return (

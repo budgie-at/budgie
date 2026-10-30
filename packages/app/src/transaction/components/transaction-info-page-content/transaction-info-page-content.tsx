@@ -2,12 +2,12 @@ import { TransactionConsolidationTypeEnum, TransactionTypeEnum } from '@budgie/c
 import { doesRuleMatchTransaction } from '@budgie/rules';
 import { useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
 import { View } from 'react-native';
 
 import { ScreenChromeFrame, ScreenChromeScrollView, useScreenChrome } from '@rnw-community/react-native-screen-chrome';
 
 import { useGetEnabledRulesQuery } from '../../../rule/query/use-get-enabled-rules.query';
+import { useTransactionInfoHandoff } from '../../hook/use-transaction-info-handoff.hook';
 import { useTransactionInfoSimilarStatsQuery } from '../../query/use-transaction-info-similar-stats.query';
 import { convertTransactionToInput } from '../../utils/convert-transaction-to-input.util';
 import { getTransactionDisplayTitle } from '../../utils/get-transaction-display-title.util';
@@ -28,9 +28,6 @@ import { TransactionInfoTagsSection } from '../transaction-info-tags-section/tra
 
 import type { TransactionInfoPagePropsInterface } from '../../interface/transaction-info-page-props.interface';
 import type { SuggestRuleDataInterface } from '@budgie/rules';
-import type { LayoutChangeEvent } from 'react-native';
-
-const HERO_TITLE_DEFAULT_OFFSET = 64;
 
 export const TransactionInfoPageContent = ({
     transaction,
@@ -42,7 +39,7 @@ export const TransactionInfoPageContent = ({
 }: TransactionInfoPagePropsInterface) => {
     const router = useRouter();
     const { t } = useLingui();
-    const [titleRevealOffset, setTitleRevealOffset] = useState(HERO_TITLE_DEFAULT_OFFSET);
+    const { revealOffset, onAmountLayout } = useTransactionInfoHandoff();
     const { stats, isLoading } = useTransactionInfoSimilarStatsQuery(transaction);
     const { enabledRules } = useGetEnabledRulesQuery();
     const { config } = useScreenChrome();
@@ -61,19 +58,12 @@ export const TransactionInfoPageContent = ({
             : enabledRules.filter(rule => doesRuleMatchTransaction(rule, transactionInput, suggestRuleData)).map(rule => rule.id);
 
     const handleGoBack = () => void router.back();
-    const handleHeroTitleLayout = (event: LayoutChangeEvent) => void setTitleRevealOffset(Math.max(0, event.nativeEvent.layout.y - 48));
 
     return (
         <ScreenChromeFrame testID={TransactionInfoPageSelector.Page}>
             <ScreenChromeScrollView contentInsetTop={config.headerHeight} contentInsetBottom={32} showsVerticalScrollIndicator={false}>
                 <View className="px-3xl">
-                    <TransactionInfoHero
-                        transaction={transaction}
-                        matchingRuleIds={matchingRuleIds}
-                        onOpenRefundSources={onOpenRefundSources}
-                        onTitleLayout={handleHeroTitleLayout}
-                        revealOffset={titleRevealOffset}
-                    />
+                    <TransactionInfoHero transaction={transaction} matchingRuleIds={matchingRuleIds} onTitleLayout={onAmountLayout} />
 
                     <View className="gap-y-5xl">
                         <TransactionInfoGroup>
@@ -105,7 +95,7 @@ export const TransactionInfoPageContent = ({
 
             <TransactionInfoNavBand />
 
-            <TransactionInfoHeader transaction={transaction} editHref={editHref} revealOffset={titleRevealOffset} onGoBack={handleGoBack} />
+            <TransactionInfoHeader transaction={transaction} editHref={editHref} revealOffset={revealOffset} onGoBack={handleGoBack} />
         </ScreenChromeFrame>
     );
 };
