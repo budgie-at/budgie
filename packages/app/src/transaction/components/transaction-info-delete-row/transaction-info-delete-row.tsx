@@ -1,4 +1,3 @@
-import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
@@ -17,9 +16,7 @@ interface Props {
 
 export const TransactionInfoDeleteRow = ({ transaction, onDelete }: Props) => {
     const { t } = useLingui();
-    const isRefundSource =
-        transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND &&
-        isDefined(transaction.consolidationParentTransactionId);
+    const isRefundSource = isDefined(transaction.consolidationParentTransactionId);
     const deleteLabel = isDefined(transaction.consolidationType) ? t`Unconsolidate` : t`Delete Transaction`;
     const label = isRefundSource ? t`Remove refund` : deleteLabel;
     const handleDelete = () => void onDelete();
@@ -33,7 +30,14 @@ export const TransactionInfoDeleteRow = ({ transaction, onDelete }: Props) => {
                 onPress={handleDelete}
                 testID={TransactionInfoPageSelector.DeleteButton}
             >
-                <Text className="text-[17px] leading-[22px] text-destructive-strong">{label}</Text>
+                <Text
+                    adjustsFontSizeToFit
+                    minimumFontScale={0.7}
+                    numberOfLines={1}
+                    className="text-[17px] leading-[22px] text-destructive-strong"
+                >
+                    {label}
+                </Text>
             </HapticPressable>
         </TransactionInfoGroup>
     );

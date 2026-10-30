@@ -38,6 +38,7 @@ export const TransactionInfoRow = (props: Props) => {
     const iconSize = 22 * fontScale;
     const chevronSize = 20 * Math.min(fontScale, TRANSACTION_INFO_STACKED_FONT_SCALE);
     const showChevron = isDefined(onPress) && !largeText;
+    const textContentClassName = largeText ? 'self-stretch min-w-0' : 'flex-1 min-w-0';
     const accessibilityLabel = [label, value, description, trailing].filter(isNotEmptyString).join(', ');
     const rowContent = (
         <>
@@ -50,7 +51,7 @@ export const TransactionInfoRow = (props: Props) => {
             )}
 
             <View className={contentVariants({ largeText })}>
-                <View className="self-stretch min-w-0 shrink">
+                <View className={textContentClassName}>
                     {isNotEmptyString(label) ? <Text className="text-[13px] leading-[18px] text-secondary-foreground">{label}</Text> : null}
                     {isNotEmptyString(value) ? (
                         <Text className={cn('text-[17px] leading-[22px] text-primary font-medium', valueClassName)} selectable>
