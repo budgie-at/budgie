@@ -22,7 +22,7 @@ export const TransactionActionsMenu = ({ onDelete, onRevert, isConsolidated = fa
     const { t } = useLingui();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [anchor, setAnchor] = useState<PopoverMenuAnchor | undefined>();
-    const actionLabel = isConsolidated ? t`Revert` : t`Delete Transaction`;
+    const actionLabel = isConsolidated ? t`Separate Transactions` : t`Delete Transaction`;
     const actionIcon = isConsolidated ? UserIconNameEnum.Undo2 : UserIconNameEnum.Trash2;
     const actionTestID = isConsolidated ? TransactionActionsMenuSelector.RevertButton : TransactionActionsMenuSelector.DeleteButton;
 

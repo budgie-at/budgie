@@ -740,6 +740,11 @@ msgstr "Ajouter une catégorie"
 msgid "Add deposit"
 msgstr "Ajouter un dépôt"
 
+#: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
+#: src/transaction/hook/use-transfer-transaction-actions.hook.ts
+msgid "Add fee"
+msgstr "Ajouter des frais"
+
 #: src/transaction/components/split-entries-add-item-footer/split-entries-add-item-footer.tsx
 msgid "Add item"
 msgstr "Ajouter un élément"
@@ -1828,10 +1833,6 @@ msgstr "Impossible de réinitialiser la synchronisation bancaire"
 msgid "Could not restore account."
 msgstr "Impossible de restaurer le compte."
 
-#: src/transaction/hook/use-revert-consolidation.hook.ts
-msgid "Could not revert consolidation."
-msgstr "Impossible d'annuler la consolidation."
-
 #: src/budget/hooks/use-budget-form.hook.ts
 msgid "Could not save budget"
 msgstr "Impossible d'enregistrer le budget"
@@ -1856,6 +1857,11 @@ msgstr "Impossible de sélectionner le fichier CSV"
 msgid "Could not select database backup"
 msgstr "Impossible de sélectionner la sauvegarde de la base de données"
 
+#: src/transaction/hook/use-delete-transaction.hook.ts
+#: src/transaction/hook/use-revert-consolidation.hook.ts
+msgid "Could not separate transactions."
+msgstr "Impossible de séparer les transactions."
+
 #: src/sync/hook/use-sync-account-setup-flow.hook.ts
 msgid "Could not set up sync"
 msgstr "Impossible de configurer la synchronisation"
@@ -1868,10 +1874,6 @@ msgstr "Impossible de lancer la synchronisation"
 #: src/categorize-inbox/hook/use-categorize-inbox-actions.hook.ts
 msgid "Could not tag transactions"
 msgstr "Impossible d'étiqueter les transactions"
-
-#: src/transaction/hook/use-delete-transaction.hook.ts
-msgid "Could not unconsolidate transaction."
-msgstr "Impossible de déconsolider la transaction."
 
 #: src/categorize-inbox/hook/use-categorize-inbox-move-to-cash.hook.ts
 msgid "Could not undo the move to cash"
@@ -3338,6 +3340,10 @@ msgstr "Gérer les règles"
 msgid "Manage Tags"
 msgstr "Gérer les étiquettes"
 
+#: src/transaction/components/refund-transaction-info-content/refund-transaction-info-content.tsx
+msgid "Manage this refund from the original purchase."
+msgstr "Gérez ce remboursement depuis l’achat d’origine."
+
 #: src/rule/constant/external-source.constant.ts
 msgid "Manual"
 msgstr "Manuel"
@@ -4090,10 +4096,6 @@ msgstr "Organisez vos dépenses à votre façon"
 msgid "Organization"
 msgstr "Organisation"
 
-#: src/transaction/hook/use-delete-transaction.hook.ts
-msgid "Original imported transactions will be restored and the consolidated transaction will be removed."
-msgstr "Les transactions importées d'origine seront restaurées et la transaction consolidée sera supprimée."
-
 #: src/transaction/components/refund-transaction-info-content/refund-transaction-info-content.tsx
 msgid "Original purchase"
 msgstr "Achat d’origine"
@@ -4634,18 +4636,6 @@ msgstr "Revenez à Budgie et sélectionnez ci-dessous le fichier XLSX enregistr�
 msgid "Returned"
 msgstr "Reçu"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
-#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
-#: src/transaction/components/transaction-list-revert-menu-item/transaction-list-revert-menu-item.tsx
-#: src/transaction/hook/use-revert-consolidation.hook.ts
-msgid "Revert"
-msgstr "Annuler"
-
-#: src/transaction/hook/use-revert-consolidation.hook.ts
-msgid "Revert consolidation?"
-msgstr "Annuler la consolidation ?"
-
 #: src/sync/component/analytics-sync-account-progress/analytics-sync-account-progress.tsx
 msgid "Review sync settings"
 msgstr "Vérifier les paramètres de synchronisation"
@@ -4990,6 +4980,23 @@ msgstr "Sélectionné"
 msgid "Sending {fromCode}"
 msgstr "Envoi {fromCode}"
 
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
+#: src/transaction/hook/use-delete-transaction.hook.ts
+#: src/transaction/hook/use-revert-consolidation.hook.ts
+msgid "Separate"
+msgstr "Séparer"
+
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
+#: src/transaction/components/transaction-info-delete-row/transaction-info-delete-row.tsx
+#: src/transaction/components/transaction-list-revert-menu-item/transaction-list-revert-menu-item.tsx
+msgid "Separate Transactions"
+msgstr "Séparer les transactions"
+
+#: src/transaction/hook/use-delete-transaction.hook.ts
+#: src/transaction/hook/use-revert-consolidation.hook.ts
+msgid "Separate transactions?"
+msgstr "Séparer les transactions ?"
+
 #: src/budget/components/budget-missing-currency-guard/budget-missing-currency-guard.tsx
 msgid "Set a default currency in Settings first"
 msgstr "Définissez d'abord une devise par défaut dans les paramètres"
@@ -5007,8 +5014,6 @@ msgid "Set Category"
 msgstr "Définir la catégorie"
 
 #: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
-#: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
-#: src/transaction/hook/use-transfer-transaction-actions.hook.ts
 msgid "Set fee"
 msgstr "Définir les frais"
 
@@ -5403,9 +5408,18 @@ msgstr "Le téléchargement s'est arrêté avant la fin. Réessayez quand la con
 msgid "The downloaded AI model data is removed from this phone. Nothing downloads again until you start it."
 msgstr "Les données des modèles d'IA téléchargées sont supprimées de ce téléphone. Rien ne sera retéléchargé tant que vous ne le lancez pas."
 
+#: src/transaction/hook/use-delete-transaction.hook.ts
+#: src/transaction/hook/use-revert-consolidation.hook.ts
+msgid "The merged transactions become separate entries again."
+msgstr "Les transactions fusionnées redeviennent des entrées distinctes."
+
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "The PIN becomes the encryption key"
 msgstr "Le code PIN devient la clé de chiffrement"
+
+#: src/transaction/hook/use-revert-consolidation.hook.ts
+msgid "The refund and the purchase become separate entries again."
+msgstr "Le remboursement et l’achat redeviennent des entrées distinctes."
 
 #: src/rule/utils/show-rule-application-toast.util.ts
 msgid "The rule was saved but no existing transactions needed updating."
@@ -5584,10 +5598,6 @@ msgstr "Cela supprimera votre budget mensuel. Vous pouvez en créer un nouveau �
 #: src/app/resync-window-picker.tsx
 msgid "This will reset the sync history and re-sync all transactions from this bank account. Your existing transactions, tags, and categories will be preserved and updated with any new data."
 msgstr "Cela réinitialisera l'historique de synchronisation et resynchronisera toutes les transactions de ce compte bancaire. Vos transactions, étiquettes et catégories existantes seront conservées et mises à jour avec les nouvelles données."
-
-#: src/transaction/hook/use-revert-consolidation.hook.ts
-msgid "This will restore the original transactions and remove the consolidated transaction."
-msgstr "Cela restaurera les transactions d'origine et supprimera la transaction consolidée."
 
 #: src/@generic/constant/date-period.constant.ts
 msgid "This Year"
@@ -5868,15 +5878,6 @@ msgstr "Indisponible"
 msgid "Uncategorized"
 msgstr "Non catégorisé"
 
-#: src/transaction/components/transaction-info-delete-row/transaction-info-delete-row.tsx
-#: src/transaction/hook/use-delete-transaction.hook.ts
-msgid "Unconsolidate"
-msgstr "Déconsolider"
-
-#: src/transaction/hook/use-delete-transaction.hook.ts
-msgid "Unconsolidate transaction?"
-msgstr "Déconsolider la transaction ?"
-
 #: src/budget/components/budget-history-legend/budget-history-legend.tsx
 msgid "Under limit"
 msgstr "Sous la limite"
@@ -5885,10 +5886,15 @@ msgstr "Sous la limite"
 msgid "Undo"
 msgstr "Annuler"
 
+#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/components/transaction-info-delete-row/transaction-info-delete-row.tsx
-#: src/transaction/components/transaction-info-undo-refund-group/transaction-info-undo-refund-group.tsx
-msgid "Undo refund"
+#: src/transaction/hook/use-revert-consolidation.hook.ts
+msgid "Undo Refund"
 msgstr "Annuler le remboursement"
+
+#: src/transaction/hook/use-revert-consolidation.hook.ts
+msgid "Undo refund?"
+msgstr "Annuler le remboursement ?"
 
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "Unknown card"

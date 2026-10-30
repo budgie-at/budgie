@@ -109,7 +109,7 @@ appId: ${APP_ID}
     centerElement: true
 - extendedWaitUntil:
       visible:
-          id: 'TransactionActionsMenu.FeeButton'
+          id: 'TransactionInfo.ConvertButton'
 - assertVisible:
       id: 'TransactionActionsMenu.CreateRuleButton'
 - assertNotVisible:
@@ -120,6 +120,8 @@ appId: ${APP_ID}
       id: 'TransactionActionsMenu.ConvertToTransferButton'
 - assertNotVisible:
       id: 'TransactionActionsMenu.RevertButton'
+- tapOn:
+      id: 'TransactionInfo.ConvertButton'
 - tapOn:
       id: 'TransactionActionsMenu.FeeButton'
 - extendedWaitUntil:

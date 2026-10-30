@@ -82,9 +82,9 @@ export const useSimpleTransactionActionsMenu = ({
         {
             key: 'fee',
             icon: UserIconNameEnum.ReceiptText,
-            label: hasFee ? t`Edit fee` : t`Set fee`,
+            label: hasFee ? t`Edit fee` : t`Add fee`,
             testID: TransactionActionsMenuSelector.FeeButton,
-            isPrimary: hasFee || transactionType === TransactionTypeEnum.EXPENSE,
+            isPrimary: false,
             onPress: onFeePress
         },
         !hasDebtSettlement && {

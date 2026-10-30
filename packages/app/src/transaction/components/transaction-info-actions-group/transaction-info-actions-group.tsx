@@ -1,5 +1,8 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { getTransactionFeeEntries } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
+
+import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { useCreateTransactionRule } from '../../hook/use-create-transaction-rule.hook';
 import { TransactionActionsMenuSelector } from '../transaction-actions-menu/transaction-actions-menu.selector';
@@ -18,8 +21,9 @@ interface Props {
 export const TransactionInfoActionsGroup = ({ transaction, items }: Props) => {
     const { t } = useLingui();
     const createRule = useCreateTransactionRule(transaction);
-    const moreItems = items.filter(item => !item.isPrimary);
-    const rowItems = moreItems.length > 1 ? items.filter(item => item.isPrimary) : items;
+    const hasFee = isNotEmptyArray(getTransactionFeeEntries(transaction.entries));
+    const pageItems = items.filter(item => !hasFee || item.testID !== TransactionActionsMenuSelector.FeeButton);
+    const moreItems = pageItems.filter(item => !item.isPrimary);
 
     return (
         <TransactionInfoGroup>
@@ -29,10 +33,18 @@ export const TransactionInfoActionsGroup = ({ transaction, items }: Props) => {
                 onPress={createRule}
                 testID={TransactionActionsMenuSelector.CreateRuleButton}
             />
-            {rowItems.map(item => (
-                <TransactionInfoActionRow key={item.key} icon={item.icon} label={item.label} onPress={item.onPress} testID={item.testID} />
-            ))}
-            {moreItems.length > 1 ? <TransactionInfoMoreActionsRow items={moreItems} /> : null}
+            {pageItems
+                .filter(item => item.isPrimary)
+                .map(item => (
+                    <TransactionInfoActionRow
+                        key={item.key}
+                        icon={item.icon}
+                        label={item.label}
+                        onPress={item.onPress}
+                        testID={item.testID}
+                    />
+                ))}
+            {isNotEmptyArray(moreItems) ? <TransactionInfoMoreActionsRow items={moreItems} /> : null}
         </TransactionInfoGroup>
     );
 };

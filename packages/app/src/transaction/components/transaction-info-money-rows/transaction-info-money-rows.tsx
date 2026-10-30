@@ -15,9 +15,10 @@ import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts'
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
+    readonly onFeePress: () => void;
 }
 
-export const TransactionInfoMoneyRows = ({ transaction }: Props) => {
+export const TransactionInfoMoneyRows = ({ transaction, onFeePress }: Props) => {
     const { t } = useLingui();
     const formatDigits = useProtectedAmountLabel();
     const formatRate = useFormatDigits(0, 4);
@@ -42,6 +43,7 @@ export const TransactionInfoMoneyRows = ({ transaction }: Props) => {
                     icon={UserIconNameEnum.Banknote}
                     label={t`Fee`}
                     value={feeDisplay}
+                    onPress={onFeePress}
                     testID={TransactionInfoPageSelector.Row.Fee}
                 />
             ) : null}

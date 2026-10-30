@@ -1,9 +1,9 @@
+import { TransactionConsolidationTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { Text } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { TransactionInfoActionRow } from '../transaction-info-action-row/transaction-info-action-row';
 import { TransactionInfoGroup } from '../transaction-info-group/transaction-info-group';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
 
@@ -16,29 +16,25 @@ interface Props {
 
 export const TransactionInfoDeleteRow = ({ transaction, onDelete }: Props) => {
     const { t } = useLingui();
-    const isRefundSource = isDefined(transaction.consolidationParentTransactionId);
-    const deleteLabel = isDefined(transaction.consolidationType) ? t`Unconsolidate` : t`Delete Transaction`;
-    const label = isRefundSource ? t`Undo refund` : deleteLabel;
+    const isRefund =
+        isDefined(transaction.consolidationParentTransactionId) ||
+        transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND;
+    const isConsolidated = isDefined(transaction.consolidationType);
+    const separateLabel = isConsolidated ? t`Separate Transactions` : t`Delete Transaction`;
+    const label = isRefund ? t`Undo Refund` : separateLabel;
+    const separateIcon = isConsolidated ? UserIconNameEnum.Ungroup : UserIconNameEnum.Trash2;
+    const icon = isRefund ? UserIconNameEnum.Undo2 : separateIcon;
     const handleDelete = () => void onDelete();
 
     return (
         <TransactionInfoGroup>
-            <HapticPressable
-                className="min-h-[50px] px-3xl py-xl items-center justify-center active:scale-100 active:opacity-70"
-                accessibilityRole="button"
-                accessibilityLabel={label}
+            <TransactionInfoActionRow
+                icon={icon}
+                label={label}
                 onPress={handleDelete}
                 testID={TransactionInfoPageSelector.DeleteButton}
-            >
-                <Text
-                    adjustsFontSizeToFit
-                    minimumFontScale={0.7}
-                    numberOfLines={1}
-                    className="text-[17px] leading-[22px] text-destructive-strong"
-                >
-                    {label}
-                </Text>
-            </HapticPressable>
+                colorClassName="text-destructive-strong"
+            />
         </TransactionInfoGroup>
     );
 };

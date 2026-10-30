@@ -32,7 +32,7 @@ export const TransactionListRevertMenuItem = ({ transaction }: Props) => {
     return (
         <PopoverMenuItem
             icon={UserIconNameEnum.Undo2}
-            label={t`Revert`}
+            label={t`Separate Transactions`}
             onPress={handlePress}
             variant="destructive"
             testID={TransactionListContextMenuSelector.RevertButton}

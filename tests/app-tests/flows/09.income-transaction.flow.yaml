@@ -92,7 +92,7 @@ appId: ${APP_ID}
 - tapOn:
     id: 'TransactionInfo.ConvertButton'
 - assertVisible:
-    text: 'Set fee'
+    text: 'Add fee'
 - assertVisible:
     text: 'Attach debt'
 - assertVisible:
@@ -103,7 +103,7 @@ appId: ${APP_ID}
     text: 'Start Deposit'
 
 - tapOn:
-    text: 'Set fee'
+    text: 'Add fee'
 - extendedWaitUntil:
     visible:
       id: 'SplitEntryRow.Amount.0'

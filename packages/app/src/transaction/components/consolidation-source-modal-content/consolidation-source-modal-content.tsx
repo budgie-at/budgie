@@ -93,7 +93,7 @@ export const ConsolidationSourceModalContent = ({ transactionId, onClose, onReve
 
                     {showRevert ? (
                         <Button
-                            content={t`Revert`}
+                            content={t`Separate`}
                             variant="destructive"
                             size="md"
                             leftIcon={UserIconNameEnum.Undo2}

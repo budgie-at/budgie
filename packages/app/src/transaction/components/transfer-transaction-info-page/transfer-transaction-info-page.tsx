@@ -33,6 +33,7 @@ export const TransferTransactionInfoPage = ({ transaction }: UpdateTransactionFo
         <TransactionInfoPage
             transaction={transaction}
             onDelete={handleDelete}
+            onFeePress={handleOpenFee}
             editHref={getTransactionEditHref(transaction)}
             actions={<TransactionInfoActionsGroup transaction={transaction} items={actions.items} />}
             {...consolidationProps}

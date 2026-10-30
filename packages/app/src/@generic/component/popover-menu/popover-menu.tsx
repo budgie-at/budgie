@@ -72,9 +72,10 @@ export const PopoverMenu = ({ isOpen, onClose, onCloseComplete, children, anchor
     const isMeasuring = hasAnchor && placement === 'auto' && menuHeight === 0;
     const measuringStyle: ViewStyle | null = isMeasuring ? { opacity: 0 } : null;
 
+    const menuMaxWidth = screenWidth - MENU_MARGIN * 2;
     const menuContainerStyle: ViewStyle = isStartAligned
-        ? { position: 'absolute', top: menuTop, left: anchor.x }
-        : { position: 'absolute', top: menuTop, right: menuRight };
+        ? { position: 'absolute', top: menuTop, left: anchor.x, maxWidth: menuMaxWidth }
+        : { position: 'absolute', top: menuTop, right: menuRight, maxWidth: menuMaxWidth };
     const animatedMenuStyle = [menuStyle, measuringStyle];
     const measuringPointerEvents = isMeasuring ? 'none' : 'auto';
     const measuringImportantForAccessibility = isMeasuring ? 'no-hide-descendants' : 'auto';

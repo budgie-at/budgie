@@ -1,9 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useRef, useState } from 'react';
-import { Text, View } from 'react-native';
-
-import { isDefined } from '@rnw-community/shared';
+import { View } from 'react-native';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
@@ -27,7 +25,6 @@ export const TransactionInfoMoreActionsRow = ({ items }: Props) => {
     const [isOpen, setIsOpen] = useState(false);
     const [anchor, setAnchor] = useState<PopoverMenuAnchor | undefined>();
     const { closeMenu, handleCloseComplete } = useTransactionListContextMenuClose({ isOpen, onClose: () => void setIsOpen(false) });
-    const consequences = [...new Set(items.map(item => item.consequence).filter(isDefined))];
     const label = t`More Actions…`;
     const handleOpen = () =>
         rowRef.current?.measureInWindow((x, y, width, height) => {
@@ -52,32 +49,15 @@ export const TransactionInfoMoreActionsRow = ({ items }: Props) => {
             <PopoverMenu isOpen={isOpen} onClose={closeMenu} onCloseComplete={handleCloseComplete} anchor={anchor}>
                 <TransactionActionsMenuContext.Provider value={closeMenu}>
                     <View className="py-sm">
-                        {items
-                            .filter(item => !isDefined(item.consequence))
-                            .map(item => (
-                                <TransactionConvertMenuItem
-                                    key={item.key}
-                                    icon={item.icon}
-                                    label={item.label}
-                                    onConvert={item.onPress}
-                                    testID={item.testID}
-                                />
-                            ))}
-                        {consequences.map(consequence => (
-                            <View key={consequence} className="mt-xs border-t border-secondary-corner pt-xs">
-                                <Text className="px-xl pt-sm text-[13px] leading-[18px] text-secondary-foreground">{consequence}</Text>
-                                {items
-                                    .filter(item => item.consequence === consequence)
-                                    .map(item => (
-                                        <TransactionConvertMenuItem
-                                            key={item.key}
-                                            icon={item.icon}
-                                            label={item.label}
-                                            onConvert={item.onPress}
-                                            testID={item.testID}
-                                        />
-                                    ))}
-                            </View>
+                        {items.map(item => (
+                            <TransactionConvertMenuItem
+                                key={item.key}
+                                icon={item.icon}
+                                label={item.label}
+                                subtitle={item.consequence}
+                                onConvert={item.onPress}
+                                testID={item.testID}
+                            />
                         ))}
                     </View>
                 </TransactionActionsMenuContext.Provider>

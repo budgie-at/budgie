@@ -42,6 +42,7 @@ export const SimpleTransactionInfoPage = ({ transaction, transactionType, onOpen
         <TransactionInfoPage
             transaction={transaction}
             onDelete={handleDelete}
+            onFeePress={handleOpenFee}
             editHref={getTransactionEditHref(transaction)}
             actions={<TransactionInfoActionsGroup transaction={transaction} items={actionsMenuProps.items} />}
             onOpenRefundSources={onOpenRefundSources}

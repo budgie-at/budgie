@@ -740,6 +740,11 @@ msgstr "Додати категорію"
 msgid "Add deposit"
 msgstr "Додати депозит"
 
+#: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
+#: src/transaction/hook/use-transfer-transaction-actions.hook.ts
+msgid "Add fee"
+msgstr "Додати комісію"
+
 #: src/transaction/components/split-entries-add-item-footer/split-entries-add-item-footer.tsx
 msgid "Add item"
 msgstr "Додати запис"
@@ -1828,10 +1833,6 @@ msgstr "Не вдалося скинути синхронізацію з бан�
 msgid "Could not restore account."
 msgstr "Не вдалося відновити рахунок."
 
-#: src/transaction/hook/use-revert-consolidation.hook.ts
-msgid "Could not revert consolidation."
-msgstr "Не вдалося скасувати об'єднання."
-
 #: src/budget/hooks/use-budget-form.hook.ts
 msgid "Could not save budget"
 msgstr "Не вдалося зберегти бюджет"
@@ -1856,6 +1857,11 @@ msgstr "Не вдалося вибрати CSV-файл"
 msgid "Could not select database backup"
 msgstr "Не вдалося вибрати резервну копію бази даних"
 
+#: src/transaction/hook/use-delete-transaction.hook.ts
+#: src/transaction/hook/use-revert-consolidation.hook.ts
+msgid "Could not separate transactions."
+msgstr "Не вдалося розділити транзакції."
+
 #: src/sync/hook/use-sync-account-setup-flow.hook.ts
 msgid "Could not set up sync"
 msgstr "Не вдалося налаштувати синхронізацію"
@@ -1868,10 +1874,6 @@ msgstr "Не вдалося почати синхронізацію"
 #: src/categorize-inbox/hook/use-categorize-inbox-actions.hook.ts
 msgid "Could not tag transactions"
 msgstr "Не вдалося додати теги до транзакцій"
-
-#: src/transaction/hook/use-delete-transaction.hook.ts
-msgid "Could not unconsolidate transaction."
-msgstr "Не вдалося розконсолідувати транзакцію."
 
 #: src/categorize-inbox/hook/use-categorize-inbox-move-to-cash.hook.ts
 msgid "Could not undo the move to cash"
@@ -3338,6 +3340,10 @@ msgstr "Керувати правилами"
 msgid "Manage Tags"
 msgstr "Керування тегами"
 
+#: src/transaction/components/refund-transaction-info-content/refund-transaction-info-content.tsx
+msgid "Manage this refund from the original purchase."
+msgstr "Керуйте цим поверненням з початкової покупки."
+
 #: src/rule/constant/external-source.constant.ts
 msgid "Manual"
 msgstr "Вручну"
@@ -4090,10 +4096,6 @@ msgstr "Організуйте витрати по-своєму"
 msgid "Organization"
 msgstr "Організація"
 
-#: src/transaction/hook/use-delete-transaction.hook.ts
-msgid "Original imported transactions will be restored and the consolidated transaction will be removed."
-msgstr "Початкові імпортовані транзакції буде відновлено, а консолідовану транзакцію буде видалено."
-
 #: src/transaction/components/refund-transaction-info-content/refund-transaction-info-content.tsx
 msgid "Original purchase"
 msgstr "Початкова покупка"
@@ -4634,18 +4636,6 @@ msgstr "Поверніться до Budgie і виберіть нижче збе
 msgid "Returned"
 msgstr "Повернено"
 
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
-#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
-#: src/transaction/components/transaction-list-revert-menu-item/transaction-list-revert-menu-item.tsx
-#: src/transaction/hook/use-revert-consolidation.hook.ts
-msgid "Revert"
-msgstr "Відновити"
-
-#: src/transaction/hook/use-revert-consolidation.hook.ts
-msgid "Revert consolidation?"
-msgstr "Скасувати об'єднання?"
-
 #: src/sync/component/analytics-sync-account-progress/analytics-sync-account-progress.tsx
 msgid "Review sync settings"
 msgstr "Переглянути налаштування синхронізації"
@@ -4990,6 +4980,23 @@ msgstr "Вибрано"
 msgid "Sending {fromCode}"
 msgstr "Відправлення {fromCode}"
 
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
+#: src/transaction/hook/use-delete-transaction.hook.ts
+#: src/transaction/hook/use-revert-consolidation.hook.ts
+msgid "Separate"
+msgstr "Розділити"
+
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
+#: src/transaction/components/transaction-info-delete-row/transaction-info-delete-row.tsx
+#: src/transaction/components/transaction-list-revert-menu-item/transaction-list-revert-menu-item.tsx
+msgid "Separate Transactions"
+msgstr "Розділити транзакції"
+
+#: src/transaction/hook/use-delete-transaction.hook.ts
+#: src/transaction/hook/use-revert-consolidation.hook.ts
+msgid "Separate transactions?"
+msgstr "Розділити транзакції?"
+
 #: src/budget/components/budget-missing-currency-guard/budget-missing-currency-guard.tsx
 msgid "Set a default currency in Settings first"
 msgstr "Спочатку оберіть валюту за замовчуванням у Налаштуваннях"
@@ -5007,8 +5014,6 @@ msgid "Set Category"
 msgstr "Встановити категорію"
 
 #: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
-#: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
-#: src/transaction/hook/use-transfer-transaction-actions.hook.ts
 msgid "Set fee"
 msgstr "Встановити комісію"
 
@@ -5403,9 +5408,18 @@ msgstr "Завантаження зупинилося, не завершивши
 msgid "The downloaded AI model data is removed from this phone. Nothing downloads again until you start it."
 msgstr "Завантажені дані моделей ШІ буде видалено з цього телефону. Нічого не завантажуватиметься, доки ви не запустите це знову."
 
+#: src/transaction/hook/use-delete-transaction.hook.ts
+#: src/transaction/hook/use-revert-consolidation.hook.ts
+msgid "The merged transactions become separate entries again."
+msgstr "Об’єднані транзакції знову стануть окремими записами."
+
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "The PIN becomes the encryption key"
 msgstr "PIN-код стає ключем шифрування"
+
+#: src/transaction/hook/use-revert-consolidation.hook.ts
+msgid "The refund and the purchase become separate entries again."
+msgstr "Повернення і покупка знову стануть окремими записами."
 
 #: src/rule/utils/show-rule-application-toast.util.ts
 msgid "The rule was saved but no existing transactions needed updating."
@@ -5584,10 +5598,6 @@ msgstr "Це видалить ваш місячний бюджет. Ви мож�
 #: src/app/resync-window-picker.tsx
 msgid "This will reset the sync history and re-sync all transactions from this bank account. Your existing transactions, tags, and categories will be preserved and updated with any new data."
 msgstr "Це скине історію синхронізації та повторно синхронізує всі транзакції з цього банківського рахунку. Ваші наявні транзакції, теги та категорії буде збережено й оновлено новими даними."
-
-#: src/transaction/hook/use-revert-consolidation.hook.ts
-msgid "This will restore the original transactions and remove the consolidated transaction."
-msgstr "Початкові транзакції буде відновлено, а об'єднану транзакцію буде видалено."
 
 #: src/@generic/constant/date-period.constant.ts
 msgid "This Year"
@@ -5868,15 +5878,6 @@ msgstr "Недоступно"
 msgid "Uncategorized"
 msgstr "Без категорії"
 
-#: src/transaction/components/transaction-info-delete-row/transaction-info-delete-row.tsx
-#: src/transaction/hook/use-delete-transaction.hook.ts
-msgid "Unconsolidate"
-msgstr "Розконсолідувати"
-
-#: src/transaction/hook/use-delete-transaction.hook.ts
-msgid "Unconsolidate transaction?"
-msgstr "Розконсолідувати транзакцію?"
-
 #: src/budget/components/budget-history-legend/budget-history-legend.tsx
 msgid "Under limit"
 msgstr "У межах ліміту"
@@ -5885,10 +5886,15 @@ msgstr "У межах ліміту"
 msgid "Undo"
 msgstr "Скасувати"
 
+#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/components/transaction-info-delete-row/transaction-info-delete-row.tsx
-#: src/transaction/components/transaction-info-undo-refund-group/transaction-info-undo-refund-group.tsx
-msgid "Undo refund"
+#: src/transaction/hook/use-revert-consolidation.hook.ts
+msgid "Undo Refund"
 msgstr "Скасувати повернення"
+
+#: src/transaction/hook/use-revert-consolidation.hook.ts
+msgid "Undo refund?"
+msgstr "Скасувати повернення?"
 
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "Unknown card"

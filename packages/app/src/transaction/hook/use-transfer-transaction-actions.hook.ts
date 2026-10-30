@@ -21,9 +21,9 @@ export const useTransferTransactionActions = (transaction: TransactionWithRelati
         {
             key: 'fee',
             icon: UserIconNameEnum.ReceiptText,
-            label: isNotEmptyArray(getTransactionFeeEntries(transaction.entries)) ? t`Edit fee` : t`Set fee`,
+            label: isNotEmptyArray(getTransactionFeeEntries(transaction.entries)) ? t`Edit fee` : t`Add fee`,
             testID: TransactionActionsMenuSelector.FeeButton,
-            isPrimary: true,
+            isPrimary: false,
             onPress: onFeePress
         }
     ];

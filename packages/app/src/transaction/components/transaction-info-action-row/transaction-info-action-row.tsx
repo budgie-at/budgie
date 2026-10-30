@@ -8,9 +8,10 @@ interface Props {
     readonly label: string;
     readonly onPress: () => void;
     readonly testID: string;
+    readonly colorClassName?: string;
 }
 
-export const TransactionInfoActionRow = ({ icon, label, onPress, testID }: Props) => (
+export const TransactionInfoActionRow = ({ icon, label, onPress, testID, colorClassName }: Props) => (
     <HapticPressable
         className="active:scale-100 active:opacity-70"
         accessibilityRole="button"
@@ -18,6 +19,6 @@ export const TransactionInfoActionRow = ({ icon, label, onPress, testID }: Props
         onPress={onPress}
         testID={testID}
     >
-        <TransactionInfoActionLabel icon={icon} label={label} />
+        <TransactionInfoActionLabel icon={icon} label={label} colorClassName={colorClassName} />
     </HapticPressable>
 );

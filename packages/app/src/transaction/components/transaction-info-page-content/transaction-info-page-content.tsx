@@ -6,7 +6,9 @@ import { View } from 'react-native';
 
 import { ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
 
+import { dismissAllOrReplace } from '../../../@generic/utils/dismiss-all-or-replace.util';
 import { useGetEnabledRulesQuery } from '../../../rule/query/use-get-enabled-rules.query';
+import { useRevertConsolidation } from '../../hook/use-revert-consolidation.hook';
 import { useTransactionInfoHandoff } from '../../hook/use-transaction-info-handoff.hook';
 import { useTransactionInfoSimilarStatsQuery } from '../../query/use-transaction-info-similar-stats.query';
 import { convertTransactionToInput } from '../../utils/convert-transaction-to-input.util';
@@ -26,7 +28,6 @@ import { TransactionInfoScrollView } from '../transaction-info-scroll-view/trans
 import { TransactionInfoSimilarCard } from '../transaction-info-similar-card/transaction-info-similar-card';
 import { TransactionInfoSourceRows } from '../transaction-info-source-rows/transaction-info-source-rows';
 import { TransactionInfoTagsSection } from '../transaction-info-tags-section/transaction-info-tags-section';
-import { TransactionInfoUndoRefundGroup } from '../transaction-info-undo-refund-group/transaction-info-undo-refund-group';
 
 import type { TransactionInfoPagePropsInterface } from '../../interface/transaction-info-page-props.interface';
 import type { SuggestRuleDataInterface } from '@budgie/rules';
@@ -36,13 +37,15 @@ export const TransactionInfoPageContent = ({
     editHref,
     actions,
     onDelete,
+    onFeePress,
     onOpenRefundSources,
     onOpenConsolidationSources
 }: TransactionInfoPagePropsInterface) => {
     const router = useRouter();
     const { t } = useLingui();
-    const { minimumHeight, revealOffset, onEndLayout, onAmountLayout, onContentLayout, scrollRef, handleScrollEnd } =
+    const { minimumHeight, revealRange, onTitleLayout, onBodyLayout, onContentLayout, scrollRef, handleScrollEnd } =
         useTransactionInfoHandoff();
+    const undoRefund = useRevertConsolidation(transaction.id, () => void dismissAllOrReplace('/'), true);
     const { stats, isLoading } = useTransactionInfoSimilarStatsQuery(transaction);
     const { enabledRules } = useGetEnabledRulesQuery();
     const firstEntry = transaction.entries.at(0);
@@ -61,28 +64,22 @@ export const TransactionInfoPageContent = ({
 
     const isRefundPurchase = transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND;
     const handleGoBack = () => void router.back();
+    const handleDestructiveAction = isRefundPurchase ? undoRefund : onDelete;
 
     return (
         <ScreenChromeFrame testID={TransactionInfoPageSelector.Page}>
             <TransactionInfoScrollView scrollRef={scrollRef} onScrollEnd={handleScrollEnd} minimumHeight={minimumHeight}>
                 <View className="px-3xl" onLayout={onContentLayout}>
-                    <TransactionInfoHero
-                        transaction={transaction}
-                        matchingRuleIds={matchingRuleIds}
-                        onTitleLayout={onAmountLayout}
-                        onEndLayout={onEndLayout}
-                    />
+                    <TransactionInfoHero transaction={transaction} matchingRuleIds={matchingRuleIds} onTitleLayout={onTitleLayout} />
 
-                    <View className="gap-y-5xl">
+                    <View className="gap-y-5xl" onLayout={onBodyLayout}>
                         <TransactionInfoGroup>
                             <TransactionInfoAccountRows transaction={transaction} />
-                            <TransactionInfoMoneyRows transaction={transaction} />
+                            <TransactionInfoMoneyRows transaction={transaction} onFeePress={onFeePress} />
                             {isRefundPurchase ? <TransactionInfoRefundSummary transaction={transaction} /> : null}
                             <TransactionInfoCategoryRows transaction={transaction} />
                             <TransactionInfoTagsSection transaction={transaction} />
                         </TransactionInfoGroup>
-
-                        {isRefundPurchase ? <TransactionInfoUndoRefundGroup transactionId={transaction.id} /> : null}
 
                         <TransactionInfoNoteGroup transaction={transaction} />
 
@@ -96,14 +93,14 @@ export const TransactionInfoPageContent = ({
 
                         {actions}
 
-                        {isRefundPurchase ? null : <TransactionInfoDeleteRow transaction={transaction} onDelete={onDelete} />}
+                        <TransactionInfoDeleteRow transaction={transaction} onDelete={handleDestructiveAction} />
                     </View>
                 </View>
             </TransactionInfoScrollView>
 
             <TransactionInfoNavBand />
 
-            <TransactionInfoHeader transaction={transaction} editHref={editHref} revealOffset={revealOffset} onGoBack={handleGoBack} />
+            <TransactionInfoHeader transaction={transaction} editHref={editHref} revealRange={revealRange} onGoBack={handleGoBack} />
         </ScreenChromeFrame>
     );
 };
