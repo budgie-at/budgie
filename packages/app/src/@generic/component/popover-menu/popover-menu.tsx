@@ -26,7 +26,7 @@ interface Props {
     readonly onCloseComplete?: EmptyFn;
     readonly children: ReactNode;
     readonly anchor?: PopoverMenuAnchor;
-    readonly placement?: 'bottom' | 'auto';
+    readonly placement?: 'bottom' | 'auto' | 'top';
     readonly align?: 'end' | 'auto';
 }
 
@@ -34,7 +34,7 @@ interface Props {
 export const PopoverMenu = ({ isOpen, onClose, onCloseComplete, children, anchor, placement = 'auto', align = 'end' }: Props) => {
     const { t } = useLingui();
     const { width: screenWidth, height: screenHeight } = useWindowDimensions();
-    const { bottom: safeBottom } = useSafeAreaInsets();
+    const { top: safeTop, bottom: safeBottom } = useSafeAreaInsets();
     const { isRendered, isVisible, handleDismiss, backdropStyle, menuStyle } = usePopoverAnimation(isOpen, onCloseComplete);
     const [menuHeight, setMenuHeight] = useState(0);
     const onCloseRef = useRef(onClose);
@@ -58,7 +58,9 @@ export const PopoverMenu = ({ isOpen, onClose, onCloseComplete, children, anchor
 
     const hasAnchor = isDefined(anchor);
     const spaceBelow = hasAnchor ? screenHeight - safeBottom - (anchor.y + anchor.height) - ANCHOR_OFFSET : 0;
-    const shouldFlipAbove = hasAnchor && placement === 'auto' && menuHeight > 0 && menuHeight > spaceBelow;
+    const fitsAbove = hasAnchor && anchor.y - menuHeight - ANCHOR_OFFSET >= safeTop;
+    const prefersAbove = placement === 'top' ? fitsAbove : menuHeight > spaceBelow;
+    const shouldFlipAbove = hasAnchor && placement !== 'bottom' && menuHeight > 0 && prefersAbove;
 
     let menuTop = DEFAULT_MENU_TOP;
     if (hasAnchor && shouldFlipAbove) {
@@ -69,7 +71,7 @@ export const PopoverMenu = ({ isOpen, onClose, onCloseComplete, children, anchor
 
     const menuRight = hasAnchor ? screenWidth - anchor.x - anchor.width : MENU_MARGIN;
     const isStartAligned = hasAnchor && align === 'auto' && anchor.x + anchor.width / 2 < screenWidth / 2;
-    const isMeasuring = hasAnchor && placement === 'auto' && menuHeight === 0;
+    const isMeasuring = hasAnchor && placement !== 'bottom' && menuHeight === 0;
     const measuringStyle: ViewStyle | null = isMeasuring ? { opacity: 0 } : null;
 
     const menuMaxWidth = screenWidth - MENU_MARGIN * 2;

@@ -46,9 +46,9 @@ export const TransactionInfoMoreActionsRow = ({ items }: Props) => {
                 </TransactionInfoActionLabel>
             </HapticPressable>
 
-            <PopoverMenu isOpen={isOpen} onClose={closeMenu} onCloseComplete={handleCloseComplete} anchor={anchor}>
+            <PopoverMenu isOpen={isOpen} onClose={closeMenu} onCloseComplete={handleCloseComplete} anchor={anchor} placement="top">
                 <TransactionActionsMenuContext.Provider value={closeMenu}>
-                    <View className="py-sm">
+                    <View className="min-w-[280px] py-sm">
                         {items.map(item => (
                             <TransactionConvertMenuItem
                                 key={item.key}
