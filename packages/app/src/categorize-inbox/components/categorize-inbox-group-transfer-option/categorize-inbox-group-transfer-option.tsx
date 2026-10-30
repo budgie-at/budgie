@@ -20,6 +20,8 @@ export const CategorizeInboxGroupTransferOption = ({ cluster, isLead }: Props) =
     const defaultSubtitle = isIncome ? t`Leaves your income` : t`Not counted as spending`;
     const subtitle = isLead ? t`Suggested` : defaultSubtitle;
 
+    const variant = isLead ? 'suggested' : 'regular';
+
     const handlePress = (): void => void router.push({ pathname: '/categorize/transfer/[key]', params: { key: cluster.key } });
 
     return (
@@ -27,7 +29,7 @@ export const CategorizeInboxGroupTransferOption = ({ cluster, isLead }: Props) =
             icon={UserIconNameEnum.ArrowLeftRight}
             title={t`Transfer to an account`}
             subtitle={subtitle}
-            isLead={isLead}
+            variant={variant}
             accessory={<CategorizeInboxOptionChevron />}
             onPress={handlePress}
         />

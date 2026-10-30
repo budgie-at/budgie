@@ -10,7 +10,7 @@ interface Props {
 
 export const CategorizeInboxGroupStat = ({ value, label, className }: Props) => (
     <View className={cn('flex-1 gap-y-xxs', className)}>
-        <Text className="text-primary text-lg font-semibold tabular-nums" numberOfLines={1}>
+        <Text className="text-primary text-md font-semibold tabular-nums" numberOfLines={1}>
             {value}
         </Text>
         <Text className="text-secondary-foreground text-xs">{label}</Text>

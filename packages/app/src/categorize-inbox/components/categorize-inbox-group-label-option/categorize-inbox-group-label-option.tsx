@@ -1,10 +1,8 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 
-import { Icon } from '../../../@generic/component/icon/icon';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 import { CategorizeInboxOptionRow } from '../categorize-inbox-option-row/categorize-inbox-option-row';
 
@@ -22,15 +20,16 @@ export const CategorizeInboxGroupLabelOption = ({ cluster, label, isBestMatch }:
     const router = useRouter();
     const { assignCluster, includedRows } = useCategorizeInboxContext();
 
-    const labelTitle = label.title;
     const count = includedRows(cluster).length;
-    const title = isBestMatch
-        ? t({ message: plural(count, { one: `File # payment as ${labelTitle}`, other: `File # payments as ${labelTitle}` }) })
-        : labelTitle;
-    const subtitleProps = { ...(isBestMatch && { subtitle: t`Best match` }) };
+    const variant = isBestMatch ? 'best' : 'regular';
+    const subtitleProps = {
+        ...(isBestMatch && { subtitle: t({ message: plural(count, { one: 'Best match · # payment', other: 'Best match · # payments' }) }) })
+    };
     const accessory = isBestMatch ? (
-        <View className="bg-positive-fill size-7 items-center justify-center rounded-full">
-            <Icon icon={UserIconNameEnum.Check} size={16} className="text-white" />
+        <View className="bg-positive-fill h-[32px] items-center justify-center rounded-full px-xl">
+            <Text className="text-sm font-semibold text-white">
+                <Trans context="Apply a category action">File</Trans>
+            </Text>
         </View>
     ) : null;
 
@@ -42,9 +41,8 @@ export const CategorizeInboxGroupLabelOption = ({ cluster, label, isBestMatch }:
     return (
         <CategorizeInboxOptionRow
             icon={label.icon}
-            title={title}
-            testKey={labelTitle}
-            isLead={isBestMatch}
+            title={label.title}
+            variant={variant}
             accessory={accessory}
             {...subtitleProps}
             onPress={handlePress}

@@ -43,7 +43,7 @@ export const CategorizeInboxGroupLearnedTransferOption = ({ cluster }: Props) =>
             icon={UserIconNameEnum.ArrowLeftRight}
             title={t`Transfer to ${title}`}
             subtitle={t`Suggested`}
-            isLead
+            variant="best"
             onPress={handlePress}
         />
     );

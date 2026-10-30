@@ -8,7 +8,6 @@ import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-am
 import { CategorizeInboxFindingKindEnum } from '../../enum/categorize-inbox-finding-kind.enum';
 import { useCategorizeInboxMatchedAccount } from '../../hook/use-categorize-inbox-matched-account.hook';
 import { getCategorizeInboxFinding } from '../../utils/get-categorize-inbox-finding.util';
-import { CategorizeInboxFindingEmphasis } from '../categorize-inbox-finding-emphasis/categorize-inbox-finding-emphasis';
 
 import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
 import type { ReactNode } from 'react';
@@ -55,24 +54,15 @@ export const CategorizeInboxGroupFinding = ({ cluster }: Props) => {
 
     const jarTopUpBody = (
         <Text>
-            {rateBody} <CategorizeInboxFindingEmphasis>{topUpEmphasis}</CategorizeInboxFindingEmphasis>
+            {rateBody} {topUpEmphasis}
         </Text>
     );
 
     const bodies: Record<CategorizeInboxFindingKindEnum, ReactNode> = {
-        [CategorizeInboxFindingKindEnum.CASH]: (
-            <Trans>
-                <CategorizeInboxFindingEmphasis>Cash from an ATM.</CategorizeInboxFindingEmphasis> Move it to your cash wallet or mark it
-                tracked.
-            </Trans>
-        ),
+        [CategorizeInboxFindingKindEnum.CASH]: <Trans>Cash from an ATM. Move it to your cash wallet or mark it tracked.</Trans>,
         [CategorizeInboxFindingKindEnum.JAR_TOP_UP]: jarTopUpBody,
-        [CategorizeInboxFindingKindEnum.JAR_RETURN]: <CategorizeInboxFindingEmphasis>{returnEmphasis}</CategorizeInboxFindingEmphasis>,
-        [CategorizeInboxFindingKindEnum.MONTHLY]: (
-            <CategorizeInboxFindingEmphasis>
-                <Trans>Arrives once a month.</Trans>
-            </CategorizeInboxFindingEmphasis>
-        ),
+        [CategorizeInboxFindingKindEnum.JAR_RETURN]: returnEmphasis,
+        [CategorizeInboxFindingKindEnum.MONTHLY]: <Trans>Arrives once a month.</Trans>,
         [CategorizeInboxFindingKindEnum.GENERIC]: <Trans>{count} payments with exactly this title.</Trans>
     };
 

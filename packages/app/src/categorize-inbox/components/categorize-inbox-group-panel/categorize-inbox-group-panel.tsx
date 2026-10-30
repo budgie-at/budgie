@@ -27,7 +27,7 @@ export const CategorizeInboxGroupPanel = ({ cluster }: Props) => {
     const barClassName = cluster.section === CategorizeInboxSectionEnum.CONFIDENT ? 'bg-positive-fill' : 'bg-secondary-foreground';
 
     return (
-        <View className="bg-secondary-background gap-y-xl rounded-3xl p-xl">
+        <View className="bg-secondary-background gap-y-lg rounded-3xl p-xl">
             <Text className="text-secondary-foreground text-xs">
                 <Trans>Payments per month</Trans>
             </Text>

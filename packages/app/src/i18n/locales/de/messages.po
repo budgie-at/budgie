@@ -156,8 +156,8 @@ msgid "{count, plural, one {# your call} other {# your call}}"
 msgstr "{count, plural, one {# deine Wahl} other {# deine Wahl}}"
 
 #: src/categorize-inbox/components/categorize-inbox-group-label-option/categorize-inbox-group-label-option.tsx
-msgid "{count, plural, one {File # payment as {labelTitle}} other {File # payments as {labelTitle}}}"
-msgstr "{count, plural, one {# Zahlung als {labelTitle} ablegen} other {# Zahlungen als {labelTitle} ablegen}}"
+msgid "{count, plural, one {Best match · # payment} other {Best match · # payments}}"
+msgstr "{count, plural, one {Beste Übereinstimmung · # Zahlung} other {Beste Übereinstimmung · # Zahlungen}}"
 
 #: src/category/hooks/use-delete-category.hook.ts
 msgid "{count, plural, one {This category has # transaction. Select another category to reassign it to.} other {This category has # transactions. Select another category to reassign them to.}}"
@@ -428,6 +428,10 @@ msgid "{rowCount, plural, one {Categorized # transaction} other {Categorized # t
 msgstr "{rowCount, plural, one {# Transaktion kategorisiert} other {# Transaktionen kategorisiert}}"
 
 #: src/categorize-inbox/components/categorize-inbox-accept-all-button/categorize-inbox-accept-all-button.tsx
+msgid "{rowCount, plural, one {File # ready payment · {total}} other {File # ready payments · {total}}}"
+msgstr "{rowCount, plural, one {# fertige Zahlung ablegen · {total}} other {# fertige Zahlungen ablegen · {total}}}"
+
+#: src/categorize-inbox/components/categorize-inbox-accept-all-button/categorize-inbox-accept-all-button.tsx
 msgid "{rowCount, plural, one {File # ready payment} other {File # ready payments}}"
 msgstr "{rowCount, plural, one {# bereite Zahlung ablegen} other {# bereite Zahlungen ablegen}}"
 
@@ -561,10 +565,6 @@ msgstr "+{hiddenCategoryCount} weitere"
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "<"
 msgstr "<"
-
-#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
-msgid "<0>Cash from an ATM.</0> Move it to your cash wallet or mark it tracked."
-msgstr "<0>Bargeld vom Geldautomaten.</0> Verschiebe es in deine Bargeldbörse oder markiere es als erfasst."
 
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid ">"
@@ -1160,10 +1160,6 @@ msgstr "Basierend auf deinen letzten Ausgaben"
 msgid "Becomes a transfer to your cash wallet"
 msgstr "Wird zu einer Überweisung auf deine Bargeldbörse"
 
-#: src/categorize-inbox/components/categorize-inbox-group-label-option/categorize-inbox-group-label-option.tsx
-msgid "Best match"
-msgstr "Beste Übereinstimmung"
-
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "between"
 msgstr "zwischen"
@@ -1381,6 +1377,10 @@ msgstr "Ersparnis übertragen"
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "Cash"
 msgstr "Bargeld"
+
+#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
+msgid "Cash from an ATM. Move it to your cash wallet or mark it tracked."
+msgstr "Bargeld vom Geldautomaten. Verschiebe es in deine Bargeldbörse oder markiere es als erfasst."
 
 #: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
 msgid "Cash withdrawals"
@@ -2802,6 +2802,11 @@ msgstr "Feld"
 #: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
 msgid "File"
 msgstr "Datei"
+
+#: src/categorize-inbox/components/categorize-inbox-group-label-option/categorize-inbox-group-label-option.tsx
+msgctxt "Apply a category action"
+msgid "File"
+msgstr "Ablegen"
 
 #: src/categorize-inbox/components/categorize-inbox-group-row-file-button/categorize-inbox-group-row-file-button.tsx
 msgid "File as {candidateTitle}"

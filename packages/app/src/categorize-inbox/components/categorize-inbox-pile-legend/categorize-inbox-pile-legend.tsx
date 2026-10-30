@@ -27,9 +27,11 @@ export const CategorizeInboxPileLegend = () => {
         <View className="flex-row flex-wrap gap-x-lg gap-y-xs">
             {segments
                 .filter(({ count }) => isPositiveNumber(count))
-                .map(({ section, className, count }) => (
-                    <CategorizeInboxPileLegendItem key={section} dotClassName={className} text={sectionTexts[section](count)} />
-                ))}
+                .map(({ section, className, count }) => {
+                    const dotClassName = section === CategorizeInboxSectionEnum.ONE_OFFS ? 'border border-secondary-foreground' : className;
+
+                    return <CategorizeInboxPileLegendItem key={section} dotClassName={dotClassName} text={sectionTexts[section](count)} />;
+                })}
             {isPositiveNumber(categorizedCount) ? (
                 <CategorizeInboxPileLegendItem dotClassName="border border-secondary-foreground bg-secondary-corner" text={sortedText} />
             ) : null}

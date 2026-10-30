@@ -36,28 +36,29 @@ export const CategorizeInboxGroupRow = ({ cluster }: Props) => {
         <View className="border-t-hairline border-secondary-corner">
             <Link href={href} asChild>
                 <HapticPressable
-                    className="flex-row items-center gap-x-md min-h-[68px] py-lg active:bg-secondary-background"
+                    className="min-h-[64px] flex-row items-center gap-x-md py-lg active:bg-secondary-background"
                     accessibilityRole="link"
                     {...testID(CategorizeInboxGroupRowSelector.Row, key)}
                 >
-                    <View className="flex-1 gap-y-xxs">
-                        <Text className="text-md font-semibold text-primary" numberOfLines={1}>
-                            {displayTitle}
-                        </Text>
-                        <Text className="text-xs text-secondary-foreground tabular-nums" numberOfLines={1}>
-                            {countText}
-                        </Text>
-                    </View>
-
-                    <View className="max-w-[55%] items-end gap-y-xxs">
-                        <CategorizeInboxGroupRowAmount cluster={cluster} />
-                        {isCash || isConfident ? <View className="h-[24px]" /> : <CategorizeInboxGroupRowHint cluster={cluster} />}
+                    <View className="flex-1 gap-y-xs">
+                        <View className="flex-row items-baseline gap-x-md">
+                            <Text className="flex-1 text-md font-semibold text-primary" numberOfLines={1}>
+                                {displayTitle}
+                            </Text>
+                            <CategorizeInboxGroupRowAmount cluster={cluster} />
+                        </View>
+                        <View className="h-[24px] flex-row items-center justify-between gap-x-md">
+                            <Text className="shrink text-xs text-secondary-foreground tabular-nums" numberOfLines={1}>
+                                {countText}
+                            </Text>
+                            {isCash || isConfident ? <View /> : <CategorizeInboxGroupRowHint cluster={cluster} />}
+                        </View>
                     </View>
                     <CategorizeInboxOptionChevron />
                 </HapticPressable>
             </Link>
 
-            <View className="absolute bottom-[10px] right-[30px] max-w-[55%]">
+            <View className="absolute bottom-[10px] right-[26px] max-w-[60%]">
                 {isCash ? <CategorizeInboxGroupRowCashButton cluster={cluster} /> : null}
                 {isConfident ? <CategorizeInboxGroupRowFileButton cluster={cluster} /> : null}
             </View>

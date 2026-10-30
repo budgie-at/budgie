@@ -1,6 +1,6 @@
 import { Text, View } from 'react-native';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isNotEmptyString } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -15,30 +15,32 @@ interface Props {
     readonly title: string;
     readonly subtitle?: string;
     readonly accessory?: ReactNode;
-    readonly isLead?: boolean;
-    readonly testKey?: string;
+    readonly variant?: 'regular' | 'best' | 'suggested';
     readonly onPress: () => void;
 }
 
-export const CategorizeInboxOptionRow = ({ icon, title, subtitle, accessory, isLead = false, testKey, onPress }: Props) => {
-    const iconVariant = isLead ? 'positive' : 'secondary';
-    const rowClassName = isLead
-        ? 'bg-positive-fill/12 flex-row items-center gap-x-xl rounded-2xl px-xl py-xl'
-        : 'border-t-hairline border-secondary-corner flex-row items-center gap-x-xl py-lg';
-    const subtitleClassName = isLead ? 'text-positive-foreground text-xs font-medium' : 'text-secondary-foreground text-xs';
+export const CategorizeInboxOptionRow = ({ icon, title, subtitle, accessory, variant = 'regular', onPress }: Props) => {
+    const isBest = variant === 'best';
+    const isRegular = variant === 'regular';
+    const iconVariant = isBest ? 'positive' : 'secondary';
+    const surfaceClassName = isBest ? 'bg-positive-fill/12' : 'bg-secondary-background';
+    const rowClassName = isRegular
+        ? 'border-t-hairline border-secondary-corner flex-row items-center gap-x-xl py-lg'
+        : `${surfaceClassName} flex-row items-center gap-x-xl rounded-2xl px-xl py-xl`;
+    const subtitleClassName = isBest ? 'text-positive-foreground text-xs font-medium' : 'text-secondary-foreground text-xs';
+    const titleClassName = isRegular ? 'text-primary text-md' : 'text-primary text-md font-semibold';
     const subtitleNode = isNotEmptyString(subtitle) ? <Text className={subtitleClassName}>{subtitle}</Text> : null;
-    const selectorTitle = isDefined(testKey) ? testKey : title;
 
     return (
         <HapticPressable
             onPress={onPress}
             className={rowClassName}
             accessibilityRole="button"
-            {...testID(CategorizeInboxGroupScreenSelector.Option, selectorTitle)}
+            {...testID(CategorizeInboxGroupScreenSelector.Option, title)}
         >
             <CircleIcon icon={icon} variant={iconVariant} size={36} iconSize={18} border={false} />
             <View className="flex-1 gap-y-xxs">
-                <Text className="text-primary text-md font-semibold" numberOfLines={2}>
+                <Text className={titleClassName} numberOfLines={2}>
                     {title}
                 </Text>
                 {subtitleNode}

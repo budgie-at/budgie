@@ -33,9 +33,18 @@ export const CategorizeInboxPaymentsScreen = ({ clusterKey }: Props) => {
                     <CategorizeInboxPaymentsSummary cluster={cluster} />
                 </CategorizeInboxScreenTitle>
 
-                {groupCategorizeInboxRowsByMonth(cluster.rows).map(group => (
-                    <CategorizeInboxPaymentsMonth key={group.month.getTime()} group={group} displayTitle={cluster.displayTitle} />
-                ))}
+                {groupCategorizeInboxRowsByMonth(cluster.rows).map((group, index) => {
+                    const monthClassName = index === 0 ? '' : 'border-t-hairline border-secondary-corner';
+
+                    return (
+                        <CategorizeInboxPaymentsMonth
+                            key={group.month.getTime()}
+                            group={group}
+                            displayTitle={cluster.displayTitle}
+                            className={monthClassName}
+                        />
+                    );
+                })}
             </CategorizeInboxScreenScroll>
         </CategorizeInboxScreenChrome>
     );
