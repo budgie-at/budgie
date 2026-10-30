@@ -359,23 +359,22 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                     source: BinanceHistorySourceEnum.DUST,
                     run: (fromUnixTime: number, toUnixTime: number | null) =>
                         commitTransferRange(token, BinanceHistorySourceEnum.DUST, client.getDustTransfers(fromUnixTime, toUnixTime))
-                },
-                {
-                    source: BinanceHistorySourceEnum.FIAT,
-                    run: (fromUnixTime: number, toUnixTime: number | null) => commitFiatRange(token, fromUnixTime, toUnixTime)
                 }
             ];
+            const runHistorySource = <E, R>(
+                source: BinanceHistorySourceEnum,
+                runSource: (from: number, to: number | null) => Effect.Effect<number, E, R>
+            ) => client.isolateSourceFailure(syncHistorySource(sync, token, source, runSource));
             yield* fetchExchangeAccounts(token);
-            const committedCounts = yield* Effect.forEach(
-                historySources,
-                ({ source, run: runSource }) => client.isolateSourceFailure(syncHistorySource(sync, token, source, runSource)),
-                { concurrency: 'unbounded' }
-            );
+            const committedCounts = yield* Effect.forEach(historySources, ({ source, run }) => runHistorySource(source, run), {
+                concurrency: 'unbounded'
+            });
+            const fiatCount = yield* runHistorySource(BinanceHistorySourceEnum.FIAT, (from, to) => commitFiatRange(token, from, to));
             if (!isRunDeferred() && !client.hasSourceFailure()) {
                 patchTokenRun(token, { sourcesSynced: true });
             }
 
-            return committedCounts.reduce((total, count) => total + count, 0);
+            return committedCounts.reduce((total, count) => total + count, fiatCount);
         });
 
         const runSyncPhases = Effect.fn('BinanceSyncService.runSyncPhases')(function* (
