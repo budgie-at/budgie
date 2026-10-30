@@ -2,7 +2,6 @@ import { AccountRepository, SyncModeEnum, SyncRepository } from '@budgie/contrac
 import { AccountBalanceIncrementalService } from '@budgie/ledger';
 import { getUnixTime } from 'date-fns/getUnixTime';
 import { subHours } from 'date-fns/subHours';
-import { subYears } from 'date-fns/subYears';
 import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -70,7 +69,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             BinanceHistorySourceEnum.DUST
         ]);
         const decodeCredentials = Schema.decodeUnknownEffect(Schema.fromJsonString(BinanceCredentialsSchema));
-        const transferLookbackYears = 5;
+        const historyStartedAt = new Date('2017-07-01T00:00:00.000Z');
         const fiatBackfillChunkSeconds = 365 * 24 * 60 * 60;
         const headOverlapSeconds = forwardOverlapHours * 60 * 60;
         const freshRunState = (deadlineAtMs: number, startedAtMs: number): BinanceRunStateInterface => ({
@@ -89,21 +88,13 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             run = { ...run, isDeferred: true };
         });
 
-        const resolveLookbackStart = (sync: SyncEntityInterface): Date =>
-            subYears(
-                sync.mode === SyncModeEnum.BACKWARD
-                    ? (sync.backwardSyncFromAt ?? sync.forwardSyncFromAt ?? new Date())
-                    : (sync.forwardSyncFromAt ?? new Date()),
-                transferLookbackYears
-            );
-
         const resolveWindowStart = (sync: SyncEntityInterface): Date =>
             sync.mode !== SyncModeEnum.BACKWARD && isDefined(sync.forwardSyncedAt)
                 ? subHours(sync.forwardSyncedAt, forwardOverlapHours)
-                : resolveLookbackStart(sync);
+                : historyStartedAt;
 
-        const resolveHeadStartSeconds = (sync: SyncEntityInterface, headAt: number): number =>
-            Math.max(getUnixTime(resolveLookbackStart(sync)), Math.floor(headAt / 1000) - headOverlapSeconds);
+        const resolveHeadStartSeconds = (headAt: number): number =>
+            Math.max(getUnixTime(historyStartedAt), Math.floor(headAt / 1000) - headOverlapSeconds);
 
         const isFiatRefreshDue = (token: string): boolean => {
             const fiatSyncedAtMs = fiatSyncedAtMsByToken.get(token);
@@ -249,7 +240,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             const isFiat = source === BinanceHistorySourceEnum.FIAT;
             const integration = yield* syncIntegrationTokenService.getOrCreateIntegration(provider, token);
             const progress = yield* binanceHistoryProgressService.find(integration.id, source);
-            const lookbackSeconds = getUnixTime(resolveLookbackStart(sync));
+            const lookbackSeconds = getUnixTime(historyStartedAt);
             const isBackfillPending = isDefined(progress)
                 ? Math.floor(progress.tailAt / 1000) > lookbackSeconds
                 : isFiat || newHistorySources.has(source) || sync.mode === SyncModeEnum.BACKWARD || !isDefined(sync.forwardSyncedAt);
@@ -259,7 +250,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             if (!isBackfillPending) {
                 const isHeadResumable = sync.mode === SyncModeEnum.BACKWARD && isDefined(progress);
                 const windowStartSeconds = isHeadResumable
-                    ? resolveHeadStartSeconds(sync, progress.headAt)
+                    ? resolveHeadStartSeconds(progress.headAt)
                     : getUnixTime(resolveWindowStart(sync));
 
                 return isFiat && !isFiatRefreshDue(token) ? 0 : yield* fetchRange(windowStartSeconds, null);
@@ -269,7 +260,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             const startedAtSeconds = Math.floor(run.startedAtMs / 1000);
             let committedCount = 0;
             if (isDefined(progress)) {
-                committedCount += yield* fetchRange(resolveHeadStartSeconds(sync, progress.headAt), null);
+                committedCount += yield* fetchRange(resolveHeadStartSeconds(progress.headAt), null);
                 if (isRunDeferred() || client.isSourceSkipped(source)) {
                     return committedCount;
                 }
