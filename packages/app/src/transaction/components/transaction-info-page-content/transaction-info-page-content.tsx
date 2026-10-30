@@ -6,7 +6,7 @@ import { useRouter } from 'expo-router';
 import { View } from 'react-native';
 
 import { ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
-import { isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
+import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { dismissAllOrReplace } from '../../../@generic/utils/dismiss-all-or-replace.util';
 import { useGetEnabledRulesQuery } from '../../../rule/query/use-get-enabled-rules.query';
@@ -19,7 +19,6 @@ import { TransactionActionsMenuSelector } from '../transaction-actions-menu/tran
 import { TransactionInfoAccountRows } from '../transaction-info-account-rows/transaction-info-account-rows';
 import { TransactionInfoActionsGroup } from '../transaction-info-actions-group/transaction-info-actions-group';
 import { TransactionInfoCategoryRows } from '../transaction-info-category-rows/transaction-info-category-rows';
-import { TransactionInfoCreateRuleRow } from '../transaction-info-create-rule-row/transaction-info-create-rule-row';
 import { TransactionInfoGroup } from '../transaction-info-group/transaction-info-group';
 import { TransactionInfoHeader } from '../transaction-info-header/transaction-info-header';
 import { TransactionInfoHero } from '../transaction-info-hero/transaction-info-hero';
@@ -90,7 +89,6 @@ export const TransactionInfoPageContent = ({
                             {isRefundPurchase ? <TransactionInfoRefundSummary transaction={transaction} /> : null}
                             <TransactionInfoCategoryRows transaction={transaction} />
                             <TransactionInfoTagsSection transaction={transaction} />
-                            {isEmptyArray(pageActionItems) ? <TransactionInfoCreateRuleRow transaction={transaction} /> : null}
                         </TransactionInfoGroup>
 
                         <TransactionInfoNoteGroup

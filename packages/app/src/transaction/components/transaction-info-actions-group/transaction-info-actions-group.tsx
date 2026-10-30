@@ -21,21 +21,19 @@ export const TransactionInfoActionsGroup = ({ transaction, items, onDelete }: Pr
 
     return (
         <>
-            {isNotEmptyArray(items) ? (
-                <TransactionInfoGroup>
-                    <TransactionInfoCreateRuleRow transaction={transaction} />
-                    {primaryItems.map(item => (
-                        <TransactionInfoActionRow
-                            key={item.key}
-                            icon={item.icon}
-                            label={item.label}
-                            onPress={item.onPress}
-                            testID={item.testID}
-                        />
-                    ))}
-                    {isNotEmptyArray(moreItems) ? <TransactionInfoMoreActionsRow items={moreItems} /> : null}
-                </TransactionInfoGroup>
-            ) : null}
+            <TransactionInfoGroup>
+                <TransactionInfoCreateRuleRow transaction={transaction} />
+                {primaryItems.map(item => (
+                    <TransactionInfoActionRow
+                        key={item.key}
+                        icon={item.icon}
+                        label={item.label}
+                        onPress={item.onPress}
+                        testID={item.testID}
+                    />
+                ))}
+                {isNotEmptyArray(moreItems) ? <TransactionInfoMoreActionsRow items={moreItems} /> : null}
+            </TransactionInfoGroup>
             <TransactionInfoGroup>
                 <TransactionInfoDeleteRow transaction={transaction} onDelete={onDelete} />
             </TransactionInfoGroup>
