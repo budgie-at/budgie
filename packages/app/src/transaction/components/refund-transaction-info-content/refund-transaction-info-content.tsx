@@ -36,7 +36,7 @@ export const RefundTransactionInfoContent = ({ transaction, parentTransaction }:
     const router = useRouter();
     const removeRefund = useRevertConsolidation(parentTransaction.id, router.back, true);
     const formatDigits = useProtectedAmountLabel();
-    const { minimumHeight, revealRange, onTitleLayout, onBodyLayout, onContentLayout, scrollRef, handleScrollEnd } =
+    const { minimumHeight, handoff, onAmountLayout, onTextLayout, onBodyLayout, onContentLayout, scrollRef, handleScrollEnd } =
         useTransactionInfoHandoff();
     const { sources } = useGetConsolidationSourcesQuery(parentTransaction.id);
     const source = sources.find(row => row.sourceTransactionId === transaction.id);
@@ -58,7 +58,9 @@ export const RefundTransactionInfoContent = ({ transaction, parentTransaction }:
                         amount={amount}
                         title={t`Refund from ${merchant}`}
                         operatedAt={transaction.operatedAt}
-                        onTitleLayout={onTitleLayout}
+                        handoff={handoff}
+                        onAmountLayout={onAmountLayout}
+                        onTextLayout={onTextLayout}
                     />
                     <View className="gap-y-5xl" onLayout={onBodyLayout}>
                         <TransactionInfoGroup footnote={t`Manage this refund from the original purchase.`}>
@@ -77,7 +79,9 @@ export const RefundTransactionInfoContent = ({ transaction, parentTransaction }:
                             />
                         </TransactionInfoGroup>
                         <TransactionInfoNoteGroup transaction={transaction} />
-                        <TransactionInfoDeleteRow transaction={transaction} onDelete={removeRefund} />
+                        <TransactionInfoGroup>
+                            <TransactionInfoDeleteRow transaction={transaction} onDelete={removeRefund} />
+                        </TransactionInfoGroup>
                     </View>
                 </View>
             </TransactionInfoScrollView>
@@ -85,7 +89,7 @@ export const RefundTransactionInfoContent = ({ transaction, parentTransaction }:
             <TransactionInfoHeader
                 transaction={transaction}
                 editHref={null}
-                revealRange={revealRange}
+                handoff={handoff}
                 onGoBack={router.back}
                 compactTitle={t`Refund from ${merchant}`}
                 compactAmount={amount}

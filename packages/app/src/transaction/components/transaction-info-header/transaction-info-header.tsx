@@ -7,6 +7,7 @@ import { GoBackButton } from '../../../@generic/component/go-back-button/go-back
 import { TransactionInfoEditButton } from '../transaction-info-edit-button/transaction-info-edit-button';
 import { TransactionInfoNavTitle } from '../transaction-info-nav-title/transaction-info-nav-title';
 
+import type { TransactionInfoHandoffInterface } from '../../interface/transaction-info-handoff.interface';
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import type { Href } from 'expo-router';
 import type { LayoutChangeEvent } from 'react-native';
@@ -14,7 +15,7 @@ import type { LayoutChangeEvent } from 'react-native';
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly editHref: Href | null;
-    readonly revealRange: readonly [number, number];
+    readonly handoff: TransactionInfoHandoffInterface;
     readonly compactTitle?: string;
     readonly compactAmount?: string;
     readonly onGoBack: () => void;
@@ -23,7 +24,7 @@ interface Props {
 const DEFAULT_CONTROL_WIDTH = 44;
 
 export const TransactionInfoHeader = (props: Props) => {
-    const { transaction, editHref, revealRange, onGoBack, compactTitle, compactAmount } = props;
+    const { transaction, editHref, handoff, onGoBack, compactTitle, compactAmount } = props;
     const [leadingWidth, setLeadingWidth] = useState(DEFAULT_CONTROL_WIDTH);
     const [trailingWidth, setTrailingWidth] = useState(DEFAULT_CONTROL_WIDTH);
     const handleLeadingLayout = (event: LayoutChangeEvent) => void setLeadingWidth(event.nativeEvent.layout.width);
@@ -34,7 +35,7 @@ export const TransactionInfoHeader = (props: Props) => {
         <>
             <TransactionInfoNavTitle
                 transaction={transaction}
-                revealRange={revealRange}
+                handoff={handoff}
                 horizontalInset={horizontalInset}
                 compactTitle={compactTitle}
                 compactAmount={compactAmount}

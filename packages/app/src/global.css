@@ -81,6 +81,9 @@
             --color-surface: rgb(255, 255, 255);
             --color-surface-row: rgba(10, 10, 10, 0.05);
             --color-transaction-detail-row: rgb(255, 255, 255);
+            --color-transaction-detail-bar: rgba(249, 249, 249, 0.92);
+            --color-popover-surface: rgb(255, 255, 255);
+            --color-popover-border: rgba(60, 60, 67, 0.18);
             --color-transaction-detail-secondary: rgba(107, 107, 107, 1);
             --color-grouped-surface: rgb(242, 242, 247);
             --color-grouped-surface-row: rgb(255, 255, 255);
@@ -164,6 +167,9 @@
             --color-surface: rgb(0, 0, 0);
             --color-surface-row: rgba(255, 255, 255, 0.05);
             --color-transaction-detail-row: rgb(28, 28, 30);
+            --color-transaction-detail-bar: rgba(22, 22, 24, 0.92);
+            --color-popover-surface: rgb(44, 44, 46);
+            --color-popover-border: rgba(255, 255, 255, 0.16);
             --color-transaction-detail-secondary: rgba(178, 178, 186, 1);
             --color-grouped-surface: rgb(0, 0, 0);
             --color-grouped-surface-row: rgba(255, 255, 255, 0.05);
@@ -252,6 +258,10 @@
 @utility border-y-hairline {
     border-top-width: hairlineWidth();
     border-bottom-width: hairlineWidth();
+}
+
+@utility border-hairline {
+    border-width: hairlineWidth();
 }
 
 @utility border-b-hairline {

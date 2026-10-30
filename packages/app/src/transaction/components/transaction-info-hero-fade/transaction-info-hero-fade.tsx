@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import Animated, { Extrapolation, interpolate, useAnimatedStyle } from 'react-native-reanimated';
 
 import { useScreenChromeScrollY } from '@rnw-community/react-native-screen-chrome';
@@ -8,25 +7,20 @@ import type { LayoutChangeEvent } from 'react-native';
 
 interface Props {
     readonly children: ReactNode;
+    readonly range: readonly [number, number];
     readonly onLayout?: (event: LayoutChangeEvent) => void;
     readonly className?: string;
 }
 
-export const TransactionInfoHeroFade = ({ children, onLayout, className }: Props) => {
+export const TransactionInfoHeroFade = ({ children, range, onLayout, className }: Props) => {
     const scrollY = useScreenChromeScrollY();
-    const [top, setTop] = useState(Number.MAX_SAFE_INTEGER);
-    const [bottom, setBottom] = useState(Number.MAX_SAFE_INTEGER);
-    const handleLayout = (event: LayoutChangeEvent) => {
-        setTop(event.nativeEvent.layout.y);
-        setBottom(event.nativeEvent.layout.y + Math.max(event.nativeEvent.layout.height, 1));
-        onLayout?.(event);
-    };
-    const heroStyle = useAnimatedStyle(() => ({
-        opacity: interpolate(scrollY.get(), [top, bottom], [1, 0], Extrapolation.CLAMP)
+    const [start, end] = range;
+    const fadeStyle = useAnimatedStyle(() => ({
+        opacity: interpolate(scrollY.get(), [start, Math.max(end, start + 1)], [1, 0], Extrapolation.CLAMP)
     }));
 
     return (
-        <Animated.View onLayout={handleLayout} className={className} style={heroStyle}>
+        <Animated.View onLayout={onLayout} className={className} style={fadeStyle}>
             {children}
         </Animated.View>
     );

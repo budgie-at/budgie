@@ -14,6 +14,8 @@ import { useScreenChrome, useScreenChromeScrollY } from '@rnw-community/react-na
 
 import { TRANSACTION_INFO_SCROLL_BOTTOM_INSET } from '../constant/transaction-info-scroll-bottom-inset.constant';
 
+import { useTransactionInfoHeroHandoff } from './use-transaction-info-hero-handoff.hook';
+
 import type { LayoutChangeEvent } from 'react-native';
 
 const SETTLE_FRAME_COUNT = 3;
@@ -29,8 +31,8 @@ export const useTransactionInfoHandoff = () => {
     const scrollRef = useAnimatedRef<Animated.ScrollView>();
     const drag = useSharedValue({ isDragging: false, lastY: 0, sampledAt: 0, direction: 0, velocity: 0 });
     const animated = !useReducedMotion();
-    const [revealRange, setRevealRange] = useState<readonly [number, number]>([0, 0]);
     const [bodyTop, setBodyTop] = useState(0);
+    const heroHandoff = useTransactionInfoHeroHandoff(animated, bodyTop);
     const [contentHeight, setContentHeight] = useState(Number.MAX_SAFE_INTEGER);
     const settledOffset = Math.max(bodyTop - SETTLED_CONTENT_GAP, 0);
     const fitsScreen = top + config.headerHeight + contentHeight + TRANSACTION_INFO_SCROLL_BOTTOM_INSET + bottom <= height;
@@ -102,12 +104,7 @@ export const useTransactionInfoHandoff = () => {
 
     return {
         minimumHeight: fitsScreen ? 0 : height + settledOffset,
-        revealRange,
-        onTitleLayout: (event: LayoutChangeEvent) => {
-            const { y, height: titleHeight } = event.nativeEvent.layout;
-
-            setRevealRange([Math.max(0, y), Math.max(0, y + titleHeight)]);
-        },
+        ...heroHandoff,
         onBodyLayout: (event: LayoutChangeEvent) => void setBodyTop(event.nativeEvent.layout.y),
         onContentLayout: (event: LayoutChangeEvent) => void setContentHeight(event.nativeEvent.layout.height),
         scrollRef,
