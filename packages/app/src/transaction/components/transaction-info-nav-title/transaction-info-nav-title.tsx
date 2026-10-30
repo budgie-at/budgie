@@ -41,7 +41,8 @@ export const TransactionInfoNavTitle = (props: Props) => {
         : 'text-[17px] leading-[21px] text-primary font-semibold';
     const amountClassName = largeText
         ? 'text-[20px] leading-[25px] text-primary font-semibold tabular-nums'
-        : 'text-[12px] leading-[15px] text-transaction-detail-secondary tabular-nums';
+        : 'text-[15px] leading-[19px] text-primary font-semibold tabular-nums';
+    const titleLines = largeText ? 2 : 1;
 
     return (
         <View
@@ -52,10 +53,10 @@ export const TransactionInfoNavTitle = (props: Props) => {
             importantForAccessibility="no-hide-descendants"
         >
             <View className="items-center justify-center" style={rowStyle}>
-                <TransactionInfoCompactLine range={handoff.compactTitleRange} className={titleClassName}>
+                <TransactionInfoCompactLine range={handoff.compactTitleRange} className={titleClassName} numberOfLines={titleLines}>
                     {compactTitle ?? title}
                 </TransactionInfoCompactLine>
-                <TransactionInfoCompactLine range={handoff.compactAmountRange} className={amountClassName}>
+                <TransactionInfoCompactLine range={handoff.compactAmountRange} className={amountClassName} numberOfLines={1}>
                     {compactAmount ?? formatTransactionInfoAmount(transaction, formatDigits)}
                 </TransactionInfoCompactLine>
             </View>

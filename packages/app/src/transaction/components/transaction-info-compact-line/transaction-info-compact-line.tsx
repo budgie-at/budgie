@@ -10,9 +10,10 @@ interface Props {
     readonly children: ReactNode;
     readonly range: readonly [number, number];
     readonly className: string;
+    readonly numberOfLines: number;
 }
 
-export const TransactionInfoCompactLine = ({ children, range, className }: Props) => {
+export const TransactionInfoCompactLine = ({ children, range, className, numberOfLines }: Props) => {
     const scrollY = useScreenChromeScrollY();
     const [start, end] = range;
     const revealStyle = useAnimatedStyle(() => ({
@@ -24,7 +25,7 @@ export const TransactionInfoCompactLine = ({ children, range, className }: Props
             maxFontSizeMultiplier={TRANSACTION_INFO_ROW_MAX_FONT_SCALE}
             className={`self-stretch text-center ${className}`}
             style={revealStyle}
-            numberOfLines={1}
+            numberOfLines={numberOfLines}
             ellipsizeMode="tail"
         >
             {children}

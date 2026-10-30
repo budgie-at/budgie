@@ -1,27 +1,20 @@
-import { isLiquidGlassAvailable } from 'expo-glass-effect';
-import { View } from 'react-native';
 import Animated, { Extrapolation, interpolate, useAnimatedStyle } from 'react-native-reanimated';
 
-import { EdgeFade, useScreenChrome, useScreenChromeHeaderMetrics, useScreenChromeScrollY } from '@rnw-community/react-native-screen-chrome';
-
-import type { EdgeFadeBandRenderer } from '@rnw-community/react-native-screen-chrome';
+import { useScreenChromeHeaderMetrics, useScreenChromeScrollY } from '@rnw-community/react-native-screen-chrome';
 
 const Z_INDEX_STYLE = { zIndex: 2 };
-const MATERIAL_Z_INDEX_STYLE = { zIndex: 3 };
 
 export const TransactionInfoNavBand = () => {
     const height = useScreenChromeHeaderMetrics();
-    const { config } = useScreenChrome();
     const scrollY = useScreenChromeScrollY();
-    const materialStyle = useAnimatedStyle(() => ({ opacity: interpolate(scrollY.get(), [0, 1], [0, 1], Extrapolation.CLAMP) }));
-    const bandStyle = [Z_INDEX_STYLE, { height }, materialStyle];
-    const renderBlur: EdgeFadeBandRenderer = ({ blur }) => (isLiquidGlassAvailable() ? blur : null);
+    const visibilityStyle = useAnimatedStyle(() => ({ opacity: interpolate(scrollY.get(), [0, 1], [0, 1], Extrapolation.CLAMP) }));
+    const bandStyle = [Z_INDEX_STYLE, { height }, visibilityStyle];
 
     return (
-        <Animated.View className="absolute inset-x-0 top-0" style={bandStyle} pointerEvents="none">
-            <EdgeFade position="top" height={config.headerHeight} renderBand={renderBlur} />
-            <View className="absolute inset-0 bg-transaction-detail-bar" style={MATERIAL_Z_INDEX_STYLE} />
-            <View className="absolute inset-x-0 bottom-0 h-[0.5px] bg-surface-separator" style={MATERIAL_Z_INDEX_STYLE} />
-        </Animated.View>
+        <Animated.View
+            className="absolute inset-x-0 top-0 bg-transaction-detail-bar border-b-hairline border-surface-separator"
+            style={bandStyle}
+            pointerEvents="none"
+        />
     );
 };

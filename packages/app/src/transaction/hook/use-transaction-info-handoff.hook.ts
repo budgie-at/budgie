@@ -32,7 +32,7 @@ export const useTransactionInfoHandoff = () => {
     const drag = useSharedValue({ isDragging: false, lastY: 0, sampledAt: 0, direction: 0, velocity: 0 });
     const animated = !useReducedMotion();
     const [bodyTop, setBodyTop] = useState(0);
-    const heroHandoff = useTransactionInfoHeroHandoff(animated, bodyTop);
+    const heroHandoff = useTransactionInfoHeroHandoff(animated);
     const [contentHeight, setContentHeight] = useState(Number.MAX_SAFE_INTEGER);
     const settledOffset = Math.max(bodyTop - SETTLED_CONTENT_GAP, 0);
     const fitsScreen = top + config.headerHeight + contentHeight + TRANSACTION_INFO_SCROLL_BOTTOM_INSET + bottom <= height;

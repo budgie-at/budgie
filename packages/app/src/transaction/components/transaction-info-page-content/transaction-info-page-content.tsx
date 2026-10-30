@@ -42,7 +42,7 @@ export const TransactionInfoPageContent = ({
 }: TransactionInfoPagePropsInterface) => {
     const router = useRouter();
     const { t } = useLingui();
-    const { minimumHeight, handoff, onAmountLayout, onTextLayout, onBodyLayout, onContentLayout, scrollRef, handleScrollEnd } =
+    const { minimumHeight, handoff, onAmountLayout, onTitleLayout, onBodyLayout, onContentLayout, scrollRef, handleScrollEnd } =
         useTransactionInfoHandoff();
     const undoRefund = useRevertConsolidation(transaction.id, () => void dismissAllOrReplace('/'), true);
     const { stats, isLoading } = useTransactionInfoSimilarStatsQuery(transaction);
@@ -72,9 +72,8 @@ export const TransactionInfoPageContent = ({
                     <TransactionInfoHero
                         transaction={transaction}
                         matchingRuleIds={matchingRuleIds}
-                        handoff={handoff}
                         onAmountLayout={onAmountLayout}
-                        onTextLayout={onTextLayout}
+                        onTitleLayout={onTitleLayout}
                     />
 
                     <View className="gap-y-5xl" onLayout={onBodyLayout}>

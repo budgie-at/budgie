@@ -36,7 +36,7 @@ export const RefundTransactionInfoContent = ({ transaction, parentTransaction }:
     const router = useRouter();
     const removeRefund = useRevertConsolidation(parentTransaction.id, router.back, true);
     const formatDigits = useProtectedAmountLabel();
-    const { minimumHeight, handoff, onAmountLayout, onTextLayout, onBodyLayout, onContentLayout, scrollRef, handleScrollEnd } =
+    const { minimumHeight, handoff, onAmountLayout, onTitleLayout, onBodyLayout, onContentLayout, scrollRef, handleScrollEnd } =
         useTransactionInfoHandoff();
     const { sources } = useGetConsolidationSourcesQuery(parentTransaction.id);
     const source = sources.find(row => row.sourceTransactionId === transaction.id);
@@ -58,9 +58,8 @@ export const RefundTransactionInfoContent = ({ transaction, parentTransaction }:
                         amount={amount}
                         title={t`Refund from ${merchant}`}
                         operatedAt={transaction.operatedAt}
-                        handoff={handoff}
                         onAmountLayout={onAmountLayout}
-                        onTextLayout={onTextLayout}
+                        onTitleLayout={onTitleLayout}
                     />
                     <View className="gap-y-5xl" onLayout={onBodyLayout}>
                         <TransactionInfoGroup footnote={t`Manage this refund from the original purchase.`}>
