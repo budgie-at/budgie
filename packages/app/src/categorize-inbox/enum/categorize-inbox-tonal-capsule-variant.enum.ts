@@ -1,5 +1,5 @@
 export enum CategorizeInboxTonalCapsuleVariantEnum {
     POSITIVE = 'POSITIVE',
-    WARNING = 'WARNING',
+    CASH = 'CASH',
     NEUTRAL = 'NEUTRAL'
 }

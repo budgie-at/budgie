@@ -14,7 +14,7 @@ const surfaceVariants = cva('h-[32px] items-center justify-center rounded-full p
     variants: {
         variant: {
             [CategorizeInboxTonalCapsuleVariantEnum.POSITIVE]: 'bg-positive-tonal',
-            [CategorizeInboxTonalCapsuleVariantEnum.WARNING]: 'bg-warning-fill/15',
+            [CategorizeInboxTonalCapsuleVariantEnum.CASH]: 'bg-cash-tonal',
             [CategorizeInboxTonalCapsuleVariantEnum.NEUTRAL]: 'bg-surface-fill'
         }
     }
@@ -24,7 +24,7 @@ const labelVariants = cva('text-[15px] font-semibold', {
     variants: {
         variant: {
             [CategorizeInboxTonalCapsuleVariantEnum.POSITIVE]: 'text-positive-action',
-            [CategorizeInboxTonalCapsuleVariantEnum.WARNING]: 'text-attention-foreground',
+            [CategorizeInboxTonalCapsuleVariantEnum.CASH]: 'text-cash-action',
             [CategorizeInboxTonalCapsuleVariantEnum.NEUTRAL]: 'text-primary'
         }
     }

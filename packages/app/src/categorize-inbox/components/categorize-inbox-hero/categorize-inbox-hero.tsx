@@ -14,6 +14,7 @@ import { getCategorizeInboxDefaultAmount } from '../../utils/get-categorize-inbo
 import { CategorizeInboxSectionChip } from '../categorize-inbox-section-chip/categorize-inbox-section-chip';
 
 interface Props {
+    readonly activeSection: CategorizeInboxSectionEnum | null;
     readonly onSectionPress: (section: CategorizeInboxSectionEnum) => void;
 }
 
@@ -24,7 +25,7 @@ const CHIP_SECTIONS = [
     CategorizeInboxSectionEnum.ONE_OFFS
 ] as const;
 
-export const CategorizeInboxHero = ({ onSectionPress }: Props) => {
+export const CategorizeInboxHero = ({ activeSection, onSectionPress }: Props) => {
     const { t } = useLingui();
     const amountLabel = useCategorizeInboxAmountLabel();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
@@ -61,7 +62,13 @@ export const CategorizeInboxHero = ({ onSectionPress }: Props) => {
                 showsHorizontalScrollIndicator={false}
             >
                 {chips.map(({ section, count }) => (
-                    <CategorizeInboxSectionChip key={section} section={section} count={count} onPress={onSectionPress} />
+                    <CategorizeInboxSectionChip
+                        key={section}
+                        section={section}
+                        count={count}
+                        isActive={section === activeSection}
+                        onPress={onSectionPress}
+                    />
                 ))}
             </ScrollView>
         </View>

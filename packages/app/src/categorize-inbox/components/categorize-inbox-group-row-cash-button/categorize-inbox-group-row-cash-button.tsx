@@ -30,7 +30,7 @@ export const CategorizeInboxGroupRowCashButton = ({ cluster, text }: Props) => {
 
     return (
         <CategorizeInboxGroupRowPill
-            variant={CategorizeInboxTonalCapsuleVariantEnum.WARNING}
+            variant={CategorizeInboxTonalCapsuleVariantEnum.CASH}
             text={text}
             label={t`Move ${displayTitle} to cash`}
             isDisabled={isEmptyArray(transactionIds)}

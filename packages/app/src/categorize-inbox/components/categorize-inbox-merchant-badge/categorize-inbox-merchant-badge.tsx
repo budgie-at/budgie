@@ -17,14 +17,14 @@ interface Props {
 
 const DISC_CLASS_NAME: Record<CategorizeInboxSectionEnum, string> = {
     [CategorizeInboxSectionEnum.CONFIDENT]: 'bg-positive-tonal',
-    [CategorizeInboxSectionEnum.CASH_WITHDRAWALS]: 'bg-warning-fill/15',
+    [CategorizeInboxSectionEnum.CASH_WITHDRAWALS]: 'bg-cash-tonal',
     [CategorizeInboxSectionEnum.REVIEW]: 'bg-surface-disc',
     [CategorizeInboxSectionEnum.ONE_OFFS]: 'bg-surface-disc'
 };
 
 const GLYPH_CLASS_NAME: Record<CategorizeInboxSectionEnum, string> = {
     [CategorizeInboxSectionEnum.CONFIDENT]: 'text-positive-action',
-    [CategorizeInboxSectionEnum.CASH_WITHDRAWALS]: 'text-attention-foreground',
+    [CategorizeInboxSectionEnum.CASH_WITHDRAWALS]: 'text-cash-action',
     [CategorizeInboxSectionEnum.REVIEW]: 'text-secondary-foreground',
     [CategorizeInboxSectionEnum.ONE_OFFS]: 'text-secondary-foreground'
 };

@@ -83,7 +83,7 @@
 
             --color-seal-background: rgb(15, 110, 77);
 
-            --color-secondary-foreground: rgba(107, 107, 107, 1);
+            --color-secondary-foreground: rgb(106, 106, 112);
             --color-secondary-corner: rgba(229, 229, 229, 1);
             --color-secondary-background: rgba(248, 248, 248, 1);
 
@@ -98,6 +98,9 @@
             --color-positive-action: rgb(30, 122, 60);
             --color-positive-action-foreground: rgb(255, 255, 255);
             --color-positive-tonal: rgb(221, 243, 228);
+            --color-cash-action: rgb(0, 94, 160);
+            --color-cash-action-foreground: rgb(255, 255, 255);
+            --color-cash-tonal: rgb(222, 239, 251);
 
             --color-destructive-foreground: rgba(239, 68, 68, 1);
             --color-destructive-fill: rgba(239, 68, 68, 1);
@@ -157,7 +160,7 @@
 
             --color-seal-background: rgb(12, 80, 57);
 
-            --color-secondary-foreground: rgba(136, 136, 136, 1);
+            --color-secondary-foreground: rgb(152, 152, 159);
             --color-secondary-corner: rgba(34, 34, 34, 1);
             --color-secondary-background: rgba(10, 10, 10, 1);
 
@@ -172,6 +175,9 @@
             --color-positive-action: rgb(48, 209, 88);
             --color-positive-action-foreground: rgb(0, 0, 0);
             --color-positive-tonal: rgba(48, 209, 88, 0.15);
+            --color-cash-action: rgb(100, 210, 255);
+            --color-cash-action-foreground: rgb(0, 0, 0);
+            --color-cash-tonal: rgba(100, 210, 255, 0.16);
 
             --color-destructive-foreground: rgba(255, 68, 68, 1);
             --color-destructive-fill: rgba(255, 68, 68, 1);
