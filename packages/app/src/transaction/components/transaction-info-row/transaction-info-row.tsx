@@ -1,51 +1,69 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { cn } from '../../../@generic/utils/cn.util';
 
-import type { TransactionInfoRowPropsInterface } from '../../interface/transaction-info-row-props.interface';
+import type { UserIconType } from '@budgie/contracts';
 
-const rowVariants = cva('flex-row items-center gap-x-xl border-t border-secondary-corner py-xl');
+interface Props {
+    readonly icon: UserIconType;
+    readonly label?: string;
+    readonly value?: string | null;
+    readonly description?: string | null;
+    readonly trailing?: string | null;
+    readonly valueClassName?: string;
+    readonly testID: string;
+    readonly onPress?: () => void;
+}
 
-export const TransactionInfoRow = ({ icon, label, value, description, children, testID, onPress }: TransactionInfoRowPropsInterface) => {
-    const hasValue = isNotEmptyString(value);
-    const hasChildren = isDefined(children);
-    const rightSlot = isDefined(onPress) ? (
-        <Icon icon={UserIconNameEnum.ChevronRight} size={20} className="text-secondary-foreground" />
-    ) : null;
+export const TransactionInfoRow = (props: Props) => {
+    const { icon, label, value, description, trailing, valueClassName, testID, onPress } = props;
     const rowContent = (
         <>
-            <View className="h-11 w-11 items-center justify-center rounded-2xl bg-secondary-background border border-secondary-corner">
+            <View className="absolute top-0 right-0 left-[56px] h-hairline bg-surface-separator" pointerEvents="none" />
+
+            <View className="h-[28px] w-[28px] items-center justify-center">
                 <Icon icon={icon} size={22} className="text-secondary-foreground" />
             </View>
 
             <View className="flex-1 min-w-0">
-                <Text className="text-sm text-secondary-foreground font-medium">{label}</Text>
-                {hasValue ? (
-                    <Text className="text-md text-primary font-semibold" numberOfLines={2} selectable>
+                {isNotEmptyString(label) ? <Text className="text-[13px] leading-[18px] text-secondary-foreground">{label}</Text> : null}
+                {isNotEmptyString(value) ? (
+                    <Text className={cn('text-[17px] leading-[22px] text-primary font-medium', valueClassName)} selectable>
                         {value}
                     </Text>
                 ) : null}
                 {isNotEmptyString(description) ? (
-                    <Text className="text-sm text-secondary-foreground" numberOfLines={1} selectable>
+                    <Text className="text-[13px] leading-[18px] text-secondary-foreground" selectable>
                         {description}
                     </Text>
                 ) : null}
-                {hasChildren ? <View className="flex-row flex-wrap gap-xs pt-xs">{children}</View> : null}
             </View>
 
-            {rightSlot}
+            {isNotEmptyString(trailing) ? (
+                <Text className="shrink-0 text-[17px] leading-[22px] text-primary font-medium text-right tabular-nums" selectable>
+                    {trailing}
+                </Text>
+            ) : null}
+
+            {isDefined(onPress) ? <Icon icon={UserIconNameEnum.ChevronRight} size={20} className="text-secondary-foreground" /> : null}
         </>
     );
+    const rowClassName = 'min-h-[56px] flex-row items-center gap-x-xl px-3xl py-xl';
 
     if (isDefined(onPress)) {
         return (
-            <HapticPressable onPress={onPress}>
-                <View className={rowVariants()} collapsable={false} nativeID={testID} testID={testID}>
+            <HapticPressable
+                accessibilityRole="button"
+                accessibilityLabel={[label, value, description].filter(isNotEmptyString).join(', ')}
+                onPress={onPress}
+                className="active:scale-100 active:opacity-70"
+            >
+                <View className={rowClassName} collapsable={false} nativeID={testID} testID={testID}>
                     {rowContent}
                 </View>
             </HapticPressable>
@@ -53,7 +71,7 @@ export const TransactionInfoRow = ({ icon, label, value, description, children, 
     }
 
     return (
-        <View className={rowVariants()} collapsable={false} nativeID={testID} testID={testID}>
+        <View className={rowClassName} collapsable={false} nativeID={testID} testID={testID}>
             {rowContent}
         </View>
     );

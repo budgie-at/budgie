@@ -8,19 +8,20 @@ import { TransactionInfoSimilarBar } from '../transaction-info-similar-bar/trans
 
 import type { SimilarTransactionMonthRowInterface } from '@budgie/contracts';
 
-const BAR_MAX_HEIGHT = 92;
+const BAR_MAX_HEIGHT = 88;
 
 interface Props {
     readonly month: SimilarTransactionMonthRowInterface;
     readonly maxAmount: number;
     readonly currencySymbol: string;
+    readonly currentMonthKey: string | null;
     readonly formatCompactDigits: (value: number, symbol?: string) => string;
     readonly formatDigits: (value: number, symbol?: string) => string;
     readonly testID: string;
 }
 
 export const TransactionInfoSimilarMonthBar = (props: Props) => {
-    const { month, maxAmount, currencySymbol, formatCompactDigits, formatDigits, testID } = props;
+    const { month, maxAmount, currencySymbol, currentMonthKey, formatCompactDigits, formatDigits, testID } = props;
     const [yearText = '0', monthText = '1'] = month.monthKey.split('-');
     const monthLabelDate = new Date(Number(yearText), Number(monthText) - 1, 1);
     const hasAmount = isPositiveNumber(month.totalAmount);
@@ -29,8 +30,16 @@ export const TransactionInfoSimilarMonthBar = (props: Props) => {
     const amount = convertFromMicroUnits(month.totalAmount);
     const value = hasAmount ? formatCompactDigits(amount, currencySymbol) : null;
     const accessibilityValue = hasAmount ? formatDigits(amount, currencySymbol) : '';
+    const barClassName = month.monthKey === currentMonthKey ? 'bg-primary' : 'bg-secondary-foreground/30';
 
     return (
-        <TransactionInfoSimilarBar height={height} label={label} value={value} accessibilityValue={accessibilityValue} testID={testID} />
+        <TransactionInfoSimilarBar
+            height={height}
+            label={label}
+            value={value}
+            accessibilityValue={accessibilityValue}
+            barClassName={barClassName}
+            testID={testID}
+        />
     );
 };

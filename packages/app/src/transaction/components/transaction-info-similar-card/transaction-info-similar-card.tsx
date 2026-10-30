@@ -5,7 +5,6 @@ import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { Card } from '../../../@generic/component/card/card';
 import { cn } from '../../../@generic/utils/cn.util';
 import { THOUSAND } from '../../../i18n/constant/compact-thresholds.constant';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
@@ -20,6 +19,8 @@ interface Props {
     readonly title: string;
     readonly isLoading: boolean;
 }
+
+const continuousCorners = { borderCurve: 'continuous' as const };
 
 export const TransactionInfoSimilarCard = ({ stats, title, isLoading }: Props) => {
     const { t } = useLingui();
@@ -36,57 +37,58 @@ export const TransactionInfoSimilarCard = ({ stats, title, isLoading }: Props) =
     const maxAmount = Math.max(...stats.months.map(month => month.totalAmount), 1);
     const total = formatDigits(convertFromMicroUnits(stats.totalAmount), stats.currencySymbol);
     const average = formatDigits(convertFromMicroUnits(stats.averageAmount), stats.currencySymbol);
+    const currentMonthKey = stats.months.at(-1)?.monthKey ?? null;
     const similarCount = stats.count;
     const description = t({
         message: plural(similarCount, {
-            one: '# similar transaction',
-            other: '# similar transactions'
+            one: '# similar · last 6 months',
+            other: '# similar · last 6 months'
         })
     });
 
     return (
-        <Card
-            size="md"
-            variant="ghost"
-            className={cn('border-0 gap-y-xl', opacityClassName)}
+        <View
+            className={cn('gap-y-3xl rounded-3xl bg-surface-row p-3xl', opacityClassName)}
+            style={continuousCorners}
+            collapsable={false}
             testID={TransactionInfoPageSelector.SimilarCard}
         >
-            <View className="items-center gap-y-xs">
-                <Text className="text-md text-primary font-semibold text-center" numberOfLines={1}>
+            <View className="gap-y-xxs">
+                <Text className="text-[17px] leading-[22px] text-primary font-semibold" numberOfLines={1}>
                     {title}
                 </Text>
-                <Text className="text-sm text-secondary-foreground text-center">{description}</Text>
+                <Text className="text-[13px] leading-[18px] text-secondary-foreground">{description}</Text>
             </View>
 
-            <View className="flex-row items-center justify-center gap-x-4xl">
-                <View className="w-[116px] items-center gap-y-xxs" collapsable={false} testID={TransactionInfoPageSelector.SimilarTotal}>
-                    <Text className="text-xs text-secondary-foreground text-center">
+            <View className="flex-row gap-x-7xl">
+                <View className="gap-y-xxs" collapsable={false} testID={TransactionInfoPageSelector.SimilarTotal}>
+                    <Text className="text-[13px] leading-[18px] text-secondary-foreground">
                         <Trans>Total</Trans>
                     </Text>
-                    <Text className="text-lg text-primary font-semibold text-center tabular-nums">{total}</Text>
+                    <Text className="text-[20px] leading-[25px] text-primary font-semibold tabular-nums">{total}</Text>
                 </View>
-                <View className="h-10 w-px bg-secondary-corner" />
-                <View className="w-[116px] items-center gap-y-xxs" collapsable={false} testID={TransactionInfoPageSelector.SimilarAverage}>
-                    <Text className="text-xs text-secondary-foreground text-center">
+                <View className="gap-y-xxs" collapsable={false} testID={TransactionInfoPageSelector.SimilarAverage}>
+                    <Text className="text-[13px] leading-[18px] text-secondary-foreground">
                         <Trans>Average</Trans>
                     </Text>
-                    <Text className="text-lg text-primary font-semibold text-center tabular-nums">{average}</Text>
+                    <Text className="text-[20px] leading-[25px] text-primary font-semibold tabular-nums">{average}</Text>
                 </View>
             </View>
 
-            <View className="flex-row items-end gap-x-sm h-[132px]">
+            <View className="flex-row items-end gap-x-sm h-[126px]">
                 {stats.months.map((month, index) => (
                     <TransactionInfoSimilarMonthBar
                         key={month.monthKey}
                         month={month}
                         maxAmount={maxAmount}
                         currencySymbol={stats.currencySymbol}
+                        currentMonthKey={currentMonthKey}
                         formatCompactDigits={formatCompactDigits}
                         formatDigits={formatDigits}
                         testID={TransactionInfoPageSelector.SimilarBar(index)}
                     />
                 ))}
             </View>
-        </Card>
+        </View>
     );
 };

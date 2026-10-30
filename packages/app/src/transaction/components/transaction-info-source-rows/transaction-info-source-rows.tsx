@@ -3,6 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { TransactionInfoGroup } from '../transaction-info-group/transaction-info-group';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
 import { TransactionInfoRow } from '../transaction-info-row/transaction-info-row';
 
@@ -19,10 +20,15 @@ export const TransactionInfoSourceRows = ({ transaction, onOpenConsolidationSour
     const isConsolidated = isDefined(transaction.consolidationType);
     const handleOpenSources = onOpenConsolidationSources ?? onOpenRefundSources;
     const { receipt } = transaction;
+    const showConsolidation = isConsolidated && isDefined(handleOpenSources);
+
+    if (!showConsolidation && !isDefined(receipt)) {
+        return null;
+    }
 
     return (
-        <>
-            {isConsolidated && isDefined(handleOpenSources) ? (
+        <TransactionInfoGroup>
+            {showConsolidation ? (
                 <TransactionInfoRow
                     icon={UserIconNameEnum.Workflow}
                     label={t`Consolidation`}
@@ -40,6 +46,6 @@ export const TransactionInfoSourceRows = ({ transaction, onOpenConsolidationSour
                     testID={TransactionInfoPageSelector.Row.Receipt}
                 />
             ) : null}
-        </>
+        </TransactionInfoGroup>
     );
 };

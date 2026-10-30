@@ -74,6 +74,15 @@
 @layer theme {
     :root {
         @variant light {
+            --color-attention-foreground: rgba(146, 64, 14, 1);
+            --color-attention-background: rgba(254, 243, 199, 1);
+            --color-surface: rgb(255, 255, 255);
+            --color-surface-row: rgba(10, 10, 10, 0.05);
+            --color-grouped-surface: rgb(242, 242, 247);
+            --color-grouped-surface-row: rgb(255, 255, 255);
+            --color-surface-fill: rgba(118, 118, 128, 0.12);
+            --color-grouped-surface-fill: rgb(255, 255, 255);
+            --color-surface-separator: rgba(60, 60, 67, 0.29);
             --color-primary: rgb(0, 0, 0);
             --color-primary-reverse: rgb(255, 255, 255);
 
@@ -134,6 +143,15 @@
         }
 
         @variant dark {
+            --color-attention-foreground: rgba(240, 180, 60, 1);
+            --color-attention-background: rgba(224, 165, 38, 0.16);
+            --color-surface: rgb(0, 0, 0);
+            --color-surface-row: rgba(255, 255, 255, 0.05);
+            --color-grouped-surface: rgb(0, 0, 0);
+            --color-grouped-surface-row: rgba(255, 255, 255, 0.05);
+            --color-surface-fill: rgba(118, 118, 128, 0.24);
+            --color-grouped-surface-fill: rgba(118, 118, 128, 0.24);
+            --color-surface-separator: rgba(56, 56, 58, 1);
             --color-primary: rgb(255, 255, 255);
             --color-primary-reverse: rgb(0, 0, 0);
 

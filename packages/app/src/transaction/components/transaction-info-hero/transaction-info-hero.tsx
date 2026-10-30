@@ -1,117 +1,106 @@
 import { AmountField, AmountFieldText } from '@budgie/amount-input';
-import { TransactionConsolidationTypeEnum, TransactionTypeEnum, UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
+import { TransactionConsolidationTypeEnum, TransactionTypeEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { MetaPill } from '../../../@generic/component/meta-pill/meta-pill';
-import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { cn } from '../../../@generic/utils/cn.util';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
+import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { MatchingRulesPill } from '../../../rule/components/matching-rules-pill/matching-rules-pill';
-import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
+import { formatTransactionInfoAmount } from '../../utils/format-transaction-info-amount.util';
 import { getTransactionDisplayTitle } from '../../utils/get-transaction-display-title.util';
-import { getTransactionIcon } from '../../utils/get-transaction-icon.util';
+import { getTransactionInfoDestinationEntry } from '../../utils/get-transaction-info-destination-entry.util';
+import { getTransactionInfoPrimaryEntry } from '../../utils/get-transaction-info-primary-entry.util';
 import { getTransactionType } from '../../utils/get-transaction-type.util';
-import { RefundedPill } from '../refunded-pill/refunded-pill';
+import { TransactionInfoHeroIcon } from '../transaction-info-hero-icon/transaction-info-hero-icon';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
+import { TransactionInfoRefundedPill } from '../transaction-info-refunded-pill/transaction-info-refunded-pill';
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import type { LayoutChangeEvent } from 'react-native';
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly matchingRuleIds: readonly number[];
     readonly onOpenRefundSources?: () => void;
+    readonly onTitleLayout: (event: LayoutChangeEvent) => void;
 }
 
-const getPrimaryEntry = (transaction: TransactionWithRelationsEntityInterface) => {
-    if (transaction.type === TransactionTypeEnum.INCOME) {
-        return transaction.entries.find(entry => entry.accountId === transaction.toAccountId) ?? transaction.entries.at(0);
-    }
-
-    return transaction.entries.find(entry => entry.accountId === transaction.fromAccountId) ?? transaction.entries.at(0);
-};
-
-const getSecondaryTransferEntry = (transaction: TransactionWithRelationsEntityInterface) =>
-    transaction.type === TransactionTypeEnum.TRANSFER
-        ? transaction.entries.find(entry => entry.accountId === transaction.toAccountId)
-        : null;
-
-const getAmountPrefix = (type: TransactionTypeEnum): string => {
-    if (type === TransactionTypeEnum.EXPENSE) {
-        return '-';
-    }
-
-    if (type === TransactionTypeEnum.INCOME) {
-        return '+';
-    }
-
-    return '';
-};
-
-const getFormattedAmount = (
-    transaction: TransactionWithRelationsEntityInterface,
-    amount: number,
-    currencySymbol: string,
-    formatDigits: (value: number, symbol?: string) => string
-): string => `${getAmountPrefix(transaction.type)}${formatDigits(amount, currencySymbol)}`;
-
-export const TransactionInfoHero = ({ transaction, matchingRuleIds, onOpenRefundSources }: Props) => {
+export const TransactionInfoHero = ({ transaction, matchingRuleIds, onOpenRefundSources, onTitleLayout }: Props) => {
     const formatDigits = useDisplayFormatDigits();
-    const variant = TRANSACTION_COLOR[getTransactionType(transaction)];
-    const primaryEntry = getPrimaryEntry(transaction);
-    const secondaryEntry = getSecondaryTransferEntry(transaction);
+    const { formatDayAndMonthAndYearWithTime } = useFormatDate();
+    const amountClassName = getTransactionType(transaction) === TransactionTypeEnum.INCOME ? 'text-positive-foreground' : 'text-primary';
     const title = getTransactionDisplayTitle(transaction);
-    const amount = isDefined(primaryEntry) ? convertFromMicroUnits(primaryEntry.amount) : 0;
-    const currencySymbol = primaryEntry?.account.instrument.symbol ?? '';
-    const formattedAmount = getFormattedAmount(transaction, amount, currencySymbol, formatDigits);
-    const secondaryAmount = isDefined(secondaryEntry)
-        ? formatDigits(convertFromMicroUnits(secondaryEntry.amount), secondaryEntry.account.instrument.symbol)
-        : null;
+    const sourceEntry = getTransactionInfoPrimaryEntry(transaction);
+    const destinationEntry = getTransactionInfoDestinationEntry(transaction);
+    const isCrossCurrency =
+        isDefined(sourceEntry) &&
+        isDefined(destinationEntry) &&
+        sourceEntry.account.instrument.id !== destinationEntry.account.instrument.id;
+    const destinationAmount =
+        isCrossCurrency && isDefined(destinationEntry)
+            ? `→ ${formatDigits(convertFromMicroUnits(destinationEntry.amount), destinationEntry.account.instrument.symbol)}`
+            : null;
+    const isTransfer = transaction.type === TransactionTypeEnum.TRANSFER;
+    const transferRoute =
+        isTransfer && isDefined(transaction.fromAccount) && isDefined(transaction.toAccount)
+            ? `${transaction.fromAccount.title} → ${transaction.toAccount.title}`
+            : null;
     const showRefundedPill = transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND;
+    const showPills = showRefundedPill || isNotEmptyArray(matchingRuleIds);
 
     return (
-        <View className="items-center gap-y-xl py-4xl">
-            <CircleIcon
-                icon={getTransactionIcon(transaction)}
-                variant={variant}
-                size={76}
-                iconSize={34}
-                radius={24}
-                className="rounded-5xl"
-            />
+        <View className="items-center pt-3xl pb-7xl">
+            <TransactionInfoHeroIcon transaction={transaction} />
 
-            <View className="items-center gap-y-sm self-stretch">
-                <AmountField fontSize={32} className="self-stretch">
-                    <AmountFieldText className={cn('font-semibold text-center', FOREGROUND_COLOR_PALETTE[variant])} selectable>
-                        {formattedAmount}
-                    </AmountFieldText>
-                </AmountField>
-                {isNotEmptyString(secondaryAmount) ? (
-                    <View className="flex-row items-center gap-x-xs">
-                        <MetaPill icon={UserIconNameEnum.ArrowRight} label={secondaryAmount} />
-                    </View>
-                ) : null}
-            </View>
+            <AmountField fontSize={40} className="mt-xl self-stretch">
+                <AmountFieldText className={cn('leading-[48px] font-semibold tracking-[-1px] text-center', amountClassName)} selectable>
+                    {formatTransactionInfoAmount(transaction, formatDigits)}
+                </AmountFieldText>
+            </AmountField>
+
+            {isNotEmptyString(destinationAmount) ? (
+                <Text className="text-[15px] leading-[20px] text-secondary-foreground tabular-nums" selectable>
+                    {destinationAmount}
+                </Text>
+            ) : null}
 
             {isNotEmptyString(title) ? (
-                <Text className="text-2xl text-primary font-semibold text-center" numberOfLines={2} selectable>
+                <Text
+                    className="mt-xs text-[20px] leading-[25px] text-primary font-semibold text-center"
+                    selectable
+                    onLayout={onTitleLayout}
+                >
                     {title}
                 </Text>
             ) : null}
 
-            {showRefundedPill ? (
-                <RefundedPill
-                    key={`${transaction.id}-${transaction.consolidationType}`}
-                    transaction={transaction}
-                    onPress={onOpenRefundSources}
-                    testID={TransactionInfoPageSelector.RefundedPill}
-                />
+            <Text className="mt-sm text-[15px] leading-[20px] text-secondary-foreground text-center">
+                {formatDayAndMonthAndYearWithTime(transaction.operatedAt)}
+            </Text>
+
+            {isNotEmptyString(transferRoute) ? (
+                <Text className="mt-xxs text-[15px] leading-[20px] text-secondary-foreground text-center" numberOfLines={2}>
+                    {transferRoute}
+                </Text>
             ) : null}
 
-            {isNotEmptyArray(matchingRuleIds) ? (
-                <MatchingRulesPill matchingRulesCount={matchingRuleIds.length} matchingRuleIds={matchingRuleIds} />
+            {showPills ? (
+                <View className="mt-xl flex-row flex-wrap items-center justify-center gap-sm">
+                    {showRefundedPill ? (
+                        <TransactionInfoRefundedPill
+                            key={`${transaction.id}-${transaction.consolidationType}`}
+                            transaction={transaction}
+                            onPress={onOpenRefundSources}
+                            testID={TransactionInfoPageSelector.RefundedPill}
+                        />
+                    ) : null}
+
+                    {isNotEmptyArray(matchingRuleIds) ? (
+                        <MatchingRulesPill matchingRulesCount={matchingRuleIds.length} matchingRuleIds={matchingRuleIds} />
+                    ) : null}
+                </View>
             ) : null}
         </View>
     );

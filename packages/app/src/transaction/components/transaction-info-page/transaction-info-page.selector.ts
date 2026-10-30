@@ -1,5 +1,6 @@
 export const TransactionInfoPageSelector = {
     Page: 'TransactionInfo.Page',
+    DeleteButton: 'TransactionActionsMenu.DeleteButton',
     EditButton: 'TransactionInfo.EditButton',
     SimilarCard: 'TransactionInfo.SimilarCard',
     SimilarTotal: 'TransactionInfo.SimilarTotal',
@@ -18,6 +19,7 @@ export const TransactionInfoPageSelector = {
         MerchantCode: 'TransactionInfo.Row.MerchantCode',
         Note: 'TransactionInfo.Row.Note',
         Receipt: 'TransactionInfo.Row.Receipt',
+        SplitEntry: (index: number) => `TransactionInfo.Row.SplitEntry.${index}` as const,
         Tags: 'TransactionInfo.Row.Tags',
         ToAccount: 'TransactionInfo.Row.ToAccount'
     }

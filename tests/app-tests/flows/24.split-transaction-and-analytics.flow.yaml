@@ -126,7 +126,7 @@ appId: ${APP_ID}
     id: 'TransactionActionsMenu.TriggerButton'
 - extendedWaitUntil:
     visible:
-      id: 'TransactionActionsMenu.DeleteButton'
+      id: 'TransactionActionsMenu.CreateRuleButton'
 - assertNotVisible:
     id: 'TransactionActionsMenu.ConvertToTransferButton'
 - tapOn:
@@ -262,7 +262,7 @@ appId: ${APP_ID}
     id: 'TransactionActionsMenu.TriggerButton'
 - extendedWaitUntil:
     visible:
-      id: 'TransactionActionsMenu.DeleteButton'
+      id: 'TransactionActionsMenu.CreateRuleButton'
 - assertVisible:
     id: 'TransactionActionsMenu.ConvertToTransferButton'
 - tapOn:

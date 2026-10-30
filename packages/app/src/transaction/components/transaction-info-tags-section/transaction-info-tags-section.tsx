@@ -18,8 +18,8 @@ export const TransactionInfoTagsSection = ({ transaction }: Props) => {
     }
 
     return (
-        <View className="gap-y-xs" testID={TransactionInfoPageSelector.Row.Tags}>
-            <Text className="text-sm text-secondary-foreground font-medium">
+        <View className="gap-y-md" testID={TransactionInfoPageSelector.Row.Tags}>
+            <Text className="px-3xl text-[13px] leading-[18px] text-secondary-foreground">
                 <Trans>Tags</Trans>
             </Text>
 

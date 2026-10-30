@@ -404,8 +404,8 @@ msgid "{selectedInGroupCount} of {accountsCount} selected"
 msgstr "Вибрано {selectedInGroupCount} з {accountsCount}"
 
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
-msgid "{similarCount, plural, one {# similar transaction} other {# similar transactions}}"
-msgstr "{similarCount, plural, one {# схожа транзакція} other {# схожих транзакцій}}"
+msgid "{similarCount, plural, one {# similar · last 6 months} other {# similar · last 6 months}}"
+msgstr "{similarCount, plural, one {# подібна · останні 6 місяців} few {# подібні · останні 6 місяців} many {# подібних · останні 6 місяців} other {# подібної · останні 6 місяців}}"
 
 #: src/categorize-inbox/components/categorize-inbox-cluster-card/categorize-inbox-cluster-card.tsx
 msgid "{skippedCount, plural, one {# skipped} other {# skipped}}"
@@ -2156,6 +2156,7 @@ msgid "Delete the {downloaded} GB part?"
 msgstr "Видалити завантажені {downloaded} ГБ?"
 
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
+#: src/transaction/components/transaction-info-delete-row/transaction-info-delete-row.tsx
 #: src/transaction/components/transaction-list-delete-menu-item/transaction-list-delete-menu-item.tsx
 msgid "Delete Transaction"
 msgstr "Видалити транзакцію"
@@ -2339,6 +2340,7 @@ msgid "Each one becomes an account. Rename or remove them later."
 msgstr "Кожен стане рахунком. Перейменувати чи видалити їх можна пізніше."
 
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+#: src/transaction/components/transaction-info-edit-button/transaction-info-edit-button.tsx
 msgid "Edit"
 msgstr "Редагувати"
 
@@ -2376,7 +2378,7 @@ msgstr "Редагувати правило"
 msgid "Edit Tag"
 msgstr "Редагувати тег"
 
-#: src/transaction/components/transaction-info-page-content/transaction-info-page-content.tsx
+#: src/transaction/components/transaction-info-edit-button/transaction-info-edit-button.tsx
 msgid "Edit transaction"
 msgstr "Редагувати транзакцію"
 
@@ -3498,6 +3500,10 @@ msgstr "Місячний підсумок"
 msgid "months left"
 msgstr "місяців залишилось"
 
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
+msgid "More actions"
+msgstr "Інші дії"
+
 #: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
 msgid "More categories"
 msgstr "Інші категорії"
@@ -3814,7 +3820,7 @@ msgstr "не встановлено"
 msgid "Not yet"
 msgstr "Ще немає"
 
-#: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
+#: src/transaction/components/transaction-info-note-group/transaction-info-note-group.tsx
 #: src/transaction/components/transaction-note-field-icon/transaction-note-field-icon.tsx
 msgid "Note"
 msgstr "Нотатка"
@@ -4421,11 +4427,11 @@ msgstr "Регулярні"
 msgid "Recurring payments will appear here once patterns are detected from your transactions"
 msgstr "Повторювані платежі з’являться тут, щойно в ваших транзакціях буде виявлено закономірності"
 
-#: src/transaction/components/refunded-pill/refunded-pill.tsx
+#: src/transaction/hook/use-refunded-label.hook.ts
 msgid "Refunded"
 msgstr "Повернено"
 
-#: src/transaction/components/refunded-pill/refunded-pill.tsx
+#: src/transaction/hook/use-refunded-label.hook.ts
 msgid "Refunded {formattedRefundedAmount}"
 msgstr "Повернено {formattedRefundedAmount}"
 
@@ -5749,9 +5755,12 @@ msgstr "Недоступно"
 
 #: src/category/components/stats-by-categories/stats-by-categories.tsx
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
+#: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
+#: src/transaction/components/transaction-info-split-entry-row/transaction-info-split-entry-row.tsx
 msgid "Uncategorized"
 msgstr "Без категорії"
 
+#: src/transaction/components/transaction-info-delete-row/transaction-info-delete-row.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
 msgid "Unconsolidate"
 msgstr "Розконсолідувати"

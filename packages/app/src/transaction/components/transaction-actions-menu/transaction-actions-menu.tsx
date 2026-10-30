@@ -16,7 +16,7 @@ import { TransactionActionsMenuSelector } from './transaction-actions-menu.selec
 
 import type { TransactionActionsMenuPropsInterface } from '../../interface/transaction-actions-menu-props.interface';
 
-const TRIGGER_SIZE = 40;
+const TRIGGER_SIZE = 44;
 
 export const TransactionActionsMenu = ({ onDelete, onRevert, isConsolidated = false, children }: TransactionActionsMenuPropsInterface) => {
     const { t } = useLingui();
@@ -59,18 +59,25 @@ export const TransactionActionsMenu = ({ onDelete, onRevert, isConsolidated = fa
             if (isConsolidated) {
                 onRevert?.();
             } else {
-                void onDelete();
+                void onDelete?.();
             }
         });
     };
 
-    const showAction = !isConsolidated || isDefined(onRevert);
+    const showAction = isConsolidated ? isDefined(onRevert) : isDefined(onDelete);
 
     return (
         <View>
             <View collapsable={false} testID={TransactionActionsMenuSelector.TriggerButton}>
-                <HapticPressable className="mr-lg" onPress={emptyFn} onPressIn={handleToggleMenu} hitSlop={16}>
-                    <CircleIcon icon={UserIconNameEnum.EllipsisVertical} variant="ghost" size={40} iconSize={24} border={false} />
+                <HapticPressable
+                    accessibilityRole="button"
+                    accessibilityLabel={t`More actions`}
+                    className="min-h-[44px] min-w-[44px] items-center justify-center active:scale-100 active:opacity-70"
+                    onPress={emptyFn}
+                    onPressIn={handleToggleMenu}
+                    hitSlop={16}
+                >
+                    <CircleIcon icon={UserIconNameEnum.Ellipsis} variant="ghost" size={44} iconSize={24} border={false} />
                 </HapticPressable>
             </View>
 

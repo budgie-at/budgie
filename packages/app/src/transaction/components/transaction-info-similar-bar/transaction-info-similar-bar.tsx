@@ -2,32 +2,34 @@ import { Text, View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
+import { cn } from '../../../@generic/utils/cn.util';
+
 interface Props {
     readonly accessibilityValue: string;
     readonly height: number;
     readonly label: string;
     readonly value?: string | null;
+    readonly barClassName: string;
     readonly testID?: string;
 }
 
-export const TransactionInfoSimilarBar = ({ accessibilityValue, height, label, value, testID }: Props) => {
+export const TransactionInfoSimilarBar = ({ accessibilityValue, height, label, value, barClassName, testID }: Props) => {
     const barStyle = { height };
 
     return (
         <View className="flex-1 items-center gap-y-xs justify-end" collapsable={false} testID={testID}>
             {isNotEmptyString(value) ? (
-                <View
+                <Text
                     accessible
                     accessibilityLabel={accessibilityValue}
-                    className="rounded-full border border-secondary-corner bg-secondary-background px-sm py-xxs"
+                    className="text-[11px] leading-[13px] text-secondary-foreground tabular-nums"
+                    numberOfLines={1}
                 >
-                    <Text className="text-xxs text-primary font-semibold tabular-nums" numberOfLines={1}>
-                        {value}
-                    </Text>
-                </View>
+                    {value}
+                </Text>
             ) : null}
-            <View className="w-full rounded-t-lg bg-default-foreground" style={barStyle} />
-            <Text className="text-xxs text-secondary-foreground">{label}</Text>
+            <View className={cn('w-full rounded-t-md', barClassName)} style={barStyle} />
+            <Text className="text-[11px] leading-[13px] text-secondary-foreground">{label}</Text>
         </View>
     );
 };

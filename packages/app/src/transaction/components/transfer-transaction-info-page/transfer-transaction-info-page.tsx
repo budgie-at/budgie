@@ -26,11 +26,12 @@ export const TransferTransactionInfoPage = ({ transaction }: UpdateTransactionFo
         openConsolidationSource({ transactionId });
     };
     const consolidationProps = isConsolidated ? { onOpenConsolidationSources: handleConsolidationPress } : {};
-    const actionsMenu = <TransferTransactionActionsMenu transaction={transaction} onDelete={handleDelete} onFeePress={handleOpenFee} />;
+    const actionsMenu = <TransferTransactionActionsMenu transaction={transaction} onFeePress={handleOpenFee} />;
 
     return (
         <TransactionInfoPage
             transaction={transaction}
+            onDelete={handleDelete}
             editHref={getTransactionEditHref(transaction)}
             actionsMenu={actionsMenu}
             {...consolidationProps}

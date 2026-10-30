@@ -131,7 +131,7 @@ appId: ${APP_ID}
       visible:
           id: 'TransactionActionsMenu.FeeButton'
 - assertVisible:
-      id: 'TransactionActionsMenu.DeleteButton'
+      id: 'TransactionActionsMenu.CreateRuleButton'
 - assertVisible:
       id: 'TransactionActionsMenu.AttachDebtSettlementButton'
 - assertVisible:

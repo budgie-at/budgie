@@ -5,6 +5,7 @@ import type { ReactNode } from 'react';
 export interface TransactionInfoPagePropsInterface {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly editHref: Href | null;
+    readonly onDelete: () => unknown;
     readonly actionsMenu: ReactNode;
     readonly onOpenRefundSources?: () => void;
     readonly onOpenConsolidationSources?: () => void;
