@@ -7,6 +7,7 @@ import { EdgeFade, useScreenChrome, useScreenChromeHeaderMetrics, useScreenChrom
 import type { EdgeFadeBandRenderer } from '@rnw-community/react-native-screen-chrome';
 
 const Z_INDEX_STYLE = { zIndex: 2 };
+const MATERIAL_Z_INDEX_STYLE = { zIndex: 3 };
 
 export const TransactionInfoNavBand = () => {
     const height = useScreenChromeHeaderMetrics();
@@ -19,8 +20,8 @@ export const TransactionInfoNavBand = () => {
     return (
         <Animated.View className="absolute inset-x-0 top-0" style={bandStyle} pointerEvents="none">
             <EdgeFade position="top" height={config.headerHeight} renderBand={renderBlur} />
-            <View className="absolute inset-0 bg-transaction-detail-bar" />
-            <View className="absolute inset-x-0 bottom-0 h-[0.5px] bg-surface-separator" />
+            <View className="absolute inset-0 bg-transaction-detail-bar" style={MATERIAL_Z_INDEX_STYLE} />
+            <View className="absolute inset-x-0 bottom-0 h-[0.5px] bg-surface-separator" style={MATERIAL_Z_INDEX_STYLE} />
         </Animated.View>
     );
 };
