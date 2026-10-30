@@ -26,12 +26,11 @@ export const getCategorizeInboxFinding = (
     const perDay = count / spanDays;
     const isPerDay = perDay >= 1;
     const rate = isPerDay ? Math.round(perDay) : Math.max(1, Math.round(perDay * DAYS_PER_WEEK));
-    const maxAmount = Math.max(...rows.map(row => row.amount));
     const distinctMonths = new Set(rows.map(row => `${row.operatedAt.getFullYear()}-${row.operatedAt.getMonth()}`)).size;
     const isMonthly =
         count >= MONTHLY_MIN_COUNT && distinctMonths >= MONTHLY_MIN_COUNT && Math.abs(count - distinctMonths) <= MONTHLY_TOLERANCE;
     const isExpense = rows.at(0)?.type === TransactionTypeEnum.EXPENSE;
-    const base = { jarName, accountTitle, rate, isPerDay, maxAmount };
+    const base = { rate, isPerDay };
 
     if (section === CategorizeInboxSectionEnum.CASH_WITHDRAWALS) {
         return { ...base, kind: CategorizeInboxFindingKindEnum.CASH };

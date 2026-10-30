@@ -1,6 +1,6 @@
 import { isPositiveNumber } from '@rnw-community/shared';
 
-import { CATEGORIZE_INBOX_SECTION_COLOR, CATEGORIZE_INBOX_SECTION_ORDER } from '../constant/categorize-inbox-section-dot.constant';
+import { CATEGORIZE_INBOX_SECTION_CLASS_NAME, CATEGORIZE_INBOX_SECTION_ORDER } from '../constant/categorize-inbox-section-dot.constant';
 
 import type { CategorizeInboxPileInterface } from '../interface/categorize-inbox-pile.interface';
 import type { CategorizeInboxListItemType } from '@budgie/categorization';
@@ -15,7 +15,7 @@ export const getCategorizeInboxPile = (items: CategorizeInboxListItemType[], tot
     const segments = counts.map(({ section, count }, index) => ({
         section,
         count,
-        className: CATEGORIZE_INBOX_SECTION_COLOR[section],
+        className: CATEGORIZE_INBOX_SECTION_CLASS_NAME[section],
         share: shares[index]
     }));
 

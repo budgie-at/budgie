@@ -6,7 +6,7 @@ import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook
 import { cn } from '../../../@generic/utils/cn.util';
 
 interface Props {
-    readonly className: string;
+    readonly className: readonly string[];
     readonly share: number;
 }
 
@@ -22,5 +22,5 @@ export const CategorizeInboxPileSegment = ({ className, share }: Props) => {
         animatedShare.set(withTiming(share, { duration: reducedMotion ? 0 : PILE_DURATION, easing: ENTRANCE_EASING }));
     }, [animatedShare, reducedMotion, share]);
 
-    return <Animated.View className={cn('h-full min-w-[24px] rounded-full', className)} style={style} />;
+    return <Animated.View className={cn('h-full min-w-[6px] rounded-full', className)} style={style} />;
 };

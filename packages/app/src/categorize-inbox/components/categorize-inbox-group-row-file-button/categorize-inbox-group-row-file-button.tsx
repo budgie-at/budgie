@@ -4,13 +4,15 @@ import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/sha
 
 import { testID } from '../../../@generic/utils/test-id.util';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
+import { CategorizeInboxTonalCapsuleVariantEnum } from '../../enum/categorize-inbox-tonal-capsule-variant.enum';
+import { formatCategorizeInboxMerchantTitle } from '../../utils/format-categorize-inbox-merchant-title.util';
 import { CategorizeInboxGroupRowPill } from '../categorize-inbox-group-row-pill/categorize-inbox-group-row-pill';
 import { CategorizeInboxGroupRowSelector } from '../categorize-inbox-group-row/categorize-inbox-group-row.selector';
 
 import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
 
 interface Props {
-    readonly cluster: Pick<CategorizeInboxClusterInterface, 'key' | 'candidateLabelIds'>;
+    readonly cluster: Pick<CategorizeInboxClusterInterface, 'key' | 'displayTitle' | 'candidateLabelIds'>;
 }
 
 export const CategorizeInboxGroupRowFileButton = ({ cluster }: Props) => {
@@ -19,6 +21,7 @@ export const CategorizeInboxGroupRowFileButton = ({ cluster }: Props) => {
 
     const candidateId = cluster.candidateLabelIds.at(0);
     const candidateTitle = isDefined(candidateId) ? strategy?.labelsById.get(candidateId)?.title : null;
+    const merchantTitle = formatCategorizeInboxMerchantTitle(cluster.displayTitle);
     const assignments = acceptableAssignments.filter(assignment => assignment.key === cluster.key);
 
     const handlePress = (): void => {
@@ -31,9 +34,9 @@ export const CategorizeInboxGroupRowFileButton = ({ cluster }: Props) => {
 
     return (
         <CategorizeInboxGroupRowPill
-            variant="positive"
-            text={t`File · ${candidateTitle}`}
-            label={t`File as ${candidateTitle}`}
+            variant={CategorizeInboxTonalCapsuleVariantEnum.POSITIVE}
+            text={t({ context: 'Apply a category action', message: 'File' })}
+            label={t`File ${merchantTitle} as ${candidateTitle}`}
             isDisabled={!isNotEmptyArray(assignments)}
             onPress={handlePress}
             {...testID(CategorizeInboxGroupRowSelector.FileButton, cluster.key)}

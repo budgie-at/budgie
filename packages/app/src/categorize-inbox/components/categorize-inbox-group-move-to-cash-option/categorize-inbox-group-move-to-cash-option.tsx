@@ -5,8 +5,9 @@ import { useRouter } from 'expo-router';
 import { isEmptyArray } from '@rnw-community/shared';
 
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
-import { CategorizeInboxActionCapsule } from '../categorize-inbox-action-capsule/categorize-inbox-action-capsule';
+import { CategorizeInboxTonalCapsuleVariantEnum } from '../../enum/categorize-inbox-tonal-capsule-variant.enum';
 import { CategorizeInboxOptionRow } from '../categorize-inbox-option-row/categorize-inbox-option-row';
+import { CategorizeInboxTonalCapsule } from '../categorize-inbox-tonal-capsule/categorize-inbox-tonal-capsule';
 
 import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
 
@@ -37,7 +38,7 @@ export const CategorizeInboxGroupMoveToCashOption = ({ cluster }: Props) => {
             icon={UserIconNameEnum.Banknote}
             title={t`Move to cash`}
             subtitle={t`Becomes a transfer to your cash wallet`}
-            accessory={<CategorizeInboxActionCapsule label={t`Move`} variant="outline" />}
+            accessory={<CategorizeInboxTonalCapsule label={t`Move`} variant={CategorizeInboxTonalCapsuleVariantEnum.NEUTRAL} />}
             onPress={handlePress}
         />
     );

@@ -4,6 +4,7 @@ import { isEmptyArray } from '@rnw-community/shared';
 
 import { testID } from '../../../@generic/utils/test-id.util';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
+import { CategorizeInboxTonalCapsuleVariantEnum } from '../../enum/categorize-inbox-tonal-capsule-variant.enum';
 import { CategorizeInboxGroupRowPill } from '../categorize-inbox-group-row-pill/categorize-inbox-group-row-pill';
 import { CategorizeInboxGroupRowSelector } from '../categorize-inbox-group-row/categorize-inbox-group-row.selector';
 
@@ -28,8 +29,8 @@ export const CategorizeInboxGroupRowCashButton = ({ cluster }: Props) => {
 
     return (
         <CategorizeInboxGroupRowPill
-            variant="warning"
-            text={t`Move to cash`}
+            variant={CategorizeInboxTonalCapsuleVariantEnum.WARNING}
+            text={t({ context: 'Move payments to the cash account', message: 'Cash' })}
             label={t`Move ${displayTitle} to cash`}
             isDisabled={isEmptyArray(transactionIds)}
             onPress={handlePress}

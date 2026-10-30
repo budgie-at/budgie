@@ -1,10 +1,10 @@
-import { Text } from 'react-native';
-
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { cn } from '../../../@generic/utils/cn.util';
+import { CategorizeInboxTonalCapsule } from '../categorize-inbox-tonal-capsule/categorize-inbox-tonal-capsule';
+
+import type { CategorizeInboxTonalCapsuleVariantEnum } from '../../enum/categorize-inbox-tonal-capsule-variant.enum';
 
 interface Props {
-    readonly variant: 'positive' | 'warning';
+    readonly variant: CategorizeInboxTonalCapsuleVariantEnum;
     readonly text: string;
     readonly label: string;
     readonly isDisabled: boolean;
@@ -12,28 +12,18 @@ interface Props {
     readonly testID?: string;
 }
 
-const PILL_HIT_SLOP = { top: 10, bottom: 10, left: 8, right: 8 } as const;
-const continuousCorners = { borderCurve: 'continuous' as const };
+const PILL_HIT_SLOP = { top: 6, bottom: 6, left: 6, right: 6 } as const;
 
-export const CategorizeInboxGroupRowPill = ({ variant, text, label, isDisabled, onPress, testID }: Props) => {
-    const isPositive = variant === 'positive';
-    const backgroundClassName = isPositive ? 'bg-positive-action' : 'bg-warning-fill';
-    const foregroundClassName = isPositive ? 'text-positive-action-foreground' : 'text-black';
-
-    return (
-        <HapticPressable
-            className={cn('h-[26px] shrink flex-row items-center rounded-full px-lg active:opacity-70', backgroundClassName)}
-            style={continuousCorners}
-            hitSlop={PILL_HIT_SLOP}
-            disabled={isDisabled}
-            onPress={onPress}
-            accessibilityRole="button"
-            accessibilityLabel={label}
-            testID={testID}
-        >
-            <Text className={cn('shrink text-[13px] font-semibold', foregroundClassName)} numberOfLines={1}>
-                {text}
-            </Text>
-        </HapticPressable>
-    );
-};
+export const CategorizeInboxGroupRowPill = ({ variant, text, label, isDisabled, onPress, testID }: Props) => (
+    <HapticPressable
+        className="active:opacity-70"
+        hitSlop={PILL_HIT_SLOP}
+        disabled={isDisabled}
+        onPress={onPress}
+        accessibilityRole="button"
+        accessibilityLabel={label}
+        testID={testID}
+    >
+        <CategorizeInboxTonalCapsule label={text} variant={variant} />
+    </HapticPressable>
+);

@@ -1,6 +1,4 @@
 import { CategorizeInboxSectionEnum } from '@budgie/categorization';
-import { plural } from '@lingui/core/macro';
-import { useLingui } from '@lingui/react/macro';
 import { Link } from 'expo-router';
 import { useState } from 'react';
 import { Text, View } from 'react-native';
@@ -12,7 +10,7 @@ import { CategorizeInboxCardRow } from '../categorize-inbox-card-row/categorize-
 import { CategorizeInboxGroupRowAmount } from '../categorize-inbox-group-row-amount/categorize-inbox-group-row-amount';
 import { CategorizeInboxGroupRowCashButton } from '../categorize-inbox-group-row-cash-button/categorize-inbox-group-row-cash-button';
 import { CategorizeInboxGroupRowFileButton } from '../categorize-inbox-group-row-file-button/categorize-inbox-group-row-file-button';
-import { CategorizeInboxGroupRowHint } from '../categorize-inbox-group-row-hint/categorize-inbox-group-row-hint';
+import { CategorizeInboxGroupRowSubtitle } from '../categorize-inbox-group-row-subtitle/categorize-inbox-group-row-subtitle';
 import { CategorizeInboxMerchantBadge } from '../categorize-inbox-merchant-badge/categorize-inbox-merchant-badge';
 import { CategorizeInboxOptionChevron } from '../categorize-inbox-option-chevron/categorize-inbox-option-chevron';
 
@@ -28,21 +26,25 @@ interface Props {
 }
 
 export const CategorizeInboxGroupRow = ({ cluster, position }: Props) => {
-    const { t } = useLingui();
     const [actionWidth, setActionWidth] = useState(0);
 
-    const { key, displayTitle, rows, section } = cluster;
+    const { key, displayTitle, section } = cluster;
     const isCash = section === CategorizeInboxSectionEnum.CASH_WITHDRAWALS;
-    const isConfident = section === CategorizeInboxSectionEnum.CONFIDENT;
-    const hasAction = isCash || isConfident;
-    const countText = isCash
-        ? t({ message: plural(rows.length, { one: '# ATM withdrawal', other: '# ATM withdrawals' }) })
-        : t({ message: plural(rows.length, { one: '# payment', other: '# payments' }) });
+    const hasAction = isCash || section === CategorizeInboxSectionEnum.CONFIDENT;
 
-    const merchantTitle = formatCategorizeInboxMerchantTitle(displayTitle);
     const href = { pathname: '/categorize/group/[key]', params: { key } } as const;
     const actionSpacerStyle = { width: actionWidth };
-    const trailing = hasAction ? <View style={actionSpacerStyle} /> : <CategorizeInboxGroupRowHint cluster={cluster} />;
+    const trailing = hasAction ? (
+        <View className="items-end gap-y-xs">
+            <CategorizeInboxGroupRowAmount cluster={cluster} />
+            <View className="h-[32px]" style={actionSpacerStyle} />
+        </View>
+    ) : (
+        <>
+            <CategorizeInboxGroupRowAmount cluster={cluster} />
+            <CategorizeInboxOptionChevron />
+        </>
+    );
     const action = isCash ? (
         <CategorizeInboxGroupRowCashButton cluster={cluster} />
     ) : (
@@ -55,34 +57,32 @@ export const CategorizeInboxGroupRow = ({ cluster, position }: Props) => {
         <CategorizeInboxCardRow position={position}>
             <Link href={href} asChild>
                 <HapticPressable
-                    className="flex-row items-center gap-x-xl px-3xl py-xl active:opacity-70"
+                    className="min-h-[64px] flex-row items-center gap-x-xl px-3xl py-lg active:opacity-70"
                     accessibilityRole="link"
                     {...testID(CategorizeInboxGroupRowSelector.Row, key)}
                 >
                     <CategorizeInboxMerchantBadge cluster={cluster} />
                     <View className="min-w-0 flex-1 gap-y-xxs">
-                        <View className="flex-row items-baseline gap-x-md">
-                            <Text className="flex-1 text-[15px] font-semibold text-primary" numberOfLines={1}>
-                                {merchantTitle}
-                            </Text>
-                            <CategorizeInboxGroupRowAmount cluster={cluster} />
-                        </View>
-                        <View className="h-[26px] flex-row items-center justify-between gap-x-md">
-                            <Text className="shrink text-[13px] text-secondary-foreground tabular-nums" numberOfLines={1}>
-                                {countText}
-                            </Text>
-                            {trailing}
-                        </View>
+                        <Text className="text-[15px] font-semibold text-primary" numberOfLines={1}>
+                            {formatCategorizeInboxMerchantTitle(displayTitle)}
+                        </Text>
+                        <CategorizeInboxGroupRowSubtitle cluster={cluster} />
                     </View>
-                    <CategorizeInboxOptionChevron />
+                    {trailing}
                 </HapticPressable>
             </Link>
 
             {hasAction ? (
-                <View className="absolute bottom-[12px] left-[140px] right-[46px] items-end" pointerEvents="box-none">
-                    <View className="max-w-full" onLayout={handleActionLayout}>
-                        {action}
+                <View className="absolute inset-y-0 right-[16px] items-end justify-center gap-y-xs" pointerEvents="box-none">
+                    <View
+                        className="opacity-0"
+                        accessibilityElementsHidden
+                        importantForAccessibility="no-hide-descendants"
+                        pointerEvents="none"
+                    >
+                        <CategorizeInboxGroupRowAmount cluster={cluster} />
                     </View>
+                    <View onLayout={handleActionLayout}>{action}</View>
                 </View>
             ) : null}
         </CategorizeInboxCardRow>

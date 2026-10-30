@@ -23,7 +23,7 @@ msgid "Binance P2P sell {assetCode}"
 msgstr "Binance P2P-Verkauf von {assetCode}"
 
 #. placeholder {0}: rows.length
-#: src/categorize-inbox/components/categorize-inbox-group-row/categorize-inbox-group-row.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-row-subtitle/categorize-inbox-group-row-subtitle.tsx
 msgid "{0, plural, one {# ATM withdrawal} other {# ATM withdrawals}}"
 msgstr "{0, plural, one {# Geldautomaten-Abhebung} other {# Geldautomaten-Abhebungen}}"
 
@@ -31,7 +31,7 @@ msgstr "{0, plural, one {# Geldautomaten-Abhebung} other {# Geldautomaten-Abhebu
 #. placeholder {0}: oneOffs.reduce((total, cluster) => total + cluster.rows.length, 0)
 #. placeholder {0}: rows.length
 #: src/categorize-inbox/components/categorize-inbox-group-hero/categorize-inbox-group-hero.tsx
-#: src/categorize-inbox/components/categorize-inbox-group-row/categorize-inbox-group-row.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-row-subtitle/categorize-inbox-group-row-subtitle.tsx
 #: src/categorize-inbox/components/categorize-inbox-one-offs-link/categorize-inbox-one-offs-link.tsx
 msgid "{0, plural, one {# payment} other {# payments}}"
 msgstr "{0, plural, one {# Zahlung} other {# Zahlungen}}"
@@ -133,6 +133,7 @@ msgstr "{count, plural, one {# vorhandene Transaktion passt zu dieser Regel.} ot
 msgid "{count, plural, one {# other} other {# other}}"
 msgstr "{count, plural, one {# weitere} other {# weitere}}"
 
+#: src/categorize-inbox/components/categorize-inbox-group-label-option/categorize-inbox-group-label-option.tsx
 #: src/installment-plan/component/installment-count-chip/installment-count-chip.tsx
 msgid "{count, plural, one {# payment} other {# payments}}"
 msgstr "{count, plural, one {# Zahlung} other {# Zahlungen}}"
@@ -156,10 +157,6 @@ msgstr "{count, plural, one {# anstehende Rechnung} other {# anstehende Rechnung
 #: src/categorize-inbox/components/categorize-inbox-pile-legend/categorize-inbox-pile-legend.tsx
 msgid "{count, plural, one {# your call} other {# your call}}"
 msgstr "{count, plural, one {# deine Wahl} other {# deine Wahl}}"
-
-#: src/categorize-inbox/components/categorize-inbox-group-label-option/categorize-inbox-group-label-option.tsx
-msgid "{count, plural, one {Best match · # payment} other {Best match · # payments}}"
-msgstr "{count, plural, one {Beste Übereinstimmung · # Zahlung} other {Beste Übereinstimmung · # Zahlungen}}"
 
 #: src/category/hooks/use-delete-category.hook.ts
 msgid "{count, plural, one {This category has # transaction. Select another category to reassign it to.} other {This category has # transactions. Select another category to reassign them to.}}"
@@ -630,12 +627,12 @@ msgid "About"
 msgstr "Über"
 
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
-msgid "About {rate} a day, every one under {maxAmountLabel}."
-msgstr "Etwa {rate} pro Tag, jede unter {maxAmountLabel}."
+msgid "about {rate} a day"
+msgstr "etwa {rate} pro Tag"
 
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
-msgid "About {rate} a week, every one under {maxAmountLabel}."
-msgstr "Etwa {rate} pro Woche, jede unter {maxAmountLabel}."
+msgid "about {rate} a week"
+msgstr "etwa {rate} pro Woche"
 
 #: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
 msgid "About 12 minutes"
@@ -1051,10 +1048,6 @@ msgstr "Möchten Sie diese Regel wirklich löschen?"
 msgid "Are you sure?"
 msgstr "Sind Sie sicher?"
 
-#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
-msgid "Arrives once a month."
-msgstr "Kommt einmal im Monat."
-
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Attach debt"
@@ -1161,6 +1154,10 @@ msgstr "Basierend auf deinen letzten Ausgaben"
 #: src/categorize-inbox/components/categorize-inbox-group-move-to-cash-option/categorize-inbox-group-move-to-cash-option.tsx
 msgid "Becomes a transfer to your cash wallet"
 msgstr "Wird zu einer Überweisung auf deine Bargeldbörse"
+
+#: src/categorize-inbox/components/categorize-inbox-group-label-option/categorize-inbox-group-label-option.tsx
+msgid "Best match"
+msgstr "Beste Übereinstimmung"
 
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "between"
@@ -1388,9 +1385,14 @@ msgstr "Ersparnis übertragen"
 msgid "Cash"
 msgstr "Bargeld"
 
+#: src/categorize-inbox/components/categorize-inbox-group-row-cash-button/categorize-inbox-group-row-cash-button.tsx
+msgctxt "Move payments to the cash account"
+msgid "Cash"
+msgstr "Bargeld"
+
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
-msgid "Cash from an ATM. Move it to your cash wallet or mark it tracked."
-msgstr "Bargeld vom Geldautomaten. Verschiebe es in deine Bargeldbörse oder markiere es als erfasst."
+msgid "cash from an ATM"
+msgstr "Bargeld vom Automaten"
 
 #: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
 msgid "Cash withdrawals"
@@ -1484,6 +1486,10 @@ msgstr "Girokonto"
 msgid "Checking transaction history"
 msgstr "Transaktionsverlauf wird geprüft"
 
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+msgid "Choose"
+msgstr "Auswählen"
+
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Choose \"Excel\" as the export format — PDF and CSV files can't be imported"
 msgstr "Wählen Sie „Excel“ als Exportformat – PDF- und CSV-Dateien können nicht importiert werden"
@@ -1500,10 +1506,6 @@ msgstr "Wähle eine PIN"
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "Choose a preset to auto-fill column mappings"
 msgstr "Wählen Sie eine Vorlage zum automatischen Ausfüllen der Spaltenzuordnungen"
-
-#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
-msgid "Choose account"
-msgstr "Konto wählen"
 
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Choose accounts"
@@ -2829,17 +2831,14 @@ msgstr "Datei"
 
 #: src/categorize-inbox/components/categorize-inbox-group-already-tracked-option/categorize-inbox-group-already-tracked-option.tsx
 #: src/categorize-inbox/components/categorize-inbox-group-label-option/categorize-inbox-group-label-option.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-row-file-button/categorize-inbox-group-row-file-button.tsx
 msgctxt "Apply a category action"
 msgid "File"
 msgstr "Ablegen"
 
 #: src/categorize-inbox/components/categorize-inbox-group-row-file-button/categorize-inbox-group-row-file-button.tsx
-msgid "File · {candidateTitle}"
-msgstr "Ablegen · {candidateTitle}"
-
-#: src/categorize-inbox/components/categorize-inbox-group-row-file-button/categorize-inbox-group-row-file-button.tsx
-msgid "File as {candidateTitle}"
-msgstr "Als {candidateTitle} ablegen"
+msgid "File {merchantTitle} as {candidateTitle}"
+msgstr "{merchantTitle} als {candidateTitle} ablegen"
 
 #: src/app/transaction-account-filter.tsx
 msgid "Filter accounts"
@@ -3400,13 +3399,13 @@ msgstr "Wird geladen…"
 msgid "Lock Budgie with your own PIN"
 msgstr "Sperre Budgie mit deiner eigenen PIN"
 
-#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
-msgid "Looks like a jar top-up."
-msgstr "Sieht nach einer Spardosen-Aufladung aus."
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+msgid "Looks like a jar top-up"
+msgstr "Sieht nach einer Spardosen-Aufladung aus"
 
-#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
-msgid "Looks like a top-up of {account}."
-msgstr "Sieht nach einer Aufladung von {account} aus."
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+msgid "Looks like a top-up of {account}"
+msgstr "Sieht nach einer Aufladung von {account} aus"
 
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "Looks right"
@@ -3574,13 +3573,13 @@ msgstr "Modelle und Downloads"
 msgid "Models download once, best on Wi-Fi"
 msgstr "Modelle werden einmal geladen, am besten über WLAN"
 
-#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
-msgid "Money coming back from {account}."
-msgstr "Geld kommt von {account} zurück."
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+msgid "Money coming back from {account}"
+msgstr "Geld zurück von {account}"
 
-#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
-msgid "Money coming back from your «{jar}» jar."
-msgstr "Geld, das aus deiner Spardose «{jar}» zurückkommt."
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+msgid "Money coming back from your «{jar}» jar"
+msgstr "Geld zurück aus deiner Spardose «{jar}»"
 
 #: src/runway/component/runway-history-legend/runway-history-legend.tsx
 msgid "Money in"
@@ -3671,7 +3670,6 @@ msgid "Move {displayTitle} to cash"
 msgstr "{displayTitle} zu Bargeld verschieben"
 
 #: src/categorize-inbox/components/categorize-inbox-group-move-to-cash-option/categorize-inbox-group-move-to-cash-option.tsx
-#: src/categorize-inbox/components/categorize-inbox-group-row-cash-button/categorize-inbox-group-row-cash-button.tsx
 msgid "Move to cash"
 msgstr "Ins Bargeld"
 
@@ -4058,6 +4056,10 @@ msgstr "Im Plan"
 #: src/app/(tabs)/settings/ai.tsx
 msgid "On-device AI"
 msgstr "On-Device-KI"
+
+#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
+msgid "once a month"
+msgstr "einmal im Monat"
 
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 msgid "One you exported with a PIN you remember"
@@ -4820,8 +4822,8 @@ msgid "Safe to spend"
 msgstr "Sicher ausgebbar"
 
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
-msgid "Same title every time."
-msgstr "Jedes Mal derselbe Titel."
+msgid "same title every time"
+msgstr "jedes Mal derselbe Titel"
 
 #: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
@@ -5838,7 +5840,7 @@ msgid "Transcription failed"
 msgstr "Transkription fehlgeschlagen"
 
 #: src/categorize-inbox/components/categorize-inbox-group-learned-transfer-option/categorize-inbox-group-learned-transfer-option.tsx
-#: src/categorize-inbox/components/categorize-inbox-group-row-hint/categorize-inbox-group-row-hint.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-row-subtitle/categorize-inbox-group-row-subtitle.tsx
 #: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/constant/transaction-type.constant.ts

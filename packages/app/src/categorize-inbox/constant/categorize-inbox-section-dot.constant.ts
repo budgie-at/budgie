@@ -7,9 +7,11 @@ export const CATEGORIZE_INBOX_SECTION_ORDER = [
     CategorizeInboxSectionEnum.ONE_OFFS
 ] as const;
 
-export const CATEGORIZE_INBOX_SECTION_COLOR: Record<CategorizeInboxSectionEnum, string> = {
-    [CategorizeInboxSectionEnum.CONFIDENT]: 'bg-positive-fill',
-    [CategorizeInboxSectionEnum.CASH_WITHDRAWALS]: 'bg-warning-fill',
-    [CategorizeInboxSectionEnum.REVIEW]: 'bg-secondary-foreground/60',
-    [CategorizeInboxSectionEnum.ONE_OFFS]: 'bg-secondary-foreground/35'
+export const CATEGORIZE_INBOX_SECTION_CLASS_NAME: Record<CategorizeInboxSectionEnum, readonly string[]> = {
+    [CategorizeInboxSectionEnum.CONFIDENT]: ['bg-positive-action'],
+    [CategorizeInboxSectionEnum.CASH_WITHDRAWALS]: ['bg-attention-foreground'],
+    [CategorizeInboxSectionEnum.REVIEW]: ['bg-secondary-foreground'],
+    [CategorizeInboxSectionEnum.ONE_OFFS]: ['border-[1.5px]', 'border-secondary-foreground']
 };
+
+export const CATEGORIZE_INBOX_SORTED_CLASS_NAME: readonly string[] = ['bg-primary'];

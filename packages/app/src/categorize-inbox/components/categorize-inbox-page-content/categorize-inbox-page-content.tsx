@@ -11,10 +11,10 @@ import { CollapsibleChromeHeaderScrim } from '../../../@generic/component/collap
 import { CollapsibleChromeHeader } from '../../../@generic/component/collapsible-chrome-header/collapsible-chrome-header';
 import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { AccountDetailsHeaderBackdrop } from '../../../account/component/account-details-header-backdrop/account-details-header-backdrop';
 import { buildUncategorizedFilters } from '../../../transaction/utils/build-uncategorized-filters.util';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 import { CategorizeInboxEmptyState } from '../categorize-inbox-empty-state/categorize-inbox-empty-state';
-import { CategorizeInboxHeaderBackdrop } from '../categorize-inbox-header-backdrop/categorize-inbox-header-backdrop';
 import { CategorizeInboxList } from '../categorize-inbox-list/categorize-inbox-list';
 import { CategorizeInboxPageSelector } from '../categorize-inbox-page/categorize-inbox-page.selector';
 import { CategorizeInboxPanel } from '../categorize-inbox-panel/categorize-inbox-panel';
@@ -57,7 +57,7 @@ export const CategorizeInboxPageContent = ({ params }: Props) => {
         <ScreenChromeFrame testID={CategorizeInboxPageSelector.Container}>
             <View className="flex-1">{content}</View>
 
-            <CategorizeInboxHeaderBackdrop />
+            <AccountDetailsHeaderBackdrop />
 
             <CollapsibleChromeHeaderScrim />
 

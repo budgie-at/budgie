@@ -7,7 +7,7 @@ interface Props {
 }
 
 export const CategorizeInboxOptionSectionTitle = ({ children }: Props) => (
-    <Text className="text-secondary-foreground px-3xl pb-sm pt-5xl text-[13px] font-semibold" accessibilityRole="header">
+    <Text className="text-primary px-3xl pb-sm pt-5xl text-[15px] font-semibold" accessibilityRole="header">
         {children}
     </Text>
 );

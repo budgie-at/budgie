@@ -1,11 +1,12 @@
-import { plural } from '@lingui/core/macro';
-import { useLingui } from '@lingui/react/macro';
+import { Plural, Trans, useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
+import { Text } from 'react-native';
 
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
-import { CategorizeInboxActionCapsule } from '../categorize-inbox-action-capsule/categorize-inbox-action-capsule';
+import { CategorizeInboxTonalCapsuleVariantEnum } from '../../enum/categorize-inbox-tonal-capsule-variant.enum';
 import { CategorizeInboxLeadOption } from '../categorize-inbox-lead-option/categorize-inbox-lead-option';
 import { CategorizeInboxOptionRow } from '../categorize-inbox-option-row/categorize-inbox-option-row';
+import { CategorizeInboxTonalCapsule } from '../categorize-inbox-tonal-capsule/categorize-inbox-tonal-capsule';
 
 import type { CategorizeInboxLabelInterface } from '../../interface/categorize-inbox-label.interface';
 import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
@@ -30,13 +31,23 @@ export const CategorizeInboxGroupLabelOption = ({ cluster, label, isBestMatch }:
     };
 
     if (isBestMatch) {
+        const bestMatchSubtitle = (
+            <Text>
+                <Text className="text-positive-action font-medium">
+                    <Trans>Best match</Trans>
+                </Text>
+                {' · '}
+                <Plural value={count} one="# payment" other="# payments" />
+            </Text>
+        );
+
         return (
             <CategorizeInboxLeadOption
                 icon={label.icon}
                 title={label.title}
-                subtitle={t({ message: plural(count, { one: 'Best match · # payment', other: 'Best match · # payments' }) })}
+                subtitle={bestMatchSubtitle}
                 variant="positive"
-                accessory={<CategorizeInboxActionCapsule label={fileLabel} variant="positive" />}
+                accessory={<CategorizeInboxTonalCapsule label={fileLabel} variant={CategorizeInboxTonalCapsuleVariantEnum.POSITIVE} />}
                 onPress={handlePress}
             />
         );
@@ -46,7 +57,7 @@ export const CategorizeInboxGroupLabelOption = ({ cluster, label, isBestMatch }:
         <CategorizeInboxOptionRow
             icon={label.icon}
             title={label.title}
-            accessory={<CategorizeInboxActionCapsule label={fileLabel} variant="outline" />}
+            accessory={<CategorizeInboxTonalCapsule label={fileLabel} variant={CategorizeInboxTonalCapsuleVariantEnum.NEUTRAL} />}
             onPress={handlePress}
         />
     );

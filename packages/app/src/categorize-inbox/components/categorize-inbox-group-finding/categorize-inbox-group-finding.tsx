@@ -1,10 +1,6 @@
-import { convertFromMicroUnits } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
-
-import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { CategorizeInboxFindingKindEnum } from '../../enum/categorize-inbox-finding-kind.enum';
 import { useCategorizeInboxMatchedAccount } from '../../hook/use-categorize-inbox-matched-account.hook';
 import { getCategorizeInboxFinding } from '../../utils/get-categorize-inbox-finding.util';
@@ -17,50 +13,18 @@ interface Props {
 }
 
 export const CategorizeInboxGroupFinding = ({ cluster }: Props) => {
-    const protectAmount = useProtectedAmountLabel();
-
     const matchedAccount = useCategorizeInboxMatchedAccount(cluster);
 
-    const { kind, jarName, accountTitle, rate, isPerDay, maxAmount } = getCategorizeInboxFinding(cluster, matchedAccount?.title ?? null);
-    const jar = jarName ?? '';
-    const account = accountTitle ?? '';
-    const symbol = cluster.rows.at(0)?.instrumentSymbol ?? '';
-    const maxAmountLabel = protectAmount(convertFromMicroUnits(maxAmount), symbol);
+    const { kind, rate, isPerDay } = getCategorizeInboxFinding(cluster, matchedAccount?.title ?? null);
 
-    const rateBody = isPerDay ? (
-        <Trans>
-            About {rate} a day, every one under {maxAmountLabel}.
-        </Trans>
-    ) : (
-        <Trans>
-            About {rate} a week, every one under {maxAmountLabel}.
-        </Trans>
-    );
-
-    const topUpEmphasis = isDefined(accountTitle) ? (
-        <Trans>Looks like a top-up of {account}.</Trans>
-    ) : (
-        <Trans>Looks like a jar top-up.</Trans>
-    );
-
-    const returnEmphasis = isDefined(accountTitle) ? (
-        <Trans>Money coming back from {account}.</Trans>
-    ) : (
-        <Trans>Money coming back from your «{jar}» jar.</Trans>
-    );
-
-    const jarTopUpBody = (
-        <Text>
-            {rateBody} {topUpEmphasis}
-        </Text>
-    );
+    const rateBody = isPerDay ? <Trans>about {rate} a day</Trans> : <Trans>about {rate} a week</Trans>;
 
     const bodies: Record<CategorizeInboxFindingKindEnum, ReactNode> = {
-        [CategorizeInboxFindingKindEnum.CASH]: <Trans>Cash from an ATM. Move it to your cash wallet or mark it tracked.</Trans>,
-        [CategorizeInboxFindingKindEnum.JAR_TOP_UP]: jarTopUpBody,
-        [CategorizeInboxFindingKindEnum.JAR_RETURN]: returnEmphasis,
-        [CategorizeInboxFindingKindEnum.MONTHLY]: <Trans>Arrives once a month.</Trans>,
-        [CategorizeInboxFindingKindEnum.GENERIC]: <Trans>Same title every time.</Trans>
+        [CategorizeInboxFindingKindEnum.CASH]: <Trans>cash from an ATM</Trans>,
+        [CategorizeInboxFindingKindEnum.JAR_TOP_UP]: rateBody,
+        [CategorizeInboxFindingKindEnum.JAR_RETURN]: rateBody,
+        [CategorizeInboxFindingKindEnum.MONTHLY]: <Trans>once a month</Trans>,
+        [CategorizeInboxFindingKindEnum.GENERIC]: <Trans>same title every time</Trans>
     };
 
     return <Text>{bodies[kind]}</Text>;

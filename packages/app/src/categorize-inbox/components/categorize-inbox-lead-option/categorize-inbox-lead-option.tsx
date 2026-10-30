@@ -12,7 +12,7 @@ import type { ReactNode } from 'react';
 interface Props {
     readonly variant: 'positive' | 'neutral';
     readonly title: string;
-    readonly subtitle: string;
+    readonly subtitle: ReactNode;
     readonly icon: UserIconType;
     readonly accessory: ReactNode;
     readonly onPress: () => void;
@@ -20,27 +20,23 @@ interface Props {
 
 const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
-const rowVariants = cva('min-h-[72px] flex-row items-center gap-x-xl px-3xl py-xl active:opacity-70', {
-    variants: { variant: { positive: 'bg-positive-fill/8', neutral: '' } }
+const cardVariants = cva('overflow-hidden rounded-3xl bg-surface-row', {
+    variants: { variant: { positive: 'border border-positive-action/30', neutral: '' } }
 });
 
 const discVariants = cva('', {
-    variants: { variant: { positive: 'bg-positive-fill/15', neutral: 'bg-secondary-foreground/15' } }
+    variants: { variant: { positive: 'bg-positive-action/15', neutral: 'bg-secondary-foreground/15' } }
 });
 
 const iconVariants = cva('', {
     variants: { variant: { positive: 'text-positive-action', neutral: 'text-secondary-foreground' } }
 });
 
-const subtitleVariants = cva('text-[13px]', {
-    variants: { variant: { positive: 'text-positive-action font-medium', neutral: 'text-secondary-foreground' } }
-});
-
 export const CategorizeInboxLeadOption = ({ variant, title, subtitle, icon, accessory, onPress }: Props) => (
-    <View className="overflow-hidden rounded-3xl bg-surface-row" style={CONTINUOUS_CORNERS}>
+    <View className={cardVariants({ variant })} style={CONTINUOUS_CORNERS}>
         <HapticPressable
             onPress={onPress}
-            className={rowVariants({ variant })}
+            className="min-h-[72px] flex-row items-center gap-x-xl px-3xl py-xl active:opacity-70"
             accessibilityRole="button"
             {...testID(CategorizeInboxGroupScreenSelector.Option, title)}
         >
@@ -58,7 +54,7 @@ export const CategorizeInboxLeadOption = ({ variant, title, subtitle, icon, acce
                 <Text className="text-primary text-[17px] font-semibold" numberOfLines={2}>
                     {title}
                 </Text>
-                <Text className={subtitleVariants({ variant })} numberOfLines={1}>
+                <Text className="text-secondary-foreground text-[13px]" numberOfLines={2}>
                     {subtitle}
                 </Text>
             </View>

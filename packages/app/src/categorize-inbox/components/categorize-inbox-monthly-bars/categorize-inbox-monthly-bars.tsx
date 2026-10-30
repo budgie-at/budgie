@@ -1,6 +1,6 @@
 import { View } from 'react-native';
 
-import { CATEGORIZE_INBOX_BAR_STRIP_HEIGHT } from '../../constant/categorize-inbox-bar-motion.constant';
+import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { CategorizeInboxMonthlyBar } from '../categorize-inbox-monthly-bar/categorize-inbox-monthly-bar';
 
 import type { CategorizeInboxMonthlyBucketInterface } from '../../interface/categorize-inbox-monthly-bucket.interface';
@@ -11,22 +11,19 @@ interface Props {
 }
 
 export const CategorizeInboxMonthlyBars = ({ buckets, barClassName }: Props) => {
+    const { formatShortMonth } = useFormatDate();
+
     const maxCount = Math.max(1, ...buckets.map(bucket => bucket.count));
-    const stripStyle = { height: CATEGORIZE_INBOX_BAR_STRIP_HEIGHT };
 
     return (
-        <View
-            className="flex-row items-end justify-between gap-x-[6px]"
-            style={stripStyle}
-            accessibilityElementsHidden
-            importantForAccessibility="no-hide-descendants"
-        >
+        <View className="flex-row items-end gap-x-xs" accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
             {buckets.map((bucket, index) => (
                 <CategorizeInboxMonthlyBar
                     key={bucket.month.getTime()}
                     count={bucket.count}
                     maxCount={maxCount}
                     index={index}
+                    monthLabel={formatShortMonth(bucket.month)}
                     className={barClassName}
                 />
             ))}

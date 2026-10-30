@@ -5,6 +5,7 @@ import { View } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
+import { CATEGORIZE_INBOX_SORTED_CLASS_NAME } from '../../constant/categorize-inbox-section-dot.constant';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 import { getCategorizeInboxPile } from '../../utils/get-categorize-inbox-pile.util';
 import { CategorizeInboxPileLegendItem } from '../categorize-inbox-pile-legend-item/categorize-inbox-pile-legend-item';
@@ -24,14 +25,14 @@ export const CategorizeInboxPileLegend = () => {
     const sortedText = t({ message: plural(categorizedCount, { one: '# sorted', other: '# sorted' }) });
 
     return (
-        <View className="flex-row flex-wrap justify-center gap-x-xl gap-y-xs">
+        <View className="flex-row flex-wrap gap-y-sm px-3xl">
             {segments
                 .filter(({ count }) => isPositiveNumber(count))
                 .map(({ section, className, count }) => (
                     <CategorizeInboxPileLegendItem key={section} dotClassName={className} text={sectionTexts[section](count)} />
                 ))}
             {isPositiveNumber(categorizedCount) ? (
-                <CategorizeInboxPileLegendItem dotClassName="bg-secondary-foreground/20" text={sortedText} />
+                <CategorizeInboxPileLegendItem dotClassName={CATEGORIZE_INBOX_SORTED_CLASS_NAME} text={sortedText} />
             ) : null}
         </View>
     );

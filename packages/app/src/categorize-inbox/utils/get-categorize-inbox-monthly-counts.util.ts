@@ -6,6 +6,7 @@ import type { CategorizeInboxMonthlyBucketInterface } from '../interface/categor
 import type { CategorizeInboxRowInterface } from '@budgie/categorization';
 
 const MIN_MONTH_BUCKET_COUNT = 6;
+const MAX_MONTH_BUCKET_COUNT = 12;
 
 export const getCategorizeInboxMonthlyCounts = (
     rows: readonly Pick<CategorizeInboxRowInterface, 'operatedAt'>[]
@@ -19,7 +20,10 @@ export const getCategorizeInboxMonthlyCounts = (
     const newestRowMonth = startOfMonth(new Date(Math.max(...timestamps)));
     const lastMonth = newestRowMonth > currentMonth ? newestRowMonth : currentMonth;
     const firstMonth = startOfMonth(new Date(Math.min(...timestamps)));
-    const bucketCount = Math.max(MIN_MONTH_BUCKET_COUNT, differenceInCalendarMonths(lastMonth, firstMonth) + 1);
+    const bucketCount = Math.min(
+        MAX_MONTH_BUCKET_COUNT,
+        Math.max(MIN_MONTH_BUCKET_COUNT, differenceInCalendarMonths(lastMonth, firstMonth) + 1)
+    );
 
     return Array.from({ length: bucketCount }, (_, index) => {
         const month = subMonths(lastMonth, bucketCount - 1 - index);

@@ -17,15 +17,15 @@ interface Props {
 }
 
 const DISC_CLASS_NAME: Record<CategorizeInboxSectionEnum, string> = {
-    [CategorizeInboxSectionEnum.CONFIDENT]: 'bg-positive-background',
-    [CategorizeInboxSectionEnum.CASH_WITHDRAWALS]: 'bg-warning-background',
+    [CategorizeInboxSectionEnum.CONFIDENT]: 'bg-positive-action/15',
+    [CategorizeInboxSectionEnum.CASH_WITHDRAWALS]: 'bg-warning-fill/15',
     [CategorizeInboxSectionEnum.REVIEW]: 'bg-secondary-foreground/15',
     [CategorizeInboxSectionEnum.ONE_OFFS]: 'bg-secondary-foreground/15'
 };
 
 const GLYPH_CLASS_NAME: Record<CategorizeInboxSectionEnum, string> = {
-    [CategorizeInboxSectionEnum.CONFIDENT]: 'text-positive-foreground',
-    [CategorizeInboxSectionEnum.CASH_WITHDRAWALS]: 'text-warning-foreground',
+    [CategorizeInboxSectionEnum.CONFIDENT]: 'text-positive-action',
+    [CategorizeInboxSectionEnum.CASH_WITHDRAWALS]: 'text-attention-foreground',
     [CategorizeInboxSectionEnum.REVIEW]: 'text-secondary-foreground',
     [CategorizeInboxSectionEnum.ONE_OFFS]: 'text-secondary-foreground'
 };

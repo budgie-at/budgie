@@ -23,7 +23,7 @@ msgid "Binance P2P sell {assetCode}"
 msgstr "P2P-продаж {assetCode} на Binance"
 
 #. placeholder {0}: rows.length
-#: src/categorize-inbox/components/categorize-inbox-group-row/categorize-inbox-group-row.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-row-subtitle/categorize-inbox-group-row-subtitle.tsx
 msgid "{0, plural, one {# ATM withdrawal} other {# ATM withdrawals}}"
 msgstr "{0, plural, one {# зняття в банкоматі} few {# зняття в банкоматі} many {# знять у банкоматі} other {# зняття в банкоматі}}"
 
@@ -31,7 +31,7 @@ msgstr "{0, plural, one {# зняття в банкоматі} few {# знятт
 #. placeholder {0}: oneOffs.reduce((total, cluster) => total + cluster.rows.length, 0)
 #. placeholder {0}: rows.length
 #: src/categorize-inbox/components/categorize-inbox-group-hero/categorize-inbox-group-hero.tsx
-#: src/categorize-inbox/components/categorize-inbox-group-row/categorize-inbox-group-row.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-row-subtitle/categorize-inbox-group-row-subtitle.tsx
 #: src/categorize-inbox/components/categorize-inbox-one-offs-link/categorize-inbox-one-offs-link.tsx
 msgid "{0, plural, one {# payment} other {# payments}}"
 msgstr "{0, plural, one {# платіж} few {# платежі} many {# платежів} other {# платежу}}"
@@ -133,6 +133,7 @@ msgstr "{count, plural, one {# наявна транзакція відпові�
 msgid "{count, plural, one {# other} other {# other}}"
 msgstr "{count, plural, one {# інший} few {# інші} many {# інших} other {# інших}}"
 
+#: src/categorize-inbox/components/categorize-inbox-group-label-option/categorize-inbox-group-label-option.tsx
 #: src/installment-plan/component/installment-count-chip/installment-count-chip.tsx
 msgid "{count, plural, one {# payment} other {# payments}}"
 msgstr "{count, plural, one {# платіж} few {# платежі} many {# платежів} other {# платежу}}"
@@ -156,10 +157,6 @@ msgstr "{count, plural, one {# майбутній платіж} few {# майб�
 #: src/categorize-inbox/components/categorize-inbox-pile-legend/categorize-inbox-pile-legend.tsx
 msgid "{count, plural, one {# your call} other {# your call}}"
 msgstr "{count, plural, one {# на ваш розсуд} few {# на ваш розсуд} many {# на ваш розсуд} other {# на ваш розсуд}}"
-
-#: src/categorize-inbox/components/categorize-inbox-group-label-option/categorize-inbox-group-label-option.tsx
-msgid "{count, plural, one {Best match · # payment} other {Best match · # payments}}"
-msgstr "{count, plural, one {Найкращий збіг · # платіж} few {Найкращий збіг · # платежі} many {Найкращий збіг · # платежів} other {Найкращий збіг · # платежу}}"
 
 #: src/category/hooks/use-delete-category.hook.ts
 msgid "{count, plural, one {This category has # transaction. Select another category to reassign it to.} other {This category has # transactions. Select another category to reassign them to.}}"
@@ -630,12 +627,12 @@ msgid "About"
 msgstr "Про застосунок"
 
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
-msgid "About {rate} a day, every one under {maxAmountLabel}."
-msgstr "Приблизно {rate} на день, кожен менший за {maxAmountLabel}."
+msgid "about {rate} a day"
+msgstr "близько {rate} на день"
 
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
-msgid "About {rate} a week, every one under {maxAmountLabel}."
-msgstr "Приблизно {rate} на тиждень, кожен менший за {maxAmountLabel}."
+msgid "about {rate} a week"
+msgstr "близько {rate} на тиждень"
 
 #: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
 msgid "About 12 minutes"
@@ -1051,10 +1048,6 @@ msgstr "Ви впевнені, що хочете видалити це прав�
 msgid "Are you sure?"
 msgstr "Ви впевнені?"
 
-#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
-msgid "Arrives once a month."
-msgstr "Надходить раз на місяць."
-
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Attach debt"
@@ -1161,6 +1154,10 @@ msgstr "На основі ваших нещодавніх витрат"
 #: src/categorize-inbox/components/categorize-inbox-group-move-to-cash-option/categorize-inbox-group-move-to-cash-option.tsx
 msgid "Becomes a transfer to your cash wallet"
 msgstr "Стане переказом до вашого гаманця готівки"
+
+#: src/categorize-inbox/components/categorize-inbox-group-label-option/categorize-inbox-group-label-option.tsx
+msgid "Best match"
+msgstr "Найкращий збіг"
 
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "between"
@@ -1388,9 +1385,14 @@ msgstr "Переносити заощадження"
 msgid "Cash"
 msgstr "Готівка"
 
+#: src/categorize-inbox/components/categorize-inbox-group-row-cash-button/categorize-inbox-group-row-cash-button.tsx
+msgctxt "Move payments to the cash account"
+msgid "Cash"
+msgstr "Готівка"
+
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
-msgid "Cash from an ATM. Move it to your cash wallet or mark it tracked."
-msgstr "Готівка з банкомата. Перенесіть її в готівковий гаманець або позначте як облікову."
+msgid "cash from an ATM"
+msgstr "готівка з банкомата"
 
 #: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
 msgid "Cash withdrawals"
@@ -1484,6 +1486,10 @@ msgstr "Поточний рахунок"
 msgid "Checking transaction history"
 msgstr "Перевіряємо історію транзакцій"
 
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+msgid "Choose"
+msgstr "Вибрати"
+
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Choose \"Excel\" as the export format — PDF and CSV files can't be imported"
 msgstr "Оберіть «Excel» як формат експорту — файли PDF і CSV імпортувати не можна"
@@ -1500,10 +1506,6 @@ msgstr "Виберіть PIN-код"
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "Choose a preset to auto-fill column mappings"
 msgstr "Оберіть шаблон для автоматичного заповнення відповідностей стовпців"
-
-#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
-msgid "Choose account"
-msgstr "Вибрати рахунок"
 
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Choose accounts"
@@ -2829,17 +2831,14 @@ msgstr "Файл"
 
 #: src/categorize-inbox/components/categorize-inbox-group-already-tracked-option/categorize-inbox-group-already-tracked-option.tsx
 #: src/categorize-inbox/components/categorize-inbox-group-label-option/categorize-inbox-group-label-option.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-row-file-button/categorize-inbox-group-row-file-button.tsx
 msgctxt "Apply a category action"
 msgid "File"
 msgstr "Віднести"
 
 #: src/categorize-inbox/components/categorize-inbox-group-row-file-button/categorize-inbox-group-row-file-button.tsx
-msgid "File · {candidateTitle}"
-msgstr "Віднести · {candidateTitle}"
-
-#: src/categorize-inbox/components/categorize-inbox-group-row-file-button/categorize-inbox-group-row-file-button.tsx
-msgid "File as {candidateTitle}"
-msgstr "Віднести до {candidateTitle}"
+msgid "File {merchantTitle} as {candidateTitle}"
+msgstr "Віднести {merchantTitle} до {candidateTitle}"
 
 #: src/app/transaction-account-filter.tsx
 msgid "Filter accounts"
@@ -3400,13 +3399,13 @@ msgstr "Завантаження…"
 msgid "Lock Budgie with your own PIN"
 msgstr "Заблокуйте Budgie власним PIN-кодом"
 
-#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
-msgid "Looks like a jar top-up."
-msgstr "Схоже на поповнення банки."
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+msgid "Looks like a jar top-up"
+msgstr "Схоже на поповнення банки"
 
-#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
-msgid "Looks like a top-up of {account}."
-msgstr "Схоже на поповнення {account}."
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+msgid "Looks like a top-up of {account}"
+msgstr "Схоже на поповнення {account}"
 
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "Looks right"
@@ -3574,13 +3573,13 @@ msgstr "Моделі та завантаження"
 msgid "Models download once, best on Wi-Fi"
 msgstr "Моделі завантажуються один раз, краще через Wi-Fi"
 
-#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
-msgid "Money coming back from {account}."
-msgstr "Гроші повертаються з {account}."
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+msgid "Money coming back from {account}"
+msgstr "Гроші повертаються з {account}"
 
-#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
-msgid "Money coming back from your «{jar}» jar."
-msgstr "Гроші, що повертаються з вашої банки «{jar}»."
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+msgid "Money coming back from your «{jar}» jar"
+msgstr "Гроші повертаються з вашої банки «{jar}»"
 
 #: src/runway/component/runway-history-legend/runway-history-legend.tsx
 msgid "Money in"
@@ -3671,7 +3670,6 @@ msgid "Move {displayTitle} to cash"
 msgstr "Перенести {displayTitle} в готівку"
 
 #: src/categorize-inbox/components/categorize-inbox-group-move-to-cash-option/categorize-inbox-group-move-to-cash-option.tsx
-#: src/categorize-inbox/components/categorize-inbox-group-row-cash-button/categorize-inbox-group-row-cash-button.tsx
 msgid "Move to cash"
 msgstr "У готівку"
 
@@ -4058,6 +4056,10 @@ msgstr "За планом"
 #: src/app/(tabs)/settings/ai.tsx
 msgid "On-device AI"
 msgstr "ШІ на пристрої"
+
+#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
+msgid "once a month"
+msgstr "раз на місяць"
 
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 msgid "One you exported with a PIN you remember"
@@ -4820,8 +4822,8 @@ msgid "Safe to spend"
 msgstr "Безпечно витрачати"
 
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
-msgid "Same title every time."
-msgstr "Щоразу та сама назва."
+msgid "same title every time"
+msgstr "щоразу та сама назва"
 
 #: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
@@ -5838,7 +5840,7 @@ msgid "Transcription failed"
 msgstr "Помилка транскрипції"
 
 #: src/categorize-inbox/components/categorize-inbox-group-learned-transfer-option/categorize-inbox-group-learned-transfer-option.tsx
-#: src/categorize-inbox/components/categorize-inbox-group-row-hint/categorize-inbox-group-row-hint.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-row-subtitle/categorize-inbox-group-row-subtitle.tsx
 #: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/constant/transaction-type.constant.ts

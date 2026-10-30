@@ -4,8 +4,9 @@ import { useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
 
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
-import { CategorizeInboxActionCapsule } from '../categorize-inbox-action-capsule/categorize-inbox-action-capsule';
+import { CategorizeInboxTonalCapsuleVariantEnum } from '../../enum/categorize-inbox-tonal-capsule-variant.enum';
 import { CategorizeInboxOptionRow } from '../categorize-inbox-option-row/categorize-inbox-option-row';
+import { CategorizeInboxTonalCapsule } from '../categorize-inbox-tonal-capsule/categorize-inbox-tonal-capsule';
 
 import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
 
@@ -32,7 +33,10 @@ export const CategorizeInboxGroupAlreadyTrackedOption = ({ cluster }: Props) => 
             icon={UserIconNameEnum.CheckCheck}
             title={t`Already tracked`}
             accessory={
-                <CategorizeInboxActionCapsule label={t({ context: 'Apply a category action', message: 'File' })} variant="outline" />
+                <CategorizeInboxTonalCapsule
+                    label={t({ context: 'Apply a category action', message: 'File' })}
+                    variant={CategorizeInboxTonalCapsuleVariantEnum.NEUTRAL}
+                />
             }
             onPress={handlePress}
         />

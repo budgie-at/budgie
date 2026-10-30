@@ -31,7 +31,7 @@ export const CategorizeInboxPaymentsMonthHeader = ({ group }: Props) => {
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
 
     const total = getCategorizeInboxDefaultAmount(group.rows, defaultInstrument);
-    const summary = isDefined(total) ? `${group.rows.length} · ${amountLabel(total, defaultInstrument.symbol)}` : `${group.rows.length}`;
+    const totalLabel = isDefined(total) ? amountLabel(total, defaultInstrument.symbol) : '';
     const isAllIncluded = getCategorizeInboxSelection(group.rows, excludedTransactionIds) === CategorizeInboxSelectionEnum.INCLUDED;
     const toggleLabel = isAllIncluded ? <Trans>Deselect all</Trans> : <Trans>Select all</Trans>;
 
@@ -49,17 +49,19 @@ export const CategorizeInboxPaymentsMonthHeader = ({ group }: Props) => {
                 hitSlop={HIT_SLOP}
                 {...testID(CategorizeInboxPaymentsMonthHeaderSelector.Toggle, group.month.getTime())}
             >
-                <Text className="text-positive-action text-[13px] font-semibold">{toggleLabel}</Text>
+                <Text className="text-primary text-[15px]">{toggleLabel}</Text>
             </HapticPressable>
         ) : null;
 
     return (
-        <View className="min-h-[32px] flex-row items-center justify-between gap-x-md px-3xl pb-sm pt-5xl">
-            <Text className="text-primary shrink text-[13px] font-semibold" numberOfLines={1}>
+        <View className="min-h-[32px] flex-row items-center gap-x-xl px-3xl pb-sm pt-5xl">
+            <Text className="text-primary min-w-0 flex-1 text-[15px] font-semibold" numberOfLines={1} accessibilityRole="header">
                 {formatFullMonthAndYear(group.month)}
-                <Text className="text-secondary-foreground font-normal tabular-nums">{` · ${summary}`}</Text>
             </Text>
             {toggle}
+            <Text className="text-secondary-foreground shrink-0 text-[15px] tabular-nums" numberOfLines={1}>
+                {totalLabel}
+            </Text>
         </View>
     );
 };

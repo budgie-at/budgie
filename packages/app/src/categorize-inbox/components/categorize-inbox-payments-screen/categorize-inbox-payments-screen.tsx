@@ -10,7 +10,6 @@ import { GroupedSurface } from '../../../@generic/component/grouped-surface/grou
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 import { useCategorizeInboxCluster } from '../../hook/use-categorize-inbox-cluster.hook';
-import { formatCategorizeInboxMerchantTitle } from '../../utils/format-categorize-inbox-merchant-title.util';
 import { groupCategorizeInboxRowsByMonth } from '../../utils/group-categorize-inbox-rows-by-month.util';
 import { CategorizeInboxPaymentsMonth } from '../categorize-inbox-payments-month/categorize-inbox-payments-month';
 import { CategorizeInboxPaymentsSummary } from '../categorize-inbox-payments-summary/categorize-inbox-payments-summary';
@@ -44,9 +43,6 @@ export const CategorizeInboxPaymentsScreen = ({ clusterKey }: Props) => {
         <GroupedSurface>
             <CategorizeInboxScreenChrome title={t`Choose payments`}>
                 <CategorizeInboxScreenScroll>
-                    <Text className="text-secondary-foreground px-3xl pb-xs pt-xs text-center text-[15px]" numberOfLines={1}>
-                        {formatCategorizeInboxMerchantTitle(cluster.displayTitle)}
-                    </Text>
                     <CategorizeInboxPaymentsSummary cluster={cluster} />
 
                     {groupCategorizeInboxRowsByMonth(cluster.rows).map(group => (
