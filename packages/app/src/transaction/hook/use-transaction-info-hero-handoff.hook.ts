@@ -7,7 +7,7 @@ import type { TransactionInfoHandoffInterface } from '../interface/transaction-i
 import type { LayoutChangeEvent } from 'react-native';
 
 const CAP_TOP_FRACTION = 0.2;
-const REVEALED_FRACTION = 0.36;
+const REVEALED_FRACTION = 0.46;
 const TITLE_LINE_HEIGHT = 25;
 
 export const useTransactionInfoHeroHandoff = (animated: boolean, maxScroll: number) => {
