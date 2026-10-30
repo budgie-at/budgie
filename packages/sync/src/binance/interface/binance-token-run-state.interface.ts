@@ -5,6 +5,7 @@ export interface BinanceTokenRunStateInterface {
     readonly transfersSynced: boolean;
     readonly sourcesSynced: boolean;
     readonly balancesAnchored: boolean;
+    readonly balancesCorrected: boolean;
     readonly signedClient: BinanceSignedClient;
     readonly exchangeAccounts: SyncAccountInterface[] | null;
 }

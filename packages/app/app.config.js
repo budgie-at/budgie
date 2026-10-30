@@ -12,6 +12,8 @@ const IS_LOGGING_DISABLED = process.env.EXPO_PUBLIC_LOGGING_DISABLE === 'true';
 const IS_PROFILING_ENABLED = process.env.EXPO_PUBLIC_PROFILING_ENABLE === 'true';
 const IS_LOGGING_ENABLED = (IS_DEV || IS_PROFILING_ENABLED) && !IS_LOGGING_DISABLED;
 
+const CAMERA_USAGE = 'Allow $(PRODUCT_NAME) to use the camera to scan receipts. Receipts are read on this device and never uploaded.';
+
 const getUniqueIdentifier = isAndroid => {
     const prefix = isAndroid ? 'com.vitaliiyehorov.budgie' : 'com.vitalyiegorov.budgie';
 
@@ -107,7 +109,7 @@ const getExpoConfig = ({ config }) => ({
         infoPlist: {
             BGTaskSchedulerPermittedIdentifiers: ['$(PRODUCT_BUNDLE_IDENTIFIER).sync.*'],
             UIBackgroundModes: ['processing'],
-            NSCameraUsageDescription: 'Allow $(PRODUCT_NAME) to use the camera to scan receipts. Receipts are read on this device and never uploaded.',
+            NSCameraUsageDescription: CAMERA_USAGE,
             LSApplicationQueriesSchemes: ['shortcuts']
         },
         associatedDomains: ['applinks:budgie.at'],
@@ -321,7 +323,16 @@ const getExpoConfig = ({ config }) => ({
                       }
                   ]
               ]
-            : [])
+            : []),
+        [
+            'expo-image-picker',
+            {
+                photosPermission:
+                    'Allow $(PRODUCT_NAME) to read receipts you pick from your photo library. Receipts are read on this device and never uploaded.',
+                cameraPermission: CAMERA_USAGE,
+                microphonePermission: false
+            }
+        ]
     ],
     experiments: {
         typedRoutes: true,

@@ -74,6 +74,22 @@ describe('binance/weight-throttle', () => {
         })
     );
 
+    it.effect('lets other endpoints proceed while one endpoint waits for its window', () =>
+        Effect.gen(function* () {
+            const throttle = new BinanceWeightThrottle(Number.MAX_SAFE_INTEGER);
+
+            yield* callTimes(throttle, FIAT_PATH, 4);
+            const blocked = yield* Effect.forkChild(throttle.waitIfNeeded(FIAT_PATH));
+            yield* TestClock.adjust(1);
+
+            yield* throttle.waitIfNeeded(C2C_PATH);
+            expect(blocked.pollUnsafe()).toBeUndefined();
+
+            yield* TestClock.adjust(MINUTE_MS);
+            yield* Fiber.join(blocked);
+        })
+    );
+
     it.effect('does not pause a cheap SAPI call after heavy fiat usage', () =>
         Effect.gen(function* () {
             const throttle = new BinanceWeightThrottle(Number.MAX_SAFE_INTEGER);

@@ -7,6 +7,10 @@ import * as Layer from 'effect/Layer';
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { SyncAccountBalanceStateEnum } from '../../core/enum/sync-account-balance-state.enum';
+import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
+import { SyncTokenClientMismatchError } from '../../core/error/sync-token-client-mismatch.error';
+import { pollingSyncDependenciesLayer } from '../../core/layer/polling-sync-dependencies.layer';
+import { SyncIntegrationTokenService } from '../../core/service/sync-integration-token.service';
 import { mapSyncAccountToCreateInput } from '../../core/utils/map-sync-account-to-create-input.util';
 import { BINANCE_ACCOUNT_DEFINITION } from '../constant/binance-account-definition.constant';
 import { mapBinanceBalanceToAccount } from '../mapper/binance.mapper';
@@ -25,6 +29,8 @@ export class BinanceAccountService extends Context.Service<BinanceAccountService
         const instrumentRepository = yield* InstrumentRepository;
         const accountService = yield* AccountService;
         const binanceAssetCodeService = yield* BinanceAssetCodeService;
+        const syncIntegrationTokenService = yield* SyncIntegrationTokenService;
+        const { provider } = BINANCE_ACCOUNT_DEFINITION;
 
         const resolveInstrument = (exchangeAccount: SyncAccountInterface, instruments: InstrumentEntityInterface[]) => {
             const instrumentCode = binanceAssetCodeService.resolveInstrumentCode(exchangeAccount.currencyCode);
@@ -64,6 +70,27 @@ export class BinanceAccountService extends Context.Service<BinanceAccountService
                 account =>
                     account.externalId === externalId && (account.integrationId === integrationId || !isDefined(account.integrationId))
             );
+        });
+
+        const findAnchorableBalances = Effect.fn('BinanceAccountService.findAnchorableBalances')(function* (
+            exchangeAccounts: SyncAccountInterface[],
+            integrationId: number
+        ) {
+            const accounts = (yield* accountRepository.findByExternalSource(BINANCE_ACCOUNT_DEFINITION.provider)).filter(
+                account => account.integrationId === integrationId
+            );
+            const exchangeAccountByExternalId = new Map(exchangeAccounts.map(exchangeAccount => [exchangeAccount.id, exchangeAccount]));
+
+            return accounts.flatMap(account => {
+                const exchangeAccount = isNotEmptyString(account.externalId) ? exchangeAccountByExternalId.get(account.externalId) : null;
+                const isAliasedAccount =
+                    isNotEmptyString(account.externalId) && canonicalizeAccountId(account.externalId) !== account.externalId;
+
+                return !isAliasedAccount &&
+                    (!isDefined(exchangeAccount) || exchangeAccount.balanceState === SyncAccountBalanceStateEnum.REPRESENTABLE)
+                    ? [{ account, balance: exchangeAccount?.balance ?? 0 }]
+                    : [];
+            });
         });
 
         const createAccount = Effect.fnUntraced(function* (resolvableAccount: BinanceResolvableAccountInterface, integrationId: number) {
@@ -133,26 +160,39 @@ export class BinanceAccountService extends Context.Service<BinanceAccountService
                     { concurrency: 'unbounded', discard: true }
                 );
             }),
+            findAnchorableBalances,
+            assertSameClient: Effect.fn('BinanceAccountService.assertSameClient')(function* (integrationId: number, clientId: string) {
+                const storedClientId = yield* syncIntegrationTokenService.findIntegrationClientId(integrationId);
+                if (isNotEmptyString(storedClientId) && storedClientId !== clientId) {
+                    return yield* new SyncTokenClientMismatchError({
+                        provider: SyncProviderEnum.BINANCE,
+                        integrationId,
+                        message: 'This Binance API key belongs to a different account'
+                    });
+                }
+            }),
+            resolveSetupIntegration: Effect.fn('BinanceAccountService.resolveSetupIntegration')(function* (
+                token: string,
+                clientId: string
+            ) {
+                const sameClientIntegration = yield* syncIntegrationTokenService.findIntegrationByClientId(provider, clientId);
+                if (isDefined(sameClientIntegration) && sameClientIntegration.token !== token) {
+                    yield* syncIntegrationTokenService.updateIntegrationToken(sameClientIntegration.id, token);
+
+                    return sameClientIntegration;
+                }
+
+                const integration = yield* syncIntegrationTokenService.getOrCreateIntegration(provider, token);
+                yield* syncIntegrationTokenService.fillIntegrationClientId(integration.id, clientId);
+
+                return integration;
+            }),
             anchorAllBalances: Effect.fn('BinanceAccountService.anchorAllBalances')(function* (
                 exchangeAccounts: SyncAccountInterface[],
                 integrationId: number
             ) {
-                const accounts = (yield* accountRepository.findByExternalSource(BINANCE_ACCOUNT_DEFINITION.provider)).filter(
-                    account => account.integrationId === integrationId
-                );
-                const exchangeAccountByExternalId = new Map(exchangeAccounts.map(exchangeAccount => [exchangeAccount.id, exchangeAccount]));
-                for (const account of accounts) {
-                    const exchangeAccount = isNotEmptyString(account.externalId)
-                        ? exchangeAccountByExternalId.get(account.externalId)
-                        : null;
-                    const isAliasedAccount =
-                        isNotEmptyString(account.externalId) && canonicalizeAccountId(account.externalId) !== account.externalId;
-                    if (
-                        !isAliasedAccount &&
-                        (!isDefined(exchangeAccount) || exchangeAccount.balanceState === SyncAccountBalanceStateEnum.REPRESENTABLE)
-                    ) {
-                        yield* anchorAccountBalance(account.id, exchangeAccount?.balance ?? 0);
-                    }
+                for (const { account, balance } of yield* findAnchorableBalances(exchangeAccounts, integrationId)) {
+                    yield* anchorAccountBalance(account.id, balance);
                 }
             }),
             setupAccount: Effect.fn('BinanceAccountService.setupAccount')(function* (
@@ -174,6 +214,7 @@ export class BinanceAccountService extends Context.Service<BinanceAccountService
 }) {
     static readonly layer = Layer.effect(BinanceAccountService, BinanceAccountService.make).pipe(
         Layer.provide([
+            pollingSyncDependenciesLayer,
             AccountRepository.layer,
             AccountBalanceRepository.layer,
             InstrumentRepository.layer,

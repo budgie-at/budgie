@@ -1,5 +1,5 @@
 import { AccountTypeEnum, UserIconNameEnum } from '@budgie/contracts';
-import { useAtomSet, useAtomValue } from '@effect/atom-react/Hooks';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { ImpactFeedbackStyle } from 'expo-haptics';
 import { router } from 'expo-router';
@@ -17,8 +17,9 @@ import { CreateActionInterface } from '../../../@generic/interface/create-action
 import { aiSystemStatusAtom } from '../../../ai/constant/ai-system-status-atom.constant';
 import { useVoiceInputContext } from '../../../ai/context/voice-input.context';
 import { AiSystemStateEnum } from '../../../ai/enum/ai-system-state.enum';
-import { receiptScanRequestAtom } from '../../../receipt/constant/receipt-scan-request-atom.constant';
+import { ReceiptSourceMenu } from '../../../receipt/components/receipt-source-menu/receipt-source-menu';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
+import { ActionItemButton } from '../action-item-button/action-item-button';
 import { ActionItem } from '../action-item/action-item';
 import { AiButton } from '../ai-button/ai-button';
 
@@ -42,7 +43,6 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
     const [, hapticImpact] = useVibration();
     const { createAction } = useCreateActionContext();
     const { open: openVoiceInput } = useVoiceInputContext();
-    const requestReceiptScan = useAtomSet(receiptScanRequestAtom);
     const [isVisible, setIsVisible] = useState(false);
 
     const isVoiceInputEnabled = useSetting('isAiVoiceInputEnabled');
@@ -82,11 +82,6 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
         router.push('/create-account');
     };
 
-    const handleScanReceipt = () => {
-        onClose();
-        requestReceiptScan(true);
-    };
-
     const handleAiPress = () => {
         onClose();
         openVoiceInput();
@@ -99,25 +94,20 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
 
     const showAiButton = isVoiceInputEnabled && isAiAvailable && !isDefined(createAction);
 
-    const defaultItems: (CreateActionInterface & { testID?: string })[] = [
+    const leadingItems: CreateActionInterface[] = [
+        ...(isDefined(createAction)
+            ? [{ testID: CreateTransactionMenuSelector.item(0), ...createAction, onPress: handleCreateAction }]
+            : []),
         {
             icon: UserIconNameEnum.TrendingDown,
             label: t`Expense`,
             testID: CreateTransactionMenuSelector.Expense,
             variant: 'destructive',
             onPress: handleCreateExpense
-        },
-        ...(isDefined(ReceiptScannerModule)
-            ? [
-                  {
-                      icon: UserIconNameEnum.ScanText,
-                      label: t`Scan receipt`,
-                      testID: CreateTransactionMenuSelector.ScanReceipt,
-                      variant: 'violet' as const,
-                      onPress: handleScanReceipt
-                  }
-              ]
-            : []),
+        }
+    ];
+
+    const trailingItems: CreateActionInterface[] = [
         {
             icon: UserIconNameEnum.TrendingUp,
             label: t`Income`,
@@ -141,9 +131,11 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
         }
     ];
 
-    const actionItems: (CreateActionInterface & { testID?: string })[] = isDefined(createAction)
-        ? [{ ...createAction, onPress: handleCreateAction }, ...defaultItems]
-        : defaultItems;
+    const actionRows = [
+        ...leadingItems.map(item => <ActionItemButton key={item.label} {...item} />),
+        ...(isDefined(ReceiptScannerModule) ? [<ReceiptSourceMenu key="receipt-source" onClose={onClose} />] : []),
+        ...trailingItems.map(item => <ActionItemButton key={item.label} {...item} />)
+    ];
 
     useEffect(() => {
         if (isOpen) {
@@ -180,18 +172,10 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
 
             <View className="absolute inset-x-0 bottom-0 items-end px-lg pb-safe" pointerEvents="box-none">
                 <View className="self-stretch items-end" pointerEvents="box-none">
-                    {actionItems.map((item, index) => (
-                        <ActionItem
-                            key={item.label}
-                            icon={item.icon}
-                            label={item.label}
-                            testID={item.testID}
-                            variant={item.variant}
-                            index={index}
-                            totalItems={actionItems.length}
-                            isOpen={isOpen}
-                            onPress={item.onPress}
-                        />
+                    {actionRows.map((row, index) => (
+                        <ActionItem key={row.key} index={index} totalItems={actionRows.length} isOpen={isOpen}>
+                            {row}
+                        </ActionItem>
                     ))}
 
                     <CircularActionButton

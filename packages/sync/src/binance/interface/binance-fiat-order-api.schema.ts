@@ -1,3 +1,4 @@
+import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
 
 const BinanceFiatOrderApiSchema = Schema.Struct({
@@ -12,7 +13,7 @@ const BinanceFiatOrderApiSchema = Schema.Struct({
 export const BinanceFiatOrderListApiSchema = Schema.Struct({
     code: Schema.String,
     message: Schema.String,
-    data: Schema.Array(BinanceFiatOrderApiSchema),
+    data: Schema.Array(BinanceFiatOrderApiSchema).pipe(Schema.withDecodingDefaultKey(Effect.succeed([]))),
     total: Schema.Number,
     success: Schema.Boolean
 });

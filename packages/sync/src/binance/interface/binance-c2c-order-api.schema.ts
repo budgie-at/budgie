@@ -1,3 +1,4 @@
+import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
 
 const BinanceC2cOrderApiSchema = Schema.Struct({
@@ -16,7 +17,7 @@ const BinanceC2cOrderApiSchema = Schema.Struct({
 export const BinanceC2cOrderListApiSchema = Schema.Struct({
     code: Schema.String,
     message: Schema.String,
-    data: Schema.Array(BinanceC2cOrderApiSchema),
+    data: Schema.Array(BinanceC2cOrderApiSchema).pipe(Schema.withDecodingDefaultKey(Effect.succeed([]))),
     total: Schema.Number,
     success: Schema.Boolean
 });

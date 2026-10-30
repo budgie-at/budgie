@@ -3,6 +3,35 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.130.1](https://github.com/budgie-at/budgie/compare/v6.130.0...v6.130.1) (2026-10-30)
+
+### Bug Fixes
+
+* **import-export:** read compound German receipt totals and stop receipt numbers at the next label ([3128b7c](https://github.com/budgie-at/budgie/commit/3128b7c11bbcfe6f66cf8814888263696e056449))
+
+
+# [6.130.0](https://github.com/budgie-at/budgie/compare/v6.129.0...v6.130.0) (2026-10-30)
+
+### Bug Fixes
+
+* **sync:** accept Binance's empty fiat and P2P responses ([40c3710](https://github.com/budgie-at/budgie/commit/40c37105bbf38749cfedd4e6c1a90e65d1c2241f))
+* **sync:** backfill Binance history from the start of the API ([f8a15ee](https://github.com/budgie-at/budgie/commit/f8a15ee0f621ae743c666c6f17c99a9a1b624509))
+* **sync:** correct Binance accounts that only exist in history ([b78d0f0](https://github.com/budgie-at/budgie/commit/b78d0f0b18a75b485a5c5c5c249d0040cd61f79e))
+* **sync:** fetch Binance fiat history after the parallel sources ([2ee96e7](https://github.com/budgie-at/budgie/commit/2ee96e7fb66a69ffed5f2a5c2797dd871c7b1582))
+* **sync:** fetch the full Binance P2P history ([fe899e4](https://github.com/budgie-at/budgie/commit/fe899e4d6d824cc257254e86324021b235cab4a1))
+* **sync:** stop booking Binance earn rewards twice through dividends ([2d690c8](https://github.com/budgie-at/budgie/commit/2d690c8b7844b6b62b706867b50fb31e1d67e697))
+
+### Features
+
+* **sync:** correct Binance balances that history cannot explain ([6ec205d](https://github.com/budgie-at/budgie/commit/6ec205d3ff8a7494eeeac23afbe658f72253b65c))
+* **sync:** sync Binance fiat card purchases ([d20a70f](https://github.com/budgie-at/budgie/commit/d20a70fb8ff385993cce27a6728ab62a4447bf82))
+
+### Performance Improvements
+
+* **sync:** fetch Binance fiat history in one paged request ([e49e320](https://github.com/budgie-at/budgie/commit/e49e32084af71659f3220dab6d2f822a096a9168))
+* **sync:** fetch independent Binance history sources in parallel ([3fe663e](https://github.com/budgie-at/budgie/commit/3fe663e147d91b50eed68fc67456051b8f6b1fce))
+
+
 # [6.129.0](https://github.com/budgie-at/budgie/compare/v6.128.0...v6.129.0) (2026-10-30)
 
 ### Features

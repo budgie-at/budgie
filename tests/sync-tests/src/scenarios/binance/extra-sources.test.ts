@@ -16,6 +16,8 @@ import {
     TestLayer
 } from '../../harness';
 
+import type { BinanceDividendApiInterface } from '@budgie/sync';
+
 const HOUR_MS = 3_600_000;
 const MICRO_UNITS = 1_000_000;
 const DUST_LOG_ID = 9001;
@@ -47,6 +49,16 @@ const rewardCases = [
     }
 ];
 
+const syncBnbDividends = (dividends: BinanceDividendApiInterface[]) =>
+    Effect.gen(function* () {
+        const binanceSyncService = yield* BinanceSyncService;
+        yield* seedCryptoInstrument('BNB');
+        yield* setupUsdtSpotFixtureWithBalances('BNB', '1');
+        binanceStub.dividends(dividends);
+
+        yield* binanceSyncService.sync();
+    });
+
 describe('binance/extra-sources', () => {
     for (const rewardCase of rewardCases) {
         it.effect(`books ${rewardCase.name} as one income per day`, () =>
@@ -68,18 +80,40 @@ describe('binance/extra-sources', () => {
         );
     }
 
+    it.effect('does not book simple earn interest dividends already synced from earn rewards', () =>
+        Effect.gen(function* () {
+            const dividendTime = recentDayInMonthsAgo(1) + HOUR_MS;
+
+            yield* syncBnbDividends([
+                buildBinance.dividend({
+                    tranId: DIVIDEND_TRAN_ID,
+                    asset: 'BNB',
+                    amount: '1.5',
+                    divTime: dividendTime,
+                    enInfo: 'Flexible Interest'
+                }),
+                buildBinance.dividend({
+                    tranId: DEBIT_TRAN_ID,
+                    asset: 'BNB',
+                    amount: '0.2',
+                    divTime: dividendTime,
+                    enInfo: 'Locked Savings'
+                })
+            ]);
+
+            expect(yield* fetchBinanceEntriesByExternalId(`binance:dividend:${DIVIDEND_TRAN_ID}`)).toHaveLength(0);
+            expect(yield* fetchBinanceEntriesByExternalId(`binance:dividend:${DEBIT_TRAN_ID}`)).toHaveLength(0);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
     it.effect('books a dividend as income and ignores debited rows', () =>
         Effect.gen(function* () {
-            const binanceSyncService = yield* BinanceSyncService;
             const dividendTime = recentDayInMonthsAgo(1) + HOUR_MS;
-            yield* seedCryptoInstrument('BNB');
-            yield* setupUsdtSpotFixtureWithBalances('BNB', '1');
-            binanceStub.dividends([
+
+            yield* syncBnbDividends([
                 buildBinance.dividend({ tranId: DIVIDEND_TRAN_ID, asset: 'BNB', amount: '1.5', divTime: dividendTime }),
                 buildBinance.dividend({ tranId: DEBIT_TRAN_ID, asset: 'BNB', amount: '0.2', divTime: dividendTime, direction: -1 })
             ]);
-
-            yield* binanceSyncService.sync();
 
             yield* expectSingleBinanceTransaction(TransactionTypeEnum.INCOME, `binance:dividend:${DIVIDEND_TRAN_ID}`);
             const entries = yield* fetchBinanceEntriesByExternalId(`binance:dividend:${DIVIDEND_TRAN_ID}`);

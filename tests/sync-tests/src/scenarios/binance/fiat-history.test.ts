@@ -10,10 +10,6 @@ import {
     buildBinanceToken,
     fetchHistoryProgress,
     fetchSortedBinanceExternalIds,
-    jumpPastDeadline,
-    restoreRealTimers,
-    resyncBinance,
-    RUN_DEADLINE_MS,
     seedSecondKeyAccount,
     setupFiatScenario,
     TestLayer,
@@ -24,7 +20,8 @@ import type { TimeWindow } from '../../harness';
 
 const DAY_MS = 86_400_000;
 const KEY_B = 'key-b';
-const SECOND_CHUNK_REQUEST = 40;
+const HISTORY_START_MS = Date.UTC(2017, 6, 1);
+const FIAT_PAGE_SIZE = 500;
 
 describe('binance/fiat-history', () => {
     it.effect.each([
@@ -78,7 +75,7 @@ describe('binance/fiat-history', () => {
             const { instrument } = yield* setupFiatScenario();
             binanceStub.accountsByApiKey([
                 { apiKey: 'test-api-key', uid: 1001, spotBalances: [] },
-                { apiKey: KEY_B, uid: 1002, spotBalances: [] }
+                { apiKey: KEY_B, uid: 1002, spotBalances: [buildBinance.balance({ asset: 'EUR', free: '100' })] }
             ]);
             yield* binanceSyncService.sync();
 
@@ -94,39 +91,58 @@ describe('binance/fiat-history', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('resumes a deferred fiat backfill from the persisted progress instead of restarting', () =>
+    it.effect('fetches the whole fiat history in one request per transaction type', () =>
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
-            const order = buildBinance.fiatOrder({
-                orderNo: 'fiat-deep',
-                fiatCurrency: 'EUR',
-                amount: '100',
-                createTime: Date.now() - 1100 * DAY_MS
-            });
-            let servedCount = 0;
+            const fiatWindows: TimeWindow[] = [];
 
-            const { sync, token } = yield* setupFiatScenario();
-            binanceStub.fiatOrders([order], [], [], [], {
-                onServed: () => {
-                    servedCount += 1;
-                    if (servedCount === SECOND_CHUNK_REQUEST) {
-                        jumpPastDeadline();
-                    }
-                }
-            });
-            yield* binanceSyncService.sync(Date.now() + RUN_DEADLINE_MS).pipe(Effect.ensuring(restoreRealTimers));
-
-            expect(yield* fetchSortedBinanceExternalIds()).toEqual([]);
-            expect((yield* fetchHistoryProgress(token))['FIAT'].tailAt).toBeLessThan(Date.now() - 300 * DAY_MS);
-
-            const resumedWindows: TimeWindow[] = [];
-            binanceStub.fiatOrders([order], [], resumedWindows);
-            yield* resyncBinance(sync.id);
+            yield* setupFiatScenario();
+            binanceStub.fiatOrders(
+                [
+                    buildBinance.fiatOrder({
+                        orderNo: 'fiat-deep',
+                        fiatCurrency: 'EUR',
+                        amount: '100',
+                        createTime: Date.now() - 1100 * DAY_MS
+                    })
+                ],
+                [],
+                fiatWindows
+            );
+            yield* binanceSyncService.sync();
 
             expect(yield* fetchSortedBinanceExternalIds()).toEqual(['fiat-deep']);
-            expect(
-                resumedWindows.filter(window => window.endMs < Date.now() - 100 * DAY_MS && window.endMs > Date.now() - 340 * DAY_MS)
-            ).toEqual([]);
+            expect(fiatWindows.map(window => window.startMs)).toEqual([HISTORY_START_MS, HISTORY_START_MS]);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('pages through a fiat history larger than one page', () =>
+        Effect.gen(function* () {
+            const binanceSyncService = yield* BinanceSyncService;
+            const fiatWindows: TimeWindow[] = [];
+            const expiredOrders = Array.from({ length: FIAT_PAGE_SIZE + 1 }, (_, index) =>
+                buildBinance.fiatOrder({ orderNo: `fiat-expired-${index}`, fiatCurrency: 'EUR', amount: '1', status: 'Expired' })
+            );
+
+            yield* setupFiatScenario();
+            binanceStub.fiatOrders(expiredOrders, [], fiatWindows);
+            yield* binanceSyncService.sync();
+
+            expect(fiatWindows).toHaveLength(3);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('completes the fiat backfill when Binance omits data for empty responses', () =>
+        Effect.gen(function* () {
+            const binanceSyncService = yield* BinanceSyncService;
+
+            const { token } = yield* setupFiatScenario();
+            binanceStub.fiatOrders([], []);
+            binanceStub.fiatPayments([]);
+            binanceStub.c2cOrders([], []);
+            yield* binanceSyncService.sync();
+
+            expect((yield* fetchHistoryProgress(token))['FIAT']).toBeDefined();
         }).pipe(Effect.provide(TestLayer))
     );
 });
