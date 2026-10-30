@@ -1,16 +1,25 @@
 import { useState } from 'react';
 import { useWindowDimensions } from 'react-native';
-import Animated, { scrollTo, useAnimatedRef, useAnimatedScrollHandler, useReducedMotion, useSharedValue } from 'react-native-reanimated';
+import Animated, {
+    scrollTo,
+    useAnimatedReaction,
+    useAnimatedRef,
+    useAnimatedScrollHandler,
+    useReducedMotion,
+    useSharedValue
+} from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useScreenChrome, useScreenChromeScrollY } from '@rnw-community/react-native-screen-chrome';
 
-import { TRANSACTION_INFO_HANDOFF_DISTANCE } from '../constant/transaction-info-handoff-distance.constant';
 import { TRANSACTION_INFO_SCROLL_BOTTOM_INSET } from '../constant/transaction-info-scroll-bottom-inset.constant';
 
 import type { LayoutChangeEvent } from 'react-native';
 
 const SETTLE_FRAME_COUNT = 3;
+const SETTLED_CONTENT_GAP = 12;
+const SNAP_MAX_VELOCITY = 0.4;
+const STALE_VELOCITY_MS = 60;
 
 export const useTransactionInfoHandoff = () => {
     const { height } = useWindowDimensions();
@@ -18,25 +27,57 @@ export const useTransactionInfoHandoff = () => {
     const { config } = useScreenChrome();
     const scrollY = useScreenChromeScrollY();
     const scrollRef = useAnimatedRef<Animated.ScrollView>();
-    const isDragging = useSharedValue(false);
+    const drag = useSharedValue({ isDragging: false, lastY: 0, sampledAt: 0, direction: 0, velocity: 0 });
     const animated = !useReducedMotion();
-    const [revealOffset, setRevealOffset] = useState(0);
-    const [fadeEnd, setFadeEnd] = useState(0);
+    const [revealRange, setRevealRange] = useState<readonly [number, number]>([0, 0]);
+    const [bodyTop, setBodyTop] = useState(0);
     const [contentHeight, setContentHeight] = useState(Number.MAX_SAFE_INTEGER);
-    const settledOffset = Math.max(revealOffset, fadeEnd) + TRANSACTION_INFO_HANDOFF_DISTANCE;
+    const settledOffset = Math.max(bodyTop - SETTLED_CONTENT_GAP, 0);
     const fitsScreen = top + config.headerHeight + contentHeight + TRANSACTION_INFO_SCROLL_BOTTOM_INSET + bottom <= height;
+
+    useAnimatedReaction(
+        () => scrollY.get(),
+        current => {
+            const state = drag.get();
+
+            if (!state.isDragging || current === state.lastY) {
+                return;
+            }
+
+            const now = Date.now();
+            const delta = current - state.lastY;
+
+            drag.set({
+                ...state,
+                lastY: current,
+                sampledAt: now,
+                direction: Math.sign(delta),
+                velocity: delta / Math.max(now - state.sampledAt, 1)
+            });
+        }
+    );
 
     const handleScrollEnd = useAnimatedScrollHandler(
         {
             onBeginDrag: () => {
-                isDragging.set(true);
+                drag.set({ isDragging: true, lastY: scrollY.get(), sampledAt: Date.now(), direction: 0, velocity: 0 });
             },
-            onEndDrag: event => {
-                isDragging.set(false);
-                let settledY = event.contentOffset.y;
+            onEndDrag: () => {
+                const state = { ...drag.get(), isDragging: false };
+                const releasedY = scrollY.get();
+                const releaseVelocity = Date.now() - state.sampledAt > STALE_VELOCITY_MS ? 0 : Math.abs(state.velocity);
+
+                drag.set(state);
+
+                if (releasedY <= 0 || releasedY >= settledOffset || releaseVelocity > SNAP_MAX_VELOCITY) {
+                    return;
+                }
+
+                const collapses = !fitsScreen && (state.direction === 0 ? releasedY > settledOffset / 2 : state.direction > 0);
+                let settledY = releasedY;
                 let stableFrames = 0;
                 const snapWhenSettled = () => {
-                    if (isDragging.get()) {
+                    if (drag.get().isDragging) {
                         return;
                     }
 
@@ -49,7 +90,7 @@ export const useTransactionInfoHandoff = () => {
                     }
 
                     if (settledY > 0 && settledY < settledOffset) {
-                        scrollTo(scrollRef, 0, settledY < settledOffset / 2 || fitsScreen ? 0 : settledOffset, animated);
+                        scrollTo(scrollRef, 0, collapses ? settledOffset : 0, animated);
                     }
                 };
 
@@ -61,9 +102,13 @@ export const useTransactionInfoHandoff = () => {
 
     return {
         minimumHeight: fitsScreen ? 0 : height + settledOffset,
-        revealOffset,
-        onEndLayout: (event: LayoutChangeEvent) => void setFadeEnd(current => Math.max(current, event.nativeEvent.layout.y)),
-        onAmountLayout: (event: LayoutChangeEvent) => void setRevealOffset(Math.max(0, event.nativeEvent.layout.y)),
+        revealRange,
+        onTitleLayout: (event: LayoutChangeEvent) => {
+            const { y, height: titleHeight } = event.nativeEvent.layout;
+
+            setRevealRange([Math.max(0, y), Math.max(0, y + titleHeight)]);
+        },
+        onBodyLayout: (event: LayoutChangeEvent) => void setBodyTop(event.nativeEvent.layout.y),
         onContentLayout: (event: LayoutChangeEvent) => void setContentHeight(event.nativeEvent.layout.height),
         scrollRef,
         handleScrollEnd

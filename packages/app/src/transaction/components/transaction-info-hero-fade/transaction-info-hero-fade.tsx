@@ -3,8 +3,6 @@ import Animated, { Extrapolation, interpolate, useAnimatedStyle } from 'react-na
 
 import { useScreenChromeScrollY } from '@rnw-community/react-native-screen-chrome';
 
-import { TRANSACTION_INFO_HANDOFF_DISTANCE } from '../../constant/transaction-info-handoff-distance.constant';
-
 import type { ReactNode } from 'react';
 import type { LayoutChangeEvent } from 'react-native';
 
@@ -17,17 +15,14 @@ interface Props {
 export const TransactionInfoHeroFade = ({ children, onLayout, className }: Props) => {
     const scrollY = useScreenChromeScrollY();
     const [top, setTop] = useState(Number.MAX_SAFE_INTEGER);
+    const [bottom, setBottom] = useState(Number.MAX_SAFE_INTEGER);
     const handleLayout = (event: LayoutChangeEvent) => {
         setTop(event.nativeEvent.layout.y);
+        setBottom(event.nativeEvent.layout.y + Math.max(event.nativeEvent.layout.height, 1));
         onLayout?.(event);
     };
     const heroStyle = useAnimatedStyle(() => ({
-        opacity: interpolate(
-            scrollY.get(),
-            [top - TRANSACTION_INFO_HANDOFF_DISTANCE, top + TRANSACTION_INFO_HANDOFF_DISTANCE],
-            [1, 0],
-            Extrapolation.CLAMP
-        )
+        opacity: interpolate(scrollY.get(), [top, bottom], [1, 0], Extrapolation.CLAMP)
     }));
 
     return (

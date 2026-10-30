@@ -14,7 +14,7 @@ import type { LayoutChangeEvent } from 'react-native';
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly editHref: Href | null;
-    readonly revealOffset: number;
+    readonly revealRange: readonly [number, number];
     readonly compactTitle?: string;
     readonly compactAmount?: string;
     readonly onGoBack: () => void;
@@ -23,7 +23,7 @@ interface Props {
 const DEFAULT_CONTROL_WIDTH = 44;
 
 export const TransactionInfoHeader = (props: Props) => {
-    const { transaction, editHref, revealOffset, onGoBack, compactTitle, compactAmount } = props;
+    const { transaction, editHref, revealRange, onGoBack, compactTitle, compactAmount } = props;
     const [leadingWidth, setLeadingWidth] = useState(DEFAULT_CONTROL_WIDTH);
     const [trailingWidth, setTrailingWidth] = useState(DEFAULT_CONTROL_WIDTH);
     const handleLeadingLayout = (event: LayoutChangeEvent) => void setLeadingWidth(event.nativeEvent.layout.width);
@@ -34,7 +34,7 @@ export const TransactionInfoHeader = (props: Props) => {
         <>
             <TransactionInfoNavTitle
                 transaction={transaction}
-                revealOffset={revealOffset}
+                revealRange={revealRange}
                 horizontalInset={horizontalInset}
                 compactTitle={compactTitle}
                 compactAmount={compactAmount}
