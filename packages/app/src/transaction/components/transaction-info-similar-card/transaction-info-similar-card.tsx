@@ -69,7 +69,7 @@ export const TransactionInfoSimilarCard = ({ stats, title, isLoading }: Props) =
         >
             <View className="gap-y-xxs">
                 <Text className="text-[17px] leading-[22px] text-primary font-semibold">{title}</Text>
-                <Text className="text-[13px] leading-[18px] text-secondary-foreground">{description}</Text>
+                <Text className="text-[13px] leading-[18px] text-transaction-detail-secondary">{description}</Text>
             </View>
 
             <View className={summaryVariants({ largeText: fontScale > TRANSACTION_INFO_STACKED_FONT_SCALE })}>

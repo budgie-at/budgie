@@ -81,6 +81,7 @@
             --color-surface: rgb(255, 255, 255);
             --color-surface-row: rgba(10, 10, 10, 0.05);
             --color-transaction-detail-row: rgb(255, 255, 255);
+            --color-transaction-detail-secondary: rgba(107, 107, 107, 1);
             --color-grouped-surface: rgb(242, 242, 247);
             --color-grouped-surface-row: rgb(255, 255, 255);
             --color-surface-fill: rgba(118, 118, 128, 0.12);
@@ -153,6 +154,7 @@
             --color-surface: rgb(0, 0, 0);
             --color-surface-row: rgba(255, 255, 255, 0.05);
             --color-transaction-detail-row: rgb(28, 28, 30);
+            --color-transaction-detail-secondary: rgba(162, 162, 168, 1);
             --color-grouped-surface: rgb(0, 0, 0);
             --color-grouped-surface-row: rgba(255, 255, 255, 0.05);
             --color-surface-fill: rgba(118, 118, 128, 0.24);

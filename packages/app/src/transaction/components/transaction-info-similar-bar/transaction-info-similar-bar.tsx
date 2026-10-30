@@ -35,7 +35,7 @@ export const TransactionInfoSimilarBar = ({ accessibilityValue, height, label, v
                 </Text>
             ) : null}
             <View className={cn('w-full rounded-t-md', barClassName)} style={barStyle} />
-            <Text className="text-[11px] leading-[13px] text-secondary-foreground text-center">{label}</Text>
+            <Text className="text-[12px] leading-[15px] font-medium text-transaction-detail-secondary text-center">{label}</Text>
         </View>
     );
 };

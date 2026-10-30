@@ -52,14 +52,16 @@ export const TransactionInfoRow = (props: Props) => {
 
             <View className={contentVariants({ largeText })}>
                 <View className={textContentClassName}>
-                    {isNotEmptyString(label) ? <Text className="text-[13px] leading-[18px] text-secondary-foreground">{label}</Text> : null}
+                    {isNotEmptyString(label) ? (
+                        <Text className="text-[13px] leading-[18px] text-transaction-detail-secondary">{label}</Text>
+                    ) : null}
                     {isNotEmptyString(value) ? (
                         <Text className={cn('text-[17px] leading-[22px] text-primary font-medium', valueClassName)} selectable>
                             {value}
                         </Text>
                     ) : null}
                     {isNotEmptyString(description) ? (
-                        <Text className="text-[13px] leading-[18px] text-secondary-foreground" selectable>
+                        <Text className="text-[13px] leading-[18px] text-transaction-detail-secondary" selectable>
                             {description}
                         </Text>
                     ) : null}

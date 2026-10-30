@@ -28,7 +28,7 @@ export const TransactionInfoHeader = (props: Props) => {
     const [trailingWidth, setTrailingWidth] = useState(DEFAULT_CONTROL_WIDTH);
     const handleLeadingLayout = (event: LayoutChangeEvent) => void setLeadingWidth(event.nativeEvent.layout.width);
     const handleTrailingLayout = (event: LayoutChangeEvent) => void setTrailingWidth(event.nativeEvent.layout.width);
-    const horizontalInset = Math.max(leadingWidth, trailingWidth) + 24;
+    const horizontalInset = Math.max(leadingWidth, trailingWidth) + 32;
 
     return (
         <>
