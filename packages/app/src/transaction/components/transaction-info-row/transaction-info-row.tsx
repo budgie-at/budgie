@@ -73,6 +73,7 @@ export const TransactionInfoRow = (props: Props) => {
     if (isDefined(onPress)) {
         return (
             <HapticPressable
+                testID={testID}
                 accessibilityRole="button"
                 accessibilityLabel={accessibilityLabel}
                 onPress={onPress}

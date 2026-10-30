@@ -36,6 +36,7 @@ export const TransactionInfoHero = ({ transaction, matchingRuleIds, onOpenRefund
     const amountClassName = getTransactionType(transaction) === TransactionTypeEnum.INCOME ? 'text-positive-strong' : 'text-primary';
     const displayTitle = getTransactionDisplayTitle(transaction);
     const title = isNotEmptyString(displayTitle) ? displayTitle : t(TRANSACTION_TYPE[transaction.type]);
+    const formattedAmount = formatTransactionInfoAmount(transaction, formatDigits);
     const sourceEntry = getTransactionInfoPrimaryEntry(transaction);
     const destinationEntry = getTransactionInfoDestinationEntry(transaction);
     const isCrossCurrency =
@@ -46,9 +47,8 @@ export const TransactionInfoHero = ({ transaction, matchingRuleIds, onOpenRefund
         isCrossCurrency && isDefined(destinationEntry)
             ? `→ ${formatDigits(convertFromMicroUnits(destinationEntry.amount), destinationEntry.account.instrument.symbol)}`
             : null;
-    const isTransfer = transaction.type === TransactionTypeEnum.TRANSFER;
     const transferRoute =
-        isTransfer && isDefined(transaction.fromAccount) && isDefined(transaction.toAccount)
+        transaction.type === TransactionTypeEnum.TRANSFER && isDefined(transaction.fromAccount) && isDefined(transaction.toAccount)
             ? `${transaction.fromAccount.title} → ${transaction.toAccount.title}`
             : null;
     const showRefundedPill = transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND;
@@ -58,15 +58,18 @@ export const TransactionInfoHero = ({ transaction, matchingRuleIds, onOpenRefund
         <View className="items-center pt-3xl pb-7xl">
             <TransactionInfoHeroIcon transaction={transaction} />
 
-            <AmountField fontSize={40} className="mt-xl self-stretch">
-                <AmountFieldText
-                    testID={TransactionInfoPageSelector.Amount}
-                    className={cn('leading-[48px] font-semibold tracking-[-1px] text-center', amountClassName)}
-                    selectable
-                >
-                    {formatTransactionInfoAmount(transaction, formatDigits)}
-                </AmountFieldText>
-            </AmountField>
+            <View
+                accessible
+                accessibilityLabel={formattedAmount}
+                testID={TransactionInfoPageSelector.Amount}
+                className="mt-xl self-stretch"
+            >
+                <AmountField fontSize={40} className="self-stretch">
+                    <AmountFieldText className={cn('leading-[48px] font-semibold tracking-[-1px] text-center', amountClassName)} selectable>
+                        {formattedAmount}
+                    </AmountFieldText>
+                </AmountField>
+            </View>
 
             {isNotEmptyString(destinationAmount) ? (
                 <Text className="text-[15px] leading-[20px] text-secondary-foreground tabular-nums" selectable>

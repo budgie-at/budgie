@@ -19,7 +19,10 @@ export const formatTransactionInfoAmount = (
         return '';
     }
 
+    const amountInMicroUnits = sumEntryAmounts(
+        getTransactionCategoryEntries(transaction.entries).filter(entry => entry.accountId === primaryEntry.accountId)
+    );
     const sign = getTransactionType(transaction) === TransactionTypeEnum.INCOME ? '+' : '';
 
-    return `${sign}${formatDigits(convertFromMicroUnits(sumEntryAmounts(getTransactionCategoryEntries(transaction.entries).filter(entry => entry.accountId === primaryEntry.accountId))), primaryEntry.account.instrument.symbol)}`;
+    return `${sign}${formatDigits(convertFromMicroUnits(amountInMicroUnits), primaryEntry.account.instrument.symbol)}`;
 };

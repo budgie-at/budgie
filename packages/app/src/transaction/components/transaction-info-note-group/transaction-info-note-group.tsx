@@ -1,5 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { Trans } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
@@ -16,13 +16,24 @@ interface Props {
 }
 
 export const TransactionInfoNoteGroup = ({ transaction }: Props) => {
+    const { t } = useLingui();
+
     if (!isNotEmptyString(transaction.comment) || isTransactionNoteDuplicated(transaction)) {
         return null;
     }
 
+    const accessibilityLabel = `${t`Note`}, ${transaction.comment}`;
+
     return (
         <TransactionInfoGroup>
-            <View className="flex-row items-start gap-x-xl px-3xl py-xl" testID={TransactionInfoPageSelector.Row.Note}>
+            <View
+                accessible
+                accessibilityLabel={accessibilityLabel}
+                collapsable={false}
+                nativeID={TransactionInfoPageSelector.Row.Note}
+                className="flex-row items-start gap-x-xl px-3xl py-xl"
+                testID={TransactionInfoPageSelector.Row.Note}
+            >
                 <View className="w-[28px] items-center pt-xxs">
                     <Icon icon={UserIconNameEnum.MessageSquare} size={22} className="text-secondary-foreground" />
                 </View>
