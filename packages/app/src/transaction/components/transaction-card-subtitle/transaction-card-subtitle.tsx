@@ -47,7 +47,12 @@ export const TransactionCardSubtitle = ({ transaction, accountId }: Props) => {
     return (
         <View className="flex-row items-center">
             {hasReceipt ? (
-                <View className="mr-xs" accessible accessibilityLabel={t`Receipt`} testID={TransactionCardSelector.ReceiptMarker}>
+                <View
+                    className="mr-xs"
+                    accessible
+                    accessibilityLabel={t`Receipt`}
+                    testID={TransactionCardSelector.ReceiptMarker(transaction.id)}
+                >
                     <Icon icon={UserIconNameEnum.Paperclip} size={12} className="text-secondary-foreground" />
                 </View>
             ) : null}

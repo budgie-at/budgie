@@ -9,6 +9,6 @@ export const TransactionCardSelector = {
     AdjustmentCard: (id: number) => `TransactionCard.Adjustment.${id}` as const,
     AdjustmentBadge: 'TransactionCard.Badge.Adjustment',
     UncategorizedBadge: 'TransactionCard.Badge.Uncategorized',
-    ReceiptMarker: 'TransactionCard.ReceiptMarker',
+    ReceiptMarker: (id: number) => `TransactionCard.ReceiptMarker.${id}` as const,
     AdjustmentAmount: (amount: number | string) => `TransactionCard.AdjustmentAmount.${normalizePart(amount)}` as const
 } as const;
