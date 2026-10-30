@@ -39,7 +39,7 @@ export const TransactionEntryAmount = ({ debtEvent, entry, variant, sign, testID
             ? debtEvent
             : null;
     const debtConversionAccessibilityLabel = isDefined(debtConversionEvent)
-        ? `${formattedAmount} → ${formatDigits(
+        ? `${sign}${formattedAmount} → ${formatDigits(
               convertFromMicroUnits(debtConversionEvent.amount),
               debtConversionEvent[DebtEventAssociationEnum.DEBT_ACCOUNT].instrument.symbol
           )}`
