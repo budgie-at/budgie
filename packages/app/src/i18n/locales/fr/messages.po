@@ -1556,7 +1556,7 @@ msgstr "Consolider les correspondances"
 msgid "Consolidated transactions cannot start a deposit"
 msgstr "Impossible d’ouvrir un dépôt à partir de transactions consolidées"
 
-#: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
+#: src/transaction/components/transaction-info-note-group/transaction-info-note-group.tsx
 msgid "Consolidation"
 msgstr "Consolidation"
 
@@ -4473,7 +4473,7 @@ msgstr "Recalcul des soldes"
 #: src/receipt/hook/use-receipt-scan.hook.ts
 #: src/rule/constant/external-source.constant.ts
 #: src/transaction/components/transaction-card-subtitle/transaction-card-subtitle.tsx
-#: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
+#: src/transaction/components/transaction-info-note-group/transaction-info-note-group.tsx
 msgid "Receipt"
 msgstr "Reçu"
 
@@ -6007,7 +6007,7 @@ msgstr "Afficher et supprimer les catégories personnalisées"
 msgid "View and restore archived accounts"
 msgstr "Afficher et restaurer les comptes archivés"
 
-#: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
+#: src/transaction/components/transaction-info-note-group/transaction-info-note-group.tsx
 msgid "View source transactions"
 msgstr "Voir les transactions source"
 

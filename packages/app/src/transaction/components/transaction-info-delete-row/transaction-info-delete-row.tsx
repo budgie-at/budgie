@@ -4,7 +4,6 @@ import { useLingui } from '@lingui/react/macro';
 import { isDefined } from '@rnw-community/shared';
 
 import { TransactionInfoActionRow } from '../transaction-info-action-row/transaction-info-action-row';
-import { TransactionInfoGroup } from '../transaction-info-group/transaction-info-group';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
@@ -27,14 +26,12 @@ export const TransactionInfoDeleteRow = ({ transaction, onDelete }: Props) => {
     const handleDelete = () => void onDelete();
 
     return (
-        <TransactionInfoGroup>
-            <TransactionInfoActionRow
-                icon={icon}
-                label={label}
-                onPress={handleDelete}
-                testID={TransactionInfoPageSelector.DeleteButton}
-                colorClassName="text-destructive-strong"
-            />
-        </TransactionInfoGroup>
+        <TransactionInfoActionRow
+            icon={icon}
+            label={label}
+            onPress={handleDelete}
+            testID={TransactionInfoPageSelector.DeleteButton}
+            colorClassName="text-destructive-strong"
+        />
     );
 };

@@ -9,7 +9,6 @@ import { useDeleteTransaction } from '../../hook/use-delete-transaction.hook';
 import { useTransferTransactionActions } from '../../hook/use-transfer-transaction-actions.hook';
 import { getTransactionEditHref } from '../../utils/get-transaction-edit-href.util';
 import { getTransactionFeeEditHref } from '../../utils/get-transaction-fee-edit-href.util';
-import { TransactionInfoActionsGroup } from '../transaction-info-actions-group/transaction-info-actions-group';
 import { TransactionInfoPage } from '../transaction-info-page/transaction-info-page';
 
 import type { UpdateTransactionFormPropsInterface } from '../../interface/update-transaction-form-props.interface';
@@ -35,7 +34,7 @@ export const TransferTransactionInfoPage = ({ transaction }: UpdateTransactionFo
             onDelete={handleDelete}
             onFeePress={handleOpenFee}
             editHref={getTransactionEditHref(transaction)}
-            actions={<TransactionInfoActionsGroup transaction={transaction} items={actions.items} />}
+            actionItems={actions.items}
             {...consolidationProps}
         />
     );

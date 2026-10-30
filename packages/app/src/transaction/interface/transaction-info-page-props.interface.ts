@@ -1,13 +1,13 @@
+import type { TransactionActionsMenuItemInterface } from './transaction-actions-menu-item.interface';
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import type { Href } from 'expo-router';
-import type { ReactNode } from 'react';
 
 export interface TransactionInfoPagePropsInterface {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly editHref: Href | null;
     readonly onDelete: () => unknown;
     readonly onFeePress: () => void;
-    readonly actions: ReactNode;
+    readonly actionItems: readonly TransactionActionsMenuItemInterface[];
     readonly onOpenRefundSources?: () => void;
     readonly onOpenConsolidationSources?: () => void;
 }

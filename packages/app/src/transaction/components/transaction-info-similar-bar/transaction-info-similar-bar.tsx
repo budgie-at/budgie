@@ -39,7 +39,10 @@ export const TransactionInfoSimilarBar = ({ accessibilityValue, height, label, v
                     {value}
                 </Text>
             ) : null}
-            <View className={cn('w-full rounded-t-md', barClassName)} style={barStyle} />
+            <View className="w-full">
+                <View className={cn('w-full rounded-t-md', barClassName)} style={barStyle} />
+                <View className="h-px w-full bg-surface-separator" />
+            </View>
             <Text
                 maxFontSizeMultiplier={TRANSACTION_INFO_ROW_MAX_FONT_SCALE}
                 className="text-[12px] leading-[15px] font-medium text-transaction-detail-secondary text-center"

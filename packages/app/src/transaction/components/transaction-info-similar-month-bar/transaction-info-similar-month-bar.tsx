@@ -28,7 +28,7 @@ export const TransactionInfoSimilarMonthBar = (props: Props) => {
     const [yearText = '0', monthText = '1'] = month.monthKey.split('-');
     const monthLabelDate = new Date(Number(yearText), Number(monthText) - 1, 1);
     const hasAmount = isPositiveNumber(month.totalAmount);
-    const height = hasAmount ? Math.max(8, Math.round((month.totalAmount / maxAmount) * BAR_MAX_HEIGHT)) : 2;
+    const height = hasAmount ? Math.max(8, Math.round((month.totalAmount / maxAmount) * BAR_MAX_HEIGHT)) : 0;
     const label = `${formatShortMonth(monthLabelDate)}${monthText === '01' ? `\n${yearText}` : ''}`;
     const amount = convertFromMicroUnits(month.totalAmount);
     const value = hasAmount ? formatCompactDigits(amount, currencySymbol) : '';

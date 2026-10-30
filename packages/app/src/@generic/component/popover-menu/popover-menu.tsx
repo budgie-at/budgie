@@ -97,7 +97,7 @@ export const PopoverMenu = ({ isOpen, onClose, onCloseComplete, children, anchor
 
                 <View style={menuContainerStyle} accessibilityRole="menu">
                     <Animated.View
-                        className="min-w-[220px] overflow-hidden rounded-2xl border border-secondary-corner bg-primary-reverse shadow-lg"
+                        className="min-w-[220px] overflow-hidden rounded-2xl border-hairline border-popover-border bg-popover-surface shadow-lg"
                         style={animatedMenuStyle}
                         onLayout={handleLayout}
                         pointerEvents={measuringPointerEvents}

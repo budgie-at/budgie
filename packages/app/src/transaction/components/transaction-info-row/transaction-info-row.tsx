@@ -47,7 +47,6 @@ export const TransactionInfoRow = (props: Props) => {
     const largeText = fontScale > TRANSACTION_INFO_STACKED_FONT_SCALE;
     const iconSize = 22 * fontScale;
     const chevronSize = 20 * Math.min(fontScale, TRANSACTION_INFO_STACKED_FONT_SCALE);
-    const showChevron = isDefined(onPress) && !largeText;
     const textContentClassName = largeText ? 'self-stretch min-w-0' : 'flex-1 min-w-0';
     const accessibilityLabel = [label, value, description, trailing].filter(isNotEmptyString).join(', ');
     const separatorClassName = largeText ? 'left-3xl' : 'left-[56px]';
@@ -109,7 +108,9 @@ export const TransactionInfoRow = (props: Props) => {
                 ) : null}
             </View>
 
-            {showChevron ? <Icon icon={UserIconNameEnum.ChevronRight} size={chevronSize} className="text-secondary-foreground" /> : null}
+            {isDefined(onPress) ? (
+                <Icon icon={UserIconNameEnum.ChevronRight} size={chevronSize} className="text-secondary-foreground" />
+            ) : null}
         </View>
     );
 

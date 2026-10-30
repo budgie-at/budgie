@@ -9,7 +9,6 @@ import { useDeleteTransaction } from '../../hook/use-delete-transaction.hook';
 import { useSimpleTransactionActionsMenu } from '../../hook/use-simple-transaction-actions-menu.hook';
 import { getTransactionEditHref } from '../../utils/get-transaction-edit-href.util';
 import { getTransactionFeeEditHref } from '../../utils/get-transaction-fee-edit-href.util';
-import { TransactionInfoActionsGroup } from '../transaction-info-actions-group/transaction-info-actions-group';
 import { TransactionInfoPage } from '../transaction-info-page/transaction-info-page';
 
 interface Props {
@@ -44,7 +43,7 @@ export const SimpleTransactionInfoPage = ({ transaction, transactionType, onOpen
             onDelete={handleDelete}
             onFeePress={handleOpenFee}
             editHref={getTransactionEditHref(transaction)}
-            actions={<TransactionInfoActionsGroup transaction={transaction} items={actionsMenuProps.items} />}
+            actionItems={actionsMenuProps.items}
             onOpenRefundSources={onOpenRefundSources}
         />
     );

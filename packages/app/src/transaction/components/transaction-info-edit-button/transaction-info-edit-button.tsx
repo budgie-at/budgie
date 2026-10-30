@@ -30,7 +30,7 @@ export const TransactionInfoEditButton = ({ editHref }: Props) => {
         <HapticPressable
             accessibilityRole="button"
             accessibilityLabel={t`Edit transaction`}
-            className="min-h-[44px] min-w-[44px] items-center justify-center active:scale-100 active:opacity-70"
+            className="min-h-[44px] min-w-[44px] items-end justify-center active:scale-100 active:opacity-70"
             disabled={!isDefined(editHref)}
             onPress={handleEditPress}
             testID={TransactionInfoPageSelector.EditButton}
