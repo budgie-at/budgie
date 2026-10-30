@@ -1263,7 +1263,6 @@ msgstr "Peut prendre des heures"
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
-#: src/transaction/components/transaction-info-convert-row/transaction-info-convert-row.tsx
 #: src/transaction/hook/use-convert-to-refund-action.hook.ts
 #: src/transaction/hook/use-delete-transaction.hook.ts
 #: src/transaction/hook/use-revert-consolidation.hook.ts
@@ -1597,10 +1596,6 @@ msgstr "Convertir en remboursement ?"
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Convert to Transfer"
 msgstr "Convertir en virement"
-
-#: src/transaction/components/transaction-info-actions-group/transaction-info-actions-group.tsx
-msgid "Convert to Transfer and Start Deposit remove the link to {debtTitle}."
-msgstr "Convertir en virement et Créer un dépôt suppriment le lien avec {debtTitle}."
 
 #: src/app/convert-to-transfer.tsx
 msgid "Convert to Transfer?"
@@ -2208,6 +2203,14 @@ msgstr "Tout désélectionner"
 msgid "Detach debt"
 msgstr "Dissocier la dette"
 
+#: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
+msgid "Detach from plan"
+msgstr "Détacher du plan"
+
+#: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
+msgid "Detaches it from “{debtTitle}”"
+msgstr "La détache de « {debtTitle} »"
+
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Details"
 msgstr "Détails"
@@ -2376,6 +2379,11 @@ msgstr "Modifier l'existante"
 #: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx
 msgid "Edit Expense"
 msgstr "Modifier la dépense"
+
+#: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
+#: src/transaction/hook/use-transfer-transaction-actions.hook.ts
+msgid "Edit fee"
+msgstr "Modifier les frais"
 
 #: src/transaction/components/update-income-transaction/update-income-transaction.tsx
 msgid "Edit Income"
@@ -3519,7 +3527,7 @@ msgstr "mois restants"
 msgid "More actions"
 msgstr "Plus d’actions"
 
-#: src/transaction/components/transaction-info-convert-row/transaction-info-convert-row.tsx
+#: src/transaction/components/transaction-info-more-actions-row/transaction-info-more-actions-row.tsx
 msgid "More Actions…"
 msgstr "Autres actions…"
 
@@ -4951,10 +4959,6 @@ msgstr "Sélectionné"
 msgid "Sending {fromCode}"
 msgstr "Envoi {fromCode}"
 
-#: src/transaction/components/transaction-info-actions-group/transaction-info-actions-group.tsx
-msgid "Separate transactions"
-msgstr "Séparer les transactions"
-
 #: src/budget/components/budget-missing-currency-guard/budget-missing-currency-guard.tsx
 msgid "Set a default currency in Settings first"
 msgstr "Définissez d'abord une devise par défaut dans les paramètres"
@@ -5830,10 +5834,7 @@ msgid "Undo"
 msgstr "Annuler"
 
 #: src/transaction/components/transaction-info-delete-row/transaction-info-delete-row.tsx
-msgid "Undo Consolidation"
-msgstr "Annuler le regroupement"
-
-#: src/transaction/components/transaction-info-actions-group/transaction-info-actions-group.tsx
+#: src/transaction/components/transaction-info-undo-refund-group/transaction-info-undo-refund-group.tsx
 msgid "Undo refund"
 msgstr "Annuler le remboursement"
 

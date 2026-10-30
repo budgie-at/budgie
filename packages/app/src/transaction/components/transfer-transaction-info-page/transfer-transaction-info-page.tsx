@@ -34,7 +34,7 @@ export const TransferTransactionInfoPage = ({ transaction }: UpdateTransactionFo
             transaction={transaction}
             onDelete={handleDelete}
             editHref={getTransactionEditHref(transaction)}
-            actions={<TransactionInfoActionsGroup transaction={transaction} items={actions.items} onRevert={actions.onRevert} />}
+            actions={<TransactionInfoActionsGroup transaction={transaction} items={actions.items} />}
             {...consolidationProps}
         />
     );

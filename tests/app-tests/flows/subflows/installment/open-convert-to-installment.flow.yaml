@@ -14,16 +14,14 @@ env:
 
 - scrollUntilVisible:
     element:
-      id: 'TransactionActionsMenu.ConvertToInstallmentButton'
+      id: 'TransactionInfo.ConvertButton'
     direction: DOWN
     centerElement: true
-- extendedWaitUntil:
-      visible:
-          id: 'TransactionActionsMenu.ConvertToInstallmentButton'
-      timeout: 5000
-
+- waitForAnimationToEnd
 - tapOn:
-      id: 'TransactionActionsMenu.ConvertToInstallmentButton'
+      id: 'TransactionInfo.ConvertButton'
+- tapOn:
+      text: 'Pay in parts'
 
 - extendedWaitUntil:
       visible:

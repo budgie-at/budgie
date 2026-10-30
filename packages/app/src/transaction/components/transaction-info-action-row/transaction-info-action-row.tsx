@@ -1,22 +1,23 @@
-import { Text, View } from 'react-native';
-
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { TransactionInfoActionLabel } from '../transaction-info-action-label/transaction-info-action-label';
+
+import type { UserIconType } from '@budgie/contracts';
 
 interface Props {
+    readonly icon: UserIconType;
     readonly label: string;
     readonly onPress: () => void;
     readonly testID: string;
 }
 
-export const TransactionInfoActionRow = ({ label, onPress, testID }: Props) => (
+export const TransactionInfoActionRow = ({ icon, label, onPress, testID }: Props) => (
     <HapticPressable
-        className="min-h-[44px] flex-row items-center gap-x-xl px-3xl py-md active:scale-100 active:opacity-70"
+        className="active:scale-100 active:opacity-70"
         accessibilityRole="button"
         accessibilityLabel={label}
         onPress={onPress}
         testID={testID}
     >
-        <View className="absolute top-0 right-0 left-3xl h-hairline bg-surface-separator" pointerEvents="none" />
-        <Text className="flex-1 text-[17px] leading-[22px] text-default-foreground">{label}</Text>
+        <TransactionInfoActionLabel icon={icon} label={label} />
     </HapticPressable>
 );

@@ -86,11 +86,13 @@ appId: ${APP_ID}
     centerElement: true
 - extendedWaitUntil:
     visible:
-      id: 'TransactionActionsMenu.FeeButton'
+      id: 'TransactionInfo.ConvertButton'
 - assertVisible:
     id: 'TransactionActionsMenu.CreateRuleButton'
 - tapOn:
     id: 'TransactionInfo.ConvertButton'
+- assertVisible:
+    text: 'Set fee'
 - assertVisible:
     text: 'Attach debt'
 - assertVisible:
@@ -101,9 +103,7 @@ appId: ${APP_ID}
     text: 'Start Deposit'
 
 - tapOn:
-    text: 'Cancel'
-- tapOn:
-    id: 'TransactionActionsMenu.FeeButton'
+    text: 'Set fee'
 - extendedWaitUntil:
     visible:
       id: 'SplitEntryRow.Amount.0'

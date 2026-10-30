@@ -1264,7 +1264,6 @@ msgstr "Can take hours"
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
-#: src/transaction/components/transaction-info-convert-row/transaction-info-convert-row.tsx
 #: src/transaction/hook/use-convert-to-refund-action.hook.ts
 #: src/transaction/hook/use-delete-transaction.hook.ts
 #: src/transaction/hook/use-revert-consolidation.hook.ts
@@ -1598,10 +1597,6 @@ msgstr "Convert to Refund?"
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Convert to Transfer"
 msgstr "Convert to Transfer"
-
-#: src/transaction/components/transaction-info-actions-group/transaction-info-actions-group.tsx
-msgid "Convert to Transfer and Start Deposit remove the link to {debtTitle}."
-msgstr "Convert to Transfer and Start Deposit remove the link to {debtTitle}."
 
 #: src/app/convert-to-transfer.tsx
 msgid "Convert to Transfer?"
@@ -2209,6 +2204,14 @@ msgstr "Deselect all"
 msgid "Detach debt"
 msgstr "Detach debt"
 
+#: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
+msgid "Detach from plan"
+msgstr "Detach from plan"
+
+#: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
+msgid "Detaches it from “{debtTitle}”"
+msgstr "Detaches it from “{debtTitle}”"
+
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Details"
 msgstr "Details"
@@ -2377,6 +2380,11 @@ msgstr "Edit existing"
 #: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx
 msgid "Edit Expense"
 msgstr "Edit Expense"
+
+#: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
+#: src/transaction/hook/use-transfer-transaction-actions.hook.ts
+msgid "Edit fee"
+msgstr "Edit fee"
 
 #: src/transaction/components/update-income-transaction/update-income-transaction.tsx
 msgid "Edit Income"
@@ -3520,7 +3528,7 @@ msgstr "months left"
 msgid "More actions"
 msgstr "More actions"
 
-#: src/transaction/components/transaction-info-convert-row/transaction-info-convert-row.tsx
+#: src/transaction/components/transaction-info-more-actions-row/transaction-info-more-actions-row.tsx
 msgid "More Actions…"
 msgstr "More Actions…"
 
@@ -4952,10 +4960,6 @@ msgstr "Selected"
 msgid "Sending {fromCode}"
 msgstr "Sending {fromCode}"
 
-#: src/transaction/components/transaction-info-actions-group/transaction-info-actions-group.tsx
-msgid "Separate transactions"
-msgstr "Separate transactions"
-
 #: src/budget/components/budget-missing-currency-guard/budget-missing-currency-guard.tsx
 msgid "Set a default currency in Settings first"
 msgstr "Set a default currency in Settings first"
@@ -5831,10 +5835,7 @@ msgid "Undo"
 msgstr "Undo"
 
 #: src/transaction/components/transaction-info-delete-row/transaction-info-delete-row.tsx
-msgid "Undo Consolidation"
-msgstr "Undo Consolidation"
-
-#: src/transaction/components/transaction-info-actions-group/transaction-info-actions-group.tsx
+#: src/transaction/components/transaction-info-undo-refund-group/transaction-info-undo-refund-group.tsx
 msgid "Undo refund"
 msgstr "Undo refund"
 

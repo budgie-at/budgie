@@ -12,16 +12,14 @@ appId: ${APP_ID}
 
 - scrollUntilVisible:
     element:
-      id: 'TransactionActionsMenu.AttachDebtSettlementButton'
+      id: 'TransactionInfo.ConvertButton'
     direction: DOWN
     centerElement: true
-- extendedWaitUntil:
-      visible:
-          id: 'TransactionActionsMenu.AttachDebtSettlementButton'
-      timeout: 5000
-
+- waitForAnimationToEnd
 - tapOn:
-      id: 'TransactionActionsMenu.AttachDebtSettlementButton'
+      id: 'TransactionInfo.ConvertButton'
+- tapOn:
+      text: 'Attach debt'
 
 - extendedWaitUntil:
       visible:

@@ -1263,7 +1263,6 @@ msgstr "Може тривати годинами"
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
-#: src/transaction/components/transaction-info-convert-row/transaction-info-convert-row.tsx
 #: src/transaction/hook/use-convert-to-refund-action.hook.ts
 #: src/transaction/hook/use-delete-transaction.hook.ts
 #: src/transaction/hook/use-revert-consolidation.hook.ts
@@ -1597,10 +1596,6 @@ msgstr "Перетворити на повернення?"
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Convert to Transfer"
 msgstr "Перетворити на переказ"
-
-#: src/transaction/components/transaction-info-actions-group/transaction-info-actions-group.tsx
-msgid "Convert to Transfer and Start Deposit remove the link to {debtTitle}."
-msgstr "Перетворення на переказ і відкриття депозиту видаляють зв’язок із {debtTitle}."
 
 #: src/app/convert-to-transfer.tsx
 msgid "Convert to Transfer?"
@@ -2208,6 +2203,14 @@ msgstr "Скасувати вибір"
 msgid "Detach debt"
 msgstr "Відкріпити борг"
 
+#: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
+msgid "Detach from plan"
+msgstr "Відʼєднати від плану"
+
+#: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
+msgid "Detaches it from “{debtTitle}”"
+msgstr "Відʼєднує її від «{debtTitle}»"
+
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Details"
 msgstr "Деталі"
@@ -2376,6 +2379,11 @@ msgstr "Редагувати наявне"
 #: src/transaction/components/update-expense-transaction/update-expense-transaction.tsx
 msgid "Edit Expense"
 msgstr "Редагувати витрату"
+
+#: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
+#: src/transaction/hook/use-transfer-transaction-actions.hook.ts
+msgid "Edit fee"
+msgstr "Редагувати комісію"
 
 #: src/transaction/components/update-income-transaction/update-income-transaction.tsx
 msgid "Edit Income"
@@ -3519,7 +3527,7 @@ msgstr "місяців залишилось"
 msgid "More actions"
 msgstr "Інші дії"
 
-#: src/transaction/components/transaction-info-convert-row/transaction-info-convert-row.tsx
+#: src/transaction/components/transaction-info-more-actions-row/transaction-info-more-actions-row.tsx
 msgid "More Actions…"
 msgstr "Інші дії…"
 
@@ -4951,10 +4959,6 @@ msgstr "Вибрано"
 msgid "Sending {fromCode}"
 msgstr "Відправлення {fromCode}"
 
-#: src/transaction/components/transaction-info-actions-group/transaction-info-actions-group.tsx
-msgid "Separate transactions"
-msgstr "Розділити транзакції"
-
 #: src/budget/components/budget-missing-currency-guard/budget-missing-currency-guard.tsx
 msgid "Set a default currency in Settings first"
 msgstr "Спочатку оберіть валюту за замовчуванням у Налаштуваннях"
@@ -5830,10 +5834,7 @@ msgid "Undo"
 msgstr "Скасувати"
 
 #: src/transaction/components/transaction-info-delete-row/transaction-info-delete-row.tsx
-msgid "Undo Consolidation"
-msgstr "Скасувати об’єднання"
-
-#: src/transaction/components/transaction-info-actions-group/transaction-info-actions-group.tsx
+#: src/transaction/components/transaction-info-undo-refund-group/transaction-info-undo-refund-group.tsx
 msgid "Undo refund"
 msgstr "Скасувати повернення"
 

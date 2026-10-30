@@ -1,7 +1,8 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { getTransactionFeeEntries } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { dismissAllOrReplace } from '../../@generic/utils/dismiss-all-or-replace.util';
 import { TransactionActionsMenuSelector } from '../components/transaction-actions-menu/transaction-actions-menu.selector';
@@ -20,8 +21,9 @@ export const useTransferTransactionActions = (transaction: TransactionWithRelati
         {
             key: 'fee',
             icon: UserIconNameEnum.ReceiptText,
-            label: t`Set fee`,
+            label: isNotEmptyArray(getTransactionFeeEntries(transaction.entries)) ? t`Edit fee` : t`Set fee`,
             testID: TransactionActionsMenuSelector.FeeButton,
+            isPrimary: true,
             onPress: onFeePress
         }
     ];
