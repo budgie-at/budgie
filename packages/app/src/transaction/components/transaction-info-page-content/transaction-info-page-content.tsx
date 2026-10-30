@@ -5,9 +5,8 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { View } from 'react-native';
 
-import { ScreenChromeFrame, ScreenChromeHeader, ScreenChromeScrollView, useScreenChrome } from '@rnw-community/react-native-screen-chrome';
+import { ScreenChromeFrame, ScreenChromeScrollView, useScreenChrome } from '@rnw-community/react-native-screen-chrome';
 
-import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
 import { useGetEnabledRulesQuery } from '../../../rule/query/use-get-enabled-rules.query';
 import { useTransactionInfoSimilarStatsQuery } from '../../query/use-transaction-info-similar-stats.query';
 import { convertTransactionToInput } from '../../utils/convert-transaction-to-input.util';
@@ -15,12 +14,11 @@ import { getTransactionDisplayTitle } from '../../utils/get-transaction-display-
 import { TransactionInfoAccountRows } from '../transaction-info-account-rows/transaction-info-account-rows';
 import { TransactionInfoCategoryRows } from '../transaction-info-category-rows/transaction-info-category-rows';
 import { TransactionInfoDeleteRow } from '../transaction-info-delete-row/transaction-info-delete-row';
-import { TransactionInfoEditButton } from '../transaction-info-edit-button/transaction-info-edit-button';
 import { TransactionInfoGroup } from '../transaction-info-group/transaction-info-group';
+import { TransactionInfoHeader } from '../transaction-info-header/transaction-info-header';
 import { TransactionInfoHero } from '../transaction-info-hero/transaction-info-hero';
 import { TransactionInfoMoneyRows } from '../transaction-info-money-rows/transaction-info-money-rows';
 import { TransactionInfoNavBand } from '../transaction-info-nav-band/transaction-info-nav-band';
-import { TransactionInfoNavTitle } from '../transaction-info-nav-title/transaction-info-nav-title';
 import { TransactionInfoNoteGroup } from '../transaction-info-note-group/transaction-info-note-group';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
 import { TransactionInfoSimilarCard } from '../transaction-info-similar-card/transaction-info-similar-card';
@@ -105,12 +103,7 @@ export const TransactionInfoPageContent = ({
 
             <TransactionInfoNavBand />
 
-            <TransactionInfoNavTitle transaction={transaction} revealOffset={titleRevealOffset} />
-
-            <ScreenChromeHeader>
-                <GoBackButton onPress={handleGoBack} />
-                <TransactionInfoEditButton editHref={editHref} />
-            </ScreenChromeHeader>
+            <TransactionInfoHeader transaction={transaction} editHref={editHref} revealOffset={titleRevealOffset} onGoBack={handleGoBack} />
         </ScreenChromeFrame>
     );
 };

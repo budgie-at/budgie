@@ -1,0 +1,43 @@
+import { useState } from 'react';
+import { View } from 'react-native';
+
+import { ScreenChromeHeader } from '@rnw-community/react-native-screen-chrome';
+
+import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
+import { TransactionInfoEditButton } from '../transaction-info-edit-button/transaction-info-edit-button';
+import { TransactionInfoNavTitle } from '../transaction-info-nav-title/transaction-info-nav-title';
+
+import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import type { Href } from 'expo-router';
+import type { LayoutChangeEvent } from 'react-native';
+
+interface Props {
+    readonly transaction: TransactionWithRelationsEntityInterface;
+    readonly editHref: Href | null;
+    readonly revealOffset: number;
+    readonly onGoBack: () => void;
+}
+
+const DEFAULT_CONTROL_WIDTH = 44;
+
+export const TransactionInfoHeader = ({ transaction, editHref, revealOffset, onGoBack }: Props) => {
+    const [leadingWidth, setLeadingWidth] = useState(DEFAULT_CONTROL_WIDTH);
+    const [trailingWidth, setTrailingWidth] = useState(DEFAULT_CONTROL_WIDTH);
+    const handleLeadingLayout = (event: LayoutChangeEvent) => void setLeadingWidth(event.nativeEvent.layout.width);
+    const handleTrailingLayout = (event: LayoutChangeEvent) => void setTrailingWidth(event.nativeEvent.layout.width);
+    const horizontalInset = Math.max(leadingWidth, trailingWidth) + 24;
+
+    return (
+        <>
+            <TransactionInfoNavTitle transaction={transaction} revealOffset={revealOffset} horizontalInset={horizontalInset} />
+            <ScreenChromeHeader>
+                <View onLayout={handleLeadingLayout}>
+                    <GoBackButton onPress={onGoBack} />
+                </View>
+                <View onLayout={handleTrailingLayout}>
+                    <TransactionInfoEditButton editHref={editHref} />
+                </View>
+            </ScreenChromeHeader>
+        </>
+    );
+};

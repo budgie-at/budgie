@@ -15,12 +15,13 @@ import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts'
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly revealOffset: number;
+    readonly horizontalInset: number;
 }
 
 const REVEAL_DISTANCE = 20;
 const Z_INDEX_STYLE = { zIndex: 4 };
 
-export const TransactionInfoNavTitle = ({ transaction, revealOffset }: Props) => {
+export const TransactionInfoNavTitle = ({ transaction, revealOffset, horizontalInset }: Props) => {
     const { t } = useLingui();
     const { config } = useScreenChrome();
     const scrollY = useScreenChromeScrollY();
@@ -35,11 +36,12 @@ export const TransactionInfoNavTitle = ({ transaction, revealOffset }: Props) =>
         return { opacity: progress };
     });
     const titleStyle = [rowStyle, animatedStyle];
+    const containerStyle = [Z_INDEX_STYLE, { paddingHorizontal: horizontalInset }];
 
     return (
         <View
-            className="absolute inset-x-0 top-0 pt-safe pl-[60px] pr-[116px]"
-            style={Z_INDEX_STYLE}
+            className="absolute inset-x-0 top-0 pt-safe"
+            style={containerStyle}
             pointerEvents="none"
             accessibilityElementsHidden
             importantForAccessibility="no-hide-descendants"
@@ -50,6 +52,7 @@ export const TransactionInfoNavTitle = ({ transaction, revealOffset }: Props) =>
                         maxFontSizeMultiplier={1.35}
                         className="text-[17px] leading-[22px] text-primary font-semibold text-center"
                         numberOfLines={1}
+                        ellipsizeMode="tail"
                     >
                         {title}
                     </Text>
