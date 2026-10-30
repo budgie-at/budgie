@@ -45,6 +45,7 @@ import { BinanceEarnPositionListApiSchema } from '../interface/binance-earn-posi
 import { BinanceEarnRewardListApiSchema } from '../interface/binance-earn-reward-api.schema';
 import { BinanceExchangeInfoApiSchema } from '../interface/binance-exchange-info-api.schema';
 import { BinanceFiatOrderListApiSchema } from '../interface/binance-fiat-order-api.schema';
+import { BinanceFiatPaymentListApiSchema } from '../interface/binance-fiat-payment-api.schema';
 import { BinanceLockedEarnPositionListApiSchema } from '../interface/binance-locked-earn-position-api.schema';
 import { BinanceLockedEarnRewardListApiSchema } from '../interface/binance-locked-earn-reward-api.schema';
 import { BinanceServerTimeApiSchema } from '../interface/binance-server-time-api.schema';
@@ -57,6 +58,7 @@ import {
     mapBinanceDustLogToTransfers,
     mapBinanceEarnRewardsToTransactions
 } from '../mapper/binance-extra-source.mapper';
+import { mapBinanceFiatPaymentToTransaction, mapBinanceFiatPaymentToTransfer } from '../mapper/binance-fiat-payment.mapper';
 import {
     buildBinanceDepositExternalId,
     getBinanceCapitalWallet,
@@ -92,6 +94,7 @@ import type { BinanceDividendApiInterface } from '../interface/binance-dividend-
 import type { BinanceDustLogApiInterface } from '../interface/binance-dust-api.schema';
 import type { BinanceEarnRewardApiInterface } from '../interface/binance-earn-reward-api.schema';
 import type { BinanceFiatOrderApiInterface } from '../interface/binance-fiat-order-api.schema';
+import type { BinanceFiatPaymentApiInterface } from '../interface/binance-fiat-payment-api.schema';
 import type { BinanceRewardHistorySourceType, BinanceTransactionHistorySourceType } from '../interface/binance-history-source-groups.type';
 import type { BinanceTradeSymbolInterface } from '../interface/binance-trade-symbol.interface';
 import type { BinanceTransactionSourcesInterface } from '../interface/binance-transaction-sources.interface';
@@ -109,6 +112,7 @@ const FUNDING_BALANCE_ENDPOINT = '/sapi/v1/asset/get-funding-asset';
 const DEPOSIT_HISTORY_ENDPOINT = '/sapi/v1/capital/deposit/hisrec';
 const WITHDRAW_HISTORY_ENDPOINT = '/sapi/v1/capital/withdraw/history';
 const FIAT_ORDERS_ENDPOINT = '/sapi/v1/fiat/orders';
+const FIAT_PAYMENTS_ENDPOINT = '/sapi/v1/fiat/payments';
 const C2C_ORDERS_ENDPOINT = '/sapi/v1/c2c/orderMatch/listUserOrderHistory';
 const CONVERT_TRADE_FLOW_ENDPOINT = '/sapi/v1/convert/tradeFlow';
 const MY_TRADES_ENDPOINT = '/api/v3/myTrades';
@@ -133,6 +137,8 @@ const MAX_TRANSACTIONS_PER_WINDOW = 500;
 const FIAT_ROWS_PER_PAGE = 500;
 const FIAT_DEPOSIT_TRANSACTION_TYPE = 0;
 const FIAT_WITHDRAW_TRANSACTION_TYPE = 1;
+const FIAT_PAYMENT_BUY_TRANSACTION_TYPE = 0;
+const FIAT_PAYMENT_ACCEPTED_STATUS = 'Completed';
 const FIAT_ACCEPTED_STATUSES: ReadonlySet<string> = new Set(['Successful', 'Finished']);
 const C2C_BUY_TRADE_TYPE = 'BUY';
 const C2C_SELL_TRADE_TYPE = 'SELL';
@@ -255,6 +261,18 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return yield* this.fetchConvertTransfers(startTimeMs, endTimeMs);
     });
 
+    readonly getFiatPaymentTransfers = Effect.fn('BinanceSignedClient.getFiatPaymentTransfers')(function* (
+        this: BinanceSignedClient,
+        from: number,
+        to: number | null = null
+    ) {
+        const { startTimeMs, endTimeMs } = yield* this.resolveSourceWindow(from, to);
+        const transfers = (yield* this.fetchFiatPayments(startTimeMs, endTimeMs)).map(mapBinanceFiatPaymentToTransfer).filter(isDefined);
+        this.noteTouchedAssets(this.collectTransferAssets(transfers));
+
+        return transfers;
+    });
+
     readonly getDustTransfers = Effect.fn('BinanceSignedClient.getDustTransfers')(function* (
         this: BinanceSignedClient,
         from: number,
@@ -309,6 +327,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     };
 
     private readonly fiatOrderCache = new Map<string, readonly BinanceFiatOrderApiInterface[]>();
+    private readonly fiatPaymentCache = new Map<string, readonly BinanceFiatPaymentApiInterface[]>();
     private readonly c2cOrderCache = new Map<string, readonly BinanceC2cOrderApiInterface[]>();
     private readonly earnRewardCache = new Map<string, readonly BinanceEarnRewardApiInterface[]>();
     private readonly dividendCache = new Map<string, readonly BinanceDividendApiInterface[]>();
@@ -436,8 +455,9 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     ) {
         const fiatDeposits = yield* this.fetchFiatOrders(FIAT_DEPOSIT_TRANSACTION_TYPE, startTimeMs, endTimeMs);
         const fiatWithdrawals = yield* this.fetchFiatOrders(FIAT_WITHDRAW_TRANSACTION_TYPE, startTimeMs, endTimeMs);
+        const fiatPayments = yield* this.fetchFiatPayments(startTimeMs, endTimeMs);
 
-        return this.emptySources({ fiatDeposits, fiatWithdrawals });
+        return this.emptySources({ fiatDeposits, fiatWithdrawals, fiatPayments });
     });
 
     private readonly fetchSplittingWindow: <T>(
@@ -926,6 +946,27 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         );
     }
 
+    private fetchFiatPayments(startTimeMs: number, endTimeMs: number) {
+        return this.cached(
+            this.fiatPaymentCache,
+            `${startTimeMs}-${endTimeMs}`,
+            this.walkPagedWindows(FIAT_MAX_PERIOD_MS, startTimeMs, endTimeMs, (page, windowStartMs, windowEndMs) =>
+                this.signedRequest(BinanceFiatPaymentListApiSchema, FIAT_PAYMENTS_ENDPOINT, 'GET', {
+                    transactionType: FIAT_PAYMENT_BUY_TRANSACTION_TYPE,
+                    beginTime: windowStartMs,
+                    endTime: windowEndMs,
+                    page,
+                    rows: FIAT_ROWS_PER_PAGE
+                }).pipe(
+                    Effect.map(response => ({
+                        rows: response.data.filter(payment => payment.status === FIAT_PAYMENT_ACCEPTED_STATUS),
+                        hasMore: response.data.length === FIAT_ROWS_PER_PAGE
+                    }))
+                )
+            )
+        );
+    }
+
     private fetchC2cOrders(startTimeMs: number, endTimeMs: number) {
         return this.cached(
             this.c2cOrderCache,
@@ -1164,6 +1205,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             withdrawals: [],
             fiatDeposits: [],
             fiatWithdrawals: [],
+            fiatPayments: [],
             c2cOrders: [],
             rewards: [],
             dividends: [],
@@ -1195,6 +1237,10 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             .filter(order => isDefaultWallet && order.fiatCurrency === asset)
             .map(order => mapBinanceFiatOrderToTransaction(order, accountId, false))
             .filter(isDefined);
+        const fiatPaymentTransactions = sources.fiatPayments
+            .filter(payment => isDefaultWallet && payment.cryptoCurrency === asset)
+            .map(payment => mapBinanceFiatPaymentToTransaction(payment, accountId))
+            .filter(isDefined);
         const c2cTransactions = sources.c2cOrders
             .filter(order => isDefaultWallet && order.asset === asset)
             .map(order => mapBinanceC2cOrderToTransaction(order, accountId))
@@ -1217,6 +1263,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             ...withdrawalTransactions,
             ...fiatDepositTransactions,
             ...fiatWithdrawalTransactions,
+            ...fiatPaymentTransactions,
             ...c2cTransactions,
             ...earnRewardTransactions,
             ...dividendTransactions
@@ -1233,6 +1280,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             ...sources.withdrawals.map(withdrawal => withdrawal.coin),
             ...sources.fiatDeposits.map(order => order.fiatCurrency),
             ...sources.fiatWithdrawals.map(order => order.fiatCurrency),
+            ...sources.fiatPayments.map(payment => payment.cryptoCurrency),
             ...sources.c2cOrders.map(order => order.asset),
             ...sources.rewards.flatMap(({ rewards }) => rewards.map(reward => reward.asset)),
             ...sources.dividends.map(dividend => dividend.asset)

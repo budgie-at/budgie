@@ -229,6 +229,7 @@ describe('binance/account-agnostic-sources', () => {
             binanceStub.c2cOrders([buildBinance.c2cOrder({ orderNumber: 'usdt-c2c', tradeType: 'BUY', asset: 'USDT', amount: '100' })], []);
             binanceStub.earnRewards([buildBinance.earnReward({ asset: 'USDT', rewards: '0.5', time: earnTime })]);
             binanceStub.fiatOrders([], []);
+            binanceStub.fiatPayments([]);
 
             yield* binanceSyncService.sync();
 

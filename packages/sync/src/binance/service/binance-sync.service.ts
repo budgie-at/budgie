@@ -220,6 +220,9 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             return yield* commitTransfers(transfers, token);
         });
 
+            const transferredCount = isRunDeferred()
+                ? 0
+                : yield* commitTransferRange(token, getRunSignedClient(token).getFiatPaymentTransfers(fromUnixTime, toUnixTime));
         const commitFiatRange = Effect.fnUntraced(function* (token: string, fromUnixTime: number, toUnixTime: number | null) {
             const committedCount = yield* commitSourceType(
                 token,
@@ -230,7 +233,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 fiatSyncedAtMsByToken.set(token, yield* Clock.currentTimeMillis);
             }
 
-            return committedCount;
+            return committedCount + transferredCount;
         });
 
         const syncHistorySource = Effect.fnUntraced(function* <E, R>(

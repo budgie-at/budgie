@@ -17,6 +17,7 @@ import type {
     BinanceEarnPositionApiInterface,
     BinanceEarnRewardApiInterface,
     BinanceFiatOrderApiInterface,
+    BinanceFiatPaymentApiInterface,
     BinanceLockedEarnPositionApiInterface,
     BinanceLockedEarnRewardApiInterface,
     BinanceStakingRewardApiInterface,
@@ -35,6 +36,7 @@ const FUNDING_BALANCE_URL = `${BASE_URL}/sapi/v1/asset/get-funding-asset`;
 const DEPOSIT_URL = `${BASE_URL}/sapi/v1/capital/deposit/hisrec`;
 const WITHDRAW_URL = `${BASE_URL}/sapi/v1/capital/withdraw/history`;
 const FIAT_ORDERS_URL = `${BASE_URL}/sapi/v1/fiat/orders`;
+const FIAT_PAYMENTS_URL = `${BASE_URL}/sapi/v1/fiat/payments`;
 const C2C_ORDERS_URL = `${BASE_URL}/sapi/v1/c2c/orderMatch/listUserOrderHistory`;
 const MY_TRADES_URL = `${BASE_URL}/api/v3/myTrades`;
 const EXCHANGE_INFO_URL = `${BASE_URL}/api/v3/exchangeInfo`;
@@ -320,6 +322,15 @@ export const binanceStub = {
             requestedWindows,
             ...(isDefined(requestOrder) && { requestOrder: { list: requestOrder, label: 'fiat' } }),
             options
+        });
+    },
+    fiatPayments: (fiatPayments: BinanceFiatPaymentApiInterface[]): void => {
+        stubWindowed({
+            url: FIAT_PAYMENTS_URL,
+            rows: fiatPayments,
+            getTimeMs: payment => payment.createTime,
+            windowParams: ['beginTime', 'endTime'],
+            respond: respondEnvelopePage(FIAT_PAGING)
         });
     },
     c2cOrders: (

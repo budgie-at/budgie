@@ -44,6 +44,7 @@ export type { BinanceDepositApiInterface } from './binance/interface/binance-dep
 export type { BinanceUniversalTransferApiInterface } from './binance/interface/binance-universal-transfer-api.schema';
 export type { BinanceWithdrawalApiInterface } from './binance/interface/binance-withdrawal-api.schema';
 export type { BinanceFiatOrderApiInterface } from './binance/interface/binance-fiat-order-api.schema';
+export type { BinanceFiatPaymentApiInterface } from './binance/interface/binance-fiat-payment-api.schema';
 export type { BinanceC2cOrderApiInterface } from './binance/interface/binance-c2c-order-api.schema';
 export type { BinanceTradeApiInterface } from './binance/interface/binance-trade-api.schema';
 export type { BinanceConvertFlowApiInterface } from './binance/interface/binance-convert-api.schema';

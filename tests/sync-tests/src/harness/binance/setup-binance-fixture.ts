@@ -55,6 +55,7 @@ export const setupBinanceFixture = (options: SetupBinanceFixtureOptions = {}) =>
         binanceStub.deposits([]);
         binanceStub.withdrawals([]);
         binanceStub.fiatOrders([], []);
+        binanceStub.fiatPayments([]);
         binanceStub.c2cOrders([], []);
         binanceStub.myTrades({});
         binanceStub.convertTradeFlow([]);
