@@ -5,6 +5,7 @@ import { Text, View } from 'react-native';
 import { isNotEmptyString } from '@rnw-community/shared';
 
 import { Icon } from '../../../@generic/component/icon/icon';
+import { TRANSACTION_INFO_ROW_MAX_FONT_SCALE } from '../../constant/transaction-info-row-max-font-scale.constant';
 import { isTransactionNoteDuplicated } from '../../utils/is-transaction-note-duplicated.util';
 import { TransactionInfoGroup } from '../transaction-info-group/transaction-info-group';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
@@ -38,10 +39,17 @@ export const TransactionInfoNoteGroup = ({ transaction }: Props) => {
                     <Icon icon={UserIconNameEnum.MessageSquare} size={22} className="text-secondary-foreground" />
                 </View>
                 <View className="flex-1 min-w-0">
-                    <Text className="text-[13px] leading-[18px] text-secondary-foreground">
+                    <Text
+                        maxFontSizeMultiplier={TRANSACTION_INFO_ROW_MAX_FONT_SCALE}
+                        className="text-[13px] leading-[18px] text-transaction-detail-secondary"
+                    >
                         <Trans>Note</Trans>
                     </Text>
-                    <Text className="text-[17px] leading-[24px] text-primary" selectable>
+                    <Text
+                        maxFontSizeMultiplier={TRANSACTION_INFO_ROW_MAX_FONT_SCALE}
+                        className="text-[17px] leading-[24px] text-primary"
+                        selectable
+                    >
                         {transaction.comment}
                     </Text>
                 </View>

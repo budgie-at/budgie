@@ -8,6 +8,7 @@ import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/sha
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { MatchingRulesPill } from '../../../rule/components/matching-rules-pill/matching-rules-pill';
+import { TRANSACTION_INFO_AMOUNT_MAX_FONT_SCALE } from '../../constant/transaction-info-amount-max-font-scale.constant';
 import { TRANSACTION_INFO_HERO_MAX_FONT_SCALE } from '../../constant/transaction-info-hero-max-font-scale.constant';
 import { TRANSACTION_INFO_STACKED_FONT_SCALE } from '../../constant/transaction-info-stacked-font-scale.constant';
 import { TRANSACTION_TYPE } from '../../constant/transaction-type.constant';
@@ -26,17 +27,16 @@ import type { LayoutChangeEvent } from 'react-native';
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
-    readonly onEndLayout: (event: LayoutChangeEvent) => void;
     readonly matchingRuleIds: readonly number[];
     readonly onTitleLayout: (event: LayoutChangeEvent) => void;
 }
 
-export const TransactionInfoHero = ({ transaction, matchingRuleIds, onTitleLayout, onEndLayout }: Props) => {
+export const TransactionInfoHero = ({ transaction, matchingRuleIds, onTitleLayout }: Props) => {
     const { t } = useLingui();
     const formatDigits = useProtectedAmountLabel();
     const { fontScale } = useWindowDimensions();
     const largeText = fontScale > TRANSACTION_INFO_STACKED_FONT_SCALE;
-    const heroClassName = largeText ? 'items-start pt-xl pb-3xl' : 'items-center pt-3xl pb-5xl';
+    const heroClassName = largeText ? 'items-start pt-md pb-3xl' : 'items-center pt-3xl pb-5xl';
     const showIcon = !largeText && getTransactionType(transaction) === TransactionTypeEnum.TRANSFER;
     const alignmentClassName = largeText ? 'text-left' : 'text-center';
     const amountClassName = getTransactionType(transaction) === TransactionTypeEnum.INCOME ? 'text-positive-strong' : 'text-primary';
@@ -64,8 +64,8 @@ export const TransactionInfoHero = ({ transaction, matchingRuleIds, onTitleLayou
                 <AmountField fontSize={amountFontSize} className="self-stretch">
                     <AmountFieldText
                         adjustsFontSizeToFit
-                        maxFontSizeMultiplier={TRANSACTION_INFO_STACKED_FONT_SCALE}
-                        minimumFontScale={0.4}
+                        maxFontSizeMultiplier={TRANSACTION_INFO_AMOUNT_MAX_FONT_SCALE}
+                        minimumFontScale={0.6}
                         testID={TransactionInfoPageSelector.Amount}
                         className={cn('leading-[48px] font-semibold tracking-[-1px] ', alignmentClassName, amountClassName)}
                         selectable
@@ -77,7 +77,11 @@ export const TransactionInfoHero = ({ transaction, matchingRuleIds, onTitleLayou
 
             {isNotEmptyString(destinationAmount) ? (
                 <TransactionInfoHeroFade>
-                    <Text className="text-[15px] leading-[20px] text-transaction-detail-secondary tabular-nums" selectable>
+                    <Text
+                        maxFontSizeMultiplier={TRANSACTION_INFO_STACKED_FONT_SCALE}
+                        className="text-[15px] leading-[20px] text-transaction-detail-secondary tabular-nums"
+                        selectable
+                    >
                         {destinationAmount}
                     </Text>
                 </TransactionInfoHeroFade>
@@ -94,12 +98,12 @@ export const TransactionInfoHero = ({ transaction, matchingRuleIds, onTitleLayou
                     </Text>
                 ) : null}
             </TransactionInfoHeroFade>
-            <TransactionInfoHeroFade onLayout={onEndLayout}>
+            <TransactionInfoHeroFade>
                 <TransactionInfoHeroDate operatedAt={transaction.operatedAt} />
             </TransactionInfoHeroFade>
 
             {isNotEmptyArray(matchingRuleIds) ? (
-                <TransactionInfoHeroFade onLayout={onEndLayout} className="mt-xl flex-row flex-wrap items-center justify-center gap-sm">
+                <TransactionInfoHeroFade className="mt-xl flex-row flex-wrap items-center justify-center gap-sm">
                     <MatchingRulesPill matchingRulesCount={matchingRuleIds.length} matchingRuleIds={matchingRuleIds} />
                 </TransactionInfoHeroFade>
             ) : null}

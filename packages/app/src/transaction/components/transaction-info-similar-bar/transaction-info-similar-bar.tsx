@@ -3,6 +3,7 @@ import { Text, View, useWindowDimensions } from 'react-native';
 import { isNotEmptyString } from '@rnw-community/shared';
 
 import { cn } from '../../../@generic/utils/cn.util';
+import { TRANSACTION_INFO_ROW_MAX_FONT_SCALE } from '../../constant/transaction-info-row-max-font-scale.constant';
 
 interface Props {
     readonly accessibilityValue: string;
@@ -30,12 +31,21 @@ export const TransactionInfoSimilarBar = ({ accessibilityValue, height, label, v
             style={columnStyle}
         >
             {isNotEmptyString(value) ? (
-                <Text className="text-[13px] leading-[18px] text-primary font-medium tabular-nums" numberOfLines={1}>
+                <Text
+                    maxFontSizeMultiplier={TRANSACTION_INFO_ROW_MAX_FONT_SCALE}
+                    className="text-[13px] leading-[18px] text-primary font-medium tabular-nums"
+                    numberOfLines={1}
+                >
                     {value}
                 </Text>
             ) : null}
             <View className={cn('w-full rounded-t-md', barClassName)} style={barStyle} />
-            <Text className="text-[12px] leading-[15px] font-medium text-transaction-detail-secondary text-center">{label}</Text>
+            <Text
+                maxFontSizeMultiplier={TRANSACTION_INFO_ROW_MAX_FONT_SCALE}
+                className="text-[12px] leading-[15px] font-medium text-transaction-detail-secondary text-center"
+            >
+                {label}
+            </Text>
         </View>
     );
 };

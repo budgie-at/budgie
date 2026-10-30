@@ -34,9 +34,9 @@ interface Props {
 export const RefundTransactionInfoContent = ({ transaction, parentTransaction }: Props) => {
     const { t } = useLingui();
     const router = useRouter();
-    const removeRefund = useRevertConsolidation(parentTransaction.id, router.back);
+    const removeRefund = useRevertConsolidation(parentTransaction.id, router.back, true);
     const formatDigits = useProtectedAmountLabel();
-    const { minimumHeight, revealOffset, onEndLayout, onAmountLayout, onContentLayout, scrollRef, handleScrollEnd } =
+    const { minimumHeight, revealRange, onTitleLayout, onBodyLayout, onContentLayout, scrollRef, handleScrollEnd } =
         useTransactionInfoHandoff();
     const { sources } = useGetConsolidationSourcesQuery(parentTransaction.id);
     const source = sources.find(row => row.sourceTransactionId === transaction.id);
@@ -58,11 +58,10 @@ export const RefundTransactionInfoContent = ({ transaction, parentTransaction }:
                         amount={amount}
                         title={t`Refund from ${merchant}`}
                         operatedAt={transaction.operatedAt}
-                        onAmountLayout={onAmountLayout}
-                        onEndLayout={onEndLayout}
+                        onTitleLayout={onTitleLayout}
                     />
-                    <View className="gap-y-5xl">
-                        <TransactionInfoGroup>
+                    <View className="gap-y-5xl" onLayout={onBodyLayout}>
+                        <TransactionInfoGroup footnote={t`Manage this refund from the original purchase.`}>
                             <TransactionInfoRow
                                 icon={UserIconNameEnum.Wallet}
                                 label={t`Account`}
@@ -86,7 +85,7 @@ export const RefundTransactionInfoContent = ({ transaction, parentTransaction }:
             <TransactionInfoHeader
                 transaction={transaction}
                 editHref={null}
-                revealOffset={revealOffset}
+                revealRange={revealRange}
                 onGoBack={router.back}
                 compactTitle={t`Refund from ${merchant}`}
                 compactAmount={amount}

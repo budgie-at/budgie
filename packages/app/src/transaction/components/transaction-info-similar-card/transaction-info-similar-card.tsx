@@ -10,6 +10,7 @@ import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-am
 import { cn } from '../../../@generic/utils/cn.util';
 import { THOUSAND } from '../../../i18n/constant/compact-thresholds.constant';
 import { useFormatCompactDigits } from '../../../i18n/hook/use-format-compact-digits.hook';
+import { TRANSACTION_INFO_ROW_MAX_FONT_SCALE } from '../../constant/transaction-info-row-max-font-scale.constant';
 import { TRANSACTION_INFO_STACKED_FONT_SCALE } from '../../constant/transaction-info-stacked-font-scale.constant';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
 import { TransactionInfoSimilarMetric } from '../transaction-info-similar-metric/transaction-info-similar-metric';
@@ -68,8 +69,18 @@ export const TransactionInfoSimilarCard = ({ stats, title, isLoading }: Props) =
             testID={TransactionInfoPageSelector.SimilarCard}
         >
             <View className="gap-y-xxs">
-                <Text className="text-[17px] leading-[22px] text-primary font-semibold">{title}</Text>
-                <Text className="text-[13px] leading-[18px] text-transaction-detail-secondary">{description}</Text>
+                <Text
+                    maxFontSizeMultiplier={TRANSACTION_INFO_ROW_MAX_FONT_SCALE}
+                    className="text-[17px] leading-[22px] text-primary font-semibold"
+                >
+                    {title}
+                </Text>
+                <Text
+                    maxFontSizeMultiplier={TRANSACTION_INFO_ROW_MAX_FONT_SCALE}
+                    className="text-[13px] leading-[18px] text-transaction-detail-secondary"
+                >
+                    {description}
+                </Text>
             </View>
 
             <View className={summaryVariants({ largeText: fontScale > TRANSACTION_INFO_STACKED_FONT_SCALE })}>
