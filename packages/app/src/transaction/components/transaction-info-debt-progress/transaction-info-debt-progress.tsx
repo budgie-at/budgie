@@ -1,4 +1,4 @@
-import { UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
@@ -24,8 +24,8 @@ export const TransactionInfoDebtProgress = ({ account }: Props) => {
         return null;
     }
 
-    const paid = formatDigits(convertFromMicroUnits(progress.paidAmount), symbol);
-    const outstanding = formatDigits(convertFromMicroUnits(progress.outstandingAmount), symbol);
+    const paid = formatDigits(progress.paidAmount, symbol);
+    const outstanding = formatDigits(progress.outstandingAmount, symbol);
 
     return (
         <TransactionInfoRow
