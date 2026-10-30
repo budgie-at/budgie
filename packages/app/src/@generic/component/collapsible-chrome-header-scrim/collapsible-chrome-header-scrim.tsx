@@ -1,7 +1,7 @@
 import { View } from 'react-native';
 import Animated, { Extrapolation, interpolate, useAnimatedStyle } from 'react-native-reanimated';
 
-import { useScreenChrome, useScreenChromeScrollY } from '@rnw-community/react-native-screen-chrome';
+import { SCREEN_CHROME_HEADER_LAYOUT_METRICS, useScreenChrome, useScreenChromeScrollY } from '@rnw-community/react-native-screen-chrome';
 
 import type { ReactNode } from 'react';
 
@@ -12,9 +12,9 @@ const VISIBLE_OPACITY = 1;
 export const CollapsibleChromeHeaderScrim = (): ReactNode => {
     const { config } = useScreenChrome();
     const scrollY = useScreenChromeScrollY();
-    const collapsedHeaderHeight = config.collapsedHeaderHeight ?? config.headerHeight;
-
-    const spacerStyle = { height: collapsedHeaderHeight };
+    const spacerStyle = {
+        height: Math.max(config.collapsedHeaderHeight ?? config.headerHeight, SCREEN_CHROME_HEADER_LAYOUT_METRICS.slotSize)
+    };
 
     const animatedStyle = useAnimatedStyle(() => ({
         zIndex: SCRIM_Z_INDEX,

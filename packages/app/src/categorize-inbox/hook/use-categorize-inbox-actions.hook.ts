@@ -1,15 +1,16 @@
-import { CategorizeInboxLabelKindEnum, CategorizeInboxService } from '@budgie/categorization';
-import { TagSourceEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
+import { CategorizeInboxService } from '@budgie/categorization';
 import * as Effect from 'effect/Effect';
 import { NotificationFeedbackType } from 'expo-haptics';
 import { useState } from 'react';
 
-import { emptyFn, isNotEmptyArray } from '@rnw-community/shared';
+import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { useVibration } from '../../@generic/hook/use-vibration.hook';
+import { toCategorizeInboxTransactionIds } from '../utils/to-categorize-inbox-transaction-ids.util';
 
+import { useCategorizeInboxLastWrite } from './use-categorize-inbox-last-write.hook';
 import { useCategorizeInboxMoveToCash } from './use-categorize-inbox-move-to-cash.hook';
+import { useCategorizeInboxTransfer } from './use-categorize-inbox-transfer.hook';
 import { useCategorizeInboxWriteQueue } from './use-categorize-inbox-write-queue.hook';
 
 import type { CategorizeInboxContextValueInterface } from '../interface/categorize-inbox-context-value.interface';
@@ -18,34 +19,39 @@ import type { CategorizeInboxLastWriteInterface } from '../interface/categorize-
 import type { CategorizeInboxStrategyInterface } from '../interface/categorize-inbox-strategy.interface';
 import type { CategorizeInboxAssignmentInterface } from '@budgie/categorization';
 
-const toTransactionIds = (assignments: CategorizeInboxAssignmentInterface[]): number[] =>
-    assignments.flatMap(assignment => assignment.rows.map(row => row.transactionId));
-
 export const useCategorizeInboxActions = (
     strategy: CategorizeInboxStrategyInterface,
     inbox: CategorizeInboxDataInterface
-): CategorizeInboxContextValueInterface => {
-    const { visibility, items, isLoading, ...inboxSummary } = inbox;
-    const { t } = useLingui();
+): Omit<CategorizeInboxContextValueInterface, 'items' | 'isLoading'> => {
+    const { visibility, remainingCount, categorizedCount, acceptableAssignments, cashWithdrawalTransactionIds } = inbox;
     const [hapticNotification] = useVibration();
     const [lastWrite, setLastWrite] = useState<CategorizeInboxLastWriteInterface | null>(null);
     const enqueueWrite = useCategorizeInboxWriteQueue();
-    const moveToCashActions = useCategorizeInboxMoveToCash(visibility, enqueueWrite, setLastWrite);
+    const { resetMovedToCash, ...moveToCashActions } = useCategorizeInboxMoveToCash(visibility, enqueueWrite, setLastWrite);
+    const { commitPendingTransfer, ...transferActions } = useCategorizeInboxTransfer(
+        visibility,
+        enqueueWrite,
+        setLastWrite,
+        resetMovedToCash
+    );
+
+    const { undo, applyFollowUp, addClusterTags } = useCategorizeInboxLastWrite(strategy, visibility, enqueueWrite, setLastWrite);
 
     const assign = (assignments: CategorizeInboxAssignmentInterface[]): void => {
-        visibility.hideTransactions(toTransactionIds(assignments));
+        commitPendingTransfer();
+        visibility.hideTransactions(toCategorizeInboxTransactionIds(assignments));
         enqueueWrite(
             Effect.gen(function* () {
                 const categorizeInboxService = yield* CategorizeInboxService;
                 const applied = yield* categorizeInboxService.assign(strategy.labelKind, assignments);
 
                 if (isNotEmptyArray(applied)) {
-                    moveToCashActions.resetMovedToCash();
+                    resetMovedToCash();
                     setLastWrite({ assignments: applied, followUpAssignments: [] });
                     hapticNotification(NotificationFeedbackType.Success);
                 }
             }),
-            () => void visibility.showTransactions(toTransactionIds(assignments)),
+            () => void visibility.showTransactions(toCategorizeInboxTransactionIds(assignments)),
             strategy.writeFailed
         );
     };
@@ -59,59 +65,25 @@ export const useCategorizeInboxActions = (
     const pickLabels = (source: Omit<CategorizeInboxAssignmentInterface, 'labelId'>, suggestedLabelIds: number[]): void =>
         void strategy.pickLabels(source.displayTitle, suggestedLabelIds, labelIds => void assignLabels(source, labelIds));
 
-    const undo = (write: CategorizeInboxLastWriteInterface): void => {
-        setLastWrite(null);
-        visibility.showTransactions(toTransactionIds(write.assignments));
-        enqueueWrite(
-            Effect.gen(function* () {
-                const categorizeInboxService = yield* CategorizeInboxService;
-                if (isNotEmptyArray(write.followUpAssignments)) {
-                    yield* categorizeInboxService.undo(CategorizeInboxLabelKindEnum.TAG, write.followUpAssignments);
-                }
-
-                yield* categorizeInboxService.undo(strategy.labelKind, write.assignments);
-            }),
-            () => void setLastWrite(previous => previous ?? write),
-            strategy.writeFailed
-        );
-    };
-
-    const applyFollowUp = (write: CategorizeInboxLastWriteInterface): void => {
-        strategy.pickFollowUpTagIds?.(write.assignments[0], tagIds => {
-            if (isNotEmptyArray(tagIds)) {
-                enqueueWrite(
-                    Effect.gen(function* () {
-                        const categorizeInboxService = yield* CategorizeInboxService;
-                        const followUpAssignments = yield* categorizeInboxService.assign(
-                            CategorizeInboxLabelKindEnum.TAG,
-                            tagIds.map(labelId => ({ ...write.assignments[0], labelId })),
-                            TagSourceEnum.USER
-                        );
-
-                        setLastWrite(previous => (previous === write ? { ...write, followUpAssignments } : previous));
-                        hapticNotification(NotificationFeedbackType.Success);
-                    }),
-                    emptyFn,
-                    t`Could not tag transactions`
-                );
-            }
-        });
-    };
-
     return {
         strategy,
         ...visibility,
-        ...inboxSummary,
+        remainingCount,
+        categorizedCount,
+        acceptableAssignments,
+        cashWithdrawalTransactionIds,
         lastWrite,
-        movedToCashTransactionIds: moveToCashActions.movedToCashTransactionIds,
         assign,
         assignCluster: (cluster, labelId) => void assignLabels({ ...cluster, rows: visibility.includedRows(cluster) }, [labelId]),
+        addClusterTags: cluster => void addClusterTags(cluster, visibility.includedRows(cluster)),
         pickClusterLabels: cluster => void pickLabels({ ...cluster, rows: visibility.includedRows(cluster) }, cluster.candidateLabelIds),
-        pickRowLabels: row =>
-            void pickLabels({ key: String(row.transactionId), displayTitle: row.title, rows: [row], ruleConditionValue: '' }, []),
-        moveToCash: moveToCashActions.moveToCash,
+        ...transferActions,
+        ...moveToCashActions,
+        moveToCash: transactionIds => {
+            commitPendingTransfer();
+            moveToCashActions.moveToCash(transactionIds);
+        },
         undo,
-        applyFollowUp,
-        undoMoveToCash: moveToCashActions.undoMoveToCash
+        applyFollowUp
     };
 };

@@ -72,7 +72,6 @@ export const CategorizeInboxUndoBar = () => {
 
     return (
         <CategorizeInboxUndoLayout
-            icon={firstLabel?.icon ?? UserIconNameEnum.CheckCheck}
             title={title}
             description={t({ message: plural(rowCount, { one: '# transaction', other: '# transactions' }) })}
             onUndo={handleUndoPress}

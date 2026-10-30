@@ -59,23 +59,15 @@ class CategorizeInboxEngineService {
         'iu'
     );
 
-    private static readonly MASKED_PAN_PATTERN = /\d{4,6}\*+\d{2,4}/u;
     private static readonly NOISE_PATTERN = /(?<![\p{L}\p{N}])\p{L}{2,8}:\S+|https?:\/\/\S+|\bwww\.|\d{4,6}\*+\d{2,4}|\+?\d[\d\s-]{6,}\d/gu;
-    private static readonly REFERENCE_NOISE_PATTERN = new RegExp(
-        `(?<![\\p{L}\\p{N}])\\p{L}{2,8}:\\S+|${CategorizeInboxEngineService.MASKED_PAN_PATTERN.source}|\\+?\\d[\\d\\s-]{6,}\\d|\\b\\d{1,2}[./]\\d{1,2}(?:[./]\\d{2,4})?\\b|\\b\\d{1,2}:\\d{2}\\b`,
-        'u'
-    );
-
-    private static readonly TRAILING_LEGAL_FORM_PATTERN = new RegExp(
-        `[\\s.,-]*(?<!\\p{L})(?:ges\\.?\\s*m\\.?\\s*b\\.?\\s*h\\.?|(?:${[...CategorizeInboxEngineService.LEGAL_FORMS].join('|')})\\.?)\\s*$`,
-        'iu'
-    );
-
-    private static readonly EDGE_PUNCTUATION_PATTERN = /^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu;
     private static readonly DIACRITIC_PATTERN = /\p{Diacritic}/gu;
     private static readonly TOKEN_SEPARATOR_PATTERN = /[^\p{L}]+/u;
-    private static readonly RULE_WORD_PATTERN = /\p{L}{2,}/gu;
-    private static readonly SECTION_ORDER = Object.values(CategorizeInboxSectionEnum);
+    private static readonly SECTION_ORDER = [
+        CategorizeInboxSectionEnum.CONFIDENT,
+        CategorizeInboxSectionEnum.CASH_WITHDRAWALS,
+        CategorizeInboxSectionEnum.REVIEW,
+        CategorizeInboxSectionEnum.ONE_OFFS
+    ];
 
     buildContext(
         evidence: LabelEvidenceRowInterface[],
@@ -98,9 +90,7 @@ class CategorizeInboxEngineService {
 
     buildClusters(rows: CategorizeInboxRowInterface[], context: CategorizeInboxBuildContextInterface): CategorizeInboxClusterInterface[] {
         const uniqueRows = [...new Map(rows.map(row => [row.transactionId, row])).values()];
-        const clusterGroups = this.groupBy(uniqueRows, row =>
-            this.isCashWithdrawal(row) ? CategorizeInboxSectionEnum.CASH_WITHDRAWALS : `${row.type}|${this.merchantKey(row.title)}`
-        );
+        const clusterGroups = this.groupBy(uniqueRows, row => this.clusterKey(row));
 
         return [...clusterGroups]
             .map(([key, groupRows]) => this.buildCluster(key, groupRows, context))
@@ -133,7 +123,7 @@ class CategorizeInboxEngineService {
         };
     }
 
-    suggestLabelIds(rows: CategorizeInboxRowInterface[], context: CategorizeInboxBuildContextInterface): number[] {
+    suggestLabelIds(rows: Omit<CategorizeInboxRowInterface, 'toIban'>[], context: CategorizeInboxBuildContextInterface): number[] {
         return isNotEmptyArray(rows) ? this.scoreRows(rows, context).candidateLabelIds : [];
     }
 
@@ -143,19 +133,24 @@ class CategorizeInboxEngineService {
         context: CategorizeInboxBuildContextInterface
     ): CategorizeInboxClusterInterface {
         const { candidateLabelIds, isConfident } = this.scoreRows(rows, context);
-        const titles = rows.map(row => row.title);
-        const mostFrequentTitle = this.mostFrequent(titles);
-        const ruleConditionValue = this.buildRuleConditionValue(titles, mostFrequentTitle);
+        const mostFrequentTitle = this.mostFrequent(rows.map(row => row.title));
 
         return {
             key,
-            displayTitle: this.resolveDisplayTitle(new Set(titles).size, ruleConditionValue, mostFrequentTitle),
+            displayTitle: mostFrequentTitle,
             rows,
             totalBaseAmount: this.sumBaseAmounts(rows, context.defaultInstrumentId),
             candidateLabelIds,
-            ruleConditionValue,
+            ruleConditionValue: mostFrequentTitle,
             section: this.resolveSection(isConfident, rows)
         };
+    }
+
+    private clusterKey(row: CategorizeInboxRowInterface): string {
+        const normalizedTitle = row.title.trim().replaceAll(/\s+/gu, ' ').toLowerCase();
+        const exactKey = `${row.type}|${normalizedTitle}|${row.mcc ?? ''}|${row.toIban ?? ''}`;
+
+        return this.isCashWithdrawal(row) ? `${CategorizeInboxSectionEnum.CASH_WITHDRAWALS}|${exactKey}` : exactKey;
     }
 
     private isCashWithdrawal(row: Pick<CategorizeInboxRowInterface, 'type' | 'mcc' | 'title'>): boolean {
@@ -250,35 +245,10 @@ class CategorizeInboxEngineService {
         );
     }
 
-    private resolveDisplayTitle(variantCount: number, ruleConditionValue: string, mostFrequentTitle: string): string {
-        if (variantCount === 1) {
-            return this.cleanDisplayTitle(mostFrequentTitle);
-        }
-
-        const commonSubstring = ruleConditionValue.replace(CategorizeInboxEngineService.EDGE_PUNCTUATION_PATTERN, '');
-        const originalCasedSubstring = this.resolveOriginalCasing(commonSubstring, mostFrequentTitle);
-        const candidate = originalCasedSubstring.length >= 3 ? originalCasedSubstring : mostFrequentTitle;
-
-        return this.cleanDisplayTitle(candidate);
-    }
-
-    private cleanDisplayTitle(title: string): string {
-        const { PAYMENT_TYPE_PREFIX_PATTERN, REFERENCE_NOISE_PATTERN, TRAILING_LEGAL_FORM_PATTERN } = CategorizeInboxEngineService;
-        const withoutPrefix = title.replace(PAYMENT_TYPE_PREFIX_PATTERN, '').trimStart();
-        const noiseMatch = REFERENCE_NOISE_PATTERN.exec(withoutPrefix);
-        const cutTitle = isDefined(noiseMatch) ? withoutPrefix.slice(0, noiseMatch.index) : withoutPrefix;
-        const cleaned = cutTitle.replace(TRAILING_LEGAL_FORM_PATTERN, '').trim();
-
-        return cleaned.length >= 3 ? cleaned : title.trim();
-    }
-
-    private resolveOriginalCasing(substring: string, sourceTitle: string): string {
-        const matchIndex = sourceTitle.toLowerCase().indexOf(substring.toLowerCase());
-
-        return matchIndex === -1 ? substring : sourceTitle.slice(matchIndex, matchIndex + substring.length);
-    }
-
-    private scoreRows(rows: CategorizeInboxRowInterface[], context: CategorizeInboxBuildContextInterface): CategorizeInboxScoreInterface {
+    private scoreRows(
+        rows: Omit<CategorizeInboxRowInterface, 'toIban'>[],
+        context: CategorizeInboxBuildContextInterface
+    ): CategorizeInboxScoreInterface {
         const { LIMITS } = CategorizeInboxEngineService;
         const [{ type }] = rows;
 
@@ -337,19 +307,6 @@ class CategorizeInboxEngineService {
         return firstToken.length >= 3 ? firstToken : null;
     }
 
-    private buildRuleConditionValue(titles: readonly string[], displayTitle: string): string {
-        const loweredDisplayTitle = displayTitle.toLowerCase();
-        const loweredTitles = [...new Set(titles.map(title => title.toLowerCase()))];
-        const words = [...loweredDisplayTitle.matchAll(CategorizeInboxEngineService.RULE_WORD_PATTERN)];
-        const sequences = words.flatMap((_, shortening) =>
-            words
-                .slice(words.length - 1 - shortening)
-                .map((lastWord, start) => loweredDisplayTitle.slice(words[start].index, lastWord.index + lastWord[0].length))
-        );
-
-        return sequences.find(sequence => sequence.length >= 3 && loweredTitles.every(title => title.includes(sequence))) ?? displayTitle;
-    }
-
     private resolveSection(isConfident: boolean, rows: readonly CategorizeInboxRowInterface[]): CategorizeInboxSectionEnum {
         if (this.isCashWithdrawal(rows[0])) {
             return CategorizeInboxSectionEnum.CASH_WITHDRAWALS;
@@ -381,10 +338,9 @@ class CategorizeInboxEngineService {
         const absoluteAmount = Math.abs((cluster.totalBaseAmount ?? cluster.rows[0].amount) / PRECISION);
 
         switch (cluster.section) {
-            case CategorizeInboxSectionEnum.REVIEW:
-                return cluster.rows.length * Math.log10(10 + absoluteAmount);
             case CategorizeInboxSectionEnum.ONE_OFFS:
                 return absoluteAmount;
+            case CategorizeInboxSectionEnum.REVIEW:
             case CategorizeInboxSectionEnum.CASH_WITHDRAWALS:
             case CategorizeInboxSectionEnum.CONFIDENT:
             default:

@@ -1,19 +1,15 @@
-import { UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
-import { Link } from 'expo-router';
+import { TransactionTypeEnum } from '@budgie/contracts';
+import { useRouter } from 'expo-router';
 import { Text, View } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
-
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/component/icon/icon';
-import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { testID } from '../../../@generic/utils/test-id.util';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
-import { TransactionRowSurface } from '../../../transaction/components/transaction-row-surface/transaction-row-surface';
-import { TransactionListRowPositionEnum } from '../../../transaction/enum/transaction-list-row-position.enum';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
+import { useCategorizeInboxAmountLabel } from '../../hook/use-categorize-inbox-amount-label.hook';
 import { getCategorizeInboxRowHref } from '../../utils/get-categorize-inbox-row-href.util';
+import { CategorizeInboxAmount } from '../categorize-inbox-amount/categorize-inbox-amount';
+import { CategorizeInboxSelectionIndicator } from '../categorize-inbox-selection-indicator/categorize-inbox-selection-indicator';
 
 import { CategorizeInboxClusterRowSelector } from './categorize-inbox-cluster-row.selector';
 
@@ -22,70 +18,63 @@ import type { CategorizeInboxRowInterface } from '@budgie/categorization';
 interface Props {
     readonly row: CategorizeInboxRowInterface;
     readonly displayTitle: string;
-    readonly position: TransactionListRowPositionEnum;
 }
 
-export const CategorizeInboxClusterRow = ({ row, displayTitle, position }: Props) => {
-    const { t } = useLingui();
-    const protectAmount = useProtectedAmountLabel();
-    const { formatDayAndMonthAndYear } = useFormatDate();
-    const { strategy, excludedTransactionIds, toggleExcluded, pickRowLabels } = useCategorizeInboxContext();
+export const CategorizeInboxClusterRow = ({ row, displayTitle }: Props) => {
+    const router = useRouter();
+    const { formatWeekdayAndDay, formatTime } = useFormatDate();
+    const amountLabel = useCategorizeInboxAmountLabel();
+    const { excludedTransactionIds, toggleExcluded } = useCategorizeInboxContext();
 
     const handleTogglePress = (): void => void toggleExcluded(row.transactionId);
-    const handlePickLabelsPress = (): void => void pickRowLabels(row);
+    const handleOpenLongPress = (): void => void router.push(getCategorizeInboxRowHref(row));
 
     const isIncluded = !excludedTransactionIds.has(row.transactionId);
-    const rowClassName = isIncluded ? 'flex-row items-center gap-x-xs py-xl' : 'flex-row items-center gap-x-xs py-xl opacity-40';
-    const checkboxIcon = isIncluded ? UserIconNameEnum.SquareCheck : UserIconNameEnum.Square;
     const accessibilityState = { checked: isIncluded };
-    const ownTitle = row.title === displayTitle ? null : row.title;
+    const contentClassName = isIncluded
+        ? 'min-w-0 flex-1 flex-row items-center gap-x-md'
+        : 'min-w-0 flex-1 flex-row items-center gap-x-md opacity-40';
+    const ownTitleLine =
+        row.title === displayTitle ? null : (
+            <Text className="text-secondary-foreground text-[13px]" numberOfLines={1}>
+                {row.title}
+            </Text>
+        );
+    const date = formatWeekdayAndDay(row.operatedAt);
+    const time = formatTime(row.operatedAt);
+    const accessibilityLabel = `${date}, ${time}, ${amountLabel(row.amount, row.instrumentSymbol)}`;
 
     return (
-        <TransactionRowSurface position={position}>
-            <View className={rowClassName} {...testID(CategorizeInboxClusterRowSelector.Row, row.transactionId)}>
-                <HapticPressable
-                    onPress={handleTogglePress}
-                    className="h-11 w-11 items-center justify-center"
-                    accessibilityRole="checkbox"
-                    accessibilityState={accessibilityState}
-                    accessibilityLabel={t`Include in bulk action`}
-                    {...testID(CategorizeInboxClusterRowSelector.Checkbox, row.transactionId)}
-                >
-                    <Icon icon={checkboxIcon} size={20} className="text-primary" />
-                </HapticPressable>
-
-                <Link href={getCategorizeInboxRowHref(row)} asChild>
-                    <HapticPressable
-                        className="min-h-11 flex-1 flex-row items-center gap-x-xs"
-                        hitSlop={0}
-                        accessibilityRole="link"
-                        {...testID(CategorizeInboxClusterRowSelector.Open, row.transactionId)}
-                    >
-                        <View className="flex-1 gap-y-xxs">
-                            {isDefined(ownTitle) ? (
-                                <Text className="text-primary text-[15px] font-semibold" numberOfLines={1}>
-                                    {ownTitle}
-                                </Text>
-                            ) : null}
-                            <Text className="text-secondary-foreground text-xs">{formatDayAndMonthAndYear(row.operatedAt)}</Text>
-                        </View>
-
-                        <Text className="text-primary text-[15px] font-semibold tabular-nums">
-                            {protectAmount(convertFromMicroUnits(row.amount), row.instrumentSymbol)}
-                        </Text>
-                    </HapticPressable>
-                </Link>
-
-                <HapticPressable
-                    onPress={handlePickLabelsPress}
-                    className="h-11 w-11 items-center justify-center"
-                    accessibilityRole="button"
-                    accessibilityLabel={strategy?.pickRowLabel}
-                    {...testID(CategorizeInboxClusterRowSelector.PickCategory, row.transactionId)}
-                >
-                    <Icon icon={UserIconNameEnum.EllipsisVertical} size={16} className="text-secondary-foreground" />
-                </HapticPressable>
+        <HapticPressable
+            onPress={handleTogglePress}
+            onLongPress={handleOpenLongPress}
+            className="min-h-[52px] flex-row items-center gap-x-xl px-3xl py-xl active:opacity-70"
+            accessibilityRole="checkbox"
+            accessibilityState={accessibilityState}
+            accessibilityLabel={accessibilityLabel}
+            {...testID(CategorizeInboxClusterRowSelector.Row, row.transactionId)}
+        >
+            <View className="absolute top-0 right-0 left-[64px] h-hairline bg-surface-separator" pointerEvents="none" />
+            <View className="w-[36px] items-center">
+                <CategorizeInboxSelectionIndicator variant="positive" isSelected={isIncluded} />
             </View>
-        </TransactionRowSurface>
+
+            <View className={contentClassName}>
+                <View className="min-w-0 flex-1">
+                    <Text className="text-primary text-[17px] tabular-nums" numberOfLines={1}>
+                        {date}
+                        <Text className="text-secondary-foreground">{` · ${time}`}</Text>
+                    </Text>
+                    {ownTitleLine}
+                </View>
+
+                <CategorizeInboxAmount
+                    amount={row.amount}
+                    symbol={row.instrumentSymbol}
+                    isIncome={row.type === TransactionTypeEnum.INCOME}
+                    className="text-[17px]"
+                />
+            </View>
+        </HapticPressable>
     );
 };
