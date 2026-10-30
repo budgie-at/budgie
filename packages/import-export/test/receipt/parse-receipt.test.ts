@@ -7,6 +7,7 @@ import { BILLA_RECEIPT } from './fixture/billa-receipt.fixture';
 import { CORD_RECEIPTS } from './fixture/cord-receipts.fixture';
 import { E2E_SHARED_RECEIPT } from './fixture/e2e-shared-receipt.fixture';
 import { IHR_LABOR_LEGAL_NAME, IHR_LABOR_RECEIPT } from './fixture/ihr-labor-receipt.fixture';
+import { SCHWEDEN_APOTHEKE_PHOTO_RECEIPT } from './fixture/schweden-apotheke-photo-receipt.fixture';
 import { UKRAINIAN_FISCAL_RECEIPT } from './fixture/ukrainian-fiscal-receipt.fixture';
 import { USD_TIP_RECEIPT } from './fixture/usd-tip-receipt.fixture';
 
@@ -85,6 +86,21 @@ describe('parseReceipt', () => {
                 merchantLegalName: 'Ihr Labor GmbH',
                 merchantCandidates: ['IHR LABOR', 'Ihr Labor GmbH'],
                 fingerprint: 'ATU12345678|2026-0042|62100000|'
+            }
+        ],
+        [
+            'an uncropped gallery photo with a compound Rechnungsbetrag total',
+            SCHWEDEN_APOTHEKE_PHOTO_RECEIPT,
+            {
+                total: convertToMicroUnits(29.8),
+                currency: CurrencyEnum.EUR,
+                occurredAt: new Date(2026, 9, 29, 14, 33, 47),
+                cardLast4: '4242',
+                receiptNumber: '7799',
+                merchantVatId: 'ATU10227100',
+                merchantLegalName: 'Mag. pharm. Christof Ulrich KG',
+                merchantCandidates: ['APOTHEKE', 'Schweden Apotheke', 'Mag. pharm. Christof Ulrich KG'],
+                fingerprint: 'ATU10227100|7799|29800000|2026-10-29'
             }
         ]
     ])('reads %s', (_name, lines, expected) => {

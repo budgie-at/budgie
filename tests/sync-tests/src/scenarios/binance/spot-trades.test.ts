@@ -64,6 +64,7 @@ const stubSpotTransferErrorScenario = (apiError: Parameters<typeof binanceStub.m
     binanceStub.withdrawals([]);
     binanceStub.c2cOrders([], []);
     binanceStub.fiatOrders([], []);
+    binanceStub.fiatPayments([]);
     binanceStub.exchangeInfo(['ADAUSDT']);
     binanceStub.myTradesFailure(HTTP_BAD_REQUEST_STATUS, apiError);
 };

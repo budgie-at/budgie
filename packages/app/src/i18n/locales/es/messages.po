@@ -1425,6 +1425,14 @@ msgstr "Elige y confirma un PIN"
 msgid "Choose features and free space from unused downloads"
 msgstr "Elige funciones y libera espacio de descargas sin usar"
 
+#: src/receipt/components/receipt-source-menu/receipt-source-menu.tsx
+msgid "Choose file"
+msgstr "Elegir archivo"
+
+#: src/receipt/components/receipt-source-menu/receipt-source-menu.tsx
+msgid "Choose from Photos"
+msgstr "Elegir de Fotos"
+
 #: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
 msgid "Choose what goes inside"
 msgstr "Elegir qué va dentro"
@@ -4754,13 +4762,17 @@ msgstr "Cuenta de ahorros"
 msgid "Scan"
 msgstr "Escanear"
 
-#: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
+#: src/receipt/components/receipt-source-menu/receipt-source-menu.tsx
 msgid "Scan receipt"
 msgstr "Escanear recibo"
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Scan the QR code with the Monobank app"
 msgstr "Escanea el código QR con la app de Monobank"
+
+#: src/receipt/components/receipt-source-menu/receipt-source-menu.tsx
+msgid "Scan with camera"
+msgstr "Escanear con la cámara"
 
 #: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
 msgid "Seal"

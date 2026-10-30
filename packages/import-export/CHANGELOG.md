@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.130.1](https://github.com/budgie-at/budgie/compare/v6.130.0...v6.130.1) (2026-10-30)
+
+### Bug Fixes
+
+* **import-export:** read compound German receipt totals and stop receipt numbers at the next label ([3128b7c](https://github.com/budgie-at/budgie/commit/3128b7c11bbcfe6f66cf8814888263696e056449))
+
+
 # [6.128.0](https://github.com/budgie-at/budgie/compare/v6.127.0...v6.128.0) (2026-10-30)
 
 **Note:** Version bump only for package @budgie/import-export

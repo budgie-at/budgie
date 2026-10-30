@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.131.0](https://github.com/budgie-at/budgie/compare/v6.130.1...v6.131.0) (2026-10-30)
+
+### Bug Fixes
+
+* **app:** keep page create-action testIDs and shim expo-image-picker in tests ([9684310](https://github.com/budgie-at/budgie/commit/9684310d4ee1357e18d8da59388c2a46f109554a))
+
+### Features
+
+* **app:** import receipts from Photos and Files ([86e2c33](https://github.com/budgie-at/budgie/commit/86e2c3345aa9f0691044e2537fb1d84532f38532))
+
+
+## [6.130.1](https://github.com/budgie-at/budgie/compare/v6.130.0...v6.130.1) (2026-10-30)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+# [6.130.0](https://github.com/budgie-at/budgie/compare/v6.129.0...v6.130.0) (2026-10-30)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
 # [6.129.0](https://github.com/budgie-at/budgie/compare/v6.128.0...v6.129.0) (2026-10-30)
 
 ### Features

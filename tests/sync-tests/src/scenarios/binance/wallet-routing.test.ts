@@ -69,6 +69,11 @@ describe('binance/wallet-routing', () => {
             const binanceSyncService = yield* BinanceSyncService;
 
             yield* setupBinanceFixture({ asset: 'USDT', mode: SyncModeEnum.FORWARD });
+            binanceStub.spotBalances([buildBinance.balance({ asset: 'USDT', free: '75' })]);
+            binanceStub.fundingBalances([buildBinance.balance({ asset: 'USDT', free: '25' })]);
+            binanceStub.deposits([
+                buildBinance.deposit({ id: 'dep-routing', coin: 'USDT', amount: '100', insertTime: Date.now() - 2 * HOUR_MS })
+            ]);
             binanceStub.universalTransfers([
                 buildBinance.universalTransfer({
                     asset: 'USDT',
@@ -81,7 +86,7 @@ describe('binance/wallet-routing', () => {
 
             yield* binanceSyncService.sync();
 
-            expect(yield* fetchLedgerBalanceByExternalId(USDT_SPOT_ID)).toBe(-25 * PRECISION);
+            expect(yield* fetchLedgerBalanceByExternalId(USDT_SPOT_ID)).toBe(75 * PRECISION);
             expect(yield* fetchLedgerBalanceByExternalId(USDT_FUNDING_ID)).toBe(25 * PRECISION);
         }).pipe(Effect.provide(TestLayer))
     );

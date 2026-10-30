@@ -6,7 +6,8 @@ const BinanceDividendApiSchema = Schema.Struct({
     asset: Schema.String,
     amount: Schema.String,
     divTime: Schema.Number,
-    direction: Schema.optionalKey(Schema.Number)
+    direction: Schema.optionalKey(Schema.Number),
+    enInfo: Schema.optionalKey(Schema.String)
 });
 
 export const BinanceDividendListApiSchema = Schema.Struct({
