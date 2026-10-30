@@ -8,6 +8,7 @@ import { useSearchAccountsSortedQuery } from '../../../account/query/use-search-
 import { CATEGORIZE_INBOX_TRANSFER_ACCOUNT_FILTER } from '../../constant/categorize-inbox-transfer-account-filter.constant';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 import { getCategorizeInboxTransferKey } from '../../utils/get-categorize-inbox-transfer-key.util';
+import { CategorizeInboxActionCapsule } from '../categorize-inbox-action-capsule/categorize-inbox-action-capsule';
 import { CategorizeInboxOptionRow } from '../categorize-inbox-option-row/categorize-inbox-option-row';
 
 import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
@@ -44,6 +45,7 @@ export const CategorizeInboxGroupLearnedTransferOption = ({ cluster }: Props) =>
             title={t`Transfer to ${title}`}
             subtitle={t`Suggested`}
             variant="best"
+            accessory={<CategorizeInboxActionCapsule label={t`Transfer`} variant="positive" />}
             onPress={handlePress}
         />
     );

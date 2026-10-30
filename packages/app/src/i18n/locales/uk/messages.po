@@ -455,6 +455,10 @@ msgstr "{selectedCount, plural, =0 {Показати всі категорії} 
 msgid "{selectedCount, plural, =0 {Show all tags} one {Show # tag} other {Show # tags}}"
 msgstr "{selectedCount, plural, =0 {Показати всі теги} one {Показати # тег} few {Показати # теги} many {Показати # тегів} other {Показати # тега}}"
 
+#: src/categorize-inbox/components/categorize-inbox-payments-screen/categorize-inbox-payments-screen.tsx
+msgid "{selectedCount, plural, one {Done · # selected} other {Done · # selected}}"
+msgstr "{selectedCount, plural, one {Готово · # вибрано} few {Готово · # вибрано} many {Готово · # вибрано} other {Готово · # вибрано}}"
+
 #: src/account/component/accounts-group/accounts-group.tsx
 msgid "{selectedInGroupCount} of {accountsCount} selected"
 msgstr "Вибрано {selectedInGroupCount} з {accountsCount}"
@@ -1473,6 +1477,10 @@ msgstr "Поточний рахунок"
 #: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
 msgid "Checking transaction history"
 msgstr "Перевіряємо історію транзакцій"
+
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+msgid "Choose"
+msgstr "Вибрати"
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Choose \"Excel\" as the export format — PDF and CSV files can't be imported"
@@ -3376,6 +3384,10 @@ msgstr "Схоже на поповнення банки."
 msgid "Looks like a top-up of {account}."
 msgstr "Схоже на поповнення {account}."
 
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+msgid "Looks like a transfer"
+msgstr "Схоже на переказ"
+
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "Looks right"
 msgstr "Виглядає правильно"
@@ -5273,7 +5285,6 @@ msgstr "Підписки"
 #: src/app/icon-selector.tsx
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 #: src/categorize-inbox/components/categorize-inbox-group-learned-transfer-option/categorize-inbox-group-learned-transfer-option.tsx
-#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
 msgid "Suggested"
 msgstr "Запропоновані"
 
@@ -5774,7 +5785,9 @@ msgstr "Транзакції синхронізовано"
 msgid "Transcription failed"
 msgstr "Помилка транскрипції"
 
+#: src/categorize-inbox/components/categorize-inbox-group-learned-transfer-option/categorize-inbox-group-learned-transfer-option.tsx
 #: src/categorize-inbox/components/categorize-inbox-group-row-hint/categorize-inbox-group-row-hint.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/constant/transaction-type.constant.ts
 #: src/widget/service/widget-snapshot-builder.service.ts

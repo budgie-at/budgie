@@ -1,6 +1,7 @@
 import { isDefined } from '@rnw-community/shared';
 
 import { useCategorizeInboxCluster } from '../../hook/use-categorize-inbox-cluster.hook';
+import { formatCategorizeInboxMerchantTitle } from '../../utils/format-categorize-inbox-merchant-title.util';
 import { CategorizeInboxGroupFinding } from '../categorize-inbox-group-finding/categorize-inbox-group-finding';
 import { CategorizeInboxGroupOptions } from '../categorize-inbox-group-options/categorize-inbox-group-options';
 import { CategorizeInboxGroupPanel } from '../categorize-inbox-group-panel/categorize-inbox-group-panel';
@@ -24,7 +25,10 @@ export const CategorizeInboxGroupScreen = ({ clusterKey }: Props) => {
     return (
         <CategorizeInboxScreenChrome>
             <CategorizeInboxScreenScroll>
-                <CategorizeInboxScreenTitle title={cluster.displayTitle} titleTestID={CategorizeInboxGroupScreenSelector.Title}>
+                <CategorizeInboxScreenTitle
+                    title={formatCategorizeInboxMerchantTitle(cluster.displayTitle)}
+                    titleTestID={CategorizeInboxGroupScreenSelector.Title}
+                >
                     <CategorizeInboxGroupFinding cluster={cluster} />
                 </CategorizeInboxScreenTitle>
 

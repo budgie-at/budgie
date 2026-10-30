@@ -23,7 +23,7 @@ export const CategorizeInboxScreenScroll = ({ children }: Props) => {
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
         >
-            <View className="px-3xl">{children}</View>
+            <View className="px-5xl">{children}</View>
         </ScreenChromeScrollView>
     );
 };

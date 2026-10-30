@@ -24,7 +24,7 @@ export const CategorizeInboxOneOffsList = () => {
     const { items } = useCategorizeInboxContext();
     const { config } = useScreenChrome();
     const { chromeHeight } = useBottomChromeInset();
-    const horizontalInset = useResolveClassNames('px-3xl');
+    const horizontalInset = useResolveClassNames('px-5xl');
 
     const clusters = items.filter(isCategorizeInboxCluster).filter(cluster => cluster.section === CategorizeInboxSectionEnum.ONE_OFFS);
     const groupCount = clusters.length;

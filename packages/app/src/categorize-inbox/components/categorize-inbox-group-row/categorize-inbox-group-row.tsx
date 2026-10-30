@@ -6,6 +6,7 @@ import { Text, View } from 'react-native';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { testID } from '../../../@generic/utils/test-id.util';
+import { formatCategorizeInboxMerchantTitle } from '../../utils/format-categorize-inbox-merchant-title.util';
 import { CategorizeInboxGroupRowAmount } from '../categorize-inbox-group-row-amount/categorize-inbox-group-row-amount';
 import { CategorizeInboxGroupRowCashButton } from '../categorize-inbox-group-row-cash-button/categorize-inbox-group-row-cash-button';
 import { CategorizeInboxGroupRowFileButton } from '../categorize-inbox-group-row-file-button/categorize-inbox-group-row-file-button';
@@ -43,7 +44,7 @@ export const CategorizeInboxGroupRow = ({ cluster }: Props) => {
                     <View className="flex-1 gap-y-xs">
                         <View className="flex-row items-baseline gap-x-md">
                             <Text className="flex-1 text-md font-semibold text-primary" numberOfLines={1}>
-                                {displayTitle}
+                                {formatCategorizeInboxMerchantTitle(displayTitle)}
                             </Text>
                             <CategorizeInboxGroupRowAmount cluster={cluster} />
                         </View>

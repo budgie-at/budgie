@@ -16,13 +16,16 @@ interface Props {
 }
 
 export const CategorizeInboxGroupPanel = ({ cluster }: Props) => {
-    const { formatShortMonth } = useFormatDate();
+    const { formatShortMonth, formatMonthAndYear } = useFormatDate();
 
     const buckets = getCategorizeInboxMonthlyCounts(cluster.rows);
     const firstBucket = buckets.at(0);
     const lastBucket = buckets.at(-1);
-    const firstMonth = isDefined(firstBucket) ? formatShortMonth(firstBucket.month) : '';
-    const lastMonth = isDefined(lastBucket) ? formatShortMonth(lastBucket.month) : '';
+    const spansYears =
+        isDefined(firstBucket) && isDefined(lastBucket) && firstBucket.month.getFullYear() !== lastBucket.month.getFullYear();
+    const formatBucketMonth = spansYears ? formatMonthAndYear : formatShortMonth;
+    const firstMonth = isDefined(firstBucket) ? formatBucketMonth(firstBucket.month) : '';
+    const lastMonth = isDefined(lastBucket) ? formatBucketMonth(lastBucket.month) : '';
 
     const barClassName = cluster.section === CategorizeInboxSectionEnum.CONFIDENT ? 'bg-positive-fill' : 'bg-secondary-foreground';
 

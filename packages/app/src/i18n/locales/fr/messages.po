@@ -455,6 +455,10 @@ msgstr "{selectedCount, plural, =0 {Afficher toutes les catégories} one {Affich
 msgid "{selectedCount, plural, =0 {Show all tags} one {Show # tag} other {Show # tags}}"
 msgstr "{selectedCount, plural, =0 {Afficher tous les tags} one {Afficher # tag} other {Afficher # tags}}"
 
+#: src/categorize-inbox/components/categorize-inbox-payments-screen/categorize-inbox-payments-screen.tsx
+msgid "{selectedCount, plural, one {Done · # selected} other {Done · # selected}}"
+msgstr "{selectedCount, plural, one {Terminé · # sélectionné} other {Terminé · # sélectionnés}}"
+
 #: src/account/component/accounts-group/accounts-group.tsx
 msgid "{selectedInGroupCount} of {accountsCount} selected"
 msgstr "{selectedInGroupCount} sur {accountsCount} sélectionnés"
@@ -1473,6 +1477,10 @@ msgstr "Compte courant"
 #: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
 msgid "Checking transaction history"
 msgstr "Vérification de l’historique des transactions"
+
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+msgid "Choose"
+msgstr "Choisir"
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Choose \"Excel\" as the export format — PDF and CSV files can't be imported"
@@ -3376,6 +3384,10 @@ msgstr "On dirait une recharge de cagnotte."
 msgid "Looks like a top-up of {account}."
 msgstr "On dirait une recharge de {account}."
 
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+msgid "Looks like a transfer"
+msgstr "Ressemble à un virement"
+
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "Looks right"
 msgstr "Ça a l'air bon"
@@ -5273,7 +5285,6 @@ msgstr "Abonnements"
 #: src/app/icon-selector.tsx
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 #: src/categorize-inbox/components/categorize-inbox-group-learned-transfer-option/categorize-inbox-group-learned-transfer-option.tsx
-#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
 msgid "Suggested"
 msgstr "Suggéré"
 
@@ -5774,7 +5785,9 @@ msgstr "Transactions synchronisées"
 msgid "Transcription failed"
 msgstr "Échec de la transcription"
 
+#: src/categorize-inbox/components/categorize-inbox-group-learned-transfer-option/categorize-inbox-group-learned-transfer-option.tsx
 #: src/categorize-inbox/components/categorize-inbox-group-row-hint/categorize-inbox-group-row-hint.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/constant/transaction-type.constant.ts
 #: src/widget/service/widget-snapshot-builder.service.ts
