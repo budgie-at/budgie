@@ -7,6 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { BudgieLegendList } from '../../../@generic/component/budgie-legend-list/budgie-legend-list';
+import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { PopoverMenuAnchor } from '../../../@generic/component/popover-menu/popover-menu';
 import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../../@generic/constant/floating-tab-bar.constant';
 import { LegendListPositionSourceInterface } from '../../../@generic/interface/legend-list-position-source.interface';
@@ -108,7 +109,7 @@ export const TransactionSectionsList = ({
 
     return (
         <>
-            <View className="flex-1">
+            <GroupedSurface>
                 <ListComponent
                     style={LIST_STYLE}
                     data={flatData}
@@ -126,7 +127,7 @@ export const TransactionSectionsList = ({
                     ref={handleListRef}
                     stickyHeaderIndices={stickyHeaderIndices}
                 />
-            </View>
+            </GroupedSurface>
             <TransactionListContextMenu ref={menuRef} />
         </>
     );

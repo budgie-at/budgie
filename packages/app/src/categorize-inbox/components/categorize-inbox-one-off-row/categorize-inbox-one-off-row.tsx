@@ -4,11 +4,11 @@ import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { Card } from '../../../@generic/component/card/card';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { testID } from '../../../@generic/utils/test-id.util';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
+import { TransactionRowSurface } from '../../../transaction/components/transaction-row-surface/transaction-row-surface';
 import { getCategorizeInboxRowHref } from '../../utils/get-categorize-inbox-row-href.util';
 import { CategorizeInboxSuggestionChips } from '../categorize-inbox-suggestion-chips/categorize-inbox-suggestion-chips';
 
@@ -31,28 +31,30 @@ export const CategorizeInboxOneOffRow = ({ cluster }: Props) => {
     }
 
     return (
-        <Card size="sm" className="gap-y-md" {...testID(CategorizeInboxOneOffRowSelector.Row, cluster.key)}>
-            <Link href={getCategorizeInboxRowHref(row)} asChild>
-                <HapticPressable
-                    className="flex-row items-center gap-x-xl"
-                    accessibilityRole="link"
-                    {...testID(CategorizeInboxOneOffRowSelector.Open, cluster.key)}
-                >
-                    <Text className="text-primary text-sm font-semibold flex-1" numberOfLines={1}>
-                        {cluster.displayTitle}
-                    </Text>
-                    <Text className="text-primary text-sm font-semibold">
-                        {protectAmount(convertFromMicroUnits(row.amount), row.instrumentSymbol)}
-                    </Text>
-                </HapticPressable>
-            </Link>
+        <TransactionRowSurface>
+            <View className="px-3xl py-xl gap-y-md" {...testID(CategorizeInboxOneOffRowSelector.Row, cluster.key)}>
+                <Link href={getCategorizeInboxRowHref(row)} asChild>
+                    <HapticPressable
+                        className="min-h-11 flex-row items-center gap-x-xl"
+                        accessibilityRole="link"
+                        {...testID(CategorizeInboxOneOffRowSelector.Open, cluster.key)}
+                    >
+                        <Text className="text-primary text-[15px] font-semibold flex-1" numberOfLines={1}>
+                            {cluster.displayTitle}
+                        </Text>
+                        <Text className="text-primary text-[15px] font-semibold">
+                            {protectAmount(convertFromMicroUnits(row.amount), row.instrumentSymbol)}
+                        </Text>
+                    </HapticPressable>
+                </Link>
 
-            <View className="flex-row items-center gap-x-sm">
-                <CategorizeInboxSuggestionChips cluster={cluster} />
-                <Text className="text-secondary-foreground text-xs flex-1 text-right" numberOfLines={1}>
-                    {formatDayAndMonthAndYear(row.operatedAt)}
-                </Text>
+                <View className="flex-row items-center gap-x-sm">
+                    <CategorizeInboxSuggestionChips cluster={cluster} />
+                    <Text className="text-secondary-foreground text-xs flex-1 text-right" numberOfLines={1}>
+                        {formatDayAndMonthAndYear(row.operatedAt)}
+                    </Text>
+                </View>
             </View>
-        </Card>
+        </TransactionRowSurface>
     );
 };
