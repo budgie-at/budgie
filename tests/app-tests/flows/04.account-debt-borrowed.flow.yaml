@@ -97,4 +97,5 @@ appId: ${APP_ID}
 - assertVisible:
       id: 'DebtAccountBalance.TotalAmount.200'
 - assertVisible:
-      text: 'To E2E Borrowed Funding'
+      id: 'TransactionCard.Label.E2E_Borrowed_To_Cash'
+      text: '.*, To E2E Borrowed Funding,.*'
