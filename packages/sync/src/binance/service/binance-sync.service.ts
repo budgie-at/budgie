@@ -7,6 +7,7 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import * as Schema from 'effect/Schema';
+import * as Semaphore from 'effect/Semaphore';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
@@ -55,6 +56,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
         const binanceTradeCursorService = yield* BinanceTradeCursorService;
         const syncIntegrationTokenService = yield* SyncIntegrationTokenService;
         const syncWorkload = yield* SyncWorkload;
+        const databaseLock = yield* Semaphore.make(1);
         const { provider } = BINANCE_ACCOUNT_DEFINITION;
         const createOrUpdateSync = yield* makePollingSyncAccountSetup(provider);
         const forwardOverlapHours = 24;
@@ -127,8 +129,8 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
 
         const getRunSignedClient = (token: string): BinanceSignedClient => getTokenRun(token).signedClient;
 
-        const deferIfWalkDeferred = (token: string) =>
-            Effect.suspend(() => (isDefined(getRunSignedClient(token).getDeferredFrontierMs()) ? markRunDeferred : Effect.void));
+        const deferIfWalkDeferred = (token: string, source: BinanceHistorySourceEnum) =>
+            Effect.suspend(() => (isDefined(getRunSignedClient(token).getDeferredFrontierMs(source)) ? markRunDeferred : Effect.void));
 
         const fetchExchangeAccounts = Effect.fnUntraced(function* (token: string) {
             const cachedExchangeAccounts = getTokenRun(token).exchangeAccounts;
@@ -152,11 +154,12 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
 
         const commitSourceType = Effect.fnUntraced(function* (
             token: string,
+            source: BinanceHistorySourceEnum,
             fetchSourceType: Effect.Effect<SyncTransactionInterface[], SyncError, HttpClient.HttpClient>,
             options: BinanceSourceCommitOptionsInterface
         ) {
             const transactions = yield* getRunSignedClient(token)
-                .withPartialWalks(fetchSourceType)
+                .withPartialWalks(source, fetchSourceType)
                 .pipe(
                     Effect.tapError(() =>
                         Effect.sync(() => {
@@ -164,15 +167,20 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                         })
                     )
                 );
-            yield* deferIfWalkDeferred(token);
+            yield* deferIfWalkDeferred(token, source);
 
-            return isNotEmptyArray(transactions)
-                ? yield* binanceSourceCommitService.commitSources(token, yield* fetchExchangeAccounts(token), transactions, options)
-                : 0;
+            if (!isNotEmptyArray(transactions)) {
+                return 0;
+            }
+            const exchangeAccounts = yield* fetchExchangeAccounts(token);
+
+            return yield* databaseLock.withPermit(binanceSourceCommitService.commitSources(token, exchangeAccounts, transactions, options));
         });
 
         const commitTransfers = Effect.fnUntraced(function* (transfers: BinanceTransferInterface[], token: string) {
-            return yield* binanceSourceCommitService.commitTransfers(token, yield* fetchExchangeAccounts(token), transfers);
+            const exchangeAccounts = yield* fetchExchangeAccounts(token);
+
+            return yield* databaseLock.withPermit(binanceSourceCommitService.commitTransfers(token, exchangeAccounts, transfers));
         });
 
         const commitCapitalRange = Effect.fnUntraced(function* (
@@ -187,15 +195,20 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 !isDefined(toUnixTime) && isDefined(pendingFromAt) ? Math.min(fromUnixTime, getUnixTime(pendingFromAt)) : fromUnixTime;
             const committedCount = yield* commitSourceType(
                 token,
+                BinanceHistorySourceEnum.CAPITAL,
                 client.getTransactions(BinanceHistorySourceEnum.CAPITAL, rangeStartUnixTime, toUnixTime),
                 createOnly
             );
-            const removedCount = yield* binanceSourceCommitService.removeByExternalIds(token, client.getRejectedCapitalExternalIds());
+            const removedCount = yield* databaseLock.withPermit(
+                binanceSourceCommitService.removeByExternalIds(token, client.getRejectedCapitalExternalIds())
+            );
             if (!isRunDeferred()) {
                 const pendingFromMs = client.getCapitalPendingFromMs();
-                yield* syncRepository.update(sync.id, {
-                    binanceCapitalPendingFromAt: isDefined(pendingFromMs) ? new Date(pendingFromMs) : null
-                });
+                yield* databaseLock.withPermit(
+                    syncRepository.update(sync.id, {
+                        binanceCapitalPendingFromAt: isDefined(pendingFromMs) ? new Date(pendingFromMs) : null
+                    })
+                );
             }
 
             return committedCount + removedCount;
@@ -203,10 +216,11 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
 
         const commitTransferRange = Effect.fnUntraced(function* (
             token: string,
+            source: BinanceHistorySourceEnum,
             fetchTransfers: Effect.Effect<BinanceTransferInterface[], SyncError, HttpClient.HttpClient>
         ) {
-            const transfers = yield* getRunSignedClient(token).withPartialWalks(fetchTransfers);
-            yield* deferIfWalkDeferred(token);
+            const transfers = yield* getRunSignedClient(token).withPartialWalks(source, fetchTransfers);
+            yield* deferIfWalkDeferred(token, source);
 
             return yield* commitTransfers(transfers, token);
         });
@@ -214,12 +228,17 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
         const commitFiatRange = Effect.fnUntraced(function* (token: string, fromUnixTime: number, toUnixTime: number | null) {
             const committedCount = yield* commitSourceType(
                 token,
+                BinanceHistorySourceEnum.FIAT,
                 getRunSignedClient(token).getTransactions(BinanceHistorySourceEnum.FIAT, fromUnixTime, toUnixTime),
                 updateExisting
             );
             const transferredCount = isRunDeferred()
                 ? 0
-                : yield* commitTransferRange(token, getRunSignedClient(token).getFiatPaymentTransfers(fromUnixTime, toUnixTime));
+                : yield* commitTransferRange(
+                      token,
+                      BinanceHistorySourceEnum.FIAT,
+                      getRunSignedClient(token).getFiatPaymentTransfers(fromUnixTime, toUnixTime)
+                  );
             if (!isRunDeferred()) {
                 fiatSyncedAtMsByToken.set(token, yield* Clock.currentTimeMillis);
             }
@@ -238,8 +257,8 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             }
 
             const isFiat = source === BinanceHistorySourceEnum.FIAT;
-            const integration = yield* syncIntegrationTokenService.getOrCreateIntegration(provider, token);
-            const progress = yield* binanceHistoryProgressService.find(integration.id, source);
+            const integration = yield* databaseLock.withPermit(syncIntegrationTokenService.getOrCreateIntegration(provider, token));
+            const progress = yield* databaseLock.withPermit(binanceHistoryProgressService.find(integration.id, source));
             const lookbackSeconds = getUnixTime(historyStartedAt);
             const isBackfillPending = isDefined(progress)
                 ? Math.floor(progress.tailAt / 1000) > lookbackSeconds
@@ -262,24 +281,30 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 if (isRunDeferred() || client.isSourceSkipped(source)) {
                     return committedCount;
                 }
-                yield* binanceHistoryProgressService.save(integration.id, source, { ...progress, headAt: run.startedAtMs });
+                yield* databaseLock.withPermit(
+                    binanceHistoryProgressService.save(integration.id, source, { ...progress, headAt: run.startedAtMs })
+                );
             }
 
             const tailAt = progress?.tailAt ?? Number.POSITIVE_INFINITY;
             committedCount += yield* fetchRange(lookbackSeconds, isDefined(progress) ? Math.ceil(progress.tailAt / 1000) : null);
             if (client.isSourceSkipped(source)) {
-                yield* binanceHistoryProgressService.save(integration.id, source, {
-                    headAt: run.startedAtMs,
-                    tailAt: Math.min(tailAt, run.startedAtMs)
-                });
+                yield* databaseLock.withPermit(
+                    binanceHistoryProgressService.save(integration.id, source, {
+                        headAt: run.startedAtMs,
+                        tailAt: Math.min(tailAt, run.startedAtMs)
+                    })
+                );
 
                 return committedCount;
             }
-            const reachedAt = isRunDeferred() ? client.getDeferredFrontierMs() : lookbackSeconds * 1000;
-            yield* binanceHistoryProgressService.save(integration.id, source, {
-                headAt: run.startedAtMs,
-                tailAt: Math.min(tailAt, reachedAt ?? tailAt)
-            });
+            const reachedAt = client.getDeferredFrontierMs(source) ?? lookbackSeconds * 1000;
+            yield* databaseLock.withPermit(
+                binanceHistoryProgressService.save(integration.id, source, {
+                    headAt: run.startedAtMs,
+                    tailAt: Math.min(tailAt, reachedAt)
+                })
+            );
 
             return committedCount;
         });
@@ -319,7 +344,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 ...transactionSources.map(([source, options]) => ({
                     source,
                     run: (fromUnixTime: number, toUnixTime: number | null) =>
-                        commitSourceType(token, client.getTransactions(source, fromUnixTime, toUnixTime), options)
+                        commitSourceType(token, source, client.getTransactions(source, fromUnixTime, toUnixTime), options)
                 })),
                 {
                     source: BinanceHistorySourceEnum.CAPITAL,
@@ -328,35 +353,29 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 {
                     source: BinanceHistorySourceEnum.CONVERT,
                     run: (fromUnixTime: number, toUnixTime: number | null) =>
-                        commitTransferRange(token, client.getConvertTransfers(fromUnixTime, toUnixTime))
+                        commitTransferRange(token, BinanceHistorySourceEnum.CONVERT, client.getConvertTransfers(fromUnixTime, toUnixTime))
                 },
                 {
                     source: BinanceHistorySourceEnum.DUST,
                     run: (fromUnixTime: number, toUnixTime: number | null) =>
-                        commitTransferRange(token, client.getDustTransfers(fromUnixTime, toUnixTime))
+                        commitTransferRange(token, BinanceHistorySourceEnum.DUST, client.getDustTransfers(fromUnixTime, toUnixTime))
+                },
+                {
+                    source: BinanceHistorySourceEnum.FIAT,
+                    run: (fromUnixTime: number, toUnixTime: number | null) => commitFiatRange(token, fromUnixTime, toUnixTime)
                 }
             ];
-            let committedCount = 0;
-            for (const { source, run: runSource } of historySources) {
-                committedCount += yield* client.isolateSourceFailure(syncHistorySource(sync, token, source, runSource));
-            }
-
-            return committedCount;
-        });
-
-        const processFiatSource = Effect.fnUntraced(function* (sync: SyncEntityInterface, token: string) {
-            if (isRunDeferred() || getTokenRun(token).sourcesSynced) {
-                return 0;
-            }
-
-            const changedCount = yield* syncHistorySource(sync, token, BinanceHistorySourceEnum.FIAT, (fromUnixTime, toUnixTime) =>
-                commitFiatRange(token, fromUnixTime, toUnixTime)
+            yield* fetchExchangeAccounts(token);
+            const committedCounts = yield* Effect.forEach(
+                historySources,
+                ({ source, run: runSource }) => client.isolateSourceFailure(syncHistorySource(sync, token, source, runSource)),
+                { concurrency: 'unbounded' }
             );
-            if (!isRunDeferred() && !getRunSignedClient(token).hasSourceFailure()) {
+            if (!isRunDeferred() && !client.hasSourceFailure()) {
                 patchTokenRun(token, { sourcesSynced: true });
             }
 
-            return changedCount;
+            return committedCounts.reduce((total, count) => total + count, 0);
         });
 
         const runSyncPhases = Effect.fn('BinanceSyncService.runSyncPhases')(function* (
@@ -370,9 +389,6 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             };
 
             yield* processSources(sync, token).pipe(
-                Effect.map(addChangedCount),
-                Effect.andThen(Effect.yieldNow),
-                Effect.andThen(() => processFiatSource(sync, token)),
                 Effect.map(addChangedCount),
                 Effect.andThen(Effect.yieldNow),
                 Effect.andThen(() => processTrades(sync, externalAccountId, token)),

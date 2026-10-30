@@ -6,6 +6,7 @@ import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils.js';
 import { subDays } from 'date-fns/subDays';
 import { subMonths } from 'date-fns/subMonths';
 import * as Clock from 'effect/Clock';
+import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Option from 'effect/Option';
 import * as Schema from 'effect/Schema';
@@ -134,6 +135,7 @@ const MILLISECONDS_PER_SECOND = 1000;
 const MILLISECONDS_PER_DAY = 86_400_000;
 const MAX_TRANSACTIONS_PER_WINDOW = 500;
 const FIAT_ROWS_PER_PAGE = 500;
+const TRADE_SYMBOL_CONCURRENCY = 4;
 const FIAT_DEPOSIT_TRANSACTION_TYPE = 0;
 const FIAT_WITHDRAW_TRANSACTION_TYPE = 1;
 const FIAT_PAYMENT_BUY_TRANSACTION_TYPE = 0;
@@ -172,6 +174,10 @@ const BINANCE_AUTH_ERROR_CODES = new Set([
 ]);
 const BINANCE_BLOCK_BACKOFF_MS = 120_000;
 const RETRY_AFTER_HEADER = 'retry-after';
+
+const PartialWalkSource = Context.Reference<BinanceHistorySourceEnum | null>('@budgie/sync/BinancePartialWalkSource', {
+    defaultValue: () => null
+});
 
 export class BinanceSignedClient extends BaseSyncProviderClient {
     private static readonly LIMITED_HISTORY_MONTHS = 6;
@@ -336,8 +342,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     private readonly runTouchedAssets = new Set<string>();
     private readonly rejectedCapitalExternalIds = new Set<string>();
     private capitalPendingFromMs: number | null = null;
-    private arePartialWalksAllowed = false;
-    private deferredFrontierMs: number | null = null;
+    private readonly deferredFrontierMsBySource = new Map<BinanceHistorySourceEnum, number>();
     private readonly unavailableSources = new Set<BinanceHistorySourceEnum>();
     private sourceFailure: SyncNetworkError | SyncInvalidResponseError | null = null;
     private readonly limitedHistoryFloorTimeMs = subMonths(new Date(), BinanceSignedClient.LIMITED_HISTORY_MONTHS).getTime();
@@ -630,22 +635,12 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return this.unavailableSources.has(source);
     }
 
-    withPartialWalks<A, E, R>(effect: Effect.Effect<A, E, R>): Effect.Effect<A, E, R> {
-        return Effect.suspend(() => {
-            this.arePartialWalksAllowed = true;
-
-            return effect;
-        }).pipe(
-            Effect.ensuring(
-                Effect.sync(() => {
-                    this.arePartialWalksAllowed = false;
-                })
-            )
-        );
+    withPartialWalks<A, E, R>(source: BinanceHistorySourceEnum, effect: Effect.Effect<A, E, R>): Effect.Effect<A, E, R> {
+        return Effect.provideService(effect, PartialWalkSource, source);
     }
 
-    getDeferredFrontierMs(): number | null {
-        return this.deferredFrontierMs;
+    getDeferredFrontierMs(source: BinanceHistorySourceEnum): number | null {
+        return this.deferredFrontierMsBySource.get(source) ?? null;
     }
 
     getCapitalPendingFromMs(): number | null {
@@ -738,13 +733,18 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     ): Effect.Effect<readonly T[] | null, SyncError, HttpClient.HttpClient> {
         return fetchOneWindow(windowStartMs, windowEndMs).pipe(
             Effect.catchTag('SyncDeferredError', error =>
-                this.arePartialWalksAllowed
-                    ? Effect.sync(() => {
-                          this.deferredFrontierMs = Math.max(this.deferredFrontierMs ?? windowEndMs, windowEndMs);
+                Effect.flatMap(Effect.service(PartialWalkSource), source =>
+                    isDefined(source)
+                        ? Effect.sync(() => {
+                              this.deferredFrontierMsBySource.set(
+                                  source,
+                                  Math.max(this.deferredFrontierMsBySource.get(source) ?? windowEndMs, windowEndMs)
+                              );
 
-                          return null;
-                      })
-                    : Effect.fail(error)
+                              return null;
+                          })
+                        : Effect.fail(error)
+                )
             )
         );
     }
@@ -789,11 +789,15 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     ) {
         return Effect.gen({ self: this }, function* (this: BinanceSignedClient) {
             const symbols = yield* this.deriveTradeSymbols(eligibleSoldOffBaseAssets);
-            const symbolFetches = yield* Effect.forEach(symbols, symbol => {
-                const resumeFromId = initialSymbolTradeCursors[symbol.symbol];
+            const symbolFetches = yield* Effect.forEach(
+                symbols,
+                symbol => {
+                    const resumeFromId = initialSymbolTradeCursors[symbol.symbol];
 
-                return this.fetchSymbolTrades(symbol, startTimeMs, endTimeMs, isDefined(resumeFromId) ? resumeFromId + 1 : null);
-            });
+                    return this.fetchSymbolTrades(symbol, startTimeMs, endTimeMs, isDefined(resumeFromId) ? resumeFromId + 1 : null);
+                },
+                { concurrency: TRADE_SYMBOL_CONCURRENCY }
+            );
             const byExternalId = new Map(
                 symbolFetches.flatMap(({ transfers }) => transfers).map(transfer => [transfer.externalId, transfer])
             );
