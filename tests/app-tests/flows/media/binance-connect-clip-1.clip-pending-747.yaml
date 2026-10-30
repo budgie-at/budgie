@@ -1,0 +1,33 @@
+appId: ${APP_ID}
+---
+- runFlow:
+      file: ../subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://create-account/BINANCE'
+
+- extendedWaitUntil:
+      visible:
+          id: 'SyncTokenSection.BinanceApiKeyInput'
+      timeout: 15000
+
+- startRecording: clip
+
+- tapOn:
+      id: 'SyncTokenSection.BinanceApiKeyInput'
+- inputText: ${BINANCE_SANDBOX_API_KEY}
+- tapOn:
+      id: 'SyncTokenSection.BinanceApiSecretInput'
+- inputText: ${BINANCE_SANDBOX_API_SECRET}
+- tapOn: 'Fetch Accounts'
+
+- extendedWaitUntil:
+      visible: 'Start Sync'
+      timeout: 30000
+- tapOn: 'Start Sync'
+
+- extendedWaitUntil:
+      visible:
+          id: 'HomePage.TotalBalance'
+      timeout: 30000
+
+- stopRecording

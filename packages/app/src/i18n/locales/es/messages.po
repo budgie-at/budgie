@@ -1088,6 +1088,14 @@ msgstr "Fechas de cobro"
 msgid "Binance"
 msgstr "Binance"
 
+#: src/sync/component/binance-parked-assets-notice/binance-parked-assets-notice.tsx
+msgid "Binance has no market price for these assets, so they are not added as accounts and are skipped from your balance."
+msgstr "Binance no tiene precio de mercado para estos activos, así que no se añaden como cuentas y se omiten de tu saldo."
+
+#: src/sync/constant/sync-error-label.constant.ts
+msgid "Binance is not available in your region, so this account cannot sync."
+msgstr "Binance no está disponible en tu región, por lo que esta cuenta no se puede sincronizar."
+
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Binance P2P orders are unavailable: the API key is missing P2P read permission."
 msgstr "Las órdenes P2P de Binance no están disponibles: la clave de API no tiene permiso de lectura P2P."
@@ -1770,6 +1778,10 @@ msgstr "No se pudieron abrir las instrucciones"
 msgid "Could not open Shortcuts"
 msgstr "No se pudo abrir Shortcuts"
 
+#: src/sync/constant/sync-error-label.constant.ts
+msgid "Could not reach the server. Check your connection; sync will retry automatically."
+msgstr "No se pudo conectar con el servidor. Comprueba tu conexión; la sincronización se reintentará automáticamente."
+
 #: src/app/(tabs)/settings/import.tsx
 msgid "Could not read CSV file"
 msgstr "No se pudo leer el archivo CSV"
@@ -2207,6 +2219,10 @@ msgstr "Detalles"
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "Didn't match"
 msgstr "No coincide"
+
+#: src/sync/component/binance-sync-token-section/binance-sync-token-section.tsx
+msgid "Different Binance account"
+msgstr "Otra cuenta de Binance"
 
 #: src/settings/components/pin-management-rows/pin-management-rows.tsx
 msgid "Disable App Lock"
@@ -3817,6 +3833,10 @@ msgstr "Ahora no"
 msgid "not set"
 msgstr "no establecido"
 
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Not synced: Auto-Invest, Binance Pay, Binance Card, gift cards, sub-account transfers, margin and futures."
+msgstr "No se sincronizan: Auto-Invest, Binance Pay, Binance Card, tarjetas de regalo, transferencias entre subcuentas, margen y futuros."
+
 #: src/settings/components/backup-row/backup-row.tsx
 msgid "Not yet"
 msgstr "Aún no"
@@ -5297,6 +5317,14 @@ msgstr "Toca para continuar"
 msgid "Tap to select"
 msgstr "Toca para seleccionar"
 
+#: src/sync/constant/sync-error-label.constant.ts
+msgid "The API key has the wrong permissions. Use a key with only \"Enable Reading\"."
+msgstr "La clave de API tiene permisos incorrectos. Usa una clave solo con «Enable Reading»."
+
+#: src/sync/constant/sync-error-label.constant.ts
+msgid "The API key or token was rejected. Check that it is correct, read-only and not restricted to other IP addresses."
+msgstr "Se rechazó la clave de API o el token. Comprueba que sea correcto, de solo lectura y que no esté restringido a otras direcciones IP."
+
 #: src/account/component/start-deposit-form/start-deposit-form.tsx
 msgid "The bank did not report the deposit currency. Confirm the currency and the receiving amount."
 msgstr "El banco no informó la moneda del depósito. Confirma la moneda y el importe recibido."
@@ -5325,6 +5353,10 @@ msgstr "La regla se guardó, pero ninguna transacción existente necesitaba actu
 msgid "The selected Budgie account is archived or no longer exists."
 msgstr "La cuenta de Budgie seleccionada está archivada o ya no existe."
 
+#: src/sync/constant/sync-error-label.constant.ts
+msgid "The service is limiting requests. Sync will retry automatically in a few minutes."
+msgstr "El servicio está limitando las solicitudes. La sincronización se reintentará automáticamente en unos minutos."
+
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "There is no \"forgot PIN\"."
 msgstr "No existe «olvidé el PIN»."
@@ -5342,6 +5374,10 @@ msgstr "Esta cuenta se ocultará de tu vista principal y no se incluirá en los 
 #: src/transaction/hook/use-delete-transaction.hook.ts
 msgid "This action cannot be undone."
 msgstr "Esta acción no se puede deshacer."
+
+#: src/sync/component/binance-sync-token-section/binance-sync-token-section.tsx
+msgid "This API key belongs to a different Binance account."
+msgstr "Esta clave de API pertenece a otra cuenta de Binance."
 
 #: src/sync/utils/toast-binance-key-permissions-error.util.ts
 msgid "This API key can trade, withdraw or transfer funds. Create a key with only \"Enable Reading\" and try again."
@@ -6121,6 +6157,10 @@ msgstr "Tus datos permanecen intactos en este dispositivo. Inténtalo de nuevo o
 #: src/onboarding/component/onboarding-file-strip/onboarding-file-strip.tsx
 msgid "Your data: {state}"
 msgstr "Tus datos: {state}"
+
+#: src/sync/constant/sync-error-label.constant.ts
+msgid "Your device clock is out of sync. Enable automatic date and time, then try again."
+msgstr "El reloj de tu dispositivo no está sincronizado. Activa la fecha y hora automáticas y vuelve a intentarlo."
 
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Your holdings"

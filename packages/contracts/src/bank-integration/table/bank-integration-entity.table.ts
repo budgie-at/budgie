@@ -12,7 +12,9 @@ export const BankIntegrationEntityTable = sqliteTable(
             .$type<ExternalSourceEnum>()
             .notNull(),
         token: text('token').notNull(),
-        label: text('label')
+        label: text('label'),
+        externalClientId: text('external_client_id'),
+        historyProgress: text('history_progress')
     }),
     table => [
         uniqueIndex('bank_integrations_provider_token_unq')

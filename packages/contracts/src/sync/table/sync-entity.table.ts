@@ -4,6 +4,7 @@ import { convertEnumToDrizzleEnum } from '../../@generic/utils/convert-enum-to-d
 import { withBaseEntityTableColumns } from '../../@generic/utils/with-base-entity-table-columns.util';
 import { ExternalSourceEnum } from '../../account/enum/external-source.enum';
 import { AccountEntityTable } from '../../account/table/account-entity.table';
+import { SyncErrorCodeEnum } from '../enum/sync-error-code.enum';
 import { SyncModeEnum } from '../enum/sync-mode.enum';
 import { SyncStatusEnum } from '../enum/sync-status.enum';
 import { SyncWarningEnum } from '../enum/sync-warning.enum';
@@ -41,6 +42,7 @@ export const SyncEntityTable = sqliteTable(
         transactionCount: int('transaction_count', { mode: 'number' }).default(0).notNull(),
         errorCount: int('error_count', { mode: 'number' }).default(0).notNull(),
         lastError: text('last_error'),
+        lastErrorCode: text('last_error_code', { enum: convertEnumToDrizzleEnum(SyncErrorCodeEnum) }).$type<SyncErrorCodeEnum>(),
         lastWarning: text('last_warning', { enum: convertEnumToDrizzleEnum(SyncWarningEnum) }).$type<SyncWarningEnum>(),
         binanceTradeCursor: text('binance_trade_cursor'),
         binanceCapitalPendingFromAt: int('binance_capital_pending_from_at', { mode: 'timestamp_ms' })

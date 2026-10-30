@@ -79,7 +79,7 @@ for (const mode of [SyncModeEnum.FORWARD, SyncModeEnum.BACKWARD]) {
                     expect(goodAfter.forwardSyncFromAt?.getTime()).toBeGreaterThan(cursor.getTime());
                 }
                 const failedAfter = yield* fetchSyncById(failed.id);
-                expect({ ...failedAfter, lastError: failed.lastError }).toEqual(failed);
+                expect({ ...failedAfter, lastError: failed.lastError, lastErrorCode: failed.lastErrorCode }).toEqual(failed);
                 expect(failedAfter.lastError).not.toBeNull();
                 expect(yield* fetchSyncById(pausedSync.id)).toEqual(pausedSync);
                 expect(events).not.toContain('mono-paused');

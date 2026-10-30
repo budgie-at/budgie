@@ -23,7 +23,7 @@ import {
 } from '../../harness';
 
 describe('binance/anchor-once-reset-ordering', () => {
-    it.effect('anchors every Binance account exactly once per run via beforeProcessRun across a multi-pass loop', () =>
+    it.effect('anchors every Binance account exactly once per run across a multi-pass loop', () =>
         Effect.gen(function* () {
             const accountBalanceRepository = yield* AccountBalanceRepository;
             const binanceSyncService = yield* BinanceSyncService;

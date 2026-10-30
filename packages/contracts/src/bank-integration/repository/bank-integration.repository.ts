@@ -22,6 +22,12 @@ export class BankIntegrationRepository extends Context.Service<BankIntegrationRe
 
         return {
             findByProviderAndToken,
+            findByProviderAndClientId: (provider: ExternalSourceEnum, externalClientId: string) =>
+                Db.query(db =>
+                    db.query.BankIntegrationEntityTable.findFirst({
+                        where: { provider, externalClientId, deletedAt: { isNull: true } }
+                    })
+                ),
             findFileImportIntegration: (provider: ExternalSourceEnum) => findByProviderAndToken(provider, ''),
             create: (input: BankIntegrationCreateEntityInterface) =>
                 Db.query(db => db.insert(BankIntegrationEntityTable).values([input]).returning()).pipe(
