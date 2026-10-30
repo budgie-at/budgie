@@ -70,6 +70,7 @@ describe('binance/wallet-routing', () => {
 
             yield* setupBinanceFixture({ asset: 'USDT', mode: SyncModeEnum.FORWARD });
             binanceStub.spotBalances([buildBinance.balance({ asset: 'USDT', free: '75' })]);
+            binanceStub.fundingBalances([buildBinance.balance({ asset: 'USDT', free: '25' })]);
             binanceStub.deposits([
                 buildBinance.deposit({ id: 'dep-routing', coin: 'USDT', amount: '100', insertTime: Date.now() - 2 * HOUR_MS })
             ]);
