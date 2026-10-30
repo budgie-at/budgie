@@ -33,7 +33,7 @@ export const TransactionInfoNavTitle = (props: Props) => {
     const title = isNotEmptyString(displayTitle) ? displayTitle : t(TRANSACTION_TYPE[transaction.type]);
     const rowStyle = { height: config.headerHeight };
     const animatedStyle = useAnimatedStyle(() => {
-        const progress = interpolate(scrollY.get(), [revealOffset, revealOffset + config.headerHeight], [0, 1], Extrapolation.CLAMP);
+        const progress = interpolate(scrollY.get(), [revealOffset, revealOffset + 20], [0, 1], Extrapolation.CLAMP);
 
         return { opacity: progress };
     });

@@ -10,7 +10,7 @@ interface Props {
 
 export const TransactionInfoActionRow = ({ label, onPress, testID }: Props) => (
     <HapticPressable
-        className="min-h-[48px] flex-row items-center gap-x-xl px-3xl py-md active:scale-100 active:opacity-70"
+        className="min-h-[44px] flex-row items-center gap-x-xl px-3xl py-md active:scale-100 active:opacity-70"
         accessibilityRole="button"
         accessibilityLabel={label}
         onPress={onPress}

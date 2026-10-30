@@ -1,9 +1,10 @@
 import { AmountField, AmountFieldText } from '@budgie/amount-input';
 import { UserIconNameEnum } from '@budgie/contracts';
-import { Text, View } from 'react-native';
+import { Text, View, useWindowDimensions } from 'react-native';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
+import { TRANSACTION_INFO_STACKED_FONT_SCALE } from '../../constant/transaction-info-stacked-font-scale.constant';
+import { TransactionInfoHeroDate } from '../transaction-info-hero-date/transaction-info-hero-date';
 import { TransactionInfoHeroFade } from '../transaction-info-hero-fade/transaction-info-hero-fade';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
 
@@ -12,16 +13,20 @@ import type { LayoutChangeEvent } from 'react-native';
 interface Props {
     readonly amount: string;
     readonly title: string;
+    readonly onEndLayout: (event: LayoutChangeEvent) => void;
     readonly operatedAt: Date;
     readonly onAmountLayout: (event: LayoutChangeEvent) => void;
 }
 
-export const RefundTransactionInfoHero = ({ amount, title, operatedAt, onAmountLayout }: Props) => {
-    const { formatWeekdayAndDateWithTime } = useFormatDate();
+export const RefundTransactionInfoHero = ({ amount, title, operatedAt, onAmountLayout, onEndLayout }: Props) => {
+    const { fontScale } = useWindowDimensions();
+    const largeText = fontScale > TRANSACTION_INFO_STACKED_FONT_SCALE;
+    const heroClassName = largeText ? 'items-start pt-3xl pb-5xl' : 'items-center pt-3xl pb-5xl';
+    const alignmentClassName = largeText ? 'text-left' : 'text-center';
 
     return (
-        <View className="items-center pt-3xl pb-5xl">
-            <TransactionInfoHeroFade>
+        <View className={heroClassName}>
+            <TransactionInfoHeroFade collapse>
                 <CircleIcon
                     icon={UserIconNameEnum.RotateCcw}
                     variant="positive"
@@ -32,29 +37,27 @@ export const RefundTransactionInfoHero = ({ amount, title, operatedAt, onAmountL
                     iconClassName="text-positive-strong"
                 />
             </TransactionInfoHeroFade>
-            <View className="mt-xl self-stretch" onLayout={onAmountLayout}>
+            <TransactionInfoHeroFade className="mt-xl self-stretch">
                 <AmountField fontSize={40} className="self-stretch">
                     <AmountFieldText
                         adjustsFontSizeToFit
                         minimumFontScale={0.4}
                         testID={TransactionInfoPageSelector.Amount}
-                        className="leading-[48px] font-semibold tracking-[-1px] text-center text-positive-strong"
+                        className={`leading-[48px] font-semibold tracking-[-1px] text-positive-strong ${alignmentClassName}`}
                         selectable
                     >
                         {amount}
                     </AmountFieldText>
                 </AmountField>
-            </View>
-            <View>
-                <Text className="mt-xs text-[20px] leading-[25px] text-primary font-semibold text-center" selectable>
+            </TransactionInfoHeroFade>
+            <TransactionInfoHeroFade onLayout={onAmountLayout}>
+                <Text className={`mt-xs text-[20px] leading-[25px] text-primary font-semibold ${alignmentClassName}`} selectable>
                     {title}
                 </Text>
-            </View>
-            <View>
-                <Text className="mt-sm text-[15px] leading-[20px] text-secondary-foreground text-center">
-                    {formatWeekdayAndDateWithTime(operatedAt)}
-                </Text>
-            </View>
+            </TransactionInfoHeroFade>
+            <TransactionInfoHeroFade onLayout={onEndLayout}>
+                <TransactionInfoHeroDate operatedAt={operatedAt} />
+            </TransactionInfoHeroFade>
         </View>
     );
 };

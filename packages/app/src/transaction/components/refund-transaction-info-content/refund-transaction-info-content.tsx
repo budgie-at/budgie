@@ -3,7 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
 import { View } from 'react-native';
 
-import { ScreenChromeFrame, ScreenChromeScrollView, useScreenChrome } from '@rnw-community/react-native-screen-chrome';
+import { ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
 import { isDefined } from '@rnw-community/shared';
 
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
@@ -12,7 +12,6 @@ import { useTransactionInfoHandoff } from '../../hook/use-transaction-info-hando
 import { useGetConsolidationSourcesQuery } from '../../query/use-get-consolidation-sources.query';
 import { formatTransactionInfoAmount } from '../../utils/format-transaction-info-amount.util';
 import { getTransactionDisplayTitle } from '../../utils/get-transaction-display-title.util';
-import { getTransactionEditHref } from '../../utils/get-transaction-edit-href.util';
 import { getTransactionHref } from '../../utils/get-transaction-href.util';
 import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 import { RefundTransactionInfoHero } from '../refund-transaction-info-hero/refund-transaction-info-hero';
@@ -23,6 +22,7 @@ import { TransactionInfoNavBand } from '../transaction-info-nav-band/transaction
 import { TransactionInfoNoteGroup } from '../transaction-info-note-group/transaction-info-note-group';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
 import { TransactionInfoRow } from '../transaction-info-row/transaction-info-row';
+import { TransactionInfoScrollView } from '../transaction-info-scroll-view/transaction-info-scroll-view';
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
@@ -36,8 +36,7 @@ export const RefundTransactionInfoContent = ({ transaction, parentTransaction }:
     const router = useRouter();
     const removeRefund = useRevertConsolidation(parentTransaction.id, router.back);
     const formatDigits = useProtectedAmountLabel();
-    const { config } = useScreenChrome();
-    const { revealOffset, onAmountLayout } = useTransactionInfoHandoff();
+    const { minimumHeight, revealOffset, onEndLayout, onAmountLayout, scrollRef, handleScrollEnd } = useTransactionInfoHandoff();
     const { sources } = useGetConsolidationSourcesQuery(parentTransaction.id);
     const source = sources.find(row => row.sourceTransactionId === transaction.id);
     const original = formatTransactionInfoAmount(parentTransaction, formatDigits);
@@ -52,13 +51,14 @@ export const RefundTransactionInfoContent = ({ transaction, parentTransaction }:
 
     return (
         <ScreenChromeFrame testID={TransactionInfoPageSelector.Page}>
-            <ScreenChromeScrollView contentInsetTop={config.headerHeight} contentInsetBottom={32} showsVerticalScrollIndicator={false}>
+            <TransactionInfoScrollView scrollRef={scrollRef} onScrollEnd={handleScrollEnd} minimumHeight={minimumHeight}>
                 <View className="px-3xl">
                     <RefundTransactionInfoHero
                         amount={amount}
-                        title={t`Refund of ${merchant} · ${original}`}
+                        title={t`Refund from ${merchant}`}
                         operatedAt={transaction.operatedAt}
                         onAmountLayout={onAmountLayout}
+                        onEndLayout={onEndLayout}
                     />
                     <View className="gap-y-5xl">
                         <TransactionInfoGroup>
@@ -80,14 +80,14 @@ export const RefundTransactionInfoContent = ({ transaction, parentTransaction }:
                         <TransactionInfoDeleteRow transaction={transaction} onDelete={removeRefund} />
                     </View>
                 </View>
-            </ScreenChromeScrollView>
+            </TransactionInfoScrollView>
             <TransactionInfoNavBand />
             <TransactionInfoHeader
                 transaction={transaction}
-                editHref={getTransactionEditHref(parentTransaction)}
+                editHref={null}
                 revealOffset={revealOffset}
                 onGoBack={router.back}
-                compactTitle={t`Refund of ${merchant} · ${original}`}
+                compactTitle={t`Refund from ${merchant}`}
                 compactAmount={amount}
             />
         </ScreenChromeFrame>

@@ -31,10 +31,10 @@ export const TransactionInfoSimilarMonthBar = (props: Props) => {
     const height = hasAmount ? Math.max(8, Math.round((month.totalAmount / maxAmount) * BAR_MAX_HEIGHT)) : 2;
     const label = `${formatShortMonth(monthLabelDate)}${monthText === '01' ? `\n${yearText}` : ''}`;
     const amount = convertFromMicroUnits(month.totalAmount);
-    const value = hasAmount ? formatCompactDigits(amount, currencySymbol) : '0';
-    const protectedValue = isAmountProtected ? PROTECTED_AMOUNT_PLACEHOLDER : value;
+    const value = hasAmount ? formatCompactDigits(amount, currencySymbol) : '';
+    const protectedValue = isAmountProtected && hasAmount ? PROTECTED_AMOUNT_PLACEHOLDER : value;
     const accessibilityValue = hasAmount ? formatDigits(amount, currencySymbol) : '0';
-    const barClassName = month.monthKey === currentMonthKey ? 'bg-default-foreground' : 'bg-secondary-foreground';
+    const barClassName = month.monthKey === currentMonthKey ? 'bg-default-foreground' : 'bg-secondary-foreground/60';
 
     return (
         <TransactionInfoSimilarBar

@@ -135,10 +135,10 @@ appId: ${APP_ID}
           id: 'TransactionActionsMenu.FeeButton'
 - assertVisible:
       id: 'TransactionActionsMenu.CreateRuleButton'
-- assertVisible:
-      id: 'TransactionActionsMenu.AttachDebtSettlementButton'
 - tapOn:
     id: 'TransactionInfo.ConvertButton'
+- assertVisible:
+    text: 'Attach debt'
 - assertVisible:
       text: 'Convert to Transfer'
 - assertVisible:

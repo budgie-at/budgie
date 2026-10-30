@@ -18,7 +18,7 @@ export const TransactionInfoDeleteRow = ({ transaction, onDelete }: Props) => {
     const { t } = useLingui();
     const isRefundSource = isDefined(transaction.consolidationParentTransactionId);
     const deleteLabel = isDefined(transaction.consolidationType) ? t`Unconsolidate` : t`Delete Transaction`;
-    const label = isRefundSource ? t`Remove refund` : deleteLabel;
+    const label = isRefundSource ? t`Undo Consolidation` : deleteLabel;
     const handleDelete = () => void onDelete();
 
     return (

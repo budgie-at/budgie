@@ -1,4 +1,4 @@
-import { TransactionConsolidationTypeEnum } from '@budgie/contracts';
+import { DebtEventAssociationEnum, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
@@ -21,15 +21,14 @@ interface Props {
 export const TransactionInfoActionsGroup = ({ transaction, items, onRevert }: Props) => {
     const { t } = useLingui();
     const createRule = useCreateTransactionRule(transaction);
-    const commonSelectors = [
-        TransactionActionsMenuSelector.FeeButton,
-        TransactionActionsMenuSelector.AttachDebtSettlementButton,
-        TransactionActionsMenuSelector.DetachDebtSettlementButton
-    ];
+    const commonSelectors = [TransactionActionsMenuSelector.FeeButton, TransactionActionsMenuSelector.DetachDebtSettlementButton];
     const commonItems = items.filter(item => commonSelectors.some(selector => selector === item.testID));
     const conversionItems = items.filter(item => !commonSelectors.some(selector => selector === item.testID));
-    const showSeparate =
-        isDefined(transaction.consolidationType) && transaction.consolidationType !== TransactionConsolidationTypeEnum.REFUND;
+    const showSeparate = isDefined(transaction.consolidationType);
+    const separateLabel =
+        transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND ? t`Undo refund` : t`Separate transactions`;
+    const debtTitle = transaction.debtEvents.at(0)?.[DebtEventAssociationEnum.DEBT_ACCOUNT].title;
+    const consequence = isDefined(debtTitle) ? t`Convert to Transfer and Start Deposit remove the link to ${debtTitle}.` : void 0;
 
     return (
         <TransactionInfoGroup>
@@ -41,13 +40,9 @@ export const TransactionInfoActionsGroup = ({ transaction, items, onRevert }: Pr
             {commonItems.map(item => (
                 <TransactionInfoActionRow key={item.key} label={item.label} onPress={item.onPress} testID={item.testID} />
             ))}
-            {isNotEmptyArray(conversionItems) ? <TransactionInfoConvertRow items={conversionItems} /> : null}
+            {isNotEmptyArray(conversionItems) ? <TransactionInfoConvertRow items={conversionItems} message={consequence} /> : null}
             {showSeparate ? (
-                <TransactionInfoActionRow
-                    label={t`Separate transactions`}
-                    onPress={onRevert}
-                    testID={TransactionActionsMenuSelector.RevertButton}
-                />
+                <TransactionInfoActionRow label={separateLabel} onPress={onRevert} testID={TransactionActionsMenuSelector.RevertButton} />
             ) : null}
         </TransactionInfoGroup>
     );

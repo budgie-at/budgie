@@ -2,7 +2,6 @@ import { UserIconNameEnum } from '@budgie/contracts';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { cn } from '../../../@generic/utils/cn.util';
-import { getTransactionIcon } from '../../utils/get-transaction-icon.util';
 import { getTransactionInfoHeroIconVariant } from '../../utils/get-transaction-info-hero-icon-variant.util';
 import { isUncategorizedTransaction } from '../../utils/is-uncategorized-transaction.util';
 
@@ -15,7 +14,7 @@ interface Props {
 export const TransactionInfoHeroIcon = ({ transaction }: Props) => {
     const isUncategorized = isUncategorizedTransaction(transaction);
     const variant = getTransactionInfoHeroIconVariant(transaction);
-    const icon = isUncategorized ? UserIconNameEnum.CircleDashed : getTransactionIcon(transaction);
+    const icon = isUncategorized ? UserIconNameEnum.CircleDashed : UserIconNameEnum.ReceiptText;
     const className = variant === 'secondary' ? 'bg-secondary-foreground/15' : '';
     const iconClassName = cn(
         isUncategorized && 'text-attention-foreground',

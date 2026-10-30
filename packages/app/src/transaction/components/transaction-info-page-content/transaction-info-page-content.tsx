@@ -4,7 +4,7 @@ import { useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
 import { View } from 'react-native';
 
-import { ScreenChromeFrame, ScreenChromeScrollView, useScreenChrome } from '@rnw-community/react-native-screen-chrome';
+import { ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
 
 import { useGetEnabledRulesQuery } from '../../../rule/query/use-get-enabled-rules.query';
 import { useTransactionInfoHandoff } from '../../hook/use-transaction-info-handoff.hook';
@@ -22,6 +22,7 @@ import { TransactionInfoNavBand } from '../transaction-info-nav-band/transaction
 import { TransactionInfoNoteGroup } from '../transaction-info-note-group/transaction-info-note-group';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
 import { TransactionInfoRefundSummary } from '../transaction-info-refund-summary/transaction-info-refund-summary';
+import { TransactionInfoScrollView } from '../transaction-info-scroll-view/transaction-info-scroll-view';
 import { TransactionInfoSimilarCard } from '../transaction-info-similar-card/transaction-info-similar-card';
 import { TransactionInfoSourceRows } from '../transaction-info-source-rows/transaction-info-source-rows';
 import { TransactionInfoTagsSection } from '../transaction-info-tags-section/transaction-info-tags-section';
@@ -39,10 +40,9 @@ export const TransactionInfoPageContent = ({
 }: TransactionInfoPagePropsInterface) => {
     const router = useRouter();
     const { t } = useLingui();
-    const { revealOffset, onAmountLayout } = useTransactionInfoHandoff();
+    const { minimumHeight, revealOffset, onEndLayout, onAmountLayout, scrollRef, handleScrollEnd } = useTransactionInfoHandoff();
     const { stats, isLoading } = useTransactionInfoSimilarStatsQuery(transaction);
     const { enabledRules } = useGetEnabledRulesQuery();
-    const { config } = useScreenChrome();
     const firstEntry = transaction.entries.at(0);
     const suggestRuleData: SuggestRuleDataInterface = {
         title: getTransactionDisplayTitle(transaction),
@@ -61,9 +61,14 @@ export const TransactionInfoPageContent = ({
 
     return (
         <ScreenChromeFrame testID={TransactionInfoPageSelector.Page}>
-            <ScreenChromeScrollView contentInsetTop={config.headerHeight} contentInsetBottom={32} showsVerticalScrollIndicator={false}>
+            <TransactionInfoScrollView scrollRef={scrollRef} onScrollEnd={handleScrollEnd} minimumHeight={minimumHeight}>
                 <View className="px-3xl">
-                    <TransactionInfoHero transaction={transaction} matchingRuleIds={matchingRuleIds} onTitleLayout={onAmountLayout} />
+                    <TransactionInfoHero
+                        transaction={transaction}
+                        matchingRuleIds={matchingRuleIds}
+                        onTitleLayout={onAmountLayout}
+                        onEndLayout={onEndLayout}
+                    />
 
                     <View className="gap-y-5xl">
                         <TransactionInfoGroup>
@@ -91,7 +96,7 @@ export const TransactionInfoPageContent = ({
                         <TransactionInfoDeleteRow transaction={transaction} onDelete={onDelete} />
                     </View>
                 </View>
-            </ScreenChromeScrollView>
+            </TransactionInfoScrollView>
 
             <TransactionInfoNavBand />
 

@@ -1599,13 +1599,13 @@ msgstr "Convert to Refund?"
 msgid "Convert to Transfer"
 msgstr "Convert to Transfer"
 
+#: src/transaction/components/transaction-info-actions-group/transaction-info-actions-group.tsx
+msgid "Convert to Transfer and Start Deposit remove the link to {debtTitle}."
+msgstr "Convert to Transfer and Start Deposit remove the link to {debtTitle}."
+
 #: src/app/convert-to-transfer.tsx
 msgid "Convert to Transfer?"
 msgstr "Convert to Transfer?"
-
-#: src/transaction/components/transaction-info-convert-row/transaction-info-convert-row.tsx
-msgid "Convert…"
-msgstr "Convert…"
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Copy the API Key and Secret Key into the fields below"
@@ -3520,6 +3520,10 @@ msgstr "months left"
 msgid "More actions"
 msgstr "More actions"
 
+#: src/transaction/components/transaction-info-convert-row/transaction-info-convert-row.tsx
+msgid "More Actions…"
+msgstr "More Actions…"
+
 #: src/categorize-inbox/components/categorize-inbox-category-page/categorize-inbox-category-page.tsx
 msgid "More categories"
 msgstr "More categories"
@@ -4464,8 +4468,8 @@ msgid "Recurring payments will appear here once patterns are detected from your 
 msgstr "Recurring payments will appear here once patterns are detected from your transactions"
 
 #: src/transaction/components/refund-transaction-info-content/refund-transaction-info-content.tsx
-msgid "Refund of {merchant} · {original}"
-msgstr "Refund of {merchant} · {original}"
+msgid "Refund from {merchant}"
+msgstr "Refund from {merchant}"
 
 #: src/transaction/hook/use-refunded-label.hook.ts
 msgid "Refunded"
@@ -4508,10 +4512,6 @@ msgstr "Remove fee"
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 msgid "Remove fee?"
 msgstr "Remove fee?"
-
-#: src/transaction/components/transaction-info-delete-row/transaction-info-delete-row.tsx
-msgid "Remove refund"
-msgstr "Remove refund"
 
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 msgid "Remove split"
@@ -5830,7 +5830,11 @@ msgstr "Under limit"
 msgid "Undo"
 msgstr "Undo"
 
-#: src/transaction/components/transaction-info-refund-summary/transaction-info-refund-summary.tsx
+#: src/transaction/components/transaction-info-delete-row/transaction-info-delete-row.tsx
+msgid "Undo Consolidation"
+msgstr "Undo Consolidation"
+
+#: src/transaction/components/transaction-info-actions-group/transaction-info-actions-group.tsx
 msgid "Undo refund"
 msgstr "Undo refund"
 
