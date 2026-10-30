@@ -1,3 +1,4 @@
+import { View } from 'react-native';
 import Animated, { Extrapolation, interpolate, useAnimatedStyle } from 'react-native-reanimated';
 
 import { useScreenChromeHeaderMetrics, useScreenChromeScrollY } from '@rnw-community/react-native-screen-chrome';
@@ -15,6 +16,8 @@ export const TransactionInfoNavBand = () => {
             className="absolute inset-x-0 top-0 bg-transaction-detail-bar border-b-hairline border-surface-separator"
             style={bandStyle}
             pointerEvents="none"
-        />
+        >
+            <View className="absolute inset-x-0 top-full h-[8px] bg-linear-to-b from-surface to-transparent" />
+        </Animated.View>
     );
 };
