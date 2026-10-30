@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Text, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withDelay, withTiming } from 'react-native-reanimated';
 
@@ -19,9 +19,19 @@ export const Tick = (props: Props) => {
     const { num, textSize, textClassName, index, duration = 500, delay = 50 } = props;
 
     const translateY = useSharedValue(-textSize * num);
+    const renderedNumRef = useRef(num);
 
     useEffect(() => {
-        translateY.set(withDelay(delay * index, withTiming(-textSize * num, { duration })));
+        const target = -textSize * num;
+
+        if (renderedNumRef.current === num) {
+            translateY.set(target);
+
+            return;
+        }
+
+        renderedNumRef.current = num;
+        translateY.set(withDelay(delay * index, withTiming(target, { duration })));
     }, [num, textSize, index, translateY, delay, duration]);
 
     const animatedStyle = useAnimatedStyle(() => ({

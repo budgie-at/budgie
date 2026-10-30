@@ -1,6 +1,5 @@
 import { DEFAULT_TRANSACTION_FILTER, TransactionFilterInterface, UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
-import React from 'react';
 import { ScrollView, Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -8,6 +7,8 @@ import { isDefined } from '@rnw-community/shared';
 import { DateFilter } from '../../../@generic/component/date-filter/date-filter';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { cn } from '../../../@generic/utils/cn.util';
+import { FILTER_CHIP_CLASS_NAME } from '../../constant/filter-chip-class-name.constant';
 import { useTransactionAccountFilterModal } from '../../context/transaction-account-filter-modal.context';
 import { useTransactionCategoryFilterModal } from '../../context/transaction-category-filter-modal.context';
 import { useTransactionTagFilterModal } from '../../context/transaction-tag-filter-modal.context';
@@ -17,15 +18,18 @@ import { TransactionTypeFilter } from '../transaction-type-filter/transaction-ty
 
 import { TransactionFiltersSelector } from './transaction-filters.selector';
 
+import type { ReactNode } from 'react';
+
 interface Props {
     readonly showTypeFilter?: boolean;
     readonly accountId: number | null;
-    readonly hasFiltersSelected: boolean;
+    readonly isClearAllVisible: boolean;
     readonly filters: TransactionFilterInterface;
     readonly onChange: (cb: TransactionFilterInterface | ((prev: TransactionFilterInterface) => TransactionFilterInterface)) => void;
+    readonly leading?: ReactNode;
 }
 
-export const TransactionFilters = ({ filters, onChange, accountId, showTypeFilter = true, hasFiltersSelected }: Props) => {
+export const TransactionFilters = ({ filters, onChange, accountId, showTypeFilter = true, isClearAllVisible, leading }: Props) => {
     const { t } = useLingui();
     const [openTransactionAccountFilter] = useTransactionAccountFilterModal();
     const [openTransactionCategoryFilter] = useTransactionCategoryFilterModal();
@@ -43,26 +47,31 @@ export const TransactionFilters = ({ filters, onChange, accountId, showTypeFilte
     const handleClear = () => void onChange({ ...DEFAULT_TRANSACTION_FILTER, accountIds: isDefined(accountId) ? [accountId] : null });
 
     return (
-        <View className="-mx-7xl">
-            <ScrollView horizontal contentContainerClassName="flex-row items-center gap-x-md px-7xl" showsHorizontalScrollIndicator={false}>
-                {hasFiltersSelected ? (
+        <View className="-mx-7xl -my-[6px]">
+            <ScrollView
+                horizontal
+                contentContainerClassName="flex-row items-center gap-x-md px-7xl py-[6px]"
+                showsHorizontalScrollIndicator={false}
+            >
+                {isClearAllVisible ? (
                     <HapticPressable
                         onPress={handleClear}
-                        className="bg-destructive-background border border-destructive-corner rounded-2xl px-xl py-sm flex-row items-center gap-x-xs"
+                        className={cn(FILTER_CHIP_CLASS_NAME, 'bg-surface-fill')}
                         testID={TransactionFiltersSelector.ClearAllButton}
                     >
-                        <Icon icon={UserIconNameEnum.X} className="text-destructive-foreground" size={14} />
-                        <Text className="text-destructive-foreground text-sm">
+                        <Icon icon={UserIconNameEnum.X} className="text-secondary-foreground" size={13} />
+                        <Text className="text-primary text-[13px] font-medium">
                             <Trans>Clear All</Trans>
                         </Text>
                     </HapticPressable>
                 ) : null}
 
+                {leading}
+
                 <DateFilter value={filters.date} onChange={createFilterHandler('date')} />
                 {showTypeFilter ? <TransactionTypeFilter value={filters.types} onChange={createFilterHandler('types')} /> : null}
                 <TransactionAmountFilter value={filters.amount} onChange={createFilterHandler('amount')} />
                 <TransactionIdsFilterChip
-                    icon={UserIconNameEnum.Tag}
                     label={t`Categories`}
                     activeLabel={t`Categories (${selectedCategoriesCount})`}
                     testID={TransactionFiltersSelector.CategoryChip}
@@ -71,7 +80,6 @@ export const TransactionFilters = ({ filters, onChange, accountId, showTypeFilte
                     onChange={createFilterHandler('categoryIds')}
                 />
                 <TransactionIdsFilterChip
-                    icon={UserIconNameEnum.Hash}
                     label={t`Tags`}
                     activeLabel={t`Tags (${selectedTagsCount})`}
                     testID={TransactionFiltersSelector.TagChip}
@@ -82,7 +90,6 @@ export const TransactionFilters = ({ filters, onChange, accountId, showTypeFilte
 
                 {isDefined(accountId) ? null : (
                     <TransactionIdsFilterChip
-                        icon={UserIconNameEnum.Wallet}
                         label={t`Accounts`}
                         activeLabel={t`Accounts (${selectedAccountsCount})`}
                         testID={TransactionFiltersSelector.AccountChip}
@@ -93,6 +100,10 @@ export const TransactionFilters = ({ filters, onChange, accountId, showTypeFilte
                     />
                 )}
             </ScrollView>
+            <View
+                className="absolute inset-y-[6px] right-0 w-[32px] bg-linear-to-r from-surface/0 via-surface/80 to-surface"
+                pointerEvents="none"
+            />
         </View>
     );
 };

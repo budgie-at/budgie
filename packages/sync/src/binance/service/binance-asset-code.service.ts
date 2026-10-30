@@ -11,7 +11,7 @@ export class BinanceAssetCodeService extends Context.Service<BinanceAssetCodeSer
     make: Effect.gen(function* () {
         const accountRepository = yield* AccountRepository;
         const instrumentRepository = yield* InstrumentRepository;
-        const assetAlias: Record<string, string> = { MATIC: 'POL' };
+        const assetAlias: Record<string, string> = { MATIC: 'POL', RNDR: 'RENDER', FTM: 'S' };
 
         return {
             resolveEligibleSoldOffBaseAssets: Effect.fn('BinanceAssetCodeService.resolveEligibleSoldOffBaseAssets')(function* (

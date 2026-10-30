@@ -80,46 +80,34 @@ appId: ${APP_ID}
                 waitToSettleTimeoutMs: 500
 - extendedWaitUntil:
       visible:
-          id: 'TransactionCard.FromAccount.E2E_Consolidation_A.Label'
+          text: '.*From E2E Consolidation A to E2E Consolidation B.*'
       timeout: 60000
-- assertVisible:
-      id: 'TransactionCard.FromAccount.E2E_Consolidation_A.Label'
-- assertVisible:
-      id: 'TransactionCard.ToAccount.E2E_Consolidation_B.Label'
 - assertVisible:
       id: 'TransactionCard.Label.E2E_Consolidation_P2_Out'
 - assertVisible:
-      id: 'TransactionCard.FromAccount.E2E_Consolidation_USD.Label'
-- assertVisible:
-      id: 'TransactionCard.ToAccount.E2E_Consolidation_EUR.Label'
+      text: '.*From E2E Consolidation USD to E2E Consolidation EUR.*'
 - assertVisible:
       id: 'TransactionCard.Label.E2E_Consolidation_ATM_Out'
 - assertNotVisible:
-      id: 'TransactionCard.ToAccount.E2E_Consolidation_Cash.Label'
+      text: '.*to E2E Consolidation Cash.*'
 - scrollUntilVisible:
       element:
           id: 'TransactionCard.Label.E2E_Consolidation_SameBank_Out_5524'
       direction: DOWN
 - assertVisible:
-      id: 'TransactionCard.FromAccount.E2E_Consolidation_Privat_Source.Label'
-- assertVisible:
-      id: 'TransactionCard.ToAccount.E2E_Consolidation_Privat_Target.Label'
+      text: '.*From E2E Consolidation Privat Source to E2E Consolidation Privat Target.*'
 - scrollUntilVisible:
       element:
           id: 'TransactionCard.Label.E2E_Consolidation_Bridge_Out'
       direction: DOWN
 - assertVisible:
-      id: 'TransactionCard.FromAccount.E2E_Consolidation_Bridge_Source.Label'
-- assertVisible:
-      id: 'TransactionCard.ToAccount.E2E_Consolidation_Bridge_Target.Label'
+      text: '.*From E2E Consolidation Bridge Source to E2E Consolidation Bridge Target.*'
 - scrollUntilVisible:
       element:
           id: 'TransactionCard.Label.E2E_Consolidation_Bridge_Chain_Out'
       direction: DOWN
 - assertVisible:
-      id: 'TransactionCard.FromAccount.E2E_Consolidation_Chain_Source.Label'
-- assertVisible:
-      id: 'TransactionCard.ToAccount.E2E_Consolidation_Chain_Target.Label'
+      text: '.*From E2E Consolidation Chain Source to E2E Consolidation Chain Target.*'
 
 # 5. Source titles are now hidden (consolidationParent != NULL)
 - assertNotVisible:
@@ -191,7 +179,7 @@ appId: ${APP_ID}
       timeout: 10000
 - extendedWaitUntil:
       notVisible:
-          id: 'TransactionCard.FromAccount.E2E_Consolidation_A.Label'
+          text: '.*From E2E Consolidation A to .*'
       timeout: 5000
 
 # 8. Final balances: consolidation never moves ATM cash

@@ -1,6 +1,5 @@
 import { TransactionFilterInterface } from '@budgie/contracts';
 import { useRouter } from 'expo-router';
-import { View } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -28,9 +27,5 @@ export const TransactionListUncategorizedPill = ({ filters }: Props) => {
         return null;
     }
 
-    return (
-        <View className="pt-2 pb-1">
-            <UncategorizedTransactionsPill count={count} onPress={handlePress} />
-        </View>
-    );
+    return <UncategorizedTransactionsPill count={count} onPress={handlePress} />;
 };

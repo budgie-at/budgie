@@ -1,0 +1,19 @@
+appId: ${APP_ID}
+---
+- tapOn:
+      id: 'TransactionCard.Label.${TRANSACTION_LABEL_ID}'
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionInfo.Page'
+      timeout: 5000
+- scrollUntilVisible:
+      element:
+          id: 'TransactionInfo.Row.Tags'
+      direction: DOWN
+- assertVisible: '${TAG_NAME}'
+- tapOn:
+      id: 'PageHeader.BackButton'
+- extendedWaitUntil:
+      visible:
+          id: 'TransactionsPage.Container'
+      timeout: 5000

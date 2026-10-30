@@ -83,6 +83,10 @@
             "deepLink": "budgie://create-account/BINANCE"
         },
         {
+            "name": "binance-sync-2",
+            "deepLink": "budgie://"
+        },
+        {
             "name": "net-worth-tracker-1",
             "deepLink": "budgie://"
         },

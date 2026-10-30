@@ -3,6 +3,55 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.128.0](https://github.com/budgie-at/budgie/compare/v6.127.0...v6.128.0) (2026-10-30)
+
+### Bug Fixes
+
+* **app:** accessibility and contrast for transaction rows ([d0d7de9](https://github.com/budgie-at/budgie/commit/d0d7de9d5b2566b2666c9b9ed0fffe832a063fbb))
+* **app:** align row subtitles with the ledger predicates ([ac19d28](https://github.com/budgie-at/budgie/commit/ac19d284a0a12d133f3c7b94f02164553b8fae18))
+* **app:** clean transfer subtitles and pinned edges ([9ede6f5](https://github.com/budgie-at/budgie/commit/9ede6f548ae36c219406b1a4dd6813bec203959d))
+* **app:** continuous pinned hairline and row clearance ([7fc4b13](https://github.com/budgie-at/budgie/commit/7fc4b1316dc83ca1c607e4ffb722e69b784ffcba))
+* **app:** dynamic type and reduce motion for the account header ([4b13c8b](https://github.com/budgie-at/budgie/commit/4b13c8bed07cc2da8d3c0216f89c72e28f3e4483))
+* **app:** keep pending read tracking stable across renders ([f2f830f](https://github.com/budgie-at/budgie/commit/f2f830f60127e2a5fe9c67f3534e010004b4d265))
+* **app:** ledger-accurate daily totals ([874e89e](https://github.com/budgie-at/budgie/commit/874e89eb186b533c0b2d79e757d404481b7b8237))
+* **app:** preserve income signs in debt accessibility labels ([5e74136](https://github.com/budgie-at/budgie/commit/5e74136ec0944eb491f6d7b4d6ac91674a39ec50))
+* **app:** restore sticky day context on shared lists ([0737521](https://github.com/budgie-at/budgie/commit/0737521c13c4ec07f00984211826f5418ac39f4f))
+* **app:** restore the shared collapsible title handoff ([1bc493f](https://github.com/budgie-at/budgie/commit/1bc493feb89001571525f9a587323f45063ad519))
+* **app:** scope the receipt marker selector to its transaction ([f3485a3](https://github.com/budgie-at/budgie/commit/f3485a3842b037eea43167baa485b9b127f9046e))
+* **app:** single-title handoff without slicing the hero ([756c68e](https://github.com/budgie-at/budgie/commit/756c68e2621c7dd1c106cdb1f6a1db3a69f5f6d8))
+* **app:** stable first frame when opening account details ([edc3e6f](https://github.com/budgie-at/budgie/commit/edc3e6fb5cc46436aa57632de0d0dfe533e059a4))
+* **app:** stable transaction count on the account list ([8915fba](https://github.com/budgie-at/budgie/commit/8915fbaae196fde1a8f38e7d7108c935b4d74818))
+
+### Features
+
+* **app:** compact grouped transaction rows and seamless sticky chrome ([e891e0e](https://github.com/budgie-at/budgie/commit/e891e0e9d0c23b7e61bdf148f9d55e0ab624cca7))
+* **app:** day-grouped transaction rows with calmer hero and amounts ([929d773](https://github.com/budgie-at/budgie/commit/929d773994ca836a3b86fcf51a6aed10c3c6a195))
+* **app:** morph hero balance into nav and sharpen secondary text ([58383b1](https://github.com/budgie-at/budgie/commit/58383b15aef5222353e751cac9d492e3c61df9ef))
+* **app:** opaque pinned chrome and continuous title handoff ([87b27ea](https://github.com/budgie-at/budgie/commit/87b27eab636ed1b73eb6630b828cd21c1e578055))
+* **app:** pin current day in chrome with a single clean scroll edge ([397ae28](https://github.com/budgie-at/budgie/commit/397ae2899e9e789c742e22c87b7806e6d1eb87b5))
+* **app:** polish account transaction list chrome and cards ([07833ba](https://github.com/budgie-at/budgie/commit/07833ba52cfa69aeea07f3b6f97ea70ada011fc3))
+* **app:** refine sticky fades, chips and uncategorized signal ([41772db](https://github.com/budgie-at/budgie/commit/41772db273e8df9c8fb40ba408dae3dec4c390a3))
+* **app:** seamless sticky day headers and calmer transaction rows ([3d0e5b7](https://github.com/budgie-at/budgie/commit/3d0e5b7be7c07df455b5af56eed49c95b88aee06))
+* **app:** stuck-aware day headers with daily totals ([7d21d2a](https://github.com/budgie-at/budgie/commit/7d21d2a406109e2b50bcc229338c19f69ff5c93b))
+
+
+# [6.127.0](https://github.com/budgie-at/budgie/compare/v6.126.5...v6.127.0) (2026-10-30)
+
+### Bug Fixes
+
+* **sync:** fix Binance sync CI failures ([732fd76](https://github.com/budgie-at/budgie/commit/732fd7654c1aabb5e831b8f4645221471aafcf98))
+* **sync:** resolve lint errors ([9c4aae5](https://github.com/budgie-at/budgie/commit/9c4aae5beaedbc90de811f23d02ab8a54b5ff49a))
+* **sync:** resume every Binance history backfill across deferred runs ([e25ada6](https://github.com/budgie-at/budgie/commit/e25ada6f7568de03b4719b30eae9320ff457c0c9))
+* **sync:** support multiple Binance keys and verify the account on key rotation ([403c474](https://github.com/budgie-at/budgie/commit/403c4742e5535d7c36242ea2398f81d984cb9cb8))
+* **sync:** walk Binance fiat history to the lookback in resumable chunks and repair imported fiat amounts once ([e39cc9a](https://github.com/budgie-at/budgie/commit/e39cc9ac6e6625a9b6421ab0c78cf7937accd814))
+
+### Features
+
+* **app:** explain Binance sync failures with translated messages ([51e58e0](https://github.com/budgie-at/budgie/commit/51e58e09c179891d20760cea15086671c099b73f))
+* **landing:** list unsupported Binance sources and refresh app catalogs ([9aba1c1](https://github.com/budgie-at/budgie/commit/9aba1c1cb1979cacaa17e01dbd3817b40fb7552b))
+* **sync:** store a stable error code with the last sync failure ([fdb9305](https://github.com/budgie-at/budgie/commit/fdb930568472c3f4f56df40d2f4a4ca0e1862d84))
+
+
 ## [6.126.5](https://github.com/budgie-at/budgie/compare/v6.126.4...v6.126.5) (2026-10-29)
 
 ### Bug Fixes

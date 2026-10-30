@@ -3177,6 +3177,10 @@ msgstr "Detectado automáticamente desde la configuración regional del disposit
 msgid "Auto-detection scans transaction history for amount + cadence patterns — no manual setup"
 msgstr "La detección automática analiza el historial de transacciones en busca de patrones de importe y cadencia, sin configuración manual"
 
+#: src/app/[lang]/features/binance-sync/page.tsx
+msgid "Auto-Invest, Binance Pay, Binance Card, gift cards, sub-account transfers, margin and futures are not synced yet. Spot, Funding, Simple Earn (including locked rewards), P2P, Convert, dust to BNB conversions, deposits, withdrawals, dividends, airdrops, Launchpool, ETH and SOL staking rewards and Spot to Funding transfers are."
+msgstr "Auto-Invest, Binance Pay, Binance Card, tarjetas de regalo, transferencias entre subcuentas, margen y futuros aún no se sincronizan. Spot, Funding, Simple Earn (incluidas las recompensas bloqueadas), P2P, Convert, conversiones de polvo a BNB, depósitos, retiros, dividendos, airdrops, Launchpool, recompensas de staking de ETH y SOL y transferencias entre Spot y Funding sí."
+
 #: src/app/[lang]/bank-sync/metadata.ts
 msgid "automatic bank sync"
 msgstr "sincronización bancaria automática"
@@ -20224,6 +20228,10 @@ msgstr "¿Qué bancos admite Budgie?"
 #: src/app/[lang]/privacy/page.tsx
 msgid "Which banks have direct API support?"
 msgstr "¿Qué bancos tienen soporte de API directa?"
+
+#: src/app/[lang]/features/binance-sync/page.tsx
+msgid "Which Binance sources are not synced?"
+msgstr "¿Qué fuentes de Binance no se sincronizan?"
 
 #: src/app/[lang]/features/budget-planning/page.tsx
 msgid "Which budget periods are supported?"

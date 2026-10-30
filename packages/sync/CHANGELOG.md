@@ -3,6 +3,49 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.128.0](https://github.com/budgie-at/budgie/compare/v6.127.0...v6.128.0) (2026-10-30)
+
+**Note:** Version bump only for package @budgie/sync
+
+
+
+
+
+# [6.127.0](https://github.com/budgie-at/budgie/compare/v6.126.5...v6.127.0) (2026-10-30)
+
+### Bug Fixes
+
+* **sync:** accept Binance's empty dust and transfer history responses ([441d134](https://github.com/budgie-at/budgie/commit/441d13412debfddcef4170986720e35db562e8a4))
+* **sync:** anchor every enabled Binance key once per run before any batch is due ([9a664d2](https://github.com/budgie-at/budgie/commit/9a664d2bad7d70bf30fcaec34d64e13275c4b916))
+* **sync:** backfill newly added Binance sources once for integrations that already synced ([7d68f23](https://github.com/budgie-at/budgie/commit/7d68f2384da41f09040888ea986c0c281d30a41c))
+* **sync:** book Binance Spot-Funding transfers, honour walletType and count frozen funds ([fedeec3](https://github.com/budgie-at/budgie/commit/fedeec3a2cbd17b49a0d37244f9ac7740d7b94e7))
+* **sync:** cap the polling rate-gate wait at one interval when the clock moves back ([911060d](https://github.com/budgie-at/budgie/commit/911060d4e035be36ce2ac8ccfc138fb5a3db8f50))
+* **sync:** fix Binance sync CI failures ([732fd76](https://github.com/budgie-at/budgie/commit/732fd7654c1aabb5e831b8f4645221471aafcf98))
+* **sync:** harden Binance mapper parsing, windows, earn totals and per-integration dedupe ([f19dbea](https://github.com/budgie-at/budgie/commit/f19dbea549ae7f455ffed56779214b465c799c59))
+* **sync:** keep deleted Binance data deleted and resolve renamed assets to one canonical account ([111f19c](https://github.com/budgie-at/budgie/commit/111f19c6e3b7226f874e7673e668f3173129d8aa))
+* **sync:** keep one failing Binance source from blocking the rest ([b46784a](https://github.com/budgie-at/budgie/commit/b46784a79cc5e3f391334df37f0693ebede32040)), closes [#1765](https://github.com/budgie-at/budgie/issues/1765)
+* **sync:** keep the history progress of a skipped Binance source unchanged so its backfill resumes later ([804eadd](https://github.com/budgie-at/budgie/commit/804eadd68447fa4d4abe8edeca781765ed7a6f66))
+* **sync:** resolve lint errors ([9c4aae5](https://github.com/budgie-at/budgie/commit/9c4aae5beaedbc90de811f23d02ab8a54b5ff49a))
+* **sync:** resolve run tokens only for providers with a pre-run hook ([8df3960](https://github.com/budgie-at/budgie/commit/8df39603326980ca19824117589f1aa53c314cf5))
+* **sync:** resume every Binance history backfill across deferred runs ([e25ada6](https://github.com/budgie-at/budgie/commit/e25ada6f7568de03b4719b30eae9320ff457c0c9))
+* **sync:** skip a Binance product for the run when the account lacks it instead of failing the whole sync ([7f553ee](https://github.com/budgie-at/budgie/commit/7f553ee80586de64df92a5978a13c2b5a97aa958))
+* **sync:** strip the query string without a regular expression ([4ca446e](https://github.com/budgie-at/budgie/commit/4ca446e4307f0918fad3db9e3cb7bdc90a2f3407))
+* **sync:** support multiple Binance keys and verify the account on key rotation ([403c474](https://github.com/budgie-at/budgie/commit/403c4742e5535d7c36242ea2398f81d984cb9cb8))
+* **sync:** type Binance history progress lookups as possibly missing ([45703c8](https://github.com/budgie-at/budgie/commit/45703c87da2afd5ab29656c82de18aadb32908b6))
+* **sync:** walk Binance fiat history to the lookback in resumable chunks and repair imported fiat amounts once ([e39cc9a](https://github.com/budgie-at/budgie/commit/e39cc9ac6e6625a9b6421ab0c78cf7937accd814))
+
+### Features
+
+* **app:** explain Binance sync failures with translated messages ([51e58e0](https://github.com/budgie-at/budgie/commit/51e58e09c179891d20760cea15086671c099b73f))
+* **sync:** store a stable error code with the last sync failure ([fdb9305](https://github.com/budgie-at/budgie/commit/fdb930568472c3f4f56df40d2f4a4ca0e1862d84))
+* **sync:** sync Binance locked earn rewards, dust conversions, dividends and ETH/SOL staking rewards ([7e8c03b](https://github.com/budgie-at/budgie/commit/7e8c03b1ba360bdba88703fe1bca50fac22c5a98))
+
+### Performance Improvements
+
+* **sync:** backfill all Binance accounts of a key in one pass ([fd7f67b](https://github.com/budgie-at/budgie/commit/fd7f67b03081a0eacc02d3d4930f5ad9f7e462ca)), closes [#1824](https://github.com/budgie-at/budgie/issues/1824)
+* **sync:** pace Binance requests on real per-endpoint weight limits ([4ed2566](https://github.com/budgie-at/budgie/commit/4ed2566d7a7de95167daaaa5bd288c77d5bef111)), closes [#1824](https://github.com/budgie-at/budgie/issues/1824)
+
+
 ## [6.126.5](https://github.com/budgie-at/budgie/compare/v6.126.4...v6.126.5) (2026-10-29)
 
 **Note:** Version bump only for package @budgie/sync

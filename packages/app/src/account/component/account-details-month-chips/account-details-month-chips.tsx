@@ -1,11 +1,11 @@
-import { DEFAULT_TRANSACTION_FILTER, DatePeriodEnum, UserIconNameEnum } from '@budgie/contracts';
+import { DEFAULT_TRANSACTION_FILTER, DatePeriodEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
-import { useLingui } from '@lingui/react/macro';
-import { View } from 'react-native';
+import { Trans, useLingui } from '@lingui/react/macro';
+import { Text, View } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
-import { StatChip } from '../../../@generic/component/stat-chip/stat-chip';
+import { CollapsibleChromeScrollFade } from '../../../@generic/component/collapsible-chrome-scroll-fade/collapsible-chrome-scroll-fade';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { getDateFilterByPeriod } from '../../../@generic/utils/date/get-date-filter-by-period.util';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
@@ -33,23 +33,28 @@ export const AccountDetailsMonthChips = ({ accountId }: Props) => {
     const formattedIncome = protectAmount(income, defaultInstrument.symbol);
 
     return (
-        <View
-            accessible
-            accessibilityLabel={t`This month: spent ${formattedExpense}, income ${formattedIncome}`}
-            className="flex-row flex-wrap justify-center gap-sm"
-        >
-            <StatChip
-                icon={UserIconNameEnum.TrendingDown}
-                iconClassName="text-destructive-foreground"
-                label={t`Spent`}
-                value={formattedExpense}
-            />
-            <StatChip
-                icon={UserIconNameEnum.TrendingUp}
-                iconClassName="text-positive-foreground"
-                label={t`Income`}
-                value={formattedIncome}
-            />
-        </View>
+        <CollapsibleChromeScrollFade>
+            <View
+                accessible
+                accessibilityLabel={t`This month: spent ${formattedExpense}, income ${formattedIncome}`}
+                className="items-center gap-y-xs"
+            >
+                <Text className="text-xs text-secondary-foreground text-center" numberOfLines={1}>
+                    <Trans>This month</Trans>
+                </Text>
+
+                <Text
+                    className="text-[13px] text-secondary-foreground text-center tabular-nums"
+                    numberOfLines={1}
+                    adjustsFontSizeToFit
+                    minimumFontScale={0.85}
+                >
+                    <Trans>
+                        Spent <Text className="text-primary font-semibold">{formattedExpense}</Text> · Income{' '}
+                        <Text className="text-primary font-semibold">{formattedIncome}</Text>
+                    </Trans>
+                </Text>
+            </View>
+        </CollapsibleChromeScrollFade>
     );
 };

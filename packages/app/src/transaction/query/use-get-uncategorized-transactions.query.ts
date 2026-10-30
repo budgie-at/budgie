@@ -1,4 +1,5 @@
 import { TransactionViewRepository } from '@budgie/contracts';
+import * as Option from 'effect/Option';
 
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
 import { TRANSACTION_LIST_TABLES } from '../constant/transaction-list-tables.constant';
@@ -18,5 +19,6 @@ export const uncategorizedTransactionsAtom = databaseQueryFamily(
 export const useGetUncategorizedTransactionsQuery = (filters: TransactionFilterInterface) =>
     useGetTransactionSectionsQuery(
         (limit, language) => uncategorizedTransactionsAtom([filters, language, limit]),
-        buildTransactionFilterKey(filters)
+        buildTransactionFilterKey(filters),
+        Option.none()
     );

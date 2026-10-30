@@ -101,10 +101,12 @@ env:
 
 - extendedWaitUntil:
     visible:
-      id: 'TransactionCard.Tag.Rules_Test_Tag'
-- extendedWaitUntil:
-    visible:
       id: 'TransactionCard.Label.Starbucks_Coffee'
+- runFlow:
+    file: subflows/transactions/assert-transaction-tag.flow.yaml
+    env:
+      TRANSACTION_LABEL_ID: 'Starbucks_Coffee'
+      TAG_NAME: ${TAG_NAME}
 
 - runFlow:
     file: subflows/navigate-to-rules.flow.yaml
@@ -180,11 +182,12 @@ env:
       id: 'TransactionCard.Category.Rules_Test_Category'
 - extendedWaitUntil:
     visible:
-      id: 'TransactionCard.Tag.Rules_Test_Tag'
-
-- extendedWaitUntil:
-    visible:
       id: 'TransactionCard.Label.Amazon_Purchase'
+- runFlow:
+    file: subflows/transactions/assert-transaction-tag.flow.yaml
+    env:
+      TRANSACTION_LABEL_ID: 'Amazon_Purchase'
+      TAG_NAME: ${TAG_NAME}
 
 - runFlow:
     file: subflows/navigate-to-rules.flow.yaml

@@ -123,6 +123,22 @@ export class SyncIntegrationTokenService extends Context.Service<SyncIntegration
                         yield* bankIntegrationRepository.updateById(integrationId, { label });
                     }
                 }),
+                fillIntegrationClientId: Effect.fn('SyncIntegrationTokenService.fillIntegrationClientId')(function* (
+                    integrationId: number,
+                    externalClientId: string
+                ) {
+                    const integration = yield* bankIntegrationRepository.findById(integrationId);
+                    if (isDefined(integration) && !isNotEmptyString(integration.externalClientId)) {
+                        yield* bankIntegrationRepository.updateById(integrationId, { externalClientId });
+                    }
+                }),
+                findIntegrationClientId: Effect.fn('SyncIntegrationTokenService.findIntegrationClientId')(function* (
+                    integrationId: number
+                ) {
+                    return (yield* bankIntegrationRepository.findById(integrationId))?.externalClientId ?? null;
+                }),
+                findIntegrationByClientId: (provider: ExternalSourceEnum, externalClientId: string) =>
+                    bankIntegrationRepository.findByProviderAndClientId(provider, externalClientId),
                 getOrCreateIntegration,
                 updateAccountToken: Effect.fn('SyncIntegrationTokenService.updateAccountToken')(function* (
                     provider: ExternalSourceEnum,

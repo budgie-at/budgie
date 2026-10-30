@@ -1,3 +1,5 @@
+import { isThisYear } from 'date-fns/isThisYear';
+
 import { useI18nContext } from '../context/i18n.context';
 
 export const useFormatDate = () => {
@@ -10,6 +12,9 @@ export const useFormatDate = () => {
 
     const formatWeekdayWithTime = (date: Date | string) =>
         intl.formatDate(date, { weekday: 'long', hour: '2-digit', minute: '2-digit', hourCycle: 'h24' });
+
+    const formatWeekdayAndDay = (date: Date | string) =>
+        intl.formatDate(date, { weekday: 'short', month: 'short', day: 'numeric', ...(!isThisYear(date) && { year: 'numeric' }) });
 
     const formatShortMonth = (date: Date | string) => intl.formatDate(date, { month: 'short' });
 
@@ -38,6 +43,7 @@ export const useFormatDate = () => {
     return {
         formatWeekdayAndDateWithTime,
         formatMonthAndDay,
+        formatWeekdayAndDay,
         formatShortMonth,
         formatFullMonth,
         formatMonthAndYear,
