@@ -484,7 +484,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
             return this.exchangeSymbols;
         }
 
-        yield* this.throttle.waitIfNeeded();
+        yield* this.throttle.waitIfNeeded(EXCHANGE_INFO_ENDPOINT);
         const exchangeInfo = yield* this.fetchJson(BinanceExchangeInfoApiSchema, EXCHANGE_INFO_ENDPOINT).pipe(Effect.option);
 
         if (Option.isNone(exchangeInfo)) {
@@ -622,8 +622,8 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return this.rejectedCapitalExternalIds;
     }
 
-    protected override onResponseHeaders(headers: Headers.Headers): void {
-        this.throttle.recordHeaders(headers);
+    protected override onResponseHeaders(headers: Headers.Headers, endpoint: string): void {
+        this.throttle.recordHeaders(endpoint, headers);
     }
 
     protected override fetchJson<S extends Schema.ConstraintDecoder<unknown>>(schema: S, endpoint: string, method: HttpMethod = 'GET') {
@@ -857,7 +857,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
                 onSome: Effect.succeed
             });
 
-            yield* this.throttle.waitIfNeeded();
+            yield* this.throttle.waitIfNeeded(endpoint);
             const query = Object.entries({ ...params, recvWindow: SIGNATURE_RECV_WINDOW_MS, timestamp: yield* this.resolveTimestamp() })
                 .map(([key, value]) => `${key}=${String(value)}`)
                 .join('&');

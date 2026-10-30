@@ -28,6 +28,7 @@ export { parsePrivatbankXlsx } from './privatbank/utils/parse-privatbank-xlsx.ut
 export type { PrivatbankRowInterface } from './privatbank/interface/privatbank-row.interface';
 
 export { BinanceSignedClient } from './binance/client/binance-signed.client';
+export { BinanceWeightThrottle } from './binance/client/binance-weight-throttle';
 export { mapBinanceDepositToTransaction, mapBinanceWithdrawalToTransaction, parseBinanceAmount } from './binance/mapper/binance.mapper';
 export { encodeBinanceAccountId, decodeBinanceAccountId } from './binance/utils/binance-account-id.util';
 export { BinanceHistorySourceEnum } from './binance/enum/binance-history-source.enum';

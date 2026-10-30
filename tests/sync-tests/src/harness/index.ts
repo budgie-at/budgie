@@ -60,12 +60,9 @@ export {
     BINANCE_WINDOW_FROM,
     BINANCE_WINDOW_TO,
     DEPOSIT_URL,
-    EMPTY_FIAT_RESPONSE,
-    FIAT_ORDERS_URL,
     stubBinanceServerTime,
     stubEmptyBinanceSources
 } from './binance/binance-raw-stub';
-export { withCoolDownSpy } from './binance/with-cooldown-spy';
 export { SYNC_ERROR_THRESHOLD, expectSyncFailedAndDisabled, httpFailureCases } from './scenario/error-recovery';
 export { seedExchangeRate } from './consolidation/seed-exchange-rate';
 export {
