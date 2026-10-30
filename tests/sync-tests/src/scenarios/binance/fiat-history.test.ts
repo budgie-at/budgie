@@ -78,7 +78,7 @@ describe('binance/fiat-history', () => {
             const { instrument } = yield* setupFiatScenario();
             binanceStub.accountsByApiKey([
                 { apiKey: 'test-api-key', uid: 1001, spotBalances: [] },
-                { apiKey: KEY_B, uid: 1002, spotBalances: [] }
+                { apiKey: KEY_B, uid: 1002, spotBalances: [buildBinance.balance({ asset: 'EUR', free: '100' })] }
             ]);
             yield* binanceSyncService.sync();
 

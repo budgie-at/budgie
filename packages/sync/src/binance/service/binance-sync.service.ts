@@ -10,11 +10,9 @@ import * as Schema from 'effect/Schema';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { SyncDeferredError } from '../../core/error/sync-deferred.error';
 import { SyncInvalidResponseError } from '../../core/error/sync-invalid-response.error';
 import { SyncRegionUnavailableError } from '../../core/error/sync-region-unavailable.error';
-import { SyncTokenClientMismatchError } from '../../core/error/sync-token-client-mismatch.error';
 import { SyncUnauthorizedError } from '../../core/error/sync-unauthorized.error';
 import { pollingSyncDependenciesLayer } from '../../core/layer/polling-sync-dependencies.layer';
 import { SyncWorkload } from '../../core/port/sync-workload.port';
@@ -30,6 +28,7 @@ import { BinanceHistorySourceEnum } from '../enum/binance-history-source.enum';
 
 import { BinanceAccountService } from './binance-account.service';
 import { BinanceAssetCodeService } from './binance-asset-code.service';
+import { BinanceBalanceCorrectionService } from './binance-balance-correction.service';
 import { BinanceHistoryProgressService } from './binance-history-progress.service';
 import { BinanceSourceCommitService } from './binance-source-commit.service';
 import { BinanceTradeCursorService } from './binance-trade-cursor.service';
@@ -50,6 +49,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
         const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
         const binanceAccountService = yield* BinanceAccountService;
         const binanceAssetCodeService = yield* BinanceAssetCodeService;
+        const binanceBalanceCorrectionService = yield* BinanceBalanceCorrectionService;
         const binanceHistoryProgressService = yield* BinanceHistoryProgressService;
         const binanceSourceCommitService = yield* BinanceSourceCommitService;
         const binanceTradeCursorService = yield* BinanceTradeCursorService;
@@ -112,6 +112,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 transfersSynced: false,
                 sourcesSynced: false,
                 balancesAnchored: false,
+                balancesCorrected: false,
                 signedClient: new BinanceSignedClient(token, run.deadlineAtMs),
                 exchangeAccounts: null
             };
@@ -211,15 +212,15 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             return yield* commitTransfers(transfers, token);
         });
 
-            const transferredCount = isRunDeferred()
-                ? 0
-                : yield* commitTransferRange(token, getRunSignedClient(token).getFiatPaymentTransfers(fromUnixTime, toUnixTime));
         const commitFiatRange = Effect.fnUntraced(function* (token: string, fromUnixTime: number, toUnixTime: number | null) {
             const committedCount = yield* commitSourceType(
                 token,
                 getRunSignedClient(token).getTransactions(BinanceHistorySourceEnum.FIAT, fromUnixTime, toUnixTime),
                 updateExisting
             );
+            const transferredCount = isRunDeferred()
+                ? 0
+                : yield* commitTransferRange(token, getRunSignedClient(token).getFiatPaymentTransfers(fromUnixTime, toUnixTime));
             if (!isRunDeferred()) {
                 fiatSyncedAtMsByToken.set(token, yield* Clock.currentTimeMillis);
             }
@@ -406,29 +407,19 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             }
         });
 
-        const assertSameClient = Effect.fnUntraced(function* (integrationId: number, clientId: string) {
-            const storedClientId = yield* syncIntegrationTokenService.findIntegrationClientId(integrationId);
-            if (isNotEmptyString(storedClientId) && storedClientId !== clientId) {
-                return yield* new SyncTokenClientMismatchError({
-                    provider: SyncProviderEnum.BINANCE,
-                    integrationId,
-                    message: 'This Binance API key belongs to a different account'
-                });
-            }
-        });
-
-        const resolveSetupIntegration = Effect.fnUntraced(function* (token: string, clientId: string) {
-            const sameClientIntegration = yield* syncIntegrationTokenService.findIntegrationByClientId(provider, clientId);
-            if (isDefined(sameClientIntegration) && sameClientIntegration.token !== token) {
-                yield* syncIntegrationTokenService.updateIntegrationToken(sameClientIntegration.id, token);
-
-                return sameClientIntegration;
+        const correctBalances = Effect.fnUntraced(function* (token: string) {
+            const { sourcesSynced, transfersSynced, balancesCorrected, signedClient } = getTokenRun(token);
+            if (isRunDeferred() || !sourcesSynced || !transfersSynced || balancesCorrected || signedClient.hasSourceFailure()) {
+                return;
             }
 
             const integration = yield* syncIntegrationTokenService.getOrCreateIntegration(provider, token);
-            yield* syncIntegrationTokenService.fillIntegrationClientId(integration.id, clientId);
-
-            return integration;
+            yield* binanceBalanceCorrectionService.correctAllBalances(
+                yield* fetchExchangeAccounts(token),
+                integration.id,
+                new Date(run.startedAtMs)
+            );
+            patchTokenRun(token, { balancesCorrected: true });
         });
 
         const pollingSyncService = yield* makePollingSyncService({
@@ -448,6 +439,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                           Effect.orDie(Effect.suspend(() => binanceTradeCursorService.persistRunWarning(sync, getRunSignedClient(token))))
                       );
                 yield* completeIntegrationBackwardSyncs(token);
+                yield* correctBalances(token);
                 if (isPositiveNumber(changedCount)) {
                     yield* accountBalanceIncrementalService.updateAllBalances(true);
                     yield* syncWorkload.enqueueTransferConsolidation();
@@ -520,7 +512,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 const clientId = yield* client.getAccountUid();
                 const currentIntegrationId = (yield* accountRepository.findById(accountId))?.integrationId;
                 if (isDefined(currentIntegrationId)) {
-                    yield* assertSameClient(currentIntegrationId, clientId);
+                    yield* binanceAccountService.assertSameClient(currentIntegrationId, clientId);
                 }
 
                 yield* pollingSyncService.updateAccountToken(accountId, token);
@@ -534,7 +526,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 const resolvableAccounts = yield* binanceAccountService.findResolvableAccounts(
                     (yield* client.getAccounts()).filter(exchangeAccount => externalIds.includes(exchangeAccount.id))
                 );
-                const integration = yield* resolveSetupIntegration(token, yield* client.getAccountUid());
+                const integration = yield* binanceAccountService.resolveSetupIntegration(token, yield* client.getAccountUid());
 
                 for (const resolvableAccount of resolvableAccounts) {
                     const account = yield* binanceAccountService.setupAccount(resolvableAccount, integration.id);
@@ -556,6 +548,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             AccountBalanceIncrementalService.layer,
             BinanceAccountService.layer,
             BinanceAssetCodeService.layer,
+            BinanceBalanceCorrectionService.layer,
             BinanceHistoryProgressService.layer,
             BinanceSourceCommitService.layer,
             BinanceTradeCursorService.layer
