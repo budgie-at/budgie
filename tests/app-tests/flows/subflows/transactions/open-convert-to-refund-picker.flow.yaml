@@ -15,9 +15,12 @@ env:
 
 - scrollUntilVisible:
     element:
-      id: 'TransactionActionsMenu.ConvertToRefundButton'
+      id: 'TransactionInfo.ConvertButton'
     direction: DOWN
     centerElement: true
+- waitForAnimationToEnd
+- tapOn:
+      id: 'TransactionInfo.ConvertButton'
 - extendedWaitUntil:
       visible:
           id: 'TransactionActionsMenu.ConvertToRefundButton'
