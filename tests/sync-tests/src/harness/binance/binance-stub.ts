@@ -1,6 +1,6 @@
 import { HttpResponse, http } from 'msw';
 
-import { isDefined, isEmptyArray, isString } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isNotEmptyArray, isString } from '@rnw-community/shared';
 
 import { mockServer } from '../scenario/mock-server';
 
@@ -216,7 +216,7 @@ const respondEnvelopePage =
     <TRow>(matched: TRow[], url: URL) => ({
         code: '000000',
         message: 'success',
-        data: slicePage(url, matched, paging),
+        ...(isNotEmptyArray(matched) && { data: slicePage(url, matched, paging) }),
         total: matched.length,
         success: true
     });
