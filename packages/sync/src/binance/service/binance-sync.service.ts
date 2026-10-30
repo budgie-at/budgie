@@ -70,7 +70,6 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
         ]);
         const decodeCredentials = Schema.decodeUnknownEffect(Schema.fromJsonString(BinanceCredentialsSchema));
         const historyStartedAt = new Date('2017-07-01T00:00:00.000Z');
-        const fiatBackfillChunkSeconds = 365 * 24 * 60 * 60;
         const headOverlapSeconds = forwardOverlapHours * 60 * 60;
         const freshRunState = (deadlineAtMs: number, startedAtMs: number): BinanceRunStateInterface => ({
             deadlineAtMs,
@@ -257,8 +256,6 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 return isFiat && !isFiatRefreshDue(token) ? 0 : yield* fetchRange(windowStartSeconds, null);
             }
 
-            const chunkSeconds = isFiat ? fiatBackfillChunkSeconds : Number.POSITIVE_INFINITY;
-            const startedAtSeconds = Math.floor(run.startedAtMs / 1000);
             let committedCount = 0;
             if (isDefined(progress)) {
                 committedCount += yield* fetchRange(resolveHeadStartSeconds(progress.headAt), null);
@@ -268,25 +265,21 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 yield* binanceHistoryProgressService.save(integration.id, source, { ...progress, headAt: run.startedAtMs });
             }
 
-            let tailAt = progress?.tailAt ?? Number.POSITIVE_INFINITY;
-            let chunkEndSeconds = isDefined(progress) ? Math.ceil(progress.tailAt / 1000) : null;
-            let chunkStartSeconds = Number.POSITIVE_INFINITY;
-            while (chunkStartSeconds > lookbackSeconds && !isRunDeferred()) {
-                chunkStartSeconds = Math.max(lookbackSeconds, (chunkEndSeconds ?? startedAtSeconds) - chunkSeconds);
-                committedCount += yield* fetchRange(chunkStartSeconds, chunkEndSeconds);
-                if (client.isSourceSkipped(source)) {
-                    yield* binanceHistoryProgressService.save(integration.id, source, {
-                        headAt: run.startedAtMs,
-                        tailAt: Math.min(tailAt, run.startedAtMs)
-                    });
+            const tailAt = progress?.tailAt ?? Number.POSITIVE_INFINITY;
+            committedCount += yield* fetchRange(lookbackSeconds, isDefined(progress) ? Math.ceil(progress.tailAt / 1000) : null);
+            if (client.isSourceSkipped(source)) {
+                yield* binanceHistoryProgressService.save(integration.id, source, {
+                    headAt: run.startedAtMs,
+                    tailAt: Math.min(tailAt, run.startedAtMs)
+                });
 
-                    return committedCount;
-                }
-                const reachedAt = isRunDeferred() ? client.getDeferredFrontierMs() : chunkStartSeconds * 1000;
-                tailAt = Math.min(tailAt, reachedAt ?? tailAt);
-                yield* binanceHistoryProgressService.save(integration.id, source, { headAt: run.startedAtMs, tailAt });
-                chunkEndSeconds = chunkStartSeconds;
+                return committedCount;
             }
+            const reachedAt = isRunDeferred() ? client.getDeferredFrontierMs() : lookbackSeconds * 1000;
+            yield* binanceHistoryProgressService.save(integration.id, source, {
+                headAt: run.startedAtMs,
+                tailAt: Math.min(tailAt, reachedAt ?? tailAt)
+            });
 
             return committedCount;
         });

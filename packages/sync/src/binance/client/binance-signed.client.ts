@@ -105,7 +105,6 @@ import type * as HttpClient from 'effect/http/HttpClient';
 import type { HttpMethod } from 'effect/http/HttpMethod';
 
 const API_BASE_URL = 'https://api.binance.com';
-const FIAT_MAX_PERIOD_MS = 2592000000;
 const MAJOR_QUOTE_ASSETS: readonly string[] = ['USDT', 'FDUSD', 'BTC', 'BNB', 'BUSD'];
 const SPOT_BALANCE_ENDPOINT = '/sapi/v3/asset/getUserAsset';
 const FUNDING_BALANCE_ENDPOINT = '/sapi/v1/asset/get-funding-asset';
@@ -929,7 +928,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return this.cached(
             this.fiatOrderCache,
             `${transactionType}:${FIAT_ORDERS_ENDPOINT}:${startTimeMs}-${endTimeMs}`,
-            this.walkPagedWindows(FIAT_MAX_PERIOD_MS, startTimeMs, endTimeMs, (page, windowStartMs, windowEndMs) =>
+            this.walkPagedWindows(Number.POSITIVE_INFINITY, startTimeMs, endTimeMs, (page, windowStartMs, windowEndMs) =>
                 this.signedRequest(BinanceFiatOrderListApiSchema, FIAT_ORDERS_ENDPOINT, 'GET', {
                     transactionType,
                     beginTime: windowStartMs,
@@ -939,7 +938,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
                 }).pipe(
                     Effect.map(response => ({
                         rows: response.data.filter(order => FIAT_ACCEPTED_STATUSES.has(order.status)),
-                        hasMore: response.data.length === FIAT_ROWS_PER_PAGE
+                        hasMore: response.data.length === FIAT_ROWS_PER_PAGE && page * FIAT_ROWS_PER_PAGE < response.total
                     }))
                 )
             )
@@ -950,7 +949,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
         return this.cached(
             this.fiatPaymentCache,
             `${startTimeMs}-${endTimeMs}`,
-            this.walkPagedWindows(FIAT_MAX_PERIOD_MS, startTimeMs, endTimeMs, (page, windowStartMs, windowEndMs) =>
+            this.walkPagedWindows(Number.POSITIVE_INFINITY, startTimeMs, endTimeMs, (page, windowStartMs, windowEndMs) =>
                 this.signedRequest(BinanceFiatPaymentListApiSchema, FIAT_PAYMENTS_ENDPOINT, 'GET', {
                     transactionType: FIAT_PAYMENT_BUY_TRANSACTION_TYPE,
                     beginTime: windowStartMs,
@@ -960,7 +959,7 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
                 }).pipe(
                     Effect.map(response => ({
                         rows: response.data.filter(payment => payment.status === FIAT_PAYMENT_ACCEPTED_STATUS),
-                        hasMore: response.data.length === FIAT_ROWS_PER_PAGE
+                        hasMore: response.data.length === FIAT_ROWS_PER_PAGE && page * FIAT_ROWS_PER_PAGE < response.total
                     }))
                 )
             )
