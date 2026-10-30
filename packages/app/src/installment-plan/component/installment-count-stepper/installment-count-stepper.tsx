@@ -46,15 +46,14 @@ export const InstallmentCountStepper = ({ count, minimumCount, onChange }: Props
                 <AmountInput
                     value={count}
                     onChangeValue={handleChangeValue}
-                    commitOnBlur
                     selectTextOnFocus
                     borderless
                     textAlign="right"
-                    inputClassName="h-auto min-w-8 px-0 text-lg font-semibold text-primary tabular-nums"
+                    inputClassName="h-auto min-w-8 px-0 py-0 text-(length:--text-lg) font-semibold text-primary tabular-nums"
                     accessibilityLabel={t`Number of months`}
                     testID={ConvertToInstallmentModalSelector.CountInput}
                 />
-                <Text className="text-md font-medium text-secondary-foreground">{monthsLabel}</Text>
+                <Text className="text-lg font-medium text-secondary-foreground">{monthsLabel}</Text>
             </View>
             <InstallmentCountStepButton
                 icon={UserIconNameEnum.Plus}
