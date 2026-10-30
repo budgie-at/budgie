@@ -2022,7 +2022,7 @@ msgid "Create plan"
 msgstr "Créer le plan"
 
 #: src/transaction/components/create-rule-menu-item/create-rule-menu-item.tsx
-#: src/transaction/components/transaction-info-actions-group/transaction-info-actions-group.tsx
+#: src/transaction/components/transaction-info-create-rule-row/transaction-info-create-rule-row.tsx
 msgid "Create rule"
 msgstr "Créer une règle"
 

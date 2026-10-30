@@ -1,10 +1,12 @@
 import { TransactionConsolidationTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
+import { getTransactionFeeEntries } from '@budgie/ledger';
 import { doesRuleMatchTransaction } from '@budgie/rules';
 import { useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
 import { View } from 'react-native';
 
 import { ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
+import { isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
 import { dismissAllOrReplace } from '../../../@generic/utils/dismiss-all-or-replace.util';
 import { useGetEnabledRulesQuery } from '../../../rule/query/use-get-enabled-rules.query';
@@ -13,9 +15,11 @@ import { useTransactionInfoHandoff } from '../../hook/use-transaction-info-hando
 import { useTransactionInfoSimilarStatsQuery } from '../../query/use-transaction-info-similar-stats.query';
 import { convertTransactionToInput } from '../../utils/convert-transaction-to-input.util';
 import { getTransactionDisplayTitle } from '../../utils/get-transaction-display-title.util';
+import { TransactionActionsMenuSelector } from '../transaction-actions-menu/transaction-actions-menu.selector';
 import { TransactionInfoAccountRows } from '../transaction-info-account-rows/transaction-info-account-rows';
 import { TransactionInfoActionsGroup } from '../transaction-info-actions-group/transaction-info-actions-group';
 import { TransactionInfoCategoryRows } from '../transaction-info-category-rows/transaction-info-category-rows';
+import { TransactionInfoCreateRuleRow } from '../transaction-info-create-rule-row/transaction-info-create-rule-row';
 import { TransactionInfoGroup } from '../transaction-info-group/transaction-info-group';
 import { TransactionInfoHeader } from '../transaction-info-header/transaction-info-header';
 import { TransactionInfoHero } from '../transaction-info-hero/transaction-info-hero';
@@ -61,6 +65,9 @@ export const TransactionInfoPageContent = ({
             ? []
             : enabledRules.filter(rule => doesRuleMatchTransaction(rule, transactionInput, suggestRuleData)).map(rule => rule.id);
 
+    const pageActionItems = isNotEmptyArray(getTransactionFeeEntries(transaction.entries))
+        ? actionItems.filter(item => item.testID !== TransactionActionsMenuSelector.FeeButton)
+        : actionItems;
     const isRefundPurchase = transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND;
     const handleGoBack = () => void router.back();
     const handleDestructiveAction = isRefundPurchase ? undoRefund : onDelete;
@@ -83,6 +90,7 @@ export const TransactionInfoPageContent = ({
                             {isRefundPurchase ? <TransactionInfoRefundSummary transaction={transaction} /> : null}
                             <TransactionInfoCategoryRows transaction={transaction} />
                             <TransactionInfoTagsSection transaction={transaction} />
+                            {isEmptyArray(pageActionItems) ? <TransactionInfoCreateRuleRow transaction={transaction} /> : null}
                         </TransactionInfoGroup>
 
                         <TransactionInfoNoteGroup
@@ -92,7 +100,7 @@ export const TransactionInfoPageContent = ({
 
                         <TransactionInfoSimilarCard stats={stats} title={t`Similar transactions`} isLoading={isLoading} />
 
-                        <TransactionInfoActionsGroup transaction={transaction} items={actionItems} onDelete={handleDestructiveAction} />
+                        <TransactionInfoActionsGroup transaction={transaction} items={pageActionItems} onDelete={handleDestructiveAction} />
                     </View>
                 </View>
             </TransactionInfoScrollView>
