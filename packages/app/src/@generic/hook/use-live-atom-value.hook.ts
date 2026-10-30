@@ -1,6 +1,6 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
-import { useLayoutEffect, useState } from 'react';
+import { useEffectEvent, useLayoutEffect, useState } from 'react';
 
 import { emptyFn } from '@rnw-community/shared';
 
@@ -12,6 +12,7 @@ export const useLiveAtomValue = <A, E>(atom: Atom.Atom<AsyncResult.AsyncResult<A
     const result = useAtomValue(atom);
     const [settledResult, setSettledResult] = useState(result);
     const trackPendingRead = useRevealGateTrack();
+    const trackRead = useEffectEvent(() => trackPendingRead());
 
     if (!AsyncResult.isInitial(result) && result !== settledResult) {
         setSettledResult(result);
@@ -20,7 +21,7 @@ export const useLiveAtomValue = <A, E>(atom: Atom.Atom<AsyncResult.AsyncResult<A
     const liveResult = AsyncResult.isInitial(result) ? settledResult : result;
     const isPending = AsyncResult.isInitial(liveResult);
 
-    useLayoutEffect(() => (isPending ? trackPendingRead() : emptyFn), [isPending, trackPendingRead]);
+    useLayoutEffect(() => (isPending ? trackRead() : emptyFn), [isPending]);
 
     return liveResult;
 };
