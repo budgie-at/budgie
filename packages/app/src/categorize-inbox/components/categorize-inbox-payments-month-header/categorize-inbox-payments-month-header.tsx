@@ -54,7 +54,8 @@ export const CategorizeInboxPaymentsMonthHeader = ({ group }: Props) => {
         ) : null;
 
     return (
-        <View className="min-h-[32px] flex-row items-center gap-x-xl px-3xl pb-sm pt-5xl">
+        <View className="min-h-[44px] flex-row items-center gap-x-xl px-3xl pb-xs pt-xl">
+            <View className="absolute top-0 right-0 left-0 h-hairline bg-surface-separator" pointerEvents="none" />
             <Text className="text-primary min-w-0 flex-1 text-[15px] font-semibold" numberOfLines={1} accessibilityRole="header">
                 {formatFullMonthAndYear(group.month)}
             </Text>

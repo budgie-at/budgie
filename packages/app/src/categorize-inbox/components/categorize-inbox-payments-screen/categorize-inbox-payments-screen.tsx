@@ -1,4 +1,3 @@
-import { plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
 import { Text, View } from 'react-native';
@@ -8,9 +7,10 @@ import { isDefined } from '@rnw-community/shared';
 
 import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 import { useCategorizeInboxCluster } from '../../hook/use-categorize-inbox-cluster.hook';
 import { groupCategorizeInboxRowsByMonth } from '../../utils/group-categorize-inbox-rows-by-month.util';
+import { CategorizeInboxClusterRow } from '../categorize-inbox-cluster-row/categorize-inbox-cluster-row';
+import { CategorizeInboxOptionCard } from '../categorize-inbox-option-card/categorize-inbox-option-card';
 import { CategorizeInboxPaymentsMonth } from '../categorize-inbox-payments-month/categorize-inbox-payments-month';
 import { CategorizeInboxPaymentsSummary } from '../categorize-inbox-payments-summary/categorize-inbox-payments-summary';
 import { CategorizeInboxScreenChrome } from '../categorize-inbox-screen-chrome/categorize-inbox-screen-chrome';
@@ -27,15 +27,20 @@ interface Props {
 export const CategorizeInboxPaymentsScreen = ({ clusterKey }: Props) => {
     const { t } = useLingui();
     const router = useRouter();
-    const { includedRows } = useCategorizeInboxContext();
     const cluster = useCategorizeInboxCluster(clusterKey);
 
     if (!isDefined(cluster)) {
         return null;
     }
 
-    const selectedCount = includedRows(cluster).length;
-    const doneContent = t({ message: plural(selectedCount, { one: 'Done · # selected', other: 'Done · # selected' }) });
+    const { displayTitle } = cluster;
+    const monthGroups = groupCategorizeInboxRowsByMonth(cluster.rows);
+    const isOnePaymentPerMonth = monthGroups.every(group => group.rows.length === 1);
+    const paymentRows = isOnePaymentPerMonth
+        ? monthGroups
+              .flatMap(group => group.rows)
+              .map(row => <CategorizeInboxClusterRow key={row.transactionId} row={row} displayTitle={displayTitle} />)
+        : monthGroups.map(group => <CategorizeInboxPaymentsMonth key={group.month.getTime()} group={group} displayTitle={displayTitle} />);
 
     const handleDone = (): void => void router.back();
 
@@ -45,9 +50,9 @@ export const CategorizeInboxPaymentsScreen = ({ clusterKey }: Props) => {
                 <CategorizeInboxScreenScroll>
                     <CategorizeInboxPaymentsSummary cluster={cluster} />
 
-                    {groupCategorizeInboxRowsByMonth(cluster.rows).map(group => (
-                        <CategorizeInboxPaymentsMonth key={group.month.getTime()} group={group} displayTitle={cluster.displayTitle} />
-                    ))}
+                    <View className="pt-xl">
+                        <CategorizeInboxOptionCard>{paymentRows}</CategorizeInboxOptionCard>
+                    </View>
 
                     <Text className="text-secondary-foreground px-3xl pt-xl text-center text-[13px]">
                         <Trans>Unchecked payments stay in your inbox.</Trans>
@@ -60,10 +65,12 @@ export const CategorizeInboxPaymentsScreen = ({ clusterKey }: Props) => {
                             onPress={handleDone}
                             className="h-[52px] items-center justify-center rounded-full bg-cta-background active:opacity-80"
                             accessibilityRole="button"
-                            accessibilityLabel={doneContent}
+                            accessibilityLabel={t`Done`}
                             testID={CategorizeInboxPaymentsScreenSelector.DoneButton}
                         >
-                            <Text className="text-cta-foreground text-[17px] font-semibold">{doneContent}</Text>
+                            <Text className="text-cta-foreground text-[17px] font-semibold">
+                                <Trans>Done</Trans>
+                            </Text>
                         </HapticPressable>
                     </View>
                 </ScreenChromeFooter>

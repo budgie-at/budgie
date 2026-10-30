@@ -30,7 +30,7 @@ export const CategorizeInboxGroupRowCashButton = ({ cluster }: Props) => {
     return (
         <CategorizeInboxGroupRowPill
             variant={CategorizeInboxTonalCapsuleVariantEnum.WARNING}
-            text={t({ context: 'Move payments to the cash account', message: 'Cash' })}
+            text={t({ context: 'Move payments to the cash account', message: 'To cash' })}
             label={t`Move ${displayTitle} to cash`}
             isDisabled={isEmptyArray(transactionIds)}
             onPress={handlePress}

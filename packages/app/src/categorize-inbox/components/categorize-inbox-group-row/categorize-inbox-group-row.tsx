@@ -35,10 +35,10 @@ export const CategorizeInboxGroupRow = ({ cluster, position }: Props) => {
     const href = { pathname: '/categorize/group/[key]', params: { key } } as const;
     const actionSpacerStyle = { width: actionWidth };
     const trailing = hasAction ? (
-        <View className="items-end gap-y-xs">
-            <CategorizeInboxGroupRowAmount cluster={cluster} />
-            <View className="h-[32px]" style={actionSpacerStyle} />
-        </View>
+        <>
+            <CategorizeInboxGroupRowAmount cluster={cluster} className="font-normal text-secondary-foreground" />
+            <View style={actionSpacerStyle} />
+        </>
     ) : (
         <>
             <CategorizeInboxGroupRowAmount cluster={cluster} />
@@ -57,7 +57,7 @@ export const CategorizeInboxGroupRow = ({ cluster, position }: Props) => {
         <CategorizeInboxCardRow position={position}>
             <Link href={href} asChild>
                 <HapticPressable
-                    className="min-h-[64px] flex-row items-center gap-x-xl px-3xl py-lg active:opacity-70"
+                    className="min-h-[62px] flex-row items-center gap-x-xl px-3xl py-lg active:opacity-70"
                     accessibilityRole="link"
                     {...testID(CategorizeInboxGroupRowSelector.Row, key)}
                 >
@@ -73,15 +73,7 @@ export const CategorizeInboxGroupRow = ({ cluster, position }: Props) => {
             </Link>
 
             {hasAction ? (
-                <View className="absolute inset-y-0 right-[16px] items-end justify-center gap-y-xs" pointerEvents="box-none">
-                    <View
-                        className="opacity-0"
-                        accessibilityElementsHidden
-                        importantForAccessibility="no-hide-descendants"
-                        pointerEvents="none"
-                    >
-                        <CategorizeInboxGroupRowAmount cluster={cluster} />
-                    </View>
+                <View className="absolute inset-y-0 right-[16px] justify-center" pointerEvents="box-none">
                     <View onLayout={handleActionLayout}>{action}</View>
                 </View>
             ) : null}

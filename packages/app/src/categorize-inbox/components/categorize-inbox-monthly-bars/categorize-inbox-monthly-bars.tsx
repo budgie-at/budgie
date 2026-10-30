@@ -7,24 +7,27 @@ import type { CategorizeInboxMonthlyBucketInterface } from '../../interface/cate
 
 interface Props {
     readonly buckets: readonly CategorizeInboxMonthlyBucketInterface[];
-    readonly barClassName: string;
 }
 
-export const CategorizeInboxMonthlyBars = ({ buckets, barClassName }: Props) => {
+export const CategorizeInboxMonthlyBars = ({ buckets }: Props) => {
     const { formatShortMonth } = useFormatDate();
 
     const maxCount = Math.max(1, ...buckets.map(bucket => bucket.count));
+    const bars = buckets.map((bucket, index) => ({
+        ...bucket,
+        className: index === buckets.length - 1 ? 'bg-primary' : 'bg-secondary-foreground/60'
+    }));
 
     return (
         <View className="flex-row items-end gap-x-xs" accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
-            {buckets.map((bucket, index) => (
+            {bars.map((bar, index) => (
                 <CategorizeInboxMonthlyBar
-                    key={bucket.month.getTime()}
-                    count={bucket.count}
+                    key={bar.month.getTime()}
+                    count={bar.count}
                     maxCount={maxCount}
                     index={index}
-                    monthLabel={formatShortMonth(bucket.month)}
-                    className={barClassName}
+                    monthLabel={formatShortMonth(bar.month)}
+                    className={bar.className}
                 />
             ))}
         </View>

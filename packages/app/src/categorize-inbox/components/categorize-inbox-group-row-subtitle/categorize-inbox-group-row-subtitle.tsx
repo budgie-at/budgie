@@ -25,15 +25,21 @@ export const CategorizeInboxGroupRowSubtitle = ({ cluster }: Props) => {
     const isLikelyTransfer = section !== CategorizeInboxSectionEnum.CONFIDENT && isTransfer;
     const label = isLikelyTransfer ? t`Transfer` : candidateTitle;
     const paymentsText = t({ message: plural(rows.length, { one: '# payment', other: '# payments' }) });
-    const labelledText = isNotEmptyString(label) ? `${paymentsText} · ${label}` : paymentsText;
-    const text =
-        section === CategorizeInboxSectionEnum.CASH_WITHDRAWALS
-            ? t({ message: plural(rows.length, { one: '# ATM withdrawal', other: '# ATM withdrawals' }) })
-            : labelledText;
+    const cashText = t({ message: plural(rows.length, { one: '# ATM withdrawal', other: '# ATM withdrawals' }) });
+    const isCash = section === CategorizeInboxSectionEnum.CASH_WITHDRAWALS;
+    const countText = isCash ? cashText : paymentsText;
+    const labelText =
+        !isCash && isNotEmptyString(label) ? (
+            <Text>
+                <Text className="text-primary">{label}</Text>
+                {' · '}
+            </Text>
+        ) : null;
 
     return (
-        <Text className="text-[13px] leading-[17px] text-secondary-foreground tabular-nums" numberOfLines={2}>
-            {text}
+        <Text className="text-[13px] leading-[17px] text-secondary-foreground tabular-nums" numberOfLines={1}>
+            {labelText}
+            {countText}
         </Text>
     );
 };

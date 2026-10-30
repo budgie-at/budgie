@@ -13,8 +13,6 @@ import {
     CATEGORIZE_INBOX_BAR_STRIP_HEIGHT
 } from '../../constant/categorize-inbox-bar-motion.constant';
 
-const COUNT_LABEL_HEIGHT = 16;
-
 interface Props {
     readonly count: number;
     readonly maxCount: number;
@@ -31,7 +29,7 @@ export const CategorizeInboxMonthlyBar = ({ count, maxCount, index, monthLabel, 
     const height = hasData ? dataHeight : CATEGORIZE_INBOX_BAR_EMPTY_HEIGHT;
     const barClassName = hasData ? className : 'bg-secondary-foreground/20';
     const style = { height, width: '100%', maxWidth: 24, borderRadius: 3, transformOrigin: 'bottom' } as const;
-    const stripStyle = { height: CATEGORIZE_INBOX_BAR_STRIP_HEIGHT + COUNT_LABEL_HEIGHT };
+    const stripStyle = { height: CATEGORIZE_INBOX_BAR_STRIP_HEIGHT };
     const countLabel = hasData ? `${count}` : '';
     const growEntering = new Keyframe({
         from: { opacity: 0, transform: [{ scaleY: CATEGORIZE_INBOX_BAR_START_SCALE }] },
@@ -43,10 +41,10 @@ export const CategorizeInboxMonthlyBar = ({ count, maxCount, index, monthLabel, 
 
     return (
         <View className="min-w-0 flex-1 items-center gap-y-xs">
-            <View className="w-full items-center justify-end gap-y-xxs" style={stripStyle}>
-                <Text className="text-secondary-foreground text-[11px] leading-[13px] tabular-nums" numberOfLines={1}>
-                    {countLabel}
-                </Text>
+            <Text className="text-secondary-foreground h-[13px] text-[11px] leading-[13px] tabular-nums" numberOfLines={1}>
+                {countLabel}
+            </Text>
+            <View className="w-full items-center justify-end" style={stripStyle}>
                 <Animated.View entering={entering} className={barClassName} style={style} />
             </View>
             <Text className="text-secondary-foreground text-[11px] leading-[13px]" numberOfLines={1}>

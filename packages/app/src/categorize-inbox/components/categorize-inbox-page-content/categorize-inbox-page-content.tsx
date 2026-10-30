@@ -6,11 +6,11 @@ import { ActivityIndicator, Text, View } from 'react-native';
 import { ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
 import { isEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { CollapsibleChromeHeaderScrim } from '../../../@generic/component/collapsible-chrome-header-scrim/collapsible-chrome-header-scrim';
 import { CollapsibleChromeHeader } from '../../../@generic/component/collapsible-chrome-header/collapsible-chrome-header';
 import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { AccountDetailsHeaderBackdrop } from '../../../account/component/account-details-header-backdrop/account-details-header-backdrop';
 import { buildUncategorizedFilters } from '../../../transaction/utils/build-uncategorized-filters.util';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
@@ -65,13 +65,14 @@ export const CategorizeInboxPageContent = ({ params }: Props) => {
                 leading={<GoBackButton onPress={handleGoBack} />}
                 trailing={
                     <HapticPressable
-                        className="h-11 w-11 items-center justify-center"
+                        className="ml-auto h-10 w-10 items-center justify-center"
+                        hitSlop={12}
                         onPress={handleShowList}
                         testID={CategorizeInboxPageSelector.ShowListButton}
                         accessibilityRole="button"
                         accessibilityLabel={t`Show list`}
                     >
-                        <CircleIcon icon={UserIconNameEnum.List} variant="ghost" size={40} iconSize={24} border={false} />
+                        <Icon icon={UserIconNameEnum.List} className="text-primary" size={24} />
                     </HapticPressable>
                 }
                 expandedTitle={

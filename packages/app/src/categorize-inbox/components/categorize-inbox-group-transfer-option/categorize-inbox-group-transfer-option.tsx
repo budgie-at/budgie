@@ -4,13 +4,11 @@ import { useRouter } from 'expo-router';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { CategorizeInboxTonalCapsuleVariantEnum } from '../../enum/categorize-inbox-tonal-capsule-variant.enum';
 import { useCategorizeInboxMatchedAccount } from '../../hook/use-categorize-inbox-matched-account.hook';
 import { getCategorizeInboxJarName } from '../../utils/get-categorize-inbox-jar-name.util';
 import { CategorizeInboxLeadOption } from '../categorize-inbox-lead-option/categorize-inbox-lead-option';
 import { CategorizeInboxOptionChevron } from '../categorize-inbox-option-chevron/categorize-inbox-option-chevron';
 import { CategorizeInboxOptionRow } from '../categorize-inbox-option-row/categorize-inbox-option-row';
-import { CategorizeInboxTonalCapsule } from '../categorize-inbox-tonal-capsule/categorize-inbox-tonal-capsule';
 
 import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
 
@@ -41,7 +39,7 @@ export const CategorizeInboxGroupTransferOption = ({ cluster, isLead }: Props) =
                 title={t`Transfer`}
                 subtitle={leadSubtitle}
                 variant="neutral"
-                accessory={<CategorizeInboxTonalCapsule label={t`Choose`} variant={CategorizeInboxTonalCapsuleVariantEnum.NEUTRAL} />}
+                accessory={<CategorizeInboxOptionChevron />}
                 onPress={handlePress}
             />
         );

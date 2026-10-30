@@ -1,18 +1,24 @@
+import { CategorizeInboxSectionEnum } from '@budgie/categorization';
 import { convertFromMicroUnits } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 import { isCategorizeInboxCluster } from '../../type-guard/is-categorize-inbox-cluster.type-guard';
 import { getCategorizeInboxDefaultAmount } from '../../utils/get-categorize-inbox-default-amount.util';
-import { CategorizeInboxPileBar } from '../categorize-inbox-pile-bar/categorize-inbox-pile-bar';
-import { CategorizeInboxPileLegend } from '../categorize-inbox-pile-legend/categorize-inbox-pile-legend';
+import { CategorizeInboxHeroCount } from '../categorize-inbox-hero-count/categorize-inbox-hero-count';
+
+const SPLIT_SECTIONS = [
+    { section: CategorizeInboxSectionEnum.CONFIDENT, dotClassName: 'bg-positive-action' },
+    { section: CategorizeInboxSectionEnum.CASH_WITHDRAWALS, dotClassName: 'bg-attention-foreground' },
+    { section: CategorizeInboxSectionEnum.REVIEW, dotClassName: 'bg-secondary-foreground' }
+] as const;
 
 export const CategorizeInboxHero = () => {
     const { t } = useLingui();
@@ -28,8 +34,20 @@ export const CategorizeInboxHero = () => {
     const countText = t({ message: plural(remainingCount, { one: 'payment to sort', other: 'payments to sort' }) });
     const subtitle = isDefined(worthAmount) ? `${countText} · ${worthText}` : countText;
 
+    const sectionTexts: Record<(typeof SPLIT_SECTIONS)[number]['section'], (count: number) => string> = {
+        [CategorizeInboxSectionEnum.CONFIDENT]: count => t({ message: plural(count, { one: '# ready', other: '# ready' }) }),
+        [CategorizeInboxSectionEnum.CASH_WITHDRAWALS]: count => t({ message: plural(count, { one: '# cash', other: '# cash' }) }),
+        [CategorizeInboxSectionEnum.REVIEW]: count => t({ message: plural(count, { one: '# your call', other: '# your call' }) })
+    };
+    const headers = items.flatMap(item => (isCategorizeInboxCluster(item) ? [] : [item]));
+    const splits = SPLIT_SECTIONS.map(({ section, dotClassName }) => ({
+        section,
+        dotClassName,
+        count: headers.find(header => header.section === section)?.count ?? 0
+    })).filter(({ count }) => isPositiveNumber(count));
+
     return (
-        <View className="items-center gap-y-3xl pb-xl pt-xs">
+        <View className="items-center gap-y-md pb-3xl pt-xs">
             <View className="items-center gap-y-xxs">
                 <Text className="text-[48px] leading-[56px] font-semibold tracking-[-1px] text-primary tabular-nums" numberOfLines={1}>
                     {remainingCount}
@@ -39,10 +57,10 @@ export const CategorizeInboxHero = () => {
                 </Text>
             </View>
 
-            <View className="gap-y-md self-stretch">
-                <CategorizeInboxPileBar />
-
-                <CategorizeInboxPileLegend />
+            <View className="flex-row flex-wrap justify-center gap-x-xl gap-y-xs px-3xl">
+                {splits.map(({ section, dotClassName, count }) => (
+                    <CategorizeInboxHeroCount key={section} dotClassName={dotClassName} text={sectionTexts[section](count)} />
+                ))}
             </View>
         </View>
     );

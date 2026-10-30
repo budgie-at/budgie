@@ -1,6 +1,5 @@
-import { Plural, Trans, useLingui } from '@lingui/react/macro';
+import { useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
-import { Text } from 'react-native';
 
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 import { CategorizeInboxTonalCapsuleVariantEnum } from '../../enum/categorize-inbox-tonal-capsule-variant.enum';
@@ -20,9 +19,8 @@ interface Props {
 export const CategorizeInboxGroupLabelOption = ({ cluster, label, isBestMatch }: Props) => {
     const { t } = useLingui();
     const router = useRouter();
-    const { assignCluster, includedRows } = useCategorizeInboxContext();
+    const { assignCluster } = useCategorizeInboxContext();
 
-    const count = includedRows(cluster).length;
     const fileLabel = t({ context: 'Apply a category action', message: 'File' });
 
     const handlePress = (): void => {
@@ -31,21 +29,11 @@ export const CategorizeInboxGroupLabelOption = ({ cluster, label, isBestMatch }:
     };
 
     if (isBestMatch) {
-        const bestMatchSubtitle = (
-            <Text>
-                <Text className="text-positive-action font-medium">
-                    <Trans>Best match</Trans>
-                </Text>
-                {' · '}
-                <Plural value={count} one="# payment" other="# payments" />
-            </Text>
-        );
-
         return (
             <CategorizeInboxLeadOption
                 icon={label.icon}
                 title={label.title}
-                subtitle={bestMatchSubtitle}
+                subtitle={t`Best match`}
                 variant="positive"
                 accessory={<CategorizeInboxTonalCapsule label={fileLabel} variant={CategorizeInboxTonalCapsuleVariantEnum.POSITIVE} />}
                 onPress={handlePress}

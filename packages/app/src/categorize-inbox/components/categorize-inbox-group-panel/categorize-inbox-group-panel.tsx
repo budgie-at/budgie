@@ -1,8 +1,8 @@
-import { CategorizeInboxSectionEnum } from '@budgie/categorization';
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { getCategorizeInboxMonthlyCounts } from '../../utils/get-categorize-inbox-monthly-counts.util';
+import { hasCategorizeInboxMonthlyVariation } from '../../utils/has-categorize-inbox-monthly-variation.util';
 import { CategorizeInboxGroupStatsLine } from '../categorize-inbox-group-stats-line/categorize-inbox-group-stats-line';
 import { CategorizeInboxMonthlyBars } from '../categorize-inbox-monthly-bars/categorize-inbox-monthly-bars';
 
@@ -15,7 +15,9 @@ interface Props {
 const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
 export const CategorizeInboxGroupPanel = ({ cluster }: Props) => {
-    const barClassName = cluster.section === CategorizeInboxSectionEnum.CONFIDENT ? 'bg-positive-action' : 'bg-secondary-foreground/80';
+    if (!hasCategorizeInboxMonthlyVariation(cluster.rows)) {
+        return null;
+    }
 
     return (
         <View className="mt-5xl gap-y-xl rounded-3xl bg-surface-row px-3xl py-xl" style={CONTINUOUS_CORNERS}>
@@ -23,7 +25,7 @@ export const CategorizeInboxGroupPanel = ({ cluster }: Props) => {
                 <Trans>Payments per month</Trans>
             </Text>
 
-            <CategorizeInboxMonthlyBars buckets={getCategorizeInboxMonthlyCounts(cluster.rows)} barClassName={barClassName} />
+            <CategorizeInboxMonthlyBars buckets={getCategorizeInboxMonthlyCounts(cluster.rows)} />
 
             <View className="h-hairline bg-surface-separator" />
 

@@ -12,17 +12,13 @@ import type { ReactNode } from 'react';
 interface Props {
     readonly variant: 'positive' | 'neutral';
     readonly title: string;
-    readonly subtitle: ReactNode;
+    readonly subtitle: string;
     readonly icon: UserIconType;
     readonly accessory: ReactNode;
     readonly onPress: () => void;
 }
 
 const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
-
-const cardVariants = cva('overflow-hidden rounded-3xl bg-surface-row', {
-    variants: { variant: { positive: 'border border-positive-action/30', neutral: '' } }
-});
 
 const discVariants = cva('', {
     variants: { variant: { positive: 'bg-positive-action/15', neutral: 'bg-secondary-foreground/15' } }
@@ -33,7 +29,7 @@ const iconVariants = cva('', {
 });
 
 export const CategorizeInboxLeadOption = ({ variant, title, subtitle, icon, accessory, onPress }: Props) => (
-    <View className={cardVariants({ variant })} style={CONTINUOUS_CORNERS}>
+    <View className="overflow-hidden rounded-3xl bg-surface-row" style={CONTINUOUS_CORNERS}>
         <HapticPressable
             onPress={onPress}
             className="min-h-[72px] flex-row items-center gap-x-xl px-3xl py-xl active:opacity-70"
