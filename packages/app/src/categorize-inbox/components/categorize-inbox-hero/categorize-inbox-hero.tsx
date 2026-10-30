@@ -13,6 +13,8 @@ import { isCategorizeInboxCluster } from '../../type-guard/is-categorize-inbox-c
 import { getCategorizeInboxDefaultAmount } from '../../utils/get-categorize-inbox-default-amount.util';
 import { CategorizeInboxSectionChip } from '../categorize-inbox-section-chip/categorize-inbox-section-chip';
 
+import { CategorizeInboxHeroSelector } from './categorize-inbox-hero.selector';
+
 interface Props {
     readonly activeSection: CategorizeInboxSectionEnum | null;
     readonly onSectionPress: (section: CategorizeInboxSectionEnum) => void;
@@ -47,7 +49,11 @@ export const CategorizeInboxHero = ({ activeSection, onSectionPress }: Props) =>
     return (
         <View className="gap-y-xl pb-3xl">
             <View className="items-center">
-                <Text className="text-[40px] leading-[48px] font-semibold tracking-[-0.8px] text-primary tabular-nums" numberOfLines={1}>
+                <Text
+                    className="text-[40px] leading-[48px] font-semibold tracking-[-0.8px] text-primary tabular-nums"
+                    numberOfLines={1}
+                    testID={CategorizeInboxHeroSelector.Count}
+                >
                     {remainingCount}
                 </Text>
                 <Text className="text-sm text-center text-secondary-foreground tabular-nums" numberOfLines={1}>

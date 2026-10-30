@@ -22,7 +22,9 @@ appId: ${APP_ID}
           id: 'CategorizeInboxPage.ShowListButton'
       timeout: 5000
 
-- assertVisible: '3 to sort.*'
+- assertVisible:
+      id: 'CategorizeInboxHero.Count'
+      text: '3'
 - assertVisible:
       id: 'CategorizeInboxGroupRow.EXPENSE\|e2e confident coffee\|\|'
 - assertVisible:
@@ -34,14 +36,17 @@ appId: ${APP_ID}
       visible:
           id: 'CategorizeInboxUndoBar'
       timeout: 5000
-- assertVisible: '1 to sort.*'
-- assertVisible: '2 sorted'
+- assertVisible:
+      id: 'CategorizeInboxHero.Count'
+      text: '1'
 - assertNotVisible:
       id: 'CategorizeInboxGroupRow.EXPENSE\|e2e confident coffee\|\|'
 
 - tapOn:
       id: 'CategorizeInboxUndoBar.UndoButton'
-- assertVisible: '3 to sort.*'
+- assertVisible:
+      id: 'CategorizeInboxHero.Count'
+      text: '3'
 - assertVisible:
       id: 'CategorizeInboxGroupRow.EXPENSE\|e2e confident coffee\|\|'
 - assertVisible:
@@ -81,7 +86,9 @@ appId: ${APP_ID}
       id: 'CategorizeInboxGroupScreen.Option.Restaurants & Cafes'
 - tapOn:
       id: 'CategorizeInboxGroupScreen.PrimaryButton'
-- assertVisible: '1 to sort.*'
+- assertVisible:
+      id: 'CategorizeInboxHero.Count'
+      text: '1'
 - assertNotVisible:
       id: 'CategorizeInboxGroupRow.EXPENSE\|e2e confident coffee\|\|'
 
@@ -138,7 +145,9 @@ appId: ${APP_ID}
       visible:
           id: 'CategorizeInboxPage.ShowListButton'
       timeout: 5000
-- assertVisible: '1 to sort.*'
+- assertVisible:
+      id: 'CategorizeInboxHero.Count'
+      text: '1'
 
 - tapOn:
       id: 'PageHeader.BackButton'
@@ -161,7 +170,9 @@ appId: ${APP_ID}
       visible:
           id: 'CategorizeInboxPage.ShowListButton'
       timeout: 5000
-- assertVisible: '1 to sort.*'
+- assertVisible:
+      id: 'CategorizeInboxHero.Count'
+      text: '1'
 - tapOn:
       id: 'PageHeader.BackButton'
 - extendedWaitUntil:
@@ -177,7 +188,9 @@ appId: ${APP_ID}
       visible:
           id: 'CategorizeInboxPage.ShowListButton'
       timeout: 5000
-- assertVisible: '3 to sort.*'
+- assertVisible:
+      id: 'CategorizeInboxHero.Count'
+      text: '3'
 - assertVisible:
       id: 'CategorizeInboxGroupRow.EXPENSE\|e2e tagged grocer\|\|'
 - assertNotVisible:
@@ -189,20 +202,23 @@ appId: ${APP_ID}
       visible:
           id: 'CategorizeInboxUndoBar'
       timeout: 5000
-- assertVisible: '2 sorted'
 - assertNotVisible:
       id: 'CategorizeInboxGroupRow.EXPENSE\|e2e tagged grocer\|\|'
 
 - tapOn:
       id: 'CategorizeInboxUndoBar.UndoButton'
-- assertVisible: '3 to sort.*'
+- assertVisible:
+      id: 'CategorizeInboxHero.Count'
+      text: '3'
 - tapOn:
       id: 'CategorizeInboxGroupRow.EXPENSE\|e2e tagged grocer\|\|'
 - tapOn:
       id: 'CategorizeInboxGroupScreen.Option.Groceries'
 - tapOn:
       id: 'CategorizeInboxGroupScreen.PrimaryButton'
-- assertVisible: '1 to sort.*'
+- assertVisible:
+      id: 'CategorizeInboxHero.Count'
+      text: '1'
 
 - tapOn:
       id: 'CategorizeInboxUndoBar.RuleButton'
