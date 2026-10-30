@@ -1,6 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
+import { useState } from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
 
 import { ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
@@ -21,6 +22,7 @@ import { CategorizeInboxPageSelector } from '../categorize-inbox-page/categorize
 import { CategorizeInboxPanel } from '../categorize-inbox-panel/categorize-inbox-panel';
 
 import type { AnalyticsTransactionsRouteParamsInterface } from '../../../transaction/interface/analytics-transactions-route-params.interface';
+import type { CategorizeInboxSectionEnum } from '@budgie/categorization';
 
 interface Props {
     readonly params: AnalyticsTransactionsRouteParamsInterface;
@@ -29,24 +31,28 @@ interface Props {
 export const CategorizeInboxPageContent = ({ params }: Props) => {
     const { t } = useLingui();
     const router = useRouter();
+    const [activeSection, setActiveSection] = useState<CategorizeInboxSectionEnum | null>(null);
 
-    const filters = buildUncategorizedFilters(params);
     const { strategy, items, isLoading, categorizedCount } = useCategorizeInboxContext();
     const pageTitle = strategy?.pageTitle ?? '';
+    const filterSection = items.some(item => item.section === activeSection) ? activeSection : null;
 
     const handleGoBack = (): void => void router.back();
     const handleShowList = (): void =>
-        void router.push({ pathname: '/analytics/transactions', params: strategy?.buildListRouteParams(filters) });
+        void router.push({
+            pathname: '/analytics/transactions',
+            params: strategy?.buildListRouteParams(buildUncategorizedFilters(params))
+        });
 
     const emptyDescription =
         (isPositiveNumber(categorizedCount) ? strategy?.doneThisSession(categorizedCount) : strategy?.emptyDescription) ?? '';
-    const panel = isLoading ? null : <CategorizeInboxPanel />;
+    const panel = isLoading ? null : <CategorizeInboxPanel activeSection={filterSection} />;
     const isEmpty = isEmptyArray(items);
     const navSubtitle = isLoading || isEmpty ? null : <CategorizeInboxNavSubtitle />;
     const body = isEmpty ? (
         <CategorizeInboxEmptyState description={emptyDescription} onDone={handleGoBack} />
     ) : (
-        <CategorizeInboxList items={items} />
+        <CategorizeInboxList items={items} filterSection={filterSection} onSectionPress={setActiveSection} />
     );
     const content = isLoading ? (
         <View className="flex-1 items-center justify-center">

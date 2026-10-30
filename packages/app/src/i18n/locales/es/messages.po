@@ -3655,6 +3655,14 @@ msgstr "Mover {count} a {title}"
 msgid "Move {displayTitle} to cash"
 msgstr "Mover {displayTitle} a efectivo"
 
+#: src/categorize-inbox/components/categorize-inbox-move-all-to-cash-button/categorize-inbox-move-all-to-cash-button.tsx
+msgid "Move {rowCount} to cash"
+msgstr "Mover {rowCount} a efectivo"
+
+#: src/categorize-inbox/components/categorize-inbox-move-all-to-cash-button/categorize-inbox-move-all-to-cash-button.tsx
+msgid "Move {rowCount} to cash · {total}"
+msgstr "Mover {rowCount} a efectivo · {total}"
+
 #: src/categorize-inbox/components/categorize-inbox-group-move-to-cash-option/categorize-inbox-group-move-to-cash-option.tsx
 msgid "Move to cash"
 msgstr "Mover a efectivo"

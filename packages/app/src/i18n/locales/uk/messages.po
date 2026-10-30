@@ -3655,6 +3655,14 @@ msgstr "Перенести {count} на {title}"
 msgid "Move {displayTitle} to cash"
 msgstr "Перенести {displayTitle} в готівку"
 
+#: src/categorize-inbox/components/categorize-inbox-move-all-to-cash-button/categorize-inbox-move-all-to-cash-button.tsx
+msgid "Move {rowCount} to cash"
+msgstr "Перенести {rowCount} у готівку"
+
+#: src/categorize-inbox/components/categorize-inbox-move-all-to-cash-button/categorize-inbox-move-all-to-cash-button.tsx
+msgid "Move {rowCount} to cash · {total}"
+msgstr "Перенести {rowCount} у готівку · {total}"
+
 #: src/categorize-inbox/components/categorize-inbox-group-move-to-cash-option/categorize-inbox-group-move-to-cash-option.tsx
 msgid "Move to cash"
 msgstr "У готівку"

@@ -3655,6 +3655,14 @@ msgstr "Déplacer {count} vers {title}"
 msgid "Move {displayTitle} to cash"
 msgstr "Déplacer {displayTitle} vers les espèces"
 
+#: src/categorize-inbox/components/categorize-inbox-move-all-to-cash-button/categorize-inbox-move-all-to-cash-button.tsx
+msgid "Move {rowCount} to cash"
+msgstr "Déplacer {rowCount} vers les espèces"
+
+#: src/categorize-inbox/components/categorize-inbox-move-all-to-cash-button/categorize-inbox-move-all-to-cash-button.tsx
+msgid "Move {rowCount} to cash · {total}"
+msgstr "Déplacer {rowCount} vers les espèces · {total}"
+
 #: src/categorize-inbox/components/categorize-inbox-group-move-to-cash-option/categorize-inbox-group-move-to-cash-option.tsx
 msgid "Move to cash"
 msgstr "Vers les espèces"

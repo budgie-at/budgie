@@ -1,5 +1,4 @@
 import { CategorizeInboxSectionEnum } from '@budgie/categorization';
-import { useState } from 'react';
 
 import { useBottomChromeInset } from '@rnw-community/react-native-screen-chrome';
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
@@ -19,17 +18,16 @@ import type { LegendListRenderItemProps } from '@legendapp/list/react-native';
 
 interface Props {
     readonly items: CategorizeInboxListItemType[];
+    readonly filterSection: CategorizeInboxSectionEnum | null;
+    readonly onSectionPress: (section: CategorizeInboxSectionEnum | null) => void;
 }
 
 const LIST_BOTTOM_CLEARANCE = 24;
 const INLINE_ONE_OFF_LIMIT = 5;
 
-export const CategorizeInboxList = ({ items }: Props) => {
-    const [activeSection, setActiveSection] = useState<CategorizeInboxSectionEnum | null>(null);
-
+export const CategorizeInboxList = ({ items, filterSection, onSectionPress }: Props) => {
     const { chromeHeight } = useBottomChromeInset();
 
-    const filterSection = items.some(item => item.section === activeSection) ? activeSection : null;
     const isInFilter = (section: CategorizeInboxSectionEnum): boolean => !isDefined(filterSection) || section === filterSection;
     const hiddenOneOffs = items
         .filter(isCategorizeInboxCluster)
@@ -72,7 +70,7 @@ export const CategorizeInboxList = ({ items }: Props) => {
     };
 
     const handleSectionPress = (section: CategorizeInboxSectionEnum): void =>
-        void setActiveSection(current => (current === section ? null : section));
+        void onSectionPress(section === filterSection ? null : section);
 
     const contentContainerStyle = { paddingBottom: chromeHeight + LIST_BOTTOM_CLEARANCE };
 
