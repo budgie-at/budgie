@@ -33,7 +33,6 @@ export const TransactionInfoMoneyRows = ({ transaction }: Props) => {
                     icon={UserIconNameEnum.ArrowRightLeft}
                     label={t`Exchange rate`}
                     value={exchangeRate.label}
-                    description={exchangeRate.description}
                     testID={TransactionInfoPageSelector.Row.ExchangeRate}
                 />
             ) : null}

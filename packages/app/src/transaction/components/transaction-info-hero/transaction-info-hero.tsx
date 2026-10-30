@@ -15,6 +15,7 @@ import { getTransactionDisplayTitle } from '../../utils/get-transaction-display-
 import { getTransactionInfoDestinationEntry } from '../../utils/get-transaction-info-destination-entry.util';
 import { getTransactionInfoPrimaryEntry } from '../../utils/get-transaction-info-primary-entry.util';
 import { getTransactionType } from '../../utils/get-transaction-type.util';
+import { TransactionInfoHeroFade } from '../transaction-info-hero-fade/transaction-info-hero-fade';
 import { TransactionInfoHeroIcon } from '../transaction-info-hero-icon/transaction-info-hero-icon';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
 import { TransactionInfoRefundedPill } from '../transaction-info-refunded-pill/transaction-info-refunded-pill';
@@ -26,10 +27,11 @@ interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly matchingRuleIds: readonly number[];
     readonly onOpenRefundSources?: () => void;
+    readonly revealOffset: number;
     readonly onTitleLayout: (event: LayoutChangeEvent) => void;
 }
 
-export const TransactionInfoHero = ({ transaction, matchingRuleIds, onOpenRefundSources, onTitleLayout }: Props) => {
+export const TransactionInfoHero = ({ transaction, matchingRuleIds, onOpenRefundSources, onTitleLayout, revealOffset }: Props) => {
     const { t } = useLingui();
     const formatDigits = useProtectedAmountLabel();
     const { formatWeekdayAndDateWithTime } = useFormatDate();
@@ -47,18 +49,15 @@ export const TransactionInfoHero = ({ transaction, matchingRuleIds, onOpenRefund
         isCrossCurrency && isDefined(destinationEntry)
             ? `→ ${formatDigits(convertFromMicroUnits(destinationEntry.amount), destinationEntry.account.instrument.symbol)}`
             : null;
-    const transferRoute =
-        transaction.type === TransactionTypeEnum.TRANSFER && isDefined(transaction.fromAccount) && isDefined(transaction.toAccount)
-            ? `${transaction.fromAccount.title} → ${transaction.toAccount.title}`
-            : null;
     const showRefundedPill = transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND;
     const showPills = showRefundedPill || isNotEmptyArray(matchingRuleIds);
 
     return (
-        <View className="items-center pt-3xl pb-7xl">
+        <TransactionInfoHeroFade revealOffset={revealOffset}>
             <TransactionInfoHeroIcon transaction={transaction} />
 
             <View
+                onLayout={onTitleLayout}
                 accessible
                 accessibilityLabel={formattedAmount}
                 testID={TransactionInfoPageSelector.Amount}
@@ -78,11 +77,7 @@ export const TransactionInfoHero = ({ transaction, matchingRuleIds, onOpenRefund
             ) : null}
 
             {isNotEmptyString(title) ? (
-                <Text
-                    className="mt-xs text-[20px] leading-[25px] text-primary font-semibold text-center"
-                    selectable
-                    onLayout={onTitleLayout}
-                >
+                <Text className="mt-xs text-[20px] leading-[25px] text-primary font-semibold text-center" selectable>
                     {title}
                 </Text>
             ) : null}
@@ -90,10 +85,6 @@ export const TransactionInfoHero = ({ transaction, matchingRuleIds, onOpenRefund
             <Text className="mt-sm text-[15px] leading-[20px] text-secondary-foreground text-center">
                 {formatWeekdayAndDateWithTime(transaction.operatedAt)}
             </Text>
-
-            {isNotEmptyString(transferRoute) ? (
-                <Text className="mt-xxs text-[15px] leading-[20px] text-secondary-foreground text-center">{transferRoute}</Text>
-            ) : null}
 
             {showPills ? (
                 <View className="mt-xl flex-row flex-wrap items-center justify-center gap-sm">
@@ -111,6 +102,6 @@ export const TransactionInfoHero = ({ transaction, matchingRuleIds, onOpenRefund
                     ) : null}
                 </View>
             ) : null}
-        </View>
+        </TransactionInfoHeroFade>
     );
 };

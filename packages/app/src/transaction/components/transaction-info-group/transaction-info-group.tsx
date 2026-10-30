@@ -9,7 +9,7 @@ interface Props {
 const continuousCorners = { borderCurve: 'continuous' as const };
 
 export const TransactionInfoGroup = ({ children }: Props) => (
-    <View className="overflow-hidden rounded-3xl bg-surface-row" style={continuousCorners}>
+    <View className="overflow-hidden rounded-3xl bg-transaction-detail-row" style={continuousCorners}>
         <View className="-mt-px">{children}</View>
     </View>
 );

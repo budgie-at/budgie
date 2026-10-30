@@ -22,6 +22,10 @@ export const TransactionInfoEditButton = ({ editHref }: Props) => {
         }
     };
 
+    if (!isDefined(editHref)) {
+        return null;
+    }
+
     return (
         <HapticPressable
             accessibilityRole="button"
@@ -33,7 +37,7 @@ export const TransactionInfoEditButton = ({ editHref }: Props) => {
         >
             <Text
                 maxFontSizeMultiplier={1.35}
-                className="text-[17px] text-primary font-medium"
+                className="text-[17px] text-default-foreground font-medium"
                 testID={`${TransactionInfoPageSelector.EditButton}.Label`}
             >
                 <Trans>Edit</Trans>

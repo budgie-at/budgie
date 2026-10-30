@@ -15,20 +15,32 @@ import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts'
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly revealOffset: number;
+    readonly compactTitle?: string;
+    readonly compactAmount?: string;
     readonly horizontalInset: number;
 }
 
-const REVEAL_DISTANCE = 20;
+const REVEAL_DISTANCE = 32;
+const COMPACT_TITLE_MAX_LENGTH = 60;
 const Z_INDEX_STYLE = { zIndex: 4 };
 
-export const TransactionInfoNavTitle = ({ transaction, revealOffset, horizontalInset }: Props) => {
+export const TransactionInfoNavTitle = (props: Props) => {
+    const { transaction, revealOffset, horizontalInset, compactTitle, compactAmount } = props;
     const { t } = useLingui();
     const { config } = useScreenChrome();
     const scrollY = useScreenChromeScrollY();
     const formatDigits = useProtectedAmountLabel();
 
-    const displayTitle = getTransactionDisplayTitle(transaction);
-    const title = isNotEmptyString(displayTitle) ? displayTitle : t(TRANSACTION_TYPE[transaction.type]);
+    const displayTitle =
+        transaction.receipt?.merchantLegalName ??
+        getTransactionDisplayTitle(transaction)
+            .split(/\n| · /u)
+            .at(0) ??
+        '';
+    const title =
+        isNotEmptyString(displayTitle) && displayTitle.length <= COMPACT_TITLE_MAX_LENGTH
+            ? displayTitle
+            : t(TRANSACTION_TYPE[transaction.type]);
     const rowStyle = { height: config.headerHeight };
     const animatedStyle = useAnimatedStyle(() => {
         const progress = interpolate(scrollY.get(), [revealOffset, revealOffset + REVEAL_DISTANCE], [0, 1], Extrapolation.CLAMP);
@@ -54,7 +66,7 @@ export const TransactionInfoNavTitle = ({ transaction, revealOffset, horizontalI
                         numberOfLines={1}
                         ellipsizeMode="tail"
                     >
-                        {title}
+                        {compactTitle ?? title}
                     </Text>
                 ) : null}
                 <Text
@@ -62,7 +74,7 @@ export const TransactionInfoNavTitle = ({ transaction, revealOffset, horizontalI
                     className="text-[13px] leading-[16px] text-secondary-foreground text-center tabular-nums"
                     numberOfLines={1}
                 >
-                    {formatTransactionInfoAmount(transaction, formatDigits)}
+                    {compactAmount ?? formatTransactionInfoAmount(transaction, formatDigits)}
                 </Text>
             </Animated.View>
         </View>

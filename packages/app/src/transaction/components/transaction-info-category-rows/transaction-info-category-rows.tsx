@@ -8,7 +8,6 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 import { getTransactionMccLabel } from '../../utils/get-transaction-mcc-label.util';
 import { isUncategorizedTransaction } from '../../utils/is-uncategorized-transaction.util';
 import { TransactionInfoDebtRows } from '../transaction-info-debt-rows/transaction-info-debt-rows';
-import { TransactionInfoGroup } from '../transaction-info-group/transaction-info-group';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
 import { TransactionInfoRow } from '../transaction-info-row/transaction-info-row';
 import { TransactionInfoSplitEntryRow } from '../transaction-info-split-entry-row/transaction-info-split-entry-row';
@@ -36,7 +35,7 @@ export const TransactionInfoCategoryRows = ({ transaction }: Props) => {
     }
 
     return (
-        <TransactionInfoGroup>
+        <>
             {isDefined(singleCategory) ? (
                 <TransactionInfoRow
                     icon={singleCategory.icon}
@@ -78,6 +77,6 @@ export const TransactionInfoCategoryRows = ({ transaction }: Props) => {
                     testID={TransactionInfoPageSelector.Row.MerchantCode}
                 />
             ) : null}
-        </TransactionInfoGroup>
+        </>
     );
 };

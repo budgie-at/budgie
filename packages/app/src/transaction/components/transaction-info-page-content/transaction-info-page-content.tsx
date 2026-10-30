@@ -1,4 +1,4 @@
-import { TransactionTypeEnum } from '@budgie/contracts';
+import { TransactionConsolidationTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { doesRuleMatchTransaction } from '@budgie/rules';
 import { useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
@@ -21,6 +21,7 @@ import { TransactionInfoMoneyRows } from '../transaction-info-money-rows/transac
 import { TransactionInfoNavBand } from '../transaction-info-nav-band/transaction-info-nav-band';
 import { TransactionInfoNoteGroup } from '../transaction-info-note-group/transaction-info-note-group';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
+import { TransactionInfoRefundSummary } from '../transaction-info-refund-summary/transaction-info-refund-summary';
 import { TransactionInfoSimilarCard } from '../transaction-info-similar-card/transaction-info-similar-card';
 import { TransactionInfoSourceRows } from '../transaction-info-source-rows/transaction-info-source-rows';
 import { TransactionInfoTagsSection } from '../transaction-info-tags-section/transaction-info-tags-section';
@@ -29,7 +30,7 @@ import type { TransactionInfoPagePropsInterface } from '../../interface/transact
 import type { SuggestRuleDataInterface } from '@budgie/rules';
 import type { LayoutChangeEvent } from 'react-native';
 
-const HERO_TITLE_DEFAULT_OFFSET = 144;
+const HERO_TITLE_DEFAULT_OFFSET = 64;
 
 export const TransactionInfoPageContent = ({
     transaction,
@@ -60,8 +61,7 @@ export const TransactionInfoPageContent = ({
             : enabledRules.filter(rule => doesRuleMatchTransaction(rule, transactionInput, suggestRuleData)).map(rule => rule.id);
 
     const handleGoBack = () => void router.back();
-    const handleHeroTitleLayout = (event: LayoutChangeEvent) =>
-        void setTitleRevealOffset(event.nativeEvent.layout.y + event.nativeEvent.layout.height);
+    const handleHeroTitleLayout = (event: LayoutChangeEvent) => void setTitleRevealOffset(Math.max(0, event.nativeEvent.layout.y - 48));
 
     return (
         <ScreenChromeFrame testID={TransactionInfoPageSelector.Page}>
@@ -72,15 +72,19 @@ export const TransactionInfoPageContent = ({
                         matchingRuleIds={matchingRuleIds}
                         onOpenRefundSources={onOpenRefundSources}
                         onTitleLayout={handleHeroTitleLayout}
+                        revealOffset={titleRevealOffset}
                     />
 
                     <View className="gap-y-5xl">
                         <TransactionInfoGroup>
                             <TransactionInfoAccountRows transaction={transaction} />
                             <TransactionInfoMoneyRows transaction={transaction} />
+                            {transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND ? (
+                                <TransactionInfoRefundSummary transaction={transaction} />
+                            ) : null}
+                            <TransactionInfoCategoryRows transaction={transaction} />
+                            <TransactionInfoTagsSection transaction={transaction} />
                         </TransactionInfoGroup>
-
-                        <TransactionInfoCategoryRows transaction={transaction} />
 
                         <TransactionInfoNoteGroup transaction={transaction} />
 
@@ -89,8 +93,6 @@ export const TransactionInfoPageContent = ({
                             onOpenRefundSources={onOpenRefundSources}
                             onOpenConsolidationSources={onOpenConsolidationSources}
                         />
-
-                        <TransactionInfoTagsSection transaction={transaction} />
 
                         <TransactionInfoSimilarCard stats={stats} title={t`Similar transactions`} isLoading={isLoading} />
 

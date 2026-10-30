@@ -17,7 +17,11 @@ export const TransactionInfoHeroIcon = ({ transaction }: Props) => {
     const variant = getTransactionInfoHeroIconVariant(transaction);
     const icon = isUncategorized ? UserIconNameEnum.CircleDashed : getTransactionIcon(transaction);
     const className = variant === 'secondary' ? 'bg-secondary-foreground/15' : '';
-    const iconClassName = cn(isUncategorized && 'text-attention-foreground', variant === 'positive' && 'text-positive-strong');
+    const iconClassName = cn(
+        isUncategorized && 'text-attention-foreground',
+        variant === 'positive' && 'text-positive-strong',
+        variant === 'default' && 'text-default-foreground'
+    );
 
     return (
         <CircleIcon

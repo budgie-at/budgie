@@ -15,12 +15,15 @@ interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly editHref: Href | null;
     readonly revealOffset: number;
+    readonly compactTitle?: string;
+    readonly compactAmount?: string;
     readonly onGoBack: () => void;
 }
 
 const DEFAULT_CONTROL_WIDTH = 44;
 
-export const TransactionInfoHeader = ({ transaction, editHref, revealOffset, onGoBack }: Props) => {
+export const TransactionInfoHeader = (props: Props) => {
+    const { transaction, editHref, revealOffset, onGoBack, compactTitle, compactAmount } = props;
     const [leadingWidth, setLeadingWidth] = useState(DEFAULT_CONTROL_WIDTH);
     const [trailingWidth, setTrailingWidth] = useState(DEFAULT_CONTROL_WIDTH);
     const handleLeadingLayout = (event: LayoutChangeEvent) => void setLeadingWidth(event.nativeEvent.layout.width);
@@ -29,7 +32,13 @@ export const TransactionInfoHeader = ({ transaction, editHref, revealOffset, onG
 
     return (
         <>
-            <TransactionInfoNavTitle transaction={transaction} revealOffset={revealOffset} horizontalInset={horizontalInset} />
+            <TransactionInfoNavTitle
+                transaction={transaction}
+                revealOffset={revealOffset}
+                horizontalInset={horizontalInset}
+                compactTitle={compactTitle}
+                compactAmount={compactAmount}
+            />
             <ScreenChromeHeader>
                 <View onLayout={handleLeadingLayout}>
                     <GoBackButton onPress={onGoBack} />

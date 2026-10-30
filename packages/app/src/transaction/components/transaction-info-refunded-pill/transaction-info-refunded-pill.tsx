@@ -34,9 +34,9 @@ export const TransactionInfoRefundedPill = ({ transaction, onPress, testID }: Pr
             testID={testID}
             className="min-h-[44px] justify-center active:scale-100 active:opacity-70"
         >
-            <View className="flex-row items-center gap-x-xs rounded-full bg-surface-row px-lg py-xs" style={continuousCorners}>
-                <Icon icon={UserIconNameEnum.RotateCcw} size={13} className="text-secondary-foreground" />
-                <Text className="text-[13px] leading-[18px] text-secondary-foreground font-medium" numberOfLines={1}>
+            <View className="flex-row items-center gap-x-xs rounded-full bg-positive-corner px-lg py-xs" style={continuousCorners}>
+                <Icon icon={UserIconNameEnum.RotateCcw} size={13} className="text-positive-strong" />
+                <Text className="text-[13px] leading-[18px] text-positive-strong font-medium" numberOfLines={1}>
                     {label}
                 </Text>
             </View>

@@ -62,7 +62,7 @@ export const TransactionInfoSimilarCard = ({ stats, title, isLoading }: Props) =
 
     return (
         <View
-            className={cn('gap-y-3xl rounded-3xl bg-surface-row p-3xl', opacityClassName)}
+            className={cn('gap-y-3xl rounded-3xl bg-transaction-detail-row p-3xl', opacityClassName)}
             style={continuousCorners}
             collapsable={false}
             testID={TransactionInfoPageSelector.SimilarCard}
