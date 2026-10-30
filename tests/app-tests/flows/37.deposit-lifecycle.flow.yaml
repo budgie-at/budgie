@@ -233,8 +233,11 @@ appId: ${APP_ID}
 - tapOn:
       id: 'TransactionCard.Label.E2E_Deposit_Convert_Expense'
 
-- tapOn:
-      id: 'TransactionActionsMenu.TriggerButton'
+- scrollUntilVisible:
+    element:
+      id: 'TransactionActionsMenu.StartDepositButton'
+    direction: DOWN
+    centerElement: true
 - extendedWaitUntil:
       visible:
           id: 'TransactionActionsMenu.StartDepositButton'

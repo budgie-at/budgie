@@ -59,8 +59,11 @@ appId: ${APP_ID}
 - tapOn:
       id: 'TransactionCard.Label.E2E_Convert_Income'
 
-- tapOn:
-      id: 'TransactionActionsMenu.TriggerButton'
+- scrollUntilVisible:
+    element:
+      id: 'TransactionActionsMenu.ConvertToTransferButton'
+    direction: DOWN
+    centerElement: true
 - extendedWaitUntil:
       visible:
           id: 'TransactionActionsMenu.ConvertToTransferButton'

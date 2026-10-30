@@ -12,7 +12,6 @@ export const TransactionInfoPageSelector = {
         Account: 'TransactionInfo.Row.Account',
         Category: 'TransactionInfo.Row.Category',
         Consolidation: 'TransactionInfo.Row.Consolidation',
-        Date: 'TransactionInfo.Row.Date',
         ExchangeRate: 'TransactionInfo.Row.ExchangeRate',
         Fee: 'TransactionInfo.Row.Fee',
         Debt: 'TransactionInfo.Row.Debt',

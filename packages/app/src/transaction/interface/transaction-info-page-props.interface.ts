@@ -6,7 +6,7 @@ export interface TransactionInfoPagePropsInterface {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly editHref: Href | null;
     readonly onDelete: () => unknown;
-    readonly actionsMenu: ReactNode;
+    readonly actions: ReactNode;
     readonly onOpenRefundSources?: () => void;
     readonly onOpenConsolidationSources?: () => void;
 }

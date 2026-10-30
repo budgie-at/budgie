@@ -2003,6 +2003,7 @@ msgid "Create plan"
 msgstr "Create plan"
 
 #: src/transaction/components/create-rule-menu-item/create-rule-menu-item.tsx
+#: src/transaction/components/transaction-info-actions-group/transaction-info-actions-group.tsx
 msgid "Create rule"
 msgstr "Create rule"
 
@@ -2068,7 +2069,6 @@ msgstr "Data management"
 #: src/@generic/component/date-filter/date-filter.tsx
 #: src/app/(tabs)/settings/import.tsx
 #: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
-#: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "Date"
 msgstr "Date"
 
@@ -4551,6 +4551,7 @@ msgstr "Returned"
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
+#: src/transaction/components/transaction-info-actions-group/transaction-info-actions-group.tsx
 #: src/transaction/components/transaction-list-revert-menu-item/transaction-list-revert-menu-item.tsx
 #: src/transaction/hook/use-revert-consolidation.hook.ts
 msgid "Revert"
@@ -4921,8 +4922,8 @@ msgid "Set Category"
 msgstr "Set Category"
 
 #: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
-#: src/transaction/components/transfer-transaction-actions-menu/transfer-transaction-actions-menu.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
+#: src/transaction/hook/use-transfer-transaction-actions.hook.ts
 msgid "Set fee"
 msgstr "Set fee"
 

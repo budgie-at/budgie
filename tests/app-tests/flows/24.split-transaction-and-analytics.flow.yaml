@@ -122,16 +122,21 @@ appId: ${APP_ID}
       id: 'TransactionInfo.Page'
     timeout: 5000
 
-- tapOn:
-    id: 'TransactionActionsMenu.TriggerButton'
+- scrollUntilVisible:
+    element:
+      id: 'TransactionActionsMenu.CreateRuleButton'
+    direction: DOWN
+    centerElement: true
 - extendedWaitUntil:
     visible:
       id: 'TransactionActionsMenu.CreateRuleButton'
 - assertNotVisible:
     id: 'TransactionActionsMenu.ConvertToTransferButton'
-- tapOn:
-    text: 'Close menu'
-
+- scrollUntilVisible:
+    element:
+      id: 'TransactionInfo.Amount'
+    direction: UP
+    centerElement: false
 - tapOn:
     id: 'TransactionInfo.EditButton.Label'
 - extendedWaitUntil:
@@ -258,16 +263,21 @@ appId: ${APP_ID}
     visible:
       id: 'TransactionInfo.Page'
     timeout: 5000
-- tapOn:
-    id: 'TransactionActionsMenu.TriggerButton'
+- scrollUntilVisible:
+    element:
+      id: 'TransactionActionsMenu.CreateRuleButton'
+    direction: DOWN
+    centerElement: true
 - extendedWaitUntil:
     visible:
       id: 'TransactionActionsMenu.CreateRuleButton'
 - assertVisible:
     id: 'TransactionActionsMenu.ConvertToTransferButton'
-- tapOn:
-    text: 'Close menu'
-
+- scrollUntilVisible:
+    element:
+      id: 'TransactionInfo.Amount'
+    direction: UP
+    centerElement: false
 - tapOn:
     id: 'TransactionInfo.EditButton.Label'
 - extendedWaitUntil:

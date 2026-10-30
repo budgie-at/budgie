@@ -55,8 +55,11 @@ appId: ${APP_ID}
 - tapOn:
       id: 'TransactionCard.Label.E2E_Installment_Expense'
 
-- tapOn:
-      id: 'TransactionActionsMenu.TriggerButton'
+- scrollUntilVisible:
+    element:
+      id: 'TransactionActionsMenu.ConvertToInstallmentButton'
+    direction: DOWN
+    centerElement: true
 - extendedWaitUntil:
       visible:
           id: 'TransactionActionsMenu.ConvertToInstallmentButton'

@@ -32,7 +32,7 @@ interface Props {
 export const TransactionInfoHero = ({ transaction, matchingRuleIds, onOpenRefundSources, onTitleLayout }: Props) => {
     const { t } = useLingui();
     const formatDigits = useProtectedAmountLabel();
-    const { formatDayAndMonthAndYearWithTime } = useFormatDate();
+    const { formatWeekdayAndDateWithTime } = useFormatDate();
     const amountClassName = getTransactionType(transaction) === TransactionTypeEnum.INCOME ? 'text-positive-strong' : 'text-primary';
     const displayTitle = getTransactionDisplayTitle(transaction);
     const title = isNotEmptyString(displayTitle) ? displayTitle : t(TRANSACTION_TYPE[transaction.type]);
@@ -88,7 +88,7 @@ export const TransactionInfoHero = ({ transaction, matchingRuleIds, onOpenRefund
             ) : null}
 
             <Text className="mt-sm text-[15px] leading-[20px] text-secondary-foreground text-center">
-                {formatDayAndMonthAndYearWithTime(transaction.operatedAt)}
+                {formatWeekdayAndDateWithTime(transaction.operatedAt)}
             </Text>
 
             {isNotEmptyString(transferRoute) ? (

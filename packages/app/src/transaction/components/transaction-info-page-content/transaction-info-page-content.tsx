@@ -36,7 +36,7 @@ const HERO_TITLE_DEFAULT_OFFSET = 144;
 export const TransactionInfoPageContent = ({
     transaction,
     editHref,
-    actionsMenu,
+    actions,
     onDelete,
     onOpenRefundSources,
     onOpenConsolidationSources
@@ -96,6 +96,8 @@ export const TransactionInfoPageContent = ({
 
                         <TransactionInfoSimilarCard stats={stats} title={t`Similar transactions`} isLoading={isLoading} />
 
+                        {actions}
+
                         <TransactionInfoDeleteRow transaction={transaction} onDelete={onDelete} />
                     </View>
                 </View>
@@ -107,10 +109,7 @@ export const TransactionInfoPageContent = ({
 
             <ScreenChromeHeader>
                 <GoBackButton onPress={handleGoBack} />
-                <View className="flex-row items-center gap-x-sm">
-                    <TransactionInfoEditButton editHref={editHref} />
-                    {actionsMenu}
-                </View>
+                <TransactionInfoEditButton editHref={editHref} />
             </ScreenChromeHeader>
         </ScreenChromeFrame>
     );

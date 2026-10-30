@@ -79,8 +79,11 @@ appId: ${APP_ID}
     id: 'TransactionInfo.Row.Category'
 - assertNotVisible:
       id: 'TransactionFeePill'
-- tapOn:
-    id: 'TransactionActionsMenu.TriggerButton'
+- scrollUntilVisible:
+    element:
+      id: 'TransactionActionsMenu.CreateRuleButton'
+    direction: DOWN
+    centerElement: true
 - extendedWaitUntil:
     visible:
       id: 'TransactionActionsMenu.FeeButton'

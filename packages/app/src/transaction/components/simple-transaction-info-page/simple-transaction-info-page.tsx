@@ -9,8 +9,8 @@ import { useDeleteTransaction } from '../../hook/use-delete-transaction.hook';
 import { useSimpleTransactionActionsMenu } from '../../hook/use-simple-transaction-actions-menu.hook';
 import { getTransactionEditHref } from '../../utils/get-transaction-edit-href.util';
 import { getTransactionFeeEditHref } from '../../utils/get-transaction-fee-edit-href.util';
+import { TransactionInfoActionsGroup } from '../transaction-info-actions-group/transaction-info-actions-group';
 import { TransactionInfoPage } from '../transaction-info-page/transaction-info-page';
-import { UpdateTransactionActionsMenu } from '../update-transaction-actions-menu/update-transaction-actions-menu';
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
@@ -43,7 +43,13 @@ export const SimpleTransactionInfoPage = ({ transaction, transactionType, onOpen
             transaction={transaction}
             onDelete={handleDelete}
             editHref={getTransactionEditHref(transaction)}
-            actionsMenu={<UpdateTransactionActionsMenu {...actionsMenuProps} onDelete={void 0} />}
+            actions={
+                <TransactionInfoActionsGroup
+                    transaction={transaction}
+                    items={actionsMenuProps.items}
+                    onRevert={actionsMenuProps.onRevert}
+                />
+            }
             onOpenRefundSources={onOpenRefundSources}
         />
     );

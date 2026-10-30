@@ -24,7 +24,19 @@ export const useFormatDate = () => {
     const formatDayAndMonthAndYearWithTime = (date: Date | string) =>
         intl.formatDate(date, { month: 'short', year: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hourCycle: 'h24' });
 
+    const formatWeekdayAndDateWithTime = (date: Date | string) =>
+        intl.formatDate(date, {
+            weekday: 'long',
+            month: 'short',
+            year: 'numeric',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hourCycle: 'h24'
+        });
+
     return {
+        formatWeekdayAndDateWithTime,
         formatMonthAndDay,
         formatShortMonth,
         formatFullMonth,

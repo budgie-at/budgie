@@ -12,10 +12,13 @@ appId: ${APP_ID}
       DEEP_LINK: 'budgie://transactions/3/income'
 - extendedWaitUntil:
     visible:
-      id: 'TransactionActionsMenu.TriggerButton'
+      id: 'TransactionInfo.Page'
     timeout: 10000
-- tapOn:
-    id: 'TransactionActionsMenu.TriggerButton'
+- scrollUntilVisible:
+    element:
+      id: 'TransactionActionsMenu.ConvertToRefundButton'
+    direction: DOWN
+    centerElement: true
 - extendedWaitUntil:
     visible:
       id: 'TransactionActionsMenu.ConvertToRefundButton'
@@ -58,22 +61,28 @@ appId: ${APP_ID}
       DEEP_LINK: 'budgie://transactions/3/income'
 - extendedWaitUntil:
     visible:
-      id: 'TransactionActionsMenu.TriggerButton'
+      id: 'TransactionInfo.Page'
     timeout: 10000
 - extendedWaitUntil:
     notVisible:
       id: 'TransactionInfo.RefundedPill'
     timeout: 10000
-- tapOn:
-    id: 'TransactionActionsMenu.TriggerButton'
+- scrollUntilVisible:
+    element:
+      id: 'TransactionActionsMenu.ConvertToTransferButton'
+    direction: DOWN
+    centerElement: true
 - extendedWaitUntil:
     visible:
       id: 'TransactionActionsMenu.ConvertToTransferButton'
     timeout: 3000
 - assertVisible:
     id: 'TransactionActionsMenu.ConvertToRefundButton'
-- tapOn:
-    text: 'Close menu'
+- scrollUntilVisible:
+    element:
+      id: 'TransactionInfo.Amount'
+    direction: UP
+    centerElement: false
 - runFlow:
     file: subflows/navigation/open-deep-link.flow.yaml
     env:

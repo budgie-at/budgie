@@ -3,7 +3,6 @@ import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { getAccountIbanSuffix } from '../../utils/get-account-iban-suffix.util';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
 import { TransactionInfoRow } from '../transaction-info-row/transaction-info-row';
@@ -16,7 +15,6 @@ interface Props {
 
 export const TransactionInfoAccountRows = ({ transaction }: Props) => {
     const { t } = useLingui();
-    const { formatDayAndFullMonthAndYear, formatWeekdayWithTime } = useFormatDate();
     const account = transaction.type === TransactionTypeEnum.INCOME ? transaction.toAccount : transaction.fromAccount;
     const isTransfer = transaction.type === TransactionTypeEnum.TRANSFER;
     const showFromAccount = isTransfer && isDefined(transaction.fromAccount);
@@ -25,14 +23,6 @@ export const TransactionInfoAccountRows = ({ transaction }: Props) => {
 
     return (
         <>
-            <TransactionInfoRow
-                icon={UserIconNameEnum.Calendar}
-                label={t`Date`}
-                value={formatDayAndFullMonthAndYear(transaction.operatedAt)}
-                description={formatWeekdayWithTime(transaction.operatedAt)}
-                testID={TransactionInfoPageSelector.Row.Date}
-            />
-
             {showFromAccount ? (
                 <TransactionInfoRow
                     icon={UserIconNameEnum.Wallet}
