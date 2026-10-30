@@ -1,4 +1,4 @@
 export interface BinanceEarnDailyTotalInterface {
-    readonly totalMicroUnits: number;
+    readonly totalRaw: bigint;
     readonly lastRewardTime: number;
 }

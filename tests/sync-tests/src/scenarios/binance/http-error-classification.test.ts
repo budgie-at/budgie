@@ -1,5 +1,5 @@
 import { SyncModeEnum } from '@budgie/contracts';
-import { BinanceSignedClient, BinanceSyncService } from '@budgie/sync';
+import { BinanceHistorySourceEnum, BinanceSignedClient, BinanceSyncService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import { HttpResponse, http } from 'msw';
@@ -9,6 +9,7 @@ import {
     BINANCE_WINDOW_FROM,
     BINANCE_WINDOW_TO,
     DEPOSIT_URL,
+    binanceErrorResponse,
     buildBinance,
     expectSyncFailedAndDisabled,
     fetchSyncById,
@@ -18,8 +19,6 @@ import {
 } from '../../harness';
 import { mockServer } from '../../harness/scenario/mock-server';
 
-import type { JsonBodyType } from 'msw';
-
 const SERVER_TIME_URL = 'https://api.binance.com/api/v3/time';
 const SPOT_BALANCE_URL = 'https://api.binance.com/sapi/v3/asset/getUserAsset';
 const RETRY_AFTER_SECONDS = 120;
@@ -27,15 +26,7 @@ const RETRY_AFTER_MS = 120_000;
 const RUN_DEADLINE_MS = 30_000;
 const NEARBY_DEADLINE_MS = 10_000;
 
-const errorBody = (code: number, msg: string) => ({ code, msg });
-
-const respondWith = (status: number, body: JsonBodyType, headers: Record<string, string> = {}) =>
-    HttpResponse.json(body, { status, headers });
-
-const respondBanned = () =>
-    respondWith(418, errorBody(-1003, 'Way too many requests; IP banned.'), { 'retry-after': String(RETRY_AFTER_SECONDS) });
-
-const respondRegionBlocked = () => new HttpResponse(null, { status: 451 });
+const respondBanned = () => binanceErrorResponse.ipBan(RETRY_AFTER_SECONDS);
 
 const countRequests = (method: 'get' | 'post', url: string, respond: (requestNumber: number) => Response) => {
     const requests: string[] = [];
@@ -53,25 +44,25 @@ const countRequests = (method: 'get' | 'post', url: string, respond: (requestNum
 const countDepositRequests = (respond: (requestNumber: number) => Response) => countRequests('get', DEPOSIT_URL, respond);
 
 const flipCapitalFailure = (client: BinanceSignedClient) =>
-    Effect.flip(client.getCapitalTransactions(BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO));
+    Effect.flip(client.getTransactions(BinanceHistorySourceEnum.CAPITAL, BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO));
 
 const BLOCKED_SYNC_CASES = [
-    { label: '403 WAF block without an auth code', respond: () => new HttpResponse('<html>Forbidden</html>', { status: 403 }) },
+    { label: '403 WAF block without an auth code', respond: binanceErrorResponse.wafBlock },
     { label: '418 IP ban with Retry-After', respond: respondBanned },
-    { label: '451 region block', respond: respondRegionBlocked }
+    { label: '451 region block', respond: binanceErrorResponse.regionBlocked }
 ];
 
 const CLIENT_ERROR_CASES = [
     { label: '418 ban', respond: respondBanned, expected: { _tag: 'SyncRateLimitedError', retryAfterMs: RETRY_AFTER_MS } },
-    { label: '451 region block', respond: respondRegionBlocked, expected: { _tag: 'SyncRegionUnavailableError' } },
+    { label: '451 region block', respond: binanceErrorResponse.regionBlocked, expected: { _tag: 'SyncRegionUnavailableError' } },
     {
         label: 'code -2014',
-        respond: () => respondWith(400, errorBody(-2014, 'API-key format invalid.')),
+        respond: () => binanceErrorResponse.apiError(-2014, 'API-key format invalid.'),
         expected: { _tag: 'SyncUnauthorizedError' }
     },
     {
         label: 'code -2008',
-        respond: () => respondWith(400, errorBody(-2008, 'Invalid Api-Key ID.')),
+        respond: () => binanceErrorResponse.apiError(-2008, 'Invalid Api-Key ID.'),
         expected: { _tag: 'SyncUnauthorizedError' }
     }
 ];
@@ -111,7 +102,7 @@ describe('binance/http-error-classification', () => {
     it.effect('cools the throttle down for the Retry-After time after a 429', () =>
         Effect.gen(function* () {
             stubEmptyBinanceSources();
-            const requests = countDepositRequests(() => respondWith(429, errorBody(-1003, 'Too many requests'), { 'retry-after': '60' }));
+            const requests = countDepositRequests(() => binanceErrorResponse.rateLimited(60));
 
             const client = new BinanceSignedClient(BINANCE_TEST_TOKEN, Date.now() + NEARBY_DEADLINE_MS);
             const firstError = yield* flipCapitalFailure(client);
@@ -142,7 +133,7 @@ describe('binance/http-error-classification', () => {
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
             const { btcFixture, ethFixture } = yield* setupBtcAndEthForwardSyncs;
-            countDepositRequests(() => respondWith(400, errorBody(-1022, 'Signature for this request is not valid.')));
+            countDepositRequests(() => binanceErrorResponse.apiError(-1022, 'Signature for this request is not valid.'));
 
             yield* binanceSyncService.sync(Date.now() + RUN_DEADLINE_MS);
 
@@ -157,11 +148,12 @@ describe('binance/http-error-classification', () => {
             const timeRequests = countRequests('get', SERVER_TIME_URL, () => HttpResponse.json({ serverTime: Date.now() }));
             const depositRequests = countDepositRequests(requestNumber =>
                 requestNumber === 1
-                    ? respondWith(400, errorBody(-1021, 'Timestamp for this request is outside of the recvWindow.'))
+                    ? binanceErrorResponse.apiError(-1021, 'Timestamp for this request is outside of the recvWindow.')
                     : HttpResponse.json([buildBinance.deposit({ id: 'dep-1', coin: 'BTC', amount: '1' })])
             );
 
-            const transactions = yield* new BinanceSignedClient(BINANCE_TEST_TOKEN).getCapitalTransactions(
+            const transactions = yield* new BinanceSignedClient(BINANCE_TEST_TOKEN).getTransactions(
+                BinanceHistorySourceEnum.CAPITAL,
                 BINANCE_WINDOW_FROM,
                 BINANCE_WINDOW_TO
             );
@@ -176,10 +168,14 @@ describe('binance/http-error-classification', () => {
         Effect.gen(function* () {
             stubEmptyBinanceSources();
             const timeRequests = countRequests('get', SERVER_TIME_URL, requestNumber =>
-                requestNumber === 1 ? respondWith(400, errorBody(-1100, 'bad')) : HttpResponse.json({ serverTime: Date.now() })
+                requestNumber === 1 ? binanceErrorResponse.apiError(-1100, 'bad') : HttpResponse.json({ serverTime: Date.now() })
             );
 
-            yield* new BinanceSignedClient(BINANCE_TEST_TOKEN).getCapitalTransactions(BINANCE_WINDOW_FROM, BINANCE_WINDOW_TO);
+            yield* new BinanceSignedClient(BINANCE_TEST_TOKEN).getTransactions(
+                BinanceHistorySourceEnum.CAPITAL,
+                BINANCE_WINDOW_FROM,
+                BINANCE_WINDOW_TO
+            );
 
             expect(timeRequests).toHaveLength(2);
         }).pipe(Effect.provide(TestLayer))

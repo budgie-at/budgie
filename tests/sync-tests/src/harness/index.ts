@@ -31,19 +31,25 @@ export { subtractMonths } from './scenario/subtract-months';
 export { binanceStub } from './binance/binance-stub';
 export type { TimeWindow } from './binance/binance-stub';
 export { buildBinance } from './binance/build-binance';
+export { binanceErrorResponse } from './binance/binance-error-response';
 export { STALE_SYNC_AGE_MS, RUN_DEADLINE_MS, advanceClock, jumpPastDeadline, restoreRealTimers } from './binance/binance-clock';
 export { setupBinanceFixture } from './binance/setup-binance-fixture';
 export {
     buildEarnDayKey,
+    expectFiatPrincipalAndFee,
     expectNoDuplicateAfterResync,
     expectSingleBinanceTransaction,
     fetchBinanceEntriesByExternalId,
     fetchBinanceTransactions,
+    fetchFiatOrderEntries,
+    fetchHistoryProgress,
     fetchSortedBinanceExternalIds,
     recentDayInMonthsAgo,
     resetBinanceSyncForResync,
+    resyncBinance,
     seedCryptoInstrument,
     setupAdaUsdtFixture,
+    setupFiatScenario,
     setupStaleForwardFixture,
     setupUsdtSpotFixtureWithBalances,
     stubBinanceAccountEndpoints,
@@ -54,12 +60,9 @@ export {
     BINANCE_WINDOW_FROM,
     BINANCE_WINDOW_TO,
     DEPOSIT_URL,
-    EMPTY_FIAT_RESPONSE,
-    FIAT_ORDERS_URL,
     stubBinanceServerTime,
     stubEmptyBinanceSources
 } from './binance/binance-raw-stub';
-export { withCoolDownSpy } from './binance/with-cooldown-spy';
 export { SYNC_ERROR_THRESHOLD, expectSyncFailedAndDisabled, httpFailureCases } from './scenario/error-recovery';
 export { seedExchangeRate } from './consolidation/seed-exchange-rate';
 export {
@@ -86,6 +89,7 @@ export { expectForwardSyncWithoutHistory } from './db/expect-forward-sync-withou
 export { explainQueryPlan } from './db/explain-query-plan';
 export { fetchCachedBalanceAmount } from './db/fetch-cached-balance-amount';
 export { seedUsdtFundingAccount } from './binance/seed-usdt-funding-account';
+export { buildBinanceToken, seedSecondKeyAccount } from './binance/seed-second-key-account';
 export { expectParentedToCanonical } from './consolidation/expect-parented-to-canonical';
 export * as Clock from 'effect/Clock';
 export * as Fiber from 'effect/Fiber';

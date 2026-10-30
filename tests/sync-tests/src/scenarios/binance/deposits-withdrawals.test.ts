@@ -1,5 +1,5 @@
 import { SyncEntityTable, SyncModeEnum, PRECISION, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
-import { BinanceSignedClient, BinanceSyncService } from '@budgie/sync';
+import { BinanceHistorySourceEnum, BinanceSignedClient, BinanceSyncService } from '@budgie/sync';
 import { describe, expect, it } from '@effect/vitest';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
@@ -93,7 +93,8 @@ describe('binance/deposits-withdrawals', () => {
             binanceStub.deposits(deposits);
             binanceStub.withdrawals(withdrawals);
 
-            const transactions = yield* new BinanceSignedClient(BINANCE_TEST_TOKEN).getCapitalTransactions(
+            const transactions = yield* new BinanceSignedClient(BINANCE_TEST_TOKEN).getTransactions(
+                BinanceHistorySourceEnum.CAPITAL,
                 BINANCE_WINDOW_FROM,
                 BINANCE_WINDOW_TO
             );

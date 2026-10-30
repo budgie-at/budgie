@@ -17,6 +17,7 @@ interface SetupBinanceFixtureOptions {
     readonly forwardSyncedAt?: Date;
     readonly instrumentType?: InstrumentTypeEnum;
     readonly binanceTradeCursor?: string;
+    readonly serverTimeOffsetMs?: number;
 }
 
 export const setupBinanceFixture = (options: SetupBinanceFixtureOptions = {}) =>
@@ -47,7 +48,7 @@ export const setupBinanceFixture = (options: SetupBinanceFixtureOptions = {}) =>
             binanceTradeCursor: options.binanceTradeCursor ?? null
         });
 
-        binanceStub.serverTime();
+        binanceStub.serverTime(options.serverTimeOffsetMs);
         binanceStub.exchangeInfoAllValid();
         binanceStub.spotBalances([]);
         binanceStub.fundingBalances([]);
@@ -57,9 +58,14 @@ export const setupBinanceFixture = (options: SetupBinanceFixtureOptions = {}) =>
         binanceStub.c2cOrders([], []);
         binanceStub.myTrades({});
         binanceStub.convertTradeFlow([]);
+        binanceStub.universalTransfers([]);
         binanceStub.earnPositions([]);
         binanceStub.lockedEarnPositions([]);
         binanceStub.earnRewards([]);
+        binanceStub.lockedEarnRewards([]);
+        binanceStub.ethStakingRewards([]);
+        binanceStub.dividends([]);
+        binanceStub.dustLogs([]);
 
         return { account, sync, instrument, externalId, token: BINANCE_TOKEN, asset, wallet };
     });

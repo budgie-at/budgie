@@ -97,4 +97,5 @@ appId: ${APP_ID}
 - assertVisible:
       id: 'DebtAccountBalance.TotalAmount.400'
 - assertVisible:
-      text: 'From E2E Lent Funding'
+      id: 'TransactionCard.Label.E2E_Lent_From_Cash'
+      text: '.*, From E2E Lent Funding,.*'
