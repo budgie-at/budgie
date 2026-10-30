@@ -1,3 +1,4 @@
+import { resolveSyncErrorCode } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { router } from 'expo-router';
@@ -8,6 +9,7 @@ import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
 import { goBackOrReplace } from '../../@generic/utils/go-back-or-replace.util';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 import { useOnboardingRedirect } from '../../onboarding/hook/use-onboarding-redirect.hook';
+import { SYNC_ERROR_LABEL } from '../constant/sync-error-label.constant';
 
 import { useAccountSelection } from './use-account-selection.hook';
 
@@ -26,6 +28,12 @@ export const useSyncAccountSetupFlow = <Identifier extends AppServices, Shape>(
 
     const exitHref = onboardingHref ?? '/';
 
+    const explainError = (error: unknown) => {
+        const errorCode = resolveSyncErrorCode(error);
+
+        return isDefined(errorCode) ? new Error(t(SYNC_ERROR_LABEL[errorCode])) : error;
+    };
+
     const handleGoBack = () => void goBackOrReplace(exitHref);
 
     const handleSetupSync = () =>
@@ -34,7 +42,7 @@ export const useSyncAccountSetupFlow = <Identifier extends AppServices, Shape>(
                 const syncService = yield* service;
                 yield* setupSync(syncService, [...accountSelection.selectedAccounts]);
                 router.dismissTo(exitHref);
-            }).pipe(toastOnFailure(t`Could not set up sync`))
+            }).pipe(Effect.mapError(explainError), toastOnFailure(t`Could not set up sync`))
         );
 
     const fetchAccountPreviews = (
@@ -47,7 +55,7 @@ export const useSyncAccountSetupFlow = <Identifier extends AppServices, Shape>(
                 if (isDefined(previews)) {
                     onLoaded(previews);
                 }
-            }).pipe(toastOnFailure(t`Could not fetch accounts`))
+            }).pipe(Effect.mapError(explainError), toastOnFailure(t`Could not fetch accounts`))
         );
 
     const isStartSyncDisabled = isLoading || accountSelection.selectedAccounts.size === 0;

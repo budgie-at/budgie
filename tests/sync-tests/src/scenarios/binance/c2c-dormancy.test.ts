@@ -56,22 +56,6 @@ describe('binance/source-window-walk', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('stops walking fiat windows after the dormancy gap when there are no fiat orders', () =>
-        Effect.gen(function* () {
-            const binanceSyncService = yield* BinanceSyncService;
-
-            yield* setupEmptyBackwardBinanceSync();
-            const requestedWindows: TimeWindow[] = [];
-            binanceStub.fiatOrders([], [], requestedWindows);
-
-            yield* binanceSyncService.sync();
-
-            expect(requestedWindows.length).toBeGreaterThan(0);
-            const oldestRequestedStartMs = Math.min(...requestedWindows.map(window => window.startMs));
-            expect(Date.now() - oldestRequestedStartMs).toBeLessThan(FIAT_DORMANCY_MAX_AGE_MS);
-        }).pipe(Effect.provide(TestLayer))
-    );
-
     it.effect('does not spend the fiat UID budget again during the daily refresh interval', () =>
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;

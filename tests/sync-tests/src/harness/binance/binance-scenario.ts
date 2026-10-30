@@ -1,20 +1,25 @@
 import {
+    BankIntegrationEntityTable,
     ExternalSourceEnum,
     InstrumentTypeEnum,
+    SyncEntityTable,
     SyncModeEnum,
+    SyncStatusEnum,
     TransactionEntityTable,
     TransactionEntryEntityTable,
+    TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
 import { BinanceSyncService } from '@budgie/sync';
 import { eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
+import * as Schema from 'effect/Schema';
 import { expect } from 'vitest';
 
 import { testDb } from '../scenario/setup';
 import { seed } from '../seed/seed';
 
-import { STALE_SYNC_AGE_MS } from './binance-clock';
+import { RUN_DEADLINE_MS, STALE_SYNC_AGE_MS } from './binance-clock';
 import { binanceStub } from './binance-stub';
 import { buildBinance } from './build-binance';
 import { setupBinanceFixture } from './setup-binance-fixture';
@@ -24,6 +29,16 @@ import type { BinanceAssetBalanceApiInterface } from '@budgie/sync';
 const EARN_DAY_KEY_LENGTH = 10;
 const DEFAULT_RECENT_DAY_OF_MONTH = 15;
 const SPOT_QUOTE_FREE = '100';
+const decodeHistoryProgress = Schema.decodeUnknownSync(
+    Schema.fromJsonString(Schema.Record(Schema.String, Schema.Struct({ headAt: Schema.Number, tailAt: Schema.Number })))
+);
+
+export const fetchHistoryProgress = (token: string) =>
+    Effect.gen(function* () {
+        const [integration] = yield* testDb.select().from(BankIntegrationEntityTable).where(eq(BankIntegrationEntityTable.token, token));
+
+        return decodeHistoryProgress(integration.historyProgress ?? '{}');
+    });
 
 export const fetchBinanceTransactions = () =>
     Effect.gen(function* () {
@@ -75,11 +90,13 @@ export const setupStaleForwardFixture = (baseAssets: readonly string[] = ['ADA']
 
 export const setupUsdtSpotFixtureWithBalances = (baseAsset: string, baseFree: string) =>
     Effect.gen(function* () {
-        yield* setupBinanceFixture({ asset: 'USDT' });
+        const fixture = yield* setupBinanceFixture({ asset: 'USDT' });
         binanceStub.spotBalances([
             buildBinance.balance({ asset: 'USDT', free: SPOT_QUOTE_FREE }),
             buildBinance.balance({ asset: baseAsset, free: baseFree })
         ]);
+
+        return fixture;
     });
 
 export const expectSingleBinanceTransaction = (transactionType: TransactionTypeEnum, externalId: string) =>
@@ -128,3 +145,43 @@ export const expectNoDuplicateAfterResync = Effect.fnUntraced(function* (restubF
 
     expect(yield* fetchBinanceTransactions()).toHaveLength(1);
 });
+
+export const setupFiatScenario = (mode = SyncModeEnum.FORWARD) =>
+    Effect.gen(function* () {
+        const fixture = yield* setupBinanceFixture({ mode, asset: 'EUR', instrumentType: InstrumentTypeEnum.FIAT });
+
+        return fixture;
+    });
+
+export const resyncBinance = (syncId: number, isDeadlineBound = false) =>
+    Effect.gen(function* () {
+        const binanceSyncService = yield* BinanceSyncService;
+
+        resetBinanceSyncForResync();
+        yield* testDb
+            .update(SyncEntityTable)
+            .set({ forwardSyncedAt: new Date(Date.now() - STALE_SYNC_AGE_MS), status: SyncStatusEnum.IDLE })
+            .where(eq(SyncEntityTable.id, syncId));
+        yield* isDeadlineBound ? binanceSyncService.sync(Date.now() + RUN_DEADLINE_MS) : binanceSyncService.sync();
+    });
+
+export const fetchFiatOrderEntries = (orderNo: string) =>
+    Effect.gen(function* () {
+        const mainEntries = yield* fetchBinanceEntriesByExternalId(orderNo);
+        const feeEntries = yield* fetchBinanceEntriesByExternalId(`${orderNo}:fee`);
+
+        return { mainEntries, feeEntries };
+    });
+
+export const expectFiatPrincipalAndFee = (orderNo: string, mainType: TransactionEntryTypeEnum, mainAmount: number, feeAmount: number) =>
+    Effect.gen(function* () {
+        const { mainEntries, feeEntries } = yield* fetchFiatOrderEntries(orderNo);
+
+        expect(mainEntries).toHaveLength(1);
+        expect(feeEntries).toHaveLength(1);
+        expect(mainEntries[0].type).toBe(mainType);
+        expect(mainEntries[0].amount).toBe(mainAmount);
+        expect(feeEntries[0].amount).toBe(feeAmount);
+
+        return { mainEntries, feeEntries };
+    });

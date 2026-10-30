@@ -72,7 +72,13 @@ export const BinanceSyncTokenSection = ({ accountId }: Props) => {
                 registry.updateAccountToken(accountId, JSON.stringify({ apiKey: trimmedApiKey, apiSecret: trimmedApiSecret }))
             ).pipe(
                 Effect.tap(() => Effect.sync(() => void handleCancel())),
-                Effect.catchTags({ BinanceKeyPermissionsError: toastBinanceKeyPermissionsError }),
+                Effect.catchTags({
+                    BinanceKeyPermissionsError: toastBinanceKeyPermissionsError,
+                    SyncTokenClientMismatchError: () =>
+                        Effect.sync(() => {
+                            showErrorToast(t`Different Binance account`, t`This API key belongs to a different Binance account.`);
+                        })
+                }),
                 toastOnFailure(t`Could not update token`)
             )
         );

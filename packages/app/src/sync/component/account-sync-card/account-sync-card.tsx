@@ -1,6 +1,6 @@
-import { ExternalSourceEnum, SyncModeEnum, SyncStatusEnum, SyncWarningEnum } from '@budgie/contracts';
+import { ExternalSourceEnum, SyncErrorCodeEnum, SyncModeEnum, SyncStatusEnum, SyncWarningEnum } from '@budgie/contracts';
 import { SyncProviderRegistryService, SYNC_PROVIDER_CAPABILITIES } from '@budgie/sync';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import * as Effect from 'effect/Effect';
 import { Text, View } from 'react-native';
@@ -13,10 +13,12 @@ import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
+import { SYNC_ERROR_LABEL } from '../../constant/sync-error-label.constant';
 import { useAccountSync } from '../../hook/use-account-sync.hook';
 import { BinanceSyncTokenSection } from '../binance-sync-token-section/binance-sync-token-section';
 import { ResyncAccount } from '../resync-account/resync-account';
 import { SyncDataRow } from '../sync-data-row/sync-data-row';
+import { SyncMessageRow } from '../sync-message-row/sync-message-row';
 
 import { AccountSyncCardSelector } from './account-sync-card.selector';
 
@@ -63,8 +65,12 @@ export const AccountSyncCard = ({ accountId }: Props) => {
     const { supportsFileImport } = SYNC_PROVIDER_CAPABILITIES[sync.provider];
     const syncLabel = supportsFileImport ? t`Include in file imports` : t`Sync`;
     const warningLabels: Record<SyncWarningEnum, string> = {
-        [SyncWarningEnum.C2C_UNAVAILABLE]: t`Binance P2P orders are unavailable: the API key is missing P2P read permission.`
+        [SyncWarningEnum.C2C_UNAVAILABLE]: t`Binance P2P orders are unavailable: the API key is missing P2P read permission.`,
+        [SyncWarningEnum.REGION_UNAVAILABLE]: t(SYNC_ERROR_LABEL[SyncErrorCodeEnum.REGION_UNAVAILABLE])
     };
+    const isRegionBlocked = sync.lastWarning === SyncWarningEnum.REGION_UNAVAILABLE;
+    const lastErrorText =
+        isNotEmptyString(sync.lastError) && isDefined(sync.lastErrorCode) ? t(SYNC_ERROR_LABEL[sync.lastErrorCode]) : sync.lastError;
     const tokenSection = sync.provider === ExternalSourceEnum.BINANCE ? <BinanceSyncTokenSection accountId={accountId} /> : null;
 
     return (
@@ -98,26 +104,24 @@ export const AccountSyncCard = ({ accountId }: Props) => {
 
                 {sync.errorCount > 0 && <SyncDataRow label={t`Errors`} value={String(sync.errorCount)} />}
 
-                {isNotEmptyString(sync.lastError) && (
-                    <View className="gap-y-xs">
-                        <Text className="text-xs text-secondary-foreground">
-                            <Trans>Last error</Trans>
-                        </Text>
-                        <Text className="text-secondary-foreground text-destructive text-xs" numberOfLines={2}>
-                            {sync.lastError}
-                        </Text>
-                    </View>
+                {isNotEmptyString(lastErrorText) && !isRegionBlocked && (
+                    <SyncMessageRow
+                        title={t`Last error`}
+                        message={lastErrorText}
+                        messageClassName="text-secondary-foreground text-destructive text-xs"
+                        numberOfLines={4}
+                        testID={AccountSyncCardSelector.LastError}
+                    />
                 )}
 
                 {isDefined(sync.lastWarning) && (
-                    <View className="gap-y-xs">
-                        <Text className="text-xs text-secondary-foreground">
-                            <Trans>Warning</Trans>
-                        </Text>
-                        <Text className="text-warning-foreground text-xs" numberOfLines={2}>
-                            {warningLabels[sync.lastWarning]}
-                        </Text>
-                    </View>
+                    <SyncMessageRow
+                        title={t`Warning`}
+                        message={warningLabels[sync.lastWarning]}
+                        messageClassName="text-warning-foreground text-xs"
+                        numberOfLines={3}
+                        testID={AccountSyncCardSelector.Warning}
+                    />
                 )}
 
                 {tokenSection}

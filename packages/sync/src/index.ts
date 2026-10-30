@@ -28,8 +28,10 @@ export { parsePrivatbankXlsx } from './privatbank/utils/parse-privatbank-xlsx.ut
 export type { PrivatbankRowInterface } from './privatbank/interface/privatbank-row.interface';
 
 export { BinanceSignedClient } from './binance/client/binance-signed.client';
+export { BinanceWeightThrottle } from './binance/client/binance-weight-throttle';
 export { mapBinanceDepositToTransaction, mapBinanceWithdrawalToTransaction, parseBinanceAmount } from './binance/mapper/binance.mapper';
 export { encodeBinanceAccountId, decodeBinanceAccountId } from './binance/utils/binance-account-id.util';
+export { BinanceHistorySourceEnum } from './binance/enum/binance-history-source.enum';
 export { BinanceWalletEnum } from './binance/enum/binance-wallet.enum';
 export { BinanceRateLimitMs } from './binance/constant/binance-rate-limit-ms.constant';
 export { BINANCE_API_MANAGEMENT_URL } from './binance/constant/binance-api-management-url.constant';
@@ -39,6 +41,7 @@ export { BinanceCredentialsSchema } from './binance/constant/binance-credentials
 export type { BinanceApiRestrictionsApiInterface } from './binance/interface/binance-api-restrictions-api.schema';
 export type { BinanceAssetBalanceApiInterface } from './binance/interface/binance-asset-balance-api.schema';
 export type { BinanceDepositApiInterface } from './binance/interface/binance-deposit-api.schema';
+export type { BinanceUniversalTransferApiInterface } from './binance/interface/binance-universal-transfer-api.schema';
 export type { BinanceWithdrawalApiInterface } from './binance/interface/binance-withdrawal-api.schema';
 export type { BinanceFiatOrderApiInterface } from './binance/interface/binance-fiat-order-api.schema';
 export type { BinanceC2cOrderApiInterface } from './binance/interface/binance-c2c-order-api.schema';
@@ -47,6 +50,10 @@ export type { BinanceConvertFlowApiInterface } from './binance/interface/binance
 export type { BinanceEarnPositionApiInterface } from './binance/interface/binance-earn-position-api.schema';
 export type { BinanceLockedEarnPositionApiInterface } from './binance/interface/binance-locked-earn-position-api.schema';
 export type { BinanceEarnRewardApiInterface } from './binance/interface/binance-earn-reward-api.schema';
+export type { BinanceLockedEarnRewardApiInterface } from './binance/interface/binance-locked-earn-reward-api.schema';
+export type { BinanceStakingRewardApiInterface } from './binance/interface/binance-staking-reward-api.schema';
+export type { BinanceDividendApiInterface } from './binance/interface/binance-dividend-api.schema';
+export type { BinanceDustLogApiInterface } from './binance/interface/binance-dust-api.schema';
 
 export { mapErsteTransaction } from './erste/mapper/erste.mapper';
 
@@ -57,6 +64,7 @@ export { SyncWorkload } from './core/port/sync-workload.port';
 export { TransferConsolidationWorkload } from './core/port/transfer-consolidation-workload.port';
 export { SyncFileReader } from './core/port/sync-file-reader.port';
 export { SYNC_PROVIDER_CAPABILITIES } from './core/constant/sync-provider-capabilities.constant';
+export { resolveSyncErrorCode } from './core/utils/resolve-sync-error-code.util';
 export { resolveInitialSyncProgress } from './core/utils/resolve-initial-sync-progress.util';
 export { isInitialSyncIncomplete } from './core/utils/is-initial-sync-incomplete.util';
 export type { InitialSyncProgressInterface } from './core/interface/initial-sync-progress.interface';

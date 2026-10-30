@@ -8,6 +8,7 @@ import * as Schema from 'effect/Schema';
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { BinanceTradeCursorMapSchema } from '../constant/binance-trade-cursor-map.schema';
+import { BinanceHistorySourceEnum } from '../enum/binance-history-source.enum';
 
 import type { BinanceSignedClient } from '../client/binance-signed.client';
 import type { BinanceTradeCursorMapInterface } from '../constant/binance-trade-cursor-map.schema';
@@ -73,7 +74,7 @@ export class BinanceTradeCursorService extends Context.Service<BinanceTradeCurso
             ) {
                 if (isDefined(client)) {
                     yield* syncRepository.update(sync.id, {
-                        lastWarning: client.isC2cUnavailable() ? SyncWarningEnum.C2C_UNAVAILABLE : null
+                        lastWarning: client.isSourceSkipped(BinanceHistorySourceEnum.C2C) ? SyncWarningEnum.C2C_UNAVAILABLE : null
                     });
                 }
             })
