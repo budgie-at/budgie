@@ -73,7 +73,8 @@ appId: ${APP_ID}
       id: 'TransactionCard.Label.E2E_Split_Expense'
     timeout: 5000
 - assertVisible:
-    text: 'Groceries, Restaurants & Cafes.*'
+    id: 'TransactionCard.Label.E2E_Split_Expense'
+    text: '.*, Groceries, Restaurants & Cafes,.*'
 
 - tapOn:
     id: 'TabBar.Home'
@@ -170,7 +171,8 @@ appId: ${APP_ID}
       id: 'TransactionCard.Label.E2E_Split_Expense'
     timeout: 5000
 - assertVisible:
-    text: 'Groceries, Restaurants & Cafes.*'
+    id: 'TransactionCard.Label.E2E_Split_Expense'
+    text: '.*, Groceries, Restaurants & Cafes,.*'
 
 - tapOn:
     id: 'TabBar.Home'
@@ -254,7 +256,8 @@ appId: ${APP_ID}
 - assertVisible:
     id: 'TransactionCard.Category.Groceries'
 - assertNotVisible:
-    text: 'Groceries, Restaurants & Cafes.*'
+    id: 'TransactionCard.Label.E2E_Split_Expense'
+    text: '.*, Groceries, Restaurants & Cafes,.*'
 
 - tapOn:
     id: 'TransactionCard.Label.E2E_Split_Expense'

@@ -99,7 +99,8 @@ appId: ${APP_ID}
       id: 'TransactionCard.Category.E2E_Txn_Category'
       text: 'E2E Txn Category'
 - assertVisible:
-      text: '.*· E2E Txn Account'
+      id: 'TransactionCard.Label.E2E_Test_Expense'
+      text: '.*· E2E Txn Account,.*'
 
 - tapOn:
       id: 'TabBar.Home'
@@ -212,7 +213,8 @@ appId: ${APP_ID}
       id: 'TransactionCard.Category.E2E_Edited_Category'
       text: 'E2E Edited Category'
 - assertVisible:
-      text: '.*· E2E Txn Account'
+      id: 'TransactionCard.Label.E2E_Edited_Expense'
+      text: '.*· E2E Txn Account,.*'
 - assertNotVisible:
       id: 'TransactionCard.Label.E2E_Test_Expense'
 

@@ -105,11 +105,13 @@ appId: ${APP_ID}
 - tapOn:
       id: 'TransactionFilters.TypeApplyButton'
 
-- scrollUntilVisible:
-      element:
-          id: 'TransactionFilters.AccountChip'
-      direction: RIGHT
-      speed: 20
+- swipe:
+      from:
+          id: 'TransactionFilters.CategoryChip'
+      direction: LEFT
+      duration: 500
+- assertVisible:
+      id: 'TransactionFilters.AccountChip'
 - tapOn:
       id: 'TransactionFilters.AccountChip'
 - waitForAnimationToEnd
@@ -294,11 +296,6 @@ appId: ${APP_ID}
       id: 'TransactionsPage.TransactionCount'
       text: '9 transactions'
 
-- scrollUntilVisible:
-      element:
-          id: 'TransactionFilters.AmountChip'
-      direction: RIGHT
-      speed: 20
 - tapOn:
       id: 'TransactionFilters.AmountChip'
 - extendedWaitUntil:
