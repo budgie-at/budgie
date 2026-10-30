@@ -213,7 +213,7 @@ appId: ${APP_ID}
 - tapOn:
       id: 'CategorizeInboxGroupRow.EXPENSE\|e2e tagged grocer\|\|'
 - tapOn:
-      id: 'CategorizeInboxGroupScreen.Option.Groceries'
+      id: 'CategorizeInboxGroupScreen.Option.E2E Grocer Tag'
 - tapOn:
       id: 'CategorizeInboxGroupScreen.PrimaryButton'
 - assertVisible:
