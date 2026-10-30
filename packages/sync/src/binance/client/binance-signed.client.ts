@@ -927,17 +927,11 @@ export class BinanceSignedClient extends BaseSyncProviderClient {
     }
 
     private fetchC2cOrders(startTimeMs: number, endTimeMs: number) {
-        const availableStartTimeMs = Math.max(startTimeMs, this.limitedHistoryFloorTimeMs);
-
-        if (availableStartTimeMs >= endTimeMs) {
-            return Effect.succeed<readonly BinanceC2cOrderApiInterface[]>([]);
-        }
-
         return this.cached(
             this.c2cOrderCache,
-            `${availableStartTimeMs}-${endTimeMs}`,
+            `${startTimeMs}-${endTimeMs}`,
             Effect.forEach([C2C_BUY_TRADE_TYPE, C2C_SELL_TRADE_TYPE], tradeType =>
-                this.walkPagedWindows(C2C_MAX_PERIOD_MS, availableStartTimeMs, endTimeMs, (page, windowStartMs, windowEndMs) =>
+                this.walkPagedWindows(C2C_MAX_PERIOD_MS, startTimeMs, endTimeMs, (page, windowStartMs, windowEndMs) =>
                     this.fetchC2cOrderPage(tradeType, windowStartMs, windowEndMs, page)
                 )
             ).pipe(Effect.map(ordersByType => ordersByType.flat()))
