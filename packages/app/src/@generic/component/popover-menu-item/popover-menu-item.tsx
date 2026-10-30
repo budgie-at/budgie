@@ -47,7 +47,9 @@ export const PopoverMenuItem = ({ icon, label, onPress, variant = 'default', rig
         <Icon icon={icon} size={20} className={iconVariants({ variant })} />
         <View className="flex-1">
             <Text className={textVariants({ variant })}>{label}</Text>
-            {isNotEmptyString(subtitle) ? <Text className="text-[13px] leading-[18px] text-secondary-foreground">{subtitle}</Text> : null}
+            {isNotEmptyString(subtitle) ? (
+                <Text className="mt-xxs text-[13px] leading-[19px] text-popover-secondary">{subtitle}</Text>
+            ) : null}
         </View>
         {isDefined(rightLabel) ? <Text className="text-sm text-secondary-foreground">{rightLabel}</Text> : null}
     </HapticPressable>

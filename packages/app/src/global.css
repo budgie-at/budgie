@@ -84,6 +84,7 @@
             --color-transaction-detail-bar: rgb(249, 249, 249);
             --color-popover-surface: rgb(255, 255, 255);
             --color-popover-border: rgba(60, 60, 67, 0.18);
+            --color-popover-secondary: rgb(82, 82, 87);
             --color-transaction-detail-secondary: rgba(107, 107, 107, 1);
             --color-grouped-surface: rgb(242, 242, 247);
             --color-grouped-surface-row: rgb(255, 255, 255);
@@ -170,6 +171,7 @@
             --color-transaction-detail-bar: rgb(22, 22, 24);
             --color-popover-surface: rgb(44, 44, 46);
             --color-popover-border: rgba(255, 255, 255, 0.16);
+            --color-popover-secondary: rgb(204, 204, 212);
             --color-transaction-detail-secondary: rgba(178, 178, 186, 1);
             --color-grouped-surface: rgb(0, 0, 0);
             --color-grouped-surface-row: rgba(255, 255, 255, 0.05);
