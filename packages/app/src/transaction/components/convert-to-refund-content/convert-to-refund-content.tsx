@@ -6,12 +6,12 @@ import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
 import { isDefined, isEmptyArray, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
-import { ListItemSeparator } from '../../../@generic/component/list-item-separator/list-item-separator';
 import { ConvertToRefundModalSelector } from '../../../app/convert-to-refund-modal.selector';
 import { useConvertToRefundAction } from '../../hook/use-convert-to-refund-action.hook';
 import { useRevertConsolidation } from '../../hook/use-revert-consolidation.hook';
 import { useGetTransactionByIdQuery } from '../../query/use-get-transaction-by-id.query';
 import { useRefundableExpenseCandidatesQuery } from '../../query/use-refundable-expense-candidates.query';
+import { getTransactionListRowPosition } from '../../utils/get-transaction-list-row-position.util';
 import { ConvertToRefundFooter } from '../convert-to-refund-footer/convert-to-refund-footer';
 import { TransactionPickerRow } from '../transaction-picker-row/transaction-picker-row';
 import { TransactionPickerSearchDock } from '../transaction-picker-search-dock/transaction-picker-search-dock';
@@ -76,15 +76,14 @@ export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConve
                         showsVerticalScrollIndicator={false}
                     >
                         {candidates.map((candidate, index) => (
-                            <View key={candidate.id}>
-                                {index > 0 ? <ListItemSeparator /> : null}
-                                <TransactionPickerRow
-                                    item={candidate}
-                                    isSelected={selectedCandidate?.id === candidate.id}
-                                    onPress={setSelectedCandidate}
-                                    testID={ConvertToRefundModalSelector.CandidateRow(candidate.id)}
-                                />
-                            </View>
+                            <TransactionPickerRow
+                                key={candidate.id}
+                                position={getTransactionListRowPosition(index, candidates.length)}
+                                item={candidate}
+                                isSelected={selectedCandidate?.id === candidate.id}
+                                onPress={setSelectedCandidate}
+                                testID={ConvertToRefundModalSelector.CandidateRow(candidate.id)}
+                            />
                         ))}
                     </ScrollView>
                 ) : null}

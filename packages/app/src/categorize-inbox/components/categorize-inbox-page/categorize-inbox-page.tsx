@@ -8,6 +8,7 @@ import { isDefined, isEmptyArray, isNotEmptyArray, isPositiveNumber } from '@rnw
 import { Button } from '../../../@generic/component/button/button';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
+import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { Page } from '../../../@generic/component/page/page';
@@ -56,30 +57,32 @@ export const CategorizeInboxPage = ({ params, strategy }: Props) => {
 
     return (
         <CategorizeInboxContext.Provider value={contextValue}>
-            <Page
-                testID={CategorizeInboxPageSelector.Container}
-                footer={panel}
-                header={
-                    <PageHeader
-                        size="md"
-                        title={strategy.pageTitle}
-                        onGoBack={handleGoBack}
-                        right={
-                            <HapticPressable
-                                className="ml-auto h-10 w-10 items-center justify-center"
-                                onPress={handleShowList}
-                                testID={CategorizeInboxPageSelector.ShowListButton}
-                                accessibilityRole="button"
-                                accessibilityLabel={t`Show list`}
-                            >
-                                <CircleIcon icon={UserIconNameEnum.List} variant="ghost" size={40} iconSize={24} border={false} />
-                            </HapticPressable>
-                        }
-                    />
-                }
-            >
-                {inbox.isLoading ? <ActivityIndicator size="large" /> : listContent}
-            </Page>
+            <GroupedSurface>
+                <Page
+                    testID={CategorizeInboxPageSelector.Container}
+                    footer={panel}
+                    header={
+                        <PageHeader
+                            size="md"
+                            title={strategy.pageTitle}
+                            onGoBack={handleGoBack}
+                            right={
+                                <HapticPressable
+                                    className="ml-auto h-10 w-10 items-center justify-center"
+                                    onPress={handleShowList}
+                                    testID={CategorizeInboxPageSelector.ShowListButton}
+                                    accessibilityRole="button"
+                                    accessibilityLabel={t`Show list`}
+                                >
+                                    <CircleIcon icon={UserIconNameEnum.List} variant="ghost" size={40} iconSize={24} border={false} />
+                                </HapticPressable>
+                            }
+                        />
+                    }
+                >
+                    {inbox.isLoading ? <ActivityIndicator size="large" /> : listContent}
+                </Page>
+            </GroupedSurface>
         </CategorizeInboxContext.Provider>
     );
 };

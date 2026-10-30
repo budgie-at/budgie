@@ -35,7 +35,7 @@ export const CategorizeInboxSectionHeader = ({ section, rowCount, totalBaseAmoun
 
     return (
         <View
-            className="flex-row items-center justify-between gap-x-md bg-primary-reverse py-sm"
+            className="flex-row items-center justify-between gap-x-md bg-surface py-sm"
             accessibilityRole="header"
             {...testID(CategorizeInboxSectionHeaderSelector.Header, section)}
         >
