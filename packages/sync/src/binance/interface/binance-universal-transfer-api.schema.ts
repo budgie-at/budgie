@@ -1,3 +1,4 @@
+import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
 
 const BinanceUniversalTransferApiSchema = Schema.Struct({
@@ -10,7 +11,7 @@ const BinanceUniversalTransferApiSchema = Schema.Struct({
 });
 
 export const BinanceUniversalTransferListApiSchema = Schema.Struct({
-    rows: Schema.Array(BinanceUniversalTransferApiSchema)
+    rows: Schema.Array(BinanceUniversalTransferApiSchema).pipe(Schema.withDecodingDefaultKey(Effect.succeed([])))
 });
 
 export type BinanceUniversalTransferApiInterface = typeof BinanceUniversalTransferApiSchema.Type;

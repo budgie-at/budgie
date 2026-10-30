@@ -1,6 +1,6 @@
 import { HttpResponse, http } from 'msw';
 
-import { isDefined, isString } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isString } from '@rnw-community/shared';
 
 import { mockServer } from '../scenario/mock-server';
 
@@ -422,7 +422,7 @@ export const binanceStub = {
             rows: transfers,
             getTimeMs: transfer => transfer.timestamp,
             isSelected: (transfer, url) => transfer.type === url.searchParams.get('type'),
-            respond: respondEarnPage,
+            respond: (matched, url) => (isEmptyArray(matched) ? { total: 0 } : respondEarnPage(matched, url)),
             requestedWindows
         });
     },
@@ -464,7 +464,8 @@ export const binanceStub = {
             url: DUST_LOG_URL,
             rows: dustLogs,
             getTimeMs: dustLog => dustLog.operateTime,
-            respond: matched => ({ total: matched.length, userAssetDribblets: matched.slice(0, DUST_MAX_ROWS) })
+            respond: matched =>
+                isEmptyArray(matched) ? {} : { total: matched.length, userAssetDribblets: matched.slice(0, DUST_MAX_ROWS) }
         });
     }
 };

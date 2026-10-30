@@ -1,3 +1,4 @@
+import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
 
 const BinanceDustDetailApiSchema = Schema.Struct({
@@ -19,8 +20,7 @@ const BinanceDustLogApiSchema = Schema.Struct({
 });
 
 export const BinanceDustListApiSchema = Schema.Struct({
-    total: Schema.Number,
-    userAssetDribblets: Schema.Array(BinanceDustLogApiSchema)
+    userAssetDribblets: Schema.Array(BinanceDustLogApiSchema).pipe(Schema.withDecodingDefaultKey(Effect.succeed([])))
 });
 
 export type BinanceDustLogApiInterface = typeof BinanceDustLogApiSchema.Type;
