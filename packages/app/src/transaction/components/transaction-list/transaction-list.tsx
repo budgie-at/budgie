@@ -8,27 +8,44 @@ import { TransactionListUncategorizedPill } from '../transaction-list-uncategori
 import { TransactionSectionsList } from '../transaction-sections-list/transaction-sections-list';
 
 export const TransactionList = () => {
-    const { activeFilters, setInternalFilters, hasFiltersSelected, sections, loadMore, isLoading } = useTransactionList(null);
+    const {
+        activeFilters,
+        rowAccountId,
+        setInternalFilters,
+        clearFilters,
+        hasFiltersSelected,
+        isClearAllVisible,
+        sections,
+        loadMore,
+        isLoading
+    } = useTransactionList(null);
 
     return (
         <View className="flex-1">
-            <TransactionFilters
-                filters={activeFilters}
-                onChange={setInternalFilters}
-                accountId={null}
-                hasFiltersSelected={hasFiltersSelected}
-            />
-
-            <View className="flex-row items-center gap-x-md">
-                <TransactionListUncategorizedPill filters={activeFilters} />
-                <TransactionListCount filters={activeFilters} className="ml-auto pt-2 pb-1" />
+            <View className="pb-md">
+                <TransactionFilters
+                    filters={activeFilters}
+                    onChange={setInternalFilters}
+                    accountId={null}
+                    isClearAllVisible={isClearAllVisible}
+                    leading={<TransactionListUncategorizedPill filters={activeFilters} />}
+                />
             </View>
 
-            <TransactionSectionsList
-                sections={sections}
-                onEndReached={loadMore}
-                listEmptyState={<TransactionListEmptyState isLoading={isLoading} hasFiltersSelected={hasFiltersSelected} />}
-            />
+            <TransactionListCount filters={activeFilters}>
+                <TransactionSectionsList
+                    sections={sections}
+                    onEndReached={loadMore}
+                    accountId={rowAccountId}
+                    listEmptyState={
+                        <TransactionListEmptyState
+                            isLoading={isLoading}
+                            hasFiltersSelected={hasFiltersSelected}
+                            onClearFilters={clearFilters}
+                        />
+                    }
+                />
+            </TransactionListCount>
         </View>
     );
 };

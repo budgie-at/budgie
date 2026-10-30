@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.127.0](https://github.com/budgie-at/budgie/compare/v6.126.5...v6.127.0) (2026-10-30)
+
+### Features
+
+* **landing:** list unsupported Binance sources and refresh app catalogs ([9aba1c1](https://github.com/budgie-at/budgie/commit/9aba1c1cb1979cacaa17e01dbd3817b40fb7552b))
+
+
 # [6.126.0](https://github.com/budgie-at/budgie/compare/v6.125.3...v6.126.0) (2026-10-29)
 
 **Note:** Version bump only for package @budgie-at/landing

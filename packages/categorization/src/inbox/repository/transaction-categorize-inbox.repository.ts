@@ -1,9 +1,11 @@
 import {
+    AccountDebtTypeEnum,
     AccountEntityTable,
     transactionFilters,
     CategoryEntityTable,
     CategorySourceEnum,
     Db,
+    DebtEventEntityTable,
     InstrumentEntityTable,
     MccCategoryEntityTable,
     TagSourceEnum,
@@ -12,7 +14,8 @@ import {
     TransactionTagsEntityTable,
     insertTransactionTag
 } from '@budgie/contracts';
-import { and, desc, eq, inArray, isNotNull, isNull, notInArray, sql } from 'drizzle-orm';
+import { and, desc, eq, inArray, isNotNull, isNull, ne, notExists, notInArray, sql } from 'drizzle-orm';
+import { QueryBuilder } from 'drizzle-orm/sqlite-core';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -27,6 +30,22 @@ export class TransactionCategorizeInboxRepository extends Context.Service<Transa
     {
         make: Effect.sync(() => {
             const writeChunkSize = 500;
+            const queryBuilder = new QueryBuilder();
+
+            const buildNonInstallmentDebtPaymentCondition = () =>
+                notExists(
+                    queryBuilder
+                        .select({ id: DebtEventEntityTable.id })
+                        .from(DebtEventEntityTable)
+                        .innerJoin(AccountEntityTable, eq(AccountEntityTable.id, DebtEventEntityTable.debtAccountId))
+                        .where(
+                            and(
+                                eq(DebtEventEntityTable.transactionId, TransactionEntityTable.id),
+                                isNull(DebtEventEntityTable.deletedAt),
+                                ne(AccountEntityTable.debtType, AccountDebtTypeEnum.INSTALLMENT)
+                            )
+                        )
+                );
 
             const writeInChunks = Effect.fnUntraced(function* (
                 transactionIds: number[],
@@ -193,7 +212,10 @@ export class TransactionCategorizeInboxRepository extends Context.Service<Transa
                 }),
                 findUncategorizedRows: (filters: TransactionFilterInterface) =>
                     selectInboxRows(
-                        buildInboxRowsWhere({ ...filters, categoryIds: null }, transactionFilters.buildUncategorizedEntryCondition())
+                        buildInboxRowsWhere(
+                            { ...filters, categoryIds: null },
+                            and(transactionFilters.buildUncategorizedEntryCondition(), buildNonInstallmentDebtPaymentCondition())
+                        )
                     ),
                 findUntaggedRows: (filters: TransactionFilterInterface) =>
                     selectInboxRows(

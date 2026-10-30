@@ -43,7 +43,7 @@ for (const mode of [SyncModeEnum.FORWARD, SyncModeEnum.BACKWARD]) {
                                 healthyRequestsBefore
                             );
                             const failedAfter = yield* fetchSyncById(failed.id);
-                            expect({ ...failedAfter, lastError: failed.lastError }).toEqual(failed);
+                            expect({ ...failedAfter, lastError: failed.lastError, lastErrorCode: failed.lastErrorCode }).toEqual(failed);
                             expect(failedAfter.lastError).not.toBeNull();
                             expect(yield* fetchSyncById(pausedSync.id)).toEqual(pausedSync);
                             yield* repository.update(good.id, { forwardSyncedAt: cursor });

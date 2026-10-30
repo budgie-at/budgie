@@ -25,7 +25,7 @@ interface Props {
 
 export const CategorizeInboxClusterRow = ({ row, displayTitle }: Props) => {
     const router = useRouter();
-    const { formatWeekdayMonthAndDay, formatWeekdayAndDay, formatTime } = useFormatDate();
+    const { formatWeekdayAndDay, formatShortWeekdayAndDay, formatTime } = useFormatDate();
     const amountLabel = useCategorizeInboxAmountLabel();
     const { excludedTransactionIds, toggleExcluded } = useCategorizeInboxContext();
 
@@ -43,7 +43,7 @@ export const CategorizeInboxClusterRow = ({ row, displayTitle }: Props) => {
         </Text>
     ) : null;
     const time = formatTime(row.operatedAt);
-    const accessibilityLabel = `${formatWeekdayMonthAndDay(row.operatedAt)}, ${time}, ${amountLabel(row.amount, row.instrumentSymbol)}`;
+    const accessibilityLabel = `${formatWeekdayAndDay(row.operatedAt)}, ${time}, ${amountLabel(row.amount, row.instrumentSymbol)}`;
 
     return (
         <HapticPressable
@@ -58,7 +58,7 @@ export const CategorizeInboxClusterRow = ({ row, displayTitle }: Props) => {
             <View className={contentClassName}>
                 <View className="flex-1">
                     <Text className="text-primary text-md font-medium tabular-nums" numberOfLines={1}>
-                        {formatWeekdayAndDay(row.operatedAt)}
+                        {formatShortWeekdayAndDay(row.operatedAt)}
                         <Text className="text-secondary-foreground">{` · ${time}`}</Text>
                     </Text>
                     {ownTitleLine}

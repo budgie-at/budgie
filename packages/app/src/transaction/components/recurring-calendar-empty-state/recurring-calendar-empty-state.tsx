@@ -60,7 +60,7 @@ export const RecurringCalendarEmptyState = () => {
                 <Text className="text-secondary-foreground text-md font-medium">
                     <Trans>No recurring payments detected</Trans>
                 </Text>
-                <Text className="text-secondary-foreground/60 text-xs text-center max-w-[280px]">
+                <Text className="text-secondary-foreground text-xs text-center max-w-[280px]">
                     <Trans>Recurring payments will appear here once patterns are detected from your transactions</Trans>
                 </Text>
             </Animated.View>

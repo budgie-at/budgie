@@ -5,18 +5,10 @@ export const TransactionCardSelector = {
     LabelCard: (value: string) => `TransactionCard.Label.${normalizePart(value)}` as const,
     Amount: (id: number) => `TransactionCard.Amount.${id}` as const,
     Category: (value: string) => `TransactionCard.Category.${normalizePart(value)}` as const,
-    EntryCategoryAmount: (value: string, amount: number | string) =>
-        `TransactionCard.EntryCategoryAmount.${normalizePart(value)}.${normalizePart(amount)}` as const,
-    Tag: (value: string) => `TransactionCard.Tag.${normalizePart(value)}` as const,
-    TagSiblingsCount: (value: string) => `TransactionCard.TagSiblingsCount.${normalizePart(value)}` as const,
     RefundedPill: (id: number) => `TransactionCard.RefundedPill.${id}` as const,
-    ReceiptPill: (id: number) => `TransactionCard.ReceiptPill.${id}` as const,
-    FeeMetadata: (id: number) => `TransactionCard.FeeMetadata.${id}` as const,
-    DebtSettlementMetadata: (id: number) => `TransactionCard.DebtSettlementMetadata.${id}` as const,
-    Account: (value: string) => `TransactionCard.Account.${normalizePart(value)}` as const,
-    FromAccount: (value: string) => `TransactionCard.FromAccount.${normalizePart(value)}` as const,
-    ToAccount: (value: string) => `TransactionCard.ToAccount.${normalizePart(value)}` as const,
     AdjustmentCard: (id: number) => `TransactionCard.Adjustment.${id}` as const,
     AdjustmentBadge: 'TransactionCard.Badge.Adjustment',
+    UncategorizedBadge: 'TransactionCard.Badge.Uncategorized',
+    ReceiptMarker: (id: number) => `TransactionCard.ReceiptMarker.${id}` as const,
     AdjustmentAmount: (amount: number | string) => `TransactionCard.AdjustmentAmount.${normalizePart(amount)}` as const
 } as const;

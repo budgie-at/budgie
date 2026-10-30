@@ -1,10 +1,8 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { Text } from 'react-native';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { Icon } from '../../../@generic/component/icon/icon';
 import { testID } from '../../../@generic/utils/test-id.util';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 import { CategorizeInboxGroupRowPill } from '../categorize-inbox-group-row-pill/categorize-inbox-group-row-pill';
@@ -34,16 +32,13 @@ export const CategorizeInboxGroupRowFileButton = ({ cluster }: Props) => {
 
     return (
         <CategorizeInboxGroupRowPill
-            className="bg-positive-background"
+            variant="positive"
+            icon={UserIconNameEnum.Check}
+            text={candidateTitle}
             label={t`File as ${candidateTitle}`}
             isDisabled={!isNotEmptyArray(assignments)}
             onPress={handlePress}
             {...testID(CategorizeInboxGroupRowSelector.FileButton, cluster.key)}
-        >
-            <Icon icon={UserIconNameEnum.Check} size={12} className="text-positive-foreground" />
-            <Text className="shrink text-xs font-semibold text-positive-foreground" numberOfLines={1}>
-                {candidateTitle}
-            </Text>
-        </CategorizeInboxGroupRowPill>
+        />
     );
 };

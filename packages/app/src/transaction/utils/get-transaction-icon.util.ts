@@ -1,17 +1,15 @@
 import {
-    TransactionEntryTypeEnum,
     TransactionTypeEnum,
     TransactionWithRelationsEntityInterface,
     UserIconNameEnum,
-    UserIconType
+    UserIconType,
+    isPositiveAdjustmentTransaction
 } from '@budgie/contracts';
 import { getTransactionCategoryEntries } from '@budgie/ledger';
 
 export const getTransactionIcon = (transaction: TransactionWithRelationsEntityInterface): UserIconType => {
     if (transaction.type === TransactionTypeEnum.ADJUSTMENT) {
-        const [entry] = transaction.entries;
-
-        return entry.type === TransactionEntryTypeEnum.DEBIT ? UserIconNameEnum.BadgeMinus : UserIconNameEnum.BadgePlus;
+        return isPositiveAdjustmentTransaction(transaction) ? UserIconNameEnum.BadgePlus : UserIconNameEnum.BadgeMinus;
     }
 
     if (transaction.type === TransactionTypeEnum.TRANSFER) {
@@ -28,5 +26,5 @@ export const getTransactionIcon = (transaction: TransactionWithRelationsEntityIn
         return UserIconNameEnum.Split;
     }
 
-    return categoryEntries.at(0)?.category?.icon ?? UserIconNameEnum.Home;
+    return categoryEntries.at(0)?.category?.icon ?? UserIconNameEnum.CircleDashed;
 };

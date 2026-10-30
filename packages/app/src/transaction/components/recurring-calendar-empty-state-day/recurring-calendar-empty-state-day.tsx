@@ -14,10 +14,10 @@ export const RecurringCalendarEmptyStateDay = ({ day, highlightDelay, animationD
         {isDefined(highlightDelay) ? (
             <Animated.View
                 entering={FadeIn.delay(highlightDelay).duration(animationDuration)}
-                className="w-10 h-10 rounded-full bg-warning-background items-center justify-center"
+                className="w-10 h-10 rounded-full bg-surface-fill items-center justify-center"
             >
-                <Text className="text-xs text-warning-foreground font-semibold">{day}</Text>
-                <View className="absolute -bottom-0.5 w-1 h-1 rounded-full bg-warning-foreground" />
+                <Text className="text-xs text-primary font-semibold">{day}</Text>
+                <View className="absolute -bottom-0.5 w-1 h-1 rounded-full bg-default-foreground" />
             </Animated.View>
         ) : (
             <Text className="text-xs text-secondary-foreground/40">{day}</Text>

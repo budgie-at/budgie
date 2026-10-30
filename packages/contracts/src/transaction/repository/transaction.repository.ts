@@ -4,7 +4,7 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { transactionFilters } from '../../@generic/repository/base-transaction-filter.repository';
 import { Db } from '../../@generic/service/db.service';
@@ -46,6 +46,37 @@ export class TransactionRepository extends Context.Service<TransactionRepository
             }
 
             return null;
+        });
+
+        const findExternalIdRows = Effect.fnUntraced(function* (
+            externalSource: ExternalSourceEnum,
+            deletedCondition: SQL,
+            accountIds?: readonly number[]
+        ) {
+            if (isDefined(accountIds) && isEmptyArray(accountIds)) {
+                return [];
+            }
+
+            return yield* Db.query(db =>
+                db
+                    .select({ id: TransactionEntityTable.id, externalId: TransactionEntityTable.externalId })
+                    .from(TransactionEntityTable)
+                    .where(
+                        and(
+                            eq(TransactionEntityTable.externalSource, externalSource),
+                            isNotNull(TransactionEntityTable.externalId),
+                            deletedCondition,
+                            ...(isDefined(accountIds)
+                                ? [
+                                      or(
+                                          inArray(TransactionEntityTable.fromAccountId, [...accountIds]),
+                                          inArray(TransactionEntityTable.toAccountId, [...accountIds])
+                                      )
+                                  ]
+                                : [])
+                        )
+                    )
+            );
         });
 
         const findByIdsWithEntriesWhere = Effect.fnUntraced(function* (
@@ -204,20 +235,10 @@ export class TransactionRepository extends Context.Service<TransactionRepository
             findByIdsWithRefundConsolidationHistory: (ids: number[]) => findByIdsWithEntriesWhere(ids, NOT_DELETED_ENTRY_RELATION_WHERE),
 
             findIdMapByExternalSource: Effect.fn('TransactionRepository.findIdMapByExternalSource')(function* (
-                externalSource: ExternalSourceEnum
+                externalSource: ExternalSourceEnum,
+                accountIds?: readonly number[]
             ) {
-                const results = yield* Db.query(db =>
-                    db
-                        .select({ id: TransactionEntityTable.id, externalId: TransactionEntityTable.externalId })
-                        .from(TransactionEntityTable)
-                        .where(
-                            and(
-                                eq(TransactionEntityTable.externalSource, externalSource),
-                                isNotNull(TransactionEntityTable.externalId),
-                                isNull(TransactionEntityTable.deletedAt)
-                            )
-                        )
-                );
+                const results = yield* findExternalIdRows(externalSource, isNull(TransactionEntityTable.deletedAt), accountIds);
 
                 return new Map(
                     results.flatMap(({ id, externalId }) => {
@@ -313,19 +334,14 @@ export class TransactionRepository extends Context.Service<TransactionRepository
                     )
                 ),
 
-            findExternalIdsByExternalSource: (externalSource: ExternalSourceEnum) =>
-                Db.query(db =>
-                    db
-                        .select({ externalId: TransactionEntityTable.externalId })
-                        .from(TransactionEntityTable)
-                        .where(
-                            and(
-                                eq(TransactionEntityTable.externalSource, externalSource),
-                                isNotNull(TransactionEntityTable.externalId),
-                                isNull(TransactionEntityTable.deletedAt)
-                            )
-                        )
-                ).pipe(Effect.map(results => results.map(row => row.externalId).filter(isDefined))),
+            findDeletedExternalIdsByExternalSource: Effect.fn('TransactionRepository.findDeletedExternalIdsByExternalSource')(function* (
+                externalSource: ExternalSourceEnum,
+                accountIds: readonly number[]
+            ) {
+                const results = yield* findExternalIdRows(externalSource, isNotNull(TransactionEntityTable.deletedAt), accountIds);
+
+                return results.map(row => row.externalId).filter(isDefined);
+            }),
 
             touchUpdatedAt: (id: number) =>
                 Db.query(db => db.update(TransactionEntityTable).set({ updatedAt: new Date() }).where(eq(TransactionEntityTable.id, id))),

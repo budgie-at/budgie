@@ -75,7 +75,8 @@ const useAutomaticBiometric = (canStart: boolean, attempt: () => boolean) => {
 export const usePinAuthentication = () => {
     const { t } = useLingui();
     const { isFaceIdAvailable, isSomeAvailable, setIsUnlocked } = useAuthContext();
-    const canUseBiometric = useSetting('isBiometricEnabled') && isSomeAvailable;
+    const isBiometricEnabled = useSetting('isBiometricEnabled');
+    const canUseBiometric = isBiometricEnabled && isSomeAvailable;
     const [{ input, isLoading }, dispatch] = useReducer(reducer, { input: '', isLoading: false });
     const { invalidate, startBiometricAttempt, startPinAttempt } = useAuthAttempt();
     const { clearError, error, isLockedOut, reportIncorrectPin } = usePinError();
@@ -95,7 +96,7 @@ export const usePinAuthentication = () => {
         }
     };
 
-    useAutomaticBiometric(canUseBiometric && isAppActive, () => {
+    const startBiometric = () => {
         if (AppState.currentState !== 'active' || !startBiometricAttempt(acceptAttempt(false))) {
             return false;
         }
@@ -103,7 +104,9 @@ export const usePinAuthentication = () => {
         dispatch({ type: PinAuthenticationActionTypeEnum.ATTEMPT_STARTED });
 
         return true;
-    });
+    };
+
+    useAutomaticBiometric(isBiometricEnabled && isAppActive, startBiometric);
 
     const addDigit = (digit: string) => {
         if (isLockedOut) {
@@ -124,11 +127,6 @@ export const usePinAuthentication = () => {
         dispatch({ type: PinAuthenticationActionTypeEnum.DIGIT_DELETED });
         clearError();
     };
-    const handleBiometricAuth = () => {
-        if (canUseBiometric && AppState.currentState === 'active' && startBiometricAttempt(acceptAttempt(false))) {
-            dispatch({ type: PinAuthenticationActionTypeEnum.ATTEMPT_STARTED });
-        }
-    };
 
     return {
         addDigit,
@@ -136,7 +134,7 @@ export const usePinAuthentication = () => {
         description: t`Enter your ${PIN_LENGTH}-digit PIN to unlock`,
         deleteDigit,
         error,
-        handleBiometricAuth,
+        handleBiometricAuth: startBiometric,
         input,
         isFaceIdAvailable,
         isInputDisabled: isLoading || isLockedOut,

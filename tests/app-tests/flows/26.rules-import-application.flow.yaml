@@ -93,13 +93,17 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
     visible:
-      id: 'TransactionCard.Tag.Subscription'
-    timeout: 10000
-
-- extendedWaitUntil:
-    visible:
       id: 'TransactionCard.Category.Groceries'
     timeout: 10000
+- extendedWaitUntil:
+    visible:
+      id: 'TransactionCard.Label.Starbucks_Coffee'
+    timeout: 10000
+- runFlow:
+    file: subflows/transactions/assert-transaction-tag.flow.yaml
+    env:
+      TRANSACTION_LABEL_ID: 'Starbucks_Coffee'
+      TAG_NAME: 'Subscription'
 
 - runFlow:
     file: subflows/navigate-to-rules.flow.yaml

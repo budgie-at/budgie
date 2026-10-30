@@ -3,6 +3,103 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.128.0](https://github.com/budgie-at/budgie/compare/v6.127.0...v6.128.0) (2026-10-30)
+
+### Bug Fixes
+
+* **app:** accessibility and contrast for transaction rows ([d0d7de9](https://github.com/budgie-at/budgie/commit/d0d7de9d5b2566b2666c9b9ed0fffe832a063fbb))
+* **app:** align row subtitles with the ledger predicates ([ac19d28](https://github.com/budgie-at/budgie/commit/ac19d284a0a12d133f3c7b94f02164553b8fae18))
+* **app:** clean transfer subtitles and pinned edges ([9ede6f5](https://github.com/budgie-at/budgie/commit/9ede6f548ae36c219406b1a4dd6813bec203959d))
+* **app:** continuous pinned hairline and row clearance ([7fc4b13](https://github.com/budgie-at/budgie/commit/7fc4b1316dc83ca1c607e4ffb722e69b784ffcba))
+* **app:** dynamic type and reduce motion for the account header ([4b13c8b](https://github.com/budgie-at/budgie/commit/4b13c8bed07cc2da8d3c0216f89c72e28f3e4483))
+* **app:** keep pending read tracking stable across renders ([f2f830f](https://github.com/budgie-at/budgie/commit/f2f830f60127e2a5fe9c67f3534e010004b4d265))
+* **app:** ledger-accurate daily totals ([874e89e](https://github.com/budgie-at/budgie/commit/874e89eb186b533c0b2d79e757d404481b7b8237))
+* **app:** preserve income signs in debt accessibility labels ([5e74136](https://github.com/budgie-at/budgie/commit/5e74136ec0944eb491f6d7b4d6ac91674a39ec50))
+* **app:** restore sticky day context on shared lists ([0737521](https://github.com/budgie-at/budgie/commit/0737521c13c4ec07f00984211826f5418ac39f4f))
+* **app:** restore the shared collapsible title handoff ([1bc493f](https://github.com/budgie-at/budgie/commit/1bc493feb89001571525f9a587323f45063ad519))
+* **app:** scope the receipt marker selector to its transaction ([f3485a3](https://github.com/budgie-at/budgie/commit/f3485a3842b037eea43167baa485b9b127f9046e))
+* **app:** single-title handoff without slicing the hero ([756c68e](https://github.com/budgie-at/budgie/commit/756c68e2621c7dd1c106cdb1f6a1db3a69f5f6d8))
+* **app:** stable first frame when opening account details ([edc3e6f](https://github.com/budgie-at/budgie/commit/edc3e6fb5cc46436aa57632de0d0dfe533e059a4))
+* **app:** stable transaction count on the account list ([8915fba](https://github.com/budgie-at/budgie/commit/8915fbaae196fde1a8f38e7d7108c935b4d74818))
+
+### Features
+
+* **app:** compact grouped transaction rows and seamless sticky chrome ([e891e0e](https://github.com/budgie-at/budgie/commit/e891e0e9d0c23b7e61bdf148f9d55e0ab624cca7))
+* **app:** day-grouped transaction rows with calmer hero and amounts ([929d773](https://github.com/budgie-at/budgie/commit/929d773994ca836a3b86fcf51a6aed10c3c6a195))
+* **app:** morph hero balance into nav and sharpen secondary text ([58383b1](https://github.com/budgie-at/budgie/commit/58383b15aef5222353e751cac9d492e3c61df9ef))
+* **app:** opaque pinned chrome and continuous title handoff ([87b27ea](https://github.com/budgie-at/budgie/commit/87b27eab636ed1b73eb6630b828cd21c1e578055))
+* **app:** pin current day in chrome with a single clean scroll edge ([397ae28](https://github.com/budgie-at/budgie/commit/397ae2899e9e789c742e22c87b7806e6d1eb87b5))
+* **app:** polish account transaction list chrome and cards ([07833ba](https://github.com/budgie-at/budgie/commit/07833ba52cfa69aeea07f3b6f97ea70ada011fc3))
+* **app:** refine sticky fades, chips and uncategorized signal ([41772db](https://github.com/budgie-at/budgie/commit/41772db273e8df9c8fb40ba408dae3dec4c390a3))
+* **app:** seamless sticky day headers and calmer transaction rows ([3d0e5b7](https://github.com/budgie-at/budgie/commit/3d0e5b7be7c07df455b5af56eed49c95b88aee06))
+* **app:** stuck-aware day headers with daily totals ([7d21d2a](https://github.com/budgie-at/budgie/commit/7d21d2a406109e2b50bcc229338c19f69ff5c93b))
+
+
+# [6.127.0](https://github.com/budgie-at/budgie/compare/v6.126.5...v6.127.0) (2026-10-30)
+
+### Bug Fixes
+
+* **sync:** accept Binance's empty dust and transfer history responses ([441d134](https://github.com/budgie-at/budgie/commit/441d13412debfddcef4170986720e35db562e8a4))
+* **sync:** anchor every enabled Binance key once per run before any batch is due ([9a664d2](https://github.com/budgie-at/budgie/commit/9a664d2bad7d70bf30fcaec34d64e13275c4b916))
+* **sync:** backfill newly added Binance sources once for integrations that already synced ([7d68f23](https://github.com/budgie-at/budgie/commit/7d68f2384da41f09040888ea986c0c281d30a41c))
+* **sync:** book Binance Spot-Funding transfers, honour walletType and count frozen funds ([fedeec3](https://github.com/budgie-at/budgie/commit/fedeec3a2cbd17b49a0d37244f9ac7740d7b94e7))
+* **sync:** cap the polling rate-gate wait at one interval when the clock moves back ([911060d](https://github.com/budgie-at/budgie/commit/911060d4e035be36ce2ac8ccfc138fb5a3db8f50))
+* **sync:** fix Binance sync CI failures ([732fd76](https://github.com/budgie-at/budgie/commit/732fd7654c1aabb5e831b8f4645221471aafcf98))
+* **sync:** harden Binance mapper parsing, windows, earn totals and per-integration dedupe ([f19dbea](https://github.com/budgie-at/budgie/commit/f19dbea549ae7f455ffed56779214b465c799c59))
+* **sync:** keep deleted Binance data deleted and resolve renamed assets to one canonical account ([111f19c](https://github.com/budgie-at/budgie/commit/111f19c6e3b7226f874e7673e668f3173129d8aa))
+* **sync:** keep one failing Binance source from blocking the rest ([b46784a](https://github.com/budgie-at/budgie/commit/b46784a79cc5e3f391334df37f0693ebede32040)), closes [#1765](https://github.com/budgie-at/budgie/issues/1765)
+* **sync:** keep the history progress of a skipped Binance source unchanged so its backfill resumes later ([804eadd](https://github.com/budgie-at/budgie/commit/804eadd68447fa4d4abe8edeca781765ed7a6f66))
+* **sync:** resolve lint errors ([9c4aae5](https://github.com/budgie-at/budgie/commit/9c4aae5beaedbc90de811f23d02ab8a54b5ff49a))
+* **sync:** resolve run tokens only for providers with a pre-run hook ([8df3960](https://github.com/budgie-at/budgie/commit/8df39603326980ca19824117589f1aa53c314cf5))
+* **sync:** resolve sync-tests type errors ([4938375](https://github.com/budgie-at/budgie/commit/49383750486e243336785a2e97b403b1bd422d52))
+* **sync:** resume every Binance history backfill across deferred runs ([e25ada6](https://github.com/budgie-at/budgie/commit/e25ada6f7568de03b4719b30eae9320ff457c0c9))
+* **sync:** skip a Binance product for the run when the account lacks it instead of failing the whole sync ([7f553ee](https://github.com/budgie-at/budgie/commit/7f553ee80586de64df92a5978a13c2b5a97aa958))
+* **sync:** strip the query string without a regular expression ([4ca446e](https://github.com/budgie-at/budgie/commit/4ca446e4307f0918fad3db9e3cb7bdc90a2f3407))
+* **sync:** support multiple Binance keys and verify the account on key rotation ([403c474](https://github.com/budgie-at/budgie/commit/403c4742e5535d7c36242ea2398f81d984cb9cb8))
+* **sync:** type Binance history progress lookups as possibly missing ([45703c8](https://github.com/budgie-at/budgie/commit/45703c87da2afd5ab29656c82de18aadb32908b6))
+* **sync:** use the unified Binance getter in the C2C test ([2c1940d](https://github.com/budgie-at/budgie/commit/2c1940d3d16aba62a4b6c07e68bdcfaa04e805db))
+* **sync:** walk Binance fiat history to the lookback in resumable chunks and repair imported fiat amounts once ([e39cc9a](https://github.com/budgie-at/budgie/commit/e39cc9ac6e6625a9b6421ab0c78cf7937accd814))
+
+### Features
+
+* **app:** explain Binance sync failures with translated messages ([51e58e0](https://github.com/budgie-at/budgie/commit/51e58e09c179891d20760cea15086671c099b73f))
+* **landing:** list unsupported Binance sources and refresh app catalogs ([9aba1c1](https://github.com/budgie-at/budgie/commit/9aba1c1cb1979cacaa17e01dbd3817b40fb7552b))
+* **sync:** store a stable error code with the last sync failure ([fdb9305](https://github.com/budgie-at/budgie/commit/fdb930568472c3f4f56df40d2f4a4ca0e1862d84))
+* **sync:** sync Binance locked earn rewards, dust conversions, dividends and ETH/SOL staking rewards ([7e8c03b](https://github.com/budgie-at/budgie/commit/7e8c03b1ba360bdba88703fe1bca50fac22c5a98))
+
+### Performance Improvements
+
+* **sync:** backfill all Binance accounts of a key in one pass ([fd7f67b](https://github.com/budgie-at/budgie/commit/fd7f67b03081a0eacc02d3d4930f5ad9f7e462ca)), closes [#1824](https://github.com/budgie-at/budgie/issues/1824)
+* **sync:** pace Binance requests on real per-endpoint weight limits ([4ed2566](https://github.com/budgie-at/budgie/commit/4ed2566d7a7de95167daaaa5bd288c77d5bef111)), closes [#1824](https://github.com/budgie-at/budgie/issues/1824)
+
+
+## [6.126.5](https://github.com/budgie-at/budgie/compare/v6.126.4...v6.126.5) (2026-10-29)
+
+### Bug Fixes
+
+* **app:** unlock immediately after Face ID success ([fa048b2](https://github.com/budgie-at/budgie/commit/fa048b2baec47ed3fb0a41e22257be1ace59be14))
+* keep debt-linked payments out of the categorize inbox ([8e9a0a6](https://github.com/budgie-at/budgie/commit/8e9a0a6fe2188a14250dc827be4f99870444a1ec))
+
+
+## [6.126.4](https://github.com/budgie-at/budgie/compare/v6.126.3...v6.126.4) (2026-10-29)
+
+### Bug Fixes
+
+* **app,recurring:** keep same-second renames when deduping, read series in id order ([34d2184](https://github.com/budgie-at/budgie/commit/34d2184deb2ddb42cdc647d10053128d10f9b100))
+* **app:** dismiss the presented scanner container from the delegate callbacks ([9e88e6b](https://github.com/budgie-at/budgie/commit/9e88e6b6284559010eac8c6a54491c3b66b9970f))
+* **app:** drop drifted burst copies when deduping recurring series ([70a23f1](https://github.com/budgie-at/budgie/commit/70a23f179aa6b8431030493aa48056bcbf52a3b1))
+* **app:** host the document camera in a container instead of subclassing it ([011a227](https://github.com/budgie-at/budgie/commit/011a22776ca0b826f4ece5cf71e6854b674ac1b3))
+* **app:** keep user-touched recurring series when deduping ([78de8a7](https://github.com/budgie-at/budgie/commit/78de8a75a379372600cb58961565979139fb236f))
+* **recurring:** stop re-inserting variable-amount recurring series ([db1d6d2](https://github.com/budgie-at/budgie/commit/db1d6d284777dc020a7132e888298fbaa38b7b4b))
+
+
+## [6.126.3](https://github.com/budgie-at/budgie/compare/v6.126.2...v6.126.3) (2026-10-29)
+
+### Bug Fixes
+
+* **app:** restore the global colour tokens changed in v6.126.0 ([6198cb7](https://github.com/budgie-at/budgie/commit/6198cb7d4b72c4df78730f870ebf433a1ef4ac84))
+
+
 ## [6.126.2](https://github.com/budgie-at/budgie/compare/v6.126.1...v6.126.2) (2026-10-29)
 
 ### Bug Fixes

@@ -1,4 +1,5 @@
 import { StatisticsRepository } from '@budgie/contracts';
+import * as Option from 'effect/Option';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -30,5 +31,9 @@ export const useGetStatisticsTransactionsQuery = (filters: StatisticsFilterInter
     const excludedCategoryKey = filters.excludedCategoryIds?.join(',') ?? 'null';
     const filterKey = `${buildTransactionFilterKey(buildTransactionFilter(filters))}|${excludedCategoryKey}`;
 
-    return useGetTransactionSectionsQuery((limit, language) => statisticsTransactionsAtom([filters, language, limit]), filterKey);
+    return useGetTransactionSectionsQuery(
+        (limit, language) => statisticsTransactionsAtom([filters, language, limit]),
+        filterKey,
+        Option.none()
+    );
 };

@@ -127,10 +127,6 @@ msgstr "{count, plural, one {# категорія має типову іконк
 msgid "{count, plural, one {# existing transaction matches this rule.} other {# existing transactions match this rule.}}"
 msgstr "{count, plural, one {# наявна транзакція відповідає цьому правилу.} few {# наявні транзакції відповідають цьому правилу.} many {# наявних транзакцій відповідають цьому правилу.} other {# наявної транзакції відповідають цьому правилу.}}"
 
-#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx
-msgid "{count, plural, one {# missing category} other {# missing categories}}"
-msgstr "{count, plural, one {# відсутня категорія} few {# відсутні категорії} many {# відсутніх категорій} other {# відсутньої категорії}}"
-
 #: src/categorize-inbox/components/categorize-inbox-pile-legend/categorize-inbox-pile-legend.tsx
 msgid "{count, plural, one {# other} other {# other}}"
 msgstr "{count, plural, one {# інший} few {# інші} many {# інших} other {# інших}}"
@@ -147,6 +143,10 @@ msgstr "{count, plural, one {# готова} few {# готові} many {# гот
 #: src/settings/utils/get-sync-repair-text.util.ts
 msgid "{count, plural, one {# sync repair} other {# sync repairs}}"
 msgstr "{count, plural, one {# виправлення синхронізації} few {# виправлення синхронізації} many {# виправлень синхронізації} other {# виправлення синхронізації}}"
+
+#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx
+msgid "{count, plural, one {# uncategorized} other {# uncategorized}}"
+msgstr "{count, plural, one {# без категорії} few {# без категорії} many {# без категорії} other {# без категорії}}"
 
 #: src/budget/components/budget-verdict-footer/budget-verdict-footer.tsx
 msgid "{count, plural, one {# upcoming bill} other {# upcoming bills}}"
@@ -1112,7 +1112,7 @@ msgid "Backup file ready"
 msgstr "Файл резервної копії готовий"
 
 #: src/app/(main)/transactions/[id]/adjustment.tsx
-#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx
+#: src/transaction/components/transaction-card-content/transaction-card-content.tsx
 msgid "Balance Adjustment"
 msgstr "Коригування балансу"
 
@@ -1120,7 +1120,7 @@ msgstr "Коригування балансу"
 msgid "Balance forecast"
 msgstr "Прогноз балансу"
 
-#: src/account/component/account-details-hero/account-details-hero.tsx
+#: src/account/component/account-details-hero-balance/account-details-hero-balance.tsx
 msgid "Balance: {formattedBalance}"
 msgstr "Баланс: {formattedBalance}"
 
@@ -1181,6 +1181,14 @@ msgstr "Дати списання"
 #: src/rule/constant/external-source.constant.ts
 msgid "Binance"
 msgstr "Binance"
+
+#: src/sync/component/binance-parked-assets-notice/binance-parked-assets-notice.tsx
+msgid "Binance has no market price for these assets, so they are not added as accounts and are skipped from your balance."
+msgstr "Binance не має ринкової ціни для цих активів, тому вони не додаються як рахунки й пропускаються у вашому балансі."
+
+#: src/sync/constant/sync-error-label.constant.ts
+msgid "Binance is not available in your region, so this account cannot sync."
+msgstr "Binance недоступний у вашому регіоні, тому цей рахунок не можна синхронізувати."
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Binance P2P orders are unavailable: the API key is missing P2P read permission."
@@ -1541,6 +1549,10 @@ msgstr "Очистити всі дані"
 msgid "Clear cached balances and recalculate from transactions"
 msgstr "Очистити кешовані баланси та перерахувати з транзакцій"
 
+#: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
+msgid "Clear filters"
+msgstr "Скинути фільтри"
+
 #: src/sync/component/paste-token-button/paste-token-button.tsx
 msgid "Clipboard doesn't contain a valid Monobank token"
 msgstr "Буфер обміну не містить дійсного токена Monobank"
@@ -1876,6 +1888,10 @@ msgstr "Не вдалося відкрити інструкції"
 #: src/wallet-capture/component/apple-pay-capture-open-shortcuts-button/apple-pay-capture-open-shortcuts-button.tsx
 msgid "Could not open Shortcuts"
 msgstr "Не вдалося відкрити Shortcuts"
+
+#: src/sync/constant/sync-error-label.constant.ts
+msgid "Could not reach the server. Check your connection; sync will retry automatically."
+msgstr "Не вдалося зв'язатися із сервером. Перевірте з'єднання; синхронізація повторить спробу автоматично."
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "Could not read CSV file"
@@ -2315,6 +2331,10 @@ msgstr "Деталі"
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "Didn't match"
 msgstr "Не збігається"
+
+#: src/sync/component/binance-sync-token-section/binance-sync-token-section.tsx
+msgid "Different Binance account"
+msgstr "Інший акаунт Binance"
 
 #: src/settings/components/pin-management-rows/pin-management-rows.tsx
 msgid "Disable App Lock"
@@ -2780,11 +2800,8 @@ msgstr "Не вдалося зберегти PIN-код. Спробуйте ще
 msgid "Fee"
 msgstr "Комісія"
 
-#: src/transaction/components/transaction-metadata-rows/transaction-metadata-rows.tsx
-msgid "Fee · {formattedFeeAmount}"
-msgstr "Комісія · {formattedFeeAmount}"
-
 #: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
+#: src/transaction/hook/use-transaction-fee-label.hook.ts
 msgid "Fee {formattedAmount}"
 msgstr "Комісія {formattedAmount}"
 
@@ -2873,10 +2890,6 @@ msgstr "Знайшли проблему або маєте ідею? Відкри
 msgid "French"
 msgstr "Французька"
 
-#: src/transaction/components/transaction-account-line/transaction-account-line.tsx
-msgid "from"
-msgstr "від"
-
 #: src/app/transaction-amount-filter.tsx
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 msgid "From"
@@ -2885,6 +2898,14 @@ msgstr "З"
 #: src/transaction/components/transaction-amount-filter/transaction-amount-filter.tsx
 msgid "From {fromText}"
 msgstr "Від {fromText}"
+
+#: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
+msgid "From {source}"
+msgstr "Від {source}"
+
+#: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
+msgid "From {source} to {destination}"
+msgstr "З {source} на {destination}"
 
 #: src/account/component/create-debt-account/create-debt-account.tsx
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
@@ -3146,7 +3167,6 @@ msgstr "Включно з криптовалютою"
 msgid "includes fee {formattedFeeAmount}"
 msgstr "включно з комісією {formattedFeeAmount}"
 
-#: src/account/component/account-details-month-chips/account-details-month-chips.tsx
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/components/statistics-content/statistics-content.tsx
@@ -3422,6 +3442,10 @@ msgstr "Керування тегами"
 msgid "Manual"
 msgstr "Вручну"
 
+#: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
+msgid "Manual adjustment"
+msgstr "Ручне коригування"
+
 #: src/app/(tabs)/settings/import.tsx
 msgid "Map CSV Columns"
 msgstr "Зіставлення стовпців CSV"
@@ -3620,7 +3644,7 @@ msgid "Monthly history"
 msgstr "Місячна історія"
 
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
-msgid "Monthly Total"
+msgid "Monthly total"
 msgstr "Місячний підсумок"
 
 #: src/runway/component/runway-verdict-figure/runway-verdict-figure.tsx
@@ -3819,7 +3843,6 @@ msgstr "Немає відповідних рахунків"
 msgid "No matching expenses"
 msgstr "Немає відповідних витрат"
 
-#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx
 #: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
 msgid "No matching transactions"
 msgstr "Немає відповідних транзакцій"
@@ -3950,6 +3973,10 @@ msgstr "Не зараз"
 #: src/transaction/components/transaction-field-icon/transaction-field-icon.tsx
 msgid "not set"
 msgstr "не встановлено"
+
+#: src/sync/constant/bank-credentials-step-config.constant.ts
+msgid "Not synced: Auto-Invest, Binance Pay, Binance Card, gift cards, sub-account transfers, margin and futures."
+msgstr "Не синхронізуються: Auto-Invest, Binance Pay, Binance Card, подарункові картки, перекази між субрахунками, маржа та ф'ючерси."
 
 #: src/settings/components/backup-row/backup-row.tsx
 msgid "Not yet"
@@ -4535,8 +4562,8 @@ msgstr "Перерахунок балансів"
 
 #: src/receipt/hook/use-receipt-scan.hook.ts
 #: src/rule/constant/external-source.constant.ts
+#: src/transaction/components/transaction-card-subtitle/transaction-card-subtitle.tsx
 #: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
-#: src/transaction/components/transaction-metadata-rows/transaction-metadata-rows.tsx
 msgid "Receipt"
 msgstr "Чек"
 
@@ -4566,11 +4593,11 @@ msgstr "Повторювані платежі з’являться тут, що
 msgid "Refine"
 msgstr "Уточнити"
 
-#: src/transaction/components/refunded-pill/refunded-pill.tsx
+#: src/transaction/hook/use-refunded-label.hook.ts
 msgid "Refunded"
 msgstr "Повернено"
 
-#: src/transaction/components/refunded-pill/refunded-pill.tsx
+#: src/transaction/hook/use-refunded-label.hook.ts
 msgid "Refunded {formattedRefundedAmount}"
 msgstr "Повернено {formattedRefundedAmount}"
 
@@ -4631,6 +4658,10 @@ msgstr "Виправити"
 #: src/settings/components/repair-sync-data/repair-sync-data.tsx
 msgid "Repair Sync Data"
 msgstr "Виправити дані синхронізації"
+
+#: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
+msgid "Repayment"
+msgstr "Погашення"
 
 #: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
 #: src/app/(tabs)/settings/index.tsx
@@ -5201,11 +5232,14 @@ msgstr "Витрати за категоріями"
 msgid "Spending by Tag"
 msgstr "Витрати за тегами"
 
-#: src/account/component/account-details-month-chips/account-details-month-chips.tsx
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Spent"
 msgstr "Витрачено"
+
+#: src/account/component/account-details-month-chips/account-details-month-chips.tsx
+msgid "Spent <0>{formattedExpense}</0> · Income <1>{formattedIncome}</1>"
+msgstr "Витрати <0>{formattedExpense}</0> · Дохід <1>{formattedIncome}</1>"
 
 #: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "Spent so far"
@@ -5427,6 +5461,14 @@ msgstr "Торкніться, щоб продовжити"
 msgid "Tap to select"
 msgstr "Торкніться для вибору"
 
+#: src/sync/constant/sync-error-label.constant.ts
+msgid "The API key has the wrong permissions. Use a key with only \"Enable Reading\"."
+msgstr "Ключ API має неправильні дозволи. Використовуйте ключ лише з «Enable Reading»."
+
+#: src/sync/constant/sync-error-label.constant.ts
+msgid "The API key or token was rejected. Check that it is correct, read-only and not restricted to other IP addresses."
+msgstr "Ключ API або токен відхилено. Перевірте, що він правильний, лише для читання та не обмежений іншими IP-адресами."
+
 #: src/account/component/start-deposit-form/start-deposit-form.tsx
 msgid "The bank did not report the deposit currency. Confirm the currency and the receiving amount."
 msgstr "Банк не передав валюту депозиту. Підтвердіть валюту та суму зарахування."
@@ -5455,6 +5497,10 @@ msgstr "Правило збережено, але жодна наявна тра
 msgid "The selected Budgie account is archived or no longer exists."
 msgstr "Вибраний рахунок Budgie заархівовано або більше не існує."
 
+#: src/sync/constant/sync-error-label.constant.ts
+msgid "The service is limiting requests. Sync will retry automatically in a few minutes."
+msgstr "Сервіс обмежує кількість запитів. Синхронізація автоматично повторить спробу за кілька хвилин."
+
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "There is no \"forgot PIN\"."
 msgstr "Немає кнопки «забув PIN-код»."
@@ -5472,6 +5518,10 @@ msgstr "Цей рахунок буде приховано з головного 
 #: src/transaction/hook/use-delete-transaction.hook.ts
 msgid "This action cannot be undone."
 msgstr "Цю дію неможливо скасувати."
+
+#: src/sync/component/binance-sync-token-section/binance-sync-token-section.tsx
+msgid "This API key belongs to a different Binance account."
+msgstr "Цей API-ключ належить іншому акаунту Binance."
 
 #: src/sync/utils/toast-binance-key-permissions-error.util.ts
 msgid "This API key can trade, withdraw or transfer funds. Create a key with only \"Enable Reading\" and try again."
@@ -5528,6 +5578,7 @@ msgstr "Цей ключ уже синхронізує інший ваш розд
 msgid "This key is for a different Monobank client."
 msgstr "Цей ключ належить іншому клієнту Monobank."
 
+#: src/account/component/account-details-month-chips/account-details-month-chips.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "This month"
 msgstr "Цього місяця"
@@ -5633,10 +5684,6 @@ msgstr "Вони не збіглися"
 msgid "Title"
 msgstr "Назва"
 
-#: src/transaction/components/transaction-account-line/transaction-account-line.tsx
-msgid "to"
-msgstr "до"
-
 #: src/app/transaction-amount-filter.tsx
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 msgid "To"
@@ -5649,6 +5696,10 @@ msgstr "До {accountTitle}"
 #: src/categorize-inbox/components/categorize-inbox-transfer-undo/categorize-inbox-transfer-undo.tsx
 msgid "To {accountTitle}, rule saved"
 msgstr "До {accountTitle}, правило збережено"
+
+#: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
+msgid "To {destination}"
+msgstr "На {destination}"
 
 #: src/transaction/components/transaction-amount-filter/transaction-amount-filter.tsx
 msgid "To {toText}"
@@ -5678,6 +5729,7 @@ msgstr "До сплати"
 #: src/@generic/constant/date-period.constant.ts
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
 #: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
+#: src/transaction/query/use-get-transaction-sections.query.ts
 msgid "Today"
 msgstr "Сьогодні"
 
@@ -5753,7 +5805,6 @@ msgid "Transaction not found"
 msgstr "Транзакцію не знайдено"
 
 #: src/@generic/component/transactions-page-header/transactions-page-header.tsx
-#: src/transaction/components/collapsible-chrome-transaction-list/collapsible-chrome-transaction-list.tsx
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Transactions"
 msgstr "Транзакції"
@@ -5779,6 +5830,7 @@ msgstr "Помилка транскрипції"
 #: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/constant/transaction-type.constant.ts
+#: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Transfer"
 msgstr "Переказ"
@@ -5850,7 +5902,6 @@ msgstr "Спробуйте інший пошуковий запит"
 msgid "Try a different search term or create a new tag"
 msgstr "Спробуйте інший пошуковий запит або створіть новий тег"
 
-#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx
 #: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
 msgid "Try adjusting your filters to see more results"
 msgstr "Спробуйте налаштувати фільтри, щоб побачити більше результатів"
@@ -5916,6 +5967,7 @@ msgstr "Недоступно"
 
 #: src/category/components/stats-by-categories/stats-by-categories.tsx
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
+#: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
 msgid "Uncategorized"
 msgstr "Без категорії"
 
@@ -5938,10 +5990,6 @@ msgstr "У межах ліміту"
 #: src/categorize-inbox/components/categorize-inbox-undo-layout/categorize-inbox-undo-layout.tsx
 msgid "Undo"
 msgstr "Скасувати"
-
-#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx
-msgid "Unknown"
-msgstr "Невідомо"
 
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "Unknown card"
@@ -6184,6 +6232,7 @@ msgid "XLSX export"
 msgstr "XLSX-експорт"
 
 #: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
+#: src/transaction/query/use-get-transaction-sections.query.ts
 msgid "Yesterday"
 msgstr "Вчора"
 
@@ -6291,6 +6340,10 @@ msgstr "Ваші дані залишаються недоторканими на
 #: src/onboarding/component/onboarding-file-strip/onboarding-file-strip.tsx
 msgid "Your data: {state}"
 msgstr "Ваші дані: {state}"
+
+#: src/sync/constant/sync-error-label.constant.ts
+msgid "Your device clock is out of sync. Enable automatic date and time, then try again."
+msgstr "Годинник вашого пристрою не синхронізований. Увімкніть автоматичні дату й час і спробуйте ще раз."
 
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Your holdings"

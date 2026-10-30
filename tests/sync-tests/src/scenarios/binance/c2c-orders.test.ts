@@ -8,6 +8,7 @@ import {
     TransactionTypeEnum
 } from '@budgie/contracts';
 import {
+    BinanceHistorySourceEnum,
     BinanceSignedClient,
     BinanceSyncService,
     BinanceWalletEnum,
@@ -64,7 +65,7 @@ describe('binance/c2c-orders reconciliation', () => {
             const { token } = yield* setupBinanceFixture({ asset: 'USDT', wallet: BinanceWalletEnum.FUNDING, mode: SyncModeEnum.FORWARD });
             stubBuyC2cOrder('c2c-funding-buy');
 
-            const transactions = yield* new BinanceSignedClient(token).getC2cTransactions(0);
+            const transactions = yield* new BinanceSignedClient(token).getTransactions(BinanceHistorySourceEnum.C2C, 0);
 
             expect(transactions[0].accountId).toBe(encodeBinanceAccountId({ wallet: BinanceWalletEnum.FUNDING, asset: 'USDT' }));
         }).pipe(Effect.provide(TestLayer))

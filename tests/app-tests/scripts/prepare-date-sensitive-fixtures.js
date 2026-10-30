@@ -1422,6 +1422,34 @@ const generateReceiptScanFixture = () => {
     );
 };
 
+const generateBinanceSyncErrorFixture = () => {
+    const sourcePath = path.join(fixturesDirectoryPath, '12.db');
+    const targetPath = path.join(outputDirectoryPath, '43-binance-sync-error.db');
+    const now = Math.floor(Date.now() / 1000);
+    const ethInstrumentId = 35;
+    const binanceAccountId = 90;
+
+    copyFixture(sourcePath, targetPath);
+    runSqlite(
+        targetPath,
+        `
+        BEGIN;
+
+        INSERT INTO bank_integrations (id, provider, token, created_at, updated_at)
+        VALUES (90, 'BINANCE', '{"apiKey":"e2eBinanceApiKey","apiSecret":"e2eBinanceApiSecret"}', ${now}, ${now});
+
+        INSERT INTO accounts (id, created_at, updated_at, icon, "order", title, title_search, type, nature, instrument_id, external_id, external_source, integration_id, include_in_net_worth, is_active)
+        VALUES (${binanceAccountId}, ${now}, ${now}, 'Bitcoin', 90, 'E2E Binance SPOT ETH', 'e2e binance spot eth', 'CRYPTO_SYNC', 'ASSET', ${ethInstrumentId}, 'SPOT:ETH', 'BINANCE', 90, 1, 1);
+
+        INSERT INTO bank_syncs (account_id, provider, enabled, mode, status, error_count, last_error, last_warning, created_at, updated_at)
+        VALUES (${binanceAccountId}, 'BINANCE', 1, 'FORWARD', 'FAILED', 1, 'Service unavailable from a restricted location', 'REGION_UNAVAILABLE', ${now}, ${now});
+
+        COMMIT;
+        VACUUM;
+        `
+    );
+};
+
 generateRunwayCryptoFixture();
 generateBudgetMultiCurrencyFixture();
 generateRecurringFixture();
@@ -1432,6 +1460,7 @@ generateMatchingRulesFixture();
 generateDebtSettlementFixture();
 generateCategorizeInboxFixture();
 generateReceiptScanFixture();
+generateBinanceSyncErrorFixture();
 
 const balanceMismatches = generatedFixturePaths.flatMap(findBalanceMismatches);
 

@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.128.0](https://github.com/budgie-at/budgie/compare/v6.127.0...v6.128.0) (2026-10-30)
+
+**Note:** Version bump only for package @budgie/ledger
+
+
+
+
+
+# [6.127.0](https://github.com/budgie-at/budgie/compare/v6.126.5...v6.127.0) (2026-10-30)
+
+### Bug Fixes
+
+* **sync:** harden Binance mapper parsing, windows, earn totals and per-integration dedupe ([f19dbea](https://github.com/budgie-at/budgie/commit/f19dbea549ae7f455ffed56779214b465c799c59))
+
+
+## [6.126.5](https://github.com/budgie-at/budgie/compare/v6.126.4...v6.126.5) (2026-10-29)
+
+### Bug Fixes
+
+* keep debt-linked payments out of the categorize inbox ([8e9a0a6](https://github.com/budgie-at/budgie/commit/8e9a0a6fe2188a14250dc827be4f99870444a1ec))
+
+
 # [6.126.0](https://github.com/budgie-at/budgie/compare/v6.125.3...v6.126.0) (2026-10-29)
 
 **Note:** Version bump only for package @budgie/ledger
