@@ -32,10 +32,10 @@ export const useTransactionInfoHandoff = () => {
     const drag = useSharedValue({ isDragging: false, lastY: 0, sampledAt: 0, direction: 0, velocity: 0 });
     const animated = !useReducedMotion();
     const [bodyTop, setBodyTop] = useState(0);
-    const heroHandoff = useTransactionInfoHeroHandoff(animated);
     const [contentHeight, setContentHeight] = useState(Number.MAX_SAFE_INTEGER);
     const settledOffset = Math.max(bodyTop - SETTLED_CONTENT_GAP, 0);
-    const fitsScreen = top + config.headerHeight + contentHeight + TRANSACTION_INFO_SCROLL_BOTTOM_INSET + bottom <= height;
+    const overflow = top + config.headerHeight + contentHeight + TRANSACTION_INFO_SCROLL_BOTTOM_INSET + bottom - height;
+    const heroHandoff = useTransactionInfoHeroHandoff(animated, overflow > 0 ? Math.max(overflow, settledOffset) : 0);
 
     useAnimatedReaction(
         () => scrollY.get(),
@@ -75,7 +75,7 @@ export const useTransactionInfoHandoff = () => {
                     return;
                 }
 
-                const collapses = !fitsScreen && (state.direction === 0 ? releasedY > settledOffset / 2 : state.direction > 0);
+                const collapses = overflow > 0 && (state.direction === 0 ? releasedY > settledOffset / 2 : state.direction > 0);
                 let settledY = releasedY;
                 let stableFrames = 0;
                 const snapWhenSettled = () => {
@@ -99,11 +99,11 @@ export const useTransactionInfoHandoff = () => {
                 requestAnimationFrame(snapWhenSettled);
             }
         },
-        [settledOffset, fitsScreen, animated]
+        [settledOffset, overflow, animated]
     );
 
     return {
-        minimumHeight: fitsScreen ? 0 : height + settledOffset,
+        minimumHeight: overflow > 0 ? height + settledOffset : 0,
         ...heroHandoff,
         onBodyLayout: (event: LayoutChangeEvent) => void setBodyTop(event.nativeEvent.layout.y),
         onContentLayout: (event: LayoutChangeEvent) => void setContentHeight(event.nativeEvent.layout.height),
