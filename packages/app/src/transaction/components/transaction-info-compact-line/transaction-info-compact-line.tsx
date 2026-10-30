@@ -2,7 +2,7 @@ import Animated, { Extrapolation, interpolate, useAnimatedStyle } from 'react-na
 
 import { useScreenChromeScrollY } from '@rnw-community/react-native-screen-chrome';
 
-import { TRANSACTION_INFO_ROW_MAX_FONT_SCALE } from '../../constant/transaction-info-row-max-font-scale.constant';
+import { TRANSACTION_INFO_COMPACT_MAX_FONT_SCALE } from '../../constant/transaction-info-compact-max-font-scale.constant';
 
 import type { ReactNode } from 'react';
 
@@ -10,10 +10,9 @@ interface Props {
     readonly children: ReactNode;
     readonly range: readonly [number, number];
     readonly className: string;
-    readonly numberOfLines: number;
 }
 
-export const TransactionInfoCompactLine = ({ children, range, className, numberOfLines }: Props) => {
+export const TransactionInfoCompactLine = ({ children, range, className }: Props) => {
     const scrollY = useScreenChromeScrollY();
     const [start, end] = range;
     const revealStyle = useAnimatedStyle(() => ({
@@ -22,10 +21,10 @@ export const TransactionInfoCompactLine = ({ children, range, className, numberO
 
     return (
         <Animated.Text
-            maxFontSizeMultiplier={TRANSACTION_INFO_ROW_MAX_FONT_SCALE}
-            className={`self-stretch text-center ${className}`}
+            maxFontSizeMultiplier={TRANSACTION_INFO_COMPACT_MAX_FONT_SCALE}
+            className={`text-center text-primary font-semibold ${className}`}
             style={revealStyle}
-            numberOfLines={numberOfLines}
+            numberOfLines={1}
             ellipsizeMode="tail"
         >
             {children}

@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { View } from 'react-native';
+import { View, useWindowDimensions } from 'react-native';
 
 import { ScreenChromeHeader } from '@rnw-community/react-native-screen-chrome';
 
 import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
+import { TRANSACTION_INFO_BAR_BUTTON_MAX_FONT_SCALE } from '../../constant/transaction-info-bar-button-max-font-scale.constant';
 import { TransactionInfoEditButton } from '../transaction-info-edit-button/transaction-info-edit-button';
 import { TransactionInfoNavTitle } from '../transaction-info-nav-title/transaction-info-nav-title';
 
@@ -25,6 +26,8 @@ const DEFAULT_CONTROL_WIDTH = 44;
 
 export const TransactionInfoHeader = (props: Props) => {
     const { transaction, editHref, handoff, onGoBack, compactTitle, compactAmount } = props;
+    const { fontScale } = useWindowDimensions();
+    const backIconSize = 24 * Math.min(fontScale, TRANSACTION_INFO_BAR_BUTTON_MAX_FONT_SCALE);
     const [leadingWidth, setLeadingWidth] = useState(DEFAULT_CONTROL_WIDTH);
     const [trailingWidth, setTrailingWidth] = useState(DEFAULT_CONTROL_WIDTH);
     const handleLeadingLayout = (event: LayoutChangeEvent) => void setLeadingWidth(event.nativeEvent.layout.width);
@@ -42,7 +45,7 @@ export const TransactionInfoHeader = (props: Props) => {
             />
             <ScreenChromeHeader>
                 <View onLayout={handleLeadingLayout}>
-                    <GoBackButton onPress={onGoBack} />
+                    <GoBackButton onPress={onGoBack} iconSize={backIconSize} />
                 </View>
                 <View onLayout={handleTrailingLayout}>
                     <TransactionInfoEditButton editHref={editHref} />
