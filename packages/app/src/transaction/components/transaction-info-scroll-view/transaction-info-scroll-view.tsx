@@ -1,12 +1,15 @@
 import { ScreenChromeScrollView, useScreenChrome } from '@rnw-community/react-native-screen-chrome';
 
-import type { ReactNode, RefObject } from 'react';
-import type { NativeScrollEvent, NativeSyntheticEvent, ScrollView } from 'react-native';
+import { TRANSACTION_INFO_SCROLL_BOTTOM_INSET } from '../../constant/transaction-info-scroll-bottom-inset.constant';
+
+import type { ReactNode } from 'react';
+import type Animated from 'react-native-reanimated';
+import type { AnimatedRef, ScrollHandlerProcessed } from 'react-native-reanimated';
 
 interface Props {
     readonly children: ReactNode;
-    readonly scrollRef: RefObject<ScrollView | null>;
-    readonly onScrollEnd: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
+    readonly scrollRef: AnimatedRef<Animated.ScrollView>;
+    readonly onScrollEnd: ScrollHandlerProcessed;
     readonly minimumHeight: number;
 }
 
@@ -18,10 +21,9 @@ export const TransactionInfoScrollView = ({ children, scrollRef, onScrollEnd, mi
         <ScreenChromeScrollView
             ref={scrollRef}
             contentInsetTop={config.headerHeight}
-            contentInsetBottom={32}
+            contentInsetBottom={TRANSACTION_INFO_SCROLL_BOTTOM_INSET}
             contentContainerStyle={contentContainerStyle}
             onScrollEndDrag={onScrollEnd}
-            onMomentumScrollEnd={onScrollEnd}
             showsVerticalScrollIndicator={false}
         >
             {children}

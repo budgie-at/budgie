@@ -36,7 +36,8 @@ export const RefundTransactionInfoContent = ({ transaction, parentTransaction }:
     const router = useRouter();
     const removeRefund = useRevertConsolidation(parentTransaction.id, router.back);
     const formatDigits = useProtectedAmountLabel();
-    const { minimumHeight, revealOffset, onEndLayout, onAmountLayout, scrollRef, handleScrollEnd } = useTransactionInfoHandoff();
+    const { minimumHeight, revealOffset, onEndLayout, onAmountLayout, onContentLayout, scrollRef, handleScrollEnd } =
+        useTransactionInfoHandoff();
     const { sources } = useGetConsolidationSourcesQuery(parentTransaction.id);
     const source = sources.find(row => row.sourceTransactionId === transaction.id);
     const original = formatTransactionInfoAmount(parentTransaction, formatDigits);
@@ -52,7 +53,7 @@ export const RefundTransactionInfoContent = ({ transaction, parentTransaction }:
     return (
         <ScreenChromeFrame testID={TransactionInfoPageSelector.Page}>
             <TransactionInfoScrollView scrollRef={scrollRef} onScrollEnd={handleScrollEnd} minimumHeight={minimumHeight}>
-                <View className="px-3xl">
+                <View className="px-3xl" onLayout={onContentLayout}>
                     <RefundTransactionInfoHero
                         amount={amount}
                         title={t`Refund from ${merchant}`}

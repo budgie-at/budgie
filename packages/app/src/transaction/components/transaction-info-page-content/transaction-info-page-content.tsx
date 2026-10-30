@@ -26,6 +26,7 @@ import { TransactionInfoScrollView } from '../transaction-info-scroll-view/trans
 import { TransactionInfoSimilarCard } from '../transaction-info-similar-card/transaction-info-similar-card';
 import { TransactionInfoSourceRows } from '../transaction-info-source-rows/transaction-info-source-rows';
 import { TransactionInfoTagsSection } from '../transaction-info-tags-section/transaction-info-tags-section';
+import { TransactionInfoUndoRefundGroup } from '../transaction-info-undo-refund-group/transaction-info-undo-refund-group';
 
 import type { TransactionInfoPagePropsInterface } from '../../interface/transaction-info-page-props.interface';
 import type { SuggestRuleDataInterface } from '@budgie/rules';
@@ -40,7 +41,8 @@ export const TransactionInfoPageContent = ({
 }: TransactionInfoPagePropsInterface) => {
     const router = useRouter();
     const { t } = useLingui();
-    const { minimumHeight, revealOffset, onEndLayout, onAmountLayout, scrollRef, handleScrollEnd } = useTransactionInfoHandoff();
+    const { minimumHeight, revealOffset, onEndLayout, onAmountLayout, onContentLayout, scrollRef, handleScrollEnd } =
+        useTransactionInfoHandoff();
     const { stats, isLoading } = useTransactionInfoSimilarStatsQuery(transaction);
     const { enabledRules } = useGetEnabledRulesQuery();
     const firstEntry = transaction.entries.at(0);
@@ -57,12 +59,13 @@ export const TransactionInfoPageContent = ({
             ? []
             : enabledRules.filter(rule => doesRuleMatchTransaction(rule, transactionInput, suggestRuleData)).map(rule => rule.id);
 
+    const isRefundPurchase = transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND;
     const handleGoBack = () => void router.back();
 
     return (
         <ScreenChromeFrame testID={TransactionInfoPageSelector.Page}>
             <TransactionInfoScrollView scrollRef={scrollRef} onScrollEnd={handleScrollEnd} minimumHeight={minimumHeight}>
-                <View className="px-3xl">
+                <View className="px-3xl" onLayout={onContentLayout}>
                     <TransactionInfoHero
                         transaction={transaction}
                         matchingRuleIds={matchingRuleIds}
@@ -74,12 +77,12 @@ export const TransactionInfoPageContent = ({
                         <TransactionInfoGroup>
                             <TransactionInfoAccountRows transaction={transaction} />
                             <TransactionInfoMoneyRows transaction={transaction} />
-                            {transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND ? (
-                                <TransactionInfoRefundSummary transaction={transaction} />
-                            ) : null}
+                            {isRefundPurchase ? <TransactionInfoRefundSummary transaction={transaction} /> : null}
                             <TransactionInfoCategoryRows transaction={transaction} />
                             <TransactionInfoTagsSection transaction={transaction} />
                         </TransactionInfoGroup>
+
+                        {isRefundPurchase ? <TransactionInfoUndoRefundGroup transactionId={transaction.id} /> : null}
 
                         <TransactionInfoNoteGroup transaction={transaction} />
 
@@ -93,7 +96,7 @@ export const TransactionInfoPageContent = ({
 
                         {actions}
 
-                        <TransactionInfoDeleteRow transaction={transaction} onDelete={onDelete} />
+                        {isRefundPurchase ? null : <TransactionInfoDeleteRow transaction={transaction} onDelete={onDelete} />}
                     </View>
                 </View>
             </TransactionInfoScrollView>

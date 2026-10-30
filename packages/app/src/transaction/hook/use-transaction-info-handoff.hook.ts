@@ -1,29 +1,71 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { useWindowDimensions } from 'react-native';
-import { useReducedMotion } from 'react-native-reanimated';
+import Animated, { scrollTo, useAnimatedRef, useAnimatedScrollHandler, useReducedMotion, useSharedValue } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import type { LayoutChangeEvent, NativeScrollEvent, NativeSyntheticEvent, ScrollView } from 'react-native';
+import { useScreenChrome, useScreenChromeScrollY } from '@rnw-community/react-native-screen-chrome';
+
+import { TRANSACTION_INFO_HANDOFF_DISTANCE } from '../constant/transaction-info-handoff-distance.constant';
+import { TRANSACTION_INFO_SCROLL_BOTTOM_INSET } from '../constant/transaction-info-scroll-bottom-inset.constant';
+
+import type { LayoutChangeEvent } from 'react-native';
+
+const SETTLE_FRAME_COUNT = 3;
 
 export const useTransactionInfoHandoff = () => {
     const { height } = useWindowDimensions();
-    const scrollRef = useRef<ScrollView>(null);
-    const reducedMotion = useReducedMotion();
+    const { top, bottom } = useSafeAreaInsets();
+    const { config } = useScreenChrome();
+    const scrollY = useScreenChromeScrollY();
+    const scrollRef = useAnimatedRef<Animated.ScrollView>();
+    const isDragging = useSharedValue(false);
+    const animated = !useReducedMotion();
     const [revealOffset, setRevealOffset] = useState(0);
     const [fadeEnd, setFadeEnd] = useState(0);
-    const settledOffset = Math.max(revealOffset + 20, fadeEnd);
-    const onEndLayout = (event: LayoutChangeEvent) => void setFadeEnd(event.nativeEvent.layout.y);
-    const onAmountLayout = (event: LayoutChangeEvent) => {
-        setRevealOffset(Math.max(0, event.nativeEvent.layout.y));
+    const [contentHeight, setContentHeight] = useState(Number.MAX_SAFE_INTEGER);
+    const settledOffset = Math.max(revealOffset, fadeEnd) + TRANSACTION_INFO_HANDOFF_DISTANCE;
+    const fitsScreen = top + config.headerHeight + contentHeight + TRANSACTION_INFO_SCROLL_BOTTOM_INSET + bottom <= height;
+
+    const handleScrollEnd = useAnimatedScrollHandler(
+        {
+            onBeginDrag: () => {
+                isDragging.set(true);
+            },
+            onEndDrag: event => {
+                isDragging.set(false);
+                let settledY = event.contentOffset.y;
+                let stableFrames = 0;
+                const snapWhenSettled = () => {
+                    if (isDragging.get()) {
+                        return;
+                    }
+
+                    if (scrollY.get() !== settledY || stableFrames < SETTLE_FRAME_COUNT) {
+                        stableFrames = scrollY.get() === settledY ? stableFrames + 1 : 0;
+                        settledY = scrollY.get();
+                        requestAnimationFrame(snapWhenSettled);
+
+                        return;
+                    }
+
+                    if (settledY > 0 && settledY < settledOffset) {
+                        scrollTo(scrollRef, 0, settledY < settledOffset / 2 || fitsScreen ? 0 : settledOffset, animated);
+                    }
+                };
+
+                requestAnimationFrame(snapWhenSettled);
+            }
+        },
+        [settledOffset, fitsScreen, animated]
+    );
+
+    return {
+        minimumHeight: fitsScreen ? 0 : height + settledOffset,
+        revealOffset,
+        onEndLayout: (event: LayoutChangeEvent) => void setFadeEnd(current => Math.max(current, event.nativeEvent.layout.y)),
+        onAmountLayout: (event: LayoutChangeEvent) => void setRevealOffset(Math.max(0, event.nativeEvent.layout.y)),
+        onContentLayout: (event: LayoutChangeEvent) => void setContentHeight(event.nativeEvent.layout.height),
+        scrollRef,
+        handleScrollEnd
     };
-
-    const handleScrollEnd = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-        const offset = event.nativeEvent.contentOffset.y;
-        const collapsedOffset = settledOffset;
-
-        if (offset > 0 && offset < collapsedOffset) {
-            scrollRef.current?.scrollTo({ y: offset < collapsedOffset / 2 ? 0 : collapsedOffset, animated: !reducedMotion });
-        }
-    };
-
-    return { minimumHeight: height + settledOffset, revealOffset, onEndLayout, onAmountLayout, scrollRef, handleScrollEnd };
 };

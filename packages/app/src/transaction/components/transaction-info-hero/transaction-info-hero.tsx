@@ -8,6 +8,7 @@ import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/sha
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { MatchingRulesPill } from '../../../rule/components/matching-rules-pill/matching-rules-pill';
+import { TRANSACTION_INFO_HERO_MAX_FONT_SCALE } from '../../constant/transaction-info-hero-max-font-scale.constant';
 import { TRANSACTION_INFO_STACKED_FONT_SCALE } from '../../constant/transaction-info-stacked-font-scale.constant';
 import { TRANSACTION_TYPE } from '../../constant/transaction-type.constant';
 import { formatTransactionInfoAmount } from '../../utils/format-transaction-info-amount.util';
@@ -35,46 +36,48 @@ export const TransactionInfoHero = ({ transaction, matchingRuleIds, onTitleLayou
     const formatDigits = useProtectedAmountLabel();
     const { fontScale } = useWindowDimensions();
     const largeText = fontScale > TRANSACTION_INFO_STACKED_FONT_SCALE;
-    const heroClassName = largeText ? 'items-start pt-3xl pb-5xl' : 'items-center pt-3xl pb-5xl';
+    const heroClassName = largeText ? 'items-start pt-xl pb-3xl' : 'items-center pt-3xl pb-5xl';
+    const showIcon = !largeText && getTransactionType(transaction) === TransactionTypeEnum.TRANSFER;
     const alignmentClassName = largeText ? 'text-left' : 'text-center';
     const amountClassName = getTransactionType(transaction) === TransactionTypeEnum.INCOME ? 'text-positive-strong' : 'text-primary';
     const displayTitle = getTransactionDisplayTitle(transaction);
     const title = isNotEmptyString(displayTitle) ? displayTitle : t(TRANSACTION_TYPE[transaction.type]);
-    const formattedAmount = formatTransactionInfoAmount(transaction, formatDigits);
     const sourceEntry = getTransactionInfoPrimaryEntry(transaction);
     const destinationEntry = getTransactionInfoDestinationEntry(transaction);
-    const isCrossCurrency =
+    const destinationAmount =
         isDefined(sourceEntry) &&
         isDefined(destinationEntry) &&
-        sourceEntry.account.instrument.id !== destinationEntry.account.instrument.id;
-    const destinationAmount =
-        isCrossCurrency && isDefined(destinationEntry)
+        sourceEntry.account.instrument.id !== destinationEntry.account.instrument.id
             ? `→ ${formatDigits(convertFromMicroUnits(destinationEntry.amount), destinationEntry.account.instrument.symbol)}`
             : null;
+    const amountFontSize = largeText ? 34 : 40;
 
     return (
         <View className={heroClassName}>
-            <TransactionInfoHeroFade collapse>
-                <TransactionInfoHeroIcon transaction={transaction} />
-            </TransactionInfoHeroFade>
+            {showIcon ? (
+                <TransactionInfoHeroFade className="mb-xl">
+                    <TransactionInfoHeroIcon />
+                </TransactionInfoHeroFade>
+            ) : null}
 
-            <TransactionInfoHeroFade className="mt-xl self-stretch">
-                <AmountField fontSize={40} className="self-stretch">
+            <TransactionInfoHeroFade className="self-stretch">
+                <AmountField fontSize={amountFontSize} className="self-stretch">
                     <AmountFieldText
                         adjustsFontSizeToFit
+                        maxFontSizeMultiplier={TRANSACTION_INFO_STACKED_FONT_SCALE}
                         minimumFontScale={0.4}
                         testID={TransactionInfoPageSelector.Amount}
                         className={cn('leading-[48px] font-semibold tracking-[-1px] ', alignmentClassName, amountClassName)}
                         selectable
                     >
-                        {formattedAmount}
+                        {formatTransactionInfoAmount(transaction, formatDigits)}
                     </AmountFieldText>
                 </AmountField>
             </TransactionInfoHeroFade>
 
             {isNotEmptyString(destinationAmount) ? (
                 <TransactionInfoHeroFade>
-                    <Text className="text-[15px] leading-[20px] text-secondary-foreground tabular-nums" selectable>
+                    <Text className="text-[15px] leading-[20px] text-transaction-detail-secondary tabular-nums" selectable>
                         {destinationAmount}
                     </Text>
                 </TransactionInfoHeroFade>
@@ -82,7 +85,11 @@ export const TransactionInfoHero = ({ transaction, matchingRuleIds, onTitleLayou
 
             <TransactionInfoHeroFade onLayout={onTitleLayout}>
                 {isNotEmptyString(title) ? (
-                    <Text className={`mt-xs text-[20px] leading-[25px] text-primary font-semibold ${alignmentClassName}`} selectable>
+                    <Text
+                        maxFontSizeMultiplier={TRANSACTION_INFO_HERO_MAX_FONT_SCALE}
+                        className={`mt-xs text-[20px] leading-[25px] text-primary font-semibold ${alignmentClassName}`}
+                        selectable
+                    >
                         {title}
                     </Text>
                 ) : null}
