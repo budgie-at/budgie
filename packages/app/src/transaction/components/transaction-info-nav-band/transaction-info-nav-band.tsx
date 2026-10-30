@@ -24,15 +24,12 @@ export const TransactionInfoNavBand = () => {
         }
     });
     const fadeStyle = [Z_INDEX_STYLE, styles.fade, backgroundStyle];
-    const bandClassName = isLiquidGlassAvailable()
-        ? 'absolute inset-x-0 top-0 bg-grouped-surface/95'
-        : 'absolute inset-x-0 top-0 bg-grouped-surface';
-    const renderBlur: EdgeFadeBandRenderer = ({ blur }) => blur;
+    const renderBlur: EdgeFadeBandRenderer = ({ blur, defaultBand }) => (isLiquidGlassAvailable() ? blur : defaultBand);
 
     return (
         <>
             <Animated.View className="absolute inset-x-0" style={fadeStyle} pointerEvents="none" />
-            <Animated.View className={bandClassName} style={bandStyle} pointerEvents="none">
+            <Animated.View className="absolute inset-x-0 top-0 bg-grouped-surface" style={bandStyle} pointerEvents="none">
                 <EdgeFade position="top" height={config.headerHeight} renderBand={renderBlur} />
                 <View className="absolute inset-x-0 bottom-0 h-[0.5px] bg-surface-separator" />
             </Animated.View>
