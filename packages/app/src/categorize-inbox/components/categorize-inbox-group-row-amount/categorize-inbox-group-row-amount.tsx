@@ -12,10 +12,9 @@ import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
 
 interface Props {
     readonly cluster: Pick<CategorizeInboxClusterInterface, 'rows' | 'totalBaseAmount'>;
-    readonly className?: string;
 }
 
-export const CategorizeInboxGroupRowAmount = ({ cluster, className }: Props) => {
+export const CategorizeInboxGroupRowAmount = ({ cluster }: Props) => {
     const amountLabel = useCategorizeInboxAmountLabel();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
 
@@ -33,7 +32,7 @@ export const CategorizeInboxGroupRowAmount = ({ cluster, className }: Props) => 
     const colorClassName = isIncome ? 'text-positive-foreground' : 'text-primary';
 
     return (
-        <Text className={cn('shrink-0 text-[15px] font-semibold tabular-nums', colorClassName, className)} numberOfLines={1}>
+        <Text className={cn('shrink-0 text-[15px] leading-[18px] font-semibold tabular-nums', colorClassName)} numberOfLines={1}>
             {`${sign}${amountLabel(amount, symbol)}`}
         </Text>
     );

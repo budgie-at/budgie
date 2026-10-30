@@ -16,6 +16,7 @@ import { buildUncategorizedFilters } from '../../../transaction/utils/build-unca
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 import { CategorizeInboxEmptyState } from '../categorize-inbox-empty-state/categorize-inbox-empty-state';
 import { CategorizeInboxList } from '../categorize-inbox-list/categorize-inbox-list';
+import { CategorizeInboxNavSubtitle } from '../categorize-inbox-nav-subtitle/categorize-inbox-nav-subtitle';
 import { CategorizeInboxPageSelector } from '../categorize-inbox-page/categorize-inbox-page.selector';
 import { CategorizeInboxPanel } from '../categorize-inbox-panel/categorize-inbox-panel';
 
@@ -40,7 +41,9 @@ export const CategorizeInboxPageContent = ({ params }: Props) => {
     const emptyDescription =
         (isPositiveNumber(categorizedCount) ? strategy?.doneThisSession(categorizedCount) : strategy?.emptyDescription) ?? '';
     const panel = isLoading ? null : <CategorizeInboxPanel />;
-    const body = isEmptyArray(items) ? (
+    const isEmpty = isEmptyArray(items);
+    const navSubtitle = isLoading || isEmpty ? null : <CategorizeInboxNavSubtitle />;
+    const body = isEmpty ? (
         <CategorizeInboxEmptyState description={emptyDescription} onDone={handleGoBack} />
     ) : (
         <CategorizeInboxList items={items} />
@@ -81,11 +84,13 @@ export const CategorizeInboxPageContent = ({ params }: Props) => {
                     </Text>
                 }
                 collapsedTitle={
-                    <Text className="text-primary text-lg font-semibold text-center" numberOfLines={1}>
+                    <Text className="text-primary text-[17px] font-semibold text-center" numberOfLines={1}>
                         {pageTitle}
                     </Text>
                 }
             />
+
+            {navSubtitle}
 
             {panel}
         </ScreenChromeFrame>

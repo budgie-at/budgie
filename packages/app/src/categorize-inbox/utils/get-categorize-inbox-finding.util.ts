@@ -1,44 +1,47 @@
 import { CategorizeInboxSectionEnum } from '@budgie/categorization';
-import { TransactionTypeEnum } from '@budgie/contracts';
-
-import { isDefined } from '@rnw-community/shared';
+import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
+import { differenceInCalendarMonths } from 'date-fns/differenceInCalendarMonths';
 
 import { CategorizeInboxFindingKindEnum } from '../enum/categorize-inbox-finding-kind.enum';
-
-import { getCategorizeInboxJarName } from './get-categorize-inbox-jar-name.util';
 
 import type { CategorizeInboxFindingInterface } from '../interface/categorize-inbox-finding.interface';
 import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
 
-const DAY_MS = 86_400_000;
 const DAYS_PER_WEEK = 7;
-const MONTHLY_TOLERANCE = 1;
 const MONTHLY_MIN_COUNT = 3;
+const RATE_MIN_COUNT = 2;
 
-export const getCategorizeInboxFinding = (
-    { displayTitle, rows, section }: CategorizeInboxClusterInterface,
-    accountTitle: string | null
-): CategorizeInboxFindingInterface => {
-    const jarName = getCategorizeInboxJarName(displayTitle);
-    const count = rows.length;
+const getKind = (count: number, perDay: number, distinctMonths: number, spanMonths: number): CategorizeInboxFindingKindEnum => {
+    if (count >= MONTHLY_MIN_COUNT && distinctMonths === count && spanMonths === count) {
+        return CategorizeInboxFindingKindEnum.ONCE_A_MONTH;
+    }
+
+    if (count >= RATE_MIN_COUNT && perDay >= 1) {
+        return CategorizeInboxFindingKindEnum.PER_DAY;
+    }
+
+    if (count >= RATE_MIN_COUNT && perDay * DAYS_PER_WEEK >= 1) {
+        return CategorizeInboxFindingKindEnum.PER_WEEK;
+    }
+
+    return spanMonths >= 2 ? CategorizeInboxFindingKindEnum.MONTH_RANGE : CategorizeInboxFindingKindEnum.SINGLE_MONTH;
+};
+
+export const getCategorizeInboxFinding = ({
+    rows,
+    section
+}: Pick<CategorizeInboxClusterInterface, 'rows' | 'section'>): CategorizeInboxFindingInterface => {
     const times = rows.map(row => row.operatedAt.getTime());
-    const spanDays = Math.max(1, (Math.max(...times) - Math.min(...times)) / DAY_MS);
-    const perDay = count / spanDays;
-    const isPerDay = perDay >= 1;
-    const rate = isPerDay ? Math.round(perDay) : Math.max(1, Math.round(perDay * DAYS_PER_WEEK));
+    const firstAt = new Date(Math.min(...times));
+    const lastAt = new Date(Math.max(...times));
+    const perDay = rows.length / (differenceInCalendarDays(lastAt, firstAt) + 1);
     const distinctMonths = new Set(rows.map(row => `${row.operatedAt.getFullYear()}-${row.operatedAt.getMonth()}`)).size;
-    const isMonthly =
-        count >= MONTHLY_MIN_COUNT && distinctMonths >= MONTHLY_MIN_COUNT && Math.abs(count - distinctMonths) <= MONTHLY_TOLERANCE;
-    const isExpense = rows.at(0)?.type === TransactionTypeEnum.EXPENSE;
-    const base = { rate, isPerDay };
+    const spanMonths = differenceInCalendarMonths(lastAt, firstAt) + 1;
+    const kind =
+        section === CategorizeInboxSectionEnum.CASH_WITHDRAWALS
+            ? CategorizeInboxFindingKindEnum.CASH
+            : getKind(rows.length, perDay, distinctMonths, spanMonths);
+    const rate = kind === CategorizeInboxFindingKindEnum.PER_DAY ? Math.round(perDay) : Math.round(perDay * DAYS_PER_WEEK);
 
-    if (section === CategorizeInboxSectionEnum.CASH_WITHDRAWALS) {
-        return { ...base, kind: CategorizeInboxFindingKindEnum.CASH };
-    }
-
-    if (isDefined(jarName) || isDefined(accountTitle)) {
-        return { ...base, kind: isExpense ? CategorizeInboxFindingKindEnum.JAR_TOP_UP : CategorizeInboxFindingKindEnum.JAR_RETURN };
-    }
-
-    return { ...base, kind: isMonthly ? CategorizeInboxFindingKindEnum.MONTHLY : CategorizeInboxFindingKindEnum.GENERIC };
+    return { kind, rate, firstAt, lastAt };
 };

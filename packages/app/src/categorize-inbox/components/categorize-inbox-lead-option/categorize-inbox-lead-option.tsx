@@ -32,7 +32,7 @@ export const CategorizeInboxLeadOption = ({ variant, title, subtitle, icon, acce
     <View className="overflow-hidden rounded-3xl bg-surface-row" style={CONTINUOUS_CORNERS}>
         <HapticPressable
             onPress={onPress}
-            className="min-h-[72px] flex-row items-center gap-x-xl px-3xl py-xl active:opacity-70"
+            className="min-h-[72px] flex-row items-center gap-x-md px-3xl py-xl active:opacity-70"
             accessibilityRole="button"
             {...testID(CategorizeInboxGroupScreenSelector.Option, title)}
         >

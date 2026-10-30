@@ -1,6 +1,6 @@
 import { CategorizeInboxSectionEnum } from '@budgie/categorization';
 import { UserIconNameEnum } from '@budgie/contracts';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -8,7 +8,6 @@ import { Icon } from '../../../@generic/component/icon/icon';
 import { cn } from '../../../@generic/utils/cn.util';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 import { useCategorizeInboxIsTransfer } from '../../hook/use-categorize-inbox-is-transfer.hook';
-import { formatCategorizeInboxMerchantTitle } from '../../utils/format-categorize-inbox-merchant-title.util';
 
 import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
 
@@ -34,15 +33,13 @@ export const CategorizeInboxMerchantBadge = ({ cluster }: Props) => {
     const { strategy } = useCategorizeInboxContext();
     const isTransfer = useCategorizeInboxIsTransfer(cluster);
 
-    const { section, displayTitle, candidateLabelIds } = cluster;
+    const { section, candidateLabelIds } = cluster;
     const candidateId = candidateLabelIds.at(0);
-    const candidateIcon = isDefined(candidateId) ? strategy?.labelsById.get(candidateId)?.icon : null;
+    const candidateIcon = (isDefined(candidateId) ? strategy?.labelsById.get(candidateId)?.icon : null) ?? UserIconNameEnum.Receipt;
     const isCash = section === CategorizeInboxSectionEnum.CASH_WITHDRAWALS;
     const isLikelyTransfer = section !== CategorizeInboxSectionEnum.CONFIDENT && isTransfer;
     const transferIcon = isLikelyTransfer ? UserIconNameEnum.ArrowLeftRight : candidateIcon;
     const icon = isCash ? UserIconNameEnum.Banknote : transferIcon;
-    const initial = formatCategorizeInboxMerchantTitle(displayTitle).match(/\p{L}/u)?.[0]?.toLocaleUpperCase() ?? '#';
-    const glyphClassName = GLYPH_CLASS_NAME[section];
 
     return (
         <View
@@ -50,11 +47,7 @@ export const CategorizeInboxMerchantBadge = ({ cluster }: Props) => {
             accessibilityElementsHidden
             importantForAccessibility="no-hide-descendants"
         >
-            {isDefined(icon) ? (
-                <Icon icon={icon} size={18} className={glyphClassName} />
-            ) : (
-                <Text className={cn('text-[15px] font-semibold', glyphClassName)}>{initial}</Text>
-            )}
+            <Icon icon={icon} size={18} className={GLYPH_CLASS_NAME[section]} />
         </View>
     );
 };

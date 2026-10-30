@@ -17,7 +17,8 @@ import { CategorizeInboxHeroCount } from '../categorize-inbox-hero-count/categor
 const SPLIT_SECTIONS = [
     { section: CategorizeInboxSectionEnum.CONFIDENT, dotClassName: 'bg-positive-action' },
     { section: CategorizeInboxSectionEnum.CASH_WITHDRAWALS, dotClassName: 'bg-attention-foreground' },
-    { section: CategorizeInboxSectionEnum.REVIEW, dotClassName: 'bg-secondary-foreground' }
+    { section: CategorizeInboxSectionEnum.REVIEW, dotClassName: 'bg-secondary-foreground' },
+    { section: CategorizeInboxSectionEnum.ONE_OFFS, dotClassName: 'bg-secondary-foreground/40' }
 ] as const;
 
 export const CategorizeInboxHero = () => {
@@ -34,10 +35,11 @@ export const CategorizeInboxHero = () => {
     const countText = t({ message: plural(remainingCount, { one: 'payment to sort', other: 'payments to sort' }) });
     const subtitle = isDefined(worthAmount) ? `${countText} · ${worthText}` : countText;
 
-    const sectionTexts: Record<(typeof SPLIT_SECTIONS)[number]['section'], (count: number) => string> = {
+    const sectionTexts: Record<CategorizeInboxSectionEnum, (count: number) => string> = {
         [CategorizeInboxSectionEnum.CONFIDENT]: count => t({ message: plural(count, { one: '# ready', other: '# ready' }) }),
         [CategorizeInboxSectionEnum.CASH_WITHDRAWALS]: count => t({ message: plural(count, { one: '# cash', other: '# cash' }) }),
-        [CategorizeInboxSectionEnum.REVIEW]: count => t({ message: plural(count, { one: '# your call', other: '# your call' }) })
+        [CategorizeInboxSectionEnum.REVIEW]: count => t({ message: plural(count, { one: '# your call', other: '# your call' }) }),
+        [CategorizeInboxSectionEnum.ONE_OFFS]: count => t({ message: plural(count, { one: '# other', other: '# other' }) })
     };
     const headers = items.flatMap(item => (isCategorizeInboxCluster(item) ? [] : [item]));
     const splits = SPLIT_SECTIONS.map(({ section, dotClassName }) => ({

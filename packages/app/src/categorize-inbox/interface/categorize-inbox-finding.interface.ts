@@ -3,5 +3,6 @@ import type { CategorizeInboxFindingKindEnum } from '../enum/categorize-inbox-fi
 export interface CategorizeInboxFindingInterface {
     readonly kind: CategorizeInboxFindingKindEnum;
     readonly rate: number;
-    readonly isPerDay: boolean;
+    readonly firstAt: Date;
+    readonly lastAt: Date;
 }

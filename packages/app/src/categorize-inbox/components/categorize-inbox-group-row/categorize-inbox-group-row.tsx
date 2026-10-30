@@ -35,10 +35,10 @@ export const CategorizeInboxGroupRow = ({ cluster, position }: Props) => {
     const href = { pathname: '/categorize/group/[key]', params: { key } } as const;
     const actionSpacerStyle = { width: actionWidth };
     const trailing = hasAction ? (
-        <>
-            <CategorizeInboxGroupRowAmount cluster={cluster} className="font-normal text-secondary-foreground" />
-            <View style={actionSpacerStyle} />
-        </>
+        <View className="items-end gap-y-xxs">
+            <CategorizeInboxGroupRowAmount cluster={cluster} />
+            <View className="h-[32px]" style={actionSpacerStyle} />
+        </View>
     ) : (
         <>
             <CategorizeInboxGroupRowAmount cluster={cluster} />
@@ -57,13 +57,13 @@ export const CategorizeInboxGroupRow = ({ cluster, position }: Props) => {
         <CategorizeInboxCardRow position={position}>
             <Link href={href} asChild>
                 <HapticPressable
-                    className="min-h-[62px] flex-row items-center gap-x-xl px-3xl py-lg active:opacity-70"
+                    className="min-h-[64px] flex-row items-center gap-x-xl px-3xl py-lg active:opacity-70"
                     accessibilityRole="link"
                     {...testID(CategorizeInboxGroupRowSelector.Row, key)}
                 >
                     <CategorizeInboxMerchantBadge cluster={cluster} />
                     <View className="min-w-0 flex-1 gap-y-xxs">
-                        <Text className="text-[15px] font-semibold text-primary" numberOfLines={1}>
+                        <Text className="text-[15px] leading-[20px] font-semibold text-primary" numberOfLines={2}>
                             {formatCategorizeInboxMerchantTitle(displayTitle)}
                         </Text>
                         <CategorizeInboxGroupRowSubtitle cluster={cluster} />
@@ -73,7 +73,15 @@ export const CategorizeInboxGroupRow = ({ cluster, position }: Props) => {
             </Link>
 
             {hasAction ? (
-                <View className="absolute inset-y-0 right-[16px] justify-center" pointerEvents="box-none">
+                <View className="absolute inset-y-0 right-[16px] items-end justify-center gap-y-xxs" pointerEvents="box-none">
+                    <View
+                        className="opacity-0"
+                        accessibilityElementsHidden
+                        importantForAccessibility="no-hide-descendants"
+                        pointerEvents="none"
+                    >
+                        <CategorizeInboxGroupRowAmount cluster={cluster} />
+                    </View>
                     <View onLayout={handleActionLayout}>{action}</View>
                 </View>
             ) : null}

@@ -6,6 +6,7 @@ import { formatCategorizeInboxMerchantTitle } from '../../utils/format-categoriz
 import { CategorizeInboxGroupHero } from '../categorize-inbox-group-hero/categorize-inbox-group-hero';
 import { CategorizeInboxGroupOptions } from '../categorize-inbox-group-options/categorize-inbox-group-options';
 import { CategorizeInboxGroupPanel } from '../categorize-inbox-group-panel/categorize-inbox-group-panel';
+import { CategorizeInboxGroupRecentPayments } from '../categorize-inbox-group-recent-payments/categorize-inbox-group-recent-payments';
 import { CategorizeInboxGroupRefineOptions } from '../categorize-inbox-group-refine-options/categorize-inbox-group-refine-options';
 import { CategorizeInboxScreenChrome } from '../categorize-inbox-screen-chrome/categorize-inbox-screen-chrome';
 import { CategorizeInboxScreenScroll } from '../categorize-inbox-screen-scroll/categorize-inbox-screen-scroll';
@@ -37,6 +38,8 @@ export const CategorizeInboxGroupScreen = ({ clusterKey }: Props) => {
                     <CategorizeInboxGroupRefineOptions cluster={cluster} />
 
                     <CategorizeInboxGroupPanel cluster={cluster} />
+
+                    <CategorizeInboxGroupRecentPayments cluster={cluster} />
                 </CategorizeInboxScreenScroll>
             </CategorizeInboxScreenChrome>
         </GroupedSurface>

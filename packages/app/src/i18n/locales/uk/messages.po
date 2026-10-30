@@ -125,6 +125,10 @@ msgstr "{count, plural, one {# категорія має типову іконк
 msgid "{count, plural, one {# existing transaction matches this rule.} other {# existing transactions match this rule.}}"
 msgstr "{count, plural, one {# наявна транзакція відповідає цьому правилу.} few {# наявні транзакції відповідають цьому правилу.} many {# наявних транзакцій відповідають цьому правилу.} other {# наявної транзакції відповідають цьому правилу.}}"
 
+#: src/categorize-inbox/components/categorize-inbox-hero/categorize-inbox-hero.tsx
+msgid "{count, plural, one {# other} other {# other}}"
+msgstr "{count, plural, one {# інший} few {# інші} many {# інших} other {# інших}}"
+
 #: src/installment-plan/component/installment-count-chip/installment-count-chip.tsx
 msgid "{count, plural, one {# payment} other {# payments}}"
 msgstr "{count, plural, one {# платіж} few {# платежі} many {# платежів} other {# платежу}}"
@@ -206,6 +210,10 @@ msgstr "{duplicateTransactionCount, plural, one {# пропущено} few {# п
 #: src/settings/components/your-data-card/your-data-card.tsx
 msgid "{fileSize} · no Budgie servers"
 msgstr "{fileSize} · без серверів Budgie"
+
+#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
+msgid "{firstMonth}–{lastMonth}"
+msgstr "{firstMonth}–{lastMonth}"
 
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
 msgid "{foldedDriverCount, plural, one {Other (# category)} other {Other (# categories)}}"
@@ -396,6 +404,10 @@ msgstr "{periodLabel}, витрачено {spentAmount} із {limitAmount}"
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "{remaining} GB one-time download"
 msgstr "Одноразове завантаження {remaining} ГБ"
+
+#: src/categorize-inbox/components/categorize-inbox-nav-subtitle/categorize-inbox-nav-subtitle.tsx
+msgid "{remainingCount, plural, one {# to sort} other {# to sort}}"
+msgstr "{remainingCount, plural, one {# до сортування} few {# до сортування} many {# до сортування} other {# до сортування}}"
 
 #: src/categorize-inbox/components/categorize-inbox-hero/categorize-inbox-hero.tsx
 msgid "{remainingCount, plural, one {payment to sort} other {payments to sort}}"
@@ -2876,6 +2888,10 @@ msgstr "Французька"
 msgid "From"
 msgstr "З"
 
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+msgid "From {counterparty}"
+msgstr "З {counterparty}"
+
 #: src/transaction/components/transaction-amount-filter/transaction-amount-filter.tsx
 msgid "From {fromText}"
 msgstr "Від {fromText}"
@@ -3105,6 +3121,10 @@ msgstr "Імпортуємо історію…"
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "in"
 msgstr "в"
+
+#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
+msgid "in {month}"
+msgstr "у {month}"
 
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "In List"
@@ -3378,14 +3398,6 @@ msgstr "Завантаження…"
 msgid "Lock Budgie with your own PIN"
 msgstr "Заблокуйте Budgie власним PIN-кодом"
 
-#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
-msgid "Looks like a jar top-up"
-msgstr "Схоже на поповнення банки"
-
-#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
-msgid "Looks like a top-up of {account}"
-msgstr "Схоже на поповнення {account}"
-
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "Looks right"
 msgstr "Виглядає правильно"
@@ -3551,14 +3563,6 @@ msgstr "Моделі та завантаження"
 #: src/app/(tabs)/settings/ai-features.tsx
 msgid "Models download once, best on Wi-Fi"
 msgstr "Моделі завантажуються один раз, краще через Wi-Fi"
-
-#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
-msgid "Money coming back from {account}"
-msgstr "Гроші повертаються з {account}"
-
-#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
-msgid "Money coming back from your «{jar}» jar"
-msgstr "Гроші повертаються з вашої банки «{jar}»"
 
 #: src/runway/component/runway-history-legend/runway-history-legend.tsx
 msgid "Money in"
@@ -4568,6 +4572,10 @@ msgstr "Сума зарахування"
 msgid "Receiving amount must be greater than zero"
 msgstr "Сума зарахування має бути більшою за нуль"
 
+#: src/categorize-inbox/components/categorize-inbox-group-recent-payments/categorize-inbox-group-recent-payments.tsx
+msgid "Recent payments"
+msgstr "Останні платежі"
+
 #: src/@generic/component/transactions-page-header/transactions-page-header.tsx
 #: src/budget/components/budget-upcoming-charge-row/budget-upcoming-charge-row.tsx
 msgid "Recurring"
@@ -4800,10 +4808,6 @@ msgstr "Запас потребує щонайменше 3 повних міся
 msgid "Safe to spend"
 msgstr "Безпечно витрачати"
 
-#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
-msgid "same title every time"
-msgstr "щоразу та сама назва"
-
 #: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
 msgid "Save"
@@ -4945,6 +4949,10 @@ msgstr "Другорядне значення"
 #: src/app/(tabs)/settings/index.tsx
 msgid "Security"
 msgstr "Безпека"
+
+#: src/categorize-inbox/components/categorize-inbox-group-recent-payments/categorize-inbox-group-recent-payments.tsx
+msgid "See all {total}"
+msgstr "Показати всі {total}"
 
 #: src/tag/components/tags-feature-intro/tags-feature-intro.tsx
 msgid "See spending by context, not just category"
@@ -5690,6 +5698,10 @@ msgstr "До {accountTitle}"
 msgid "To {accountTitle}, rule saved"
 msgstr "До {accountTitle}, правило збережено"
 
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+msgid "To {counterparty}"
+msgstr "На {counterparty}"
+
 #: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
 msgid "To {destination}"
 msgstr "На {destination}"
@@ -5845,6 +5857,10 @@ msgstr "Рахунок переказу"
 msgid "Transfer From Account"
 msgstr "Переказ з рахунку"
 
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+msgid "Transfer from savings jar"
+msgstr "Переказ з банки"
+
 #: src/categorize-inbox/components/categorize-inbox-transfer-screen/categorize-inbox-transfer-screen.tsx
 msgid "Transfer to"
 msgstr "Переказ до"
@@ -5860,6 +5876,10 @@ msgstr "Переказ на рахунок"
 #: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
 msgid "Transfer to an account"
 msgstr "Переказ на рахунок"
+
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+msgid "Transfer to savings jar"
+msgstr "Переказ у банку"
 
 #: src/ai/component/ai-settings-section/ai-settings-section.tsx
 msgid "Translate categories and tags"

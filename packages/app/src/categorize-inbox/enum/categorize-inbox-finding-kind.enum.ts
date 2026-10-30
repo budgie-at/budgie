@@ -1,7 +1,8 @@
 export enum CategorizeInboxFindingKindEnum {
     CASH = 'CASH',
-    JAR_TOP_UP = 'JAR_TOP_UP',
-    JAR_RETURN = 'JAR_RETURN',
-    MONTHLY = 'MONTHLY',
-    GENERIC = 'GENERIC'
+    ONCE_A_MONTH = 'ONCE_A_MONTH',
+    PER_DAY = 'PER_DAY',
+    PER_WEEK = 'PER_WEEK',
+    MONTH_RANGE = 'MONTH_RANGE',
+    SINGLE_MONTH = 'SINGLE_MONTH'
 }

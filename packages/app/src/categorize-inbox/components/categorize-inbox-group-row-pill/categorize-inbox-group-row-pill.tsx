@@ -16,7 +16,7 @@ const PILL_HIT_SLOP = { top: 6, bottom: 6, left: 6, right: 6 } as const;
 
 export const CategorizeInboxGroupRowPill = ({ variant, text, label, isDisabled, onPress, testID }: Props) => (
     <HapticPressable
-        className="min-w-[72px] active:opacity-70"
+        className="active:opacity-70"
         hitSlop={PILL_HIT_SLOP}
         disabled={isDisabled}
         onPress={onPress}

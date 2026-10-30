@@ -24,8 +24,10 @@ export const CategorizeInboxScreenChrome = ({ children, title, titleTestID }: Pr
     const titleNode = isNotEmptyString(title) ? (
         <View className="absolute inset-0 items-center justify-center px-[72px]" pointerEvents="none">
             <Text
-                className="text-primary text-2xl font-semibold text-center"
-                numberOfLines={1}
+                className="text-primary text-2xl leading-[26px] font-semibold text-center"
+                numberOfLines={2}
+                adjustsFontSizeToFit
+                minimumFontScale={0.77}
                 accessibilityRole="header"
                 {...testID(titleTestID)}
             >

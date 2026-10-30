@@ -125,6 +125,10 @@ msgstr "{count, plural, one {# Kategorie nutzt das Standardsymbol} other {# Kate
 msgid "{count, plural, one {# existing transaction matches this rule.} other {# existing transactions match this rule.}}"
 msgstr "{count, plural, one {# vorhandene Transaktion passt zu dieser Regel.} other {# vorhandene Transaktionen passen zu dieser Regel.}}"
 
+#: src/categorize-inbox/components/categorize-inbox-hero/categorize-inbox-hero.tsx
+msgid "{count, plural, one {# other} other {# other}}"
+msgstr "{count, plural, one {# weitere} other {# weitere}}"
+
 #: src/installment-plan/component/installment-count-chip/installment-count-chip.tsx
 msgid "{count, plural, one {# payment} other {# payments}}"
 msgstr "{count, plural, one {# Zahlung} other {# Zahlungen}}"
@@ -206,6 +210,10 @@ msgstr "{duplicateTransactionCount, plural, one {# übersprungen} other {# über
 #: src/settings/components/your-data-card/your-data-card.tsx
 msgid "{fileSize} · no Budgie servers"
 msgstr "{fileSize} · keine Budgie-Server"
+
+#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
+msgid "{firstMonth}–{lastMonth}"
+msgstr "{firstMonth}–{lastMonth}"
 
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
 msgid "{foldedDriverCount, plural, one {Other (# category)} other {Other (# categories)}}"
@@ -396,6 +404,10 @@ msgstr "{periodLabel}, {spentAmount} von {limitAmount} ausgegeben"
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "{remaining} GB one-time download"
 msgstr "{remaining} GB einmaliger Download"
+
+#: src/categorize-inbox/components/categorize-inbox-nav-subtitle/categorize-inbox-nav-subtitle.tsx
+msgid "{remainingCount, plural, one {# to sort} other {# to sort}}"
+msgstr "{remainingCount, plural, one {# zu sortieren} other {# zu sortieren}}"
 
 #: src/categorize-inbox/components/categorize-inbox-hero/categorize-inbox-hero.tsx
 msgid "{remainingCount, plural, one {payment to sort} other {payments to sort}}"
@@ -2876,6 +2888,10 @@ msgstr "Französisch"
 msgid "From"
 msgstr "Von"
 
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+msgid "From {counterparty}"
+msgstr "Von {counterparty}"
+
 #: src/transaction/components/transaction-amount-filter/transaction-amount-filter.tsx
 msgid "From {fromText}"
 msgstr "Ab {fromText}"
@@ -3105,6 +3121,10 @@ msgstr "Verlauf wird importiert…"
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "in"
 msgstr "in"
+
+#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
+msgid "in {month}"
+msgstr "im {month}"
 
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "In List"
@@ -3378,14 +3398,6 @@ msgstr "Wird geladen…"
 msgid "Lock Budgie with your own PIN"
 msgstr "Sperre Budgie mit deiner eigenen PIN"
 
-#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
-msgid "Looks like a jar top-up"
-msgstr "Sieht nach einer Spardosen-Aufladung aus"
-
-#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
-msgid "Looks like a top-up of {account}"
-msgstr "Sieht nach einer Aufladung von {account} aus"
-
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "Looks right"
 msgstr "Sieht gut aus"
@@ -3551,14 +3563,6 @@ msgstr "Modelle und Downloads"
 #: src/app/(tabs)/settings/ai-features.tsx
 msgid "Models download once, best on Wi-Fi"
 msgstr "Modelle werden einmal geladen, am besten über WLAN"
-
-#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
-msgid "Money coming back from {account}"
-msgstr "Geld zurück von {account}"
-
-#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
-msgid "Money coming back from your «{jar}» jar"
-msgstr "Geld zurück aus deiner Spardose «{jar}»"
 
 #: src/runway/component/runway-history-legend/runway-history-legend.tsx
 msgid "Money in"
@@ -4568,6 +4572,10 @@ msgstr "Empfangsbetrag"
 msgid "Receiving amount must be greater than zero"
 msgstr "Der Empfangsbetrag muss größer als null sein"
 
+#: src/categorize-inbox/components/categorize-inbox-group-recent-payments/categorize-inbox-group-recent-payments.tsx
+msgid "Recent payments"
+msgstr "Letzte Zahlungen"
+
 #: src/@generic/component/transactions-page-header/transactions-page-header.tsx
 #: src/budget/components/budget-upcoming-charge-row/budget-upcoming-charge-row.tsx
 msgid "Recurring"
@@ -4800,10 +4808,6 @@ msgstr "Die Reichweite benötigt mindestens 3 vollständige Monate mit Transakti
 msgid "Safe to spend"
 msgstr "Sicher ausgebbar"
 
-#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
-msgid "same title every time"
-msgstr "jedes Mal derselbe Titel"
-
 #: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
 msgid "Save"
@@ -4945,6 +4949,10 @@ msgstr "Zweiter Wert"
 #: src/app/(tabs)/settings/index.tsx
 msgid "Security"
 msgstr "Sicherheit"
+
+#: src/categorize-inbox/components/categorize-inbox-group-recent-payments/categorize-inbox-group-recent-payments.tsx
+msgid "See all {total}"
+msgstr "Alle {total} anzeigen"
 
 #: src/tag/components/tags-feature-intro/tags-feature-intro.tsx
 msgid "See spending by context, not just category"
@@ -5690,6 +5698,10 @@ msgstr "An {accountTitle}"
 msgid "To {accountTitle}, rule saved"
 msgstr "An {accountTitle}, Regel gespeichert"
 
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+msgid "To {counterparty}"
+msgstr "An {counterparty}"
+
 #: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
 msgid "To {destination}"
 msgstr "An {destination}"
@@ -5845,6 +5857,10 @@ msgstr "Überweisungskonto"
 msgid "Transfer From Account"
 msgstr "Vom Konto übertragen"
 
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+msgid "Transfer from savings jar"
+msgstr "Überweisung aus der Spardose"
+
 #: src/categorize-inbox/components/categorize-inbox-transfer-screen/categorize-inbox-transfer-screen.tsx
 msgid "Transfer to"
 msgstr "Überweisung an"
@@ -5860,6 +5876,10 @@ msgstr "Auf Konto übertragen"
 #: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
 msgid "Transfer to an account"
 msgstr "Überweisung an ein Konto"
+
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+msgid "Transfer to savings jar"
+msgstr "Überweisung in die Spardose"
 
 #: src/ai/component/ai-settings-section/ai-settings-section.tsx
 msgid "Translate categories and tags"

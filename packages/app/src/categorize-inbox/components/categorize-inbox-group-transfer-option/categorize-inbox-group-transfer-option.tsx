@@ -1,4 +1,4 @@
-import { TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { AccountTypeEnum, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
 
@@ -24,11 +24,12 @@ export const CategorizeInboxGroupTransferOption = ({ cluster, isLead }: Props) =
 
     const isIncome = cluster.rows.at(0)?.type === TransactionTypeEnum.INCOME;
     const subtitle = isIncome ? t`Leaves your income` : t`Not counted as spending`;
-    const account = matchedAccount?.title ?? '';
-    const jar = getCategorizeInboxJarName(cluster.displayTitle) ?? '';
-    const topUpHint = isDefined(matchedAccount) ? t`Looks like a top-up of ${account}` : t`Looks like a jar top-up`;
-    const returnHint = isDefined(matchedAccount) ? t`Money coming back from ${account}` : t`Money coming back from your «${jar}» jar`;
-    const leadSubtitle = isIncome ? returnHint : topUpHint;
+    const jarName = getCategorizeInboxJarName(cluster.displayTitle);
+    const counterparty = matchedAccount?.title ?? (isDefined(jarName) ? `«${jarName}»` : null);
+    const directedCounterparty = isIncome ? t`From ${counterparty}` : t`To ${counterparty}`;
+    const leadSubtitle = isDefined(counterparty) ? directedCounterparty : subtitle;
+    const jarTitle = isIncome ? t`Transfer from savings jar` : t`Transfer to savings jar`;
+    const leadTitle = isDefined(jarName) || matchedAccount?.type === AccountTypeEnum.SAVINGS ? jarTitle : t`Transfer`;
 
     const handlePress = (): void => void router.push({ pathname: '/categorize/transfer/[key]', params: { key: cluster.key } });
 
@@ -36,7 +37,7 @@ export const CategorizeInboxGroupTransferOption = ({ cluster, isLead }: Props) =
         return (
             <CategorizeInboxLeadOption
                 icon={UserIconNameEnum.ArrowLeftRight}
-                title={t`Transfer`}
+                title={leadTitle}
                 subtitle={leadSubtitle}
                 variant="neutral"
                 accessory={<CategorizeInboxOptionChevron />}
