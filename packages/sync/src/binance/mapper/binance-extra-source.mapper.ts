@@ -23,6 +23,7 @@ const EARN_ROUNDING_HALF = EARN_RAW_PER_MICRO_UNIT / BigInt(2);
 const EARN_DATE_PART_DIGITS = 2;
 const DUST_DEFAULT_TARGET_ASSET = 'BNB';
 const DEBITED_DIVIDEND_DIRECTION = -1;
+const EARN_DIVIDEND_INFO_PATTERN = /^(flexible|locked)/iu;
 
 const EARN_REWARD_KIND_LABELS: Record<BinanceEarnRewardKindEnum, { readonly idPrefix: string; readonly label: string }> = {
     [BinanceEarnRewardKindEnum.FLEXIBLE]: { idPrefix: 'binance:earn', label: 'Earn reward' },
@@ -83,7 +84,9 @@ export const mapBinanceDividendToTransaction = (
 ): SyncTransactionInterface | null => {
     const amount = parseUnsignedAmount(dividend.amount);
 
-    return isDefined(amount) && dividend.direction !== DEBITED_DIVIDEND_DIRECTION
+    const isEarnReward = EARN_DIVIDEND_INFO_PATTERN.test(dividend.enInfo ?? '');
+
+    return isDefined(amount) && dividend.direction !== DEBITED_DIVIDEND_DIRECTION && !isEarnReward
         ? toSyncTransaction({
               id: `binance:dividend:${dividend.tranId}`,
               accountId,
