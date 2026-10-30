@@ -46,11 +46,19 @@ export const TransactionInfoNavTitle = ({ transaction, revealOffset }: Props) =>
         >
             <Animated.View className="items-center justify-center" style={titleStyle}>
                 {isNotEmptyString(title) ? (
-                    <Text className="text-[17px] leading-[22px] text-primary font-semibold text-center" numberOfLines={1}>
+                    <Text
+                        maxFontSizeMultiplier={1.35}
+                        className="text-[17px] leading-[22px] text-primary font-semibold text-center"
+                        numberOfLines={1}
+                    >
                         {title}
                     </Text>
                 ) : null}
-                <Text className="text-[13px] leading-[16px] text-secondary-foreground text-center tabular-nums" numberOfLines={1}>
+                <Text
+                    maxFontSizeMultiplier={1.35}
+                    className="text-[13px] leading-[16px] text-secondary-foreground text-center tabular-nums"
+                    numberOfLines={1}
+                >
                     {formatTransactionInfoAmount(transaction, formatDigits)}
                 </Text>
             </Animated.View>

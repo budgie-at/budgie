@@ -28,7 +28,7 @@ export const TransactionInfoDeleteRow = ({ transaction, onDelete }: Props) => {
                 onPress={handleDelete}
                 testID={TransactionInfoPageSelector.DeleteButton}
             >
-                <Text className="text-[17px] leading-[22px] text-destructive-foreground">{label}</Text>
+                <Text className="text-[17px] leading-[22px] text-destructive-strong">{label}</Text>
             </HapticPressable>
         </TransactionInfoGroup>
     );

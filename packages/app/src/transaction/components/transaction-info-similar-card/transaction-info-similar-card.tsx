@@ -1,7 +1,8 @@
 import { convertFromMicroUnits } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
-import { Trans, useLingui } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
+import { useLingui } from '@lingui/react/macro';
+import { cva } from 'class-variance-authority';
+import { ScrollView, Text, View, useWindowDimensions } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -9,7 +10,9 @@ import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-am
 import { cn } from '../../../@generic/utils/cn.util';
 import { THOUSAND } from '../../../i18n/constant/compact-thresholds.constant';
 import { useFormatCompactDigits } from '../../../i18n/hook/use-format-compact-digits.hook';
+import { TRANSACTION_INFO_STACKED_FONT_SCALE } from '../../constant/transaction-info-stacked-font-scale.constant';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
+import { TransactionInfoSimilarMetric } from '../transaction-info-similar-metric/transaction-info-similar-metric';
 import { TransactionInfoSimilarMonthBar } from '../transaction-info-similar-month-bar/transaction-info-similar-month-bar';
 
 import type { SimilarTransactionStatsInterface } from '@budgie/contracts';
@@ -20,10 +23,21 @@ interface Props {
     readonly isLoading: boolean;
 }
 
+const chartContainerStyle = { flexGrow: 1 };
 const continuousCorners = { borderCurve: 'continuous' as const };
+
+const summaryVariants = cva('gap-x-5xl gap-y-xl', {
+    variants: {
+        largeText: {
+            true: 'flex-col',
+            false: 'flex-row flex-wrap'
+        }
+    }
+});
 
 export const TransactionInfoSimilarCard = ({ stats, title, isLoading }: Props) => {
     const { t } = useLingui();
+    const { fontScale } = useWindowDimensions();
     const formatDigits = useProtectedAmountLabel();
     const formatCompactDigits = useFormatCompactDigits(THOUSAND);
 
@@ -54,41 +68,31 @@ export const TransactionInfoSimilarCard = ({ stats, title, isLoading }: Props) =
             testID={TransactionInfoPageSelector.SimilarCard}
         >
             <View className="gap-y-xxs">
-                <Text className="text-[17px] leading-[22px] text-primary font-semibold" numberOfLines={1}>
-                    {title}
-                </Text>
+                <Text className="text-[17px] leading-[22px] text-primary font-semibold">{title}</Text>
                 <Text className="text-[13px] leading-[18px] text-secondary-foreground">{description}</Text>
             </View>
 
-            <View className="flex-row flex-wrap gap-x-5xl gap-y-xl">
-                <View className="flex-1 min-w-[120px] gap-y-xxs" collapsable={false} testID={TransactionInfoPageSelector.SimilarTotal}>
-                    <Text className="text-[13px] leading-[18px] text-secondary-foreground">
-                        <Trans>Total</Trans>
-                    </Text>
-                    <Text className="text-[20px] leading-[25px] text-primary font-semibold tabular-nums">{total}</Text>
-                </View>
-                <View className="flex-1 min-w-[120px] gap-y-xxs" collapsable={false} testID={TransactionInfoPageSelector.SimilarAverage}>
-                    <Text className="text-[13px] leading-[18px] text-secondary-foreground">
-                        <Trans>Average</Trans>
-                    </Text>
-                    <Text className="text-[20px] leading-[25px] text-primary font-semibold tabular-nums">{average}</Text>
-                </View>
+            <View className={summaryVariants({ largeText: fontScale > TRANSACTION_INFO_STACKED_FONT_SCALE })}>
+                <TransactionInfoSimilarMetric label={t`Total`} amount={total} testID={TransactionInfoPageSelector.SimilarTotal} />
+                <TransactionInfoSimilarMetric label={t`Average`} amount={average} testID={TransactionInfoPageSelector.SimilarAverage} />
             </View>
 
-            <View className="flex-row items-end gap-x-sm min-h-[126px]">
-                {stats.months.map((month, index) => (
-                    <TransactionInfoSimilarMonthBar
-                        key={month.monthKey}
-                        month={month}
-                        maxAmount={maxAmount}
-                        currencySymbol={stats.currencySymbol}
-                        currentMonthKey={currentMonthKey}
-                        formatCompactDigits={formatCompactDigits}
-                        formatDigits={formatDigits}
-                        testID={TransactionInfoPageSelector.SimilarBar(index)}
-                    />
-                ))}
-            </View>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} className="grow-0" contentContainerStyle={chartContainerStyle}>
+                <View className="grow flex-row items-end gap-x-sm min-h-[126px]">
+                    {stats.months.map((month, index) => (
+                        <TransactionInfoSimilarMonthBar
+                            key={month.monthKey}
+                            month={month}
+                            maxAmount={maxAmount}
+                            currencySymbol={stats.currencySymbol}
+                            currentMonthKey={currentMonthKey}
+                            formatCompactDigits={formatCompactDigits}
+                            formatDigits={formatDigits}
+                            testID={TransactionInfoPageSelector.SimilarBar(index)}
+                        />
+                    ))}
+                </View>
+            </ScrollView>
         </View>
     );
 };

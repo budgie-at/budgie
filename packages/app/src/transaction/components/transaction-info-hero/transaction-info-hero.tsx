@@ -33,7 +33,7 @@ export const TransactionInfoHero = ({ transaction, matchingRuleIds, onOpenRefund
     const { t } = useLingui();
     const formatDigits = useProtectedAmountLabel();
     const { formatDayAndMonthAndYearWithTime } = useFormatDate();
-    const amountClassName = getTransactionType(transaction) === TransactionTypeEnum.INCOME ? 'text-positive-foreground' : 'text-primary';
+    const amountClassName = getTransactionType(transaction) === TransactionTypeEnum.INCOME ? 'text-positive-strong' : 'text-primary';
     const displayTitle = getTransactionDisplayTitle(transaction);
     const title = isNotEmptyString(displayTitle) ? displayTitle : t(TRANSACTION_TYPE[transaction.type]);
     const sourceEntry = getTransactionInfoPrimaryEntry(transaction);

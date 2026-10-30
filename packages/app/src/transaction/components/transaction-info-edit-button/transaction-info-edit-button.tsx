@@ -31,7 +31,11 @@ export const TransactionInfoEditButton = ({ editHref }: Props) => {
             onPress={handleEditPress}
             testID={TransactionInfoPageSelector.EditButton}
         >
-            <Text className="text-[17px] text-primary font-medium" testID={`${TransactionInfoPageSelector.EditButton}.Label`}>
+            <Text
+                maxFontSizeMultiplier={1.35}
+                className="text-[17px] text-primary font-medium"
+                testID={`${TransactionInfoPageSelector.EditButton}.Label`}
+            >
                 <Trans>Edit</Trans>
             </Text>
         </HapticPressable>

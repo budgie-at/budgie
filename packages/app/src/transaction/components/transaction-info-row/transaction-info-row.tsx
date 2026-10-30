@@ -7,6 +7,7 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { cn } from '../../../@generic/utils/cn.util';
+import { TRANSACTION_INFO_STACKED_FONT_SCALE } from '../../constant/transaction-info-stacked-font-scale.constant';
 
 import type { UserIconType } from '@budgie/contracts';
 
@@ -20,8 +21,6 @@ interface Props {
     readonly testID: string;
     readonly onPress?: () => void;
 }
-
-const STACKED_AMOUNT_FONT_SCALE = 1.3;
 
 const contentVariants = cva('flex-1 min-w-0 gap-x-xl gap-y-xs', {
     variants: {
@@ -44,7 +43,7 @@ export const TransactionInfoRow = (props: Props) => {
                 <Icon icon={icon} size={22} className="text-secondary-foreground" />
             </View>
 
-            <View className={contentVariants({ largeText: fontScale > STACKED_AMOUNT_FONT_SCALE })}>
+            <View className={contentVariants({ largeText: fontScale > TRANSACTION_INFO_STACKED_FONT_SCALE })}>
                 <View className="flex-1 min-w-0">
                     {isNotEmptyString(label) ? <Text className="text-[13px] leading-[18px] text-secondary-foreground">{label}</Text> : null}
                     {isNotEmptyString(value) ? (

@@ -3,7 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { GestureResponderEvent, View } from 'react-native';
 
-import { emptyFn, isDefined } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -73,8 +73,7 @@ export const TransactionActionsMenu = ({ onDelete, onRevert, isConsolidated = fa
                     accessibilityRole="button"
                     accessibilityLabel={t`More actions`}
                     className="min-h-[44px] min-w-[44px] items-center justify-center active:scale-100 active:opacity-70"
-                    onPress={emptyFn}
-                    onPressIn={handleToggleMenu}
+                    onPress={handleToggleMenu}
                     hitSlop={16}
                 >
                     <CircleIcon icon={UserIconNameEnum.Ellipsis} variant="ghost" size={44} iconSize={24} border={false} />

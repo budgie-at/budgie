@@ -74,6 +74,8 @@
 @layer theme {
     :root {
         @variant light {
+            --color-positive-strong: rgb(0, 122, 82);
+            --color-destructive-strong: rgb(196, 38, 45);
             --color-attention-foreground: rgba(146, 64, 14, 1);
             --color-attention-background: rgba(254, 243, 199, 1);
             --color-surface: rgb(255, 255, 255);
@@ -143,6 +145,8 @@
         }
 
         @variant dark {
+            --color-positive-strong: rgb(0, 255, 136);
+            --color-destructive-strong: rgb(255, 68, 68);
             --color-attention-foreground: rgba(240, 180, 60, 1);
             --color-attention-background: rgba(224, 165, 38, 0.16);
             --color-surface: rgb(0, 0, 0);
