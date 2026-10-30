@@ -98,7 +98,7 @@ export class BinanceWeightThrottle {
     }
 
     private toPath(endpoint: string): string {
-        return endpoint.replace(/\?.*$/u, '');
+        return endpoint.split('?', 1)[0] ?? endpoint;
     }
 
     private toBudgetKey(path: string): string {
