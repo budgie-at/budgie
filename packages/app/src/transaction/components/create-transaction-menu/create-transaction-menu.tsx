@@ -96,7 +96,7 @@ export const CreateTransactionMenu = ({ isOpen, onClose, accountId, accountType 
 
     const leadingItems: CreateActionInterface[] = [
         ...(isDefined(createAction)
-            ? [{ ...createAction, testID: CreateTransactionMenuSelector.item(0), onPress: handleCreateAction }]
+            ? [{ testID: CreateTransactionMenuSelector.item(0), ...createAction, onPress: handleCreateAction }]
             : []),
         {
             icon: UserIconNameEnum.TrendingDown,
