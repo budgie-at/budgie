@@ -32,31 +32,39 @@ export class BinanceWeightThrottle {
         ['/sapi/v1/asset/assetDividend', { ...BinanceWeightThrottle.SAPI_IP, weight: 10 }]
     ]);
 
-    readonly waitIfNeeded = Effect.fn('BinanceWeightThrottle.waitIfNeeded')(
-        function* (this: BinanceWeightThrottle, endpoint: string) {
-            const retryAfterRemainingMs = this.retryAfterUntilMs - (yield* Clock.currentTimeMillis);
-            if (retryAfterRemainingMs > 0) {
-                yield* this.sleepWithinDeadline(retryAfterRemainingMs, 'Retry-After back-off exceeds deadline');
-            }
+    readonly waitIfNeeded = Effect.fn('BinanceWeightThrottle.waitIfNeeded')(function* (this: BinanceWeightThrottle, endpoint: string) {
+        let pause = yield* this.semaphore.withPermit(this.reserveOrPause(endpoint));
 
-            const { key, ceiling, weight } = this.toBudget(endpoint);
-            const now = yield* Clock.currentTimeMillis;
-
-            this.rollWindow(key, now);
-
-            if ((this.usedByKey.get(key) ?? 0) + weight > ceiling) {
-                const windowEndMs = (this.windowStartByKey.get(key) ?? now) + WEIGHT_WINDOW_MS;
-                yield* this.sleepWithinDeadline(windowEndMs - now, 'Weight window reset exceeds deadline');
-                this.rollWindow(key, yield* Clock.currentTimeMillis);
-            }
-
-            this.usedByKey.set(key, (this.usedByKey.get(key) ?? 0) + weight);
-        },
-        effect => this.semaphore.withPermit(effect)
-    );
+        while (isDefined(pause)) {
+            yield* this.sleepWithinDeadline(pause.durationMs, pause.message);
+            pause = yield* this.semaphore.withPermit(this.reserveOrPause(endpoint));
+        }
+    });
 
     readonly coolDownFor = Effect.fnUntraced(function* (this: BinanceWeightThrottle, retryAfterMs: number) {
         this.retryAfterUntilMs = Math.max(this.retryAfterUntilMs, (yield* Clock.currentTimeMillis) + retryAfterMs);
+    });
+
+    private readonly reserveOrPause = Effect.fnUntraced(function* (this: BinanceWeightThrottle, endpoint: string) {
+        const retryAfterRemainingMs = this.retryAfterUntilMs - (yield* Clock.currentTimeMillis);
+        if (retryAfterRemainingMs > 0) {
+            return { durationMs: retryAfterRemainingMs, message: 'Retry-After back-off exceeds deadline' };
+        }
+
+        const { key, ceiling, weight } = this.toBudget(endpoint);
+        const now = yield* Clock.currentTimeMillis;
+
+        this.rollWindow(key, now);
+
+        if ((this.usedByKey.get(key) ?? 0) + weight > ceiling) {
+            const windowEndMs = (this.windowStartByKey.get(key) ?? now) + WEIGHT_WINDOW_MS;
+
+            return { durationMs: windowEndMs - now, message: 'Weight window reset exceeds deadline' };
+        }
+
+        this.usedByKey.set(key, (this.usedByKey.get(key) ?? 0) + weight);
+
+        return null;
     });
 
     private readonly sleepWithinDeadline = Effect.fnUntraced(function* (this: BinanceWeightThrottle, durationMs: number, message: string) {

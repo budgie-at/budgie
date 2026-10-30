@@ -28,7 +28,7 @@ const MIN_SPLIT_WINDOW_COUNT = 1;
 const EXPECTED_CREATED_TRANSACTION_COUNT = 1;
 const BACKFILL_STARTED_AT = new Date('2026-07-01T00:00:00.000Z');
 const INTERRUPTED_PROGRESS_AT = new Date('2026-06-01T00:00:00.000Z');
-const EXPECTED_BACKFILL_START_MS = new Date('2021-07-01T00:00:00.000Z').getTime();
+const EXPECTED_BACKFILL_START_MS = new Date('2017-07-01T00:00:00.000Z').getTime();
 
 const stubUsdtToBtcConvert = (orderId: number): void => {
     binanceStub.convertTradeFlow([

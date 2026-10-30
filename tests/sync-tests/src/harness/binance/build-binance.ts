@@ -8,6 +8,7 @@ import type {
     BinanceEarnPositionApiInterface,
     BinanceEarnRewardApiInterface,
     BinanceFiatOrderApiInterface,
+    BinanceFiatPaymentApiInterface,
     BinanceLockedEarnPositionApiInterface,
     BinanceLockedEarnRewardApiInterface,
     BinanceStakingRewardApiInterface,
@@ -23,6 +24,9 @@ type DepositOverrides = Partial<BinanceDepositApiInterface> & Pick<BinanceDeposi
 type WithdrawalOverrides = Partial<BinanceWithdrawalApiInterface> & Pick<BinanceWithdrawalApiInterface, 'id' | 'coin' | 'amount'>;
 
 type FiatOrderOverrides = Partial<BinanceFiatOrderApiInterface> & Pick<BinanceFiatOrderApiInterface, 'orderNo' | 'fiatCurrency' | 'amount'>;
+
+type FiatPaymentOverrides = Partial<BinanceFiatPaymentApiInterface> &
+    Pick<BinanceFiatPaymentApiInterface, 'orderNo' | 'fiatCurrency' | 'cryptoCurrency' | 'sourceAmount' | 'obtainAmount'>;
 
 type C2cOrderOverrides = Partial<BinanceC2cOrderApiInterface> &
     Pick<BinanceC2cOrderApiInterface, 'orderNumber' | 'tradeType' | 'asset' | 'amount'>;
@@ -70,6 +74,12 @@ export const buildBinance = {
     fiatOrder: (overrides: FiatOrderOverrides): BinanceFiatOrderApiInterface => ({
         totalFee: '0',
         status: 'Successful',
+        createTime: Date.now(),
+        ...overrides
+    }),
+    fiatPayment: (overrides: FiatPaymentOverrides): BinanceFiatPaymentApiInterface => ({
+        price: '1',
+        status: 'Completed',
         createTime: Date.now(),
         ...overrides
     }),
