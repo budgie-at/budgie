@@ -57,7 +57,7 @@ export const CategorizeInboxHero = ({ onSectionPress }: Props) => {
             <ScrollView
                 horizontal
                 className="-mx-5xl"
-                contentContainerClassName="grow justify-center gap-x-md px-5xl"
+                contentContainerClassName="grow justify-center gap-x-sm px-5xl"
                 showsHorizontalScrollIndicator={false}
             >
                 {chips.map(({ section, count }) => (

@@ -405,6 +405,10 @@ msgstr "{remainingCount, plural, one {paiement à trier} other {paiements à tri
 msgid "{repairedTransactionCount, plural, one {# sync item repaired} other {# sync items repaired}}"
 msgstr "{repairedTransactionCount, plural, one {# élément de synchronisation réparé} other {# éléments de synchronisation réparés}}"
 
+#: src/categorize-inbox/components/categorize-inbox-payments-select-all/categorize-inbox-payments-select-all.tsx
+msgid "{rowCount, plural, one {# payment} other {# payments}}"
+msgstr "{rowCount, plural, one {# paiement} other {# paiements}}"
+
 #: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
 msgid "{rowCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{rowCount, plural, one {# transaction} other {# transactions}}"

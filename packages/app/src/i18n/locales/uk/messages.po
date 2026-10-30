@@ -405,6 +405,10 @@ msgstr "{remainingCount, plural, one {платіж до сортування} fe
 msgid "{repairedTransactionCount, plural, one {# sync item repaired} other {# sync items repaired}}"
 msgstr "{repairedTransactionCount, plural, one {# елемент синхронізації виправлено} few {# елементи синхронізації виправлено} many {# елементів синхронізації виправлено} other {# елемента синхронізації виправлено}}"
 
+#: src/categorize-inbox/components/categorize-inbox-payments-select-all/categorize-inbox-payments-select-all.tsx
+msgid "{rowCount, plural, one {# payment} other {# payments}}"
+msgstr "{rowCount, plural, one {# платіж} few {# платежі} many {# платежів} other {# платежу}}"
+
 #: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
 msgid "{rowCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{rowCount, plural, one {# транзакція} few {# транзакції} many {# транзакцій} other {# транзакцій}}"

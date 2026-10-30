@@ -18,8 +18,8 @@ interface Props {
 const DISC_CLASS_NAME: Record<CategorizeInboxSectionEnum, string> = {
     [CategorizeInboxSectionEnum.CONFIDENT]: 'bg-positive-tonal',
     [CategorizeInboxSectionEnum.CASH_WITHDRAWALS]: 'bg-warning-fill/15',
-    [CategorizeInboxSectionEnum.REVIEW]: 'bg-secondary-foreground/15',
-    [CategorizeInboxSectionEnum.ONE_OFFS]: 'bg-secondary-foreground/15'
+    [CategorizeInboxSectionEnum.REVIEW]: 'bg-surface-disc',
+    [CategorizeInboxSectionEnum.ONE_OFFS]: 'bg-surface-disc'
 };
 
 const GLYPH_CLASS_NAME: Record<CategorizeInboxSectionEnum, string> = {

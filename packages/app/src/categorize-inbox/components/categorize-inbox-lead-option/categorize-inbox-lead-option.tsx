@@ -22,7 +22,7 @@ export const CategorizeInboxLeadOption = ({ choice, variant, title, subtitle, ic
             title={title}
             subtitle={subtitle}
             icon={icon}
-            accessory={<CategorizeInboxSelectionIndicator isSelected={isSelected} />}
+            accessory={<CategorizeInboxSelectionIndicator variant={variant} isSelected={isSelected} />}
             accessibilityState={accessibilityState}
             onPress={onSelect}
         />

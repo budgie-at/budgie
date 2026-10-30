@@ -16,7 +16,7 @@ interface Props {
 
 const continuousCorners = { borderCurve: 'continuous' as const };
 
-const chipVariants = cva('h-[36px] flex-row items-center rounded-2xl px-2xl active:opacity-70', {
+const chipVariants = cva('h-[36px] flex-row items-center rounded-2xl px-lg active:opacity-70', {
     variants: {
         section: {
             [CategorizeInboxSectionEnum.CONFIDENT]: 'bg-positive-tonal',

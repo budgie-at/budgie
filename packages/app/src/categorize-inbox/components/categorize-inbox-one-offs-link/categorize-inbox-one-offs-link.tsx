@@ -40,7 +40,7 @@ export const CategorizeInboxOneOffsLink = ({ oneOffs, position }: Props) => {
                     testID={CategorizeInboxOneOffsLinkSelector.Link}
                 >
                     <View
-                        className="h-[36px] w-[36px] items-center justify-center rounded-full bg-secondary-foreground/15"
+                        className="h-[36px] w-[36px] items-center justify-center rounded-full bg-surface-disc"
                         accessibilityElementsHidden
                         importantForAccessibility="no-hide-descendants"
                     >

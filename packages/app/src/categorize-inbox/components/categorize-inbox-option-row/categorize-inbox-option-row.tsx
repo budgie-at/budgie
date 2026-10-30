@@ -38,15 +38,7 @@ export const CategorizeInboxOptionRow = ({ icon, title, subtitle, accessory, acc
             {...testID(CategorizeInboxGroupScreenSelector.Option, title)}
         >
             <View className="absolute top-0 right-0 left-[64px] h-hairline bg-surface-separator" pointerEvents="none" />
-            <CircleIcon
-                icon={icon}
-                variant="secondary"
-                size={36}
-                iconSize={18}
-                radius={18}
-                border={false}
-                className="bg-secondary-foreground/15"
-            />
+            <CircleIcon icon={icon} variant="secondary" size={36} iconSize={18} radius={18} border={false} className="bg-surface-disc" />
             <View className="min-w-0 flex-1 gap-y-xxs">
                 <Text className={cn('text-primary text-[17px]', titleWeightClassName)} numberOfLines={2}>
                     {title}

@@ -23,7 +23,7 @@ interface Props {
 const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
 const discVariants = cva('', {
-    variants: { variant: { positive: 'bg-positive-action/15', neutral: 'bg-secondary-foreground/15' } }
+    variants: { variant: { positive: 'bg-positive-action/15', neutral: 'bg-surface-disc' } }
 });
 
 const titleVariants = cva('text-primary text-[17px]', {

@@ -1,5 +1,5 @@
 import { Trans, useLingui } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
+import { Text } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -38,13 +38,12 @@ export const CategorizeInboxPaymentsScreen = ({ clusterKey }: Props) => {
 
     return (
         <GroupedSurface>
-            <CategorizeInboxScreenChrome title={t`Choose payments`} trailing={<CategorizeInboxPaymentsSelectAll cluster={cluster} />}>
+            <CategorizeInboxScreenChrome title={t`Choose payments`}>
                 <CategorizeInboxScreenScroll>
                     <CategorizeInboxPaymentsSummary cluster={cluster} />
 
-                    <View className="pt-xl">
-                        <CategorizeInboxOptionCard>{paymentRows}</CategorizeInboxOptionCard>
-                    </View>
+                    <CategorizeInboxPaymentsSelectAll cluster={cluster} />
+                    <CategorizeInboxOptionCard>{paymentRows}</CategorizeInboxOptionCard>
 
                     <Text className="text-secondary-foreground px-3xl pt-md text-[13px]">
                         <Trans>Unchecked payments stay in your inbox.</Trans>

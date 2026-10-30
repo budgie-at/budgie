@@ -20,7 +20,7 @@ export const CategorizeInboxChoiceRow = ({ choice, icon, title, subtitle }: Prop
             icon={icon}
             title={title}
             subtitle={subtitle}
-            accessory={<CategorizeInboxSelectionIndicator isSelected={isSelected} />}
+            accessory={<CategorizeInboxSelectionIndicator variant="neutral" isSelected={isSelected} />}
             accessibilityState={accessibilityState}
             onPress={onSelect}
         />

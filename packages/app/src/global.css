@@ -129,6 +129,7 @@
             --color-grouped-surface-row: rgb(255, 255, 255);
             --color-surface-fill: rgba(118, 118, 128, 0.12);
             --color-grouped-surface-fill: rgb(255, 255, 255);
+            --color-surface-disc: rgba(107, 107, 107, 0.15);
             --color-surface-separator: rgba(60, 60, 67, 0.29);
 
             --color-pink-foreground: rgba(246, 51, 154, 0.7);
@@ -202,6 +203,7 @@
             --color-grouped-surface-row: rgb(13, 13, 13);
             --color-surface-fill: rgba(118, 118, 128, 0.24);
             --color-grouped-surface-fill: rgba(118, 118, 128, 0.24);
+            --color-surface-disc: rgb(44, 44, 46);
             --color-surface-separator: rgba(56, 56, 58, 1);
 
             --color-pink-foreground: rgba(246, 51, 154, 0.7);

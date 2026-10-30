@@ -56,7 +56,7 @@ export const CategorizeInboxClusterRow = ({ row, displayTitle }: Props) => {
         >
             <View className="absolute top-0 right-0 left-[64px] h-hairline bg-surface-separator" pointerEvents="none" />
             <View className="w-[36px] items-center">
-                <CategorizeInboxSelectionIndicator isSelected={isIncluded} />
+                <CategorizeInboxSelectionIndicator variant="positive" isSelected={isIncluded} />
             </View>
 
             <View className={contentClassName}>
