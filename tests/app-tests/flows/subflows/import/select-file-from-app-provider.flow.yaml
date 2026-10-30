@@ -19,6 +19,11 @@ env:
                 text: 'Not Now'
           - waitForAnimationToEnd
 
+- tapOn:
+      text: 'Browse|Explorer|Durchsuchen|Examinar|Огляд'
+
+- waitForAnimationToEnd
+
 - runFlow:
       when:
           visible: 'No Results for .*'
@@ -225,3 +230,7 @@ env:
                 commands:
                     - tapOn:
                           text: 'Open'
+
+- extendedWaitUntil:
+      notVisible: 'Browse|Explorer|Durchsuchen|Examinar|Огляд'
+      timeout: 5000
