@@ -19,7 +19,7 @@ export default function ConsolidationSourceModal() {
     }
 
     return (
-        <View className="bg-primary-reverse" collapsable={false}>
+        <View className="bg-grouped-surface" collapsable={false}>
             <Stack.Screen options={screenOptions} />
             <ConsolidationSourceModalContent
                 transactionId={currentParams.transactionId}

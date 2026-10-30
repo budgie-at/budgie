@@ -1,3 +1,4 @@
+import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { Page } from '../../../@generic/component/page/page';
 import { TransactionListEmptyState } from '../transaction-list-empty-state/transaction-list-empty-state';
 import { TransactionSectionsList } from '../transaction-sections-list/transaction-sections-list';
@@ -15,13 +16,15 @@ interface Props {
 }
 
 export const AnalyticsTransactionsPageContent = ({ headerProps, sections, isLoading, onLoadMore, accountId }: Props) => (
-    <Page header={<TransactionFilterPageHeader {...headerProps} />}>
-        <TransactionSectionsList
-            sections={sections}
-            onEndReached={onLoadMore}
-            listEmptyState={<TransactionListEmptyState isLoading={isLoading} hasFiltersSelected />}
-            accountId={accountId}
-            footerSpacerMultiplier={0}
-        />
-    </Page>
+    <GroupedSurface>
+        <Page header={<TransactionFilterPageHeader {...headerProps} />}>
+            <TransactionSectionsList
+                sections={sections}
+                onEndReached={onLoadMore}
+                listEmptyState={<TransactionListEmptyState isLoading={isLoading} hasFiltersSelected />}
+                accountId={accountId}
+                footerSpacerMultiplier={0}
+            />
+        </Page>
+    </GroupedSurface>
 );

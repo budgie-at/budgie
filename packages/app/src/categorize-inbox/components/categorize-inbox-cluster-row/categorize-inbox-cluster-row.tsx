@@ -10,6 +10,8 @@ import { Icon } from '../../../@generic/component/icon/icon';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { testID } from '../../../@generic/utils/test-id.util';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
+import { TransactionRowSurface } from '../../../transaction/components/transaction-row-surface/transaction-row-surface';
+import { TransactionListRowPositionEnum } from '../../../transaction/enum/transaction-list-row-position.enum';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 import { getCategorizeInboxRowHref } from '../../utils/get-categorize-inbox-row-href.util';
 
@@ -20,9 +22,10 @@ import type { CategorizeInboxRowInterface } from '@budgie/categorization';
 interface Props {
     readonly row: CategorizeInboxRowInterface;
     readonly displayTitle: string;
+    readonly position: TransactionListRowPositionEnum;
 }
 
-export const CategorizeInboxClusterRow = ({ row, displayTitle }: Props) => {
+export const CategorizeInboxClusterRow = ({ row, displayTitle, position }: Props) => {
     const { t } = useLingui();
     const protectAmount = useProtectedAmountLabel();
     const { formatDayAndMonthAndYear } = useFormatDate();
@@ -32,55 +35,57 @@ export const CategorizeInboxClusterRow = ({ row, displayTitle }: Props) => {
     const handlePickLabelsPress = (): void => void pickRowLabels(row);
 
     const isIncluded = !excludedTransactionIds.has(row.transactionId);
-    const rowClassName = isIncluded ? 'flex-row items-center gap-x-xs' : 'flex-row items-center gap-x-xs opacity-40';
+    const rowClassName = isIncluded ? 'flex-row items-center gap-x-xs py-xl' : 'flex-row items-center gap-x-xs py-xl opacity-40';
     const checkboxIcon = isIncluded ? UserIconNameEnum.SquareCheck : UserIconNameEnum.Square;
     const accessibilityState = { checked: isIncluded };
     const ownTitle = row.title === displayTitle ? null : row.title;
 
     return (
-        <View className={rowClassName} {...testID(CategorizeInboxClusterRowSelector.Row, row.transactionId)}>
-            <HapticPressable
-                onPress={handleTogglePress}
-                className="h-11 w-11 items-center justify-center"
-                accessibilityRole="checkbox"
-                accessibilityState={accessibilityState}
-                accessibilityLabel={t`Include in bulk action`}
-                {...testID(CategorizeInboxClusterRowSelector.Checkbox, row.transactionId)}
-            >
-                <Icon icon={checkboxIcon} size={20} className="text-primary" />
-            </HapticPressable>
-
-            <Link href={getCategorizeInboxRowHref(row)} asChild>
+        <TransactionRowSurface position={position}>
+            <View className={rowClassName} {...testID(CategorizeInboxClusterRowSelector.Row, row.transactionId)}>
                 <HapticPressable
-                    className="flex-1 flex-row items-center gap-x-xs"
-                    hitSlop={0}
-                    accessibilityRole="link"
-                    {...testID(CategorizeInboxClusterRowSelector.Open, row.transactionId)}
+                    onPress={handleTogglePress}
+                    className="h-11 w-11 items-center justify-center"
+                    accessibilityRole="checkbox"
+                    accessibilityState={accessibilityState}
+                    accessibilityLabel={t`Include in bulk action`}
+                    {...testID(CategorizeInboxClusterRowSelector.Checkbox, row.transactionId)}
                 >
-                    <View className="flex-1 gap-y-xxs">
-                        {isDefined(ownTitle) ? (
-                            <Text className="text-primary text-sm" numberOfLines={1}>
-                                {ownTitle}
-                            </Text>
-                        ) : null}
-                        <Text className="text-secondary-foreground text-xs">{formatDayAndMonthAndYear(row.operatedAt)}</Text>
-                    </View>
-
-                    <Text className="text-primary text-sm font-medium">
-                        {protectAmount(convertFromMicroUnits(row.amount), row.instrumentSymbol)}
-                    </Text>
+                    <Icon icon={checkboxIcon} size={20} className="text-primary" />
                 </HapticPressable>
-            </Link>
 
-            <HapticPressable
-                onPress={handlePickLabelsPress}
-                className="h-11 w-11 items-center justify-center"
-                accessibilityRole="button"
-                accessibilityLabel={strategy?.pickRowLabel}
-                {...testID(CategorizeInboxClusterRowSelector.PickCategory, row.transactionId)}
-            >
-                <Icon icon={UserIconNameEnum.EllipsisVertical} size={16} className="text-secondary-foreground" />
-            </HapticPressable>
-        </View>
+                <Link href={getCategorizeInboxRowHref(row)} asChild>
+                    <HapticPressable
+                        className="min-h-11 flex-1 flex-row items-center gap-x-xs"
+                        hitSlop={0}
+                        accessibilityRole="link"
+                        {...testID(CategorizeInboxClusterRowSelector.Open, row.transactionId)}
+                    >
+                        <View className="flex-1 gap-y-xxs">
+                            {isDefined(ownTitle) ? (
+                                <Text className="text-primary text-[15px] font-semibold" numberOfLines={1}>
+                                    {ownTitle}
+                                </Text>
+                            ) : null}
+                            <Text className="text-secondary-foreground text-xs">{formatDayAndMonthAndYear(row.operatedAt)}</Text>
+                        </View>
+
+                        <Text className="text-primary text-[15px] font-semibold tabular-nums">
+                            {protectAmount(convertFromMicroUnits(row.amount), row.instrumentSymbol)}
+                        </Text>
+                    </HapticPressable>
+                </Link>
+
+                <HapticPressable
+                    onPress={handlePickLabelsPress}
+                    className="h-11 w-11 items-center justify-center"
+                    accessibilityRole="button"
+                    accessibilityLabel={strategy?.pickRowLabel}
+                    {...testID(CategorizeInboxClusterRowSelector.PickCategory, row.transactionId)}
+                >
+                    <Icon icon={UserIconNameEnum.EllipsisVertical} size={16} className="text-secondary-foreground" />
+                </HapticPressable>
+            </View>
+        </TransactionRowSurface>
     );
 };

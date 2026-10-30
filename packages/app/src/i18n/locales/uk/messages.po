@@ -200,10 +200,6 @@ msgstr "{foldedDriverCount, plural, one {Інше (# категорія)} few {�
 msgid "{foldedDriverCount, plural, one {Other (# tag)} other {Other (# tags)}}"
 msgstr "{foldedDriverCount, plural, one {Інше (# тег)} few {Інше (# теги)} many {Інше (# тегів)} other {Інше (# тегів)}}"
 
-#: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
-msgid "{formattedAmount} · {detail}"
-msgstr "{formattedAmount} · {detail}"
-
 #: src/budget/components/budget-period-recap-rollover/budget-period-recap-rollover.tsx
 msgid "{formattedAmount} carried into {name}"
 msgstr "{formattedAmount} перевитрати перенесено на {name}"
