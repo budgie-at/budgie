@@ -6,7 +6,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { getCategorizeInboxMonthlyCounts } from '../../utils/get-categorize-inbox-monthly-counts.util';
-import { CategorizeInboxGroupStats } from '../categorize-inbox-group-stats/categorize-inbox-group-stats';
+import { CategorizeInboxGroupStatsLine } from '../categorize-inbox-group-stats-line/categorize-inbox-group-stats-line';
 import { CategorizeInboxMonthlyBars } from '../categorize-inbox-monthly-bars/categorize-inbox-monthly-bars';
 
 import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
@@ -30,7 +30,7 @@ export const CategorizeInboxGroupPanel = ({ cluster }: Props) => {
     const barClassName = cluster.section === CategorizeInboxSectionEnum.CONFIDENT ? 'bg-positive-fill' : 'bg-secondary-foreground';
 
     return (
-        <View className="bg-secondary-background gap-y-lg rounded-3xl p-xl">
+        <View className="bg-secondary-background gap-y-lg mt-3xl rounded-3xl p-xl">
             <Text className="text-secondary-foreground text-xs">
                 <Trans>Payments per month</Trans>
             </Text>
@@ -43,7 +43,7 @@ export const CategorizeInboxGroupPanel = ({ cluster }: Props) => {
                 </View>
             </View>
 
-            <CategorizeInboxGroupStats cluster={cluster} />
+            <CategorizeInboxGroupStatsLine cluster={cluster} />
         </View>
     );
 };

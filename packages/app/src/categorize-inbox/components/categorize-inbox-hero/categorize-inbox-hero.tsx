@@ -29,9 +29,9 @@ export const CategorizeInboxHero = () => {
     const subtitle = isDefined(worthAmount) ? `${countText} · ${worthText}` : countText;
 
     return (
-        <View className="gap-y-xl pb-xl pt-xl">
+        <View className="gap-y-xl pb-lg pt-md">
             <View>
-                <Text className="text-6xl font-bold tracking-tight text-primary tabular-nums">{remainingCount}</Text>
+                <Text className="text-5xl font-bold tracking-tight text-primary tabular-nums">{remainingCount}</Text>
                 <Text className="text-sm text-secondary-foreground" numberOfLines={1}>
                     {subtitle}
                 </Text>

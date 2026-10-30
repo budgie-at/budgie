@@ -17,17 +17,15 @@ import { CategorizeInboxSelectionIndicator } from '../categorize-inbox-selection
 import { CategorizeInboxClusterRowSelector } from './categorize-inbox-cluster-row.selector';
 
 import type { CategorizeInboxRowInterface } from '@budgie/categorization';
-import type { ReactNode } from 'react';
 
 interface Props {
     readonly row: CategorizeInboxRowInterface;
     readonly displayTitle: string;
-    readonly leading: ReactNode;
 }
 
-export const CategorizeInboxClusterRow = ({ row, displayTitle, leading }: Props) => {
+export const CategorizeInboxClusterRow = ({ row, displayTitle }: Props) => {
     const router = useRouter();
-    const { formatWeekdayMonthAndDay, formatTime } = useFormatDate();
+    const { formatWeekdayMonthAndDay, formatWeekdayAndDay, formatTime } = useFormatDate();
     const amountLabel = useCategorizeInboxAmountLabel();
     const { excludedTransactionIds, toggleExcluded } = useCategorizeInboxContext();
 
@@ -39,6 +37,11 @@ export const CategorizeInboxClusterRow = ({ row, displayTitle, leading }: Props)
     const selection = isIncluded ? CategorizeInboxSelectionEnum.INCLUDED : CategorizeInboxSelectionEnum.EXCLUDED;
     const accessibilityState = { checked: isIncluded };
     const ownTitle = row.title === displayTitle ? null : row.title;
+    const ownTitleLine = isDefined(ownTitle) ? (
+        <Text className="text-secondary-foreground text-xs" numberOfLines={1}>
+            {ownTitle}
+        </Text>
+    ) : null;
     const time = formatTime(row.operatedAt);
     const accessibilityLabel = `${formatWeekdayMonthAndDay(row.operatedAt)}, ${time}, ${amountLabel(row.amount, row.instrumentSymbol)}`;
 
@@ -46,26 +49,19 @@ export const CategorizeInboxClusterRow = ({ row, displayTitle, leading }: Props)
         <HapticPressable
             onPress={handleTogglePress}
             onLongPress={handleOpenLongPress}
-            className="flex-row items-center gap-x-md min-h-[56px] py-md active:bg-secondary-background"
+            className="flex-row items-center gap-x-md min-h-[48px] py-md active:bg-secondary-background"
             accessibilityRole="checkbox"
             accessibilityState={accessibilityState}
             accessibilityLabel={accessibilityLabel}
             {...testID(CategorizeInboxClusterRowSelector.Row, row.transactionId)}
         >
             <View className={contentClassName}>
-                <View className="w-[44px]">{leading}</View>
-
                 <View className="flex-1">
-                    {isDefined(ownTitle) ? (
-                        <Text className="text-primary text-sm" numberOfLines={1}>
-                            {ownTitle}
-                            <Text className="text-secondary-foreground tabular-nums">{` · ${time}`}</Text>
-                        </Text>
-                    ) : (
-                        <Text className="text-secondary-foreground text-sm tabular-nums" numberOfLines={1}>
-                            {time}
-                        </Text>
-                    )}
+                    <Text className="text-primary text-md font-medium tabular-nums" numberOfLines={1}>
+                        {formatWeekdayAndDay(row.operatedAt)}
+                        <Text className="text-secondary-foreground">{` · ${time}`}</Text>
+                    </Text>
+                    {ownTitleLine}
                 </View>
 
                 <CategorizeInboxAmount

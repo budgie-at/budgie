@@ -18,8 +18,7 @@ export const CategorizeInboxGroupTransferOption = ({ cluster, isLead }: Props) =
     const router = useRouter();
 
     const isIncome = cluster.rows.at(0)?.type === TransactionTypeEnum.INCOME;
-    const defaultSubtitle = isIncome ? t`Leaves your income` : t`Not counted as spending`;
-    const subtitle = isLead ? t`Looks like a transfer` : defaultSubtitle;
+    const subtitle = isIncome ? t`Leaves your income` : t`Not counted as spending`;
 
     const accessory = isLead ? <CategorizeInboxActionCapsule label={t`Choose`} variant="neutral" /> : <CategorizeInboxOptionChevron />;
     const variant = isLead ? 'suggested' : 'regular';

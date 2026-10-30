@@ -135,6 +135,7 @@ msgstr "{count, plural, one {# fehlende Kategorie} other {# fehlende Kategorien}
 msgid "{count, plural, one {# other} other {# other}}"
 msgstr "{count, plural, one {# weitere} other {# weitere}}"
 
+#: src/categorize-inbox/components/categorize-inbox-group-stats-line/categorize-inbox-group-stats-line.tsx
 #: src/installment-plan/component/installment-count-chip/installment-count-chip.tsx
 msgid "{count, plural, one {# payment} other {# payments}}"
 msgstr "{count, plural, one {# Zahlung} other {# Zahlungen}}"
@@ -1086,13 +1087,13 @@ msgstr "Verfügbare Spalten"
 msgid "Available once the import finishes"
 msgstr "Verfügbar, sobald der Import abgeschlossen ist"
 
-#: src/categorize-inbox/components/categorize-inbox-group-stats/categorize-inbox-group-stats.tsx
-msgid "average"
-msgstr "Durchschnitt"
-
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "Average"
 msgstr "Durchschnitt"
+
+#: src/categorize-inbox/components/categorize-inbox-group-stats-line/categorize-inbox-group-stats-line.tsx
+msgid "avg"
+msgstr "Ø"
 
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Avg cost"
@@ -3384,10 +3385,6 @@ msgstr "Sieht nach einer Spardosen-Aufladung aus."
 msgid "Looks like a top-up of {account}."
 msgstr "Sieht nach einer Aufladung von {account} aus."
 
-#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
-msgid "Looks like a transfer"
-msgstr "Sieht nach einer Überweisung aus"
-
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "Looks right"
 msgstr "Sieht gut aus"
@@ -4292,10 +4289,6 @@ msgstr "Pausiert. {downloaded} von {total} GB bleiben erhalten."
 msgid "Pay in parts"
 msgstr "In Raten zahlen"
 
-#: src/categorize-inbox/components/categorize-inbox-group-stats/categorize-inbox-group-stats.tsx
-msgid "payments"
-msgstr "Zahlungen"
-
 #: src/installment-plan/component/installment-plan-count-field/installment-plan-count-field.tsx
 msgid "Payments"
 msgstr "Zahlungen"
@@ -4569,7 +4562,7 @@ msgstr "Wiederkehrend"
 msgid "Recurring payments will appear here once patterns are detected from your transactions"
 msgstr "Wiederkehrende Zahlungen erscheinen hier, sobald Muster in deinen Transaktionen erkannt werden"
 
-#: src/categorize-inbox/components/categorize-inbox-group-options/categorize-inbox-group-options.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-refine-options/categorize-inbox-group-refine-options.tsx
 msgid "Refine"
 msgstr "Verfeinern"
 
@@ -5703,10 +5696,6 @@ msgstr "Zu früh für eine Prognose"
 #: src/auth/hook/use-pin-error.hook.ts
 msgid "Too many attempts. Try again in {time}"
 msgstr "Zu viele Versuche. Versuche es in {time} erneut"
-
-#: src/categorize-inbox/components/categorize-inbox-group-stats/categorize-inbox-group-stats.tsx
-msgid "total"
-msgstr "gesamt"
 
 #: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
 #: src/account/component/debt-account-balance/debt-account-balance.tsx

@@ -11,6 +11,7 @@ import { CategorizeInboxGroupRowAmount } from '../categorize-inbox-group-row-amo
 import { CategorizeInboxGroupRowCashButton } from '../categorize-inbox-group-row-cash-button/categorize-inbox-group-row-cash-button';
 import { CategorizeInboxGroupRowFileButton } from '../categorize-inbox-group-row-file-button/categorize-inbox-group-row-file-button';
 import { CategorizeInboxGroupRowHint } from '../categorize-inbox-group-row-hint/categorize-inbox-group-row-hint';
+import { CategorizeInboxMerchantBadge } from '../categorize-inbox-merchant-badge/categorize-inbox-merchant-badge';
 import { CategorizeInboxOptionChevron } from '../categorize-inbox-option-chevron/categorize-inbox-option-chevron';
 
 import { CategorizeInboxGroupRowSelector } from './categorize-inbox-group-row.selector';
@@ -31,24 +32,26 @@ export const CategorizeInboxGroupRow = ({ cluster }: Props) => {
         ? t({ message: plural(rows.length, { one: '# ATM withdrawal', other: '# ATM withdrawals' }) })
         : t({ message: plural(rows.length, { one: '# payment', other: '# payments' }) });
 
+    const merchantTitle = formatCategorizeInboxMerchantTitle(displayTitle);
     const href = { pathname: '/categorize/group/[key]', params: { key } } as const;
 
     return (
         <View className="border-t-hairline border-secondary-corner">
             <Link href={href} asChild>
                 <HapticPressable
-                    className="min-h-[64px] flex-row items-center gap-x-md py-lg active:bg-secondary-background"
+                    className="min-h-[60px] flex-row items-center gap-x-md py-md active:bg-secondary-background"
                     accessibilityRole="link"
                     {...testID(CategorizeInboxGroupRowSelector.Row, key)}
                 >
-                    <View className="flex-1 gap-y-xs">
+                    <CategorizeInboxMerchantBadge title={merchantTitle} />
+                    <View className="flex-1 gap-y-xxs">
                         <View className="flex-row items-baseline gap-x-md">
                             <Text className="flex-1 text-md font-semibold text-primary" numberOfLines={1}>
-                                {formatCategorizeInboxMerchantTitle(displayTitle)}
+                                {merchantTitle}
                             </Text>
                             <CategorizeInboxGroupRowAmount cluster={cluster} />
                         </View>
-                        <View className="h-[24px] flex-row items-center justify-between gap-x-md">
+                        <View className="h-[22px] flex-row items-center justify-between gap-x-md">
                             <Text className="shrink text-xs text-secondary-foreground tabular-nums" numberOfLines={1}>
                                 {countText}
                             </Text>
@@ -59,7 +62,7 @@ export const CategorizeInboxGroupRow = ({ cluster }: Props) => {
                 </HapticPressable>
             </Link>
 
-            <View className="absolute bottom-[10px] right-[26px] max-w-[60%]">
+            <View className="absolute bottom-[8px] right-[26px] max-w-[60%]">
                 {isCash ? <CategorizeInboxGroupRowCashButton cluster={cluster} /> : null}
                 {isConfident ? <CategorizeInboxGroupRowFileButton cluster={cluster} /> : null}
             </View>

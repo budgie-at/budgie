@@ -32,9 +32,9 @@ export const CategorizeInboxGroupRowHint = ({ cluster }: Props) => {
     const icon = isTransfer ? UserIconNameEnum.ArrowLeftRight : UserIconNameEnum.Sparkles;
 
     return isNotEmptyString(label) ? (
-        <View className="h-[24px] shrink flex-row items-center gap-x-xs rounded-full bg-secondary-background px-sm">
+        <View className="shrink flex-row items-center gap-x-xs">
             <Icon icon={icon} size={12} className="text-secondary-foreground" />
-            <Text className="shrink text-xs font-semibold text-secondary-foreground" numberOfLines={1}>
+            <Text className="shrink text-xs text-secondary-foreground" numberOfLines={1}>
                 {label}
             </Text>
         </View>
