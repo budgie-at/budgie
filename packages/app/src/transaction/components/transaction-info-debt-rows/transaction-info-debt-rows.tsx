@@ -5,7 +5,6 @@ import { useRouter } from 'expo-router';
 import { isDefined } from '@rnw-community/shared';
 
 import { DEBT_SETTLEMENT_LABEL } from '../../constant/debt-settlement-label.constant';
-import { getDebtSettlementIcon } from '../../utils/get-debt-settlement-icon.util';
 import { TransactionInfoDebtProgress } from '../transaction-info-debt-progress/transaction-info-debt-progress';
 import { TransactionInfoInstallmentTerms } from '../transaction-info-installment-terms/transaction-info-installment-terms';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
@@ -27,8 +26,7 @@ export const TransactionInfoDebtRows = ({ transaction }: Props) => {
     }
 
     const handleOpen = () => void router.push({ pathname: '/account/[id]/details', params: { id: String(debtAccount.id) } });
-    const icon =
-        debtAccount.debtType === AccountDebtTypeEnum.INSTALLMENT ? UserIconNameEnum.CalendarClock : getDebtSettlementIcon(debtAccount);
+    const icon = debtAccount.debtType === AccountDebtTypeEnum.INSTALLMENT ? UserIconNameEnum.CalendarClock : UserIconNameEnum.BookOpen;
 
     return (
         <>
