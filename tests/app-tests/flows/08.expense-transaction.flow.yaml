@@ -147,7 +147,7 @@ appId: ${APP_ID}
       text: 'Convert to Refund'
 
 - tapOn:
-    id: 'TransactionInfo.Page'
+    text: 'Close menu'
 - tapOn:
       id: 'TransactionActionsMenu.FeeButton'
 - extendedWaitUntil:
