@@ -26,7 +26,7 @@ export const CategorizeInboxPaymentsSelectAll = ({ cluster }: Props) => {
 
     return (
         <HapticPressable onPress={handlePress} accessibilityRole="button" hitSlop={HIT_SLOP}>
-            <Text className="text-primary text-sm font-semibold">{label}</Text>
+            <Text className="text-positive-action text-[15px] font-semibold">{label}</Text>
         </HapticPressable>
     );
 };

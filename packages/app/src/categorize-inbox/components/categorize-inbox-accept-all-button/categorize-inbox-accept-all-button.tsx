@@ -1,16 +1,19 @@
-import { convertFromMicroUnits, UserIconNameEnum } from '@budgie/contracts';
+import { convertFromMicroUnits } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
+import { Text } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { Button } from '../../../@generic/component/button/button';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 import { getCategorizeInboxDefaultAmount } from '../../utils/get-categorize-inbox-default-amount.util';
 import { CategorizeInboxPanelSelector } from '../categorize-inbox-panel/categorize-inbox-panel.selector';
+
+const continuousCorners = { borderCurve: 'continuous' as const };
 
 export const CategorizeInboxAcceptAllButton = () => {
     const { t } = useLingui();
@@ -34,13 +37,17 @@ export const CategorizeInboxAcceptAllButton = () => {
     const handlePress = (): void => void assign(acceptableAssignments);
 
     return (
-        <Button
-            variant="cta"
-            size="md"
-            leftIcon={UserIconNameEnum.CheckCheck}
-            content={content}
+        <HapticPressable
+            className="h-[52px] items-center justify-center rounded-full bg-cta-background px-5xl active:opacity-80"
+            style={continuousCorners}
             onPress={handlePress}
+            accessibilityRole="button"
+            accessibilityLabel={content}
             testID={CategorizeInboxPanelSelector.AcceptAllButton}
-        />
+        >
+            <Text className="text-[17px] font-semibold text-cta-foreground tabular-nums" numberOfLines={1}>
+                {content}
+            </Text>
+        </HapticPressable>
     );
 };

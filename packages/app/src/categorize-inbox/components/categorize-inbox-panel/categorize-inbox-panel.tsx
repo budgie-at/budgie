@@ -44,7 +44,7 @@ export const CategorizeInboxPanel = () => {
     return (
         <ScreenChromeFooter includeBottomSafeArea={false} edgeFadeProps={HIDDEN_EDGE_FADE_PROPS}>
             <View
-                className="border-t-hairline border-secondary-corner bg-primary-reverse px-3xl pb-safe pt-md"
+                className="border-t-hairline border-surface-separator bg-surface px-5xl pb-safe pt-md"
                 testID={CategorizeInboxPanelSelector.Panel}
             >
                 <View className="h-14">

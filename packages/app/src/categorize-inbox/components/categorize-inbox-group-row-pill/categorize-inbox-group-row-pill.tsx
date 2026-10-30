@@ -1,14 +1,10 @@
 import { Text } from 'react-native';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/component/icon/icon';
 import { cn } from '../../../@generic/utils/cn.util';
-
-import type { UserIconType } from '@budgie/contracts';
 
 interface Props {
     readonly variant: 'positive' | 'warning';
-    readonly icon: UserIconType;
     readonly text: string;
     readonly label: string;
     readonly isDisabled: boolean;
@@ -16,16 +12,18 @@ interface Props {
     readonly testID?: string;
 }
 
-const PILL_HIT_SLOP = { top: 12, bottom: 12, left: 8, right: 8 } as const;
+const PILL_HIT_SLOP = { top: 10, bottom: 10, left: 8, right: 8 } as const;
+const continuousCorners = { borderCurve: 'continuous' as const };
 
-export const CategorizeInboxGroupRowPill = ({ variant, icon, text, label, isDisabled, onPress, testID }: Props) => {
+export const CategorizeInboxGroupRowPill = ({ variant, text, label, isDisabled, onPress, testID }: Props) => {
     const isPositive = variant === 'positive';
-    const backgroundClassName = isPositive ? 'bg-positive-background' : 'bg-warning-background';
-    const foregroundClassName = isPositive ? 'text-positive-foreground' : 'text-warning-foreground';
+    const backgroundClassName = isPositive ? 'bg-positive-action' : 'bg-warning-fill';
+    const foregroundClassName = isPositive ? 'text-positive-action-foreground' : 'text-black';
 
     return (
         <HapticPressable
-            className={cn('h-[22px] shrink flex-row items-center gap-x-xs rounded-full px-sm', backgroundClassName)}
+            className={cn('h-[26px] shrink flex-row items-center rounded-full px-lg active:opacity-70', backgroundClassName)}
+            style={continuousCorners}
             hitSlop={PILL_HIT_SLOP}
             disabled={isDisabled}
             onPress={onPress}
@@ -33,8 +31,7 @@ export const CategorizeInboxGroupRowPill = ({ variant, icon, text, label, isDisa
             accessibilityLabel={label}
             testID={testID}
         >
-            <Icon icon={icon} size={12} className={foregroundClassName} />
-            <Text className={cn('shrink text-xs font-semibold', foregroundClassName)} numberOfLines={1}>
+            <Text className={cn('shrink text-[13px] font-semibold', foregroundClassName)} numberOfLines={1}>
                 {text}
             </Text>
         </HapticPressable>

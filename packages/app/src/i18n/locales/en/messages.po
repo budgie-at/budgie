@@ -28,8 +28,10 @@ msgstr "Binance P2P sell {assetCode}"
 msgid "{0, plural, one {# ATM withdrawal} other {# ATM withdrawals}}"
 msgstr "{0, plural, one {# ATM withdrawal} other {# ATM withdrawals}}"
 
+#. placeholder {0}: cluster.rows.length
 #. placeholder {0}: oneOffs.reduce((total, cluster) => total + cluster.rows.length, 0)
 #. placeholder {0}: rows.length
+#: src/categorize-inbox/components/categorize-inbox-group-hero/categorize-inbox-group-hero.tsx
 #: src/categorize-inbox/components/categorize-inbox-group-row/categorize-inbox-group-row.tsx
 #: src/categorize-inbox/components/categorize-inbox-one-offs-link/categorize-inbox-one-offs-link.tsx
 msgid "{0, plural, one {# payment} other {# payments}}"
@@ -132,7 +134,6 @@ msgstr "{count, plural, one {# existing transaction matches this rule.} other {#
 msgid "{count, plural, one {# other} other {# other}}"
 msgstr "{count, plural, one {# other} other {# other}}"
 
-#: src/categorize-inbox/components/categorize-inbox-group-stats-line/categorize-inbox-group-stats-line.tsx
 #: src/installment-plan/component/installment-count-chip/installment-count-chip.tsx
 msgid "{count, plural, one {# payment} other {# payments}}"
 msgstr "{count, plural, one {# payment} other {# payments}}"
@@ -168,10 +169,6 @@ msgstr "{count, plural, one {This category has # transaction. Select another cat
 #: src/tag/hooks/use-delete-tag.hook.ts
 msgid "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
 msgstr "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
-
-#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
-msgid "{count} payments with exactly this title."
-msgstr "{count} payments with exactly this title."
 
 #: src/budget/components/budget-upcoming-charge-row/budget-upcoming-charge-row.tsx
 msgid "{dateLabel}, {kindLabel}"
@@ -1093,8 +1090,8 @@ msgid "Average"
 msgstr "Average"
 
 #: src/categorize-inbox/components/categorize-inbox-group-stats-line/categorize-inbox-group-stats-line.tsx
-msgid "avg"
-msgstr "avg"
+msgid "Average payment"
+msgstr "Average payment"
 
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Avg cost"
@@ -1488,10 +1485,6 @@ msgstr "Checking Account"
 msgid "Checking transaction history"
 msgstr "Checking transaction history"
 
-#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
-msgid "Choose"
-msgstr "Choose"
-
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Choose \"Excel\" as the export format — PDF and CSV files can't be imported"
 msgstr "Choose \"Excel\" as the export format — PDF and CSV files can't be imported"
@@ -1508,6 +1501,10 @@ msgstr "Choose a PIN"
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "Choose a preset to auto-fill column mappings"
 msgstr "Choose a preset to auto-fill column mappings"
+
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+msgid "Choose account"
+msgstr "Choose account"
 
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Choose accounts"
@@ -2316,6 +2313,7 @@ msgstr "Deposit balance cannot become negative"
 msgid "Deposits"
 msgstr "Deposits"
 
+#: src/categorize-inbox/components/categorize-inbox-payments-month-header/categorize-inbox-payments-month-header.tsx
 #: src/categorize-inbox/components/categorize-inbox-payments-select-all/categorize-inbox-payments-select-all.tsx
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Deselect all"
@@ -2830,10 +2828,15 @@ msgstr "Field"
 msgid "File"
 msgstr "File"
 
+#: src/categorize-inbox/components/categorize-inbox-group-already-tracked-option/categorize-inbox-group-already-tracked-option.tsx
 #: src/categorize-inbox/components/categorize-inbox-group-label-option/categorize-inbox-group-label-option.tsx
 msgctxt "Apply a category action"
 msgid "File"
 msgstr "File"
+
+#: src/categorize-inbox/components/categorize-inbox-group-row-file-button/categorize-inbox-group-row-file-button.tsx
+msgid "File · {candidateTitle}"
+msgstr "File · {candidateTitle}"
 
 #: src/categorize-inbox/components/categorize-inbox-group-row-file-button/categorize-inbox-group-row-file-button.tsx
 msgid "File as {candidateTitle}"
@@ -3659,6 +3662,10 @@ msgstr "More categories"
 #: src/categorize-inbox/components/categorize-inbox-tag-provider/categorize-inbox-tag-provider.tsx
 msgid "More tags"
 msgstr "More tags"
+
+#: src/categorize-inbox/components/categorize-inbox-group-move-to-cash-option/categorize-inbox-group-move-to-cash-option.tsx
+msgid "Move"
+msgstr "Move"
 
 #: src/categorize-inbox/components/categorize-inbox-group-row-cash-button/categorize-inbox-group-row-cash-button.tsx
 msgid "Move {displayTitle} to cash"
@@ -4813,6 +4820,10 @@ msgstr "Runway needs at least 3 complete months of transactions. You have {month
 msgid "Safe to spend"
 msgstr "Safe to spend"
 
+#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
+msgid "Same title every time."
+msgstr "Same title every time."
+
 #: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
 msgid "Save"
@@ -4993,6 +5004,7 @@ msgstr "Select Account"
 msgid "Select Action Type"
 msgstr "Select Action Type"
 
+#: src/categorize-inbox/components/categorize-inbox-payments-month-header/categorize-inbox-payments-month-header.tsx
 #: src/categorize-inbox/components/categorize-inbox-payments-select-all/categorize-inbox-payments-select-all.tsx
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Select all"

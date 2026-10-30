@@ -1,6 +1,6 @@
 import { CategorizeInboxSectionEnum } from '@budgie/categorization';
 import { Trans } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -13,6 +13,8 @@ import { CategorizeInboxGroupLearnedTransferOption } from '../categorize-inbox-g
 import { CategorizeInboxGroupMoreLabelsOption } from '../categorize-inbox-group-more-labels-option/categorize-inbox-group-more-labels-option';
 import { CategorizeInboxGroupMoveToCashOption } from '../categorize-inbox-group-move-to-cash-option/categorize-inbox-group-move-to-cash-option';
 import { CategorizeInboxGroupTransferOption } from '../categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option';
+import { CategorizeInboxOptionCard } from '../categorize-inbox-option-card/categorize-inbox-option-card';
+import { CategorizeInboxOptionSectionTitle } from '../categorize-inbox-option-section-title/categorize-inbox-option-section-title';
 
 import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
 
@@ -38,9 +40,9 @@ export const CategorizeInboxGroupOptions = ({ cluster }: Props) => {
     const otherLabelOptions = labelOptions.filter(option => !option.isBestMatch);
     const otherOptionsHeading =
         isLeadTransfer || isLearnedMatch || isNotEmptyArray(leadLabelOptions) ? (
-            <Text className="text-secondary-foreground pb-xs pt-3xl text-sm font-semibold">
+            <CategorizeInboxOptionSectionTitle>
                 <Trans>Other options</Trans>
-            </Text>
+            </CategorizeInboxOptionSectionTitle>
         ) : null;
 
     const leadTransfer = isLeadTransfer ? <CategorizeInboxGroupTransferOption cluster={cluster} isLead /> : null;
@@ -53,23 +55,27 @@ export const CategorizeInboxGroupOptions = ({ cluster }: Props) => {
     ) : null;
 
     return (
-        <View className="pt-md">
-            <Text className="text-secondary-foreground pb-xs text-sm font-semibold">
+        <View>
+            <CategorizeInboxOptionSectionTitle>
                 <Trans>What is it?</Trans>
-            </Text>
+            </CategorizeInboxOptionSectionTitle>
 
-            <CategorizeInboxGroupLearnedTransferOption cluster={cluster} />
-            {leadTransfer}
-            {leadLabelOptions.map(option => (
-                <CategorizeInboxGroupLabelOption key={option.label.id} cluster={cluster} {...option} />
-            ))}
+            <View className="gap-y-md">
+                <CategorizeInboxGroupLearnedTransferOption cluster={cluster} />
+                {leadTransfer}
+                {leadLabelOptions.map(option => (
+                    <CategorizeInboxGroupLabelOption key={option.label.id} cluster={cluster} {...option} />
+                ))}
+            </View>
             {otherOptionsHeading}
-            {cashOptions}
-            {otherLabelOptions.map(option => (
-                <CategorizeInboxGroupLabelOption key={option.label.id} cluster={cluster} {...option} />
-            ))}
-            <CategorizeInboxGroupMoreLabelsOption cluster={cluster} />
-            {trailingTransfer}
+            <CategorizeInboxOptionCard>
+                {cashOptions}
+                {otherLabelOptions.map(option => (
+                    <CategorizeInboxGroupLabelOption key={option.label.id} cluster={cluster} {...option} />
+                ))}
+                <CategorizeInboxGroupMoreLabelsOption cluster={cluster} />
+                {trailingTransfer}
+            </CategorizeInboxOptionCard>
         </View>
     );
 };

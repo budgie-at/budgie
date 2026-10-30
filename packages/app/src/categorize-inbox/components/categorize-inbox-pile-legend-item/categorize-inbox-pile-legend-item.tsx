@@ -1,6 +1,6 @@
 import { Text, View } from 'react-native';
 
-import { CategorizeInboxDot } from '../categorize-inbox-dot/categorize-inbox-dot';
+import { cn } from '../../../@generic/utils/cn.util';
 
 interface Props {
     readonly dotClassName: string;
@@ -8,9 +8,9 @@ interface Props {
 }
 
 export const CategorizeInboxPileLegendItem = ({ dotClassName, text }: Props) => (
-    <View className="flex-row items-center gap-x-xs">
-        <CategorizeInboxDot className={dotClassName} />
-        <Text className="text-xs text-secondary-foreground tabular-nums" numberOfLines={1}>
+    <View className="flex-row items-center gap-x-sm">
+        <View className={cn('h-[8px] w-[8px] rounded-full', dotClassName)} />
+        <Text className="text-[13px] text-secondary-foreground tabular-nums" numberOfLines={1}>
             {text}
         </Text>
     </View>

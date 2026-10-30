@@ -1,8 +1,10 @@
 import { Trans } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
 import { CategorizeInboxGroupChoosePaymentsOption } from '../categorize-inbox-group-choose-payments-option/categorize-inbox-group-choose-payments-option';
 import { CategorizeInboxGroupTagsOption } from '../categorize-inbox-group-tags-option/categorize-inbox-group-tags-option';
+import { CategorizeInboxOptionCard } from '../categorize-inbox-option-card/categorize-inbox-option-card';
+import { CategorizeInboxOptionSectionTitle } from '../categorize-inbox-option-section-title/categorize-inbox-option-section-title';
 
 import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
 
@@ -11,11 +13,13 @@ interface Props {
 }
 
 export const CategorizeInboxGroupRefineOptions = ({ cluster }: Props) => (
-    <View className="pt-3xl">
-        <Text className="text-secondary-foreground pb-xs text-sm font-semibold">
+    <View>
+        <CategorizeInboxOptionSectionTitle>
             <Trans>Refine</Trans>
-        </Text>
-        <CategorizeInboxGroupTagsOption cluster={cluster} />
-        <CategorizeInboxGroupChoosePaymentsOption cluster={cluster} />
+        </CategorizeInboxOptionSectionTitle>
+        <CategorizeInboxOptionCard>
+            <CategorizeInboxGroupTagsOption cluster={cluster} />
+            <CategorizeInboxGroupChoosePaymentsOption cluster={cluster} />
+        </CategorizeInboxOptionCard>
     </View>
 );

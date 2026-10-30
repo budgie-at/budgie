@@ -9,11 +9,9 @@ import { isDefined } from '@rnw-community/shared';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { testID } from '../../../@generic/utils/test-id.util';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
-import { CATEGORIZE_INBOX_SECTION_COLOR } from '../../constant/categorize-inbox-section-dot.constant';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 import { isCategorizeInboxCluster } from '../../type-guard/is-categorize-inbox-cluster.type-guard';
 import { getCategorizeInboxDefaultAmount } from '../../utils/get-categorize-inbox-default-amount.util';
-import { CategorizeInboxDot } from '../categorize-inbox-dot/categorize-inbox-dot';
 
 import { CategorizeInboxSectionHeaderSelector } from './categorize-inbox-section-header.selector';
 
@@ -45,18 +43,15 @@ export const CategorizeInboxSectionHeader = ({ section, rowCount }: Props) => {
 
     return (
         <View
-            className="flex-row items-center justify-between gap-x-md pb-md pt-2xl"
+            className="h-[32px] flex-row items-center justify-between gap-x-md px-3xl"
             accessibilityRole="header"
             {...testID(CategorizeInboxSectionHeaderSelector.Header, section)}
         >
-            <View className="shrink flex-row items-center gap-x-sm">
-                <CategorizeInboxDot className={CATEGORIZE_INBOX_SECTION_COLOR[section]} />
-                <Text className="shrink text-sm font-semibold text-primary" numberOfLines={1}>
-                    {`${sectionTitles[section]} `}
-                    <Text className="font-normal text-secondary-foreground tabular-nums">{rowCount}</Text>
-                </Text>
-            </View>
-            <Text className="text-sm text-secondary-foreground tabular-nums" numberOfLines={1}>
+            <Text className="shrink text-[13px] leading-[16px] font-semibold text-primary" numberOfLines={1}>
+                {`${sectionTitles[section]} `}
+                <Text className="font-normal text-secondary-foreground tabular-nums">{rowCount}</Text>
+            </Text>
+            <Text className="shrink-0 text-[13px] leading-[16px] text-secondary-foreground tabular-nums" numberOfLines={1}>
                 {totalText}
             </Text>
         </View>

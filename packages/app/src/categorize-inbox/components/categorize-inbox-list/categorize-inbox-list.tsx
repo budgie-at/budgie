@@ -1,11 +1,12 @@
 import { CategorizeInboxSectionEnum } from '@budgie/categorization';
 
 import { useBottomChromeInset } from '@rnw-community/react-native-screen-chrome';
-import { isNotEmptyArray } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { CollapsibleChromeLegendList } from '../../../@generic/component/collapsible-chrome-legend-list/collapsible-chrome-legend-list';
 import { LEGEND_LIST_STYLE } from '../../../@generic/constant/legend-list.constant';
 import { isCategorizeInboxCluster } from '../../type-guard/is-categorize-inbox-cluster.type-guard';
+import { getCategorizeInboxRowPosition } from '../../utils/get-categorize-inbox-row-position.util';
 import { CategorizeInboxGroupRow } from '../categorize-inbox-group-row/categorize-inbox-group-row';
 import { CategorizeInboxHero } from '../categorize-inbox-hero/categorize-inbox-hero';
 import { CategorizeInboxOneOffsLink } from '../categorize-inbox-one-offs-link/categorize-inbox-one-offs-link';
@@ -32,6 +33,12 @@ export const CategorizeInboxList = ({ items }: Props) => {
         ? [{ key: 'one-offs-link', oneOffs: hiddenOneOffs }]
         : [];
     const data = [...items.filter(item => !hiddenKeys.has(item.key)), ...oneOffsLink];
+    const isCardItem = (index: number): boolean => {
+        const item = data.at(index);
+
+        return index >= 0 && isDefined(item) && ('rows' in item || 'oneOffs' in item);
+    };
+    const positions = data.map((_item, index) => getCategorizeInboxRowPosition(isCardItem(index - 1), isCardItem(index + 1)));
 
     const keyExtractor = (item: (typeof data)[number]): string => item.key;
     const getItemType = (item: (typeof data)[number]): string => {
@@ -42,16 +49,16 @@ export const CategorizeInboxList = ({ items }: Props) => {
         return 'rows' in item ? 'group' : 'header';
     };
 
-    const renderItem = ({ item }: LegendListRenderItemProps<(typeof data)[number]>) => {
+    const renderItem = ({ item, index }: LegendListRenderItemProps<(typeof data)[number]>) => {
         if ('oneOffs' in item) {
-            return <CategorizeInboxOneOffsLink oneOffs={item.oneOffs} />;
+            return <CategorizeInboxOneOffsLink oneOffs={item.oneOffs} position={positions[index]} />;
         }
 
         if (!('rows' in item)) {
             return <CategorizeInboxSectionHeader section={item.section} rowCount={item.count} />;
         }
 
-        return <CategorizeInboxGroupRow cluster={item} />;
+        return <CategorizeInboxGroupRow cluster={item} position={positions[index]} />;
     };
 
     const contentContainerStyle = { paddingBottom: chromeHeight + LIST_BOTTOM_CLEARANCE };
@@ -62,7 +69,8 @@ export const CategorizeInboxList = ({ items }: Props) => {
             data={data}
             keyExtractor={keyExtractor}
             renderItem={renderItem}
-            estimatedItemSize={64}
+            estimatedItemSize={72}
+            extraData={positions}
             getItemType={getItemType}
             drawDistance={600}
             contentContainerStyle={contentContainerStyle}

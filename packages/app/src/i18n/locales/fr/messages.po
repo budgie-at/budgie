@@ -27,8 +27,10 @@ msgstr "Vente P2P de {assetCode} sur Binance"
 msgid "{0, plural, one {# ATM withdrawal} other {# ATM withdrawals}}"
 msgstr "{0, plural, one {# retrait de distributeur} other {# retraits de distributeur}}"
 
+#. placeholder {0}: cluster.rows.length
 #. placeholder {0}: oneOffs.reduce((total, cluster) => total + cluster.rows.length, 0)
 #. placeholder {0}: rows.length
+#: src/categorize-inbox/components/categorize-inbox-group-hero/categorize-inbox-group-hero.tsx
 #: src/categorize-inbox/components/categorize-inbox-group-row/categorize-inbox-group-row.tsx
 #: src/categorize-inbox/components/categorize-inbox-one-offs-link/categorize-inbox-one-offs-link.tsx
 msgid "{0, plural, one {# payment} other {# payments}}"
@@ -131,7 +133,6 @@ msgstr "{count, plural, one {# transaction existante correspond à cette règle.
 msgid "{count, plural, one {# other} other {# other}}"
 msgstr "{count, plural, one {# autre} other {# autres}}"
 
-#: src/categorize-inbox/components/categorize-inbox-group-stats-line/categorize-inbox-group-stats-line.tsx
 #: src/installment-plan/component/installment-count-chip/installment-count-chip.tsx
 msgid "{count, plural, one {# payment} other {# payments}}"
 msgstr "{count, plural, one {# paiement} other {# paiements}}"
@@ -167,10 +168,6 @@ msgstr "{count, plural, one {Cette catégorie contient # transaction. Sélection
 #: src/tag/hooks/use-delete-tag.hook.ts
 msgid "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
 msgstr "{count, plural, one {Ce tag contient # transaction. Sélectionnez un autre tag pour la réaffecter.} other {Ce tag contient # transactions. Sélectionnez un autre tag pour les réaffecter.}}"
-
-#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
-msgid "{count} payments with exactly this title."
-msgstr "{count} paiements avec exactement ce libellé."
 
 #: src/budget/components/budget-upcoming-charge-row/budget-upcoming-charge-row.tsx
 msgid "{dateLabel}, {kindLabel}"
@@ -1092,8 +1089,8 @@ msgid "Average"
 msgstr "Moyenne"
 
 #: src/categorize-inbox/components/categorize-inbox-group-stats-line/categorize-inbox-group-stats-line.tsx
-msgid "avg"
-msgstr "moy."
+msgid "Average payment"
+msgstr "Paiement moyen"
 
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Avg cost"
@@ -1487,10 +1484,6 @@ msgstr "Compte courant"
 msgid "Checking transaction history"
 msgstr "Vérification de l’historique des transactions"
 
-#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
-msgid "Choose"
-msgstr "Choisir"
-
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Choose \"Excel\" as the export format — PDF and CSV files can't be imported"
 msgstr "Choisissez « Excel » comme format d'export — les fichiers PDF et CSV ne peuvent pas être importés"
@@ -1507,6 +1500,10 @@ msgstr "Choisis un code PIN"
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "Choose a preset to auto-fill column mappings"
 msgstr "Choisissez un modèle pour remplir automatiquement les correspondances de colonnes"
+
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+msgid "Choose account"
+msgstr "Choisir un compte"
 
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Choose accounts"
@@ -2315,6 +2312,7 @@ msgstr "Le solde du dépôt ne peut pas devenir négatif"
 msgid "Deposits"
 msgstr "Dépôts"
 
+#: src/categorize-inbox/components/categorize-inbox-payments-month-header/categorize-inbox-payments-month-header.tsx
 #: src/categorize-inbox/components/categorize-inbox-payments-select-all/categorize-inbox-payments-select-all.tsx
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Deselect all"
@@ -2829,10 +2827,15 @@ msgstr "Champ"
 msgid "File"
 msgstr "Fichier"
 
+#: src/categorize-inbox/components/categorize-inbox-group-already-tracked-option/categorize-inbox-group-already-tracked-option.tsx
 #: src/categorize-inbox/components/categorize-inbox-group-label-option/categorize-inbox-group-label-option.tsx
 msgctxt "Apply a category action"
 msgid "File"
 msgstr "Classer"
+
+#: src/categorize-inbox/components/categorize-inbox-group-row-file-button/categorize-inbox-group-row-file-button.tsx
+msgid "File · {candidateTitle}"
+msgstr "Classer · {candidateTitle}"
 
 #: src/categorize-inbox/components/categorize-inbox-group-row-file-button/categorize-inbox-group-row-file-button.tsx
 msgid "File as {candidateTitle}"
@@ -3658,6 +3661,10 @@ msgstr "Autres catégories"
 #: src/categorize-inbox/components/categorize-inbox-tag-provider/categorize-inbox-tag-provider.tsx
 msgid "More tags"
 msgstr "Plus d'étiquettes"
+
+#: src/categorize-inbox/components/categorize-inbox-group-move-to-cash-option/categorize-inbox-group-move-to-cash-option.tsx
+msgid "Move"
+msgstr "Déplacer"
 
 #: src/categorize-inbox/components/categorize-inbox-group-row-cash-button/categorize-inbox-group-row-cash-button.tsx
 msgid "Move {displayTitle} to cash"
@@ -4812,6 +4819,10 @@ msgstr "L'autonomie nécessite au moins 3 mois complets de transactions. Vous en
 msgid "Safe to spend"
 msgstr "Sûr à dépenser"
 
+#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
+msgid "Same title every time."
+msgstr "Toujours le même intitulé."
+
 #: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
 msgid "Save"
@@ -4992,6 +5003,7 @@ msgstr "Sélectionner un compte"
 msgid "Select Action Type"
 msgstr "Sélectionner le type d'action"
 
+#: src/categorize-inbox/components/categorize-inbox-payments-month-header/categorize-inbox-payments-month-header.tsx
 #: src/categorize-inbox/components/categorize-inbox-payments-select-all/categorize-inbox-payments-select-all.tsx
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Select all"

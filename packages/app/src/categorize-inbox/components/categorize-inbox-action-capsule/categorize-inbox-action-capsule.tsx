@@ -1,18 +1,33 @@
+import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 
 interface Props {
     readonly label: string;
-    readonly variant: 'positive' | 'neutral';
+    readonly variant: 'positive' | 'neutral' | 'outline';
 }
 
-export const CategorizeInboxActionCapsule = ({ label, variant }: Props) => {
-    const isPositive = variant === 'positive';
-    const surfaceClassName = isPositive ? 'bg-positive-fill' : 'bg-primary';
-    const textClassName = isPositive ? 'text-white' : 'text-primary-reverse';
+const surfaceVariants = cva('h-[32px] items-center justify-center rounded-full px-xl', {
+    variants: {
+        variant: {
+            positive: 'bg-positive-action',
+            neutral: 'bg-cta-background',
+            outline: 'border-[1.5px] border-positive-action/45'
+        }
+    }
+});
 
-    return (
-        <View className={`${surfaceClassName} h-[32px] items-center justify-center rounded-full px-xl`}>
-            <Text className={`${textClassName} text-sm font-semibold`}>{label}</Text>
-        </View>
-    );
-};
+const labelVariants = cva('text-[15px] font-semibold', {
+    variants: {
+        variant: {
+            positive: 'text-positive-action-foreground',
+            neutral: 'text-cta-foreground',
+            outline: 'text-positive-action'
+        }
+    }
+});
+
+export const CategorizeInboxActionCapsule = ({ label, variant }: Props) => (
+    <View className={surfaceVariants({ variant })}>
+        <Text className={labelVariants({ variant })}>{label}</Text>
+    </View>
+);

@@ -2,13 +2,10 @@ import { TransactionTypeEnum } from '@budgie/contracts';
 import { useRouter } from 'expo-router';
 import { Text, View } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
-
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { testID } from '../../../@generic/utils/test-id.util';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
-import { CategorizeInboxSelectionEnum } from '../../enum/categorize-inbox-selection.enum';
 import { useCategorizeInboxAmountLabel } from '../../hook/use-categorize-inbox-amount-label.hook';
 import { getCategorizeInboxRowHref } from '../../utils/get-categorize-inbox-row-href.util';
 import { CategorizeInboxAmount } from '../categorize-inbox-amount/categorize-inbox-amount';
@@ -25,7 +22,7 @@ interface Props {
 
 export const CategorizeInboxClusterRow = ({ row, displayTitle }: Props) => {
     const router = useRouter();
-    const { formatWeekdayAndDay, formatShortWeekdayAndDay, formatTime } = useFormatDate();
+    const { formatWeekdayAndDay, formatTime } = useFormatDate();
     const amountLabel = useCategorizeInboxAmountLabel();
     const { excludedTransactionIds, toggleExcluded } = useCategorizeInboxContext();
 
@@ -33,32 +30,37 @@ export const CategorizeInboxClusterRow = ({ row, displayTitle }: Props) => {
     const handleOpenLongPress = (): void => void router.push(getCategorizeInboxRowHref(row));
 
     const isIncluded = !excludedTransactionIds.has(row.transactionId);
-    const contentClassName = isIncluded ? 'flex-1 flex-row items-center gap-x-md' : 'flex-1 flex-row items-center gap-x-md opacity-40';
-    const selection = isIncluded ? CategorizeInboxSelectionEnum.INCLUDED : CategorizeInboxSelectionEnum.EXCLUDED;
     const accessibilityState = { checked: isIncluded };
-    const ownTitle = row.title === displayTitle ? null : row.title;
-    const ownTitleLine = isDefined(ownTitle) ? (
-        <Text className="text-secondary-foreground text-xs" numberOfLines={1}>
-            {ownTitle}
-        </Text>
-    ) : null;
+    const contentClassName = isIncluded
+        ? 'min-w-0 flex-1 flex-row items-center gap-x-md'
+        : 'min-w-0 flex-1 flex-row items-center gap-x-md opacity-40';
+    const ownTitleLine =
+        row.title === displayTitle ? null : (
+            <Text className="text-secondary-foreground text-[13px]" numberOfLines={1}>
+                {row.title}
+            </Text>
+        );
+    const date = formatWeekdayAndDay(row.operatedAt);
     const time = formatTime(row.operatedAt);
-    const accessibilityLabel = `${formatWeekdayAndDay(row.operatedAt)}, ${time}, ${amountLabel(row.amount, row.instrumentSymbol)}`;
+    const accessibilityLabel = `${date}, ${time}, ${amountLabel(row.amount, row.instrumentSymbol)}`;
 
     return (
         <HapticPressable
             onPress={handleTogglePress}
             onLongPress={handleOpenLongPress}
-            className="flex-row items-center gap-x-md min-h-[48px] py-md active:bg-secondary-background"
+            className="min-h-[52px] flex-row items-center gap-x-xl px-3xl py-xl active:opacity-70"
             accessibilityRole="checkbox"
             accessibilityState={accessibilityState}
             accessibilityLabel={accessibilityLabel}
             {...testID(CategorizeInboxClusterRowSelector.Row, row.transactionId)}
         >
+            <View className="absolute top-0 right-0 left-[52px] h-hairline bg-surface-separator" pointerEvents="none" />
+            <CategorizeInboxSelectionIndicator isSelected={isIncluded} />
+
             <View className={contentClassName}>
-                <View className="flex-1">
-                    <Text className="text-primary text-md font-medium tabular-nums" numberOfLines={1}>
-                        {formatShortWeekdayAndDay(row.operatedAt)}
+                <View className="min-w-0 flex-1">
+                    <Text className="text-primary text-[17px] tabular-nums" numberOfLines={1}>
+                        {date}
                         <Text className="text-secondary-foreground">{` · ${time}`}</Text>
                     </Text>
                     {ownTitleLine}
@@ -68,10 +70,9 @@ export const CategorizeInboxClusterRow = ({ row, displayTitle }: Props) => {
                     amount={row.amount}
                     symbol={row.instrumentSymbol}
                     isIncome={row.type === TransactionTypeEnum.INCOME}
+                    className="text-[17px]"
                 />
             </View>
-
-            <CategorizeInboxSelectionIndicator selection={selection} />
         </HapticPressable>
     );
 };

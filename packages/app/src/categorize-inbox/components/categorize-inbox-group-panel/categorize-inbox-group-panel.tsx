@@ -15,6 +15,8 @@ interface Props {
     readonly cluster: CategorizeInboxClusterInterface;
 }
 
+const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
+
 export const CategorizeInboxGroupPanel = ({ cluster }: Props) => {
     const { formatShortMonth, formatMonthAndYear } = useFormatDate();
 
@@ -27,21 +29,23 @@ export const CategorizeInboxGroupPanel = ({ cluster }: Props) => {
     const firstMonth = isDefined(firstBucket) ? formatBucketMonth(firstBucket.month) : '';
     const lastMonth = isDefined(lastBucket) ? formatBucketMonth(lastBucket.month) : '';
 
-    const barClassName = cluster.section === CategorizeInboxSectionEnum.CONFIDENT ? 'bg-positive-fill' : 'bg-secondary-foreground';
+    const barClassName = cluster.section === CategorizeInboxSectionEnum.CONFIDENT ? 'bg-positive-fill/70' : 'bg-secondary-foreground/50';
 
     return (
-        <View className="bg-secondary-background gap-y-lg mt-3xl rounded-3xl p-xl">
-            <Text className="text-secondary-foreground text-xs">
+        <View className="mt-5xl gap-y-xl rounded-3xl bg-surface-row px-3xl py-xl" style={CONTINUOUS_CORNERS}>
+            <Text className="text-secondary-foreground text-[13px]">
                 <Trans>Payments per month</Trans>
             </Text>
 
-            <View className="gap-y-xs">
+            <View className="gap-y-sm">
                 <CategorizeInboxMonthlyBars buckets={buckets} barClassName={barClassName} />
                 <View className="flex-row items-center justify-between">
-                    <Text className="text-secondary-foreground text-[11px]">{firstMonth}</Text>
-                    <Text className="text-secondary-foreground text-[11px]">{lastMonth}</Text>
+                    <Text className="text-secondary-foreground text-[12px]">{firstMonth}</Text>
+                    <Text className="text-secondary-foreground text-[12px]">{lastMonth}</Text>
                 </View>
             </View>
+
+            <View className="h-hairline bg-surface-separator" />
 
             <CategorizeInboxGroupStatsLine cluster={cluster} />
         </View>

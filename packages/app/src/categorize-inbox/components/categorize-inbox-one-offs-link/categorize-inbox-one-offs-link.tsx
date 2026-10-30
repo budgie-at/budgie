@@ -6,16 +6,20 @@ import { Text, View } from 'react-native';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { CategorizeInboxCardRow } from '../categorize-inbox-card-row/categorize-inbox-card-row';
+import { CategorizeInboxOptionChevron } from '../categorize-inbox-option-chevron/categorize-inbox-option-chevron';
 
 import { CategorizeInboxOneOffsLinkSelector } from './categorize-inbox-one-offs-link.selector';
 
+import type { TransactionListRowPositionEnum } from '../../../transaction/enum/transaction-list-row-position.enum';
 import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
 
 interface Props {
     readonly oneOffs: CategorizeInboxClusterInterface[];
+    readonly position: TransactionListRowPositionEnum;
 }
 
-export const CategorizeInboxOneOffsLink = ({ oneOffs }: Props) => {
+export const CategorizeInboxOneOffsLink = ({ oneOffs, position }: Props) => {
     const { t } = useLingui();
 
     const groupsText = t({ message: plural(oneOffs.length, { one: 'Show # more group', other: 'Show # more groups' }) });
@@ -29,20 +33,27 @@ export const CategorizeInboxOneOffsLink = ({ oneOffs }: Props) => {
     const href = { pathname: '/categorize/one-offs' } as const;
 
     return (
-        <Link href={href} asChild>
-            <HapticPressable
-                className="flex-row items-center justify-between gap-x-xl border-t-hairline border-secondary-corner py-xl active:bg-secondary-background"
-                accessibilityRole="link"
-                testID={CategorizeInboxOneOffsLinkSelector.Link}
-            >
-                <Text className="shrink text-sm font-medium text-primary" numberOfLines={1}>
-                    {groupsText}
-                </Text>
-                <View className="shrink-0 flex-row items-center gap-x-xs">
-                    <Text className="text-xs text-secondary-foreground tabular-nums">{paymentsText}</Text>
-                    <Icon icon={UserIconNameEnum.ChevronRight} size={14} className="text-secondary-foreground" />
-                </View>
-            </HapticPressable>
-        </Link>
+        <CategorizeInboxCardRow position={position}>
+            <Link href={href} asChild>
+                <HapticPressable
+                    className="flex-row items-center gap-x-xl px-3xl py-xl active:opacity-70"
+                    accessibilityRole="link"
+                    testID={CategorizeInboxOneOffsLinkSelector.Link}
+                >
+                    <View
+                        className="h-[36px] w-[36px] items-center justify-center rounded-full bg-secondary-foreground/15"
+                        accessibilityElementsHidden
+                        importantForAccessibility="no-hide-descendants"
+                    >
+                        <Icon icon={UserIconNameEnum.Layers} size={18} className="text-secondary-foreground" />
+                    </View>
+                    <Text className="min-w-0 flex-1 text-[15px] font-semibold text-primary" numberOfLines={1}>
+                        {groupsText}
+                    </Text>
+                    <Text className="shrink-0 text-[13px] text-secondary-foreground tabular-nums">{paymentsText}</Text>
+                    <CategorizeInboxOptionChevron />
+                </HapticPressable>
+            </Link>
+        </CategorizeInboxCardRow>
     );
 };

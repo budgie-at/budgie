@@ -1,14 +1,14 @@
 import { isDefined } from '@rnw-community/shared';
 
+import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { useCategorizeInboxCluster } from '../../hook/use-categorize-inbox-cluster.hook';
 import { formatCategorizeInboxMerchantTitle } from '../../utils/format-categorize-inbox-merchant-title.util';
-import { CategorizeInboxGroupFinding } from '../categorize-inbox-group-finding/categorize-inbox-group-finding';
+import { CategorizeInboxGroupHero } from '../categorize-inbox-group-hero/categorize-inbox-group-hero';
 import { CategorizeInboxGroupOptions } from '../categorize-inbox-group-options/categorize-inbox-group-options';
 import { CategorizeInboxGroupPanel } from '../categorize-inbox-group-panel/categorize-inbox-group-panel';
 import { CategorizeInboxGroupRefineOptions } from '../categorize-inbox-group-refine-options/categorize-inbox-group-refine-options';
 import { CategorizeInboxScreenChrome } from '../categorize-inbox-screen-chrome/categorize-inbox-screen-chrome';
 import { CategorizeInboxScreenScroll } from '../categorize-inbox-screen-scroll/categorize-inbox-screen-scroll';
-import { CategorizeInboxScreenTitle } from '../categorize-inbox-screen-title/categorize-inbox-screen-title';
 
 import { CategorizeInboxGroupScreenSelector } from './categorize-inbox-group-screen.selector';
 
@@ -24,21 +24,21 @@ export const CategorizeInboxGroupScreen = ({ clusterKey }: Props) => {
     }
 
     return (
-        <CategorizeInboxScreenChrome>
-            <CategorizeInboxScreenScroll>
-                <CategorizeInboxScreenTitle
-                    title={formatCategorizeInboxMerchantTitle(cluster.displayTitle)}
-                    titleTestID={CategorizeInboxGroupScreenSelector.Title}
-                >
-                    <CategorizeInboxGroupFinding cluster={cluster} />
-                </CategorizeInboxScreenTitle>
+        <GroupedSurface>
+            <CategorizeInboxScreenChrome
+                title={formatCategorizeInboxMerchantTitle(cluster.displayTitle)}
+                titleTestID={CategorizeInboxGroupScreenSelector.Title}
+            >
+                <CategorizeInboxScreenScroll>
+                    <CategorizeInboxGroupHero cluster={cluster} />
 
-                <CategorizeInboxGroupOptions cluster={cluster} />
+                    <CategorizeInboxGroupOptions cluster={cluster} />
 
-                <CategorizeInboxGroupPanel cluster={cluster} />
+                    <CategorizeInboxGroupRefineOptions cluster={cluster} />
 
-                <CategorizeInboxGroupRefineOptions cluster={cluster} />
-            </CategorizeInboxScreenScroll>
-        </CategorizeInboxScreenChrome>
+                    <CategorizeInboxGroupPanel cluster={cluster} />
+                </CategorizeInboxScreenScroll>
+            </CategorizeInboxScreenChrome>
+        </GroupedSurface>
     );
 };

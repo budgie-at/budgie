@@ -1,4 +1,3 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
@@ -33,8 +32,7 @@ export const CategorizeInboxGroupRowFileButton = ({ cluster }: Props) => {
     return (
         <CategorizeInboxGroupRowPill
             variant="positive"
-            icon={UserIconNameEnum.Check}
-            text={candidateTitle}
+            text={t`File · ${candidateTitle}`}
             label={t`File as ${candidateTitle}`}
             isDisabled={!isNotEmptyArray(assignments)}
             onPress={handlePress}

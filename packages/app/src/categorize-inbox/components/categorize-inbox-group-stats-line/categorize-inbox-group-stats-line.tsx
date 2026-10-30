@@ -1,12 +1,10 @@
-import { TransactionTypeEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
-import { Plural, Trans } from '@lingui/react/macro';
+import { Trans } from '@lingui/react/macro';
 import { Text } from 'react-native';
-
-import { isDefined } from '@rnw-community/shared';
 
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { useCategorizeInboxAmountLabel } from '../../hook/use-categorize-inbox-amount-label.hook';
+import { getCategorizeInboxClusterTotal } from '../../utils/get-categorize-inbox-cluster-total.util';
 
 import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
 
@@ -18,25 +16,13 @@ export const CategorizeInboxGroupStatsLine = ({ cluster }: Props) => {
     const protectAmount = useCategorizeInboxAmountLabel();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
 
-    const count = cluster.rows.length;
-    const hasBaseTotal = isDefined(cluster.totalBaseAmount);
-    const fallbackTotal = cluster.rows.reduce((sum, row) => sum + row.amount, 0);
-    const total = cluster.totalBaseAmount ?? fallbackTotal;
-    const symbol = hasBaseTotal ? defaultInstrument.symbol : (cluster.rows.at(0)?.instrumentSymbol ?? '');
-    const sign = cluster.rows.at(0)?.type === TransactionTypeEnum.INCOME ? '+' : '';
-    const totalLabel = `${sign}${protectAmount(total, symbol)}`;
-    const averageLabel = `${sign}${protectAmount(total / Math.max(1, count), symbol)}`;
+    const { amount, symbol, sign } = getCategorizeInboxClusterTotal(cluster, defaultInstrument.symbol);
+    const averageLabel = `${sign}${protectAmount(amount / Math.max(1, cluster.rows.length), symbol)}`;
 
     return (
-        <Text className="text-primary text-sm tabular-nums" numberOfLines={1}>
-            <Plural value={count} one="# payment" other="# payments" />
-            <Text className="text-secondary-foreground">{' · '}</Text>
-            {totalLabel}
-            <Text className="text-secondary-foreground">{' · '}</Text>
-            <Text className="text-secondary-foreground">
-                <Trans>avg</Trans>
-            </Text>
-            {` ${averageLabel}`}
+        <Text className="text-secondary-foreground text-[15px] tabular-nums" numberOfLines={1}>
+            <Trans>Average payment</Trans>
+            <Text className="text-primary font-medium">{` ${averageLabel}`}</Text>
         </Text>
     );
 };

@@ -16,7 +16,7 @@ export const CategorizeInboxMonthlyBars = ({ buckets, barClassName }: Props) => 
 
     return (
         <View
-            className="flex-row items-end justify-end gap-x-[3px]"
+            className="flex-row items-end justify-between gap-x-[6px]"
             style={stripStyle}
             accessibilityElementsHidden
             importantForAccessibility="no-hide-descendants"

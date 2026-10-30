@@ -16,8 +16,7 @@ export const getCategorizeInboxPile = (items: CategorizeInboxListItemType[], tot
         section,
         count,
         className: CATEGORIZE_INBOX_SECTION_COLOR[section],
-        share: shares[index],
-        offset: shares.slice(0, index).reduce((sum, share) => sum + share, 0)
+        share: shares[index]
     }));
 
     return { segments };

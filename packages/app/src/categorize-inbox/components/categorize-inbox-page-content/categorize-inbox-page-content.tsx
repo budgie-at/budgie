@@ -3,7 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
 import { ActivityIndicator, Text, View } from 'react-native';
 
-import { CollapsibleHeaderBackdrop, ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
+import { ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
 import { isEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
@@ -14,6 +14,7 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { buildUncategorizedFilters } from '../../../transaction/utils/build-uncategorized-filters.util';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 import { CategorizeInboxEmptyState } from '../categorize-inbox-empty-state/categorize-inbox-empty-state';
+import { CategorizeInboxHeaderBackdrop } from '../categorize-inbox-header-backdrop/categorize-inbox-header-backdrop';
 import { CategorizeInboxList } from '../categorize-inbox-list/categorize-inbox-list';
 import { CategorizeInboxPageSelector } from '../categorize-inbox-page/categorize-inbox-page.selector';
 import { CategorizeInboxPanel } from '../categorize-inbox-panel/categorize-inbox-panel';
@@ -56,7 +57,7 @@ export const CategorizeInboxPageContent = ({ params }: Props) => {
         <ScreenChromeFrame testID={CategorizeInboxPageSelector.Container}>
             <View className="flex-1">{content}</View>
 
-            <CollapsibleHeaderBackdrop />
+            <CategorizeInboxHeaderBackdrop />
 
             <CollapsibleChromeHeaderScrim />
 
@@ -74,7 +75,7 @@ export const CategorizeInboxPageContent = ({ params }: Props) => {
                     </HapticPressable>
                 }
                 expandedTitle={
-                    <Text className="text-primary font-medium text-3xl" numberOfLines={1}>
+                    <Text className="text-primary text-[22px] font-semibold text-center" numberOfLines={1}>
                         {pageTitle}
                     </Text>
                 }

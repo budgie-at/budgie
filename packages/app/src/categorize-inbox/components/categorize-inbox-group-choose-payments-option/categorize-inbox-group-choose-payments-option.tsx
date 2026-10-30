@@ -26,7 +26,7 @@ export const CategorizeInboxGroupChoosePaymentsOption = ({ cluster }: Props) => 
 
     const accessory = (
         <View className="flex-row items-center gap-x-xs">
-            <Text className="text-secondary-foreground text-sm tabular-nums">{summary}</Text>
+            <Text className="text-secondary-foreground text-[15px] tabular-nums">{summary}</Text>
             <CategorizeInboxOptionChevron />
         </View>
     );

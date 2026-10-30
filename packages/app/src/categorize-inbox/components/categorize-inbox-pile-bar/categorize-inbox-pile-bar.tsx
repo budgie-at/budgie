@@ -1,5 +1,7 @@
 import { View } from 'react-native';
 
+import { isPositiveNumber } from '@rnw-community/shared';
+
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 import { getCategorizeInboxPile } from '../../utils/get-categorize-inbox-pile.util';
 import { CategorizeInboxPileSegment } from '../categorize-inbox-pile-segment/categorize-inbox-pile-segment';
@@ -7,22 +9,20 @@ import { CategorizeInboxPileSegment } from '../categorize-inbox-pile-segment/cat
 export const CategorizeInboxPileBar = () => {
     const { items, remainingCount, categorizedCount } = useCategorizeInboxContext();
 
-    const { segments } = getCategorizeInboxPile(items, remainingCount + categorizedCount);
+    const totalCount = remainingCount + categorizedCount;
+    const { segments } = getCategorizeInboxPile(items, totalCount);
+    const sortedShare = isPositiveNumber(totalCount) ? categorizedCount / totalCount : 0;
 
     return (
-        <View
-            className="h-[6px] overflow-hidden rounded-full bg-secondary-corner"
-            accessibilityElementsHidden
-            importantForAccessibility="no-hide-descendants"
-        >
-            {segments.map(segment => (
-                <CategorizeInboxPileSegment
-                    key={segment.className}
-                    className={segment.className}
-                    offset={segment.offset}
-                    share={segment.share}
-                />
-            ))}
+        <View className="h-[8px] flex-row gap-x-xxs" accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+            {segments
+                .filter(({ count }) => isPositiveNumber(count))
+                .map(segment => (
+                    <CategorizeInboxPileSegment key={segment.section} className={segment.className} share={segment.share} />
+                ))}
+            {isPositiveNumber(categorizedCount) ? (
+                <CategorizeInboxPileSegment className="bg-secondary-foreground/20" share={sortedShare} />
+            ) : null}
         </View>
     );
 };

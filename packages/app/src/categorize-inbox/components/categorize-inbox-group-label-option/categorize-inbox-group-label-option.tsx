@@ -1,10 +1,10 @@
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
-import { Text } from 'react-native';
 
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 import { CategorizeInboxActionCapsule } from '../categorize-inbox-action-capsule/categorize-inbox-action-capsule';
+import { CategorizeInboxLeadOption } from '../categorize-inbox-lead-option/categorize-inbox-lead-option';
 import { CategorizeInboxOptionRow } from '../categorize-inbox-option-row/categorize-inbox-option-row';
 
 import type { CategorizeInboxLabelInterface } from '../../interface/categorize-inbox-label.interface';
@@ -22,28 +22,31 @@ export const CategorizeInboxGroupLabelOption = ({ cluster, label, isBestMatch }:
     const { assignCluster, includedRows } = useCategorizeInboxContext();
 
     const count = includedRows(cluster).length;
-    const variant = isBestMatch ? 'best' : 'regular';
-    const subtitleProps = {
-        ...(isBestMatch && { subtitle: t({ message: plural(count, { one: 'Best match · # payment', other: 'Best match · # payments' }) }) })
-    };
-    const accessory = isBestMatch ? (
-        <CategorizeInboxActionCapsule label={t({ context: 'Apply a category action', message: 'File' })} variant="positive" />
-    ) : (
-        <Text className="text-secondary-foreground text-sm font-medium">{t({ context: 'Apply a category action', message: 'File' })}</Text>
-    );
+    const fileLabel = t({ context: 'Apply a category action', message: 'File' });
 
     const handlePress = (): void => {
         assignCluster(cluster, label.id);
         router.dismissTo('/categorize');
     };
 
+    if (isBestMatch) {
+        return (
+            <CategorizeInboxLeadOption
+                icon={label.icon}
+                title={label.title}
+                subtitle={t({ message: plural(count, { one: 'Best match · # payment', other: 'Best match · # payments' }) })}
+                variant="positive"
+                accessory={<CategorizeInboxActionCapsule label={fileLabel} variant="positive" />}
+                onPress={handlePress}
+            />
+        );
+    }
+
     return (
         <CategorizeInboxOptionRow
             icon={label.icon}
             title={label.title}
-            variant={variant}
-            accessory={accessory}
-            {...subtitleProps}
+            accessory={<CategorizeInboxActionCapsule label={fileLabel} variant="outline" />}
             onPress={handlePress}
         />
     );

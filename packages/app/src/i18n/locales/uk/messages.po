@@ -27,8 +27,10 @@ msgstr "P2P-продаж {assetCode} на Binance"
 msgid "{0, plural, one {# ATM withdrawal} other {# ATM withdrawals}}"
 msgstr "{0, plural, one {# зняття в банкоматі} few {# зняття в банкоматі} many {# знять у банкоматі} other {# зняття в банкоматі}}"
 
+#. placeholder {0}: cluster.rows.length
 #. placeholder {0}: oneOffs.reduce((total, cluster) => total + cluster.rows.length, 0)
 #. placeholder {0}: rows.length
+#: src/categorize-inbox/components/categorize-inbox-group-hero/categorize-inbox-group-hero.tsx
 #: src/categorize-inbox/components/categorize-inbox-group-row/categorize-inbox-group-row.tsx
 #: src/categorize-inbox/components/categorize-inbox-one-offs-link/categorize-inbox-one-offs-link.tsx
 msgid "{0, plural, one {# payment} other {# payments}}"
@@ -131,7 +133,6 @@ msgstr "{count, plural, one {# наявна транзакція відпові�
 msgid "{count, plural, one {# other} other {# other}}"
 msgstr "{count, plural, one {# інший} few {# інші} many {# інших} other {# інших}}"
 
-#: src/categorize-inbox/components/categorize-inbox-group-stats-line/categorize-inbox-group-stats-line.tsx
 #: src/installment-plan/component/installment-count-chip/installment-count-chip.tsx
 msgid "{count, plural, one {# payment} other {# payments}}"
 msgstr "{count, plural, one {# платіж} few {# платежі} many {# платежів} other {# платежу}}"
@@ -167,10 +168,6 @@ msgstr "{count, plural, one {Ця категорія має # транзакці
 #: src/tag/hooks/use-delete-tag.hook.ts
 msgid "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
 msgstr "{count, plural, one {Цей тег має # транзакцію. Виберіть інший тег, щоб перепризначити її.} few {Цей тег має # транзакції. Виберіть інший тег, щоб перепризначити їх.} many {Цей тег має # транзакцій. Виберіть інший тег, щоб перепризначити їх.} other {Цей тег має # транзакції. Виберіть інший тег, щоб перепризначити їх.}}"
-
-#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
-msgid "{count} payments with exactly this title."
-msgstr "{count} платежів із точно такою назвою."
 
 #: src/budget/components/budget-upcoming-charge-row/budget-upcoming-charge-row.tsx
 msgid "{dateLabel}, {kindLabel}"
@@ -1092,8 +1089,8 @@ msgid "Average"
 msgstr "Середнє"
 
 #: src/categorize-inbox/components/categorize-inbox-group-stats-line/categorize-inbox-group-stats-line.tsx
-msgid "avg"
-msgstr "сер."
+msgid "Average payment"
+msgstr "Середній платіж"
 
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Avg cost"
@@ -1487,10 +1484,6 @@ msgstr "Поточний рахунок"
 msgid "Checking transaction history"
 msgstr "Перевіряємо історію транзакцій"
 
-#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
-msgid "Choose"
-msgstr "Вибрати"
-
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Choose \"Excel\" as the export format — PDF and CSV files can't be imported"
 msgstr "Оберіть «Excel» як формат експорту — файли PDF і CSV імпортувати не можна"
@@ -1507,6 +1500,10 @@ msgstr "Виберіть PIN-код"
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "Choose a preset to auto-fill column mappings"
 msgstr "Оберіть шаблон для автоматичного заповнення відповідностей стовпців"
+
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+msgid "Choose account"
+msgstr "Вибрати рахунок"
 
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Choose accounts"
@@ -2315,6 +2312,7 @@ msgstr "Баланс депозиту не може стати відʼємни�
 msgid "Deposits"
 msgstr "Депозити"
 
+#: src/categorize-inbox/components/categorize-inbox-payments-month-header/categorize-inbox-payments-month-header.tsx
 #: src/categorize-inbox/components/categorize-inbox-payments-select-all/categorize-inbox-payments-select-all.tsx
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Deselect all"
@@ -2829,10 +2827,15 @@ msgstr "Поле"
 msgid "File"
 msgstr "Файл"
 
+#: src/categorize-inbox/components/categorize-inbox-group-already-tracked-option/categorize-inbox-group-already-tracked-option.tsx
 #: src/categorize-inbox/components/categorize-inbox-group-label-option/categorize-inbox-group-label-option.tsx
 msgctxt "Apply a category action"
 msgid "File"
 msgstr "Віднести"
+
+#: src/categorize-inbox/components/categorize-inbox-group-row-file-button/categorize-inbox-group-row-file-button.tsx
+msgid "File · {candidateTitle}"
+msgstr "Віднести · {candidateTitle}"
 
 #: src/categorize-inbox/components/categorize-inbox-group-row-file-button/categorize-inbox-group-row-file-button.tsx
 msgid "File as {candidateTitle}"
@@ -3658,6 +3661,10 @@ msgstr "Інші категорії"
 #: src/categorize-inbox/components/categorize-inbox-tag-provider/categorize-inbox-tag-provider.tsx
 msgid "More tags"
 msgstr "Інші теги"
+
+#: src/categorize-inbox/components/categorize-inbox-group-move-to-cash-option/categorize-inbox-group-move-to-cash-option.tsx
+msgid "Move"
+msgstr "Перенести"
 
 #: src/categorize-inbox/components/categorize-inbox-group-row-cash-button/categorize-inbox-group-row-cash-button.tsx
 msgid "Move {displayTitle} to cash"
@@ -4812,6 +4819,10 @@ msgstr "Запас потребує щонайменше 3 повних міся
 msgid "Safe to spend"
 msgstr "Безпечно витрачати"
 
+#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
+msgid "Same title every time."
+msgstr "Щоразу та сама назва."
+
 #: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
 msgid "Save"
@@ -4992,6 +5003,7 @@ msgstr "Вибрати рахунок"
 msgid "Select Action Type"
 msgstr "Вибрати тип дії"
 
+#: src/categorize-inbox/components/categorize-inbox-payments-month-header/categorize-inbox-payments-month-header.tsx
 #: src/categorize-inbox/components/categorize-inbox-payments-select-all/categorize-inbox-payments-select-all.tsx
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Select all"

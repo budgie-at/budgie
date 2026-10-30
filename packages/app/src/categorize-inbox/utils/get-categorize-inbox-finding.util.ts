@@ -31,7 +31,7 @@ export const getCategorizeInboxFinding = (
     const isMonthly =
         count >= MONTHLY_MIN_COUNT && distinctMonths >= MONTHLY_MIN_COUNT && Math.abs(count - distinctMonths) <= MONTHLY_TOLERANCE;
     const isExpense = rows.at(0)?.type === TransactionTypeEnum.EXPENSE;
-    const base = { jarName, accountTitle, count, rate, isPerDay, maxAmount };
+    const base = { jarName, accountTitle, rate, isPerDay, maxAmount };
 
     if (section === CategorizeInboxSectionEnum.CASH_WITHDRAWALS) {
         return { ...base, kind: CategorizeInboxFindingKindEnum.CASH };

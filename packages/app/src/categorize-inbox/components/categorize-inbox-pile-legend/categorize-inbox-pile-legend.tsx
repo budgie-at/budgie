@@ -24,16 +24,14 @@ export const CategorizeInboxPileLegend = () => {
     const sortedText = t({ message: plural(categorizedCount, { one: '# sorted', other: '# sorted' }) });
 
     return (
-        <View className="flex-row flex-wrap gap-x-lg gap-y-xs">
+        <View className="flex-row flex-wrap justify-center gap-x-xl gap-y-xs">
             {segments
                 .filter(({ count }) => isPositiveNumber(count))
-                .map(({ section, className, count }) => {
-                    const dotClassName = section === CategorizeInboxSectionEnum.ONE_OFFS ? 'border border-secondary-foreground' : className;
-
-                    return <CategorizeInboxPileLegendItem key={section} dotClassName={dotClassName} text={sectionTexts[section](count)} />;
-                })}
+                .map(({ section, className, count }) => (
+                    <CategorizeInboxPileLegendItem key={section} dotClassName={className} text={sectionTexts[section](count)} />
+                ))}
             {isPositiveNumber(categorizedCount) ? (
-                <CategorizeInboxPileLegendItem dotClassName="border border-secondary-foreground bg-secondary-corner" text={sortedText} />
+                <CategorizeInboxPileLegendItem dotClassName="bg-secondary-foreground/20" text={sortedText} />
             ) : null}
         </View>
     );

@@ -1,12 +1,12 @@
-import { TransactionTypeEnum } from '@budgie/contracts';
+import { convertFromMicroUnits, TransactionTypeEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Text } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
-import { useCategorizeInboxAmountLabel } from '../../hook/use-categorize-inbox-amount-label.hook';
 
 import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
 
@@ -15,7 +15,7 @@ interface Props {
 }
 
 export const CategorizeInboxGroupRowAmount = ({ cluster }: Props) => {
-    const protectAmount = useCategorizeInboxAmountLabel();
+    const protectAmount = useProtectedAmountLabel();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
 
     const [firstRow] = cluster.rows;
@@ -32,8 +32,8 @@ export const CategorizeInboxGroupRowAmount = ({ cluster }: Props) => {
     const colorClassName = isIncome ? 'text-positive-foreground' : 'text-primary';
 
     return (
-        <Text className={cn('shrink-0 text-md font-semibold tabular-nums', colorClassName)} numberOfLines={1}>
-            {`${sign}${protectAmount(amount, symbol)}`}
+        <Text className={cn('shrink-0 text-[15px] font-semibold tabular-nums', colorClassName)} numberOfLines={1}>
+            {`${sign}${protectAmount(convertFromMicroUnits(amount), symbol)}`}
         </Text>
     );
 };

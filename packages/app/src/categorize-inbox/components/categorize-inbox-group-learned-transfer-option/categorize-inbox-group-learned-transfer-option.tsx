@@ -9,7 +9,7 @@ import { CATEGORIZE_INBOX_TRANSFER_ACCOUNT_FILTER } from '../../constant/categor
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 import { getCategorizeInboxTransferKey } from '../../utils/get-categorize-inbox-transfer-key.util';
 import { CategorizeInboxActionCapsule } from '../categorize-inbox-action-capsule/categorize-inbox-action-capsule';
-import { CategorizeInboxOptionRow } from '../categorize-inbox-option-row/categorize-inbox-option-row';
+import { CategorizeInboxLeadOption } from '../categorize-inbox-lead-option/categorize-inbox-lead-option';
 
 import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
 
@@ -40,11 +40,11 @@ export const CategorizeInboxGroupLearnedTransferOption = ({ cluster }: Props) =>
     const { title } = account;
 
     return (
-        <CategorizeInboxOptionRow
+        <CategorizeInboxLeadOption
             icon={UserIconNameEnum.ArrowLeftRight}
             title={t`Transfer to ${title}`}
             subtitle={t`Suggested`}
-            variant="best"
+            variant="positive"
             accessory={<CategorizeInboxActionCapsule label={t`Transfer`} variant="positive" />}
             onPress={handlePress}
         />

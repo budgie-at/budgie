@@ -29,15 +29,17 @@ export const CategorizeInboxHero = () => {
     const subtitle = isDefined(worthAmount) ? `${countText} · ${worthText}` : countText;
 
     return (
-        <View className="gap-y-xl pb-lg pt-md">
-            <View>
-                <Text className="text-5xl font-bold tracking-tight text-primary tabular-nums">{remainingCount}</Text>
-                <Text className="text-sm text-secondary-foreground" numberOfLines={1}>
+        <View className="items-center gap-y-3xl pb-md pt-xs">
+            <View className="items-center gap-y-xxs">
+                <Text className="text-[52px] leading-[60px] font-bold tracking-[-1px] text-primary tabular-nums" numberOfLines={1}>
+                    {remainingCount}
+                </Text>
+                <Text className="text-[15px] text-center text-secondary-foreground tabular-nums" numberOfLines={1}>
                     {subtitle}
                 </Text>
             </View>
 
-            <View className="gap-y-md">
+            <View className="gap-y-md self-stretch">
                 <CategorizeInboxPileBar />
 
                 <CategorizeInboxPileLegend />

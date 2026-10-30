@@ -8,6 +8,7 @@ import { useBottomChromeInset, useScreenChrome, useScreenChromeScrollProps } fro
 
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 import { isCategorizeInboxCluster } from '../../type-guard/is-categorize-inbox-cluster.type-guard';
+import { getCategorizeInboxRowPosition } from '../../utils/get-categorize-inbox-row-position.util';
 import { CategorizeInboxGroupRow } from '../categorize-inbox-group-row/categorize-inbox-group-row';
 import { CategorizeInboxScreenTitle } from '../categorize-inbox-screen-title/categorize-inbox-screen-title';
 
@@ -15,7 +16,7 @@ import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
 import type { LegendListRenderItemProps } from '@legendapp/list/react-native';
 
 const LIST_BOTTOM_CLEARANCE = 32;
-const ESTIMATED_ROW_HEIGHT = 64;
+const ESTIMATED_ROW_HEIGHT = 72;
 
 const keyExtractor = (cluster: CategorizeInboxClusterInterface): string => cluster.key;
 
@@ -35,7 +36,11 @@ export const CategorizeInboxOneOffsList = () => {
         contentContainerStyle: horizontalInset
     });
 
-    const renderItem = ({ item }: LegendListRenderItemProps<CategorizeInboxClusterInterface>) => <CategorizeInboxGroupRow cluster={item} />;
+    const renderItem = ({ item, index }: LegendListRenderItemProps<CategorizeInboxClusterInterface>) => {
+        const position = getCategorizeInboxRowPosition(index > 0, index < groupCount - 1);
+
+        return <CategorizeInboxGroupRow cluster={item} position={position} />;
+    };
 
     const header = (
         <CategorizeInboxScreenTitle title={t`Smaller groups`}>
@@ -54,6 +59,7 @@ export const CategorizeInboxOneOffsList = () => {
             keyExtractor={keyExtractor}
             renderItem={renderItem}
             estimatedItemSize={ESTIMATED_ROW_HEIGHT}
+            extraData={groupCount}
             ListHeaderComponent={header}
             showsVerticalScrollIndicator={false}
             recycleItems

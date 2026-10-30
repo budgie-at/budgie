@@ -21,10 +21,7 @@ export const CategorizeInboxGroupFinding = ({ cluster }: Props) => {
 
     const matchedAccount = useCategorizeInboxMatchedAccount(cluster);
 
-    const { kind, jarName, accountTitle, count, rate, isPerDay, maxAmount } = getCategorizeInboxFinding(
-        cluster,
-        matchedAccount?.title ?? null
-    );
+    const { kind, jarName, accountTitle, rate, isPerDay, maxAmount } = getCategorizeInboxFinding(cluster, matchedAccount?.title ?? null);
     const jar = jarName ?? '';
     const account = accountTitle ?? '';
     const symbol = cluster.rows.at(0)?.instrumentSymbol ?? '';
@@ -63,8 +60,8 @@ export const CategorizeInboxGroupFinding = ({ cluster }: Props) => {
         [CategorizeInboxFindingKindEnum.JAR_TOP_UP]: jarTopUpBody,
         [CategorizeInboxFindingKindEnum.JAR_RETURN]: returnEmphasis,
         [CategorizeInboxFindingKindEnum.MONTHLY]: <Trans>Arrives once a month.</Trans>,
-        [CategorizeInboxFindingKindEnum.GENERIC]: <Trans>{count} payments with exactly this title.</Trans>
+        [CategorizeInboxFindingKindEnum.GENERIC]: <Trans>Same title every time.</Trans>
     };
 
-    return <Text className="text-secondary-foreground text-sm">{bodies[kind]}</Text>;
+    return <Text>{bodies[kind]}</Text>;
 };

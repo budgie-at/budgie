@@ -2,25 +2,19 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { View } from 'react-native';
 
 import { Icon } from '../../../@generic/component/icon/icon';
-import { CategorizeInboxSelectionEnum } from '../../enum/categorize-inbox-selection.enum';
 
 interface Props {
-    readonly selection: CategorizeInboxSelectionEnum;
+    readonly isSelected: boolean;
 }
 
-export const CategorizeInboxSelectionIndicator = ({ selection }: Props) => {
-    const isIncluded = selection === CategorizeInboxSelectionEnum.INCLUDED;
-    const isPartial = selection === CategorizeInboxSelectionEnum.PARTIAL;
+export const CategorizeInboxSelectionIndicator = ({ isSelected }: Props) => {
+    if (isSelected) {
+        return (
+            <View className="size-[24px] items-center justify-center rounded-full bg-positive-action">
+                <Icon icon={UserIconNameEnum.Check} size={15} className="text-positive-action-foreground" />
+            </View>
+        );
+    }
 
-    const circleClassName =
-        isIncluded || isPartial
-            ? 'h-[22px] w-[22px] items-center justify-center rounded-full bg-positive-fill'
-            : 'h-[22px] w-[22px] items-center justify-center rounded-full border-[1.5px] border-secondary-foreground/50';
-
-    return (
-        <View className={circleClassName}>
-            {isIncluded ? <Icon icon={UserIconNameEnum.Check} size={14} className="text-white" /> : null}
-            {isPartial ? <Icon icon={UserIconNameEnum.Minus} size={14} className="text-white" /> : null}
-        </View>
-    );
+    return <View className="size-[24px] rounded-full border-2 border-secondary-foreground/50" />;
 };

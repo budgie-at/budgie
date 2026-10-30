@@ -6,9 +6,7 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { Icon } from '../../../@generic/component/icon/icon';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
-import { useCategorizeInboxMatchedAccount } from '../../hook/use-categorize-inbox-matched-account.hook';
-import { getCategorizeInboxJarName } from '../../utils/get-categorize-inbox-jar-name.util';
-import { getCategorizeInboxTransferKey } from '../../utils/get-categorize-inbox-transfer-key.util';
+import { useCategorizeInboxIsTransfer } from '../../hook/use-categorize-inbox-is-transfer.hook';
 
 import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
 
@@ -18,23 +16,18 @@ interface Props {
 
 export const CategorizeInboxGroupRowHint = ({ cluster }: Props) => {
     const { t } = useLingui();
-    const { strategy, learnedTransferAccountIds } = useCategorizeInboxContext();
-    const matchedAccount = useCategorizeInboxMatchedAccount(cluster);
+    const { strategy } = useCategorizeInboxContext();
+    const isTransfer = useCategorizeInboxIsTransfer(cluster);
 
-    const { displayTitle, candidateLabelIds } = cluster;
-    const candidateId = candidateLabelIds.at(0);
+    const candidateId = cluster.candidateLabelIds.at(0);
     const candidateTitle = isDefined(candidateId) ? strategy?.labelsById.get(candidateId)?.title : null;
-    const isTransfer =
-        isDefined(matchedAccount) ||
-        isDefined(getCategorizeInboxJarName(displayTitle)) ||
-        learnedTransferAccountIds.has(getCategorizeInboxTransferKey(displayTitle));
     const label = isTransfer ? t`Transfer` : candidateTitle;
     const icon = isTransfer ? UserIconNameEnum.ArrowLeftRight : UserIconNameEnum.Sparkles;
 
     return isNotEmptyString(label) ? (
         <View className="shrink flex-row items-center gap-x-xs">
             <Icon icon={icon} size={12} className="text-secondary-foreground" />
-            <Text className="shrink text-xs text-secondary-foreground" numberOfLines={1}>
+            <Text className="shrink text-[13px] text-secondary-foreground" numberOfLines={1}>
                 {label}
             </Text>
         </View>

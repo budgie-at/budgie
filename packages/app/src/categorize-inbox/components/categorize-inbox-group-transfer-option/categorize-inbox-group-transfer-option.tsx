@@ -3,6 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
 
 import { CategorizeInboxActionCapsule } from '../categorize-inbox-action-capsule/categorize-inbox-action-capsule';
+import { CategorizeInboxLeadOption } from '../categorize-inbox-lead-option/categorize-inbox-lead-option';
 import { CategorizeInboxOptionChevron } from '../categorize-inbox-option-chevron/categorize-inbox-option-chevron';
 import { CategorizeInboxOptionRow } from '../categorize-inbox-option-row/categorize-inbox-option-row';
 
@@ -20,19 +21,27 @@ export const CategorizeInboxGroupTransferOption = ({ cluster, isLead }: Props) =
     const isIncome = cluster.rows.at(0)?.type === TransactionTypeEnum.INCOME;
     const subtitle = isIncome ? t`Leaves your income` : t`Not counted as spending`;
 
-    const accessory = isLead ? <CategorizeInboxActionCapsule label={t`Choose`} variant="neutral" /> : <CategorizeInboxOptionChevron />;
-    const variant = isLead ? 'suggested' : 'regular';
-    const title = isLead ? t`Transfer` : t`Transfer to an account`;
-
     const handlePress = (): void => void router.push({ pathname: '/categorize/transfer/[key]', params: { key: cluster.key } });
+
+    if (isLead) {
+        return (
+            <CategorizeInboxLeadOption
+                icon={UserIconNameEnum.ArrowLeftRight}
+                title={t`Transfer`}
+                subtitle={subtitle}
+                variant="neutral"
+                accessory={<CategorizeInboxActionCapsule label={t`Choose account`} variant="neutral" />}
+                onPress={handlePress}
+            />
+        );
+    }
 
     return (
         <CategorizeInboxOptionRow
             icon={UserIconNameEnum.ArrowLeftRight}
-            title={title}
+            title={t`Transfer to an account`}
             subtitle={subtitle}
-            variant={variant}
-            accessory={accessory}
+            accessory={<CategorizeInboxOptionChevron />}
             onPress={handlePress}
         />
     );

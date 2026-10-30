@@ -28,9 +28,9 @@ export const CategorizeInboxPaymentsSummary = ({ cluster }: Props) => {
     const totalLabel = isDefined(total) ? ` · ${amountLabel(total, defaultInstrument.symbol)}` : '';
 
     return (
-        <View className="flex-row items-center justify-between gap-x-md">
-            <Text className="flex-1 text-secondary-foreground text-sm tabular-nums" numberOfLines={1}>
-                <Text className="text-primary text-md font-semibold">
+        <View className="flex-row items-center justify-between gap-x-md px-3xl pt-xl">
+            <Text className="flex-1 text-secondary-foreground text-[15px] tabular-nums" numberOfLines={1}>
+                <Text className="text-primary font-semibold">
                     <Trans>
                         {includedCount} of {rowCount} selected
                     </Trans>

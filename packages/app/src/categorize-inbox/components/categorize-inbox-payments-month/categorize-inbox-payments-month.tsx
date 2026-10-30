@@ -1,7 +1,7 @@
 import { View } from 'react-native';
 
-import { groupCategorizeInboxRowsByDay } from '../../utils/group-categorize-inbox-rows-by-day.util';
-import { CategorizeInboxPaymentsDay } from '../categorize-inbox-payments-day/categorize-inbox-payments-day';
+import { CategorizeInboxClusterRow } from '../categorize-inbox-cluster-row/categorize-inbox-cluster-row';
+import { CategorizeInboxOptionCard } from '../categorize-inbox-option-card/categorize-inbox-option-card';
 import { CategorizeInboxPaymentsMonthHeader } from '../categorize-inbox-payments-month-header/categorize-inbox-payments-month-header';
 
 import type { CategorizeInboxMonthGroupInterface } from '../../interface/categorize-inbox-month-group.interface';
@@ -9,29 +9,15 @@ import type { CategorizeInboxMonthGroupInterface } from '../../interface/categor
 interface Props {
     readonly group: CategorizeInboxMonthGroupInterface;
     readonly displayTitle: string;
-    readonly className: string;
 }
 
-export const CategorizeInboxPaymentsMonth = ({ group, displayTitle, className }: Props) => {
-    const separatorClassName = 'border-t-hairline border-secondary-corner';
-
-    const dayBlocks = groupCategorizeInboxRowsByDay(group.rows).map((dayGroup, index) => {
-        const dayClassName = index === 0 ? '' : separatorClassName;
-
-        return (
-            <CategorizeInboxPaymentsDay
-                key={dayGroup.day.getTime()}
-                group={dayGroup}
-                displayTitle={displayTitle}
-                className={dayClassName}
-            />
-        );
-    });
-
-    return (
-        <View className={className}>
-            <CategorizeInboxPaymentsMonthHeader group={group} />
-            {dayBlocks}
-        </View>
-    );
-};
+export const CategorizeInboxPaymentsMonth = ({ group, displayTitle }: Props) => (
+    <View>
+        <CategorizeInboxPaymentsMonthHeader group={group} />
+        <CategorizeInboxOptionCard>
+            {group.rows.map(row => (
+                <CategorizeInboxClusterRow key={row.transactionId} row={row} displayTitle={displayTitle} />
+            ))}
+        </CategorizeInboxOptionCard>
+    </View>
+);

@@ -27,8 +27,10 @@ msgstr "Binance P2P-Verkauf von {assetCode}"
 msgid "{0, plural, one {# ATM withdrawal} other {# ATM withdrawals}}"
 msgstr "{0, plural, one {# Geldautomaten-Abhebung} other {# Geldautomaten-Abhebungen}}"
 
+#. placeholder {0}: cluster.rows.length
 #. placeholder {0}: oneOffs.reduce((total, cluster) => total + cluster.rows.length, 0)
 #. placeholder {0}: rows.length
+#: src/categorize-inbox/components/categorize-inbox-group-hero/categorize-inbox-group-hero.tsx
 #: src/categorize-inbox/components/categorize-inbox-group-row/categorize-inbox-group-row.tsx
 #: src/categorize-inbox/components/categorize-inbox-one-offs-link/categorize-inbox-one-offs-link.tsx
 msgid "{0, plural, one {# payment} other {# payments}}"
@@ -131,7 +133,6 @@ msgstr "{count, plural, one {# vorhandene Transaktion passt zu dieser Regel.} ot
 msgid "{count, plural, one {# other} other {# other}}"
 msgstr "{count, plural, one {# weitere} other {# weitere}}"
 
-#: src/categorize-inbox/components/categorize-inbox-group-stats-line/categorize-inbox-group-stats-line.tsx
 #: src/installment-plan/component/installment-count-chip/installment-count-chip.tsx
 msgid "{count, plural, one {# payment} other {# payments}}"
 msgstr "{count, plural, one {# Zahlung} other {# Zahlungen}}"
@@ -167,10 +168,6 @@ msgstr "{count, plural, one {Diese Kategorie hat # Transaktion. Wählen Sie eine
 #: src/tag/hooks/use-delete-tag.hook.ts
 msgid "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
 msgstr "{count, plural, one {Dieser Tag hat # Transaktion. Wählen Sie einen anderen Tag aus, dem sie neu zugewiesen wird.} other {Dieser Tag hat # Transaktionen. Wählen Sie einen anderen Tag aus, dem sie neu zugewiesen werden.}}"
-
-#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
-msgid "{count} payments with exactly this title."
-msgstr "{count} Zahlungen mit genau diesem Titel."
 
 #: src/budget/components/budget-upcoming-charge-row/budget-upcoming-charge-row.tsx
 msgid "{dateLabel}, {kindLabel}"
@@ -1092,8 +1089,8 @@ msgid "Average"
 msgstr "Durchschnitt"
 
 #: src/categorize-inbox/components/categorize-inbox-group-stats-line/categorize-inbox-group-stats-line.tsx
-msgid "avg"
-msgstr "Ø"
+msgid "Average payment"
+msgstr "Durchschnittliche Zahlung"
 
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Avg cost"
@@ -1487,10 +1484,6 @@ msgstr "Girokonto"
 msgid "Checking transaction history"
 msgstr "Transaktionsverlauf wird geprüft"
 
-#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
-msgid "Choose"
-msgstr "Auswählen"
-
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Choose \"Excel\" as the export format — PDF and CSV files can't be imported"
 msgstr "Wählen Sie „Excel“ als Exportformat – PDF- und CSV-Dateien können nicht importiert werden"
@@ -1507,6 +1500,10 @@ msgstr "Wähle eine PIN"
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "Choose a preset to auto-fill column mappings"
 msgstr "Wählen Sie eine Vorlage zum automatischen Ausfüllen der Spaltenzuordnungen"
+
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+msgid "Choose account"
+msgstr "Konto wählen"
 
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Choose accounts"
@@ -2315,6 +2312,7 @@ msgstr "Der Festgeldsaldo darf nicht negativ werden"
 msgid "Deposits"
 msgstr "Festgelder"
 
+#: src/categorize-inbox/components/categorize-inbox-payments-month-header/categorize-inbox-payments-month-header.tsx
 #: src/categorize-inbox/components/categorize-inbox-payments-select-all/categorize-inbox-payments-select-all.tsx
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Deselect all"
@@ -2829,10 +2827,15 @@ msgstr "Feld"
 msgid "File"
 msgstr "Datei"
 
+#: src/categorize-inbox/components/categorize-inbox-group-already-tracked-option/categorize-inbox-group-already-tracked-option.tsx
 #: src/categorize-inbox/components/categorize-inbox-group-label-option/categorize-inbox-group-label-option.tsx
 msgctxt "Apply a category action"
 msgid "File"
 msgstr "Ablegen"
+
+#: src/categorize-inbox/components/categorize-inbox-group-row-file-button/categorize-inbox-group-row-file-button.tsx
+msgid "File · {candidateTitle}"
+msgstr "Ablegen · {candidateTitle}"
 
 #: src/categorize-inbox/components/categorize-inbox-group-row-file-button/categorize-inbox-group-row-file-button.tsx
 msgid "File as {candidateTitle}"
@@ -3658,6 +3661,10 @@ msgstr "Weitere Kategorien"
 #: src/categorize-inbox/components/categorize-inbox-tag-provider/categorize-inbox-tag-provider.tsx
 msgid "More tags"
 msgstr "Weitere Tags"
+
+#: src/categorize-inbox/components/categorize-inbox-group-move-to-cash-option/categorize-inbox-group-move-to-cash-option.tsx
+msgid "Move"
+msgstr "Verschieben"
 
 #: src/categorize-inbox/components/categorize-inbox-group-row-cash-button/categorize-inbox-group-row-cash-button.tsx
 msgid "Move {displayTitle} to cash"
@@ -4812,6 +4819,10 @@ msgstr "Die Reichweite benötigt mindestens 3 vollständige Monate mit Transakti
 msgid "Safe to spend"
 msgstr "Sicher ausgebbar"
 
+#: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
+msgid "Same title every time."
+msgstr "Jedes Mal derselbe Titel."
+
 #: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
 msgid "Save"
@@ -4992,6 +5003,7 @@ msgstr "Konto auswählen"
 msgid "Select Action Type"
 msgstr "Aktionstyp auswählen"
 
+#: src/categorize-inbox/components/categorize-inbox-payments-month-header/categorize-inbox-payments-month-header.tsx
 #: src/categorize-inbox/components/categorize-inbox-payments-select-all/categorize-inbox-payments-select-all.tsx
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Select all"
