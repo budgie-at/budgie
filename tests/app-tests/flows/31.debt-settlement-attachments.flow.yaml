@@ -115,7 +115,7 @@ appId: ${APP_ID}
     centerElement: false
 - assertVisible:
       id: 'TransactionInfo.Row.Debt'
-- assertVisible: 'E2E Lent Debt'
+      text: '.*E2E Lent Debt.*'
 - scrollUntilVisible:
     element:
       id: 'TransactionActionsMenu.DetachDebtSettlementButton'
