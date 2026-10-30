@@ -40,9 +40,7 @@ export class BinanceWeightThrottle {
                 yield* this.sleepWithinDeadline(retryAfterRemainingMs, 'Retry-After back-off exceeds deadline');
             }
 
-            const path = this.toPath(endpoint);
-            const key = this.toBudgetKey(path);
-            const { ceiling, weight } = this.toCost(path);
+            const { key, ceiling, weight } = this.toBudget(endpoint);
             const now = yield* Clock.currentTimeMillis;
 
             this.rollWindow(key, now);
@@ -78,9 +76,8 @@ export class BinanceWeightThrottle {
     constructor(private readonly deadlineAtMs: number) {}
 
     recordHeaders(endpoint: string, headers: Headers.Headers): void {
-        const path = this.toPath(endpoint);
-        const key = this.toBudgetKey(path);
-        const rawValue: string | undefined = headers[this.toCost(path).header];
+        const { key, header } = this.toBudget(endpoint);
+        const rawValue: string | undefined = headers[header];
         const parsed = isDefined(rawValue) ? Number.parseInt(rawValue, 10) : Number.NaN;
 
         if (this.usedByKey.has(key) && !Number.isNaN(parsed)) {
@@ -97,18 +94,11 @@ export class BinanceWeightThrottle {
         }
     }
 
-    private toPath(endpoint: string): string {
-        return endpoint.split('?', 1)[0] ?? endpoint;
-    }
+    private toBudget(endpoint: string): BinanceWeightCostInterface & { readonly key: string } {
+        const path = endpoint.split('?', 1)[0] ?? endpoint;
+        const isSpot = path.startsWith(SPOT_PATH_PREFIX);
+        const defaultCost = { ...(isSpot ? BinanceWeightThrottle.SPOT_IP : BinanceWeightThrottle.SAPI_IP), weight: 1 };
 
-    private toBudgetKey(path: string): string {
-        return path.startsWith(SPOT_PATH_PREFIX) ? SPOT_BUDGET_KEY : path;
-    }
-
-    private toCost(path: string): BinanceWeightCostInterface {
-        const spotDefault = { ...BinanceWeightThrottle.SPOT_IP, weight: 1 };
-        const sapiDefault = { ...BinanceWeightThrottle.SAPI_IP, weight: 1 };
-
-        return BinanceWeightThrottle.COSTS.get(path) ?? (path.startsWith(SPOT_PATH_PREFIX) ? spotDefault : sapiDefault);
+        return { ...(BinanceWeightThrottle.COSTS.get(path) ?? defaultCost), key: isSpot ? SPOT_BUDGET_KEY : path };
     }
 }
