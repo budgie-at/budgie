@@ -22,6 +22,7 @@ import { SyncWorkload } from '../../core/port/sync-workload.port';
 import { SyncIntegrationTokenService } from '../../core/service/sync-integration-token.service';
 import { makePollingSyncAccountSetup } from '../../core/utils/make-polling-sync-account-setup.util';
 import { makePollingSyncService } from '../../core/utils/make-polling-sync-service.util';
+import { resolveSyncProgressUpdate } from '../../core/utils/resolve-sync-progress-update.util';
 import { BinanceSignedClient } from '../client/binance-signed.client';
 import { BINANCE_ACCOUNT_DEFINITION } from '../constant/binance-account-definition.constant';
 import { BinanceCredentialsSchema } from '../constant/binance-credentials.schema';
@@ -101,6 +102,9 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             sync.mode !== SyncModeEnum.BACKWARD && isDefined(sync.forwardSyncedAt)
                 ? subHours(sync.forwardSyncedAt, forwardOverlapHours)
                 : resolveLookbackStart(sync);
+
+        const resolveHeadStartSeconds = (sync: SyncEntityInterface, headAt: number): number =>
+            Math.max(getUnixTime(resolveLookbackStart(sync)), Math.floor(headAt / 1000) - headOverlapSeconds);
 
         const isFiatRefreshDue = (token: string): boolean => {
             const fiatSyncedAtMs = fiatSyncedAtMsByToken.get(token);
@@ -248,19 +252,22 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                 ? Math.floor(progress.tailAt / 1000) > lookbackSeconds
                 : isFiat || newHistorySources.has(source) || sync.mode === SyncModeEnum.BACKWARD || !isDefined(sync.forwardSyncedAt);
 
+            const client = getRunSignedClient(token);
+
             if (!isBackfillPending) {
-                return isFiat && !isFiatRefreshDue(token) ? 0 : yield* fetchRange(getUnixTime(resolveWindowStart(sync)), null);
+                const isHeadResumable = sync.mode === SyncModeEnum.BACKWARD && isDefined(progress);
+                const windowStartSeconds = isHeadResumable
+                    ? resolveHeadStartSeconds(sync, progress.headAt)
+                    : getUnixTime(resolveWindowStart(sync));
+
+                return isFiat && !isFiatRefreshDue(token) ? 0 : yield* fetchRange(windowStartSeconds, null);
             }
 
             const chunkSeconds = isFiat ? fiatBackfillChunkSeconds : Number.POSITIVE_INFINITY;
             const startedAtSeconds = Math.floor(run.startedAtMs / 1000);
-            const client = getRunSignedClient(token);
             let committedCount = 0;
             if (isDefined(progress)) {
-                committedCount += yield* fetchRange(
-                    Math.max(lookbackSeconds, Math.floor(progress.headAt / 1000) - headOverlapSeconds),
-                    null
-                );
+                committedCount += yield* fetchRange(resolveHeadStartSeconds(sync, progress.headAt), null);
                 if (isRunDeferred() || client.isSourceSkipped(source)) {
                     return committedCount;
                 }
@@ -390,6 +397,23 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
             return changedCount;
         });
 
+        const completeIntegrationBackwardSyncs = Effect.fnUntraced(function* (token: string) {
+            const { sourcesSynced, transfersSynced } = getTokenRun(token);
+            if (isRunDeferred() || !sourcesSynced || !transfersSynced) {
+                return;
+            }
+
+            const now = new Date();
+            for (const backwardSync of yield* syncRepository.getPendingBackwardSync(provider)) {
+                if ((yield* syncIntegrationTokenService.resolveAccountToken(provider, backwardSync.accountId)) === token) {
+                    yield* syncRepository.update(backwardSync.id, {
+                        ...resolveSyncProgressUpdate(backwardSync, { transactions: [], nextTo: now, nextFrom: now, completed: true }),
+                        forwardSyncedAt: now
+                    });
+                }
+            }
+        });
+
         const assertSameClient = Effect.fnUntraced(function* (integrationId: number, clientId: string) {
             const storedClientId = yield* syncIntegrationTokenService.findIntegrationClientId(integrationId);
             if (isNotEmptyString(storedClientId) && storedClientId !== clientId) {
@@ -431,6 +455,7 @@ export class BinanceSyncService extends Context.Service<BinanceSyncService>()('@
                           runSyncPhases(sync, externalAccountId, token),
                           Effect.orDie(Effect.suspend(() => binanceTradeCursorService.persistRunWarning(sync, getRunSignedClient(token))))
                       );
+                yield* completeIntegrationBackwardSyncs(token);
                 if (isPositiveNumber(changedCount)) {
                     yield* accountBalanceIncrementalService.updateAllBalances(true);
                     yield* syncWorkload.enqueueTransferConsolidation();
