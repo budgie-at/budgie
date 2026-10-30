@@ -113,10 +113,6 @@ msgstr "{categoryName}: límite alcanzado"
 msgid "{count, plural, one {{formattedAmount} rolled over across # category} other {{formattedAmount} rolled over across # categories}}"
 msgstr "{count, plural, one {{formattedAmount} trasladados a # categoría} other {{formattedAmount} trasladados a # categorías}}"
 
-#: src/categorize-inbox/components/categorize-inbox-hero/categorize-inbox-hero.tsx
-msgid "{count, plural, one {# cash} other {# cash}}"
-msgstr "{count, plural, one {# efectivo} other {# efectivo}}"
-
 #: src/category/components/category-default-icon-button/category-default-icon-button.tsx
 msgid "{count, plural, one {# category uses the default icon} other {# categories use the default icon}}"
 msgstr "{count, plural, one {# categoría usa el icono predeterminado} other {# categorías usan el icono predeterminado}}"
@@ -125,17 +121,9 @@ msgstr "{count, plural, one {# categoría usa el icono predeterminado} other {# 
 msgid "{count, plural, one {# existing transaction matches this rule.} other {# existing transactions match this rule.}}"
 msgstr "{count, plural, one {# transacción existente coincide con esta regla.} other {# transacciones existentes coinciden con esta regla.}}"
 
-#: src/categorize-inbox/components/categorize-inbox-hero/categorize-inbox-hero.tsx
-msgid "{count, plural, one {# other} other {# other}}"
-msgstr "{count, plural, one {# otro} other {# otros}}"
-
 #: src/installment-plan/component/installment-count-chip/installment-count-chip.tsx
 msgid "{count, plural, one {# payment} other {# payments}}"
 msgstr "{count, plural, one {# pago} other {# pagos}}"
-
-#: src/categorize-inbox/components/categorize-inbox-hero/categorize-inbox-hero.tsx
-msgid "{count, plural, one {# ready} other {# ready}}"
-msgstr "{count, plural, one {# listo} other {# listos}}"
 
 #: src/settings/utils/get-sync-repair-text.util.ts
 msgid "{count, plural, one {# sync repair} other {# sync repairs}}"
@@ -148,10 +136,6 @@ msgstr "{count, plural, one {# sin categoría} other {# sin categoría}}"
 #: src/budget/components/budget-verdict-footer/budget-verdict-footer.tsx
 msgid "{count, plural, one {# upcoming bill} other {# upcoming bills}}"
 msgstr "{count, plural, one {# pago próximo} other {# pagos próximos}}"
-
-#: src/categorize-inbox/components/categorize-inbox-hero/categorize-inbox-hero.tsx
-msgid "{count, plural, one {# your call} other {# your call}}"
-msgstr "{count, plural, one {# tú decides} other {# tú decides}}"
 
 #: src/category/hooks/use-delete-category.hook.ts
 msgid "{count, plural, one {This category has # transaction. Select another category to reassign it to.} other {This category has # transactions. Select another category to reassign them to.}}"
@@ -930,6 +914,7 @@ msgid "Already syncing"
 msgstr "Ya sincronizando"
 
 #: src/categorize-inbox/components/categorize-inbox-group-already-tracked-option/categorize-inbox-group-already-tracked-option.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-primary-bar/categorize-inbox-group-primary-bar.tsx
 msgid "Already tracked"
 msgstr "Ya registrado"
 
@@ -1384,6 +1369,11 @@ msgstr "Trasladar ahorros"
 msgid "Cash"
 msgstr "Efectivo"
 
+#: src/categorize-inbox/components/categorize-inbox-section-chip/categorize-inbox-section-chip.tsx
+msgctxt "Categorize inbox section chip"
+msgid "Cash"
+msgstr "Efectivo"
+
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
 msgid "cash from an ATM"
 msgstr "efectivo de cajero"
@@ -1496,6 +1486,10 @@ msgstr "Elige un PIN"
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "Choose a preset to auto-fill column mappings"
 msgstr "Elige un preset para autocompletar las asignaciones de columnas"
+
+#: src/categorize-inbox/components/categorize-inbox-group-primary-bar/categorize-inbox-group-primary-bar.tsx
+msgid "Choose account"
+msgstr "Elegir cuenta"
 
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Choose accounts"
@@ -2820,12 +2814,18 @@ msgstr "Campo"
 msgid "File"
 msgstr "Archivo"
 
-#: src/categorize-inbox/components/categorize-inbox-group-already-tracked-option/categorize-inbox-group-already-tracked-option.tsx
-#: src/categorize-inbox/components/categorize-inbox-group-label-option/categorize-inbox-group-label-option.tsx
 #: src/categorize-inbox/components/categorize-inbox-group-row-file-button/categorize-inbox-group-row-file-button.tsx
 msgctxt "Apply a category action"
 msgid "File"
 msgstr "Archivar"
+
+#: src/categorize-inbox/components/categorize-inbox-group-file-bar/categorize-inbox-group-file-bar.tsx
+msgid "File {count} as {labelTitle}"
+msgstr "Archivar {count} como {labelTitle}"
+
+#: src/categorize-inbox/components/categorize-inbox-group-file-bar/categorize-inbox-group-file-bar.tsx
+msgid "File {count} as {labelTitle} · {totalLabel}"
+msgstr "Archivar {count} como {labelTitle} · {totalLabel}"
 
 #: src/categorize-inbox/components/categorize-inbox-group-row-file-button/categorize-inbox-group-row-file-button.tsx
 msgid "File {merchantTitle} as {candidateTitle}"
@@ -3644,9 +3644,9 @@ msgstr "Más categorías"
 msgid "More tags"
 msgstr "Más etiquetas"
 
-#: src/categorize-inbox/components/categorize-inbox-group-move-to-cash-option/categorize-inbox-group-move-to-cash-option.tsx
-msgid "Move"
-msgstr "Mover"
+#: src/categorize-inbox/components/categorize-inbox-group-primary-bar/categorize-inbox-group-primary-bar.tsx
+msgid "Move {cashCount} to cash"
+msgstr "Mover {cashCount} a efectivo"
 
 #: src/categorize-inbox/components/categorize-inbox-group-row-cash-button/categorize-inbox-group-row-cash-button.tsx
 msgid "Move {displayTitle} to cash"
@@ -4196,6 +4196,11 @@ msgstr "Transacción original"
 msgid "Other"
 msgstr "Otros"
 
+#: src/categorize-inbox/components/categorize-inbox-section-chip/categorize-inbox-section-chip.tsx
+msgctxt "Categorize inbox section chip"
+msgid "Other"
+msgstr "Otros"
+
 #: src/categorize-inbox/components/categorize-inbox-transfer-accounts/categorize-inbox-transfer-accounts.tsx
 msgid "Other accounts"
 msgstr "Otras cuentas"
@@ -4511,6 +4516,11 @@ msgstr "Leyendo recibos · {current} de {total}"
 #: src/ai/constant/ai-download-card-visuals.constant.ts
 msgid "Ready"
 msgstr "Listo"
+
+#: src/categorize-inbox/components/categorize-inbox-section-chip/categorize-inbox-section-chip.tsx
+msgctxt "Categorize inbox section chip"
+msgid "Ready"
+msgstr "Listos"
 
 #: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
 msgid "Ready to file"
@@ -5835,7 +5845,6 @@ msgstr "Transacciones sincronizadas"
 msgid "Transcription failed"
 msgstr "Error de transcripción"
 
-#: src/categorize-inbox/components/categorize-inbox-group-learned-transfer-option/categorize-inbox-group-learned-transfer-option.tsx
 #: src/categorize-inbox/components/categorize-inbox-group-row-subtitle/categorize-inbox-group-row-subtitle.tsx
 #: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
@@ -5844,6 +5853,10 @@ msgstr "Error de transcripción"
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Transfer"
 msgstr "Transferencia"
+
+#: src/categorize-inbox/components/categorize-inbox-group-learned-transfer-bar/categorize-inbox-group-learned-transfer-bar.tsx
+msgid "Transfer {count} to {title}"
+msgstr "Transferir {count} a {title}"
 
 #: src/rule/components/rule-action-pill/rule-action-pill.tsx
 msgid "Transfer → {accountTitle}"
@@ -6340,6 +6353,11 @@ msgid "Your budget is ahead of pace"
 msgstr "Tu presupuesto va por delante del ritmo"
 
 #: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
+msgid "Your call"
+msgstr "Tú decides"
+
+#: src/categorize-inbox/components/categorize-inbox-section-chip/categorize-inbox-section-chip.tsx
+msgctxt "Categorize inbox section chip"
 msgid "Your call"
 msgstr "Tú decides"
 

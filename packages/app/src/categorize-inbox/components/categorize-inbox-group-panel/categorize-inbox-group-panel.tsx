@@ -3,6 +3,7 @@ import { Text, View } from 'react-native';
 
 import { getCategorizeInboxMonthlyCounts } from '../../utils/get-categorize-inbox-monthly-counts.util';
 import { hasCategorizeInboxMonthlyVariation } from '../../utils/has-categorize-inbox-monthly-variation.util';
+import { hasCategorizeInboxUniformAmounts } from '../../utils/has-categorize-inbox-uniform-amounts.util';
 import { CategorizeInboxGroupStatsLine } from '../categorize-inbox-group-stats-line/categorize-inbox-group-stats-line';
 import { CategorizeInboxMonthlyBars } from '../categorize-inbox-monthly-bars/categorize-inbox-monthly-bars';
 
@@ -19,6 +20,14 @@ export const CategorizeInboxGroupPanel = ({ cluster }: Props) => {
         return null;
     }
 
+    const averageLine = hasCategorizeInboxUniformAmounts(cluster.rows) ? null : (
+        <>
+            <View className="h-hairline bg-surface-separator" />
+
+            <CategorizeInboxGroupStatsLine cluster={cluster} />
+        </>
+    );
+
     return (
         <View className="mt-5xl gap-y-xl rounded-3xl bg-surface-row px-3xl py-xl" style={CONTINUOUS_CORNERS}>
             <Text className="text-primary text-[15px] font-semibold" accessibilityRole="header">
@@ -27,9 +36,7 @@ export const CategorizeInboxGroupPanel = ({ cluster }: Props) => {
 
             <CategorizeInboxMonthlyBars buckets={getCategorizeInboxMonthlyCounts(cluster.rows)} />
 
-            <View className="h-hairline bg-surface-separator" />
-
-            <CategorizeInboxGroupStatsLine cluster={cluster} />
+            {averageLine}
         </View>
     );
 };

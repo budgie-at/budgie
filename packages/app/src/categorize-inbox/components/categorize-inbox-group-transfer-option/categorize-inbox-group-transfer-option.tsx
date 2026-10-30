@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { CategorizeInboxGroupChoiceEnum } from '../../enum/categorize-inbox-group-choice.enum';
 import { useCategorizeInboxMatchedAccount } from '../../hook/use-categorize-inbox-matched-account.hook';
 import { getCategorizeInboxJarName } from '../../utils/get-categorize-inbox-jar-name.util';
 import { CategorizeInboxLeadOption } from '../categorize-inbox-lead-option/categorize-inbox-lead-option';
@@ -36,12 +37,11 @@ export const CategorizeInboxGroupTransferOption = ({ cluster, isLead }: Props) =
     if (isLead) {
         return (
             <CategorizeInboxLeadOption
+                choice={CategorizeInboxGroupChoiceEnum.TRANSFER}
                 icon={UserIconNameEnum.ArrowLeftRight}
                 title={leadTitle}
                 subtitle={leadSubtitle}
                 variant="neutral"
-                accessory={<CategorizeInboxOptionChevron />}
-                onPress={handlePress}
             />
         );
     }

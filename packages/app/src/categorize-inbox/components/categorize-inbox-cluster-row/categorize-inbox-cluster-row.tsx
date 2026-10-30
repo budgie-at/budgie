@@ -54,8 +54,10 @@ export const CategorizeInboxClusterRow = ({ row, displayTitle }: Props) => {
             accessibilityLabel={accessibilityLabel}
             {...testID(CategorizeInboxClusterRowSelector.Row, row.transactionId)}
         >
-            <View className="absolute top-0 right-0 left-[52px] h-hairline bg-surface-separator" pointerEvents="none" />
-            <CategorizeInboxSelectionIndicator isSelected={isIncluded} />
+            <View className="absolute top-0 right-0 left-[64px] h-hairline bg-surface-separator" pointerEvents="none" />
+            <View className="w-[36px] items-center">
+                <CategorizeInboxSelectionIndicator isSelected={isIncluded} />
+            </View>
 
             <View className={contentClassName}>
                 <View className="min-w-0 flex-1">

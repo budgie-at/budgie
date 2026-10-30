@@ -8,6 +8,7 @@ import { defaultInstrumentAtom } from '../../../settings/constants/settings-atom
 import { useCategorizeInboxAmountLabel } from '../../hook/use-categorize-inbox-amount-label.hook';
 import { getCategorizeInboxClusterTotal } from '../../utils/get-categorize-inbox-cluster-total.util';
 import { hasCategorizeInboxMonthlyVariation } from '../../utils/has-categorize-inbox-monthly-variation.util';
+import { hasCategorizeInboxUniformAmounts } from '../../utils/has-categorize-inbox-uniform-amounts.util';
 import { CategorizeInboxGroupFinding } from '../categorize-inbox-group-finding/categorize-inbox-group-finding';
 import { CategorizeInboxGroupStatsLine } from '../categorize-inbox-group-stats-line/categorize-inbox-group-stats-line';
 
@@ -22,7 +23,7 @@ export const CategorizeInboxGroupHero = ({ cluster }: Props) => {
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
 
     const { amount, symbol, sign } = getCategorizeInboxClusterTotal(cluster, defaultInstrument.symbol);
-    const isAverageShown = cluster.rows.length > 1 && !hasCategorizeInboxMonthlyVariation(cluster.rows);
+    const isAverageShown = !hasCategorizeInboxUniformAmounts(cluster.rows) && !hasCategorizeInboxMonthlyVariation(cluster.rows);
     const amountColorClassName = cluster.rows.at(0)?.type === TransactionTypeEnum.INCOME ? 'text-positive-foreground' : 'text-primary';
     const averageLine = isAverageShown ? <CategorizeInboxGroupStatsLine cluster={cluster} /> : null;
 

@@ -53,7 +53,7 @@ appId: ${APP_ID}
 - tapOn:
       id: 'CategorizeInboxGroupRow.EXPENSE\|e2e confident coffee\|\|'
 - tapOn:
-      id: 'CategorizeInboxGroupScreen.Option.Choose which payments'
+      id: 'CategorizeInboxGroupScreen.Option.Choose payments'
 - extendedWaitUntil:
       visible:
           id: 'CategorizeInboxClusterRow.3'
@@ -79,6 +79,8 @@ appId: ${APP_ID}
 
 - tapOn:
       id: 'CategorizeInboxGroupScreen.Option.Restaurants & Cafes'
+- tapOn:
+      id: 'CategorizeInboxGroupScreen.PrimaryButton'
 - assertVisible: '1 to sort.*'
 - assertNotVisible:
       id: 'CategorizeInboxGroupRow.EXPENSE\|e2e confident coffee\|\|'
@@ -198,6 +200,8 @@ appId: ${APP_ID}
       id: 'CategorizeInboxGroupRow.EXPENSE\|e2e tagged grocer\|\|'
 - tapOn:
       id: 'CategorizeInboxGroupScreen.Option.Groceries'
+- tapOn:
+      id: 'CategorizeInboxGroupScreen.PrimaryButton'
 - assertVisible: '1 to sort.*'
 
 - tapOn:

@@ -1,6 +1,5 @@
 import { CategorizeInboxSectionEnum } from '@budgie/categorization';
 import { Link } from 'expo-router';
-import { useState } from 'react';
 import { Text, View } from 'react-native';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -12,13 +11,11 @@ import { CategorizeInboxGroupRowCashButton } from '../categorize-inbox-group-row
 import { CategorizeInboxGroupRowFileButton } from '../categorize-inbox-group-row-file-button/categorize-inbox-group-row-file-button';
 import { CategorizeInboxGroupRowSubtitle } from '../categorize-inbox-group-row-subtitle/categorize-inbox-group-row-subtitle';
 import { CategorizeInboxMerchantBadge } from '../categorize-inbox-merchant-badge/categorize-inbox-merchant-badge';
-import { CategorizeInboxOptionChevron } from '../categorize-inbox-option-chevron/categorize-inbox-option-chevron';
 
 import { CategorizeInboxGroupRowSelector } from './categorize-inbox-group-row.selector';
 
 import type { TransactionListRowPositionEnum } from '../../../transaction/enum/transaction-list-row-position.enum';
 import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
-import type { LayoutChangeEvent } from 'react-native';
 
 interface Props {
     readonly cluster: CategorizeInboxClusterInterface;
@@ -26,32 +23,24 @@ interface Props {
 }
 
 export const CategorizeInboxGroupRow = ({ cluster, position }: Props) => {
-    const [actionWidth, setActionWidth] = useState(0);
-
     const { key, displayTitle, section } = cluster;
     const isCash = section === CategorizeInboxSectionEnum.CASH_WITHDRAWALS;
     const hasAction = isCash || section === CategorizeInboxSectionEnum.CONFIDENT;
 
     const href = { pathname: '/categorize/group/[key]', params: { key } } as const;
-    const actionSpacerStyle = { width: actionWidth };
     const trailing = hasAction ? (
         <View className="items-end gap-y-xxs">
             <CategorizeInboxGroupRowAmount cluster={cluster} />
-            <View className="h-[32px]" style={actionSpacerStyle} />
+            <View className="h-[32px] w-[88px]" />
         </View>
     ) : (
-        <>
-            <CategorizeInboxGroupRowAmount cluster={cluster} />
-            <CategorizeInboxOptionChevron />
-        </>
+        <CategorizeInboxGroupRowAmount cluster={cluster} />
     );
     const action = isCash ? (
         <CategorizeInboxGroupRowCashButton cluster={cluster} />
     ) : (
         <CategorizeInboxGroupRowFileButton cluster={cluster} />
     );
-
-    const handleActionLayout = (event: LayoutChangeEvent) => void setActionWidth(event.nativeEvent.layout.width);
 
     return (
         <CategorizeInboxCardRow position={position}>
@@ -82,7 +71,7 @@ export const CategorizeInboxGroupRow = ({ cluster, position }: Props) => {
                     >
                         <CategorizeInboxGroupRowAmount cluster={cluster} />
                     </View>
-                    <View onLayout={handleActionLayout}>{action}</View>
+                    {action}
                 </View>
             ) : null}
         </CategorizeInboxCardRow>

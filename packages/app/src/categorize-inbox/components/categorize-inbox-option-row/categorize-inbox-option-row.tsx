@@ -9,16 +9,18 @@ import { CategorizeInboxGroupScreenSelector } from '../categorize-inbox-group-sc
 
 import type { UserIconType } from '@budgie/contracts';
 import type { ReactNode } from 'react';
+import type { AccessibilityState } from 'react-native';
 
 interface Props {
     readonly icon: UserIconType;
     readonly title: string;
     readonly subtitle?: string;
     readonly accessory?: ReactNode;
+    readonly accessibilityState?: AccessibilityState;
     readonly onPress: () => void;
 }
 
-export const CategorizeInboxOptionRow = ({ icon, title, subtitle, accessory, onPress }: Props) => {
+export const CategorizeInboxOptionRow = ({ icon, title, subtitle, accessory, accessibilityState, onPress }: Props) => {
     const subtitleNode = isNotEmptyString(subtitle) ? (
         <Text className="text-secondary-foreground text-[13px]" numberOfLines={1}>
             {subtitle}
@@ -30,6 +32,7 @@ export const CategorizeInboxOptionRow = ({ icon, title, subtitle, accessory, onP
             onPress={onPress}
             className="min-h-[60px] flex-row items-center gap-x-xl px-3xl py-xl active:opacity-70"
             accessibilityRole="button"
+            accessibilityState={accessibilityState}
             {...testID(CategorizeInboxGroupScreenSelector.Option, title)}
         >
             <View className="absolute top-0 right-0 left-[64px] h-hairline bg-surface-separator" pointerEvents="none" />

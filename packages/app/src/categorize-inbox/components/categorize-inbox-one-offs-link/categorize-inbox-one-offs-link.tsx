@@ -7,7 +7,6 @@ import { Text, View } from 'react-native';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { CategorizeInboxCardRow } from '../categorize-inbox-card-row/categorize-inbox-card-row';
-import { CategorizeInboxOptionChevron } from '../categorize-inbox-option-chevron/categorize-inbox-option-chevron';
 
 import { CategorizeInboxOneOffsLinkSelector } from './categorize-inbox-one-offs-link.selector';
 
@@ -51,7 +50,6 @@ export const CategorizeInboxOneOffsLink = ({ oneOffs, position }: Props) => {
                         {groupsText}
                     </Text>
                     <Text className="shrink-0 text-[13px] text-secondary-foreground tabular-nums">{paymentsText}</Text>
-                    <CategorizeInboxOptionChevron />
                 </HapticPressable>
             </Link>
         </CategorizeInboxCardRow>

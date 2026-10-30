@@ -14,8 +14,11 @@ export const CategorizeInboxRecentPaymentRow = ({ row }: Props) => {
     const { formatWeekdayAndDay, formatTime } = useFormatDate();
 
     return (
-        <View className="min-h-[52px] flex-row items-center gap-x-md px-3xl py-xl" accessible>
-            <View className="absolute top-0 right-0 left-[16px] h-hairline bg-surface-separator" pointerEvents="none" />
+        <View className="min-h-[60px] flex-row items-center gap-x-xl px-3xl py-xl" accessible>
+            <View className="absolute top-0 right-0 left-[64px] h-hairline bg-surface-separator" pointerEvents="none" />
+            <View className="size-[36px] items-center justify-center rounded-full bg-secondary-foreground/15">
+                <Text className="text-primary text-[15px] font-semibold tabular-nums">{row.operatedAt.getDate()}</Text>
+            </View>
             <Text className="text-primary min-w-0 flex-1 text-[17px] tabular-nums" numberOfLines={1}>
                 {formatWeekdayAndDay(row.operatedAt)}
                 <Text className="text-secondary-foreground">{` · ${formatTime(row.operatedAt)}`}</Text>

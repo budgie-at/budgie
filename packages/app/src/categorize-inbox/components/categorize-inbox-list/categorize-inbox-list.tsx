@@ -1,10 +1,13 @@
 import { CategorizeInboxSectionEnum } from '@budgie/categorization';
+import { useRef } from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useBottomChromeInset } from '@rnw-community/react-native-screen-chrome';
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { CollapsibleChromeLegendList } from '../../../@generic/component/collapsible-chrome-legend-list/collapsible-chrome-legend-list';
 import { LEGEND_LIST_STYLE } from '../../../@generic/constant/legend-list.constant';
+import { SCREEN_CHROME_CONTENT_INSET_TOP } from '../../../@generic/constant/screen-chrome-content-inset.constant';
 import { isCategorizeInboxCluster } from '../../type-guard/is-categorize-inbox-cluster.type-guard';
 import { getCategorizeInboxRowPosition } from '../../utils/get-categorize-inbox-row-position.util';
 import { CategorizeInboxGroupRow } from '../categorize-inbox-group-row/categorize-inbox-group-row';
@@ -14,7 +17,7 @@ import { CategorizeInboxSectionHeader } from '../categorize-inbox-section-header
 
 import type { CategorizeInboxOneOffsLinkItemInterface } from '../../interface/categorize-inbox-one-offs-link-item.interface';
 import type { CategorizeInboxListItemType } from '@budgie/categorization';
-import type { LegendListRenderItemProps } from '@legendapp/list/react-native';
+import type { LegendListRef, LegendListRenderItemProps } from '@legendapp/list/react-native';
 
 interface Props {
     readonly items: CategorizeInboxListItemType[];
@@ -24,10 +27,15 @@ const LIST_BOTTOM_CLEARANCE = 24;
 const INLINE_ONE_OFF_LIMIT = 5;
 
 export const CategorizeInboxList = ({ items }: Props) => {
-    const { chromeHeight } = useBottomChromeInset();
+    const listRef = useRef<LegendListRef>(null);
 
-    const oneOffs = items.filter(isCategorizeInboxCluster).filter(cluster => cluster.section === CategorizeInboxSectionEnum.ONE_OFFS);
-    const hiddenOneOffs = oneOffs.slice(INLINE_ONE_OFF_LIMIT);
+    const { chromeHeight } = useBottomChromeInset();
+    const { top } = useSafeAreaInsets();
+
+    const hiddenOneOffs = items
+        .filter(isCategorizeInboxCluster)
+        .filter(cluster => cluster.section === CategorizeInboxSectionEnum.ONE_OFFS)
+        .slice(INLINE_ONE_OFF_LIMIT);
     const hiddenKeys = new Set(hiddenOneOffs.map(cluster => cluster.key));
     const oneOffsLink: CategorizeInboxOneOffsLinkItemInterface[] = isNotEmptyArray(hiddenOneOffs)
         ? [{ key: 'one-offs-link', oneOffs: hiddenOneOffs }]
@@ -61,10 +69,19 @@ export const CategorizeInboxList = ({ items }: Props) => {
         return <CategorizeInboxGroupRow cluster={item} position={positions[index]} />;
     };
 
+    const handleSectionPress = (section: CategorizeInboxSectionEnum): void => {
+        const index = data.findIndex(item => !('rows' in item) && !('oneOffs' in item) && item.section === section);
+
+        if (index >= 0) {
+            void listRef.current?.scrollToIndex({ index, animated: true, viewOffset: top + SCREEN_CHROME_CONTENT_INSET_TOP });
+        }
+    };
+
     const contentContainerStyle = { paddingBottom: chromeHeight + LIST_BOTTOM_CLEARANCE };
 
     return (
         <CollapsibleChromeLegendList
+            ref={listRef}
             style={LEGEND_LIST_STYLE}
             data={data}
             keyExtractor={keyExtractor}
@@ -74,7 +91,7 @@ export const CategorizeInboxList = ({ items }: Props) => {
             getItemType={getItemType}
             drawDistance={600}
             contentContainerStyle={contentContainerStyle}
-            ListHeaderComponent={<CategorizeInboxHero />}
+            ListHeaderComponent={<CategorizeInboxHero onSectionPress={handleSectionPress} />}
         />
     );
 };

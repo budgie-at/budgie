@@ -1,12 +1,13 @@
 import { useRouter } from 'expo-router';
 import { Text, View } from 'react-native';
 
-import { BottomChromeInsetProvider, EdgeFade, ScreenChromeFrame, ScreenChromeHeader } from '@rnw-community/react-native-screen-chrome';
+import { BottomChromeInsetProvider, ScreenChromeFrame, ScreenChromeHeader } from '@rnw-community/react-native-screen-chrome';
 import { isNotEmptyString } from '@rnw-community/shared';
 
 import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
 import { ScreenChromeThemeProvider } from '../../../@generic/provider/screen-chrome-theme.provider';
 import { testID } from '../../../@generic/utils/test-id.util';
+import { AccountDetailsHeaderBackdrop } from '../../../account/component/account-details-header-backdrop/account-details-header-backdrop';
 
 import type { ReactNode } from 'react';
 
@@ -42,7 +43,7 @@ export const CategorizeInboxScreenChrome = ({ children, title, titleTestID }: Pr
                 <ScreenChromeFrame>
                     {children}
 
-                    <EdgeFade position="top" />
+                    <AccountDetailsHeaderBackdrop />
 
                     <ScreenChromeHeader>
                         {titleNode}

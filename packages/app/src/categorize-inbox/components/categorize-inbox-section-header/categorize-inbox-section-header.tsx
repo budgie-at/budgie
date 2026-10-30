@@ -1,15 +1,14 @@
 import { CategorizeInboxSectionEnum } from '@budgie/categorization';
-import { convertFromMicroUnits } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { testID } from '../../../@generic/utils/test-id.util';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
+import { useCategorizeInboxAmountLabel } from '../../hook/use-categorize-inbox-amount-label.hook';
 import { isCategorizeInboxCluster } from '../../type-guard/is-categorize-inbox-cluster.type-guard';
 import { getCategorizeInboxDefaultAmount } from '../../utils/get-categorize-inbox-default-amount.util';
 
@@ -22,7 +21,7 @@ interface Props {
 
 export const CategorizeInboxSectionHeader = ({ section, rowCount }: Props) => {
     const { t } = useLingui();
-    const protectAmount = useProtectedAmountLabel();
+    const amountLabel = useCategorizeInboxAmountLabel();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const { items } = useCategorizeInboxContext();
 
@@ -39,7 +38,7 @@ export const CategorizeInboxSectionHeader = ({ section, rowCount }: Props) => {
             .flatMap(cluster => cluster.rows),
         defaultInstrument
     );
-    const totalText = isDefined(totalAmount) ? protectAmount(convertFromMicroUnits(totalAmount), defaultInstrument.symbol) : '';
+    const totalText = isDefined(totalAmount) ? amountLabel(totalAmount, defaultInstrument.symbol) : '';
 
     return (
         <View

@@ -8,7 +8,7 @@ import type { CategorizeInboxFindingInterface } from '../interface/categorize-in
 import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
 
 const DAYS_PER_WEEK = 7;
-const MONTHLY_MIN_COUNT = 3;
+const MONTHLY_MIN_COUNT = 4;
 const RATE_MIN_COUNT = 2;
 
 const getKind = (count: number, perDay: number, distinctMonths: number, spanMonths: number): CategorizeInboxFindingKindEnum => {
