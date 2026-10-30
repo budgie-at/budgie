@@ -18,7 +18,7 @@ export default function ConvertToRefundModal() {
     }
 
     return (
-        <View className="flex-1 bg-primary-reverse" collapsable={false} testID={ConvertToRefundModalSelector.Page}>
+        <View className="flex-1 bg-grouped-surface" collapsable={false} testID={ConvertToRefundModalSelector.Page}>
             <Stack.Screen options={screenOptions} />
             <ConvertToRefundContent refundIncomeTransactionId={refundIncomeTransactionId} resolveConvertToRefund={resolveConvertToRefund} />
         </View>

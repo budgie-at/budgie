@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.129.0](https://github.com/budgie-at/budgie/compare/v6.128.0...v6.129.0) (2026-10-30)
+
+### Features
+
+* **app:** make grouped transaction lists the shared default ([37686cc](https://github.com/budgie-at/budgie/commit/37686cc1434d60e34d50822de2deb29ea755932f))
+
+
 # [6.128.0](https://github.com/budgie-at/budgie/compare/v6.127.0...v6.128.0) (2026-10-30)
 
 ### Bug Fixes
