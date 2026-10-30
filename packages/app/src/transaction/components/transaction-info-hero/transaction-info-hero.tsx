@@ -1,13 +1,15 @@
 import { AmountField, AmountFieldText } from '@budgie/amount-input';
 import { TransactionConsolidationTypeEnum, TransactionTypeEnum, convertFromMicroUnits } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
+import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { cn } from '../../../@generic/utils/cn.util';
-import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { MatchingRulesPill } from '../../../rule/components/matching-rules-pill/matching-rules-pill';
+import { TRANSACTION_TYPE } from '../../constant/transaction-type.constant';
 import { formatTransactionInfoAmount } from '../../utils/format-transaction-info-amount.util';
 import { getTransactionDisplayTitle } from '../../utils/get-transaction-display-title.util';
 import { getTransactionInfoDestinationEntry } from '../../utils/get-transaction-info-destination-entry.util';
@@ -28,10 +30,12 @@ interface Props {
 }
 
 export const TransactionInfoHero = ({ transaction, matchingRuleIds, onOpenRefundSources, onTitleLayout }: Props) => {
-    const formatDigits = useDisplayFormatDigits();
+    const { t } = useLingui();
+    const formatDigits = useProtectedAmountLabel();
     const { formatDayAndMonthAndYearWithTime } = useFormatDate();
     const amountClassName = getTransactionType(transaction) === TransactionTypeEnum.INCOME ? 'text-positive-foreground' : 'text-primary';
-    const title = getTransactionDisplayTitle(transaction);
+    const displayTitle = getTransactionDisplayTitle(transaction);
+    const title = isNotEmptyString(displayTitle) ? displayTitle : t(TRANSACTION_TYPE[transaction.type]);
     const sourceEntry = getTransactionInfoPrimaryEntry(transaction);
     const destinationEntry = getTransactionInfoDestinationEntry(transaction);
     const isCrossCurrency =
@@ -55,7 +59,11 @@ export const TransactionInfoHero = ({ transaction, matchingRuleIds, onOpenRefund
             <TransactionInfoHeroIcon transaction={transaction} />
 
             <AmountField fontSize={40} className="mt-xl self-stretch">
-                <AmountFieldText className={cn('leading-[48px] font-semibold tracking-[-1px] text-center', amountClassName)} selectable>
+                <AmountFieldText
+                    testID={TransactionInfoPageSelector.Amount}
+                    className={cn('leading-[48px] font-semibold tracking-[-1px] text-center', amountClassName)}
+                    selectable
+                >
                     {formatTransactionInfoAmount(transaction, formatDigits)}
                 </AmountFieldText>
             </AmountField>
@@ -81,9 +89,7 @@ export const TransactionInfoHero = ({ transaction, matchingRuleIds, onOpenRefund
             </Text>
 
             {isNotEmptyString(transferRoute) ? (
-                <Text className="mt-xxs text-[15px] leading-[20px] text-secondary-foreground text-center" numberOfLines={2}>
-                    {transferRoute}
-                </Text>
+                <Text className="mt-xxs text-[15px] leading-[20px] text-secondary-foreground text-center">{transferRoute}</Text>
             ) : null}
 
             {showPills ? (

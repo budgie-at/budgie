@@ -1,9 +1,10 @@
 import { convertFromMicroUnits } from '@budgie/contracts';
-import { format } from 'date-fns/format';
-import { enUS } from 'date-fns/locale/en-US';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
+import { PROTECTED_AMOUNT_PLACEHOLDER } from '../../../@generic/constant/protected-amount-placeholder.constant';
+import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
+import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { TransactionInfoSimilarBar } from '../transaction-info-similar-bar/transaction-info-similar-bar';
 
 import type { SimilarTransactionMonthRowInterface } from '@budgie/contracts';
@@ -22,13 +23,16 @@ interface Props {
 
 export const TransactionInfoSimilarMonthBar = (props: Props) => {
     const { month, maxAmount, currencySymbol, currentMonthKey, formatCompactDigits, formatDigits, testID } = props;
+    const { formatMonthAndYear } = useFormatDate();
+    const isAmountProtected = useIsAmountProtected();
     const [yearText = '0', monthText = '1'] = month.monthKey.split('-');
     const monthLabelDate = new Date(Number(yearText), Number(monthText) - 1, 1);
     const hasAmount = isPositiveNumber(month.totalAmount);
     const height = hasAmount ? Math.max(8, Math.round((month.totalAmount / maxAmount) * BAR_MAX_HEIGHT)) : 0;
-    const label = format(monthLabelDate, 'MMM yy', { locale: enUS });
+    const label = formatMonthAndYear(monthLabelDate);
     const amount = convertFromMicroUnits(month.totalAmount);
     const value = hasAmount ? formatCompactDigits(amount, currencySymbol) : null;
+    const protectedValue = isAmountProtected ? PROTECTED_AMOUNT_PLACEHOLDER : value;
     const accessibilityValue = hasAmount ? formatDigits(amount, currencySymbol) : '';
     const barClassName = month.monthKey === currentMonthKey ? 'bg-primary' : 'bg-secondary-foreground/30';
 
@@ -36,7 +40,7 @@ export const TransactionInfoSimilarMonthBar = (props: Props) => {
         <TransactionInfoSimilarBar
             height={height}
             label={label}
-            value={value}
+            value={protectedValue}
             accessibilityValue={accessibilityValue}
             barClassName={barClassName}
             testID={testID}

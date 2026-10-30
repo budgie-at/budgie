@@ -4,7 +4,7 @@ import { useLingui } from '@lingui/react/macro';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
+import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { getTransactionInfoExchangeRate } from '../../utils/get-transaction-info-exchange-rate.util';
 import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
@@ -19,7 +19,7 @@ interface Props {
 
 export const TransactionInfoMoneyRows = ({ transaction }: Props) => {
     const { t } = useLingui();
-    const formatDigits = useDisplayFormatDigits();
+    const formatDigits = useProtectedAmountLabel();
     const formatRate = useFormatDigits(0, 4);
     const exchangeRate = getTransactionInfoExchangeRate(transaction, formatRate, formatDigits);
     const feeEntries = getTransactionFeeEntries(transaction.entries);

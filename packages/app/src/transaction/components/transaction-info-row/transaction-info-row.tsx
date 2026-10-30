@@ -1,5 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { Text, View } from 'react-native';
+import { cva } from 'class-variance-authority';
+import { Text, View, useWindowDimensions } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
@@ -20,8 +21,21 @@ interface Props {
     readonly onPress?: () => void;
 }
 
+const STACKED_AMOUNT_FONT_SCALE = 1.3;
+
+const contentVariants = cva('flex-1 min-w-0 gap-x-xl gap-y-xs', {
+    variants: {
+        largeText: {
+            true: 'items-start',
+            false: 'flex-row items-center'
+        }
+    }
+});
+
 export const TransactionInfoRow = (props: Props) => {
     const { icon, label, value, description, trailing, valueClassName, testID, onPress } = props;
+    const { fontScale } = useWindowDimensions();
+    const accessibilityLabel = [label, value, description, trailing].filter(isNotEmptyString).join(', ');
     const rowContent = (
         <>
             <View className="absolute top-0 right-0 left-[56px] h-hairline bg-surface-separator" pointerEvents="none" />
@@ -30,25 +44,27 @@ export const TransactionInfoRow = (props: Props) => {
                 <Icon icon={icon} size={22} className="text-secondary-foreground" />
             </View>
 
-            <View className="flex-1 min-w-0">
-                {isNotEmptyString(label) ? <Text className="text-[13px] leading-[18px] text-secondary-foreground">{label}</Text> : null}
-                {isNotEmptyString(value) ? (
-                    <Text className={cn('text-[17px] leading-[22px] text-primary font-medium', valueClassName)} selectable>
-                        {value}
-                    </Text>
-                ) : null}
-                {isNotEmptyString(description) ? (
-                    <Text className="text-[13px] leading-[18px] text-secondary-foreground" selectable>
-                        {description}
+            <View className={contentVariants({ largeText: fontScale > STACKED_AMOUNT_FONT_SCALE })}>
+                <View className="flex-1 min-w-0">
+                    {isNotEmptyString(label) ? <Text className="text-[13px] leading-[18px] text-secondary-foreground">{label}</Text> : null}
+                    {isNotEmptyString(value) ? (
+                        <Text className={cn('text-[17px] leading-[22px] text-primary font-medium', valueClassName)} selectable>
+                            {value}
+                        </Text>
+                    ) : null}
+                    {isNotEmptyString(description) ? (
+                        <Text className="text-[13px] leading-[18px] text-secondary-foreground" selectable>
+                            {description}
+                        </Text>
+                    ) : null}
+                </View>
+
+                {isNotEmptyString(trailing) ? (
+                    <Text className="shrink-0 text-[17px] leading-[22px] text-primary font-medium text-right tabular-nums" selectable>
+                        {trailing}
                     </Text>
                 ) : null}
             </View>
-
-            {isNotEmptyString(trailing) ? (
-                <Text className="shrink-0 text-[17px] leading-[22px] text-primary font-medium text-right tabular-nums" selectable>
-                    {trailing}
-                </Text>
-            ) : null}
 
             {isDefined(onPress) ? <Icon icon={UserIconNameEnum.ChevronRight} size={20} className="text-secondary-foreground" /> : null}
         </>
@@ -59,7 +75,7 @@ export const TransactionInfoRow = (props: Props) => {
         return (
             <HapticPressable
                 accessibilityRole="button"
-                accessibilityLabel={[label, value, description].filter(isNotEmptyString).join(', ')}
+                accessibilityLabel={accessibilityLabel}
                 onPress={onPress}
                 className="active:scale-100 active:opacity-70"
             >
@@ -71,7 +87,14 @@ export const TransactionInfoRow = (props: Props) => {
     }
 
     return (
-        <View className={rowClassName} collapsable={false} nativeID={testID} testID={testID}>
+        <View
+            accessible
+            accessibilityLabel={accessibilityLabel}
+            className={rowClassName}
+            collapsable={false}
+            nativeID={testID}
+            testID={testID}
+        >
             {rowContent}
         </View>
     );

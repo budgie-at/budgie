@@ -1,6 +1,7 @@
 import { TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { getTransactionCategoryEntries } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
+import { View } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
@@ -55,15 +56,17 @@ export const TransactionInfoCategoryRows = ({ transaction }: Props) => {
                 />
             ) : null}
 
-            {isSplit
-                ? categoryEntries.map((entry, index) => (
-                      <TransactionInfoSplitEntryRow
-                          key={entry.id}
-                          entry={entry}
-                          testID={TransactionInfoPageSelector.Row.SplitEntry(index)}
-                      />
-                  ))
-                : null}
+            {isSplit ? (
+                <View testID={TransactionInfoPageSelector.Row.Category}>
+                    {categoryEntries.map((entry, index) => (
+                        <TransactionInfoSplitEntryRow
+                            key={entry.id}
+                            entry={entry}
+                            testID={TransactionInfoPageSelector.Row.SplitEntry(index)}
+                        />
+                    ))}
+                </View>
+            ) : null}
 
             <TransactionInfoDebtRows transaction={transaction} />
 

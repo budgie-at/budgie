@@ -1,10 +1,12 @@
+import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 import Animated, { Extrapolation, interpolate, useAnimatedStyle } from 'react-native-reanimated';
 
 import { useScreenChrome, useScreenChromeScrollY } from '@rnw-community/react-native-screen-chrome';
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
+import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
+import { TRANSACTION_TYPE } from '../../constant/transaction-type.constant';
 import { formatTransactionInfoAmount } from '../../utils/format-transaction-info-amount.util';
 import { getTransactionDisplayTitle } from '../../utils/get-transaction-display-title.util';
 
@@ -19,11 +21,13 @@ const REVEAL_DISTANCE = 20;
 const Z_INDEX_STYLE = { zIndex: 4 };
 
 export const TransactionInfoNavTitle = ({ transaction, revealOffset }: Props) => {
+    const { t } = useLingui();
     const { config } = useScreenChrome();
     const scrollY = useScreenChromeScrollY();
-    const formatDigits = useDisplayFormatDigits();
+    const formatDigits = useProtectedAmountLabel();
 
-    const title = getTransactionDisplayTitle(transaction);
+    const displayTitle = getTransactionDisplayTitle(transaction);
+    const title = isNotEmptyString(displayTitle) ? displayTitle : t(TRANSACTION_TYPE[transaction.type]);
     const rowStyle = { height: config.headerHeight };
     const animatedStyle = useAnimatedStyle(() => {
         const progress = interpolate(scrollY.get(), [revealOffset, revealOffset + REVEAL_DISTANCE], [0, 1], Extrapolation.CLAMP);
@@ -33,7 +37,13 @@ export const TransactionInfoNavTitle = ({ transaction, revealOffset }: Props) =>
     const titleStyle = [rowStyle, animatedStyle];
 
     return (
-        <View className="absolute inset-x-0 top-0 pt-safe pl-[60px] pr-[116px]" style={Z_INDEX_STYLE} pointerEvents="none">
+        <View
+            className="absolute inset-x-0 top-0 pt-safe pl-[60px] pr-[116px]"
+            style={Z_INDEX_STYLE}
+            pointerEvents="none"
+            accessibilityElementsHidden
+            importantForAccessibility="no-hide-descendants"
+        >
             <Animated.View className="items-center justify-center" style={titleStyle}>
                 {isNotEmptyString(title) ? (
                     <Text className="text-[17px] leading-[22px] text-primary font-semibold text-center" numberOfLines={1}>

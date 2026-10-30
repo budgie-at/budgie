@@ -5,9 +5,9 @@ import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { THOUSAND } from '../../../i18n/constant/compact-thresholds.constant';
-import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useFormatCompactDigits } from '../../../i18n/hook/use-format-compact-digits.hook';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
 import { TransactionInfoSimilarMonthBar } from '../transaction-info-similar-month-bar/transaction-info-similar-month-bar';
@@ -24,7 +24,7 @@ const continuousCorners = { borderCurve: 'continuous' as const };
 
 export const TransactionInfoSimilarCard = ({ stats, title, isLoading }: Props) => {
     const { t } = useLingui();
-    const formatDigits = useDisplayFormatDigits();
+    const formatDigits = useProtectedAmountLabel();
     const formatCompactDigits = useFormatCompactDigits(THOUSAND);
 
     const hasStats = isDefined(stats) && stats.count > 1;
@@ -60,14 +60,14 @@ export const TransactionInfoSimilarCard = ({ stats, title, isLoading }: Props) =
                 <Text className="text-[13px] leading-[18px] text-secondary-foreground">{description}</Text>
             </View>
 
-            <View className="flex-row gap-x-7xl">
-                <View className="gap-y-xxs" collapsable={false} testID={TransactionInfoPageSelector.SimilarTotal}>
+            <View className="flex-row flex-wrap gap-x-5xl gap-y-xl">
+                <View className="flex-1 min-w-[120px] gap-y-xxs" collapsable={false} testID={TransactionInfoPageSelector.SimilarTotal}>
                     <Text className="text-[13px] leading-[18px] text-secondary-foreground">
                         <Trans>Total</Trans>
                     </Text>
                     <Text className="text-[20px] leading-[25px] text-primary font-semibold tabular-nums">{total}</Text>
                 </View>
-                <View className="gap-y-xxs" collapsable={false} testID={TransactionInfoPageSelector.SimilarAverage}>
+                <View className="flex-1 min-w-[120px] gap-y-xxs" collapsable={false} testID={TransactionInfoPageSelector.SimilarAverage}>
                     <Text className="text-[13px] leading-[18px] text-secondary-foreground">
                         <Trans>Average</Trans>
                     </Text>
@@ -75,7 +75,7 @@ export const TransactionInfoSimilarCard = ({ stats, title, isLoading }: Props) =
                 </View>
             </View>
 
-            <View className="flex-row items-end gap-x-sm h-[126px]">
+            <View className="flex-row items-end gap-x-sm min-h-[126px]">
                 {stats.months.map((month, index) => (
                     <TransactionInfoSimilarMonthBar
                         key={month.monthKey}

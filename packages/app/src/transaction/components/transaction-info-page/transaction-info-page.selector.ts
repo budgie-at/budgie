@@ -1,4 +1,5 @@
 export const TransactionInfoPageSelector = {
+    Amount: 'TransactionInfo.Amount',
     Page: 'TransactionInfo.Page',
     DeleteButton: 'TransactionActionsMenu.DeleteButton',
     EditButton: 'TransactionInfo.EditButton',

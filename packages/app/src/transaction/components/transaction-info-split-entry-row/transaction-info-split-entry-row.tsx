@@ -3,7 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
+import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { TransactionInfoRow } from '../transaction-info-row/transaction-info-row';
 
 import type { TransactionEntryWithRelationsEntityInterface } from '@budgie/contracts';
@@ -15,7 +15,7 @@ interface Props {
 
 export const TransactionInfoSplitEntryRow = ({ entry, testID }: Props) => {
     const { t } = useLingui();
-    const formatDigits = useDisplayFormatDigits();
+    const formatDigits = useProtectedAmountLabel();
     const { category } = entry;
     const icon = isDefined(category) ? category.icon : UserIconNameEnum.CircleDashed;
     const title = isDefined(category) ? category.title : t`Uncategorized`;
