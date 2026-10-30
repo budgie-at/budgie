@@ -97,13 +97,10 @@ appId: ${APP_ID}
       timeout: 5000
 - assertVisible:
       id: 'TransactionCard.Category.E2E_Txn_Category'
+      text: 'E2E Txn Category'
 - assertVisible:
-      id: 'TransactionCard.Tag.E2E_Txn_Primary_Tag'
-- assertVisible:
-      id: 'TransactionCard.TagSiblingsCount.E2E_Txn_Primary_Tag'
-      text: '+1'
-- assertVisible:
-      id: 'TransactionCard.Account.E2E_Txn_Account.Label'
+      id: 'TransactionCard.Label.E2E_Test_Expense'
+      text: '.*· E2E Txn Account,.*'
 
 - tapOn:
       id: 'TabBar.Home'
@@ -199,6 +196,12 @@ appId: ${APP_ID}
       visible:
           id: 'TransactionInfo.Page'
       timeout: 3000
+- scrollUntilVisible:
+      element:
+          id: 'TransactionInfo.Row.Tags'
+      direction: DOWN
+- assertVisible: 'E2E Txn Primary Tag'
+- assertVisible: 'E2E Txn Tag'
 - tapOn:
       id: 'PageHeader.BackButton'
 
@@ -208,13 +211,10 @@ appId: ${APP_ID}
       timeout: 5000
 - assertVisible:
       id: 'TransactionCard.Category.E2E_Edited_Category'
+      text: 'E2E Edited Category'
 - assertVisible:
-      id: 'TransactionCard.Tag.E2E_Txn_Primary_Tag'
-- assertVisible:
-      id: 'TransactionCard.TagSiblingsCount.E2E_Txn_Primary_Tag'
-      text: '+1'
-- assertVisible:
-      id: 'TransactionCard.Account.E2E_Txn_Account.Label'
+      id: 'TransactionCard.Label.E2E_Edited_Expense'
+      text: '.*· E2E Txn Account,.*'
 - assertNotVisible:
       id: 'TransactionCard.Label.E2E_Test_Expense'
 

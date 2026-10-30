@@ -1,0 +1,5 @@
+import { SCREEN_CHROME_HEADER_LAYOUT_METRICS } from '@rnw-community/react-native-screen-chrome';
+
+const HEADER_BAND_EDGE_HEIGHT = 12;
+
+export const SCREEN_CHROME_HEADER_BAND_HEIGHT = SCREEN_CHROME_HEADER_LAYOUT_METRICS.slotSize + HEADER_BAND_EDGE_HEIGHT;

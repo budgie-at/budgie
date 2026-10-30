@@ -208,12 +208,14 @@ export type { TransactionUpdateServiceInputInterface } from './transaction/input
 export type { ConsolidationScanScopeInterface } from './transaction/interface/consolidation-scan-scope.interface';
 export type { ConsolidationSourceRowInterface } from './transaction/interface/consolidation-source-row.interface';
 export type { PotentialExpenseDuplicateInputInterface } from './transaction/interface/potential-expense-duplicate-input.interface';
+export type { TransactionDayNetAmountRowInterface } from './transaction/interface/transaction-day-net-amount-row.interface';
 export type { SimilarTransactionMonthRowInterface } from './transaction/interface/similar-transaction-month-row.interface';
 export type { SimilarTransactionStatsInterface } from './transaction/interface/similar-transaction-stats.interface';
 export type { SimilarTransactionStatsQueryInterface } from './transaction/interface/similar-transaction-stats-query.interface';
 
 export { TransactionRepository } from './transaction/repository/transaction.repository';
 export { TransactionConsolidationRepository } from './transaction/repository/transaction-consolidation.repository';
+export { TransactionDayNetAmountRepository } from './transaction/repository/transaction-day-net-amount.repository';
 export { TransactionViewRepository } from './transaction/repository/transaction-view.repository';
 
 export { TagSourceEnum } from './transaction-tags/enum/tag-source.enum';

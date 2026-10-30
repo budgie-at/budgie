@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { GroupedSurface } from '../../@generic/component/grouped-surface/grouped-surface';
 import { Page } from '../../@generic/component/page/page';
 import { TransactionsPageHeader } from '../../@generic/component/transactions-page-header/transactions-page-header';
 import { TransactionsPageContent } from '../../transaction/components/transactions-page-content/transactions-page-content';
@@ -16,8 +17,10 @@ export default function TransactionsPage() {
     const header = <TransactionsPageHeader activeTab={activeTab} onChangeTab={setActiveTab} />;
 
     return (
-        <Page testID={TransactionsPageSelector.Container} header={header}>
-            <TransactionsPageContent activeTab={activeTab} tabs={TABS} onChangeTab={setActiveTab} />
-        </Page>
+        <GroupedSurface>
+            <Page testID={TransactionsPageSelector.Container} header={header}>
+                <TransactionsPageContent activeTab={activeTab} tabs={TABS} onChangeTab={setActiveTab} />
+            </Page>
+        </GroupedSurface>
     );
 }

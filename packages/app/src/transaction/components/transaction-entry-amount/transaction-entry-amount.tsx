@@ -1,4 +1,4 @@
-import { DebtEventAssociationEnum, InstrumentTypeEnum, convertFromMicroUnits } from '@budgie/contracts';
+import { DebtEventAssociationEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
@@ -19,39 +19,33 @@ interface Props {
     readonly debtEvent?: DebtEventWithRelationsEntityInterface | null;
     readonly entry: AggregatedTransactionEntryInterface;
     readonly variant: ColorPaletteVariant;
+    readonly sign: string;
     readonly testID: string;
 }
 
-const amountVariants = cva('text-sm font-semibold text-right', {
+const amountVariants = cva('text-[15px] font-semibold text-right tabular-nums', {
     variants: { variant: FOREGROUND_COLOR_PALETTE }
 });
 
-export const TransactionEntryAmount = ({ debtEvent, entry, variant, testID }: Props) => {
+export const TransactionEntryAmount = ({ debtEvent, entry, variant, sign, testID }: Props) => {
     const defaultInstrumentId = useAtomValue(defaultInstrumentIdAtom);
     const formatDigits = useDisplayFormatDigits();
 
     const amount = convertFromMicroUnits(entry.amount);
     const formattedAmount = formatDigits(amount, entry.account.instrument.symbol);
     const isCrossCurrency = entry.account.instrument.id !== defaultInstrumentId;
-    const shouldShowExchangeRate = entry.account.instrument.type === InstrumentTypeEnum.CRYPTO;
     const debtConversionEvent =
         isDefined(debtEvent) && debtEvent[DebtEventAssociationEnum.DEBT_ACCOUNT].instrument.id !== entry.account.instrument.id
             ? debtEvent
             : null;
     const debtConversionAccessibilityLabel = isDefined(debtConversionEvent)
-        ? `${formattedAmount} → ${formatDigits(
+        ? `${sign}${formattedAmount} → ${formatDigits(
               convertFromMicroUnits(debtConversionEvent.amount),
               debtConversionEvent[DebtEventAssociationEnum.DEBT_ACCOUNT].instrument.symbol
           )}`
         : null;
     const convertedAmountLabel = isCrossCurrency ? (
-        <ConvertedAmountLabel
-            instrumentId={entry.account.instrument.id}
-            instrumentSymbol={entry.account.instrument.symbol}
-            amount={entry.amount}
-            baseAmount={entry.baseAmount}
-            shouldShowExchangeRate={shouldShowExchangeRate}
-        />
+        <ConvertedAmountLabel instrumentId={entry.account.instrument.id} amount={entry.amount} baseAmount={entry.baseAmount} />
     ) : null;
     const secondaryAmountLabel = isDefined(debtConversionEvent) ? (
         <DebtSettlementConvertedAmountLabel debtEvent={debtConversionEvent} />
@@ -61,14 +55,14 @@ export const TransactionEntryAmount = ({ debtEvent, entry, variant, testID }: Pr
 
     return (
         <View
-            className="items-end"
+            className="shrink-0 items-end gap-y-xxs"
             testID={testID}
             {...(isDefined(debtConversionAccessibilityLabel) && {
                 accessibilityLabel: debtConversionAccessibilityLabel,
                 accessible: true
             })}
         >
-            <Text className={amountVariants({ variant })}>{formattedAmount}</Text>
+            <Text className={amountVariants({ variant })}>{`${sign}${formattedAmount}`}</Text>
             {secondaryAmountLabel}
         </View>
     );

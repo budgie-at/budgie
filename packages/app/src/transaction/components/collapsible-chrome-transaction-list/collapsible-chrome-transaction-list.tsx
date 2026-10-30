@@ -1,15 +1,14 @@
-import { Trans } from '@lingui/react/macro';
 import { useState } from 'react';
-import { Text, View } from 'react-native';
-
-import { isPositiveNumber } from '@rnw-community/shared';
+import { View } from 'react-native';
+import { useSharedValue } from 'react-native-reanimated';
 
 import { CollapsibleChromeLegendList } from '../../../@generic/component/collapsible-chrome-legend-list/collapsible-chrome-legend-list';
 import { CollapsibleChromePinnedBar } from '../../../@generic/component/collapsible-chrome-pinned-bar/collapsible-chrome-pinned-bar';
 import { useTransactionList } from '../../hook/use-transaction-list.hook';
-import { useGetTransactionCountQuery } from '../../query/use-get-transaction-count.query';
 import { TransactionFilters } from '../transaction-filters/transaction-filters';
+import { TransactionListCount } from '../transaction-list-count/transaction-list-count';
 import { TransactionListEmptyState } from '../transaction-list-empty-state/transaction-list-empty-state';
+import { TransactionListPinnedDay } from '../transaction-list-pinned-day/transaction-list-pinned-day';
 import { TransactionListUncategorizedPill } from '../transaction-list-uncategorized-pill/transaction-list-uncategorized-pill';
 import { TransactionSectionsList } from '../transaction-sections-list/transaction-sections-list';
 
@@ -24,50 +23,56 @@ interface Props {
 const FAB_FOOTER_SPACER_MULTIPLIER = 3;
 
 export const CollapsibleChromeTransactionList = ({ accountId, children }: Props) => {
-    const { activeFilters, setInternalFilters, hasFiltersSelected, sections, loadMore, isLoading } = useTransactionList(accountId);
-    const { count } = useGetTransactionCountQuery(activeFilters);
+    const { activeFilters, setInternalFilters, clearFilters, hasFiltersSelected, isClearAllVisible, sections, loadMore, isLoading } =
+        useTransactionList(accountId);
     const [filtersY, setFiltersY] = useState(0);
     const [pinnedFiltersHeight, setPinnedFiltersHeight] = useState(0);
+    const headerOffsets = useSharedValue<number[]>([]);
 
     const handleFiltersLayout = (event: LayoutChangeEvent) => void setFiltersY(event.nativeEvent.layout.y);
 
-    const countLabel = isPositiveNumber(count) ? ` ${count}` : '';
     const filtersSpacerStyle = { height: pinnedFiltersHeight };
 
     const listHeader = (
         <View>
-            <View className="pb-5xl">{children}</View>
-
-            <Text className="text-primary text-lg font-semibold">
-                <Trans>Transactions</Trans>
-                <Text className="text-secondary-foreground font-normal">{countLabel}</Text>
-            </Text>
+            <View className="pb-md">{children}</View>
 
             <View style={filtersSpacerStyle} onLayout={handleFiltersLayout} />
-
-            <TransactionListUncategorizedPill filters={activeFilters} />
         </View>
     );
 
     return (
         <>
-            <TransactionSectionsList
-                sections={sections}
-                onEndReached={loadMore}
-                listEmptyState={<TransactionListEmptyState isLoading={isLoading} hasFiltersSelected={hasFiltersSelected} />}
-                accountId={accountId}
-                footerSpacerMultiplier={FAB_FOOTER_SPACER_MULTIPLIER}
-                listHeader={listHeader}
-                listComponent={CollapsibleChromeLegendList}
-                stickyHeaderOffset={pinnedFiltersHeight}
-            />
+            <TransactionListCount filters={activeFilters}>
+                <TransactionSectionsList
+                    sections={sections}
+                    onEndReached={loadMore}
+                    listEmptyState={
+                        <TransactionListEmptyState
+                            isLoading={isLoading}
+                            hasFiltersSelected={hasFiltersSelected}
+                            onClearFilters={clearFilters}
+                        />
+                    }
+                    accountId={accountId}
+                    footerSpacerMultiplier={FAB_FOOTER_SPACER_MULTIPLIER}
+                    listHeader={listHeader}
+                    listComponent={CollapsibleChromeLegendList}
+                    headerOffsets={headerOffsets}
+                />
+            </TransactionListCount>
 
-            <CollapsibleChromePinnedBar anchorY={filtersY} onHeightChange={setPinnedFiltersHeight}>
+            <CollapsibleChromePinnedBar
+                anchorY={filtersY}
+                onHeightChange={setPinnedFiltersHeight}
+                pinnedFooter={<TransactionListPinnedDay sections={sections} headerOffsets={headerOffsets} anchorY={filtersY} />}
+            >
                 <TransactionFilters
                     filters={activeFilters}
                     onChange={setInternalFilters}
                     accountId={accountId}
-                    hasFiltersSelected={hasFiltersSelected}
+                    isClearAllVisible={isClearAllVisible}
+                    leading={<TransactionListUncategorizedPill filters={activeFilters} />}
                 />
             </CollapsibleChromePinnedBar>
         </>

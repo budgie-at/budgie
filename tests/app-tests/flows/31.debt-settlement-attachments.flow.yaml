@@ -33,7 +33,9 @@ appId: ${APP_ID}
           id: 'TransactionCard.Label.E2E_Debt_Attach_Expense'
       timeout: 5000
 - extendedWaitUntil:
-      visible: 'Debt · E2E Lent Expense Debt'
+      visible:
+          id: 'TransactionCard.Label.E2E_Debt_Attach_Expense'
+          text: '.*, From E2E Txn Account to E2E Lent Expense Debt,.*'
       timeout: 10000
 
 - tapOn:
@@ -161,7 +163,9 @@ appId: ${APP_ID}
       visible:
           id: 'TransactionCard.Label.E2E_Debt_Attach_Income'
       timeout: 5000
-- assertVisible: 'Debt · E2E Lent Debt'
+- assertVisible:
+      id: 'TransactionCard.Label.E2E_Debt_Attach_Income'
+      text: '.*, Repayment · E2E Lent Debt,.*'
 
 - tapOn:
       id: 'TabBar.Home'
@@ -229,7 +233,9 @@ appId: ${APP_ID}
           ACCOUNT_NAME: 'E2E Lent Debt'
 
 - extendedWaitUntil:
-      visible: 'Debt · E2E Lent Debt'
+      visible:
+          id: 'TransactionCard.Label.E2E_Lent_Debt_Extra_Lending'
+          text: '.*, From E2E EUR Debt Funding Account,.*'
       timeout: 10000
 
 - tapOn:
@@ -311,7 +317,9 @@ appId: ${APP_ID}
       element:
           id: 'TransactionCard.Label.E2E_Borrowed_Debt_Attach_Expense'
       direction: DOWN
-- assertVisible: 'Debt · E2E Borrowed Debt'
+- assertVisible:
+      id: 'TransactionCard.Label.E2E_Borrowed_Debt_Attach_Expense'
+      text: '.*, Repayment,.*'
 
 - tapOn:
       id: 'TabBar.Home'
@@ -391,7 +399,9 @@ appId: ${APP_ID}
       element:
           id: 'TransactionCard.Label.E2E_Borrowed_Debt_Attach_Income'
       direction: DOWN
-- assertVisible: 'Debt · E2E Borrowed Debt'
+- assertVisible:
+      id: 'TransactionCard.Label.E2E_Borrowed_Debt_Attach_Income'
+      text: '.*, To E2E Txn Account,.*'
 
 - tapOn:
       id: 'TabBar.Home'
@@ -463,7 +473,9 @@ appId: ${APP_ID}
       element:
           id: 'TransactionCard.Label.E2E_Completed_Debt_Attach_Income'
       direction: DOWN
-- assertVisible: 'Debt · E2E Completed Debt'
+- assertVisible:
+      id: 'TransactionCard.Label.E2E_Completed_Debt_Attach_Income'
+      text: '.*, (Repayment|To E2E Txn Account),.*'
 
 - tapOn:
       id: 'TabBar.Home'
@@ -522,7 +534,9 @@ appId: ${APP_ID}
       visible:
           id: 'TransactionCard.Label.E2E_Fee_Debt_Attach_Expense'
       timeout: 5000
-- assertVisible: 'Debt · E2E Lent Debt'
+- assertVisible:
+      id: 'TransactionCard.Label.E2E_Fee_Debt_Attach_Expense'
+      text: '.*, From E2E Txn Account to E2E Lent Debt,.*'
 
 - tapOn:
       id: 'TabBar.Home'
@@ -575,7 +589,9 @@ appId: ${APP_ID}
       visible:
           id: 'TransactionCard.Label.E2E_Cross_Currency_Debt_Attach'
       timeout: 5000
-- assertVisible: 'Debt · E2E Borrowed Debt'
+- assertVisible:
+      id: 'TransactionCard.Label.E2E_Cross_Currency_Debt_Attach'
+      text: '.*, Repayment · E2E Borrowed Debt,.*'
 
 - tapOn:
       id: 'TabBar.Home'
@@ -657,6 +673,5 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
       visible:
-          id: 'TransactionCard.EntryCategoryAmount.Lending.100'
+          text: 'From E2E Txn Account to E2E Lent Debt'
       timeout: 10000
-- assertVisible: 'Debt · E2E Lent Debt'

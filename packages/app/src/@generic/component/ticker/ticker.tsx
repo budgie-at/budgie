@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode, useLayoutEffect, useRef, useState } from 'react';
 import { LayoutChangeEvent, View, type ViewProps } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -35,6 +35,7 @@ export const Ticker = (props: Props) => {
         children
     } = props;
 
+    const containerRef = useRef<View>(null);
     const [containerWidth, setContainerWidth] = useState(0);
 
     const charArray = number.toString().split('');
@@ -48,6 +49,12 @@ export const Ticker = (props: Props) => {
         defaultSize: fontSize,
         charCount: charArray.length
     });
+
+    useLayoutEffect(() => {
+        if (!isDefined(availableWidth) && isDefined(containerRef.current)) {
+            setContainerWidth(containerRef.current.getBoundingClientRect().width);
+        }
+    }, [availableWidth]);
 
     const handleLayout = (event: LayoutChangeEvent): void => {
         setContainerWidth(event.nativeEvent.layout.width);
@@ -81,7 +88,13 @@ export const Ticker = (props: Props) => {
     });
 
     return (
-        <View accessible={accessible} className="w-full" testID={testID} {...(!isDefined(availableWidth) && { onLayout: handleLayout })}>
+        <View
+            ref={containerRef}
+            accessible={accessible}
+            className="w-full"
+            testID={testID}
+            {...(!isDefined(availableWidth) && { onLayout: handleLayout })}
+        >
             <View className={cn('flex-row justify-center', className)}>
                 {elements}
                 {children}

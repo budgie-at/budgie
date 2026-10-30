@@ -1,29 +1,31 @@
 import { TransactionFilterInterface } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
-import { Text } from 'react-native';
+import { View } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
-import { cn } from '../../../@generic/utils/cn.util';
+import { TransactionsPageSelector } from '../../../app/(tabs)/transactions-page.selector';
 import { useGetTransactionCountQuery } from '../../query/use-get-transaction-count.query';
+
+import type { ReactNode } from 'react';
 
 interface Props {
     readonly filters: TransactionFilterInterface;
-    readonly className?: string;
+    readonly children: ReactNode;
 }
 
-export const TransactionListCount = ({ filters, className }: Props) => {
+export const TransactionListCount = ({ filters, children }: Props) => {
     const { t } = useLingui();
     const { count: transactionCount } = useGetTransactionCountQuery(filters);
 
-    if (!isPositiveNumber(transactionCount)) {
-        return null;
-    }
+    const countLabelProps = isPositiveNumber(transactionCount)
+        ? { accessibilityLabel: t({ message: plural(transactionCount, { one: '# transaction', other: '# transactions' }) }) }
+        : {};
 
     return (
-        <Text className={cn('text-sm text-secondary-foreground', className)} numberOfLines={1}>
-            {t({ message: plural(transactionCount, { one: '# transaction', other: '# transactions' }) })}
-        </Text>
+        <View className="flex-1" collapsable={false} testID={TransactionsPageSelector.TransactionCount} {...countLabelProps}>
+            {children}
+        </View>
     );
 };

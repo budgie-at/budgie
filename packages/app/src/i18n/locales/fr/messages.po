@@ -118,10 +118,6 @@ msgstr "{count, plural, one {# catégorie utilise l'icône par défaut} other {#
 msgid "{count, plural, one {# existing transaction matches this rule.} other {# existing transactions match this rule.}}"
 msgstr "{count, plural, one {# transaction existante correspond à cette règle.} other {# transactions existantes correspondent à cette règle.}}"
 
-#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx
-msgid "{count, plural, one {# missing category} other {# missing categories}}"
-msgstr "{count, plural, one {# catégorie manquante} other {# catégories manquantes}}"
-
 #: src/installment-plan/component/installment-count-chip/installment-count-chip.tsx
 msgid "{count, plural, one {# payment} other {# payments}}"
 msgstr "{count, plural, one {# paiement} other {# paiements}}"
@@ -129,6 +125,10 @@ msgstr "{count, plural, one {# paiement} other {# paiements}}"
 #: src/settings/utils/get-sync-repair-text.util.ts
 msgid "{count, plural, one {# sync repair} other {# sync repairs}}"
 msgstr "{count, plural, one {# réparation de synchronisation} other {# réparations de synchronisation}}"
+
+#: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx
+msgid "{count, plural, one {# uncategorized} other {# uncategorized}}"
+msgstr "{count, plural, one {# sans catégorie} other {# sans catégorie}}"
 
 #: src/budget/components/budget-verdict-footer/budget-verdict-footer.tsx
 msgid "{count, plural, one {# upcoming bill} other {# upcoming bills}}"
@@ -1022,7 +1022,7 @@ msgid "Backup file ready"
 msgstr "Fichier de sauvegarde prêt"
 
 #: src/app/(main)/transactions/[id]/adjustment.tsx
-#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx
+#: src/transaction/components/transaction-card-content/transaction-card-content.tsx
 msgid "Balance Adjustment"
 msgstr "Ajustement de solde"
 
@@ -1030,7 +1030,7 @@ msgstr "Ajustement de solde"
 msgid "Balance forecast"
 msgstr "Prévision de solde"
 
-#: src/account/component/account-details-hero/account-details-hero.tsx
+#: src/account/component/account-details-hero-balance/account-details-hero-balance.tsx
 msgid "Balance: {formattedBalance}"
 msgstr "Solde : {formattedBalance}"
 
@@ -1441,6 +1441,10 @@ msgstr "Effacer toutes les données"
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
 msgid "Clear cached balances and recalculate from transactions"
 msgstr "Effacer les soldes mis en cache et recalculer à partir des transactions"
+
+#: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
+msgid "Clear filters"
+msgstr "Effacer les filtres"
 
 #: src/sync/component/paste-token-button/paste-token-button.tsx
 msgid "Clipboard doesn't contain a valid Monobank token"
@@ -2684,11 +2688,8 @@ msgstr "Échec de l'enregistrement du code PIN. Veuillez réessayer."
 msgid "Fee"
 msgstr "Frais"
 
-#: src/transaction/components/transaction-metadata-rows/transaction-metadata-rows.tsx
-msgid "Fee · {formattedFeeAmount}"
-msgstr "Frais · {formattedFeeAmount}"
-
 #: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
+#: src/transaction/hook/use-transaction-fee-label.hook.ts
 msgid "Fee {formattedAmount}"
 msgstr "Frais {formattedAmount}"
 
@@ -2768,10 +2769,6 @@ msgstr "Vous avez trouvé un problème ou avez une idée ? Ouvrez les modèles d
 msgid "French"
 msgstr "Français"
 
-#: src/transaction/components/transaction-account-line/transaction-account-line.tsx
-msgid "from"
-msgstr "de"
-
 #: src/app/transaction-amount-filter.tsx
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 msgid "From"
@@ -2780,6 +2777,14 @@ msgstr "De"
 #: src/transaction/components/transaction-amount-filter/transaction-amount-filter.tsx
 msgid "From {fromText}"
 msgstr "À partir de {fromText}"
+
+#: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
+msgid "From {source}"
+msgstr "De {source}"
+
+#: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
+msgid "From {source} to {destination}"
+msgstr "De {source} vers {destination}"
 
 #: src/account/component/create-debt-account/create-debt-account.tsx
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
@@ -3049,7 +3054,6 @@ msgstr "Inclut les cryptos"
 msgid "includes fee {formattedFeeAmount}"
 msgstr "dont frais {formattedFeeAmount}"
 
-#: src/account/component/account-details-month-chips/account-details-month-chips.tsx
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/components/statistics-content/statistics-content.tsx
@@ -3317,6 +3321,10 @@ msgstr "Gérer les étiquettes"
 msgid "Manual"
 msgstr "Manuel"
 
+#: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
+msgid "Manual adjustment"
+msgstr "Ajustement manuel"
+
 #: src/app/(tabs)/settings/import.tsx
 msgid "Map CSV Columns"
 msgstr "Mapper les colonnes CSV"
@@ -3507,7 +3515,7 @@ msgid "Monthly history"
 msgstr "Historique mensuel"
 
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
-msgid "Monthly Total"
+msgid "Monthly total"
 msgstr "Total mensuel"
 
 #: src/runway/component/runway-verdict-figure/runway-verdict-figure.tsx
@@ -3698,7 +3706,6 @@ msgstr "Aucun compte correspondant"
 msgid "No matching expenses"
 msgstr "Aucune dépense correspondante"
 
-#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx
 #: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
 msgid "No matching transactions"
 msgstr "Aucune transaction correspondante"
@@ -4414,8 +4421,8 @@ msgstr "Recalcul des soldes"
 
 #: src/receipt/hook/use-receipt-scan.hook.ts
 #: src/rule/constant/external-source.constant.ts
+#: src/transaction/components/transaction-card-subtitle/transaction-card-subtitle.tsx
 #: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
-#: src/transaction/components/transaction-metadata-rows/transaction-metadata-rows.tsx
 msgid "Receipt"
 msgstr "Reçu"
 
@@ -4441,11 +4448,11 @@ msgstr "Récurrents"
 msgid "Recurring payments will appear here once patterns are detected from your transactions"
 msgstr "Les paiements récurrents apparaîtront ici une fois que des modèles auront été détectés dans vos transactions"
 
-#: src/transaction/components/refunded-pill/refunded-pill.tsx
+#: src/transaction/hook/use-refunded-label.hook.ts
 msgid "Refunded"
 msgstr "Remboursé"
 
-#: src/transaction/components/refunded-pill/refunded-pill.tsx
+#: src/transaction/hook/use-refunded-label.hook.ts
 msgid "Refunded {formattedRefundedAmount}"
 msgstr "Remboursé {formattedRefundedAmount}"
 
@@ -4506,6 +4513,10 @@ msgstr "Réparer"
 #: src/settings/components/repair-sync-data/repair-sync-data.tsx
 msgid "Repair Sync Data"
 msgstr "Réparer les données de synchronisation"
+
+#: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
+msgid "Repayment"
+msgstr "Remboursement"
 
 #: src/@generic/component/error-boundary-fallback/error-boundary-fallback.tsx
 #: src/app/(tabs)/settings/index.tsx
@@ -5074,11 +5085,14 @@ msgstr "Dépenses par catégorie"
 msgid "Spending by Tag"
 msgstr "Dépenses par étiquette"
 
-#: src/account/component/account-details-month-chips/account-details-month-chips.tsx
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Spent"
 msgstr "Dépensé"
+
+#: src/account/component/account-details-month-chips/account-details-month-chips.tsx
+msgid "Spent <0>{formattedExpense}</0> · Income <1>{formattedIncome}</1>"
+msgstr "Dépenses <0>{formattedExpense}</0> · Revenus <1>{formattedIncome}</1>"
 
 #: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "Spent so far"
@@ -5420,6 +5434,7 @@ msgstr "Cette clé synchronise déjà une autre de vos sections Monobank."
 msgid "This key is for a different Monobank client."
 msgstr "Cette clé appartient à un autre client Monobank."
 
+#: src/account/component/account-details-month-chips/account-details-month-chips.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "This month"
 msgstr "Ce mois-ci"
@@ -5525,14 +5540,14 @@ msgstr "Ils ne correspondent pas"
 msgid "Title"
 msgstr "Titre"
 
-#: src/transaction/components/transaction-account-line/transaction-account-line.tsx
-msgid "to"
-msgstr "à"
-
 #: src/app/transaction-amount-filter.tsx
 #: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 msgid "To"
 msgstr "Vers"
+
+#: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
+msgid "To {destination}"
+msgstr "Vers {destination}"
 
 #: src/transaction/components/transaction-amount-filter/transaction-amount-filter.tsx
 msgid "To {toText}"
@@ -5562,6 +5577,7 @@ msgstr "À rembourser"
 #: src/@generic/constant/date-period.constant.ts
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
 #: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
+#: src/transaction/query/use-get-transaction-sections.query.ts
 msgid "Today"
 msgstr "Aujourd'hui"
 
@@ -5637,7 +5653,6 @@ msgid "Transaction not found"
 msgstr "Transaction introuvable"
 
 #: src/@generic/component/transactions-page-header/transactions-page-header.tsx
-#: src/transaction/components/collapsible-chrome-transaction-list/collapsible-chrome-transaction-list.tsx
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Transactions"
 msgstr "Transactions"
@@ -5660,6 +5675,7 @@ msgstr "Échec de la transcription"
 
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/constant/transaction-type.constant.ts
+#: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Transfer"
 msgstr "Virement"
@@ -5719,7 +5735,6 @@ msgstr "Essayez un autre terme de recherche"
 msgid "Try a different search term or create a new tag"
 msgstr "Essayez un autre terme de recherche ou créez une nouvelle étiquette"
 
-#: src/transaction/components/analytics-transactions-page-content/analytics-transactions-page-content.tsx
 #: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
 msgid "Try adjusting your filters to see more results"
 msgstr "Essayez d'ajuster vos filtres pour voir plus de résultats"
@@ -5785,6 +5800,7 @@ msgstr "Indisponible"
 
 #: src/category/components/stats-by-categories/stats-by-categories.tsx
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
+#: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
 msgid "Uncategorized"
 msgstr "Non catégorisé"
 
@@ -5803,10 +5819,6 @@ msgstr "Sous la limite"
 #: src/categorize-inbox/components/categorize-inbox-undo-layout/categorize-inbox-undo-layout.tsx
 msgid "Undo"
 msgstr "Annuler"
-
-#: src/transaction/components/transaction-category-badge/transaction-category-badge.tsx
-msgid "Unknown"
-msgstr "Inconnu"
 
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "Unknown card"
@@ -6045,6 +6057,7 @@ msgid "XLSX export"
 msgstr "Export XLSX"
 
 #: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
+#: src/transaction/query/use-get-transaction-sections.query.ts
 msgid "Yesterday"
 msgstr "Hier"
 

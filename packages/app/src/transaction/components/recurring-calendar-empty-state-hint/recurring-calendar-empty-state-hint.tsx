@@ -14,6 +14,6 @@ interface Props {
 export const RecurringCalendarEmptyStateHint = ({ icon, label, delay, animationDuration }: Props) => (
     <Animated.View entering={FadeInUp.delay(delay).duration(animationDuration)} className="items-center gap-y-sm">
         <Icon icon={icon} size={18} className="text-secondary-foreground/50" />
-        <Text className="text-xxs text-secondary-foreground/50">{label}</Text>
+        <Text className="text-xxs text-secondary-foreground">{label}</Text>
     </Animated.View>
 );

@@ -69,7 +69,8 @@ appId: ${APP_ID}
       speed: 20
 
 - assertVisible:
-      id: 'TransactionCard.FeeMetadata.3'
+      id: 'TransactionCard.Label.E2E_Privatbank_ATM'
+      text: '.*Fee .*'
 
 - tapOn:
       id: 'PageHeader.BackButton'

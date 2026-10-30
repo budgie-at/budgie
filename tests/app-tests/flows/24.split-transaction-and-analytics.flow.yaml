@@ -73,9 +73,8 @@ appId: ${APP_ID}
       id: 'TransactionCard.Label.E2E_Split_Expense'
     timeout: 5000
 - assertVisible:
-    id: 'TransactionCard.EntryCategoryAmount.Groceries.20'
-- assertVisible:
-    id: 'TransactionCard.EntryCategoryAmount.Restaurants_Cafes.25'
+    id: 'TransactionCard.Label.E2E_Split_Expense'
+    text: '.*, Groceries, Restaurants & Cafes,.*'
 
 - tapOn:
     id: 'TabBar.Home'
@@ -172,9 +171,8 @@ appId: ${APP_ID}
       id: 'TransactionCard.Label.E2E_Split_Expense'
     timeout: 5000
 - assertVisible:
-    id: 'TransactionCard.EntryCategoryAmount.Groceries.15'
-- assertVisible:
-    id: 'TransactionCard.EntryCategoryAmount.Restaurants_Cafes.30'
+    id: 'TransactionCard.Label.E2E_Split_Expense'
+    text: '.*, Groceries, Restaurants & Cafes,.*'
 
 - tapOn:
     id: 'TabBar.Home'
@@ -183,6 +181,16 @@ appId: ${APP_ID}
       id: 'HomePage.NetWorthValue.55'
 - assertVisible:
     id: 'AccountCard.Balance.E2E_Txn_Account.55'
+
+- tapOn:
+    id: 'TabBar.Analytics'
+- extendedWaitUntil:
+    visible:
+      id: 'AnalyticsPage.Tab.Categories'
+- assertVisible:
+    id: 'CategoryStatisticsCard.Amount.Groceries.15000000'
+- assertVisible:
+    id: 'CategoryStatisticsCard.Amount.Restaurants_Cafes.30000000'
 
 # --- Remove Split From Expense ---
 
@@ -248,9 +256,8 @@ appId: ${APP_ID}
 - assertVisible:
     id: 'TransactionCard.Category.Groceries'
 - assertNotVisible:
-    id: 'TransactionCard.EntryCategoryAmount.Groceries.15'
-- assertNotVisible:
-    id: 'TransactionCard.EntryCategoryAmount.Restaurants_Cafes.30'
+    id: 'TransactionCard.Label.E2E_Split_Expense'
+    text: '.*, Groceries, Restaurants & Cafes,.*'
 
 - tapOn:
     id: 'TransactionCard.Label.E2E_Split_Expense'
