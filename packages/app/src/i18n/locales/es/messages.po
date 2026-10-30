@@ -301,7 +301,7 @@ msgstr "{groupCount} grupos, {paymentCount} pagos"
 msgid "{included} of {total}"
 msgstr "{included} de {total}"
 
-#: src/categorize-inbox/components/categorize-inbox-payments-screen/categorize-inbox-payments-screen.tsx
+#: src/categorize-inbox/components/categorize-inbox-payments-summary/categorize-inbox-payments-summary.tsx
 msgid "{includedCount} of {rowCount} selected"
 msgstr "{includedCount} de {rowCount} seleccionados"
 
@@ -3108,10 +3108,6 @@ msgstr "Cuentas inactivas"
 #: src/runway/component/runway-settings-section/runway-settings-section.tsx
 msgid "Include crypto"
 msgstr "Incluir criptomonedas"
-
-#: src/categorize-inbox/components/categorize-inbox-cluster-row/categorize-inbox-cluster-row.tsx
-msgid "Include in bulk action"
-msgstr "Incluir en la acción masiva"
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts

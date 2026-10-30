@@ -10,6 +10,8 @@ interface Props {
     readonly cluster: CategorizeInboxClusterInterface;
 }
 
+const HIT_SLOP = { top: 10, bottom: 10, left: 8, right: 8 };
+
 export const CategorizeInboxPaymentsSelectAll = ({ cluster }: Props) => {
     const { includedRows, setExcluded } = useCategorizeInboxContext();
 
@@ -23,8 +25,13 @@ export const CategorizeInboxPaymentsSelectAll = ({ cluster }: Props) => {
         );
 
     return (
-        <HapticPressable onPress={handlePress} accessibilityRole="button" hitSlop={8}>
-            <Text className="text-primary text-sm font-semibold">{label}</Text>
+        <HapticPressable
+            onPress={handlePress}
+            accessibilityRole="button"
+            hitSlop={HIT_SLOP}
+            className="rounded-full bg-secondary-background px-md py-xs"
+        >
+            <Text className="text-primary text-xs font-medium">{label}</Text>
         </HapticPressable>
     );
 };
