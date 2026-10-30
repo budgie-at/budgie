@@ -8,12 +8,12 @@ import { useCategorizeInboxGroupChoiceContext } from '../../context/categorize-i
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 import { CategorizeInboxGroupChoiceEnum } from '../../enum/categorize-inbox-group-choice.enum';
 import { useCategorizeInboxGroupOptions } from '../../hook/use-categorize-inbox-group-options.hook';
-import { CategorizeInboxGroupFileBar } from '../categorize-inbox-group-file-bar/categorize-inbox-group-file-bar';
-import { CategorizeInboxGroupLearnedTransferBar } from '../categorize-inbox-group-learned-transfer-bar/categorize-inbox-group-learned-transfer-bar';
+import { useCategorizeInboxIncludedTotal } from '../../hook/use-categorize-inbox-included-total.hook';
 import { CategorizeInboxGroupScreenSelector } from '../categorize-inbox-group-screen/categorize-inbox-group-screen.selector';
 import { CategorizeInboxPrimaryBar } from '../categorize-inbox-primary-bar/categorize-inbox-primary-bar';
 
 import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
+import type { AccountEntityInterface } from '@budgie/contracts';
 import type { ReactNode } from 'react';
 
 interface Props {
@@ -23,43 +23,35 @@ interface Props {
 export const CategorizeInboxGroupPrimaryBar = ({ cluster }: Props) => {
     const { t } = useLingui();
     const router = useRouter();
-    const { strategy, moveToCash } = useCategorizeInboxContext();
+    const { strategy, moveToCash, assignCluster, transferCluster } = useCategorizeInboxContext();
     const { choice } = useCategorizeInboxGroupChoiceContext();
-    const { learnedAccount, cashTransactionIds } = useCategorizeInboxGroupOptions(cluster);
+    const { learnedAccount, matchedAccount, cashTransactionIds } = useCategorizeInboxGroupOptions(cluster);
+    const { count, totalLabel } = useCategorizeInboxIncludedTotal(cluster);
 
-    const handleChooseAccount = (): void => void router.push({ pathname: '/categorize/transfer/[key]', params: { key: cluster.key } });
-    const handleMoveToCash = (): void => {
-        moveToCash(cashTransactionIds);
-        router.dismissTo('/categorize');
+    const renderBar = (label: string, commit: () => void): ReactNode => {
+        const handlePress = (): void => {
+            commit();
+            router.dismissTo('/categorize');
+        };
+
+        return <CategorizeInboxPrimaryBar label={label} testID={CategorizeInboxGroupScreenSelector.PrimaryButton} onPress={handlePress} />;
     };
+    const withTotal = (label: string): string => (isDefined(totalLabel) ? `${label} · ${totalLabel}` : label);
+    const renderFileBar = (labelId: number, labelTitle: string | undefined): ReactNode =>
+        isDefined(labelTitle) ? renderBar(withTotal(t`File ${count} as ${labelTitle}`), () => void assignCluster(cluster, labelId)) : null;
+    const renderTransferBar = ({ id, title }: Pick<AccountEntityInterface, 'id' | 'title'>): ReactNode =>
+        renderBar(withTotal(t`Move ${count} to ${title}`), () => void transferCluster(cluster, id, title, true));
 
     const cashCount = cashTransactionIds.length;
-    const labelTitle = isNumber(choice) ? strategy?.labelsById.get(choice)?.title : null;
     const bars: Record<CategorizeInboxGroupChoiceEnum, ReactNode> = {
-        [CategorizeInboxGroupChoiceEnum.TRANSFER]: (
-            <CategorizeInboxPrimaryBar
-                label={t`Choose account`}
-                testID={CategorizeInboxGroupScreenSelector.PrimaryButton}
-                onPress={handleChooseAccount}
-            />
-        ),
-        [CategorizeInboxGroupChoiceEnum.LEARNED_TRANSFER]: isDefined(learnedAccount) ? (
-            <CategorizeInboxGroupLearnedTransferBar cluster={cluster} account={learnedAccount} />
-        ) : null,
-        [CategorizeInboxGroupChoiceEnum.MOVE_TO_CASH]: (
-            <CategorizeInboxPrimaryBar
-                label={t`Move ${cashCount} to cash`}
-                testID={CategorizeInboxGroupScreenSelector.PrimaryButton}
-                onPress={handleMoveToCash}
-            />
-        ),
-        [CategorizeInboxGroupChoiceEnum.ALREADY_TRACKED]: (
-            <CategorizeInboxGroupFileBar cluster={cluster} labelId={CASH_WITHDRAWAL_TRACKED_CATEGORY_ID} labelTitle={t`Already tracked`} />
-        )
+        [CategorizeInboxGroupChoiceEnum.TRANSFER]: isDefined(matchedAccount) ? renderTransferBar(matchedAccount) : null,
+        [CategorizeInboxGroupChoiceEnum.LEARNED_TRANSFER]: isDefined(learnedAccount) ? renderTransferBar(learnedAccount) : null,
+        [CategorizeInboxGroupChoiceEnum.MOVE_TO_CASH]: renderBar(t`Move ${cashCount} to cash`, () => void moveToCash(cashTransactionIds)),
+        [CategorizeInboxGroupChoiceEnum.ALREADY_TRACKED]: renderFileBar(CASH_WITHDRAWAL_TRACKED_CATEGORY_ID, t`Already tracked`)
     };
 
     if (isNumber(choice)) {
-        return isDefined(labelTitle) ? <CategorizeInboxGroupFileBar cluster={cluster} labelId={choice} labelTitle={labelTitle} /> : null;
+        return renderFileBar(choice, strategy?.labelsById.get(choice)?.title);
     }
 
     return isDefined(choice) ? bars[choice] : null;

@@ -145,6 +145,14 @@ msgstr "{count, plural, one {Diese Kategorie hat # Transaktion. Wählen Sie eine
 msgid "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
 msgstr "{count, plural, one {Dieser Tag hat # Transaktion. Wählen Sie einen anderen Tag aus, dem sie neu zugewiesen wird.} other {Dieser Tag hat # Transaktionen. Wählen Sie einen anderen Tag aus, dem sie neu zugewiesen werden.}}"
 
+#: src/categorize-inbox/components/categorize-inbox-payments-bar/categorize-inbox-payments-bar.tsx
+msgid "{count, plural, one {Use # payment} other {Use # payments}}"
+msgstr "{count, plural, one {# Zahlung verwenden} other {# Zahlungen verwenden}}"
+
+#: src/categorize-inbox/components/categorize-inbox-payments-summary/categorize-inbox-payments-summary.tsx
+msgid "{count} of {rowCount} selected"
+msgstr "{count} von {rowCount} ausgewählt"
+
 #: src/budget/components/budget-upcoming-charge-row/budget-upcoming-charge-row.tsx
 msgid "{dateLabel}, {kindLabel}"
 msgstr "{dateLabel}, {kindLabel}"
@@ -278,10 +286,6 @@ msgstr "{groupCount} Gruppen, {paymentCount} Zahlungen"
 #: src/categorize-inbox/components/categorize-inbox-group-choose-payments-option/categorize-inbox-group-choose-payments-option.tsx
 msgid "{included} of {total}"
 msgstr "{included} von {total}"
-
-#: src/categorize-inbox/components/categorize-inbox-payments-summary/categorize-inbox-payments-summary.tsx
-msgid "{includedCount} of {rowCount} selected"
-msgstr "{includedCount} von {rowCount} ausgewählt"
 
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "{loadedDays}/{totalDays} days"
@@ -1487,10 +1491,6 @@ msgstr "Wähle eine PIN"
 msgid "Choose a preset to auto-fill column mappings"
 msgstr "Wählen Sie eine Vorlage zum automatischen Ausfüllen der Spaltenzuordnungen"
 
-#: src/categorize-inbox/components/categorize-inbox-group-primary-bar/categorize-inbox-group-primary-bar.tsx
-msgid "Choose account"
-msgstr "Konto wählen"
-
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Choose accounts"
 msgstr "Konten auswählen"
@@ -2353,7 +2353,6 @@ msgstr "Verlauf nicht synchronisieren"
 
 #: src/app/import-column-mapper.tsx
 #: src/categorize-inbox/components/categorize-inbox-empty-state/categorize-inbox-empty-state.tsx
-#: src/categorize-inbox/components/categorize-inbox-payments-screen/categorize-inbox-payments-screen.tsx
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 msgid "Done"
@@ -2814,18 +2813,14 @@ msgstr "Feld"
 msgid "File"
 msgstr "Datei"
 
-#: src/categorize-inbox/components/categorize-inbox-group-row-file-button/categorize-inbox-group-row-file-button.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-row/categorize-inbox-group-row.tsx
 msgctxt "Apply a category action"
 msgid "File"
 msgstr "Ablegen"
 
-#: src/categorize-inbox/components/categorize-inbox-group-file-bar/categorize-inbox-group-file-bar.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-primary-bar/categorize-inbox-group-primary-bar.tsx
 msgid "File {count} as {labelTitle}"
 msgstr "{count} als {labelTitle} ablegen"
-
-#: src/categorize-inbox/components/categorize-inbox-group-file-bar/categorize-inbox-group-file-bar.tsx
-msgid "File {count} as {labelTitle} · {totalLabel}"
-msgstr "{count} als {labelTitle} ablegen · {totalLabel}"
 
 #: src/categorize-inbox/components/categorize-inbox-group-row-file-button/categorize-inbox-group-row-file-button.tsx
 msgid "File {merchantTitle} as {candidateTitle}"
@@ -2888,7 +2883,7 @@ msgstr "Französisch"
 msgid "From"
 msgstr "Von"
 
-#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-lead/categorize-inbox-group-transfer-lead.tsx
 msgid "From {counterparty}"
 msgstr "Von {counterparty}"
 
@@ -3647,6 +3642,10 @@ msgstr "Weitere Tags"
 #: src/categorize-inbox/components/categorize-inbox-group-primary-bar/categorize-inbox-group-primary-bar.tsx
 msgid "Move {cashCount} to cash"
 msgstr "{cashCount} zu Bargeld verschieben"
+
+#: src/categorize-inbox/components/categorize-inbox-group-primary-bar/categorize-inbox-group-primary-bar.tsx
+msgid "Move {count} to {title}"
+msgstr "{count} nach {title} verschieben"
 
 #: src/categorize-inbox/components/categorize-inbox-group-row-cash-button/categorize-inbox-group-row-cash-button.tsx
 msgid "Move {displayTitle} to cash"
@@ -5708,7 +5707,7 @@ msgstr "An {accountTitle}"
 msgid "To {accountTitle}, rule saved"
 msgstr "An {accountTitle}, Regel gespeichert"
 
-#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-lead/categorize-inbox-group-transfer-lead.tsx
 msgid "To {counterparty}"
 msgstr "An {counterparty}"
 
@@ -5729,7 +5728,7 @@ msgstr "Auf Konto"
 msgid "To Account"
 msgstr "Auf Konto"
 
-#: src/categorize-inbox/components/categorize-inbox-group-row-cash-button/categorize-inbox-group-row-cash-button.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-row/categorize-inbox-group-row.tsx
 msgctxt "Move payments to the cash account"
 msgid "To cash"
 msgstr "Zu Bargeld"
@@ -5846,17 +5845,13 @@ msgid "Transcription failed"
 msgstr "Transkription fehlgeschlagen"
 
 #: src/categorize-inbox/components/categorize-inbox-group-row-subtitle/categorize-inbox-group-row-subtitle.tsx
-#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-lead/categorize-inbox-group-transfer-lead.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/constant/transaction-type.constant.ts
 #: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Transfer"
 msgstr "Überweisung"
-
-#: src/categorize-inbox/components/categorize-inbox-group-learned-transfer-bar/categorize-inbox-group-learned-transfer-bar.tsx
-msgid "Transfer {count} to {title}"
-msgstr "{count} an {title} überweisen"
 
 #: src/rule/components/rule-action-pill/rule-action-pill.tsx
 msgid "Transfer → {accountTitle}"
@@ -5870,7 +5865,7 @@ msgstr "Überweisungskonto"
 msgid "Transfer From Account"
 msgstr "Vom Konto übertragen"
 
-#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-lead/categorize-inbox-group-transfer-lead.tsx
 msgid "Transfer from savings jar"
 msgstr "Überweisung aus der Spardose"
 
@@ -5890,7 +5885,7 @@ msgstr "Auf Konto übertragen"
 msgid "Transfer to an account"
 msgstr "Überweisung an ein Konto"
 
-#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-lead/categorize-inbox-group-transfer-lead.tsx
 msgid "Transfer to savings jar"
 msgstr "Überweisung in die Spardose"
 

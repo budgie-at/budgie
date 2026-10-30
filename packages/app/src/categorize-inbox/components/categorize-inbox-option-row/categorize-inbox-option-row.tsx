@@ -4,6 +4,7 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { cn } from '../../../@generic/utils/cn.util';
 import { testID } from '../../../@generic/utils/test-id.util';
 import { CategorizeInboxGroupScreenSelector } from '../categorize-inbox-group-screen/categorize-inbox-group-screen.selector';
 
@@ -21,6 +22,7 @@ interface Props {
 }
 
 export const CategorizeInboxOptionRow = ({ icon, title, subtitle, accessory, accessibilityState, onPress }: Props) => {
+    const titleWeightClassName = accessibilityState?.selected === true ? 'font-semibold' : 'font-normal';
     const subtitleNode = isNotEmptyString(subtitle) ? (
         <Text className="text-secondary-foreground text-[13px]" numberOfLines={1}>
             {subtitle}
@@ -46,7 +48,7 @@ export const CategorizeInboxOptionRow = ({ icon, title, subtitle, accessory, acc
                 className="bg-secondary-foreground/15"
             />
             <View className="min-w-0 flex-1 gap-y-xxs">
-                <Text className="text-primary text-[17px]" numberOfLines={2}>
+                <Text className={cn('text-primary text-[17px]', titleWeightClassName)} numberOfLines={2}>
                     {title}
                 </Text>
                 {subtitleNode}

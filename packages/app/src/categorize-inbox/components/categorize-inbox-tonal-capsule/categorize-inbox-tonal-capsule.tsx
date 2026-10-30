@@ -10,10 +10,10 @@ interface Props {
 
 const continuousCorners = { borderCurve: 'continuous' as const };
 
-const surfaceVariants = cva('h-[32px] items-center justify-center rounded-full px-xl', {
+const surfaceVariants = cva('h-[32px] items-center justify-center rounded-full px-2xl', {
     variants: {
         variant: {
-            [CategorizeInboxTonalCapsuleVariantEnum.POSITIVE]: 'bg-positive-action/15',
+            [CategorizeInboxTonalCapsuleVariantEnum.POSITIVE]: 'bg-positive-tonal',
             [CategorizeInboxTonalCapsuleVariantEnum.WARNING]: 'bg-warning-fill/15',
             [CategorizeInboxTonalCapsuleVariantEnum.NEUTRAL]: 'bg-surface-fill'
         }

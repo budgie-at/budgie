@@ -12,9 +12,10 @@ import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
 
 interface Props {
     readonly cluster: CategorizeInboxClusterInterface;
+    readonly text: string;
 }
 
-export const CategorizeInboxGroupRowCashButton = ({ cluster }: Props) => {
+export const CategorizeInboxGroupRowCashButton = ({ cluster, text }: Props) => {
     const { t } = useLingui();
     const { includedRows, moveToCash, cashWithdrawalTransactionIds } = useCategorizeInboxContext();
 
@@ -30,7 +31,7 @@ export const CategorizeInboxGroupRowCashButton = ({ cluster }: Props) => {
     return (
         <CategorizeInboxGroupRowPill
             variant={CategorizeInboxTonalCapsuleVariantEnum.WARNING}
-            text={t({ context: 'Move payments to the cash account', message: 'To cash' })}
+            text={text}
             label={t`Move ${displayTitle} to cash`}
             isDisabled={isEmptyArray(transactionIds)}
             onPress={handlePress}

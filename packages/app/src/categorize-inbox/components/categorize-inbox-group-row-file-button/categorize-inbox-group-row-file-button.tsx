@@ -13,9 +13,10 @@ import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
 
 interface Props {
     readonly cluster: Pick<CategorizeInboxClusterInterface, 'key' | 'displayTitle' | 'candidateLabelIds'>;
+    readonly text: string;
 }
 
-export const CategorizeInboxGroupRowFileButton = ({ cluster }: Props) => {
+export const CategorizeInboxGroupRowFileButton = ({ cluster, text }: Props) => {
     const { t } = useLingui();
     const { strategy, acceptableAssignments, assign } = useCategorizeInboxContext();
 
@@ -35,7 +36,7 @@ export const CategorizeInboxGroupRowFileButton = ({ cluster }: Props) => {
     return (
         <CategorizeInboxGroupRowPill
             variant={CategorizeInboxTonalCapsuleVariantEnum.POSITIVE}
-            text={t({ context: 'Apply a category action', message: 'File' })}
+            text={text}
             label={t`File ${merchantTitle} as ${candidateTitle}`}
             isDisabled={!isNotEmptyArray(assignments)}
             onPress={handlePress}

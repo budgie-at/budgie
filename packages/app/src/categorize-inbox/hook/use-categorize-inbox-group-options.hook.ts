@@ -23,7 +23,7 @@ const getLeadChoice = (
     }
 
     if (options.isLeadTransfer) {
-        return CategorizeInboxGroupChoiceEnum.TRANSFER;
+        return isDefined(options.matchedAccount) ? CategorizeInboxGroupChoiceEnum.TRANSFER : null;
     }
 
     if (isNotEmptyArray(options.cashTransactionIds)) {
@@ -56,6 +56,7 @@ export const useCategorizeInboxGroupOptions = (cluster: CategorizeInboxClusterIn
         : [];
     const options = {
         learnedAccount,
+        matchedAccount,
         isLeadTransfer,
         isCash,
         leadLabelOptions: labelOptions.filter(option => option.isBestMatch),

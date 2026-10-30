@@ -19,7 +19,7 @@ const continuousCorners = { borderCurve: 'continuous' as const };
 const chipVariants = cva('h-[36px] flex-row items-center rounded-2xl px-2xl active:opacity-70', {
     variants: {
         section: {
-            [CategorizeInboxSectionEnum.CONFIDENT]: 'bg-positive-action/15',
+            [CategorizeInboxSectionEnum.CONFIDENT]: 'bg-positive-tonal',
             [CategorizeInboxSectionEnum.CASH_WITHDRAWALS]: 'bg-warning-fill/15',
             [CategorizeInboxSectionEnum.REVIEW]: 'bg-surface-fill',
             [CategorizeInboxSectionEnum.ONE_OFFS]: 'bg-surface-fill'

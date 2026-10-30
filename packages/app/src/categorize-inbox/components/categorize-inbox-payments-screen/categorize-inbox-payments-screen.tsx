@@ -1,5 +1,4 @@
 import { Trans, useLingui } from '@lingui/react/macro';
-import { useRouter } from 'expo-router';
 import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -9,13 +8,12 @@ import { useCategorizeInboxCluster } from '../../hook/use-categorize-inbox-clust
 import { groupCategorizeInboxRowsByMonth } from '../../utils/group-categorize-inbox-rows-by-month.util';
 import { CategorizeInboxClusterRow } from '../categorize-inbox-cluster-row/categorize-inbox-cluster-row';
 import { CategorizeInboxOptionCard } from '../categorize-inbox-option-card/categorize-inbox-option-card';
+import { CategorizeInboxPaymentsBar } from '../categorize-inbox-payments-bar/categorize-inbox-payments-bar';
 import { CategorizeInboxPaymentsMonth } from '../categorize-inbox-payments-month/categorize-inbox-payments-month';
+import { CategorizeInboxPaymentsSelectAll } from '../categorize-inbox-payments-select-all/categorize-inbox-payments-select-all';
 import { CategorizeInboxPaymentsSummary } from '../categorize-inbox-payments-summary/categorize-inbox-payments-summary';
-import { CategorizeInboxPrimaryBar } from '../categorize-inbox-primary-bar/categorize-inbox-primary-bar';
 import { CategorizeInboxScreenChrome } from '../categorize-inbox-screen-chrome/categorize-inbox-screen-chrome';
 import { CategorizeInboxScreenScroll } from '../categorize-inbox-screen-scroll/categorize-inbox-screen-scroll';
-
-import { CategorizeInboxPaymentsScreenSelector } from './categorize-inbox-payments-screen.selector';
 
 interface Props {
     readonly clusterKey: string;
@@ -23,7 +21,6 @@ interface Props {
 
 export const CategorizeInboxPaymentsScreen = ({ clusterKey }: Props) => {
     const { t } = useLingui();
-    const router = useRouter();
     const cluster = useCategorizeInboxCluster(clusterKey);
 
     if (!isDefined(cluster)) {
@@ -39,11 +36,9 @@ export const CategorizeInboxPaymentsScreen = ({ clusterKey }: Props) => {
               .map(row => <CategorizeInboxClusterRow key={row.transactionId} row={row} displayTitle={displayTitle} />)
         : monthGroups.map(group => <CategorizeInboxPaymentsMonth key={group.month.getTime()} group={group} displayTitle={displayTitle} />);
 
-    const handleDone = (): void => void router.back();
-
     return (
         <GroupedSurface>
-            <CategorizeInboxScreenChrome title={t`Choose payments`}>
+            <CategorizeInboxScreenChrome title={t`Choose payments`} trailing={<CategorizeInboxPaymentsSelectAll cluster={cluster} />}>
                 <CategorizeInboxScreenScroll>
                     <CategorizeInboxPaymentsSummary cluster={cluster} />
 
@@ -56,7 +51,7 @@ export const CategorizeInboxPaymentsScreen = ({ clusterKey }: Props) => {
                     </Text>
                 </CategorizeInboxScreenScroll>
 
-                <CategorizeInboxPrimaryBar label={t`Done`} testID={CategorizeInboxPaymentsScreenSelector.DoneButton} onPress={handleDone} />
+                <CategorizeInboxPaymentsBar cluster={cluster} />
             </CategorizeInboxScreenChrome>
         </GroupedSurface>
     );

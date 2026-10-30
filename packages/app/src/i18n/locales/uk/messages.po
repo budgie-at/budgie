@@ -145,6 +145,14 @@ msgstr "{count, plural, one {Ця категорія має # транзакці
 msgid "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
 msgstr "{count, plural, one {Цей тег має # транзакцію. Виберіть інший тег, щоб перепризначити її.} few {Цей тег має # транзакції. Виберіть інший тег, щоб перепризначити їх.} many {Цей тег має # транзакцій. Виберіть інший тег, щоб перепризначити їх.} other {Цей тег має # транзакції. Виберіть інший тег, щоб перепризначити їх.}}"
 
+#: src/categorize-inbox/components/categorize-inbox-payments-bar/categorize-inbox-payments-bar.tsx
+msgid "{count, plural, one {Use # payment} other {Use # payments}}"
+msgstr "{count, plural, one {Використати # платіж} few {Використати # платежі} many {Використати # платежів} other {Використати # платежу}}"
+
+#: src/categorize-inbox/components/categorize-inbox-payments-summary/categorize-inbox-payments-summary.tsx
+msgid "{count} of {rowCount} selected"
+msgstr "Вибрано {count} з {rowCount}"
+
 #: src/budget/components/budget-upcoming-charge-row/budget-upcoming-charge-row.tsx
 msgid "{dateLabel}, {kindLabel}"
 msgstr "{dateLabel}, {kindLabel}"
@@ -278,10 +286,6 @@ msgstr "Груп: {groupCount}, платежів: {paymentCount}"
 #: src/categorize-inbox/components/categorize-inbox-group-choose-payments-option/categorize-inbox-group-choose-payments-option.tsx
 msgid "{included} of {total}"
 msgstr "{included} з {total}"
-
-#: src/categorize-inbox/components/categorize-inbox-payments-summary/categorize-inbox-payments-summary.tsx
-msgid "{includedCount} of {rowCount} selected"
-msgstr "Вибрано {includedCount} з {rowCount}"
 
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "{loadedDays}/{totalDays} days"
@@ -1487,10 +1491,6 @@ msgstr "Виберіть PIN-код"
 msgid "Choose a preset to auto-fill column mappings"
 msgstr "Оберіть шаблон для автоматичного заповнення відповідностей стовпців"
 
-#: src/categorize-inbox/components/categorize-inbox-group-primary-bar/categorize-inbox-group-primary-bar.tsx
-msgid "Choose account"
-msgstr "Вибрати рахунок"
-
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Choose accounts"
 msgstr "Вибрати рахунки"
@@ -2353,7 +2353,6 @@ msgstr "Не синхронізувати історію"
 
 #: src/app/import-column-mapper.tsx
 #: src/categorize-inbox/components/categorize-inbox-empty-state/categorize-inbox-empty-state.tsx
-#: src/categorize-inbox/components/categorize-inbox-payments-screen/categorize-inbox-payments-screen.tsx
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 msgid "Done"
@@ -2814,18 +2813,14 @@ msgstr "Поле"
 msgid "File"
 msgstr "Файл"
 
-#: src/categorize-inbox/components/categorize-inbox-group-row-file-button/categorize-inbox-group-row-file-button.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-row/categorize-inbox-group-row.tsx
 msgctxt "Apply a category action"
 msgid "File"
 msgstr "Віднести"
 
-#: src/categorize-inbox/components/categorize-inbox-group-file-bar/categorize-inbox-group-file-bar.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-primary-bar/categorize-inbox-group-primary-bar.tsx
 msgid "File {count} as {labelTitle}"
 msgstr "Віднести {count} до {labelTitle}"
-
-#: src/categorize-inbox/components/categorize-inbox-group-file-bar/categorize-inbox-group-file-bar.tsx
-msgid "File {count} as {labelTitle} · {totalLabel}"
-msgstr "Віднести {count} до {labelTitle} · {totalLabel}"
 
 #: src/categorize-inbox/components/categorize-inbox-group-row-file-button/categorize-inbox-group-row-file-button.tsx
 msgid "File {merchantTitle} as {candidateTitle}"
@@ -2888,7 +2883,7 @@ msgstr "Французька"
 msgid "From"
 msgstr "З"
 
-#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-lead/categorize-inbox-group-transfer-lead.tsx
 msgid "From {counterparty}"
 msgstr "З {counterparty}"
 
@@ -3647,6 +3642,10 @@ msgstr "Інші теги"
 #: src/categorize-inbox/components/categorize-inbox-group-primary-bar/categorize-inbox-group-primary-bar.tsx
 msgid "Move {cashCount} to cash"
 msgstr "Перенести {cashCount} у готівку"
+
+#: src/categorize-inbox/components/categorize-inbox-group-primary-bar/categorize-inbox-group-primary-bar.tsx
+msgid "Move {count} to {title}"
+msgstr "Перенести {count} на {title}"
 
 #: src/categorize-inbox/components/categorize-inbox-group-row-cash-button/categorize-inbox-group-row-cash-button.tsx
 msgid "Move {displayTitle} to cash"
@@ -5708,7 +5707,7 @@ msgstr "До {accountTitle}"
 msgid "To {accountTitle}, rule saved"
 msgstr "До {accountTitle}, правило збережено"
 
-#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-lead/categorize-inbox-group-transfer-lead.tsx
 msgid "To {counterparty}"
 msgstr "На {counterparty}"
 
@@ -5729,7 +5728,7 @@ msgstr "На рахунок"
 msgid "To Account"
 msgstr "На рахунок"
 
-#: src/categorize-inbox/components/categorize-inbox-group-row-cash-button/categorize-inbox-group-row-cash-button.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-row/categorize-inbox-group-row.tsx
 msgctxt "Move payments to the cash account"
 msgid "To cash"
 msgstr "У готівку"
@@ -5846,17 +5845,13 @@ msgid "Transcription failed"
 msgstr "Помилка транскрипції"
 
 #: src/categorize-inbox/components/categorize-inbox-group-row-subtitle/categorize-inbox-group-row-subtitle.tsx
-#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-lead/categorize-inbox-group-transfer-lead.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/constant/transaction-type.constant.ts
 #: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Transfer"
 msgstr "Переказ"
-
-#: src/categorize-inbox/components/categorize-inbox-group-learned-transfer-bar/categorize-inbox-group-learned-transfer-bar.tsx
-msgid "Transfer {count} to {title}"
-msgstr "Переказати {count} на {title}"
 
 #: src/rule/components/rule-action-pill/rule-action-pill.tsx
 msgid "Transfer → {accountTitle}"
@@ -5870,7 +5865,7 @@ msgstr "Рахунок переказу"
 msgid "Transfer From Account"
 msgstr "Переказ з рахунку"
 
-#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-lead/categorize-inbox-group-transfer-lead.tsx
 msgid "Transfer from savings jar"
 msgstr "Переказ з банки"
 
@@ -5890,7 +5885,7 @@ msgstr "Переказ на рахунок"
 msgid "Transfer to an account"
 msgstr "Переказ на рахунок"
 
-#: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-transfer-lead/categorize-inbox-group-transfer-lead.tsx
 msgid "Transfer to savings jar"
 msgstr "Переказ у банку"
 

@@ -1,9 +1,11 @@
 import { CategorizeInboxSectionEnum } from '@budgie/categorization';
+import { useLingui } from '@lingui/react/macro';
 import { Link } from 'expo-router';
 import { Text, View } from 'react-native';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { testID } from '../../../@generic/utils/test-id.util';
+import { CategorizeInboxTonalCapsuleVariantEnum } from '../../enum/categorize-inbox-tonal-capsule-variant.enum';
 import { formatCategorizeInboxMerchantTitle } from '../../utils/format-categorize-inbox-merchant-title.util';
 import { CategorizeInboxCardRow } from '../categorize-inbox-card-row/categorize-inbox-card-row';
 import { CategorizeInboxGroupRowAmount } from '../categorize-inbox-group-row-amount/categorize-inbox-group-row-amount';
@@ -11,6 +13,7 @@ import { CategorizeInboxGroupRowCashButton } from '../categorize-inbox-group-row
 import { CategorizeInboxGroupRowFileButton } from '../categorize-inbox-group-row-file-button/categorize-inbox-group-row-file-button';
 import { CategorizeInboxGroupRowSubtitle } from '../categorize-inbox-group-row-subtitle/categorize-inbox-group-row-subtitle';
 import { CategorizeInboxMerchantBadge } from '../categorize-inbox-merchant-badge/categorize-inbox-merchant-badge';
+import { CategorizeInboxTonalCapsule } from '../categorize-inbox-tonal-capsule/categorize-inbox-tonal-capsule';
 
 import { CategorizeInboxGroupRowSelector } from './categorize-inbox-group-row.selector';
 
@@ -23,23 +26,31 @@ interface Props {
 }
 
 export const CategorizeInboxGroupRow = ({ cluster, position }: Props) => {
+    const { t } = useLingui();
+
     const { key, displayTitle, section } = cluster;
     const isCash = section === CategorizeInboxSectionEnum.CASH_WITHDRAWALS;
     const hasAction = isCash || section === CategorizeInboxSectionEnum.CONFIDENT;
+
+    const actionText = isCash
+        ? t({ context: 'Move payments to the cash account', message: 'To cash' })
+        : t({ context: 'Apply a category action', message: 'File' });
 
     const href = { pathname: '/categorize/group/[key]', params: { key } } as const;
     const trailing = hasAction ? (
         <View className="items-end gap-y-xxs">
             <CategorizeInboxGroupRowAmount cluster={cluster} />
-            <View className="h-[32px] w-[88px]" />
+            <View className="opacity-0" accessibilityElementsHidden importantForAccessibility="no-hide-descendants" pointerEvents="none">
+                <CategorizeInboxTonalCapsule label={actionText} variant={CategorizeInboxTonalCapsuleVariantEnum.NEUTRAL} />
+            </View>
         </View>
     ) : (
         <CategorizeInboxGroupRowAmount cluster={cluster} />
     );
     const action = isCash ? (
-        <CategorizeInboxGroupRowCashButton cluster={cluster} />
+        <CategorizeInboxGroupRowCashButton cluster={cluster} text={actionText} />
     ) : (
-        <CategorizeInboxGroupRowFileButton cluster={cluster} />
+        <CategorizeInboxGroupRowFileButton cluster={cluster} text={actionText} />
     );
 
     return (

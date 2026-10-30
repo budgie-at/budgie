@@ -9,6 +9,7 @@ import { CategorizeInboxGroupLabelOption } from '../categorize-inbox-group-label
 import { CategorizeInboxGroupLearnedTransferOption } from '../categorize-inbox-group-learned-transfer-option/categorize-inbox-group-learned-transfer-option';
 import { CategorizeInboxGroupMoreLabelsOption } from '../categorize-inbox-group-more-labels-option/categorize-inbox-group-more-labels-option';
 import { CategorizeInboxGroupMoveToCashOption } from '../categorize-inbox-group-move-to-cash-option/categorize-inbox-group-move-to-cash-option';
+import { CategorizeInboxGroupTransferLead } from '../categorize-inbox-group-transfer-lead/categorize-inbox-group-transfer-lead';
 import { CategorizeInboxGroupTransferOption } from '../categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option';
 import { CategorizeInboxOptionCard } from '../categorize-inbox-option-card/categorize-inbox-option-card';
 import { CategorizeInboxOptionSectionTitle } from '../categorize-inbox-option-section-title/categorize-inbox-option-section-title';
@@ -23,7 +24,9 @@ export const CategorizeInboxGroupOptions = ({ cluster }: Props) => {
     const { learnedAccount, isLeadTransfer, isCash, leadLabelOptions, otherLabelOptions, cashTransactionIds } =
         useCategorizeInboxGroupOptions(cluster);
 
-    const hasLead = isDefined(learnedAccount) || isLeadTransfer || isNotEmptyArray(leadLabelOptions);
+    const hasTransferLead = isDefined(learnedAccount) || isLeadTransfer;
+    const hasLead = hasTransferLead || isNotEmptyArray(leadLabelOptions);
+    const candidateOptions = hasTransferLead ? [] : otherLabelOptions;
     const otherOptionsHeading = hasLead ? (
         <CategorizeInboxOptionSectionTitle>
             <Trans>Other options</Trans>
@@ -31,8 +34,8 @@ export const CategorizeInboxGroupOptions = ({ cluster }: Props) => {
     ) : null;
 
     const learnedTransfer = isDefined(learnedAccount) ? <CategorizeInboxGroupLearnedTransferOption account={learnedAccount} /> : null;
-    const leadTransfer = isLeadTransfer ? <CategorizeInboxGroupTransferOption cluster={cluster} isLead /> : null;
-    const trailingTransfer = isLeadTransfer ? null : <CategorizeInboxGroupTransferOption cluster={cluster} isLead={false} />;
+    const leadTransfer = isLeadTransfer ? <CategorizeInboxGroupTransferLead cluster={cluster} /> : null;
+    const trailingTransfer = isLeadTransfer ? null : <CategorizeInboxGroupTransferOption cluster={cluster} />;
     const moveToCash = isNotEmptyArray(cashTransactionIds) ? <CategorizeInboxGroupMoveToCashOption /> : null;
     const alreadyTracked = isCash ? <CategorizeInboxGroupAlreadyTrackedOption /> : null;
 
@@ -53,7 +56,7 @@ export const CategorizeInboxGroupOptions = ({ cluster }: Props) => {
             <CategorizeInboxOptionCard>
                 {moveToCash}
                 {alreadyTracked}
-                {otherLabelOptions.map(option => (
+                {candidateOptions.map(option => (
                     <CategorizeInboxGroupLabelOption key={option.label.id} {...option} />
                 ))}
                 <CategorizeInboxGroupMoreLabelsOption cluster={cluster} />

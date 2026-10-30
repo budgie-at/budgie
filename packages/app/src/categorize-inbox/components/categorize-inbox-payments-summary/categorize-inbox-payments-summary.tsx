@@ -1,14 +1,9 @@
-import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
-import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
-import { useCategorizeInboxAmountLabel } from '../../hook/use-categorize-inbox-amount-label.hook';
-import { getCategorizeInboxDefaultAmount } from '../../utils/get-categorize-inbox-default-amount.util';
-import { CategorizeInboxPaymentsSelectAll } from '../categorize-inbox-payments-select-all/categorize-inbox-payments-select-all';
+import { useCategorizeInboxIncludedTotal } from '../../hook/use-categorize-inbox-included-total.hook';
 
 import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
 
@@ -17,27 +12,28 @@ interface Props {
 }
 
 export const CategorizeInboxPaymentsSummary = ({ cluster }: Props) => {
-    const { includedRows } = useCategorizeInboxContext();
-    const amountLabel = useCategorizeInboxAmountLabel();
-    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
+    const { count, totalLabel } = useCategorizeInboxIncludedTotal(cluster);
 
-    const included = includedRows(cluster);
-    const includedCount = included.length;
     const rowCount = cluster.rows.length;
-    const total = getCategorizeInboxDefaultAmount(included, defaultInstrument);
-    const totalLabel = isDefined(total) ? ` · ${amountLabel(total, defaultInstrument.symbol)}` : '';
+    const totalNode = isDefined(totalLabel) ? (
+        <Text
+            className="text-primary text-[40px] leading-[48px] font-semibold tracking-[-1px] tabular-nums"
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            minimumFontScale={0.6}
+        >
+            {totalLabel}
+        </Text>
+    ) : null;
 
     return (
-        <View className="flex-row items-center justify-between gap-x-md px-3xl pt-xl">
-            <Text className="flex-1 text-secondary-foreground text-[15px] tabular-nums" numberOfLines={1}>
-                <Text className="text-primary font-semibold">
-                    <Trans>
-                        {includedCount} of {rowCount} selected
-                    </Trans>
-                </Text>
-                {totalLabel}
+        <View className="items-center gap-y-sm px-3xl pb-xs pt-md">
+            {totalNode}
+            <Text className="text-secondary-foreground text-center text-[15px] leading-[20px] tabular-nums" numberOfLines={1}>
+                <Trans>
+                    {count} of {rowCount} selected
+                </Trans>
             </Text>
-            <CategorizeInboxPaymentsSelectAll cluster={cluster} />
         </View>
     );
 };
