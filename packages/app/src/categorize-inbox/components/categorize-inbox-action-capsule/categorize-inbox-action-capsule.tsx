@@ -7,8 +7,8 @@ interface Props {
 
 export const CategorizeInboxActionCapsule = ({ label, variant }: Props) => {
     const isPositive = variant === 'positive';
-    const surfaceClassName = isPositive ? 'bg-positive-fill' : 'bg-secondary-corner';
-    const textClassName = isPositive ? 'text-white' : 'text-primary';
+    const surfaceClassName = isPositive ? 'bg-positive-fill' : 'bg-primary';
+    const textClassName = isPositive ? 'text-white' : 'text-primary-reverse';
 
     return (
         <View className={`${surfaceClassName} h-[32px] items-center justify-center rounded-full px-xl`}>

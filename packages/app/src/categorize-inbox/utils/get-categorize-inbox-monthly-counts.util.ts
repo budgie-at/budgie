@@ -1,11 +1,11 @@
-import { isSameMonth, startOfMonth, subMonths } from 'date-fns';
+import { differenceInCalendarMonths, isSameMonth, startOfMonth, subMonths } from 'date-fns';
 
 import { isEmptyArray } from '@rnw-community/shared';
 
 import type { CategorizeInboxMonthlyBucketInterface } from '../interface/categorize-inbox-monthly-bucket.interface';
 import type { CategorizeInboxRowInterface } from '@budgie/categorization';
 
-const MONTH_BUCKET_COUNT = 12;
+const MIN_MONTH_BUCKET_COUNT = 6;
 
 export const getCategorizeInboxMonthlyCounts = (
     rows: readonly Pick<CategorizeInboxRowInterface, 'operatedAt'>[]
@@ -14,10 +14,15 @@ export const getCategorizeInboxMonthlyCounts = (
         return [];
     }
 
-    const newestMonth = startOfMonth(new Date(Math.max(...rows.map(row => row.operatedAt.getTime()))));
+    const timestamps = rows.map(row => row.operatedAt.getTime());
+    const currentMonth = startOfMonth(new Date());
+    const newestRowMonth = startOfMonth(new Date(Math.max(...timestamps)));
+    const lastMonth = newestRowMonth > currentMonth ? newestRowMonth : currentMonth;
+    const firstMonth = startOfMonth(new Date(Math.min(...timestamps)));
+    const bucketCount = Math.max(MIN_MONTH_BUCKET_COUNT, differenceInCalendarMonths(lastMonth, firstMonth) + 1);
 
-    return Array.from({ length: MONTH_BUCKET_COUNT }, (_, index) => {
-        const month = subMonths(newestMonth, MONTH_BUCKET_COUNT - 1 - index);
+    return Array.from({ length: bucketCount }, (_, index) => {
+        const month = subMonths(lastMonth, bucketCount - 1 - index);
 
         return { month, count: rows.filter(row => isSameMonth(row.operatedAt, month)).length };
     });

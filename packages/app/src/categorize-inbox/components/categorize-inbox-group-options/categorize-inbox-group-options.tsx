@@ -54,7 +54,7 @@ export const CategorizeInboxGroupOptions = ({ cluster }: Props) => {
 
     return (
         <View className="pt-md">
-            <Text className="text-primary pb-md text-lg font-semibold">
+            <Text className="text-secondary-foreground pb-xs text-sm font-semibold">
                 <Trans>What is it?</Trans>
             </Text>
 

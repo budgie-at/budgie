@@ -1,6 +1,7 @@
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
+import { Text } from 'react-native';
 
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
 import { CategorizeInboxActionCapsule } from '../categorize-inbox-action-capsule/categorize-inbox-action-capsule';
@@ -27,7 +28,9 @@ export const CategorizeInboxGroupLabelOption = ({ cluster, label, isBestMatch }:
     };
     const accessory = isBestMatch ? (
         <CategorizeInboxActionCapsule label={t({ context: 'Apply a category action', message: 'File' })} variant="positive" />
-    ) : null;
+    ) : (
+        <Text className="text-secondary-foreground text-sm font-medium">{t({ context: 'Apply a category action', message: 'File' })}</Text>
+    );
 
     const handlePress = (): void => {
         assignCluster(cluster, label.id);

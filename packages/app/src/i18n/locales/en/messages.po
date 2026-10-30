@@ -5920,6 +5920,10 @@ msgstr "Unavailable"
 msgid "Uncategorized"
 msgstr "Uncategorized"
 
+#: src/categorize-inbox/components/categorize-inbox-payments-screen/categorize-inbox-payments-screen.tsx
+msgid "Unchecked payments stay in your inbox."
+msgstr "Unchecked payments stay in your inbox."
+
 #: src/transaction/hook/use-delete-transaction.hook.ts
 msgid "Unconsolidate"
 msgstr "Unconsolidate"

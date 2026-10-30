@@ -1,5 +1,5 @@
 import { plural } from '@lingui/core/macro';
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
 import { Text, View } from 'react-native';
 
@@ -62,6 +62,10 @@ export const CategorizeInboxPaymentsScreen = ({ clusterKey }: Props) => {
                         />
                     );
                 })}
+
+                <Text className="text-secondary-foreground pt-3xl text-center text-xs">
+                    <Trans>Unchecked payments stay in your inbox.</Trans>
+                </Text>
             </CategorizeInboxScreenScroll>
 
             <ScreenChromeFooter includeBottomSafeArea={false} edgeFadeProps={HIDDEN_EDGE_FADE_PROPS}>

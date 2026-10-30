@@ -5919,6 +5919,10 @@ msgstr "Indisponible"
 msgid "Uncategorized"
 msgstr "Non catégorisé"
 
+#: src/categorize-inbox/components/categorize-inbox-payments-screen/categorize-inbox-payments-screen.tsx
+msgid "Unchecked payments stay in your inbox."
+msgstr "Les paiements non cochés restent dans ta boîte."
+
 #: src/transaction/hook/use-delete-transaction.hook.ts
 msgid "Unconsolidate"
 msgstr "Déconsolider"
