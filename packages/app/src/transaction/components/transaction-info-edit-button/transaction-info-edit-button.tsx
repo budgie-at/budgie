@@ -22,15 +22,12 @@ export const TransactionInfoEditButton = ({ editHref }: Props) => {
     const { fontScale } = useWindowDimensions();
     const hitSize = MIN_HIT_SIZE * Math.min(fontScale, TRANSACTION_INFO_BAR_BUTTON_MAX_FONT_SCALE);
     const hitAreaStyle = { minHeight: hitSize, minWidth: hitSize };
-    const handleEditPress = () => {
-        if (isDefined(editHref)) {
-            router.push(editHref);
-        }
-    };
 
     if (!isDefined(editHref)) {
         return null;
     }
+
+    const handleEditPress = () => void router.push(editHref);
 
     return (
         <HapticPressable
@@ -38,14 +35,13 @@ export const TransactionInfoEditButton = ({ editHref }: Props) => {
             accessibilityLabel={t`Edit transaction`}
             className="items-end justify-center active:scale-100 active:opacity-70"
             style={hitAreaStyle}
-            disabled={!isDefined(editHref)}
             onPress={handleEditPress}
             testID={TransactionInfoPageSelector.EditButton}
         >
             <Text
                 maxFontSizeMultiplier={TRANSACTION_INFO_BAR_BUTTON_MAX_FONT_SCALE}
                 className="text-[17px] text-default-foreground font-medium"
-                testID={`${TransactionInfoPageSelector.EditButton}.Label`}
+                testID={TransactionInfoPageSelector.EditButtonLabel}
             >
                 <Trans>Edit</Trans>
             </Text>

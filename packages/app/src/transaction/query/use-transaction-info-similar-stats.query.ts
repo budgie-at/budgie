@@ -52,7 +52,6 @@ const buildSimilarStatsQuery = (transaction: TransactionWithRelationsEntityInter
     }
 
     return {
-        transactionId: transaction.id,
         type: transaction.type,
         operatedAt: transaction.operatedAt,
         title: transaction.title,

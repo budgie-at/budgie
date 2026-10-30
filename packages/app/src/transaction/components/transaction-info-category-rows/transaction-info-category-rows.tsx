@@ -27,12 +27,6 @@ export const TransactionInfoCategoryRows = ({ transaction }: Props) => {
     const isUncategorized = !isSplit && isUncategorizedTransaction(transaction);
     const singleCategory = !isTransfer && !isSplit && isDefined(category) ? category : null;
     const mccLabel = getTransactionMccLabel(transaction);
-    const hasDebt = isDefined(transaction.debtEvents.at(0));
-    const hasRows = isSplit || isUncategorized || isDefined(singleCategory) || hasDebt || isNotEmptyString(mccLabel);
-
-    if (!hasRows) {
-        return null;
-    }
 
     return (
         <>

@@ -3,6 +3,7 @@ export const TransactionInfoPageSelector = {
     Page: 'TransactionInfo.Page',
     DeleteButton: 'TransactionActionsMenu.DeleteButton',
     EditButton: 'TransactionInfo.EditButton',
+    EditButtonLabel: 'TransactionInfo.EditButton.Label',
     SimilarCard: 'TransactionInfo.SimilarCard',
     SimilarTotal: 'TransactionInfo.SimilarTotal',
     SimilarAverage: 'TransactionInfo.SimilarAverage',

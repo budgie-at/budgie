@@ -42,6 +42,7 @@ export const RefundTransactionInfoContent = ({ transaction, parentTransaction }:
     const source = sources.find(row => row.sourceTransactionId === transaction.id);
     const original = formatTransactionInfoAmount(parentTransaction, formatDigits);
     const merchant = getTransactionDisplayTitle(parentTransaction);
+    const title = t`Refund from ${merchant}`;
     const handleOpenPurchase = () => void router.push(getTransactionHref(parentTransaction));
 
     if (!isDefined(source)) {
@@ -56,7 +57,7 @@ export const RefundTransactionInfoContent = ({ transaction, parentTransaction }:
                 <View className="px-3xl" onLayout={onContentLayout}>
                     <RefundTransactionInfoHero
                         amount={amount}
-                        title={t`Refund from ${merchant}`}
+                        title={title}
                         operatedAt={transaction.operatedAt}
                         onAmountLayout={onAmountLayout}
                         onTitleLayout={onTitleLayout}
@@ -90,7 +91,7 @@ export const RefundTransactionInfoContent = ({ transaction, parentTransaction }:
                 editHref={null}
                 handoff={handoff}
                 onGoBack={router.back}
-                compactTitle={t`Refund from ${merchant}`}
+                compactTitle={title}
                 compactAmount={amount}
             />
         </ScreenChromeFrame>

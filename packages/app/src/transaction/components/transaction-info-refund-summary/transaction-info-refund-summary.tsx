@@ -38,13 +38,11 @@ export const TransactionInfoRefundSummary = ({ transaction }: Props) => {
     const net = formatDigits(convertFromMicroUnits(originalAmount - refundedTotal), purchase.account.instrument.symbol);
 
     return (
-        <>
-            <TransactionInfoRow
-                icon={UserIconNameEnum.RotateCcw}
-                label={t`Refunds received`}
-                value={t`${refunded} refunded · ${net} net`}
-                testID={TransactionInfoPageSelector.Row.RefundSummary}
-            />
-        </>
+        <TransactionInfoRow
+            icon={UserIconNameEnum.RotateCcw}
+            label={t`Refunds received`}
+            value={t`${refunded} refunded · ${net} net`}
+            testID={TransactionInfoPageSelector.Row.RefundSummary}
+        />
     );
 };

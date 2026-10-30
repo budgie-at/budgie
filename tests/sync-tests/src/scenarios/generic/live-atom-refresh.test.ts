@@ -209,7 +209,6 @@ const liveAtoms = ({
     uncategorizedTransactionCount: uncategorizedTransactionCountAtom(DEFAULT_TRANSACTION_FILTER),
     uncategorizedTransactions: uncategorizedTransactionsAtom([DEFAULT_TRANSACTION_FILTER, EN, 20]),
     similarStats: similarStatsAtom({
-        transactionId: expense.id,
         type: TransactionTypeEnum.EXPENSE,
         operatedAt: new Date(NOW),
         title: expense.title,
