@@ -135,6 +135,10 @@ msgstr "{count, plural, one {# uncategorized} other {# uncategorized}}"
 msgid "{count, plural, one {# upcoming bill} other {# upcoming bills}}"
 msgstr "{count, plural, one {# upcoming bill} other {# upcoming bills}}"
 
+#: src/installment-plan/component/installment-count-stepper/installment-count-stepper.tsx
+msgid "{count, plural, one {month} other {months}}"
+msgstr "{count, plural, one {month} other {months}}"
+
 #: src/category/hooks/use-delete-category.hook.ts
 msgid "{count, plural, one {This category has # transaction. Select another category to reassign it to.} other {This category has # transactions. Select another category to reassign them to.}}"
 msgstr "{count, plural, one {This category has # transaction. Select another category to reassign it to.} other {This category has # transactions. Select another category to reassign them to.}}"
@@ -2706,6 +2710,10 @@ msgstr "Fetch Accounts"
 msgid "Fetching new..."
 msgstr "Fetching new..."
 
+#: src/installment-plan/component/installment-count-stepper/installment-count-stepper.tsx
+msgid "Fewer months"
+msgstr "Fewer months"
+
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 msgid "Field"
 msgstr "Field"
@@ -3523,6 +3531,10 @@ msgstr "months left"
 msgid "More categories"
 msgstr "More categories"
 
+#: src/installment-plan/component/installment-count-stepper/installment-count-stepper.tsx
+msgid "More months"
+msgstr "More months"
+
 #: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
 msgid "More tags"
 msgstr "More tags"
@@ -3854,6 +3866,10 @@ msgstr "Nothing to fix here"
 #: src/runway/hook/use-runway-tick-label.hook.ts
 msgid "Now"
 msgstr "Now"
+
+#: src/installment-plan/component/installment-count-stepper/installment-count-stepper.tsx
+msgid "Number of months"
+msgstr "Number of months"
 
 #: src/account/component/debt-account-card-summary/debt-account-card-summary.tsx
 msgid "of"

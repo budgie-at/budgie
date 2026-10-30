@@ -134,6 +134,10 @@ msgstr "{count, plural, one {# sans catégorie} other {# sans catégorie}}"
 msgid "{count, plural, one {# upcoming bill} other {# upcoming bills}}"
 msgstr "{count, plural, one {# facture à venir} other {# factures à venir}}"
 
+#: src/installment-plan/component/installment-count-stepper/installment-count-stepper.tsx
+msgid "{count, plural, one {month} other {months}}"
+msgstr "{count, plural, one {mois} other {mois}}"
+
 #: src/category/hooks/use-delete-category.hook.ts
 msgid "{count, plural, one {This category has # transaction. Select another category to reassign it to.} other {This category has # transactions. Select another category to reassign them to.}}"
 msgstr "{count, plural, one {Cette catégorie contient # transaction. Sélectionnez une autre catégorie pour la réaffecter.} other {Cette catégorie contient # transactions. Sélectionnez une autre catégorie pour les réaffecter.}}"
@@ -2705,6 +2709,10 @@ msgstr "Récupérer les comptes"
 msgid "Fetching new..."
 msgstr "Récupération des nouvelles..."
 
+#: src/installment-plan/component/installment-count-stepper/installment-count-stepper.tsx
+msgid "Fewer months"
+msgstr "Moins de mois"
+
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 msgid "Field"
 msgstr "Champ"
@@ -3522,6 +3530,10 @@ msgstr "mois restants"
 msgid "More categories"
 msgstr "Autres catégories"
 
+#: src/installment-plan/component/installment-count-stepper/installment-count-stepper.tsx
+msgid "More months"
+msgstr "Plus de mois"
+
 #: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
 msgid "More tags"
 msgstr "Plus d'étiquettes"
@@ -3853,6 +3865,10 @@ msgstr "Rien à corriger ici"
 #: src/runway/hook/use-runway-tick-label.hook.ts
 msgid "Now"
 msgstr "Maintenant"
+
+#: src/installment-plan/component/installment-count-stepper/installment-count-stepper.tsx
+msgid "Number of months"
+msgstr "Nombre de mois"
 
 #: src/account/component/debt-account-card-summary/debt-account-card-summary.tsx
 msgid "of"

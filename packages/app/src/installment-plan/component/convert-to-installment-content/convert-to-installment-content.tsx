@@ -20,7 +20,7 @@ import { ConvertToInstallmentParts } from '../convert-to-installment-parts/conve
 import { ConvertToInstallmentSource } from '../convert-to-installment-source/convert-to-installment-source';
 import { ConvertToInstallmentTitleField } from '../convert-to-installment-title-field/convert-to-installment-title-field';
 import { ConvertToInstallmentTotal } from '../convert-to-installment-total/convert-to-installment-total';
-import { InstallmentCountChips } from '../installment-count-chips/installment-count-chips';
+import { InstallmentCountPicker } from '../installment-count-picker/installment-count-picker';
 import { InstallmentTimeline } from '../installment-timeline/installment-timeline';
 
 import type { ConvertToInstallmentFormValues } from '../../constant/convert-to-installment-form-schema.constant';
@@ -91,7 +91,7 @@ export const ConvertToInstallmentContent = ({ params, onResolve }: Props) => {
                 </View>
 
                 <View className="gap-y-xl">
-                    <InstallmentCountChips selectedCount={installmentCount} onSelect={handleSelectCount} />
+                    <InstallmentCountPicker selectedCount={installmentCount} onSelect={handleSelectCount} />
                     <InstallmentTimeline operatedAt={params.operatedAt} />
                 </View>
 

@@ -134,6 +134,10 @@ msgstr "{count, plural, one {# без категорії} few {# без кате
 msgid "{count, plural, one {# upcoming bill} other {# upcoming bills}}"
 msgstr "{count, plural, one {# майбутній платіж} few {# майбутні платежі} many {# майбутніх платежів} other {# майбутнього платежу}}"
 
+#: src/installment-plan/component/installment-count-stepper/installment-count-stepper.tsx
+msgid "{count, plural, one {month} other {months}}"
+msgstr "{count, plural, one {місяць} few {місяці} many {місяців} other {місяця}}"
+
 #: src/category/hooks/use-delete-category.hook.ts
 msgid "{count, plural, one {This category has # transaction. Select another category to reassign it to.} other {This category has # transactions. Select another category to reassign them to.}}"
 msgstr "{count, plural, one {Ця категорія має # транзакцію. Виберіть іншу категорію, щоб перепризначити її.} few {Ця категорія має # транзакції. Виберіть іншу категорію, щоб перепризначити їх.} many {Ця категорія має # транзакцій. Виберіть іншу категорію, щоб перепризначити їх.} other {Ця категорія має # транзакції. Виберіть іншу категорію, щоб перепризначити їх.}}"
@@ -2705,6 +2709,10 @@ msgstr "Отримати рахунки"
 msgid "Fetching new..."
 msgstr "Завантаження нових..."
 
+#: src/installment-plan/component/installment-count-stepper/installment-count-stepper.tsx
+msgid "Fewer months"
+msgstr "Менше місяців"
+
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 msgid "Field"
 msgstr "Поле"
@@ -3522,6 +3530,10 @@ msgstr "місяців залишилось"
 msgid "More categories"
 msgstr "Інші категорії"
 
+#: src/installment-plan/component/installment-count-stepper/installment-count-stepper.tsx
+msgid "More months"
+msgstr "Більше місяців"
+
 #: src/categorize-inbox/components/categorize-inbox-tag-page/categorize-inbox-tag-page.tsx
 msgid "More tags"
 msgstr "Інші теги"
@@ -3853,6 +3865,10 @@ msgstr "Тут нічого виправляти"
 #: src/runway/hook/use-runway-tick-label.hook.ts
 msgid "Now"
 msgstr "Зараз"
+
+#: src/installment-plan/component/installment-count-stepper/installment-count-stepper.tsx
+msgid "Number of months"
+msgstr "Кількість місяців"
 
 #: src/account/component/debt-account-card-summary/debt-account-card-summary.tsx
 msgid "of"

@@ -15,6 +15,7 @@ interface Props {
 }
 
 const MONTH_LABELS_LIMIT = 6;
+const POINTS_LIMIT = 36;
 const HALF_PERCENT = 50;
 
 export const InstallmentTimeline = ({ operatedAt }: Props) => {
@@ -24,10 +25,11 @@ export const InstallmentTimeline = ({ operatedAt }: Props) => {
     const { control } = useFormContext<ConvertToInstallmentFormValues>();
     const installmentCount = useWatch({ control, name: 'installmentCount' });
 
-    const paymentDates = Array.from({ length: installmentCount }, (_, index) => addMonths(operatedAt, index));
+    const pointCount = Math.min(installmentCount, POINTS_LIMIT);
+    const paymentDates = Array.from({ length: pointCount }, (_, index) => addMonths(operatedAt, index));
     const firstPaymentLabel = formatMonthAndYear(operatedAt);
     const lastPaymentLabel = formatMonthAndYear(addMonths(operatedAt, installmentCount - 1));
-    const trackInset = `${HALF_PERCENT / installmentCount}%` as const;
+    const trackInset = `${HALF_PERCENT / pointCount}%` as const;
     const trackStyle = { left: trackInset, right: trackInset };
     const hasMonthLabels = installmentCount <= MONTH_LABELS_LIMIT;
 
