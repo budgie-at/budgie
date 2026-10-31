@@ -1,10 +1,11 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useEffect, useReducer, useRef, useState } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
+import { SelectorModalDescription } from '../@generic/component/selector-modal-description/selector-modal-description';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { prepareSelectorGridData } from '../@generic/utils/prepare-selector-grid-data.util';
@@ -107,19 +108,18 @@ export default function TagsSelectorModal() {
                 testID={TagsSelectorModalSelector.Input}
             />
 
-            {isNotEmptyString(description) ? (
-                <View className="px-xl pb-md">
-                    <Text className="text-foreground text-sm">{description}</Text>
-                </View>
-            ) : null}
-
-            <TagsSelectContent
-                data={data}
-                selectedTagIds={selected}
-                primaryTagId={primaryTagId}
-                onSelect={handleSelectTag}
-                {...(enablePrimarySelection && { onPrimarySelect: handlePrimarySelect })}
-            />
+            <SelectorModalDescription description={description}>
+                {topOffset => (
+                    <TagsSelectContent
+                        topOffset={topOffset}
+                        data={data}
+                        selectedTagIds={selected}
+                        primaryTagId={primaryTagId}
+                        onSelect={handleSelectTag}
+                        {...(enablePrimarySelection && { onPrimarySelect: handlePrimarySelect })}
+                    />
+                )}
+            </SelectorModalDescription>
 
             {dirty && !singleSelect ? (
                 <TagsSelectorDoneButton count={selected.length} onPress={handleDone} testID={TagsSelectorModalSelector.DoneButton} />

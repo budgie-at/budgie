@@ -61,6 +61,8 @@ export class TagRepository extends Context.Service<TagRepository>()('@budgie/con
 
             yield* Db.query(db => db.delete(TransactionTagsEntityTable).where(eq(TransactionTagsEntityTable.tagId, fromTagId)));
         }),
+        deleteTransactionLinks: (tagId: number) =>
+            Db.query(db => db.delete(TransactionTagsEntityTable).where(eq(TransactionTagsEntityTable.tagId, tagId))).pipe(Effect.asVoid),
         deleteById: (id: number) => Db.query(db => db.delete(TagEntityTable).where(eq(TagEntityTable.id, id))).pipe(Effect.asVoid),
         countTransactions: (tagId: number) =>
             Db.query(db =>

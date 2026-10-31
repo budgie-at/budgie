@@ -1,49 +1,52 @@
+import { CategoryRepository } from '@budgie/contracts';
 import { CategoryService } from '@budgie/ledger';
-import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
+import { showSuccessToast } from '../../@generic/utils/show-success-toast/show-success-toast';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
-import { useCategorySelectorModal } from '../context/category-selector-modal.context';
+import { useSetting } from '../../settings/hook/use-setting.hook';
+
+import { useMergeCategory } from './use-merge-category.hook';
 
 export const useDeleteCategory = () => {
     const { t } = useLingui();
-    const [openCategorySelector] = useCategorySelectorModal();
+    const language = useSetting('language');
+    const mergeCategory = useMergeCategory();
 
-    const deleteCategory = Effect.fn('useDeleteCategory.deleteCategory')(function* (id: number) {
+    return Effect.fn('useDeleteCategory.deleteCategory')(function* (id: number) {
         const categoryService = yield* CategoryService;
         const count = yield* categoryService.countTransactionEntries(id);
 
-        if (!isPositiveNumber(count)) {
-            yield* categoryService.deleteById(id).pipe(toastOnFailure(t`Could not delete category`, t`Please try again later`));
-
-            return true;
+        if (isPositiveNumber(count)) {
+            return isDefined(yield* mergeCategory(id));
         }
 
-        const description = t({
-            message: plural(count, {
-                one: 'This category has # transaction. Select another category to reassign it to.',
-                other: 'This category has # transactions. Select another category to reassign them to.'
-            })
-        });
-        const targetCategoryId = yield* Effect.callback<number | null>(resume => {
-            openCategorySelector({ excludeCategoryIds: [id], description, variant: 'primary' }, selectedCategoryId => {
-                resume(Effect.succeed(selectedCategoryId));
-            });
-        });
+        const categoryRepository = yield* CategoryRepository;
+        const [category] = yield* categoryRepository.findById(id, language);
 
-        if (!isDefined(targetCategoryId)) {
+        if (!isDefined(category)) {
             return false;
         }
 
-        yield* categoryService
-            .mergeInto(id, targetCategoryId)
-            .pipe(toastOnFailure(t`Could not reassign category`, t`Please try again later`));
+        const { title } = category;
+        const isConfirmed = yield* confirmAlert({
+            title: t`Delete “${title}”?`,
+            confirmText: t`Delete`,
+            cancelText: t`Cancel`,
+            isDestructive: true
+        });
+
+        if (!isConfirmed) {
+            return false;
+        }
+
+        yield* categoryService.deleteById(id).pipe(toastOnFailure(t`Could not delete category`, t`Please try again later`));
+        yield* Effect.sync(() => void showSuccessToast(t`“${title}” deleted`));
 
         return true;
     });
-
-    return deleteCategory;
 };

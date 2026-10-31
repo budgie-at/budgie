@@ -12,9 +12,9 @@ export const useFormatEntityUsage = () => {
     const { t } = useLingui();
     const { formatMonthAndDay, formatDayAndMonthAndYear } = useFormatDate();
 
-    return (usage: EntityUsageInterface | undefined): string => {
+    return (usage: EntityUsageInterface | undefined): string | null => {
         if (!isDefined(usage?.lastUsedAt)) {
-            return t`Not used yet`;
+            return null;
         }
 
         const transactions = t({ message: plural(usage.transactionCount, { one: '# transaction', other: '# transactions' }) });

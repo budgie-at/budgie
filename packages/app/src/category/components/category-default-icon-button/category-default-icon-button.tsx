@@ -9,16 +9,16 @@ import { isPositiveNumber } from '@rnw-community/shared';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
-import { useNonSystemCategoriesQuery } from '../../query/use-non-system-categories.query';
+import { useSearchCategoriesQuery } from '../../query/use-search-categories.query';
 
 import { CategoryDefaultIconButtonSelector } from './category-default-icon-button.selector';
 
 export const CategoryDefaultIconButton = () => {
     const { t } = useLingui();
     const router = useRouter();
-    const { categories } = useNonSystemCategoriesQuery();
+    const { categories } = useSearchCategoriesQuery('', false);
 
-    const count = categories.filter(category => category.icon === DEFAULT_CATEGORY_ICON).length;
+    const count = (categories ?? []).filter(category => category.icon === DEFAULT_CATEGORY_ICON).length;
 
     const handlePress = () => void router.push('/settings/category-icons');
 

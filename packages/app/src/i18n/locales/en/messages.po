@@ -23,6 +23,16 @@ msgstr "Binance P2P buy {assetCode}"
 msgid "Binance P2P sell {assetCode}"
 msgstr "Binance P2P sell {assetCode}"
 
+#: src/category/hooks/use-merge-category.hook.ts
+#: src/tag/hooks/use-merge-tag.hook.ts
+msgid "“{sourceTitle}” merged into “{targetTitle}”"
+msgstr "“{sourceTitle}” merged into “{targetTitle}”"
+
+#: src/category/hooks/use-delete-category.hook.ts
+#: src/tag/hooks/use-delete-tag.hook.ts
+msgid "“{title}” deleted"
+msgstr "“{title}” deleted"
+
 #. placeholder {0}: rows.length
 #: src/categorize-inbox/components/categorize-inbox-group-row-subtitle/categorize-inbox-group-row-subtitle.tsx
 msgid "{0, plural, one {# ATM withdrawal} other {# ATM withdrawals}}"
@@ -134,6 +144,14 @@ msgstr "{code} · 1 {code} ≈ {convertedAmount} {defaultCode}"
 msgid "{code} · Base currency"
 msgstr "{code} · Base currency"
 
+#: src/category/hooks/use-merge-category.hook.ts
+msgid "{count, plural, =0 {“{sourceTitle}” has no transactions. Pick a category to merge it into, and “{sourceTitle}” is removed.} one {“{sourceTitle}” has # transaction. It moves to the category you pick, and “{sourceTitle}” is removed.} other {“{sourceTitle}” has # transactions. They move to the category you pick, and “{sourceTitle}” is removed.}}"
+msgstr "{count, plural, =0 {“{sourceTitle}” has no transactions. Pick a category to merge it into, and “{sourceTitle}” is removed.} one {“{sourceTitle}” has # transaction. It moves to the category you pick, and “{sourceTitle}” is removed.} other {“{sourceTitle}” has # transactions. They move to the category you pick, and “{sourceTitle}” is removed.}}"
+
+#: src/tag/hooks/use-merge-tag.hook.ts
+msgid "{count, plural, =0 {“{sourceTitle}” is not on any transactions. Pick a tag to merge it into, and “{sourceTitle}” is removed.} one {“{sourceTitle}” is on # transaction. It gets the tag you pick, and “{sourceTitle}” is removed.} other {“{sourceTitle}” is on # transactions. They get the tag you pick, and “{sourceTitle}” is removed.}}"
+msgstr "{count, plural, =0 {“{sourceTitle}” is not on any transactions. Pick a tag to merge it into, and “{sourceTitle}” is removed.} one {“{sourceTitle}” is on # transaction. It gets the tag you pick, and “{sourceTitle}” is removed.} other {“{sourceTitle}” is on # transactions. They get the tag you pick, and “{sourceTitle}” is removed.}}"
+
 #: src/budget/components/budget-period-recap-rollover/budget-period-recap-rollover.tsx
 msgid "{count, plural, one {{formattedAmount} rolled over across # category} other {{formattedAmount} rolled over across # categories}}"
 msgstr "{count, plural, one {{formattedAmount} rolled over across # category} other {{formattedAmount} rolled over across # categories}}"
@@ -162,13 +180,9 @@ msgstr "{count, plural, one {# upcoming bill} other {# upcoming bills}}"
 msgid "{count, plural, one {Choose an icon for # category} other {Choose icons for # categories}}"
 msgstr "{count, plural, one {Choose an icon for # category} other {Choose icons for # categories}}"
 
-#: src/category/hooks/use-delete-category.hook.ts
-msgid "{count, plural, one {This category has # transaction. Select another category to reassign it to.} other {This category has # transactions. Select another category to reassign them to.}}"
-msgstr "{count, plural, one {This category has # transaction. Select another category to reassign it to.} other {This category has # transactions. Select another category to reassign them to.}}"
-
 #: src/tag/hooks/use-delete-tag.hook.ts
-msgid "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
-msgstr "{count, plural, one {This tag has # transaction. Select another tag to reassign it to.} other {This tag has # transactions. Select another tag to reassign them to.}}"
+msgid "{count, plural, one {It will be removed from # transaction. The transaction stays.} other {It will be removed from # transactions. The transactions stay.}}"
+msgstr "{count, plural, one {It will be removed from # transaction. The transaction stays.} other {It will be removed from # transactions. The transactions stay.}}"
 
 #: src/categorize-inbox/components/categorize-inbox-payments-bar/categorize-inbox-payments-bar.tsx
 msgid "{count, plural, one {Use # payment} other {Use # payments}}"
@@ -1347,6 +1361,10 @@ msgstr "Budgie will notify you when it finishes"
 msgid "Budgie will soft-delete {countText}. This keeps your manual transactions unchanged."
 msgstr "Budgie will soft-delete {countText}. This keeps your manual transactions unchanged."
 
+#: src/category/components/category-empty-state/category-empty-state.tsx
+msgid "Built-in categories are always there. Add your own to sort spending the way you think about it."
+msgstr "Built-in categories are always there. Add your own to sort spending the way you think about it."
+
 #: src/runway/component/runway-verdict/runway-verdict.tsx
 msgid "Burning"
 msgstr "Burning"
@@ -1376,7 +1394,6 @@ msgid "Can't be changed later"
 msgstr "Can't be changed later"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
-#: src/@generic/component/merge-delete-section/merge-delete-section.tsx
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx
 #: src/account/component/account-action-button/account-action-button.tsx
 #: src/account/component/account-actions-menu/use-deposit-close-action.hook.ts
@@ -1388,6 +1405,7 @@ msgstr "Can't be changed later"
 #: src/app/resync-window-picker.tsx
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 #: src/budget/hooks/use-budget-form.hook.ts
+#: src/category/hooks/use-delete-category.hook.ts
 #: src/import/hook/use-restore-backup.hook.ts
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
@@ -1400,6 +1418,7 @@ msgstr "Can't be changed later"
 #: src/settings/components/truncate-data/truncate-data.tsx
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
+#: src/tag/hooks/use-delete-tag.hook.ts
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
@@ -1947,11 +1966,11 @@ msgstr "Could not load sources. Please try again."
 msgid "Could not mark account as external"
 msgstr "Could not mark account as external"
 
-#: src/category/components/category-form/category-form.tsx
+#: src/category/hooks/use-merge-category.hook.ts
 msgid "Could not merge category"
 msgstr "Could not merge category"
 
-#: src/tag/components/tag-form/tag-form.tsx
+#: src/tag/hooks/use-merge-tag.hook.ts
 msgid "Could not merge tag"
 msgstr "Could not merge tag"
 
@@ -1982,14 +2001,6 @@ msgstr "Could not read CSV file"
 #: src/app/(tabs)/settings/apple-pay-capture.tsx
 msgid "Could not read Wallet captures"
 msgstr "Could not read Wallet captures"
-
-#: src/category/hooks/use-delete-category.hook.ts
-msgid "Could not reassign category"
-msgstr "Could not reassign category"
-
-#: src/tag/hooks/use-delete-tag.hook.ts
-msgid "Could not reassign tag"
-msgstr "Could not reassign tag"
 
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
 msgid "Could not recalculate balances"
@@ -2233,10 +2244,6 @@ msgstr "Create your budget"
 msgid "Create your first account to start tracking your finances"
 msgstr "Create your first account to start tracking your finances"
 
-#: src/category/components/category-empty-state/category-empty-state.tsx
-msgid "Create your own categories to sort spending the way you think about it."
-msgstr "Create your own categories to sort spending the way you think about it."
-
 #: src/sync/component/binance-sync-token-section/binance-sync-token-section.tsx
 #: src/sync/component/create-binance-account/create-binance-account.tsx
 msgid "Credentials required"
@@ -2272,6 +2279,10 @@ msgstr "Currency"
 #: src/account/component/account-balance-field/account-balance-field.tsx
 msgid "Current balance"
 msgstr "Current balance"
+
+#: src/category/components/category-list-header/category-list-header.tsx
+msgid "Custom categories"
+msgstr "Custom categories"
 
 #: src/settings/components/theme-switch/theme-switch.tsx
 msgid "Dark Mode"
@@ -2332,14 +2343,21 @@ msgid "Default Account"
 msgstr "Default Account"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
+#: src/@generic/component/entity-list-row/entity-list-row.tsx
 #: src/@generic/component/grouped-list-row/grouped-list-row.tsx
-#: src/@generic/component/merge-delete-section/merge-delete-section.tsx
 #: src/ai/hook/use-ai-model-download-actions.hook.ts
 #: src/budget/hooks/use-budget-form.hook.ts
+#: src/category/hooks/use-delete-category.hook.ts
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
+#: src/tag/hooks/use-delete-tag.hook.ts
 #: src/transaction/hook/use-delete-transaction.hook.ts
 msgid "Delete"
 msgstr "Delete"
+
+#: src/category/hooks/use-delete-category.hook.ts
+#: src/tag/hooks/use-delete-tag.hook.ts
+msgid "Delete “{title}”?"
+msgstr "Delete “{title}”?"
 
 #: src/app/(tabs)/settings/archived.tsx
 msgid "Delete Account Permanently?"
@@ -2381,13 +2399,9 @@ msgstr "Delete the {downloaded} GB part"
 msgid "Delete the {downloaded} GB part?"
 msgstr "Delete the {downloaded} GB part?"
 
-#: src/category/components/category-form/category-form.tsx
-msgid "Delete this category?"
-msgstr "Delete this category?"
-
-#: src/tag/components/tag-form/tag-form.tsx
-msgid "Delete this tag?"
-msgstr "Delete this tag?"
+#: src/rule/components/rules-list-page/rules-list-page.tsx
+msgid "Delete this rule?"
+msgstr "Delete this rule?"
 
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
 #: src/transaction/components/transaction-info-delete-row/transaction-info-delete-row.tsx
@@ -2444,6 +2458,7 @@ msgstr "Detaches it from “{debtTitle}”"
 #: src/account/component/update-account-page/update-account-page.tsx
 #: src/category/components/category-form/category-form.tsx
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+#: src/tag/components/tag-form/tag-form.tsx
 msgid "Details"
 msgstr "Details"
 
@@ -2606,6 +2621,7 @@ msgstr "Each day against your {allowanceLabel} daily allowance"
 msgid "Each one becomes an account. Rename or remove them later."
 msgstr "Each one becomes an account. Rename or remove them later."
 
+#: src/@generic/component/entity-list-row/entity-list-row.tsx
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 #: src/transaction/components/transaction-info-edit-button/transaction-info-edit-button.tsx
 msgid "Edit"
@@ -3100,10 +3116,6 @@ msgstr "Generate English names and search keywords automatically."
 msgid "Generated automatically so search finds this by other words too."
 msgstr "Generated automatically so search finds this by other words too."
 
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx
-msgid "Generating keywords…"
-msgstr "Generating keywords…"
-
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "Generic"
 msgstr "Generic"
@@ -3203,6 +3215,10 @@ msgstr "How to export"
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "I have a Budgie backup"
 msgstr "I have a Budgie backup"
+
+#: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
+msgid "Icon updated for {categoryTitle}"
+msgstr "Icon updated for {categoryTitle}"
 
 #: src/app/(tabs)/settings/ai.tsx
 msgid "If a download arrives damaged, Budgie deletes it and asks before starting again."
@@ -3711,6 +3727,10 @@ msgstr "Merge into another category…"
 msgid "Merge into another tag…"
 msgstr "Merge into another tag…"
 
+#: src/@generic/component/entity-list-row/entity-list-row.tsx
+msgid "Merge into…"
+msgstr "Merge into…"
+
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
 msgid "Merge matching transfers and refunds"
 msgstr "Merge matching transfers and refunds"
@@ -3986,14 +4006,6 @@ msgstr "No archived accounts match your search"
 msgid "No categories found"
 msgstr "No categories found"
 
-#: src/category/components/category-empty-state/category-empty-state.tsx
-msgid "No categories match “{trimmedSearch}”"
-msgstr "No categories match “{trimmedSearch}”"
-
-#: src/category/components/category-empty-state/category-empty-state.tsx
-msgid "No categories yet"
-msgstr "No categories yet"
-
 #: src/budget/components/budget-category-limits-empty-state/budget-category-limits-empty-state.tsx
 #: src/budget/components/budget-details-category-list/budget-details-category-list.tsx
 msgid "No category limits yet"
@@ -4018,6 +4030,14 @@ msgstr "No crypto found"
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 msgid "No currencies found"
 msgstr "No currencies found"
+
+#: src/category/components/category-empty-state/category-empty-state.tsx
+msgid "No custom categories match “{trimmedSearch}”"
+msgstr "No custom categories match “{trimmedSearch}”"
+
+#: src/category/components/category-empty-state/category-empty-state.tsx
+msgid "No custom categories yet"
+msgstr "No custom categories yet"
 
 #: src/account/component/debt-account-card-empty/debt-account-card-empty.tsx
 msgid "No debt yet"
@@ -4191,10 +4211,6 @@ msgstr "not set"
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Not synced: Auto-Invest, Binance Pay, Binance Card, gift cards, sub-account transfers, margin and futures."
 msgstr "Not synced: Auto-Invest, Binance Pay, Binance Card, gift cards, sub-account transfers, margin and futures."
-
-#: src/@generic/hook/use-format-entity-usage.hook.ts
-msgid "Not used yet"
-msgstr "Not used yet"
 
 #: src/settings/components/backup-row/backup-row.tsx
 msgid "Not yet"
@@ -4698,8 +4714,10 @@ msgstr "Please try again"
 #: src/category/components/category-form/category-form.tsx
 #: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
 #: src/category/hooks/use-delete-category.hook.ts
+#: src/category/hooks/use-merge-category.hook.ts
 #: src/tag/components/tag-form/tag-form.tsx
 #: src/tag/hooks/use-delete-tag.hook.ts
+#: src/tag/hooks/use-merge-tag.hook.ts
 msgid "Please try again later"
 msgstr "Please try again later"
 
@@ -5221,7 +5239,6 @@ msgstr "Search archived accounts..."
 msgid "Search by code or description..."
 msgstr "Search by code or description..."
 
-#: src/app/(tabs)/settings/categories.tsx
 #: src/app/category-selector.tsx
 #: src/app/transaction-category-filter.tsx
 msgid "Search categories..."
@@ -5238,6 +5255,10 @@ msgstr "Search crypto..."
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 msgid "Search currencies..."
 msgstr "Search currencies..."
+
+#: src/app/(tabs)/settings/categories.tsx
+msgid "Search custom categories..."
+msgstr "Search custom categories..."
 
 #: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
 msgid "Search expenses refunded by this income"
@@ -5290,17 +5311,9 @@ msgstr "See spending by context, not just category"
 msgid "Select"
 msgstr "Select"
 
-#: src/category/components/category-form/category-form.tsx
-msgid "Select a category to merge into"
-msgstr "Select a category to merge into"
-
 #: src/@generic/component/contact-selector/contact-selector.tsx
 msgid "Select a contact"
 msgstr "Select a contact"
-
-#: src/tag/components/tag-form/tag-form.tsx
-msgid "Select a tag to merge into"
-msgstr "Select a tag to merge into"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "Select a valid column"
@@ -5910,7 +5923,6 @@ msgid "This account will be hidden from your main view and won't be included in 
 msgstr "This account will be hidden from your main view and won't be included in totals. You can restore it anytime from Settings → Archived Accounts."
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
-#: src/@generic/component/merge-delete-section/merge-delete-section.tsx
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
 msgid "This action cannot be undone."

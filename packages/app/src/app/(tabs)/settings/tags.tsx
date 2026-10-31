@@ -10,7 +10,7 @@ import { TagCard } from '../../../tag/components/tag-card/tag-card';
 import { TagEmptyState } from '../../../tag/components/tag-empty-state/tag-empty-state';
 import { useTagFormModal } from '../../../tag/context/tag-form-modal.context';
 import { useDeleteTag } from '../../../tag/hooks/use-delete-tag.hook';
-import { useSearchTagsQuery } from '../../../tag/query/use-search-tags.query';
+import { useTagsWithUsageQuery } from '../../../tag/query/use-tags-with-usage.query';
 
 import { TagPageSelector } from './tag-page.selector';
 
@@ -20,7 +20,7 @@ export default function Tags() {
 
     const [search, setSearch] = useState('');
     const handleDeleteTag = useDeleteTag();
-    const { tags } = useSearchTagsQuery(search);
+    const { tags, usage } = useTagsWithUsageQuery(search);
 
     useCreateAction({
         icon: UserIconNameEnum.Tag,
@@ -36,7 +36,7 @@ export default function Tags() {
     const handleClearSearch = () => void setSearch('');
 
     const renderCard = (tag: TagEntityInterface, index: number, isLast: boolean) => (
-        <TagCard onOpen={handleOpenTag} tag={tag} isFirst={index === 0} isLast={isLast} />
+        <TagCard onOpen={handleOpenTag} tag={tag} usage={usage?.find(entry => entry.id === tag.id)} isFirst={index === 0} isLast={isLast} />
     );
 
     return (

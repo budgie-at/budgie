@@ -6,11 +6,11 @@ import { SearchablePageList } from '../../../@generic/component/searchable-page-
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
 import { useCreateAction } from '../../../@generic/hook/use-create-action.hook';
 import { CategoryCard } from '../../../category/components/category-card/category-card';
-import { CategoryDefaultIconButton } from '../../../category/components/category-default-icon-button/category-default-icon-button';
 import { CategoryEmptyState } from '../../../category/components/category-empty-state/category-empty-state';
+import { CategoryListHeader } from '../../../category/components/category-list-header/category-list-header';
 import { useCategoryFormModal } from '../../../category/context/category-form-modal.context';
 import { useDeleteCategory } from '../../../category/hooks/use-delete-category.hook';
-import { useSearchCategoriesQuery } from '../../../category/query/use-search-categories.query';
+import { useCustomCategoriesWithUsageQuery } from '../../../category/query/use-custom-categories-with-usage.query';
 import { goBackToSettings } from '../../../settings/utils/go-back-to-settings.util';
 
 import { CategoryPageSelector } from './category-page.selector';
@@ -21,7 +21,7 @@ export default function Categories() {
 
     const [search, setSearch] = useState('');
     const handleDeleteCategory = useDeleteCategory();
-    const { categories } = useSearchCategoriesQuery(search, false);
+    const { categories, usage } = useCustomCategoriesWithUsageQuery(search);
 
     useCreateAction({
         icon: UserIconNameEnum.Folder,
@@ -37,7 +37,13 @@ export default function Categories() {
     const handleClearSearch = () => void setSearch('');
 
     const renderCard = (category: CategoryEntityInterface, index: number, isLast: boolean) => (
-        <CategoryCard onOpen={handleOpenCategory} category={category} isFirst={index === 0} isLast={isLast} />
+        <CategoryCard
+            onOpen={handleOpenCategory}
+            category={category}
+            usage={usage?.find(entry => entry.id === category.id)}
+            isFirst={index === 0}
+            isLast={isLast}
+        />
     );
 
     return (
@@ -45,7 +51,7 @@ export default function Categories() {
             title={t`Categories`}
             onGoBack={goBackToSettings}
             search={search}
-            searchPlaceholder={t`Search categories...`}
+            searchPlaceholder={t`Search custom categories...`}
             onSearchChange={setSearch}
             searchInputTestID={CategoryPageSelector.SearchInput}
         >
@@ -54,7 +60,7 @@ export default function Categories() {
                 emptyState={<CategoryEmptyState search={search} onClearSearch={handleClearSearch} />}
                 onDelete={handleDeleteCategory}
                 renderCard={renderCard}
-                listHeader={<CategoryDefaultIconButton />}
+                listHeader={<CategoryListHeader />}
                 gap={0}
             />
         </SearchablePage>

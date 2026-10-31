@@ -14,12 +14,12 @@ interface Props {
 
 const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
-const containerVariants = cva('h-[52px] items-center justify-center rounded-full px-5xl active:opacity-80', {
-    variants: { isDisabled: { true: 'bg-cta-background opacity-40', false: 'bg-cta-background' } }
+const containerVariants = cva('min-h-[52px] items-center justify-center rounded-full px-5xl py-md active:opacity-80', {
+    variants: { isDisabled: { true: 'bg-cta-background/15', false: 'bg-cta-background' } }
 });
 
-const labelVariants = cva('text-[17px] font-semibold', {
-    variants: { isDisabled: { true: 'text-cta-foreground', false: 'text-cta-foreground' } }
+const labelVariants = cva('text-center text-[17px] font-semibold', {
+    variants: { isDisabled: { true: 'text-primary/40', false: 'text-cta-foreground' } }
 });
 
 export const PillButton = ({ label, testID, isLoading = false, isDisabled = false, onPress }: Props) => {
@@ -40,9 +40,7 @@ export const PillButton = ({ label, testID, isLoading = false, isDisabled = fals
             testID={testID}
         >
             <LoadingContent isLoading={isLoading}>
-                <Text className={labelClassName} numberOfLines={1}>
-                    {label}
-                </Text>
+                <Text className={labelClassName}>{label}</Text>
             </LoadingContent>
         </HapticPressable>
     );

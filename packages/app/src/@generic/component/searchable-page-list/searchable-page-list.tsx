@@ -2,7 +2,7 @@ import { AnimatedLegendList } from '@legendapp/list/reanimated';
 import * as Effect from 'effect/Effect';
 import { NotificationFeedbackType } from 'expo-haptics';
 import { ReactElement, ReactNode } from 'react';
-import { View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useCollapsibleHeaderScroll } from '@rnw-community/react-native-collapsible-header';
@@ -57,24 +57,26 @@ export const SearchablePageList = <T extends IdInterface>({
     const insets = useSafeAreaInsets();
     const items = useStickyDefinedValue(data);
     const paddingTop = insets.top + SCREEN_CHROME_CONTENT_INSET_TOP;
+    const paddingBottom =
+        FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + insets.bottom - SEARCH_INPUT_VERTICAL_OFFSET + SEARCH_LIST_BOTTOM_CLEARANCE;
 
     if (!isNotEmptyArray(items)) {
-        const emptyStateStyle = { paddingTop };
+        const emptyStateContainerStyle = { paddingTop, paddingBottom };
 
         return (
-            <View className="flex-1" style={emptyStateStyle}>
+            <KeyboardAwareScrollView
+                contentContainerStyle={emptyStateContainerStyle}
+                bottomOffset={SEARCH_LIST_BOTTOM_CLEARANCE}
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
+            >
                 <LoadingContent isLoading={!isDefined(data)}>{emptyState}</LoadingContent>
-            </View>
+            </KeyboardAwareScrollView>
         );
     }
 
     const lastIndex = items.length - 1;
-    const contentContainerStyle = {
-        gap,
-        paddingTop,
-        paddingBottom:
-            FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + insets.bottom - SEARCH_INPUT_VERTICAL_OFFSET + SEARCH_LIST_BOTTOM_CLEARANCE
-    };
+    const contentContainerStyle = { gap, paddingTop, paddingBottom };
 
     const handleDeleteItem = (id: number) => {
         if (!isDefined(onDelete)) {

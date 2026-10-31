@@ -135,6 +135,8 @@ export const RulesListPage = ({ matchingRuleIds = [], onGoBack }: Props) => {
 
     const searchedRules = searchRules(visibleRules, search);
 
+    const getDeleteConfirmation = () => ({ title: t`Delete this rule?` });
+
     const renderCard = (rule: RuleWithActionsRelationsEntityInterface, index: number) => (
         <RuleCard
             testID={RulesPageSelector.RuleCard(index)}
@@ -161,6 +163,7 @@ export const RulesListPage = ({ matchingRuleIds = [], onGoBack }: Props) => {
                 data={searchedRules}
                 emptyState={<RuleEmptyState search={search} />}
                 onDelete={handleDeleteRule}
+                getDeleteConfirmation={getDeleteConfirmation}
                 renderCard={renderCard}
                 listHeader={listHeaderComponent}
                 sizing={RULES_LIST_SIZING}

@@ -4,6 +4,8 @@ import { Alert } from 'react-native';
 import ReanimatedSwipeable, { SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
 import { SharedValue } from 'react-native-reanimated';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { DeletableRowContext } from '../../context/deletable-row.context';
 
 import { DeletableRowAction } from './deletable-row-action';
@@ -30,23 +32,21 @@ export const DeletableRow = ({ children, onDelete, id, confirmation }: Props) =>
     const handleOpen = () => void setIsOpen(true);
     const handleClose = () => void setIsOpen(false);
 
-    const confirmTitle = confirmation?.title ?? t`Are you sure?`;
-    const confirmDescription = confirmation?.description ?? t`This action cannot be undone.`;
-    const confirmButtonText = confirmation?.buttonText ?? t`Delete`;
+    const handleDelete = () => void onDelete(id);
 
-    const confirm = () =>
-        void Alert.alert(confirmTitle, confirmDescription, [
-            {
-                text: confirmButtonText,
-                onPress: () => void onDelete(id),
-                style: 'destructive'
-            },
-            {
-                text: t`Cancel`,
-                style: 'cancel',
-                onPress: () => ref.current?.close()
-            }
+    const confirm = () => {
+        if (!isDefined(confirmation)) {
+            ref.current?.close();
+            handleDelete();
+
+            return;
+        }
+
+        Alert.alert(confirmation.title ?? t`Are you sure?`, confirmation.description ?? t`This action cannot be undone.`, [
+            { text: confirmation.buttonText ?? t`Delete`, onPress: handleDelete, style: 'destructive' },
+            { text: t`Cancel`, style: 'cancel', onPress: () => ref.current?.close() }
         ]);
+    };
 
     const renderRightActions = (_: SharedValue<number>, drag: SharedValue<number>) => (
         <DeletableRowAction drag={drag} isOpen={isOpen} onPress={confirm} />

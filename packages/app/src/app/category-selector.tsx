@@ -1,10 +1,11 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
+import { SelectorModalDescription } from '../@generic/component/selector-modal-description/selector-modal-description';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { prepareSelectorGridData } from '../@generic/utils/prepare-selector-grid-data.util';
@@ -48,20 +49,19 @@ export default function CategorySelectorModal() {
                 testID={CategorySelectorModalSelector.Input}
             />
 
-            {isNotEmptyString(description) ? (
-                <View className="px-xl pb-md">
-                    <Text className="text-foreground text-sm">{description}</Text>
-                </View>
-            ) : null}
-
-            <CategorySelectContent
-                data={data}
-                variant={variant}
-                selectedCategoryIds={selectedCategoryIds}
-                isLoading={isLoading}
-                onSelect={resolveCategorySelector}
-                cardTestID={CategorySelectorModalSelector.Card}
-            />
+            <SelectorModalDescription description={description}>
+                {topOffset => (
+                    <CategorySelectContent
+                        topOffset={topOffset}
+                        data={data}
+                        variant={variant}
+                        selectedCategoryIds={selectedCategoryIds}
+                        isLoading={isLoading}
+                        onSelect={resolveCategorySelector}
+                        cardTestID={CategorySelectorModalSelector.Card}
+                    />
+                )}
+            </SelectorModalDescription>
         </View>
     );
 }

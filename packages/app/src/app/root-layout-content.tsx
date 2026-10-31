@@ -62,6 +62,8 @@ const STACKED_FILTER_OPTIONS: NativeStackNavigationOptions = {
     contentStyle: { backgroundColor: 'transparent' }
 };
 
+const ENTITY_FORM_OPTIONS: NativeStackNavigationOptions = { presentation: 'fullScreenModal', headerShown: false };
+
 const PIN_OPTIONS: NativeStackNavigationOptions = { ...MODAL_OPTIONS, gestureEnabled: false };
 
 const LOCK_SCREEN_OPTIONS: NativeStackNavigationOptions = { presentation: 'fullScreenModal', animation: 'none' };
@@ -180,8 +182,8 @@ export const RootLayoutContent = () => {
                                                                         name="budget-safe-to-spend"
                                                                         options={formSheetOptions([DETENT_55, DETENT_95], 0)}
                                                                     />
-                                                                    <Stack.Screen name="category-form" options={MODAL_OPTIONS} />
-                                                                    <Stack.Screen name="tag-form" options={MODAL_OPTIONS} />
+                                                                    <Stack.Screen name="category-form" options={ENTITY_FORM_OPTIONS} />
+                                                                    <Stack.Screen name="tag-form" options={ENTITY_FORM_OPTIONS} />
                                                                     <Stack.Screen
                                                                         name="date-picker"
                                                                         options={formSheetOptions([DETENT_46])}

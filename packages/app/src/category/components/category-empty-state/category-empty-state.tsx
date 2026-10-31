@@ -23,7 +23,7 @@ export const CategoryEmptyState = ({ search, onClearSearch }: Props) => {
         return (
             <SearchablePageEmptyState
                 icon={UserIconNameEnum.Search}
-                title={t`No categories match “${trimmedSearch}”`}
+                title={t`No custom categories match “${trimmedSearch}”`}
                 description={t`Check the spelling or create it as a new category.`}
             >
                 <SearchablePageEmptyStateActions
@@ -38,8 +38,8 @@ export const CategoryEmptyState = ({ search, onClearSearch }: Props) => {
     return (
         <SearchablePageEmptyState
             icon={UserIconNameEnum.Folder}
-            title={t`No categories yet`}
-            description={t`Create your own categories to sort spending the way you think about it.`}
+            title={t`No custom categories yet`}
+            description={t`Built-in categories are always there. Add your own to sort spending the way you think about it.`}
         >
             <SearchablePageEmptyStateActions createLabel={t`New category`} onCreate={handleCreate} />
         </SearchablePageEmptyState>

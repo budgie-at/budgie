@@ -2,7 +2,7 @@ import { isEmojiIcon, UserIconNameEnum, UserIconType } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
-import { isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { TONAL_DISC_BACKGROUND } from '../../constant/tonal-disc-background.constant';
 import { useIconSearchEntries } from '../../hook/use-icon-search-entries.hook';
@@ -17,7 +17,7 @@ interface Props {
     readonly icon: UserIconType;
     readonly variant: ColorPaletteVariant;
     readonly label: string;
-    readonly onIconPress: () => void;
+    readonly onIconPress?: () => void;
     readonly error?: string;
     readonly iconTriggerTestID?: string;
     readonly iconTestID?: string;
@@ -32,32 +32,42 @@ export const IconTitleField = (props: Props) => {
     const iconName = useIconSearchEntries().find(entry => entry.icon === icon)?.label ?? icon;
     const iconSize = isEmojiIcon(icon) ? 22 : 18;
 
+    const tile = (
+        <View testID={iconTestID}>
+            <CircleIcon
+                variant={variant}
+                size={36}
+                iconSize={iconSize}
+                radius={18}
+                border={false}
+                icon={icon}
+                className={TONAL_DISC_BACKGROUND[variant]}
+            />
+        </View>
+    );
+
     return (
         <View className="px-3xl py-lg">
             <View className="flex-row items-center gap-x-xl">
-                <HapticPressable
-                    onPress={onIconPress}
-                    accessibilityRole="button"
-                    accessibilityLabel={t`Change icon, current: ${iconName}`}
-                    hitSlop={ICON_HIT_SLOP}
-                    className="active:opacity-70"
-                    testID={iconTriggerTestID}
-                >
-                    <View testID={iconTestID}>
-                        <CircleIcon
-                            variant={variant}
-                            size={36}
-                            iconSize={iconSize}
-                            radius={18}
-                            border={false}
-                            icon={icon}
-                            className={TONAL_DISC_BACKGROUND[variant]}
-                        />
+                {isDefined(onIconPress) ? (
+                    <HapticPressable
+                        onPress={onIconPress}
+                        accessibilityRole="button"
+                        accessibilityLabel={t`Change icon, current: ${iconName}`}
+                        hitSlop={ICON_HIT_SLOP}
+                        className="active:opacity-70"
+                        testID={iconTriggerTestID}
+                    >
+                        {tile}
+                        <View className="absolute -right-[3px] -bottom-[3px] h-[20px] w-[20px] items-center justify-center rounded-full border-2 border-grouped-surface-row bg-surface-disc">
+                            <Icon icon={UserIconNameEnum.Pencil} size={11} className="text-primary" />
+                        </View>
+                    </HapticPressable>
+                ) : (
+                    <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+                        {tile}
                     </View>
-                    <View className="absolute -right-[3px] -bottom-[3px] h-[20px] w-[20px] items-center justify-center rounded-full border-2 border-grouped-surface-row bg-surface-disc">
-                        <Icon icon={UserIconNameEnum.Pencil} size={11} className="text-primary" />
-                    </View>
-                </HapticPressable>
+                )}
                 <View className="flex-1">
                     <Text className="text-secondary-foreground text-[13px]" importantForAccessibility="no" accessibilityElementsHidden>
                         {label}

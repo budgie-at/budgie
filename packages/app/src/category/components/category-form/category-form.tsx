@@ -1,33 +1,24 @@
-import {
-    CATEGORY_TITLE_MAX_LENGTH,
-    CategoryCreateEntityInterface,
-    CategoryEntityInterface,
-    CategoryRepository,
-    UserIconType
-} from '@budgie/contracts';
-import { CategoryService } from '@budgie/ledger';
+import { CATEGORY_TITLE_MAX_LENGTH, CategoryCreateEntityInterface, CategoryEntityInterface, UserIconType } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
+import { useState } from 'react';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { AiTranslationFields } from '../../../@generic/component/ai-translation-fields/ai-translation-fields';
+import { EntityEditSections } from '../../../@generic/component/entity-edit-sections/entity-edit-sections';
 import { EntityFormPage } from '../../../@generic/component/entity-form-page/entity-form-page';
 import { FormTitleInput } from '../../../@generic/component/form-title-input/form-title-input';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { IconTitleField } from '../../../@generic/component/icon-title-field/icon-title-field';
-import { MergeDeleteSection } from '../../../@generic/component/merge-delete-section/merge-delete-section';
-import { ModalFormSaveBar } from '../../../@generic/component/modal-form-save-bar/modal-form-save-bar';
 import { useIconSelectorModal } from '../../../@generic/context/icon-selector-modal.context';
-import { useAiTranslationFields } from '../../../@generic/hook/use-ai-translation-fields.hook';
-import { useRegenerateTranslation } from '../../../@generic/hook/use-regenerate-translation.hook';
+import { useIconSearchEntries } from '../../../@generic/hook/use-icon-search-entries.hook';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
+import { iconSearchService } from '../../../@generic/service/icon-search.service';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
-import { useChatModelStatus } from '../../../ai/hook/use-chat-model-status.hook';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
-import { useCategorySelectorModal } from '../../context/category-selector-modal.context';
 import { useCategoryForm } from '../../hooks/use-category-form.hook';
 import { useDeleteCategory } from '../../hooks/use-delete-category.hook';
+import { useMergeCategory } from '../../hooks/use-merge-category.hook';
 import { createCategory } from '../../utils/create-category.util';
 import { getCategoryIconTerms } from '../../utils/get-category-icon-terms.util';
 import { updateCategory } from '../../utils/update-category.util';
@@ -53,47 +44,35 @@ export const CategoryForm = (props: Props) => {
     const { category, defaultTitle, onSuccess, onCancel } = props;
     const { t } = useLingui();
     const language = useSetting('language');
-    const [openCategorySelector] = useCategorySelectorModal();
     const { run, isLoading } = useSingleFlight();
     const deleteCategory = useDeleteCategory();
+    const mergeCategory = useMergeCategory();
     const [openIconSelector] = useIconSelectorModal();
-    const { regenerate, isRegenerating } = useRegenerateTranslation((id, titleEn, titleTags) =>
-        Effect.flatMap(CategoryRepository, categoryRepository => categoryRepository.updateTranslation(id, titleEn, titleTags))
-    );
-    const isTranslationsEnabled = useSetting('isAiTranslationsEnabled');
-    const { isChatReady } = useChatModelStatus();
+    const iconSearchEntries = useIconSearchEntries();
 
     const { handleSubmit, setValue, icon, title } = useCategoryForm(category ?? null, defaultTitle);
 
-    const isEditing = isDefined(category?.id);
+    const isEditing = isDefined(category);
+    const [isIconChosen, setIsIconChosen] = useState(isEditing);
 
-    const { titleEn, titleTags, handleTitleBlur, translationFieldsProps } = useAiTranslationFields({
-        entity: category ?? null,
-        entityId: category?.id ?? 0,
-        currentTitle: title,
-        regenerate,
-        isRegenerating,
-        isModelReady: isTranslationsEnabled && isChatReady
-    });
+    const iconTerms = getCategoryIconTerms({ title, titleEn: category?.titleEn ?? null, titleTags: category?.titleTags ?? null });
+    const suggestedIcon = iconSearchService.rank(iconSearchEntries, iconTerms).at(0)?.icon;
+    const resolvedIcon = isIconChosen || !isDefined(suggestedIcon) ? icon : suggestedIcon;
 
-    const isChanged =
-        !isDefined(category) ||
-        title !== category.title ||
-        icon !== category.icon ||
-        titleEn !== category.titleEn ||
-        titleTags !== category.titleTags;
+    const isChanged = !isDefined(category) || title !== category.title || icon !== category.icon;
     const isSaveDisabled = !isNotEmptyString(title) || !isChanged;
     const headerTitle = isEditing ? t`Edit Category` : t`Create Category`;
     const saveLabel = isEditing ? t`Save changes` : t`Create category`;
 
-    const iconTerms = getCategoryIconTerms({ title, titleEn, titleTags });
-
-    const handleIconSelect = (selectedIcon: UserIconType) => void setValue('icon', selectedIcon);
-
     const handleIconPress = () => {
-        openIconSelector({ selectedIcon: icon, keywords: iconTerms }, selectedIcon => {
+        if (isLoading) {
+            return;
+        }
+
+        openIconSelector({ selectedIcon: resolvedIcon, keywords: iconTerms }, selectedIcon => {
             if (isDefined(selectedIcon)) {
-                handleIconSelect(selectedIcon);
+                setIsIconChosen(true);
+                setValue('icon', selectedIcon);
             }
         });
     };
@@ -102,46 +81,29 @@ export const CategoryForm = (props: Props) => {
         setValue('title', value);
     };
 
-    const mergeInto = (sourceCategoryId: number, targetCategoryId: number) =>
-        Effect.gen(function* () {
-            const categoryRepository = yield* CategoryRepository;
-            const categoryService = yield* CategoryService;
-            const [targetCategory] = yield* categoryRepository.findById(targetCategoryId, language);
-            yield* categoryService.mergeInto(sourceCategoryId, targetCategoryId);
-
-            if (isDefined(targetCategory)) {
-                onSuccess({ category: targetCategory, action: 'merged' });
-            }
-        }).pipe(toastOnFailure(t`Could not merge category`, t`Please try again later`));
-
     const handleMerge = () => {
-        const sourceCategoryId = category?.id;
-
-        if (!isDefined(sourceCategoryId)) {
-            return;
+        if (isDefined(category)) {
+            void run(
+                mergeCategory(category.id).pipe(
+                    Effect.tap(target =>
+                        isDefined(target) ? Effect.sync(() => void onSuccess({ category: target, action: 'merged' })) : Effect.void
+                    )
+                )
+            );
         }
-
-        openCategorySelector(
-            {
-                excludeCategoryIds: [sourceCategoryId],
-                description: t`Select a category to merge into`,
-                variant: 'primary'
-            },
-            targetCategoryId => {
-                if (isDefined(targetCategoryId)) {
-                    void run(mergeInto(sourceCategoryId, targetCategoryId));
-                }
-            }
-        );
     };
 
-    const submitCategory = (values: CategoryCreateEntityInterface) =>
+    const submitCategory = (values: CategoryCreateEntityInterface, submittedIcon: UserIconType) =>
         Effect.gen(function* () {
+            const input = { ...values, icon: submittedIcon };
+
             if (isDefined(category)) {
-                const updatedCategory = yield* updateCategory(category.id, values, { titleEn, titleTags }, language);
+                const isTitleChanged = values.title !== category.title;
+                const translation = isTitleChanged ? { titleEn: null, titleTags: null } : category;
+                const updatedCategory = yield* updateCategory(category.id, input, translation, language);
                 onSuccess({ category: updatedCategory, action: 'updated' });
             } else {
-                const createdCategory = yield* createCategory(values, { titleEn, titleTags });
+                const createdCategory = yield* createCategory(input, { titleEn: null, titleTags: null });
                 onSuccess({ category: createdCategory, action: 'created' });
             }
         }).pipe(toastOnFailure(isEditing ? t`Could not save category` : t`Could not create category`, t`Please try again later`));
@@ -152,37 +114,32 @@ export const CategoryForm = (props: Props) => {
         }
     };
 
-    const handleFormSubmit = handleSubmit(values => run(submitCategory(values)));
+    const handleFormSubmit = handleSubmit(values => run(submitCategory(values, resolvedIcon)));
 
     return (
         <EntityFormPage
             title={headerTitle}
             onCancel={onCancel}
-            scrollTestID={CategoryFormSelector.ScrollView}
-            footer={
-                <ModalFormSaveBar
-                    label={saveLabel}
-                    onPress={handleFormSubmit}
-                    isLoading={isLoading}
-                    isDisabled={isSaveDisabled}
-                    testID={CategoryFormSelector.Submit}
-                />
-            }
+            saveLabel={saveLabel}
+            onSave={handleFormSubmit}
+            isSaving={isLoading}
+            isSaveDisabled={isSaveDisabled}
+            saveTestID={CategoryFormSelector.Submit}
         >
             <GroupedListSection title={t`Details`}>
                 <IconTitleField
-                    icon={icon}
-                    variant="default"
+                    icon={resolvedIcon}
+                    variant="secondary"
                     label={t`Name`}
                     onIconPress={handleIconPress}
                     iconTriggerTestID={CategoryFormSelector.IconTrigger}
-                    iconTestID={CategoryFormSelector.CurrentIcon(icon)}
+                    iconTestID={CategoryFormSelector.CurrentIcon(resolvedIcon)}
                 >
                     <FormTitleInput
                         autoFocus={!isEditing}
+                        editable={!isLoading}
                         value={title}
                         onChangeText={handleTitleChange}
-                        onBlur={handleTitleBlur}
                         maxLength={CATEGORY_TITLE_MAX_LENGTH}
                         placeholder={t`e.g. Groceries, Entertainment`}
                         accessibilityLabel={t`Category name`}
@@ -191,16 +148,15 @@ export const CategoryForm = (props: Props) => {
                 </IconTitleField>
             </GroupedListSection>
 
-            <AiTranslationFields {...translationFieldsProps} isRegenerating={isRegenerating} />
-
-            {isEditing ? (
-                <MergeDeleteSection
+            {isDefined(category) ? (
+                <EntityEditSections
+                    entity={category}
                     mergeLabel={t`Merge into another category…`}
                     onMerge={handleMerge}
                     mergeTestID={CategoryFormSelector.Merge}
                     deleteLabel={t`Delete category`}
-                    deleteConfirmTitle={t`Delete this category?`}
                     onDelete={handleDelete}
+                    isDisabled={isLoading}
                 />
             ) : null}
         </EntityFormPage>

@@ -16,14 +16,14 @@ export const SearchablePageEmptyStateActions = ({ createLabel, onCreate, onClear
     const { t } = useLingui();
 
     return (
-        <View className="items-center gap-y-md">
+        <View className="items-center gap-y-xs">
             <Button
-                variant="ghost"
+                variant="cta"
                 size="sm"
                 leftIcon={UserIconNameEnum.Plus}
                 content={createLabel}
                 onPress={onCreate}
-                className="px-5xl"
+                className="rounded-full px-5xl"
             />
             {isDefined(onClearSearch) ? (
                 <Button variant="ghost" size="sm" content={t`Clear search`} onPress={onClearSearch} className="border-0 bg-transparent" />

@@ -3,7 +3,7 @@ import { Input } from '../input/input';
 interface Props {
     readonly value: string;
     readonly onChangeText: (value: string) => void;
-    readonly onBlur: () => void;
+    readonly editable: boolean;
     readonly maxLength: number;
     readonly placeholder: string;
     readonly accessibilityLabel: string;

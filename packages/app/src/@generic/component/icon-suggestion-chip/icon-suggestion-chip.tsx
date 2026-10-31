@@ -26,12 +26,12 @@ export const IconSuggestionChip = ({ icon, label, onSelect, testID }: Props) => 
         >
             <CircleIcon
                 icon={icon}
-                variant="default"
+                variant="secondary"
                 size={44}
                 iconSize={20}
                 radius={16}
                 border={false}
-                className={TONAL_DISC_BACKGROUND.default}
+                className={TONAL_DISC_BACKGROUND.secondary}
             />
         </HapticPressable>
     );

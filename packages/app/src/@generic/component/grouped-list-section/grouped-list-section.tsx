@@ -2,6 +2,8 @@ import { Text, View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
+import { GroupedListSectionTitle } from '../grouped-list-section-title/grouped-list-section-title';
+
 import type { ReactNode } from 'react';
 
 interface Props {
@@ -14,11 +16,7 @@ const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
 export const GroupedListSection = ({ title, footer, children }: Props) => (
     <View>
-        {isNotEmptyString(title) ? (
-            <Text className="text-primary px-3xl pb-md text-[15px] font-semibold" accessibilityRole="header">
-                {title}
-            </Text>
-        ) : null}
+        {isNotEmptyString(title) ? <GroupedListSectionTitle title={title} /> : null}
 
         <View className="overflow-hidden rounded-3xl bg-surface-row" style={CONTINUOUS_CORNERS}>
             <View className="-mt-px">{children}</View>
