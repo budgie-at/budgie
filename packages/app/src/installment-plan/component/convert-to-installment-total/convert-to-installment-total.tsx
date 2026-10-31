@@ -1,68 +1,80 @@
-import { useLingui } from '@lingui/react/macro';
-import { ImpactFeedbackStyle } from 'expo-haptics';
+import { UserIconNameEnum } from '@budgie/contracts';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
-import { useFormContext, useWatch } from 'react-hook-form';
-import { Pressable } from 'react-native';
+import { useFormContext } from 'react-hook-form';
+import { Pressable, Text, View } from 'react-native';
 
-import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
-import { PROTECTED_AMOUNT_PLACEHOLDER } from '../../../@generic/constant/protected-amount-placeholder.constant';
-import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
-import { useReducedMotion } from '../../../@generic/hook/use-reduced-motion.hook';
-import { useVibration } from '../../../@generic/hook/use-vibration.hook';
+import { isPositiveNumber } from '@rnw-community/shared';
+
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { ScaledIcon } from '../../../@generic/component/scaled-icon/scaled-icon';
 import { ConvertToInstallmentModalSelector } from '../../../app/convert-to-installment-modal.selector';
-import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
-import { INSTALLMENT_TOTAL_HERO_FONT_SIZE } from '../../constant/installment-total-hero-font-size.constant';
+import { useInstallmentAmountLabel } from '../../hook/use-installment-amount-label.hook';
 import { ConvertToInstallmentTotalInput } from '../convert-to-installment-total-input/convert-to-installment-total-input';
 
 import type { ConvertToInstallmentFormValues } from '../../constant/convert-to-installment-form-schema.constant';
-import type { ConvertToInstallmentModalParamsInterface } from '../../interface/convert-to-installment-modal-params.interface';
+import type { InstallmentSplitInterface } from '../../interface/installment-split.interface';
 
 interface Props {
-    readonly params: Pick<ConvertToInstallmentModalParamsInterface, 'amount' | 'instrumentSymbol'>;
+    readonly instrumentSymbol: string;
+    readonly split: Pick<InstallmentSplitInterface, 'planTotal' | 'feeAmount' | 'isCustomTotal'>;
 }
 
-export const ConvertToInstallmentTotal = ({ params }: Props) => {
+export const ConvertToInstallmentTotal = ({ instrumentSymbol, split }: Props) => {
     const { t } = useLingui();
-    const [, hapticImpact] = useVibration();
     const [isEditing, setIsEditing] = useState(false);
-    const formatDigits = useDisplayFormatDigits();
-    const isAmountProtected = useIsAmountProtected();
-    const reducedMotion = useReducedMotion();
-    const { control } = useFormContext<ConvertToInstallmentFormValues>();
-    const totalAmount = useWatch({ control, name: 'totalAmount' });
+    const formatAmount = useInstallmentAmountLabel();
+    const { setValue } = useFormContext<ConvertToInstallmentFormValues>();
+    const { planTotal, feeAmount, isCustomTotal } = split;
 
-    const handleStartEditing = () => {
-        hapticImpact(ImpactFeedbackStyle.Light);
-        setIsEditing(true);
+    const handleToggleEditing = () => {
+        setIsEditing(previous => !previous);
     };
 
-    const handleEndEditing = () => {
-        setIsEditing(!isAmountProtected);
+    const handleResetTotal = () => {
+        setValue('totalAmount', null, { shouldDirty: true, shouldValidate: true });
     };
 
-    const formattedTotal = isAmountProtected ? PROTECTED_AMOUNT_PLACEHOLDER : formatDigits(totalAmount, params.instrumentSymbol);
+    const formattedTotal = formatAmount(planTotal, instrumentSymbol);
+    const formattedFee = formatAmount(feeAmount, instrumentSymbol);
+    const accessibilityLabel = isPositiveNumber(feeAmount)
+        ? t`Plan total ${formattedTotal}, includes ${formattedFee} fee`
+        : t`Plan total ${formattedTotal}`;
 
     if (isEditing) {
-        return <ConvertToInstallmentTotalInput instrumentSymbol={params.instrumentSymbol} onEndEditing={handleEndEditing} />;
+        return (
+            <ConvertToInstallmentTotalInput planTotal={planTotal} instrumentSymbol={instrumentSymbol} onEndEditing={handleToggleEditing} />
+        );
     }
 
     return (
-        <Pressable
-            className="active:scale-xs h-20 w-full justify-center"
-            onPress={handleStartEditing}
-            accessibilityRole="button"
-            accessibilityLabel={formattedTotal}
-            accessibilityHint={t`Edits the total of the plan`}
-            testID={ConvertToInstallmentModalSelector.TotalButton}
-        >
-            <ProtectedMoney
-                instrumentSymbol={params.instrumentSymbol}
-                fontSize={INSTALLMENT_TOTAL_HERO_FONT_SIZE}
-                maxFontSize={INSTALLMENT_TOTAL_HERO_FONT_SIZE}
-                {...(reducedMotion && { hasAnimation: false })}
+        <View className="flex-row flex-wrap items-center justify-center gap-x-md">
+            <HapticPressable
+                className="min-h-[44px] flex-row items-center gap-x-xs active:opacity-60"
+                onPress={handleToggleEditing}
+                accessibilityRole="button"
+                accessibilityLabel={accessibilityLabel}
+                accessibilityHint={t`Edits the total of the plan`}
+                testID={ConvertToInstallmentModalSelector.TotalButton}
             >
-                {totalAmount}
-            </ProtectedMoney>
-        </Pressable>
+                <Text className="text-md font-medium text-primary tabular-nums">
+                    <Trans>Total {formattedTotal}</Trans>
+                </Text>
+                <ScaledIcon icon={UserIconNameEnum.Pencil} size={14} className="text-secondary-foreground" />
+            </HapticPressable>
+            {isCustomTotal ? (
+                <Pressable
+                    className="min-h-[44px] flex-row items-center gap-x-xs px-md active:opacity-60"
+                    onPress={handleResetTotal}
+                    accessibilityRole="button"
+                    accessibilityHint={t`Goes back to the total worked out from the payments and fee`}
+                >
+                    <ScaledIcon icon={UserIconNameEnum.RotateCcw} size={12} className="text-secondary-foreground" />
+                    <Text className="text-sm font-medium text-primary">
+                        <Trans>Reset total</Trans>
+                    </Text>
+                </Pressable>
+            ) : null}
+        </View>
     );
 };

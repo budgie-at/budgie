@@ -36,19 +36,19 @@ const buttonVariants = cva<{
         variant: BACKGROUND_COLOR_PALETTE,
         size: {
             sm: 'rounded-2xl p-2xl',
-            md: 'rounded-3xl p-3xl'
+            md: 'rounded-3xl p-3xl',
+            lg: 'min-h-14 flex-col rounded-[28px] px-3xl py-md'
         }
     }
 });
 
 const textVariants = cva<{
-    size: Record<ButtonSizeType, ClassValue>;
+    size: Partial<Record<ButtonSizeType, ClassValue>>;
     variant: Record<ColorPaletteVariant, ClassValue>;
 }>('', {
     variants: {
         size: {
-            sm: 'font-medium text-sm',
-            md: 'font-semibold text-md'
+            lg: 'shrink text-center font-semibold text-lg'
         },
         variant: FOREGROUND_COLOR_PALETTE
     }
@@ -75,7 +75,7 @@ export const Button = (props: Props) => {
     const isDisabled = disabled || isLoading;
     const resolvedAccessibilityLabel = accessibilityLabel ?? (isString(content) ? content : testID);
     const hasTestID = isNotEmptyString(testID);
-    const resolvedAccessibilityState = { ...accessibilityState, busy: isLoading };
+    const resolvedAccessibilityState = { ...accessibilityState, disabled: isDisabled, busy: isLoading };
 
     return (
         <HapticPressable
@@ -97,7 +97,7 @@ export const Button = (props: Props) => {
                     {isNotEmptyString(leftIcon) ? <Icon className={textVariants({ variant })} size={16} icon={leftIcon} /> : null}
 
                     {isDefined(content) && (
-                        <Text className={textVariants({ variant })} {...testIDProps(testID, TestIDPartEnum.LABEL)}>
+                        <Text className={textVariants({ size, variant })} {...testIDProps(testID, TestIDPartEnum.LABEL)}>
                             {content}
                         </Text>
                     )}
