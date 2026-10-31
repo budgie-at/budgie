@@ -89,6 +89,8 @@
 
             --color-cta-foreground: rgb(255, 255, 255);
             --color-cta-background: rgb(0, 0, 0);
+            --color-cta-disabled-background: rgb(229, 229, 234);
+            --color-cta-disabled-foreground: rgb(60, 60, 67);
             --color-cta-corner: rgb(0, 0, 0);
 
             --color-seal-background: rgb(15, 110, 77);
@@ -177,6 +179,8 @@
 
             --color-cta-foreground: rgb(0, 0, 0);
             --color-cta-background: rgb(255, 255, 255);
+            --color-cta-disabled-background: rgb(44, 44, 46);
+            --color-cta-disabled-foreground: rgb(174, 174, 178);
             --color-cta-corner: rgb(255, 255, 255);
 
             --color-seal-background: rgb(12, 80, 57);
