@@ -1,4 +1,5 @@
 import { AccountTypeEnum } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
 import { ReactNode } from 'react';
 import { Control } from 'react-hook-form';
 
@@ -29,6 +30,7 @@ interface Props {
 
 export const DepositAccountFormScreen = (props: Props) => {
     const { title, control, instrument, onSubmit, isSubmitting, balanceFieldLabel, children, onInstrumentChange } = props;
+    const { t } = useLingui();
     const fields = useAccountCreateBindings(control, {
         title: 'title',
         icon: 'icon',
@@ -44,7 +46,7 @@ export const DepositAccountFormScreen = (props: Props) => {
     }
 
     return (
-        <CreateAccountScreen variant={variant} title={title} onSubmit={onSubmit} isSubmitting={isSubmitting}>
+        <CreateAccountScreen title={title} onSubmit={onSubmit} isSubmitting={isSubmitting}>
             {children}
 
             <CreateAccountCoreFields
@@ -52,6 +54,7 @@ export const DepositAccountFormScreen = (props: Props) => {
                 fields={fields}
                 instrumentSymbol={stickyInstrument.symbol}
                 balanceFieldLabel={balanceFieldLabel}
+                namePlaceholder={t`e.g. 12-month deposit`}
                 onInstrumentChange={onInstrumentChange}
             >
                 <DepositInterestRateField control={control} />
