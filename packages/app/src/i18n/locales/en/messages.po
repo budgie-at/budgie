@@ -28,6 +28,16 @@ msgstr "Binance P2P sell {assetCode}"
 msgid "{0, plural, one {# ATM withdrawal} other {# ATM withdrawals}}"
 msgstr "{0, plural, one {# ATM withdrawal} other {# ATM withdrawals}}"
 
+#. placeholder {0}: installmentCount - 1
+#: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
+msgid "{0, plural, one {# more payment of {formattedLast}} other {# more payments of {formattedLast}}}"
+msgstr "{0, plural, one {# more payment of {formattedLast}} other {# more payments of {formattedLast}}}"
+
+#. placeholder {0}: installmentCount - 2
+#: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
+msgid "{0, plural, one {# more payment of {formattedPayment}} other {# more payments of {formattedPayment}}}"
+msgstr "{0, plural, one {# more payment of {formattedPayment}} other {# more payments of {formattedPayment}}}"
+
 #. placeholder {0}: cluster.rows.length
 #. placeholder {0}: oneOffs.reduce((total, cluster) => total + cluster.rows.length, 0)
 #. placeholder {0}: rows.length
@@ -48,6 +58,11 @@ msgstr "{0, plural, one {# tag} other {# tags}}"
 #: src/transaction/components/statistics-drill-down-caption/statistics-drill-down-caption.tsx
 msgid "{0, plural, one {# transaction} other {# transactions}}"
 msgstr "{0, plural, one {# transaction} other {# transactions}}"
+
+#. placeholder {0}: Number(draft ?? selectedCount)
+#: src/installment-plan/component/installment-count-picker/installment-count-picker.tsx
+msgid "{0, plural, one {month} other {months}}"
+msgstr "{0, plural, one {month} other {months}}"
 
 #. placeholder {0}: otherStats.length
 #: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
@@ -120,6 +135,18 @@ msgstr "{changePercent} less than {previousLabel}"
 msgid "{changePercent} more than {previousLabel}"
 msgstr "{changePercent} more than {previousLabel}"
 
+#: src/installment-plan/hook/use-installment-count-draft.hook.ts
+msgid "{clampedCount, plural, one {Set to # month} other {Set to # months}}"
+msgstr "{clampedCount, plural, one {Set to # month} other {Set to # months}}"
+
+#: src/@generic/component/create-account-currency-field/create-account-currency-field.tsx
+msgid "{code} · 1 {code} ≈ {convertedAmount} {defaultCode}"
+msgstr "{code} · 1 {code} ≈ {convertedAmount} {defaultCode}"
+
+#: src/@generic/component/create-account-currency-field/create-account-currency-field.tsx
+msgid "{code} · Base currency"
+msgstr "{code} · Base currency"
+
 #: src/budget/components/budget-period-recap-rollover/budget-period-recap-rollover.tsx
 msgid "{count, plural, one {{formattedAmount} rolled over across # category} other {{formattedAmount} rolled over across # categories}}"
 msgstr "{count, plural, one {{formattedAmount} rolled over across # category} other {{formattedAmount} rolled over across # categories}}"
@@ -133,8 +160,8 @@ msgid "{count, plural, one {# existing transaction matches this rule.} other {# 
 msgstr "{count, plural, one {# existing transaction matches this rule.} other {# existing transactions match this rule.}}"
 
 #: src/installment-plan/component/installment-count-chip/installment-count-chip.tsx
-msgid "{count, plural, one {# payment} other {# payments}}"
-msgstr "{count, plural, one {# payment} other {# payments}}"
+msgid "{count, plural, one {# month} other {# months}}"
+msgstr "{count, plural, one {# month} other {# months}}"
 
 #: src/settings/utils/get-sync-repair-text.util.ts
 msgid "{count, plural, one {# sync repair} other {# sync repairs}}"
@@ -219,12 +246,12 @@ msgid "{firstMonth}–{lastMonth}"
 msgstr "{firstMonth}–{lastMonth}"
 
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
-msgid "{foldedDriverCount, plural, one {Other (# category)} other {Other (# categories)}}"
-msgstr "{foldedDriverCount, plural, one {Other (# category)} other {Other (# categories)}}"
+msgid "{foldedDriverCount, plural, one {# more category} other {# more categories}}"
+msgstr "{foldedDriverCount, plural, one {# more category} other {# more categories}}"
 
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
-msgid "{foldedDriverCount, plural, one {Other (# tag)} other {Other (# tags)}}"
-msgstr "{foldedDriverCount, plural, one {Other (# tag)} other {Other (# tags)}}"
+msgid "{foldedDriverCount, plural, one {# more tag} other {# more tags}}"
+msgstr "{foldedDriverCount, plural, one {# more tag} other {# more tags}}"
 
 #: src/budget/components/budget-period-recap-rollover/budget-period-recap-rollover.tsx
 msgid "{formattedAmount} carried into {name}"
@@ -298,6 +325,18 @@ msgstr "{hiddenCount, plural, one {Show # more} other {Show # more}}"
 msgid "{included} of {total}"
 msgstr "{included} of {total}"
 
+#: src/installment-plan/component/installment-timeline/installment-timeline.tsx
+msgid "{installmentCount, plural, one {# monthly payment until {finalPaymentLabel}, the first one is already paid, next on {nextPaymentLabel}} other {# monthly payments until {finalPaymentLabel}, the first one is already paid, next on {nextPaymentLabel}}}"
+msgstr "{installmentCount, plural, one {# monthly payment until {finalPaymentLabel}, the first one is already paid, next on {nextPaymentLabel}} other {# monthly payments until {finalPaymentLabel}, the first one is already paid, next on {nextPaymentLabel}}}"
+
+#: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
+msgid "{installmentCount, plural, one {# payment in total} other {# payments in total}}"
+msgstr "{installmentCount, plural, one {# payment in total} other {# payments in total}}"
+
+#: src/installment-plan/component/convert-to-installment-create-button/convert-to-installment-create-button.tsx
+msgid "{installmentCount, plural, one {Split into # payment} other {Split into # payments}}"
+msgstr "{installmentCount, plural, one {Split into # payment} other {Split into # payments}}"
+
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "{loadedDays}/{totalDays} days"
 msgstr "{loadedDays}/{totalDays} days"
@@ -305,6 +344,10 @@ msgstr "{loadedDays}/{totalDays} days"
 #: src/app/transaction-type-filter.tsx
 msgid "{localSelectedCount, plural, =0 {Show all types} one {Show # type} other {Show # types}}"
 msgstr "{localSelectedCount, plural, =0 {Show all types} one {Show # type} other {Show # types}}"
+
+#: src/installment-plan/component/installment-count-picker/installment-count-picker.tsx
+msgid "{lowestCount}–{MAX_INSTALLMENT_COUNT} months · showing {selectedCount}"
+msgstr "{lowestCount}–{MAX_INSTALLMENT_COUNT} months · showing {selectedCount}"
 
 #: src/rule/components/matching-rules-pill/matching-rules-pill.tsx
 #: src/rule/components/rules-list-page/rules-list-page.tsx
@@ -347,6 +390,10 @@ msgstr "{monthLabel}: {amountLabel}"
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "{months, plural, one {# month} other {# months}}"
 msgstr "{months, plural, one {# month} other {# months}}"
+
+#: src/runway/component/runway-empty-state/runway-empty-state.tsx
+msgid "{monthsUsed} of {RUNWAY_MINIMUM_MONTHS} complete months"
+msgstr "{monthsUsed} of {RUNWAY_MINIMUM_MONTHS} complete months"
 
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "{newAccountCount, plural, one {Add # account} other {Add # accounts}}"
@@ -396,6 +443,10 @@ msgstr "{percent}% used"
 #: src/budget/components/budget-history-chart/budget-history-chart.tsx
 msgid "{periodLabel}, spent {spentAmount} of {limitAmount}"
 msgstr "{periodLabel}, spent {spentAmount} of {limitAmount}"
+
+#: src/sync/component/account-sync-card/account-sync-card.tsx
+msgid "{providerName} sync"
+msgstr "{providerName} sync"
 
 #: src/transaction/components/transaction-info-refund-summary/transaction-info-refund-summary.tsx
 msgid "{refunded} refunded · {net} net"
@@ -482,8 +533,8 @@ msgid "{source} error · {message}"
 msgstr "{source} error · {message}"
 
 #: src/runway/component/runway-history-spike-note/runway-history-spike-note.tsx
-msgid "{spikeLabel} had a one-off {spikeAmount}. The estimate uses a typical month instead."
-msgstr "{spikeLabel} had a one-off {spikeAmount}. The estimate uses a typical month instead."
+msgid "{spikeLabel} included a one-off of {spikeAmount}."
+msgstr "{spikeLabel} included a one-off of {spikeAmount}."
 
 #: src/transaction/components/transaction-split-field-icon/transaction-split-field-icon.tsx
 msgid "{splitEntryCount, plural, one {# item} other {# items}}"
@@ -545,6 +596,10 @@ msgstr "{totalSize} GB"
 msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{transactionCount, plural, one {# transaction} other {# transactions}}"
 
+#: src/sync/component/account-sync-card/account-sync-card.tsx
+msgid "{transactionCount} transactions synced since {historyStart}"
+msgstr "{transactionCount} transactions synced since {historyStart}"
+
 #: src/categorize-inbox/components/categorize-inbox-transfer-undo/categorize-inbox-transfer-undo.tsx
 msgid "{transferCount} now transfers"
 msgstr "{transferCount} now transfers"
@@ -555,9 +610,9 @@ msgstr "{transferCount} now transfers"
 msgid "/ day"
 msgstr "/ day"
 
-#: src/runway/component/runway-driver-amount/runway-driver-amount.tsx
-msgid "/ mo"
-msgstr "/ mo"
+#: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
+msgid "/ month"
+msgstr "/ month"
 
 #: src/budget/components/budget-limit-row/budget-limit-row.tsx
 msgid "+{carriedLabel} rolled over"
@@ -597,17 +652,9 @@ msgstr "−{changePercent} vs {shortPreviousLabel}"
 msgid "≈ {formattedMonths} mo"
 msgstr "≈ {formattedMonths} mo"
 
-#: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
-msgid "≈ {formattedPartAmount} per payment"
-msgstr "≈ {formattedPartAmount} per payment"
-
 #: src/account/component/crypto-currency-group-toggle-row/crypto-currency-group-toggle-row.tsx
 msgid "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
 msgstr "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
-
-#: src/@generic/component/currency-selector/currency-selector.tsx
-msgid "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
-msgstr "1 {selectedCurrencyCode} ~ {convertedAmount} {defaultInstrumentCode}"
 
 #: src/transaction/components/conversion-row/conversion-row.tsx
 msgid "1 {sourceCode} = {formattedRate} {destinationCode}"
@@ -700,8 +747,9 @@ msgid "Account actions"
 msgstr "Account actions"
 
 #: src/@generic/component/account-details-field/account-details-field.tsx
-msgid "Account Name & Icon"
-msgstr "Account Name & Icon"
+#: src/account/component/update-account-page/update-account-page.tsx
+msgid "Account name"
+msgstr "Account name"
 
 #. js-lingui-explicit-id
 #: ../ledger/src/transaction/service/transfer-creation.service.ts
@@ -711,18 +759,6 @@ msgstr "Account not found"
 #: src/wallet-capture/component/wallet-capture-review-list/wallet-capture-review-list.tsx
 msgid "Account not found"
 msgstr "Account not found"
-
-#: src/account/component/update-account-page/update-account-page.tsx
-msgid "Account Settings"
-msgstr "Account Settings"
-
-#: src/app/(main)/create-account/index.tsx
-msgid "Account Sync"
-msgstr "Account Sync"
-
-#: src/account/component/update-liability-account/update-liability-account.tsx
-msgid "Account Type"
-msgstr "Account Type"
 
 #: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
 #: src/transaction/components/statistics-filters-menu/statistics-filters-menu.tsx
@@ -774,9 +810,9 @@ msgstr "Activate"
 msgid "Activate Account?"
 msgstr "Activate Account?"
 
-#: src/account/component/account-active-toggle-field/account-active-toggle-field.tsx
-msgid "Active"
-msgstr "Active"
+#: src/account/component/create-account-screen/create-account-screen.tsx
+msgid "Add a name to continue"
+msgstr "Add a name to continue"
 
 #: src/app/note-input.tsx
 msgid "Add a note..."
@@ -844,13 +880,17 @@ msgstr "Add tags to these transactions"
 msgid "Add the Budgie action"
 msgstr "Add the Budgie action"
 
+#: src/runway/component/runway-empty-state/runway-empty-state.tsx
+msgid "Add transactions to see your runway"
+msgstr "Add transactions to see your runway"
+
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add your first account to start tracking your finances"
 msgstr "Add your first account to start tracking your finances"
 
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
-msgid "Adds the fee of the plan"
-msgstr "Adds the fee of the plan"
+msgid "Adds a fee to the plan total"
+msgstr "Adds a fee to the plan total"
 
 #: src/transaction/constant/transaction-type.constant.ts
 msgid "Adjustment"
@@ -1057,6 +1097,10 @@ msgstr "Apply to existing transactions?"
 msgid "Archive"
 msgstr "Archive"
 
+#: src/account/component/archive-account/archive-account.tsx
+msgid "Archive account"
+msgstr "Archive account"
+
 #: src/account/hooks/use-archive-account.hook.ts
 msgid "Archive Account?"
 msgstr "Archive Account?"
@@ -1093,9 +1137,13 @@ msgstr "Auto-assign categories from MCC"
 msgid "Auto-categorize transactions"
 msgstr "Auto-categorize transactions"
 
+#: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
+msgid "Automatic sync"
+msgstr "Automatic sync"
+
 #: src/app/(main)/create-account/index.tsx
-msgid "Auto-sync accounts and transactions from Monobank"
-msgstr "Auto-sync accounts and transactions from Monobank"
+msgid "Automatic sync with a personal token"
+msgstr "Automatic sync with a personal token"
 
 #: src/wallet-capture/component/apple-pay-capture-settings-card/apple-pay-capture-settings-card.tsx
 msgid "Automatically record eligible card taps using Shortcuts"
@@ -1116,6 +1164,10 @@ msgstr "Average"
 #: src/categorize-inbox/components/categorize-inbox-group-stats-line/categorize-inbox-group-stats-line.tsx
 msgid "Average payment"
 msgstr "Average payment"
+
+#: src/runway/component/runway-drivers/runway-drivers.tsx
+msgid "Average per month"
+msgstr "Average per month"
 
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Avg cost"
@@ -1142,6 +1194,18 @@ msgstr "Balance Adjustment"
 msgid "Balance forecast"
 msgstr "Balance forecast"
 
+#: src/account/component/create-account-screen/update-account-screen.tsx
+msgid "Balance from {providerName}"
+msgstr "Balance from {providerName}"
+
+#: src/account/component/create-account-screen/update-account-screen.tsx
+msgid "Balance from sync"
+msgstr "Balance from sync"
+
+#: src/@generic/component/amount-sign-capsule/amount-sign-capsule.tsx
+msgid "Balance sign"
+msgstr "Balance sign"
+
 #: src/account/component/account-details-hero-balance/account-details-hero-balance.tsx
 msgid "Balance: {formattedBalance}"
 msgstr "Balance: {formattedBalance}"
@@ -1159,6 +1223,7 @@ msgstr "Bank account"
 msgid "Bank integration settings"
 msgstr "Bank integration settings"
 
+#: src/account/constant/account-kind-title.constant.ts
 #: src/account/constant/account-type.constant.ts
 msgid "Bank sync"
 msgstr "Bank sync"
@@ -1174,10 +1239,6 @@ msgstr "Bars compare each category with the largest one."
 #: src/tag/components/stats-by-tags-panel/stats-by-tags-panel.tsx
 msgid "Bars compare each tag with the largest one. A transaction with several tags counts toward each of them, so shares can add up to more than 100%."
 msgstr "Bars compare each tag with the largest one. A transaction with several tags counts toward each of them, so shares can add up to more than 100%."
-
-#: src/@generic/component/currency-selector/currency-selector.tsx
-msgid "Base currency"
-msgstr "Base currency"
 
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Base instrument not found"
@@ -1207,6 +1268,10 @@ msgstr "between"
 msgid "Between"
 msgstr "Between"
 
+#: src/installment-plan/component/installment-count-picker/installment-count-picker.tsx
+msgid "Between {lowestCount} and {MAX_INSTALLMENT_COUNT} months"
+msgstr "Between {lowestCount} and {MAX_INSTALLMENT_COUNT} months"
+
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
 msgid "Billing Dates"
 msgstr "Billing Dates"
@@ -1224,7 +1289,7 @@ msgstr "Binance has no market price for these assets, so they are not added as a
 msgid "Binance is not available in your region, so this account cannot sync."
 msgstr "Binance is not available in your region, so this account cannot sync."
 
-#: src/sync/component/account-sync-card/account-sync-card.tsx
+#: src/sync/component/account-sync-warning-row/account-sync-warning-row.tsx
 msgid "Binance P2P orders are unavailable: the API key is missing P2P read permission."
 msgstr "Binance P2P orders are unavailable: the API key is missing P2P read permission."
 
@@ -1365,6 +1430,10 @@ msgstr "Can run for hours on old accounts, and much slower while the app is clos
 msgid "Can take hours"
 msgstr "Can take hours"
 
+#: src/account/component/create-account-details-section/create-account-details-section.tsx
+msgid "Can't be changed later"
+msgstr "Can't be changed later"
+
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx
 #: src/account/component/account-action-button/account-action-button.tsx
@@ -1412,6 +1481,10 @@ msgstr "Captures new eligible Apple Pay taps. It cannot import Wallet history or
 msgid "Card"
 msgstr "Card"
 
+#: src/app/(main)/create-account/index.tsx
+msgid "Cards and everyday spending"
+msgstr "Cards and everyday spending"
+
 #: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
 msgid "Carry all"
 msgstr "Carry all"
@@ -1430,9 +1503,17 @@ msgctxt "Categorize inbox section chip"
 msgid "Cash"
 msgstr "Cash"
 
+#: src/account/constant/account-kind-title.constant.ts
+msgid "Cash & savings"
+msgstr "Cash & savings"
+
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
 msgid "cash from an ATM"
 msgstr "cash from an ATM"
+
+#: src/app/(main)/create-account/index.tsx
+msgid "Cash wallets and savings goals"
+msgstr "Cash wallets and savings goals"
 
 #: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
 msgid "Cash withdrawals"
@@ -1507,6 +1588,10 @@ msgstr "Change"
 msgid "Change currency"
 msgstr "Change currency"
 
+#: src/@generic/component/account-details-field/account-details-field.tsx
+msgid "Change icon"
+msgstr "Change icon"
+
 #: src/settings/components/pin-management-rows/pin-management-rows.tsx
 msgid "Change PIN"
 msgstr "Change PIN"
@@ -1515,12 +1600,12 @@ msgstr "Change PIN"
 msgid "Check the key and secret, then try again."
 msgstr "Check the key and secret, then try again."
 
+#: src/account/constant/account-kind-title.constant.ts
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Checking"
 msgstr "Checking"
 
 #: src/account/component/create-simple-account/create-simple-account.tsx
-#: src/app/(main)/create-account/index.tsx
 msgid "Checking Account"
 msgstr "Checking Account"
 
@@ -1556,6 +1641,10 @@ msgstr "Choose accounts"
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 msgid "Choose and confirm a PIN"
 msgstr "Choose and confirm a PIN"
+
+#: src/sync/component/account-sync-card/account-sync-card.tsx
+msgid "Choose dates to sync again"
+msgstr "Choose dates to sync again"
 
 #: src/ai/component/ai-features-settings-card/ai-features-settings-card.tsx
 msgid "Choose features and free space from unused downloads"
@@ -1635,10 +1724,6 @@ msgstr "Closing balance · {title}"
 #: src/rule/constant/external-source.constant.ts
 msgid "Coinbase"
 msgstr "Coinbase"
-
-#: src/app/(main)/create-account/index.tsx
-msgid "Cold wallets and exchange balances"
-msgstr "Cold wallets and exchange balances"
 
 #: src/app/(tabs)/settings/import.tsx
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
@@ -1834,7 +1919,7 @@ msgstr "Could not create budget"
 msgid "Could not create category"
 msgstr "Could not create category"
 
-#: src/installment-plan/component/convert-to-installment-content/convert-to-installment-content.tsx
+#: src/installment-plan/component/convert-to-installment-create-button/convert-to-installment-create-button.tsx
 msgid "Could not create plan"
 msgstr "Could not create plan"
 
@@ -2056,7 +2141,7 @@ msgid "Could not update rule"
 msgstr "Could not update rule"
 
 #: src/settings/hook/use-setting-toggle.hook.ts
-#: src/sync/component/account-sync-card/account-sync-card.tsx
+#: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
 #: src/sync/component/bank-integration-account-row/bank-integration-account-row.tsx
 msgid "Could not update setting"
 msgstr "Could not update setting"
@@ -2095,17 +2180,13 @@ msgstr "Could not verify the API key permissions"
 msgid "Couldn’t check Monobank for new accounts"
 msgstr "Couldn’t check Monobank for new accounts"
 
-#: src/account/component/include-in-net-worth-field/include-in-net-worth-field.tsx
-msgid "Count this account in your net worth calculation"
-msgstr "Count this account in your net worth calculation"
+#: src/account/component/account-switch-field/account-switch-field.tsx
+msgid "Count it in your net worth"
+msgstr "Count it in your net worth"
 
 #: src/runway/component/runway-settings-section/runway-settings-section.tsx
 msgid "Counts crypto at today's market value"
 msgstr "Counts crypto at today's market value"
-
-#: src/runway/component/runway-verdict-outlook/runway-verdict-outlook.tsx
-msgid "Covered by {coverMonths} months of expenses."
-msgstr "Covered by {coverMonths} months of expenses."
 
 #: src/runway/component/runway-verdict-outlook/runway-verdict-outlook.tsx
 msgid "Covered by your liquid balance."
@@ -2136,6 +2217,10 @@ msgstr "Create a rule"
 #: src/tag/components/tags-settings-feature-intro/tags-settings-feature-intro.tsx
 msgid "Create a tag"
 msgstr "Create a tag"
+
+#: src/account/component/create-account-screen/create-account-screen.tsx
+msgid "Create account"
+msgstr "Create account"
 
 #: src/app/transaction-account-filter.tsx
 msgid "Create Accounts"
@@ -2171,10 +2256,6 @@ msgstr "Create Category"
 msgid "Create one to get started."
 msgstr "Create one to get started."
 
-#: src/installment-plan/component/convert-to-installment-content/convert-to-installment-content.tsx
-msgid "Create plan"
-msgstr "Create plan"
-
 #: src/transaction/components/create-rule-menu-item/create-rule-menu-item.tsx
 #: src/transaction/components/transaction-info-create-rule-row/transaction-info-create-rule-row.tsx
 msgid "Create rule"
@@ -2201,16 +2282,17 @@ msgstr "Create your first account to start tracking your finances"
 msgid "Credentials required"
 msgstr "Credentials required"
 
+#: src/account/constant/account-kind-title.constant.ts
 #: src/account/constant/account-type.constant.ts
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "Crypto"
 msgstr "Crypto"
 
 #: src/account/component/create-simple-account/create-simple-account.tsx
-#: src/app/(main)/create-account/index.tsx
 msgid "Crypto Account"
 msgstr "Crypto Account"
 
+#: src/account/constant/account-kind-title.constant.ts
 #: src/account/constant/account-type.constant.ts
 msgid "Crypto sync"
 msgstr "Crypto sync"
@@ -2223,9 +2305,13 @@ msgstr "CSV"
 msgid "CSV exported"
 msgstr "CSV exported"
 
-#: src/@generic/component/create-account-currency-field/create-account-currency-field.tsx
+#: src/account/component/update-liability-account/update-liability-account.tsx
 msgid "Currency"
 msgstr "Currency"
+
+#: src/account/component/account-balance-field/account-balance-field.tsx
+msgid "Current balance"
+msgstr "Current balance"
 
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "Custom categories you create will appear here"
@@ -2258,6 +2344,7 @@ msgid "Days Remaining"
 msgstr "Days Remaining"
 
 #: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
+#: src/account/constant/account-kind-title.constant.ts
 #: src/account/constant/account-type.constant.ts
 #: src/transaction/constant/debt-settlement-label.constant.ts
 #: src/transaction/constant/transaction-type.constant.ts
@@ -2265,7 +2352,6 @@ msgid "Debt"
 msgstr "Debt"
 
 #: src/account/component/create-debt-account/create-debt-account.tsx
-#: src/app/(main)/create-account/index.tsx
 msgid "Debt Account"
 msgstr "Debt Account"
 
@@ -2345,7 +2431,6 @@ msgid "Deposit"
 msgstr "Deposit"
 
 #: src/account/component/create-deposit-account/create-deposit-account.tsx
-#: src/app/(main)/create-account/index.tsx
 msgid "Deposit Account"
 msgstr "Deposit Account"
 
@@ -2381,6 +2466,8 @@ msgstr "Detach from plan"
 msgid "Detaches it from “{debtTitle}”"
 msgstr "Detaches it from “{debtTitle}”"
 
+#: src/account/component/create-account-details-section/create-account-details-section.tsx
+#: src/account/component/update-account-page/update-account-page.tsx
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Details"
 msgstr "Details"
@@ -2424,6 +2511,7 @@ msgstr "Display the runway pill next to your total balance"
 msgid "Do not sync history"
 msgstr "Do not sync history"
 
+#: src/@generic/component/keyboard-done-accessory/keyboard-done-accessory.tsx
 #: src/app/import-column-mapper.tsx
 #: src/categorize-inbox/components/categorize-inbox-empty-state/categorize-inbox-empty-state.tsx
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
@@ -2499,6 +2587,10 @@ msgstr "Duplicate rule"
 msgid "e.g. 1000"
 msgstr "e.g. 1000"
 
+#: src/account/component/deposit-account-form-screen/deposit-account-form-screen.tsx
+msgid "e.g. 12-month deposit"
+msgstr "e.g. 12-month deposit"
+
 #: src/budget/components/budget-limit-amount-input/budget-limit-amount-input.tsx
 msgid "e.g. 200"
 msgstr "e.g. 200"
@@ -2511,13 +2603,25 @@ msgstr "e.g. 5"
 msgid "e.g. Business, Personal, Vacation"
 msgstr "e.g. Business, Personal, Vacation"
 
+#: src/account/component/create-simple-account/create-simple-account.tsx
+msgid "e.g. Cold wallet"
+msgstr "e.g. Cold wallet"
+
+#: src/account/component/create-simple-account/create-simple-account.tsx
+msgid "e.g. Emergency fund"
+msgstr "e.g. Emergency fund"
+
 #: src/category/components/category-title-input/category-title-input.tsx
 msgid "e.g. Groceries, Entertainment"
 msgstr "e.g. Groceries, Entertainment"
 
-#: src/@generic/component/account-details-field/account-details-field.tsx
-msgid "e.g. Savings Account"
-msgstr "e.g. Savings Account"
+#: src/account/component/create-debt-account/create-debt-account.tsx
+msgid "e.g. Loan to Alex"
+msgstr "e.g. Loan to Alex"
+
+#: src/account/component/create-simple-account/create-simple-account.tsx
+msgid "e.g. Main card"
+msgstr "e.g. Main card"
 
 #: src/budget/components/budget-day-strip/budget-day-strip.tsx
 msgid "Each day against your {allowanceLabel} daily allowance"
@@ -2537,6 +2641,10 @@ msgstr "Edit"
 #: src/account/component/account-card-menu/account-card-menu.tsx
 msgid "Edit account"
 msgstr "Edit account"
+
+#: src/account/component/update-account-page/update-account-page.tsx
+msgid "Edit Account"
+msgstr "Edit Account"
 
 #: src/budget/components/budget-setup-form/budget-setup-form.tsx
 msgid "Edit budget"
@@ -2583,17 +2691,9 @@ msgstr "Edit Transaction"
 msgid "Edit Transfer"
 msgstr "Edit Transfer"
 
-#: src/installment-plan/component/convert-to-installment-title-field/convert-to-installment-title-field.tsx
-msgid "Edits the name of the plan"
-msgstr "Edits the name of the plan"
-
 #: src/installment-plan/component/convert-to-installment-total/convert-to-installment-total.tsx
 msgid "Edits the total of the plan"
 msgstr "Edits the total of the plan"
-
-#: src/app/(main)/create-account/index.tsx
-msgid "Emergency fund and savings goals"
-msgstr "Emergency fund and savings goals"
 
 #: src/onboarding/hook/use-onboarding-file-state.hook.ts
 msgid "empty"
@@ -2729,10 +2829,6 @@ msgstr "Erase and start fresh"
 msgid "Erase and start fresh?"
 msgstr "Erase and start fresh?"
 
-#: src/sync/component/account-sync-card/account-sync-card.tsx
-msgid "Errors"
-msgstr "Errors"
-
 #: src/account/constant/bank-provider-title.constant.ts
 #: src/rule/constant/external-source.constant.ts
 msgid "Erste"
@@ -2761,10 +2857,6 @@ msgstr "Every transaction has a category."
 #: src/categorize-inbox/components/categorize-inbox-tag-provider/categorize-inbox-tag-provider.tsx
 msgid "Every transaction has a tag."
 msgstr "Every transaction has a tag."
-
-#: src/app/(main)/create-account/index.tsx
-msgid "Everyday transactions and spending"
-msgstr "Everyday transactions and spending"
 
 #: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
 msgid "Everything still stays on this device and nothing is uploaded. But anyone who can unlock your phone can open Budgie."
@@ -2810,6 +2902,7 @@ msgid "Expense"
 msgstr "Expense"
 
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
+#: src/runway/component/runway-history-legend/runway-history-legend.tsx
 #: src/transaction/hook/use-transaction-filter-page-title.hook.ts
 msgid "Expenses"
 msgstr "Expenses"
@@ -2869,8 +2962,12 @@ msgid "Fee {formattedAmount}"
 msgstr "Fee {formattedAmount}"
 
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
-msgid "Fee {formattedFeePercent}"
-msgstr "Fee {formattedFeePercent}"
+msgid "Fee {formattedPercent}, {formattedFee}"
+msgstr "Fee {formattedPercent}, {formattedFee}"
+
+#: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
+msgid "Fee, no fee"
+msgstr "Fee, no fee"
 
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
 msgid "Fee, percent"
@@ -2880,9 +2977,13 @@ msgstr "Fee, percent"
 msgid "Fetch Accounts"
 msgstr "Fetch Accounts"
 
-#: src/sync/component/account-sync-card/account-sync-card.tsx
+#: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
 msgid "Fetching new..."
 msgstr "Fetching new..."
+
+#: src/installment-plan/component/installment-count-picker/installment-count-picker.tsx
+msgid "Fewer months"
+msgstr "Fewer months"
 
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 msgid "Field"
@@ -2941,13 +3042,25 @@ msgstr "Fingerprint day to day"
 msgid "Finish importing this account’s history to include it in analytics."
 msgstr "Finish importing this account’s history to include it in analytics."
 
+#: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
+msgid "first {formattedPaid} already paid"
+msgstr "first {formattedPaid} already paid"
+
+#: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
+msgid "First {formattedPaid} already paid"
+msgstr "First {formattedPaid} already paid"
+
+#: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
+msgid "First {formattedPaid} already paid · last payment {formattedLast}"
+msgstr "First {formattedPaid} already paid · last payment {formattedLast}"
+
 #: src/app/(tabs)/settings/import.tsx
 msgid "Fix Errors"
 msgstr "Fix Errors"
 
 #: src/app/(main)/create-account/index.tsx
-msgid "Fixed-term savings with an interest rate"
-msgstr "Fixed-term savings with an interest rate"
+msgid "Fixed-term savings with interest"
+msgstr "Fixed-term savings with interest"
 
 #: src/budget/components/budget-forecast-card/budget-forecast-card.tsx
 msgid "Forecast"
@@ -3059,6 +3172,10 @@ msgstr "Go back"
 msgid "Go straight to Budgie"
 msgstr "Go straight to Budgie"
 
+#: src/installment-plan/component/convert-to-installment-total/convert-to-installment-total.tsx
+msgid "Goes back to the total worked out from the payments and fee"
+msgstr "Goes back to the total worked out from the payments and fee"
+
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Greater Than"
 msgstr "Greater Than"
@@ -3074,6 +3191,10 @@ msgstr "Help sorting, without leaving the phone?"
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Hidden from Home"
 msgstr "Hidden from Home"
+
+#: src/account/component/update-account-page/update-account-page.tsx
+msgid "Hidden from Home and totals. Restore it in Settings."
+msgstr "Hidden from Home and totals. Restore it in Settings."
 
 #: src/transaction/components/statistics-share-bar/statistics-share-bar.tsx
 msgid "Hide breakdown"
@@ -3098,10 +3219,6 @@ msgstr "History import paused"
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "History loading paused"
 msgstr "History loading paused"
-
-#: src/sync/component/account-sync-card/account-sync-card.tsx
-msgid "History synced"
-msgstr "History synced"
 
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Hold to seal with this PIN"
@@ -3136,13 +3253,16 @@ msgid "If you forget it, nobody can open this file, including you and us."
 msgstr "If you forget it, nobody can open this file, including you and us."
 
 #: src/app/(main)/create-account/index.tsx
+msgid "Import a PDF statement"
+msgstr "Import a PDF statement"
+
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Import accounts and transactions from Erste Bank PDF statement"
 msgstr "Import accounts and transactions from Erste Bank PDF statement"
 
 #: src/app/(main)/create-account/index.tsx
-msgid "Import accounts and transactions from Privatbank XLSX export"
-msgstr "Import accounts and transactions from Privatbank XLSX export"
+msgid "Import an XLSX statement"
+msgstr "Import an XLSX statement"
 
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "Import anyway"
@@ -3212,6 +3332,10 @@ msgstr "in"
 msgid "in {month}"
 msgstr "in {month}"
 
+#: src/@generic/component/amount-sign-capsule/amount-sign-capsule.tsx
+msgid "In credit"
+msgstr "In credit"
+
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "In List"
 msgstr "In List"
@@ -3233,29 +3357,26 @@ msgstr "Inactive Accounts"
 msgid "Include crypto"
 msgstr "Include crypto"
 
-#: src/sync/component/account-sync-card/account-sync-card.tsx
+#: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Include in file imports"
 msgstr "Include in file imports"
 
-#: src/account/component/include-in-net-worth-field/include-in-net-worth-field.tsx
-msgid "Include in Net Worth"
-msgstr "Include in Net Worth"
+#: src/account/component/account-switch-field/account-switch-field.tsx
+msgid "Include in net worth"
+msgstr "Include in net worth"
 
 #: src/runway/component/runway-all-in-toggle/runway-all-in-toggle.tsx
-msgid "Include one-offs"
-msgstr "Include one-offs"
+msgid "Include one‑offs"
+msgstr "Include one‑offs"
 
 #: src/runway/component/runway-verdict-outlook/runway-verdict-outlook.tsx
 msgid "Includes crypto"
 msgstr "Includes crypto"
 
-#: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
-msgid "includes fee {formattedFeeAmount}"
-msgstr "includes fee {formattedFeeAmount}"
-
 #: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
+#: src/runway/component/runway-history-legend/runway-history-legend.tsx
 #: src/tag/components/stats-by-tags-panel/stats-by-tags-panel.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/components/statistics-cash-flow-card/statistics-cash-flow-card.tsx
@@ -3280,7 +3401,7 @@ msgstr "Installment"
 
 #: src/account/constant/account-debt-type.constant.ts
 #: src/installment-plan/component/convert-to-installment-content/convert-to-installment-content.tsx
-#: src/installment-plan/component/convert-to-installment-title-field/convert-to-installment-title-field.tsx
+#: src/installment-plan/component/convert-to-installment-header/convert-to-installment-header.tsx
 #: src/transaction/constant/debt-settlement-label.constant.ts
 msgid "Installment plan"
 msgstr "Installment plan"
@@ -3369,10 +3490,6 @@ msgstr "Last 7 days"
 msgid "Last 90 days"
 msgstr "Last 90 days"
 
-#: src/sync/component/account-sync-card/account-sync-card.tsx
-msgid "Last error"
-msgstr "Last error"
-
 #: src/settings/components/backup-row/backup-row.tsx
 msgid "Last export"
 msgstr "Last export"
@@ -3381,9 +3498,9 @@ msgstr "Last export"
 msgid "Last Month"
 msgstr "Last Month"
 
-#: src/sync/component/account-sync-card/account-sync-card.tsx
-msgid "Last sync"
-msgstr "Last sync"
+#: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
+msgid "last payment {formattedLast}"
+msgstr "last payment {formattedLast}"
 
 #: src/@generic/constant/date-period.constant.ts
 msgid "Last Week"
@@ -3441,6 +3558,10 @@ msgstr "Less Than"
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx
 msgid "Limit"
 msgstr "Limit"
+
+#: src/account/component/account-switch-field/account-switch-field.tsx
+msgid "List it on the Home screen"
+msgstr "List it on the Home screen"
 
 #: src/ai/component/voice-input-bubble/voice-input-bubble.tsx
 msgid "Listening..."
@@ -3644,17 +3765,9 @@ msgstr "Models and downloads"
 msgid "Models download once, best on Wi-Fi"
 msgstr "Models download once, best on Wi-Fi"
 
-#: src/runway/component/runway-history-legend/runway-history-legend.tsx
-msgid "Money in"
-msgstr "Money in"
-
 #: src/app/(main)/create-account/index.tsx
-msgid "Money lent or borrowed"
-msgstr "Money lent or borrowed"
-
-#: src/runway/component/runway-history-legend/runway-history-legend.tsx
-msgid "Money out"
-msgstr "Money out"
+msgid "Money you lent or borrowed"
+msgstr "Money you lent or borrowed"
 
 #: src/account/constant/bank-provider-title.constant.ts
 #: src/app/(main)/create-account/index.tsx
@@ -3731,6 +3844,10 @@ msgstr "More Actions…"
 #: src/categorize-inbox/components/categorize-inbox-category-provider/categorize-inbox-category-provider.tsx
 msgid "More categories"
 msgstr "More categories"
+
+#: src/installment-plan/component/installment-count-picker/installment-count-picker.tsx
+msgid "More months"
+msgstr "More months"
 
 #: src/categorize-inbox/components/categorize-inbox-tag-provider/categorize-inbox-tag-provider.tsx
 msgid "More tags"
@@ -3825,9 +3942,17 @@ msgstr "New Transfer"
 msgid "Next {formattedNextAmount} · {nextDate}"
 msgstr "Next {formattedNextAmount} · {nextDate}"
 
+#: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
+msgid "next month"
+msgstr "next month"
+
 #: src/transaction/components/transaction-info-installment-terms/transaction-info-installment-terms.tsx
 msgid "Next payment"
 msgstr "Next payment"
+
+#: src/installment-plan/component/installment-timeline/installment-timeline.tsx
+msgid "Next payment {nextPaymentLabel}"
+msgstr "Next payment {nextPaymentLabel}"
 
 #: src/transaction/components/statistics-period-control/statistics-period-control.tsx
 msgid "Next period"
@@ -3915,6 +4040,10 @@ msgstr "No debt yet"
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "No enabled accounts were found in this file"
 msgstr "No enabled accounts were found in this file"
+
+#: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
+msgid "No fee"
+msgstr "No fee"
 
 #: src/app/icon-selector.tsx
 msgid "No icons found"
@@ -4109,9 +4238,17 @@ msgstr "Nothing to fix here"
 msgid "Now"
 msgstr "Now"
 
+#: src/installment-plan/component/installment-count-picker/installment-count-picker.tsx
+msgid "Number of months"
+msgstr "Number of months"
+
 #: src/account/component/debt-account-card-summary/debt-account-card-summary.tsx
 msgid "of"
 msgstr "of"
+
+#: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
+msgid "of {formattedBase} before the fee"
+msgstr "of {formattedBase} before the fee"
 
 #: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
 msgid "of {total} GB"
@@ -4119,13 +4256,19 @@ msgstr "of {total} GB"
 
 #: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
 #: src/settings/components/your-data-card/your-data-card.tsx
+#: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
 msgid "Off"
 msgstr "Off"
+
+#: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
+msgid "Off after an error"
+msgstr "Off after an error"
 
 #: src/ai/component/ai-download-wifi-banner/ai-download-wifi-banner.tsx
 msgid "OK"
 msgstr "OK"
 
+#: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
 #: src/transaction/components/statistics-filters-menu/statistics-filters-menu.tsx
 msgid "On"
 msgstr "On"
@@ -4174,17 +4317,13 @@ msgstr "On-device AI"
 msgid "once a month"
 msgstr "once a month"
 
+#: src/runway/component/runway-empty-state/runway-empty-state.tsx
+msgid "Once you have 3 months of transactions, Runway shows how long your balance lasts."
+msgstr "Once you have 3 months of transactions, Runway shows how long your balance lasts."
+
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 msgid "One you exported with a PIN you remember"
 msgstr "One you exported with a PIN you remember"
-
-#: src/runway/component/runway-driver-row/runway-driver-row.tsx
-msgid "One-off"
-msgstr "One-off"
-
-#: src/runway/component/runway-history-legend/runway-history-legend.tsx
-msgid "One-off spike"
-msgstr "One-off spike"
 
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "one-time download"
@@ -4193,6 +4332,10 @@ msgstr "one-time download"
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "One-time import from a Privat24 statement — this is not a live sync, and each export covers a single card or account"
 msgstr "One-time import from a Privat24 statement — this is not a live sync, and each export covers a single card or account"
+
+#: src/runway/component/runway-driver-row/runway-driver-row.tsx
+msgid "One‑off"
+msgstr "One‑off"
 
 #: ../ledger/src/installment/service/installment-plan.service.ts
 msgid "Only an expense can become an installment plan"
@@ -4292,6 +4435,11 @@ msgstr "Operator"
 msgid "Optional — without it the amount stays manual"
 msgstr "Optional — without it the amount stays manual"
 
+#: src/account/component/create-account-options-section/create-account-options-section.tsx
+#: src/account/component/update-account-page/update-account-page.tsx
+msgid "Options"
+msgstr "Options"
+
 #: src/rule/components/rule-summary-pills/rule-summary-condition-item.tsx
 msgid "or"
 msgstr "or"
@@ -4377,6 +4525,10 @@ msgstr "Overall budget: {threshold}% spent"
 msgid "Overall monthly limit"
 msgstr "Overall monthly limit"
 
+#: src/@generic/component/amount-sign-capsule/amount-sign-capsule.tsx
+msgid "Overdrawn"
+msgstr "Overdrawn"
+
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "Overdue"
 msgstr "Overdue"
@@ -4441,19 +4593,22 @@ msgstr "Paused: no Wi-Fi"
 msgid "Paused. {downloaded} of {total} GB is kept."
 msgstr "Paused. {downloaded} of {total} GB is kept."
 
-#: src/installment-plan/component/convert-to-installment-content/convert-to-installment-content.tsx
 #: src/transaction/components/transaction-list-convert-to-installment-menu-item/transaction-list-convert-to-installment-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Pay in parts"
 msgstr "Pay in parts"
 
+#: src/installment-plan/component/convert-to-installment-header/convert-to-installment-header.tsx
+msgid "Pay in parts · {operatedAtLabel} · {accountTitle}"
+msgstr "Pay in parts · {operatedAtLabel} · {accountTitle}"
+
+#: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
+msgid "Payment schedule unavailable"
+msgstr "Payment schedule unavailable"
+
 #: src/installment-plan/component/installment-plan-count-field/installment-plan-count-field.tsx
 msgid "Payments"
 msgstr "Payments"
-
-#: src/installment-plan/component/installment-timeline/installment-timeline.tsx
-msgid "Payments from {firstPaymentLabel} to {lastPaymentLabel}"
-msgstr "Payments from {firstPaymentLabel} to {lastPaymentLabel}"
 
 #: src/categorize-inbox/components/categorize-inbox-group-panel/categorize-inbox-group-panel.tsx
 msgid "Payments per month"
@@ -4470,6 +4625,10 @@ msgstr "per day"
 #: src/runway/component/runway-verdict-figure/runway-verdict-figure.tsx
 msgid "per month"
 msgstr "per month"
+
+#: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
+msgid "Percent of the plan total before the fee"
+msgstr "Percent of the plan total before the fee"
 
 #: src/@generic/hook/use-contacts.hook.ts
 msgid "Permission to access contacts was denied."
@@ -4515,9 +4674,25 @@ msgstr "PINs match"
 msgid "Plan created"
 msgstr "Plan created"
 
-#: src/installment-plan/component/convert-to-installment-title-field/convert-to-installment-title-field.tsx
+#: src/installment-plan/component/convert-to-installment-header/convert-to-installment-header.tsx
 msgid "Plan name"
 msgstr "Plan name"
+
+#: src/installment-plan/component/convert-to-installment-total-input/convert-to-installment-total-input.tsx
+msgid "Plan total"
+msgstr "Plan total"
+
+#: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
+msgid "plan total {formattedTotal}"
+msgstr "plan total {formattedTotal}"
+
+#: src/installment-plan/component/convert-to-installment-total/convert-to-installment-total.tsx
+msgid "Plan total {formattedTotal}"
+msgstr "Plan total {formattedTotal}"
+
+#: src/installment-plan/component/convert-to-installment-total/convert-to-installment-total.tsx
+msgid "Plan total {formattedTotal}, includes {formattedFee} fee"
+msgstr "Plan total {formattedTotal}, includes {formattedFee} fee"
 
 #: src/account/component/start-deposit-form/start-deposit-form.tsx
 #: src/account/hooks/use-account-entity-form.hook.ts
@@ -4534,7 +4709,7 @@ msgid "Please enter your Monobank API token"
 msgstr "Please enter your Monobank API token"
 
 #: src/app/convert-to-transfer.tsx
-#: src/installment-plan/component/convert-to-installment-content/convert-to-installment-content.tsx
+#: src/installment-plan/component/convert-to-installment-create-button/convert-to-installment-create-button.tsx
 msgid "Please try again"
 msgstr "Please try again"
 
@@ -4545,6 +4720,10 @@ msgstr "Please try again"
 #: src/tag/hooks/use-delete-tag.hook.ts
 msgid "Please try again later"
 msgstr "Please try again later"
+
+#: src/@generic/component/amount-sign-capsule/amount-sign-capsule.tsx
+msgid "Positive"
+msgstr "Positive"
 
 #: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
 msgid "Preparing valuation"
@@ -4599,9 +4778,21 @@ msgstr "Projected {overAmount} over"
 msgid "Push notifications are disabled"
 msgstr "Push notifications are disabled"
 
+#: src/installment-plan/component/installment-count-chips/installment-count-chips.tsx
+msgid "Quick picks"
+msgstr "Quick picks"
+
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 msgid "Quick rule"
 msgstr "Quick rule"
+
+#: src/installment-plan/component/convert-to-installment-content/convert-to-installment-content.tsx
+msgid "Raise the total above the paid {formattedPaid}"
+msgstr "Raise the total above the paid {formattedPaid}"
+
+#: src/installment-plan/component/convert-to-installment-content/convert-to-installment-content.tsx
+msgid "Raise the total or choose fewer payments"
+msgstr "Raise the total or choose fewer payments"
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Re-enter your PIN to confirm"
@@ -4807,6 +4998,10 @@ msgstr "Remove unused downloads ({unusedSize})"
 msgid "Rename"
 msgstr "Rename"
 
+#: src/installment-plan/component/convert-to-installment-header/convert-to-installment-header.tsx
+msgid "Rename plan, {value}"
+msgstr "Rename plan, {value}"
+
 #: src/account/constant/debt-settled-label.constant.ts
 msgid "Repaid"
 msgstr "Repaid"
@@ -4832,6 +5027,10 @@ msgstr "Report a Bug"
 #: src/budget/components/budget-verdict-footer/budget-verdict-footer.tsx
 msgid "Reserving {upcomingAmount} for {billsLabel}"
 msgstr "Reserving {upcomingAmount} for {billsLabel}"
+
+#: src/installment-plan/component/convert-to-installment-total/convert-to-installment-total.tsx
+msgid "Reset total"
+msgstr "Reset total"
 
 #: src/app/resync-window-picker.tsx
 msgid "Resets all sync state"
@@ -4955,8 +5154,8 @@ msgid "Runway"
 msgstr "Runway"
 
 #: src/runway/component/runway-empty-state/runway-empty-state.tsx
-msgid "Runway needs at least 3 complete months of transactions. You have {monthsUsed}."
-msgstr "Runway needs at least 3 complete months of transactions. You have {monthsUsed}."
+msgid "Runway needs 3 complete months of transactions to forecast your balance."
+msgstr "Runway needs 3 complete months of transactions to forecast your balance."
 
 #: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
 msgid "Safe to spend"
@@ -4975,6 +5174,10 @@ msgstr "Save {count}"
 msgid "Save balances"
 msgstr "Save balances"
 
+#: src/account/component/update-account-page/update-account-page.tsx
+msgid "Save changes"
+msgstr "Save changes"
+
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 msgid "Save fee"
 msgstr "Save fee"
@@ -4991,13 +5194,13 @@ msgstr "Save it to Files or another app."
 msgid "Saved as a rule"
 msgstr "Saved as a rule"
 
+#: src/account/constant/account-kind-title.constant.ts
 #: src/account/constant/account-type.constant.ts
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "Savings"
 msgstr "Savings"
 
 #: src/account/component/create-simple-account/create-simple-account.tsx
-#: src/app/(main)/create-account/index.tsx
 msgid "Savings Account"
 msgstr "Savings Account"
 
@@ -5287,8 +5490,8 @@ msgid "Setup"
 msgstr "Setup"
 
 #: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
-msgid "Shaded area shows your better and worse months."
-msgstr "Shaded area shows your better and worse months."
+msgid "Shading shows how much your months usually vary."
+msgstr "Shading shows how much your months usually vary."
 
 #: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
 msgid "Shortcuts"
@@ -5334,14 +5537,14 @@ msgstr "Show list"
 msgid "Show on home"
 msgstr "Show on home"
 
+#: src/account/component/account-switch-field/account-switch-field.tsx
+msgid "Show on Home"
+msgstr "Show on Home"
+
 #: src/app/date-filter.tsx
 #: src/app/transaction-amount-filter.tsx
 msgid "Show selected range"
 msgstr "Show selected range"
-
-#: src/account/component/account-active-toggle-field/account-active-toggle-field.tsx
-msgid "Show this account on the main page"
-msgstr "Show this account on the main page"
 
 #: src/app/transaction-amount-filter.tsx
 msgid "Show transactions when any main amount is inside this range, regardless of currency."
@@ -5441,9 +5644,13 @@ msgstr "Spent so far"
 msgid "Split"
 msgstr "Split"
 
+#: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
+msgid "Splits your total into the purchase and a fee"
+msgstr "Splits your total into the purchase and a fee"
+
 #: src/runway/component/runway-all-in-toggle/runway-all-in-toggle.tsx
-msgid "Spreads irregular costs like insurance across the months."
-msgstr "Spreads irregular costs like insurance across the months."
+msgid "Spreads irregular costs across the months."
+msgstr "Spreads irregular costs across the months."
 
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "Start again with your new PIN"
@@ -5476,9 +5683,21 @@ msgstr "Start Sync"
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Start tracking your spending by using the mic button or adding transactions manually"
 
+#: src/account/component/create-simple-account/create-simple-account.tsx
+msgid "Starting balance"
+msgstr "Starting balance"
+
 #: src/ai/constant/ai-umbrella-status-atom.constant.ts
 msgid "Starting up AI…"
 msgstr "Starting up AI…"
+
+#: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
+msgid "Starts at {startLabel}. Ends at {endLabel}."
+msgstr "Starts at {startLabel}. Ends at {endLabel}."
+
+#: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
+msgid "Starts at {startLabel}. Ends at {endLabel}. Runs out around {runOutLabel}."
+msgstr "Starts at {startLabel}. Ends at {endLabel}. Runs out around {runOutLabel}."
 
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Statement imported"
@@ -5488,14 +5707,11 @@ msgstr "Statement imported"
 msgid "Step {stepNumber}"
 msgstr "Step {stepNumber}"
 
+#: src/account/constant/account-kind-title.constant.ts
 #: src/account/constant/account-type.constant.ts
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "Stocks"
 msgstr "Stocks"
-
-#: src/account/component/create-account-screen/create-account-screen.tsx
-msgid "Submit"
-msgstr "Submit"
 
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
 msgid "Subscriptions"
@@ -5538,10 +5754,6 @@ msgstr "Switch on to start syncing"
 msgid "Sync"
 msgstr "Sync"
 
-#: src/app/(main)/create-account/index.tsx
-msgid "Sync crypto balances and transactions from Binance with a read-only API key"
-msgstr "Sync crypto balances and transactions from Binance with a read-only API key"
-
 #: src/settings/hooks/use-sync-repairs-action.hook.ts
 msgid "Sync data repaired"
 msgstr "Sync data repaired"
@@ -5550,11 +5762,22 @@ msgstr "Sync data repaired"
 msgid "Sync data repairs"
 msgstr "Sync data repairs"
 
+#: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
+msgid "Sync failed"
+msgstr "Sync failed"
+
 #: src/account/constant/account-sync-state-label.constant.ts
-#: src/sync/component/account-sync-card/account-sync-card.tsx
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Sync Failed"
 msgstr "Sync Failed"
+
+#: src/app/(main)/create-account/index.tsx
+msgid "Sync or import"
+msgstr "Sync or import"
+
+#: src/sync/component/resync-account/resync-account.tsx
+msgid "Sync past transactions"
+msgstr "Sync past transactions"
 
 #: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
@@ -5564,6 +5787,14 @@ msgstr "Sync paused"
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Sync Repairs"
 msgstr "Sync Repairs"
+
+#: src/sync/component/account-sync-problem-row/account-sync-problem-row.tsx
+msgid "Sync stopped"
+msgstr "Sync stopped"
+
+#: src/app/(main)/create-account/index.tsx
+msgid "Sync with a read-only API key"
+msgstr "Sync with a read-only API key"
 
 #: src/sync/component/create-binance-account/create-binance-account.tsx
 msgid "Sync your Binance balances and transactions"
@@ -5577,7 +5808,7 @@ msgstr "Syncing"
 msgid "Syncing bank history"
 msgstr "Syncing bank history"
 
-#: src/sync/component/account-sync-card/account-sync-card.tsx
+#: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
 msgid "Syncing history..."
 msgstr "Syncing history..."
 
@@ -5642,6 +5873,10 @@ msgstr "Tap \"Get API Token\" above to open api.monobank.ua"
 msgid "Tap re-record to try again"
 msgstr "Tap re-record to try again"
 
+#: src/@generic/component/amount-sign-capsule/amount-sign-capsule.tsx
+msgid "Tap to change sign"
+msgstr "Tap to change sign"
+
 #: src/@generic/component/search-input/search-input.tsx
 #: src/app/import-column-mapper.tsx
 msgid "Tap to clear"
@@ -5651,9 +5886,17 @@ msgstr "Tap to clear"
 msgid "Tap to continue"
 msgstr "Tap to continue"
 
+#: src/sync/component/account-sync-problem-row/account-sync-problem-row.tsx
+msgid "Tap to retry"
+msgstr "Tap to retry"
+
 #: src/sync/component/file-upload-step/file-upload-step.tsx
 msgid "Tap to select"
 msgstr "Tap to select"
+
+#: src/account/constant/account-kind-title.constant.ts
+msgid "Term deposit"
+msgstr "Term deposit"
 
 #: src/sync/constant/sync-error-label.constant.ts
 msgid "The API key has the wrong permissions. Use a key with only \"Enable Reading\"."
@@ -5678,6 +5921,10 @@ msgstr "The download stopped before it finished. Try again when the connection i
 #: src/ai/hook/use-ai-model-download-actions.hook.ts
 msgid "The downloaded AI model data is removed from this phone. Nothing downloads again until you start it."
 msgstr "The downloaded AI model data is removed from this phone. Nothing downloads again until you start it."
+
+#: src/installment-plan/component/convert-to-installment-total-input/convert-to-installment-total-input.tsx
+msgid "The exact amount you will pay, fee included"
+msgstr "The exact amount you will pay, fee included"
 
 #: src/transaction/hook/use-delete-transaction.hook.ts
 #: src/transaction/hook/use-revert-consolidation.hook.ts
@@ -5949,6 +6196,10 @@ msgstr "Token already connected"
 msgid "Token required"
 msgstr "Token required"
 
+#: src/app/(main)/create-account/index.tsx
+msgid "Tokens and statements stay on this device."
+msgstr "Tokens and statements stay on this device."
+
 #: src/budget/components/budget-verdict-header/budget-verdict-header.tsx
 msgid "Too early to forecast"
 msgstr "Too early to forecast"
@@ -5962,11 +6213,14 @@ msgstr "Too many attempts. Try again in {time}"
 #: src/account/component/debt-account-card/debt-account-card.tsx
 #: src/account/component/debt-account-paid-off/debt-account-paid-off.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
-#: src/installment-plan/component/convert-to-installment-total-input/convert-to-installment-total-input.tsx
 #: src/installment-plan/component/installment-plan-total-field/installment-plan-total-field.tsx
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "Total"
 msgstr "Total"
+
+#: src/installment-plan/component/convert-to-installment-total/convert-to-installment-total.tsx
+msgid "Total {formattedTotal}"
+msgstr "Total {formattedTotal}"
 
 #: src/account/component/net-worth-collapsible-header/net-worth-collapsible-header.tsx
 msgid "Total Balance"
@@ -5984,6 +6238,10 @@ msgstr "Total lent"
 #: src/settings/hook/use-biometric-label.hook.ts
 msgid "Touch ID"
 msgstr "Touch ID"
+
+#: src/app/(main)/create-account/index.tsx
+msgid "Track manually"
+msgstr "Track manually"
 
 #: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
 msgid "Transaction already has a debt attachment"
@@ -6020,10 +6278,6 @@ msgstr "Transactions already in Budgie are skipped. Nothing is written until you
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "Transactions imported"
 msgstr "Transactions imported"
-
-#: src/sync/component/account-sync-card/account-sync-card.tsx
-msgid "Transactions synced"
-msgstr "Transactions synced"
 
 #: src/ai/hook/use-stt.hook.ts
 msgid "Transcription failed"
@@ -6160,9 +6414,10 @@ msgstr "Type ({selectedTypesCount})"
 msgid "Type the same PIN again to make sure it's the one you meant."
 msgstr "Type the same PIN again to make sure it's the one you meant."
 
+#: src/runway/component/runway-flow-row/runway-flow-row.tsx
 #: src/runway/component/runway-history-legend/runway-history-legend.tsx
-msgid "Typical month {amount}"
-msgstr "Typical month {amount}"
+msgid "Typical month"
+msgstr "Typical month"
 
 #: src/i18n/constant/languages.constant.ts
 msgid "Ukrainian"
@@ -6231,7 +6486,6 @@ msgid "Until {toLabel}"
 msgstr "Until {toLabel}"
 
 #: src/account/constant/account-sync-state-label.constant.ts
-#: src/sync/component/account-sync-card/account-sync-card.tsx
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
 msgid "Up to date"
 msgstr "Up to date"
@@ -6248,10 +6502,6 @@ msgstr "Upcoming"
 #: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "Upcoming this period"
 msgstr "Upcoming this period"
-
-#: src/account/component/update-account-page/update-account-page.tsx
-msgid "Update Account"
-msgstr "Update Account"
 
 #: src/rule/components/rule-update-card/rule-update-card.tsx
 msgid "Update rule?"
@@ -6282,10 +6532,6 @@ msgstr "Use mobile data for {remaining} GB"
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Use Touch ID to unlock your app quickly and securely"
 msgstr "Use Touch ID to unlock your app quickly and securely"
-
-#: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
-msgid "Usually 0% up to 4 months"
-msgstr "Usually 0% up to 4 months"
 
 #: src/sync/component/binance-parked-assets-notice/binance-parked-assets-notice.tsx
 msgid "Valuation unavailable"
@@ -6344,7 +6590,7 @@ msgid "Volume"
 msgstr "Volume"
 
 #: src/account/constant/account-sync-state-label.constant.ts
-#: src/sync/component/account-sync-card/account-sync-card.tsx
+#: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
 msgid "Waiting"
 msgstr "Waiting"
 
@@ -6356,7 +6602,11 @@ msgstr "Waiting for a connection"
 msgid "Waiting for a key"
 msgstr "Waiting for a key"
 
-#: src/sync/component/account-sync-card/account-sync-card.tsx
+#: src/app/(main)/create-account/index.tsx
+msgid "Wallets and exchange balances"
+msgstr "Wallets and exchange balances"
+
+#: src/sync/component/account-sync-warning-row/account-sync-warning-row.tsx
 msgid "Warning"
 msgstr "Warning"
 
@@ -6461,6 +6711,10 @@ msgstr "Yesterday"
 msgid "You can add a PIN any time in Settings. Budgie re-encrypts the file with it then."
 msgstr "You can add a PIN any time in Settings. Budgie re-encrypts the file with it then."
 
+#: src/account/component/create-account-options-section/create-account-options-section.tsx
+msgid "You can rename it and change options later."
+msgstr "You can rename it and change options later."
+
 #: src/account/component/account-dept-type-card/account-dept-type-card.tsx
 msgid "You gave money"
 msgstr "You gave money"
@@ -6533,6 +6787,10 @@ msgstr "Your accounts keep syncing with the new key."
 #: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
 msgid "Your analytics are taking shape"
 msgstr "Your analytics are taking shape"
+
+#: src/runway/component/runway-verdict-outlook/runway-verdict-outlook.tsx
+msgid "Your balance covers {coverMonths} months of spending."
+msgstr "Your balance covers {coverMonths} months of spending."
 
 #: src/runway/component/runway-verdict-outlook/runway-verdict-outlook.tsx
 msgid "Your balance is already below zero."

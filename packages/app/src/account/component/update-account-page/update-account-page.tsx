@@ -3,22 +3,27 @@ import { useLingui } from '@lingui/react/macro';
 import { ReactNode } from 'react';
 import { View } from 'react-native';
 
-import { EmptyFn } from '@rnw-community/shared';
+import { EmptyFn, isDefined } from '@rnw-community/shared';
 
 import { AccountDetailsField } from '../../../@generic/component/account-details-field/account-details-field';
-import { Button } from '../../../@generic/component/button/button';
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
+import { PillButton } from '../../../@generic/component/pill-button/pill-button';
+import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
+import { ACCOUNT_KIND_TITLE } from '../../constant/account-kind-title.constant';
+import { BANK_PROVIDER_TITLE } from '../../constant/bank-provider-title.constant';
+import { AccountSwitchFieldKindEnum } from '../../enum/account-switch-field-kind.enum';
 import { AccountFormBindingsInterface } from '../../interface/account-form-bindings.interface';
-import { AccountActiveToggleField } from '../account-active-toggle-field/account-active-toggle-field';
+import { AccountSwitchField } from '../account-switch-field/account-switch-field';
 import { ArchiveAccount } from '../archive-account/archive-account';
 import { CreateAccountScreenSelector } from '../create-account-screen/create-account-screen.selector';
 
 interface Props {
     readonly account: AccountEntityInterface;
-    readonly fields: Pick<AccountFormBindingsInterface, 'title' | 'icon' | 'isActive'>;
+    readonly fields: Pick<AccountFormBindingsInterface, 'title' | 'icon' | 'isActive' | 'includeInNetWorth'>;
     readonly hero: ReactNode;
     readonly children?: ReactNode;
     readonly onSubmit: EmptyFn;
@@ -27,44 +32,62 @@ interface Props {
 
 export const UpdateAccountPage = ({ account, fields, hero, children, onSubmit, isSubmitting }: Props) => {
     const { t } = useLingui();
-    const variant = ACCOUNT_COLOR[account.type];
+    const { instrument } = useGetInstrumentByIdQuery(account.instrumentId);
+
+    const providerTitle = isDefined(account.externalSource) ? BANK_PROVIDER_TITLE[account.externalSource] : null;
+    const kindLabel = isDefined(providerTitle) ? t(providerTitle) : t(ACCOUNT_KIND_TITLE[account.type]);
+    const currencyLabel = isDefined(instrument) ? instrument.name : null;
+    const detailsFooter = [kindLabel, currencyLabel].filter(isDefined).join(' · ');
 
     return (
         <CollapsibleChromePage
-            title={t`Account Settings`}
+            title={t`Edit Account`}
             leading={<HeaderBackButton />}
             testID={CreateAccountScreenSelector.ScrollView}
             footer={
-                <View className="gap-md pt-xl px-7xl">
-                    <View className="flex-row gap-2">
-                        <ArchiveAccount accountId={account.id} />
-                        <Button
-                            onPress={onSubmit}
-                            size="sm"
-                            variant={variant}
-                            isLoading={isSubmitting}
-                            content={t`Update Account`}
-                            className="flex-1"
-                            testID={CreateAccountScreenSelector.SubmitButton}
-                        />
-                    </View>
+                <View className="border-t-hairline border-surface-separator bg-surface px-5xl pt-lg">
+                    <View className="absolute inset-x-0 top-full h-[64px] bg-surface" pointerEvents="none" />
+                    <PillButton
+                        label={t`Save changes`}
+                        isLoading={isSubmitting}
+                        testID={CreateAccountScreenSelector.SubmitButton}
+                        onPress={onSubmit}
+                    />
                 </View>
             }
         >
             {hero}
 
             <FormLayoutGroup>
-                <AccountDetailsField
-                    titleBinding={fields.title}
-                    iconBinding={fields.icon}
-                    variant={variant}
-                    nameInputTestID={CreateAccountScreenSelector.NameInput}
-                    selectNameOnFocus
-                />
+                <GroupedListSection title={t`Details`} footer={detailsFooter}>
+                    <AccountDetailsField
+                        titleBinding={fields.title}
+                        iconBinding={fields.icon}
+                        variant={ACCOUNT_COLOR[account.type]}
+                        placeholder={t`Account name`}
+                        nameInputTestID={CreateAccountScreenSelector.NameInput}
+                        selectNameOnFocus
+                    />
+                </GroupedListSection>
 
                 {children}
 
-                <AccountActiveToggleField value={fields.isActive.field.value} onChange={fields.isActive.field.onChange} />
+                <GroupedListSection title={t`Options`}>
+                    <AccountSwitchField
+                        kind={AccountSwitchFieldKindEnum.INCLUDE_IN_NET_WORTH}
+                        value={fields.includeInNetWorth.field.value}
+                        onChange={fields.includeInNetWorth.field.onChange}
+                    />
+                    <AccountSwitchField
+                        kind={AccountSwitchFieldKindEnum.SHOW_ON_HOME}
+                        value={fields.isActive.field.value}
+                        onChange={fields.isActive.field.onChange}
+                    />
+                </GroupedListSection>
+
+                <GroupedListSection footer={t`Hidden from Home and totals. Restore it in Settings.`}>
+                    <ArchiveAccount accountId={account.id} />
+                </GroupedListSection>
             </FormLayoutGroup>
         </CollapsibleChromePage>
     );
