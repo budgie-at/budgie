@@ -47,7 +47,7 @@ export const BudgetFundForm = ({ budget, editingId }: Props) => {
 
     return (
         <FormProvider {...form}>
-            <View className="border-t-hairline border-secondary-corner bg-primary-reverse px-5xl pb-safe-or-[16px] dark:bg-secondary-background">
+            <View className="border-t-hairline border-secondary-corner bg-primary-reverse px-5xl pb-3xl">
                 <FormsheetHeader size="md" title={title} />
                 <FormLayoutGroup className="gap-3xl">
                     {isDefined(suggestion) ? (

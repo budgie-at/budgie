@@ -7,7 +7,7 @@ export default function BudgetPeriodSummaryModal() {
     const { snapshotId } = useLocalSearchParams<{ snapshotId: string }>();
 
     return (
-        <View className="bg-primary-reverse dark:bg-secondary-background" collapsable={false}>
+        <View className="bg-primary-reverse" collapsable={false}>
             <BudgetPeriodSummary snapshotId={Number(snapshotId)} />
         </View>
     );

@@ -42,12 +42,12 @@ export const BudgetLimitChangesSheet = ({ budget }: Props) => {
 
     return (
         <View
-            className="border-t-hairline border-secondary-corner bg-primary-reverse dark:bg-secondary-background"
+            className="border-t-hairline border-secondary-corner bg-primary-reverse"
             collapsable={false}
             testID={BudgetSelector.LimitChangesSheet}
         >
             <FormsheetHeader size="md" title={t`Limit changes`} />
-            <ScrollView contentContainerClassName="px-5xl pt-md gap-y-md pb-safe-or-[16px]" showsVerticalScrollIndicator={false}>
+            <ScrollView contentContainerClassName="px-5xl pt-md gap-y-md pb-3xl" showsVerticalScrollIndicator={false}>
                 {limitChanges.map(change => (
                     <BudgetLimitChangeRow key={change.id} change={change} currencySymbol={currencySymbol} />
                 ))}
