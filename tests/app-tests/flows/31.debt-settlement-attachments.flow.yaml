@@ -157,9 +157,12 @@ appId: ${APP_ID}
       id: 'TransactionInfo.Row.Debt'
 - scrollUntilVisible:
     element:
-      id: 'TransactionActionsMenu.AttachDebtSettlementButton'
+      id: 'TransactionInfo.ConvertButton'
     direction: DOWN
     centerElement: true
+- waitForAnimationToEnd
+- tapOn:
+      id: 'TransactionInfo.ConvertButton'
 - extendedWaitUntil:
       visible:
           id: 'TransactionActionsMenu.AttachDebtSettlementButton'
