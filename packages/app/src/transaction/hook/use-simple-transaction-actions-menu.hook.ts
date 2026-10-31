@@ -1,9 +1,9 @@
-import { TransactionTypeEnum, UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
-import { getTransactionCategoryEntries } from '@budgie/ledger';
+import { AccountDebtTypeEnum, TransactionTypeEnum, UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
+import { getTransactionCategoryEntries, getTransactionFeeEntries } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { dismissAllOrReplace } from '../../@generic/utils/dismiss-all-or-replace.util';
 import { useOpenConvertToInstallment } from '../../installment-plan/hook/use-open-convert-to-installment.hook';
@@ -76,27 +76,34 @@ export const useSimpleTransactionActionsMenu = ({
         !isConsolidated &&
         !isDefined(transaction.consolidationParentTransactionId);
     const { debtSettlementAccount, hasDebtSettlement } = debtSettlementActions;
+    const hasFee = isNotEmptyArray(getTransactionFeeEntries(transaction.entries));
+    const isInstallment = debtSettlementAccount?.debtType === AccountDebtTypeEnum.INSTALLMENT;
+    const debtTitle = debtSettlementAccount?.title;
+    const detachConsequence = isDefined(debtTitle) ? { consequence: t`Detaches it from “${debtTitle}”` } : {};
 
     const allItems: readonly (TransactionActionsMenuItemInterface | false)[] = [
         {
             key: 'fee',
             icon: UserIconNameEnum.ReceiptText,
-            label: t`Set fee`,
+            label: hasFee ? t`Edit fee` : t`Add fee`,
             testID: TransactionActionsMenuSelector.FeeButton,
+            isPrimary: false,
             onPress: onFeePress
         },
         !hasDebtSettlement && {
             key: 'attach-debt',
             icon: UserIconNameEnum.HandCoins,
-            label: debtSettlementAccount?.title ?? t`Attach debt`,
+            label: t`Attach debt`,
             testID: TransactionActionsMenuSelector.AttachDebtSettlementButton,
+            isPrimary: false,
             onPress: debtSettlementActions.handleOpenDebtSettlement
         },
         hasDebtSettlement && {
             key: 'detach-debt',
             icon: UserIconNameEnum.Unlink,
-            label: t`Detach debt`,
+            label: isInstallment ? t`Detach from plan` : t`Detach debt`,
             testID: TransactionActionsMenuSelector.DetachDebtSettlementButton,
+            isPrimary: true,
             onPress: debtSettlementActions.handleDetachDebtSettlement
         },
         canConvertToRefund && {
@@ -104,6 +111,7 @@ export const useSimpleTransactionActionsMenu = ({
             icon: UserIconNameEnum.ReceiptText,
             label: t`Convert to Refund`,
             testID: TransactionActionsMenuSelector.ConvertToRefundButton,
+            isPrimary: false,
             onPress: handleOpenRefundConvert
         },
         canConvertToTransfer && {
@@ -111,6 +119,8 @@ export const useSimpleTransactionActionsMenu = ({
             icon: UserIconNameEnum.ArrowRightLeft,
             label: t`Convert to Transfer`,
             testID: TransactionActionsMenuSelector.ConvertToTransferButton,
+            isPrimary: false,
+            ...detachConsequence,
             onPress: handleOpenConvert
         },
         isDefined(handleOpenConvertToInstallment) &&
@@ -119,6 +129,7 @@ export const useSimpleTransactionActionsMenu = ({
                 icon: UserIconNameEnum.CalendarClock,
                 label: t`Pay in parts`,
                 testID: TransactionActionsMenuSelector.ConvertToInstallmentButton,
+                isPrimary: false,
                 onPress: handleOpenConvertToInstallment
             },
         canStartDeposit && {
@@ -126,6 +137,8 @@ export const useSimpleTransactionActionsMenu = ({
             icon: UserIconNameEnum.Landmark,
             label: t`Start Deposit`,
             testID: TransactionActionsMenuSelector.StartDepositButton,
+            isPrimary: false,
+            ...detachConsequence,
             onPress: handleOpenStartDeposit
         }
     ];

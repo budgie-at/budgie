@@ -45,8 +45,8 @@ env:
 - extendedWaitUntil:
       visible:
           id: 'TransactionInfo.Row.Receipt'
+          text: '.*2026-0042.*'
       timeout: 5000
-- assertVisible: '2026-0042'
 - tapOn:
       id: 'PageHeader.BackButton'
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml

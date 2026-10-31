@@ -1,0 +1,10 @@
+appId: ${APP_ID}
+---
+- scrollUntilVisible:
+    element:
+      id: 'TransactionInfo.ConvertButton'
+    direction: DOWN
+    centerElement: true
+- tapOn:
+    id: 'TransactionInfo.ConvertButton'
+- waitForAnimationToEnd

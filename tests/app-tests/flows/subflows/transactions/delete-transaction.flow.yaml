@@ -4,16 +4,11 @@ appId: ${APP_ID}
     visible:
       id: 'TransactionInfo.Page'
     timeout: 20000
-- extendedWaitUntil:
-    visible:
-      id: 'TransactionActionsMenu.TriggerButton'
-    timeout: 20000
-- tapOn:
-    id: 'TransactionActionsMenu.TriggerButton'
-- extendedWaitUntil:
-    visible:
+- scrollUntilVisible:
+    element:
       id: 'TransactionActionsMenu.DeleteButton'
-
+    direction: DOWN
+    timeout: 20000
 - tapOn:
     id: 'TransactionActionsMenu.DeleteButton'
 - runFlow: confirm-delete-dialog.flow.yaml

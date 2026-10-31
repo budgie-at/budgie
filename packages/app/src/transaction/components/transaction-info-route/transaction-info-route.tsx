@@ -6,6 +6,7 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 import { IdParamInterface } from '../../../@generic/interface/id-param.interface';
 import { useGetTransactionByIdQuery } from '../../query/use-get-transaction-by-id.query';
 import { getTransactionHref } from '../../utils/get-transaction-href.util';
+import { TransactionInfoConsolidatedRoute } from '../transaction-info-consolidated-route/transaction-info-consolidated-route';
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 import type { ReactNode } from 'react';
@@ -34,7 +35,9 @@ export const TransactionInfoRoute = ({ children, transactionType }: Props) => {
     }
 
     if (isDefined(transaction.consolidationParentTransactionId)) {
-        return isParentLoading || !isDefined(parentTransaction) ? null : <Redirect href={getTransactionHref(parentTransaction)} />;
+        return isParentLoading || !isDefined(parentTransaction) ? null : (
+            <TransactionInfoConsolidatedRoute transaction={transaction} parentTransaction={parentTransaction} />
+        );
     }
 
     if (

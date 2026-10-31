@@ -20,6 +20,11 @@ appId: ${APP_ID}
       id: 'TransactionInfo.Row.Debt'
 - assertVisible:
       id: 'TransactionInfo.Row.Category'
+- scrollUntilVisible:
+      element:
+          id: 'TransactionInfo.Row.Tags'
+      direction: DOWN
+      timeout: 10000
 - assertVisible:
       id: 'TransactionInfo.Row.Tags'
 - assertNotVisible:
@@ -41,9 +46,15 @@ appId: ${APP_ID}
       id: 'TransactionCard.Label.E2E_Similar_Expense'
 - extendedWaitUntil:
       visible:
-          text: 'Similar transactions'
+          id: 'TransactionInfo.Page'
       timeout: 10000
-- assertVisible: '2 similar transactions'
+- scrollUntilVisible:
+      element:
+          id: 'TransactionInfo.SimilarCard'
+      direction: DOWN
+      centerElement: true
+      timeout: 10000
+- assertVisible: '2 similar · last 6 months'
 - assertVisible: 'Total'
 - assertVisible: '$20'
 - assertVisible: 'Average'
@@ -93,9 +104,22 @@ appId: ${APP_ID}
       visible:
           id: 'TransactionInfo.Page'
       timeout: 15000
-- assertVisible: '-$10'
+- scrollUntilVisible:
+      element:
+          id: 'TransactionInfo.Amount'
+      direction: UP
+      timeout: 10000
+- assertVisible:
+      id: 'TransactionInfo.Amount'
+      text: '$10'
+- scrollUntilVisible:
+      element:
+          id: 'TransactionInfo.SimilarCard'
+      direction: DOWN
+      centerElement: true
+      timeout: 10000
 - extendedWaitUntil:
       visible: '$30'
       timeout: 10000
-- assertVisible: '2 similar transactions'
+- assertVisible: '2 similar · last 6 months'
 - assertVisible: '$15'
