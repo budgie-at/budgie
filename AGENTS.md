@@ -248,25 +248,25 @@ Rule 3 ("No comments") applies to every language in this repo, not just TypeScri
 
 ### React performance red flags
 
-How we build fast screens: the React Compiler memoizes components, so code stays plain and declarative; live data comes from Effect atoms (`databaseQueryAtom` / `databaseQueryFamily` + `useLiveAtomValue`) read in the smallest component that renders them; effectful work runs as Effect services at the runtime edge; long lists use `BudgieLegendList` (LegendList with `recycleItems`); motion and scroll-driven UI run on the UI thread with Reanimated; images use `expo-image`. Review a diff against these tables before adding state, effects, props or a list. Keep `useWatch` calls together (rule 21) and loading content mounted at its measured size (rule 67). Verify suspected render churn with the React DevTools Profiler in a Metro dev build; never ship instrumentation.
+How we build fast screens: the React Compiler memoizes components, so code stays plain and declarative; live data comes from Effect atoms (`databaseQueryAtom` / `databaseQueryFamily` + `useLiveAtomValue`) read in the smallest component that renders them; effectful work runs as Effect services at the runtime edge; long lists use `BudgieLegendList` (LegendList with `recycleItems`); motion and scroll-driven UI run on the UI thread with Reanimated; images use `expo-image`. Review a diff against these tables before adding state, effects, props or a list. The Rule column cites a numbered rule only where it directly covers the row; `—` means the row itself is the rule. Keep `useWatch` calls together (rule 21) and loading content mounted at its measured size (rule 67). Verify suspected render churn with the React DevTools Profiler in a Metro dev build; never ship instrumentation.
 
 #### State and effects
 
 | Red flag | Do instead | Rule |
 | --- | --- | --- |
-| State mirrors props or other state | Derive during render; let React Compiler memoize | 62 |
-| Effects filter or sort lists into state | Derive the list during render | 62 |
+| State mirrors props or other state | Derive during render; let React Compiler memoize | — |
+| Effects filter or sort lists into state | Derive the list during render | — |
 | Effects fetch, subscribe to, or read the database | Use `databaseQueryAtom` / `databaseQueryFamily` + `useLiveAtomValue`; run service Effects at runtime edges | 22, 35, 60 |
-| Effects synchronize state or chain setters | Keep one source of truth; use event handlers or a reducer for related transitions | 46, 62 |
-| Scroll or repeated layout callbacks set state | Use Reanimated shared values and animated styles on the UI thread; retain measurements that genuinely drive React layout | 57, 65 |
-| Effects respond to taps or other events | Perform the action in the event handler | 48, 62 |
+| Effects synchronize state or chain setters | Keep one source of truth; use event handlers or a reducer for related transitions | — |
+| Scroll or repeated layout callbacks set state | Use Reanimated shared values and animated styles on the UI thread; retain measurements that genuinely drive React layout | — |
+| Effects respond to taps or other events | Perform the action in the event handler | 48 |
 | Cleanup depends on a recreated callback | Read the latest callback with `useEffectEvent`; non-React callbacks use an effect-synced ref | 53 |
 | Reads after `await` use captured state | Read the awaited result, callback argument, or fresh ref | 54 |
-| List rows own repeated subscriptions or derived state | Lift shared reads and derive row props; retain genuine row interaction state | 60, 62 |
-| Unprofiled `useCallback`, `useMemo`, or `React.memo` | Let React Compiler handle memoization; preserve identity where an external API requires it | 62 |
-| An effect is empty or only sets derived state | Delete it and derive during render; put event-driven updates in handlers | 48, 62 |
-| Effect dependencies contain fresh objects or arrays | Depend on primitive inputs or construct the value inside the effect | 53, 62 |
-| State holds a value never rendered | Use a ref for imperative bookkeeping | 62 |
+| List rows own repeated subscriptions or derived state | Lift shared reads and derive row props; retain genuine row interaction state | 60 |
+| Unprofiled `useCallback`, `useMemo`, or `React.memo` | Let React Compiler handle memoization; preserve identity where an external API requires it | — |
+| An effect is empty or only sets derived state | Delete it and derive during render; put event-driven updates in handlers | 48 |
+| Effect dependencies contain fresh objects or arrays | Depend on primitive inputs or construct the value inside the effect | — |
+| State holds a value never rendered | Use a ref for imperative bookkeeping | — |
 | Booleans encode mutually exclusive states | Use an enum and a reducer with explicit transitions | 46 |
 | Timers or intervals live in effects | Use Effect `Schedule` / `Effect.sleep` with scoped fibers | 22, 57 |
 | Manual cancellation flags guard async results | Use fiber interruption and scoped resource cleanup | 35, 57 |
@@ -278,12 +278,12 @@ How we build fast screens: the React Compiler memoizes components, so code stays
 | --- | --- | --- |
 | A component is declared inside another component or hook | Give it its own file; inner components remount and lose state every render | 9, 56 |
 | `renderItem` or `.map()` builds JSX inline with closures per row | Module-level `keyExtractor`; `renderItem` only selects the row component and passes ids and primitives | 56 |
-| Rows receive whole entities or wide objects | `Pick` the fields the row renders so unchanged rows keep equal props across live-query refreshes | 15, 37 |
-| `key={index}` or keys built from changing values | Stable entity ids | 56 |
-| Screen-level state that only one leaf reads (search text, toggles, form values) | Colocate the state in the leaf; read `useWatch` in the smallest component | 21, 62 |
+| Rows receive whole entities or wide objects | `Pick` the fields the row renders so unchanged rows keep equal props across live-query refreshes | 15 |
+| `key={index}` or keys built from changing values | Stable entity ids | — |
+| Screen-level state that only one leaf reads (search text, toggles, form values) | Colocate the state in the leaf; read `useWatch` in the smallest component | 21 |
 | One wide atom or context read by many components | Split atoms, use a family per key, keep context values stable, read at the leaf | 60 |
-| Expensive sorting, grouping or currency conversion in render | Do it in the query or atom; reuse hoisted `Intl` formatters instead of creating them per row | 60, 64 |
-| Typing or filtering blocks the UI while a large list re-renders | `useDeferredValue` or `startTransition` for the non-urgent update | 62 |
+| Expensive sorting, grouping or currency conversion in render | Do it in the query or atom; reuse hoisted `Intl` formatters instead of creating them per row | 60 |
+| Typing or filtering blocks the UI while a large list re-renders | `useDeferredValue` or `startTransition` for the non-urgent update | — |
 | Prop relay through several components, boolean mode props | Composition, compound components, explicit variants | 61, 62 |
 | `console.*` in render or hot paths | Remove; log once at the edge through the logger layer | 32, 41 |
 
@@ -292,8 +292,8 @@ How we build fast screens: the React Compiler memoizes components, so code stays
 | Red flag | Do instead | Rule |
 | --- | --- | --- |
 | `ScrollView` + `.map()` over unbounded or growing data | `BudgieLegendList` (or the screen-chrome list wrapper) with `recycleItems` | 65 |
-| Recycled rows keep local state, refs or animations from a previous item | Derive row state from the item, or reset it by key; prefer stateless rows | 56, 62 |
-| Rows of different shapes share one recycle pool | Provide the list's item-type callback so recycling reuses matching rows | 56 |
+| Recycled rows keep local state, refs or animations from a previous item | Derive row state from the item, or reset it by key; prefer stateless rows | — |
+| Rows of different shapes share one recycle pool | Provide the list's item-type callback so recycling reuses matching rows | — |
 | Each row subscribes to its own atom or query | One list query; pass row data down | 60 |
 | Sticky headers or totals recomputed per row | Precompute section data once in the query or list builder | 60 |
 
@@ -301,12 +301,12 @@ How we build fast screens: the React Compiler memoizes components, so code stays
 
 | Red flag | Do instead | Rule |
 | --- | --- | --- |
-| React Native `Animated` on the JS driver, or `setState`-driven animation | Reanimated shared values, `useAnimatedStyle`, `useAnimatedScrollHandler` | 57 |
+| React Native `Animated` on the JS driver, or `setState`-driven animation | Reanimated shared values, `useAnimatedStyle`, `useAnimatedScrollHandler` | — |
 | Non-worklet calls inside worklets (`isDefined`, formatters, closures over React state) | Compute guarded values outside the worklet and capture primitives | 31 |
-| `runOnJS` / `scheduleOnRN` on every frame | Cross to JS only when a threshold changes | 57 |
-| Layout animated by changing height every frame | Animate transform and opacity; keep layout stable while scrolling | 65, 67 |
-| Motion ignores Reduce Motion | Check reduced motion and fall back to instant or opacity-only changes | 65 |
-| React Native `Image` for remote or large images, or images without a fixed size | `expo-image` with explicit size and caching | 67 |
+| `runOnJS` / `scheduleOnRN` on every frame | Cross to JS only when a threshold changes | — |
+| Layout animated by changing height every frame | Animate transform and opacity; keep layout stable while scrolling | — |
+| Motion ignores Reduce Motion | Check reduced motion and fall back to instant or opacity-only changes | — |
+| React Native `Image` for remote or large images, or images without a fixed size | `expo-image` with explicit size and caching | — |
 
 ### Money Safety
 
