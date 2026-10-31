@@ -29,7 +29,7 @@ export const BudgetEventsSection = () => {
             testID={BudgetSelector.DetailsEventsSection}
             addTestID={BudgetSelector.DetailsEventAddButton}
             onAddPress={handleAddPress}
-            emptyHint={emptyHint}
+            footnote={emptyHint}
         >
             {events.map(event => (
                 <BudgetEventRow key={event.budget.id} event={event} />

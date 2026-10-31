@@ -15,10 +15,11 @@ import type { BudgetEntityInterface, BudgetSinkingFundEntityInterface } from '@b
 interface Props {
     readonly fund: BudgetSinkingFundEntityInterface;
     readonly budget: BudgetEntityInterface;
+    readonly dueLabel: string;
     readonly currencySymbol: string;
 }
 
-export const BudgetFundRowStatus = ({ fund, budget, currencySymbol }: Props) => {
+export const BudgetFundRowStatus = ({ fund, budget, dueLabel, currencySymbol }: Props) => {
     const { t } = useLingui();
     const today = useToday();
     const formatDigits = useFormatDigits(0);
@@ -31,10 +32,14 @@ export const BudgetFundRowStatus = ({ fund, budget, currencySymbol }: Props) => 
     if (isFundBehind(fund, today)) {
         return (
             <Text className="text-xs text-secondary-foreground">
-                <Text className="text-warning-foreground">{t`Behind.`}</Text> {t`Setting aside ${setAsideLabel} ${rate} to catch up`}
+                {dueLabel} · <Text className="text-warning-strong">{t`Behind, ${setAsideLabel} ${rate} to catch up`}</Text>
             </Text>
         );
     }
 
-    return <Text className="text-xs text-secondary-foreground">{settledLabel}</Text>;
+    return (
+        <Text className="text-xs text-secondary-foreground">
+            {dueLabel} · {settledLabel}
+        </Text>
+    );
 };

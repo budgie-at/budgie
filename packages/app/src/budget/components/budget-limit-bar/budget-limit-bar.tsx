@@ -33,7 +33,7 @@ export const BudgetLimitBar = ({ spent, limit, tone, elapsedFraction, staggerInd
                 <GrowBar ratio={ratio} className={cn('h-full rounded-full', BAR_FILL_CLASS_NAME[tone])} staggerIndex={staggerIndex} />
             </View>
             {isDefined(elapsedFraction) ? (
-                <View className="absolute top-0 h-[11px] w-[1.5px] -ms-[0.75px] rounded-full bg-primary" style={todayStyle} />
+                <View className="absolute top-[1px] h-[9px] w-[2px] -ms-[1px] rounded-full bg-secondary-foreground/70" style={todayStyle} />
             ) : null}
         </View>
     );

@@ -1,6 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
-import { Text } from 'react-native';
 
 import { useToday } from '../../../@generic/hook/use-today.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
@@ -40,14 +39,13 @@ export const BudgetFundRow = ({ fund, budget, currencySymbol }: Props) => {
                 limit={fund.targetAmount}
                 currencySymbol={currencySymbol}
             />
-            <Text className="text-xs text-secondary-foreground">{dueLabel}</Text>
             <BudgetLimitBar
                 spent={fund.fundedAmount}
                 limit={fund.targetAmount}
                 tone={barTone}
                 elapsedFraction={computeFundTimeFraction(fund, today)}
             />
-            <BudgetFundRowStatus fund={fund} budget={budget} currencySymbol={currencySymbol} />
+            <BudgetFundRowStatus fund={fund} budget={budget} dueLabel={dueLabel} currencySymbol={currencySymbol} />
         </BudgetListRow>
     );
 };

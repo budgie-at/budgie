@@ -1,10 +1,14 @@
-import { BudgetKindEnum } from '@budgie/contracts';
+import { BudgetKindEnum, UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
+import { router } from 'expo-router';
 import { Text } from 'react-native';
 
 import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { EntranceReveal } from '../../../@generic/component/entrance-reveal/entrance-reveal';
+import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
+import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { SectionHeader } from '../../../@generic/component/section-header/section-header';
 import { useNonSystemCategoriesQuery } from '../../../category/query/use-non-system-categories.query';
 import { useGetBudgetEffectiveLimitsQuery } from '../../query/use-get-budget-effective-limits.query';
@@ -32,6 +36,14 @@ export const BudgetDetailsCategoryList = ({ budget, projection, periodStart, per
     const isOtherRowVisible = budget.kind === BudgetKindEnum.MAIN || isPositiveNumber(projection.other.limit);
     const hasCategoryLimits = isNotEmptyArray(projection.categories) || isPositiveNumber(budget.otherLimit);
 
+    const handleAddLimitsPress = () => {
+        if (budget.kind === BudgetKindEnum.EVENT) {
+            router.push({ pathname: '/budget/event/[id]/edit', params: { id: String(budget.id) } });
+        } else {
+            router.push({ pathname: '/budget/edit', params: { id: String(budget.id) } });
+        }
+    };
+
     const rows = hasCategoryLimits ? (
         <>
             {projection.categories.map((category, index) => (
@@ -58,11 +70,19 @@ export const BudgetDetailsCategoryList = ({ budget, projection, periodStart, per
                     staggerIndex={categoryIds.length}
                 />
             ) : null}
+            <Text className="text-xs text-secondary-foreground">
+                <Trans>Tick marks where spending should be by today.</Trans>
+            </Text>
         </>
     ) : (
-        <Text className="text-sm text-secondary-foreground">
-            <Trans>No category limits yet</Trans>
-        </Text>
+        <GroupedListSection footer={t`Optional. The overall limit applies without them.`}>
+            <GroupedListRow
+                left={<GroupedListIcon icon={UserIconNameEnum.ListPlus} />}
+                title={t`Add category limits`}
+                titleClassName="text-default-foreground"
+                onPress={handleAddLimitsPress}
+            />
+        </GroupedListSection>
     );
 
     return (
