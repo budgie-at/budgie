@@ -27,7 +27,7 @@ export const ConvertToRefundFooter = ({ selectedCandidate, showRevert, onClose, 
             <Button content={leftAction} variant="secondary" size="md" onPress={onClose} className="flex-1" />
             {showRevert ? (
                 <Button
-                    content={t`Revert`}
+                    content={t`Undo Refund`}
                     variant="destructive"
                     size="md"
                     leftIcon={UserIconNameEnum.Undo2}

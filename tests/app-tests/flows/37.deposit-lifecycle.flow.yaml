@@ -233,13 +233,9 @@ appId: ${APP_ID}
 - tapOn:
       id: 'TransactionCard.Label.E2E_Deposit_Convert_Expense'
 
+- runFlow: subflows/transactions/open-info-conversions.flow.yaml
 - tapOn:
-      id: 'TransactionActionsMenu.TriggerButton'
-- extendedWaitUntil:
-      visible:
-          id: 'TransactionActionsMenu.StartDepositButton'
-- tapOn:
-      id: 'TransactionActionsMenu.StartDepositButton'
+    text: 'Start Deposit'
 
 - extendedWaitUntil:
       visible:

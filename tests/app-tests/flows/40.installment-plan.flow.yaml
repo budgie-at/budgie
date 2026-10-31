@@ -55,13 +55,9 @@ appId: ${APP_ID}
 - tapOn:
       id: 'TransactionCard.Label.E2E_Installment_Expense'
 
+- runFlow: subflows/transactions/open-info-conversions.flow.yaml
 - tapOn:
-      id: 'TransactionActionsMenu.TriggerButton'
-- extendedWaitUntil:
-      visible:
-          id: 'TransactionActionsMenu.ConvertToInstallmentButton'
-- tapOn:
-      id: 'TransactionActionsMenu.ConvertToInstallmentButton'
+    text: 'Pay in parts'
 
 - extendedWaitUntil:
       visible:

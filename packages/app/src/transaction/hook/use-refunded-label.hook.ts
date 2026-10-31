@@ -5,7 +5,7 @@ import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
-import { useDisplayFormatDigits } from '../../i18n/hook/use-display-format-digits.hook';
+import { useProtectedAmountLabel } from '../../@generic/hook/use-protected-amount-label.hook';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 import { refundsTotalAtom } from '../constant/refunds-total-atom.constant';
 import { RefundedSummaryKindEnum } from '../enum/refunded-summary-kind.enum';
@@ -16,7 +16,7 @@ import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts'
 export const useRefundedLabel = (transaction: TransactionWithRelationsEntityInterface): string | null => {
     const { t } = useLingui();
     const language = useSetting('language');
-    const formatDigits = useDisplayFormatDigits();
+    const formatDigits = useProtectedAmountLabel();
     const isRefund = transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND;
     const result = useLiveAtomValue(refundsTotalAtom([isRefund ? transaction.id : null, language]));
     const refundsTotal = AsyncResult.isSuccess(result) ? result.value : null;

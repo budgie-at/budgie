@@ -39,7 +39,7 @@ export const ConvertToRefundContent = ({ refundIncomeTransactionId, resolveConve
         resolveConvertToRefund(null);
     };
 
-    const revertRefund = useRevertConsolidation(canonicalTransactionId, handleResolve);
+    const revertRefund = useRevertConsolidation(canonicalTransactionId, handleResolve, true);
     const convertToRefund = useConvertToRefundAction(refundIncomeTransactionId, selectedCandidate, resolveConvertToRefund);
     const hasCandidates = isNotEmptyArray(candidates);
     const showEmpty = !isLoading && isEmptyArray(candidates);

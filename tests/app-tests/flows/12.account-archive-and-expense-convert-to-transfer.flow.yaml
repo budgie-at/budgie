@@ -142,13 +142,9 @@ appId: ${APP_ID}
 - tapOn:
       id: 'TransactionCard.Label.E2E_Convert_Expense'
 
+- runFlow: subflows/transactions/open-info-conversions.flow.yaml
 - tapOn:
-      id: 'TransactionActionsMenu.TriggerButton'
-- extendedWaitUntil:
-      visible:
-          id: 'TransactionActionsMenu.ConvertToTransferButton'
-- tapOn:
-      id: 'TransactionActionsMenu.ConvertToTransferButton'
+    text: 'Convert to Transfer'
 
 - extendedWaitUntil:
       visible:

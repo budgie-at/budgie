@@ -80,14 +80,16 @@ appId: ${APP_ID}
 - assertNotVisible:
       id: 'TransactionInfo.Row.Debt'
 
-- tapOn:
-      id: 'TransactionActionsMenu.TriggerButton'
-- extendedWaitUntil:
-      visible:
-          id: 'TransactionActionsMenu.AttachDebtSettlementButton'
+- scrollUntilVisible:
+    element:
+      id: 'TransactionInfo.ConvertButton'
+    direction: DOWN
+    centerElement: true
 - waitForAnimationToEnd
 - tapOn:
-      id: 'TransactionActionsMenu.AttachDebtSettlementButton'
+      id: 'TransactionInfo.ConvertButton'
+- tapOn:
+      text: 'Attach debt'
 - extendedWaitUntil:
       visible:
           id: 'AccountPickerBottomSheet.Input'
@@ -106,17 +108,21 @@ appId: ${APP_ID}
       notVisible:
           id: 'AccountPickerBottomSheet.Input'
 - waitForAnimationToEnd
+- scrollUntilVisible:
+    element:
+      id: 'TransactionInfo.Row.Debt'
+    direction: UP
+    centerElement: false
 - assertVisible:
       id: 'TransactionInfo.Row.Debt'
-- assertVisible: 'E2E Lent Debt'
-- tapOn:
-      id: 'TransactionActionsMenu.TriggerButton'
+      text: '.*E2E Lent Debt.*'
+- scrollUntilVisible:
+    element:
+      id: 'TransactionActionsMenu.DetachDebtSettlementButton'
+    direction: DOWN
+    centerElement: true
 - extendedWaitUntil:
       visible:
-          id: 'TransactionActionsMenu.DetachDebtSettlementButton'
-- tapOn: 'Close menu'
-- extendedWaitUntil:
-      notVisible:
           id: 'TransactionActionsMenu.DetachDebtSettlementButton'
 - tapOn:
       id: 'PageHeader.BackButton'
@@ -131,18 +137,32 @@ appId: ${APP_ID}
           id: 'TransactionInfo.Page'
       timeout: 10000
 - waitForAnimationToEnd
-- tapOn:
-      id: 'TransactionActionsMenu.TriggerButton'
+- scrollUntilVisible:
+    element:
+      id: 'TransactionActionsMenu.DetachDebtSettlementButton'
+    direction: DOWN
+    centerElement: true
 - extendedWaitUntil:
       visible:
           id: 'TransactionActionsMenu.DetachDebtSettlementButton'
 - tapOn:
       id: 'TransactionActionsMenu.DetachDebtSettlementButton'
 - waitForAnimationToEnd
+- scrollUntilVisible:
+    element:
+      id: 'TransactionInfo.Row.Account'
+    direction: UP
+    centerElement: false
 - assertNotVisible:
       id: 'TransactionInfo.Row.Debt'
+- scrollUntilVisible:
+    element:
+      id: 'TransactionInfo.ConvertButton'
+    direction: DOWN
+    centerElement: true
+- waitForAnimationToEnd
 - tapOn:
-      id: 'TransactionActionsMenu.TriggerButton'
+      id: 'TransactionInfo.ConvertButton'
 - extendedWaitUntil:
       visible:
           id: 'TransactionActionsMenu.AttachDebtSettlementButton'
