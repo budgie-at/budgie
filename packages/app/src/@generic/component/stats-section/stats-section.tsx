@@ -9,26 +9,34 @@ import { useIsAccessibilityTextSize } from '../../hook/use-is-accessibility-text
 
 interface Props {
     readonly title: string;
-    readonly footnote?: string;
+    readonly subtitle?: string;
     readonly children: ReactNode;
 }
 
 const continuousCorners = { borderCurve: 'continuous' as const };
 
-export const StatsSection = ({ title, footnote, children }: Props) => {
+export const StatsSection = ({ title, subtitle, children }: Props) => {
     const isStacked = useIsAccessibilityTextSize();
 
     const separatorClassName = isStacked ? 'ml-3xl h-hairline bg-surface-separator' : 'ml-[60px] h-hairline bg-surface-separator';
 
     return (
         <View className="gap-y-md">
-            <Text
-                accessibilityRole="header"
-                maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER}
-                className="px-3xl text-lg font-semibold text-primary"
-            >
-                {title}
-            </Text>
+            <View className="gap-y-xxs px-3xl">
+                <Text
+                    accessibilityRole="header"
+                    maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER}
+                    className="text-lg font-semibold text-primary"
+                >
+                    {title}
+                </Text>
+
+                {isNotEmptyString(subtitle) ? (
+                    <Text maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER} className="text-[13px] text-secondary-foreground">
+                        {subtitle}
+                    </Text>
+                ) : null}
+            </View>
 
             <View className="overflow-hidden rounded-3xl bg-grouped-surface-row" style={continuousCorners}>
                 {Children.toArray(children).map((child, index) => (
@@ -38,12 +46,6 @@ export const StatsSection = ({ title, footnote, children }: Props) => {
                     </Fragment>
                 ))}
             </View>
-
-            {isNotEmptyString(footnote) ? (
-                <Text maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER} className="px-3xl text-[13px] text-secondary-foreground">
-                    {footnote}
-                </Text>
-            ) : null}
         </View>
     );
 };

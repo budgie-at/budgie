@@ -23,7 +23,6 @@ interface Props {
 }
 
 const SEGMENT_TRANSITION_DURATION = 240;
-const OTHER_SEGMENT_CLASS_NAME = 'bg-secondary-foreground/35';
 const SEGMENT_TRANSITION = LinearTransition.duration(SEGMENT_TRANSITION_DURATION);
 
 export const StatisticsShareBar = ({ segments, other, onOtherPress }: Props) => {
@@ -55,13 +54,12 @@ export const StatisticsShareBar = ({ segments, other, onOtherPress }: Props) => 
                 >
                     {barSegments.map(segment => {
                         const segmentStyle = { flexGrow: segment.amount, flexBasis: 0 };
-                        const segmentClassName = segment === other ? OTHER_SEGMENT_CLASS_NAME : segment.swatchClassName;
 
                         return (
                             <Animated.View
                                 key={segment.key}
                                 layout={SEGMENT_TRANSITION}
-                                className={cn('h-full min-w-[3px]', segmentClassName)}
+                                className={cn('h-full min-w-[3px]', segment.swatchClassName)}
                                 style={segmentStyle}
                             />
                         );

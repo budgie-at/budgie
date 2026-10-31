@@ -21,6 +21,7 @@ interface Props {
 
 const TOP_CONTRIBUTOR_COUNT = 3;
 const NEUTRAL_SWATCH_CLASS_NAME = 'bg-secondary-foreground';
+const OTHER_SWATCH_CLASS_NAME = 'bg-secondary-foreground/55';
 
 export const StatsByCategoriesPanel = ({ filters, incomeByCategory, expenseByCategory }: Props) => {
     const { t } = useLingui();
@@ -46,7 +47,7 @@ export const StatsByCategoriesPanel = ({ filters, incomeByCategory, expenseByCat
                   key: 'other',
                   label: t({ message: plural(otherStats.length, { one: 'Other · # category', other: 'Other · # categories' }) }),
                   amount: otherAmount,
-                  swatchClassName: NEUTRAL_SWATCH_CLASS_NAME
+                  swatchClassName: OTHER_SWATCH_CLASS_NAME
               }
             : null;
 

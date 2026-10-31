@@ -58,6 +58,11 @@ export const StatisticsTrendBars = ({ points, currentMonth, currencySymbol }: Pr
 
             <View>
                 <View className="absolute inset-x-0 top-[72px] h-hairline bg-surface-separator" pointerEvents="none" />
+                {isAmountProtected ? null : (
+                    <View className="absolute inset-x-0 top-0 h-[72px]" pointerEvents="none">
+                        <View className="absolute inset-x-0 h-[1px] bg-primary/30" style={averageLineStyle} />
+                    </View>
+                )}
 
                 <View className="flex-row gap-x-md">
                     {points.map(point => {
@@ -82,12 +87,6 @@ export const StatisticsTrendBars = ({ points, currentMonth, currencySymbol }: Pr
                         );
                     })}
                 </View>
-
-                {isAmountProtected ? null : (
-                    <View className="absolute inset-x-0 top-0 h-[72px]" pointerEvents="none">
-                        <View className="absolute inset-x-0 h-[1px] bg-primary/30" style={averageLineStyle} />
-                    </View>
-                )}
             </View>
         </View>
     );

@@ -831,6 +831,7 @@ msgid "Add a PIN any time later"
 msgstr "Tu pourras ajouter un code PIN plus tard"
 
 #: src/category/components/categories-feature-intro/categories-feature-intro.tsx
+#: src/transaction/components/statistics-empty-ledger/statistics-empty-ledger.tsx
 msgid "Add a transaction"
 msgstr "Ajouter une transaction"
 
@@ -892,7 +893,7 @@ msgstr "Ajoutez des transactions pour voir votre autonomie"
 msgid "Add your first account to start tracking your finances"
 msgstr "Ajoutez votre premier compte pour commencer à suivre vos finances"
 
-#: src/category/components/categories-feature-intro/categories-feature-intro.tsx
+#: src/transaction/components/statistics-empty-ledger/statistics-empty-ledger.tsx
 msgid "Add your first transaction to see where your money goes."
 msgstr "Ajoutez votre première transaction pour voir où va votre argent."
 
@@ -1245,8 +1246,8 @@ msgid "Bars compare each category with the largest one."
 msgstr "Les barres comparent chaque catégorie à la plus importante."
 
 #: src/tag/components/stats-by-tags-panel/stats-by-tags-panel.tsx
-msgid "Bars compare each tag with the largest one. A transaction with several tags counts toward each of them, so shares can add up to more than 100%."
-msgstr "Les barres comparent chaque tag au plus important. Une transaction avec plusieurs tags compte pour chacun d’eux, les parts peuvent donc dépasser 100 %."
+msgid "Bars compare each tag with the largest one. Shares overlap when a transaction has several tags."
+msgstr "Les barres comparent chaque étiquette à la plus grande. Les parts se chevauchent quand une transaction a plusieurs étiquettes."
 
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Base instrument not found"
@@ -4139,6 +4140,10 @@ msgstr "Aucune dépense sur cette période."
 msgid "No spending matches these filters"
 msgstr "Aucune dépense ne correspond à ces filtres"
 
+#: src/transaction/components/statistics-empty-ledger/statistics-empty-ledger.tsx
+msgid "No spending or income yet"
+msgstr "Aucune dépense ni aucun revenu pour l’instant"
+
 #: src/settings/components/sync-repairs-empty-state-card/sync-repairs-empty-state-card.tsx
 msgid "No sync repairs found."
 msgstr "Aucune réparation de synchronisation trouvée."
@@ -4163,7 +4168,6 @@ msgstr "Sans titre"
 msgid "No transactions matched"
 msgstr "Aucune transaction ne correspond"
 
-#: src/category/components/categories-feature-intro/categories-feature-intro.tsx
 #: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
 msgid "No transactions yet"
 msgstr "Aucune transaction pour le moment"

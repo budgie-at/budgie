@@ -4,7 +4,7 @@ import { Text, View } from 'react-native';
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-font-size-multiplier.constant';
+import { FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/footnote-max-font-size-multiplier.constant';
 
 interface Props {
     readonly label: string;
@@ -23,7 +23,7 @@ const barVariants = cva('w-full max-w-[28px] rounded-t-[4px] rounded-b-[1px]', {
     }
 });
 
-const labelVariants = cva('text-center text-xxs', {
+const labelVariants = cva('text-center text-xs', {
     variants: { isHighlighted: { true: 'font-semibold text-primary', false: 'text-secondary-foreground' } }
 });
 
@@ -48,7 +48,7 @@ export const StatisticsTrendBar = ({ label, accessibilityLabel, ratio, isSelecte
                 )}
             </View>
 
-            <Text numberOfLines={1} maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER} className={labelVariants({ isHighlighted })}>
+            <Text numberOfLines={1} maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER} className={labelVariants({ isHighlighted })}>
                 {label}
             </Text>
         </HapticPressable>

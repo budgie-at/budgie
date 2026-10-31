@@ -832,6 +832,7 @@ msgid "Add a PIN any time later"
 msgstr "Add a PIN any time later"
 
 #: src/category/components/categories-feature-intro/categories-feature-intro.tsx
+#: src/transaction/components/statistics-empty-ledger/statistics-empty-ledger.tsx
 msgid "Add a transaction"
 msgstr "Add a transaction"
 
@@ -893,7 +894,7 @@ msgstr "Add transactions to see your runway"
 msgid "Add your first account to start tracking your finances"
 msgstr "Add your first account to start tracking your finances"
 
-#: src/category/components/categories-feature-intro/categories-feature-intro.tsx
+#: src/transaction/components/statistics-empty-ledger/statistics-empty-ledger.tsx
 msgid "Add your first transaction to see where your money goes."
 msgstr "Add your first transaction to see where your money goes."
 
@@ -1246,8 +1247,8 @@ msgid "Bars compare each category with the largest one."
 msgstr "Bars compare each category with the largest one."
 
 #: src/tag/components/stats-by-tags-panel/stats-by-tags-panel.tsx
-msgid "Bars compare each tag with the largest one. A transaction with several tags counts toward each of them, so shares can add up to more than 100%."
-msgstr "Bars compare each tag with the largest one. A transaction with several tags counts toward each of them, so shares can add up to more than 100%."
+msgid "Bars compare each tag with the largest one. Shares overlap when a transaction has several tags."
+msgstr "Bars compare each tag with the largest one. Shares overlap when a transaction has several tags."
 
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Base instrument not found"
@@ -4140,6 +4141,10 @@ msgstr "No spending in this window."
 msgid "No spending matches these filters"
 msgstr "No spending matches these filters"
 
+#: src/transaction/components/statistics-empty-ledger/statistics-empty-ledger.tsx
+msgid "No spending or income yet"
+msgstr "No spending or income yet"
+
 #: src/settings/components/sync-repairs-empty-state-card/sync-repairs-empty-state-card.tsx
 msgid "No sync repairs found."
 msgstr "No sync repairs found."
@@ -4164,7 +4169,6 @@ msgstr "No title"
 msgid "No transactions matched"
 msgstr "No transactions matched"
 
-#: src/category/components/categories-feature-intro/categories-feature-intro.tsx
 #: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
 msgid "No transactions yet"
 msgstr "No transactions yet"

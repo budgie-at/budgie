@@ -831,6 +831,7 @@ msgid "Add a PIN any time later"
 msgstr "PIN-код можна додати будь-коли пізніше"
 
 #: src/category/components/categories-feature-intro/categories-feature-intro.tsx
+#: src/transaction/components/statistics-empty-ledger/statistics-empty-ledger.tsx
 msgid "Add a transaction"
 msgstr "Додати транзакцію"
 
@@ -892,7 +893,7 @@ msgstr "Додайте транзакції, щоб побачити свій з
 msgid "Add your first account to start tracking your finances"
 msgstr "Додайте свій перший рахунок, щоб почати відстежувати свої фінанси"
 
-#: src/category/components/categories-feature-intro/categories-feature-intro.tsx
+#: src/transaction/components/statistics-empty-ledger/statistics-empty-ledger.tsx
 msgid "Add your first transaction to see where your money goes."
 msgstr "Додайте першу транзакцію, щоб побачити, куди йдуть ваші гроші."
 
@@ -1245,8 +1246,8 @@ msgid "Bars compare each category with the largest one."
 msgstr "Смуги порівнюють кожну категорію з найбільшою."
 
 #: src/tag/components/stats-by-tags-panel/stats-by-tags-panel.tsx
-msgid "Bars compare each tag with the largest one. A transaction with several tags counts toward each of them, so shares can add up to more than 100%."
-msgstr "Смуги порівнюють кожен тег із найбільшим. Транзакція з кількома тегами враховується для кожного з них, тож частки можуть перевищувати 100%."
+msgid "Bars compare each tag with the largest one. Shares overlap when a transaction has several tags."
+msgstr "Смуги порівнюють кожен тег із найбільшим. Частки перетинаються, коли транзакція має кілька тегів."
 
 #: src/money-data/hook/use-money-data-upgrade-status.hook.ts
 msgid "Base instrument not found"
@@ -4139,6 +4140,10 @@ msgstr "Немає витрат за цей період."
 msgid "No spending matches these filters"
 msgstr "Немає витрат, що відповідають цим фільтрам"
 
+#: src/transaction/components/statistics-empty-ledger/statistics-empty-ledger.tsx
+msgid "No spending or income yet"
+msgstr "Ще немає витрат чи доходів"
+
 #: src/settings/components/sync-repairs-empty-state-card/sync-repairs-empty-state-card.tsx
 msgid "No sync repairs found."
 msgstr "Виправлень синхронізації не знайдено."
@@ -4163,7 +4168,6 @@ msgstr "Без назви"
 msgid "No transactions matched"
 msgstr "Жодна транзакція не відповідає"
 
-#: src/category/components/categories-feature-intro/categories-feature-intro.tsx
 #: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
 msgid "No transactions yet"
 msgstr "Поки немає транзакцій"

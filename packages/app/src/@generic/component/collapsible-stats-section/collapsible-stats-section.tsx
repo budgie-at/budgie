@@ -26,7 +26,7 @@ export const CollapsibleStatsSection = ({ title, footnote, rows, pinnedRow, isEx
     const toggleLabel = isExpanded ? t`Show less` : t({ message: plural(hiddenCount, { one: 'Show # more', other: 'Show # more' }) });
 
     return (
-        <StatsSection title={title} footnote={footnote}>
+        <StatsSection title={title} subtitle={footnote}>
             {visibleRows}
             {hiddenCount > 0 ? <StatsSectionToggleRow label={toggleLabel} testID={toggleTestID} onPress={onToggleExpanded} /> : null}
             {pinnedRow}

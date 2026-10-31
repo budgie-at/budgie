@@ -28,7 +28,7 @@ export const StatsByTagsPanel = ({ filters, income, expense, incomeByTag, expens
 
     const hasIncomeStats = isNotEmptyArray(incomeByTag);
     const hasExpenseStats = isNotEmptyArray(expenseByTag);
-    const footnote = t`Bars compare each tag with the largest one. A transaction with several tags counts toward each of them, so shares can add up to more than 100%.`;
+    const footnote = t`Bars compare each tag with the largest one. Shares overlap when a transaction has several tags.`;
 
     return (
         <View className="gap-y-6xl">
