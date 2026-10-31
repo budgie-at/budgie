@@ -34,10 +34,10 @@ export default function AnalyticsPage() {
 
     const { t } = useLingui();
     const formatDateRange = useFormatDateRange();
-    const [filters, setFilters] = useState<TransactionFilterInterface>({
+    const [filters, setFilters] = useState<TransactionFilterInterface>(() => ({
         ...DEFAULT_TRANSACTION_FILTER,
         date: getDateFilterByPeriod(DatePeriodEnum.THIS_MONTH)
-    });
+    }));
 
     const activeTab = isAnalyticsTab(tab) ? tab : DEFAULT_ANALYTICS_TAB;
 

@@ -1,7 +1,6 @@
 import { useLingui } from '@lingui/react/macro';
-import { useEffect, useState } from 'react';
 import { View } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, useDerivedValue, useSharedValue, withSpring } from 'react-native-reanimated';
 
 import { AnalyticsPageSelector } from '../../../app/(tabs)/analytics-page.selector';
 import { useReducedMotion } from '../../hook/use-reduced-motion.hook';
@@ -22,7 +21,7 @@ const continuousCorners = { borderCurve: 'continuous' as const };
 export const AnalyticsSegmentedControl = ({ activeTab, onChangeTab }: Props) => {
     const { t } = useLingui();
     const reducedMotion = useReducedMotion();
-    const [segmentWidth, setSegmentWidth] = useState(0);
+    const segmentWidth = useSharedValue(0);
 
     const segments = [
         { key: 'categories' as const, label: t`Categories`, testID: AnalyticsPageSelector.CategoriesTab },
@@ -33,20 +32,18 @@ export const AnalyticsSegmentedControl = ({ activeTab, onChangeTab }: Props) => 
         segments.findIndex(segment => segment.key === activeTab),
         0
     );
-    const thumbOffset = useSharedValue(activeIndex * segmentWidth);
+    const thumbOffset = useDerivedValue(() => {
+        const target = activeIndex * segmentWidth.get();
 
-    const thumbAnimatedStyle = useAnimatedStyle(() => ({ width: segmentWidth, transform: [{ translateX: thumbOffset.get() }] }));
+        return reducedMotion ? target : withSpring(target, THUMB_SPRING);
+    });
+
+    const thumbAnimatedStyle = useAnimatedStyle(() => ({ width: segmentWidth.get(), transform: [{ translateX: thumbOffset.get() }] }));
 
     const handleLayout = (event: LayoutChangeEvent) =>
-        void setSegmentWidth((event.nativeEvent.layout.width - TRACK_PADDING * 2) / segments.length);
+        void segmentWidth.set((event.nativeEvent.layout.width - TRACK_PADDING * 2) / segments.length);
 
     const thumbStyle = [continuousCorners, thumbAnimatedStyle];
-
-    useEffect(() => {
-        const target = activeIndex * segmentWidth;
-
-        thumbOffset.set(reducedMotion ? target : withSpring(target, THUMB_SPRING));
-    }, [activeIndex, reducedMotion, segmentWidth, thumbOffset]);
 
     return (
         <View
