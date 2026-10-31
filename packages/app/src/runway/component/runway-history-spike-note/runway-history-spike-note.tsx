@@ -1,10 +1,8 @@
-import { convertFromMicroUnits } from '@budgie/contracts';
-import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Trans } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
+import { RUNWAY_FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../constant/runway-footnote-max-font-size-multiplier.constant';
+import { useRunwayAmountLabel } from '../../hook/use-runway-amount-label.hook';
 
 interface Props {
     readonly spikeLabel: string;
@@ -12,15 +10,17 @@ interface Props {
 }
 
 export const RunwayHistorySpikeNote = ({ spikeLabel, expense }: Props) => {
-    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
-    const formatDigits = useFormatDigits(0);
+    const formatAmount = useRunwayAmountLabel();
 
-    const spikeAmount = formatDigits(convertFromMicroUnits(expense), defaultInstrument.symbol);
+    const spikeAmount = formatAmount(expense);
 
     return (
-        <Text className="text-xs tabular-nums text-secondary-foreground">
+        <Text
+            maxFontSizeMultiplier={RUNWAY_FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
+            className="px-3xl text-[13px] tabular-nums text-secondary-foreground"
+        >
             <Trans>
-                {spikeLabel} had a one-off {spikeAmount}. The estimate uses a typical month instead.
+                {spikeLabel} included a one-off of {spikeAmount}.
             </Trans>
         </Text>
     );

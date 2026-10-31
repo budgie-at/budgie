@@ -1,0 +1,1 @@
+export const RUNWAY_MAX_FONT_SIZE_MULTIPLIER = 1.6;
