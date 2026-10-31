@@ -148,6 +148,13 @@
             --color-cyan-background: rgba(8, 105, 130, 0.1);
 
             --color-corner: rgba(229, 229, 229, 1);
+
+            --color-chart-1: #2a78d6;
+            --color-chart-2: #eb6834;
+            --color-chart-3: #1baf7a;
+            --color-chart-4: #eda100;
+            --color-chart-5: #e87ba4;
+            --color-chart-6: #6250d6;
         }
 
         @variant dark {
@@ -225,6 +232,13 @@
             --color-cyan-background: rgba(34, 211, 238, 0.1);
 
             --color-corner: rgba(34, 34, 34, 1);
+
+            --color-chart-1: #3987e5;
+            --color-chart-2: #d95926;
+            --color-chart-3: #199e70;
+            --color-chart-4: #c98500;
+            --color-chart-5: #d55181;
+            --color-chart-6: #9085e9;
         }
     }
 }

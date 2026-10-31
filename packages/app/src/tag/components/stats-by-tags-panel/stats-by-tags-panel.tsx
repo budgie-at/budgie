@@ -1,9 +1,10 @@
-import { TransactionFilterInterface } from '@budgie/contracts';
+import { TransactionFilterInterface, TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
+import { StatisticsSpendingHero } from '../../../transaction/components/statistics-spending-hero/statistics-spending-hero';
 import { TagStatInterface } from '../../interface/tag-stat.interface';
 import { StatsByTags } from '../stats-by-tags/stats-by-tags';
 import { TagsFeatureIntro } from '../tags-feature-intro/tags-feature-intro';
@@ -12,8 +13,8 @@ interface Props {
     readonly filters: TransactionFilterInterface;
     readonly income: number;
     readonly expense: number;
-    readonly incomeByTag: TagStatInterface[];
-    readonly expenseByTag: TagStatInterface[];
+    readonly incomeByTag: readonly TagStatInterface[];
+    readonly expenseByTag: readonly TagStatInterface[];
 }
 
 export const StatsByTagsPanel = ({ filters, income, expense, incomeByTag, expenseByTag }: Props) => {
@@ -22,33 +23,19 @@ export const StatsByTagsPanel = ({ filters, income, expense, incomeByTag, expens
     const hasIncomeStats = isNotEmptyArray(incomeByTag);
     const hasExpenseStats = isNotEmptyArray(expenseByTag);
 
-    if (!hasIncomeStats && !hasExpenseStats) {
-        return <TagsFeatureIntro />;
-    }
-
     return (
-        <View className="gap-y-7xl">
-            {hasIncomeStats && (
-                <StatsByTags
-                    variant="positive"
-                    title={t`Income by Tag`}
-                    stats={incomeByTag}
-                    totalAmount={income}
-                    filters={filters}
-                    isIncome
-                />
-            )}
+        <View className="gap-y-6xl">
+            <StatisticsSpendingHero filters={filters} />
 
-            {hasExpenseStats && (
-                <StatsByTags
-                    variant="destructive"
-                    title={t`Spending by Tag`}
-                    stats={expenseByTag}
-                    totalAmount={expense}
-                    filters={filters}
-                    isIncome={false}
-                />
-            )}
+            {hasExpenseStats ? (
+                <StatsByTags title={t`Spending`} stats={expenseByTag} base={expense} filters={filters} type={TransactionTypeEnum.EXPENSE} />
+            ) : null}
+
+            {hasIncomeStats ? (
+                <StatsByTags title={t`Income`} stats={incomeByTag} base={income} filters={filters} type={TransactionTypeEnum.INCOME} />
+            ) : null}
+
+            {hasIncomeStats || hasExpenseStats ? null : <TagsFeatureIntro />}
         </View>
     );
 };

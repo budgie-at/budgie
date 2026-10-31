@@ -26,5 +26,8 @@ export const useGetStatisticsByCategoryQuery = (filters: TransactionFilterInterf
     const defaultInstrumentId = useAtomValue(defaultInstrumentIdAtom);
     const result = useLiveAtomValue(statisticsByCategoryAtom([filters, defaultInstrumentId, language]));
 
-    return AsyncResult.getOrElse(result, () => ({ incomeByCategory: [], expenseByCategory: [] }));
+    return {
+        ...AsyncResult.getOrElse(result, () => ({ incomeByCategory: [], expenseByCategory: [] })),
+        isLoading: AsyncResult.isInitial(result)
+    };
 };

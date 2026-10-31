@@ -47,7 +47,9 @@ msgid "{0, plural, one {# tag} other {# tags}}"
 msgstr "{0, plural, one {# étiquette} other {# étiquettes}}"
 
 #. placeholder {0}: movedToCashTransactionIds.length
+#. placeholder {0}: summary.transactionCount
 #: src/categorize-inbox/components/categorize-inbox-moved-to-cash-undo/categorize-inbox-moved-to-cash-undo.tsx
+#: src/transaction/components/statistics-drill-down-summary/statistics-drill-down-summary.tsx
 msgid "{0, plural, one {# transaction} other {# transactions}}"
 msgstr "{0, plural, one {# transaction} other {# transactions}}"
 
@@ -108,6 +110,14 @@ msgstr "{categoryName}: {threshold}% dépensé"
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "{categoryName}: limit reached"
 msgstr "{categoryName}: limite atteinte"
+
+#: src/transaction/components/statistics-change-label/statistics-change-label.tsx
+msgid "{changePercent} less than {previousLabel}"
+msgstr "{changePercent} de moins qu’en {previousLabel}"
+
+#: src/transaction/components/statistics-change-label/statistics-change-label.tsx
+msgid "{changePercent} more than {previousLabel}"
+msgstr "{changePercent} de plus qu’en {previousLabel}"
 
 #: src/budget/components/budget-period-recap-rollover/budget-period-recap-rollover.tsx
 msgid "{count, plural, one {{formattedAmount} rolled over across # category} other {{formattedAmount} rolled over across # categories}}"
@@ -279,6 +289,10 @@ msgstr "{gigabytes} Go"
 msgid "{groupCount} groups, {paymentCount} payments"
 msgstr "{groupCount} groupes, {paymentCount} paiements"
 
+#: src/@generic/component/collapsible-stats-section/collapsible-stats-section.tsx
+msgid "{hiddenCount, plural, one {Show # more} other {Show # more}}"
+msgstr "{hiddenCount, plural, one {Afficher # de plus} other {Afficher # de plus}}"
+
 #: src/categorize-inbox/components/categorize-inbox-group-choose-payments-option/categorize-inbox-group-choose-payments-option.tsx
 msgid "{included} of {total}"
 msgstr "{included} sur {total}"
@@ -324,6 +338,10 @@ msgstr "{month} clôturé avec {amount} en dessous"
 #: src/runway/component/runway-history-bar-label/runway-history-bar-label.tsx
 msgid "{month}, out {expenseAmount}, in {incomeAmount}"
 msgstr "{month}, dépenses {expenseAmount}, revenus {incomeAmount}"
+
+#: src/transaction/components/statistics-trend-bars/statistics-trend-bars.tsx
+msgid "{monthLabel}: {amountLabel}"
+msgstr "{monthLabel} : {amountLabel}"
 
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "{months, plural, one {# month} other {# months}}"
@@ -372,14 +390,6 @@ msgstr "{paymentCount} paiements deviennent des virements et quittent vos revenu
 #: src/budget/hooks/use-budget-limit-accessibility.hook.ts
 msgid "{percent}% used"
 msgstr "{percent} % utilisé"
-
-#: src/@generic/component/statistics-card/statistics-card.tsx
-msgid "{percentage}% of expenses"
-msgstr "{percentage}% des dépenses"
-
-#: src/@generic/component/statistics-card/statistics-card.tsx
-msgid "{percentage}% of income"
-msgstr "{percentage}% des revenus"
 
 #: src/budget/components/budget-history-chart/budget-history-chart.tsx
 msgid "{periodLabel}, spent {spentAmount} of {limitAmount}"
@@ -444,6 +454,14 @@ msgstr "{selectedCount, plural, =0 {Afficher tous les tags} one {Afficher # tag}
 #: src/account/component/accounts-group/accounts-group.tsx
 msgid "{selectedInGroupCount} of {accountsCount} selected"
 msgstr "{selectedInGroupCount} sur {accountsCount} sélectionnés"
+
+#: src/transaction/components/statistics-drill-down-summary/statistics-drill-down-summary.tsx
+msgid "{shareLabel} of income"
+msgstr "{shareLabel} des revenus"
+
+#: src/transaction/components/statistics-drill-down-summary/statistics-drill-down-summary.tsx
+msgid "{shareLabel} of spending"
+msgstr "{shareLabel} des dépenses"
 
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "{similarCount, plural, one {# similar transaction} other {# similar transactions}}"
@@ -608,6 +626,10 @@ msgstr "Une règle identifie les transactions bancaires entrantes et leur appliq
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 msgid "A rule with the same conditions already exists."
 msgstr "Une règle avec les mêmes conditions existe déjà."
+
+#: src/tag/components/stats-by-tags/stats-by-tags.tsx
+msgid "A transaction with several tags counts toward each of them, so shares can add up to more than 100%."
+msgstr "Une transaction avec plusieurs tags compte pour chacun d’eux : les parts peuvent donc dépasser 100 % au total."
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "About"
@@ -887,6 +909,10 @@ msgstr "Toutes les icônes"
 msgid "All Recurring"
 msgstr "Tous les récurrents"
 
+#: src/i18n/hook/use-format-date-range.hook.ts
+msgid "All time"
+msgstr "Toute la période"
+
 #: src/@generic/constant/date-period.constant.ts
 msgid "All Time"
 msgstr "Tout le temps"
@@ -950,6 +976,10 @@ msgstr "Montant prêté"
 #: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
 msgid "Amount or merchant is empty"
 msgstr "Le montant ou le commerçant est manquant"
+
+#: src/app/(tabs)/analytics.tsx
+msgid "Analytics"
+msgstr "Analyses"
 
 #: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
 msgid "Analytics will appear once we can confirm your history is ready."
@@ -1386,7 +1416,7 @@ msgstr "espèces au distributeur"
 msgid "Cash withdrawals"
 msgstr "Retraits d'espèces"
 
-#: src/@generic/component/analytics-page-header/analytics-page-header.tsx
+#: src/@generic/component/analytics-segmented-control/analytics-segmented-control.tsx
 #: src/app/(tabs)/settings/categories.tsx
 #: src/budget/components/budget-details-category-list/budget-details-category-list.tsx
 #: src/budget/components/budget-period-summary/budget-period-summary.tsx
@@ -1481,6 +1511,10 @@ msgstr "Choisissez « Excel » comme format d'export — les fichiers PDF et CSV
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Choose a different PIN"
 msgstr "Choisir un autre code PIN"
+
+#: src/transaction/components/statistics-period-control/statistics-period-control.tsx
+msgid "Choose a period"
+msgstr "Choisir une période"
 
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
@@ -2739,7 +2773,7 @@ msgid "Expense"
 msgstr "Dépense"
 
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
+#: src/transaction/hook/use-transaction-filter-page-title.hook.ts
 msgid "Expenses"
 msgstr "Dépenses"
 
@@ -3171,26 +3205,20 @@ msgstr "Inclut les cryptos"
 msgid "includes fee {formattedFeeAmount}"
 msgstr "dont frais {formattedFeeAmount}"
 
+#: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
+#: src/tag/components/stats-by-tags-panel/stats-by-tags-panel.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
-#: src/transaction/components/statistics-content/statistics-content.tsx
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
+#: src/transaction/components/statistics-spending-hero/statistics-spending-hero.tsx
 #: src/transaction/constant/transaction-type.constant.ts
+#: src/transaction/hook/use-transaction-filter-page-title.hook.ts
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Income"
 msgstr "Revenu"
 
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
+#: src/transaction/hook/use-transaction-filter-page-title.hook.ts
 msgid "Income and expenses"
 msgstr "Revenus et dépenses"
-
-#: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
-msgid "Income by category"
-msgstr "Revenus par catégorie"
-
-#: src/tag/components/stats-by-tags-panel/stats-by-tags-panel.tsx
-msgid "Income by Tag"
-msgstr "Revenus par étiquette"
 
 #: src/auth/hook/use-pin-error.hook.ts
 #: src/import/component/import-backup-pin/import-backup-pin.tsx
@@ -3283,6 +3311,10 @@ msgstr "30 derniers jours"
 #: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
 msgid "Last 6 months"
 msgstr "6 derniers mois"
+
+#: src/transaction/components/statistics-trend-bars/statistics-trend-bars.tsx
+msgid "Last 6 months. {summary}"
+msgstr "6 derniers mois. {summary}"
 
 #: src/app/resync-window-picker.tsx
 msgid "Last 7 days"
@@ -3551,7 +3583,7 @@ msgstr "{consolidated} sur {foundPairsText} fusionnées."
 msgid "Minimum amount"
 msgstr "Montant minimum"
 
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
+#: src/transaction/hook/use-transaction-filter-page-title.hook.ts
 msgid "Missing categories"
 msgstr "Catégories manquantes"
 
@@ -3696,6 +3728,7 @@ msgid "Negative amount"
 msgstr "Montant négatif"
 
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
+#: src/transaction/components/statistics-spending-hero/statistics-spending-hero.tsx
 msgid "Net"
 msgstr "Net"
 
@@ -3734,6 +3767,10 @@ msgstr "Nouveau transfert"
 #: src/installment-plan/component/installment-plan-next-payment/installment-plan-next-payment.tsx
 msgid "Next {formattedNextAmount} · {nextDate}"
 msgstr "Prochain paiement : {formattedNextAmount} · {nextDate}"
+
+#: src/transaction/components/statistics-period-control/statistics-period-control.tsx
+msgid "Next period"
+msgstr "Période suivante"
 
 #: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
 msgid "No account needed · Takes about a minute"
@@ -4207,7 +4244,8 @@ msgstr "Transaction d’origine"
 #: src/budget/components/budget-period-recap-rollover/budget-period-recap-rollover.tsx
 #: src/budget/components/budget-period-summary/budget-period-summary.tsx
 #: src/budget/service/budget-alert-monitor.service.ts
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
+#: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
+#: src/transaction/hook/use-transaction-filter-page-title.hook.ts
 msgid "Other"
 msgstr "Autre"
 
@@ -4266,10 +4304,6 @@ msgstr "En retard"
 #: src/account/component/debt-account-paid-off/debt-account-paid-off.tsx
 msgid "Overpaid"
 msgstr "Trop remboursé"
-
-#: src/transaction/components/statistics-content/statistics-content.tsx
-msgid "Overview"
-msgstr "Aperçu"
 
 #: src/account/component/debt-section-header/debt-section-header.tsx
 msgid "Owed to you"
@@ -4443,6 +4477,10 @@ msgstr "Appuie longuement pour sceller"
 msgid "Press to re-evaluate transactions"
 msgstr "Appuyez pour réévaluer les transactions"
 
+#: src/transaction/components/statistics-period-control/statistics-period-control.tsx
+msgid "Previous period"
+msgstr "Période précédente"
+
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "Price changed"
 msgstr "Prix modifié"
@@ -4582,6 +4620,10 @@ msgstr "Recalcul des soldes"
 #: src/transaction/components/transaction-card-subtitle/transaction-card-subtitle.tsx
 #: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
 msgid "Receipt"
+msgstr "Reçu"
+
+#: src/transaction/components/statistics-drill-down-summary/statistics-drill-down-summary.tsx
+msgid "Received"
 msgstr "Reçu"
 
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
@@ -4819,7 +4861,7 @@ msgstr "Épuisé vers le {runOutDate}"
 msgid "Runs out around {runOutDate}."
 msgstr "Épuisé vers {runOutDate}."
 
-#: src/@generic/component/analytics-page-header/analytics-page-header.tsx
+#: src/@generic/component/analytics-segmented-control/analytics-segmented-control.tsx
 #: src/app/(tabs)/settings/index.tsx
 #: src/runway/component/runway-pill/runway-pill.tsx
 msgid "Runway"
@@ -5174,6 +5216,10 @@ msgstr "Afficher le budget sur l'accueil"
 msgid "Show Cents"
 msgstr "Afficher les centimes"
 
+#: src/@generic/component/collapsible-stats-section/collapsible-stats-section.tsx
+msgid "Show less"
+msgstr "Afficher moins"
+
 #: src/categorize-inbox/components/categorize-inbox-page-content/categorize-inbox-page-content.tsx
 msgid "Show list"
 msgstr "Afficher la liste"
@@ -5198,6 +5244,10 @@ msgstr "Afficher les transactions lorsqu’un montant principal se situe dans ce
 #: src/transaction/components/transaction-info-page-content/transaction-info-page-content.tsx
 msgid "Similar transactions"
 msgstr "Transactions similaires"
+
+#: src/i18n/hook/use-format-date-range.hook.ts
+msgid "Since {fromLabel}"
+msgstr "Depuis le {fromLabel}"
 
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "Skip"
@@ -5255,15 +5305,13 @@ msgid "Speak an expense and Budgie fills in the transaction."
 msgstr "Dictez une dépense et Budgie remplit la transaction."
 
 #: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
-msgid "Spending by Category"
-msgstr "Dépenses par catégorie"
-
 #: src/tag/components/stats-by-tags-panel/stats-by-tags-panel.tsx
-msgid "Spending by Tag"
-msgstr "Dépenses par étiquette"
+msgid "Spending"
+msgstr "Dépenses"
 
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx
-#: src/transaction/components/statistics-content/statistics-content.tsx
+#: src/transaction/components/statistics-drill-down-summary/statistics-drill-down-summary.tsx
+#: src/transaction/components/statistics-spending-hero/statistics-spending-hero.tsx
 msgid "Spent"
 msgstr "Dépensé"
 
@@ -5445,7 +5493,7 @@ msgstr "Étiqueter comme {tagTitle}"
 msgid "Tag Name"
 msgstr "Nom de l'étiquette"
 
-#: src/@generic/component/analytics-page-header/analytics-page-header.tsx
+#: src/@generic/component/analytics-segmented-control/analytics-segmented-control.tsx
 #: src/app/(tabs)/settings/tags.tsx
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
 #: src/transaction/components/transaction-info-tags-section/transaction-info-tags-section.tsx
@@ -5799,10 +5847,6 @@ msgstr "Trop de tentatives. Réessayez dans {time}"
 msgid "Total"
 msgstr "Total"
 
-#: src/transaction/components/statistics-content/statistics-content.tsx
-msgid "Total balance"
-msgstr "Solde total"
-
 #: src/account/component/net-worth-collapsible-header/net-worth-collapsible-header.tsx
 msgid "Total Balance"
 msgstr "Solde total"
@@ -5844,7 +5888,7 @@ msgid "Transaction not found"
 msgstr "Transaction introuvable"
 
 #: src/@generic/component/transactions-page-header/transactions-page-header.tsx
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
+#: src/transaction/hook/use-transaction-filter-page-title.hook.ts
 msgid "Transactions"
 msgstr "Transactions"
 
@@ -6011,6 +6055,7 @@ msgstr "Impossible de vérifier l’historique des transactions"
 msgid "Unavailable"
 msgstr "Indisponible"
 
+#: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
 #: src/category/components/stats-by-categories/stats-by-categories.tsx
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
 #: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
@@ -6047,13 +6092,17 @@ msgstr "Gain/perte latent"
 
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
 #: src/tag/components/stats-by-tags/stats-by-tags.tsx
-#: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
+#: src/transaction/hook/use-transaction-filter-page-title.hook.ts
 msgid "Untagged"
 msgstr "Sans étiquette"
 
 #: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
 msgid "Until {periodEndLabel}"
 msgstr "Jusqu'au {periodEndLabel}"
+
+#: src/i18n/hook/use-format-date-range.hook.ts
+msgid "Until {toLabel}"
+msgstr "Jusqu’au {toLabel}"
 
 #: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/account-sync-card/account-sync-card.tsx

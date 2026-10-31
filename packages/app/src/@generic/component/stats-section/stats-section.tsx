@@ -1,18 +1,31 @@
-import { PropsWithChildren } from 'react';
+import { Children, Fragment, ReactNode } from 'react';
 import { Text, View } from 'react-native';
 
-import { Card } from '../card/card';
+import { isNotEmptyString } from '@rnw-community/shared';
 
-interface Props extends PropsWithChildren {
+interface Props {
     readonly title: string;
+    readonly footnote?: string;
+    readonly children: ReactNode;
 }
 
-export const StatsSection = ({ title, children }: Props) => (
-    <View className="gap-y-md">
-        <Text className="uppercase text-secondary-foreground text-xs">{title}</Text>
+const continuousCorners = { borderCurve: 'continuous' as const };
 
-        <Card size="md" className="gap-y-xl">
-            {children}
-        </Card>
+export const StatsSection = ({ title, footnote, children }: Props) => (
+    <View className="gap-y-md">
+        <Text accessibilityRole="header" className="px-xs text-lg font-semibold text-primary">
+            {title}
+        </Text>
+
+        <View className="overflow-hidden rounded-3xl bg-grouped-surface-row" style={continuousCorners}>
+            {Children.toArray(children).map((child, index) => (
+                <Fragment key={index}>
+                    {index > 0 ? <View className="ml-[60px] h-hairline bg-surface-separator" /> : null}
+                    {child}
+                </Fragment>
+            ))}
+        </View>
+
+        {isNotEmptyString(footnote) ? <Text className="px-xs text-xs text-secondary-foreground">{footnote}</Text> : null}
     </View>
 );

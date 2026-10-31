@@ -151,16 +151,24 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
         const buildLedgerEntriesQuery = <TSelection extends SelectedFields>(db: DB, selectFields: TSelection) =>
             db.select(selectFields).from(TransactionEntryEntityTable);
 
+        const buildBreakdownQuery = <TSelection extends SelectedFields>(db: DB, selectFields: TSelection, amountSql: SQL<number>) =>
+            buildLedgerEntriesQuery(db, {
+                ...selectFields,
+                amount: amountSql.as('amount'),
+                transactionCount: sql<number>`COUNT(DISTINCT ${TransactionEntryEntityTable.transactionId})`.as('transaction_count')
+            })
+                .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+                .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id));
+
         const buildCategoryBreakdownQuery = (db: DB, defaultInstrumentId: number, language: LanguageEnum, where: SQL | undefined) => {
             const amountSql = buildRefundAwareBaseAmountSql(defaultInstrumentId);
             const categoryTitleSql = sql<string>`COALESCE(${DefaultCategoryTranslationEntityTable.title}, ${CategoryEntityTable.title})`;
 
-            return buildLedgerEntriesQuery(db, {
-                category: { ...getTableColumns(CategoryEntityTable), title: categoryTitleSql.as('title') },
-                amount: amountSql.as('amount')
-            })
-                .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-                .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
+            return buildBreakdownQuery(
+                db,
+                { category: { ...getTableColumns(CategoryEntityTable), title: categoryTitleSql.as('title') } },
+                amountSql
+            )
                 .leftJoin(CategoryEntityTable, eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id))
                 .leftJoin(DefaultCategoryTranslationEntityTable, buildCategoryTranslationJoinCondition(language))
                 .where(where)
@@ -172,12 +180,7 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
         const buildTagBreakdownQuery = (db: DB, defaultInstrumentId: number, where: SQL | undefined) => {
             const amountSql = buildRefundAwareBaseAmountSql(defaultInstrumentId);
 
-            return buildLedgerEntriesQuery(db, {
-                tag: TagEntityTable,
-                amount: amountSql.as('amount')
-            })
-                .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-                .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
+            return buildBreakdownQuery(db, { tag: TagEntityTable }, amountSql)
                 .leftJoin(TransactionTagsEntityTable, eq(TransactionEntityTable.id, TransactionTagsEntityTable.transactionId))
                 .leftJoin(TagEntityTable, eq(TransactionTagsEntityTable.tagId, TagEntityTable.id))
                 .where(where)

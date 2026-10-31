@@ -1,48 +1,55 @@
-import { CategoryEntityInterface, TransactionFilterInterface } from '@budgie/contracts';
-import { Text } from 'react-native';
+import { CategoryEntityInterface, TransactionFilterInterface, TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { StatisticsCard } from '../../../@generic/component/statistics-card/statistics-card';
+import { StatisticsRankingRow } from '../../../@generic/component/statistics-ranking-row/statistics-ranking-row';
 import { useStatisticsCardPress } from '../../../@generic/hook/use-statistics-card-press.hook';
-import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { CategorizeInboxKindEnum } from '../../../categorize-inbox/enum/categorize-inbox-kind.enum';
+import { StatisticsRankingAmount } from '../../../transaction/components/statistics-ranking-amount/statistics-ranking-amount';
 
 import { CategoryStatisticsCardSelector } from './category-statistics-card.selector';
 
+import type { ChartSwatchInterface } from '../../../@generic/interface/chart-swatch.interface';
+
 interface Props {
-    readonly category: Pick<CategoryEntityInterface, 'id' | 'icon' | 'title' | 'isDefault'>;
+    readonly category: Pick<CategoryEntityInterface, 'id' | 'icon' | 'title'>;
     readonly amount: number;
-    readonly totalAmount: number;
-    readonly variant: ColorPaletteVariant;
+    readonly share: number;
+    readonly ratio: number;
+    readonly swatch: ChartSwatchInterface | null;
     readonly filters: TransactionFilterInterface;
-    readonly isIncome: boolean;
+    readonly type: TransactionTypeEnum.INCOME | TransactionTypeEnum.EXPENSE;
 }
 
-export const CategoryStatisticsCard = ({ category, amount, totalAmount, variant, filters, isIncome }: Props) => {
+export const CategoryStatisticsCard = ({ category, amount, share, ratio, swatch, filters, type }: Props) => {
     const isCategorized = isPositiveNumber(category.id);
     const cardTestID = isCategorized ? CategoryStatisticsCardSelector.Card(category.title) : CategoryStatisticsCardSelector.Uncategorized;
 
     const handlePress = useStatisticsCardPress(
         filters,
-        isIncome,
+        type,
         CategorizeInboxKindEnum.CATEGORY,
         isCategorized ? { categoryId: String(category.id) } : null
     );
 
+    const icon = isCategorized ? category.icon : UserIconNameEnum.CircleDashed;
+
     return (
-        <StatisticsCard
-            amount={amount}
-            totalAmount={totalAmount}
-            variant={variant}
-            isIncome={isIncome}
-            cardTestID={cardTestID}
-            amountTestID={CategoryStatisticsCardSelector.Amount(category.title, amount)}
+        <StatisticsRankingRow
+            title={category.title}
+            share={share}
+            ratio={ratio}
+            icon={icon}
+            swatch={swatch}
+            amount={
+                <StatisticsRankingAmount
+                    amount={amount}
+                    type={type}
+                    testID={CategoryStatisticsCardSelector.Amount(category.title, amount)}
+                />
+            }
+            testID={cardTestID}
             onPress={handlePress}
-        >
-            <CircleIcon icon={category.icon} variant={variant} />
-            <Text className="mr-auto text-primary text-xs">{category.title}</Text>
-        </StatisticsCard>
+        />
     );
 };

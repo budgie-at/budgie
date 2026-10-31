@@ -1,10 +1,15 @@
+import { Trans } from '@lingui/react/macro';
 import { router, useLocalSearchParams } from 'expo-router';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 import { GestureDetector } from 'react-native-gesture-handler';
 
 import { isString } from '@rnw-community/shared';
 
-import { AnalyticsPageHeader } from '../../@generic/component/analytics-page-header/analytics-page-header';
+import { AnalyticsSegmentedControl } from '../../@generic/component/analytics-segmented-control/analytics-segmented-control';
+import { CollapsibleChromePage } from '../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
+import { GroupedSurface } from '../../@generic/component/grouped-surface/grouped-surface';
+import { MenuSpacer } from '../../@generic/component/menu-spacer/menu-spacer';
+import { MAX_FONT_SIZE_MULTIPLIER } from '../../@generic/constant/max-font-size-multiplier.constant';
 import { tabSwipeGesture } from '../../@generic/utils/tab-swipe-gesture.util';
 import { StatisticsContent } from '../../transaction/components/statistics-content/statistics-content';
 
@@ -29,16 +34,38 @@ export default function AnalyticsPage() {
     const swipeGesture = tabSwipeGesture({ tabs: TABS, activeTab, onChangeTab: handleChangeTab });
 
     return (
-        <View className="flex-1" testID={AnalyticsPageSelector.Container}>
+        <GroupedSurface testID={AnalyticsPageSelector.Container}>
             <GestureDetector gesture={swipeGesture}>
                 <View className="flex-1">
-                    <StatisticsContent activeTab={activeTab} />
+                    <CollapsibleChromePage
+                        largeTitle={
+                            <Text
+                                accessibilityRole="header"
+                                maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
+                                className="text-3xl font-semibold text-primary"
+                            >
+                                <Trans>Analytics</Trans>
+                            </Text>
+                        }
+                        smallTitle={
+                            <Text
+                                maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
+                                className="text-center text-lg font-semibold text-primary"
+                            >
+                                <Trans>Analytics</Trans>
+                            </Text>
+                        }
+                    >
+                        <View className="gap-y-3xl">
+                            <AnalyticsSegmentedControl activeTab={activeTab} onChangeTab={handleChangeTab} />
+
+                            <StatisticsContent activeTab={activeTab} />
+                        </View>
+
+                        <MenuSpacer />
+                    </CollapsibleChromePage>
                 </View>
             </GestureDetector>
-
-            <View className="absolute top-0 right-0 left-0 z-10 bg-primary-reverse pt-safe" pointerEvents="box-none">
-                <AnalyticsPageHeader activeTab={activeTab} onChangeTab={handleChangeTab} />
-            </View>
-        </View>
+        </GroupedSurface>
     );
 }
