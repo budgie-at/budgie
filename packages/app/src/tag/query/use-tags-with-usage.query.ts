@@ -2,8 +2,6 @@ import { TagRepository, TransactionEntityTable, TransactionTagsEntityTable } fro
 import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
-import { isDefined } from '@rnw-community/shared';
-
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { databaseQueryAtom } from '../../@generic/utils/database-query-atom.util';
 
@@ -15,8 +13,13 @@ const tagUsageAtom = databaseQueryAtom(
 );
 
 export const useTagsWithUsageQuery = (search: string) => {
-    const { tags } = useSearchTagsQuery(search);
-    const usage = AsyncResult.getOrElse(useLiveAtomValue(tagUsageAtom), () => null);
+    const { tags, isFailure, retry } = useSearchTagsQuery(search);
+    const usageResult = useLiveAtomValue(tagUsageAtom);
 
-    return { tags: isDefined(usage) ? tags : null, usage };
+    return {
+        tags: AsyncResult.isInitial(usageResult) ? null : tags,
+        usage: AsyncResult.getOrElse(usageResult, () => null),
+        isFailure,
+        retry
+    };
 };

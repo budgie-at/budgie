@@ -10,10 +10,11 @@ import { DeletableRowSelector } from './deletable-row.selector';
 interface Props {
     readonly drag: SharedValue<number>;
     readonly isOpen: boolean;
+    readonly label: string;
     readonly onPress: () => void;
 }
 
-export const DeletableRowAction = ({ drag, isOpen, onPress }: Props) => {
+export const DeletableRowAction = ({ drag, isOpen, label, onPress }: Props) => {
     const styleAnimation = useAnimatedStyle(() => ({
         transform: [{ translateX: drag.value + 70 }]
     }));
@@ -25,6 +26,8 @@ export const DeletableRowAction = ({ drag, isOpen, onPress }: Props) => {
             <HapticPressable
                 testID={DeletableRowSelector.DeleteButton}
                 onPress={onPress}
+                accessibilityRole="button"
+                accessibilityLabel={label}
                 className="justify-center items-center w-17.5 h-full"
             >
                 <Icon className="text-destructive-foreground" icon={UserIconNameEnum.Trash} />

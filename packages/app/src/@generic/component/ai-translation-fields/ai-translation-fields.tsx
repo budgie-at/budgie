@@ -32,9 +32,7 @@ export const AiTranslationFields = ({ title, titleEn, titleTags }: Props) => {
             {hasDistinctEnglishTitle ? (
                 <GroupedListRow title={t`English`} subtitle={englishTitle} testID={AiTranslationFieldsSelector.EnglishField} />
             ) : null}
-            {isNotEmptyString(keywords) ? (
-                <GroupedListRow title={t`Keywords`} subtitle={keywords} testID={AiTranslationFieldsSelector.TagsField} />
-            ) : null}
+            {isNotEmptyString(keywords) ? <GroupedListRow title={keywords} testID={AiTranslationFieldsSelector.TagsField} /> : null}
         </GroupedListSection>
     );
 };

@@ -1,11 +1,15 @@
-import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { TagEntityInterface } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
+import { Text, View } from 'react-native';
 
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { EntityListRow } from '../../../@generic/component/entity-list-row/entity-list-row';
+import { useDeleteTag } from '../../hooks/use-delete-tag.hook';
 import { useMergeTag } from '../../hooks/use-merge-tag.hook';
+import { getTagMonogram } from '../../utils/get-tag-monogram.util';
 
 import { TagCardSelector } from './tag-card.selector';
 
+import type { EntityRowOperationsInterface } from '../../../@generic/interface/entity-row-operations.interface';
 import type { EntityUsageInterface } from '../../../@generic/interface/entity-usage.interface';
 
 interface Props {
@@ -17,28 +21,34 @@ interface Props {
 }
 
 export const TagCard = ({ onOpen, tag, usage, isFirst, isLast }: Props) => {
+    const { t } = useLingui();
+    const deleteTag = useDeleteTag();
     const mergeTag = useMergeTag();
     const handleOpen = () => void onOpen(tag);
-    const handleMerge = () => mergeTag(tag.id);
+    const operations: EntityRowOperationsInterface = {
+        deleteLabel: t`Delete`,
+        onMerge: trackMutation => mergeTag(tag.id, trackMutation),
+        onDelete: trackMutation => deleteTag(tag.id, trackMutation)
+    };
 
     return (
         <EntityListRow
             testID={TagCardSelector.Card(tag.title)}
+            entity={tag}
             left={
-                <CircleIcon
-                    icon={UserIconNameEnum.Tag}
-                    variant="secondary"
-                    size={36}
-                    iconSize={18}
-                    radius={18}
-                    border={false}
-                    className="bg-surface-disc"
-                />
+                <View
+                    className="size-[36px] items-center justify-center rounded-full bg-surface-disc"
+                    accessibilityElementsHidden
+                    importantForAccessibility="no-hide-descendants"
+                >
+                    <Text className="text-secondary-foreground text-[16px] font-semibold" allowFontScaling={false}>
+                        {getTagMonogram(tag.title)}
+                    </Text>
+                </View>
             }
-            title={tag.title}
             usage={usage}
             onOpen={handleOpen}
-            onMerge={handleMerge}
+            operations={operations}
             isFirst={isFirst}
             isLast={isLast}
         />

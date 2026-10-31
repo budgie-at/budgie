@@ -5,6 +5,7 @@ export interface CategorySelectorModalParams {
     readonly initialCategoryId?: number | null;
     readonly excludeCategoryIds?: number[];
     readonly variant?: ColorPaletteVariant;
+    readonly title?: string;
     readonly description?: string;
 }
 

@@ -9,6 +9,8 @@ import { EntityFormPage } from '../../../@generic/component/entity-form-page/ent
 import { FormTitleInput } from '../../../@generic/component/form-title-input/form-title-input';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { IconTitleField } from '../../../@generic/component/icon-title-field/icon-title-field';
+import { EntityOperationEnum } from '../../../@generic/enum/entity-operation.enum';
+import { useEntityOperation } from '../../../@generic/hook/use-entity-operation.hook';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useDeleteTag } from '../../hooks/use-delete-tag.hook';
@@ -32,19 +34,21 @@ interface Props {
     readonly onCancel: () => void;
 }
 
-// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
+// eslint-disable-next-line max-lines-per-function, max-statements -- Form orchestration component with multiple hooks and handlers
 export const TagForm = (props: Props) => {
     const { tag, defaultTitle, onSuccess, onCancel } = props;
     const { t } = useLingui();
-    const { run, isLoading } = useSingleFlight();
+    const saveFlight = useSingleFlight();
+    const operation = useEntityOperation();
     const deleteTag = useDeleteTag();
     const mergeTag = useMergeTag();
 
     const { handleSubmit, setValue, title } = useTagForm(tag ?? (defaultTitle ? { title: defaultTitle } : null));
 
     const isEditing = isDefined(tag);
+    const isBusy = saveFlight.isLoading || operation.isPending;
     const isChanged = !isDefined(tag) || title !== tag.title;
-    const isSaveDisabled = !isNotEmptyString(title) || !isChanged;
+    const isSaveDisabled = !isNotEmptyString(title) || operation.isPending;
     const headerTitle = isEditing ? t`Edit Tag` : t`Create Tag`;
     const saveLabel = isEditing ? t`Save changes` : t`Create tag`;
 
@@ -54,8 +58,8 @@ export const TagForm = (props: Props) => {
 
     const handleMerge = () => {
         if (isDefined(tag)) {
-            void run(
-                mergeTag(tag.id).pipe(
+            operation.start(EntityOperationEnum.MERGE, trackMutation =>
+                mergeTag(tag.id, trackMutation).pipe(
                     Effect.tap(target =>
                         isDefined(target) ? Effect.sync(() => void onSuccess({ tag: target, action: 'merged' })) : Effect.void
                     )
@@ -68,7 +72,9 @@ export const TagForm = (props: Props) => {
         Effect.gen(function* () {
             const tagService = yield* TagService;
 
-            if (isDefined(tag)) {
+            if (isDefined(tag) && !isChanged) {
+                onCancel();
+            } else if (isDefined(tag)) {
                 const translation = values.title === tag.title ? tag : { titleEn: null, titleTags: null };
                 const updatedTag = yield* tagService.update(tag.id, values, translation.titleEn, translation.titleTags);
                 onSuccess({ tag: updatedTag, action: 'updated' });
@@ -80,11 +86,13 @@ export const TagForm = (props: Props) => {
 
     const handleDelete = () => {
         if (isDefined(tag)) {
-            void run(deleteTag(tag.id).pipe(Effect.tap(isDeleted => (isDeleted ? Effect.sync(onCancel) : Effect.void))));
+            operation.start(EntityOperationEnum.DELETE, trackMutation =>
+                deleteTag(tag.id, trackMutation).pipe(Effect.tap(isDeleted => (isDeleted ? Effect.sync(onCancel) : Effect.void)))
+            );
         }
     };
 
-    const handleFormSubmit = handleSubmit(values => run(submitTag(values)));
+    const handleFormSubmit = handleSubmit(values => saveFlight.run(submitTag(values)));
 
     return (
         <EntityFormPage
@@ -92,7 +100,7 @@ export const TagForm = (props: Props) => {
             onCancel={onCancel}
             saveLabel={saveLabel}
             onSave={handleFormSubmit}
-            isSaving={isLoading}
+            isSaving={saveFlight.isLoading}
             isSaveDisabled={isSaveDisabled}
             saveTestID={TagFormSelector.Submit}
         >
@@ -100,7 +108,7 @@ export const TagForm = (props: Props) => {
                 <IconTitleField icon={UserIconNameEnum.Tag} variant="secondary" label={t`Name`}>
                     <FormTitleInput
                         autoFocus={!isEditing}
-                        editable={!isLoading}
+                        editable={!isBusy}
                         value={title}
                         onChangeText={handleTitleChange}
                         maxLength={TAG_TITLE_MAX_LENGTH}
@@ -119,7 +127,8 @@ export const TagForm = (props: Props) => {
                     mergeTestID={TagFormSelector.Merge}
                     deleteLabel={t`Delete tag`}
                     onDelete={handleDelete}
-                    isDisabled={isLoading}
+                    isDisabled={isBusy}
+                    mutatingOperation={operation.mutatingOperation}
                 />
             ) : null}
         </EntityFormPage>

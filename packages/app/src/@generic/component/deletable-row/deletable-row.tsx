@@ -6,8 +6,6 @@ import { SharedValue } from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { DeletableRowContext } from '../../context/deletable-row.context';
-
 import { DeletableRowAction } from './deletable-row-action';
 
 interface Props {
@@ -15,6 +13,7 @@ interface Props {
     readonly children: ReactNode;
     readonly id: number;
     readonly confirmation?: DeleteConfirmation;
+    readonly label?: string;
 }
 
 export interface DeleteConfirmation {
@@ -23,11 +22,12 @@ export interface DeleteConfirmation {
     readonly buttonText?: string;
 }
 
-export const DeletableRow = ({ children, onDelete, id, confirmation }: Props) => {
+export const DeletableRow = ({ children, onDelete, id, confirmation, label }: Props) => {
     const ref = useRef<SwipeableMethods>(null);
     const { t } = useLingui();
 
     const [isOpen, setIsOpen] = useState(false);
+    const actionLabel = label ?? t`Delete`;
 
     const handleOpen = () => void setIsOpen(true);
     const handleClose = () => void setIsOpen(false);
@@ -49,7 +49,7 @@ export const DeletableRow = ({ children, onDelete, id, confirmation }: Props) =>
     };
 
     const renderRightActions = (_: SharedValue<number>, drag: SharedValue<number>) => (
-        <DeletableRowAction drag={drag} isOpen={isOpen} onPress={confirm} />
+        <DeletableRowAction drag={drag} isOpen={isOpen} label={actionLabel} onPress={confirm} />
     );
 
     return (
@@ -62,7 +62,7 @@ export const DeletableRow = ({ children, onDelete, id, confirmation }: Props) =>
             onSwipeableOpen={handleOpen}
             onSwipeableClose={handleClose}
         >
-            <DeletableRowContext.Provider value={confirm}>{children}</DeletableRowContext.Provider>
+            {children}
         </ReanimatedSwipeable>
     );
 };

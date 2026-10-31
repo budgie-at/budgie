@@ -1,35 +1,39 @@
-import { useState } from 'react';
 import { Text, View } from 'react-native';
 
-import { isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isNotEmptyString } from '@rnw-community/shared';
 
 import { SELECTOR_HEADER_OFFSET } from '../../constant/selector-header-offset.constant';
 
 import type { ReactNode } from 'react';
-import type { LayoutChangeEvent } from 'react-native';
 
 interface Props {
+    readonly title: string | undefined;
     readonly description: string | undefined;
     readonly children: (topOffset: number) => ReactNode;
 }
 
-const DESCRIPTION_STYLE = { top: SELECTOR_HEADER_OFFSET };
+const HEADER_SPACER_STYLE = { height: SELECTOR_HEADER_OFFSET };
+const LIST_TOP_OFFSET = 4;
 
-export const SelectorModalDescription = ({ description, children }: Props) => {
-    const [descriptionHeight, setDescriptionHeight] = useState(0);
-
-    if (!isNotEmptyString(description)) {
+export const SelectorModalDescription = ({ title, description, children }: Props) => {
+    if (!isNotEmptyString(title) && !isNotEmptyString(description)) {
         return children(SELECTOR_HEADER_OFFSET);
     }
 
-    const handleLayout = (event: LayoutChangeEvent) => void setDescriptionHeight(event.nativeEvent.layout.height);
-
     return (
-        <>
-            <View className="absolute inset-x-0 z-10 bg-primary-reverse px-3xl pb-md" style={DESCRIPTION_STYLE} onLayout={handleLayout}>
-                <Text className="text-secondary-foreground text-[13px] leading-[18px]">{description}</Text>
+        <View className="flex-1">
+            <View style={HEADER_SPACER_STYLE} />
+            <View className="gap-y-xs px-3xl pb-lg">
+                {isNotEmptyString(title) ? (
+                    <Text className="text-primary text-[17px] font-semibold leading-[22px]" accessibilityRole="header">
+                        {title}
+                    </Text>
+                ) : null}
+                {isNotEmptyString(description) ? (
+                    <Text className="text-secondary-foreground text-[15px] leading-[20px]">{description}</Text>
+                ) : null}
             </View>
-            {isPositiveNumber(descriptionHeight) ? children(SELECTOR_HEADER_OFFSET + descriptionHeight) : null}
-        </>
+            <View className="flex-1">{children(LIST_TOP_OFFSET)}</View>
+        </View>
     );
 };

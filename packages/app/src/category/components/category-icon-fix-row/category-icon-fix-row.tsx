@@ -22,9 +22,10 @@ import { CategoryIconFixRowSelector } from './category-icon-fix-row.selector';
 
 interface Props {
     readonly category: CategoryEntityInterface;
+    readonly footer?: string;
 }
 
-export const CategoryIconFixRow = ({ category }: Props) => {
+export const CategoryIconFixRow = ({ category, footer }: Props) => {
     const { t } = useLingui();
     const [openIconSelector] = useIconSelectorModal();
     const iconTerms = getCategoryIconTerms(category);
@@ -59,7 +60,7 @@ export const CategoryIconFixRow = ({ category }: Props) => {
     };
 
     return (
-        <GroupedListSection>
+        <GroupedListSection footer={footer}>
             <GroupedListRow
                 testID={CategoryIconFixRowSelector.Row(category.title)}
                 left={
@@ -74,7 +75,6 @@ export const CategoryIconFixRow = ({ category }: Props) => {
                     />
                 }
                 title={category.title}
-                subtitle={t`More icons`}
                 onPress={handleOpenIconSelector}
             />
             <LoadingContent isLoading={isLoading} className="px-3xl pb-xl pt-xs">

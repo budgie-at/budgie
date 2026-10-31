@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Text, View } from 'react-native';
 
 import { CollapsibleHeaderBackdrop, ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
@@ -14,6 +15,7 @@ import { CollapsibleChromeHeader } from '../collapsible-chrome-header/collapsibl
 import { StickyFooterBand } from '../sticky-footer-band/sticky-footer-band';
 
 import type { ComponentProps, ReactNode } from 'react';
+import type { LayoutChangeEvent } from 'react-native';
 
 type TitleProps =
     | { readonly title: string; readonly subtitle?: string; readonly largeTitle?: never; readonly smallTitle?: never }
@@ -29,7 +31,8 @@ type Props = TitleProps & {
     readonly testID?: string;
 };
 
-const FOOTER_CONTENT_BOTTOM_INSET = 96;
+const FOOTER_CONTENT_GAP = 32;
+const ESTIMATED_FOOTER_HEIGHT = 64;
 
 export const CollapsibleChromePage = ({
     title,
@@ -44,7 +47,8 @@ export const CollapsibleChromePage = ({
     contentClassName,
     testID
 }: Props): ReactNode => {
-    const contentInsetBottom = isDefined(footer) ? FOOTER_CONTENT_BOTTOM_INSET : 0;
+    const [footerHeight, setFooterHeight] = useState(ESTIMATED_FOOTER_HEIGHT);
+    const contentInsetBottom = isDefined(footer) ? footerHeight + FOOTER_CONTENT_GAP : 0;
     const { bottomOffset: bottomOffsetOverride, ...restScrollViewProps } = isDefined(scrollViewProps) ? scrollViewProps : {};
     const resolvedBottomOffset = isDefined(bottomOffsetOverride) ? bottomOffsetOverride : contentInsetBottom;
     const resolvedLargeTitle = isDefined(largeTitle) ? (
@@ -76,6 +80,8 @@ export const CollapsibleChromePage = ({
         </View>
     );
 
+    const handleFooterLayout = (event: LayoutChangeEvent) => void setFooterHeight(Math.ceil(event.nativeEvent.layout.height));
+
     return (
         <ScreenChromeThemeProvider syncNativeScrollOffset>
             <ScreenChromeFrame>
@@ -102,7 +108,11 @@ export const CollapsibleChromePage = ({
                     collapsedTitle={resolvedSmallTitle}
                 />
 
-                {isDefined(footer) ? <StickyFooterBand>{footer}</StickyFooterBand> : null}
+                {isDefined(footer) ? (
+                    <StickyFooterBand>
+                        <View onLayout={handleFooterLayout}>{footer}</View>
+                    </StickyFooterBand>
+                ) : null}
             </ScreenChromeFrame>
         </ScreenChromeThemeProvider>
     );

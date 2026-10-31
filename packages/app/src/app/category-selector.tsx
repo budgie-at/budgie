@@ -25,7 +25,7 @@ export default function CategorySelectorModal() {
     const [search, setSearch] = useState('');
     const { categories, isLoading } = useSearchCategoriesQuery(search, true);
 
-    const { variant = 'primary', initialCategoryId = null, description, excludeCategoryIds = [] } = currentParams ?? {};
+    const { variant = 'primary', initialCategoryId = null, title, description, excludeCategoryIds = [] } = currentParams ?? {};
     const selectedCategoryIds = isDefined(initialCategoryId) ? [initialCategoryId] : [];
     const data = prepareSelectorGridData(categories, excludeCategoryIds, selectedCategoryIds);
 
@@ -49,7 +49,7 @@ export default function CategorySelectorModal() {
                 testID={CategorySelectorModalSelector.Input}
             />
 
-            <SelectorModalDescription description={description}>
+            <SelectorModalDescription title={title} description={description}>
                 {topOffset => (
                     <CategorySelectContent
                         topOffset={topOffset}

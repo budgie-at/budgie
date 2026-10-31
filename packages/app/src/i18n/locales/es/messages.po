@@ -23,6 +23,10 @@ msgid "Binance P2P sell {assetCode}"
 msgstr "Venta P2P de {assetCode} en Binance"
 
 #: src/category/hooks/use-merge-category.hook.ts
+msgid "“{sourceTitle}” deleted, transactions moved to “{targetTitle}”"
+msgstr "«{sourceTitle}» eliminada, transacciones movidas a «{targetTitle}»"
+
+#: src/category/hooks/use-merge-category.hook.ts
 #: src/tag/hooks/use-merge-tag.hook.ts
 msgid "“{sourceTitle}” merged into “{targetTitle}”"
 msgstr "«{sourceTitle}» combinado con «{targetTitle}»"
@@ -144,12 +148,12 @@ msgid "{code} · Base currency"
 msgstr "{code} · Moneda base"
 
 #: src/category/hooks/use-merge-category.hook.ts
-msgid "{count, plural, =0 {“{sourceTitle}” has no transactions. Pick a category to merge it into, and “{sourceTitle}” is removed.} one {“{sourceTitle}” has # transaction. It moves to the category you pick, and “{sourceTitle}” is removed.} other {“{sourceTitle}” has # transactions. They move to the category you pick, and “{sourceTitle}” is removed.}}"
-msgstr "{count, plural, =0 {«{sourceTitle}» no tiene transacciones. Elige una categoría para combinarla y «{sourceTitle}» se eliminará.} one {«{sourceTitle}» tiene # transacción. Pasará a la categoría que elijas y «{sourceTitle}» se eliminará.} other {«{sourceTitle}» tiene # transacciones. Pasarán a la categoría que elijas y «{sourceTitle}» se eliminará.}}"
+msgid "{count, plural, =0 {“{sourceTitle}” has no transactions. It is removed after the merge.} one {Its # transaction moves to the category you pick, and “{sourceTitle}” is removed.} other {Its # transactions move to the category you pick, and “{sourceTitle}” is removed.}}"
+msgstr "{count, plural, =0 {«{sourceTitle}» no tiene transacciones. Se eliminará tras la fusión.} one {Su # transacción pasa a la categoría que elijas y «{sourceTitle}» se elimina.} other {Sus # transacciones pasan a la categoría que elijas y «{sourceTitle}» se elimina.}}"
 
 #: src/tag/hooks/use-merge-tag.hook.ts
-msgid "{count, plural, =0 {“{sourceTitle}” is not on any transactions. Pick a tag to merge it into, and “{sourceTitle}” is removed.} one {“{sourceTitle}” is on # transaction. It gets the tag you pick, and “{sourceTitle}” is removed.} other {“{sourceTitle}” is on # transactions. They get the tag you pick, and “{sourceTitle}” is removed.}}"
-msgstr "{count, plural, =0 {«{sourceTitle}» no está en ninguna transacción. Elige una etiqueta para combinarla y «{sourceTitle}» se eliminará.} one {«{sourceTitle}» está en # transacción. Recibirá la etiqueta que elijas y «{sourceTitle}» se eliminará.} other {«{sourceTitle}» está en # transacciones. Recibirán la etiqueta que elijas y «{sourceTitle}» se eliminará.}}"
+msgid "{count, plural, =0 {“{sourceTitle}” is not on any transactions. It is removed after the merge.} one {Its # transaction gets the tag you pick, and “{sourceTitle}” is removed.} other {Its # transactions get the tag you pick, and “{sourceTitle}” is removed.}}"
+msgstr "{count, plural, =0 {«{sourceTitle}» no está en ninguna transacción. Se eliminará tras la fusión.} one {Su # transacción recibe la etiqueta que elijas y «{sourceTitle}» se elimina.} other {Sus # transacciones reciben la etiqueta que elijas y «{sourceTitle}» se elimina.}}"
 
 #: src/budget/components/budget-period-recap-rollover/budget-period-recap-rollover.tsx
 msgid "{count, plural, one {{formattedAmount} rolled over across # category} other {{formattedAmount} rolled over across # categories}}"
@@ -182,6 +186,10 @@ msgstr "{count, plural, one {Elige un icono para # categoría} other {Elige icon
 #: src/tag/hooks/use-delete-tag.hook.ts
 msgid "{count, plural, one {It will be removed from # transaction. The transaction stays.} other {It will be removed from # transactions. The transactions stay.}}"
 msgstr "{count, plural, one {Se quitará de # transacción. La transacción se conserva.} other {Se quitará de # transacciones. Las transacciones se conservan.}}"
+
+#: src/category/hooks/use-merge-category.hook.ts
+msgid "{count, plural, one {Move # transaction from “{sourceTitle}”, then delete it} other {Move # transactions from “{sourceTitle}”, then delete it}}"
+msgstr "{count, plural, one {Mover # transacción de «{sourceTitle}» y luego eliminarla} other {Mover # transacciones de «{sourceTitle}» y luego eliminarla}}"
 
 #: src/categorize-inbox/components/categorize-inbox-payments-bar/categorize-inbox-payments-bar.tsx
 msgid "{count, plural, one {Use # payment} other {Use # payments}}"
@@ -2137,6 +2145,10 @@ msgstr "No se pudieron verificar los permisos de la clave de API"
 msgid "Couldn’t check Monobank for new accounts"
 msgstr "No se pudieron buscar cuentas nuevas en Monobank"
 
+#: src/@generic/component/searchable-page-error-state/searchable-page-error-state.tsx
+msgid "Couldn’t load this list"
+msgstr "No se pudo cargar la lista"
+
 #: src/account/component/account-switch-field/account-switch-field.tsx
 msgid "Count it in your net worth"
 msgstr "Contarla en tu patrimonio neto"
@@ -2149,10 +2161,9 @@ msgstr "Cuenta las criptomonedas a su valor de mercado actual"
 msgid "Covered by your liquid balance."
 msgstr "Cubierto por tu saldo líquido."
 
-#: src/category/components/category-empty-state/category-empty-state.tsx
-#: src/tag/components/tag-empty-state/tag-empty-state.tsx
-msgid "Create “{trimmedSearch}”"
-msgstr "Crear «{trimmedSearch}»"
+#: src/@generic/component/searchable-page-empty-state-actions/searchable-page-empty-state-actions.tsx
+msgid "Create “{query}”"
+msgstr "Crear «{query}»"
 
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-debt-settlement-transaction-actions.hook.ts
@@ -2342,12 +2353,12 @@ msgid "Default Account"
 msgstr "Cuenta predeterminada"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
-#: src/@generic/component/entity-list-row/entity-list-row.tsx
-#: src/@generic/component/grouped-list-row/grouped-list-row.tsx
 #: src/ai/hook/use-ai-model-download-actions.hook.ts
 #: src/budget/hooks/use-budget-form.hook.ts
+#: src/category/components/category-card/category-card.tsx
 #: src/category/hooks/use-delete-category.hook.ts
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
+#: src/tag/components/tag-card/tag-card.tsx
 #: src/tag/hooks/use-delete-tag.hook.ts
 #: src/transaction/hook/use-delete-transaction.hook.ts
 msgid "Delete"
@@ -3451,10 +3462,6 @@ msgstr "Clave rechazada"
 msgid "Key updated"
 msgstr "Clave actualizada"
 
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx
-msgid "Keywords"
-msgstr "Palabras clave"
-
 #: src/settings/components/language-selector/language-selector.tsx
 msgid "Language"
 msgstr "Idioma"
@@ -3718,6 +3725,11 @@ msgstr "Código MCC"
 msgid "Merchant code"
 msgstr "Código de comercio"
 
+#: src/category/hooks/use-merge-category.hook.ts
+#: src/tag/hooks/use-merge-tag.hook.ts
+msgid "Merge “{sourceTitle}” into…"
+msgstr "Fusionar «{sourceTitle}» con…"
+
 #: src/category/components/category-form/category-form.tsx
 msgid "Merge into another category…"
 msgstr "Fusionar con otra categoría…"
@@ -3838,10 +3850,6 @@ msgstr "Más acciones…"
 msgid "More categories"
 msgstr "Más categorías"
 
-#: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
-msgid "More icons"
-msgstr "Más iconos"
-
 #: src/installment-plan/component/installment-count-picker/installment-count-picker.tsx
 msgid "More months"
 msgstr "Más meses"
@@ -3873,6 +3881,11 @@ msgstr "Mover {rowCount} a efectivo · {total}"
 #: src/categorize-inbox/components/categorize-inbox-group-move-to-cash-option/categorize-inbox-group-move-to-cash-option.tsx
 msgid "Move to cash"
 msgstr "Mover a efectivo"
+
+#: src/category/components/category-card/category-card.tsx
+#: src/category/components/category-form/category-form.tsx
+msgid "Move transactions and delete…"
+msgstr "Mover transacciones y eliminar…"
 
 #: src/categorize-inbox/components/categorize-inbox-moved-to-cash-undo/categorize-inbox-moved-to-cash-undo.tsx
 msgid "Moved to cash"
@@ -3922,6 +3935,10 @@ msgstr "Nueva cuenta"
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 msgid "New borrowed debt"
 msgstr "Nueva deuda pedida prestada"
+
+#: src/app/(tabs)/settings/category-icons.tsx
+msgid "New categories get an icon from their name automatically."
+msgstr "Las categorías nuevas reciben un icono según su nombre automáticamente."
 
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "New category"
@@ -4223,10 +4240,6 @@ msgstr "Nota"
 #: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
 msgid "Nothing from the past is imported"
 msgstr "No se importa nada del pasado"
-
-#: src/app/(tabs)/settings/category-icons.tsx
-msgid "Nothing to fix here"
-msgstr "No hay nada que corregir"
 
 #: src/runway/hook/use-runway-tick-label.hook.ts
 msgid "Now"
@@ -4650,6 +4663,10 @@ msgstr "Elige un periodo. Los datos existentes se conservan."
 #: src/app/(tabs)/settings/category-icons.tsx
 msgid "Pick an icon — it saves instantly."
 msgstr "Elige un icono: se guarda al instante."
+
+#: src/category/hooks/use-merge-category.hook.ts
+msgid "Pick the category they move to."
+msgstr "Elige la categoría a la que pasan."
 
 #: src/settings/components/app-lock-row/app-lock-row.tsx
 msgid "PIN and {biometricLabel}. Encrypts your data."
@@ -6333,6 +6350,7 @@ msgstr "Prueba un término de búsqueda diferente o crea una nueva etiqueta"
 msgid "Try adjusting your filters to see more results"
 msgstr "Intenta ajustar tus filtros para ver más resultados"
 
+#: src/@generic/component/searchable-page-error-state/searchable-page-error-state.tsx
 #: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
 #: src/ai/component/ai-download-stopped-card/ai-download-stopped-card.tsx
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
@@ -6770,6 +6788,10 @@ msgstr "Tú decides"
 msgid "Your data"
 msgstr "Tus datos"
 
+#: src/@generic/component/searchable-page-error-state/searchable-page-error-state.tsx
+msgid "Your data is safe. Reading it failed this time."
+msgstr "Tus datos están a salvo. Solo falló la lectura esta vez."
+
 #: src/auth/components/security-lock-button/security-lock-button.tsx
 msgid "Your data is sealed. Only your PIN opens it."
 msgstr "Tus datos están sellados. Solo tu PIN los abre."
@@ -6813,6 +6835,10 @@ msgstr "Tu PIN · Face ID"
 #: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
 msgid "Your PIN · Fingerprint"
 msgstr "Tu PIN · Huella dactilar"
+
+#: src/app/(tabs)/settings/tags.tsx
+msgid "Your tags"
+msgstr "Tus etiquetas"
 
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Your token is stored in Budgie's file and only ever sent to Monobank."

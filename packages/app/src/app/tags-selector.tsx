@@ -40,6 +40,7 @@ export default function TagsSelectorModal() {
         initialTagIds = [],
         suggestedTagIds = [],
         excludeTagIds = [],
+        title,
         description,
         singleSelect = false,
         enablePrimarySelection = false
@@ -59,33 +60,32 @@ export default function TagsSelectorModal() {
     const data = prepareSelectorGridData(tags, excludeTagIds, selected);
     const dirty = isSelectionDirty(selected, initialTagIds) || primaryTagId !== initialPrimaryTagId;
 
+    const resolveSelection = (tagIds: number[]) => {
+        hasResolvedRef.current = true;
+        resolveTagsSelector(tagIds);
+    };
+
     const handleSelectTag = (tagId: number) => {
         if (singleSelect) {
-            hasResolvedRef.current = true;
-            resolveTagsSelector([tagId]);
-
-            return;
+            resolveSelection([tagId]);
+        } else {
+            dispatch({ type: TagsSelectorActionTypeEnum.TAG_TOGGLED, tagId });
         }
-
-        dispatch({ type: TagsSelectorActionTypeEnum.TAG_TOGGLED, tagId });
     };
 
-    const handlePrimarySelect = (tagId: number) => {
-        dispatch({ type: TagsSelectorActionTypeEnum.PRIMARY_SELECTED, tagId });
-    };
+    const handlePrimarySelect = (tagId: number) => void dispatch({ type: TagsSelectorActionTypeEnum.PRIMARY_SELECTED, tagId });
 
     const handleCreatePress = () => {
         openTagForm({ defaultTitle: search }, result => {
-            if (isDefined(result)) {
+            if (isDefined(result) && singleSelect) {
+                resolveSelection([result.tag.id]);
+            } else if (isDefined(result)) {
                 dispatch({ type: TagsSelectorActionTypeEnum.TAG_ADDED, tagId: result.tag.id });
             }
         });
     };
 
-    const handleDone = () => {
-        hasResolvedRef.current = true;
-        resolveTagsSelector(reorderTagIdsByPrimary(selected, primaryTagId));
-    };
+    const handleDone = () => void resolveSelection(reorderTagIdsByPrimary(selected, primaryTagId));
 
     useEffect(
         () => () => {
@@ -108,7 +108,7 @@ export default function TagsSelectorModal() {
                 testID={TagsSelectorModalSelector.Input}
             />
 
-            <SelectorModalDescription description={description}>
+            <SelectorModalDescription title={title} description={description}>
                 {topOffset => (
                     <TagsSelectContent
                         topOffset={topOffset}

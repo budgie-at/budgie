@@ -16,32 +16,23 @@ export const TagEmptyState = ({ search, onClearSearch }: Props) => {
     const { t } = useLingui();
     const [openTagForm] = useTagFormModal();
     const trimmedSearch = search.trim();
+    const hasSearch = isNotEmptyString(trimmedSearch);
+    const icon = hasSearch ? UserIconNameEnum.Search : UserIconNameEnum.Tag;
+    const title = hasSearch ? t`No tags match “${trimmedSearch}”` : t`No tags yet`;
+    const description = hasSearch
+        ? t`Check the spelling or create it as a new tag.`
+        : t`Tags cut across categories — track a trip, a project or a person and see the true total.`;
 
     const handleCreate = () => void openTagForm({ defaultTitle: trimmedSearch });
 
-    if (isNotEmptyString(trimmedSearch)) {
-        return (
-            <SearchablePageEmptyState
-                icon={UserIconNameEnum.Search}
-                title={t`No tags match “${trimmedSearch}”`}
-                description={t`Check the spelling or create it as a new tag.`}
-            >
-                <SearchablePageEmptyStateActions
-                    createLabel={t`Create “${trimmedSearch}”`}
-                    onCreate={handleCreate}
-                    onClearSearch={onClearSearch}
-                />
-            </SearchablePageEmptyState>
-        );
-    }
-
     return (
-        <SearchablePageEmptyState
-            icon={UserIconNameEnum.Tag}
-            title={t`No tags yet`}
-            description={t`Tags cut across categories — track a trip, a project or a person and see the true total.`}
-        >
-            <SearchablePageEmptyStateActions createLabel={t`New tag`} onCreate={handleCreate} />
+        <SearchablePageEmptyState icon={icon} title={title} description={description}>
+            <SearchablePageEmptyStateActions
+                search={trimmedSearch}
+                createLabel={t`New tag`}
+                onCreate={handleCreate}
+                onClearSearch={onClearSearch}
+            />
         </SearchablePageEmptyState>
     );
 };

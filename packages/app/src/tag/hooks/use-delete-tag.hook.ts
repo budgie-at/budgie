@@ -10,10 +10,12 @@ import { showSuccessToast } from '../../@generic/utils/show-success-toast/show-s
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 import { TagService } from '../service/tag.service';
 
+import type { MutationTracker } from '../../@generic/type/mutation-tracker.type';
+
 export const useDeleteTag = () => {
     const { t } = useLingui();
 
-    return Effect.fn('useDeleteTag.deleteTag')(function* (id: number) {
+    return Effect.fn('useDeleteTag.deleteTag')(function* (id: number, trackMutation: MutationTracker) {
         const tagRepository = yield* TagRepository;
         const tagService = yield* TagService;
         const [tag] = yield* tagRepository.findByIds([id]);
@@ -43,7 +45,7 @@ export const useDeleteTag = () => {
             return false;
         }
 
-        yield* tagService.deleteById(id).pipe(toastOnFailure(t`Could not delete tag`, t`Please try again later`));
+        yield* trackMutation(tagService.deleteById(id)).pipe(toastOnFailure(t`Could not delete tag`, t`Please try again later`));
         yield* Effect.sync(() => void showSuccessToast(t`“${title}” deleted`));
 
         return true;
