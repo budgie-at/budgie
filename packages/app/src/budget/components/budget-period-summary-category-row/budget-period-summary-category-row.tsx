@@ -1,3 +1,5 @@
+import { UserIconNameEnum } from '@budgie/contracts';
+
 import { isDefined } from '@rnw-community/shared';
 
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
@@ -15,6 +17,7 @@ interface Props {
 export const BudgetPeriodSummaryCategoryRow = ({ categoryId, limitAmount, carriedAmount, spent, currencySymbol }: Props) => {
     const { category } = useGetCategoryByIdQuery(categoryId);
     const title = isDefined(category) ? category.title : '';
+    const icon = isDefined(category) ? category.icon : UserIconNameEnum.Shapes;
 
     return (
         <BudgetPeriodSummaryLimitRow
@@ -25,6 +28,7 @@ export const BudgetPeriodSummaryCategoryRow = ({ categoryId, limitAmount, carrie
             currencySymbol={currencySymbol}
             testID={BudgetSelector.PeriodSummaryCategoryRow(categoryId)}
             spentTestID={BudgetSelector.PeriodSummaryCategorySpentLabel(categoryId)}
+            icon={icon}
         />
     );
 };

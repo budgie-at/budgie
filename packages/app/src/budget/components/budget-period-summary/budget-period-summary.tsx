@@ -1,4 +1,4 @@
-import { BudgetPeriodEnum } from '@budgie/contracts';
+import { BudgetPeriodEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { ScrollView, Text, View } from 'react-native';
 
@@ -80,6 +80,7 @@ export const BudgetPeriodSummary = ({ snapshotId }: Props) => {
                         currencySymbol={currencySymbol}
                         testID={BudgetSelector.PeriodSummaryOther}
                         spentTestID={BudgetSelector.PeriodSummaryOtherSpentLabel}
+                        icon={UserIconNameEnum.CircleEllipsis}
                     />
                 </View>
             </ScrollView>
