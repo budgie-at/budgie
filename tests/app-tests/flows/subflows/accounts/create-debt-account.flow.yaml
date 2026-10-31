@@ -25,7 +25,7 @@ env:
       id: 'AccountForm.NameInput'
 - inputText: ${ACCOUNT_NAME}
 - tapOn:
-      text: 'ACCOUNT NAME & ICON'
+      text: 'Details'
 
 - extendedWaitUntil:
       visible:

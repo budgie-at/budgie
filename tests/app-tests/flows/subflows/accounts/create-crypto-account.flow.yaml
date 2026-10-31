@@ -56,7 +56,7 @@ appId: ${APP_ID}
 - eraseText: 20
 - inputText: ${ACCOUNT_AMOUNT}
 - tapOn:
-      text: 'ACCOUNT NAME & ICON'
+      text: 'Details'
 - extendedWaitUntil:
       visible:
           id: 'AccountForm.SelectedCurrency.${CURRENCY_CODE}'
