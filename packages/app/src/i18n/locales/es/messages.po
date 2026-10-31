@@ -3298,10 +3298,6 @@ msgstr "General"
 msgid "Generate English names and search keywords automatically."
 msgstr "Genera nombres en inglés y palabras clave de búsqueda automáticamente."
 
-#: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
-msgid "Generic"
-msgstr "Genérico"
-
 #: src/i18n/constant/languages.constant.ts
 msgid "German"
 msgstr "Alemán"
@@ -5953,6 +5949,10 @@ msgstr "Iniciar sincronización"
 #: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
 msgid "Start tracking your spending by using the mic button or adding transactions manually"
 msgstr "Comienza a rastrear tus gastos usando el botón de micrófono o agregando transacciones manualmente"
+
+#: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
+msgid "Starter budget"
+msgstr "Presupuesto inicial"
 
 #: src/account/component/create-simple-account/create-simple-account.tsx
 msgid "Starting balance"
