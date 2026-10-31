@@ -9,6 +9,7 @@ import { useGetCategoryByIdQuery } from '../../../category/query/use-get-categor
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { BudgetSelector } from '../../budget.selector';
 import { computeFundTimeFraction } from '../../utils/compute-fund-time-fraction.util';
+import { formatBudgetFundDueDate } from '../../utils/format-budget-fund-due-date.util';
 import { isFundBehind } from '../../utils/is-fund-behind.util';
 import { BudgetFundRowStatus } from '../budget-fund-row-status/budget-fund-row-status';
 import { BudgetLimitBar } from '../budget-limit-bar/budget-limit-bar';
@@ -27,9 +28,9 @@ interface Props {
 export const BudgetFundRow = ({ fund, budget, currencySymbol }: Props) => {
     const { t } = useLingui();
     const today = useToday();
-    const { formatMonthAndDay } = useFormatDate();
+    const { formatMonthAndDay, formatDayAndMonthAndYear } = useFormatDate();
     const barTone = isFundBehind(fund, today) ? 'warning' : 'positive';
-    const dueDate = formatMonthAndDay(fund.dueAt);
+    const dueDate = formatBudgetFundDueDate(fund.dueAt, today, formatMonthAndDay, formatDayAndMonthAndYear);
     const dueLabel = t`Due ${dueDate}`;
     const { category } = useGetCategoryByIdQuery(fund.categoryId);
     const icon = isDefined(category) ? category.icon : UserIconNameEnum.PiggyBank;
