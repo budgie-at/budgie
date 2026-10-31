@@ -180,10 +180,7 @@ export const RootLayoutContent = () => {
                                                                         options={formSheetOptions([0.65, DETENT_95], 0)}
                                                                     />
                                                                     <Stack.Screen name="budget-safe-to-spend" options={sheetOptions} />
-                                                                    <Stack.Screen
-                                                                        name="budget-fund-form"
-                                                                        options={formSheetOptions([DETENT_82, DETENT_95], 0)}
-                                                                    />
+                                                                    <Stack.Screen name="budget-fund-form" options={sheetOptions} />
                                                                     <Stack.Screen name="budget-limit-changes" options={sheetOptions} />
                                                                     <Stack.Screen name="category-form" options={MODAL_OPTIONS} />
                                                                     <Stack.Screen name="tag-form" options={MODAL_OPTIONS} />

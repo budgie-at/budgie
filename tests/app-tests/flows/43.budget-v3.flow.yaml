@@ -214,13 +214,11 @@ env:
 - tapOn:
       id: 'BudgetFund.TargetInput'
 - inputText: '600'
+- waitForAnimationToEnd
 - tapOn:
       id: 'BudgetFund.NameInput'
 - inputText: ${FUND_NAME}
-- scrollUntilVisible:
-      element:
-          id: 'BudgetFund.CategoryField'
-      direction: DOWN
+- waitForAnimationToEnd
 - tapOn:
       id: 'BudgetFund.CategoryField'
 - runFlow:
@@ -235,10 +233,7 @@ env:
       timeout: 10000
 - tapOn:
       id: 'DatePicker.Day.20'
-- scrollUntilVisible:
-      element:
-          id: 'BudgetFund.SaveButton'
-      direction: DOWN
+- waitForAnimationToEnd
 - extendedWaitUntil:
       visible:
           id: 'BudgetFund.SaveButton'

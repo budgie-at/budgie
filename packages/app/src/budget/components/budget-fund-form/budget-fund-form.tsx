@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react/macro';
 import { FormProvider, useWatch } from 'react-hook-form';
-import { ScrollView, View } from 'react-native';
+import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -47,14 +47,7 @@ export const BudgetFundForm = ({ budget, editingId }: Props) => {
 
     return (
         <FormProvider {...form}>
-            <ScrollView
-                className="flex-1 bg-sheet-surface"
-                contentContainerClassName="px-5xl pb-safe-or-[16px]"
-                keyboardShouldPersistTaps="handled"
-                keyboardDismissMode="interactive"
-                automaticallyAdjustKeyboardInsets
-                showsVerticalScrollIndicator={false}
-            >
+            <View className="bg-sheet-surface px-5xl pb-3xl">
                 <FormsheetHeader size="md" title={title} />
                 <FormLayoutGroup className="gap-3xl">
                     {isDefined(suggestion) ? (
@@ -85,7 +78,7 @@ export const BudgetFundForm = ({ budget, editingId }: Props) => {
                         onPress={handleSubmit}
                     />
                 </FormLayoutGroup>
-            </ScrollView>
+            </View>
         </FormProvider>
     );
 };
