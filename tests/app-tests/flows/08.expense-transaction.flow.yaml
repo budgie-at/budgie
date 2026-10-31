@@ -122,23 +122,29 @@ appId: ${APP_ID}
       timeout: 5000
 - assertNotVisible:
       id: 'TransactionFeePill'
-- tapOn:
-      id: 'TransactionActionsMenu.TriggerButton'
+- scrollUntilVisible:
+    element:
+      id: 'TransactionActionsMenu.CreateRuleButton'
+    direction: DOWN
+    centerElement: true
 - extendedWaitUntil:
       visible:
-          id: 'TransactionActionsMenu.FeeButton'
+          id: 'TransactionInfo.ConvertButton'
 - assertVisible:
-      id: 'TransactionActionsMenu.DeleteButton'
+      id: 'TransactionActionsMenu.CreateRuleButton'
+- tapOn:
+    id: 'TransactionInfo.ConvertButton'
 - assertVisible:
-      id: 'TransactionActionsMenu.AttachDebtSettlementButton'
+    text: 'Add fee'
 - assertVisible:
-      id: 'TransactionActionsMenu.ConvertToTransferButton'
+    text: 'Attach debt'
 - assertVisible:
-      id: 'TransactionActionsMenu.StartDepositButton'
+      text: 'Convert to Transfer'
+- assertVisible:
+      text: 'Start Deposit'
 - assertNotVisible:
-      id: 'TransactionActionsMenu.ConvertToRefundButton'
-- assertNotVisible:
-      id: 'TransactionActionsMenu.RevertButton'
+      text: 'Convert to Refund'
+
 - tapOn:
       id: 'TransactionActionsMenu.FeeButton'
 - extendedWaitUntil:
@@ -200,8 +206,12 @@ appId: ${APP_ID}
       element:
           id: 'TransactionInfo.Row.Tags'
       direction: DOWN
-- assertVisible: 'E2E Txn Primary Tag'
-- assertVisible: 'E2E Txn Tag'
+- assertVisible:
+      id: 'TransactionInfo.Row.Tags'
+      text: '.*E2E Txn Primary Tag.*'
+- assertVisible:
+      id: 'TransactionInfo.Row.Tags'
+      text: '.*E2E Txn Tag.*'
 - tapOn:
       id: 'PageHeader.BackButton'
 

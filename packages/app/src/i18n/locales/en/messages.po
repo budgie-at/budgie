@@ -47,11 +47,6 @@ msgstr "{0, plural, one {# more payment of {formattedPayment}} other {# more pay
 msgid "{0, plural, one {# payment} other {# payments}}"
 msgstr "{0, plural, one {# payment} other {# payments}}"
 
-#. placeholder {0}: changed.length
-#: src/receipt/hook/use-receipt-scan.hook.ts
-msgid "{0, plural, one {# receipt saved} other {# receipts saved}}"
-msgstr "{0, plural, one {# receipt saved} other {# receipts saved}}"
-
 #. placeholder {0}: labels.length
 #: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
 msgid "{0, plural, one {# tag} other {# tags}}"
@@ -390,6 +385,7 @@ msgid "{overdueDays, plural, one {Overdue # day} other {Overdue # days}}"
 msgstr "{overdueDays, plural, one {Overdue # day} other {Overdue # days}}"
 
 #: src/installment-plan/component/installment-plan-schedule-summary/installment-plan-schedule-summary.tsx
+#: src/transaction/components/transaction-info-installment-terms/transaction-info-installment-terms.tsx
 msgid "{paidCount} of {installmentCount} paid"
 msgstr "{paidCount} of {installmentCount} paid"
 
@@ -420,6 +416,10 @@ msgstr "{percentage}% of income"
 #: src/budget/components/budget-history-chart/budget-history-chart.tsx
 msgid "{periodLabel}, spent {spentAmount} of {limitAmount}"
 msgstr "{periodLabel}, spent {spentAmount} of {limitAmount}"
+
+#: src/transaction/components/transaction-info-refund-summary/transaction-info-refund-summary.tsx
+msgid "{refunded} refunded · {net} net"
+msgstr "{refunded} refunded · {net} net"
 
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "{remaining} GB one-time download"
@@ -482,8 +482,8 @@ msgid "{selectedInGroupCount} of {accountsCount} selected"
 msgstr "{selectedInGroupCount} of {accountsCount} selected"
 
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
-msgid "{similarCount, plural, one {# similar transaction} other {# similar transactions}}"
-msgstr "{similarCount, plural, one {# similar transaction} other {# similar transactions}}"
+msgid "{similarCount, plural, one {# similar · last 6 months} other {# similar · last 6 months}}"
+msgstr "{similarCount, plural, one {# similar · last 6 months} other {# similar · last 6 months}}"
 
 #: src/ai/constant/ai-umbrella-status-atom.constant.ts
 msgid "{source} error · {message}"
@@ -556,10 +556,6 @@ msgstr "{transactionCount, plural, one {# transaction} other {# transactions}}"
 #: src/categorize-inbox/components/categorize-inbox-transfer-undo/categorize-inbox-transfer-undo.tsx
 msgid "{transferCount} now transfers"
 msgstr "{transferCount} now transfers"
-
-#: src/receipt/hook/use-receipt-scan.hook.ts
-msgid "{unreadableCount, plural, one {Couldn't read # receipt} other {Couldn't read # receipts}}"
-msgstr "{unreadableCount, plural, one {Couldn't read # receipt} other {Couldn't read # receipts}}"
 
 #: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 #: src/budget/components/budget-verdict-figure/budget-verdict-figure.tsx
@@ -677,6 +673,7 @@ msgstr "About a minute"
 #: src/rule/constant/rule-condition-field.constant.ts
 #: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
+#: src/transaction/components/refund-transaction-info-content/refund-transaction-info-content.tsx
 #: src/transaction/components/transaction-account-row/transaction-account-row.tsx
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
@@ -820,6 +817,11 @@ msgstr "Add category"
 msgid "Add deposit"
 msgstr "Add deposit"
 
+#: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
+#: src/transaction/hook/use-transfer-transaction-actions.hook.ts
+msgid "Add fee"
+msgstr "Add fee"
+
 #: src/transaction/components/split-entries-add-item-footer/split-entries-add-item-footer.tsx
 msgid "Add item"
 msgstr "Add item"
@@ -844,10 +846,6 @@ msgstr "Add the Budgie action"
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add your first account to start tracking your finances"
 msgstr "Add your first account to start tracking your finances"
-
-#: src/receipt/hook/use-receipt-scan.hook.ts
-msgid "Added"
-msgstr "Added"
 
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
 msgid "Adds a fee to the plan total"
@@ -1687,7 +1685,7 @@ msgstr "Consolidate Matches"
 msgid "Consolidated transactions cannot start a deposit"
 msgstr "Consolidated transactions cannot start a deposit"
 
-#: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
+#: src/transaction/components/transaction-info-note-group/transaction-info-note-group.tsx
 msgid "Consolidation"
 msgstr "Consolidation"
 
@@ -1964,10 +1962,6 @@ msgstr "Could not reset bank sync"
 msgid "Could not restore account."
 msgstr "Could not restore account."
 
-#: src/transaction/hook/use-revert-consolidation.hook.ts
-msgid "Could not revert consolidation."
-msgstr "Could not revert consolidation."
-
 #: src/budget/hooks/use-budget-form.hook.ts
 msgid "Could not save budget"
 msgstr "Could not save budget"
@@ -1992,6 +1986,11 @@ msgstr "Could not select CSV file"
 msgid "Could not select database backup"
 msgstr "Could not select database backup"
 
+#: src/transaction/hook/use-delete-transaction.hook.ts
+#: src/transaction/hook/use-revert-consolidation.hook.ts
+msgid "Could not separate transactions."
+msgstr "Could not separate transactions."
+
 #: src/sync/hook/use-sync-account-setup-flow.hook.ts
 msgid "Could not set up sync"
 msgstr "Could not set up sync"
@@ -2004,10 +2003,6 @@ msgstr "Could not start syncing"
 #: src/categorize-inbox/hook/use-categorize-inbox-last-write.hook.ts
 msgid "Could not tag transactions"
 msgstr "Could not tag transactions"
-
-#: src/transaction/hook/use-delete-transaction.hook.ts
-msgid "Could not unconsolidate transaction."
-msgstr "Could not unconsolidate transaction."
 
 #: src/categorize-inbox/hook/use-categorize-inbox-move-to-cash.hook.ts
 msgid "Could not undo the move to cash"
@@ -2156,6 +2151,7 @@ msgid "Create one to get started."
 msgstr "Create one to get started."
 
 #: src/transaction/components/create-rule-menu-item/create-rule-menu-item.tsx
+#: src/transaction/components/transaction-info-create-rule-row/transaction-info-create-rule-row.tsx
 msgid "Create rule"
 msgstr "Create rule"
 
@@ -2221,7 +2217,6 @@ msgstr "Data management"
 #: src/@generic/component/date-filter/date-filter.tsx
 #: src/app/(tabs)/settings/import.tsx
 #: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
-#: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "Date"
 msgstr "Date"
 
@@ -2310,6 +2305,7 @@ msgid "Delete the {downloaded} GB part?"
 msgstr "Delete the {downloaded} GB part?"
 
 #: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
+#: src/transaction/components/transaction-info-delete-row/transaction-info-delete-row.tsx
 #: src/transaction/components/transaction-list-delete-menu-item/transaction-list-delete-menu-item.tsx
 msgid "Delete Transaction"
 msgstr "Delete Transaction"
@@ -2351,6 +2347,14 @@ msgstr "Deselect all"
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Detach debt"
 msgstr "Detach debt"
+
+#: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
+msgid "Detach from plan"
+msgstr "Detach from plan"
+
+#: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
+msgid "Detaches it from “{debtTitle}”"
+msgstr "Detaches it from “{debtTitle}”"
 
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Details"
@@ -2500,6 +2504,7 @@ msgid "Each one becomes an account. Rename or remove them later."
 msgstr "Each one becomes an account. Rename or remove them later."
 
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+#: src/transaction/components/transaction-info-edit-button/transaction-info-edit-button.tsx
 msgid "Edit"
 msgstr "Edit"
 
@@ -2525,6 +2530,11 @@ msgstr "Edit existing"
 msgid "Edit Expense"
 msgstr "Edit Expense"
 
+#: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
+#: src/transaction/hook/use-transfer-transaction-actions.hook.ts
+msgid "Edit fee"
+msgstr "Edit fee"
+
 #: src/transaction/components/update-income-transaction/update-income-transaction.tsx
 msgid "Edit Income"
 msgstr "Edit Income"
@@ -2537,7 +2547,7 @@ msgstr "Edit Rule"
 msgid "Edit Tag"
 msgstr "Edit Tag"
 
-#: src/transaction/components/transaction-info-page-content/transaction-info-page-content.tsx
+#: src/transaction/components/transaction-info-edit-button/transaction-info-edit-button.tsx
 msgid "Edit transaction"
 msgstr "Edit transaction"
 
@@ -3491,6 +3501,10 @@ msgstr "Manage Rules"
 msgid "Manage Tags"
 msgstr "Manage Tags"
 
+#: src/transaction/components/refund-transaction-info-content/refund-transaction-info-content.tsx
+msgid "Manage this refund from the original purchase."
+msgstr "Manage this refund from the original purchase."
+
 #: src/rule/constant/external-source.constant.ts
 msgid "Manual"
 msgstr "Manual"
@@ -3542,10 +3556,6 @@ msgstr "Matched expenses are converted into a transfer to this account."
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Matched income is converted into a transfer from this account."
 msgstr "Matched income is converted into a transfer from this account."
-
-#: src/receipt/hook/use-receipt-scan.hook.ts
-msgid "Matched to existing"
-msgstr "Matched to existing"
 
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "matches"
@@ -3671,6 +3681,10 @@ msgstr "Monobank rejected this key. Check it and try again."
 msgid "Monobank sends about one month of history per minute, for each account you selected."
 msgstr "Monobank sends about one month of history per minute, for each account you selected."
 
+#: src/transaction/components/transaction-info-installment-terms/transaction-info-installment-terms.tsx
+msgid "Monthly"
+msgstr "Monthly"
+
 #: src/budget/components/budget-period-summary/budget-period-summary.tsx
 #: src/budget/components/budget-widget-card/budget-widget-card.tsx
 msgid "Monthly budget"
@@ -3695,6 +3709,14 @@ msgstr "Monthly total"
 #: src/runway/component/runway-verdict-figure/runway-verdict-figure.tsx
 msgid "months left"
 msgstr "months left"
+
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
+msgid "More actions"
+msgstr "More actions"
+
+#: src/transaction/components/transaction-info-more-actions-row/transaction-info-more-actions-row.tsx
+msgid "More Actions…"
+msgstr "More Actions…"
 
 #: src/categorize-inbox/components/categorize-inbox-category-provider/categorize-inbox-category-provider.tsx
 msgid "More categories"
@@ -3799,6 +3821,10 @@ msgstr "Next {formattedNextAmount} · {nextDate}"
 #: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
 msgid "next month"
 msgstr "next month"
+
+#: src/transaction/components/transaction-info-installment-terms/transaction-info-installment-terms.tsx
+msgid "Next payment"
+msgstr "Next payment"
 
 #: src/installment-plan/component/installment-timeline/installment-timeline.tsx
 msgid "Next payment {nextPaymentLabel}"
@@ -4058,7 +4084,7 @@ msgstr "Not synced: Auto-Invest, Binance Pay, Binance Card, gift cards, sub-acco
 msgid "Not yet"
 msgstr "Not yet"
 
-#: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
+#: src/transaction/components/transaction-info-note-group/transaction-info-note-group.tsx
 #: src/transaction/components/transaction-note-field-icon/transaction-note-field-icon.tsx
 msgid "Note"
 msgstr "Note"
@@ -4107,6 +4133,10 @@ msgstr "On · PIN"
 #: src/settings/components/app-lock-row/app-lock-row.tsx
 msgid "On · PIN and {biometricLabel}"
 msgstr "On · PIN and {biometricLabel}"
+
+#: src/transaction/components/transaction-info-installment-terms/transaction-info-installment-terms.tsx
+msgid "On {nextDate} · Monthly"
+msgstr "On {nextDate} · Monthly"
 
 #: src/budget/components/budget-verdict-outlook/budget-verdict-outlook.tsx
 msgid "On pace to finish {differenceAmount} under."
@@ -4274,9 +4304,9 @@ msgstr "Organise spending your own way"
 msgid "Organization"
 msgstr "Organization"
 
-#: src/transaction/hook/use-delete-transaction.hook.ts
-msgid "Original imported transactions will be restored and the consolidated transaction will be removed."
-msgstr "Original imported transactions will be restored and the consolidated transaction will be removed."
+#: src/transaction/components/refund-transaction-info-content/refund-transaction-info-content.tsx
+msgid "Original purchase"
+msgstr "Original purchase"
 
 #: src/transaction/components/consolidation-source-row/consolidation-source-row.tsx
 msgid "Original transaction"
@@ -4312,6 +4342,10 @@ msgstr "Other budget: limit reached"
 #: src/categorize-inbox/components/categorize-inbox-group-options/categorize-inbox-group-options.tsx
 msgid "Other options"
 msgstr "Other options"
+
+#: src/transaction/components/transaction-info-debt-progress/transaction-info-debt-progress.tsx
+msgid "Outstanding"
+msgstr "Outstanding"
 
 #: src/budget/components/budget-verdict-figure/budget-verdict-figure.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
@@ -4363,6 +4397,10 @@ msgstr "Owes you"
 #: src/installment-plan/component/installment-plan-paid-summary/installment-plan-paid-summary.tsx
 msgid "Paid {paidAmount} · {paidCount} of {installmentCount}"
 msgstr "Paid {paidAmount} · {paidCount} of {installmentCount}"
+
+#: src/transaction/components/transaction-info-debt-progress/transaction-info-debt-progress.tsx
+msgid "Paid to date: {paid}"
+msgstr "Paid to date: {paid}"
 
 #: src/budget/components/budget-history-section/budget-history-section.tsx
 msgid "Past months"
@@ -4640,10 +4678,6 @@ msgstr "Read on this phone, then you can delete it."
 msgid "Reading receipt"
 msgstr "Reading receipt"
 
-#: src/receipt/components/receipt-scan-toast/receipt-scan-toast.tsx
-msgid "Reading receipts · {current} of {total}"
-msgstr "Reading receipts · {current} of {total}"
-
 #: src/ai/constant/ai-download-card-visuals.constant.ts
 msgid "Ready"
 msgstr "Ready"
@@ -4696,7 +4730,7 @@ msgstr "Recalculating balances"
 #: src/receipt/hook/use-receipt-scan.hook.ts
 #: src/rule/constant/external-source.constant.ts
 #: src/transaction/components/transaction-card-subtitle/transaction-card-subtitle.tsx
-#: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
+#: src/transaction/components/transaction-info-note-group/transaction-info-note-group.tsx
 msgid "Receipt"
 msgstr "Receipt"
 
@@ -4730,6 +4764,10 @@ msgstr "Recurring payments will appear here once patterns are detected from your
 msgid "Refine"
 msgstr "Refine"
 
+#: src/transaction/components/refund-transaction-info-content/refund-transaction-info-content.tsx
+msgid "Refund from {merchant}"
+msgstr "Refund from {merchant}"
+
 #: src/transaction/hook/use-refunded-label.hook.ts
 msgid "Refunded"
 msgstr "Refunded"
@@ -4738,11 +4776,16 @@ msgstr "Refunded"
 msgid "Refunded {formattedRefundedAmount}"
 msgstr "Refunded {formattedRefundedAmount}"
 
+#: src/transaction/components/transaction-info-refund-summary/transaction-info-refund-summary.tsx
+msgid "Refunds received"
+msgstr "Refunds received"
+
 #: src/sync/component/bank-integration-key-card/bank-integration-key-card.tsx
 msgid "Rejected · tap to update"
 msgstr "Rejected · tap to update"
 
 #: src/budget/components/budget-allocation-summary/budget-allocation-summary.tsx
+#: src/transaction/components/transaction-info-installment-terms/transaction-info-installment-terms.tsx
 msgid "Remaining"
 msgstr "Remaining"
 
@@ -4861,18 +4904,6 @@ msgstr "Return to Budgie and select the saved XLSX file below"
 #: src/account/constant/debt-settled-label.constant.ts
 msgid "Returned"
 msgstr "Returned"
-
-#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
-#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
-#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
-#: src/transaction/components/transaction-list-revert-menu-item/transaction-list-revert-menu-item.tsx
-#: src/transaction/hook/use-revert-consolidation.hook.ts
-msgid "Revert"
-msgstr "Revert"
-
-#: src/transaction/hook/use-revert-consolidation.hook.ts
-msgid "Revert consolidation?"
-msgstr "Revert consolidation?"
 
 #: src/sync/component/analytics-sync-account-progress/analytics-sync-account-progress.tsx
 msgid "Review sync settings"
@@ -5228,6 +5259,23 @@ msgstr "Selected"
 msgid "Sending {fromCode}"
 msgstr "Sending {fromCode}"
 
+#: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
+#: src/transaction/hook/use-delete-transaction.hook.ts
+#: src/transaction/hook/use-revert-consolidation.hook.ts
+msgid "Separate"
+msgstr "Separate"
+
+#: src/transaction/components/transaction-actions-menu/transaction-actions-menu.tsx
+#: src/transaction/components/transaction-info-delete-row/transaction-info-delete-row.tsx
+#: src/transaction/components/transaction-list-revert-menu-item/transaction-list-revert-menu-item.tsx
+msgid "Separate Transactions"
+msgstr "Separate Transactions"
+
+#: src/transaction/hook/use-delete-transaction.hook.ts
+#: src/transaction/hook/use-revert-consolidation.hook.ts
+msgid "Separate transactions?"
+msgstr "Separate transactions?"
+
 #: src/budget/components/budget-missing-currency-guard/budget-missing-currency-guard.tsx
 msgid "Set a default currency in Settings first"
 msgstr "Set a default currency in Settings first"
@@ -5245,8 +5293,6 @@ msgid "Set Category"
 msgstr "Set Category"
 
 #: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
-#: src/transaction/components/transfer-transaction-actions-menu/transfer-transaction-actions-menu.tsx
-#: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Set fee"
 msgstr "Set fee"
 
@@ -5647,9 +5693,18 @@ msgstr "The downloaded AI model data is removed from this phone. Nothing downloa
 msgid "The exact amount you will pay, fee included"
 msgstr "The exact amount you will pay, fee included"
 
+#: src/transaction/hook/use-delete-transaction.hook.ts
+#: src/transaction/hook/use-revert-consolidation.hook.ts
+msgid "The merged transactions become separate entries again."
+msgstr "The merged transactions become separate entries again."
+
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "The PIN becomes the encryption key"
 msgstr "The PIN becomes the encryption key"
+
+#: src/transaction/hook/use-revert-consolidation.hook.ts
+msgid "The refund and the purchase become separate entries again."
+msgstr "The refund and the purchase become separate entries again."
 
 #: src/rule/utils/show-rule-application-toast.util.ts
 msgid "The rule was saved but no existing transactions needed updating."
@@ -5828,10 +5883,6 @@ msgstr "This will remove your monthly budget. You can create a new one anytime."
 #: src/app/resync-window-picker.tsx
 msgid "This will reset the sync history and re-sync all transactions from this bank account. Your existing transactions, tags, and categories will be preserved and updated with any new data."
 msgstr "This will reset the sync history and re-sync all transactions from this bank account. Your existing transactions, tags, and categories will be preserved and updated with any new data."
-
-#: src/transaction/hook/use-revert-consolidation.hook.ts
-msgid "This will restore the original transactions and remove the consolidated transaction."
-msgstr "This will restore the original transactions and remove the consolidated transaction."
 
 #: src/@generic/constant/date-period.constant.ts
 msgid "This Year"
@@ -6148,6 +6199,8 @@ msgstr "Unavailable"
 
 #: src/category/components/stats-by-categories/stats-by-categories.tsx
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
+#: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
+#: src/transaction/components/transaction-info-split-entry-row/transaction-info-split-entry-row.tsx
 #: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
 msgid "Uncategorized"
 msgstr "Uncategorized"
@@ -6156,14 +6209,6 @@ msgstr "Uncategorized"
 msgid "Unchecked payments stay in your inbox."
 msgstr "Unchecked payments stay in your inbox."
 
-#: src/transaction/hook/use-delete-transaction.hook.ts
-msgid "Unconsolidate"
-msgstr "Unconsolidate"
-
-#: src/transaction/hook/use-delete-transaction.hook.ts
-msgid "Unconsolidate transaction?"
-msgstr "Unconsolidate transaction?"
-
 #: src/budget/components/budget-history-legend/budget-history-legend.tsx
 msgid "Under limit"
 msgstr "Under limit"
@@ -6171,6 +6216,17 @@ msgstr "Under limit"
 #: src/categorize-inbox/components/categorize-inbox-undo-layout/categorize-inbox-undo-layout.tsx
 msgid "Undo"
 msgstr "Undo"
+
+#: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
+#: src/transaction/components/transaction-info-delete-row/transaction-info-delete-row.tsx
+#: src/transaction/components/transaction-list-revert-menu-item/transaction-list-revert-menu-item.tsx
+#: src/transaction/hook/use-revert-consolidation.hook.ts
+msgid "Undo Refund"
+msgstr "Undo Refund"
+
+#: src/transaction/hook/use-revert-consolidation.hook.ts
+msgid "Undo refund?"
+msgstr "Undo refund?"
 
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "Unknown card"
@@ -6283,7 +6339,7 @@ msgstr "View and delete custom categories"
 msgid "View and restore archived accounts"
 msgstr "View and restore archived accounts"
 
-#: src/transaction/components/transaction-info-source-rows/transaction-info-source-rows.tsx
+#: src/transaction/components/transaction-info-note-group/transaction-info-note-group.tsx
 msgid "View source transactions"
 msgstr "View source transactions"
 

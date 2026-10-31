@@ -79,25 +79,31 @@ appId: ${APP_ID}
     id: 'TransactionInfo.Row.Category'
 - assertNotVisible:
       id: 'TransactionFeePill'
-- tapOn:
-    id: 'TransactionActionsMenu.TriggerButton'
+- scrollUntilVisible:
+    element:
+      id: 'TransactionActionsMenu.CreateRuleButton'
+    direction: DOWN
+    centerElement: true
 - extendedWaitUntil:
     visible:
-      id: 'TransactionActionsMenu.FeeButton'
+      id: 'TransactionInfo.ConvertButton'
 - assertVisible:
-    id: 'TransactionActionsMenu.DeleteButton'
-- assertVisible:
-    id: 'TransactionActionsMenu.AttachDebtSettlementButton'
-- assertVisible:
-    id: 'TransactionActionsMenu.ConvertToRefundButton'
-- assertVisible:
-    id: 'TransactionActionsMenu.ConvertToTransferButton'
-- assertNotVisible:
-    id: 'TransactionActionsMenu.StartDepositButton'
-- assertNotVisible:
-    id: 'TransactionActionsMenu.RevertButton'
+    id: 'TransactionActionsMenu.CreateRuleButton'
 - tapOn:
-    id: 'TransactionActionsMenu.FeeButton'
+    id: 'TransactionInfo.ConvertButton'
+- assertVisible:
+    text: 'Add fee'
+- assertVisible:
+    text: 'Attach debt'
+- assertVisible:
+    text: 'Convert to Refund'
+- assertVisible:
+    text: 'Convert to Transfer'
+- assertNotVisible:
+    text: 'Start Deposit'
+
+- tapOn:
+    text: 'Add fee'
 - extendedWaitUntil:
     visible:
       id: 'SplitEntryRow.Amount.0'

@@ -10,7 +10,6 @@ import { useSimpleTransactionActionsMenu } from '../../hook/use-simple-transacti
 import { getTransactionEditHref } from '../../utils/get-transaction-edit-href.util';
 import { getTransactionFeeEditHref } from '../../utils/get-transaction-fee-edit-href.util';
 import { TransactionInfoPage } from '../transaction-info-page/transaction-info-page';
-import { UpdateTransactionActionsMenu } from '../update-transaction-actions-menu/update-transaction-actions-menu';
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
@@ -41,8 +40,10 @@ export const SimpleTransactionInfoPage = ({ transaction, transactionType, onOpen
     return (
         <TransactionInfoPage
             transaction={transaction}
+            onDelete={handleDelete}
+            onFeePress={handleOpenFee}
             editHref={getTransactionEditHref(transaction)}
-            actionsMenu={<UpdateTransactionActionsMenu {...actionsMenuProps} />}
+            actionItems={actionsMenuProps.items}
             onOpenRefundSources={onOpenRefundSources}
         />
     );

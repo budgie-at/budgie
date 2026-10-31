@@ -7,19 +7,21 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
       visible:
-          id: 'TransactionActionsMenu.TriggerButton'
+          id: 'TransactionInfo.Page'
       timeout: 15000
 
-- tapOn:
-      id: 'TransactionActionsMenu.TriggerButton'
-
+- scrollUntilVisible:
+    element:
+      id: 'TransactionInfo.Row.Fee'
+    direction: DOWN
+    centerElement: true
 - extendedWaitUntil:
       visible:
-          id: 'TransactionActionsMenu.FeeButton'
+          id: 'TransactionInfo.Row.Fee'
       timeout: 5000
 
 - tapOn:
-      id: 'TransactionActionsMenu.FeeButton'
+      id: 'TransactionInfo.Row.Fee'
 
 - extendedWaitUntil:
       visible:

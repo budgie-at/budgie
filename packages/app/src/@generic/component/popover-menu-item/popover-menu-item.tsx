@@ -1,9 +1,9 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { ClassValue } from 'cn';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 
-import { EmptyFn, isDefined } from '@rnw-community/shared';
+import { EmptyFn, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
@@ -16,12 +16,13 @@ interface Props {
     readonly onPress: EmptyFn;
     readonly variant?: MenuItemVariant;
     readonly rightLabel?: string | null;
+    readonly subtitle?: string;
     readonly testID?: string;
 }
 
 const containerClassName = cva('flex-row items-center gap-x-lg px-xl py-lg active:bg-secondary-background');
 
-const textVariants = cva<{ variant: Record<MenuItemVariant, ClassValue> }>('text-base font-medium flex-1', {
+const textVariants = cva<{ variant: Record<MenuItemVariant, ClassValue> }>('text-base font-medium', {
     variants: {
         variant: {
             default: 'text-primary',
@@ -41,10 +42,15 @@ const iconVariants = cva<{ variant: Record<MenuItemVariant, ClassValue> }>('', {
     defaultVariants: { variant: 'default' }
 });
 
-export const PopoverMenuItem = ({ icon, label, onPress, variant = 'default', rightLabel, testID }: Props) => (
+export const PopoverMenuItem = ({ icon, label, onPress, variant = 'default', rightLabel, subtitle, testID }: Props) => (
     <HapticPressable onPress={onPress} className={containerClassName()} accessibilityRole="menuitem" testID={testID}>
         <Icon icon={icon} size={20} className={iconVariants({ variant })} />
-        <Text className={textVariants({ variant })}>{label}</Text>
+        <View className="flex-1">
+            <Text className={textVariants({ variant })}>{label}</Text>
+            {isNotEmptyString(subtitle) ? (
+                <Text className="mt-xxs text-[13px] leading-[19px] text-popover-secondary">{subtitle}</Text>
+            ) : null}
+        </View>
         {isDefined(rightLabel) ? <Text className="text-sm text-secondary-foreground">{rightLabel}</Text> : null}
     </HapticPressable>
 );

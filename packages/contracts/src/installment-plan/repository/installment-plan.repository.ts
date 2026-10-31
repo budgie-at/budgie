@@ -12,6 +12,8 @@ import { AccountBalanceRepository } from '../../account-balance/repository/accou
 import { AccountDebtTypeEnum } from '../../account/enum/account-debt-type.enum';
 import { AccountRepository } from '../../account/repository/account.repository';
 import { DebtEventDirectionEnum } from '../../debt-event/enum/debt-event-direction.enum';
+import { DebtEventSourceEnum } from '../../debt-event/enum/debt-event-source.enum';
+import { DebtEventRepository } from '../../debt-event/repository/debt-event.repository';
 import { DebtEventEntityTable } from '../../debt-event/table/debt-event-entity.table';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
 import { TransactionTypeEnum } from '../../transaction/enum/transaction-type.enum';
@@ -22,6 +24,7 @@ import type { InstallmentPlanScheduleInterface } from '../interface/installment-
 
 export class InstallmentPlanRepository extends Context.Service<InstallmentPlanRepository>()('@budgie/contracts/InstallmentPlanRepository', {
     make: Effect.gen(function* () {
+        const debtEventRepository = yield* DebtEventRepository;
         const accountRepository = yield* AccountRepository;
         const accountBalanceRepository = yield* AccountBalanceRepository;
         const queryBuilder = new QueryBuilder();
@@ -110,7 +113,10 @@ export class InstallmentPlanRepository extends Context.Service<InstallmentPlanRe
 
                 const progress = (yield* accountBalanceRepository.getDebtAccountProgressByAccountId(accountId)).at(0);
                 const parts = yield* findParts(accountId);
-                const [firstPart] = parts;
+                const firstPart = parts.at(0);
+                const openingEvents = yield* debtEventRepository.findByAccountIdAndSource(accountId, DebtEventSourceEnum.OPENING);
+                const anchorAt = firstPart?.operatedAt ?? openingEvents.at(0)?.operatedAt;
+                const monthOffset = isDefined(firstPart) ? parts.length : 1;
                 const totalAmount = progress?.totalAmount ?? 0;
                 const remainingAmount = progress?.outstandingAmount ?? 0;
                 const isOpen = isPositiveNumber(remainingAmount);
@@ -124,7 +130,7 @@ export class InstallmentPlanRepository extends Context.Service<InstallmentPlanRe
                     totalAmount,
                     paidAmount: progress?.paidAmount ?? 0,
                     remainingAmount,
-                    nextDueAt: isOpen && isDefined(firstPart) ? getInstallmentDueDate(firstPart.operatedAt, parts.length) : null,
+                    nextDueAt: isOpen && isDefined(anchorAt) ? getInstallmentDueDate(anchorAt, monthOffset) : null,
                     nextAmount: isOpen ? nextAmount : null,
                     instrumentId: account.instrumentId
                 };
@@ -135,6 +141,6 @@ export class InstallmentPlanRepository extends Context.Service<InstallmentPlanRe
     })
 }) {
     static readonly layer = Layer.effect(InstallmentPlanRepository, InstallmentPlanRepository.make).pipe(
-        Layer.provide([AccountRepository.layer, AccountBalanceRepository.layer])
+        Layer.provide([AccountRepository.layer, AccountBalanceRepository.layer, DebtEventRepository.layer])
     );
 }

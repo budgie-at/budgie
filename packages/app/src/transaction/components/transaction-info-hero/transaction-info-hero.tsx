@@ -1,117 +1,105 @@
 import { AmountField, AmountFieldText } from '@budgie/amount-input';
-import { TransactionConsolidationTypeEnum, TransactionTypeEnum, UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
-import { Text, View } from 'react-native';
+import { TransactionTypeEnum, convertFromMicroUnits } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
+import { Text, View, useWindowDimensions } from 'react-native';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { MetaPill } from '../../../@generic/component/meta-pill/meta-pill';
-import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
+import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { cn } from '../../../@generic/utils/cn.util';
-import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { MatchingRulesPill } from '../../../rule/components/matching-rules-pill/matching-rules-pill';
-import { TRANSACTION_COLOR } from '../../constant/transaction-color.constant';
+import { TRANSACTION_INFO_AMOUNT_MAX_FONT_SCALE } from '../../constant/transaction-info-amount-max-font-scale.constant';
+import { TRANSACTION_INFO_HERO_MAX_FONT_SCALE } from '../../constant/transaction-info-hero-max-font-scale.constant';
+import { TRANSACTION_INFO_STACKED_FONT_SCALE } from '../../constant/transaction-info-stacked-font-scale.constant';
+import { TRANSACTION_TYPE } from '../../constant/transaction-type.constant';
+import { formatTransactionInfoAmount } from '../../utils/format-transaction-info-amount.util';
 import { getTransactionDisplayTitle } from '../../utils/get-transaction-display-title.util';
-import { getTransactionIcon } from '../../utils/get-transaction-icon.util';
+import { getTransactionInfoDestinationEntry } from '../../utils/get-transaction-info-destination-entry.util';
+import { getTransactionInfoPrimaryEntry } from '../../utils/get-transaction-info-primary-entry.util';
 import { getTransactionType } from '../../utils/get-transaction-type.util';
-import { RefundedPill } from '../refunded-pill/refunded-pill';
+import { TransactionInfoHeroDate } from '../transaction-info-hero-date/transaction-info-hero-date';
+import { TransactionInfoHeroIcon } from '../transaction-info-hero-icon/transaction-info-hero-icon';
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+import type { LayoutChangeEvent } from 'react-native';
 
 interface Props {
     readonly transaction: TransactionWithRelationsEntityInterface;
     readonly matchingRuleIds: readonly number[];
-    readonly onOpenRefundSources?: () => void;
+    readonly onAmountLayout: (event: LayoutChangeEvent) => void;
+    readonly onTitleLayout: (event: LayoutChangeEvent) => void;
 }
 
-const getPrimaryEntry = (transaction: TransactionWithRelationsEntityInterface) => {
-    if (transaction.type === TransactionTypeEnum.INCOME) {
-        return transaction.entries.find(entry => entry.accountId === transaction.toAccountId) ?? transaction.entries.at(0);
-    }
-
-    return transaction.entries.find(entry => entry.accountId === transaction.fromAccountId) ?? transaction.entries.at(0);
-};
-
-const getSecondaryTransferEntry = (transaction: TransactionWithRelationsEntityInterface) =>
-    transaction.type === TransactionTypeEnum.TRANSFER
-        ? transaction.entries.find(entry => entry.accountId === transaction.toAccountId)
-        : null;
-
-const getAmountPrefix = (type: TransactionTypeEnum): string => {
-    if (type === TransactionTypeEnum.EXPENSE) {
-        return '-';
-    }
-
-    if (type === TransactionTypeEnum.INCOME) {
-        return '+';
-    }
-
-    return '';
-};
-
-const getFormattedAmount = (
-    transaction: TransactionWithRelationsEntityInterface,
-    amount: number,
-    currencySymbol: string,
-    formatDigits: (value: number, symbol?: string) => string
-): string => `${getAmountPrefix(transaction.type)}${formatDigits(amount, currencySymbol)}`;
-
-export const TransactionInfoHero = ({ transaction, matchingRuleIds, onOpenRefundSources }: Props) => {
-    const formatDigits = useDisplayFormatDigits();
-    const variant = TRANSACTION_COLOR[getTransactionType(transaction)];
-    const primaryEntry = getPrimaryEntry(transaction);
-    const secondaryEntry = getSecondaryTransferEntry(transaction);
-    const title = getTransactionDisplayTitle(transaction);
-    const amount = isDefined(primaryEntry) ? convertFromMicroUnits(primaryEntry.amount) : 0;
-    const currencySymbol = primaryEntry?.account.instrument.symbol ?? '';
-    const formattedAmount = getFormattedAmount(transaction, amount, currencySymbol, formatDigits);
-    const secondaryAmount = isDefined(secondaryEntry)
-        ? formatDigits(convertFromMicroUnits(secondaryEntry.amount), secondaryEntry.account.instrument.symbol)
-        : null;
-    const showRefundedPill = transaction.consolidationType === TransactionConsolidationTypeEnum.REFUND;
+export const TransactionInfoHero = ({ transaction, matchingRuleIds, onAmountLayout, onTitleLayout }: Props) => {
+    const { t } = useLingui();
+    const formatDigits = useProtectedAmountLabel();
+    const { fontScale } = useWindowDimensions();
+    const largeText = fontScale > TRANSACTION_INFO_STACKED_FONT_SCALE;
+    const heroClassName = largeText ? 'items-center pt-md pb-3xl' : 'items-center pt-3xl pb-5xl';
+    const showIcon = getTransactionType(transaction) === TransactionTypeEnum.TRANSFER;
+    const amountClassName = getTransactionType(transaction) === TransactionTypeEnum.INCOME ? 'text-positive-strong' : 'text-primary';
+    const displayTitle = getTransactionDisplayTitle(transaction);
+    const title = isNotEmptyString(displayTitle) ? displayTitle : t(TRANSACTION_TYPE[transaction.type]);
+    const sourceEntry = getTransactionInfoPrimaryEntry(transaction);
+    const destinationEntry = getTransactionInfoDestinationEntry(transaction);
+    const destinationAmount =
+        isDefined(sourceEntry) &&
+        isDefined(destinationEntry) &&
+        sourceEntry.account.instrument.id !== destinationEntry.account.instrument.id
+            ? `→ ${formatDigits(convertFromMicroUnits(destinationEntry.amount), destinationEntry.account.instrument.symbol)}`
+            : null;
+    const amountFontSize = largeText ? 34 : 40;
 
     return (
-        <View className="items-center gap-y-xl py-4xl">
-            <CircleIcon
-                icon={getTransactionIcon(transaction)}
-                variant={variant}
-                size={76}
-                iconSize={34}
-                radius={24}
-                className="rounded-5xl"
-            />
+        <View className={heroClassName}>
+            {showIcon ? (
+                <View className="mb-xl">
+                    <TransactionInfoHeroIcon />
+                </View>
+            ) : null}
 
-            <View className="items-center gap-y-sm self-stretch">
-                <AmountField fontSize={32} className="self-stretch">
-                    <AmountFieldText className={cn('font-semibold text-center', FOREGROUND_COLOR_PALETTE[variant])} selectable>
-                        {formattedAmount}
+            <View onLayout={onAmountLayout} className="self-stretch">
+                <AmountField fontSize={amountFontSize} className="self-stretch">
+                    <AmountFieldText
+                        adjustsFontSizeToFit
+                        maxFontSizeMultiplier={TRANSACTION_INFO_AMOUNT_MAX_FONT_SCALE}
+                        minimumFontScale={0.6}
+                        testID={TransactionInfoPageSelector.Amount}
+                        className={cn('leading-[48px] font-semibold tracking-[-1px] text-center', amountClassName)}
+                        selectable
+                    >
+                        {formatTransactionInfoAmount(transaction, formatDigits)}
                     </AmountFieldText>
                 </AmountField>
-                {isNotEmptyString(secondaryAmount) ? (
-                    <View className="flex-row items-center gap-x-xs">
-                        <MetaPill icon={UserIconNameEnum.ArrowRight} label={secondaryAmount} />
-                    </View>
-                ) : null}
             </View>
 
-            {isNotEmptyString(title) ? (
-                <Text className="text-2xl text-primary font-semibold text-center" numberOfLines={2} selectable>
-                    {title}
+            {isNotEmptyString(destinationAmount) ? (
+                <Text
+                    maxFontSizeMultiplier={TRANSACTION_INFO_AMOUNT_MAX_FONT_SCALE}
+                    className="text-[17px] leading-[22px] text-transaction-detail-secondary font-medium text-center tabular-nums"
+                    selectable
+                >
+                    {destinationAmount}
                 </Text>
             ) : null}
 
-            {showRefundedPill ? (
-                <RefundedPill
-                    key={`${transaction.id}-${transaction.consolidationType}`}
-                    transaction={transaction}
-                    onPress={onOpenRefundSources}
-                    testID={TransactionInfoPageSelector.RefundedPill}
-                />
+            {isNotEmptyString(title) ? (
+                <Text
+                    onLayout={onTitleLayout}
+                    maxFontSizeMultiplier={TRANSACTION_INFO_HERO_MAX_FONT_SCALE}
+                    className="mt-xs text-[20px] leading-[25px] text-primary font-semibold text-center"
+                    selectable
+                >
+                    {title}
+                </Text>
             ) : null}
+            <TransactionInfoHeroDate operatedAt={transaction.operatedAt} />
 
             {isNotEmptyArray(matchingRuleIds) ? (
-                <MatchingRulesPill matchingRulesCount={matchingRuleIds.length} matchingRuleIds={matchingRuleIds} />
+                <View className="mt-xl flex-row flex-wrap items-center justify-center gap-sm">
+                    <MatchingRulesPill matchingRulesCount={matchingRuleIds.length} matchingRuleIds={matchingRuleIds} />
+                </View>
             ) : null}
         </View>
     );

@@ -1,0 +1,84 @@
+import { UserIconNameEnum } from '@budgie/contracts';
+import { Trans, useLingui } from '@lingui/react/macro';
+import { Text, View } from 'react-native';
+
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+
+import { Icon } from '../../../@generic/component/icon/icon';
+import { TRANSACTION_INFO_ROW_MAX_FONT_SCALE } from '../../constant/transaction-info-row-max-font-scale.constant';
+import { isTransactionNoteDuplicated } from '../../utils/is-transaction-note-duplicated.util';
+import { TransactionInfoGroup } from '../transaction-info-group/transaction-info-group';
+import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
+import { TransactionInfoRow } from '../transaction-info-row/transaction-info-row';
+
+import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
+
+interface Props {
+    readonly transaction: TransactionWithRelationsEntityInterface;
+    readonly onOpenSources?: () => void;
+}
+
+export const TransactionInfoNoteGroup = ({ transaction, onOpenSources }: Props) => {
+    const { t } = useLingui();
+    const { receipt, comment } = transaction;
+    const showNote = isNotEmptyString(comment) && !isTransactionNoteDuplicated(transaction);
+    const showConsolidation = isDefined(transaction.consolidationType) && isDefined(onOpenSources);
+
+    if (!showNote && !showConsolidation && !isDefined(receipt)) {
+        return null;
+    }
+
+    const accessibilityLabel = `${t`Note`}, ${comment}`;
+
+    return (
+        <TransactionInfoGroup>
+            {showNote ? (
+                <View
+                    accessible
+                    accessibilityLabel={accessibilityLabel}
+                    collapsable={false}
+                    nativeID={TransactionInfoPageSelector.Row.Note}
+                    className="flex-row items-start gap-x-xl px-3xl py-xl"
+                    testID={TransactionInfoPageSelector.Row.Note}
+                >
+                    <View className="w-[28px] items-center pt-xxs">
+                        <Icon icon={UserIconNameEnum.MessageSquare} size={22} className="text-secondary-foreground" />
+                    </View>
+                    <View className="flex-1 min-w-0">
+                        <Text
+                            maxFontSizeMultiplier={TRANSACTION_INFO_ROW_MAX_FONT_SCALE}
+                            className="text-[13px] leading-[18px] text-transaction-detail-secondary"
+                        >
+                            <Trans>Note</Trans>
+                        </Text>
+                        <Text
+                            maxFontSizeMultiplier={TRANSACTION_INFO_ROW_MAX_FONT_SCALE}
+                            className="text-[17px] leading-[24px] text-primary"
+                            selectable
+                        >
+                            {comment}
+                        </Text>
+                    </View>
+                </View>
+            ) : null}
+            {showConsolidation ? (
+                <TransactionInfoRow
+                    icon={UserIconNameEnum.Workflow}
+                    label={t`Consolidation`}
+                    value={t`View source transactions`}
+                    testID={TransactionInfoPageSelector.Row.Consolidation}
+                    onPress={onOpenSources}
+                />
+            ) : null}
+            {isDefined(receipt) ? (
+                <TransactionInfoRow
+                    icon={UserIconNameEnum.Receipt}
+                    label={t`Receipt`}
+                    value={receipt.receiptNumber}
+                    description={receipt.merchantLegalName}
+                    testID={TransactionInfoPageSelector.Row.Receipt}
+                />
+            ) : null}
+        </TransactionInfoGroup>
+    );
+};

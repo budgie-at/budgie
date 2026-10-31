@@ -31,16 +31,22 @@ env:
           id: 'BackButton'
 - extendedWaitUntil:
       visible:
-          id: 'ReceiptScanToast.DONE'
-          text: 'Ihr Labor.*'
+          id: 'TransactionForm.SubmitButton'
       timeout: 30000
+- runFlow:
+      file: subflows/categories/create-category-from-transaction.flow.yaml
+      env:
+          CATEGORY_NAME: 'E2E Receipt Category'
 - tapOn:
-      id: 'ReceiptScanToast.DONE'
+      id: 'TransactionForm.SubmitButton'
+- runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
+- tapOn:
+      text: 'Ihr Labor.*'
 - extendedWaitUntil:
       visible:
           id: 'TransactionInfo.Row.Receipt'
+          text: '.*2026-0042.*'
       timeout: 5000
-- assertVisible: '2026-0042'
 - tapOn:
       id: 'PageHeader.BackButton'
 - runFlow: subflows/navigation/navigate-to-transactions.flow.yaml
