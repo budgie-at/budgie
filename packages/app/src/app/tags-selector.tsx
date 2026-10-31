@@ -1,4 +1,3 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useEffect, useReducer, useRef, useState } from 'react';
 import { View } from 'react-native';
@@ -9,6 +8,7 @@ import { SelectorModalDescription } from '../@generic/component/selector-modal-d
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { prepareSelectorGridData } from '../@generic/utils/prepare-selector-grid-data.util';
+import { TagDestinationSheet } from '../tag/components/tag-destination-sheet/tag-destination-sheet';
 import { TagsSelectContent } from '../tag/components/tags-select-content/tags-select-content';
 import { TagsSelectorDoneButton } from '../tag/components/tags-selector-done-button/tags-selector-done-button';
 import { useTagFormModal } from '../tag/context/tag-form-modal.context';
@@ -28,7 +28,7 @@ const isSelectionDirty = (selected: number[], initial: number[]): boolean => {
     return selected.some((id, index) => id !== initial[index]);
 };
 
-// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
+// eslint-disable-next-line max-lines-per-function, max-statements -- Form orchestration component with multiple hooks and handlers
 export default function TagsSelectorModal() {
     const { t } = useLingui();
     const [openTagForm] = useTagFormModal();
@@ -53,7 +53,7 @@ export default function TagsSelectorModal() {
         selected: initialSelectedTagIds,
         primaryTagId: initialPrimaryTagId
     });
-    const { tags } = useSearchTagsQuery(search);
+    const { tags, isLoading } = useSearchTagsQuery(search);
 
     const hasResolvedRef = useRef(false);
 
@@ -96,15 +96,19 @@ export default function TagsSelectorModal() {
         [resolveTagsSelector]
     );
 
+    if (isDefined(title)) {
+        return <TagDestinationSheet title={title} description={description} excludeTagIds={excludeTagIds} onSelect={handleSelectTag} />;
+    }
+
     return (
         <View className="flex-1 bg-primary-reverse" collapsable={false}>
             <SelectorModalSearchHeader
                 search={search}
                 onSearchChange={setSearch}
-                placeholder={t`Search tags...`}
-                rightActionIcon={UserIconNameEnum.Plus}
-                rightActionOnPress={handleCreatePress}
-                rightActionTestID={TagsSelectorModalSelector.CreateButton}
+                placeholder={t`Search tags…`}
+                createLabel={t`Create tag`}
+                onCreate={handleCreatePress}
+                createTestID={TagsSelectorModalSelector.CreateButton}
                 testID={TagsSelectorModalSelector.Input}
             />
 
@@ -115,6 +119,7 @@ export default function TagsSelectorModal() {
                         data={data}
                         selectedTagIds={selected}
                         primaryTagId={primaryTagId}
+                        isLoading={isLoading}
                         onSelect={handleSelectTag}
                         {...(enablePrimarySelection && { onPrimarySelect: handlePrimarySelect })}
                     />

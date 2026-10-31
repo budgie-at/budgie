@@ -20,7 +20,7 @@ interface Props {
 export const IconSuggestions = ({ terms, limit, onSelect, testID, children }: Props) => {
     const entries = useIconSearchEntries();
 
-    const suggestions = iconSearchService.rank(entries, terms).slice(0, limit);
+    const suggestions = iconSearchService.suggest(entries, terms).slice(0, limit);
 
     if (isEmptyArray(suggestions)) {
         return null;

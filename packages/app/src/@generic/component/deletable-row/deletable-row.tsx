@@ -14,6 +14,7 @@ interface Props {
     readonly id: number;
     readonly confirmation?: DeleteConfirmation;
     readonly label?: string;
+    readonly isDisabled?: boolean;
 }
 
 export interface DeleteConfirmation {
@@ -22,7 +23,7 @@ export interface DeleteConfirmation {
     readonly buttonText?: string;
 }
 
-export const DeletableRow = ({ children, onDelete, id, confirmation, label }: Props) => {
+export const DeletableRow = ({ children, onDelete, id, confirmation, label, isDisabled = false }: Props) => {
     const ref = useRef<SwipeableMethods>(null);
     const { t } = useLingui();
 
@@ -55,6 +56,7 @@ export const DeletableRow = ({ children, onDelete, id, confirmation, label }: Pr
     return (
         <ReanimatedSwipeable
             ref={ref}
+            enabled={!isDisabled}
             friction={2}
             enableTrackpadTwoFingerGesture
             rightThreshold={40}

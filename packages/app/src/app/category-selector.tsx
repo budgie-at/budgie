@@ -1,4 +1,3 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { View } from 'react-native';
@@ -9,6 +8,7 @@ import { SelectorModalDescription } from '../@generic/component/selector-modal-d
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { prepareSelectorGridData } from '../@generic/utils/prepare-selector-grid-data.util';
+import { CategoryDestinationSheet } from '../category/components/category-destination-sheet/category-destination-sheet';
 import { CategorySelectContent } from '../category/components/category-select-content/category-select-content';
 import { useCategoryFormModal } from '../category/context/category-form-modal.context';
 import { useCategorySelectorModal, useCategorySelectorModalParams } from '../category/context/category-selector-modal.context';
@@ -37,15 +37,26 @@ export default function CategorySelectorModal() {
         });
     };
 
+    if (isDefined(title)) {
+        return (
+            <CategoryDestinationSheet
+                title={title}
+                description={description}
+                excludeCategoryIds={excludeCategoryIds}
+                onSelect={resolveCategorySelector}
+            />
+        );
+    }
+
     return (
         <View className="flex-1 bg-primary-reverse" collapsable={false}>
             <SelectorModalSearchHeader
                 search={search}
                 onSearchChange={setSearch}
-                placeholder={t`Search categories...`}
-                rightActionIcon={UserIconNameEnum.Plus}
-                rightActionOnPress={handleCreatePress}
-                rightActionTestID={CategorySelectorModalSelector.CreateButton}
+                placeholder={t`Search categories…`}
+                createLabel={t`Create category`}
+                onCreate={handleCreatePress}
+                createTestID={CategorySelectorModalSelector.CreateButton}
                 testID={CategorySelectorModalSelector.Input}
             />
 

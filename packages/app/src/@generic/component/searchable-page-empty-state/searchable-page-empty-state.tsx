@@ -1,7 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 
-import { EmptyState } from '../empty-state/empty-state';
+import { CircleIcon } from '../circle-icon/circle-icon';
 
 import type { ReactNode } from 'react';
 
@@ -15,14 +15,13 @@ interface Props {
 
 export const SearchablePageEmptyState = ({ title, icon, description, testID, children }: Props) => (
     <View testID={testID} collapsable={false} className="items-center gap-y-xl px-6xl pt-[72px]">
-        <EmptyState
-            circleIcon={icon}
-            title={title}
-            description={description}
-            className="py-0"
-            titleClassName="text-primary text-center text-md font-medium"
-            descriptionClassName="text-secondary-foreground text-center text-sm max-w-70"
-        />
+        <View className="items-center">
+            <CircleIcon icon={icon} size={64} iconSize={32} variant="ghost" className="text-secondary-foreground mb-xl rounded-5xl" />
+            <Text className="text-primary text-center text-md font-medium mb-sm" numberOfLines={2} accessibilityLabel={title}>
+                {title}
+            </Text>
+            <Text className="text-secondary-foreground text-center text-sm max-w-70">{description}</Text>
+        </View>
         {children}
     </View>
 );

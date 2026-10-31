@@ -1,9 +1,7 @@
-import { useLingui } from '@lingui/react/macro';
+import { Trans } from '@lingui/react/macro';
+import { Text, View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
-
-import { GroupedListRow } from '../grouped-list-row/grouped-list-row';
-import { GroupedListSection } from '../grouped-list-section/grouped-list-section';
 
 import { AiTranslationFieldsSelector } from './ai-translation-fields.selector';
 
@@ -14,7 +12,6 @@ interface Props {
 }
 
 export const AiTranslationFields = ({ title, titleEn, titleTags }: Props) => {
-    const { t } = useLingui();
     const keywords = (titleTags ?? '')
         .split(',')
         .map(keyword => keyword.trim())
@@ -28,11 +25,20 @@ export const AiTranslationFields = ({ title, titleEn, titleTags }: Props) => {
     }
 
     return (
-        <GroupedListSection title={t`Search keywords`} footer={t`Generated automatically so search finds this by other words too.`}>
+        <View className="gap-y-xxs px-3xl pt-md">
             {hasDistinctEnglishTitle ? (
-                <GroupedListRow title={t`English`} subtitle={englishTitle} testID={AiTranslationFieldsSelector.EnglishField} />
+                <Text className="text-secondary-foreground text-[13px] leading-[18px]" testID={AiTranslationFieldsSelector.EnglishField}>
+                    <Trans>Also found as “{englishTitle}”</Trans>
+                </Text>
             ) : null}
-            {isNotEmptyString(keywords) ? <GroupedListRow title={keywords} testID={AiTranslationFieldsSelector.TagsField} /> : null}
-        </GroupedListSection>
+            {isNotEmptyString(keywords) ? (
+                <Text className="text-secondary-foreground text-[13px] leading-[18px]" testID={AiTranslationFieldsSelector.TagsField}>
+                    <Trans>Search keywords: {keywords}</Trans>
+                </Text>
+            ) : null}
+            <Text className="text-secondary-foreground/70 text-[13px] leading-[18px]">
+                <Trans>Generated automatically so search finds this by other words too.</Trans>
+            </Text>
+        </View>
     );
 };

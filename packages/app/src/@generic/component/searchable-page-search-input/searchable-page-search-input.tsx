@@ -29,7 +29,7 @@ export const SearchablePageSearchInput = ({ search, placeholder, onSearchChange,
         <>
             <View className="absolute inset-x-0" style={searchBlurStyle} pointerEvents="none">
                 <EdgeFade position="bottom" height={scrimHeight} />
-                <View className="absolute inset-0 bg-linear-to-b from-surface/0 via-surface/60 to-surface/95" />
+                <View className="absolute inset-0 bg-linear-to-b from-surface/0 via-surface/85 via-35% to-surface" />
             </View>
             <KeyboardStickySearchInput
                 search={search}

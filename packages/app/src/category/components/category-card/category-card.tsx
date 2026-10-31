@@ -2,13 +2,10 @@ import { CategoryEntityInterface, isEmojiIcon } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
-import { isPositiveNumber } from '@rnw-community/shared';
-
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { EntityListRow } from '../../../@generic/component/entity-list-row/entity-list-row';
 import { TONAL_DISC_BACKGROUND } from '../../../@generic/constant/tonal-disc-background.constant';
 import { useDeleteCategory } from '../../hooks/use-delete-category.hook';
-import { useMergeCategory } from '../../hooks/use-merge-category.hook';
 
 import { CategoryCardSelector } from './category-card.selector';
 
@@ -26,12 +23,10 @@ interface Props {
 export const CategoryCard = ({ onOpen, category, usage, isFirst, isLast }: Props) => {
     const { t } = useLingui();
     const deleteCategory = useDeleteCategory();
-    const mergeCategory = useMergeCategory();
     const handleOpen = () => void onOpen(category);
     const iconSize = isEmojiIcon(category.icon) ? 22 : 18;
     const operations: EntityRowOperationsInterface = {
-        deleteLabel: isPositiveNumber(usage?.transactionCount) ? t`Move transactions and delete…` : t`Delete`,
-        onMerge: trackMutation => mergeCategory(category.id, trackMutation),
+        deleteLabel: usage?.transactionCount === 0 ? t`Delete` : t`Delete…`,
         onDelete: trackMutation => deleteCategory(category.id, trackMutation)
     };
 

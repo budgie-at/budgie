@@ -1,7 +1,7 @@
-import { DEFAULT_CATEGORY_ICON, UserIconNameEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
+import { UserIconNameEnum } from '@budgie/contracts';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -9,9 +9,11 @@ import { CollapsibleChromePage } from '../../../@generic/component/collapsible-c
 import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
 import { SearchablePageEmptyState } from '../../../@generic/component/searchable-page-empty-state/searchable-page-empty-state';
 import { SearchablePageErrorState } from '../../../@generic/component/searchable-page-error-state/searchable-page-error-state';
+import { useIconSearchEntries } from '../../../@generic/hook/use-icon-search-entries.hook';
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { CategoryIconFixRow } from '../../../category/components/category-icon-fix-row/category-icon-fix-row';
 import { useSearchCategoriesQuery } from '../../../category/query/use-search-categories.query';
+import { hasPlaceholderIcon } from '../../../category/utils/has-placeholder-icon.util';
 
 import { CategoryIconsPageSelector } from './category-icons-page.selector';
 
@@ -21,8 +23,9 @@ export default function CategoryIconsPage() {
     const { t } = useLingui();
     const { categories, isLoading, isFailure, retry } = useSearchCategoriesQuery('', false);
     const [hadCategoriesToFix, setHadCategoriesToFix] = useState(false);
+    const iconSearchEntries = useIconSearchEntries();
 
-    const categoriesWithDefaultIcon = (categories ?? []).filter(category => category.icon === DEFAULT_CATEGORY_ICON);
+    const categoriesWithDefaultIcon = (categories ?? []).filter(category => hasPlaceholderIcon(category, iconSearchEntries));
     const isRead = !isLoading && !isFailure;
     const isAllFixed = isRead && hadCategoriesToFix && isEmptyArray(categoriesWithDefaultIcon);
 
@@ -54,12 +57,11 @@ export default function CategoryIconsPage() {
         >
             {isNotEmptyArray(categoriesWithDefaultIcon) ? (
                 <View className="gap-y-3xl">
-                    {categoriesWithDefaultIcon.map((category, index) => (
-                        <CategoryIconFixRow
-                            key={category.id}
-                            category={category}
-                            {...(index === 0 && { footer: t`Pick an icon — it saves instantly.` })}
-                        />
+                    <Text className="text-secondary-foreground px-3xl text-[13px] leading-[18px]">
+                        <Trans>Pick an icon — it saves instantly.</Trans>
+                    </Text>
+                    {categoriesWithDefaultIcon.map(category => (
+                        <CategoryIconFixRow key={category.id} category={category} />
                     ))}
                 </View>
             ) : (

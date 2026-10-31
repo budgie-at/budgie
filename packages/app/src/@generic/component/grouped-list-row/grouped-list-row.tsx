@@ -19,7 +19,7 @@ interface Props {
     readonly onPress?: () => void;
     readonly pressableProps?: Pick<
         ComponentProps<typeof HapticPressable>,
-        'onLongPress' | 'accessibilityActions' | 'onAccessibilityAction'
+        'onLongPress' | 'disabled' | 'accessibilityState' | 'accessibilityActions' | 'onAccessibilityAction'
     >;
 }
 

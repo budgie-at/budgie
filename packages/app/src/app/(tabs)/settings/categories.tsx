@@ -2,6 +2,8 @@ import { CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { SearchablePageErrorState } from '../../../@generic/component/searchable-page-error-state/searchable-page-error-state';
 import { SearchablePageList } from '../../../@generic/component/searchable-page-list/searchable-page-list';
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
@@ -15,7 +17,10 @@ import { goBackToSettings } from '../../../settings/utils/go-back-to-settings.ut
 
 import { CategoryPageSelector } from './category-page.selector';
 
+import type { EntityUsageInterface } from '../../../@generic/interface/entity-usage.interface';
+
 const NO_CATEGORIES: CategoryEntityInterface[] = [];
+const UNUSED: EntityUsageInterface = { transactionCount: 0, lastUsedAt: null };
 
 export default function Categories() {
     const { t } = useLingui();
@@ -44,23 +49,27 @@ export default function Categories() {
         <CategoryEmptyState search={search} onClearSearch={handleClearSearch} />
     );
 
-    const renderCard = (category: CategoryEntityInterface, index: number, isLast: boolean) => (
-        <CategoryCard
-            key={category.id}
-            onOpen={handleOpenCategory}
-            category={category}
-            usage={usage?.find(entry => entry.id === category.id)}
-            isFirst={index === 0}
-            isLast={isLast}
-        />
-    );
+    const renderCard = (category: CategoryEntityInterface, index: number, isLast: boolean) => {
+        const categoryUsage = isDefined(usage) ? (usage.find(entry => entry.id === category.id) ?? UNUSED) : void 0;
+
+        return (
+            <CategoryCard
+                key={category.id}
+                onOpen={handleOpenCategory}
+                category={category}
+                usage={categoryUsage}
+                isFirst={index === 0}
+                isLast={isLast}
+            />
+        );
+    };
 
     return (
         <SearchablePage
             title={t`Categories`}
             onGoBack={goBackToSettings}
             search={search}
-            searchPlaceholder={t`Search custom categories...`}
+            searchPlaceholder={t`Search custom categories…`}
             onSearchChange={setSearch}
             searchInputTestID={CategoryPageSelector.SearchInput}
         >

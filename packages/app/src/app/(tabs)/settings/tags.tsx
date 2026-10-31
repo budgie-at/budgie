@@ -60,7 +60,7 @@ export default function Tags() {
             title={t`Tags`}
             onGoBack={goBackToSettings}
             search={search}
-            searchPlaceholder={t`Search tags...`}
+            searchPlaceholder={t`Search tags…`}
             onSearchChange={setSearch}
             searchInputTestID={TagPageSelector.SearchInput}
         >

@@ -12,10 +12,12 @@ import { useState } from 'react';
 
 import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
+import { AiTranslationFields } from '../../../@generic/component/ai-translation-fields/ai-translation-fields';
 import { EntityEditSections } from '../../../@generic/component/entity-edit-sections/entity-edit-sections';
 import { EntityFormPage } from '../../../@generic/component/entity-form-page/entity-form-page';
 import { FormTitleInput } from '../../../@generic/component/form-title-input/form-title-input';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
+import { IconTitleFieldTrigger } from '../../../@generic/component/icon-title-field-trigger/icon-title-field-trigger';
 import { IconTitleField } from '../../../@generic/component/icon-title-field/icon-title-field';
 import { useIconSelectorModal } from '../../../@generic/context/icon-selector-modal.context';
 import { EntityOperationEnum } from '../../../@generic/enum/entity-operation.enum';
@@ -28,7 +30,6 @@ import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { useCategoryForm } from '../../hooks/use-category-form.hook';
 import { useDeleteCategory } from '../../hooks/use-delete-category.hook';
-import { useMergeCategory } from '../../hooks/use-merge-category.hook';
 import { categoryUsageAtom } from '../../query/use-custom-categories-with-usage.query';
 import { createCategory } from '../../utils/create-category.util';
 import { getCategoryIconTerms } from '../../utils/get-category-icon-terms.util';
@@ -36,7 +37,7 @@ import { updateCategory } from '../../utils/update-category.util';
 
 import { CategoryFormSelector } from './category-form.selector';
 
-type CategoryFormAction = 'created' | 'updated' | 'merged' | 'cancelled';
+type CategoryFormAction = 'created' | 'updated' | 'cancelled';
 
 export interface CategoryFormResult {
     readonly category: CategoryEntityInterface;
@@ -59,7 +60,6 @@ export const CategoryForm = (props: Props) => {
     const operation = useEntityOperation();
     const usageResult = useLiveAtomValue(categoryUsageAtom);
     const deleteCategory = useDeleteCategory();
-    const mergeCategory = useMergeCategory();
     const [openIconSelector] = useIconSelectorModal();
     const iconSearchEntries = useIconSearchEntries();
 
@@ -68,15 +68,18 @@ export const CategoryForm = (props: Props) => {
     const isEditing = isDefined(category);
     const [isIconChosen, setIsIconChosen] = useState(isEditing && category.icon !== DEFAULT_CATEGORY_ICON);
     const isBusy = saveFlight.isLoading || operation.isPending;
-    const transactionCount = AsyncResult.getOrElse(usageResult, () => []).find(entry => entry.id === category?.id)?.transactionCount;
+    const transactionCount = AsyncResult.isSuccess(usageResult)
+        ? (usageResult.value.find(entry => entry.id === category?.id)?.transactionCount ?? 0)
+        : null;
 
     const iconTerms = getCategoryIconTerms({ title, titleEn: category?.titleEn ?? null, titleTags: category?.titleTags ?? null });
-    const suggestedIcon = iconSearchService.rank(iconSearchEntries, iconTerms).at(0)?.icon;
+    const suggestedIcon = iconSearchService.findConfidentIcon(iconSearchEntries, iconTerms);
     const resolvedIcon = isIconChosen || !isDefined(suggestedIcon) ? icon : suggestedIcon;
 
     const isChanged = !isDefined(category) || title !== category.title || resolvedIcon !== category.icon;
     const isSaveDisabled = !isNotEmptyString(title) || operation.isPending;
-    const deleteLabel = isPositiveNumber(transactionCount) ? t`Move transactions and delete…` : t`Delete category`;
+    const unusedDeleteLabel = transactionCount === 0 ? t`Delete category` : t`Delete category…`;
+    const deleteLabel = isPositiveNumber(transactionCount) ? t`Move transactions and delete…` : unusedDeleteLabel;
     const headerTitle = isEditing ? t`Edit Category` : t`Create Category`;
     const saveLabel = isEditing ? t`Save changes` : t`Create category`;
 
@@ -95,18 +98,6 @@ export const CategoryForm = (props: Props) => {
 
     const handleTitleChange = (value: string) => {
         setValue('title', value);
-    };
-
-    const handleMerge = () => {
-        if (isDefined(category)) {
-            operation.start(EntityOperationEnum.MERGE, trackMutation =>
-                mergeCategory(category.id, trackMutation).pipe(
-                    Effect.tap(target =>
-                        isDefined(target) ? Effect.sync(() => void onSuccess({ category: target, action: 'merged' })) : Effect.void
-                    )
-                )
-            );
-        }
     };
 
     const submitCategory = (values: CategoryCreateEntityInterface, submittedIcon: UserIconType) =>
@@ -134,6 +125,10 @@ export const CategoryForm = (props: Props) => {
         }
     };
 
+    const keywordsFooter = isDefined(category) ? (
+        <AiTranslationFields title={category.title} titleEn={category.titleEn} titleTags={category.titleTags} />
+    ) : null;
+
     const handleFormSubmit = handleSubmit(values => saveFlight.run(submitCategory(values, resolvedIcon)));
 
     return (
@@ -146,14 +141,18 @@ export const CategoryForm = (props: Props) => {
             isSaveDisabled={isSaveDisabled}
             saveTestID={CategoryFormSelector.Submit}
         >
-            <GroupedListSection title={t`Details`}>
+            <GroupedListSection title={t`Details`} footer={keywordsFooter}>
                 <IconTitleField
-                    icon={resolvedIcon}
-                    variant="secondary"
+                    tile={
+                        <IconTitleFieldTrigger
+                            icon={resolvedIcon}
+                            variant="secondary"
+                            onPress={handleIconPress}
+                            testID={CategoryFormSelector.IconTrigger}
+                            iconTestID={CategoryFormSelector.CurrentIcon(resolvedIcon)}
+                        />
+                    }
                     label={t`Name`}
-                    onIconPress={handleIconPress}
-                    iconTriggerTestID={CategoryFormSelector.IconTrigger}
-                    iconTestID={CategoryFormSelector.CurrentIcon(resolvedIcon)}
                 >
                     <FormTitleInput
                         autoFocus={!isEditing}
@@ -161,7 +160,7 @@ export const CategoryForm = (props: Props) => {
                         value={title}
                         onChangeText={handleTitleChange}
                         maxLength={CATEGORY_TITLE_MAX_LENGTH}
-                        placeholder={t`e.g. Groceries, Entertainment`}
+                        placeholder={t`e.g. Climbing, Side project`}
                         accessibilityLabel={t`Category name`}
                         testID={CategoryFormSelector.Input}
                     />
@@ -170,11 +169,8 @@ export const CategoryForm = (props: Props) => {
 
             {isDefined(category) ? (
                 <EntityEditSections
-                    entity={category}
-                    mergeLabel={t`Merge into another category…`}
-                    onMerge={handleMerge}
-                    mergeTestID={CategoryFormSelector.Merge}
                     deleteLabel={deleteLabel}
+                    deleteTestID={CategoryFormSelector.Delete}
                     onDelete={handleDelete}
                     isDisabled={isBusy}
                     mutatingOperation={operation.mutatingOperation}

@@ -1,4 +1,4 @@
-import { CategoryEntityInterface, UserIconType } from '@budgie/contracts';
+import { CategoryEntityInterface, UserIconNameEnum, UserIconType } from '@budgie/contracts';
 import { CategoryService } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -22,10 +22,9 @@ import { CategoryIconFixRowSelector } from './category-icon-fix-row.selector';
 
 interface Props {
     readonly category: CategoryEntityInterface;
-    readonly footer?: string;
 }
 
-export const CategoryIconFixRow = ({ category, footer }: Props) => {
+export const CategoryIconFixRow = ({ category }: Props) => {
     const { t } = useLingui();
     const [openIconSelector] = useIconSelectorModal();
     const iconTerms = getCategoryIconTerms(category);
@@ -60,7 +59,7 @@ export const CategoryIconFixRow = ({ category, footer }: Props) => {
     };
 
     return (
-        <GroupedListSection footer={footer}>
+        <GroupedListSection>
             <GroupedListRow
                 testID={CategoryIconFixRowSelector.Row(category.title)}
                 left={
@@ -75,9 +74,8 @@ export const CategoryIconFixRow = ({ category, footer }: Props) => {
                     />
                 }
                 title={category.title}
-                onPress={handleOpenIconSelector}
             />
-            <LoadingContent isLoading={isLoading} className="px-3xl pb-xl pt-xs">
+            <LoadingContent isLoading={isLoading} className="px-3xl pb-lg pt-xs">
                 <IconSuggestions
                     terms={iconTerms}
                     limit={6}
@@ -85,6 +83,12 @@ export const CategoryIconFixRow = ({ category, footer }: Props) => {
                     testID={CategoryIconFixRowSelector.Suggestions(category.title)}
                 />
             </LoadingContent>
+            <GroupedListRow
+                testID={CategoryIconFixRowSelector.ChooseAnother(category.title)}
+                left={<CircleIcon icon={UserIconNameEnum.LayoutGrid} variant="ghost" size={36} iconSize={18} radius={18} border={false} />}
+                title={t`Choose another icon…`}
+                onPress={handleOpenIconSelector}
+            />
         </GroupedListSection>
     );
 };

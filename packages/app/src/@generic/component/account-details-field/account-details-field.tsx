@@ -4,6 +4,7 @@ import { useLingui } from '@lingui/react/macro';
 import { AccountFormBindingsInterface } from '../../../account/interface/account-form-bindings.interface';
 import { useIconSelectorModal } from '../../context/icon-selector-modal.context';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
+import { IconTitleFieldTrigger } from '../icon-title-field-trigger/icon-title-field-trigger';
 import { IconTitleField } from '../icon-title-field/icon-title-field';
 import { Input } from '../input/input';
 
@@ -31,10 +32,8 @@ export const AccountDetailsField = (props: Props) => {
 
     return (
         <IconTitleField
-            icon={iconBinding.field.value}
-            variant={variant}
+            tile={<IconTitleFieldTrigger icon={iconBinding.field.value} variant={variant} onPress={handleIconPress} />}
             label={t`Account name`}
-            onIconPress={handleIconPress}
             error={titleBinding.fieldState.error?.message}
         >
             <Input

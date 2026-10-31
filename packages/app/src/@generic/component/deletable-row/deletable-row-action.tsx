@@ -1,11 +1,13 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import React from 'react';
+import { View } from 'react-native';
 import Reanimated, { SharedValue, useAnimatedStyle } from 'react-native-reanimated';
 
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
 
 import { DeletableRowSelector } from './deletable-row.selector';
+
+const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
 interface Props {
     readonly drag: SharedValue<number>;
@@ -28,9 +30,14 @@ export const DeletableRowAction = ({ drag, isOpen, label, onPress }: Props) => {
                 onPress={onPress}
                 accessibilityRole="button"
                 accessibilityLabel={label}
-                className="justify-center items-center w-17.5 h-full"
+                className="h-full w-[70px] py-xxs pl-sm"
             >
-                <Icon className="text-destructive-foreground" icon={UserIconNameEnum.Trash} />
+                <View
+                    className="flex-1 items-center justify-center rounded-2xl bg-destructive-fill active:opacity-80"
+                    style={CONTINUOUS_CORNERS}
+                >
+                    <Icon className="text-white" icon={UserIconNameEnum.Trash} />
+                </View>
             </HapticPressable>
         </Reanimated.View>
     );

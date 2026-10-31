@@ -41,17 +41,20 @@ export const EntityListRow = ({ entity, usage, left, testID, isFirst, isLast, on
     const { t } = useLingui();
     const [notify] = useVibration();
     const formatUsage = useFormatEntityUsage();
-    const { mutatingOperation, start } = useEntityOperation();
+    const { isPending, mutatingOperation, start } = useEntityOperation();
     const { anchor, closeMenu, handleCloseComplete, handleToggleMenu, isMenuOpen } = usePopoverMenuAnchor();
     const mergeLabel = t`Merge into…`;
 
     const notifyWhenCompleted = (isCompleted: boolean) =>
         isCompleted ? Effect.sync(() => void notify(NotificationFeedbackType.Success)) : Effect.void;
 
-    const handleMerge = () =>
-        void start(EntityOperationEnum.MERGE, trackMutation =>
-            operations.onMerge(trackMutation).pipe(Effect.flatMap(target => notifyWhenCompleted(isDefined(target))))
-        );
+    const { onMerge } = operations;
+    const handleMerge = isDefined(onMerge)
+        ? () =>
+              void start(EntityOperationEnum.MERGE, trackMutation =>
+                  onMerge(trackMutation).pipe(Effect.flatMap(target => notifyWhenCompleted(isDefined(target))))
+              )
+        : null;
 
     const handleDelete = () =>
         void start(EntityOperationEnum.DELETE, trackMutation =>
@@ -59,7 +62,7 @@ export const EntityListRow = ({ entity, usage, left, testID, isFirst, isLast, on
         );
 
     const accessibilityActionHandlers = new Map<string, () => void>([
-        [EntityOperationEnum.MERGE, handleMerge],
+        ...(isDefined(handleMerge) ? [[EntityOperationEnum.MERGE, handleMerge] as const] : []),
         [EntityOperationEnum.DELETE, handleDelete]
     ]);
 
@@ -74,15 +77,17 @@ export const EntityListRow = ({ entity, usage, left, testID, isFirst, isLast, on
 
     const pressableProps = {
         onLongPress: handleToggleMenu,
+        disabled: isPending,
+        accessibilityState: { disabled: isPending, busy: isDefined(mutatingOperation) },
         accessibilityActions: [
-            { name: EntityOperationEnum.MERGE, label: mergeLabel },
+            ...(isDefined(handleMerge) ? [{ name: EntityOperationEnum.MERGE, label: mergeLabel }] : []),
             { name: EntityOperationEnum.DELETE, label: operations.deleteLabel }
         ],
         onAccessibilityAction: handleAccessibilityAction
     };
 
     return (
-        <DeletableRow id={entity.id} onDelete={handleDelete} label={operations.deleteLabel}>
+        <DeletableRow id={entity.id} onDelete={handleDelete} label={operations.deleteLabel} isDisabled={isPending}>
             <GroupedListItem isFirst={isFirst} isLast={isLast}>
                 <GroupedListRow
                     testID={testID}
@@ -97,7 +102,9 @@ export const EntityListRow = ({ entity, usage, left, testID, isFirst, isLast, on
                     <ActionsMenuContext value={closeMenu}>
                         <View className="py-sm">
                             <ActionsMenuItem icon={UserIconNameEnum.Pencil} label={t`Edit`} onPress={onOpen} />
-                            <ActionsMenuItem icon={UserIconNameEnum.GitMerge} label={mergeLabel} onPress={handleMerge} />
+                            {isDefined(handleMerge) ? (
+                                <ActionsMenuItem icon={UserIconNameEnum.GitMerge} label={mergeLabel} onPress={handleMerge} />
+                            ) : null}
                             <ActionsMenuItem
                                 icon={UserIconNameEnum.Trash2}
                                 label={operations.deleteLabel}

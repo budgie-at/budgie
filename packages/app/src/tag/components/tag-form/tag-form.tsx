@@ -1,12 +1,14 @@
-import { TAG_TITLE_MAX_LENGTH, TagCreateEntityInterface, TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { TAG_TITLE_MAX_LENGTH, TagCreateEntityInterface, TagEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { AiTranslationFields } from '../../../@generic/component/ai-translation-fields/ai-translation-fields';
 import { EntityEditSections } from '../../../@generic/component/entity-edit-sections/entity-edit-sections';
 import { EntityFormPage } from '../../../@generic/component/entity-form-page/entity-form-page';
 import { FormTitleInput } from '../../../@generic/component/form-title-input/form-title-input';
+import { GroupedListActionRow } from '../../../@generic/component/grouped-list-action-row/grouped-list-action-row';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { IconTitleField } from '../../../@generic/component/icon-title-field/icon-title-field';
 import { EntityOperationEnum } from '../../../@generic/enum/entity-operation.enum';
@@ -17,6 +19,7 @@ import { useDeleteTag } from '../../hooks/use-delete-tag.hook';
 import { useMergeTag } from '../../hooks/use-merge-tag.hook';
 import { useTagForm } from '../../hooks/use-tag-form.hook';
 import { TagService } from '../../service/tag.service';
+import { TagMonogram } from '../tag-monogram/tag-monogram';
 
 import { TagFormSelector } from './tag-form.selector';
 
@@ -92,6 +95,10 @@ export const TagForm = (props: Props) => {
         }
     };
 
+    const keywordsFooter = isDefined(tag) ? (
+        <AiTranslationFields title={tag.title} titleEn={tag.titleEn} titleTags={tag.titleTags} />
+    ) : null;
+
     const handleFormSubmit = handleSubmit(values => saveFlight.run(submitTag(values)));
 
     return (
@@ -104,8 +111,8 @@ export const TagForm = (props: Props) => {
             isSaveDisabled={isSaveDisabled}
             saveTestID={TagFormSelector.Submit}
         >
-            <GroupedListSection title={t`Details`}>
-                <IconTitleField icon={UserIconNameEnum.Tag} variant="secondary" label={t`Name`}>
+            <GroupedListSection title={t`Details`} footer={keywordsFooter}>
+                <IconTitleField tile={<TagMonogram title={title} />} label={t`Name`}>
                     <FormTitleInput
                         autoFocus={!isEditing}
                         editable={!isBusy}
@@ -121,15 +128,20 @@ export const TagForm = (props: Props) => {
 
             {isDefined(tag) ? (
                 <EntityEditSections
-                    entity={tag}
-                    mergeLabel={t`Merge into another tag…`}
-                    onMerge={handleMerge}
-                    mergeTestID={TagFormSelector.Merge}
                     deleteLabel={t`Delete tag`}
                     onDelete={handleDelete}
                     isDisabled={isBusy}
                     mutatingOperation={operation.mutatingOperation}
-                />
+                >
+                    <GroupedListActionRow
+                        label={t`Merge into another tag…`}
+                        onPress={handleMerge}
+                        isDisabled={isBusy}
+                        isLoading={operation.mutatingOperation === EntityOperationEnum.MERGE}
+                        labelClassName="text-primary"
+                        testID={TagFormSelector.Merge}
+                    />
+                </EntityEditSections>
             ) : null}
         </EntityFormPage>
     );
