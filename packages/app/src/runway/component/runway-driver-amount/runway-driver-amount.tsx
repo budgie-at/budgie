@@ -1,12 +1,11 @@
 import { convertFromMicroUnits } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
-import { Trans } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
-import { Text, View } from 'react-native';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
+import { RUNWAY_MAX_FONT_SIZE_MULTIPLIER } from '../../constant/runway-max-font-size-multiplier.constant';
 
 interface Props {
     readonly monthlyAmount: number;
@@ -16,7 +15,7 @@ interface Props {
 const amountVariants = cva('text-[15px] tabular-nums', {
     variants: {
         isFolded: {
-            true: 'font-medium text-secondary-foreground',
+            true: 'font-medium text-primary',
             false: 'font-medium text-primary'
         }
     }
@@ -27,13 +26,8 @@ export const RunwayDriverAmount = ({ monthlyAmount, isFolded }: Props) => {
     const formatDigits = useFormatDigits(0);
 
     return (
-        <View className="flex-row items-baseline gap-x-xs">
-            <ProtectedText numberOfLines={1} className={amountVariants({ isFolded })}>
-                {formatDigits(convertFromMicroUnits(monthlyAmount), defaultInstrument.symbol)}
-            </ProtectedText>
-            <Text className="text-xs tabular-nums text-secondary-foreground">
-                <Trans>/ mo</Trans>
-            </Text>
-        </View>
+        <ProtectedText numberOfLines={1} maxFontSizeMultiplier={RUNWAY_MAX_FONT_SIZE_MULTIPLIER} className={amountVariants({ isFolded })}>
+            {formatDigits(convertFromMicroUnits(monthlyAmount), defaultInstrument.symbol)}
+        </ProtectedText>
     );
 };

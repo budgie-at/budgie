@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
-import { MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-font-size-multiplier.constant';
+import { RUNWAY_FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../constant/runway-footnote-max-font-size-multiplier.constant';
 import { useRunwayAmountLabel } from '../../hook/use-runway-amount-label.hook';
 
 interface Props {
@@ -15,7 +15,10 @@ export const RunwayHistorySpikeNote = ({ spikeLabel, expense }: Props) => {
     const spikeAmount = formatAmount(expense);
 
     return (
-        <Text maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER} className="px-3xl text-xs tabular-nums text-secondary-foreground">
+        <Text
+            maxFontSizeMultiplier={RUNWAY_FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
+            className="px-3xl text-[13px] tabular-nums text-secondary-foreground"
+        >
             <Trans>
                 {spikeLabel} had a one-off of {spikeAmount}. The estimate uses a typical month instead.
             </Trans>

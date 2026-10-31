@@ -1,6 +1,6 @@
 import { Text, View } from 'react-native';
 
-import { MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-font-size-multiplier.constant';
+import { RUNWAY_MAX_FONT_SIZE_MULTIPLIER } from '../../constant/runway-max-font-size-multiplier.constant';
 import { RunwayCard } from '../runway-card/runway-card';
 
 import type { ReactNode } from 'react';
@@ -17,7 +17,7 @@ export const RunwaySection = ({ title, children, accessory, footnote, testID }: 
     <View collapsable={false} testID={testID} className="gap-y-md">
         <Text
             accessibilityRole="header"
-            maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
+            maxFontSizeMultiplier={RUNWAY_MAX_FONT_SIZE_MULTIPLIER}
             className="px-3xl text-lg font-semibold text-primary"
         >
             {title}

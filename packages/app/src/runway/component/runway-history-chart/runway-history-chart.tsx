@@ -10,6 +10,7 @@ import {
     RUNWAY_HISTORY_BAR_AREA_HEIGHT,
     RUNWAY_HISTORY_BAR_GAP,
     RUNWAY_HISTORY_CHART_WIDTH,
+    RUNWAY_HISTORY_PLOT_WIDTH,
     RUNWAY_HISTORY_PLOT_TOP
 } from '../../constant/runway-history.constant';
 import { RunwayHistoryBarLabel } from '../runway-history-bar-label/runway-history-bar-label';
@@ -17,6 +18,7 @@ import { RunwayHistoryBars } from '../runway-history-bars/runway-history-bars';
 import { RunwayHistoryLegend } from '../runway-history-legend/runway-history-legend';
 import { RunwayHistoryMedianLine } from '../runway-history-median-line/runway-history-median-line';
 import { RunwayHistoryMonthLabel } from '../runway-history-month-label/runway-history-month-label';
+import { RunwayHistorySpikeLabel } from '../runway-history-spike-label/runway-history-spike-label';
 import { RunwayHistorySpikeNote } from '../runway-history-spike-note/runway-history-spike-note';
 import { RunwaySection } from '../runway-section/runway-section';
 
@@ -48,7 +50,7 @@ export const RunwayHistoryChart = ({ series, burn }: Props) => {
     );
     const maxValue = series.reduce((maximum, row) => Math.max(maximum, row.expense, row.income), 0);
     const hasSpike = isDefined(peakRow) && isPositiveNumber(burn) && peakRow.expense > SPIKE_MULTIPLIER * burn;
-    const slotWidth = RUNWAY_HISTORY_CHART_WIDTH / Math.max(series.length, 1);
+    const slotWidth = RUNWAY_HISTORY_PLOT_WIDTH / Math.max(series.length, 1);
     const barWidth = Math.min(MAX_BAR_WIDTH, Math.max((slotWidth * (1 - SLOT_GUTTER_RATIO) - RUNWAY_HISTORY_BAR_GAP) / 2, MIN_BAR_WIDTH));
     const labelStep = Math.ceil(series.length / MAX_MONTH_LABELS);
     const months = series.map((row, index) => {
@@ -66,7 +68,9 @@ export const RunwayHistoryChart = ({ series, burn }: Props) => {
         };
     });
     const spikeExpense = isDefined(peakRow) ? peakRow.expense : 0;
-    const spikeLabel = months.find(month => month.isSpike)?.label ?? '';
+    const spikeMonth = months.find(month => month.isSpike);
+    const spikeLabel = spikeMonth?.label ?? '';
+    const spikeBarX = (spikeMonth?.centerX ?? 0) - RUNWAY_HISTORY_BAR_GAP / 2 - barWidth / 2;
     const spikeNote = hasSpike ? <RunwayHistorySpikeNote spikeLabel={spikeLabel} expense={spikeExpense} /> : null;
 
     return (
@@ -78,7 +82,7 @@ export const RunwayHistoryChart = ({ series, burn }: Props) => {
                             <StyledLine
                                 x1={0}
                                 y1={BASELINE_Y}
-                                x2={RUNWAY_HISTORY_CHART_WIDTH}
+                                x2={RUNWAY_HISTORY_PLOT_WIDTH}
                                 y2={BASELINE_Y}
                                 strokeClassName="accent-corner"
                             />
@@ -95,6 +99,7 @@ export const RunwayHistoryChart = ({ series, burn }: Props) => {
                                 />
                             ))}
                             <RunwayHistoryMedianLine value={burn} maxValue={maxValue} />
+                            {hasSpike ? <RunwayHistorySpikeLabel x={spikeBarX} expense={spikeExpense} /> : null}
                             {months.map(month => (
                                 <RunwayHistoryMonthLabel
                                     key={month.key}
@@ -113,7 +118,7 @@ export const RunwayHistoryChart = ({ series, burn }: Props) => {
                         ))}
                     </View>
                 </View>
-                <RunwayHistoryLegend hasSpike={hasSpike} typicalAmount={burn} />
+                <RunwayHistoryLegend />
             </View>
         </RunwaySection>
     );

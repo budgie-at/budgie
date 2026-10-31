@@ -208,12 +208,12 @@ msgid "{firstMonth}–{lastMonth}"
 msgstr "{firstMonth}–{lastMonth}"
 
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
-msgid "{foldedDriverCount, plural, one {Other (# category)} other {Other (# categories)}}"
-msgstr "{foldedDriverCount, plural, one {Andere (# Kategorie)} other {Andere (# Kategorien)}}"
+msgid "{foldedDriverCount, plural, one {# more category} other {# more categories}}"
+msgstr "{foldedDriverCount, plural, one {# weitere Kategorie} other {# weitere Kategorien}}"
 
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
-msgid "{foldedDriverCount, plural, one {Other (# tag)} other {Other (# tags)}}"
-msgstr "{foldedDriverCount, plural, one {Andere (# Tag)} other {Andere (# Tags)}}"
+msgid "{foldedDriverCount, plural, one {# more tag} other {# more tags}}"
+msgstr "{foldedDriverCount, plural, one {# weiterer Tag} other {# weitere Tags}}"
 
 #: src/budget/components/budget-period-recap-rollover/budget-period-recap-rollover.tsx
 msgid "{formattedAmount} carried into {name}"
@@ -330,8 +330,8 @@ msgid "{months, plural, one {# month} other {# months}}"
 msgstr "{months, plural, one {# Monat} other {# Monate}}"
 
 #: src/runway/component/runway-empty-state/runway-empty-state.tsx
-msgid "{monthsUsed} of {RUNWAY_MINIMUM_MONTHS} months"
-msgstr "{monthsUsed} von {RUNWAY_MINIMUM_MONTHS} Monaten"
+msgid "{monthsUsed} of {RUNWAY_MINIMUM_MONTHS} complete months"
+msgstr "{monthsUsed} von {RUNWAY_MINIMUM_MONTHS} vollständigen Monaten"
 
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "{newAccountCount, plural, one {Add # account} other {Add # accounts}}"
@@ -534,10 +534,6 @@ msgstr "{unreadableCount, plural, one {# Beleg nicht lesbar} other {# Belege nic
 #: src/budget/components/budget-widget-headline/budget-widget-headline.tsx
 msgid "/ day"
 msgstr "/ Tag"
-
-#: src/runway/component/runway-driver-amount/runway-driver-amount.tsx
-msgid "/ mo"
-msgstr "/ Mon."
 
 #: src/budget/components/budget-limit-row/budget-limit-row.tsx
 msgid "+{carriedLabel} rolled over"
@@ -809,6 +805,10 @@ msgstr "Tags zu diesen Transaktionen hinzufügen"
 msgid "Add the Budgie action"
 msgstr "Budgie-Aktion hinzufügen"
 
+#: src/runway/component/runway-empty-state/runway-empty-state.tsx
+msgid "Add transactions to see your runway"
+msgstr "Füge Transaktionen hinzu, um deine Runway zu sehen"
+
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add your first account to start tracking your finances"
 msgstr "Fügen Sie Ihr erstes Konto hinzu, um Ihre Finanzen zu verfolgen"
@@ -1076,6 +1076,10 @@ msgstr "Durchschnitt"
 #: src/categorize-inbox/components/categorize-inbox-group-stats-line/categorize-inbox-group-stats-line.tsx
 msgid "Average payment"
 msgstr "Durchschnittliche Zahlung"
+
+#: src/runway/component/runway-drivers/runway-drivers.tsx
+msgid "Average per month"
+msgstr "Durchschnitt pro Monat"
 
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Avg cost"
@@ -2052,10 +2056,6 @@ msgid "Counts crypto at today's market value"
 msgstr "Rechnet Krypto zum heutigen Marktwert"
 
 #: src/runway/component/runway-verdict-outlook/runway-verdict-outlook.tsx
-msgid "Covered by {coverMonths} months of expenses."
-msgstr "Deckt {coverMonths} Monate an Ausgaben ab."
-
-#: src/runway/component/runway-verdict-outlook/runway-verdict-outlook.tsx
 msgid "Covered by your liquid balance."
 msgstr "Durch dein liquides Guthaben gedeckt."
 
@@ -2743,6 +2743,7 @@ msgid "Expense"
 msgstr "Ausgabe"
 
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
+#: src/runway/component/runway-history-legend/runway-history-legend.tsx
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Expenses"
 msgstr "Ausgaben"
@@ -3164,7 +3165,7 @@ msgid "Include in Net Worth"
 msgstr "In Nettovermögen einbeziehen"
 
 #: src/runway/component/runway-all-in-toggle/runway-all-in-toggle.tsx
-msgid "Include one-offs"
+msgid "Include one‑offs"
 msgstr "Einmalige Ausgaben einbeziehen"
 
 #: src/runway/component/runway-verdict-outlook/runway-verdict-outlook.tsx
@@ -3176,6 +3177,7 @@ msgid "includes fee {formattedFeeAmount}"
 msgstr "inkl. Gebühr {formattedFeeAmount}"
 
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
+#: src/runway/component/runway-history-legend/runway-history-legend.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/components/statistics-content/statistics-content.tsx
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
@@ -3571,17 +3573,9 @@ msgstr "Modelle und Downloads"
 msgid "Models download once, best on Wi-Fi"
 msgstr "Modelle werden einmal geladen, am besten über WLAN"
 
-#: src/runway/component/runway-history-legend/runway-history-legend.tsx
-msgid "Money in"
-msgstr "Einnahmen"
-
 #: src/app/(main)/create-account/index.tsx
 msgid "Money lent or borrowed"
 msgstr "Verliehenes oder geliehenes Geld"
-
-#: src/runway/component/runway-history-legend/runway-history-legend.tsx
-msgid "Money out"
-msgstr "Ausgaben"
 
 #: src/account/constant/bank-provider-title.constant.ts
 #: src/app/(main)/create-account/index.tsx
@@ -4063,17 +4057,13 @@ msgstr "On-Device-KI"
 msgid "once a month"
 msgstr "einmal im Monat"
 
+#: src/runway/component/runway-empty-state/runway-empty-state.tsx
+msgid "Once you have 3 months of transactions, Runway shows how long your balance lasts."
+msgstr "Sobald du 3 Monate an Transaktionen hast, zeigt Runway, wie lange dein Guthaben reicht."
+
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 msgid "One you exported with a PIN you remember"
 msgstr "Eines, das du mit einer PIN exportiert hast, die du noch weißt"
-
-#: src/runway/component/runway-driver-row/runway-driver-row.tsx
-msgid "One-off"
-msgstr "Einmalig"
-
-#: src/runway/component/runway-history-legend/runway-history-legend.tsx
-msgid "One-off spike"
-msgstr "Einmaliger Ausschlag"
 
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "one-time download"
@@ -4082,6 +4072,10 @@ msgstr "einmaliger Download"
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "One-time import from a Privat24 statement — this is not a live sync, and each export covers a single card or account"
 msgstr "Einmaliger Import aus einem Privat24-Kontoauszug – kein Live-Abgleich, und jeder Export umfasst nur eine Karte oder ein Konto"
+
+#: src/runway/component/runway-driver-row/runway-driver-row.tsx
+msgid "One‑off"
+msgstr "Einmalig"
 
 #: ../ledger/src/installment/service/installment-plan.service.ts
 msgid "Only an expense can become an installment plan"
@@ -5147,8 +5141,8 @@ msgid "Setup"
 msgstr "Einrichtung"
 
 #: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
-msgid "Shaded area shows your better and worse months."
-msgstr "Der schattierte Bereich zeigt deine besseren und schlechteren Monate."
+msgid "Shading shows how much your months usually vary."
+msgstr "Die Schattierung zeigt, wie stark deine Monate schwanken."
 
 #: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
 msgid "Shortcuts"
@@ -5284,8 +5278,8 @@ msgid "Split"
 msgstr "Aufteilen"
 
 #: src/runway/component/runway-all-in-toggle/runway-all-in-toggle.tsx
-msgid "Spreads irregular costs like insurance across the months."
-msgstr "Verteilt unregelmäßige Kosten wie Versicherungen auf die Monate."
+msgid "Spreads irregular costs across the months."
+msgstr "Verteilt unregelmäßige Kosten auf die Monate."
 
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "Start again with your new PIN"
@@ -5321,6 +5315,14 @@ msgstr "Beginnen Sie mit der Verfolgung Ihrer Ausgaben, indem Sie die Mikrofonta
 #: src/ai/constant/ai-umbrella-status-atom.constant.ts
 msgid "Starting up AI…"
 msgstr "KI wird gestartet…"
+
+#: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
+msgid "Starts at {startLabel}."
+msgstr "Beginnt bei {startLabel}."
+
+#: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
+msgid "Starts at {startLabel}. Runs out around {runOutLabel}."
+msgstr "Beginnt bei {startLabel}. Reicht bis etwa {runOutLabel}."
 
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Statement imported"
@@ -6000,12 +6002,9 @@ msgid "Type the same PIN again to make sure it's the one you meant."
 msgstr "Gib dieselbe PIN noch einmal ein, um sicherzugehen, dass es die richtige ist."
 
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
+#: src/runway/component/runway-history-legend/runway-history-legend.tsx
 msgid "Typical month"
 msgstr "Typischer Monat"
-
-#: src/runway/component/runway-history-legend/runway-history-legend.tsx
-msgid "Typical month {amount}"
-msgstr "Typischer Monat {amount}"
 
 #: src/i18n/constant/languages.constant.ts
 msgid "Ukrainian"
@@ -6366,6 +6365,10 @@ msgstr "Deine Konten synchronisieren weiter mit dem neuen Schlüssel."
 #: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
 msgid "Your analytics are taking shape"
 msgstr "Deine Auswertungen nehmen Gestalt an"
+
+#: src/runway/component/runway-verdict-outlook/runway-verdict-outlook.tsx
+msgid "Your balance covers {coverMonths} months of spending."
+msgstr "Dein Guthaben deckt {coverMonths} Monate an Ausgaben."
 
 #: src/runway/component/runway-verdict-outlook/runway-verdict-outlook.tsx
 msgid "Your balance is already below zero."
