@@ -49,11 +49,16 @@ export const AccountSyncToggleRow = ({ sync }: Props) => {
     };
     const syncLabel = SYNC_PROVIDER_CAPABILITIES[sync.provider].supportsFileImport ? t`Include in file imports` : t`Automatic sync`;
     const offLabel = hasSyncProblem(sync) ? t`Off after an error` : t`Off`;
-    const statusText = sync.enabled ? (
-        <Text className={statusTextVariants({ status: sync.status })}>{statusLabels[sync.status]}</Text>
-    ) : (
-        <Text className="text-secondary-foreground text-[13px] leading-[18px]">{offLabel}</Text>
-    );
+    const statusText =
+        sync.enabled || sync.status === SyncStatusEnum.FAILED ? (
+            <Text className={statusTextVariants({ status: sync.status })} testID={AccountSyncCardSelector.Status}>
+                {statusLabels[sync.status]}
+            </Text>
+        ) : (
+            <Text className="text-secondary-foreground text-[13px] leading-[18px]" testID={AccountSyncCardSelector.Status}>
+                {offLabel}
+            </Text>
+        );
 
     return (
         <GroupedListRow
