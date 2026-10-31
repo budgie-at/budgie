@@ -6,6 +6,7 @@ import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import type { BudgetCategoryLimitTuneInputInterface } from '../../tuning/interface/budget-category-limit-tune-input.interface';
 import type { BudgetCategoryLimitBulkUpdateInputInterface, BudgetCategoryLimitCreateEntityInterface } from '@budgie/contracts';
 
 export class BudgetCategoryLimitRepository extends Context.Service<BudgetCategoryLimitRepository>()(
@@ -30,7 +31,8 @@ export class BudgetCategoryLimitRepository extends Context.Service<BudgetCategor
                             .update(BudgetCategoryLimitEntityTable)
                             .set({
                                 limitAmount: update.limitAmount,
-                                ...(isDefined(update.rolloverMode) && { rolloverMode: update.rolloverMode })
+                                ...(isDefined(update.rolloverMode) && { rolloverMode: update.rolloverMode }),
+                                ...(isDefined(update.userEditedAt) && { userEditedAt: update.userEditedAt })
                             })
                             .where(eq(BudgetCategoryLimitEntityTable.id, update.id))
                             .returning()
@@ -49,6 +51,21 @@ export class BudgetCategoryLimitRepository extends Context.Service<BudgetCategor
                         .update(BudgetCategoryLimitEntityTable)
                         .set({ deletedAt: new Date() })
                         .where(and(inArray(BudgetCategoryLimitEntityTable.id, ids), isNull(BudgetCategoryLimitEntityTable.deletedAt)))
+                );
+            }),
+            applyTunedLimits: Effect.fn('BudgetCategoryLimitRepository.applyTunedLimits')(function* (
+                updates: readonly BudgetCategoryLimitTuneInputInterface[]
+            ) {
+                yield* Effect.forEach(
+                    updates,
+                    update =>
+                        Db.query(db =>
+                            db
+                                .update(BudgetCategoryLimitEntityTable)
+                                .set({ limitAmount: update.limitAmount })
+                                .where(eq(BudgetCategoryLimitEntityTable.id, update.id))
+                        ),
+                    { discard: true }
                 );
             }),
             getByBudget: (budgetId: number) =>

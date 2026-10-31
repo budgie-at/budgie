@@ -59,6 +59,11 @@ env:
           id: 'BudgetSetup.OverallLimitInput'
           text: '1000'
       timeout: 3000
+- scrollUntilVisible:
+      element:
+          id: 'BudgetSetup.CategoryLimitsHeader'
+      direction: DOWN
+      centerElement: true
 - tapOn:
       id: 'BudgetSetup.CategoryLimitsHeader'
 - waitForAnimationToEnd
@@ -168,6 +173,11 @@ env:
           id: 'BudgetSetup.OverallLimitInput'
           text: '1500'
       timeout: 3000
+- scrollUntilVisible:
+      element:
+          id: 'BudgetSetup.CategoryLimitsHeader'
+      direction: DOWN
+      centerElement: true
 - tapOn:
       id: 'BudgetSetup.CategoryLimitsHeader'
 - waitForAnimationToEnd

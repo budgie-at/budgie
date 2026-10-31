@@ -1,4 +1,5 @@
 import { budgetComputeAllocation } from '@budgie/budget';
+import { BudgetLimitSourceEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { useFormContext, useWatch } from 'react-hook-form';
@@ -37,12 +38,16 @@ const remainingTextVariants = cva<{ status: Record<AllocationStatus, string> }>(
 export const BudgetAllocationSummary = () => {
     const { t } = useLingui();
     const { control } = useFormContext<BudgetFormValues>();
-    const [overallLimit, otherLimit, categoryLimits, instrumentId] = useWatch({
+    const [overallLimit, otherLimit, categoryLimits, instrumentId, limitSource] = useWatch({
         control,
-        name: ['overallLimit', 'otherLimit', 'categoryLimits', 'instrumentId']
+        name: ['overallLimit', 'otherLimit', 'categoryLimits', 'instrumentId', 'limitSource']
     });
     const { instrument } = useGetInstrumentByIdQuery(instrumentId);
     const formatDigits = useDisplayFormatDigits();
+
+    if (limitSource !== BudgetLimitSourceEnum.FIXED) {
+        return null;
+    }
 
     const allocation = budgetComputeAllocation({ overallLimit, otherLimit, categoryLimits });
     const status: AllocationStatus = allocation.isOverAllocated ? 'over' : 'normal';

@@ -10,8 +10,9 @@ interface Props {
     readonly isLabelBelow: boolean;
 }
 
-const LABEL_ABOVE_OFFSET = -4;
-const LABEL_BELOW_OFFSET = 11;
+const END_MARKER_CLEARANCE = 6;
+const LABEL_ABOVE_OFFSET = -4 - END_MARKER_CLEARANCE;
+const LABEL_BELOW_OFFSET = 11 + END_MARKER_CLEARANCE;
 
 export const BudgetForecastLimit = ({ y, left, right, label, fontSize, isLabelBelow }: Props) => {
     const labelY = y + (isLabelBelow ? LABEL_BELOW_OFFSET : LABEL_ABOVE_OFFSET);

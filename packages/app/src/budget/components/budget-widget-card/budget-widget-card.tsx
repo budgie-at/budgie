@@ -1,4 +1,4 @@
-import { Trans } from '@lingui/react/macro';
+import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
 
@@ -9,6 +9,7 @@ import { LoadingContent } from '../../../@generic/component/loading-content/load
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { BudgetSelector } from '../../budget.selector';
+import { BUDGET_PERIOD_TITLE_LABEL } from '../../constant/budget-period-title-label.constant';
 import { useGetBudgetEffectiveLimitsQuery } from '../../query/use-get-budget-effective-limits.query';
 import { useGetBudgetProjectionQuery } from '../../query/use-get-budget-projection.query';
 import { useGetBudgetSpentQuery } from '../../query/use-get-budget-spent.query';
@@ -25,6 +26,7 @@ interface Props {
 }
 
 export const BudgetWidgetCard = ({ budget }: Props) => {
+    const { t } = useLingui();
     const { projection, isLoading } = useGetBudgetProjectionQuery(budget);
     const { spent } = useGetBudgetSpentQuery(budget);
     const { instrument } = useGetInstrumentByIdQuery(budget.instrumentId);
@@ -37,9 +39,7 @@ export const BudgetWidgetCard = ({ budget }: Props) => {
     return (
         <Card testID={BudgetSelector.WidgetCard} variant="ghost" size="md" onPress={handleNavigate} className="gap-y-md">
             <View className="flex-row items-center justify-between">
-                <Text className="text-primary font-medium text-sm">
-                    <Trans>Monthly budget</Trans>
-                </Text>
+                <Text className="text-primary font-medium text-sm">{t(BUDGET_PERIOD_TITLE_LABEL[budget.period])}</Text>
                 <Text className="text-secondary-foreground text-xs">{formatBudgetPeriodLabel(budget, formatMonthAndDay)}</Text>
             </View>
 

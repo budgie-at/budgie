@@ -1,4 +1,4 @@
 import type { BudgetCategoryLimitEntityInterface } from './budget-category-limit-entity.interface';
 
 export type BudgetCategoryLimitCreateEntityInterface = Pick<BudgetCategoryLimitEntityInterface, 'budgetId' | 'categoryId' | 'limitAmount'> &
-    Partial<Pick<BudgetCategoryLimitEntityInterface, 'rolloverMode'>>;
+    Partial<Pick<BudgetCategoryLimitEntityInterface, 'rolloverMode' | 'userEditedAt'>>;

@@ -1,5 +1,3 @@
-import { router } from 'expo-router';
-
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { EntranceReveal } from '../../../@generic/component/entrance-reveal/entrance-reveal';
@@ -17,15 +15,14 @@ import type { BudgetProjectionInterface } from '@budgie/budget';
 interface Props {
     readonly projection: BudgetProjectionInterface;
     readonly currencySymbol: string;
-    readonly onPaceHintPress: (target: BudgetHighlightTargetInterface) => void;
+    readonly onFigurePress?: () => void;
+    readonly onPaceHintPress?: (target: BudgetHighlightTargetInterface) => void;
 }
 
-export const BudgetVerdict = ({ projection, currencySymbol, onPaceHintPress }: Props) => {
+export const BudgetVerdict = ({ projection, currencySymbol, onFigurePress, onPaceHintPress }: Props) => {
     const { overall, upcomingCharges, daysLeft } = projection;
 
-    const hasPaceHint = isDefined(findRiskiestAheadScope(projection));
-
-    const handleFigurePress = () => void router.push('/budget-safe-to-spend');
+    const hasPaceHint = isDefined(onPaceHintPress) && isDefined(findRiskiestAheadScope(projection));
 
     const outlook = hasPaceHint ? (
         <BudgetPaceHint projection={projection} currencySymbol={currencySymbol} onPress={onPaceHintPress} />
@@ -33,13 +30,21 @@ export const BudgetVerdict = ({ projection, currencySymbol, onPaceHintPress }: P
         <BudgetVerdictOutlook scope={overall} currencySymbol={currencySymbol} />
     );
 
+    const verdictFigure = <BudgetVerdictFigure scope={overall} currencySymbol={currencySymbol} />;
+
+    const figure = isDefined(onFigurePress) ? (
+        <HapticPressable accessibilityRole="button" onPress={onFigurePress}>
+            {verdictFigure}
+        </HapticPressable>
+    ) : (
+        verdictFigure
+    );
+
     return (
         <EntranceReveal step={0} className="gap-y-md">
             <BudgetVerdictHeader scope={overall} daysLeft={daysLeft} />
 
-            <HapticPressable accessibilityRole="button" onPress={handleFigurePress}>
-                <BudgetVerdictFigure scope={overall} currencySymbol={currencySymbol} />
-            </HapticPressable>
+            {figure}
 
             {outlook}
 

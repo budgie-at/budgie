@@ -1,10 +1,13 @@
+import { BudgetPeriodEnum } from '@budgie/contracts';
 import { expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
 import { computeClosedPeriods } from '../src/history/utils/budget-closed-periods.util';
 
-const CALENDAR_MONTH = { periodStartDay: 1, useLastDayOfMonth: false };
-const LAST_DAY_OF_MONTH = { periodStartDay: 1, useLastDayOfMonth: true };
+const CALENDAR_MONTH = { period: BudgetPeriodEnum.MONTHLY, periodStartDay: 1, useLastDayOfMonth: false, periodAnchorDate: null };
+const LAST_DAY_OF_MONTH = { ...CALENDAR_MONTH, useLastDayOfMonth: true };
+const WEEKLY_FROM_OCTOBER_5 = { ...CALENDAR_MONTH, period: BudgetPeriodEnum.WEEKLY, periodAnchorDate: new Date(2026, 9, 5) };
+const YEARLY_FROM_MARCH_15 = { ...CALENDAR_MONTH, period: BudgetPeriodEnum.YEARLY, periodAnchorDate: new Date(2024, 2, 15) };
 
 const closedPeriodStarts = (now: Date, latestSnapshotStart: Date | null, earliestOperatedAt: Date | null) =>
     computeClosedPeriods(CALENDAR_MONTH, now, latestSnapshotStart, earliestOperatedAt).map(window => window.periodStart);
@@ -63,12 +66,7 @@ it.effect('treats the exact period boundary as the start of the next period', ()
 
 it.effect('clamps a start day beyond the month length', () =>
     Effect.sync(() => {
-        const windows = computeClosedPeriods(
-            { periodStartDay: 31, useLastDayOfMonth: false },
-            new Date(2026, 2, 15),
-            null,
-            new Date(2025, 11, 1)
-        );
+        const windows = computeClosedPeriods({ ...CALENDAR_MONTH, periodStartDay: 31 }, new Date(2026, 2, 15), null, new Date(2025, 11, 1));
         const last = windows[windows.length - 1];
 
         expect(last.periodStart).toEqual(new Date(2026, 0, 31));
@@ -92,12 +90,7 @@ it.effect('enumerates last-day-of-month periods across February', () =>
 
 it.effect('produces contiguous windows for a custom start day', () =>
     Effect.sync(() => {
-        const windows = computeClosedPeriods(
-            { periodStartDay: 15, useLastDayOfMonth: false },
-            new Date(2026, 5, 20),
-            null,
-            new Date(2025, 0, 1)
-        );
+        const windows = computeClosedPeriods({ ...CALENDAR_MONTH, periodStartDay: 15 }, new Date(2026, 5, 20), null, new Date(2025, 0, 1));
 
         expect(windows).toHaveLength(6);
         expect(windows.slice(1).every((window, index) => window.periodStart.getTime() === windows[index]?.nextPeriodStart.getTime())).toBe(
@@ -113,5 +106,27 @@ it.effect('caps catch-up after a long absence', () =>
 
         expect(windows).toHaveLength(12);
         expect(windows[11]?.nextPeriodStart).toEqual(new Date(2026, 2, 1));
+    })
+);
+
+it.effect('enumerates weekly windows after the latest snapshot', () =>
+    Effect.sync(() => {
+        const windows = computeClosedPeriods(WEEKLY_FROM_OCTOBER_5, new Date(2026, 9, 29, 12), new Date(2026, 9, 5), new Date(2025, 0, 1));
+
+        expect(windows.map(window => window.periodStart)).toEqual([new Date(2026, 9, 12), new Date(2026, 9, 19)]);
+        expect(windows[1]?.nextPeriodStart).toEqual(new Date(2026, 9, 26));
+    })
+);
+
+it.effect('backfills yearly windows only while they overlap transaction history', () =>
+    Effect.sync(() => {
+        const windows = computeClosedPeriods(YEARLY_FROM_MARCH_15, new Date(2026, 9, 29, 12), null, new Date(2023, 0, 1));
+
+        expect(windows.map(window => window.periodStart)).toEqual([
+            new Date(2022, 2, 15),
+            new Date(2023, 2, 15),
+            new Date(2024, 2, 15),
+            new Date(2025, 2, 15)
+        ]);
     })
 );

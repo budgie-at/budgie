@@ -14,12 +14,15 @@ import { BudgetSelector } from '../../budget.selector';
 import { BudgetFormSchema } from '../../constant/budget-form-schema.constant';
 import { BudgetTemplateKindEnum } from '../../enum/budget-template-kind.enum';
 import { useBudgetForm } from '../../hooks/use-budget-form.hook';
-import { useGetBudgetSpentQuery } from '../../query/use-get-budget-spent.query';
+import { BudgetAutoTuneField } from '../budget-auto-tune-field/budget-auto-tune-field';
+import { BudgetDeleteButton } from '../budget-delete-button/budget-delete-button';
 import { BudgetEditFooter } from '../budget-edit-footer/budget-edit-footer';
 import { BudgetInlineCategoryLimits } from '../budget-inline-category-limits/budget-inline-category-limits';
-import { BudgetOverallLimitField } from '../budget-overall-limit-field/budget-overall-limit-field';
-import { BudgetProgressBar } from '../budget-progress-bar/budget-progress-bar';
-import { BudgetSetupDeleteButton } from '../budget-setup-delete-button/budget-setup-delete-button';
+import { BudgetLimitSourceField } from '../budget-limit-source-field/budget-limit-source-field';
+import { BudgetNameField } from '../budget-name-field/budget-name-field';
+import { BudgetPeriodField } from '../budget-period-field/budget-period-field';
+import { BudgetSetupProgress } from '../budget-setup-progress/budget-setup-progress';
+import { BudgetStartsOnField } from '../budget-starts-on-field/budget-starts-on-field';
 
 import type { KeyboardAwareScrollViewRef } from 'react-native-keyboard-controller';
 
@@ -31,7 +34,7 @@ interface Props {
 
 export const BudgetSetupForm = ({ defaultInstrumentId, editingId, templateKind }: Props) => {
     const scrollViewRef = useRef<KeyboardAwareScrollViewRef | null>(null);
-    const { form, handleCancel, handleSubmit, handleDelete, isEditing, isLoading, budget } = useBudgetForm({
+    const { form, handleCancel, handleSubmit, handleDelete, handlePeriodChange, isEditing, isLoading, budget } = useBudgetForm({
         defaultInstrumentId,
         editingId,
         templateKind
@@ -40,7 +43,6 @@ export const BudgetSetupForm = ({ defaultInstrumentId, editingId, templateKind }
         control: form.control,
         name: ['overallLimit', 'otherLimit', 'categoryLimits', 'instrumentId']
     });
-    const { spent } = useGetBudgetSpentQuery(budget);
     const instrumentId = isPositiveNumber(watchedInstrumentId) ? watchedInstrumentId : defaultInstrumentId;
     const { instrument } = useGetInstrumentByIdQuery(instrumentId);
     const isSaveDisabled = !Schema.is(BudgetFormSchema.from)({
@@ -55,15 +57,9 @@ export const BudgetSetupForm = ({ defaultInstrumentId, editingId, templateKind }
     const handleCategoryAdded = () => scrollViewRef.current?.scrollToEnd({ animated: true });
     const scrollViewProps = { ref: scrollViewRef };
     const setupProgressBar =
-        isEditing && isDefined(budget) ? (
-            <BudgetProgressBar
-                currencySymbol={currencySymbol}
-                spent={spent.spentOverall}
-                limit={budget.overallLimit}
-                spentTestID={BudgetSelector.SetupSpentLabel}
-                remainingTestID={BudgetSelector.SetupRemainingLabel}
-            />
-        ) : null;
+        isEditing && isDefined(budget) ? <BudgetSetupProgress budget={budget} currencySymbol={currencySymbol} /> : null;
+
+    const deleteButton = isEditing ? <BudgetDeleteButton testID={BudgetSelector.SetupDeleteButton} onDelete={handleDelete} /> : null;
 
     if (isLoading) {
         return <LoadingScreen />;
@@ -78,16 +74,23 @@ export const BudgetSetupForm = ({ defaultInstrumentId, editingId, templateKind }
                 scrollViewProps={scrollViewProps}
                 footer={
                     <View className="gap-md pt-xl px-7xl">
-                        <BudgetEditFooter
-                            onSubmit={handleSubmit}
-                            disabled={isSaveDisabled}
-                            deleteButton={<BudgetSetupDeleteButton isEditing={isEditing} onDelete={handleDelete} />}
-                        />
+                        <BudgetEditFooter onSubmit={handleSubmit} disabled={isSaveDisabled} deleteButton={deleteButton} />
                     </View>
                 }
             >
                 {setupProgressBar}
-                <BudgetOverallLimitField control={form.control} currencySymbol={currencySymbol} />
+                <View className="gap-y-lg">
+                    <BudgetNameField
+                        control={form.control}
+                        name="name"
+                        placeholder={t`Budget name`}
+                        testID={BudgetSelector.SetupNameInput}
+                    />
+                    <BudgetPeriodField onPeriodChange={handlePeriodChange} />
+                    <BudgetStartsOnField />
+                </View>
+                <BudgetLimitSourceField currencySymbol={currencySymbol} />
+                <BudgetAutoTuneField />
                 <BudgetInlineCategoryLimits currencySymbol={currencySymbol} onCategoryAdded={handleCategoryAdded} />
             </CollapsibleChromePage>
         </FormProvider>

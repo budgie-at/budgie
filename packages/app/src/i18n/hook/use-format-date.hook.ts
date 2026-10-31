@@ -7,9 +7,6 @@ export const useFormatDate = () => {
 
     const formatMonthAndDay = (date: Date | string) => intl.formatDate(date, { month: 'short', day: 'numeric' });
 
-    const formatMonthAndDayWithTime = (date: Date | string) =>
-        intl.formatDate(date, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hourCycle: 'h24' });
-
     const formatWeekdayWithTime = (date: Date | string) =>
         intl.formatDate(date, { weekday: 'long', hour: '2-digit', minute: '2-digit', hourCycle: 'h24' });
 
@@ -20,11 +17,13 @@ export const useFormatDate = () => {
 
     const formatShortMonth = (date: Date | string) => intl.formatDate(date, { month: 'short' });
 
+    const formatYear = (date: Date | string) => intl.formatDate(date, { year: 'numeric' });
+
+    const formatWeekday = (date: Date | string) => intl.formatDate(date, { weekday: 'long' });
+
     const formatFullMonth = (date: Date | string) => intl.formatDate(date, { month: 'long' });
 
     const formatMonthAndYear = (date: Date | string) => intl.formatDate(date, { month: 'short', year: 'numeric' });
-
-    const formatShortWeekdayAndDay = (date: Date | string) => intl.formatDate(date, { weekday: 'short', day: 'numeric' });
 
     const formatFullMonthAndYear = (date: Date | string) => intl.formatDate(date, { month: 'long', year: 'numeric' });
 
@@ -40,12 +39,12 @@ export const useFormatDate = () => {
         formatTime,
         formatWeekdayAndDay,
         formatShortMonth,
+        formatYear,
+        formatWeekday,
         formatFullMonth,
         formatMonthAndYear,
-        formatShortWeekdayAndDay,
         formatFullMonthAndYear,
         formatDayAndMonthAndYear,
-        formatMonthAndDayWithTime,
         formatWeekdayWithTime,
         formatDayAndFullMonthAndYear,
         formatDayAndMonthAndYearWithTime

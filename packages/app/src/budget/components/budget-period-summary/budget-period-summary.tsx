@@ -1,3 +1,4 @@
+import { BudgetPeriodEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { ScrollView, Text, View } from 'react-native';
 
@@ -8,9 +9,10 @@ import { SectionHeader } from '../../../@generic/component/section-header/sectio
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { BudgetSelector } from '../../budget.selector';
+import { BUDGET_PERIOD_TITLE_LABEL } from '../../constant/budget-period-title-label.constant';
+import { useFormatBudgetPeriod } from '../../hooks/use-format-budget-period.hook';
 import { useGetActiveBudgetQuery } from '../../query/use-get-active-budget.query';
 import { useGetBudgetPeriodSnapshotQuery } from '../../query/use-get-budget-period-snapshot.query';
-import { getBudgetPeriodLabelDate } from '../../utils/get-budget-period-label-date.util';
 import { BudgetPeriodSummaryCategoryRow } from '../budget-period-summary-category-row/budget-period-summary-category-row';
 import { BudgetPeriodSummaryLimitRow } from '../budget-period-summary-limit-row/budget-period-summary-limit-row';
 
@@ -22,7 +24,8 @@ export const BudgetPeriodSummary = ({ snapshotId }: Props) => {
     const { snapshot } = useGetBudgetPeriodSnapshotQuery(snapshotId);
     const { budget } = useGetActiveBudgetQuery();
     const { instrument } = useGetInstrumentByIdQuery(isDefined(budget) ? budget.instrumentId : 0);
-    const { formatFullMonth, formatMonthAndDay } = useFormatDate();
+    const { formatMonthAndDay } = useFormatDate();
+    const { formatFullPeriod } = useFormatBudgetPeriod();
     const { t } = useLingui();
 
     if (!isDefined(snapshot)) {
@@ -30,7 +33,7 @@ export const BudgetPeriodSummary = ({ snapshotId }: Props) => {
     }
 
     const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
-    const title = formatFullMonth(getBudgetPeriodLabelDate(snapshot.periodStart, snapshot.periodEnd));
+    const period = isDefined(budget) ? budget.period : BudgetPeriodEnum.MONTHLY;
     const startLabel = formatMonthAndDay(snapshot.periodStart);
     const endLabel = formatMonthAndDay(snapshot.periodEnd);
     const dateRange = t`${startLabel} - ${endLabel}`;
@@ -38,7 +41,7 @@ export const BudgetPeriodSummary = ({ snapshotId }: Props) => {
 
     return (
         <>
-            <FormsheetHeader size="md" title={title} description={dateRange} />
+            <FormsheetHeader size="md" title={formatFullPeriod(period, snapshot.periodStart, snapshot.periodEnd)} description={dateRange} />
 
             <ScrollView contentContainerClassName="px-3xl pt-md gap-y-md pb-5xl" showsVerticalScrollIndicator={false}>
                 {snapshot.isReconstructed ? (
@@ -49,7 +52,7 @@ export const BudgetPeriodSummary = ({ snapshotId }: Props) => {
 
                 <View className="gap-y-xl">
                     <BudgetPeriodSummaryLimitRow
-                        title={t`Monthly budget`}
+                        title={t(BUDGET_PERIOD_TITLE_LABEL[period])}
                         carriedAmount={totalCarriedIn}
                         spent={snapshot.overallSpent}
                         baseLimit={snapshot.overallLimit}

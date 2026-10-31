@@ -42,7 +42,7 @@ describe('settings/user-write-live-refresh', () => {
             });
 
             expect(yield* countSettledTransactionBoundaries(budgetService.deleteBudget(budget.id))).toBe(1);
-            expect(yield* budgetRepository.findActive()).toBeUndefined();
+            expect(yield* budgetRepository.findMain()).toBeUndefined();
         }).pipe(Effect.provide(TestLayer))
     );
 

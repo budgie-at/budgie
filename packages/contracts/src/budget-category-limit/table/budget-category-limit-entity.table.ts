@@ -11,7 +11,8 @@ export const BudgetCategoryLimitEntityTable = sqliteTable(
         budgetId: int('budget_id', { mode: 'number' })
             .notNull()
             .references(() => BudgetEntityTable.id, { onDelete: 'cascade' }),
-        ...getBudgetCategoryLimitColumns()
+        ...getBudgetCategoryLimitColumns(),
+        userEditedAt: int('user_edited_at', { mode: 'timestamp' })
     }),
     table => [
         uniqueIndex('budget_category_limit_budget_category_unq')
