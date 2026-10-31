@@ -7,12 +7,13 @@ import { isDefined } from '@rnw-community/shared';
 import { SearchablePageErrorState } from '../../../@generic/component/searchable-page-error-state/searchable-page-error-state';
 import { SearchablePageList } from '../../../@generic/component/searchable-page-list/searchable-page-list';
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
+import { UsageFailureRow } from '../../../@generic/component/usage-failure-row/usage-failure-row';
 import { useCreateAction } from '../../../@generic/hook/use-create-action.hook';
 import { CategoryCard } from '../../../category/components/category-card/category-card';
 import { CategoryEmptyState } from '../../../category/components/category-empty-state/category-empty-state';
 import { CategoryListHeader } from '../../../category/components/category-list-header/category-list-header';
 import { useCategoryFormModal } from '../../../category/context/category-form-modal.context';
-import { useCustomCategoriesWithUsageQuery } from '../../../category/query/use-custom-categories-with-usage.query';
+import { useCategoriesWithUsageQuery } from '../../../category/query/use-categories-with-usage.query';
 import { goBackToSettings } from '../../../settings/utils/go-back-to-settings.util';
 
 import { CategoryPageSelector } from './category-page.selector';
@@ -27,7 +28,7 @@ export default function Categories() {
     const [openCategoryForm] = useCategoryFormModal();
 
     const [search, setSearch] = useState('');
-    const { categories, usage, isFailure, retry } = useCustomCategoriesWithUsageQuery(search);
+    const { categories, usage, isUsageFailure, retryUsage, isFailure, retry } = useCategoriesWithUsageQuery(search, false);
 
     useCreateAction({
         icon: UserIconNameEnum.Folder,
@@ -77,7 +78,7 @@ export default function Categories() {
                 data={listData}
                 emptyState={emptyState}
                 renderCard={renderCard}
-                listHeader={<CategoryListHeader />}
+                listHeader={<CategoryListHeader>{isUsageFailure ? <UsageFailureRow onRetry={retryUsage} /> : null}</CategoryListHeader>}
                 gap={0}
             />
         </SearchablePage>

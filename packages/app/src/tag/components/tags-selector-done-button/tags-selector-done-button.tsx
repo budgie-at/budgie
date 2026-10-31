@@ -21,7 +21,7 @@ export const TagsSelectorDoneButton = ({ count, onPress, testID }: Props) => {
         <Animated.View
             entering={FadeInUp.springify()}
             exiting={FadeOutDown.duration(EXIT_DURATION_MS)}
-            className="absolute inset-x-0 bottom-safe-offset-[4px] items-center"
+            className="absolute inset-x-0 bottom-0 items-center bg-linear-to-b from-primary-reverse/0 via-primary-reverse via-40% to-primary-reverse pt-3xl pb-safe-offset-[4px]"
             pointerEvents="box-none"
         >
             <HapticPressable

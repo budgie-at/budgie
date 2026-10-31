@@ -1,16 +1,10 @@
-import {
-    CATEGORY_TITLE_MAX_LENGTH,
-    CategoryCreateEntityInterface,
-    CategoryEntityInterface,
-    DEFAULT_CATEGORY_ICON,
-    UserIconType
-} from '@budgie/contracts';
+import { CATEGORY_TITLE_MAX_LENGTH, CategoryCreateEntityInterface, CategoryEntityInterface, UserIconType } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { useState } from 'react';
 
-import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { AiTranslationFields } from '../../../@generic/component/ai-translation-fields/ai-translation-fields';
 import { EntityEditSections } from '../../../@generic/component/entity-edit-sections/entity-edit-sections';
@@ -30,9 +24,11 @@ import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { useCategoryForm } from '../../hooks/use-category-form.hook';
 import { useDeleteCategory } from '../../hooks/use-delete-category.hook';
-import { categoryUsageAtom } from '../../query/use-custom-categories-with-usage.query';
+import { categoryUsageAtom } from '../../query/use-categories-with-usage.query';
 import { createCategory } from '../../utils/create-category.util';
+import { getCategoryDeleteCopy } from '../../utils/get-category-delete-copy.util';
 import { getCategoryIconTerms } from '../../utils/get-category-icon-terms.util';
+import { hasPlaceholderIcon } from '../../utils/has-placeholder-icon.util';
 import { updateCategory } from '../../utils/update-category.util';
 
 import { CategoryFormSelector } from './category-form.selector';
@@ -66,7 +62,8 @@ export const CategoryForm = (props: Props) => {
     const { handleSubmit, setValue, icon, title } = useCategoryForm(category ?? null, defaultTitle);
 
     const isEditing = isDefined(category);
-    const [isIconChosen, setIsIconChosen] = useState(isEditing && category.icon !== DEFAULT_CATEGORY_ICON);
+    const [hasPickedIcon, setHasPickedIcon] = useState(false);
+    const isIconChosen = hasPickedIcon || (isEditing && !hasPlaceholderIcon(category, iconSearchEntries));
     const isBusy = saveFlight.isLoading || operation.isPending;
     const transactionCount = AsyncResult.isSuccess(usageResult)
         ? (usageResult.value.find(entry => entry.id === category?.id)?.transactionCount ?? 0)
@@ -78,10 +75,10 @@ export const CategoryForm = (props: Props) => {
 
     const isChanged = !isDefined(category) || title !== category.title || resolvedIcon !== category.icon;
     const isSaveDisabled = !isNotEmptyString(title) || operation.isPending;
-    const unusedDeleteLabel = transactionCount === 0 ? t`Delete category` : t`Delete category…`;
-    const deleteLabel = isPositiveNumber(transactionCount) ? t`Move transactions and delete…` : unusedDeleteLabel;
+    const deleteCopy = getCategoryDeleteCopy(transactionCount, t);
     const headerTitle = isEditing ? t`Edit Category` : t`Create Category`;
-    const saveLabel = isEditing ? t`Save changes` : t`Create category`;
+    const createLabel = isNotEmptyString(title) ? t`Create category` : t`Add a name to continue`;
+    const saveLabel = isEditing ? t`Save changes` : createLabel;
 
     const handleIconPress = () => {
         if (isBusy) {
@@ -90,7 +87,7 @@ export const CategoryForm = (props: Props) => {
 
         openIconSelector({ selectedIcon: resolvedIcon, keywords: iconTerms }, selectedIcon => {
             if (isDefined(selectedIcon)) {
-                setIsIconChosen(true);
+                setHasPickedIcon(true);
                 setValue('icon', selectedIcon);
             }
         });
@@ -169,7 +166,8 @@ export const CategoryForm = (props: Props) => {
 
             {isDefined(category) ? (
                 <EntityEditSections
-                    deleteLabel={deleteLabel}
+                    deleteLabel={deleteCopy.label}
+                    deleteFooter={deleteCopy.footer}
                     deleteTestID={CategoryFormSelector.Delete}
                     onDelete={handleDelete}
                     isDisabled={isBusy}

@@ -8,7 +8,6 @@ import { SelectorModalDescription } from '../@generic/component/selector-modal-d
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { prepareSelectorGridData } from '../@generic/utils/prepare-selector-grid-data.util';
-import { TagDestinationSheet } from '../tag/components/tag-destination-sheet/tag-destination-sheet';
 import { TagsSelectContent } from '../tag/components/tags-select-content/tags-select-content';
 import { TagsSelectorDoneButton } from '../tag/components/tags-selector-done-button/tags-selector-done-button';
 import { useTagFormModal } from '../tag/context/tag-form-modal.context';
@@ -95,10 +94,6 @@ export default function TagsSelectorModal() {
         },
         [resolveTagsSelector]
     );
-
-    if (isDefined(title)) {
-        return <TagDestinationSheet title={title} description={description} excludeTagIds={excludeTagIds} onSelect={handleSelectTag} />;
-    }
 
     return (
         <View className="flex-1 bg-primary-reverse" collapsable={false}>

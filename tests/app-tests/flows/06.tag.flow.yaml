@@ -74,6 +74,8 @@ appId: ${APP_ID}
       timeout: 10000
 - tapOn:
       id: 'TagPickerBottomSheet.Card.E2E Tag Primary'
+- tapOn:
+      id: 'TagPickerBottomSheet.CommitButton'
 
 - assertNotVisible:
       id: 'TagCard.E2E Tag Search'

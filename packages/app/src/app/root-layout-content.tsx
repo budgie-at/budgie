@@ -70,6 +70,8 @@ const LOCK_SCREEN_OPTIONS: NativeStackNavigationOptions = { presentation: 'fullS
 
 const SELECTOR_OPTIONS = formSheetOptions([DETENT_40, DETENT_70], 0);
 
+const DESTINATION_OPTIONS = formSheetOptions([DETENT_90]);
+
 enableScreens();
 enableFreeze();
 
@@ -174,6 +176,11 @@ export const RootLayoutContent = () => {
                                                                     <Stack.Screen name="resync-window-picker" options={SELECTOR_OPTIONS} />
                                                                     <Stack.Screen name="contact-selector" options={SELECTOR_OPTIONS} />
                                                                     <Stack.Screen name="tags-selector" options={SELECTOR_OPTIONS} />
+                                                                    <Stack.Screen
+                                                                        name="category-destination"
+                                                                        options={DESTINATION_OPTIONS}
+                                                                    />
+                                                                    <Stack.Screen name="tag-destination" options={DESTINATION_OPTIONS} />
                                                                     <Stack.Screen
                                                                         name="voice-review"
                                                                         options={formSheetOptions([0.65, DETENT_95], 0)}

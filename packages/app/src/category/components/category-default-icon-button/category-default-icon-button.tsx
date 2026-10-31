@@ -11,7 +11,7 @@ import { GroupedListRow } from '../../../@generic/component/grouped-list-row/gro
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { useIconSearchEntries } from '../../../@generic/hook/use-icon-search-entries.hook';
 import { useSearchCategoriesQuery } from '../../query/use-search-categories.query';
-import { hasPlaceholderIcon } from '../../utils/has-placeholder-icon.util';
+import { needsIconChoice } from '../../utils/needs-icon-choice.util';
 
 import { CategoryDefaultIconButtonSelector } from './category-default-icon-button.selector';
 
@@ -21,7 +21,7 @@ export const CategoryDefaultIconButton = () => {
     const { categories } = useSearchCategoriesQuery('', false);
     const iconSearchEntries = useIconSearchEntries();
 
-    const count = (categories ?? []).filter(category => hasPlaceholderIcon(category, iconSearchEntries)).length;
+    const count = (categories ?? []).filter(category => needsIconChoice(category, iconSearchEntries)).length;
 
     const handlePress = () => void router.push('/settings/category-icons');
 
@@ -38,7 +38,12 @@ export const CategoryDefaultIconButton = () => {
                         <CircleIcon icon={UserIconNameEnum.Sparkles} variant="ghost" size={36} iconSize={18} radius={18} border={false} />
                     }
                     title={t({ message: plural(count, { one: 'Choose an icon for # category', other: 'Choose icons for # categories' }) })}
-                    subtitle={t`Suggestions are ready — one tap each`}
+                    subtitle={t({
+                        message: plural(count, {
+                            one: 'Its name doesn’t suggest a clear icon',
+                            other: 'Their names don’t suggest a clear icon'
+                        })
+                    })}
                     onPress={handlePress}
                 />
             </GroupedListSection>

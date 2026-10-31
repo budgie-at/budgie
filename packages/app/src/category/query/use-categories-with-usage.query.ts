@@ -1,8 +1,7 @@
 import { CategoryRepository, TransactionEntityTable, TransactionEntryEntityTable } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
-import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
-import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
+import { useEntityUsage } from '../../@generic/hook/use-entity-usage.hook';
 import { databaseQueryAtom } from '../../@generic/utils/database-query-atom.util';
 
 import { useSearchCategoriesQuery } from './use-search-categories.query';
@@ -12,13 +11,13 @@ export const categoryUsageAtom = databaseQueryAtom(
     Effect.flatMap(CategoryRepository, categoryRepository => categoryRepository.findUsage())
 );
 
-export const useCustomCategoriesWithUsageQuery = (search: string) => {
-    const { categories, isFailure, retry } = useSearchCategoriesQuery(search, false);
-    const usageResult = useLiveAtomValue(categoryUsageAtom);
+export const useCategoriesWithUsageQuery = (search: string, includeDefault: boolean) => {
+    const { categories, isSearchPending, isFailure, retry } = useSearchCategoriesQuery(search, includeDefault);
+    const { isUsageReady, ...usage } = useEntityUsage(categoryUsageAtom);
 
     return {
-        categories: AsyncResult.isInitial(usageResult) ? null : categories,
-        usage: AsyncResult.getOrElse(usageResult, () => null),
+        ...usage,
+        categories: isSearchPending || !isUsageReady ? null : categories,
         isFailure,
         retry
     };

@@ -1,8 +1,10 @@
 import { TAG_TITLE_MAX_LENGTH, TagCreateEntityInterface, TagEntityInterface } from '@budgie/contracts';
+import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
+import * as AsyncResult from 'effect/reactivity/AsyncResult';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { AiTranslationFields } from '../../../@generic/component/ai-translation-fields/ai-translation-fields';
 import { EntityEditSections } from '../../../@generic/component/entity-edit-sections/entity-edit-sections';
@@ -13,11 +15,13 @@ import { GroupedListSection } from '../../../@generic/component/grouped-list-sec
 import { IconTitleField } from '../../../@generic/component/icon-title-field/icon-title-field';
 import { EntityOperationEnum } from '../../../@generic/enum/entity-operation.enum';
 import { useEntityOperation } from '../../../@generic/hook/use-entity-operation.hook';
+import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useDeleteTag } from '../../hooks/use-delete-tag.hook';
 import { useMergeTag } from '../../hooks/use-merge-tag.hook';
 import { useTagForm } from '../../hooks/use-tag-form.hook';
+import { tagUsageAtom } from '../../query/use-tags-with-usage.query';
 import { TagService } from '../../service/tag.service';
 import { TagMonogram } from '../tag-monogram/tag-monogram';
 
@@ -45,6 +49,7 @@ export const TagForm = (props: Props) => {
     const operation = useEntityOperation();
     const deleteTag = useDeleteTag();
     const mergeTag = useMergeTag();
+    const usageResult = useLiveAtomValue(tagUsageAtom);
 
     const { handleSubmit, setValue, title } = useTagForm(tag ?? (defaultTitle ? { title: defaultTitle } : null));
 
@@ -53,7 +58,21 @@ export const TagForm = (props: Props) => {
     const isChanged = !isDefined(tag) || title !== tag.title;
     const isSaveDisabled = !isNotEmptyString(title) || operation.isPending;
     const headerTitle = isEditing ? t`Edit Tag` : t`Create Tag`;
-    const saveLabel = isEditing ? t`Save changes` : t`Create tag`;
+    const createLabel = isNotEmptyString(title) ? t`Create tag` : t`Add a name to continue`;
+    const saveLabel = isEditing ? t`Save changes` : createLabel;
+    const transactionCount = AsyncResult.isSuccess(usageResult)
+        ? (usageResult.value.find(entry => entry.id === tag?.id)?.transactionCount ?? 0)
+        : null;
+    const usedDeleteFooter = isPositiveNumber(transactionCount)
+        ? t({
+              message: plural(transactionCount, {
+                  one: 'Removed from # transaction. The transaction stays.',
+                  other: 'Removed from # transactions. The transactions stay.'
+              })
+          })
+        : null;
+    const deleteFooter = transactionCount === 0 ? t`This can’t be undone.` : usedDeleteFooter;
+    const mergeFooter = isPositiveNumber(transactionCount) ? t`Its transactions get the tag you pick.` : null;
 
     const handleTitleChange = (value: string) => {
         setValue('title', value);
@@ -129,18 +148,21 @@ export const TagForm = (props: Props) => {
             {isDefined(tag) ? (
                 <EntityEditSections
                     deleteLabel={t`Delete tag`}
+                    deleteFooter={deleteFooter}
                     onDelete={handleDelete}
                     isDisabled={isBusy}
                     mutatingOperation={operation.mutatingOperation}
                 >
-                    <GroupedListActionRow
-                        label={t`Merge into another tag…`}
-                        onPress={handleMerge}
-                        isDisabled={isBusy}
-                        isLoading={operation.mutatingOperation === EntityOperationEnum.MERGE}
-                        labelClassName="text-primary"
-                        testID={TagFormSelector.Merge}
-                    />
+                    <GroupedListSection footer={mergeFooter}>
+                        <GroupedListActionRow
+                            label={t`Merge into another tag…`}
+                            onPress={handleMerge}
+                            isDisabled={isBusy}
+                            isLoading={operation.mutatingOperation === EntityOperationEnum.MERGE}
+                            labelClassName="text-primary"
+                            testID={TagFormSelector.Merge}
+                        />
+                    </GroupedListSection>
                 </EntityEditSections>
             ) : null}
         </EntityFormPage>

@@ -8,6 +8,7 @@ export interface TagsSelectorModalParams {
     readonly description?: string;
     readonly singleSelect?: boolean;
     readonly enablePrimarySelection?: boolean;
+    readonly getCommitLabel?: (destinationTitle: string) => string;
 }
 
 export type TagsSelectorResult = number[] | null;

@@ -1,9 +1,10 @@
-import { isEmojiIcon, isUserIcon } from '@budgie/contracts';
+import { isEmojiIcon, isUserIcon, UserIconNameEnum } from '@budgie/contracts';
 import * as Effect from 'effect/Effect';
 
-import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { normalizeIconSearchText } from '../utils/normalize-icon-search-text.util';
+import { resolveReiconIcon } from '../utils/resolve-reicon-icon.util';
 
 import type { IconSearchEntryInterface } from '../interface/icon-search-entry.interface';
 import type { UserIconType } from '@budgie/contracts';
@@ -18,6 +19,45 @@ class IconSearchService {
     private static readonly MIN_PREFIX_LENGTH = 4;
     private static readonly MIN_SINGULAR_LENGTH = 4;
     private static readonly CONFIDENT_SCORE = 2;
+    private static readonly NAME_WORD_SCORE = IconSearchService.NAME_SCORE - IconSearchService.PREFIX_SCORE;
+    private static readonly HEAD_WORD_WEIGHT = 0.65;
+    private static readonly MODIFIER_WORD_WEIGHT = 0.6;
+    private static readonly MIN_SUGGESTION_SCORE = IconSearchService.WORD_SCORE;
+    private static readonly GENERIC_WORDS = new Set([
+        'a',
+        'activities',
+        'an',
+        'and',
+        'costs',
+        'expenses',
+        'extra',
+        'extras',
+        'for',
+        'general',
+        'misc',
+        'miscellaneous',
+        'my',
+        'of',
+        'other',
+        'others',
+        'our',
+        'personal',
+        'runs',
+        'side',
+        'stuff',
+        'the',
+        'things',
+        'various'
+    ]);
+
+    private static readonly FALLBACK_ICONS: readonly UserIconType[] = [
+        UserIconNameEnum.Folder,
+        UserIconNameEnum.Briefcase,
+        UserIconNameEnum.Star,
+        UserIconNameEnum.Bookmark,
+        UserIconNameEnum.Tag,
+        UserIconNameEnum.Sparkles
+    ].map(resolveReiconIcon);
 
     readonly load = Effect.fn('IconSearchService.load')(function* (this: IconSearchService) {
         const { default: index } = yield* Effect.promise(() => import('../constant/icon-search-index.json'));
@@ -33,7 +73,15 @@ class IconSearchService {
     }
 
     suggest(entries: readonly IconSearchEntryInterface[], terms: readonly string[]): IconSearchEntryInterface[] {
-        return this.score(entries, terms, false).map(({ entry }) => entry);
+        const relevant = this.score(entries, terms, false)
+            .filter(({ score }) => score >= IconSearchService.MIN_SUGGESTION_SCORE)
+            .map(({ entry }) => entry);
+        const relevantIcons = new Set(relevant.map(({ icon }) => icon));
+        const fallback = IconSearchService.FALLBACK_ICONS.filter(icon => !relevantIcons.has(icon))
+            .map(icon => entries.find(entry => entry.icon === icon))
+            .filter(isDefined);
+
+        return [...relevant, ...fallback];
     }
 
     findConfidentIcon(entries: readonly IconSearchEntryInterface[], terms: readonly string[]): UserIconType | null {
@@ -43,19 +91,45 @@ class IconSearchService {
     }
 
     private score(entries: readonly IconSearchEntryInterface[], terms: readonly string[], allowPrefix: boolean) {
-        const termVariants = [...new Set(terms.map(normalizeIconSearchText))].filter(isNotEmptyString).map(term => this.toVariants(term));
+        const weightedTerms = [...new Set(terms.map(normalizeIconSearchText))]
+            .filter(isNotEmptyString)
+            .map(term => this.toWeightedWords(term));
 
         return entries
             .map(entry => ({
                 entry,
-                score: termVariants.reduce(
-                    (total, variants, index) =>
-                        total + Math.max(...variants.map(variant => this.scoreVariant(entry, variant, allowPrefix))) / (index + 1),
+                score: weightedTerms.reduce(
+                    (total, { phrase, words }, index) =>
+                        total +
+                        Math.max(
+                            this.scoreWord(entry, phrase, allowPrefix),
+                            words.reduce((sum, { variants, weight }) => sum + this.scoreWord(entry, variants, allowPrefix) * weight, 0)
+                        ) /
+                            (index + 1),
                     0
                 )
             }))
             .filter(({ score }) => isPositiveNumber(score))
             .sort((first, second) => second.score - first.score);
+    }
+
+    private toWeightedWords(term: string) {
+        const words = term.split(/[^\p{L}\p{N}]+/u).filter(isNotEmptyString);
+        const meaningfulWords = words.filter(word => !IconSearchService.GENERIC_WORDS.has(word));
+        const candidateWords = isNotEmptyArray(meaningfulWords) ? meaningfulWords : words;
+        const scoredWords = words.length < 2 ? [] : candidateWords;
+
+        return {
+            phrase: this.toVariants(term),
+            words: scoredWords.map((word, index) => ({
+                variants: this.toVariants(word),
+                weight: index === scoredWords.length - 1 ? IconSearchService.HEAD_WORD_WEIGHT : IconSearchService.MODIFIER_WORD_WEIGHT
+            }))
+        };
+    }
+
+    private scoreWord(entry: IconSearchEntryInterface, variants: readonly string[], allowPrefix: boolean): number {
+        return Math.max(...variants.map(variant => this.scoreVariant(entry, variant, allowPrefix)));
     }
 
     private toVariants(term: string): string[] {
@@ -97,6 +171,10 @@ class IconSearchService {
     private scoreVariant({ name, keywords }: IconSearchEntryInterface, term: string, allowPrefix: boolean): number {
         if (name.includes(`|${term}|`)) {
             return IconSearchService.NAME_SCORE;
+        }
+
+        if (name.includes(`|${term} `) || name.includes(` ${term}|`) || name.includes(` ${term} `)) {
+            return IconSearchService.NAME_WORD_SCORE;
         }
 
         const exactOffset = keywords.indexOf(`|${term}|`, name.length - 1);

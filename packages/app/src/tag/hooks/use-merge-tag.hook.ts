@@ -26,8 +26,10 @@ export const useMergeTag = () => {
             })
         });
 
+        const getCommitLabel = (targetTitle: string) => t`Merge into “${targetTitle}”`;
+
         return Effect.callback<TagsSelectorResult>(resume => {
-            openTagsSelector({ excludeTagIds: [sourceId], title, description, singleSelect: true }, selectedTagIds => {
+            openTagsSelector({ excludeTagIds: [sourceId], title, description, singleSelect: true, getCommitLabel }, selectedTagIds => {
                 resume(Effect.succeed(selectedTagIds));
             });
         });

@@ -1,5 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { plural } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react/macro';
 import { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
 
@@ -13,7 +14,7 @@ import { useIconSearchEntries } from '../../../@generic/hook/use-icon-search-ent
 import { goBackOrReplace } from '../../../@generic/utils/go-back-or-replace.util';
 import { CategoryIconFixRow } from '../../../category/components/category-icon-fix-row/category-icon-fix-row';
 import { useSearchCategoriesQuery } from '../../../category/query/use-search-categories.query';
-import { hasPlaceholderIcon } from '../../../category/utils/has-placeholder-icon.util';
+import { needsIconChoice } from '../../../category/utils/needs-icon-choice.util';
 
 import { CategoryIconsPageSelector } from './category-icons-page.selector';
 
@@ -25,8 +26,8 @@ export default function CategoryIconsPage() {
     const [hadCategoriesToFix, setHadCategoriesToFix] = useState(false);
     const iconSearchEntries = useIconSearchEntries();
 
-    const categoriesWithDefaultIcon = (categories ?? []).filter(category => hasPlaceholderIcon(category, iconSearchEntries));
-    const isRead = !isLoading && !isFailure;
+    const categoriesWithDefaultIcon = (categories ?? []).filter(category => needsIconChoice(category, iconSearchEntries));
+    const isRead = !isLoading && !isFailure && isNotEmptyArray(iconSearchEntries);
     const isAllFixed = isRead && hadCategoriesToFix && isEmptyArray(categoriesWithDefaultIcon);
 
     if (isRead && isNotEmptyArray(categoriesWithDefaultIcon) && !hadCategoriesToFix) {
@@ -58,7 +59,12 @@ export default function CategoryIconsPage() {
             {isNotEmptyArray(categoriesWithDefaultIcon) ? (
                 <View className="gap-y-3xl">
                     <Text className="text-secondary-foreground px-3xl text-[13px] leading-[18px]">
-                        <Trans>Pick an icon — it saves instantly.</Trans>
+                        {t({
+                            message: plural(categoriesWithDefaultIcon.length, {
+                                one: 'This name doesn’t suggest a clear icon. Pick one — it saves instantly.',
+                                other: 'These names don’t suggest a clear icon. Pick one — it saves instantly.'
+                            })
+                        })}
                     </Text>
                     {categoriesWithDefaultIcon.map(category => (
                         <CategoryIconFixRow key={category.id} category={category} />

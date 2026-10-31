@@ -115,6 +115,7 @@ import { AuthService } from '../../auth/service/auth.service';
 import { PinAttemptService } from '../../auth/service/pin-attempt.service';
 import { BudgetAlertMonitorService } from '../../budget/service/budget-alert-monitor.service';
 import { BudgetProjectionService } from '../../budget/service/budget-projection.service';
+import { CategoryIconBackfillService } from '../../category/service/category-icon-backfill.service';
 import { ExchangeRateBackgroundService } from '../../exchange-rate/service/exchange-rate-background.service';
 import { DatabaseExportService } from '../../export/service/database-export.service';
 import { DatabaseImportService } from '../../import/service/database-import.service';
@@ -184,6 +185,7 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     TagService.layer,
     CategoryRepository.layer,
     CategoryService.layer,
+    CategoryIconBackfillService.layer,
     MccCategoryRepository.layer,
     TransactionReceiptRepository.layer,
     CommentEmbeddingRepository.layer,

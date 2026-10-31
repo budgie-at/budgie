@@ -12,6 +12,7 @@ import { useEntityOperation } from '../../hook/use-entity-operation.hook';
 import { useFormatEntityUsage } from '../../hook/use-format-entity-usage.hook';
 import { usePopoverMenuAnchor } from '../../hook/use-popover-menu-anchor.hook';
 import { useVibration } from '../../hook/use-vibration.hook';
+import { cn } from '../../utils/cn.util';
 import { ActionsMenuItem } from '../actions-menu-item/actions-menu-item';
 import { DeletableRow } from '../deletable-row/deletable-row';
 import { GroupedListItem } from '../grouped-list-item/grouped-list-item';
@@ -87,34 +88,36 @@ export const EntityListRow = ({ entity, usage, left, testID, isFirst, isLast, on
     };
 
     return (
-        <DeletableRow id={entity.id} onDelete={handleDelete} label={operations.deleteLabel} isDisabled={isPending}>
-            <GroupedListItem isFirst={isFirst} isLast={isLast}>
-                <GroupedListRow
-                    testID={testID}
-                    left={left}
-                    title={entity.title}
-                    subtitle={formatUsage(usage)}
-                    onPress={onOpen}
-                    right={accessory}
-                    pressableProps={pressableProps}
-                />
-                <PopoverMenu isOpen={isMenuOpen} onClose={closeMenu} onCloseComplete={handleCloseComplete} anchor={anchor} align="auto">
-                    <ActionsMenuContext value={closeMenu}>
-                        <View className="py-sm">
-                            <ActionsMenuItem icon={UserIconNameEnum.Pencil} label={t`Edit`} onPress={onOpen} />
-                            {isDefined(handleMerge) ? (
-                                <ActionsMenuItem icon={UserIconNameEnum.GitMerge} label={mergeLabel} onPress={handleMerge} />
-                            ) : null}
-                            <ActionsMenuItem
-                                icon={UserIconNameEnum.Trash2}
-                                label={operations.deleteLabel}
-                                onPress={handleDelete}
-                                variant="destructive"
-                            />
-                        </View>
-                    </ActionsMenuContext>
-                </PopoverMenu>
-            </GroupedListItem>
-        </DeletableRow>
+        <GroupedListItem isFirst={isFirst} isLast={isLast}>
+            <DeletableRow id={entity.id} onDelete={handleDelete} label={operations.deleteLabel} isDisabled={isPending}>
+                <View className={cn(isMenuOpen && 'bg-surface-fill')}>
+                    <GroupedListRow
+                        testID={testID}
+                        left={left}
+                        title={entity.title}
+                        subtitle={formatUsage(usage)}
+                        onPress={onOpen}
+                        right={accessory}
+                        pressableProps={pressableProps}
+                    />
+                </View>
+            </DeletableRow>
+            <PopoverMenu isOpen={isMenuOpen} onClose={closeMenu} onCloseComplete={handleCloseComplete} anchor={anchor} align="auto">
+                <ActionsMenuContext value={closeMenu}>
+                    <View className="py-sm">
+                        <ActionsMenuItem icon={UserIconNameEnum.Pencil} label={t`Edit`} onPress={onOpen} />
+                        {isDefined(handleMerge) ? (
+                            <ActionsMenuItem icon={UserIconNameEnum.GitMerge} label={mergeLabel} onPress={handleMerge} />
+                        ) : null}
+                        <ActionsMenuItem
+                            icon={UserIconNameEnum.Trash2}
+                            label={operations.deleteLabel}
+                            onPress={handleDelete}
+                            variant="destructive"
+                        />
+                    </View>
+                </ActionsMenuContext>
+            </PopoverMenu>
+        </GroupedListItem>
     );
 };

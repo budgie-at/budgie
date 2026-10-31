@@ -1,16 +1,16 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { Text, View } from 'react-native';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString, isString } from '@rnw-community/shared';
 
 import { cn } from '../../utils/cn.util';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
 
-import type { ComponentProps, ReactNode } from 'react';
+import type { ComponentProps, ReactElement, ReactNode } from 'react';
 
 interface Props {
-    readonly title: string;
+    readonly title: string | ReactElement;
     readonly subtitle?: ReactNode;
     readonly left?: ReactNode;
     readonly right?: ReactNode;
@@ -50,9 +50,13 @@ export const GroupedListRow = (props: Props) => {
             <View className={cn('absolute top-0 right-0 h-hairline bg-surface-separator', separatorClassName)} pointerEvents="none" />
             {left}
             <View className="min-w-0 flex-1 gap-y-xxs">
-                <Text className="text-primary text-[17px]" numberOfLines={2} testID={titleTestID}>
-                    {title}
-                </Text>
+                {isString(title) ? (
+                    <Text className="text-primary text-[17px]" numberOfLines={2} testID={titleTestID}>
+                        {title}
+                    </Text>
+                ) : (
+                    title
+                )}
                 {subtitleNode}
             </View>
             {accessory}

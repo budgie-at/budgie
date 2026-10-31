@@ -41,6 +41,8 @@ interface Props<T extends IdInterface> {
 }
 
 const MAINTAIN_VISIBLE_CONTENT_POSITION = { data: false, size: true };
+const SETTLED_LIST_PROPS = { style: LEGEND_LIST_STYLE, accessibilityState: { busy: false } };
+const PENDING_LIST_PROPS = { style: { ...LEGEND_LIST_STYLE, opacity: 0.5 }, accessibilityState: { busy: true } };
 
 export const SearchablePageList = <T extends IdInterface>({
     data,
@@ -75,7 +77,6 @@ export const SearchablePageList = <T extends IdInterface>({
         );
     }
 
-    const lastIndex = items.length - 1;
     const contentContainerStyle = { gap, paddingTop, paddingBottom };
 
     const handleDeleteItem = (id: number) => {
@@ -89,7 +90,7 @@ export const SearchablePageList = <T extends IdInterface>({
     };
 
     const renderItem = ({ item, index }: { item: T; index: number }) => {
-        const card = renderCard(item, index, index === lastIndex);
+        const card = renderCard(item, index, index === items.length - 1);
         if (!isDefined(onDelete)) {
             return card;
         }
@@ -104,10 +105,11 @@ export const SearchablePageList = <T extends IdInterface>({
     };
 
     const sharedValues = { scrollOffset: scrollY };
+    const pendingProps = isDefined(data) ? SETTLED_LIST_PROPS : PENDING_LIST_PROPS;
 
     return (
         <AnimatedLegendList
-            style={LEGEND_LIST_STYLE}
+            {...pendingProps}
             data={items}
             contentContainerStyle={contentContainerStyle}
             ListHeaderComponent={customListHeader}

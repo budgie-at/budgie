@@ -8,8 +8,11 @@ const suggestFor = (title: string) =>
     Effect.map(iconSearchService.load(), entries => {
         const terms = getCategoryIconTerms({ title, titleEn: null, titleTags: null });
 
+        const suggestions = iconSearchService.suggest(entries, terms).map(({ icon }) => icon);
+
         return {
-            top: iconSearchService.suggest(entries, terms).at(0)?.icon,
+            suggestions,
+            top: suggestions.at(0),
             confident: iconSearchService.findConfidentIcon(entries, terms)
         };
     });
@@ -36,21 +39,40 @@ describe('IconSearchService', () => {
         })
     );
 
-    it.effect('matchesClimbingGymToClimbingOrFitness', () =>
+    it.effect('matchesClimbingGymToAClimberConfidently', () =>
         Effect.gen(function* () {
-            expect(['🧗', 'reicon:ImageMountain', 'reicon:Dumbbell']).toContain((yield* suggestFor('Climbing gym')).top);
+            expect((yield* suggestFor('Climbing gym')).confident).toBe('🧗');
         })
     );
 
     it.effect('matchesKidsActivitiesToAChild', () =>
         Effect.gen(function* () {
-            expect(['🧒', '👦', '👧', 'reicon:UserHeart']).toContain((yield* suggestFor('Kids activities')).top);
+            expect((yield* suggestFor('Kids activities')).top).toBe('🧒');
         })
     );
 
-    it.effect('appliesNoIconWhenSideProjectHasOnlyWeakMatches', () =>
+    it.effect('suggestsProjectIconsWithoutFoodOrConfidenceForSideProject', () =>
         Effect.gen(function* () {
-            expect((yield* suggestFor('Side project')).confident).toBeNull();
+            const { confident, suggestions } = yield* suggestFor('Side project');
+
+            expect(confident).toBeNull();
+            expect(suggestions.slice(0, 6)).toContain('reicon:FolderOpen');
+            expect(suggestions.slice(0, 6)).toContain('reicon:Briefcase');
+            expect(suggestions).not.toContain('🍳');
+            expect(suggestions).not.toContain('reicon:FoodTray');
+        })
+    );
+
+    it.effect('fallsBackToGenericIconsWhenNothingIsRelevant', () =>
+        Effect.gen(function* () {
+            expect((yield* suggestFor('Zzqx')).suggestions).toEqual([
+                'reicon:Folder',
+                'reicon:Briefcase',
+                'reicon:Star',
+                'reicon:Bookmark',
+                'reicon:Tag',
+                'reicon:Sparkles'
+            ]);
         })
     );
 

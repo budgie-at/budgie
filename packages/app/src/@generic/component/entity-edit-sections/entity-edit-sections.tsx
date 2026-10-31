@@ -1,10 +1,12 @@
 import { EntityOperationEnum } from '../../enum/entity-operation.enum';
 import { GroupedListActionRow } from '../grouped-list-action-row/grouped-list-action-row';
+import { GroupedListSection } from '../grouped-list-section/grouped-list-section';
 
 import type { ReactNode } from 'react';
 
 interface Props {
     readonly deleteLabel: string;
+    readonly deleteFooter: string | null;
     readonly onDelete: () => void;
     readonly isDisabled: boolean;
     readonly mutatingOperation: EntityOperationEnum | null;
@@ -12,16 +14,26 @@ interface Props {
     readonly children?: ReactNode;
 }
 
-export const EntityEditSections = ({ deleteLabel, onDelete, isDisabled, mutatingOperation, deleteTestID, children }: Props) => (
+export const EntityEditSections = ({
+    deleteLabel,
+    deleteFooter,
+    onDelete,
+    isDisabled,
+    mutatingOperation,
+    deleteTestID,
+    children
+}: Props) => (
     <>
         {children}
-        <GroupedListActionRow
-            label={deleteLabel}
-            onPress={onDelete}
-            isDisabled={isDisabled}
-            isLoading={mutatingOperation === EntityOperationEnum.DELETE}
-            labelClassName="text-destructive-foreground"
-            testID={deleteTestID}
-        />
+        <GroupedListSection footer={deleteFooter}>
+            <GroupedListActionRow
+                label={deleteLabel}
+                onPress={onDelete}
+                isDisabled={isDisabled}
+                isLoading={mutatingOperation === EntityOperationEnum.DELETE}
+                labelClassName="text-destructive-foreground"
+                testID={deleteTestID}
+            />
+        </GroupedListSection>
     </>
 );

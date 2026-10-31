@@ -9,8 +9,9 @@ import type { IconSearchEntryInterface } from '../../@generic/interface/icon-sea
 import type { CategoryEntityInterface } from '@budgie/contracts';
 
 export const hasPlaceholderIcon = (
-    category: Pick<CategoryEntityInterface, 'icon' | 'title' | 'titleEn' | 'titleTags'>,
+    category: Pick<CategoryEntityInterface, 'icon' | 'title' | 'titleEn' | 'titleTags' | 'createdAt' | 'updatedAt'>,
     entries: readonly IconSearchEntryInterface[]
 ): boolean =>
     category.icon === DEFAULT_CATEGORY_ICON &&
+    category.updatedAt.getTime() === category.createdAt.getTime() &&
     iconSearchService.findConfidentIcon(entries, getCategoryIconTerms(category)) !== resolveReiconIcon(DEFAULT_CATEGORY_ICON);

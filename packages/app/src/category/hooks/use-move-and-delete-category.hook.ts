@@ -38,7 +38,14 @@ export const useMoveAndDeleteCategory = () => {
                         })
                     }),
                     description: t`Pick the category they move to.`,
-                    variant: 'primary'
+                    variant: 'primary',
+                    getCommitLabel: targetTitle =>
+                        t({
+                            message: plural(count, {
+                                one: `Move # transaction to “${targetTitle}”`,
+                                other: `Move # transactions to “${targetTitle}”`
+                            })
+                        })
                 },
                 selectedCategoryId => {
                     resume(Effect.succeed(selectedCategoryId));

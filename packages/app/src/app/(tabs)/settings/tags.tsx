@@ -6,6 +6,7 @@ import { GroupedListSectionTitle } from '../../../@generic/component/grouped-lis
 import { SearchablePageErrorState } from '../../../@generic/component/searchable-page-error-state/searchable-page-error-state';
 import { SearchablePageList } from '../../../@generic/component/searchable-page-list/searchable-page-list';
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
+import { UsageFailureRow } from '../../../@generic/component/usage-failure-row/usage-failure-row';
 import { useCreateAction } from '../../../@generic/hook/use-create-action.hook';
 import { goBackToSettings } from '../../../settings/utils/go-back-to-settings.util';
 import { TagCard } from '../../../tag/components/tag-card/tag-card';
@@ -22,7 +23,7 @@ export default function Tags() {
     const [openTagForm] = useTagFormModal();
 
     const [search, setSearch] = useState('');
-    const { tags, usage, isFailure, retry } = useTagsWithUsageQuery(search);
+    const { tags, usage, isUsageFailure, retryUsage, isFailure, retry } = useTagsWithUsageQuery(search);
 
     useCreateAction({
         icon: UserIconNameEnum.Tag,
@@ -67,7 +68,12 @@ export default function Tags() {
             <SearchablePageList
                 data={listData}
                 emptyState={emptyState}
-                listHeader={<GroupedListSectionTitle title={t`Your tags`} />}
+                listHeader={
+                    <>
+                        {isUsageFailure ? <UsageFailureRow onRetry={retryUsage} /> : null}
+                        <GroupedListSectionTitle title={t`Your tags`} />
+                    </>
+                }
                 renderCard={renderCard}
                 gap={0}
             />

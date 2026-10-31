@@ -66,6 +66,7 @@ export class CategoryRepository extends Context.Service<CategoryRepository>()('@
                         .update(CategoryEntityTable)
                         .set({
                             ...input,
+                            updatedAt: new Date(),
                             ...(titleChanged && { titleSearch: newTitle.toLowerCase() }),
                             ...(titleChanged && TRANSLATION_RESET)
                         })
