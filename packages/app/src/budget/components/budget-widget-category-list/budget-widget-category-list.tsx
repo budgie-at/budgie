@@ -1,15 +1,17 @@
 import { Trans } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
+import { Text, View, useWindowDimensions } from 'react-native';
 
 import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { BudgetSelector } from '../../budget.selector';
 import { getBudgetCategorySpent } from '../../utils/get-budget-category-spent.util';
+import { selectBudgetWidgetChips } from '../../utils/select-budget-widget-chips.util';
 import { BudgetWidgetCategoryChip } from '../budget-widget-category-chip/budget-widget-category-chip';
 
 import type { BudgetCategorySpentInterface, BudgetEffectiveCategoryLimitInterface } from '@budgie/budget';
 
-const WIDGET_CATEGORY_LIMITS_MAX = 3;
+const WIDGET_CHIPS_MAX = 2;
+const LARGE_TEXT_FONT_SCALE = 1.3;
 
 interface Props {
     readonly categoryLimits: readonly BudgetEffectiveCategoryLimitInterface[];
@@ -17,16 +19,14 @@ interface Props {
 }
 
 export const BudgetWidgetCategoryList = ({ categoryLimits, spentByCategory }: Props) => {
+    const { fontScale } = useWindowDimensions();
     const spentByCategoryMap = new Map(spentByCategory.map(entry => [entry.categoryId, entry.spent]));
-
-    const sortedCategoryLimits = [...categoryLimits].sort((firstCategoryLimit, secondCategoryLimit) => {
-        const firstSpent = getBudgetCategorySpent(spentByCategoryMap, firstCategoryLimit.categoryId);
-        const secondSpent = getBudgetCategorySpent(spentByCategoryMap, secondCategoryLimit.categoryId);
-
-        return secondSpent - firstSpent;
-    });
-    const visibleCategoryLimits = sortedCategoryLimits.slice(0, WIDGET_CATEGORY_LIMITS_MAX);
-    const hiddenCategoryCount = categoryLimits.length - visibleCategoryLimits.length;
+    const maxChips = fontScale > LARGE_TEXT_FONT_SCALE ? 1 : WIDGET_CHIPS_MAX;
+    const { visible: visibleCategoryLimits, hiddenCount: hiddenCategoryCount } = selectBudgetWidgetChips(
+        categoryLimits,
+        spentByCategoryMap,
+        maxChips
+    );
 
     if (!isNotEmptyArray(visibleCategoryLimits)) {
         return null;

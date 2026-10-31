@@ -396,10 +396,10 @@ env:
 - assertVisible:
       id: 'BudgetWidget.CategoryRow.11'
 - assertVisible:
-      id: 'BudgetWidget.CategoryRow.12'
-- assertVisible:
       id: 'BudgetWidget.MoreCategoriesLabel'
-      text: '+1 more'
+      text: '+2 more'
+- assertNotVisible:
+      id: 'BudgetWidget.CategoryRow.12'
 - assertNotVisible:
       id: 'BudgetWidget.CategoryRow.14'
 
