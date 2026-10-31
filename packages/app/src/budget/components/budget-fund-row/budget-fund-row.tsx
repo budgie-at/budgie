@@ -2,7 +2,7 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { useToday } from '../../../@generic/hook/use-today.hook';
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
@@ -19,6 +19,8 @@ import { BudgetRowChevron } from '../budget-row-chevron/budget-row-chevron';
 
 import type { BudgetEntityInterface, BudgetSinkingFundEntityInterface } from '@budgie/contracts';
 
+const MIN_TICK_FRACTION = 0.02;
+
 interface Props {
     readonly fund: BudgetSinkingFundEntityInterface;
     readonly budget: BudgetEntityInterface;
@@ -30,6 +32,8 @@ export const BudgetFundRow = ({ fund, budget, currencySymbol }: Props) => {
     const today = useToday();
     const { formatMonthAndDay, formatDayAndMonthAndYear } = useFormatDate();
     const barTone = isFundBehind(fund, today) ? 'warning' : 'positive';
+    const timeFraction = computeFundTimeFraction(fund, today);
+    const isTickVisible = isPositiveNumber(fund.fundedAmount) && timeFraction > MIN_TICK_FRACTION;
     const dueDate = formatBudgetFundDueDate(fund.dueAt, today, formatMonthAndDay, formatDayAndMonthAndYear);
     const dueLabel = t`Due ${dueDate}`;
     const { category } = useGetCategoryByIdQuery(fund.categoryId);
@@ -52,7 +56,7 @@ export const BudgetFundRow = ({ fund, budget, currencySymbol }: Props) => {
                 spent={fund.fundedAmount}
                 limit={fund.targetAmount}
                 tone={barTone}
-                elapsedFraction={computeFundTimeFraction(fund, today)}
+                {...(isTickVisible && { elapsedFraction: timeFraction })}
             />
             <BudgetFundRowStatus fund={fund} budget={budget} dueLabel={dueLabel} currencySymbol={currencySymbol} />
         </BudgetListRow>
