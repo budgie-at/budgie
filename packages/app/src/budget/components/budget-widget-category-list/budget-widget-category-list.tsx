@@ -33,7 +33,7 @@ export const BudgetWidgetCategoryList = ({ categoryLimits, spentByCategory }: Pr
     }
 
     return (
-        <View className="flex-row items-center gap-x-lg overflow-hidden">
+        <View className="flex-row items-center gap-x-lg">
             {visibleCategoryLimits.map(limit => (
                 <BudgetWidgetCategoryChip
                     key={limit.categoryId}
