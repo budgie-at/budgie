@@ -21,7 +21,7 @@ appId: ${APP_ID}
 - runFlow:
       when:
           notVisible:
-              id: 'budgie \(E2E\), Folder'
+              id: 'budgie \(E2E\), Container'
       commands:
           - tapOn:
                 id: 'BackButton'
@@ -43,7 +43,7 @@ appId: ${APP_ID}
 - runFlow:
       when:
           notVisible:
-              id: 'budgie \(E2E\), Folder'
+              id: 'budgie \(E2E\), Container'
       commands:
           - runFlow:
                 when:
@@ -56,11 +56,11 @@ appId: ${APP_ID}
 - runFlow:
       when:
           notVisible:
-              id: 'budgie \(E2E\), Folder'
+              id: 'budgie \(E2E\), Container'
       commands:
           - scrollUntilVisible:
                 element:
-                    id: 'budgie \(E2E\), Folder'
+                    id: 'budgie \(E2E\), Container'
                 direction: DOWN
                 timeout: 20000
                 speed: 20
@@ -69,11 +69,11 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
       visible:
-          id: 'budgie \(E2E\), Folder'
+          id: 'budgie \(E2E\), Container'
       timeout: 20000
 
 - tapOn:
-      id: 'budgie \(E2E\), Folder'
+      id: 'budgie \(E2E\), Container'
       retryTapIfNoChange: true
 
 - waitForAnimationToEnd
