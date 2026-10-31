@@ -12,7 +12,6 @@ export { BalanceAdjustmentService } from './account/service/balance-adjustment.s
 export { AccountTransferConversionService } from './account/service/account-transfer-conversion.service';
 export { DebtAccountService } from './account/service/debt-account.service';
 
-export { ReceiptAccountNotFoundError } from './receipt/error/receipt-account-not-found.error';
 export { ReceiptMatchResultKindEnum } from './receipt/enum/receipt-match-result-kind.enum';
 export { ReceiptMatchService } from './receipt/service/receipt-match.service';
 

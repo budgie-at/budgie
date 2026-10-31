@@ -36,11 +36,6 @@ msgstr "{0, plural, one {# retrait de distributeur} other {# retraits de distrib
 msgid "{0, plural, one {# payment} other {# payments}}"
 msgstr "{0, plural, one {# paiement} other {# paiements}}"
 
-#. placeholder {0}: changed.length
-#: src/receipt/hook/use-receipt-scan.hook.ts
-msgid "{0, plural, one {# receipt saved} other {# receipts saved}}"
-msgstr "{0, plural, one {# reçu enregistré} other {# reçus enregistrés}}"
-
 #. placeholder {0}: labels.length
 #: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
 msgid "{0, plural, one {# tag} other {# tags}}"
@@ -526,10 +521,6 @@ msgstr "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgid "{transferCount} now transfers"
 msgstr "{transferCount} sont maintenant des virements"
 
-#: src/receipt/hook/use-receipt-scan.hook.ts
-msgid "{unreadableCount, plural, one {Couldn't read # receipt} other {Couldn't read # receipts}}"
-msgstr "{unreadableCount, plural, one {Impossible de lire # reçu} other {Impossible de lire # reçus}}"
-
 #: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 #: src/budget/components/budget-verdict-figure/budget-verdict-figure.tsx
 #: src/budget/components/budget-widget-headline/budget-widget-headline.tsx
@@ -819,10 +810,6 @@ msgstr "Ajoutez l’action Budgie"
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add your first account to start tracking your finances"
 msgstr "Ajoutez votre premier compte pour commencer à suivre vos finances"
-
-#: src/receipt/hook/use-receipt-scan.hook.ts
-msgid "Added"
-msgstr "Ajouté"
 
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
 msgid "Adds the fee of the plan"
@@ -3513,10 +3500,6 @@ msgstr "Les dépenses correspondantes sont converties en virement vers ce compte
 msgid "Matched income is converted into a transfer from this account."
 msgstr "Les revenus correspondants sont convertis en virement depuis ce compte."
 
-#: src/receipt/hook/use-receipt-scan.hook.ts
-msgid "Matched to existing"
-msgstr "Associé à l'existante"
-
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "matches"
 msgstr "correspond"
@@ -4578,10 +4561,6 @@ msgstr "Lu sur ce téléphone, tu peux ensuite le supprimer."
 #: src/receipt/components/receipt-scan-toast/receipt-scan-toast.tsx
 msgid "Reading receipt"
 msgstr "Lecture du reçu"
-
-#: src/receipt/components/receipt-scan-toast/receipt-scan-toast.tsx
-msgid "Reading receipts · {current} of {total}"
-msgstr "Lecture des reçus · {current} sur {total}"
 
 #: src/ai/constant/ai-download-card-visuals.constant.ts
 msgid "Ready"
