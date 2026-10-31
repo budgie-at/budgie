@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.134.0](https://github.com/budgie-at/budgie/compare/v6.133.0...v6.134.0) (2026-10-31)
+
+### Bug Fixes
+
+* **app:** restore similar-transaction stats query to main ([3e143f0](https://github.com/budgie-at/budgie/commit/3e143f02e7f3bbaca071a1649c247c76982d5dca))
+* **contracts:** include current transaction and anchor unpaid plans ([228633b](https://github.com/budgie-at/budgie/commit/228633b9022f1bc2f2494876f89147185cedcd6a))
+
+
 # [6.128.0](https://github.com/budgie-at/budgie/compare/v6.127.0...v6.128.0) (2026-10-30)
 
 ### Bug Fixes

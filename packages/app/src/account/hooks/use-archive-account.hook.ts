@@ -20,7 +20,7 @@ export const useArchiveAccount = (accountId: number, onArchived: EmptyFn) => {
                     message: t`This account will be hidden from your main view and won't be included in totals. You can restore it anytime from Settings → Archived Accounts.`,
                     confirmText: t`Archive`,
                     cancelText: t`Cancel`,
-                    isDestructive: false
+                    isDestructive: true
                 });
 
                 if (!confirmed) {

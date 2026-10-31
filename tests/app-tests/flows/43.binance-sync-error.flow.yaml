@@ -26,7 +26,7 @@ env:
 - assertVisible:
       id: 'AccountSyncCard.Warning'
       text: 'Binance is not available in your region.*'
-- assertVisible: 'Sync Failed'
+- assertVisible: 'Sync failed'
 - assertNotVisible:
       id: 'AccountSyncCard.LastError'
 
