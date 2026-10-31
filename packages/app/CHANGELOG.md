@@ -3,6 +3,51 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.134.0](https://github.com/budgie-at/budgie/compare/v6.133.0...v6.134.0) (2026-10-31)
+
+### Bug Fixes
+
+* **app:** distinguish debt links from category icons ([7ead31f](https://github.com/budgie-at/budgie/commit/7ead31fefb98edeb2e29018aad04e37b86fc386a))
+* **app:** draw the transaction detail bar fill above the edge blur ([a42f781](https://github.com/budgie-at/budgie/commit/a42f78172c2897a0a3438894cee78c4018304c7c))
+* **app:** fill the transaction details header from the first scroll ([6a8eb91](https://github.com/budgie-at/budgie/commit/6a8eb91e64627080400ac7be5df3f5ccf4cab155))
+* **app:** finish transaction detail contrast and large text ([713ecdb](https://github.com/budgie-at/budgie/commit/713ecdbf68738f640a116ff593dfc2e8f0317cba))
+* **app:** give Create rule its own non-destructive action group ([018d6d2](https://github.com/budgie-at/budgie/commit/018d6d28bfa4d12836cd4f1c9f36b901c2c54580))
+* **app:** give every transaction type one detail action model ([08ded07](https://github.com/budgie-at/budgie/commit/08ded07396348fcd8bf672fc8a1f62156fde4aa3))
+* **app:** hand off transaction detail title and snap at rest ([b17a2c2](https://github.com/budgie-at/budgie/commit/b17a2c23af8ed98ad4e7e6479fcd5720c85e9614))
+* **app:** improve transaction detail accessibility and privacy ([9f80e9d](https://github.com/budgie-at/budgie/commit/9f80e9d8bba374deac90d9b5c8521f8d3e8f323e))
+* **app:** keep Convert to Transfer for consolidated transactions and say Undo Refund in the list menu ([ecbdfc7](https://github.com/budgie-at/budgie/commit/ecbdfc74a0622d63f1a4e2997d6cfc45b219896d))
+* **app:** keep refund actions and scaled labels consistent ([6cabedd](https://github.com/budgie-at/budgie/commit/6cabedd3a0684cd222038968243b5fd6c37afdc3))
+* **app:** keep the destructive transaction action alone in the last group ([efa2fa0](https://github.com/budgie-at/budgie/commit/efa2fa0475109fdb9ecc056473ee6bf7e4097f57))
+* **app:** keep the transaction detail amount the largest text at every size ([94a6769](https://github.com/budgie-at/budgie/commit/94a67699a8cee6a0909f43ebe217335380d22236))
+* **app:** keep the transaction detail bar material opaque over its blur ([32900b2](https://github.com/budgie-at/budgie/commit/32900b26e2bd4e64d3b9dc55727efae4e7fa9308))
+* **app:** keep the transaction detail compact bar at bar size for accessibility text ([aaf6d8e](https://github.com/budgie-at/budgie/commit/aaf6d8ea0b30484d773740641ec9b553fdc54088))
+* **app:** keep transaction details continuous and actions quiet ([0a881ae](https://github.com/budgie-at/budgie/commit/0a881aea1592f0f2fdee728462fb8ab1e9a37d2d))
+* **app:** mask large hero glyphs beneath transaction header ([2ef783f](https://github.com/budgie-at/budgie/commit/2ef783f56b28a4af0e2e7bc3d2e1ce390aa5d45d))
+* **app:** open transaction detail extra actions in an accessible popover ([c3a9ac1](https://github.com/budgie-at/budgie/commit/c3a9ac17bf674450c02fe1af6dd083be7afac002))
+* **app:** open transaction detail more actions above their row ([c9ffd54](https://github.com/budgie-at/budgie/commit/c9ffd54b1949bf3640a97e8c3803ca20f936c71c))
+* **app:** preserve detail accessibility and refund privacy ([8bc3ce2](https://github.com/budgie-at/budgie/commit/8bc3ce259ec0cd9b6c4c2eef8d92e45bbac82ed0))
+* **app:** preserve display units in debt progress amounts ([ef5e8fc](https://github.com/budgie-at/budgie/commit/ef5e8fca45fa65feafacb0279027ab47ffc62ed8))
+* **app:** raise popover subtitle contrast and line spacing ([c65a040](https://github.com/budgie-at/budgie/commit/c65a0403727d172484fbf407ac37129e2e62ace5))
+* **app:** raise transaction detail secondary contrast ([d0be39e](https://github.com/budgie-at/budgie/commit/d0be39e56f1e8d281edcded4e879f96445acf87f))
+* **app:** refine transaction detail collapse and actions ([ebfee66](https://github.com/budgie-at/budgie/commit/ebfee66711e9b7667bb52a873c3e8dc83a0969d8))
+* **app:** refine transaction details chrome and financial context ([6998468](https://github.com/budgie-at/budgie/commit/6998468c068583bed7b043d9a57e71b0cc8da3af))
+* **app:** restore similar-transaction stats query to main ([3e143f0](https://github.com/budgie-at/budgie/commit/3e143f02e7f3bbaca071a1649c247c76982d5dca))
+* **app:** reveal the compact summary only while the hero is covered ([4e4745d](https://github.com/budgie-at/budgie/commit/4e4745dc8c7b414d863b2a3e9fc25cc0db108fe2))
+* **app:** send an unmatched refund back to its purchase ([c57acfe](https://github.com/budgie-at/budgie/commit/c57acfe990a3ef9ab12c8e7bf5d5a737cdd5e630))
+* **app:** sequence the transaction detail title handoff under a material bar ([4cbe591](https://github.com/budgie-at/budgie/commit/4cbe5919d2710dda7b5b7ba0542f9814a21f6745))
+* **app:** snap transaction detail hero only on slow releases and collapse it without gaps ([804e9ea](https://github.com/budgie-at/budgie/commit/804e9ea4652ac522817cd32fb9ff62f6d0389035))
+* **app:** tighten transaction detail grouping and polish ([9c20ea0](https://github.com/budgie-at/budgie/commit/9c20ea0fabf9224b577666271aad5f9a50fd4201))
+
+### Features
+
+* **app:** group transaction detail actions as an inset list ([8ffe503](https://github.com/budgie-at/budgie/commit/8ffe503e63e651addf75108090f156f47b9e8783))
+* **app:** pass the transaction detail hero under an opaque bar ([f72b6fc](https://github.com/budgie-at/budgie/commit/f72b6fcb1863cbe16b5c8bce5b15bf28dabb9ff8))
+* **app:** rebuild transaction details around a scrolling hero ([fabbe63](https://github.com/budgie-at/budgie/commit/fabbe63f8fd0886b368b85794e4d903d835e8288))
+* **app:** sharpen the transaction detail bar edge and handoff ([fb03cfc](https://github.com/budgie-at/budgie/commit/fb03cfc7533596cb6c7c26c3b6c6a942f9b649c8))
+* **app:** single edit action and one date on transaction details ([0e78402](https://github.com/budgie-at/budgie/commit/0e784026fbb1cfbf39e44a37f43470b34604023c))
+* **app:** soften content passing under the transaction detail bar ([e121f69](https://github.com/budgie-at/budgie/commit/e121f69dd51e8e798a8d48aa9970039267cc76b9))
+
+
 # [6.133.0](https://github.com/budgie-at/budgie/compare/v6.132.0...v6.133.0) (2026-10-31)
 
 ### Bug Fixes
