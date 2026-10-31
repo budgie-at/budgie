@@ -2700,16 +2700,11 @@ msgstr "Fälligkeitsdatum"
 msgid "Duplicate rule"
 msgstr "Regel duplizieren"
 
-#: src/budget/components/budget-overall-limit-field/budget-overall-limit-field.tsx
-msgid "e.g. 1000"
-msgstr "z. B. 1000"
-
 #: src/account/component/deposit-account-form-screen/deposit-account-form-screen.tsx
 msgid "e.g. 12-month deposit"
 msgstr "z. B. 12-Monats-Festgeld"
 
-#: src/budget/components/budget-event-category-limit-row/budget-event-category-limit-row.tsx
-#: src/budget/components/budget-limit-amount-input/budget-limit-amount-input.tsx
+#: src/budget/components/budget-editable-amount-input/budget-editable-amount-input.tsx
 msgid "e.g. 200"
 msgstr "z. B. 200"
 

@@ -35,7 +35,7 @@ export const BudgetRolloverModeMenu = ({ name, icon, title, testID }: Props) => 
     const render = ({ field: { value, onChange } }: UseControllerReturn<BudgetFormValues, Props['name']>) => {
         const currentLabel = labels[value];
 
-        const trigger = <BudgetCategoryLimitLabel icon={icon} title={title} testID={testID} subtitle={t`Rollover · ${currentLabel}`} />;
+        const trigger = <BudgetCategoryLimitLabel icon={icon} title={title} testID={testID} menuValue={t`Rollover · ${currentLabel}`} />;
 
         return (
             <ActionsMenu
