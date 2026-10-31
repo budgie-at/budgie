@@ -30,8 +30,6 @@ interface UseAiTranslationFieldsReturn {
     translationFieldsProps: {
         titleEn: string | null;
         titleTags: string | null;
-        disabled: boolean;
-        onRegenerate: () => void;
         onTitleEnPress: () => void;
         onTitleTagsPress: () => void;
     };
@@ -45,8 +43,6 @@ export const useAiTranslationFields = (params: UseAiTranslationFieldsParams): Us
     const [titleTags, setTitleTags] = useState<string | null>(entity?.titleTags ?? null);
 
     const lastRegeneratedTitle = useRef<string>(entity?.title ?? '');
-
-    const isGenerateDisabled = !isNotEmptyString(currentTitle);
 
     const handleRegenerate = (): void => {
         if (!isModelReady) {
@@ -88,8 +84,6 @@ export const useAiTranslationFields = (params: UseAiTranslationFieldsParams): Us
     const translationFieldsProps = {
         titleEn,
         titleTags,
-        disabled: isGenerateDisabled,
-        onRegenerate: handleRegenerate,
         onTitleEnPress: handleNoteEdit(titleEn, setTitleEn),
         onTitleTagsPress: handleNoteEdit(titleTags, setTitleTags)
     };

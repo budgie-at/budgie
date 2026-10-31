@@ -33,7 +33,11 @@ export default function Tags() {
         openTagForm({ tag });
     };
 
-    const renderCard = (tag: TagEntityInterface) => <TagCard onOpen={handleOpenTag} tag={tag} />;
+    const handleClearSearch = () => void setSearch('');
+
+    const renderCard = (tag: TagEntityInterface, index: number, isLast: boolean) => (
+        <TagCard onOpen={handleOpenTag} tag={tag} isFirst={index === 0} isLast={isLast} />
+    );
 
     return (
         <SearchablePage
@@ -46,9 +50,10 @@ export default function Tags() {
         >
             <SearchablePageList
                 data={tags}
-                emptyState={<TagEmptyState search={search} />}
+                emptyState={<TagEmptyState search={search} onClearSearch={handleClearSearch} />}
                 onDelete={handleDeleteTag}
                 renderCard={renderCard}
+                gap={0}
             />
         </SearchablePage>
     );

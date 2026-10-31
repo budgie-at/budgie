@@ -19,7 +19,7 @@ export const useDeleteCategory = () => {
         if (!isPositiveNumber(count)) {
             yield* categoryService.deleteById(id).pipe(toastOnFailure(t`Could not delete category`, t`Please try again later`));
 
-            return;
+            return true;
         }
 
         const description = t({
@@ -34,11 +34,15 @@ export const useDeleteCategory = () => {
             });
         });
 
-        if (isDefined(targetCategoryId)) {
-            yield* categoryService
-                .mergeInto(id, targetCategoryId)
-                .pipe(toastOnFailure(t`Could not reassign category`, t`Please try again later`));
+        if (!isDefined(targetCategoryId)) {
+            return false;
         }
+
+        yield* categoryService
+            .mergeInto(id, targetCategoryId)
+            .pipe(toastOnFailure(t`Could not reassign category`, t`Please try again later`));
+
+        return true;
     });
 
     return deleteCategory;

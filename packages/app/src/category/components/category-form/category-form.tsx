@@ -1,16 +1,23 @@
-import { CategoryCreateEntityInterface, CategoryEntityInterface, CategoryRepository, UserIconType } from '@budgie/contracts';
+import {
+    CATEGORY_TITLE_MAX_LENGTH,
+    CategoryCreateEntityInterface,
+    CategoryEntityInterface,
+    CategoryRepository,
+    UserIconType
+} from '@budgie/contracts';
 import { CategoryService } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { AiTranslationFields } from '../../../@generic/component/ai-translation-fields/ai-translation-fields';
-import { ModalFormFooter } from '../../../@generic/component/modal-form-footer/modal-form-footer';
-import { ModalFormMergeButton } from '../../../@generic/component/modal-form-merge-button/modal-form-merge-button';
-import { PageHeader } from '../../../@generic/component/page-header/page-header';
-import { ModalPage } from '../../../@generic/component/page/modal-page';
+import { EntityFormPage } from '../../../@generic/component/entity-form-page/entity-form-page';
+import { FormTitleInput } from '../../../@generic/component/form-title-input/form-title-input';
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
+import { IconTitleField } from '../../../@generic/component/icon-title-field/icon-title-field';
+import { MergeDeleteSection } from '../../../@generic/component/merge-delete-section/merge-delete-section';
+import { ModalFormSaveBar } from '../../../@generic/component/modal-form-save-bar/modal-form-save-bar';
 import { useIconSelectorModal } from '../../../@generic/context/icon-selector-modal.context';
 import { useAiTranslationFields } from '../../../@generic/hook/use-ai-translation-fields.hook';
 import { useRegenerateTranslation } from '../../../@generic/hook/use-regenerate-translation.hook';
@@ -20,11 +27,10 @@ import { useChatModelStatus } from '../../../ai/hook/use-chat-model-status.hook'
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { useCategorySelectorModal } from '../../context/category-selector-modal.context';
 import { useCategoryForm } from '../../hooks/use-category-form.hook';
+import { useDeleteCategory } from '../../hooks/use-delete-category.hook';
 import { createCategory } from '../../utils/create-category.util';
 import { getCategoryIconTerms } from '../../utils/get-category-icon-terms.util';
 import { updateCategory } from '../../utils/update-category.util';
-import { CategoryIconDisplay } from '../category-icon-display/category-icon-display';
-import { CategoryTitleInput } from '../category-title-input/category-title-input';
 
 import { CategoryFormSelector } from './category-form.selector';
 
@@ -48,13 +54,14 @@ export const CategoryForm = (props: Props) => {
     const { t } = useLingui();
     const language = useSetting('language');
     const [openCategorySelector] = useCategorySelectorModal();
-    const { run } = useSingleFlight();
+    const { run, isLoading } = useSingleFlight();
+    const deleteCategory = useDeleteCategory();
     const [openIconSelector] = useIconSelectorModal();
     const { regenerate, isRegenerating } = useRegenerateTranslation((id, titleEn, titleTags) =>
         Effect.flatMap(CategoryRepository, categoryRepository => categoryRepository.updateTranslation(id, titleEn, titleTags))
     );
     const isTranslationsEnabled = useSetting('isAiTranslationsEnabled');
-    const { isChatReady, modelStatus } = useChatModelStatus();
+    const { isChatReady } = useChatModelStatus();
 
     const { handleSubmit, setValue, icon, title } = useCategoryForm(category ?? null, defaultTitle);
 
@@ -69,8 +76,15 @@ export const CategoryForm = (props: Props) => {
         isModelReady: isTranslationsEnabled && isChatReady
     });
 
-    const isSaveDisabled = !isNotEmptyString(title);
+    const isChanged =
+        !isDefined(category) ||
+        title !== category.title ||
+        icon !== category.icon ||
+        titleEn !== category.titleEn ||
+        titleTags !== category.titleTags;
+    const isSaveDisabled = !isNotEmptyString(title) || !isChanged;
     const headerTitle = isEditing ? t`Edit Category` : t`Create Category`;
+    const saveLabel = isEditing ? t`Save changes` : t`Create category`;
 
     const iconTerms = getCategoryIconTerms({ title, titleEn, titleTags });
 
@@ -132,47 +146,63 @@ export const CategoryForm = (props: Props) => {
             }
         }).pipe(toastOnFailure(isEditing ? t`Could not save category` : t`Could not create category`, t`Please try again later`));
 
+    const handleDelete = () => {
+        if (isDefined(category)) {
+            void run(deleteCategory(category.id).pipe(Effect.tap(isDeleted => (isDeleted ? Effect.sync(onCancel) : Effect.void))));
+        }
+    };
+
     const handleFormSubmit = handleSubmit(values => run(submitCategory(values)));
 
     return (
-        <ModalPage header={<PageHeader title={headerTitle} onGoBack={onCancel} />}>
-            <KeyboardAwareScrollView
-                testID={CategoryFormSelector.ScrollView}
-                keyboardShouldPersistTaps="always"
-                showsVerticalScrollIndicator={false}
-                bounces={false}
-            >
-                <CategoryIconDisplay
+        <EntityFormPage
+            title={headerTitle}
+            onCancel={onCancel}
+            scrollTestID={CategoryFormSelector.ScrollView}
+            footer={
+                <ModalFormSaveBar
+                    label={saveLabel}
+                    onPress={handleFormSubmit}
+                    isLoading={isLoading}
+                    isDisabled={isSaveDisabled}
+                    testID={CategoryFormSelector.Submit}
+                />
+            }
+        >
+            <GroupedListSection title={t`Details`}>
+                <IconTitleField
                     icon={icon}
-                    onPress={handleIconPress}
-                    triggerTestID={CategoryFormSelector.IconTrigger}
+                    variant="default"
+                    label={t`Name`}
+                    onIconPress={handleIconPress}
+                    iconTriggerTestID={CategoryFormSelector.IconTrigger}
                     iconTestID={CategoryFormSelector.CurrentIcon(icon)}
-                />
-
-                <CategoryTitleInput
-                    value={title}
-                    onChange={handleTitleChange}
-                    onBlur={handleTitleBlur}
-                    testID={CategoryFormSelector.Input}
-                />
-
-                <AiTranslationFields {...translationFieldsProps} isRegenerating={isRegenerating} modelStatus={modelStatus} />
-            </KeyboardAwareScrollView>
-
-            <ModalFormFooter
-                onCancel={onCancel}
-                onSave={handleFormSubmit}
-                isSaveDisabled={isSaveDisabled}
-                saveTestID={CategoryFormSelector.Submit}
-            >
-                {isEditing ? (
-                    <ModalFormMergeButton
-                        testID={CategoryFormSelector.Merge}
-                        onPress={handleMerge}
-                        content={t`Merge into another category`}
+                >
+                    <FormTitleInput
+                        autoFocus={!isEditing}
+                        value={title}
+                        onChangeText={handleTitleChange}
+                        onBlur={handleTitleBlur}
+                        maxLength={CATEGORY_TITLE_MAX_LENGTH}
+                        placeholder={t`e.g. Groceries, Entertainment`}
+                        accessibilityLabel={t`Category name`}
+                        testID={CategoryFormSelector.Input}
                     />
-                ) : null}
-            </ModalFormFooter>
-        </ModalPage>
+                </IconTitleField>
+            </GroupedListSection>
+
+            <AiTranslationFields {...translationFieldsProps} isRegenerating={isRegenerating} />
+
+            {isEditing ? (
+                <MergeDeleteSection
+                    mergeLabel={t`Merge into another category…`}
+                    onMerge={handleMerge}
+                    mergeTestID={CategoryFormSelector.Merge}
+                    deleteLabel={t`Delete category`}
+                    deleteConfirmTitle={t`Delete this category?`}
+                    onDelete={handleDelete}
+                />
+            ) : null}
+        </EntityFormPage>
     );
 };

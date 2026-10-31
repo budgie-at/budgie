@@ -4,6 +4,8 @@ import { Alert } from 'react-native';
 import ReanimatedSwipeable, { SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
 import { SharedValue } from 'react-native-reanimated';
 
+import { DeletableRowContext } from '../../context/deletable-row.context';
+
 import { DeletableRowAction } from './deletable-row-action';
 
 interface Props {
@@ -60,7 +62,7 @@ export const DeletableRow = ({ children, onDelete, id, confirmation }: Props) =>
             onSwipeableOpen={handleOpen}
             onSwipeableClose={handleClose}
         >
-            {children}
+            <DeletableRowContext.Provider value={confirm}>{children}</DeletableRowContext.Provider>
         </ReanimatedSwipeable>
     );
 };

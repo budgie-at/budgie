@@ -31,8 +31,8 @@ export const IconSuggestions = ({ terms, limit, onSelect, testID, children }: Pr
             {children}
 
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="gap-x-md">
-                {suggestions.map(({ icon }) => (
-                    <IconSuggestionChip key={icon} icon={icon} onSelect={onSelect} {...testIDProps(testID, icon)} />
+                {suggestions.map(({ icon, label }) => (
+                    <IconSuggestionChip key={icon} icon={icon} label={label} onSelect={onSelect} {...testIDProps(testID, icon)} />
                 ))}
             </ScrollView>
         </View>

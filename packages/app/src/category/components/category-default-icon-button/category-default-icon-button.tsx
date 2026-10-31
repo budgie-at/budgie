@@ -2,10 +2,13 @@ import { DEFAULT_CATEGORY_ICON, UserIconNameEnum } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { useRouter } from 'expo-router';
+import { View } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
-import { Button } from '../../../@generic/component/button/button';
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { useNonSystemCategoriesQuery } from '../../query/use-non-system-categories.query';
 
 import { CategoryDefaultIconButtonSelector } from './category-default-icon-button.selector';
@@ -24,14 +27,18 @@ export const CategoryDefaultIconButton = () => {
     }
 
     return (
-        <Button
-            testID={CategoryDefaultIconButtonSelector.Button}
-            onPress={handlePress}
-            size="sm"
-            variant="secondary"
-            leftIcon={UserIconNameEnum.Sparkles}
-            className="mb-xl"
-            content={t({ message: plural(count, { one: '# category uses the default icon', other: '# categories use the default icon' }) })}
-        />
+        <View className="pb-3xl">
+            <GroupedListSection>
+                <GroupedListRow
+                    testID={CategoryDefaultIconButtonSelector.Button}
+                    left={
+                        <CircleIcon icon={UserIconNameEnum.Sparkles} variant="ghost" size={36} iconSize={18} radius={18} border={false} />
+                    }
+                    title={t({ message: plural(count, { one: 'Choose an icon for # category', other: 'Choose icons for # categories' }) })}
+                    subtitle={t`Suggestions are ready — one tap each`}
+                    onPress={handlePress}
+                />
+            </GroupedListSection>
+        </View>
     );
 };

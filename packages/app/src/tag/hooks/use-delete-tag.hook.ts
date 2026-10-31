@@ -17,7 +17,9 @@ export const useDeleteTag = () => {
         const count = yield* tagService.countTransactions(id);
 
         if (!isPositiveNumber(count)) {
-            return yield* tagService.deleteById(id).pipe(toastOnFailure(t`Could not delete tag`, t`Please try again later`));
+            yield* tagService.deleteById(id).pipe(toastOnFailure(t`Could not delete tag`, t`Please try again later`));
+
+            return true;
         }
 
         const description = t({
@@ -33,9 +35,13 @@ export const useDeleteTag = () => {
         });
         const targetTagId = isNotEmptyArray(targetTagIds) ? targetTagIds[0] : null;
 
-        if (isDefined(targetTagId)) {
-            yield* tagService.mergeInto(id, targetTagId).pipe(toastOnFailure(t`Could not reassign tag`, t`Please try again later`));
+        if (!isDefined(targetTagId)) {
+            return false;
         }
+
+        yield* tagService.mergeInto(id, targetTagId).pipe(toastOnFailure(t`Could not reassign tag`, t`Please try again later`));
+
+        return true;
     });
 
     return deleteTag;

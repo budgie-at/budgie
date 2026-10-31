@@ -34,7 +34,11 @@ export default function Categories() {
         openCategoryForm({ category });
     };
 
-    const renderCard = (category: CategoryEntityInterface) => <CategoryCard onOpen={handleOpenCategory} category={category} />;
+    const handleClearSearch = () => void setSearch('');
+
+    const renderCard = (category: CategoryEntityInterface, index: number, isLast: boolean) => (
+        <CategoryCard onOpen={handleOpenCategory} category={category} isFirst={index === 0} isLast={isLast} />
+    );
 
     return (
         <SearchablePage
@@ -47,10 +51,11 @@ export default function Categories() {
         >
             <SearchablePageList
                 data={categories}
-                emptyState={<CategoryEmptyState search={search} />}
+                emptyState={<CategoryEmptyState search={search} onClearSearch={handleClearSearch} />}
                 onDelete={handleDeleteCategory}
                 renderCard={renderCard}
                 listHeader={<CategoryDefaultIconButton />}
+                gap={0}
             />
         </SearchablePage>
     );

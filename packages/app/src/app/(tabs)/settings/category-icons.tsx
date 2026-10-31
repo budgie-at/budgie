@@ -1,5 +1,6 @@
 import { DEFAULT_CATEGORY_ICON, UserIconNameEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
+import { Text, View } from 'react-native';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
@@ -29,9 +30,18 @@ export default function CategoryIconsPage() {
             leading={<GoBackButton onPress={handleGoBack} />}
             testID={CategoryIconsPageSelector.Container}
         >
-            {isNotEmptyArray(categoriesWithDefaultIcon)
-                ? categoriesWithDefaultIcon.map(category => <CategoryIconFixRow key={category.id} category={category} />)
-                : emptyState}
+            {isNotEmptyArray(categoriesWithDefaultIcon) ? (
+                <View className="gap-y-3xl">
+                    <Text className="text-secondary-foreground px-3xl text-[13px] leading-[18px]">
+                        <Trans>Pick an icon — it saves instantly.</Trans>
+                    </Text>
+                    {categoriesWithDefaultIcon.map(category => (
+                        <CategoryIconFixRow key={category.id} category={category} />
+                    ))}
+                </View>
+            ) : (
+                emptyState
+            )}
         </CollapsibleChromePage>
     );
 }

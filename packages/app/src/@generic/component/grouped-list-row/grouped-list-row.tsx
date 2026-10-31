@@ -1,13 +1,16 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { useDeletableRowDelete } from '../../context/deletable-row.context';
 import { cn } from '../../utils/cn.util';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
 
 import type { ReactNode } from 'react';
+import type { AccessibilityActionEvent } from 'react-native';
 
 interface Props {
     readonly title: string;
@@ -22,6 +25,8 @@ interface Props {
 
 export const GroupedListRow = (props: Props) => {
     const { title, subtitle, left, right, titleClassName, titleTestID, testID, onPress } = props;
+    const { t } = useLingui();
+    const deleteRow = useDeletableRowDelete();
     const isPressable = isDefined(onPress);
     const Container = isPressable ? HapticPressable : View;
 
@@ -36,11 +41,21 @@ export const GroupedListRow = (props: Props) => {
         subtitle
     );
 
+    const deleteAccessibility = isDefined(deleteRow) && {
+        accessibilityActions: [{ name: 'delete', label: t`Delete` }],
+        onAccessibilityAction: (event: AccessibilityActionEvent) => {
+            if (event.nativeEvent.actionName === 'delete') {
+                deleteRow();
+            }
+        }
+    };
+
     return (
         <Container
             onPress={onPress}
             className="min-h-[50px] flex-row items-center gap-x-xl px-3xl py-lg active:opacity-70"
             {...(isPressable && { accessibilityRole: 'button' as const })}
+            {...deleteAccessibility}
             testID={testID}
         >
             <View className={cn('absolute top-0 right-0 h-hairline bg-surface-separator', separatorClassName)} pointerEvents="none" />

@@ -1,18 +1,16 @@
 import { TAG_TITLE_MAX_LENGTH, TagCreateEntityInterface, TagEntityInterface, TagRepository } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
-import Animated, { FadeInUp } from 'react-native-reanimated';
+import { View } from 'react-native';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { AiTranslationFields } from '../../../@generic/component/ai-translation-fields/ai-translation-fields';
-import { FormItem } from '../../../@generic/component/form-item/form-item';
-import { Input } from '../../../@generic/component/input/input';
-import { ModalFormFooter } from '../../../@generic/component/modal-form-footer/modal-form-footer';
-import { ModalFormMergeButton } from '../../../@generic/component/modal-form-merge-button/modal-form-merge-button';
-import { PageHeader } from '../../../@generic/component/page-header/page-header';
-import { ModalPage } from '../../../@generic/component/page/modal-page';
+import { EntityFormPage } from '../../../@generic/component/entity-form-page/entity-form-page';
+import { FormTitleInput } from '../../../@generic/component/form-title-input/form-title-input';
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
+import { MergeDeleteSection } from '../../../@generic/component/merge-delete-section/merge-delete-section';
+import { ModalFormSaveBar } from '../../../@generic/component/modal-form-save-bar/modal-form-save-bar';
 import { useAiTranslationFields } from '../../../@generic/hook/use-ai-translation-fields.hook';
 import { useRegenerateTranslation } from '../../../@generic/hook/use-regenerate-translation.hook';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
@@ -20,6 +18,7 @@ import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useChatModelStatus } from '../../../ai/hook/use-chat-model-status.hook';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { useTagsSelectorModal } from '../../context/tags-selector-modal.context';
+import { useDeleteTag } from '../../hooks/use-delete-tag.hook';
 import { useTagForm } from '../../hooks/use-tag-form.hook';
 import { TagService } from '../../service/tag.service';
 
@@ -39,19 +38,18 @@ interface Props {
     readonly onCancel: () => void;
 }
 
-const TITLE_ANIMATION_DELAY = 100;
-
 // eslint-disable-next-line max-lines-per-function, max-statements -- Form orchestration component with multiple hooks and handlers
 export const TagForm = (props: Props) => {
     const { tag, defaultTitle, onSuccess, onCancel } = props;
     const { t } = useLingui();
     const [openTagsSelector] = useTagsSelectorModal();
-    const { run } = useSingleFlight();
+    const { run, isLoading } = useSingleFlight();
+    const deleteTag = useDeleteTag();
     const { regenerate, isRegenerating } = useRegenerateTranslation((id, titleEn, titleTags) =>
         Effect.flatMap(TagRepository, tagRepository => tagRepository.updateTranslation(id, titleEn, titleTags))
     );
     const isTranslationsEnabled = useSetting('isAiTranslationsEnabled');
-    const { isChatReady, modelStatus } = useChatModelStatus();
+    const { isChatReady } = useChatModelStatus();
 
     const { handleSubmit, setValue, title } = useTagForm(tag ?? (defaultTitle ? { title: defaultTitle } : null));
 
@@ -66,8 +64,10 @@ export const TagForm = (props: Props) => {
         isModelReady: isTranslationsEnabled && isChatReady
     });
 
-    const isSaveDisabled = !isNotEmptyString(title);
+    const isChanged = !isDefined(tag) || title !== tag.title || titleEn !== tag.titleEn || titleTags !== tag.titleTags;
+    const isSaveDisabled = !isNotEmptyString(title) || !isChanged;
     const headerTitle = isEditing ? t`Edit Tag` : t`Create Tag`;
+    const saveLabel = isEditing ? t`Save changes` : t`Create tag`;
 
     const handleTitleChange = (value: string) => {
         setValue('title', value);
@@ -118,49 +118,56 @@ export const TagForm = (props: Props) => {
             }
         }).pipe(toastOnFailure(isEditing ? t`Could not save tag` : t`Could not create tag`, t`Please try again later`));
 
+    const handleDelete = () => {
+        if (isDefined(tag)) {
+            void run(deleteTag(tag.id).pipe(Effect.tap(isDeleted => (isDeleted ? Effect.sync(onCancel) : Effect.void))));
+        }
+    };
+
     const handleFormSubmit = handleSubmit(values => run(submitTag(values)));
 
     return (
-        <ModalPage header={<PageHeader title={headerTitle} onGoBack={onCancel} />}>
-            <KeyboardAwareScrollView
-                testID={TagFormSelector.ScrollView}
-                keyboardShouldPersistTaps="always"
-                showsVerticalScrollIndicator={false}
-                bounces={false}
-            >
-                <Animated.View entering={FadeInUp.delay(TITLE_ANIMATION_DELAY).duration(200)} className="px-3xl pt-2xl">
-                    <FormItem label={t`Tag Name`}>
-                        <Input
-                            size="lg"
-                            value={title}
-                            onChangeText={handleTitleChange}
-                            onBlur={handleTitleBlur}
-                            maxLength={TAG_TITLE_MAX_LENGTH}
-                            placeholder={t`e.g. Business, Personal, Vacation`}
-                            autoCapitalize="words"
-                            autoCorrect={false}
-                            autoComplete="off"
-                            textContentType="none"
-                            spellCheck={false}
-                            inputMode="text"
-                            testID={TagFormSelector.Input}
-                        />
-                    </FormItem>
-                </Animated.View>
+        <EntityFormPage
+            title={headerTitle}
+            onCancel={onCancel}
+            scrollTestID={TagFormSelector.ScrollView}
+            footer={
+                <ModalFormSaveBar
+                    label={saveLabel}
+                    onPress={handleFormSubmit}
+                    isLoading={isLoading}
+                    isDisabled={isSaveDisabled}
+                    testID={TagFormSelector.Submit}
+                />
+            }
+        >
+            <GroupedListSection title={t`Name`}>
+                <View className="px-3xl py-lg">
+                    <FormTitleInput
+                        autoFocus={!isEditing}
+                        value={title}
+                        onChangeText={handleTitleChange}
+                        onBlur={handleTitleBlur}
+                        maxLength={TAG_TITLE_MAX_LENGTH}
+                        placeholder={t`e.g. Business, Personal, Vacation`}
+                        accessibilityLabel={t`Tag name`}
+                        testID={TagFormSelector.Input}
+                    />
+                </View>
+            </GroupedListSection>
 
-                <AiTranslationFields {...translationFieldsProps} isRegenerating={isRegenerating} modelStatus={modelStatus} />
-            </KeyboardAwareScrollView>
+            <AiTranslationFields {...translationFieldsProps} isRegenerating={isRegenerating} />
 
-            <ModalFormFooter
-                onCancel={onCancel}
-                onSave={handleFormSubmit}
-                isSaveDisabled={isSaveDisabled}
-                saveTestID={TagFormSelector.Submit}
-            >
-                {isEditing ? (
-                    <ModalFormMergeButton testID={TagFormSelector.Merge} onPress={handleMerge} content={t`Merge into another tag`} />
-                ) : null}
-            </ModalFormFooter>
-        </ModalPage>
+            {isEditing ? (
+                <MergeDeleteSection
+                    mergeLabel={t`Merge into another tag…`}
+                    onMerge={handleMerge}
+                    mergeTestID={TagFormSelector.Merge}
+                    deleteLabel={t`Delete tag`}
+                    deleteConfirmTitle={t`Delete this tag?`}
+                    onDelete={handleDelete}
+                />
+            ) : null}
+        </EntityFormPage>
     );
 };
