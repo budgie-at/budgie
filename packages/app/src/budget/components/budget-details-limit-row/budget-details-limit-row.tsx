@@ -52,11 +52,11 @@ export const BudgetDetailsLimitRow = (props: Props) => {
                 accessibilityLabel={accessibilityLabel}
                 accessibilityRole="button"
                 accessibilityValue={accessibilityValue}
-                className="min-h-[44px] flex-row items-center gap-x-xl py-xs active:opacity-70"
+                className="min-h-[44px] flex-row items-start gap-x-xl py-xs active:opacity-70"
                 onPress={onPress}
             >
                 <GroupedListIcon icon={icon} />
-                <View className="flex-1">
+                <View className="flex-1 pt-md">
                     <BudgetLimitRow
                         title={title}
                         carriedAmount={carriedAmount}

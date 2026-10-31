@@ -16,11 +16,11 @@ interface Props {
 export const BudgetListRow = ({ icon, testID, onPress, children }: Props) => (
     <HapticPressable
         accessibilityRole="button"
-        className="min-h-[44px] flex-row items-center gap-x-xl py-xs active:opacity-70"
+        className="min-h-[44px] flex-row items-start gap-x-xl py-xs active:opacity-70"
         testID={testID}
         onPress={onPress}
     >
         <GroupedListIcon icon={icon} />
-        <View className="flex-1 gap-y-sm">{children}</View>
+        <View className="flex-1 gap-y-sm pt-md">{children}</View>
     </HapticPressable>
 );
