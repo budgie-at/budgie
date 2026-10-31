@@ -1,5 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
-import { FormProvider, useWatch } from 'react-hook-form';
+import { FormProvider } from 'react-hook-form';
 import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -35,13 +35,10 @@ export const BudgetFundForm = ({ budget, editingId }: Props) => {
         budget,
         editingId
     });
-    const [name, categoryId, targetAmount, dueAtMs, repeatEveryMonths, recurringSeriesId] = useWatch({
-        control: form.control,
-        name: ['name', 'categoryId', 'targetAmount', 'dueAtMs', 'repeatEveryMonths', 'recurringSeriesId']
-    });
+    const values = form.watch();
     const { instrument } = useGetInstrumentByIdQuery(budget.instrumentId);
     const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
-    const saveBlocker = resolveBudgetFundSaveBlocker({ name, categoryId, targetAmount, dueAtMs, repeatEveryMonths, recurringSeriesId });
+    const saveBlocker = resolveBudgetFundSaveBlocker(values);
     const [title, submitLabel] = isEditing ? [t`Edit set aside`, t`Save changes`] : [t`New set aside`, t`Save set aside`];
     const saveLabel = isDefined(saveBlocker) ? t(saveBlocker) : submitLabel;
     const fundedAmount = isDefined(editingFund) ? editingFund.fundedAmount : 0;
