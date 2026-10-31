@@ -14,7 +14,7 @@ interface Props {
 
 export const BudgetDetailsForecast = ({ projection, currencySymbol, isLoading }: Props) => {
     if (isLoading) {
-        return <View className="h-[240px]" />;
+        return <View className="h-[200px]" />;
     }
 
     if (projection.overall.status === BudgetPaceStatusEnum.TOO_EARLY) {

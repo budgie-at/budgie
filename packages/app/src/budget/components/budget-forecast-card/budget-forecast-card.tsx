@@ -15,7 +15,7 @@ export const BudgetForecastCard = ({ projection, currencySymbol }: Props) => {
     const { t } = useLingui();
 
     return (
-        <View className="gap-y-lg">
+        <View className="gap-y-xl">
             <SectionHeader label={t`Forecast`} />
 
             <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants">

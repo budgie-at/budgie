@@ -20,7 +20,7 @@ export const BudgetListSection = ({ label, testID, addTestID, onAddPress, footno
 
     return (
         <EntranceReveal step={5} className="gap-y-lg">
-            <View collapsable={false} testID={testID}>
+            <View collapsable={false} className="gap-y-lg" testID={testID}>
                 <SectionHeader label={label} trailing={<HeaderTextAction label={t`Add`} onPress={onAddPress} testID={addTestID} />} />
                 <View className="gap-y-lg">{children}</View>
                 {footnote}

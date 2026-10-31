@@ -41,7 +41,7 @@ export const BudgetLimitChangesRow = ({ budget, currencySymbol }: Props) => {
     };
 
     return (
-        <EntranceReveal step={5} className="pt-7xl">
+        <EntranceReveal step={5} className="pt-xl">
             <GroupedListSection>
                 <GroupedListRow
                     left={<GroupedListIcon icon={UserIconNameEnum.WandSparkles} />}
