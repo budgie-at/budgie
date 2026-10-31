@@ -11,7 +11,6 @@ import { GroupedListRow } from '../../../@generic/component/grouped-list-row/gro
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { SectionHeader } from '../../../@generic/component/section-header/section-header';
 import { cn } from '../../../@generic/utils/cn.util';
-import { useNonSystemCategoriesQuery } from '../../../category/query/use-non-system-categories.query';
 import { useGetBudgetEffectiveLimitsQuery } from '../../query/use-get-budget-effective-limits.query';
 import { BudgetDetailsCategoryRow } from '../budget-details-category-row/budget-details-category-row';
 import { BudgetDetailsOtherCategoryRow } from '../budget-details-other-category-row/budget-details-other-category-row';
@@ -29,9 +28,7 @@ interface Props {
 
 export const BudgetDetailsCategoryList = ({ budget, projection, periodStart, periodEnd, currencySymbol }: Props) => {
     const { t } = useLingui();
-    const { categories } = useNonSystemCategoriesQuery();
     const effectiveLimits = useGetBudgetEffectiveLimitsQuery(budget);
-    const titleByCategoryId = new Map(categories.map(category => [category.id, category.title]));
     const categoryIds = projection.categories.map(category => category.categoryId);
     const carriedAmountByCategory = new Map(effectiveLimits.categoryLimits.map(limit => [limit.categoryId, limit.carriedAmount]));
     const isOtherRowVisible = budget.kind === BudgetKindEnum.MAIN || isPositiveNumber(projection.other.limit);
@@ -54,7 +51,6 @@ export const BudgetDetailsCategoryList = ({ budget, projection, periodStart, per
                 <BudgetDetailsCategoryRow
                     key={category.categoryId}
                     categoryId={category.categoryId}
-                    title={titleByCategoryId.get(category.categoryId) ?? ''}
                     scope={category}
                     carriedAmount={carriedAmountByCategory.get(category.categoryId) ?? 0}
                     periodStart={periodStart}
