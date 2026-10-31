@@ -1,69 +1,55 @@
-import { useLingui } from '@lingui/react/macro';
+import { plural } from '@lingui/core/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { addMonths } from 'date-fns';
-import { useFormContext, useWatch } from 'react-hook-form';
 import { Text, View } from 'react-native';
 
 import { ConvertToInstallmentModalSelector } from '../../../app/convert-to-installment-modal.selector';
-import { useI18nContext } from '../../../i18n/context/i18n.context';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { InstallmentTimelinePoint } from '../installment-timeline-point/installment-timeline-point';
 
-import type { ConvertToInstallmentFormValues } from '../../constant/convert-to-installment-form-schema.constant';
-
 interface Props {
     readonly operatedAt: Date;
+    readonly installmentCount: number;
 }
 
-const MONTH_LABELS_LIMIT = 6;
-const POINTS_LIMIT = 36;
-const HALF_PERCENT = 50;
+const MONTHLY_POINTS_LIMIT = 6;
 
-export const InstallmentTimeline = ({ operatedAt }: Props) => {
+export const InstallmentTimeline = ({ operatedAt, installmentCount }: Props) => {
     const { t } = useLingui();
-    const { intl } = useI18nContext();
-    const { formatMonthAndYear } = useFormatDate();
-    const { control } = useFormContext<ConvertToInstallmentFormValues>();
-    const installmentCount = useWatch({ control, name: 'installmentCount' });
+    const { formatShortMonth, formatMonthAndYear, formatDayAndMonthAndYear } = useFormatDate();
 
-    const pointCount = Math.min(installmentCount, POINTS_LIMIT);
-    const paymentDates = Array.from({ length: pointCount }, (_, index) => addMonths(operatedAt, index));
-    const firstPaymentLabel = formatMonthAndYear(operatedAt);
-    const lastPaymentLabel = formatMonthAndYear(addMonths(operatedAt, installmentCount - 1));
-    const trackInset = `${HALF_PERCENT / pointCount}%` as const;
-    const trackStyle = { left: trackInset, right: trackInset };
-    const hasMonthLabels = installmentCount <= MONTH_LABELS_LIMIT;
+    const isMonthly = installmentCount <= MONTHLY_POINTS_LIMIT;
+    const lastOffset = installmentCount - 1;
+    const isYearCrossed = addMonths(operatedAt, lastOffset).getFullYear() !== operatedAt.getFullYear();
+    const points = (isMonthly ? Array.from({ length: installmentCount }, (_, offset) => offset) : [0, lastOffset]).map(offset => {
+        const formatPoint = isYearCrossed && (offset === 0 || offset === lastOffset) ? formatMonthAndYear : formatShortMonth;
+
+        return {
+            key: offset === lastOffset ? 'end' : String(offset),
+            label: formatPoint(addMonths(operatedAt, offset)),
+            isPaid: offset === 0
+        };
+    });
+    const nextPaymentLabel = formatDayAndMonthAndYear(addMonths(operatedAt, 1));
+    const finalPaymentLabel = formatDayAndMonthAndYear(addMonths(operatedAt, lastOffset));
+    const accessibilityLabel = t({
+        message: plural(installmentCount, {
+            one: `# monthly payment until ${finalPaymentLabel}, the first one is already paid, next on ${nextPaymentLabel}`,
+            other: `# monthly payments until ${finalPaymentLabel}, the first one is already paid, next on ${nextPaymentLabel}`
+        })
+    });
 
     return (
-        <View
-            className="gap-y-sm"
-            accessible
-            accessibilityLabel={t`Payments from ${firstPaymentLabel} to ${lastPaymentLabel}`}
-            testID={ConvertToInstallmentModalSelector.Timeline}
-        >
-            <View className="h-2 flex-row">
-                <View className="absolute top-[3px] h-px bg-secondary-corner" style={trackStyle} />
-                {paymentDates.map((paymentDate, index) => (
-                    <InstallmentTimelinePoint key={paymentDate.getTime()} isPaid={index === 0} />
+        <View className="gap-y-md" accessible accessibilityLabel={accessibilityLabel} testID={ConvertToInstallmentModalSelector.Timeline}>
+            <View className="flex-row justify-between" accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+                <View className="absolute inset-x-1/12 top-[4px] h-0.5 rounded-full bg-secondary-corner" />
+                {points.map(point => (
+                    <InstallmentTimelinePoint key={point.key} label={point.label} isPaid={point.isPaid} />
                 ))}
             </View>
-            {hasMonthLabels ? (
-                <View className="flex-row">
-                    {paymentDates.map(paymentDate => (
-                        <Text
-                            key={paymentDate.getTime()}
-                            className="flex-1 text-center text-xs text-secondary-foreground"
-                            numberOfLines={1}
-                        >
-                            {intl.formatDate(paymentDate, { month: 'short' })}
-                        </Text>
-                    ))}
-                </View>
-            ) : (
-                <View className="flex-row justify-between">
-                    <Text className="text-xs text-secondary-foreground">{firstPaymentLabel}</Text>
-                    <Text className="text-xs text-secondary-foreground">{lastPaymentLabel}</Text>
-                </View>
-            )}
+            <Text className="text-center text-sm text-secondary-foreground tabular-nums">
+                <Trans>Next payment {nextPaymentLabel}</Trans>
+            </Text>
         </View>
     );
 };

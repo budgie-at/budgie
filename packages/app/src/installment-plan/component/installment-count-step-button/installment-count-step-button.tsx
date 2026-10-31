@@ -1,36 +1,50 @@
 import { cva } from 'class-variance-authority';
+import { Pressable } from 'react-native';
 
-import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/component/icon/icon';
+import { ScaledIcon } from '../../../@generic/component/scaled-icon/scaled-icon';
+import { useVibration } from '../../../@generic/hook/use-vibration.hook';
+import { MAX_INSTALLMENT_COUNT } from '../../constant/convert-to-installment-form-schema.constant';
 
 import type { UserIconNameEnum } from '@budgie/contracts';
 
 interface Props {
     readonly icon: UserIconNameEnum;
-    readonly isDisabled: boolean;
+    readonly count: number;
+    readonly delta: number;
+    readonly minimumCount: number;
     readonly accessibilityLabel: string;
-    readonly onPress: () => void;
+    readonly onSelect: (count: number) => void;
     readonly testID: string;
 }
 
-const ICON_SIZE = 20;
-
-const buttonVariants = cva('size-11 items-center justify-center rounded-full bg-primary-reverse', {
-    variants: {
-        isDisabled: {
-            true: 'opacity-40',
-            false: 'active:scale-xs'
+const buttonVariants = cva(
+    'min-h-11 min-w-11 items-center justify-center rounded-full border border-ghost-corner p-md bg-primary-reverse shadow-md dark:bg-surface-separator',
+    {
+        variants: {
+            isDisabled: {
+                true: 'opacity-40',
+                false: 'active:scale-s'
+            }
         }
     }
-});
+);
 
-export const InstallmentCountStepButton = ({ icon, isDisabled, accessibilityLabel, onPress, testID }: Props) => {
+export const InstallmentCountStepButton = (props: Props) => {
+    const { icon, count, delta, minimumCount, accessibilityLabel, onSelect, testID } = props;
+    const [, , hapticSelection] = useVibration();
+    const targetCount = count + delta;
+    const isDisabled = targetCount < minimumCount || targetCount > MAX_INSTALLMENT_COUNT;
     const accessibilityState = { disabled: isDisabled };
 
+    const handlePress = () => {
+        hapticSelection();
+        onSelect(targetCount);
+    };
+
     return (
-        <HapticPressable
+        <Pressable
             className={buttonVariants({ isDisabled })}
-            onPress={onPress}
+            onPress={handlePress}
             disabled={isDisabled}
             accessibilityRole="button"
             accessibilityLabel={accessibilityLabel}
@@ -38,7 +52,7 @@ export const InstallmentCountStepButton = ({ icon, isDisabled, accessibilityLabe
             hitSlop={8}
             testID={testID}
         >
-            <Icon icon={icon} size={ICON_SIZE} className="text-primary" />
-        </HapticPressable>
+            <ScaledIcon icon={icon} size={20} className="text-primary" />
+        </Pressable>
     );
 };

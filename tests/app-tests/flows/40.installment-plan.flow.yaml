@@ -72,7 +72,7 @@ appId: ${APP_ID}
       text: '.*90.*'
 - assertVisible:
       id: 'ConvertToInstallment.PartsLabel'
-      text: '3 × .*30.*'
+      text: '3 payments in total, .*30.*'
 
 - tapOn:
       id: 'ConvertToInstallment.CreateButton'
