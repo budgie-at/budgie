@@ -10,6 +10,7 @@ import { BudgetFundRowStatus } from '../budget-fund-row-status/budget-fund-row-s
 import { BudgetLimitBar } from '../budget-limit-bar/budget-limit-bar';
 import { BudgetListRow } from '../budget-list-row/budget-list-row';
 import { BudgetNamedProgressRowHeader } from '../budget-named-progress-row-header/budget-named-progress-row-header';
+import { BudgetRowChevron } from '../budget-row-chevron/budget-row-chevron';
 
 import type { BudgetEntityInterface, BudgetSinkingFundEntityInterface } from '@budgie/contracts';
 
@@ -38,6 +39,7 @@ export const BudgetFundRow = ({ fund, budget, currencySymbol }: Props) => {
                 amount={fund.fundedAmount}
                 limit={fund.targetAmount}
                 currencySymbol={currencySymbol}
+                trailing={<BudgetRowChevron />}
             />
             <BudgetLimitBar
                 spent={fund.fundedAmount}

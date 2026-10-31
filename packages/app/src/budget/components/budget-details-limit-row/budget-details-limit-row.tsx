@@ -1,17 +1,16 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/component/icon/icon';
 import { BUDGET_PACE_VARIANT } from '../../constant/budget-pace-variant.constant';
 import { useBudgetHighlightContext } from '../../context/budget-highlight.context';
 import { useBudgetLimitAccessibility } from '../../hooks/use-budget-limit-accessibility.hook';
 import { BudgetCategoryForecast } from '../budget-category-forecast/budget-category-forecast';
 import { BudgetLimitBar } from '../budget-limit-bar/budget-limit-bar';
 import { BudgetLimitRow } from '../budget-limit-row/budget-limit-row';
+import { BudgetRowChevron } from '../budget-row-chevron/budget-row-chevron';
 import { BudgetRowHighlight } from '../budget-row-highlight/budget-row-highlight';
 
 import type { BudgetDetailsRowTestIDsInterface } from '../../interface/budget-details-row-test-ids.interface';
@@ -50,29 +49,27 @@ export const BudgetDetailsLimitRow = (props: Props) => {
                 accessibilityLabel={accessibilityLabel}
                 accessibilityRole="button"
                 accessibilityValue={accessibilityValue}
-                className="min-h-[44px] flex-row items-center gap-x-md py-xs active:opacity-70"
+                className="min-h-[44px] justify-center py-xs active:opacity-70"
                 onPress={onPress}
             >
-                <View className="flex-1">
-                    <BudgetLimitRow
-                        title={title}
-                        carriedAmount={carriedAmount}
+                <BudgetLimitRow
+                    title={title}
+                    carriedAmount={carriedAmount}
+                    spent={scope.spent}
+                    limit={scope.limit}
+                    currencySymbol={currencySymbol}
+                    spentTestID={testIDs.spent}
+                    trailing={<BudgetRowChevron />}
+                >
+                    <BudgetLimitBar
                         spent={scope.spent}
                         limit={scope.limit}
-                        currencySymbol={currencySymbol}
-                        spentTestID={testIDs.spent}
-                    >
-                        <BudgetLimitBar
-                            spent={scope.spent}
-                            limit={scope.limit}
-                            tone={BUDGET_PACE_VARIANT[scope.status]}
-                            elapsedFraction={scope.elapsedFraction}
-                            staggerIndex={staggerIndex}
-                        />
-                        {isHighlightTarget(hint) ? null : <BudgetCategoryForecast scope={scope} currencySymbol={currencySymbol} />}
-                    </BudgetLimitRow>
-                </View>
-                <Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />
+                        tone={BUDGET_PACE_VARIANT[scope.status]}
+                        elapsedFraction={scope.elapsedFraction}
+                        staggerIndex={staggerIndex}
+                    />
+                    {isHighlightTarget(hint) ? null : <BudgetCategoryForecast scope={scope} currencySymbol={currencySymbol} />}
+                </BudgetLimitRow>
             </HapticPressable>
             <View collapsable={false} nativeID={testIDs.row} pointerEvents="none" style={StyleSheet.absoluteFill} testID={testIDs.row} />
         </View>
