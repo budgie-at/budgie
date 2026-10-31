@@ -48,7 +48,7 @@ export const BudgetFundForm = ({ budget, editingId }: Props) => {
     return (
         <FormProvider {...form}>
             <ScrollView
-                className="flex-1 border-t-hairline border-secondary-corner bg-primary-reverse"
+                className="flex-1 bg-sheet-surface"
                 contentContainerClassName="px-5xl pb-safe-or-[16px]"
                 keyboardShouldPersistTaps="handled"
                 keyboardDismissMode="interactive"

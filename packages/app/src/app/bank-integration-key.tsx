@@ -62,7 +62,7 @@ export default function BankIntegrationKeyModal() {
         );
 
     return (
-        <View className="bg-primary-reverse">
+        <View className="bg-sheet-surface">
             <FormsheetHeader size="md" title={t`Monobank API key`} description={t`Paste the key from api.monobank.ua`} />
             <View className="px-3xl gap-y-md">
                 <FormItem error={errorMessage}>

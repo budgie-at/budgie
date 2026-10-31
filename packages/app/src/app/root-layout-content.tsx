@@ -114,7 +114,7 @@ const handleAppStateChange = (isActive: boolean): void => {
 // eslint-disable-next-line max-lines-per-function -- Layout component requires many lines
 export const RootLayoutContent = () => {
     const databaseMigrationStatus = useDatabaseMigration();
-    const [sheetSurface, groupedSheetSurface] = useCSSVariable(['--color-primary-reverse', '--color-grouped-surface']);
+    const [sheetSurface, groupedSheetSurface] = useCSSVariable(['--color-sheet-surface', '--color-grouped-surface']);
     const sheetOptions = fitToContentsSheetOptions(sheetSurface);
 
     useAppInitialization(databaseMigrationStatus === DatabaseMigrationStatusEnum.MIGRATED);
