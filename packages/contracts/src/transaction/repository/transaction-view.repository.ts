@@ -51,6 +51,7 @@ export class TransactionViewRepository extends Context.Service<TransactionViewRe
 
         const buildSimilarStatsSql = (query: SimilarTransactionStatsQueryInterface): string => {
             const conditions = [
+                't.id != ?',
                 't.type = ?',
                 't.deleted_at IS NULL',
                 't.consolidation_parent_transaction_id IS NULL',
@@ -58,7 +59,7 @@ export class TransactionViewRepository extends Context.Service<TransactionViewRe
                 'te.original_transaction_id IS NULL',
                 'te.account_id = ?',
                 't.operated_at >= ?',
-                't.operated_at <= ?',
+                't.operated_at < ?',
                 ...buildSimilarIdentityConditions(query)
             ];
 
@@ -90,7 +91,7 @@ export class TransactionViewRepository extends Context.Service<TransactionViewRe
         const buildSimilarStatsParams = (query: SimilarTransactionStatsQueryInterface): (number | string)[] => {
             const operatedAtSeconds = Math.floor(query.operatedAt.getTime() / 1000);
             const sinceSeconds = Math.floor(getSimilarStatsSinceDate(query).getTime() / 1000);
-            const params: (number | string)[] = [query.type, query.accountId, sinceSeconds, operatedAtSeconds];
+            const params: (number | string)[] = [query.transactionId, query.type, query.accountId, sinceSeconds, operatedAtSeconds];
 
             if (isNotEmptyString(query.title)) {
                 params.push(query.title);

@@ -1,6 +1,7 @@
 import type { TransactionTypeEnum } from '../enum/transaction-type.enum';
 
 export interface SimilarTransactionStatsQueryInterface {
+    readonly transactionId: number;
     readonly type: TransactionTypeEnum;
     readonly operatedAt: Date;
     readonly title: string;
