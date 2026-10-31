@@ -22,6 +22,7 @@ import type { ReactNode } from 'react';
 
 interface Props {
     readonly showTypeFilter?: boolean;
+    readonly showDateFilter?: boolean;
     readonly accountId: number | null;
     readonly isClearAllVisible: boolean;
     readonly filters: TransactionFilterInterface;
@@ -29,7 +30,8 @@ interface Props {
     readonly leading?: ReactNode;
 }
 
-export const TransactionFilters = ({ filters, onChange, accountId, showTypeFilter = true, isClearAllVisible, leading }: Props) => {
+export const TransactionFilters = (props: Props) => {
+    const { filters, onChange, accountId, showTypeFilter = true, showDateFilter = true, isClearAllVisible, leading } = props;
     const { t } = useLingui();
     const [openTransactionAccountFilter] = useTransactionAccountFilterModal();
     const [openTransactionCategoryFilter] = useTransactionCategoryFilterModal();
@@ -44,7 +46,12 @@ export const TransactionFilters = ({ filters, onChange, accountId, showTypeFilte
             onChange(prev => ({ ...prev, [key]: value }));
         };
 
-    const handleClear = () => void onChange({ ...DEFAULT_TRANSACTION_FILTER, accountIds: isDefined(accountId) ? [accountId] : null });
+    const handleClear = () =>
+        void onChange({
+            ...DEFAULT_TRANSACTION_FILTER,
+            accountIds: isDefined(accountId) ? [accountId] : null,
+            ...(!showDateFilter && { date: filters.date })
+        });
 
     return (
         <View className="-mx-7xl -my-[6px]">
@@ -68,7 +75,7 @@ export const TransactionFilters = ({ filters, onChange, accountId, showTypeFilte
 
                 {leading}
 
-                <DateFilter value={filters.date} onChange={createFilterHandler('date')} />
+                {showDateFilter ? <DateFilter value={filters.date} onChange={createFilterHandler('date')} /> : null}
                 {showTypeFilter ? <TransactionTypeFilter value={filters.types} onChange={createFilterHandler('types')} /> : null}
                 <TransactionAmountFilter value={filters.amount} onChange={createFilterHandler('amount')} />
                 <TransactionIdsFilterChip

@@ -1,11 +1,20 @@
+import { DEFAULT_TRANSACTION_FILTER, DatePeriodEnum, TransactionFilterInterface } from '@budgie/contracts';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { router, useLocalSearchParams } from 'expo-router';
-import { View } from 'react-native';
+import { useState } from 'react';
+import { Text, View } from 'react-native';
 import { GestureDetector } from 'react-native-gesture-handler';
 
 import { isString } from '@rnw-community/shared';
 
-import { AnalyticsPageHeader } from '../../@generic/component/analytics-page-header/analytics-page-header';
+import { AnalyticsSegmentedControl } from '../../@generic/component/analytics-segmented-control/analytics-segmented-control';
+import { CollapsibleChromePage } from '../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
+import { GroupedSurface } from '../../@generic/component/grouped-surface/grouped-surface';
+import { MenuSpacer } from '../../@generic/component/menu-spacer/menu-spacer';
+import { MAX_FONT_SIZE_MULTIPLIER } from '../../@generic/constant/max-font-size-multiplier.constant';
+import { getDateFilterByPeriod } from '../../@generic/utils/date/get-date-filter-by-period.util';
 import { tabSwipeGesture } from '../../@generic/utils/tab-swipe-gesture.util';
+import { useFormatDateRange } from '../../i18n/hook/use-format-date-range.hook';
 import { StatisticsContent } from '../../transaction/components/statistics-content/statistics-content';
 
 import { AnalyticsPageSelector } from './analytics-page.selector';
@@ -20,6 +29,13 @@ const isAnalyticsTab = (value: unknown): value is AnalyticsTabType => isString(v
 export default function AnalyticsPage() {
     const { tab } = useLocalSearchParams<{ tab?: string }>();
 
+    const { t } = useLingui();
+    const formatDateRange = useFormatDateRange();
+    const [filters, setFilters] = useState<TransactionFilterInterface>({
+        ...DEFAULT_TRANSACTION_FILTER,
+        date: getDateFilterByPeriod(DatePeriodEnum.THIS_MONTH)
+    });
+
     const activeTab = isAnalyticsTab(tab) ? tab : DEFAULT_ANALYTICS_TAB;
 
     const handleChangeTab = (nextTab: AnalyticsTabType) => {
@@ -27,18 +43,44 @@ export default function AnalyticsPage() {
     };
 
     const swipeGesture = tabSwipeGesture({ tabs: TABS, activeTab, onChangeTab: handleChangeTab });
+    const tabTitles = { categories: t`Categories`, tags: t`Tags`, runway: t`Runway` };
+    const periodLabel = formatDateRange(filters.date, true);
+    const compactTitle = activeTab === 'runway' ? tabTitles.runway : `${tabTitles[activeTab]} · ${periodLabel}`;
 
     return (
-        <View className="flex-1" testID={AnalyticsPageSelector.Container}>
+        <GroupedSurface testID={AnalyticsPageSelector.Container}>
             <GestureDetector gesture={swipeGesture}>
                 <View className="flex-1">
-                    <StatisticsContent activeTab={activeTab} />
+                    <CollapsibleChromePage
+                        largeTitle={
+                            <Text
+                                accessibilityRole="header"
+                                maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
+                                className="text-3xl font-semibold text-primary"
+                            >
+                                <Trans>Analytics</Trans>
+                            </Text>
+                        }
+                        smallTitle={
+                            <Text
+                                numberOfLines={1}
+                                maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
+                                className="text-center text-lg font-semibold text-primary"
+                            >
+                                {compactTitle}
+                            </Text>
+                        }
+                    >
+                        <View className="gap-y-3xl">
+                            <AnalyticsSegmentedControl activeTab={activeTab} onChangeTab={handleChangeTab} />
+
+                            <StatisticsContent activeTab={activeTab} filters={filters} onChangeFilters={setFilters} />
+                        </View>
+
+                        <MenuSpacer />
+                    </CollapsibleChromePage>
                 </View>
             </GestureDetector>
-
-            <View className="absolute top-0 right-0 left-0 z-10 bg-primary-reverse pt-safe" pointerEvents="box-none">
-                <AnalyticsPageHeader activeTab={activeTab} onChangeTab={handleChangeTab} />
-            </View>
-        </View>
+        </GroupedSurface>
     );
 }

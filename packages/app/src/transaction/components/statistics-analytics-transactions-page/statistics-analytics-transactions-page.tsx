@@ -1,9 +1,9 @@
-import { type StatisticsFilterInterface, TransactionTypeEnum } from '@budgie/contracts';
-import { useRouter } from 'expo-router';
+import { DEFAULT_TRANSACTION_FILTER, type StatisticsFilterInterface, TransactionTypeEnum } from '@budgie/contracts';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
+import { useFormatDateRange } from '../../../i18n/hook/use-format-date-range.hook';
 import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query';
 import { UNTAGGED_TAG_ID_PARAM } from '../../constant/untagged-tag-id-param.constant';
 import { StatisticsCategoryIdsContext } from '../../context/statistics-category-ids.context';
@@ -12,7 +12,11 @@ import { TransactionFilterPageHeaderModeEnum } from '../../enum/transaction-filt
 import { useGetStatisticsTransactionsQuery } from '../../query/use-get-statistics-transactions.query';
 import { buildUncategorizedFilters } from '../../utils/build-uncategorized-filters.util';
 import { getSingleAccountId } from '../../utils/get-single-account-id.util';
+import { getStatisticsDrillDownEntity } from '../../utils/get-statistics-drill-down-entity.util';
+import { parseRouteDateRange } from '../../utils/parse-route-date-range.util';
 import { AnalyticsTransactionsPageContent } from '../analytics-transactions-page-content/analytics-transactions-page-content';
+import { StatisticsDrillDownEmptyState } from '../statistics-drill-down-empty-state/statistics-drill-down-empty-state';
+import { StatisticsDrillDownSummary } from '../statistics-drill-down-summary/statistics-drill-down-summary';
 
 import type { AnalyticsTransactionsRouteParamsInterface } from '../../interface/analytics-transactions-route-params.interface';
 
@@ -55,10 +59,7 @@ const buildFilters = (params: AnalyticsTransactionsRouteParamsInterface): Statis
 
     return {
         type: params.type === TransactionTypeEnum.INCOME || params.type === TransactionTypeEnum.EXPENSE ? params.type : null,
-        date: {
-            from: isDefined(params.startDate) ? new Date(params.startDate) : null,
-            to: isDefined(params.endDate) ? new Date(params.endDate) : null
-        },
+        date: parseRouteDateRange(params.startDate, params.endDate),
         categoryIds: buildCategoryIds(params),
         excludedCategoryIds: params.excludedCategoryIds ?? null,
         tagIds: buildTagIds(params),
@@ -85,33 +86,48 @@ const getHeaderMode = (params: AnalyticsTransactionsRouteParamsInterface): Trans
 };
 
 export const StatisticsAnalyticsTransactionsPage = (params: AnalyticsTransactionsRouteParamsInterface) => {
-    const router = useRouter();
     const filters = buildFilters(params);
 
     const { category } = useGetCategoryByIdQuery(isDefined(params.categoryId) ? Number(params.categoryId) : 0);
     const tagIdsForLookup = isUntaggedNav(params) || !isDefined(params.tagId) ? [] : [Number(params.tagId)];
     const { tags } = useGetTagByIdsQuery(tagIdsForLookup);
     const { sections, loadMore, isLoading } = useGetStatisticsTransactionsQuery(filters);
-
-    const handleGoBack = () => void router.back();
+    const formatDateRange = useFormatDateRange();
 
     const selectedTag = tags?.[0] ?? null;
+    const hasFiltersSelected = isNotEmptyArray(filters.accountIds) || isDefined(filters.amount);
+    const drillDownEntity = getStatisticsDrillDownEntity(params);
+    const summaryType = params.type === TransactionTypeEnum.INCOME ? TransactionTypeEnum.INCOME : TransactionTypeEnum.EXPENSE;
+    const summaryFilters = { ...DEFAULT_TRANSACTION_FILTER, date: filters.date, accountIds: filters.accountIds, amount: filters.amount };
+    const summary = isDefined(drillDownEntity) ? (
+        <StatisticsDrillDownSummary
+            kind={drillDownEntity.kind}
+            entityId={drillDownEntity.entityId}
+            type={summaryType}
+            filters={summaryFilters}
+        />
+    ) : null;
     const headerProps = {
         category,
         tag: selectedTag,
         type: params.type,
-        startDate: params.startDate,
-        endDate: params.endDate,
-        mode: getHeaderMode(params),
-        onGoBack: handleGoBack
+        date: filters.date,
+        mode: getHeaderMode(params)
     };
 
     return (
         <StatisticsCategoryIdsContext.Provider value={filters.categoryIds}>
             <AnalyticsTransactionsPageContent
                 headerProps={headerProps}
+                summary={summary}
                 sections={sections}
-                isLoading={isLoading}
+                emptyState={
+                    <StatisticsDrillDownEmptyState
+                        isLoading={isLoading}
+                        hasFiltersSelected={hasFiltersSelected}
+                        periodLabel={formatDateRange(filters.date)}
+                    />
+                }
                 onLoadMore={loadMore}
                 accountId={getSingleAccountId(filters.accountIds)}
             />

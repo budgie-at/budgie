@@ -1,11 +1,13 @@
 /* eslint-disable max-lines -- File owns the single multi-stage statistics SQL aggregation pipeline that must stay together */
-import { SQL, and, desc, eq, getTableColumns, inArray, isNotNull, isNull, ne, notInArray, or, sql } from 'drizzle-orm';
+import { SQL, and, desc, eq, getTableColumns, gt, gte, inArray, isNotNull, isNull, lt, lte, ne, notInArray, or, sql } from 'drizzle-orm';
+import { alias } from 'drizzle-orm/sqlite-core';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { PRECISION } from '../../@generic/constant/precision.constant';
 import { LanguageEnum } from '../../@generic/enum/language.enum';
 import { transactionFilters } from '../../@generic/repository/base-transaction-filter.repository';
 import { Db } from '../../@generic/service/db.service';
@@ -85,14 +87,19 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
             ${getInverseHistoricalExchangeRateSql(defaultInstrumentId, instrumentIdRef)}
         )`;
 
+        const minorUnitMicroUnits = PRECISION / 100;
+
+        const roundToMinorUnitSql = (value: SQL) =>
+            sql<number>`(CAST(ROUND((${value}) * 1.0 / ${minorUnitMicroUnits}) AS INTEGER) * ${minorUnitMicroUnits})`;
+
         const buildEntryBaseValueSql = (defaultInstrumentId: number) =>
-            sql<number>`CASE
+            roundToMinorUnitSql(sql`CASE
             WHEN ${TransactionEntryEntityTable.baseInstrumentId} = ${defaultInstrumentId}
             THEN ${TransactionEntryEntityTable.baseAmount}
             WHEN ${AccountEntityTable.instrumentId} = ${defaultInstrumentId}
             THEN ${TransactionEntryEntityTable.amount}
             ELSE ROUND(${TransactionEntryEntityTable.amount} * ${buildConversionRateSql(defaultInstrumentId, sql.raw('accounts.instrument_id'))})
-        END`;
+        END`);
 
         const buildRefundTotalBaseAmountSql = (defaultInstrumentId: number) =>
             sql<number>`COALESCE((
@@ -125,14 +132,14 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
         ), 0)`;
 
         const buildRefundAdjustedCreditBaseAmountSql = (defaultInstrumentId: number) =>
-            sql<number>`
+            roundToMinorUnitSql(sql`
             ${buildEntryBaseValueSql(defaultInstrumentId)}
             - (
                 ${buildRefundTotalBaseAmountSql(defaultInstrumentId)}
                 * ${buildEntryBaseValueSql(defaultInstrumentId)}
                 / NULLIF(${buildLedgerCreditBaseAmountTotalSql(defaultInstrumentId)}, 0)
             )
-        `;
+        `);
 
         const buildRefundAwareBaseAmountSql = (defaultInstrumentId: number) =>
             sql<number>`COALESCE(SUM(CASE
@@ -145,36 +152,41 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
         const buildLedgerEntriesQuery = <TSelection extends SelectedFields>(db: DB, selectFields: TSelection) =>
             db.select(selectFields).from(TransactionEntryEntityTable);
 
+        const buildBreakdownQuery = <TSelection extends SelectedFields>(db: DB, selectFields: TSelection, amountSql: SQL<number>) =>
+            buildLedgerEntriesQuery(db, {
+                ...selectFields,
+                amount: amountSql.as('amount'),
+                transactionCount: sql<number>`COUNT(DISTINCT ${TransactionEntryEntityTable.transactionId})`.as('transaction_count')
+            })
+                .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+                .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id));
+
         const buildCategoryBreakdownQuery = (db: DB, defaultInstrumentId: number, language: LanguageEnum, where: SQL | undefined) => {
             const amountSql = buildRefundAwareBaseAmountSql(defaultInstrumentId);
             const categoryTitleSql = sql<string>`COALESCE(${DefaultCategoryTranslationEntityTable.title}, ${CategoryEntityTable.title})`;
 
-            return buildLedgerEntriesQuery(db, {
-                category: { ...getTableColumns(CategoryEntityTable), title: categoryTitleSql.as('title') },
-                amount: amountSql.as('amount')
-            })
-                .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-                .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
+            return buildBreakdownQuery(
+                db,
+                { category: { ...getTableColumns(CategoryEntityTable), title: categoryTitleSql.as('title') } },
+                amountSql
+            )
                 .leftJoin(CategoryEntityTable, eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id))
                 .leftJoin(DefaultCategoryTranslationEntityTable, buildCategoryTranslationJoinCondition(language))
                 .where(where)
                 .groupBy(TransactionEntryEntityTable.categoryId, categoryTitleSql)
+                .having(ne(amountSql, 0))
                 .orderBy(desc(amountSql));
         };
 
         const buildTagBreakdownQuery = (db: DB, defaultInstrumentId: number, where: SQL | undefined) => {
             const amountSql = buildRefundAwareBaseAmountSql(defaultInstrumentId);
 
-            return buildLedgerEntriesQuery(db, {
-                tag: TagEntityTable,
-                amount: amountSql.as('amount')
-            })
-                .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-                .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
+            return buildBreakdownQuery(db, { tag: TagEntityTable }, amountSql)
                 .leftJoin(TransactionTagsEntityTable, eq(TransactionEntityTable.id, TransactionTagsEntityTable.transactionId))
                 .leftJoin(TagEntityTable, eq(TransactionTagsEntityTable.tagId, TagEntityTable.id))
                 .where(where)
                 .groupBy(TagEntityTable.id)
+                .having(ne(amountSql, 0))
                 .orderBy(desc(amountSql));
         };
 
@@ -406,6 +418,35 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
                         )
                     )
                 ),
+
+            getNettedRefundsQuery: (filters: TransactionFilterInterface, defaultInstrumentId: number) =>
+                Db.query(db => {
+                    const refundTransaction = alias(TransactionEntityTable, 'refund_transaction');
+
+                    return db
+                        .select({
+                            amount: sql<number>`COALESCE(SUM(${buildEntryBaseValueSql(defaultInstrumentId)}), 0)`.as('amount'),
+                            purchasedAt: sql<number | null>`MAX(${TransactionEntityTable.operatedAt})`.as('purchased_at')
+                        })
+                        .from(TransactionEntryEntityTable)
+                        .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+                        .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
+                        .innerJoin(refundTransaction, eq(TransactionEntryEntityTable.originalTransactionId, refundTransaction.id))
+                        .where(
+                            and(
+                                transactionFilters.buildFilterWhere({ ...filters, date: null }),
+                                eq(TransactionEntityTable.consolidationType, TransactionConsolidationTypeEnum.REFUND),
+                                eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.DEBIT),
+                                isNull(TransactionEntryEntityTable.deletedAt),
+                                ...(isDefined(filters.date?.from) ? [gte(refundTransaction.operatedAt, filters.date.from)] : []),
+                                ...(isDefined(filters.date?.to) ? [lte(refundTransaction.operatedAt, filters.date.to)] : []),
+                                or(
+                                    isDefined(filters.date?.from) ? lt(TransactionEntityTable.operatedAt, filters.date.from) : sql`0`,
+                                    isDefined(filters.date?.to) ? gt(TransactionEntityTable.operatedAt, filters.date.to) : sql`0`
+                                )
+                            )
+                        );
+                }),
 
             getIncomeTransactionsQuery: (filters: TransactionFilterInterface) =>
                 Db.query(db =>

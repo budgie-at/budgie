@@ -3,5 +3,6 @@ const normalizePart = (value: number | string) => String(value).replaceAll(/[^a-
 export const CategoryStatisticsCardSelector = {
     Card: (title: string) => `CategoryStatisticsCard.${normalizePart(title)}` as const,
     Uncategorized: 'CategoryStatisticsCard.Uncategorized',
-    Amount: (title: string, amount: number) => `CategoryStatisticsCard.Amount.${normalizePart(title)}.${normalizePart(amount)}` as const
+    Amount: (title: string, amount: number) => `CategoryStatisticsCard.Amount.${normalizePart(title)}.${normalizePart(amount)}` as const,
+    Toggle: (type: string) => `TagStatisticsCard.Toggle.${type}` as const
 } as const;
