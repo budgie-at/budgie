@@ -458,8 +458,8 @@ msgid "{source} error · {message}"
 msgstr "Помилка {source} · {message}"
 
 #: src/runway/component/runway-history-spike-note/runway-history-spike-note.tsx
-msgid "{spikeLabel} had a one-off of {spikeAmount}. The estimate uses a typical month instead."
-msgstr "{spikeLabel}: разова витрата {spikeAmount}. Для оцінки взято типовий місяць."
+msgid "{spikeLabel} included a one-off of {spikeAmount}."
+msgstr "{spikeLabel}: разова витрата {spikeAmount}."
 
 #: src/transaction/components/transaction-split-field-icon/transaction-split-field-icon.tsx
 msgid "{splitEntryCount, plural, one {# item} other {# items}}"

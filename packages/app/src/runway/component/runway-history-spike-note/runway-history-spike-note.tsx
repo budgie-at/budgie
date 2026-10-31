@@ -20,7 +20,7 @@ export const RunwayHistorySpikeNote = ({ spikeLabel, expense }: Props) => {
             className="px-3xl text-[13px] tabular-nums text-secondary-foreground"
         >
             <Trans>
-                {spikeLabel} had a one-off of {spikeAmount}. The estimate uses a typical month instead.
+                {spikeLabel} included a one-off of {spikeAmount}.
             </Trans>
         </Text>
     );
