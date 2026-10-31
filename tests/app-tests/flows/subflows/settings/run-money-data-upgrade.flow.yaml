@@ -23,7 +23,7 @@ appId: ${APP_ID}
 - tapOn:
       id: 'SettingsPage.MoneyDataUpgradeCard'
 - extendedWaitUntil:
-      visible: 'Convert past amounts?'
+      visible: 'Convert past amounts\?'
       timeout: 10000
 - tapOn: 'Convert'
 - extendedWaitUntil:

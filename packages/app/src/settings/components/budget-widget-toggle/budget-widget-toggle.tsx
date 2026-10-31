@@ -12,12 +12,9 @@ export const BudgetWidgetToggle = () => {
     const isBudgetWidgetEnabled = useSetting('isBudgetWidgetEnabled');
     const handleChange = useSettingToggle('isBudgetWidgetEnabled');
 
-    const handlePress = () => handleChange(!isBudgetWidgetEnabled);
-
     return (
         <SettingsRow
             testID={SettingsPageSelector.BudgetWidgetCard}
-            onPress={handlePress}
             title={t`Show budget`}
             subtitle={t`Spending left below your balance`}
             icon={UserIconNameEnum.Gauge}

@@ -14,14 +14,10 @@ export const RunwaySettingsRows = () => {
     const handlePillChange = useSettingToggle('isRunwayPillEnabled');
     const handleCryptoChange = useSettingToggle('isRunwayCryptoIncluded');
 
-    const handlePillPress = () => handlePillChange(!isRunwayPillEnabled);
-    const handleCryptoPress = () => handleCryptoChange(!isRunwayCryptoIncluded);
-
     return (
         <>
             <SettingsRow
                 testID={SettingsPageSelector.RunwayPillCard}
-                onPress={handlePillPress}
                 title={t`Show runway`}
                 subtitle={t`Months left beside your balance`}
                 icon={UserIconNameEnum.Hourglass}
@@ -39,7 +35,6 @@ export const RunwaySettingsRows = () => {
             />
             <SettingsRow
                 testID={SettingsPageSelector.RunwayCryptoCard}
-                onPress={handleCryptoPress}
                 title={t`Include crypto`}
                 subtitle={t`In runway, at today's prices`}
                 icon={UserIconNameEnum.Bitcoin}

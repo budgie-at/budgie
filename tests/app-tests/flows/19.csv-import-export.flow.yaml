@@ -110,7 +110,7 @@ appId: ${APP_ID}
 
 - runFlow:
     when:
-      visible: 'Convert past amounts?'
+      visible: 'Convert past amounts\?'
     commands:
       - tapOn: 'Cancel'
       - waitForAnimationToEnd

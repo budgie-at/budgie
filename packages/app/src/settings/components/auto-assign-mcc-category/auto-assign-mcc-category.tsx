@@ -21,14 +21,11 @@ export const AutoAssignMccCategory = () => {
         );
     };
 
-    const handlePress = () => void handleToggle(!applyMccDefaultCategory);
-
     return (
         <SettingsRow
             title={t`Apply merchant categories`}
             subtitle={t`Only when a category is missing`}
             icon={UserIconNameEnum.Store}
-            onPress={handlePress}
             variant="ghost"
             right={
                 <ThemedSwitch

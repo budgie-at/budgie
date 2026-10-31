@@ -48,12 +48,9 @@ export const BudgetPushToggle = () => {
         );
     };
 
-    const handlePress = () => void handleChange(!isBudgetPushEnabled);
-
     return (
         <SettingsRow
             testID={SettingsPageSelector.BudgetPushCard}
-            onPress={handlePress}
             title={t`Budget alerts`}
             subtitle={t`Notify me near a limit`}
             icon={UserIconNameEnum.Bell}

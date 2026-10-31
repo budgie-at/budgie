@@ -22,8 +22,6 @@ export const ScreenshotProtectionRow = () => {
         );
     };
 
-    const handlePress = () => void handleToggle(!isScreenshotProtectionEnabled);
-
     return (
         <SettingsRow
             icon={UserIconNameEnum.ScanEye}
@@ -39,7 +37,6 @@ export const ScreenshotProtectionRow = () => {
                 />
             }
             testID={SettingsPageSelector.ScreenshotProtectionCard}
-            onPress={handlePress}
         />
     );
 };

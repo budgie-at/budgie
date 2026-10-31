@@ -29,8 +29,6 @@ export const PinManagementRows = () => {
         );
     };
 
-    const handleBiometricPress = () => void handleToggleBiometric(!isBiometricEnabled);
-
     return (
         <>
             {isDefined(biometricLabel) ? (
@@ -38,7 +36,6 @@ export const PinManagementRows = () => {
                     icon={UserIconNameEnum.ScanFace}
                     variant="ghost"
                     title={t`Unlock with ${biometricLabel}`}
-                    onPress={handleBiometricPress}
                     right={
                         <ThemedSwitch
                             testID={SettingsPageSelector.AppLockBiometricSwitch}
