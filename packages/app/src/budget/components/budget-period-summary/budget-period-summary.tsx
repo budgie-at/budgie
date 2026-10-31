@@ -14,6 +14,7 @@ import { useGetActiveBudgetQuery } from '../../query/use-get-active-budget.query
 import { useGetBudgetPeriodSnapshotQuery } from '../../query/use-get-budget-period-snapshot.query';
 import { BudgetPeriodSummaryCategoryRow } from '../budget-period-summary-category-row/budget-period-summary-category-row';
 import { BudgetPeriodSummaryLimitRow } from '../budget-period-summary-limit-row/budget-period-summary-limit-row';
+import { BudgetPeriodSummaryTotal } from '../budget-period-summary-total/budget-period-summary-total';
 
 interface Props {
     readonly snapshotId: number;
@@ -33,34 +34,30 @@ export const BudgetPeriodSummary = ({ snapshotId }: Props) => {
 
     const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
     const period = isDefined(budget) ? budget.period : BudgetPeriodEnum.MONTHLY;
-    const startLabel = formatMonthAndDay(snapshot.periodStart);
-    const endLabel = formatMonthAndDay(snapshot.periodEnd);
-    const dateRange = t`${startLabel} – ${endLabel}`;
-    const totalCarriedIn = snapshot.categories.reduce((total, category) => total + category.carriedIn, snapshot.otherCarriedIn);
+    const dateRange = `${formatMonthAndDay(snapshot.periodStart)} – ${formatMonthAndDay(snapshot.periodEnd)}`;
+    const totalLimit = snapshot.categories.reduce(
+        (total, category) => total + category.carriedIn,
+        snapshot.otherCarriedIn + snapshot.overallLimit
+    );
+    const estimateNote = snapshot.isReconstructed ? (
+        <Text className="text-xs text-secondary-foreground">{t`Estimated from your past transactions using your current limits.`}</Text>
+    ) : null;
 
     return (
         <>
             <FormsheetHeader size="md" title={formatFullPeriod(period, snapshot.periodStart, snapshot.periodEnd)} description={dateRange} />
 
-            <ScrollView contentContainerClassName="px-5xl pt-md gap-y-xl pb-safe-or-[16px]" showsVerticalScrollIndicator={false}>
-                {snapshot.isReconstructed ? (
-                    <Text className="text-secondary-foreground text-sm">
-                        {t`Estimated from your past transactions using your current limits.`}
-                    </Text>
-                ) : null}
+            <ScrollView contentContainerClassName="px-5xl pt-md gap-y-7xl pb-3xl" showsVerticalScrollIndicator={false}>
+                <BudgetPeriodSummaryTotal
+                    title={t(BUDGET_PERIOD_TITLE_LABEL[period])}
+                    spent={snapshot.overallSpent}
+                    limit={totalLimit}
+                    currencySymbol={currencySymbol}
+                    footnote={estimateNote}
+                />
 
                 <View className="gap-y-xl">
-                    <BudgetPeriodSummaryLimitRow
-                        title={t(BUDGET_PERIOD_TITLE_LABEL[period])}
-                        carriedAmount={totalCarriedIn}
-                        spent={snapshot.overallSpent}
-                        baseLimit={snapshot.overallLimit}
-                        currencySymbol={currencySymbol}
-                        testID={BudgetSelector.PeriodSummaryOverall}
-                        spentTestID={BudgetSelector.PeriodSummaryOverallSpentLabel}
-                    />
-
-                    <Text className="pt-xl text-md font-semibold text-primary" accessibilityRole="header">
+                    <Text className="text-md font-semibold text-primary" accessibilityRole="header">
                         {t`Categories`}
                     </Text>
 

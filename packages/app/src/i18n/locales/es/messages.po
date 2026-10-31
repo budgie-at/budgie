@@ -432,11 +432,11 @@ msgstr "{periodLabel} cerró con {amount} por debajo"
 msgid "{periodLabel}, spent {spentAmount} of {limitAmount}"
 msgstr "{periodLabel}, gastado {spentAmount} de {limitAmount}"
 
-#: src/budget/components/budget-forecast-chart/budget-forecast-chart.tsx
+#: src/budget/hooks/use-budget-forecast-labels.hook.ts
 msgid "{projectedAmount} · {gapAmount} over"
 msgstr "{projectedAmount} · {gapAmount} por encima"
 
-#: src/budget/components/budget-forecast-chart/budget-forecast-chart.tsx
+#: src/budget/hooks/use-budget-forecast-labels.hook.ts
 msgid "{projectedAmount} · {gapAmount} under"
 msgstr "{projectedAmount} · {gapAmount} por debajo"
 
@@ -528,10 +528,6 @@ msgstr "{spikeLabel} incluyó un gasto puntual de {spikeAmount}."
 msgid "{splitEntryCount, plural, one {# item} other {# items}}"
 msgstr "{splitEntryCount, plural, one {# elemento} other {# elementos}}"
 
-#: src/budget/components/budget-period-summary/budget-period-summary.tsx
-msgid "{startLabel} – {endLabel}"
-msgstr "{startLabel} – {endLabel}"
-
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "{statementAccountCount, plural, one {# account. Balances come from the statement.} other {# accounts. Balances come from the statement.}}"
 msgstr "{statementAccountCount, plural, one {# cuenta. Los saldos vienen del extracto.} other {# cuentas. Los saldos vienen del extracto.}}"
@@ -553,16 +549,16 @@ msgid "{title} is ahead of pace"
 msgstr "{title} va por delante del ritmo"
 
 #: src/budget/components/budget-pace-hint-line/budget-pace-hint-line.tsx
-msgid "{title} is running fast. Keep it under {perDayAmount}/day."
-msgstr "{title} va demasiado rápido. Mantenlo por debajo de {perDayAmount}/día."
-
-#: src/budget/components/budget-pace-hint-line/budget-pace-hint-line.tsx
-msgid "{title} is running fast. Keep it under <0>{perDayAmount}/day</0>."
-msgstr "{title} va demasiado rápido. Mantenlo por debajo de <0>{perDayAmount}/día</0>."
+msgid "{title} is running fast"
+msgstr "{title} va demasiado rápido"
 
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
 msgid "{title}, {protectedAmount} per month"
 msgstr "{title}, {protectedAmount} al mes"
+
+#: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
+msgid "{title}, rollover {currentLabel}. Double tap to change."
+msgstr "{title}, traspaso {currentLabel}. Toca dos veces para cambiar."
 
 #: src/budget/hooks/use-budget-limit-accessibility.hook.ts
 msgid "{title}, spent {spentAmount} of {limitAmount}, {statusLabel}"
@@ -811,6 +807,10 @@ msgstr "¿Activar cuenta?"
 msgid "Add"
 msgstr "Añadir"
 
+#: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
+msgid "Add a category limit"
+msgstr "Añadir un límite de categoría"
+
 #: src/account/component/create-account-screen/create-account-screen.tsx
 #: src/budget/constant/budget-save-blocker-label.constant.ts
 msgid "Add a name to continue"
@@ -819,10 +819,6 @@ msgstr "Añade un nombre para continuar"
 #: src/app/note-input.tsx
 msgid "Add a note..."
 msgstr "Agregar una nota..."
-
-#: src/budget/components/budget-category-limits-empty-state/budget-category-limits-empty-state.tsx
-msgid "Add a per-category cap"
-msgstr "Añadir un tope por categoría"
 
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "Add a PIN any time later"
@@ -847,10 +843,6 @@ msgstr "Añadir saldos más tarde"
 #: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
 msgid "Add Capture contactless payment and set Amount, Merchant and Card from the Shortcut Input."
 msgstr "Añade Capture contactless payment y asigna Importe, Comercio y Tarjeta desde la entrada del atajo."
-
-#: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
-msgid "Add category"
-msgstr "Añadir categoría"
 
 #: src/budget/components/budget-details-category-list/budget-details-category-list.tsx
 msgid "Add category limits"
@@ -2757,14 +2749,6 @@ msgstr "p. ej., préstamo a Alex"
 msgid "e.g. Main card"
 msgstr "p. ej., tarjeta principal"
 
-#: src/budget/hooks/use-budget-day-strip-labels.hook.ts
-msgid "Each day against the {allowanceLabel}/day plan. {safeLabel}/day from today keeps you on budget."
-msgstr "Cada día frente al plan de {allowanceLabel}/día. Con {safeLabel}/día desde hoy sigues dentro del presupuesto."
-
-#: src/budget/hooks/use-budget-day-strip-labels.hook.ts
-msgid "Each day against your {allowanceLabel} daily allowance"
-msgstr "Cada día frente a tu límite diario de {allowanceLabel}"
-
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "Each one becomes an account. Rename or remove them later."
 msgstr "Cada uno se convierte en una cuenta. Puedes renombrarlas o eliminarlas después."
@@ -3632,6 +3616,10 @@ msgstr "Huchas"
 msgid "Keep"
 msgstr "Conservar"
 
+#: src/budget/components/budget-pace-hint-line/budget-pace-hint-line.tsx
+msgid "Keep it under <0>{perDayAmount}/day</0>"
+msgstr "Mantente por debajo de <0>{perDayAmount}/día</0>"
+
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Keep only \"Enable Reading\" on — never allow trading or withdrawals"
 msgstr "Mantén activado solo \"Habilitar lectura\" — nunca permitas operaciones ni retiros"
@@ -3756,7 +3744,7 @@ msgstr "Menor que"
 msgid "Limit"
 msgstr "Límite"
 
-#: src/budget/components/budget-forecast-chart/budget-forecast-chart.tsx
+#: src/budget/hooks/use-budget-forecast-labels.hook.ts
 msgid "Limit {limitAmount}"
 msgstr "Límite {limitAmount}"
 
@@ -4232,10 +4220,6 @@ msgstr "No se encontraron categorías"
 msgid "No categories match your search"
 msgstr "Ninguna categoría coincide con tu búsqueda"
 
-#: src/budget/components/budget-category-limits-empty-state/budget-category-limits-empty-state.tsx
-msgid "No category limits yet"
-msgstr "Sin límites de categoría"
-
 #: src/app/contact-selector.tsx
 msgid "No contacts found"
 msgstr "No se encontraron contactos"
@@ -4505,14 +4489,6 @@ msgstr "Activado · PIN y {biometricLabel}"
 #: src/transaction/components/transaction-info-installment-terms/transaction-info-installment-terms.tsx
 msgid "On {nextDate} · Monthly"
 msgstr "El {nextDate} · Mensualmente"
-
-#: src/budget/components/budget-verdict-outlook/budget-verdict-outlook.tsx
-msgid "On pace to finish {differenceAmount} under."
-msgstr "Al ritmo actual terminarás {differenceAmount} por debajo del límite."
-
-#: src/budget/components/budget-verdict-outlook/budget-verdict-outlook.tsx
-msgid "On pace to go {differenceAmount} over."
-msgstr "Al ritmo actual te pasarás {differenceAmount} del límite."
 
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "On pace to run out by {runOutDate}. Keeping under {perDayAmount}/day keeps it on track."
@@ -4934,6 +4910,18 @@ msgstr "Los PIN no coinciden"
 msgid "PINs match"
 msgstr "Los PIN coinciden"
 
+#: src/budget/hooks/use-budget-day-strip-labels.hook.ts
+msgid "Plan {allowanceLabel}/day"
+msgstr "Plan {allowanceLabel}/día"
+
+#: src/budget/hooks/use-budget-day-strip-labels.hook.ts
+msgid "Plan {allowanceLabel}/day · {safeLabel}/day keeps you on track"
+msgstr "Plan {allowanceLabel}/día · con {safeLabel}/día vas bien"
+
+#: src/budget/hooks/use-budget-day-strip-labels.hook.ts
+msgid "Plan {allowanceLabel}/day · You can spend up to {safeLabel}/day"
+msgstr "Plan {allowanceLabel}/día · Puedes gastar hasta {safeLabel}/día"
+
 #: src/installment-plan/hook/use-open-convert-to-installment.hook.ts
 msgid "Plan created"
 msgstr "Plan creado"
@@ -5346,12 +5334,8 @@ msgid "Right now anyone who can unlock your phone can open Budgie. With a PIN, t
 msgstr "Ahora mismo, cualquiera que pueda desbloquear tu teléfono puede abrir Budgie. Con un PIN, el propio archivo se cifra y solo se abre con él."
 
 #: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
-msgid "Rollover, {currentLabel}. Double tap to change."
-msgstr "Traspaso, {currentLabel}. Toca dos veces para cambiar."
-
-#: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
-msgid "Rollover: {currentLabel}"
-msgstr "Traspaso: {currentLabel}"
+msgid "Rollover · {currentLabel}"
+msgstr "Traspaso · {currentLabel}"
 
 #: src/rule/hooks/use-rules-list-page-actions.hook.ts
 msgid "Rule"
@@ -6120,7 +6104,7 @@ msgstr "Etiquetar como {tagTitle}"
 msgid "Tag Name"
 msgstr "Nombre de la etiqueta"
 
-#: src/budget/components/budget-event-details/budget-event-details.tsx
+#: src/budget/components/budget-details-category-list/budget-details-category-list.tsx
 #: src/budget/components/budget-event-form/budget-event-form.tsx
 msgid "Tagged expenses also count in your main budget."
 msgstr "Los gastos con etiqueta también cuentan en tu presupuesto principal."
@@ -6437,6 +6421,10 @@ msgstr "La marca indica dónde deberían estar los ahorros hoy."
 #: src/budget/components/budget-details-category-list/budget-details-category-list.tsx
 msgid "Tick marks where spending should be by today."
 msgstr "La marca indica dónde debería estar el gasto hoy."
+
+#: src/budget/components/budget-verdict-header/budget-verdict-header.tsx
+msgid "Tight"
+msgstr "Ajustado"
 
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts

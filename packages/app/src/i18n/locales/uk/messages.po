@@ -432,11 +432,11 @@ msgstr "{periodLabel} завершено з {amount} під лімітом"
 msgid "{periodLabel}, spent {spentAmount} of {limitAmount}"
 msgstr "{periodLabel}, витрачено {spentAmount} із {limitAmount}"
 
-#: src/budget/components/budget-forecast-chart/budget-forecast-chart.tsx
+#: src/budget/hooks/use-budget-forecast-labels.hook.ts
 msgid "{projectedAmount} · {gapAmount} over"
 msgstr "{projectedAmount} · {gapAmount} понад"
 
-#: src/budget/components/budget-forecast-chart/budget-forecast-chart.tsx
+#: src/budget/hooks/use-budget-forecast-labels.hook.ts
 msgid "{projectedAmount} · {gapAmount} under"
 msgstr "{projectedAmount} · {gapAmount} менше"
 
@@ -528,10 +528,6 @@ msgstr "{spikeLabel}: разова витрата {spikeAmount}."
 msgid "{splitEntryCount, plural, one {# item} other {# items}}"
 msgstr "{splitEntryCount, plural, one {# елемент} few {# елементи} many {# елементів} other {# елемента}}"
 
-#: src/budget/components/budget-period-summary/budget-period-summary.tsx
-msgid "{startLabel} – {endLabel}"
-msgstr "{startLabel} – {endLabel}"
-
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "{statementAccountCount, plural, one {# account. Balances come from the statement.} other {# accounts. Balances come from the statement.}}"
 msgstr "{statementAccountCount, plural, one {# рахунок. Баланси взято з виписки.} few {# рахунки. Баланси взято з виписки.} many {# рахунків. Баланси взято з виписки.} other {# рахунків. Баланси взято з виписки.}}"
@@ -553,16 +549,16 @@ msgid "{title} is ahead of pace"
 msgstr "{title} випереджає темп"
 
 #: src/budget/components/budget-pace-hint-line/budget-pace-hint-line.tsx
-msgid "{title} is running fast. Keep it under {perDayAmount}/day."
-msgstr "{title} витрачається надто швидко. Не перевищуйте {perDayAmount}/день."
-
-#: src/budget/components/budget-pace-hint-line/budget-pace-hint-line.tsx
-msgid "{title} is running fast. Keep it under <0>{perDayAmount}/day</0>."
-msgstr "{title} витрачається надто швидко. Не перевищуйте <0>{perDayAmount}/день</0>."
+msgid "{title} is running fast"
+msgstr "{title} витрачається надто швидко"
 
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
 msgid "{title}, {protectedAmount} per month"
 msgstr "{title}, {protectedAmount} на місяць"
+
+#: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
+msgid "{title}, rollover {currentLabel}. Double tap to change."
+msgstr "{title}, перенесення {currentLabel}. Двічі торкніться, щоб змінити."
 
 #: src/budget/hooks/use-budget-limit-accessibility.hook.ts
 msgid "{title}, spent {spentAmount} of {limitAmount}, {statusLabel}"
@@ -811,6 +807,10 @@ msgstr "Активувати рахунок?"
 msgid "Add"
 msgstr "Додати"
 
+#: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
+msgid "Add a category limit"
+msgstr "Додати ліміт категорії"
+
 #: src/account/component/create-account-screen/create-account-screen.tsx
 #: src/budget/constant/budget-save-blocker-label.constant.ts
 msgid "Add a name to continue"
@@ -819,10 +819,6 @@ msgstr "Додайте назву, щоб продовжити"
 #: src/app/note-input.tsx
 msgid "Add a note..."
 msgstr "Додати нотатку..."
-
-#: src/budget/components/budget-category-limits-empty-state/budget-category-limits-empty-state.tsx
-msgid "Add a per-category cap"
-msgstr "Додати ліміт для категорії"
 
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "Add a PIN any time later"
@@ -847,10 +843,6 @@ msgstr "Додати баланси пізніше"
 #: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
 msgid "Add Capture contactless payment and set Amount, Merchant and Card from the Shortcut Input."
 msgstr "Додайте Capture contactless payment і задайте Суму, Продавця та Картку з вхідних даних швидкої команди."
-
-#: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
-msgid "Add category"
-msgstr "Додати категорію"
 
 #: src/budget/components/budget-details-category-list/budget-details-category-list.tsx
 msgid "Add category limits"
@@ -2757,14 +2749,6 @@ msgstr "напр. позика Олексі"
 msgid "e.g. Main card"
 msgstr "напр. основна картка"
 
-#: src/budget/hooks/use-budget-day-strip-labels.hook.ts
-msgid "Each day against the {allowanceLabel}/day plan. {safeLabel}/day from today keeps you on budget."
-msgstr "Кожен день проти плану {allowanceLabel}/день. {safeLabel}/день від сьогодні тримають вас у бюджеті."
-
-#: src/budget/hooks/use-budget-day-strip-labels.hook.ts
-msgid "Each day against your {allowanceLabel} daily allowance"
-msgstr "Кожен день порівняно з вашою денною нормою {allowanceLabel}"
-
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "Each one becomes an account. Rename or remove them later."
 msgstr "Кожен стане рахунком. Перейменувати чи видалити їх можна пізніше."
@@ -3632,6 +3616,10 @@ msgstr "Банки"
 msgid "Keep"
 msgstr "Залишити"
 
+#: src/budget/components/budget-pace-hint-line/budget-pace-hint-line.tsx
+msgid "Keep it under <0>{perDayAmount}/day</0>"
+msgstr "Тримайтеся до <0>{perDayAmount}/день</0>"
+
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Keep only \"Enable Reading\" on — never allow trading or withdrawals"
 msgstr "Залиште увімкненим лише \"Дозволити читання\" — ніколи не дозволяйте торгівлю чи виведення"
@@ -3756,7 +3744,7 @@ msgstr "Менше ніж"
 msgid "Limit"
 msgstr "Ліміт"
 
-#: src/budget/components/budget-forecast-chart/budget-forecast-chart.tsx
+#: src/budget/hooks/use-budget-forecast-labels.hook.ts
 msgid "Limit {limitAmount}"
 msgstr "Ліміт {limitAmount}"
 
@@ -4232,10 +4220,6 @@ msgstr "Категорій не знайдено"
 msgid "No categories match your search"
 msgstr "Жодна категорія не відповідає вашому пошуку"
 
-#: src/budget/components/budget-category-limits-empty-state/budget-category-limits-empty-state.tsx
-msgid "No category limits yet"
-msgstr "Лімітів за категоріями немає"
-
 #: src/app/contact-selector.tsx
 msgid "No contacts found"
 msgstr "Контактів не знайдено"
@@ -4505,14 +4489,6 @@ msgstr "Увімкнено · PIN-код і {biometricLabel}"
 #: src/transaction/components/transaction-info-installment-terms/transaction-info-installment-terms.tsx
 msgid "On {nextDate} · Monthly"
 msgstr "{nextDate} · Щомісяця"
-
-#: src/budget/components/budget-verdict-outlook/budget-verdict-outlook.tsx
-msgid "On pace to finish {differenceAmount} under."
-msgstr "За поточного темпу ви закінчите на {differenceAmount} нижче ліміту."
-
-#: src/budget/components/budget-verdict-outlook/budget-verdict-outlook.tsx
-msgid "On pace to go {differenceAmount} over."
-msgstr "За поточного темпу ви перевищите ліміт на {differenceAmount}."
 
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "On pace to run out by {runOutDate}. Keeping under {perDayAmount}/day keeps it on track."
@@ -4934,6 +4910,18 @@ msgstr "PIN-коди не збігаються"
 msgid "PINs match"
 msgstr "PIN-коди збігаються"
 
+#: src/budget/hooks/use-budget-day-strip-labels.hook.ts
+msgid "Plan {allowanceLabel}/day"
+msgstr "План {allowanceLabel}/день"
+
+#: src/budget/hooks/use-budget-day-strip-labels.hook.ts
+msgid "Plan {allowanceLabel}/day · {safeLabel}/day keeps you on track"
+msgstr "План {allowanceLabel}/день · {safeLabel}/день тримає вас у плані"
+
+#: src/budget/hooks/use-budget-day-strip-labels.hook.ts
+msgid "Plan {allowanceLabel}/day · You can spend up to {safeLabel}/day"
+msgstr "План {allowanceLabel}/день · Можна витрачати до {safeLabel}/день"
+
 #: src/installment-plan/hook/use-open-convert-to-installment.hook.ts
 msgid "Plan created"
 msgstr "План створено"
@@ -5346,12 +5334,8 @@ msgid "Right now anyone who can unlock your phone can open Budgie. With a PIN, t
 msgstr "Зараз будь-хто, хто може розблокувати ваш телефон, може відкрити Budgie. З PIN-кодом сам файл шифрується й відкривається лише ним."
 
 #: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
-msgid "Rollover, {currentLabel}. Double tap to change."
-msgstr "Перенесення, {currentLabel}. Двічі торкніться, щоб змінити."
-
-#: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
-msgid "Rollover: {currentLabel}"
-msgstr "Перенесення: {currentLabel}"
+msgid "Rollover · {currentLabel}"
+msgstr "Перенесення · {currentLabel}"
 
 #: src/rule/hooks/use-rules-list-page-actions.hook.ts
 msgid "Rule"
@@ -6120,7 +6104,7 @@ msgstr "Додати тег {tagTitle}"
 msgid "Tag Name"
 msgstr "Назва тегу"
 
-#: src/budget/components/budget-event-details/budget-event-details.tsx
+#: src/budget/components/budget-details-category-list/budget-details-category-list.tsx
 #: src/budget/components/budget-event-form/budget-event-form.tsx
 msgid "Tagged expenses also count in your main budget."
 msgstr "Витрати з тегом також враховуються в основному бюджеті."
@@ -6437,6 +6421,10 @@ msgstr "Позначка показує, скільки має бути відк
 #: src/budget/components/budget-details-category-list/budget-details-category-list.tsx
 msgid "Tick marks where spending should be by today."
 msgstr "Позначка показує, скільки мало б бути витрачено на сьогодні."
+
+#: src/budget/components/budget-verdict-header/budget-verdict-header.tsx
+msgid "Tight"
+msgstr "Впритул"
 
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
