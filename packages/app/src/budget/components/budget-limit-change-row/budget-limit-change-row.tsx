@@ -1,9 +1,11 @@
-import { BudgetLimitChangeReasonEnum, convertFromMicroUnits } from '@budgie/contracts';
+import { BudgetLimitChangeReasonEnum, UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
+import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
@@ -21,23 +23,29 @@ export const BudgetLimitChangeRow = ({ change, currencySymbol }: Props) => {
     const formatDigits = useFormatDigits(0);
     const { category } = useGetCategoryByIdQuery(isDefined(change.categoryId) ? change.categoryId : 0);
     const name = isDefined(category) ? category.title : t`Other`;
-    const previousLabel = formatDigits(convertFromMicroUnits(change.previousAmount), currencySymbol);
-    const newLabel = formatDigits(convertFromMicroUnits(change.newAmount), currencySymbol);
+    const icon = isDefined(category) ? category.icon : UserIconNameEnum.CircleEllipsis;
     const count = change.periodsObserved;
     const dateLabel = formatMonthAndDay(change.periodStart);
-    const raisedLabel = t`Raised. Over the limit ${count} periods in a row. ${dateLabel}`;
-    const loweredLabel = t`Lowered. Under 80% for ${count} periods. ${dateLabel}`;
-    const reasonLabel = change.reason === BudgetLimitChangeReasonEnum.OVER_SPENT ? raisedLabel : loweredLabel;
+    const reasonLabel =
+        change.reason === BudgetLimitChangeReasonEnum.OVER_SPENT
+            ? t`Raised ${dateLabel} · over the limit ${count} periods in a row`
+            : t`Lowered ${dateLabel} · under 80% for ${count} periods`;
 
     return (
-        <View className="gap-y-xs py-md">
-            <View className="flex-row items-baseline justify-between gap-x-md">
-                <Text numberOfLines={1} className="shrink text-md font-medium text-primary">
-                    {name}
-                </Text>
-                <Text className="text-md font-semibold tabular-nums text-primary">{`${previousLabel} → ${newLabel}`}</Text>
-            </View>
-            <Text className="text-xs text-secondary-foreground">{reasonLabel}</Text>
-        </View>
+        <GroupedListRow
+            left={<GroupedListIcon icon={icon} />}
+            title={name}
+            subtitle={reasonLabel}
+            right={
+                <View className="flex-row items-baseline gap-x-xs">
+                    <Text className="text-[15px] tabular-nums text-secondary-foreground">
+                        {formatDigits(convertFromMicroUnits(change.previousAmount), currencySymbol)} →
+                    </Text>
+                    <Text className="text-[17px] font-semibold tabular-nums text-primary">
+                        {formatDigits(convertFromMicroUnits(change.newAmount), currencySymbol)}
+                    </Text>
+                </View>
+            }
+        />
     );
 };

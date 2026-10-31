@@ -3809,8 +3809,8 @@ msgid "Lower category limits to continue"
 msgstr "Зменште ліміти категорій, щоб продовжити"
 
 #: src/budget/components/budget-limit-change-row/budget-limit-change-row.tsx
-msgid "Lowered. Under 80% for {count} periods. {dateLabel}"
-msgstr "Знижено. Нижче 80% протягом {count} періодів. {dateLabel}"
+msgid "Lowered {dateLabel} · under 80% for {count} periods"
+msgstr "Знижено {dateLabel} · менше 80% протягом {count} періодів"
 
 #: src/settings/components/default-currency-selector/default-currency-selector.tsx
 msgid "Main Currency"
@@ -5042,8 +5042,8 @@ msgid "Raise the total or choose fewer payments"
 msgstr "Збільште суму або виберіть менше платежів"
 
 #: src/budget/components/budget-limit-change-row/budget-limit-change-row.tsx
-msgid "Raised. Over the limit {count} periods in a row. {dateLabel}"
-msgstr "Підвищено. Перевищення ліміту протягом {count} періодів поспіль. {dateLabel}"
+msgid "Raised {dateLabel} · over the limit {count} periods in a row"
+msgstr "Підвищено {dateLabel} · понад ліміт {count} періодів поспіль"
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Re-enter your PIN to confirm"
