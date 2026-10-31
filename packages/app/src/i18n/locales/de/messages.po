@@ -801,11 +801,14 @@ msgstr "Aktivieren"
 msgid "Activate Account?"
 msgstr "Konto aktivieren?"
 
+#: src/budget/components/budget-event-category-limits/budget-event-category-limits.tsx
+#: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
 #: src/budget/components/budget-list-section/budget-list-section.tsx
 msgid "Add"
 msgstr "Hinzufügen"
 
 #: src/account/component/create-account-screen/create-account-screen.tsx
+#: src/budget/constant/budget-save-blocker-label.constant.ts
 msgid "Add a name to continue"
 msgstr "Namen eingeben, um fortzufahren"
 
@@ -841,7 +844,6 @@ msgstr "Salden später hinzufügen"
 msgid "Add Capture contactless payment and set Amount, Merchant and Card from the Shortcut Input."
 msgstr "Füge „Capture contactless payment“ hinzu und setze Betrag, Händler und Karte aus der Kurzbefehl-Eingabe."
 
-#: src/budget/components/budget-event-category-limits/budget-event-category-limits.tsx
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
 msgid "Add category"
 msgstr "Kategorie hinzufügen"
@@ -895,6 +897,18 @@ msgstr "Anpassung"
 #: src/budget/components/budget-auto-tune-switch-row/budget-auto-tune-switch-row.tsx
 msgid "Adjusts category limits after 3 periods of steady over or under spending"
 msgstr "Passt Kategorielimits nach 3 Zeiträumen mit gleichmäßig zu hohen oder zu niedrigen Ausgaben an"
+
+#: src/budget/components/budget-held-back-note/budget-held-back-note.tsx
+msgid "After {reservedAmount} set aside"
+msgstr "Nach {reservedAmount} Rücklage"
+
+#: src/budget/components/budget-held-back-note/budget-held-back-note.tsx
+msgid "After {reservedAmount} set aside and {upcomingAmount} for bills"
+msgstr "Nach {reservedAmount} Rücklage und {upcomingAmount} für Rechnungen"
+
+#: src/budget/components/budget-held-back-note/budget-held-back-note.tsx
+msgid "After {upcomingAmount} for upcoming bills"
+msgstr "Nach {upcomingAmount} für anstehende Rechnungen"
 
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 msgid "After 5 wrong tries, Budgie waits a little longer between attempts."
@@ -1029,6 +1043,10 @@ msgstr "Verliehener Betrag"
 #: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
 msgid "Amount or merchant is empty"
 msgstr "Betrag oder Händler fehlt"
+
+#: src/budget/components/budget-fund-target-field/budget-fund-target-field.tsx
+msgid "Amount to set aside"
+msgstr "Zurückzulegender Betrag"
 
 #: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
 msgid "Analytics will appear once we can confirm your history is ready."
@@ -1614,6 +1632,10 @@ msgstr "Symbol ändern"
 msgid "Change PIN"
 msgstr "PIN ändern"
 
+#: src/budget/constant/budget-save-blocker-label.constant.ts
+msgid "Check the form to continue"
+msgstr "Formular prüfen, um fortzufahren"
+
 #: src/sync/utils/toast-binance-key-permissions-error.util.ts
 msgid "Check the key and secret, then try again."
 msgstr "Prüfe Schlüssel und Secret und versuche es erneut."
@@ -1631,9 +1653,18 @@ msgstr "Girokonto"
 msgid "Checking transaction history"
 msgstr "Transaktionsverlauf wird geprüft"
 
+#: src/budget/components/budget-event-tag-field/budget-event-tag-field.tsx
+#: src/budget/components/budget-fund-category-field/budget-fund-category-field.tsx
+msgid "Choose"
+msgstr "Auswählen"
+
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Choose \"Excel\" as the export format — PDF and CSV files can't be imported"
 msgstr "Wählen Sie „Excel“ als Exportformat – PDF- und CSV-Dateien können nicht importiert werden"
+
+#: src/budget/utils/resolve-budget-fund-save-blocker.util.ts
+msgid "Choose a category to continue"
+msgstr "Kategorie wählen, um fortzufahren"
 
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Choose a different PIN"
@@ -1647,6 +1678,10 @@ msgstr "Wähle eine PIN"
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "Choose a preset to auto-fill column mappings"
 msgstr "Wählen Sie eine Vorlage zum automatischen Ausfüllen der Spaltenzuordnungen"
+
+#: src/budget/utils/resolve-budget-event-save-blocker.util.ts
+msgid "Choose a tag to continue"
+msgstr "Tag wählen, um fortzufahren"
 
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Choose accounts"
@@ -2289,6 +2324,10 @@ msgstr "Budget erstellen"
 msgid "Create Category"
 msgstr "Kategorie erstellen"
 
+#: src/budget/components/budget-event-form/budget-event-form.tsx
+msgid "Create event"
+msgstr "Ereignis erstellen"
+
 #: src/account/component/account-select-content/account-select-content.tsx
 #: src/app/contact-selector.tsx
 msgid "Create one to get started."
@@ -2443,6 +2482,10 @@ msgstr "Konto dauerhaft löschen?"
 msgid "Delete all transactions and settings"
 msgstr "Alle Transaktionen und Einstellungen löschen"
 
+#: src/budget/components/budget-setup-form/budget-setup-form.tsx
+msgid "Delete budget"
+msgstr "Budget löschen"
+
 #: src/budget/hooks/use-budget-form.hook.ts
 msgid "Delete budget?"
 msgstr "Budget löschen?"
@@ -2450,6 +2493,10 @@ msgstr "Budget löschen?"
 #: src/settings/components/truncate-data/truncate-data.tsx
 msgid "Delete data"
 msgstr "Daten löschen"
+
+#: src/budget/components/budget-event-form/budget-event-form.tsx
+msgid "Delete event"
+msgstr "Ereignis löschen"
 
 #: src/budget/hooks/use-budget-event-form.hook.ts
 msgid "Delete event?"
@@ -2466,6 +2513,10 @@ msgstr "Dauerhaft löschen"
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 msgid "Delete rule"
 msgstr "Regel löschen"
+
+#: src/budget/components/budget-fund-form/budget-fund-form.tsx
+msgid "Delete set aside"
+msgstr "Rücklage löschen"
 
 #: src/ai/component/ai-download-stopped-card/ai-download-stopped-card.tsx
 msgid "Delete the {downloaded} GB part"
@@ -2528,6 +2579,8 @@ msgstr "Löst sie von „{debtTitle}“"
 
 #: src/account/component/create-account-details-section/create-account-details-section.tsx
 #: src/account/component/update-account-page/update-account-page.tsx
+#: src/budget/components/budget-event-form/budget-event-form.tsx
+#: src/budget/components/budget-setup-form/budget-setup-form.tsx
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Details"
 msgstr "Details"
@@ -2651,7 +2704,6 @@ msgstr "Fälligkeitsdatum"
 msgid "Duplicate rule"
 msgstr "Regel duplizieren"
 
-#: src/budget/components/budget-event-limit-field/budget-event-limit-field.tsx
 #: src/budget/components/budget-overall-limit-field/budget-overall-limit-field.tsx
 msgid "e.g. 1000"
 msgstr "z. B. 1000"
@@ -2668,10 +2720,6 @@ msgstr "z. B. 200"
 #: src/account/component/deposit-interest-rate-field/deposit-interest-rate-field.tsx
 msgid "e.g. 5"
 msgstr "z. B. 5"
-
-#: src/budget/components/budget-fund-target-field/budget-fund-target-field.tsx
-msgid "e.g. 900"
-msgstr "z. B. 900"
 
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "e.g. Business, Personal, Vacation"
@@ -2764,6 +2812,10 @@ msgstr "Einnahme bearbeiten"
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 msgid "Edit Rule"
 msgstr "Regel bearbeiten"
+
+#: src/budget/components/budget-fund-form/budget-fund-form.tsx
+msgid "Edit set aside"
+msgstr "Rücklage bearbeiten"
 
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Edit Tag"
@@ -2935,6 +2987,10 @@ msgstr "Erste Bank (PDF)"
 #: src/budget/components/budget-period-summary/budget-period-summary.tsx
 msgid "Estimated from your past transactions using your current limits."
 msgstr "Geschätzt aus deinen früheren Transaktionen mit deinen aktuellen Limits."
+
+#: src/budget/components/budget-event-limit-field/budget-event-limit-field.tsx
+msgid "Event limit"
+msgstr "Ereignislimit"
 
 #: src/budget/components/budget-events-section/budget-events-section.tsx
 msgid "Events"
@@ -3672,8 +3728,8 @@ msgstr "Verlässt deine Einnahmen"
 msgid "left"
 msgstr "übrig"
 
+#: src/budget/components/budget-setup-progress/budget-setup-progress.tsx
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx
-#: src/budget/hooks/use-budget-progress-labels.hook.ts
 msgid "Left"
 msgstr "Übrig"
 
@@ -3686,7 +3742,6 @@ msgstr "Verliehen"
 msgid "Less Than"
 msgstr "Kleiner als"
 
-#: src/budget/components/budget-event-limit-field/budget-event-limit-field.tsx
 #: src/budget/components/budget-forecast-chart/budget-forecast-chart.tsx
 #: src/budget/components/budget-history-legend/budget-history-legend.tsx
 #: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
@@ -3750,6 +3805,10 @@ msgstr "Sperre Budgie mit deiner eigenen PIN"
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "Looks right"
 msgstr "Sieht gut aus"
+
+#: src/budget/constant/budget-save-blocker-label.constant.ts
+msgid "Lower category limits to continue"
+msgstr "Kategorielimits senken, um fortzufahren"
 
 #: src/budget/components/budget-limit-change-row/budget-limit-change-row.tsx
 msgid "Lowered. Under 80% for {count} periods. {dateLabel}"
@@ -4091,6 +4150,10 @@ msgstr "Neu bei Monobank"
 #: src/app/(main)/create-transaction/income.tsx
 msgid "New Income"
 msgstr "Neue Einnahme"
+
+#: src/budget/components/budget-fund-form/budget-fund-form.tsx
+msgid "New set aside"
+msgstr "Neue Rücklage"
 
 #: src/app/(main)/create-transaction/transfer.tsx
 msgid "New Transfer"
@@ -4666,8 +4729,8 @@ msgstr "drüber"
 msgid "Over"
 msgstr "Drüber"
 
+#: src/budget/components/budget-setup-progress/budget-setup-progress.tsx
 #: src/budget/constant/budget-pace-status-label.constant.ts
-#: src/budget/hooks/use-budget-progress-labels.hook.ts
 msgid "Over budget"
 msgstr "Über Budget"
 
@@ -4804,7 +4867,7 @@ msgstr "pro Monat"
 msgid "Percent of the plan total before the fee"
 msgstr "Prozent der Plansumme vor der Gebühr"
 
-#: src/budget/components/budget-period-field/budget-period-field.tsx
+#: src/budget/components/budget-setup-form/budget-setup-form.tsx
 msgid "Period"
 msgstr "Zeitraum"
 
@@ -5345,6 +5408,9 @@ msgid "Save balances"
 msgstr "Salden speichern"
 
 #: src/account/component/update-account-page/update-account-page.tsx
+#: src/budget/components/budget-event-form/budget-event-form.tsx
+#: src/budget/components/budget-fund-form/budget-fund-form.tsx
+#: src/budget/components/budget-setup-form/budget-setup-form.tsx
 msgid "Save changes"
 msgstr "Änderungen speichern"
 
@@ -5359,6 +5425,10 @@ msgstr "Speichern"
 #: src/settings/components/backup-row/backup-row.tsx
 msgid "Save it to Files or another app."
 msgstr "Speichern Sie sie in Dateien oder einer anderen App."
+
+#: src/budget/components/budget-fund-form/budget-fund-form.tsx
+msgid "Save set aside"
+msgstr "Rücklage speichern"
 
 #: src/budget/components/budget-funds-section/budget-funds-section.tsx
 msgid "Save up for yearly bills a little each period so they never surprise you"
@@ -5538,7 +5608,6 @@ msgstr "Alle auswählen"
 msgid "Select all categories"
 msgstr "Alle Kategorien auswählen"
 
-#: src/budget/components/budget-fund-category-field/budget-fund-category-field.tsx
 #: src/transaction/components/split-entry-row/split-entry-row.tsx
 msgid "Select category"
 msgstr "Kategorie auswählen"
@@ -5578,10 +5647,6 @@ msgstr "Operator auswählen"
 #: src/rule/components/rule-condition-value-input/rule-condition-value-input.tsx
 msgid "Select source"
 msgstr "Quelle auswählen"
-
-#: src/budget/components/budget-event-tag-field/budget-event-tag-field.tsx
-msgid "Select tag"
-msgstr "Tag auswählen"
 
 #: src/rule/components/rule-action-tag-selector/rule-action-tag-selector.tsx
 msgid "Select Tag"
@@ -5640,21 +5705,29 @@ msgstr "Standardwährung zuerst in den Einstellungen festlegen"
 msgid "Set a limit and track your spending"
 msgstr "Lege ein Limit fest und verfolge deine Ausgaben"
 
+#: src/budget/constant/budget-save-blocker-label.constant.ts
+msgid "Set a limit to continue"
+msgstr "Limit festlegen, um fortzufahren"
+
 #: src/settings/components/budget-management-card/budget-management-card.tsx
 msgid "Set a monthly limit and track spending"
 msgstr "Lege ein monatliches Limit fest und verfolge deine Ausgaben"
+
+#: src/budget/utils/resolve-budget-fund-save-blocker.util.ts
+msgid "Set an amount to continue"
+msgstr "Betrag eingeben, um fortzufahren"
 
 #: src/budget/components/budget-funds-section/budget-funds-section.tsx
 msgid "Set aside"
 msgstr "Zurückgelegt"
 
-#: src/budget/components/budget-fund-form/budget-fund-form.tsx
-msgid "Set aside for"
-msgstr "Zurücklegen für"
-
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 msgid "Set Category"
 msgstr "Kategorie festlegen"
+
+#: src/budget/constant/budget-save-blocker-label.constant.ts
+msgid "Set every category limit to continue"
+msgstr "Alle Kategorielimits festlegen, um fortzufahren"
 
 #: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
 msgid "Set fee"
@@ -6022,6 +6095,7 @@ msgid "Tag Name"
 msgstr "Tag-Name"
 
 #: src/budget/components/budget-event-details/budget-event-details.tsx
+#: src/budget/components/budget-event-form/budget-event-form.tsx
 msgid "Tagged expenses also count in your main budget."
 msgstr "Getaggte Ausgaben zählen auch in deinem Hauptbudget."
 
@@ -6078,10 +6152,6 @@ msgstr "Tippen zum Wiederholen"
 #: src/sync/component/file-upload-step/file-upload-step.tsx
 msgid "Tap to select"
 msgstr "Zum Auswählen tippen"
-
-#: src/budget/components/budget-fund-target-field/budget-fund-target-field.tsx
-msgid "Target amount"
-msgstr "Zielbetrag"
 
 #: src/account/constant/account-kind-title.constant.ts
 msgid "Term deposit"

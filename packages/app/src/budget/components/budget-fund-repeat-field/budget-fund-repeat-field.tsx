@@ -1,9 +1,10 @@
 import { useLingui } from '@lingui/react/macro';
 import { useFormContext, useWatch } from 'react-hook-form';
+import { View } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { FormItem } from '../../../@generic/component/form-item/form-item';
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { Input } from '../../../@generic/component/input/input';
 import { SegmentedTabs } from '../../../@generic/component/segmented-tabs/segmented-tabs';
 import { BudgetFundFormValues } from '../../constant/budget-fund-form-schema.constant';
@@ -50,9 +51,11 @@ export const BudgetFundRepeatField = () => {
     };
 
     return (
-        <FormItem label={t`Repeats`}>
-            <SegmentedTabs options={options} value={selected} onChange={handleChange} />
-            {customInput}
-        </FormItem>
+        <GroupedListSection title={t`Repeats`}>
+            <View className="gap-y-md px-3xl py-lg">
+                <SegmentedTabs options={options} value={selected} onChange={handleChange} />
+                {customInput}
+            </View>
+        </GroupedListSection>
     );
 };

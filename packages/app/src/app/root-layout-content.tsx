@@ -182,7 +182,7 @@ export const RootLayoutContent = () => {
                                                                     />
                                                                     <Stack.Screen
                                                                         name="budget-fund-form"
-                                                                        options={formSheetOptions([DETENT_70, DETENT_95], 0)}
+                                                                        options={formSheetOptions('fitToContents')}
                                                                     />
                                                                     <Stack.Screen
                                                                         name="budget-limit-changes"

@@ -1,10 +1,10 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Control, FieldPathByValue, FieldValues, useController } from 'react-hook-form';
 
 import { isString } from '@rnw-community/shared';
 
-import { FormItem } from '../../../@generic/component/form-item/form-item';
-import { Input } from '../../../@generic/component/input/input';
+import { GroupedListInputRow } from '../../../@generic/component/grouped-list-input-row/grouped-list-input-row';
 
 interface Props<TFieldValues extends FieldValues> {
     readonly control: Control<TFieldValues>;
@@ -22,8 +22,14 @@ export const BudgetNameField = <TFieldValues extends FieldValues>({ control, nam
     const nameValue = isString(value) ? value : '';
 
     return (
-        <FormItem label={t`Name`}>
-            <Input testID={testID} size="md" value={nameValue} onChangeText={onChange} onBlur={onBlur} placeholder={placeholder} />
-        </FormItem>
+        <GroupedListInputRow
+            icon={UserIconNameEnum.Type}
+            label={t`Name`}
+            testID={testID}
+            value={nameValue}
+            onChangeText={onChange}
+            onBlur={onBlur}
+            placeholder={placeholder}
+        />
     );
 };

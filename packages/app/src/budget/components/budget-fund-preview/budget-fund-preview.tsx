@@ -36,5 +36,7 @@ export const BudgetFundPreview = ({ budget, fundedAmount, currencySymbol }: Prop
     const amountLabel = formatDigits(convertFromMicroUnits(setAside), currencySymbol);
     const rate = t(BUDGET_PERIOD_RATE_LABEL[budget.period]);
 
-    return <Text className="text-md font-medium text-primary">{t`Budgie sets aside ${amountLabel} ${rate}`}</Text>;
+    return (
+        <Text className="text-secondary-foreground px-3xl text-[13px] leading-[18px]">{t`Budgie sets aside ${amountLabel} ${rate}`}</Text>
+    );
 };

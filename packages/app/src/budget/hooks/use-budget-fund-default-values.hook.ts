@@ -10,6 +10,6 @@ export const useBudgetFundDefaultValues = (): BudgetFundFormValues => ({
     categoryId: 0,
     targetAmount: 0,
     dueAtMs: addMonths(useToday(), FUND_YEARLY_MONTHS).getTime(),
-    repeatEveryMonths: FUND_YEARLY_MONTHS,
+    repeatEveryMonths: null,
     recurringSeriesId: null
 });

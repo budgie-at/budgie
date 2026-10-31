@@ -1,12 +1,12 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { FormItem } from '../../../@generic/component/form-item/form-item';
+import { GroupedListValueRow } from '../../../@generic/component/grouped-list-value-row/grouped-list-value-row';
 import { useDateFilterModal } from '../../../@generic/context/date-filter-modal.context';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
-import { RuleSelectorButton } from '../../../rule/components/rule-selector-button/rule-selector-button';
 import { BudgetSelector } from '../../budget.selector';
 import { BudgetEventFormValues } from '../../constant/budget-event-form-schema.constant';
 
@@ -32,8 +32,12 @@ export const BudgetEventDatesField = () => {
     };
 
     return (
-        <FormItem label={t`Dates`}>
-            <RuleSelectorButton testID={BudgetSelector.EventDatesField} value={datesLabel} onPress={handleOpen} />
-        </FormItem>
+        <GroupedListValueRow
+            icon={UserIconNameEnum.CalendarRange}
+            title={t`Dates`}
+            value={datesLabel}
+            testID={BudgetSelector.EventDatesField}
+            onPress={handleOpen}
+        />
     );
 };

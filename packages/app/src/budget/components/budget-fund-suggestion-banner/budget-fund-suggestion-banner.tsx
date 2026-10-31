@@ -33,7 +33,7 @@ export const BudgetFundSuggestionBanner = ({ suggestion, currencySymbol, onUse }
                 testID={BudgetSelector.FundSuggestionUseButton}
                 onPress={handleUse}
             >
-                <Text className="text-md font-semibold text-primary">{t`Use`}</Text>
+                <Text className="text-md font-semibold text-default-foreground">{t`Use`}</Text>
             </HapticPressable>
         </View>
     );
