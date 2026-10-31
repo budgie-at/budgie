@@ -15,7 +15,7 @@ interface Props {
 export const BudgetEditableAmountInput = ({ value, currencySymbol, testID, className, onChangeValue }: Props) => {
     const { t } = useLingui();
     const [isFocused, setIsFocused] = useState(false);
-    const toneClassName = isFocused ? 'text-default-foreground' : 'text-secondary-foreground';
+    const toneClassName = isFocused ? 'text-default-foreground' : 'text-primary';
 
     const handleFocus = () => void setIsFocused(true);
     const handleBlur = () => void setIsFocused(false);
