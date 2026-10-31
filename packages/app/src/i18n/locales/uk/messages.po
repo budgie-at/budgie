@@ -27,6 +27,16 @@ msgstr "P2P-продаж {assetCode} на Binance"
 msgid "{0, plural, one {# ATM withdrawal} other {# ATM withdrawals}}"
 msgstr "{0, plural, one {# зняття в банкоматі} few {# зняття в банкоматі} many {# знять у банкоматі} other {# зняття в банкоматі}}"
 
+#. placeholder {0}: installmentCount - 1
+#: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
+msgid "{0, plural, one {# more payment of {formattedLast}} other {# more payments of {formattedLast}}}"
+msgstr "{0, plural, one {ще # платіж по {formattedLast}} few {ще # платежі по {formattedLast}} many {ще # платежів по {formattedLast}} other {ще # платежу по {formattedLast}}}"
+
+#. placeholder {0}: installmentCount - 2
+#: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
+msgid "{0, plural, one {# more payment of {formattedPayment}} other {# more payments of {formattedPayment}}}"
+msgstr "{0, plural, one {ще # платіж по {formattedPayment}} few {ще # платежі по {formattedPayment}} many {ще # платежів по {formattedPayment}} other {ще # платежу по {formattedPayment}}}"
+
 #. placeholder {0}: cluster.rows.length
 #. placeholder {0}: oneOffs.reduce((total, cluster) => total + cluster.rows.length, 0)
 #. placeholder {0}: rows.length
@@ -45,6 +55,11 @@ msgstr "{0, plural, one {# тег} few {# теги} many {# тегів} other {#
 #: src/categorize-inbox/components/categorize-inbox-moved-to-cash-undo/categorize-inbox-moved-to-cash-undo.tsx
 msgid "{0, plural, one {# transaction} other {# transactions}}"
 msgstr "{0, plural, one {# транзакція} few {# транзакції} many {# транзакцій} other {# транзакцій}}"
+
+#. placeholder {0}: Number(draft ?? selectedCount)
+#: src/installment-plan/component/installment-count-picker/installment-count-picker.tsx
+msgid "{0, plural, one {month} other {months}}"
+msgstr "{0, plural, one {місяць} few {місяці} many {місяців} other {місяця}}"
 
 #. placeholder {0}: oneOffs.length
 #: src/categorize-inbox/components/categorize-inbox-one-offs-link/categorize-inbox-one-offs-link.tsx
@@ -104,6 +119,10 @@ msgstr "{categoryName}: {threshold}% витрачено"
 msgid "{categoryName}: limit reached"
 msgstr "{categoryName}: ліміт досягнуто"
 
+#: src/installment-plan/hook/use-installment-count-draft.hook.ts
+msgid "{clampedCount, plural, one {Set to # month} other {Set to # months}}"
+msgstr "{clampedCount, plural, one {Встановлено # місяць} few {Встановлено # місяці} many {Встановлено # місяців} other {Встановлено # місяця}}"
+
 #: src/@generic/component/create-account-currency-field/create-account-currency-field.tsx
 msgid "{code} · 1 {code} ≈ {convertedAmount} {defaultCode}"
 msgstr "{code} · 1 {code} ≈ {convertedAmount} {defaultCode}"
@@ -125,8 +144,8 @@ msgid "{count, plural, one {# existing transaction matches this rule.} other {# 
 msgstr "{count, plural, one {# наявна транзакція відповідає цьому правилу.} few {# наявні транзакції відповідають цьому правилу.} many {# наявних транзакцій відповідають цьому правилу.} other {# наявної транзакції відповідають цьому правилу.}}"
 
 #: src/installment-plan/component/installment-count-chip/installment-count-chip.tsx
-msgid "{count, plural, one {# payment} other {# payments}}"
-msgstr "{count, plural, one {# платіж} few {# платежі} many {# платежів} other {# платежу}}"
+msgid "{count, plural, one {# month} other {# months}}"
+msgstr "{count, plural, one {# місяць} few {# місяці} many {# місяців} other {# місяця}}"
 
 #: src/settings/utils/get-sync-repair-text.util.ts
 msgid "{count, plural, one {# sync repair} other {# sync repairs}}"
@@ -211,12 +230,12 @@ msgid "{firstMonth}–{lastMonth}"
 msgstr "{firstMonth}–{lastMonth}"
 
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
-msgid "{foldedDriverCount, plural, one {Other (# category)} other {Other (# categories)}}"
-msgstr "{foldedDriverCount, plural, one {Інше (# категорія)} few {Інше (# категорії)} many {Інше (# категорій)} other {Інше (# категорії)}}"
+msgid "{foldedDriverCount, plural, one {# more category} other {# more categories}}"
+msgstr "{foldedDriverCount, plural, one {Ще # категорія} few {Ще # категорії} many {Ще # категорій} other {Ще # категорії}}"
 
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
-msgid "{foldedDriverCount, plural, one {Other (# tag)} other {Other (# tags)}}"
-msgstr "{foldedDriverCount, plural, one {Інше (# тег)} few {Інше (# теги)} many {Інше (# тегів)} other {Інше (# тегів)}}"
+msgid "{foldedDriverCount, plural, one {# more tag} other {# more tags}}"
+msgstr "{foldedDriverCount, plural, one {Ще # тег} few {Ще # теги} many {Ще # тегів} other {Ще # тегів}}"
 
 #: src/budget/components/budget-period-recap-rollover/budget-period-recap-rollover.tsx
 msgid "{formattedAmount} carried into {name}"
@@ -286,6 +305,18 @@ msgstr "Груп: {groupCount}, платежів: {paymentCount}"
 msgid "{included} of {total}"
 msgstr "{included} з {total}"
 
+#: src/installment-plan/component/installment-timeline/installment-timeline.tsx
+msgid "{installmentCount, plural, one {# monthly payment until {finalPaymentLabel}, the first one is already paid, next on {nextPaymentLabel}} other {# monthly payments until {finalPaymentLabel}, the first one is already paid, next on {nextPaymentLabel}}}"
+msgstr "{installmentCount, plural, one {# щомісячний платіж до {finalPaymentLabel}, перший уже сплачено, наступний {nextPaymentLabel}} few {# щомісячні платежі до {finalPaymentLabel}, перший уже сплачено, наступний {nextPaymentLabel}} many {# щомісячних платежів до {finalPaymentLabel}, перший уже сплачено, наступний {nextPaymentLabel}} other {# щомісячного платежу до {finalPaymentLabel}, перший уже сплачено, наступний {nextPaymentLabel}}}"
+
+#: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
+msgid "{installmentCount, plural, one {# payment in total} other {# payments in total}}"
+msgstr "{installmentCount, plural, one {усього # платіж} few {усього # платежі} many {усього # платежів} other {усього # платежу}}"
+
+#: src/installment-plan/component/convert-to-installment-create-button/convert-to-installment-create-button.tsx
+msgid "{installmentCount, plural, one {Split into # payment} other {Split into # payments}}"
+msgstr "{installmentCount, plural, one {Розбити на # платіж} few {Розбити на # платежі} many {Розбити на # платежів} other {Розбити на # платежу}}"
+
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "{loadedDays}/{totalDays} days"
 msgstr "{loadedDays}/{totalDays} днів"
@@ -293,6 +324,10 @@ msgstr "{loadedDays}/{totalDays} днів"
 #: src/app/transaction-type-filter.tsx
 msgid "{localSelectedCount, plural, =0 {Show all types} one {Show # type} other {Show # types}}"
 msgstr "{localSelectedCount, plural, =0 {Показати всі типи} one {Показати # тип} few {Показати # типи} many {Показати # типів} other {Показати # типу}}"
+
+#: src/installment-plan/component/installment-count-picker/installment-count-picker.tsx
+msgid "{lowestCount}–{MAX_INSTALLMENT_COUNT} months · showing {selectedCount}"
+msgstr "{lowestCount}–{MAX_INSTALLMENT_COUNT} місяців · показано {selectedCount}"
 
 #: src/rule/components/matching-rules-pill/matching-rules-pill.tsx
 #: src/rule/components/rules-list-page/rules-list-page.tsx
@@ -323,6 +358,10 @@ msgstr "{month}, витрати {expenseAmount}, доходи {incomeAmount}"
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "{months, plural, one {# month} other {# months}}"
 msgstr "{months, plural, one {# місяць} few {# місяці} many {# місяців} other {# місяця}}"
+
+#: src/runway/component/runway-empty-state/runway-empty-state.tsx
+msgid "{monthsUsed} of {RUNWAY_MINIMUM_MONTHS} complete months"
+msgstr "{monthsUsed} з {RUNWAY_MINIMUM_MONTHS} повних місяців"
 
 #: src/budget/components/budget-limit-changes-row/budget-limit-changes-row.tsx
 msgid "{name} lowered to {amountLabel}"
@@ -482,8 +521,8 @@ msgid "{source} error · {message}"
 msgstr "Помилка {source} · {message}"
 
 #: src/runway/component/runway-history-spike-note/runway-history-spike-note.tsx
-msgid "{spikeLabel} had a one-off {spikeAmount}. The estimate uses a typical month instead."
-msgstr "{spikeLabel}: разова витрата {spikeAmount}. Для оцінки взято типовий місяць."
+msgid "{spikeLabel} included a one-off of {spikeAmount}."
+msgstr "{spikeLabel}: разова витрата {spikeAmount}."
 
 #: src/transaction/components/transaction-split-field-icon/transaction-split-field-icon.tsx
 msgid "{splitEntryCount, plural, one {# item} other {# items}}"
@@ -559,8 +598,8 @@ msgstr "Тепер переказів: {transferCount}"
 msgid "/ day"
 msgstr "/ день"
 
-#: src/runway/component/runway-driver-amount/runway-driver-amount.tsx
-msgid "/ mo"
+#: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
+msgid "/ month"
 msgstr "/ міс."
 
 #: src/budget/components/budget-limit-row/budget-limit-row.tsx
@@ -592,10 +631,6 @@ msgstr "−{carriedLabel} перенесено"
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "≈ {formattedMonths} mo"
 msgstr "≈ {formattedMonths} міс."
-
-#: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
-msgid "≈ {formattedPartAmount} per payment"
-msgstr "≈ {formattedPartAmount} за платіж"
 
 #: src/account/component/crypto-currency-group-toggle-row/crypto-currency-group-toggle-row.tsx
 msgid "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
@@ -841,13 +876,17 @@ msgstr "Додати теги до цих транзакцій"
 msgid "Add the Budgie action"
 msgstr "Додайте дію Budgie"
 
+#: src/runway/component/runway-empty-state/runway-empty-state.tsx
+msgid "Add transactions to see your runway"
+msgstr "Додайте транзакції, щоб побачити свій запас"
+
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add your first account to start tracking your finances"
 msgstr "Додайте свій перший рахунок, щоб почати відстежувати свої фінанси"
 
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
-msgid "Adds the fee of the plan"
-msgstr "Додає комісію плану"
+msgid "Adds a fee to the plan total"
+msgstr "Додає комісію до суми плану"
 
 #: src/transaction/constant/transaction-type.constant.ts
 msgid "Adjustment"
@@ -1125,6 +1164,10 @@ msgstr "Середнє"
 msgid "Average payment"
 msgstr "Середній платіж"
 
+#: src/runway/component/runway-drivers/runway-drivers.tsx
+msgid "Average per month"
+msgstr "Середнє за місяць"
+
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Avg cost"
 msgstr "Сер. ціна"
@@ -1227,6 +1270,10 @@ msgstr "між"
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Between"
 msgstr "Між"
+
+#: src/installment-plan/component/installment-count-picker/installment-count-picker.tsx
+msgid "Between {lowestCount} and {MAX_INSTALLMENT_COUNT} months"
+msgstr "Від {lowestCount} до {MAX_INSTALLMENT_COUNT} місяців"
 
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
 msgid "Billing Dates"
@@ -1893,7 +1940,7 @@ msgstr "Не вдалося створити подію"
 msgid "Could not create fund"
 msgstr "Не вдалося створити фонд"
 
-#: src/installment-plan/component/convert-to-installment-content/convert-to-installment-content.tsx
+#: src/installment-plan/component/convert-to-installment-create-button/convert-to-installment-create-button.tsx
 msgid "Could not create plan"
 msgstr "Не вдалося створити план"
 
@@ -2180,10 +2227,6 @@ msgid "Counts crypto at today's market value"
 msgstr "Враховує криптовалюту за сьогоднішньою ринковою вартістю"
 
 #: src/runway/component/runway-verdict-outlook/runway-verdict-outlook.tsx
-msgid "Covered by {coverMonths} months of expenses."
-msgstr "Покриває {coverMonths} міс. витрат."
-
-#: src/runway/component/runway-verdict-outlook/runway-verdict-outlook.tsx
 msgid "Covered by your liquid balance."
 msgstr "Покривається вашим ліквідним балансом."
 
@@ -2250,10 +2293,6 @@ msgstr "Створити категорію"
 #: src/app/contact-selector.tsx
 msgid "Create one to get started."
 msgstr "Створіть один, щоб розпочати."
-
-#: src/installment-plan/component/convert-to-installment-content/convert-to-installment-content.tsx
-msgid "Create plan"
-msgstr "Створити план"
 
 #: src/transaction/components/create-rule-menu-item/create-rule-menu-item.tsx
 #: src/transaction/components/transaction-info-create-rule-row/transaction-info-create-rule-row.tsx
@@ -2532,6 +2571,7 @@ msgstr "Показувати індикатор запасу поруч із з�
 msgid "Do not sync history"
 msgstr "Не синхронізувати історію"
 
+#: src/@generic/component/keyboard-done-accessory/keyboard-done-accessory.tsx
 #: src/app/import-column-mapper.tsx
 #: src/categorize-inbox/components/categorize-inbox-empty-state/categorize-inbox-empty-state.tsx
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
@@ -2740,10 +2780,6 @@ msgstr "Редагувати транзакцію"
 #: src/transaction/components/update-transfer-transaction/update-transfer-transaction.tsx
 msgid "Edit Transfer"
 msgstr "Редагувати переказ"
-
-#: src/installment-plan/component/convert-to-installment-title-field/convert-to-installment-title-field.tsx
-msgid "Edits the name of the plan"
-msgstr "Змінює назву плану"
 
 #: src/installment-plan/component/convert-to-installment-total/convert-to-installment-total.tsx
 msgid "Edits the total of the plan"
@@ -2981,6 +3017,7 @@ msgid "Expense"
 msgstr "Витрата"
 
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
+#: src/runway/component/runway-history-legend/runway-history-legend.tsx
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Expenses"
 msgstr "Витрати"
@@ -3040,8 +3077,12 @@ msgid "Fee {formattedAmount}"
 msgstr "Комісія {formattedAmount}"
 
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
-msgid "Fee {formattedFeePercent}"
-msgstr "Комісія {formattedFeePercent}"
+msgid "Fee {formattedPercent}, {formattedFee}"
+msgstr "Комісія {formattedPercent}, {formattedFee}"
+
+#: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
+msgid "Fee, no fee"
+msgstr "Комісія, без комісії"
 
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
 msgid "Fee, percent"
@@ -3054,6 +3095,10 @@ msgstr "Отримати рахунки"
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
 msgid "Fetching new..."
 msgstr "Завантаження нових..."
+
+#: src/installment-plan/component/installment-count-picker/installment-count-picker.tsx
+msgid "Fewer months"
+msgstr "Менше місяців"
 
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 msgid "Field"
@@ -3103,6 +3148,18 @@ msgstr "Відбиток пальця щодня"
 #: src/sync/component/analytics-sync-account-progress/analytics-sync-account-progress.tsx
 msgid "Finish importing this account’s history to include it in analytics."
 msgstr "Завершіть імпорт історії цього рахунку, щоб включити його в аналітику."
+
+#: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
+msgid "first {formattedPaid} already paid"
+msgstr "перший {formattedPaid} уже сплачено"
+
+#: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
+msgid "First {formattedPaid} already paid"
+msgstr "Перший {formattedPaid} уже сплачено"
+
+#: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
+msgid "First {formattedPaid} already paid · last payment {formattedLast}"
+msgstr "Перший платіж {formattedPaid} уже сплачено · останній {formattedLast}"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "Fix Errors"
@@ -3233,6 +3290,10 @@ msgstr "Назад"
 #: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
 msgid "Go straight to Budgie"
 msgstr "Одразу до Budgie"
+
+#: src/installment-plan/component/convert-to-installment-total/convert-to-installment-total.tsx
+msgid "Goes back to the total worked out from the payments and fee"
+msgstr "Повертає суму, розраховану з платежів і комісії"
 
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Greater Than"
@@ -3421,19 +3482,16 @@ msgid "Include in net worth"
 msgstr "Враховувати в чистих активах"
 
 #: src/runway/component/runway-all-in-toggle/runway-all-in-toggle.tsx
-msgid "Include one-offs"
+msgid "Include one‑offs"
 msgstr "Включити разові витрати"
 
 #: src/runway/component/runway-verdict-outlook/runway-verdict-outlook.tsx
 msgid "Includes crypto"
 msgstr "Включно з криптовалютою"
 
-#: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
-msgid "includes fee {formattedFeeAmount}"
-msgstr "включно з комісією {formattedFeeAmount}"
-
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
+#: src/runway/component/runway-history-legend/runway-history-legend.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/components/statistics-content/statistics-content.tsx
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
@@ -3473,7 +3531,7 @@ msgstr "Розстрочка"
 
 #: src/account/constant/account-debt-type.constant.ts
 #: src/installment-plan/component/convert-to-installment-content/convert-to-installment-content.tsx
-#: src/installment-plan/component/convert-to-installment-title-field/convert-to-installment-title-field.tsx
+#: src/installment-plan/component/convert-to-installment-header/convert-to-installment-header.tsx
 #: src/transaction/constant/debt-settlement-label.constant.ts
 msgid "Installment plan"
 msgstr "Оплата частинами"
@@ -3573,6 +3631,10 @@ msgstr "Останній експорт"
 #: src/@generic/constant/date-period.constant.ts
 msgid "Last Month"
 msgstr "Минулий місяць"
+
+#: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
+msgid "last payment {formattedLast}"
+msgstr "останній платіж {formattedLast}"
 
 #: src/@generic/constant/date-period.constant.ts
 msgid "Last Week"
@@ -3855,14 +3917,6 @@ msgstr "Моделі та завантаження"
 msgid "Models download once, best on Wi-Fi"
 msgstr "Моделі завантажуються один раз, краще через Wi-Fi"
 
-#: src/runway/component/runway-history-legend/runway-history-legend.tsx
-msgid "Money in"
-msgstr "Надходження"
-
-#: src/runway/component/runway-history-legend/runway-history-legend.tsx
-msgid "Money out"
-msgstr "Витрати"
-
 #: src/app/(main)/create-account/index.tsx
 msgid "Money you lent or borrowed"
 msgstr "Гроші, які ви позичили або взяли в борг"
@@ -3941,6 +3995,10 @@ msgstr "Інші дії…"
 #: src/categorize-inbox/components/categorize-inbox-category-provider/categorize-inbox-category-provider.tsx
 msgid "More categories"
 msgstr "Інші категорії"
+
+#: src/installment-plan/component/installment-count-picker/installment-count-picker.tsx
+msgid "More months"
+msgstr "Більше місяців"
 
 #: src/categorize-inbox/components/categorize-inbox-tag-provider/categorize-inbox-tag-provider.tsx
 msgid "More tags"
@@ -4042,9 +4100,17 @@ msgstr "Новий переказ"
 msgid "Next {formattedNextAmount} · {nextDate}"
 msgstr "Наступний {formattedNextAmount} · {nextDate}"
 
+#: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
+msgid "next month"
+msgstr "наступного місяця"
+
 #: src/transaction/components/transaction-info-installment-terms/transaction-info-installment-terms.tsx
 msgid "Next payment"
 msgstr "Наступний платіж"
+
+#: src/installment-plan/component/installment-timeline/installment-timeline.tsx
+msgid "Next payment {nextPaymentLabel}"
+msgstr "Наступний платіж {nextPaymentLabel}"
 
 #: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
 msgid "No account needed · Takes about a minute"
@@ -4128,6 +4194,10 @@ msgstr "Боргу немає"
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "No enabled accounts were found in this file"
 msgstr "У цьому файлі не знайдено активованих рахунків"
+
+#: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
+msgid "No fee"
+msgstr "Без комісії"
 
 #: src/app/icon-selector.tsx
 msgid "No icons found"
@@ -4317,9 +4387,17 @@ msgstr "Тут нічого виправляти"
 msgid "Now"
 msgstr "Зараз"
 
+#: src/installment-plan/component/installment-count-picker/installment-count-picker.tsx
+msgid "Number of months"
+msgstr "Кількість місяців"
+
 #: src/account/component/debt-account-card-summary/debt-account-card-summary.tsx
 msgid "of"
 msgstr "з"
+
+#: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
+msgid "of {formattedBase} before the fee"
+msgstr "від {formattedBase} без комісії"
 
 #: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
 msgid "of {total} GB"
@@ -4391,17 +4469,13 @@ msgstr "Один раз"
 msgid "once a month"
 msgstr "раз на місяць"
 
+#: src/runway/component/runway-empty-state/runway-empty-state.tsx
+msgid "Once you have 3 months of transactions, Runway shows how long your balance lasts."
+msgstr "Коли у вас будуть транзакції за 3 місяці, запас покаже, на скільки вистачить вашого балансу."
+
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 msgid "One you exported with a PIN you remember"
 msgstr "Ту, яку ви експортували з PIN-кодом, що пам'ятаєте"
-
-#: src/runway/component/runway-driver-row/runway-driver-row.tsx
-msgid "One-off"
-msgstr "Разово"
-
-#: src/runway/component/runway-history-legend/runway-history-legend.tsx
-msgid "One-off spike"
-msgstr "Разовий стрибок"
 
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "one-time download"
@@ -4410,6 +4484,10 @@ msgstr "одноразове завантаження"
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "One-time import from a Privat24 statement — this is not a live sync, and each export covers a single card or account"
 msgstr "Одноразовий імпорт виписки з Приват24 — це не постійна синхронізація, і кожен експорт охоплює лише одну картку чи рахунок"
+
+#: src/runway/component/runway-driver-row/runway-driver-row.tsx
+msgid "One‑off"
+msgstr "Разово"
 
 #: ../ledger/src/installment/service/installment-plan.service.ts
 msgid "Only an expense can become an installment plan"
@@ -4689,19 +4767,22 @@ msgstr "Призупинено: немає Wi-Fi"
 msgid "Paused. {downloaded} of {total} GB is kept."
 msgstr "Призупинено. {downloaded} з {total} ГБ збережено."
 
-#: src/installment-plan/component/convert-to-installment-content/convert-to-installment-content.tsx
 #: src/transaction/components/transaction-list-convert-to-installment-menu-item/transaction-list-convert-to-installment-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Pay in parts"
 msgstr "Оплата частинами"
 
+#: src/installment-plan/component/convert-to-installment-header/convert-to-installment-header.tsx
+msgid "Pay in parts · {operatedAtLabel} · {accountTitle}"
+msgstr "Оплата частинами · {operatedAtLabel} · {accountTitle}"
+
+#: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
+msgid "Payment schedule unavailable"
+msgstr "Графік платежів недоступний"
+
 #: src/installment-plan/component/installment-plan-count-field/installment-plan-count-field.tsx
 msgid "Payments"
 msgstr "Платежі"
-
-#: src/installment-plan/component/installment-timeline/installment-timeline.tsx
-msgid "Payments from {firstPaymentLabel} to {lastPaymentLabel}"
-msgstr "Платежі з {firstPaymentLabel} по {lastPaymentLabel}"
 
 #: src/categorize-inbox/components/categorize-inbox-group-panel/categorize-inbox-group-panel.tsx
 msgid "Payments per month"
@@ -4718,6 +4799,10 @@ msgstr "на день"
 #: src/runway/component/runway-verdict-figure/runway-verdict-figure.tsx
 msgid "per month"
 msgstr "на місяць"
+
+#: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
+msgid "Percent of the plan total before the fee"
+msgstr "Відсоток від суми плану без комісії"
 
 #: src/budget/components/budget-period-field/budget-period-field.tsx
 msgid "Period"
@@ -4768,9 +4853,25 @@ msgstr "PIN-коди збігаються"
 msgid "Plan created"
 msgstr "План створено"
 
-#: src/installment-plan/component/convert-to-installment-title-field/convert-to-installment-title-field.tsx
+#: src/installment-plan/component/convert-to-installment-header/convert-to-installment-header.tsx
 msgid "Plan name"
 msgstr "Назва плану"
+
+#: src/installment-plan/component/convert-to-installment-total-input/convert-to-installment-total-input.tsx
+msgid "Plan total"
+msgstr "Сума плану"
+
+#: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
+msgid "plan total {formattedTotal}"
+msgstr "сума плану {formattedTotal}"
+
+#: src/installment-plan/component/convert-to-installment-total/convert-to-installment-total.tsx
+msgid "Plan total {formattedTotal}"
+msgstr "Сума плану {formattedTotal}"
+
+#: src/installment-plan/component/convert-to-installment-total/convert-to-installment-total.tsx
+msgid "Plan total {formattedTotal}, includes {formattedFee} fee"
+msgstr "Сума плану {formattedTotal}, включно з комісією {formattedFee}"
 
 #: src/account/component/start-deposit-form/start-deposit-form.tsx
 #: src/account/hooks/use-account-entity-form.hook.ts
@@ -4787,7 +4888,7 @@ msgid "Please enter your Monobank API token"
 msgstr "Будь ласка, введіть ваш API-токен Монобанку"
 
 #: src/app/convert-to-transfer.tsx
-#: src/installment-plan/component/convert-to-installment-content/convert-to-installment-content.tsx
+#: src/installment-plan/component/convert-to-installment-create-button/convert-to-installment-create-button.tsx
 msgid "Please try again"
 msgstr "Будь ласка, спробуйте ще раз"
 
@@ -4848,9 +4949,21 @@ msgstr "Прогноз: перевищення на {overAmount}"
 msgid "Push notifications are disabled"
 msgstr "Push-сповіщення вимкнено"
 
+#: src/installment-plan/component/installment-count-chips/installment-count-chips.tsx
+msgid "Quick picks"
+msgstr "Швидкий вибір"
+
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 msgid "Quick rule"
 msgstr "Швидке правило"
+
+#: src/installment-plan/component/convert-to-installment-content/convert-to-installment-content.tsx
+msgid "Raise the total above the paid {formattedPaid}"
+msgstr "Збільште суму понад сплачені {formattedPaid}"
+
+#: src/installment-plan/component/convert-to-installment-content/convert-to-installment-content.tsx
+msgid "Raise the total or choose fewer payments"
+msgstr "Збільште суму або виберіть менше платежів"
 
 #: src/budget/components/budget-limit-change-row/budget-limit-change-row.tsx
 msgid "Raised. Over the limit {count} periods in a row. {dateLabel}"
@@ -5052,6 +5165,10 @@ msgstr "Видалити невикористані завантаження ({u
 msgid "Rename"
 msgstr "Перейменувати"
 
+#: src/installment-plan/component/convert-to-installment-header/convert-to-installment-header.tsx
+msgid "Rename plan, {value}"
+msgstr "Перейменувати план, {value}"
+
 #: src/account/constant/debt-settled-label.constant.ts
 msgid "Repaid"
 msgstr "Погашено"
@@ -5081,6 +5198,10 @@ msgstr "Повідомити про помилку"
 #: src/budget/components/budget-verdict-footer/budget-verdict-footer.tsx
 msgid "Reserving {upcomingAmount} for {billsLabel}"
 msgstr "Резервуємо {upcomingAmount} на {billsLabel}"
+
+#: src/installment-plan/component/convert-to-installment-total/convert-to-installment-total.tsx
+msgid "Reset total"
+msgstr "Скинути суму"
 
 #: src/app/resync-window-picker.tsx
 msgid "Resets all sync state"
@@ -5203,8 +5324,8 @@ msgid "Runway"
 msgstr "Запас"
 
 #: src/runway/component/runway-empty-state/runway-empty-state.tsx
-msgid "Runway needs at least 3 complete months of transactions. You have {monthsUsed}."
-msgstr "Запас потребує щонайменше 3 повних місяців транзакцій. У вас {monthsUsed}."
+msgid "Runway needs 3 complete months of transactions to forecast your balance."
+msgstr "Для розрахунку запасу потрібно 3 повні місяці транзакцій."
 
 #: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
 msgid "Safe to spend"
@@ -5560,8 +5681,8 @@ msgid "Setup"
 msgstr "Налаштування"
 
 #: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
-msgid "Shaded area shows your better and worse months."
-msgstr "Затінена область показує ваші кращі та гірші місяці."
+msgid "Shading shows how much your months usually vary."
+msgstr "Затінення показує, наскільки зазвичай різняться ваші місяці."
 
 #: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
 msgid "Shortcuts"
@@ -5696,9 +5817,13 @@ msgstr "Витрачено досі"
 msgid "Split"
 msgstr "Розділити"
 
+#: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
+msgid "Splits your total into the purchase and a fee"
+msgstr "Ділить вашу суму на покупку та комісію"
+
 #: src/runway/component/runway-all-in-toggle/runway-all-in-toggle.tsx
-msgid "Spreads irregular costs like insurance across the months."
-msgstr "Розподіляє нерегулярні витрати, як-от страховку, по місяцях."
+msgid "Spreads irregular costs across the months."
+msgstr "Розподіляє нерегулярні витрати на місяці."
 
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "Start again with your new PIN"
@@ -5738,6 +5863,14 @@ msgstr "Початковий баланс"
 #: src/ai/constant/ai-umbrella-status-atom.constant.ts
 msgid "Starting up AI…"
 msgstr "Запуск ШІ…"
+
+#: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
+msgid "Starts at {startLabel}. Ends at {endLabel}."
+msgstr "Починається з {startLabel}. Закінчується на {endLabel}."
+
+#: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
+msgid "Starts at {startLabel}. Ends at {endLabel}. Runs out around {runOutLabel}."
+msgstr "Починається з {startLabel}. Закінчується на {endLabel}. Закінчиться приблизно {runOutLabel}."
 
 #: src/budget/components/budget-starts-on-row/budget-starts-on-row.tsx
 #: src/budget/components/budget-weekday-start-field/budget-weekday-start-field.tsx
@@ -5977,6 +6110,10 @@ msgstr "Завантаження зупинилося, не завершивши
 #: src/ai/hook/use-ai-model-download-actions.hook.ts
 msgid "The downloaded AI model data is removed from this phone. Nothing downloads again until you start it."
 msgstr "Завантажені дані моделей ШІ буде видалено з цього телефону. Нічого не завантажуватиметься, доки ви не запустите це знову."
+
+#: src/installment-plan/component/convert-to-installment-total-input/convert-to-installment-total-input.tsx
+msgid "The exact amount you will pay, fee included"
+msgstr "Точна сума до сплати разом із комісією"
 
 #: src/transaction/hook/use-delete-transaction.hook.ts
 #: src/transaction/hook/use-revert-consolidation.hook.ts
@@ -6285,11 +6422,14 @@ msgstr "Забагато спроб. Спробуйте ще раз через {
 #: src/account/component/debt-account-card/debt-account-card.tsx
 #: src/account/component/debt-account-paid-off/debt-account-paid-off.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
-#: src/installment-plan/component/convert-to-installment-total-input/convert-to-installment-total-input.tsx
 #: src/installment-plan/component/installment-plan-total-field/installment-plan-total-field.tsx
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "Total"
 msgstr "Загалом"
+
+#: src/installment-plan/component/convert-to-installment-total/convert-to-installment-total.tsx
+msgid "Total {formattedTotal}"
+msgstr "Разом {formattedTotal}"
 
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Total balance"
@@ -6503,9 +6643,10 @@ msgstr "Тип ({selectedTypesCount})"
 msgid "Type the same PIN again to make sure it's the one you meant."
 msgstr "Введіть той самий PIN-код ще раз, щоб переконатися, що це саме він."
 
+#: src/runway/component/runway-flow-row/runway-flow-row.tsx
 #: src/runway/component/runway-history-legend/runway-history-legend.tsx
-msgid "Typical month {amount}"
-msgstr "Типовий місяць {amount}"
+msgid "Typical month"
+msgstr "Типовий місяць"
 
 #: src/i18n/constant/languages.constant.ts
 msgid "Ukrainian"
@@ -6623,10 +6764,6 @@ msgstr "Використати мобільні дані для {remaining} ГБ
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Use Touch ID to unlock your app quickly and securely"
 msgstr "Використовуйте Touch ID для швидкого й безпечного розблокування застосунку"
-
-#: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
-msgid "Usually 0% up to 4 months"
-msgstr "Зазвичай 0% до 4 місяців"
 
 #: src/sync/component/binance-parked-assets-notice/binance-parked-assets-notice.tsx
 msgid "Valuation unavailable"
@@ -6902,6 +7039,10 @@ msgstr "Ваші рахунки й надалі синхронізуються �
 #: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
 msgid "Your analytics are taking shape"
 msgstr "Ваша аналітика набуває форми"
+
+#: src/runway/component/runway-verdict-outlook/runway-verdict-outlook.tsx
+msgid "Your balance covers {coverMonths} months of spending."
+msgstr "Вашого балансу вистачить на {coverMonths} міс. витрат."
 
 #: src/runway/component/runway-verdict-outlook/runway-verdict-outlook.tsx
 msgid "Your balance is already below zero."

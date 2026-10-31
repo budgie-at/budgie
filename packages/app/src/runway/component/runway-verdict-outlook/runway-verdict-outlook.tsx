@@ -5,6 +5,7 @@ import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/sh
 
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
+import { RUNWAY_MAX_FONT_SIZE_MULTIPLIER } from '../../constant/runway-max-font-size-multiplier.constant';
 import { RunwaySelector } from '../../runway.selector';
 
 import type { RunwayComputationInterface } from '../../interface/runway-computation.interface';
@@ -21,14 +22,20 @@ export const RunwayVerdictOutlook = ({ computation }: Props) => {
     const { burn, isPositive, liquid, runsOutAt, runwayMonths } = computation;
     const coverMonths = isPositiveNumber(burn) && isPositiveNumber(liquid) ? Math.round(liquid / burn) : null;
     const runOutDate = isDefined(runsOutAt) ? formatMonthAndYear(runsOutAt) : '';
-    const coverLine = isDefined(coverMonths) ? t`Covered by ${coverMonths} months of expenses.` : t`Covered by your liquid balance.`;
+    const coverLine = isDefined(coverMonths)
+        ? t`Your balance covers ${coverMonths} months of spending.`
+        : t`Covered by your liquid balance.`;
     const runOutLine = isNotEmptyString(runOutDate) ? t`Runs out around ${runOutDate}.` : '';
     const burningLine = isPositiveNumber(runwayMonths) ? runOutLine : t`Your balance is already below zero.`;
     const outlookLine = isPositive ? coverLine : burningLine;
 
     return (
         <View className="gap-y-xs">
-            {isNotEmptyString(outlookLine) ? <Text className="text-base text-primary">{outlookLine}</Text> : null}
+            {isNotEmptyString(outlookLine) ? (
+                <Text maxFontSizeMultiplier={RUNWAY_MAX_FONT_SIZE_MULTIPLIER} className="text-[15px] text-primary">
+                    {outlookLine}
+                </Text>
+            ) : null}
 
             {isRunwayCryptoIncluded ? (
                 <Text testID={RunwaySelector.VerdictCryptoNote} className="text-xs text-secondary-foreground">

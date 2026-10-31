@@ -1,1 +1,0 @@
-export const INSTALLMENT_TOTAL_HERO_FONT_SIZE = 48;

@@ -15,7 +15,7 @@ interface Props {
 }
 
 const MIN_BAR_HEIGHT = 1.5;
-const INCOME_OPACITY = 0.35;
+const INCOME_OPACITY = 0.45;
 
 export const RunwayHistoryBars = ({ centerX, barWidth, baselineY, expense, income, maxValue, isSpike }: Props) => {
     const scale = isPositiveNumber(maxValue) ? RUNWAY_HISTORY_BAR_AREA_HEIGHT / maxValue : 0;
