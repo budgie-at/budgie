@@ -4,24 +4,18 @@ import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Struct from 'effect/Struct';
 import { useController } from 'react-hook-form';
-import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { CreateAccountCurrencyField } from '../../../@generic/component/create-account-currency-field/create-account-currency-field';
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
-import { FormItem } from '../../../@generic/component/form-item/form-item';
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { useStickyDefinedValue } from '../../../@generic/hook/use-sticky-defined-value.hook';
 import { AccountSyncCard } from '../../../sync/component/account-sync-card/account-sync-card';
-import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
-import { ACCOUNT_ICON } from '../../constant/account-icon.constant';
-import { ACCOUNT_TYPE } from '../../constant/account-type.constant';
 import { useAccountUpdateBindings } from '../../hooks/use-account-update-bindings.hook';
 import { useLiabilityAccountForm } from '../../hooks/use-liability-account-form.hook';
 import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
 import { UpdateAccountScreen } from '../create-account-screen/update-account-screen';
-import { IncludeInNetWorthField } from '../include-in-net-worth-field/include-in-net-worth-field';
 
 interface Props {
     readonly account: AccountWithInstrumentEntityInterface;
@@ -51,15 +45,16 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
         instrumentId: useController({ control, name: 'instrumentId' })
     };
     const stickyInstrument = useStickyDefinedValue(instrument);
-    const accountTypeVariant = ACCOUNT_COLOR[account.type];
     const isSyncedAccount = account.type === AccountTypeEnum.BANK_SYNC || account.type === AccountTypeEnum.CRYPTO_SYNC;
     const currencyField =
         account.type === AccountTypeEnum.CRYPTO ? (
-            <CreateAccountCurrencyField
-                value={fields.instrumentId.field.value}
-                onChange={fields.instrumentId.field.onChange}
-                instrumentType={InstrumentTypeEnum.CRYPTO}
-            />
+            <GroupedListSection title={t`Currency`}>
+                <CreateAccountCurrencyField
+                    value={fields.instrumentId.field.value}
+                    onChange={fields.instrumentId.field.onChange}
+                    instrumentType={InstrumentTypeEnum.CRYPTO}
+                />
+            </GroupedListSection>
         ) : null;
 
     if (!isDefined(stickyInstrument)) {
@@ -76,16 +71,7 @@ export const UpdateLiabilityAccount = ({ account }: Props) => {
             onSubmit={handleSubmit}
         >
             {currencyField}
-            <FormItem label={t`Account Type`}>
-                <View className="flex-row items-center rounded-2xl bg-secondary-background p-xl">
-                    <View className="flex-row items-center gap-x-lg">
-                        <CircleIcon icon={ACCOUNT_ICON[account.type]} variant={accountTypeVariant} size={40} iconSize={18} border={false} />
-                        <Text className="text-primary text-base font-medium">{t(ACCOUNT_TYPE[account.type])}</Text>
-                    </View>
-                </View>
-            </FormItem>
             {isSyncedAccount ? <AccountSyncCard accountId={account.id} /> : null}
-            <IncludeInNetWorthField value={fields.includeInNetWorth.field.value} onChange={fields.includeInNetWorth.field.onChange} />
         </UpdateAccountScreen>
     );
 };
