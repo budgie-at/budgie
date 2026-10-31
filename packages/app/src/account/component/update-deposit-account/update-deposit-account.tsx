@@ -14,7 +14,6 @@ import { useAccountBalanceQuery } from '../../query/use-account-balance.query';
 import { UpdateAccountScreen } from '../create-account-screen/update-account-screen';
 import { DepositInterestRateField } from '../deposit-interest-rate-field/deposit-interest-rate-field';
 import { DepositMaturityDateField } from '../deposit-maturity-date-field/deposit-maturity-date-field';
-import { IncludeInNetWorthField } from '../include-in-net-worth-field/include-in-net-worth-field';
 
 interface Props {
     readonly account: AccountEntityInterface;
@@ -71,7 +70,6 @@ export const UpdateDepositAccount = ({ account }: Props) => {
         >
             <DepositInterestRateField control={control} />
             <DepositMaturityDateField control={control} variant={ACCOUNT_COLOR.DEPOSIT} />
-            <IncludeInNetWorthField value={fields.includeInNetWorth.field.value} onChange={fields.includeInNetWorth.field.onChange} />
         </UpdateAccountScreen>
     );
 };

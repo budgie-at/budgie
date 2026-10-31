@@ -75,12 +75,13 @@ export const CreateDebtAccount = () => {
     }
 
     return (
-        <CreateAccountScreen variant={variant} title={t`Debt Account`} onSubmit={handleSubmit} isSubmitting={isSubmitting}>
+        <CreateAccountScreen title={t`Debt Account`} onSubmit={handleSubmit} isSubmitting={isSubmitting}>
             <CreateAccountCoreFields
                 variant={variant}
                 fields={fields}
                 instrumentSymbol={stickyInstrument.symbol}
                 balanceFieldLabel={balanceFieldLabel}
+                namePlaceholder={t`e.g. Loan to Alex`}
             >
                 <DebtOpeningAccountField
                     accountId={openingAccountId}
