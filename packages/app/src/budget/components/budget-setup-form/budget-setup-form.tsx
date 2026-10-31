@@ -39,13 +39,10 @@ export const BudgetSetupForm = ({ defaultInstrumentId, editingId, templateKind }
         editingId,
         templateKind
     });
-    const [name, overallLimit, otherLimit, categoryLimits, watchedInstrumentId] = useWatch({
-        control: form.control,
-        name: ['name', 'overallLimit', 'otherLimit', 'categoryLimits', 'instrumentId']
-    });
+    const { instrumentId: watchedInstrumentId } = useWatch({ control: form.control });
     const instrumentId = isPositiveNumber(watchedInstrumentId) ? watchedInstrumentId : defaultInstrumentId;
     const { instrument } = useGetInstrumentByIdQuery(instrumentId);
-    const saveBlocker = resolveBudgetSaveBlocker({ ...form.getValues(), name, overallLimit, otherLimit, categoryLimits, instrumentId });
+    const saveBlocker = isLoading ? null : resolveBudgetSaveBlocker({ ...form.getValues(), instrumentId });
     const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
     const handleCategoryAdded = () => scrollViewRef.current?.scrollToEnd({ animated: true });
     const scrollViewProps = { ref: scrollViewRef };
