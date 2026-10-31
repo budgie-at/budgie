@@ -5,13 +5,14 @@ import { isDefined } from '@rnw-community/shared';
 import { cn } from '../../../@generic/utils/cn.util';
 import { BUDGET_BAR_FILL_CLASS_NAME } from '../../constant/budget-bar-fill-class-name.constant';
 import { BUDGET_PACE_RESERVED_CLASS_NAME } from '../../constant/budget-pace-reserved-class-name.constant';
-import { BUDGET_PACE_VARIANT } from '../../constant/budget-pace-variant.constant';
 import { buildBudgetPaceTrackMetrics } from '../../utils/build-budget-pace-track-metrics.util';
 
+import type { BudgetPaceVariant } from '../../type/budget-pace-variant.type';
 import type { BudgetProjectionScopeInterface } from '@budgie/budget';
 
 interface Props {
     readonly scope: BudgetProjectionScopeInterface;
+    readonly tone: BudgetPaceVariant;
 }
 
 const RING_BORDER_CLASS_NAME = {
@@ -20,8 +21,7 @@ const RING_BORDER_CLASS_NAME = {
     destructive: 'border-destructive-fill'
 } as const;
 
-export const BudgetPaceTrack = ({ scope }: Props) => {
-    const variant = BUDGET_PACE_VARIANT[scope.status];
+export const BudgetPaceTrack = ({ scope, tone: variant }: Props) => {
     const { spentStyle, upcomingStyle, todayStyle, ringStyle } = buildBudgetPaceTrackMetrics(scope);
 
     return (

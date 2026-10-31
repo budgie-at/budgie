@@ -4,14 +4,16 @@ import { View } from 'react-native';
 import { SectionHeader } from '../../../@generic/component/section-header/section-header';
 import { BudgetForecastChart } from '../budget-forecast-chart/budget-forecast-chart';
 
+import type { BudgetPaceVariant } from '../../type/budget-pace-variant.type';
 import type { BudgetProjectionInterface } from '@budgie/budget';
 
 interface Props {
     readonly projection: BudgetProjectionInterface;
+    readonly tone: BudgetPaceVariant;
     readonly currencySymbol: string;
 }
 
-export const BudgetForecastCard = ({ projection, currencySymbol }: Props) => {
+export const BudgetForecastCard = ({ projection, tone, currencySymbol }: Props) => {
     const { t } = useLingui();
 
     return (
@@ -19,7 +21,7 @@ export const BudgetForecastCard = ({ projection, currencySymbol }: Props) => {
             <SectionHeader label={t`Forecast`} />
 
             <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
-                <BudgetForecastChart projection={projection} currencySymbol={currencySymbol} />
+                <BudgetForecastChart projection={projection} tone={tone} currencySymbol={currencySymbol} />
             </View>
         </View>
     );

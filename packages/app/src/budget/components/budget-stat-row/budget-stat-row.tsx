@@ -6,23 +6,23 @@ import { HairlineStatRow } from '../../../@generic/component/hairline-stat-row/h
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { BudgetSelector } from '../../budget.selector';
 import { BUDGET_PACE_TEXT_CLASS_NAME } from '../../constant/budget-pace-text-class-name.constant';
-import { isBudgetTight } from '../../utils/is-budget-tight.util';
 import { BudgetHeldBackNote } from '../budget-held-back-note/budget-held-back-note';
 
-import type { BudgetProjectionInterface } from '@budgie/budget';
+import type { BudgetDisplayStatusInterface } from '../../interface/budget-display-status.interface';
+import type { BudgetProjectionScopeInterface } from '@budgie/budget';
 
 interface Props {
-    readonly projection: BudgetProjectionInterface;
+    readonly scope: BudgetProjectionScopeInterface;
+    readonly displayStatus: BudgetDisplayStatusInterface;
     readonly limitSource: BudgetLimitSourceEnum;
     readonly currencySymbol: string;
 }
 
-export const BudgetStatRow = ({ projection, limitSource, currencySymbol }: Props) => {
+export const BudgetStatRow = ({ scope, displayStatus, limitSource, currencySymbol }: Props) => {
     const { t } = useLingui();
     const formatDigits = useDisplayFormatDigits();
-    const scope = projection.overall;
     const leftTone = scope.free < 0 ? 'destructive' : 'positive';
-    const isNeutralLeft = scope.free >= 0 && isBudgetTight(projection, limitSource);
+    const isNeutralLeft = scope.free >= 0 && displayStatus.isTight;
 
     const formatAmount = (amount: number) => formatDigits(convertFromMicroUnits(amount), currencySymbol).replace('-', '−');
 

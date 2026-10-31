@@ -4920,6 +4920,10 @@ msgid "Plan {allowanceLabel}/day · {safeLabel}/day keeps you on track"
 msgstr "Plan {allowanceLabel}/day · {safeLabel}/day keeps you on track"
 
 #: src/budget/hooks/use-budget-day-strip-labels.hook.ts
+msgid "Plan {allowanceLabel}/day · Stay under {safeLabel}/day"
+msgstr "Plan {allowanceLabel}/day · Stay under {safeLabel}/day"
+
+#: src/budget/hooks/use-budget-day-strip-labels.hook.ts
 msgid "Plan {allowanceLabel}/day · You can spend up to {safeLabel}/day"
 msgstr "Plan {allowanceLabel}/day · You can spend up to {safeLabel}/day"
 
@@ -6423,7 +6427,7 @@ msgstr "Tick marks where savings should be by today."
 msgid "Tick marks where spending should be by today."
 msgstr "Tick marks where spending should be by today."
 
-#: src/budget/components/budget-verdict-header/budget-verdict-header.tsx
+#: src/budget/utils/resolve-budget-display-status.util.ts
 msgid "Tight"
 msgstr "Tight"
 

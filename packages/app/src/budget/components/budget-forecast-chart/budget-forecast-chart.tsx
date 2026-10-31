@@ -5,7 +5,6 @@ import Svg from 'react-native-svg';
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { StyledPath } from '../../../@generic/component/styled-path/styled-path';
-import { BUDGET_PACE_VARIANT } from '../../constant/budget-pace-variant.constant';
 import { useBudgetForecastLabels } from '../../hooks/use-budget-forecast-labels.hook';
 import { buildBudgetForecastGeometry } from '../../utils/build-budget-forecast-geometry.util';
 import { resolveBudgetForecastLabelLane } from '../../utils/resolve-budget-forecast-label-lane.util';
@@ -16,11 +15,13 @@ import { BudgetForecastLimit } from '../budget-forecast-limit/budget-forecast-li
 import { BudgetForecastRunOut } from '../budget-forecast-run-out/budget-forecast-run-out';
 import { BudgetForecastTodayMarker } from '../budget-forecast-today-marker/budget-forecast-today-marker';
 
+import type { BudgetPaceVariant } from '../../type/budget-pace-variant.type';
 import type { BudgetProjectionInterface } from '@budgie/budget';
 import type { LayoutChangeEvent } from 'react-native';
 
 interface Props {
     readonly projection: BudgetProjectionInterface;
+    readonly tone: BudgetPaceVariant;
     readonly currencySymbol: string;
 }
 
@@ -54,17 +55,16 @@ const TONE_LABEL_CLASS_NAME = {
     destructive: 'accent-destructive-strong'
 } as const;
 
-export const BudgetForecastChart = ({ projection, currencySymbol }: Props) => {
+export const BudgetForecastChart = ({ projection, tone, currencySymbol }: Props) => {
     const [width, setWidth] = useState(0);
     const { limitLabel, endLabel } = useBudgetForecastLabels(projection.overall, currencySymbol);
 
     const handleLayout = (event: LayoutChangeEvent) => void setWidth(event.nativeEvent.layout.width);
 
-    const { runOutAt, status } = projection.overall;
+    const { runOutAt } = projection.overall;
     const paddingTop = isDefined(runOutAt) ? CHART_RUN_OUT_PADDING_TOP : CHART_PADDING_TOP;
     const geometry = buildBudgetForecastGeometry({ projection, width, paddingTop, ...GEOMETRY_LAYOUT });
     const { actualPath, projectedPath, projectedEndPoint, limitY, todayX, todayPoint, runOutX, bills } = geometry;
-    const tone = BUDGET_PACE_VARIANT[status];
     const accentClassName = TONE_STROKE_CLASS_NAME[tone];
     const todayIndex = projection.elapsedDays - 1;
     const endLabelY = resolveBudgetForecastLabelLane({

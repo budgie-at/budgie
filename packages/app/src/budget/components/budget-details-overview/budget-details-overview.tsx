@@ -2,6 +2,7 @@ import { BudgetLimitSourceEnum } from '@budgie/contracts';
 import { Fragment } from 'react';
 
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
+import { resolveBudgetDisplayStatus } from '../../utils/resolve-budget-display-status.util';
 import { BudgetAllocationBlock } from '../budget-allocation-block/budget-allocation-block';
 import { BudgetDayStrip } from '../budget-day-strip/budget-day-strip';
 import { BudgetDetailsCategoryList } from '../budget-details-category-list/budget-details-category-list';
@@ -26,6 +27,7 @@ interface Props {
 
 export const BudgetDetailsOverview = (props: Props) => {
     const { budget, projection, isLoading, currencySymbol, periodStart, periodEnd, onFigurePress, onPaceHintPress } = props;
+    const displayStatus = resolveBudgetDisplayStatus(projection, budget.limitSource);
     const allocationBlock =
         budget.limitSource === BudgetLimitSourceEnum.FIXED ? null : (
             <BudgetAllocationBlock projection={projection} budget={budget} currencySymbol={currencySymbol} />
@@ -36,7 +38,7 @@ export const BudgetDetailsOverview = (props: Props) => {
             <LoadingContent isLoading={isLoading}>
                 <BudgetVerdict
                     projection={projection}
-                    limitSource={budget.limitSource}
+                    displayStatus={displayStatus}
                     currencySymbol={currencySymbol}
                     onFigurePress={onFigurePress}
                     onPaceHintPress={onPaceHintPress}
@@ -44,16 +46,31 @@ export const BudgetDetailsOverview = (props: Props) => {
             </LoadingContent>
 
             <LoadingContent isLoading={isLoading}>
-                <BudgetDayStrip projection={projection} period={budget.period} currencySymbol={currencySymbol} />
+                <BudgetDayStrip
+                    projection={projection}
+                    period={budget.period}
+                    isTight={displayStatus.isTight}
+                    currencySymbol={currencySymbol}
+                />
             </LoadingContent>
 
             <LoadingContent isLoading={isLoading}>
-                <BudgetStatRow projection={projection} limitSource={budget.limitSource} currencySymbol={currencySymbol} />
+                <BudgetStatRow
+                    scope={projection.overall}
+                    displayStatus={displayStatus}
+                    limitSource={budget.limitSource}
+                    currencySymbol={currencySymbol}
+                />
             </LoadingContent>
 
             {allocationBlock}
 
-            <BudgetDetailsForecast projection={projection} currencySymbol={currencySymbol} isLoading={isLoading} />
+            <BudgetDetailsForecast
+                projection={projection}
+                tone={displayStatus.tone}
+                currencySymbol={currencySymbol}
+                isLoading={isLoading}
+            />
 
             <LoadingContent isLoading={isLoading}>
                 <BudgetDetailsCategoryList

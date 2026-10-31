@@ -12,19 +12,19 @@ import { BudgetVerdictFigure } from '../budget-verdict-figure/budget-verdict-fig
 import { BudgetVerdictFooter } from '../budget-verdict-footer/budget-verdict-footer';
 import { BudgetVerdictHeader } from '../budget-verdict-header/budget-verdict-header';
 
+import type { BudgetDisplayStatusInterface } from '../../interface/budget-display-status.interface';
 import type { BudgetHighlightTargetInterface } from '../../interface/budget-highlight-target.interface';
 import type { BudgetProjectionInterface } from '@budgie/budget';
-import type { BudgetLimitSourceEnum } from '@budgie/contracts';
 
 interface Props {
     readonly projection: BudgetProjectionInterface;
-    readonly limitSource: BudgetLimitSourceEnum;
+    readonly displayStatus: BudgetDisplayStatusInterface;
     readonly currencySymbol: string;
     readonly onFigurePress?: () => void;
     readonly onPaceHintPress?: (target: BudgetHighlightTargetInterface) => void;
 }
 
-export const BudgetVerdict = ({ projection, limitSource, currencySymbol, onFigurePress, onPaceHintPress }: Props) => {
+export const BudgetVerdict = ({ projection, displayStatus, currencySymbol, onFigurePress, onPaceHintPress }: Props) => {
     const { t } = useLingui();
     const { overall, upcomingCharges } = projection;
 
@@ -51,7 +51,7 @@ export const BudgetVerdict = ({ projection, limitSource, currencySymbol, onFigur
 
     return (
         <EntranceReveal step={0} className="gap-y-md">
-            <BudgetVerdictHeader projection={projection} limitSource={limitSource} />
+            <BudgetVerdictHeader projection={projection} displayStatus={displayStatus} />
 
             {figure}
 
