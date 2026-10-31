@@ -5,10 +5,10 @@ import { Text } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
+import { BUDGET_PACE_TEXT_CLASS_NAME } from '../../constant/budget-pace-text-class-name.constant';
 import { BUDGET_PACE_VARIANT } from '../../constant/budget-pace-variant.constant';
 
 import type { BudgetProjectionScopeInterface } from '@budgie/budget';
@@ -40,7 +40,7 @@ export const BudgetCategoryForecast = ({ scope, currencySymbol }: Props) => {
     }
 
     return (
-        <Text className={cn('text-xs tabular-nums', FOREGROUND_COLOR_PALETTE[BUDGET_PACE_VARIANT[scope.status]])} numberOfLines={1}>
+        <Text className={cn('text-xs tabular-nums', BUDGET_PACE_TEXT_CLASS_NAME[BUDGET_PACE_VARIANT[scope.status]])} numberOfLines={1}>
             {note}
         </Text>
     );

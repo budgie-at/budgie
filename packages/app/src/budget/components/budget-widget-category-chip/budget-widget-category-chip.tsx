@@ -12,8 +12,8 @@ const percentTextVariants = cva<{ tone: Record<BudgetBarTone, string> }>('text-x
     variants: {
         tone: {
             green: 'text-primary',
-            yellow: 'text-warning-foreground',
-            red: 'text-destructive-foreground'
+            yellow: 'text-warning-strong',
+            red: 'text-destructive-strong'
         }
     }
 });

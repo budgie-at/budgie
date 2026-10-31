@@ -76,6 +76,7 @@
         @variant light {
             --color-positive-strong: rgb(0, 122, 82);
             --color-destructive-strong: rgb(196, 38, 45);
+            --color-warning-strong: rgb(161, 98, 7);
             --color-transaction-detail-row: rgb(255, 255, 255);
             --color-transaction-detail-bar: rgb(249, 249, 249);
             --color-transaction-detail-bar-separator: rgba(60, 60, 67, 0.29);
@@ -162,6 +163,7 @@
         @variant dark {
             --color-positive-strong: rgb(0, 255, 136);
             --color-destructive-strong: rgb(255, 68, 68);
+            --color-warning-strong: rgba(240, 177, 0, 1);
             --color-transaction-detail-row: rgb(28, 28, 30);
             --color-transaction-detail-bar: rgb(22, 22, 24);
             --color-transaction-detail-bar-separator: rgba(84, 84, 88, 0.6);

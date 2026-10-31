@@ -35,7 +35,7 @@ export const BudgetPeriodRecapCard = ({ snapshot, period, currencySymbol }: Prop
     const title = isUnder ? t`${periodLabel} closed ${amount} under` : t`${periodLabel} closed ${amount} over`;
     const onBudgetCategoryCount = snapshot.categories.filter(category => category.spent <= category.limitAmount).length;
     const categoryCount = snapshot.categories.length;
-    const toneClassName = isUnder ? 'text-positive-foreground' : 'text-destructive-foreground';
+    const toneClassName = isUnder ? 'text-positive-strong' : 'text-destructive-strong';
 
     const handleDismiss = () => {
         appRuntime.runFork(
