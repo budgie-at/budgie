@@ -4,10 +4,11 @@ import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
-import { FormsheetHeader } from '../../../@generic/component/formsheet-header/formsheet-header';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
-import { PillButton } from '../../../@generic/component/pill-button/pill-button';
+import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
+import { PillButtonFooter } from '../../../@generic/component/pill-button-footer/pill-button-footer';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { BudgetSelector } from '../../budget.selector';
 import { useBudgetFundForm } from '../../hooks/use-budget-fund-form.hook';
@@ -47,9 +48,19 @@ export const BudgetFundForm = ({ budget, editingId }: Props) => {
 
     return (
         <FormProvider {...form}>
-            <View className="bg-sheet-surface px-5xl pb-3xl">
-                <FormsheetHeader size="md" title={title} />
-                <FormLayoutGroup className="gap-3xl">
+            <CollapsibleChromePage
+                title={title}
+                leading={<HeaderBackButton />}
+                footer={
+                    <PillButtonFooter
+                        label={saveLabel}
+                        isDisabled={isDefined(saveBlocker)}
+                        testID={BudgetSelector.FundSaveButton}
+                        onPress={handleSubmit}
+                    />
+                }
+            >
+                <FormLayoutGroup>
                     {isDefined(suggestion) ? (
                         <BudgetFundSuggestionBanner suggestion={suggestion} currencySymbol={currencySymbol} onUse={handleUseSuggestion} />
                     ) : null}
@@ -71,14 +82,8 @@ export const BudgetFundForm = ({ budget, editingId }: Props) => {
                     {isEditing ? (
                         <BudgetDeleteRow title={t`Delete set aside`} testID={BudgetSelector.FundDeleteButton} onDelete={handleDelete} />
                     ) : null}
-                    <PillButton
-                        label={saveLabel}
-                        isDisabled={isDefined(saveBlocker)}
-                        testID={BudgetSelector.FundSaveButton}
-                        onPress={handleSubmit}
-                    />
                 </FormLayoutGroup>
-            </View>
+            </CollapsibleChromePage>
         </FormProvider>
     );
 };

@@ -21,7 +21,7 @@ export const BudgetFundsSection = ({ budget, currencySymbol }: Props) => {
     const { funds } = useGetBudgetFundsQuery(budget.id);
 
     const handleAddPress = () => {
-        router.push('/budget-fund-form');
+        router.push('/budget/fund');
     };
 
     const footnote = isEmptyArray(funds) ? (

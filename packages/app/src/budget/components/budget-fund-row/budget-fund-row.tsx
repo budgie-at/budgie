@@ -35,7 +35,7 @@ export const BudgetFundRow = ({ fund, budget, currencySymbol }: Props) => {
     const icon = isDefined(category) ? category.icon : UserIconNameEnum.PiggyBank;
 
     const handlePress = () => {
-        router.push({ pathname: '/budget-fund-form', params: { id: String(fund.id) } });
+        router.push({ pathname: '/budget/fund', params: { id: String(fund.id) } });
     };
 
     return (
