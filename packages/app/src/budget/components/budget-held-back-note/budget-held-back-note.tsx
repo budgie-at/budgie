@@ -26,8 +26,8 @@ export const BudgetHeldBackNote = ({ scope, currencySymbol }: Props) => {
     }
 
     const upcomingLabel = hasUpcoming ? t`After ${upcomingAmount} for upcoming bills` : null;
-    const reservedLabel = hasReserved ? t`After ${reservedAmount} set aside` : upcomingLabel;
-    const label = hasReserved && hasUpcoming ? t`After ${reservedAmount} set aside and ${upcomingAmount} for bills` : reservedLabel;
+    const reservedLabel = hasReserved ? t`After ${reservedAmount} planned for set-asides` : upcomingLabel;
+    const label = hasReserved && hasUpcoming ? t`After ${reservedAmount} for set-asides and ${upcomingAmount} for bills` : reservedLabel;
 
     return <Text className="text-xs text-secondary-foreground">{label}</Text>;
 };

@@ -517,8 +517,8 @@ msgid "{selectedInGroupCount} of {accountsCount} selected"
 msgstr "Вибрано {selectedInGroupCount} з {accountsCount}"
 
 #: src/budget/components/budget-fund-row-status/budget-fund-row-status.tsx
-msgid "{setAsideLabel} set aside {thisPeriod}"
-msgstr "{setAsideLabel} відкладено {thisPeriod}"
+msgid "{setAsideLabel} to set aside {thisPeriod}"
+msgstr "{setAsideLabel} відкласти {thisPeriod}"
 
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "{similarCount, plural, one {# similar · last 6 months} other {# similar · last 6 months}}"
@@ -911,12 +911,12 @@ msgid "Adjusts category limits after 3 periods of steady over or under spending"
 msgstr "Коригує ліміти категорій після 3 періодів стабільного перевищення або недовитрачання"
 
 #: src/budget/components/budget-held-back-note/budget-held-back-note.tsx
-msgid "After {reservedAmount} set aside"
-msgstr "Після {reservedAmount} відкладеного"
+msgid "After {reservedAmount} for set-asides and {upcomingAmount} for bills"
+msgstr "Після {reservedAmount} на відкладення та {upcomingAmount} на рахунки"
 
 #: src/budget/components/budget-held-back-note/budget-held-back-note.tsx
-msgid "After {reservedAmount} set aside and {upcomingAmount} for bills"
-msgstr "Після {reservedAmount} відкладеного та {upcomingAmount} на рахунки"
+msgid "After {reservedAmount} planned for set-asides"
+msgstr "Після {reservedAmount}, запланованих на відкладення"
 
 #: src/budget/components/budget-held-back-note/budget-held-back-note.tsx
 msgid "After {upcomingAmount} for upcoming bills"
@@ -1404,6 +1404,10 @@ msgstr "Budgie обирає рахунок за назвою картки, то�
 msgid "Budgie picks the account from the card name, then your default account. Name the account like the card, or set the optional Account field in the action to pin one."
 msgstr "Budgie обирає рахунок за назвою картки, а потім за рахунком за замовчуванням. Назви рахунок так само, як картку, або закріпи рахунок необов'язковим полем «Рахунок» у дії."
 
+#: src/budget/components/budget-fund-preview/budget-fund-preview.tsx
+msgid "Budgie plans to set aside {amountLabel} {rate}"
+msgstr "Budgie планує відкладати {amountLabel} {rate}"
+
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 msgid "Budgie re-encrypts {DB_NAME} ({fileSize}) on this phone. It takes a few seconds."
 msgstr "Budgie перешифровує {DB_NAME} ({fileSize}) на цьому телефоні. Це займе кілька секунд."
@@ -1415,10 +1419,6 @@ msgstr "Budgie читає ці виписки на цьому телефоні."
 #: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
 msgid "Budgie records Apple Pay payments the moment you tap, through a Shortcuts automation."
 msgstr "Budgie записує платежі Apple Pay щойно ви прикладаєте пристрій — через автоматизацію в Швидких командах."
-
-#: src/budget/components/budget-fund-preview/budget-fund-preview.tsx
-msgid "Budgie sets aside {amountLabel} {rate}"
-msgstr "Budgie відкладає {amountLabel} {rate}"
 
 #: src/settings/components/screenshot-protection-row/screenshot-protection-row.tsx
 msgid "Budgie stays blank in screenshots and screen recordings"
@@ -1635,6 +1635,10 @@ msgstr "Змінити іконку"
 #: src/settings/components/pin-management-rows/pin-management-rows.tsx
 msgid "Change PIN"
 msgstr "Змінити PIN-код"
+
+#: src/budget/hooks/use-budget-forecast-labels.hook.ts
+msgid "Chart max {scaleAmount}"
+msgstr "Максимум графіка {scaleAmount}"
 
 #: src/budget/constant/budget-save-blocker-label.constant.ts
 msgid "Check the form to continue"
@@ -5738,10 +5742,6 @@ msgstr "Вкажіть суму, щоб продовжити"
 msgid "Set aside"
 msgstr "Відкладено"
 
-#: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
-msgid "Set aside this period"
-msgstr "Відкладено в цьому періоді"
-
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 msgid "Set Category"
 msgstr "Встановити категорію"
@@ -6492,6 +6492,10 @@ msgstr "До отримання"
 #: src/account/constant/debt-remaining-label.constant.ts
 msgid "To repay"
 msgstr "До сплати"
+
+#: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
+msgid "To set aside this period"
+msgstr "Відкласти в цьому періоді"
 
 #: src/@generic/constant/date-period.constant.ts
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx

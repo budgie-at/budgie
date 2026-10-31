@@ -37,6 +37,6 @@ export const BudgetFundPreview = ({ budget, fundedAmount, currencySymbol }: Prop
     const rate = t(BUDGET_PERIOD_RATE_LABEL[budget.period]);
 
     return (
-        <Text className="text-secondary-foreground px-3xl text-[13px] leading-[18px]">{t`Budgie sets aside ${amountLabel} ${rate}`}</Text>
+        <Text className="text-secondary-foreground px-3xl text-[13px] leading-[18px]">{t`Budgie plans to set aside ${amountLabel} ${rate}`}</Text>
     );
 };

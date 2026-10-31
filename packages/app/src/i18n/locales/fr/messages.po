@@ -517,8 +517,8 @@ msgid "{selectedInGroupCount} of {accountsCount} selected"
 msgstr "{selectedInGroupCount} sur {accountsCount} sélectionnés"
 
 #: src/budget/components/budget-fund-row-status/budget-fund-row-status.tsx
-msgid "{setAsideLabel} set aside {thisPeriod}"
-msgstr "{setAsideLabel} mis de côté {thisPeriod}"
+msgid "{setAsideLabel} to set aside {thisPeriod}"
+msgstr "{setAsideLabel} à mettre de côté {thisPeriod}"
 
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "{similarCount, plural, one {# similar · last 6 months} other {# similar · last 6 months}}"
@@ -911,12 +911,12 @@ msgid "Adjusts category limits after 3 periods of steady over or under spending"
 msgstr "Ajuste les limites par catégorie après 3 périodes de dépenses constamment au-dessus ou en dessous"
 
 #: src/budget/components/budget-held-back-note/budget-held-back-note.tsx
-msgid "After {reservedAmount} set aside"
-msgstr "Après {reservedAmount} mis de côté"
+msgid "After {reservedAmount} for set-asides and {upcomingAmount} for bills"
+msgstr "Après {reservedAmount} pour les réserves et {upcomingAmount} pour les factures"
 
 #: src/budget/components/budget-held-back-note/budget-held-back-note.tsx
-msgid "After {reservedAmount} set aside and {upcomingAmount} for bills"
-msgstr "Après {reservedAmount} mis de côté et {upcomingAmount} pour les factures"
+msgid "After {reservedAmount} planned for set-asides"
+msgstr "Après {reservedAmount} prévus pour les réserves"
 
 #: src/budget/components/budget-held-back-note/budget-held-back-note.tsx
 msgid "After {upcomingAmount} for upcoming bills"
@@ -1404,6 +1404,10 @@ msgstr "Budgie choisit le compte d’après le nom de la carte : une seule autom
 msgid "Budgie picks the account from the card name, then your default account. Name the account like the card, or set the optional Account field in the action to pin one."
 msgstr "Budgie choisit le compte d'après le nom de la carte, puis ton compte par défaut. Nomme le compte comme la carte, ou fixe-en un avec le champ facultatif Compte de l'action."
 
+#: src/budget/components/budget-fund-preview/budget-fund-preview.tsx
+msgid "Budgie plans to set aside {amountLabel} {rate}"
+msgstr "Budgie prévoit de mettre de côté {amountLabel} {rate}"
+
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 msgid "Budgie re-encrypts {DB_NAME} ({fileSize}) on this phone. It takes a few seconds."
 msgstr "Budgie rechiffre {DB_NAME} ({fileSize}) sur ce téléphone. Cela prend quelques secondes."
@@ -1415,10 +1419,6 @@ msgstr "Budgie lit ces relevés sur ce téléphone."
 #: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
 msgid "Budgie records Apple Pay payments the moment you tap, through a Shortcuts automation."
 msgstr "Budgie enregistre vos paiements Apple Pay dès que vous payez, grâce à une automatisation Raccourcis."
-
-#: src/budget/components/budget-fund-preview/budget-fund-preview.tsx
-msgid "Budgie sets aside {amountLabel} {rate}"
-msgstr "Budgie met de côté {amountLabel} {rate}"
 
 #: src/settings/components/screenshot-protection-row/screenshot-protection-row.tsx
 msgid "Budgie stays blank in screenshots and screen recordings"
@@ -1635,6 +1635,10 @@ msgstr "Changer l'icône"
 #: src/settings/components/pin-management-rows/pin-management-rows.tsx
 msgid "Change PIN"
 msgstr "Modifier le code PIN"
+
+#: src/budget/hooks/use-budget-forecast-labels.hook.ts
+msgid "Chart max {scaleAmount}"
+msgstr "Maximum du graphique {scaleAmount}"
 
 #: src/budget/constant/budget-save-blocker-label.constant.ts
 msgid "Check the form to continue"
@@ -5738,10 +5742,6 @@ msgstr "Saisissez un montant pour continuer"
 msgid "Set aside"
 msgstr "Mis de côté"
 
-#: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
-msgid "Set aside this period"
-msgstr "Mis de côté sur cette période"
-
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 msgid "Set Category"
 msgstr "Définir la catégorie"
@@ -6492,6 +6492,10 @@ msgstr "À recevoir"
 #: src/account/constant/debt-remaining-label.constant.ts
 msgid "To repay"
 msgstr "À rembourser"
+
+#: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
+msgid "To set aside this period"
+msgstr "À mettre de côté sur cette période"
 
 #: src/@generic/constant/date-period.constant.ts
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx

@@ -27,7 +27,7 @@ export const BudgetFundRowStatus = ({ fund, budget, dueLabel, currencySymbol }: 
     const setAsideLabel = formatDigits(convertFromMicroUnits(setAside), currencySymbol);
     const thisPeriod = t(BUDGET_PERIOD_THIS_LABEL[budget.period]);
     const rate = t(BUDGET_PERIOD_RATE_LABEL[budget.period]);
-    const settledLabel = setAside > 0 ? t`${setAsideLabel} set aside ${thisPeriod}` : t`Fully funded`;
+    const settledLabel = setAside > 0 ? t`${setAsideLabel} to set aside ${thisPeriod}` : t`Fully funded`;
 
     if (isFundBehind(fund, today)) {
         return (

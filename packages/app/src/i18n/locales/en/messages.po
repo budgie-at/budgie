@@ -518,8 +518,8 @@ msgid "{selectedInGroupCount} of {accountsCount} selected"
 msgstr "{selectedInGroupCount} of {accountsCount} selected"
 
 #: src/budget/components/budget-fund-row-status/budget-fund-row-status.tsx
-msgid "{setAsideLabel} set aside {thisPeriod}"
-msgstr "{setAsideLabel} set aside {thisPeriod}"
+msgid "{setAsideLabel} to set aside {thisPeriod}"
+msgstr "{setAsideLabel} to set aside {thisPeriod}"
 
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "{similarCount, plural, one {# similar · last 6 months} other {# similar · last 6 months}}"
@@ -912,12 +912,12 @@ msgid "Adjusts category limits after 3 periods of steady over or under spending"
 msgstr "Adjusts category limits after 3 periods of steady over or under spending"
 
 #: src/budget/components/budget-held-back-note/budget-held-back-note.tsx
-msgid "After {reservedAmount} set aside"
-msgstr "After {reservedAmount} set aside"
+msgid "After {reservedAmount} for set-asides and {upcomingAmount} for bills"
+msgstr "After {reservedAmount} for set-asides and {upcomingAmount} for bills"
 
 #: src/budget/components/budget-held-back-note/budget-held-back-note.tsx
-msgid "After {reservedAmount} set aside and {upcomingAmount} for bills"
-msgstr "After {reservedAmount} set aside and {upcomingAmount} for bills"
+msgid "After {reservedAmount} planned for set-asides"
+msgstr "After {reservedAmount} planned for set-asides"
 
 #: src/budget/components/budget-held-back-note/budget-held-back-note.tsx
 msgid "After {upcomingAmount} for upcoming bills"
@@ -1405,6 +1405,10 @@ msgstr "Budgie picks the account from the card name, so one automation covers al
 msgid "Budgie picks the account from the card name, then your default account. Name the account like the card, or set the optional Account field in the action to pin one."
 msgstr "Budgie picks the account from the card name, then your default account. Name the account like the card, or set the optional Account field in the action to pin one."
 
+#: src/budget/components/budget-fund-preview/budget-fund-preview.tsx
+msgid "Budgie plans to set aside {amountLabel} {rate}"
+msgstr "Budgie plans to set aside {amountLabel} {rate}"
+
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 msgid "Budgie re-encrypts {DB_NAME} ({fileSize}) on this phone. It takes a few seconds."
 msgstr "Budgie re-encrypts {DB_NAME} ({fileSize}) on this phone. It takes a few seconds."
@@ -1416,10 +1420,6 @@ msgstr "Budgie reads these statements on this phone."
 #: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
 msgid "Budgie records Apple Pay payments the moment you tap, through a Shortcuts automation."
 msgstr "Budgie records Apple Pay payments the moment you tap, through a Shortcuts automation."
-
-#: src/budget/components/budget-fund-preview/budget-fund-preview.tsx
-msgid "Budgie sets aside {amountLabel} {rate}"
-msgstr "Budgie sets aside {amountLabel} {rate}"
 
 #: src/settings/components/screenshot-protection-row/screenshot-protection-row.tsx
 msgid "Budgie stays blank in screenshots and screen recordings"
@@ -1636,6 +1636,10 @@ msgstr "Change icon"
 #: src/settings/components/pin-management-rows/pin-management-rows.tsx
 msgid "Change PIN"
 msgstr "Change PIN"
+
+#: src/budget/hooks/use-budget-forecast-labels.hook.ts
+msgid "Chart max {scaleAmount}"
+msgstr "Chart max {scaleAmount}"
 
 #: src/budget/constant/budget-save-blocker-label.constant.ts
 msgid "Check the form to continue"
@@ -5739,10 +5743,6 @@ msgstr "Set an amount to continue"
 msgid "Set aside"
 msgstr "Set aside"
 
-#: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
-msgid "Set aside this period"
-msgstr "Set aside this period"
-
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 msgid "Set Category"
 msgstr "Set Category"
@@ -6493,6 +6493,10 @@ msgstr "To receive"
 #: src/account/constant/debt-remaining-label.constant.ts
 msgid "To repay"
 msgstr "To repay"
+
+#: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
+msgid "To set aside this period"
+msgstr "To set aside this period"
 
 #: src/@generic/constant/date-period.constant.ts
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx

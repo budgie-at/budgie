@@ -20,10 +20,11 @@ export const useBudgetForecastLabels = (
     const gapAmount = formatWholeAmount(convertFromMicroUnits(Math.abs(limit - (projectedEnd ?? limit))), currencySymbol);
     const projectedAmount = formatWholeAmount(convertFromMicroUnits(projectedEnd ?? limit), currencySymbol);
     const limitAmount = formatWholeAmount(convertFromMicroUnits(limit), currencySymbol);
+    const scaleAmount = formatWholeAmount(convertFromMicroUnits(domain.maxValue), currencySymbol);
 
     return {
         limitLabel: domain.isLimitInRange ? t`Limit ${limitAmount}` : t`Limit ${limitAmount} · above chart`,
-        scaleLabel: formatWholeAmount(convertFromMicroUnits(domain.maxValue), currencySymbol),
+        scaleLabel: t`Chart max ${scaleAmount}`,
         endLabel: isOver ? t`${projectedAmount} · ${gapAmount} over` : t`${projectedAmount} · ${gapAmount} under`
     };
 };
