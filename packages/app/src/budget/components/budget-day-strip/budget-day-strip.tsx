@@ -20,6 +20,7 @@ interface Props {
 export const BudgetDayStrip = ({ projection, period, isTight, currencySymbol }: Props) => {
     const { elapsedDays, totalDays } = projection;
     const { dayCells, accessibilityLabel, captionLabel } = useBudgetDayStripLabels(projection, period, currencySymbol, isTight);
+    const presentDayStates = new Set(dayCells.map(cell => cell.dayState));
     const todayIndex = dayCells.findIndex(cell => cell.dayState === BudgetDayStateEnum.TODAY);
     const accessibilityValue = { min: 1, max: totalDays, now: elapsedDays };
 
@@ -39,9 +40,10 @@ export const BudgetDayStrip = ({ projection, period, isTight, currencySymbol }: 
                 })}
             </View>
 
-            <BudgetDayStripKey />
-
-            <Text className="text-xs text-secondary-foreground">{captionLabel}</Text>
+            <View className="flex-row flex-wrap items-center gap-x-xl gap-y-xs">
+                <Text className="text-xs text-secondary-foreground">{captionLabel}</Text>
+                <BudgetDayStripKey dayStates={presentDayStates} />
+            </View>
         </EntranceReveal>
     );
 };
