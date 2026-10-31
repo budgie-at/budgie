@@ -57,7 +57,6 @@ const TONE_LABEL_CLASS_NAME = {
 
 export const BudgetForecastChart = ({ projection, tone, currencySymbol }: Props) => {
     const [width, setWidth] = useState(0);
-    const { limitLabel, endLabel } = useBudgetForecastLabels(projection.overall, currencySymbol);
 
     const handleLayout = (event: LayoutChangeEvent) => void setWidth(event.nativeEvent.layout.width);
 
@@ -65,6 +64,7 @@ export const BudgetForecastChart = ({ projection, tone, currencySymbol }: Props)
     const paddingTop = isDefined(runOutAt) ? CHART_RUN_OUT_PADDING_TOP : CHART_PADDING_TOP;
     const geometry = buildBudgetForecastGeometry({ projection, width, paddingTop, ...GEOMETRY_LAYOUT });
     const { actualPath, projectedPath, projectedEndPoint, limitY, todayX, todayPoint, runOutX, bills } = geometry;
+    const { limitLabel, endLabel } = useBudgetForecastLabels(projection.overall, currencySymbol, geometry.isLimitInRange);
     const accentClassName = TONE_STROKE_CLASS_NAME[tone];
     const todayIndex = projection.elapsedDays - 1;
     const endLabelY = resolveBudgetForecastLabelLane({

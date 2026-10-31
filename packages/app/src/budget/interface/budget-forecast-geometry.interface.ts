@@ -8,6 +8,7 @@ export interface BudgetForecastGeometryInterface {
     readonly projectedEndPoint: BudgetForecastPointInterface | null;
     readonly todayPoint: BudgetForecastPointInterface | null;
     readonly limitY: number;
+    readonly isLimitInRange: boolean;
     readonly todayX: number;
     readonly runOutX: number | null;
     readonly bills: readonly BudgetForecastBillPointInterface[];

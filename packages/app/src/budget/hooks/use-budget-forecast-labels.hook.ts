@@ -7,7 +7,11 @@ import { useProtectedWholeAmountLabel } from '../../@generic/hook/use-protected-
 
 import type { BudgetProjectionScopeInterface } from '@budgie/budget';
 
-export const useBudgetForecastLabels = (scope: Pick<BudgetProjectionScopeInterface, 'limit' | 'projectedEnd'>, currencySymbol: string) => {
+export const useBudgetForecastLabels = (
+    scope: Pick<BudgetProjectionScopeInterface, 'limit' | 'projectedEnd'>,
+    currencySymbol: string,
+    isLimitInRange: boolean
+) => {
     const { t } = useLingui();
     const formatWholeAmount = useProtectedWholeAmountLabel();
     const { limit, projectedEnd } = scope;
@@ -17,7 +21,7 @@ export const useBudgetForecastLabels = (scope: Pick<BudgetProjectionScopeInterfa
     const limitAmount = formatWholeAmount(convertFromMicroUnits(limit), currencySymbol);
 
     return {
-        limitLabel: t`Limit ${limitAmount}`,
+        limitLabel: isLimitInRange ? t`Limit ${limitAmount}` : t`Limit ${limitAmount} ↑`,
         endLabel: isOver ? t`${projectedAmount} · ${gapAmount} over` : t`${projectedAmount} · ${gapAmount} under`
     };
 };

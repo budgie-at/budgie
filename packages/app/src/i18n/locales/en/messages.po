@@ -808,7 +808,7 @@ msgstr "Activate Account?"
 msgid "Add"
 msgstr "Add"
 
-#: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
+#: src/budget/components/budget-add-category-limit-row/budget-add-category-limit-row.tsx
 msgid "Add a category limit"
 msgstr "Add a category limit"
 
@@ -1262,11 +1262,11 @@ msgstr "Based on {monthsUsed} months"
 msgid "Based on your recent spending"
 msgstr "Based on your recent spending"
 
-#: src/budget/components/budget-expected-income-hint/budget-expected-income-hint.tsx
+#: src/budget/hooks/use-budget-expected-income-hint.hook.ts
 msgid "Based on your regular income: {amountLabel}"
 msgstr "Based on your regular income: {amountLabel}"
 
-#: src/budget/components/budget-expected-income-hint/budget-expected-income-hint.tsx
+#: src/budget/hooks/use-budget-expected-income-hint.hook.ts
 msgid "Based on your regular income. None detected yet."
 msgstr "Based on your regular income. None detected yet."
 
@@ -3743,6 +3743,10 @@ msgstr "Limit"
 #: src/budget/hooks/use-budget-forecast-labels.hook.ts
 msgid "Limit {limitAmount}"
 msgstr "Limit {limitAmount}"
+
+#: src/budget/hooks/use-budget-forecast-labels.hook.ts
+msgid "Limit {limitAmount} ↑"
+msgstr "Limit {limitAmount} ↑"
 
 #: src/budget/components/budget-limit-changes-row/budget-limit-changes-row.tsx
 #: src/budget/components/budget-limit-changes-sheet/budget-limit-changes-sheet.tsx
