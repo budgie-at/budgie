@@ -28,19 +28,15 @@ export const useBudgetDayStripLabels = (
     const totalWeeks = dayCells.length;
     const periodAllowance = isYearly ? dailyAllowance * DAYS_PER_WEEK : dailyAllowance;
     const allowanceLabel = formatWholeAmount(convertFromMicroUnits(periodAllowance), currencySymbol);
-    const dayOverLabel = t({
-        message: plural(overDays, { one: '# day over your daily allowance', other: '# days over your daily allowance' })
-    });
-    const weekOverLabel = t({
-        message: plural(overDays, { one: '# week over your weekly allowance', other: '# weeks over your weekly allowance' })
-    });
-
-    const overLabel = isYearly ? weekOverLabel : dayOverLabel;
+    const overLabel = isYearly
+        ? t({ message: plural(overDays, { one: '# week over your weekly allowance', other: '# weeks over your weekly allowance' }) })
+        : t({ message: plural(overDays, { one: '# day over your daily allowance', other: '# days over your daily allowance' }) });
     const safeLabel = formatWholeAmount(convertFromMicroUnits(overall.safePerDay), currencySymbol);
-    const dailyCaption =
-        overall.status === BudgetPaceStatusEnum.OVER
-            ? t`Each day against your ${allowanceLabel} daily allowance`
-            : t`Each day against the ${allowanceLabel}/day plan. ${safeLabel}/day from today keeps you on budget.`;
+    const safeCaption =
+        overall.safePerDay > dailyAllowance
+            ? t`Plan ${allowanceLabel}/day · You can spend up to ${safeLabel}/day`
+            : t`Plan ${allowanceLabel}/day · ${safeLabel}/day keeps you on track`;
+    const dailyCaption = overall.status === BudgetPaceStatusEnum.OVER ? t`Plan ${allowanceLabel}/day` : safeCaption;
 
     return {
         accessibilityLabel: isYearly

@@ -11,29 +11,28 @@ import { BudgetPaceHint } from '../budget-pace-hint/budget-pace-hint';
 import { BudgetVerdictFigure } from '../budget-verdict-figure/budget-verdict-figure';
 import { BudgetVerdictFooter } from '../budget-verdict-footer/budget-verdict-footer';
 import { BudgetVerdictHeader } from '../budget-verdict-header/budget-verdict-header';
-import { BudgetVerdictOutlook } from '../budget-verdict-outlook/budget-verdict-outlook';
 
 import type { BudgetHighlightTargetInterface } from '../../interface/budget-highlight-target.interface';
 import type { BudgetProjectionInterface } from '@budgie/budget';
+import type { BudgetLimitSourceEnum } from '@budgie/contracts';
 
 interface Props {
     readonly projection: BudgetProjectionInterface;
+    readonly limitSource: BudgetLimitSourceEnum;
     readonly currencySymbol: string;
     readonly onFigurePress?: () => void;
     readonly onPaceHintPress?: (target: BudgetHighlightTargetInterface) => void;
 }
 
-export const BudgetVerdict = ({ projection, currencySymbol, onFigurePress, onPaceHintPress }: Props) => {
+export const BudgetVerdict = ({ projection, limitSource, currencySymbol, onFigurePress, onPaceHintPress }: Props) => {
     const { t } = useLingui();
-    const { overall, upcomingCharges, daysLeft } = projection;
+    const { overall, upcomingCharges } = projection;
 
     const hasPaceHint = isDefined(onPaceHintPress) && isDefined(findRiskiestAheadScope(projection));
 
-    const outlook = hasPaceHint ? (
+    const paceHint = hasPaceHint ? (
         <BudgetPaceHint projection={projection} currencySymbol={currencySymbol} onPress={onPaceHintPress} />
-    ) : (
-        <BudgetVerdictOutlook scope={overall} currencySymbol={currencySymbol} />
-    );
+    ) : null;
 
     const figure = isDefined(onFigurePress) ? (
         <HapticPressable
@@ -52,11 +51,11 @@ export const BudgetVerdict = ({ projection, currencySymbol, onFigurePress, onPac
 
     return (
         <EntranceReveal step={0} className="gap-y-md">
-            <BudgetVerdictHeader scope={overall} daysLeft={daysLeft} />
+            <BudgetVerdictHeader projection={projection} limitSource={limitSource} />
 
             {figure}
 
-            {outlook}
+            {paceHint}
 
             {isNotEmptyArray(upcomingCharges) ? (
                 <BudgetVerdictFooter upcoming={overall.upcoming} count={upcomingCharges.length} currencySymbol={currencySymbol} />

@@ -1,4 +1,3 @@
-import { getInclusiveEnd } from '@budgie/budget';
 import { router } from 'expo-router';
 import { View } from 'react-native';
 
@@ -6,16 +5,11 @@ import { isDefined } from '@rnw-community/shared';
 
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
-import { useToday } from '../../../@generic/hook/use-today.hook';
-import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
-import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { BudgetSelector } from '../../budget.selector';
 import { BudgetHighlightContext } from '../../context/budget-highlight.context';
+import { useBudgetDetailsData } from '../../hooks/use-budget-details-data.hook';
 import { useBudgetDetailsReveal } from '../../hooks/use-budget-details-reveal.hook';
-import { useGetBudgetProjectionQuery } from '../../query/use-get-budget-projection.query';
 import { findRiskiestAheadScope } from '../../utils/find-riskiest-ahead-scope.util';
-import { formatBudgetPeriodLabel } from '../../utils/format-budget-period-label.util';
-import { resolveBudgetWindow } from '../../utils/resolve-budget-window.util';
 import { BudgetDetailsEditButton } from '../budget-details-edit-button/budget-details-edit-button';
 import { BudgetDetailsOverview } from '../budget-details-overview/budget-details-overview';
 import { BudgetEventsSection } from '../budget-events-section/budget-events-section';
@@ -31,19 +25,12 @@ interface Props {
 }
 
 export const BudgetDetails = ({ budget }: Props) => {
-    const today = useToday();
-    const { formatMonthAndDay } = useFormatDate();
-    const { projection, isLoading } = useGetBudgetProjectionQuery(budget);
-    const { instrument } = useGetInstrumentByIdQuery(budget.instrumentId);
+    const { projection, isLoading, periodStart, periodEnd, currencySymbol, dateLabel } = useBudgetDetailsData(budget);
     const riskiestAheadScope = findRiskiestAheadScope(projection);
     const { scrollRef, contentRef, setHighlightTarget, highlightContextValue } = useBudgetDetailsReveal(
         isLoading,
         isDefined(riskiestAheadScope) ? riskiestAheadScope.target : null
     );
-    const periodWindow = resolveBudgetWindow(budget, today);
-    const periodEnd = getInclusiveEnd(periodWindow.nextPeriodStart);
-    const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
-    const dateLabel = formatBudgetPeriodLabel(budget, formatMonthAndDay);
     const scrollViewProps = { ref: scrollRef };
 
     const handleEditPress = () => {
@@ -72,7 +59,7 @@ export const BudgetDetails = ({ budget }: Props) => {
                         projection={projection}
                         isLoading={isLoading}
                         currencySymbol={currencySymbol}
-                        periodStart={periodWindow.periodStart}
+                        periodStart={periodStart}
                         periodEnd={periodEnd}
                         onFigurePress={handleFigurePress}
                         onPaceHintPress={setHighlightTarget}
@@ -89,7 +76,7 @@ export const BudgetDetails = ({ budget }: Props) => {
                         period={budget.period}
                         overallLimit={projection.overall.limit}
                         currentSpent={projection.overall.spent}
-                        currentPeriodStart={periodWindow.periodStart}
+                        currentPeriodStart={periodStart}
                         currentPeriodEnd={periodEnd}
                         currencySymbol={currencySymbol}
                     />

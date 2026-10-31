@@ -1,4 +1,3 @@
-import { budgetComputeAllocation } from '@budgie/budget';
 import { BudgetLimitSourceEnum, UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
@@ -10,6 +9,7 @@ import { GroupedListRow } from '../../../@generic/component/grouped-list-row/gro
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { BudgetSelector } from '../../budget.selector';
+import { computeProjectionAllocation } from '../../utils/compute-projection-allocation.util';
 
 import type { BudgetProjectionInterface } from '@budgie/budget';
 import type { BudgetEntityInterface } from '@budgie/contracts';
@@ -23,11 +23,7 @@ interface Props {
 export const BudgetAllocationBlock = ({ projection, budget, currencySymbol }: Props) => {
     const { t } = useLingui();
     const formatDigits = useDisplayFormatDigits();
-    const allocation = budgetComputeAllocation({
-        overallLimit: projection.overall.limit,
-        otherLimit: projection.other.limit,
-        categoryLimits: projection.categories.map(category => ({ categoryId: category.categoryId, limitAmount: category.limit }))
-    });
+    const allocation = computeProjectionAllocation(projection);
     const remainingLabel = formatDigits(convertFromMicroUnits(Math.abs(allocation.remaining)), currencySymbol);
     const incomeLabel = formatDigits(convertFromMicroUnits(projection.overall.limit), currencySymbol);
     const assignedLabel = formatDigits(convertFromMicroUnits(allocation.allocated), currencySymbol);
@@ -37,6 +33,7 @@ export const BudgetAllocationBlock = ({ projection, budget, currencySymbol }: Pr
     const icon = allocation.isOverAllocated ? UserIconNameEnum.TriangleAlert : UserIconNameEnum.Scale;
     const title = allocation.isOverAllocated ? t`Over-assigned by ${remainingLabel}` : t`Unassigned ${remainingLabel}`;
     const titleClassName = allocation.isOverAllocated ? 'text-destructive-strong font-medium' : 'font-medium';
+    const iconClassName = allocation.isOverAllocated ? 'text-destructive-strong' : 'text-secondary-foreground';
 
     const handleAdjustPress = () => {
         router.push({ pathname: '/budget/edit', params: { id: String(budget.id) } });
@@ -47,7 +44,7 @@ export const BudgetAllocationBlock = ({ projection, budget, currencySymbol }: Pr
             <View collapsable={false} testID={BudgetSelector.DetailsAllocationBlock}>
                 <GroupedListSection>
                     <GroupedListRow
-                        left={<GroupedListIcon icon={icon} />}
+                        left={<GroupedListIcon icon={icon} iconClassName={iconClassName} />}
                         title={title}
                         titleClassName={titleClassName}
                         titleTestID={BudgetSelector.DetailsAllocationUnassigned}

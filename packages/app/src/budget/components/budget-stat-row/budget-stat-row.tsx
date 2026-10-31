@@ -6,20 +6,23 @@ import { HairlineStatRow } from '../../../@generic/component/hairline-stat-row/h
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { BudgetSelector } from '../../budget.selector';
 import { BUDGET_PACE_TEXT_CLASS_NAME } from '../../constant/budget-pace-text-class-name.constant';
+import { isBudgetTight } from '../../utils/is-budget-tight.util';
 import { BudgetHeldBackNote } from '../budget-held-back-note/budget-held-back-note';
 
-import type { BudgetProjectionScopeInterface } from '@budgie/budget';
+import type { BudgetProjectionInterface } from '@budgie/budget';
 
 interface Props {
-    readonly scope: BudgetProjectionScopeInterface;
+    readonly projection: BudgetProjectionInterface;
     readonly limitSource: BudgetLimitSourceEnum;
     readonly currencySymbol: string;
 }
 
-export const BudgetStatRow = ({ scope, limitSource, currencySymbol }: Props) => {
+export const BudgetStatRow = ({ projection, limitSource, currencySymbol }: Props) => {
     const { t } = useLingui();
     const formatDigits = useDisplayFormatDigits();
-    const leftVariant = scope.free < 0 ? 'destructive' : 'positive';
+    const scope = projection.overall;
+    const leftTone = scope.free < 0 ? 'destructive' : 'positive';
+    const isNeutralLeft = scope.free >= 0 && isBudgetTight(projection, limitSource);
 
     const formatAmount = (amount: number) => formatDigits(convertFromMicroUnits(amount), currencySymbol).replace('-', '−');
 
@@ -32,8 +35,8 @@ export const BudgetStatRow = ({ scope, limitSource, currencySymbol }: Props) => 
     const leftStat = {
         label: t`Left`,
         value: formatAmount(scope.free),
-        variant: leftVariant,
-        valueClassName: BUDGET_PACE_TEXT_CLASS_NAME[leftVariant],
+        variant: isNeutralLeft ? 'primary' : leftTone,
+        ...(!isNeutralLeft && { valueClassName: BUDGET_PACE_TEXT_CLASS_NAME[leftTone] }),
         testID: BudgetSelector.DetailsRemainingLabel
     } as const;
     const limitValue = formatAmount(scope.limit);

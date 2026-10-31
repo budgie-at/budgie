@@ -36,6 +36,7 @@ export const BudgetDetailsOverview = (props: Props) => {
             <LoadingContent isLoading={isLoading}>
                 <BudgetVerdict
                     projection={projection}
+                    limitSource={budget.limitSource}
                     currencySymbol={currencySymbol}
                     onFigurePress={onFigurePress}
                     onPaceHintPress={onPaceHintPress}
@@ -47,7 +48,7 @@ export const BudgetDetailsOverview = (props: Props) => {
             </LoadingContent>
 
             <LoadingContent isLoading={isLoading}>
-                <BudgetStatRow scope={projection.overall} limitSource={budget.limitSource} currencySymbol={currencySymbol} />
+                <BudgetStatRow projection={projection} limitSource={budget.limitSource} currencySymbol={currencySymbol} />
             </LoadingContent>
 
             {allocationBlock}

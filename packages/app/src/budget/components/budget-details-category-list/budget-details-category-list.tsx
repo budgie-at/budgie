@@ -10,6 +10,7 @@ import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/g
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { SectionHeader } from '../../../@generic/component/section-header/section-header';
+import { cn } from '../../../@generic/utils/cn.util';
 import { useNonSystemCategoriesQuery } from '../../../category/query/use-non-system-categories.query';
 import { useGetBudgetEffectiveLimitsQuery } from '../../query/use-get-budget-effective-limits.query';
 import { BudgetDetailsCategoryRow } from '../budget-details-category-row/budget-details-category-row';
@@ -36,8 +37,11 @@ export const BudgetDetailsCategoryList = ({ budget, projection, periodStart, per
     const isOtherRowVisible = budget.kind === BudgetKindEnum.MAIN || isPositiveNumber(projection.other.limit);
     const hasCategoryLimits = isNotEmptyArray(projection.categories) || isPositiveNumber(budget.otherLimit);
 
+    const isEvent = budget.kind === BudgetKindEnum.EVENT;
+    const noteClassName = hasCategoryLimits ? 'text-xs' : 'px-3xl text-[13px] leading-[18px]';
+
     const handleAddLimitsPress = () => {
-        if (budget.kind === BudgetKindEnum.EVENT) {
+        if (isEvent) {
             router.push({ pathname: '/budget/event/[id]/edit', params: { id: String(budget.id) } });
         } else {
             router.push({ pathname: '/budget/edit', params: { id: String(budget.id) } });
@@ -90,6 +94,12 @@ export const BudgetDetailsCategoryList = ({ budget, projection, periodStart, per
             <SectionHeader label={t`Categories`} />
 
             {rows}
+
+            {isEvent ? (
+                <Text className={cn('text-secondary-foreground', noteClassName)}>
+                    <Trans>Tagged expenses also count in your main budget.</Trans>
+                </Text>
+            ) : null}
         </EntranceReveal>
     );
 };
