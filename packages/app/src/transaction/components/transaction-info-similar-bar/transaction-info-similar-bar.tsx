@@ -1,33 +1,54 @@
-import { Text, View } from 'react-native';
+import { Text, View, useWindowDimensions } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
+
+import { cn } from '../../../@generic/utils/cn.util';
+import { TRANSACTION_INFO_ROW_MAX_FONT_SCALE } from '../../constant/transaction-info-row-max-font-scale.constant';
 
 interface Props {
     readonly accessibilityValue: string;
     readonly height: number;
     readonly label: string;
     readonly value?: string | null;
+    readonly barClassName: string;
     readonly testID?: string;
 }
 
-export const TransactionInfoSimilarBar = ({ accessibilityValue, height, label, value, testID }: Props) => {
+const MIN_COLUMN_WIDTH = 44;
+
+export const TransactionInfoSimilarBar = ({ accessibilityValue, height, label, value, barClassName, testID }: Props) => {
+    const { fontScale } = useWindowDimensions();
+    const columnStyle = { minWidth: MIN_COLUMN_WIDTH * fontScale };
     const barStyle = { height };
 
     return (
-        <View className="flex-1 items-center gap-y-xs justify-end" collapsable={false} testID={testID}>
+        <View
+            accessible
+            accessibilityLabel={`${label}, ${accessibilityValue}`}
+            className="flex-1 items-center gap-y-xs justify-end"
+            collapsable={false}
+            testID={testID}
+            style={columnStyle}
+        >
             {isNotEmptyString(value) ? (
-                <View
-                    accessible
-                    accessibilityLabel={accessibilityValue}
-                    className="rounded-full border border-secondary-corner bg-secondary-background px-sm py-xxs"
+                <Text
+                    maxFontSizeMultiplier={TRANSACTION_INFO_ROW_MAX_FONT_SCALE}
+                    className="text-[13px] leading-[18px] text-primary font-medium tabular-nums"
+                    numberOfLines={1}
                 >
-                    <Text className="text-xxs text-primary font-semibold tabular-nums" numberOfLines={1}>
-                        {value}
-                    </Text>
-                </View>
+                    {value}
+                </Text>
             ) : null}
-            <View className="w-full rounded-t-lg bg-default-foreground" style={barStyle} />
-            <Text className="text-xxs text-secondary-foreground">{label}</Text>
+            <View className="w-full">
+                <View className={cn('w-full rounded-t-md', barClassName)} style={barStyle} />
+                <View className="h-px w-full bg-surface-separator" />
+            </View>
+            <Text
+                maxFontSizeMultiplier={TRANSACTION_INFO_ROW_MAX_FONT_SCALE}
+                className="text-[12px] leading-[15px] font-medium text-transaction-detail-secondary text-center"
+            >
+                {label}
+            </Text>
         </View>
     );
 };

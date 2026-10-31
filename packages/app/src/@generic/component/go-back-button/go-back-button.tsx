@@ -8,13 +8,18 @@ import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
 import { PageHeaderSelector } from '../page-header/page-header.selector';
 
+interface Props extends ComponentProps<typeof HapticPressable> {
+    readonly iconSize?: number;
+}
+
 export const GoBackButton = ({
     accessibilityLabel,
     accessibilityRole = 'button',
     className,
     testID = PageHeaderSelector.BackButton,
+    iconSize = 24,
     ...rest
-}: ComponentProps<typeof HapticPressable>) => {
+}: Props) => {
     const { t } = useLingui();
     const resolvedAccessibilityLabel = accessibilityLabel ?? t`Go back`;
 
@@ -30,7 +35,7 @@ export const GoBackButton = ({
             {...rest}
         >
             <View collapsable={false} nativeID={testID} style={StyleSheet.absoluteFill} testID={testID} />
-            <Icon icon={UserIconNameEnum.ChevronLeft} className="text-primary" size={24} />
+            <Icon icon={UserIconNameEnum.ChevronLeft} className="text-primary" size={iconSize} />
         </HapticPressable>
     );
 };

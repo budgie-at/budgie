@@ -63,7 +63,8 @@ import {
     LedgerWorkload,
     AccountDebtOpeningService,
     DebtAccountService,
-    MoneyDataUpgradeService
+    MoneyDataUpgradeService,
+    ReceiptMatchService
 } from '@budgie/ledger';
 import {
     EntryBaseValuationService,
@@ -213,6 +214,7 @@ export const appServicesWithoutDrainerLayer = Layer.mergeAll(
     AiEmbeddingStatusService.layer,
     AiTranslationStatusService.layer,
     VoiceReviewBatchCreateService.layer,
+    ReceiptMatchService.layer,
     ReceiptScanService.layer,
     TranslationLlmService.layer.pipe(Layer.provide(ChatService.invokerLayer)),
     VoiceLlmService.layer.pipe(Layer.provide(ChatService.invokerLayer)),

@@ -1,11 +1,11 @@
 appId: ${APP_ID}
 ---
 - extendedWaitUntil:
-    visible: 'Revert consolidation?'
+    visible: 'Separate transactions?'
     timeout: 10000
 - tapOn:
-    text: 'Revert'
+    text: 'Separate'
     index: 0
 - extendedWaitUntil:
-    notVisible: 'Revert consolidation?'
+    notVisible: 'Separate transactions?'
     timeout: 15000

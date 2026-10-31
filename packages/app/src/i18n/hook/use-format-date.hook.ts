@@ -7,9 +7,6 @@ export const useFormatDate = () => {
 
     const formatMonthAndDay = (date: Date | string) => intl.formatDate(date, { month: 'short', day: 'numeric' });
 
-    const formatMonthAndDayWithTime = (date: Date | string) =>
-        intl.formatDate(date, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hourCycle: 'h24' });
-
     const formatWeekdayWithTime = (date: Date | string) =>
         intl.formatDate(date, { weekday: 'long', hour: '2-digit', minute: '2-digit', hourCycle: 'h24' });
 
@@ -24,8 +21,6 @@ export const useFormatDate = () => {
 
     const formatMonthAndYear = (date: Date | string) => intl.formatDate(date, { month: 'short', year: 'numeric' });
 
-    const formatShortWeekdayAndDay = (date: Date | string) => intl.formatDate(date, { weekday: 'short', day: 'numeric' });
-
     const formatFullMonthAndYear = (date: Date | string) => intl.formatDate(date, { month: 'long', year: 'numeric' });
 
     const formatDayAndMonthAndYear = (date: Date | string) => intl.formatDate(date, { month: 'short', year: 'numeric', day: 'numeric' });
@@ -35,17 +30,27 @@ export const useFormatDate = () => {
     const formatDayAndMonthAndYearWithTime = (date: Date | string) =>
         intl.formatDate(date, { month: 'short', year: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hourCycle: 'h24' });
 
+    const formatWeekdayAndDateWithTime = (date: Date | string) =>
+        intl.formatDate(date, {
+            weekday: 'long',
+            month: 'short',
+            year: 'numeric',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hourCycle: 'h24'
+        });
+
     return {
+        formatWeekdayAndDateWithTime,
         formatMonthAndDay,
         formatTime,
         formatWeekdayAndDay,
         formatShortMonth,
         formatFullMonth,
         formatMonthAndYear,
-        formatShortWeekdayAndDay,
         formatFullMonthAndYear,
         formatDayAndMonthAndYear,
-        formatMonthAndDayWithTime,
         formatWeekdayWithTime,
         formatDayAndFullMonthAndYear,
         formatDayAndMonthAndYearWithTime
