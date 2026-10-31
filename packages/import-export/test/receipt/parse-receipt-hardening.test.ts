@@ -45,6 +45,22 @@ describe('parseReceipt hardening', () => {
         ],
         ['date as receipt number', rowsOf('Receipt 27/10/2026', 'Total 12.50'), { receiptNumber: null }],
         [
+            'column receipt number below a header row carrying its own value',
+            [
+                receiptLine('Bonnr.', 0.55, 0.1),
+                receiptLine('Jahr', 0.56, 0.1),
+                receiptLine('2026', 0.57, 0.104),
+                receiptLine('00222', 0.55, 0.115),
+                receiptLine('Total 12.50', 0.06, 0.2)
+            ],
+            { receiptNumber: '00222' }
+        ],
+        [
+            'legal name with a double space inside one OCR line',
+            rowsOf('Alpha  Beta GmbH', 'UID: ATU12345678', 'Total 12.50'),
+            { merchantLegalName: 'Alpha  Beta GmbH' }
+        ],
+        [
             'time on the following row',
             rowsOf('Datum: 27.10.2026', 'Zeit: 14:32', 'Total 12,50 EUR'),
             { occurredAt: new Date(2026, 9, 27, 14, 32, 0) }

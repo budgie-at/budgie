@@ -379,7 +379,6 @@ const LEGAL_FORMS: Record<LanguageEnum, readonly string[]> = {
 };
 
 const LEGAL_FORM_PATTERN = buildReceiptKeywordPattern(Object.values(LEGAL_FORMS).flat(), 'u');
-const ROW_LINE_SEPARATOR = '  ';
 const MERCHANT_TEXT_PATTERN = /\p{L}{2}/u;
 const NUMERIC_RUN_PATTERN = /\d{3}/u;
 const TOP_BAND_RATIO = 0.2;
@@ -397,18 +396,19 @@ const findTopCandidates = (lines: readonly ReceiptTextLineInterface[]): string[]
         .slice(0, MAX_TOP_CANDIDATES);
 };
 
-const findLegalName = (rows: readonly string[], vatRowIndex: number): string | null => {
+const findLegalName = (rows: readonly string[], lines: readonly ReceiptTextLineInterface[], vatRowIndex: number): string | null => {
     const anchorIndex = Math.max(vatRowIndex, 0);
+    const legalRow = rows
+        .map((row, index) => ({ row, distance: Math.abs(index - anchorIndex) }))
+        .filter(({ row }) => LEGAL_FORM_PATTERN.test(row))
+        .sort((left, right) => left.distance - right.distance)
+        .at(0)?.row;
 
-    return (
-        rows
-            .map((row, index) => ({ row, distance: Math.abs(index - anchorIndex) }))
-            .filter(({ row }) => LEGAL_FORM_PATTERN.test(row))
-            .sort((left, right) => left.distance - right.distance)
-            .at(0)
-            ?.row.split(ROW_LINE_SEPARATOR)
-            .find(line => LEGAL_FORM_PATTERN.test(line)) ?? null
-    );
+    if (!isDefined(legalRow)) {
+        return null;
+    }
+
+    return lines.map(line => line.text.trim()).find(text => legalRow.includes(text) && LEGAL_FORM_PATTERN.test(text)) ?? legalRow;
 };
 
 const RECEIPT_NUMBER_LABELS: Record<LanguageEnum, readonly string[]> = {
@@ -467,7 +467,7 @@ const groupRows = (lines: readonly ReceiptTextLineInterface[]): string[] =>
             [...row]
                 .sort((left, right) => left.x - right.x)
                 .map(line => line.text.trim())
-                .join(ROW_LINE_SEPARATOR)
+                .join('  ')
         );
 
 const isReceiptNumberCandidate = (candidate: string): boolean => !isDefined(findDate(candidate));
@@ -481,6 +481,7 @@ const findColumnReceiptNumber = (lines: readonly ReceiptTextLineInterface[]): st
                     .filter(
                         line =>
                             line.y > header.y &&
+                            !isSameRow(header, line) &&
                             line.y - header.y <= header.height * RECEIPT_NUMBER_COLUMN_LINE_SPAN &&
                             Math.abs(line.x - header.x) <= header.height * 2
                     )
@@ -531,7 +532,7 @@ export const parseReceipt = (lines: readonly ReceiptTextLineInterface[], default
 
     const timestamp = extractReceiptTimestamp(rows, total.paymentRows);
     const vatIds = rows.map(findVatId);
-    const merchantLegalName = findLegalName(rows, vatIds.findIndex(isDefined));
+    const merchantLegalName = findLegalName(rows, lines, vatIds.findIndex(isDefined));
     const draft = {
         total: total.amount,
         currency: total.currency,
