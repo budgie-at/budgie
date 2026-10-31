@@ -6,11 +6,11 @@ const INSTALLMENT_COUNT_OPTIONS = [2, 3, 4, 6, 10, 12, 24] as const;
 
 interface Props {
     readonly selectedCount: number;
-    readonly minimumCount?: number;
+    readonly minimumCount: number;
     readonly onSelect: (count: number) => void;
 }
 
-export const InstallmentCountChips = ({ selectedCount, minimumCount = 0, onSelect }: Props) => (
+export const InstallmentCountChips = ({ selectedCount, minimumCount, onSelect }: Props) => (
     <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}

@@ -137,6 +137,10 @@ msgstr "{count, plural, one {# ohne Kategorie} other {# ohne Kategorie}}"
 msgid "{count, plural, one {# upcoming bill} other {# upcoming bills}}"
 msgstr "{count, plural, one {# anstehende Rechnung} other {# anstehende Rechnungen}}"
 
+#: src/installment-plan/component/installment-count-stepper/installment-count-stepper.tsx
+msgid "{count, plural, one {month} other {months}}"
+msgstr "{count, plural, one {Monat} other {Monate}}"
+
 #: src/category/hooks/use-delete-category.hook.ts
 msgid "{count, plural, one {This category has # transaction. Select another category to reassign it to.} other {This category has # transactions. Select another category to reassign them to.}}"
 msgstr "{count, plural, one {Diese Kategorie hat # Transaktion. Wählen Sie eine andere Kategorie aus, der sie neu zugewiesen wird.} other {Diese Kategorie hat # Transaktionen. Wählen Sie eine andere Kategorie aus, der sie neu zugewiesen werden.}}"
@@ -2813,6 +2817,10 @@ msgstr "Konten abrufen"
 msgid "Fetching new..."
 msgstr "Neue abrufen..."
 
+#: src/installment-plan/component/installment-count-stepper/installment-count-stepper.tsx
+msgid "Fewer months"
+msgstr "Weniger Monate"
+
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 msgid "Field"
 msgstr "Feld"
@@ -3643,6 +3651,10 @@ msgstr "Monate übrig"
 msgid "More categories"
 msgstr "Weitere Kategorien"
 
+#: src/installment-plan/component/installment-count-stepper/installment-count-stepper.tsx
+msgid "More months"
+msgstr "Mehr Monate"
+
 #: src/categorize-inbox/components/categorize-inbox-tag-provider/categorize-inbox-tag-provider.tsx
 msgid "More tags"
 msgstr "Weitere Tags"
@@ -4001,6 +4013,10 @@ msgstr "Hier gibt es nichts zu korrigieren"
 #: src/runway/hook/use-runway-tick-label.hook.ts
 msgid "Now"
 msgstr "Jetzt"
+
+#: src/installment-plan/component/installment-count-stepper/installment-count-stepper.tsx
+msgid "Number of months"
+msgstr "Anzahl der Monate"
 
 #: src/account/component/debt-account-card-summary/debt-account-card-summary.tsx
 msgid "of"
