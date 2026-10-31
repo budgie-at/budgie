@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.137.1](https://github.com/budgie-at/budgie/compare/v6.137.0...v6.137.1) (2026-10-31)
+
+### Bug Fixes
+
+* **import-export:** keep OCR line boundaries for legal names and skip header-row values ([41d2603](https://github.com/budgie-at/budgie/commit/41d26038fd6b87d733bcf0ae4420e0239a84c269))
+* **import-export:** read tabular receipt numbers and m.b.H. legal names ([e7da4ab](https://github.com/budgie-at/budgie/commit/e7da4ab062e18741c0474b0ef703c058e1de3f15))
+
+
 # [6.137.0](https://github.com/budgie-at/budgie/compare/v6.136.0...v6.137.0) (2026-10-31)
 
 ### Bug Fixes
