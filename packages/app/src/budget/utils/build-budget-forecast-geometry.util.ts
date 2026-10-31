@@ -6,7 +6,7 @@ import type { BudgetForecastGeometryParamsInterface } from '../interface/budget-
 import type { BudgetForecastGeometryInterface } from '../interface/budget-forecast-geometry.interface';
 import type { BudgetForecastPointInterface } from '../interface/budget-forecast-point.interface';
 
-const VALUE_HEADROOM = 1.1;
+const VALUE_HEADROOM = 1.05;
 const BILL_LABEL_OFFSET = 12;
 
 const buildLinePath = (points: readonly BudgetForecastPointInterface[]): string =>
