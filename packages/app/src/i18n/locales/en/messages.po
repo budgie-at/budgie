@@ -330,6 +330,10 @@ msgstr "{month}, out {expenseAmount}, in {incomeAmount}"
 msgid "{months, plural, one {# month} other {# months}}"
 msgstr "{months, plural, one {# month} other {# months}}"
 
+#: src/runway/component/runway-empty-state/runway-empty-state.tsx
+msgid "{monthsUsed} of {RUNWAY_MINIMUM_MONTHS} months"
+msgstr "{monthsUsed} of {RUNWAY_MINIMUM_MONTHS} months"
+
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "{newAccountCount, plural, one {Add # account} other {Add # accounts}}"
 msgstr "{newAccountCount, plural, one {Add # account} other {Add # accounts}}"
@@ -455,8 +459,8 @@ msgid "{source} error · {message}"
 msgstr "{source} error · {message}"
 
 #: src/runway/component/runway-history-spike-note/runway-history-spike-note.tsx
-msgid "{spikeLabel} had a one-off {spikeAmount}. The estimate uses a typical month instead."
-msgstr "{spikeLabel} had a one-off {spikeAmount}. The estimate uses a typical month instead."
+msgid "{spikeLabel} had a one-off of {spikeAmount}. The estimate uses a typical month instead."
+msgstr "{spikeLabel} had a one-off of {spikeAmount}. The estimate uses a typical month instead."
 
 #: src/transaction/components/transaction-split-field-icon/transaction-split-field-icon.tsx
 msgid "{splitEntryCount, plural, one {# item} other {# items}}"
@@ -4827,8 +4831,8 @@ msgid "Runway"
 msgstr "Runway"
 
 #: src/runway/component/runway-empty-state/runway-empty-state.tsx
-msgid "Runway needs at least 3 complete months of transactions. You have {monthsUsed}."
-msgstr "Runway needs at least 3 complete months of transactions. You have {monthsUsed}."
+msgid "Runway needs 3 complete months of transactions to forecast your balance."
+msgstr "Runway needs 3 complete months of transactions to forecast your balance."
 
 #: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
 msgid "Safe to spend"
@@ -5995,6 +5999,10 @@ msgstr "Type ({selectedTypesCount})"
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "Type the same PIN again to make sure it's the one you meant."
 msgstr "Type the same PIN again to make sure it's the one you meant."
+
+#: src/runway/component/runway-flow-row/runway-flow-row.tsx
+msgid "Typical month"
+msgstr "Typical month"
 
 #: src/runway/component/runway-history-legend/runway-history-legend.tsx
 msgid "Typical month {amount}"

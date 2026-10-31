@@ -3,6 +3,7 @@ import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
+import { MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-font-size-multiplier.constant';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { RunwaySelector } from '../../runway.selector';
@@ -28,10 +29,18 @@ export const RunwayVerdictOutlook = ({ computation }: Props) => {
 
     return (
         <View className="gap-y-xs">
-            {isNotEmptyString(outlookLine) ? <Text className="text-base text-primary">{outlookLine}</Text> : null}
+            {isNotEmptyString(outlookLine) ? (
+                <Text maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER} className="text-[15px] text-primary">
+                    {outlookLine}
+                </Text>
+            ) : null}
 
             {isRunwayCryptoIncluded ? (
-                <Text testID={RunwaySelector.VerdictCryptoNote} className="text-xs text-secondary-foreground">
+                <Text
+                    testID={RunwaySelector.VerdictCryptoNote}
+                    maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
+                    className="text-xs text-secondary-foreground"
+                >
                     <Trans>Includes crypto</Trans>
                 </Text>
             ) : null}

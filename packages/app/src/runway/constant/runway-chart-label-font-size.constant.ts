@@ -1,1 +1,1 @@
-export const RUNWAY_CHART_LABEL_FONT_SIZE = 10;
+export const RUNWAY_CHART_LABEL_FONT_SIZE = 11;

@@ -329,6 +329,10 @@ msgstr "{month}, Ausgaben {expenseAmount}, Einnahmen {incomeAmount}"
 msgid "{months, plural, one {# month} other {# months}}"
 msgstr "{months, plural, one {# Monat} other {# Monate}}"
 
+#: src/runway/component/runway-empty-state/runway-empty-state.tsx
+msgid "{monthsUsed} of {RUNWAY_MINIMUM_MONTHS} months"
+msgstr "{monthsUsed} von {RUNWAY_MINIMUM_MONTHS} Monaten"
+
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "{newAccountCount, plural, one {Add # account} other {Add # accounts}}"
 msgstr "{newAccountCount, plural, one {# Konto hinzufügen} other {# Konten hinzufügen}}"
@@ -454,7 +458,7 @@ msgid "{source} error · {message}"
 msgstr "{source}-Fehler · {message}"
 
 #: src/runway/component/runway-history-spike-note/runway-history-spike-note.tsx
-msgid "{spikeLabel} had a one-off {spikeAmount}. The estimate uses a typical month instead."
+msgid "{spikeLabel} had a one-off of {spikeAmount}. The estimate uses a typical month instead."
 msgstr "{spikeLabel} hatte eine Einmalausgabe von {spikeAmount}. Die Schätzung nutzt stattdessen einen typischen Monat."
 
 #: src/transaction/components/transaction-split-field-icon/transaction-split-field-icon.tsx
@@ -4826,8 +4830,8 @@ msgid "Runway"
 msgstr "Reichweite"
 
 #: src/runway/component/runway-empty-state/runway-empty-state.tsx
-msgid "Runway needs at least 3 complete months of transactions. You have {monthsUsed}."
-msgstr "Die Reichweite benötigt mindestens 3 vollständige Monate mit Transaktionen. Du hast {monthsUsed}."
+msgid "Runway needs 3 complete months of transactions to forecast your balance."
+msgstr "Runway braucht 3 vollständige Monate mit Transaktionen, um deinen Kontostand vorherzusagen."
 
 #: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
 msgid "Safe to spend"
@@ -5994,6 +5998,10 @@ msgstr "Typ ({selectedTypesCount})"
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "Type the same PIN again to make sure it's the one you meant."
 msgstr "Gib dieselbe PIN noch einmal ein, um sicherzugehen, dass es die richtige ist."
+
+#: src/runway/component/runway-flow-row/runway-flow-row.tsx
+msgid "Typical month"
+msgstr "Typischer Monat"
 
 #: src/runway/component/runway-history-legend/runway-history-legend.tsx
 msgid "Typical month {amount}"

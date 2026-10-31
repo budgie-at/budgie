@@ -3,13 +3,12 @@ import { useAtomValue } from '@effect/atom-react/Hooks';
 import { plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
-import { Text, View } from 'react-native';
+import { Text, View, useWindowDimensions } from 'react-native';
 
 import { isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { GrowBar } from '../../../@generic/component/grow-bar/grow-bar';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
-import { cn } from '../../../@generic/utils/cn.util';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { RunwayDriverAmount } from '../runway-driver-amount/runway-driver-amount';
 
@@ -22,19 +21,31 @@ interface Props {
     readonly rank: number;
 }
 
-const titleVariants = cva('shrink text-sm', {
+const titleVariants = cva('shrink text-[15px]', {
     variants: {
         isFolded: {
             true: 'text-secondary-foreground',
-            false: 'font-medium text-primary'
+            false: 'text-primary'
         }
     }
 });
+
+const headlineVariants = cva('gap-x-md', {
+    variants: {
+        isStacked: {
+            true: 'gap-y-xs',
+            false: 'flex-row items-center justify-between'
+        }
+    }
+});
+
+const ACCESSIBILITY_FONT_SCALE = 1.6;
 
 export const RunwayDriverRow = ({ driver, dimension, maxAmount, rank }: Props) => {
     const { t } = useLingui();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const formatProtectedAmount = useProtectedAmountLabel();
+    const isStacked = useWindowDimensions().fontScale >= ACCESSIBILITY_FONT_SCALE;
 
     const { foldedDriverCount } = driver;
     const isFolded = isPositiveNumber(foldedDriverCount);
@@ -46,14 +57,18 @@ export const RunwayDriverRow = ({ driver, dimension, maxAmount, rank }: Props) =
     const namedTitle = isNotEmptyString(driver.title) ? driver.title : emptyTitle;
     const title = isFolded ? foldedTitle : namedTitle;
     const protectedAmount = formatProtectedAmount(convertFromMicroUnits(driver.monthlyAmount), defaultInstrument.symbol);
-    const barToneClassName = isFolded ? 'bg-primary/35' : 'bg-primary';
     const share = isPositiveNumber(maxAmount) ? driver.monthlyAmount / maxAmount : 0;
+    const titleLineCount = isStacked ? 3 : 1;
 
     return (
-        <View accessible accessibilityLabel={t`${title}, ${protectedAmount} per month`} className="min-h-[44px] justify-center gap-y-sm">
-            <View className="flex-row items-center justify-between gap-x-md">
-                <View className="shrink flex-row items-center gap-x-sm">
-                    <Text numberOfLines={1} className={titleVariants({ isFolded })}>
+        <View
+            accessible
+            accessibilityLabel={t`${title}, ${protectedAmount} per month`}
+            className="min-h-[52px] justify-center gap-y-sm px-3xl py-md"
+        >
+            <View className={headlineVariants({ isStacked })}>
+                <View className="shrink flex-row flex-wrap items-center gap-x-sm">
+                    <Text numberOfLines={titleLineCount} className={titleVariants({ isFolded })}>
                         {title}
                     </Text>
 
@@ -67,9 +82,11 @@ export const RunwayDriverRow = ({ driver, dimension, maxAmount, rank }: Props) =
                 <RunwayDriverAmount monthlyAmount={driver.monthlyAmount} isFolded={isFolded} />
             </View>
 
-            <View className="h-[3px] overflow-hidden rounded-full bg-secondary-corner">
-                <GrowBar ratio={share} className={cn('h-full rounded-full', barToneClassName)} staggerIndex={rank} />
-            </View>
+            {isFolded ? null : (
+                <View className="h-[4px] overflow-hidden rounded-full bg-surface-fill">
+                    <GrowBar ratio={share} className="h-full rounded-full bg-primary/70" staggerIndex={rank} />
+                </View>
+            )}
         </View>
     );
 };

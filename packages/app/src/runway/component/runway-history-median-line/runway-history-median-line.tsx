@@ -12,7 +12,7 @@ interface Props {
     readonly maxValue: number;
 }
 
-const MEDIAN_OPACITY = 0.35;
+const MEDIAN_OPACITY = 0.5;
 
 export const RunwayHistoryMedianLine = ({ value, maxValue }: Props) => {
     const ratio = isPositiveNumber(maxValue) ? Math.min(value / maxValue, 1) : 0;

@@ -27,6 +27,7 @@ export const RunwayVerdictFigure = ({ computation }: Props) => {
         amount: netAmount,
         currencySymbol: defaultInstrument.symbol,
         prefix: '+',
+        decimalPlaces: 0,
         unit: t`per month`,
         testID: growingTestID
     };

@@ -329,6 +329,10 @@ msgstr "{month}, витрати {expenseAmount}, доходи {incomeAmount}"
 msgid "{months, plural, one {# month} other {# months}}"
 msgstr "{months, plural, one {# місяць} few {# місяці} many {# місяців} other {# місяця}}"
 
+#: src/runway/component/runway-empty-state/runway-empty-state.tsx
+msgid "{monthsUsed} of {RUNWAY_MINIMUM_MONTHS} months"
+msgstr "{monthsUsed} з {RUNWAY_MINIMUM_MONTHS} місяців"
+
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "{newAccountCount, plural, one {Add # account} other {Add # accounts}}"
 msgstr "{newAccountCount, plural, one {Додати # рахунок} few {Додати # рахунки} many {Додати # рахунків} other {Додати # рахунку}}"
@@ -454,7 +458,7 @@ msgid "{source} error · {message}"
 msgstr "Помилка {source} · {message}"
 
 #: src/runway/component/runway-history-spike-note/runway-history-spike-note.tsx
-msgid "{spikeLabel} had a one-off {spikeAmount}. The estimate uses a typical month instead."
+msgid "{spikeLabel} had a one-off of {spikeAmount}. The estimate uses a typical month instead."
 msgstr "{spikeLabel}: разова витрата {spikeAmount}. Для оцінки взято типовий місяць."
 
 #: src/transaction/components/transaction-split-field-icon/transaction-split-field-icon.tsx
@@ -4826,8 +4830,8 @@ msgid "Runway"
 msgstr "Запас"
 
 #: src/runway/component/runway-empty-state/runway-empty-state.tsx
-msgid "Runway needs at least 3 complete months of transactions. You have {monthsUsed}."
-msgstr "Запас потребує щонайменше 3 повних місяців транзакцій. У вас {monthsUsed}."
+msgid "Runway needs 3 complete months of transactions to forecast your balance."
+msgstr "Runway потрібно 3 повні місяці транзакцій, щоб спрогнозувати ваш баланс."
 
 #: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
 msgid "Safe to spend"
@@ -5994,6 +5998,10 @@ msgstr "Тип ({selectedTypesCount})"
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "Type the same PIN again to make sure it's the one you meant."
 msgstr "Введіть той самий PIN-код ще раз, щоб переконатися, що це саме він."
+
+#: src/runway/component/runway-flow-row/runway-flow-row.tsx
+msgid "Typical month"
+msgstr "Типовий місяць"
 
 #: src/runway/component/runway-history-legend/runway-history-legend.tsx
 msgid "Typical month {amount}"

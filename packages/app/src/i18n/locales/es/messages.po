@@ -329,6 +329,10 @@ msgstr "{month}, gastos {expenseAmount}, ingresos {incomeAmount}"
 msgid "{months, plural, one {# month} other {# months}}"
 msgstr "{months, plural, one {# mes} other {# meses}}"
 
+#: src/runway/component/runway-empty-state/runway-empty-state.tsx
+msgid "{monthsUsed} of {RUNWAY_MINIMUM_MONTHS} months"
+msgstr "{monthsUsed} de {RUNWAY_MINIMUM_MONTHS} meses"
+
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "{newAccountCount, plural, one {Add # account} other {Add # accounts}}"
 msgstr "{newAccountCount, plural, one {Añadir # cuenta} other {Añadir # cuentas}}"
@@ -454,7 +458,7 @@ msgid "{source} error · {message}"
 msgstr "Error de {source} · {message}"
 
 #: src/runway/component/runway-history-spike-note/runway-history-spike-note.tsx
-msgid "{spikeLabel} had a one-off {spikeAmount}. The estimate uses a typical month instead."
+msgid "{spikeLabel} had a one-off of {spikeAmount}. The estimate uses a typical month instead."
 msgstr "{spikeLabel} tuvo un gasto puntual de {spikeAmount}. La estimación usa un mes típico."
 
 #: src/transaction/components/transaction-split-field-icon/transaction-split-field-icon.tsx
@@ -4826,8 +4830,8 @@ msgid "Runway"
 msgstr "Autonomía"
 
 #: src/runway/component/runway-empty-state/runway-empty-state.tsx
-msgid "Runway needs at least 3 complete months of transactions. You have {monthsUsed}."
-msgstr "La autonomía necesita al menos 3 meses completos de transacciones. Tienes {monthsUsed}."
+msgid "Runway needs 3 complete months of transactions to forecast your balance."
+msgstr "Runway necesita 3 meses completos de transacciones para prever tu saldo."
 
 #: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
 msgid "Safe to spend"
@@ -5994,6 +5998,10 @@ msgstr "Tipo ({selectedTypesCount})"
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "Type the same PIN again to make sure it's the one you meant."
 msgstr "Escribe el mismo PIN otra vez para confirmar que es el que querías."
+
+#: src/runway/component/runway-flow-row/runway-flow-row.tsx
+msgid "Typical month"
+msgstr "Mes típico"
 
 #: src/runway/component/runway-history-legend/runway-history-legend.tsx
 msgid "Typical month {amount}"
