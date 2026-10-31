@@ -1,5 +1,3 @@
-import { convertFromMicroUnits } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { View } from 'react-native';
 import Svg from 'react-native-svg';
@@ -7,10 +5,10 @@ import Svg from 'react-native-svg';
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { StyledPath } from '../../../@generic/component/styled-path/styled-path';
-import { useProtectedWholeAmountLabel } from '../../../@generic/hook/use-protected-whole-amount-label.hook';
 import { BUDGET_PACE_VARIANT } from '../../constant/budget-pace-variant.constant';
+import { useBudgetForecastLabels } from '../../hooks/use-budget-forecast-labels.hook';
 import { buildBudgetForecastGeometry } from '../../utils/build-budget-forecast-geometry.util';
-import { resolveBudgetForecastEndLabelY } from '../../utils/resolve-budget-forecast-end-label-y.util';
+import { resolveBudgetForecastLabelLane } from '../../utils/resolve-budget-forecast-label-lane.util';
 import { BudgetForecastAxisLabels } from '../budget-forecast-axis-labels/budget-forecast-axis-labels';
 import { BudgetForecastBills } from '../budget-forecast-bills/budget-forecast-bills';
 import { BudgetForecastEnd } from '../budget-forecast-end/budget-forecast-end';
@@ -29,7 +27,10 @@ interface Props {
 const CHART_HEIGHT = 160;
 const CHART_PADDING_LEFT = 0;
 const CHART_PADDING_RIGHT = 6;
-const CHART_PADDING_TOP = 30;
+const CHART_PADDING_TOP = 22;
+const CHART_RUN_OUT_PADDING_TOP = 36;
+const RUN_OUT_ROW_HEIGHT = 22;
+const LABEL_CHAR_WIDTH_RATIO = 0.56;
 const CHART_PADDING_BOTTOM = 24;
 const LABEL_FONT_SIZE = 11;
 const DASH = '4 3';
@@ -45,7 +46,6 @@ const GEOMETRY_LAYOUT = {
     height: CHART_HEIGHT,
     paddingLeft: CHART_PADDING_LEFT,
     paddingRight: CHART_PADDING_RIGHT,
-    paddingTop: CHART_PADDING_TOP,
     paddingBottom: CHART_PADDING_BOTTOM
 };
 const TONE_LABEL_CLASS_NAME = {
@@ -55,38 +55,33 @@ const TONE_LABEL_CLASS_NAME = {
 } as const;
 
 export const BudgetForecastChart = ({ projection, currencySymbol }: Props) => {
-    const { t } = useLingui();
     const [width, setWidth] = useState(0);
-    const formatWholeAmount = useProtectedWholeAmountLabel();
+    const { limitLabel, endLabel } = useBudgetForecastLabels(projection.overall, currencySymbol);
 
     const handleLayout = (event: LayoutChangeEvent) => void setWidth(event.nativeEvent.layout.width);
 
-    const { actualPath, projectedPath, projectedEndPoint, limitY, todayX, todayPoint, runOutX, bills } = buildBudgetForecastGeometry({
-        projection,
-        width,
-        ...GEOMETRY_LAYOUT
-    });
-    const { runOutAt, status, limit, projectedEnd } = projection.overall;
+    const { runOutAt, status } = projection.overall;
+    const paddingTop = isDefined(runOutAt) ? CHART_RUN_OUT_PADDING_TOP : CHART_PADDING_TOP;
+    const geometry = buildBudgetForecastGeometry({ projection, width, paddingTop, ...GEOMETRY_LAYOUT });
+    const { actualPath, projectedPath, projectedEndPoint, limitY, todayX, todayPoint, runOutX, bills } = geometry;
     const tone = BUDGET_PACE_VARIANT[status];
     const accentClassName = TONE_STROKE_CLASS_NAME[tone];
-    const isOver = isDefined(projectedEnd) && projectedEnd > limit;
-    const gapAmount = formatWholeAmount(convertFromMicroUnits(Math.abs(limit - (projectedEnd ?? limit))), currencySymbol);
-    const projectedAmount = formatWholeAmount(convertFromMicroUnits(projectedEnd ?? limit), currencySymbol);
-    const limitAmount = formatWholeAmount(convertFromMicroUnits(limit), currencySymbol);
-    const gapLabel = isOver ? t`${projectedAmount} · ${gapAmount} over` : t`${projectedAmount} · ${gapAmount} under`;
     const todayIndex = projection.elapsedDays - 1;
+    const endLabelY = resolveBudgetForecastLabelLane({
+        anchor: { x: width, y: isDefined(projectedEndPoint) ? projectedEndPoint.y : limitY },
+        lines: geometry.lines,
+        labelWidth: endLabel.length * LABEL_FONT_SIZE * LABEL_CHAR_WIDTH_RATIO,
+        fontSize: LABEL_FONT_SIZE,
+        limitY,
+        top: isDefined(runOutAt) ? RUN_OUT_ROW_HEIGHT : 0,
+        bottom: CHART_BOTTOM
+    });
 
     return (
         <View className="h-[160px] w-full" onLayout={handleLayout}>
             {isPositiveNumber(width) ? (
                 <Svg width={width} height={CHART_HEIGHT}>
-                    <BudgetForecastLimit
-                        y={limitY}
-                        left={CHART_PADDING_LEFT}
-                        right={width}
-                        label={t`Limit ${limitAmount}`}
-                        fontSize={LABEL_FONT_SIZE}
-                    />
+                    <BudgetForecastLimit y={limitY} left={CHART_PADDING_LEFT} right={width} label={limitLabel} fontSize={LABEL_FONT_SIZE} />
 
                     <StyledPath
                         d={projectedPath}
@@ -110,7 +105,7 @@ export const BudgetForecastChart = ({ projection, currencySymbol }: Props) => {
                     {isDefined(runOutX) && isDefined(runOutAt) ? (
                         <BudgetForecastRunOut
                             x={runOutX}
-                            top={CHART_PADDING_TOP}
+                            top={paddingTop}
                             bottom={CHART_BOTTOM}
                             width={width}
                             runOutAt={runOutAt}
@@ -122,8 +117,8 @@ export const BudgetForecastChart = ({ projection, currencySymbol }: Props) => {
                     {isDefined(projectedEndPoint) ? (
                         <BudgetForecastEnd
                             point={projectedEndPoint}
-                            label={gapLabel}
-                            labelY={resolveBudgetForecastEndLabelY(projectedEndPoint.y, limitY, LABEL_FONT_SIZE, CHART_BOTTOM)}
+                            label={endLabel}
+                            labelY={endLabelY}
                             right={width}
                             strokeClassName={accentClassName}
                             labelClassName={TONE_LABEL_CLASS_NAME[tone]}

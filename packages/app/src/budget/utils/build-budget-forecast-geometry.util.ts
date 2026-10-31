@@ -38,6 +38,7 @@ export const buildBudgetForecastGeometry = (params: BudgetForecastGeometryParams
         actualPath: buildLinePath(actualPoints),
         todayPoint: isDefined(lastActual) ? lastActual : null,
         projectedPath: buildLinePath(projectedPoints),
+        lines: [actualPoints, projectedPoints],
         projectedEndPoint: projectedPoints[projectedPoints.length - 1] ?? null,
         limitY: yAt(overall.limit),
         todayX: xAt(Math.max(elapsedDays - 1, 0)),

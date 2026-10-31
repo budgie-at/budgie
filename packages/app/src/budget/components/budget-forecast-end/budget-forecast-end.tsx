@@ -15,6 +15,7 @@ interface Props {
 
 const RING_RADIUS = 4;
 const RING_STROKE_WIDTH = 2;
+const HALO_WIDTH = 4;
 
 export const BudgetForecastEnd = ({ point, label, labelY, right, strokeClassName, labelClassName, fontSize }: Props) => (
     <>
@@ -26,6 +27,19 @@ export const BudgetForecastEnd = ({ point, label, labelY, right, strokeClassName
             strokeClassName={strokeClassName}
             strokeWidth={RING_STROKE_WIDTH}
         />
+        <StyledSvgText
+            x={right}
+            y={labelY}
+            fillClassName="accent-primary-reverse"
+            strokeClassName="accent-primary-reverse"
+            strokeWidth={HALO_WIDTH}
+            strokeLinejoin="round"
+            fontSize={fontSize}
+            fontWeight="600"
+            textAnchor="end"
+        >
+            {label}
+        </StyledSvgText>
         <StyledSvgText x={right} y={labelY} fillClassName={labelClassName} fontSize={fontSize} fontWeight="600" textAnchor="end">
             {label}
         </StyledSvgText>
