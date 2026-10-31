@@ -3,6 +3,42 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.137.0](https://github.com/budgie-at/budgie/compare/v6.136.0...v6.137.0) (2026-10-31)
+
+### Bug Fixes
+
+* **app:** address runway analytics review feedback ([5ec15cd](https://github.com/budgie-at/budgie/commit/5ec15cd419e16b5d11ecb0dee8e1e89e71daa976))
+* **app:** keep the runway spike note true with one-offs included ([d3a8c14](https://github.com/budgie-at/budgie/commit/d3a8c14c5752bcc1b8a2bd1d8a8c766d3766beb3))
+
+### Features
+
+* **app:** annotate runway charts and tune text for every size ([8be798c](https://github.com/budgie-at/budgie/commit/8be798cc83d616d52d5595ac9370f5a17eed03bf))
+* **app:** regroup runway into grouped cards with consistent figures ([b7a131a](https://github.com/budgie-at/budgie/commit/b7a131a1e2a9f8dc192c743a588e8587331f1239)), closes [not-enough-history](https://github.com/not-enou/issues/history)
+
+
+# [6.136.0](https://github.com/budgie-at/budgie/compare/v6.135.0...v6.136.0) (2026-10-31)
+
+### Bug Fixes
+
+* **app:** align stepper count and apply typed months immediately ([663da79](https://github.com/budgie-at/budgie/commit/663da790926697503c4c91a4438262a6b63a7d1b))
+
+### Features
+
+* **app:** let pay-in-parts pick any number of months ([53d69bc](https://github.com/budgie-at/budgie/commit/53d69bc36f5ad5c1725b1663127022d12c57644e))
+* **app:** polish pay-in-parts sheet to best-in-class UX ([e87527f](https://github.com/budgie-at/budgie/commit/e87527fb26fc3f0b2c99528272ec02da2deba3b1))
+
+
+# [6.135.0](https://github.com/budgie-at/budgie/compare/v6.134.0...v6.135.0) (2026-10-31)
+
+### Bug Fixes
+
+* **app:** restore formatMonthAndDayWithTime for the account sync readout ([9f014c7](https://github.com/budgie-at/budgie/commit/9f014c756457c11605fa76bf488cd98fe9856cc1))
+
+### Features
+
+* **app:** redesign account create and edit forms as grouped lists ([c0eb461](https://github.com/budgie-at/budgie/commit/c0eb461a8f85f54e4566a106762a161de3abfa57))
+
+
 # [6.134.0](https://github.com/budgie-at/budgie/compare/v6.133.0...v6.134.0) (2026-10-31)
 
 ### Bug Fixes

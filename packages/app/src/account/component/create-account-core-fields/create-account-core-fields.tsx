@@ -1,24 +1,25 @@
 import { ReactNode } from 'react';
 
-import { AccountDetailsField } from '../../../@generic/component/account-details-field/account-details-field';
-import { CreateAccountCurrencyField } from '../../../@generic/component/create-account-currency-field/create-account-currency-field';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { AccountFormBindingsInterface } from '../../interface/account-form-bindings.interface';
 import { AccountBalanceField } from '../account-balance-field/account-balance-field';
-import { CreateAccountScreenSelector } from '../create-account-screen/create-account-screen.selector';
-import { IncludeInNetWorthField } from '../include-in-net-worth-field/include-in-net-worth-field';
+import { CreateAccountDetailsSection } from '../create-account-details-section/create-account-details-section';
+import { CreateAccountOptionsSection } from '../create-account-options-section/create-account-options-section';
 
 interface Props {
     readonly fields: Pick<AccountFormBindingsInterface, 'title' | 'icon' | 'currentBalance' | 'instrumentId' | 'includeInNetWorth'>;
     readonly variant: ColorPaletteVariant;
     readonly instrumentSymbol: string;
     readonly balanceFieldLabel?: string;
+    readonly namePlaceholder: string;
     readonly children?: ReactNode;
     readonly onInstrumentChange?: (instrumentId: number) => void;
 }
 
-export const CreateAccountCoreFields = ({ fields, variant, instrumentSymbol, balanceFieldLabel, children, onInstrumentChange }: Props) => {
+export const CreateAccountCoreFields = (props: Props) => {
+    const { fields, variant, instrumentSymbol, balanceFieldLabel, namePlaceholder, children, onInstrumentChange } = props;
+
     const handleInstrumentChange = (instrumentId: number) => {
         fields.instrumentId.field.onChange(instrumentId);
         onInstrumentChange?.(instrumentId);
@@ -27,7 +28,6 @@ export const CreateAccountCoreFields = ({ fields, variant, instrumentSymbol, bal
     return (
         <>
             <AccountBalanceField
-                variant={variant}
                 instrumentSymbol={instrumentSymbol}
                 value={fields.currentBalance.field.value}
                 onChange={fields.currentBalance.field.onChange}
@@ -35,18 +35,19 @@ export const CreateAccountCoreFields = ({ fields, variant, instrumentSymbol, bal
             />
 
             <FormLayoutGroup>
-                <AccountDetailsField
+                <CreateAccountDetailsSection
+                    fields={fields}
                     variant={variant}
-                    titleBinding={fields.title}
-                    iconBinding={fields.icon}
-                    nameInputTestID={CreateAccountScreenSelector.NameInput}
+                    namePlaceholder={namePlaceholder}
+                    onInstrumentChange={handleInstrumentChange}
                 />
-
-                <CreateAccountCurrencyField value={fields.instrumentId.field.value} onChange={handleInstrumentChange} />
 
                 {children}
 
-                <IncludeInNetWorthField value={fields.includeInNetWorth.field.value} onChange={fields.includeInNetWorth.field.onChange} />
+                <CreateAccountOptionsSection
+                    includeInNetWorth={fields.includeInNetWorth.field.value}
+                    onIncludeInNetWorthChange={fields.includeInNetWorth.field.onChange}
+                />
             </FormLayoutGroup>
         </>
     );

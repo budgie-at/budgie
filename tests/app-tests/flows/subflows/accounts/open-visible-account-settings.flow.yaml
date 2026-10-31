@@ -14,5 +14,5 @@ appId: ${APP_ID}
 - tapOn:
     id: 'AccountDetails.EditButton'
 - extendedWaitUntil:
-    visible: 'Account Settings'
+    visible: 'Edit Account'
     timeout: 10000

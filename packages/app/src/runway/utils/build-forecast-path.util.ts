@@ -16,6 +16,9 @@ interface RunwayForecastGeometryInterface {
     readonly bandPath: string;
     readonly zeroY: number;
     readonly runOutX: number | null;
+    readonly startLabelY: number;
+    readonly endLabelY: number;
+    readonly endValue: number;
     readonly tickXs: readonly number[];
 }
 
@@ -30,6 +33,9 @@ interface BuildRunwayForecastPathParamsInterface {
 }
 
 const ZERO_VALUE = 0;
+const LABEL_ABOVE_GAP = 6;
+const LABEL_BELOW_GAP = 15;
+const LABEL_MIN_Y = 11;
 
 const buildForecastPath = (points: readonly RunwayForecastPointInterface[], close: boolean): string => {
     const path = points.map((point, index) => `${index === 0 ? 'M' : 'L'}${point.x},${point.y}`).join(' ');
@@ -59,12 +65,18 @@ export const buildRunwayForecastPath = (params: BuildRunwayForecastPathParamsInt
     const p25Points = p25Values.map((value, index) => ({ x: xTicks[index], y: yAt(value) }));
     const likelyPoints = likelyValues.map((value, index) => ({ x: xTicks[index], y: yAt(value) }));
     const p75Points = p75Values.map((value, index) => ({ x: xTicks[index], y: yAt(value) }));
+    const [startPoint] = likelyPoints;
+    const endPoint = likelyPoints[likelyPoints.length - 1];
+    const isGrowing = net >= 0;
 
     return {
         likelyPath: buildForecastPath(likelyPoints, false),
         bandPath: buildForecastPath([...p75Points, ...[...p25Points].reverse()], true),
         zeroY: yAt(ZERO_VALUE),
         runOutX: isPositiveNumber(runwayMonths) && runwayMonths <= RUNWAY_MAX_MONTHS ? xAt(runwayMonths) : null,
-        tickXs: xTicks
+        tickXs: xTicks,
+        startLabelY: isGrowing ? startPoint.y + LABEL_BELOW_GAP : Math.max(startPoint.y - LABEL_ABOVE_GAP, LABEL_MIN_Y),
+        endLabelY: isGrowing ? Math.max(endPoint.y - LABEL_ABOVE_GAP, LABEL_MIN_Y) : endPoint.y + LABEL_BELOW_GAP,
+        endValue: likelyValues[likelyValues.length - 1]
     };
 };

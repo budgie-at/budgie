@@ -10,8 +10,8 @@ export const ThemedSwitch = ({
     <View className={cn('ios:h-[28px] ios:justify-start', className)}>
         <Switch
             {...props}
-            thumbColorClassName="accent-primary"
-            trackColorOnClassName="accent-secondary-foreground"
+            thumbColorClassName="accent-white"
+            trackColorOnClassName="accent-positive-action"
             trackColorOffClassName="accent-secondary-corner"
             ios_backgroundColorClassName="accent-secondary-corner"
         />

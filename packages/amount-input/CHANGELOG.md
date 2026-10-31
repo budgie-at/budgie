@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.135.0](https://github.com/budgie-at/budgie/compare/v6.134.0...v6.135.0) (2026-10-31)
+
+### Features
+
+* **app:** redesign account create and edit forms as grouped lists ([c0eb461](https://github.com/budgie-at/budgie/commit/c0eb461a8f85f54e4566a106762a161de3abfa57))
+
+
 ## [6.115.9](https://github.com/budgie-at/budgie/compare/v6.115.8...v6.115.9) (2026-10-25)
 
 **Note:** Version bump only for package @budgie/amount-input

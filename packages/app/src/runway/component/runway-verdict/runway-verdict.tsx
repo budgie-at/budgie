@@ -1,7 +1,7 @@
 import { useLingui } from '@lingui/react/macro';
 
-import { EntranceReveal } from '../../../@generic/component/entrance-reveal/entrance-reveal';
 import { StatusLabel } from '../../../@generic/component/status-label/status-label';
+import { RunwayCard } from '../runway-card/runway-card';
 import { RunwayVerdictFigure } from '../runway-verdict-figure/runway-verdict-figure';
 import { RunwayVerdictOutlook } from '../runway-verdict-outlook/runway-verdict-outlook';
 
@@ -20,12 +20,12 @@ export const RunwayVerdict = ({ computation }: Props) => {
     const basisLabel = t`Based on ${monthsUsed} months`;
 
     return (
-        <EntranceReveal step={0} className="gap-y-md">
+        <RunwayCard className="gap-y-md p-3xl">
             <StatusLabel label={statusLabel} tone={tone} trailing={basisLabel} />
 
             <RunwayVerdictFigure computation={computation} />
 
             <RunwayVerdictOutlook computation={computation} />
-        </EntranceReveal>
+        </RunwayCard>
     );
 };
