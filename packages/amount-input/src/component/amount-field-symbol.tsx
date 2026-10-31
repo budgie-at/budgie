@@ -6,7 +6,7 @@ import { AmountFieldMeasure } from './amount-field-measure';
 
 import type { AmountFieldSymbolPropsInterface } from '../interface/amount-field-symbol-props.interface';
 
-const SYMBOL_GAP_SCALE = 0.2;
+const SYMBOL_GAP_SCALE = 0.08;
 
 interface Props extends AmountFieldSymbolPropsInterface {
     readonly gapSide: 'marginStart' | 'marginEnd';
