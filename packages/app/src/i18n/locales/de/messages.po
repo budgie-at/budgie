@@ -1231,7 +1231,7 @@ msgstr "Bank-Synchronisation"
 msgid "Bank sync reset"
 msgstr "Bank-Synchronisation zurückgesetzt"
 
-#: src/category/components/stats-by-categories/stats-by-categories.tsx
+#: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
 msgid "Bars compare each category with the largest one."
 msgstr "Die Balken vergleichen jede Kategorie mit der größten."
 
@@ -1533,8 +1533,8 @@ msgid "Categories ({selectedCategoriesCount})"
 msgstr "Kategorien ({selectedCategoriesCount})"
 
 #: src/category/components/categories-feature-intro/categories-feature-intro.tsx
-msgid "Categories break your spending down automatically. Add a transaction, or widen the period to see earlier ones."
-msgstr "Kategorien schlüsseln deine Ausgaben automatisch auf. Füge eine Transaktion hinzu oder erweitere den Zeitraum, um frühere zu sehen."
+msgid "Categories break your spending down automatically. Add a transaction, or choose another period."
+msgstr "Kategorien schlüsseln deine Ausgaben automatisch auf. Füge eine Transaktion hinzu oder wähle einen anderen Zeitraum."
 
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "Categories, tags and voice notes are handled on this phone."
@@ -3378,7 +3378,7 @@ msgstr "Inklusive Krypto"
 #: src/runway/component/runway-history-legend/runway-history-legend.tsx
 #: src/tag/components/stats-by-tags-panel/stats-by-tags-panel.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
-#: src/transaction/components/statistics-cash-flow-card/statistics-cash-flow-card.tsx
+#: src/transaction/components/statistics-cash-flow-row/statistics-cash-flow-row.tsx
 #: src/transaction/constant/transaction-type.constant.ts
 #: src/transaction/hook/use-transaction-filter-page-title.hook.ts
 #: src/widget/service/widget-snapshot-builder.service.ts
@@ -3807,6 +3807,10 @@ msgstr "Monobank sendet etwa einen Monat Verlauf pro Minute, für jedes ausgewä
 msgid "Monthly"
 msgstr "Monatlich"
 
+#: src/transaction/components/statistics-trend-bars/statistics-trend-bars.tsx
+msgid "Monthly average"
+msgstr "Monatsdurchschnitt"
+
 #: src/budget/components/budget-period-summary/budget-period-summary.tsx
 #: src/budget/components/budget-widget-card/budget-widget-card.tsx
 msgid "Monthly budget"
@@ -3901,7 +3905,7 @@ msgid "Negative amount"
 msgstr "Negativer Betrag"
 
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
-#: src/transaction/components/statistics-cash-flow-card/statistics-cash-flow-card.tsx
+#: src/transaction/components/statistics-cash-flow-row/statistics-cash-flow-row.tsx
 msgid "Net"
 msgstr "Netto"
 
@@ -4056,6 +4060,10 @@ msgstr "Keine inaktiven Konten"
 msgid "No inactive accounts match your search"
 msgstr "Keine inaktiven Konten entsprechen deiner Suche"
 
+#: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
+msgid "No income"
+msgstr "Keine Einnahmen"
+
 #: src/app/voice-review.tsx
 msgid "No items to save"
 msgstr "Keine Einträge zum Speichern"
@@ -4109,13 +4117,22 @@ msgstr "Keine Ergebnisse"
 msgid "No source transactions"
 msgstr "Keine Quelltransaktionen"
 
+#: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
+msgid "No spending"
+msgstr "Keine Ausgaben"
+
 #: src/category/components/categories-feature-intro/categories-feature-intro.tsx
+#: src/transaction/components/statistics-spending-hero/statistics-spending-hero.tsx
 msgid "No spending in this period"
 msgstr "Keine Ausgaben in diesem Zeitraum"
 
 #: src/runway/component/runway-drivers/runway-drivers.tsx
 msgid "No spending in this window."
 msgstr "Keine Ausgaben in diesem Zeitraum."
+
+#: src/transaction/components/statistics-spending-hero/statistics-spending-hero.tsx
+msgid "No spending matches these filters"
+msgstr "Keine Ausgaben passen zu diesen Filtern"
 
 #: src/settings/components/sync-repairs-empty-state-card/sync-repairs-empty-state-card.tsx
 msgid "No sync repairs found."
@@ -4136,10 +4153,6 @@ msgstr "Nein, danke"
 #: src/transaction/components/transaction-picker-row/transaction-picker-row.tsx
 msgid "No title"
 msgstr "Kein Titel"
-
-#: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
-msgid "No transactions"
-msgstr "Keine Transaktionen"
 
 #: src/rule/utils/show-rule-application-toast.util.ts
 msgid "No transactions matched"
@@ -4219,11 +4232,6 @@ msgstr "Noch keins"
 #: src/transaction/components/transaction-note-field-icon/transaction-note-field-icon.tsx
 msgid "Note"
 msgstr "Notiz"
-
-#: src/transaction/components/statistics-drill-down-caption/statistics-drill-down-caption.tsx
-#: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
-msgid "Nothing booked in this period"
-msgstr "In diesem Zeitraum nichts gebucht"
 
 #: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
 msgid "Nothing from the past is imported"

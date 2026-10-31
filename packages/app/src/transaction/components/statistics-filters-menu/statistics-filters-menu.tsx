@@ -7,6 +7,7 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 import { ActionsMenuItem } from '../../../@generic/component/actions-menu-item/actions-menu-item';
 import { ActionsMenu } from '../../../@generic/component/actions-menu/actions-menu';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { TITLE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/title-max-font-size-multiplier.constant';
 import { useTransactionAccountFilterModal } from '../../context/transaction-account-filter-modal.context';
 import { useTransactionAmountFilterModal } from '../../context/transaction-amount-filter-modal.context';
 import { useTransactionCategoryFilterModal } from '../../context/transaction-category-filter-modal.context';
@@ -77,7 +78,9 @@ export const StatisticsFiltersMenu = ({ filters, onChange }: Props) => {
             trigger={
                 <View className="flex-row items-center gap-x-md" style={continuousCorners}>
                     <Icon icon={UserIconNameEnum.SlidersHorizontal} size={16} className="text-primary" />
-                    <Text className="text-md font-semibold text-primary">{triggerLabel}</Text>
+                    <Text maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER} className="text-md font-semibold text-primary">
+                        {triggerLabel}
+                    </Text>
                 </View>
             }
         >

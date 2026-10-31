@@ -4,7 +4,7 @@ import { cva } from 'class-variance-authority';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
-import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 
 interface Props {
@@ -26,7 +26,7 @@ const amountVariants = cva('text-[15px] font-medium', {
 
 export const StatisticsRankingAmount = ({ amount, type, testID }: Props) => {
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
-    const formatDigits = useDisplayFormatDigits();
+    const formatDigits = useFormatDigits(0);
 
     const sign = type === TransactionTypeEnum.INCOME ? '+' : '';
     const formattedAmount = `${sign}${formatDigits(convertFromMicroUnits(amount), defaultInstrument.symbol)}`;

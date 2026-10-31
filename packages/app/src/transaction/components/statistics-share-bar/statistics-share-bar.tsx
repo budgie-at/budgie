@@ -6,6 +6,7 @@ import Animated, { LinearTransition } from 'react-native-reanimated';
 import { isDefined } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { TITLE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/title-max-font-size-multiplier.constant';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
 import { cn } from '../../../@generic/utils/cn.util';
@@ -21,7 +22,6 @@ interface Props {
     readonly onOtherPress: () => void;
 }
 
-const CAPTION_SEGMENT_COUNT = 3;
 const SEGMENT_TRANSITION_DURATION = 240;
 const SEGMENT_TRANSITION = LinearTransition.duration(SEGMENT_TRANSITION_DURATION);
 
@@ -75,13 +75,15 @@ export const StatisticsShareBar = ({ segments, other, onOtherPress }: Props) => 
                     hitSlop={0}
                     onPress={handleToggleBreakdown}
                 >
-                    <Text className="text-[15px] text-default-foreground">{breakdownToggleLabel}</Text>
+                    <Text maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER} className="text-[15px] text-default-foreground">
+                        {breakdownToggleLabel}
+                    </Text>
                 </HapticPressable>
             ) : null}
 
             {isCaptionVisible ? (
                 <View className="flex-row flex-wrap items-center gap-x-lg gap-y-sm">
-                    {segments.slice(0, CAPTION_SEGMENT_COUNT).map(segment => (
+                    {segments.map(segment => (
                         <StatisticsShareCaptionItem
                             key={segment.key}
                             label={segment.label}

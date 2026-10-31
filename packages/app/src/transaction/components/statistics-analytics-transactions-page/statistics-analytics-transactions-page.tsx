@@ -126,6 +126,7 @@ export const StatisticsAnalyticsTransactionsPage = (params: AnalyticsTransaction
                         isLoading={isLoading}
                         hasFiltersSelected={hasFiltersSelected}
                         periodLabel={formatDateRange(filters.date)}
+                        type={summaryType}
                     />
                 }
                 onLoadMore={loadMore}

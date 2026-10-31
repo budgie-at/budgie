@@ -1231,7 +1231,7 @@ msgstr "Синхронізація банку"
 msgid "Bank sync reset"
 msgstr "Синхронізацію з банком скинуто"
 
-#: src/category/components/stats-by-categories/stats-by-categories.tsx
+#: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
 msgid "Bars compare each category with the largest one."
 msgstr "Смуги порівнюють кожну категорію з найбільшою."
 
@@ -1533,8 +1533,8 @@ msgid "Categories ({selectedCategoriesCount})"
 msgstr "Категорії ({selectedCategoriesCount})"
 
 #: src/category/components/categories-feature-intro/categories-feature-intro.tsx
-msgid "Categories break your spending down automatically. Add a transaction, or widen the period to see earlier ones."
-msgstr "Категорії автоматично розподіляють ваші витрати. Додайте транзакцію або розширте період, щоб побачити попередні."
+msgid "Categories break your spending down automatically. Add a transaction, or choose another period."
+msgstr "Категорії автоматично розподіляють ваші витрати. Додайте транзакцію або виберіть інший період."
 
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "Categories, tags and voice notes are handled on this phone."
@@ -3378,7 +3378,7 @@ msgstr "Включно з криптовалютою"
 #: src/runway/component/runway-history-legend/runway-history-legend.tsx
 #: src/tag/components/stats-by-tags-panel/stats-by-tags-panel.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
-#: src/transaction/components/statistics-cash-flow-card/statistics-cash-flow-card.tsx
+#: src/transaction/components/statistics-cash-flow-row/statistics-cash-flow-row.tsx
 #: src/transaction/constant/transaction-type.constant.ts
 #: src/transaction/hook/use-transaction-filter-page-title.hook.ts
 #: src/widget/service/widget-snapshot-builder.service.ts
@@ -3807,6 +3807,10 @@ msgstr "Monobank надсилає близько одного місяця іс�
 msgid "Monthly"
 msgstr "Щомісяця"
 
+#: src/transaction/components/statistics-trend-bars/statistics-trend-bars.tsx
+msgid "Monthly average"
+msgstr "Середнє за місяць"
+
 #: src/budget/components/budget-period-summary/budget-period-summary.tsx
 #: src/budget/components/budget-widget-card/budget-widget-card.tsx
 msgid "Monthly budget"
@@ -3901,7 +3905,7 @@ msgid "Negative amount"
 msgstr "Від’ємна сума"
 
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
-#: src/transaction/components/statistics-cash-flow-card/statistics-cash-flow-card.tsx
+#: src/transaction/components/statistics-cash-flow-row/statistics-cash-flow-row.tsx
 msgid "Net"
 msgstr "Чистий"
 
@@ -4056,6 +4060,10 @@ msgstr "Немає неактивних рахунків"
 msgid "No inactive accounts match your search"
 msgstr "Жоден неактивний рахунок не відповідає вашому запиту"
 
+#: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
+msgid "No income"
+msgstr "Немає доходів"
+
 #: src/app/voice-review.tsx
 msgid "No items to save"
 msgstr "Немає елементів для збереження"
@@ -4109,13 +4117,22 @@ msgstr "Немає результатів"
 msgid "No source transactions"
 msgstr "Немає вихідних транзакцій"
 
+#: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
+msgid "No spending"
+msgstr "Немає витрат"
+
 #: src/category/components/categories-feature-intro/categories-feature-intro.tsx
+#: src/transaction/components/statistics-spending-hero/statistics-spending-hero.tsx
 msgid "No spending in this period"
 msgstr "Немає витрат за цей період"
 
 #: src/runway/component/runway-drivers/runway-drivers.tsx
 msgid "No spending in this window."
 msgstr "Немає витрат за цей період."
+
+#: src/transaction/components/statistics-spending-hero/statistics-spending-hero.tsx
+msgid "No spending matches these filters"
+msgstr "Немає витрат, що відповідають цим фільтрам"
 
 #: src/settings/components/sync-repairs-empty-state-card/sync-repairs-empty-state-card.tsx
 msgid "No sync repairs found."
@@ -4136,10 +4153,6 @@ msgstr "Ні, дякую"
 #: src/transaction/components/transaction-picker-row/transaction-picker-row.tsx
 msgid "No title"
 msgstr "Без назви"
-
-#: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
-msgid "No transactions"
-msgstr "Немає транзакцій"
 
 #: src/rule/utils/show-rule-application-toast.util.ts
 msgid "No transactions matched"
@@ -4219,11 +4232,6 @@ msgstr "Ще немає"
 #: src/transaction/components/transaction-note-field-icon/transaction-note-field-icon.tsx
 msgid "Note"
 msgstr "Нотатка"
-
-#: src/transaction/components/statistics-drill-down-caption/statistics-drill-down-caption.tsx
-#: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
-msgid "Nothing booked in this period"
-msgstr "За цей період нічого не записано"
 
 #: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
 msgid "Nothing from the past is imported"

@@ -3,6 +3,7 @@ import { Text } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/footnote-max-font-size-multiplier.constant';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { getSingleMonth } from '../../../@generic/utils/date/get-single-month.util';
 import { useFormatDateRange } from '../../../i18n/hook/use-format-date-range.hook';
@@ -34,7 +35,11 @@ export const StatisticsChangeLabel = ({ current, previous, previousRange }: Prop
     const visibleLabel = isAccessibilityTextSize ? conciseLabel : `${isIncrease ? '↑' : '↓'} ${changeLabel}`;
 
     return (
-        <Text accessibilityLabel={changeLabel} className="text-sm text-secondary-foreground">
+        <Text
+            accessibilityLabel={changeLabel}
+            maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
+            className="text-sm text-secondary-foreground"
+        >
             {visibleLabel}
         </Text>
     );

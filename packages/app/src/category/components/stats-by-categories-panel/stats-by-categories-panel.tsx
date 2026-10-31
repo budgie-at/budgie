@@ -7,7 +7,6 @@ import { View } from 'react-native';
 import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { getChartSwatches } from '../../../@generic/utils/get-chart-swatches.util';
-import { StatisticsCashFlowCard } from '../../../transaction/components/statistics-cash-flow-card/statistics-cash-flow-card';
 import { StatisticsShareBar } from '../../../transaction/components/statistics-share-bar/statistics-share-bar';
 import { StatisticsSpendingHero } from '../../../transaction/components/statistics-spending-hero/statistics-spending-hero';
 import { CategoryStatInterface } from '../../interface/category-stat.interface';
@@ -20,7 +19,7 @@ interface Props {
     readonly expenseByCategory: readonly CategoryStatInterface[];
 }
 
-const TOP_CONTRIBUTOR_COUNT = 5;
+const TOP_CONTRIBUTOR_COUNT = 3;
 const NEUTRAL_SWATCH_CLASS_NAME = 'bg-secondary-foreground';
 
 export const StatsByCategoriesPanel = ({ filters, incomeByCategory, expenseByCategory }: Props) => {
@@ -41,26 +40,30 @@ export const StatsByCategoriesPanel = ({ filters, incomeByCategory, expenseByCat
     }));
     const otherStats = expenseByCategory.slice(TOP_CONTRIBUTOR_COUNT);
     const otherAmount = otherStats.reduce((sum, stat) => sum + stat.amount, 0);
-    const otherLabel = t({ message: plural(otherStats.length, { one: 'Other · # category', other: 'Other · # categories' }) });
     const other =
-        otherAmount > 0 ? { key: 'other', label: otherLabel, amount: otherAmount, swatchClassName: NEUTRAL_SWATCH_CLASS_NAME } : null;
+        otherAmount > 0
+            ? {
+                  key: 'other',
+                  label: t({ message: plural(otherStats.length, { one: 'Other · # category', other: 'Other · # categories' }) }),
+                  amount: otherAmount,
+                  swatchClassName: NEUTRAL_SWATCH_CLASS_NAME
+              }
+            : null;
 
     const hasIncomeStats = isNotEmptyArray(incomeByCategory);
     const hasExpenseStats = isNotEmptyArray(expenseByCategory);
+    const footnote = t`Bars compare each category with the largest one.`;
 
     return (
         <View className="gap-y-6xl">
-            <View className="gap-y-lg">
-                <StatisticsSpendingHero filters={filters}>
-                    {hasExpenseStats ? <StatisticsShareBar segments={segments} other={other} onOtherPress={handleShowAllSpending} /> : null}
-                </StatisticsSpendingHero>
-
-                <StatisticsCashFlowCard filters={filters} />
-            </View>
+            <StatisticsSpendingHero filters={filters}>
+                {hasExpenseStats ? <StatisticsShareBar segments={segments} other={other} onOtherPress={handleShowAllSpending} /> : null}
+            </StatisticsSpendingHero>
 
             {hasExpenseStats ? (
                 <StatsByCategories
                     title={t`Spending`}
+                    {...(!hasIncomeStats && { footnote })}
                     stats={expenseByCategory}
                     filters={filters}
                     type={TransactionTypeEnum.EXPENSE}
@@ -72,6 +75,7 @@ export const StatsByCategoriesPanel = ({ filters, incomeByCategory, expenseByCat
             {hasIncomeStats ? (
                 <StatsByCategories
                     title={t`Income`}
+                    footnote={footnote}
                     stats={incomeByCategory}
                     filters={filters}
                     type={TransactionTypeEnum.INCOME}

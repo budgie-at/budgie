@@ -1,6 +1,7 @@
 import { cva } from 'class-variance-authority';
 import { Text } from 'react-native';
 
+import { MAX_FONT_SIZE_MULTIPLIER } from '../../constant/max-font-size-multiplier.constant';
 import { AnalyticsTabType } from '../../type/analytics-tab.type';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 
@@ -34,7 +35,7 @@ export const AnalyticsSegmentedControlItem = ({ tab, label, isActive, testID, on
                 numberOfLines={1}
                 adjustsFontSizeToFit
                 minimumFontScale={0.6}
-                maxFontSizeMultiplier={2}
+                maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
                 className={labelVariants({ isActive })}
             >
                 {label}

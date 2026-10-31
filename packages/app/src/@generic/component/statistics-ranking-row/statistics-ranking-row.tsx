@@ -76,7 +76,7 @@ export const StatisticsRankingRow = ({ title, share, ratio, icon, swatch, amount
                 </View>
 
                 <View className="flex-row items-center gap-x-md">
-                    <View className="h-[4px] flex-1 overflow-hidden rounded-full bg-surface-fill">
+                    <View className="h-[4px] flex-1 overflow-hidden rounded-full bg-primary/10">
                         {isAmountProtected ? null : <GrowBar ratio={ratio} className={cn('h-full rounded-full', barClassName)} />}
                     </View>
 

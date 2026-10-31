@@ -46,7 +46,7 @@ export const StatisticsTrendBar = ({ label, accessibilityLabel, ratio, isSelecte
                 {isPositiveNumber(ratio) ? (
                     <View className={barVariants({ tone })} style={barStyle} />
                 ) : (
-                    <View className="h-[2px] w-[12px] rounded-full bg-secondary-foreground/70" />
+                    <View className="h-[2px] w-[12px] rounded-full bg-surface-separator" />
                 )}
             </View>
 

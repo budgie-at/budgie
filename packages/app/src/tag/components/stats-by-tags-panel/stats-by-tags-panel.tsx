@@ -5,7 +5,6 @@ import { View } from 'react-native';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
-import { StatisticsCashFlowCard } from '../../../transaction/components/statistics-cash-flow-card/statistics-cash-flow-card';
 import { StatisticsSpendingHero } from '../../../transaction/components/statistics-spending-hero/statistics-spending-hero';
 import { TagStatInterface } from '../../interface/tag-stat.interface';
 import { StatsByTags } from '../stats-by-tags/stats-by-tags';
@@ -34,11 +33,7 @@ export const StatsByTagsPanel = ({ filters, income, expense, incomeByTag, expens
 
     return (
         <View className="gap-y-6xl">
-            <View className="gap-y-lg">
-                <StatisticsSpendingHero filters={filters} />
-
-                <StatisticsCashFlowCard filters={filters} />
-            </View>
+            <StatisticsSpendingHero filters={filters} />
 
             {hasExpenseStats ? (
                 <StatsByTags

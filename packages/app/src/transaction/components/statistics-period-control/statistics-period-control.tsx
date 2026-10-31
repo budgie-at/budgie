@@ -7,6 +7,7 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 import { isDefined } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { TITLE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/title-max-font-size-multiplier.constant';
 import { useDateFilterModal } from '../../../@generic/context/date-filter-modal.context';
 import { normalizeToWholeDays } from '../../../@generic/utils/date/normalize-to-whole-days.util';
 import { shiftDateRange } from '../../../@generic/utils/date/shift-date-range.util';
@@ -61,7 +62,11 @@ export const StatisticsPeriodControl = ({ value, onChange }: Props) => {
                 onPress={handleOpen}
             >
                 <Animated.View key={label} entering={FadeIn.duration(180)}>
-                    <Text numberOfLines={2} maxFontSizeMultiplier={1.6} className="text-center text-md font-semibold text-primary">
+                    <Text
+                        numberOfLines={2}
+                        maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER}
+                        className="text-center text-md font-semibold text-primary"
+                    >
                         {label}
                     </Text>
                 </Animated.View>

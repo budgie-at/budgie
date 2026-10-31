@@ -3,8 +3,9 @@ import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/footnote-max-font-size-multiplier.constant';
 import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { getShare } from '../../../@generic/utils/get-share.util';
@@ -37,7 +38,7 @@ export const StatisticsDrillDownCaption = ({ summary, type, currencySymbol }: Pr
         }
 
         if (summary.transactionCount === 0) {
-            return t`Nothing booked in this period`;
+            return '';
         }
 
         const shareLabel = isAmountProtected ? '••%' : formatPercent(getShare(summary.amount, summary.base));
@@ -47,5 +48,11 @@ export const StatisticsDrillDownCaption = ({ summary, type, currencySymbol }: Pr
         return `${countLabel} · ${shareText}`;
     };
 
-    return <Text className="text-sm text-secondary-foreground">{getLabel()}</Text>;
+    const label = getLabel();
+
+    return isNotEmptyString(label) ? (
+        <Text maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER} className="text-sm text-secondary-foreground">
+            {label}
+        </Text>
+    ) : null;
 };

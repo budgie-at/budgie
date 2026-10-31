@@ -1,0 +1,1 @@
+export const FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER = 1.3;

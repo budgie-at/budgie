@@ -12,6 +12,7 @@ import { CategoryStatisticsCardSelector } from '../category-statistics-card/cate
 
 interface Props {
     readonly title: string;
+    readonly footnote?: string;
     readonly stats: readonly CategoryStatInterface[];
     readonly filters: TransactionFilterInterface;
     readonly type: TransactionTypeEnum.INCOME | TransactionTypeEnum.EXPENSE;
@@ -19,7 +20,7 @@ interface Props {
     readonly onToggleExpanded: () => void;
 }
 
-export const StatsByCategories = ({ title, stats, filters, type, isExpanded, onToggleExpanded }: Props) => {
+export const StatsByCategories = ({ title, footnote, stats, filters, type, isExpanded, onToggleExpanded }: Props) => {
     const { t } = useLingui();
 
     const totalAmount = stats.reduce((sum, stat) => sum + stat.amount, 0);
@@ -44,7 +45,7 @@ export const StatsByCategories = ({ title, stats, filters, type, isExpanded, onT
     return (
         <CollapsibleStatsSection
             title={title}
-            footnote={t`Bars compare each category with the largest one.`}
+            footnote={footnote}
             rows={categorizedRows}
             pinnedRow={rows[uncategorizedIndex]}
             isExpanded={isExpanded}
