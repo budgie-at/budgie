@@ -1,6 +1,6 @@
 import { TransactionEntryTypeEnum, UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { useRouter } from 'expo-router';
+import { Redirect, useRouter } from 'expo-router';
 import { View } from 'react-native';
 
 import { ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
@@ -38,7 +38,7 @@ export const RefundTransactionInfoContent = ({ transaction, parentTransaction }:
     const formatDigits = useProtectedAmountLabel();
     const { minimumHeight, handoff, onAmountLayout, onTitleLayout, onBodyLayout, onContentLayout, scrollRef, handleScrollEnd } =
         useTransactionInfoHandoff();
-    const { sources } = useGetConsolidationSourcesQuery(parentTransaction.id);
+    const { sources, isLoading } = useGetConsolidationSourcesQuery(parentTransaction.id);
     const source = sources.find(row => row.sourceTransactionId === transaction.id);
     const original = formatTransactionInfoAmount(parentTransaction, formatDigits);
     const merchant = getTransactionDisplayTitle(parentTransaction);
@@ -46,7 +46,7 @@ export const RefundTransactionInfoContent = ({ transaction, parentTransaction }:
     const handleOpenPurchase = () => void router.push(getTransactionHref(parentTransaction));
 
     if (!isDefined(source)) {
-        return null;
+        return isLoading ? null : <Redirect href={getTransactionHref(parentTransaction)} />;
     }
 
     const amount = `+${formatDigits(convertFromMicroUnits(sumEntryAmounts(sources.filter(row => row.sourceTransactionId === transaction.id && row.entryType === TransactionEntryTypeEnum.DEBIT))), source.currencySymbol)}`;
