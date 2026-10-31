@@ -1,6 +1,8 @@
 import { TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { useFormatDateRange } from '../../i18n/hook/use-format-date-range.hook';
 import { TransactionFilterPageHeaderModeEnum } from '../enum/transaction-filter-page-header-mode.enum';
 
@@ -29,7 +31,9 @@ export const useTransactionFilterPageTitle = ({ mode, category, tag, type, types
         return type === TransactionTypeEnum.EXPENSE ? t`Expenses` : t`Transactions`;
     };
 
-    const subtitle = hasMissingCategories && hasBothTypes ? `${getTypeText()} · ${periodText}` : periodText;
+    const hasDateRange = isDefined(date?.from) || isDefined(date?.to);
+    const missingCategoriesSubtitle = hasDateRange ? `${getTypeText()} · ${periodText}` : getTypeText();
+    const subtitle = hasMissingCategories ? missingCategoriesSubtitle : periodText;
 
     const title = filterName ?? getTypeText();
     const compactPeriodText = formatDateRange(date, true);
