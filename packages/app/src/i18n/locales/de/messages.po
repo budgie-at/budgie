@@ -810,7 +810,7 @@ msgstr "Budgie-Aktion hinzufügen"
 
 #: src/runway/component/runway-empty-state/runway-empty-state.tsx
 msgid "Add transactions to see your runway"
-msgstr "Füge Transaktionen hinzu, um deine Runway zu sehen"
+msgstr "Füge Transaktionen hinzu, um deine Reichweite zu sehen"
 
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add your first account to start tracking your finances"
@@ -4157,7 +4157,7 @@ msgstr "einmal im Monat"
 
 #: src/runway/component/runway-empty-state/runway-empty-state.tsx
 msgid "Once you have 3 months of transactions, Runway shows how long your balance lasts."
-msgstr "Sobald du 3 Monate an Transaktionen hast, zeigt Runway, wie lange dein Guthaben reicht."
+msgstr "Sobald du 3 Monate an Transaktionen hast, zeigt die Reichweite, wie lange dein Guthaben reicht."
 
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 msgid "One you exported with a PIN you remember"
@@ -4937,7 +4937,7 @@ msgstr "Reichweite"
 
 #: src/runway/component/runway-empty-state/runway-empty-state.tsx
 msgid "Runway needs 3 complete months of transactions to forecast your balance."
-msgstr "Runway braucht 3 vollständige Monate mit Transaktionen, um deinen Kontostand vorherzusagen."
+msgstr "Die Reichweite braucht 3 vollständige Monate mit Transaktionen, um deinen Kontostand vorherzusagen."
 
 #: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
 msgid "Safe to spend"
@@ -5452,12 +5452,12 @@ msgid "Starting up AI…"
 msgstr "KI wird gestartet…"
 
 #: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
-msgid "Starts at {startLabel}."
-msgstr "Beginnt bei {startLabel}."
+msgid "Starts at {startLabel}. Ends at {endLabel}."
+msgstr "Beginnt bei {startLabel}. Endet bei {endLabel}."
 
 #: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
-msgid "Starts at {startLabel}. Runs out around {runOutLabel}."
-msgstr "Beginnt bei {startLabel}. Reicht bis etwa {runOutLabel}."
+msgid "Starts at {startLabel}. Ends at {endLabel}. Runs out around {runOutLabel}."
+msgstr "Beginnt bei {startLabel}. Endet bei {endLabel}. Reicht bis etwa {runOutLabel}."
 
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Statement imported"

@@ -5452,12 +5452,12 @@ msgid "Starting up AI…"
 msgstr "Démarrage de l'IA…"
 
 #: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
-msgid "Starts at {startLabel}."
-msgstr "Commence à {startLabel}."
+msgid "Starts at {startLabel}. Ends at {endLabel}."
+msgstr "Commence à {startLabel}. Termine à {endLabel}."
 
 #: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
-msgid "Starts at {startLabel}. Runs out around {runOutLabel}."
-msgstr "Commence à {startLabel}. S'épuise vers {runOutLabel}."
+msgid "Starts at {startLabel}. Ends at {endLabel}. Runs out around {runOutLabel}."
+msgstr "Commence à {startLabel}. Termine à {endLabel}. S'épuise vers {runOutLabel}."
 
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Statement imported"

@@ -51,9 +51,10 @@ export const RunwayForecastChart = ({ computation }: Props) => {
     });
     const runOutLabel = isDefined(computation.runsOutAt) ? formatMonthAndYear(computation.runsOutAt) : '';
     const startLabel = formatChartAmount(computation.liquid);
+    const endLabel = formatChartAmount(endValue);
     const chartSummary = isNotEmptyString(runOutLabel)
-        ? t`Starts at ${startLabel}. Runs out around ${runOutLabel}.`
-        : t`Starts at ${startLabel}.`;
+        ? t`Starts at ${startLabel}. Ends at ${endLabel}. Runs out around ${runOutLabel}.`
+        : t`Starts at ${startLabel}. Ends at ${endLabel}.`;
     const runOutAnchor = isDefined(runOutX) && runOutX > CHART_WIDTH * RUN_OUT_ANCHOR_RATIO ? 'end' : 'middle';
 
     return (
@@ -91,7 +92,7 @@ export const RunwayForecastChart = ({ computation }: Props) => {
 
                         <RunwayForecastValueLabel x={CHART_PADDING_LEFT} y={startLabelY} label={startLabel} anchor="start" />
 
-                        <RunwayForecastValueLabel x={CHART_WIDTH} y={endLabelY} label={formatChartAmount(endValue)} anchor="end" />
+                        <RunwayForecastValueLabel x={CHART_WIDTH} y={endLabelY} label={endLabel} anchor="end" />
 
                         {isDefined(runOutX) && isNotEmptyString(runOutLabel) ? (
                             <RunwayForecastRunOut

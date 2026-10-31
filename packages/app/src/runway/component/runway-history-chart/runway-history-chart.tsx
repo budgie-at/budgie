@@ -35,6 +35,7 @@ const MONTH_LABEL_Y = CHART_HEIGHT - 4;
 const MAX_MONTH_LABELS = 6;
 const VIEW_BOX = `0 0 ${RUNWAY_HISTORY_CHART_WIDTH} ${CHART_HEIGHT}`;
 const CHART_ASPECT_STYLE = { aspectRatio: RUNWAY_HISTORY_CHART_WIDTH / CHART_HEIGHT };
+const PLOT_REGION_STYLE = { width: `${(RUNWAY_HISTORY_PLOT_WIDTH / RUNWAY_HISTORY_CHART_WIDTH) * 100}%` } as const;
 const MAX_BAR_WIDTH = 16;
 const MIN_BAR_WIDTH = 3;
 const SLOT_GUTTER_RATIO = 0.3;
@@ -112,7 +113,7 @@ export const RunwayHistoryChart = ({ series, burn }: Props) => {
                             ))}
                         </Svg>
                     </View>
-                    <View className="absolute inset-0 flex-row">
+                    <View className="absolute inset-y-0 left-0 flex-row" style={PLOT_REGION_STYLE}>
                         {months.map(month => (
                             <RunwayHistoryBarLabel key={month.key} month={month.label} expense={month.expense} income={month.income} />
                         ))}
