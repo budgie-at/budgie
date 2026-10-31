@@ -1,5 +1,6 @@
 /* eslint-disable max-lines -- File owns the single multi-stage statistics SQL aggregation pipeline that must stay together */
-import { SQL, and, desc, eq, getTableColumns, inArray, isNotNull, isNull, ne, notInArray, or, sql } from 'drizzle-orm';
+import { SQL, and, desc, eq, getTableColumns, gt, gte, inArray, isNotNull, isNull, lt, lte, ne, notInArray, or, sql } from 'drizzle-orm';
+import { alias } from 'drizzle-orm/sqlite-core';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -417,6 +418,35 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
                         )
                     )
                 ),
+
+            getNettedRefundsQuery: (filters: TransactionFilterInterface, defaultInstrumentId: number) =>
+                Db.query(db => {
+                    const refundTransaction = alias(TransactionEntityTable, 'refund_transaction');
+
+                    return db
+                        .select({
+                            amount: sql<number>`COALESCE(SUM(${buildEntryBaseValueSql(defaultInstrumentId)}), 0)`.as('amount'),
+                            purchasedAt: sql<number | null>`MAX(${TransactionEntityTable.operatedAt})`.as('purchased_at')
+                        })
+                        .from(TransactionEntryEntityTable)
+                        .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+                        .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
+                        .innerJoin(refundTransaction, eq(TransactionEntryEntityTable.originalTransactionId, refundTransaction.id))
+                        .where(
+                            and(
+                                transactionFilters.buildFilterWhere({ ...filters, date: null }),
+                                eq(TransactionEntityTable.consolidationType, TransactionConsolidationTypeEnum.REFUND),
+                                eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.DEBIT),
+                                isNull(TransactionEntryEntityTable.deletedAt),
+                                ...(isDefined(filters.date?.from) ? [gte(refundTransaction.operatedAt, filters.date.from)] : []),
+                                ...(isDefined(filters.date?.to) ? [lte(refundTransaction.operatedAt, filters.date.to)] : []),
+                                or(
+                                    isDefined(filters.date?.from) ? lt(TransactionEntityTable.operatedAt, filters.date.from) : sql`0`,
+                                    isDefined(filters.date?.to) ? gt(TransactionEntityTable.operatedAt, filters.date.to) : sql`0`
+                                )
+                            )
+                        );
+                }),
 
             getIncomeTransactionsQuery: (filters: TransactionFilterInterface) =>
                 Db.query(db =>
