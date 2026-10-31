@@ -2,8 +2,7 @@ import { ReceiptMerchantLlmService } from '@budgie/ai';
 import { EmbeddingSuggestionService } from '@budgie/categorization';
 import { CategoryRepository, CurrencyEnum, LanguageEnum, SettingsRepository, convertFromMicroUnits } from '@budgie/contracts';
 import { parseReceipt } from '@budgie/import-export';
-import { ReceiptMatchService } from '@budgie/ledger';
-import { RuleEngineService } from '@budgie/rules';
+import { ReceiptMatchResultKindEnum, ReceiptMatchService } from '@budgie/ledger';
 import { SyncFileReader } from '@budgie/sync';
 import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
@@ -20,18 +19,16 @@ import * as ImagePicker from 'expo-image-picker';
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { ReceiptScannerModule } from '../../../modules/receipt-scanner';
-import { appAtomRegistry } from '../../@generic/constant/app-atom-registry.constant';
 import { waitForIdle } from '../../@generic/utils/wait-for-idle.util';
 import { AiSubsystemNameEnum } from '../../ai/enum/ai-subsystem-name.enum';
 import { AiModelResidencyService } from '../../ai/service/ai-model-residency.service';
 import { ChatService } from '../../ai/service/chat.service';
 import { LocalEmbeddingService } from '../../ai/service/embedding.service';
-import { receiptScanProgressAtom } from '../constant/receipt-scan-progress-atom.constant';
 import { ReceiptScanFailureEnum } from '../enum/receipt-scan-failure.enum';
 import { ReceiptSourceEnum } from '../enum/receipt-source.enum';
 
 import type { PickedAssetsResultInterface } from '../interface/picked-assets-result.interface';
-import type { ReceiptScanResultInterface } from '../interface/receipt-scan-result.interface';
+import type { ReceiptProposalInterface } from '../interface/receipt-proposal.interface';
 import type { CategoryEntityInterface } from '@budgie/contracts';
 import type { ReceiptDraftInterface, ReceiptTextLineInterface } from '@budgie/import-export';
 import type { PdfTextItemInterface } from '@budgie/sync';
@@ -43,7 +40,6 @@ export class ReceiptScanService extends Context.Service<ReceiptScanService>()('@
         const embeddingSuggestionService = yield* EmbeddingSuggestionService;
         const receiptMatchService = yield* ReceiptMatchService;
         const receiptMerchantLlmService = yield* ReceiptMerchantLlmService;
-        const ruleEngineService = yield* RuleEngineService;
         const settingsRepository = yield* SettingsRepository;
         const syncFileReader = yield* SyncFileReader;
         const nativeModule = ReceiptScannerModule;
@@ -55,13 +51,18 @@ export class ReceiptScanService extends Context.Service<ReceiptScanService>()('@
         const CONTEXT_LINE_COUNT = 15;
         const decodeCurrency = Schema.decodeUnknownOption(Schema.Enum(CurrencyEnum));
 
-        const failure = (kind: ReceiptScanFailureEnum): ReceiptScanResultInterface => ({
+        const failure = (kind: ReceiptScanFailureEnum): ReceiptProposalInterface => ({
             kind,
             transactionId: null,
             title: '',
+            comment: '',
             amount: null,
             currency: null,
-            fallback: null
+            categoryId: null,
+            accountId: null,
+            operatedAt: null,
+            aiContext: '',
+            receipt: null
         });
 
         const toTitleCase = (text: string): string =>
@@ -123,84 +124,71 @@ export class ReceiptScanService extends Context.Service<ReceiptScanService>()('@
                 return failure(ReceiptScanFailureEnum.NO_TEXT);
             }
 
+            const aiContext = toContext(lines);
             const draft = parseReceipt(lines, baseCurrency);
 
             if (!isDefined(draft)) {
-                return { ...failure(ReceiptScanFailureEnum.MANUAL), fallback: { amount: null, aiContext: toContext(lines) } };
+                return { ...failure(ReceiptScanFailureEnum.MANUAL), aiContext };
             }
 
-            if (!draft.isPaid) {
-                return {
-                    ...failure(ReceiptScanFailureEnum.MANUAL),
-                    title: draft.merchantLegalName ?? '',
-                    fallback: { amount: convertFromMicroUnits(draft.total), aiContext: toContext(lines) }
-                };
-            }
-
-            const { title, description } = yield* nameMerchant(draft, lines, isChatReady);
-            const categoryId =
-                isNotEmptyArray(categories) && isNotEmptyString(title) ? yield* suggestCategoryId(categories, title, description) : null;
             const now = yield* Clock.currentTimeMillis;
+            const amount = convertFromMicroUnits(draft.total);
+            const occurredAt = draft.occurredAt ?? new Date(now);
 
-            return yield* receiptMatchService
-                .match({ ...draft, occurredAt: draft.occurredAt ?? new Date(now), title, description, categoryId }, transactionId =>
-                    ruleEngineService.applyCreateSafeRulesToTransactionIds([transactionId]).pipe(Effect.catchCause(Effect.logError))
-                )
-                .pipe(
-                    Effect.map((result): ReceiptScanResultInterface => ({
-                        ...result,
-                        title,
-                        amount: convertFromMicroUnits(draft.total),
-                        currency: draft.currency,
-                        fallback: null
-                    })),
-                    Effect.catchTags({
-                        ReceiptAccountNotFoundError: () =>
-                            Effect.succeed({
-                                ...failure(ReceiptScanFailureEnum.MANUAL),
-                                title,
-                                fallback: { amount: convertFromMicroUnits(draft.total), aiContext: toContext(lines) }
-                            })
-                    })
-                );
+            const { title, description } = draft.isPaid
+                ? yield* nameMerchant(draft, lines, isChatReady)
+                : { title: draft.merchantLegalName ?? '', description: null };
+            const categoryId =
+                draft.isPaid && isNotEmptyArray(categories) && isNotEmptyString(title)
+                    ? yield* suggestCategoryId(categories, title, description)
+                    : null;
+            const receipt = { ...draft, occurredAt, title, description, categoryId };
+            const proposal = yield* receiptMatchService.propose(receipt);
+
+            return {
+                kind: proposal.kind,
+                transactionId: proposal.transactionId,
+                title,
+                comment: description ?? '',
+                amount,
+                currency: draft.currency,
+                categoryId,
+                accountId: draft.isPaid ? proposal.accountId : null,
+                operatedAt: draft.occurredAt,
+                aiContext,
+                receipt: proposal.kind === ReceiptMatchResultKindEnum.DUPLICATE ? null : receipt
+            };
         });
 
-        const PHOTO_SELECTION_LIMIT = 10;
+        const captureFromCamera = (): Effect.Effect<string | null> =>
+            isDefined(nativeModule)
+                ? Effect.promise(() => nativeModule.scan()).pipe(Effect.map(uris => uris.at(0) ?? null))
+                : Effect.succeed(null);
 
-        const captureFromCamera = (): Effect.Effect<readonly string[]> =>
-            isDefined(nativeModule) ? Effect.promise(() => nativeModule.scan()) : Effect.succeed([]);
-
-        const pickUris = <Result extends PickedAssetsResultInterface>(pick: () => Promise<Result>): Effect.Effect<readonly string[]> =>
+        const pickUri = <Result extends PickedAssetsResultInterface>(pick: () => Promise<Result>): Effect.Effect<string | null> =>
             Effect.promise(pick).pipe(
-                Effect.map(result => result.assets?.map(asset => asset.uri) ?? []),
-                Effect.catchCause(cause => Effect.as(Effect.logError(cause), []))
+                Effect.map(result => result.assets?.at(0)?.uri ?? null),
+                Effect.catchCause(cause => Effect.as(Effect.logError(cause), null))
             );
 
-        const captureFromPhotos = (): Effect.Effect<readonly string[]> =>
-            pickUris(() =>
-                ImagePicker.launchImageLibraryAsync({
-                    mediaTypes: ['images'],
-                    allowsMultipleSelection: true,
-                    selectionLimit: PHOTO_SELECTION_LIMIT,
-                    orderedSelection: true
-                })
+        const captureFromPhotos = (): Effect.Effect<string | null> =>
+            pickUri(() => ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], allowsMultipleSelection: false }));
+
+        const captureFromFiles = (): Effect.Effect<string | null> =>
+            pickUri(() =>
+                DocumentPicker.getDocumentAsync({ type: ['image/*', 'application/pdf'], multiple: false, copyToCacheDirectory: true })
             );
 
-        const captureFromFiles = (): Effect.Effect<readonly string[]> =>
-            pickUris(() =>
-                DocumentPicker.getDocumentAsync({ type: ['image/*', 'application/pdf'], multiple: true, copyToCacheDirectory: true })
-            );
-
-        const captureBySource: Record<ReceiptSourceEnum, () => Effect.Effect<readonly string[]>> = {
+        const captureBySource: Record<ReceiptSourceEnum, () => Effect.Effect<string | null>> = {
             [ReceiptSourceEnum.CAMERA]: captureFromCamera,
             [ReceiptSourceEnum.PHOTOS]: captureFromPhotos,
             [ReceiptSourceEnum.FILES]: captureFromFiles
         };
 
         return {
-            capture: (source: ReceiptSourceEnum): Effect.Effect<readonly string[]> => captureBySource[source](),
+            capture: (source: ReceiptSourceEnum): Effect.Effect<string | null> => captureBySource[source](),
             process: Effect.fn('ReceiptScanService.process')(
-                function* (uris: readonly string[]) {
+                function* (uri: string) {
                     const settings = yield* settingsRepository.findSettings();
                     const baseCurrency = Option.getOrElse(decodeCurrency(settings?.defaultInstrument?.code), () => CurrencyEnum.EUR);
                     const allCategories = yield* categoryRepository.findAllNonSystemLocalized(settings?.language ?? LanguageEnum.EN);
@@ -208,15 +196,10 @@ export class ReceiptScanService extends Context.Service<ReceiptScanService>()('@
                     return yield* Effect.acquireUseRelease(
                         Effect.forEach(AI_SUBSYSTEMS, subsystem => aiModelResidencyService.acquire(subsystem)),
                         ([isChatReady, isEmbeddingReady]) =>
-                            Effect.forEach(uris, (uri, index) =>
-                                Effect.sync(
-                                    () => void appAtomRegistry.set(receiptScanProgressAtom, { current: index + 1, total: uris.length })
-                                ).pipe(
-                                    Effect.andThen(processReceipt(uri, isChatReady, isEmbeddingReady ? allCategories : [], baseCurrency)),
-                                    Effect.catchCause(cause => Effect.as(Effect.logError(cause), failure(ReceiptScanFailureEnum.FAILED))),
-                                    Effect.ensuring(Effect.ignore(Effect.try(() => void new File(uri).delete()))),
-                                    Effect.tap(() => waitForIdle)
-                                )
+                            processReceipt(uri, isChatReady, isEmbeddingReady ? allCategories : [], baseCurrency).pipe(
+                                Effect.catchCause(cause => Effect.as(Effect.logError(cause), failure(ReceiptScanFailureEnum.FAILED))),
+                                Effect.ensuring(Effect.ignore(Effect.try(() => void new File(uri).delete()))),
+                                Effect.tap(() => waitForIdle)
                             ),
                         () => Effect.forEach(AI_SUBSYSTEMS, subsystem => aiModelResidencyService.release(subsystem), { discard: true })
                     );
@@ -233,7 +216,6 @@ export class ReceiptScanService extends Context.Service<ReceiptScanService>()('@
             EmbeddingSuggestionService.layer.pipe(Layer.provide(LocalEmbeddingService.invokerLayer)),
             ReceiptMatchService.layer,
             ReceiptMerchantLlmService.layer.pipe(Layer.provide(ChatService.invokerLayer)),
-            RuleEngineService.layer,
             SettingsRepository.layer
         ])
     );
