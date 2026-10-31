@@ -3,12 +3,10 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { ClassValue } from 'cn';
-import { ImpactFeedbackStyle } from 'expo-haptics';
-import { Keyboard } from 'react-native';
 
 import { BACKGROUND_COLOR_PALETTE } from '../../constant/background-color-palette.constant';
 import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
-import { useVibration } from '../../hook/use-vibration.hook';
+import { useSignTogglePress } from '../../hook/use-sign-toggle-press.hook';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { Icon } from '../icon/icon';
 
@@ -37,13 +35,7 @@ const iconVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>('
 
 export const AmountSignPill = ({ isNegative, variant, onToggle }: Props) => {
     const { t } = useLingui();
-    const [, hapticImpact] = useVibration();
-
-    const handlePress = () => {
-        hapticImpact(ImpactFeedbackStyle.Light);
-        Keyboard.dismiss();
-        onToggle();
-    };
+    const handlePress = useSignTogglePress(onToggle);
 
     const iconClassName = iconVariants({ variant });
     const positiveIcon = <Icon icon={UserIconNameEnum.Plus} size={20} className={iconClassName} />;

@@ -1,15 +1,14 @@
-import { AccountTypeEnum, InstrumentTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { AccountTypeEnum, InstrumentTypeEnum } from '@budgie/contracts';
 import { AccountService } from '@budgie/ledger';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
+import { useController } from 'react-hook-form';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { AccountDetailsField } from '../../../@generic/component/account-details-field/account-details-field';
-import { CreateAccountCurrencyField } from '../../../@generic/component/create-account-currency-field/create-account-currency-field';
 import { EmptyScreen } from '../../../@generic/component/empty-screen/empty-screen';
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
 import { MICRO_UNIT_DECIMAL_PLACES } from '../../../@generic/constant/micro-unit-decimal-places.constant';
@@ -18,12 +17,15 @@ import { useGetInstrumentsByTypeQuery } from '../../../instrument/query/use-get-
 import { HistoricalMarketDataDrainerService } from '../../../market-data/service/historical-market-data-drainer.service';
 import { defaultInstrumentIdAtom } from '../../../settings/constants/settings-atoms.constant';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
+import { ACCOUNT_ICON } from '../../constant/account-icon.constant';
+import { AccountSwitchFieldKindEnum } from '../../enum/account-switch-field-kind.enum';
 import { useAccountCreateBindings } from '../../hooks/use-account-create-bindings.hook';
 import { useLiabilityAccountForm } from '../../hooks/use-liability-account-form.hook';
 import { AccountBalanceField } from '../account-balance-field/account-balance-field';
+import { AccountSwitchField } from '../account-switch-field/account-switch-field';
+import { CreateAccountDetailsSection } from '../create-account-details-section/create-account-details-section';
+import { CreateAccountOptionsSection } from '../create-account-options-section/create-account-options-section';
 import { CreateAccountScreen } from '../create-account-screen/create-account-screen';
-import { CreateAccountScreenSelector } from '../create-account-screen/create-account-screen.selector';
-import { IncludeInNetWorthField } from '../include-in-net-worth-field/include-in-net-worth-field';
 
 interface Props {
     readonly type: AccountTypeEnum.BANK | AccountTypeEnum.CASH | AccountTypeEnum.CRYPTO;
@@ -35,6 +37,13 @@ const TITLE: Record<Props['type'], MessageDescriptor> = {
     [AccountTypeEnum.CRYPTO]: msg`Crypto Account`
 };
 
+const NAME_PLACEHOLDER: Record<Props['type'], MessageDescriptor> = {
+    [AccountTypeEnum.BANK]: msg`e.g. Main card`,
+    [AccountTypeEnum.CASH]: msg`e.g. Emergency fund`,
+    [AccountTypeEnum.CRYPTO]: msg`e.g. Cold wallet`
+};
+
+// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export const CreateSimpleAccount = ({ type }: Props) => {
     const { t } = useLingui();
     const isCrypto = type === AccountTypeEnum.CRYPTO;
@@ -47,8 +56,9 @@ export const CreateSimpleAccount = ({ type }: Props) => {
         type,
         title: '',
         currentBalance: 0,
-        icon: isCrypto ? UserIconNameEnum.Coins : UserIconNameEnum.Home,
+        icon: ACCOUNT_ICON[type],
         includeInNetWorth: true,
+        isActive: true,
         instrumentId: isDefined(cryptoInstrumentId) ? cryptoInstrumentId : defaultInstrumentId
     };
 
@@ -64,13 +74,16 @@ export const CreateSimpleAccount = ({ type }: Props) => {
         })
     );
 
-    const fields = useAccountCreateBindings(control, {
-        title: 'title',
-        icon: 'icon',
-        currentBalance: 'currentBalance',
-        instrumentId: 'instrumentId',
-        includeInNetWorth: 'includeInNetWorth'
-    });
+    const fields = {
+        ...useAccountCreateBindings(control, {
+            title: 'title',
+            icon: 'icon',
+            currentBalance: 'currentBalance',
+            instrumentId: 'instrumentId',
+            includeInNetWorth: 'includeInNetWorth'
+        }),
+        isActive: useController({ control, name: 'isActive' })
+    };
     const stickyInstrument = useStickyDefinedValue(instrument);
 
     if ((isCrypto && !isDefined(cryptoInstrumentId)) || !isDefined(stickyInstrument)) {
@@ -78,12 +91,14 @@ export const CreateSimpleAccount = ({ type }: Props) => {
     }
 
     const variant = ACCOUNT_COLOR[type];
+    const hasTitle = isNotEmptyString(fields.title.field.value.trim());
     const minimumDecimalPlaces = isCrypto ? MICRO_UNIT_DECIMAL_PLACES : 0;
 
     return (
-        <CreateAccountScreen title={t(TITLE[type])} variant={variant} onSubmit={handleSubmit} isSubmitting={isSubmitting}>
+        <CreateAccountScreen title={t(TITLE[type])} onSubmit={handleSubmit} isSubmitting={isSubmitting} isSubmitDisabled={!hasTitle}>
             <AccountBalanceField
-                variant={variant}
+                label={t`Starting balance`}
+
                 instrumentSymbol={stickyInstrument.symbol}
                 value={fields.currentBalance.field.value}
                 onChange={fields.currentBalance.field.onChange}
@@ -93,18 +108,24 @@ export const CreateSimpleAccount = ({ type }: Props) => {
             />
 
             <FormLayoutGroup>
-                <AccountDetailsField
+                <CreateAccountDetailsSection
+                    fields={fields}
                     variant={variant}
-                    titleBinding={fields.title}
-                    iconBinding={fields.icon}
-                    nameInputTestID={CreateAccountScreenSelector.NameInput}
-                />
-                <CreateAccountCurrencyField
-                    value={fields.instrumentId.field.value}
-                    onChange={fields.instrumentId.field.onChange}
+                    namePlaceholder={t(NAME_PLACEHOLDER[type])}
                     instrumentType={instrumentType}
+                    onInstrumentChange={fields.instrumentId.field.onChange}
                 />
-                <IncludeInNetWorthField value={fields.includeInNetWorth.field.value} onChange={fields.includeInNetWorth.field.onChange} />
+
+                <CreateAccountOptionsSection
+                    includeInNetWorth={fields.includeInNetWorth.field.value}
+                    onIncludeInNetWorthChange={fields.includeInNetWorth.field.onChange}
+                >
+                    <AccountSwitchField
+                        kind={AccountSwitchFieldKindEnum.SHOW_ON_HOME}
+                        value={fields.isActive.field.value}
+                        onChange={fields.isActive.field.onChange}
+                    />
+                </CreateAccountOptionsSection>
             </FormLayoutGroup>
         </CreateAccountScreen>
     );

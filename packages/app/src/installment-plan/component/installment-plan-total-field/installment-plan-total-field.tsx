@@ -5,7 +5,6 @@ import { View } from 'react-native';
 import { FormAmountInput } from '../../../@generic/component/form-amount-input/form-amount-input';
 import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
-import { ACCOUNT_COLOR } from '../../../account/constant/account-color.constant';
 import { CreateAccountSelector } from '../../../app/(main)/create-account/create-account.selector';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 
@@ -24,13 +23,7 @@ export const InstallmentPlanTotalField = ({ control, instrumentSymbol }: Props) 
     const partsLabel = `${installmentCount} × ${formatDigits(targetBalance / installmentCount, instrumentSymbol)}`;
 
     const render = ({ field: { value, onChange } }: UseControllerReturn<InstallmentPlanUpdateFormValues, 'targetBalance'>) => (
-        <FormAmountInput
-            testID={CreateAccountSelector.Amount}
-            value={value}
-            instrumentSymbol={instrumentSymbol}
-            variant={ACCOUNT_COLOR.DEBT}
-            onChange={onChange}
-        />
+        <FormAmountInput testID={CreateAccountSelector.Amount} value={value} instrumentSymbol={instrumentSymbol} onChange={onChange} />
     );
 
     return (

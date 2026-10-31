@@ -18,7 +18,6 @@ import { useInstallmentPlanScheduleQuery } from '../../../installment-plan/query
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { useAccountDetailsBindings } from '../../hooks/use-account-details-bindings.hook';
 import { useAccountEntityForm } from '../../hooks/use-account-entity-form.hook';
-import { IncludeInNetWorthField } from '../include-in-net-worth-field/include-in-net-worth-field';
 import { UpdateAccountPage } from '../update-account-page/update-account-page';
 
 import type { InstallmentPlanUpdateFormValues } from '../../../installment-plan/constant/installment-plan-update-form-schema.constant';
@@ -84,8 +83,6 @@ export const UpdateInstallmentPlanAccount = ({ account }: Props) => {
                     <InstallmentPlanCountField control={control} minimumCount={minimumCount} />
                 </View>
             }
-        >
-            <IncludeInNetWorthField value={fields.includeInNetWorth.field.value} onChange={fields.includeInNetWorth.field.onChange} />
-        </UpdateAccountPage>
+        />
     );
 };
