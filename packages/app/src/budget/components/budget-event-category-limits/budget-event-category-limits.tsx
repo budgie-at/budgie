@@ -10,6 +10,7 @@ import { HeaderTextAction } from '../../../@generic/component/header-text-action
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
 import { BudgetSelector } from '../../budget.selector';
 import { BudgetEventFormValues } from '../../constant/budget-event-form-schema.constant';
+import { BudgetAddCategoryLimitRow } from '../budget-add-category-limit-row/budget-add-category-limit-row';
 import { BudgetEventCategoryLimitRow } from '../budget-event-category-limit-row/budget-event-category-limit-row';
 import { BudgetGroupedSectionHeader } from '../budget-grouped-section-header/budget-grouped-section-header';
 
@@ -42,13 +43,12 @@ export const BudgetEventCategoryLimits = ({ currencySymbol }: Props) => {
                 label={t`Category limits`}
                 trailing={<HeaderTextAction label={t`Add`} onPress={handleAddPress} testID={BudgetSelector.EventCategoryLimitAddButton} />}
             />
-            {isEmptyArray(fields) ? null : (
-                <GroupedListSection>
-                    {fields.map((field, index) => (
-                        <BudgetEventCategoryLimitRow key={field.id} currencySymbol={currencySymbol} index={index} onRemove={remove} />
-                    ))}
-                </GroupedListSection>
-            )}
+            <GroupedListSection>
+                {fields.map((field, index) => (
+                    <BudgetEventCategoryLimitRow key={field.id} currencySymbol={currencySymbol} index={index} onRemove={remove} />
+                ))}
+                {isEmptyArray(fields) ? <BudgetAddCategoryLimitRow onPress={handleAddPress} /> : null}
+            </GroupedListSection>
             <Text className="text-secondary-foreground px-3xl text-[13px] leading-[18px]">
                 <Trans>Optional. Leave empty to track the event as a single limit.</Trans>
             </Text>

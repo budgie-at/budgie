@@ -1,4 +1,4 @@
-import { BudgetRolloverModeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { BudgetRolloverModeEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { useRef } from 'react';
 import { useFieldArray, useFormContext, useWatch } from 'react-hook-form';
@@ -6,13 +6,12 @@ import { View } from 'react-native';
 
 import { isEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
-import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { HeaderTextAction } from '../../../@generic/component/header-text-action/header-text-action';
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
 import { BudgetSelector } from '../../budget.selector';
 import { BudgetFormValues } from '../../constant/budget-form-schema.constant';
+import { BudgetAddCategoryLimitRow } from '../budget-add-category-limit-row/budget-add-category-limit-row';
 import { BudgetAllocationSummary } from '../budget-allocation-summary/budget-allocation-summary';
 import { BudgetCategoryLimitCompactRow } from '../budget-category-limit-compact-row/budget-category-limit-compact-row';
 import { BudgetGroupedSectionHeader } from '../budget-grouped-section-header/budget-grouped-section-header';
@@ -71,13 +70,7 @@ export const BudgetInlineCategoryLimits = ({ currencySymbol, onCategoryAdded }: 
                     <BudgetCategoryLimitCompactRow key={field.id} currencySymbol={currencySymbol} index={index} onRemove={remove} />
                 ))}
                 {isCategoryLimitsEmpty || isBottomAddButtonVisible ? (
-                    <GroupedListRow
-                        left={<GroupedListIcon icon={UserIconNameEnum.ListPlus} />}
-                        title={t`Add a category limit`}
-                        titleClassName="text-default-foreground"
-                        testID={BudgetSelector.SetupCategoryLimitBottomAddButton}
-                        onPress={handleAddPress}
-                    />
+                    <BudgetAddCategoryLimitRow testID={BudgetSelector.SetupCategoryLimitBottomAddButton} onPress={handleAddPress} />
                 ) : null}
             </GroupedListSection>
             <View className="px-3xl">
