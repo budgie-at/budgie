@@ -56,7 +56,7 @@ export const StatisticsPeriodControl = ({ value, onChange }: Props) => {
             <HapticPressable
                 accessibilityRole="button"
                 accessibilityHint={t`Choose a period`}
-                className="min-h-[44px] flex-1 items-center justify-center py-sm active:scale-100 active:opacity-60"
+                className="min-h-[44px] flex-1 items-center justify-center py-xs active:scale-100 active:opacity-60"
                 hitSlop={0}
                 testID={labelTestID}
                 onPress={handleOpen}

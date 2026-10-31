@@ -3,7 +3,6 @@ import { DEFAULT_TRANSACTION_FILTER, type StatisticsFilterInterface, Transaction
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
-import { useFormatDateRange } from '../../../i18n/hook/use-format-date-range.hook';
 import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query';
 import { UNTAGGED_TAG_ID_PARAM } from '../../constant/untagged-tag-id-param.constant';
 import { StatisticsCategoryIdsContext } from '../../context/statistics-category-ids.context';
@@ -92,7 +91,6 @@ export const StatisticsAnalyticsTransactionsPage = (params: AnalyticsTransaction
     const tagIdsForLookup = isUntaggedNav(params) || !isDefined(params.tagId) ? [] : [Number(params.tagId)];
     const { tags } = useGetTagByIdsQuery(tagIdsForLookup);
     const { sections, loadMore, isLoading } = useGetStatisticsTransactionsQuery(filters);
-    const formatDateRange = useFormatDateRange();
 
     const selectedTag = tags?.[0] ?? null;
     const hasFiltersSelected = isNotEmptyArray(filters.accountIds) || isDefined(filters.amount);
@@ -122,12 +120,7 @@ export const StatisticsAnalyticsTransactionsPage = (params: AnalyticsTransaction
                 summary={summary}
                 sections={sections}
                 emptyState={
-                    <StatisticsDrillDownEmptyState
-                        isLoading={isLoading}
-                        hasFiltersSelected={hasFiltersSelected}
-                        periodLabel={formatDateRange(filters.date)}
-                        type={summaryType}
-                    />
+                    <StatisticsDrillDownEmptyState isLoading={isLoading} hasFiltersSelected={hasFiltersSelected} type={summaryType} />
                 }
                 onLoadMore={loadMore}
                 accountId={getSingleAccountId(filters.accountIds)}

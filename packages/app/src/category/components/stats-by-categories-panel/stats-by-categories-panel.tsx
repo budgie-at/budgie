@@ -63,7 +63,7 @@ export const StatsByCategoriesPanel = ({ filters, incomeByCategory, expenseByCat
             {hasExpenseStats ? (
                 <StatsByCategories
                     title={t`Spending`}
-                    {...(!hasIncomeStats && { footnote })}
+                    footnote={footnote}
                     stats={expenseByCategory}
                     filters={filters}
                     type={TransactionTypeEnum.EXPENSE}
@@ -75,7 +75,7 @@ export const StatsByCategoriesPanel = ({ filters, incomeByCategory, expenseByCat
             {hasIncomeStats ? (
                 <StatsByCategories
                     title={t`Income`}
-                    footnote={footnote}
+                    {...(!hasExpenseStats && { footnote })}
                     stats={incomeByCategory}
                     filters={filters}
                     type={TransactionTypeEnum.INCOME}

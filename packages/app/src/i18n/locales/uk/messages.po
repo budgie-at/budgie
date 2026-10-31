@@ -58,6 +58,11 @@ msgstr "{0, plural, one {# тег} few {# теги} many {# тегів} other {#
 msgid "{0, plural, one {# transaction} other {# transactions}}"
 msgstr "{0, plural, one {# транзакція} few {# транзакції} many {# транзакцій} other {# транзакцій}}"
 
+#. placeholder {0}: activePoints.length
+#: src/transaction/components/statistics-trend-bars/statistics-trend-bars.tsx
+msgid "{0, plural, one {Average · # month} other {Average · # months}}"
+msgstr "{0, plural, one {Середнє · # місяць} few {Середнє · # місяці} many {Середнє · # місяців} other {Середнє · # місяця}}"
+
 #. placeholder {0}: Number(draft ?? selectedCount)
 #: src/installment-plan/component/installment-count-picker/installment-count-picker.tsx
 msgid "{0, plural, one {month} other {months}}"
@@ -886,6 +891,10 @@ msgstr "Додайте транзакції, щоб побачити свій з
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add your first account to start tracking your finances"
 msgstr "Додайте свій перший рахунок, щоб почати відстежувати свої фінанси"
+
+#: src/category/components/categories-feature-intro/categories-feature-intro.tsx
+msgid "Add your first transaction to see where your money goes."
+msgstr "Додайте першу транзакцію, щоб побачити, куди йдуть ваші гроші."
 
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
 msgid "Adds a fee to the plan total"
@@ -3807,10 +3816,6 @@ msgstr "Monobank надсилає близько одного місяця іс�
 msgid "Monthly"
 msgstr "Щомісяця"
 
-#: src/transaction/components/statistics-trend-bars/statistics-trend-bars.tsx
-msgid "Monthly average"
-msgstr "Середнє за місяць"
-
 #: src/budget/components/budget-period-summary/budget-period-summary.tsx
 #: src/budget/components/budget-widget-card/budget-widget-card.tsx
 msgid "Monthly budget"
@@ -4158,6 +4163,7 @@ msgstr "Без назви"
 msgid "No transactions matched"
 msgstr "Жодна транзакція не відповідає"
 
+#: src/category/components/categories-feature-intro/categories-feature-intro.tsx
 #: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
 msgid "No transactions yet"
 msgstr "Поки немає транзакцій"

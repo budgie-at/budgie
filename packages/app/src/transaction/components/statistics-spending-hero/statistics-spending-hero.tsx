@@ -37,6 +37,7 @@ export const StatisticsSpendingHero = ({ filters, children }: Props) => {
     const previous = useGetTotalIncomeAndExpensesQuery({ ...filters, date: previousRange ?? filters.date });
 
     const hasComparison = isDefined(previousRange) && isPositiveNumber(previous.expense) && isPositiveNumber(expense) && !isAmountProtected;
+    const hasCashFlow = isPositiveNumber(income) || isPositiveNumber(expense);
     const isIncomeOnly = !isPositiveNumber(expense) && isPositiveNumber(income);
     const noSpendingLabel = checkIfFiltersSelected(null, { ...filters, date: null })
         ? t`No spending matches these filters`
@@ -73,7 +74,7 @@ export const StatisticsSpendingHero = ({ filters, children }: Props) => {
 
                 {children}
 
-                <StatisticsCashFlowRow income={income} expense={expense} />
+                {hasCashFlow ? <StatisticsCashFlowRow income={income} expense={expense} /> : null}
             </View>
         </LoadingContent>
     );

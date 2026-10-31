@@ -48,7 +48,7 @@ export const StatisticsContent = ({ activeTab, filters, onChangeFilters: setFilt
     }
 
     return (
-        <View className="gap-y-2xl">
+        <View className="gap-y-xl">
             <View className="gap-y-md">
                 <StatisticsPeriodControl value={filters.date} onChange={handleChangeDate} />
 

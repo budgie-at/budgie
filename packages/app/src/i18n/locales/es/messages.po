@@ -58,6 +58,11 @@ msgstr "{0, plural, one {# etiqueta} other {# etiquetas}}"
 msgid "{0, plural, one {# transaction} other {# transactions}}"
 msgstr "{0, plural, one {# transacción} other {# transacciones}}"
 
+#. placeholder {0}: activePoints.length
+#: src/transaction/components/statistics-trend-bars/statistics-trend-bars.tsx
+msgid "{0, plural, one {Average · # month} other {Average · # months}}"
+msgstr "{0, plural, one {Media · # mes} other {Media · # meses}}"
+
 #. placeholder {0}: Number(draft ?? selectedCount)
 #: src/installment-plan/component/installment-count-picker/installment-count-picker.tsx
 msgid "{0, plural, one {month} other {months}}"
@@ -886,6 +891,10 @@ msgstr "Añade transacciones para ver tu autonomía"
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add your first account to start tracking your finances"
 msgstr "Agrega tu primera cuenta para comenzar a rastrear tus finanzas"
+
+#: src/category/components/categories-feature-intro/categories-feature-intro.tsx
+msgid "Add your first transaction to see where your money goes."
+msgstr "Añade tu primera transacción para ver a dónde va tu dinero."
 
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
 msgid "Adds a fee to the plan total"
@@ -3807,10 +3816,6 @@ msgstr "Monobank envía alrededor de un mes de historial por minuto, por cada cu
 msgid "Monthly"
 msgstr "Mensualmente"
 
-#: src/transaction/components/statistics-trend-bars/statistics-trend-bars.tsx
-msgid "Monthly average"
-msgstr "Media mensual"
-
 #: src/budget/components/budget-period-summary/budget-period-summary.tsx
 #: src/budget/components/budget-widget-card/budget-widget-card.tsx
 msgid "Monthly budget"
@@ -4158,6 +4163,7 @@ msgstr "Sin título"
 msgid "No transactions matched"
 msgstr "Ninguna transacción coincidió"
 
+#: src/category/components/categories-feature-intro/categories-feature-intro.tsx
 #: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
 msgid "No transactions yet"
 msgstr "Aún no hay transacciones"

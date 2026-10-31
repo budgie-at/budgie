@@ -12,6 +12,7 @@ import { CollapsibleChromePage } from '../../@generic/component/collapsible-chro
 import { GroupedSurface } from '../../@generic/component/grouped-surface/grouped-surface';
 import { MenuSpacer } from '../../@generic/component/menu-spacer/menu-spacer';
 import { MAX_FONT_SIZE_MULTIPLIER } from '../../@generic/constant/max-font-size-multiplier.constant';
+import { SCREEN_CHROME_CONFIG } from '../../@generic/constant/screen-chrome-config.constant';
 import { getDateFilterByPeriod } from '../../@generic/utils/date/get-date-filter-by-period.util';
 import { tabSwipeGesture } from '../../@generic/utils/tab-swipe-gesture.util';
 import { useFormatDateRange } from '../../i18n/hook/use-format-date-range.hook';
@@ -23,6 +24,8 @@ import type { AnalyticsTabType } from '../../@generic/type/analytics-tab.type';
 
 const DEFAULT_ANALYTICS_TAB: AnalyticsTabType = 'categories';
 const TABS: readonly AnalyticsTabType[] = [DEFAULT_ANALYTICS_TAB, 'tags', 'runway'];
+
+const SNAPPING_CHROME_CONFIG = { ...SCREEN_CHROME_CONFIG, snapToCollapse: true };
 
 const isAnalyticsTab = (value: unknown): value is AnalyticsTabType => isString(value) && TABS.some(tab => tab === value);
 
@@ -52,6 +55,7 @@ export default function AnalyticsPage() {
             <GestureDetector gesture={swipeGesture}>
                 <View className="flex-1">
                     <CollapsibleChromePage
+                        chromeConfig={SNAPPING_CHROME_CONFIG}
                         largeTitle={
                             <Text
                                 accessibilityRole="header"

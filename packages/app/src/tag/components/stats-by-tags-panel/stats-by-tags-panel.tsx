@@ -29,7 +29,6 @@ export const StatsByTagsPanel = ({ filters, income, expense, incomeByTag, expens
     const hasIncomeStats = isNotEmptyArray(incomeByTag);
     const hasExpenseStats = isNotEmptyArray(expenseByTag);
     const footnote = t`Bars compare each tag with the largest one. A transaction with several tags counts toward each of them, so shares can add up to more than 100%.`;
-    const spendingFootnote = hasIncomeStats ? '' : footnote;
 
     return (
         <View className="gap-y-6xl">
@@ -38,7 +37,7 @@ export const StatsByTagsPanel = ({ filters, income, expense, incomeByTag, expens
             {hasExpenseStats ? (
                 <StatsByTags
                     title={t`Spending`}
-                    footnote={spendingFootnote}
+                    footnote={footnote}
                     stats={expenseByTag}
                     base={expense}
                     filters={filters}
@@ -51,7 +50,7 @@ export const StatsByTagsPanel = ({ filters, income, expense, incomeByTag, expens
             {hasIncomeStats ? (
                 <StatsByTags
                     title={t`Income`}
-                    footnote={footnote}
+                    {...(!hasExpenseStats && { footnote })}
                     stats={incomeByTag}
                     base={income}
                     filters={filters}

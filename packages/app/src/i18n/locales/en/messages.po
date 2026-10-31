@@ -59,6 +59,11 @@ msgstr "{0, plural, one {# tag} other {# tags}}"
 msgid "{0, plural, one {# transaction} other {# transactions}}"
 msgstr "{0, plural, one {# transaction} other {# transactions}}"
 
+#. placeholder {0}: activePoints.length
+#: src/transaction/components/statistics-trend-bars/statistics-trend-bars.tsx
+msgid "{0, plural, one {Average · # month} other {Average · # months}}"
+msgstr "{0, plural, one {Average · # month} other {Average · # months}}"
+
 #. placeholder {0}: Number(draft ?? selectedCount)
 #: src/installment-plan/component/installment-count-picker/installment-count-picker.tsx
 msgid "{0, plural, one {month} other {months}}"
@@ -887,6 +892,10 @@ msgstr "Add transactions to see your runway"
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add your first account to start tracking your finances"
 msgstr "Add your first account to start tracking your finances"
+
+#: src/category/components/categories-feature-intro/categories-feature-intro.tsx
+msgid "Add your first transaction to see where your money goes."
+msgstr "Add your first transaction to see where your money goes."
 
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
 msgid "Adds a fee to the plan total"
@@ -3808,10 +3817,6 @@ msgstr "Monobank sends about one month of history per minute, for each account y
 msgid "Monthly"
 msgstr "Monthly"
 
-#: src/transaction/components/statistics-trend-bars/statistics-trend-bars.tsx
-msgid "Monthly average"
-msgstr "Monthly average"
-
 #: src/budget/components/budget-period-summary/budget-period-summary.tsx
 #: src/budget/components/budget-widget-card/budget-widget-card.tsx
 msgid "Monthly budget"
@@ -4159,6 +4164,7 @@ msgstr "No title"
 msgid "No transactions matched"
 msgstr "No transactions matched"
 
+#: src/category/components/categories-feature-intro/categories-feature-intro.tsx
 #: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
 msgid "No transactions yet"
 msgstr "No transactions yet"

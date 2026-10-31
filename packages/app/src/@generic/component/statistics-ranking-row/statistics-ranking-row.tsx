@@ -5,6 +5,7 @@ import { Text, View } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { useFormatPercent } from '../../../i18n/hook/use-format-percent.hook';
+import { FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../constant/footnote-max-font-size-multiplier.constant';
 import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../constant/row-max-font-size-multiplier.constant';
 import { useIsAccessibilityTextSize } from '../../hook/use-is-accessibility-text-size.hook';
 import { useIsAmountProtected } from '../../hook/use-is-amount-protected.hook';
@@ -82,7 +83,7 @@ export const StatisticsRankingRow = ({ title, share, ratio, icon, swatch, amount
 
                     <ProtectedText
                         placeholderText="••%"
-                        maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
+                        maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
                         style={SHARE_STYLE}
                         className="min-w-[40px] text-right text-xs text-secondary-foreground"
                     >

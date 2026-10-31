@@ -8,11 +8,10 @@ import { TransactionsPageSelector } from '../../../app/(tabs)/transactions-page.
 interface Props {
     readonly isLoading: boolean;
     readonly hasFiltersSelected: boolean;
-    readonly periodLabel: string;
     readonly type: TransactionTypeEnum.INCOME | TransactionTypeEnum.EXPENSE;
 }
 
-export const StatisticsDrillDownEmptyState = ({ isLoading, hasFiltersSelected, periodLabel, type }: Props) => {
+export const StatisticsDrillDownEmptyState = ({ isLoading, hasFiltersSelected, type }: Props) => {
     const { t } = useLingui();
 
     if (isLoading) {
@@ -25,7 +24,7 @@ export const StatisticsDrillDownEmptyState = ({ isLoading, hasFiltersSelected, p
         <StatsEmptyCard
             icon={UserIconNameEnum.Receipt}
             title={title}
-            description={periodLabel}
+
             testID={TransactionsPageSelector.EmptyState}
         >
             {hasFiltersSelected ? (

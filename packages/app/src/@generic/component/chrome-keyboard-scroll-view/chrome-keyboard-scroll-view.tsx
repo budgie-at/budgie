@@ -1,3 +1,4 @@
+import { useWindowDimensions } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -28,7 +29,12 @@ export const ChromeKeyboardScrollView = ({
     const { onScroll, scrollRef } = useCollapsibleHeaderScroll();
     const insets = useSafeAreaInsets();
     const mergedRef = mergeRefs(scrollRef, ref);
-    const mergedContentContainerStyle = addScrollContentInset(insets, contentInsetTop, contentInsetBottom, contentContainerStyle);
+    const { height } = useWindowDimensions();
+    const snapRangeStyle = config.snapToCollapse ? { minHeight: height + config.collapseEnd } : null;
+    const mergedContentContainerStyle = addScrollContentInset(insets, contentInsetTop, contentInsetBottom, [
+        snapRangeStyle,
+        contentContainerStyle
+    ]);
 
     return (
         <AnimatedKeyboardAwareScrollView

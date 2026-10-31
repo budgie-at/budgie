@@ -58,6 +58,11 @@ msgstr "{0, plural, one {# étiquette} other {# étiquettes}}"
 msgid "{0, plural, one {# transaction} other {# transactions}}"
 msgstr "{0, plural, one {# transaction} other {# transactions}}"
 
+#. placeholder {0}: activePoints.length
+#: src/transaction/components/statistics-trend-bars/statistics-trend-bars.tsx
+msgid "{0, plural, one {Average · # month} other {Average · # months}}"
+msgstr "{0, plural, one {Moyenne · # mois} other {Moyenne · # mois}}"
+
 #. placeholder {0}: Number(draft ?? selectedCount)
 #: src/installment-plan/component/installment-count-picker/installment-count-picker.tsx
 msgid "{0, plural, one {month} other {months}}"
@@ -886,6 +891,10 @@ msgstr "Ajoutez des transactions pour voir votre autonomie"
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add your first account to start tracking your finances"
 msgstr "Ajoutez votre premier compte pour commencer à suivre vos finances"
+
+#: src/category/components/categories-feature-intro/categories-feature-intro.tsx
+msgid "Add your first transaction to see where your money goes."
+msgstr "Ajoutez votre première transaction pour voir où va votre argent."
 
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
 msgid "Adds a fee to the plan total"
@@ -3807,10 +3816,6 @@ msgstr "Monobank envoie environ un mois d'historique par minute, pour chaque com
 msgid "Monthly"
 msgstr "Chaque mois"
 
-#: src/transaction/components/statistics-trend-bars/statistics-trend-bars.tsx
-msgid "Monthly average"
-msgstr "Moyenne mensuelle"
-
 #: src/budget/components/budget-period-summary/budget-period-summary.tsx
 #: src/budget/components/budget-widget-card/budget-widget-card.tsx
 msgid "Monthly budget"
@@ -4158,6 +4163,7 @@ msgstr "Sans titre"
 msgid "No transactions matched"
 msgstr "Aucune transaction ne correspond"
 
+#: src/category/components/categories-feature-intro/categories-feature-intro.tsx
 #: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
 msgid "No transactions yet"
 msgstr "Aucune transaction pour le moment"
