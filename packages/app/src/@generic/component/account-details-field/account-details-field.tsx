@@ -7,7 +7,9 @@ import { isNotEmptyString } from '@rnw-community/shared';
 import { AccountFormBindingsInterface } from '../../../account/interface/account-form-bindings.interface';
 import { TONAL_DISC_BACKGROUND } from '../../constant/tonal-disc-background.constant';
 import { useIconSelectorModal } from '../../context/icon-selector-modal.context';
+import { TestIDPartEnum } from '../../enum/test-id-part.enum';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
+import { testID } from '../../utils/test-id.util';
 import { CircleIcon } from '../circle-icon/circle-icon';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
@@ -59,7 +61,9 @@ export const AccountDetailsField = (props: Props) => {
                     </View>
                 </HapticPressable>
                 <View className="flex-1">
-                    <Text className="text-secondary-foreground text-[13px]">{t`Account name`}</Text>
+                    <Text className="text-secondary-foreground text-[13px]" {...testID(nameInputTestID, TestIDPartEnum.LABEL)}>
+                        {t`Account name`}
+                    </Text>
                     <Input
                         borderless
                         value={titleBinding.field.value}
