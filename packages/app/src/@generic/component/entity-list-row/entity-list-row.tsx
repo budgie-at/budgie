@@ -89,7 +89,7 @@ export const EntityListRow = ({ entity, usage, left, testID, isFirst, isLast, on
 
     return (
         <GroupedListItem isFirst={isFirst} isLast={isLast}>
-            <DeletableRow id={entity.id} onDelete={handleDelete} label={operations.deleteLabel} isDisabled={isPending}>
+            <DeletableRow id={entity.id} onDelete={handleDelete} label={operations.deleteLabel} isDisabled={isPending} variant="fill">
                 <View className={cn(isMenuOpen && 'bg-surface-fill')}>
                     <GroupedListRow
                         testID={testID}

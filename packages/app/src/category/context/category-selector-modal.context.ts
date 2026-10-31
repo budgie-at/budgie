@@ -7,6 +7,7 @@ export interface CategorySelectorModalParams {
     readonly variant?: ColorPaletteVariant;
     readonly title?: string;
     readonly description?: string;
+    readonly commitLabel?: string;
     readonly getCommitLabel?: (destinationTitle: string) => string;
 }
 

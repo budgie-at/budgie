@@ -1,4 +1,4 @@
-import { TAG_TITLE_MAX_LENGTH, TagCreateEntityInterface, TagEntityInterface } from '@budgie/contracts';
+import { TAG_TITLE_MAX_LENGTH, TagCreateEntityInterface, TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -13,6 +13,7 @@ import { FormTitleInput } from '../../../@generic/component/form-title-input/for
 import { GroupedListActionRow } from '../../../@generic/component/grouped-list-action-row/grouped-list-action-row';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { IconTitleField } from '../../../@generic/component/icon-title-field/icon-title-field';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { EntityOperationEnum } from '../../../@generic/enum/entity-operation.enum';
 import { useEntityOperation } from '../../../@generic/hook/use-entity-operation.hook';
 import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
@@ -51,14 +52,16 @@ export const TagForm = (props: Props) => {
     const mergeTag = useMergeTag();
     const usageResult = useLiveAtomValue(tagUsageAtom);
 
-    const { handleSubmit, setValue, title } = useTagForm(tag ?? (defaultTitle ? { title: defaultTitle } : null));
+    const { handleSubmit, setValue, formState, title } = useTagForm(tag ?? (defaultTitle ? { title: defaultTitle } : null));
 
     const isEditing = isDefined(tag);
     const isBusy = saveFlight.isLoading || operation.isPending;
     const isChanged = !isDefined(tag) || title !== tag.title;
-    const isSaveDisabled = !isNotEmptyString(title) || operation.isPending;
+    const hasTitle = isNotEmptyString(title.trim());
+    const isSaveDisabled = !hasTitle || operation.isPending;
     const headerTitle = isEditing ? t`Edit Tag` : t`Create Tag`;
-    const createLabel = isNotEmptyString(title) ? t`Create tag` : t`Add a name to continue`;
+    const createLabel = hasTitle ? t`Create tag` : t`Add a name to continue`;
+    const titleError = isDefined(formState.errors.title) ? t`Use 1 to ${TAG_TITLE_MAX_LENGTH} characters` : void 0;
     const saveLabel = isEditing ? t`Save changes` : createLabel;
     const transactionCount = AsyncResult.isSuccess(usageResult)
         ? (usageResult.value.find(entry => entry.id === tag?.id)?.transactionCount ?? 0)
@@ -72,7 +75,15 @@ export const TagForm = (props: Props) => {
           })
         : null;
     const deleteFooter = transactionCount === 0 ? t`This can’t be undone.` : usedDeleteFooter;
-    const mergeFooter = isPositiveNumber(transactionCount) ? t`Its transactions get the tag you pick.` : null;
+    const tagTitle = tag?.title ?? '';
+    const mergeFooter = isPositiveNumber(transactionCount)
+        ? t({
+              message: plural(transactionCount, {
+                  one: `Its # transaction gets the tag you pick, and “${tagTitle}” is removed.`,
+                  other: `Its # transactions get the tag you pick, and “${tagTitle}” is removed.`
+              })
+          })
+        : null;
 
     const handleTitleChange = (value: string) => {
         setValue('title', value);
@@ -131,7 +142,7 @@ export const TagForm = (props: Props) => {
             saveTestID={TagFormSelector.Submit}
         >
             <GroupedListSection title={t`Details`} footer={keywordsFooter}>
-                <IconTitleField tile={<TagMonogram title={title} />} label={t`Name`}>
+                <IconTitleField tile={<TagMonogram title={title} />} label={t`Name`} error={titleError}>
                     <FormTitleInput
                         autoFocus={!isEditing}
                         editable={!isBusy}
@@ -160,6 +171,7 @@ export const TagForm = (props: Props) => {
                             isDisabled={isBusy}
                             isLoading={operation.mutatingOperation === EntityOperationEnum.MERGE}
                             labelClassName="text-primary"
+                            trailing={<Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />}
                             testID={TagFormSelector.Merge}
                         />
                     </GroupedListSection>

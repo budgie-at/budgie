@@ -61,8 +61,8 @@ export default function CategoryIconsPage() {
                     <Text className="text-secondary-foreground px-3xl text-[13px] leading-[18px]">
                         {t({
                             message: plural(categoriesWithDefaultIcon.length, {
-                                one: 'This name doesn’t suggest a clear icon. Pick one — it saves instantly.',
-                                other: 'These names don’t suggest a clear icon. Pick one — it saves instantly.'
+                                one: 'This category still has a placeholder icon. Tap a suggestion to save it.',
+                                other: 'These categories still have placeholder icons. Tap a suggestion to save it.'
                             })
                         })}
                     </Text>

@@ -7,8 +7,8 @@ import * as Layer from 'effect/Layer';
 import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { iconSearchService } from '../../@generic/service/icon-search.service';
+import { canAutoApplyCategoryIcon } from '../utils/can-auto-apply-category-icon.util';
 import { getCategoryIconTerms } from '../utils/get-category-icon-terms.util';
-import { hasPlaceholderIcon } from '../utils/has-placeholder-icon.util';
 
 export class CategoryIconBackfillService extends Context.Service<CategoryIconBackfillService>()('@budgie/app/CategoryIconBackfillService', {
     make: Effect.gen(function* () {
@@ -28,7 +28,7 @@ export class CategoryIconBackfillService extends Context.Service<CategoryIconBac
                 const entries = yield* iconSearchService.load();
 
                 yield* Effect.forEach(
-                    categories.filter(category => hasPlaceholderIcon(category, entries)),
+                    categories.filter(category => canAutoApplyCategoryIcon(category, entries)),
                     category => {
                         const icon = iconSearchService.findConfidentIcon(entries, getCategoryIconTerms(category));
 

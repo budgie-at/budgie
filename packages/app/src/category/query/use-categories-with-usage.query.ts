@@ -13,11 +13,11 @@ export const categoryUsageAtom = databaseQueryAtom(
 
 export const useCategoriesWithUsageQuery = (search: string, includeDefault: boolean) => {
     const { categories, isSearchPending, isFailure, retry } = useSearchCategoriesQuery(search, includeDefault);
-    const { isUsageReady, ...usage } = useEntityUsage(categoryUsageAtom);
+    const { isUsagePending, ...usage } = useEntityUsage(categoryUsageAtom);
 
     return {
         ...usage,
-        categories: isSearchPending || !isUsageReady ? null : categories,
+        categories: isSearchPending || isUsagePending ? null : categories,
         isFailure,
         retry
     };

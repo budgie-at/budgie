@@ -8,6 +8,8 @@ import { isDefined } from '@rnw-community/shared';
 
 import { DeletableRowAction } from './deletable-row-action';
 
+import type { DeletableRowVariant } from '../../type/deletable-row-variant.type';
+
 interface Props {
     readonly onDelete: (id: number) => void;
     readonly children: ReactNode;
@@ -15,6 +17,7 @@ interface Props {
     readonly confirmation?: DeleteConfirmation;
     readonly label?: string;
     readonly isDisabled?: boolean;
+    readonly variant?: DeletableRowVariant;
 }
 
 export interface DeleteConfirmation {
@@ -23,7 +26,7 @@ export interface DeleteConfirmation {
     readonly buttonText?: string;
 }
 
-export const DeletableRow = ({ children, onDelete, id, confirmation, label, isDisabled = false }: Props) => {
+export const DeletableRow = ({ children, onDelete, id, confirmation, label, isDisabled = false, variant = 'pill' }: Props) => {
     const ref = useRef<SwipeableMethods>(null);
     const { t } = useLingui();
 
@@ -50,7 +53,7 @@ export const DeletableRow = ({ children, onDelete, id, confirmation, label, isDi
     };
 
     const renderRightActions = (_: SharedValue<number>, drag: SharedValue<number>) => (
-        <DeletableRowAction drag={drag} isOpen={isOpen} label={actionLabel} onPress={confirm} />
+        <DeletableRowAction drag={drag} isOpen={isOpen} label={actionLabel} variant={variant} onPress={confirm} />
     );
 
     return (

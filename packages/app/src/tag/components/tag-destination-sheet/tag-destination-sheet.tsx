@@ -7,6 +7,7 @@ import { DestinationList } from '../../../@generic/component/destination-list/de
 import { DestinationRow } from '../../../@generic/component/destination-row/destination-row';
 import { DestinationSheetFooter } from '../../../@generic/component/destination-sheet-footer/destination-sheet-footer';
 import { DestinationSheet } from '../../../@generic/component/destination-sheet/destination-sheet';
+import { PillButton } from '../../../@generic/component/pill-button/pill-button';
 import { SelectorCreateButton } from '../../../@generic/component/selector-create-button/selector-create-button';
 import { useDestinationSelection } from '../../../@generic/hook/use-destination-selection.hook';
 import { useFormatEntityUsage } from '../../../@generic/hook/use-format-entity-usage.hook';
@@ -89,12 +90,14 @@ export const TagDestinationSheet = (props: Props) => {
                 renderRow={renderRow}
                 emptyState={<TagEmptyState search={search} onClearSearch={handleClearSearch} onCreate={handleCreatePress} />}
             />
-            <DestinationSheetFooter
-                label={commitLabel}
-                isDisabled={!isDefined(selected)}
-                onPress={handleCommit}
-                testID={TagsSelectorModalSelector.CommitButton}
-            />
+            <DestinationSheetFooter>
+                <PillButton
+                    label={commitLabel}
+                    isDisabled={!isDefined(selected)}
+                    onPress={handleCommit}
+                    testID={TagsSelectorModalSelector.CommitButton}
+                />
+            </DestinationSheetFooter>
         </DestinationSheet>
     );
 };

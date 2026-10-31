@@ -36,7 +36,7 @@ export const AiTranslationFields = ({ title, titleEn, titleTags }: Props) => {
                     <Trans>Search keywords: {keywords}</Trans>
                 </Text>
             ) : null}
-            <Text className="text-secondary-foreground/70 text-[13px] leading-[18px]">
+            <Text className="text-secondary-foreground text-[13px] leading-[18px]">
                 <Trans>Generated automatically so search finds this by other words too.</Trans>
             </Text>
         </View>

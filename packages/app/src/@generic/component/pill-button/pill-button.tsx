@@ -4,22 +4,40 @@ import { Text } from 'react-native';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { LoadingContent } from '../loading-content/loading-content';
 
+type PillButtonVariant = 'primary' | 'destructive';
+
 interface Props {
     readonly label: string;
     readonly testID: string;
     readonly isLoading?: boolean;
     readonly isDisabled?: boolean;
+    readonly variant?: PillButtonVariant;
+    readonly accessibilityLabel?: string;
     readonly onPress: () => void;
 }
 
 const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
-const containerVariants = cva('min-h-[52px] items-center justify-center rounded-full bg-cta-background px-5xl py-md active:opacity-80', {
-    variants: { isDisabled: { true: 'opacity-40', false: '' } }
+const containerVariants = cva('min-h-[52px] items-center justify-center rounded-full px-5xl py-md active:opacity-80', {
+    variants: {
+        variant: { primary: 'bg-cta-background', destructive: 'bg-destructive-fill' },
+        isDisabled: { true: 'opacity-40', false: '' }
+    }
 });
 
-export const PillButton = ({ label, testID, isLoading = false, isDisabled = false, onPress }: Props) => {
-    const containerClassName = containerVariants({ isDisabled });
+const labelVariants = cva('text-center text-[17px] font-semibold', {
+    variants: { variant: { primary: 'text-cta-foreground', destructive: 'text-white' } }
+});
+
+export const PillButton = ({
+    label,
+    testID,
+    isLoading = false,
+    isDisabled = false,
+    variant = 'primary',
+    accessibilityLabel = label,
+    onPress
+}: Props) => {
     const isInactive = isLoading || isDisabled;
     const accessibilityState = { busy: isLoading, disabled: isDisabled };
 
@@ -27,15 +45,15 @@ export const PillButton = ({ label, testID, isLoading = false, isDisabled = fals
         <HapticPressable
             onPress={onPress}
             disabled={isInactive}
-            className={containerClassName}
+            className={containerVariants({ variant, isDisabled })}
             style={CONTINUOUS_CORNERS}
             accessibilityRole="button"
-            accessibilityLabel={label}
+            accessibilityLabel={accessibilityLabel}
             accessibilityState={accessibilityState}
             testID={testID}
         >
             <LoadingContent isLoading={isLoading}>
-                <Text className="text-center text-[17px] font-semibold text-cta-foreground">{label}</Text>
+                <Text className={labelVariants({ variant })}>{label}</Text>
             </LoadingContent>
         </HapticPressable>
     );

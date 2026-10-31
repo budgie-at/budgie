@@ -1,10 +1,16 @@
-import { CATEGORY_TITLE_MAX_LENGTH, CategoryCreateEntityInterface, CategoryEntityInterface, UserIconType } from '@budgie/contracts';
+import {
+    CATEGORY_TITLE_MAX_LENGTH,
+    CategoryCreateEntityInterface,
+    CategoryEntityInterface,
+    UserIconNameEnum,
+    UserIconType
+} from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { useState } from 'react';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { AiTranslationFields } from '../../../@generic/component/ai-translation-fields/ai-translation-fields';
 import { EntityEditSections } from '../../../@generic/component/entity-edit-sections/entity-edit-sections';
@@ -13,6 +19,7 @@ import { FormTitleInput } from '../../../@generic/component/form-title-input/for
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { IconTitleFieldTrigger } from '../../../@generic/component/icon-title-field-trigger/icon-title-field-trigger';
 import { IconTitleField } from '../../../@generic/component/icon-title-field/icon-title-field';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { useIconSelectorModal } from '../../../@generic/context/icon-selector-modal.context';
 import { EntityOperationEnum } from '../../../@generic/enum/entity-operation.enum';
 import { useEntityOperation } from '../../../@generic/hook/use-entity-operation.hook';
@@ -25,10 +32,11 @@ import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { useCategoryForm } from '../../hooks/use-category-form.hook';
 import { useDeleteCategory } from '../../hooks/use-delete-category.hook';
 import { categoryUsageAtom } from '../../query/use-categories-with-usage.query';
+import { canAutoApplyCategoryIcon } from '../../utils/can-auto-apply-category-icon.util';
 import { createCategory } from '../../utils/create-category.util';
 import { getCategoryDeleteCopy } from '../../utils/get-category-delete-copy.util';
+import { getCategoryDisplayIcon } from '../../utils/get-category-display-icon.util';
 import { getCategoryIconTerms } from '../../utils/get-category-icon-terms.util';
-import { hasPlaceholderIcon } from '../../utils/has-placeholder-icon.util';
 import { updateCategory } from '../../utils/update-category.util';
 
 import { CategoryFormSelector } from './category-form.selector';
@@ -59,25 +67,34 @@ export const CategoryForm = (props: Props) => {
     const [openIconSelector] = useIconSelectorModal();
     const iconSearchEntries = useIconSearchEntries();
 
-    const { handleSubmit, setValue, icon, title } = useCategoryForm(category ?? null, defaultTitle);
+    const { handleSubmit, setValue, formState, icon, title } = useCategoryForm(category ?? null, defaultTitle);
 
     const isEditing = isDefined(category);
     const [hasPickedIcon, setHasPickedIcon] = useState(false);
-    const isIconChosen = hasPickedIcon || (isEditing && !hasPlaceholderIcon(category, iconSearchEntries));
+    const isIconChosen = hasPickedIcon || (isEditing && !canAutoApplyCategoryIcon(category, iconSearchEntries));
+    const hasTitle = isNotEmptyString(title.trim());
     const isBusy = saveFlight.isLoading || operation.isPending;
     const transactionCount = AsyncResult.isSuccess(usageResult)
         ? (usageResult.value.find(entry => entry.id === category?.id)?.transactionCount ?? 0)
         : null;
 
-    const iconTerms = getCategoryIconTerms({ title, titleEn: category?.titleEn ?? null, titleTags: category?.titleTags ?? null });
+    const iconTerms = getCategoryIconTerms({ titleEn: null, titleTags: null, ...category, title });
     const suggestedIcon = iconSearchService.findConfidentIcon(iconSearchEntries, iconTerms);
     const resolvedIcon = isIconChosen || !isDefined(suggestedIcon) ? icon : suggestedIcon;
+    const triggerIcon =
+        hasPickedIcon || !isDefined(category)
+            ? resolvedIcon
+            : getCategoryDisplayIcon({ ...category, icon: resolvedIcon }, iconSearchEntries);
 
     const isChanged = !isDefined(category) || title !== category.title || resolvedIcon !== category.icon;
-    const isSaveDisabled = !isNotEmptyString(title) || operation.isPending;
+    const isSaveDisabled = !hasTitle || operation.isPending;
     const deleteCopy = getCategoryDeleteCopy(transactionCount, t);
     const headerTitle = isEditing ? t`Edit Category` : t`Create Category`;
-    const createLabel = isNotEmptyString(title) ? t`Create category` : t`Add a name to continue`;
+    const createLabel = hasTitle ? t`Create category` : t`Add a name to continue`;
+    const titleError = isDefined(formState.errors.title) ? t`Use 1 to ${CATEGORY_TITLE_MAX_LENGTH} characters` : void 0;
+    const deleteTrailing = isPositiveNumber(transactionCount) ? (
+        <Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />
+    ) : null;
     const saveLabel = isEditing ? t`Save changes` : createLabel;
 
     const handleIconPress = () => {
@@ -142,14 +159,15 @@ export const CategoryForm = (props: Props) => {
                 <IconTitleField
                     tile={
                         <IconTitleFieldTrigger
-                            icon={resolvedIcon}
+                            icon={triggerIcon}
                             variant="secondary"
                             onPress={handleIconPress}
                             testID={CategoryFormSelector.IconTrigger}
-                            iconTestID={CategoryFormSelector.CurrentIcon(resolvedIcon)}
+                            iconTestID={CategoryFormSelector.CurrentIcon(triggerIcon)}
                         />
                     }
                     label={t`Name`}
+                    error={titleError}
                 >
                     <FormTitleInput
                         autoFocus={!isEditing}
@@ -169,6 +187,7 @@ export const CategoryForm = (props: Props) => {
                     deleteLabel={deleteCopy.label}
                     deleteFooter={deleteCopy.footer}
                     deleteTestID={CategoryFormSelector.Delete}
+                    deleteTrailing={deleteTrailing}
                     onDelete={handleDelete}
                     isDisabled={isBusy}
                     mutatingOperation={operation.mutatingOperation}

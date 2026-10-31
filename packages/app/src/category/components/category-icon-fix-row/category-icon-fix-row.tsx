@@ -16,6 +16,7 @@ import { useIconSelectorModal } from '../../../@generic/context/icon-selector-mo
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { showSuccessToast } from '../../../@generic/utils/show-success-toast/show-success-toast';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
+import { PLACEHOLDER_CATEGORY_ICON } from '../../constant/placeholder-category-icon.constant';
 import { getCategoryIconTerms } from '../../utils/get-category-icon-terms.util';
 
 import { CategoryIconFixRowSelector } from './category-icon-fix-row.selector';
@@ -64,7 +65,7 @@ export const CategoryIconFixRow = ({ category }: Props) => {
                 testID={CategoryIconFixRowSelector.Row(category.title)}
                 left={
                     <CircleIcon
-                        icon={category.icon}
+                        icon={PLACEHOLDER_CATEGORY_ICON}
                         variant="secondary"
                         size={36}
                         iconSize={18}

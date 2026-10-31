@@ -1,8 +1,10 @@
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { cn } from '../../utils/cn.util';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { LoadingContent } from '../loading-content/loading-content';
+
+import type { ReactNode } from 'react';
 
 interface Props {
     readonly label: string;
@@ -10,12 +12,13 @@ interface Props {
     readonly isDisabled: boolean;
     readonly isLoading: boolean;
     readonly labelClassName: string;
+    readonly trailing?: ReactNode;
     readonly testID?: string;
 }
 
 const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
-export const GroupedListActionRow = ({ label, onPress, isDisabled, isLoading, labelClassName, testID }: Props) => {
+export const GroupedListActionRow = ({ label, onPress, isDisabled, isLoading, labelClassName, trailing, testID }: Props) => {
     const isInactive = isDisabled || isLoading;
     const accessibilityState = { disabled: isInactive, busy: isLoading };
 
@@ -34,7 +37,10 @@ export const GroupedListActionRow = ({ label, onPress, isDisabled, isLoading, la
             testID={testID}
         >
             <LoadingContent isLoading={isLoading}>
-                <Text className={cn('text-[17px]', labelClassName)}>{label}</Text>
+                <View className="flex-row items-center gap-x-md">
+                    <Text className={cn('flex-1 text-[17px]', labelClassName)}>{label}</Text>
+                    {trailing}
+                </View>
             </LoadingContent>
         </HapticPressable>
     );

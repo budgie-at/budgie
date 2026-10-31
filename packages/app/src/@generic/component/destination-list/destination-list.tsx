@@ -57,15 +57,17 @@ export const DestinationList = <T extends IdInterface>({
     const accessibilityState = { busy: isPending };
     const header = isUsageFailure ? <UsageFailureRow onRetry={onRetryUsage} /> : null;
 
-    if (isFailure) {
-        return <SearchablePageErrorState onRetry={onRetry} />;
-    }
-
-    if (!isNotEmptyArray(rows)) {
+    if (isFailure || !isNotEmptyArray(rows)) {
         return (
             <ScrollView className="flex-1 px-xl" contentContainerStyle={contentContainerStyle} keyboardShouldPersistTaps="handled">
-                {header}
-                <LoadingContent isLoading={isPending}>{emptyState}</LoadingContent>
+                {isFailure ? (
+                    <SearchablePageErrorState onRetry={onRetry} />
+                ) : (
+                    <>
+                        {header}
+                        <LoadingContent isLoading={isPending}>{emptyState}</LoadingContent>
+                    </>
+                )}
             </ScrollView>
         );
     }

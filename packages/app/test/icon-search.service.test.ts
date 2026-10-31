@@ -22,8 +22,8 @@ describe('IconSearchService', () => {
         Effect.gen(function* () {
             const { top, confident } = yield* suggestFor('Plants');
 
-            expect(['reicon:Leaf', '🌱', '🪴', '🌿']).toContain(top);
-            expect(confident).toBe(top);
+            expect(top).toBe('reicon:Leaf');
+            expect(confident).toBe('reicon:Leaf');
         })
     );
 
@@ -33,15 +33,18 @@ describe('IconSearchService', () => {
         })
     );
 
-    it.effect('matchesParcelDeliveryToAPackage', () =>
+    it.effect('prefersAConfidentGlyphOverAHigherScoringEmoji', () =>
         Effect.gen(function* () {
-            expect(['📦️', 'reicon:Package', 'reicon:Box']).toContain((yield* suggestFor('Parcel delivery')).confident);
+            expect((yield* suggestFor('Parcel delivery')).confident).toBe('reicon:Package');
         })
     );
 
-    it.effect('matchesClimbingGymToAClimberConfidently', () =>
+    it.effect('fallsBackToAnEmojiWhenNoGlyphIsConfident', () =>
         Effect.gen(function* () {
-            expect((yield* suggestFor('Climbing gym')).confident).toBe('🧗');
+            const { confident, suggestions } = yield* suggestFor('Climbing gym');
+
+            expect(confident).toBe('🧗');
+            expect(suggestions.filter(icon => icon.startsWith('🧗'))).toEqual(['🧗']);
         })
     );
 
@@ -56,7 +59,7 @@ describe('IconSearchService', () => {
             const { confident, suggestions } = yield* suggestFor('Side project');
 
             expect(confident).toBeNull();
-            expect(suggestions.slice(0, 6)).toContain('reicon:FolderOpen');
+            expect(suggestions.slice(0, 6).filter(icon => icon.startsWith('reicon:Folder'))).toEqual(['reicon:FolderOpen']);
             expect(suggestions.slice(0, 6)).toContain('reicon:Briefcase');
             expect(suggestions).not.toContain('🍳');
             expect(suggestions).not.toContain('reicon:FoodTray');

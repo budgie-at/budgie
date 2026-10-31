@@ -81,13 +81,26 @@ class IconSearchService {
             .map(icon => entries.find(entry => entry.icon === icon))
             .filter(isDefined);
 
-        return [...relevant, ...fallback];
+        const families = new Set<string>();
+
+        return [...relevant, ...fallback].filter(({ icon }) => {
+            const family = this.getFamily(icon);
+            const isNewFamily = !families.has(family);
+            families.add(family);
+
+            return isNewFamily;
+        });
     }
 
     findConfidentIcon(entries: readonly IconSearchEntryInterface[], terms: readonly string[]): UserIconType | null {
-        const [top] = this.score(entries, terms, false);
+        const confident = this.score(entries, terms, false).filter(({ score }) => score >= IconSearchService.CONFIDENT_SCORE);
+        const top = confident.find(({ entry }) => !isEmojiIcon(entry.icon)) ?? confident.at(0);
 
-        return isDefined(top) && top.score >= IconSearchService.CONFIDENT_SCORE ? top.entry.icon : null;
+        return top?.entry.icon ?? null;
+    }
+
+    private getFamily(icon: UserIconType): string {
+        return isEmojiIcon(icon) ? (Array.from(icon).at(0) ?? icon) : (/^(?:reicon:)?[A-Z][a-z]*/u.exec(icon)?.[0] ?? icon);
     }
 
     private score(entries: readonly IconSearchEntryInterface[], terms: readonly string[], allowPrefix: boolean) {

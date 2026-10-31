@@ -11,6 +11,7 @@ interface Props {
     readonly isDisabled: boolean;
     readonly mutatingOperation: EntityOperationEnum | null;
     readonly deleteTestID?: string;
+    readonly deleteTrailing?: ReactNode;
     readonly children?: ReactNode;
 }
 
@@ -21,6 +22,7 @@ export const EntityEditSections = ({
     isDisabled,
     mutatingOperation,
     deleteTestID,
+    deleteTrailing,
     children
 }: Props) => (
     <>
@@ -32,6 +34,7 @@ export const EntityEditSections = ({
                 isDisabled={isDisabled}
                 isLoading={mutatingOperation === EntityOperationEnum.DELETE}
                 labelClassName="text-destructive-foreground"
+                trailing={deleteTrailing}
                 testID={deleteTestID}
             />
         </GroupedListSection>

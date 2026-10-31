@@ -1,24 +1,21 @@
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { PillButton } from '../pill-button/pill-button';
+import type { ReactNode } from 'react';
 
 interface Props {
-    readonly label: string;
-    readonly isDisabled: boolean;
-    readonly onPress: () => void;
-    readonly testID: string;
+    readonly children: ReactNode;
 }
 
 const MIN_BOTTOM_SPACING = 16;
 
-export const DestinationSheetFooter = ({ label, isDisabled, onPress, testID }: Props) => {
+export const DestinationSheetFooter = ({ children }: Props) => {
     const { bottom } = useSafeAreaInsets();
     const style = { paddingBottom: Math.max(bottom, MIN_BOTTOM_SPACING) };
 
     return (
-        <View className="border-t-hairline border-surface-separator bg-primary-reverse px-5xl pt-lg" style={style}>
-            <PillButton label={label} onPress={onPress} isDisabled={isDisabled} testID={testID} />
+        <View className="border-t-hairline border-surface-separator bg-primary-reverse px-xl pt-lg" style={style}>
+            {children}
         </View>
     );
 };

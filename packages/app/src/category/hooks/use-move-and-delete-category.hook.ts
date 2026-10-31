@@ -39,11 +39,12 @@ export const useMoveAndDeleteCategory = () => {
                     }),
                     description: t`Pick the category they move to.`,
                     variant: 'primary',
+                    commitLabel: t`Move ${count} and delete “${sourceTitle}”`,
                     getCommitLabel: targetTitle =>
                         t({
                             message: plural(count, {
-                                one: `Move # transaction to “${targetTitle}”`,
-                                other: `Move # transactions to “${targetTitle}”`
+                                one: `Move # transaction to “${targetTitle}” and delete “${sourceTitle}”`,
+                                other: `Move # transactions to “${targetTitle}” and delete “${sourceTitle}”`
                             })
                         })
                 },

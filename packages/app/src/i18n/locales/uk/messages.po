@@ -83,8 +83,8 @@ msgstr "{0, plural, one {Показати ще # групу} few {Показат
 
 #. placeholder {0}: categoriesWithDefaultIcon.length
 #: src/app/(tabs)/settings/category-icons.tsx
-msgid "{0, plural, one {This name doesn’t suggest a clear icon. Pick one — it saves instantly.} other {These names don’t suggest a clear icon. Pick one — it saves instantly.}}"
-msgstr "{0, plural, one {Ця назва не підказує очевидної іконки. Виберіть її — вона збережеться одразу.} few {Ці назви не підказують очевидної іконки. Виберіть її — вона збережеться одразу.} many {Ці назви не підказують очевидної іконки. Виберіть її — вона збережеться одразу.} other {Ці назви не підказують очевидної іконки. Виберіть її — вона збережеться одразу.}}"
+msgid "{0, plural, one {This category still has a placeholder icon. Tap a suggestion to save it.} other {These categories still have placeholder icons. Tap a suggestion to save it.}}"
+msgstr "{0, plural, one {Ця категорія ще має тимчасову іконку. Торкніться пропозиції, щоб зберегти її.} few {Ці категорії ще мають тимчасові іконки. Торкніться пропозиції, щоб зберегти її.} many {Ці категорії ще мають тимчасові іконки. Торкніться пропозиції, щоб зберегти її.} other {Ці категорії ще мають тимчасові іконки. Торкніться пропозиції, щоб зберегти її.}}"
 
 #: src/onboarding/hook/use-onboarding-file-state.hook.ts
 msgid "{accountCount, plural, one {# account} other {# accounts}}"
@@ -183,21 +183,21 @@ msgstr "{count, plural, one {# майбутній платіж} few {# майб�
 msgid "{count, plural, one {Choose an icon for # category} other {Choose icons for # categories}}"
 msgstr "{count, plural, one {Виберіть іконку для # категорії} few {Виберіть іконки для # категорій} many {Виберіть іконки для # категорій} other {Виберіть іконки для # категорії}}"
 
+#: src/category/components/category-default-icon-button/category-default-icon-button.tsx
+msgid "{count, plural, one {It still has a placeholder icon} other {They still have placeholder icons}}"
+msgstr "{count, plural, one {Вона ще має тимчасову іконку} few {Вони ще мають тимчасові іконки} many {Вони ще мають тимчасові іконки} other {Вони ще мають тимчасові іконки}}"
+
 #: src/tag/hooks/use-delete-tag.hook.ts
 msgid "{count, plural, one {It will be removed from # transaction. The transaction stays.} other {It will be removed from # transactions. The transactions stay.}}"
 msgstr "{count, plural, one {Його буде знято з # транзакції. Транзакція залишиться.} few {Його буде знято з # транзакцій. Транзакції залишаться.} many {Його буде знято з # транзакцій. Транзакції залишаться.} other {Його буде знято з # транзакції. Транзакції залишаться.}}"
-
-#: src/category/components/category-default-icon-button/category-default-icon-button.tsx
-msgid "{count, plural, one {Its name doesn’t suggest a clear icon} other {Their names don’t suggest a clear icon}}"
-msgstr "{count, plural, one {Назва не підказує очевидної іконки} few {Назви не підказують очевидної іконки} many {Назви не підказують очевидної іконки} other {Назви не підказують очевидної іконки}}"
 
 #: src/category/hooks/use-move-and-delete-category.hook.ts
 msgid "{count, plural, one {Move # transaction from “{sourceTitle}”, then delete it} other {Move # transactions from “{sourceTitle}”, then delete it}}"
 msgstr "{count, plural, one {Перенести # транзакцію з «{sourceTitle}», потім видалити її} few {Перенести # транзакції з «{sourceTitle}», потім видалити її} many {Перенести # транзакцій з «{sourceTitle}», потім видалити її} other {Перенести # транзакції з «{sourceTitle}», потім видалити її}}"
 
 #: src/category/hooks/use-move-and-delete-category.hook.ts
-msgid "{count, plural, one {Move # transaction to “{targetTitle}”} other {Move # transactions to “{targetTitle}”}}"
-msgstr "{count, plural, one {Перенести # транзакцію до «{targetTitle}»} few {Перенести # транзакції до «{targetTitle}»} many {Перенести # транзакцій до «{targetTitle}»} other {Перенести # транзакції до «{targetTitle}»}}"
+msgid "{count, plural, one {Move # transaction to “{targetTitle}” and delete “{sourceTitle}”} other {Move # transactions to “{targetTitle}” and delete “{sourceTitle}”}}"
+msgstr "{count, plural, one {Перемістити # транзакцію до «{targetTitle}» і видалити «{sourceTitle}»} few {Перемістити # транзакції до «{targetTitle}» і видалити «{sourceTitle}»} many {Перемістити # транзакцій до «{targetTitle}» і видалити «{sourceTitle}»} other {Перемістити # транзакції до «{targetTitle}» і видалити «{sourceTitle}»}}"
 
 #: src/categorize-inbox/components/categorize-inbox-payments-bar/categorize-inbox-payments-bar.tsx
 msgid "{count, plural, one {Use # payment} other {Use # payments}}"
@@ -595,6 +595,10 @@ msgstr "{totalSize} ГБ"
 #: src/transaction/components/transaction-list-count/transaction-list-count.tsx
 msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{transactionCount, plural, one {# транзакція} few {# транзакції} many {# транзакцій} other {# транзакцій}}"
+
+#: src/tag/components/tag-form/tag-form.tsx
+msgid "{transactionCount, plural, one {Its # transaction gets the tag you pick, and “{tagTitle}” is removed.} other {Its # transactions get the tag you pick, and “{tagTitle}” is removed.}}"
+msgstr "{transactionCount, plural, one {Його # транзакція отримає вибраний тег, а «{tagTitle}» буде видалено.} few {Його # транзакції отримають вибраний тег, а «{tagTitle}» буде видалено.} many {Його # транзакцій отримають вибраний тег, а «{tagTitle}» буде видалено.} other {Його # транзакції отримають вибраний тег, а «{tagTitle}» буде видалено.}}"
 
 #: src/category/utils/get-category-delete-copy.util.ts
 msgid "{transactionCount, plural, one {Its # transaction moves to the category you pick.} other {Its # transactions move to the category you pick.}}"
@@ -2391,7 +2395,6 @@ msgstr "Рахунок за замовчуванням"
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/ai/hook/use-ai-model-download-actions.hook.ts
 #: src/budget/hooks/use-budget-form.hook.ts
-#: src/category/components/category-card/category-card.tsx
 #: src/category/hooks/use-delete-category.hook.ts
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 #: src/tag/components/tag-card/tag-card.tsx
@@ -3473,10 +3476,6 @@ msgstr "Він більше не з’являтиметься в календа
 msgid "It's the only key to your file. There's no account and no copy on a server, so there's nothing to reset it from."
 msgstr "Це єдиний ключ до вашого файлу. Немає ні акаунта, ні копії на сервері, тож нема звідки його скинути."
 
-#: src/tag/components/tag-form/tag-form.tsx
-msgid "Its transactions get the tag you pick."
-msgstr "Його транзакції отримають вибраний тег."
-
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Jars"
 msgstr "Банки"
@@ -3908,6 +3907,10 @@ msgstr "Інші теги"
 msgid "Move {cashCount} to cash"
 msgstr "Перенести {cashCount} у готівку"
 
+#: src/category/hooks/use-move-and-delete-category.hook.ts
+msgid "Move {count} and delete “{sourceTitle}”"
+msgstr "Перемістити {count} і видалити «{sourceTitle}»"
+
 #: src/categorize-inbox/components/categorize-inbox-group-primary-bar/categorize-inbox-group-primary-bar.tsx
 msgid "Move {count} to {title}"
 msgstr "Перенести {count} на {title}"
@@ -3928,6 +3931,7 @@ msgstr "Перенести {rowCount} у готівку · {total}"
 msgid "Move to cash"
 msgstr "У готівку"
 
+#: src/category/components/category-card/category-card.tsx
 #: src/category/utils/get-category-delete-copy.util.ts
 msgid "Move transactions and delete…"
 msgstr "Перенести транзакції й видалити…"
@@ -6558,6 +6562,14 @@ msgstr "Оновлено {formattedDate}"
 #: src/@generic/component/icon-suggestion-chip/icon-suggestion-chip.tsx
 msgid "Use {label} icon"
 msgstr "Використати іконку {label}"
+
+#: src/category/components/category-form/category-form.tsx
+msgid "Use 1 to {CATEGORY_TITLE_MAX_LENGTH} characters"
+msgstr "Використайте від 1 до {CATEGORY_TITLE_MAX_LENGTH} символів"
+
+#: src/tag/components/tag-form/tag-form.tsx
+msgid "Use 1 to {TAG_TITLE_MAX_LENGTH} characters"
+msgstr "Використайте від 1 до {TAG_TITLE_MAX_LENGTH} символів"
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
 #: src/auth/utils/get-pin-setup-meta.util.ts

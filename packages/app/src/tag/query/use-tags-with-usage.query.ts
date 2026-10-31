@@ -13,11 +13,11 @@ export const tagUsageAtom = databaseQueryAtom(
 
 export const useTagsWithUsageQuery = (search: string) => {
     const { tags, isSearchPending, isFailure, retry } = useSearchTagsQuery(search);
-    const { isUsageReady, ...usage } = useEntityUsage(tagUsageAtom);
+    const { isUsagePending, ...usage } = useEntityUsage(tagUsageAtom);
 
     return {
         ...usage,
-        tags: isSearchPending || !isUsageReady ? null : tags,
+        tags: isSearchPending || isUsagePending ? null : tags,
         isFailure,
         retry
     };
