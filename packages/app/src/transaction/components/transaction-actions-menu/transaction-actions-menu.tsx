@@ -59,12 +59,12 @@ export const TransactionActionsMenu = ({ onDelete, onRevert, isConsolidated = fa
             if (isConsolidated) {
                 onRevert?.();
             } else {
-                void onDelete?.();
+                void onDelete();
             }
         });
     };
 
-    const showAction = isConsolidated ? isDefined(onRevert) : isDefined(onDelete);
+    const showAction = !isConsolidated || isDefined(onRevert);
 
     return (
         <View>
