@@ -27,6 +27,11 @@ env:
       visible:
           id: 'BudgetSetup.StartsOnRow'
       timeout: 3000
+- scrollUntilVisible:
+      element:
+          id: 'BudgetSetup.OverallLimitInput'
+      direction: DOWN
+      centerElement: true
 - tapOn:
       id: 'BudgetSetup.OverallLimitInput'
 - inputText: '1000'
@@ -43,6 +48,10 @@ env:
 - tapOn:
       id: 'BudgetSetup.CategoryLimitsHeader'
 - waitForAnimationToEnd
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetSetup.SaveButton'
+      timeout: 3000
 - tapOn:
       id: 'BudgetSetup.SaveButton'
 

@@ -51,6 +51,11 @@ env:
 - runFlow:
       file: subflows/budget/choose-empty-canvas.flow.yaml
 
+- scrollUntilVisible:
+      element:
+          id: 'BudgetSetup.OverallLimitInput'
+      direction: DOWN
+      centerElement: true
 - tapOn:
       id: 'BudgetSetup.OverallLimitInput'
 - inputText: '1000'
@@ -164,6 +169,11 @@ env:
       visible: 'Edit budget'
       timeout: 3000
 
+- scrollUntilVisible:
+      element:
+          id: 'BudgetSetup.OverallLimitInput'
+      direction: DOWN
+      centerElement: true
 - tapOn:
       id: 'BudgetSetup.OverallLimitInput'
 - eraseText: 10
@@ -205,6 +215,11 @@ env:
       visible: 'Edit budget'
       timeout: 3000
 
+- scrollUntilVisible:
+      element:
+          id: 'BudgetSetup.OverallLimitInput'
+      direction: DOWN
+      centerElement: true
 - tapOn:
       id: 'BudgetSetup.OverallLimitInput'
 - eraseText: 10
@@ -500,6 +515,10 @@ env:
 - tapOn: 'Remove'
 - waitForAnimationToEnd
 
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetSetup.SaveButton'
+      timeout: 3000
 - tapOn:
       id: 'BudgetSetup.SaveButton'
 
@@ -548,6 +567,10 @@ env:
       timeout: 3000
 - tapOn: 'Category limits'
 - waitForAnimationToEnd
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetSetup.SaveButton'
+      timeout: 3000
 - tapOn:
       id: 'BudgetSetup.SaveButton'
 - extendedWaitUntil:
@@ -688,6 +711,11 @@ env:
       id: 'BudgetWidget.EmptyState'
 - runFlow:
       file: subflows/budget/choose-empty-canvas.flow.yaml
+- scrollUntilVisible:
+      element:
+          id: 'BudgetSetup.OverallLimitInput'
+      direction: DOWN
+      centerElement: true
 - tapOn:
       id: 'BudgetSetup.OverallLimitInput'
 - inputText: '100'
@@ -733,6 +761,10 @@ env:
       visible:
           id: 'BudgetSetup.AllocationSummary.OverBy'
       timeout: 3000
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetSetup.SaveButton'
+      timeout: 3000
 - tapOn:
       id: 'BudgetSetup.SaveButton'
 - waitForAnimationToEnd
@@ -752,6 +784,10 @@ env:
 - waitForAnimationToEnd
 - assertNotVisible:
       id: 'BudgetSetup.AllocationSummary.OverBy'
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetSetup.SaveButton'
+      timeout: 3000
 - tapOn:
       id: 'BudgetSetup.SaveButton'
 - extendedWaitUntil:

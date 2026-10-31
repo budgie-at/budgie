@@ -20,6 +20,11 @@ env:
 - runFlow:
       file: subflows/budget/choose-empty-canvas.flow.yaml
 
+- scrollUntilVisible:
+      element:
+          id: 'BudgetSetup.OverallLimitInput'
+      direction: DOWN
+      centerElement: true
 - tapOn:
       id: 'BudgetSetup.OverallLimitInput'
 - inputText: '200'
@@ -64,6 +69,10 @@ env:
       timeout: 3000
 - tapOn: 'Category limits'
 - waitForAnimationToEnd
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetSetup.SaveButton'
+      timeout: 3000
 - tapOn:
       id: 'BudgetSetup.SaveButton'
 
