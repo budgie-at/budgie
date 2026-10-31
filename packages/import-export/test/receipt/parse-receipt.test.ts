@@ -7,6 +7,7 @@ import { BILLA_RECEIPT } from './fixture/billa-receipt.fixture';
 import { CORD_RECEIPTS } from './fixture/cord-receipts.fixture';
 import { E2E_SHARED_RECEIPT } from './fixture/e2e-shared-receipt.fixture';
 import { IHR_LABOR_LEGAL_NAME, IHR_LABOR_RECEIPT } from './fixture/ihr-labor-receipt.fixture';
+import { RESTAURANT_TABLE_BILL_RECEIPT } from './fixture/restaurant-table-bill-receipt.fixture';
 import { SCHWEDEN_APOTHEKE_PHOTO_RECEIPT } from './fixture/schweden-apotheke-photo-receipt.fixture';
 import { UKRAINIAN_FISCAL_RECEIPT } from './fixture/ukrainian-fiscal-receipt.fixture';
 import { USD_TIP_RECEIPT } from './fixture/usd-tip-receipt.fixture';
@@ -25,6 +26,7 @@ describe('parseReceipt', () => {
                 merchantVatId: 'ATU71427716',
                 merchantLegalName: IHR_LABOR_LEGAL_NAME,
                 merchantCandidates: ['IHR LABOR', 'Qualität, ganz persönlich.', 'ALLE KASSEN. IHRLABOR.AT', IHR_LABOR_LEGAL_NAME],
+                isPaid: true,
                 fingerprint: 'ATU71427716|K2310000301/26-010863|62100000|2026-10-27'
             }
         ],
@@ -40,6 +42,7 @@ describe('parseReceipt', () => {
                 merchantVatId: 'ATU12345678',
                 merchantLegalName: 'BILLA AG',
                 merchantCandidates: ['BILLA', 'BILLA AG'],
+                isPaid: true,
                 fingerprint: 'ATU12345678|4711|18450000|2026-10-27'
             }
         ],
@@ -55,6 +58,7 @@ describe('parseReceipt', () => {
                 merchantVatId: '300123456789',
                 merchantLegalName: 'ТОВ "АТБ-МАРКЕТ"',
                 merchantCandidates: ['ТОВ "АТБ-МАРКЕТ"', 'м. Дніпро, вул. Шевченка, 15'],
+                isPaid: true,
                 fingerprint: '300123456789|0012345|184050000|2026-10-27'
             }
         ],
@@ -70,6 +74,7 @@ describe('parseReceipt', () => {
                 merchantVatId: null,
                 merchantLegalName: null,
                 merchantCandidates: ['THE GOLDEN SPOON', 'Bistro & Bar'],
+                isPaid: true,
                 fingerprint: 'thegoldenspoon|62680000|2026-10-27|20:14|1047'
             }
         ],
@@ -85,6 +90,7 @@ describe('parseReceipt', () => {
                 merchantVatId: 'ATU12345678',
                 merchantLegalName: 'Ihr Labor GmbH',
                 merchantCandidates: ['IHR LABOR', 'Ihr Labor GmbH'],
+                isPaid: true,
                 fingerprint: 'ATU12345678|2026-0042|62100000|'
             }
         ],
@@ -100,7 +106,24 @@ describe('parseReceipt', () => {
                 merchantVatId: 'ATU10227100',
                 merchantLegalName: 'Mag. pharm. Christof Ulrich KG',
                 merchantCandidates: ['APOTHEKE', 'Schweden Apotheke', 'Mag. pharm. Christof Ulrich KG'],
+                isPaid: true,
                 fingerprint: 'ATU10227100|7799|29800000|2026-10-29'
+            }
+        ],
+        [
+            'an unpaid restaurant table bill without merchant, date or payment',
+            RESTAURANT_TABLE_BILL_RECEIPT,
+            {
+                total: convertToMicroUnits(128.9),
+                currency: CurrencyEnum.EUR,
+                occurredAt: null,
+                cardLast4: null,
+                receiptNumber: null,
+                merchantVatId: null,
+                merchantLegalName: null,
+                merchantCandidates: ['Ausdruck Gruppe:', 'Tisch:', 'Stk Artikelname'],
+                isPaid: false,
+                fingerprint: 'ausdruckgruppe|128900000||'
             }
         ]
     ])('reads %s', (_name, lines, expected) => {

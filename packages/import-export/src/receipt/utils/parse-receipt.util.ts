@@ -261,7 +261,12 @@ const extractReceiptTotal = (rows: readonly string[], receiptCurrency: CurrencyE
         return null;
     }
 
-    return { amount: total.amount, currency: findCurrencies(total.row).at(0) ?? receiptCurrency, paymentRows };
+    const isPaid =
+        paymentRows.some(row => PAYMENT_PATTERN.test(row)) ||
+        isDefined(tendered) ||
+        rows.some(row => CASH_LABEL_PATTERN.test(row) && isNotEmptyArray(findAmounts(row)));
+
+    return { amount: total.amount, currency: findCurrencies(total.row).at(0) ?? receiptCurrency, paymentRows, isPaid };
 };
 
 const MONTH_NAMES: Record<LanguageEnum, readonly string[]> = {
@@ -471,7 +476,10 @@ const findVatId = (row: string): string | null =>
         .find(isDefined)
         ?.replaceAll(/\s/gu, '') ?? null;
 
-const buildFingerprint = (draft: Omit<ReceiptDraftInterface, 'fingerprint'>, timestamp: ReceiptTimestampInterface | null): string => {
+const buildFingerprint = (
+    draft: Omit<ReceiptDraftInterface, 'fingerprint' | 'isPaid'>,
+    timestamp: ReceiptTimestampInterface | null
+): string => {
     const date = isDefined(timestamp) ? format(timestamp.occurredAt, 'yyyy-MM-dd') : '';
 
     if (isNotEmptyString(draft.merchantVatId) && isNotEmptyString(draft.receiptNumber)) {
@@ -510,5 +518,5 @@ export const parseReceipt = (lines: readonly ReceiptTextLineInterface[], default
         merchantCandidates: [...new Set([...findTopCandidates(lines), merchantLegalName].filter(isDefined))]
     };
 
-    return { ...draft, fingerprint: buildFingerprint(draft, timestamp) };
+    return { ...draft, isPaid: total.isPaid || isDefined(draft.cardLast4), fingerprint: buildFingerprint(draft, timestamp) };
 };

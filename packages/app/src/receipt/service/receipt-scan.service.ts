@@ -129,6 +129,14 @@ export class ReceiptScanService extends Context.Service<ReceiptScanService>()('@
                 return { ...failure(ReceiptScanFailureEnum.MANUAL), fallback: { amount: null, aiContext: toContext(lines) } };
             }
 
+            if (!draft.isPaid) {
+                return {
+                    ...failure(ReceiptScanFailureEnum.MANUAL),
+                    title: draft.merchantLegalName ?? '',
+                    fallback: { amount: convertFromMicroUnits(draft.total), aiContext: toContext(lines) }
+                };
+            }
+
             const { title, description } = yield* nameMerchant(draft, lines, isChatReady);
             const categoryId =
                 isNotEmptyArray(categories) && isNotEmptyString(title) ? yield* suggestCategoryId(categories, title, description) : null;
