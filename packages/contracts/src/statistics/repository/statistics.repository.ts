@@ -101,13 +101,16 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
             ELSE ROUND(${TransactionEntryEntityTable.amount} * ${buildConversionRateSql(defaultInstrumentId, sql.raw('accounts.instrument_id'))})
         END`);
 
+        const buildCorrelatedEntryBaseValueSql = (defaultInstrumentId: number, entryAlias: string, accountAlias: string) =>
+            sql<number>`CASE
+            WHEN ${sql.raw(entryAlias)}.base_instrument_id = ${defaultInstrumentId} THEN ${sql.raw(entryAlias)}.base_amount
+            WHEN ${sql.raw(accountAlias)}.instrument_id = ${defaultInstrumentId} THEN ${sql.raw(entryAlias)}.amount
+            ELSE ROUND(${sql.raw(entryAlias)}.amount * ${buildConversionRateSql(defaultInstrumentId, sql.raw(`${accountAlias}.instrument_id`))})
+        END`;
+
         const buildRefundTotalBaseAmountSql = (defaultInstrumentId: number) =>
             sql<number>`COALESCE((
-            SELECT SUM(CASE
-                WHEN refund_entry.base_instrument_id = ${defaultInstrumentId} THEN refund_entry.base_amount
-                WHEN refund_account.instrument_id = ${defaultInstrumentId} THEN refund_entry.amount
-                ELSE ROUND(refund_entry.amount * ${buildConversionRateSql(defaultInstrumentId, sql.raw('refund_account.instrument_id'))})
-            END)
+            SELECT SUM(${buildCorrelatedEntryBaseValueSql(defaultInstrumentId, 'refund_entry', 'refund_account')})
             FROM transaction_entries refund_entry
             INNER JOIN accounts refund_account ON refund_account.id = refund_entry.account_id
             WHERE refund_entry.transaction_id = ${TransactionEntryEntityTable.transactionId}
@@ -116,30 +119,26 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
               AND refund_entry.type = ${TransactionEntryTypeEnum.DEBIT}
         ), 0)`;
 
-        const buildLedgerCreditBaseAmountTotalSql = (defaultInstrumentId: number) =>
-            sql<number>`COALESCE((
-            SELECT SUM(CASE
-                WHEN ledger_credit.base_instrument_id = ${defaultInstrumentId} THEN ledger_credit.base_amount
-                WHEN ledger_account.instrument_id = ${defaultInstrumentId} THEN ledger_credit.amount
-                ELSE ROUND(ledger_credit.amount * ${buildConversionRateSql(defaultInstrumentId, sql.raw('ledger_account.instrument_id'))})
-            END)
+        const buildRefundAdjustedCreditBaseAmountSql = (defaultInstrumentId: number) => {
+            const creditValueSql = roundToMinorUnitSql(
+                buildCorrelatedEntryBaseValueSql(defaultInstrumentId, 'ledger_credit', 'ledger_account')
+            );
+            const precedingCreditSql = sql`COALESCE(SUM(CASE WHEN ledger_credit.id < ${TransactionEntryEntityTable.id} THEN ${creditValueSql} END), 0)`;
+            const allocateNetSql = (cumulativeCreditSql: SQL) =>
+                roundToMinorUnitSql(
+                    sql`${cumulativeCreditSql} - ${buildRefundTotalBaseAmountSql(defaultInstrumentId)} * (${cumulativeCreditSql}) * 1.0 / NULLIF(SUM(${creditValueSql}), 0)`
+                );
+
+            return sql<number>`(
+            SELECT ${allocateNetSql(sql`${precedingCreditSql} + ${buildEntryBaseValueSql(defaultInstrumentId)}`)} - ${allocateNetSql(precedingCreditSql)}
             FROM transaction_entries ledger_credit
             INNER JOIN accounts ledger_account ON ledger_account.id = ledger_credit.account_id
             WHERE ledger_credit.transaction_id = ${TransactionEntryEntityTable.transactionId}
               AND ledger_credit.original_transaction_id IS NULL
               AND ledger_credit.deleted_at IS NULL
               AND ledger_credit.type = ${TransactionEntryTypeEnum.CREDIT}
-        ), 0)`;
-
-        const buildRefundAdjustedCreditBaseAmountSql = (defaultInstrumentId: number) =>
-            roundToMinorUnitSql(sql`
-            ${buildEntryBaseValueSql(defaultInstrumentId)}
-            - (
-                ${buildRefundTotalBaseAmountSql(defaultInstrumentId)}
-                * ${buildEntryBaseValueSql(defaultInstrumentId)}
-                / NULLIF(${buildLedgerCreditBaseAmountTotalSql(defaultInstrumentId)}, 0)
-            )
-        `);
+        )`;
+        };
 
         const buildRefundAwareBaseAmountSql = (defaultInstrumentId: number) =>
             sql<number>`COALESCE(SUM(CASE
@@ -364,6 +363,19 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
                         .where(buildStatisticsLedgerWhere(filters))
                 ),
 
+            hasIncomeOrExpenseQuery: (filters: TransactionFilterInterface) =>
+                Db.query(db =>
+                    buildLedgerEntriesQuery(db, { id: TransactionEntryEntityTable.id })
+                        .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+                        .where(
+                            and(
+                                buildStatisticsLedgerWhere(filters),
+                                inArray(TransactionEntityTable.type, [TransactionTypeEnum.INCOME, TransactionTypeEnum.EXPENSE])
+                            )
+                        )
+                        .limit(1)
+                ),
+
             getRunwaySeriesQuery: (
                 filters: TransactionFilterInterface,
                 defaultInstrumentId: number,
@@ -424,27 +436,46 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
 
             getNettedRefundsQuery: (filters: TransactionFilterInterface, defaultInstrumentId: number) =>
                 Db.query(db => {
+                    const refundEntry = alias(TransactionEntryEntityTable, 'netted_refund_entry');
                     const refundTransaction = alias(TransactionEntityTable, 'refund_transaction');
+                    const nettedInPeriodTransactionIds = db
+                        .select({ transactionId: refundEntry.transactionId })
+                        .from(refundEntry)
+                        .innerJoin(refundTransaction, eq(refundEntry.originalTransactionId, refundTransaction.id))
+                        .where(
+                            and(
+                                eq(refundEntry.type, TransactionEntryTypeEnum.DEBIT),
+                                isNull(refundEntry.deletedAt),
+                                or(
+                                    buildOperatedWithinCondition(refundTransaction.operatedAt, filters.date),
+                                    buildOperatedWithinCondition(TransactionEntityTable.operatedAt, filters.date)
+                                )
+                            )
+                        );
 
                     return db
                         .select({
-                            amount: sql<number>`COALESCE(SUM(${buildEntryBaseValueSql(defaultInstrumentId)}), 0)`.as('amount'),
+                            amount: sql<number>`COALESCE(SUM(${buildEntryBaseValueSql(defaultInstrumentId)} - ${buildRefundAdjustedCreditBaseAmountSql(defaultInstrumentId)}), 0)`.as(
+                                'amount'
+                            ),
                             purchasedAt: sql<number | null>`MAX(${TransactionEntityTable.operatedAt})`.as('purchased_at')
                         })
                         .from(TransactionEntryEntityTable)
                         .innerJoin(TransactionEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
                         .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-                        .innerJoin(refundTransaction, eq(TransactionEntryEntityTable.originalTransactionId, refundTransaction.id))
                         .where(
                             and(
-                                transactionFilters.buildFilterWhere({ ...filters, date: null }),
+                                buildExpenseBreakdownWhere({ ...filters, date: null }),
                                 eq(TransactionEntityTable.consolidationType, TransactionConsolidationTypeEnum.REFUND),
-                                eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.DEBIT),
-                                isNull(TransactionEntryEntityTable.deletedAt),
-                                or(
-                                    buildOperatedWithinCondition(refundTransaction.operatedAt, filters.date),
-                                    buildOperatedWithinCondition(TransactionEntityTable.operatedAt, filters.date)
-                                )
+                                eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.CREDIT),
+                                ...(isDefined(filters.categoryIds)
+                                    ? [
+                                          isNotEmptyArray(filters.categoryIds)
+                                              ? inArray(TransactionEntryEntityTable.categoryId, filters.categoryIds)
+                                              : isNull(TransactionEntryEntityTable.categoryId)
+                                      ]
+                                    : []),
+                                inArray(TransactionEntityTable.id, nettedInPeriodTransactionIds)
                             )
                         );
                 }),
