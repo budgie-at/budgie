@@ -1,22 +1,23 @@
 import { cva } from 'class-variance-authority';
-import { View } from 'react-native';
-import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
+import { Text, View } from 'react-native';
 
 interface Props {
+    readonly label: string;
     readonly isPaid: boolean;
 }
 
-const pointVariants = cva('size-2 rounded-full', {
+const pointVariants = cva('size-2.5 rounded-full', {
     variants: {
         isPaid: {
             true: 'bg-primary',
-            false: 'border border-secondary-foreground bg-primary-reverse'
+            false: 'border-2 border-secondary-foreground bg-primary-reverse'
         }
     }
 });
 
-export const InstallmentTimelinePoint = ({ isPaid }: Props) => (
-    <Animated.View entering={FadeIn} exiting={FadeOut} layout={LinearTransition} className="flex-1 items-center">
+export const InstallmentTimelinePoint = ({ label, isPaid }: Props) => (
+    <View className="w-2/12 items-center gap-y-sm">
         <View className={pointVariants({ isPaid })} />
-    </Animated.View>
+        <Text className="text-center text-sm font-medium text-primary">{label}</Text>
+    </View>
 );

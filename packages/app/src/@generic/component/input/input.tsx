@@ -1,11 +1,11 @@
 import { cva } from 'class-variance-authority';
-import { ComponentProps } from 'react';
+import { ComponentPropsWithRef } from 'react';
 import { TextInput } from 'react-native';
 
 import { FormFieldStatus } from '../../type/form-field-status.type';
 import { cn } from '../../utils/cn.util';
 
-interface Props extends ComponentProps<typeof TextInput> {
+interface Props extends ComponentPropsWithRef<typeof TextInput> {
     readonly status?: FormFieldStatus;
     readonly borderless?: boolean;
     readonly size?: 'sm' | 'md' | 'lg';
