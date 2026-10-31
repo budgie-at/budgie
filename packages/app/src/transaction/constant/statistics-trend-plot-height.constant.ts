@@ -1,0 +1,1 @@
+export const STATISTICS_TREND_PLOT_HEIGHT = 72;

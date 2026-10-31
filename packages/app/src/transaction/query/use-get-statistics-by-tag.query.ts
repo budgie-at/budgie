@@ -24,5 +24,5 @@ export const useGetStatisticsByTagQuery = (filters: TransactionFilterInterface) 
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const result = useLiveAtomValue(statisticsByTagAtom([filters, defaultInstrument.id]));
 
-    return AsyncResult.getOrElse(result, () => ({ incomeByTag: [], expenseByTag: [] }));
+    return { ...AsyncResult.getOrElse(result, () => ({ incomeByTag: [], expenseByTag: [] })), isLoading: AsyncResult.isInitial(result) };
 };

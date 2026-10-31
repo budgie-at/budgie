@@ -8,9 +8,11 @@ import {
 } from '@budgie/contracts';
 import { getTransactionCategoryEntries } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
+import { useContext } from 'react';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { StatisticsCategoryIdsContext } from '../context/statistics-category-ids.context';
 import { getTransactionDisplayTitle } from '../utils/get-transaction-display-title.util';
 import { isUncategorizedTransaction } from '../utils/is-uncategorized-transaction.util';
 
@@ -90,17 +92,22 @@ export const useTransactionSubtitleSegments = (
     const { t } = useLingui();
     const refundedLabel = useRefundedLabel(transaction);
     const feeLabel = useTransactionFeeLabel(transaction);
+    const scopedCategoryIds = useContext(StatisticsCategoryIdsContext);
 
     const counterparty = getTransactionCounterparty(transaction, accountId);
     const displayTitle = getTransactionDisplayTitle(transaction);
     const source = counterparty?.source;
     const destination = counterparty?.destination;
-    const categoryLabels =
+    const categories =
         transaction.type === TransactionTypeEnum.TRANSFER
             ? []
             : getTransactionCategoryEntries(transaction.entries)
-                  .map(entry => entry.category?.title)
+                  .map(entry => entry.category)
                   .filter(isDefined);
+    const categoryLabels = categories.map(category => category.title);
+    const unscopedCategoryLabels = categories
+        .filter(category => !(scopedCategoryIds?.length === 1 && scopedCategoryIds.includes(category.id)))
+        .map(category => category.title);
     const counterpartyLabel = [
         isNotEmptyString(source) && isNotEmptyString(destination) ? t`From ${source} to ${destination}` : null,
         isNotEmptyString(destination) ? t`To ${destination}` : null,
@@ -117,7 +124,7 @@ export const useTransactionSubtitleSegments = (
           }
         : {
               relationSegments: [
-                  counterpartyLabel ?? (transaction.type === TransactionTypeEnum.TRANSFER ? t`Transfer` : categoryLabels.join(', '))
+                  counterpartyLabel ?? (transaction.type === TransactionTypeEnum.TRANSFER ? t`Transfer` : unscopedCategoryLabels.join(', '))
               ],
               ownAccountTitle: isDefined(counterparty) ? null : moneyAccountTitle
           };
