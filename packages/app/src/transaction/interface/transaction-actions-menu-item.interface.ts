@@ -5,5 +5,7 @@ export interface TransactionActionsMenuItemInterface {
     readonly icon: UserIconNameEnum;
     readonly label: string;
     readonly testID: string;
+    readonly isPrimary: boolean;
+    readonly consequence?: string;
     readonly onPress: () => void;
 }

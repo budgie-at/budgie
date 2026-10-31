@@ -1,0 +1,1 @@
+export const TRANSACTION_INFO_HERO_MAX_FONT_SCALE = 2;

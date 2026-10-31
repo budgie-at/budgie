@@ -10,12 +10,17 @@ env:
 
 - extendedWaitUntil:
       visible:
-          id: 'TransactionActionsMenu.TriggerButton'
+          id: 'TransactionInfo.Page'
       timeout: 15000
 
+- scrollUntilVisible:
+    element:
+      id: 'TransactionInfo.ConvertButton'
+    direction: DOWN
+    centerElement: true
+- waitForAnimationToEnd
 - tapOn:
-      id: 'TransactionActionsMenu.TriggerButton'
-
+      id: 'TransactionInfo.ConvertButton'
 - extendedWaitUntil:
       visible:
           id: 'TransactionActionsMenu.ConvertToRefundButton'

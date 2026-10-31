@@ -6,7 +6,7 @@ import { runConfirmedTransactionAction } from '../utils/run-confirmed-transactio
 
 import type { EmptyFn } from '@rnw-community/shared';
 
-export const useRevertConsolidation = (transactionId: number, onSuccess?: EmptyFn) => {
+export const useRevertConsolidation = (transactionId: number, onSuccess?: EmptyFn, isRefund = false) => {
     const { t } = useLingui();
 
     const { run } = useSingleFlight();
@@ -16,13 +16,15 @@ export const useRevertConsolidation = (transactionId: number, onSuccess?: EmptyF
             Effect.gen(function* () {
                 const isReverted = yield* runConfirmedTransactionAction(
                     {
-                        title: t`Revert consolidation?`,
-                        message: t`This will restore the original transactions and remove the consolidated transaction.`,
-                        confirmText: t`Revert`,
+                        title: isRefund ? t`Undo refund?` : t`Separate transactions?`,
+                        message: isRefund
+                            ? t`The refund and the purchase become separate entries again.`
+                            : t`The merged transactions become separate entries again.`,
+                        confirmText: isRefund ? t`Undo Refund` : t`Separate`,
                         cancelText: t`Cancel`,
                         isDestructive: true
                     },
-                    t`Could not revert consolidation.`,
+                    t`Could not separate transactions.`,
                     transactionService => transactionService.unconsolidateById(transactionId)
                 );
 

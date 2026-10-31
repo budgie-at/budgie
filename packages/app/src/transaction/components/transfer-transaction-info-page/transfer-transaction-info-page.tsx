@@ -6,10 +6,10 @@ import { isDefined } from '@rnw-community/shared';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { useConsolidationSourceModal } from '../../context/consolidation-source-modal.context';
 import { useDeleteTransaction } from '../../hook/use-delete-transaction.hook';
+import { useTransferTransactionActions } from '../../hook/use-transfer-transaction-actions.hook';
 import { getTransactionEditHref } from '../../utils/get-transaction-edit-href.util';
 import { getTransactionFeeEditHref } from '../../utils/get-transaction-fee-edit-href.util';
 import { TransactionInfoPage } from '../transaction-info-page/transaction-info-page';
-import { TransferTransactionActionsMenu } from '../transfer-transaction-actions-menu/transfer-transaction-actions-menu';
 
 import type { UpdateTransactionFormPropsInterface } from '../../interface/update-transaction-form-props.interface';
 
@@ -26,13 +26,15 @@ export const TransferTransactionInfoPage = ({ transaction }: UpdateTransactionFo
         openConsolidationSource({ transactionId });
     };
     const consolidationProps = isConsolidated ? { onOpenConsolidationSources: handleConsolidationPress } : {};
-    const actionsMenu = <TransferTransactionActionsMenu transaction={transaction} onDelete={handleDelete} onFeePress={handleOpenFee} />;
+    const actions = useTransferTransactionActions(transaction, handleOpenFee);
 
     return (
         <TransactionInfoPage
             transaction={transaction}
+            onDelete={handleDelete}
+            onFeePress={handleOpenFee}
             editHref={getTransactionEditHref(transaction)}
-            actionsMenu={actionsMenu}
+            actionItems={actions.items}
             {...consolidationProps}
         />
     );

@@ -19,6 +19,11 @@ env:
                 text: 'Not Now'
           - waitForAnimationToEnd
 
+- tapOn:
+      text: 'Browse|Explorer|Durchsuchen|Examinar|Огляд'
+
+- waitForAnimationToEnd
+
 - runFlow:
       when:
           visible: 'No Results for .*'
@@ -141,6 +146,14 @@ env:
           visible:
               id: '${FILE_ROW_ID_MATCH}'
       commands:
+          - scrollUntilVisible:
+                element:
+                    id: '${FILE_ROW_ID_MATCH}'
+                direction: DOWN
+                timeout: 15000
+                speed: 20
+                waitToSettleTimeoutMs: 2000
+                optional: true
           - tapOn:
                 id: '${FILE_ROW_ID_MATCH}'
                 retryTapIfNoChange: true
@@ -225,3 +238,7 @@ env:
                 commands:
                     - tapOn:
                           text: 'Open'
+
+- extendedWaitUntil:
+      notVisible: 'Browse|Explorer|Durchsuchen|Examinar|Огляд'
+      timeout: 5000
