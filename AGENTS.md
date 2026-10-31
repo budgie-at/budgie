@@ -246,9 +246,11 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 
 Rule 3 ("No comments") applies to every language in this repo, not just TypeScript — shell, SQL, YAML, and config included. At most one single-line header comment per file; explanations belong in the README or the PR description, not inline. Treat these as over-engineering red flags to refactor before shipping, not to ship: a config map that a naming convention would replace, parallel scripts that could share one implementation, a test larger than the code it covers, and single-consumer abstractions.
 
-### React red flags
+### React performance red flags
 
-Review these patterns before adding state or effects. Keep `useWatch` calls together (rule 21) and loading content mounted at its measured size (rule 67).
+How we build fast screens: the React Compiler memoizes components, so code stays plain and declarative; live data comes from Effect atoms (`databaseQueryAtom` / `databaseQueryFamily` + `useLiveAtomValue`) read in the smallest component that renders them; effectful work runs as Effect services at the runtime edge; long lists use `BudgieLegendList` (LegendList with `recycleItems`); motion and scroll-driven UI run on the UI thread with Reanimated; images use `expo-image`. Review a diff against these tables before adding state, effects, props or a list. Keep `useWatch` calls together (rule 21) and loading content mounted at its measured size (rule 67). Verify suspected render churn with the React DevTools Profiler in a Metro dev build; never ship instrumentation.
+
+#### State and effects
 
 | Red flag | Do instead | Rule |
 | --- | --- | --- |
@@ -269,6 +271,42 @@ Review these patterns before adding state or effects. Keep `useWatch` calls toge
 | Timers or intervals live in effects | Use Effect `Schedule` / `Effect.sleep` with scoped fibers | 22, 57 |
 | Manual cancellation flags guard async results | Use fiber interruption and scoped resource cleanup | 35, 57 |
 | Mount effects start provider-owned services | Let the provider own startup; inline delegate-only hooks | 47, 48, 62 |
+
+#### Rendering
+
+| Red flag | Do instead | Rule |
+| --- | --- | --- |
+| A component is declared inside another component or hook | Give it its own file; inner components remount and lose state every render | 9, 56 |
+| `renderItem` or `.map()` builds JSX inline with closures per row | Module-level `keyExtractor`; `renderItem` only selects the row component and passes ids and primitives | 56 |
+| Rows receive whole entities or wide objects | `Pick` the fields the row renders so unchanged rows keep equal props across live-query refreshes | 15, 37 |
+| `key={index}` or keys built from changing values | Stable entity ids | 56 |
+| Screen-level state that only one leaf reads (search text, toggles, form values) | Colocate the state in the leaf; read `useWatch` in the smallest component | 21, 62 |
+| One wide atom or context read by many components | Split atoms, use a family per key, keep context values stable, read at the leaf | 60 |
+| Expensive sorting, grouping or currency conversion in render | Do it in the query or atom; reuse hoisted `Intl` formatters instead of creating them per row | 60, 64 |
+| Typing or filtering blocks the UI while a large list re-renders | `useDeferredValue` or `startTransition` for the non-urgent update | 62 |
+| Prop relay through several components, boolean mode props | Composition, compound components, explicit variants | 61, 62 |
+| `console.*` in render or hot paths | Remove; log once at the edge through the logger layer | 32, 41 |
+
+#### Lists
+
+| Red flag | Do instead | Rule |
+| --- | --- | --- |
+| `ScrollView` + `.map()` over unbounded or growing data | `BudgieLegendList` (or the screen-chrome list wrapper) with `recycleItems` | 65 |
+| Recycled rows keep local state, refs or animations from a previous item | Derive row state from the item, or reset it by key; prefer stateless rows | 56, 62 |
+| Rows of different shapes share one recycle pool | Provide the list's item-type callback so recycling reuses matching rows | 56 |
+| Each row subscribes to its own atom or query | One list query; pass row data down | 60 |
+| Sticky headers or totals recomputed per row | Precompute section data once in the query or list builder | 60 |
+
+#### Animation and media
+
+| Red flag | Do instead | Rule |
+| --- | --- | --- |
+| React Native `Animated` on the JS driver, or `setState`-driven animation | Reanimated shared values, `useAnimatedStyle`, `useAnimatedScrollHandler` | 57 |
+| Non-worklet calls inside worklets (`isDefined`, formatters, closures over React state) | Compute guarded values outside the worklet and capture primitives | 31 |
+| `runOnJS` / `scheduleOnRN` on every frame | Cross to JS only when a threshold changes | 57 |
+| Layout animated by changing height every frame | Animate transform and opacity; keep layout stable while scrolling | 65, 67 |
+| Motion ignores Reduce Motion | Check reduced motion and fall back to instant or opacity-only changes | 65 |
+| React Native `Image` for remote or large images, or images without a fixed size | `expo-image` with explicit size and caching | 67 |
 
 ### Money Safety
 
