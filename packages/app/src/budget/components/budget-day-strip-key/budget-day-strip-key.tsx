@@ -19,7 +19,11 @@ export const BudgetDayStripKey = ({ dayStates }: Props) => {
     ].filter(item => item.dayState === BudgetDayStateEnum.TODAY || dayStates.has(item.dayState));
 
     return (
-        <View className="flex-row items-center gap-x-md" accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+        <View
+            className="flex-row flex-wrap items-center gap-x-md gap-y-xxs"
+            accessibilityElementsHidden
+            importantForAccessibility="no-hide-descendants"
+        >
             {items.map(({ dayState, label }) => (
                 <View key={dayState} className="flex-row items-center gap-x-xxs">
                     <View className={cn('w-[4px] rounded-[1px]', BUDGET_DAY_STATE_CLASS_NAME[dayState], 'h-[8px]')} />

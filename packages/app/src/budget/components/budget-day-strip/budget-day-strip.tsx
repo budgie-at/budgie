@@ -40,7 +40,7 @@ export const BudgetDayStrip = ({ projection, period, isTight, currencySymbol }: 
                 })}
             </View>
 
-            <View className="flex-row flex-wrap items-center gap-x-xl gap-y-xs">
+            <View className="gap-y-xs">
                 <Text className="text-xs text-secondary-foreground">{captionLabel}</Text>
                 <BudgetDayStripKey dayStates={presentDayStates} />
             </View>
