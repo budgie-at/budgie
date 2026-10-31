@@ -3,6 +3,7 @@ import { useGetUncategorizedTransactionsQuery } from '../../query/use-get-uncate
 import { buildUncategorizedFilters } from '../../utils/build-uncategorized-filters.util';
 import { getSingleAccountId } from '../../utils/get-single-account-id.util';
 import { AnalyticsTransactionsPageContent } from '../analytics-transactions-page-content/analytics-transactions-page-content';
+import { TransactionListEmptyState } from '../transaction-list-empty-state/transaction-list-empty-state';
 
 import type { AnalyticsTransactionsRouteParamsInterface } from '../../interface/analytics-transactions-route-params.interface';
 
@@ -22,7 +23,7 @@ export const UncategorizedAnalyticsTransactionsPage = (params: AnalyticsTransact
         <AnalyticsTransactionsPageContent
             headerProps={headerProps}
             sections={sections}
-            isLoading={isLoading}
+            emptyState={<TransactionListEmptyState isLoading={isLoading} hasFiltersSelected />}
             onLoadMore={loadMore}
             accountId={getSingleAccountId(filters.accountIds)}
         />

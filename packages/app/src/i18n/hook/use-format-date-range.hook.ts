@@ -3,6 +3,7 @@ import { differenceInCalendarMonths, endOfYear, isSameDay, isSameYear, startOfYe
 
 import { isDefined } from '@rnw-community/shared';
 
+import { getSingleMonth } from '../../@generic/utils/date/get-single-month.util';
 import { isWholeMonthRange } from '../../@generic/utils/date/is-whole-month-range.util';
 import { useI18nContext } from '../context/i18n.context';
 
@@ -39,9 +40,15 @@ export const useFormatDateRange = () => {
             : `${formatDayAndMonthAndYear(from)} – ${formatDayAndMonthAndYear(to)}`;
     };
 
-    return (range: DateRangeInterface | null) => {
+    return (range: DateRangeInterface | null, isCompact = false) => {
         const from = range?.from ?? null;
         const to = range?.to ?? null;
+
+        const singleMonth = getSingleMonth(range);
+
+        if (isCompact && isDefined(singleMonth)) {
+            return formatMonthAndYear(singleMonth);
+        }
 
         if (isDefined(from) && isDefined(to)) {
             return isWholeMonthRange(from, to) ? formatWholeMonths(from, to) : formatDays(from, to);

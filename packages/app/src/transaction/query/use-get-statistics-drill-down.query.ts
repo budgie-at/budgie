@@ -6,10 +6,12 @@ import {
     TransactionTypeEnum
 } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
-import { endOfMonth, startOfMonth, subMonths } from 'date-fns';
+import { endOfMonth, fromUnixTime, startOfMonth, subMonths } from 'date-fns';
 import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { useState } from 'react';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { useLiveAtomValue } from '../../@generic/hook/use-live-atom-value.hook';
 import { databaseQueryFamily } from '../../@generic/utils/database-query-family.util';
@@ -19,6 +21,7 @@ import { useSetting } from '../../settings/hook/use-setting.hook';
 import { STATISTICS_TABLES } from '../constant/statistics-tables.constant';
 
 import type { StatisticsDrillDownKeyInterface } from '../interface/statistics-drill-down-key.interface';
+import type { StatisticsDrillDownSummaryInterface } from '../interface/statistics-drill-down-summary.interface';
 import type { TransactionFilterInterface } from '@budgie/contracts';
 
 const TREND_MONTH_COUNT = 6;
@@ -55,6 +58,9 @@ const statisticsDrillDownAtom = databaseQueryFamily(
         return Effect.all({
             entity: findEntity(key.filters),
             totals: statisticsRepository.getTotalIncomeAndExpenseQuery(key.filters, key.defaultInstrumentId),
+            refunds: isIncome
+                ? Effect.succeed([])
+                : statisticsRepository.getNettedRefundsQuery(entityFilters(key.filters), key.defaultInstrumentId),
             trend: Effect.forEach(key.trendMonths, month =>
                 Effect.map(findEntity({ ...key.filters, date: { from: startOfMonth(month), to: endOfMonth(month) } }), entity => ({
                     month,
@@ -62,11 +68,19 @@ const statisticsDrillDownAtom = databaseQueryFamily(
                 }))
             )
         }).pipe(
-            Effect.map(({ entity, totals, trend }) => {
+            Effect.map(({ entity, totals, trend, refunds }) => {
                 const total = totals.at(0);
                 const base = isIncome ? (total?.income ?? 0) : (total?.expense ?? 0);
+                const refund = refunds.at(0);
+                const purchasedAt = refund?.purchasedAt ?? null;
 
-                return { amount: entity.amount, transactionCount: entity.transactionCount, base, trend };
+                return {
+                    amount: entity.amount,
+                    transactionCount: entity.transactionCount,
+                    base,
+                    trend,
+                    nettedRefund: isDefined(purchasedAt) ? { amount: refund?.amount ?? 0, purchasedAt: fromUnixTime(purchasedAt) } : null
+                };
             })
         );
     }
@@ -86,7 +100,13 @@ export const useGetStatisticsDrillDownQuery = (
     const result = useLiveAtomValue(statisticsDrillDownAtom({ kind, entityId, type, filters, trendMonths, defaultInstrumentId, language }));
 
     return {
-        summary: AsyncResult.getOrElse(result, () => ({ amount: 0, transactionCount: 0, base: 0, trend: [] })),
+        summary: AsyncResult.getOrElse(result, (): StatisticsDrillDownSummaryInterface => ({
+            amount: 0,
+            transactionCount: 0,
+            base: 0,
+            trend: [],
+            nettedRefund: null
+        })),
         referenceMonth,
         isLoading: AsyncResult.isInitial(result)
     };

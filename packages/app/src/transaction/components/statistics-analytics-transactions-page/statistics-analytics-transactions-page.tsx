@@ -1,8 +1,9 @@
 import { DEFAULT_TRANSACTION_FILTER, type StatisticsFilterInterface, TransactionTypeEnum } from '@budgie/contracts';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
+import { useFormatDateRange } from '../../../i18n/hook/use-format-date-range.hook';
 import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query';
 import { UNTAGGED_TAG_ID_PARAM } from '../../constant/untagged-tag-id-param.constant';
 import { StatisticsCategoryIdsContext } from '../../context/statistics-category-ids.context';
@@ -14,6 +15,7 @@ import { getSingleAccountId } from '../../utils/get-single-account-id.util';
 import { getStatisticsDrillDownEntity } from '../../utils/get-statistics-drill-down-entity.util';
 import { parseRouteDateRange } from '../../utils/parse-route-date-range.util';
 import { AnalyticsTransactionsPageContent } from '../analytics-transactions-page-content/analytics-transactions-page-content';
+import { StatisticsDrillDownEmptyState } from '../statistics-drill-down-empty-state/statistics-drill-down-empty-state';
 import { StatisticsDrillDownSummary } from '../statistics-drill-down-summary/statistics-drill-down-summary';
 
 import type { AnalyticsTransactionsRouteParamsInterface } from '../../interface/analytics-transactions-route-params.interface';
@@ -90,8 +92,10 @@ export const StatisticsAnalyticsTransactionsPage = (params: AnalyticsTransaction
     const tagIdsForLookup = isUntaggedNav(params) || !isDefined(params.tagId) ? [] : [Number(params.tagId)];
     const { tags } = useGetTagByIdsQuery(tagIdsForLookup);
     const { sections, loadMore, isLoading } = useGetStatisticsTransactionsQuery(filters);
+    const formatDateRange = useFormatDateRange();
 
     const selectedTag = tags?.[0] ?? null;
+    const hasFiltersSelected = isNotEmptyArray(filters.accountIds) || isDefined(filters.amount);
     const drillDownEntity = getStatisticsDrillDownEntity(params);
     const summaryType = params.type === TransactionTypeEnum.INCOME ? TransactionTypeEnum.INCOME : TransactionTypeEnum.EXPENSE;
     const summaryFilters = { ...DEFAULT_TRANSACTION_FILTER, date: filters.date, accountIds: filters.accountIds, amount: filters.amount };
@@ -117,7 +121,13 @@ export const StatisticsAnalyticsTransactionsPage = (params: AnalyticsTransaction
                 headerProps={headerProps}
                 summary={summary}
                 sections={sections}
-                isLoading={isLoading}
+                emptyState={
+                    <StatisticsDrillDownEmptyState
+                        isLoading={isLoading}
+                        hasFiltersSelected={hasFiltersSelected}
+                        periodLabel={formatDateRange(filters.date)}
+                    />
+                }
                 onLoadMore={loadMore}
                 accountId={getSingleAccountId(filters.accountIds)}
             />

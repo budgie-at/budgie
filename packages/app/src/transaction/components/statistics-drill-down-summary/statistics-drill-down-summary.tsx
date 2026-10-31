@@ -1,16 +1,14 @@
 import { TransactionTypeEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
-import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { HeroFigure } from '../../../@generic/component/hero-figure/hero-figure';
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
-import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
 import { CategorizeInboxKindEnum } from '../../../categorize-inbox/enum/categorize-inbox-kind.enum';
-import { useFormatPercent } from '../../../i18n/hook/use-format-percent.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { useGetStatisticsDrillDownQuery } from '../../query/use-get-statistics-drill-down.query';
+import { StatisticsDrillDownCaption } from '../statistics-drill-down-caption/statistics-drill-down-caption';
 import { StatisticsTrendBars } from '../statistics-trend-bars/statistics-trend-bars';
 
 import type { TransactionFilterInterface } from '@budgie/contracts';
@@ -27,16 +25,10 @@ const continuousCorners = { borderCurve: 'continuous' as const };
 export const StatisticsDrillDownSummary = ({ kind, entityId, type, filters }: Props) => {
     const { t } = useLingui();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
-    const isAmountProtected = useIsAmountProtected();
-    const formatPercent = useFormatPercent();
 
     const { summary, referenceMonth, isLoading } = useGetStatisticsDrillDownQuery(kind, entityId, type, filters);
 
     const isIncome = type === TransactionTypeEnum.INCOME;
-    const share = summary.base > 0 ? summary.amount / summary.base : 0;
-    const shareLabel = isAmountProtected ? '••%' : formatPercent(share);
-    const countLabel = t({ message: plural(summary.transactionCount, { one: '# transaction', other: '# transactions' }) });
-    const shareText = isIncome ? t`${shareLabel} of income` : t`${shareLabel} of spending`;
     const totalLabel = isIncome ? t`Received` : t`Spent`;
     const figureVariant = isIncome ? 'positive' : 'primary';
 
@@ -52,10 +44,15 @@ export const StatisticsDrillDownSummary = ({ kind, entityId, type, filters }: Pr
                         variant={figureVariant}
                     />
 
-                    <Text className="text-sm text-secondary-foreground">{`${countLabel} · ${shareText}`}</Text>
+                    <StatisticsDrillDownCaption summary={summary} type={type} currencySymbol={defaultInstrument.symbol} />
                 </View>
 
-                <StatisticsTrendBars points={summary.trend} currentMonth={referenceMonth} currencySymbol={defaultInstrument.symbol} />
+                <StatisticsTrendBars
+                    key={referenceMonth.getTime()}
+                    points={summary.trend}
+                    currentMonth={referenceMonth}
+                    currencySymbol={defaultInstrument.symbol}
+                />
             </View>
         </LoadingContent>
     );

@@ -1,10 +1,13 @@
 import { TransactionFilterInterface, TransactionTypeEnum } from '@budgie/contracts';
+import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
+import { useState } from 'react';
 import { View } from 'react-native';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { getChartSwatches } from '../../../@generic/utils/get-chart-swatches.util';
+import { StatisticsCashFlowCard } from '../../../transaction/components/statistics-cash-flow-card/statistics-cash-flow-card';
 import { StatisticsShareBar } from '../../../transaction/components/statistics-share-bar/statistics-share-bar';
 import { StatisticsSpendingHero } from '../../../transaction/components/statistics-spending-hero/statistics-spending-hero';
 import { CategoryStatInterface } from '../../interface/category-stat.interface';
@@ -18,39 +21,63 @@ interface Props {
 }
 
 const TOP_CONTRIBUTOR_COUNT = 5;
-const NEUTRAL_SWATCH_CLASS_NAME = 'bg-secondary-foreground/40';
+const NEUTRAL_SWATCH_CLASS_NAME = 'bg-secondary-foreground';
 
 export const StatsByCategoriesPanel = ({ filters, incomeByCategory, expenseByCategory }: Props) => {
     const { t } = useLingui();
+    const [isSpendingExpanded, setIsSpendingExpanded] = useState(false);
+    const [isIncomeExpanded, setIsIncomeExpanded] = useState(false);
+
+    const handleShowAllSpending = () => void setIsSpendingExpanded(true);
+    const handleToggleSpending = () => void setIsSpendingExpanded(current => !current);
+    const handleToggleIncome = () => void setIsIncomeExpanded(current => !current);
 
     const swatches = getChartSwatches(expenseByCategory.map(stat => stat.category?.id ?? null));
-    const topSegments = expenseByCategory.slice(0, TOP_CONTRIBUTOR_COUNT).map(({ category, amount }, index) => ({
+    const segments = expenseByCategory.slice(0, TOP_CONTRIBUTOR_COUNT).map(({ category, amount }, index) => ({
         key: String(category?.id ?? 'uncategorized'),
         label: category?.title ?? t`Uncategorized`,
         amount,
         swatchClassName: swatches[index]?.fill ?? NEUTRAL_SWATCH_CLASS_NAME
     }));
-    const otherAmount = expenseByCategory.slice(TOP_CONTRIBUTOR_COUNT).reduce((sum, stat) => sum + stat.amount, 0);
-    const segments =
-        otherAmount > 0
-            ? [...topSegments, { key: 'other', label: t`Other`, amount: otherAmount, swatchClassName: NEUTRAL_SWATCH_CLASS_NAME }]
-            : topSegments;
+    const otherStats = expenseByCategory.slice(TOP_CONTRIBUTOR_COUNT);
+    const otherAmount = otherStats.reduce((sum, stat) => sum + stat.amount, 0);
+    const otherLabel = t({ message: plural(otherStats.length, { one: 'Other · # category', other: 'Other · # categories' }) });
+    const other =
+        otherAmount > 0 ? { key: 'other', label: otherLabel, amount: otherAmount, swatchClassName: NEUTRAL_SWATCH_CLASS_NAME } : null;
 
     const hasIncomeStats = isNotEmptyArray(incomeByCategory);
     const hasExpenseStats = isNotEmptyArray(expenseByCategory);
 
     return (
         <View className="gap-y-6xl">
-            <StatisticsSpendingHero filters={filters}>
-                {hasExpenseStats ? <StatisticsShareBar segments={segments} /> : null}
-            </StatisticsSpendingHero>
+            <View className="gap-y-lg">
+                <StatisticsSpendingHero filters={filters}>
+                    {hasExpenseStats ? <StatisticsShareBar segments={segments} other={other} onOtherPress={handleShowAllSpending} /> : null}
+                </StatisticsSpendingHero>
+
+                <StatisticsCashFlowCard filters={filters} />
+            </View>
 
             {hasExpenseStats ? (
-                <StatsByCategories title={t`Spending`} stats={expenseByCategory} filters={filters} type={TransactionTypeEnum.EXPENSE} />
+                <StatsByCategories
+                    title={t`Spending`}
+                    stats={expenseByCategory}
+                    filters={filters}
+                    type={TransactionTypeEnum.EXPENSE}
+                    isExpanded={isSpendingExpanded}
+                    onToggleExpanded={handleToggleSpending}
+                />
             ) : null}
 
             {hasIncomeStats ? (
-                <StatsByCategories title={t`Income`} stats={incomeByCategory} filters={filters} type={TransactionTypeEnum.INCOME} />
+                <StatsByCategories
+                    title={t`Income`}
+                    stats={incomeByCategory}
+                    filters={filters}
+                    type={TransactionTypeEnum.INCOME}
+                    isExpanded={isIncomeExpanded}
+                    onToggleExpanded={handleToggleIncome}
+                />
             ) : null}
 
             {hasIncomeStats || hasExpenseStats ? null : <CategoriesFeatureIntro />}

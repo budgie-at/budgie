@@ -1,6 +1,8 @@
 import { TransactionFilterInterface, TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { CollapsibleStatsSection } from '../../../@generic/component/collapsible-stats-section/collapsible-stats-section';
 import { getChartSwatches } from '../../../@generic/utils/get-chart-swatches.util';
 import { getShare } from '../../../@generic/utils/get-share.util';
@@ -10,13 +12,17 @@ import { TagStatisticsCardSelector } from '../tag-statistics-card/tag-statistics
 
 interface Props {
     readonly title: string;
+    readonly footnote?: string;
     readonly stats: readonly TagStatInterface[];
     readonly base: number;
     readonly filters: TransactionFilterInterface;
     readonly type: TransactionTypeEnum.INCOME | TransactionTypeEnum.EXPENSE;
+    readonly isExpanded: boolean;
+    readonly onToggleExpanded: () => void;
 }
 
-export const StatsByTags = ({ title, stats, base, filters, type }: Props) => {
+export const StatsByTags = (props: Props) => {
+    const { title, footnote, stats, base, filters, type, isExpanded, onToggleExpanded } = props;
     const { t } = useLingui();
 
     const maxAmount = Math.max(...stats.map(stat => stat.amount), 0);
@@ -34,13 +40,18 @@ export const StatsByTags = ({ title, stats, base, filters, type }: Props) => {
             type={type}
         />
     ));
+    const untaggedIndex = stats.findIndex(stat => !isDefined(stat.tag));
+    const taggedRows = rows.filter((_, index) => index !== untaggedIndex);
 
     return (
         <CollapsibleStatsSection
             title={title}
-            footnote={t`A transaction with several tags counts toward each of them, so shares can add up to more than 100%.`}
-            rows={rows}
+            footnote={footnote}
+            rows={taggedRows}
+            pinnedRow={rows[untaggedIndex]}
+            isExpanded={isExpanded}
             toggleTestID={TagStatisticsCardSelector.Toggle(type)}
+            onToggleExpanded={onToggleExpanded}
         />
     );
 };

@@ -10,24 +10,23 @@ import { HeaderBackButton } from '../../../@generic/component/header-back-button
 import { MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-font-size-multiplier.constant';
 import { ScreenChromeThemeProvider } from '../../../@generic/provider/screen-chrome-theme.provider';
 import { useTransactionFilterPageTitle } from '../../hook/use-transaction-filter-page-title.hook';
-import { TransactionListEmptyState } from '../transaction-list-empty-state/transaction-list-empty-state';
 import { TransactionSectionsList } from '../transaction-sections-list/transaction-sections-list';
 
 import type { TransactionFilterPageHeaderPropsInterface } from '../../interface/transaction-filter-page-header-props.interface';
 import type { TransactionsByDaySectionInterface } from '../../interface/transactions-by-day-section.interface';
-import type { ReactNode } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 
 interface Props {
     readonly headerProps: TransactionFilterPageHeaderPropsInterface;
     readonly summary?: ReactNode;
+    readonly emptyState: ReactElement;
     readonly sections: TransactionsByDaySectionInterface[];
-    readonly isLoading: boolean;
     readonly onLoadMore: () => void;
     readonly accountId: number | null;
 }
 
-export const AnalyticsTransactionsPageContent = ({ headerProps, summary, sections, isLoading, onLoadMore, accountId }: Props) => {
-    const { title, subtitle } = useTransactionFilterPageTitle(headerProps);
+export const AnalyticsTransactionsPageContent = ({ headerProps, summary, emptyState, sections, onLoadMore, accountId }: Props) => {
+    const { title, subtitle, compactTitle } = useTransactionFilterPageTitle(headerProps);
 
     const expandedTitle = (
         <View className="gap-y-xs">
@@ -48,7 +47,7 @@ export const AnalyticsTransactionsPageContent = ({ headerProps, summary, section
     );
     const collapsedTitle = (
         <Text numberOfLines={1} maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER} className="text-center text-lg font-semibold text-primary">
-            {title}
+            {compactTitle}
         </Text>
     );
 
@@ -60,7 +59,7 @@ export const AnalyticsTransactionsPageContent = ({ headerProps, summary, section
                         <TransactionSectionsList
                             sections={sections}
                             onEndReached={onLoadMore}
-                            listEmptyState={<TransactionListEmptyState isLoading={isLoading} hasFiltersSelected />}
+                            listEmptyState={emptyState}
                             accountId={accountId}
                             footerSpacerMultiplier={0}
                             listHeader={<View className="pb-xl">{summary}</View>}

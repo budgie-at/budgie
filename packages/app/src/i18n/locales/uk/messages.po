@@ -49,9 +49,14 @@ msgstr "{0, plural, one {# тег} few {# теги} many {# тегів} other {#
 #. placeholder {0}: movedToCashTransactionIds.length
 #. placeholder {0}: summary.transactionCount
 #: src/categorize-inbox/components/categorize-inbox-moved-to-cash-undo/categorize-inbox-moved-to-cash-undo.tsx
-#: src/transaction/components/statistics-drill-down-summary/statistics-drill-down-summary.tsx
+#: src/transaction/components/statistics-drill-down-caption/statistics-drill-down-caption.tsx
 msgid "{0, plural, one {# transaction} other {# transactions}}"
 msgstr "{0, plural, one {# транзакція} few {# транзакції} many {# транзакцій} other {# транзакцій}}"
+
+#. placeholder {0}: otherStats.length
+#: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
+msgid "{0, plural, one {Other · # category} other {Other · # categories}}"
+msgstr "{0, plural, one {Інші · # категорія} few {Інші · # категорії} many {Інші · # категорій} other {Інші · # категорії}}"
 
 #. placeholder {0}: oneOffs.length
 #: src/categorize-inbox/components/categorize-inbox-one-offs-link/categorize-inbox-one-offs-link.tsx
@@ -395,6 +400,10 @@ msgstr "використано {percent}%"
 msgid "{periodLabel}, spent {spentAmount} of {limitAmount}"
 msgstr "{periodLabel}, витрачено {spentAmount} із {limitAmount}"
 
+#: src/transaction/components/statistics-drill-down-caption/statistics-drill-down-caption.tsx
+msgid "{refundLabel} refund · netted against the {purchaseMonth} purchase"
+msgstr "Повернення {refundLabel} · зараховано в покупку за {purchaseMonth}"
+
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "{remaining} GB one-time download"
 msgstr "Одноразове завантаження {remaining} ГБ"
@@ -455,11 +464,11 @@ msgstr "{selectedCount, plural, =0 {Показати всі теги} one {По�
 msgid "{selectedInGroupCount} of {accountsCount} selected"
 msgstr "Вибрано {selectedInGroupCount} з {accountsCount}"
 
-#: src/transaction/components/statistics-drill-down-summary/statistics-drill-down-summary.tsx
+#: src/transaction/components/statistics-drill-down-caption/statistics-drill-down-caption.tsx
 msgid "{shareLabel} of income"
 msgstr "{shareLabel} доходів"
 
-#: src/transaction/components/statistics-drill-down-summary/statistics-drill-down-summary.tsx
+#: src/transaction/components/statistics-drill-down-caption/statistics-drill-down-caption.tsx
 msgid "{shareLabel} of spending"
 msgstr "{shareLabel} витрат"
 
@@ -557,6 +566,10 @@ msgstr "/ міс."
 msgid "+{carriedLabel} rolled over"
 msgstr "+{carriedLabel} перенесено"
 
+#: src/transaction/components/statistics-change-label/statistics-change-label.tsx
+msgid "+{changePercent} vs {shortPreviousLabel}"
+msgstr "+{changePercent} до {shortPreviousLabel}"
+
 #: src/runway/component/runway-pill/runway-pill.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "+{formattedNet} / mo"
@@ -577,6 +590,10 @@ msgstr ">"
 #: src/budget/components/budget-limit-row/budget-limit-row.tsx
 msgid "−{carriedLabel} carried"
 msgstr "−{carriedLabel} перенесено"
+
+#: src/transaction/components/statistics-change-label/statistics-change-label.tsx
+msgid "−{changePercent} vs {shortPreviousLabel}"
+msgstr "−{changePercent} до {shortPreviousLabel}"
 
 #: src/runway/component/runway-pill/runway-pill.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
@@ -626,10 +643,6 @@ msgstr "Правило визначає вхідні банківські тра
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 msgid "A rule with the same conditions already exists."
 msgstr "Правило з такими ж умовами вже існує."
-
-#: src/tag/components/stats-by-tags/stats-by-tags.tsx
-msgid "A transaction with several tags counts toward each of them, so shares can add up to more than 100%."
-msgstr "Транзакція з кількома тегами враховується в кожному з них, тож частки можуть у сумі перевищувати 100 %."
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "About"
@@ -714,6 +727,7 @@ msgid "Account Type"
 msgstr "Тип рахунку"
 
 #: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
+#: src/transaction/components/statistics-filters-menu/statistics-filters-menu.tsx
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
 msgid "Accounts"
 msgstr "Рахунки"
@@ -959,6 +973,7 @@ msgstr "Також для нових платежів у «{jarName}»"
 #: src/app/(tabs)/settings/import.tsx
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
+#: src/transaction/components/statistics-filters-menu/statistics-filters-menu.tsx
 #: src/transaction/components/transaction-amount-filter/transaction-amount-filter.tsx
 msgid "Amount"
 msgstr "Сума"
@@ -1152,6 +1167,14 @@ msgstr "Синхронізація банку"
 #: src/app/resync-window-picker.tsx
 msgid "Bank sync reset"
 msgstr "Синхронізацію з банком скинуто"
+
+#: src/category/components/stats-by-categories/stats-by-categories.tsx
+msgid "Bars compare each category with the largest one."
+msgstr "Смуги порівнюють кожну категорію з найбільшою."
+
+#: src/tag/components/stats-by-tags-panel/stats-by-tags-panel.tsx
+msgid "Bars compare each tag with the largest one. A transaction with several tags counts toward each of them, so shares can add up to more than 100%."
+msgstr "Смуги порівнюють кожен тег із найбільшим. Транзакція з кількома тегами враховується для кожного з них, тож частки можуть перевищувати 100%."
 
 #: src/@generic/component/currency-selector/currency-selector.tsx
 msgid "Base currency"
@@ -1417,9 +1440,11 @@ msgid "Cash withdrawals"
 msgstr "Зняття готівки"
 
 #: src/@generic/component/analytics-segmented-control/analytics-segmented-control.tsx
+#: src/app/(tabs)/analytics.tsx
 #: src/app/(tabs)/settings/categories.tsx
 #: src/budget/components/budget-details-category-list/budget-details-category-list.tsx
 #: src/budget/components/budget-period-summary/budget-period-summary.tsx
+#: src/transaction/components/statistics-filters-menu/statistics-filters-menu.tsx
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
 msgid "Categories"
 msgstr "Категорії"
@@ -1562,6 +1587,7 @@ msgstr "Оберіть, що відстежувати. Баланси й іст�
 msgid "Clear"
 msgstr "Очистити"
 
+#: src/transaction/components/statistics-filters-menu/statistics-filters-menu.tsx
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
 msgid "Clear All"
 msgstr "Очистити все"
@@ -2884,6 +2910,14 @@ msgstr "Фільтрувати категорії"
 msgid "Filter tags"
 msgstr "Фільтрувати теги"
 
+#: src/transaction/components/statistics-filters-menu/statistics-filters-menu.tsx
+msgid "Filters"
+msgstr "Фільтри"
+
+#: src/transaction/components/statistics-filters-menu/statistics-filters-menu.tsx
+msgid "Filters · {activeCount}"
+msgstr "Фільтри · {activeCount}"
+
 #: src/settings/hook/use-biometric-label.hook.ts
 msgid "Fingerprint"
 msgstr "Відбиток пальця"
@@ -3029,6 +3063,10 @@ msgstr "Допомога з сортуванням, не виходячи з т�
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Hidden from Home"
 msgstr "Приховано з Головної"
+
+#: src/transaction/components/statistics-share-bar/statistics-share-bar.tsx
+msgid "Hide breakdown"
+msgstr "Сховати розподіл"
 
 #: src/settings/components/screenshot-protection-row/screenshot-protection-row.tsx
 msgid "Hide in screenshots"
@@ -3209,7 +3247,7 @@ msgstr "включно з комісією {formattedFeeAmount}"
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
 #: src/tag/components/stats-by-tags-panel/stats-by-tags-panel.tsx
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
-#: src/transaction/components/statistics-spending-hero/statistics-spending-hero.tsx
+#: src/transaction/components/statistics-cash-flow-card/statistics-cash-flow-card.tsx
 #: src/transaction/constant/transaction-type.constant.ts
 #: src/transaction/hook/use-transaction-filter-page-title.hook.ts
 #: src/widget/service/widget-snapshot-builder.service.ts
@@ -3311,10 +3349,6 @@ msgstr "Останні 30 днів"
 #: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
 msgid "Last 6 months"
 msgstr "Останні 6 місяців"
-
-#: src/transaction/components/statistics-trend-bars/statistics-trend-bars.tsx
-msgid "Last 6 months. {summary}"
-msgstr "Останні 6 місяців. {summary}"
 
 #: src/app/resync-window-picker.tsx
 msgid "Last 7 days"
@@ -3728,7 +3762,7 @@ msgid "Negative amount"
 msgstr "Від’ємна сума"
 
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
-#: src/transaction/components/statistics-spending-hero/statistics-spending-hero.tsx
+#: src/transaction/components/statistics-cash-flow-card/statistics-cash-flow-card.tsx
 msgid "Net"
 msgstr "Чистий"
 
@@ -3948,6 +3982,10 @@ msgstr "Ні, дякую"
 msgid "No title"
 msgstr "Без назви"
 
+#: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
+msgid "No transactions"
+msgstr "Немає транзакцій"
+
 #: src/rule/utils/show-rule-application-toast.util.ts
 msgid "No transactions matched"
 msgstr "Жодна транзакція не відповідає"
@@ -4027,6 +4065,11 @@ msgstr "Ще немає"
 msgid "Note"
 msgstr "Нотатка"
 
+#: src/transaction/components/statistics-drill-down-caption/statistics-drill-down-caption.tsx
+#: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
+msgid "Nothing booked in this period"
+msgstr "За цей період нічого не записано"
+
 #: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
 msgid "Nothing from the past is imported"
 msgstr "Нічого з минулого не імпортується"
@@ -4055,6 +4098,10 @@ msgstr "Вимкнено"
 #: src/ai/component/ai-download-wifi-banner/ai-download-wifi-banner.tsx
 msgid "OK"
 msgstr "OK"
+
+#: src/transaction/components/statistics-filters-menu/statistics-filters-menu.tsx
+msgid "On"
+msgstr "Увімк."
 
 #: src/settings/components/app-lock-row/app-lock-row.tsx
 msgid "On · PIN"
@@ -4244,7 +4291,6 @@ msgstr "Початкова транзакція"
 #: src/budget/components/budget-period-recap-rollover/budget-period-recap-rollover.tsx
 #: src/budget/components/budget-period-summary/budget-period-summary.tsx
 #: src/budget/service/budget-alert-monitor.service.ts
-#: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
 #: src/transaction/hook/use-transaction-filter-page-title.hook.ts
 msgid "Other"
 msgstr "Інше"
@@ -4476,6 +4522,10 @@ msgstr "Натисніть і утримуйте, щоб запечатати"
 #: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
 msgid "Press to re-evaluate transactions"
 msgstr "Натисніть, щоб переоцінити транзакції"
+
+#: src/transaction/components/statistics-change-label/statistics-change-label.tsx
+msgid "previous period"
+msgstr "попереднього періоду"
 
 #: src/transaction/components/statistics-period-control/statistics-period-control.tsx
 msgid "Previous period"
@@ -4862,6 +4912,7 @@ msgid "Runs out around {runOutDate}."
 msgstr "Закінчиться приблизно {runOutDate}."
 
 #: src/@generic/component/analytics-segmented-control/analytics-segmented-control.tsx
+#: src/app/(tabs)/analytics.tsx
 #: src/app/(tabs)/settings/index.tsx
 #: src/runway/component/runway-pill/runway-pill.tsx
 msgid "Runway"
@@ -5208,6 +5259,10 @@ msgstr "Показати всі суми"
 msgid "Show all dates"
 msgstr "Показати всі дати"
 
+#: src/transaction/components/statistics-share-bar/statistics-share-bar.tsx
+msgid "Show breakdown"
+msgstr "Показати розподіл"
+
 #: src/settings/components/budget-widget-toggle/budget-widget-toggle.tsx
 msgid "Show budget on home"
 msgstr "Показувати бюджет на головній"
@@ -5241,6 +5296,10 @@ msgstr "Показати цей рахунок на головній сторі�
 msgid "Show transactions when any main amount is inside this range, regardless of currency."
 msgstr "Показувати транзакції, коли будь-яка основна сума потрапляє в цей діапазон, незалежно від валюти."
 
+#: src/transaction/components/statistics-share-bar/statistics-share-bar.tsx
+msgid "Shows every category"
+msgstr "Показує всі категорії"
+
 #: src/transaction/components/transaction-info-page-content/transaction-info-page-content.tsx
 msgid "Similar transactions"
 msgstr "Схожі транзакції"
@@ -5265,6 +5324,10 @@ msgstr "Розумні підказки"
 #: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
 msgid "Some issuers do not provide every Wallet trigger field. Edit the automation and check the variable bindings."
 msgstr "Деякі емітенти не надають усіх полів тригера Wallet. Відредагуйте автоматизацію та перевірте прив’язки змінних."
+
+#: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
+msgid "Some transactions may be hidden by the account or amount filter."
+msgstr "Деякі транзакції можуть бути приховані фільтром рахунку чи суми."
 
 #: src/rule/components/rule-conflict-warning/rule-conflict-warning.tsx
 msgid "Some transactions may match multiple rules. The first matching rule will take priority."
@@ -5494,7 +5557,9 @@ msgid "Tag Name"
 msgstr "Назва тегу"
 
 #: src/@generic/component/analytics-segmented-control/analytics-segmented-control.tsx
+#: src/app/(tabs)/analytics.tsx
 #: src/app/(tabs)/settings/tags.tsx
+#: src/transaction/components/statistics-filters-menu/statistics-filters-menu.tsx
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
 #: src/transaction/components/transaction-info-tags-section/transaction-info-tags-section.tsx
 #: src/transaction/components/transaction-tags-field-icon/transaction-tags-field-icon.tsx

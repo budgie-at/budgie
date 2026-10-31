@@ -1,6 +1,5 @@
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
-import { useState } from 'react';
 
 import { StatsSectionToggleRow } from '../stats-section-toggle-row/stats-section-toggle-row';
 import { StatsSection } from '../stats-section/stats-section';
@@ -11,16 +10,16 @@ interface Props {
     readonly title: string;
     readonly footnote?: string;
     readonly rows: readonly ReactNode[];
+    readonly pinnedRow: ReactNode;
+    readonly isExpanded: boolean;
     readonly toggleTestID: string;
+    readonly onToggleExpanded: () => void;
 }
 
 const COLLAPSED_ROW_COUNT = 8;
 
-export const CollapsibleStatsSection = ({ title, footnote, rows, toggleTestID }: Props) => {
+export const CollapsibleStatsSection = ({ title, footnote, rows, pinnedRow, isExpanded, toggleTestID, onToggleExpanded }: Props) => {
     const { t } = useLingui();
-    const [isExpanded, setIsExpanded] = useState(false);
-
-    const handleToggle = () => void setIsExpanded(current => !current);
 
     const hiddenCount = rows.length - COLLAPSED_ROW_COUNT;
     const visibleRows = isExpanded ? rows : rows.slice(0, COLLAPSED_ROW_COUNT);
@@ -29,7 +28,8 @@ export const CollapsibleStatsSection = ({ title, footnote, rows, toggleTestID }:
     return (
         <StatsSection title={title} footnote={footnote}>
             {visibleRows}
-            {hiddenCount > 0 ? <StatsSectionToggleRow label={toggleLabel} testID={toggleTestID} onPress={handleToggle} /> : null}
+            {hiddenCount > 0 ? <StatsSectionToggleRow label={toggleLabel} testID={toggleTestID} onPress={onToggleExpanded} /> : null}
+            {pinnedRow}
         </StatsSection>
     );
 };

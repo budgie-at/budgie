@@ -31,5 +31,8 @@ export const useTransactionFilterPageTitle = ({ mode, category, tag, type, types
 
     const subtitle = hasMissingCategories && hasBothTypes ? `${getTypeText()} · ${periodText}` : periodText;
 
-    return { title: filterName ?? getTypeText(), subtitle };
+    const title = filterName ?? getTypeText();
+    const compactPeriodText = formatDateRange(date, true);
+
+    return { title, subtitle, compactTitle: `${title} · ${compactPeriodText}` };
 };
