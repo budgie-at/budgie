@@ -20,7 +20,7 @@ export const ReceiptLaunchHandler = () => {
     const { isUnlocked } = useAuthContext();
     const { hasShareIntent, shareIntent, resetShareIntent } = useShareIntent();
     const [scanSource, setScanSource] = useAtom(receiptScanRequestAtom);
-    const processReceipts = useReceiptScan();
+    const processReceipt = useReceiptScan();
 
     const handleQuickAction = (action: Action) => {
         const isScanAction = action.id === RECEIPT_SCAN_ACTION;
@@ -35,16 +35,16 @@ export const ReceiptLaunchHandler = () => {
     useQuickActionRouting(handleQuickAction);
 
     const handleShareIntent = useEffectEvent(() => {
-        const uris = (shareIntent.files ?? []).map(file => file.path);
+        const uri = shareIntent.files?.at(0)?.path ?? null;
         resetShareIntent();
-        processReceipts(uris);
+        processReceipt(uri);
     });
 
     const handleScanRequest = useEffectEvent((source: ReceiptSourceEnum) => {
         setScanSource(null);
         appRuntime.runFork(
             Effect.flatMap(ReceiptScanService, receiptScanService => receiptScanService.capture(source)).pipe(
-                Effect.tap(uris => Effect.sync(() => void processReceipts(uris)))
+                Effect.tap(uri => Effect.sync(() => void processReceipt(uri)))
             )
         );
     });

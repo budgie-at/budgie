@@ -121,16 +121,21 @@ appId: ${APP_ID}
       id: 'TransactionInfo.Page'
     timeout: 5000
 
-- tapOn:
-    id: 'TransactionActionsMenu.TriggerButton'
+- scrollUntilVisible:
+    element:
+      id: 'TransactionActionsMenu.CreateRuleButton'
+    direction: DOWN
+    centerElement: true
 - extendedWaitUntil:
     visible:
-      id: 'TransactionActionsMenu.DeleteButton'
+      id: 'TransactionActionsMenu.CreateRuleButton'
 - assertNotVisible:
     id: 'TransactionActionsMenu.ConvertToTransferButton'
-- tapOn:
-    text: 'Close menu'
-
+- scrollUntilVisible:
+    element:
+      id: 'TransactionInfo.Amount'
+    direction: UP
+    centerElement: false
 - tapOn:
     id: 'TransactionInfo.EditButton.Label'
 - extendedWaitUntil:
@@ -218,6 +223,7 @@ appId: ${APP_ID}
     id: 'TransactionActionsMenu.ConvertToTransferButton'
 - tapOn:
     text: 'Close menu'
+    point: '10%,8%'
 
 - tapOn:
     id: 'TransactionFieldIcon.Split'
@@ -246,6 +252,7 @@ appId: ${APP_ID}
     id: 'TransactionActionsMenu.ConvertToTransferButton'
 - tapOn:
     text: 'Close menu'
+    point: '10%,8%'
 
 - runFlow: subflows/transactions/submit-transaction-and-return-to-list.flow.yaml
 
@@ -265,16 +272,25 @@ appId: ${APP_ID}
     visible:
       id: 'TransactionInfo.Page'
     timeout: 5000
-- tapOn:
-    id: 'TransactionActionsMenu.TriggerButton'
+- scrollUntilVisible:
+    element:
+      id: 'TransactionActionsMenu.CreateRuleButton'
+    direction: DOWN
+    centerElement: true
 - extendedWaitUntil:
     visible:
-      id: 'TransactionActionsMenu.DeleteButton'
+      id: 'TransactionActionsMenu.CreateRuleButton'
+- runFlow: subflows/transactions/open-info-conversions.flow.yaml
 - assertVisible:
-    id: 'TransactionActionsMenu.ConvertToTransferButton'
+    text: 'Convert to Transfer'
 - tapOn:
     text: 'Close menu'
-
+    point: '10%,8%'
+- scrollUntilVisible:
+    element:
+      id: 'TransactionInfo.Amount'
+    direction: UP
+    centerElement: false
 - tapOn:
     id: 'TransactionInfo.EditButton.Label'
 - extendedWaitUntil:
@@ -322,6 +338,7 @@ appId: ${APP_ID}
     id: 'TransactionActionsMenu.ConvertToTransferButton'
 - tapOn:
     text: 'Close menu'
+    point: '10%,8%'
 
 # --- Delete Expense ---
 

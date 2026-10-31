@@ -1,10 +1,10 @@
-import { Trans } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
+import { UserIconNameEnum } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
 
 import { isNotEmptyArray } from '@rnw-community/shared';
 
 import { TransactionInfoPageSelector } from '../transaction-info-page/transaction-info-page.selector';
-import { TransactionTagPill } from '../transaction-tag-pill/transaction-tag-pill';
+import { TransactionInfoRow } from '../transaction-info-row/transaction-info-row';
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
@@ -13,21 +13,18 @@ interface Props {
 }
 
 export const TransactionInfoTagsSection = ({ transaction }: Props) => {
+    const { t } = useLingui();
+
     if (!isNotEmptyArray(transaction.transactionTags)) {
         return null;
     }
 
     return (
-        <View className="gap-y-xs" testID={TransactionInfoPageSelector.Row.Tags}>
-            <Text className="text-sm text-secondary-foreground font-medium">
-                <Trans>Tags</Trans>
-            </Text>
-
-            <View className="flex-row flex-wrap gap-sm">
-                {transaction.transactionTags.map(({ tagId, tag }) => (
-                    <TransactionTagPill key={tagId} title={tag.title} />
-                ))}
-            </View>
-        </View>
+        <TransactionInfoRow
+            icon={UserIconNameEnum.Tags}
+            label={t`Tags`}
+            value={transaction.transactionTags.map(({ tag }) => tag.title).join(', ')}
+            testID={TransactionInfoPageSelector.Row.Tags}
+        />
     );
 };

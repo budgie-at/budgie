@@ -74,6 +74,15 @@
 @layer theme {
     :root {
         @variant light {
+            --color-positive-strong: rgb(0, 122, 82);
+            --color-destructive-strong: rgb(196, 38, 45);
+            --color-transaction-detail-row: rgb(255, 255, 255);
+            --color-transaction-detail-bar: rgb(249, 249, 249);
+            --color-transaction-detail-bar-separator: rgba(60, 60, 67, 0.29);
+            --color-popover-surface: rgb(255, 255, 255);
+            --color-popover-border: rgba(60, 60, 67, 0.18);
+            --color-popover-secondary: rgb(82, 82, 87);
+            --color-transaction-detail-secondary: rgba(107, 107, 107, 1);
             --color-primary: rgb(0, 0, 0);
             --color-primary-reverse: rgb(255, 255, 255);
 
@@ -158,6 +167,15 @@
         }
 
         @variant dark {
+            --color-positive-strong: rgb(0, 255, 136);
+            --color-destructive-strong: rgb(255, 68, 68);
+            --color-transaction-detail-row: rgb(28, 28, 30);
+            --color-transaction-detail-bar: rgb(22, 22, 24);
+            --color-transaction-detail-bar-separator: rgba(84, 84, 88, 0.6);
+            --color-popover-surface: rgb(44, 44, 46);
+            --color-popover-border: rgba(255, 255, 255, 0.16);
+            --color-popover-secondary: rgb(204, 204, 212);
+            --color-transaction-detail-secondary: rgba(178, 178, 186, 1);
             --color-primary: rgb(255, 255, 255);
             --color-primary-reverse: rgb(0, 0, 0);
 
@@ -254,6 +272,10 @@
 @utility border-y-hairline {
     border-top-width: hairlineWidth();
     border-bottom-width: hairlineWidth();
+}
+
+@utility border-hairline {
+    border-width: hairlineWidth();
 }
 
 @utility border-b-hairline {

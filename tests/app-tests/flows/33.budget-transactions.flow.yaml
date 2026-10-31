@@ -178,16 +178,11 @@ env:
           DEEP_LINK: 'budgie://transactions/10/income'
 - extendedWaitUntil:
       visible:
-          id: 'TransactionActionsMenu.TriggerButton'
+          id: 'TransactionInfo.Page'
       timeout: 10000
+- runFlow: subflows/transactions/open-info-conversions.flow.yaml
 - tapOn:
-      id: 'TransactionActionsMenu.TriggerButton'
-- extendedWaitUntil:
-      visible:
-          id: 'TransactionActionsMenu.ConvertToRefundButton'
-      timeout: 3000
-- tapOn:
-      id: 'TransactionActionsMenu.ConvertToRefundButton'
+    text: 'Convert to Refund'
 - extendedWaitUntil:
       visible:
           id: 'ConvertToRefund.Page'
@@ -206,7 +201,7 @@ env:
       index: 0
 - extendedWaitUntil:
       visible:
-          id: 'TransactionInfo.RefundedPill'
+          id: 'TransactionInfo.Row.RefundSummary'
       timeout: 10000
 
 - tapOn:

@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.133.0](https://github.com/budgie-at/budgie/compare/v6.132.0...v6.133.0) (2026-10-31)
+
+**Note:** Version bump only for package @budgie/sync
+
+
+
+
+
 # [6.132.0](https://github.com/budgie-at/budgie/compare/v6.131.0...v6.132.0) (2026-10-30)
 
 **Note:** Version bump only for package @budgie/sync
