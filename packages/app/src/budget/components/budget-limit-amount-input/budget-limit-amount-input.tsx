@@ -22,6 +22,7 @@ export const BudgetLimitAmountInput = ({ currencySymbol, name, testID }: Props) 
             placeholder={t`e.g. 200`}
             valuePrefix={currencySymbol}
             size="md"
+            borderless
             textAlign="right"
             inputClassName="min-w-[104px] max-w-[136px]"
             commitOnBlur

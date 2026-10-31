@@ -1,24 +1,16 @@
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
 import type { ReactNode } from 'react';
 
 interface Props {
+    readonly leading: ReactNode;
     readonly amountInput: ReactNode;
-    readonly icon: ReactNode;
-    readonly subtitle: ReactNode;
-    readonly testID: string;
-    readonly title: string;
 }
 
-export const BudgetCategoryLimitCompactRowLayout = ({ amountInput, icon, subtitle, testID, title }: Props) => (
-    <View collapsable={false} className="flex-row items-center gap-x-md bg-primary-reverse px-md py-sm rounded-2xl">
-        {icon}
-        <View className="flex-1 items-start">
-            <Text className="self-stretch text-primary text-md" numberOfLines={1} testID={testID}>
-                {title}
-            </Text>
-            {subtitle}
-        </View>
+export const BudgetCategoryLimitCompactRowLayout = ({ leading, amountInput }: Props) => (
+    <View collapsable={false} className="flex-row items-center gap-x-md bg-surface-row-opaque px-3xl py-sm">
+        <View className="absolute top-0 right-0 left-[64px] h-hairline bg-surface-separator" pointerEvents="none" />
+        <View className="flex-1">{leading}</View>
         {amountInput}
     </View>
 );

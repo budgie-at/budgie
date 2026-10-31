@@ -4,7 +4,6 @@ import { BudgetSelector } from '../../budget.selector';
 import { BudgetFormValues } from '../../constant/budget-form-schema.constant';
 import { BudgetCategoryLimitDeletableRow } from '../budget-category-limit-deletable-row/budget-category-limit-deletable-row';
 import { BudgetLimitAmountInput } from '../budget-limit-amount-input/budget-limit-amount-input';
-import { BudgetRolloverModeMenu } from '../budget-rollover-mode-menu/budget-rollover-mode-menu';
 
 interface Props {
     readonly currencySymbol: string;
@@ -28,7 +27,7 @@ export const BudgetCategoryLimitCompactRow = ({ currencySymbol, index, onRemove 
                     testID={BudgetSelector.SetupCategoryLimitAmountInput(index)}
                 />
             }
-            subtitle={<BudgetRolloverModeMenu name={`categoryLimits.${index}.rolloverMode`} />}
+            rolloverName={`categoryLimits.${index}.rolloverMode`}
             onRemove={onRemove}
         />
     );

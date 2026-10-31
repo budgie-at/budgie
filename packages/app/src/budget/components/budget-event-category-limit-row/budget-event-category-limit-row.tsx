@@ -27,6 +27,7 @@ export const BudgetEventCategoryLimitRow = ({ currencySymbol, index, onRemove }:
             placeholder={t`e.g. 200`}
             valuePrefix={currencySymbol}
             size="md"
+            borderless
             textAlign="right"
             inputClassName="min-w-[104px] max-w-[136px]"
             commitOnBlur
@@ -40,7 +41,6 @@ export const BudgetEventCategoryLimitRow = ({ currencySymbol, index, onRemove }:
             index={index}
             testID={BudgetSelector.EventCategoryLimitRow(index)}
             amountInput={<Controller control={control} name={`categoryLimits.${index}.limitAmount`} render={renderAmount} />}
-            subtitle={null}
             onRemove={onRemove}
         />
     );
