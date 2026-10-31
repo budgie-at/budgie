@@ -46,7 +46,7 @@ describe('binance/trade-cursor-loss', () => {
     it.effect('imports the trades of a symbol fetched before a deadline deferral on the next run', () =>
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
-            const { sync } = yield* setupStaleForwardFixture(['ADA', 'BNB']);
+            const { sync } = yield* setupStaleForwardFixture(['ADA', 'BNB', 'ETH', 'BTC', 'PEPE']);
 
             binanceStub.myTrades({ ADAUSDT: [buildAdaTrade(FIRST_TRADE_ID, Date.now())] }, new Set<string>(), [], {
                 onServed: jumpPastDeadline

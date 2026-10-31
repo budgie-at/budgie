@@ -193,7 +193,6 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
             const exactRows = detected.map(series =>
                 rows.find(
                     item =>
-                        isQualifiedIdentity(item.merchantKey) &&
                         item.kind === series.kind &&
                         item.merchantKey === series.merchantKey &&
                         item.periodDays === Math.round(series.periodDays)

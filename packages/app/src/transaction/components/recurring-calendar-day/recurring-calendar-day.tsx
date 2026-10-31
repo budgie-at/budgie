@@ -21,8 +21,8 @@ const circleVariants = cva('w-10 h-10 items-center justify-center rounded-full',
         hasOnlyForecasted: { true: '', false: '' }
     },
     compoundVariants: [
-        { hasEntries: true, isSelected: false, hasOnlyForecasted: false, className: 'bg-warning-background' },
-        { hasOnlyForecasted: true, isSelected: false, className: 'bg-warning-background opacity-50' }
+        { hasEntries: true, isSelected: false, hasOnlyForecasted: false, className: 'bg-surface-fill' },
+        { hasOnlyForecasted: true, isSelected: false, className: 'bg-surface-fill opacity-50' }
     ]
 });
 

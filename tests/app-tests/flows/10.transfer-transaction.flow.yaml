@@ -184,9 +184,7 @@ appId: ${APP_ID}
           id: 'TransactionCard.Label.E2E_Edited_Transfer'
       timeout: 5000
 - assertVisible:
-      id: 'TransactionCard.FromAccount.E2E_Transfer_Account.Label'
-- assertVisible:
-      id: 'TransactionCard.ToAccount.E2E_Txn_Account.Label'
+      text: 'From E2E Transfer Account to E2E Txn Account.*'
 
 - tapOn:
       id: 'TabBar.Home'

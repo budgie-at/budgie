@@ -22,7 +22,7 @@ const TOTAL_LABELS: Record<LanguageEnum, readonly string[]> = {
     [LanguageEnum.EN]: ['total', 'amount', 'due'],
     [LanguageEnum.FR]: ['total', 'montant', 'à payer'],
     [LanguageEnum.UK]: ['сума', 'разом', 'до сплати', 'всього'],
-    [LanguageEnum.DE]: ['gesamt', 'summe', 'gesamtbetrag', 'betrag', 'zu zahlen', 'endsumme'],
+    [LanguageEnum.DE]: ['gesamt', 'summe', 'gesamtbetrag', 'rechnungsbetrag', 'betrag', 'zu zahlen', 'endsumme'],
     [LanguageEnum.ES]: ['total', 'importe', 'a pagar']
 };
 
@@ -423,7 +423,7 @@ const RECEIPT_NUMBER_LABELS: Record<LanguageEnum, readonly string[]> = {
 };
 
 const RECEIPT_NUMBER_PATTERN = new RegExp(
-    String.raw`${buildReceiptKeywordPattern(Object.values(RECEIPT_NUMBER_LABELS).flat(), 'iu').source}[\s.:#№°º-]*([\p{L}\d][\p{L}\d/-]*\d[\p{L}\d/-]*)`,
+    String.raw`${buildReceiptKeywordPattern(Object.values(RECEIPT_NUMBER_LABELS).flat(), 'iu').source}[\s.:#№°º-]*([\p{L}\d]*\d[\p{L}\d]*(?:[/-][\p{L}\d]*\d[\p{L}\d]*)*)`,
     'iu'
 );
 const CARD_PATTERN = /(?:[*X•x]{4}[\s-]*){1,4}(\d{4})(?!\d)/u;

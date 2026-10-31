@@ -1,4 +1,4 @@
-import { TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { TransactionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
@@ -30,7 +30,6 @@ export const TransactionTypeFilter = ({ value, onChange }: Props) => {
     return (
         <TransactionFilterChip
             isActive={isPositiveNumber(selectedTypesCount)}
-            icon={UserIconNameEnum.Layers}
             label={label}
             onPress={handleOpen}
             testID={TransactionFiltersSelector.TypeChip}

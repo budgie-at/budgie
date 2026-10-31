@@ -6,6 +6,7 @@ import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer'
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
+import { getTransactionListRowPosition } from '../../utils/get-transaction-list-row-position.util';
 import { RecurringCalendarEntryRow } from '../recurring-calendar-entry-row/recurring-calendar-entry-row';
 
 import type { RecurringCalendarEntryInterface } from '@budgie/recurring';
@@ -32,15 +33,15 @@ export const RecurringCalendarEntryList = ({
 }: Props) => {
     const { formatMonthAndDay } = useFormatDate();
     const hasDayLabels = isDefined(displayMonth) && isDefined(displayYear);
-    const rowsClassName = hasDayLabels ? 'gap-y-lg pt-lg' : 'gap-y-lg';
+    const rowsClassName = hasDayLabels ? 'pt-lg' : '';
 
     return (
         <View className="flex-1 pt-lg">
-            <View className="bg-primary-reverse py-md -mx-5xl px-5xl flex-row justify-between items-center">
-                <Text className="text-xs uppercase text-secondary-foreground" {...testIDProps(headerTestID)}>
+            <View className="bg-surface py-md -mx-5xl px-5xl flex-row justify-between items-center">
+                <Text className="text-[13px] font-semibold text-primary" {...testIDProps(headerTestID)}>
                     {title}
                 </Text>
-                <ProtectedText className="text-xs text-secondary-foreground">{formattedTotal}</ProtectedText>
+                <ProtectedText className="text-[13px] tabular-nums text-secondary-foreground">{formattedTotal}</ProtectedText>
             </View>
 
             <ScrollView className="flex-1" contentContainerClassName="pb-5xl" showsVerticalScrollIndicator={false}>
@@ -50,7 +51,7 @@ export const RecurringCalendarEntryList = ({
                             <RecurringCalendarEntryRow
                                 key={entry.key}
                                 entry={entry}
-                                index={index}
+                                position={getTransactionListRowPosition(index, entries.length)}
                                 {...(hasDayLabels && {
                                     dayLabel: formatMonthAndDay(new Date(displayYear, displayMonth, entry.dayOfMonth))
                                 })}

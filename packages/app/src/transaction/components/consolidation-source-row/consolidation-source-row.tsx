@@ -1,9 +1,9 @@
 import { ConsolidationSourceRowInterface, TransactionConsolidationTypeEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
-import Animated, { FadeIn, LinearTransition } from 'react-native-reanimated';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
+import { TransactionListRowPositionEnum } from '../../enum/transaction-list-row-position.enum';
 import { getConsolidationSourceDisplayType } from '../../utils/get-consolidation-source-display-type.util';
 import { TransactionPickerRow } from '../transaction-picker-row/transaction-picker-row';
 
@@ -11,14 +11,11 @@ import type { TransactionPickerItemInterface } from '../../interface/transaction
 
 interface Props {
     readonly source: ConsolidationSourceRowInterface;
-    readonly index: number;
+    readonly position: TransactionListRowPositionEnum;
     readonly consolidationType: TransactionConsolidationTypeEnum | null;
     readonly testID?: string;
 }
 
-const ANIMATION_STAGGER_MS = 60;
-const ANIMATION_STAGGER_MAX_INDEX = 4;
-const ANIMATION_DURATION_MS = 280;
 const getSourceTitle = (source: ConsolidationSourceRowInterface): string => {
     if (isNotEmptyString(source.sourceTitle)) {
         return source.sourceTitle;
@@ -47,17 +44,6 @@ const mapSourceToPickerItem = (
     isRecommended: false
 });
 
-export const ConsolidationSourceRow = ({ source, index, consolidationType, testID }: Props) => {
-    const staggerIndex = Math.min(index, ANIMATION_STAGGER_MAX_INDEX);
-    const item = mapSourceToPickerItem(source, consolidationType);
-
-    return (
-        <Animated.View
-            entering={FadeIn.delay(staggerIndex * ANIMATION_STAGGER_MS).duration(ANIMATION_DURATION_MS)}
-            layout={LinearTransition}
-            testID={testID}
-        >
-            <TransactionPickerRow item={item} testID={testID} />
-        </Animated.View>
-    );
-};
+export const ConsolidationSourceRow = ({ source, position, consolidationType, testID }: Props) => (
+    <TransactionPickerRow item={mapSourceToPickerItem(source, consolidationType)} position={position} testID={testID} />
+);

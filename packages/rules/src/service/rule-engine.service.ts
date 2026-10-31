@@ -1,20 +1,16 @@
 import {
-    AccountRepository,
-    AccountTypeEnum,
     CategorySourceEnum,
     Db,
-    DebtEventRepository,
     MccCategoryRepository,
     TransactionRepository,
     TransactionTagsRepository,
     RuleActionTypeEnum,
     RuleConditionFieldEnum,
     TagSourceEnum,
-    TransactionTypeEnum,
     TransactionUpdatedByEnum,
     YIELD_TO_UI
 } from '@budgie/contracts';
-import { TransactionTransferService, getTransactionCategoryEntries } from '@budgie/ledger';
+import { TransactionTransferService } from '@budgie/ledger';
 import * as Arr from 'effect/Array';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -38,8 +34,6 @@ import type { RuleActionEntityInterface, RuleWithRelationsEntityInterface, Trans
 
 export class RuleEngineService extends Context.Service<RuleEngineService>()('@budgie/rules/RuleEngineService', {
     make: Effect.gen(function* () {
-        const accountRepository = yield* AccountRepository;
-        const debtEventRepository = yield* DebtEventRepository;
         const mccCategoryRepository = yield* MccCategoryRepository;
         const ruleRepository = yield* RuleRepository;
         const transactionRepository = yield* TransactionRepository;
@@ -47,53 +41,6 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
         const transactionTagsRepository = yield* TransactionTagsRepository;
         const ruleMatcherService = yield* RuleMatcherService;
         const transactionTransferService = yield* TransactionTransferService;
-
-        const isTransferAccount = Effect.fnUntraced(function* (accountId: number) {
-            const account = yield* accountRepository.findById(accountId);
-
-            return isDefined(account) && account.type !== AccountTypeEnum.DEBT;
-        });
-
-        const convertToTransfer = Effect.fn('RuleEngineService.convertToTransfer')(function* (
-            transactionId: number,
-            targetAccountId: number
-        ) {
-            const transaction = yield* transactionRepository.getByIdWithEntries(transactionId);
-
-            if (!isDefined(transaction) || isDefined(transaction.consolidationType)) {
-                return false;
-            }
-
-            const isExpense = transaction.type === TransactionTypeEnum.EXPENSE;
-            const sourceAccountId = isExpense ? transaction.fromAccountId : transaction.toAccountId;
-            const isConvertible =
-                (isExpense || transaction.type === TransactionTypeEnum.INCOME) &&
-                isDefined(sourceAccountId) &&
-                sourceAccountId !== targetAccountId &&
-                getTransactionCategoryEntries(transaction.entries).length === 1;
-
-            if (!isConvertible) {
-                return false;
-            }
-
-            const [isSourceTransferAccount, isTargetTransferAccount, debtEvent] = yield* Effect.all([
-                isTransferAccount(sourceAccountId),
-                isTransferAccount(targetAccountId),
-                debtEventRepository.findByTransactionId(transactionId)
-            ]);
-
-            if (!isSourceTransferAccount || !isTargetTransferAccount || isDefined(debtEvent)) {
-                return false;
-            }
-
-            const params = { id: transactionId, accountId: targetAccountId, customExchangeRate: 0, feeEntries: [] };
-
-            yield* isExpense
-                ? transactionTransferService.convertExpenseToTransfer(params)
-                : transactionTransferService.convertIncomeToTransfer(params);
-
-            return true;
-        });
 
         const applySetCategoryAction = Effect.fn('RuleEngineService.applySetCategoryAction')(function* (
             transactionId: number,
@@ -145,7 +92,7 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
                     if (
                         isDefined(action.accountId) &&
                         !appliedExclusiveActions.has(RuleActionTypeEnum.CONVERT_TO_TRANSFER) &&
-                        (yield* convertToTransfer(transactionId, action.accountId))
+                        (yield* transactionTransferService.convertToTransferAccount(transactionId, action.accountId))
                     ) {
                         appliedExclusiveActions.add(RuleActionTypeEnum.CONVERT_TO_TRANSFER);
                     }
@@ -371,7 +318,7 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
             const { accountId } = transferAction;
 
             for (const transactionId of batchIds) {
-                yield* convertToTransfer(transactionId, accountId);
+                yield* transactionTransferService.convertToTransferAccount(transactionId, accountId);
             }
         });
 
@@ -458,8 +405,6 @@ export class RuleEngineService extends Context.Service<RuleEngineService>()('@bu
 }) {
     static readonly layer = Layer.effect(RuleEngineService, RuleEngineService.make).pipe(
         Layer.provide([
-            AccountRepository.layer,
-            DebtEventRepository.layer,
             MccCategoryRepository.layer,
             RuleRepository.layer,
             TransactionRepository.layer,

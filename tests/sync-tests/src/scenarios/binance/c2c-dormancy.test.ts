@@ -10,7 +10,7 @@ import type { TimeWindow } from '../../harness';
 
 const DAY_MS = 86_400_000;
 const POST_GAP_ORDER_AGE_MS = 150 * DAY_MS;
-const FIAT_DORMANCY_MAX_AGE_MS = 200 * DAY_MS;
+const FULL_HISTORY_MIN_DEPTH_MS = 5 * 365 * DAY_MS;
 const STALE_FORWARD_SYNC_AGE_MS = 5 * 60 * 1000;
 
 const fetchExternalIds = () =>
@@ -29,7 +29,7 @@ const setupEmptyBackwardBinanceSync = () =>
     });
 
 describe('binance/source-window-walk', () => {
-    it.effect('collects available C2C history without requesting beyond the Binance six-month limit', () =>
+    it.effect('collects the full C2C history back to the start of the Binance API', () =>
         Effect.gen(function* () {
             const binanceSyncService = yield* BinanceSyncService;
 
@@ -52,23 +52,7 @@ describe('binance/source-window-walk', () => {
             yield* binanceSyncService.sync();
 
             expect(yield* fetchExternalIds()).toContain('binance:c2c:post-gap-p2p');
-            expect(Math.min(...requestedWindows.map(window => window.startMs))).toBeGreaterThan(Date.now() - FIAT_DORMANCY_MAX_AGE_MS);
-        }).pipe(Effect.provide(TestLayer))
-    );
-
-    it.effect('stops walking fiat windows after the dormancy gap when there are no fiat orders', () =>
-        Effect.gen(function* () {
-            const binanceSyncService = yield* BinanceSyncService;
-
-            yield* setupEmptyBackwardBinanceSync();
-            const requestedWindows: TimeWindow[] = [];
-            binanceStub.fiatOrders([], [], requestedWindows);
-
-            yield* binanceSyncService.sync();
-
-            expect(requestedWindows.length).toBeGreaterThan(0);
-            const oldestRequestedStartMs = Math.min(...requestedWindows.map(window => window.startMs));
-            expect(Date.now() - oldestRequestedStartMs).toBeLessThan(FIAT_DORMANCY_MAX_AGE_MS);
+            expect(Math.min(...requestedWindows.map(window => window.startMs))).toBeLessThan(Date.now() - FULL_HISTORY_MIN_DEPTH_MS);
         }).pipe(Effect.provide(TestLayer))
     );
 

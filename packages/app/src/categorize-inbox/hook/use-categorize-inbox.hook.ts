@@ -25,10 +25,12 @@ const keepPresentTransactionIds = (transactionIds: Set<number>, rows: Categorize
     return keptTransactionIds.size === transactionIds.size ? transactionIds : keptTransactionIds;
 };
 
+const setExclusion = (excluded: Set<number>, transactionIds: readonly number[], isExcluded: boolean): Set<number> =>
+    isExcluded
+        ? new Set([...excluded, ...transactionIds])
+        : new Set([...excluded].filter(transactionId => !transactionIds.includes(transactionId)));
+
 const reducer = (state: CategorizeInboxStateInterface, action: CategorizeInboxActionInterface): CategorizeInboxStateInterface => {
-    if (action.type === CategorizeInboxActionTypeEnum.CLUSTER_EXPANSION_TOGGLED) {
-        return { ...state, expandedClusterKey: state.expandedClusterKey === action.clusterKey ? null : action.clusterKey };
-    }
     if (action.type === CategorizeInboxActionTypeEnum.EXCLUSION_TOGGLED) {
         const excluded = new Set(state.excluded);
 
@@ -37,6 +39,9 @@ const reducer = (state: CategorizeInboxStateInterface, action: CategorizeInboxAc
         }
 
         return { ...state, excluded };
+    }
+    if (action.type === CategorizeInboxActionTypeEnum.EXCLUSION_SET) {
+        return { ...state, excluded: setExclusion(state.excluded, action.transactionIds, action.isExcluded) };
     }
     if (action.type === CategorizeInboxActionTypeEnum.TRANSACTIONS_HIDDEN) {
         return { ...state, hidden: new Set([...state.hidden, ...action.transactionIds]) };
@@ -66,19 +71,18 @@ export const useCategorizeInbox = (
     const cashWithdrawalResult = useLiveAtomValue(atmCashWithdrawalTransactionIdsAtom([...new Set(rows.map(row => row.transactionId))]));
     const [state, dispatch] = useReducer(reducer, {
         session: { placements: new Map(), clustersByKey: new Map(), peakRowCount: 0 },
-        expandedClusterKey: null,
         rows,
         hidden: new Set<number>(),
         excluded: new Set<number>()
     });
-    const { session, expandedClusterKey } = state;
+    const { session } = state;
 
     const visibility: CategorizeInboxVisibilityInterface = {
         excludedTransactionIds: state.excluded,
-        expandedClusterKey,
         includedRows: cluster => cluster.rows.filter(row => !state.excluded.has(row.transactionId)),
-        toggleExpanded: clusterKey => void dispatch({ type: CategorizeInboxActionTypeEnum.CLUSTER_EXPANSION_TOGGLED, clusterKey }),
         toggleExcluded: transactionId => void dispatch({ type: CategorizeInboxActionTypeEnum.EXCLUSION_TOGGLED, transactionId }),
+        setExcluded: (transactionIds, isExcluded) =>
+            void dispatch({ type: CategorizeInboxActionTypeEnum.EXCLUSION_SET, transactionIds, isExcluded }),
         hideTransactions: transactionIds => void dispatch({ type: CategorizeInboxActionTypeEnum.TRANSACTIONS_HIDDEN, transactionIds }),
         showTransactions: transactionIds => void dispatch({ type: CategorizeInboxActionTypeEnum.TRANSACTIONS_SHOWN, transactionIds })
     };

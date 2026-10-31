@@ -61,6 +61,20 @@ const seedSalaryAndNetflix = Effect.fnUntraced(function* () {
     return seed;
 });
 
+const seedVariableUtilityBills = Effect.fnUntraced(function* () {
+    const seed = yield* seedCharges();
+    yield* Effect.forEach(
+        [
+            [7, 80],
+            [5, 95],
+            [3, 110],
+            [1, 120]
+        ],
+        ([monthsAgo, amount]) => seed('STADTWERKE WIEN', monthsAgo, 20, amount),
+        { discard: true }
+    );
+});
+
 const calendar = (month: number) => Effect.flatMap(RecurringService, service => service.calendar(2026, month, NOW));
 
 const calendarAsOf = (month: number, now: Date) => Effect.flatMap(RecurringService, service => service.calendar(2026, month, now));
@@ -739,23 +753,24 @@ layer(TestLayer)('recurringService', it => {
 
     it.effect('forecasts variable utility bills with a proven bimonthly cadence', () =>
         Effect.gen(function* () {
-            const seed = yield* seedCharges();
-            yield* Effect.forEach(
-                [
-                    [7, 80],
-                    [5, 95],
-                    [3, 110],
-                    [1, 120]
-                ],
-                ([monthsAgo, amount]) => seed('STADTWERKE WIEN', monthsAgo, 20, amount),
-                { discard: true }
-            );
+            yield* seedVariableUtilityBills();
 
             const june = yield* calendar(JUNE);
             const july = yield* calendar(JULY);
 
             expect(forecastedAmounts(june, 20)).toEqual([]);
             expect(forecastedAmounts(july, 20)).toEqual([110 * PRECISION]);
+        })
+    );
+
+    it.effect('stores a variable-amount series once across repeated calendar reads', () =>
+        Effect.gen(function* () {
+            yield* seedVariableUtilityBills();
+
+            yield* Effect.repeat(calendar(JULY), { times: 2 });
+            const rows = yield* Effect.flatMap(RecurringRepository, repository => repository.findSeries());
+
+            expect(rows).toHaveLength(1);
         })
     );
 
@@ -1213,6 +1228,39 @@ layer(TestLayer)('recurringService', it => {
             expect(rows.find(row => row.id === legacy.id)).toMatchObject({ merchantKey: 'NETFLIX' });
             expect(rows).toHaveLength(2);
         }).pipe(withFirstLaunchService)
+    );
+
+    it.effect('tracks the lowest id without inserting when several touched rows share one identity', () =>
+        Effect.gen(function* () {
+            const seed = yield* seedCharges();
+            yield* seedMonthly(seed, 'NETFLIX', 20, 12);
+            const [created] = allEntries(yield* calendar(JULY));
+            const [confirmed] = (yield* Effect.flatMap(RecurringRepository, repository => repository.findSeries())).filter(
+                row => row.id === created.seriesId
+            );
+            yield* Effect.flatMap(RecurringService, service => service.setUserState(confirmed.id, RecurringSeriesUserStateEnum.CONFIRMED));
+            const dismissed = yield* seedSavedSeries({
+                merchantKey: confirmed.merchantKey,
+                periodDays: confirmed.periodDays,
+                amount: confirmed.amount,
+                lastSeenAt: confirmed.lastSeenAt,
+                title: 'Renamed twin',
+                userState: RecurringSeriesUserStateEnum.DISMISSED
+            });
+
+            const reads = yield* Effect.forEach([1, 2, 3], () =>
+                Effect.gen(function* () {
+                    const [entry] = allEntries(yield* calendar(JULY));
+                    const rows = yield* Effect.flatMap(RecurringRepository, repository => repository.findSeries());
+
+                    return { entry, rowIds: rows.map(row => row.id) };
+                })
+            );
+            for (const { entry, rowIds } of reads) {
+                expect(entry).toMatchObject({ seriesId: confirmed.id, userState: RecurringSeriesUserStateEnum.CONFIRMED });
+                expect(rowIds).toEqual([confirmed.id, dismissed.id]);
+            }
+        })
     );
 
     it.effect('preserves a dismissed legacy identity after qualified detection', () =>

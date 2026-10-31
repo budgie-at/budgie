@@ -1,57 +1,20 @@
-import { cva } from 'class-variance-authority';
-import { ImpactFeedbackStyle } from 'expo-haptics';
 import { useEffect } from 'react';
-import { Pressable, Text, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withDelay, withSpring } from 'react-native-reanimated';
 
-import { Icon } from '../../../@generic/component/icon/icon';
-import { BACKGROUND_COLOR_PALETTE } from '../../../@generic/constant/background-color-palette.constant';
-import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
-import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
-import { useVibration } from '../../../@generic/hook/use-vibration.hook';
-import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
-import { CreateTransactionMenuSelector } from '../create-transaction-menu/create-transaction-menu.selector';
-
-import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-import type { UserIconNameEnum } from '@budgie/contracts';
-import type { ClassValue } from 'cn';
+import type { ReactNode } from 'react';
 
 interface Props {
-    readonly icon: UserIconNameEnum;
-    readonly label: string;
-    readonly testID?: string;
-    readonly variant: ColorPaletteVariant;
     readonly index: number;
     readonly totalItems: number;
     readonly isOpen: boolean;
-    readonly onPress: () => void;
+    readonly children: ReactNode;
 }
 
-const ICON_SIZE = 20;
 const ITEM_SPACING = 72;
 const STAGGER_DELAY = 40;
 const SPRING_CONFIG = { damping: 12, stiffness: 180, mass: 0.6 };
-const actionItemBackgroundColorPalette: Record<ColorPaletteVariant, ClassValue> = {
-    ...BACKGROUND_COLOR_PALETTE,
-    secondary: 'bg-secondary-foreground/10',
-    positive: 'bg-positive-foreground/30',
-    warning: 'bg-warning-foreground/30',
-    destructive: 'bg-destructive-foreground/25',
-    violet: 'bg-violet-foreground/45'
-};
 
-const containerVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>(
-    'w-12 h-12 rounded-full items-center justify-center border-0',
-    { variants: { variant: actionItemBackgroundColorPalette } }
-);
-
-const iconVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>('', {
-    variants: { variant: FOREGROUND_COLOR_PALETTE }
-});
-
-export const ActionItem = ({ icon, label, testID, variant, index, totalItems, isOpen, onPress }: Props) => {
-    const [, hapticImpact] = useVibration();
-
+export const ActionItem = ({ index, totalItems, isOpen, children }: Props) => {
     const translateY = useSharedValue(0);
     const scale = useSharedValue(0);
     const opacity = useSharedValue(0);
@@ -78,29 +41,9 @@ export const ActionItem = ({ icon, label, testID, variant, index, totalItems, is
         opacity: opacity.value
     }));
 
-    const handlePress = () => {
-        hapticImpact(ImpactFeedbackStyle.Medium);
-        onPress();
-    };
-
-    const actionItemTestID = testID ?? CreateTransactionMenuSelector.item(index);
-
     return (
         <Animated.View className="absolute right-0" style={animatedStyle}>
-            <Pressable
-                className="flex-row-reverse items-center p-sm"
-                hitSlop={10}
-                onPress={handlePress}
-                testID={actionItemTestID}
-                collapsable={false}
-            >
-                <View className={containerVariants({ variant })}>
-                    <Icon className={iconVariants({ variant })} icon={icon} size={ICON_SIZE} />
-                </View>
-                <Text className="text-white text-sm font-medium mr-lg" {...testIDProps(actionItemTestID, TestIDPartEnum.LABEL)}>
-                    {label}
-                </Text>
-            </Pressable>
+            {children}
         </Animated.View>
     );
 };

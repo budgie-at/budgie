@@ -3,6 +3,7 @@ import { useRouter } from 'expo-router';
 import { TransactionFilterPageHeaderModeEnum } from '../../enum/transaction-filter-page-header-mode.enum';
 import { useGetUncategorizedTransactionsQuery } from '../../query/use-get-uncategorized-transactions.query';
 import { buildUncategorizedFilters } from '../../utils/build-uncategorized-filters.util';
+import { getSingleAccountId } from '../../utils/get-single-account-id.util';
 import { AnalyticsTransactionsPageContent } from '../analytics-transactions-page-content/analytics-transactions-page-content';
 
 import type { AnalyticsTransactionsRouteParamsInterface } from '../../interface/analytics-transactions-route-params.interface';
@@ -24,5 +25,13 @@ export const UncategorizedAnalyticsTransactionsPage = (params: AnalyticsTransact
         onGoBack: handleGoBack
     };
 
-    return <AnalyticsTransactionsPageContent headerProps={headerProps} sections={sections} isLoading={isLoading} onLoadMore={loadMore} />;
+    return (
+        <AnalyticsTransactionsPageContent
+            headerProps={headerProps}
+            sections={sections}
+            isLoading={isLoading}
+            onLoadMore={loadMore}
+            accountId={getSingleAccountId(filters.accountIds)}
+        />
+    );
 };

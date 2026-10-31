@@ -58,11 +58,13 @@ const setupUsdtAdaBnbFixture = (bnbFree: string) =>
 const stubSpotTransferErrorScenario = (apiError: Parameters<typeof binanceStub.myTradesFailure>[1]): void => {
     binanceStub.serverTime();
     binanceStub.convertTradeFlow([]);
+    binanceStub.universalTransfers([]);
     binanceStub.spotBalances([buildBinance.balance({ asset: 'USDT', free: '100' }), buildBinance.balance({ asset: 'ADA', free: '200' })]);
     binanceStub.deposits([]);
     binanceStub.withdrawals([]);
     binanceStub.c2cOrders([], []);
     binanceStub.fiatOrders([], []);
+    binanceStub.fiatPayments([]);
     binanceStub.exchangeInfo(['ADAUSDT']);
     binanceStub.myTradesFailure(HTTP_BAD_REQUEST_STATUS, apiError);
 };

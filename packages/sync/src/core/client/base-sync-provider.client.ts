@@ -46,7 +46,7 @@ export abstract class BaseSyncProviderClient {
             const client = (yield* HttpClient.HttpClient).pipe(
                 HttpClient.tap(response =>
                     Effect.sync(() => {
-                        this.onResponseHeaders(response.headers);
+                        this.onResponseHeaders(response.headers, endpoint);
                     })
                 ),
                 HttpClient.filterStatusOk,
@@ -98,7 +98,7 @@ export abstract class BaseSyncProviderClient {
         );
     }
 
-    protected onResponseHeaders(_headers: Headers.Headers): void {
+    protected onResponseHeaders(_headers: Headers.Headers, _endpoint: string): void {
         return void 0;
     }
 

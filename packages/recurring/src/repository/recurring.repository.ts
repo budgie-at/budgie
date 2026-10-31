@@ -115,6 +115,7 @@ export class RecurringRepository extends Context.Service<RecurringRepository>()(
                         .select()
                         .from(RecurringSeriesEntityTable)
                         .where(and(isNull(RecurringSeriesEntityTable.deletedAt), eq(RecurringSeriesEntityTable.kind, kind)))
+                        .orderBy(RecurringSeriesEntityTable.id)
                 ),
             createSeries: (input: RecurringSeriesCreateEntityInterface) =>
                 Db.query(db => db.insert(RecurringSeriesEntityTable).values([input]).returning()).pipe(Effect.map(([series]) => series)),

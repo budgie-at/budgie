@@ -5,51 +5,49 @@ import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Alert, Text, View } from 'react-native';
-import Animated, { FadeInDown } from 'react-native-reanimated';
+import { Alert, Text } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { DeletableRow } from '../../../@generic/component/deletable-row/deletable-row';
-import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
-import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
+import { TransactionListRowPositionEnum } from '../../enum/transaction-list-row-position.enum';
 import { RecurringCalendarSelector } from '../recurring-calendar-content/recurring-calendar.selector';
 import { RecurringSeriesTitleInput } from '../recurring-series-title-input/recurring-series-title-input';
+import { TransactionRowLayout } from '../transaction-row-layout/transaction-row-layout';
+import { TransactionRowSurface } from '../transaction-row-surface/transaction-row-surface';
 
 import type { RecurringCalendarEntryInterface } from '@budgie/recurring';
 
-const ANIMATION_STAGGER = 50;
-const MAX_STAGGER_INDEX = 8;
-
 interface Props {
     readonly entry: RecurringCalendarEntryInterface;
-    readonly index: number;
+    readonly position: TransactionListRowPositionEnum;
     readonly onPress?: () => void;
     readonly dayLabel?: string;
 }
 
 // eslint-disable-next-line max-statements -- Row derives navigation, day-label, alert and series-action affordances from entry data
-export const RecurringCalendarEntryRow = ({ entry, index, onPress, dayLabel }: Props) => {
+export const RecurringCalendarEntryRow = ({ entry, position, onPress, dayLabel }: Props) => {
     const router = useRouter();
     const { t } = useLingui();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
-    const formatDigits = useDisplayFormatDigits();
+    const protectAmount = useProtectedAmountLabel();
     const [isRenaming, setIsRenaming] = useState(false);
 
-    const formattedAmount = formatDigits(convertFromMicroUnits(entry.latestAmount), defaultInstrument.symbol);
+    const formattedAmount = protectAmount(convertFromMicroUnits(entry.latestAmount), defaultInstrument.symbol);
     const alertLabels = {
         [RecurringAlertEnum.OVERDUE]: t`Overdue`,
         [RecurringAlertEnum.PRICE_CHANGE]: t`Price changed`
     };
     const detail = isDefined(entry.alert) ? alertLabels[entry.alert] : (entry.categoryTitle ?? entry.title);
-    const description = t`${formattedAmount} · ${detail}`;
+    const description = isNotEmptyString(dayLabel) ? `${dayLabel} · ${detail}` : detail;
     const icon = entry.categoryIcon ?? UserIconNameEnum.Wallet;
-    const animationDelay = Math.min(index, MAX_STAGGER_INDEX) * ANIMATION_STAGGER;
     let handlePress = onPress;
 
     if (!isDefined(handlePress) && isDefined(entry.latestTransactionId)) {
@@ -84,12 +82,6 @@ export const RecurringCalendarEntryRow = ({ entry, index, onPress, dayLabel }: P
             { text: t`Cancel`, style: 'cancel' }
         ]);
 
-    const right = isNotEmptyString(dayLabel) ? (
-        <View className="ml-auto">
-            <Text className="text-xs text-secondary-foreground">{dayLabel}</Text>
-        </View>
-    ) : null;
-
     const dismissConfirmation = {
         title: t`Dismiss recurring payment?`,
         description: t`It will no longer appear in the calendar.`,
@@ -97,22 +89,31 @@ export const RecurringCalendarEntryRow = ({ entry, index, onPress, dayLabel }: P
     };
 
     return (
-        <Animated.View key={entry.key} entering={FadeInDown.delay(animationDelay).duration(200)}>
+        <TransactionRowSurface position={position}>
             {isRenaming ? (
                 <RecurringSeriesTitleInput seriesId={entry.seriesId} title={entry.title} onDone={handleRenameDone} />
             ) : (
                 <DeletableRow id={entry.seriesId} onDelete={handleDismiss} confirmation={dismissConfirmation}>
-                    <SimpleHorizontalCell
+                    <HapticPressable
+                        className="px-3xl py-xl active:scale-100 active:opacity-70"
                         testID={RecurringCalendarSelector.Row(entry.title)}
-                        left={<CircleIcon icon={icon} variant="destructive" />}
-                        title={entry.title}
-                        description={description}
                         onLongPress={handleLongPress}
-                        {...(isDefined(handlePress) && { onPress: handlePress })}
-                        {...(isDefined(right) && { right })}
-                    />
+                        {...(isDefined(handlePress) && { onPress: handlePress, accessibilityRole: 'button' as const })}
+                    >
+                        <TransactionRowLayout
+                            icon={<CircleIcon size={36} iconSize={18} radius={18} border={false} icon={icon} variant="secondary" />}
+                            amount={<Text className="text-[15px] font-semibold text-primary tabular-nums">{formattedAmount}</Text>}
+                        >
+                            <Text className="text-[15px] font-semibold text-primary" numberOfLines={1}>
+                                {entry.title}
+                            </Text>
+                            <Text className="text-[13px] text-secondary-foreground" numberOfLines={1}>
+                                {description}
+                            </Text>
+                        </TransactionRowLayout>
+                    </HapticPressable>
                 </DeletableRow>
             )}
-        </Animated.View>
+        </TransactionRowSurface>
     );
 };

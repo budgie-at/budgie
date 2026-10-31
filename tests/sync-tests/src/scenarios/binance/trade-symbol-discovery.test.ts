@@ -90,28 +90,18 @@ describe('binance/trade-symbol-discovery', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
-    it.effect('keeps a fiat asset touched in an earlier window for trades fetched in a later window', () =>
+    it.effect('keeps an asset known from the ledger touched for trades fetched in a later window', () =>
         Effect.gen(function* () {
             yield* setupBinanceFixture({ asset: 'USDT' });
             const nowSeconds = Math.floor(Date.now() / MILLISECONDS_PER_SECOND);
             const atDaysAgo = (days: number) => nowSeconds - days * SECONDS_PER_DAY;
             binanceStub.exchangeInfo(['BTCEUR']);
             binanceStub.spotBalances([buildBinance.balance({ asset: 'BTC', free: '1' })]);
-            binanceStub.fiatOrders(
-                [
-                    buildBinance.fiatOrder({
-                        orderNo: 'fiat-dep-eur-early',
-                        fiatCurrency: 'EUR',
-                        amount: '100',
-                        createTime: atDaysAgo(15) * MILLISECONDS_PER_SECOND
-                    })
-                ],
-                []
-            );
             binanceStub.myTrades({
                 BTCEUR: [buildBinance.fill('BTCEUR', 34, { time: atDaysAgo(5) * MILLISECONDS_PER_SECOND })]
             });
             const client = new BinanceSignedClient(BINANCE_TEST_TOKEN);
+            client.noteTouchedAssets(['EUR']);
             const accountId = encodeBinanceAccountId({ wallet: BinanceWalletEnum.SPOT, asset: 'USDT' });
 
             const earlierWindow = yield* client.getTransfers(accountId, atDaysAgo(20), atDaysAgo(10));

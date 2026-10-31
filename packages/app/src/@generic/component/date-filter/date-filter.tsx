@@ -1,4 +1,4 @@
-import { DateRangeInterface, UserIconNameEnum } from '@budgie/contracts';
+import { DateRangeInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
@@ -65,13 +65,5 @@ export const DateFilter = ({ value, onChange }: Props) => {
     const label = getLabel();
     const chipTestID = hasDateFilterSelected ? TransactionFiltersSelector.DateChipActive : TransactionFiltersSelector.DateChip;
 
-    return (
-        <TransactionFilterChip
-            isActive={hasDateFilterSelected}
-            icon={UserIconNameEnum.Calendar}
-            label={label}
-            onPress={handleOpen}
-            testID={chipTestID}
-        />
-    );
+    return <TransactionFilterChip isActive={hasDateFilterSelected} label={label} onPress={handleOpen} testID={chipTestID} />;
 };

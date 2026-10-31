@@ -73,6 +73,9 @@ const VIRTUAL_SHIMS: Record<string, string> = {
     'expo-document-picker': `
         export const getDocumentAsync = async () => ({ canceled: true, assets: null });
     `,
+    'expo-image-picker': `
+        export const launchImageLibraryAsync = async () => ({ canceled: true, assets: null });
+    `,
     'expo-sharing': `
         export const isAvailableAsync = async () => false;
         export const shareAsync = async () => undefined;

@@ -185,9 +185,7 @@ appId: ${APP_ID}
 - assertVisible:
       id: 'TransactionCard.Label.E2E_Convert_Expense'
 - assertVisible:
-      id: 'TransactionCard.FromAccount.E2E_Expense_Source.Label'
-- assertVisible:
-      id: 'TransactionCard.ToAccount.E2E_Expense_Target.Label'
+      text: 'From E2E Expense Source to E2E Expense Target.*'
 
 - tapOn:
       id: 'TabBar.Home'

@@ -2,6 +2,7 @@ import type { BinanceTransferSourceEnum } from '../enum/binance-transfer-source.
 
 export interface BinanceTransferInterface {
     readonly externalId: string;
+    readonly legacyExternalId?: string;
     readonly fromAssetAccountId: string;
     readonly toAssetAccountId: string;
     readonly fromAmount: number;

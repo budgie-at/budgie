@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.132.0](https://github.com/budgie-at/budgie/compare/v6.131.0...v6.132.0) (2026-10-30)
+
+### Features
+
+* **app:** rebuild categorize inbox as a list-first triage flow ([#1814](https://github.com/budgie-at/budgie/issues/1814)) ([449ff76](https://github.com/budgie-at/budgie/commit/449ff764853d40e0734c2d4bc808a3d336ab7103))
+
+
+# [6.128.0](https://github.com/budgie-at/budgie/compare/v6.127.0...v6.128.0) (2026-10-30)
+
+**Note:** Version bump only for package @budgie/categorization
+
+
+
+
+
+# [6.127.0](https://github.com/budgie-at/budgie/compare/v6.126.5...v6.127.0) (2026-10-30)
+
+**Note:** Version bump only for package @budgie/categorization
+
+
+
+
+
+## [6.126.5](https://github.com/budgie-at/budgie/compare/v6.126.4...v6.126.5) (2026-10-29)
+
+### Bug Fixes
+
+* keep debt-linked payments out of the categorize inbox ([8e9a0a6](https://github.com/budgie-at/budgie/commit/8e9a0a6fe2188a14250dc827be4f99870444a1ec))
+
+
 # [6.126.0](https://github.com/budgie-at/budgie/compare/v6.125.3...v6.126.0) (2026-10-29)
 
 **Note:** Version bump only for package @budgie/categorization

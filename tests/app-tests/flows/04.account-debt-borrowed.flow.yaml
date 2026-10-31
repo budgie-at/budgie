@@ -81,7 +81,7 @@ appId: ${APP_ID}
           ACCOUNT_NAME: 'E2E Borrowed Funding'
 
 - assertVisible:
-      id: 'TransactionCard.EntryCategoryAmount.Borrowing.200'
+      id: 'TransactionCard.Category.Borrowing'
 
 - runFlow: subflows/accounts/exit-account-details-to-home.flow.yaml
 
@@ -97,4 +97,5 @@ appId: ${APP_ID}
 - assertVisible:
       id: 'DebtAccountBalance.TotalAmount.200'
 - assertVisible:
-      id: 'TransactionCard.EntryCategoryAmount.Borrowing.200'
+      id: 'TransactionCard.Label.E2E_Borrowed_To_Cash'
+      text: '.*, To E2E Borrowed Funding,.*'

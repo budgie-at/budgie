@@ -1,10 +1,9 @@
 import { TransactionFilterInterface } from '@budgie/contracts';
 import { useRouter } from 'expo-router';
-import { View } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { AnalyticsTransactionsModeEnum } from '../../enum/analytics-transactions-mode.enum';
+import { CategorizeInboxKindEnum } from '../../../categorize-inbox/enum/categorize-inbox-kind.enum';
 import { useGetUncategorizedTransactionCountQuery } from '../../query/use-get-uncategorized-transaction-count.query';
 import { buildUncategorizedRouteParams } from '../../utils/build-uncategorized-route-params.util';
 import { UncategorizedTransactionsPill } from '../uncategorized-transactions-pill/uncategorized-transactions-pill';
@@ -19,8 +18,8 @@ export const TransactionListUncategorizedPill = ({ filters }: Props) => {
 
     const handlePress = () => {
         router.push({
-            pathname: '/analytics/transactions',
-            params: buildUncategorizedRouteParams(filters, AnalyticsTransactionsModeEnum.CATEGORIZE)
+            pathname: '/categorize',
+            params: { kind: CategorizeInboxKindEnum.CATEGORY, ...buildUncategorizedRouteParams(filters, null) }
         });
     };
 
@@ -28,9 +27,5 @@ export const TransactionListUncategorizedPill = ({ filters }: Props) => {
         return null;
     }
 
-    return (
-        <View className="pt-2 pb-1">
-            <UncategorizedTransactionsPill count={count} onPress={handlePress} />
-        </View>
-    );
+    return <UncategorizedTransactionsPill count={count} onPress={handlePress} />;
 };

@@ -1,41 +1,22 @@
-import { AccountAssociationEnum, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
+import { AccountWithInstrumentEntityInterface } from '@budgie/contracts';
 import { View } from 'react-native';
 
-import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
-import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
-import { AccountDetailsSelector } from '../../../app/(main)/account/[id]/account-details.selector';
+import { ACCOUNT_DETAILS_HERO_BALANCE_HEIGHT } from '../../constant/account-details-hero-balance-height.constant';
 import { AccountDetailsMonthChips } from '../account-details-month-chips/account-details-month-chips';
 import { AccountDetailsStatusLine } from '../account-details-status-line/account-details-status-line';
 
 interface Props {
-    readonly account: Pick<AccountWithInstrumentEntityInterface, 'id' | 'iban' | AccountAssociationEnum.INSTRUMENT>;
-    readonly balance: number;
+    readonly account: Pick<AccountWithInstrumentEntityInterface, 'id' | 'iban'>;
 }
 
-export const AccountDetailsHero = ({ account, balance }: Props) => {
-    const { t } = useLingui();
-    const protectAmount = useProtectedAmountLabel();
+const BALANCE_SLOT_STYLE = { height: ACCOUNT_DETAILS_HERO_BALANCE_HEIGHT };
 
-    const formattedBalance = protectAmount(balance, account.instrument.symbol);
+export const AccountDetailsHero = ({ account }: Props) => (
+    <View className="items-center gap-y-lg pb-md">
+        <View style={BALANCE_SLOT_STYLE} />
 
-    return (
-        <View className="items-center gap-y-lg pt-xl pb-md">
-            <View
-                accessible
-                accessibilityLabel={t`Balance: ${formattedBalance}`}
-                testID={AccountDetailsSelector.Balance}
-                collapsable={false}
-                className="w-full"
-            >
-                <ProtectedMoney minFontSize={24} maxFontSize={52} instrumentSymbol={account.instrument.symbol}>
-                    {balance}
-                </ProtectedMoney>
-            </View>
+        <AccountDetailsStatusLine account={account} />
 
-            <AccountDetailsStatusLine account={account} />
-
-            <AccountDetailsMonthChips accountId={account.id} />
-        </View>
-    );
-};
+        <AccountDetailsMonthChips accountId={account.id} />
+    </View>
+);

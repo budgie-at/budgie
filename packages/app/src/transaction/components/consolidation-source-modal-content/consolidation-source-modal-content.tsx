@@ -2,13 +2,13 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
 
-import { EmptyFn, isDefined, isEmptyArray, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { EmptyFn, isDefined, isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
-import { ListItemSeparator } from '../../../@generic/component/list-item-separator/list-item-separator';
 import { useRevertConsolidation } from '../../hook/use-revert-consolidation.hook';
 import { useGetConsolidationSourcesQuery } from '../../query/use-get-consolidation-sources.query';
+import { getTransactionListRowPosition } from '../../utils/get-transaction-list-row-position.util';
 import { ConsolidationSourceRow } from '../consolidation-source-row/consolidation-source-row';
 
 import { ConsolidationSourceModalSelector } from './consolidation-source-modal-content.selector';
@@ -33,15 +33,13 @@ export const ConsolidationSourceModalContent = ({ transactionId, onClose, onReve
     const containerClassName = useFlexibleContainer ? 'flex-1' : '';
     const footerClassName = showRevert ? 'flex-row gap-x-md' : '';
     const sourceRows = sources.map((source, index) => (
-        <View key={source.entryId}>
-            {isPositiveNumber(index) ? <ListItemSeparator /> : null}
-            <ConsolidationSourceRow
-                source={source}
-                index={index}
-                consolidationType={consolidationType}
-                testID={ConsolidationSourceModalSelector.Row(index)}
-            />
-        </View>
+        <ConsolidationSourceRow
+            key={source.entryId}
+            source={source}
+            position={getTransactionListRowPosition(index, sources.length)}
+            consolidationType={consolidationType}
+            testID={ConsolidationSourceModalSelector.Row(index)}
+        />
     ));
 
     return (

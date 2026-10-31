@@ -7,48 +7,64 @@ import { isDefined } from '@rnw-community/shared';
 import { SyncProviderEnum } from '../../core/enum/sync-provider.enum';
 import { SyncDeferredError } from '../../core/error/sync-deferred.error';
 
+import type { BinanceWeightCostInterface } from '../interface/binance-weight-cost.interface';
 import type * as Headers from 'effect/http/Headers';
 
-const RAW_IP_WEIGHT_CEILING = 3000;
-const SAPI_IP_WEIGHT_CEILING = 6000;
-const SAPI_UID_WEIGHT_CEILING = 90000;
-const COOL_DOWN_THRESHOLD_RATIO = 0.8;
 const WEIGHT_WINDOW_MS = 60000;
-const REQUEST_RATE_WINDOW_MS = 60000;
-const REQUEST_RATE_CEILING = 1000;
-const REQUEST_RATE_PACING_MS = 1000;
-
-const RAW_IP_WEIGHT_HEADER = 'x-mbx-used-weight-1m';
-const SAPI_IP_WEIGHT_HEADER = 'x-sapi-used-ip-weight-1m';
-const SAPI_UID_WEIGHT_HEADER = 'x-sapi-used-uid-weight-1m';
+const SPOT_BUDGET_KEY = 'spot';
+const SPOT_PATH_PREFIX = '/api/';
 
 export class BinanceWeightThrottle {
-    readonly waitIfNeeded = Effect.fn('BinanceWeightThrottle.waitIfNeeded')(
-        function* (this: BinanceWeightThrottle) {
-            const retryAfterRemainingMs = this.retryAfterUntilMs - (yield* Clock.currentTimeMillis);
-            if (retryAfterRemainingMs > 0) {
-                yield* this.sleepWithinDeadline(retryAfterRemainingMs, 'Retry-After back-off exceeds deadline');
-            }
+    private static readonly SPOT_IP = { ceiling: 6000, header: 'x-mbx-used-weight-1m' } as const;
+    private static readonly SAPI_IP = { ceiling: 12000, header: 'x-sapi-used-ip-weight-1m' } as const;
+    private static readonly SAPI_UID = { ceiling: 180000, header: 'x-sapi-used-uid-weight-1m' } as const;
 
-            if (this.shouldCoolDown()) {
-                yield* this.sleepWithinDeadline(WEIGHT_WINDOW_MS, 'Weight cool-down exceeds deadline');
-                this.resetWeights();
-            }
+    private static readonly COSTS: ReadonlyMap<string, BinanceWeightCostInterface> = new Map([
+        ['/api/v3/myTrades', { ...BinanceWeightThrottle.SPOT_IP, weight: 20 }],
+        ['/api/v3/account', { ...BinanceWeightThrottle.SPOT_IP, weight: 20 }],
+        ['/api/v3/exchangeInfo', { ...BinanceWeightThrottle.SPOT_IP, weight: 20 }],
+        ['/sapi/v1/fiat/orders', { ...BinanceWeightThrottle.SAPI_UID, weight: 45000 }],
+        ['/sapi/v1/capital/withdraw/history', { ...BinanceWeightThrottle.SAPI_UID, weight: 18000 }],
+        ['/sapi/v1/convert/tradeFlow', { ...BinanceWeightThrottle.SAPI_UID, weight: 3000 }],
+        ['/sapi/v1/simple-earn/flexible/history/rewardsRecord', { ...BinanceWeightThrottle.SAPI_IP, weight: 150 }],
+        ['/sapi/v1/simple-earn/locked/history/rewardsRecord', { ...BinanceWeightThrottle.SAPI_IP, weight: 150 }],
+        ['/sapi/v1/eth-staking/eth/history/rewardsHistory', { ...BinanceWeightThrottle.SAPI_IP, weight: 150 }],
+        ['/sapi/v1/asset/assetDividend', { ...BinanceWeightThrottle.SAPI_IP, weight: 10 }]
+    ]);
 
-            const windowStart = (yield* Clock.currentTimeMillis) - REQUEST_RATE_WINDOW_MS;
-            this.requestTimestamps = this.requestTimestamps.filter(timestamp => timestamp > windowStart);
+    readonly waitIfNeeded = Effect.fn('BinanceWeightThrottle.waitIfNeeded')(function* (this: BinanceWeightThrottle, endpoint: string) {
+        let pause = yield* this.semaphore.withPermit(this.reserveOrPause(endpoint));
 
-            if (this.requestTimestamps.length >= REQUEST_RATE_CEILING) {
-                yield* Effect.sleep(REQUEST_RATE_PACING_MS);
-            }
-
-            this.requestTimestamps.push(yield* Clock.currentTimeMillis);
-        },
-        effect => this.semaphore.withPermit(effect)
-    );
+        while (isDefined(pause)) {
+            yield* this.sleepWithinDeadline(pause.durationMs, pause.message);
+            pause = yield* this.semaphore.withPermit(this.reserveOrPause(endpoint));
+        }
+    });
 
     readonly coolDownFor = Effect.fnUntraced(function* (this: BinanceWeightThrottle, retryAfterMs: number) {
         this.retryAfterUntilMs = Math.max(this.retryAfterUntilMs, (yield* Clock.currentTimeMillis) + retryAfterMs);
+    });
+
+    private readonly reserveOrPause = Effect.fnUntraced(function* (this: BinanceWeightThrottle, endpoint: string) {
+        const retryAfterRemainingMs = this.retryAfterUntilMs - (yield* Clock.currentTimeMillis);
+        if (retryAfterRemainingMs > 0) {
+            return { durationMs: retryAfterRemainingMs, message: 'Retry-After back-off exceeds deadline' };
+        }
+
+        const { key, ceiling, weight } = this.toBudget(endpoint);
+        const now = yield* Clock.currentTimeMillis;
+
+        this.rollWindow(key, now);
+
+        if ((this.usedByKey.get(key) ?? 0) + weight > ceiling) {
+            const windowEndMs = (this.windowStartByKey.get(key) ?? now) + WEIGHT_WINDOW_MS;
+
+            return { durationMs: windowEndMs - now, message: 'Weight window reset exceeds deadline' };
+        }
+
+        this.usedByKey.set(key, (this.usedByKey.get(key) ?? 0) + weight);
+
+        return null;
     });
 
     private readonly sleepWithinDeadline = Effect.fnUntraced(function* (this: BinanceWeightThrottle, durationMs: number, message: string) {
@@ -59,39 +75,37 @@ export class BinanceWeightThrottle {
         yield* Effect.sleep(durationMs);
     });
 
-    private rawIpWeight = 0;
-    private sapiIpWeight = 0;
-    private sapiUidWeight = 0;
-    private requestTimestamps: number[] = [];
+    private readonly usedByKey = new Map<string, number>();
+    private readonly windowStartByKey = new Map<string, number>();
     private retryAfterUntilMs = 0;
     private readonly semaphore = Semaphore.makeUnsafe(1);
 
     constructor(private readonly deadlineAtMs: number) {}
 
-    recordHeaders(headers: Headers.Headers): void {
-        this.rawIpWeight = this.readWeight(headers, RAW_IP_WEIGHT_HEADER, this.rawIpWeight);
-        this.sapiIpWeight = this.readWeight(headers, SAPI_IP_WEIGHT_HEADER, this.sapiIpWeight);
-        this.sapiUidWeight = this.readWeight(headers, SAPI_UID_WEIGHT_HEADER, this.sapiUidWeight);
-    }
-
-    private resetWeights(): void {
-        this.rawIpWeight = 0;
-        this.sapiIpWeight = 0;
-        this.sapiUidWeight = 0;
-    }
-
-    private shouldCoolDown(): boolean {
-        const rawIpExceeded = this.rawIpWeight >= RAW_IP_WEIGHT_CEILING * COOL_DOWN_THRESHOLD_RATIO;
-        const sapiIpExceeded = this.sapiIpWeight >= SAPI_IP_WEIGHT_CEILING * COOL_DOWN_THRESHOLD_RATIO;
-        const sapiUidExceeded = this.sapiUidWeight >= SAPI_UID_WEIGHT_CEILING * COOL_DOWN_THRESHOLD_RATIO;
-
-        return rawIpExceeded || sapiIpExceeded || sapiUidExceeded;
-    }
-
-    private readWeight(headers: Headers.Headers, headerName: string, fallback: number): number {
-        const rawValue: string | undefined = headers[headerName];
+    recordHeaders(endpoint: string, headers: Headers.Headers): void {
+        const { key, header } = this.toBudget(endpoint);
+        const rawValue: string | undefined = headers[header];
         const parsed = isDefined(rawValue) ? Number.parseInt(rawValue, 10) : Number.NaN;
 
-        return Number.isNaN(parsed) ? fallback : parsed;
+        if (this.usedByKey.has(key) && !Number.isNaN(parsed)) {
+            this.usedByKey.set(key, parsed);
+        }
+    }
+
+    private rollWindow(key: string, now: number): void {
+        const windowStartMs = this.windowStartByKey.get(key);
+
+        if (!isDefined(windowStartMs) || now >= windowStartMs + WEIGHT_WINDOW_MS) {
+            this.windowStartByKey.set(key, Math.floor(now / WEIGHT_WINDOW_MS) * WEIGHT_WINDOW_MS);
+            this.usedByKey.set(key, 0);
+        }
+    }
+
+    private toBudget(endpoint: string): BinanceWeightCostInterface & { readonly key: string } {
+        const path = endpoint.split('?', 1)[0] ?? endpoint;
+        const isSpot = path.startsWith(SPOT_PATH_PREFIX);
+        const defaultCost = { ...(isSpot ? BinanceWeightThrottle.SPOT_IP : BinanceWeightThrottle.SAPI_IP), weight: 1 };
+
+        return { ...(BinanceWeightThrottle.COSTS.get(path) ?? defaultCost), key: isSpot ? SPOT_BUDGET_KEY : path };
     }
 }

@@ -10,9 +10,7 @@ export interface CategorizeInboxStrategyInterface {
     readonly labelsById: ReadonlyMap<number, CategorizeInboxLabelInterface>;
     readonly pageTitle: string;
     readonly emptyDescription: string;
-    readonly selectLabel: string;
     readonly moreLabels: string;
-    readonly pickRowLabel: string;
     readonly writeFailed: string;
     readonly assignAs: (labelTitle: string) => string;
     readonly assignedCount: (count: number) => string;
@@ -21,7 +19,10 @@ export interface CategorizeInboxStrategyInterface {
     readonly evidenceAtom: typeof categoryEvidenceAtom;
     readonly pickLabels: (description: string, suggestedLabelIds: number[], onPicked: (labelIds: number[] | null) => void) => void;
     readonly pickFollowUpTagIds:
-        | ((assignment: CategorizeInboxAssignmentInterface, onPicked: (tagIds: number[] | null) => void) => void)
+        | ((
+              assignment: Pick<CategorizeInboxAssignmentInterface, 'displayTitle' | 'rows'>,
+              onPicked: (tagIds: number[] | null) => void
+          ) => void)
         | null;
     readonly buildRuleActions: (labelIds: number[]) => Pick<RulePrefillDataInterface, 'categoryId' | 'tagIds'>;
     readonly buildListRouteParams: (filters: TransactionFilterInterface) => UnknownInputParams;

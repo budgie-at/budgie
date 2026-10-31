@@ -1,45 +1,30 @@
-import { UserIconNameEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
-import { ActivityIndicator } from 'react-native';
-
-import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
+import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { Page } from '../../../@generic/component/page/page';
+import { TransactionListEmptyState } from '../transaction-list-empty-state/transaction-list-empty-state';
 import { TransactionSectionsList } from '../transaction-sections-list/transaction-sections-list';
 import { TransactionFilterPageHeader } from '../transactions-page-header/transaction-filter-page-header';
 
 import type { TransactionFilterPageHeaderPropsInterface } from '../../interface/transaction-filter-page-header-props.interface';
-import type { TransactionsByMonthSection } from '../../interface/transactions-by-month-section.type';
+import type { TransactionsByDaySectionInterface } from '../../interface/transactions-by-day-section.interface';
 
 interface Props {
     readonly headerProps: TransactionFilterPageHeaderPropsInterface;
-    readonly sections: TransactionsByMonthSection[];
+    readonly sections: TransactionsByDaySectionInterface[];
     readonly isLoading: boolean;
     readonly onLoadMore: () => void;
+    readonly accountId: number | null;
 }
 
-export const AnalyticsTransactionsPageContent = ({ headerProps, sections, isLoading, onLoadMore }: Props) => {
-    const { t } = useLingui();
-
-    const listEmptyState = isLoading ? (
-        <ActivityIndicator size="large" />
-    ) : (
-        <EmptyState
-            circleIcon={UserIconNameEnum.Receipt}
-            title={t`No matching transactions`}
-            titleClassName="text-md text-primary font-semibold"
-            description={t`Try adjusting your filters to see more results`}
-            descriptionClassName="text-center max-w-[250px]"
-        />
-    );
-
-    return (
+export const AnalyticsTransactionsPageContent = ({ headerProps, sections, isLoading, onLoadMore, accountId }: Props) => (
+    <GroupedSurface>
         <Page header={<TransactionFilterPageHeader {...headerProps} />}>
             <TransactionSectionsList
                 sections={sections}
                 onEndReached={onLoadMore}
-                listEmptyState={listEmptyState}
+                listEmptyState={<TransactionListEmptyState isLoading={isLoading} hasFiltersSelected />}
+                accountId={accountId}
                 footerSpacerMultiplier={0}
             />
         </Page>
-    );
-};
+    </GroupedSurface>
+);
