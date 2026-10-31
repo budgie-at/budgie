@@ -8,15 +8,16 @@ interface Props {
     readonly testID: string;
     readonly stateOnTestID: string;
     readonly stateOffTestID: string;
+    readonly accessibilityLabel?: string;
 }
 
-export const SettingSwitch = ({ value, onValueChange, testID, stateOnTestID, stateOffTestID }: Props) => {
+export const SettingSwitch = ({ value, onValueChange, testID, stateOnTestID, stateOffTestID, accessibilityLabel }: Props) => {
     const stateMarkerTestID = value ? stateOnTestID : stateOffTestID;
 
     return (
         <View className="flex-row items-center gap-x-xs">
             <View testID={stateMarkerTestID} className="h-1 w-1" />
-            <ThemedSwitch testID={testID} value={value} onValueChange={onValueChange} />
+            <ThemedSwitch testID={testID} value={value} onValueChange={onValueChange} accessibilityLabel={accessibilityLabel} />
         </View>
     );
 };

@@ -1,6 +1,8 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
+import { isThisYear } from 'date-fns';
 import * as Effect from 'effect/Effect';
-import { Text, View } from 'react-native';
+import { Text } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -11,6 +13,7 @@ import { DatabaseExportService } from '../../../export/service/database-export.s
 import { useI18nContext } from '../../../i18n/context/i18n.context';
 import { useSetting } from '../../hook/use-setting.hook';
 import { SettingsPillButton } from '../settings-pill-button/settings-pill-button';
+import { SettingsRow } from '../settings-row/settings-row';
 
 export const BackupRow = () => {
     const { t } = useLingui();
@@ -24,23 +27,42 @@ export const BackupRow = () => {
     });
 
     const hasBackup = isDefined(lastBackupAt);
-    const lastBackupLabel = hasBackup ? intl.formatDate(lastBackupAt, { day: 'numeric', month: 'short', year: 'numeric' }) : t`Not yet`;
-    const backupLabel = hasBackup ? t`Last export` : t`Backup`;
-    const lastBackupClassName = hasBackup ? 'text-primary' : 'text-warning-foreground';
+    const isBackupThisYear = hasBackup && isThisYear(lastBackupAt);
+    const lastBackupDate = hasBackup
+        ? intl.formatDate(lastBackupAt, {
+              day: 'numeric',
+              month: 'short',
+              hour: 'numeric',
+              minute: '2-digit',
+              ...(!isBackupThisYear && { year: 'numeric' })
+          })
+        : '';
+    const lastBackupLabel = hasBackup ? t`Last created ${lastBackupDate}` : t`Not created yet`;
+    const lastBackupClassName = hasBackup ? 'text-secondary-foreground' : 'text-warning-foreground';
+    const discVariant = hasBackup ? 'ghost' : 'warning';
     const buttonVariant = hasBackup ? 'secondary' : 'cta';
     const handleBackup = () => void handleExport();
 
     return (
-        <View className="flex-row items-center gap-x-lg py-lg" testID={SettingsPageSelector.DataBackup}>
-            <Text className="flex-1 text-sm text-secondary-foreground">{backupLabel}</Text>
-            <Text className={cn('text-sm font-semibold', lastBackupClassName)}>{lastBackupLabel}</Text>
-            <SettingsPillButton
-                label={t`Back up`}
-                onPress={handleBackup}
-                variant={buttonVariant}
-                isLoading={isLoading}
-                testID={SettingsPageSelector.DataBackupButton}
-            />
-        </View>
+        <SettingsRow
+            icon={UserIconNameEnum.HardDriveUpload}
+            variant={discVariant}
+            title={t`Backup file`}
+            testID={SettingsPageSelector.DataBackup}
+            {...(!isLoading && { onPress: handleBackup })}
+            subtitle={
+                <Text className={cn('text-[13px] leading-[18px]', lastBackupClassName)} numberOfLines={2}>
+                    {lastBackupLabel}
+                </Text>
+            }
+            right={
+                <SettingsPillButton
+                    label={t`Back up`}
+                    variant={buttonVariant}
+                    isLoading={isLoading}
+                    testID={SettingsPageSelector.DataBackupButton}
+                />
+            }
+        />
     );
 };

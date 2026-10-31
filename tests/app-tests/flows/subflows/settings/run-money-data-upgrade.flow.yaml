@@ -3,7 +3,7 @@ appId: ${APP_ID}
 - runFlow:
       file: ../navigation/open-deep-link.flow.yaml
       env:
-          DEEP_LINK: 'budgie://settings?anchor=data'
+          DEEP_LINK: 'budgie://settings/data'
 
 # The scroll-driven blur chrome keeps invalidating the iOS 26 AX snapshot;
 # settle animations first and re-query after the scroll instead of trusting
@@ -23,9 +23,9 @@ appId: ${APP_ID}
 - tapOn:
       id: 'SettingsPage.MoneyDataUpgradeCard'
 - extendedWaitUntil:
-      visible: 'Value historical entries?'
+      visible: 'Convert past amounts?'
       timeout: 10000
-- tapOn: 'Value entries'
+- tapOn: 'Convert'
 - extendedWaitUntil:
       visible:
           id: 'SettingsPage.MoneyDataUpgradeCard.Status.COMPLETE'
