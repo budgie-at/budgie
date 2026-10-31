@@ -21,7 +21,7 @@ appId: ${APP_ID}
 - runFlow:
       when:
           notVisible:
-              text: 'budgie \(E2E\)'
+              id: 'budgie \(E2E\), Folder'
       commands:
           - tapOn:
                 id: 'BackButton'
@@ -34,16 +34,16 @@ appId: ${APP_ID}
 
 - runFlow:
       when:
-          visible: 'Réessayer|Retry|Wiederholen|Reintentar|Повторити'
+          visible: 'Réessayer|Retry|Try Again|Wiederholen|Reintentar|Повторити'
       commands:
           - tapOn:
-                text: 'Réessayer|Retry|Wiederholen|Reintentar|Повторити'
+                text: 'Réessayer|Retry|Try Again|Wiederholen|Reintentar|Повторити'
           - waitForAnimationToEnd
 
 - runFlow:
       when:
           notVisible:
-              text: 'budgie \(E2E\)'
+              id: 'budgie \(E2E\), Folder'
       commands:
           - runFlow:
                 when:
@@ -56,11 +56,11 @@ appId: ${APP_ID}
 - runFlow:
       when:
           notVisible:
-              text: 'budgie \(E2E\)'
+              id: 'budgie \(E2E\), Folder'
       commands:
           - scrollUntilVisible:
                 element:
-                    text: 'budgie \(E2E\)'
+                    id: 'budgie \(E2E\), Folder'
                 direction: DOWN
                 timeout: 20000
                 speed: 20
@@ -69,11 +69,11 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
       visible:
-          text: 'budgie \(E2E\)'
+          id: 'budgie \(E2E\), Folder'
       timeout: 20000
 
 - tapOn:
-      text: 'budgie \(E2E\)'
+      id: 'budgie \(E2E\), Folder'
       retryTapIfNoChange: true
 
 - waitForAnimationToEnd
@@ -83,10 +83,10 @@ appId: ${APP_ID}
       commands:
           - runFlow:
                 when:
-                    visible: 'Réessayer|Retry|Wiederholen|Reintentar|Повторити'
+                    visible: 'Réessayer|Retry|Try Again|Wiederholen|Reintentar|Повторити'
                 commands:
                     - tapOn:
-                          text: 'Réessayer|Retry|Wiederholen|Reintentar|Повторити'
+                          text: 'Réessayer|Retry|Try Again|Wiederholen|Reintentar|Повторити'
                     - waitForAnimationToEnd
           - extendedWaitUntil:
                 visible:
