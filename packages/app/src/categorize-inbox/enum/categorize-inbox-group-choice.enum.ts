@@ -1,0 +1,6 @@
+export enum CategorizeInboxGroupChoiceEnum {
+    TRANSFER = 'TRANSFER',
+    LEARNED_TRANSFER = 'LEARNED_TRANSFER',
+    MOVE_TO_CASH = 'MOVE_TO_CASH',
+    ALREADY_TRACKED = 'ALREADY_TRACKED'
+}

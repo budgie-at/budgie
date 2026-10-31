@@ -4,10 +4,13 @@ import { useQuickActionRouting } from 'expo-quick-actions/router';
 import { useShareIntent } from 'expo-share-intent';
 import { useEffect, useEffectEvent } from 'react';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { useAuthContext } from '../../../auth/context/auth.context';
 import { RECEIPT_SCAN_ACTION } from '../../constant/receipt-scan-action.constant';
 import { receiptScanRequestAtom } from '../../constant/receipt-scan-request-atom.constant';
+import { ReceiptSourceEnum } from '../../enum/receipt-source.enum';
 import { useReceiptScan } from '../../hook/use-receipt-scan.hook';
 import { ReceiptScanService } from '../../service/receipt-scan.service';
 
@@ -16,14 +19,14 @@ import type { Action } from 'expo-quick-actions';
 export const ReceiptLaunchHandler = () => {
     const { isUnlocked } = useAuthContext();
     const { hasShareIntent, shareIntent, resetShareIntent } = useShareIntent();
-    const [isScanRequested, setIsScanRequested] = useAtom(receiptScanRequestAtom);
+    const [scanSource, setScanSource] = useAtom(receiptScanRequestAtom);
     const processReceipts = useReceiptScan();
 
     const handleQuickAction = (action: Action) => {
         const isScanAction = action.id === RECEIPT_SCAN_ACTION;
 
         if (isScanAction) {
-            setIsScanRequested(true);
+            setScanSource(ReceiptSourceEnum.CAMERA);
         }
 
         return isScanAction;
@@ -37,10 +40,10 @@ export const ReceiptLaunchHandler = () => {
         processReceipts(uris);
     });
 
-    const handleScanRequest = useEffectEvent(() => {
-        setIsScanRequested(false);
+    const handleScanRequest = useEffectEvent((source: ReceiptSourceEnum) => {
+        setScanSource(null);
         appRuntime.runFork(
-            Effect.flatMap(ReceiptScanService, receiptScanService => receiptScanService.scan()).pipe(
+            Effect.flatMap(ReceiptScanService, receiptScanService => receiptScanService.capture(source)).pipe(
                 Effect.tap(uris => Effect.sync(() => void processReceipts(uris)))
             )
         );
@@ -53,10 +56,10 @@ export const ReceiptLaunchHandler = () => {
     }, [isUnlocked, hasShareIntent]);
 
     useEffect(() => {
-        if (isUnlocked && isScanRequested) {
-            handleScanRequest();
+        if (isUnlocked && isDefined(scanSource)) {
+            handleScanRequest(scanSource);
         }
-    }, [isUnlocked, isScanRequested]);
+    }, [isUnlocked, scanSource]);
 
     return null;
 };
