@@ -42,7 +42,7 @@ export const useBudgetFundForm = ({ budget, editingId }: UseBudgetFundFormOption
     const editingFund = funds.find(fund => fund.id === editingId);
     const suggestions = useGetBudgetFundSuggestionsQuery(budget.id, budget.instrumentId);
 
-    const defaultValues = useBudgetFundDefaultValues();
+    const defaultValues = useBudgetFundDefaultValues(budget);
 
     const form = useForm<BudgetFundFormValues>({
         mode: 'onChange',
