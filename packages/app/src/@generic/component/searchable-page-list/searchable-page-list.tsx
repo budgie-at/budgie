@@ -115,6 +115,7 @@ export const SearchablePageList = <T extends IdInterface>({
             ListHeaderComponent={customListHeader}
             estimatedHeaderSize={LEGEND_LIST_HEADER_HEIGHT}
             renderItem={renderItem}
+            extraData={renderItem}
             keyExtractor={legendListKeyExtractor}
             estimatedItemSize={sizing?.estimatedItemSize}
             getItemType={sizing?.getItemType}

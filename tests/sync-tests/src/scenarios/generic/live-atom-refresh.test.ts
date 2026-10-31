@@ -23,6 +23,7 @@ import {
     uncategorizedRowsAtom,
     untaggedRowsAtom
 } from '@app/categorize-inbox/constant/categorize-inbox-atoms.constant';
+import { categoryUsageAtom } from '@app/category/query/use-categories-with-usage.query';
 import { categoryByIdAtom } from '@app/category/query/use-get-category-by-id.query';
 import { nonSystemCategoriesAtom } from '@app/category/query/use-non-system-categories.query';
 import { searchCategoriesAtom } from '@app/category/query/use-search-categories.query';
@@ -50,6 +51,7 @@ import { bankIntegrationByIdAtom } from '@app/sync/query/use-get-bank-integratio
 import { bankIntegrationCountAtom } from '@app/sync/query/use-get-bank-integration-count.query';
 import { tagsByIdsAtom } from '@app/tag/query/use-get-tag-by-ids.query';
 import { searchTagsAtom } from '@app/tag/query/use-search-tags.query';
+import { tagUsageAtom } from '@app/tag/query/use-tags-with-usage.query';
 import { TagService } from '@app/tag/service/tag.service';
 import { refundsTotalAtom } from '@app/transaction/constant/refunds-total-atom.constant';
 import { recurringCalendarAtom } from '@app/transaction/hook/use-recurring-calendar.hook';
@@ -165,6 +167,7 @@ const liveAtoms = ({
     categoryById: categoryByIdAtom([category.id, EN]),
     nonSystemCategories: nonSystemCategoriesAtom(EN),
     searchCategories: searchCategoriesAtom(['', true, EN]),
+    categoryUsage: categoryUsageAtom,
     exchangeRatesUpdatedAt: exchangeRatesUpdatedAtAtom,
     rateByBaseAndQuoteIds: rateByBaseAndQuoteIdsAtom([BASE_INSTRUMENT_ID, 2]),
     installmentPlanSchedule: installmentPlanScheduleAtom(installmentAccount.id),
@@ -192,6 +195,7 @@ const liveAtoms = ({
     bankIntegrationCount: bankIntegrationCountAtom,
     tagsByIds: tagsByIdsAtom([tag.id]),
     searchTags: searchTagsAtom(''),
+    tagUsage: tagUsageAtom,
     refundsTotal: refundsTotalAtom([expense.id, EN]),
     recurringCalendar: recurringCalendarAtom([new Date(NOW).getFullYear(), new Date(NOW).getMonth(), NOW]),
     consolidationSources: consolidationSourcesAtom([expense.id, EN]),
