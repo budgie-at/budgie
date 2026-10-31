@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { router } from 'expo-router';
 import { Text } from 'react-native';
 
@@ -35,7 +36,7 @@ export const BudgetEventRow = ({ event }: Props) => {
     };
 
     return (
-        <BudgetListRow testID={BudgetSelector.DetailsEventRow(budget.id)} onPress={handlePress}>
+        <BudgetListRow icon={UserIconNameEnum.CalendarRange} testID={BudgetSelector.DetailsEventRow(budget.id)} onPress={handlePress}>
             <BudgetNamedProgressRowHeader
                 name={budget.name}
                 amount={projection.overall.spent}

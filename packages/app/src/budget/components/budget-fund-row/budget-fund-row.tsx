@@ -1,7 +1,11 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { useToday } from '../../../@generic/hook/use-today.hook';
+import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { BudgetSelector } from '../../budget.selector';
 import { computeFundTimeFraction } from '../../utils/compute-fund-time-fraction.util';
@@ -27,13 +31,15 @@ export const BudgetFundRow = ({ fund, budget, currencySymbol }: Props) => {
     const barTone = isFundBehind(fund, today) ? 'warning' : 'positive';
     const dueDate = formatMonthAndDay(fund.dueAt);
     const dueLabel = t`Due ${dueDate}`;
+    const { category } = useGetCategoryByIdQuery(fund.categoryId);
+    const icon = isDefined(category) ? category.icon : UserIconNameEnum.PiggyBank;
 
     const handlePress = () => {
         router.push({ pathname: '/budget-fund-form', params: { id: String(fund.id) } });
     };
 
     return (
-        <BudgetListRow testID={BudgetSelector.DetailsFundRow(fund.id)} onPress={handlePress}>
+        <BudgetListRow icon={icon} testID={BudgetSelector.DetailsFundRow(fund.id)} onPress={handlePress}>
             <BudgetNamedProgressRowHeader
                 name={fund.name}
                 amount={fund.fundedAmount}
