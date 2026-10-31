@@ -1,7 +1,11 @@
+import { UserIconNameEnum } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
+
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { EntranceReveal } from '../../../@generic/component/entrance-reveal/entrance-reveal';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { findRiskiestAheadScope } from '../../utils/find-riskiest-ahead-scope.util';
 import { BudgetPaceHint } from '../budget-pace-hint/budget-pace-hint';
 import { BudgetVerdictFigure } from '../budget-verdict-figure/budget-verdict-figure';
@@ -20,6 +24,7 @@ interface Props {
 }
 
 export const BudgetVerdict = ({ projection, currencySymbol, onFigurePress, onPaceHintPress }: Props) => {
+    const { t } = useLingui();
     const { overall, upcomingCharges, daysLeft } = projection;
 
     const hasPaceHint = isDefined(onPaceHintPress) && isDefined(findRiskiestAheadScope(projection));
@@ -30,14 +35,19 @@ export const BudgetVerdict = ({ projection, currencySymbol, onFigurePress, onPac
         <BudgetVerdictOutlook scope={overall} currencySymbol={currencySymbol} />
     );
 
-    const verdictFigure = <BudgetVerdictFigure scope={overall} currencySymbol={currencySymbol} />;
-
     const figure = isDefined(onFigurePress) ? (
-        <HapticPressable accessibilityRole="button" onPress={onFigurePress}>
-            {verdictFigure}
+        <HapticPressable
+            accessibilityRole="button"
+            accessibilityHint={t`Shows how this is calculated`}
+            className="self-start active:opacity-70"
+            onPress={onFigurePress}
+        >
+            <BudgetVerdictFigure scope={overall} currencySymbol={currencySymbol}>
+                <Icon icon={UserIconNameEnum.Info} size={14} className="text-secondary-foreground" />
+            </BudgetVerdictFigure>
         </HapticPressable>
     ) : (
-        verdictFigure
+        <BudgetVerdictFigure scope={overall} currencySymbol={currencySymbol} />
     );
 
     return (

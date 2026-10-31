@@ -5,6 +5,8 @@ import { EntranceReveal } from '../../../@generic/component/entrance-reveal/entr
 import { HairlineStatRow } from '../../../@generic/component/hairline-stat-row/hairline-stat-row';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { BudgetSelector } from '../../budget.selector';
+import { BUDGET_PACE_TEXT_CLASS_NAME } from '../../constant/budget-pace-text-class-name.constant';
+import { BudgetHeldBackNote } from '../budget-held-back-note/budget-held-back-note';
 
 import type { BudgetProjectionScopeInterface } from '@budgie/budget';
 
@@ -31,6 +33,7 @@ export const BudgetStatRow = ({ scope, limitSource, currencySymbol }: Props) => 
         label: t`Left`,
         value: formatAmount(scope.free),
         variant: leftVariant,
+        valueClassName: BUDGET_PACE_TEXT_CLASS_NAME[leftVariant],
         testID: BudgetSelector.DetailsRemainingLabel
     } as const;
     const limitValue = formatAmount(scope.limit);
@@ -43,8 +46,9 @@ export const BudgetStatRow = ({ scope, limitSource, currencySymbol }: Props) => 
             : ([incomeStat, spentStat, leftStat] as const);
 
     return (
-        <EntranceReveal step={2}>
+        <EntranceReveal step={2} className="gap-y-xs">
             <HairlineStatRow stats={stats} />
+            <BudgetHeldBackNote scope={scope} currencySymbol={currencySymbol} />
         </EntranceReveal>
     );
 };

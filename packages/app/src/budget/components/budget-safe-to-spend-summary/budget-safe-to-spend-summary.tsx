@@ -27,6 +27,9 @@ export const BudgetSafeToSpendSummary = ({ projection, currencySymbol }: Props) 
     const spentRow = isPositiveNumber(overall.spent) ? (
         <BudgetBreakdownRow label={t`Spent so far`} amount={`−${formatAmount(overall.spent)}`} />
     ) : null;
+    const reservedRow = isPositiveNumber(overall.reserved) ? (
+        <BudgetBreakdownRow label={t`Set aside this period`} amount={`−${formatAmount(overall.reserved)}`} />
+    ) : null;
     const upcomingRow = isPositiveNumber(overall.upcoming) ? (
         <BudgetBreakdownRow label={t`Upcoming this period`} amount={`−${formatAmount(overall.upcoming)}`} />
     ) : null;
@@ -36,6 +39,7 @@ export const BudgetSafeToSpendSummary = ({ projection, currencySymbol }: Props) 
             <BudgetBreakdownRow label={t`Limit`} amount={formatAmount(overall.limit)} />
             {spentRow}
             {upcomingRow}
+            {reservedRow}
             <View className="h-hairline bg-secondary-corner" />
             <Text className="text-sm tabular-nums text-secondary-foreground">{t`${freeAmount} ÷ ${daysLabel}`}</Text>
             <HeroFigure

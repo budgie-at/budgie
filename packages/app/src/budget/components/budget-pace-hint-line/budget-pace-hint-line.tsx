@@ -1,10 +1,11 @@
 import { convertFromMicroUnits } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { ChevronLinkRow } from '../../../@generic/component/chevron-link-row/chevron-link-row';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { BudgetSelector } from '../../budget.selector';
+import { BudgetHeldBackNote } from '../budget-held-back-note/budget-held-back-note';
 
 import type { BudgetProjectionScopeInterface } from '@budgie/budget';
 
@@ -22,10 +23,13 @@ export const BudgetPaceHintLine = ({ title, scope, currencySymbol, onPress }: Pr
     const label = t`${title} is running fast. Keep it under ${perDayAmount}/day.`;
 
     return (
-        <ChevronLinkRow label={label} textClassName="text-sm text-primary" testID={BudgetSelector.DetailsPaceBanner} onPress={onPress}>
-            <Trans>
-                {title} is running fast. Keep it under <Text className="text-warning-foreground">{perDayAmount}/day</Text>.
-            </Trans>
-        </ChevronLinkRow>
+        <View className="gap-y-xxs">
+            <ChevronLinkRow label={label} textClassName="text-sm text-primary" testID={BudgetSelector.DetailsPaceBanner} onPress={onPress}>
+                <Trans>
+                    {title} is running fast. Keep it under <Text className="text-warning-strong">{perDayAmount}/day</Text>.
+                </Trans>
+            </ChevronLinkRow>
+            <BudgetHeldBackNote scope={scope} currencySymbol={currencySymbol} />
+        </View>
     );
 };

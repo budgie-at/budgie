@@ -7,6 +7,7 @@ import { BudgetDayStateEnum } from '../../enum/budget-day-state.enum';
 import { useBudgetDayStripLabels } from '../../hooks/use-budget-day-strip-labels.hook';
 import { buildBudgetDayStripCells } from '../../utils/build-budget-day-strip-cells.util';
 import { BudgetDayStripCell } from '../budget-day-strip-cell/budget-day-strip-cell';
+import { BudgetDayStripKey } from '../budget-day-strip-key/budget-day-strip-key';
 
 import type { BudgetProjectionInterface } from '@budgie/budget';
 
@@ -38,6 +39,8 @@ export const BudgetDayStrip = ({ projection, period, currencySymbol }: Props) =>
                     return <BudgetDayStripCell key={key} dayState={dayState} fillDelay={fillDelay} />;
                 })}
             </View>
+
+            <BudgetDayStripKey />
 
             <Text className="text-xs text-secondary-foreground">{captionLabel}</Text>
         </EntranceReveal>

@@ -139,7 +139,8 @@ env:
       env:
           DEEP_LINK: 'budgie://budget'
 - extendedWaitUntil:
-      visible: 'Budget details'
+      visible:
+          id: 'BudgetDetails.Screen'
       timeout: 3000
 - assertNotVisible: 'Edit budget'
 - assertVisible:
@@ -159,7 +160,8 @@ env:
 - tapOn:
       id: 'BudgetWidget.Card'
 - extendedWaitUntil:
-      visible: 'Budget details'
+      visible:
+          id: 'BudgetDetails.Screen'
       timeout: 3000
 - assertNotVisible: 'Edit budget'
 
@@ -200,7 +202,8 @@ env:
       id: 'BudgetSetup.SaveButton'
 
 - extendedWaitUntil:
-      visible: 'Budget details'
+      visible:
+          id: 'BudgetDetails.Screen'
       timeout: 3000
 - assertVisible:
       id: 'BudgetDetails.SpentLabel'
@@ -235,7 +238,8 @@ env:
 - waitForAnimationToEnd
 
 - extendedWaitUntil:
-      visible: 'Budget details'
+      visible:
+          id: 'BudgetDetails.Screen'
       timeout: 3000
 - assertNotVisible: 'Edit budget'
 - assertVisible:
@@ -376,7 +380,8 @@ env:
       id: 'BudgetSetup.SaveButton'
 
 - extendedWaitUntil:
-      visible: 'Budget details'
+      visible:
+          id: 'BudgetDetails.Screen'
       timeout: 3000
 
 - tapOn:
@@ -401,7 +406,8 @@ env:
 - tapOn:
       id: 'BudgetWidget.Card'
 - extendedWaitUntil:
-      visible: 'Budget details'
+      visible:
+          id: 'BudgetDetails.Screen'
       timeout: 3000
 
 - scrollUntilVisible:
@@ -464,7 +470,8 @@ env:
 - tapOn:
       id: 'BudgetWidget.Card'
 - extendedWaitUntil:
-      visible: 'Budget details'
+      visible:
+          id: 'BudgetDetails.Screen'
       timeout: 3000
 - scrollUntilVisible:
       element:
@@ -486,7 +493,8 @@ env:
 - tapOn:
       id: 'PageHeader.BackButton'
 - extendedWaitUntil:
-      visible: 'Budget details'
+      visible:
+          id: 'BudgetDetails.Screen'
       timeout: 3000
 
 - tapOn:
@@ -523,7 +531,8 @@ env:
       id: 'BudgetSetup.SaveButton'
 
 - extendedWaitUntil:
-      visible: 'Budget details'
+      visible:
+          id: 'BudgetDetails.Screen'
       timeout: 3000
 - assertVisible:
       id: 'BudgetDetails.CategoryRow.42'
@@ -678,7 +687,8 @@ env:
 - tapOn:
       id: 'BudgetWidget.Card'
 - extendedWaitUntil:
-      visible: 'Budget details'
+      visible:
+          id: 'BudgetDetails.Screen'
       timeout: 3000
 
 - tapOn:

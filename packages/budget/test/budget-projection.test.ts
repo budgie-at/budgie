@@ -316,6 +316,25 @@ it.effect('subtracts reservations from free money and safe per day per scope lik
     })
 );
 
+it.effect("spreads a category nudge over the days left after that category's set-aside", () =>
+    Effect.sync(() => {
+        const projection = computeBudgetProjection(
+            octoberInput({
+                now: october(21),
+                overallLimit: 5_350_000_000,
+                categoryLimits: [{ categoryId: LIMITED_CATEGORY_ID, limitAmount: 670_000_000 }],
+                entries: variableRun([2, 5, 8, 11, 14, 17, 20], 575_000_000 / 7, LIMITED_CATEGORY_ID),
+                reservations: [{ fundId: 1, categoryId: LIMITED_CATEGORY_ID, amount: 80_000_000 }]
+            })
+        );
+        const limitedCategory = projection.categories.find(category => category.categoryId === LIMITED_CATEGORY_ID);
+
+        expect(projection.daysLeft).toBe(11);
+        expect(limitedCategory?.free).toBeCloseTo(15_000_000);
+        expect(limitedCategory?.safePerDay).toBe(1_363_636);
+    })
+);
+
 it.effect('now equal to periodStart yields elapsedDays 1 and daysLeft equal to totalDays', () =>
     Effect.sync(() => {
         const projection = computeBudgetProjection(octoberInput({ now: new Date(2026, OCTOBER, 1) }));

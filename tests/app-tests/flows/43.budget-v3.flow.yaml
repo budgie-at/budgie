@@ -62,7 +62,8 @@ env:
 - tapOn:
       id: 'BudgetWidget.Card'
 - extendedWaitUntil:
-      visible: 'Budget details'
+      visible:
+          id: 'BudgetDetails.Screen'
       timeout: 3000
 - extendedWaitUntil:
       visible:
@@ -80,7 +81,8 @@ env:
 - tapOn:
       id: 'PageHeader.BackButton'
 - extendedWaitUntil:
-      visible: 'Budget details'
+      visible:
+          id: 'BudgetDetails.Screen'
       timeout: 3000
 
 - runFlow:
@@ -124,7 +126,8 @@ env:
       env:
           DEEP_LINK: 'budgie://budget'
 - extendedWaitUntil:
-      visible: 'Budget details'
+      visible:
+          id: 'BudgetDetails.Screen'
       timeout: 3000
 - assertVisible:
       id: 'BudgetDetails.SpentLabel'
@@ -169,7 +172,8 @@ env:
       id: 'BudgetEvent.SaveButton'
 
 - extendedWaitUntil:
-      visible: 'Budget details'
+      visible:
+          id: 'BudgetDetails.Screen'
       timeout: 3000
 - scrollUntilVisible:
       element: ${EVENT_NAME}

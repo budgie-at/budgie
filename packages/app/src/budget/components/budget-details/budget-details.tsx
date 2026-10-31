@@ -1,5 +1,4 @@
 import { getInclusiveEnd } from '@budgie/budget';
-import { t } from '@lingui/core/macro';
 import { router } from 'expo-router';
 import { View } from 'react-native';
 
@@ -10,9 +9,11 @@ import { HeaderBackButton } from '../../../@generic/component/header-back-button
 import { useToday } from '../../../@generic/hook/use-today.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
+import { BudgetSelector } from '../../budget.selector';
 import { BudgetHighlightContext } from '../../context/budget-highlight.context';
 import { useBudgetDetailsReveal } from '../../hooks/use-budget-details-reveal.hook';
 import { useGetBudgetProjectionQuery } from '../../query/use-get-budget-projection.query';
+import { findRiskiestAheadScope } from '../../utils/find-riskiest-ahead-scope.util';
 import { formatBudgetPeriodLabel } from '../../utils/format-budget-period-label.util';
 import { resolveBudgetWindow } from '../../utils/resolve-budget-window.util';
 import { BudgetDetailsEditButton } from '../budget-details-edit-button/budget-details-edit-button';
@@ -34,7 +35,11 @@ export const BudgetDetails = ({ budget }: Props) => {
     const { formatMonthAndDay } = useFormatDate();
     const { projection, isLoading } = useGetBudgetProjectionQuery(budget);
     const { instrument } = useGetInstrumentByIdQuery(budget.instrumentId);
-    const { scrollRef, contentRef, setHighlightTarget, highlightContextValue } = useBudgetDetailsReveal(isLoading);
+    const riskiestAheadScope = findRiskiestAheadScope(projection);
+    const { scrollRef, contentRef, setHighlightTarget, highlightContextValue } = useBudgetDetailsReveal(
+        isLoading,
+        isDefined(riskiestAheadScope) ? riskiestAheadScope.target : null
+    );
     const periodWindow = resolveBudgetWindow(budget, today);
     const periodEnd = getInclusiveEnd(periodWindow.nextPeriodStart);
     const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
@@ -51,11 +56,12 @@ export const BudgetDetails = ({ budget }: Props) => {
 
     return (
         <CollapsibleChromePage
-            title={t`Budget details`}
+            title={budget.name}
             subtitle={dateLabel}
             leading={<HeaderBackButton />}
             trailing={<BudgetDetailsEditButton onPress={handleEditPress} />}
             scrollViewProps={scrollViewProps}
+            testID={BudgetSelector.DetailsScreen}
         >
             <BudgetHighlightContext value={highlightContextValue}>
                 <View ref={contentRef} collapsable={false} className="gap-y-3xl">

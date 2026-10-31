@@ -1,9 +1,11 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { BUDGET_PACE_VARIANT } from '../../constant/budget-pace-variant.constant';
 import { useBudgetHighlightContext } from '../../context/budget-highlight.context';
 import { useBudgetLimitAccessibility } from '../../hooks/use-budget-limit-accessibility.hook';
@@ -29,11 +31,13 @@ interface Props {
 
 export const BudgetDetailsLimitRow = (props: Props) => {
     const { title, carriedAmount, scope, currencySymbol, testIDs, onPress, highlightTarget, staggerIndex } = props;
-    const { target } = useBudgetHighlightContext();
+    const { target, hint } = useBudgetHighlightContext();
     const rowRef = useRef<View>(null);
     const [hasBeenHighlighted, setHasBeenHighlighted] = useState(false);
     const { accessibilityLabel, accessibilityValue } = useBudgetLimitAccessibility(title, scope, currencySymbol);
-    const isHighlighted = isDefined(target) && target.scope === highlightTarget.scope && target.categoryId === highlightTarget.categoryId;
+    const isHighlightTarget = (candidate: BudgetHighlightTargetInterface | null) =>
+        isDefined(candidate) && candidate.scope === highlightTarget.scope && candidate.categoryId === highlightTarget.categoryId;
+    const isHighlighted = isHighlightTarget(target);
 
     if (isHighlighted && !hasBeenHighlighted) {
         setHasBeenHighlighted(true);
@@ -46,26 +50,29 @@ export const BudgetDetailsLimitRow = (props: Props) => {
                 accessibilityLabel={accessibilityLabel}
                 accessibilityRole="button"
                 accessibilityValue={accessibilityValue}
-                className="min-h-[44px] justify-center active:opacity-70"
+                className="min-h-[44px] flex-row items-center gap-x-md py-xs active:opacity-70"
                 onPress={onPress}
             >
-                <BudgetLimitRow
-                    title={title}
-                    carriedAmount={carriedAmount}
-                    spent={scope.spent}
-                    limit={scope.limit}
-                    currencySymbol={currencySymbol}
-                    spentTestID={testIDs.spent}
-                >
-                    <BudgetLimitBar
+                <View className="flex-1">
+                    <BudgetLimitRow
+                        title={title}
+                        carriedAmount={carriedAmount}
                         spent={scope.spent}
                         limit={scope.limit}
-                        tone={BUDGET_PACE_VARIANT[scope.status]}
-                        elapsedFraction={scope.elapsedFraction}
-                        staggerIndex={staggerIndex}
-                    />
-                    <BudgetCategoryForecast scope={scope} currencySymbol={currencySymbol} />
-                </BudgetLimitRow>
+                        currencySymbol={currencySymbol}
+                        spentTestID={testIDs.spent}
+                    >
+                        <BudgetLimitBar
+                            spent={scope.spent}
+                            limit={scope.limit}
+                            tone={BUDGET_PACE_VARIANT[scope.status]}
+                            elapsedFraction={scope.elapsedFraction}
+                            staggerIndex={staggerIndex}
+                        />
+                        {isHighlightTarget(hint) ? null : <BudgetCategoryForecast scope={scope} currencySymbol={currencySymbol} />}
+                    </BudgetLimitRow>
+                </View>
+                <Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />
             </HapticPressable>
             <View collapsable={false} nativeID={testIDs.row} pointerEvents="none" style={StyleSheet.absoluteFill} testID={testIDs.row} />
         </View>

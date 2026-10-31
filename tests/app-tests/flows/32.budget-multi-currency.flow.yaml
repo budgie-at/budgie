@@ -86,7 +86,8 @@ env:
 - tapOn:
       id: 'BudgetWidget.Card'
 - extendedWaitUntil:
-      visible: 'Budget details'
+      visible:
+          id: 'BudgetDetails.Screen'
       timeout: 3000
 - assertVisible:
       id: 'BudgetDetails.SpentLabel'
