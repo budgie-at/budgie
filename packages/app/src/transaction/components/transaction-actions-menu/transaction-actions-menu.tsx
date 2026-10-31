@@ -3,7 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { GestureResponderEvent, View } from 'react-native';
 
-import { emptyFn, isDefined } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
@@ -16,13 +16,13 @@ import { TransactionActionsMenuSelector } from './transaction-actions-menu.selec
 
 import type { TransactionActionsMenuPropsInterface } from '../../interface/transaction-actions-menu-props.interface';
 
-const TRIGGER_SIZE = 40;
+const TRIGGER_SIZE = 44;
 
 export const TransactionActionsMenu = ({ onDelete, onRevert, isConsolidated = false, children }: TransactionActionsMenuPropsInterface) => {
     const { t } = useLingui();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [anchor, setAnchor] = useState<PopoverMenuAnchor | undefined>();
-    const actionLabel = isConsolidated ? t`Revert` : t`Delete Transaction`;
+    const actionLabel = isConsolidated ? t`Separate Transactions` : t`Delete Transaction`;
     const actionIcon = isConsolidated ? UserIconNameEnum.Undo2 : UserIconNameEnum.Trash2;
     const actionTestID = isConsolidated ? TransactionActionsMenuSelector.RevertButton : TransactionActionsMenuSelector.DeleteButton;
 
@@ -69,8 +69,14 @@ export const TransactionActionsMenu = ({ onDelete, onRevert, isConsolidated = fa
     return (
         <View>
             <View collapsable={false} testID={TransactionActionsMenuSelector.TriggerButton}>
-                <HapticPressable className="mr-lg" onPress={emptyFn} onPressIn={handleToggleMenu} hitSlop={16}>
-                    <CircleIcon icon={UserIconNameEnum.EllipsisVertical} variant="ghost" size={40} iconSize={24} border={false} />
+                <HapticPressable
+                    accessibilityRole="button"
+                    accessibilityLabel={t`More actions`}
+                    className="min-h-[44px] min-w-[44px] items-center justify-center active:scale-100 active:opacity-70"
+                    onPress={handleToggleMenu}
+                    hitSlop={16}
+                >
+                    <CircleIcon icon={UserIconNameEnum.Ellipsis} variant="ghost" size={44} iconSize={24} border={false} />
                 </HapticPressable>
             </View>
 

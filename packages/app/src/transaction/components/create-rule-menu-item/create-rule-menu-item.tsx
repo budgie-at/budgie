@@ -1,11 +1,9 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { getTransactionCategoryEntries } from '@budgie/ledger';
-import { selectSuggestConditions } from '@budgie/rules';
 import { t } from '@lingui/core/macro';
 
 import { PopoverMenuItem } from '../../../@generic/component/popover-menu-item/popover-menu-item';
-import { useRuleFormModal } from '../../../rule/context/rule-form-modal.context';
 import { useTransactionActionsMenu } from '../../context/transaction-actions-menu.context';
+import { useCreateTransactionRule } from '../../hook/use-create-transaction-rule.hook';
 import { TransactionActionsMenuSelector } from '../transaction-actions-menu/transaction-actions-menu.selector';
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
@@ -16,22 +14,8 @@ interface Props {
 
 export const CreateRuleMenuItem = ({ transaction }: Props) => {
     const closeMenu = useTransactionActionsMenu();
-    const [openRuleForm] = useRuleFormModal();
-
-    const handleCreateRule = () => {
-        const categoryEntry = getTransactionCategoryEntries(transaction.entries).at(0);
-
-        closeMenu(() => {
-            openRuleForm({
-                prefillData: {
-                    conditions:
-                        selectSuggestConditions(transaction.title, categoryEntry?.mccCategory?.mcc ?? null, transaction.comment) ?? [],
-                    categoryId: categoryEntry?.categoryId ?? null,
-                    tagIds: transaction.transactionTags.map(({ tagId }) => tagId)
-                }
-            });
-        });
-    };
+    const createRule = useCreateTransactionRule(transaction);
+    const handleCreateRule = () => void closeMenu(createRule);
 
     return (
         <PopoverMenuItem

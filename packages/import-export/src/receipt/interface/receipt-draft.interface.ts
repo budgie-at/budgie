@@ -9,5 +9,6 @@ export interface ReceiptDraftInterface {
     readonly merchantVatId: string | null;
     readonly merchantLegalName: string | null;
     readonly merchantCandidates: readonly string[];
+    readonly isPaid: boolean;
     readonly fingerprint: string;
 }
