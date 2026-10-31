@@ -223,6 +223,7 @@ appId: ${APP_ID}
     id: 'TransactionActionsMenu.ConvertToTransferButton'
 - tapOn:
     text: 'Close menu'
+    point: '10%,8%'
 
 - tapOn:
     id: 'TransactionFieldIcon.Split'
@@ -251,6 +252,7 @@ appId: ${APP_ID}
     id: 'TransactionActionsMenu.ConvertToTransferButton'
 - tapOn:
     text: 'Close menu'
+    point: '10%,8%'
 
 - runFlow: subflows/transactions/submit-transaction-and-return-to-list.flow.yaml
 
@@ -283,6 +285,7 @@ appId: ${APP_ID}
     text: 'Convert to Transfer'
 - tapOn:
     text: 'Close menu'
+    point: '10%,8%'
 - scrollUntilVisible:
     element:
       id: 'TransactionInfo.Amount'
@@ -335,6 +338,7 @@ appId: ${APP_ID}
     id: 'TransactionActionsMenu.ConvertToTransferButton'
 - tapOn:
     text: 'Close menu'
+    point: '10%,8%'
 
 # --- Delete Expense ---
 

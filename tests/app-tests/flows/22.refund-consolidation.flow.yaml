@@ -64,6 +64,7 @@ appId: ${APP_ID}
     text: 'Convert to Refund'
 - tapOn:
     text: 'Close menu'
+    point: '10%,8%'
 - scrollUntilVisible:
     element:
       id: 'TransactionInfo.Amount'
@@ -114,6 +115,7 @@ appId: ${APP_ID}
     timeout: 3000
 - tapOn:
     text: 'Close menu'
+    point: '10%,8%'
 
 - runFlow: subflows/settings/run-money-data-upgrade.flow.yaml
 
