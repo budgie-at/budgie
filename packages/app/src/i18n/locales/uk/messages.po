@@ -2744,6 +2744,10 @@ msgstr "напр. позика Олексі"
 msgid "e.g. Main card"
 msgstr "напр. основна картка"
 
+#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+msgid "Each bar compares one day's spending with your daily plan."
+msgstr "Кожен стовпчик порівнює витрати за день із вашим денним планом."
+
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "Each one becomes an account. Rename or remove them later."
 msgstr "Кожен стане рахунком. Перейменувати чи видалити їх можна пізніше."
@@ -5092,6 +5096,10 @@ msgstr "Читається на цьому телефоні, потім її м�
 #: src/receipt/components/receipt-scan-toast/receipt-scan-toast.tsx
 msgid "Reading receipt"
 msgstr "Читаю чек"
+
+#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+msgid "Reading the day strip"
+msgstr "Як читати смугу днів"
 
 #: src/ai/constant/ai-download-card-visuals.constant.ts
 msgid "Ready"

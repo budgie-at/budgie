@@ -2745,6 +2745,10 @@ msgstr "e.g. Loan to Alex"
 msgid "e.g. Main card"
 msgstr "e.g. Main card"
 
+#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+msgid "Each bar compares one day's spending with your daily plan."
+msgstr "Each bar compares one day's spending with your daily plan."
+
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "Each one becomes an account. Rename or remove them later."
 msgstr "Each one becomes an account. Rename or remove them later."
@@ -5093,6 +5097,10 @@ msgstr "Read on this phone, then you can delete it."
 #: src/receipt/components/receipt-scan-toast/receipt-scan-toast.tsx
 msgid "Reading receipt"
 msgstr "Reading receipt"
+
+#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+msgid "Reading the day strip"
+msgstr "Reading the day strip"
 
 #: src/ai/constant/ai-download-card-visuals.constant.ts
 msgid "Ready"

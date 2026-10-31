@@ -2744,6 +2744,10 @@ msgstr "z. B. Darlehen an Alex"
 msgid "e.g. Main card"
 msgstr "z. B. Hauptkarte"
 
+#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+msgid "Each bar compares one day's spending with your daily plan."
+msgstr "Jeder Balken vergleicht die Ausgaben eines Tages mit deinem Tagesplan."
+
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "Each one becomes an account. Rename or remove them later."
 msgstr "Jedes wird zu einem Konto. Umbenennen oder entfernen kannst du sie später."
@@ -5092,6 +5096,10 @@ msgstr "Wird auf diesem Telefon gelesen, danach kannst du ihn löschen."
 #: src/receipt/components/receipt-scan-toast/receipt-scan-toast.tsx
 msgid "Reading receipt"
 msgstr "Beleg wird gelesen"
+
+#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+msgid "Reading the day strip"
+msgstr "So liest du die Tagesleiste"
 
 #: src/ai/constant/ai-download-card-visuals.constant.ts
 msgid "Ready"

@@ -11,7 +11,9 @@ import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { BudgetSelector } from '../../budget.selector';
 import { useGetBudgetProjectionQuery } from '../../query/use-get-budget-projection.query';
+import { buildBudgetDayStripCells } from '../../utils/build-budget-day-strip-cells.util';
 import { resolveBudgetWindow } from '../../utils/resolve-budget-window.util';
+import { BudgetDayStripKey } from '../budget-day-strip-key/budget-day-strip-key';
 import { BudgetSafeToSpendSummary } from '../budget-safe-to-spend-summary/budget-safe-to-spend-summary';
 import { BudgetUpcomingChargeRow } from '../budget-upcoming-charge-row/budget-upcoming-charge-row';
 
@@ -28,6 +30,7 @@ export const BudgetSafeToSpendSheet = ({ budget }: Props) => {
     const { instrument } = useGetInstrumentByIdQuery(budget.instrumentId);
     const { formatMonthAndDay } = useFormatDate();
     const { upcomingCharges } = projection;
+    const presentDayStates = new Set(buildBudgetDayStripCells(projection, budget.period).map(cell => cell.dayState));
 
     const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
     const periodEnd = getInclusiveEnd(resolveBudgetWindow(budget, today).nextPeriodStart);
@@ -54,6 +57,14 @@ export const BudgetSafeToSpendSheet = ({ budget }: Props) => {
                 <BudgetSafeToSpendSummary projection={projection} currencySymbol={currencySymbol} />
 
                 {upcomingSection}
+
+                <View className="gap-y-md">
+                    <SectionHeader label={t`Reading the day strip`} />
+                    <Text className="text-sm text-secondary-foreground">
+                        <Trans>Each bar compares one day&apos;s spending with your daily plan.</Trans>
+                    </Text>
+                    <BudgetDayStripKey dayStates={presentDayStates} />
+                </View>
 
                 <Text className="text-xxs text-secondary-foreground">
                     <Trans>Recalculates every day. Spend less today and tomorrow&apos;s amount grows.</Trans>

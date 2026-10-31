@@ -6,7 +6,6 @@ import { BUDGET_DAY_STRIP_STAGGER_SPAN } from '../../constant/budget-day-strip-m
 import { BudgetDayStateEnum } from '../../enum/budget-day-state.enum';
 import { useBudgetDayStripLabels } from '../../hooks/use-budget-day-strip-labels.hook';
 import { BudgetDayStripCell } from '../budget-day-strip-cell/budget-day-strip-cell';
-import { BudgetDayStripKey } from '../budget-day-strip-key/budget-day-strip-key';
 
 import type { BudgetProjectionInterface } from '@budgie/budget';
 
@@ -20,7 +19,6 @@ interface Props {
 export const BudgetDayStrip = ({ projection, period, isTight, currencySymbol }: Props) => {
     const { elapsedDays, totalDays } = projection;
     const { dayCells, accessibilityLabel, captionLabel } = useBudgetDayStripLabels(projection, period, currencySymbol, isTight);
-    const presentDayStates = new Set(dayCells.map(cell => cell.dayState));
     const todayIndex = dayCells.findIndex(cell => cell.dayState === BudgetDayStateEnum.TODAY);
     const accessibilityValue = { min: 1, max: totalDays, now: elapsedDays };
 
@@ -40,10 +38,7 @@ export const BudgetDayStrip = ({ projection, period, isTight, currencySymbol }: 
                 })}
             </View>
 
-            <View className="gap-y-xs">
-                <Text className="text-xs text-secondary-foreground">{captionLabel}</Text>
-                <BudgetDayStripKey dayStates={presentDayStates} />
-            </View>
+            <Text className="text-xs text-secondary-foreground">{captionLabel}</Text>
         </EntranceReveal>
     );
 };

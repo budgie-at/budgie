@@ -2744,6 +2744,10 @@ msgstr "ex. prêt à Alex"
 msgid "e.g. Main card"
 msgstr "ex. carte principale"
 
+#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+msgid "Each bar compares one day's spending with your daily plan."
+msgstr "Chaque barre compare les dépenses d’une journée à votre plan quotidien."
+
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "Each one becomes an account. Rename or remove them later."
 msgstr "Chacun devient un compte. Tu peux les renommer ou les supprimer plus tard."
@@ -5092,6 +5096,10 @@ msgstr "Lu sur ce téléphone, tu peux ensuite le supprimer."
 #: src/receipt/components/receipt-scan-toast/receipt-scan-toast.tsx
 msgid "Reading receipt"
 msgstr "Lecture du reçu"
+
+#: src/budget/components/budget-safe-to-spend-sheet/budget-safe-to-spend-sheet.tsx
+msgid "Reading the day strip"
+msgstr "Lire la bande des jours"
 
 #: src/ai/constant/ai-download-card-visuals.constant.ts
 msgid "Ready"

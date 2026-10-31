@@ -26,8 +26,8 @@ export const BudgetDayStripKey = ({ dayStates }: Props) => {
         >
             {items.map(({ dayState, label }) => (
                 <View key={dayState} className="flex-row items-center gap-x-xxs">
-                    <View className={cn('w-[4px] rounded-[1px]', BUDGET_DAY_STATE_CLASS_NAME[dayState], 'h-[8px]')} />
-                    <Text className="text-xxs text-secondary-foreground">{label}</Text>
+                    <View className={cn('w-[6px] rounded-[2px]', BUDGET_DAY_STATE_CLASS_NAME[dayState], 'h-[12px]')} />
+                    <Text className="text-xs text-secondary-foreground">{label}</Text>
                 </View>
             ))}
         </View>
