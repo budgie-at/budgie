@@ -255,6 +255,12 @@ env:
       visible: 'Edit budget'
       timeout: 3000
 
+- scrollUntilVisible:
+      element:
+          id: 'BudgetSetup.CategoryLimitAddButton'
+      direction: DOWN
+      centerElement: true
+- waitForAnimationToEnd
 - retry:
       maxRetries: 3
       commands:
@@ -282,6 +288,7 @@ env:
           id: 'BudgetSetup.CategoryLimit.0.AmountInput'
           text: '200'
       timeout: 3000
+- waitForAnimationToEnd
 - tapOn: 'Category limits'
 - waitForAnimationToEnd
 - retry:
@@ -311,6 +318,7 @@ env:
           id: 'BudgetSetup.CategoryLimit.1.AmountInput'
           text: '100'
       timeout: 3000
+- waitForAnimationToEnd
 - tapOn: 'Category limits'
 - waitForAnimationToEnd
 - retry:
@@ -340,6 +348,7 @@ env:
           id: 'BudgetSetup.CategoryLimit.2.AmountInput'
           text: '150'
       timeout: 3000
+- waitForAnimationToEnd
 - tapOn: 'Category limits'
 - waitForAnimationToEnd
 - retry:
@@ -369,6 +378,7 @@ env:
           id: 'BudgetSetup.CategoryLimit.3.AmountInput'
           text: '75'
       timeout: 3000
+- waitForAnimationToEnd
 - tapOn: 'Category limits'
 - waitForAnimationToEnd
 - extendedWaitUntil:
