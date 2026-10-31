@@ -1,5 +1,5 @@
 /* eslint-disable max-lines -- File owns the single multi-stage statistics SQL aggregation pipeline that must stay together */
-import { SQL, and, desc, eq, getTableColumns, gt, gte, inArray, isNotNull, isNull, lt, lte, ne, notInArray, or, sql } from 'drizzle-orm';
+import { SQL, and, desc, eq, getTableColumns, gte, inArray, isNotNull, isNull, lte, ne, notInArray, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -36,7 +36,7 @@ import { TransactionEntityTable } from '../../transaction/table/transaction-enti
 import { StatisticsFilterInterface } from '../interface/statistics-filter.interface';
 
 import type { DB } from '../../@generic/type/db.type';
-import type { SelectedFields } from 'drizzle-orm/sqlite-core';
+import type { SQLiteColumn, SelectedFields } from 'drizzle-orm/sqlite-core';
 
 export class StatisticsRepository extends Context.Service<StatisticsRepository>()('@budgie/contracts/StatisticsRepository', {
     make: Effect.sync(() => {
@@ -148,6 +148,9 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
             THEN ${buildRefundAdjustedCreditBaseAmountSql(defaultInstrumentId)}
             ELSE ${buildEntryBaseValueSql(defaultInstrumentId)}
         END), 0)`;
+
+        const buildOperatedWithinCondition = (column: SQLiteColumn, date: TransactionFilterInterface['date']) =>
+            and(...(isDefined(date?.from) ? [gte(column, date.from)] : []), ...(isDefined(date?.to) ? [lte(column, date.to)] : []));
 
         const buildLedgerEntriesQuery = <TSelection extends SelectedFields>(db: DB, selectFields: TSelection) =>
             db.select(selectFields).from(TransactionEntryEntityTable);
@@ -438,11 +441,9 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
                                 eq(TransactionEntityTable.consolidationType, TransactionConsolidationTypeEnum.REFUND),
                                 eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.DEBIT),
                                 isNull(TransactionEntryEntityTable.deletedAt),
-                                ...(isDefined(filters.date?.from) ? [gte(refundTransaction.operatedAt, filters.date.from)] : []),
-                                ...(isDefined(filters.date?.to) ? [lte(refundTransaction.operatedAt, filters.date.to)] : []),
                                 or(
-                                    isDefined(filters.date?.from) ? lt(TransactionEntityTable.operatedAt, filters.date.from) : sql`0`,
-                                    isDefined(filters.date?.to) ? gt(TransactionEntityTable.operatedAt, filters.date.to) : sql`0`
+                                    buildOperatedWithinCondition(refundTransaction.operatedAt, filters.date),
+                                    buildOperatedWithinCondition(TransactionEntityTable.operatedAt, filters.date)
                                 )
                             )
                         );

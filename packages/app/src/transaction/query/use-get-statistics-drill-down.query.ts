@@ -6,7 +6,7 @@ import {
     TransactionTypeEnum
 } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
-import { endOfMonth, fromUnixTime, startOfMonth, subMonths } from 'date-fns';
+import { endOfMonth, fromUnixTime, isBefore, startOfMonth, subMonths } from 'date-fns';
 import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { useState } from 'react';
@@ -79,7 +79,13 @@ const statisticsDrillDownAtom = databaseQueryFamily(
                     transactionCount: entity.transactionCount,
                     base,
                     trend,
-                    nettedRefund: isDefined(purchasedAt) ? { amount: refund?.amount ?? 0, purchasedAt: fromUnixTime(purchasedAt) } : null
+                    nettedRefund: isDefined(purchasedAt)
+                        ? {
+                              amount: refund?.amount ?? 0,
+                              purchasedAt: fromUnixTime(purchasedAt),
+                              isPurchaseInPeriod: !isBefore(fromUnixTime(purchasedAt), key.filters.date?.from ?? 0)
+                          }
+                        : null
                 };
             })
         );

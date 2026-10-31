@@ -31,7 +31,9 @@ export const StatisticsDrillDownCaption = ({ summary, type, currencySymbol }: Pr
             const refundLabel = formatProtectedAmount(convertFromMicroUnits(summary.nettedRefund.amount), currencySymbol);
             const purchaseMonth = formatFullMonth(summary.nettedRefund.purchasedAt);
 
-            return t`${refundLabel} refund · netted against the ${purchaseMonth} purchase`;
+            return summary.nettedRefund.isPurchaseInPeriod
+                ? t`Refunded in full · ${refundLabel}`
+                : t`${refundLabel} refund · netted against the ${purchaseMonth} purchase`;
         }
 
         if (summary.transactionCount === 0) {

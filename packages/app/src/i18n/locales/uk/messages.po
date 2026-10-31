@@ -4714,6 +4714,10 @@ msgstr "Повернено"
 msgid "Refunded {formattedRefundedAmount}"
 msgstr "Повернено {formattedRefundedAmount}"
 
+#: src/transaction/components/statistics-drill-down-caption/statistics-drill-down-caption.tsx
+msgid "Refunded in full · {refundLabel}"
+msgstr "Повністю повернено · {refundLabel}"
+
 #: src/sync/component/bank-integration-key-card/bank-integration-key-card.tsx
 msgid "Rejected · tap to update"
 msgstr "Відхилено · торкніться, щоб оновити"
