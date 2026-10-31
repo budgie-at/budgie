@@ -374,11 +374,12 @@ const LEGAL_FORMS: Record<LanguageEnum, readonly string[]> = {
     [LanguageEnum.EN]: ['Ltd', 'LLC', 'Inc', 'Corp', 'PLC'],
     [LanguageEnum.FR]: ['SARL', 'SAS', 'SA', 'EURL'],
     [LanguageEnum.UK]: ['ТОВ', 'ФОП', 'ПП', 'ПрАТ', 'АТ'],
-    [LanguageEnum.DE]: ['GmbH', 'GesbR', 'GesmbH', 'AG', 'KG', 'OG', 'OHG', 'e.U.'],
+    [LanguageEnum.DE]: ['GmbH', 'GesbR', 'GesmbH', 'm.b.H.', 'mbH', 'AG', 'KG', 'OG', 'OHG', 'e.U.'],
     [LanguageEnum.ES]: ['S.L.', 'S.A.', 'SL']
 };
 
 const LEGAL_FORM_PATTERN = buildReceiptKeywordPattern(Object.values(LEGAL_FORMS).flat(), 'u');
+const ROW_LINE_SEPARATOR = '  ';
 const MERCHANT_TEXT_PATTERN = /\p{L}{2}/u;
 const NUMERIC_RUN_PATTERN = /\d{3}/u;
 const TOP_BAND_RATIO = 0.2;
@@ -404,7 +405,9 @@ const findLegalName = (rows: readonly string[], vatRowIndex: number): string | n
             .map((row, index) => ({ row, distance: Math.abs(index - anchorIndex) }))
             .filter(({ row }) => LEGAL_FORM_PATTERN.test(row))
             .sort((left, right) => left.distance - right.distance)
-            .at(0)?.row ?? null
+            .at(0)
+            ?.row.split(ROW_LINE_SEPARATOR)
+            .find(line => LEGAL_FORM_PATTERN.test(line)) ?? null
     );
 };
 
@@ -427,10 +430,12 @@ const RECEIPT_NUMBER_LABELS: Record<LanguageEnum, readonly string[]> = {
     [LanguageEnum.ES]: ['factura', 'ticket', 'recibo']
 };
 
-const RECEIPT_NUMBER_PATTERN = new RegExp(
-    String.raw`${buildReceiptKeywordPattern(Object.values(RECEIPT_NUMBER_LABELS).flat(), 'iu').source}[\s.:#№°º-]*([\p{L}\d]*\d[\p{L}\d]*(?:[/-][\p{L}\d]*\d[\p{L}\d]*)*)`,
-    'iu'
-);
+const RECEIPT_NUMBER_LABEL_SOURCE = buildReceiptKeywordPattern(Object.values(RECEIPT_NUMBER_LABELS).flat(), 'iu').source;
+const RECEIPT_NUMBER_VALUE_SOURCE = String.raw`[\p{L}\d]*\d[\p{L}\d]*(?:[/-][\p{L}\d]*\d[\p{L}\d]*)*`;
+const RECEIPT_NUMBER_PATTERN = new RegExp(String.raw`${RECEIPT_NUMBER_LABEL_SOURCE}[\s.:#№°º-]*(${RECEIPT_NUMBER_VALUE_SOURCE})`, 'iu');
+const RECEIPT_NUMBER_HEADER_PATTERN = new RegExp(String.raw`^${RECEIPT_NUMBER_LABEL_SOURCE}[\s.:#№°º-]*$`, 'iu');
+const RECEIPT_NUMBER_VALUE_PATTERN = new RegExp(String.raw`^${RECEIPT_NUMBER_VALUE_SOURCE}$`, 'u');
+const RECEIPT_NUMBER_COLUMN_LINE_SPAN = 3;
 const CARD_PATTERN = /(?:[*X•x]{4}[\s-]*){1,4}(\d{4})(?!\d)/u;
 const VAT_ID_PATTERNS: readonly RegExp[] = [
     /(?<!\p{L})(ATU\s?\d{8})(?!\d)/u,
@@ -462,14 +467,34 @@ const groupRows = (lines: readonly ReceiptTextLineInterface[]): string[] =>
             [...row]
                 .sort((left, right) => left.x - right.x)
                 .map(line => line.text.trim())
-                .join('  ')
+                .join(ROW_LINE_SEPARATOR)
         );
 
-const findReceiptNumber = (rows: readonly string[]): string | null =>
+const isReceiptNumberCandidate = (candidate: string): boolean => !isDefined(findDate(candidate));
+
+const findColumnReceiptNumber = (lines: readonly ReceiptTextLineInterface[]): string | null =>
+    lines
+        .filter(header => RECEIPT_NUMBER_HEADER_PATTERN.test(header.text.trim()))
+        .map(
+            header =>
+                lines
+                    .filter(
+                        line =>
+                            line.y > header.y &&
+                            line.y - header.y <= header.height * RECEIPT_NUMBER_COLUMN_LINE_SPAN &&
+                            Math.abs(line.x - header.x) <= header.height * 2
+                    )
+                    .sort((upper, lower) => upper.y - lower.y)
+                    .map(line => line.text.trim())
+                    .find(text => RECEIPT_NUMBER_VALUE_PATTERN.test(text) && isReceiptNumberCandidate(text)) ?? null
+        )
+        .find(isDefined) ?? null;
+
+const findReceiptNumber = (rows: readonly string[], lines: readonly ReceiptTextLineInterface[]): string | null =>
     rows
         .map(row => RECEIPT_NUMBER_PATTERN.exec(row)?.[1])
         .filter(isDefined)
-        .find(candidate => !isDefined(findDate(candidate))) ?? null;
+        .find(isReceiptNumberCandidate) ?? findColumnReceiptNumber(lines);
 
 const findVatId = (row: string): string | null =>
     VAT_ID_PATTERNS.map(pattern => pattern.exec(row)?.[1])
@@ -512,7 +537,7 @@ export const parseReceipt = (lines: readonly ReceiptTextLineInterface[], default
         currency: total.currency,
         occurredAt: timestamp?.occurredAt ?? null,
         cardLast4: rows.map(row => CARD_PATTERN.exec(row)?.[1]).find(isDefined) ?? null,
-        receiptNumber: findReceiptNumber(rows),
+        receiptNumber: findReceiptNumber(rows, lines),
         merchantVatId: vatIds.find(isDefined) ?? null,
         merchantLegalName,
         merchantCandidates: [...new Set([...findTopCandidates(lines), merchantLegalName].filter(isDefined))]
