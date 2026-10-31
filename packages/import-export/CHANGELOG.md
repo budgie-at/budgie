@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.133.0](https://github.com/budgie-at/budgie/compare/v6.132.0...v6.133.0) (2026-10-31)
+
+### Bug Fixes
+
+* **app:** open a prefilled expense form for unpaid bills instead of creating a transaction ([b177acb](https://github.com/budgie-at/budgie/commit/b177acb233426b918286cad1bc3742ea11f6e020))
+
+
 # [6.132.0](https://github.com/budgie-at/budgie/compare/v6.131.0...v6.132.0) (2026-10-30)
 
 **Note:** Version bump only for package @budgie/import-export
