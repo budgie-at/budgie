@@ -8,6 +8,7 @@ import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/g
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { BudgetSelector } from '../../budget.selector';
 import { computeProjectionAllocation } from '../../utils/compute-projection-allocation.util';
 
@@ -23,13 +24,15 @@ interface Props {
 export const BudgetAllocationBlock = ({ projection, budget, currencySymbol }: Props) => {
     const { t } = useLingui();
     const formatDigits = useDisplayFormatDigits();
+    const formatWholeDigits = useFormatDigits(0);
     const allocation = computeProjectionAllocation(projection);
     const remainingLabel = formatDigits(convertFromMicroUnits(Math.abs(allocation.remaining)), currencySymbol);
-    const incomeLabel = formatDigits(convertFromMicroUnits(projection.overall.limit), currencySymbol);
-    const assignedLabel = formatDigits(convertFromMicroUnits(allocation.allocated), currencySymbol);
-    const receivedNote = t`Income ${incomeLabel} received so far. ${assignedLabel} assigned to categories.`;
-    const expectedNote = t`Expected income ${incomeLabel}. ${assignedLabel} assigned to categories.`;
-    const note = budget.limitSource === BudgetLimitSourceEnum.INCOME_EXPECTED ? expectedNote : receivedNote;
+    const incomeLabel = formatWholeDigits(convertFromMicroUnits(projection.overall.limit), currencySymbol);
+    const assignedLabel = formatWholeDigits(convertFromMicroUnits(allocation.allocated), currencySymbol);
+    const note =
+        budget.limitSource === BudgetLimitSourceEnum.INCOME_EXPECTED
+            ? t`${assignedLabel} assigned · ${incomeLabel} expected`
+            : t`${assignedLabel} assigned · ${incomeLabel} received`;
     const icon = allocation.isOverAllocated ? UserIconNameEnum.TriangleAlert : UserIconNameEnum.Scale;
     const title = allocation.isOverAllocated ? t`Over-assigned by ${remainingLabel}` : t`Unassigned ${remainingLabel}`;
     const titleClassName = allocation.isOverAllocated ? 'text-destructive-strong font-medium' : 'font-medium';

@@ -95,6 +95,14 @@ msgstr "{applied, plural, one {# passende Transaktion aktualisiert} other {# pas
 msgid "{approxTransactions, plural, one {about # transaction} other {about # transactions}}"
 msgstr "{approxTransactions, plural, one {etwa # Transaktion} other {etwa # Transaktionen}}"
 
+#: src/budget/components/budget-allocation-block/budget-allocation-block.tsx
+msgid "{assignedLabel} assigned · {incomeLabel} expected"
+msgstr "{assignedLabel} zugewiesen · {incomeLabel} erwartet"
+
+#: src/budget/components/budget-allocation-block/budget-allocation-block.tsx
+msgid "{assignedLabel} assigned · {incomeLabel} received"
+msgstr "{assignedLabel} zugewiesen · {incomeLabel} erhalten"
+
 #: src/app/import-column-mapper.tsx
 msgid "{availableCount, plural, one {# column available} other {# columns available}}"
 msgstr "{availableCount, plural, one {# Spalte verfügbar} other {# Spalten verfügbar}}"
@@ -3037,10 +3045,6 @@ msgstr "Von Dateiimporten ausgeschlossen"
 msgid "Expected income"
 msgstr "Erwartetes Einkommen"
 
-#: src/budget/components/budget-allocation-block/budget-allocation-block.tsx
-msgid "Expected income {incomeLabel}. {assignedLabel} assigned to categories."
-msgstr "Erwartetes Einkommen {incomeLabel}. {assignedLabel} Kategorien zugeteilt."
-
 #: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
 msgid "Expected maturity date"
 msgstr "Voraussichtliches Fälligkeitsdatum"
@@ -3542,10 +3546,6 @@ msgstr "Inklusive Krypto"
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Income"
 msgstr "Einnahmen"
-
-#: src/budget/components/budget-allocation-block/budget-allocation-block.tsx
-msgid "Income {incomeLabel} received so far. {assignedLabel} assigned to categories."
-msgstr "Bisher {incomeLabel} Einkommen erhalten. {assignedLabel} Kategorien zugeteilt."
 
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Income and expenses"

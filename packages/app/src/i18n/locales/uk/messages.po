@@ -95,6 +95,14 @@ msgstr "{applied, plural, one {# відповідну транзакцію он�
 msgid "{approxTransactions, plural, one {about # transaction} other {about # transactions}}"
 msgstr "{approxTransactions, plural, one {близько # транзакції} few {близько # транзакцій} many {близько # транзакцій} other {близько # транзакції}}"
 
+#: src/budget/components/budget-allocation-block/budget-allocation-block.tsx
+msgid "{assignedLabel} assigned · {incomeLabel} expected"
+msgstr "{assignedLabel} розподілено · {incomeLabel} очікується"
+
+#: src/budget/components/budget-allocation-block/budget-allocation-block.tsx
+msgid "{assignedLabel} assigned · {incomeLabel} received"
+msgstr "{assignedLabel} розподілено · {incomeLabel} отримано"
+
 #: src/app/import-column-mapper.tsx
 msgid "{availableCount, plural, one {# column available} other {# columns available}}"
 msgstr "{availableCount, plural, one {# стовпець доступний} few {# стовпці доступні} many {# стовпців доступні} other {# стовпця доступні}}"
@@ -3037,10 +3045,6 @@ msgstr "Виключено з імпортів файлів"
 msgid "Expected income"
 msgstr "Очікуваний дохід"
 
-#: src/budget/components/budget-allocation-block/budget-allocation-block.tsx
-msgid "Expected income {incomeLabel}. {assignedLabel} assigned to categories."
-msgstr "Очікуваний дохід: {incomeLabel}. {assignedLabel} розподілено за категоріями."
-
 #: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
 msgid "Expected maturity date"
 msgstr "Очікувана дата погашення"
@@ -3542,10 +3546,6 @@ msgstr "Включно з криптовалютою"
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Income"
 msgstr "Дохід"
-
-#: src/budget/components/budget-allocation-block/budget-allocation-block.tsx
-msgid "Income {incomeLabel} received so far. {assignedLabel} assigned to categories."
-msgstr "Отримано доходу: {incomeLabel}. {assignedLabel} розподілено за категоріями."
 
 #: src/transaction/components/transactions-page-header/transaction-filter-page-header.tsx
 msgid "Income and expenses"
