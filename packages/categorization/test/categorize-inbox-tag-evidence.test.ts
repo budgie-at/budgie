@@ -42,7 +42,8 @@ const buildAssignment = (transactionId: number, title: string, labelId: number):
             mccCategoryId: null,
             categoryId: null,
             tagIds: [],
-            mcc: null
+            mcc: null,
+            toIban: null
         }
     ]
 });

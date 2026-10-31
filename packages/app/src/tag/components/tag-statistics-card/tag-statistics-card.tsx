@@ -6,7 +6,7 @@ import { isDefined } from '@rnw-community/shared';
 import { StatisticsCard } from '../../../@generic/component/statistics-card/statistics-card';
 import { useStatisticsCardPress } from '../../../@generic/hook/use-statistics-card-press.hook';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-import { AnalyticsTransactionsModeEnum } from '../../../transaction/enum/analytics-transactions-mode.enum';
+import { CategorizeInboxKindEnum } from '../../../categorize-inbox/enum/categorize-inbox-kind.enum';
 
 import { TagStatisticsCardSelector } from './tag-statistics-card.selector';
 
@@ -23,12 +23,7 @@ export const TagStatisticsCard = ({ tag, amount, totalAmount, variant, filters, 
     const isTagged = isDefined(tag.id);
     const cardTestID = isTagged ? TagStatisticsCardSelector.Card(tag.title) : TagStatisticsCardSelector.Untagged;
 
-    const handlePress = useStatisticsCardPress(
-        filters,
-        isIncome,
-        AnalyticsTransactionsModeEnum.TAG_INBOX,
-        isTagged ? { tagId: String(tag.id) } : null
-    );
+    const handlePress = useStatisticsCardPress(filters, isIncome, CategorizeInboxKindEnum.TAG, isTagged ? { tagId: String(tag.id) } : null);
 
     return (
         <StatisticsCard

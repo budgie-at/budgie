@@ -1,122 +1,12 @@
-import { TransactionTypeEnum } from '@budgie/contracts';
 import { useLocalSearchParams } from 'expo-router';
 
-import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
-
 import { AnalyticsTransactionsRoute } from '../../../transaction/components/analytics-transactions-route/analytics-transactions-route';
-import { AnalyticsTransactionsModeEnum } from '../../../transaction/enum/analytics-transactions-mode.enum';
+import { parseAnalyticsTransactionsRouteParams } from '../../../transaction/utils/parse-analytics-transactions-route-params.util';
 
-import type { AnalyticsTransactionsRouteParamsInterface } from '../../../transaction/interface/analytics-transactions-route-params.interface';
-
-const getRouteParam = (value: string | string[] | undefined): string | null => {
-    if (Array.isArray(value)) {
-        return value[0] ?? null;
-    }
-
-    return value ?? null;
-};
-
-const getRouteParamValues = (value: string | string[] | undefined): string[] => {
-    const values = Array.isArray(value) ? value : [value].filter(isDefined);
-
-    return values.flatMap(item => item.split(',')).filter(isNotEmptyString);
-};
-
-const getTransactionType = (value: string | null): TransactionTypeEnum | null => {
-    if (value === TransactionTypeEnum.INCOME) {
-        return TransactionTypeEnum.INCOME;
-    }
-
-    if (value === TransactionTypeEnum.EXPENSE) {
-        return TransactionTypeEnum.EXPENSE;
-    }
-
-    return null;
-};
-
-const getTransactionTypes = (value: string | string[] | undefined): TransactionTypeEnum[] =>
-    getRouteParamValues(value).map(getTransactionType).filter(isDefined);
-
-const getNumberParams = (value: string | string[] | undefined): number[] => getRouteParamValues(value).map(Number).filter(Number.isFinite);
-
-const getNumberParam = (value: string | string[] | undefined): number | null => {
-    const rawValue = getRouteParam(value);
-
-    if (!isNotEmptyString(rawValue)) {
-        return null;
-    }
-
-    const numberValue = Number(rawValue);
-
-    return Number.isFinite(numberValue) ? numberValue : null;
-};
-
-const getAnalyticsMode = (value: string | null): AnalyticsTransactionsModeEnum | null => {
-    if (value === AnalyticsTransactionsModeEnum.BUDGET_OTHER) {
-        return AnalyticsTransactionsModeEnum.BUDGET_OTHER;
-    }
-
-    if (value === AnalyticsTransactionsModeEnum.UNCATEGORIZED) {
-        return AnalyticsTransactionsModeEnum.UNCATEGORIZED;
-    }
-
-    if (value === AnalyticsTransactionsModeEnum.CATEGORIZE) {
-        return AnalyticsTransactionsModeEnum.CATEGORIZE;
-    }
-
-    if (value === AnalyticsTransactionsModeEnum.TAG_INBOX) {
-        return AnalyticsTransactionsModeEnum.TAG_INBOX;
-    }
-
-    return null;
-};
+import type { AnalyticsTransactionsSearchParamsType } from '../../../transaction/type/analytics-transactions-search-params.type';
 
 export default function AnalyticsTransactionsPage() {
-    const searchParams = useLocalSearchParams<{
-        readonly mode?: string | string[];
-        readonly startDate?: string | string[];
-        readonly endDate?: string | string[];
-        readonly categoryId?: string | string[];
-        readonly tagId?: string | string[];
-        readonly type?: string | string[];
-        readonly types?: string | string[];
-        readonly accountIds?: string | string[];
-        readonly categoryIds?: string | string[];
-        readonly excludedCategoryIds?: string | string[];
-        readonly tagIds?: string | string[];
-        readonly amountFrom?: string | string[];
-        readonly amountTo?: string | string[];
-    }>();
-    const mode = getAnalyticsMode(getRouteParam(searchParams.mode));
-    const startDate = getRouteParam(searchParams.startDate);
-    const endDate = getRouteParam(searchParams.endDate);
-    const categoryId = getRouteParam(searchParams.categoryId);
-    const tagId = getRouteParam(searchParams.tagId);
-    const type = getTransactionType(getRouteParam(searchParams.type));
-    const types = getTransactionTypes(searchParams.types);
-    const [accountIds, categoryIds, excludedCategoryIds, tagIds] = [
-        searchParams.accountIds,
-        searchParams.categoryIds,
-        searchParams.excludedCategoryIds,
-        searchParams.tagIds
-    ].map(getNumberParams);
-    const amountFrom = getNumberParam(searchParams.amountFrom);
-    const amountTo = getNumberParam(searchParams.amountTo);
-    const params: AnalyticsTransactionsRouteParamsInterface = {
-        ...(isDefined(mode) && { mode }),
-        ...(isDefined(startDate) && { startDate }),
-        ...(isDefined(endDate) && { endDate }),
-        ...(isDefined(categoryId) && { categoryId }),
-        ...(isDefined(tagId) && { tagId }),
-        ...(isDefined(type) && { type }),
-        ...(isNotEmptyArray(types) && { types }),
-        ...(isNotEmptyArray(accountIds) && { accountIds }),
-        ...(isNotEmptyArray(categoryIds) && { categoryIds }),
-        ...(isNotEmptyArray(excludedCategoryIds) && { excludedCategoryIds }),
-        ...(isNotEmptyArray(tagIds) && { tagIds }),
-        ...(isDefined(amountFrom) && { amountFrom }),
-        ...(isDefined(amountTo) && { amountTo })
-    };
+    const searchParams = useLocalSearchParams<AnalyticsTransactionsSearchParamsType>();
 
-    return <AnalyticsTransactionsRoute params={params} />;
+    return <AnalyticsTransactionsRoute params={parseAnalyticsTransactionsRouteParams(searchParams)} />;
 }

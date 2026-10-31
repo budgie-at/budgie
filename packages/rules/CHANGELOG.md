@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.132.0](https://github.com/budgie-at/budgie/compare/v6.131.0...v6.132.0) (2026-10-30)
+
+### Features
+
+* **app:** rebuild categorize inbox as a list-first triage flow ([#1814](https://github.com/budgie-at/budgie/issues/1814)) ([449ff76](https://github.com/budgie-at/budgie/commit/449ff764853d40e0734c2d4bc808a3d336ab7103))
+
+
 # [6.128.0](https://github.com/budgie-at/budgie/compare/v6.127.0...v6.128.0) (2026-10-30)
 
 **Note:** Version bump only for package @budgie/rules

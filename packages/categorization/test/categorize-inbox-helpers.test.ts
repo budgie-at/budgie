@@ -16,7 +16,8 @@ const buildRow = (transactionId: number, categoryId: number | null, tagIds: numb
     mccCategoryId: null,
     categoryId,
     tagIds,
-    mcc: null
+    mcc: null,
+    toIban: null
 });
 
 const buildCluster = (
