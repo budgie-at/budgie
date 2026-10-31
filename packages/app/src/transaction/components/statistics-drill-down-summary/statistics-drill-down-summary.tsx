@@ -34,7 +34,7 @@ export const StatisticsDrillDownSummary = ({ kind, entityId, type, filters }: Pr
     const isIncome = type === TransactionTypeEnum.INCOME;
     const totalLabel = isIncome ? t`Received` : t`Spent`;
     const figureVariant = isIncome ? 'positive' : 'primary';
-    const hasTrend = summary.trend.some(point => isPositiveNumber(point.amount));
+    const hasTrend = isLoading || summary.trend.some(point => isPositiveNumber(point.amount));
 
     return (
         <LoadingContent isLoading={isLoading}>

@@ -110,7 +110,7 @@ export const useGetStatisticsDrillDownQuery = (
             amount: 0,
             transactionCount: 0,
             base: 0,
-            trend: [],
+            trend: trendMonths.map(month => ({ month, amount: 0 })),
             nettedRefund: null
         })),
         referenceMonth,

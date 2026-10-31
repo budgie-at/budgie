@@ -65,6 +65,23 @@ describe('consolidation/refund-pair-full-refund', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
+    it.effect('keeps a fully refunded purchase as statistics history although its totals net to zero', () =>
+        Effect.gen(function* () {
+            const transferConsolidationService = yield* TransferConsolidationService;
+            const statisticsRepository = yield* StatisticsRepository;
+            const allTime = { ...DEFAULT_TRANSACTION_FILTER, date: null };
+            const emptyLedger = yield* statisticsRepository.hasIncomeOrExpenseQuery(allTime);
+            const { account } = yield* seedRefundStatisticsScenario(120 * PRECISION);
+
+            yield* transferConsolidationService.consolidate(null);
+
+            const [totals] = yield* statisticsRepository.getTotalIncomeAndExpenseQuery(allTime, account.instrumentId);
+
+            expect([emptyLedger, totals.income, totals.expense]).toStrictEqual([[], 0, 0]);
+            expect(yield* statisticsRepository.hasIncomeOrExpenseQuery(allTime)).toHaveLength(1);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
     it.effect('reports refunds netted against purchases in or before the period', () =>
         Effect.gen(function* () {
             const transferConsolidationService = yield* TransferConsolidationService;

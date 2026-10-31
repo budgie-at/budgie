@@ -1,4 +1,4 @@
-import { DEFAULT_TRANSACTION_FILTER, TransactionFilterInterface, UserIconNameEnum } from '@budgie/contracts';
+import { TransactionFilterInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
@@ -11,7 +11,7 @@ import { AnalyticsPageSelector } from '../../../app/(tabs)/analytics-page.select
 import { RunwayContent } from '../../../runway/component/runway-content/runway-content';
 import { AnalyticsHistoryBoundary } from '../../../sync/component/analytics-history-boundary/analytics-history-boundary';
 import { useTransactionAccountFilterModal } from '../../context/transaction-account-filter-modal.context';
-import { useGetTotalIncomeAndExpensesQuery } from '../../query/use-get-total-income-and-expenses.query';
+import { useHasIncomeOrExpenseQuery } from '../../query/use-has-income-or-expense.query';
 import { checkIfFiltersSelected } from '../../utils/check-if-filters-selected.util';
 import { StatisticsActivityPanels } from '../statistics-activity-panels/statistics-activity-panels';
 import { StatisticsEmptyLedger } from '../statistics-empty-ledger/statistics-empty-ledger';
@@ -33,7 +33,7 @@ export const StatisticsContent = ({ activeTab, filters, onChangeFilters: setFilt
     const isAccessibilityTextSize = useIsAccessibilityTextSize();
 
     const [openAccountFilter] = useTransactionAccountFilterModal();
-    const allTime = useGetTotalIncomeAndExpensesQuery({ ...DEFAULT_TRANSACTION_FILTER, date: null });
+    const { hasIncomeOrExpense, isLoading: isHistoryLoading } = useHasIncomeOrExpenseQuery();
 
     const handleChooseAccounts = () => {
         openAccountFilter({ value: filters.accountIds }, result => {
@@ -51,7 +51,7 @@ export const StatisticsContent = ({ activeTab, filters, onChangeFilters: setFilt
         return <RunwayContent />;
     }
 
-    if (!allTime.isLoading && allTime.income === 0 && allTime.expense === 0) {
+    if (!isHistoryLoading && !hasIncomeOrExpense) {
         const emptyTestID = activeTab === 'tags' ? AnalyticsPageSelector.TagsEmptyState : AnalyticsPageSelector.CategoriesEmptyState;
 
         return <StatisticsEmptyLedger testID={emptyTestID} />;
