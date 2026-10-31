@@ -165,6 +165,7 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
                 .leftJoin(DefaultCategoryTranslationEntityTable, buildCategoryTranslationJoinCondition(language))
                 .where(where)
                 .groupBy(TransactionEntryEntityTable.categoryId, categoryTitleSql)
+                .having(ne(amountSql, 0))
                 .orderBy(desc(amountSql));
         };
 
@@ -181,6 +182,7 @@ export class StatisticsRepository extends Context.Service<StatisticsRepository>(
                 .leftJoin(TagEntityTable, eq(TransactionTagsEntityTable.tagId, TagEntityTable.id))
                 .where(where)
                 .groupBy(TagEntityTable.id)
+                .having(ne(amountSql, 0))
                 .orderBy(desc(amountSql));
         };
 

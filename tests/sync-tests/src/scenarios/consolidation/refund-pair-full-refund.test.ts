@@ -59,9 +59,9 @@ describe('consolidation/refund-pair-full-refund', () => {
                 account.instrumentId,
                 LanguageEnum.EN
             );
-            const categoryAmount = categoryRows.find(row => row.category?.id === category.id)?.amount;
+            const categoryRow = categoryRows.find(row => row.category?.id === category.id);
 
-            expect([totals?.income, totals?.expense, categoryAmount]).toStrictEqual([0, 0, 0]);
+            expect([totals?.income, totals?.expense, categoryRow]).toStrictEqual([0, 0, undefined]);
         }).pipe(Effect.provide(TestLayer))
     );
 
