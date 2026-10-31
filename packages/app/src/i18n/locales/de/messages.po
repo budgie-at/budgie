@@ -36,11 +36,6 @@ msgstr "{0, plural, one {# Geldautomaten-Abhebung} other {# Geldautomaten-Abhebu
 msgid "{0, plural, one {# payment} other {# payments}}"
 msgstr "{0, plural, one {# Zahlung} other {# Zahlungen}}"
 
-#. placeholder {0}: changed.length
-#: src/receipt/hook/use-receipt-scan.hook.ts
-msgid "{0, plural, one {# receipt saved} other {# receipts saved}}"
-msgstr "{0, plural, one {# Beleg gespeichert} other {# Belege gespeichert}}"
-
 #. placeholder {0}: labels.length
 #: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
 msgid "{0, plural, one {# tag} other {# tags}}"
@@ -521,10 +516,6 @@ msgstr "{transactionCount, plural, one {# Transaktion} other {# Transaktionen}}"
 msgid "{transferCount} now transfers"
 msgstr "{transferCount} jetzt Überweisungen"
 
-#: src/receipt/hook/use-receipt-scan.hook.ts
-msgid "{unreadableCount, plural, one {Couldn't read # receipt} other {Couldn't read # receipts}}"
-msgstr "{unreadableCount, plural, one {# Beleg nicht lesbar} other {# Belege nicht lesbar}}"
-
 #: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 #: src/budget/components/budget-verdict-figure/budget-verdict-figure.tsx
 #: src/budget/components/budget-widget-headline/budget-widget-headline.tsx
@@ -808,10 +799,6 @@ msgstr "Budgie-Aktion hinzufügen"
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add your first account to start tracking your finances"
 msgstr "Fügen Sie Ihr erstes Konto hinzu, um Ihre Finanzen zu verfolgen"
-
-#: src/receipt/hook/use-receipt-scan.hook.ts
-msgid "Added"
-msgstr "Hinzugefügt"
 
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
 msgid "Adds the fee of the plan"
@@ -3486,10 +3473,6 @@ msgstr "Passende Ausgaben werden in eine Überweisung auf dieses Konto umgewande
 msgid "Matched income is converted into a transfer from this account."
 msgstr "Passende Einnahmen werden in eine Überweisung von diesem Konto umgewandelt."
 
-#: src/receipt/hook/use-receipt-scan.hook.ts
-msgid "Matched to existing"
-msgstr "Mit bestehender zugeordnet"
-
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "matches"
 msgstr "entspricht"
@@ -4523,10 +4506,6 @@ msgstr "Wird auf diesem Telefon gelesen, danach kannst du ihn löschen."
 #: src/receipt/components/receipt-scan-toast/receipt-scan-toast.tsx
 msgid "Reading receipt"
 msgstr "Beleg wird gelesen"
-
-#: src/receipt/components/receipt-scan-toast/receipt-scan-toast.tsx
-msgid "Reading receipts · {current} of {total}"
-msgstr "Belege werden gelesen · {current} von {total}"
 
 #: src/ai/constant/ai-download-card-visuals.constant.ts
 msgid "Ready"

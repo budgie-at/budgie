@@ -3,6 +3,7 @@ import {
     AccountTypeEnum,
     CurrencyEnum,
     ExternalSourceEnum,
+    convertFromMicroUnits,
     convertToMicroUnits,
     TransactionConsolidationTypeEnum,
     TransactionEntryKindEnum,
@@ -14,6 +15,8 @@ import { createTransactionInput, ReceiptMatchResultKindEnum, ReceiptMatchService
 import { expect, layer } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { expectConsolidationParent, fetchLedgerBalances } from '../harness/consolidation-revert-audit';
 import { expectSecondConsolidationRunStable, runConsolidation } from '../harness/run-consolidation';
@@ -67,6 +70,50 @@ const importBankExpense = (accountId: number, externalId = 'erste-receipt-paymen
         })
     );
 
+const scanReceipt = (fingerprint: string, receiptNumber: string, accountId: number) =>
+    Effect.gen(function* () {
+        const receiptMatchService = yield* ReceiptMatchService;
+        const transactionService = yield* TransactionService;
+        const input = buildReceipt(fingerprint, receiptNumber);
+        const proposal = yield* receiptMatchService.propose(input);
+
+        if (isDefined(proposal.transactionId)) {
+            yield* receiptMatchService.attach(proposal.transactionId, input);
+
+            return { kind: proposal.kind, transactionId: proposal.transactionId };
+        }
+
+        const amount = convertFromMicroUnits(input.total);
+        const transaction = yield* transactionService.createInternal({
+            ...createTransactionInput({
+                type: TransactionTypeEnum.EXPENSE,
+                fromAccountId: accountId,
+                toAccountId: null,
+                exchangeRate: 1,
+                amount,
+                entries: [
+                    {
+                        accountId,
+                        categoryId: null,
+                        mccCategoryId: null,
+                        type: TransactionEntryTypeEnum.CREDIT,
+                        kind: TransactionEntryKindEnum.PRIMARY,
+                        amount,
+                        externalId: null
+                    }
+                ]
+            }),
+            title: input.title,
+            operatedAt: input.occurredAt,
+            externalId: fingerprint,
+            externalSource: ExternalSourceEnum.RECEIPT
+        });
+
+        yield* receiptMatchService.attach(transaction.id, input);
+
+        return { kind: proposal.kind, transactionId: transaction.id };
+    });
+
 const seedCardAccount = Effect.gen(function* () {
     const account = yield* testSeedService.account({ title: 'Erste card', type: AccountTypeEnum.BANK_SYNC, externalId: 'erste-card' });
     const accountRepository = yield* AccountRepository;
@@ -80,13 +127,12 @@ layer(TestLayer)('consolidation/receipt-expense-duplicate', it => {
     it.effect('merges a receipt-created expense with the later bank import into one ledger effect', () =>
         Effect.gen(function* () {
             const account = yield* seedCardAccount;
-            const receiptMatchService = yield* ReceiptMatchService;
             const transactionReceiptRepository = yield* TransactionReceiptRepository;
 
-            const receipt = yield* receiptMatchService.match(buildReceipt(FINGERPRINT, 'K2310000301/26-010863'), () => Effect.void);
+            const receipt = yield* scanReceipt(FINGERPRINT, 'K2310000301/26-010863', account.id);
             const bankExpense = yield* importBankExpense(account.id);
 
-            expect(receipt.kind).toBe(ReceiptMatchResultKindEnum.CREATED);
+            expect(receipt.kind).toBe(ReceiptMatchResultKindEnum.NEW);
             expect(yield* runConsolidation()).toEqual({ found: 1, consolidated: 1 });
             expect((yield* testQueryService.fetchTransactionById(bankExpense.id)).consolidationType).toBe(
                 TransactionConsolidationTypeEnum.MANUAL_EXPENSE_DUPLICATE
@@ -101,16 +147,15 @@ layer(TestLayer)('consolidation/receipt-expense-duplicate', it => {
     it.effect('merges a second same-amount receipt only with the bank row that carries no receipt yet', () =>
         Effect.gen(function* () {
             const account = yield* seedCardAccount;
-            const receiptMatchService = yield* ReceiptMatchService;
             const transactionReceiptRepository = yield* TransactionReceiptRepository;
 
             const firstBankExpense = yield* importBankExpense(account.id, 'erste-first-payment', RECEIPT_OCCURRED_AT);
-            const firstReceipt = yield* receiptMatchService.match(buildReceipt('first-receipt', '0001'), () => Effect.void);
-            const secondReceipt = yield* receiptMatchService.match(buildReceipt('second-receipt', '0002'), () => Effect.void);
+            const firstReceipt = yield* scanReceipt('first-receipt', '0001', account.id);
+            const secondReceipt = yield* scanReceipt('second-receipt', '0002', account.id);
             const secondBankExpense = yield* importBankExpense(account.id, 'erste-second-payment');
 
             expect(firstReceipt).toEqual({ kind: ReceiptMatchResultKindEnum.MATCHED, transactionId: firstBankExpense.id });
-            expect(secondReceipt.kind).toBe(ReceiptMatchResultKindEnum.CREATED);
+            expect(secondReceipt.kind).toBe(ReceiptMatchResultKindEnum.NEW);
             expect(yield* runConsolidation()).toEqual({ found: 1, consolidated: 1 });
             yield* expectConsolidationParent(secondReceipt.transactionId, secondBankExpense.id);
             expect(yield* fetchLedgerBalances([account.id])).toEqual([[account.id, -2 * convertToMicroUnits(AMOUNT)]]);
