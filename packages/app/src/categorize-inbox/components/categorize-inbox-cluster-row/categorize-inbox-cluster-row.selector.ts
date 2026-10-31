@@ -1,6 +1,3 @@
 export const CategorizeInboxClusterRowSelector = {
-    Row: 'CategorizeInboxClusterRow',
-    Open: 'CategorizeInboxClusterRow.Open',
-    Checkbox: 'CategorizeInboxClusterRow.Checkbox',
-    PickCategory: 'CategorizeInboxClusterRow.PickCategory'
+    Row: 'CategorizeInboxClusterRow'
 } as const;

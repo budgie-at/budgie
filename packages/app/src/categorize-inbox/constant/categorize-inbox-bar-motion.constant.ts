@@ -1,0 +1,9 @@
+import { ENTRANCE_EASING } from '../../@generic/constant/entrance-motion.constant';
+
+export const CATEGORIZE_INBOX_BAR_DURATION = 520;
+export const CATEGORIZE_INBOX_BAR_STAGGER = 22;
+export const CATEGORIZE_INBOX_BAR_START_SCALE = 0.2;
+export const CATEGORIZE_INBOX_BAR_STRIP_HEIGHT = 56;
+export const CATEGORIZE_INBOX_BAR_MIN_HEIGHT = 4;
+export const CATEGORIZE_INBOX_BAR_EMPTY_HEIGHT = 3;
+export const CATEGORIZE_INBOX_BAR_EASING = ENTRANCE_EASING;

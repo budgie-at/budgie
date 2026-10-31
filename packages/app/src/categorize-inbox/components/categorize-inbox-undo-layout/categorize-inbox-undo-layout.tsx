@@ -1,34 +1,27 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { CategorizeInboxUndoBarSelector } from '../categorize-inbox-undo-bar/categorize-inbox-undo-bar.selector';
 
-import type { UserIconType } from '@budgie/contracts';
 import type { ReactNode } from 'react';
 
 interface Props {
-    readonly icon: UserIconType;
     readonly title: string;
     readonly description: string;
     readonly onUndo: () => void;
     readonly children?: ReactNode;
 }
 
-export const CategorizeInboxUndoLayout = ({ icon, title, description, onUndo, children }: Props) => (
-    <View
-        className="h-14 flex-row items-center gap-x-lg rounded-5xl border border-secondary-corner bg-primary-reverse pl-md"
-        accessibilityLiveRegion="polite"
-        testID={CategorizeInboxUndoBarSelector.Bar}
-    >
-        <CircleIcon icon={icon} variant="ghost" size={36} iconSize={20} border={false} />
-
+export const CategorizeInboxUndoLayout = ({ title, description, onUndo, children }: Props) => (
+    <View className="h-14 flex-row items-center gap-x-md" accessibilityLiveRegion="polite" testID={CategorizeInboxUndoBarSelector.Bar}>
         <View className="flex-1" accessible>
             <Text className="text-sm font-semibold text-primary" numberOfLines={1}>
                 {title}
             </Text>
-            <Text className="mt-xxs text-xs font-medium text-secondary-foreground" numberOfLines={1}>
+            <Text className="mt-xxs text-xs text-secondary-foreground" numberOfLines={1}>
                 {description}
             </Text>
         </View>
@@ -37,11 +30,12 @@ export const CategorizeInboxUndoLayout = ({ icon, title, description, onUndo, ch
 
         <HapticPressable
             onPress={onUndo}
-            className="h-11 justify-center pr-xl pl-md"
+            className="h-9 flex-row items-center gap-x-xs rounded-full bg-primary px-xl"
             accessibilityRole="button"
             testID={CategorizeInboxUndoBarSelector.UndoButton}
         >
-            <Text className="text-sm font-semibold text-primary">
+            <Icon icon={UserIconNameEnum.Undo2} size={14} className="text-primary-reverse" />
+            <Text className="text-sm font-semibold text-primary-reverse">
                 <Trans>Undo</Trans>
             </Text>
         </HapticPressable>

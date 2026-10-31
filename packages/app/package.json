@@ -1,6 +1,6 @@
 {
     "name": "@budgie-at/app",
-    "version": "6.130.1",
+    "version": "6.132.0",
     "private": true,
     "scripts": {
         "android": "expo run:android",
@@ -72,6 +72,7 @@
         "expo-file-system": "~58.0.9",
         "expo-haptics": "~58.0.7",
         "expo-image": "~58.0.15",
+        "expo-image-picker": "~58.0.10",
         "expo-linking": "~58.0.13",
         "expo-local-authentication": "~58.0.2",
         "expo-localization": "~58.0.4",

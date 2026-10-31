@@ -13,4 +13,5 @@ export interface CategorizeInboxRowInterface {
     readonly categoryId: number | null;
     readonly tagIds: number[];
     readonly mcc: string | null;
+    readonly toIban: string | null;
 }

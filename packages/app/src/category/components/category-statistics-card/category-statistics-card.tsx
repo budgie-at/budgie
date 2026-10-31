@@ -7,7 +7,7 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { StatisticsCard } from '../../../@generic/component/statistics-card/statistics-card';
 import { useStatisticsCardPress } from '../../../@generic/hook/use-statistics-card-press.hook';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-import { AnalyticsTransactionsModeEnum } from '../../../transaction/enum/analytics-transactions-mode.enum';
+import { CategorizeInboxKindEnum } from '../../../categorize-inbox/enum/categorize-inbox-kind.enum';
 
 import { CategoryStatisticsCardSelector } from './category-statistics-card.selector';
 
@@ -27,7 +27,7 @@ export const CategoryStatisticsCard = ({ category, amount, totalAmount, variant,
     const handlePress = useStatisticsCardPress(
         filters,
         isIncome,
-        AnalyticsTransactionsModeEnum.CATEGORIZE,
+        CategorizeInboxKindEnum.CATEGORY,
         isCategorized ? { categoryId: String(category.id) } : null
     );
 

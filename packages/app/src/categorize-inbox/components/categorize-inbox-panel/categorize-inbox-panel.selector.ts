@@ -1,5 +1,5 @@
 export const CategorizeInboxPanelSelector = {
     Panel: 'CategorizeInboxPanel',
-    Progress: 'CategorizeInboxPanel.Progress',
-    AcceptAllButton: 'CategorizeInboxAcceptAllButton.Button'
+    AcceptAllButton: 'CategorizeInboxAcceptAllButton.Button',
+    MoveAllToCashButton: 'CategorizeInboxMoveAllToCashButton.Button'
 } as const;

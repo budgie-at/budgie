@@ -1,0 +1,111 @@
+import { useEffect, useEffectEvent, useRef, useState } from 'react';
+import { AppState } from 'react-native';
+
+import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+
+import { getCategorizeInboxTransferKey } from '../utils/get-categorize-inbox-transfer-key.util';
+
+import { useCategorizeInboxCommitTransfer } from './use-categorize-inbox-commit-transfer.hook';
+
+import type { CategorizeInboxLastWriteInterface } from '../interface/categorize-inbox-last-write.interface';
+import type { CategorizeInboxPendingTransferInterface } from '../interface/categorize-inbox-pending-transfer.interface';
+import type { CategorizeInboxVisibilityInterface } from '../interface/categorize-inbox-visibility.interface';
+import type { CategorizeInboxEnqueueWriteType } from '../type/categorize-inbox-enqueue-write.type';
+import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
+
+export const useCategorizeInboxTransfer = (
+    visibility: Pick<CategorizeInboxVisibilityInterface, 'hideTransactions' | 'showTransactions' | 'includedRows'>,
+    enqueueWrite: CategorizeInboxEnqueueWriteType,
+    setLastWrite: (lastWrite: CategorizeInboxLastWriteInterface | null) => void,
+    resetMovedToCash: () => void
+) => {
+    const commitTransfer = useCategorizeInboxCommitTransfer(visibility, enqueueWrite);
+    const pendingTransferRef = useRef<CategorizeInboxPendingTransferInterface | null>(null);
+    const [pendingTransfer, setPendingTransfer] = useState<CategorizeInboxPendingTransferInterface | null>(null);
+    const [learnedTransferAccountIds, setLearnedTransferAccountIds] = useState<ReadonlyMap<string, number>>(new Map());
+
+    const storePendingTransfer = (value: CategorizeInboxPendingTransferInterface | null): void => {
+        pendingTransferRef.current = value;
+        setPendingTransfer(value);
+    };
+
+    const commitPendingTransfer = (): void => {
+        const pending = pendingTransferRef.current;
+
+        if (isDefined(pending)) {
+            storePendingTransfer(null);
+            commitTransfer(pending);
+        }
+    };
+
+    const transferCluster = (
+        cluster: CategorizeInboxClusterInterface,
+        accountId: number,
+        accountTitle: string,
+        isRuleEnabled: boolean
+    ): void => {
+        const transactionIds = visibility.includedRows(cluster).map(row => row.transactionId);
+
+        if (isNotEmptyArray(transactionIds)) {
+            const transferKey = getCategorizeInboxTransferKey(cluster.displayTitle);
+
+            const existing = pendingTransferRef.current;
+            const isSameCluster = isDefined(existing) && existing.clusterKey === cluster.key;
+            const previousLearnedAccountIds = isSameCluster ? existing.previousLearnedAccountIds : learnedTransferAccountIds;
+
+            if (isSameCluster) {
+                storePendingTransfer(null);
+            } else {
+                commitPendingTransfer();
+            }
+
+            visibility.hideTransactions(transactionIds);
+
+            if (isNotEmptyString(transferKey)) {
+                setLearnedTransferAccountIds(previous => new Map(previous).set(transferKey, accountId));
+            }
+
+            setLastWrite(null);
+            resetMovedToCash();
+            storePendingTransfer({
+                clusterKey: cluster.key,
+                clusterTitle: cluster.displayTitle,
+                ruleConditionValue: cluster.ruleConditionValue,
+                accountId,
+                accountTitle,
+                transactionIds,
+                isRuleEnabled,
+                previousLearnedAccountIds
+            });
+        }
+    };
+
+    const undoTransfer = (): void => {
+        const pending = pendingTransferRef.current;
+
+        if (isDefined(pending)) {
+            storePendingTransfer(null);
+            visibility.showTransactions(pending.transactionIds);
+
+            setLearnedTransferAccountIds(pending.previousLearnedAccountIds);
+        }
+    };
+
+    const handleUnmount = useEffectEvent(commitPendingTransfer);
+
+    useEffect(() => () => void handleUnmount(), []);
+
+    const handleBackground = useEffectEvent(commitPendingTransfer);
+
+    useEffect(() => {
+        const subscription = AppState.addEventListener('change', state => {
+            if (state === 'background') {
+                handleBackground();
+            }
+        });
+
+        return () => void subscription.remove();
+    }, []);
+
+    return { pendingTransfer, learnedTransferAccountIds, transferCluster, undoTransfer, commitPendingTransfer };
+};

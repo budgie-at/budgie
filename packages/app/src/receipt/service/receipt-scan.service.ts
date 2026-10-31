@@ -13,7 +13,9 @@ import * as Layer from 'effect/Layer';
 import * as Option from 'effect/Option';
 import * as Schema from 'effect/Schema';
 import * as Semaphore from 'effect/Semaphore';
+import * as DocumentPicker from 'expo-document-picker';
 import { File } from 'expo-file-system';
+import * as ImagePicker from 'expo-image-picker';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
@@ -26,7 +28,9 @@ import { ChatService } from '../../ai/service/chat.service';
 import { LocalEmbeddingService } from '../../ai/service/embedding.service';
 import { receiptScanProgressAtom } from '../constant/receipt-scan-progress-atom.constant';
 import { ReceiptScanFailureEnum } from '../enum/receipt-scan-failure.enum';
+import { ReceiptSourceEnum } from '../enum/receipt-source.enum';
 
+import type { PickedAssetsResultInterface } from '../interface/picked-assets-result.interface';
 import type { ReceiptScanResultInterface } from '../interface/receipt-scan-result.interface';
 import type { CategoryEntityInterface } from '@budgie/contracts';
 import type { ReceiptDraftInterface, ReceiptTextLineInterface } from '@budgie/import-export';
@@ -153,8 +157,40 @@ export class ReceiptScanService extends Context.Service<ReceiptScanService>()('@
                 );
         });
 
+        const PHOTO_SELECTION_LIMIT = 10;
+
+        const captureFromCamera = (): Effect.Effect<readonly string[]> =>
+            isDefined(nativeModule) ? Effect.promise(() => nativeModule.scan()) : Effect.succeed([]);
+
+        const pickUris = <Result extends PickedAssetsResultInterface>(pick: () => Promise<Result>): Effect.Effect<readonly string[]> =>
+            Effect.promise(pick).pipe(
+                Effect.map(result => result.assets?.map(asset => asset.uri) ?? []),
+                Effect.catchCause(cause => Effect.as(Effect.logError(cause), []))
+            );
+
+        const captureFromPhotos = (): Effect.Effect<readonly string[]> =>
+            pickUris(() =>
+                ImagePicker.launchImageLibraryAsync({
+                    mediaTypes: ['images'],
+                    allowsMultipleSelection: true,
+                    selectionLimit: PHOTO_SELECTION_LIMIT,
+                    orderedSelection: true
+                })
+            );
+
+        const captureFromFiles = (): Effect.Effect<readonly string[]> =>
+            pickUris(() =>
+                DocumentPicker.getDocumentAsync({ type: ['image/*', 'application/pdf'], multiple: true, copyToCacheDirectory: true })
+            );
+
+        const captureBySource: Record<ReceiptSourceEnum, () => Effect.Effect<readonly string[]>> = {
+            [ReceiptSourceEnum.CAMERA]: captureFromCamera,
+            [ReceiptSourceEnum.PHOTOS]: captureFromPhotos,
+            [ReceiptSourceEnum.FILES]: captureFromFiles
+        };
+
         return {
-            scan: () => (isDefined(nativeModule) ? Effect.promise(() => nativeModule.scan()) : Effect.succeed([])),
+            capture: (source: ReceiptSourceEnum): Effect.Effect<readonly string[]> => captureBySource[source](),
             process: Effect.fn('ReceiptScanService.process')(
                 function* (uris: readonly string[]) {
                     const settings = yield* settingsRepository.findSettings();
