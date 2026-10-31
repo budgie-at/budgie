@@ -178,7 +178,7 @@ export const RootLayoutContent = () => {
                                                                     />
                                                                     <Stack.Screen
                                                                         name="budget-safe-to-spend"
-                                                                        options={formSheetOptions([DETENT_55, DETENT_95], 0)}
+                                                                        options={formSheetOptions('fitToContents')}
                                                                     />
                                                                     <Stack.Screen
                                                                         name="budget-fund-form"
@@ -186,7 +186,7 @@ export const RootLayoutContent = () => {
                                                                     />
                                                                     <Stack.Screen
                                                                         name="budget-limit-changes"
-                                                                        options={formSheetOptions([DETENT_55, DETENT_95], 0)}
+                                                                        options={formSheetOptions('fitToContents')}
                                                                     />
                                                                     <Stack.Screen name="category-form" options={MODAL_OPTIONS} />
                                                                     <Stack.Screen name="tag-form" options={MODAL_OPTIONS} />
@@ -262,7 +262,7 @@ export const RootLayoutContent = () => {
                                                                     />
                                                                     <Stack.Screen
                                                                         name="budget-period-summary"
-                                                                        options={formSheetOptions([0.6, DETENT_90])}
+                                                                        options={formSheetOptions('fitToContents')}
                                                                     />
                                                                     <Stack.Screen name="rule-form" options={MODAL_OPTIONS} />
                                                                     <Stack.Screen name="rule-selector" options={formSheetOptions([0.75])} />

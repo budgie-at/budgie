@@ -28,7 +28,7 @@ export const BudgetDetailsOverview = (props: Props) => {
     const { budget, projection, isLoading, currencySymbol, periodStart, periodEnd, onFigurePress, onPaceHintPress } = props;
     const allocationBlock =
         budget.limitSource === BudgetLimitSourceEnum.FIXED ? null : (
-            <BudgetAllocationBlock projection={projection} limitSource={budget.limitSource} currencySymbol={currencySymbol} />
+            <BudgetAllocationBlock projection={projection} budget={budget} currencySymbol={currencySymbol} />
         );
 
     return (
@@ -50,6 +50,8 @@ export const BudgetDetailsOverview = (props: Props) => {
                 <BudgetStatRow scope={projection.overall} limitSource={budget.limitSource} currencySymbol={currencySymbol} />
             </LoadingContent>
 
+            {allocationBlock}
+
             <BudgetDetailsForecast projection={projection} currencySymbol={currencySymbol} isLoading={isLoading} />
 
             <LoadingContent isLoading={isLoading}>
@@ -61,8 +63,6 @@ export const BudgetDetailsOverview = (props: Props) => {
                     currencySymbol={currencySymbol}
                 />
             </LoadingContent>
-
-            {allocationBlock}
         </Fragment>
     );
 };

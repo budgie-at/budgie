@@ -42,17 +42,17 @@ export const BudgetLimitChangesSheet = ({ budget }: Props) => {
 
     return (
         <View
-            className="flex-1 border-t-hairline border-secondary-corner bg-primary-reverse dark:bg-secondary-background"
+            className="border-t-hairline border-secondary-corner bg-primary-reverse dark:bg-secondary-background"
             collapsable={false}
             testID={BudgetSelector.LimitChangesSheet}
         >
             <FormsheetHeader size="md" title={t`Limit changes`} />
-            <ScrollView contentContainerClassName="px-5xl pt-md gap-y-md pb-5xl" showsVerticalScrollIndicator={false}>
+            <ScrollView contentContainerClassName="px-5xl pt-md gap-y-md pb-safe-or-[16px]" showsVerticalScrollIndicator={false}>
                 {limitChanges.map(change => (
                     <BudgetLimitChangeRow key={change.id} change={change} currencySymbol={currencySymbol} />
                 ))}
                 {emptyHint}
-                <View className="mt-xl border-t-hairline border-secondary-corner pt-xl">
+                <View className="pt-xl">
                     <BudgetAutoTuneSwitchRow
                         value={budget.isAutoTuneEnabled}
                         onValueChange={handleAutoTuneChange}

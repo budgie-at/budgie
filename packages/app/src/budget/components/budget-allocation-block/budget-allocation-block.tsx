@@ -1,24 +1,26 @@
 import { budgetComputeAllocation } from '@budgie/budget';
-import { BudgetLimitSourceEnum, convertFromMicroUnits } from '@budgie/contracts';
+import { BudgetLimitSourceEnum, UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
+import { router } from 'expo-router';
+import { View } from 'react-native';
 
 import { EntranceReveal } from '../../../@generic/component/entrance-reveal/entrance-reveal';
-import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
-import { SectionHeader } from '../../../@generic/component/section-header/section-header';
-import { cn } from '../../../@generic/utils/cn.util';
+import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
+import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { BudgetSelector } from '../../budget.selector';
 
 import type { BudgetProjectionInterface } from '@budgie/budget';
+import type { BudgetEntityInterface } from '@budgie/contracts';
 
 interface Props {
     readonly projection: BudgetProjectionInterface;
-    readonly limitSource: BudgetLimitSourceEnum;
+    readonly budget: Pick<BudgetEntityInterface, 'id' | 'limitSource'>;
     readonly currencySymbol: string;
 }
 
-export const BudgetAllocationBlock = ({ projection, limitSource, currencySymbol }: Props) => {
+export const BudgetAllocationBlock = ({ projection, budget, currencySymbol }: Props) => {
     const { t } = useLingui();
     const formatDigits = useDisplayFormatDigits();
     const allocation = budgetComputeAllocation({
@@ -26,29 +28,39 @@ export const BudgetAllocationBlock = ({ projection, limitSource, currencySymbol 
         otherLimit: projection.other.limit,
         categoryLimits: projection.categories.map(category => ({ categoryId: category.categoryId, limitAmount: category.limit }))
     });
-    const title = allocation.isOverAllocated ? t`Over-assigned` : t`Unassigned`;
-    const valueClassName = allocation.isOverAllocated ? 'text-destructive-foreground' : 'text-positive-foreground';
     const remainingLabel = formatDigits(convertFromMicroUnits(Math.abs(allocation.remaining)), currencySymbol);
     const incomeLabel = formatDigits(convertFromMicroUnits(projection.overall.limit), currencySymbol);
     const assignedLabel = formatDigits(convertFromMicroUnits(allocation.allocated), currencySymbol);
     const receivedNote = t`Income ${incomeLabel} received so far. ${assignedLabel} assigned to categories.`;
     const expectedNote = t`Expected income ${incomeLabel}. ${assignedLabel} assigned to categories.`;
-    const note = limitSource === BudgetLimitSourceEnum.INCOME_EXPECTED ? expectedNote : receivedNote;
+    const note = budget.limitSource === BudgetLimitSourceEnum.INCOME_EXPECTED ? expectedNote : receivedNote;
+    const icon = allocation.isOverAllocated ? UserIconNameEnum.TriangleAlert : UserIconNameEnum.Scale;
+    const title = allocation.isOverAllocated ? t`Over-assigned by ${remainingLabel}` : t`Unassigned ${remainingLabel}`;
+    const titleClassName = allocation.isOverAllocated ? 'text-destructive-strong font-medium' : 'font-medium';
+
+    const handleAdjustPress = () => {
+        router.push({ pathname: '/budget/edit', params: { id: String(budget.id) } });
+    };
 
     return (
-        <EntranceReveal step={4} className="gap-y-lg">
+        <EntranceReveal step={2}>
             <View collapsable={false} testID={BudgetSelector.DetailsAllocationBlock}>
-                <SectionHeader label={t`Allocation`} />
-                <View className="flex-row items-baseline justify-between gap-x-md">
-                    <Text className="text-md font-medium text-primary">{title}</Text>
-                    <ProtectedText
-                        testID={BudgetSelector.DetailsAllocationUnassigned}
-                        className={cn('text-xl font-semibold tabular-nums', valueClassName)}
-                    >
-                        {remainingLabel}
-                    </ProtectedText>
-                </View>
-                <Text className="mt-sm text-xs text-secondary-foreground">{note}</Text>
+                <GroupedListSection>
+                    <GroupedListRow
+                        left={<GroupedListIcon icon={icon} />}
+                        title={title}
+                        titleClassName={titleClassName}
+                        titleTestID={BudgetSelector.DetailsAllocationUnassigned}
+                        subtitle={note}
+                    />
+                    {allocation.isOverAllocated ? (
+                        <GroupedListRow
+                            title={t`Adjust category limits`}
+                            titleClassName="text-default-foreground"
+                            onPress={handleAdjustPress}
+                        />
+                    ) : null}
+                </GroupedListSection>
             </View>
         </EntranceReveal>
     );

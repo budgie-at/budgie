@@ -5,7 +5,6 @@ import { ScrollView, Text, View } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { FormsheetHeader } from '../../../@generic/component/formsheet-header/formsheet-header';
-import { SectionHeader } from '../../../@generic/component/section-header/section-header';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { BudgetSelector } from '../../budget.selector';
@@ -36,14 +35,14 @@ export const BudgetPeriodSummary = ({ snapshotId }: Props) => {
     const period = isDefined(budget) ? budget.period : BudgetPeriodEnum.MONTHLY;
     const startLabel = formatMonthAndDay(snapshot.periodStart);
     const endLabel = formatMonthAndDay(snapshot.periodEnd);
-    const dateRange = t`${startLabel} - ${endLabel}`;
+    const dateRange = t`${startLabel} – ${endLabel}`;
     const totalCarriedIn = snapshot.categories.reduce((total, category) => total + category.carriedIn, snapshot.otherCarriedIn);
 
     return (
         <>
             <FormsheetHeader size="md" title={formatFullPeriod(period, snapshot.periodStart, snapshot.periodEnd)} description={dateRange} />
 
-            <ScrollView contentContainerClassName="px-3xl pt-md gap-y-md pb-5xl" showsVerticalScrollIndicator={false}>
+            <ScrollView contentContainerClassName="px-5xl pt-md gap-y-xl pb-safe-or-[16px]" showsVerticalScrollIndicator={false}>
                 {snapshot.isReconstructed ? (
                     <Text className="text-secondary-foreground text-sm">
                         {t`Estimated from your past transactions using your current limits.`}
@@ -61,7 +60,9 @@ export const BudgetPeriodSummary = ({ snapshotId }: Props) => {
                         spentTestID={BudgetSelector.PeriodSummaryOverallSpentLabel}
                     />
 
-                    <SectionHeader label={t`Categories`} />
+                    <Text className="pt-xl text-md font-semibold text-primary" accessibilityRole="header">
+                        {t`Categories`}
+                    </Text>
 
                     {snapshot.categories.map(category => (
                         <BudgetPeriodSummaryCategoryRow
