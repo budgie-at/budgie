@@ -206,8 +206,12 @@ appId: ${APP_ID}
       element:
           id: 'TransactionInfo.Row.Tags'
       direction: DOWN
-- assertVisible: 'E2E Txn Primary Tag'
-- assertVisible: 'E2E Txn Tag'
+- assertVisible:
+      id: 'TransactionInfo.Row.Tags'
+      text: '.*E2E Txn Primary Tag.*'
+- assertVisible:
+      id: 'TransactionInfo.Row.Tags'
+      text: '.*E2E Txn Tag.*'
 - tapOn:
       id: 'PageHeader.BackButton'
 

@@ -282,7 +282,7 @@ appId: ${APP_ID}
 - assertVisible:
     text: 'Convert to Transfer'
 - tapOn:
-    text: 'Cancel'
+    text: 'Close menu'
 - scrollUntilVisible:
     element:
       id: 'TransactionInfo.Amount'

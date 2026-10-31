@@ -124,14 +124,6 @@ appId: ${APP_ID}
 - extendedWaitUntil:
       visible:
           id: 'TransactionActionsMenu.DetachDebtSettlementButton'
-- scrollUntilVisible:
-    element:
-      id: 'TransactionInfo.Amount'
-    direction: UP
-    centerElement: false
-- extendedWaitUntil:
-      notVisible:
-          id: 'TransactionActionsMenu.DetachDebtSettlementButton'
 - tapOn:
       id: 'PageHeader.BackButton'
 - extendedWaitUntil:
