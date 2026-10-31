@@ -2,6 +2,7 @@ import { computeBudgetProjection } from '@budgie/budget';
 import { describe, expect, it } from '@effect/vitest';
 
 import { buildBudgetForecastGeometry } from '../src/budget/utils/build-budget-forecast-geometry.util';
+import { resolveBudgetForecastDomain } from '../src/budget/utils/resolve-budget-forecast-domain.util';
 
 const LAYOUT = { width: 300, height: 160, paddingLeft: 0, paddingRight: 6, paddingTop: 22, paddingBottom: 24 };
 const OCTOBER = 9;
@@ -26,17 +27,21 @@ const projectionWithLimit = (overallLimit: number) =>
 
 describe('buildBudgetForecastGeometry', () => {
     it('keeps the limit on the chart when the projection is close to it', () => {
-        const geometry = buildBudgetForecastGeometry({ projection: projectionWithLimit(300), ...LAYOUT });
+        const projection = projectionWithLimit(300);
+        const geometry = buildBudgetForecastGeometry({ projection, ...LAYOUT });
 
-        expect(geometry.isLimitInRange).toBe(true);
+        expect(resolveBudgetForecastDomain(projection)).toEqual({ maxValue: 315, isLimitInRange: true });
         expect(geometry.limitY).toBeGreaterThan(LAYOUT.paddingTop);
     });
 
     it('scales to the data and pins a far-away limit to the top edge', () => {
-        const geometry = buildBudgetForecastGeometry({ projection: projectionWithLimit(5000), ...LAYOUT });
+        const projection = projectionWithLimit(5000);
+        const geometry = buildBudgetForecastGeometry({ projection, ...LAYOUT });
         const plotTop = Math.min(...geometry.lines.flat().map(point => point.y));
+        const domain = resolveBudgetForecastDomain(projection);
 
-        expect(geometry.isLimitInRange).toBe(false);
+        expect(domain.isLimitInRange).toBe(false);
+        expect(domain.maxValue).toBeLessThan(5000 / 2);
         expect(geometry.limitY).toBe(LAYOUT.paddingTop);
         expect(plotTop).toBeLessThan(LAYOUT.height / 2);
     });

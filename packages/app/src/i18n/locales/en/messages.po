@@ -3745,8 +3745,8 @@ msgid "Limit {limitAmount}"
 msgstr "Limit {limitAmount}"
 
 #: src/budget/hooks/use-budget-forecast-labels.hook.ts
-msgid "Limit {limitAmount} ↑"
-msgstr "Limit {limitAmount} ↑"
+msgid "Limit {limitAmount} · above chart"
+msgstr "Limit {limitAmount} · above chart"
 
 #: src/budget/components/budget-limit-changes-row/budget-limit-changes-row.tsx
 #: src/budget/components/budget-limit-changes-sheet/budget-limit-changes-sheet.tsx

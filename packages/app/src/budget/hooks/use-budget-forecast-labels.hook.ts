@@ -5,12 +5,13 @@ import { isDefined } from '@rnw-community/shared';
 
 import { useProtectedWholeAmountLabel } from '../../@generic/hook/use-protected-whole-amount-label.hook';
 
+import type { BudgetForecastDomainInterface } from '../interface/budget-forecast-domain.interface';
 import type { BudgetProjectionScopeInterface } from '@budgie/budget';
 
 export const useBudgetForecastLabels = (
     scope: Pick<BudgetProjectionScopeInterface, 'limit' | 'projectedEnd'>,
     currencySymbol: string,
-    isLimitInRange: boolean
+    domain: BudgetForecastDomainInterface
 ) => {
     const { t } = useLingui();
     const formatWholeAmount = useProtectedWholeAmountLabel();
@@ -21,7 +22,8 @@ export const useBudgetForecastLabels = (
     const limitAmount = formatWholeAmount(convertFromMicroUnits(limit), currencySymbol);
 
     return {
-        limitLabel: isLimitInRange ? t`Limit ${limitAmount}` : t`Limit ${limitAmount} ↑`,
+        limitLabel: domain.isLimitInRange ? t`Limit ${limitAmount}` : t`Limit ${limitAmount} · above chart`,
+        scaleLabel: formatWholeAmount(convertFromMicroUnits(domain.maxValue), currencySymbol),
         endLabel: isOver ? t`${projectedAmount} · ${gapAmount} over` : t`${projectedAmount} · ${gapAmount} under`
     };
 };

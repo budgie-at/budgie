@@ -4,14 +4,16 @@ import Svg from 'react-native-svg';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { StyledPath } from '../../../@generic/component/styled-path/styled-path';
 import { useBudgetForecastLabels } from '../../hooks/use-budget-forecast-labels.hook';
 import { buildBudgetForecastGeometry } from '../../utils/build-budget-forecast-geometry.util';
+import { resolveBudgetForecastDomain } from '../../utils/resolve-budget-forecast-domain.util';
 import { resolveBudgetForecastLabelLane } from '../../utils/resolve-budget-forecast-label-lane.util';
 import { BudgetForecastAxisLabels } from '../budget-forecast-axis-labels/budget-forecast-axis-labels';
 import { BudgetForecastBills } from '../budget-forecast-bills/budget-forecast-bills';
 import { BudgetForecastEnd } from '../budget-forecast-end/budget-forecast-end';
 import { BudgetForecastLimit } from '../budget-forecast-limit/budget-forecast-limit';
+import { BudgetForecastLines } from '../budget-forecast-lines/budget-forecast-lines';
+import { BudgetForecastOffScaleLimit } from '../budget-forecast-off-scale-limit/budget-forecast-off-scale-limit';
 import { BudgetForecastRunOut } from '../budget-forecast-run-out/budget-forecast-run-out';
 import { BudgetForecastTodayMarker } from '../budget-forecast-today-marker/budget-forecast-today-marker';
 
@@ -37,7 +39,6 @@ const LABEL_FONT_SIZE = 11;
 const DASH = '4 3';
 const CHART_BOTTOM = CHART_HEIGHT - CHART_PADDING_BOTTOM;
 const AXIS_LABEL_Y = CHART_HEIGHT - 4;
-const PROJECTION_STROKE_WIDTH = 2;
 const TONE_STROKE_CLASS_NAME = {
     positive: 'accent-positive-fill',
     warning: 'accent-warning-fill',
@@ -61,10 +62,12 @@ export const BudgetForecastChart = ({ projection, tone, currencySymbol }: Props)
     const handleLayout = (event: LayoutChangeEvent) => void setWidth(event.nativeEvent.layout.width);
 
     const { runOutAt } = projection.overall;
-    const paddingTop = isDefined(runOutAt) ? CHART_RUN_OUT_PADDING_TOP : CHART_PADDING_TOP;
+    const domain = resolveBudgetForecastDomain(projection);
+    const hasTopRow = isDefined(runOutAt) || !domain.isLimitInRange;
+    const paddingTop = hasTopRow ? CHART_RUN_OUT_PADDING_TOP : CHART_PADDING_TOP;
     const geometry = buildBudgetForecastGeometry({ projection, width, paddingTop, ...GEOMETRY_LAYOUT });
     const { actualPath, projectedPath, projectedEndPoint, limitY, todayX, todayPoint, runOutX, bills } = geometry;
-    const { limitLabel, endLabel } = useBudgetForecastLabels(projection.overall, currencySymbol, geometry.isLimitInRange);
+    const { limitLabel, scaleLabel, endLabel } = useBudgetForecastLabels(projection.overall, currencySymbol, domain);
     const accentClassName = TONE_STROKE_CLASS_NAME[tone];
     const todayIndex = projection.elapsedDays - 1;
     const endLabelY = resolveBudgetForecastLabelLane({
@@ -73,7 +76,7 @@ export const BudgetForecastChart = ({ projection, tone, currencySymbol }: Props)
         labelWidth: endLabel.length * LABEL_FONT_SIZE * LABEL_CHAR_WIDTH_RATIO,
         fontSize: LABEL_FONT_SIZE,
         limitY,
-        top: isDefined(runOutAt) ? RUN_OUT_ROW_HEIGHT : 0,
+        top: hasTopRow ? RUN_OUT_ROW_HEIGHT : 0,
         bottom: CHART_BOTTOM
     });
 
@@ -81,23 +84,28 @@ export const BudgetForecastChart = ({ projection, tone, currencySymbol }: Props)
         <View className="h-[160px] w-full" onLayout={handleLayout}>
             {isPositiveNumber(width) ? (
                 <Svg width={width} height={CHART_HEIGHT}>
-                    <BudgetForecastLimit y={limitY} left={CHART_PADDING_LEFT} right={width} label={limitLabel} fontSize={LABEL_FONT_SIZE} />
+                    {domain.isLimitInRange ? (
+                        <BudgetForecastLimit
+                            y={limitY}
+                            left={CHART_PADDING_LEFT}
+                            right={width}
+                            label={limitLabel}
+                            fontSize={LABEL_FONT_SIZE}
+                        />
+                    ) : (
+                        <BudgetForecastOffScaleLimit
+                            label={limitLabel}
+                            scaleLabel={scaleLabel}
+                            top={paddingTop}
+                            fontSize={LABEL_FONT_SIZE}
+                        />
+                    )}
 
-                    <StyledPath
-                        d={projectedPath}
-                        fill="none"
-                        strokeClassName={accentClassName}
-                        strokeDasharray={DASH}
-                        strokeWidth={PROJECTION_STROKE_WIDTH}
-                        strokeLinecap="round"
-                    />
-                    <StyledPath
-                        d={actualPath}
-                        fill="none"
-                        strokeClassName="accent-primary"
-                        strokeWidth={2}
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
+                    <BudgetForecastLines
+                        actualPath={actualPath}
+                        projectedPath={projectedPath}
+                        accentClassName={accentClassName}
+                        dash={DASH}
                     />
 
                     <BudgetForecastBills bills={bills} />
