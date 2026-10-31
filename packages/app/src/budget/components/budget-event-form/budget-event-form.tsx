@@ -1,5 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
-import { FormProvider, useWatch } from 'react-hook-form';
+import { FormProvider } from 'react-hook-form';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -28,21 +28,10 @@ interface Props {
 export const BudgetEventForm = ({ defaultInstrumentId, editingId }: Props) => {
     const { t } = useLingui();
     const { form, handleCancel, handleSubmit, handleDelete, isEditing, isLoading } = useBudgetEventForm({ defaultInstrumentId, editingId });
-    const [name, tagId, startsAtMs, endsAtMs, overallLimit, categoryLimits, instrumentId] = useWatch({
-        control: form.control,
-        name: ['name', 'tagId', 'startsAtMs', 'endsAtMs', 'overallLimit', 'categoryLimits', 'instrumentId']
-    });
-    const { instrument } = useGetInstrumentByIdQuery(isPositiveNumber(instrumentId) ? instrumentId : defaultInstrumentId);
+    const values = form.watch();
+    const { instrument } = useGetInstrumentByIdQuery(isPositiveNumber(values.instrumentId) ? values.instrumentId : defaultInstrumentId);
     const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
-    const saveBlocker = resolveBudgetEventSaveBlocker({
-        name,
-        tagId,
-        startsAtMs,
-        endsAtMs,
-        overallLimit,
-        categoryLimits,
-        instrumentId
-    });
+    const saveBlocker = resolveBudgetEventSaveBlocker(values);
     const submitLabel = isEditing ? t`Save changes` : t`Create event`;
     const saveLabel = isDefined(saveBlocker) ? t(saveBlocker) : submitLabel;
     const headerTitle = isEditing ? t`Edit event` : t`New event`;
