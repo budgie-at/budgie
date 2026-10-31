@@ -246,6 +246,30 @@ Before changing `packages/landing` SEO pages, blog articles, feature pages, pill
 
 Rule 3 ("No comments") applies to every language in this repo, not just TypeScript — shell, SQL, YAML, and config included. At most one single-line header comment per file; explanations belong in the README or the PR description, not inline. Treat these as over-engineering red flags to refactor before shipping, not to ship: a config map that a naming convention would replace, parallel scripts that could share one implementation, a test larger than the code it covers, and single-consumer abstractions.
 
+### React red flags
+
+Review these patterns before adding state or effects. Keep `useWatch` calls together (rule 21) and loading content mounted at its measured size (rule 67).
+
+| Red flag | Do instead | Rule |
+| --- | --- | --- |
+| State mirrors props or other state | Derive during render; let React Compiler memoize | 62 |
+| Effects filter or sort lists into state | Derive the list during render | 62 |
+| Effects fetch, subscribe to, or read the database | Use `databaseQueryAtom` / `databaseQueryFamily` + `useLiveAtomValue`; run service Effects at runtime edges | 22, 35, 60 |
+| Effects synchronize state or chain setters | Keep one source of truth; use event handlers or a reducer for related transitions | 46, 62 |
+| Scroll or repeated layout callbacks set state | Use Reanimated shared values and animated styles on the UI thread; retain measurements that genuinely drive React layout | 57, 65 |
+| Effects respond to taps or other events | Perform the action in the event handler | 48, 62 |
+| Cleanup depends on a recreated callback | Read the latest callback with `useEffectEvent`; non-React callbacks use an effect-synced ref | 53 |
+| Reads after `await` use captured state | Read the awaited result, callback argument, or fresh ref | 54 |
+| List rows own repeated subscriptions or derived state | Lift shared reads and derive row props; retain genuine row interaction state | 60, 62 |
+| Unprofiled `useCallback`, `useMemo`, or `React.memo` | Let React Compiler handle memoization; preserve identity where an external API requires it | 62 |
+| An effect is empty or only sets derived state | Delete it and derive during render; put event-driven updates in handlers | 48, 62 |
+| Effect dependencies contain fresh objects or arrays | Depend on primitive inputs or construct the value inside the effect | 53, 62 |
+| State holds a value never rendered | Use a ref for imperative bookkeeping | 62 |
+| Booleans encode mutually exclusive states | Use an enum and a reducer with explicit transitions | 46 |
+| Timers or intervals live in effects | Use Effect `Schedule` / `Effect.sleep` with scoped fibers | 22, 57 |
+| Manual cancellation flags guard async results | Use fiber interruption and scoped resource cleanup | 35, 57 |
+| Mount effects start provider-owned services | Let the provider own startup; inline delegate-only hooks | 47, 48, 62 |
+
 ### Money Safety
 
 - Any PR that adds a data migration or touches consolidation, balance, ledger, or import code must run `pnpm verify:backup <latest backup .db>` locally and report only redacted account ids and the pass/fail totals in the PR description. Never commit backup files or their output, and never paste account titles or balances.
