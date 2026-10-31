@@ -246,6 +246,8 @@ env:
           id: 'BudgetDetails.Screen'
       timeout: 3000
 - scrollUntilVisible:
-      element: ${FUND_NAME}
+      element:
+          id: 'BudgetDetails\.FundRow\..*'
+          text: '${FUND_NAME}, .*'
       direction: DOWN
       centerElement: true
