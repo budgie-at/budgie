@@ -11,6 +11,7 @@ import { FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/fo
 import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
 import { useProtectedWholeAmountLabel } from '../../../@generic/hook/use-protected-whole-amount-label.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
+import { STATISTICS_TREND_PLOT_HEIGHT } from '../../constant/statistics-trend-plot-height.constant';
 import { StatisticsTrendBar } from '../statistics-trend-bar/statistics-trend-bar';
 
 import type { StatisticsTrendPointInterface } from '../../interface/statistics-trend-point.interface';
@@ -22,7 +23,6 @@ interface Props {
 }
 
 const PROTECTED_BAR_RATIO = 0.5;
-const PLOT_HEIGHT = 72;
 
 export const StatisticsTrendBars = ({ points, currentMonth, currencySymbol }: Props) => {
     const { t } = useLingui();
@@ -39,7 +39,8 @@ export const StatisticsTrendBars = ({ points, currentMonth, currencySymbol }: Pr
         )
     );
     const averageAmount = activePoints.reduce((sum, point) => sum + point.amount, 0) / Math.max(activePoints.length, 1);
-    const averageLineStyle = { bottom: maxAmount > 0 ? (averageAmount / maxAmount) * PLOT_HEIGHT : 0 };
+    const averageLineStyle = { top: STATISTICS_TREND_PLOT_HEIGHT * (1 - (maxAmount > 0 ? averageAmount / maxAmount : 0)) };
+    const baselineStyle = { top: STATISTICS_TREND_PLOT_HEIGHT };
     const selectedPoint = points.find(point => isDefined(selectedMonth) && isSameMonth(point.month, selectedMonth));
     const averageLabel = t({ message: plural(activePoints.length, { one: 'Average · # month', other: 'Average · # months' }) });
     const readoutLabel = isDefined(selectedPoint) ? formatFullMonthAndYear(selectedPoint.month) : averageLabel;
@@ -57,11 +58,9 @@ export const StatisticsTrendBars = ({ points, currentMonth, currencySymbol }: Pr
             </View>
 
             <View>
-                <View className="absolute inset-x-0 top-[72px] h-hairline bg-surface-separator" pointerEvents="none" />
+                <View className="absolute inset-x-0 h-hairline bg-surface-separator" style={baselineStyle} pointerEvents="none" />
                 {isAmountProtected ? null : (
-                    <View className="absolute inset-x-0 top-0 h-[72px]" pointerEvents="none">
-                        <View className="absolute inset-x-0 h-[1px] bg-primary/30" style={averageLineStyle} />
-                    </View>
+                    <View className="absolute inset-x-0 h-[1px] bg-primary/30" style={averageLineStyle} pointerEvents="none" />
                 )}
 
                 <View className="flex-row gap-x-md">

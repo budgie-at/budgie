@@ -34,10 +34,6 @@ const headlineVariants = cva('gap-x-md', {
     variants: { isStacked: { true: 'gap-y-xs', false: 'flex-row items-center' } }
 });
 
-const amountSlotVariants = cva('', {
-    variants: { isStacked: { true: '', false: 'ml-auto' } }
-});
-
 const SHARE_STYLE = { fontVariant: ['tabular-nums' as const] };
 
 export const StatisticsRankingRow = ({ title, share, ratio, icon, swatch, amount, testID, onPress }: Props) => {
@@ -47,6 +43,7 @@ export const StatisticsRankingRow = ({ title, share, ratio, icon, swatch, amount
 
     const shareLabel = formatPercent(share);
     const titleLineCount = isStacked ? 3 : 2;
+    const amountSlotClassName = isStacked ? '' : 'ml-auto';
     const barClassName = isDefined(swatch) ? swatch.fill : 'bg-secondary-foreground';
     const leading = <StatisticsRankingIcon icon={icon} swatch={swatch} />;
 
@@ -73,7 +70,7 @@ export const StatisticsRankingRow = ({ title, share, ratio, icon, swatch, amount
                         {title}
                     </Text>
 
-                    <View className={amountSlotVariants({ isStacked })}>{amount}</View>
+                    <View className={amountSlotClassName}>{amount}</View>
                 </View>
 
                 <View className="flex-row items-center gap-x-md">

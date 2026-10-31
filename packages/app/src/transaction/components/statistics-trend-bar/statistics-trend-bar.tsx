@@ -5,6 +5,7 @@ import { isPositiveNumber } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/footnote-max-font-size-multiplier.constant';
+import { STATISTICS_TREND_PLOT_HEIGHT } from '../../constant/statistics-trend-plot-height.constant';
 
 interface Props {
     readonly label: string;
@@ -16,6 +17,7 @@ interface Props {
 }
 
 const PERCENT = 100;
+const PLOT_STYLE = { height: STATISTICS_TREND_PLOT_HEIGHT };
 
 const barVariants = cva('w-full max-w-[28px] rounded-t-[4px] rounded-b-[1px]', {
     variants: {
@@ -40,7 +42,7 @@ export const StatisticsTrendBar = ({ label, accessibilityLabel, ratio, isSelecte
             hitSlop={0}
             onPress={onPress}
         >
-            <View className="h-[72px] items-center justify-end">
+            <View className="items-center justify-end" style={PLOT_STYLE}>
                 {isPositiveNumber(ratio) ? (
                     <View className={barVariants({ isHighlighted })} style={barStyle} />
                 ) : (

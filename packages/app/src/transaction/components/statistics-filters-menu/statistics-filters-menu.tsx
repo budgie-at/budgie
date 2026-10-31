@@ -54,21 +54,12 @@ export const StatisticsFiltersMenu = ({ filters, onChange }: Props) => {
         });
     const handleClear = () => void onChange(current => ({ ...DEFAULT_TRANSACTION_FILTER, date: current.date }));
 
-    const activeCount = [
-        isDefined(filters.amount),
-        isNotEmptyArray(filters.categoryIds),
-        isNotEmptyArray(filters.tagIds),
-        isNotEmptyArray(filters.accountIds)
-    ].filter(Boolean).length;
+    const amountLabel = isDefined(filters.amount) ? t`On` : null;
+    const categoryLabel = isNotEmptyArray(filters.categoryIds) ? String(filters.categoryIds.length) : null;
+    const tagLabel = isNotEmptyArray(filters.tagIds) ? String(filters.tagIds.length) : null;
+    const accountLabel = isNotEmptyArray(filters.accountIds) ? String(filters.accountIds.length) : null;
+    const activeCount = [amountLabel, categoryLabel, tagLabel, accountLabel].filter(isDefined).length;
     const triggerLabel = activeCount > 0 ? t`Filters · ${activeCount}` : t`Filters`;
-    const activeLabel = t`On`;
-    const amountLabel = isDefined(filters.amount) ? activeLabel : null;
-    const categoryCount = filters.categoryIds?.length ?? 0;
-    const tagCount = filters.tagIds?.length ?? 0;
-    const accountCount = filters.accountIds?.length ?? 0;
-    const categoryLabel = categoryCount > 0 ? String(categoryCount) : null;
-    const tagLabel = tagCount > 0 ? String(tagCount) : null;
-    const accountLabel = accountCount > 0 ? String(accountCount) : null;
 
     return (
         <ActionsMenu

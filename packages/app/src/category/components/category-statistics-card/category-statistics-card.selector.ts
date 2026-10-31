@@ -4,5 +4,5 @@ export const CategoryStatisticsCardSelector = {
     Card: (title: string) => `CategoryStatisticsCard.${normalizePart(title)}` as const,
     Uncategorized: 'CategoryStatisticsCard.Uncategorized',
     Amount: (title: string, amount: number) => `CategoryStatisticsCard.Amount.${normalizePart(title)}.${normalizePart(amount)}` as const,
-    Toggle: (type: string) => `TagStatisticsCard.Toggle.${type}` as const
+    Toggle: (type: string) => `CategoryStatisticsCard.Toggle.${type}` as const
 } as const;
