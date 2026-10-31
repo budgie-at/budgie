@@ -7,7 +7,7 @@ import { GroupedListSection } from '../../../@generic/component/grouped-list-sec
 import { RadioOptionRow } from '../../../@generic/component/radio-option-row/radio-option-row';
 import { BudgetSelector } from '../../budget.selector';
 import { BudgetFormValues } from '../../constant/budget-form-schema.constant';
-import { BudgetExpectedIncomeHint } from '../budget-expected-income-hint/budget-expected-income-hint';
+import { useBudgetExpectedIncomeHint } from '../../hooks/use-budget-expected-income-hint.hook';
 import { BudgetOverallLimitField } from '../budget-overall-limit-field/budget-overall-limit-field';
 
 interface Props {
@@ -17,6 +17,7 @@ interface Props {
 export const BudgetLimitSourceField = ({ currencySymbol }: Props) => {
     const { t } = useLingui();
     const { control } = useFormContext<BudgetFormValues>();
+    const expectedIncomeHint = useBudgetExpectedIncomeHint();
 
     const render = ({ field: { value, onChange } }: UseControllerReturn<BudgetFormValues, 'limitSource'>) => {
         const handleFixedPress = () => void onChange(BudgetLimitSourceEnum.FIXED);
@@ -45,12 +46,11 @@ export const BudgetLimitSourceField = ({ currencySymbol }: Props) => {
                     />
                     <RadioOptionRow
                         label={t`Expected income`}
+                        description={expectedIncomeHint}
                         isSelected={value === BudgetLimitSourceEnum.INCOME_EXPECTED}
                         onPress={handleExpectedPress}
                         testID={BudgetSelector.SetupLimitSourceRow(BudgetLimitSourceEnum.INCOME_EXPECTED)}
-                    >
-                        <BudgetExpectedIncomeHint />
-                    </RadioOptionRow>
+                    />
                 </View>
             </GroupedListSection>
         );
