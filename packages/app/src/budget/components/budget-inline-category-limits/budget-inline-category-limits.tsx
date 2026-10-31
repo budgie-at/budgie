@@ -34,6 +34,9 @@ export const BudgetInlineCategoryLimits = ({ currencySymbol, onCategoryAdded }: 
     const selectedCategoryIds = categoryLimits.map(limit => limit.categoryId).filter(isPositiveNumber);
     const isCategoryLimitsEmpty = isEmptyArray(fields);
     const isBottomAddButtonVisible = fields.length > BOTTOM_ADD_BUTTON_THRESHOLD;
+    const addRowTestID = isCategoryLimitsEmpty
+        ? BudgetSelector.SetupCategoryLimitAddButton
+        : BudgetSelector.SetupCategoryLimitBottomAddButton;
 
     const handleAddPress = () => {
         openCategorySelector(
@@ -57,20 +60,20 @@ export const BudgetInlineCategoryLimits = ({ currencySymbol, onCategoryAdded }: 
         }
     };
 
+    const addAction = isCategoryLimitsEmpty ? null : (
+        <HeaderTextAction label={t`Add`} onPress={handleAddPress} testID={BudgetSelector.SetupCategoryLimitAddButton} />
+    );
+
     return (
         <View className="gap-y-md" onLayout={handleLayout}>
-            <BudgetGroupedSectionHeader
-                label={t`Category limits`}
-                testID={BudgetSelector.SetupCategoryLimitsHeader}
-                trailing={<HeaderTextAction label={t`Add`} onPress={handleAddPress} testID={BudgetSelector.SetupCategoryLimitAddButton} />}
-            />
+            <BudgetGroupedSectionHeader label={t`Category limits`} testID={BudgetSelector.SetupCategoryLimitsHeader} trailing={addAction} />
             <GroupedListSection>
                 <BudgetInlineOtherLimitRow currencySymbol={currencySymbol} />
                 {fields.map((field, index) => (
                     <BudgetCategoryLimitCompactRow key={field.id} currencySymbol={currencySymbol} index={index} onRemove={remove} />
                 ))}
                 {isCategoryLimitsEmpty || isBottomAddButtonVisible ? (
-                    <BudgetAddCategoryLimitRow testID={BudgetSelector.SetupCategoryLimitBottomAddButton} onPress={handleAddPress} />
+                    <BudgetAddCategoryLimitRow testID={addRowTestID} onPress={handleAddPress} />
                 ) : null}
             </GroupedListSection>
             <View className="px-3xl">

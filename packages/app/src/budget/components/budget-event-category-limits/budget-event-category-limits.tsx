@@ -37,17 +37,21 @@ export const BudgetEventCategoryLimits = ({ currencySymbol }: Props) => {
         );
     };
 
+    const isEmpty = isEmptyArray(fields);
+    const addAction = isEmpty ? null : (
+        <HeaderTextAction label={t`Add`} onPress={handleAddPress} testID={BudgetSelector.EventCategoryLimitAddButton} />
+    );
+
     return (
         <View className="gap-y-md">
-            <BudgetGroupedSectionHeader
-                label={t`Category limits`}
-                trailing={<HeaderTextAction label={t`Add`} onPress={handleAddPress} testID={BudgetSelector.EventCategoryLimitAddButton} />}
-            />
+            <BudgetGroupedSectionHeader label={t`Category limits`} trailing={addAction} />
             <GroupedListSection>
                 {fields.map((field, index) => (
                     <BudgetEventCategoryLimitRow key={field.id} currencySymbol={currencySymbol} index={index} onRemove={remove} />
                 ))}
-                {isEmptyArray(fields) ? <BudgetAddCategoryLimitRow onPress={handleAddPress} /> : null}
+                {isEmpty ? (
+                    <BudgetAddCategoryLimitRow testID={BudgetSelector.EventCategoryLimitAddButton} onPress={handleAddPress} />
+                ) : null}
             </GroupedListSection>
             <Text className="text-secondary-foreground px-3xl text-[13px] leading-[18px]">
                 <Trans>Optional. Leave empty to track the event as a single limit.</Trans>
