@@ -29,16 +29,16 @@ export const CryptoCurrencyGroupCard = ({ group, balance, balancesByAccountId }:
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const formatDigits = useDisplayFormatDigits();
     const formatCryptoDigits = useFormatDigits(0, MICRO_UNIT_DECIMAL_PLACES);
-    const formatRate = useFormatDigits(2);
-    const formatFractionalRate = useFormatDigits(2, 4);
     const valuationRate = useCryptoValuationRateQuery(group.instrument.id, defaultInstrument.id);
+    const isFractionalRate = isDefined(valuationRate) && valuationRate > 0 && valuationRate < 1;
+    const rateFractionDigits = isFractionalRate ? Math.min(Math.max(Math.ceil(-Math.log10(valuationRate)) + 2, 4), 8) : 2;
+    const formatRate = useFormatDigits(2, rateFractionDigits);
 
     const toggleOpen = () => void setIsOpen(value => !value);
     const navigateToMarket = () => void router.push({ pathname: '/currency/[id]', params: { id: String(group.instrument.id) } });
     const formattedBalance = `${formatCryptoDigits(balance)} ${group.instrument.code}`;
     const formattedValue = isDefined(valuationRate) ? formatDigits(balance * valuationRate, defaultInstrument.symbol) : null;
-    const formatRateDigits = isDefined(valuationRate) && valuationRate >= 1 ? formatRate : formatFractionalRate;
-    const rateLabel = isDefined(valuationRate) ? formatRateDigits(valuationRate) : null;
+    const rateLabel = isDefined(valuationRate) ? formatRate(valuationRate) : null;
 
     return (
         <View testID={CryptoCurrencyGroupCardSelector.Card(group.instrument.code)}>

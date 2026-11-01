@@ -20,8 +20,10 @@ export const InstitutionRowTotal = ({ integrationId, total }: Props) => {
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const formatDigits = useDisplayFormatDigits();
 
-    const formattedTotal = toTrueMinus(formatDigits(total, defaultInstrument.symbol));
-    const isZeroTotal = formattedTotal === formatDigits(0, defaultInstrument.symbol);
+    const signedTotal = toTrueMinus(formatDigits(total, defaultInstrument.symbol));
+    const unsignedTotal = signedTotal.replace(/^−/u, '');
+    const isZeroTotal = unsignedTotal === formatDigits(0, defaultInstrument.symbol);
+    const formattedTotal = isZeroTotal ? unsignedTotal : signedTotal;
     const toneClassName = cn(
         isZeroTotal && 'text-secondary-foreground',
         !isZeroTotal && total < 0 && 'text-destructive-foreground',

@@ -31,7 +31,7 @@ export const DebtAccountCardDeadline = ({ deadline }: Props) => {
 
         return (
             <Text className="text-[13px] text-secondary-foreground" numberOfLines={2}>
-                {t`Due ${date}`.replaceAll(' ', '\u00A0')}
+                {t`Due ${date}`}
             </Text>
         );
     }
