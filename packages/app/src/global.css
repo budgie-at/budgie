@@ -120,6 +120,11 @@
             --color-warning-fill: rgba(240, 177, 0, 1);
             --color-warning-corner: rgba(240, 177, 0, 0.2);
             --color-warning-background: rgba(240, 177, 0, 0.1);
+
+            --color-positive-ink: rgba(4, 120, 87, 1);
+            --color-positive-gauge: rgba(16, 185, 129, 1);
+            --color-warning-ink: rgba(154, 103, 0, 1);
+            --color-destructive-ink: rgba(220, 38, 38, 1);
             --color-attention-foreground: rgba(146, 64, 14, 1);
             --color-attention-background: rgba(254, 243, 199, 1);
 
@@ -213,6 +218,11 @@
             --color-warning-fill: rgba(240, 177, 0, 1);
             --color-warning-corner: rgba(240, 177, 0, 0.2);
             --color-warning-background: rgba(240, 177, 0, 0.1);
+
+            --color-positive-ink: rgba(48, 209, 88, 1);
+            --color-positive-gauge: rgba(48, 209, 88, 1);
+            --color-warning-ink: rgba(240, 177, 0, 1);
+            --color-destructive-ink: rgba(255, 105, 97, 1);
             --color-attention-foreground: rgba(240, 180, 60, 1);
             --color-attention-background: rgba(224, 165, 38, 0.16);
 

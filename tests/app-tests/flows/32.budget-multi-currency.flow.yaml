@@ -73,7 +73,7 @@ env:
       timeout: 3000
 - assertVisible:
       id: 'BudgetWidget.SpentLabel'
-      text: '€136 / €200'
+      text: '€136 spent'
 - tapOn:
       id: 'BudgetWidget.Card'
 - extendedWaitUntil:

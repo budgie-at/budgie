@@ -1,4 +1,4 @@
-import { BudgetRepository, computePeriodWindow, computeSafePerDay, getInclusiveEnd } from '@budgie/budget';
+import { BudgetPaceStatusEnum, BudgetRepository, computePeriodWindow, computeSafePerDay, getInclusiveEnd } from '@budgie/budget';
 import {
     AccountBalanceRepository,
     AccountTypeEnum,
@@ -22,10 +22,13 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isEmptyArray, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { ACCOUNT_TYPE } from '../../account/constant/account-type.constant';
+import { BUDGET_PACE_STATUS_LABEL } from '../../budget/constant/budget-pace-status-label.constant';
+import { BUDGET_PACE_VARIANT } from '../../budget/constant/budget-pace-variant.constant';
 import { BudgetProjectionService } from '../../budget/service/budget-projection.service';
+import { resolveBudgetBarTone } from '../../budget/utils/resolve-budget-bar-tone.util';
 import { DEFAULT_DECIMAL_PLACES } from '../../i18n/constant/default-decimal-places.constant';
 import { formatSymbolAmount } from '../../i18n/utils/format-symbol-amount.util';
 import { i18nLoadLanguageMessages } from '../../i18n/utils/i18n.util';
@@ -38,6 +41,8 @@ import { DEFAULT_INSTRUMENT } from '../../settings/constants/default-instrument.
 
 import type { WidgetAccountTypeTotalInterface } from '../interface/widget-account-type-total.interface';
 import type { WidgetBudgetCategoryInterface } from '../interface/widget-budget-category.interface';
+import type { WidgetBudgetStatInterface } from '../interface/widget-budget-stat.interface';
+import type { WidgetBudgetStatsInputInterface } from '../interface/widget-budget-stats-input.interface';
 import type { WidgetNetWorthSnapshotInterface } from '../interface/widget-net-worth-snapshot.interface';
 import type { WidgetRunwaySnapshotInterface } from '../interface/widget-runway-snapshot.interface';
 import type { WidgetSnapshotContextInterface } from '../interface/widget-snapshot-context.interface';
@@ -62,6 +67,9 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
             const topCategoryCount = 3;
             const topAccountTypeCount = 4;
             const maskedAmount = '•••';
+            const compactAmountThreshold = 100;
+            const abbreviatedAmountThreshold = 100_000;
+            const categoryTone = { green: 'positive', yellow: 'warning', red: 'destructive' } as const;
 
             const formatPercent = (ratio: number, context: WidgetSnapshotContextInterface): string =>
                 new Intl.NumberFormat(context.locale, { style: 'percent', maximumFractionDigits: 0 }).format(ratio);
@@ -104,14 +112,29 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
                 return `${resolveDeltaPrefix(value)}${formatWithSymbol(Math.abs(value), symbol, context)}`;
             };
 
+            const formatCompactWithSymbol = (value: number, symbol: string, context: WidgetSnapshotContextInterface): string => {
+                if (context.isMasked || Math.abs(value) < abbreviatedAmountThreshold) {
+                    return formatWithSymbol(
+                        value,
+                        symbol,
+                        Math.abs(value) >= compactAmountThreshold ? { ...context, decimalPlaces: 0 } : context
+                    );
+                }
+
+                return formatSymbolAmount(value, symbol, absolute =>
+                    new Intl.NumberFormat(context.locale, { notation: 'compact', maximumFractionDigits: 1 }).format(absolute)
+                );
+            };
+
             const buildStrings = (i18n: I18n): WidgetSnapshotStringsInterface => ({
                 netWorthTitle: i18n._(msg`Net worth`),
                 thisMonth: i18n._(msg`This month`),
-                budgetTitle: i18n._(msg`Budget`),
-                perDay: i18n._(msg`per day`),
-                left: i18n._(msg`left`),
-                over: i18n._(msg`over`),
-                noBudget: i18n._(msg`No active budget`),
+                categoriesTitle: i18n._(msg`Category limits`),
+                today: i18n._(msg`Today`),
+                limit: i18n._(msg`Limit`),
+                emptyBudgetTitle: i18n._(msg`Know what’s safe to spend`),
+                emptyBudgetSubtitle: i18n._(msg`Set a limit and get a daily allowance`),
+                emptyBudgetAction: i18n._(msg`Set budget`),
                 expense: i18n._(msg`Expense`),
                 income: i18n._(msg`Income`),
                 transfer: i18n._(msg`Transfer`),
@@ -170,7 +193,9 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
                 const budgetCategory: WidgetBudgetCategoryInterface = {
                     title: isDefined(category) ? category.title : context.i18n._(msg`Category`),
                     formattedProgress: formatPercent(progressRatio, context),
-                    isOverLimit: progressRatio >= 1
+                    ratio: Math.min(Math.max(progressRatio, 0), 1),
+                    limitRatio: progressRatio > 1 ? 1 / progressRatio : null,
+                    tone: categoryTone[resolveBudgetBarTone(progressRatio)]
                 };
 
                 return budgetCategory;
@@ -184,9 +209,10 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
                     .filter(category => isPositiveNumber(category.limit))
                     .map(category => ({
                         categoryId: category.categoryId,
+                        spent: category.spent,
                         progressRatio: convertFromMicroUnits(category.spent) / convertFromMicroUnits(category.limit)
                     }))
-                    .sort((first, second) => second.progressRatio - first.progressRatio)
+                    .sort((first, second) => second.progressRatio - first.progressRatio || second.spent - first.spent)
                     .slice(0, topCategoryCount);
 
                 return yield* Effect.all(
@@ -194,6 +220,63 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
                     { concurrency: 'unbounded' }
                 );
             });
+
+            const formatPeriod = (start: Date, end: Date, context: WidgetSnapshotContextInterface): string => {
+                const formatter = new Intl.DateTimeFormat(context.locale, { month: 'short', day: 'numeric' });
+
+                return `${formatter.format(start)} – ${formatter.format(end)}`;
+            };
+
+            const formatHiddenCategories = (count: number, context: WidgetSnapshotContextInterface): string =>
+                isPositiveNumber(count) ? context.i18n._(msg({ message: plural(count, { one: '+# more', other: '+# more' }) })) : '';
+
+            const buildBudgetCaption = (isOverLimit: boolean, formattedLimit: string, context: WidgetSnapshotContextInterface): string => {
+                if (context.isMasked) {
+                    return context.i18n._(msg`Unlock to view`);
+                }
+
+                return isOverLimit ? context.i18n._(msg`above ${formattedLimit} limit`) : context.i18n._(msg`left of ${formattedLimit}`);
+            };
+
+            const buildBudgetStats = (
+                input: WidgetBudgetStatsInputInterface,
+                context: WidgetSnapshotContextInterface
+            ): readonly WidgetBudgetStatInterface[] => {
+                const formattedAveragePerDay = formatCompactWithSymbol(
+                    input.spentAmount / Math.max(input.elapsedDays, 1),
+                    input.symbol,
+                    context
+                );
+                const averageStat: WidgetBudgetStatInterface = {
+                    label: context.i18n._(msg`Average spend`),
+                    value: context.i18n._(msg`${formattedAveragePerDay} a day`),
+                    note: null,
+                    isNoteNegative: false
+                };
+
+                if (!isDefined(input.projectedAmount)) {
+                    return [averageStat];
+                }
+
+                const formattedDifference = formatCompactWithSymbol(
+                    Math.abs(input.limitAmount - input.projectedAmount),
+                    input.symbol,
+                    context
+                );
+                const isProjectedOver = input.projectedAmount > input.limitAmount;
+
+                return [
+                    {
+                        label: context.i18n._(msg`Projected spend`),
+                        value: formatCompactWithSymbol(input.projectedAmount, input.symbol, context),
+                        note: isProjectedOver
+                            ? context.i18n._(msg`${formattedDifference} over limit`)
+                            : context.i18n._(msg`${formattedDifference} under limit`),
+                        isNoteNegative: isProjectedOver
+                    },
+                    averageStat
+                ];
+            };
 
             const buildRunway = Effect.fn('WidgetSnapshotBuilderService.buildRunway')(function* (
                 instrument: InstrumentEntityInterface,
@@ -284,7 +367,7 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
                 }
 
                 const now = new Date();
-                const { nextPeriodStart } = computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, now);
+                const { periodStart, nextPeriodStart } = computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, now);
                 const [instrument, projection] = yield* Effect.all(
                     [instrumentRepository.findById(budget.instrumentId), budgetProjectionService.project(budget, now)],
                     { concurrency: 'unbounded' }
@@ -294,34 +377,117 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
                 const limitAmount = convertFromMicroUnits(projection.overall.limit);
                 const progressRatio = isPositiveNumber(limitAmount) ? spentAmount / limitAmount : 1;
                 const periodEnd = getInclusiveEnd(nextPeriodStart);
-                const categories = yield* buildBudgetCategories(projection.categories, context);
+                const categories = context.isMasked ? [] : yield* buildBudgetCategories(projection.categories, context);
+                const formattedLimit = formatCompactWithSymbol(limitAmount, symbol, context);
+                const isOverLimit = spentAmount > limitAmount;
+                const formattedSpentAmount = formatCompactWithSymbol(spentAmount, symbol, context);
+                const formattedSpentLabel = context.i18n._(msg`${formattedSpentAmount} spent`);
+                const formattedReservedAmount = formatCompactWithSymbol(
+                    convertFromMicroUnits(projection.overall.upcoming),
+                    symbol,
+                    context
+                );
+                const projectedAmount = isDefined(projection.overall.projectedEnd)
+                    ? convertFromMicroUnits(projection.overall.projectedEnd)
+                    : null;
 
+                const periodDays = Math.max(differenceInCalendarDays(periodEnd, periodStart) + 1, 1);
                 const daysCount = Math.max(differenceInCalendarDays(periodEnd, new Date()) + 1, 1);
+                const formattedAmount = formatCompactWithSymbol(Math.abs(limitAmount - spentAmount), symbol, context);
+                const caption = buildBudgetCaption(isOverLimit, formattedLimit, context);
+                const formattedPeriod = formatPeriod(periodStart, periodEnd, context);
+                const categorySummary = categories.map(category => `${category.title} ${category.formattedProgress}`).join(', ');
                 const sharedFields = {
-                    formattedSpent: formatWithSymbol(spentAmount, symbol, context),
-                    formattedLimit: formatWithSymbol(limitAmount, symbol, context),
-                    formattedRemaining: formatWithSymbol(Math.abs(limitAmount - spentAmount), symbol, context),
-                    progressRatio,
-                    formattedProgress: formatPercent(progressRatio, context),
-                    isOverLimit: spentAmount > limitAmount,
-                    categories
+                    formattedAmount,
+                    caption,
+                    statusLabel: context.isMasked
+                        ? context.i18n._(msg`Budget`)
+                        : context.i18n._(BUDGET_PACE_STATUS_LABEL[projection.overall.status]),
+                    tone: BUDGET_PACE_VARIANT[projection.overall.status],
+                    isOverLimit: isOverLimit && !context.isMasked,
+                    isMasked: context.isMasked,
+                    spentRatio: context.isMasked ? 0 : Math.min(Math.max(progressRatio, 0), 1),
+                    reservedRatio:
+                        context.isMasked || !isPositiveNumber(limitAmount)
+                            ? 0
+                            : Math.min(convertFromMicroUnits(projection.overall.upcoming) / limitAmount, Math.max(1 - progressRatio, 0)),
+                    limitRatio: isOverLimit && !context.isMasked ? limitAmount / spentAmount : null,
+                    categories,
+                    formattedPeriod,
+                    formattedReserved:
+                        context.isMasked || !isPositiveNumber(projection.overall.upcoming)
+                            ? ''
+                            : context.i18n._(msg`${formattedReservedAmount} reserved for bills`),
+                    formattedHiddenCategories: formatHiddenCategories(
+                        projection.categories.filter(category => isPositiveNumber(category.limit)).length - categories.length,
+                        context
+                    ),
+                    formattedSpent: formattedSpentLabel
                 };
 
                 return Array.from({ length: daysCount }, (_entry, index) => {
                     const daysRemaining = daysCount - index;
+                    const safePerDay = convertFromMicroUnits(computeSafePerDay(projection.overall.free, daysRemaining));
+                    const formattedSafePerDay = formatCompactWithSymbol(
+                        safePerDay >= compactAmountThreshold ? Math.floor(safePerDay) : Math.floor(safePerDay * 100) / 100,
+                        symbol,
+                        context
+                    );
+
+                    const elapsedRatio = Math.min(projection.overall.elapsedFraction + index / periodDays, 1);
+                    const isCaughtUp =
+                        projection.overall.status === BudgetPaceStatusEnum.AHEAD && index > 0 && progressRatio <= elapsedRatio;
+                    const entryStatus = isCaughtUp ? BudgetPaceStatusEnum.ON_TRACK : projection.overall.status;
+                    const entryStatusLabel = context.i18n._(BUDGET_PACE_STATUS_LABEL[entryStatus]);
+                    const formattedPerDay = context.i18n._(msg`${formattedSafePerDay} a day`);
+                    const formattedDaysLeft = context.i18n._(
+                        msg({ message: plural(daysRemaining, { one: '# day left', other: '# days left' }) })
+                    );
+
+                    const reservedPrefix = isNotEmptyString(sharedFields.formattedReserved) ? `${sharedFields.formattedReserved}, ` : '';
+                    const entryStats = buildBudgetStats(
+                        {
+                            spentAmount,
+                            limitAmount,
+                            projectedAmount: isDefined(projectedAmount)
+                                ? spentAmount +
+                                  (projectedAmount - spentAmount) *
+                                      ((1 - elapsedRatio) / Math.max(1 - projection.overall.elapsedFraction, Number.EPSILON))
+                                : null,
+                            elapsedDays: elapsedRatio * periodDays,
+                            symbol
+                        },
+                        context
+                    );
+                    const statsSummary = isEmptyArray(categories)
+                        ? entryStats.map(stat => `${stat.label} ${stat.value}${isDefined(stat.note) ? `, ${stat.note}` : ''}`).join('. ')
+                        : '';
+                    const unmaskedSummary = isOverLimit
+                        ? context.i18n._(
+                              msg`${entryStatusLabel}. ${formattedAmount} ${caption}. ${formattedSpentLabel}, ${formattedDaysLeft}.`
+                          )
+                        : context.i18n._(
+                              msg`${entryStatusLabel}. ${formattedAmount} ${caption}. ${reservedPrefix}${formattedPerDay}, ${formattedDaysLeft}.`
+                          );
 
                     return {
                         date: startOfDay(addDays(periodEnd, -(daysRemaining - 1))),
                         budget: {
                             ...sharedFields,
-                            formattedDaysLeft: context.i18n._(
-                                msg({ message: plural(daysRemaining, { one: '# day left', other: '# days left' }) })
-                            ),
-                            formattedSafePerDay: formatWithSymbol(
-                                convertFromMicroUnits(computeSafePerDay(projection.overall.free, daysRemaining)),
-                                symbol,
-                                context
-                            )
+                            ...(!context.isMasked && {
+                                statusLabel: entryStatusLabel,
+                                tone: BUDGET_PACE_VARIANT[entryStatus]
+                            }),
+                            elapsedRatio,
+                            stats: entryStats,
+                            formattedPerDay,
+                            accessibilitySummary: context.isMasked
+                                ? context.i18n._(msg`Budget locked, ${formattedDaysLeft}. Unlock to view.`)
+                                : unmaskedSummary,
+                            formattedDaysLeft,
+                            accessibilityDetail: context.isMasked
+                                ? formattedPeriod
+                                : `${formattedPeriod}. ${categorySummary}${statsSummary}`
                         }
                     };
                 });

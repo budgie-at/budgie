@@ -179,6 +179,10 @@ msgstr "{count, plural, one {# без категорії} few {# без кате
 msgid "{count, plural, one {# upcoming bill} other {# upcoming bills}}"
 msgstr "{count, plural, one {# майбутній платіж} few {# майбутні платежі} many {# майбутніх платежів} other {# майбутнього платежу}}"
 
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "{count, plural, one {+# more} other {+# more}}"
+msgstr "{count, plural, one {ще +#} few {ще +#} many {ще +#} other {ще +#}}"
+
 #: src/category/hooks/use-delete-category.hook.ts
 msgid "{count, plural, one {This category has # transaction. Select another category to reassign it to.} other {This category has # transactions. Select another category to reassign them to.}}"
 msgstr "{count, plural, one {Ця категорія має # транзакцію. Виберіть іншу категорію, щоб перепризначити її.} few {Ця категорія має # транзакції. Виберіть іншу категорію, щоб перепризначити їх.} many {Ця категорія має # транзакцій. Виберіть іншу категорію, щоб перепризначити їх.} other {Ця категорія має # транзакції. Виберіть іншу категорію, щоб перепризначити їх.}}"
@@ -204,11 +208,11 @@ msgid "{days, plural, one {In # day} other {In # days}}"
 msgstr "{days, plural, one {Через # день} few {Через # дні} many {Через # днів} other {Через # дня}}"
 
 #: src/budget/components/budget-verdict-header/budget-verdict-header.tsx
+#: src/budget/components/budget-widget-footer-row/budget-widget-footer-row.tsx
 msgid "{daysLeft, plural, one {# day left} other {# days left}}"
 msgstr "{daysLeft, plural, one {Залишився # день} few {Залишилося # дні} many {Залишилося # днів} other {Залишилося # дня}}"
 
 #: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
-#: src/budget/components/budget-widget-footer-row/budget-widget-footer-row.tsx
 msgid "{daysLeft, plural, one {# day} other {# days}}"
 msgstr "{daysLeft, plural, one {# день} few {# дні} many {# днів} other {# дня}}"
 
@@ -241,6 +245,14 @@ msgstr "{downloadPercent}%"
 msgid "{duplicateTransactionCount, plural, one {# skipped} other {# skipped}}"
 msgstr "{duplicateTransactionCount, plural, one {# пропущено} few {# пропущено} many {# пропущено} other {# пропущено}}"
 
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "{entryStatusLabel}. {formattedAmount} {caption}. {formattedSpentLabel}, {formattedDaysLeft}."
+msgstr "{entryStatusLabel}. {formattedAmount} {caption}. {formattedSpentLabel}, {formattedDaysLeft}."
+
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "{entryStatusLabel}. {formattedAmount} {caption}. {reservedPrefix}{formattedPerDay}, {formattedDaysLeft}."
+msgstr "{entryStatusLabel}. {formattedAmount} {caption}. {reservedPrefix}{formattedPerDay}, {formattedDaysLeft}."
+
 #: src/settings/components/your-data-card/your-data-card.tsx
 msgid "{fileSize} · no Budgie servers"
 msgstr "{fileSize} · без серверів Budgie"
@@ -265,9 +277,21 @@ msgstr "{formattedAmount} перевитрати перенесено на {name
 msgid "{formattedAmount} rolled into {name}"
 msgstr "{formattedAmount} перенесено на {name}"
 
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "{formattedAveragePerDay} a day"
+msgstr "{formattedAveragePerDay} на день"
+
 #: src/account/component/account-actions-menu/use-deposit-close-action.hook.ts
 msgid "{formattedBalance} will be transferred to {destinationAccountTitle} and this deposit will be archived. You can restore it anytime from Settings → Archived Accounts."
 msgstr "{formattedBalance} буде переведено на {destinationAccountTitle}, а цей депозит буде архівовано. Ви можете відновити його в будь-який час у Налаштуваннях → Архівовані рахунки."
+
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "{formattedDifference} over limit"
+msgstr "{formattedDifference} понад ліміт"
+
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "{formattedDifference} under limit"
+msgstr "{formattedDifference} у межах ліміту"
 
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 msgid "{formattedRemaining} left to assign"
@@ -276,6 +300,18 @@ msgstr "{formattedRemaining} залишилось розподілити"
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 msgid "{formattedRemaining} over budget"
 msgstr "{formattedRemaining} понад бюджет"
+
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "{formattedReservedAmount} reserved for bills"
+msgstr "{formattedReservedAmount} зарезервовано на рахунки"
+
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "{formattedSafePerDay} a day"
+msgstr "{formattedSafePerDay} на день"
+
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "{formattedSpentAmount} spent"
+msgstr "Витрачено {formattedSpentAmount}"
 
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
 msgid "{found, plural, one {# high-confidence match} other {# high-confidence matches}}"
@@ -296,10 +332,6 @@ msgstr "Зараз вільно {free} ГБ. Ваші фінансові дан�
 #: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "{freeAmount} ÷ {daysLabel}"
 msgstr "{freeAmount} ÷ {daysLabel}"
-
-#: src/budget/components/budget-widget-footer-row/budget-widget-footer-row.tsx
-msgid "{freeAmount} free for {daysLabel}"
-msgstr "{freeAmount} вільно на {daysLabel}"
 
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "{freeSize} GB free on this phone"
@@ -476,6 +508,10 @@ msgstr "{remainingCount, plural, one {платіж до сортування} fe
 msgid "{repairedTransactionCount, plural, one {# sync item repaired} other {# sync items repaired}}"
 msgstr "{repairedTransactionCount, plural, one {# елемент синхронізації виправлено} few {# елементи синхронізації виправлено} many {# елементів синхронізації виправлено} other {# елемента синхронізації виправлено}}"
 
+#: src/budget/components/budget-widget-footer-row/budget-widget-footer-row.tsx
+msgid "{reservedAmount} reserved for upcoming bills"
+msgstr "{reservedAmount} зарезервовано на майбутні рахунки"
+
 #: src/categorize-inbox/components/categorize-inbox-payments-select-all/categorize-inbox-payments-select-all.tsx
 msgid "{rowCount, plural, one {# payment} other {# payments}}"
 msgstr "{rowCount, plural, one {# платіж} few {# платежі} many {# платежів} other {# платежу}}"
@@ -499,6 +535,10 @@ msgstr "{rowCount, plural, one {Розподілити # готовий плат
 #: src/categorize-inbox/components/categorize-inbox-tag-provider/categorize-inbox-tag-provider.tsx
 msgid "{rowCount, plural, one {Tagged # transaction} other {Tagged # transactions}}"
 msgstr "{rowCount, plural, one {Тег додано до # транзакції} few {Тег додано до # транзакцій} many {Тег додано до # транзакцій} other {Тег додано до # транзакції}}"
+
+#: src/budget/components/budget-widget-footer-row/budget-widget-footer-row.tsx
+msgid "{safePerDayAmount} a day"
+msgstr "{safePerDayAmount} на день"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "{selectedAccountCount, plural, one {Add # account} other {Add # accounts}}"
@@ -535,6 +575,10 @@ msgstr "{similarCount, plural, one {# подібна · останні 6 міс�
 #: src/ai/constant/ai-umbrella-status-atom.constant.ts
 msgid "{source} error · {message}"
 msgstr "Помилка {source} · {message}"
+
+#: src/budget/components/budget-widget-footer-row/budget-widget-footer-row.tsx
+msgid "{spentAmount} spent"
+msgstr "Витрачено {spentAmount}"
 
 #: src/runway/component/runway-history-spike-note/runway-history-spike-note.tsx
 msgid "{spikeLabel} included a one-off of {spikeAmount}."
@@ -610,7 +654,6 @@ msgstr "Тепер переказів: {transferCount}"
 
 #: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 #: src/budget/components/budget-verdict-figure/budget-verdict-figure.tsx
-#: src/budget/components/budget-widget-headline/budget-widget-headline.tsx
 msgid "/ day"
 msgstr "/ день"
 
@@ -719,6 +762,14 @@ msgstr "Близько 6 хвилин"
 #: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
 msgid "About a minute"
 msgstr "Близько хвилини"
+
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "above {formattedLimit} limit"
+msgstr "понад ліміт {formattedLimit}"
+
+#: src/budget/components/budget-widget-headline/budget-widget-headline.tsx
+msgid "above {limitAmount} limit"
+msgstr "понад ліміт {limitAmount}"
 
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
@@ -908,10 +959,6 @@ msgstr "Коригування"
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 msgid "After 5 wrong tries, Budgie waits a little longer between attempts."
 msgstr "Після 5 невдалих спроб Budgie трохи довше чекає між спробами."
-
-#: src/budget/constant/budget-pace-status-label.constant.ts
-msgid "Ahead of pace"
-msgstr "Швидше за план"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "AI"
@@ -1178,6 +1225,10 @@ msgstr "Середній платіж"
 msgid "Average per month"
 msgstr "Середнє за місяць"
 
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "Average spend"
+msgstr "Середні витрати"
+
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Avg cost"
 msgstr "Сер. ціна"
@@ -1317,6 +1368,7 @@ msgid "Borrowed debt account expected"
 msgstr "Очікувався рахунок позиченого боргу"
 
 #: src/app/(tabs)/settings/index.tsx
+#: src/budget/components/budget-status-label/budget-status-label.tsx
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Budget"
 msgstr "Бюджет"
@@ -1332,6 +1384,10 @@ msgstr "Деталі бюджету"
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "Budget limit reached"
 msgstr "Ліміт бюджету досягнуто"
+
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "Budget locked, {formattedDaysLeft}. Unlock to view."
+msgstr "Бюджет заблоковано, {formattedDaysLeft}. Розблокуйте, щоб переглянути."
 
 #: src/app/(tabs)/settings/index.tsx
 #: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
@@ -1581,6 +1637,8 @@ msgid "Category Icons"
 msgstr "Іконки категорій"
 
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
+#: src/budget/components/budget-widget-category-list/budget-widget-category-list.tsx
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Category limits"
 msgstr "Ліміти за категоріями"
 
@@ -2277,10 +2335,6 @@ msgstr "Створити правило"
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Create Tag"
 msgstr "Створити тег"
-
-#: src/budget/components/budget-empty-state/budget-empty-state.tsx
-msgid "Create your budget"
-msgstr "Створіть свій бюджет"
 
 #: src/app/transaction-account-filter.tsx
 msgid "Create your first account to start tracking your finances"
@@ -3471,6 +3525,11 @@ msgstr "Ключ відхилено"
 msgid "Key updated"
 msgstr "Ключ оновлено"
 
+#: src/budget/components/budget-empty-state/budget-empty-state.tsx
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "Know what’s safe to spend"
+msgstr "Знайте, скільки можна витратити"
+
 #: src/settings/components/language-selector/language-selector.tsx
 msgid "Language"
 msgstr "Мова"
@@ -3543,14 +3602,18 @@ msgstr "Поки залишити порожнім"
 msgid "Leaves your income"
 msgstr "Зникне з ваших доходів"
 
-#: src/widget/service/widget-snapshot-builder.service.ts
-msgid "left"
-msgstr "лишилось"
-
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx
 #: src/budget/hooks/use-budget-progress-labels.hook.ts
 msgid "Left"
 msgstr "Залишилось"
+
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "left of {formattedLimit}"
+msgstr "залишилось із {formattedLimit}"
+
+#: src/budget/components/budget-widget-headline/budget-widget-headline.tsx
+msgid "left of {limitAmount}"
+msgstr "залишилось із {limitAmount}"
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
 #: src/account/constant/account-debt-type.constant.ts
@@ -3563,8 +3626,10 @@ msgstr "Менше ніж"
 
 #: src/budget/components/budget-forecast-chart/budget-forecast-chart.tsx
 #: src/budget/components/budget-history-legend/budget-history-legend.tsx
+#: src/budget/components/budget-pace-track/budget-pace-track.tsx
 #: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Limit"
 msgstr "Ліміт"
 
@@ -3818,7 +3883,6 @@ msgid "Monthly"
 msgstr "Щомісяця"
 
 #: src/budget/components/budget-period-summary/budget-period-summary.tsx
-#: src/budget/components/budget-widget-card/budget-widget-card.tsx
 msgid "Monthly budget"
 msgstr "Місячний бюджет"
 
@@ -3992,10 +4056,6 @@ msgstr "Ще немає рахунків"
 #: src/app/transaction-account-filter.tsx
 msgid "No Accounts Yet"
 msgstr "Ще немає рахунків"
-
-#: src/widget/service/widget-snapshot-builder.service.ts
-msgid "No active budget"
-msgstr "Немає активного бюджету"
 
 #: src/account/component/archived-accounts-empty-state/archived-accounts-empty-state.tsx
 msgid "No Archived Accounts"
@@ -4517,7 +4577,6 @@ msgid "Outstanding"
 msgstr "Залишок боргу"
 
 #: src/budget/components/budget-verdict-figure/budget-verdict-figure.tsx
-#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "over"
 msgstr "перевитрата"
 
@@ -4525,7 +4584,6 @@ msgstr "перевитрата"
 msgid "Over"
 msgstr "Перевищено"
 
-#: src/budget/constant/budget-pace-status-label.constant.ts
 #: src/budget/hooks/use-budget-progress-labels.hook.ts
 msgid "Over budget"
 msgstr "Понад бюджет"
@@ -4533,6 +4591,10 @@ msgstr "Понад бюджет"
 #: src/budget/components/budget-allocation-summary/budget-allocation-summary.tsx
 msgid "Over by"
 msgstr "Перевищено на"
+
+#: src/budget/constant/budget-pace-status-label.constant.ts
+msgid "Over limit"
+msgstr "Ліміт перевищено"
 
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "Overall budget: {threshold}% spent"
@@ -4634,10 +4696,6 @@ msgstr "Платежів на місяць"
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "PDF statement"
 msgstr "PDF-виписка"
-
-#: src/widget/service/widget-snapshot-builder.service.ts
-msgid "per day"
-msgstr "на день"
 
 #: src/runway/component/runway-verdict-figure/runway-verdict-figure.tsx
 msgid "per month"
@@ -4790,6 +4848,10 @@ msgstr "Приватбанк (XLSX)"
 #: src/budget/components/budget-category-forecast/budget-category-forecast.tsx
 msgid "Projected {overAmount} over"
 msgstr "Прогноз: перевищення на {overAmount}"
+
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "Projected spend"
+msgstr "Прогноз витрат"
 
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Push notifications are disabled"
@@ -5474,13 +5536,18 @@ msgstr "Розділити транзакції?"
 msgid "Set a default currency in Settings first"
 msgstr "Спочатку оберіть валюту за замовчуванням у Налаштуваннях"
 
+#: src/budget/components/budget-empty-state/budget-empty-state.tsx
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "Set a limit and get a daily allowance"
+msgstr "Встановіть ліміт і отримайте денну суму"
+
 #: src/settings/components/budget-management-card/budget-management-card.tsx
 msgid "Set a monthly limit and track spending"
 msgstr "Встановіть місячний ліміт та відстежуйте витрати"
 
-#: src/budget/components/budget-empty-state/budget-empty-state.tsx
-msgid "Set a monthly limit and track your spending"
-msgstr "Встановіть місячний ліміт та відстежуйте свої витрати"
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "Set budget"
+msgstr "Створити бюджет"
 
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 msgid "Set Category"
@@ -5642,6 +5709,10 @@ msgstr "Скажіть витрату, і Budgie заповнить транза
 #: src/tag/components/stats-by-tags-panel/stats-by-tags-panel.tsx
 msgid "Spending"
 msgstr "Витрати"
+
+#: src/budget/constant/budget-pace-status-label.constant.ts
+msgid "Spending fast"
+msgstr "Швидкі витрати"
 
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx
 #: src/transaction/components/statistics-drill-down-summary/statistics-drill-down-summary.tsx
@@ -6200,8 +6271,10 @@ msgstr "До сплати"
 
 #: src/@generic/constant/date-period.constant.ts
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
+#: src/budget/components/budget-pace-track/budget-pace-track.tsx
 #: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
 #: src/transaction/query/use-get-transaction-sections.query.ts
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Today"
 msgstr "Сьогодні"
 
@@ -6483,6 +6556,10 @@ msgstr "Скасувати повернення?"
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "Unknown card"
 msgstr "Невідома картка"
+
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "Unlock to view"
+msgstr "Розблокуйте для перегляду"
 
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Unrealized P&L"

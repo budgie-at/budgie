@@ -1,4 +1,3 @@
-import { Trans } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
 
@@ -14,6 +13,7 @@ import { useGetBudgetProjectionQuery } from '../../query/use-get-budget-projecti
 import { useGetBudgetSpentQuery } from '../../query/use-get-budget-spent.query';
 import { formatBudgetPeriodLabel } from '../../utils/format-budget-period-label.util';
 import { BudgetPaceTrack } from '../budget-pace-track/budget-pace-track';
+import { BudgetStatusLabel } from '../budget-status-label/budget-status-label';
 import { BudgetWidgetCategoryList } from '../budget-widget-category-list/budget-widget-category-list';
 import { BudgetWidgetFooterRow } from '../budget-widget-footer-row/budget-widget-footer-row';
 import { BudgetWidgetHeadline } from '../budget-widget-headline/budget-widget-headline';
@@ -31,16 +31,17 @@ export const BudgetWidgetCard = ({ budget }: Props) => {
     const effectiveLimits = useGetBudgetEffectiveLimitsQuery(budget);
     const { formatMonthAndDay } = useFormatDate();
     const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
+    const periodLabel = formatBudgetPeriodLabel(budget, formatMonthAndDay);
 
     const handleNavigate = () => void router.push('/budget');
 
     return (
-        <Card testID={BudgetSelector.WidgetCard} variant="ghost" size="md" onPress={handleNavigate} className="gap-y-md">
-            <View className="flex-row items-center justify-between">
-                <Text className="text-primary font-medium text-sm">
-                    <Trans>Monthly budget</Trans>
+        <Card testID={BudgetSelector.WidgetCard} variant="primary" size="md" onPress={handleNavigate} className="gap-y-md">
+            <View className="flex-row items-center justify-between gap-x-md">
+                <BudgetStatusLabel status={projection.overall.status} />
+                <Text className="shrink text-secondary-foreground text-xs" numberOfLines={1}>
+                    {periodLabel}
                 </Text>
-                <Text className="text-secondary-foreground text-xs">{formatBudgetPeriodLabel(budget, formatMonthAndDay)}</Text>
             </View>
 
             <LoadingContent isLoading={isLoading} className="gap-y-md">
