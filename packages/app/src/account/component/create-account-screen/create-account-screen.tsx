@@ -1,12 +1,11 @@
 import { useLingui } from '@lingui/react/macro';
 import { ReactNode } from 'react';
-import { View } from 'react-native';
 
 import { EmptyFn } from '@rnw-community/shared';
 
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
-import { PillButton } from '../../../@generic/component/pill-button/pill-button';
+import { PillButtonFooter } from '../../../@generic/component/pill-button-footer/pill-button-footer';
 
 import { CreateAccountScreenSelector } from './create-account-screen.selector';
 
@@ -32,16 +31,13 @@ export const CreateAccountScreen = ({ title, children, onSubmit, isSubmitting, i
             testID={CreateAccountScreenSelector.ScrollView}
             scrollViewProps={SCROLL_VIEW_PROPS}
             footer={
-                <View className="border-t-hairline border-surface-separator bg-surface px-5xl pt-lg">
-                    <View className="absolute inset-x-0 top-full h-[64px] bg-surface" pointerEvents="none" />
-                    <PillButton
-                        label={submitLabel}
-                        isLoading={isSubmitting}
-                        isDisabled={isSubmitDisabled}
-                        testID={CreateAccountScreenSelector.SubmitButton}
-                        onPress={onSubmit}
-                    />
-                </View>
+                <PillButtonFooter
+                    label={submitLabel}
+                    isLoading={isSubmitting}
+                    isDisabled={isSubmitDisabled}
+                    testID={CreateAccountScreenSelector.SubmitButton}
+                    onPress={onSubmit}
+                />
             }
         >
             {children}

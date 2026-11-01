@@ -12,4 +12,5 @@ export type BudgetPeriodSnapshotCreateEntityInterface = Pick<
     | 'otherCarriedIn'
     | 'otherRolloverMode'
     | 'isReconstructed'
->;
+> &
+    Partial<Pick<BudgetPeriodSnapshotEntityInterface, 'otherFundCovered'>>;

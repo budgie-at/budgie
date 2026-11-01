@@ -3,6 +3,44 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.140.0](https://github.com/budgie-at/budgie/compare/v6.139.2...v6.140.0) (2026-11-01)
+
+### Bug Fixes
+
+* **budget:** cover catch-up periods with funds accumulated earlier in the run ([dfc8634](https://github.com/budgie-at/budgie/commit/dfc8634e1c62e0aa7ee0bc5fcbe25c548e3791a0))
+* **budget:** default the period anchor when the cadence changes ([9c6965e](https://github.com/budgie-at/budgie/commit/9c6965eb6944f949ae9bc737a5f07d3ef504b6fb))
+* **budget:** let a capped limit raise use the fractional room before rounding to a unit ([07dfe8a](https://github.com/budgie-at/budgie/commit/07dfe8af6bead033414046b5ddc2c9d1cc9f5fc4))
+* **budget:** let sinking funds cover upcoming charges and keep fund-net amounts consistent ([0a7a6e2](https://github.com/budgie-at/budgie/commit/0a7a6e25c39692a0788478d0f7004115ada72835))
+* **budget:** round capped limit raises to a whole unit ([de8f579](https://github.com/budgie-at/budgie/commit/de8f579cb80d86544b3bf6a869f98f486901a01c))
+* **budget:** settle sinking funds only after their due window closes ([bd5296c](https://github.com/budgie-at/budgie/commit/bd5296c4d43d37765a38912004cae519ecc4f181))
+* **budget:** skip the budget row update when only category limits change ([7c1ab4e](https://github.com/budgie-at/budgie/commit/7c1ab4e8b8d318a070cacc2063ab6585ede00c14))
+* **budget:** stamp limit edits only when the amount changes ([6a0ffb6](https://github.com/budgie-at/budgie/commit/6a0ffb6c987e43eb956e424c9531c7bf39974104))
+
+### Features
+
+* **app:** explain the safe-to-spend figure and reconcile Left ([2190352](https://github.com/budgie-at/budgie/commit/2190352e42d171441f3ed314b4193c1b828ee06c))
+* **budget:** add sinking fund and limit change repositories ([204a115](https://github.com/budgie-at/budgie/commit/204a115ac7deb862da34c4877d2934505267ef39))
+* **budget:** compute expected income from recurring income calendars ([42008a9](https://github.com/budgie-at/budgie/commit/42008a96fb2f15b22b3cc56d797a143e22ff4a97))
+* **budget:** compute the per-period set-aside of a sinking fund ([5938ee9](https://github.com/budgie-at/budgie/commit/5938ee963e462469718a08cc15b3738dd92c1c21))
+* **budget:** compute the window of an event budget ([5176ee0](https://github.com/budgie-at/budgie/commit/5176ee0f947a67f846a4f14b605e609ac53a2e91))
+* **budget:** compute weekly, biweekly and yearly period windows ([d9d25ac](https://github.com/budgie-at/budgie/commit/d9d25ac92557e8d28567b0f0dba017836dcfcfed))
+* **budget:** contribute to and settle sinking funds ([22aa770](https://github.com/budgie-at/budgie/commit/22aa770e55a6ba659176b346b731928416cf7184))
+* **budget:** default the period anchor when a budget is created ([85972a7](https://github.com/budgie-at/budgie/commit/85972a7b71b7a45e34b97ed97a62d9f1c9f094ea))
+* **budget:** export the nominal period day counts ([8f2d1cb](https://github.com/budgie-at/budgie/commit/8f2d1cb746a250225ef26a9630748adf32a6425f))
+* **budget:** expose spent entries and draws net of sinking funds ([b9c851b](https://github.com/budgie-at/budgie/commit/b9c851bf8b35154b726d56177c01b24204e0b43b))
+* **budget:** fund and settle sinking funds when periods close ([c8c4115](https://github.com/budgie-at/budgie/commit/c8c411587b8de52f0bf52e701379fb1dc03ef9e1))
+* **budget:** match spending against sinking fund balances ([9554cb6](https://github.com/budgie-at/budgie/commit/9554cb6c476775c22b8f0d223de53287e9500c4e))
+* **budget:** propose gentle limit changes from closed periods ([0b44dee](https://github.com/budgie-at/budgie/commit/0b44dee71abb9820de710f027a3e95013af8570b))
+* **budget:** query income received in a period window ([6eb96cc](https://github.com/budgie-at/budgie/commit/6eb96cc685b2c390a89c07cd4fff151288e81192))
+* **budget:** reserve sinking fund set-asides in the projection ([76dca1b](https://github.com/budgie-at/budgie/commit/76dca1b9f064efec70d435693cfe7899df35306f))
+* **budget:** resolve the overall limit from income ([786f74e](https://github.com/budgie-at/budgie/commit/786f74ee817093e9fd6f56ed230d04cac5185ee7))
+* **budget:** scale suggested template limits to the budget cadence ([39f4351](https://github.com/budgie-at/budgie/commit/39f4351d65271109152373570639ea7a9ba638cd))
+* **budget:** separate the main budget from event budgets in queries ([929f237](https://github.com/budgie-at/budgie/commit/929f237fb8592b841a1fc7815535c390c1cfde37))
+* **budget:** store period spend net of sinking fund coverage ([8504d7a](https://github.com/budgie-at/budgie/commit/8504d7acea6838830e367cba9353bff4484e6ea5))
+* **budget:** track user edits of category limits ([0856a81](https://github.com/budgie-at/budgie/commit/0856a8162b7d813629c30fa5b883d3e8cb34604f))
+* **budget:** tune limits and log changes when periods close ([173ede0](https://github.com/budgie-at/budgie/commit/173ede0c6cc68086537939a74f46d41734bd8fc3))
+
+
 # [6.138.0](https://github.com/budgie-at/budgie/compare/v6.137.1...v6.138.0) (2026-10-31)
 
 **Note:** Version bump only for package @budgie/budget

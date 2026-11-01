@@ -56,17 +56,17 @@ appId: ${APP_ID}
 - eraseText: 20
 - inputText: ${ACCOUNT_AMOUNT}
 - tapOn:
-      text: 'Details'
+      id: 'AccountForm.NameInput.Label'
 - extendedWaitUntil:
       visible:
           id: 'AccountForm.SelectedCurrency.${CURRENCY_CODE}'
       timeout: 3000
 
-- scrollUntilVisible:
-      element:
+- extendedWaitUntil:
+      visible:
           id: 'AccountForm.SubmitButton'
           enabled: true
-      direction: DOWN
+      timeout: 3000
 - tapOn:
       id: 'AccountForm.SubmitButton'
       enabled: true

@@ -1,6 +1,7 @@
 import type { BudgetCategoryProjectionInterface } from './budget-category-projection.interface';
 import type { BudgetProjectionDayInterface } from './budget-projection-day.interface';
 import type { BudgetProjectionScopeInterface } from './budget-projection-scope.interface';
+import type { BudgetReservationInterface } from './budget-reservation.interface';
 import type { BudgetUpcomingChargeInterface } from './budget-upcoming-charge.interface';
 
 export interface BudgetProjectionInterface {
@@ -13,4 +14,5 @@ export interface BudgetProjectionInterface {
     readonly dailyAllowance: number;
     readonly days: readonly BudgetProjectionDayInterface[];
     readonly upcomingCharges: readonly BudgetUpcomingChargeInterface[];
+    readonly reservations: readonly BudgetReservationInterface[];
 }

@@ -1,4 +1,10 @@
-import { Db, RecurringSeriesStatusEnum, RecurringSeriesUserStateEnum, SettingsRepository } from '@budgie/contracts';
+import {
+    Db,
+    RecurringSeriesKindEnum,
+    RecurringSeriesStatusEnum,
+    RecurringSeriesUserStateEnum,
+    SettingsRepository
+} from '@budgie/contracts';
 import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
 import { startOfDay } from 'date-fns/startOfDay';
 import * as Context from 'effect/Context';
@@ -20,6 +26,7 @@ import type { RecurringTrackedSeriesInterface } from '../interface/recurring-tra
 import type { RecurringSeriesCreateEntityInterface, RecurringSeriesEntityInterface } from '@budgie/contracts';
 
 const HISTORY_MONTHS = 24;
+const TRACKED_KINDS = [RecurringSeriesKindEnum.EXPENSE, RecurringSeriesKindEnum.INCOME] as const;
 
 export class RecurringService extends Context.Service<RecurringService>()('@budgie/recurring/RecurringService', {
     make: Effect.gen(function* () {
@@ -182,7 +189,7 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
             isLegacyAdoption: boolean,
             now: Date
         ) {
-            const rows = yield* recurringRepository.findSeries();
+            const rows = (yield* Effect.forEach(TRACKED_KINDS, kind => recurringRepository.findSeries(kind))).flat();
             const exactRows = detected.map(series =>
                 rows.find(
                     item =>
@@ -259,9 +266,13 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
         const syncSeries = Effect.fnUntraced(function* (now: Date, isLegacyAdoption: boolean) {
             const { defaultInstrumentId, language } = yield* settingsRepository.getSettings();
             const since = new Date(now.getFullYear(), now.getMonth() - HISTORY_MONTHS, now.getDate());
-            const charges = yield* recurringRepository.findCharges(defaultInstrumentId, language, since);
+            const charges = (yield* Effect.forEach(TRACKED_KINDS, kind =>
+                recurringRepository.findCharges(defaultInstrumentId, language, since, kind)
+            )).flat();
             const historicalCharges = isLegacyAdoption
-                ? yield* recurringRepository.findHistoricalCharges(defaultInstrumentId, language, since)
+                ? (yield* Effect.forEach(TRACKED_KINDS, kind =>
+                      recurringRepository.findHistoricalCharges(defaultInstrumentId, language, since, kind)
+                  )).flat()
                 : [];
 
             return yield* Db.transaction(track(detectRecurringSeries(charges), historicalCharges, isLegacyAdoption, now));
@@ -283,7 +294,10 @@ export class RecurringService extends Context.Service<RecurringService>()('@budg
 
         return {
             calendar: Effect.fn('RecurringService.calendar')(function* (year: number, month: number, now: Date) {
-                return projectRecurringMonth(yield* syncSeriesAdoptingLegacyOnce(now), year, month, now);
+                return projectRecurringMonth(yield* syncSeriesAdoptingLegacyOnce(now), year, month, now, RecurringSeriesKindEnum.EXPENSE);
+            }),
+            incomeCalendar: Effect.fn('RecurringService.incomeCalendar')(function* (year: number, month: number, now: Date) {
+                return projectRecurringMonth(yield* syncSeriesAdoptingLegacyOnce(now), year, month, now, RecurringSeriesKindEnum.INCOME);
             }),
             setUserState: (seriesId: number, userState: RecurringSeriesUserStateEnum) =>
                 recurringRepository.updateSeries(seriesId, { userState }),

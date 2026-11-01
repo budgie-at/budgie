@@ -4,6 +4,7 @@ import type { BudgetForecastPointInterface } from './budget-forecast-point.inter
 export interface BudgetForecastGeometryInterface {
     readonly actualPath: string;
     readonly projectedPath: string;
+    readonly lines: readonly (readonly BudgetForecastPointInterface[])[];
     readonly projectedEndPoint: BudgetForecastPointInterface | null;
     readonly todayPoint: BudgetForecastPointInterface | null;
     readonly limitY: number;

@@ -1,12 +1,11 @@
-import { computePeriodWindow, getInclusiveEnd } from '@budgie/budget';
+import { getInclusiveEnd } from '@budgie/budget';
 
-import type { BudgetEntityInterface } from '@budgie/contracts';
+import { resolveBudgetWindow } from './resolve-budget-window.util';
 
-export const formatBudgetPeriodLabel = (
-    budget: Pick<BudgetEntityInterface, 'periodStartDay' | 'useLastDayOfMonth'>,
-    formatMonthAndDay: (date: Date) => string
-): string => {
-    const window = computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, new Date());
+import type { BudgetWindowSourceInterface } from '../interface/budget-window-source.interface';
+
+export const formatBudgetPeriodLabel = (budget: BudgetWindowSourceInterface, formatMonthAndDay: (date: Date) => string): string => {
+    const window = resolveBudgetWindow(budget, new Date());
     const endDate = getInclusiveEnd(window.nextPeriodStart);
 
     return `${formatMonthAndDay(window.periodStart)} – ${formatMonthAndDay(endDate)}`;

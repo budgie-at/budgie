@@ -47,7 +47,7 @@ export const FormAmountInput = (props: Props) => {
                         value={absoluteValue}
                         format={format}
                         onChangeValue={changeAbsoluteValue}
-                        className="text-primary -ml-[12px] tabular-nums"
+                        className="text-primary tabular-nums"
                         placeholderTextColorClassName="accent-primary"
                         placeholder={format.format(0)}
                         textAlign={textAlign}

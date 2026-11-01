@@ -238,11 +238,13 @@ it.effect('uses the same evidence for ordinary P2P expenses', () =>
     })
 );
 
-it.effect('does not detect income passed directly to the detector', () =>
+it.effect('detects income passed to the detector as an income series', () =>
     Effect.sync(() => {
-        expect(
-            detectRecurringSeries([5, 36, 64, 95].map(day => ({ ...charge(day, 3000, 'SALARY'), kind: RecurringSeriesKindEnum.INCOME })))
-        ).toEqual([]);
+        const series = detectRecurringSeries(
+            [5, 36, 64, 95].map(day => ({ ...charge(day, 3000, 'SALARY'), kind: RecurringSeriesKindEnum.INCOME }))
+        );
+        expect(series).toHaveLength(1);
+        expect(series[0].kind).toBe(RecurringSeriesKindEnum.INCOME);
     })
 );
 
