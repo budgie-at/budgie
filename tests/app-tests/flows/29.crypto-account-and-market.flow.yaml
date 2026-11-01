@@ -69,7 +69,7 @@ appId: ${APP_ID}
       id: 'AccountCard.E2E Binance BTC'
 # Provider-grouped rows render as sync cards, so the balance id carries no asset code
 - assertVisible:
-      id: 'AccountCard.Balance.E2E_Binance_BTC.2'
+      id: 'AccountCard.Balance.E2E_Binance_BTC.2_BTC'
 
 # --- Binance account settings credentials editor ---
 
