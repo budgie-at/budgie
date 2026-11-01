@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.140.1](https://github.com/budgie-at/budgie/compare/v6.140.0...v6.140.1) (2026-11-01)
+
+### Bug Fixes
+
+* address receipt merchant review findings ([2210793](https://github.com/budgie-at/budgie/commit/221079378a32253c4e129c5f2fcf7d4f805adfcf))
+* **app:** derive receipt merchant from receipt evidence and category from merchant memory ([02f9e44](https://github.com/budgie-at/budgie/commit/02f9e445c20ece025e44c9e30e0cb7d51a7ce5ec))
+
+
 # [6.140.0](https://github.com/budgie-at/budgie/compare/v6.139.2...v6.140.0) (2026-11-01)
 
 ### Bug Fixes
