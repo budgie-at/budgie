@@ -20,11 +20,12 @@ interface Props {
     readonly valuationRate: number | null;
     readonly instrumentCode: string;
     readonly subtitle: string | null;
+    readonly isSubtitleProtected: boolean;
 }
 
 const PERCENT_FRACTION_DIGITS = 2;
 
-export const CurrencyMarketReturnRow = ({ position, valuationRate, instrumentCode, subtitle }: Props) => {
+export const CurrencyMarketReturnRow = ({ position, valuationRate, instrumentCode, subtitle, isSubtitleProtected }: Props) => {
     const { t } = useLingui();
     const { symbol } = useAtomValue(defaultInstrumentAtom);
     const formatMoney = useDisplayFormatDigits();
@@ -47,6 +48,7 @@ export const CurrencyMarketReturnRow = ({ position, valuationRate, instrumentCod
             valueClassName={returnClassName}
             testID={CurrencyMarketPageSelector.UnrealizedProfit(instrumentCode)}
             subtitle={subtitle}
+            isSubtitleProtected={isSubtitleProtected}
         />
     );
 };

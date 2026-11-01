@@ -1560,12 +1560,8 @@ msgid "Average spend"
 msgstr "Середні витрати"
 
 #: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
-msgid "Avg {averageCost}"
-msgstr "Сер. {averageCost}"
-
-#: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
-msgid "Avg {averageCost} · known for {coveredAmount} of {totalAmount}"
-msgstr "Сер. {averageCost} · відомо для {coveredAmount} із {totalAmount}"
+msgid "Avg {averageCost} per {instrumentCode}"
+msgstr "Серед. {averageCost} за {instrumentCode}"
 
 #: src/settings/components/backup-row/backup-row.tsx
 msgid "Back up"
@@ -2395,6 +2391,10 @@ msgstr "Скопіюйте токен і вставте його нижче"
 #: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
 msgid "Cost basis"
 msgstr "Собівартість"
+
+#: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
+msgid "Cost known for {coveredAmount} of {totalAmount}"
+msgstr "Вартість відома для {coveredAmount} з {totalAmount}"
 
 #: src/account/component/inactive-account-card/inactive-account-card.tsx
 msgid "Could not activate account."
@@ -3708,6 +3708,10 @@ msgstr "Отримати рахунки"
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
 msgid "Fetching new..."
 msgstr "Завантаження нових..."
+
+#: src/market-data/component/currency-market-chart-status/currency-market-chart-status.tsx
+msgid "Fetching price history…"
+msgstr "Завантаження історії цін…"
 
 #: src/installment-plan/component/installment-count-picker/installment-count-picker.tsx
 msgid "Fewer months"

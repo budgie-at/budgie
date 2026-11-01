@@ -2,6 +2,8 @@ import { useAtomValue } from '@effect/atom-react/Hooks';
 import { View } from 'react-native';
 import { useSharedValue } from 'react-native-reanimated';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
@@ -47,7 +49,7 @@ export const CurrencyMarketPage = ({ instrument }: Props) => {
             <RevealGate isLoading={false}>
                 <CollapsibleChromePage
                     leading={<HeaderBackButton />}
-                    largeTitle={<CurrencyMarketLargeTitle instrument={instrument} />}
+                    largeTitle={<CurrencyMarketLargeTitle instrument={instrument} hasPrice={isDefined(latestPrice)} />}
                     smallTitle={
                         <CurrencyMarketSmallTitle instrumentName={instrument.name} latestPrice={latestPrice} priceBottom={priceBottom} />
                     }

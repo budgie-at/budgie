@@ -9,6 +9,7 @@ import { CryptoCurrencyIcon } from '../../../@generic/component/crypto-currency-
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
+import { PROTECTED_HERO_PLACEHOLDER } from '../../../@generic/constant/protected-hero-placeholder.constant';
 import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
 import { BANK_PROVIDER_TITLE } from '../../../account/constant/bank-provider-title.constant';
 import { MILLION } from '../../../i18n/constant/compact-thresholds.constant';
@@ -49,8 +50,8 @@ export const CurrencyMarketAccountRow = ({ account, instrumentCode, sync, amount
             pressableProps={pressableProps}
             onPress={handlePress}
             title={
-                <View className="min-h-[36px] justify-center gap-y-xxs">
-                    <Text className="text-primary text-[17px]" numberOfLines={1}>
+                <View className="my-px min-h-[34px] justify-center gap-y-xxs">
+                    <Text className="text-primary text-[15px] leading-[20px]" numberOfLines={2}>
                         {account.title}
                     </Text>
                     {isNotEmptyString(subtitle) ? (
@@ -61,15 +62,22 @@ export const CurrencyMarketAccountRow = ({ account, instrumentCode, sync, amount
                 </View>
             }
             right={
-                <View className="shrink-0 flex-row items-center gap-x-xs">
-                    <View className="items-end justify-center">
-                        <ProtectedText className="text-primary text-right text-[15px] tabular-nums" numberOfLines={1}>
+                <View className="flex-row items-start gap-x-xs mt-px self-start">
+                    <View className="w-[118px] shrink-0 grow-0 items-end">
+                        <ProtectedText
+                            className="text-primary text-right text-[15px] leading-[20px] tabular-nums"
+                            numberOfLines={1}
+                            placeholderText={PROTECTED_HERO_PLACEHOLDER}
+                        >
                             {amountLabel}
                         </ProtectedText>
-                        {isDefined(valueLabel) ? (
-                            <ProtectedText className="text-secondary-foreground text-right text-[13px] tabular-nums" numberOfLines={1}>
+                        {isDefined(valueLabel) && !isAmountProtected ? (
+                            <Text
+                                className="text-secondary-foreground text-right text-[13px] leading-[18px] tabular-nums"
+                                numberOfLines={1}
+                            >
                                 {valueLabel}
-                            </ProtectedText>
+                            </Text>
                         ) : null}
                     </View>
                     <Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />

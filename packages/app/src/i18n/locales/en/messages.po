@@ -1561,12 +1561,8 @@ msgid "Average spend"
 msgstr "Average spend"
 
 #: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
-msgid "Avg {averageCost}"
-msgstr "Avg {averageCost}"
-
-#: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
-msgid "Avg {averageCost} · known for {coveredAmount} of {totalAmount}"
-msgstr "Avg {averageCost} · known for {coveredAmount} of {totalAmount}"
+msgid "Avg {averageCost} per {instrumentCode}"
+msgstr "Avg {averageCost} per {instrumentCode}"
 
 #: src/settings/components/backup-row/backup-row.tsx
 msgid "Back up"
@@ -2396,6 +2392,10 @@ msgstr "Copy the token and paste it below"
 #: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
 msgid "Cost basis"
 msgstr "Cost basis"
+
+#: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
+msgid "Cost known for {coveredAmount} of {totalAmount}"
+msgstr "Cost known for {coveredAmount} of {totalAmount}"
 
 #: src/account/component/inactive-account-card/inactive-account-card.tsx
 msgid "Could not activate account."
@@ -3709,6 +3709,10 @@ msgstr "Fetch Accounts"
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
 msgid "Fetching new..."
 msgstr "Fetching new..."
+
+#: src/market-data/component/currency-market-chart-status/currency-market-chart-status.tsx
+msgid "Fetching price history…"
+msgstr "Fetching price history…"
 
 #: src/installment-plan/component/installment-count-picker/installment-count-picker.tsx
 msgid "Fewer months"

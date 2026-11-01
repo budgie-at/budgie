@@ -9,10 +9,11 @@ import type { InstrumentEntityInterface } from '@budgie/contracts';
 
 interface Props {
     readonly instrument: Pick<InstrumentEntityInterface, 'code' | 'symbol' | 'type' | 'name' | 'marketCapRank'>;
+    readonly hasPrice: boolean;
 }
 
-export const CurrencyMarketLargeTitle = ({ instrument }: Props) => {
-    const caption = isDefined(instrument.marketCapRank) ? `${instrument.code} · #${instrument.marketCapRank}` : instrument.code;
+export const CurrencyMarketLargeTitle = ({ instrument, hasPrice }: Props) => {
+    const caption = hasPrice && isDefined(instrument.marketCapRank) ? `${instrument.code} · #${instrument.marketCapRank}` : instrument.code;
 
     return (
         <View className="gap-y-xxs" testID={CurrencyMarketPageSelector.Header(instrument.code)}>

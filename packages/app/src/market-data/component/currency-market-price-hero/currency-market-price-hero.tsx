@@ -26,6 +26,7 @@ interface Props {
     readonly basePrice: number | null;
     readonly isScrubbing: boolean;
     readonly rangeLabel: string;
+    readonly rangeStartDate: string | null;
     readonly priceBottom: SharedValue<number>;
 }
 
@@ -39,10 +40,11 @@ export const CurrencyMarketPriceHero = ({
     basePrice,
     isScrubbing,
     rangeLabel,
+    rangeStartDate,
     priceBottom
 }: Props) => {
     const { symbol } = useAtomValue(defaultInstrumentAtom);
-    const { formatDayAndMonthAndYear } = useFormatDate();
+    const { formatDayAndMonthAndYear, formatMonthAndDay } = useFormatDate();
     const formatPrice = useFormatDigits(MIN_PRICE_FRACTION_DIGITS, getMarketPriceFractionDigits(latestPrice?.price ?? 0));
     const formatPercent = useFormatDigits(MIN_PRICE_FRACTION_DIGITS);
 
@@ -53,10 +55,13 @@ export const CurrencyMarketPriceHero = ({
         isDefined(change) && isPositiveNumber(basePrice)
             ? `${changeSign}${formatPrice(Math.abs(change), symbol)} (${changeSign}${formatPercent(Math.abs((change / basePrice) * PERCENT))}%) `
             : null;
-    const changeClassName = getMarketChangeClassName(change ?? 0);
-    const suffixLabel =
-        isScrubbing && isDefined(displayedPrice) ? formatDayAndMonthAndYear(parseISO(displayedPrice.priceDate)) : rangeLabel;
     const stalePriceDate = isDefined(latestPrice) && isMarketPriceStale(latestPrice.priceDate) ? latestPrice.priceDate : null;
+    const staleWindowLabel =
+        isDefined(stalePriceDate) && isDefined(rangeStartDate)
+            ? `${formatMonthAndDay(parseISO(rangeStartDate))} – ${formatMonthAndDay(parseISO(stalePriceDate))}`
+            : rangeLabel;
+    const suffixLabel =
+        isScrubbing && isDefined(displayedPrice) ? formatDayAndMonthAndYear(parseISO(displayedPrice.priceDate)) : staleWindowLabel;
 
     const handlePriceLayout = (event: LayoutChangeEvent) =>
         void priceBottom.set(event.nativeEvent.layout.y + event.nativeEvent.layout.height);
@@ -95,7 +100,7 @@ export const CurrencyMarketPriceHero = ({
                 numberOfLines={1}
                 testID={CurrencyMarketPageSelector.Change(instrumentCode)}
             >
-                {isDefined(changeLabel) ? <Text className={changeClassName}>{changeLabel}</Text> : null}
+                {isDefined(changeLabel) ? <Text className={getMarketChangeClassName(change ?? 0)}>{changeLabel}</Text> : null}
                 {suffixLabel}
             </Text>
 

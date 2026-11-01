@@ -68,6 +68,7 @@ export const CurrencyMarketOverview = ({ instrument, prices, priceBottom }: Prop
                 priceBottom={priceBottom}
                 isScrubbing={isDefined(scrubIndex)}
                 rangeLabel={rangeLabels[range]}
+                rangeStartDate={rangePrices.at(0)?.priceDate ?? null}
             />
 
             <View className="mt-3xl">
