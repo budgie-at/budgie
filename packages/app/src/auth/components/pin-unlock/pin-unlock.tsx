@@ -38,7 +38,7 @@ export const PinUnlock = ({ onForgotPin }: Props) => {
                         variant="ghost"
                         content={t`Forgot PIN?`}
                         onPress={onForgotPin}
-                        className="self-center border-0 bg-transparent px-5xl min-h-[44px]"
+                        className="border-0 bg-transparent px-5xl min-h-[44px]"
                     />
                 }
             >

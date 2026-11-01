@@ -58,7 +58,7 @@ export const PinForm = ({
     const isErrorVisible = hasError && !isBusy;
     const filledDotsCount = hasError || isAccepted ? PIN_LENGTH : currentInput.length;
     const keypadRowGapClassName = isCompact ? 'gap-y-xl' : 'gap-y-3xl';
-    const footerHeightClassName = isCompact ? 'h-[48px]' : 'h-[56px]';
+    const footerClassName = isCompact ? 'h-[48px] mb-md' : 'h-[56px] mb-3xl';
 
     const signalRejection = useEffectEvent(() => {
         hapticNotification(NotificationFeedbackType.Error);
@@ -118,7 +118,7 @@ export const PinForm = ({
                 </View>
             </View>
 
-            <View className={cn('justify-center', footerHeightClassName)}>{footer}</View>
+            <View className={cn('justify-center', footerClassName)}>{footer}</View>
         </View>
     );
 };

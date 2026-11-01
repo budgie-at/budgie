@@ -118,7 +118,7 @@ export const ImportBackupPin = ({ sourceUri, onResult }: Props) => {
                             content={t`Start fresh instead`}
                             onPress={handleCancel}
                             disabled={isLoading}
-                            className="self-center border-0 bg-transparent px-5xl min-h-[44px]"
+                            className="border-0 bg-transparent px-5xl min-h-[44px]"
                         />
                     }
                 />

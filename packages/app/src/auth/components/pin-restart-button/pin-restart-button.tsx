@@ -22,7 +22,7 @@ export const PinRestartButton = ({ onPress, disabled = false }: Props) => {
             content={t`Choose a different PIN`}
             onPress={onPress}
             disabled={disabled}
-            className="self-center border-0 bg-transparent px-5xl py-md min-h-[44px]"
+            className="border-0 bg-transparent px-5xl py-md min-h-[44px]"
         />
     );
 };
