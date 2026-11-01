@@ -10,6 +10,8 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { Icon } from '../../../@generic/component/icon/icon';
 import { cn } from '../../../@generic/utils/cn.util';
 import { AccountDetailsSelector } from '../../../app/(main)/account/[id]/account-details.selector';
+import { getMarketChangeClassName } from '../../../market-data/utils/get-market-change-class-name.util';
+import { getMarketChangeSign } from '../../../market-data/utils/get-market-change-sign.util';
 import { useAccountDetailsMarketSummary } from '../../hook/use-account-details-market-summary.hook';
 
 import type { InstrumentEntityInterface } from '@budgie/contracts';
@@ -22,15 +24,16 @@ const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
 export const AccountDetailsMarketLink = ({ instrument }: Props) => {
     const { t } = useLingui();
-    const { priceLabel, changeShare, isUp } = useAccountDetailsMarketSummary(instrument.id);
+    const { priceLabel, change, changeShare } = useAccountDetailsMarketSummary(instrument.id);
 
+    const isUp = isDefined(change) && change >= 0;
     const marketName = instrument.name;
     const direction = isUp ? t`up ${changeShare} today` : t`down ${changeShare} today`;
     const accessibilityLabel = isDefined(changeShare)
         ? t`${marketName} market, ${priceLabel}, ${direction}`
         : t`${marketName} market, ${priceLabel}`;
-    const changeToneClassName = isUp ? 'text-positive-foreground' : 'text-destructive-foreground';
-    const changeLabel = `${isUp ? '+' : '−'}${changeShare}`;
+    const changeToneClassName = getMarketChangeClassName(change ?? 0);
+    const changeLabel = `${getMarketChangeSign(change ?? 0)}${changeShare}`;
 
     const handlePress = () => void router.push({ pathname: '/currency/[id]', params: { id: String(instrument.id) } });
 
@@ -56,7 +59,7 @@ export const AccountDetailsMarketLink = ({ instrument }: Props) => {
                     <Text className={cn('text-[15px] font-semibold tabular-nums', changeToneClassName)}>{changeLabel}</Text>
                     <Text className="text-[13px] text-secondary-foreground">
                         {' '}
-                        <Trans>today</Trans>
+                        <Trans>24h</Trans>
                     </Text>
                 </Text>
             ) : null}

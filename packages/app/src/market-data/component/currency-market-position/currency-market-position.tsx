@@ -35,10 +35,10 @@ export const CurrencyMarketPosition = ({ instrument, latestPriceDate }: Props) =
     const formatMoney = useDisplayFormatDigits();
     const formatInstrumentAmount = useFormatInstrumentAmount();
 
-    const { code } = instrument;
     const hasBalance = convertToMicroUnits(balance) !== 0;
-    const totalAmount = formatInstrumentAmount(balance, code, InstrumentTypeEnum.CRYPTO);
+    const totalAmount = formatInstrumentAmount(balance, instrument.code, InstrumentTypeEnum.CRYPTO);
     const isStale = isDefined(valuationRate) && isDefined(latestPriceDate) && isMarketPriceStale(latestPriceDate);
+    const staleNote = isStale ? t`At last known price` : null;
     const valueLabel = isDefined(valuationRate) ? formatMoney(balance * valuationRate, defaultInstrument.symbol) : t`No price`;
     const valueClassName = isDefined(valuationRate) ? PRIMARY_VALUE_CLASSNAME : 'text-secondary-foreground';
     const footer = hasBalance ? <CurrencyMarketPositionFooter costBasis={position.costBasis} valuationRate={valuationRate} /> : null;
@@ -49,7 +49,7 @@ export const CurrencyMarketPosition = ({ instrument, latestPriceDate }: Props) =
                 label={t`Balance`}
                 value={totalAmount}
                 valueClassName={PRIMARY_VALUE_CLASSNAME}
-                testID={CurrencyMarketPageSelector.HoldingsBalance(code)}
+                testID={CurrencyMarketPageSelector.HoldingsBalance(instrument.code)}
             />
             {hasBalance ? (
                 <>
@@ -57,10 +57,16 @@ export const CurrencyMarketPosition = ({ instrument, latestPriceDate }: Props) =
                         label={t`Value`}
                         value={valueLabel}
                         valueClassName={valueClassName}
-                        testID={CurrencyMarketPageSelector.HoldingsValue(code)}
-                        {...(isStale && { subtitle: t`At last known price` })}
+                        testID={CurrencyMarketPageSelector.HoldingsValue(instrument.code)}
+                        subtitle={staleNote}
                     />
-                    <CurrencyMarketReturnRows position={position} valuationRate={valuationRate} balance={balance} instrumentCode={code} />
+                    <CurrencyMarketReturnRows
+                        position={position}
+                        valuationRate={valuationRate}
+                        balance={balance}
+                        instrumentCode={instrument.code}
+                        staleNote={staleNote}
+                    />
                 </>
             ) : null}
         </GroupedListSection>

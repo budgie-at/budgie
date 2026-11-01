@@ -882,6 +882,14 @@ msgstr "1 р."
 msgid "2× plan"
 msgstr "2× план"
 
+#: src/account/component/account-details-market-link/account-details-market-link.tsx
+msgid "24h"
+msgstr "24 год"
+
+#: src/market-data/component/currency-market-daily-change-row/currency-market-daily-change-row.tsx
+msgid "24h change"
+msgstr "Зміна за 24 год"
+
 #: src/market-data/component/currency-market-range-control/currency-market-range-control.tsx
 msgid "3M"
 msgstr "3 міс."
@@ -4243,6 +4251,10 @@ msgstr "Ключ оновлено"
 msgid "Know what’s safe to spend"
 msgstr "Знайте, скільки можна витратити"
 
+#: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
+msgid "Known for {coveredAmount} of {totalAmount}"
+msgstr "Відомо для {coveredAmount} із {totalAmount}"
+
 #: src/rule/constant/rule-action-type.constant.ts
 msgid "Label matching payments with a tag"
 msgstr "Позначати відповідні платежі тегом"
@@ -5212,10 +5224,6 @@ msgstr "OK"
 msgid "On"
 msgstr "Увімк."
 
-#: src/market-data/component/currency-market-return-row/currency-market-return-row.tsx
-msgid "On {coveredAmount} of {totalAmount}"
-msgstr "На {coveredAmount} із {totalAmount}"
-
 #: src/transaction/components/transaction-info-installment-terms/transaction-info-installment-terms.tsx
 msgid "On {nextDate} · Monthly"
 msgstr "{nextDate} · Щомісяця"
@@ -5223,6 +5231,10 @@ msgstr "{nextDate} · Щомісяця"
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "On pace to run out by {runOutDate}. Keeping under {perDayAmount}/day keeps it on track."
 msgstr "За поточного темпу кошти закінчаться до {runOutDate}. Якщо витрачати менше {perDayAmount}/день, ви залишитеся в межах плану."
+
+#: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
+msgid "On the {coveredAmountWithCode} with known cost"
+msgstr "На {coveredAmountWithCode} з відомою вартістю"
 
 #: src/settings/components/your-data-card/your-data-card.tsx
 msgid "On this iPhone"
@@ -7383,13 +7395,10 @@ msgstr "До сплати"
 msgid "To set aside this period"
 msgstr "Відкласти в цьому періоді"
 
-#: src/account/component/account-details-market-link/account-details-market-link.tsx
-msgid "today"
-msgstr "сьогодні"
-
 #: src/@generic/constant/date-period.constant.ts
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
 #: src/budget/components/budget-day-strip-key/budget-day-strip-key.tsx
+#: src/market-data/hook/use-market-chart-timeline.hook.ts
 #: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
 #: src/transaction/query/use-get-transaction-sections.query.ts
 #: src/widget/service/widget-snapshot-builder.service.ts

@@ -9,9 +9,10 @@ import { MarketChartRangeEnum } from '../../enum/market-chart-range.enum';
 interface Props {
     readonly value: MarketChartRangeEnum;
     readonly onChange: (range: MarketChartRangeEnum) => void;
+    readonly disabled: boolean;
 }
 
-export const CurrencyMarketRangeControl = ({ value, onChange }: Props) => {
+export const CurrencyMarketRangeControl = ({ value, onChange, disabled }: Props) => {
     const { t } = useLingui();
     const track = useCSSVariable('--color-segmented-track');
 
@@ -25,7 +26,7 @@ export const CurrencyMarketRangeControl = ({ value, onChange }: Props) => {
 
     return (
         <ScopedVariables variables={variables}>
-            <SegmentedControl segments={segments} value={value} onChange={onChange} />
+            <SegmentedControl segments={segments} value={value} disabled={disabled} onChange={onChange} />
         </ScopedVariables>
     );
 };

@@ -4,4 +4,5 @@ export interface MarketChartGeometryInterface {
     readonly linePath: string;
     readonly areaPath: string;
     readonly baselineY: number;
+    readonly isFlat: boolean;
 }

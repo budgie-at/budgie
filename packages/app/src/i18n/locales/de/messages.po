@@ -882,6 +882,14 @@ msgstr "1 J"
 msgid "2× plan"
 msgstr "2× Plan"
 
+#: src/account/component/account-details-market-link/account-details-market-link.tsx
+msgid "24h"
+msgstr "24 Std."
+
+#: src/market-data/component/currency-market-daily-change-row/currency-market-daily-change-row.tsx
+msgid "24h change"
+msgstr "Änderung (24 Std.)"
+
 #: src/market-data/component/currency-market-range-control/currency-market-range-control.tsx
 msgid "3M"
 msgstr "3 M"
@@ -4243,6 +4251,10 @@ msgstr "Schlüssel aktualisiert"
 msgid "Know what’s safe to spend"
 msgstr "Wissen, was du ausgeben kannst"
 
+#: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
+msgid "Known for {coveredAmount} of {totalAmount}"
+msgstr "Bekannt für {coveredAmount} von {totalAmount}"
+
 #: src/rule/constant/rule-action-type.constant.ts
 msgid "Label matching payments with a tag"
 msgstr "Passende Zahlungen mit einem Tag versehen"
@@ -5212,10 +5224,6 @@ msgstr "OK"
 msgid "On"
 msgstr "Ein"
 
-#: src/market-data/component/currency-market-return-row/currency-market-return-row.tsx
-msgid "On {coveredAmount} of {totalAmount}"
-msgstr "Auf {coveredAmount} von {totalAmount}"
-
 #: src/transaction/components/transaction-info-installment-terms/transaction-info-installment-terms.tsx
 msgid "On {nextDate} · Monthly"
 msgstr "Am {nextDate} · Monatlich"
@@ -5223,6 +5231,10 @@ msgstr "Am {nextDate} · Monatlich"
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "On pace to run out by {runOutDate}. Keeping under {perDayAmount}/day keeps it on track."
 msgstr "Im aktuellen Tempo ist das Budget bis {runOutDate} aufgebraucht. Bleibst du unter {perDayAmount}/Tag, bleibst du im Plan."
+
+#: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
+msgid "On the {coveredAmountWithCode} with known cost"
+msgstr "Auf die {coveredAmountWithCode} mit bekanntem Kaufpreis"
 
 #: src/settings/components/your-data-card/your-data-card.tsx
 msgid "On this iPhone"
@@ -7383,13 +7395,10 @@ msgstr "Zu zahlen"
 msgid "To set aside this period"
 msgstr "In diesem Zeitraum zurückzulegen"
 
-#: src/account/component/account-details-market-link/account-details-market-link.tsx
-msgid "today"
-msgstr "heute"
-
 #: src/@generic/constant/date-period.constant.ts
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
 #: src/budget/components/budget-day-strip-key/budget-day-strip-key.tsx
+#: src/market-data/hook/use-market-chart-timeline.hook.ts
 #: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
 #: src/transaction/query/use-get-transaction-sections.query.ts
 #: src/widget/service/widget-snapshot-builder.service.ts

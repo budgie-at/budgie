@@ -10,7 +10,9 @@ import { GroupedListSection } from '../../../@generic/component/grouped-list-sec
 import { useFormatCompactDigits } from '../../../i18n/hook/use-format-compact-digits.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
+import { getMarketDailyChange } from '../../utils/get-market-daily-change.util';
 import { getMarketPriceAgeDays } from '../../utils/get-market-price-age-days.util';
+import { CurrencyMarketDailyChangeRow } from '../currency-market-daily-change-row/currency-market-daily-change-row';
 import { CurrencyMarketPageSelector } from '../currency-market-page/currency-market-page.selector';
 
 import type { InstrumentDailyMarketPriceEntityInterface, InstrumentEntityInterface } from '@budgie/contracts';
@@ -18,11 +20,12 @@ import type { InstrumentDailyMarketPriceEntityInterface, InstrumentEntityInterfa
 interface Props {
     readonly instrument: Pick<InstrumentEntityInterface, 'code' | 'marketCapRank'>;
     readonly latestPrice: InstrumentDailyMarketPriceEntityInterface | undefined;
+    readonly previousPrice: InstrumentDailyMarketPriceEntityInterface | undefined;
 }
 
 const VALUE_CLASSNAME = 'text-secondary-foreground text-[17px] tabular-nums';
 
-export const CurrencyMarketStats = ({ instrument, latestPrice }: Props) => {
+export const CurrencyMarketStats = ({ instrument, latestPrice, previousPrice }: Props) => {
     const { t } = useLingui();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const formatCompactDigits = useFormatCompactDigits();
@@ -33,7 +36,8 @@ export const CurrencyMarketStats = ({ instrument, latestPrice }: Props) => {
     const volume = latestPrice?.volume;
     const ageDays = isDefined(latestPrice) ? getMarketPriceAgeDays(latestPrice.priceDate) : null;
     const updatedDate = isDefined(latestPrice) ? formatMonthAndDay(parseISO(latestPrice.priceDate)) : '';
-    const hasRows = isDefined(marketCap) || isDefined(volume) || isDefined(marketCapRank);
+    const dailyChange = getMarketDailyChange(latestPrice, previousPrice);
+    const hasRows = isDefined(dailyChange) || isDefined(marketCap) || isDefined(volume) || isDefined(marketCapRank);
 
     if (!hasRows) {
         return null;
@@ -52,6 +56,9 @@ export const CurrencyMarketStats = ({ instrument, latestPrice }: Props) => {
 
     return (
         <GroupedListSection title={t`Market`} footer={footer}>
+            {isDefined(dailyChange) ? (
+                <CurrencyMarketDailyChangeRow change={dailyChange} testID={CurrencyMarketPageSelector.DailyChange(code)} />
+            ) : null}
             {isDefined(marketCap) ? (
                 <GroupedListRow
                     title={t`Market cap`}

@@ -18,7 +18,7 @@ interface Props {
 
 const MIN_FRACTION_DIGITS = 2;
 const LABEL_HEIGHT = 13;
-const LABEL_GAP = 4;
+const LABEL_GAP = 6;
 
 export const CurrencyMarketChartExtremes = ({ values, xs, ys, chartWidth, activeIndex }: Props) => {
     const { symbol } = useAtomValue(defaultInstrumentAtom);

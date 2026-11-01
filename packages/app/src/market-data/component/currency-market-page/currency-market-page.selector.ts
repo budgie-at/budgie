@@ -10,6 +10,7 @@ export const CurrencyMarketPageSelector = {
     CostBasis: (code: string) => `CurrencyMarket.Holdings.CostBasis.${code}` as const,
     UnrealizedProfit: (code: string) => `CurrencyMarket.Holdings.UnrealizedProfit.${code}` as const,
     Account: (code: string, accountId: number) => `CurrencyMarket.Account.${code}.${accountId}` as const,
+    DailyChange: (code: string) => `CurrencyMarket.DailyChange.${code}` as const,
     MarketCap: (code: string) => `CurrencyMarket.MarketCap.${code}` as const,
     Volume: (code: string) => `CurrencyMarket.Volume.${code}` as const,
     Updated: (code: string) => `CurrencyMarket.Updated.${code}` as const

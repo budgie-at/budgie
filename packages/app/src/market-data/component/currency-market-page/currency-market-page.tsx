@@ -1,5 +1,6 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { View } from 'react-native';
+import { useSharedValue } from 'react-native-reanimated';
 
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
@@ -24,6 +25,7 @@ interface Props {
 }
 
 const TITLE_HANDOFF_DISTANCE = 24;
+const HERO_PRICE_HEIGHT = 41;
 const CURRENCY_MARKET_CHROME_CONFIG = {
     ...SCREEN_CHROME_CONFIG,
     collapsedHeaderHeight: 44,
@@ -34,7 +36,9 @@ const CURRENCY_MARKET_CHROME_CONFIG = {
 
 export const CurrencyMarketPage = ({ instrument }: Props) => {
     const defaultInstrumentId = useAtomValue(defaultInstrumentIdAtom);
-    const { latestPrice, prices } = useInstrumentMarketDataQuery(instrument.id, defaultInstrumentId);
+    const { latestPrice, previousPrice, prices } = useInstrumentMarketDataQuery(instrument.id, defaultInstrumentId);
+
+    const priceBottom = useSharedValue(HERO_PRICE_HEIGHT);
 
     const latestPriceDate = latestPrice?.priceDate ?? null;
 
@@ -44,11 +48,13 @@ export const CurrencyMarketPage = ({ instrument }: Props) => {
                 <CollapsibleChromePage
                     leading={<HeaderBackButton />}
                     largeTitle={<CurrencyMarketLargeTitle instrument={instrument} />}
-                    smallTitle={<CurrencyMarketSmallTitle instrumentName={instrument.name} latestPrice={latestPrice} />}
+                    smallTitle={
+                        <CurrencyMarketSmallTitle instrumentName={instrument.name} latestPrice={latestPrice} priceBottom={priceBottom} />
+                    }
                     chromeConfig={CURRENCY_MARKET_CHROME_CONFIG}
                     contentClassName="px-3xl gap-y-[28px] pb-8xl"
                 >
-                    <CurrencyMarketOverview instrument={instrument} prices={prices} />
+                    <CurrencyMarketOverview instrument={instrument} prices={prices} priceBottom={priceBottom} />
 
                     <View testID={CurrencyMarketPageSelector.Holdings(instrument.code)}>
                         <CurrencyMarketPosition instrument={instrument} latestPriceDate={latestPriceDate} />
@@ -56,7 +62,7 @@ export const CurrencyMarketPage = ({ instrument }: Props) => {
 
                     <CurrencyMarketAccounts instrument={instrument} />
 
-                    <CurrencyMarketStats instrument={instrument} latestPrice={latestPrice} />
+                    <CurrencyMarketStats instrument={instrument} latestPrice={latestPrice} previousPrice={previousPrice} />
                 </CollapsibleChromePage>
             </RevealGate>
         </GroupedSurface>

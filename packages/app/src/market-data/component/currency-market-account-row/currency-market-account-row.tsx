@@ -1,13 +1,11 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { Text, View } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { CryptoCurrencyIcon } from '../../../@generic/component/crypto-currency-icon/crypto-currency-icon';
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
-import { Icon } from '../../../@generic/component/icon/icon';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { BANK_PROVIDER_TITLE } from '../../../account/constant/bank-provider-title.constant';
 
@@ -32,27 +30,28 @@ export const CurrencyMarketAccountRow = ({ account, instrumentCode, sync, amount
     return (
         <GroupedListRow
             left={<CryptoCurrencyIcon code={instrumentCode} size={28} />}
-            title={
-                <Text className="text-primary text-[17px]" numberOfLines={1}>
-                    {account.title}
-                </Text>
-            }
-            subtitle={subtitle}
             testID={testID}
             onPress={handlePress}
-            right={
-                <View className="max-w-[64%] shrink-0 flex-row items-center gap-x-xs">
-                    <View className="items-end">
-                        <ProtectedText className="text-primary text-[15px] tabular-nums" numberOfLines={1}>
-                            {amountLabel}
-                        </ProtectedText>
+            title={
+                <View className="min-h-[36px] flex-row flex-wrap items-center gap-x-xl gap-y-xxs">
+                    <View className="min-w-[45%] flex-1 gap-y-xxs">
+                        <Text className="text-primary text-[17px]" numberOfLines={2}>
+                            {account.title}
+                        </Text>
+                        {isNotEmptyString(subtitle) ? (
+                            <Text className="text-secondary-foreground text-[13px] leading-[18px]" numberOfLines={1}>
+                                {subtitle}
+                            </Text>
+                        ) : null}
+                    </View>
+                    <View className="ml-auto items-end">
+                        <ProtectedText className="text-primary text-right text-[15px] tabular-nums">{amountLabel}</ProtectedText>
                         {isDefined(valueLabel) ? (
-                            <ProtectedText className="text-secondary-foreground text-[13px] tabular-nums" numberOfLines={1}>
+                            <ProtectedText className="text-secondary-foreground text-right text-[13px] tabular-nums">
                                 {valueLabel}
                             </ProtectedText>
                         ) : null}
                     </View>
-                    <Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />
                 </View>
             }
         />
