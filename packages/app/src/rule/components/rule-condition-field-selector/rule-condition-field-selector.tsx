@@ -1,4 +1,4 @@
-import { RuleConditionFieldEnum, RuleCreateInputInterface } from '@budgie/contracts';
+import { RuleConditionFieldEnum, RuleConditionMatchTypeEnum, RuleCreateInputInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useFormContext, useWatch } from 'react-hook-form';
 
@@ -30,6 +30,10 @@ export const RuleConditionFieldSelector = ({ index, testID }: Props) => {
     const field = useWatch({ control, name: `conditions.${index}.field` });
     const openFieldSheet = useRuleOptionSheet(t`Match on`, RULE_CONDITION_FIELD);
     const label = t(RULE_CONDITION_FIELD[field].label);
+    const matchType = useWatch({ control, name: 'conditionMatchType' });
+    const connector = matchType === RuleConditionMatchTypeEnum.ALL ? t`and` : t`or`;
+    const fieldLabel = t`Field: ${label}`;
+    const accessibilityLabel = index > 0 ? `${connector}, ${fieldLabel}` : fieldLabel;
 
     const handleSelect = (nextField: RuleConditionFieldEnum) => {
         const validOperators = RULE_FIELD_OPERATORS[nextField];
@@ -53,7 +57,7 @@ export const RuleConditionFieldSelector = ({ index, testID }: Props) => {
         <RuleFormPickerPill
             label={label}
             icon={RULE_CONDITION_FIELD[field].icon}
-            accessibilityLabel={t`Field: ${label}`}
+            accessibilityLabel={accessibilityLabel}
             onPress={handleOpen}
             testID={testID}
         />

@@ -1,4 +1,4 @@
-import { RuleConditionOperatorEnum, RuleCreateInputInterface } from '@budgie/contracts';
+import { RuleConditionMatchTypeEnum, RuleConditionOperatorEnum, RuleCreateInputInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { Platform, Text, View } from 'react-native';
@@ -24,7 +24,10 @@ export const RuleConditionSummaryRow = ({ index, onExpand }: Props) => {
     const label = useRuleConditionFormatter()(condition);
     const [before = '', after = ''] = label.sentenceTemplate.split(RULE_CONDITION_VALUE_MARKER);
     const isPattern = condition.operator === RuleConditionOperatorEnum.MATCHES_REGEX;
-    const summary = label.sentenceTemplate.replace(RULE_CONDITION_VALUE_MARKER, label.value);
+    const matchType = useWatch({ control, name: 'conditionMatchType' });
+    const connector = matchType === RuleConditionMatchTypeEnum.ALL ? t`and` : t`or`;
+    const sentence = label.sentenceTemplate.replace(RULE_CONDITION_VALUE_MARKER, label.value);
+    const summary = index > 0 ? `${connector}, ${sentence}` : sentence;
     const ellipsizeMode = isPattern ? 'middle' : 'tail';
 
     const handlePress = () => void onExpand(index);

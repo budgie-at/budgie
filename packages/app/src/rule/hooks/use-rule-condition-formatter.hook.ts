@@ -23,12 +23,6 @@ import { RULE_CONDITION_VALUE_MARKER } from '../constant/rule-condition-value-ma
 import type { RuleConditionLabelInterface } from '../interface/rule-condition-label.interface';
 
 const LIST_SEPARATOR = ',';
-const TEXT_FIELDS = new Set([RuleConditionFieldEnum.TITLE, RuleConditionFieldEnum.COMMENT]);
-const COMPARISON_SYMBOL: Partial<Record<RuleConditionOperatorEnum, string>> = {
-    [RuleConditionOperatorEnum.GREATER_THAN]: '>',
-    [RuleConditionOperatorEnum.LESS_THAN]: '<'
-};
-const LIST_PREDICATE_OPERATORS = new Set([RuleConditionOperatorEnum.EQUALS, RuleConditionOperatorEnum.IN]);
 const EMPTY_VALUE = '…';
 const QUOTES: Record<LanguageEnum, readonly [string, string]> = {
     [LanguageEnum.EN]: ['“', '”'],
@@ -85,6 +79,17 @@ export const useRuleConditionFormatter = () => {
         return templates[operator];
     };
 
+    const buildListTemplate = (fieldLabel: string, operator: RuleConditionOperatorEnum) => {
+        const value = RULE_CONDITION_VALUE_MARKER;
+        const compactTemplates: Partial<Record<RuleConditionOperatorEnum, string>> = {
+            [RuleConditionOperatorEnum.IN]: t`${fieldLabel} is ${value}`,
+            [RuleConditionOperatorEnum.GREATER_THAN]: t`${fieldLabel} > ${value}`,
+            [RuleConditionOperatorEnum.LESS_THAN]: t`${fieldLabel} < ${value}`
+        };
+
+        return compactTemplates[operator] ?? buildSentenceTemplate(fieldLabel, operator);
+    };
+
     const resolveValue = (condition: Pick<RuleConditionCreateInputInterface, 'field' | 'operator' | 'value' | 'secondaryValue'>) => {
         const parts = splitListValue(condition.value);
         const fromAmount = formatAmount(condition.value, i18n.locale);
@@ -117,7 +122,6 @@ export const useRuleConditionFormatter = () => {
         const parts = splitListValue(condition.value);
         const firstValue = resolveValue({ ...condition, value: parts.at(0) ?? '' });
         const multiValue = parts.length > 1 ? `${firstValue} +${parts.length - 1}` : value;
-        const isListPredicate = !TEXT_FIELDS.has(condition.field) && LIST_PREDICATE_OPERATORS.has(condition.operator);
 
         return {
             fieldLabel,
@@ -125,8 +129,8 @@ export const useRuleConditionFormatter = () => {
             operator,
             value,
             listValue: multiValue,
-            shortPredicate: isListPredicate ? `${fieldLabel}:` : [fieldLabel, COMPARISON_SYMBOL[condition.operator] ?? operator].join(' '),
             sentenceTemplate: buildSentenceTemplate(fieldLabel, condition.operator),
+            listTemplate: buildListTemplate(fieldLabel, condition.operator),
             phraseTemplate: buildSentenceTemplate(t(RULE_CONDITION_FIELD[condition.field].phrase), condition.operator),
             hasValue: value !== EMPTY_VALUE && isNotEmptyString(condition.value.trim())
         };

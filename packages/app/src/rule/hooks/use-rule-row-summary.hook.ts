@@ -1,7 +1,7 @@
 import { RuleConditionMatchTypeEnum, RuleWithActionsRelationsEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
-import { isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { RULE_CONDITION_VALUE_MARKER } from '../constant/rule-condition-value-marker.constant';
 import { getRuleOutcomeParts } from '../utils/get-rule-outcome-parts.util';
@@ -31,8 +31,7 @@ export const useRuleRowSummary = (rule: RuleWithActionsRelationsEntityInterface)
     return {
         primaryOutcome,
         secondaryOutcome: secondaryParts.map(part => `${OUTCOME_SEPARATOR}${part}`).join(''),
-        triggerPrefix: firstLabel?.shortPredicate ?? '',
-        triggerValue: firstLabel?.listValue ?? '',
+        trigger: isDefined(firstLabel) ? firstLabel.listTemplate.replace(RULE_CONDITION_VALUE_MARKER, firstLabel.listValue) : '',
         extraConditionsLabel: isPositiveNumber(extraCount) ? extraLabel : null,
         accessibilityLabel: t`When ${conditionsText}, ${title}. ${statusLabel}`
     };

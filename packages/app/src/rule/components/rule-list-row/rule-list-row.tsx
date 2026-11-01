@@ -2,8 +2,6 @@ import { RuleActionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
-import { isNotEmptyString } from '@rnw-community/shared';
-
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
@@ -12,6 +10,7 @@ import { cn } from '../../../@generic/utils/cn.util';
 import { RULE_ACTION_TYPE } from '../../constant/rule-action-type.constant';
 import { useRuleRowSummary } from '../../hooks/use-rule-row-summary.hook';
 import { RulesPageSelector } from '../../selector/rules-page.selector';
+import { RuleListRowTitle } from '../rule-list-row-title/rule-list-row-title';
 import { RuleListRowTrigger } from '../rule-list-row-trigger/rule-list-row-trigger';
 
 import type { RuleWithActionsRelationsEntityInterface } from '@budgie/contracts';
@@ -29,15 +28,11 @@ const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
 export const RuleListRow = ({ rule, index, isLast, hasOverlap, onOpen, onToggle }: Props) => {
     const { t } = useLingui();
-    const { primaryOutcome, secondaryOutcome, triggerPrefix, triggerValue, extraConditionsLabel, accessibilityLabel } =
-        useRuleRowSummary(rule);
+    const { primaryOutcome, secondaryOutcome, trigger, extraConditionsLabel, accessibilityLabel } = useRuleRowSummary(rule);
     const isFirst = index === 0;
     const firstAction = rule.actions.at(0);
     const actionMeta = RULE_ACTION_TYPE[firstAction?.type ?? RuleActionTypeEnum.SET_CATEGORY];
     const categoryIcon = firstAction?.type === RuleActionTypeEnum.SET_CATEGORY ? firstAction.category?.icon : null;
-    const titleClassName = rule.enabled
-        ? 'shrink text-[17px] font-semibold text-primary'
-        : 'shrink text-[17px] font-semibold text-secondary-foreground';
     const containerClassName = cn('overflow-hidden', 'bg-surface-row', isFirst && 'rounded-t-3xl', isLast && 'rounded-b-3xl');
     const chipIcon = categoryIcon ?? actionMeta.icon;
     const pressableClassName = cn(
@@ -80,20 +75,15 @@ export const RuleListRow = ({ rule, index, isLast, hasOverlap, onOpen, onToggle 
                         />
                     </View>
 
-                    <View className="min-w-0 flex-1 gap-y-xxs">
-                        <View testID={RulesPageSelector.RuleCardActions(index)} className="flex-row items-baseline">
-                            <Text className={titleClassName} numberOfLines={1}>
-                                {primaryOutcome}
-                            </Text>
-                            {isNotEmptyString(secondaryOutcome) ? (
-                                <Text className="shrink-0 text-[17px] text-secondary-foreground" numberOfLines={1}>
-                                    {secondaryOutcome}
-                                </Text>
-                            ) : null}
-                        </View>
+                    <View className="min-w-0 flex-1 gap-y-xxs pr-sm">
+                        <RuleListRowTitle
+                            primary={primaryOutcome}
+                            secondary={secondaryOutcome}
+                            isEnabled={rule.enabled}
+                            testID={RulesPageSelector.RuleCardActions(index)}
+                        />
                         <RuleListRowTrigger
-                            prefix={triggerPrefix}
-                            value={triggerValue}
+                            trigger={trigger}
                             extraLabel={extraConditionsLabel}
                             testID={RulesPageSelector.RuleCardConditions(index)}
                         />

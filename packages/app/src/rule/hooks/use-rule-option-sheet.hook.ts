@@ -18,6 +18,7 @@ export const useRuleOptionSheet = <T extends string>(title: string, meta: Readon
             label: t(meta[value].label),
             description: t(meta[value].description),
             icon: meta[value].icon,
+            glyph: meta[value].glyph ?? null,
             disabledReason: disabledValues?.has(value) === true ? disabledReason : null
         }));
 

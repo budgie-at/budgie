@@ -1,17 +1,16 @@
-import { RuleConditionMatchTypeEnum, RuleCreateInputInterface, UserIconNameEnum } from '@budgie/contracts';
+import { RuleConditionMatchTypeEnum, RuleCreateInputInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { Text, View } from 'react-native';
-import Animated, { FadeIn, LinearTransition } from 'react-native-reanimated';
+import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 
-import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/component/icon/icon';
 import { cn } from '../../../@generic/utils/cn.util';
 import { useRuleConditionValueField } from '../../hooks/use-rule-condition-value-field.hook';
 import { RuleConditionFieldSelector } from '../rule-condition-field-selector/rule-condition-field-selector';
 import { RuleConditionOperatorSelector } from '../rule-condition-operator-selector/rule-condition-operator-selector';
 import { RuleConditionSummaryRow } from '../rule-condition-summary-row/rule-condition-summary-row';
 import { RuleConditionValueInput } from '../rule-condition-value-input/rule-condition-value-input';
+import { RuleFormCollapseToggle } from '../rule-form-collapse-toggle/rule-form-collapse-toggle';
 import { RuleFormRemoveButton } from '../rule-form-remove-button/rule-form-remove-button';
 
 import { RuleConditionRowSelector } from './rule-condition-row.selector';
@@ -27,6 +26,7 @@ interface Props {
 const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 const ROW_TRANSITION = LinearTransition.duration(200);
 const CONTENT_ENTERING = FadeIn.duration(180);
+const ROW_EXITING = FadeOut.duration(200);
 
 export const RuleConditionRow = ({ index, isExpanded, canRemove, onExpand, onRemove }: Props) => {
     const { t } = useLingui();
@@ -45,6 +45,7 @@ export const RuleConditionRow = ({ index, isExpanded, canRemove, onExpand, onRem
     };
     const handleRemove = () => void onRemove(index);
     const handleCollapse = () => void onExpand(null);
+    const handleExpand = () => void onExpand(index);
     const removeButton = canRemove ? (
         <RuleFormRemoveButton
             accessibilityLabel={t`Remove condition ${position}`}
@@ -54,12 +55,14 @@ export const RuleConditionRow = ({ index, isExpanded, canRemove, onExpand, onRem
     ) : null;
 
     return (
-        <Animated.View testID={RuleConditionRowSelector.Row(index)} layout={ROW_TRANSITION}>
+        <Animated.View testID={RuleConditionRowSelector.Row(index)} layout={ROW_TRANSITION} exiting={ROW_EXITING}>
             <View className="absolute top-0 right-0 left-[16px] h-hairline bg-surface-separator" pointerEvents="none" />
             {hasConnector ? (
                 <View
-                    className="absolute -top-[11px] left-[16px] z-10 rounded-full bg-surface-disc px-md py-xxs"
+                    className="absolute -top-[11px] left-[24px] z-10 rounded-full bg-surface-disc px-md py-xxs"
                     style={CONTINUOUS_CORNERS}
+                    accessibilityElementsHidden
+                    importantForAccessibility="no-hide-descendants"
                 >
                     <Text className="text-[13px] font-semibold text-primary">{connectorLabel}</Text>
                 </View>
@@ -73,14 +76,11 @@ export const RuleConditionRow = ({ index, isExpanded, canRemove, onExpand, onRem
                             <RuleConditionOperatorSelector index={index} testID={RuleConditionRowSelector.OperatorSelector(index)} />
                         </View>
                         {canCollapse ? (
-                            <HapticPressable
-                                onPress={handleCollapse}
-                                accessibilityRole="button"
+                            <RuleFormCollapseToggle
+                                isExpanded
                                 accessibilityLabel={t`Collapse condition ${position}`}
-                                className="h-[44px] w-[44px] items-center justify-center active:opacity-60"
-                            >
-                                <Icon icon={UserIconNameEnum.ChevronUp} size={18} className="text-secondary-foreground" />
-                            </HapticPressable>
+                                onPress={handleCollapse}
+                            />
                         ) : null}
                         {removeButton}
                     </View>
@@ -96,6 +96,7 @@ export const RuleConditionRow = ({ index, isExpanded, canRemove, onExpand, onRem
             ) : (
                 <Animated.View key="closed" entering={CONTENT_ENTERING} className={classNames.collapsed}>
                     <RuleConditionSummaryRow index={index} onExpand={onExpand} />
+                    <RuleFormCollapseToggle isExpanded={false} accessibilityLabel={t`Edit condition ${position}`} onPress={handleExpand} />
                     {removeButton}
                 </Animated.View>
             )}

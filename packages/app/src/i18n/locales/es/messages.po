@@ -260,6 +260,14 @@ msgid "{fieldLabel} {operatorLabel}, value"
 msgstr "{fieldLabel} {operatorLabel}, valor"
 
 #: src/rule/hooks/use-rule-condition-formatter.hook.ts
+msgid "{fieldLabel} < {value}"
+msgstr "{fieldLabel} < {value}"
+
+#: src/rule/hooks/use-rule-condition-formatter.hook.ts
+msgid "{fieldLabel} > {value}"
+msgstr "{fieldLabel} > {value}"
+
+#: src/rule/hooks/use-rule-condition-formatter.hook.ts
 msgid "{fieldLabel} contains {value}"
 msgstr "{fieldLabel} contiene {value}"
 
@@ -1179,7 +1187,9 @@ msgid "Analytics will appear once we can confirm your history is ready."
 msgstr "Los análisis aparecerán cuando podamos confirmar que tu historial está completo."
 
 #: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx
+#: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/components/rule-condition-row/rule-condition-row.tsx
+#: src/rule/components/rule-condition-summary-row/rule-condition-summary-row.tsx
 #: src/rule/components/rule-summary-conditions/rule-summary-conditions.tsx
 #: src/rule/components/rule-summary-hero/rule-summary-hero.tsx
 #: src/rule/hooks/use-rule-row-summary.hook.ts
@@ -2906,6 +2916,10 @@ msgstr "Editar presupuesto"
 #: src/category/components/category-form/category-form.tsx
 msgid "Edit Category"
 msgstr "Editar categoría"
+
+#: src/rule/components/rule-condition-row/rule-condition-row.tsx
+msgid "Edit condition {position}"
+msgstr "Editar condición {position}"
 
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 msgid "Edit existing"
@@ -4829,7 +4843,9 @@ msgstr "Opcional: sin ella el importe sigue siendo manual"
 msgid "Options"
 msgstr "Opciones"
 
+#: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/components/rule-condition-row/rule-condition-row.tsx
+#: src/rule/components/rule-condition-summary-row/rule-condition-summary-row.tsx
 #: src/rule/components/rule-summary-conditions/rule-summary-conditions.tsx
 #: src/rule/hooks/use-rule-row-summary.hook.ts
 msgid "or"
@@ -6859,8 +6875,8 @@ msgid "Turn on on-device AI to download the models."
 msgstr "Activa la IA en el dispositivo para descargar los modelos."
 
 #: src/rule/constant/rule-action-type.constant.ts
-msgid "Turn payments into transfers between accounts"
-msgstr "Convierte pagos en transferencias entre cuentas"
+msgid "Turn payments into transfers"
+msgstr "Convierte pagos en transferencias"
 
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "Turns a voice note into an expense"
@@ -7113,8 +7129,8 @@ msgid "When should it be returned?"
 msgstr "¿Cuándo debería ser devuelto?"
 
 #: src/rule/components/rules-list-page/rules-list-page.tsx
-msgid "When two rules set a category, the older one wins. Swipe a rule left to delete it."
-msgstr "Si dos reglas asignan categoría, gana la más antigua. Desliza una regla a la izquierda para eliminarla."
+msgid "When two rules set a category, the older one wins. Tap a rule to edit it, swipe left to delete."
+msgstr "Si dos reglas asignan categoría, gana la más antigua. Toca una regla para editarla, desliza a la izquierda para eliminarla."
 
 #: src/rule/constant/rule-condition-field.constant.ts
 msgid "Where the payment happened"

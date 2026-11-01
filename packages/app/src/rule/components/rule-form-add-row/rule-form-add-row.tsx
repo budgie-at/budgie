@@ -1,8 +1,8 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { Fragment } from 'react';
+import { Text, View } from 'react-native';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { TONAL_DISC_BACKGROUND } from '../../../@generic/constant/tonal-disc-background.constant';
 
 interface Props {
@@ -12,22 +12,23 @@ interface Props {
 }
 
 export const RuleFormAddRow = ({ label, onPress, testID }: Props) => (
-    <GroupedListRow
-        left={
-            <CircleIcon
-                icon={UserIconNameEnum.Plus}
-                variant="primary"
-                size={36}
-                iconSize={18}
-                radius={18}
-                border={false}
-                className={TONAL_DISC_BACKGROUND.primary}
-            />
-        }
-        title={label}
-        titleClassName="text-primary"
-        right={<Fragment />}
-        onPress={onPress}
+    <HapticPressable
         testID={testID}
-    />
+        onPress={onPress}
+        accessibilityRole="button"
+        accessibilityLabel={label}
+        className="min-h-[56px] flex-row items-center gap-x-xl px-3xl active:opacity-70"
+    >
+        <View className="absolute top-0 right-0 left-[16px] h-hairline bg-surface-separator" pointerEvents="none" />
+        <CircleIcon
+            icon={UserIconNameEnum.Plus}
+            variant="primary"
+            size={36}
+            iconSize={18}
+            radius={18}
+            border={false}
+            className={TONAL_DISC_BACKGROUND.primary}
+        />
+        <Text className="text-[17px] text-primary">{label}</Text>
+    </HapticPressable>
 );

@@ -21,7 +21,7 @@ export const RULE_ACTION_TYPE: Record<RuleActionTypeEnum, RuleOptionMetaInterfac
     [RuleActionTypeEnum.CONVERT_TO_TRANSFER]: {
         label: msg`Transfer to account`,
         phrase: msg`transfer to`,
-        description: msg`Turn payments into transfers between accounts`,
+        description: msg`Turn payments into transfers`,
         icon: UserIconNameEnum.ArrowRightLeft,
         variant: 'cyan'
     }

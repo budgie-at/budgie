@@ -40,6 +40,7 @@ export const RuleConditionValueEnumSelector = ({ index, options, icon, sheetTitl
                     label: t(option.label),
                     description: null,
                     icon: option.icon,
+                    glyph: null,
                     disabledReason: null
                 })),
                 selectedValue: value

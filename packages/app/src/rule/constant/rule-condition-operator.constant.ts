@@ -1,6 +1,8 @@
 import { RuleConditionOperatorEnum, UserIconNameEnum } from '@budgie/contracts';
 import { msg } from '@lingui/core/macro';
 
+import { RuleGlyphEnum } from '../enum/rule-glyph.enum';
+
 import type { RuleOptionMetaInterface } from '../interface/rule-option-meta.interface';
 
 export const RULE_CONDITION_OPERATOR: Record<RuleConditionOperatorEnum, RuleOptionMetaInterface> = {
@@ -9,28 +11,32 @@ export const RULE_CONDITION_OPERATOR: Record<RuleConditionOperatorEnum, RuleOpti
         phrase: msg`is`,
         description: msg`Exact match, any letter case`,
         icon: UserIconNameEnum.Target,
-        variant: 'ghost'
+        variant: 'ghost',
+        glyph: RuleGlyphEnum.EQUAL
     },
     [RuleConditionOperatorEnum.NOT_EQUALS]: {
         label: msg`Is not`,
         phrase: msg`is not`,
         description: msg`Anything except this value`,
         icon: UserIconNameEnum.CircleSlash2,
-        variant: 'ghost'
+        variant: 'ghost',
+        glyph: RuleGlyphEnum.NOT_EQUAL
     },
     [RuleConditionOperatorEnum.CONTAINS]: {
         label: msg`Contains`,
         phrase: msg`contains`,
         description: msg`The text appears anywhere`,
         icon: UserIconNameEnum.Search,
-        variant: 'ghost'
+        variant: 'ghost',
+        glyph: RuleGlyphEnum.CONTAINS
     },
     [RuleConditionOperatorEnum.NOT_CONTAINS]: {
         label: msg`Does not contain`,
         phrase: msg`does not contain`,
         description: msg`The text appears nowhere`,
         icon: UserIconNameEnum.ZoomOut,
-        variant: 'ghost'
+        variant: 'ghost',
+        glyph: RuleGlyphEnum.NOT_CONTAINS
     },
     [RuleConditionOperatorEnum.MATCHES_REGEX]: {
         label: msg`Matches pattern`,

@@ -4,8 +4,8 @@ export interface RuleConditionLabelInterface {
     readonly operator: string;
     readonly value: string;
     readonly listValue: string;
-    readonly shortPredicate: string;
     readonly hasValue: boolean;
     readonly sentenceTemplate: string;
     readonly phraseTemplate: string;
+    readonly listTemplate: string;
 }

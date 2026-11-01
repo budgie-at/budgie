@@ -1,8 +1,7 @@
 export interface RuleRowSummaryInterface {
     readonly primaryOutcome: string;
     readonly secondaryOutcome: string;
-    readonly triggerPrefix: string;
-    readonly triggerValue: string;
+    readonly trigger: string;
     readonly extraConditionsLabel: string | null;
     readonly accessibilityLabel: string;
 }

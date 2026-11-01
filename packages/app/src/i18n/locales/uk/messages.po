@@ -260,6 +260,14 @@ msgid "{fieldLabel} {operatorLabel}, value"
 msgstr "{fieldLabel} {operatorLabel}, значення"
 
 #: src/rule/hooks/use-rule-condition-formatter.hook.ts
+msgid "{fieldLabel} < {value}"
+msgstr "{fieldLabel} < {value}"
+
+#: src/rule/hooks/use-rule-condition-formatter.hook.ts
+msgid "{fieldLabel} > {value}"
+msgstr "{fieldLabel} > {value}"
+
+#: src/rule/hooks/use-rule-condition-formatter.hook.ts
 msgid "{fieldLabel} contains {value}"
 msgstr "{fieldLabel} містить {value}"
 
@@ -1179,7 +1187,9 @@ msgid "Analytics will appear once we can confirm your history is ready."
 msgstr "Аналітика з’явиться, щойно ми підтвердимо, що історію завантажено."
 
 #: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx
+#: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/components/rule-condition-row/rule-condition-row.tsx
+#: src/rule/components/rule-condition-summary-row/rule-condition-summary-row.tsx
 #: src/rule/components/rule-summary-conditions/rule-summary-conditions.tsx
 #: src/rule/components/rule-summary-hero/rule-summary-hero.tsx
 #: src/rule/hooks/use-rule-row-summary.hook.ts
@@ -2906,6 +2916,10 @@ msgstr "Редагувати бюджет"
 #: src/category/components/category-form/category-form.tsx
 msgid "Edit Category"
 msgstr "Редагувати категорію"
+
+#: src/rule/components/rule-condition-row/rule-condition-row.tsx
+msgid "Edit condition {position}"
+msgstr "Редагувати умову {position}"
 
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 msgid "Edit existing"
@@ -4829,7 +4843,9 @@ msgstr "Необов’язково — без нього сума залиша�
 msgid "Options"
 msgstr "Параметри"
 
+#: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/components/rule-condition-row/rule-condition-row.tsx
+#: src/rule/components/rule-condition-summary-row/rule-condition-summary-row.tsx
 #: src/rule/components/rule-summary-conditions/rule-summary-conditions.tsx
 #: src/rule/hooks/use-rule-row-summary.hook.ts
 msgid "or"
@@ -6859,8 +6875,8 @@ msgid "Turn on on-device AI to download the models."
 msgstr "Увімкніть ШІ на пристрої, щоб завантажити моделі."
 
 #: src/rule/constant/rule-action-type.constant.ts
-msgid "Turn payments into transfers between accounts"
-msgstr "Перетворювати платежі на перекази між рахунками"
+msgid "Turn payments into transfers"
+msgstr "Перетворювати платежі на перекази"
 
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "Turns a voice note into an expense"
@@ -7113,8 +7129,8 @@ msgid "When should it be returned?"
 msgstr "Коли це потрібно повернути?"
 
 #: src/rule/components/rules-list-page/rules-list-page.tsx
-msgid "When two rules set a category, the older one wins. Swipe a rule left to delete it."
-msgstr "Якщо два правила задають категорію, перемагає старіше. Проведіть правило вліво, щоб видалити."
+msgid "When two rules set a category, the older one wins. Tap a rule to edit it, swipe left to delete."
+msgstr "Якщо два правила задають категорію, перемагає старіше. Торкніться правила, щоб змінити, проведіть вліво, щоб видалити."
 
 #: src/rule/constant/rule-condition-field.constant.ts
 msgid "Where the payment happened"
