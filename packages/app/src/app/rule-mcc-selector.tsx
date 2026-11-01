@@ -71,7 +71,12 @@ export default function RuleMccSelectorModal() {
 
     return (
         <View className="flex-1 bg-primary-reverse" collapsable={false}>
-            <SelectorModalSearchHeader search={search} onSearchChange={setSearch} placeholder={t`Search by code or description...`} />
+            <SelectorModalSearchHeader
+                search={search}
+                onSearchChange={setSearch}
+                placeholder={t`Search by code or description…`}
+                testID={RuleMccSelectorModalSelector.SearchInput}
+            />
 
             {isNotEmptyArray(filteredCategories) ? (
                 <View className="absolute inset-0 bg-primary-reverse pt-3 px-xl">

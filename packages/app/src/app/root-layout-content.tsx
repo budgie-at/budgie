@@ -251,8 +251,11 @@ export const RootLayoutContent = () => {
                                                                         options={STACKED_FILTER_OPTIONS}
                                                                     />
                                                                     <Stack.Screen name="budget-period-summary" options={sheetOptions} />
-                                                                    <Stack.Screen name="rule-form" options={MODAL_OPTIONS} />
-                                                                    <Stack.Screen name="rule-selector" options={formSheetOptions([0.75])} />
+                                                                    <Stack.Screen name="rule-form" />
+                                                                    <Stack.Screen
+                                                                        name="rule-selector"
+                                                                        options={formSheetOptions('fitToContents')}
+                                                                    />
                                                                     <Stack.Screen name="rule-mcc-selector" options={SELECTOR_OPTIONS} />
                                                                 </Stack>
                                                             </VoiceInputProvider>

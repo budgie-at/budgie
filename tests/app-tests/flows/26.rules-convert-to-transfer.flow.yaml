@@ -79,7 +79,7 @@ env:
     id: 'RulesPage.RuleCardActions.0'
 - assertVisible:
     id: 'RulesPage.RuleCard.0'
-    text: '.*Transfer → Test22 Destination.*'
+    text: '.*Test22 Destination.*'
 
 - runFlow:
     file: subflows/navigation/open-deep-link.flow.yaml

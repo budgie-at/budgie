@@ -8,6 +8,7 @@ import { SearchablePageErrorState } from '../../../@generic/component/searchable
 import { SearchablePageList } from '../../../@generic/component/searchable-page-list/searchable-page-list';
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
 import { UsageFailureRow } from '../../../@generic/component/usage-failure-row/usage-failure-row';
+import { GROUPED_LIST_SIZING } from '../../../@generic/constant/grouped-list-sizing.constant';
 import { useCreateAction } from '../../../@generic/hook/use-create-action.hook';
 import { CategoryCard } from '../../../category/components/category-card/category-card';
 import { CategoryEmptyState } from '../../../category/components/category-empty-state/category-empty-state';
@@ -79,7 +80,7 @@ export default function Categories() {
                 emptyState={emptyState}
                 renderCard={renderCard}
                 listHeader={<CategoryListHeader>{isUsageFailure ? <UsageFailureRow onRetry={retryUsage} /> : null}</CategoryListHeader>}
-                gap={0}
+                sizing={GROUPED_LIST_SIZING}
             />
         </SearchablePage>
     );

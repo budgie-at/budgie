@@ -5,6 +5,12 @@ appId: ${APP_ID}
 - extendedWaitUntil:
     visible: 'Edit Rule'
     timeout: 5000
+- scrollUntilVisible:
+    element:
+      id: 'RuleForm.Footer.DeleteButton.Label'
+    direction: DOWN
+    centerElement: true
+- waitForAnimationToEnd
 - tapOn:
     id: 'RuleForm.Footer.DeleteButton.Label'
 - extendedWaitUntil:

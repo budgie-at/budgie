@@ -1,37 +1,67 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { MessageDescriptor } from '@lingui/core';
 import { useLingui } from '@lingui/react/macro';
 
-import { FormItem } from '../../../@generic/component/form-item/form-item';
+import { isDefined } from '@rnw-community/shared';
+
+import { useRuleSelectorModal } from '../../context/rule-selector-modal.context';
 import { useRuleConditionValueField } from '../../hooks/use-rule-condition-value-field.hook';
-import { RuleOptionPicker } from '../rule-option-picker/rule-option-picker';
+import { RuleValueGlyph } from '../rule-value-glyph/rule-value-glyph';
+import { RuleValuePickerButton } from '../rule-value-picker-button/rule-value-picker-button';
 
 interface EnumOption {
     readonly value: string;
     readonly label: MessageDescriptor;
+    readonly icon: UserIconNameEnum;
 }
 
 interface Props {
     readonly index: number;
-    readonly options: EnumOption[];
+    readonly options: readonly EnumOption[];
+    readonly icon: UserIconNameEnum;
     readonly sheetTitle: string;
-    readonly defaultLabel: string;
+    readonly placeholder: string;
     readonly testID?: string;
 }
 
-export const RuleConditionValueEnumSelector = ({ index, options, sheetTitle, defaultLabel, testID }: Props) => {
+export const RuleConditionValueEnumSelector = ({ index, options, icon, sheetTitle, placeholder, testID }: Props) => {
     const { t } = useLingui();
-    const { value, onChange } = useRuleConditionValueField(index);
+    const { value, onChange, isMissing } = useRuleConditionValueField(index);
+    const [openRuleSelector] = useRuleSelectorModal();
+    const selectedOption = options.find(option => option.value === value);
+    const selectedLabel = isDefined(selectedOption) ? t(selectedOption.label) : null;
+
+    const handleOpen = () => {
+        openRuleSelector(
+            {
+                title: sheetTitle,
+                options: options.map(option => ({
+                    value: option.value,
+                    label: t(option.label),
+                    description: null,
+                    icon: option.icon,
+                    glyph: null,
+                    disabledReason: null
+                })),
+                selectedValue: value
+            },
+            result => {
+                if (isDefined(result)) {
+                    onChange(result);
+                }
+            }
+        );
+    };
 
     return (
-        <FormItem label={t`Value`}>
-            <RuleOptionPicker
-                value={value}
-                onChange={onChange}
-                options={options}
-                sheetTitle={sheetTitle}
-                defaultLabel={defaultLabel}
-                testID={testID}
-            />
-        </FormItem>
+        <RuleValuePickerButton
+            value={selectedLabel}
+            placeholder={placeholder}
+            name={sheetTitle}
+            isMissing={isMissing}
+            leading={<RuleValueGlyph icon={selectedOption?.icon ?? icon} variant="ghost" />}
+            onPress={handleOpen}
+            testID={testID}
+        />
     );
 };

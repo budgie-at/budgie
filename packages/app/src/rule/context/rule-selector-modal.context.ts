@@ -1,13 +1,10 @@
 import { createModalContext } from '../../@generic/utils/create-modal-context/create-modal-context.util';
 
-interface RuleSelectorOptionInterface {
-    readonly value: string;
-    readonly label: string;
-}
+import type { RuleSelectorOptionInterface } from '../interface/rule-selector-option.interface';
 
 interface RuleSelectorModalParams {
     readonly title: string;
-    readonly options: RuleSelectorOptionInterface[];
+    readonly options: readonly RuleSelectorOptionInterface[];
     readonly selectedValue: string | null;
 }
 

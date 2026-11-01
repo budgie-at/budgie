@@ -7,6 +7,7 @@ import { SearchablePageErrorState } from '../../../@generic/component/searchable
 import { SearchablePageList } from '../../../@generic/component/searchable-page-list/searchable-page-list';
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
 import { UsageFailureRow } from '../../../@generic/component/usage-failure-row/usage-failure-row';
+import { GROUPED_LIST_SIZING } from '../../../@generic/constant/grouped-list-sizing.constant';
 import { useCreateAction } from '../../../@generic/hook/use-create-action.hook';
 import { goBackToSettings } from '../../../settings/utils/go-back-to-settings.util';
 import { TagCard } from '../../../tag/components/tag-card/tag-card';
@@ -75,7 +76,7 @@ export default function Tags() {
                     </>
                 }
                 renderCard={renderCard}
-                gap={0}
+                sizing={GROUPED_LIST_SIZING}
             />
         </SearchablePage>
     );

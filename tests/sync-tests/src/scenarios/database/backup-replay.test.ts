@@ -18,6 +18,7 @@ import * as Effect from 'effect/Effect';
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { testDb, TestLayer } from '../../harness';
+import { snapshotMissingTransferFeeDeltas } from '../../harness/backup-replay/snapshot-missing-transfer-fee-deltas';
 import { backupDatabasePath } from '../../harness/scenario/setup';
 
 import type { SQL } from 'drizzle-orm';
@@ -81,7 +82,7 @@ const formatAmount = (amount: number | undefined): string => (isDefined(amount) 
 
 describe.skipIf(!isDefined(backupDatabasePath))('database/backup-replay', () => {
     it.effect(
-        'replays consolidation and the balance rebuild on a migrated real backup moving ledger balances only by removed manual duplicates and ATM cash moves',
+        'replays consolidation and the balance rebuild on a migrated real backup moving ledger balances only by removed manual duplicates, ATM cash moves and restored legacy transfer fees',
         () =>
             Effect.gen(function* () {
                 const accountBalanceIncrementalService = yield* AccountBalanceIncrementalService;
@@ -96,6 +97,8 @@ describe.skipIf(!isDefined(backupDatabasePath))('database/backup-replay', () => 
                 const manualDuplicateEntryIdsBefore = new Set((yield* fetchManualDuplicateEntries()).map(({ id }) => id));
                 const atmCashMoveEntryIdsBefore = new Set((yield* fetchAtmCashMoveEntries()).map(({ id }) => id));
 
+                const missingTransferFeeDeltas = yield* snapshotMissingTransferFeeDeltas();
+
                 yield* transferConsolidationService.consolidate(null);
                 yield* accountBalanceIncrementalService.updateAllBalances(false);
                 const after = yield* snapshotBalances(accountIds);
@@ -109,7 +112,7 @@ describe.skipIf(!isDefined(backupDatabasePath))('database/backup-replay', () => 
                 ].reduce(
                     (deltas, { accountId, type, amount, direction }) =>
                         deltas.set(accountId, (deltas.get(accountId) ?? 0) + direction * (LEDGER_SIGN_BY_ENTRY_TYPE[type] ?? 0) * amount),
-                    new Map<number, number>()
+                    missingTransferFeeDeltas
                 );
                 const rows = accounts.map(({ id, title, currency }) =>
                     [

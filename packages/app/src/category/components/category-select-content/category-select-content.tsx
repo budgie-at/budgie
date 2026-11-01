@@ -19,7 +19,7 @@ interface Props {
     readonly cardTestID?: (title: string) => string;
 }
 
-const CARD_HEIGHT = 72;
+const CARD_HEIGHT = 82;
 
 const keyExtractor = (item: FlatListDataItem<CategoryEntityInterface>, index: number) =>
     item.isEmpty ? `empty-${index}` : item.id.toString();
