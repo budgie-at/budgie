@@ -3,6 +3,57 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.139.0](https://github.com/budgie-at/budgie/compare/v6.138.0...v6.139.0) (2026-11-01)
+
+### Features
+
+* **app:** rebuild settings as grouped lists with a data tools screen ([#1844](https://github.com/budgie-at/budgie/issues/1844)) ([11a46d6](https://github.com/budgie-at/budgie/commit/11a46d694c1051e8834ac3b4a14fd045bc655501))
+
+
+# [6.138.0](https://github.com/budgie-at/budgie/compare/v6.137.1...v6.138.0) (2026-10-31)
+
+### Bug Fixes
+
+* **app:** keep statistics controls for refunded history and stable drill-down layout ([f2df369](https://github.com/budgie-at/budgie/commit/f2df369a6e6b56b1a25b2a677c10c58842bdb75b))
+* **app:** name the type on single-type missing-category lists ([296dd44](https://github.com/budgie-at/budgie/commit/296dd44a36850c2974d8dbd86728fd63fea72990)), closes [#1842](https://github.com/budgie-at/budgie/issues/1842)
+* **app:** read analytics route dates as inclusive local days ([64b3c16](https://github.com/budgie-at/budgie/commit/64b3c164f1858b6ae7c3372ccac5461ef276d654))
+* **app:** stack shared transaction rows at accessibility text sizes ([0adf72d](https://github.com/budgie-at/budgie/commit/0adf72d5ae89d81f6723387d1be7ff2a098868d4))
+* **contracts:** allocate statistics refunds in cents per entry and category ([b0e5078](https://github.com/budgie-at/budgie/commit/b0e50780c1b359470e4a0490660f9468668d830c))
+* **contracts:** book converted statistics entries at cents ([eb0113a](https://github.com/budgie-at/budgie/commit/eb0113a107179a190f904a7224f2b93f7a35cb7f))
+* **contracts:** drop zero-net rows from statistics rankings ([abcf36b](https://github.com/budgie-at/budgie/commit/abcf36b2ec64317e75f77a2c44de2b7041cf5801))
+* explain refunds netted inside the period ([805ad75](https://github.com/budgie-at/budgie/commit/805ad75c5fd0edaf90484a6ab3115d41b86787c1))
+
+### Features
+
+* **app:** one empty-ledger card, explanations above rankings ([3087702](https://github.com/budgie-at/budgie/commit/3087702fa849c780363ab513ad0e31931a0a4622))
+* **app:** polish category and tag statistics ([d3196fb](https://github.com/budgie-at/budgie/commit/d3196fbddf42d1fa9a8f4877753cb3ed04fc2a66))
+* **app:** rework statistics for accessibility, privacy and drill-down trends ([d165606](https://github.com/budgie-at/budgie/commit/d165606f5727f3b8dd9795b42f25118b2f77237c))
+* **app:** sharpen statistics trend, drill-down rows and short-page chrome ([e1f75fa](https://github.com/budgie-at/budgie/commit/e1f75fac1aa77bc71510a6659089bdb5025331d6))
+* **app:** tighten statistics hero, captions and empty states ([6765ed9](https://github.com/budgie-at/budgie/commit/6765ed97cc944844a9f1c4cba7fa91580339c128))
+* **contracts:** report refunds netted against purchases outside the period ([57bc264](https://github.com/budgie-at/budgie/commit/57bc2641a33ba49aea3c03092f91c452eccdd1a6))
+
+
+## [6.137.1](https://github.com/budgie-at/budgie/compare/v6.137.0...v6.137.1) (2026-10-31)
+
+### Bug Fixes
+
+* **import-export:** keep OCR line boundaries for legal names and skip header-row values ([41d2603](https://github.com/budgie-at/budgie/commit/41d26038fd6b87d733bcf0ae4420e0239a84c269))
+* **import-export:** read tabular receipt numbers and m.b.H. legal names ([e7da4ab](https://github.com/budgie-at/budgie/commit/e7da4ab062e18741c0474b0ef703c058e1de3f15))
+
+
+# [6.137.0](https://github.com/budgie-at/budgie/compare/v6.136.0...v6.137.0) (2026-10-31)
+
+### Bug Fixes
+
+* **app:** address runway analytics review feedback ([5ec15cd](https://github.com/budgie-at/budgie/commit/5ec15cd419e16b5d11ecb0dee8e1e89e71daa976))
+* **app:** keep the runway spike note true with one-offs included ([d3a8c14](https://github.com/budgie-at/budgie/commit/d3a8c14c5752bcc1b8a2bd1d8a8c766d3766beb3))
+
+### Features
+
+* **app:** annotate runway charts and tune text for every size ([8be798c](https://github.com/budgie-at/budgie/commit/8be798cc83d616d52d5595ac9370f5a17eed03bf))
+* **app:** regroup runway into grouped cards with consistent figures ([b7a131a](https://github.com/budgie-at/budgie/commit/b7a131a1e2a9f8dc192c743a588e8587331f1239)), closes [not-enough-history](https://github.com/not-enou/issues/history)
+
+
 # [6.136.0](https://github.com/budgie-at/budgie/compare/v6.135.0...v6.136.0) (2026-10-31)
 
 ### Bug Fixes

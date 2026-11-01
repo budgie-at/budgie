@@ -3,6 +3,7 @@ import { Text, View } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { TITLE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/title-max-font-size-multiplier.constant';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 
 import type { TransactionsDayNetAmountInterface } from '../../interface/transactions-day-net-amount.interface';
@@ -23,12 +24,20 @@ export const TransactionSectionHeader = ({ title, netAmount }: Props) => {
         : null;
 
     return (
-        <View className="h-[32px] flex-row items-center justify-between gap-x-md px-3xl">
-            <Text className="shrink text-primary text-[13px] leading-[16px] font-semibold" numberOfLines={1}>
+        <View className="min-h-[32px] flex-row flex-wrap items-center justify-between gap-x-md px-3xl py-xs">
+            <Text
+                maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER}
+                className="shrink text-primary text-[13px] font-semibold"
+                numberOfLines={2}
+            >
                 {title}
             </Text>
             {isDefined(netAmountLabel) ? (
-                <Text className="shrink-0 text-secondary-foreground text-[13px] leading-[16px] tabular-nums" numberOfLines={1}>
+                <Text
+                    maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER}
+                    className="shrink-0 text-secondary-foreground text-[13px] tabular-nums"
+                    numberOfLines={1}
+                >
                     {netAmountLabel}
                 </Text>
             ) : null}

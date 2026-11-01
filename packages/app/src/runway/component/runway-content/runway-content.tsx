@@ -3,9 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { View } from 'react-native';
 
-import { ChromeScrollFrame } from '../../../@generic/component/chrome-scroll-frame/chrome-scroll-frame';
 import { EntranceReveal } from '../../../@generic/component/entrance-reveal/entrance-reveal';
-import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { AnalyticsHistoryBoundary } from '../../../sync/component/analytics-history-boundary/analytics-history-boundary';
 import { RUNWAY_MINIMUM_MONTHS } from '../../constant/runway-minimum-months.constant';
@@ -36,37 +34,34 @@ export const RunwayContent = () => {
     const hasEnoughHistory = computation.monthsUsed >= RUNWAY_MINIMUM_MONTHS;
 
     return (
-        <ChromeScrollFrame>
-            <AnalyticsHistoryBoundary
-                activeAccountTypes={activeAccountTypes}
-                description={t`We’re still importing transaction history for your Runway accounts. Your forecast will appear when their history is ready.`}
-            >
-                {hasEnoughHistory ? (
-                    <View className="gap-y-3xl">
-                        <View className="gap-y-lg">
-                            <RunwayVerdict computation={computation} />
-                            <EntranceReveal step={1}>
-                                <RunwayAllInToggle isAllIn={isAllIn} onToggle={handleToggleAllIn} />
-                            </EntranceReveal>
-                        </View>
-                        <EntranceReveal step={2}>
-                            <RunwayFlowRow computation={computation} />
-                        </EntranceReveal>
-                        <EntranceReveal step={3}>
-                            <RunwayForecastChart computation={computation} />
-                        </EntranceReveal>
-                        <EntranceReveal step={4}>
-                            <RunwayHistoryChart series={series} burn={computation.burn} />
-                        </EntranceReveal>
-                        <EntranceReveal step={5}>
-                            <RunwayDrivers drivers={drivers} dimension={dimension} onChangeDimension={setDimension} />
+        <AnalyticsHistoryBoundary
+            activeAccountTypes={activeAccountTypes}
+            description={t`We’re still importing transaction history for your Runway accounts. Your forecast will appear when their history is ready.`}
+        >
+            {hasEnoughHistory ? (
+                <View className="gap-y-3xl">
+                    <View className="gap-y-lg">
+                        <RunwayVerdict computation={computation} />
+                        <EntranceReveal step={1}>
+                            <RunwayAllInToggle isAllIn={isAllIn} onToggle={handleToggleAllIn} />
                         </EntranceReveal>
                     </View>
-                ) : (
-                    <RunwayEmptyState monthsUsed={computation.monthsUsed} />
-                )}
-            </AnalyticsHistoryBoundary>
-            <MenuSpacer />
-        </ChromeScrollFrame>
+                    <EntranceReveal step={2}>
+                        <RunwayFlowRow computation={computation} />
+                    </EntranceReveal>
+                    <EntranceReveal step={3}>
+                        <RunwayForecastChart computation={computation} />
+                    </EntranceReveal>
+                    <EntranceReveal step={4}>
+                        <RunwayHistoryChart series={series} burn={computation.burn} />
+                    </EntranceReveal>
+                    <EntranceReveal step={5}>
+                        <RunwayDrivers drivers={drivers} dimension={dimension} onChangeDimension={setDimension} />
+                    </EntranceReveal>
+                </View>
+            ) : (
+                <RunwayEmptyState monthsUsed={computation.monthsUsed} />
+            )}
+        </AnalyticsHistoryBoundary>
     );
 };

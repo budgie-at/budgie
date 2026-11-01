@@ -6,7 +6,7 @@ import type { MoneyDataUpgradeRuntimeSnapshotInterface } from '@budgie/ledger';
 
 export const buildMoneyDataUpgradeStatusText = (snapshot: MoneyDataUpgradeRuntimeSnapshotInterface): string => {
     if (isDefined(snapshot.lastError)) {
-        return snapshot.lastError;
+        return t`Couldn't finish. Try again.`;
     }
 
     if (snapshot.isUpdatingBalances) {
@@ -14,15 +14,15 @@ export const buildMoneyDataUpgradeStatusText = (snapshot: MoneyDataUpgradeRuntim
     }
 
     if (!snapshot.isRunning) {
-        return t`Press to re-evaluate transactions`;
+        return t`Fill missing currency conversions`;
     }
 
     if (!isPositiveNumber(snapshot.totalEntryCount)) {
-        return t`Preparing valuation`;
+        return t`Preparing conversions`;
     }
 
     const { processedEntryCount } = snapshot;
     const { totalEntryCount } = snapshot;
 
-    return t`Valuing ${processedEntryCount} of ${totalEntryCount} transactions`;
+    return t`Converting ${processedEntryCount} of ${totalEntryCount} transactions`;
 };

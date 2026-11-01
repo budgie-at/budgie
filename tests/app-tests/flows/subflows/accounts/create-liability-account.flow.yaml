@@ -50,7 +50,7 @@ appId: ${APP_ID}
       id: 'CreateAccount.Amount'
 - inputText: ${ACCOUNT_AMOUNT}
 - tapOn:
-      text: 'ACCOUNT NAME & ICON'
+      text: 'Details'
 - waitForAnimationToEnd
 
 - extendedWaitUntil:

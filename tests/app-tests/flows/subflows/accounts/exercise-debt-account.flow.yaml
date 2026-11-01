@@ -184,6 +184,10 @@ appId: ${APP_ID}
     env:
       ACCOUNT_NAME: ${UPDATED_ACCOUNT_NAME}
 
+- scrollUntilVisible:
+    element:
+      id: 'AccountDetails.ArchiveButton'
+    direction: DOWN
 - tapOn:
     id: 'AccountDetails.ArchiveButton'
 - tapOn: 'Archive'

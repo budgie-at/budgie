@@ -8,7 +8,8 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
-import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
+import { SettingsRowAccessory } from '../../../settings/components/settings-row-accessory/settings-row-accessory';
+import { SettingsRow } from '../../../settings/components/settings-row/settings-row';
 
 import { ImportCsvSelector } from './import-csv.selector';
 
@@ -32,14 +33,16 @@ export const ImportCsv = () => {
             }).pipe(toastOnFailure(t`Could not select CSV file`))
         );
 
+    const handlePress = () => void handleSelectAndNavigate();
+
     return (
-        <SettingsCard
+        <SettingsRow
             title={t`Import CSV`}
-            description={t`Import transactions from a CSV file`}
-            onPress={handleSelectAndNavigate}
-            icon={UserIconNameEnum.Upload}
-            variant="warning"
-            isLoading={isLoading}
+            subtitle={t`Add transactions from a spreadsheet`}
+            {...(!isLoading && { onPress: handlePress })}
+            icon={UserIconNameEnum.Download}
+            variant="ghost"
+            right={<SettingsRowAccessory isLoading={isLoading} />}
             testID={ImportCsvSelector.ImportCard}
         />
     );

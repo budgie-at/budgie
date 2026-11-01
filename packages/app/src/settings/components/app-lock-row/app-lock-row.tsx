@@ -6,10 +6,11 @@ import { isDefined } from '@rnw-community/shared';
 
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
 import { PinSetupModeEnum } from '../../../auth/enum/pin-setup-mode.enum';
+import { SettingsRowAccessoryKindEnum } from '../../enum/settings-row-accessory-kind.enum';
 import { useBiometricLabel } from '../../hook/use-biometric-label.hook';
 import { useSetting } from '../../hook/use-setting.hook';
-import { SettingsDetailRow } from '../settings-detail-row/settings-detail-row';
-import { SettingsPillButton } from '../settings-pill-button/settings-pill-button';
+import { SettingsRowAccessory } from '../settings-row-accessory/settings-row-accessory';
+import { SettingsRow } from '../settings-row/settings-row';
 
 export const AppLockRow = () => {
     const { t } = useLingui();
@@ -20,28 +21,37 @@ export const AppLockRow = () => {
     const handleCreatePin = () => void router.push({ pathname: '/settings/pin', params: { mode: PinSetupModeEnum.CREATE } });
 
     if (isPinEnabled) {
-        const description = isBiometricEnabled && isDefined(biometricLabel) ? t`On · PIN and ${biometricLabel}` : t`On · PIN`;
+        const description = isBiometricEnabled && isDefined(biometricLabel) ? t`Encrypted · PIN and ${biometricLabel}` : t`Encrypted · PIN`;
 
         return (
-            <SettingsDetailRow
+            <SettingsRow
                 icon={UserIconNameEnum.Lock}
                 variant="positive"
-                title={t`App Lock`}
-                description={description}
+                title={t`App lock`}
+                subtitle={description}
+                right={
+                    <SettingsRowAccessory
+                        value={t`On`}
+                        kind={SettingsRowAccessoryKindEnum.ACTION}
+                        testID={SettingsPageSelector.DataEncryptionStateOn}
+                    />
+                }
                 testID={SettingsPageSelector.AppLockCard}
             />
         );
     }
 
-    const enableDescription = isDefined(biometricLabel) ? t`PIN and ${biometricLabel}. Encrypts your data.` : t`PIN. Encrypts your data.`;
+    const enableDescription = isDefined(biometricLabel)
+        ? t`Encrypt with a PIN, unlock with ${biometricLabel}`
+        : t`Encrypt your data with a PIN`;
 
     return (
-        <SettingsDetailRow
+        <SettingsRow
             icon={UserIconNameEnum.LockOpen}
             variant="ghost"
-            title={t`App Lock`}
-            description={enableDescription}
-            right={<SettingsPillButton label={t`Enable`} onPress={handleCreatePin} variant="cta" />}
+            title={t`App lock`}
+            subtitle={enableDescription}
+            right={<SettingsRowAccessory value={t`Off`} testID={SettingsPageSelector.DataEncryptionStateOff} />}
             onPress={handleCreatePin}
             testID={SettingsPageSelector.AppLockCard}
         />

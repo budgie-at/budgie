@@ -1,0 +1,1 @@
+export const ROW_MAX_FONT_SIZE_MULTIPLIER = 2.4;
