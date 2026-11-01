@@ -10,7 +10,7 @@ interface Props {
 }
 
 export const AdjustmentAccountSummary = ({ details }: Props) => (
-    <View className="min-h-[56px] flex-row items-center gap-md rounded-2xl bg-transaction-detail-row px-lg py-md">
+    <View className="min-h-[56px] flex-row items-center gap-md rounded-2xl border-hairline border-surface-separator bg-transaction-detail-row px-lg py-md dark:border-transparent">
         <CircleIcon icon={details.accountIcon} variant="ghost" border={false} size={34} iconSize={18} radius={10} />
         <View className="flex-1">
             <Text className="text-[13px] leading-[18px] text-secondary-foreground">

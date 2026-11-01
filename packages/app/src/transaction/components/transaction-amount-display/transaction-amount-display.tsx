@@ -65,9 +65,9 @@ export const TransactionAmountDisplay = ({ ref, amount, currencySymbol, variant,
     const fullDisplay = `${currencySymbol} ${formatKeypadAmount(amount, decimalSeparator, digitGroupingSeparator)}`;
 
     return (
-        <Animated.View entering={FadeIn.duration(200)} className="flex-1 items-center justify-center">
+        <Animated.View entering={FadeIn.duration(200)} className="items-center self-stretch">
+            <View className="h-[22px] flex-row items-center justify-center gap-xs self-stretch overflow-hidden">{topContent}</View>
             <View className="items-center self-stretch">
-                {isDefined(topContent) ? <View className="absolute bottom-full mb-sm items-center z-10">{topContent}</View> : null}
                 <Pressable className="self-stretch" onPress={onPress} disabled={!isDefined(onPress)}>
                     <Animated.View style={shakeStyle} className="w-full">
                         <Animated.View style={scaleStyle}>

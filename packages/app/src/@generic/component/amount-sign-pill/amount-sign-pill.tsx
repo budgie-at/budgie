@@ -1,6 +1,5 @@
 import { AmountSignToggle } from '@budgie/amount-input';
 import { UserIconNameEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { ClassValue } from 'cn';
 
@@ -13,13 +12,14 @@ import { Icon } from '../icon/icon';
 interface Props {
     readonly isNegative: boolean;
     readonly variant: ColorPaletteVariant;
+    readonly accessibilityLabel: string;
     readonly onToggle: () => void;
 }
 
-const SIGN_TOGGLE_HIT_SLOP = { top: 16, bottom: 16, left: 12, right: 12 };
+const SIGN_TOGGLE_HIT_SLOP = 8;
 
 const pillVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>(
-    'items-center justify-center rounded-full border w-10 h-10 active:scale-xs',
+    'items-center justify-center rounded-full border w-11 h-11 active:scale-xs',
     {
         variants: {
             variant: BACKGROUND_COLOR_PALETTE
@@ -33,8 +33,7 @@ const iconVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>('
     }
 });
 
-export const AmountSignPill = ({ isNegative, variant, onToggle }: Props) => {
-    const { t } = useLingui();
+export const AmountSignPill = ({ isNegative, variant, accessibilityLabel, onToggle }: Props) => {
     const handlePress = useSignTogglePress(onToggle);
 
     const iconClassName = iconVariants({ variant });
@@ -48,7 +47,7 @@ export const AmountSignPill = ({ isNegative, variant, onToggle }: Props) => {
             negativeIcon={negativeIcon}
             className={pillVariants({ variant })}
             hitSlop={SIGN_TOGGLE_HIT_SLOP}
-            accessibilityLabel={t`Negative amount`}
+            accessibilityLabel={accessibilityLabel}
             onPress={handlePress}
         />
     );

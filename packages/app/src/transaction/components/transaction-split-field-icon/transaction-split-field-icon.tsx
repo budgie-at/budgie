@@ -1,7 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
-import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
 import { TransactionFieldIcon } from '../transaction-field-icon/transaction-field-icon';
 import { TransactionFieldIconsSelector } from '../transaction-field-icons/transaction-field-icons.selector';
@@ -27,23 +26,17 @@ export const TransactionSplitFieldIcon = ({ splitEntryCount, isAmountPositive, o
           })
         : void 0;
     const splitEnabled = isAmountPositive || isSplitActive;
-
-    const splitOpacityStyle = useAnimatedStyle(() => ({
-        opacity: withTiming(splitEnabled ? 1 : 0.3, { duration: 200 })
-    }));
-
-    const splitPointerEvents = splitEnabled ? 'auto' : 'none';
+    const disabledHint = splitEnabled ? void 0 : t`Enter an amount to split it`;
 
     return (
-        <Animated.View style={splitOpacityStyle} pointerEvents={splitPointerEvents} className="flex-1">
-            <TransactionFieldIcon
-                icon={UserIconNameEnum.Split}
-                label={t`Split`}
-                value={splitValue}
-                onPress={onPress}
-                animationDelay={170}
-                testID={TransactionFieldIconsSelector.Split}
-            />
-        </Animated.View>
+        <TransactionFieldIcon
+            icon={UserIconNameEnum.Split}
+            label={t`Split`}
+            value={splitValue}
+            onPress={onPress}
+            animationDelay={170}
+            disabledHint={disabledHint}
+            testID={TransactionFieldIconsSelector.Split}
+        />
     );
 };

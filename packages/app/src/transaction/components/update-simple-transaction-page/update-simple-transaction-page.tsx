@@ -7,7 +7,10 @@ import type { UpdateSimpleTransactionPagePropsInterface } from '../../interface/
 
 export const UpdateSimpleTransactionPage = ({ form, title, children, onGoBack, right }: UpdateSimpleTransactionPagePropsInterface) => (
     <FormProvider {...form}>
-        <FullPage className="bg-grouped-surface" header={<PageHeader title={title} onGoBack={onGoBack} right={right} />}>
+        <FullPage
+            className="bg-grouped-surface"
+            header={<PageHeader size="md" className="min-h-[52px]" title={title} onGoBack={onGoBack} right={right} />}
+        >
             {children}
         </FullPage>
     </FormProvider>

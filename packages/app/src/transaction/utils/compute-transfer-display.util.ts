@@ -28,6 +28,7 @@ interface ComputeTransferDisplayParams {
 }
 
 interface ConversionRowDisplayProps {
+    readonly label: string;
     readonly destinationAmount: number;
     readonly destinationSymbol: string;
     readonly sourceCode: string;
@@ -38,8 +39,8 @@ interface ConversionRowDisplayProps {
 interface TransferDisplayResult {
     readonly displayAmount: string;
     readonly displaySymbol: string;
-    readonly amountLabel: string | null;
-    readonly secondaryAmountText: string | null;
+    readonly amountCode: string | null;
+    readonly amountLabel: string;
     readonly conversionRowProps: ConversionRowDisplayProps;
 }
 
@@ -72,13 +73,10 @@ export const computeTransferDisplay = (params: ComputeTransferDisplayParams): Tr
     const displaySymbol = isEditingDestination ? toInfo.symbol : fromInfo.symbol;
 
     const hasAccountCodes = isNotEmptyString(fromInfo.code) && isNotEmptyString(toInfo.code);
-    const editingLabel = isEditingDestination ? receivingLabel : sendingLabel;
-    const amountLabel = conversion.isCrossCurrency && hasAccountCodes ? editingLabel : null;
-
-    const secondarySymbol = isEditingDestination ? fromInfo.symbol : toInfo.symbol;
-    const secondaryValue = isEditingDestination ? sourceNumericValue : conversion.destinationAmount;
-    const formattedSecondaryValue = secondaryValue > 0 ? secondaryValue.toFixed(2) : '0.00';
-    const secondaryAmountText = conversion.isCrossCurrency ? `${secondarySymbol} ${formattedSecondaryValue}` : null;
+    const amountLabel = isEditingDestination ? receivingLabel : sendingLabel;
+    const conversionRowLabel = isEditingDestination ? sendingLabel : receivingLabel;
+    const editingCode = isEditingDestination ? toInfo.code : fromInfo.code;
+    const amountCode = conversion.isCrossCurrency && hasAccountCodes ? editingCode : null;
 
     const conversionRowAmount = isEditingDestination ? sourceNumericValue : conversion.destinationAmount;
     const conversionRowSymbol = isEditingDestination ? fromInfo.symbol : toInfo.symbol;
@@ -89,9 +87,10 @@ export const computeTransferDisplay = (params: ComputeTransferDisplayParams): Tr
     return {
         displayAmount,
         displaySymbol,
+        amountCode,
         amountLabel,
-        secondaryAmountText,
         conversionRowProps: {
+            label: conversionRowLabel,
             destinationAmount: conversionRowAmount,
             destinationSymbol: conversionRowSymbol,
             sourceCode: conversionRowSourceCode,

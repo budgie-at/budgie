@@ -68,7 +68,7 @@ export const TransactionAccountRow = ({ ref, fieldName, label, testID }: Props) 
         <Animated.View entering={FadeInUp.delay(ANIMATION_DELAY).duration(200)}>
             <Animated.View style={shakeStyle}>
                 <HapticPressable
-                    className="relative min-h-[56px] flex-row items-center px-lg py-md gap-md bg-transaction-detail-row rounded-2xl"
+                    className="relative min-h-[56px] flex-row items-center gap-md rounded-2xl border-hairline border-surface-separator bg-transaction-detail-row px-lg py-md dark:border-transparent"
                     onPress={handlePress}
                     accessibilityLabel={accessibilityLabel}
                     accessibilityRole="button"

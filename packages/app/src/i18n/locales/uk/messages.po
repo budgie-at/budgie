@@ -1933,6 +1933,10 @@ msgstr "Категорії"
 msgid "Categories ({selectedCategoriesCount})"
 msgstr "Категорії ({selectedCategoriesCount})"
 
+#: src/transaction/components/transaction-category-field-icon/transaction-category-field-icon.tsx
+msgid "Categories are set per split item"
+msgstr "Категорії задаються для кожної частини"
+
 #: src/category/components/categories-feature-intro/categories-feature-intro.tsx
 msgid "Categories break your spending down automatically. Add a transaction, or choose another period."
 msgstr "Категорії автоматично розподіляють ваші витрати. Додайте транзакцію або виберіть інший період."
@@ -2922,6 +2926,10 @@ msgstr "Боргові рахунки не можуть брати участь 
 msgid "Debts and loans"
 msgstr "Борги та позики"
 
+#: src/transaction/components/update-adjustment-transaction/update-adjustment-transaction.tsx
+msgid "Decrease balance"
+msgstr "Зменшити баланс"
+
 #: src/settings/components/default-account-selector/default-account-selector.tsx
 msgid "Default account"
 msgstr "Рахунок за замовчуванням"
@@ -3328,6 +3336,10 @@ msgstr "Редагувати відкладене"
 msgid "Edit Tag"
 msgstr "Редагувати тег"
 
+#: src/transaction/components/conversion-row/conversion-row.tsx
+msgid "Edit the amount"
+msgstr "Змінити суму"
+
 #: src/transaction/components/transaction-info-edit-button/transaction-info-edit-button.tsx
 msgid "Edit transaction"
 msgstr "Редагувати транзакцію"
@@ -3402,6 +3414,10 @@ msgstr "Введіть усі суми"
 #: src/transaction/hook/use-quick-form-submit.hook.ts
 msgid "Enter an amount"
 msgstr "ÐÐ²ÐµÐ´ÑÑÑ ÑÑÐ¼Ñ"
+
+#: src/transaction/components/transaction-split-field-icon/transaction-split-field-icon.tsx
+msgid "Enter an amount to split it"
+msgstr "Введіть суму, щоб розділити її"
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Enter current PIN"
@@ -3546,8 +3562,8 @@ msgid "Exchange rate not found"
 msgstr "Курс обміну не знайдено"
 
 #: src/transaction/components/conversion-row/conversion-row.tsx
-msgid "Exchange rate: {rateLabel}. Tap to edit receiving amount"
-msgstr "Курс обміну: {rateLabel}. Натисніть, щоб редагувати суму отримання"
+msgid "Exchange rate: {rateLabel}"
+msgstr "Курс обміну: {rateLabel}"
 
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Excluded from file imports"
@@ -4783,10 +4799,6 @@ msgstr "Потребує уваги"
 #: src/app/(tabs)/settings/apple-pay-capture.tsx
 msgid "Needs review"
 msgstr "Потребують перевірки"
-
-#: src/@generic/component/amount-sign-pill/amount-sign-pill.tsx
-msgid "Negative amount"
-msgstr "Від’ємна сума"
 
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
 #: src/transaction/components/statistics-cash-flow-row/statistics-cash-flow-row.tsx

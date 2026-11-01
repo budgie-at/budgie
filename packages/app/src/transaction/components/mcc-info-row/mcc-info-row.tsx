@@ -2,6 +2,7 @@ import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
+import { MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-font-size-multiplier.constant';
 import { useGetMccCategoryByIdQuery } from '../../../mcc-category/query/use-get-mcc-category-by-id.query';
 
 interface Props {
@@ -12,26 +13,29 @@ interface Props {
 export const MccInfoRow = ({ transactionTitle, mccCategoryId }: Props) => {
     const { mccCategory } = useGetMccCategoryByIdQuery(mccCategoryId);
 
-    const hasTitle = isNotEmptyString(transactionTitle);
-    const hasMcc = isDefined(mccCategory);
-
-    if (!hasTitle && !hasMcc) {
-        return null;
-    }
-
     return (
-        <View className="items-center mx-xl gap-xs">
-            {hasTitle ? (
-                <Text className="w-full text-sm text-secondary-foreground font-medium text-center" numberOfLines={2}>
+        <>
+            {isNotEmptyString(transactionTitle) ? (
+                <Text
+                    className="shrink text-center text-[15px] leading-[20px] font-medium text-secondary-foreground"
+                    maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
+                    numberOfLines={1}
+                >
                     {transactionTitle}
                 </Text>
             ) : null}
 
-            {hasMcc ? (
-                <View className="rounded-full py-xs px-md bg-primary/10 border border-primary/20">
-                    <Text className="text-primary/80 text-xs font-medium">{mccCategory.shortDescription}</Text>
+            {isDefined(mccCategory) ? (
+                <View className="shrink-0 rounded-full border border-primary/20 bg-primary/10 px-md py-xxs">
+                    <Text
+                        className="text-xs font-medium text-primary/80"
+                        maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
+                        numberOfLines={1}
+                    >
+                        {mccCategory.shortDescription}
+                    </Text>
                 </View>
             ) : null}
-        </View>
+        </>
     );
 };

@@ -24,6 +24,7 @@ import { useEmbeddingGenerator } from '../../../ai/hook/use-embedding-generator.
 import { useKeypadInput } from '../../hook/use-keypad-input.hook';
 import { AdjustmentAccountSummary } from '../adjustment-account-summary/adjustment-account-summary';
 import { CurrencyModePill } from '../currency-mode-pill/currency-mode-pill';
+import { QuickFormSecondaryLine } from '../quick-form-secondary-line/quick-form-secondary-line';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
 import { TransactionKeypad } from '../transaction-keypad/transaction-keypad';
 
@@ -132,20 +133,30 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
     };
 
     return (
-        <View className="flex-1 gap-xl">
+        <View className="flex-1">
             <TransactionAmountDisplay
                 ref={amountDisplayRef}
                 amount={displayValue}
                 currencySymbol={signedInstrumentSymbol}
                 variant={variant}
             >
-                <CurrencyModePill label={details.instrumentCode} isFlipped={false} />
+                <QuickFormSecondaryLine>
+                    <CurrencyModePill label={details.instrumentCode} isFlipped={false} />
+                </QuickFormSecondaryLine>
             </TransactionAmountDisplay>
 
-            <View className="gap-md">
-                <View className="items-center">
-                    <AmountSignPill isNegative={!isIncrease} variant={variant} onToggle={toggleIsIncrease} />
-                </View>
+            <View className="flex-1" />
+
+            <View className="mb-md items-center">
+                <AmountSignPill
+                    isNegative={!isIncrease}
+                    variant={variant}
+                    accessibilityLabel={t`Decrease balance`}
+                    onToggle={toggleIsIncrease}
+                />
+            </View>
+
+            <View className="mb-md">
                 <AdjustmentAccountSummary details={details} />
             </View>
 

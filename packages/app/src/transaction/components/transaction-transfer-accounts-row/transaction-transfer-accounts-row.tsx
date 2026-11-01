@@ -76,7 +76,7 @@ export const TransactionTransferAccountsRow = ({ ref }: Props) => {
     };
 
     return (
-        <Animated.View entering={FadeInUp.delay(ANIMATION_DELAY).duration(200)} className="flex-row items-center gap-sm">
+        <Animated.View entering={FadeInUp.delay(ANIMATION_DELAY).duration(200)} className="flex-row items-center">
             <TransferAccountPicker
                 label={t`From`}
                 account={fromAccount}
@@ -88,12 +88,13 @@ export const TransactionTransferAccountsRow = ({ ref }: Props) => {
             />
 
             <HapticPressable
+                className="h-[44px] w-[44px] items-center justify-center"
                 onPress={handleSwap}
                 testID={TransferQuickFormSelector.SwapAccounts}
                 accessibilityLabel={t`Swap accounts`}
                 accessibilityRole="button"
             >
-                <CircleIcon icon={UserIconNameEnum.ArrowLeftRight} variant="ghost" size={28} iconSize={12} />
+                <CircleIcon icon={UserIconNameEnum.ArrowLeftRight} variant="ghost" size={32} iconSize={16} />
             </HapticPressable>
 
             <TransferAccountPicker

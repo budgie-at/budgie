@@ -43,7 +43,8 @@ export const SplitEntryRow = (props: Props) => {
 
     const categoryIcon = hasCategorySelected && isDefined(category) ? category.icon : UserIconNameEnum.Circle;
     const categoryTitle = isDefined(category) ? category.title : t`Select category`;
-    const titleClassName = hasCategorySelected ? 'text-primary' : 'text-secondary-foreground';
+    const titleClassName = hasCategorySelected ? 'text-primary' : 'text-warning-foreground';
+    const iconVariant = hasCategorySelected ? variant : 'warning';
 
     return (
         <Animated.View entering={FadeIn} exiting={FadeOutDown} layout={LinearTransition}>
@@ -58,7 +59,7 @@ export const SplitEntryRow = (props: Props) => {
                         size={CIRCLE_ICON_SIZE}
                         iconSize={CIRCLE_ICON_INNER_SIZE}
                         border={false}
-                        variant={variant}
+                        variant={iconVariant}
                     />
                     <Text className={cn('text-md font-semibold flex-1', titleClassName)} numberOfLines={2} ellipsizeMode="tail">
                         {categoryTitle}

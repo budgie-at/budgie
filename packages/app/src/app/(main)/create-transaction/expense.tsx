@@ -69,7 +69,10 @@ export default function CreateExpenseTransactionPage() {
 
     return (
         <FormProvider {...form}>
-            <FullPage className="bg-grouped-surface" header={<PageHeader title={t`New Expense`} onGoBack={handleGoBack} />}>
+            <FullPage
+                className="bg-grouped-surface"
+                header={<PageHeader size="md" className="min-h-[52px]" title={t`New Expense`} onGoBack={handleGoBack} />}
+            >
                 <SimpleQuickForm
                     transactionType={TransactionTypeEnum.EXPENSE}
                     aiContext={normalizedAiContext}

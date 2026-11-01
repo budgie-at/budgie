@@ -6,6 +6,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { cn } from '../../../@generic/utils/cn.util';
 import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { AccountInactiveIcon } from '../../../account/component/account-inactive-icon/account-inactive-icon';
@@ -30,7 +31,7 @@ export const TransferAccountPicker = ({ label, placeholder, account, animatedSty
     return (
         <Animated.View style={animatedStyle} className="flex-1">
             <HapticPressable
-                className="min-h-[56px] flex-row items-center px-md py-md gap-sm bg-transaction-detail-row rounded-2xl"
+                className="min-h-[56px] flex-row items-center gap-sm rounded-2xl border-hairline border-surface-separator bg-transaction-detail-row py-md px-md dark:border-transparent"
                 onPress={onPress}
                 testID={testID}
                 accessibilityLabel={accessibilityLabel}
@@ -41,9 +42,12 @@ export const TransferAccountPicker = ({ label, placeholder, account, animatedSty
                 </AccountInactiveIcon>
 
                 <View className="flex-1 justify-center">
-                    <Text className="text-[13px] leading-[18px] text-secondary-foreground" numberOfLines={1}>
-                        {label}
-                    </Text>
+                    <View className="flex-row items-center gap-xxs">
+                        <Text className="shrink text-[13px] leading-[18px] text-secondary-foreground" numberOfLines={1}>
+                            {label}
+                        </Text>
+                        <Icon icon={UserIconNameEnum.ChevronDown} size={12} className="text-secondary-foreground" />
+                    </View>
                     <Text
                         className={cn('text-[15px] leading-[20px] font-medium', titleClassName)}
                         numberOfLines={1}

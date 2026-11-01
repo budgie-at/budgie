@@ -19,15 +19,16 @@ import { useTransferAccounts } from '../../hook/use-transfer-accounts.hook';
 import { computeTransferDisplay } from '../../utils/compute-transfer-display.util';
 import { ConversionRow } from '../conversion-row/conversion-row';
 import { CurrencyModePill } from '../currency-mode-pill/currency-mode-pill';
+import { QuickFormSecondaryLine } from '../quick-form-secondary-line/quick-form-secondary-line';
 import { QuickFormValidationSlot } from '../quick-form-validation-slot/quick-form-validation-slot';
 import { SimpleQuickFormSelector } from '../simple-quick-form/simple-quick-form.selector';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
 import { TransactionDateFieldIcon } from '../transaction-date-field-icon/transaction-date-field-icon';
 import { TransactionFeePill } from '../transaction-fee-pill/transaction-fee-pill';
+import { TransactionFieldIconSpacer } from '../transaction-field-icon-spacer/transaction-field-icon-spacer';
 import { TransactionFieldIcons } from '../transaction-field-icons/transaction-field-icons';
 import { TransactionKeypad } from '../transaction-keypad/transaction-keypad';
 import { TransactionNoteFieldIcon } from '../transaction-note-field-icon/transaction-note-field-icon';
-import { TransactionSecondaryAmount } from '../transaction-secondary-amount/transaction-secondary-amount';
 import { TransactionSourcesFieldIcon } from '../transaction-sources-field-icon/transaction-sources-field-icon';
 import {
     TransactionTransferAccountsRow,
@@ -225,45 +226,51 @@ export const TransferQuickForm = (props: Props) => {
                 onPress={conversionPress}
                 testID={SimpleQuickFormSelector.AmountInput}
             >
-                {isDefined(display.amountLabel) ? (
-                    <CurrencyModePill label={display.amountLabel} isFlipped={isEditingDestination} onPress={conversionPress} />
-                ) : null}
-                {isDefined(display.secondaryAmountText) ? (
-                    <TransactionSecondaryAmount amount={display.secondaryAmountText} onPress={conversionPress} />
-                ) : null}
-                <View className="mt-lg items-center">
-                    <QuickFormValidationSlot>
-                        {showInlineFeeAction ? (
-                            <TransactionFeePill
-                                amount={feeAmount}
-                                currencySymbol={feeCurrencySymbol}
-                                instrumentType={feeInstrumentType}
-                                showEmptyState
-                                onPress={handleFeePress}
-                            />
-                        ) : null}
-                    </QuickFormValidationSlot>
-                </View>
+                <QuickFormSecondaryLine>
+                    {isDefined(display.amountCode) ? (
+                        <CurrencyModePill
+                            label={display.amountCode}
+                            accessibilityLabel={display.amountLabel}
+                            isFlipped={isEditingDestination}
+                            onPress={conversionPress}
+                        />
+                    ) : null}
+                </QuickFormSecondaryLine>
+                <QuickFormValidationSlot>
+                    {showInlineFeeAction ? (
+                        <TransactionFeePill
+                            amount={feeAmount}
+                            currencySymbol={feeCurrencySymbol}
+                            instrumentType={feeInstrumentType}
+                            showEmptyState
+                            onPress={handleFeePress}
+                        />
+                    ) : null}
+                </QuickFormValidationSlot>
             </TransactionAmountDisplay>
 
+            <View className="flex-1" />
+
             <TransactionFieldIcons>
+                <TransactionFieldIconSpacer />
                 <TransactionDateFieldIcon onPress={handleDatePress} />
                 <TransactionNoteFieldIcon onPress={handleCommentPress} />
-                {isDefined(onConsolidationPress) ? <TransactionSourcesFieldIcon onPress={onConsolidationPress} /> : null}
+                {isDefined(onConsolidationPress) ? (
+                    <TransactionSourcesFieldIcon onPress={onConsolidationPress} />
+                ) : (
+                    <TransactionFieldIconSpacer />
+                )}
+                <TransactionFieldIconSpacer />
             </TransactionFieldIcons>
 
-            <View className="mb-xl gap-sm">
+            <View className="mb-md">
                 <TransactionTransferAccountsRow ref={transferAccountsRef} />
             </View>
 
             {conversion.isCrossCurrency ? (
-                <View className="mb-sm">
+                <View className="mb-md">
                     <ConversionRow
-                        destinationAmount={display.conversionRowProps.destinationAmount}
-                        destinationSymbol={display.conversionRowProps.destinationSymbol}
-                        sourceCode={display.conversionRowProps.sourceCode}
-                        destinationCode={display.conversionRowProps.destinationCode}
-                        exchangeRate={display.conversionRowProps.exchangeRate}
+                        {...display.conversionRowProps}
                         isManualRate={conversion.isManualRate}
                         onPress={handleConversionRowPress}
                     />

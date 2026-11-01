@@ -43,6 +43,8 @@ export const UpdateTransferTransaction = ({ transaction, openFeeOnMount }: Updat
                 className="bg-grouped-surface"
                 header={
                     <PageHeader
+                        size="md"
+                        className="min-h-[52px]"
                         title={t`Edit Transfer`}
                         onGoBack={handleGoBack}
                         right={

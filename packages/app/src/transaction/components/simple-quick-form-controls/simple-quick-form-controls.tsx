@@ -82,7 +82,7 @@ export const SimpleQuickFormControls = ({
                 <TransactionCategoryFieldIcon ref={categoryIconRef} variant={variant} isSplitActive={formState.isSplitActive} />
             </TransactionFieldIcons>
 
-            <View className="mb-xl gap-sm">
+            <View className="mb-md">
                 <TransactionAccountRow ref={accountRowRef} fieldName={accountFieldName} testID={SimpleQuickFormSelector.AccountSelector} />
             </View>
 

@@ -30,17 +30,17 @@ export const TransactionKeypad = (props: Props) => {
     const { t } = useLingui();
 
     return (
-        <Animated.View entering={FadeInUp.delay(100).duration(250)} className="flex-1 pb-lg">
-            <View className="flex-1 gap-md">
-                <View className="flex-1 gap-md">
+        <Animated.View entering={FadeInUp.delay(100).duration(250)} className="shrink pb-md">
+            <View className="shrink gap-md">
+                <View className="shrink gap-md">
                     {DIGIT_ROWS.map(row => (
-                        <View key={row.join('')} className="flex-1 flex-row gap-md">
+                        <View key={row.join('')} className="h-[56px] shrink flex-row gap-md">
                             {row.map(digit => (
                                 <KeypadDigitButton key={digit} digit={digit} onDigit={keypad.onDigit} />
                             ))}
                         </View>
                     ))}
-                    <View className="flex-1 flex-row gap-md">
+                    <View className="h-[56px] shrink flex-row gap-md">
                         <TransactionKeypadButton value="." onPress={keypad.onDecimal} />
                         <KeypadDigitButton digit="0" onDigit={keypad.onDigit} />
                         <TransactionKeypadButton

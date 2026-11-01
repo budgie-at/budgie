@@ -186,7 +186,8 @@ export const SplitEntriesModalContent = (props: Props) => {
     const assignedLabel = isFullySplit ? t`Fully assigned` : t`${formattedRemaining} left to assign`;
     const pendingLabel = hasMissingCategories ? t`Select all categories` : assignedLabel;
     const remainderLabel = isOverBudget ? t`${formattedRemaining} over budget` : pendingLabel;
-    const remainderClassName = isOverBudget ? 'text-destructive-foreground' : 'text-secondary-foreground';
+    const pendingClassName = isFullySplit && !hasMissingCategories ? 'text-secondary-foreground' : 'text-warning-foreground';
+    const remainderClassName = isOverBudget ? 'text-destructive-foreground' : pendingClassName;
 
     return (
         <View className="flex-1">
@@ -195,11 +196,10 @@ export const SplitEntriesModalContent = (props: Props) => {
             <ScrollView contentContainerStyle={CONTENT_CONTAINER_STYLE} keyboardShouldPersistTaps="handled" className="flex-1">
                 <GroupedListSection>{entries.map(renderEntry)}</GroupedListSection>
                 <SplitEntriesAddItemFooter canAddEntry={canAddEntry} onAddEntry={handleAddEntry} />
+                <Text className={cn('pt-lg text-center text-[15px] leading-[20px]', remainderClassName)}>{remainderLabel}</Text>
             </ScrollView>
 
             <KeyboardStickyView offset={keyboardOffset}>
-                <Text className={cn('px-xl pb-md text-center text-[15px] leading-[20px]', remainderClassName)}>{remainderLabel}</Text>
-
                 <View className="flex-row items-center gap-x-md px-xl pb-xl">
                     {canRemoveSplit ? (
                         <Button
