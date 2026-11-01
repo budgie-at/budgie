@@ -10,17 +10,17 @@ appId: ${APP_ID}
           id: 'HomePage.TotalBalance'
       timeout: 10000
 
-# 2. Home shows the Monobank integration section with its gear button
+# 2. Home shows the Monobank integration as one institution card
 - scrollUntilVisible:
       element:
-          id: 'BankProviderSectionHeader.SettingsButton.1'
+          id: 'InstitutionRow.1'
       direction: DOWN
 - assertVisible:
-      id: 'BankProviderSectionHeader.SettingsButton.1'
+      id: 'InstitutionRow.1'
 
 # 3. Open the integration settings page
 - tapOn:
-      id: 'BankProviderSectionHeader.SettingsButton.1'
+      id: 'InstitutionRow.1'
 - extendedWaitUntil:
       visible:
           id: 'BankIntegration.Page'
