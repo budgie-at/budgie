@@ -7,7 +7,6 @@ import { ProtectedText } from '../../../@generic/component/protected-text/protec
 import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
-import { useI18nContext } from '../../../i18n/context/i18n.context';
 import { BudgetBarTone, resolveBudgetBarTone } from '../../utils/resolve-budget-bar-tone.util';
 
 const PERCENT_MULTIPLIER = 100;
@@ -44,10 +43,9 @@ interface Props {
 export const BudgetWidgetCategoryChip = ({ categoryId, limitAmount, spent, testID, spentTestID }: Props) => {
     const { category } = useGetCategoryByIdQuery(categoryId);
     const isAmountProtected = useIsAmountProtected();
-    const { intl } = useI18nContext();
 
     const ratio = isPositiveNumber(limitAmount) ? spent / limitAmount : 0;
-    const percentLabel = intl.formatNumber(ratio, { style: 'percent', maximumFractionDigits: 0 });
+    const percentLabel = `${Math.round(ratio * PERCENT_MULTIPLIER)}%`;
     const title = category?.title ?? '';
     const tone = resolveBudgetBarTone(ratio);
     const isOverLimit = ratio > 1;
