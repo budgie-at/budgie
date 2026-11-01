@@ -34,6 +34,7 @@ export const RULE_CONDITION_FIELD: Record<RuleConditionFieldEnum, RuleOptionMeta
     },
     [RuleConditionFieldEnum.MCC_CODE]: {
         label: msg`Merchant category`,
+        shortLabel: msg`MCC`,
         phrase: msg`merchant category`,
         description: msg`Card network code (MCC)`,
         icon: UserIconNameEnum.Store,

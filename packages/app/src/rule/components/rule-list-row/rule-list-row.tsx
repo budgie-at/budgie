@@ -28,8 +28,8 @@ const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
 export const RuleListRow = ({ rule, index, isLast, hasOverlap, onOpen, onToggle }: Props) => {
     const { t } = useLingui();
-    const { primaryOutcome, secondaryOutcome, trigger, triggerOverflow, extraConditionsLabel, accessibilityLabel } =
-        useRuleRowSummary(rule);
+    const summary = useRuleRowSummary(rule);
+    const { primaryOutcome, secondaryOutcome, extraConditionsLabel, accessibilityLabel } = summary;
     const isFirst = index === 0;
     const firstAction = rule.actions.at(0);
     const actionMeta = RULE_ACTION_TYPE[firstAction?.type ?? RuleActionTypeEnum.SET_CATEGORY];
@@ -84,8 +84,7 @@ export const RuleListRow = ({ rule, index, isLast, hasOverlap, onOpen, onToggle 
                             testID={RulesPageSelector.RuleCardActions(index)}
                         />
                         <RuleListRowTrigger
-                            trigger={trigger}
-                            overflow={triggerOverflow}
+                            summary={summary}
                             extraLabel={extraConditionsLabel}
                             testID={RulesPageSelector.RuleCardConditions(index)}
                         />

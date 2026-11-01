@@ -4069,6 +4069,7 @@ msgid "Maximum amount"
 msgstr "Importe máximo"
 
 #: src/app/(tabs)/settings/import.tsx
+#: src/rule/constant/rule-condition-field.constant.ts
 msgid "MCC"
 msgstr "MCC"
 
@@ -5733,7 +5734,7 @@ msgid "Search archived accounts..."
 msgstr "Buscar cuentas archivadas..."
 
 #: src/app/rule-mcc-selector.tsx
-msgid "Search by code or description..."
+msgid "Search by code or description…"
 msgstr "Buscar por código o descripción..."
 
 #: src/app/(tabs)/settings/categories.tsx

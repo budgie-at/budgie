@@ -52,13 +52,10 @@ export const useRuleConditionFormatter = () => {
     const formatMcc = (parts: readonly string[]) =>
         translateParts(parts, part => mccCategories.find(({ mcc }) => mcc === part)?.shortDescription ?? part);
 
-    const formatAccount = (parts: readonly string[]) => {
-        if (parts.length > 1) {
-            return t({ message: plural(parts.length, { one: '# account', other: '# accounts' }) });
-        }
-
-        return accounts.find(({ id }) => String(id) === parts[0])?.title ?? EMPTY_VALUE;
-    };
+    const formatAccount = (parts: readonly string[]) =>
+        parts.length > 1
+            ? t({ message: plural(parts.length, { one: '# account', other: '# accounts' }) })
+            : (accounts.find(({ id }) => String(id) === parts[0])?.title ?? EMPTY_VALUE);
 
     const [openQuote, closeQuote] = isEnumValue(i18n.locale, LanguageEnum) ? QUOTES[i18n.locale] : QUOTES[LanguageEnum.EN];
 
@@ -132,7 +129,10 @@ export const useRuleConditionFormatter = () => {
             listValue: moreCount > 0 ? firstValue : value,
             listOverflow,
             sentenceTemplate: buildSentenceTemplate(fieldLabel, condition.operator),
-            listTemplate: buildListTemplate(fieldLabel, condition.operator),
+            listTemplate: buildListTemplate(
+                t(RULE_CONDITION_FIELD[condition.field].shortLabel ?? RULE_CONDITION_FIELD[condition.field].label),
+                condition.operator
+            ),
             phraseTemplate: buildSentenceTemplate(t(RULE_CONDITION_FIELD[condition.field].phrase), condition.operator),
             hasValue: value !== EMPTY_VALUE && isNotEmptyString(condition.value.trim())
         };

@@ -32,6 +32,8 @@ export const useRuleRowSummary = (rule: RuleWithActionsRelationsEntityInterface)
         primaryOutcome,
         secondaryOutcome: secondaryParts.map(part => `${OUTCOME_SEPARATOR}${part}`).join(''),
         triggerOverflow: firstLabel?.listOverflow ?? null,
+        triggerPrefix: firstLabel?.listTemplate.split(RULE_CONDITION_VALUE_MARKER).at(0) ?? '',
+        triggerValue: firstLabel?.listValue ?? '',
         trigger: isDefined(firstLabel) ? firstLabel.listTemplate.replace(RULE_CONDITION_VALUE_MARKER, firstLabel.listValue) : '',
         extraConditionsLabel: isPositiveNumber(extraCount) ? extraLabel : null,
         accessibilityLabel: t`When ${conditionsText}, ${title}. ${statusLabel}`

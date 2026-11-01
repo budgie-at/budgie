@@ -10,4 +10,5 @@ export interface RuleOptionMetaInterface {
     readonly icon: UserIconNameEnum;
     readonly variant: ColorPaletteVariant;
     readonly glyph?: RuleGlyphEnum;
+    readonly shortLabel?: MessageDescriptor;
 }
