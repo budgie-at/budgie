@@ -1,6 +1,6 @@
 import { TransactionEntryTypeEnum, convertFromMicroUnits } from '@budgie/contracts';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import type { CryptoPositionLotInterface } from '../interface/crypto-position-lot.interface';
 import type { CryptoPositionInterface } from '../interface/crypto-position.interface';
@@ -40,11 +40,12 @@ export const calculateCryptoPosition = (entries: readonly CryptoPositionEntryRow
                 : consumeLots(openLots, entry.amount),
         []
     );
-    const amountMicro = lots.reduce((total, lot) => total + lot.amount, 0);
-    const hasUnknownCost = lots.some(lot => !isDefined(lot.baseAmount));
-    const costBasisMicro = hasUnknownCost ? null : lots.reduce((total, lot) => total + (lot.baseAmount ?? 0), 0);
+    const costedLots = lots.filter(lot => isDefined(lot.baseAmount));
+    const amountMicro = costedLots.reduce((total, lot) => total + lot.amount, 0);
+    const costBasisMicro = isNotEmptyArray(costedLots) ? costedLots.reduce((total, lot) => total + (lot.baseAmount ?? 0), 0) : null;
 
     return {
+        amount: convertFromMicroUnits(amountMicro),
         costBasis: isDefined(costBasisMicro) ? convertFromMicroUnits(costBasisMicro) : null,
         averageCost: isDefined(costBasisMicro) && isPositiveNumber(amountMicro) ? costBasisMicro / amountMicro : null
     };

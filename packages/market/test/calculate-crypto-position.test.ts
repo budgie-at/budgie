@@ -9,11 +9,12 @@ const sell = (amount: number) => ({ type: TransactionEntryTypeEnum.CREDIT, amoun
 
 describe('calculateCryptoPosition', () => {
     it('returns an empty position without entries', () => {
-        expect(calculateCryptoPosition([])).toStrictEqual({ costBasis: 0, averageCost: null });
+        expect(calculateCryptoPosition([])).toStrictEqual({ amount: 0, costBasis: null, averageCost: null });
     });
 
     it('sums the cost of every open lot', () => {
         expect(calculateCryptoPosition([buy(2 * PRECISION, 100 * PRECISION), buy(PRECISION, 80 * PRECISION)])).toStrictEqual({
+            amount: 3,
             costBasis: 180,
             averageCost: 60
         });
@@ -22,28 +23,33 @@ describe('calculateCryptoPosition', () => {
     it('consumes the oldest lots first and prorates a partially sold lot', () => {
         const entries = [buy(2 * PRECISION, 100 * PRECISION), buy(4 * PRECISION, 400 * PRECISION), sell(3 * PRECISION)];
 
-        expect(calculateCryptoPosition(entries)).toStrictEqual({ costBasis: 300, averageCost: 100 });
+        expect(calculateCryptoPosition(entries)).toStrictEqual({ amount: 3, costBasis: 300, averageCost: 100 });
     });
 
     it('removes a lot sold exactly and ignores sells beyond the open amount', () => {
         expect(calculateCryptoPosition([buy(2 * PRECISION, 100 * PRECISION), sell(2 * PRECISION)])).toStrictEqual({
-            costBasis: 0,
+            amount: 0,
+            costBasis: null,
             averageCost: null
         });
         expect(
             calculateCryptoPosition([buy(PRECISION, 50 * PRECISION), sell(5 * PRECISION), buy(PRECISION, 70 * PRECISION)])
         ).toStrictEqual({
+            amount: 1,
             costBasis: 70,
             averageCost: 70
         });
     });
 
-    it('reports an unknown cost while an unvalued lot stays open', () => {
+    it('costs only the open lots with a known purchase price', () => {
         expect(calculateCryptoPosition([buy(PRECISION, null), buy(PRECISION, 50 * PRECISION)])).toStrictEqual({
-            costBasis: null,
-            averageCost: null
+            amount: 1,
+            costBasis: 50,
+            averageCost: 50
         });
+        expect(calculateCryptoPosition([buy(PRECISION, null)])).toStrictEqual({ amount: 0, costBasis: null, averageCost: null });
         expect(calculateCryptoPosition([buy(PRECISION, null), buy(PRECISION, 50 * PRECISION), sell(PRECISION)])).toStrictEqual({
+            amount: 1,
             costBasis: 50,
             averageCost: 50
         });
@@ -52,7 +58,11 @@ describe('calculateCryptoPosition', () => {
     it('skips empty lots while consuming and does not mutate earlier results', () => {
         const entries = [buy(0, 0), buy(2 * PRECISION, 80 * PRECISION), sell(PRECISION)];
 
-        expect(calculateCryptoPosition(entries)).toStrictEqual({ costBasis: 40, averageCost: 40 });
-        expect(calculateCryptoPosition(entries)).toStrictEqual({ costBasis: 40, averageCost: 40 });
+        expect(calculateCryptoPosition(entries)).toStrictEqual({ amount: 1, costBasis: 40, averageCost: 40 });
+        expect(calculateCryptoPosition(entries)).toStrictEqual({ amount: 1, costBasis: 40, averageCost: 40 });
+    });
+
+    it('reports the open amount after a partial sell', () => {
+        expect(calculateCryptoPosition([buy(5 * PRECISION, 100 * PRECISION), sell(2 * PRECISION)]).amount).toBe(3);
     });
 });

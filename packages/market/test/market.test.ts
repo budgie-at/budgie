@@ -7,6 +7,7 @@ import { ExchangeRateRepository } from '../src/exchange-rate/repository/exchange
 import { ExchangeRatesSyncService } from '../src/exchange-rate/service/exchange-rates-sync.service';
 import { ExchangeRatesService } from '../src/exchange-rate/service/exchange-rates.service';
 import { HistoricalExchangeRateRepository } from '../src/historical-exchange-rate/repository/historical-exchange-rate.repository';
+import { InstrumentDailyMarketPriceRepository } from '../src/market-data/repository/instrument-daily-market-price.repository';
 import { EntryBaseValuationService } from '../src/valuation/service/entry-base-valuation.service';
 
 import { makeFakeHttpClientLayer, setDefaultInstrument, TestLayer, testSeedService } from './test-context';
@@ -130,5 +131,61 @@ describe('base valuation', () => {
             expect(valued).toStrictEqual({ baseInstrumentId: base.id, baseExchangeRate: 20_000, baseAmount: 10_000 * PRECISION });
             expect(unvalued).toStrictEqual({ baseInstrumentId: null, baseExchangeRate: null, baseAmount: null });
         }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('values every crypto account instrument with its own latest daily price', () =>
+        Effect.gen(function* () {
+            const exchangeRateRepository = yield* ExchangeRateRepository;
+            const priceRepository = yield* InstrumentDailyMarketPriceRepository;
+            const { base: bitcoin, quote } = yield* seedPair('TA6', 'TB6', InstrumentTypeEnum.CRYPTO);
+            const { base: ether } = yield* seedPair('TA7', 'TB7', InstrumentTypeEnum.CRYPTO);
+
+            yield* testSeedService.account({ instrumentId: bitcoin.id, type: AccountTypeEnum.CRYPTO });
+            yield* testSeedService.account({ instrumentId: ether.id, type: AccountTypeEnum.CRYPTO });
+            yield* priceRepository.bulkUpsert([
+                {
+                    instrumentId: bitcoin.id,
+                    quoteInstrumentId: quote.id,
+                    priceDate: '2024-01-01',
+                    price: 40_000,
+                    marketCap: null,
+                    volume: null,
+                    source: 'test'
+                },
+                {
+                    instrumentId: bitcoin.id,
+                    quoteInstrumentId: quote.id,
+                    priceDate: '2024-01-02',
+                    price: 50_000,
+                    marketCap: null,
+                    volume: null,
+                    source: 'test'
+                },
+                {
+                    instrumentId: ether.id,
+                    quoteInstrumentId: quote.id,
+                    priceDate: '2024-01-01',
+                    price: 2000,
+                    marketCap: null,
+                    volume: null,
+                    source: 'test'
+                },
+                {
+                    instrumentId: ether.id,
+                    quoteInstrumentId: quote.id,
+                    priceDate: '2024-01-02',
+                    price: 3000,
+                    marketCap: null,
+                    volume: null,
+                    source: 'test'
+                }
+            ]);
+
+            const rates = yield* exchangeRateRepository.findCryptoAccountValuationRates(quote.id);
+            const priceByInstrumentId = new Map(rates.map(rate => [rate.instrumentId, rate.price]));
+
+            expect(priceByInstrumentId.get(bitcoin.id)).toBe(50_000);
+            expect(priceByInstrumentId.get(ether.id)).toBe(3000);
+        }).pipe(Effect.provide(Layer.mergeAll(TestLayer, InstrumentDailyMarketPriceRepository.layer.pipe(Layer.provide(TestLayer)))))
     );
 });
