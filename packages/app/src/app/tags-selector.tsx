@@ -1,10 +1,10 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useEffect, useReducer, useRef, useState } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
+import { SelectorModalDescription } from '../@generic/component/selector-modal-description/selector-modal-description';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { prepareSelectorGridData } from '../@generic/utils/prepare-selector-grid-data.util';
@@ -27,7 +27,7 @@ const isSelectionDirty = (selected: number[], initial: number[]): boolean => {
     return selected.some((id, index) => id !== initial[index]);
 };
 
-// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
+// eslint-disable-next-line max-lines-per-function, max-statements -- Form orchestration component with multiple hooks and handlers
 export default function TagsSelectorModal() {
     const { t } = useLingui();
     const [openTagForm] = useTagFormModal();
@@ -39,6 +39,7 @@ export default function TagsSelectorModal() {
         initialTagIds = [],
         suggestedTagIds = [],
         excludeTagIds = [],
+        title,
         description,
         singleSelect = false,
         enablePrimarySelection = false
@@ -51,40 +52,39 @@ export default function TagsSelectorModal() {
         selected: initialSelectedTagIds,
         primaryTagId: initialPrimaryTagId
     });
-    const { tags } = useSearchTagsQuery(search);
+    const { tags, isLoading } = useSearchTagsQuery(search);
 
     const hasResolvedRef = useRef(false);
 
     const data = prepareSelectorGridData(tags, excludeTagIds, selected);
     const dirty = isSelectionDirty(selected, initialTagIds) || primaryTagId !== initialPrimaryTagId;
 
+    const resolveSelection = (tagIds: number[]) => {
+        hasResolvedRef.current = true;
+        resolveTagsSelector(tagIds);
+    };
+
     const handleSelectTag = (tagId: number) => {
         if (singleSelect) {
-            hasResolvedRef.current = true;
-            resolveTagsSelector([tagId]);
-
-            return;
+            resolveSelection([tagId]);
+        } else {
+            dispatch({ type: TagsSelectorActionTypeEnum.TAG_TOGGLED, tagId });
         }
-
-        dispatch({ type: TagsSelectorActionTypeEnum.TAG_TOGGLED, tagId });
     };
 
-    const handlePrimarySelect = (tagId: number) => {
-        dispatch({ type: TagsSelectorActionTypeEnum.PRIMARY_SELECTED, tagId });
-    };
+    const handlePrimarySelect = (tagId: number) => void dispatch({ type: TagsSelectorActionTypeEnum.PRIMARY_SELECTED, tagId });
 
     const handleCreatePress = () => {
         openTagForm({ defaultTitle: search }, result => {
-            if (isDefined(result)) {
+            if (isDefined(result) && singleSelect) {
+                resolveSelection([result.tag.id]);
+            } else if (isDefined(result)) {
                 dispatch({ type: TagsSelectorActionTypeEnum.TAG_ADDED, tagId: result.tag.id });
             }
         });
     };
 
-    const handleDone = () => {
-        hasResolvedRef.current = true;
-        resolveTagsSelector(reorderTagIdsByPrimary(selected, primaryTagId));
-    };
+    const handleDone = () => void resolveSelection(reorderTagIdsByPrimary(selected, primaryTagId));
 
     useEffect(
         () => () => {
@@ -100,26 +100,26 @@ export default function TagsSelectorModal() {
             <SelectorModalSearchHeader
                 search={search}
                 onSearchChange={setSearch}
-                placeholder={t`Search tags...`}
-                rightActionIcon={UserIconNameEnum.Plus}
-                rightActionOnPress={handleCreatePress}
-                rightActionTestID={TagsSelectorModalSelector.CreateButton}
+                placeholder={t`Search tags…`}
+                createLabel={t`Create tag`}
+                onCreate={handleCreatePress}
+                createTestID={TagsSelectorModalSelector.CreateButton}
                 testID={TagsSelectorModalSelector.Input}
             />
 
-            {isNotEmptyString(description) ? (
-                <View className="px-xl pb-md">
-                    <Text className="text-foreground text-sm">{description}</Text>
-                </View>
-            ) : null}
-
-            <TagsSelectContent
-                data={data}
-                selectedTagIds={selected}
-                primaryTagId={primaryTagId}
-                onSelect={handleSelectTag}
-                {...(enablePrimarySelection && { onPrimarySelect: handlePrimarySelect })}
-            />
+            <SelectorModalDescription title={title} description={description}>
+                {topOffset => (
+                    <TagsSelectContent
+                        topOffset={topOffset}
+                        data={data}
+                        selectedTagIds={selected}
+                        primaryTagId={primaryTagId}
+                        isLoading={isLoading}
+                        onSelect={handleSelectTag}
+                        {...(enablePrimarySelection && { onPrimarySelect: handlePrimarySelect })}
+                    />
+                )}
+            </SelectorModalDescription>
 
             {dirty && !singleSelect ? (
                 <TagsSelectorDoneButton count={selected.length} onPress={handleDone} testID={TagsSelectorModalSelector.DoneButton} />

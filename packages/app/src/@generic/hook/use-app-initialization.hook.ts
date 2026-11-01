@@ -10,6 +10,7 @@ import { emptyFn } from '@rnw-community/shared';
 import { ACCOUNT_BALANCE_INCREMENTAL_TASK } from '../../account/constant/account-balance-incremental-task.constant';
 import { AuthService } from '../../auth/service/auth.service';
 import { BudgetAlertMonitorService } from '../../budget/service/budget-alert-monitor.service';
+import { CategoryIconBackfillService } from '../../category/service/category-icon-backfill.service';
 import { ExchangeRateBackgroundService } from '../../exchange-rate/service/exchange-rate-background.service';
 import { HistoricalMarketDataDrainerService } from '../../market-data/service/historical-market-data-drainer.service';
 import { OnboardingService } from '../../onboarding/service/onboarding.service';
@@ -83,6 +84,7 @@ const initializeAppServices = Effect.gen(function* () {
     yield* logAndContinue(workload.run((yield* BudgetPeriodCloseService).closeDuePeriods(new Date())));
     yield* logAndContinue(onboardingService.initializeLocale());
     yield* logAndContinue(historicalMarketDataDrainerService.enqueueActiveAccounts());
+    yield* logAndContinue((yield* CategoryIconBackfillService).applyConfidentIcons());
 });
 
 const scheduleAppServicesInitialization = Effect.sleep(STARTUP_SERVICE_DELAY_MS).pipe(

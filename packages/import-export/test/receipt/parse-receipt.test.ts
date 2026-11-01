@@ -1,12 +1,13 @@
 import { convertToMicroUnits, CurrencyEnum } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 
-import { parseReceipt } from '../../src/receipt/utils/parse-receipt.util';
+import { parseReceipt, toMerchantTitle } from '../../src/receipt/utils/parse-receipt.util';
 
 import { BILLA_RECEIPT } from './fixture/billa-receipt.fixture';
 import { CORD_RECEIPTS } from './fixture/cord-receipts.fixture';
 import { E2E_SHARED_RECEIPT } from './fixture/e2e-shared-receipt.fixture';
 import { IHR_LABOR_LEGAL_NAME, IHR_LABOR_RECEIPT } from './fixture/ihr-labor-receipt.fixture';
+import { receiptLine } from './fixture/receipt-line';
 import { RESTAURANT_TABLE_BILL_RECEIPT } from './fixture/restaurant-table-bill-receipt.fixture';
 import { SCHWEDEN_APOTHEKE_PHOTO_RECEIPT } from './fixture/schweden-apotheke-photo-receipt.fixture';
 import { SMYTHS_CASH_RECEIPT } from './fixture/smyths-cash-receipt.fixture';
@@ -26,7 +27,7 @@ describe('parseReceipt', () => {
                 receiptNumber: 'K2310000301/26-010863',
                 merchantVatId: 'ATU71427716',
                 merchantLegalName: IHR_LABOR_LEGAL_NAME,
-                merchantCandidates: ['IHR LABOR', 'Qualität, ganz persönlich.', 'ALLE KASSEN. IHRLABOR.AT', IHR_LABOR_LEGAL_NAME],
+                merchantCandidates: ['IHR LABOR', 'ALLE KASSEN. IHRLABOR.AT', 'Qualität, ganz persönlich.', IHR_LABOR_LEGAL_NAME],
                 isPaid: true,
                 fingerprint: 'ATU71427716|K2310000301/26-010863|62100000|2026-10-27'
             }
@@ -106,7 +107,7 @@ describe('parseReceipt', () => {
                 receiptNumber: '7799',
                 merchantVatId: 'ATU10227100',
                 merchantLegalName: 'Mag. pharm. Christof Ulrich KG',
-                merchantCandidates: ['APOTHEKE', 'Schweden Apotheke', 'Mag. pharm. Christof Ulrich KG'],
+                merchantCandidates: ['Schweden Apotheke', 'SCHWEDEN +', 'office@schweden-apotheke.at', 'Mag. pharm. Christof Ulrich KG'],
                 isPaid: true,
                 fingerprint: 'ATU10227100|7799|29800000|2026-10-29'
             }
@@ -138,13 +139,26 @@ describe('parseReceipt', () => {
                 receiptNumber: '00222',
                 merchantVatId: 'ATU22547304',
                 merchantLegalName: 'Smyths Toys Handelsges. m.b.H.',
-                merchantCandidates: ['SMYTHS', 'TOYS SUPERSTORES', 'Smyths Toys Handelsges. m.b.H.'],
+                merchantCandidates: ['SMYTHS', 'Smyths Toys Handelsges. m.b.H.', 'TOYS SUPERSTORES'],
                 isPaid: true,
                 fingerprint: 'ATU22547304|00222|96960000|2026-10-31'
             }
         ]
     ])('reads %s', (_name, lines, expected) => {
         expect(parseReceipt(lines, CurrencyEnum.EUR)).toEqual(expected);
+    });
+
+    it('ranks a recurring brand above a misread oversized logo', () => {
+        const lines = [
+            receiptLine('SNYTHS', 0.28, 0.1, 0.09),
+            receiptLine('Smyths Toys Handelsges. m.b.H.', 0.3, 0.208, 0.02),
+            receiptLine('www.smythstoys.com', 0.36, 0.26, 0.013),
+            receiptLine('SMYTHS TOYS TRAGETASCHE', 0.25, 0.472, 0.013),
+            receiptLine('SUMME EUR 96,96', 0.25, 0.512, 0.015),
+            receiptLine('Bar EUR 96,96', 0.25, 0.9, 0.015)
+        ];
+
+        expect(parseReceipt(lines, CurrencyEnum.EUR)?.merchantCandidates.at(0)).toBe('Smyths Toys Handelsges. m.b.H.');
     });
 
     it.each([
@@ -168,5 +182,20 @@ describe('parseReceipt', () => {
         ['grouped integers in a three-decimal currency', CORD_RECEIPTS.grandTotalAfterTax, CurrencyEnum.KWD]
     ])('rejects CORD receipt with %s', (_name, lines, defaultCurrency) => {
         expect(parseReceipt(lines, defaultCurrency)).toBeNull();
+    });
+});
+
+describe('toMerchantTitle', () => {
+    it.each([
+        ['ТОВ "АТБ-МАРКЕТ"', 'Атб-Маркет'],
+        ['Smyths Toys Handelsges. m.b.H.', 'Smyths Toys Handelsges.'],
+        ['Mag. pharm. Christof Ulrich KG', 'Mag. Pharm. Christof Ulrich'],
+        ['IHR LABOR', 'Ihr Labor'],
+        ["JOE'S PIZZA", "Joe's Pizza"],
+        ['«Kaffee Alt Wien»', 'Kaffee Alt Wien'],
+        ['Ihr Labor GmbH', 'Ihr Labor'],
+        ['', '']
+    ])('turns %s into %s', (name, expected) => {
+        expect(toMerchantTitle(name)).toBe(expected);
     });
 });

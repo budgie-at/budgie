@@ -1,27 +1,31 @@
-import { TAG_TITLE_MAX_LENGTH, TagCreateEntityInterface, TagEntityInterface, TagRepository } from '@budgie/contracts';
+import { TAG_TITLE_MAX_LENGTH, TagCreateEntityInterface, TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
-import Animated, { FadeInUp } from 'react-native-reanimated';
 
-import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { AiTranslationFields } from '../../../@generic/component/ai-translation-fields/ai-translation-fields';
-import { FormItem } from '../../../@generic/component/form-item/form-item';
-import { Input } from '../../../@generic/component/input/input';
-import { ModalFormFooter } from '../../../@generic/component/modal-form-footer/modal-form-footer';
-import { ModalFormMergeButton } from '../../../@generic/component/modal-form-merge-button/modal-form-merge-button';
-import { PageHeader } from '../../../@generic/component/page-header/page-header';
-import { ModalPage } from '../../../@generic/component/page/modal-page';
-import { useAiTranslationFields } from '../../../@generic/hook/use-ai-translation-fields.hook';
-import { useRegenerateTranslation } from '../../../@generic/hook/use-regenerate-translation.hook';
+import { EntityEditSections } from '../../../@generic/component/entity-edit-sections/entity-edit-sections';
+import { EntityFormPage } from '../../../@generic/component/entity-form-page/entity-form-page';
+import { FormTitleInput } from '../../../@generic/component/form-title-input/form-title-input';
+import { GroupedListActionRow } from '../../../@generic/component/grouped-list-action-row/grouped-list-action-row';
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
+import { IconTitleField } from '../../../@generic/component/icon-title-field/icon-title-field';
+import { Icon } from '../../../@generic/component/icon/icon';
+import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
+import { UsageFailureRow } from '../../../@generic/component/usage-failure-row/usage-failure-row';
+import { EntityOperationEnum } from '../../../@generic/enum/entity-operation.enum';
+import { useEntityOperation } from '../../../@generic/hook/use-entity-operation.hook';
+import { useEntityUsage } from '../../../@generic/hook/use-entity-usage.hook';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
-import { useChatModelStatus } from '../../../ai/hook/use-chat-model-status.hook';
-import { useSetting } from '../../../settings/hook/use-setting.hook';
-import { useTagsSelectorModal } from '../../context/tags-selector-modal.context';
+import { useDeleteTag } from '../../hooks/use-delete-tag.hook';
+import { useMergeTag } from '../../hooks/use-merge-tag.hook';
 import { useTagForm } from '../../hooks/use-tag-form.hook';
+import { tagUsageAtom } from '../../query/use-tags-with-usage.query';
 import { TagService } from '../../service/tag.service';
+import { TagMonogram } from '../tag-monogram/tag-monogram';
 
 import { TagFormSelector } from './tag-form.selector';
 
@@ -39,128 +43,148 @@ interface Props {
     readonly onCancel: () => void;
 }
 
-const TITLE_ANIMATION_DELAY = 100;
-
 // eslint-disable-next-line max-lines-per-function, max-statements -- Form orchestration component with multiple hooks and handlers
 export const TagForm = (props: Props) => {
     const { tag, defaultTitle, onSuccess, onCancel } = props;
     const { t } = useLingui();
-    const [openTagsSelector] = useTagsSelectorModal();
-    const { run } = useSingleFlight();
-    const { regenerate, isRegenerating } = useRegenerateTranslation((id, titleEn, titleTags) =>
-        Effect.flatMap(TagRepository, tagRepository => tagRepository.updateTranslation(id, titleEn, titleTags))
-    );
-    const isTranslationsEnabled = useSetting('isAiTranslationsEnabled');
-    const { isChatReady, modelStatus } = useChatModelStatus();
+    const saveFlight = useSingleFlight();
+    const operation = useEntityOperation();
+    const deleteTag = useDeleteTag();
+    const mergeTag = useMergeTag();
+    const { usage, isUsagePending, isUsageFailure, retryUsage } = useEntityUsage(tagUsageAtom);
 
-    const { handleSubmit, setValue, title } = useTagForm(tag ?? (defaultTitle ? { title: defaultTitle } : null));
+    const { handleSubmit, setValue, formState, title } = useTagForm(tag ?? (defaultTitle ? { title: defaultTitle } : null));
 
-    const isEditing = isDefined(tag?.id);
-
-    const { titleEn, titleTags, handleTitleBlur, translationFieldsProps } = useAiTranslationFields({
-        entity: tag ?? null,
-        entityId: tag?.id ?? 0,
-        currentTitle: title,
-        regenerate,
-        isRegenerating,
-        isModelReady: isTranslationsEnabled && isChatReady
-    });
-
-    const isSaveDisabled = !isNotEmptyString(title);
+    const isEditing = isDefined(tag);
+    const isBusy = saveFlight.isLoading || operation.isPending;
+    const isChanged = !isDefined(tag) || title !== tag.title;
+    const hasTitle = isNotEmptyString(title.trim());
+    const isSaveDisabled = !hasTitle || operation.isPending;
     const headerTitle = isEditing ? t`Edit Tag` : t`Create Tag`;
+    const createLabel = hasTitle ? t`Create tag` : t`Add a name to continue`;
+    const titleError = isDefined(formState.errors.title) ? t`Use 1 to ${TAG_TITLE_MAX_LENGTH} characters` : void 0;
+    const saveLabel = isEditing ? t`Save changes` : createLabel;
+    const transactionCount = usage?.find(entry => entry.id === tag?.id)?.transactionCount ?? 0;
+    const deleteFooter = isPositiveNumber(transactionCount)
+        ? t({
+              message: plural(transactionCount, {
+                  one: 'Removed from # transaction. The transaction stays.',
+                  other: 'Removed from # transactions. The transactions stay.'
+              })
+          })
+        : t`Not on any transactions. This can’t be undone.`;
+    const tagTitle = tag?.title ?? '';
+    const mergeFooter = isPositiveNumber(transactionCount)
+        ? t({
+              message: plural(transactionCount, {
+                  one: `Its # transaction gets the tag you pick, and “${tagTitle}” is removed.`,
+                  other: `Its # transactions get the tag you pick, and “${tagTitle}” is removed.`
+              })
+          })
+        : null;
 
     const handleTitleChange = (value: string) => {
         setValue('title', value);
     };
 
     const handleMerge = () => {
-        if (!isDefined(tag?.id)) {
-            return;
+        if (isDefined(tag)) {
+            operation.start(EntityOperationEnum.MERGE, trackMutation =>
+                mergeTag(tag.id, trackMutation).pipe(
+                    Effect.tap(target =>
+                        isDefined(target) ? Effect.sync(() => void onSuccess({ tag: target, action: 'merged' })) : Effect.void
+                    )
+                )
+            );
         }
-
-        const sourceTagId = tag.id;
-
-        const mergeIntoTarget = (targetTagId: number) =>
-            Effect.gen(function* () {
-                const tagService = yield* TagService;
-                const targetTag = yield* tagService.mergeInto(sourceTagId, targetTagId);
-
-                if (isDefined(targetTag)) {
-                    onSuccess({ tag: targetTag, action: 'merged' });
-                }
-            }).pipe(toastOnFailure(t`Could not merge tag`, t`Please try again later`));
-
-        openTagsSelector(
-            {
-                excludeTagIds: [sourceTagId],
-                description: t`Select a tag to merge into`,
-                singleSelect: true
-            },
-            targetTagIds => {
-                const targetTagId = isNotEmptyArray(targetTagIds) ? targetTagIds[0] : null;
-                if (isDefined(targetTagId)) {
-                    void run(mergeIntoTarget(targetTagId));
-                }
-            }
-        );
     };
 
     const submitTag = (values: TagCreateEntityInterface) =>
         Effect.gen(function* () {
             const tagService = yield* TagService;
 
-            if (isDefined(tag)) {
-                const updatedTag = yield* tagService.update(tag.id, values, titleEn, titleTags);
+            if (isDefined(tag) && !isChanged) {
+                onCancel();
+            } else if (isDefined(tag)) {
+                const translation = values.title === tag.title ? tag : { titleEn: null, titleTags: null };
+                const updatedTag = yield* tagService.update(tag.id, values, translation.titleEn, translation.titleTags);
                 onSuccess({ tag: updatedTag, action: 'updated' });
             } else {
-                const createdTag = yield* tagService.create(values, titleEn, titleTags);
+                const createdTag = yield* tagService.create(values, null, null);
                 onSuccess({ tag: createdTag, action: 'created' });
             }
         }).pipe(toastOnFailure(isEditing ? t`Could not save tag` : t`Could not create tag`, t`Please try again later`));
 
-    const handleFormSubmit = handleSubmit(values => run(submitTag(values)));
+    const handleDelete = () => {
+        if (isDefined(tag)) {
+            operation.start(EntityOperationEnum.DELETE, trackMutation =>
+                deleteTag(tag.id, trackMutation).pipe(Effect.tap(isDeleted => (isDeleted ? Effect.sync(onCancel) : Effect.void)))
+            );
+        }
+    };
+
+    const keywordsFooter = isDefined(tag) ? (
+        <AiTranslationFields title={tag.title} titleEn={tag.titleEn} titleTags={tag.titleTags} />
+    ) : null;
+
+    const usageActions = isUsageFailure ? (
+        <UsageFailureRow onRetry={retryUsage} />
+    ) : (
+        <LoadingContent isLoading={isUsagePending} className="gap-7xl">
+            <EntityEditSections
+                deleteLabel={t`Delete tag`}
+                deleteFooter={deleteFooter}
+                deleteTestID={TagFormSelector.Delete}
+                onDelete={handleDelete}
+                isDisabled={isBusy}
+                mutatingOperation={operation.mutatingOperation}
+            >
+                {isPositiveNumber(transactionCount) ? (
+                    <GroupedListSection footer={mergeFooter}>
+                        <GroupedListActionRow
+                            label={t`Merge into another tag…`}
+                            icon={UserIconNameEnum.GitMerge}
+                            onPress={handleMerge}
+                            isDisabled={isBusy}
+                            isLoading={operation.mutatingOperation === EntityOperationEnum.MERGE}
+                            labelClassName="text-primary"
+                            trailing={<Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />}
+                            testID={TagFormSelector.Merge}
+                        />
+                    </GroupedListSection>
+                ) : null}
+            </EntityEditSections>
+        </LoadingContent>
+    );
+
+    const handleFormSubmit = handleSubmit(values => saveFlight.run(submitTag(values)));
 
     return (
-        <ModalPage header={<PageHeader title={headerTitle} onGoBack={onCancel} />}>
-            <KeyboardAwareScrollView
-                testID={TagFormSelector.ScrollView}
-                keyboardShouldPersistTaps="always"
-                showsVerticalScrollIndicator={false}
-                bounces={false}
-            >
-                <Animated.View entering={FadeInUp.delay(TITLE_ANIMATION_DELAY).duration(200)} className="px-3xl pt-2xl">
-                    <FormItem label={t`Tag Name`}>
-                        <Input
-                            size="lg"
-                            value={title}
-                            onChangeText={handleTitleChange}
-                            onBlur={handleTitleBlur}
-                            maxLength={TAG_TITLE_MAX_LENGTH}
-                            placeholder={t`e.g. Business, Personal, Vacation`}
-                            autoCapitalize="words"
-                            autoCorrect={false}
-                            autoComplete="off"
-                            textContentType="none"
-                            spellCheck={false}
-                            inputMode="text"
-                            testID={TagFormSelector.Input}
-                        />
-                    </FormItem>
-                </Animated.View>
+        <EntityFormPage
+            title={headerTitle}
+            onCancel={onCancel}
+            saveLabel={saveLabel}
+            onSave={handleFormSubmit}
+            isSaving={saveFlight.isLoading}
+            isSaveDisabled={isSaveDisabled}
+            saveTestID={TagFormSelector.Submit}
+        >
+            <GroupedListSection title={t`Details`} footer={keywordsFooter}>
+                <IconTitleField tile={<TagMonogram title={title} />} label={t`Name`} error={titleError}>
+                    <FormTitleInput
+                        autoFocus={!isEditing}
+                        editable={!isBusy}
+                        value={title}
+                        onChangeText={handleTitleChange}
+                        maxLength={TAG_TITLE_MAX_LENGTH}
+                        placeholder={t`e.g. Business, Personal, Vacation`}
+                        accessibilityLabel={t`Tag name`}
+                        testID={TagFormSelector.Input}
+                    />
+                </IconTitleField>
+            </GroupedListSection>
 
-                <AiTranslationFields {...translationFieldsProps} isRegenerating={isRegenerating} modelStatus={modelStatus} />
-            </KeyboardAwareScrollView>
-
-            <ModalFormFooter
-                onCancel={onCancel}
-                onSave={handleFormSubmit}
-                isSaveDisabled={isSaveDisabled}
-                saveTestID={TagFormSelector.Submit}
-            >
-                {isEditing ? (
-                    <ModalFormMergeButton testID={TagFormSelector.Merge} onPress={handleMerge} content={t`Merge into another tag`} />
-                ) : null}
-            </ModalFormFooter>
-        </ModalPage>
+            {isDefined(tag) ? usageActions : null}
+        </EntityFormPage>
     );
 };

@@ -11,10 +11,17 @@ interface Props {
 
 export const LoadingContent = ({ children, isLoading, className }: Props) => {
     const contentPointerEvents = isLoading ? 'none' : 'auto';
+    const contentImportantForAccessibility = isLoading ? 'no-hide-descendants' : 'auto';
+    const accessibilityState = { busy: isLoading };
 
     return (
-        <View>
-            <View pointerEvents={contentPointerEvents} className={cn(className, isLoading && 'opacity-0')}>
+        <View accessibilityState={accessibilityState}>
+            <View
+                pointerEvents={contentPointerEvents}
+                accessibilityElementsHidden={isLoading}
+                importantForAccessibility={contentImportantForAccessibility}
+                className={cn(className, isLoading && 'opacity-0')}
+            >
                 {children}
             </View>
             {isLoading ? <ActivityIndicator size="small" style={StyleSheet.absoluteFill} /> : null}

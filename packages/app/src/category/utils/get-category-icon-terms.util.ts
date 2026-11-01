@@ -7,9 +7,5 @@ export const getCategoryIconTerms = ({
     titleEn,
     titleTags
 }: Pick<CategoryEntityInterface, 'title' | 'titleEn' | 'titleTags'>): string[] => [
-    ...new Set(
-        [title, ...title.split(/[^\p{L}\p{N}]+/u), titleEn ?? '', ...(titleTags ?? '').split(',').slice(0, 8)]
-            .map(term => term.trim())
-            .filter(isNotEmptyString)
-    )
+    ...new Set([title, titleEn ?? '', ...(titleTags ?? '').split(',').slice(0, 8)].map(term => term.trim()).filter(isNotEmptyString))
 ];

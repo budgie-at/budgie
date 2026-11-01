@@ -78,8 +78,11 @@ export const BudgetDetailsCategoryList = ({ budget, projection, periodStart, per
         <GroupedListSection footer={t`Optional. The overall limit applies without them.`}>
             <GroupedListRow
                 left={<GroupedListIcon icon={UserIconNameEnum.ListPlus} />}
-                title={t`Add category limits`}
-                titleClassName="text-default-foreground"
+                title={
+                    <Text className="text-default-foreground text-[17px]" numberOfLines={2}>
+                        {t`Add category limits`}
+                    </Text>
+                }
                 onPress={handleAddLimitsPress}
             />
         </GroupedListSection>

@@ -2,12 +2,13 @@ import { AnimatedLegendList } from '@legendapp/list/reanimated';
 import * as Effect from 'effect/Effect';
 import { NotificationFeedbackType } from 'expo-haptics';
 import { ReactElement, ReactNode } from 'react';
-import { View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useCollapsibleHeaderScroll } from '@rnw-community/react-native-collapsible-header';
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../constant/floating-tab-bar.constant';
 import {
     LEGEND_LIST_CONTENT_GAP,
     LEGEND_LIST_HEADER_HEIGHT,
@@ -15,11 +16,14 @@ import {
     legendListKeyExtractor
 } from '../../constant/legend-list.constant';
 import { SCREEN_CHROME_CONTENT_INSET_TOP } from '../../constant/screen-chrome-content-inset.constant';
+import { useStickyDefinedValue } from '../../hook/use-sticky-defined-value.hook';
 import { useVibration } from '../../hook/use-vibration.hook';
 import { IdInterface } from '../../interface/id.interface';
 import { appRuntime } from '../../runtime/app.runtime';
 import { logAndContinue } from '../../utils/log-and-continue.util';
 import { DeletableRow } from '../deletable-row/deletable-row';
+import { LoadingContent } from '../loading-content/loading-content';
+import { SEARCH_INPUT_VERTICAL_OFFSET, SEARCH_LIST_BOTTOM_CLEARANCE } from '../searchable-page/searchable-page.constant';
 
 import type { LegendListSizingInterface } from '../../interface/legend-list-sizing.interface';
 import type { AppServices } from '../../runtime/app.runtime';
@@ -29,17 +33,16 @@ interface Props<T extends IdInterface> {
     data: T[] | null;
     emptyState: ReactNode;
     onDelete?: (id: number) => Effect.Effect<unknown, unknown, AppServices>;
-    renderCard: (item: T, index: number) => ReactNode;
+    renderCard: (item: T, index: number, isLast: boolean) => ReactNode;
     getDeleteConfirmation?: (item: T) => DeleteConfirmation | undefined;
     listHeader?: ReactElement | null;
-    estimatedHeaderSize?: number;
     sizing?: LegendListSizingInterface<T>;
+    gap?: number;
 }
 
-const FOOTER_SPACER_STYLE = { height: 330 };
 const MAINTAIN_VISIBLE_CONTENT_POSITION = { data: false, size: true };
-
-const listFooter = <View style={FOOTER_SPACER_STYLE} />;
+const SETTLED_LIST_PROPS = { style: LEGEND_LIST_STYLE, accessibilityState: { busy: false } };
+const PENDING_LIST_PROPS = { style: { ...LEGEND_LIST_STYLE, opacity: 0.5 }, accessibilityState: { busy: true } };
 
 export const SearchablePageList = <T extends IdInterface>({
     data,
@@ -48,22 +51,33 @@ export const SearchablePageList = <T extends IdInterface>({
     renderCard,
     getDeleteConfirmation,
     listHeader: customListHeader,
-    estimatedHeaderSize = LEGEND_LIST_HEADER_HEIGHT,
-    sizing
+    sizing,
+    gap = LEGEND_LIST_CONTENT_GAP
 }: Props<T>) => {
     const [notify] = useVibration();
     const { scrollY } = useCollapsibleHeaderScroll();
     const insets = useSafeAreaInsets();
+    const items = useStickyDefinedValue(data);
+    const paddingTop = insets.top + SCREEN_CHROME_CONTENT_INSET_TOP;
+    const paddingBottom =
+        FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + insets.bottom - SEARCH_INPUT_VERTICAL_OFFSET + SEARCH_LIST_BOTTOM_CLEARANCE;
 
-    if (!isNotEmptyArray(data)) {
-        return emptyState;
+    if (!isNotEmptyArray(items)) {
+        const emptyStateContainerStyle = { paddingTop, paddingBottom };
+
+        return (
+            <KeyboardAwareScrollView
+                contentContainerStyle={emptyStateContainerStyle}
+                bottomOffset={SEARCH_LIST_BOTTOM_CLEARANCE}
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
+            >
+                <LoadingContent isLoading={!isDefined(data)}>{emptyState}</LoadingContent>
+            </KeyboardAwareScrollView>
+        );
     }
 
-    const contentContainerStyle = {
-        gap: LEGEND_LIST_CONTENT_GAP,
-        paddingTop: insets.top + SCREEN_CHROME_CONTENT_INSET_TOP,
-        paddingBottom: 220
-    };
+    const contentContainerStyle = { gap, paddingTop, paddingBottom };
 
     const handleDeleteItem = (id: number) => {
         if (!isDefined(onDelete)) {
@@ -76,7 +90,7 @@ export const SearchablePageList = <T extends IdInterface>({
     };
 
     const renderItem = ({ item, index }: { item: T; index: number }) => {
-        const card = renderCard(item, index);
+        const card = renderCard(item, index, index === items.length - 1);
         if (!isDefined(onDelete)) {
             return card;
         }
@@ -91,20 +105,21 @@ export const SearchablePageList = <T extends IdInterface>({
     };
 
     const sharedValues = { scrollOffset: scrollY };
+    const pendingProps = isDefined(data) ? SETTLED_LIST_PROPS : PENDING_LIST_PROPS;
 
     return (
         <AnimatedLegendList
-            style={LEGEND_LIST_STYLE}
-            data={data}
+            {...pendingProps}
+            data={items}
             contentContainerStyle={contentContainerStyle}
             ListHeaderComponent={customListHeader}
-            estimatedHeaderSize={estimatedHeaderSize}
+            estimatedHeaderSize={LEGEND_LIST_HEADER_HEIGHT}
             renderItem={renderItem}
+            extraData={renderItem}
             keyExtractor={legendListKeyExtractor}
             estimatedItemSize={sizing?.estimatedItemSize}
             getItemType={sizing?.getItemType}
             keyboardShouldPersistTaps="handled"
-            ListFooterComponent={listFooter}
             sharedValues={sharedValues}
             recycleItems
             maintainVisibleContentPosition={MAINTAIN_VISIBLE_CONTENT_POSITION}

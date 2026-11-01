@@ -2,15 +2,22 @@ import { useLingui } from '@lingui/react/macro';
 import { ReactNode, useRef, useState } from 'react';
 import { Alert } from 'react-native';
 import ReanimatedSwipeable, { SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
-import { SharedValue } from 'react-native-reanimated';
+import Reanimated, { Extrapolation, SharedValue, interpolate, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { DeletableRowAction } from './deletable-row-action';
+
+import type { DeletableRowVariant } from '../../type/deletable-row-variant.type';
 
 interface Props {
     readonly onDelete: (id: number) => void;
     readonly children: ReactNode;
     readonly id: number;
     readonly confirmation?: DeleteConfirmation;
+    readonly label?: string;
+    readonly isDisabled?: boolean;
+    readonly variant?: DeletableRowVariant;
 }
 
 export interface DeleteConfirmation {
@@ -19,40 +26,48 @@ export interface DeleteConfirmation {
     readonly buttonText?: string;
 }
 
-export const DeletableRow = ({ children, onDelete, id, confirmation }: Props) => {
+const ACTION_WIDTH = 70;
+const DRAGGED_CONTENT_OPACITY = 0.4;
+
+export const DeletableRow = ({ children, onDelete, id, confirmation, label, isDisabled = false, variant = 'pill' }: Props) => {
     const ref = useRef<SwipeableMethods>(null);
     const { t } = useLingui();
 
     const [isOpen, setIsOpen] = useState(false);
+    const translation = useSharedValue(0);
+    const contentStyle = useAnimatedStyle(() => ({
+        opacity:
+            variant === 'fill' ? interpolate(translation.get(), [-ACTION_WIDTH, 0], [DRAGGED_CONTENT_OPACITY, 1], Extrapolation.CLAMP) : 1
+    }));
+    const actionLabel = label ?? t`Delete`;
 
     const handleOpen = () => void setIsOpen(true);
     const handleClose = () => void setIsOpen(false);
 
-    const confirmTitle = confirmation?.title ?? t`Are you sure?`;
-    const confirmDescription = confirmation?.description ?? t`This action cannot be undone.`;
-    const confirmButtonText = confirmation?.buttonText ?? t`Delete`;
+    const handleDelete = () => void onDelete(id);
 
-    const confirm = () =>
-        void Alert.alert(confirmTitle, confirmDescription, [
-            {
-                text: confirmButtonText,
-                onPress: () => void onDelete(id),
-                style: 'destructive'
-            },
-            {
-                text: t`Cancel`,
-                style: 'cancel',
-                onPress: () => ref.current?.close()
-            }
+    const confirm = () => {
+        if (!isDefined(confirmation)) {
+            ref.current?.close();
+            handleDelete();
+
+            return;
+        }
+
+        Alert.alert(confirmation.title ?? t`Are you sure?`, confirmation.description ?? t`This action cannot be undone.`, [
+            { text: confirmation.buttonText ?? t`Delete`, onPress: handleDelete, style: 'destructive' },
+            { text: t`Cancel`, style: 'cancel', onPress: () => ref.current?.close() }
         ]);
+    };
 
     const renderRightActions = (_: SharedValue<number>, drag: SharedValue<number>) => (
-        <DeletableRowAction drag={drag} isOpen={isOpen} onPress={confirm} />
+        <DeletableRowAction drag={drag} translation={translation} isOpen={isOpen} label={actionLabel} variant={variant} onPress={confirm} />
     );
 
     return (
         <ReanimatedSwipeable
             ref={ref}
+            enabled={!isDisabled}
             friction={2}
             enableTrackpadTwoFingerGesture
             rightThreshold={40}
@@ -60,7 +75,7 @@ export const DeletableRow = ({ children, onDelete, id, confirmation }: Props) =>
             onSwipeableOpen={handleOpen}
             onSwipeableClose={handleClose}
         >
-            {children}
+            <Reanimated.View style={contentStyle}>{children}</Reanimated.View>
         </ReanimatedSwipeable>
     );
 };

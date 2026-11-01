@@ -1,7 +1,7 @@
 import { BudgetLimitSourceEnum, UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { EntranceReveal } from '../../../@generic/component/entrance-reveal/entrance-reveal';
 import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
@@ -35,7 +35,9 @@ export const BudgetAllocationBlock = ({ projection, budget, currencySymbol }: Pr
             : t`${assignedLabel} assigned · ${incomeLabel} received`;
     const icon = allocation.isOverAllocated ? UserIconNameEnum.TriangleAlert : UserIconNameEnum.Scale;
     const title = allocation.isOverAllocated ? t`Over-assigned by ${remainingLabel}` : t`Unassigned ${remainingLabel}`;
-    const titleClassName = allocation.isOverAllocated ? 'text-destructive-strong font-medium' : 'font-medium';
+    const titleClassName = allocation.isOverAllocated
+        ? 'text-destructive-strong font-medium text-[17px]'
+        : 'text-primary font-medium text-[17px]';
     const iconClassName = allocation.isOverAllocated ? 'text-destructive-strong' : 'text-secondary-foreground';
 
     const handleAdjustPress = () => {
@@ -48,15 +50,20 @@ export const BudgetAllocationBlock = ({ projection, budget, currencySymbol }: Pr
                 <GroupedListSection>
                     <GroupedListRow
                         left={<GroupedListIcon icon={icon} iconClassName={iconClassName} />}
-                        title={title}
-                        titleClassName={titleClassName}
-                        titleTestID={BudgetSelector.DetailsAllocationUnassigned}
+                        title={
+                            <Text className={titleClassName} numberOfLines={2} testID={BudgetSelector.DetailsAllocationUnassigned}>
+                                {title}
+                            </Text>
+                        }
                         subtitle={note}
                     />
                     {allocation.isOverAllocated ? (
                         <GroupedListRow
-                            title={t`Adjust category limits`}
-                            titleClassName="text-default-foreground"
+                            title={
+                                <Text className="text-default-foreground text-[17px]" numberOfLines={2}>
+                                    {t`Adjust category limits`}
+                                </Text>
+                            }
                             onPress={handleAdjustPress}
                         />
                     ) : null}

@@ -1,31 +1,45 @@
-import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
-import { Trans } from '@lingui/react/macro';
-import { Text } from 'react-native';
+import { TagEntityInterface } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
 
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { SimpleHorizontalCell } from '../../../@generic/component/simple-horizontal-cell/simple-horizontal-cell';
+import { EntityListRow } from '../../../@generic/component/entity-list-row/entity-list-row';
+import { useDeleteTag } from '../../hooks/use-delete-tag.hook';
+import { useMergeTag } from '../../hooks/use-merge-tag.hook';
+import { TagMonogram } from '../tag-monogram/tag-monogram';
 
 import { TagCardSelector } from './tag-card.selector';
 
+import type { EntityRowOperationsInterface } from '../../../@generic/interface/entity-row-operations.interface';
+import type { EntityUsageInterface } from '../../../@generic/interface/entity-usage.interface';
+
 interface Props {
-    tag: TagEntityInterface;
-    onOpen: (tag: TagEntityInterface) => void;
+    readonly tag: TagEntityInterface;
+    readonly usage: EntityUsageInterface | undefined;
+    readonly isFirst: boolean;
+    readonly isLast: boolean;
+    readonly onOpen: (tag: TagEntityInterface) => void;
 }
 
-export const TagCard = ({ onOpen, tag }: Props) => {
+export const TagCard = ({ onOpen, tag, usage, isFirst, isLast }: Props) => {
+    const { t } = useLingui();
+    const deleteTag = useDeleteTag();
+    const mergeTag = useMergeTag();
     const handleOpen = () => void onOpen(tag);
+    const operations: EntityRowOperationsInterface = {
+        deleteLabel: t`Delete`,
+        onMerge: trackMutation => mergeTag(tag.id, trackMutation),
+        onDelete: trackMutation => deleteTag(tag.id, trackMutation)
+    };
 
     return (
-        <SimpleHorizontalCell
+        <EntityListRow
             testID={TagCardSelector.Card(tag.title)}
-            right={
-                <Text className="text-secondary-foreground font-medium text-xs ml-auto">
-                    <Trans>Swipe left</Trans>
-                </Text>
-            }
-            onPress={handleOpen}
-            left={<CircleIcon icon={UserIconNameEnum.Dot} variant="destructive" size={40} iconSize={72} />}
-            title={tag.title}
+            entity={tag}
+            left={<TagMonogram title={tag.title} />}
+            usage={usage}
+            onOpen={handleOpen}
+            operations={operations}
+            isFirst={isFirst}
+            isLast={isLast}
         />
     );
 };
