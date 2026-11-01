@@ -8,5 +8,5 @@ import type { CategorySelectorModalParams, CategorySelectorResult } from '../con
 export const CategorySelectorModalProvider = createModalProvider<CategorySelectorModalParams, CategorySelectorResult>(
     CategorySelectorModalContext,
     '/category-selector',
-    params => (isDefined(params?.getCommitSummary) ? '/category-destination' : '/category-selector')
+    params => (isDefined(params?.getCommitCopy) ? '/category-destination' : '/category-selector')
 );

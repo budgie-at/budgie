@@ -27,7 +27,7 @@ export const DestinationRow = ({ id, title, subtitle, left, isSelected, isDisabl
             title={<Text className="text-primary text-[17px]">{title}</Text>}
             subtitle={subtitle}
             left={
-                <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+                <View className="min-h-[42px] justify-center" accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
                     {left}
                 </View>
             }

@@ -27,7 +27,6 @@ import { useEntityOperation } from '../../../@generic/hook/use-entity-operation.
 import { useIconSearchEntries } from '../../../@generic/hook/use-icon-search-entries.hook';
 import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
-import { iconSearchService } from '../../../@generic/service/icon-search.service';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { useCategoryForm } from '../../hooks/use-category-form.hook';
@@ -36,7 +35,7 @@ import { categoryUsageAtom } from '../../query/use-categories-with-usage.query';
 import { createCategory } from '../../utils/create-category.util';
 import { getCategoryDeleteCopy } from '../../utils/get-category-delete-copy.util';
 import { getCategoryDisplayIcon } from '../../utils/get-category-display-icon.util';
-import { getCategoryIconTerms } from '../../utils/get-category-icon-terms.util';
+import { suggestCategoryIcon } from '../../utils/suggest-category-icon.util';
 import { updateCategory } from '../../utils/update-category.util';
 
 import { CategoryFormSelector } from './category-form.selector';
@@ -79,9 +78,8 @@ export const CategoryForm = (props: Props) => {
         ? (usageResult.value.find(entry => entry.id === category?.id)?.transactionCount ?? 0)
         : null;
 
-    const iconTerms = getCategoryIconTerms({ titleEn: null, titleTags: null, ...category, title });
-    const suggestedIcon = iconSearchService.findConfidentIcon(iconSearchEntries, iconTerms);
-    const resolvedIcon = isIconChosen || !isDefined(suggestedIcon) ? icon : suggestedIcon;
+    const autoIcon = suggestCategoryIcon(iconSearchEntries, category, title);
+    const resolvedIcon = isIconChosen ? icon : autoIcon.icon;
     const triggerIcon = hasPickedIcon || !isDefined(category) ? resolvedIcon : getCategoryDisplayIcon({ ...category, icon: resolvedIcon });
 
     const isChanged =
@@ -101,7 +99,7 @@ export const CategoryForm = (props: Props) => {
             return;
         }
 
-        openIconSelector({ selectedIcon: resolvedIcon, keywords: iconTerms }, selectedIcon => {
+        openIconSelector({ selectedIcon: resolvedIcon, keywords: autoIcon.terms }, selectedIcon => {
             if (isDefined(selectedIcon)) {
                 setHasPickedIcon(true);
                 setValue('icon', selectedIcon);

@@ -83,8 +83,8 @@ msgstr "{0, plural, one {Afficher # groupe de plus} other {Afficher # groupes de
 
 #. placeholder {0}: categoriesWithDefaultIcon.length
 #: src/app/(tabs)/settings/category-icons.tsx
-msgid "{0, plural, one {This category still uses the default icon. Tap a suggestion to set it.} other {These categories still use the default icon. Tap a suggestion to set one.}}"
-msgstr "{0, plural, one {Cette catégorie utilise encore l’icône par défaut. Touchez une suggestion pour la définir.} other {Ces catégories utilisent encore l’icône par défaut. Touchez une suggestion pour en définir une.}}"
+msgid "{0, plural, one {Tap a suggestion to replace the default icon} other {Tap a suggestion to replace each default icon}}"
+msgstr "{0, plural, one {Touchez une suggestion pour remplacer l’icône par défaut} other {Touchez une suggestion pour remplacer chaque icône par défaut}}"
 
 #: src/onboarding/hook/use-onboarding-file-state.hook.ts
 msgid "{accountCount, plural, one {# account} other {# accounts}}"
@@ -152,12 +152,16 @@ msgid "{code} · Base currency"
 msgstr "{code} · Devise de base"
 
 #: src/tag/hooks/use-merge-tag.hook.ts
-msgid "{count, plural, =0 {“{sourceTitle}” is not on any transactions. It is removed after the merge.} one {Its # transaction gets the tag you pick, and “{sourceTitle}” is removed.} other {Its # transactions get the tag you pick, and “{sourceTitle}” is removed.}}"
-msgstr "{count, plural, =0 {« {sourceTitle} » n’est sur aucune transaction. Il sera supprimé après la fusion.} one {Sa # transaction reçoit l’étiquette choisie, et « {sourceTitle} » est supprimé.} other {Ses # transactions reçoivent l’étiquette choisie, et « {sourceTitle} » est supprimé.}}"
+msgid "{count, plural, =0 {“{sourceTitle}” is not on any transactions. It is removed after the merge.} one {Pick the tag that replaces it on # transaction.} other {Pick the tag that replaces it on # transactions.}}"
+msgstr "{count, plural, =0 {« {sourceTitle} » n’est sur aucune transaction. Il sera supprimé après la fusion.} one {Choisissez le tag qui le remplace sur # transaction.} other {Choisissez le tag qui le remplace sur # transactions.}}"
 
 #: src/tag/hooks/use-merge-tag.hook.ts
-msgid "{count, plural, =0 {“{sourceTitle}” merges into “{targetTitle}” and will be removed.} one {# transaction → “{targetTitle}”. “{sourceTitle}” will be removed.} other {# transactions → “{targetTitle}”. “{sourceTitle}” will be removed.}}"
-msgstr "{count, plural, =0 {« {sourceTitle} » est fusionné dans « {targetTitle} » et sera supprimé.} one {# transaction → « {targetTitle} ». « {sourceTitle} » sera supprimé.} other {# transactions → « {targetTitle} ». « {sourceTitle} » sera supprimé.}}"
+msgid "{count, plural, =0 {“{sourceTitle}” merges into “{targetTitle}” and will be removed.} one {# transaction gets “{targetTitle}”. “{sourceTitle}” will be removed.} other {# transactions get “{targetTitle}”. “{sourceTitle}” will be removed.}}"
+msgstr "{count, plural, =0 {« {sourceTitle} » est fusionné dans « {targetTitle} » et sera supprimé.} one {# transaction reçoit « {targetTitle} ». « {sourceTitle} » sera supprimé.} other {# transactions reçoivent « {targetTitle} ». « {sourceTitle} » sera supprimé.}}"
+
+#: src/tag/hooks/use-merge-tag.hook.ts
+msgid "{count, plural, =0 {Merge “{sourceTitle}” into “{targetTitle}” and remove it} one {Merge # transaction into “{targetTitle}” and remove “{sourceTitle}”} other {Merge # transactions into “{targetTitle}” and remove “{sourceTitle}”}}"
+msgstr "{count, plural, =0 {Fusionner « {sourceTitle} » dans « {targetTitle} » et le supprimer} one {Fusionner # transaction dans « {targetTitle} » et supprimer « {sourceTitle} »} other {Fusionner # transactions dans « {targetTitle} » et supprimer « {sourceTitle} »}}"
 
 #: src/budget/components/budget-period-recap-rollover/budget-period-recap-rollover.tsx
 msgid "{count, plural, one {{formattedAmount} rolled over across # category} other {{formattedAmount} rolled over across # categories}}"
@@ -176,8 +180,8 @@ msgid "{count, plural, one {# sync repair} other {# sync repairs}}"
 msgstr "{count, plural, one {# réparation de synchronisation} other {# réparations de synchronisation}}"
 
 #: src/category/hooks/use-move-and-delete-category.hook.ts
-msgid "{count, plural, one {# transaction → “{targetTitle}”. “{sourceTitle}” will be deleted.} other {# transactions → “{targetTitle}”. “{sourceTitle}” will be deleted.}}"
-msgstr "{count, plural, one {# transaction → « {targetTitle} ». « {sourceTitle} » sera supprimée.} other {# transactions → « {targetTitle} ». « {sourceTitle} » sera supprimée.}}"
+msgid "{count, plural, one {# transaction moves to “{targetTitle}”. “{sourceTitle}” will be deleted.} other {# transactions move to “{targetTitle}”. “{sourceTitle}” will be deleted.}}"
+msgstr "{count, plural, one {# transaction passe dans « {targetTitle} ». « {sourceTitle} » sera supprimée.} other {# transactions passent dans « {targetTitle} ». « {sourceTitle} » sera supprimée.}}"
 
 #: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx
 msgid "{count, plural, one {# uncategorized} other {# uncategorized}}"
@@ -191,21 +195,25 @@ msgstr "{count, plural, one {# facture à venir} other {# factures à venir}}"
 msgid "{count, plural, one {Choose an icon for # category} other {Choose icons for # categories}}"
 msgstr "{count, plural, one {Choisir une icône pour # catégorie} other {Choisir des icônes pour # catégories}}"
 
+#: src/category/components/category-default-icon-button/category-default-icon-button.tsx
+msgid "{count, plural, one {It still uses the default icon} other {They still use the default icon}}"
+msgstr "{count, plural, one {Elle utilise encore l’icône par défaut} other {Elles utilisent encore l’icône par défaut}}"
+
 #: src/tag/hooks/use-delete-tag.hook.ts
 msgid "{count, plural, one {It will be removed from # transaction. The transaction stays.} other {It will be removed from # transactions. The transactions stay.}}"
 msgstr "{count, plural, one {Il sera retiré de # transaction. La transaction est conservée.} other {Il sera retiré de # transactions. Les transactions sont conservées.}}"
 
 #: src/category/hooks/use-move-and-delete-category.hook.ts
-msgid "{count, plural, one {Its # transaction moves to the category you pick, and “{sourceTitle}” is deleted.} other {Its # transactions move to the category you pick, and “{sourceTitle}” is deleted.}}"
-msgstr "{count, plural, one {Sa # transaction passe dans la catégorie choisie, et « {sourceTitle} » est supprimée.} other {Ses # transactions passent dans la catégorie choisie, et « {sourceTitle} » est supprimée.}}"
+msgid "{count, plural, one {Move # transaction to “{targetTitle}” and delete “{sourceTitle}”} other {Move # transactions to “{targetTitle}” and delete “{sourceTitle}”}}"
+msgstr "{count, plural, one {Déplacer # transaction vers « {targetTitle} » et supprimer « {sourceTitle} »} other {Déplacer # transactions vers « {targetTitle} » et supprimer « {sourceTitle} »}}"
+
+#: src/category/hooks/use-move-and-delete-category.hook.ts
+msgid "{count, plural, one {Pick the category its # transaction moves to.} other {Pick the category its # transactions move to.}}"
+msgstr "{count, plural, one {Choisissez la catégorie qui recevra sa # transaction.} other {Choisissez la catégorie qui recevra ses # transactions.}}"
 
 #: src/categorize-inbox/components/categorize-inbox-payments-bar/categorize-inbox-payments-bar.tsx
 msgid "{count, plural, one {Use # payment} other {Use # payments}}"
 msgstr "{count, plural, one {Utiliser # paiement} other {Utiliser # paiements}}"
-
-#: src/category/components/category-default-icon-button/category-default-icon-button.tsx
-msgid "{count, plural, one {Uses the default icon} other {Use the default icon}}"
-msgstr "{count, plural, one {Utilise l’icône par défaut} other {Utilisent l’icône par défaut}}"
 
 #: src/categorize-inbox/components/categorize-inbox-payments-summary/categorize-inbox-payments-summary.tsx
 msgid "{count} of {rowCount} selected"
@@ -3172,10 +3180,6 @@ msgstr "Général"
 msgid "Generate English names and search keywords automatically."
 msgstr "Générez automatiquement des noms anglais et des mots-clés de recherche."
 
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx
-msgid "Generated automatically so search finds this by other words too."
-msgstr "Généré automatiquement pour que la recherche le trouve aussi avec d’autres mots."
-
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "Generic"
 msgstr "Générique"
@@ -3511,6 +3515,10 @@ msgstr "Clé refusée"
 #: src/app/bank-integration-key.tsx
 msgid "Key updated"
 msgstr "Clé mise à jour"
+
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx
+msgid "Keywords: {keywords} · added automatically for search"
+msgstr "Mots-clés : {keywords} · ajoutés automatiquement pour la recherche"
 
 #: src/settings/components/language-selector/language-selector.tsx
 msgid "Language"
@@ -5358,8 +5366,8 @@ msgid "Search inactive accounts..."
 msgstr "Rechercher des comptes inactifs..."
 
 #: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx
-msgid "Search keywords: {keywords}"
-msgstr "Mots-clés : {keywords}"
+msgid "Search keywords: {keywords}. Generated automatically so search finds this by other words too."
+msgstr "Mots-clés de recherche : {keywords}. Générés automatiquement pour que la recherche le trouve aussi avec d’autres mots."
 
 #: src/app/language-selector.tsx
 msgid "Search languages..."

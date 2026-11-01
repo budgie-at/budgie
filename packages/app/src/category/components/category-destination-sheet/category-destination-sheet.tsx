@@ -6,7 +6,6 @@ import { isDefined } from '@rnw-community/shared';
 import { DestinationList } from '../../../@generic/component/destination-list/destination-list';
 import { DestinationSheetFooter } from '../../../@generic/component/destination-sheet-footer/destination-sheet-footer';
 import { DestinationSheet } from '../../../@generic/component/destination-sheet/destination-sheet';
-import { PillButton } from '../../../@generic/component/pill-button/pill-button';
 import { SelectorCreateButton } from '../../../@generic/component/selector-create-button/selector-create-button';
 import { useDestinationSelection } from '../../../@generic/hook/use-destination-selection.hook';
 import { useFormatEntityUsage } from '../../../@generic/hook/use-format-entity-usage.hook';
@@ -16,6 +15,7 @@ import { useCategoriesWithUsageQuery } from '../../query/use-categories-with-usa
 import { CategoryDestinationRow } from '../category-destination-row/category-destination-row';
 import { CategoryEmptyState } from '../category-empty-state/category-empty-state';
 
+import type { DestinationCommitCopyInterface } from '../../../@generic/interface/destination-commit-copy.interface';
 import type { CategoryEntityInterface } from '@budgie/contracts';
 
 interface Props {
@@ -23,12 +23,12 @@ interface Props {
     readonly description: string | undefined;
     readonly excludeCategoryIds: readonly number[];
     readonly commitLabel: string;
-    readonly getCommitSummary: (destinationTitle: string) => string;
+    readonly getCommitCopy: (destinationTitle: string) => DestinationCommitCopyInterface;
     readonly onSelect: (categoryId: number) => void;
 }
 
 export const CategoryDestinationSheet = (props: Props) => {
-    const { title, description, excludeCategoryIds, commitLabel, getCommitSummary, onSelect } = props;
+    const { title, description, excludeCategoryIds, commitLabel, getCommitCopy, onSelect } = props;
     const { t } = useLingui();
     const [openCategoryForm] = useCategoryFormModal();
     const [search, setSearch] = useState('');
@@ -43,9 +43,7 @@ export const CategoryDestinationSheet = (props: Props) => {
               { title: t`Built-in`, data: destinations.filter(category => category.isDefault) }
           ]
         : null;
-    const footer = isDefined(selected)
-        ? { summary: getCommitSummary(selected.title), label: commitLabel }
-        : { summary: null, label: t`Pick a category to continue` };
+    const commitCopy = isDefined(selected) ? getCommitCopy(selected.title) : null;
 
     const handleCreatePress = (defaultTitle: string) => {
         openCategoryForm({ defaultTitle }, result => {
@@ -94,15 +92,13 @@ export const CategoryDestinationSheet = (props: Props) => {
                 renderRow={renderRow}
                 emptyState={<CategoryEmptyState search={search} onClearSearch={handleClearSearch} onCreate={handleCreatePress} />}
             />
-            <DestinationSheetFooter summary={footer.summary}>
-                <PillButton
-                    label={footer.label}
-                    variant="destructive"
-                    isDisabled={!isDefined(selected)}
-                    onPress={handleCommit}
-                    testID={CategorySelectorModalSelector.CommitButton}
-                />
-            </DestinationSheetFooter>
+            <DestinationSheetFooter
+                commitCopy={commitCopy}
+                commitLabel={commitLabel}
+                pickLabel={t`Pick a category to continue`}
+                onCommit={handleCommit}
+                testID={CategorySelectorModalSelector.CommitButton}
+            />
         </DestinationSheet>
     );
 };

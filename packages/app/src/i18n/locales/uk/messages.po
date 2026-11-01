@@ -83,8 +83,8 @@ msgstr "{0, plural, one {Показати ще # групу} few {Показат
 
 #. placeholder {0}: categoriesWithDefaultIcon.length
 #: src/app/(tabs)/settings/category-icons.tsx
-msgid "{0, plural, one {This category still uses the default icon. Tap a suggestion to set it.} other {These categories still use the default icon. Tap a suggestion to set one.}}"
-msgstr "{0, plural, one {Ця категорія досі має стандартну іконку. Торкніться пропозиції, щоб її встановити.} few {Ці категорії досі мають стандартну іконку. Торкніться пропозиції, щоб установити іконку.} many {Ці категорії досі мають стандартну іконку. Торкніться пропозиції, щоб установити іконку.} other {Ці категорії досі мають стандартну іконку. Торкніться пропозиції, щоб установити іконку.}}"
+msgid "{0, plural, one {Tap a suggestion to replace the default icon} other {Tap a suggestion to replace each default icon}}"
+msgstr "{0, plural, one {Торкніться пропозиції, щоб замінити типову іконку} few {Торкніться пропозиції, щоб замінити кожну типову іконку} many {Торкніться пропозиції, щоб замінити кожну типову іконку} other {Торкніться пропозиції, щоб замінити кожну типову іконку}}"
 
 #: src/onboarding/hook/use-onboarding-file-state.hook.ts
 msgid "{accountCount, plural, one {# account} other {# accounts}}"
@@ -152,12 +152,16 @@ msgid "{code} · Base currency"
 msgstr "{code} · Базова валюта"
 
 #: src/tag/hooks/use-merge-tag.hook.ts
-msgid "{count, plural, =0 {“{sourceTitle}” is not on any transactions. It is removed after the merge.} one {Its # transaction gets the tag you pick, and “{sourceTitle}” is removed.} other {Its # transactions get the tag you pick, and “{sourceTitle}” is removed.}}"
-msgstr "{count, plural, =0 {«{sourceTitle}» немає в жодній транзакції. Його буде видалено після об’єднання.} one {Його # транзакція отримає обраний тег, а «{sourceTitle}» буде видалено.} few {Його # транзакції отримають обраний тег, а «{sourceTitle}» буде видалено.} many {Його # транзакцій отримають обраний тег, а «{sourceTitle}» буде видалено.} other {Його # транзакції отримають обраний тег, а «{sourceTitle}» буде видалено.}}"
+msgid "{count, plural, =0 {“{sourceTitle}” is not on any transactions. It is removed after the merge.} one {Pick the tag that replaces it on # transaction.} other {Pick the tag that replaces it on # transactions.}}"
+msgstr "{count, plural, =0 {«{sourceTitle}» не додано до жодної транзакції. Його буде видалено після об’єднання.} one {Виберіть тег, який замінить його в # транзакції.} few {Виберіть тег, який замінить його в # транзакціях.} many {Виберіть тег, який замінить його в # транзакціях.} other {Виберіть тег, який замінить його в # транзакції.}}"
 
 #: src/tag/hooks/use-merge-tag.hook.ts
-msgid "{count, plural, =0 {“{sourceTitle}” merges into “{targetTitle}” and will be removed.} one {# transaction → “{targetTitle}”. “{sourceTitle}” will be removed.} other {# transactions → “{targetTitle}”. “{sourceTitle}” will be removed.}}"
-msgstr "{count, plural, =0 {«{sourceTitle}» буде об’єднано з «{targetTitle}» і видалено.} one {# транзакція → «{targetTitle}». «{sourceTitle}» буде видалено.} few {# транзакції → «{targetTitle}». «{sourceTitle}» буде видалено.} many {# транзакцій → «{targetTitle}». «{sourceTitle}» буде видалено.} other {# транзакції → «{targetTitle}». «{sourceTitle}» буде видалено.}}"
+msgid "{count, plural, =0 {“{sourceTitle}” merges into “{targetTitle}” and will be removed.} one {# transaction gets “{targetTitle}”. “{sourceTitle}” will be removed.} other {# transactions get “{targetTitle}”. “{sourceTitle}” will be removed.}}"
+msgstr "{count, plural, =0 {«{sourceTitle}» об’єднається з «{targetTitle}» і буде видалений.} one {# транзакція отримає «{targetTitle}». «{sourceTitle}» буде видалено.} few {# транзакції отримають «{targetTitle}». «{sourceTitle}» буде видалено.} many {# транзакцій отримають «{targetTitle}». «{sourceTitle}» буде видалено.} other {# транзакції отримають «{targetTitle}». «{sourceTitle}» буде видалено.}}"
+
+#: src/tag/hooks/use-merge-tag.hook.ts
+msgid "{count, plural, =0 {Merge “{sourceTitle}” into “{targetTitle}” and remove it} one {Merge # transaction into “{targetTitle}” and remove “{sourceTitle}”} other {Merge # transactions into “{targetTitle}” and remove “{sourceTitle}”}}"
+msgstr "{count, plural, =0 {Об’єднати «{sourceTitle}» з «{targetTitle}» і видалити його} one {Об’єднати # транзакцію з «{targetTitle}» і видалити «{sourceTitle}»} few {Об’єднати # транзакції з «{targetTitle}» і видалити «{sourceTitle}»} many {Об’єднати # транзакцій з «{targetTitle}» і видалити «{sourceTitle}»} other {Об’єднати # транзакції з «{targetTitle}» і видалити «{sourceTitle}»}}"
 
 #: src/budget/components/budget-period-recap-rollover/budget-period-recap-rollover.tsx
 msgid "{count, plural, one {{formattedAmount} rolled over across # category} other {{formattedAmount} rolled over across # categories}}"
@@ -176,8 +180,8 @@ msgid "{count, plural, one {# sync repair} other {# sync repairs}}"
 msgstr "{count, plural, one {# виправлення синхронізації} few {# виправлення синхронізації} many {# виправлень синхронізації} other {# виправлення синхронізації}}"
 
 #: src/category/hooks/use-move-and-delete-category.hook.ts
-msgid "{count, plural, one {# transaction → “{targetTitle}”. “{sourceTitle}” will be deleted.} other {# transactions → “{targetTitle}”. “{sourceTitle}” will be deleted.}}"
-msgstr "{count, plural, one {# транзакція → «{targetTitle}». «{sourceTitle}» буде видалено.} few {# транзакції → «{targetTitle}». «{sourceTitle}» буде видалено.} many {# транзакцій → «{targetTitle}». «{sourceTitle}» буде видалено.} other {# транзакції → «{targetTitle}». «{sourceTitle}» буде видалено.}}"
+msgid "{count, plural, one {# transaction moves to “{targetTitle}”. “{sourceTitle}” will be deleted.} other {# transactions move to “{targetTitle}”. “{sourceTitle}” will be deleted.}}"
+msgstr "{count, plural, one {# транзакція переходить до «{targetTitle}». «{sourceTitle}» буде видалено.} few {# транзакції переходять до «{targetTitle}». «{sourceTitle}» буде видалено.} many {# транзакцій переходять до «{targetTitle}». «{sourceTitle}» буде видалено.} other {# транзакції переходять до «{targetTitle}». «{sourceTitle}» буде видалено.}}"
 
 #: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx
 msgid "{count, plural, one {# uncategorized} other {# uncategorized}}"
@@ -191,21 +195,25 @@ msgstr "{count, plural, one {# майбутній платіж} few {# майб�
 msgid "{count, plural, one {Choose an icon for # category} other {Choose icons for # categories}}"
 msgstr "{count, plural, one {Виберіть іконку для # категорії} few {Виберіть іконки для # категорій} many {Виберіть іконки для # категорій} other {Виберіть іконки для # категорії}}"
 
+#: src/category/components/category-default-icon-button/category-default-icon-button.tsx
+msgid "{count, plural, one {It still uses the default icon} other {They still use the default icon}}"
+msgstr "{count, plural, one {Вона досі має типову іконку} few {Вони досі мають типову іконку} many {Вони досі мають типову іконку} other {Вони досі мають типову іконку}}"
+
 #: src/tag/hooks/use-delete-tag.hook.ts
 msgid "{count, plural, one {It will be removed from # transaction. The transaction stays.} other {It will be removed from # transactions. The transactions stay.}}"
 msgstr "{count, plural, one {Його буде знято з # транзакції. Транзакція залишиться.} few {Його буде знято з # транзакцій. Транзакції залишаться.} many {Його буде знято з # транзакцій. Транзакції залишаться.} other {Його буде знято з # транзакції. Транзакції залишаться.}}"
 
 #: src/category/hooks/use-move-and-delete-category.hook.ts
-msgid "{count, plural, one {Its # transaction moves to the category you pick, and “{sourceTitle}” is deleted.} other {Its # transactions move to the category you pick, and “{sourceTitle}” is deleted.}}"
-msgstr "{count, plural, one {Її # транзакція перейде до обраної категорії, а «{sourceTitle}» буде видалено.} few {Її # транзакції перейдуть до обраної категорії, а «{sourceTitle}» буде видалено.} many {Її # транзакцій перейдуть до обраної категорії, а «{sourceTitle}» буде видалено.} other {Її # транзакції перейдуть до обраної категорії, а «{sourceTitle}» буде видалено.}}"
+msgid "{count, plural, one {Move # transaction to “{targetTitle}” and delete “{sourceTitle}”} other {Move # transactions to “{targetTitle}” and delete “{sourceTitle}”}}"
+msgstr "{count, plural, one {Перемістити # транзакцію до «{targetTitle}» і видалити «{sourceTitle}»} few {Перемістити # транзакції до «{targetTitle}» і видалити «{sourceTitle}»} many {Перемістити # транзакцій до «{targetTitle}» і видалити «{sourceTitle}»} other {Перемістити # транзакції до «{targetTitle}» і видалити «{sourceTitle}»}}"
+
+#: src/category/hooks/use-move-and-delete-category.hook.ts
+msgid "{count, plural, one {Pick the category its # transaction moves to.} other {Pick the category its # transactions move to.}}"
+msgstr "{count, plural, one {Виберіть категорію, куди перейде її # транзакція.} few {Виберіть категорію, куди перейдуть її # транзакції.} many {Виберіть категорію, куди перейдуть її # транзакцій.} other {Виберіть категорію, куди перейдуть її # транзакції.}}"
 
 #: src/categorize-inbox/components/categorize-inbox-payments-bar/categorize-inbox-payments-bar.tsx
 msgid "{count, plural, one {Use # payment} other {Use # payments}}"
 msgstr "{count, plural, one {Використати # платіж} few {Використати # платежі} many {Використати # платежів} other {Використати # платежу}}"
-
-#: src/category/components/category-default-icon-button/category-default-icon-button.tsx
-msgid "{count, plural, one {Uses the default icon} other {Use the default icon}}"
-msgstr "{count, plural, one {Має стандартну іконку} few {Мають стандартну іконку} many {Мають стандартну іконку} other {Мають стандартну іконку}}"
 
 #: src/categorize-inbox/components/categorize-inbox-payments-summary/categorize-inbox-payments-summary.tsx
 msgid "{count} of {rowCount} selected"
@@ -3172,10 +3180,6 @@ msgstr "Загальне"
 msgid "Generate English names and search keywords automatically."
 msgstr "Автоматично створювати англійські назви й ключові слова для пошуку."
 
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx
-msgid "Generated automatically so search finds this by other words too."
-msgstr "Створено автоматично, щоб пошук знаходив це й за іншими словами."
-
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "Generic"
 msgstr "Загальний"
@@ -3511,6 +3515,10 @@ msgstr "Ключ відхилено"
 #: src/app/bank-integration-key.tsx
 msgid "Key updated"
 msgstr "Ключ оновлено"
+
+#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx
+msgid "Keywords: {keywords} · added automatically for search"
+msgstr "Ключові слова: {keywords} · додано автоматично для пошуку"
 
 #: src/settings/components/language-selector/language-selector.tsx
 msgid "Language"
@@ -5358,8 +5366,8 @@ msgid "Search inactive accounts..."
 msgstr "Шукати неактивні рахунки..."
 
 #: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx
-msgid "Search keywords: {keywords}"
-msgstr "Ключові слова: {keywords}"
+msgid "Search keywords: {keywords}. Generated automatically so search finds this by other words too."
+msgstr "Ключові слова для пошуку: {keywords}. Згенеровано автоматично, щоб пошук знаходив це й за іншими словами."
 
 #: src/app/language-selector.tsx
 msgid "Search languages..."

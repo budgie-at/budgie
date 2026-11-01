@@ -23,7 +23,7 @@ interface Props {
 
 const pressableVariants = cva('h-full w-[70px]', { variants: { variant: { pill: 'py-xxs pl-sm', fill: '' } } });
 
-const fillVariants = cva('flex-1 items-center justify-center bg-destructive-fill active:opacity-80', {
+const fillVariants = cva('flex-1 items-center justify-center bg-destructive-action active:opacity-80', {
     variants: { variant: { pill: 'rounded-2xl', fill: '' } }
 });
 

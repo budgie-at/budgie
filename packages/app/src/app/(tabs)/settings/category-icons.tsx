@@ -2,7 +2,7 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { useEffect, useState } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
 import { isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -28,8 +28,7 @@ export default function CategoryIconsPage() {
     const catalog = useIconSearchCatalog();
 
     const categoriesWithDefaultIcon = (categories ?? []).filter(category => needsIconChoice(category, catalog.entries));
-    const isPending = isLoading || catalog.isLoading;
-    const isRead = !isPending && !isFailure && !catalog.isFailure;
+    const isRead = !isLoading && !catalog.isLoading && !isFailure && !catalog.isFailure;
     const isAllFixed = isRead && hadCategoriesToFix && isEmptyArray(categoriesWithDefaultIcon);
 
     if (isRead && isNotEmptyArray(categoriesWithDefaultIcon) && !hadCategoriesToFix) {
@@ -43,7 +42,7 @@ export default function CategoryIconsPage() {
     }, [isAllFixed]);
 
     const doneState = isAllFixed ? null : (
-        <LoadingContent isLoading={isPending}>
+        <LoadingContent isLoading={!isRead}>
             <SearchablePageEmptyState
                 icon={UserIconNameEnum.Sparkles}
                 title={t`All categories have icons`}
@@ -55,24 +54,25 @@ export default function CategoryIconsPage() {
         retry();
         catalog.retry();
     };
-    const fallback = isPending || isRead ? doneState : <SearchablePageErrorState onRetry={handleRetry} />;
+    const subtitle = isNotEmptyArray(categoriesWithDefaultIcon)
+        ? t({
+              message: plural(categoriesWithDefaultIcon.length, {
+                  one: 'Tap a suggestion to replace the default icon',
+                  other: 'Tap a suggestion to replace each default icon'
+              })
+          })
+        : void 0;
+    const fallback = isFailure || catalog.isFailure ? <SearchablePageErrorState onRetry={handleRetry} /> : doneState;
 
     return (
         <CollapsibleChromePage
             title={t`Category Icons`}
+            subtitle={subtitle}
             leading={<GoBackButton onPress={handleGoBack} />}
             testID={CategoryIconsPageSelector.Container}
         >
             {isNotEmptyArray(categoriesWithDefaultIcon) ? (
                 <View className="gap-y-3xl">
-                    <Text className="text-secondary-foreground px-3xl text-[13px] leading-[18px]">
-                        {t({
-                            message: plural(categoriesWithDefaultIcon.length, {
-                                one: 'This category still uses the default icon. Tap a suggestion to set it.',
-                                other: 'These categories still use the default icon. Tap a suggestion to set one.'
-                            })
-                        })}
-                    </Text>
                     {categoriesWithDefaultIcon.map(category => (
                         <CategoryIconFixRow key={category.id} category={category} />
                     ))}

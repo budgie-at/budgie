@@ -1,4 +1,4 @@
-import { Trans } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
@@ -12,6 +12,7 @@ interface Props {
 }
 
 export const AiTranslationFields = ({ title, titleEn, titleTags }: Props) => {
+    const { t } = useLingui();
     const keywords = (titleTags ?? '')
         .split(',')
         .map(keyword => keyword.trim())
@@ -32,13 +33,14 @@ export const AiTranslationFields = ({ title, titleEn, titleTags }: Props) => {
                 </Text>
             ) : null}
             {isNotEmptyString(keywords) ? (
-                <Text className="text-secondary-foreground text-[13px] leading-[18px]" testID={AiTranslationFieldsSelector.TagsField}>
-                    <Trans>Search keywords: {keywords}</Trans>
+                <Text
+                    className="text-secondary-foreground text-[13px] leading-[18px]"
+                    accessibilityLabel={t`Search keywords: ${keywords}. Generated automatically so search finds this by other words too.`}
+                    testID={AiTranslationFieldsSelector.TagsField}
+                >
+                    <Trans>Keywords: {keywords} · added automatically for search</Trans>
                 </Text>
             ) : null}
-            <Text className="text-secondary-foreground text-[13px] leading-[18px]">
-                <Trans>Generated automatically so search finds this by other words too.</Trans>
-            </Text>
         </View>
     );
 };

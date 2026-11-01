@@ -197,6 +197,10 @@ class IconSearchService {
             return IconSearchService.NAME_WORD_SCORE;
         }
 
+        if (this.hasPrefix(name, term)) {
+            return IconSearchService.NAME_PREFIX_SCORE;
+        }
+
         const exactOffset = keywords.indexOf(`|${term}|`, name.length - 1);
 
         if (exactOffset >= 0) {

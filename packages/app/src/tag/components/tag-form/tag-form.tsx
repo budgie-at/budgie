@@ -160,22 +160,25 @@ export const TagForm = (props: Props) => {
                 <EntityEditSections
                     deleteLabel={t`Delete tag`}
                     deleteFooter={deleteFooter}
+                    deleteTestID={TagFormSelector.Delete}
                     onDelete={handleDelete}
                     isDisabled={isBusy}
                     mutatingOperation={operation.mutatingOperation}
                 >
-                    <GroupedListSection footer={mergeFooter}>
-                        <GroupedListActionRow
-                            label={t`Merge into another tag…`}
-                            icon={UserIconNameEnum.GitMerge}
-                            onPress={handleMerge}
-                            isDisabled={isBusy}
-                            isLoading={operation.mutatingOperation === EntityOperationEnum.MERGE}
-                            labelClassName="text-primary"
-                            trailing={<Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />}
-                            testID={TagFormSelector.Merge}
-                        />
-                    </GroupedListSection>
+                    {transactionCount === 0 ? null : (
+                        <GroupedListSection footer={mergeFooter}>
+                            <GroupedListActionRow
+                                label={t`Merge into another tag…`}
+                                icon={UserIconNameEnum.GitMerge}
+                                onPress={handleMerge}
+                                isDisabled={isBusy}
+                                isLoading={operation.mutatingOperation === EntityOperationEnum.MERGE}
+                                labelClassName="text-primary"
+                                trailing={<Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />}
+                                testID={TagFormSelector.Merge}
+                            />
+                        </GroupedListSection>
+                    )}
                 </EntityEditSections>
             ) : null}
         </EntityFormPage>

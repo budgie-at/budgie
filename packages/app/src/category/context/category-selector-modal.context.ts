@@ -1,6 +1,8 @@
 import { ColorPaletteVariant } from '../../@generic/type/color-palette-variant.type';
 import { createModalContext } from '../../@generic/utils/create-modal-context/create-modal-context.util';
 
+import type { DestinationCommitCopyInterface } from '../../@generic/interface/destination-commit-copy.interface';
+
 export interface CategorySelectorModalParams {
     readonly initialCategoryId?: number | null;
     readonly excludeCategoryIds?: number[];
@@ -8,7 +10,7 @@ export interface CategorySelectorModalParams {
     readonly title?: string;
     readonly description?: string;
     readonly commitLabel?: string;
-    readonly getCommitSummary?: (destinationTitle: string) => string;
+    readonly getCommitCopy?: (destinationTitle: string) => DestinationCommitCopyInterface;
 }
 
 export type CategorySelectorResult = number | null;

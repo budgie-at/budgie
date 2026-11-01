@@ -78,6 +78,8 @@ describe('IconSearchService', () => {
 
             expect(suggestions.filter(icon => /^reicon:(?:Folder|Home)/u.test(icon))).toEqual([]);
             expect(suggestions).toEqual(expect.arrayContaining(['reicon:Briefcase', 'reicon:Laptop', 'reicon:Code']));
+            expect(suggestions.slice(0, 3)).not.toContain('reicon:Projector');
+            expect(suggestions.slice(0, 3)).toEqual(expect.arrayContaining(['reicon:Briefcase']));
         })
     );
 

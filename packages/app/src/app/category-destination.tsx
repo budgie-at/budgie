@@ -9,7 +9,7 @@ export default function CategoryDestinationModal() {
     useModalDismiss(dismissCategorySelector);
     const currentParams = useCategorySelectorModalParams();
 
-    if (!isDefined(currentParams?.title) || !isDefined(currentParams.commitLabel) || !isDefined(currentParams.getCommitSummary)) {
+    if (!isDefined(currentParams?.title) || !isDefined(currentParams.commitLabel) || !isDefined(currentParams.getCommitCopy)) {
         return null;
     }
 
@@ -19,7 +19,7 @@ export default function CategoryDestinationModal() {
             description={currentParams.description}
             excludeCategoryIds={currentParams.excludeCategoryIds ?? []}
             commitLabel={currentParams.commitLabel}
-            getCommitSummary={currentParams.getCommitSummary}
+            getCommitCopy={currentParams.getCommitCopy}
             onSelect={resolveCategorySelector}
         />
     );

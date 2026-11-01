@@ -34,19 +34,26 @@ export const useMoveAndDeleteCategory = () => {
                     title: t`Move “${sourceTitle}” transactions to…`,
                     description: t({
                         message: plural(count, {
-                            one: `Its # transaction moves to the category you pick, and “${sourceTitle}” is deleted.`,
-                            other: `Its # transactions move to the category you pick, and “${sourceTitle}” is deleted.`
+                            one: `Pick the category its # transaction moves to.`,
+                            other: `Pick the category its # transactions move to.`
                         })
                     }),
                     variant: 'primary',
                     commitLabel: t`Move and delete`,
-                    getCommitSummary: targetTitle =>
-                        t({
+                    getCommitCopy: targetTitle => ({
+                        summary: t({
                             message: plural(count, {
-                                one: `# transaction → “${targetTitle}”. “${sourceTitle}” will be deleted.`,
-                                other: `# transactions → “${targetTitle}”. “${sourceTitle}” will be deleted.`
+                                one: `# transaction moves to “${targetTitle}”. “${sourceTitle}” will be deleted.`,
+                                other: `# transactions move to “${targetTitle}”. “${sourceTitle}” will be deleted.`
+                            })
+                        }),
+                        accessibilityLabel: t({
+                            message: plural(count, {
+                                one: `Move # transaction to “${targetTitle}” and delete “${sourceTitle}”`,
+                                other: `Move # transactions to “${targetTitle}” and delete “${sourceTitle}”`
                             })
                         })
+                    })
                 },
                 selectedCategoryId => {
                     resume(Effect.succeed(selectedCategoryId));

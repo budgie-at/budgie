@@ -89,7 +89,7 @@ export const CategoryIconFixRow = ({ category }: Props) => {
             </LoadingContent>
             <GroupedListRow
                 testID={CategoryIconFixRowSelector.ChooseAnother(category.title)}
-                left={<CircleIcon icon={UserIconNameEnum.Ellipsis} variant="ghost" size={36} iconSize={18} radius={18} border={false} />}
+                left={<CircleIcon icon={UserIconNameEnum.Search} variant="ghost" size={36} iconSize={18} radius={18} border={false} />}
                 title={t`Choose another icon…`}
                 onPress={handleOpenIconSelector}
             />

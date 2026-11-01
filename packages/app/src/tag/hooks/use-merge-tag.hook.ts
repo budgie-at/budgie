@@ -21,23 +21,31 @@ export const useMergeTag = () => {
         const description = t({
             message: plural(count, {
                 0: `“${sourceTitle}” is not on any transactions. It is removed after the merge.`,
-                one: `Its # transaction gets the tag you pick, and “${sourceTitle}” is removed.`,
-                other: `Its # transactions get the tag you pick, and “${sourceTitle}” is removed.`
+                one: `Pick the tag that replaces it on # transaction.`,
+                other: `Pick the tag that replaces it on # transactions.`
             })
         });
 
-        const getCommitSummary = (targetTitle: string) =>
-            t({
+        const getCommitCopy = (targetTitle: string) => ({
+            summary: t({
                 message: plural(count, {
                     0: `“${sourceTitle}” merges into “${targetTitle}” and will be removed.`,
-                    one: `# transaction → “${targetTitle}”. “${sourceTitle}” will be removed.`,
-                    other: `# transactions → “${targetTitle}”. “${sourceTitle}” will be removed.`
+                    one: `# transaction gets “${targetTitle}”. “${sourceTitle}” will be removed.`,
+                    other: `# transactions get “${targetTitle}”. “${sourceTitle}” will be removed.`
                 })
-            });
+            }),
+            accessibilityLabel: t({
+                message: plural(count, {
+                    0: `Merge “${sourceTitle}” into “${targetTitle}” and remove it`,
+                    one: `Merge # transaction into “${targetTitle}” and remove “${sourceTitle}”`,
+                    other: `Merge # transactions into “${targetTitle}” and remove “${sourceTitle}”`
+                })
+            })
+        });
 
         return Effect.callback<TagsSelectorResult>(resume => {
             openTagsSelector(
-                { excludeTagIds: [sourceId], title, description, singleSelect: true, commitLabel: t`Merge`, getCommitSummary },
+                { excludeTagIds: [sourceId], title, description, singleSelect: true, commitLabel: t`Merge`, getCommitCopy },
                 selectedTagIds => {
                     resume(Effect.succeed(selectedTagIds));
                 }

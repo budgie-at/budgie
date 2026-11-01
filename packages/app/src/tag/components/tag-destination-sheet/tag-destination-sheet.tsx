@@ -7,7 +7,6 @@ import { DestinationList } from '../../../@generic/component/destination-list/de
 import { DestinationRow } from '../../../@generic/component/destination-row/destination-row';
 import { DestinationSheetFooter } from '../../../@generic/component/destination-sheet-footer/destination-sheet-footer';
 import { DestinationSheet } from '../../../@generic/component/destination-sheet/destination-sheet';
-import { PillButton } from '../../../@generic/component/pill-button/pill-button';
 import { SelectorCreateButton } from '../../../@generic/component/selector-create-button/selector-create-button';
 import { useDestinationSelection } from '../../../@generic/hook/use-destination-selection.hook';
 import { useFormatEntityUsage } from '../../../@generic/hook/use-format-entity-usage.hook';
@@ -17,6 +16,7 @@ import { useTagsWithUsageQuery } from '../../query/use-tags-with-usage.query';
 import { TagEmptyState } from '../tag-empty-state/tag-empty-state';
 import { TagMonogram } from '../tag-monogram/tag-monogram';
 
+import type { DestinationCommitCopyInterface } from '../../../@generic/interface/destination-commit-copy.interface';
 import type { TagEntityInterface } from '@budgie/contracts';
 
 interface Props {
@@ -24,12 +24,12 @@ interface Props {
     readonly description: string | undefined;
     readonly excludeTagIds: readonly number[];
     readonly commitLabel: string;
-    readonly getCommitSummary: (destinationTitle: string) => string;
+    readonly getCommitCopy: (destinationTitle: string) => DestinationCommitCopyInterface;
     readonly onSelect: (tagId: number) => void;
 }
 
 export const TagDestinationSheet = (props: Props) => {
-    const { title, description, excludeTagIds, commitLabel, getCommitSummary, onSelect } = props;
+    const { title, description, excludeTagIds, commitLabel, getCommitCopy, onSelect } = props;
     const { t } = useLingui();
     const [openTagForm] = useTagFormModal();
     const [search, setSearch] = useState('');
@@ -39,9 +39,7 @@ export const TagDestinationSheet = (props: Props) => {
     const destinations = tags?.filter(tag => !excludeTagIds.includes(tag.id));
     const { selected, setSelected, isPending, handleRowSelect, handleCommit } = useDestinationSelection(destinations, onSelect);
     const sections = isDefined(destinations) ? [{ title: t`Your tags`, data: destinations }] : null;
-    const footer = isDefined(selected)
-        ? { summary: getCommitSummary(selected.title), label: commitLabel }
-        : { summary: null, label: t`Pick a tag to continue` };
+    const commitCopy = isDefined(selected) ? getCommitCopy(selected.title) : null;
 
     const handleCreatePress = (defaultTitle: string) => {
         openTagForm({ defaultTitle }, result => {
@@ -93,14 +91,13 @@ export const TagDestinationSheet = (props: Props) => {
                 renderRow={renderRow}
                 emptyState={<TagEmptyState search={search} onClearSearch={handleClearSearch} onCreate={handleCreatePress} />}
             />
-            <DestinationSheetFooter summary={footer.summary}>
-                <PillButton
-                    label={footer.label}
-                    isDisabled={!isDefined(selected)}
-                    onPress={handleCommit}
-                    testID={TagsSelectorModalSelector.CommitButton}
-                />
-            </DestinationSheetFooter>
+            <DestinationSheetFooter
+                commitCopy={commitCopy}
+                commitLabel={commitLabel}
+                pickLabel={t`Pick a tag to continue`}
+                onCommit={handleCommit}
+                testID={TagsSelectorModalSelector.CommitButton}
+            />
         </DestinationSheet>
     );
 };

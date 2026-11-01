@@ -93,7 +93,7 @@ export const EntityListRow = ({ entity, usage, left, testID, isFirst, isLast, on
                 <View ref={frameRef} className={cn(isMenuOpen && 'bg-surface-fill')}>
                     <GroupedListRow
                         testID={testID}
-                        left={left}
+                        left={<View className="min-h-[42px] justify-center">{left}</View>}
                         title={entity.title}
                         subtitle={formatUsage(usage)}
                         onPress={onOpen}

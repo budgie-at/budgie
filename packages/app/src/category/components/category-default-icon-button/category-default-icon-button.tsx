@@ -40,8 +40,8 @@ export const CategoryDefaultIconButton = () => {
                     title={t({ message: plural(count, { one: 'Choose an icon for # category', other: 'Choose icons for # categories' }) })}
                     subtitle={t({
                         message: plural(count, {
-                            one: 'Uses the default icon',
-                            other: 'Use the default icon'
+                            one: 'It still uses the default icon',
+                            other: 'They still use the default icon'
                         })
                     })}
                     onPress={handlePress}
