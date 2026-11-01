@@ -41,13 +41,13 @@ export const CategorizeInboxMonthlyBar = ({ count, maxCount, index, monthLabel, 
 
     return (
         <View className="min-w-0 flex-1 items-center gap-y-xs">
-            <Text className="text-secondary-foreground h-[13px] text-[11px] leading-[13px] tabular-nums" numberOfLines={1}>
+            <Text className="text-secondary-foreground h-[15px] text-[12px] leading-[15px] tabular-nums" numberOfLines={1}>
                 {countLabel}
             </Text>
             <View className="w-full items-center justify-end" style={stripStyle}>
                 <Animated.View entering={entering} className={barClassName} style={style} />
             </View>
-            <Text className="text-secondary-foreground text-[11px] leading-[13px]" numberOfLines={1}>
+            <Text className="text-secondary-foreground text-[12px] leading-[15px]" numberOfLines={1}>
                 {monthLabel}
             </Text>
         </View>

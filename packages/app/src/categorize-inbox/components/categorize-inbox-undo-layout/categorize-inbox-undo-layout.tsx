@@ -15,6 +15,8 @@ interface Props {
     readonly children?: ReactNode;
 }
 
+const UNDO_HIT_SLOP = { top: 4, bottom: 4 } as const;
+
 export const CategorizeInboxUndoLayout = ({ title, description, onUndo, children }: Props) => (
     <View className="h-14 flex-row items-center gap-x-md" accessibilityLiveRegion="polite" testID={CategorizeInboxUndoBarSelector.Bar}>
         <View className="flex-1" accessible>
@@ -31,6 +33,7 @@ export const CategorizeInboxUndoLayout = ({ title, description, onUndo, children
         <HapticPressable
             onPress={onUndo}
             className="h-9 flex-row items-center gap-x-xs rounded-full bg-primary px-xl"
+            hitSlop={UNDO_HIT_SLOP}
             accessibilityRole="button"
             testID={CategorizeInboxUndoBarSelector.UndoButton}
         >

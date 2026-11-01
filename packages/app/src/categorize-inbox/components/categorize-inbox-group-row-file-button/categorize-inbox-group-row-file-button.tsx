@@ -1,22 +1,21 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { testID } from '../../../@generic/utils/test-id.util';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
-import { CategorizeInboxTonalCapsuleVariantEnum } from '../../enum/categorize-inbox-tonal-capsule-variant.enum';
 import { formatCategorizeInboxMerchantTitle } from '../../utils/format-categorize-inbox-merchant-title.util';
-import { CategorizeInboxGroupRowPill } from '../categorize-inbox-group-row-pill/categorize-inbox-group-row-pill';
+import { CategorizeInboxGroupRowActionButton } from '../categorize-inbox-group-row-action-button/categorize-inbox-group-row-action-button';
 import { CategorizeInboxGroupRowSelector } from '../categorize-inbox-group-row/categorize-inbox-group-row.selector';
 
 import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
 
 interface Props {
     readonly cluster: Pick<CategorizeInboxClusterInterface, 'key' | 'displayTitle' | 'candidateLabelIds'>;
-    readonly text: string;
 }
 
-export const CategorizeInboxGroupRowFileButton = ({ cluster, text }: Props) => {
+export const CategorizeInboxGroupRowFileButton = ({ cluster }: Props) => {
     const { t } = useLingui();
     const { strategy, acceptableAssignments, assign } = useCategorizeInboxContext();
 
@@ -34,9 +33,8 @@ export const CategorizeInboxGroupRowFileButton = ({ cluster, text }: Props) => {
     }
 
     return (
-        <CategorizeInboxGroupRowPill
-            variant={CategorizeInboxTonalCapsuleVariantEnum.POSITIVE}
-            text={text}
+        <CategorizeInboxGroupRowActionButton
+            icon={UserIconNameEnum.Check}
             label={t`File ${merchantTitle} as ${candidateTitle}`}
             isDisabled={!isNotEmptyArray(assignments)}
             onPress={handlePress}

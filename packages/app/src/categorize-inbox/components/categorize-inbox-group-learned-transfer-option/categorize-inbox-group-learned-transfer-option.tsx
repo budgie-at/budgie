@@ -21,7 +21,6 @@ export const CategorizeInboxGroupLearnedTransferOption = ({ account }: Props) =>
             icon={UserIconNameEnum.ArrowLeftRight}
             title={t`Transfer to ${title}`}
             subtitle={t`Suggested`}
-            variant="positive"
         />
     );
 };

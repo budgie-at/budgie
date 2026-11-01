@@ -1,21 +1,20 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { isEmptyArray } from '@rnw-community/shared';
 
 import { testID } from '../../../@generic/utils/test-id.util';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
-import { CategorizeInboxTonalCapsuleVariantEnum } from '../../enum/categorize-inbox-tonal-capsule-variant.enum';
-import { CategorizeInboxGroupRowPill } from '../categorize-inbox-group-row-pill/categorize-inbox-group-row-pill';
+import { CategorizeInboxGroupRowActionButton } from '../categorize-inbox-group-row-action-button/categorize-inbox-group-row-action-button';
 import { CategorizeInboxGroupRowSelector } from '../categorize-inbox-group-row/categorize-inbox-group-row.selector';
 
 import type { CategorizeInboxClusterInterface } from '@budgie/categorization';
 
 interface Props {
     readonly cluster: CategorizeInboxClusterInterface;
-    readonly text: string;
 }
 
-export const CategorizeInboxGroupRowCashButton = ({ cluster, text }: Props) => {
+export const CategorizeInboxGroupRowCashButton = ({ cluster }: Props) => {
     const { t } = useLingui();
     const { includedRows, moveToCash, cashWithdrawalTransactionIds } = useCategorizeInboxContext();
 
@@ -29,9 +28,8 @@ export const CategorizeInboxGroupRowCashButton = ({ cluster, text }: Props) => {
     };
 
     return (
-        <CategorizeInboxGroupRowPill
-            variant={CategorizeInboxTonalCapsuleVariantEnum.CASH}
-            text={text}
+        <CategorizeInboxGroupRowActionButton
+            icon={UserIconNameEnum.Banknote}
             label={t`Move ${displayTitle} to cash`}
             isDisabled={isEmptyArray(transactionIds)}
             onPress={handlePress}

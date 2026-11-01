@@ -14,15 +14,7 @@ export const CategorizeInboxGroupLabelOption = ({ label, isBestMatch }: Props) =
     const { t } = useLingui();
 
     if (isBestMatch) {
-        return (
-            <CategorizeInboxLeadOption
-                choice={label.id}
-                icon={label.icon}
-                title={label.title}
-                subtitle={t`Best match`}
-                variant="positive"
-            />
-        );
+        return <CategorizeInboxLeadOption choice={label.id} icon={label.icon} title={label.title} subtitle={t`Best match`} />;
     }
 
     return <CategorizeInboxChoiceRow choice={label.id} icon={label.icon} title={label.title} />;

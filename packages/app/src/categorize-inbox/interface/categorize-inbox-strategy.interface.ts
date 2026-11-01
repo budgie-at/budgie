@@ -13,7 +13,6 @@ export interface CategorizeInboxStrategyInterface {
     readonly moreLabels: string;
     readonly writeFailed: string;
     readonly assignAs: (labelTitle: string) => string;
-    readonly assignedCount: (count: number) => string;
     readonly doneThisSession: (count: number) => string;
     readonly rowsAtom: typeof uncategorizedRowsAtom;
     readonly evidenceAtom: typeof categoryEvidenceAtom;
