@@ -1,4 +1,3 @@
-import { RecurringSeriesKindEnum } from '@budgie/contracts';
 import { addDays } from 'date-fns/addDays';
 import { addMonths } from 'date-fns/addMonths';
 import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
@@ -273,7 +272,7 @@ export const detectRecurringSeries = (charges: readonly RecurringChargeInterface
     const groups = new Map<string, RecurringChargeInterface[]>();
     for (const charge of charges) {
         const key = identity(charge);
-        if (charge.kind === RecurringSeriesKindEnum.EXPENSE && isNotEmptyString(key)) {
+        if (isNotEmptyString(key)) {
             const group = groups.get(key) ?? [];
             group.push(charge);
             groups.set(key, group);

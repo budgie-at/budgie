@@ -15,7 +15,7 @@ export default function TransactionFeeModal() {
     }
 
     return (
-        <View className="bg-primary-reverse" collapsable={false}>
+        <View className="bg-sheet-surface" collapsable={false}>
             <Stack.Screen options={screenOptions} />
             <TransactionFeeModalContent
                 accountId={currentParams.accountId}

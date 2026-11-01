@@ -22,7 +22,7 @@ export default function ConvertToInstallmentModal() {
     }
 
     return (
-        <View className="bg-primary-reverse" collapsable={false} testID={ConvertToInstallmentModalSelector.Page}>
+        <View className="bg-sheet-surface" collapsable={false} testID={ConvertToInstallmentModalSelector.Page}>
             <Stack.Screen options={screenOptions} />
             <ConvertToInstallmentContent params={currentParams} onResolve={resolveConvertToInstallment} />
         </View>

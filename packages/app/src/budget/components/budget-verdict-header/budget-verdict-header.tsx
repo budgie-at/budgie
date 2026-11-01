@@ -5,19 +5,19 @@ import { Text, View } from 'react-native';
 
 import { StatusLabel } from '../../../@generic/component/status-label/status-label';
 import { BudgetSelector } from '../../budget.selector';
-import { BUDGET_PACE_STATUS_LABEL } from '../../constant/budget-pace-status-label.constant';
-import { BUDGET_PACE_VARIANT } from '../../constant/budget-pace-variant.constant';
 
-import type { BudgetProjectionScopeInterface } from '@budgie/budget';
+import type { BudgetDisplayStatusInterface } from '../../interface/budget-display-status.interface';
+import type { BudgetProjectionInterface } from '@budgie/budget';
 
 interface Props {
-    readonly scope: BudgetProjectionScopeInterface;
-    readonly daysLeft: number;
+    readonly projection: Pick<BudgetProjectionInterface, 'overall' | 'daysLeft'>;
+    readonly displayStatus: BudgetDisplayStatusInterface;
 }
 
-export const BudgetVerdictHeader = ({ scope, daysLeft }: Props) => {
+export const BudgetVerdictHeader = ({ projection, displayStatus }: Props) => {
     const { t } = useLingui();
-    const statusLabel = t(BUDGET_PACE_STATUS_LABEL[scope.status]);
+    const { overall: scope, daysLeft } = projection;
+    const statusLabel = t(displayStatus.label);
     const daysLeftLabel = t({ message: plural(daysLeft, { one: '# day left', other: '# days left' }) });
     const accessibilityLabel = t`${statusLabel}, ${daysLeftLabel}.`;
 
@@ -26,7 +26,7 @@ export const BudgetVerdictHeader = ({ scope, daysLeft }: Props) => {
             <StatusLabel
                 label={statusLabel}
                 trailing={daysLeftLabel}
-                tone={BUDGET_PACE_VARIANT[scope.status]}
+                tone={displayStatus.tone}
                 testID={BudgetSelector.DetailsVerdictStatus}
             />
 

@@ -15,7 +15,7 @@ interface Props {
     readonly dash: string;
 }
 
-const LABEL_LIFT = 10;
+const LABEL_LIFT = 19;
 
 export const BudgetForecastRunOut = ({ x, top, bottom, width, runOutAt, fontSize, dash }: Props) => {
     const { t } = useLingui();
@@ -29,7 +29,7 @@ export const BudgetForecastRunOut = ({ x, top, bottom, width, runOutAt, fontSize
             <StyledSvgText
                 x={x}
                 y={labelY}
-                fillClassName="accent-warning-foreground"
+                fillClassName="accent-warning-strong"
                 fontSize={fontSize}
                 fontWeight="600"
                 textAnchor={textAnchor}

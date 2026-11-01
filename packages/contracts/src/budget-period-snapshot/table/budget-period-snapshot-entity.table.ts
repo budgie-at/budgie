@@ -19,6 +19,7 @@ export const BudgetPeriodSnapshotEntityTable = sqliteTable(
         otherLimit: int('other_limit').notNull(),
         otherSpent: int('other_spent').notNull(),
         otherCarriedIn: int('other_carried_in').notNull().default(0),
+        otherFundCovered: int('other_fund_covered').notNull().default(0),
         otherRolloverMode: text('other_rollover_mode', { enum: convertEnumToDrizzleEnum(BudgetRolloverModeEnum) })
             .$type<BudgetRolloverModeEnum>()
             .notNull()

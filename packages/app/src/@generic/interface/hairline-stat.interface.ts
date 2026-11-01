@@ -4,5 +4,6 @@ export interface HairlineStatInterface {
     readonly label: string;
     readonly value: string;
     readonly variant: ColorPaletteVariant;
+    readonly valueClassName?: string;
     readonly testID?: string;
 }

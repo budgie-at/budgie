@@ -346,6 +346,8 @@ export type { RuleActionCreateEntityInterface } from './rule-action/entity/rule-
 
 export { BudgetPeriodEnum } from './budget/enum/budget-period.enum';
 export { BudgetRolloverModeEnum } from './budget/enum/budget-rollover-mode.enum';
+export { BudgetKindEnum } from './budget/enum/budget-kind.enum';
+export { BudgetLimitSourceEnum } from './budget/enum/budget-limit-source.enum';
 export { BudgetEntityTable } from './budget/table/budget-entity.table';
 export type { BudgetEntityInterface } from './budget/entity/budget-entity.interface';
 export type { BudgetCreateEntityInterface } from './budget/entity/budget-create-entity.interface';
@@ -364,6 +366,16 @@ export type { BudgetPeriodSnapshotWithCategoriesEntityInterface } from './budget
 export { BudgetPeriodCategorySnapshotEntityTable } from './budget-period-category-snapshot/table/budget-period-category-snapshot-entity.table';
 export type { BudgetPeriodCategorySnapshotEntityInterface } from './budget-period-category-snapshot/entity/budget-period-category-snapshot-entity.interface';
 export type { BudgetPeriodCategorySnapshotCreateEntityInterface } from './budget-period-category-snapshot/entity/budget-period-category-snapshot-create-entity.interface';
+
+export { BudgetLimitChangeReasonEnum } from './budget-limit-change/enum/budget-limit-change-reason.enum';
+export { BudgetLimitChangeEntityTable } from './budget-limit-change/table/budget-limit-change-entity.table';
+export type { BudgetLimitChangeEntityInterface } from './budget-limit-change/entity/budget-limit-change-entity.interface';
+export type { BudgetLimitChangeCreateEntityInterface } from './budget-limit-change/entity/budget-limit-change-create-entity.interface';
+
+export { BudgetSinkingFundEntityTable } from './budget-sinking-fund/table/budget-sinking-fund-entity.table';
+export type { BudgetSinkingFundEntityInterface } from './budget-sinking-fund/entity/budget-sinking-fund-entity.interface';
+export type { BudgetSinkingFundCreateEntityInterface } from './budget-sinking-fund/entity/budget-sinking-fund-create-entity.interface';
+export type { BudgetSinkingFundUpdateEntityInterface } from './budget-sinking-fund/entity/budget-sinking-fund-update-entity.interface';
 
 export { RecurringSeriesKindEnum } from './recurring-series/enum/recurring-series-kind.enum';
 export { RecurringSeriesStatusEnum } from './recurring-series/enum/recurring-series-status.enum';

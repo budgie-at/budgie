@@ -1,15 +1,16 @@
 import { BudgetAlertScopeEnum } from '@budgie/budget';
-import { TransactionTypeEnum } from '@budgie/contracts';
+import { TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { router } from 'expo-router';
 
-import { BudgetSelector } from '../../budget.selector';
+import { isDefined } from '@rnw-community/shared';
+
+import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 import { BudgetDetailsLimitRow } from '../budget-details-limit-row/budget-details-limit-row';
 
 import type { BudgetProjectionScopeInterface } from '@budgie/budget';
 
 interface Props {
     readonly categoryId: number;
-    readonly title: string;
     readonly scope: BudgetProjectionScopeInterface;
     readonly periodStart: Date;
     readonly periodEnd: Date;
@@ -19,8 +20,10 @@ interface Props {
 }
 
 export const BudgetDetailsCategoryRow = (props: Props) => {
-    const { categoryId, title, scope, periodStart, periodEnd, currencySymbol, carriedAmount, staggerIndex } = props;
-    const testIDs = { row: BudgetSelector.DetailsCategoryRow(categoryId), spent: BudgetSelector.DetailsCategorySpentLabel(categoryId) };
+    const { categoryId, scope, periodStart, periodEnd, currencySymbol, carriedAmount, staggerIndex } = props;
+    const { category } = useGetCategoryByIdQuery(categoryId);
+    const title = isDefined(category) ? category.title : '';
+    const icon = isDefined(category) ? category.icon : UserIconNameEnum.Shapes;
     const highlightTarget = { scope: BudgetAlertScopeEnum.CATEGORY, categoryId };
 
     const handlePress = () => {
@@ -41,7 +44,7 @@ export const BudgetDetailsCategoryRow = (props: Props) => {
             carriedAmount={carriedAmount}
             scope={scope}
             currencySymbol={currencySymbol}
-            testIDs={testIDs}
+            icon={icon}
             onPress={handlePress}
             highlightTarget={highlightTarget}
             staggerIndex={staggerIndex}

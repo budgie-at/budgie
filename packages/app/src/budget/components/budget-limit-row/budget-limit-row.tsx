@@ -18,9 +18,11 @@ interface Props {
     readonly limit: number;
     readonly currencySymbol: string;
     readonly spentTestID: string;
+    readonly trailing?: ReactNode;
 }
 
-export const BudgetLimitRow = ({ children, title, carriedAmount, spent, limit, currencySymbol, spentTestID }: Props) => {
+export const BudgetLimitRow = (props: Props) => {
+    const { children, title, carriedAmount, spent, limit, currencySymbol, spentTestID, trailing } = props;
     const { t } = useLingui();
     const formatDigits = useFormatDigits(0);
     const carriedLabel = formatDigits(convertFromMicroUnits(Math.abs(carriedAmount)), currencySymbol);
@@ -41,11 +43,12 @@ export const BudgetLimitRow = ({ children, title, carriedAmount, spent, limit, c
                     {pill}
                 </View>
 
-                <View className="flex-row items-baseline gap-x-xs">
+                <View className="flex-row items-center gap-x-xs">
                     <ProtectedText testID={spentTestID} className="text-sm font-semibold tabular-nums text-primary">
                         {spentLabel}
                     </ProtectedText>
                     <ProtectedText className="text-sm tabular-nums text-secondary-foreground">/ {limitLabel}</ProtectedText>
+                    {trailing}
                 </View>
             </View>
 

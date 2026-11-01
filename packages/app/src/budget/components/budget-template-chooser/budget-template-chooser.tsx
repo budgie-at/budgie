@@ -3,6 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { View } from 'react-native';
 
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { BudgetSelector } from '../../budget.selector';
 import { BudgetTemplateKindEnum } from '../../enum/budget-template-kind.enum';
 import { BudgetSuggestedTemplateCard } from '../budget-suggested-template-card/budget-suggested-template-card';
@@ -20,24 +21,26 @@ export const BudgetTemplateChooser = () => {
     const handleEmpty = () => void navigateToTemplate(BudgetTemplateKindEnum.EMPTY);
 
     return (
-        <View className="gap-y-lg pt-xl">
-            <BudgetSuggestedTemplateCard onPress={handleSuggested} />
+        <View className="pt-xl">
+            <GroupedListSection>
+                <BudgetSuggestedTemplateCard onPress={handleSuggested} />
 
-            <BudgetTemplateOptionCard
-                testID={BudgetSelector.CreateTemplateGenericCard}
-                icon={UserIconNameEnum.LayoutGrid}
-                title={t`Generic`}
-                description={t`A balanced starter budget with common categories`}
-                onPress={handleGeneric}
-            />
+                <BudgetTemplateOptionCard
+                    testID={BudgetSelector.CreateTemplateGenericCard}
+                    icon={UserIconNameEnum.LayoutGrid}
+                    title={t`Starter budget`}
+                    description={t`A balanced starter budget with common categories`}
+                    onPress={handleGeneric}
+                />
 
-            <BudgetTemplateOptionCard
-                testID={BudgetSelector.CreateTemplateEmptyCard}
-                icon={UserIconNameEnum.Plus}
-                title={t`Empty canvas`}
-                description={t`Start from scratch and set every limit yourself`}
-                onPress={handleEmpty}
-            />
+                <BudgetTemplateOptionCard
+                    testID={BudgetSelector.CreateTemplateEmptyCard}
+                    icon={UserIconNameEnum.Plus}
+                    title={t`Empty canvas`}
+                    description={t`Start from scratch and set every limit yourself`}
+                    onPress={handleEmpty}
+                />
+            </GroupedListSection>
         </View>
     );
 };

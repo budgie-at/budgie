@@ -32,6 +32,7 @@ export const AddPinSheet = () => {
     return (
         <PinSheetLayout
             testID={AddPinSheetSelector.Root}
+            className="bg-sheet-surface"
             iconVariant="warning"
             title={t`Lock Budgie with your own PIN`}
             description={t`Right now anyone who can unlock your phone can open Budgie. With a PIN, the file itself is encrypted and only opens with it.`}

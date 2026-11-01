@@ -6,7 +6,7 @@ import type { BudgetForecastPointInterface } from '../../interface/budget-foreca
 interface Props {
     readonly point: BudgetForecastPointInterface;
     readonly label: string;
-    readonly isOver: boolean;
+    readonly labelY: number;
     readonly right: number;
     readonly strokeClassName: string;
     readonly labelClassName: string;
@@ -15,25 +15,33 @@ interface Props {
 
 const RING_RADIUS = 4;
 const RING_STROKE_WIDTH = 2;
-const LABEL_ABOVE_OFFSET = -10;
-const LABEL_BELOW_OFFSET = 28;
+const HALO_WIDTH = 4;
 
-export const BudgetForecastEnd = ({ point, label, isOver, right, strokeClassName, labelClassName, fontSize }: Props) => {
-    const labelY = point.y + (isOver ? LABEL_ABOVE_OFFSET : LABEL_BELOW_OFFSET);
-
-    return (
-        <>
-            <StyledCircle
-                cx={point.x}
-                cy={point.y}
-                r={RING_RADIUS}
-                fill="none"
-                strokeClassName={strokeClassName}
-                strokeWidth={RING_STROKE_WIDTH}
-            />
-            <StyledSvgText x={right} y={labelY} fillClassName={labelClassName} fontSize={fontSize} fontWeight="600" textAnchor="end">
-                {label}
-            </StyledSvgText>
-        </>
-    );
-};
+export const BudgetForecastEnd = ({ point, label, labelY, right, strokeClassName, labelClassName, fontSize }: Props) => (
+    <>
+        <StyledCircle
+            cx={point.x}
+            cy={point.y}
+            r={RING_RADIUS}
+            fill="none"
+            strokeClassName={strokeClassName}
+            strokeWidth={RING_STROKE_WIDTH}
+        />
+        <StyledSvgText
+            x={right}
+            y={labelY}
+            fillClassName="accent-primary-reverse"
+            strokeClassName="accent-primary-reverse"
+            strokeWidth={HALO_WIDTH}
+            strokeLinejoin="round"
+            fontSize={fontSize}
+            fontWeight="600"
+            textAnchor="end"
+        >
+            {label}
+        </StyledSvgText>
+        <StyledSvgText x={right} y={labelY} fillClassName={labelClassName} fontSize={fontSize} fontWeight="600" textAnchor="end">
+            {label}
+        </StyledSvgText>
+    </>
+);
