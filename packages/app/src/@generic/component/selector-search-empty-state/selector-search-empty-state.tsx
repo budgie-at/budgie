@@ -1,14 +1,15 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { Icon } from '../icon/icon';
 
 interface Props {
     readonly query: string;
+    readonly hint: string;
 }
 
-export const SelectorSearchEmptyState = ({ query }: Props) => {
+export const SelectorSearchEmptyState = ({ query, hint }: Props) => {
     const { t } = useLingui();
 
     return (
@@ -17,9 +18,7 @@ export const SelectorSearchEmptyState = ({ query }: Props) => {
             <Text className="text-primary text-center text-[17px] font-semibold" numberOfLines={2}>
                 {t`No results for “${query}”`}
             </Text>
-            <Text className="text-secondary-foreground text-center text-[13px] leading-[18px]">
-                <Trans>Check the spelling or try a code.</Trans>
-            </Text>
+            <Text className="text-secondary-foreground text-center text-[13px] leading-[18px]">{hint}</Text>
         </View>
     );
 };

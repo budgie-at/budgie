@@ -1,34 +1,32 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
+
+import { isString } from '@rnw-community/shared';
 
 import { GroupedListRow } from '../grouped-list-row/grouped-list-row';
 import { Icon } from '../icon/icon';
+import { SelectorRowTitle } from '../selector-row-title/selector-row-title';
 
-import type { ReactNode } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 
 interface Props {
-    readonly title: string;
+    readonly title: string | ReactElement;
     readonly subtitle?: ReactNode;
     readonly left: ReactNode;
     readonly isSelected: boolean;
     readonly onPress: () => void;
     readonly testID?: string;
     readonly titleTestID?: string;
-    readonly titleLanguage?: string;
 }
 
-export const SelectorRow = ({ title, subtitle, left, isSelected, onPress, testID, titleTestID, titleLanguage }: Props) => {
+export const SelectorRow = ({ title, subtitle, left, isSelected, onPress, testID, titleTestID }: Props) => {
     const check = isSelected ? (
         <Icon icon={UserIconNameEnum.Check} size={22} className="text-positive-action" />
     ) : (
         <View className="w-[22px]" />
     );
     const pressableProps = { accessibilityState: { selected: isSelected } };
-    const titleNode = (
-        <Text className="text-primary text-[17px]" numberOfLines={2} testID={titleTestID} accessibilityLanguage={titleLanguage}>
-            {title}
-        </Text>
-    );
+    const titleNode = isString(title) ? <SelectorRowTitle text={title} testID={titleTestID} /> : title;
 
     return (
         <GroupedListRow

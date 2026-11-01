@@ -2009,9 +2009,13 @@ msgstr "Revisa la ortografía o créala como nueva categoría."
 msgid "Check the spelling or create it as a new tag."
 msgstr "Revisa la ortografía o créala como nueva etiqueta."
 
-#: src/@generic/component/selector-search-empty-state/selector-search-empty-state.tsx
-msgid "Check the spelling or try a code."
-msgstr "Revisa la ortografía o prueba con un código."
+#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
+msgid "Check the spelling or try a code like EUR."
+msgstr "Revisa la ortografía o prueba con un código como EUR."
+
+#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
+msgid "Check the spelling or try a ticker like BTC."
+msgstr "Revisa la ortografía o prueba con un ticker como BTC."
 
 #: src/account/constant/account-kind-title.constant.ts
 #: src/app/(tabs)/settings/sync-repairs.tsx
@@ -5424,10 +5428,6 @@ msgid "Other budget: limit reached"
 msgstr "Presupuesto de otros: límite alcanzado"
 
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
-msgid "Other crypto"
-msgstr "Otras criptomonedas"
-
-#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 msgid "Other currencies"
 msgstr "Otras monedas"
 
@@ -6405,6 +6405,10 @@ msgstr "Buscar etiquetas…"
 #: src/@generic/component/selector-modal-search-header/selector-modal-search-header.tsx
 msgid "Search…"
 msgstr "Buscar…"
+
+#: src/@generic/component/section-index-rail/section-index-rail.tsx
+msgid "Section index"
+msgstr "Índice de secciones"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Security"

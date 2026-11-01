@@ -12,7 +12,7 @@ export const flattenSelectorSections = <T>(
             ? [{ key: `section-${sectionIndex}`, title: section.title, item: null, isFirst: sectionIndex === 0, isLast: false }]
             : [];
         const rows = section.data.map((item, index) => ({
-            key: keyExtractor(item),
+            key: `${sectionIndex}-${keyExtractor(item)}`,
             title: null,
             item,
             isFirst: index === 0,

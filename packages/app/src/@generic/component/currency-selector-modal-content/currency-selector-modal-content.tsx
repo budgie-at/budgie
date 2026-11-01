@@ -6,6 +6,7 @@ import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { CurrencySelectorModalSelector } from '../../../app/currency-selector-modal.selector';
 import { useGetInstrumentsByTypeQuery } from '../../../instrument/query/use-get-instruments-by-type.query';
+import { groupByInitial } from '../../utils/group-by-initial.util';
 import { partitionInstruments } from '../../utils/partition-instruments.util';
 import { rankInstrumentSearch } from '../../utils/rank-instrument-search.util';
 import { CurrencySelectorCard } from '../currency-selector-card/currency-selector-card';
@@ -28,12 +29,14 @@ export const CurrencySelectorModalContent = ({ instrumentType, selectedInstrumen
 
     const isCrypto = instrumentType === InstrumentTypeEnum.CRYPTO;
     const title = isCrypto ? t`Crypto` : t`Currency`;
+    const emptyHint = isCrypto ? t`Check the spelling or try a ticker like BTC.` : t`Check the spelling or try a code like EUR.`;
     const searchPlaceholder = isCrypto ? t`Search crypto` : t`Search currencies`;
     const { selected, featured, other } = partitionInstruments(instruments, selectedInstrumentId, instrumentType);
+    const otherSections = isCrypto ? groupByInitial(other) : [{ title: t`Other currencies`, data: other }];
     const browseSections = [
         { title: t`Selected`, data: selected },
         { title: isCrypto ? t`Top by market cap` : t`Common`, data: featured },
-        { title: isCrypto ? t`Other crypto` : t`Other currencies`, data: other }
+        ...otherSections
     ];
     const sections = (
         isNotEmptyString(search.trim()) ? [{ title: t`Results`, data: rankInstrumentSearch(instruments, search) }] : browseSections
@@ -48,6 +51,7 @@ export const CurrencySelectorModalContent = ({ instrumentType, selectedInstrumen
             name={item.name}
             type={item.type}
             onSelect={onSelect}
+            highlight={search.trim()}
         />
     );
 
@@ -65,7 +69,7 @@ export const CurrencySelectorModalContent = ({ instrumentType, selectedInstrumen
             sections={sections}
             keyExtractor={keyExtractor}
             renderItem={renderItem}
-            emptyState={<SelectorSearchEmptyState query={search.trim()} />}
+            emptyState={<SelectorSearchEmptyState query={search.trim()} hint={emptyHint} />}
         />
     );
 };

@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 
 import { FittedSheetSurface } from '../@generic/component/fitted-sheet-surface/fitted-sheet-surface';
 import { GroupedListSection } from '../@generic/component/grouped-list-section/grouped-list-section';
+import { SelectorRowTitle } from '../@generic/component/selector-row-title/selector-row-title';
 import { SelectorRow } from '../@generic/component/selector-row/selector-row';
 import { SheetTitleRow } from '../@generic/component/sheet-title-row/sheet-title-row';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
@@ -51,8 +52,7 @@ export default function LanguageSelectorModal() {
                         <Text className={codeVariants({ isSelected })}>{item.code.toUpperCase()}</Text>
                     </View>
                 }
-                title={title}
-                titleLanguage={item.code}
+                title={<SelectorRowTitle text={title} language={item.code} />}
                 subtitle={subtitle}
             />
         );

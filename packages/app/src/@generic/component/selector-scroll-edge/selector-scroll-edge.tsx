@@ -13,8 +13,8 @@ export const SelectorScrollEdge = ({ scrollOffset, top }: Props) => {
 
     return (
         <Animated.View pointerEvents="none" className="absolute left-0 right-0 z-20" style={animatedStyle}>
-            <View className="h-hairline bg-surface-separator" />
-            <View className="h-[16px] bg-linear-to-b from-surface to-surface/0" />
+            <View className="h-hairline bg-surface-separator/50" />
+            <View className="h-[12px] bg-linear-to-b from-surface to-surface/0" />
         </Animated.View>
     );
 };
