@@ -44,8 +44,9 @@ export const CategorizeInboxOneOffsList = () => {
 
     const groupsText = t({ message: plural(groupCount, { one: '# group', other: '# groups' }) });
     const paymentsText = t({ message: plural(paymentCount, { one: '# payment', other: '# payments' }) });
+    const subtitleText = groupCount === paymentCount ? paymentsText : `${groupsText} · ${paymentsText}`;
     const header = (
-        <Text className="text-secondary-foreground pb-3xl text-center text-[15px] leading-[20px] tabular-nums">{`${groupsText} · ${paymentsText}`}</Text>
+        <Text className="text-secondary-foreground pb-3xl text-center text-[15px] leading-[20px] tabular-nums">{subtitleText}</Text>
     );
 
     return (

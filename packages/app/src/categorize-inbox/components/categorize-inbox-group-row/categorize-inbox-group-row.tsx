@@ -1,17 +1,16 @@
 import { CategorizeInboxSectionEnum } from '@budgie/categorization';
 import { UserIconNameEnum } from '@budgie/contracts';
 import { Link } from 'expo-router';
-import { Text, View } from 'react-native';
+import { useWindowDimensions, View } from 'react-native';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { testID } from '../../../@generic/utils/test-id.util';
-import { formatCategorizeInboxMerchantTitle } from '../../utils/format-categorize-inbox-merchant-title.util';
 import { CategorizeInboxCardRow } from '../categorize-inbox-card-row/categorize-inbox-card-row';
-import { CategorizeInboxGroupRowAmount } from '../categorize-inbox-group-row-amount/categorize-inbox-group-row-amount';
 import { CategorizeInboxGroupRowCashButton } from '../categorize-inbox-group-row-cash-button/categorize-inbox-group-row-cash-button';
+import { CategorizeInboxGroupRowColumns } from '../categorize-inbox-group-row-columns/categorize-inbox-group-row-columns';
 import { CategorizeInboxGroupRowFileButton } from '../categorize-inbox-group-row-file-button/categorize-inbox-group-row-file-button';
-import { CategorizeInboxGroupRowSubtitle } from '../categorize-inbox-group-row-subtitle/categorize-inbox-group-row-subtitle';
+import { CategorizeInboxGroupRowStackedBody } from '../categorize-inbox-group-row-stacked-body/categorize-inbox-group-row-stacked-body';
 import { CategorizeInboxMerchantBadge } from '../categorize-inbox-merchant-badge/categorize-inbox-merchant-badge';
 
 import { CategorizeInboxGroupRowSelector } from './categorize-inbox-group-row.selector';
@@ -24,25 +23,36 @@ interface Props {
     readonly position: TransactionListRowPositionEnum;
 }
 
+const STACKED_FONT_SCALE = 1.3;
+
 export const CategorizeInboxGroupRow = ({ cluster, position }: Props) => {
-    const { key, displayTitle, section } = cluster;
+    const { fontScale } = useWindowDimensions();
+
+    const { key, section } = cluster;
     const isCash = section === CategorizeInboxSectionEnum.CASH_WITHDRAWALS;
     const hasAction = isCash || section === CategorizeInboxSectionEnum.CONFIDENT;
 
     const href = { pathname: '/categorize/group/[key]', params: { key } } as const;
     const linkClassName = hasAction
-        ? 'min-h-[64px] min-w-0 flex-1 flex-row items-center gap-x-xl py-xl pr-xl pl-3xl active:opacity-70'
-        : 'min-h-[64px] min-w-0 flex-1 flex-row items-center gap-x-xl py-xl pl-3xl active:opacity-70';
+        ? 'min-h-[64px] min-w-0 flex-1 flex-row items-center gap-x-lg py-xl pr-xl pl-3xl active:opacity-70'
+        : 'min-h-[64px] min-w-0 flex-1 flex-row items-center gap-x-lg py-xl pr-3xl pl-3xl active:opacity-70';
+    const body =
+        fontScale >= STACKED_FONT_SCALE ? (
+            <CategorizeInboxGroupRowStackedBody cluster={cluster} />
+        ) : (
+            <CategorizeInboxGroupRowColumns cluster={cluster} />
+        );
     const actionButton = isCash ? (
         <CategorizeInboxGroupRowCashButton cluster={cluster} />
     ) : (
         <CategorizeInboxGroupRowFileButton cluster={cluster} />
     );
-    const chevron = <Icon icon={UserIconNameEnum.ChevronRight} size={13} className="text-secondary-foreground" />;
-    const trailingContent = hasAction ? actionButton : chevron;
-    const trailingSlot = <View className="mr-md w-[72px] items-center justify-center">{trailingContent}</View>;
-    const linkTrailingSlot = hasAction ? null : trailingSlot;
-    const rowTrailingSlot = hasAction ? trailingSlot : null;
+    const actionSlot = hasAction ? <View className="mr-md w-[72px] items-center justify-center">{actionButton}</View> : null;
+    const chevronSlot = hasAction ? null : (
+        <View className="w-[24px] items-end">
+            <Icon icon={UserIconNameEnum.ChevronRight} size={13} className="text-secondary-foreground" />
+        </View>
+    );
 
     return (
         <CategorizeInboxCardRow position={position}>
@@ -54,19 +64,11 @@ export const CategorizeInboxGroupRow = ({ cluster, position }: Props) => {
                         {...testID(CategorizeInboxGroupRowSelector.Row, key)}
                     >
                         <CategorizeInboxMerchantBadge cluster={cluster} />
-                        <View className="min-w-0 flex-1 gap-y-xxs">
-                            <View className="flex-row items-start gap-x-md">
-                                <Text className="min-w-0 flex-1 text-[15px] leading-[20px] font-semibold text-primary" numberOfLines={2}>
-                                    {formatCategorizeInboxMerchantTitle(displayTitle)}
-                                </Text>
-                                <CategorizeInboxGroupRowAmount cluster={cluster} />
-                            </View>
-                            <CategorizeInboxGroupRowSubtitle cluster={cluster} />
-                        </View>
-                        {linkTrailingSlot}
+                        {body}
+                        {chevronSlot}
                     </HapticPressable>
                 </Link>
-                {rowTrailingSlot}
+                {actionSlot}
             </View>
         </CategorizeInboxCardRow>
     );

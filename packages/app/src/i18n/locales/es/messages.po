@@ -58,7 +58,7 @@ msgstr "{0, plural, one {# pago más de {formattedPayment}} other {# pagos más 
 #. placeholder {0}: movedToCashTransactionIds.length
 #. placeholder {0}: oneOffs.reduce((total, cluster) => total + cluster.rows.length, 0)
 #: src/categorize-inbox/components/categorize-inbox-group-hero/categorize-inbox-group-hero.tsx
-#: src/categorize-inbox/components/categorize-inbox-group-row-subtitle/categorize-inbox-group-row-subtitle.tsx
+#: src/categorize-inbox/components/categorize-inbox-group-row-count/categorize-inbox-group-row-count.tsx
 #: src/categorize-inbox/components/categorize-inbox-moved-to-cash-undo/categorize-inbox-moved-to-cash-undo.tsx
 #: src/categorize-inbox/components/categorize-inbox-one-offs-link/categorize-inbox-one-offs-link.tsx
 msgid "{0, plural, one {# payment} other {# payments}}"
@@ -5020,10 +5020,6 @@ msgstr "Ningún gasto coincide con estos filtros"
 #: src/transaction/components/statistics-empty-ledger/statistics-empty-ledger.tsx
 msgid "No spending or income yet"
 msgstr "Aún no hay gastos ni ingresos"
-
-#: src/categorize-inbox/components/categorize-inbox-group-row-subtitle/categorize-inbox-group-row-subtitle.tsx
-msgid "No suggestion"
-msgstr "Sin sugerencia"
 
 #: src/settings/components/sync-repairs-empty-state-card/sync-repairs-empty-state-card.tsx
 msgid "No sync repairs found."
