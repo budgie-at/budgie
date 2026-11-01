@@ -12,11 +12,13 @@ import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Schema from 'effect/Schema';
+import { NotificationFeedbackType } from 'expo-haptics';
 import { useForm } from 'react-hook-form';
 
 import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
+import { useVibration } from '../../@generic/hook/use-vibration.hook';
 import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 import { RulePrefillDataInterface } from '../interface/rule-prefill-data.interface';
@@ -104,6 +106,7 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
     const isEditing = isDefined(ruleId);
     const { isLoading: isSaving, run: runSubmit } = useSingleFlight();
     const { isLoading: isDeleting, run: runDelete } = useSingleFlight();
+    const [hapticNotification] = useVibration();
 
     const form = useForm<RuleCreateInputInterface>({
         resolver: standardSchemaResolver(Schema.toStandardSchemaV1(RuleCreateInputSchema)),
@@ -165,7 +168,12 @@ export const useRuleForm = (options: UseRuleFormOptionsInterface = {}) => {
     const handleSubmit = (values: RuleCreateInputInterface) => {
         void runSubmit(
             submitRule(values).pipe(
-                Effect.tap(() => Effect.sync(() => void onSuccess?.(isEditing ? 'updated' : 'created'))),
+                Effect.tap(() =>
+                    Effect.sync(() => {
+                        hapticNotification(NotificationFeedbackType.Success);
+                        onSuccess?.(isEditing ? 'updated' : 'created');
+                    })
+                ),
                 toastOnFailure(isEditing ? t`Could not update rule` : t`Could not create rule`)
             )
         );

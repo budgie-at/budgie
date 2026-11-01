@@ -1,20 +1,19 @@
-import { RuleWithActionsRelationsEntityInterface, UserIconNameEnum } from '@budgie/contracts';
-import { plural } from '@lingui/core/macro';
+import { RuleWithActionsRelationsEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
-import { View } from 'react-native';
+import { Text } from 'react-native';
 
 import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { SearchablePageList } from '../../../@generic/component/searchable-page-list/searchable-page-list';
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
-import { LEGEND_LIST_HEADER_HEIGHT } from '../../../@generic/constant/legend-list.constant';
 import { RULES_LIST_SIZING } from '../../constant/rules-list-sizing.constant';
 import { useRulesListPageActions } from '../../hooks/use-rules-list-page-actions.hook';
 import { RulesPageSelector } from '../../selector/rules-page.selector';
-import { RuleCard } from '../rule-card/rule-card';
+import { getOverlappingRuleIds } from '../../utils/get-overlapping-rule-ids.util';
 import { RuleEmptyState } from '../rule-empty-state/rule-empty-state';
-import { RuleIndicatorPill } from '../rule-indicator-pill/rule-indicator-pill';
+import { RuleListRow } from '../rule-list-row/rule-list-row';
+import { RulesListHeader } from '../rules-list-header/rules-list-header';
 
 interface Props {
     readonly matchingRuleIds?: readonly number[];
@@ -117,34 +116,23 @@ export const RulesListPage = ({ matchingRuleIds = [], onGoBack }: Props) => {
     const { t } = useLingui();
     const [search, setSearch] = useState('');
     const { rules, handleDeleteRule, handleOpenRule, handleToggleRule } = useRulesListPageActions();
-    const matchingRulesCount = matchingRuleIds.length;
     const isMatchingRulesFilterActive = isNotEmptyArray(matchingRuleIds);
     const visibleRules = isMatchingRulesFilterActive && isDefined(rules) ? rules.filter(rule => matchingRuleIds.includes(rule.id)) : rules;
-    const matchingRulesFilterLabel = t({
-        message: plural(matchingRulesCount, {
-            one: '# matching rule',
-            other: '# matching rules'
-        })
-    });
-    const listHeaderComponent = isMatchingRulesFilterActive ? (
-        <View className="pb-lg items-start">
-            <View testID={RulesPageSelector.MatchingRulesFilter}>
-                <RuleIndicatorPill icon={UserIconNameEnum.Workflow}>{matchingRulesFilterLabel}</RuleIndicatorPill>
-            </View>
-        </View>
-    ) : null;
-
+    const overlappingRuleIds = getOverlappingRuleIds(rules ?? []);
     const searchedRules = searchRules(visibleRules, search);
+    const lastIndex = (searchedRules?.length ?? 0) - 1;
+    const deleteConfirmation = { title: t`Delete this rule?`, description: t`Payments it already changed stay as they are.` };
+    const getDeleteConfirmation = () => deleteConfirmation;
+    const handleClearSearch = () => void setSearch('');
 
     const renderCard = (rule: RuleWithActionsRelationsEntityInterface, index: number) => (
-        <RuleCard
-            testID={RulesPageSelector.RuleCard(index)}
-            switchTestID={RulesPageSelector.RuleCardEnabledSwitch(index)}
-            conditionsTestID={RulesPageSelector.RuleCardConditions(index)}
-            actionsTestID={RulesPageSelector.RuleCardActions(index)}
+        <RuleListRow
+            rule={rule}
+            index={index}
+            isLast={index === lastIndex}
+            hasOverlap={overlappingRuleIds.has(rule.id)}
             onOpen={handleOpenRule}
             onToggle={handleToggleRule}
-            rule={rule}
         />
     );
 
@@ -154,17 +142,22 @@ export const RulesListPage = ({ matchingRuleIds = [], onGoBack }: Props) => {
             title={t`Rules`}
             onGoBack={onGoBack}
             search={search}
-            searchPlaceholder={t`Search...`}
+            searchPlaceholder={t`Search rules`}
             onSearchChange={setSearch}
             searchInputTestID={RulesPageSelector.SearchInput}
         >
             <SearchablePageList
                 data={searchedRules}
-                emptyState={<RuleEmptyState search={search} />}
+                emptyState={<RuleEmptyState search={search} onClearSearch={handleClearSearch} />}
                 onDelete={handleDeleteRule}
+                getDeleteConfirmation={getDeleteConfirmation}
                 renderCard={renderCard}
-                listHeader={listHeaderComponent}
-                estimatedHeaderSize={LEGEND_LIST_HEADER_HEIGHT}
+                listHeader={<RulesListHeader rules={searchedRules ?? []} matchingRulesCount={matchingRuleIds.length} />}
+                listFooter={
+                    <Text className="text-secondary-foreground px-3xl pt-md text-[13px] leading-[18px]">
+                        {t`Rules run top to bottom, and the first match sets the category. Swipe left on a rule to delete it.`}
+                    </Text>
+                }
                 sizing={RULES_LIST_SIZING}
             />
         </SearchablePage>

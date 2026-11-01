@@ -32,14 +32,12 @@ interface Props<T extends IdInterface> {
     renderCard: (item: T, index: number) => ReactNode;
     getDeleteConfirmation?: (item: T) => DeleteConfirmation | undefined;
     listHeader?: ReactElement | null;
-    estimatedHeaderSize?: number;
+    listFooter?: ReactNode;
     sizing?: LegendListSizingInterface<T>;
 }
 
 const FOOTER_SPACER_STYLE = { height: 330 };
 const MAINTAIN_VISIBLE_CONTENT_POSITION = { data: false, size: true };
-
-const listFooter = <View style={FOOTER_SPACER_STYLE} />;
 
 export const SearchablePageList = <T extends IdInterface>({
     data,
@@ -48,7 +46,7 @@ export const SearchablePageList = <T extends IdInterface>({
     renderCard,
     getDeleteConfirmation,
     listHeader: customListHeader,
-    estimatedHeaderSize = LEGEND_LIST_HEADER_HEIGHT,
+    listFooter,
     sizing
 }: Props<T>) => {
     const [notify] = useVibration();
@@ -60,7 +58,7 @@ export const SearchablePageList = <T extends IdInterface>({
     }
 
     const contentContainerStyle = {
-        gap: LEGEND_LIST_CONTENT_GAP,
+        gap: sizing?.contentGap ?? LEGEND_LIST_CONTENT_GAP,
         paddingTop: insets.top + SCREEN_CHROME_CONTENT_INSET_TOP,
         paddingBottom: 220
     };
@@ -91,6 +89,12 @@ export const SearchablePageList = <T extends IdInterface>({
     };
 
     const sharedValues = { scrollOffset: scrollY };
+    const listFooterComponent = (
+        <View>
+            {listFooter}
+            <View style={FOOTER_SPACER_STYLE} />
+        </View>
+    );
 
     return (
         <AnimatedLegendList
@@ -98,13 +102,13 @@ export const SearchablePageList = <T extends IdInterface>({
             data={data}
             contentContainerStyle={contentContainerStyle}
             ListHeaderComponent={customListHeader}
-            estimatedHeaderSize={estimatedHeaderSize}
+            estimatedHeaderSize={LEGEND_LIST_HEADER_HEIGHT}
             renderItem={renderItem}
             keyExtractor={legendListKeyExtractor}
             estimatedItemSize={sizing?.estimatedItemSize}
             getItemType={sizing?.getItemType}
             keyboardShouldPersistTaps="handled"
-            ListFooterComponent={listFooter}
+            ListFooterComponent={listFooterComponent}
             sharedValues={sharedValues}
             recycleItems
             maintainVisibleContentPosition={MAINTAIN_VISIBLE_CONTENT_POSITION}

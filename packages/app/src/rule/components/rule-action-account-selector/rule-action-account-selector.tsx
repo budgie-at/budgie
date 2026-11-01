@@ -8,14 +8,15 @@ import {
 } from '@budgie/contracts';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
-import { Controller, UseControllerReturn, useFormContext, useWatch } from 'react-hook-form';
+import { useController, useFormContext, useWatch } from 'react-hook-form';
+import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { isEnumValue } from '../../../@generic/type-guard/is-enum-value.type-guard';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
-import { RuleSelectorField } from '../rule-selector-field/rule-selector-field';
+import { RuleValuePickerButton } from '../rule-value-picker-button/rule-value-picker-button';
 
 interface Props {
     readonly index: number;
@@ -33,15 +34,15 @@ const hasTransactionTypeCondition = (conditions: RuleConditionCreateInputInterfa
 
 const resolveTransferCopy = (hasExpenseCondition: boolean, hasIncomeCondition: boolean) => {
     if (hasExpenseCondition && !hasIncomeCondition) {
-        return { label: msg`Transfer To Account`, hint: msg`Matched expenses are converted into a transfer to this account.` };
+        return { label: msg`Choose the account it goes to`, hint: msg`Matched expenses are converted into a transfer to this account.` };
     }
 
     if (hasIncomeCondition && !hasExpenseCondition) {
-        return { label: msg`Transfer From Account`, hint: msg`Matched income is converted into a transfer from this account.` };
+        return { label: msg`Choose the account it comes from`, hint: msg`Matched income is converted into a transfer from this account.` };
     }
 
     return {
-        label: msg`Transfer Account`,
+        label: msg`Choose the other account`,
         hint: msg`Only expense and income transactions are converted: expenses transfer to this account, income transfers from it. Other types are left unchanged.`
     };
 };
@@ -50,8 +51,9 @@ export const RuleActionAccountSelector = ({ index, testID }: Props) => {
     const { t } = useLingui();
     const { control } = useFormContext<RuleCreateInputInterface>();
     const [openAccountSelector] = useAccountSelectorModal();
-
-    const accountId = useWatch({ control, name: `actions.${index}.accountId` });
+    const {
+        field: { value: accountId, onChange }
+    } = useController({ control, name: `actions.${index}.accountId` });
     const conditions = useWatch({ control, name: 'conditions' });
     const { account } = useGetAccountByIdQuery(accountId ?? 0);
 
@@ -59,32 +61,27 @@ export const RuleActionAccountSelector = ({ index, testID }: Props) => {
     const hasIncomeCondition = hasTransactionTypeCondition(conditions, TransactionTypeEnum.INCOME);
     const { label, hint } = resolveTransferCopy(hasExpenseCondition, hasIncomeCondition);
 
-    const renderSelector = ({ field: { onChange } }: UseControllerReturn<RuleCreateInputInterface, `actions.${number}.accountId`>) => {
-        const handleOpen = () => {
-            openAccountSelector(
-                {
-                    initialAccountId: accountId ?? null,
-                    excludeAccountTypes: [AccountTypeEnum.DEBT],
-                    onlyActive: false
-                },
-                selectedAccountId => {
-                    if (isDefined(selectedAccountId)) {
-                        onChange(selectedAccountId);
-                    }
+    const handleOpen = () => {
+        openAccountSelector(
+            { initialAccountId: accountId ?? null, excludeAccountTypes: [AccountTypeEnum.DEBT], onlyActive: false },
+            selectedAccountId => {
+                if (isDefined(selectedAccountId)) {
+                    onChange(selectedAccountId);
                 }
-            );
-        };
-
-        return (
-            <RuleSelectorField
-                label={t(label)}
-                value={account?.title ?? t`Select Account`}
-                hint={t(hint)}
-                onPress={handleOpen}
-                testID={testID}
-            />
+            }
         );
     };
 
-    return <Controller control={control} name={`actions.${index}.accountId`} render={renderSelector} />;
+    return (
+        <View className="flex-1 pb-md">
+            <RuleValuePickerButton
+                value={account?.title ?? null}
+                placeholder={t(label)}
+                name={t`Transfer account`}
+                onPress={handleOpen}
+                testID={testID}
+            />
+            <Text className="text-[13px] leading-[18px] text-secondary-foreground">{t(hint)}</Text>
+        </View>
+    );
 };

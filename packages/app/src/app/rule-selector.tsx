@@ -14,14 +14,15 @@ export default function RuleSelectorModal() {
     const selectedValue = currentParams?.selectedValue ?? null;
 
     return (
-        <View className="flex-1 bg-primary-reverse p-5xl gap-y-lg">
-            <Text className="text-primary text-lg font-semibold mb-lg">{currentParams?.title ?? ''}</Text>
+        <View className="bg-primary-reverse px-xl pt-3xl pb-safe gap-y-sm" collapsable={false}>
+            <Text className="text-primary text-xl font-semibold px-md pb-md" accessibilityRole="header">
+                {currentParams?.title ?? ''}
+            </Text>
 
             {options.map(option => (
                 <RuleSelectorOptionRow
                     key={option.value}
-                    value={option.value}
-                    label={option.label}
+                    option={option}
                     isSelected={option.value === selectedValue}
                     onPress={resolveRuleSelector}
                     testID={RuleFormSelector.SelectorCard(option.value)}

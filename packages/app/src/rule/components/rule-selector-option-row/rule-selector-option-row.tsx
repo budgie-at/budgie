@@ -1,40 +1,38 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { Text, View } from 'react-native';
 
-import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/component/icon/icon';
-import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
-import { cn } from '../../../@generic/utils/cn.util';
-import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
+import { emptyFn, isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-const CHECK_ICON_SIZE = 16;
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { SelectorCard } from '../../../@generic/component/selector-card/selector-card';
+import { cn } from '../../../@generic/utils/cn.util';
+
+import type { RuleSelectorOptionInterface } from '../../interface/rule-selector-option.interface';
 
 interface Props {
-    readonly value: string;
-    readonly label: string;
+    readonly option: RuleSelectorOptionInterface;
     readonly isSelected: boolean;
     readonly onPress: (value: string) => void;
     readonly testID?: string;
 }
 
-export const RuleSelectorOptionRow = ({ value, label, isSelected, onPress, testID }: Props) => {
-    const handlePress = () => void onPress(value);
-    const stateClassName = isSelected ? 'bg-secondary-background border-secondary-corner' : 'border-secondary-corner/50';
+export const RuleSelectorOptionRow = ({ option, isSelected, onPress, testID }: Props) => {
+    const isDisabled = isDefined(option.disabledReason);
+    const handlePress = isDisabled ? emptyFn : () => void onPress(option.value);
+    const accessibilityState = { disabled: isDisabled };
+    const pointerEvents = isDisabled ? 'none' : 'auto';
+    const subtitleText = option.disabledReason ?? option.description;
+    const subtitle = isNotEmptyString(subtitleText) ? <Text className="text-sm text-secondary-foreground">{subtitleText}</Text> : null;
 
     return (
-        <HapticPressable
-            onPress={handlePress}
-            className={cn('rounded-3xl p-3xl border-2 flex-row items-center gap-x-xl', stateClassName)}
-            testID={testID}
-        >
-            <Text className="text-primary text-md font-semibold flex-1" {...testIDProps(testID, TestIDPartEnum.LABEL)}>
-                {label}
-            </Text>
-            {isSelected ? (
-                <View className="bg-primary rounded-full p-xs">
-                    <Icon className="text-primary-reverse" icon={UserIconNameEnum.Check} size={CHECK_ICON_SIZE} />
-                </View>
-            ) : null}
-        </HapticPressable>
+        <View className={cn(isDisabled && 'opacity-40')} pointerEvents={pointerEvents} accessibilityState={accessibilityState}>
+            <SelectorCard
+                testID={testID}
+                isSelected={isSelected}
+                onPress={handlePress}
+                iconSlot={<CircleIcon icon={option.icon} size={40} iconSize={20} radius={20} variant="ghost" border={false} />}
+                title={option.label}
+                subtitle={subtitle}
+            />
+        </View>
     );
 };

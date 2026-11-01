@@ -47,8 +47,8 @@ env:
     visible:
       text: 'Some transactions may match multiple rules\..*'
 
-- swipe:
-    direction: DOWN
+- tapOn:
+    id: 'PageHeader.BackButton'
 - extendedWaitUntil:
     notVisible: 'Create Rule'
 

@@ -1,13 +1,11 @@
-import { RuleCreateInputInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { Controller, UseControllerReturn, useFormContext, useWatch } from 'react-hook-form';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
-import { RuleSelectorButton } from '../rule-selector-button/rule-selector-button';
+import { useRuleConditionValueField } from '../../hooks/use-rule-condition-value-field.hook';
+import { RuleValuePickerButton } from '../rule-value-picker-button/rule-value-picker-button';
 
 interface Props {
     readonly index: number;
@@ -16,35 +14,27 @@ interface Props {
 
 export const RuleConditionAccountSelector = ({ index, testID }: Props) => {
     const { t } = useLingui();
-    const { control } = useFormContext<RuleCreateInputInterface>();
+    const { value, onChange } = useRuleConditionValueField(index);
     const [openAccountSelector] = useAccountSelectorModal();
-
-    const value = useWatch({ control, name: `conditions.${index}.value` });
-    const accountId = isPositiveNumber(Number(value)) ? Number(value) : 0;
+    const parsedAccountId = Number.parseInt(value, 10);
+    const accountId = isPositiveNumber(parsedAccountId) ? parsedAccountId : 0;
     const { account } = useGetAccountByIdQuery(accountId);
-    const displayLabel = account?.title ?? t`Select account`;
 
-    const renderSelector = ({ field: { onChange } }: UseControllerReturn<RuleCreateInputInterface, `conditions.${number}.value`>) => {
-        const handleOpen = () => {
-            openAccountSelector(
-                {
-                    initialAccountId: isPositiveNumber(accountId) ? accountId : null,
-                    onlyActive: false
-                },
-                selectedAccountId => {
-                    if (isDefined(selectedAccountId)) {
-                        onChange(String(selectedAccountId));
-                    }
-                }
-            );
-        };
-
-        return <RuleSelectorButton testID={testID} value={displayLabel} onPress={handleOpen} />;
+    const handleOpen = () => {
+        openAccountSelector({ initialAccountId: isPositiveNumber(accountId) ? accountId : null, onlyActive: false }, selectedAccountId => {
+            if (isDefined(selectedAccountId)) {
+                onChange(String(selectedAccountId));
+            }
+        });
     };
 
     return (
-        <FormItem label={t`Value`}>
-            <Controller control={control} name={`conditions.${index}.value`} render={renderSelector} />
-        </FormItem>
+        <RuleValuePickerButton
+            value={account?.title ?? null}
+            placeholder={t`Choose an account`}
+            name={t`Account`}
+            onPress={handleOpen}
+            testID={testID}
+        />
     );
 };

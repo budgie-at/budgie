@@ -1,18 +1,19 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
+import { Fragment } from 'react';
 import { FormProvider } from 'react-hook-form';
 
-import { Button } from '../../../@generic/component/button/button';
-import { PageHeader } from '../../../@generic/component/page-header/page-header';
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
+import { SettingsRow } from '../../../settings/components/settings-row/settings-row';
 import { RuleFormResultType } from '../../context/rule-form-modal.context';
 import { useRuleForm } from '../../hooks/use-rule-form.hook';
-import { RuleFormButtons } from '../rule-form-buttons/rule-form-buttons';
-import { RuleFormLayout } from '../rule-form-layout/rule-form-layout';
 import { RuleFormSelector } from '../rule-form-layout/rule-form-layout.selector';
+import { RuleFormScreen } from '../rule-form-screen/rule-form-screen';
+import { RuleFormSubmitBar } from '../rule-form-submit-bar/rule-form-submit-bar';
 
 import type { RuleCreateInputInterface, RuleWithRelationsEntityInterface } from '@budgie/contracts';
 
@@ -48,8 +49,8 @@ export const RuleFormEditContent = ({ rule, onSuccess, onCancel }: Props) => {
             logAndContinue(
                 Effect.gen(function* () {
                     const confirmed = yield* confirmAlert({
-                        title: t`Are you sure you want to delete this rule?`,
-                        message: t`This action cannot be undone.`,
+                        title: t`Delete this rule?`,
+                        message: t`Payments it already changed stay as they are.`,
                         confirmText: t`Delete`,
                         cancelText: t`Cancel`,
                         isDestructive: true
@@ -63,23 +64,26 @@ export const RuleFormEditContent = ({ rule, onSuccess, onCancel }: Props) => {
         );
     };
 
-    const header = <PageHeader title={t`Edit Rule`} onGoBack={onCancel} />;
-
-    const footer = (
-        <RuleFormButtons onCancel={onCancel} onSubmit={handleSubmit} isSubmitting={isSubmitting}>
-            <Button
-                testID={RuleFormSelector.DeleteButton}
-                leftIcon={UserIconNameEnum.Trash2}
-                onPress={handleDeleteConfirm}
-                variant="destructive"
-                content={t`Delete rule`}
-            />
-        </RuleFormButtons>
-    );
-
     return (
         <FormProvider {...form}>
-            <RuleFormLayout header={header} footer={footer} ruleId={rule.id} />
+            <RuleFormScreen
+                title={t`Edit Rule`}
+                onCancel={onCancel}
+                ruleId={rule.id}
+                footer={<RuleFormSubmitBar submitLabel={t`Save changes`} isSubmitting={isSubmitting} onSubmit={handleSubmit} />}
+            >
+                <GroupedListSection footer={t`Payments this rule already changed stay as they are.`}>
+                    <SettingsRow
+                        icon={UserIconNameEnum.Trash2}
+                        variant="destructive"
+                        title={t`Delete rule`}
+                        onPress={handleDeleteConfirm}
+                        right={<Fragment />}
+                        testID={RuleFormSelector.DeleteButton}
+                        titleTestID={RuleFormSelector.DeleteButtonLabel}
+                    />
+                </GroupedListSection>
+            </RuleFormScreen>
         </FormProvider>
     );
 };

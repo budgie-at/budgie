@@ -1,13 +1,56 @@
-import { RuleConditionFieldEnum } from '@budgie/contracts';
-import { MessageDescriptor } from '@lingui/core';
+import { RuleConditionFieldEnum, UserIconNameEnum } from '@budgie/contracts';
 import { msg } from '@lingui/core/macro';
 
-export const RULE_CONDITION_FIELD: Record<RuleConditionFieldEnum, MessageDescriptor> = {
-    [RuleConditionFieldEnum.TITLE]: msg`Title`,
-    [RuleConditionFieldEnum.COMMENT]: msg`Comment`,
-    [RuleConditionFieldEnum.AMOUNT]: msg`Amount`,
-    [RuleConditionFieldEnum.ACCOUNT_ID]: msg`Account`,
-    [RuleConditionFieldEnum.MCC_CODE]: msg`Merchant code`,
-    [RuleConditionFieldEnum.TRANSACTION_TYPE]: msg`Type`,
-    [RuleConditionFieldEnum.EXTERNAL_SOURCE]: msg`Source`
+import type { RuleOptionMetaInterface } from '../interface/rule-option-meta.interface';
+
+export const RULE_CONDITION_FIELD: Record<RuleConditionFieldEnum, RuleOptionMetaInterface> = {
+    [RuleConditionFieldEnum.TITLE]: {
+        label: msg`Title`,
+        phrase: msg`title`,
+        description: msg`Merchant or payment description`,
+        icon: UserIconNameEnum.Type,
+        variant: 'ghost'
+    },
+    [RuleConditionFieldEnum.COMMENT]: {
+        label: msg`Comment`,
+        phrase: msg`comment`,
+        description: msg`The note on a payment`,
+        icon: UserIconNameEnum.MessageSquareText,
+        variant: 'ghost'
+    },
+    [RuleConditionFieldEnum.AMOUNT]: {
+        label: msg`Amount`,
+        phrase: msg`amount`,
+        description: msg`Payment size, in any currency`,
+        icon: UserIconNameEnum.Banknote,
+        variant: 'ghost'
+    },
+    [RuleConditionFieldEnum.ACCOUNT_ID]: {
+        label: msg`Account`,
+        phrase: msg`account`,
+        description: msg`Where the payment happened`,
+        icon: UserIconNameEnum.Wallet,
+        variant: 'ghost'
+    },
+    [RuleConditionFieldEnum.MCC_CODE]: {
+        label: msg`Merchant category`,
+        phrase: msg`merchant category`,
+        description: msg`Card network code (MCC)`,
+        icon: UserIconNameEnum.Store,
+        variant: 'ghost'
+    },
+    [RuleConditionFieldEnum.TRANSACTION_TYPE]: {
+        label: msg`Type`,
+        phrase: msg`type`,
+        description: msg`Expense, income or transfer`,
+        icon: UserIconNameEnum.ArrowLeftRight,
+        variant: 'ghost'
+    },
+    [RuleConditionFieldEnum.EXTERNAL_SOURCE]: {
+        label: msg`Source`,
+        phrase: msg`source`,
+        description: msg`Bank, import or manual entry`,
+        icon: UserIconNameEnum.Import,
+        variant: 'ghost'
+    }
 };

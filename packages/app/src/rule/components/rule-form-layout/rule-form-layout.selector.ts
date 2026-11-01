@@ -1,6 +1,7 @@
 export const RuleFormSelector = {
     SubmitButton: 'RuleForm.Footer.SubmitButton',
     DeleteButton: 'RuleForm.Footer.DeleteButton',
+    DeleteButtonLabel: 'RuleForm.Footer.DeleteButton.Label',
     ConditionSectionHeader: 'RuleForm.ConditionSection.Header',
     ConditionAddButton: 'RuleForm.ConditionSection.AddButton',
     ActionSectionHeader: 'RuleForm.ActionSection.Header',

@@ -1,49 +1,81 @@
 import { RuleConditionFieldEnum, RuleCreateInputInterface } from '@budgie/contracts';
-import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 
+import { isDefined } from '@rnw-community/shared';
+
+import { RULE_CONDITION_FIELD } from '../../constant/rule-condition-field.constant';
 import { RULE_FIELD_OPERATORS } from '../../constant/rule-field-operators.constant';
-import { RuleConditionFormFieldEnum } from '../../enum/rule-condition-form-field.enum';
-import { RuleConditionEnumSelector } from '../rule-condition-enum-selector/rule-condition-enum-selector';
+import { useRuleSelectorModal } from '../../context/rule-selector-modal.context';
+import { buildRuleSelectorOptions } from '../../utils/build-rule-selector-options.util';
+import { RuleFormPickerHead } from '../rule-form-picker-head/rule-form-picker-head';
+
+import type { MessageDescriptor } from '@lingui/core';
 
 interface Props {
     readonly index: number;
     readonly testID?: string;
 }
 
-const FIELD_OPTIONS = [
-    { value: RuleConditionFieldEnum.TITLE, label: msg`Title` },
-    { value: RuleConditionFieldEnum.COMMENT, label: msg`Comment` },
-    { value: RuleConditionFieldEnum.AMOUNT, label: msg`Amount` },
-    { value: RuleConditionFieldEnum.ACCOUNT_ID, label: msg`Account` },
-    { value: RuleConditionFieldEnum.MCC_CODE, label: msg`MCC Code` },
-    { value: RuleConditionFieldEnum.TRANSACTION_TYPE, label: msg`Type` },
-    { value: RuleConditionFieldEnum.EXTERNAL_SOURCE, label: msg`Source` }
-];
+const FIELD_VALUES = [
+    RuleConditionFieldEnum.TITLE,
+    RuleConditionFieldEnum.COMMENT,
+    RuleConditionFieldEnum.AMOUNT,
+    RuleConditionFieldEnum.ACCOUNT_ID,
+    RuleConditionFieldEnum.MCC_CODE,
+    RuleConditionFieldEnum.TRANSACTION_TYPE,
+    RuleConditionFieldEnum.EXTERNAL_SOURCE
+] as const;
+
+const TEXT_FIELDS = new Set([RuleConditionFieldEnum.TITLE, RuleConditionFieldEnum.COMMENT]);
 
 export const RuleConditionFieldSelector = ({ index, testID }: Props) => {
     const { t } = useLingui();
-    const { getValues, setValue } = useFormContext<RuleCreateInputInterface>();
+    const { control, getValues, setValue } = useFormContext<RuleCreateInputInterface>();
+    const field = useWatch({ control, name: `conditions.${index}.field` });
+    const [openRuleSelector] = useRuleSelectorModal();
+    const label = t(RULE_CONDITION_FIELD[field].label);
 
-    const handleFieldChange = (field: RuleConditionFieldEnum) => {
-        const validOperators = RULE_FIELD_OPERATORS[field];
+    const handleSelect = (nextField: RuleConditionFieldEnum) => {
+        const validOperators = RULE_FIELD_OPERATORS[nextField];
+        const keepsValue = TEXT_FIELDS.has(field) && TEXT_FIELDS.has(nextField);
+
+        setValue(`conditions.${index}.field`, nextField, { shouldDirty: true });
 
         if (!validOperators.includes(getValues(`conditions.${index}.operator`))) {
-            setValue(`conditions.${index}.operator`, validOperators[0]);
+            setValue(`conditions.${index}.operator`, validOperators[0], { shouldDirty: true });
+        }
+
+        if (!keepsValue && nextField !== field) {
+            setValue(`conditions.${index}.value`, '', { shouldDirty: true });
+            setValue(`conditions.${index}.secondaryValue`, null, { shouldDirty: true });
         }
     };
 
+    const handleOpen = () => {
+        openRuleSelector(
+            {
+                title: t`Match on`,
+                options: buildRuleSelectorOptions(FIELD_VALUES, RULE_CONDITION_FIELD, (descriptor: MessageDescriptor) => t(descriptor)),
+                selectedValue: field
+            },
+            result => {
+                const nextField = FIELD_VALUES.find(value => value === result);
+
+                if (isDefined(nextField)) {
+                    handleSelect(nextField);
+                }
+            }
+        );
+    };
+
     return (
-        <RuleConditionEnumSelector
-            index={index}
-            options={FIELD_OPTIONS}
-            fieldName={RuleConditionFormFieldEnum.FIELD}
-            label={t`Field`}
-            sheetTitle={t`Select Field`}
-            defaultLabel={t`Select Field`}
+        <RuleFormPickerHead
+            meta={RULE_CONDITION_FIELD[field]}
+            label={label}
+            accessibilityLabel={t`Match on ${label}`}
+            onPress={handleOpen}
             testID={testID}
-            onValueChange={handleFieldChange}
         />
     );
 };

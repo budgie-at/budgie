@@ -1,4 +1,4 @@
-import { RuleConditionFieldEnum, RuleCreateInputInterface } from '@budgie/contracts';
+import { RuleConditionFieldEnum, RuleCreateInputInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useFormContext, useWatch } from 'react-hook-form';
 
@@ -33,8 +33,9 @@ export const RuleConditionValueInput = ({ index, testID, secondaryTestID }: Prop
                 <RuleConditionValueEnumSelector
                     index={index}
                     options={TRANSACTION_TYPE_OPTIONS}
-                    sheetTitle={t`Select Transaction Type`}
-                    defaultLabel={t`Select type`}
+                    icon={UserIconNameEnum.ArrowLeftRight}
+                    sheetTitle={t`Transaction type`}
+                    placeholder={t`Choose a type`}
                     testID={testID}
                 />
             );
@@ -43,8 +44,9 @@ export const RuleConditionValueInput = ({ index, testID, secondaryTestID }: Prop
                 <RuleConditionValueEnumSelector
                     index={index}
                     options={EXTERNAL_SOURCE_OPTIONS}
-                    sheetTitle={t`Select External Source`}
-                    defaultLabel={t`Select source`}
+                    icon={UserIconNameEnum.Import}
+                    sheetTitle={t`Source`}
+                    placeholder={t`Choose a source`}
                     testID={testID}
                 />
             );

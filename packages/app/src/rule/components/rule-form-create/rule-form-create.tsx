@@ -1,12 +1,11 @@
 import { useLingui } from '@lingui/react/macro';
 import { FormProvider } from 'react-hook-form';
 
-import { PageHeader } from '../../../@generic/component/page-header/page-header';
 import { RuleFormResultType } from '../../context/rule-form-modal.context';
 import { useRuleForm } from '../../hooks/use-rule-form.hook';
 import { RulePrefillDataInterface } from '../../interface/rule-prefill-data.interface';
-import { RuleFormButtons } from '../rule-form-buttons/rule-form-buttons';
-import { RuleFormLayout } from '../rule-form-layout/rule-form-layout';
+import { RuleFormScreen } from '../rule-form-screen/rule-form-screen';
+import { RuleFormSubmitBar } from '../rule-form-submit-bar/rule-form-submit-bar';
 
 interface Props {
     readonly prefillData?: RulePrefillDataInterface;
@@ -18,13 +17,13 @@ export const RuleFormCreate = ({ prefillData, onSuccess, onCancel }: Props) => {
     const { t } = useLingui();
     const { form, handleSubmit, isSubmitting } = useRuleForm({ prefillData, onSuccess });
 
-    const header = <PageHeader title={t`Create Rule`} onGoBack={onCancel} />;
-
-    const footer = <RuleFormButtons onCancel={onCancel} onSubmit={handleSubmit} isSubmitting={isSubmitting} />;
-
     return (
         <FormProvider {...form}>
-            <RuleFormLayout header={header} footer={footer} />
+            <RuleFormScreen
+                title={t`Create Rule`}
+                onCancel={onCancel}
+                footer={<RuleFormSubmitBar submitLabel={t`Create rule`} isSubmitting={isSubmitting} onSubmit={handleSubmit} />}
+            />
         </FormProvider>
     );
 };
