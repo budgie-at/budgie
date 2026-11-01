@@ -1,12 +1,13 @@
-import { RuleCreateInputInterface } from '@budgie/contracts';
+import { RuleCreateInputInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { Controller, UseControllerReturn, useFormContext, useWatch } from 'react-hook-form';
+import { useController, useFormContext } from 'react-hook-form';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useTagsSelectorModal } from '../../../tag/context/tags-selector-modal.context';
 import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query';
-import { RuleSelectorField } from '../rule-selector-field/rule-selector-field';
+import { RuleValueGlyph } from '../rule-value-glyph/rule-value-glyph';
+import { RuleValuePickerButton } from '../rule-value-picker-button/rule-value-picker-button';
 
 interface Props {
     readonly index: number;
@@ -15,23 +16,35 @@ interface Props {
 
 export const RuleActionTagSelector = ({ index, testID }: Props) => {
     const { t } = useLingui();
-    const { control } = useFormContext<RuleCreateInputInterface>();
+    const { control, formState } = useFormContext<RuleCreateInputInterface>();
+    const {
+        field: { value: tagId, onChange }
+    } = useController({ control, name: `actions.${index}.tagId` });
     const [openTagsSelector] = useTagsSelectorModal();
+    const selectedTagIds = isDefined(tagId) ? [tagId] : [];
+    const { tags } = useGetTagByIdsQuery(selectedTagIds);
+    const tagTitle = tags?.at(0)?.title;
+    const tagLabel = isDefined(tagTitle) ? `#${tagTitle}` : null;
 
-    const tagId = useWatch({ control, name: `actions.${index}.tagId` });
-    const { tags } = useGetTagByIdsQuery(isDefined(tagId) ? [tagId] : []);
+    const isMissing = !isDefined(tagId) && (formState.isDirty || formState.submitCount > 0);
 
-    const renderSelector = ({ field: { onChange } }: UseControllerReturn<RuleCreateInputInterface, `actions.${number}.tagId`>) => {
-        const handleOpen = () => {
-            openTagsSelector({ initialTagIds: isDefined(tagId) ? [tagId] : [], singleSelect: true }, selectedTagIds => {
-                if (isNotEmptyArray(selectedTagIds)) {
-                    onChange(selectedTagIds[0]);
-                }
-            });
-        };
-
-        return <RuleSelectorField label={t`Tag`} value={tags?.[0]?.title ?? t`Select Tag`} onPress={handleOpen} testID={testID} />;
+    const handleOpen = () => {
+        openTagsSelector({ initialTagIds: selectedTagIds, singleSelect: true }, nextTagIds => {
+            if (isNotEmptyArray(nextTagIds)) {
+                onChange(nextTagIds[0]);
+            }
+        });
     };
 
-    return <Controller control={control} name={`actions.${index}.tagId`} render={renderSelector} />;
+    return (
+        <RuleValuePickerButton
+            value={tagLabel}
+            isMissing={isMissing}
+            leading={<RuleValueGlyph icon={UserIconNameEnum.Tag} variant="pink" />}
+            placeholder={t`Choose a tag`}
+            name={t`Tag`}
+            onPress={handleOpen}
+            testID={testID}
+        />
+    );
 };

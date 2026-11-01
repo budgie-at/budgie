@@ -118,7 +118,7 @@ env:
 - tapOn: Done
 
 - assertVisible:
-    text: 'Match All'
+    text: 'All conditions'
 
 - scrollUntilVisible:
     element:
@@ -706,7 +706,8 @@ env:
 - tapOn:
     id: 'RuleForm.Condition.0.ValueInput'
 - waitForAnimationToEnd
-- tapOn: 'Search by code or description...'
+- tapOn:
+    id: 'RuleMccSelector.SearchInput'
 - inputText: '0742'
 - tapOn: Done
 - extendedWaitUntil:

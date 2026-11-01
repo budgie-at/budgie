@@ -1,5 +1,6 @@
 export const RuleConditionRowSelector = {
     Row: (index: number) => `RuleForm.Condition.${index}.Row` as const,
+    Summary: (index: number) => `RuleForm.Condition.${index}.Summary` as const,
     FieldSelector: (index: number) => `RuleForm.Condition.${index}.FieldSelector` as const,
     OperatorSelector: (index: number) => `RuleForm.Condition.${index}.OperatorSelector` as const,
     ValueInput: (index: number) => `RuleForm.Condition.${index}.ValueInput` as const,

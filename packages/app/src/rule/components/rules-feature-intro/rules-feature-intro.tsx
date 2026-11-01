@@ -4,7 +4,8 @@ import { router } from 'expo-router';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
-import { FeatureIntro } from '../../../@generic/component/feature-intro/feature-intro';
+import { Button } from '../../../@generic/component/button/button';
+import { StatsEmptyCard } from '../../../@generic/component/stats-empty-card/stats-empty-card';
 import { useGetBankIntegrationCountQuery } from '../../../sync/query/use-get-bank-integration-count.query';
 import { useRuleFormModal } from '../../context/rule-form-modal.context';
 import { RulesPageSelector } from '../../selector/rules-page.selector';
@@ -21,25 +22,25 @@ export const RulesFeatureIntro = () => {
 
     if (!isPositiveNumber(bankIntegrationCount)) {
         return (
-            <FeatureIntro
+            <StatsEmptyCard
                 testID={RulesPageSelector.EmptyState}
                 icon={UserIconNameEnum.Zap}
                 title={t`Rules work on imported transactions`}
                 description={t`Connect a bank or import a statement first, then rules can categorise and tag every transaction as it arrives.`}
-                buttonText={t`Connect a bank`}
-                onCreate={handleConnectBank}
-            />
+            >
+                <Button onPress={handleConnectBank} leftIcon={UserIconNameEnum.Landmark} content={t`Connect a bank`} />
+            </StatsEmptyCard>
         );
     }
 
     return (
-        <FeatureIntro
+        <StatsEmptyCard
             testID={RulesPageSelector.EmptyState}
             icon={UserIconNameEnum.Zap}
             title={t`Categorise imports automatically`}
             description={t`A rule matches incoming bank transactions and applies a category and tags for you.`}
-            buttonText={t`Create a rule`}
-            onCreate={handleCreateRule}
-        />
+        >
+            <Button onPress={handleCreateRule} leftIcon={UserIconNameEnum.Plus} content={t`Create a rule`} />
+        </StatsEmptyCard>
     );
 };

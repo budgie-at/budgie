@@ -113,9 +113,9 @@ env:
 - assertVisible:
       id: 'RulesPage.EmptyState'
 - assertVisible:
-      text: 'No Results'
+      text: 'No rules match.*'
 - assertVisible:
-      text: 'Try a different search term'
+      text: 'Try a title, category or tag name.'
 
 - eraseText: 25
 - assertVisible:

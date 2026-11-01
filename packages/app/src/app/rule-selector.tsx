@@ -1,4 +1,6 @@
+import { Stack } from 'expo-router';
 import { Text, View } from 'react-native';
+import { useResolveClassNames } from 'uniwind';
 
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { RuleFormSelector } from '../rule/components/rule-form-layout/rule-form-layout.selector';
@@ -9,19 +11,23 @@ export default function RuleSelectorModal() {
     const [, resolveRuleSelector, dismissRuleSelector] = useRuleSelectorModal();
     useModalDismiss(dismissRuleSelector);
     const currentParams = useRuleSelectorModalParams();
+    const contentStyle = useResolveClassNames('bg-primary-reverse');
+    const screenOptions = { contentStyle };
 
     const options = currentParams?.options ?? [];
     const selectedValue = currentParams?.selectedValue ?? null;
 
     return (
-        <View className="flex-1 bg-primary-reverse p-5xl gap-y-lg">
-            <Text className="text-primary text-lg font-semibold mb-lg">{currentParams?.title ?? ''}</Text>
+        <View className="bg-primary-reverse px-xl pt-3xl pb-safe-offset-[16px] gap-y-sm" collapsable={false}>
+            <Stack.Screen options={screenOptions} />
+            <Text className="text-primary text-xl font-semibold px-md pb-md" accessibilityRole="header">
+                {currentParams?.title ?? ''}
+            </Text>
 
             {options.map(option => (
                 <RuleSelectorOptionRow
                     key={option.value}
-                    value={option.value}
-                    label={option.label}
+                    option={option}
                     isSelected={option.value === selectedValue}
                     onPress={resolveRuleSelector}
                     testID={RuleFormSelector.SelectorCard(option.value)}
