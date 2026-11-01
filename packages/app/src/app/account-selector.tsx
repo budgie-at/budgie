@@ -2,11 +2,11 @@ import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { Stack } from 'expo-router';
 import { useState } from 'react';
-import { View } from 'react-native';
 
 import { getErrorMessage, isDefined } from '@rnw-community/shared';
 
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
+import { SheetSurface } from '../@generic/component/sheet-surface/sheet-surface';
 import { useModalRouteState } from '../@generic/hook/use-modal-route-state/use-modal-route-state.hook';
 import { appRuntime } from '../@generic/runtime/app.runtime';
 import { logAndContinue } from '../@generic/utils/log-and-continue.util';
@@ -63,13 +63,13 @@ export default function AccountSelectorModal() {
     }
 
     return (
-        <View className="flex-1 bg-primary-reverse" collapsable={false}>
+        <SheetSurface>
             <Stack.Screen options={screenOptions} />
 
             <SelectorModalSearchHeader
                 search={search}
                 onSearchChange={setSearch}
-                placeholder={t`Search accounts...`}
+                placeholder={t`Search accounts…`}
                 testID={AccountSelectorModalSelector.Input}
             />
 
@@ -82,6 +82,6 @@ export default function AccountSelectorModal() {
                 showDebtTotal={currentParams.showDebtTotal ?? false}
                 createAction={contentCreateAction}
             />
-        </View>
+        </SheetSurface>
     );
 }

@@ -32,7 +32,16 @@ export const IconSuggestionChip = ({ icon, label, isSelected, onSelect, testID }
             className="active:opacity-70"
             testID={testID}
         >
-            <CircleIcon icon={icon} variant="secondary" size={52} iconSize={22} radius={16} border={false} className={discClassName} />
+            <CircleIcon
+                icon={icon}
+                variant="secondary"
+                size={52}
+                iconSize={24}
+                radius={16}
+                border={false}
+                className={discClassName}
+                iconClassName="text-primary/80"
+            />
 
             {isSelected ? <IconSelectedIndicator /> : null}
         </HapticPressable>

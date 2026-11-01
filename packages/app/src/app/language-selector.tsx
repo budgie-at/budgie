@@ -1,13 +1,14 @@
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
 import { emptyFn } from '@rnw-community/shared';
 
 import { CountryFlag } from '../@generic/component/country-flag/country-flag';
 import { EmptyState } from '../@generic/component/empty-state/empty-state';
 import { SearchableSelectorList } from '../@generic/component/searchable-selector-list/searchable-selector-list';
-import { SelectorCard } from '../@generic/component/selector-card/selector-card';
+import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
+import { SelectorRow } from '../@generic/component/selector-row/selector-row';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { LANGUAGES } from '../i18n/constant/languages.constant';
 import { useLanguageSelectorModal, useLanguageSelectorModalParams } from '../i18n/context/language-selector-modal.context';
@@ -22,9 +23,8 @@ const filterLanguages = (
     search: string,
     translate: (name: LanguageInterface['name']) => string
 ): LanguageInterface[] =>
-    languages.filter(
-        ({ name, code }) =>
-            translate(name).toLowerCase().includes(search.toLowerCase()) || code.toLowerCase().includes(search.toLowerCase())
+    languages.filter(({ name, nativeName, code }) =>
+        [translate(name), translate(nativeName), code].some(value => value.toLowerCase().includes(search.toLowerCase()))
     );
 
 export default function LanguageSelectorModal() {
@@ -35,35 +35,44 @@ export default function LanguageSelectorModal() {
     const [search, setSearch] = useState('');
 
     const selectedLanguage = currentParams?.selectedLanguage;
-    const data = filterLanguages(LANGUAGES, search, t);
+    const sections = [{ title: null, data: filterLanguages(LANGUAGES, search, t) }];
 
-    const renderItem = ({ item }: { item: LanguageInterface }) => {
+    const renderItem = (item: LanguageInterface) => {
         const isSelected = item.code === selectedLanguage;
         const handleSelect = isSelected ? emptyFn : () => void resolveLanguageSelector(item.code);
 
+        const title = t(item.nativeName);
+        const translatedName = t(item.name);
+        const subtitle = title === translatedName ? null : translatedName;
+
         return (
-            <SelectorCard
+            <SelectorRow
                 isSelected={isSelected}
                 onPress={handleSelect}
                 testID={LanguageSelectorModalSelector.Option(item.code)}
-                iconSlot={
-                    <View className="w-12 h-12 bg-secondary-background rounded-5xl items-center justify-center">
-                        <CountryFlag language={item.code} size={28} />
+                left={
+                    <View className="h-[36px] w-[36px] items-center justify-center overflow-hidden rounded-full border-hairline border-primary/25">
+                        <CountryFlag language={item.code} size={54} />
                     </View>
                 }
-                title={<Text className="text-primary font-medium text-md">{t(item.name)}</Text>}
-                subtitle={<Text className="text-sm text-secondary-foreground">{item.code}</Text>}
+                title={title}
+                subtitle={subtitle}
             />
         );
     };
 
     return (
         <SearchableSelectorList
-            search={search}
-            onSearchChange={setSearch}
-            searchPlaceholder={t`Search languages...`}
-            searchTestID={LanguageSelectorModalSelector.SearchInput}
-            data={data}
+            header={
+                <SelectorModalSearchHeader
+                    title={t`Language`}
+                    search={search}
+                    onSearchChange={setSearch}
+                    placeholder={t`Search`}
+                    testID={LanguageSelectorModalSelector.SearchInput}
+                />
+            }
+            sections={sections}
             keyExtractor={keyExtractor}
             renderItem={renderItem}
             emptyState={<EmptyState title={t`No languages found`} description={t`Try a different search term`} />}

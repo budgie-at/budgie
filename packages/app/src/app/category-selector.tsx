@@ -1,11 +1,11 @@
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
-import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { SelectorModalDescription } from '../@generic/component/selector-modal-description/selector-modal-description';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
+import { SheetSurface } from '../@generic/component/sheet-surface/sheet-surface';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { prepareSelectorGridData } from '../@generic/utils/prepare-selector-grid-data.util';
 import { CategorySelectContent } from '../category/components/category-select-content/category-select-content';
@@ -37,7 +37,7 @@ export default function CategorySelectorModal() {
     };
 
     return (
-        <View className="flex-1 bg-primary-reverse" collapsable={false}>
+        <SheetSurface>
             <SelectorModalSearchHeader
                 search={search}
                 onSearchChange={setSearch}
@@ -61,6 +61,6 @@ export default function CategorySelectorModal() {
                     />
                 )}
             </SelectorModalDescription>
-        </View>
+        </SheetSurface>
     );
 }

@@ -1,38 +1,26 @@
-import { InstrumentEntityInterface, InstrumentTypeEnum } from '@budgie/contracts';
-import { Text } from 'react-native';
+import { InstrumentEntityInterface } from '@budgie/contracts';
 
 import { CreateAccountScreenSelector } from '../../../account/component/create-account-screen/create-account-screen.selector';
 import { CurrencySelectorInstrumentIcon } from '../currency-selector-instrument-icon/currency-selector-instrument-icon';
-import { SelectorCard } from '../selector-card/selector-card';
+import { SelectorRow } from '../selector-row/selector-row';
 
 interface Props extends Pick<InstrumentEntityInterface, 'id' | 'code' | 'symbol' | 'name' | 'type'> {
     readonly onSelect: (id: number) => void;
     readonly isSelected: boolean;
-    readonly className?: string;
 }
 
-export const CurrencySelectorCard = ({ className, isSelected, name, onSelect, code, symbol, id, type }: Props) => {
+export const CurrencySelectorCard = ({ isSelected, name, onSelect, code, symbol, id, type }: Props) => {
     const handleSelect = () => void onSelect(id);
-    const isCrypto = type === InstrumentTypeEnum.CRYPTO;
-    const iconSlot = <CurrencySelectorInstrumentIcon code={code} symbol={symbol} type={type} size={42} />;
-    const title = isCrypto ? (
-        <Text className="text-primary uppercase font-medium text-md">{code}</Text>
-    ) : (
-        <Text className="text-primary uppercase font-medium text-md">
-            {code}
-            <Text className="text-xl font-thin text-secondary-foreground"> {symbol}</Text>
-        </Text>
-    );
+    const subtitle = name.toUpperCase() === code.toUpperCase() ? null : code;
 
     return (
-        <SelectorCard
+        <SelectorRow
             isSelected={isSelected}
             onPress={handleSelect}
-            className={className}
             testID={CreateAccountScreenSelector.CurrencyOption(code)}
-            iconSlot={iconSlot}
-            title={title}
-            subtitle={<Text className="text-sm text-secondary-foreground">{name}</Text>}
+            left={<CurrencySelectorInstrumentIcon code={code} symbol={symbol} type={type} size={36} />}
+            title={name}
+            subtitle={subtitle}
         />
     );
 };

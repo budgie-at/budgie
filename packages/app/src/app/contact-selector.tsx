@@ -7,6 +7,7 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 import { ContactSelectorCard } from '../@generic/component/contact-selector-card/contact-selector-card';
 import { EmptyState } from '../@generic/component/empty-state/empty-state';
 import { SearchableSelectorList } from '../@generic/component/searchable-selector-list/searchable-selector-list';
+import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
 import { useContactSelectorModal, useContactSelectorModalParams } from '../@generic/context/contact-selector-modal.context';
 import { Contact, useContacts } from '../@generic/hook/use-contacts.hook';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
@@ -30,13 +31,13 @@ export default function ContactSelectorModal() {
     const contacts = useContacts();
 
     const selectedContactId = useContactSelectorModalParams()?.selectedContactId;
-    const data = filterContacts(contacts, search);
+    const sections = [{ title: null, data: filterContacts(contacts, search) }];
     const isSearching = isNotEmptyString(search);
     const emptyIcon = isSearching ? UserIconNameEnum.Search : UserIconNameEnum.User;
     const emptyTitle = isSearching ? t`No contacts found` : t`No contacts yet`;
     const emptyDescription = isSearching ? t`Try a different search term` : t`Create one to get started.`;
 
-    const renderItem = ({ item }: { item: Contact }) => {
+    const renderItem = (item: Contact) => {
         const handleSelect = () => void resolveContactSelector(item);
 
         return (
@@ -53,10 +54,15 @@ export default function ContactSelectorModal() {
 
     return (
         <SearchableSelectorList
-            search={search}
-            onSearchChange={setSearch}
-            searchPlaceholder={t`Search contacts...`}
-            data={data}
+            header={
+                <SelectorModalSearchHeader
+                    title={t`Contacts`}
+                    search={search}
+                    onSearchChange={setSearch}
+                    placeholder={t`Search contacts…`}
+                />
+            }
+            sections={sections}
             keyExtractor={keyExtractor}
             renderItem={renderItem}
             emptyState={<EmptyState icon={emptyIcon} title={emptyTitle} description={emptyDescription} />}

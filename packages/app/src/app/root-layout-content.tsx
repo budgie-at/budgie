@@ -175,7 +175,10 @@ export const RootLayoutContent = () => {
                                                                     <Stack.Screen name="category-selector" options={SELECTOR_OPTIONS} />
                                                                     <Stack.Screen name="account-selector" options={SELECTOR_OPTIONS} />
                                                                     <Stack.Screen name="currency-selector" options={SELECTOR_OPTIONS} />
-                                                                    <Stack.Screen name="language-selector" options={SELECTOR_OPTIONS} />
+                                                                    <Stack.Screen
+                                                                        name="language-selector"
+                                                                        options={formSheetOptions([DETENT_55])}
+                                                                    />
                                                                     <Stack.Screen name="resync-window-picker" options={SELECTOR_OPTIONS} />
                                                                     <Stack.Screen name="contact-selector" options={SELECTOR_OPTIONS} />
                                                                     <Stack.Screen name="tags-selector" options={SELECTOR_OPTIONS} />

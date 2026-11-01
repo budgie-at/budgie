@@ -35,7 +35,7 @@ export const SelectorGridContent = <Item,>(props: Props<Item>) => {
         additionalBottomPadding = 0,
         topOffset
     } = props;
-    const contentContainerStyle = useFormsheetListContentStyle(additionalBottomPadding, topOffset);
+    const contentContainerStyle = useFormsheetListContentStyle(additionalBottomPadding, topOffset, COLUMN_GAP);
 
     const estimatedItemSize = itemHeight + ROW_GAP;
 
@@ -44,7 +44,7 @@ export const SelectorGridContent = <Item,>(props: Props<Item>) => {
     }
 
     return (
-        <View className="absolute inset-0 bg-primary-reverse">
+        <View className="absolute inset-0">
             <BudgieLegendList
                 style={LEGEND_LIST_STYLE}
                 data={data}

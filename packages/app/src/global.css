@@ -149,6 +149,11 @@
             --color-grouped-surface-fill: rgb(255, 255, 255);
             --color-surface-disc: rgba(107, 107, 107, 0.15);
             --color-surface-separator: rgba(60, 60, 67, 0.29);
+            --color-sheet-grouped-surface: rgb(242, 242, 247);
+            --color-sheet-grouped-row: rgb(255, 255, 255);
+            --color-sheet-grouped-disc: rgba(118, 118, 128, 0.12);
+            --color-sheet-grouped-separator: rgba(60, 60, 67, 0.29);
+            --color-sheet-grouped-secondary: rgb(106, 106, 112);
 
             --color-pink-foreground: rgba(246, 51, 154, 0.7);
             --color-pink-corner: rgba(246, 51, 154, 0.2);
@@ -248,6 +253,11 @@
             --color-grouped-surface-fill: rgba(118, 118, 128, 0.24);
             --color-surface-disc: rgb(44, 44, 46);
             --color-surface-separator: rgba(56, 56, 58, 1);
+            --color-sheet-grouped-surface: rgb(28, 28, 30);
+            --color-sheet-grouped-row: rgb(44, 44, 46);
+            --color-sheet-grouped-disc: rgb(58, 58, 60);
+            --color-sheet-grouped-separator: rgb(72, 72, 75);
+            --color-sheet-grouped-secondary: rgb(162, 162, 168);
 
             --color-pink-foreground: rgba(246, 51, 154, 0.7);
             --color-pink-corner: rgba(246, 51, 154, 0.2);

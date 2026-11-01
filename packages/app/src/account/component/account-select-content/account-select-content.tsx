@@ -6,7 +6,7 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import { BudgieLegendList } from '../../../@generic/component/budgie-legend-list/budgie-legend-list';
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
-import { ListItemSeparator } from '../../../@generic/component/list-item-separator/list-item-separator';
+import { GroupedListItem } from '../../../@generic/component/grouped-list-item/grouped-list-item';
 import { LEGEND_LIST_STYLE } from '../../../@generic/constant/legend-list.constant';
 import { useFormsheetListContentStyle } from '../../../@generic/hook/use-formsheet-list-content-style/use-formsheet-list-content-style.hook';
 import { AccountSelectorCard } from '../account-selector-card/account-selector-card';
@@ -33,20 +33,22 @@ export const AccountSelectContent = (props: Props) => {
     const { t } = useLingui();
     const contentContainerStyle = useFormsheetListContentStyle();
 
-    const renderItem = ({ item }: { item: AccountWithInstrumentEntityInterface }) => (
-        <AccountSelectorCard
-            isSelected={item.id === initialAccountId}
-            instrument={item.instrument}
-            isActive={item.isActive}
-            onSelect={onSelect}
-            title={item.title}
-            icon={item.icon}
-            type={item.type}
-            id={item.id}
-            debtType={item.debtType}
-            showDebtTotal={showDebtTotal}
-            targetBalance={item.targetBalance}
-        />
+    const renderItem = ({ item, index }: { item: AccountWithInstrumentEntityInterface; index: number }) => (
+        <GroupedListItem isFirst={index === 0} isLast={index === data.length - 1}>
+            <AccountSelectorCard
+                isSelected={item.id === initialAccountId}
+                instrument={item.instrument}
+                isActive={item.isActive}
+                onSelect={onSelect}
+                title={item.title}
+                icon={item.icon}
+                type={item.type}
+                id={item.id}
+                debtType={item.debtType}
+                showDebtTotal={showDebtTotal}
+                targetBalance={item.targetBalance}
+            />
+        </GroupedListItem>
     );
 
     const emptyIcon = isNotEmptyString(search) ? UserIconNameEnum.Search : UserIconNameEnum.Wallet;
@@ -66,7 +68,7 @@ export const AccountSelectContent = (props: Props) => {
         );
 
     return (
-        <View className="absolute inset-0 bg-primary-reverse">
+        <View className="absolute inset-0">
             <BudgieLegendList
                 style={LEGEND_LIST_STYLE}
                 data={data}
@@ -76,7 +78,6 @@ export const AccountSelectContent = (props: Props) => {
                 contentContainerStyle={contentContainerStyle}
                 ListHeaderComponent={listHeaderComponent}
                 ListEmptyComponent={listEmptyComponent}
-                ItemSeparatorComponent={ListItemSeparator}
             />
         </View>
     );

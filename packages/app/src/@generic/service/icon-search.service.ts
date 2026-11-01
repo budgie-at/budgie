@@ -51,16 +51,31 @@ class IconSearchService {
         'various'
     ]);
 
+    private static readonly BROWSE_TERMS = [
+        'money',
+        'bank',
+        'shopping',
+        'food',
+        'home',
+        'transport',
+        'travel',
+        'health',
+        'entertainment',
+        'education',
+        'gift',
+        'work'
+    ];
+
     private static readonly FALLBACK_ICONS: readonly UserIconType[] = [
-        UserIconNameEnum.Folder,
-        UserIconNameEnum.Briefcase,
-        UserIconNameEnum.Laptop,
-        UserIconNameEnum.Code,
-        UserIconNameEnum.Lightbulb,
-        UserIconNameEnum.Star,
-        UserIconNameEnum.Bookmark,
-        UserIconNameEnum.Tag,
-        UserIconNameEnum.Sparkles
+        UserIconNameEnum.Wallet,
+        UserIconNameEnum.CreditCard,
+        UserIconNameEnum.Landmark,
+        UserIconNameEnum.PiggyBank,
+        UserIconNameEnum.Coins,
+        UserIconNameEnum.Banknote,
+        UserIconNameEnum.Receipt,
+        UserIconNameEnum.ShoppingCart,
+        UserIconNameEnum.Gift
     ].map(resolveReiconIcon);
 
     readonly load = Effect.fn('IconSearchService.load')(function* (this: IconSearchService) {
@@ -76,6 +91,30 @@ class IconSearchService {
 
     rank(entries: readonly IconSearchEntryInterface[], terms: readonly string[]): IconSearchEntryInterface[] {
         return this.score(entries, terms, true).map(({ entry }) => entry);
+    }
+
+    popular(
+        entries: readonly IconSearchEntryInterface[],
+        terms: readonly string[],
+        excludedIcons: readonly UserIconNameEnum[] | undefined,
+        selectedIcon: UserIconType | undefined
+    ): IconSearchEntryInterface[] {
+        const selectedEntry = entries.find(entry => entry.icon === selectedIcon);
+        const suggested = this.suggest(entries, terms, excludedIcons).filter(entry => entry.icon !== selectedIcon);
+
+        return [selectedEntry, ...suggested].filter(isDefined);
+    }
+
+    browse(entries: readonly IconSearchEntryInterface[], pinnedIcons: readonly UserIconType[]): IconSearchEntryInterface[] {
+        const relevant = this.score(entries, IconSearchService.BROWSE_TERMS, false).map(({ entry }) => entry);
+        const relevantIcons = relevant.filter(({ icon }) => !isEmojiIcon(icon));
+        const relevantEmoji = relevant.filter(({ icon }) => isEmojiIcon(icon));
+
+        const pinnedFamilies = new Set(pinnedIcons.map(icon => this.getFamily(icon)));
+
+        return this.distinctFamilies([...relevantIcons, ...relevantEmoji, ...entries], []).filter(
+            ({ icon }) => !pinnedFamilies.has(this.getFamily(icon))
+        );
     }
 
     suggest(

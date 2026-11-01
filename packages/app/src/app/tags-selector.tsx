@@ -1,11 +1,11 @@
 import { useLingui } from '@lingui/react/macro';
 import { useEffect, useReducer, useRef, useState } from 'react';
-import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { SelectorModalDescription } from '../@generic/component/selector-modal-description/selector-modal-description';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
+import { SheetSurface } from '../@generic/component/sheet-surface/sheet-surface';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { prepareSelectorGridData } from '../@generic/utils/prepare-selector-grid-data.util';
 import { TagsSelectContent } from '../tag/components/tags-select-content/tags-select-content';
@@ -96,7 +96,7 @@ export default function TagsSelectorModal() {
     );
 
     return (
-        <View className="flex-1 bg-primary-reverse" collapsable={false}>
+        <SheetSurface>
             <SelectorModalSearchHeader
                 search={search}
                 onSearchChange={setSearch}
@@ -124,6 +124,6 @@ export default function TagsSelectorModal() {
             {dirty && !singleSelect ? (
                 <TagsSelectorDoneButton count={selected.length} onPress={handleDone} testID={TagsSelectorModalSelector.DoneButton} />
             ) : null}
-        </View>
+        </SheetSurface>
     );
 }

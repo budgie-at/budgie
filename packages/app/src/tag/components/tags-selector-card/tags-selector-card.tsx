@@ -49,7 +49,7 @@ const cardVariants = cva('relative border-2 rounded-3xl px-xl py-sm items-center
         {
             isSelected: false,
             variant: 'static',
-            className: 'border-secondary-corner'
+            className: 'border-transparent bg-surface-row'
         }
     ]
 });
@@ -72,7 +72,7 @@ const textVariants = cva('text-sm', {
         {
             isSelected: false,
             variant: 'static',
-            className: 'text-secondary-foreground'
+            className: 'text-primary'
         },
         {
             isPrimary: true,
