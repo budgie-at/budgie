@@ -519,7 +519,7 @@ appId: ${APP_ID}
 - tapOn:
       id: 'TransactionFilters.DateApplyButton'
 - assertVisible:
-      id: 'TransactionAnalyticsCard.Amount.Spent.5'
+      id: 'StatisticsSpendingHero.Spent.5'
 - assertVisible:
       id: 'CategoryStatisticsCard.Amount.E2E_Filter_Expense_Category.5000000'
 
@@ -555,9 +555,13 @@ appId: ${APP_ID}
 - tapOn:
       id: 'AnalyticsPage.Tab.Categories'
 - tapOn:
-      id: 'TransactionFilters.ClearAllButton'
+      id: 'TransactionFilters.DateChipActive'
+- tapOn:
+      id: 'TransactionFilters.DatePeriod.ALL_TIME'
+- tapOn:
+      id: 'TransactionFilters.DateApplyButton'
 - assertVisible:
-      id: 'TransactionAnalyticsCard.Amount.Spent.40_294871'
+      id: 'StatisticsSpendingHero.Spent.40_.*'
 - assertVisible:
       id: 'CategoryStatisticsCard.Amount.E2E_Filter_Expense_Category.40000000'
 - assertNotVisible:

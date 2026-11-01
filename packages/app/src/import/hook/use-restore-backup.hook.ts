@@ -59,12 +59,12 @@ export const useRestoreBackup = () => {
                 const databaseImportService = yield* DatabaseImportService;
                 const isBackupUnencrypted = yield* databaseImportService.canOpenBackup(uri, null);
                 const confirmMessage = isBackupUnencrypted
-                    ? t`Importing a database will replace all current data. The app will restart after import. This action cannot be undone.`
-                    : t`This backup is protected by a PIN. Importing it will replace all current data and its PIN becomes your app PIN. The app will restart after import. This action cannot be undone.`;
+                    ? t`Restoring a backup replaces all current Budgie data. The app restarts afterwards. This can't be undone.`
+                    : t`Restoring a backup replaces all current Budgie data. This backup is protected by a PIN, which becomes your app PIN. The app restarts afterwards. This can't be undone.`;
                 const confirmed = yield* confirmAlert({
-                    title: t`Import Database`,
+                    title: t`Restore backup?`,
                     message: confirmMessage,
-                    confirmText: t`Import Database`,
+                    confirmText: t`Restore`,
                     cancelText: t`Cancel`,
                     isDestructive: true
                 });

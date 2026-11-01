@@ -59,9 +59,56 @@ describe('consolidation/refund-pair-full-refund', () => {
                 account.instrumentId,
                 LanguageEnum.EN
             );
-            const categoryAmount = categoryRows.find(row => row.category?.id === category.id)?.amount;
+            const categoryRow = categoryRows.find(row => row.category?.id === category.id);
 
-            expect([totals?.income, totals?.expense, categoryAmount]).toStrictEqual([0, 0, 0]);
+            expect([totals?.income, totals?.expense, categoryRow]).toStrictEqual([0, 0, undefined]);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('keeps a fully refunded purchase as statistics history although its totals net to zero', () =>
+        Effect.gen(function* () {
+            const transferConsolidationService = yield* TransferConsolidationService;
+            const statisticsRepository = yield* StatisticsRepository;
+            const allTime = { ...DEFAULT_TRANSACTION_FILTER, date: null };
+            const emptyLedger = yield* statisticsRepository.hasIncomeOrExpenseQuery(allTime);
+            const { account } = yield* seedRefundStatisticsScenario(120 * PRECISION);
+
+            yield* transferConsolidationService.consolidate(null);
+
+            const [totals] = yield* statisticsRepository.getTotalIncomeAndExpenseQuery(allTime, account.instrumentId);
+
+            expect([emptyLedger, totals.income, totals.expense]).toStrictEqual([[], 0, 0]);
+            expect(yield* statisticsRepository.hasIncomeOrExpenseQuery(allTime)).toHaveLength(1);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('reports refunds netted against purchases in or before the period', () =>
+        Effect.gen(function* () {
+            const transferConsolidationService = yield* TransferConsolidationService;
+            const statisticsRepository = yield* StatisticsRepository;
+            const { account, category, expense } = yield* seedRefundStatisticsScenario(120 * PRECISION);
+
+            yield* transferConsolidationService.consolidate(null);
+
+            const categoryFilter = { ...DEFAULT_TRANSACTION_FILTER, categoryIds: [category.id] };
+            const refundOnlyPeriod = { from: new Date(2026, 0, 16), to: new Date(2026, 0, 31, 23, 59, 59) };
+            const purchaseOnlyPeriod = { from: new Date(2026, 0, 1), to: new Date(2026, 0, 15, 23, 59, 59) };
+            const laterPeriod = { from: new Date(2026, 1, 1), to: new Date(2026, 1, 28, 23, 59, 59) };
+            const [refundOnly] = yield* statisticsRepository.getNettedRefundsQuery(
+                { ...categoryFilter, date: refundOnlyPeriod },
+                account.instrumentId
+            );
+            const [purchaseOnly] = yield* statisticsRepository.getNettedRefundsQuery(
+                { ...categoryFilter, date: purchaseOnlyPeriod },
+                account.instrumentId
+            );
+            const [later] = yield* statisticsRepository.getNettedRefundsQuery(
+                { ...categoryFilter, date: laterPeriod },
+                account.instrumentId
+            );
+            const netted = { amount: 120 * PRECISION, purchasedAt: Math.floor(expense.operatedAt.getTime() / 1000) };
+
+            expect([refundOnly, purchaseOnly, later]).toStrictEqual([netted, netted, { amount: 0, purchasedAt: null }]);
         }).pipe(Effect.provide(TestLayer))
     );
 

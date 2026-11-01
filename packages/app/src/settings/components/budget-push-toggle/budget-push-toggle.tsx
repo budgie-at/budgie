@@ -2,6 +2,7 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as Notifications from 'expo-notifications';
+import { Linking } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
@@ -10,7 +11,9 @@ import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page
 import { useSetting } from '../../hook/use-setting.hook';
 import { updateSettingsMutation } from '../../mutation/update-settings.mutation';
 import { SettingSwitch } from '../setting-switch/setting-switch';
-import { SettingsCard } from '../settings-card/settings-card';
+import { SettingsRow } from '../settings-row/settings-row';
+
+const handleOpenSettings = () => void Linking.openSettings();
 
 export const BudgetPushToggle = () => {
     const { t } = useLingui();
@@ -37,7 +40,8 @@ export const BudgetPushToggle = () => {
                     Toast.show({
                         type: 'error',
                         text1: t`Push notifications are disabled`,
-                        text2: t`Enable them in device settings to receive budget alerts.`
+                        text2: t`Tap to open Settings and allow notifications.`,
+                        onPress: handleOpenSettings
                     });
                 }
             })
@@ -45,16 +49,17 @@ export const BudgetPushToggle = () => {
     };
 
     return (
-        <SettingsCard
+        <SettingsRow
             testID={SettingsPageSelector.BudgetPushCard}
             title={t`Budget alerts`}
-            description={t`Get notified when a budget threshold is crossed`}
+            subtitle={t`Notify me near a limit`}
             icon={UserIconNameEnum.Bell}
-            variant="warning"
+            variant="ghost"
             right={
                 <SettingSwitch
                     value={isBudgetPushEnabled}
                     onValueChange={handleChange}
+                    accessibilityLabel={t`Budget alerts`}
                     testID={SettingsPageSelector.BudgetPushSwitch}
                     stateOnTestID={SettingsPageSelector.BudgetPushSwitchStateOn}
                     stateOffTestID={SettingsPageSelector.BudgetPushSwitchStateOff}

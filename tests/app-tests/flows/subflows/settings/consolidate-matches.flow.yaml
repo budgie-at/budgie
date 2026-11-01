@@ -3,7 +3,7 @@ appId: ${APP_ID}
 - runFlow:
       file: ../navigation/open-deep-link.flow.yaml
       env:
-          DEEP_LINK: 'budgie://settings?anchor=data'
+          DEEP_LINK: 'budgie://settings/data'
 
 # Same iOS 26 AX-staleness class as the money-data upgrade card: settle the
 # scroll-driven blur chrome before and re-query after scrolling, or the card
@@ -41,4 +41,4 @@ appId: ${APP_ID}
       visible: '.*high-confidence transfer.*'
       timeout: 3000
 
-- tapOn: 'Consolidate'
+- tapOn: 'Merge'

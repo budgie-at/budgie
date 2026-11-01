@@ -2,7 +2,8 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 
-import { FeatureIntro } from '../../../@generic/component/feature-intro/feature-intro';
+import { Button } from '../../../@generic/component/button/button';
+import { StatsEmptyCard } from '../../../@generic/component/stats-empty-card/stats-empty-card';
 import { AnalyticsPageSelector } from '../../../app/(tabs)/analytics-page.selector';
 
 export const TagsFeatureIntro = () => {
@@ -11,13 +12,13 @@ export const TagsFeatureIntro = () => {
     const handleOpenTransactions = () => void router.push('/transactions');
 
     return (
-        <FeatureIntro
+        <StatsEmptyCard
             testID={AnalyticsPageSelector.TagsEmptyState}
             icon={UserIconNameEnum.Tags}
             title={t`See spending by context, not just category`}
             description={t`Tags cut across categories — track a trip, a project or a person and see the true total.`}
-            buttonText={t`Tag a transaction`}
-            onCreate={handleOpenTransactions}
-        />
+        >
+            <Button onPress={handleOpenTransactions} leftIcon={UserIconNameEnum.Plus} content={t`Tag a transaction`} />
+        </StatsEmptyCard>
     );
 };

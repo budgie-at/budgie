@@ -1,4 +1,5 @@
 import { AccountEntityInterface, AccountTypeEnum } from '@budgie/contracts';
+import { SYNC_PROVIDER_CAPABILITIES } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 import { ReactNode } from 'react';
 
@@ -32,14 +33,16 @@ export const UpdateAccountScreen = (props: Props) => {
 
     const showInstrumentAfterAmount = account.type === AccountTypeEnum.CRYPTO || account.type === AccountTypeEnum.CRYPTO_SYNC;
     const minimumDecimalPlaces = showInstrumentAfterAmount ? MICRO_UNIT_DECIMAL_PLACES : 0;
-    const isSyncedAccount = account.type === AccountTypeEnum.BANK_SYNC || account.type === AccountTypeEnum.CRYPTO_SYNC;
+    const isReadOnlyBalance =
+        (account.type === AccountTypeEnum.BANK_SYNC || account.type === AccountTypeEnum.CRYPTO_SYNC) &&
+        !(isDefined(account.externalSource) && SYNC_PROVIDER_CAPABILITIES[account.externalSource].supportsFileImport);
     const providerTitle = isDefined(account.externalSource) ? BANK_PROVIDER_TITLE[account.externalSource] : null;
     const providerName = isDefined(providerTitle) ? t(providerTitle) : null;
     const readoutSource = isDefined(providerName) ? t`Balance from ${providerName}` : t`Balance from sync`;
     const readoutCaption = isDefined(sync?.forwardSyncedAt)
         ? `${readoutSource} · ${formatMonthAndDayWithTime(sync.forwardSyncedAt)}`
         : readoutSource;
-    const hero = isSyncedAccount ? (
+    const hero = isReadOnlyBalance ? (
         <AccountBalanceReadout
             value={fields.currentBalance.field.value}
             caption={readoutCaption}

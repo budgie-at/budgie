@@ -1,9 +1,11 @@
 import { AmountRangeInterface } from '@budgie/contracts';
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
+import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { useTransactionAmountFilterModal } from '../../context/transaction-amount-filter-modal.context';
 import { TransactionFilterChip } from '../transaction-filter-chip/transaction-filter-chip';
 import { TransactionFiltersSelector } from '../transaction-filters/transaction-filters.selector';
@@ -15,7 +17,8 @@ interface Props {
 
 export const TransactionAmountFilter = ({ value, onChange }: Props) => {
     const { t } = useLingui();
-    const formatDigits = useDisplayFormatDigits();
+    const defaultInstrument = useAtomValue(defaultInstrumentAtom);
+    const formatDigits = useFormatDigits(0, 2);
     const [openTransactionAmountFilter] = useTransactionAmountFilterModal();
 
     const handleOpen = () => {
@@ -31,8 +34,8 @@ export const TransactionAmountFilter = ({ value, onChange }: Props) => {
     const hasAmountFilterSelected = isDefined(fromAmount) || isDefined(toAmount);
 
     const getLabel = () => {
-        const fromText = isDefined(fromAmount) ? formatDigits(fromAmount) : null;
-        const toText = isDefined(toAmount) ? formatDigits(toAmount) : null;
+        const fromText = isDefined(fromAmount) ? formatDigits(fromAmount, defaultInstrument.symbol) : null;
+        const toText = isDefined(toAmount) ? formatDigits(toAmount, defaultInstrument.symbol) : null;
 
         if (isDefined(fromText) && isDefined(toText)) {
             return `${fromText} – ${toText}`;

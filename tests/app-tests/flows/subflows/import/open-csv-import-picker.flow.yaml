@@ -1,12 +1,12 @@
 appId: ${APP_ID}
 ---
-- openLink: 'budgie://settings?anchor=data'
+- openLink: 'budgie://settings/data'
 
 - waitForAnimationToEnd
 
 - extendedWaitUntil:
       visible:
-          id: 'SettingsPage.Container'
+          id: 'DataPage.Container'
       timeout: 15000
 
 - scrollUntilVisible:

@@ -1,18 +1,51 @@
-import { PropsWithChildren } from 'react';
+import { Children, Fragment, ReactNode } from 'react';
 import { Text, View } from 'react-native';
 
-import { Card } from '../card/card';
+import { isNotEmptyString } from '@rnw-community/shared';
 
-interface Props extends PropsWithChildren {
+import { FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../constant/footnote-max-font-size-multiplier.constant';
+import { TITLE_MAX_FONT_SIZE_MULTIPLIER } from '../../constant/title-max-font-size-multiplier.constant';
+import { useIsAccessibilityTextSize } from '../../hook/use-is-accessibility-text-size.hook';
+
+interface Props {
     readonly title: string;
+    readonly subtitle?: string;
+    readonly children: ReactNode;
 }
 
-export const StatsSection = ({ title, children }: Props) => (
-    <View className="gap-y-md">
-        <Text className="uppercase text-secondary-foreground text-xs">{title}</Text>
+const continuousCorners = { borderCurve: 'continuous' as const };
 
-        <Card size="md" className="gap-y-xl">
-            {children}
-        </Card>
-    </View>
-);
+export const StatsSection = ({ title, subtitle, children }: Props) => {
+    const isStacked = useIsAccessibilityTextSize();
+
+    const separatorClassName = isStacked ? 'ml-3xl h-hairline bg-surface-separator' : 'ml-[60px] h-hairline bg-surface-separator';
+
+    return (
+        <View className="gap-y-md">
+            <View className="gap-y-xxs px-3xl">
+                <Text
+                    accessibilityRole="header"
+                    maxFontSizeMultiplier={TITLE_MAX_FONT_SIZE_MULTIPLIER}
+                    className="text-lg font-semibold text-primary"
+                >
+                    {title}
+                </Text>
+
+                {isNotEmptyString(subtitle) ? (
+                    <Text maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER} className="text-[13px] text-secondary-foreground">
+                        {subtitle}
+                    </Text>
+                ) : null}
+            </View>
+
+            <View className="overflow-hidden rounded-3xl bg-grouped-surface-row" style={continuousCorners}>
+                {Children.toArray(children).map((child, index) => (
+                    <Fragment key={index}>
+                        {index > 0 ? <View className={separatorClassName} /> : null}
+                        {child}
+                    </Fragment>
+                ))}
+            </View>
+        </View>
+    );
+};
