@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
@@ -6,6 +7,7 @@ import { useGetAllMccCategoriesQuery } from '../../../mcc-category/query/use-get
 import { formatMccDisplay } from '../../../mcc-category/utils/format-mcc-display.util';
 import { useRuleMccSelectorModal } from '../../context/rule-mcc-selector-modal.context';
 import { useRuleConditionValueField } from '../../hooks/use-rule-condition-value-field.hook';
+import { RuleValueGlyph } from '../rule-value-glyph/rule-value-glyph';
 import { RuleValuePickerButton } from '../rule-value-picker-button/rule-value-picker-button';
 
 interface Props {
@@ -34,6 +36,7 @@ export const RuleConditionMccSelector = ({ index, testID }: Props) => {
         <RuleValuePickerButton
             value={selectedLabel}
             isMissing={isMissing}
+            leading={<RuleValueGlyph icon={UserIconNameEnum.Store} variant="ghost" />}
             placeholder={t`Choose a merchant category`}
             name={t`Merchant category`}
             onPress={handleOpen}

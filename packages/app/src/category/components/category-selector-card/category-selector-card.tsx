@@ -1,4 +1,4 @@
-import { CategoryEntityInterface } from '@budgie/contracts';
+import { CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { StyleSheet, Text, View } from 'react-native';
 
@@ -6,6 +6,7 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { BACKGROUND_COLOR_PALETTE } from '../../../@generic/constant/background-color-palette.constant';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { TONAL_DISC_BACKGROUND } from '../../../@generic/constant/tonal-disc-background.constant';
@@ -26,7 +27,7 @@ const cardVariants = cva(`flex-1 rounded-2xl px-sm py-xs gap-y-0.5 border-2 item
     variants: {
         isSelected: {
             true: '',
-            false: 'border-secondary-corner/50'
+            false: 'border-transparent bg-surface-row'
         }
     }
 });
@@ -45,9 +46,8 @@ export const CategorySelectorCard = (props: Props) => {
 
     const handleSelect = () => void onSelect(id);
 
-    const iconVariant = isSelected ? variant : 'ghost';
     const hasTestID = isNotEmptyString(testID);
-    const iconClassName = cn('rounded-4xl', TONAL_DISC_BACKGROUND[iconVariant]);
+    const iconClassName = cn('rounded-4xl', TONAL_DISC_BACKGROUND[variant]);
 
     return (
         <HapticPressable
@@ -64,7 +64,13 @@ export const CategorySelectorCard = (props: Props) => {
                 <View collapsable={false} nativeID={testID} pointerEvents="none" style={StyleSheet.absoluteFill} testID={testID} />
             ) : null}
 
-            <CircleIcon size={28} iconSize={14} className={iconClassName} icon={icon} variant={iconVariant} border={false} />
+            {isSelected ? (
+                <View className="absolute top-[6px] right-[6px] rounded-full bg-primary p-[2px]" pointerEvents="none">
+                    <Icon icon={UserIconNameEnum.Check} size={10} className="text-primary-reverse" />
+                </View>
+            ) : null}
+
+            <CircleIcon size={28} iconSize={14} className={iconClassName} icon={icon} variant={variant} border={false} />
 
             <View className="self-stretch flex-1 justify-center">
                 <Text

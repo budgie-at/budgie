@@ -21,6 +21,12 @@ import { RULE_CONDITION_OPERATOR } from '../constant/rule-condition-operator.con
 import type { RuleConditionLabelInterface } from '../interface/rule-condition-label.interface';
 
 const LIST_SEPARATOR = ',';
+const TEXT_FIELDS = new Set([RuleConditionFieldEnum.TITLE, RuleConditionFieldEnum.COMMENT]);
+const COMPARISON_SYMBOL: Partial<Record<RuleConditionOperatorEnum, string>> = {
+    [RuleConditionOperatorEnum.GREATER_THAN]: '>',
+    [RuleConditionOperatorEnum.LESS_THAN]: '<'
+};
+const LIST_PREDICATE_OPERATORS = new Set([RuleConditionOperatorEnum.EQUALS, RuleConditionOperatorEnum.IN]);
 const EMPTY_VALUE = '…';
 
 const splitListValue = (value: string) =>
@@ -78,12 +84,19 @@ export const useRuleConditionFormatter = () => {
         condition: Pick<RuleConditionCreateInputInterface, 'field' | 'operator' | 'value' | 'secondaryValue'>
     ): RuleConditionLabelInterface => {
         const value = resolveValue(condition);
+        const fieldLabel = t(RULE_CONDITION_FIELD[condition.field].label);
+        const operator = t(RULE_CONDITION_OPERATOR[condition.operator].phrase);
+        const isQuoted = TEXT_FIELDS.has(condition.field) && isNotEmptyString(condition.value.trim());
+        const isListPredicate = !TEXT_FIELDS.has(condition.field) && LIST_PREDICATE_OPERATORS.has(condition.operator);
 
         return {
-            fieldLabel: t(RULE_CONDITION_FIELD[condition.field].label),
+            fieldLabel,
             field: t(RULE_CONDITION_FIELD[condition.field].phrase),
-            operator: t(RULE_CONDITION_OPERATOR[condition.operator].phrase),
+            operator,
             value,
+            rawValue: isQuoted ? condition.value : value,
+            isQuoted,
+            shortPredicate: isListPredicate ? `${fieldLabel}:` : [fieldLabel, COMPARISON_SYMBOL[condition.operator] ?? operator].join(' '),
             hasValue: value !== EMPTY_VALUE && isNotEmptyString(condition.value.trim())
         };
     };

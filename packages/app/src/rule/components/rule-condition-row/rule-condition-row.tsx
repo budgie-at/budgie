@@ -4,12 +4,10 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { Text, View } from 'react-native';
 
 import { cn } from '../../../@generic/utils/cn.util';
-import { RULE_CONDITION_FIELD } from '../../constant/rule-condition-field.constant';
 import { RuleConditionFieldSelector } from '../rule-condition-field-selector/rule-condition-field-selector';
 import { RuleConditionOperatorSelector } from '../rule-condition-operator-selector/rule-condition-operator-selector';
 import { RuleConditionValueInput } from '../rule-condition-value-input/rule-condition-value-input';
 import { RuleFormRemoveButton } from '../rule-form-remove-button/rule-form-remove-button';
-import { RuleFormRowChip } from '../rule-form-row-chip/rule-form-row-chip';
 
 import { RuleConditionRowSelector } from './rule-condition-row.selector';
 
@@ -25,10 +23,9 @@ export const RuleConditionRow = ({ index, onRemove, canRemove }: Props) => {
     const { t } = useLingui();
     const { control } = useFormContext<RuleCreateInputInterface>();
     const matchType = useWatch({ control, name: 'conditionMatchType' });
-    const field = useWatch({ control, name: `conditions.${index}.field` });
     const connectorLabel = matchType === RuleConditionMatchTypeEnum.ALL ? t`and` : t`or`;
     const position = index + 1;
-    const headClassName = cn('flex-row', 'items-center', 'gap-x-xl', 'pl-3xl', 'py-xs', canRemove ? 'pr-md' : 'pr-3xl');
+    const headClassName = cn('flex-row', 'items-start', 'gap-x-sm', 'pl-3xl', 'pt-xs', canRemove ? 'pr-md' : 'pr-3xl');
 
     const handleRemove = () => void onRemove(index);
 
@@ -44,7 +41,6 @@ export const RuleConditionRow = ({ index, onRemove, canRemove }: Props) => {
             ) : null}
 
             <View className={headClassName}>
-                <RuleFormRowChip meta={RULE_CONDITION_FIELD[field]} />
                 <View className="min-w-0 flex-1 flex-row flex-wrap items-center gap-x-sm">
                     <RuleConditionFieldSelector index={index} testID={RuleConditionRowSelector.FieldSelector(index)} />
                     <RuleConditionOperatorSelector index={index} testID={RuleConditionRowSelector.OperatorSelector(index)} />
@@ -58,7 +54,7 @@ export const RuleConditionRow = ({ index, onRemove, canRemove }: Props) => {
                 ) : null}
             </View>
 
-            <View className="pr-3xl pb-md pl-[64px]">
+            <View className="px-3xl pb-md">
                 <RuleConditionValueInput
                     index={index}
                     testID={RuleConditionRowSelector.ValueInput(index)}

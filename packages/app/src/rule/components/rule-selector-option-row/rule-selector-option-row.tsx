@@ -18,7 +18,8 @@ interface Props {
 export const RuleSelectorOptionRow = ({ option, isSelected, onPress, testID }: Props) => {
     const isDisabled = isDefined(option.disabledReason);
     const handlePress = isDisabled ? emptyFn : () => void onPress(option.value);
-    const accessibilityState = { disabled: isDisabled };
+    const accessibilityState = { disabled: isDisabled, selected: isSelected };
+    const selectedClassName = isSelected ? 'border-primary/40 bg-surface-fill' : '';
     const pointerEvents = isDisabled ? 'none' : 'auto';
     const subtitleText = option.disabledReason ?? option.description;
     const subtitle = isNotEmptyString(subtitleText) ? <Text className="text-sm text-secondary-foreground">{subtitleText}</Text> : null;
@@ -28,6 +29,7 @@ export const RuleSelectorOptionRow = ({ option, isSelected, onPress, testID }: P
             <SelectorCard
                 testID={testID}
                 isSelected={isSelected}
+                className={selectedClassName}
                 onPress={handlePress}
                 iconSlot={<CircleIcon icon={option.icon} size={40} iconSize={20} radius={20} variant="ghost" border={false} />}
                 title={option.label}

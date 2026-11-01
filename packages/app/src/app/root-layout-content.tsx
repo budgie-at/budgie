@@ -68,7 +68,7 @@ const LOCK_SCREEN_OPTIONS: NativeStackNavigationOptions = { presentation: 'fullS
 
 const SELECTOR_OPTIONS = formSheetOptions([DETENT_40, DETENT_70], 0);
 
-const CATEGORY_SELECTOR_OPTIONS = formSheetOptions([DETENT_70, DETENT_96], 0);
+const CATEGORY_SELECTOR_OPTIONS = formSheetOptions([DETENT_70, DETENT_96], 1);
 
 enableScreens();
 enableFreeze();

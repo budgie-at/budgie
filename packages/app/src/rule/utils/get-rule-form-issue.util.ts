@@ -5,6 +5,7 @@ import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/sha
 
 import { isValidRulePattern } from './is-valid-rule-pattern.util';
 
+import type { RuleFormIssueInterface } from '../interface/rule-form-issue.interface';
 import type { RuleCreateInputInterface } from '@budgie/contracts';
 import type { MessageDescriptor } from '@lingui/core';
 
@@ -26,32 +27,41 @@ const hasActionTarget = (action: RuleCreateInputInterface['actions'][number]) =>
     }
 };
 
-export const getRuleFormIssue = (values: Pick<RuleCreateInputInterface, 'conditions' | 'actions'>): MessageDescriptor | null => {
+const findConditionIssue = (conditions: RuleCreateInputInterface['conditions']): RuleFormIssueInterface | null => {
+    const emptyIndex = conditions.findIndex(condition => !isNotEmptyString(condition.value.trim()));
+
+    if (emptyIndex >= 0) {
+        return { message: msg`Add a value to save`, conditionIndex: emptyIndex };
+    }
+
+    const rangeIndex = conditions.findIndex(
+        condition => condition.operator === RuleConditionOperatorEnum.BETWEEN && !isNotEmptyString(condition.secondaryValue?.trim())
+    );
+
+    if (rangeIndex >= 0) {
+        return { message: msg`Add both amounts to save`, conditionIndex: rangeIndex };
+    }
+
+    const patternIndex = conditions.findIndex(
+        condition => condition.operator === RuleConditionOperatorEnum.MATCHES_REGEX && !isValidRulePattern(condition.value)
+    );
+
+    return patternIndex >= 0 ? { message: msg`Fix the pattern to save`, conditionIndex: patternIndex } : null;
+};
+
+export const getRuleFormIssue = (values: Pick<RuleCreateInputInterface, 'conditions' | 'actions'>): RuleFormIssueInterface | null => {
     const { conditions, actions } = values;
+    const conditionIssue = findConditionIssue(conditions);
 
-    if (conditions.some(condition => !isNotEmptyString(condition.value.trim()))) {
-        return msg`Add a value to save`;
-    }
-
-    if (
-        conditions.some(
-            condition => condition.operator === RuleConditionOperatorEnum.BETWEEN && !isNotEmptyString(condition.secondaryValue?.trim())
-        )
-    ) {
-        return msg`Add both amounts to save`;
-    }
-
-    if (
-        conditions.some(condition => condition.operator === RuleConditionOperatorEnum.MATCHES_REGEX && !isValidRulePattern(condition.value))
-    ) {
-        return msg`Fix the pattern to save`;
+    if (isDefined(conditionIssue)) {
+        return conditionIssue;
     }
 
     if (!isNotEmptyArray(actions)) {
-        return msg`Add an action to save`;
+        return { message: msg`Add an action to save`, conditionIndex: null };
     }
 
     const actionWithoutTarget = actions.find(action => !hasActionTarget(action));
 
-    return isDefined(actionWithoutTarget) ? ACTION_TARGET_ISSUE[actionWithoutTarget.type] : null;
+    return isDefined(actionWithoutTarget) ? { message: ACTION_TARGET_ISSUE[actionWithoutTarget.type], conditionIndex: null } : null;
 };

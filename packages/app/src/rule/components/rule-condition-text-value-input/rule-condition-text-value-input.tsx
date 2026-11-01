@@ -18,7 +18,7 @@ export const RuleConditionTextValueInput = ({ index, testID }: Props) => {
     const [isFocused, setIsFocused] = useState(false);
     const { control } = useFormContext<RuleCreateInputInterface>();
     const {
-        field: { value, onChange, onBlur }
+        field: { value, onChange, onBlur, ref }
     } = useController({ control, name: `conditions.${index}.value` });
     const { isPattern, placeholder, hint, isHintWarning, accessibilityLabel } = useRuleTextValueMeta(index);
 
@@ -31,6 +31,7 @@ export const RuleConditionTextValueInput = ({ index, testID }: Props) => {
     return (
         <RuleValueField isFocused={isFocused} hint={hint} isHintWarning={isHintWarning}>
             <Input
+                ref={ref}
                 testID={testID}
                 borderless
                 size="md"

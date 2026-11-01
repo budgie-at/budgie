@@ -20,10 +20,10 @@ export const useRuleTextValueMeta = (index: number): RuleTextValueMetaInterface 
     const isPattern = operator === RuleConditionOperatorEnum.MATCHES_REGEX;
     const isEmpty = !isNotEmptyString(value.trim());
     const isPatternInvalid = isPattern && !isEmpty && !isValidRulePattern(value);
-    const isMissing = isEmpty && formState.isDirty;
+    const isMissing = isEmpty && (formState.isDirty || formState.submitCount > 0);
     const textPlaceholder = field === RuleConditionFieldEnum.COMMENT ? t`e.g. lunch with team` : t`e.g. Netflix`;
     const patternHint = isPatternInvalid ? t`This pattern isn't valid yet` : t`Letter case is ignored`;
-    const missingHint = isMissing ? t`Add a value` : null;
+    const missingHint = isMissing ? t`Add a value to save this rule` : null;
     const fieldLabel = t(RULE_CONDITION_FIELD[field].label);
     const operatorLabel = t(RULE_CONDITION_OPERATOR[operator].phrase);
 

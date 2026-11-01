@@ -49,5 +49,13 @@ export const RuleConditionFieldSelector = ({ index, testID }: Props) => {
 
     const handleOpen = () => void openFieldSheet({ values: FIELD_VALUES, selectedValue: field, onSelect: handleSelect });
 
-    return <RuleFormPickerPill label={label} accessibilityLabel={t`Match on ${label}`} onPress={handleOpen} testID={testID} />;
+    return (
+        <RuleFormPickerPill
+            label={label}
+            icon={RULE_CONDITION_FIELD[field].icon}
+            accessibilityLabel={t`Match on ${label}`}
+            onPress={handleOpen}
+            testID={testID}
+        />
+    );
 };

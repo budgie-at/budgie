@@ -10,6 +10,7 @@ import { cn } from '../../../@generic/utils/cn.util';
 import { RULE_ACTION_TYPE } from '../../constant/rule-action-type.constant';
 import { useRuleRowSummary } from '../../hooks/use-rule-row-summary.hook';
 import { RulesPageSelector } from '../../selector/rules-page.selector';
+import { RuleListRowTrigger } from '../rule-list-row-trigger/rule-list-row-trigger';
 
 import type { RuleWithActionsRelationsEntityInterface } from '@budgie/contracts';
 
@@ -26,16 +27,26 @@ const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
 export const RuleListRow = ({ rule, index, isLast, hasOverlap, onOpen, onToggle }: Props) => {
     const { t } = useLingui();
-    const { title, triggerPrefix, triggerValue, extraConditionCount, accessibilityLabel } = useRuleRowSummary(rule);
-    const hasExtraConditions = extraConditionCount > 0;
-    const extraConditionsLabel = `+${extraConditionCount}`;
+    const { primaryOutcome, secondaryOutcome, triggerPrefix, triggerValue, isTriggerQuoted, extraConditionsLabel, accessibilityLabel } =
+        useRuleRowSummary(rule);
     const isFirst = index === 0;
     const firstAction = rule.actions.at(0);
     const actionMeta = RULE_ACTION_TYPE[firstAction?.type ?? RuleActionTypeEnum.SET_CATEGORY];
     const categoryIcon = firstAction?.type === RuleActionTypeEnum.SET_CATEGORY ? firstAction.category?.icon : null;
-    const titleClassName = rule.enabled ? 'text-[17px] text-primary' : 'text-[17px] text-secondary-foreground';
+    const titleClassName = rule.enabled ? 'text-[17px] font-semibold text-primary' : 'text-[17px] font-semibold text-secondary-foreground';
     const containerClassName = cn('overflow-hidden', 'bg-surface-row', isFirst && 'rounded-t-3xl', isLast && 'rounded-b-3xl');
     const chipIcon = categoryIcon ?? actionMeta.icon;
+    const pressableClassName = cn(
+        'flex-1',
+        'flex-row',
+        'items-center',
+        'gap-x-xl',
+        'pl-3xl',
+        'active:opacity-60',
+        hasOverlap && 'min-h-[64px]',
+        hasOverlap && 'py-md',
+        !hasOverlap && 'h-[64px]'
+    );
 
     const handleOpen = () => void onOpen(rule);
     const handleToggle = (enabled: boolean) => void onToggle(rule, enabled);
@@ -51,7 +62,7 @@ export const RuleListRow = ({ rule, index, isLast, hasOverlap, onOpen, onToggle 
                     accessibilityRole="button"
                     accessibilityLabel={accessibilityLabel}
                     accessibilityHint={t`Opens the rule`}
-                    className="min-h-[68px] flex-1 flex-row items-center gap-x-xl py-lg pl-3xl active:opacity-70"
+                    className={pressableClassName}
                 >
                     <View className={cn(!rule.enabled && 'opacity-40')}>
                         <CircleIcon
@@ -66,24 +77,17 @@ export const RuleListRow = ({ rule, index, isLast, hasOverlap, onOpen, onToggle 
                     </View>
 
                     <View className="min-w-0 flex-1 gap-y-xxs">
-                        <Text testID={RulesPageSelector.RuleCardActions(index)} className={titleClassName} numberOfLines={2}>
-                            {title}
+                        <Text testID={RulesPageSelector.RuleCardActions(index)} className={titleClassName} numberOfLines={1}>
+                            {primaryOutcome}
+                            <Text className="font-normal text-secondary-foreground">{secondaryOutcome}</Text>
                         </Text>
-                        <View testID={RulesPageSelector.RuleCardConditions(index)} className="flex-row items-center gap-x-xs">
-                            <Text className="shrink-0 text-[13px] leading-[18px] text-secondary-foreground" numberOfLines={1}>
-                                {triggerPrefix}
-                            </Text>
-                            <Text className="shrink text-[13px] leading-[18px] text-secondary-foreground" numberOfLines={1}>
-                                {triggerValue}
-                            </Text>
-                            {hasExtraConditions ? (
-                                <View className="rounded-full bg-surface-fill px-sm" style={CONTINUOUS_CORNERS}>
-                                    <Text className="text-[12px] font-semibold leading-[18px] text-secondary-foreground">
-                                        {extraConditionsLabel}
-                                    </Text>
-                                </View>
-                            ) : null}
-                        </View>
+                        <RuleListRowTrigger
+                            prefix={triggerPrefix}
+                            value={triggerValue}
+                            isQuoted={isTriggerQuoted}
+                            extraLabel={extraConditionsLabel}
+                            testID={RulesPageSelector.RuleCardConditions(index)}
+                        />
                         {hasOverlap ? (
                             <Text className="text-[13px] leading-[18px] text-warning-foreground" numberOfLines={1}>
                                 {t`Same trigger as a rule above`}
@@ -97,7 +101,7 @@ export const RuleListRow = ({ rule, index, isLast, hasOverlap, onOpen, onToggle 
                         testID={RulesPageSelector.RuleCardEnabledSwitch(index)}
                         value={rule.enabled}
                         onValueChange={handleToggle}
-                        accessibilityLabel={t`Enable rule: ${title}`}
+                        accessibilityLabel={t`Enable rule: ${primaryOutcome}`}
                     />
                 </View>
             </View>

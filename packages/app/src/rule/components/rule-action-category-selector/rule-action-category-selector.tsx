@@ -1,4 +1,4 @@
-import { RuleCreateInputInterface } from '@budgie/contracts';
+import { RuleCreateInputInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useController, useFormContext } from 'react-hook-form';
 
@@ -6,6 +6,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
+import { RuleValueGlyph } from '../rule-value-glyph/rule-value-glyph';
 import { RuleValuePickerButton } from '../rule-value-picker-button/rule-value-picker-button';
 
 interface Props {
@@ -22,7 +23,7 @@ export const RuleActionCategorySelector = ({ index, testID }: Props) => {
     const [openCategorySelector] = useCategorySelectorModal();
     const { category } = useGetCategoryByIdQuery(categoryId ?? 0);
 
-    const isMissing = !isDefined(categoryId) && formState.isDirty;
+    const isMissing = !isDefined(categoryId) && (formState.isDirty || formState.submitCount > 0);
 
     const handleOpen = () => {
         openCategorySelector({ initialCategoryId: categoryId, variant: 'violet' }, selectedCategoryId => {
@@ -36,6 +37,7 @@ export const RuleActionCategorySelector = ({ index, testID }: Props) => {
         <RuleValuePickerButton
             value={category?.title ?? null}
             isMissing={isMissing}
+            leading={<RuleValueGlyph icon={category?.icon ?? UserIconNameEnum.FolderOpen} variant="violet" />}
             placeholder={t`Choose a category`}
             name={t`Category`}
             onPress={handleOpen}

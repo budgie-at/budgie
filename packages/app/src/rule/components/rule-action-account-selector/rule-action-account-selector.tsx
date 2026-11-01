@@ -4,7 +4,8 @@ import {
     RuleConditionFieldEnum,
     RuleConditionOperatorEnum,
     RuleCreateInputInterface,
-    TransactionTypeEnum
+    TransactionTypeEnum,
+    UserIconNameEnum
 } from '@budgie/contracts';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
@@ -16,6 +17,7 @@ import { isDefined } from '@rnw-community/shared';
 import { isEnumValue } from '../../../@generic/type-guard/is-enum-value.type-guard';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
+import { RuleValueGlyph } from '../rule-value-glyph/rule-value-glyph';
 import { RuleValuePickerButton } from '../rule-value-picker-button/rule-value-picker-button';
 
 interface Props {
@@ -61,7 +63,7 @@ export const RuleActionAccountSelector = ({ index, testID }: Props) => {
     const hasIncomeCondition = hasTransactionTypeCondition(conditions, TransactionTypeEnum.INCOME);
     const { label, hint } = resolveTransferCopy(hasExpenseCondition, hasIncomeCondition);
 
-    const isMissing = !isDefined(accountId) && formState.isDirty;
+    const isMissing = !isDefined(accountId) && (formState.isDirty || formState.submitCount > 0);
 
     const handleOpen = () => {
         openAccountSelector(
@@ -79,6 +81,7 @@ export const RuleActionAccountSelector = ({ index, testID }: Props) => {
             <RuleValuePickerButton
                 value={account?.title ?? null}
                 isMissing={isMissing}
+                leading={<RuleValueGlyph icon={UserIconNameEnum.Wallet} variant="cyan" />}
                 placeholder={t(label)}
                 name={t`Transfer account`}
                 onPress={handleOpen}

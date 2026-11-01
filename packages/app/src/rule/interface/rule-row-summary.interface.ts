@@ -1,7 +1,9 @@
 export interface RuleRowSummaryInterface {
-    readonly title: string;
+    readonly primaryOutcome: string;
+    readonly secondaryOutcome: string;
     readonly triggerPrefix: string;
     readonly triggerValue: string;
-    readonly extraConditionCount: number;
+    readonly isTriggerQuoted: boolean;
+    readonly extraConditionsLabel: string | null;
     readonly accessibilityLabel: string;
 }

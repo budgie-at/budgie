@@ -6,6 +6,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { useRuleSelectorModal } from '../../context/rule-selector-modal.context';
 import { useRuleConditionValueField } from '../../hooks/use-rule-condition-value-field.hook';
+import { RuleValueGlyph } from '../rule-value-glyph/rule-value-glyph';
 import { RuleValuePickerButton } from '../rule-value-picker-button/rule-value-picker-button';
 
 interface EnumOption {
@@ -56,6 +57,7 @@ export const RuleConditionValueEnumSelector = ({ index, options, icon, sheetTitl
             placeholder={placeholder}
             name={sheetTitle}
             isMissing={isMissing}
+            leading={<RuleValueGlyph icon={icon} variant="ghost" />}
             onPress={handleOpen}
             testID={testID}
         />

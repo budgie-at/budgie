@@ -20,7 +20,7 @@ const containerVariants = cva('h-[52px] items-center justify-center rounded-full
 });
 
 const labelVariants = cva('text-[17px] font-semibold', {
-    variants: { isDisabled: { true: 'text-secondary-foreground', false: 'text-cta-foreground' } }
+    variants: { isDisabled: { true: 'text-primary/70', false: 'text-cta-foreground' } }
 });
 
 export const PillButton = ({ label, testID, isLoading = false, isDisabled = false, accessibilityHint, onPress }: Props) => {

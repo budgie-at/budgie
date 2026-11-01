@@ -6,8 +6,6 @@ import { isNotEmptyString } from '@rnw-community/shared';
 import type { RuleActionWithRelationsEntityInterface } from '@budgie/contracts';
 import type { MessageDescriptor } from '@lingui/core';
 
-const OUTCOME_SEPARATOR = ' · ';
-
 const getActionOutcome = (action: RuleActionWithRelationsEntityInterface, translate: (descriptor: MessageDescriptor) => string) => {
     const accountTitle = action.account?.title ?? '';
 
@@ -22,11 +20,7 @@ const getActionOutcome = (action: RuleActionWithRelationsEntityInterface, transl
     }
 };
 
-export const getRuleOutcomeLabel = (
+export const getRuleOutcomeParts = (
     actions: readonly RuleActionWithRelationsEntityInterface[],
     translate: (descriptor: MessageDescriptor) => string
-): string =>
-    actions
-        .map(action => getActionOutcome(action, translate))
-        .filter(isNotEmptyString)
-        .join(OUTCOME_SEPARATOR);
+): string[] => actions.map(action => getActionOutcome(action, translate)).filter(isNotEmptyString);

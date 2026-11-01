@@ -165,14 +165,6 @@ msgstr "{code} · 1 {code} ≈ {convertedAmount} {defaultCode}"
 msgid "{code} · Base currency"
 msgstr "{code} · Basiswährung"
 
-#: src/rule/components/rule-summary-hero/rule-summary-hero.tsx
-msgid "{conditionCount, plural, one {all # conditions match} other {all # conditions match}}"
-msgstr "{conditionCount, plural, one {alle # Bedingungen zutreffen} other {alle # Bedingungen zutreffen}}"
-
-#: src/rule/components/rule-summary-hero/rule-summary-hero.tsx
-msgid "{conditionCount, plural, one {any of # conditions matches} other {any of # conditions matches}}"
-msgstr "{conditionCount, plural, one {eine von # Bedingungen zutrifft} other {eine von # Bedingungen zutrifft}}"
-
 #: src/budget/components/budget-period-recap-rollover/budget-period-recap-rollover.tsx
 msgid "{count, plural, one {{formattedAmount} rolled over across # category} other {{formattedAmount} rolled over across # categories}}"
 msgstr "{count, plural, one {{formattedAmount} auf # Kategorie übertragen} other {{formattedAmount} auf # Kategorien übertragen}}"
@@ -370,6 +362,10 @@ msgstr "{installmentCount, plural, one {# Zahlung insgesamt} other {# Zahlungen 
 #: src/installment-plan/component/convert-to-installment-create-button/convert-to-installment-create-button.tsx
 msgid "{installmentCount, plural, one {Split into # payment} other {Split into # payments}}"
 msgstr "{installmentCount, plural, one {In # Zahlung aufteilen} other {In # Zahlungen aufteilen}}"
+
+#: src/rule/components/rule-summary-conditions/rule-summary-conditions.tsx
+msgid "{joiner} {remainingCount} more"
+msgstr "{joiner} {remainingCount} weitere"
 
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "{loadedDays}/{totalDays} days"
@@ -877,13 +873,13 @@ msgstr "Eine PIN kannst du jederzeit später hinzufügen"
 msgid "Add a transaction"
 msgstr "Transaktion hinzufügen"
 
-#: src/rule/hooks/use-rule-text-value-meta.hook.ts
-msgid "Add a value"
-msgstr "Wert eingeben"
-
 #: src/rule/utils/get-rule-form-issue.util.ts
 msgid "Add a value to save"
 msgstr "Wert eingeben, um zu speichern"
+
+#: src/rule/hooks/use-rule-text-value-meta.hook.ts
+msgid "Add a value to save this rule"
+msgstr "Wert eingeben, um die Regel zu speichern"
 
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add Account"
@@ -1140,18 +1136,19 @@ msgstr "Die Auswertungen erscheinen, sobald wir bestätigen können, dass dein V
 
 #: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx
 #: src/rule/components/rule-condition-row/rule-condition-row.tsx
+#: src/rule/components/rule-summary-conditions/rule-summary-conditions.tsx
 #: src/rule/components/rule-summary-hero/rule-summary-hero.tsx
 #: src/rule/hooks/use-rule-row-summary.hook.ts
 msgid "and"
 msgstr "und"
 
-#: src/rule/components/rule-actions-section/rule-actions-section.tsx
-msgid "Another rule also sets a category or transfer, and the older rule wins."
-msgstr "Eine andere Regel setzt ebenfalls eine Kategorie oder Überweisung, und die ältere Regel gewinnt."
+#: src/rule/hooks/use-rule-row-summary.hook.ts
+msgid "and +{extraCount}"
+msgstr "und +{extraCount}"
 
 #: src/rule/components/rule-condition-match-type-selector/rule-condition-match-type-selector.tsx
 msgid "Any condition"
-msgstr "Eine Bedingung"
+msgstr "Mindestens eine"
 
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "Anyone who can unlock this phone"
@@ -1742,6 +1739,7 @@ msgstr "Transaktionsverlauf wird geprüft"
 msgid "Choose \"Excel\" as the export format — PDF and CSV files can't be imported"
 msgstr "Wählen Sie „Excel“ als Exportformat – PDF- und CSV-Dateien können nicht importiert werden"
 
+#: src/app/category-selector.tsx
 #: src/rule/components/rule-action-category-selector/rule-action-category-selector.tsx
 msgid "Choose a category"
 msgstr "Kategorie wählen"
@@ -2924,8 +2922,8 @@ msgid "Enable Face ID unlock?"
 msgstr "Face ID-Entsperrung aktivieren?"
 
 #: src/rule/components/rule-list-row/rule-list-row.tsx
-msgid "Enable rule: {title}"
-msgstr "Regel aktivieren: {title}"
+msgid "Enable rule: {primaryOutcome}"
+msgstr "Regel aktivieren: {primaryOutcome}"
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Enable Touch ID unlock?"
@@ -3467,6 +3465,10 @@ msgstr "Ich habe ein Budgie-Backup"
 msgid "If a download arrives damaged, Budgie deletes it and asks before starting again."
 msgstr "Kommt ein Download beschädigt an, löscht Budgie ihn und fragt, bevor er neu startet."
 
+#: src/rule/components/rule-actions-section/rule-actions-section.tsx
+msgid "If another rule also sets a category or transfer, the older rule wins."
+msgstr "Setzt eine andere Regel ebenfalls eine Kategorie oder Überweisung, gewinnt die ältere."
+
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "If Privat24 emails you the file instead of downloading it, save the attachment from your inbox"
 msgstr "Falls Privat24 Ihnen die Datei per E-Mail statt zum Download sendet, speichern Sie den Anhang aus Ihrem Postfach"
@@ -3545,6 +3547,10 @@ msgstr "Verlauf wird importiert…"
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
 msgid "in {month}"
 msgstr "im {month}"
+
+#: src/rule/components/rule-summary-conditions/rule-summary-conditions.tsx
+msgid "in account currency"
+msgstr "in Kontowährung"
 
 #: src/@generic/component/amount-sign-capsule/amount-sign-capsule.tsx
 msgid "In credit"
@@ -4209,6 +4215,10 @@ msgstr "Namen stimmen überein"
 msgid "Navigate to Account → Statements"
 msgstr "Zu Konto → Kontoauszüge navigieren"
 
+#: src/rule/components/rule-value-picker-button/rule-value-picker-button.tsx
+msgid "Needed to save this rule"
+msgstr "Nötig, um die Regel zu speichern"
+
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
 msgid "Needs attention"
 msgstr "Erfordert Aufmerksamkeit"
@@ -4768,10 +4778,14 @@ msgid "Options"
 msgstr "Optionen"
 
 #: src/rule/components/rule-condition-row/rule-condition-row.tsx
-#: src/rule/components/rule-summary-hero/rule-summary-hero.tsx
+#: src/rule/components/rule-summary-conditions/rule-summary-conditions.tsx
 #: src/rule/hooks/use-rule-row-summary.hook.ts
 msgid "or"
 msgstr "oder"
+
+#: src/rule/hooks/use-rule-row-summary.hook.ts
+msgid "or +{extraCount}"
+msgstr "oder +{extraCount}"
 
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Or fill it from"
@@ -5505,10 +5519,6 @@ msgstr "Regel aktualisiert"
 msgid "Rules"
 msgstr "Regeln"
 
-#: src/rule/components/rules-list-page/rules-list-page.tsx
-msgid "Rules run in the order they were created. If two set a category, the older one wins."
-msgstr "Regeln laufen in der Reihenfolge ihrer Erstellung. Setzen zwei eine Kategorie, gewinnt die ältere."
-
 #: src/rule/components/rules-feature-intro/rules-feature-intro.tsx
 msgid "Rules work on imported transactions"
 msgstr "Regeln funktionieren mit importierten Transaktionen"
@@ -5924,7 +5934,7 @@ msgstr "Einige Kartenaussteller stellen nicht jedes Wallet-Auslöserfeld bereit.
 msgid "Some transactions may be hidden by the account or amount filter."
 msgstr "Einige Transaktionen sind eventuell durch den Konto- oder Betragsfilter ausgeblendet."
 
-#: src/rule/components/rule-condition-phrase/rule-condition-phrase.tsx
+#: src/rule/components/rule-summary-conditions/rule-summary-conditions.tsx
 msgid "something"
 msgstr "etwas"
 
@@ -6688,7 +6698,7 @@ msgstr "überweisen an"
 msgid "Transfer to"
 msgstr "Überweisung an"
 
-#: src/rule/utils/get-rule-outcome-label.util.ts
+#: src/rule/utils/get-rule-outcome-parts.util.ts
 msgid "Transfer to {accountTitle}"
 msgstr "Überweisung an {accountTitle}"
 
@@ -7040,6 +7050,10 @@ msgstr "Wann wird die Einlage fällig?"
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx
 msgid "When should it be returned?"
 msgstr "Wann soll es zurückgegeben werden?"
+
+#: src/rule/components/rules-list-page/rules-list-page.tsx
+msgid "When two rules set a category, the older one wins. Swipe a rule left to delete it."
+msgstr "Setzen zwei Regeln eine Kategorie, gewinnt die ältere. Zum Löschen eine Regel nach links wischen."
 
 #: src/rule/constant/rule-condition-field.constant.ts
 msgid "Where the payment happened"

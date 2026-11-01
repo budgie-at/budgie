@@ -9,5 +9,5 @@ export const useRuleConditionValueField = (index: number) => {
         field: { value, onChange }
     } = useController({ control, name: `conditions.${index}.value` });
 
-    return { value, onChange, isMissing: !isNotEmptyString(value) && formState.isDirty };
+    return { value, onChange, isMissing: !isNotEmptyString(value) && (formState.isDirty || formState.submitCount > 0) };
 };

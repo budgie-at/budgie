@@ -166,14 +166,6 @@ msgstr "{code} · 1 {code} ≈ {convertedAmount} {defaultCode}"
 msgid "{code} · Base currency"
 msgstr "{code} · Base currency"
 
-#: src/rule/components/rule-summary-hero/rule-summary-hero.tsx
-msgid "{conditionCount, plural, one {all # conditions match} other {all # conditions match}}"
-msgstr "{conditionCount, plural, one {all # conditions match} other {all # conditions match}}"
-
-#: src/rule/components/rule-summary-hero/rule-summary-hero.tsx
-msgid "{conditionCount, plural, one {any of # conditions matches} other {any of # conditions matches}}"
-msgstr "{conditionCount, plural, one {any of # conditions matches} other {any of # conditions matches}}"
-
 #: src/budget/components/budget-period-recap-rollover/budget-period-recap-rollover.tsx
 msgid "{count, plural, one {{formattedAmount} rolled over across # category} other {{formattedAmount} rolled over across # categories}}"
 msgstr "{count, plural, one {{formattedAmount} rolled over across # category} other {{formattedAmount} rolled over across # categories}}"
@@ -371,6 +363,10 @@ msgstr "{installmentCount, plural, one {# payment in total} other {# payments in
 #: src/installment-plan/component/convert-to-installment-create-button/convert-to-installment-create-button.tsx
 msgid "{installmentCount, plural, one {Split into # payment} other {Split into # payments}}"
 msgstr "{installmentCount, plural, one {Split into # payment} other {Split into # payments}}"
+
+#: src/rule/components/rule-summary-conditions/rule-summary-conditions.tsx
+msgid "{joiner} {remainingCount} more"
+msgstr "{joiner} {remainingCount} more"
 
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "{loadedDays}/{totalDays} days"
@@ -878,13 +874,13 @@ msgstr "Add a PIN any time later"
 msgid "Add a transaction"
 msgstr "Add a transaction"
 
-#: src/rule/hooks/use-rule-text-value-meta.hook.ts
-msgid "Add a value"
-msgstr "Add a value"
-
 #: src/rule/utils/get-rule-form-issue.util.ts
 msgid "Add a value to save"
 msgstr "Add a value to save"
+
+#: src/rule/hooks/use-rule-text-value-meta.hook.ts
+msgid "Add a value to save this rule"
+msgstr "Add a value to save this rule"
 
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add Account"
@@ -1141,14 +1137,15 @@ msgstr "Analytics will appear once we can confirm your history is ready."
 
 #: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx
 #: src/rule/components/rule-condition-row/rule-condition-row.tsx
+#: src/rule/components/rule-summary-conditions/rule-summary-conditions.tsx
 #: src/rule/components/rule-summary-hero/rule-summary-hero.tsx
 #: src/rule/hooks/use-rule-row-summary.hook.ts
 msgid "and"
 msgstr "and"
 
-#: src/rule/components/rule-actions-section/rule-actions-section.tsx
-msgid "Another rule also sets a category or transfer, and the older rule wins."
-msgstr "Another rule also sets a category or transfer, and the older rule wins."
+#: src/rule/hooks/use-rule-row-summary.hook.ts
+msgid "and +{extraCount}"
+msgstr "and +{extraCount}"
 
 #: src/rule/components/rule-condition-match-type-selector/rule-condition-match-type-selector.tsx
 msgid "Any condition"
@@ -1743,6 +1740,7 @@ msgstr "Checking transaction history"
 msgid "Choose \"Excel\" as the export format — PDF and CSV files can't be imported"
 msgstr "Choose \"Excel\" as the export format — PDF and CSV files can't be imported"
 
+#: src/app/category-selector.tsx
 #: src/rule/components/rule-action-category-selector/rule-action-category-selector.tsx
 msgid "Choose a category"
 msgstr "Choose a category"
@@ -2925,8 +2923,8 @@ msgid "Enable Face ID unlock?"
 msgstr "Enable Face ID unlock?"
 
 #: src/rule/components/rule-list-row/rule-list-row.tsx
-msgid "Enable rule: {title}"
-msgstr "Enable rule: {title}"
+msgid "Enable rule: {primaryOutcome}"
+msgstr "Enable rule: {primaryOutcome}"
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Enable Touch ID unlock?"
@@ -3468,6 +3466,10 @@ msgstr "I have a Budgie backup"
 msgid "If a download arrives damaged, Budgie deletes it and asks before starting again."
 msgstr "If a download arrives damaged, Budgie deletes it and asks before starting again."
 
+#: src/rule/components/rule-actions-section/rule-actions-section.tsx
+msgid "If another rule also sets a category or transfer, the older rule wins."
+msgstr "If another rule also sets a category or transfer, the older rule wins."
+
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "If Privat24 emails you the file instead of downloading it, save the attachment from your inbox"
 msgstr "If Privat24 emails you the file instead of downloading it, save the attachment from your inbox"
@@ -3546,6 +3548,10 @@ msgstr "Importing history…"
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
 msgid "in {month}"
 msgstr "in {month}"
+
+#: src/rule/components/rule-summary-conditions/rule-summary-conditions.tsx
+msgid "in account currency"
+msgstr "in account currency"
 
 #: src/@generic/component/amount-sign-capsule/amount-sign-capsule.tsx
 msgid "In credit"
@@ -4210,6 +4216,10 @@ msgstr "Name matches"
 msgid "Navigate to Account → Statements"
 msgstr "Navigate to Account → Statements"
 
+#: src/rule/components/rule-value-picker-button/rule-value-picker-button.tsx
+msgid "Needed to save this rule"
+msgstr "Needed to save this rule"
+
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
 msgid "Needs attention"
 msgstr "Needs attention"
@@ -4769,10 +4779,14 @@ msgid "Options"
 msgstr "Options"
 
 #: src/rule/components/rule-condition-row/rule-condition-row.tsx
-#: src/rule/components/rule-summary-hero/rule-summary-hero.tsx
+#: src/rule/components/rule-summary-conditions/rule-summary-conditions.tsx
 #: src/rule/hooks/use-rule-row-summary.hook.ts
 msgid "or"
 msgstr "or"
+
+#: src/rule/hooks/use-rule-row-summary.hook.ts
+msgid "or +{extraCount}"
+msgstr "or +{extraCount}"
 
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Or fill it from"
@@ -5506,10 +5520,6 @@ msgstr "Rule updated"
 msgid "Rules"
 msgstr "Rules"
 
-#: src/rule/components/rules-list-page/rules-list-page.tsx
-msgid "Rules run in the order they were created. If two set a category, the older one wins."
-msgstr "Rules run in the order they were created. If two set a category, the older one wins."
-
 #: src/rule/components/rules-feature-intro/rules-feature-intro.tsx
 msgid "Rules work on imported transactions"
 msgstr "Rules work on imported transactions"
@@ -5925,7 +5935,7 @@ msgstr "Some issuers do not provide every Wallet trigger field. Edit the automat
 msgid "Some transactions may be hidden by the account or amount filter."
 msgstr "Some transactions may be hidden by the account or amount filter."
 
-#: src/rule/components/rule-condition-phrase/rule-condition-phrase.tsx
+#: src/rule/components/rule-summary-conditions/rule-summary-conditions.tsx
 msgid "something"
 msgstr "something"
 
@@ -6689,7 +6699,7 @@ msgstr "transfer to"
 msgid "Transfer to"
 msgstr "Transfer to"
 
-#: src/rule/utils/get-rule-outcome-label.util.ts
+#: src/rule/utils/get-rule-outcome-parts.util.ts
 msgid "Transfer to {accountTitle}"
 msgstr "Transfer to {accountTitle}"
 
@@ -7041,6 +7051,10 @@ msgstr "When does the deposit mature?"
 #: src/account/component/account-form-date-picker/account-form-date-picker.tsx
 msgid "When should it be returned?"
 msgstr "When should it be returned?"
+
+#: src/rule/components/rules-list-page/rules-list-page.tsx
+msgid "When two rules set a category, the older one wins. Swipe a rule left to delete it."
+msgstr "When two rules set a category, the older one wins. Swipe a rule left to delete it."
 
 #: src/rule/constant/rule-condition-field.constant.ts
 msgid "Where the payment happened"

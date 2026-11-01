@@ -30,7 +30,7 @@ export const RuleActionsSection = ({ ruleId }: Props) => {
         ruleId
     );
     const appliesHint = t`Applies to new payments as they arrive from your bank or an import.`;
-    const conflictHint = t`Another rule also sets a category or transfer, and the older rule wins.`;
+    const conflictHint = t`If another rule also sets a category or transfer, the older rule wins.`;
     const footer = hasConflict ? `${appliesHint} ${conflictHint}` : appliesHint;
 
     return (

@@ -15,6 +15,9 @@ import { useSearchCategoriesQuery } from '../category/query/use-search-categorie
 
 import { CategorySelectorModalSelector } from './category-selector-modal.selector';
 
+const CATEGORY_LIST_TOP_OFFSET = 132;
+const CATEGORY_LIST_BOTTOM_PADDING = 16;
+
 export default function CategorySelectorModal() {
     const { t } = useLingui();
     const [openCategoryForm] = useCategoryFormModal();
@@ -46,6 +49,7 @@ export default function CategorySelectorModal() {
                 rightActionOnPress={handleCreatePress}
                 rightActionTestID={CategorySelectorModalSelector.CreateButton}
                 testID={CategorySelectorModalSelector.Input}
+                title={t`Choose a category`}
             />
 
             {isNotEmptyString(description) ? (
@@ -61,6 +65,8 @@ export default function CategorySelectorModal() {
                 isLoading={isLoading}
                 onSelect={resolveCategorySelector}
                 cardTestID={CategorySelectorModalSelector.Card}
+                topOffset={CATEGORY_LIST_TOP_OFFSET}
+                additionalBottomPadding={CATEGORY_LIST_BOTTOM_PADDING}
             />
         </View>
     );

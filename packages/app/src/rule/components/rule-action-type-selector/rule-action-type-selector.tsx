@@ -37,5 +37,13 @@ export const RuleActionTypeSelector = ({ index, testID }: Props) => {
             onSelect: handleSelect
         });
 
-    return <RuleFormPickerPill label={label} accessibilityLabel={t`Action: ${label}`} onPress={handleOpen} testID={testID} />;
+    return (
+        <RuleFormPickerPill
+            label={label}
+            icon={RULE_ACTION_TYPE[actionType].icon}
+            accessibilityLabel={t`Action: ${label}`}
+            onPress={handleOpen}
+            testID={testID}
+        />
+    );
 };
