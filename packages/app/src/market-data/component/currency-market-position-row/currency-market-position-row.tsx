@@ -21,7 +21,7 @@ export const CurrencyMarketPositionRow = ({ label, value, valueClassName, testID
             <View className="gap-y-xxs">
                 <View className="flex-row flex-wrap items-center justify-between gap-x-xl">
                     <Text className="text-primary text-[17px]">{label}</Text>
-                    <ProtectedText selectable className={cn('ml-auto text-right text-[17px] tabular-nums', valueClassName)}>
+                    <ProtectedText className={cn('ml-auto text-right text-[17px] tabular-nums', valueClassName)}>
                         {value}
                     </ProtectedText>
                 </View>
