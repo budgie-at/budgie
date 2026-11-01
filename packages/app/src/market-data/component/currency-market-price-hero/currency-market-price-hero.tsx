@@ -4,7 +4,6 @@ import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { cn } from '../../../@generic/utils/cn.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { useMarketPriceHeroChange } from '../../hook/use-market-price-hero-change.hook';
@@ -47,7 +46,6 @@ export const CurrencyMarketPriceHero = ({
     const price = (scrubbedPrice ?? latestPrice)?.price;
     const { changeLabel, changeClassName } = useMarketPriceHeroChange(price, basePrice, fractionDigits);
     const { stalePriceDate, suffixLabel } = useMarketPriceHeroSuffix(latestPrice, scrubbedPrice, rangeLabel, rangeStartDate);
-    const emptyPriceClassName = isHistoryLoading ? 'text-[34px]' : 'text-[28px]';
 
     const handlePriceLayout = (event: LayoutChangeEvent) =>
         void priceBottom.set(event.nativeEvent.layout.y + event.nativeEvent.layout.height);
@@ -56,14 +54,20 @@ export const CurrencyMarketPriceHero = ({
         return (
             <View className="gap-y-xs">
                 <Text
-                    className={cn('text-secondary-foreground leading-[41px] font-semibold', emptyPriceClassName)}
+                    className="text-secondary-foreground text-[34px] leading-[41px] font-semibold"
                     numberOfLines={1}
                     testID={CurrencyMarketPageSelector.Price(instrumentCode)}
                     onLayout={handlePriceLayout}
                 >
-                    {isHistoryLoading ? '—' : <Trans>No price yet</Trans>}
+                    <Trans>No price yet</Trans>
                 </Text>
-                <View className="h-[20px]" />
+                <View className="h-[20px]">
+                    {isHistoryLoading ? (
+                        <Text className="text-secondary-foreground text-[15px] leading-[20px]" numberOfLines={1}>
+                            <Trans>Waiting for the first market quote</Trans>
+                        </Text>
+                    ) : null}
+                </View>
             </View>
         );
     }

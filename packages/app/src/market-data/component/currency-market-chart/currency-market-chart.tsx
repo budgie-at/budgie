@@ -16,6 +16,7 @@ import { getMarketChartTone } from '../../utils/get-market-chart-tone.util';
 import { CurrencyMarketChartCursor } from '../currency-market-chart-cursor/currency-market-chart-cursor';
 import { CurrencyMarketChartDateChip } from '../currency-market-chart-date-chip/currency-market-chart-date-chip';
 import { CurrencyMarketChartExtremes } from '../currency-market-chart-extremes/currency-market-chart-extremes';
+import { CurrencyMarketChartOpenLabel } from '../currency-market-chart-open-label/currency-market-chart-open-label';
 import { CurrencyMarketChartScrubClip } from '../currency-market-chart-scrub-clip/currency-market-chart-scrub-clip';
 import { CurrencyMarketChartSeries } from '../currency-market-chart-series/currency-market-chart-series';
 
@@ -76,7 +77,7 @@ export const CurrencyMarketChart = ({ prices, selectedIndex, rangeLabel, startLa
     const series = {
         linePath: geometry.linePath,
         areaPath: geometry.areaPath,
-        fill: isString(lineColor) ? FILL_URL : null,
+        fill: isString(lineColor) && !geometry.isFlat ? FILL_URL : null,
         strokeClassName: tone.strokeClassName,
         strokeWidth: geometry.isFlat ? FLAT_LINE_WIDTH : LINE_WIDTH
     };
@@ -121,6 +122,13 @@ export const CurrencyMarketChart = ({ prices, selectedIndex, rangeLabel, startLa
                         xs={geometry.xs}
                         ys={geometry.ys}
                         chartWidth={width}
+                        activeIndex={activeIndex}
+                    />
+
+                    <CurrencyMarketChartOpenLabel
+                        values={values}
+                        ys={geometry.ys}
+                        baselineY={geometry.baselineY}
                         activeIndex={activeIndex}
                     />
 

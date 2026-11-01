@@ -5355,6 +5355,10 @@ msgstr "Nur du hast den Schlüssel."
 msgid "Only your PIN opens this file."
 msgstr "Nur deine PIN öffnet diese Datei."
 
+#: src/market-data/component/currency-market-chart-open-label/currency-market-chart-open-label.tsx
+msgid "Open {openPrice}"
+msgstr "Eröffnung {openPrice}"
+
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Open Binance to get your API key"
 msgstr "Öffnen Sie Binance, um Ihren API-Schlüssel zu erhalten"
@@ -7909,6 +7913,10 @@ msgstr "Warte auf Verbindung"
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "Waiting for a key"
 msgstr "Wartet auf einen Schlüssel"
+
+#: src/market-data/component/currency-market-price-hero/currency-market-price-hero.tsx
+msgid "Waiting for the first market quote"
+msgstr "Warte auf den ersten Marktkurs"
 
 #: src/app/(main)/create-account/index.tsx
 msgid "Wallets and exchange balances"

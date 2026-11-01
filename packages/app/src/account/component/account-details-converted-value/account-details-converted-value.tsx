@@ -25,7 +25,10 @@ export const AccountDetailsConvertedValue = ({ balance, instrument }: Props) => 
     const formatInstrumentAmount = useFormatInstrumentAmount();
     const valuationRate = useCryptoValuationRateQuery(instrument.id, defaultInstrument.id);
 
-    const approximateValue = isDefined(valuationRate) ? `≈ ${formatDigits(balance * valuationRate, defaultInstrument.symbol)}` : null;
+    const convertedValue = isDefined(valuationRate) ? balance * valuationRate : null;
+    const formattedValue = isDefined(convertedValue) ? formatDigits(convertedValue, defaultInstrument.symbol) : null;
+    const approximatePrefix = convertedValue === 0 ? '' : '≈ ';
+    const approximateValue = isDefined(formattedValue) ? `${approximatePrefix}${formattedValue}` : null;
     const fullAmount = formatInstrumentAmount(balance, instrument.code, InstrumentTypeEnum.CRYPTO);
     const convertedLabel =
         isDefined(approximateValue) && Math.abs(balance) >= MILLION ? `${fullAmount} · ${approximateValue}` : approximateValue;

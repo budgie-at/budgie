@@ -1,0 +1,1 @@
+export const MARKET_CHART_LABEL_HEIGHT = 16;

@@ -28,7 +28,7 @@ export const CurrencyMarketPositionRow = ({ label, value, valueClassName, testID
         <GroupedListRow
             testID={testID}
             title={
-                <View className="gap-y-xxs">
+                <View className="min-h-[32px] justify-center gap-y-xxs">
                     <View className="flex-row flex-wrap items-center justify-between gap-x-xl">
                         <Text className="text-primary text-[17px]">{label}</Text>
                         <ProtectedText
