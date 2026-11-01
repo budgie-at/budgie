@@ -15,37 +15,33 @@ interface Props {
 
 export const CurrencyMarketChartStatus = ({ progress, testID }: Props) => {
     const { loadedDays, percent, status, totalDays, isComplete } = progress;
-    const isPaused = status === InstrumentMarketDataJobStatusEnum.FAILED;
-    const isLoading = !isPaused && !isComplete;
+    const isLoading = status !== InstrumentMarketDataJobStatusEnum.FAILED && !isComplete;
+
+    if (!isLoading) {
+        return (
+            <View className="h-[184px] w-full items-center justify-center px-7xl" testID={testID}>
+                <Text className="text-secondary-foreground text-center text-[15px] font-semibold">
+                    <Trans>No price history yet</Trans>
+                </Text>
+            </View>
+        );
+    }
 
     return (
         <View className="h-[184px] w-full items-center justify-center gap-y-xs px-7xl" testID={testID}>
             <Text className="text-primary text-center text-[15px] font-semibold">
-                {isPaused ? <Trans>Price history paused</Trans> : null}
-                {isLoading ? <Trans>Loading price history</Trans> : null}
-                {!isPaused && !isLoading ? <Trans>No price history yet</Trans> : null}
+                <Trans>Loading price history</Trans>
             </Text>
-
-            {isPaused ? (
-                <Text className="text-secondary-foreground text-center text-[13px]">
-                    <Trans>Budgie retries automatically</Trans>
+            {isPositiveNumber(totalDays) ? (
+                <Text className="text-secondary-foreground text-center text-[13px] tabular-nums">
+                    <Trans>
+                        {loadedDays} of {totalDays} days
+                    </Trans>
                 </Text>
             ) : null}
-
-            {isLoading ? (
-                <>
-                    {isPositiveNumber(totalDays) ? (
-                        <Text className="text-secondary-foreground text-center text-[13px] tabular-nums">
-                            <Trans>
-                                {loadedDays} of {totalDays} days
-                            </Trans>
-                        </Text>
-                    ) : null}
-                    <View className="mt-md w-[160px]">
-                        <AiProgressBar progress={percent} />
-                    </View>
-                </>
-            ) : null}
+            <View className="mt-md w-[160px]">
+                <AiProgressBar progress={percent} />
+            </View>
         </View>
     );
 };

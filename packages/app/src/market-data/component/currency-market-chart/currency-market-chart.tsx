@@ -25,7 +25,6 @@ interface Props {
     readonly rangeLabel: string;
     readonly startLabel: string;
     readonly endLabel: string;
-    readonly lineOpacity: number;
     readonly testID: string;
     readonly onScrub: (index: number | null) => void;
 }
@@ -48,7 +47,7 @@ const TONE_STYLES = {
     [MarketChartToneEnum.NEUTRAL]: { colorVariable: '--color-secondary-foreground', strokeClassName: 'accent-secondary-foreground' }
 } as const;
 
-export const CurrencyMarketChart = ({ values, rangeLabel, startLabel, endLabel, lineOpacity, testID, onScrub }: Props) => {
+export const CurrencyMarketChart = ({ values, rangeLabel, startLabel, endLabel, testID, onScrub }: Props) => {
     const { width: windowWidth } = useWindowDimensions();
     const [width, setWidth] = useState(windowWidth - SCREEN_PADDING_X);
     const accessibilityLabel = useMarketChartAccessibilityLabel(values, rangeLabel);
@@ -57,8 +56,7 @@ export const CurrencyMarketChart = ({ values, rangeLabel, startLabel, endLabel, 
     const tone = TONE_STYLES[geometry.isFlat ? MarketChartToneEnum.NEUTRAL : getMarketChartTone(values)];
     const lineColor = useCSSVariable(tone.colorVariable);
 
-    const fill = isString(lineColor) && !geometry.isFlat ? FILL_URL : null;
-    const futureOpacity = lineOpacity * FUTURE_OPACITY;
+    const fill = isString(lineColor) ? FILL_URL : null;
     const strokeWidth = geometry.isFlat ? FLAT_LINE_WIDTH : LINE_WIDTH;
     const series = { linePath: geometry.linePath, areaPath: geometry.areaPath, fill, strokeClassName: tone.strokeClassName, strokeWidth };
 
@@ -93,8 +91,8 @@ export const CurrencyMarketChart = ({ values, rangeLabel, startLabel, endLabel, 
                             strokeWidth={1}
                             strokeDasharray={BASELINE_DASH}
                         />
-                        <CurrencyMarketChartSeries {...series} clipPath={PAST_CLIP_URL} opacity={lineOpacity} />
-                        <CurrencyMarketChartSeries {...series} clipPath={FUTURE_CLIP_URL} opacity={futureOpacity} />
+                        <CurrencyMarketChartSeries {...series} clipPath={PAST_CLIP_URL} opacity={1} />
+                        <CurrencyMarketChartSeries {...series} clipPath={FUTURE_CLIP_URL} opacity={FUTURE_OPACITY} />
                     </Svg>
 
                     <CurrencyMarketChartExtremes

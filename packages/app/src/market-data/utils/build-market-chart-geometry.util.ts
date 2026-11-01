@@ -8,6 +8,7 @@ import type { MarketChartGeometryInterface } from '../interface/market-chart-geo
 const PADDING_Y = 24;
 const MIDDLE = 0.5;
 const FLAT_RELATIVE_SPAN = 0.01;
+const MIN_RELATIVE_HALF_SPAN = 0.005;
 
 const toCommand = (command: string, x: number, y: number): string => `${command}${x},${y}`;
 
@@ -15,8 +16,8 @@ export const buildMarketChartGeometry = (values: readonly number[], width: numbe
     const low = Math.min(...values);
     const high = Math.max(...values);
     const mean = values.reduce((total, value) => total + value, 0) / Math.max(values.length, 1);
-    const minHalfSpan = Math.abs(mean) * FLAT_RELATIVE_SPAN;
-    const isFlat = high - low < minHalfSpan;
+    const minHalfSpan = Math.abs(mean) * MIN_RELATIVE_HALF_SPAN;
+    const isFlat = high - low < Math.abs(mean) * FLAT_RELATIVE_SPAN;
     const halfSpan = isFlat ? Math.max(minHalfSpan, high - mean, mean - low) : (high - low) * MIDDLE;
     const min = isFlat ? mean - halfSpan : low;
     const range = halfSpan * 2;

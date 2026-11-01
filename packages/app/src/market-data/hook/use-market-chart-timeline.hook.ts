@@ -9,9 +9,6 @@ import { isMarketPriceStale } from '../utils/is-market-price-stale.util';
 
 import type { InstrumentDailyMarketPriceEntityInterface } from '@budgie/contracts';
 
-const STALE_LINE_OPACITY = 0.5;
-const LIVE_LINE_OPACITY = 1;
-
 export const useMarketChartTimeline = (
     firstPrice: Pick<InstrumentDailyMarketPriceEntityInterface, 'priceDate'> | undefined,
     latestPrice: Pick<InstrumentDailyMarketPriceEntityInterface, 'priceDate'> | undefined
@@ -27,7 +24,6 @@ export const useMarketChartTimeline = (
     };
 
     return {
-        lineOpacity: isStale ? STALE_LINE_OPACITY : LIVE_LINE_OPACITY,
         startLabel: isDefined(firstPrice) ? formatPriceDate(firstPrice.priceDate) : '',
         endLabel: isStale && isDefined(latestPrice) ? formatPriceDate(latestPrice.priceDate) : t`Today`
     };

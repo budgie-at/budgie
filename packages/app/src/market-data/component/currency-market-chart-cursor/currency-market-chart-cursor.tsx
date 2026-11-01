@@ -8,7 +8,7 @@ interface Props {
     readonly ys: readonly number[];
 }
 
-const DOT_RADIUS = 6;
+const DOT_RADIUS = 7;
 const LINE_HALF_WIDTH = 0.5;
 
 export const CurrencyMarketChartCursor = ({ activeIndex, xs, ys }: Props) => {
@@ -31,7 +31,7 @@ export const CurrencyMarketChartCursor = ({ activeIndex, xs, ys }: Props) => {
             <Animated.View pointerEvents="none" className="absolute top-0 bottom-0 left-0 w-px bg-secondary-foreground" style={lineStyle} />
             <Animated.View
                 pointerEvents="none"
-                className="absolute top-0 left-0 size-[12px] rounded-full border-2 border-surface bg-primary"
+                className="absolute top-0 left-0 size-[14px] rounded-full border-2 border-surface bg-primary"
                 style={dotStyle}
             />
         </>

@@ -891,6 +891,10 @@ msgstr "24 год"
 msgid "24h change"
 msgstr "Зміна за 24 год"
 
+#: src/market-data/component/currency-market-daily-change-row/currency-market-daily-change-row.tsx
+msgid "24h change · {staleDate}"
+msgstr "Зміна за 24 год · {staleDate}"
+
 #: src/market-data/component/currency-market-range-control/currency-market-range-control.tsx
 msgid "3M"
 msgstr "3 міс."
@@ -1494,9 +1498,17 @@ msgstr "Ви впевнені?"
 msgid "Asset mix"
 msgstr "Структура активів"
 
+#: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
+msgid "At {rateLabel} per {instrumentCode}"
+msgstr "По {rateLabel} за {instrumentCode}"
+
 #: src/market-data/component/currency-market-position/currency-market-position.tsx
 msgid "At last known price"
 msgstr "За останньою відомою ціною"
+
+#: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
+msgid "At last known price, {rateLabel} per {instrumentCode}"
+msgstr "За останньою відомою ціною, {rateLabel} за {instrumentCode}"
 
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
@@ -1535,10 +1547,6 @@ msgstr "Стане доступним після завершення імпор
 msgid "Average"
 msgstr "Середнє"
 
-#: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
-msgid "Average cost"
-msgstr "Середня вартість"
-
 #: src/categorize-inbox/components/categorize-inbox-group-stats-line/categorize-inbox-group-stats-line.tsx
 msgid "Average payment"
 msgstr "Середній платіж"
@@ -1550,6 +1558,14 @@ msgstr "Середнє за місяць"
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Average spend"
 msgstr "Середні витрати"
+
+#: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
+msgid "Avg {averageCost}"
+msgstr "Сер. {averageCost}"
+
+#: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
+msgid "Avg {averageCost} · known for {coveredAmount} of {totalAmount}"
+msgstr "Сер. {averageCost} · відомо для {coveredAmount} із {totalAmount}"
 
 #: src/settings/components/backup-row/backup-row.tsx
 msgid "Back up"
@@ -1807,10 +1823,6 @@ msgstr "Budgie читає ці виписки на цьому телефоні."
 #: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
 msgid "Budgie records Apple Pay payments the moment you tap, through a Shortcuts automation."
 msgstr "Budgie записує платежі Apple Pay щойно ви прикладаєте пристрій — через автоматизацію в Швидких командах."
-
-#: src/market-data/component/currency-market-chart-status/currency-market-chart-status.tsx
-msgid "Budgie retries automatically"
-msgstr "Budgie повторить спробу автоматично"
 
 #: src/budget/hooks/use-budget-fund-form.hook.ts
 msgid "Budgie stops setting money aside for it. Your transactions are not affected."
@@ -4257,10 +4269,6 @@ msgstr "Ключ оновлено"
 msgid "Know what’s safe to spend"
 msgstr "Знайте, скільки можна витратити"
 
-#: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
-msgid "Known for {coveredAmount} of {totalAmount}"
-msgstr "Відомо для {coveredAmount} із {totalAmount}"
-
 #: src/rule/constant/rule-action-type.constant.ts
 msgid "Label matching payments with a tag"
 msgstr "Позначати відповідні платежі тегом"
@@ -5031,7 +5039,6 @@ msgstr "MCC-кодів не знайдено"
 msgid "No new transactions"
 msgstr "Нових транзакцій немає"
 
-#: src/market-data/component/currency-market-position/currency-market-position.tsx
 #: src/market-data/component/currency-market-return-row/currency-market-return-row.tsx
 msgid "No price"
 msgstr "Немає ціни"
@@ -5810,10 +5817,6 @@ msgstr "Графік цін, {rangeLabel}, від {fromLabel} до {toLabel}, м
 #: src/market-data/component/currency-market-stale-price/currency-market-stale-price.tsx
 msgid "Price from {date}"
 msgstr "Ціна станом на {date}"
-
-#: src/market-data/component/currency-market-chart-status/currency-market-chart-status.tsx
-msgid "Price history paused"
-msgstr "Історію цін призупинено"
 
 #: src/settings/components/support-settings-rows/support-settings-rows.tsx
 msgid "Privacy policy"
@@ -7790,15 +7793,15 @@ msgstr "Оновити?"
 msgid "Updated {applied} of {total} transactions."
 msgstr "Оновлено {applied} з {total} транзакцій."
 
-#: src/market-data/component/currency-market-stats/currency-market-stats.tsx
+#: src/market-data/component/currency-market-stats-footer/currency-market-stats-footer.tsx
 msgid "Updated {updatedDate}"
 msgstr "Оновлено {updatedDate}"
 
-#: src/market-data/component/currency-market-stats/currency-market-stats.tsx
+#: src/market-data/component/currency-market-stats-footer/currency-market-stats-footer.tsx
 msgid "Updated today"
 msgstr "Оновлено сьогодні"
 
-#: src/market-data/component/currency-market-stats/currency-market-stats.tsx
+#: src/market-data/component/currency-market-stats-footer/currency-market-stats-footer.tsx
 msgid "Updated yesterday"
 msgstr "Оновлено вчора"
 
@@ -7856,7 +7859,7 @@ msgstr "Використовує регулярний вираз до 200 сим
 msgid "Valuation unavailable"
 msgstr "Оцінка недоступна"
 
-#: src/market-data/component/currency-market-position/currency-market-position.tsx
+#: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
 msgid "Value"
 msgstr "Вартість"
 

@@ -18,7 +18,7 @@ export const CurrencyMarketChartExtreme = ({ label, x, top, chartWidth }: Props)
 
     return (
         <Text
-            className={cn('absolute text-secondary-foreground text-[11px] leading-[13px] tabular-nums', textClassName)}
+            className={cn('absolute text-secondary-foreground text-[12px] leading-[16px] tabular-nums', textClassName)}
             numberOfLines={1}
             style={style}
         >

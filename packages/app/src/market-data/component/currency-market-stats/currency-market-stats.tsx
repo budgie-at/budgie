@@ -1,6 +1,5 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
-import { Trans, useLingui } from '@lingui/react/macro';
-import { parseISO } from 'date-fns/parseISO';
+import { useLingui } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
@@ -8,12 +7,11 @@ import { isDefined } from '@rnw-community/shared';
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { useFormatCompactDigits } from '../../../i18n/hook/use-format-compact-digits.hook';
-import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { getMarketDailyChange } from '../../utils/get-market-daily-change.util';
-import { getMarketPriceAgeDays } from '../../utils/get-market-price-age-days.util';
 import { CurrencyMarketDailyChangeRow } from '../currency-market-daily-change-row/currency-market-daily-change-row';
 import { CurrencyMarketPageSelector } from '../currency-market-page/currency-market-page.selector';
+import { CurrencyMarketStatsFooter } from '../currency-market-stats-footer/currency-market-stats-footer';
 
 import type { InstrumentDailyMarketPriceEntityInterface, InstrumentEntityInterface } from '@budgie/contracts';
 
@@ -29,35 +27,28 @@ export const CurrencyMarketStats = ({ instrument, latestPrice, previousPrice }: 
     const { t } = useLingui();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const formatCompactDigits = useFormatCompactDigits();
-    const { formatMonthAndDay } = useFormatDate();
 
     const { code, marketCapRank } = instrument;
     const marketCap = latestPrice?.marketCap;
     const volume = latestPrice?.volume;
-    const ageDays = isDefined(latestPrice) ? getMarketPriceAgeDays(latestPrice.priceDate) : null;
-    const updatedDate = isDefined(latestPrice) ? formatMonthAndDay(parseISO(latestPrice.priceDate)) : '';
+    const rank = isDefined(latestPrice) ? marketCapRank : null;
     const dailyChange = getMarketDailyChange(latestPrice, previousPrice);
-    const hasRows = isDefined(dailyChange) || isDefined(marketCap) || isDefined(volume) || isDefined(marketCapRank);
+    const hasRows = isDefined(dailyChange) || isDefined(marketCap) || isDefined(volume) || isDefined(rank);
 
-    if (!hasRows) {
+    if (!hasRows || !isDefined(latestPrice)) {
         return null;
     }
 
-    const footer = isDefined(ageDays) ? (
-        <Text
-            className="text-secondary-foreground px-3xl pt-md text-[13px] leading-[18px]"
-            testID={CurrencyMarketPageSelector.Updated(code)}
-        >
-            {ageDays === 0 ? <Trans>Updated today</Trans> : null}
-            {ageDays === 1 ? <Trans>Updated yesterday</Trans> : null}
-            {ageDays !== 0 && ageDays !== 1 ? <Trans>Updated {updatedDate}</Trans> : null}
-        </Text>
-    ) : null;
+    const footer = <CurrencyMarketStatsFooter priceDate={latestPrice.priceDate} testID={CurrencyMarketPageSelector.Updated(code)} />;
 
     return (
         <GroupedListSection title={t`Market`} footer={footer}>
             {isDefined(dailyChange) ? (
-                <CurrencyMarketDailyChangeRow change={dailyChange} testID={CurrencyMarketPageSelector.DailyChange(code)} />
+                <CurrencyMarketDailyChangeRow
+                    change={dailyChange}
+                    priceDate={latestPrice.priceDate}
+                    testID={CurrencyMarketPageSelector.DailyChange(code)}
+                />
             ) : null}
             {isDefined(marketCap) ? (
                 <GroupedListRow
@@ -73,9 +64,7 @@ export const CurrencyMarketStats = ({ instrument, latestPrice, previousPrice }: 
                     right={<Text className={VALUE_CLASSNAME}>{formatCompactDigits(volume, defaultInstrument.symbol)}</Text>}
                 />
             ) : null}
-            {isDefined(marketCapRank) ? (
-                <GroupedListRow title={t`Rank`} right={<Text className={VALUE_CLASSNAME}>{`#${marketCapRank}`}</Text>} />
-            ) : null}
+            {isDefined(rank) ? <GroupedListRow title={t`Rank`} right={<Text className={VALUE_CLASSNAME}>{`#${rank}`}</Text>} /> : null}
         </GroupedListSection>
     );
 };

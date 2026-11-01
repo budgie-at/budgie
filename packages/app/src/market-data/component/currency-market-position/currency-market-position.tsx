@@ -7,7 +7,6 @@ import { isDefined } from '@rnw-community/shared';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { useCryptoInstrumentBalanceQuery } from '../../../account/query/use-crypto-instrument-balance.query';
 import { useCryptoValuationRateQuery } from '../../../exchange-rate/query/use-crypto-valuation-rate.query';
-import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useFormatInstrumentAmount } from '../../../i18n/hook/use-format-instrument-amount.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { useCryptoInstrumentPositionQuery } from '../../query/use-crypto-instrument-position.query';
@@ -16,6 +15,7 @@ import { CurrencyMarketPageSelector } from '../currency-market-page/currency-mar
 import { CurrencyMarketPositionFooter } from '../currency-market-position-footer/currency-market-position-footer';
 import { CurrencyMarketPositionRow } from '../currency-market-position-row/currency-market-position-row';
 import { CurrencyMarketReturnRows } from '../currency-market-return-rows/currency-market-return-rows';
+import { CurrencyMarketValueRow } from '../currency-market-value-row/currency-market-value-row';
 
 import type { InstrumentEntityInterface } from '@budgie/contracts';
 
@@ -32,15 +32,12 @@ export const CurrencyMarketPosition = ({ instrument, latestPriceDate }: Props) =
     const { balance } = useCryptoInstrumentBalanceQuery(instrument.id);
     const position = useCryptoInstrumentPositionQuery(instrument.id, defaultInstrument.id);
     const valuationRate = useCryptoValuationRateQuery(instrument.id, defaultInstrument.id);
-    const formatMoney = useDisplayFormatDigits();
     const formatInstrumentAmount = useFormatInstrumentAmount();
 
     const hasBalance = convertToMicroUnits(balance) !== 0;
     const totalAmount = formatInstrumentAmount(balance, instrument.code, InstrumentTypeEnum.CRYPTO);
     const isStale = isDefined(valuationRate) && isDefined(latestPriceDate) && isMarketPriceStale(latestPriceDate);
     const staleNote = isStale ? t`At last known price` : null;
-    const valueLabel = isDefined(valuationRate) ? formatMoney(balance * valuationRate, defaultInstrument.symbol) : t`No price`;
-    const valueClassName = isDefined(valuationRate) ? PRIMARY_VALUE_CLASSNAME : 'text-secondary-foreground';
     const footer = hasBalance ? <CurrencyMarketPositionFooter costBasis={position.costBasis} valuationRate={valuationRate} /> : null;
 
     return (
@@ -51,14 +48,13 @@ export const CurrencyMarketPosition = ({ instrument, latestPriceDate }: Props) =
                 valueClassName={PRIMARY_VALUE_CLASSNAME}
                 testID={CurrencyMarketPageSelector.HoldingsBalance(instrument.code)}
             />
-            {hasBalance ? (
+            {hasBalance && isDefined(valuationRate) ? (
                 <>
-                    <CurrencyMarketPositionRow
-                        label={t`Value`}
-                        value={valueLabel}
-                        valueClassName={valueClassName}
-                        testID={CurrencyMarketPageSelector.HoldingsValue(instrument.code)}
-                        subtitle={staleNote}
+                    <CurrencyMarketValueRow
+                        balance={balance}
+                        valuationRate={valuationRate}
+                        instrumentCode={instrument.code}
+                        isStale={isStale}
                     />
                     <CurrencyMarketReturnRows
                         position={position}

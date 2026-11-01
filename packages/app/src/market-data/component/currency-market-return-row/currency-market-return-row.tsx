@@ -3,6 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
@@ -28,6 +29,7 @@ export const CurrencyMarketReturnRow = ({ position, valuationRate, instrumentCod
     const { symbol } = useAtomValue(defaultInstrumentAtom);
     const formatMoney = useDisplayFormatDigits();
     const formatPercent = useFormatDigits(PERCENT_FRACTION_DIGITS);
+    const isAmountProtected = useIsAmountProtected();
 
     const cryptoReturn = calculateCryptoReturn(position, valuationRate);
     const sign = getMarketChangeSign(cryptoReturn?.profit ?? 0);
@@ -35,7 +37,8 @@ export const CurrencyMarketReturnRow = ({ position, valuationRate, instrumentCod
     const returnLabel = isDefined(cryptoReturn)
         ? `${sign}${formatMoney(Math.abs(cryptoReturn.profit), symbol)}${percentLabel}`
         : t`No price`;
-    const returnClassName = isDefined(cryptoReturn) ? getMarketChangeClassName(cryptoReturn.profit) : 'text-secondary-foreground';
+    const returnClassName =
+        isDefined(cryptoReturn) && !isAmountProtected ? getMarketChangeClassName(cryptoReturn.profit) : 'text-secondary-foreground';
 
     return (
         <CurrencyMarketPositionRow

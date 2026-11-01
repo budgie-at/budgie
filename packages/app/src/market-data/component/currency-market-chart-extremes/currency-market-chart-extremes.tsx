@@ -17,7 +17,7 @@ interface Props {
 }
 
 const MIN_FRACTION_DIGITS = 2;
-const LABEL_HEIGHT = 13;
+const LABEL_HEIGHT = 16;
 const LABEL_GAP = 6;
 
 export const CurrencyMarketChartExtremes = ({ values, xs, ys, chartWidth, activeIndex }: Props) => {

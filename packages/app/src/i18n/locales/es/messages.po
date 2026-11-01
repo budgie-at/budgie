@@ -891,6 +891,10 @@ msgstr "24 h"
 msgid "24h change"
 msgstr "Cambio en 24 h"
 
+#: src/market-data/component/currency-market-daily-change-row/currency-market-daily-change-row.tsx
+msgid "24h change · {staleDate}"
+msgstr "Cambio en 24 h · {staleDate}"
+
 #: src/market-data/component/currency-market-range-control/currency-market-range-control.tsx
 msgid "3M"
 msgstr "3M"
@@ -1494,9 +1498,17 @@ msgstr "¿Estás seguro?"
 msgid "Asset mix"
 msgstr "Composición de activos"
 
+#: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
+msgid "At {rateLabel} per {instrumentCode}"
+msgstr "A {rateLabel} por {instrumentCode}"
+
 #: src/market-data/component/currency-market-position/currency-market-position.tsx
 msgid "At last known price"
 msgstr "Al último precio conocido"
+
+#: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
+msgid "At last known price, {rateLabel} per {instrumentCode}"
+msgstr "Al último precio conocido, {rateLabel} por {instrumentCode}"
 
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
@@ -1535,10 +1547,6 @@ msgstr "Disponible cuando termine la importación"
 msgid "Average"
 msgstr "Promedio"
 
-#: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
-msgid "Average cost"
-msgstr "Coste medio"
-
 #: src/categorize-inbox/components/categorize-inbox-group-stats-line/categorize-inbox-group-stats-line.tsx
 msgid "Average payment"
 msgstr "Pago medio"
@@ -1550,6 +1558,14 @@ msgstr "Promedio mensual"
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Average spend"
 msgstr "Gasto medio"
+
+#: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
+msgid "Avg {averageCost}"
+msgstr "Prom. {averageCost}"
+
+#: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
+msgid "Avg {averageCost} · known for {coveredAmount} of {totalAmount}"
+msgstr "Prom. {averageCost} · conocido para {coveredAmount} de {totalAmount}"
 
 #: src/settings/components/backup-row/backup-row.tsx
 msgid "Back up"
@@ -1807,10 +1823,6 @@ msgstr "Budgie lee estos extractos en este teléfono."
 #: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
 msgid "Budgie records Apple Pay payments the moment you tap, through a Shortcuts automation."
 msgstr "Budgie registra los pagos con Apple Pay en el momento en que pagas, mediante una automatización de Atajos."
-
-#: src/market-data/component/currency-market-chart-status/currency-market-chart-status.tsx
-msgid "Budgie retries automatically"
-msgstr "Budgie reintenta automáticamente"
 
 #: src/budget/hooks/use-budget-fund-form.hook.ts
 msgid "Budgie stops setting money aside for it. Your transactions are not affected."
@@ -4257,10 +4269,6 @@ msgstr "Clave actualizada"
 msgid "Know what’s safe to spend"
 msgstr "Sabe cuánto puedes gastar"
 
-#: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
-msgid "Known for {coveredAmount} of {totalAmount}"
-msgstr "Conocido para {coveredAmount} de {totalAmount}"
-
 #: src/rule/constant/rule-action-type.constant.ts
 msgid "Label matching payments with a tag"
 msgstr "Etiqueta los pagos que coincidan"
@@ -5031,7 +5039,6 @@ msgstr "No se encontraron códigos MCC"
 msgid "No new transactions"
 msgstr "No hay transacciones nuevas"
 
-#: src/market-data/component/currency-market-position/currency-market-position.tsx
 #: src/market-data/component/currency-market-return-row/currency-market-return-row.tsx
 msgid "No price"
 msgstr "Sin precio"
@@ -5810,10 +5817,6 @@ msgstr "Gráfico de precios, {rangeLabel}, de {fromLabel} a {toLabel}, máximo {
 #: src/market-data/component/currency-market-stale-price/currency-market-stale-price.tsx
 msgid "Price from {date}"
 msgstr "Precio del {date}"
-
-#: src/market-data/component/currency-market-chart-status/currency-market-chart-status.tsx
-msgid "Price history paused"
-msgstr "Historial de precios en pausa"
 
 #: src/settings/components/support-settings-rows/support-settings-rows.tsx
 msgid "Privacy policy"
@@ -7790,15 +7793,15 @@ msgstr "¿Actualizar regla?"
 msgid "Updated {applied} of {total} transactions."
 msgstr "Se actualizaron {applied} de {total} transacciones."
 
-#: src/market-data/component/currency-market-stats/currency-market-stats.tsx
+#: src/market-data/component/currency-market-stats-footer/currency-market-stats-footer.tsx
 msgid "Updated {updatedDate}"
 msgstr "Actualizado el {updatedDate}"
 
-#: src/market-data/component/currency-market-stats/currency-market-stats.tsx
+#: src/market-data/component/currency-market-stats-footer/currency-market-stats-footer.tsx
 msgid "Updated today"
 msgstr "Actualizado hoy"
 
-#: src/market-data/component/currency-market-stats/currency-market-stats.tsx
+#: src/market-data/component/currency-market-stats-footer/currency-market-stats-footer.tsx
 msgid "Updated yesterday"
 msgstr "Actualizado ayer"
 
@@ -7856,7 +7859,7 @@ msgstr "Usa una expresión regular de hasta 200 caracteres, sin distinguir mayú
 msgid "Valuation unavailable"
 msgstr "Valoración no disponible"
 
-#: src/market-data/component/currency-market-position/currency-market-position.tsx
+#: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
 msgid "Value"
 msgstr "Valor"
 

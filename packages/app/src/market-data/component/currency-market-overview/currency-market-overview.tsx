@@ -51,7 +51,7 @@ export const CurrencyMarketOverview = ({ instrument, prices, priceBottom }: Prop
     };
     const sparklineTestID = CurrencyMarketPageSelector.Sparkline(instrument.code);
     const hasPriceHistory = isNotEmptyArray(prices);
-    const { lineOpacity, startLabel, endLabel } = useMarketChartTimeline(rangePrices.at(0), latestPrice);
+    const { startLabel, endLabel } = useMarketChartTimeline(rangePrices.at(0), latestPrice);
 
     const handleRangeChange = (nextRange: MarketChartRangeEnum) => {
         setScrubIndex(null);
@@ -77,7 +77,6 @@ export const CurrencyMarketOverview = ({ instrument, prices, priceBottom }: Prop
                         rangeLabel={rangeLabels[range]}
                         startLabel={startLabel}
                         endLabel={endLabel}
-                        lineOpacity={lineOpacity}
                         testID={sparklineTestID}
                         onScrub={setScrubIndex}
                     />

@@ -1,7 +1,10 @@
 import { AccountAssociationEnum, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
+import { Text } from 'react-native';
 
 import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
 import { Ticker } from '../../../@generic/component/ticker/ticker';
+import { MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-font-size-multiplier.constant';
+import { PROTECTED_HERO_PLACEHOLDER } from '../../../@generic/constant/protected-hero-placeholder.constant';
 import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
 import { ACCOUNT_DETAILS_HERO_BALANCE_HEIGHT } from '../../constant/account-details-hero-balance-height.constant';
 import { useAccountDetailsBalanceLabel } from '../../hook/use-account-details-balance-label.hook';
@@ -16,10 +19,22 @@ export const AccountDetailsHeroBalanceValue = ({ balance, account }: Props) => {
     const getBalanceLabel = useAccountDetailsBalanceLabel();
     const isAmountProtected = useIsAmountProtected();
 
+    if (isCryptoAccountType(account.type) && isAmountProtected) {
+        return (
+            <Text
+                numberOfLines={1}
+                maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
+                className="text-[48px] font-semibold tracking-[0.08em] text-secondary-foreground"
+            >
+                {PROTECTED_HERO_PLACEHOLDER}
+            </Text>
+        );
+    }
+
     if (isCryptoAccountType(account.type)) {
         return (
             <Ticker
-                hasAnimation={!isAmountProtected}
+                hasAnimation
                 number={getBalanceLabel(balance, account)}
                 textClassName="font-semibold tracking-[-1px] text-primary"
                 minFontSize={24}

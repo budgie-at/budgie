@@ -1,4 +1,5 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
+import { parseISO } from 'date-fns/parseISO';
 import { Text, View } from 'react-native';
 import Animated, { Extrapolation, interpolate, useAnimatedStyle } from 'react-native-reanimated';
 
@@ -7,16 +8,18 @@ import { useScreenChrome } from '@rnw-community/react-native-screen-chrome';
 import { isDefined } from '@rnw-community/shared';
 
 import { SCREEN_CHROME_CONTENT_INSET_TOP } from '../../../@generic/constant/screen-chrome-content-inset.constant';
+import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { getMarketPriceFractionDigits } from '../../utils/get-market-price-fraction-digits.util';
+import { isMarketPriceStale } from '../../utils/is-market-price-stale.util';
 
 import type { InstrumentDailyMarketPriceEntityInterface } from '@budgie/contracts';
 import type { SharedValue } from 'react-native-reanimated';
 
 interface Props {
     readonly instrumentName: string;
-    readonly latestPrice: Pick<InstrumentDailyMarketPriceEntityInterface, 'price'> | undefined;
+    readonly latestPrice: Pick<InstrumentDailyMarketPriceEntityInterface, 'price' | 'priceDate'> | undefined;
     readonly priceBottom: SharedValue<number>;
 }
 
@@ -28,7 +31,13 @@ export const CurrencyMarketSmallTitle = ({ instrumentName, latestPrice, priceBot
     const formatPrice = useFormatDigits(MIN_FRACTION_DIGITS, getMarketPriceFractionDigits(latestPrice?.price ?? 0));
     const { config } = useScreenChrome();
     const { scrollY } = useCollapsibleHeaderScroll();
+    const { formatMonthAndDay } = useFormatDate();
     const navBarHeight = config.collapsedHeaderHeight ?? config.headerHeight;
+    const priceLabel = isDefined(latestPrice) ? formatPrice(latestPrice.price, symbol) : '';
+    const subtitle =
+        isDefined(latestPrice) && isMarketPriceStale(latestPrice.priceDate)
+            ? `${priceLabel} · ${formatMonthAndDay(parseISO(latestPrice.priceDate))}`
+            : priceLabel;
 
     const priceStyle = useAnimatedStyle(() => {
         const hiddenOffset = SCREEN_CHROME_CONTENT_INSET_TOP + priceBottom.get() - navBarHeight;
@@ -49,7 +58,7 @@ export const CurrencyMarketSmallTitle = ({ instrumentName, latestPrice, priceBot
                     numberOfLines={1}
                     style={priceStyle}
                 >
-                    {formatPrice(latestPrice.price, symbol)}
+                    {subtitle}
                 </Animated.Text>
             ) : null}
         </View>
