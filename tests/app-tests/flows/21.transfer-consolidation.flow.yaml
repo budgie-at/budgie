@@ -197,6 +197,7 @@ appId: ${APP_ID}
       element:
           id: 'InstitutionRow.1'
       direction: DOWN
+- waitForAnimationToEnd
 - tapOn:
       id: 'InstitutionRow.1'
 - extendedWaitUntil:
