@@ -55,10 +55,15 @@ export const CryptoCurrencyGroupMarketLink = (props: Props) => {
                 >
                     {instrumentName}
                 </Text>
-                <Text className="text-[13px] text-secondary-foreground tabular-nums" maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}>
-                    {instrumentCode}
-                    {' · '}
-                    <Text testID={CryptoCurrencyGroupCardSelector.Rate(instrumentCode)}>
+                <View className="flex-row flex-wrap">
+                    <Text className="text-[13px] text-secondary-foreground" maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}>
+                        {`${instrumentCode} · `}
+                    </Text>
+                    <Text
+                        className="text-[13px] text-secondary-foreground tabular-nums"
+                        maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
+                        testID={CryptoCurrencyGroupCardSelector.Rate(instrumentCode)}
+                    >
                         {isDefined(formattedRate) ? (
                             <Trans>
                                 1 {instrumentCode} ≈ {defaultInstrumentSymbol}
@@ -68,7 +73,7 @@ export const CryptoCurrencyGroupMarketLink = (props: Props) => {
                             <Trans>Missing rate</Trans>
                         )}
                     </Text>
-                </Text>
+                </View>
             </View>
 
             <View className={amountVariants({ isStacked })}>
