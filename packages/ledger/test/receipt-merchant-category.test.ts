@@ -88,6 +88,15 @@ describe('TransactionReceiptRepository.findMerchantCategoryId', () => {
         }).pipe(Effect.provide(TestLayer))
     );
 
+    it.effect('matches a non-Latin title exactly, where SQLite lower() cannot fold it', () =>
+        Effect.gen(function* () {
+            const { addTransaction, toys, receiptRepository } = yield* scenario;
+            yield* addTransaction({ categoryId: toys.id, title: ' Атб-Маркет ' });
+
+            expect(yield* receiptRepository.findMerchantCategoryId(null, 'Атб-Маркет')).toBe(toys.id);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
     it.effect('picks the most frequent category', () =>
         Effect.gen(function* () {
             const { addTransaction, toys, groceries, receiptRepository } = yield* scenario;

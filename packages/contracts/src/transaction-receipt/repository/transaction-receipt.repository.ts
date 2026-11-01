@@ -163,16 +163,20 @@ export class TransactionReceiptRepository extends Context.Service<TransactionRec
                     ),
                 findMerchantCategoryId: Effect.fn('TransactionReceiptRepository.findMerchantCategoryId')(function* (
                     merchantVatId: string | null,
-                    normalizedTitle: string
+                    title: string
                 ) {
+                    const trimmedTitle = title.trim();
+
                     const vatCategoryId = isDefined(merchantVatId)
                         ? yield* findMostFrequentCategoryId(eq(TransactionReceiptEntityTable.merchantVatId, merchantVatId))
                         : null;
 
                     return (
                         vatCategoryId ??
-                        (isNotEmptyString(normalizedTitle)
-                            ? yield* findMostFrequentCategoryId(sql`lower(trim(${TransactionEntityTable.title})) = ${normalizedTitle}`)
+                        (isNotEmptyString(trimmedTitle)
+                            ? yield* findMostFrequentCategoryId(
+                                  sql`(trim(${TransactionEntityTable.title}) = ${trimmedTitle} OR lower(trim(${TransactionEntityTable.title})) = ${trimmedTitle.toLocaleLowerCase()})`
+                              )
                             : null)
                     );
                 }),

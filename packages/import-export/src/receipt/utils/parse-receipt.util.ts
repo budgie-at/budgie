@@ -380,7 +380,7 @@ const LEGAL_FORMS: Record<LanguageEnum, readonly string[]> = {
 
 const LEGAL_FORM_PATTERN = buildReceiptKeywordPattern(Object.values(LEGAL_FORMS).flat(), 'u');
 const LEGAL_FORM_GLOBAL_PATTERN = new RegExp(LEGAL_FORM_PATTERN.source, 'gu');
-const MERCHANT_QUOTES_PATTERN = /["'«»„“”]/gu;
+const MERCHANT_QUOTES_PATTERN = /(?<!\p{L})["'«»„“”]|["'«»„“”](?!\p{L})/gu;
 const MERCHANT_EDGE_PUNCTUATION_PATTERN = /^[\s,.;:-]+|[\s,;:-]+$/gu;
 const MERCHANT_WORD_START_PATTERN = /(^|[\s-])\p{L}/gu;
 const MERCHANT_TEXT_PATTERN = /\p{L}{2}/u;
@@ -397,6 +397,11 @@ export const toMerchantTitle = (name: string): string =>
         .toLocaleLowerCase()
         .replaceAll(MERCHANT_WORD_START_PATTERN, letter => letter.toLocaleUpperCase());
 
+const SAME_ROW_TOLERANCE = 0.75;
+
+const isSameRow = (anchor: ReceiptTextLineInterface, line: ReceiptTextLineInterface): boolean =>
+    Math.abs(anchor.y + anchor.height / 2 - (line.y + line.height / 2)) <= Math.min(anchor.height, line.height) * SAME_ROW_TOLERANCE;
+
 const MIN_EVIDENCE_TOKEN_LENGTH = 4;
 
 const foldText = (text: string): string => text.normalize('NFD').replaceAll(/\p{M}/gu, '').toLowerCase();
@@ -411,7 +416,14 @@ const findTopCandidates = (lines: readonly ReceiptTextLineInterface[]): string[]
 
         return Math.max(
             0,
-            ...tokens.map(token => foldedLines.filter((folded, index) => index !== lineIndex && folded.includes(token)).length)
+            ...tokens.map(
+                token =>
+                    foldedLines.filter(
+                        (folded, index) =>
+                            !isSameRow(lines[index], lines[lineIndex]) &&
+                            (folded.match(/\p{L}+/gu) ?? []).some(word => word.startsWith(token))
+                    ).length
+            )
         );
     };
 
@@ -470,11 +482,6 @@ const VAT_ID_PATTERNS: readonly RegExp[] = [
     /(?<!\p{L})((?:BE|BG|CY|CZ|DK|EE|EL|ES|FI|FR|HR|HU|IE|IT|LT|LU|LV|MT|NL|PL|PT|RO|SE|SI|SK)\s?(?=[\dA-Z]*\d{7})[\dA-Z]{8,12})(?![\dA-Z])/u,
     /(?<!\p{L})(?:ІПН|ПН|ЄДРПОУ|ЕДРПОУ)\s*[:№]?\s*(\d{12}|\d{10}|\d{8})(?!\d)/iu
 ];
-
-const SAME_ROW_TOLERANCE = 0.75;
-
-const isSameRow = (anchor: ReceiptTextLineInterface, line: ReceiptTextLineInterface): boolean =>
-    Math.abs(anchor.y + anchor.height / 2 - (line.y + line.height / 2)) <= Math.min(anchor.height, line.height) * SAME_ROW_TOLERANCE;
 
 const groupRows = (lines: readonly ReceiptTextLineInterface[]): string[] =>
     [...lines]

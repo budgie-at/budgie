@@ -88,9 +88,7 @@ export class ReceiptScanService extends Context.Service<ReceiptScanService>()('@
             const occurredAt = draft.occurredAt ?? new Date(now);
 
             const title = toMerchantTitle(draft.isPaid ? (draft.merchantCandidates.at(0) ?? '') : (draft.merchantLegalName ?? ''));
-            const categoryId = draft.isPaid
-                ? yield* transactionReceiptRepository.findMerchantCategoryId(draft.merchantVatId, title.toLocaleLowerCase().trim())
-                : null;
+            const categoryId = draft.isPaid ? yield* transactionReceiptRepository.findMerchantCategoryId(draft.merchantVatId, title) : null;
             const receipt = { ...draft, occurredAt, title, description: null, categoryId };
             const proposal = yield* receiptMatchService.propose(receipt);
 

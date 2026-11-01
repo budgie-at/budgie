@@ -123,9 +123,9 @@ describe('parseReceipt', () => {
                 receiptNumber: null,
                 merchantVatId: null,
                 merchantLegalName: null,
-                merchantCandidates: ['E-Preis', 'G-Preis €', 'Ausdruck Gruppe:'],
+                merchantCandidates: ['Ausdruck Gruppe:', 'Tisch:', 'Stk Artikelname'],
                 isPaid: false,
-                fingerprint: 'epreis|128900000||'
+                fingerprint: 'ausdruckgruppe|128900000||'
             }
         ],
         [
@@ -139,7 +139,7 @@ describe('parseReceipt', () => {
                 receiptNumber: '00222',
                 merchantVatId: 'ATU22547304',
                 merchantLegalName: 'Smyths Toys Handelsges. m.b.H.',
-                merchantCandidates: ['SMYTHS', 'TOYS SUPERSTORES', 'Smyths Toys Handelsges. m.b.H.'],
+                merchantCandidates: ['SMYTHS', 'Smyths Toys Handelsges. m.b.H.', 'TOYS SUPERSTORES'],
                 isPaid: true,
                 fingerprint: 'ATU22547304|00222|96960000|2026-10-31'
             }
@@ -158,7 +158,7 @@ describe('parseReceipt', () => {
             receiptLine('Bar EUR 96,96', 0.25, 0.9, 0.015)
         ];
 
-        expect(parseReceipt(lines, CurrencyEnum.EUR)?.merchantCandidates.at(0)).not.toBe('SNYTHS');
+        expect(parseReceipt(lines, CurrencyEnum.EUR)?.merchantCandidates.at(0)).toBe('Smyths Toys Handelsges. m.b.H.');
     });
 
     it.each([
@@ -191,6 +191,8 @@ describe('toMerchantTitle', () => {
         ['Smyths Toys Handelsges. m.b.H.', 'Smyths Toys Handelsges.'],
         ['Mag. pharm. Christof Ulrich KG', 'Mag. Pharm. Christof Ulrich'],
         ['IHR LABOR', 'Ihr Labor'],
+        ["JOE'S PIZZA", "Joe's Pizza"],
+        ['«Kaffee Alt Wien»', 'Kaffee Alt Wien'],
         ['Ihr Labor GmbH', 'Ihr Labor'],
         ['', '']
     ])('turns %s into %s', (name, expected) => {
