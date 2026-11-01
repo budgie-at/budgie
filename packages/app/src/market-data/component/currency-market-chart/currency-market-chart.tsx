@@ -127,8 +127,10 @@ export const CurrencyMarketChart = ({ prices, selectedIndex, rangeLabel, startLa
 
                     <CurrencyMarketChartOpenLabel
                         values={values}
+                        xs={geometry.xs}
                         ys={geometry.ys}
                         baselineY={geometry.baselineY}
+                        chartWidth={width}
                         activeIndex={activeIndex}
                     />
 
