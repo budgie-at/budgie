@@ -43,7 +43,7 @@ env:
       when:
           true: ${DATABASE_FIXTURE_SEEDED != 'true'}
       commands:
-          - openLink: 'budgie://settings?anchor=data'
+          - openLink: 'budgie://settings'
 
           - tapOn:
                 text: 'Not Now'
@@ -64,13 +64,13 @@ env:
                 optional: true
 
           - extendedWaitUntil:
-                visible: 'Importing a database will replace all current data.*'
+                visible: 'Restoring a backup replaces all current Budgie data.*'
                 timeout: 3000
                 optional: true
 
           - runFlow:
                 when:
-                    notVisible: 'Importing a database will replace all current data.*'
+                    notVisible: 'Restoring a backup replaces all current Budgie data.*'
                 commands:
                     - launchApp:
                           stopApp: true
@@ -92,12 +92,11 @@ env:
                               FILE_PICKER_REPEAT_TAP: 'true'
                               FILE_PICKER_SEARCH_TEXT: ${FILE_PICKER_SEARCH_TEXT}
                     - extendedWaitUntil:
-                          visible: 'Importing a database will replace all current data.*'
+                          visible: 'Restoring a backup replaces all current Budgie data.*'
                           timeout: 5000
 
           - tapOn:
-                text: 'Import Database'
-                index: 1
+                text: '^Restore$'
 
           - waitForAnimationToEnd
 

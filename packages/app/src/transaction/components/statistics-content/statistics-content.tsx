@@ -1,39 +1,39 @@
-import { DEFAULT_TRANSACTION_FILTER, DatePeriodEnum, TransactionFilterInterface, UserIconNameEnum } from '@budgie/contracts';
-import { Trans, useLingui } from '@lingui/react/macro';
-import { useState } from 'react';
-import { Text, View } from 'react-native';
+import { TransactionFilterInterface, UserIconNameEnum } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
+import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
-import { ChromeScrollFrame } from '../../../@generic/component/chrome-scroll-frame/chrome-scroll-frame';
-import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
+import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { AnalyticsTabType } from '../../../@generic/type/analytics-tab.type';
-import { getDateFilterByPeriod } from '../../../@generic/utils/date/get-date-filter-by-period.util';
-import { useNetWorthQuery } from '../../../account/query/use-net-worth.query';
+import { AnalyticsPageSelector } from '../../../app/(tabs)/analytics-page.selector';
 import { RunwayContent } from '../../../runway/component/runway-content/runway-content';
 import { AnalyticsHistoryBoundary } from '../../../sync/component/analytics-history-boundary/analytics-history-boundary';
 import { useTransactionAccountFilterModal } from '../../context/transaction-account-filter-modal.context';
-import { useGetTotalIncomeAndExpensesQuery } from '../../query/use-get-total-income-and-expenses.query';
+import { useHasIncomeOrExpenseQuery } from '../../query/use-has-income-or-expense.query';
 import { checkIfFiltersSelected } from '../../utils/check-if-filters-selected.util';
 import { StatisticsActivityPanels } from '../statistics-activity-panels/statistics-activity-panels';
-import { TransactionAnalyticsCard } from '../transaction-analytics-card/transaction-analytics-card';
+import { StatisticsEmptyLedger } from '../statistics-empty-ledger/statistics-empty-ledger';
+import { StatisticsFiltersMenu } from '../statistics-filters-menu/statistics-filters-menu';
+import { StatisticsPeriodControl } from '../statistics-period-control/statistics-period-control';
 import { TransactionFilters } from '../transaction-filters/transaction-filters';
+
+import type { DateRangeInterface } from '@budgie/contracts';
+import type { Dispatch, SetStateAction } from 'react';
 
 interface Props {
     readonly activeTab: AnalyticsTabType;
+    readonly filters: TransactionFilterInterface;
+    readonly onChangeFilters: Dispatch<SetStateAction<TransactionFilterInterface>>;
 }
 
-export const StatisticsContent = ({ activeTab }: Props) => {
+export const StatisticsContent = ({ activeTab, filters, onChangeFilters: setFilters }: Props) => {
     const { t } = useLingui();
-    const [filters, setFilters] = useState<TransactionFilterInterface>({
-        ...DEFAULT_TRANSACTION_FILTER,
-        date: getDateFilterByPeriod(DatePeriodEnum.THIS_MONTH)
-    });
+    const isAccessibilityTextSize = useIsAccessibilityTextSize();
 
-    const { expense, income } = useGetTotalIncomeAndExpensesQuery(filters);
-    const netWorth = useNetWorthQuery();
     const [openAccountFilter] = useTransactionAccountFilterModal();
+    const { hasIncomeOrExpense, isLoading: isHistoryLoading } = useHasIncomeOrExpenseQuery();
 
     const handleChooseAccounts = () => {
         openAccountFilter({ value: filters.accountIds }, result => {
@@ -43,21 +43,38 @@ export const StatisticsContent = ({ activeTab }: Props) => {
         });
     };
 
-    const isRunwayTab = activeTab === 'runway';
+    const handleChangeDate = (date: DateRangeInterface | null) => void setFilters(current => ({ ...current, date }));
 
-    if (isRunwayTab) {
+    const hasNonDateFilters = checkIfFiltersSelected(null, { ...filters, date: null });
+
+    if (activeTab === 'runway') {
         return <RunwayContent />;
     }
 
+    if (!isHistoryLoading && !hasIncomeOrExpense) {
+        const emptyTestID = activeTab === 'tags' ? AnalyticsPageSelector.TagsEmptyState : AnalyticsPageSelector.CategoriesEmptyState;
+
+        return <StatisticsEmptyLedger testID={emptyTestID} />;
+    }
+
     return (
-        <ChromeScrollFrame>
-            <TransactionFilters
-                accountId={null}
-                filters={filters}
-                onChange={setFilters}
-                showTypeFilter={false}
-                isClearAllVisible={checkIfFiltersSelected(null, filters)}
-            />
+        <View className="gap-y-xl">
+            <View className="gap-y-md">
+                <StatisticsPeriodControl value={filters.date} onChange={handleChangeDate} />
+
+                {isAccessibilityTextSize ? (
+                    <StatisticsFiltersMenu filters={filters} onChange={setFilters} />
+                ) : (
+                    <TransactionFilters
+                        accountId={null}
+                        filters={filters}
+                        onChange={setFilters}
+                        showTypeFilter={false}
+                        showDateFilter={false}
+                        isClearAllVisible={hasNonDateFilters}
+                    />
+                )}
+            </View>
 
             <AnalyticsHistoryBoundary
                 accountIds={filters.accountIds}
@@ -71,32 +88,8 @@ export const StatisticsContent = ({ activeTab }: Props) => {
                     />
                 }
             >
-                <View className="gap-y-lg">
-                    <Text className="uppercase text-secondary-foreground text-xs">
-                        <Trans>Overview</Trans>
-                    </Text>
-
-                    <View className="flex-row gap-x-xl">
-                        <TransactionAnalyticsCard
-                            amount={expense}
-                            label={t`Spent`}
-                            icon={UserIconNameEnum.TrendingDown}
-                            variant="destructive"
-                        />
-                        <TransactionAnalyticsCard amount={income} label={t`Income`} icon={UserIconNameEnum.TrendingUp} variant="positive" />
-                        <TransactionAnalyticsCard
-                            amount={netWorth}
-                            label={t`Total balance`}
-                            icon={UserIconNameEnum.Wallet}
-                            variant="warning"
-                        />
-                    </View>
-                </View>
-
-                <StatisticsActivityPanels activeTab={activeTab} filters={filters} income={income} expense={expense} />
+                <StatisticsActivityPanels activeTab={activeTab} filters={filters} />
             </AnalyticsHistoryBoundary>
-
-            <MenuSpacer />
-        </ChromeScrollFrame>
+        </View>
     );
 };

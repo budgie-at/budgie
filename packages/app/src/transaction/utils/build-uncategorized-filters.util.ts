@@ -2,6 +2,8 @@ import { DEFAULT_TRANSACTION_FILTER, TransactionTypeEnum } from '@budgie/contrac
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
+import { parseRouteDateRange } from './parse-route-date-range.util';
+
 import type { AnalyticsTransactionsRouteParamsInterface } from '../interface/analytics-transactions-route-params.interface';
 import type { AmountRangeInterface, TransactionFilterInterface } from '@budgie/contracts';
 
@@ -36,10 +38,7 @@ const buildAmountRange = (params: AnalyticsTransactionsRouteParamsInterface): Am
 export const buildUncategorizedFilters = (params: AnalyticsTransactionsRouteParamsInterface): TransactionFilterInterface => ({
     ...DEFAULT_TRANSACTION_FILTER,
     types: buildTypes(params),
-    date: {
-        from: isDefined(params.startDate) ? new Date(params.startDate) : null,
-        to: isDefined(params.endDate) ? new Date(params.endDate) : null
-    },
+    date: parseRouteDateRange(params.startDate, params.endDate),
     accountIds: buildFilterIds(params.accountIds),
     categoryIds: buildFilterIds(params.categoryIds),
     tagIds: buildFilterIds(params.tagIds),

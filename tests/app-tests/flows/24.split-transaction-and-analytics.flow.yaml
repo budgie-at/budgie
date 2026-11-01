@@ -92,7 +92,7 @@ appId: ${APP_ID}
     visible:
       id: 'AnalyticsPage.Tab.Categories'
 - assertVisible:
-    id: 'TransactionAnalyticsCard.Amount.Spent.45'
+    id: 'StatisticsSpendingHero.Spent.45'
 - assertVisible:
     id: 'CategoryStatisticsCard.Amount.Groceries.20000000'
 - assertVisible:

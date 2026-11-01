@@ -19,5 +19,5 @@ export const useGetTotalIncomeAndExpensesQuery = (filters: TransactionFilterInte
     const result = useLiveAtomValue(totalIncomeAndExpensesAtom([filters, defaultInstrumentId]));
     const { income, expense } = AsyncResult.getOrElse(result, () => []).at(0) ?? { income: 0, expense: 0 };
 
-    return { income: convertFromMicroUnits(income), expense: convertFromMicroUnits(expense) };
+    return { income: convertFromMicroUnits(income), expense: convertFromMicroUnits(expense), isLoading: AsyncResult.isInitial(result) };
 };

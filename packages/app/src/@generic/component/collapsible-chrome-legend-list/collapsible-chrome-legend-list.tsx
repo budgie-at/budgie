@@ -1,8 +1,10 @@
 import { AnimatedLegendList } from '@legendapp/list/reanimated';
+import { useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useResolveClassNames } from 'uniwind';
 
 import { useCollapsibleHeaderScroll } from '@rnw-community/react-native-collapsible-header';
+import { useScreenChrome } from '@rnw-community/react-native-screen-chrome';
 
 import { SCREEN_CHROME_CONTENT_INSET_TOP } from '../../constant/screen-chrome-content-inset.constant';
 
@@ -18,10 +20,16 @@ export const CollapsibleChromeLegendList = <TItem,>({
 }: LegendListProps<TItem> & { readonly ref?: RefCallback<LegendListPositionSourceInterface> }) => {
     const { scrollY } = useCollapsibleHeaderScroll();
     const { top } = useSafeAreaInsets();
+    const { height } = useWindowDimensions();
+    const { config } = useScreenChrome();
     const horizontalInset = useResolveClassNames('px-5xl');
 
     const sharedValues = { scrollOffset: scrollY };
-    const contentContainerStyleWithInset = [{ paddingTop: top + SCREEN_CHROME_CONTENT_INSET_TOP }, horizontalInset, contentContainerStyle];
+    const contentContainerStyleWithInset = [
+        { paddingTop: top + SCREEN_CHROME_CONTENT_INSET_TOP, minHeight: height + config.collapseEnd },
+        horizontalInset,
+        contentContainerStyle
+    ];
 
     return (
         <AnimatedLegendList

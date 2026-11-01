@@ -1,9 +1,9 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { useState } from 'react';
 import { Text, View } from 'react-native';
+import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 
-import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { Icon } from '../../../@generic/component/icon/icon';
 import { useTransactionSubtitleSegments } from '../../hook/use-transaction-subtitle-segments.hook';
@@ -21,8 +21,11 @@ interface Props {
 export const TransactionCardSubtitle = ({ transaction, accountId }: Props) => {
     const { t } = useLingui();
     const { segments, feeLabel, accountTitle, categoryLabel } = useTransactionSubtitleSegments(transaction, accountId);
-    const [segmentsBoxWidth, setSegmentsBoxWidth] = useState(0);
-    const [segmentsLineWidth, setSegmentsLineWidth] = useState(0);
+    const segmentsBoxWidth = useSharedValue(0);
+    const segmentsLineWidth = useSharedValue(0);
+    const trailingStyle = useAnimatedStyle(() => ({
+        transform: [{ translateX: segmentsLineWidth.get() > 0 ? -Math.max(segmentsBoxWidth.get() - segmentsLineWidth.get(), 0) : 0 }]
+    }));
 
     const hasSegments = isNotEmptyArray(segments);
     const hasReceipt = isDefined(transaction.receipt);
@@ -37,12 +40,9 @@ export const TransactionCardSubtitle = ({ transaction, accountId }: Props) => {
         isDefined(categoryLabel) ? TransactionCardSelector.Category(categoryLabel) : null
     ].find(isDefined);
 
-    const truncationSlack = isPositiveNumber(segmentsLineWidth) ? Math.max(segmentsBoxWidth - segmentsLineWidth, 0) : 0;
-    const trailingStyle = { transform: [{ translateX: -truncationSlack }] };
-
-    const handleSegmentsLayout = (event: LayoutChangeEvent) => void setSegmentsBoxWidth(event.nativeEvent.layout.width);
+    const handleSegmentsLayout = (event: LayoutChangeEvent) => void segmentsBoxWidth.set(event.nativeEvent.layout.width);
     const handleSegmentsTextLayout = (event: NativeSyntheticEvent<TextLayoutEventData>) =>
-        void setSegmentsLineWidth(event.nativeEvent.lines.at(0)?.width ?? 0);
+        void segmentsLineWidth.set(event.nativeEvent.lines.at(0)?.width ?? 0);
 
     return (
         <View className="flex-row items-center">
@@ -68,13 +68,13 @@ export const TransactionCardSubtitle = ({ transaction, accountId }: Props) => {
                 </Text>
             ) : null}
             {isDefined(feeLabel) ? (
-                <Text className="shrink-0 text-[13px] text-secondary-foreground" style={trailingStyle} numberOfLines={1}>
+                <Animated.Text className="shrink-0 text-[13px] text-secondary-foreground" style={trailingStyle} numberOfLines={1}>
                     {hasSegments ? ' · ' : null}
                     {feeLabel}
-                </Text>
+                </Animated.Text>
             ) : null}
             {isDefined(accountTitle) ? (
-                <Text
+                <Animated.Text
                     className="min-w-[56px] shrink-100 text-[13px] text-secondary-foreground"
                     style={trailingStyle}
                     numberOfLines={1}
@@ -82,7 +82,7 @@ export const TransactionCardSubtitle = ({ transaction, accountId }: Props) => {
                 >
                     {hasSegments || isDefined(feeLabel) ? ' · ' : null}
                     {accountTitle}
-                </Text>
+                </Animated.Text>
             ) : null}
         </View>
     );

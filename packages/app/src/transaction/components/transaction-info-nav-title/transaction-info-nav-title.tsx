@@ -34,19 +34,22 @@ export const TransactionInfoNavTitle = (props: Props) => {
     const scrollY = useScreenChromeScrollY();
     const formatDigits = useProtectedAmountLabel();
     const titleOffset = (COMPACT_TITLE_LINE_HEIGHT * Math.min(fontScale, TRANSACTION_INFO_COMPACT_MAX_FONT_SCALE)) / 2;
-    const [titleStart, titleEnd] = handoff.compactTitleRange;
-    const centringStyle = useAnimatedStyle(() => ({
-        transform: [
-            {
-                translateY: interpolate(
-                    scrollY.get(),
-                    [titleStart, Math.max(titleEnd, titleStart + 1)],
-                    [-titleOffset, 0],
-                    Extrapolation.CLAMP
-                )
-            }
-        ]
-    }));
+    const centringStyle = useAnimatedStyle(() => {
+        const [titleStart, titleEnd] = handoff.compactTitleRange.get();
+
+        return {
+            transform: [
+                {
+                    translateY: interpolate(
+                        scrollY.get(),
+                        [titleStart, Math.max(titleEnd, titleStart + 1)],
+                        [-titleOffset, 0],
+                        Extrapolation.CLAMP
+                    )
+                }
+            ]
+        };
+    });
 
     const displayTitle = getTransactionDisplayTitle(transaction);
     const title = isNotEmptyString(displayTitle) ? displayTitle : t(TRANSACTION_TYPE[transaction.type]);

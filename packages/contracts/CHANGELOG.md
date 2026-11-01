@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.138.0](https://github.com/budgie-at/budgie/compare/v6.137.1...v6.138.0) (2026-10-31)
+
+### Bug Fixes
+
+* **contracts:** allocate statistics refunds in cents per entry and category ([b0e5078](https://github.com/budgie-at/budgie/commit/b0e50780c1b359470e4a0490660f9468668d830c))
+* **contracts:** book converted statistics entries at cents ([eb0113a](https://github.com/budgie-at/budgie/commit/eb0113a107179a190f904a7224f2b93f7a35cb7f))
+* **contracts:** drop zero-net rows from statistics rankings ([abcf36b](https://github.com/budgie-at/budgie/commit/abcf36b2ec64317e75f77a2c44de2b7041cf5801))
+* explain refunds netted inside the period ([805ad75](https://github.com/budgie-at/budgie/commit/805ad75c5fd0edaf90484a6ab3115d41b86787c1))
+
+### Features
+
+* **app:** polish category and tag statistics ([d3196fb](https://github.com/budgie-at/budgie/commit/d3196fbddf42d1fa9a8f4877753cb3ed04fc2a66))
+* **contracts:** report refunds netted against purchases outside the period ([57bc264](https://github.com/budgie-at/budgie/commit/57bc2641a33ba49aea3c03092f91c452eccdd1a6))
+
+
 # [6.134.0](https://github.com/budgie-at/budgie/compare/v6.133.0...v6.134.0) (2026-10-31)
 
 ### Bug Fixes

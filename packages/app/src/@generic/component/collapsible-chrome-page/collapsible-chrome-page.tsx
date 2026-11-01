@@ -14,6 +14,7 @@ import { CollapsibleChromeHeaderScrim } from '../collapsible-chrome-header-scrim
 import { CollapsibleChromeHeader } from '../collapsible-chrome-header/collapsible-chrome-header';
 import { StickyFooterBand } from '../sticky-footer-band/sticky-footer-band';
 
+import type { ScreenChromeConfigOverridesInterface } from '@rnw-community/react-native-screen-chrome';
 import type { ComponentProps, ReactNode } from 'react';
 import type { LayoutChangeEvent } from 'react-native';
 
@@ -29,6 +30,7 @@ type Props = TitleProps & {
     readonly scrollViewProps?: Pick<ComponentProps<typeof ChromeKeyboardScrollView>, 'ref' | 'onLayout' | 'bottomOffset'>;
     readonly contentClassName?: string;
     readonly testID?: string;
+    readonly chromeConfig?: ScreenChromeConfigOverridesInterface;
 };
 
 const FOOTER_CONTENT_GAP = 32;
@@ -45,7 +47,8 @@ export const CollapsibleChromePage = ({
     footer,
     scrollViewProps,
     contentClassName,
-    testID
+    testID,
+    chromeConfig
 }: Props): ReactNode => {
     const [footerHeight, setFooterHeight] = useState(ESTIMATED_FOOTER_HEIGHT);
     const contentInsetBottom = isDefined(footer) ? footerHeight + FOOTER_CONTENT_GAP : 0;
@@ -83,7 +86,7 @@ export const CollapsibleChromePage = ({
     const handleFooterLayout = (event: LayoutChangeEvent) => void setFooterHeight(Math.ceil(event.nativeEvent.layout.height));
 
     return (
-        <ScreenChromeThemeProvider syncNativeScrollOffset>
+        <ScreenChromeThemeProvider syncNativeScrollOffset {...(isDefined(chromeConfig) && { config: chromeConfig })}>
             <ScreenChromeFrame>
                 <ChromeKeyboardScrollView
                     {...restScrollViewProps}

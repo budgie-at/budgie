@@ -35,6 +35,7 @@ export const AccountDetailsField = (props: Props) => {
             tile={<IconTitleFieldTrigger icon={iconBinding.field.value} variant={variant} onPress={handleIconPress} />}
             label={t`Account name`}
             error={titleBinding.fieldState.error?.message}
+            testID={nameInputTestID}
         >
             <Input
                 borderless

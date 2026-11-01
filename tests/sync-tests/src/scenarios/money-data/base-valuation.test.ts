@@ -33,7 +33,7 @@ const seedEuroBaseUahAccount = Effect.fnUntraced(function* () {
     return { euro, account };
 });
 
-const HISTORICAL_ANALYTICS_EXPENSE_AMOUNT = 5_419_222;
+const HISTORICAL_ANALYTICS_EXPENSE_AMOUNT = 5_420_000;
 
 const setDefaultInstrument = (defaultInstrumentId: number) =>
     Effect.gen(function* () {
