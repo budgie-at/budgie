@@ -66,10 +66,12 @@ class IconSearchService {
     readonly load = Effect.fn('IconSearchService.load')(function* (this: IconSearchService) {
         const { default: index } = yield* Effect.promise(() => import('../constant/icon-search-index.json'));
         const translations: Record<string, string> = index.translations;
-
-        return index.icons.flatMap(([icon, keywords]) =>
-            isUserIcon(icon) && isNotEmptyString(keywords) ? [this.createEntry(icon, keywords, translations)] : []
+        const icons = index.icons.flatMap(([icon, keywords]) =>
+            isUserIcon(icon) && isNotEmptyString(keywords) ? [{ icon, keywords }] : []
         );
+        const labels = new Set(icons.map(({ keywords }) => this.toReadableName(keywords.split(/\|/u)[0])));
+
+        return icons.map(({ icon, keywords }) => this.createEntry(icon, keywords, translations, labels));
     });
 
     rank(entries: readonly IconSearchEntryInterface[], terms: readonly string[]): IconSearchEntryInterface[] {
@@ -92,9 +94,8 @@ class IconSearchService {
         }
 
         const fallback = IconSearchService.FALLBACK_ICONS.map(icon => entries.find(entry => entry.icon === icon)).filter(isDefined);
-        const isConfident = scored.some(({ score }) => score >= IconSearchService.CONFIDENT_SCORE);
 
-        return this.distinctFamilies(isConfident ? [...relevant, ...fallback] : [...fallback, ...relevant], excludedIcons);
+        return this.distinctFamilies([...relevant, ...fallback], excludedIcons);
     }
 
     findConfidentIcon(entries: readonly IconSearchEntryInterface[], terms: readonly string[]): UserIconType | null {
@@ -181,20 +182,38 @@ class IconSearchService {
         return term.endsWith('s') ? [term, term.slice(0, -1)] : [term];
     }
 
-    private createEntry(icon: UserIconType, keywords: string, translations: Record<string, string>): IconSearchEntryInterface {
+    private createEntry(
+        icon: UserIconType,
+        keywords: string,
+        translations: Record<string, string>,
+        labels: Set<string>
+    ): IconSearchEntryInterface {
         const [nameKeywords, otherKeywords = ''] = keywords.split('||');
         const name = `|${this.withTranslations(icon, nameKeywords, translations)}|`;
 
         return {
             icon,
-            label: this.toReadableName(nameKeywords.split('|')[0]),
+            label: this.toDistinctLabel(nameKeywords.split('|'), labels),
             name,
             keywords: `${name}${this.withTranslations(icon, otherKeywords, translations)}|`
         };
     }
 
+    private toDistinctLabel([primaryName = '', ...aliases]: readonly string[], labels: Set<string>): string {
+        const label = this.toReadableName(primaryName);
+        const alias = /\d/u.test(primaryName)
+            ? aliases.map(candidate => this.toReadableName(candidate)).find(candidate => !/\d/u.test(candidate) && !labels.has(candidate))
+            : void 0;
+
+        if (isDefined(alias)) {
+            labels.add(alias);
+        }
+
+        return alias ?? label;
+    }
+
     private toReadableName(name: string): string {
-        const readable = name.replaceAll(/(?<=\p{L})\d+\b/gu, '').trim();
+        const readable = name.replaceAll(/(?<=\p{L})(\d+)\b/gu, ' $1').trim();
 
         return `${readable.charAt(0).toUpperCase()}${readable.slice(1)}`;
     }

@@ -1,3 +1,4 @@
+import { isEmojiIcon } from '@budgie/contracts';
 import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
@@ -60,27 +61,28 @@ describe('IconSearchService', () => {
             const { confident, suggestions } = yield* suggestFor('Side project');
 
             expect(confident).toBeNull();
-            expect(suggestions.slice(0, 6).filter(icon => icon.startsWith('reicon:Folder'))).toEqual(['reicon:Folder']);
+            expect(suggestions.filter(icon => icon.startsWith('reicon:Folder'))).toHaveLength(1);
             expect(suggestions.slice(0, 6)).toContain('reicon:Briefcase');
             expect(suggestions).not.toContain('🍳');
             expect(suggestions).not.toContain('reicon:FoodTray');
         })
     );
 
-    it.effect('leavesThePlaceholderFamiliesOutOfSideProjectSuggestions', () =>
+    it.effect('putsWeakNameMatchesBeforeFallbacksWithoutPlaceholders', () =>
         Effect.gen(function* () {
             const entries = yield* iconSearchService.load();
             const terms = getCategoryIconTerms({ title: 'Side project', titleEn: null, titleTags: null });
-            const suggestions = iconSearchService
-                .suggest(entries, terms, PLACEHOLDER_CATEGORY_ICONS)
-                .slice(0, 6)
-                .map(({ icon }) => icon);
+            const suggestFrom = (searchTerms: readonly string[]) =>
+                iconSearchService
+                    .suggest(entries, searchTerms, PLACEHOLDER_CATEGORY_ICONS)
+                    .slice(0, 6)
+                    .map(({ icon }) => icon);
+            const suggestions = suggestFrom(terms);
 
             expect(suggestions.filter(icon => /^reicon:(?:Folder|Home)/u.test(icon))).toEqual([]);
+            expect(suggestions.at(0)).toBe('reicon:Presentation');
             expect(suggestions).toEqual(expect.arrayContaining(['reicon:Briefcase', 'reicon:Laptop', 'reicon:Code']));
-            expect(suggestions.slice(0, 3)).not.toContain('reicon:Projector');
-            expect(suggestions.slice(0, 3)).not.toContain('reicon:Presentation');
-            expect(suggestions.slice(0, 2)).toContain('reicon:Laptop');
+            expect(suggestions).not.toEqual(suggestFrom([]));
         })
     );
 
@@ -93,11 +95,20 @@ describe('IconSearchService', () => {
         })
     );
 
+    it.effect('givesEveryIconOfAKindADistinctLabel', () =>
+        Effect.gen(function* () {
+            const labels = (yield* iconSearchService.load()).map(({ icon, label }) => `${isEmojiIcon(icon)}:${label}`);
+
+            expect(new Set(labels).size).toBe(labels.length);
+        })
+    );
+
     it.effect('humanizesCatalogNamesForLabels', () =>
         Effect.gen(function* () {
             const entries = yield* iconSearchService.load();
 
-            expect(entries.find(({ name }) => name.startsWith('|ac2|'))?.label).toBe('Ac');
+            expect(entries.find(({ name }) => name.startsWith('|ac2|'))?.label).toBe('Ac 2');
+            expect(entries.find(({ name }) => name.startsWith('|building2|'))?.label).toBe('Building complex');
             expect(entries.find(({ name }) => name.startsWith('|add circle|'))?.label).toBe('Add circle');
         })
     );

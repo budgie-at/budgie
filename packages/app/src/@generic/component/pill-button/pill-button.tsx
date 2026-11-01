@@ -20,13 +20,25 @@ const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
 const containerVariants = cva('min-h-[52px] items-center justify-center rounded-full px-5xl py-md active:opacity-80', {
     variants: {
-        variant: { primary: 'bg-cta-background', destructive: 'bg-destructive-action' },
-        isDisabled: { true: 'opacity-40', false: '' }
-    }
+        variant: { primary: 'bg-cta-background', destructive: '' },
+        isDisabled: { true: '', false: '' }
+    },
+    compoundVariants: [
+        { variant: 'primary', isDisabled: true, className: 'opacity-40' },
+        { variant: 'destructive', isDisabled: false, className: 'bg-destructive-action' },
+        { variant: 'destructive', isDisabled: true, className: 'bg-destructive-action/40' }
+    ]
 });
 
 const labelVariants = cva('text-center text-[17px] font-semibold', {
-    variants: { variant: { primary: 'text-cta-foreground', destructive: 'text-white' } }
+    variants: {
+        variant: { primary: 'text-cta-foreground', destructive: '' },
+        isDisabled: { true: '', false: '' }
+    },
+    compoundVariants: [
+        { variant: 'destructive', isDisabled: false, className: 'text-white' },
+        { variant: 'destructive', isDisabled: true, className: 'text-primary/70' }
+    ]
 });
 
 export const PillButton = ({
@@ -53,7 +65,7 @@ export const PillButton = ({
             testID={testID}
         >
             <LoadingContent isLoading={isLoading}>
-                <Text className={labelVariants({ variant })}>{label}</Text>
+                <Text className={labelVariants({ variant, isDisabled })}>{label}</Text>
             </LoadingContent>
         </HapticPressable>
     );

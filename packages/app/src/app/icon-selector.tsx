@@ -3,7 +3,7 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { Text, View } from 'react-native';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { BudgieLegendList } from '../@generic/component/budgie-legend-list/budgie-legend-list';
 import { EmptyState } from '../@generic/component/empty-state/empty-state';
@@ -25,10 +25,10 @@ import { resolveReiconIcon } from '../@generic/utils/resolve-reicon-icon.util';
 
 import { IconSelectorModalSelector } from './icon-selector-modal.selector';
 
-const NUM_COLUMNS = 5;
+const NUM_COLUMNS = 6;
 const COLUMN_WRAPPER_STYLE = { columnGap: 10, rowGap: 10 };
 const LIST_HEADER_STYLE = { marginBottom: 12 };
-const ESTIMATED_ROW_HEIGHT = 76;
+const ESTIMATED_ROW_HEIGHT = 62;
 
 const keyExtractor = (item: FlatListDataItem<IconSearchEntryInterface>, index: number) => (item.isEmpty ? `empty-${index}` : item.icon);
 
@@ -72,7 +72,7 @@ export default function IconSelectorModal() {
                     testID={IconSelectorModalSelector.Suggestions}
                 >
                     <Text className="text-secondary-foreground px-xs text-xxs font-semibold uppercase tracking-widest">
-                        <Trans>Suggested</Trans>
+                        {isNotEmptyArray(keywords) ? <Trans>Suggested</Trans> : <Trans>Popular</Trans>}
                     </Text>
                 </IconSuggestions>
 

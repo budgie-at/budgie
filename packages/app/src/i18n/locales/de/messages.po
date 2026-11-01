@@ -604,6 +604,10 @@ msgstr "{totalCount, plural, one {Im Budget {onBudgetCount} von # Monat} other {
 msgid "{totalSize} GB"
 msgstr "{totalSize} GB"
 
+#: src/category/utils/get-category-delete-copy.util.ts
+msgid "{transactionCount, plural, one {# transaction will move to the category you pick.} other {# transactions will move to the category you pick.}}"
+msgstr "{transactionCount, plural, one {# Transaktion wird in die gewählte Kategorie verschoben.} other {# Transaktionen werden in die gewählte Kategorie verschoben.}}"
+
 #: src/transaction/components/transaction-list-count/transaction-list-count.tsx
 msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{transactionCount, plural, one {# Transaktion} other {# Transaktionen}}"
@@ -611,10 +615,6 @@ msgstr "{transactionCount, plural, one {# Transaktion} other {# Transaktionen}}"
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "{transactionCount, plural, one {Its # transaction gets the tag you pick, and “{tagTitle}” is removed.} other {Its # transactions get the tag you pick, and “{tagTitle}” is removed.}}"
 msgstr "{transactionCount, plural, one {Seine # Transaktion erhält den gewählten Tag, danach wird „{tagTitle}“ entfernt.} other {Seine # Transaktionen erhalten den gewählten Tag, danach wird „{tagTitle}“ entfernt.}}"
-
-#: src/category/utils/get-category-delete-copy.util.ts
-msgid "{transactionCount, plural, one {Its # transaction moves to the category you pick.} other {Its # transactions move to the category you pick.}}"
-msgstr "{transactionCount, plural, one {Ihre # Transaktion wird in die gewählte Kategorie verschoben.} other {Ihre # Transaktionen werden in die gewählte Kategorie verschoben.}}"
 
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "{transactionCount, plural, one {Removed from # transaction. The transaction stays.} other {Removed from # transactions. The transactions stay.}}"
@@ -2435,10 +2435,6 @@ msgstr "Budget löschen?"
 #: src/category/utils/get-category-delete-copy.util.ts
 msgid "Delete category"
 msgstr "Kategorie löschen"
-
-#: src/category/utils/get-category-delete-copy.util.ts
-msgid "Delete category…"
-msgstr "Kategorie löschen…"
 
 #: src/settings/components/truncate-data/truncate-data.tsx
 msgid "Delete data"
@@ -4811,6 +4807,10 @@ msgstr "Bitte versuchen Sie es erneut"
 msgid "Please try again later"
 msgstr "Bitte versuchen Sie es später erneut"
 
+#: src/app/icon-selector.tsx
+msgid "Popular"
+msgstr "Beliebt"
+
 #: src/@generic/component/amount-sign-capsule/amount-sign-capsule.tsx
 msgid "Positive"
 msgstr "Positiv"
@@ -6567,8 +6567,11 @@ msgstr "{applied} von {total} Transaktionen aktualisiert."
 msgid "Updated {formattedDate}"
 msgstr "Aktualisiert {formattedDate}"
 
-#: src/@generic/component/icon-selector-card/icon-selector-card.tsx
-#: src/@generic/component/icon-suggestion-chip/icon-suggestion-chip.tsx
+#: src/@generic/utils/get-icon-choice-label.util.ts
+msgid "Use {label} emoji"
+msgstr "Emoji {label} verwenden"
+
+#: src/@generic/utils/get-icon-choice-label.util.ts
 msgid "Use {label} icon"
 msgstr "Symbol {label} verwenden"
 

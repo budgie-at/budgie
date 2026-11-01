@@ -605,6 +605,10 @@ msgstr "{totalCount, plural, one {On budget {onBudgetCount} of # month} other {O
 msgid "{totalSize} GB"
 msgstr "{totalSize} GB"
 
+#: src/category/utils/get-category-delete-copy.util.ts
+msgid "{transactionCount, plural, one {# transaction will move to the category you pick.} other {# transactions will move to the category you pick.}}"
+msgstr "{transactionCount, plural, one {# transaction will move to the category you pick.} other {# transactions will move to the category you pick.}}"
+
 #: src/transaction/components/transaction-list-count/transaction-list-count.tsx
 msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{transactionCount, plural, one {# transaction} other {# transactions}}"
@@ -612,10 +616,6 @@ msgstr "{transactionCount, plural, one {# transaction} other {# transactions}}"
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "{transactionCount, plural, one {Its # transaction gets the tag you pick, and “{tagTitle}” is removed.} other {Its # transactions get the tag you pick, and “{tagTitle}” is removed.}}"
 msgstr "{transactionCount, plural, one {Its # transaction gets the tag you pick, and “{tagTitle}” is removed.} other {Its # transactions get the tag you pick, and “{tagTitle}” is removed.}}"
-
-#: src/category/utils/get-category-delete-copy.util.ts
-msgid "{transactionCount, plural, one {Its # transaction moves to the category you pick.} other {Its # transactions move to the category you pick.}}"
-msgstr "{transactionCount, plural, one {Its # transaction moves to the category you pick.} other {Its # transactions move to the category you pick.}}"
 
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "{transactionCount, plural, one {Removed from # transaction. The transaction stays.} other {Removed from # transactions. The transactions stay.}}"
@@ -2436,10 +2436,6 @@ msgstr "Delete budget?"
 #: src/category/utils/get-category-delete-copy.util.ts
 msgid "Delete category"
 msgstr "Delete category"
-
-#: src/category/utils/get-category-delete-copy.util.ts
-msgid "Delete category…"
-msgstr "Delete category…"
 
 #: src/settings/components/truncate-data/truncate-data.tsx
 msgid "Delete data"
@@ -4812,6 +4808,10 @@ msgstr "Please try again"
 msgid "Please try again later"
 msgstr "Please try again later"
 
+#: src/app/icon-selector.tsx
+msgid "Popular"
+msgstr "Popular"
+
 #: src/@generic/component/amount-sign-capsule/amount-sign-capsule.tsx
 msgid "Positive"
 msgstr "Positive"
@@ -6568,8 +6568,11 @@ msgstr "Updated {applied} of {total} transactions."
 msgid "Updated {formattedDate}"
 msgstr "Updated {formattedDate}"
 
-#: src/@generic/component/icon-selector-card/icon-selector-card.tsx
-#: src/@generic/component/icon-suggestion-chip/icon-suggestion-chip.tsx
+#: src/@generic/utils/get-icon-choice-label.util.ts
+msgid "Use {label} emoji"
+msgstr "Use {label} emoji"
+
+#: src/@generic/utils/get-icon-choice-label.util.ts
 msgid "Use {label} icon"
 msgstr "Use {label} icon"
 

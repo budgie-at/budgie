@@ -45,8 +45,8 @@ export const IconTitleFieldTrigger = ({ icon, variant, onPress, testID, iconTest
                     className={TONAL_DISC_BACKGROUND[variant]}
                 />
             </View>
-            <View className="absolute -right-[3px] -bottom-[3px] h-[20px] w-[20px] items-center justify-center rounded-full border-2 border-grouped-surface-row bg-surface-disc">
-                <Icon icon={UserIconNameEnum.Pencil} size={11} className="text-primary" />
+            <View className="absolute -right-[5px] -bottom-[5px] h-[24px] w-[24px] items-center justify-center rounded-full border-2 border-grouped-surface-row bg-surface-disc">
+                <Icon icon={UserIconNameEnum.Pencil} size={14} className="text-primary" />
             </View>
         </HapticPressable>
     );

@@ -8,7 +8,6 @@ import {
 } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { useState } from 'react';
 
 import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
@@ -21,11 +20,13 @@ import { GroupedListSection } from '../../../@generic/component/grouped-list-sec
 import { IconTitleFieldTrigger } from '../../../@generic/component/icon-title-field-trigger/icon-title-field-trigger';
 import { IconTitleField } from '../../../@generic/component/icon-title-field/icon-title-field';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
+import { UsageFailureRow } from '../../../@generic/component/usage-failure-row/usage-failure-row';
 import { useIconSelectorModal } from '../../../@generic/context/icon-selector-modal.context';
 import { EntityOperationEnum } from '../../../@generic/enum/entity-operation.enum';
 import { useEntityOperation } from '../../../@generic/hook/use-entity-operation.hook';
+import { useEntityUsage } from '../../../@generic/hook/use-entity-usage.hook';
 import { useIconSearchEntries } from '../../../@generic/hook/use-icon-search-entries.hook';
-import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
@@ -62,7 +63,7 @@ export const CategoryForm = (props: Props) => {
     const language = useSetting('language');
     const saveFlight = useSingleFlight();
     const operation = useEntityOperation();
-    const usageResult = useLiveAtomValue(categoryUsageAtom);
+    const { usage, isUsagePending, isUsageFailure, retryUsage } = useEntityUsage(categoryUsageAtom);
     const deleteCategory = useDeleteCategory();
     const [openIconSelector] = useIconSelectorModal();
     const iconSearchEntries = useIconSearchEntries();
@@ -75,9 +76,7 @@ export const CategoryForm = (props: Props) => {
     const isIconChosen = iconSource === CategoryIconSourceEnum.USER;
     const hasTitle = isNotEmptyString(title.trim());
     const isBusy = saveFlight.isLoading || operation.isPending;
-    const transactionCount = AsyncResult.isSuccess(usageResult)
-        ? (usageResult.value.find(entry => entry.id === category?.id)?.transactionCount ?? 0)
-        : null;
+    const transactionCount = usage?.find(entry => entry.id === category?.id)?.transactionCount ?? 0;
 
     const autoIcon = suggestCategoryIcon(iconSearchEntries, category, title);
     const resolvedIcon = isIconChosen ? icon : autoIcon.icon;
@@ -144,6 +143,22 @@ export const CategoryForm = (props: Props) => {
         <AiTranslationFields title={category.title} titleEn={category.titleEn} titleTags={category.titleTags} />
     ) : null;
 
+    const usageActions = isUsageFailure ? (
+        <UsageFailureRow onRetry={retryUsage} />
+    ) : (
+        <LoadingContent isLoading={isUsagePending}>
+            <EntityEditSections
+                deleteLabel={deleteCopy.label}
+                deleteFooter={deleteCopy.footer}
+                deleteTestID={CategoryFormSelector.Delete}
+                deleteTrailing={deleteTrailing}
+                onDelete={handleDelete}
+                isDisabled={isBusy}
+                mutatingOperation={operation.mutatingOperation}
+            />
+        </LoadingContent>
+    );
+
     const handleFormSubmit = handleSubmit(values => saveFlight.run(submitCategory(values, resolvedIcon)));
 
     return (
@@ -183,17 +198,7 @@ export const CategoryForm = (props: Props) => {
                 </IconTitleField>
             </GroupedListSection>
 
-            {isDefined(category) ? (
-                <EntityEditSections
-                    deleteLabel={deleteCopy.label}
-                    deleteFooter={deleteCopy.footer}
-                    deleteTestID={CategoryFormSelector.Delete}
-                    deleteTrailing={deleteTrailing}
-                    onDelete={handleDelete}
-                    isDisabled={isBusy}
-                    mutatingOperation={operation.mutatingOperation}
-                />
-            ) : null}
+            {isDefined(category) ? usageActions : null}
         </EntityFormPage>
     );
 };

@@ -1,13 +1,15 @@
-import { UserIconNameEnum, UserIconType } from '@budgie/contracts';
+import { isEmojiIcon, UserIconType } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
-import { View } from 'react-native';
 
 import { IconSelectorModalSelector } from '../../../app/icon-selector-modal.selector';
+import { EMOJI_TILE_BACKGROUND } from '../../constant/emoji-tile-background.constant';
 import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
 import { ColorPaletteVariant } from '../../type/color-palette-variant.type';
 import { cn } from '../../utils/cn.util';
+import { getIconChoiceLabel } from '../../utils/get-icon-choice-label.util';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
+import { IconSelectedIndicator } from '../icon-selected-indicator/icon-selected-indicator';
 import { Icon } from '../icon/icon';
 
 interface Props {
@@ -18,13 +20,8 @@ interface Props {
     readonly icon: UserIconType;
 }
 
-const tileVariants = cva('aspect-square flex-1 items-center justify-center rounded-3xl border-2 bg-surface-disc active:opacity-70', {
-    variants: {
-        isSelected: {
-            true: 'border-primary',
-            false: 'border-transparent'
-        }
-    }
+const tileVariants = cva('aspect-square flex-1 items-center justify-center rounded-3xl bg-surface-disc active:opacity-70', {
+    variants: { isEmoji: { true: EMOJI_TILE_BACKGROUND, false: '' } }
 });
 
 export const IconSelectorCard = ({ isSelected, icon, label, onSelect, variant }: Props) => {
@@ -37,18 +34,14 @@ export const IconSelectorCard = ({ isSelected, icon, label, onSelect, variant }:
         <HapticPressable
             testID={IconSelectorModalSelector.IconCard(icon)}
             accessibilityRole="button"
-            accessibilityLabel={t`Use ${label} icon`}
+            accessibilityLabel={getIconChoiceLabel(icon, label, t)}
             accessibilityState={accessibilityState}
-            className={tileVariants({ isSelected })}
+            className={tileVariants({ isEmoji: isEmojiIcon(icon) })}
             onPress={handleSelect}
         >
-            <Icon className={cn(iconClassName)} icon={icon} size={24} />
+            <Icon className={cn(iconClassName)} icon={icon} size={22} />
 
-            {isSelected ? (
-                <View className="absolute right-[6px] top-[6px] h-[18px] w-[18px] items-center justify-center rounded-full bg-primary">
-                    <Icon icon={UserIconNameEnum.Check} size={12} className="text-primary-reverse" />
-                </View>
-            ) : null}
+            {isSelected ? <IconSelectedIndicator /> : null}
         </HapticPressable>
     );
 };

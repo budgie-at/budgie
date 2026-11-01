@@ -604,6 +604,10 @@ msgstr "{totalCount, plural, one {У межах бюджету {onBudgetCount} �
 msgid "{totalSize} GB"
 msgstr "{totalSize} ГБ"
 
+#: src/category/utils/get-category-delete-copy.util.ts
+msgid "{transactionCount, plural, one {# transaction will move to the category you pick.} other {# transactions will move to the category you pick.}}"
+msgstr "{transactionCount, plural, one {# транзакцію буде перенесено до вибраної категорії.} few {# транзакції буде перенесено до вибраної категорії.} many {# транзакцій буде перенесено до вибраної категорії.} other {# транзакції буде перенесено до вибраної категорії.}}"
+
 #: src/transaction/components/transaction-list-count/transaction-list-count.tsx
 msgid "{transactionCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{transactionCount, plural, one {# транзакція} few {# транзакції} many {# транзакцій} other {# транзакцій}}"
@@ -611,10 +615,6 @@ msgstr "{transactionCount, plural, one {# транзакція} few {# тран�
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "{transactionCount, plural, one {Its # transaction gets the tag you pick, and “{tagTitle}” is removed.} other {Its # transactions get the tag you pick, and “{tagTitle}” is removed.}}"
 msgstr "{transactionCount, plural, one {Його # транзакція отримає вибраний тег, а «{tagTitle}» буде видалено.} few {Його # транзакції отримають вибраний тег, а «{tagTitle}» буде видалено.} many {Його # транзакцій отримають вибраний тег, а «{tagTitle}» буде видалено.} other {Його # транзакції отримають вибраний тег, а «{tagTitle}» буде видалено.}}"
-
-#: src/category/utils/get-category-delete-copy.util.ts
-msgid "{transactionCount, plural, one {Its # transaction moves to the category you pick.} other {Its # transactions move to the category you pick.}}"
-msgstr "{transactionCount, plural, one {Її # транзакцію буде перенесено до вибраної категорії.} few {Її # транзакції буде перенесено до вибраної категорії.} many {Її # транзакцій буде перенесено до вибраної категорії.} other {Її # транзакції буде перенесено до вибраної категорії.}}"
 
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "{transactionCount, plural, one {Removed from # transaction. The transaction stays.} other {Removed from # transactions. The transactions stay.}}"
@@ -2435,10 +2435,6 @@ msgstr "Видалити бюджет?"
 #: src/category/utils/get-category-delete-copy.util.ts
 msgid "Delete category"
 msgstr "Видалити категорію"
-
-#: src/category/utils/get-category-delete-copy.util.ts
-msgid "Delete category…"
-msgstr "Видалити категорію…"
 
 #: src/settings/components/truncate-data/truncate-data.tsx
 msgid "Delete data"
@@ -4811,6 +4807,10 @@ msgstr "Будь ласка, спробуйте ще раз"
 msgid "Please try again later"
 msgstr "Будь ласка, спробуйте пізніше"
 
+#: src/app/icon-selector.tsx
+msgid "Popular"
+msgstr "Популярні"
+
 #: src/@generic/component/amount-sign-capsule/amount-sign-capsule.tsx
 msgid "Positive"
 msgstr "Додатний"
@@ -6567,8 +6567,11 @@ msgstr "Оновлено {applied} з {total} транзакцій."
 msgid "Updated {formattedDate}"
 msgstr "Оновлено {formattedDate}"
 
-#: src/@generic/component/icon-selector-card/icon-selector-card.tsx
-#: src/@generic/component/icon-suggestion-chip/icon-suggestion-chip.tsx
+#: src/@generic/utils/get-icon-choice-label.util.ts
+msgid "Use {label} emoji"
+msgstr "Використати емодзі {label}"
+
+#: src/@generic/utils/get-icon-choice-label.util.ts
 msgid "Use {label} icon"
 msgstr "Використати іконку {label}"
 
