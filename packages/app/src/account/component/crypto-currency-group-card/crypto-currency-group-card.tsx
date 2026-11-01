@@ -46,13 +46,13 @@ export const CryptoCurrencyGroupCard = ({ group, balance, balancesByAccountId }:
                 instrumentName={group.instrument.name}
                 formattedBalance={formattedBalance}
                 formattedValue={formattedValue}
+                formattedRate={rateLabel}
+                defaultInstrumentSymbol={defaultInstrument.symbol}
                 onPress={navigateToMarket}
             />
 
             <CryptoCurrencyGroupToggleRow
                 accountsCount={group.accounts.length}
-                defaultInstrumentSymbol={defaultInstrument.symbol}
-                formattedRate={rateLabel}
                 instrumentCode={group.instrument.code}
                 isOpen={isOpen}
                 onPress={toggleOpen}

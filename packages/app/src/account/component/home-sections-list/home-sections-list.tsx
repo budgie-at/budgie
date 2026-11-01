@@ -27,12 +27,13 @@ const LIST_HORIZONTAL_PADDING = 16;
 interface Props {
     readonly sections: HomeSectionInterface[];
     readonly activeAccountCount: number;
+    readonly isLoading: boolean;
     readonly bottomInset: number;
     readonly balanceSummary: HomeAccountBalanceSummaryInterface;
     readonly listHeaderComponent?: ReactElement;
 }
 
-export const HomeSectionsList = ({ sections, activeAccountCount, bottomInset, balanceSummary, listHeaderComponent }: Props) => {
+export const HomeSectionsList = ({ sections, activeAccountCount, isLoading, bottomInset, balanceSummary, listHeaderComponent }: Props) => {
     const decimalPlaces = useAtomValue(decimalPlacesAtom);
     const defaultInstrumentId = useAtomValue(defaultInstrumentIdAtom);
     const bottomPadding = FLOATING_TAB_BAR_HEIGHT + FLOATING_TAB_BAR_MARGIN + bottomInset;
@@ -45,6 +46,8 @@ export const HomeSectionsList = ({ sections, activeAccountCount, bottomInset, ba
         activeAccountCount > COLLAPSIBLE_NET_WORTH_HEADER_SCROLL_SPACER_MIN_ACCOUNT_COUNT ? (
             <CollapsibleNetWorthHeaderScrollSpacer />
         ) : null;
+
+    const listEmptyComponent = isLoading ? null : AccountsEmptyState;
 
     const renderSectionHeader = ({ section }: { section: HomeSectionInterface }) => (
         <HomeSectionHeader section={section} balanceSummary={balanceSummary} />
@@ -73,7 +76,7 @@ export const HomeSectionsList = ({ sections, activeAccountCount, bottomInset, ba
             stickySectionHeadersEnabled
             ListHeaderComponent={listHeaderComponent}
             ListFooterComponent={listFooterComponent}
-            ListEmptyComponent={AccountsEmptyState}
+            ListEmptyComponent={listEmptyComponent}
             {...scrollProps}
         />
     );

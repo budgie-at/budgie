@@ -248,5 +248,5 @@ export const useHomePageDataQuery = () => {
     );
     const sections = buildHomePageSections(displayedAccounts, integrationProviders, integrationLabels);
 
-    return { activeAccountCount: displayedAccounts.length, accounts, balanceSummary, sections };
+    return { activeAccountCount: displayedAccounts.length, accounts, balanceSummary, isLoading: AsyncResult.isInitial(result), sections };
 };

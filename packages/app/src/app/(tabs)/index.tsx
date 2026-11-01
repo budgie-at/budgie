@@ -14,7 +14,7 @@ import { BudgetWidget } from '../../budget/components/budget-widget/budget-widge
 import { useOnboardingRedirect } from '../../onboarding/hook/use-onboarding-redirect.hook';
 
 export default function HomePage() {
-    const { activeAccountCount, balanceSummary, sections } = useHomePageDataQuery();
+    const { activeAccountCount, balanceSummary, isLoading, sections } = useHomePageDataQuery();
     const { bottom } = useSafeAreaInsets();
     const onboardingHref = useOnboardingRedirect();
 
@@ -38,11 +38,13 @@ export default function HomePage() {
                     cryptoTotal={balanceSummary.cryptoTotal}
                     fiatCount={balanceSummary.fiatCount}
                     cryptoCount={balanceSummary.cryptoCount}
+                    isLoading={isLoading}
                 />
 
                 <HomeSectionsList
                     sections={sections}
                     activeAccountCount={activeAccountCount}
+                    isLoading={isLoading}
                     bottomInset={bottom}
                     balanceSummary={balanceSummary}
                     listHeaderComponent={listHeaderComponent}

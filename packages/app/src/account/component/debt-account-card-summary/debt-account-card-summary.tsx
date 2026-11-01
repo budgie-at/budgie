@@ -1,9 +1,11 @@
 import { Trans } from '@lingui/react/macro';
+import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
+import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 
@@ -16,13 +18,18 @@ interface Props {
     readonly totalAmount: number;
 }
 
+const summaryVariants = cva('gap-y-xxs', {
+    variants: { isStacked: { true: 'items-start', false: 'max-w-[45%] shrink-0 items-end' } }
+});
+
 export const DebtAccountCardSummary = ({ instrumentSymbol, outstandingAmount, title, totalAmount }: Props) => {
     const formatDigits = useDisplayFormatDigits();
+    const isStacked = useIsAccessibilityTextSize();
 
     const amountColorClassName = isPositiveNumber(outstandingAmount) ? 'text-primary' : 'text-secondary-foreground';
 
     return (
-        <View className="max-w-[45%] shrink-0 items-end gap-y-xxs">
+        <View className={summaryVariants({ isStacked })}>
             <ProtectedText
                 adjustsFontSizeToFit
                 className={cn('text-[17px] font-semibold tracking-tight tabular-nums', amountColorClassName)}

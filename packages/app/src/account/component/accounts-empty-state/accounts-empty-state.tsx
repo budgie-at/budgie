@@ -43,7 +43,7 @@ export const AccountsEmptyState = () => {
             </View>
 
             <Button
-                variant="primary"
+                variant="cta"
                 size="md"
                 leftIcon={UserIconNameEnum.Plus}
                 onPress={handleAddAccount}
