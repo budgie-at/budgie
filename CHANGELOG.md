@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.139.1](https://github.com/budgie-at/budgie/compare/v6.139.0...v6.139.1) (2026-11-01)
+
+### Bug Fixes
+
+* **app:** restore account form interactions after redesign ([6c00fcb](https://github.com/budgie-at/budgie/commit/6c00fcb1e3d32a2123309d0d2dd552465cdce048))
+* **app:** retain failed sync status when automatic sync is off ([bc280c7](https://github.com/budgie-at/budgie/commit/bc280c72fbed6627e8b6c94f79618d2bc8334b68))
+
+
 # [6.139.0](https://github.com/budgie-at/budgie/compare/v6.138.0...v6.139.0) (2026-11-01)
 
 ### Features
