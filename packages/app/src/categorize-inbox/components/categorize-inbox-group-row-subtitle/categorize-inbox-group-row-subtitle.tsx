@@ -23,25 +23,17 @@ export const CategorizeInboxGroupRowSubtitle = ({ cluster }: Props) => {
     const candidateId = candidateLabelIds.at(0);
     const candidateTitle = isDefined(candidateId) ? strategy?.labelsById.get(candidateId)?.title : null;
     const isLikelyTransfer = section !== CategorizeInboxSectionEnum.CONFIDENT && isTransfer;
-    const label = isLikelyTransfer ? t`Transfer` : candidateTitle;
-    const paymentsText = t({ message: plural(rows.length, { one: '# payment', other: '# payments' }) });
-    const cashText = t({ message: plural(rows.length, { one: '# ATM withdrawal', other: '# ATM withdrawals' }) });
-    const isCash = section === CategorizeInboxSectionEnum.CASH_WITHDRAWALS;
-    const countText = isCash ? cashText : paymentsText;
-    const labelText =
-        !isCash && isNotEmptyString(label) ? (
-            <Text className="min-w-0 shrink text-[13px] leading-[17px] text-secondary-foreground" numberOfLines={1}>
-                {label}
-            </Text>
-        ) : null;
-    const separator = isDefined(labelText) ? ' · ' : '';
+    const suggestionText = isNotEmptyString(candidateTitle) ? candidateTitle : t`No suggestion`;
+    const transferOrSuggestionText = isLikelyTransfer ? t`Transfer` : suggestionText;
+    const labelText = section === CategorizeInboxSectionEnum.CASH_WITHDRAWALS ? t`Cash withdrawal` : transferOrSuggestionText;
+    const countText = t({ message: plural(rows.length, { one: '# payment', other: '# payments' }) });
 
     return (
-        <View className="flex-row items-center">
-            {labelText}
-            <Text className="shrink-0 text-[13px] leading-[17px] text-secondary-foreground tabular-nums" numberOfLines={1}>
-                {`${separator}${countText}`}
+        <View className="flex-row items-start gap-x-md">
+            <Text className="min-w-0 flex-1 text-[13px] leading-[17px] text-secondary-foreground" numberOfLines={1}>
+                {labelText}
             </Text>
+            <Text className="shrink-0 text-[13px] leading-[17px] text-secondary-foreground tabular-nums">{countText}</Text>
         </View>
     );
 };

@@ -45,11 +45,6 @@ msgstr "(pick one)"
 msgid "{0, plural, one {# account} other {# accounts}}"
 msgstr "{0, plural, one {# account} other {# accounts}}"
 
-#. placeholder {0}: rows.length
-#: src/categorize-inbox/components/categorize-inbox-group-row-subtitle/categorize-inbox-group-row-subtitle.tsx
-msgid "{0, plural, one {# ATM withdrawal} other {# ATM withdrawals}}"
-msgstr "{0, plural, one {# ATM withdrawal} other {# ATM withdrawals}}"
-
 #. placeholder {0}: installmentCount - 1
 #: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
 msgid "{0, plural, one {# more payment of {formattedLast}} other {# more payments of {formattedLast}}}"
@@ -1907,6 +1902,10 @@ msgstr "cash from an ATM"
 msgid "Cash wallets and savings goals"
 msgstr "Cash wallets and savings goals"
 
+#: src/categorize-inbox/components/categorize-inbox-group-row-subtitle/categorize-inbox-group-row-subtitle.tsx
+msgid "Cash withdrawal"
+msgstr "Cash withdrawal"
+
 #: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
 msgid "Cash withdrawals"
 msgstr "Cash withdrawals"
@@ -2101,6 +2100,10 @@ msgstr "Choose and confirm a PIN"
 msgid "Choose another icon…"
 msgstr "Choose another icon…"
 
+#: src/categorize-inbox/components/categorize-inbox-category-provider/categorize-inbox-category-provider.tsx
+msgid "Choose category"
+msgstr "Choose category"
+
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Choose dates to sync again"
 msgstr "Choose dates to sync again"
@@ -2114,10 +2117,13 @@ msgid "Choose from Photos"
 msgstr "Choose from Photos"
 
 #: src/categorize-inbox/components/categorize-inbox-group-choose-payments-option/categorize-inbox-group-choose-payments-option.tsx
-#: src/categorize-inbox/components/categorize-inbox-group-recent-payments/categorize-inbox-group-recent-payments.tsx
 #: src/categorize-inbox/components/categorize-inbox-payments-screen/categorize-inbox-payments-screen.tsx
 msgid "Choose payments"
 msgstr "Choose payments"
+
+#: src/categorize-inbox/components/categorize-inbox-tag-provider/categorize-inbox-tag-provider.tsx
+msgid "Choose tags"
+msgstr "Choose tags"
 
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Choose the account it comes from"
@@ -5015,6 +5021,10 @@ msgstr "No spending matches these filters"
 #: src/transaction/components/statistics-empty-ledger/statistics-empty-ledger.tsx
 msgid "No spending or income yet"
 msgstr "No spending or income yet"
+
+#: src/categorize-inbox/components/categorize-inbox-group-row-subtitle/categorize-inbox-group-row-subtitle.tsx
+msgid "No suggestion"
+msgstr "No suggestion"
 
 #: src/settings/components/sync-repairs-empty-state-card/sync-repairs-empty-state-card.tsx
 msgid "No sync repairs found."

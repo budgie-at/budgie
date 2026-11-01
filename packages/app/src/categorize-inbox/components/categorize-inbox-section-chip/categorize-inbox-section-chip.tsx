@@ -38,7 +38,7 @@ export const CategorizeInboxSectionChip = ({ section, count, isActive, onPress }
 
     return (
         <HapticPressable
-            className={cn('h-[36px] flex-row items-center rounded-2xl px-lg active:opacity-70', surfaceClassName)}
+            className={cn('min-h-[36px] flex-row items-center rounded-2xl px-lg py-sm active:opacity-70', surfaceClassName)}
             style={continuousCorners}
             hitSlop={CHIP_HIT_SLOP}
             onPress={handlePress}

@@ -41,7 +41,7 @@ export const CategorizeInboxMonthlyBar = ({ count, maxCount, index, monthLabel, 
 
     return (
         <View className="min-w-0 flex-1 items-center gap-y-xs">
-            <Text className="text-secondary-foreground h-[15px] text-[12px] leading-[15px] tabular-nums" numberOfLines={1}>
+            <Text className="text-secondary-foreground min-h-[15px] text-[12px] leading-[15px] tabular-nums" numberOfLines={1}>
                 {countLabel}
             </Text>
             <View className="w-full items-center justify-end" style={stripStyle}>

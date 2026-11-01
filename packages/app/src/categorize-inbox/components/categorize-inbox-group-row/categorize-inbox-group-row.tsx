@@ -31,15 +31,18 @@ export const CategorizeInboxGroupRow = ({ cluster, position }: Props) => {
 
     const href = { pathname: '/categorize/group/[key]', params: { key } } as const;
     const linkClassName = hasAction
-        ? 'min-h-[64px] min-w-0 flex-1 flex-row items-center gap-x-xl py-lg pr-xl pl-3xl active:opacity-70'
-        : 'min-h-[64px] min-w-0 flex-1 flex-row items-center gap-x-xl py-lg px-3xl active:opacity-70';
-    const chevron = hasAction ? null : <Icon icon={UserIconNameEnum.ChevronRight} size={13} className="text-secondary-foreground" />;
+        ? 'min-h-[64px] min-w-0 flex-1 flex-row items-center gap-x-xl py-xl pr-xl pl-3xl active:opacity-70'
+        : 'min-h-[64px] min-w-0 flex-1 flex-row items-center gap-x-xl py-xl pl-3xl active:opacity-70';
     const actionButton = isCash ? (
         <CategorizeInboxGroupRowCashButton cluster={cluster} />
     ) : (
         <CategorizeInboxGroupRowFileButton cluster={cluster} />
     );
-    const action = hasAction ? <View className="mr-3xl">{actionButton}</View> : null;
+    const chevron = <Icon icon={UserIconNameEnum.ChevronRight} size={13} className="text-secondary-foreground" />;
+    const trailingContent = hasAction ? actionButton : chevron;
+    const trailingSlot = <View className="mr-md w-[64px] items-center justify-center">{trailingContent}</View>;
+    const linkTrailingSlot = hasAction ? null : trailingSlot;
+    const rowTrailingSlot = hasAction ? trailingSlot : null;
 
     return (
         <CategorizeInboxCardRow position={position}>
@@ -60,10 +63,10 @@ export const CategorizeInboxGroupRow = ({ cluster, position }: Props) => {
                             </View>
                             <CategorizeInboxGroupRowSubtitle cluster={cluster} />
                         </View>
-                        {chevron}
+                        {linkTrailingSlot}
                     </HapticPressable>
                 </Link>
-                {action}
+                {rowTrailingSlot}
             </View>
         </CategorizeInboxCardRow>
     );

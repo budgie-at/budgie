@@ -43,6 +43,7 @@ export const CategorizeInboxTagProvider = ({ params, children }: Props) => {
         pageTitle: t`Add tags`,
         emptyDescription: t`Every transaction has a tag.`,
         moreLabels: t`More tags`,
+        chooseLabel: t`Choose tags`,
         writeFailed: t`Could not tag transactions`,
         assignAs: tagTitle => t`Tag as ${tagTitle}`,
         doneThisSession: taggedCount =>

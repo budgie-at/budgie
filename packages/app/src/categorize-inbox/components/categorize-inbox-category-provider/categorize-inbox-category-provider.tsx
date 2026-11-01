@@ -70,6 +70,7 @@ export const CategorizeInboxCategoryProvider = ({ params, children }: Props) => 
         pageTitle: t`Categorize`,
         emptyDescription: t`Every transaction has a category.`,
         moreLabels: t`More categories`,
+        chooseLabel: t`Choose category`,
         writeFailed: t`Could not categorize transactions`,
         assignAs: categoryTitle => t`Categorize as ${categoryTitle}`,
         doneThisSession: categorizedCount =>

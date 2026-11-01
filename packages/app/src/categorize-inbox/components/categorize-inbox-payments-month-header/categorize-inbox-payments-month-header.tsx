@@ -65,13 +65,13 @@ export const CategorizeInboxPaymentsMonthHeader = ({ group }: Props) => {
             {...testID(CategorizeInboxPaymentsMonthHeaderSelector.Toggle, group.month.getTime())}
         >
             <View className="absolute top-0 right-0 left-0 h-hairline bg-surface-separator" pointerEvents="none" />
+            <View className="w-[36px] items-center">{indicators[selection]}</View>
             <Text className="text-primary min-w-0 flex-1 text-[15px] font-semibold" numberOfLines={1}>
                 {monthLabel}
             </Text>
             <Text className="text-secondary-foreground shrink-0 text-[15px] tabular-nums" numberOfLines={1}>
                 {totalLabel}
             </Text>
-            {indicators[selection]}
         </HapticPressable>
     );
 };

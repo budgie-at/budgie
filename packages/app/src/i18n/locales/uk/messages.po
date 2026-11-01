@@ -44,11 +44,6 @@ msgstr "(виберіть)"
 msgid "{0, plural, one {# account} other {# accounts}}"
 msgstr "{0, plural, one {# рахунок} few {# рахунки} many {# рахунків} other {# рахунку}}"
 
-#. placeholder {0}: rows.length
-#: src/categorize-inbox/components/categorize-inbox-group-row-subtitle/categorize-inbox-group-row-subtitle.tsx
-msgid "{0, plural, one {# ATM withdrawal} other {# ATM withdrawals}}"
-msgstr "{0, plural, one {# зняття в банкоматі} few {# зняття в банкоматі} many {# знять у банкоматі} other {# зняття в банкоматі}}"
-
 #. placeholder {0}: installmentCount - 1
 #: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
 msgid "{0, plural, one {# more payment of {formattedLast}} other {# more payments of {formattedLast}}}"
@@ -1906,6 +1901,10 @@ msgstr "готівка з банкомата"
 msgid "Cash wallets and savings goals"
 msgstr "Готівка та цілі заощаджень"
 
+#: src/categorize-inbox/components/categorize-inbox-group-row-subtitle/categorize-inbox-group-row-subtitle.tsx
+msgid "Cash withdrawal"
+msgstr "Зняття готівки"
+
 #: src/categorize-inbox/components/categorize-inbox-section-header/categorize-inbox-section-header.tsx
 msgid "Cash withdrawals"
 msgstr "Зняття готівки"
@@ -2100,6 +2099,10 @@ msgstr "Виберіть і підтвердьте PIN-код"
 msgid "Choose another icon…"
 msgstr "Вибрати іншу іконку…"
 
+#: src/categorize-inbox/components/categorize-inbox-category-provider/categorize-inbox-category-provider.tsx
+msgid "Choose category"
+msgstr "Обрати категорію"
+
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Choose dates to sync again"
 msgstr "Оберіть дати для повторної синхронізації"
@@ -2113,10 +2116,13 @@ msgid "Choose from Photos"
 msgstr "Обрати з Фото"
 
 #: src/categorize-inbox/components/categorize-inbox-group-choose-payments-option/categorize-inbox-group-choose-payments-option.tsx
-#: src/categorize-inbox/components/categorize-inbox-group-recent-payments/categorize-inbox-group-recent-payments.tsx
 #: src/categorize-inbox/components/categorize-inbox-payments-screen/categorize-inbox-payments-screen.tsx
 msgid "Choose payments"
 msgstr "Обрати платежі"
+
+#: src/categorize-inbox/components/categorize-inbox-tag-provider/categorize-inbox-tag-provider.tsx
+msgid "Choose tags"
+msgstr "Обрати теги"
 
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Choose the account it comes from"
@@ -5014,6 +5020,10 @@ msgstr "Немає витрат, що відповідають цим фільт
 #: src/transaction/components/statistics-empty-ledger/statistics-empty-ledger.tsx
 msgid "No spending or income yet"
 msgstr "Ще немає витрат чи доходів"
+
+#: src/categorize-inbox/components/categorize-inbox-group-row-subtitle/categorize-inbox-group-row-subtitle.tsx
+msgid "No suggestion"
+msgstr "Немає пропозиції"
 
 #: src/settings/components/sync-repairs-empty-state-card/sync-repairs-empty-state-card.tsx
 msgid "No sync repairs found."

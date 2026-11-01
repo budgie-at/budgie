@@ -15,7 +15,7 @@ const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
 export const CategorizeInboxGroupRowActionButton = ({ title, label, isDisabled, onPress, testID }: Props) => (
     <HapticPressable
-        className="h-[32px] min-w-[44px] items-center justify-center rounded-full bg-surface-disc px-xl active:opacity-70"
+        className="min-h-[32px] min-w-[44px] items-center justify-center self-center rounded-full bg-surface-disc px-lg py-[6px] active:opacity-70"
         style={CONTINUOUS_CORNERS}
         hitSlop={BUTTON_HIT_SLOP}
         disabled={isDisabled}
@@ -24,7 +24,7 @@ export const CategorizeInboxGroupRowActionButton = ({ title, label, isDisabled, 
         accessibilityLabel={label}
         testID={testID}
     >
-        <Text className="text-[15px] leading-[20px] font-semibold text-primary" numberOfLines={1}>
+        <Text className="text-center text-[15px] leading-[20px] font-semibold text-primary" numberOfLines={2}>
             {title}
         </Text>
     </HapticPressable>
