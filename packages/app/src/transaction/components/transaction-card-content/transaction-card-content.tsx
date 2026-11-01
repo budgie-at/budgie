@@ -9,12 +9,14 @@ import { Trans } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { getTransactionDisplayTitle } from '../../utils/get-transaction-display-title.util';
 import { getTransactionIcon } from '../../utils/get-transaction-icon.util';
 import { getTransactionType } from '../../utils/get-transaction-type.util';
 import { isEarnedIncomeTransaction } from '../../utils/is-earned-income-transaction.util';
 import { isUncategorizedTransaction } from '../../utils/is-uncategorized-transaction.util';
 import { TransactionAmount } from '../transaction-amount/transaction-amount';
+import { TransactionCardStackedSubtitle } from '../transaction-card-stacked-subtitle/transaction-card-stacked-subtitle';
 import { TransactionCardSubtitle } from '../transaction-card-subtitle/transaction-card-subtitle';
 import { TransactionCardSelector } from '../transaction-card/transaction-card.selector';
 import { TransactionRowLayout } from '../transaction-row-layout/transaction-row-layout';
@@ -25,6 +27,8 @@ interface Props {
 }
 
 export const TransactionCardContent = ({ transaction, accountId = null }: Props) => {
+    const isAccessibilityTextSize = useIsAccessibilityTextSize();
+
     const isAdjustment = isPositiveAdjustmentTransaction(transaction) || isNegativeAdjustmentTransaction(transaction);
     const neutralIconVariant = getTransactionType(transaction) === TransactionTypeEnum.TRANSFER ? 'default' : 'secondary';
     const isUncategorized = isUncategorizedTransaction(transaction);
@@ -32,6 +36,7 @@ export const TransactionCardContent = ({ transaction, accountId = null }: Props)
     const iconClassName = iconVariant === 'secondary' ? 'bg-secondary-foreground/15' : '';
     const icon = isUncategorized ? UserIconNameEnum.CircleDashed : getTransactionIcon(transaction);
     const iconForegroundClassName = isUncategorized ? 'text-attention-foreground' : '';
+    const titleLineCount = isAccessibilityTextSize ? 4 : 1;
 
     return (
         <TransactionRowLayout
@@ -50,16 +55,24 @@ export const TransactionCardContent = ({ transaction, accountId = null }: Props)
             amount={<TransactionAmount transaction={transaction} accountId={accountId} />}
         >
             {isAdjustment ? (
-                <Text className="text-primary text-[15px] font-semibold" numberOfLines={1} testID={TransactionCardSelector.AdjustmentBadge}>
+                <Text
+                    className="text-primary text-[15px] font-semibold"
+                    numberOfLines={titleLineCount}
+                    testID={TransactionCardSelector.AdjustmentBadge}
+                >
                     <Trans>Balance Adjustment</Trans>
                 </Text>
             ) : (
-                <Text className="text-primary text-[15px] font-semibold" numberOfLines={1} ellipsizeMode="tail">
+                <Text className="text-primary text-[15px] font-semibold" numberOfLines={titleLineCount} ellipsizeMode="tail">
                     {getTransactionDisplayTitle(transaction)}
                 </Text>
             )}
 
-            <TransactionCardSubtitle transaction={transaction} accountId={accountId} />
+            {isAccessibilityTextSize ? (
+                <TransactionCardStackedSubtitle transaction={transaction} accountId={accountId} />
+            ) : (
+                <TransactionCardSubtitle transaction={transaction} accountId={accountId} />
+            )}
         </TransactionRowLayout>
     );
 };

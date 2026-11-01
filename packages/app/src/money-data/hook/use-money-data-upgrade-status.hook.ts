@@ -55,14 +55,15 @@ const getState = (snapshot: MoneyDataUpgradeRuntimeSnapshotInterface): MoneyData
 
 export const useMoneyDataUpgradeStatus = () => {
     const { t } = useLingui();
-    const runtimeSnapshot = AsyncResult.getOrElse(useAtomValue(moneyDataUpgradeProgressAtom), () => EMPTY_RUNTIME_SNAPSHOT);
+    const runtimeResult = useAtomValue(moneyDataUpgradeProgressAtom);
+    const runtimeSnapshot = AsyncResult.getOrElse(runtimeResult, () => EMPTY_RUNTIME_SNAPSHOT);
 
     useEffect(() => {
         const fiber = appRuntime.runFork(
             logAndContinue(
                 Effect.flatMap(MoneyDataUpgradeService, moneyDataUpgradeService =>
                     moneyDataUpgradeService.refreshSnapshot(t`Base instrument not found`)
-                ).pipe(toastOnFailure(t`Historical valuation failed`))
+                ).pipe(toastOnFailure(t`Could not convert past amounts`))
             )
         );
 
@@ -70,10 +71,10 @@ export const useMoneyDataUpgradeStatus = () => {
     }, [t]);
 
     const snapshot: MoneyDataUpgradeStatusSnapshotInterface = {
-        title: t`Value Historical Entries`,
+        title: t`Convert past amounts`,
         statusText: buildMoneyDataUpgradeStatusText(runtimeSnapshot),
         percent: calculatePercent(runtimeSnapshot.processedEntryCount, runtimeSnapshot.totalEntryCount),
-        state: getState(runtimeSnapshot)
+        state: AsyncResult.isInitial(runtimeResult) ? MoneyDataUpgradeProgressStateEnum.READY : getState(runtimeSnapshot)
     };
 
     const handlePrimaryAction = () =>
@@ -81,9 +82,9 @@ export const useMoneyDataUpgradeStatus = () => {
             logAndContinue(
                 Effect.gen(function* () {
                     const confirmed = yield* confirmAlert({
-                        title: t`Value historical entries?`,
+                        title: t`Convert past amounts?`,
                         message: t`Budgie will fill missing base-currency values from historical exchange rates. Analytics may be unavailable until this finishes.`,
-                        confirmText: t`Value entries`,
+                        confirmText: t`Convert`,
                         cancelText: t`Cancel`
                     });
 
@@ -94,7 +95,7 @@ export const useMoneyDataUpgradeStatus = () => {
                     const moneyDataUpgradeService = yield* MoneyDataUpgradeService;
 
                     yield* moneyDataUpgradeService.run(t`Base instrument not found`);
-                }).pipe(toastOnFailure(t`Historical valuation failed`))
+                }).pipe(toastOnFailure(t`Could not convert past amounts`))
             )
         );
 

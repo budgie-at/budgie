@@ -25,7 +25,6 @@ export const SettingsPageSelector = {
             : ('SettingsPage.DefaultAccountCard.None' as const),
     ApplePayCaptureCard: 'SettingsPage.ApplePayCaptureCard',
     DarkModeCard: 'SettingsPage.DarkModeCard',
-    DarkModeSwitch: 'SettingsPage.DarkModeSwitch',
     ShowCentsCard: 'SettingsPage.ShowCentsCard',
     ShowCentsSwitch: 'SettingsPage.ShowCentsSwitch',
     ManageCategoriesCard: 'SettingsPage.ManageCategoriesCard',
@@ -57,5 +56,6 @@ export const SettingsPageSelector = {
     RecalculateBalancesCard: 'SettingsPage.RecalculateBalancesCard',
     MoneyDataUpgradeCard: 'SettingsPage.MoneyDataUpgradeCard',
     RepairSyncDataCard: 'SettingsPage.RepairSyncDataCard',
-    ReportBugCard: 'SettingsPage.ReportBugCard'
+    ReportBugCard: 'SettingsPage.ReportBugCard',
+    DataCard: 'SettingsPage.DataCard'
 } as const;

@@ -15,7 +15,7 @@ const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 export const GroupedListSection = ({ title, footer, children }: Props) => (
     <View>
         {isNotEmptyString(title) ? (
-            <Text className="text-primary px-3xl pb-md text-[15px] font-semibold" accessibilityRole="header">
+            <Text className="text-secondary-foreground px-3xl pb-md text-[15px] font-semibold" accessibilityRole="header">
                 {title}
             </Text>
         ) : null}

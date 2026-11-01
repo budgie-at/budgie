@@ -9,6 +9,7 @@ import { E2E_SHARED_RECEIPT } from './fixture/e2e-shared-receipt.fixture';
 import { IHR_LABOR_LEGAL_NAME, IHR_LABOR_RECEIPT } from './fixture/ihr-labor-receipt.fixture';
 import { RESTAURANT_TABLE_BILL_RECEIPT } from './fixture/restaurant-table-bill-receipt.fixture';
 import { SCHWEDEN_APOTHEKE_PHOTO_RECEIPT } from './fixture/schweden-apotheke-photo-receipt.fixture';
+import { SMYTHS_CASH_RECEIPT } from './fixture/smyths-cash-receipt.fixture';
 import { UKRAINIAN_FISCAL_RECEIPT } from './fixture/ukrainian-fiscal-receipt.fixture';
 import { USD_TIP_RECEIPT } from './fixture/usd-tip-receipt.fixture';
 
@@ -124,6 +125,22 @@ describe('parseReceipt', () => {
                 merchantCandidates: ['Ausdruck Gruppe:', 'Tisch:', 'Stk Artikelname'],
                 isPaid: false,
                 fingerprint: 'ausdruckgruppe|128900000||'
+            }
+        ],
+        [
+            'a cash-paid toy store receipt with a tabular receipt number and an m.b.H. legal name',
+            SMYTHS_CASH_RECEIPT,
+            {
+                total: convertToMicroUnits(96.96),
+                currency: CurrencyEnum.EUR,
+                occurredAt: new Date(2026, 9, 31, 14, 8, 0),
+                cardLast4: null,
+                receiptNumber: '00222',
+                merchantVatId: 'ATU22547304',
+                merchantLegalName: 'Smyths Toys Handelsges. m.b.H.',
+                merchantCandidates: ['SMYTHS', 'TOYS SUPERSTORES', 'Smyths Toys Handelsges. m.b.H.'],
+                isPaid: true,
+                fingerprint: 'ATU22547304|00222|96960000|2026-10-31'
             }
         ]
     ])('reads %s', (_name, lines, expected) => {

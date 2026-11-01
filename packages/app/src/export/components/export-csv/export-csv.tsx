@@ -3,7 +3,8 @@ import { ExporterService } from '@budgie/import-export';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 
-import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
+import { SettingsPillButton } from '../../../settings/components/settings-pill-button/settings-pill-button';
+import { SettingsRow } from '../../../settings/components/settings-row/settings-row';
 import { useExportAction } from '../../hook/use-export-action.hook';
 import { shareCacheFile } from '../../utils/share-cache-file.util';
 
@@ -32,14 +33,16 @@ export const ExportCsv = () => {
         errorTitle: t`Could not export CSV`
     });
 
+    const handlePress = () => void handleExport();
+
     return (
-        <SettingsCard
+        <SettingsRow
             title={t`Export CSV`}
-            description={t`Export all transactions to a CSV file`}
-            onPress={handleExport}
-            icon={UserIconNameEnum.Download}
-            variant="default"
-            isLoading={isLoading}
+            subtitle={t`Every transaction as a spreadsheet`}
+            {...(!isLoading && { onPress: handlePress })}
+            icon={UserIconNameEnum.Upload}
+            variant="ghost"
+            right={<SettingsPillButton label={t`Export`} variant="secondary" isLoading={isLoading} />}
             testID={ExportCsvSelector.ExportCard}
         />
     );

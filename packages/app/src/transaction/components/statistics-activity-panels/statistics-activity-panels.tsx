@@ -9,11 +9,9 @@ import type { TransactionFilterInterface } from '@budgie/contracts';
 interface Props {
     readonly activeTab: AnalyticsTabType;
     readonly filters: TransactionFilterInterface;
-    readonly income: number;
-    readonly expense: number;
 }
 
-export const StatisticsActivityPanels = ({ activeTab, filters, income, expense }: Props) => {
+export const StatisticsActivityPanels = ({ activeTab, filters }: Props) => {
     const [visitedTabs, setVisitedTabs] = useState<ReadonlySet<AnalyticsTabType>>(() => new Set([activeTab]));
 
     if (!visitedTabs.has(activeTab)) {
@@ -25,12 +23,12 @@ export const StatisticsActivityPanels = ({ activeTab, filters, income, expense }
     const tagsActivityMode = isCategoriesTab ? 'hidden' : 'visible';
     const categoriesPanel = visitedTabs.has('categories') ? (
         <Activity mode={categoriesActivityMode}>
-            <StatisticsCategoriesActivityContent filters={filters} income={income} expense={expense} />
+            <StatisticsCategoriesActivityContent filters={filters} />
         </Activity>
     ) : null;
     const tagsPanel = visitedTabs.has('tags') ? (
         <Activity mode={tagsActivityMode}>
-            <StatisticsTagsActivityContent filters={filters} income={income} expense={expense} />
+            <StatisticsTagsActivityContent filters={filters} />
         </Activity>
     ) : null;
 
