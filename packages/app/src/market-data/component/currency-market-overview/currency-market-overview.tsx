@@ -3,11 +3,12 @@ import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { View } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { defaultInstrumentIdAtom } from '../../../settings/constants/settings-atoms.constant';
 import { MarketChartRangeEnum } from '../../enum/market-chart-range.enum';
 import { useInstrumentMarketDataProgressQuery } from '../../query/use-instrument-market-data-progress.query';
+import { isMarketPriceStale } from '../../utils/is-market-price-stale.util';
 import { CurrencyMarketChartStatus } from '../currency-market-chart-status/currency-market-chart-status';
 import { CurrencyMarketChart } from '../currency-market-chart/currency-market-chart';
 import { CurrencyMarketPageSelector } from '../currency-market-page/currency-market-page.selector';
@@ -28,6 +29,8 @@ const RANGE_DAYS: Record<MarketChartRangeEnum, number> = {
     [MarketChartRangeEnum.YEAR]: 365
 };
 const MIN_CHART_POINTS = 2;
+const STALE_LINE_OPACITY = 0.5;
+const LIVE_LINE_OPACITY = 1;
 
 export const CurrencyMarketOverview = ({ instrument, prices }: Props) => {
     const { t } = useLingui();
@@ -47,6 +50,7 @@ export const CurrencyMarketOverview = ({ instrument, prices }: Props) => {
         [MarketChartRangeEnum.YEAR]: t`Past year`
     };
     const sparklineTestID = CurrencyMarketPageSelector.Sparkline(instrument.code);
+    const lineOpacity = isDefined(latestPrice) && isMarketPriceStale(latestPrice.priceDate) ? STALE_LINE_OPACITY : LIVE_LINE_OPACITY;
 
     const handleRangeChange = (nextRange: MarketChartRangeEnum) => {
         setScrubIndex(null);
@@ -66,15 +70,23 @@ export const CurrencyMarketOverview = ({ instrument, prices }: Props) => {
 
             <View className="mt-3xl">
                 {values.length >= MIN_CHART_POINTS ? (
-                    <CurrencyMarketChart values={values} rangeLabel={rangeLabels[range]} testID={sparklineTestID} onScrub={setScrubIndex} />
+                    <CurrencyMarketChart
+                        values={values}
+                        rangeLabel={rangeLabels[range]}
+                        lineOpacity={lineOpacity}
+                        testID={sparklineTestID}
+                        onScrub={setScrubIndex}
+                    />
                 ) : (
                     <CurrencyMarketChartStatus progress={progress} testID={sparklineTestID} />
                 )}
             </View>
 
-            <View className="mt-xl">
-                <CurrencyMarketRangeControl value={range} onChange={handleRangeChange} />
-            </View>
+            {isNotEmptyArray(prices) ? (
+                <View className="mt-xl">
+                    <CurrencyMarketRangeControl value={range} onChange={handleRangeChange} />
+                </View>
+            ) : null}
         </View>
     );
 };

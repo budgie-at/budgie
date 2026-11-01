@@ -7,11 +7,13 @@ interface Props {
     readonly value: string;
     readonly valueClassName: string;
     readonly testID: string;
+    readonly subtitle?: string;
 }
 
-export const CurrencyMarketPositionRow = ({ label, value, valueClassName, testID }: Props) => (
+export const CurrencyMarketPositionRow = ({ label, value, valueClassName, testID, subtitle }: Props) => (
     <GroupedListRow
         title={label}
+        subtitle={subtitle}
         testID={testID}
         right={
             <ProtectedText

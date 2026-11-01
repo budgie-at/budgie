@@ -133,6 +133,10 @@ msgstr "{accountTitle} sera restauré dans votre vue principale et inclus dans l
 msgid "{accountTitle} will be restored to your main view."
 msgstr "{accountTitle} sera restauré dans votre vue principale."
 
+#: src/market-data/component/currency-market-stale-price/currency-market-stale-price.tsx
+msgid "{ageDays, plural, one {# day old} other {# days old}}"
+msgstr "{ageDays, plural, one {il y a # jour} other {il y a # jours}}"
+
 #: src/rule/utils/show-rule-application-toast.util.ts
 msgid "{applied, plural, one {# matching transaction updated} other {# matching transactions updated}}"
 msgstr "{applied, plural, one {# transaction correspondante mise à jour} other {# transactions correspondantes mises à jour}}"
@@ -1476,6 +1480,10 @@ msgstr "Êtes-vous sûr de vouloir supprimer toutes vos données ? Cette action 
 #: src/transaction/hook/use-delete-transaction.hook.ts
 msgid "Are you sure?"
 msgstr "Êtes-vous sûr ?"
+
+#: src/market-data/component/currency-market-position/currency-market-position.tsx
+msgid "At last known price"
+msgstr "Au dernier prix connu"
 
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
@@ -4977,6 +4985,10 @@ msgstr "Aucune langue trouvée"
 msgid "No limit changes yet"
 msgstr "Aucun changement de limite pour l'instant"
 
+#: src/market-data/component/currency-market-position-footer/currency-market-position-footer.tsx
+msgid "No market price yet, so value and return can’t be calculated."
+msgstr "Pas encore de prix du marché, la valeur et le rendement ne peuvent donc pas être calculés."
+
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "No matching accounts"
 msgstr "Aucun compte correspondant"
@@ -5002,7 +5014,7 @@ msgid "No new transactions"
 msgstr "Aucune nouvelle transaction"
 
 #: src/market-data/component/currency-market-position/currency-market-position.tsx
-#: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
+#: src/market-data/component/currency-market-return-row/currency-market-return-row.tsx
 msgid "No price"
 msgstr "Aucun prix"
 
@@ -5199,6 +5211,10 @@ msgstr "OK"
 #: src/transaction/components/statistics-filters-menu/statistics-filters-menu.tsx
 msgid "On"
 msgstr "Actif"
+
+#: src/market-data/component/currency-market-return-row/currency-market-return-row.tsx
+msgid "On {coveredAmount} of {totalAmount}"
+msgstr "Sur {coveredAmount} de {totalAmount}"
 
 #: src/transaction/components/transaction-info-installment-terms/transaction-info-installment-terms.tsx
 msgid "On {nextDate} · Monthly"
@@ -5773,9 +5789,9 @@ msgstr "Prix modifié"
 msgid "Price chart, {rangeLabel}, from {fromLabel} to {toLabel}, high {highLabel}, low {lowLabel}"
 msgstr "Graphique des prix, {rangeLabel}, de {fromLabel} à {toLabel}, plus haut {highLabel}, plus bas {lowLabel}"
 
-#: src/market-data/component/currency-market-price-hero/currency-market-price-hero.tsx
-msgid "Price from {staleDate}"
-msgstr "Prix du {staleDate}"
+#: src/market-data/component/currency-market-stale-price/currency-market-stale-price.tsx
+msgid "Price from {date}"
+msgstr "Prix du {date}"
 
 #: src/market-data/component/currency-market-chart-status/currency-market-chart-status.tsx
 msgid "Price history paused"
@@ -6167,13 +6183,10 @@ msgstr "Reprendre"
 msgid "Retry"
 msgstr "Réessayer"
 
+#: src/market-data/component/currency-market-return-row/currency-market-return-row.tsx
 #: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
 msgid "Return"
 msgstr "Rendement"
-
-#: src/market-data/component/currency-market-position-footer/currency-market-position-footer.tsx
-msgid "Return covers {coveredAmount} of {totalAmount} with a known purchase price."
-msgstr "Le rendement couvre {coveredAmount} sur {totalAmount} avec un prix d'achat connu."
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Return to Budgie and select the saved XLSX file below"
@@ -7369,6 +7382,10 @@ msgstr "À rembourser"
 #: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "To set aside this period"
 msgstr "À mettre de côté sur cette période"
+
+#: src/account/component/account-details-market-link/account-details-market-link.tsx
+msgid "today"
+msgstr "aujourd’hui"
 
 #: src/@generic/constant/date-period.constant.ts
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx

@@ -1,4 +1,4 @@
-import { CRYPTO_ACCOUNT_TYPES, convertFromMicroUnits } from '@budgie/contracts';
+import { CRYPTO_ACCOUNT_TYPES, InstrumentTypeEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import * as Arr from 'effect/Array';
@@ -8,12 +8,11 @@ import * as AsyncResult from 'effect/reactivity/AsyncResult';
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
-import { MICRO_UNIT_DECIMAL_PLACES } from '../../../@generic/constant/micro-unit-decimal-places.constant';
 import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
 import { homeAccountRowsAtom } from '../../../account/query/use-home-page-data.query';
 import { useCryptoValuationRateQuery } from '../../../exchange-rate/query/use-crypto-valuation-rate.query';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
+import { useFormatInstrumentAmount } from '../../../i18n/hook/use-format-instrument-amount.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { CurrencyMarketAccountRow } from '../currency-market-account-row/currency-market-account-row';
 import { CurrencyMarketPageSelector } from '../currency-market-page/currency-market-page.selector';
@@ -30,7 +29,7 @@ export const CurrencyMarketAccounts = ({ instrument }: Props) => {
     const rows = AsyncResult.getOrElse(useLiveAtomValue(homeAccountRowsAtom(defaultInstrument.id)), () => []);
     const valuationRate = useCryptoValuationRateQuery(instrument.id, defaultInstrument.id);
     const formatMoney = useDisplayFormatDigits();
-    const formatCrypto = useFormatDigits(0, MICRO_UNIT_DECIMAL_PLACES);
+    const formatInstrumentAmount = useFormatInstrumentAmount();
 
     const accountRows = Arr.sort(
         rows.filter(
@@ -54,7 +53,8 @@ export const CurrencyMarketAccounts = ({ instrument }: Props) => {
                         key={row.account.id}
                         account={row.account}
                         sync={row.sync}
-                        amountLabel={`${formatCrypto(amount)} ${instrument.code}`}
+                        instrumentCode={instrument.code}
+                        amountLabel={formatInstrumentAmount(amount, instrument.code, InstrumentTypeEnum.CRYPTO)}
                         valueLabel={valueLabel}
                         testID={CurrencyMarketPageSelector.Account(instrument.code, row.account.id)}
                     />

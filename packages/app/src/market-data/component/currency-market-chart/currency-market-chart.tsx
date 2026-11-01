@@ -12,16 +12,20 @@ import { StyledLine } from '../../../@generic/component/styled-line/styled-line'
 import { StyledPath } from '../../../@generic/component/styled-path/styled-path';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { MARKET_CHART_HEIGHT } from '../../constant/market-chart-height.constant';
+import { MarketChartToneEnum } from '../../enum/market-chart-tone.enum';
 import { useMarketChartAccessibilityLabel } from '../../hook/use-market-chart-accessibility-label.hook';
 import { buildMarketChartGeometry } from '../../utils/build-market-chart-geometry.util';
 import { getMarketChartIndex } from '../../utils/get-market-chart-index.util';
+import { getMarketChartTone } from '../../utils/get-market-chart-tone.util';
 import { CurrencyMarketChartCursor } from '../currency-market-chart-cursor/currency-market-chart-cursor';
+import { CurrencyMarketChartExtremes } from '../currency-market-chart-extremes/currency-market-chart-extremes';
 
 import type { LayoutChangeEvent } from 'react-native';
 
 interface Props {
     readonly values: readonly number[];
     readonly rangeLabel: string;
+    readonly lineOpacity: number;
     readonly testID: string;
     readonly onScrub: (index: number | null) => void;
 }
@@ -36,19 +40,35 @@ const FILL_ID = 'currency-market-chart-fill';
 const FILL_URL = `url(#${FILL_ID})`;
 const FILL_TOP_OPACITY = 0.18;
 const BASELINE_DASH = '2 4';
+const TONE_STYLES = {
+    [MarketChartToneEnum.POSITIVE]: {
+        colorVariable: '--color-positive-foreground',
+        strokeClassName: 'accent-positive-foreground',
+        dotClassName: 'bg-positive-foreground'
+    },
+    [MarketChartToneEnum.NEGATIVE]: {
+        colorVariable: '--color-destructive-foreground',
+        strokeClassName: 'accent-destructive-foreground',
+        dotClassName: 'bg-destructive-foreground'
+    },
+    [MarketChartToneEnum.NEUTRAL]: {
+        colorVariable: '--color-secondary-foreground',
+        strokeClassName: 'accent-secondary-foreground',
+        dotClassName: 'bg-secondary-foreground'
+    }
+} as const;
 
-export const CurrencyMarketChart = ({ values, rangeLabel, testID, onScrub }: Props) => {
+export const CurrencyMarketChart = ({ values, rangeLabel, lineOpacity, testID, onScrub }: Props) => {
     const { width: windowWidth } = useWindowDimensions();
     const [width, setWidth] = useState(windowWidth - SCREEN_PADDING_X);
     const [, , hapticSelection] = useVibration();
     const accessibilityLabel = useMarketChartAccessibilityLabel(values, rangeLabel);
-    const isPositive = (values.at(-1) ?? 0) >= (values.at(0) ?? 0);
-    const lineColor = useCSSVariable(isPositive ? '--color-positive-foreground' : '--color-destructive-foreground');
+    const tone = TONE_STYLES[getMarketChartTone(values)];
+    const lineColor = useCSSVariable(tone.colorVariable);
     const activeIndex = useSharedValue(NO_INDEX);
 
     const { xs, ys, linePath, areaPath, baselineY } = buildMarketChartGeometry(values, width);
     const count = values.length;
-    const strokeClassName = isPositive ? 'accent-positive-foreground' : 'accent-destructive-foreground';
 
     const handleLayout = (event: LayoutChangeEvent) => void setWidth(event.nativeEvent.layout.width);
 
@@ -94,7 +114,7 @@ export const CurrencyMarketChart = ({ values, rangeLabel, testID, onScrub }: Pro
                                     <Stop offset="1" stopColor={lineColor} stopOpacity={0} />
                                 </LinearGradient>
                             </Defs>
-                            <Path d={areaPath} fill={FILL_URL} />
+                            <Path d={areaPath} fill={FILL_URL} opacity={lineOpacity} />
                         </>
                     ) : null}
                     <StyledLine
@@ -109,14 +129,17 @@ export const CurrencyMarketChart = ({ values, rangeLabel, testID, onScrub }: Pro
                     <StyledPath
                         d={linePath}
                         fill="none"
-                        strokeClassName={strokeClassName}
+                        strokeClassName={tone.strokeClassName}
                         strokeWidth={2}
+                        opacity={lineOpacity}
                         strokeLinecap="round"
                         strokeLinejoin="round"
                     />
                 </Svg>
 
-                <CurrencyMarketChartCursor activeIndex={activeIndex} xs={xs} ys={ys} isPositive={isPositive} />
+                <CurrencyMarketChartExtremes values={values} xs={xs} ys={ys} chartWidth={width} activeIndex={activeIndex} />
+
+                <CurrencyMarketChartCursor activeIndex={activeIndex} xs={xs} ys={ys} dotClassName={tone.dotClassName} />
             </View>
         </GestureDetector>
     );

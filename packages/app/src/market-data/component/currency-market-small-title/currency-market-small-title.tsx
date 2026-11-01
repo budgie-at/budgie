@@ -1,18 +1,35 @@
+import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Text, View } from 'react-native';
 
-import { CurrencySelectorInstrumentIcon } from '../../../@generic/component/currency-selector-instrument-icon/currency-selector-instrument-icon';
+import { isDefined } from '@rnw-community/shared';
 
-import type { InstrumentEntityInterface } from '@budgie/contracts';
+import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
+import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
+import { getMarketPriceFractionDigits } from '../../utils/get-market-price-fraction-digits.util';
+
+import type { InstrumentDailyMarketPriceEntityInterface } from '@budgie/contracts';
 
 interface Props {
-    readonly instrument: InstrumentEntityInterface;
+    readonly instrumentName: string;
+    readonly latestPrice: Pick<InstrumentDailyMarketPriceEntityInterface, 'price'> | undefined;
 }
 
-export const CurrencyMarketSmallTitle = ({ instrument }: Props) => (
-    <View className="flex-row items-center gap-x-sm">
-        <CurrencySelectorInstrumentIcon code={instrument.code} symbol={instrument.symbol} type={instrument.type} size={20} />
-        <Text className="text-primary text-lg font-semibold" numberOfLines={1}>
-            {instrument.name}
-        </Text>
-    </View>
-);
+const MIN_FRACTION_DIGITS = 2;
+
+export const CurrencyMarketSmallTitle = ({ instrumentName, latestPrice }: Props) => {
+    const { symbol } = useAtomValue(defaultInstrumentAtom);
+    const formatPrice = useFormatDigits(MIN_FRACTION_DIGITS, getMarketPriceFractionDigits(latestPrice?.price ?? 0));
+
+    return (
+        <View className="items-center" accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+            <Text className="text-primary text-center text-[17px] leading-[20px] font-semibold" numberOfLines={1}>
+                {instrumentName}
+            </Text>
+            {isDefined(latestPrice) ? (
+                <Text className="text-secondary-foreground text-center text-[12px] leading-[15px] tabular-nums" numberOfLines={1}>
+                    {formatPrice(latestPrice.price, symbol)}
+                </Text>
+            ) : null}
+        </View>
+    );
+};

@@ -5,18 +5,21 @@ import { MARKET_CHART_PADDING_X } from '../constant/market-chart-padding-x.const
 
 import type { MarketChartGeometryInterface } from '../interface/market-chart-geometry.interface';
 
-const PADDING_Y = 16;
+const PADDING_Y = 24;
 const MIDDLE = 0.5;
-const MIN_RELATIVE_SPAN = 0.02;
+const MIN_RELATIVE_HALF_SPAN = 0.01;
 
 const toCommand = (command: string, x: number, y: number): string => `${command}${x},${y}`;
 
 export const buildMarketChartGeometry = (values: readonly number[], width: number): MarketChartGeometryInterface => {
     const low = Math.min(...values);
     const high = Math.max(...values);
-    const middle = (low + high) * MIDDLE;
-    const range = Math.max(high - low, Math.abs(middle) * MIN_RELATIVE_SPAN);
-    const min = middle - range * MIDDLE;
+    const mean = values.reduce((total, value) => total + value, 0) / Math.max(values.length, 1);
+    const minHalfSpan = Math.abs(mean) * MIN_RELATIVE_HALF_SPAN;
+    const isFlat = high - low < minHalfSpan * 2;
+    const halfSpan = isFlat ? Math.max(minHalfSpan, high - mean, mean - low) : (high - low) * MIDDLE;
+    const min = isFlat ? mean - halfSpan : low;
+    const range = halfSpan * 2;
     const drawableWidth = Math.max(width - MARKET_CHART_PADDING_X * 2, 0);
     const drawableHeight = MARKET_CHART_HEIGHT - PADDING_Y * 2;
     const lastIndex = Math.max(values.length - 1, 1);

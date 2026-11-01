@@ -1,4 +1,7 @@
 import { useLingui } from '@lingui/react/macro';
+import { ScopedVariables, useCSSVariable } from 'uniwind';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { SegmentedControl } from '../../../@generic/component/segmented-control/segmented-control';
 import { MarketChartRangeEnum } from '../../enum/market-chart-range.enum';
@@ -10,7 +13,9 @@ interface Props {
 
 export const CurrencyMarketRangeControl = ({ value, onChange }: Props) => {
     const { t } = useLingui();
+    const track = useCSSVariable('--color-segmented-track');
 
+    const variables = { ...(isDefined(track) && { '--color-surface-fill': track }) };
     const segments = [
         { value: MarketChartRangeEnum.WEEK, label: t`1W` },
         { value: MarketChartRangeEnum.MONTH, label: t`1M` },
@@ -18,5 +23,9 @@ export const CurrencyMarketRangeControl = ({ value, onChange }: Props) => {
         { value: MarketChartRangeEnum.YEAR, label: t`1Y` }
     ];
 
-    return <SegmentedControl segments={segments} value={value} onChange={onChange} />;
+    return (
+        <ScopedVariables variables={variables}>
+            <SegmentedControl segments={segments} value={value} onChange={onChange} />
+        </ScopedVariables>
+    );
 };

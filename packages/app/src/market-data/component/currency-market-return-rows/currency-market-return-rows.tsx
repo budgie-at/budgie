@@ -6,39 +6,28 @@ import { isDefined } from '@rnw-community/shared';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
-import { calculateCryptoReturn } from '../../utils/calculate-crypto-return.util';
-import { getMarketChangeClassName } from '../../utils/get-market-change-class-name.util';
-import { getMarketChangeSign } from '../../utils/get-market-change-sign.util';
 import { getMarketPriceFractionDigits } from '../../utils/get-market-price-fraction-digits.util';
 import { CurrencyMarketPageSelector } from '../currency-market-page/currency-market-page.selector';
 import { CurrencyMarketPositionRow } from '../currency-market-position-row/currency-market-position-row';
+import { CurrencyMarketReturnRow } from '../currency-market-return-row/currency-market-return-row';
 
 import type { CryptoPositionInterface } from '@budgie/market';
 
 interface Props {
     readonly position: CryptoPositionInterface;
     readonly valuationRate: number | null;
+    readonly balance: number;
     readonly instrumentCode: string;
 }
 
 const MIN_FRACTION_DIGITS = 2;
 const SECONDARY_VALUE_CLASSNAME = 'text-secondary-foreground';
 
-export const CurrencyMarketReturnRows = ({ position, valuationRate, instrumentCode }: Props) => {
+export const CurrencyMarketReturnRows = ({ position, valuationRate, balance, instrumentCode }: Props) => {
     const { t } = useLingui();
     const { symbol } = useAtomValue(defaultInstrumentAtom);
     const formatMoney = useDisplayFormatDigits();
-    const formatPercent = useFormatDigits(MIN_FRACTION_DIGITS);
     const formatAverageCost = useFormatDigits(MIN_FRACTION_DIGITS, getMarketPriceFractionDigits(position.averageCost ?? 0));
-
-    const cryptoReturn = calculateCryptoReturn(position, valuationRate);
-    const sign = getMarketChangeSign(cryptoReturn?.profit ?? 0);
-    const percentLabel = isDefined(cryptoReturn?.percent) ? ` (${sign}${formatPercent(Math.abs(cryptoReturn.percent))}%)` : '';
-    const returnLabel = isDefined(cryptoReturn)
-        ? `${sign}${formatMoney(Math.abs(cryptoReturn.profit), symbol)}${percentLabel}`
-        : t`No price`;
-    const returnClassName = isDefined(cryptoReturn) ? getMarketChangeClassName(cryptoReturn.profit) : SECONDARY_VALUE_CLASSNAME;
-    const returnTestID = CurrencyMarketPageSelector.UnrealizedProfit(instrumentCode);
 
     if (!isDefined(position.costBasis)) {
         return (
@@ -46,7 +35,7 @@ export const CurrencyMarketReturnRows = ({ position, valuationRate, instrumentCo
                 label={t`Return`}
                 value={t`Unavailable`}
                 valueClassName={SECONDARY_VALUE_CLASSNAME}
-                testID={returnTestID}
+                testID={CurrencyMarketPageSelector.UnrealizedProfit(instrumentCode)}
             />
         );
     }
@@ -67,7 +56,7 @@ export const CurrencyMarketReturnRows = ({ position, valuationRate, instrumentCo
                 valueClassName={SECONDARY_VALUE_CLASSNAME}
                 testID={CurrencyMarketPageSelector.CostBasis(instrumentCode)}
             />
-            <CurrencyMarketPositionRow label={t`Return`} value={returnLabel} valueClassName={returnClassName} testID={returnTestID} />
+            <CurrencyMarketReturnRow position={position} valuationRate={valuationRate} balance={balance} instrumentCode={instrumentCode} />
         </>
     );
 };

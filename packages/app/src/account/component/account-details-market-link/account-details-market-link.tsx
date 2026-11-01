@@ -1,5 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { Text } from 'react-native';
 
@@ -52,8 +52,12 @@ export const AccountDetailsMarketLink = ({ instrument }: Props) => {
                 {priceLabel}
             </Text>
             {isDefined(changeShare) ? (
-                <Text className={cn('text-[15px] font-semibold tabular-nums', changeToneClassName)} numberOfLines={1}>
-                    {changeLabel}
+                <Text numberOfLines={1}>
+                    <Text className={cn('text-[15px] font-semibold tabular-nums', changeToneClassName)}>{changeLabel}</Text>
+                    <Text className="text-[13px] text-secondary-foreground">
+                        {' '}
+                        <Trans>today</Trans>
+                    </Text>
                 </Text>
             ) : null}
             <Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />

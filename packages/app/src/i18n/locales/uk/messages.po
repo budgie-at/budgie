@@ -133,6 +133,10 @@ msgstr "{accountTitle} буде відновлено у вашому голов�
 msgid "{accountTitle} will be restored to your main view."
 msgstr "{accountTitle} буде відновлено у вашому головному перегляді."
 
+#: src/market-data/component/currency-market-stale-price/currency-market-stale-price.tsx
+msgid "{ageDays, plural, one {# day old} other {# days old}}"
+msgstr "{ageDays, plural, one {# день тому} few {# дні тому} many {# днів тому} other {# дня тому}}"
+
 #: src/rule/utils/show-rule-application-toast.util.ts
 msgid "{applied, plural, one {# matching transaction updated} other {# matching transactions updated}}"
 msgstr "{applied, plural, one {# відповідну транзакцію оновлено} other {# відповідних транзакцій оновлено}}"
@@ -1476,6 +1480,10 @@ msgstr "Ви впевнені, що хочете видалити всі сво�
 #: src/transaction/hook/use-delete-transaction.hook.ts
 msgid "Are you sure?"
 msgstr "Ви впевнені?"
+
+#: src/market-data/component/currency-market-position/currency-market-position.tsx
+msgid "At last known price"
+msgstr "За останньою відомою ціною"
 
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
@@ -4977,6 +4985,10 @@ msgstr "Мов не знайдено"
 msgid "No limit changes yet"
 msgstr "Змін лімітів поки немає"
 
+#: src/market-data/component/currency-market-position-footer/currency-market-position-footer.tsx
+msgid "No market price yet, so value and return can’t be calculated."
+msgstr "Ринкової ціни ще немає, тому вартість і прибутковість неможливо розрахувати."
+
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "No matching accounts"
 msgstr "Немає відповідних рахунків"
@@ -5002,7 +5014,7 @@ msgid "No new transactions"
 msgstr "Нових транзакцій немає"
 
 #: src/market-data/component/currency-market-position/currency-market-position.tsx
-#: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
+#: src/market-data/component/currency-market-return-row/currency-market-return-row.tsx
 msgid "No price"
 msgstr "Немає ціни"
 
@@ -5199,6 +5211,10 @@ msgstr "OK"
 #: src/transaction/components/statistics-filters-menu/statistics-filters-menu.tsx
 msgid "On"
 msgstr "Увімк."
+
+#: src/market-data/component/currency-market-return-row/currency-market-return-row.tsx
+msgid "On {coveredAmount} of {totalAmount}"
+msgstr "На {coveredAmount} із {totalAmount}"
 
 #: src/transaction/components/transaction-info-installment-terms/transaction-info-installment-terms.tsx
 msgid "On {nextDate} · Monthly"
@@ -5773,9 +5789,9 @@ msgstr "Ціна змінилася"
 msgid "Price chart, {rangeLabel}, from {fromLabel} to {toLabel}, high {highLabel}, low {lowLabel}"
 msgstr "Графік цін, {rangeLabel}, від {fromLabel} до {toLabel}, максимум {highLabel}, мінімум {lowLabel}"
 
-#: src/market-data/component/currency-market-price-hero/currency-market-price-hero.tsx
-msgid "Price from {staleDate}"
-msgstr "Ціна станом на {staleDate}"
+#: src/market-data/component/currency-market-stale-price/currency-market-stale-price.tsx
+msgid "Price from {date}"
+msgstr "Ціна станом на {date}"
 
 #: src/market-data/component/currency-market-chart-status/currency-market-chart-status.tsx
 msgid "Price history paused"
@@ -6167,13 +6183,10 @@ msgstr "Продовжити"
 msgid "Retry"
 msgstr "Повторити"
 
+#: src/market-data/component/currency-market-return-row/currency-market-return-row.tsx
 #: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
 msgid "Return"
 msgstr "Прибутковість"
-
-#: src/market-data/component/currency-market-position-footer/currency-market-position-footer.tsx
-msgid "Return covers {coveredAmount} of {totalAmount} with a known purchase price."
-msgstr "Прибутковість охоплює {coveredAmount} із {totalAmount} з відомою ціною купівлі."
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Return to Budgie and select the saved XLSX file below"
@@ -7369,6 +7382,10 @@ msgstr "До сплати"
 #: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "To set aside this period"
 msgstr "Відкласти в цьому періоді"
+
+#: src/account/component/account-details-market-link/account-details-market-link.tsx
+msgid "today"
+msgstr "сьогодні"
 
 #: src/@generic/constant/date-period.constant.ts
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
