@@ -8,8 +8,8 @@ import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-di
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { calculateCryptoReturn } from '../../utils/calculate-crypto-return.util';
-import { getMarketChangeClassName } from '../../utils/get-market-change-class-name.util';
 import { getMarketChangeSign } from '../../utils/get-market-change-sign.util';
+import { getMarketMoveClassName } from '../../utils/get-market-move-class-name.util';
 import { CurrencyMarketPageSelector } from '../currency-market-page/currency-market-page.selector';
 import { CurrencyMarketPositionRow } from '../currency-market-position-row/currency-market-position-row';
 
@@ -24,6 +24,7 @@ interface Props {
 }
 
 const PERCENT_FRACTION_DIGITS = 2;
+const PERCENT = 100;
 
 export const CurrencyMarketReturnRow = ({ position, valuationRate, instrumentCode, subtitle, isSubtitleProtected }: Props) => {
     const { t } = useLingui();
@@ -38,8 +39,9 @@ export const CurrencyMarketReturnRow = ({ position, valuationRate, instrumentCod
     const returnLabel = isDefined(cryptoReturn)
         ? `${sign}${formatMoney(Math.abs(cryptoReturn.profit), symbol)}${percentLabel}`
         : t`No price`;
+    const returnShare = isDefined(cryptoReturn?.percent) ? cryptoReturn.percent / PERCENT : (cryptoReturn?.profit ?? 0);
     const returnClassName =
-        isDefined(cryptoReturn) && !isAmountProtected ? getMarketChangeClassName(cryptoReturn.profit) : 'text-secondary-foreground';
+        isDefined(cryptoReturn) && !isAmountProtected ? getMarketMoveClassName(returnShare) : 'text-secondary-foreground';
 
     return (
         <CurrencyMarketPositionRow

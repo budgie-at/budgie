@@ -1,17 +1,20 @@
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 
+import { cn } from '../../../@generic/utils/cn.util';
+
 import type { SharedValue } from 'react-native-reanimated';
 
 interface Props {
     readonly activeIndex: SharedValue<number>;
     readonly xs: readonly number[];
     readonly ys: readonly number[];
+    readonly dotClassName: string;
 }
 
 const DOT_RADIUS = 7;
 const LINE_HALF_WIDTH = 0.5;
 
-export const CurrencyMarketChartCursor = ({ activeIndex, xs, ys }: Props) => {
+export const CurrencyMarketChartCursor = ({ activeIndex, xs, ys, dotClassName }: Props) => {
     const lineStyle = useAnimatedStyle(() => {
         const index = activeIndex.get();
 
@@ -31,7 +34,7 @@ export const CurrencyMarketChartCursor = ({ activeIndex, xs, ys }: Props) => {
             <Animated.View pointerEvents="none" className="absolute top-0 bottom-0 left-0 w-px bg-secondary-foreground" style={lineStyle} />
             <Animated.View
                 pointerEvents="none"
-                className="absolute top-0 left-0 size-[14px] rounded-full border-2 border-surface bg-primary"
+                className={cn('absolute top-0 left-0 size-[14px] rounded-full border-2 border-surface', dotClassName)}
                 style={dotStyle}
             />
         </>

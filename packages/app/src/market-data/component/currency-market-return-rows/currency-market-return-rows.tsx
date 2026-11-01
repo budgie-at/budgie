@@ -39,7 +39,7 @@ export const CurrencyMarketReturnRows = ({ position, valuationRate, balance, ins
     const isPartiallyCovered = convertToMicroUnits(position.amount) < convertToMicroUnits(balance);
     const averageCost = isDefined(position.averageCost) ? formatAverageCost(position.averageCost, symbol) : t`Unavailable`;
     const averageCostCaption = isPartiallyCovered
-        ? t`Avg ${averageCost} · known for ${coveredAmount} of ${totalAmount}`
+        ? t`Avg ${averageCost} per ${instrumentCode} · cost known for ${coveredAmount} of ${totalAmount}`
         : t`Avg ${averageCost} per ${instrumentCode}`;
     const returnNote = staleNote ?? (isPartiallyCovered ? t`On the ${coveredAmountWithCode} with known cost` : null);
 

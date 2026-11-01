@@ -1564,12 +1564,12 @@ msgid "Average spend"
 msgstr "Середні витрати"
 
 #: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
-msgid "Avg {averageCost} · known for {coveredAmount} of {totalAmount}"
-msgstr "Сер. {averageCost} · відомо для {coveredAmount} з {totalAmount}"
-
-#: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
 msgid "Avg {averageCost} per {instrumentCode}"
 msgstr "Серед. {averageCost} за {instrumentCode}"
+
+#: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
+msgid "Avg {averageCost} per {instrumentCode} · cost known for {coveredAmount} of {totalAmount}"
+msgstr "Сер. {averageCost} за {instrumentCode} · вартість відома для {coveredAmount} з {totalAmount}"
 
 #: src/settings/components/backup-row/backup-row.tsx
 msgid "Back up"

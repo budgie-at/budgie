@@ -42,9 +42,21 @@ const BASELINE_DASH = '2 4';
 const LINE_WIDTH = 2;
 const FLAT_LINE_WIDTH = 1.5;
 const TONE_STYLES = {
-    [MarketChartToneEnum.POSITIVE]: { colorVariable: '--color-positive-foreground', strokeClassName: 'accent-positive-foreground' },
-    [MarketChartToneEnum.NEGATIVE]: { colorVariable: '--color-destructive-foreground', strokeClassName: 'accent-destructive-foreground' },
-    [MarketChartToneEnum.NEUTRAL]: { colorVariable: '--color-secondary-foreground', strokeClassName: 'accent-secondary-foreground' }
+    [MarketChartToneEnum.POSITIVE]: {
+        colorVariable: '--color-positive-strong',
+        strokeClassName: 'accent-positive-strong',
+        dotClassName: 'bg-positive-strong'
+    },
+    [MarketChartToneEnum.NEGATIVE]: {
+        colorVariable: '--color-destructive-strong',
+        strokeClassName: 'accent-destructive-strong',
+        dotClassName: 'bg-destructive-strong'
+    },
+    [MarketChartToneEnum.NEUTRAL]: {
+        colorVariable: '--color-secondary-foreground',
+        strokeClassName: 'accent-secondary-foreground',
+        dotClassName: 'bg-primary'
+    }
 } as const;
 
 export const CurrencyMarketChart = ({ values, rangeLabel, startLabel, endLabel, testID, onScrub }: Props) => {
@@ -103,7 +115,12 @@ export const CurrencyMarketChart = ({ values, rangeLabel, startLabel, endLabel, 
                         activeIndex={activeIndex}
                     />
 
-                    <CurrencyMarketChartCursor activeIndex={activeIndex} xs={geometry.xs} ys={geometry.ys} />
+                    <CurrencyMarketChartCursor
+                        activeIndex={activeIndex}
+                        xs={geometry.xs}
+                        ys={geometry.ys}
+                        dotClassName={tone.dotClassName}
+                    />
                 </View>
             </GestureDetector>
 

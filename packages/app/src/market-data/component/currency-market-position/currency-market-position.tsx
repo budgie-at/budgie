@@ -52,6 +52,7 @@ export const CurrencyMarketPosition = ({ instrument, latestPriceDate }: Props) =
                 <>
                     <CurrencyMarketValueRow
                         balance={balance}
+                        positionAmount={position.amount}
                         valuationRate={valuationRate}
                         instrumentCode={instrument.code}
                         isStale={isStale}

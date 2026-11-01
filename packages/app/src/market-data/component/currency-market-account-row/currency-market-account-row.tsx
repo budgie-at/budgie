@@ -51,8 +51,8 @@ export const CurrencyMarketAccountRow = ({ account, instrumentCode, sync, amount
             pressableProps={pressableProps}
             onPress={handlePress}
             title={
-                <View className="my-px min-h-[34px] justify-center gap-y-xxs">
-                    <Text className="text-primary text-[17px] leading-[22px]" numberOfLines={2}>
+                <View className="my-px min-h-[34px] min-w-0 flex-1 justify-center gap-y-xxs">
+                    <Text className="text-primary text-[17px] leading-[22px]" numberOfLines={2} ellipsizeMode="tail">
                         {account.title}
                     </Text>
                     {isNotEmptyString(subtitle) ? (
@@ -63,8 +63,8 @@ export const CurrencyMarketAccountRow = ({ account, instrumentCode, sync, amount
                 </View>
             }
             right={
-                <View className="flex-row items-center gap-x-xs">
-                    <View className="w-[118px] shrink-0 grow-0 items-end justify-center">
+                <View className="ml-3 shrink-0 flex-row items-center gap-x-xs">
+                    <View className="shrink-0 items-end justify-center">
                         <ProtectedText
                             className="text-primary text-right text-[15px] leading-[20px] tabular-nums"
                             numberOfLines={1}

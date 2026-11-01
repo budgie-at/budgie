@@ -1565,12 +1565,12 @@ msgid "Average spend"
 msgstr "Average spend"
 
 #: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
-msgid "Avg {averageCost} · known for {coveredAmount} of {totalAmount}"
-msgstr "Avg {averageCost} · known for {coveredAmount} of {totalAmount}"
-
-#: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
 msgid "Avg {averageCost} per {instrumentCode}"
 msgstr "Avg {averageCost} per {instrumentCode}"
+
+#: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
+msgid "Avg {averageCost} per {instrumentCode} · cost known for {coveredAmount} of {totalAmount}"
+msgstr "Avg {averageCost} per {instrumentCode} · cost known for {coveredAmount} of {totalAmount}"
 
 #: src/settings/components/backup-row/backup-row.tsx
 msgid "Back up"
