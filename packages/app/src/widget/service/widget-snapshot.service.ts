@@ -34,6 +34,7 @@ export class WidgetSnapshotService extends Context.Service<WidgetSnapshotService
         const publishDebounceMs = 2_000;
         const publishKey = 'widget-snapshot-publish';
         const budgetUrl = 'budgie://budget';
+        const createBudgetUrl = 'budgie://budget/create';
         const links: WidgetLinksInterface = {
             expenseUrl: 'budgie://create-transaction/expense',
             incomeUrl: 'budgie://create-transaction/income',
@@ -49,15 +50,26 @@ export class WidgetSnapshotService extends Context.Service<WidgetSnapshotService
             runway: { isPositive: true, label: '' }
         };
         const emptyBudget: WidgetBudgetSnapshotInterface = {
-            formattedSpent: '',
-            formattedLimit: '',
-            formattedRemaining: '',
-            progressRatio: 0,
-            formattedProgress: '',
-            isOverLimit: false,
+            formattedAmount: '',
+            caption: '',
+            formattedPerDay: '',
             formattedDaysLeft: '',
-            formattedSafePerDay: '',
-            categories: []
+            formattedSpent: '',
+            statusLabel: '',
+            tone: 'positive',
+            isOverLimit: false,
+            isMasked: false,
+            spentRatio: 0,
+            elapsedRatio: 0,
+            reservedRatio: 0,
+            limitRatio: null,
+            categories: [],
+            formattedHiddenCategories: '',
+            formattedPeriod: '',
+            formattedReserved: '',
+            accessibilitySummary: '',
+            accessibilityDetail: '',
+            stats: []
         };
         const writeSemaphore = yield* Semaphore.make(1);
         const isLocked = yield* Ref.make(false);
@@ -76,11 +88,11 @@ export class WidgetSnapshotService extends Context.Service<WidgetSnapshotService
                 BudgetWidget.updateTimeline(
                     snapshot.budget.map(entry => ({
                         date: entry.date,
-                        props: { isEmpty: false, budget: entry.budget, strings: snapshot.strings, budgetUrl }
+                        props: { isEmpty: false, budget: entry.budget, strings: snapshot.strings, budgetUrl, createBudgetUrl }
                     }))
                 );
             } else {
-                BudgetWidget.updateSnapshot({ isEmpty: true, budget: emptyBudget, strings: snapshot.strings, budgetUrl });
+                BudgetWidget.updateSnapshot({ isEmpty: true, budget: emptyBudget, strings: snapshot.strings, budgetUrl, createBudgetUrl });
             }
 
             QuickAddWidget.updateSnapshot({ strings: snapshot.strings, links });

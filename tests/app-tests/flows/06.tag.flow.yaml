@@ -116,8 +116,8 @@ appId: ${APP_ID}
 - tapOn:
       id: 'DeletableRow.DeleteButton'
 - tapOn:
-      text: 'Delete'
-      below: 'Delete .+\?'
+      text: '^Delete$'
+      below: 'Delete .E2E Tag Updated.\?'
 - extendedWaitUntil:
       notVisible:
           id: 'TagCard.E2E Tag Updated'

@@ -11,5 +11,5 @@ appId: ${APP_ID}
     id: DeletableRow.DeleteButton
 
 - tapOn:
-    text: 'Delete'
-    below: 'Delete .+\?'
+    text: '^Delete$'
+    below: 'Delete this rule\?'

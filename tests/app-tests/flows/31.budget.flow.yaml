@@ -715,10 +715,10 @@ env:
 - tapOn:
       id: 'BudgetSetup.DeleteButton'
 - extendedWaitUntil:
-      visible: 'Delete budget?'
+      visible: 'Delete budget\?'
       timeout: 3000
 - tapOn:
-      text: 'Delete'
+      text: '^Delete$'
       below: 'Delete budget\?'
 
 - waitForAnimationToEnd

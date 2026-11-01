@@ -1,11 +1,12 @@
 export interface WidgetSnapshotStringsInterface {
     readonly netWorthTitle: string;
     readonly thisMonth: string;
-    readonly budgetTitle: string;
-    readonly perDay: string;
-    readonly left: string;
-    readonly over: string;
-    readonly noBudget: string;
+    readonly categoriesTitle: string;
+    readonly today: string;
+    readonly limit: string;
+    readonly emptyBudgetTitle: string;
+    readonly emptyBudgetSubtitle: string;
+    readonly emptyBudgetAction: string;
     readonly expense: string;
     readonly income: string;
     readonly transfer: string;
