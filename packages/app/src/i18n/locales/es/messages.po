@@ -796,6 +796,11 @@ msgstr "Cuenta {accountId} no encontrada"
 msgid "Account actions"
 msgstr "Acciones de la cuenta"
 
+#: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx
+#: src/rule/hooks/use-rule-condition-formatter.hook.ts
+msgid "account currency"
+msgstr "moneda de la cuenta"
+
 #: src/@generic/component/account-details-field/account-details-field.tsx
 #: src/account/component/update-account-page/update-account-page.tsx
 msgid "Account name"
@@ -874,8 +879,8 @@ msgid "Add a transaction"
 msgstr "Añadir una transacción"
 
 #: src/rule/utils/get-rule-form-issue.util.ts
-msgid "Add a value to save"
-msgstr "Añade un valor para guardar"
+msgid "Add a value to continue"
+msgstr "Añade un valor para continuar"
 
 #: src/rule/hooks/use-rule-text-value-meta.hook.ts
 msgid "Add a value to save this rule"
@@ -890,8 +895,8 @@ msgid "Add action"
 msgstr "Añadir acción"
 
 #: src/rule/utils/get-rule-form-issue.util.ts
-msgid "Add an action to save"
-msgstr "Añade una acción para guardar"
+msgid "Add an action to continue"
+msgstr "Añade una acción para continuar"
 
 #: src/account/component/account-grid-item/account-grid-item.tsx
 msgid "Add balance"
@@ -902,8 +907,8 @@ msgid "Add balances later"
 msgstr "Añadir saldos más tarde"
 
 #: src/rule/utils/get-rule-form-issue.util.ts
-msgid "Add both amounts to save"
-msgstr "Añade ambos importes para guardar"
+msgid "Add both amounts to continue"
+msgstr "Añade ambos importes para continuar"
 
 #: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
 msgid "Add Capture contactless payment and set Amount, Merchant and Card from the Shortcut Input."
@@ -937,6 +942,10 @@ msgstr "añadir etiqueta"
 #: src/rule/constant/rule-action-type.constant.ts
 msgid "Add tag"
 msgstr "Añadir etiqueta"
+
+#: src/rule/components/rule-action-phrase/rule-action-phrase.tsx
+msgid "add tag {target}"
+msgstr "añadir la etiqueta {target}"
 
 #: src/categorize-inbox/components/categorize-inbox-group-tags-option/categorize-inbox-group-tags-option.tsx
 #: src/categorize-inbox/components/categorize-inbox-tag-provider/categorize-inbox-tag-provider.tsx
@@ -1745,8 +1754,12 @@ msgid "Choose a category"
 msgstr "Elige una categoría"
 
 #: src/rule/utils/get-rule-form-issue.util.ts
-msgid "Choose a category to save"
-msgstr "Elige una categoría para guardar"
+msgid "Choose a category to continue"
+msgstr "Elige una categoría para continuar"
+
+#: src/rule/components/rule-action-category-selector/rule-action-category-selector.tsx
+msgid "Choose a category to save this rule"
+msgstr "Elige una categoría para guardar la regla"
 
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Choose a different PIN"
@@ -1755,6 +1768,10 @@ msgstr "Elegir otro PIN"
 #: src/rule/components/rule-condition-mcc-selector/rule-condition-mcc-selector.tsx
 msgid "Choose a merchant category"
 msgstr "Elige una categoría de comercio"
+
+#: src/rule/components/rule-condition-mcc-selector/rule-condition-mcc-selector.tsx
+msgid "Choose a merchant category to save this rule"
+msgstr "Elige una categoría de comercio para guardar la regla"
 
 #: src/transaction/components/statistics-period-control/statistics-period-control.tsx
 msgid "Choose a period"
@@ -1778,12 +1795,20 @@ msgid "Choose a tag"
 msgstr "Elige una etiqueta"
 
 #: src/rule/utils/get-rule-form-issue.util.ts
-msgid "Choose a tag to save"
-msgstr "Elige una etiqueta para guardar"
+msgid "Choose a tag to continue"
+msgstr "Elige una etiqueta para continuar"
+
+#: src/rule/components/rule-action-tag-selector/rule-action-tag-selector.tsx
+msgid "Choose a tag to save this rule"
+msgstr "Elige una etiqueta para guardar la regla"
 
 #: src/rule/components/rule-condition-value-input/rule-condition-value-input.tsx
 msgid "Choose a type"
 msgstr "Elige un tipo"
+
+#: src/rule/components/rule-condition-value-enum-selector/rule-condition-value-enum-selector.tsx
+msgid "Choose a value to save this rule"
+msgstr "Elige un valor para guardar la regla"
 
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Choose accounts"
@@ -1794,8 +1819,13 @@ msgid "Choose an account"
 msgstr "Elige una cuenta"
 
 #: src/rule/utils/get-rule-form-issue.util.ts
-msgid "Choose an account to save"
-msgstr "Elige una cuenta para guardar"
+msgid "Choose an account to continue"
+msgstr "Elige una cuenta para continuar"
+
+#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
+#: src/rule/components/rule-condition-account-selector/rule-condition-account-selector.tsx
+msgid "Choose an account to save this rule"
+msgstr "Elige una cuenta para guardar la regla"
 
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 msgid "Choose an action"
@@ -1910,8 +1940,8 @@ msgid "Compared with the payment amount in its account currency, without the min
 msgstr "Se compara con el importe del pago en la moneda de su cuenta, sin el signo menos."
 
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
-msgid "Condition: {label}"
-msgstr "Condición: {label}"
+msgid "Comparison: {label}"
+msgstr "Comparación: {label}"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "Confirm"
@@ -3202,6 +3232,10 @@ msgstr "Obteniendo nuevos..."
 msgid "Fewer months"
 msgstr "Menos meses"
 
+#: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
+msgid "Field: {label}"
+msgstr "Campo: {label}"
+
 #: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
 msgid "File"
 msgstr "Archivo"
@@ -3276,8 +3310,8 @@ msgid "Fix Errors"
 msgstr "Corregir errores"
 
 #: src/rule/utils/get-rule-form-issue.util.ts
-msgid "Fix the pattern to save"
-msgstr "Corrige el patrón para guardar"
+msgid "Fix the pattern to continue"
+msgstr "Corrige el patrón para continuar"
 
 #: src/app/(main)/create-account/index.tsx
 msgid "Fixed-term savings with interest"
@@ -3934,10 +3968,6 @@ msgstr "Asigna cada campo a una columna de tu archivo CSV"
 msgid "Match on"
 msgstr "Comparar por"
 
-#: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
-msgid "Match on {label}"
-msgstr "Comparar por {label}"
-
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Matched expenses are converted into a transfer to this account."
 msgstr "Los gastos coincidentes se convierten en una transferencia a esta cuenta."
@@ -4195,6 +4225,10 @@ msgstr "Mueve los pagos que coincidan a una categoría"
 msgid "move to"
 msgstr "mover a"
 
+#: src/rule/components/rule-action-phrase/rule-action-phrase.tsx
+msgid "move to {target}"
+msgstr "mover a {target}"
+
 #: src/categorize-inbox/components/categorize-inbox-group-move-to-cash-option/categorize-inbox-group-move-to-cash-option.tsx
 msgid "Move to cash"
 msgstr "Mover a efectivo"
@@ -4214,10 +4248,6 @@ msgstr "Coinciden los nombres"
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Navigate to Account → Statements"
 msgstr "Navega a Cuenta → Extractos"
-
-#: src/rule/components/rule-value-picker-button/rule-value-picker-button.tsx
-msgid "Needed to save this rule"
-msgstr "Necesario para guardar la regla"
 
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
 msgid "Needs attention"
@@ -4757,12 +4787,16 @@ msgid "Open Shortcuts"
 msgstr "Abrir Shortcuts"
 
 #: src/rule/components/rule-list-row/rule-list-row.tsx
-msgid "Opens the rule"
-msgstr "Abre la regla"
+msgid "Opens the rule editor"
+msgstr "Abre el editor de reglas"
 
 #: src/receipt/components/receipt-scan-toast/receipt-scan-toast.tsx
 msgid "Opens the transaction"
 msgstr "Abre la transacción"
+
+#: src/rule/components/rule-condition-summary-row/rule-condition-summary-row.tsx
+msgid "Opens this condition for editing"
+msgstr "Abre esta condición para editarla"
 
 #: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
 msgid "Opens with"
@@ -5905,6 +5939,10 @@ msgstr "Mostrar transacciones cuando cualquier importe principal esté dentro de
 msgid "Shows every category"
 msgstr "Muestra todas las categorías"
 
+#: src/rule/components/rule-form-submit-bar/rule-form-submit-bar.tsx
+msgid "Shows what is missing"
+msgstr "Muestra lo que falta"
+
 #: src/transaction/components/transaction-info-page-content/transaction-info-page-content.tsx
 msgid "Similar transactions"
 msgstr "Transacciones similares"
@@ -6675,6 +6713,7 @@ msgstr "Error de transcripción"
 
 #: src/categorize-inbox/components/categorize-inbox-group-row-subtitle/categorize-inbox-group-row-subtitle.tsx
 #: src/categorize-inbox/components/categorize-inbox-group-transfer-lead/categorize-inbox-group-transfer-lead.tsx
+#: src/rule/utils/get-rule-outcome-parts.util.ts
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/constant/transaction-type.constant.ts
 #: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
@@ -6698,9 +6737,9 @@ msgstr "transferir a"
 msgid "Transfer to"
 msgstr "Transferir a"
 
-#: src/rule/utils/get-rule-outcome-parts.util.ts
-msgid "Transfer to {accountTitle}"
-msgstr "Transferencia a {accountTitle}"
+#: src/rule/components/rule-action-phrase/rule-action-phrase.tsx
+msgid "transfer to {target}"
+msgstr "transferir a {target}"
 
 #: src/categorize-inbox/components/categorize-inbox-group-learned-transfer-option/categorize-inbox-group-learned-transfer-option.tsx
 msgid "Transfer to {title}"
@@ -6761,8 +6800,8 @@ msgid "Try a different search term or create a new tag"
 msgstr "Prueba un término de búsqueda diferente o crea una nueva etiqueta"
 
 #: src/rule/components/rule-empty-state/rule-empty-state.tsx
-msgid "Try a merchant, category or tag name."
-msgstr "Prueba con un comercio, una categoría o una etiqueta."
+msgid "Try a title, category or tag name."
+msgstr "Prueba con un título, una categoría o una etiqueta."
 
 #: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
 msgid "Try adjusting your filters to see more results"

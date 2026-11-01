@@ -15,6 +15,8 @@ interface Props {
 
 const amountInputClassName = 'h-[44px] flex-1 border-0 px-0 text-[17px]';
 
+const TABULAR_STYLE = { fontVariant: ['tabular-nums' as const] };
+
 const toAmount = (value: string | null) => Number.parseFloat(value ?? '') || 0;
 
 export const RuleConditionAmountValueInput = ({ index, testID, secondaryTestID }: Props) => {
@@ -46,7 +48,10 @@ export const RuleConditionAmountValueInput = ({ index, testID, secondaryTestID }
                         placeholder={t`Amount`}
                         accessibilityLabel={valueAccessibilityLabel}
                         inputClassName={amountInputClassName}
+                        keyboardType="decimal-pad"
+                        style={TABULAR_STYLE}
                     />
+                    {isRange ? null : <Text className="text-[13px] text-secondary-foreground">{t`account currency`}</Text>}
                 </RuleValueField>
                 {isRange ? (
                     <>
@@ -63,6 +68,8 @@ export const RuleConditionAmountValueInput = ({ index, testID, secondaryTestID }
                                 placeholder={t`Amount`}
                                 accessibilityLabel={t`To amount`}
                                 inputClassName={amountInputClassName}
+                                keyboardType="decimal-pad"
+                                style={TABULAR_STYLE}
                             />
                         </RuleValueField>
                     </>

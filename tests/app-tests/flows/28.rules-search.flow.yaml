@@ -115,7 +115,7 @@ env:
 - assertVisible:
       text: 'No rules match.*'
 - assertVisible:
-      text: 'Try a merchant, category or tag name.'
+      text: 'Try a title, category or tag name.'
 
 - eraseText: 25
 - assertVisible:

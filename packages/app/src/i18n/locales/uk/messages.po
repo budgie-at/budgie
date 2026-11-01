@@ -796,6 +796,11 @@ msgstr "Рахунок {accountId} не знайдено"
 msgid "Account actions"
 msgstr "Дії з рахунком"
 
+#: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx
+#: src/rule/hooks/use-rule-condition-formatter.hook.ts
+msgid "account currency"
+msgstr "валюта рахунку"
+
 #: src/@generic/component/account-details-field/account-details-field.tsx
 #: src/account/component/update-account-page/update-account-page.tsx
 msgid "Account name"
@@ -874,8 +879,8 @@ msgid "Add a transaction"
 msgstr "Додати транзакцію"
 
 #: src/rule/utils/get-rule-form-issue.util.ts
-msgid "Add a value to save"
-msgstr "Додайте значення, щоб зберегти"
+msgid "Add a value to continue"
+msgstr "Додайте значення, щоб продовжити"
 
 #: src/rule/hooks/use-rule-text-value-meta.hook.ts
 msgid "Add a value to save this rule"
@@ -890,8 +895,8 @@ msgid "Add action"
 msgstr "Додати дію"
 
 #: src/rule/utils/get-rule-form-issue.util.ts
-msgid "Add an action to save"
-msgstr "Додайте дію, щоб зберегти"
+msgid "Add an action to continue"
+msgstr "Додайте дію, щоб продовжити"
 
 #: src/account/component/account-grid-item/account-grid-item.tsx
 msgid "Add balance"
@@ -902,8 +907,8 @@ msgid "Add balances later"
 msgstr "Додати баланси пізніше"
 
 #: src/rule/utils/get-rule-form-issue.util.ts
-msgid "Add both amounts to save"
-msgstr "Додайте обидві суми, щоб зберегти"
+msgid "Add both amounts to continue"
+msgstr "Додайте обидві суми, щоб продовжити"
 
 #: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
 msgid "Add Capture contactless payment and set Amount, Merchant and Card from the Shortcut Input."
@@ -937,6 +942,10 @@ msgstr "додати тег"
 #: src/rule/constant/rule-action-type.constant.ts
 msgid "Add tag"
 msgstr "Додати тег"
+
+#: src/rule/components/rule-action-phrase/rule-action-phrase.tsx
+msgid "add tag {target}"
+msgstr "додати тег {target}"
 
 #: src/categorize-inbox/components/categorize-inbox-group-tags-option/categorize-inbox-group-tags-option.tsx
 #: src/categorize-inbox/components/categorize-inbox-tag-provider/categorize-inbox-tag-provider.tsx
@@ -1745,8 +1754,12 @@ msgid "Choose a category"
 msgstr "Виберіть категорію"
 
 #: src/rule/utils/get-rule-form-issue.util.ts
-msgid "Choose a category to save"
-msgstr "Виберіть категорію, щоб зберегти"
+msgid "Choose a category to continue"
+msgstr "Виберіть категорію, щоб продовжити"
+
+#: src/rule/components/rule-action-category-selector/rule-action-category-selector.tsx
+msgid "Choose a category to save this rule"
+msgstr "Виберіть категорію, щоб зберегти правило"
 
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Choose a different PIN"
@@ -1755,6 +1768,10 @@ msgstr "Вибрати інший PIN-код"
 #: src/rule/components/rule-condition-mcc-selector/rule-condition-mcc-selector.tsx
 msgid "Choose a merchant category"
 msgstr "Виберіть категорію продавця"
+
+#: src/rule/components/rule-condition-mcc-selector/rule-condition-mcc-selector.tsx
+msgid "Choose a merchant category to save this rule"
+msgstr "Виберіть категорію продавця, щоб зберегти правило"
 
 #: src/transaction/components/statistics-period-control/statistics-period-control.tsx
 msgid "Choose a period"
@@ -1778,12 +1795,20 @@ msgid "Choose a tag"
 msgstr "Виберіть тег"
 
 #: src/rule/utils/get-rule-form-issue.util.ts
-msgid "Choose a tag to save"
-msgstr "Виберіть тег, щоб зберегти"
+msgid "Choose a tag to continue"
+msgstr "Виберіть тег, щоб продовжити"
+
+#: src/rule/components/rule-action-tag-selector/rule-action-tag-selector.tsx
+msgid "Choose a tag to save this rule"
+msgstr "Виберіть тег, щоб зберегти правило"
 
 #: src/rule/components/rule-condition-value-input/rule-condition-value-input.tsx
 msgid "Choose a type"
 msgstr "Виберіть тип"
+
+#: src/rule/components/rule-condition-value-enum-selector/rule-condition-value-enum-selector.tsx
+msgid "Choose a value to save this rule"
+msgstr "Виберіть значення, щоб зберегти правило"
 
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Choose accounts"
@@ -1794,8 +1819,13 @@ msgid "Choose an account"
 msgstr "Виберіть рахунок"
 
 #: src/rule/utils/get-rule-form-issue.util.ts
-msgid "Choose an account to save"
-msgstr "Виберіть рахунок, щоб зберегти"
+msgid "Choose an account to continue"
+msgstr "Виберіть рахунок, щоб продовжити"
+
+#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
+#: src/rule/components/rule-condition-account-selector/rule-condition-account-selector.tsx
+msgid "Choose an account to save this rule"
+msgstr "Виберіть рахунок, щоб зберегти правило"
 
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 msgid "Choose an action"
@@ -1910,8 +1940,8 @@ msgid "Compared with the payment amount in its account currency, without the min
 msgstr "Порівнюється із сумою платежу у валюті рахунку, без знака мінус."
 
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
-msgid "Condition: {label}"
-msgstr "Умова: {label}"
+msgid "Comparison: {label}"
+msgstr "Порівняння: {label}"
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "Confirm"
@@ -3202,6 +3232,10 @@ msgstr "Завантаження нових..."
 msgid "Fewer months"
 msgstr "Менше місяців"
 
+#: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
+msgid "Field: {label}"
+msgstr "Поле: {label}"
+
 #: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
 msgid "File"
 msgstr "Файл"
@@ -3276,8 +3310,8 @@ msgid "Fix Errors"
 msgstr "Виправити помилки"
 
 #: src/rule/utils/get-rule-form-issue.util.ts
-msgid "Fix the pattern to save"
-msgstr "Виправте шаблон, щоб зберегти"
+msgid "Fix the pattern to continue"
+msgstr "Виправте шаблон, щоб продовжити"
 
 #: src/app/(main)/create-account/index.tsx
 msgid "Fixed-term savings with interest"
@@ -3934,10 +3968,6 @@ msgstr "Зіставте кожне поле зі стовпцем вашого 
 msgid "Match on"
 msgstr "Порівнювати за"
 
-#: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
-msgid "Match on {label}"
-msgstr "Порівнювати за: {label}"
-
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Matched expenses are converted into a transfer to this account."
 msgstr "Відповідні витрати перетворюються на переказ на цей рахунок."
@@ -4195,6 +4225,10 @@ msgstr "Переносити відповідні платежі в катего
 msgid "move to"
 msgstr "перенести в"
 
+#: src/rule/components/rule-action-phrase/rule-action-phrase.tsx
+msgid "move to {target}"
+msgstr "перенести в {target}"
+
 #: src/categorize-inbox/components/categorize-inbox-group-move-to-cash-option/categorize-inbox-group-move-to-cash-option.tsx
 msgid "Move to cash"
 msgstr "У готівку"
@@ -4214,10 +4248,6 @@ msgstr "Збігаються назви"
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Navigate to Account → Statements"
 msgstr "Перейдіть до Рахунок → Виписки"
-
-#: src/rule/components/rule-value-picker-button/rule-value-picker-button.tsx
-msgid "Needed to save this rule"
-msgstr "Потрібно, щоб зберегти правило"
 
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
 msgid "Needs attention"
@@ -4757,12 +4787,16 @@ msgid "Open Shortcuts"
 msgstr "Відкрити Shortcuts"
 
 #: src/rule/components/rule-list-row/rule-list-row.tsx
-msgid "Opens the rule"
-msgstr "Відкриває правило"
+msgid "Opens the rule editor"
+msgstr "Відкриває редактор правила"
 
 #: src/receipt/components/receipt-scan-toast/receipt-scan-toast.tsx
 msgid "Opens the transaction"
 msgstr "Відкриває транзакцію"
+
+#: src/rule/components/rule-condition-summary-row/rule-condition-summary-row.tsx
+msgid "Opens this condition for editing"
+msgstr "Відкриває цю умову для редагування"
 
 #: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
 msgid "Opens with"
@@ -5905,6 +5939,10 @@ msgstr "Показувати транзакції, коли будь-яка ос
 msgid "Shows every category"
 msgstr "Показує всі категорії"
 
+#: src/rule/components/rule-form-submit-bar/rule-form-submit-bar.tsx
+msgid "Shows what is missing"
+msgstr "Показує, чого бракує"
+
 #: src/transaction/components/transaction-info-page-content/transaction-info-page-content.tsx
 msgid "Similar transactions"
 msgstr "Схожі транзакції"
@@ -6675,6 +6713,7 @@ msgstr "Помилка транскрипції"
 
 #: src/categorize-inbox/components/categorize-inbox-group-row-subtitle/categorize-inbox-group-row-subtitle.tsx
 #: src/categorize-inbox/components/categorize-inbox-group-transfer-lead/categorize-inbox-group-transfer-lead.tsx
+#: src/rule/utils/get-rule-outcome-parts.util.ts
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/constant/transaction-type.constant.ts
 #: src/transaction/hook/use-transaction-subtitle-segments.hook.ts
@@ -6698,9 +6737,9 @@ msgstr "переказати на"
 msgid "Transfer to"
 msgstr "Переказ до"
 
-#: src/rule/utils/get-rule-outcome-parts.util.ts
-msgid "Transfer to {accountTitle}"
-msgstr "Переказ на {accountTitle}"
+#: src/rule/components/rule-action-phrase/rule-action-phrase.tsx
+msgid "transfer to {target}"
+msgstr "переказати на {target}"
 
 #: src/categorize-inbox/components/categorize-inbox-group-learned-transfer-option/categorize-inbox-group-learned-transfer-option.tsx
 msgid "Transfer to {title}"
@@ -6761,8 +6800,8 @@ msgid "Try a different search term or create a new tag"
 msgstr "Спробуйте інший пошуковий запит або створіть новий тег"
 
 #: src/rule/components/rule-empty-state/rule-empty-state.tsx
-msgid "Try a merchant, category or tag name."
-msgstr "Спробуйте назву продавця, категорії чи тегу."
+msgid "Try a title, category or tag name."
+msgstr "Спробуйте назву, категорію чи тег."
 
 #: src/transaction/components/transaction-list-empty-state/transaction-list-empty-state.tsx
 msgid "Try adjusting your filters to see more results"

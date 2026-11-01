@@ -43,7 +43,7 @@ export const RULE_CONDITION_FIELD: Record<RuleConditionFieldEnum, RuleOptionMeta
         label: msg`Type`,
         phrase: msg`type`,
         description: msg`Expense, income or transfer`,
-        icon: UserIconNameEnum.ArrowLeftRight,
+        icon: UserIconNameEnum.Shapes,
         variant: 'ghost'
     },
     [RuleConditionFieldEnum.EXTERNAL_SOURCE]: {

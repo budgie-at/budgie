@@ -73,15 +73,15 @@ env:
 - extendedWaitUntil:
     visible: 'Edit Rule'
 - assertVisible:
-    id: 'RuleForm.Condition.0.FieldSelector.Value'
+    id: 'RuleForm.Condition.0.Row'
 - assertVisible:
-    id: 'RuleForm.Condition.1.FieldSelector'
+    id: 'RuleForm.Condition.1.Row'
 - runFlow:
     when:
       true: ${EXPECTED_CONDITION_COUNT == '3'}
     commands:
       - assertVisible:
-          id: 'RuleForm.Condition.2.FieldSelector'
+          id: 'RuleForm.Condition.2.Row'
 - tapOn:
     id: 'PageHeader.BackButton'
 - waitForAnimationToEnd

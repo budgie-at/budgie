@@ -8,7 +8,6 @@ import { isDefined } from '@rnw-community/shared';
 import { useGetAccountByIdQuery } from '../../../account/query/use-get-account-by-id.query';
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query';
-import { RULE_ACTION_TYPE } from '../../constant/rule-action-type.constant';
 
 import type { RuleCreateInputInterface } from '@budgie/contracts';
 import type { MessageDescriptor } from '@lingui/core';
@@ -16,6 +15,8 @@ import type { MessageDescriptor } from '@lingui/core';
 interface Props {
     readonly action: RuleCreateInputInterface['actions'][number];
 }
+
+const TARGET_MARKER = '\u2063';
 
 const EMPTY_TARGET: Record<RuleActionTypeEnum, MessageDescriptor> = {
     [RuleActionTypeEnum.SET_CATEGORY]: msg`a category`,
@@ -35,13 +36,21 @@ export const RuleActionPhrase = ({ action }: Props) => {
         [RuleActionTypeEnum.CONVERT_TO_TRANSFER]: account?.title ?? null
     };
 
-    const target = targets[action.type];
-    const targetClassName = isDefined(target) ? 'text-primary' : 'text-secondary-foreground';
+    const target = TARGET_MARKER;
+    const templates: Record<RuleActionTypeEnum, string> = {
+        [RuleActionTypeEnum.SET_CATEGORY]: t`move to ${target}`,
+        [RuleActionTypeEnum.ADD_TAG]: t`add tag ${target}`,
+        [RuleActionTypeEnum.CONVERT_TO_TRANSFER]: t`transfer to ${target}`
+    };
+    const [before = '', after = ''] = templates[action.type].split(TARGET_MARKER);
+    const targetLabel = targets[action.type];
+    const targetClassName = isDefined(targetLabel) ? 'text-primary' : 'text-secondary-foreground';
 
     return (
         <>
-            <Text className="text-primary">{t(RULE_ACTION_TYPE[action.type].phrase)} </Text>
-            <Text className={targetClassName}>{target ?? t(EMPTY_TARGET[action.type])}</Text>
+            <Text className="text-primary">{before}</Text>
+            <Text className={targetClassName}>{targetLabel ?? t(EMPTY_TARGET[action.type])}</Text>
+            <Text className="text-primary">{after}</Text>
         </>
     );
 };

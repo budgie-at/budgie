@@ -28,7 +28,7 @@ export const RuleEmptyState = ({ search, onClearSearch }: Props) => {
                     testID={RulesPageSelector.EmptyState}
                     icon={UserIconNameEnum.SearchX}
                     title={t`No rules match “${search}”`}
-                    description={t`Try a merchant, category or tag name.`}
+                    description={t`Try a title, category or tag name.`}
                 >
                     <Button onPress={onClearSearch} leftIcon={UserIconNameEnum.X} content={t`Clear search`} />
                 </StatsEmptyCard>

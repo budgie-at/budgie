@@ -53,7 +53,7 @@ export const RuleConditionFieldSelector = ({ index, testID }: Props) => {
         <RuleFormPickerPill
             label={label}
             icon={RULE_CONDITION_FIELD[field].icon}
-            accessibilityLabel={t`Match on ${label}`}
+            accessibilityLabel={t`Field: ${label}`}
             onPress={handleOpen}
             testID={testID}
         />

@@ -10,9 +10,9 @@ import type { RuleCreateInputInterface } from '@budgie/contracts';
 import type { MessageDescriptor } from '@lingui/core';
 
 const ACTION_TARGET_ISSUE: Record<RuleActionTypeEnum, MessageDescriptor> = {
-    [RuleActionTypeEnum.SET_CATEGORY]: msg`Choose a category to save`,
-    [RuleActionTypeEnum.ADD_TAG]: msg`Choose a tag to save`,
-    [RuleActionTypeEnum.CONVERT_TO_TRANSFER]: msg`Choose an account to save`
+    [RuleActionTypeEnum.SET_CATEGORY]: msg`Choose a category to continue`,
+    [RuleActionTypeEnum.ADD_TAG]: msg`Choose a tag to continue`,
+    [RuleActionTypeEnum.CONVERT_TO_TRANSFER]: msg`Choose an account to continue`
 };
 
 const hasActionTarget = (action: RuleCreateInputInterface['actions'][number]) => {
@@ -31,7 +31,7 @@ const findConditionIssue = (conditions: RuleCreateInputInterface['conditions']):
     const emptyIndex = conditions.findIndex(condition => !isNotEmptyString(condition.value.trim()));
 
     if (emptyIndex >= 0) {
-        return { message: msg`Add a value to save`, conditionIndex: emptyIndex };
+        return { message: msg`Add a value to continue`, conditionIndex: emptyIndex };
     }
 
     const rangeIndex = conditions.findIndex(
@@ -39,14 +39,14 @@ const findConditionIssue = (conditions: RuleCreateInputInterface['conditions']):
     );
 
     if (rangeIndex >= 0) {
-        return { message: msg`Add both amounts to save`, conditionIndex: rangeIndex };
+        return { message: msg`Add both amounts to continue`, conditionIndex: rangeIndex };
     }
 
     const patternIndex = conditions.findIndex(
         condition => condition.operator === RuleConditionOperatorEnum.MATCHES_REGEX && !isValidRulePattern(condition.value)
     );
 
-    return patternIndex >= 0 ? { message: msg`Fix the pattern to save`, conditionIndex: patternIndex } : null;
+    return patternIndex >= 0 ? { message: msg`Fix the pattern to continue`, conditionIndex: patternIndex } : null;
 };
 
 export const getRuleFormIssue = (values: Pick<RuleCreateInputInterface, 'conditions' | 'actions'>): RuleFormIssueInterface | null => {
@@ -58,7 +58,7 @@ export const getRuleFormIssue = (values: Pick<RuleCreateInputInterface, 'conditi
     }
 
     if (!isNotEmptyArray(actions)) {
-        return { message: msg`Add an action to save`, conditionIndex: null };
+        return { message: msg`Add an action to continue`, conditionIndex: null };
     }
 
     const actionWithoutTarget = actions.find(action => !hasActionTarget(action));

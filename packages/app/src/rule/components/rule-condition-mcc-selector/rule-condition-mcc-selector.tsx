@@ -36,6 +36,7 @@ export const RuleConditionMccSelector = ({ index, testID }: Props) => {
         <RuleValuePickerButton
             value={selectedLabel}
             isMissing={isMissing}
+            missingHint={t`Choose a merchant category to save this rule`}
             leading={<RuleValueGlyph icon={UserIconNameEnum.Store} variant="ghost" />}
             placeholder={t`Choose a merchant category`}
             name={t`Merchant category`}

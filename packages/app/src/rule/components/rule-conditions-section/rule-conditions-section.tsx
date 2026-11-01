@@ -2,8 +2,11 @@ import { RuleConditionFieldEnum, RuleConditionMatchTypeEnum, RuleConditionOperat
 import { MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
-import { useWatch } from 'react-hook-form';
+import { useState } from 'react';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
+
+import { isNotEmptyString } from '@rnw-community/shared';
 
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { useMinimumFieldArray } from '../../hooks/use-minimum-field-array.hook';
@@ -24,6 +27,12 @@ const OPERATOR_HELP: Record<RuleConditionOperatorEnum, MessageDescriptor> = {
     [RuleConditionOperatorEnum.IN]: msg`Matches any of the chosen values.`
 };
 
+const getFirstIncompleteIndex = (conditions: RuleCreateInputInterface['conditions']) => {
+    const incompleteIndex = conditions.findIndex(condition => !isNotEmptyString(condition.value.trim()));
+
+    return incompleteIndex >= 0 ? incompleteIndex : null;
+};
+
 const DEFAULT_CONDITION = {
     field: RuleConditionFieldEnum.TITLE,
     operator: RuleConditionOperatorEnum.CONTAINS,
@@ -40,7 +49,18 @@ export const RuleConditionsSection = () => {
     const [matchType, firstOperator] = useWatch<RuleCreateInputInterface, ['conditionMatchType', 'conditions.0.operator']>({
         name: ['conditionMatchType', 'conditions.0.operator']
     });
+    const { getValues } = useFormContext<RuleCreateInputInterface>();
+    const [expandedIndex, setExpandedIndex] = useState(() => getFirstIncompleteIndex(getValues('conditions')));
     const hasSeveralConditions = fields.length >= 2;
+
+    const handleAdd = () => {
+        setExpandedIndex(fields.length);
+        add();
+    };
+    const handleRemove = (index: number) => {
+        setExpandedIndex(null);
+        safeRemove(index);
+    };
     const matchTypeFooter =
         matchType === RuleConditionMatchTypeEnum.ALL
             ? t`A payment has to match every condition.`
@@ -53,10 +73,17 @@ export const RuleConditionsSection = () => {
                 {hasSeveralConditions ? <RuleConditionMatchTypeSelector /> : null}
 
                 {fields.map((field, index) => (
-                    <RuleConditionRow key={field.id} index={index} onRemove={safeRemove} canRemove={canRemove} />
+                    <RuleConditionRow
+                        key={field.id}
+                        index={index}
+                        isExpanded={index === expandedIndex}
+                        canRemove={canRemove}
+                        onExpand={setExpandedIndex}
+                        onRemove={handleRemove}
+                    />
                 ))}
 
-                <RuleFormAddRow label={t`Add condition`} onPress={add} testID={RuleFormSelector.ConditionAddButton} />
+                <RuleFormAddRow label={t`Add condition`} onPress={handleAdd} testID={RuleFormSelector.ConditionAddButton} />
             </GroupedListSection>
         </View>
     );

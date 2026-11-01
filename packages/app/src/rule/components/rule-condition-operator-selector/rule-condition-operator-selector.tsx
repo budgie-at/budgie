@@ -25,5 +25,5 @@ export const RuleConditionOperatorSelector = ({ index, testID }: Props) => {
         void setValue(`conditions.${index}.operator`, nextOperator, { shouldDirty: true });
     const handleOpen = () => void openOperatorSheet({ values: validOperators, selectedValue: operator, onSelect: handleSelect });
 
-    return <RuleFormPickerPill label={label} accessibilityLabel={t`Condition: ${label}`} onPress={handleOpen} testID={testID} />;
+    return <RuleFormPickerPill label={label} accessibilityLabel={t`Comparison: ${label}`} onPress={handleOpen} testID={testID} />;
 };

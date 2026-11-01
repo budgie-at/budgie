@@ -27,7 +27,7 @@ const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
 export const RuleListRow = ({ rule, index, isLast, hasOverlap, onOpen, onToggle }: Props) => {
     const { t } = useLingui();
-    const { primaryOutcome, secondaryOutcome, triggerPrefix, triggerValue, isTriggerQuoted, extraConditionsLabel, accessibilityLabel } =
+    const { primaryOutcome, secondaryOutcome, triggerPrefix, triggerValue, extraConditionsLabel, accessibilityLabel } =
         useRuleRowSummary(rule);
     const isFirst = index === 0;
     const firstAction = rule.actions.at(0);
@@ -61,7 +61,7 @@ export const RuleListRow = ({ rule, index, isLast, hasOverlap, onOpen, onToggle 
                     onPress={handleOpen}
                     accessibilityRole="button"
                     accessibilityLabel={accessibilityLabel}
-                    accessibilityHint={t`Opens the rule`}
+                    accessibilityHint={t`Opens the rule editor`}
                     className={pressableClassName}
                 >
                     <View className={cn(!rule.enabled && 'opacity-40')}>
@@ -84,7 +84,6 @@ export const RuleListRow = ({ rule, index, isLast, hasOverlap, onOpen, onToggle 
                         <RuleListRowTrigger
                             prefix={triggerPrefix}
                             value={triggerValue}
-                            isQuoted={isTriggerQuoted}
                             extraLabel={extraConditionsLabel}
                             testID={RulesPageSelector.RuleCardConditions(index)}
                         />

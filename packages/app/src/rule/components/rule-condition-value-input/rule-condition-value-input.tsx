@@ -1,4 +1,10 @@
-import { RuleConditionFieldEnum, RuleCreateInputInterface, UserIconNameEnum } from '@budgie/contracts';
+import {
+    ExternalSourceEnum,
+    RuleConditionFieldEnum,
+    RuleCreateInputInterface,
+    TransactionTypeEnum,
+    UserIconNameEnum
+} from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useFormContext, useWatch } from 'react-hook-form';
 
@@ -10,9 +16,25 @@ import { RuleConditionMccSelector } from '../rule-condition-mcc-selector/rule-co
 import { RuleConditionTextValueInput } from '../rule-condition-text-value-input/rule-condition-text-value-input';
 import { RuleConditionValueEnumSelector } from '../rule-condition-value-enum-selector/rule-condition-value-enum-selector';
 
-const EXTERNAL_SOURCE_OPTIONS = Object.entries(EXTERNAL_SOURCE).map(([value, label]) => ({ value, label }));
+const TRANSACTION_TYPE_ICON: Record<TransactionTypeEnum, UserIconNameEnum> = {
+    [TransactionTypeEnum.EXPENSE]: UserIconNameEnum.ArrowUpRight,
+    [TransactionTypeEnum.INCOME]: UserIconNameEnum.ArrowDownLeft,
+    [TransactionTypeEnum.TRANSFER]: UserIconNameEnum.ArrowRightLeft,
+    [TransactionTypeEnum.DEBT]: UserIconNameEnum.HandCoins,
+    [TransactionTypeEnum.ADJUSTMENT]: UserIconNameEnum.SlidersHorizontal
+};
 
-const TRANSACTION_TYPE_OPTIONS = Object.entries(TRANSACTION_TYPE).map(([value, label]) => ({ value, label }));
+const EXTERNAL_SOURCE_OPTIONS = Object.values(ExternalSourceEnum).map(value => ({
+    value,
+    label: EXTERNAL_SOURCE[value],
+    icon: UserIconNameEnum.Import
+}));
+
+const TRANSACTION_TYPE_OPTIONS = Object.values(TransactionTypeEnum).map(value => ({
+    value,
+    label: TRANSACTION_TYPE[value],
+    icon: TRANSACTION_TYPE_ICON[value]
+}));
 
 interface Props {
     readonly index: number;
@@ -33,7 +55,7 @@ export const RuleConditionValueInput = ({ index, testID, secondaryTestID }: Prop
                 <RuleConditionValueEnumSelector
                     index={index}
                     options={TRANSACTION_TYPE_OPTIONS}
-                    icon={UserIconNameEnum.ArrowLeftRight}
+                    icon={UserIconNameEnum.Shapes}
                     sheetTitle={t`Transaction type`}
                     placeholder={t`Choose a type`}
                     testID={testID}

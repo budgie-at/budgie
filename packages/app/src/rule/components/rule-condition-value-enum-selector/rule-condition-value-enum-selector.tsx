@@ -12,6 +12,7 @@ import { RuleValuePickerButton } from '../rule-value-picker-button/rule-value-pi
 interface EnumOption {
     readonly value: string;
     readonly label: MessageDescriptor;
+    readonly icon: UserIconNameEnum;
 }
 
 interface Props {
@@ -38,7 +39,7 @@ export const RuleConditionValueEnumSelector = ({ index, options, icon, sheetTitl
                     value: option.value,
                     label: t(option.label),
                     description: null,
-                    icon,
+                    icon: option.icon,
                     disabledReason: null
                 })),
                 selectedValue: value
@@ -57,7 +58,8 @@ export const RuleConditionValueEnumSelector = ({ index, options, icon, sheetTitl
             placeholder={placeholder}
             name={sheetTitle}
             isMissing={isMissing}
-            leading={<RuleValueGlyph icon={icon} variant="ghost" />}
+            missingHint={t`Choose a value to save this rule`}
+            leading={<RuleValueGlyph icon={selectedOption?.icon ?? icon} variant="ghost" />}
             onPress={handleOpen}
             testID={testID}
         />

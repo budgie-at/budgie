@@ -1,5 +1,6 @@
 import {
     ExternalSourceEnum,
+    LanguageEnum,
     RuleConditionCreateInputInterface,
     RuleConditionFieldEnum,
     RuleConditionOperatorEnum,
@@ -28,6 +29,13 @@ const COMPARISON_SYMBOL: Partial<Record<RuleConditionOperatorEnum, string>> = {
 };
 const LIST_PREDICATE_OPERATORS = new Set([RuleConditionOperatorEnum.EQUALS, RuleConditionOperatorEnum.IN]);
 const EMPTY_VALUE = '…';
+const QUOTES: Record<LanguageEnum, readonly [string, string]> = {
+    [LanguageEnum.EN]: ['“', '”'],
+    [LanguageEnum.FR]: ['«', '»'],
+    [LanguageEnum.UK]: ['«', '»'],
+    [LanguageEnum.DE]: ['„', '“'],
+    [LanguageEnum.ES]: ['«', '»']
+};
 
 const splitListValue = (value: string) =>
     value
@@ -57,6 +65,9 @@ export const useRuleConditionFormatter = () => {
         return accounts.find(({ id }) => String(id) === parts[0])?.title ?? EMPTY_VALUE;
     };
 
+    const [openQuote, closeQuote] = isEnumValue(i18n.locale, LanguageEnum) ? QUOTES[i18n.locale] : QUOTES[LanguageEnum.EN];
+    const accountCurrency = t`account currency`;
+
     const resolveValue = (condition: Pick<RuleConditionCreateInputInterface, 'field' | 'operator' | 'value' | 'secondaryValue'>) => {
         const parts = splitListValue(condition.value);
         const fromAmount = formatAmount(condition.value, i18n.locale);
@@ -76,7 +87,7 @@ export const useRuleConditionFormatter = () => {
             case RuleConditionFieldEnum.TITLE:
             case RuleConditionFieldEnum.COMMENT:
             default:
-                return isNotEmptyString(condition.value.trim()) ? `“${condition.value}”` : EMPTY_VALUE;
+                return isNotEmptyString(condition.value.trim()) ? `${openQuote}${condition.value}${closeQuote}` : EMPTY_VALUE;
         }
     };
 
@@ -86,7 +97,10 @@ export const useRuleConditionFormatter = () => {
         const value = resolveValue(condition);
         const fieldLabel = t(RULE_CONDITION_FIELD[condition.field].label);
         const operator = t(RULE_CONDITION_OPERATOR[condition.operator].phrase);
-        const isQuoted = TEXT_FIELDS.has(condition.field) && isNotEmptyString(condition.value.trim());
+        const parts = splitListValue(condition.value);
+        const firstValue = resolveValue({ ...condition, value: parts.at(0) ?? '' });
+        const multiValue = parts.length > 1 ? `${firstValue} +${parts.length - 1}` : value;
+        const listValue = condition.field === RuleConditionFieldEnum.AMOUNT ? `${value} · ${accountCurrency}` : multiValue;
         const isListPredicate = !TEXT_FIELDS.has(condition.field) && LIST_PREDICATE_OPERATORS.has(condition.operator);
 
         return {
@@ -94,8 +108,7 @@ export const useRuleConditionFormatter = () => {
             field: t(RULE_CONDITION_FIELD[condition.field].phrase),
             operator,
             value,
-            rawValue: isQuoted ? condition.value : value,
-            isQuoted,
+            listValue,
             shortPredicate: isListPredicate ? `${fieldLabel}:` : [fieldLabel, COMPARISON_SYMBOL[condition.operator] ?? operator].join(' '),
             hasValue: value !== EMPTY_VALUE && isNotEmptyString(condition.value.trim())
         };

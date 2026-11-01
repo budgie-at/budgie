@@ -1,5 +1,4 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
 import { Text } from 'react-native';
 
 import { isNotEmptyString } from '@rnw-community/shared';
@@ -16,17 +15,17 @@ interface Props {
     readonly placeholder: string;
     readonly name: string;
     readonly isMissing: boolean;
+    readonly missingHint: string;
     readonly leading: ReactNode;
     readonly onPress: () => void;
     readonly testID?: string;
 }
 
-export const RuleValuePickerButton = ({ value, placeholder, name, isMissing, leading, onPress, testID }: Props) => {
-    const { t } = useLingui();
+export const RuleValuePickerButton = ({ value, placeholder, name, isMissing, missingHint, leading, onPress, testID }: Props) => {
     const hasValue = isNotEmptyString(value);
     const label = hasValue ? value : placeholder;
     const labelClassName = hasValue ? 'flex-1 text-[17px] text-primary' : 'flex-1 text-[17px] text-secondary-foreground';
-    const hint = isMissing ? t`Needed to save this rule` : null;
+    const hint = isMissing ? missingHint : null;
 
     return (
         <RuleValueField

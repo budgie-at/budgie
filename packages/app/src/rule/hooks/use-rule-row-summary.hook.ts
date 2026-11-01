@@ -32,8 +32,7 @@ export const useRuleRowSummary = (rule: RuleWithActionsRelationsEntityInterface)
         primaryOutcome,
         secondaryOutcome: secondaryParts.map(part => `${OUTCOME_SEPARATOR}${part}`).join(''),
         triggerPrefix: firstLabel?.shortPredicate ?? '',
-        triggerValue: firstLabel?.rawValue ?? '',
-        isTriggerQuoted: firstLabel?.isQuoted ?? false,
+        triggerValue: firstLabel?.listValue ?? '',
         extraConditionsLabel: isPositiveNumber(extraCount) ? extraLabel : null,
         accessibilityLabel: t`When ${conditionsText}, ${title}. ${statusLabel}`
     };

@@ -23,7 +23,7 @@ interface Props extends Pick<CategoryEntityInterface, 'id' | 'icon' | 'title'> {
     readonly testID?: string;
 }
 
-const cardVariants = cva(`flex-1 rounded-2xl px-sm py-xs gap-y-0.5 border-2 items-center h-[72px]`, {
+const cardVariants = cva(`flex-1 rounded-2xl px-sm py-xs gap-y-0.5 border-2 items-center h-[82px]`, {
     variants: {
         isSelected: {
             true: '',
@@ -70,7 +70,7 @@ export const CategorySelectorCard = (props: Props) => {
                 </View>
             ) : null}
 
-            <CircleIcon size={28} iconSize={14} className={iconClassName} icon={icon} variant={variant} border={false} />
+            <CircleIcon size={32} iconSize={17} className={iconClassName} icon={icon} variant={variant} border={false} />
 
             <View className="self-stretch flex-1 justify-center">
                 <Text
