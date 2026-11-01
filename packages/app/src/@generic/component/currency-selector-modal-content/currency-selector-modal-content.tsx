@@ -2,28 +2,18 @@ import { InstrumentEntityInterface, InstrumentTypeEnum } from '@budgie/contracts
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { CurrencySelectorModalSelector } from '../../../app/currency-selector-modal.selector';
 import { useGetInstrumentsByTypeQuery } from '../../../instrument/query/use-get-instruments-by-type.query';
+import { partitionInstruments } from '../../utils/partition-instruments.util';
+import { rankInstrumentSearch } from '../../utils/rank-instrument-search.util';
 import { CurrencySelectorCard } from '../currency-selector-card/currency-selector-card';
-import { EmptyState } from '../empty-state/empty-state';
 import { SearchableSelectorList } from '../searchable-selector-list/searchable-selector-list';
 import { SelectorModalSearchHeader } from '../selector-modal-search-header/selector-modal-search-header';
-
-const POPULAR_COUNT = 8;
-
-const compareByName = (first: InstrumentEntityInterface, second: InstrumentEntityInterface) => first.name.localeCompare(second.name);
+import { SelectorSearchEmptyState } from '../selector-search-empty-state/selector-search-empty-state';
 
 const keyExtractor = (item: InstrumentEntityInterface) => String(item.id);
-
-const filterInstruments = (instruments: InstrumentEntityInterface[], search: string): InstrumentEntityInterface[] =>
-    instruments.filter(
-        ({ name, code, symbol }) =>
-            name.toLowerCase().includes(search.toLowerCase()) ||
-            code.toLowerCase().includes(search.toLowerCase()) ||
-            symbol.toLowerCase().includes(search.toLowerCase())
-    );
 
 interface Props {
     readonly instrumentType: InstrumentTypeEnum;
@@ -35,22 +25,19 @@ export const CurrencySelectorModalContent = ({ instrumentType, selectedInstrumen
     const { t } = useLingui();
     const [search, setSearch] = useState('');
     const { instruments } = useGetInstrumentsByTypeQuery(instrumentType);
-    const data = filterInstruments(instruments, search);
-    const emptyStateTitle = instrumentType === InstrumentTypeEnum.CRYPTO ? t`No crypto found` : t`No currencies found`;
-    const title = instrumentType === InstrumentTypeEnum.CRYPTO ? t`Crypto` : t`Currency`;
-    const otherTitle = instrumentType === InstrumentTypeEnum.CRYPTO ? t`Other crypto` : t`Other currencies`;
-    const selectedInstrument = data.find(({ id }) => id === selectedInstrumentId);
-    const popular = [selectedInstrument, ...data.filter(({ id }) => id !== selectedInstrumentId)].filter(isDefined).slice(0, POPULAR_COUNT);
-    const popularIds = new Set(popular.map(({ id }) => id));
-    const remainingInstruments = data.filter(({ id }) => !popularIds.has(id));
-    const otherInstruments =
-        instrumentType === InstrumentTypeEnum.CRYPTO ? remainingInstruments : [...remainingInstruments].sort(compareByName);
-    const sections = isNotEmptyString(search.trim())
-        ? [{ title: null, data }]
-        : [
-              { title: t`Popular`, data: popular },
-              { title: otherTitle, data: otherInstruments }
-          ];
+
+    const isCrypto = instrumentType === InstrumentTypeEnum.CRYPTO;
+    const title = isCrypto ? t`Crypto` : t`Currency`;
+    const searchPlaceholder = isCrypto ? t`Search crypto` : t`Search currencies`;
+    const { selected, featured, other } = partitionInstruments(instruments, selectedInstrumentId, instrumentType);
+    const browseSections = [
+        { title: t`Selected`, data: selected },
+        { title: isCrypto ? t`Top by market cap` : t`Common`, data: featured },
+        { title: isCrypto ? t`Other crypto` : t`Other currencies`, data: other }
+    ];
+    const sections = (
+        isNotEmptyString(search.trim()) ? [{ title: t`Results`, data: rankInstrumentSearch(instruments, search) }] : browseSections
+    ).filter(({ data }) => isNotEmptyArray(data));
 
     const renderItem = (item: InstrumentEntityInterface) => (
         <CurrencySelectorCard
@@ -71,14 +58,14 @@ export const CurrencySelectorModalContent = ({ instrumentType, selectedInstrumen
                     title={title}
                     search={search}
                     onSearchChange={setSearch}
-                    placeholder={t`Search`}
+                    placeholder={searchPlaceholder}
                     testID={CurrencySelectorModalSelector.SearchInput}
                 />
             }
             sections={sections}
             keyExtractor={keyExtractor}
             renderItem={renderItem}
-            emptyState={<EmptyState title={emptyStateTitle} description={t`Try a different search term`} />}
+            emptyState={<SelectorSearchEmptyState query={search.trim()} />}
         />
     );
 };

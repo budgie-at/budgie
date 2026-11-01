@@ -1,4 +1,5 @@
-import { InstrumentEntityInterface } from '@budgie/contracts';
+import { InstrumentEntityInterface, InstrumentTypeEnum } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
 
 import { CreateAccountScreenSelector } from '../../../account/component/create-account-screen/create-account-screen.selector';
 import { CurrencySelectorInstrumentIcon } from '../currency-selector-instrument-icon/currency-selector-instrument-icon';
@@ -10,8 +11,11 @@ interface Props extends Pick<InstrumentEntityInterface, 'id' | 'code' | 'symbol'
 }
 
 export const CurrencySelectorCard = ({ isSelected, name, onSelect, code, symbol, id, type }: Props) => {
+    const { t } = useLingui();
     const handleSelect = () => void onSelect(id);
-    const subtitle = name.toUpperCase() === code.toUpperCase() ? null : code;
+    const isFiatWithSymbol = type === InstrumentTypeEnum.FIAT && symbol !== code;
+    const codeLabel = name.toUpperCase() === code.toUpperCase() ? null : code;
+    const subtitle = isFiatWithSymbol ? t`${code} · ${symbol}` : codeLabel;
 
     return (
         <SelectorRow

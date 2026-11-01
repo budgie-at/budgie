@@ -1,8 +1,12 @@
 import { InstrumentTypeEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
+import { SvgXml } from 'react-native-svg';
+
+import { isDefined } from '@rnw-community/shared';
 
 import { GlyphSizeEnum } from '../../enum/glyph-size.enum';
+import { getCurrencyFlag } from '../../utils/get-currency-flag.util';
 import { getGlyphSize } from '../../utils/get-glyph-size.util';
 import { CryptoCurrencyIcon } from '../crypto-currency-icon/crypto-currency-icon';
 
@@ -30,6 +34,16 @@ export const CurrencySelectorInstrumentIcon = ({ code, symbol, type, size = 48, 
     }
 
     const style = { width: size, height: size } as const;
+    const flag = isLargeFiatSymbol ? null : getCurrencyFlag(code);
+
+    if (isDefined(flag)) {
+        return (
+            <View className="overflow-hidden rounded-full border-hairline border-primary/20" style={style} accessible={false}>
+                <SvgXml xml={flag} width={size} height={size} />
+            </View>
+        );
+    }
+
     const glyphSize = getGlyphSize(symbol);
     const displaySymbol = glyphSize === GlyphSizeEnum.CODE ? code : symbol;
     const textClassName = isLargeFiatSymbol ? 'text-primary text-4xl' : symbolVariants({ glyphSize });

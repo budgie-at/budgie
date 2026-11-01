@@ -33,7 +33,7 @@ export const SelectorModalSearchHeader = (props: Props) => {
     return (
         <View collapsable={false} className={headerVariants({ hasTitle })}>
             {hasTitle ? (
-                <View className="pb-lg">
+                <View className="pb-[14px]">
                     <SheetTitleRow title={title} />
                 </View>
             ) : null}

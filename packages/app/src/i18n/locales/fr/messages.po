@@ -185,6 +185,10 @@ msgstr "{changePercent} de plus qu’en {previousLabel}"
 msgid "{clampedCount, plural, one {Set to # month} other {Set to # months}}"
 msgstr "{clampedCount, plural, one {Réglé sur # mois} other {Réglé sur # mois}}"
 
+#: src/@generic/component/currency-selector-card/currency-selector-card.tsx
+msgid "{code} · {symbol}"
+msgstr "{code} · {symbol}"
+
 #: src/@generic/component/create-account-currency-field/create-account-currency-field.tsx
 msgid "{code} · 1 {code} ≈ {convertedAmount} {defaultCode}"
 msgstr "{code} · 1 {code} ≈ {convertedAmount} {defaultCode}"
@@ -2005,6 +2009,10 @@ msgstr "Vérifiez l’orthographe ou créez-la comme nouvelle catégorie."
 msgid "Check the spelling or create it as a new tag."
 msgstr "Vérifiez l’orthographe ou créez-la comme nouvelle étiquette."
 
+#: src/@generic/component/selector-search-empty-state/selector-search-empty-state.tsx
+msgid "Check the spelling or try a code."
+msgstr "Vérifiez l’orthographe ou essayez un code."
+
 #: src/account/constant/account-kind-title.constant.ts
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Checking"
@@ -2203,6 +2211,10 @@ msgstr "Commentaire"
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "Committed {committedExpense} per month"
 msgstr "Engagé par mois : {committedExpense}"
+
+#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
+msgid "Common"
+msgstr "Courantes"
 
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Comparison: {label}"
@@ -4925,14 +4937,6 @@ msgstr "Aucun contact trouvé sur cet appareil."
 msgid "No contacts yet"
 msgstr "Aucun contact pour le moment"
 
-#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
-msgid "No crypto found"
-msgstr "Aucune crypto trouvée"
-
-#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
-msgid "No currencies found"
-msgstr "Aucune devise trouvée"
-
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "No custom categories yet"
 msgstr "Pas encore de catégories personnalisées"
@@ -5010,6 +5014,10 @@ msgstr "Aucun paiement récurrent détecté"
 #: src/account/component/inactive-accounts-empty-state/inactive-accounts-empty-state.tsx
 msgid "No Results"
 msgstr "Aucun résultat"
+
+#: src/@generic/component/selector-search-empty-state/selector-search-empty-state.tsx
+msgid "No results for “{query}”"
+msgstr "Aucun résultat pour « {query} »"
 
 #: src/rule/components/rule-empty-state/rule-empty-state.tsx
 msgid "No rules match “{search}”"
@@ -5708,7 +5716,6 @@ msgstr "Veuillez réessayer"
 msgid "Please try again later"
 msgstr "Veuillez réessayer plus tard"
 
-#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 #: src/@generic/component/icon-selector-list-header/icon-selector-list-header.tsx
 msgid "Popular"
 msgstr "Populaires"
@@ -6117,6 +6124,10 @@ msgstr "Restaurer une sauvegarde remplace toutes les données Budgie actuelles. 
 msgid "Restoring a backup replaces all current Budgie data. This backup is protected by a PIN, which becomes your app PIN. The app restarts afterwards. This can't be undone."
 msgstr "Restaurer une sauvegarde remplace toutes les données Budgie actuelles. Cette sauvegarde est protégée par un PIN, qui devient le PIN de l’app. L’app redémarre ensuite. Action irréversible."
 
+#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
+msgid "Results"
+msgstr "Résultats"
+
 #: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
 msgid "Resume"
 msgstr "Reprendre"
@@ -6319,7 +6330,6 @@ msgstr "Scellé. Face ID ou l'empreinte digitale sont facultatifs."
 msgid "Sealed. Only your PIN opens this file."
 msgstr "Scellé. Seul ton code PIN ouvre ce fichier."
 
-#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 #: src/app/icon-selector.tsx
 msgid "Search"
 msgstr "Rechercher"
@@ -6353,6 +6363,14 @@ msgstr "Rechercher des catégories…"
 #: src/app/contact-selector.tsx
 msgid "Search contacts…"
 msgstr "Rechercher des contacts…"
+
+#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
+msgid "Search crypto"
+msgstr "Rechercher des cryptos"
+
+#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
+msgid "Search currencies"
+msgstr "Rechercher des devises"
 
 #: src/app/(tabs)/settings/categories.tsx
 msgid "Search custom categories…"
@@ -6452,6 +6470,7 @@ msgstr "Sélectionnez le fichier PDF téléchargé"
 msgid "Select the exported XLSX file"
 msgstr "Sélectionnez le fichier XLSX exporté"
 
+#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 #: src/app/import-column-mapper.tsx
 msgid "Selected"
 msgstr "Sélectionné"
@@ -7343,6 +7362,10 @@ msgstr "Trop tôt pour prévoir"
 msgid "Too many attempts. Try again in {time}"
 msgstr "Trop de tentatives. Réessayez dans {time}"
 
+#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
+msgid "Top by market cap"
+msgstr "Top par capitalisation"
+
 #: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
 #: src/account/component/debt-account-card/debt-account-card.tsx
@@ -7499,7 +7522,6 @@ msgstr "Dépannage"
 msgid "Try a different merchant, amount, or date."
 msgstr "Essayez un autre commerçant, montant ou date."
 
-#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 #: src/@generic/component/icon-selector-empty-state/icon-selector-empty-state.tsx
 #: src/account/component/account-select-content/account-select-content.tsx
 #: src/app/contact-selector.tsx

@@ -51,6 +51,7 @@ const DETENT_90 = 0.9;
 const DETENT_70 = 0.7;
 const DETENT_40 = 0.4;
 const DETENT_55 = 0.55;
+const DETENT_62 = 0.62;
 const DETENT_85 = 0.85;
 const DETENT_82 = 0.82;
 const DETENT_96 = 0.96;
@@ -178,7 +179,10 @@ export const RootLayoutContent = () => {
                                                                     <Stack.Screen name="(main)/categorize" />
                                                                     <Stack.Screen name="category-selector" options={SELECTOR_OPTIONS} />
                                                                     <Stack.Screen name="account-selector" options={SELECTOR_OPTIONS} />
-                                                                    <Stack.Screen name="currency-selector" options={SELECTOR_OPTIONS} />
+                                                                    <Stack.Screen
+                                                                        name="currency-selector"
+                                                                        options={formSheetOptions([DETENT_62, DETENT_90], 0)}
+                                                                    />
                                                                     <Stack.Screen
                                                                         name="language-selector"
                                                                         options={fitToContentsSheetOptions(sheetGroupedSurface)}

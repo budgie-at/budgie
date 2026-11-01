@@ -64,7 +64,7 @@ export const SearchableSelectorList = <T,>({ header, sections, keyExtractor, ren
                     onScroll={handleScroll}
                     scrollEventThrottle={16}
                     contentContainerStyle={contentContainerStyle}
-                    ListEmptyComponent={<View className="flex-1 justify-center">{emptyState}</View>}
+                    ListEmptyComponent={<View className="pt-7xl">{emptyState}</View>}
                 />
             </View>
 
