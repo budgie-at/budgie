@@ -3434,8 +3434,8 @@ msgid "Enter new token"
 msgstr "Введіть новий токен"
 
 #: src/import/component/import-backup-pin/import-backup-pin.tsx
-msgid "Enter the PIN this backup was sealed with"
-msgstr "Введіть PIN-код, яким запечатано цю резервну копію"
+msgid "Enter the backup's PIN"
+msgstr "Введіть PIN-код резервної копії"
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
@@ -3960,10 +3960,6 @@ msgstr "Якщо інше правило теж задає категорію ч
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "If Privat24 emails you the file instead of downloading it, save the attachment from your inbox"
 msgstr "Якщо Приват24 надсилає файл на пошту замість завантаження, збережіть вкладення зі своєї поштової скриньки"
-
-#: src/import/component/import-backup-pin/import-backup-pin.tsx
-msgid "If you don't remember it, this backup can't be opened. You can start fresh instead."
-msgstr "Якщо ви його не пам'ятаєте, цю резервну копію не відкрити. Натомість можна почати з чистого аркуша."
 
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "If you forget it, nobody can open this file, including you and us."
@@ -7819,6 +7815,10 @@ msgstr "Використати мобільні дані для {remaining} ГБ
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
 msgid "Use PIN only"
 msgstr "Лише PIN-код"
+
+#: src/import/component/import-backup-pin/import-backup-pin.tsx
+msgid "Use the PIN this backup was sealed with. Without it, the backup can't be opened."
+msgstr "Використайте PIN-код, яким запечатано цю резервну копію. Без нього її не відкрити."
 
 #: src/app/(tabs)/settings/data.tsx
 msgid "Use these only if conversions, imports or balances look wrong."

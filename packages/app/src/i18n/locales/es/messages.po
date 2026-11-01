@@ -3434,8 +3434,8 @@ msgid "Enter new token"
 msgstr "Ingresar nuevo token"
 
 #: src/import/component/import-backup-pin/import-backup-pin.tsx
-msgid "Enter the PIN this backup was sealed with"
-msgstr "Introduce el PIN con el que se selló esta copia"
+msgid "Enter the backup's PIN"
+msgstr "Introduce el PIN de la copia de seguridad"
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
@@ -3960,10 +3960,6 @@ msgstr "Si otra regla también asigna una categoría o transferencia, gana la m�
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "If Privat24 emails you the file instead of downloading it, save the attachment from your inbox"
 msgstr "Si Privat24 te envía el archivo por correo en lugar de descargarlo, guarda el adjunto desde tu bandeja de entrada"
-
-#: src/import/component/import-backup-pin/import-backup-pin.tsx
-msgid "If you don't remember it, this backup can't be opened. You can start fresh instead."
-msgstr "Si no lo recuerdas, esta copia no se puede abrir. Puedes empezar de cero."
 
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "If you forget it, nobody can open this file, including you and us."
@@ -7819,6 +7815,10 @@ msgstr "Usar datos móviles para {remaining} GB"
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
 msgid "Use PIN only"
 msgstr "Usar solo el PIN"
+
+#: src/import/component/import-backup-pin/import-backup-pin.tsx
+msgid "Use the PIN this backup was sealed with. Without it, the backup can't be opened."
+msgstr "Usa el PIN con el que se selló esta copia. Sin él, no se puede abrir."
 
 #: src/app/(tabs)/settings/data.tsx
 msgid "Use these only if conversions, imports or balances look wrong."

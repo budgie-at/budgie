@@ -3,6 +3,8 @@ import { useEffect, useRef } from 'react';
 import { AccessibilityInfo, Text, View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { cn } from '../../../@generic/utils/cn.util';
@@ -13,7 +15,7 @@ import { PinFormSelector } from '../pin-form/pin-form.selector';
 interface Props {
     readonly title: string;
     readonly description: string;
-    readonly icon?: UserIconNameEnum;
+    readonly icon?: UserIconNameEnum | null;
     readonly iconVariant?: ColorPaletteVariant;
 }
 
@@ -41,7 +43,9 @@ export const PinFormHeader = ({ title, description, icon = UserIconNameEnum.Lock
 
     return (
         <Animated.View key={title} entering={FadeIn.duration(PIN_STEP_FADE_DURATION_MS)} className={cn('items-center', gapClassName)}>
-            <CircleIcon icon={icon} variant={iconVariant} size={tileSize} iconSize={glyphSize} className="rounded-3xl" />
+            {isDefined(icon) ? (
+                <CircleIcon icon={icon} variant={iconVariant} size={tileSize} iconSize={glyphSize} className="rounded-3xl" />
+            ) : null}
 
             <View className="items-center gap-y-md px-xl">
                 <Text

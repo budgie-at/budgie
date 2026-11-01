@@ -3434,8 +3434,8 @@ msgid "Enter new token"
 msgstr "Entrer un nouveau jeton"
 
 #: src/import/component/import-backup-pin/import-backup-pin.tsx
-msgid "Enter the PIN this backup was sealed with"
-msgstr "Saisis le code PIN qui a scellé cette sauvegarde"
+msgid "Enter the backup's PIN"
+msgstr "Saisis le code PIN de la sauvegarde"
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
@@ -3960,10 +3960,6 @@ msgstr "Si une autre règle définit aussi une catégorie ou un virement, la plu
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "If Privat24 emails you the file instead of downloading it, save the attachment from your inbox"
 msgstr "Si Privat24 vous envoie le fichier par e-mail au lieu de le télécharger, enregistrez la pièce jointe depuis votre boîte de réception"
-
-#: src/import/component/import-backup-pin/import-backup-pin.tsx
-msgid "If you don't remember it, this backup can't be opened. You can start fresh instead."
-msgstr "Si tu ne t'en souviens pas, cette sauvegarde ne peut pas être ouverte. Tu peux repartir de zéro à la place."
 
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "If you forget it, nobody can open this file, including you and us."
@@ -7819,6 +7815,10 @@ msgstr "Utiliser les données mobiles pour {remaining} Go"
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
 msgid "Use PIN only"
 msgstr "Utiliser le code PIN uniquement"
+
+#: src/import/component/import-backup-pin/import-backup-pin.tsx
+msgid "Use the PIN this backup was sealed with. Without it, the backup can't be opened."
+msgstr "Utilise le code PIN avec lequel cette sauvegarde a été scellée. Sans lui, elle ne peut pas être ouverte."
 
 #: src/app/(tabs)/settings/data.tsx
 msgid "Use these only if conversions, imports or balances look wrong."
