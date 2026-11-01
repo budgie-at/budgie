@@ -35,7 +35,7 @@ export const CollapsibleChromeHeaderScrim = (): ReactNode => {
     return (
         <Animated.View
             pointerEvents="none"
-            className="absolute inset-x-0 top-0 border-b-hairline border-surface-separator bg-primary-reverse pt-safe"
+            className="absolute inset-x-0 top-0 border-b-hairline border-surface-separator bg-surface pt-safe"
             style={animatedStyle}
         >
             <View style={spacerStyle} />

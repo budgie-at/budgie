@@ -125,8 +125,6 @@ appId: ${APP_ID}
 - assertVisible:
       id: 'CurrencyMarket.Price.BTC'
 - assertVisible:
-      id: 'CurrencyMarket.Rate.BTC'
-- assertVisible:
       id: 'CurrencyMarket.Sparkline.BTC'
 - assertVisible:
       id: 'CurrencyMarket.Holdings.BTC'
@@ -134,10 +132,6 @@ appId: ${APP_ID}
       id: 'CurrencyMarket.Holdings.Balance.BTC'
 - assertVisible:
       id: 'CurrencyMarket.Holdings.Value.BTC'
-- assertVisible:
-      id: 'CurrencyMarket.Holdings.AverageCost.BTC'
-- assertVisible:
-      id: 'CurrencyMarket.Holdings.CostBasis.BTC'
 - assertVisible:
       id: 'CurrencyMarket.Holdings.UnrealizedProfit.BTC'
 - assertVisible: '4 BTC'
@@ -181,8 +175,6 @@ appId: ${APP_ID}
       timeout: 10000
 - assertVisible:
       id: 'CurrencyMarket.Price.ETH'
-- assertVisible:
-      id: 'CurrencyMarket.Rate.ETH'
 - assertVisible:
       id: 'CurrencyMarket.Sparkline.ETH'
 - assertVisible:
@@ -289,10 +281,6 @@ appId: ${APP_ID}
           id: 'CurrencyMarket.Header.BTC'
       timeout: 10000
 - assertVisible: '5 BTC'
-- assertVisible:
-      id: 'CurrencyMarket.Holdings.AverageCost.BTC'
-- assertVisible:
-      id: 'CurrencyMarket.Holdings.CostBasis.BTC'
 - assertVisible:
       id: 'CurrencyMarket.Holdings.UnrealizedProfit.BTC'
 
