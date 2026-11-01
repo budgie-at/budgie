@@ -22,8 +22,8 @@ export const IconTitleField = ({ tile, label, error, testID, children }: Props) 
             <View className="flex-1">
                 <Text
                     className="text-secondary-foreground text-[13px]"
+                    accessible={false}
                     importantForAccessibility="no"
-                    accessibilityElementsHidden
                     {...testIDProps(testID, TestIDPartEnum.LABEL)}
                 >
                     {label}
