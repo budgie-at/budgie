@@ -15,7 +15,7 @@ export default function SplitEntriesModal() {
     }
 
     return (
-        <View className="flex-1 bg-primary-reverse" collapsable={false}>
+        <View className="flex-1 bg-sheet-surface" collapsable={false}>
             <Stack.Screen options={screenOptions} />
             <SplitEntriesModalContent
                 initialEntries={currentParams.entries}

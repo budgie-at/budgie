@@ -72,28 +72,21 @@ export const SimpleQuickFormControls = ({
         <>
             <TransactionFieldIcons>
                 <TransactionSplitFieldIcon
-                    variant={variant}
                     splitEntryCount={formState.splitEntryCount}
                     isAmountPositive={formState.isAmountPositive}
                     onPress={handleSplitIconPress}
                 />
-                <TransactionDateFieldIcon variant={variant} onPress={handleDatePress} />
-                <TransactionNoteFieldIcon variant={variant} onPress={handleCommentPress} />
-                <TransactionTagsFieldIcon variant={variant} />
+                <TransactionDateFieldIcon onPress={handleDatePress} />
+                <TransactionNoteFieldIcon onPress={handleCommentPress} />
+                <TransactionTagsFieldIcon />
                 <TransactionCategoryFieldIcon ref={categoryIconRef} variant={variant} isSplitActive={formState.isSplitActive} />
             </TransactionFieldIcons>
 
             <View className="mb-xl gap-sm">
-                <TransactionAccountRow
-                    ref={accountRowRef}
-                    variant={variant}
-                    fieldName={accountFieldName}
-                    testID={SimpleQuickFormSelector.AccountSelector}
-                />
+                <TransactionAccountRow ref={accountRowRef} fieldName={accountFieldName} testID={SimpleQuickFormSelector.AccountSelector} />
             </View>
 
             <TransactionKeypad
-                variant={variant}
                 keypad={keypadHandlers}
                 onConfirm={handleConfirm}
                 onCancel={onCancel}

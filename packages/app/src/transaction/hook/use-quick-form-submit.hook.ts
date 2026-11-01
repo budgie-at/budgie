@@ -1,5 +1,6 @@
 import { TransactionCreateInputInterface, TransactionEntryTypeEnum, TransactionTypeEnum } from '@budgie/contracts';
 import { getTransactionCategoryEntries, getTransactionFeeEntries } from '@budgie/ledger';
+import { useLingui } from '@lingui/react/macro';
 import { RefObject } from 'react';
 import { useFormContext } from 'react-hook-form';
 
@@ -14,6 +15,7 @@ import { sumEntryAmounts } from '../utils/sum-entry-amounts.util';
 import { useQuickFormValidation } from './use-quick-form-validation.hook';
 
 import type { QuickFormAccountFieldName } from '../interface/quick-form-account-field-name.type';
+import type { QuickFormValidationCheckInterface } from '../interface/quick-form-validation-check.interface';
 
 interface UseQuickFormSubmitConfig {
     readonly accountFieldName: QuickFormAccountFieldName;
@@ -42,6 +44,7 @@ export const useQuickFormSubmit = ({
     transactionType,
     onSubmit
 }: UseQuickFormSubmitConfig): UseQuickFormSubmitResult => {
+    const { t } = useLingui();
     const { setValue, getValues } = useFormContext<TransactionCreateInputInterface>();
     const { validateAndShake } = useQuickFormValidation();
 
@@ -50,6 +53,20 @@ export const useQuickFormSubmit = ({
 
         return isDefined(selectedAccountId) ? selectedAccountId : 0;
     };
+
+    const buildAmountCheck = (isValid: boolean, message: string): QuickFormValidationCheckInterface => ({
+        isValid,
+        field: 'amount',
+        message,
+        shake: () => amountDisplayRef.current?.shake()
+    });
+
+    const buildAccountCheck = (accountId: number): QuickFormValidationCheckInterface => ({
+        isValid: isPositiveNumber(accountId),
+        field: accountFieldName,
+        message: t`Choose an account`,
+        shake: () => accountRowRef.current?.shake()
+    });
 
     const handleNormalConfirm = () => {
         const amount = getValues('amount');
@@ -62,10 +79,15 @@ export const useQuickFormSubmit = ({
         const categoryAmount = transactionType === TransactionTypeEnum.EXPENSE ? amount - feeTotal : amount;
 
         const isValid = validateAndShake([
-            { isValid: isPositiveNumber(amount), shake: () => amountDisplayRef.current?.shake() },
-            { isValid: isPositiveNumber(categoryAmount), shake: () => amountDisplayRef.current?.shake() },
-            { isValid: isPositiveNumber(formCategoryId), shake: () => categoryIconRef.current?.shake() },
-            { isValid: isPositiveNumber(accountId), shake: () => accountRowRef.current?.shake() }
+            buildAmountCheck(isPositiveNumber(amount), t`Enter an amount`),
+            buildAmountCheck(isPositiveNumber(categoryAmount), t`Amount must be larger than the fee`),
+            {
+                isValid: isPositiveNumber(formCategoryId),
+                field: 'entries',
+                message: t`Choose a category`,
+                shake: () => categoryIconRef.current?.shake()
+            },
+            buildAccountCheck(accountId)
         ]);
 
         if (!isValid) {
@@ -90,9 +112,9 @@ export const useQuickFormSubmit = ({
             transactionType === TransactionTypeEnum.EXPENSE ? categoryTotalAmount + sumEntryAmounts(feeEntries) : categoryTotalAmount;
 
         const isValid = validateAndShake([
-            { isValid: isPositiveNumber(categoryTotalAmount), shake: () => amountDisplayRef.current?.shake() },
-            { isValid: allEntriesValid },
-            { isValid: isPositiveNumber(accountId), shake: () => accountRowRef.current?.shake() }
+            buildAmountCheck(isPositiveNumber(categoryTotalAmount), t`Enter an amount`),
+            { isValid: allEntriesValid, field: 'entries', message: t`Complete every split entry` },
+            buildAccountCheck(accountId)
         ]);
 
         if (!isValid) {

@@ -9,7 +9,6 @@ import { isDefined } from '@rnw-community/shared';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
-import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
 import { useTransferAccounts } from '../../hook/use-transfer-accounts.hook';
 import { TransferAccountPicker } from '../transfer-account-picker/transfer-account-picker';
@@ -24,10 +23,9 @@ export interface TransactionTransferAccountsRowRef {
 
 interface Props {
     readonly ref?: RefObject<TransactionTransferAccountsRowRef | null>;
-    readonly variant: ColorPaletteVariant;
 }
 
-export const TransactionTransferAccountsRow = ({ ref, variant }: Props) => {
+export const TransactionTransferAccountsRow = ({ ref }: Props) => {
     const { t } = useLingui();
     const { setValue } = useFormContext<TransactionCreateInputInterface>();
     const [openAccountSelector] = useAccountSelectorModal();
@@ -82,7 +80,7 @@ export const TransactionTransferAccountsRow = ({ ref, variant }: Props) => {
             <TransferAccountPicker
                 label={t`From`}
                 account={fromAccount}
-                variant={variant}
+                placeholder={t`Select account`}
                 animatedStyle={fromAnimatedStyle}
                 testID={TransferQuickFormSelector.FromAccount}
                 selectedTestID={fromAccountSelectedTestID}
@@ -101,7 +99,7 @@ export const TransactionTransferAccountsRow = ({ ref, variant }: Props) => {
             <TransferAccountPicker
                 label={t`To`}
                 account={toAccount}
-                variant={variant}
+                placeholder={t`Select account`}
                 animatedStyle={toAnimatedStyle}
                 testID={TransferQuickFormSelector.ToAccount}
                 selectedTestID={toAccountSelectedTestID}

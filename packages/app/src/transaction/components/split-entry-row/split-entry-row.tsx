@@ -47,7 +47,7 @@ export const SplitEntryRow = (props: Props) => {
 
     return (
         <Animated.View entering={FadeIn} exiting={FadeOutDown} layout={LinearTransition}>
-            <View className="flex-row items-center gap-x-xl rounded-3xl bg-secondary-background px-3xl py-xl">
+            <View className="flex-row items-center gap-x-xl px-3xl py-xl">
                 <HapticPressable
                     onPress={onCategoryPress}
                     className="flex-row items-center gap-x-xl flex-1"

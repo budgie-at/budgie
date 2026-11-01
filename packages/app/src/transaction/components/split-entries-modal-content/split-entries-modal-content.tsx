@@ -11,18 +11,19 @@ import { t } from '@lingui/core/macro';
 import * as Effect from 'effect/Effect';
 import { NotificationFeedbackType } from 'expo-haptics';
 import { useState } from 'react';
-import { View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import { KeyboardStickyView } from 'react-native-keyboard-controller';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { BudgieLegendList } from '../../../@generic/component/budgie-legend-list/budgie-legend-list';
 import { Button } from '../../../@generic/component/button/button';
-import { ListItemSeparator } from '../../../@generic/component/list-item-separator/list-item-separator';
-import { LEGEND_LIST_STYLE } from '../../../@generic/constant/legend-list.constant';
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
+import { PillButton } from '../../../@generic/component/pill-button/pill-button';
+import { SheetTitle } from '../../../@generic/component/sheet-title/sheet-title';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { cn } from '../../../@generic/utils/cn.util';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
@@ -33,7 +34,6 @@ import {
     EntryWithLocalIdInterface,
     addLocalId,
     createEmptyEntry,
-    entryKeyExtractor,
     stripLocalId,
     withEntryAmount
 } from '../../utils/entry-with-local-id.util';
@@ -45,7 +45,7 @@ import { SplitEntryRow } from '../split-entry-row/split-entry-row';
 import { SplitEntriesModalContentSelector } from './split-entries-modal-content.selector';
 
 const keyboardOffset = { closed: 0, opened: 8 };
-const CONTENT_CONTAINER_STYLE = { paddingHorizontal: 12, paddingTop: 16, paddingBottom: 12 };
+const CONTENT_CONTAINER_STYLE = { paddingHorizontal: 16, paddingBottom: 12 };
 
 interface Props {
     readonly initialEntries: TransactionEntryCreateInputInterface[];
@@ -158,7 +158,7 @@ export const SplitEntriesModalContent = (props: Props) => {
         );
     };
 
-    const renderItem = ({ item, index }: { item: EntryWithLocalIdInterface; index: number }) => {
+    const renderEntry = (item: EntryWithLocalIdInterface, index: number) => {
         const handleCategory = () => {
             handleCategoryPress(index);
         };
@@ -166,44 +166,41 @@ export const SplitEntriesModalContent = (props: Props) => {
         const handleAmount = (amount: number) => void handleAmountChange(index, amount);
 
         return (
-            <SplitEntryRow
-                index={index}
-                entry={item}
-                currencySymbol={currencySymbol}
-                variant={variant}
-                autoFocus={index === autoFocusIndex}
-                onAmountChange={handleAmount}
-                onCategoryPress={handleCategory}
-            >
-                {canDelete ? <SplitEntryDeleteButton index={index} onPress={handleDelete} /> : null}
-            </SplitEntryRow>
+            <View key={item.localId}>
+                {index > 0 ? <View className="h-hairline bg-surface-separator ml-3xl" /> : null}
+                <SplitEntryRow
+                    index={index}
+                    entry={item}
+                    currencySymbol={currencySymbol}
+                    variant={variant}
+                    autoFocus={index === autoFocusIndex}
+                    onAmountChange={handleAmount}
+                    onCategoryPress={handleCategory}
+                >
+                    {canDelete ? <SplitEntryDeleteButton index={index} onPress={handleDelete} /> : null}
+                </SplitEntryRow>
+            </View>
         );
     };
 
-    const listFooter = <SplitEntriesAddItemFooter canAddEntry={canAddEntry} onAddEntry={handleAddEntry} />;
-
-    const remainingButtonLabel = isOverBudget ? t`${formattedRemaining} over budget` : t`${formattedRemaining} left to assign`;
-    const remainingButtonVariant: ColorPaletteVariant = isOverBudget ? 'destructive' : 'secondary';
-    const splitButtonLabel = hasMissingCategories ? t`Select all categories` : t`Confirm Split`;
-    const splitButtonVariant = hasMissingCategories ? 'secondary' : variant;
-    const confirmButtonVariant = isFullySplit ? splitButtonVariant : remainingButtonVariant;
-    const confirmButtonLabel = isFullySplit ? splitButtonLabel : remainingButtonLabel;
+    const assignedLabel = isFullySplit ? t`Fully assigned` : t`${formattedRemaining} left to assign`;
+    const pendingLabel = hasMissingCategories ? t`Select all categories` : assignedLabel;
+    const remainderLabel = isOverBudget ? t`${formattedRemaining} over budget` : pendingLabel;
+    const remainderClassName = isOverBudget ? 'text-destructive-foreground' : 'text-secondary-foreground';
 
     return (
         <View className="flex-1">
-            <BudgieLegendList
-                style={LEGEND_LIST_STYLE}
-                data={entries}
-                keyExtractor={entryKeyExtractor}
-                renderItem={renderItem}
-                keyboardShouldPersistTaps="handled"
-                contentContainerStyle={CONTENT_CONTAINER_STYLE}
-                ListFooterComponent={listFooter}
-                ItemSeparatorComponent={ListItemSeparator}
-            />
+            <SheetTitle title={t`Split`} />
+
+            <ScrollView contentContainerStyle={CONTENT_CONTAINER_STYLE} keyboardShouldPersistTaps="handled" className="flex-1">
+                <GroupedListSection>{entries.map(renderEntry)}</GroupedListSection>
+                <SplitEntriesAddItemFooter canAddEntry={canAddEntry} onAddEntry={handleAddEntry} />
+            </ScrollView>
 
             <KeyboardStickyView offset={keyboardOffset}>
-                <View className="flex-row gap-x-md px-xl pb-xl">
+                <Text className={cn('px-xl pb-md text-center text-[15px] leading-[20px]', remainderClassName)}>{remainderLabel}</Text>
+
+                <View className="flex-row items-center gap-x-md px-xl pb-xl">
                     {canRemoveSplit ? (
                         <Button
                             leftIcon={UserIconNameEnum.X}
@@ -215,15 +212,14 @@ export const SplitEntriesModalContent = (props: Props) => {
                         />
                     ) : null}
 
-                    <Button
-                        className="flex-1"
-                        content={confirmButtonLabel}
-                        variant={confirmButtonVariant}
-                        size="md"
-                        disabled={!canConfirm}
-                        onPress={handleConfirm}
-                        testID={SplitEntriesModalContentSelector.ConfirmButton}
-                    />
+                    <View className="flex-1">
+                        <PillButton
+                            label={t`Done`}
+                            isDisabled={!canConfirm}
+                            onPress={handleConfirm}
+                            testID={SplitEntriesModalContentSelector.ConfirmButton}
+                        />
+                    </View>
                 </View>
             </KeyboardStickyView>
         </View>

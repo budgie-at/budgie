@@ -112,6 +112,7 @@ export default function ConvertToTransferModal() {
     return (
         <FormProvider {...form}>
             <ModalPage
+                className="bg-grouped-surface"
                 testID={ConvertToTransferModalSelector.Page}
                 header={<PageHeader title={t`Convert to Transfer`} onGoBack={handleCancel} />}
             >

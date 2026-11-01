@@ -2,6 +2,7 @@ import { InstrumentTypeEnum } from '@budgie/contracts';
 import { View } from 'react-native';
 
 import { DebtSettlementPill } from '../debt-settlement-pill/debt-settlement-pill';
+import { QuickFormValidationSlot } from '../quick-form-validation-slot/quick-form-validation-slot';
 import { SimpleQuickFormFeePill } from '../simple-quick-form-fee-pill/simple-quick-form-fee-pill';
 
 import type { DebtSettlementAccountInterface } from '../../interface/debt-settlement-account.interface';
@@ -25,12 +26,14 @@ export const SimpleQuickFormAmountBottomContent = ({
 }: Props) => (
     <View className="items-center gap-xs">
         <DebtSettlementPill account={debtSettlementAccount} />
-        <SimpleQuickFormFeePill
-            amount={feeAmount}
-            currencySymbol={feeCurrencySymbol}
-            instrumentType={feeInstrumentType}
-            showInlineAction={showInlineFeeAction}
-            onPress={onFeePress}
-        />
+        <QuickFormValidationSlot>
+            <SimpleQuickFormFeePill
+                amount={feeAmount}
+                currencySymbol={feeCurrencySymbol}
+                instrumentType={feeInstrumentType}
+                showInlineAction={showInlineFeeAction}
+                onPress={onFeePress}
+            />
+        </QuickFormValidationSlot>
     </View>
 );

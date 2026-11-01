@@ -7,6 +7,9 @@ import { View } from 'react-native';
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
+import { PillButton } from '../../../@generic/component/pill-button/pill-button';
+import { SheetTitle } from '../../../@generic/component/sheet-title/sheet-title';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { confirmAlert } from '../../../@generic/utils/confirm-alert/confirm-alert.util';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
@@ -84,18 +87,22 @@ export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, v
         );
 
     return (
-        <View className="px-xl pt-3xl pb-xl gap-lg">
-            <SplitEntryRow
-                index={ROW_INDEX}
-                entry={feeEntry}
-                currencySymbol={currencySymbol}
-                variant={variant}
-                autoFocus={!isDefined(entry)}
-                onAmountChange={handleAmountChange}
-                onCategoryPress={handleCategoryPress}
-            />
+        <View className="px-xl pb-xl gap-lg">
+            <SheetTitle title={t`Fee`} />
 
-            <View className="flex-row gap-x-md">
+            <GroupedListSection>
+                <SplitEntryRow
+                    index={ROW_INDEX}
+                    entry={feeEntry}
+                    currencySymbol={currencySymbol}
+                    variant={variant}
+                    autoFocus={!isDefined(entry)}
+                    onAmountChange={handleAmountChange}
+                    onCategoryPress={handleCategoryPress}
+                />
+            </GroupedListSection>
+
+            <View className="flex-row items-center gap-x-md">
                 {canRemove ? (
                     <Button
                         leftIcon={UserIconNameEnum.X}
@@ -107,15 +114,14 @@ export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, v
                     />
                 ) : null}
 
-                <Button
-                    className="flex-1"
-                    content={t`Save fee`}
-                    variant={variant}
-                    size="md"
-                    disabled={!canSave}
-                    onPress={handleConfirm}
-                    testID={TransactionFeeModalContentSelector.SaveButton}
-                />
+                <View className="flex-1">
+                    <PillButton
+                        label={t`Save fee`}
+                        isDisabled={!canSave}
+                        onPress={handleConfirm}
+                        testID={TransactionFeeModalContentSelector.SaveButton}
+                    />
+                </View>
             </View>
         </View>
     );

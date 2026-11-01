@@ -140,18 +140,19 @@ export default function VoiceReviewModal() {
                             const handleDelete = () => void deleteRow(row.id);
 
                             return (
-                                <SplitEntryRow
-                                    key={row.id}
-                                    index={index}
-                                    entry={row}
-                                    currencySymbol={currencySymbol}
-                                    variant="destructive"
-                                    autoFocus={false}
-                                    onAmountChange={handleAmount}
-                                    onCategoryPress={handleCategory}
-                                >
-                                    {canDelete ? <SplitEntryDeleteButton index={index} onPress={handleDelete} /> : null}
-                                </SplitEntryRow>
+                                <View key={row.id} className="overflow-hidden rounded-3xl bg-secondary-background">
+                                    <SplitEntryRow
+                                        index={index}
+                                        entry={row}
+                                        currencySymbol={currencySymbol}
+                                        variant="destructive"
+                                        autoFocus={false}
+                                        onAmountChange={handleAmount}
+                                        onCategoryPress={handleCategory}
+                                    >
+                                        {canDelete ? <SplitEntryDeleteButton index={index} onPress={handleDelete} /> : null}
+                                    </SplitEntryRow>
+                                </View>
                             );
                         })}
                     </View>

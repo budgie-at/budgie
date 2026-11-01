@@ -6,17 +6,15 @@ import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated'
 import { TransactionFieldIcon } from '../transaction-field-icon/transaction-field-icon';
 import { TransactionFieldIconsSelector } from '../transaction-field-icons/transaction-field-icons.selector';
 
-import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import type { EmptyFn } from '@rnw-community/shared';
 
 interface Props {
-    readonly variant: ColorPaletteVariant;
     readonly splitEntryCount: number;
     readonly isAmountPositive: boolean;
     readonly onPress: EmptyFn;
 }
 
-export const TransactionSplitFieldIcon = ({ variant, splitEntryCount, isAmountPositive, onPress }: Props) => {
+export const TransactionSplitFieldIcon = ({ splitEntryCount, isAmountPositive, onPress }: Props) => {
     const { t } = useLingui();
 
     const isSplitActive = splitEntryCount > 1;
@@ -42,7 +40,6 @@ export const TransactionSplitFieldIcon = ({ variant, splitEntryCount, isAmountPo
                 icon={UserIconNameEnum.Split}
                 label={t`Split`}
                 value={splitValue}
-                variant={variant}
                 onPress={onPress}
                 animationDelay={170}
                 testID={TransactionFieldIconsSelector.Split}

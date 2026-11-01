@@ -43,7 +43,7 @@ export default function CreateIncomeTransactionPage() {
 
     return (
         <FormProvider {...form}>
-            <FullPage header={<PageHeader title={t`New Income`} onGoBack={handleGoBack} />}>
+            <FullPage className="bg-grouped-surface" header={<PageHeader title={t`New Income`} onGoBack={handleGoBack} />}>
                 <SimpleQuickForm
                     transactionType={TransactionTypeEnum.INCOME}
                     isNewTransaction

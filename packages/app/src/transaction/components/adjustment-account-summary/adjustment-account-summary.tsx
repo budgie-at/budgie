@@ -3,22 +3,20 @@ import { Text, View } from 'react-native';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 
-import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import type { AdjustmentTransactionDetailsInterface } from '../../interface/adjustment-transaction-details.interface';
 
 interface Props {
     readonly details: AdjustmentTransactionDetailsInterface;
-    readonly variant: ColorPaletteVariant;
 }
 
-export const AdjustmentAccountSummary = ({ details, variant }: Props) => (
-    <View className="flex-row items-center gap-md rounded-2xl bg-secondary-background px-lg py-md">
-        <CircleIcon icon={details.accountIcon} variant={variant} size={34} iconSize={18} radius={10} />
+export const AdjustmentAccountSummary = ({ details }: Props) => (
+    <View className="min-h-[56px] flex-row items-center gap-md rounded-2xl bg-transaction-detail-row px-lg py-md">
+        <CircleIcon icon={details.accountIcon} variant="ghost" border={false} size={34} iconSize={18} radius={10} />
         <View className="flex-1">
-            <Text className="text-xs text-secondary-foreground uppercase">
+            <Text className="text-[13px] leading-[18px] text-secondary-foreground">
                 <Trans>Account</Trans>
             </Text>
-            <Text className="text-md font-medium text-primary" numberOfLines={1}>
+            <Text className="text-[15px] leading-[20px] font-medium text-primary" numberOfLines={1}>
                 {details.accountTitle}
             </Text>
         </View>

@@ -19,6 +19,7 @@ import { useTransferAccounts } from '../../hook/use-transfer-accounts.hook';
 import { computeTransferDisplay } from '../../utils/compute-transfer-display.util';
 import { ConversionRow } from '../conversion-row/conversion-row';
 import { CurrencyModePill } from '../currency-mode-pill/currency-mode-pill';
+import { QuickFormValidationSlot } from '../quick-form-validation-slot/quick-form-validation-slot';
 import { SimpleQuickFormSelector } from '../simple-quick-form/simple-quick-form.selector';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
 import { TransactionDateFieldIcon } from '../transaction-date-field-icon/transaction-date-field-icon';
@@ -180,9 +181,14 @@ export const TransferQuickForm = (props: Props) => {
         const to = toAccountId ?? 0;
 
         const isValid = validateAndShake([
-            { isValid: amount > 0, shake: () => amountDisplayRef.current?.shake() },
-            { isValid: from > 0, shake: () => transferAccountsRef.current?.shakeFrom() },
-            { isValid: to > 0, shake: () => transferAccountsRef.current?.shakeTo() }
+            { isValid: amount > 0, field: 'amount', message: t`Enter an amount`, shake: () => amountDisplayRef.current?.shake() },
+            {
+                isValid: from > 0,
+                field: 'fromAccountId',
+                message: t`Choose both accounts`,
+                shake: () => transferAccountsRef.current?.shakeFrom()
+            },
+            { isValid: to > 0, field: 'toAccountId', message: t`Choose both accounts`, shake: () => transferAccountsRef.current?.shakeTo() }
         ]);
 
         if (!isValid) {
@@ -215,7 +221,7 @@ export const TransferQuickForm = (props: Props) => {
                 ref={amountDisplayRef}
                 amount={display.displayAmount}
                 currencySymbol={display.displaySymbol}
-                variant={variant}
+                variant="primary"
                 onPress={conversionPress}
                 testID={SimpleQuickFormSelector.AmountInput}
             >
@@ -225,27 +231,29 @@ export const TransferQuickForm = (props: Props) => {
                 {isDefined(display.secondaryAmountText) ? (
                     <TransactionSecondaryAmount amount={display.secondaryAmountText} onPress={conversionPress} />
                 ) : null}
-                {showInlineFeeAction ? (
-                    <View className="mt-lg items-center">
-                        <TransactionFeePill
-                            amount={feeAmount}
-                            currencySymbol={feeCurrencySymbol}
-                            instrumentType={feeInstrumentType}
-                            showEmptyState
-                            onPress={handleFeePress}
-                        />
-                    </View>
-                ) : null}
+                <View className="mt-lg items-center">
+                    <QuickFormValidationSlot>
+                        {showInlineFeeAction ? (
+                            <TransactionFeePill
+                                amount={feeAmount}
+                                currencySymbol={feeCurrencySymbol}
+                                instrumentType={feeInstrumentType}
+                                showEmptyState
+                                onPress={handleFeePress}
+                            />
+                        ) : null}
+                    </QuickFormValidationSlot>
+                </View>
             </TransactionAmountDisplay>
 
             <TransactionFieldIcons>
-                <TransactionDateFieldIcon variant={variant} onPress={handleDatePress} />
-                <TransactionNoteFieldIcon variant={variant} onPress={handleCommentPress} />
-                {isDefined(onConsolidationPress) ? <TransactionSourcesFieldIcon variant={variant} onPress={onConsolidationPress} /> : null}
+                <TransactionDateFieldIcon onPress={handleDatePress} />
+                <TransactionNoteFieldIcon onPress={handleCommentPress} />
+                {isDefined(onConsolidationPress) ? <TransactionSourcesFieldIcon onPress={onConsolidationPress} /> : null}
             </TransactionFieldIcons>
 
             <View className="mb-xl gap-sm">
-                <TransactionTransferAccountsRow ref={transferAccountsRef} variant={variant} />
+                <TransactionTransferAccountsRow ref={transferAccountsRef} />
             </View>
 
             {conversion.isCrossCurrency ? (
@@ -263,7 +271,6 @@ export const TransferQuickForm = (props: Props) => {
             ) : null}
 
             <TransactionKeypad
-                variant={variant}
                 keypad={activeKeypad.handlers}
                 onConfirm={handleConfirm}
                 onCancel={onCancel}

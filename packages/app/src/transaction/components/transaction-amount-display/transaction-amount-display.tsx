@@ -9,6 +9,8 @@ import { isDefined } from '@rnw-community/shared';
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
 import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
 import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { useLocaleInfo } from '../../../i18n/hook/use-locale-info.hook';
+import { formatKeypadAmount } from '../../utils/format-keypad-amount.util';
 
 export interface TransactionAmountDisplayRef {
     shake: () => void;
@@ -25,7 +27,7 @@ interface Props {
     readonly children?: ReactNode;
 }
 
-const textVariants = cva('text-center font-semibold', {
+const textVariants = cva('text-center font-semibold tabular-nums', {
     variants: {
         variant: FOREGROUND_COLOR_PALETTE
     }
@@ -36,6 +38,7 @@ const BOUNCE_SPRING = { damping: 12, mass: 0.8, stiffness: 200 };
 const RETURN_SPRING = { damping: 15, mass: 1, stiffness: 150 };
 
 export const TransactionAmountDisplay = ({ ref, amount, currencySymbol, variant, topContent, onPress, testID, children }: Props) => {
+    const { decimalSeparator, digitGroupingSeparator } = useLocaleInfo();
     const { shake, animatedStyle: shakeStyle } = useShakeAnimation();
     const scale = useSharedValue(1);
     const previousAmount = useRef(amount);
@@ -59,7 +62,7 @@ export const TransactionAmountDisplay = ({ ref, amount, currencySymbol, variant,
         transform: [{ scale: scale.value }]
     }));
 
-    const fullDisplay = `${currencySymbol} ${amount}`;
+    const fullDisplay = `${currencySymbol} ${formatKeypadAmount(amount, decimalSeparator, digitGroupingSeparator)}`;
 
     return (
         <Animated.View entering={FadeIn.duration(200)} className="flex-1 items-center justify-center">

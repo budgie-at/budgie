@@ -8,22 +8,16 @@ import { isDefined } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
-import { BACKGROUND_COLOR_PALETTE } from '../../../@generic/constant/background-color-palette.constant';
-import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
-import { cn } from '../../../@generic/utils/cn.util';
 
-import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-
-type KeypadButtonVariant = 'digit' | 'action' | 'confirm' | 'cancel';
+type KeypadButtonVariant = 'digit' | 'action' | 'cancel';
 
 interface Props {
     readonly value?: string;
     readonly icon?: UserIconNameEnum;
     readonly variant?: KeypadButtonVariant;
-    readonly colorVariant?: ColorPaletteVariant;
+    readonly accessibilityLabel?: string;
     readonly onPress: () => void;
     readonly onLongPress?: () => void;
-    readonly disabled?: boolean;
     readonly testID?: string;
 }
 
@@ -39,39 +33,29 @@ const buttonVariants = cva<{
 }>('items-center justify-center rounded-xl', {
     variants: {
         buttonVariant: {
-            digit: 'flex-1 bg-ghost-background',
+            digit: 'flex-1 bg-transaction-detail-row',
             action: 'flex-1 bg-transparent',
-            confirm: 'flex-[2] h-14',
-            cancel: 'flex-1 h-14 bg-ghost-background'
+            cancel: 'flex-1 h-[56px] bg-transaction-detail-row'
         }
     },
     defaultVariants: { buttonVariant: 'digit' }
 });
 
-const confirmVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>('border-0', {
-    variants: { variant: BACKGROUND_COLOR_PALETTE }
-});
-
 const textVariants = cva<{
     buttonVariant: Record<KeypadButtonVariant, ClassValue>;
-}>('text-2xl font-semibold', {
+}>('text-2xl font-semibold tabular-nums', {
     variants: {
         buttonVariant: {
             digit: 'text-primary',
             action: 'text-secondary-foreground',
-            confirm: '',
             cancel: 'text-secondary-foreground'
         }
     },
     defaultVariants: { buttonVariant: 'digit' }
 });
 
-const confirmTextVariants = cva<{ variant: Record<ColorPaletteVariant, ClassValue> }>('', {
-    variants: { variant: FOREGROUND_COLOR_PALETTE }
-});
-
 export const TransactionKeypadButton = (props: Props) => {
-    const { value, icon, variant = 'digit', colorVariant = 'positive', onPress, onLongPress, disabled = false, testID } = props;
+    const { value, icon, variant = 'digit', accessibilityLabel, onPress, onLongPress, testID } = props;
 
     const pressed = useSharedValue(false);
 
@@ -92,31 +76,20 @@ export const TransactionKeypadButton = (props: Props) => {
         opacity: withTiming(pressed.value ? PRESSED_OPACITY : 1, { duration: OPACITY_DURATION_MS })
     }));
 
-    const isConfirm = variant === 'confirm';
-
-    const containerClassName = cn(buttonVariants({ buttonVariant: variant }), isConfirm && confirmVariants({ variant: colorVariant }));
-
-    const contentClassName = cn(textVariants({ buttonVariant: variant }), isConfirm && confirmTextVariants({ variant: colorVariant }));
-    const hasTestID = isDefined(testID);
+    const contentClassName = textVariants({ buttonVariant: variant });
 
     return (
         <HapticPressable
-            accessibilityLabel={value ?? icon}
+            accessibilityLabel={accessibilityLabel ?? value ?? icon}
             accessibilityRole="button"
-            className={containerClassName}
-            disabled={disabled}
+            className={buttonVariants({ buttonVariant: variant })}
             onLongPress={onLongPress}
             onPress={onPress}
             onPressIn={handlePressIn}
             onPressOut={handlePressOut}
-            {...(!isConfirm && hasTestID && { testID })}
+            testID={testID}
         >
-            <Animated.View
-                className="items-center justify-center"
-                collapsable={false}
-                style={animatedStyle}
-                {...(isConfirm && hasTestID && { testID })}
-            >
+            <Animated.View className="items-center justify-center" collapsable={false} style={animatedStyle}>
                 {isDefined(icon) ? (
                     <Icon className={contentClassName} icon={icon} size={ICON_SIZE} />
                 ) : (

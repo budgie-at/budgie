@@ -104,7 +104,7 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
         return null;
     }
 
-    const variant: ColorPaletteVariant = isIncrease ? 'positive' : 'destructive';
+    const variant: ColorPaletteVariant = isIncrease ? 'positive' : 'primary';
     const signedInstrumentSymbol = `${isIncrease ? '+' : '-'}${details.instrumentSymbol}`;
     const confirmDisabled = isSubmitting || !isPositiveNumber(numericValue);
 
@@ -146,16 +146,10 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
                 <View className="items-center">
                     <AmountSignPill isNegative={!isIncrease} variant={variant} onToggle={toggleIsIncrease} />
                 </View>
-                <AdjustmentAccountSummary details={details} variant={variant} />
+                <AdjustmentAccountSummary details={details} />
             </View>
 
-            <TransactionKeypad
-                variant={variant}
-                keypad={handlers}
-                onConfirm={handleConfirm}
-                onCancel={handleGoBack}
-                isConfirmDisabled={confirmDisabled}
-            />
+            <TransactionKeypad keypad={handlers} onConfirm={handleConfirm} onCancel={handleGoBack} isConfirmDisabled={confirmDisabled} />
         </View>
     );
 };

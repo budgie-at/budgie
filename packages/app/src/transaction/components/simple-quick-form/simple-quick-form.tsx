@@ -39,6 +39,7 @@ export const SimpleQuickForm = ({
 }: Props) => {
     const isExpense = transactionType === TransactionTypeEnum.EXPENSE;
     const variant = isExpense ? 'destructive' : 'positive';
+    const amountVariant = isExpense ? 'primary' : 'positive';
     const accountFieldName = isExpense ? 'fromAccountId' : 'toAccountId';
     const { displayValue, currencySymbol, instrumentType, keypadHandlers, setFromNumeric } = useQuickFormAmount({ accountFieldName });
     const formState = useSimpleQuickFormState({ accountFieldName, setFromNumeric });
@@ -62,7 +63,7 @@ export const SimpleQuickForm = ({
                         ref={amountDisplayRef}
                         amount={displayValue}
                         currencySymbol={currencySymbol}
-                        variant={variant}
+                        variant={amountVariant}
                         topContent={<SimpleQuickFormAmountHeader>{children}</SimpleQuickFormAmountHeader>}
                         testID={SimpleQuickFormSelector.AmountInput}
                     >

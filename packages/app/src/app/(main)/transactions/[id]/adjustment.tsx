@@ -33,7 +33,7 @@ export default function UpdateAdjustmentTransactionPage() {
     const handleGoBack = () => void goBackOrReplace('/');
 
     return (
-        <FullPage header={<PageHeader title={t`Balance Adjustment`} onGoBack={handleGoBack} />}>
+        <FullPage className="bg-grouped-surface" header={<PageHeader title={t`Balance Adjustment`} onGoBack={handleGoBack} />}>
             <UpdateAdjustmentTransaction transaction={transaction} transactionId={transactionId} />
         </FullPage>
     );

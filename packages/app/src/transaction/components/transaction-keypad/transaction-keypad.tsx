@@ -1,13 +1,14 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 
 import { KeypadDigitButton } from '../keypad-digit-button/keypad-digit-button';
 import { TransactionKeypadButton } from '../transaction-keypad-button/transaction-keypad-button';
+import { TransactionKeypadConfirmButton } from '../transaction-keypad-confirm-button/transaction-keypad-confirm-button';
 
 import { TransactionKeypadSelector } from './transaction-keypad.selector';
 
-import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import type { KeypadHandlersInterface } from '../../interface/keypad-handlers.interface';
 
 const DIGIT_ROWS = [
@@ -17,7 +18,6 @@ const DIGIT_ROWS = [
 ] as const;
 
 interface Props {
-    readonly variant: ColorPaletteVariant;
     readonly keypad: KeypadHandlersInterface;
     readonly onConfirm: () => void;
     readonly onCancel: () => void;
@@ -26,7 +26,8 @@ interface Props {
 }
 
 export const TransactionKeypad = (props: Props) => {
-    const { variant, keypad, onConfirm, onCancel, isConfirmDisabled, confirmTestID } = props;
+    const { keypad, onConfirm, onCancel, isConfirmDisabled = false, confirmTestID } = props;
+    const { t } = useLingui();
 
     return (
         <Animated.View entering={FadeInUp.delay(100).duration(250)} className="flex-1 pb-lg">
@@ -53,15 +54,8 @@ export const TransactionKeypad = (props: Props) => {
                 </View>
 
                 <View className="flex-row gap-md">
-                    <TransactionKeypadButton icon={UserIconNameEnum.X} variant="cancel" onPress={onCancel} />
-                    <TransactionKeypadButton
-                        icon={UserIconNameEnum.CircleCheck}
-                        variant="confirm"
-                        colorVariant={variant}
-                        onPress={onConfirm}
-                        disabled={isConfirmDisabled}
-                        testID={confirmTestID}
-                    />
+                    <TransactionKeypadButton icon={UserIconNameEnum.X} variant="cancel" accessibilityLabel={t`Cancel`} onPress={onCancel} />
+                    <TransactionKeypadConfirmButton isDisabled={isConfirmDisabled} onPress={onConfirm} testID={confirmTestID} />
                 </View>
             </View>
         </Animated.View>

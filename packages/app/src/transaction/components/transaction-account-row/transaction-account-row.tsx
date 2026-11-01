@@ -11,7 +11,6 @@ import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon'
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
-import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
 import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 import { AccountInactiveIcon } from '../../../account/component/account-inactive-icon/account-inactive-icon';
 import { useAccountSelectorModal } from '../../../account/context/account-selector-modal.context';
@@ -26,13 +25,12 @@ export interface TransactionAccountRowRef {
 
 interface Props {
     readonly ref?: RefObject<TransactionAccountRowRef | null>;
-    readonly variant: ColorPaletteVariant;
     readonly fieldName: 'fromAccountId' | 'toAccountId';
     readonly label?: string;
     readonly testID?: string;
 }
 
-export const TransactionAccountRow = ({ ref, variant, fieldName, label, testID }: Props) => {
+export const TransactionAccountRow = ({ ref, fieldName, label, testID }: Props) => {
     const { t } = useLingui();
     const { control, setValue } = useFormContext<TransactionCreateInputInterface>();
     const [openAccountSelector] = useAccountSelectorModal();
@@ -70,7 +68,7 @@ export const TransactionAccountRow = ({ ref, variant, fieldName, label, testID }
         <Animated.View entering={FadeInUp.delay(ANIMATION_DELAY).duration(200)}>
             <Animated.View style={shakeStyle}>
                 <HapticPressable
-                    className="relative flex-row items-center px-lg py-md gap-md bg-secondary-background rounded-2xl"
+                    className="relative min-h-[56px] flex-row items-center px-lg py-md gap-md bg-transaction-detail-row rounded-2xl"
                     onPress={handlePress}
                     accessibilityLabel={accessibilityLabel}
                     accessibilityRole="button"
@@ -84,12 +82,23 @@ export const TransactionAccountRow = ({ ref, variant, fieldName, label, testID }
                     ) : null}
 
                     <AccountInactiveIcon isInactive={isInactiveAccount} size={28}>
-                        <CircleIcon icon={account?.icon ?? UserIconNameEnum.Wallet} variant={variant} size={28} iconSize={14} radius={8} />
+                        <CircleIcon
+                            icon={account?.icon ?? UserIconNameEnum.Wallet}
+                            variant="ghost"
+                            border={false}
+                            size={28}
+                            iconSize={14}
+                            radius={8}
+                        />
                     </AccountInactiveIcon>
 
                     <View className="flex-1">
-                        <Text className="text-xs text-secondary-foreground uppercase">{displayLabel}</Text>
-                        <Text className="text-md font-medium text-primary" numberOfLines={1} {...testIDProps(selectedAccountTestID)}>
+                        <Text className="text-[13px] leading-[18px] text-secondary-foreground">{displayLabel}</Text>
+                        <Text
+                            className="text-[15px] leading-[20px] font-medium text-primary"
+                            numberOfLines={1}
+                            {...testIDProps(selectedAccountTestID)}
+                        >
                             {account?.title ?? t`Select account`}
                         </Text>
                     </View>

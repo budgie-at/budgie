@@ -44,7 +44,11 @@ export default function CreateTransferTransactionPage() {
 
     return (
         <FormProvider {...form}>
-            <FullPage header={<PageHeader title={t`New Transfer`} onGoBack={handleGoBack} />} safeEdges={SAFE_EDGES}>
+            <FullPage
+                className="bg-grouped-surface"
+                header={<PageHeader title={t`New Transfer`} onGoBack={handleGoBack} />}
+                safeEdges={SAFE_EDGES}
+            >
                 <TransferQuickForm variant="default" onSubmit={handleSubmit} onCancel={handleGoBack} />
             </FullPage>
         </FormProvider>

@@ -40,6 +40,7 @@ export const UpdateTransferTransaction = ({ transaction, openFeeOnMount }: Updat
     return (
         <FormProvider {...form}>
             <FullPage
+                className="bg-grouped-surface"
                 header={
                     <PageHeader
                         title={t`Edit Transfer`}

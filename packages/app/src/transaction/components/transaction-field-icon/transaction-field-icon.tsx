@@ -6,11 +6,11 @@ import Animated, { FadeInUp, useAnimatedStyle, useSharedValue, withSpring } from
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
 import { useShakeAnimation } from '../../../@generic/hook/use-shake-animation.hook';
-import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { cn } from '../../../@generic/utils/cn.util';
 import { testID as testIDProps } from '../../../@generic/utils/test-id.util';
 
 export interface TransactionFieldIconRef {
@@ -22,16 +22,16 @@ interface Props {
     readonly icon: UserIconType;
     readonly label: string;
     readonly value?: string;
-    readonly variant: ColorPaletteVariant;
     readonly onPress: () => void;
     readonly animationDelay?: number;
     readonly testID?: string;
 }
 
 const PRESSED_SCALE = 0.95;
+const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
 export const TransactionFieldIcon = (props: Props) => {
-    const { ref, icon, label, value, variant, onPress, animationDelay = 0, testID } = props;
+    const { ref, icon, label, value, onPress, animationDelay = 0, testID } = props;
 
     const pressed = useSharedValue(false);
     const { shake, animatedStyle: shakeStyle } = useShakeAnimation();
@@ -51,15 +51,16 @@ export const TransactionFieldIcon = (props: Props) => {
     };
 
     const hasValue = isNotEmptyString(value);
-    const circleIconVariant = hasValue ? variant : 'ghost';
+    const tileClassName = hasValue ? 'bg-surface-disc' : 'bg-transaction-detail-row';
+    const glyphClassName = hasValue ? 'text-primary' : 'text-secondary-foreground';
     const accessibilityLabel = `${label}: ${value ?? t`not set`}`;
 
     return (
-        <Animated.View entering={FadeInUp.delay(animationDelay).duration(200)} className="flex-1 items-center">
+        <Animated.View entering={FadeInUp.delay(animationDelay).duration(200)} className="flex-1">
             <Animated.View style={shakeStyle}>
                 <Animated.View style={pressedStyle}>
                     <HapticPressable
-                        className="items-center gap-sm"
+                        className="items-center gap-sm px-xxs"
                         onPress={onPress}
                         onPressIn={handlePressIn}
                         onPressOut={handlePressOut}
@@ -70,13 +71,18 @@ export const TransactionFieldIcon = (props: Props) => {
                         nativeID={testID}
                         testID={testID}
                     >
-                        <CircleIcon icon={icon} variant={circleIconVariant} size={44} iconSize={20} radius={14} />
-                        <View className="items-center gap-y-0.5 h-[28px]">
-                            <Text className="text-xs text-secondary-foreground uppercase" numberOfLines={1}>
+                        <View
+                            className={cn('h-[44px] w-[44px] items-center justify-center rounded-[14px]', tileClassName)}
+                            style={CONTINUOUS_CORNERS}
+                        >
+                            <Icon className={glyphClassName} icon={icon} size={20} />
+                        </View>
+                        <View className="h-[34px] items-center self-stretch">
+                            <Text className="text-[12px] leading-[16px] text-secondary-foreground" numberOfLines={1}>
                                 {label}
                             </Text>
                             <Text
-                                className="text-xs text-primary font-medium max-w-[68px] min-h-[14px]"
+                                className="self-stretch text-center text-[13px] leading-[18px] font-medium text-primary"
                                 numberOfLines={1}
                                 {...testIDProps(testID, TestIDPartEnum.TITLE)}
                             >

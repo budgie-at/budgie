@@ -10,13 +10,7 @@ import { getTagsDisplayValue } from '../../utils/get-tags-display-value.util';
 import { SimpleQuickFormSelector } from '../simple-quick-form/simple-quick-form.selector';
 import { TransactionFieldIcon } from '../transaction-field-icon/transaction-field-icon';
 
-import type { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
-
-interface Props {
-    readonly variant: ColorPaletteVariant;
-}
-
-export const TransactionTagsFieldIcon = ({ variant }: Props) => {
+export const TransactionTagsFieldIcon = () => {
     const { t } = useLingui();
     const { control, setValue } = useFormContext<TransactionCreateInputInterface>();
     const [openTagsSelector] = useTagsSelectorModal();
@@ -38,7 +32,6 @@ export const TransactionTagsFieldIcon = ({ variant }: Props) => {
             icon={UserIconNameEnum.Tag}
             label={t`Tags`}
             value={tagsValue}
-            variant={variant}
             onPress={handlePress}
             animationDelay={80}
             testID={SimpleQuickFormSelector.TagsSelector}
