@@ -10,8 +10,6 @@ export type { UseSuggestionReturnInterface } from './suggestion/interface/use-su
 
 export { TranslationLlmService } from './suggestion/service/translation-llm.service';
 
-export { ReceiptMerchantLlmService } from './receipt/service/receipt-merchant-llm.service';
-
 export type { AITransactionInterface } from './voice/interface/ai-transaction.interface';
 
 export {
