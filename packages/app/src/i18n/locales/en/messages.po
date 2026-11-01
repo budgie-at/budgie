@@ -1616,7 +1616,6 @@ msgstr "Carry all"
 msgid "Carry savings"
 msgstr "Carry savings"
 
-#: src/account/component/cash-card/cash-card.tsx
 #: src/account/constant/account-type.constant.ts
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "Cash"

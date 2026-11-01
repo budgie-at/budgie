@@ -1615,7 +1615,6 @@ msgstr "Переносити все"
 msgid "Carry savings"
 msgstr "Переносити заощадження"
 
-#: src/account/component/cash-card/cash-card.tsx
 #: src/account/constant/account-type.constant.ts
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "Cash"

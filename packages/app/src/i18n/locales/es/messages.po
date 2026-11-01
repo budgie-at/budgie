@@ -1615,7 +1615,6 @@ msgstr "Trasladar todo"
 msgid "Carry savings"
 msgstr "Trasladar ahorros"
 
-#: src/account/component/cash-card/cash-card.tsx
 #: src/account/constant/account-type.constant.ts
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "Cash"
