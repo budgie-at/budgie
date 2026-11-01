@@ -154,17 +154,21 @@ class IconSearchService {
 
     private findCandidates(entries: readonly IconSearchEntryInterface[], variants: readonly string[]): IconSearchEntryInterface[] {
         const { tokens, postings } = this.getTokenIndex(entries);
-        const entryIndexes = new Set<number>();
+        const isCandidate = new Uint8Array(entries.length);
 
         variants.forEach(variant => {
             const [prefix] = variant.split(/[| ]/u);
             const start = this.countTokensBefore(tokens, token => token < prefix);
             const end = this.countTokensBefore(tokens, token => token < prefix || token.startsWith(prefix));
 
-            tokens.slice(start, end).forEach(token => postings.get(token)?.forEach(entryIndex => void entryIndexes.add(entryIndex)));
+            tokens.slice(start, end).forEach(token =>
+                postings.get(token)?.forEach(entryIndex => {
+                    isCandidate[entryIndex] = 1;
+                })
+            );
         });
 
-        return [...entryIndexes].sort((first, second) => first - second).map(entryIndex => entries[entryIndex]);
+        return entries.filter((_entry, entryIndex) => isCandidate[entryIndex] === 1);
     }
 
     private getTokenIndex(entries: readonly IconSearchEntryInterface[]): IconSearchTokenIndexInterface {
