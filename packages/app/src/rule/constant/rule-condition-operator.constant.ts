@@ -15,21 +15,21 @@ export const RULE_CONDITION_OPERATOR: Record<RuleConditionOperatorEnum, RuleOpti
         label: msg`Is not`,
         phrase: msg`is not`,
         description: msg`Anything except this value`,
-        icon: UserIconNameEnum.Ban,
+        icon: UserIconNameEnum.CircleSlash2,
         variant: 'ghost'
     },
     [RuleConditionOperatorEnum.CONTAINS]: {
         label: msg`Contains`,
         phrase: msg`contains`,
         description: msg`The text appears anywhere`,
-        icon: UserIconNameEnum.TextSearch,
+        icon: UserIconNameEnum.Search,
         variant: 'ghost'
     },
     [RuleConditionOperatorEnum.NOT_CONTAINS]: {
         label: msg`Does not contain`,
         phrase: msg`does not contain`,
         description: msg`The text appears nowhere`,
-        icon: UserIconNameEnum.SearchX,
+        icon: UserIconNameEnum.ZoomOut,
         variant: 'ghost'
     },
     [RuleConditionOperatorEnum.MATCHES_REGEX]: {

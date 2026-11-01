@@ -6,4 +6,6 @@ export interface RuleConditionLabelInterface {
     readonly listValue: string;
     readonly shortPredicate: string;
     readonly hasValue: boolean;
+    readonly sentenceTemplate: string;
+    readonly phraseTemplate: string;
 }

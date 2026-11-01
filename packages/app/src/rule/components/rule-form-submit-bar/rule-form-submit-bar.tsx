@@ -21,7 +21,7 @@ interface Props {
 }
 
 const DISABLED_STATE = { disabled: true };
-const FADE_HEIGHT = 150;
+const FADE_HEIGHT = 112;
 
 export const RuleFormSubmitBar = ({ submitLabel, isSubmitting, onSubmit }: Props) => {
     const { t } = useLingui();

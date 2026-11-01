@@ -51,7 +51,7 @@ export const RuleConditionAmountValueInput = ({ index, testID, secondaryTestID }
                         keyboardType="decimal-pad"
                         style={TABULAR_STYLE}
                     />
-                    {isRange ? null : <Text className="text-[13px] text-secondary-foreground">{t`account currency`}</Text>}
+                    {isRange ? null : <Text className="text-[13px] text-secondary-foreground opacity-60">{t`account currency`}</Text>}
                 </RuleValueField>
                 {isRange ? (
                     <>
@@ -76,7 +76,7 @@ export const RuleConditionAmountValueInput = ({ index, testID, secondaryTestID }
                 ) : null}
             </View>
             <Text className="text-[13px] text-secondary-foreground">
-                <Trans>Compared with the payment amount in its account currency, without the minus sign.</Trans>
+                <Trans>Ignores the minus sign.</Trans>
             </Text>
         </View>
     );

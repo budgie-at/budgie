@@ -259,6 +259,42 @@ msgstr "{duplicateTransactionCount, plural, one {# omitida} other {# omitidas}}"
 msgid "{fieldLabel} {operatorLabel}, value"
 msgstr "{fieldLabel} {operatorLabel}, valor"
 
+#: src/rule/hooks/use-rule-condition-formatter.hook.ts
+msgid "{fieldLabel} contains {value}"
+msgstr "{fieldLabel} contiene {value}"
+
+#: src/rule/hooks/use-rule-condition-formatter.hook.ts
+msgid "{fieldLabel} does not contain {value}"
+msgstr "{fieldLabel} no contiene {value}"
+
+#: src/rule/hooks/use-rule-condition-formatter.hook.ts
+msgid "{fieldLabel} is {value}"
+msgstr "{fieldLabel} es {value}"
+
+#: src/rule/hooks/use-rule-condition-formatter.hook.ts
+msgid "{fieldLabel} is any of {value}"
+msgstr "{fieldLabel} es uno de {value}"
+
+#: src/rule/hooks/use-rule-condition-formatter.hook.ts
+msgid "{fieldLabel} is between {value}"
+msgstr "{fieldLabel} está entre {value}"
+
+#: src/rule/hooks/use-rule-condition-formatter.hook.ts
+msgid "{fieldLabel} is less than {value}"
+msgstr "{fieldLabel} es menor que {value}"
+
+#: src/rule/hooks/use-rule-condition-formatter.hook.ts
+msgid "{fieldLabel} is more than {value}"
+msgstr "{fieldLabel} es mayor que {value}"
+
+#: src/rule/hooks/use-rule-condition-formatter.hook.ts
+msgid "{fieldLabel} is not {value}"
+msgstr "{fieldLabel} no es {value}"
+
+#: src/rule/hooks/use-rule-condition-formatter.hook.ts
+msgid "{fieldLabel} matches {value}"
+msgstr "{fieldLabel} coincide con {value}"
+
 #: src/settings/components/your-data-card/your-data-card.tsx
 msgid "{fileSize} · Stored only on this device"
 msgstr "{fileSize} · Guardado solo en este dispositivo"
@@ -362,10 +398,6 @@ msgstr "{installmentCount, plural, one {# pago en total} other {# pagos en total
 #: src/installment-plan/component/convert-to-installment-create-button/convert-to-installment-create-button.tsx
 msgid "{installmentCount, plural, one {Split into # payment} other {Split into # payments}}"
 msgstr "{installmentCount, plural, one {Dividir en # pago} other {Dividir en # pagos}}"
-
-#: src/rule/components/rule-summary-conditions/rule-summary-conditions.tsx
-msgid "{joiner} {remainingCount} more"
-msgstr "{joiner} {remainingCount} más"
 
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "{loadedDays}/{totalDays} days"
@@ -493,6 +525,14 @@ msgstr "Descarga única de {remaining} GB"
 #: src/categorize-inbox/components/categorize-inbox-nav-subtitle/categorize-inbox-nav-subtitle.tsx
 msgid "{remainingCount, plural, one {# to sort} other {# to sort}}"
 msgstr "{remainingCount, plural, one {# por ordenar} other {# por ordenar}}"
+
+#: src/rule/components/rule-summary-conditions/rule-summary-conditions.tsx
+msgid "{remainingCount, plural, one {and # other condition} other {and # other conditions}}"
+msgstr "{remainingCount, plural, one {y # condición más} other {y # condiciones más}}"
+
+#: src/rule/components/rule-summary-conditions/rule-summary-conditions.tsx
+msgid "{remainingCount, plural, one {or # other condition} other {or # other conditions}}"
+msgstr "{remainingCount, plural, one {o # condición más} other {o # condiciones más}}"
 
 #: src/categorize-inbox/components/categorize-inbox-hero/categorize-inbox-hero.tsx
 msgid "{remainingCount, plural, one {payment to sort} other {payments to sort}}"
@@ -797,7 +837,6 @@ msgid "Account actions"
 msgstr "Acciones de la cuenta"
 
 #: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx
-#: src/rule/hooks/use-rule-condition-formatter.hook.ts
 msgid "account currency"
 msgstr "moneda de la cuenta"
 
@@ -881,10 +920,6 @@ msgstr "Añadir una transacción"
 #: src/rule/utils/get-rule-form-issue.util.ts
 msgid "Add a value to continue"
 msgstr "Añade un valor para continuar"
-
-#: src/rule/hooks/use-rule-text-value-meta.hook.ts
-msgid "Add a value to save this rule"
-msgstr "Añade un valor para guardar la regla"
 
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add Account"
@@ -1757,10 +1792,6 @@ msgstr "Elige una categoría"
 msgid "Choose a category to continue"
 msgstr "Elige una categoría para continuar"
 
-#: src/rule/components/rule-action-category-selector/rule-action-category-selector.tsx
-msgid "Choose a category to save this rule"
-msgstr "Elige una categoría para guardar la regla"
-
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Choose a different PIN"
 msgstr "Elegir otro PIN"
@@ -1768,10 +1799,6 @@ msgstr "Elegir otro PIN"
 #: src/rule/components/rule-condition-mcc-selector/rule-condition-mcc-selector.tsx
 msgid "Choose a merchant category"
 msgstr "Elige una categoría de comercio"
-
-#: src/rule/components/rule-condition-mcc-selector/rule-condition-mcc-selector.tsx
-msgid "Choose a merchant category to save this rule"
-msgstr "Elige una categoría de comercio para guardar la regla"
 
 #: src/transaction/components/statistics-period-control/statistics-period-control.tsx
 msgid "Choose a period"
@@ -1798,17 +1825,9 @@ msgstr "Elige una etiqueta"
 msgid "Choose a tag to continue"
 msgstr "Elige una etiqueta para continuar"
 
-#: src/rule/components/rule-action-tag-selector/rule-action-tag-selector.tsx
-msgid "Choose a tag to save this rule"
-msgstr "Elige una etiqueta para guardar la regla"
-
 #: src/rule/components/rule-condition-value-input/rule-condition-value-input.tsx
 msgid "Choose a type"
 msgstr "Elige un tipo"
-
-#: src/rule/components/rule-condition-value-enum-selector/rule-condition-value-enum-selector.tsx
-msgid "Choose a value to save this rule"
-msgstr "Elige un valor para guardar la regla"
 
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Choose accounts"
@@ -1821,11 +1840,6 @@ msgstr "Elige una cuenta"
 #: src/rule/utils/get-rule-form-issue.util.ts
 msgid "Choose an account to continue"
 msgstr "Elige una cuenta para continuar"
-
-#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
-#: src/rule/components/rule-condition-account-selector/rule-condition-account-selector.tsx
-msgid "Choose an account to save this rule"
-msgstr "Elige una cuenta para guardar la regla"
 
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 msgid "Choose an action"
@@ -1922,6 +1936,10 @@ msgstr "Saldo final · {title}"
 msgid "Coinbase"
 msgstr "Coinbase"
 
+#: src/rule/components/rule-condition-row/rule-condition-row.tsx
+msgid "Collapse condition {position}"
+msgstr "Contraer condición {position}"
+
 #: src/rule/constant/rule-condition-field.constant.ts
 msgid "comment"
 msgstr "comentario"
@@ -1934,10 +1952,6 @@ msgstr "Comentario"
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "Committed {committedExpense} per month"
 msgstr "Comprometido al mes: {committedExpense}"
-
-#: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx
-msgid "Compared with the payment amount in its account currency, without the minus sign."
-msgstr "Se compara con el importe del pago en la moneda de su cuenta, sin el signo menos."
 
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Comparison: {label}"
@@ -3514,6 +3528,10 @@ msgstr "Si no lo recuerdas, esta copia no se puede abrir. Puedes empezar de cero
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "If you forget it, nobody can open this file, including you and us."
 msgstr "Si lo olvidas, nadie podrá abrir este archivo, ni tú ni nosotros."
+
+#: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx
+msgid "Ignores the minus sign."
+msgstr "Se ignora el signo menos."
 
 #: src/app/(main)/create-account/index.tsx
 msgid "Import a PDF statement"
@@ -5441,6 +5459,11 @@ msgstr "Informar de un error"
 msgid "Report a bug or idea"
 msgstr "Informar de un error o idea"
 
+#: src/rule/components/rule-value-picker-button/rule-value-picker-button.tsx
+#: src/rule/hooks/use-rule-text-value-meta.hook.ts
+msgid "Required"
+msgstr "Obligatorio"
+
 #: src/budget/components/budget-verdict-footer/budget-verdict-footer.tsx
 msgid "Reserving {upcomingAmount} for {billsLabel}"
 msgstr "Reservando {upcomingAmount} para {billsLabel}"
@@ -6713,7 +6736,6 @@ msgstr "Error de transcripción"
 
 #: src/categorize-inbox/components/categorize-inbox-group-row-subtitle/categorize-inbox-group-row-subtitle.tsx
 #: src/categorize-inbox/components/categorize-inbox-group-transfer-lead/categorize-inbox-group-transfer-lead.tsx
-#: src/rule/utils/get-rule-outcome-parts.util.ts
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/constant/transaction-type.constant.ts
 #: src/transaction/hook/use-transaction-subtitle-segments.hook.ts

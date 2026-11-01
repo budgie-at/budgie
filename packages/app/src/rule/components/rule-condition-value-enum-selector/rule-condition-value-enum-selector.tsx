@@ -58,7 +58,6 @@ export const RuleConditionValueEnumSelector = ({ index, options, icon, sheetTitl
             placeholder={placeholder}
             name={sheetTitle}
             isMissing={isMissing}
-            missingHint={t`Choose a value to save this rule`}
             leading={<RuleValueGlyph icon={selectedOption?.icon ?? icon} variant="ghost" />}
             onPress={handleOpen}
             testID={testID}

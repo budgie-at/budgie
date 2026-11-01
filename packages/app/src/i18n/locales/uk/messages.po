@@ -259,6 +259,42 @@ msgstr "{duplicateTransactionCount, plural, one {# пропущено} few {# п
 msgid "{fieldLabel} {operatorLabel}, value"
 msgstr "{fieldLabel} {operatorLabel}, значення"
 
+#: src/rule/hooks/use-rule-condition-formatter.hook.ts
+msgid "{fieldLabel} contains {value}"
+msgstr "{fieldLabel} містить {value}"
+
+#: src/rule/hooks/use-rule-condition-formatter.hook.ts
+msgid "{fieldLabel} does not contain {value}"
+msgstr "{fieldLabel} не містить {value}"
+
+#: src/rule/hooks/use-rule-condition-formatter.hook.ts
+msgid "{fieldLabel} is {value}"
+msgstr "{fieldLabel} дорівнює {value}"
+
+#: src/rule/hooks/use-rule-condition-formatter.hook.ts
+msgid "{fieldLabel} is any of {value}"
+msgstr "{fieldLabel} — одне з {value}"
+
+#: src/rule/hooks/use-rule-condition-formatter.hook.ts
+msgid "{fieldLabel} is between {value}"
+msgstr "{fieldLabel} між {value}"
+
+#: src/rule/hooks/use-rule-condition-formatter.hook.ts
+msgid "{fieldLabel} is less than {value}"
+msgstr "{fieldLabel} менше ніж {value}"
+
+#: src/rule/hooks/use-rule-condition-formatter.hook.ts
+msgid "{fieldLabel} is more than {value}"
+msgstr "{fieldLabel} більше ніж {value}"
+
+#: src/rule/hooks/use-rule-condition-formatter.hook.ts
+msgid "{fieldLabel} is not {value}"
+msgstr "{fieldLabel} не дорівнює {value}"
+
+#: src/rule/hooks/use-rule-condition-formatter.hook.ts
+msgid "{fieldLabel} matches {value}"
+msgstr "{fieldLabel} відповідає {value}"
+
 #: src/settings/components/your-data-card/your-data-card.tsx
 msgid "{fileSize} · Stored only on this device"
 msgstr "{fileSize} · Зберігається лише на цьому пристрої"
@@ -362,10 +398,6 @@ msgstr "{installmentCount, plural, one {усього # платіж} few {усь
 #: src/installment-plan/component/convert-to-installment-create-button/convert-to-installment-create-button.tsx
 msgid "{installmentCount, plural, one {Split into # payment} other {Split into # payments}}"
 msgstr "{installmentCount, plural, one {Розбити на # платіж} few {Розбити на # платежі} many {Розбити на # платежів} other {Розбити на # платежу}}"
-
-#: src/rule/components/rule-summary-conditions/rule-summary-conditions.tsx
-msgid "{joiner} {remainingCount} more"
-msgstr "{joiner} ще {remainingCount}"
 
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "{loadedDays}/{totalDays} days"
@@ -493,6 +525,14 @@ msgstr "Одноразове завантаження {remaining} ГБ"
 #: src/categorize-inbox/components/categorize-inbox-nav-subtitle/categorize-inbox-nav-subtitle.tsx
 msgid "{remainingCount, plural, one {# to sort} other {# to sort}}"
 msgstr "{remainingCount, plural, one {# до сортування} few {# до сортування} many {# до сортування} other {# до сортування}}"
+
+#: src/rule/components/rule-summary-conditions/rule-summary-conditions.tsx
+msgid "{remainingCount, plural, one {and # other condition} other {and # other conditions}}"
+msgstr "{remainingCount, plural, one {і ще # умова} few {і ще # умови} many {і ще # умов} other {і ще # умови}}"
+
+#: src/rule/components/rule-summary-conditions/rule-summary-conditions.tsx
+msgid "{remainingCount, plural, one {or # other condition} other {or # other conditions}}"
+msgstr "{remainingCount, plural, one {або ще # умова} few {або ще # умови} many {або ще # умов} other {або ще # умови}}"
 
 #: src/categorize-inbox/components/categorize-inbox-hero/categorize-inbox-hero.tsx
 msgid "{remainingCount, plural, one {payment to sort} other {payments to sort}}"
@@ -797,7 +837,6 @@ msgid "Account actions"
 msgstr "Дії з рахунком"
 
 #: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx
-#: src/rule/hooks/use-rule-condition-formatter.hook.ts
 msgid "account currency"
 msgstr "валюта рахунку"
 
@@ -881,10 +920,6 @@ msgstr "Додати транзакцію"
 #: src/rule/utils/get-rule-form-issue.util.ts
 msgid "Add a value to continue"
 msgstr "Додайте значення, щоб продовжити"
-
-#: src/rule/hooks/use-rule-text-value-meta.hook.ts
-msgid "Add a value to save this rule"
-msgstr "Додайте значення, щоб зберегти правило"
 
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add Account"
@@ -1757,10 +1792,6 @@ msgstr "Виберіть категорію"
 msgid "Choose a category to continue"
 msgstr "Виберіть категорію, щоб продовжити"
 
-#: src/rule/components/rule-action-category-selector/rule-action-category-selector.tsx
-msgid "Choose a category to save this rule"
-msgstr "Виберіть категорію, щоб зберегти правило"
-
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Choose a different PIN"
 msgstr "Вибрати інший PIN-код"
@@ -1768,10 +1799,6 @@ msgstr "Вибрати інший PIN-код"
 #: src/rule/components/rule-condition-mcc-selector/rule-condition-mcc-selector.tsx
 msgid "Choose a merchant category"
 msgstr "Виберіть категорію продавця"
-
-#: src/rule/components/rule-condition-mcc-selector/rule-condition-mcc-selector.tsx
-msgid "Choose a merchant category to save this rule"
-msgstr "Виберіть категорію продавця, щоб зберегти правило"
 
 #: src/transaction/components/statistics-period-control/statistics-period-control.tsx
 msgid "Choose a period"
@@ -1798,17 +1825,9 @@ msgstr "Виберіть тег"
 msgid "Choose a tag to continue"
 msgstr "Виберіть тег, щоб продовжити"
 
-#: src/rule/components/rule-action-tag-selector/rule-action-tag-selector.tsx
-msgid "Choose a tag to save this rule"
-msgstr "Виберіть тег, щоб зберегти правило"
-
 #: src/rule/components/rule-condition-value-input/rule-condition-value-input.tsx
 msgid "Choose a type"
 msgstr "Виберіть тип"
-
-#: src/rule/components/rule-condition-value-enum-selector/rule-condition-value-enum-selector.tsx
-msgid "Choose a value to save this rule"
-msgstr "Виберіть значення, щоб зберегти правило"
 
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Choose accounts"
@@ -1821,11 +1840,6 @@ msgstr "Виберіть рахунок"
 #: src/rule/utils/get-rule-form-issue.util.ts
 msgid "Choose an account to continue"
 msgstr "Виберіть рахунок, щоб продовжити"
-
-#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
-#: src/rule/components/rule-condition-account-selector/rule-condition-account-selector.tsx
-msgid "Choose an account to save this rule"
-msgstr "Виберіть рахунок, щоб зберегти правило"
 
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 msgid "Choose an action"
@@ -1922,6 +1936,10 @@ msgstr "Кінцевий баланс · {title}"
 msgid "Coinbase"
 msgstr "Coinbase"
 
+#: src/rule/components/rule-condition-row/rule-condition-row.tsx
+msgid "Collapse condition {position}"
+msgstr "Згорнути умову {position}"
+
 #: src/rule/constant/rule-condition-field.constant.ts
 msgid "comment"
 msgstr "коментар"
@@ -1934,10 +1952,6 @@ msgstr "Коментар"
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "Committed {committedExpense} per month"
 msgstr "Регулярні витрати на місяць: {committedExpense}"
-
-#: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx
-msgid "Compared with the payment amount in its account currency, without the minus sign."
-msgstr "Порівнюється із сумою платежу у валюті рахунку, без знака мінус."
 
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Comparison: {label}"
@@ -3514,6 +3528,10 @@ msgstr "Якщо ви його не пам'ятаєте, цю резервну �
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "If you forget it, nobody can open this file, including you and us."
 msgstr "Якщо ви його забудете, ніхто не зможе відкрити цей файл — ні ви, ні ми."
+
+#: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx
+msgid "Ignores the minus sign."
+msgstr "Знак мінус ігнорується."
 
 #: src/app/(main)/create-account/index.tsx
 msgid "Import a PDF statement"
@@ -5441,6 +5459,11 @@ msgstr "Повідомити про помилку"
 msgid "Report a bug or idea"
 msgstr "Повідомити про помилку чи ідею"
 
+#: src/rule/components/rule-value-picker-button/rule-value-picker-button.tsx
+#: src/rule/hooks/use-rule-text-value-meta.hook.ts
+msgid "Required"
+msgstr "Обов’язково"
+
 #: src/budget/components/budget-verdict-footer/budget-verdict-footer.tsx
 msgid "Reserving {upcomingAmount} for {billsLabel}"
 msgstr "Резервуємо {upcomingAmount} на {billsLabel}"
@@ -6713,7 +6736,6 @@ msgstr "Помилка транскрипції"
 
 #: src/categorize-inbox/components/categorize-inbox-group-row-subtitle/categorize-inbox-group-row-subtitle.tsx
 #: src/categorize-inbox/components/categorize-inbox-group-transfer-lead/categorize-inbox-group-transfer-lead.tsx
-#: src/rule/utils/get-rule-outcome-parts.util.ts
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/constant/transaction-type.constant.ts
 #: src/transaction/hook/use-transaction-subtitle-segments.hook.ts

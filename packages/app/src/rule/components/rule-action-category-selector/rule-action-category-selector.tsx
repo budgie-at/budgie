@@ -37,7 +37,6 @@ export const RuleActionCategorySelector = ({ index, testID }: Props) => {
         <RuleValuePickerButton
             value={category?.title ?? null}
             isMissing={isMissing}
-            missingHint={t`Choose a category to save this rule`}
             leading={<RuleValueGlyph icon={category?.icon ?? UserIconNameEnum.FolderOpen} variant="violet" />}
             placeholder={t`Choose a category`}
             name={t`Category`}

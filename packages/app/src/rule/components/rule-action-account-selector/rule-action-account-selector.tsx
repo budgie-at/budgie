@@ -81,7 +81,6 @@ export const RuleActionAccountSelector = ({ index, testID }: Props) => {
             <RuleValuePickerButton
                 value={account?.title ?? null}
                 isMissing={isMissing}
-                missingHint={t`Choose an account to save this rule`}
                 leading={<RuleValueGlyph icon={UserIconNameEnum.Wallet} variant="cyan" />}
                 placeholder={t(label)}
                 name={t`Transfer account`}

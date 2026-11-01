@@ -40,7 +40,6 @@ export const RuleActionTagSelector = ({ index, testID }: Props) => {
         <RuleValuePickerButton
             value={tagLabel}
             isMissing={isMissing}
-            missingHint={t`Choose a tag to save this rule`}
             leading={<RuleValueGlyph icon={UserIconNameEnum.Tag} variant="pink" />}
             placeholder={t`Choose a tag`}
             name={t`Tag`}

@@ -18,6 +18,7 @@ import { TRANSACTION_TYPE } from '../../transaction/constant/transaction-type.co
 import { EXTERNAL_SOURCE } from '../constant/external-source.constant';
 import { RULE_CONDITION_FIELD } from '../constant/rule-condition-field.constant';
 import { RULE_CONDITION_OPERATOR } from '../constant/rule-condition-operator.constant';
+import { RULE_CONDITION_VALUE_MARKER } from '../constant/rule-condition-value-marker.constant';
 
 import type { RuleConditionLabelInterface } from '../interface/rule-condition-label.interface';
 
@@ -66,7 +67,23 @@ export const useRuleConditionFormatter = () => {
     };
 
     const [openQuote, closeQuote] = isEnumValue(i18n.locale, LanguageEnum) ? QUOTES[i18n.locale] : QUOTES[LanguageEnum.EN];
-    const accountCurrency = t`account currency`;
+
+    const buildSentenceTemplate = (fieldLabel: string, operator: RuleConditionOperatorEnum) => {
+        const value = RULE_CONDITION_VALUE_MARKER;
+        const templates: Record<RuleConditionOperatorEnum, string> = {
+            [RuleConditionOperatorEnum.EQUALS]: t`${fieldLabel} is ${value}`,
+            [RuleConditionOperatorEnum.NOT_EQUALS]: t`${fieldLabel} is not ${value}`,
+            [RuleConditionOperatorEnum.CONTAINS]: t`${fieldLabel} contains ${value}`,
+            [RuleConditionOperatorEnum.NOT_CONTAINS]: t`${fieldLabel} does not contain ${value}`,
+            [RuleConditionOperatorEnum.MATCHES_REGEX]: t`${fieldLabel} matches ${value}`,
+            [RuleConditionOperatorEnum.GREATER_THAN]: t`${fieldLabel} is more than ${value}`,
+            [RuleConditionOperatorEnum.LESS_THAN]: t`${fieldLabel} is less than ${value}`,
+            [RuleConditionOperatorEnum.BETWEEN]: t`${fieldLabel} is between ${value}`,
+            [RuleConditionOperatorEnum.IN]: t`${fieldLabel} is any of ${value}`
+        };
+
+        return templates[operator];
+    };
 
     const resolveValue = (condition: Pick<RuleConditionCreateInputInterface, 'field' | 'operator' | 'value' | 'secondaryValue'>) => {
         const parts = splitListValue(condition.value);
@@ -100,7 +117,6 @@ export const useRuleConditionFormatter = () => {
         const parts = splitListValue(condition.value);
         const firstValue = resolveValue({ ...condition, value: parts.at(0) ?? '' });
         const multiValue = parts.length > 1 ? `${firstValue} +${parts.length - 1}` : value;
-        const listValue = condition.field === RuleConditionFieldEnum.AMOUNT ? `${value} · ${accountCurrency}` : multiValue;
         const isListPredicate = !TEXT_FIELDS.has(condition.field) && LIST_PREDICATE_OPERATORS.has(condition.operator);
 
         return {
@@ -108,8 +124,10 @@ export const useRuleConditionFormatter = () => {
             field: t(RULE_CONDITION_FIELD[condition.field].phrase),
             operator,
             value,
-            listValue,
+            listValue: multiValue,
             shortPredicate: isListPredicate ? `${fieldLabel}:` : [fieldLabel, COMPARISON_SYMBOL[condition.operator] ?? operator].join(' '),
+            sentenceTemplate: buildSentenceTemplate(fieldLabel, condition.operator),
+            phraseTemplate: buildSentenceTemplate(t(RULE_CONDITION_FIELD[condition.field].phrase), condition.operator),
             hasValue: value !== EMPTY_VALUE && isNotEmptyString(condition.value.trim())
         };
     };

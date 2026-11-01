@@ -260,6 +260,42 @@ msgstr "{duplicateTransactionCount, plural, one {# skipped} other {# skipped}}"
 msgid "{fieldLabel} {operatorLabel}, value"
 msgstr "{fieldLabel} {operatorLabel}, value"
 
+#: src/rule/hooks/use-rule-condition-formatter.hook.ts
+msgid "{fieldLabel} contains {value}"
+msgstr "{fieldLabel} contains {value}"
+
+#: src/rule/hooks/use-rule-condition-formatter.hook.ts
+msgid "{fieldLabel} does not contain {value}"
+msgstr "{fieldLabel} does not contain {value}"
+
+#: src/rule/hooks/use-rule-condition-formatter.hook.ts
+msgid "{fieldLabel} is {value}"
+msgstr "{fieldLabel} is {value}"
+
+#: src/rule/hooks/use-rule-condition-formatter.hook.ts
+msgid "{fieldLabel} is any of {value}"
+msgstr "{fieldLabel} is any of {value}"
+
+#: src/rule/hooks/use-rule-condition-formatter.hook.ts
+msgid "{fieldLabel} is between {value}"
+msgstr "{fieldLabel} is between {value}"
+
+#: src/rule/hooks/use-rule-condition-formatter.hook.ts
+msgid "{fieldLabel} is less than {value}"
+msgstr "{fieldLabel} is less than {value}"
+
+#: src/rule/hooks/use-rule-condition-formatter.hook.ts
+msgid "{fieldLabel} is more than {value}"
+msgstr "{fieldLabel} is more than {value}"
+
+#: src/rule/hooks/use-rule-condition-formatter.hook.ts
+msgid "{fieldLabel} is not {value}"
+msgstr "{fieldLabel} is not {value}"
+
+#: src/rule/hooks/use-rule-condition-formatter.hook.ts
+msgid "{fieldLabel} matches {value}"
+msgstr "{fieldLabel} matches {value}"
+
 #: src/settings/components/your-data-card/your-data-card.tsx
 msgid "{fileSize} · Stored only on this device"
 msgstr "{fileSize} · Stored only on this device"
@@ -363,10 +399,6 @@ msgstr "{installmentCount, plural, one {# payment in total} other {# payments in
 #: src/installment-plan/component/convert-to-installment-create-button/convert-to-installment-create-button.tsx
 msgid "{installmentCount, plural, one {Split into # payment} other {Split into # payments}}"
 msgstr "{installmentCount, plural, one {Split into # payment} other {Split into # payments}}"
-
-#: src/rule/components/rule-summary-conditions/rule-summary-conditions.tsx
-msgid "{joiner} {remainingCount} more"
-msgstr "{joiner} {remainingCount} more"
 
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "{loadedDays}/{totalDays} days"
@@ -494,6 +526,14 @@ msgstr "{remaining} GB one-time download"
 #: src/categorize-inbox/components/categorize-inbox-nav-subtitle/categorize-inbox-nav-subtitle.tsx
 msgid "{remainingCount, plural, one {# to sort} other {# to sort}}"
 msgstr "{remainingCount, plural, one {# to sort} other {# to sort}}"
+
+#: src/rule/components/rule-summary-conditions/rule-summary-conditions.tsx
+msgid "{remainingCount, plural, one {and # other condition} other {and # other conditions}}"
+msgstr "{remainingCount, plural, one {and # other condition} other {and # other conditions}}"
+
+#: src/rule/components/rule-summary-conditions/rule-summary-conditions.tsx
+msgid "{remainingCount, plural, one {or # other condition} other {or # other conditions}}"
+msgstr "{remainingCount, plural, one {or # other condition} other {or # other conditions}}"
 
 #: src/categorize-inbox/components/categorize-inbox-hero/categorize-inbox-hero.tsx
 msgid "{remainingCount, plural, one {payment to sort} other {payments to sort}}"
@@ -798,7 +838,6 @@ msgid "Account actions"
 msgstr "Account actions"
 
 #: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx
-#: src/rule/hooks/use-rule-condition-formatter.hook.ts
 msgid "account currency"
 msgstr "account currency"
 
@@ -882,10 +921,6 @@ msgstr "Add a transaction"
 #: src/rule/utils/get-rule-form-issue.util.ts
 msgid "Add a value to continue"
 msgstr "Add a value to continue"
-
-#: src/rule/hooks/use-rule-text-value-meta.hook.ts
-msgid "Add a value to save this rule"
-msgstr "Add a value to save this rule"
 
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
 msgid "Add Account"
@@ -1758,10 +1793,6 @@ msgstr "Choose a category"
 msgid "Choose a category to continue"
 msgstr "Choose a category to continue"
 
-#: src/rule/components/rule-action-category-selector/rule-action-category-selector.tsx
-msgid "Choose a category to save this rule"
-msgstr "Choose a category to save this rule"
-
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Choose a different PIN"
 msgstr "Choose a different PIN"
@@ -1769,10 +1800,6 @@ msgstr "Choose a different PIN"
 #: src/rule/components/rule-condition-mcc-selector/rule-condition-mcc-selector.tsx
 msgid "Choose a merchant category"
 msgstr "Choose a merchant category"
-
-#: src/rule/components/rule-condition-mcc-selector/rule-condition-mcc-selector.tsx
-msgid "Choose a merchant category to save this rule"
-msgstr "Choose a merchant category to save this rule"
 
 #: src/transaction/components/statistics-period-control/statistics-period-control.tsx
 msgid "Choose a period"
@@ -1799,17 +1826,9 @@ msgstr "Choose a tag"
 msgid "Choose a tag to continue"
 msgstr "Choose a tag to continue"
 
-#: src/rule/components/rule-action-tag-selector/rule-action-tag-selector.tsx
-msgid "Choose a tag to save this rule"
-msgstr "Choose a tag to save this rule"
-
 #: src/rule/components/rule-condition-value-input/rule-condition-value-input.tsx
 msgid "Choose a type"
 msgstr "Choose a type"
-
-#: src/rule/components/rule-condition-value-enum-selector/rule-condition-value-enum-selector.tsx
-msgid "Choose a value to save this rule"
-msgstr "Choose a value to save this rule"
 
 #: src/transaction/components/statistics-content/statistics-content.tsx
 msgid "Choose accounts"
@@ -1822,11 +1841,6 @@ msgstr "Choose an account"
 #: src/rule/utils/get-rule-form-issue.util.ts
 msgid "Choose an account to continue"
 msgstr "Choose an account to continue"
-
-#: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
-#: src/rule/components/rule-condition-account-selector/rule-condition-account-selector.tsx
-msgid "Choose an account to save this rule"
-msgstr "Choose an account to save this rule"
 
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 msgid "Choose an action"
@@ -1923,6 +1937,10 @@ msgstr "Closing balance · {title}"
 msgid "Coinbase"
 msgstr "Coinbase"
 
+#: src/rule/components/rule-condition-row/rule-condition-row.tsx
+msgid "Collapse condition {position}"
+msgstr "Collapse condition {position}"
+
 #: src/rule/constant/rule-condition-field.constant.ts
 msgid "comment"
 msgstr "comment"
@@ -1935,10 +1953,6 @@ msgstr "Comment"
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "Committed {committedExpense} per month"
 msgstr "Committed {committedExpense} per month"
-
-#: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx
-msgid "Compared with the payment amount in its account currency, without the minus sign."
-msgstr "Compared with the payment amount in its account currency, without the minus sign."
 
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Comparison: {label}"
@@ -3515,6 +3529,10 @@ msgstr "If you don't remember it, this backup can't be opened. You can start fre
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "If you forget it, nobody can open this file, including you and us."
 msgstr "If you forget it, nobody can open this file, including you and us."
+
+#: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx
+msgid "Ignores the minus sign."
+msgstr "Ignores the minus sign."
 
 #: src/app/(main)/create-account/index.tsx
 msgid "Import a PDF statement"
@@ -5442,6 +5460,11 @@ msgstr "Report a Bug"
 msgid "Report a bug or idea"
 msgstr "Report a bug or idea"
 
+#: src/rule/components/rule-value-picker-button/rule-value-picker-button.tsx
+#: src/rule/hooks/use-rule-text-value-meta.hook.ts
+msgid "Required"
+msgstr "Required"
+
 #: src/budget/components/budget-verdict-footer/budget-verdict-footer.tsx
 msgid "Reserving {upcomingAmount} for {billsLabel}"
 msgstr "Reserving {upcomingAmount} for {billsLabel}"
@@ -6714,7 +6737,6 @@ msgstr "Transcription failed"
 
 #: src/categorize-inbox/components/categorize-inbox-group-row-subtitle/categorize-inbox-group-row-subtitle.tsx
 #: src/categorize-inbox/components/categorize-inbox-group-transfer-lead/categorize-inbox-group-transfer-lead.tsx
-#: src/rule/utils/get-rule-outcome-parts.util.ts
 #: src/transaction/components/create-transaction-menu/create-transaction-menu.tsx
 #: src/transaction/constant/transaction-type.constant.ts
 #: src/transaction/hook/use-transaction-subtitle-segments.hook.ts

@@ -2,6 +2,8 @@ import { RuleActionTypeEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
+import { isNotEmptyString } from '@rnw-community/shared';
+
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
@@ -33,7 +35,9 @@ export const RuleListRow = ({ rule, index, isLast, hasOverlap, onOpen, onToggle 
     const firstAction = rule.actions.at(0);
     const actionMeta = RULE_ACTION_TYPE[firstAction?.type ?? RuleActionTypeEnum.SET_CATEGORY];
     const categoryIcon = firstAction?.type === RuleActionTypeEnum.SET_CATEGORY ? firstAction.category?.icon : null;
-    const titleClassName = rule.enabled ? 'text-[17px] font-semibold text-primary' : 'text-[17px] font-semibold text-secondary-foreground';
+    const titleClassName = rule.enabled
+        ? 'shrink text-[17px] font-semibold text-primary'
+        : 'shrink text-[17px] font-semibold text-secondary-foreground';
     const containerClassName = cn('overflow-hidden', 'bg-surface-row', isFirst && 'rounded-t-3xl', isLast && 'rounded-b-3xl');
     const chipIcon = categoryIcon ?? actionMeta.icon;
     const pressableClassName = cn(
@@ -77,10 +81,16 @@ export const RuleListRow = ({ rule, index, isLast, hasOverlap, onOpen, onToggle 
                     </View>
 
                     <View className="min-w-0 flex-1 gap-y-xxs">
-                        <Text testID={RulesPageSelector.RuleCardActions(index)} className={titleClassName} numberOfLines={1}>
-                            {primaryOutcome}
-                            <Text className="font-normal text-secondary-foreground">{secondaryOutcome}</Text>
-                        </Text>
+                        <View testID={RulesPageSelector.RuleCardActions(index)} className="flex-row items-baseline">
+                            <Text className={titleClassName} numberOfLines={1}>
+                                {primaryOutcome}
+                            </Text>
+                            {isNotEmptyString(secondaryOutcome) ? (
+                                <Text className="shrink-0 text-[17px] text-secondary-foreground" numberOfLines={1}>
+                                    {secondaryOutcome}
+                                </Text>
+                            ) : null}
+                        </View>
                         <RuleListRowTrigger
                             prefix={triggerPrefix}
                             value={triggerValue}
