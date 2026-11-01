@@ -25,7 +25,7 @@ export const OnboardingSealedMoment = ({ onContinue }: Props) => {
 
     const reducedMotion = useReducedMotion();
     const [, hapticImpact] = useVibration();
-    const [opensWithRow, copiesElsewhereRow] = useOnboardingReceiptRows();
+    const receiptRows = useOnboardingReceiptRows();
 
     const sealedAt = new Date();
     const sealedDate = intl.formatDate(sealedAt, { day: 'numeric', month: 'long', year: 'numeric' });
@@ -72,14 +72,12 @@ export const OnboardingSealedMoment = ({ onContinue }: Props) => {
                 </View>
 
                 <View className="mx-5xl rounded-[22px] border border-white/22 bg-white/10 px-4xl py-xs">
-                    <View className="flex-row justify-between gap-x-lg border-b border-white/18 py-xl">
-                        <Text className="text-white/80 text-sm">{opensWithRow.label}</Text>
-                        <Text className="text-white text-sm">{opensWithRow.value}</Text>
-                    </View>
-                    <View className="flex-row justify-between gap-x-lg py-xl">
-                        <Text className="text-white/80 text-sm">{copiesElsewhereRow.label}</Text>
-                        <Text className="text-white text-sm font-semibold">{copiesElsewhereRow.value}</Text>
-                    </View>
+                    {receiptRows.map(row => (
+                        <View key={row.label} className="flex-row justify-between gap-x-lg py-xl">
+                            <Text className="text-white/80 text-sm">{row.label}</Text>
+                            <Text className="text-white text-sm font-semibold">{row.value}</Text>
+                        </View>
+                    ))}
                 </View>
 
                 <Text className="text-white/80 text-md text-center px-5xl pt-6xl pb-[40px]">
