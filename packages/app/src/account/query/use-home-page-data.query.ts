@@ -19,13 +19,13 @@ import { HomeSectionKindEnum } from '../enum/home-section-kind.enum';
 import { buildIntegrationProviderMap } from '../utils/build-integration-provider-map.util';
 import { getDebtProgressDisplayState } from '../utils/get-debt-progress-display-state.util';
 import { getDebtSectionKind } from '../utils/get-debt-section-kind.util';
-import { pairAccountsIntoRows } from '../utils/pair-accounts-into-rows.util';
 import { resolveBankProviderGroup } from '../utils/resolve-bank-provider-group.util';
 
 import type { DebtSectionInterface } from '../interface/debt-section.interface';
 import type { HomeAccountBalanceSummaryInterface } from '../interface/home-account-balance-summary.interface';
 import type { HomeAccountBalanceInterface } from '../interface/home-account-balance.interface';
 import type { HomeSectionInterface } from '../interface/home-section.interface';
+import type { InstitutionGroupInterface } from '../interface/institution-group.interface';
 import type { AccountWithSyncEntityInterface, ExternalSourceEnum } from '@budgie/contracts';
 
 export const homeAccountRowsAtom = databaseQueryFamily(
@@ -35,16 +35,16 @@ export const homeAccountRowsAtom = databaseQueryFamily(
 );
 
 const createHomeAccountBalanceSummary = () => ({
-    accountTypeTotals: new Map<AccountTypeEnum, number>(),
     balancesByAccountId: new Map<number, HomeAccountBalanceInterface>(),
     bankProviderTotals: new Map<number, number>(),
-    cryptoCount: 0,
-    cryptoTotal: 0,
     debtSectionTotals: new Map<DebtSectionInterface['kind'], number>(),
-    fiatCount: 0,
-    fiatTotal: 0,
     netWorth: 0
 });
+
+const sumConvertedBalances = (
+    accounts: readonly Pick<AccountWithSyncEntityInterface, 'id'>[],
+    balancesByAccountId: ReadonlyMap<number, HomeAccountBalanceInterface>
+): number => accounts.reduce((total, account) => total + (balancesByAccountId.get(account.id)?.convertedBalance ?? 0), 0);
 
 const groupBy = <Item, Key>(items: readonly Item[], getKey: (item: Item) => Key): Map<Key, Item[]> => {
     const groups = new Map<Key, Item[]>();
@@ -58,31 +58,86 @@ const groupBy = <Item, Key>(items: readonly Item[], getKey: (item: Item) => Key)
     return groups;
 };
 
+const buildInstitutionGroups = (
+    providerAccounts: AccountWithSyncEntityInterface[],
+    integrationProviders: ReadonlyMap<number, ExternalSourceEnum>,
+    integrationLabels: ReadonlyMap<number, string | null>,
+    balancesByAccountId: ReadonlyMap<number, HomeAccountBalanceInterface>
+): InstitutionGroupInterface[] => {
+    const entries = [...groupBy(providerAccounts, account => account.integrationId)].flatMap(([integrationId, accounts]) => {
+        const provider = resolveBankProviderGroup(integrationId, integrationProviders)?.provider;
+
+        return isDefined(provider) && isDefined(integrationId)
+            ? [{ provider, integrationId, label: integrationLabels.get(integrationId) ?? null, accounts }]
+            : [];
+    });
+
+    return entries.map(entry => {
+        const unlabeledSameProviderIntegrationIds = entries
+            .filter(other => other.provider === entry.provider && !isDefined(other.label))
+            .map(other => other.integrationId)
+            .sort((left, right) => left - right);
+        const groupNumber =
+            !isDefined(entry.label) && unlabeledSameProviderIntegrationIds.length > 1
+                ? unlabeledSameProviderIntegrationIds.indexOf(entry.integrationId) + 1
+                : null;
+
+        return { ...entry, groupNumber, total: sumConvertedBalances(entry.accounts, balancesByAccountId) };
+    });
+};
+
+const isCryptoInstitution = (institution: InstitutionGroupInterface): boolean =>
+    institution.accounts.every(account => account.type === AccountTypeEnum.CRYPTO_SYNC);
+
 const buildHomePageSections = (
     activeAccounts: AccountWithSyncEntityInterface[],
     integrationProviders: ReadonlyMap<number, ExternalSourceEnum>,
-    integrationLabels: ReadonlyMap<number, string | null>
+    integrationLabels: ReadonlyMap<number, string | null>,
+    balanceSummary: Pick<HomeAccountBalanceSummaryInterface, 'balancesByAccountId' | 'debtSectionTotals'>
 ): HomeSectionInterface[] => {
     const debtAccounts = activeAccounts.filter(account => account.type === AccountTypeEnum.DEBT);
     const otherAccounts = activeAccounts.filter(account => account.type !== AccountTypeEnum.DEBT);
     const isProviderAccount = (account: AccountWithSyncEntityInterface) =>
         isDefined(resolveBankProviderGroup(account.integrationId, integrationProviders));
-    const providerAccounts = otherAccounts.filter(isProviderAccount);
-    const typeAccounts = otherAccounts.filter(account => !isProviderAccount(account));
+    const typeAccounts = otherAccounts.filter(account => !isProviderAccount(account) && account.type !== AccountTypeEnum.CASH);
+    const institutions = buildInstitutionGroups(
+        otherAccounts.filter(isProviderAccount),
+        integrationProviders,
+        integrationLabels,
+        balanceSummary.balancesByAccountId
+    );
+    const institutionsByType = new Map([
+        [AccountTypeEnum.BANK, institutions.filter(institution => !isCryptoInstitution(institution))],
+        [AccountTypeEnum.CRYPTO, institutions.filter(isCryptoInstitution)]
+    ]);
     const debtGroups = groupBy(debtAccounts, account => getDebtSectionKind(account.debtType));
-    const providerGroups = groupBy(providerAccounts, account => account.integrationId);
 
-    const typeSections = [...groupBy(typeAccounts, account => account.type)].map(([type, accounts]) => ({
-        kind: HomeSectionKindEnum.ACCOUNT_TYPE as const,
-        type,
-        data:
+    const typeGroups = groupBy(typeAccounts, account => account.type);
+    const sectionTypes = new Set([
+        ...typeGroups.keys(),
+        ...[...institutionsByType].flatMap(([type, typeInstitutions]) => (isNotEmptyArray(typeInstitutions) ? [type] : []))
+    ]);
+
+    const typeSections = [...sectionTypes].map(type => {
+        const accounts = typeGroups.get(type) ?? [];
+        const accountItems =
             type === AccountTypeEnum.CRYPTO
                 ? [...groupBy(accounts, account => account.instrument.id).values()].map(group => ({
                       instrument: group[0].instrument,
                       accounts: group
                   }))
-                : pairAccountsIntoRows(accounts)
-    }));
+                : accounts;
+
+        const typeInstitutions = institutionsByType.get(type) ?? [];
+        const institutionsTotal = typeInstitutions.reduce((sum, institution) => sum + institution.total, 0);
+
+        return {
+            kind: HomeSectionKindEnum.ACCOUNT_TYPE as const,
+            type,
+            total: sumConvertedBalances(accounts, balanceSummary.balancesByAccountId) + institutionsTotal,
+            data: [...typeInstitutions, ...accountItems]
+        };
+    });
 
     const debtSectionKinds = [
         HomeSectionKindEnum.DEBT_YOU_OWE,
@@ -91,46 +146,14 @@ const buildHomePageSections = (
     const debtSections = debtSectionKinds.flatMap(kind => {
         const data = debtGroups.get(kind);
 
-        return isNotEmptyArray(data) ? [{ kind, data }] : [];
+        return isNotEmptyArray(data) ? [{ kind, data, total: balanceSummary.debtSectionTotals.get(kind) ?? 0 }] : [];
     });
 
-    const providerGroupEntries = [...providerGroups].flatMap(([integrationId, accounts]) => {
-        const provider = resolveBankProviderGroup(integrationId, integrationProviders)?.provider;
-
-        return isDefined(provider) && isDefined(integrationId)
-            ? [{ provider, integrationId, label: integrationLabels.get(integrationId) ?? null, accounts }]
-            : [];
-    });
-    const providerSections = providerGroupEntries.map(({ provider, integrationId, label, accounts }) => {
-        const unlabeledSameProviderIntegrationIds = providerGroupEntries
-            .filter(entry => entry.provider === provider && !isDefined(entry.label))
-            .map(entry => entry.integrationId)
-            .sort((left, right) => left - right);
-
-        return {
-            kind: HomeSectionKindEnum.BANK_PROVIDER as const,
-            provider,
-            integrationId,
-            label,
-            groupNumber:
-                !isDefined(label) && unlabeledSameProviderIntegrationIds.length > 1
-                    ? unlabeledSameProviderIntegrationIds.indexOf(integrationId) + 1
-                    : null,
-            data: pairAccountsIntoRows(accounts)
-        };
-    });
-
-    return [...typeSections, ...debtSections, ...providerSections];
+    return [...typeSections.sort((left, right) => right.total - left.total), ...debtSections];
 };
 
 const addTotal = <Key>(totals: Map<Key, number>, key: Key, amount: number): void => {
     totals.set(key, (totals.get(key) ?? 0) + amount);
-};
-
-const addActiveTotal = <Key>(totals: Map<Key, number>, key: Key, amount: number, isActive: boolean): void => {
-    if (isActive) {
-        addTotal(totals, key, amount);
-    }
 };
 
 const addBankProviderTotal = (totals: Map<number, number>, integrationId: number | null, amount: number, isActive: boolean): void => {
@@ -147,27 +170,13 @@ const addDebtSectionTotal = (totals: Map<DebtSectionInterface['kind'], number>, 
     }
 };
 
-const addNetWorthAssetTotals = (
+const addNetWorth = (
     summary: ReturnType<typeof createHomeAccountBalanceSummary>,
     homeAccountBalance: HomeAccountBalanceInterface
 ): void => {
-    const { accountType, convertedBalance, includeInNetWorth } = homeAccountBalance;
-
-    if (!includeInNetWorth) {
-        return;
+    if (homeAccountBalance.includeInNetWorth) {
+        summary.netWorth += homeAccountBalance.convertedBalance;
     }
-
-    summary.netWorth += convertedBalance;
-
-    if (accountType === AccountTypeEnum.CRYPTO || accountType === AccountTypeEnum.CRYPTO_SYNC) {
-        summary.cryptoCount += 1;
-        summary.cryptoTotal += convertedBalance;
-
-        return;
-    }
-
-    summary.fiatCount += 1;
-    summary.fiatTotal += convertedBalance;
 };
 
 const isSettledDebtAccount = (
@@ -232,13 +241,12 @@ export const useHomePageDataQuery = () => {
             isActive: row.account.isActive,
             hasLedgerHistory: row.hasLedgerHistory === 1
         };
-        const { accountType, accountId, convertedBalance, isActive } = homeAccountBalance;
+        const { accountId, convertedBalance, isActive } = homeAccountBalance;
 
         summary.balancesByAccountId.set(accountId, homeAccountBalance);
-        addActiveTotal(summary.accountTypeTotals, accountType, convertedBalance, isActive);
         addBankProviderTotal(summary.bankProviderTotals, bankProviderGroup?.integrationId ?? null, convertedBalance, isActive);
         addDebtSectionTotal(summary.debtSectionTotals, homeAccountBalance);
-        addNetWorthAssetTotals(summary, homeAccountBalance);
+        addNetWorth(summary, homeAccountBalance);
 
         return summary;
     }, createHomeAccountBalanceSummary());
@@ -247,7 +255,19 @@ export const useHomePageDataQuery = () => {
     const integrationLabels = new Map(
         data.flatMap(row => (isDefined(row.account.integrationId) ? [[row.account.integrationId, row.integrationLabel] as const] : []))
     );
-    const sections = buildHomePageSections(displayedAccounts, integrationProviders, integrationLabels);
+    const sections = buildHomePageSections(displayedAccounts, integrationProviders, integrationLabels, balanceSummary);
+    const cashAccounts = displayedAccounts.filter(
+        account =>
+            account.type === AccountTypeEnum.CASH && !isDefined(resolveBankProviderGroup(account.integrationId, integrationProviders))
+    );
 
-    return { activeAccountCount: displayedAccounts.length, accounts, balanceSummary, sections };
+    return {
+        activeAccountCount: displayedAccounts.length,
+        accounts,
+        balanceSummary,
+        cashAccounts,
+        cashTotal: sumConvertedBalances(cashAccounts, balanceSummary.balancesByAccountId),
+        isLoading: AsyncResult.isInitial(result),
+        sections
+    };
 };

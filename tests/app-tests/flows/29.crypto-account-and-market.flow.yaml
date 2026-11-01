@@ -16,11 +16,7 @@ appId: ${APP_ID}
 - assertVisible:
       id: 'CryptoGroup.Container.BTC'
 - assertVisible:
-      id: 'NetWorthAssetChips'
-- assertVisible:
-      id: 'NetWorthAssetChips.Fiat'
-- assertVisible:
-      id: 'NetWorthAssetChips.Crypto'
+      id: 'NetWorthComposition'
 - assertVisible:
       id: 'CryptoGroup.Balance.BTC'
 - assertVisible:
@@ -66,14 +62,14 @@ appId: ${APP_ID}
 # --- Binance sync accounts group under their integration, not the crypto instrument group ---
 - scrollUntilVisible:
       element:
-          id: 'BankProviderSectionHeader.SettingsButton.1'
+          id: 'AccountCard.E2E Binance BTC'
       direction: DOWN
       timeout: 10000
 - assertVisible:
       id: 'AccountCard.E2E Binance BTC'
 # Provider-grouped rows render as sync cards, so the balance id carries no asset code
 - assertVisible:
-      id: 'AccountCard.Balance.E2E_Binance_BTC.2'
+      id: 'AccountCard.Balance.E2E_Binance_BTC.2_BTC'
 
 # --- Binance account settings credentials editor ---
 
@@ -307,7 +303,7 @@ appId: ${APP_ID}
 
 - scrollUntilVisible:
       element:
-          id: 'NetWorthAssetChips'
+          id: 'NetWorthComposition'
       direction: UP
       speed: 20
       centerElement: true
@@ -396,7 +392,7 @@ appId: ${APP_ID}
       timeout: 10000
 - scrollUntilVisible:
       element:
-          id: 'NetWorthAssetChips'
+          id: 'NetWorthComposition'
       direction: UP
       speed: 20
       centerElement: true
@@ -433,7 +429,7 @@ appId: ${APP_ID}
       timeout: 10000
 - scrollUntilVisible:
       element:
-          id: 'NetWorthAssetChips'
+          id: 'NetWorthComposition'
       direction: UP
       speed: 20
       centerElement: true

@@ -118,6 +118,7 @@ msgstr "{accountCount, plural, one {# cuenta} other {# cuentas}}"
 
 #: src/account/component/accounts-group/accounts-group.tsx
 #: src/account/component/crypto-currency-group-toggle-row/crypto-currency-group-toggle-row.tsx
+#: src/account/component/institution-row/institution-row.tsx
 msgid "{accountsCount, plural, one {# account} other {# accounts}}"
 msgstr "{accountsCount, plural, one {# cuenta} other {# cuentas}}"
 
@@ -846,7 +847,7 @@ msgstr "−{changePercent} vs. {shortPreviousLabel}"
 msgid "≈ {formattedMonths} mo"
 msgstr "≈ {formattedMonths} m."
 
-#: src/account/component/crypto-currency-group-toggle-row/crypto-currency-group-toggle-row.tsx
+#: src/account/component/crypto-currency-group-market-link/crypto-currency-group-market-link.tsx
 msgid "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
 msgstr "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
 
@@ -1082,7 +1083,7 @@ msgstr "Añadir acción"
 msgid "Add an action to continue"
 msgstr "Añade una acción para continuar"
 
-#: src/account/component/account-grid-item/account-grid-item.tsx
+#: src/account/component/account-list-item/account-list-item.tsx
 msgid "Add balance"
 msgstr "Añadir saldo"
 
@@ -1453,6 +1454,10 @@ msgstr "¿Está seguro de que desea eliminar todos sus datos? Esta acción no se
 msgid "Are you sure?"
 msgstr "¿Estás seguro?"
 
+#: src/account/component/net-worth-composition/net-worth-composition.tsx
+msgid "Asset mix"
+msgstr "Composición de activos"
+
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Attach debt"
@@ -1560,7 +1565,6 @@ msgid "Bank account"
 msgstr "Cuenta bancaria"
 
 #: src/account/component/account-card-menu/account-card-menu.tsx
-#: src/account/component/bank-provider-section-header/bank-provider-section-header.tsx
 msgid "Bank integration settings"
 msgstr "Ajustes de la integración bancaria"
 
@@ -1633,6 +1637,7 @@ msgstr "Entre {lowestCount} y {MAX_INSTALLMENT_COUNT} meses"
 msgid "Billing Dates"
 msgstr "Fechas de cobro"
 
+#: src/account/constant/bank-provider-title.constant.ts
 #: src/app/(main)/create-account/index.tsx
 #: src/rule/constant/external-source.constant.ts
 msgid "Binance"
@@ -2182,6 +2187,7 @@ msgstr "Cerrar menú"
 msgid "Closing balance · {title}"
 msgstr "Saldo final · {title}"
 
+#: src/account/constant/bank-provider-title.constant.ts
 #: src/rule/constant/external-source.constant.ts
 msgid "Coinbase"
 msgstr "Coinbase"
@@ -4564,7 +4570,7 @@ msgstr "Importe mínimo"
 msgid "Missing categories"
 msgstr "Categorías sin asignar"
 
-#: src/account/component/crypto-currency-group-toggle-row/crypto-currency-group-toggle-row.tsx
+#: src/account/component/crypto-currency-group-market-link/crypto-currency-group-market-link.tsx
 msgid "Missing rate"
 msgstr "Falta el tipo de cambio"
 
@@ -5899,6 +5905,10 @@ msgstr "Pagos recientes"
 msgid "Record card taps with Shortcuts"
 msgstr "Registra pagos con tarjeta con Atajos"
 
+#: src/account/component/cash-card/cash-card.tsx
+msgid "Record expense"
+msgstr "Registrar gasto"
+
 #: src/@generic/component/transactions-page-header/transactions-page-header.tsx
 #: src/budget/components/budget-upcoming-charge-row/budget-upcoming-charge-row.tsx
 msgid "Recurring"
@@ -6102,6 +6112,7 @@ msgstr "Recibido"
 msgid "Review sync settings"
 msgstr "Revisar los ajustes de sincronización"
 
+#: src/account/constant/bank-provider-title.constant.ts
 #: src/rule/constant/external-source.constant.ts
 msgid "Revolut"
 msgstr "Revolut"
@@ -7856,6 +7867,7 @@ msgstr "Todo el período"
 msgid "Will be created on this phone"
 msgstr "Se creará en este teléfono"
 
+#: src/account/constant/bank-provider-title.constant.ts
 #: src/rule/constant/external-source.constant.ts
 msgid "Wise"
 msgstr "Wise"
