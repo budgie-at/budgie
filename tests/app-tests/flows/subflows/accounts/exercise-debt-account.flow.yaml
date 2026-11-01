@@ -188,6 +188,7 @@ appId: ${APP_ID}
     element:
       id: 'AccountDetails.ArchiveButton'
     direction: DOWN
+- waitForAnimationToEnd
 - tapOn:
     id: 'AccountDetails.ArchiveButton'
 - tapOn: 'Archive'

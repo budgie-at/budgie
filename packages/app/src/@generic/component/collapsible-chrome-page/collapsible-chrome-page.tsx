@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Text, View } from 'react-native';
 
 import { CollapsibleHeaderBackdrop, ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
@@ -15,6 +16,7 @@ import { StickyFooterBand } from '../sticky-footer-band/sticky-footer-band';
 
 import type { ScreenChromeConfigOverridesInterface } from '@rnw-community/react-native-screen-chrome';
 import type { ComponentProps, ReactNode } from 'react';
+import type { LayoutChangeEvent } from 'react-native';
 
 type TitleProps =
     | { readonly title: string; readonly subtitle?: string; readonly largeTitle?: never; readonly smallTitle?: never }
@@ -47,7 +49,11 @@ export const CollapsibleChromePage = ({
     testID,
     chromeConfig
 }: Props): ReactNode => {
-    const contentInsetBottom = isDefined(footer) ? FOOTER_CONTENT_BOTTOM_INSET : 0;
+    const [footerHeight, setFooterHeight] = useState(FOOTER_CONTENT_BOTTOM_INSET);
+    const handleFooterLayout = (event: LayoutChangeEvent) => {
+        setFooterHeight(event.nativeEvent.layout.height);
+    };
+    const contentInsetBottom = isDefined(footer) ? Math.max(footerHeight, FOOTER_CONTENT_BOTTOM_INSET) : 0;
     const { bottomOffset: bottomOffsetOverride, ...restScrollViewProps } = isDefined(scrollViewProps) ? scrollViewProps : {};
     const resolvedBottomOffset = isDefined(bottomOffsetOverride) ? bottomOffsetOverride : contentInsetBottom;
     const resolvedLargeTitle = isDefined(largeTitle) ? (
@@ -105,7 +111,7 @@ export const CollapsibleChromePage = ({
                     collapsedTitle={resolvedSmallTitle}
                 />
 
-                {isDefined(footer) ? <StickyFooterBand>{footer}</StickyFooterBand> : null}
+                {isDefined(footer) ? <StickyFooterBand onLayout={handleFooterLayout}>{footer}</StickyFooterBand> : null}
             </ScreenChromeFrame>
         </ScreenChromeThemeProvider>
     );

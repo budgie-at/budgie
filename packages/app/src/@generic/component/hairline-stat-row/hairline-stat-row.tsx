@@ -17,6 +17,7 @@ export const HairlineStatRow = ({ stats }: Props) => (
                 label={stat.label}
                 value={stat.value}
                 variant={stat.variant}
+                valueClassName={stat.valueClassName}
                 testID={stat.testID}
             />
         ))}

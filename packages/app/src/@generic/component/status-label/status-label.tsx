@@ -16,9 +16,9 @@ interface Props {
 }
 
 const TONE_TEXT_CLASS_NAME: Record<StatusToneType, string> = {
-    positive: 'text-positive-foreground',
-    warning: 'text-warning-foreground',
-    destructive: 'text-destructive-foreground'
+    positive: 'text-positive-strong',
+    warning: 'text-warning-strong',
+    destructive: 'text-destructive-strong'
 };
 
 export const StatusLabel = ({ label, tone, trailing, testID }: Props) => (

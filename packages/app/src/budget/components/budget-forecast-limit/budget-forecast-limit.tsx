@@ -7,19 +7,17 @@ interface Props {
     readonly right: number;
     readonly label: string;
     readonly fontSize: number;
-    readonly isLabelBelow: boolean;
 }
 
-const LABEL_ABOVE_OFFSET = -4;
-const LABEL_BELOW_OFFSET = 11;
+const LABEL_LIFT = 5;
 
-export const BudgetForecastLimit = ({ y, left, right, label, fontSize, isLabelBelow }: Props) => {
-    const labelY = y + (isLabelBelow ? LABEL_BELOW_OFFSET : LABEL_ABOVE_OFFSET);
+export const BudgetForecastLimit = ({ y, left, right, label, fontSize }: Props) => {
+    const labelY = y - LABEL_LIFT;
 
     return (
         <>
             <StyledLine x1={left} y1={y} x2={right} y2={y} strokeClassName="accent-secondary-corner" strokeWidth={1} />
-            <StyledSvgText x={right} y={labelY} fillClassName="accent-secondary-foreground" fontSize={fontSize} textAnchor="end">
+            <StyledSvgText x={left} y={labelY} fillClassName="accent-secondary-foreground" fontSize={fontSize} textAnchor="start">
                 {label}
             </StyledSvgText>
         </>

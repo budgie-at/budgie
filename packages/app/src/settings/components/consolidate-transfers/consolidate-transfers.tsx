@@ -7,7 +7,8 @@ import Toast from 'react-native-toast-message';
 
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
 import { useConfirmedSettingsAction } from '../../hook/use-confirmed-settings-action.hook';
-import { SettingsCard } from '../settings-card/settings-card';
+import { SettingsPillButton } from '../settings-pill-button/settings-pill-button';
+import { SettingsRow } from '../settings-row/settings-row';
 
 const showConsolidationSuccessToast = (consolidated: number, found: number, t: ReturnType<typeof useLingui>['t']): void => {
     const foundPairsText = t({
@@ -19,7 +20,7 @@ const showConsolidationSuccessToast = (consolidated: number, found: number, t: R
 
     Toast.show({
         type: 'success',
-        text1: t(msg`Matches consolidated`),
+        text1: t(msg`Transfers and refunds merged`),
         text2: t(msg`Merged ${consolidated} of ${foundPairsText}.`)
     });
 };
@@ -28,12 +29,12 @@ export const ConsolidateTransfers = () => {
     const { t } = useLingui();
     const { isLoading, run } = useConfirmedSettingsAction(
         {
-            title: t`Consolidate Matches`,
+            title: t`Merge transfers?`,
             message: t`Budgie will merge high-confidence transfer and refund matches. Ambiguous matches stay unchanged.`,
-            confirmText: t`Consolidate`,
+            confirmText: t`Merge`,
             cancelText: t`Cancel`
         },
-        t`Could not consolidate matches`
+        t`Could not merge transfers and refunds`
     );
 
     const handleConsolidate = () =>
@@ -43,14 +44,16 @@ export const ConsolidateTransfers = () => {
             ).pipe(Effect.map(({ consolidated, found }) => void showConsolidationSuccessToast(consolidated, found, t)))
         );
 
+    const handlePress = () => void handleConsolidate();
+
     return (
-        <SettingsCard
-            onPress={handleConsolidate}
-            title={t`Consolidate Matches`}
-            description={t`Merge matching transfers and refunds`}
+        <SettingsRow
+            {...(!isLoading && { onPress: handlePress })}
+            title={t`Merge transfers`}
+            subtitle={t`Pair transfers and refunds`}
             icon={UserIconNameEnum.ArrowLeftRight}
-            variant="positive"
-            isLoading={isLoading}
+            variant="ghost"
+            right={<SettingsPillButton label={t`Merge`} variant="secondary" isLoading={isLoading} />}
             testID={SettingsPageSelector.ConsolidateTransfersCard}
         />
     );

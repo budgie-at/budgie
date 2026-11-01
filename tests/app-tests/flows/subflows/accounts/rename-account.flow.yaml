@@ -10,11 +10,7 @@ appId: ${APP_ID}
 - eraseText: 60
 - inputText: ${UPDATED_ACCOUNT_NAME}
 - tapOn:
-    text: 'Details'
-- scrollUntilVisible:
-    element:
-      id: 'AccountForm.SubmitButton'
-    direction: DOWN
+    id: 'AccountForm.NameInput.Label'
 - extendedWaitUntil:
     visible:
       id: 'AccountForm.SubmitButton'

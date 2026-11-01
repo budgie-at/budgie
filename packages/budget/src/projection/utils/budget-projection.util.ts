@@ -12,6 +12,7 @@ import type { BudgetCategoryProjectionInterface } from '../interface/budget-cate
 import type { BudgetProjectionDayInterface } from '../interface/budget-projection-day.interface';
 import type { BudgetProjectionEntryInterface } from '../interface/budget-projection-entry.interface';
 import type { BudgetProjectionInputInterface } from '../interface/budget-projection-input.interface';
+import type { BudgetProjectionScopeItemsInterface } from '../interface/budget-projection-scope-items.interface';
 import type { BudgetProjectionScopeInterface } from '../interface/budget-projection-scope.interface';
 import type { BudgetProjectionTimelineInterface } from '../interface/budget-projection-timeline.interface';
 import type { BudgetProjectionInterface } from '../interface/budget-projection.interface';
@@ -111,14 +112,14 @@ const resolveDailyPace = (
 };
 
 const computeScope = (
-    entries: readonly BudgetProjectionEntryInterface[],
-    charges: readonly BudgetUpcomingChargeInterface[],
+    { entries, charges, reservations }: BudgetProjectionScopeItemsInterface,
     limit: number,
     timeline: BudgetProjectionTimelineInterface
 ): BudgetProjectionScopeInterface => {
     const spent = sumAmounts(entries);
     const upcoming = sumAmounts(charges);
-    const free = limit - spent - upcoming;
+    const reserved = sumAmounts(reservations);
+    const free = limit - spent - upcoming - reserved;
     const dailyPace = resolveDailyPace(entries, timeline);
     const cumulative = isDefined(dailyPace) ? buildProjectedCumulative(spent, dailyPace, charges, timeline) : [];
     const projectedEnd = isDefined(dailyPace) ? (cumulative.at(-1) ?? spent + upcoming) : null;
@@ -128,6 +129,7 @@ const computeScope = (
         limit,
         spent,
         upcoming,
+        reserved,
         free,
         safePerDay: computeSafePerDay(free, timeline.daysLeft),
         elapsedFraction: timeline.elapsedDays / timeline.totalDays,
@@ -182,14 +184,13 @@ const buildDays = (
 };
 
 const computeDailyAllowance = (
-    entries: readonly BudgetProjectionEntryInterface[],
-    charges: readonly BudgetUpcomingChargeInterface[],
+    { entries, charges, reservations }: BudgetProjectionScopeItemsInterface,
     limit: number,
     timeline: BudgetProjectionTimelineInterface
 ): number => {
     const postedCommitted = sumAmounts(entries.filter(entry => isDefined(entry.committedSource)));
 
-    return Math.max(limit - postedCommitted - sumAmounts(charges), 0) / timeline.totalDays;
+    return Math.max(limit - postedCommitted - sumAmounts(charges) - sumAmounts(reservations), 0) / timeline.totalDays;
 };
 
 const compareByRisk = (first: BudgetProjectionScopeInterface, second: BudgetProjectionScopeInterface): number => {
@@ -221,8 +222,11 @@ export const computeBudgetProjection = (input: BudgetProjectionInputInterface): 
     const categories: BudgetCategoryProjectionInterface[] = input.categoryLimits.map(limit => ({
         categoryId: limit.categoryId,
         ...computeScope(
-            input.entries.filter(entry => entry.categoryId === limit.categoryId),
-            upcomingCharges.filter(charge => charge.categoryId === limit.categoryId),
+            {
+                entries: input.entries.filter(entry => entry.categoryId === limit.categoryId),
+                charges: upcomingCharges.filter(charge => charge.categoryId === limit.categoryId),
+                reservations: input.reservations.filter(reservation => reservation.categoryId === limit.categoryId)
+            },
             limit.limitAmount,
             timeline
         )
@@ -232,16 +236,28 @@ export const computeBudgetProjection = (input: BudgetProjectionInputInterface): 
         totalDays: timeline.totalDays,
         elapsedDays: timeline.elapsedDays,
         daysLeft: timeline.daysLeft,
-        overall: computeScope(input.entries, upcomingCharges, input.overallLimit, timeline),
+        overall: computeScope(
+            { entries: input.entries, charges: upcomingCharges, reservations: input.reservations },
+            input.overallLimit,
+            timeline
+        ),
         categories: categories.sort(compareByRisk),
         other: computeScope(
-            input.entries.filter(entry => isOther(entry.categoryId)),
-            upcomingCharges.filter(charge => isOther(charge.categoryId)),
+            {
+                entries: input.entries.filter(entry => isOther(entry.categoryId)),
+                charges: upcomingCharges.filter(charge => isOther(charge.categoryId)),
+                reservations: input.reservations.filter(reservation => isOther(reservation.categoryId))
+            },
             input.otherLimit,
             timeline
         ),
-        dailyAllowance: computeDailyAllowance(input.entries, upcomingCharges, input.overallLimit, timeline),
+        dailyAllowance: computeDailyAllowance(
+            { entries: input.entries, charges: upcomingCharges, reservations: input.reservations },
+            input.overallLimit,
+            timeline
+        ),
         days: buildDays(input.entries, upcomingCharges, timeline),
-        upcomingCharges
+        upcomingCharges,
+        reservations: input.reservations
     };
 };

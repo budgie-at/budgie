@@ -15,11 +15,11 @@ interface Props {
 const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
 const containerVariants = cva('h-[52px] items-center justify-center rounded-full px-5xl active:opacity-80', {
-    variants: { isDisabled: { true: 'bg-cta-background opacity-40', false: 'bg-cta-background' } }
+    variants: { isDisabled: { true: 'bg-cta-disabled-background', false: 'bg-cta-background' } }
 });
 
 const labelVariants = cva('text-[17px] font-semibold', {
-    variants: { isDisabled: { true: 'text-cta-foreground', false: 'text-cta-foreground' } }
+    variants: { isDisabled: { true: 'text-cta-disabled-foreground', false: 'text-cta-foreground' } }
 });
 
 export const PillButton = ({ label, testID, isLoading = false, isDisabled = false, onPress }: Props) => {

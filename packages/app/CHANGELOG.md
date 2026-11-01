@@ -3,6 +3,121 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.140.0](https://github.com/budgie-at/budgie/compare/v6.139.2...v6.140.0) (2026-11-01)
+
+### Bug Fixes
+
+* **app:** align budget row tiles to the title line ([68701e5](https://github.com/budgie-at/budgie/commit/68701e546c41f80189560ed24ced7dd47fe0e277))
+* **app:** align budget rows and neutralise the Home bar ([e2573ba](https://github.com/budgie-at/budgie/commit/e2573bafa3397a44d067ab62e91d2c5cc86df538))
+* **app:** annotate an off-scale forecast limit instead of drawing it ([1e28449](https://github.com/budgie-at/budgie/commit/1e284498c75f96f231f5d47b7a3df664acf40c75))
+* **app:** bound the budget forecast chart and label its ends ([0368c2b](https://github.com/budgie-at/budgie/commit/0368c2ba10ff9788754cbd77f2a81dc900ec5340))
+* **app:** default a new set aside to the end of the next period ([d5e41ea](https://github.com/budgie-at/budgie/commit/d5e41eaa5786dd0abe753781570bb71f32a7ef77))
+* **app:** drop the stray tick on an empty set-aside bar ([db19078](https://github.com/budgie-at/budgie/commit/db1907889e80926a7c9e2f657dd0d07de3266f9f))
+* **app:** drop unused date formatters after main merge ([9d0079c](https://github.com/budgie-at/budgie/commit/9d0079c23f7bb35ecbc28a9054ce8197be45d927))
+* **app:** elevate content-sized sheets in dark mode ([10946a2](https://github.com/budgie-at/budgie/commit/10946a27cbabe9fadfc85e4d92e4b6f7ca054766)), closes [#1C1C1E](https://github.com/budgie-at/budgie/issues/1C1C1E)
+* **app:** expose Home budget chips to accessibility again ([df56f52](https://github.com/budgie-at/budgie/commit/df56f525f2871ce91bba1a7b9cb4f5f88eeb0ad6))
+* **app:** give budget status copy accessible light-mode contrast ([69121c6](https://github.com/budgie-at/budgie/commit/69121c6ea5b5b8c3c5c86f6cdc742fb54a61f511))
+* **app:** give every "Limit from" option the same subtitle gap ([de59ddd](https://github.com/budgie-at/budgie/commit/de59dddcc84e5e6b9a80e5fb6be70d8494d452e0))
+* **app:** give the day-strip key its own line ([03244ac](https://github.com/budgie-at/budgie/commit/03244acc56c7dc0e7a0af1139f81c54c7244c959))
+* **app:** judge the edit budget CTA on hydrated values ([bf4dbc6](https://github.com/budgie-at/budgie/commit/bf4dbc664bed09514c4a72766a65556f87b2f009))
+* **app:** keep disabled pill CTAs readable ([2a7184e](https://github.com/budgie-at/budgie/commit/2a7184eb31942e0d1c5470385908848f71f1270b)), closes [#2C2C2E](https://github.com/budgie-at/budgie/issues/2C2C2E)
+* **app:** keep event budgets off the main budget press targets ([21c67e8](https://github.com/budgie-at/budgie/commit/21c67e8c72892eec44879eefff97f67517ac666e))
+* **app:** keep focused budget form fields above the footer ([b767db8](https://github.com/budgie-at/budgie/commit/b767db87829f3935ff015b4e142f747e4334188f))
+* **app:** keep the forecast end label clear of its own line ([12a53bf](https://github.com/budgie-at/budgie/commit/12a53bf165bc82b7b71c4b9d7e3982cccec3ca78))
+* **app:** keep the form sheet title above its content ([3010afa](https://github.com/budgie-at/budgie/commit/3010afa68a2db635f6d3f12706bdf94b2e875011))
+* **app:** keep the set-aside editor under its pickers ([8b807e5](https://github.com/budgie-at/budgie/commit/8b807e54c5f6eac7fe79344bfaa8283605ae1844))
+* **app:** let the event editor save an unchanged existing event ([dfaf788](https://github.com/budgie-at/budgie/commit/dfaf788cc58c049517e4da46ffff88e50b82b935))
+* **app:** let the set-aside editor save an unchanged existing fund ([2b3f47f](https://github.com/budgie-at/budgie/commit/2b3f47f0fcee2969dd7d825f1c1958f743eab264))
+* **app:** let the set-aside sheet open its category and date pickers ([ae642f4](https://github.com/budgie-at/budgie/commit/ae642f4c7465a5d412f8251ff39d02e69b56aed5))
+* **app:** make planned set-aside amounts read as plans ([5160aad](https://github.com/budgie-at/budgie/commit/5160aad8438a75295c408ff4a2be93e815d689ed))
+* **app:** offer one Add for empty category limits ([b76690b](https://github.com/budgie-at/budgie/commit/b76690b2763d8cc1ac8c7632bc5efb9a498b4f39))
+* **app:** paint content-sized sheets as one opaque surface ([c9a22bc](https://github.com/budgie-at/budgie/commit/c9a22bc8d64ab49f5f35c9654cb8c6a834bc1d8b))
+* **app:** polish budget v3 section actions, labels and forecast ([2ccc235](https://github.com/budgie-at/budgie/commit/2ccc235eb271e220926fc8872089ba82de9db91f))
+* **app:** render the set-aside sheet again ([f113685](https://github.com/budgie-at/budgie/commit/f1136850f00e9683c2589ac8e2b61cd3a813e5c2))
+* **app:** say "left" on the Home budget card and keep chips on one line ([36e7e52](https://github.com/budgie-at/budgie/commit/36e7e52cc19645256702cc26c05f33a5f4bdfc93))
+* **app:** scale a far-from-limit forecast to its data ([6393778](https://github.com/budgie-at/budgie/commit/6393778a5469edee25f59ea0d50a77c016a32bc6))
+* **app:** scroll the fund sheet title with its form ([95a51a4](https://github.com/budgie-at/budgie/commit/95a51a4bd4bfcf327d919bdaad576a32eb8c882c))
+* **app:** shorten the over-assigned note to one line ([1977043](https://github.com/budgie-at/budgie/commit/19770433a150d942113c1df58c896424be0fcb98))
+* **app:** show editable budget amounts in primary text at rest ([fc47675](https://github.com/budgie-at/budgie/commit/fc47675216c4448f72621b8ceda2bed84bf87ec6))
+* **app:** show the fixed limit only for fixed budgets and tighten budget v3 forms ([89a3b0f](https://github.com/budgie-at/budgie/commit/89a3b0fa02db49824b7d8bde0d86d3619bbb55ab))
+* **app:** show the year on set-aside due dates outside this year ([7abb6f5](https://github.com/budgie-at/budgie/commit/7abb6f534a476e433db5dfb3c1a86823be671c4c))
+* **app:** show two readable category chips on the Home budget card ([351f41f](https://github.com/budgie-at/budgie/commit/351f41ff306039ec17fd1753b97b408e76f209b9))
+* **app:** stop exporting unused budget query atoms ([f098906](https://github.com/budgie-at/budgie/commit/f0989067968c242148d6add1173e6156415231df))
+* **app:** stop the hero amount digits sliding under the currency ([0780f9c](https://github.com/budgie-at/budgie/commit/0780f9cabfac03bc6ef3682d9f7f0e8e0705e4fb))
+* **app:** tighten budget v3 form validation ([86c6625](https://github.com/budgie-at/budgie/commit/86c6625d2a69b601591bf3e2324810541908d006))
+* **app:** use one section rhythm on the budget details screens ([92791da](https://github.com/budgie-at/budgie/commit/92791da04f401d9b6eaee6fc49f15f2c294b48cf))
+* **app:** use shared guards in budget form schema and day strip ([96b98fd](https://github.com/budgie-at/budgie/commit/96b98fd1f5c38bb50d3319e639720f58db4c2f95))
+
+### Features
+
+* **app:** add a radio option row, weekday formatter and budget v3 selectors ([17cd7b3](https://github.com/budgie-at/budgie/commit/17cd7b32dc9160865c5cc95f6a14eb600f4e822e))
+* **app:** add budget_v3 migration ([7eade13](https://github.com/budgie-at/budgie/commit/7eade13c0f86e4b9abafd86d0897e3c58cf009b8))
+* **app:** add category icon tiles to budget detail rows ([fb146e2](https://github.com/budgie-at/budgie/commit/fb146e2fe0d305aa20dd7b9daca9e264a6f42bd9))
+* **app:** add category icon tiles to the period summary ([ed7695e](https://github.com/budgie-at/budgie/commit/ed7695eaf341337c6207b13b0fa517b8d0fc7d0a))
+* **app:** add limit source radios and the tune switch to the budget form ([2fd6fd9](https://github.com/budgie-at/budgie/commit/2fd6fd9e00fb7c7f415170d84dd0297bb7ddba8f))
+* **app:** add live budget atoms for events, funds, limit changes and expected income ([9e03761](https://github.com/budgie-at/budgie/commit/9e037618070f6ee42649b0c0a0d4db43973bf15e))
+* **app:** add period, starts-on and name fields to the budget form hook ([eda7e44](https://github.com/budgie-at/budgie/commit/eda7e4447b9f2aae70e58f7f0a25fbf1062bd4fa))
+* **app:** add the event budget form and routes ([621a67a](https://github.com/budgie-at/budgie/commit/621a67a9a239163e07ff38b994e3d568d3d46067))
+* **app:** add the events section to budget details ([86468b8](https://github.com/budgie-at/budgie/commit/86468b84289bd144aef9026a76f78b55c2988789))
+* **app:** add the set aside section and fund rows ([8cab8ee](https://github.com/budgie-at/budgie/commit/8cab8eedef3de270335ca66e8634cf8cfdee70b6))
+* **app:** add the sinking fund sheet with recurring prefill ([8378590](https://github.com/budgie-at/budgie/commit/8378590036d97f7c5561b55a39722f009eacb9e0))
+* **app:** explain the safe-to-spend figure and reconcile Left ([2190352](https://github.com/budgie-at/budgie/commit/2190352e42d171441f3ed314b4193c1b828ee06c))
+* **app:** extend budget form schemas and payload mappers for v3 ([230024a](https://github.com/budgie-at/budgie/commit/230024abad1aece481b55fbec2f72752d48892ad))
+* **app:** feed alerts and the home widget from the cadence-aware projection ([ce6c796](https://github.com/budgie-at/budgie/commit/ce6c796b299501e6f3b8db53841f802fdf6f4cb7))
+* **app:** give budget rows disclosure and one-line meta ([89ed730](https://github.com/budgie-at/budgie/commit/89ed7308d84f745a3e207cd7a8bf4f066a0e3704))
+* **app:** give the budget hero one voice ([565c2fd](https://github.com/budgie-at/budgie/commit/565c2fd77ad360acee35215cd598890f428cb45e))
+* **app:** group category limits on the budget forms ([1e18c41](https://github.com/budgie-at/budgie/commit/1e18c41605b271d1f55806a10150cd8ed35c3e97))
+* **app:** group limit changes in the sheet ([9d550e3](https://github.com/budgie-at/budgie/commit/9d550e325a975bdcf5c8fa99820eb18ea740c510))
+* **app:** lead set-aside and event rows with icon tiles ([90cf259](https://github.com/budgie-at/budgie/commit/90cf2597a667c0702f28292bb56e80ecd8f79786))
+* **app:** lead the period summary with its total ([181f019](https://github.com/budgie-at/budgie/commit/181f0192930a1fc8f7449970e20390a8ef73ed68))
+* **app:** lighten the day-strip key ([c5a01a0](https://github.com/budgie-at/budgie/commit/c5a01a0d0f4f249b204f70227fe2b860ee4322bd))
+* **app:** make budget copy and the day strip follow the period ([97e5776](https://github.com/budgie-at/budgie/commit/97e5776507f5cbccc84875e3fe4369ae5ff1d2d3))
+* **app:** move the day-strip key into the safe-to-spend sheet ([3b871b8](https://github.com/budgie-at/budgie/commit/3b871b85bb78e104f4373f09ba9ec43223641bea))
+* **app:** offer an add row in empty event category limits ([434d418](https://github.com/budgie-at/budgie/commit/434d418a33dd7bc4dca9bd2870a095e0abd0fe22))
+* **app:** project budgets for any cadence, income mode, funds and events ([e424118](https://github.com/budgie-at/budgie/commit/e4241186fe6943cdf1e7633fd3953a709cce41ec))
+* **app:** rebuild budget forms on grouped rows with an opaque footer ([5885e10](https://github.com/budgie-at/budgie/commit/5885e10fca3ff0a165d3ed74e68b23d9be554773))
+* **app:** resolve budget windows and projection keys for every cadence and event ([971cdcd](https://github.com/budgie-at/budgie/commit/971cdcd4ee887b71b4bdbffddceb6f9d6ee6abdc))
+* **app:** resolve one budget display state for every surface ([f9c7421](https://github.com/budgie-at/budgie/commit/f9c74211d7cf86bc18b28c26b11dd52bd4ab9658))
+* **app:** share the details overview between the main budget and event budgets ([c2876ee](https://github.com/budgie-at/budgie/commit/c2876eeb543f272880023af4bc0830e48c538914))
+* **app:** show budget templates as grouped rows ([c897536](https://github.com/budgie-at/budgie/commit/c897536acff60822b43963366e53b090d2e94d1e))
+* **app:** show income in the stats and an Unassigned allocation block ([5996af4](https://github.com/budgie-at/budgie/commit/5996af4cc0d5bc02863e21762c2825b2abcd2664))
+* **app:** show limit changes and the per-budget tune switch ([70d58ca](https://github.com/budgie-at/budgie/commit/70d58caae424ee072a87c93ebc96f67dcb8fe798))
+* **app:** show the rollover menu and editable amounts on budget forms ([2925d4a](https://github.com/budgie-at/budgie/commit/2925d4a72c44e28a583855786ec60fb158c7a9c7))
+* **app:** size budget sheets to content and surface over-assignment ([36085f3](https://github.com/budgie-at/budgie/commit/36085f316dd0a54d0a2bb408f976191543ccd664))
+* **app:** suggest sinking funds from yearly recurring series ([5c3d3b6](https://github.com/budgie-at/budgie/commit/5c3d3b62752431016b693dd60e1c1e9bfed78479))
+* **app:** translate budget v3 strings ([7e43d5f](https://github.com/budgie-at/budgie/commit/7e43d5f91274e04e0c532aa3d0e7e702d923cc41))
+* **app:** translate budget v3 week labels ([2fab465](https://github.com/budgie-at/budgie/commit/2fab465fec523c3d8ab8d7dac5f5cc6b7f5f2b71))
+* **budget:** add sinking fund and limit change repositories ([204a115](https://github.com/budgie-at/budgie/commit/204a115ac7deb862da34c4877d2934505267ef39))
+* **budget:** compute weekly, biweekly and yearly period windows ([d9d25ac](https://github.com/budgie-at/budgie/commit/d9d25ac92557e8d28567b0f0dba017836dcfcfed))
+* **budget:** expose spent entries and draws net of sinking funds ([b9c851b](https://github.com/budgie-at/budgie/commit/b9c851bf8b35154b726d56177c01b24204e0b43b))
+* **budget:** reserve sinking fund set-asides in the projection ([76dca1b](https://github.com/budgie-at/budgie/commit/76dca1b9f064efec70d435693cfe7899df35306f))
+* **budget:** separate the main budget from event budgets in queries ([929f237](https://github.com/budgie-at/budgie/commit/929f237fb8592b841a1fc7815535c390c1cfde37))
+* **contracts:** add sinking fund and limit change tables ([9093d2a](https://github.com/budgie-at/budgie/commit/9093d2aa5f31330099f9e49e62db7bcbc0f4f860))
+
+
+## [6.139.2](https://github.com/budgie-at/budgie/compare/v6.139.1...v6.139.2) (2026-11-01)
+
+**Note:** Version bump only for package @budgie-at/app
+
+
+
+
+
+## [6.139.1](https://github.com/budgie-at/budgie/compare/v6.139.0...v6.139.1) (2026-11-01)
+
+### Bug Fixes
+
+* **app:** restore account form interactions after redesign ([6c00fcb](https://github.com/budgie-at/budgie/commit/6c00fcb1e3d32a2123309d0d2dd552465cdce048))
+* **app:** retain failed sync status when automatic sync is off ([bc280c7](https://github.com/budgie-at/budgie/commit/bc280c72fbed6627e8b6c94f79618d2bc8334b68))
+
+
+# [6.139.0](https://github.com/budgie-at/budgie/compare/v6.138.0...v6.139.0) (2026-11-01)
+
+### Features
+
+* **app:** rebuild settings as grouped lists with a data tools screen ([#1844](https://github.com/budgie-at/budgie/issues/1844)) ([11a46d6](https://github.com/budgie-at/budgie/commit/11a46d694c1051e8834ac3b4a14fd045bc655501))
+
+
 # [6.138.0](https://github.com/budgie-at/budgie/compare/v6.137.1...v6.138.0) (2026-10-31)
 
 ### Bug Fixes

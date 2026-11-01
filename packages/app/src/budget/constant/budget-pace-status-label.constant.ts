@@ -6,6 +6,6 @@ import type { MessageDescriptor } from '@lingui/core';
 export const BUDGET_PACE_STATUS_LABEL: Record<BudgetPaceStatusEnum, MessageDescriptor> = {
     [BudgetPaceStatusEnum.ON_TRACK]: msg`On track`,
     [BudgetPaceStatusEnum.TOO_EARLY]: msg`On track`,
-    [BudgetPaceStatusEnum.AHEAD]: msg`Spending fast`,
-    [BudgetPaceStatusEnum.OVER]: msg`Over limit`
+    [BudgetPaceStatusEnum.AHEAD]: msg`Ahead of pace`,
+    [BudgetPaceStatusEnum.OVER]: msg`Over budget`
 };

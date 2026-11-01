@@ -1,4 +1,4 @@
-import { BudgetPaceStatusEnum, BudgetRepository, computePeriodWindow, computeSafePerDay, getInclusiveEnd } from '@budgie/budget';
+import { BudgetPaceStatusEnum, BudgetRepository, computeSafePerDay, getInclusiveEnd } from '@budgie/budget';
 import {
     AccountBalanceRepository,
     AccountTypeEnum,
@@ -29,6 +29,7 @@ import { BUDGET_PACE_STATUS_LABEL } from '../../budget/constant/budget-pace-stat
 import { BUDGET_PACE_VARIANT } from '../../budget/constant/budget-pace-variant.constant';
 import { BudgetProjectionService } from '../../budget/service/budget-projection.service';
 import { resolveBudgetBarTone } from '../../budget/utils/resolve-budget-bar-tone.util';
+import { resolveBudgetWindow } from '../../budget/utils/resolve-budget-window.util';
 import { DEFAULT_DECIMAL_PLACES } from '../../i18n/constant/default-decimal-places.constant';
 import { formatSymbolAmount } from '../../i18n/utils/format-symbol-amount.util';
 import { i18nLoadLanguageMessages } from '../../i18n/utils/i18n.util';
@@ -360,18 +361,23 @@ export class WidgetSnapshotBuilderService extends Context.Service<WidgetSnapshot
             });
 
             const buildBudget = Effect.fn('WidgetSnapshotBuilderService.buildBudget')(function* (context: WidgetSnapshotContextInterface) {
-                const budget = yield* budgetRepository.findActive();
+                const budget = yield* budgetRepository.findMain();
 
-                if (!isDefined(budget) || !isPositiveNumber(budget.instrumentId) || !isPositiveNumber(budget.overallLimit)) {
+                if (!isDefined(budget) || !isPositiveNumber(budget.instrumentId)) {
                     return null;
                 }
 
                 const now = new Date();
-                const { periodStart, nextPeriodStart } = computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, now);
+                const { periodStart, nextPeriodStart } = resolveBudgetWindow(budget, now);
                 const [instrument, projection] = yield* Effect.all(
                     [instrumentRepository.findById(budget.instrumentId), budgetProjectionService.project(budget, now)],
                     { concurrency: 'unbounded' }
                 );
+
+                if (!isPositiveNumber(projection.overall.limit)) {
+                    return null;
+                }
+
                 const symbol = instrument?.symbol ?? DEFAULT_INSTRUMENT.symbol;
                 const spentAmount = convertFromMicroUnits(projection.overall.spent);
                 const limitAmount = convertFromMicroUnits(projection.overall.limit);

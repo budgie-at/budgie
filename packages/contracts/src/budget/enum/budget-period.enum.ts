@@ -1,3 +1,6 @@
 export enum BudgetPeriodEnum {
-    MONTHLY = 'MONTHLY'
+    WEEKLY = 'WEEKLY',
+    BIWEEKLY = 'BIWEEKLY',
+    MONTHLY = 'MONTHLY',
+    YEARLY = 'YEARLY'
 }

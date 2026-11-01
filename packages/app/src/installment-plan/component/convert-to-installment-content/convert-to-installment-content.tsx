@@ -101,13 +101,13 @@ export const ConvertToInstallmentContent = ({ params, onResolve }: Props) => {
                     </ScrollView>
                     {isScrolled ? (
                         <View
-                            className="absolute inset-x-0 top-0 h-[40px] bg-linear-to-b from-primary-reverse via-primary-reverse to-primary-reverse/0"
+                            className="absolute inset-x-0 top-0 h-[40px] bg-linear-to-b from-sheet-surface via-sheet-surface to-sheet-surface/0"
                             pointerEvents="none"
                         />
                     ) : null}
                     {isKeyboardVisible ? (
                         <View
-                            className="absolute inset-x-0 bottom-0 h-[24px] bg-linear-to-b from-primary-reverse/0 to-primary-reverse"
+                            className="absolute inset-x-0 bottom-0 h-[24px] bg-linear-to-b from-sheet-surface/0 to-sheet-surface"
                             pointerEvents="none"
                         />
                     ) : (

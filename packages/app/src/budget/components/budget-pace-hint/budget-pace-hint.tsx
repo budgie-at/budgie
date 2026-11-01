@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
@@ -35,5 +36,13 @@ export const BudgetPaceHint = ({ projection, currencySymbol, onPress }: Props) =
         );
     }
 
-    return <BudgetPaceHintLine title={t`Other`} scope={scope} currencySymbol={currencySymbol} onPress={handlePress} />;
+    return (
+        <BudgetPaceHintLine
+            icon={UserIconNameEnum.CircleEllipsis}
+            title={t`Other`}
+            scope={scope}
+            currencySymbol={currencySymbol}
+            onPress={handlePress}
+        />
+    );
 };

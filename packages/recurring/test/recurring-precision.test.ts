@@ -33,7 +33,8 @@ const calendarFromCharges = (charges: readonly RecurringChargeInterface[], now: 
         })),
         now.getFullYear(),
         now.getMonth(),
-        now
+        now,
+        RecurringSeriesKindEnum.EXPENSE
     );
 
 it.effect('omits income from a mixed recurring day and expense totals', () =>
@@ -58,7 +59,8 @@ it.effect('omits a previously tracked income series from projection', () =>
             ],
             2026,
             4,
-            new Date(2026, 4, 5, 12)
+            new Date(2026, 4, 5, 12),
+            RecurringSeriesKindEnum.EXPENSE
         );
         expect(data.forecastedEntriesByDay.get(5)).toHaveLength(1);
         expect(data.committedMonthlyExpense).toBe(12);
@@ -160,7 +162,8 @@ it.effect('preserves an annual leap-day anchor', () =>
             series.map(item => ({ ...item, seriesId: 1, userState: RecurringSeriesUserStateEnum.CONFIRMED })),
             2028,
             1,
-            new Date(2025, 1, 28)
+            new Date(2025, 1, 28),
+            RecurringSeriesKindEnum.EXPENSE
         );
         expect([...data.forecastedEntriesByDay.keys()]).toEqual([29]);
     })
@@ -193,7 +196,8 @@ it.effect('projects weekly and biweekly dates across Vienna daylight saving time
                 series.map(item => ({ ...item, seriesId: 1, userState: RecurringSeriesUserStateEnum.CONFIRMED })),
                 2025,
                 10,
-                new Date(2025, 9, 19)
+                new Date(2025, 9, 19),
+                RecurringSeriesKindEnum.EXPENSE
             );
             expect([...data.forecastedEntriesByDay.keys()]).toEqual(expected);
         }

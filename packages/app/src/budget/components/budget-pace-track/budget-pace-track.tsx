@@ -1,60 +1,44 @@
-import { Trans } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
-import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
+import { isDefined } from '@rnw-community/shared';
+
 import { cn } from '../../../@generic/utils/cn.util';
+import { BUDGET_BAR_FILL_CLASS_NAME } from '../../constant/budget-bar-fill-class-name.constant';
 import { BUDGET_PACE_RESERVED_CLASS_NAME } from '../../constant/budget-pace-reserved-class-name.constant';
-import { BUDGET_PACE_VARIANT } from '../../constant/budget-pace-variant.constant';
 import { buildBudgetPaceTrackMetrics } from '../../utils/build-budget-pace-track-metrics.util';
 
+import type { BudgetPaceVariant } from '../../type/budget-pace-variant.type';
 import type { BudgetProjectionScopeInterface } from '@budgie/budget';
-
-const FILL_CLASS_NAME = {
-    positive: 'bg-positive-gauge',
-    warning: 'bg-warning-fill',
-    destructive: 'bg-destructive-fill'
-} as const;
 
 interface Props {
     readonly scope: BudgetProjectionScopeInterface;
+    readonly tone: BudgetPaceVariant;
 }
 
-export const BudgetPaceTrack = ({ scope }: Props) => {
-    const isAmountProtected = useIsAmountProtected();
-    const variant = BUDGET_PACE_VARIANT[scope.status];
-    const { isOverBudget, neutralStyle, fillStyle, reservedStyle, markerStyle, labelStyle } = buildBudgetPaceTrackMetrics(scope);
-    const limitLabelStyle = labelStyle;
-    const isFillVisible = !isAmountProtected;
-    const withinPlanClassName = isOverBudget ? 'bg-[#F4C2BE] opacity-100 dark:bg-destructive-fill/35' : FILL_CLASS_NAME[variant];
-    const isMarkerVisible = isFillVisible && !isOverBudget;
-    const isReservedVisible = isFillVisible && !isOverBudget;
-    const trackClassName = isOverBudget ? 'gap-x-[3px]' : 'bg-secondary-corner';
+const RING_BORDER_CLASS_NAME = {
+    positive: 'border-primary',
+    warning: 'border-warning-fill',
+    destructive: 'border-destructive-fill'
+} as const;
+
+export const BudgetPaceTrack = ({ scope, tone: variant }: Props) => {
+    const { spentStyle, upcomingStyle, todayStyle, ringStyle } = buildBudgetPaceTrackMetrics(scope);
 
     return (
-        <View className="mt-sm h-3.5 justify-center" importantForAccessibility="no-hide-descendants">
-            <View className={cn('h-1.5 flex-row items-center overflow-hidden rounded-full', trackClassName)}>
-                {isFillVisible ? <View className={cn('h-full opacity-35', withinPlanClassName)} style={neutralStyle} /> : null}
-                {isFillVisible ? <View className={cn('h-full', FILL_CLASS_NAME[variant])} style={fillStyle} /> : null}
-                {isReservedVisible ? (
-                    <View className={cn('h-[3px]', BUDGET_PACE_RESERVED_CLASS_NAME[variant])} style={reservedStyle} />
-                ) : null}
+        <View className="h-4 justify-center" importantForAccessibility="no-hide-descendants">
+            <View className="h-2 flex-row overflow-hidden rounded-full bg-secondary-corner">
+                <View className={cn('h-full', BUDGET_BAR_FILL_CLASS_NAME[variant])} style={spentStyle} />
+                <View className={cn('h-full', BUDGET_PACE_RESERVED_CLASS_NAME[variant])} style={upcomingStyle} />
             </View>
-            {isMarkerVisible ? <View className="absolute top-0 h-3.5 w-0.5 -ms-px rounded-full bg-primary" style={markerStyle} /> : null}
-            {isFillVisible && isOverBudget ? (
-                <Text
-                    className="absolute -top-3.5 -ms-6 w-12 text-center text-[11px] font-semibold text-secondary-foreground"
-                    style={limitLabelStyle}
-                >
-                    <Trans>Limit</Trans>
-                </Text>
-            ) : null}
-            {isMarkerVisible ? (
-                <Text
-                    className="absolute -top-3.5 -ms-6 w-12 text-center text-[11px] font-semibold text-secondary-foreground"
-                    style={labelStyle}
-                >
-                    <Trans>Today</Trans>
-                </Text>
+            <View className="absolute top-0 h-4 w-0.5 -ms-px rounded-full bg-primary" style={todayStyle} />
+            {isDefined(ringStyle) ? (
+                <View
+                    className={cn(
+                        'absolute top-0.5 h-3 w-3 -ms-1.5 rounded-full border-2 bg-primary-reverse dark:bg-secondary-background',
+                        RING_BORDER_CLASS_NAME[variant]
+                    )}
+                    style={ringStyle}
+                />
             ) : null}
         </View>
     );

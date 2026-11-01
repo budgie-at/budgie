@@ -16,9 +16,9 @@ export const BudgetEmptyState = ({ testID }: Props) => {
     return (
         <BudgetTemplateOptionCard
             testID={testID}
-            icon={UserIconNameEnum.ChartPie}
-            title={t`Know what’s safe to spend`}
-            description={t`Set a limit and get a daily allowance`}
+            icon={UserIconNameEnum.PiggyBank}
+            title={t`Create your budget`}
+            description={t`Set a limit and track your spending`}
             onPress={handleNavigate}
         />
     );

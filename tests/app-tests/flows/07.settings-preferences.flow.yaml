@@ -102,11 +102,9 @@ appId: ${APP_ID}
       centerElement: true
 - assertVisible:
       id: 'SettingsPage.DarkModeCard'
-- tapOn:
-      id: 'SettingsPage.DarkModeCard'
+- tapOn: 'Dark'
 - waitForAnimationToEnd
-- tapOn:
-      id: 'SettingsPage.DarkModeCard'
+- tapOn: 'Light'
 - waitForAnimationToEnd
 
 - assertVisible:

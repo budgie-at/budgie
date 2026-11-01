@@ -12,6 +12,7 @@ import {
     RecurringSeriesEntityTable,
     TransactionEntityTable,
     TransactionEntryEntityTable,
+    TransactionConsolidationTypeEnum,
     TransactionEntryTypeEnum,
     TransactionTypeEnum
 } from '@budgie/contracts';
@@ -24,9 +25,26 @@ import type { RecurringSeriesCreateEntityInterface } from '@budgie/contracts';
 
 export class RecurringRepository extends Context.Service<RecurringRepository>()('@budgie/recurring/RecurringRepository', {
     make: Effect.sync(() => {
-        const findCharges = (defaultInstrumentId: number | null, language: LanguageEnum, since: Date, historical: boolean) =>
-            Db.query(db => {
-                const rateToDefault = sql<number>`COALESCE(
+        const kindConditions = {
+            [RecurringSeriesKindEnum.EXPENSE]: [
+                eq(TransactionEntityTable.type, TransactionTypeEnum.EXPENSE),
+                eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.CREDIT)
+            ],
+            [RecurringSeriesKindEnum.INCOME]: [
+                eq(TransactionEntityTable.type, TransactionTypeEnum.INCOME),
+                eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.DEBIT),
+                or(
+                    isNull(TransactionEntityTable.consolidationType),
+                    ne(TransactionEntityTable.consolidationType, TransactionConsolidationTypeEnum.REFUND)
+                )
+            ]
+        } as const;
+
+        const findCharges =
+            (historical: boolean) =>
+            (defaultInstrumentId: number | null, language: LanguageEnum, since: Date, kind: RecurringSeriesKindEnum) =>
+                Db.query(db => {
+                    const rateToDefault = sql<number>`COALESCE(
                         (SELECT ${ExchangeRateEntityTable.rate} * 1.0 FROM ${ExchangeRateEntityTable}
                          WHERE ${ExchangeRateEntityTable.baseInstrumentId} = ${AccountEntityTable.instrumentId}
                            AND ${ExchangeRateEntityTable.quoteInstrumentId} = ${defaultInstrumentId}
@@ -39,57 +57,64 @@ export class RecurringRepository extends Context.Service<RecurringRepository>()(
                          ORDER BY ${ExchangeRateEntityTable.createdAt} DESC LIMIT 1),
                         1.0
                     )`;
-                const defaultAmount = sql<number>`${TransactionEntryEntityTable.amount} * ${rateToDefault}`;
+                    const defaultAmount = sql<number>`${TransactionEntryEntityTable.amount} * ${rateToDefault}`;
 
-                return db
-                    .select({
-                        transactionId: TransactionEntityTable.id,
-                        operatedAt: TransactionEntityTable.operatedAt,
-                        title: TransactionEntityTable.title,
-                        comment: TransactionEntityTable.comment,
-                        defaultAmount,
-                        kind: sql<RecurringSeriesKindEnum>`${RecurringSeriesKindEnum.EXPENSE}`,
-                        nativeAmount: TransactionEntryEntityTable.amount,
-                        instrumentId: AccountEntityTable.instrumentId,
-                        counterpartyIban: TransactionEntryEntityTable.toIban,
-                        accountId: AccountEntityTable.id,
-                        categoryId: TransactionEntryEntityTable.categoryId,
-                        categoryTitle: sql<
-                            string | null
-                        >`COALESCE(${DefaultCategoryTranslationEntityTable.title}, ${CategoryEntityTable.title})`,
-                        categoryIcon: CategoryEntityTable.icon
-                    })
-                    .from(TransactionEntityTable)
-                    .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
-                    .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
-                    .leftJoin(CategoryEntityTable, eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id))
-                    .leftJoin(DefaultCategoryTranslationEntityTable, buildCategoryTranslationJoinCondition(language))
-                    .where(
-                        and(
-                            eq(TransactionEntityTable.type, TransactionTypeEnum.EXPENSE),
-                            eq(TransactionEntryEntityTable.type, TransactionEntryTypeEnum.CREDIT),
-                            transactionFilters.buildVisibleTransactionCondition(),
-                            transactionFilters.buildCategorizableEntryCondition(),
-                            transactionFilters.buildNonDebtAccountCondition(),
-                            ...(historical ? [] : [buildSpendingEntryCondition(), eq(AccountEntityTable.isActive, true)]),
-                            gt(TransactionEntryEntityTable.amount, 0),
-                            gte(TransactionEntityTable.operatedAt, since),
-                            or(ne(TransactionEntityTable.title, ''), ne(TransactionEntityTable.comment, ''))
-                        )
-                    );
-            });
+                    return db
+                        .select({
+                            transactionId: TransactionEntityTable.id,
+                            operatedAt: TransactionEntityTable.operatedAt,
+                            title: TransactionEntityTable.title,
+                            comment: TransactionEntityTable.comment,
+                            defaultAmount,
+                            kind: sql<RecurringSeriesKindEnum>`${kind}`,
+                            nativeAmount: TransactionEntryEntityTable.amount,
+                            instrumentId: AccountEntityTable.instrumentId,
+                            counterpartyIban: TransactionEntryEntityTable.toIban,
+                            accountId: AccountEntityTable.id,
+                            categoryId: TransactionEntryEntityTable.categoryId,
+                            categoryTitle: sql<
+                                string | null
+                            >`COALESCE(${DefaultCategoryTranslationEntityTable.title}, ${CategoryEntityTable.title})`,
+                            categoryIcon: CategoryEntityTable.icon
+                        })
+                        .from(TransactionEntityTable)
+                        .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+                        .innerJoin(AccountEntityTable, eq(TransactionEntryEntityTable.accountId, AccountEntityTable.id))
+                        .leftJoin(CategoryEntityTable, eq(TransactionEntryEntityTable.categoryId, CategoryEntityTable.id))
+                        .leftJoin(DefaultCategoryTranslationEntityTable, buildCategoryTranslationJoinCondition(language))
+                        .where(
+                            and(
+                                ...kindConditions[kind],
+                                transactionFilters.buildVisibleTransactionCondition(),
+                                transactionFilters.buildCategorizableEntryCondition(),
+                                transactionFilters.buildNonDebtAccountCondition(),
+                                ...(historical ? [] : [buildSpendingEntryCondition(), eq(AccountEntityTable.isActive, true)]),
+                                gt(TransactionEntryEntityTable.amount, 0),
+                                gte(TransactionEntityTable.operatedAt, since),
+                                or(ne(TransactionEntityTable.title, ''), ne(TransactionEntityTable.comment, ''))
+                            )
+                        );
+                });
 
         return {
-            findCharges: (defaultInstrumentId: number | null, language: LanguageEnum, since: Date) =>
-                findCharges(defaultInstrumentId, language, since, false),
-            findHistoricalCharges: (defaultInstrumentId: number | null, language: LanguageEnum, since: Date) =>
-                findCharges(defaultInstrumentId, language, since, true),
-            findSeries: () =>
+            findCharges: (
+                defaultInstrumentId: number | null,
+                language: LanguageEnum,
+                since: Date,
+                kind: RecurringSeriesKindEnum = RecurringSeriesKindEnum.EXPENSE
+            ) => findCharges(false)(defaultInstrumentId, language, since, kind),
+            findHistoricalCharges: (
+                defaultInstrumentId: number | null,
+                language: LanguageEnum,
+                since: Date,
+                kind: RecurringSeriesKindEnum = RecurringSeriesKindEnum.EXPENSE
+            ) => findCharges(true)(defaultInstrumentId, language, since, kind),
+            findSeries: (kind: RecurringSeriesKindEnum = RecurringSeriesKindEnum.EXPENSE) =>
                 Db.query(db =>
                     db
                         .select()
                         .from(RecurringSeriesEntityTable)
-                        .where(isNull(RecurringSeriesEntityTable.deletedAt))
+                        .where(and(isNull(RecurringSeriesEntityTable.deletedAt), eq(RecurringSeriesEntityTable.kind, kind)))
                         .orderBy(RecurringSeriesEntityTable.id)
                 ),
             createSeries: (input: RecurringSeriesCreateEntityInterface) =>
