@@ -84,6 +84,7 @@ msgstr "{accountCount, plural, one {# compte} other {# comptes}}"
 
 #: src/account/component/accounts-group/accounts-group.tsx
 #: src/account/component/crypto-currency-group-toggle-row/crypto-currency-group-toggle-row.tsx
+#: src/account/component/institution-row/institution-row.tsx
 msgid "{accountsCount, plural, one {# account} other {# accounts}}"
 msgstr "{accountsCount, plural, one {# compte} other {# comptes}}"
 
@@ -684,7 +685,7 @@ msgstr "−{changePercent} vs {shortPreviousLabel}"
 msgid "≈ {formattedMonths} mo"
 msgstr "≈ {formattedMonths} mois"
 
-#: src/account/component/crypto-currency-group-toggle-row/crypto-currency-group-toggle-row.tsx
+#: src/account/component/crypto-currency-group-market-link/crypto-currency-group-market-link.tsx
 msgid "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
 msgstr "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
 
@@ -890,7 +891,7 @@ msgstr "Ajouter une transaction"
 msgid "Add Account"
 msgstr "Ajouter un compte"
 
-#: src/account/component/account-grid-item/account-grid-item.tsx
+#: src/account/component/account-list-item/account-list-item.tsx
 msgid "Add balance"
 msgstr "Ajouter un solde"
 
@@ -1207,6 +1208,10 @@ msgstr "Voulez-vous vraiment supprimer cette règle ?"
 msgid "Are you sure?"
 msgstr "Êtes-vous sûr ?"
 
+#: src/account/component/net-worth-composition/net-worth-composition.tsx
+msgid "Asset mix"
+msgstr "Répartition des actifs"
+
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Attach debt"
@@ -1310,7 +1315,6 @@ msgid "Bank account"
 msgstr "Compte bancaire"
 
 #: src/account/component/account-card-menu/account-card-menu.tsx
-#: src/account/component/bank-provider-section-header/bank-provider-section-header.tsx
 msgid "Bank integration settings"
 msgstr "Paramètres de l'intégration bancaire"
 
@@ -1379,6 +1383,7 @@ msgstr "Entre {lowestCount} et {MAX_INSTALLMENT_COUNT} mois"
 msgid "Billing Dates"
 msgstr "Dates de facturation"
 
+#: src/account/constant/bank-provider-title.constant.ts
 #: src/app/(main)/create-account/index.tsx
 #: src/rule/constant/external-source.constant.ts
 msgid "Binance"
@@ -1610,6 +1615,7 @@ msgstr "Tout reporter"
 msgid "Carry savings"
 msgstr "Reporter les économies"
 
+#: src/account/component/cash-card/cash-card.tsx
 #: src/account/constant/account-type.constant.ts
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "Cash"
@@ -1850,6 +1856,7 @@ msgstr "Fermer le menu"
 msgid "Closing balance · {title}"
 msgstr "Solde de clôture · {title}"
 
+#: src/account/constant/bank-provider-title.constant.ts
 #: src/rule/constant/external-source.constant.ts
 msgid "Coinbase"
 msgstr "Coinbase"
@@ -4068,7 +4075,7 @@ msgstr "Montant minimum"
 msgid "Missing categories"
 msgstr "Catégories manquantes"
 
-#: src/account/component/crypto-currency-group-toggle-row/crypto-currency-group-toggle-row.tsx
+#: src/account/component/crypto-currency-group-market-link/crypto-currency-group-market-link.tsx
 msgid "Missing rate"
 msgstr "Taux manquant"
 
@@ -5326,6 +5333,10 @@ msgstr "Paiements récents"
 msgid "Record card taps with Shortcuts"
 msgstr "Enregistrer les paiements par carte avec Raccourcis"
 
+#: src/account/component/cash-card/cash-card.tsx
+msgid "Record expense"
+msgstr "Ajouter une dépense"
+
 #: src/@generic/component/transactions-page-header/transactions-page-header.tsx
 #: src/budget/components/budget-upcoming-charge-row/budget-upcoming-charge-row.tsx
 msgid "Recurring"
@@ -5516,6 +5527,7 @@ msgstr "Reçu"
 msgid "Review sync settings"
 msgstr "Vérifier les paramètres de synchronisation"
 
+#: src/account/constant/bank-provider-title.constant.ts
 #: src/rule/constant/external-source.constant.ts
 msgid "Revolut"
 msgstr "Revolut"
@@ -7229,6 +7241,7 @@ msgstr "Toute la période"
 msgid "Will be created on this phone"
 msgstr "Sera créé sur ce téléphone"
 
+#: src/account/constant/bank-provider-title.constant.ts
 #: src/rule/constant/external-source.constant.ts
 msgid "Wise"
 msgstr "Wise"

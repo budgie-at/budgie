@@ -1,9 +1,11 @@
 import { AccountDebtTypeEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
+import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { InstallmentPlanNextPayment } from '../../../installment-plan/component/installment-plan-next-payment/installment-plan-next-payment';
 import { DEBT_REMAINING_LABEL } from '../../constant/debt-remaining-label.constant';
@@ -23,11 +25,16 @@ interface Props {
     readonly debtProgressSummary: DebtAccountProgressSummaryInterface | null;
 }
 
+const progressSubtitleVariants = cva('gap-x-xs', {
+    variants: { isStacked: { true: 'items-start', false: 'flex-row items-center' } }
+});
+
 export const DebtAccountCard = ({ account, instrumentSymbol, debtProgressSummary }: Props) => {
     const { id, title, debtType, deadline } = account;
 
     const { t } = useLingui();
     const protectAmount = useProtectedAmountLabel();
+    const isStacked = useIsAccessibilityTextSize();
 
     const deadlineBadge = isDefined(deadline) ? <DebtAccountCardDeadline deadline={deadline} /> : null;
 
@@ -47,9 +54,9 @@ export const DebtAccountCard = ({ account, instrumentSymbol, debtProgressSummary
 
     const { outstandingAmount, paidAmount, percentage, totalAmount } = debtProgressSummary;
     const displayPercentage = percentage >= 100 ? 100 : Math.floor(percentage);
-    const separator = isDefined(deadlineBadge) ? <Text className="text-[13px] text-secondary-foreground">·</Text> : null;
+    const separator = isDefined(deadlineBadge) && !isStacked ? <Text className="text-[13px] text-secondary-foreground">·</Text> : null;
     const progressSubtitle = (
-        <View className="flex-row flex-wrap items-center gap-x-xs">
+        <View className={progressSubtitleVariants({ isStacked })}>
             <Text
                 className="shrink-0 text-[13px] text-secondary-foreground tabular-nums"
                 testID={DebtAccountCardSummarySelector.Percentage(title, displayPercentage)}

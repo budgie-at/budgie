@@ -2,18 +2,18 @@ import { AccountAssociationEnum, AccountWithSyncEntityInterface } from '@budgie/
 import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { router } from 'expo-router';
-import { ReactNode } from 'react';
+import { ReactNode, use } from 'react';
 import { AccessibilityActionEvent, View } from 'react-native';
 
 import { EmptyFn, isDefined } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { TONAL_DISC_BACKGROUND } from '../../../@generic/constant/tonal-disc-background.constant';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
-import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { ACCOUNT_SYNC_STATE_LABEL } from '../../constant/account-sync-state-label.constant';
+import { ACCOUNT_TYPE_SWATCH } from '../../constant/account-type-swatch.constant';
+import { AccountRowLeadingContext } from '../../context/account-row-leading.context';
 import { useAccountCardMenu } from '../../hook/use-account-card-menu.hook';
 import { getAccountSyncState } from '../../utils/get-account-sync-state.util';
 import { AccountCardBalance } from '../account-card-balance/account-card-balance';
@@ -51,6 +51,7 @@ export const AccountCardBase = ({ account, balance, convertedBalance, amountLabe
 
     const { t } = useLingui();
     const isStacked = useIsAccessibilityTextSize();
+    const leading = use(AccountRowLeadingContext);
     const protectAmount = useProtectedAmountLabel();
     const { cardRef, isMenuOpen, menuAnchor, openMenu, closeMenu, handleCloseComplete } = useAccountCardMenu();
 
@@ -68,7 +69,7 @@ export const AccountCardBase = ({ account, balance, convertedBalance, amountLabe
     ];
     const handleAccessibilityAction = (event: AccessibilityActionEvent) =>
         accessibilityActions.find(action => action.name === event.nativeEvent.actionName)?.onAction();
-    const iconVariant = ACCOUNT_COLOR[type];
+    const swatch = ACCOUNT_TYPE_SWATCH[type];
 
     return (
         <View ref={cardRef} collapsable={false}>
@@ -84,18 +85,21 @@ export const AccountCardBase = ({ account, balance, convertedBalance, amountLabe
                 className={rowVariants({ isStacked })}
             >
                 <View className={leadingVariants({ isStacked })}>
-                    <View>
-                        <CircleIcon
-                            size={36}
-                            iconSize={18}
-                            radius={18}
-                            icon={icon}
-                            variant={iconVariant}
-                            border={false}
-                            className={TONAL_DISC_BACKGROUND[iconVariant]}
-                        />
-                        {isDefined(syncState) ? <AccountSyncBadge state={syncState} /> : null}
-                    </View>
+                    {leading ?? (
+                        <View>
+                            <CircleIcon
+                                size={36}
+                                iconSize={18}
+                                radius={9}
+                                icon={icon}
+                                variant="ghost"
+                                border={false}
+                                className={swatch.soft}
+                                iconClassName={swatch.text}
+                            />
+                            {isDefined(syncState) ? <AccountSyncBadge state={syncState} /> : null}
+                        </View>
+                    )}
 
                     {isStacked ? null : (
                         <AccountCardTitle title={title} iban={iban} syncState={syncState} syncStateLabel={syncStateLabel} />

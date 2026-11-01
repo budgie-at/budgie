@@ -24,18 +24,22 @@ export const DebtAccountCardDeadline = ({ deadline }: Props) => {
     const relativeDate = days === 0 ? t`Today` : t({ message: plural(days, { one: 'In # day', other: 'In # days' }) });
     const dateLabel = isOverdue
         ? t({ message: plural(overdueDays, { one: 'Overdue # day', other: 'Overdue # days' }) })
-        : `${relativeDate} · ${formatDayAndMonthAndYear(deadline)}`;
+        : `${relativeDate} · ${formatDayAndMonthAndYear(deadline).replaceAll(' ', '\u00A0')}`;
 
     if (!isOverdue && !isSoon) {
-        const date = formatDayAndMonthAndYear(deadline);
+        const date = formatDayAndMonthAndYear(deadline).replaceAll(' ', '\u00A0');
 
-        return <Text className="text-[13px] text-secondary-foreground" numberOfLines={1}>{t`Due ${date}`}</Text>;
+        return (
+            <Text className="text-[13px] text-secondary-foreground" numberOfLines={2}>
+                {t`Due ${date}`.replaceAll(' ', '\u00A0')}
+            </Text>
+        );
     }
 
     return (
         <View className="flex-row items-center gap-x-xs">
             <View className={cn('h-[6px] w-[6px] rounded-full', dotClassName)} />
-            <Text className={cn('shrink text-[13px] tabular-nums', textClassName)} numberOfLines={1}>
+            <Text className={cn('shrink text-[13px] tabular-nums', textClassName)} numberOfLines={2}>
                 {dateLabel}
             </Text>
         </View>

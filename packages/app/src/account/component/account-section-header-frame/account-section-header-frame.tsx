@@ -2,6 +2,8 @@ import { useAtomValue } from '@effect/atom-react/Hooks';
 import { ReactNode } from 'react';
 import { Text, View } from 'react-native';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { StickySectionHeaderBackdrop } from '../../../@generic/component/sticky-section-header-backdrop/sticky-section-header-backdrop';
 import { FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/footnote-max-font-size-multiplier.constant';
@@ -11,7 +13,7 @@ import { defaultInstrumentAtom } from '../../../settings/constants/settings-atom
 
 interface Props {
     readonly title: string;
-    readonly total: number;
+    readonly total: number | null;
     readonly leading?: ReactNode;
     readonly trailing?: ReactNode;
     readonly footer?: ReactNode;
@@ -21,7 +23,7 @@ export const AccountSectionHeaderFrame = ({ title, total, leading, trailing, foo
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const formatDigits = useDisplayFormatDigits();
 
-    const formattedTotal = formatDigits(total, defaultInstrument.symbol).replace(/^-/u, '−');
+    const formattedTotal = isDefined(total) ? formatDigits(total, defaultInstrument.symbol).replace(/^-/u, '−') : null;
 
     return (
         <View className="-mx-3xl gap-y-md pt-md pb-md pr-[28px] pl-[32px]">
@@ -38,12 +40,14 @@ export const AccountSectionHeaderFrame = ({ title, total, leading, trailing, foo
                     </Text>
                     {trailing}
                 </View>
-                <ProtectedText
-                    maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
-                    className="text-[15px] font-medium text-secondary-foreground tabular-nums"
-                >
-                    {formattedTotal}
-                </ProtectedText>
+                {isDefined(formattedTotal) ? (
+                    <ProtectedText
+                        maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
+                        className="text-[15px] font-medium text-secondary-foreground tabular-nums"
+                    >
+                        {formattedTotal}
+                    </ProtectedText>
+                ) : null}
             </View>
             {footer}
         </View>

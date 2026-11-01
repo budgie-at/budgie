@@ -5,7 +5,7 @@ import { cva } from 'class-variance-authority';
 import { Text } from 'react-native';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/component/icon/icon';
+import { ScaledIcon } from '../../../@generic/component/scaled-icon/scaled-icon';
 import { FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/footnote-max-font-size-multiplier.constant';
 import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { CryptoCurrencyGroupCardSelector } from '../crypto-currency-group-card/crypto-currency-group-card.selector';
@@ -53,7 +53,7 @@ export const CryptoCurrencyGroupToggleRow = ({ accountsCount, instrumentCode, is
             >
                 {accountsCountLabel}
             </Text>
-            <Icon icon={chevronIcon} size={14} className="text-secondary-foreground" />
+            <ScaledIcon icon={chevronIcon} size={14} className="text-secondary-foreground" />
         </HapticPressable>
     );
 };

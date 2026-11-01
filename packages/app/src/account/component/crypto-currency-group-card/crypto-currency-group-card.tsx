@@ -6,7 +6,6 @@ import { View } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { MICRO_UNIT_DECIMAL_PLACES } from '../../../@generic/constant/micro-unit-decimal-places.constant';
-import { formatExchangeRate } from '../../../@generic/utils/format-exchange-rate.util';
 import { useCryptoValuationRateQuery } from '../../../exchange-rate/query/use-crypto-valuation-rate.query';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
@@ -30,14 +29,16 @@ export const CryptoCurrencyGroupCard = ({ group, balance, balancesByAccountId }:
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const formatDigits = useDisplayFormatDigits();
     const formatCryptoDigits = useFormatDigits(0, MICRO_UNIT_DECIMAL_PLACES);
+    const formatRate = useFormatDigits(2);
+    const formatFractionalRate = useFormatDigits(2, 4);
     const valuationRate = useCryptoValuationRateQuery(group.instrument.id, defaultInstrument.id);
 
     const toggleOpen = () => void setIsOpen(value => !value);
     const navigateToMarket = () => void router.push({ pathname: '/currency/[id]', params: { id: String(group.instrument.id) } });
     const formattedBalance = `${formatCryptoDigits(balance)} ${group.instrument.code}`;
     const formattedValue = isDefined(valuationRate) ? formatDigits(balance * valuationRate, defaultInstrument.symbol) : null;
-    const formattedRate = isDefined(valuationRate) && valuationRate >= 1 ? formatDigits(valuationRate) : null;
-    const rateLabel = isDefined(valuationRate) ? (formattedRate ?? formatExchangeRate(valuationRate)) : null;
+    const formatRateDigits = isDefined(valuationRate) && valuationRate >= 1 ? formatRate : formatFractionalRate;
+    const rateLabel = isDefined(valuationRate) ? formatRateDigits(valuationRate) : null;
 
     return (
         <View testID={CryptoCurrencyGroupCardSelector.Card(group.instrument.code)}>

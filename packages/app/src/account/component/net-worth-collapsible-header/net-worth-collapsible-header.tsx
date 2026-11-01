@@ -15,23 +15,18 @@ import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-di
 import { RunwayPill } from '../../../runway/component/runway-pill/runway-pill';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
-import { NetWorthAssetChips } from '../net-worth-asset-chips/net-worth-asset-chips';
 
 interface Props {
     readonly netWorth: number;
-    readonly fiatTotal: number;
-    readonly cryptoTotal: number;
-    readonly fiatCount: number;
-    readonly cryptoCount: number;
     readonly isLoading: boolean;
 }
 
 const HEADER_COLLAPSED_HEIGHT = 44;
-const HEADER_EXPANDED_HEIGHT = 172;
+const HEADER_EXPANDED_HEIGHT = 156;
 const SCROLL_THRESHOLD = 112;
 
 export const NetWorthCollapsibleHeader = (props: Props) => {
-    const { netWorth, fiatTotal, cryptoTotal, fiatCount, cryptoCount, isLoading } = props;
+    const { netWorth, isLoading } = props;
 
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const isRunwayPillEnabled = useSetting('isRunwayPillEnabled');
@@ -61,11 +56,11 @@ export const NetWorthCollapsibleHeader = (props: Props) => {
                     <HeroFigure amount={netWorth} currencySymbol={defaultInstrument.symbol} variant="primary" />
                 </View>
 
-                <View className="flex-row flex-wrap items-center gap-sm">
-                    <NetWorthAssetChips fiatTotal={fiatTotal} cryptoTotal={cryptoTotal} fiatCount={fiatCount} cryptoCount={cryptoCount} />
-
-                    {isRunwayPillEnabled ? <RunwayPill /> : null}
-                </View>
+                {isRunwayPillEnabled ? (
+                    <View className="flex-row">
+                        <RunwayPill />
+                    </View>
+                ) : null}
             </LoadingContent>
         </View>
     );

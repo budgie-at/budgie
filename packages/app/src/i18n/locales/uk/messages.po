@@ -84,6 +84,7 @@ msgstr "{accountCount, plural, one {# рахунок} few {# рахунки} man
 
 #: src/account/component/accounts-group/accounts-group.tsx
 #: src/account/component/crypto-currency-group-toggle-row/crypto-currency-group-toggle-row.tsx
+#: src/account/component/institution-row/institution-row.tsx
 msgid "{accountsCount, plural, one {# account} other {# accounts}}"
 msgstr "{accountsCount, plural, one {# рахунок} few {# рахунки} many {# рахунків} other {# рахунка}}"
 
@@ -684,7 +685,7 @@ msgstr "−{changePercent} до {shortPreviousLabel}"
 msgid "≈ {formattedMonths} mo"
 msgstr "≈ {formattedMonths} міс."
 
-#: src/account/component/crypto-currency-group-toggle-row/crypto-currency-group-toggle-row.tsx
+#: src/account/component/crypto-currency-group-market-link/crypto-currency-group-market-link.tsx
 msgid "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
 msgstr "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
 
@@ -890,7 +891,7 @@ msgstr "Додати транзакцію"
 msgid "Add Account"
 msgstr "Додати рахунок"
 
-#: src/account/component/account-grid-item/account-grid-item.tsx
+#: src/account/component/account-list-item/account-list-item.tsx
 msgid "Add balance"
 msgstr "Додати баланс"
 
@@ -1207,6 +1208,10 @@ msgstr "Ви впевнені, що хочете видалити це прав�
 msgid "Are you sure?"
 msgstr "Ви впевнені?"
 
+#: src/account/component/net-worth-composition/net-worth-composition.tsx
+msgid "Asset mix"
+msgstr "Структура активів"
+
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Attach debt"
@@ -1310,7 +1315,6 @@ msgid "Bank account"
 msgstr "Банківський рахунок"
 
 #: src/account/component/account-card-menu/account-card-menu.tsx
-#: src/account/component/bank-provider-section-header/bank-provider-section-header.tsx
 msgid "Bank integration settings"
 msgstr "Налаштування банківської інтеграції"
 
@@ -1379,6 +1383,7 @@ msgstr "Від {lowestCount} до {MAX_INSTALLMENT_COUNT} місяців"
 msgid "Billing Dates"
 msgstr "Дати списання"
 
+#: src/account/constant/bank-provider-title.constant.ts
 #: src/app/(main)/create-account/index.tsx
 #: src/rule/constant/external-source.constant.ts
 msgid "Binance"
@@ -1610,6 +1615,7 @@ msgstr "Переносити все"
 msgid "Carry savings"
 msgstr "Переносити заощадження"
 
+#: src/account/component/cash-card/cash-card.tsx
 #: src/account/constant/account-type.constant.ts
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "Cash"
@@ -1850,6 +1856,7 @@ msgstr "Закрити меню"
 msgid "Closing balance · {title}"
 msgstr "Кінцевий баланс · {title}"
 
+#: src/account/constant/bank-provider-title.constant.ts
 #: src/rule/constant/external-source.constant.ts
 msgid "Coinbase"
 msgstr "Coinbase"
@@ -4068,7 +4075,7 @@ msgstr "Мінімальна сума"
 msgid "Missing categories"
 msgstr "Без категорій"
 
-#: src/account/component/crypto-currency-group-toggle-row/crypto-currency-group-toggle-row.tsx
+#: src/account/component/crypto-currency-group-market-link/crypto-currency-group-market-link.tsx
 msgid "Missing rate"
 msgstr "Курс відсутній"
 
@@ -5326,6 +5333,10 @@ msgstr "Останні платежі"
 msgid "Record card taps with Shortcuts"
 msgstr "Записувати оплати карткою через Швидкі команди"
 
+#: src/account/component/cash-card/cash-card.tsx
+msgid "Record expense"
+msgstr "Записати витрату"
+
 #: src/@generic/component/transactions-page-header/transactions-page-header.tsx
 #: src/budget/components/budget-upcoming-charge-row/budget-upcoming-charge-row.tsx
 msgid "Recurring"
@@ -5516,6 +5527,7 @@ msgstr "Повернено"
 msgid "Review sync settings"
 msgstr "Переглянути налаштування синхронізації"
 
+#: src/account/constant/bank-provider-title.constant.ts
 #: src/rule/constant/external-source.constant.ts
 msgid "Revolut"
 msgstr "Revolut"
@@ -7229,6 +7241,7 @@ msgstr "Увесь період"
 msgid "Will be created on this phone"
 msgstr "Буде створено на цьому телефоні"
 
+#: src/account/constant/bank-provider-title.constant.ts
 #: src/rule/constant/external-source.constant.ts
 msgid "Wise"
 msgstr "Wise"

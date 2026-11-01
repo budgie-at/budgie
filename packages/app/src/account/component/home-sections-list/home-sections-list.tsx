@@ -7,11 +7,12 @@ import { useScreenChromeScrollProps } from '@rnw-community/react-native-screen-c
 
 import { FLOATING_TAB_BAR_HEIGHT, FLOATING_TAB_BAR_MARGIN } from '../../../@generic/constant/floating-tab-bar.constant';
 import { decimalPlacesAtom, defaultInstrumentIdAtom } from '../../../settings/constants/settings-atoms.constant';
-import { getTransactionListRowPosition } from '../../../transaction/utils/get-transaction-list-row-position.util';
 import { COLLAPSIBLE_NET_WORTH_HEADER_SCROLL_SPACER_MIN_ACCOUNT_COUNT } from '../../constant/collapsible-net-worth-header-scroll-spacer.constant';
 import { CryptoCurrencyGroupInterface } from '../../interface/crypto-currency-group.interface';
 import { HomeAccountBalanceSummaryInterface } from '../../interface/home-account-balance-summary.interface';
 import { HomeSectionInterface } from '../../interface/home-section.interface';
+import { InstitutionGroupInterface } from '../../interface/institution-group.interface';
+import { getHomeSectionItemPosition } from '../../utils/get-home-section-item-position.util';
 import { AccountsEmptyState } from '../accounts-empty-state/accounts-empty-state';
 import { CollapsibleNetWorthHeaderScrollSpacer } from '../collapsible-net-worth-header-scroll-spacer/collapsible-net-worth-header-scroll-spacer';
 import { HomeSectionHeader } from '../home-section-header/home-section-header';
@@ -19,7 +20,7 @@ import { HomeSectionItem } from '../home-section-item/home-section-item';
 
 import type { ReactElement } from 'react';
 
-type HomeSectionsListItem = CryptoCurrencyGroupInterface | AccountWithSyncEntityInterface;
+type HomeSectionsListItem = CryptoCurrencyGroupInterface | InstitutionGroupInterface | AccountWithSyncEntityInterface;
 
 const AnimatedSectionList = Animated.createAnimatedComponent(SectionList<HomeSectionsListItem, HomeSectionInterface>);
 const LIST_HORIZONTAL_PADDING = 16;
@@ -47,22 +48,26 @@ export const HomeSectionsList = ({ sections, activeAccountCount, isLoading, bott
             <CollapsibleNetWorthHeaderScrollSpacer />
         ) : null;
 
-    const listEmptyComponent = isLoading ? null : AccountsEmptyState;
+    const listEmptyComponent = isLoading || activeAccountCount > 0 ? null : AccountsEmptyState;
 
-    const renderSectionHeader = ({ section }: { section: HomeSectionInterface }) => (
-        <HomeSectionHeader section={section} balanceSummary={balanceSummary} />
-    );
+    const renderSectionHeader = ({ section }: { section: HomeSectionInterface }) => <HomeSectionHeader section={section} />;
 
     const renderItem = ({ item, index, section }: { item: HomeSectionsListItem; index: number; section: HomeSectionInterface }) => (
         <HomeSectionItem
             item={item}
             section={section}
             balanceSummary={balanceSummary}
-            position={getTransactionListRowPosition(index, section.data.length)}
+            position={getHomeSectionItemPosition(section.data, index)}
         />
     );
 
-    const keyExtractor = (item: HomeSectionsListItem) => ('accounts' in item ? `crypto-${item.instrument.id}` : String(item.id));
+    const keyExtractor = (item: HomeSectionsListItem) => {
+        if ('provider' in item) {
+            return `institution-${item.integrationId}`;
+        }
+
+        return 'accounts' in item ? `crypto-${item.instrument.id}` : String(item.id);
+    };
 
     return (
         <AnimatedSectionList
