@@ -18,6 +18,7 @@ import type { CryptoPositionInterface } from '@budgie/market';
 interface Props {
     readonly position: CryptoPositionInterface;
     readonly valuationRate: number | null;
+    readonly balance: number;
     readonly instrumentCode: string;
     readonly subtitle: string | null;
     readonly isSubtitleProtected: boolean;
@@ -26,19 +27,19 @@ interface Props {
 const PERCENT_FRACTION_DIGITS = 2;
 const PERCENT = 100;
 
-export const CurrencyMarketReturnRow = ({ position, valuationRate, instrumentCode, subtitle, isSubtitleProtected }: Props) => {
+export const CurrencyMarketReturnRow = ({ position, valuationRate, balance, instrumentCode, subtitle, isSubtitleProtected }: Props) => {
     const { t } = useLingui();
     const { symbol } = useAtomValue(defaultInstrumentAtom);
     const formatMoney = useDisplayFormatDigits();
     const formatPercent = useFormatDigits(PERCENT_FRACTION_DIGITS);
     const isAmountProtected = useIsAmountProtected();
 
-    const cryptoReturn = calculateCryptoReturn(position, valuationRate);
+    const cryptoReturn = calculateCryptoReturn(position, valuationRate, balance);
     const sign = getMarketChangeSign(cryptoReturn?.profit ?? 0);
     const percentLabel = isDefined(cryptoReturn?.percent) ? ` (${sign}${formatPercent(Math.abs(cryptoReturn.percent))}%)` : '';
     const returnLabel = isDefined(cryptoReturn)
         ? `${sign}${formatMoney(Math.abs(cryptoReturn.profit), symbol)}${percentLabel}`
-        : t`No price`;
+        : t`Unavailable`;
     const returnShare = isDefined(cryptoReturn?.percent) ? cryptoReturn.percent / PERCENT : (cryptoReturn?.profit ?? 0);
     const returnClassName =
         isDefined(cryptoReturn) && !isAmountProtected ? getMarketMoveClassName(returnShare) : 'text-secondary-foreground';

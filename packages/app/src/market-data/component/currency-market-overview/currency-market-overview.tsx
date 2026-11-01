@@ -1,5 +1,7 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
+import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
+import { parseISO } from 'date-fns/parseISO';
 import { useState } from 'react';
 import { View } from 'react-native';
 
@@ -40,7 +42,9 @@ export const CurrencyMarketOverview = ({ instrument, prices, priceBottom }: Prop
     const [scrubIndex, setScrubIndex] = useState<number | null>(null);
 
     const latestPrice = prices.at(-1);
-    const rangePrices = prices.slice(-RANGE_DAYS[range]);
+    const rangePrices = isDefined(latestPrice)
+        ? prices.filter(price => differenceInCalendarDays(parseISO(latestPrice.priceDate), parseISO(price.priceDate)) <= RANGE_DAYS[range])
+        : [];
     const values = rangePrices.map(price => price.price);
     const scrubbedPrice = isDefined(scrubIndex) ? rangePrices.at(scrubIndex) : latestPrice;
     const rangeLabels: Record<MarketChartRangeEnum, string> = {
@@ -74,7 +78,8 @@ export const CurrencyMarketOverview = ({ instrument, prices, priceBottom }: Prop
             <View className="mt-3xl">
                 {values.length >= MIN_CHART_POINTS ? (
                     <CurrencyMarketChart
-                        values={values}
+                        prices={rangePrices}
+                        selectedIndex={scrubIndex}
                         rangeLabel={rangeLabels[range]}
                         startLabel={startLabel}
                         endLabel={endLabel}

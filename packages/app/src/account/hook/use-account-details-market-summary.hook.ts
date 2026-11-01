@@ -24,6 +24,7 @@ export const useAccountDetailsMarketSummary = (instrumentId: number) => {
     return {
         priceLabel: isDefined(price) ? formatPrice(price, defaultInstrument.symbol) : MISSING_VALUE,
         change,
+        priceDate: latestPrice?.priceDate ?? null,
         changeShare: isDefined(change) ? `${formatPercent(Math.abs(change * PERCENT))}%` : null
     };
 };

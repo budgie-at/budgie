@@ -1,7 +1,9 @@
+import { isPositiveNumber } from '@rnw-community/shared';
+
 export const getMarketChangeSign = (value: number): string => {
-    if (value > 0) {
+    if (isPositiveNumber(value)) {
         return '+';
     }
 
-    return value < 0 ? '−' : '';
+    return isPositiveNumber(-value) ? '−' : '';
 };

@@ -9,7 +9,7 @@ import { isString } from '@rnw-community/shared';
 import { StyledLine } from '../../../@generic/component/styled-line/styled-line';
 import { MARKET_CHART_PLOT_HEIGHT } from '../../constant/market-chart-plot-height.constant';
 import { MarketChartToneEnum } from '../../enum/market-chart-tone.enum';
-import { useMarketChartAccessibilityLabel } from '../../hook/use-market-chart-accessibility-label.hook';
+import { useMarketChartAccessibility } from '../../hook/use-market-chart-accessibility.hook';
 import { useMarketChartScrub } from '../../hook/use-market-chart-scrub.hook';
 import { buildMarketChartGeometry } from '../../utils/build-market-chart-geometry.util';
 import { getMarketChartTone } from '../../utils/get-market-chart-tone.util';
@@ -18,10 +18,12 @@ import { CurrencyMarketChartExtremes } from '../currency-market-chart-extremes/c
 import { CurrencyMarketChartScrubClip } from '../currency-market-chart-scrub-clip/currency-market-chart-scrub-clip';
 import { CurrencyMarketChartSeries } from '../currency-market-chart-series/currency-market-chart-series';
 
+import type { InstrumentDailyMarketPriceEntityInterface } from '@budgie/contracts';
 import type { LayoutChangeEvent } from 'react-native';
 
 interface Props {
-    readonly values: readonly number[];
+    readonly prices: readonly Pick<InstrumentDailyMarketPriceEntityInterface, 'price' | 'priceDate'>[];
+    readonly selectedIndex: number | null;
     readonly rangeLabel: string;
     readonly startLabel: string;
     readonly endLabel: string;
@@ -59,23 +61,28 @@ const TONE_STYLES = {
     }
 } as const;
 
-export const CurrencyMarketChart = ({ values, rangeLabel, startLabel, endLabel, testID, onScrub }: Props) => {
+export const CurrencyMarketChart = ({ prices, selectedIndex, rangeLabel, startLabel, endLabel, testID, onScrub }: Props) => {
     const { width: windowWidth } = useWindowDimensions();
+    const values = prices.map(price => price.price);
     const [width, setWidth] = useState(windowWidth - SCREEN_PADDING_X);
-    const accessibilityLabel = useMarketChartAccessibilityLabel(values, rangeLabel);
+    const accessibilityProps = useMarketChartAccessibility(prices, rangeLabel, selectedIndex, onScrub);
     const { activeIndex, panGesture } = useMarketChartScrub(width, values.length, onScrub);
     const geometry = buildMarketChartGeometry(values, width);
     const tone = TONE_STYLES[geometry.isFlat ? MarketChartToneEnum.NEUTRAL : getMarketChartTone(values)];
     const lineColor = useCSSVariable(tone.colorVariable);
 
-    const fill = isString(lineColor) ? FILL_URL : null;
-    const strokeWidth = geometry.isFlat ? FLAT_LINE_WIDTH : LINE_WIDTH;
-    const series = { linePath: geometry.linePath, areaPath: geometry.areaPath, fill, strokeClassName: tone.strokeClassName, strokeWidth };
+    const series = {
+        linePath: geometry.linePath,
+        areaPath: geometry.areaPath,
+        fill: isString(lineColor) ? FILL_URL : null,
+        strokeClassName: tone.strokeClassName,
+        strokeWidth: geometry.isFlat ? FLAT_LINE_WIDTH : LINE_WIDTH
+    };
 
     const handleLayout = (event: LayoutChangeEvent) => void setWidth(event.nativeEvent.layout.width);
 
     return (
-        <View accessible accessibilityRole="image" accessibilityLabel={accessibilityLabel} className="h-[184px] w-full" testID={testID}>
+        <View {...accessibilityProps} className="h-[184px] w-full" testID={testID}>
             <GestureDetector gesture={panGesture}>
                 <View className="h-[164px] w-full" onLayout={handleLayout}>
                     <Svg width={width} height={MARKET_CHART_PLOT_HEIGHT}>

@@ -8,14 +8,20 @@ import {
     useScreenChromeScrollY
 } from '@rnw-community/react-native-screen-chrome';
 
+import { cn } from '../../utils/cn.util';
+
 import type { ReactNode } from 'react';
+
+interface Props {
+    readonly className?: string;
+}
 
 const SCRIM_Z_INDEX = 2;
 const SCRIM_FADE_HEIGHT = 24;
 const HIDDEN_OPACITY = 0;
 const VISIBLE_OPACITY = 1;
 
-export const CollapsibleChromeHeaderScrim = (): ReactNode => {
+export const CollapsibleChromeHeaderScrim = ({ className }: Props = {}): ReactNode => {
     const { config } = useScreenChrome();
     const scrollY = useScreenChromeScrollY();
     const spacerStyle = {
@@ -35,7 +41,7 @@ export const CollapsibleChromeHeaderScrim = (): ReactNode => {
     return (
         <Animated.View
             pointerEvents="none"
-            className="absolute inset-x-0 top-0 border-b-hairline border-surface-separator bg-surface pt-safe"
+            className={cn('absolute inset-x-0 top-0 border-b-hairline border-surface-separator bg-primary-reverse pt-safe', className)}
             style={animatedStyle}
         >
             <View style={spacerStyle} />

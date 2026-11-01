@@ -32,10 +32,8 @@ export const AccountDetailsConvertedValue = ({ balance, instrument }: Props) => 
 
     return (
         <ProtectedText
-            className="h-[20px] text-center text-[15px] leading-[20px] text-secondary-foreground tabular-nums"
-            adjustsFontSizeToFit
-            minimumFontScale={0.7}
-            numberOfLines={1}
+            className="min-h-[20px] text-center text-[15px] leading-[20px] text-secondary-foreground tabular-nums"
+            numberOfLines={2}
             placeholderText={`≈ ${PROTECTED_HERO_PLACEHOLDER}`}
             testID={AccountDetailsSelector.ConvertedValue}
         >

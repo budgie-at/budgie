@@ -65,4 +65,8 @@ describe('calculateCryptoPosition', () => {
     it('reports the open amount after a partial sell', () => {
         expect(calculateCryptoPosition([buy(5 * PRECISION, 100 * PRECISION), sell(2 * PRECISION)]).amount).toBe(3);
     });
+
+    it('ignores zero-size lots when costing the position', () => {
+        expect(calculateCryptoPosition([buy(0, 0), buy(PRECISION, null)])).toStrictEqual({ amount: 0, costBasis: null, averageCost: null });
+    });
 });

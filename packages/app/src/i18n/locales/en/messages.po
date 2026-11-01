@@ -275,6 +275,10 @@ msgstr "{count} of {rowCount} selected"
 msgid "{dateLabel}, {kindLabel}"
 msgstr "{dateLabel}, {kindLabel}"
 
+#: src/market-data/hook/use-market-chart-accessibility.hook.ts
+msgid "{dateLabel}, {priceLabel}"
+msgstr "{dateLabel}, {priceLabel}"
+
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
 msgid "{days, plural, one {In # day} other {In # days}}"
 msgstr "{days, plural, one {In # day} other {In # days}}"
@@ -1511,6 +1515,10 @@ msgstr "At {rateLabel} per {instrumentCode}"
 msgid "At last known price"
 msgstr "At last known price"
 
+#: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
+msgid "At last known price · on the {coveredAmountWithCode} with known cost"
+msgstr "At last known price · on the {coveredAmountWithCode} with known cost"
+
 #: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
 msgid "At last known price, {rateLabel} per {instrumentCode}"
 msgstr "At last known price, {rateLabel} per {instrumentCode}"
@@ -1564,11 +1572,11 @@ msgstr "Average per month"
 msgid "Average spend"
 msgstr "Average spend"
 
-#: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
+#: src/market-data/component/currency-market-cost-basis-row/currency-market-cost-basis-row.tsx
 msgid "Avg {averageCost} per {instrumentCode}"
 msgstr "Avg {averageCost} per {instrumentCode}"
 
-#: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
+#: src/market-data/component/currency-market-cost-basis-row/currency-market-cost-basis-row.tsx
 msgid "Avg {averageCost} per {instrumentCode} · cost known for {coveredAmount} of {totalAmount}"
 msgstr "Avg {averageCost} per {instrumentCode} · cost known for {coveredAmount} of {totalAmount}"
 
@@ -2397,7 +2405,7 @@ msgstr "Copy the API Key and Secret Key into the fields below"
 msgid "Copy the token and paste it below"
 msgstr "Copy the token and paste it below"
 
-#: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
+#: src/market-data/component/currency-market-cost-basis-row/currency-market-cost-basis-row.tsx
 msgid "Cost basis"
 msgstr "Cost basis"
 
@@ -3181,6 +3189,10 @@ msgstr "Done"
 #: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx
 msgid "Done ({count})"
 msgstr "Done ({count})"
+
+#: src/account/component/account-details-market-link/account-details-market-link.tsx
+msgid "down {changeShare} on {staleDate}"
+msgstr "down {changeShare} on {staleDate}"
 
 #: src/account/component/account-details-market-link/account-details-market-link.tsx
 msgid "down {changeShare} today"
@@ -5044,10 +5056,6 @@ msgstr "No MCC codes found"
 msgid "No new transactions"
 msgstr "No new transactions"
 
-#: src/market-data/component/currency-market-return-row/currency-market-return-row.tsx
-msgid "No price"
-msgstr "No price"
-
 #: src/market-data/component/currency-market-chart-status/currency-market-chart-status.tsx
 msgid "No price history yet"
 msgstr "No price history yet"
@@ -5815,7 +5823,7 @@ msgstr "Previous period"
 msgid "Price changed"
 msgstr "Price changed"
 
-#: src/market-data/hook/use-market-chart-accessibility-label.hook.ts
+#: src/market-data/hook/use-market-chart-accessibility.hook.ts
 msgid "Price chart, {rangeLabel}, from {fromLabel} to {toLabel}, high {highLabel}, low {lowLabel}"
 msgstr "Price chart, {rangeLabel}, from {fromLabel} to {toLabel}, high {highLabel}, low {lowLabel}"
 
@@ -7706,6 +7714,8 @@ msgstr "Unable to check transaction history"
 msgid "Unassigned {remainingLabel}"
 msgstr "Unassigned {remainingLabel}"
 
+#: src/market-data/component/currency-market-cost-basis-row/currency-market-cost-basis-row.tsx
+#: src/market-data/component/currency-market-return-row/currency-market-return-row.tsx
 #: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
 msgid "Unavailable"
 msgstr "Unavailable"
@@ -7767,6 +7777,10 @@ msgstr "Until {periodEndLabel}"
 #: src/i18n/hook/use-format-date-range.hook.ts
 msgid "Until {toLabel}"
 msgstr "Until {toLabel}"
+
+#: src/account/component/account-details-market-link/account-details-market-link.tsx
+msgid "up {changeShare} on {staleDate}"
+msgstr "up {changeShare} on {staleDate}"
 
 #: src/account/component/account-details-market-link/account-details-market-link.tsx
 msgid "up {changeShare} today"

@@ -48,14 +48,20 @@ export const CurrencyMarketSmallTitle = ({ instrumentName, latestPrice, priceBot
     });
 
     return (
-        <View className="items-center" accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
-            <Text className="text-primary text-center text-[17px] leading-[20px] font-semibold" numberOfLines={1}>
+        <View className="items-center">
+            <Text
+                accessibilityRole="header"
+                className="text-primary text-center text-[17px] leading-[20px] font-semibold"
+                numberOfLines={1}
+            >
                 {instrumentName}
             </Text>
             {isDefined(latestPrice) ? (
                 <Animated.Text
                     className="text-secondary-foreground text-center text-[12px] leading-[15px] tabular-nums"
                     numberOfLines={1}
+                    accessibilityElementsHidden
+                    importantForAccessibility="no"
                     style={priceStyle}
                 >
                     {subtitle}

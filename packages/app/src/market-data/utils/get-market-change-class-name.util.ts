@@ -1,7 +1,9 @@
+import { isPositiveNumber } from '@rnw-community/shared';
+
 export const getMarketChangeClassName = (value: number): string => {
-    if (value > 0) {
+    if (isPositiveNumber(value)) {
         return 'text-positive-strong';
     }
 
-    return value < 0 ? 'text-destructive-strong' : 'text-primary';
+    return isPositiveNumber(-value) ? 'text-destructive-strong' : 'text-primary';
 };

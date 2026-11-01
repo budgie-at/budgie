@@ -1,14 +1,10 @@
 import { InstrumentTypeEnum, convertToMicroUnits } from '@budgie/contracts';
-import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
-import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useFormatInstrumentAmount } from '../../../i18n/hook/use-format-instrument-amount.hook';
-import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
-import { getMarketPriceFractionDigits } from '../../utils/get-market-price-fraction-digits.util';
+import { CurrencyMarketCostBasisRow } from '../currency-market-cost-basis-row/currency-market-cost-basis-row';
 import { CurrencyMarketPageSelector } from '../currency-market-page/currency-market-page.selector';
 import { CurrencyMarketPositionRow } from '../currency-market-position-row/currency-market-position-row';
 import { CurrencyMarketReturnRow } from '../currency-market-return-row/currency-market-return-row';
@@ -23,32 +19,23 @@ interface Props {
     readonly staleNote: string | null;
 }
 
-const MIN_FRACTION_DIGITS = 2;
-const SECONDARY_VALUE_CLASSNAME = 'text-secondary-foreground';
-
 export const CurrencyMarketReturnRows = ({ position, valuationRate, balance, instrumentCode, staleNote }: Props) => {
     const { t } = useLingui();
-    const { symbol } = useAtomValue(defaultInstrumentAtom);
-    const formatMoney = useDisplayFormatDigits();
-    const formatAverageCost = useFormatDigits(MIN_FRACTION_DIGITS, getMarketPriceFractionDigits(position.averageCost ?? 0));
     const formatInstrumentAmount = useFormatInstrumentAmount();
 
-    const coveredAmount = formatInstrumentAmount(position.amount, '', InstrumentTypeEnum.CRYPTO);
     const coveredAmountWithCode = formatInstrumentAmount(position.amount, instrumentCode, InstrumentTypeEnum.CRYPTO);
-    const totalAmount = formatInstrumentAmount(balance, instrumentCode, InstrumentTypeEnum.CRYPTO);
     const isPartiallyCovered = convertToMicroUnits(position.amount) < convertToMicroUnits(balance);
-    const averageCost = isDefined(position.averageCost) ? formatAverageCost(position.averageCost, symbol) : t`Unavailable`;
-    const averageCostCaption = isPartiallyCovered
-        ? t`Avg ${averageCost} per ${instrumentCode} · cost known for ${coveredAmount} of ${totalAmount}`
-        : t`Avg ${averageCost} per ${instrumentCode}`;
-    const returnNote = staleNote ?? (isPartiallyCovered ? t`On the ${coveredAmountWithCode} with known cost` : null);
+    const partialNote = isDefined(staleNote)
+        ? t`At last known price · on the ${coveredAmountWithCode} with known cost`
+        : t`On the ${coveredAmountWithCode} with known cost`;
+    const returnNote = isPartiallyCovered ? partialNote : staleNote;
 
     if (!isDefined(position.costBasis)) {
         return (
             <CurrencyMarketPositionRow
                 label={t`Return`}
                 value={t`Unavailable`}
-                valueClassName={SECONDARY_VALUE_CLASSNAME}
+                valueClassName="text-secondary-foreground"
                 testID={CurrencyMarketPageSelector.UnrealizedProfit(instrumentCode)}
             />
         );
@@ -56,18 +43,17 @@ export const CurrencyMarketReturnRows = ({ position, valuationRate, balance, ins
 
     return (
         <>
-            <CurrencyMarketPositionRow
-                label={t`Cost basis`}
-                value={formatMoney(position.costBasis, symbol)}
-                valueClassName={SECONDARY_VALUE_CLASSNAME}
-                testID={CurrencyMarketPageSelector.CostBasis(instrumentCode)}
-                subtitle={averageCostCaption}
-                isSubtitleProtected
-                subtitleTestID={CurrencyMarketPageSelector.AverageCost(instrumentCode)}
+            <CurrencyMarketCostBasisRow
+                position={position}
+                costBasis={position.costBasis}
+                balance={balance}
+                instrumentCode={instrumentCode}
+                isPartiallyCovered={isPartiallyCovered}
             />
             <CurrencyMarketReturnRow
                 position={position}
                 valuationRate={valuationRate}
+                balance={balance}
                 instrumentCode={instrumentCode}
                 subtitle={returnNote}
                 isSubtitleProtected={!isDefined(staleNote)}

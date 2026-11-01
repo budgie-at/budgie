@@ -40,7 +40,7 @@ export const calculateCryptoPosition = (entries: readonly CryptoPositionEntryRow
                 : consumeLots(openLots, entry.amount),
         []
     );
-    const costedLots = lots.filter(lot => isDefined(lot.baseAmount));
+    const costedLots = lots.filter(lot => isDefined(lot.baseAmount) && isPositiveNumber(lot.amount));
     const amountMicro = costedLots.reduce((total, lot) => total + lot.amount, 0);
     const costBasisMicro = isNotEmptyArray(costedLots) ? costedLots.reduce((total, lot) => total + (lot.baseAmount ?? 0), 0) : null;
 

@@ -2,6 +2,7 @@ export const CurrencyMarketPageSelector = {
     Header: (code: string) => `CurrencyMarket.Header.${code}` as const,
     Price: (code: string) => `CurrencyMarket.Price.${code}` as const,
     Change: (code: string) => `CurrencyMarket.Change.${code}` as const,
+    Range: (range: string) => `CurrencyMarket.Range.${range}` as const,
     Sparkline: (code: string) => `CurrencyMarket.Sparkline.${code}` as const,
     Holdings: (code: string) => `CurrencyMarket.Holdings.${code}` as const,
     HoldingsBalance: (code: string) => `CurrencyMarket.Holdings.Balance.${code}` as const,

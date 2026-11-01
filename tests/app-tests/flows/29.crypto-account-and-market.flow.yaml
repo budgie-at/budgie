@@ -121,6 +121,12 @@ appId: ${APP_ID}
 - assertVisible:
       id: 'CurrencyMarket.Price.BTC'
 - assertVisible:
+      id: 'CurrencyMarket.Change.BTC'
+- assertVisible:
+      id: 'CurrencyMarket.Sparkline.BTC'
+- tapOn:
+      id: 'CurrencyMarket.Range.YEAR'
+- assertVisible:
       id: 'CurrencyMarket.Sparkline.BTC'
 - assertVisible:
       id: 'CurrencyMarket.Holdings.BTC'
@@ -134,9 +140,19 @@ appId: ${APP_ID}
 
 - scrollUntilVisible:
       element:
+          id: 'CurrencyMarket.Account.BTC.2'
+      direction: DOWN
+      timeout: 3000
+- assertVisible:
+      id: 'CurrencyMarket.Account.BTC.2'
+
+- scrollUntilVisible:
+      element:
           id: 'CurrencyMarket.MarketCap.BTC'
       direction: DOWN
       timeout: 3000
+- assertVisible:
+      id: 'CurrencyMarket.DailyChange.BTC'
 - assertVisible:
       id: 'CurrencyMarket.Volume.BTC'
 - assertVisible:
@@ -217,6 +233,22 @@ appId: ${APP_ID}
       centerElement: true
 - tapOn:
       id: 'AccountCard.Balance.E2E_Crypto_Vault.2_BTC'
+- extendedWaitUntil:
+      visible:
+          id: 'AccountDetails.ActionsButton'
+      timeout: 10000
+- assertVisible:
+      id: 'AccountDetails.ConvertedValue'
+- assertVisible:
+      id: 'AccountDetails.MarketLink'
+- tapOn:
+      id: 'AccountDetails.MarketLink'
+- extendedWaitUntil:
+      visible:
+          id: 'CurrencyMarket.Header.BTC'
+      timeout: 10000
+- tapOn:
+      id: 'PageHeader.BackButton'
 - extendedWaitUntil:
       visible:
           id: 'AccountDetails.ActionsButton'

@@ -5,6 +5,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { SegmentedControl } from '../../../@generic/component/segmented-control/segmented-control';
 import { MarketChartRangeEnum } from '../../enum/market-chart-range.enum';
+import { CurrencyMarketPageSelector } from '../currency-market-page/currency-market-page.selector';
 
 interface Props {
     readonly value: MarketChartRangeEnum;
@@ -18,10 +19,14 @@ export const CurrencyMarketRangeControl = ({ value, onChange, disabled }: Props)
 
     const variables = { ...(isDefined(track) && { '--color-surface-fill': track }) };
     const segments = [
-        { value: MarketChartRangeEnum.WEEK, label: t`1W` },
-        { value: MarketChartRangeEnum.MONTH, label: t`1M` },
-        { value: MarketChartRangeEnum.THREE_MONTHS, label: t`3M` },
-        { value: MarketChartRangeEnum.YEAR, label: t`1Y` }
+        { value: MarketChartRangeEnum.WEEK, testID: CurrencyMarketPageSelector.Range(MarketChartRangeEnum.WEEK), label: t`1W` },
+        { value: MarketChartRangeEnum.MONTH, testID: CurrencyMarketPageSelector.Range(MarketChartRangeEnum.MONTH), label: t`1M` },
+        {
+            value: MarketChartRangeEnum.THREE_MONTHS,
+            testID: CurrencyMarketPageSelector.Range(MarketChartRangeEnum.THREE_MONTHS),
+            label: t`3M`
+        },
+        { value: MarketChartRangeEnum.YEAR, testID: CurrencyMarketPageSelector.Range(MarketChartRangeEnum.YEAR), label: t`1Y` }
     ];
 
     return (
