@@ -10,6 +10,7 @@ import { isNotEmptyString } from '@rnw-community/shared';
 import { SearchablePageErrorState } from '../../../@generic/component/searchable-page-error-state/searchable-page-error-state';
 import { SearchablePageList } from '../../../@generic/component/searchable-page-list/searchable-page-list';
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
+import { GROUPED_LIST_SIZING } from '../../../@generic/constant/grouped-list-sizing.constant';
 import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
 import { goBackToSettings } from '../../../settings/utils/go-back-to-settings.util';
 import { filterAccountsBySearchQuery } from '../../utils/filter-accounts-by-search-query.util';
@@ -75,7 +76,7 @@ export const ShelvedAccountsPage = (props: Props) => {
                 emptyState={visibleEmptyState}
                 listHeader={<ShelvedAccountsListHeader description={description} title={countTitle} />}
                 renderCard={renderItem}
-                gap={0}
+                sizing={GROUPED_LIST_SIZING}
             />
         </SearchablePage>
     );
