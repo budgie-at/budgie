@@ -8,7 +8,7 @@ interface Props {
     readonly children: string;
 }
 
-const HERO_TITLE_SCROLL_RANGE = [8, 36] as const;
+const HERO_TITLE_SCROLL_RANGE = [26, 44] as const;
 const FADE_IN_OPACITY = [0, 1] as const;
 
 export const CategorizeInboxCollapsingNavTitle = ({ children }: Props) => {

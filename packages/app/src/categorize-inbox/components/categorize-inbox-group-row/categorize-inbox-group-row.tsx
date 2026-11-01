@@ -40,7 +40,7 @@ export const CategorizeInboxGroupRow = ({ cluster, position }: Props) => {
     );
     const chevron = <Icon icon={UserIconNameEnum.ChevronRight} size={13} className="text-secondary-foreground" />;
     const trailingContent = hasAction ? actionButton : chevron;
-    const trailingSlot = <View className="mr-md w-[64px] items-center justify-center">{trailingContent}</View>;
+    const trailingSlot = <View className="mr-md w-[72px] items-center justify-center">{trailingContent}</View>;
     const linkTrailingSlot = hasAction ? null : trailingSlot;
     const rowTrailingSlot = hasAction ? trailingSlot : null;
 
