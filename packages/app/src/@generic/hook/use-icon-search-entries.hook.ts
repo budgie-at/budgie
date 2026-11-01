@@ -10,6 +10,8 @@ import type { IconSearchEntryInterface } from '../interface/icon-search-entry.in
 
 const EMPTY_ENTRIES: readonly IconSearchEntryInterface[] = [];
 
-const iconSearchEntriesAtom = appAtomRuntime.atom(iconSearchService.load().pipe(Effect.tapCause(Effect.logError))).pipe(Atom.keepAlive);
+export const iconSearchEntriesAtom = appAtomRuntime
+    .atom(iconSearchService.load().pipe(Effect.tapCause(Effect.logError)))
+    .pipe(Atom.keepAlive);
 
 export const useIconSearchEntries = () => AsyncResult.getOrElse(useAtomValue(iconSearchEntriesAtom), () => EMPTY_ENTRIES);

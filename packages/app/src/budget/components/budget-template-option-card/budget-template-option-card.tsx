@@ -1,4 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { Text } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -17,13 +18,16 @@ interface Props {
 
 export const BudgetTemplateOptionCard = ({ icon, title, description, summary, onPress, isDisabled = false, testID }: Props) => {
     const subtitle = isDefined(summary) ? `${description}\n${summary}` : description;
-    const titleClassName = isDisabled ? 'text-secondary-foreground' : 'font-medium';
+    const titleClassName = isDisabled ? 'text-secondary-foreground text-[17px]' : 'text-primary font-medium text-[17px]';
 
     return (
         <GroupedListRow
             left={<GroupedListIcon icon={icon} />}
-            title={title}
-            titleClassName={titleClassName}
+            title={
+                <Text className={titleClassName} numberOfLines={2}>
+                    {title}
+                </Text>
+            }
             subtitle={subtitle}
             testID={testID}
             {...(!isDisabled && { onPress })}

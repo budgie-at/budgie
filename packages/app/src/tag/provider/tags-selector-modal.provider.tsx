@@ -1,3 +1,5 @@
+import { isDefined } from '@rnw-community/shared';
+
 import { createModalProvider } from '../../@generic/utils/create-modal-provider/create-modal-provider.util';
 import { TagsSelectorModalContext } from '../context/tags-selector-modal.context';
 
@@ -5,5 +7,6 @@ import type { TagsSelectorModalParams, TagsSelectorResult } from '../context/tag
 
 export const TagsSelectorModalProvider = createModalProvider<TagsSelectorModalParams, TagsSelectorResult>(
     TagsSelectorModalContext,
-    '/tags-selector'
+    '/tags-selector',
+    params => (isDefined(params?.getCommitCopy) ? '/tag-destination' : '/tags-selector')
 );

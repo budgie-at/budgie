@@ -1,8 +1,7 @@
 export const CategoryFormSelector = {
-    ScrollView: 'CategoryForm.ScrollView',
     Input: 'CategoryForm.Input',
     Submit: 'CategoryForm.Submit',
-    Merge: 'CategoryForm.Merge',
+    Delete: 'CategoryForm.Delete',
     IconTrigger: 'CategoryForm.IconTrigger',
     CurrentIcon: (icon: string) => `CategoryForm.Icon.${icon}` as const
 } as const;

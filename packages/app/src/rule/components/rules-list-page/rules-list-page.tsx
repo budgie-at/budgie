@@ -8,7 +8,6 @@ import { isDefined, isNotEmptyArray, isNotEmptyString, isPositiveNumber } from '
 
 import { SearchablePageList } from '../../../@generic/component/searchable-page-list/searchable-page-list';
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
-import { LEGEND_LIST_HEADER_HEIGHT } from '../../../@generic/constant/legend-list.constant';
 import { RULES_LIST_SIZING } from '../../constant/rules-list-sizing.constant';
 import { useRulesListPageActions } from '../../hooks/use-rules-list-page-actions.hook';
 import { RulesPageSelector } from '../../selector/rules-page.selector';
@@ -136,6 +135,8 @@ export const RulesListPage = ({ matchingRuleIds = [], onGoBack }: Props) => {
 
     const searchedRules = searchRules(visibleRules, search);
 
+    const getDeleteConfirmation = () => ({ title: t`Delete this rule?` });
+
     const renderCard = (rule: RuleWithActionsRelationsEntityInterface, index: number) => (
         <RuleCard
             testID={RulesPageSelector.RuleCard(index)}
@@ -162,9 +163,9 @@ export const RulesListPage = ({ matchingRuleIds = [], onGoBack }: Props) => {
                 data={searchedRules}
                 emptyState={<RuleEmptyState search={search} />}
                 onDelete={handleDeleteRule}
+                getDeleteConfirmation={getDeleteConfirmation}
                 renderCard={renderCard}
                 listHeader={listHeaderComponent}
-                estimatedHeaderSize={LEGEND_LIST_HEADER_HEIGHT}
                 sizing={RULES_LIST_SIZING}
             />
         </SearchablePage>

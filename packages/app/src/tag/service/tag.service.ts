@@ -50,7 +50,13 @@ export class TagService extends Context.Service<TagService>()('@budgie/app/TagSe
                 },
                 effect => Db.transaction(effect)
             ),
-            deleteById: (tagId: number) => tagRepository.deleteById(tagId)
+            deleteById: Effect.fn('TagService.deleteById')(
+                function* (tagId: number) {
+                    yield* tagRepository.deleteTransactionLinks(tagId);
+                    yield* tagRepository.deleteById(tagId);
+                },
+                effect => Db.transaction(effect)
+            )
         };
     })
 }) {

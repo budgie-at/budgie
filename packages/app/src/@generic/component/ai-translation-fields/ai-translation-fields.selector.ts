@@ -1,5 +1,4 @@
 export const AiTranslationFieldsSelector = {
     EnglishField: 'AiTranslationFields.EnglishField',
-    TagsField: 'AiTranslationFields.TagsField',
-    RegenerateButton: 'AiTranslationFields.RegenerateButton'
+    TagsField: 'AiTranslationFields.TagsField'
 } as const;

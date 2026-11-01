@@ -1,4 +1,4 @@
-import { count, eq } from 'drizzle-orm';
+import { count, eq, max } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -6,10 +6,12 @@ import * as Layer from 'effect/Layer';
 import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { TRANSLATION_RESET } from '../../@generic/constant/translation-reset.constant';
+import { transactionFilters } from '../../@generic/repository/base-transaction-filter.repository';
 import { Db } from '../../@generic/service/db.service';
 import { makeTranslatableRepository } from '../../@generic/utils/make-translatable-repository.util';
 import { TRANSACTION_TAGS_PREFER_USER_SOURCE_CONFLICT } from '../../transaction-tags/constant/transaction-tags-prefer-user-source-conflict.constant';
 import { TransactionTagsEntityTable } from '../../transaction-tags/table/transaction-tags-entity.table';
+import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { TagCreateEntityInterface } from '../entity/tag-create-entity.interface';
 import { TagUpdateEntityInterface } from '../entity/tag-update-entity.interface';
 import { TagEntityTable } from '../table/tag-entity.table';
@@ -59,11 +61,26 @@ export class TagRepository extends Context.Service<TagRepository>()('@budgie/con
 
             yield* Db.query(db => db.delete(TransactionTagsEntityTable).where(eq(TransactionTagsEntityTable.tagId, fromTagId)));
         }),
+        deleteTransactionLinks: (tagId: number) =>
+            Db.query(db => db.delete(TransactionTagsEntityTable).where(eq(TransactionTagsEntityTable.tagId, tagId))).pipe(Effect.asVoid),
         deleteById: (id: number) => Db.query(db => db.delete(TagEntityTable).where(eq(TagEntityTable.id, id))).pipe(Effect.asVoid),
         countTransactions: (tagId: number) =>
             Db.query(db =>
                 db.select({ count: count() }).from(TransactionTagsEntityTable).where(eq(TransactionTagsEntityTable.tagId, tagId))
             ).pipe(Effect.map(([result]) => result.count)),
+        findUsage: () =>
+            Db.query(db =>
+                db
+                    .select({
+                        id: TransactionTagsEntityTable.tagId,
+                        transactionCount: count(),
+                        lastUsedAt: max(TransactionEntityTable.operatedAt)
+                    })
+                    .from(TransactionTagsEntityTable)
+                    .innerJoin(TransactionEntityTable, eq(TransactionEntityTable.id, TransactionTagsEntityTable.transactionId))
+                    .where(transactionFilters.buildVisibleTransactionCondition())
+                    .groupBy(TransactionTagsEntityTable.tagId)
+            ),
         findByIds: (ids: number[]) => Db.query(db => db.query.TagEntityTable.findMany({ where: { id: { in: ids } } })),
         findBySearchQuery: (search: string) => {
             const pattern = `%${search.trim().toLowerCase()}%`;

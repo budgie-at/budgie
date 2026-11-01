@@ -1,4 +1,4 @@
-import { count, eq } from 'drizzle-orm';
+import { and, count, eq } from 'drizzle-orm';
 import * as Effect from 'effect/Effect';
 
 import { TRANSLATION_RESET } from '../constant/translation-reset.constant';
@@ -34,5 +34,12 @@ export const makeTranslatableRepository = (table: TranslatableTableInterface) =>
         Db.query(db => db.update(table).set({ titleEn, titleTags, tagsGeneratedAt: new Date() }).where(eq(table.id, id))).pipe(
             Effect.asVoid
         ),
+    updateTranslationForTitle: (id: number, title: string, titleEn: string, titleTags: string) =>
+        Db.query(db =>
+            db
+                .update(table)
+                .set({ titleEn, titleTags, tagsGeneratedAt: new Date() })
+                .where(and(eq(table.id, id), eq(table.title, title)))
+        ).pipe(Effect.asVoid),
     clearTranslation: (id: number) => Db.query(db => db.update(table).set(TRANSLATION_RESET).where(eq(table.id, id))).pipe(Effect.asVoid)
 });

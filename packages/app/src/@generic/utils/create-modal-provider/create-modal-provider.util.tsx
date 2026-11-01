@@ -11,7 +11,8 @@ export const createModalProvider = <TParams, TResult>(
         Context<TParams | null>,
         TResult
     ],
-    route: Href
+    route: Href,
+    getRoute?: (params: TParams | null) => Href
 ) => {
     const ModalProvider = ({ children }: PropsWithChildren) => {
         const [params, setParams] = useState<TParams | null>(null);
@@ -28,7 +29,7 @@ export const createModalProvider = <TParams, TResult>(
         const open: ModalContextTuple<TParams, TResult>[0] = (nextParams, onResult) => {
             pendingResultRef.current = onResult ?? emptyFn;
             setParams(nextParams ?? null);
-            router.push(route);
+            router.push(getRoute?.(nextParams ?? null) ?? route);
         };
 
         const resolve: ModalContextTuple<TParams, TResult>[1] = (result, options) => {

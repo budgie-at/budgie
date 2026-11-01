@@ -1,4 +1,4 @@
-import { and, count, eq, getTableColumns, inArray, isNull, like, or, sql } from 'drizzle-orm';
+import { and, count, countDistinct, eq, getTableColumns, inArray, isNotNull, isNull, like, max, or, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -7,11 +7,13 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { TRANSLATION_RESET } from '../../@generic/constant/translation-reset.constant';
 import { LanguageEnum } from '../../@generic/enum/language.enum';
+import { transactionFilters } from '../../@generic/repository/base-transaction-filter.repository';
 import { Db } from '../../@generic/service/db.service';
 import { buildCategoryTranslationJoinCondition } from '../../@generic/utils/build-category-translation-join-condition.util';
 import { makeTranslatableRepository } from '../../@generic/utils/make-translatable-repository.util';
 import { DefaultCategoryTranslationEntityTable } from '../../category-translation/table/default-category-translation-entity.table';
 import { TransactionEntryEntityTable } from '../../transaction-entry/table/transaction-entry-entity.table';
+import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
 import { BORROWING_CATEGORY_ID } from '../constant/borrowing-category-id.constant';
 import { LENDING_CATEGORY_ID } from '../constant/lending-category-id.constant';
 import { CategoryCreateEntityInterface } from '../entity/category-create-entity.interface';
@@ -64,6 +66,7 @@ export class CategoryRepository extends Context.Service<CategoryRepository>()('@
                         .update(CategoryEntityTable)
                         .set({
                             ...input,
+                            updatedAt: new Date(),
                             ...(titleChanged && { titleSearch: newTitle.toLowerCase() }),
                             ...(titleChanged && TRANSLATION_RESET)
                         })
@@ -89,6 +92,25 @@ export class CategoryRepository extends Context.Service<CategoryRepository>()('@
                         .from(TransactionEntryEntityTable)
                         .where(eq(TransactionEntryEntityTable.categoryId, categoryId))
                 ).pipe(Effect.map(([result]) => result.count)),
+            findUsage: () =>
+                Db.query(db =>
+                    db
+                        .select({
+                            id: sql<number>`${TransactionEntryEntityTable.categoryId}`,
+                            transactionCount: countDistinct(TransactionEntryEntityTable.transactionId),
+                            lastUsedAt: max(TransactionEntityTable.operatedAt)
+                        })
+                        .from(TransactionEntryEntityTable)
+                        .innerJoin(TransactionEntityTable, eq(TransactionEntityTable.id, TransactionEntryEntityTable.transactionId))
+                        .where(
+                            and(
+                                isNotNull(TransactionEntryEntityTable.categoryId),
+                                transactionFilters.buildPrimaryLedgerEntryCondition(),
+                                transactionFilters.buildVisibleTransactionCondition()
+                            )
+                        )
+                        .groupBy(TransactionEntryEntityTable.categoryId)
+                ),
             reassignTransactionEntries: (fromCategoryId: number, toCategoryId: number) =>
                 Db.query(db =>
                     db
