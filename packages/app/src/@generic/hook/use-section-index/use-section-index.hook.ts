@@ -31,7 +31,7 @@ export const useSectionIndex = <T>(rows: readonly SelectorListRowInterface<T>[])
     };
     const handleViewableItemsChanged = ({ viewableItems }: OnViewableItemsChangedInfo<SelectorListRowInterface<T>>) => {
         const state = listRef.current?.getState();
-        const visibleTop = (state?.scroll ?? 0) + SELECTOR_TITLED_HEADER_HEIGHT;
+        const visibleTop = (state?.scroll ?? 0) + SELECTOR_TITLED_HEADER_HEIGHT - SELECTOR_TITLED_HEADER_OFFSET;
         const unobscuredIndices = viewableItems
             .map(({ index }) => index)
             .filter(index => isDefined(state) && state.positionAtIndex(index) + state.sizeAtIndex(index) / 2 >= visibleTop);

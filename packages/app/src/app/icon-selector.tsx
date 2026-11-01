@@ -1,113 +1,112 @@
 import { isEmojiIcon } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { useState } from 'react';
-import { View } from 'react-native';
+import { useRef, useState } from 'react';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
-import { BudgieLegendList } from '../@generic/component/budgie-legend-list/budgie-legend-list';
-import { IconSelectorCard } from '../@generic/component/icon-selector-card/icon-selector-card';
 import { IconSelectorEmptyState } from '../@generic/component/icon-selector-empty-state/icon-selector-empty-state';
-import { IconSelectorListHeader } from '../@generic/component/icon-selector-list-header/icon-selector-list-header';
-import { IconSelectorPaddingCell } from '../@generic/component/icon-selector-padding-cell/icon-selector-padding-cell';
+import { IconSelectorList } from '../@generic/component/icon-selector-list/icon-selector-list';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
-import { SelectorScrollEdge } from '../@generic/component/selector-scroll-edge/selector-scroll-edge';
 import { SheetBottomFade } from '../@generic/component/sheet-bottom-fade/sheet-bottom-fade';
 import { SheetSurface } from '../@generic/component/sheet-surface/sheet-surface';
+import { ICON_CATEGORY_LABEL } from '../@generic/constant/icon-category-label.constant';
 import { ICON_SELECTOR_COLUMNS } from '../@generic/constant/icon-selector-columns.constant';
-import { LEGEND_LIST_STYLE } from '../@generic/constant/legend-list.constant';
-import { SELECTOR_TITLED_HEADER_HEIGHT, SELECTOR_TITLED_HEADER_OFFSET } from '../@generic/constant/selector-header-offset.constant';
 import { useIconSelectorModal, useIconSelectorModalParams } from '../@generic/context/icon-selector-modal.context';
-import { useFormsheetListContentStyle } from '../@generic/hook/use-formsheet-list-content-style/use-formsheet-list-content-style.hook';
 import { useIconSearchCatalog } from '../@generic/hook/use-icon-search-catalog.hook';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
-import { useSheetScrollEdge } from '../@generic/hook/use-sheet-scroll-edge/use-sheet-scroll-edge.hook';
-import { IconSearchEntryInterface } from '../@generic/interface/icon-search-entry.interface';
+import { IconSelectorChipInterface } from '../@generic/interface/icon-selector-chip.interface';
+import { IconSelectorRowInterface } from '../@generic/interface/icon-selector-row.interface';
+import { IconSelectorSectionInterface } from '../@generic/interface/icon-selector-section.interface';
 import { iconSearchService } from '../@generic/service/icon-search.service';
-import { FlatListDataItem, padFlatListData } from '../@generic/utils/map-to-flatlist-data.util';
 import { resolveReiconIcon } from '../@generic/utils/resolve-reicon-icon.util';
 
 import { IconSelectorModalSelector } from './icon-selector-modal.selector';
 
-const COLUMN_GAP = 8;
-const COLUMN_WRAPPER_STYLE = { columnGap: COLUMN_GAP, rowGap: COLUMN_GAP };
-const LIST_HEADER_STYLE = { marginBottom: 12, marginHorizontal: -COLUMN_GAP / 2 };
-const ESTIMATED_ROW_HEIGHT = 62;
+import type { LegendListRef } from '@legendapp/list/react-native';
 
-const keyExtractor = (item: FlatListDataItem<IconSearchEntryInterface>, index: number) => (item.isEmpty ? `empty-${index}` : item.icon);
+const MAX_BROWSE_SECTION_SIZE = ICON_SELECTOR_COLUMNS * 3;
 
+const toRows = (sections: readonly IconSelectorSectionInterface[]): IconSelectorRowInterface[] =>
+    sections
+        .filter(({ entries }) => isNotEmptyArray(entries))
+        .flatMap(({ title, entries }) => [
+            { key: `title-${title}`, title, entries: [] },
+            ...Array.from({ length: Math.ceil(entries.length / ICON_SELECTOR_COLUMNS) }, (_, index) => ({
+                key: `${title}-${index}`,
+                title: null,
+                entries: entries.slice(index * ICON_SELECTOR_COLUMNS, (index + 1) * ICON_SELECTOR_COLUMNS)
+            })),
+            { key: `spacer-${title}`, title: null, entries: [] }
+        ]);
+
+const toChips = (rows: readonly IconSelectorRowInterface[]): IconSelectorChipInterface[] =>
+    rows.flatMap((row, index) => {
+        const firstIcon = rows[index + 1]?.entries[0]?.icon;
+        const label = isDefined(firstIcon) && isEmojiIcon(firstIcon) ? firstIcon : row.title;
+
+        return isDefined(row.title) && isDefined(label) ? [{ label, title: row.title, rowIndex: index }] : [];
+    });
+
+// eslint-disable-next-line max-statements -- Form orchestration component with multiple hooks and handlers
 export default function IconSelectorModal() {
     const { t } = useLingui();
     const [, resolveIconSelector, dismissIconSelector] = useIconSelectorModal();
     useModalDismiss(dismissIconSelector);
     const { selectedIcon, keywords = [], excludedIcons } = useIconSelectorModalParams() ?? {};
-    const contentContainerStyle = useFormsheetListContentStyle(0, SELECTOR_TITLED_HEADER_OFFSET, COLUMN_GAP);
     const [search, setSearch] = useState('');
-    const { scrollOffset, handleScroll } = useSheetScrollEdge();
+    const listRef = useRef<LegendListRef>(null);
     const { entries, isLoading, isFailure, retry } = useIconSearchCatalog();
 
-    const hasSearch = isNotEmptyString(search.trim());
+    const handleSearchChange = (value: string) => {
+        setSearch(value);
+        void listRef.current?.scrollToOffset({ offset: 0, animated: false });
+    };
+
+    const isSearching = isNotEmptyString(search.trim());
     const selectedCatalogIcon = isDefined(selectedIcon) && !isEmojiIcon(selectedIcon) ? resolveReiconIcon(selectedIcon) : selectedIcon;
     const popularEntries = iconSearchService.popular(entries, keywords, excludedIcons, selectedCatalogIcon).slice(0, ICON_SELECTOR_COLUMNS);
-    const matchedEntries = hasSearch
-        ? iconSearchService.rank(entries, [search])
-        : iconSearchService.browse(
-              entries,
-              popularEntries.map(({ icon }) => icon)
-          );
+    const pinnedIcons = new Set(popularEntries.map(({ icon }) => icon));
+    const toBrowseSections = () => [
+        { title: isNotEmptyArray(keywords) ? t`Suggested` : t`Popular`, entries: popularEntries },
+        ...iconSearchService.categorize(entries).map(section => {
+            const sectionEntries = section.entries.filter(({ icon }) => !pinnedIcons.has(icon));
+            const isEmojiSection = sectionEntries.some(({ icon }) => isEmojiIcon(icon));
 
-    const renderItem = ({ item }: { item: FlatListDataItem<IconSearchEntryInterface> }) =>
-        item.isEmpty ? (
-            <IconSelectorPaddingCell />
-        ) : (
-            <IconSelectorCard
-                isSelected={item.icon === selectedCatalogIcon}
-                onSelect={resolveIconSelector}
-                label={item.label}
-                icon={item.icon}
-            />
-        );
+            return {
+                title: t(ICON_CATEGORY_LABEL[section.category]),
+                entries: isEmojiSection ? sectionEntries : sectionEntries.slice(0, MAX_BROWSE_SECTION_SIZE)
+            };
+        })
+    ];
+    const toSearchSections = () => {
+        const matchedEntries = iconSearchService.rank(entries, [search]);
 
-    const listHeader =
-        hasSearch || isFailure ? null : (
-            <IconSelectorListHeader
-                entries={popularEntries}
-                keywords={keywords}
-                selectedIcon={selectedCatalogIcon}
-                onSelect={resolveIconSelector}
-            />
-        );
+        return [
+            { title: t`Icons`, entries: matchedEntries.filter(({ icon }) => !isEmojiIcon(icon)) },
+            { title: t`Emoji`, entries: matchedEntries.filter(({ icon }) => isEmojiIcon(icon)) }
+        ];
+    };
+    const rows = isFailure ? [] : toRows(isSearching ? toSearchSections() : toBrowseSections());
+    const chips = isSearching ? [] : toChips(rows);
 
     return (
         <SheetSurface>
             <SelectorModalSearchHeader
                 search={search}
-                onSearchChange={setSearch}
+                onSearchChange={handleSearchChange}
                 title={t`Icon`}
-                placeholder={t`Search`}
+                placeholder={t`Search icons`}
                 testID={IconSelectorModalSelector.SearchInput}
             />
 
-            <SelectorScrollEdge scrollOffset={scrollOffset} top={SELECTOR_TITLED_HEADER_HEIGHT} />
-
-            <View className="absolute inset-0">
-                <BudgieLegendList
-                    style={LEGEND_LIST_STYLE}
-                    data={padFlatListData([...matchedEntries], ICON_SELECTOR_COLUMNS)}
-                    keyExtractor={keyExtractor}
-                    renderItem={renderItem}
-                    numColumns={ICON_SELECTOR_COLUMNS}
-                    estimatedItemSize={ESTIMATED_ROW_HEIGHT}
-                    keyboardShouldPersistTaps="handled"
-                    onScroll={handleScroll}
-                    scrollEventThrottle={16}
-                    columnWrapperStyle={COLUMN_WRAPPER_STYLE}
-                    contentContainerStyle={contentContainerStyle}
-                    ListHeaderComponent={listHeader}
-                    ListHeaderComponentStyle={LIST_HEADER_STYLE}
-                    ListEmptyComponent={<IconSelectorEmptyState isFailure={isFailure} isLoading={isLoading} onRetry={retry} />}
-                />
-            </View>
+            <IconSelectorList
+                listRef={listRef}
+                rows={rows}
+                chips={chips}
+                selectedIcon={selectedCatalogIcon}
+                onSelect={resolveIconSelector}
+                emptyState={<IconSelectorEmptyState query={search.trim()} isFailure={isFailure} isLoading={isLoading} onRetry={retry} />}
+            />
 
             <SheetBottomFade />
         </SheetSurface>

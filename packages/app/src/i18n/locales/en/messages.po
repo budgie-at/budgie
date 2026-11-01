@@ -1041,6 +1041,10 @@ msgstr "Activate Account?"
 msgid "Active budget"
 msgstr "Active budget"
 
+#: src/@generic/constant/icon-category-label.constant.ts
+msgid "Activities"
+msgstr "Activities"
+
 #: src/budget/components/budget-event-category-limits/budget-event-category-limits.tsx
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
 #: src/budget/components/budget-list-section/budget-list-section.tsx
@@ -1247,10 +1251,6 @@ msgstr "All columns have been assigned"
 msgid "All conditions"
 msgstr "All conditions"
 
-#: src/@generic/component/icon-selector-list-header/icon-selector-list-header.tsx
-msgid "All icons"
-msgstr "All icons"
-
 #: src/money-data/component/money-data-upgrade-status-card/money-data-upgrade-status-card.tsx
 msgid "All past amounts are converted"
 msgstr "All past amounts are converted"
@@ -1369,6 +1369,10 @@ msgstr "and"
 #: src/rule/hooks/use-rule-row-summary.hook.ts
 msgid "and +{extraCount}"
 msgstr "and +{extraCount}"
+
+#: src/@generic/constant/icon-category-label.constant.ts
+msgid "Animals & nature"
+msgstr "Animals & nature"
 
 #: src/rule/components/rule-condition-match-type-selector/rule-condition-match-type-selector.tsx
 msgid "Any condition"
@@ -3353,6 +3357,14 @@ msgstr "Edit Transfer"
 msgid "Edits the total of the plan"
 msgstr "Edits the total of the plan"
 
+#: src/@generic/constant/icon-category-label.constant.ts
+msgid "Education"
+msgstr "Education"
+
+#: src/app/icon-selector.tsx
+msgid "Emoji"
+msgstr "Emoji"
+
 #: src/onboarding/hook/use-onboarding-file-state.hook.ts
 msgid "empty"
 msgstr "empty"
@@ -3463,6 +3475,10 @@ msgstr "Enter your new PIN again from the start. Take your time: this is the one
 #: src/auth/hook/use-pin-authentication.hook.ts
 msgid "Enter your PIN"
 msgstr "Enter your PIN"
+
+#: src/@generic/constant/icon-category-label.constant.ts
+msgid "Entertainment"
+msgstr "Entertainment"
 
 #: src/app/resync-window-picker.tsx
 msgid "Entire history will be re-synced on next sync."
@@ -3771,6 +3787,14 @@ msgstr "Fixed amount"
 msgid "Fixed-term savings with interest"
 msgstr "Fixed-term savings with interest"
 
+#: src/@generic/constant/icon-category-label.constant.ts
+msgid "Flags"
+msgstr "Flags"
+
+#: src/@generic/constant/icon-category-label.constant.ts
+msgid "Food & drink"
+msgstr "Food & drink"
+
 #: src/budget/components/budget-forecast-card/budget-forecast-card.tsx
 msgid "Forecast"
 msgstr "Forecast"
@@ -3882,6 +3906,10 @@ msgstr "Get category, tag, and note suggestions from your history."
 msgid "Get started"
 msgstr "Get started"
 
+#: src/@generic/constant/icon-category-label.constant.ts
+msgid "Gifts"
+msgstr "Gifts"
+
 #: src/@generic/component/go-back-button/go-back-button.tsx
 msgid "Go back"
 msgstr "Go back"
@@ -3897,6 +3925,10 @@ msgstr "Goes back to the total worked out from the payments and fee"
 #: src/runway/component/runway-verdict/runway-verdict.tsx
 msgid "Growing"
 msgstr "Growing"
+
+#: src/@generic/constant/icon-category-label.constant.ts
+msgid "Health"
+msgstr "Health"
 
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "Help sorting, without leaving the phone?"
@@ -3938,6 +3970,10 @@ msgstr "History loading paused"
 msgid "Hold to seal with this PIN"
 msgstr "Hold to seal with this PIN"
 
+#: src/@generic/constant/icon-category-label.constant.ts
+msgid "Home"
+msgstr "Home"
+
 #: src/app/(tabs)/settings/index.tsx
 msgid "Home screen"
 msgstr "Home screen"
@@ -3965,6 +4001,10 @@ msgstr "Icon"
 #: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
 msgid "Icon updated for {categoryTitle}"
 msgstr "Icon updated for {categoryTitle}"
+
+#: src/app/icon-selector.tsx
+msgid "Icons"
+msgstr "Icons"
 
 #: src/app/(tabs)/settings/ai.tsx
 msgid "If a download arrives damaged, Budgie deletes it and asks before starting again."
@@ -4625,6 +4665,10 @@ msgstr "Models and downloads"
 msgid "Models download once, best on Wi-Fi"
 msgstr "Models download once, best on Wi-Fi"
 
+#: src/@generic/constant/icon-category-label.constant.ts
+msgid "Money"
+msgstr "Money"
+
 #: src/app/(main)/create-account/index.tsx
 msgid "Money you lent or borrowed"
 msgstr "Money you lent or borrowed"
@@ -5157,6 +5201,10 @@ msgstr "Now"
 #: src/installment-plan/component/installment-count-picker/installment-count-picker.tsx
 msgid "Number of months"
 msgstr "Number of months"
+
+#: src/@generic/constant/icon-category-label.constant.ts
+msgid "Objects"
+msgstr "Objects"
 
 #: src/account/component/debt-account-card-summary/debt-account-card-summary.tsx
 msgid "of"
@@ -5717,7 +5765,7 @@ msgstr "Please try again"
 msgid "Please try again later"
 msgstr "Please try again later"
 
-#: src/@generic/component/icon-selector-list-header/icon-selector-list-header.tsx
+#: src/app/icon-selector.tsx
 msgid "Popular"
 msgstr "Popular"
 
@@ -6331,10 +6379,6 @@ msgstr "Sealed. Face ID or fingerprint is optional."
 msgid "Sealed. Only your PIN opens this file."
 msgstr "Sealed. Only your PIN opens this file."
 
-#: src/app/icon-selector.tsx
-msgid "Search"
-msgstr "Search"
-
 #: src/app/transaction-account-filter.tsx
 #: src/categorize-inbox/components/categorize-inbox-transfer-screen/categorize-inbox-transfer-screen.tsx
 msgid "Search accounts..."
@@ -6380,6 +6424,10 @@ msgstr "Search custom categories…"
 #: src/transaction/components/convert-to-refund-content/convert-to-refund-content.tsx
 msgid "Search expenses refunded by this income"
 msgstr "Search expenses refunded by this income"
+
+#: src/app/icon-selector.tsx
+msgid "Search icons"
+msgstr "Search icons"
 
 #: src/app/(tabs)/settings/inactive.tsx
 msgid "Search inactive accounts..."
@@ -6557,6 +6605,10 @@ msgstr "Setup"
 msgid "Shading shows how much your months usually vary."
 msgstr "Shading shows how much your months usually vary."
 
+#: src/@generic/constant/icon-category-label.constant.ts
+msgid "Shopping"
+msgstr "Shopping"
+
 #: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
 msgid "Shortcuts"
 msgstr "Shortcuts"
@@ -6650,6 +6702,10 @@ msgstr "Smaller groups"
 #: src/ai/component/ai-settings-section/ai-settings-section.tsx
 msgid "Smart suggestions"
 msgstr "Smart suggestions"
+
+#: src/@generic/constant/icon-category-label.constant.ts
+msgid "Smileys & people"
+msgstr "Smileys & people"
 
 #: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
 msgid "Some issuers do not provide every Wallet trigger field. Edit the automation and check the variable bindings."
@@ -6810,7 +6866,7 @@ msgstr "Stocks"
 msgid "Subscriptions"
 msgstr "Subscriptions"
 
-#: src/@generic/component/icon-selector-list-header/icon-selector-list-header.tsx
+#: src/app/icon-selector.tsx
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 #: src/categorize-inbox/components/categorize-inbox-group-learned-transfer-option/categorize-inbox-group-learned-transfer-option.tsx
 msgid "Suggested"
@@ -6835,6 +6891,10 @@ msgstr "Swipe to remove this per-category cap from your budget."
 #: src/sync/component/bank-integration-new-accounts/bank-integration-new-accounts.tsx
 msgid "Switch on to start syncing"
 msgstr "Switch on to start syncing"
+
+#: src/@generic/constant/icon-category-label.constant.ts
+msgid "Symbols"
+msgstr "Symbols"
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 #: src/sync/component/bank-integration-new-account-row/bank-integration-new-account-row.tsx
@@ -7519,6 +7579,18 @@ msgstr "Translation"
 msgid "Translations ready"
 msgstr "Translations ready"
 
+#: src/@generic/constant/icon-category-label.constant.ts
+msgid "Transport"
+msgstr "Transport"
+
+#: src/@generic/constant/icon-category-label.constant.ts
+msgid "Travel"
+msgstr "Travel"
+
+#: src/@generic/constant/icon-category-label.constant.ts
+msgid "Travel & places"
+msgstr "Travel & places"
+
 #: src/app/(tabs)/settings/apple-pay-capture.tsx
 msgid "Troubleshooting"
 msgstr "Troubleshooting"
@@ -7538,6 +7610,10 @@ msgstr "Try a different search term"
 #: src/tag/components/tags-select-content/tags-select-content.tsx
 msgid "Try a different search term or create a new tag"
 msgstr "Try a different search term or create a new tag"
+
+#: src/@generic/component/icon-selector-empty-state/icon-selector-empty-state.tsx
+msgid "Try a simpler word like “car” or “food”."
+msgstr "Try a simpler word like “car” or “food”."
 
 #: src/rule/components/rule-empty-state/rule-empty-state.tsx
 msgid "Try a title, category or tag name."
@@ -7922,6 +7998,10 @@ msgstr "Within plan"
 #: src/app/(tabs)/settings/index.tsx
 msgid "Without a backup, lost data can't be recovered."
 msgstr "Without a backup, lost data can't be recovered."
+
+#: src/@generic/constant/icon-category-label.constant.ts
+msgid "Work"
+msgstr "Work"
 
 #: src/ai/component/ai-download-eta/ai-download-eta.tsx
 msgid "Working out the time left…"
