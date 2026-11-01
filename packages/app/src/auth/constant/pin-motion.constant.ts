@@ -1,0 +1,3 @@
+export const PIN_STEP_FADE_DURATION_MS = 220;
+export const PIN_ERROR_FADE_DURATION_MS = 180;
+export const PIN_SEALING_FADE_DURATION_MS = 260;

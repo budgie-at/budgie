@@ -18,7 +18,7 @@ export const AppLockRow = () => {
     const isBiometricEnabled = useSetting('isBiometricEnabled');
     const biometricLabel = useBiometricLabel();
 
-    const handleCreatePin = () => void router.push({ pathname: '/settings/pin', params: { mode: PinSetupModeEnum.CREATE } });
+    const handleCreatePin = () => void router.push({ pathname: '/pin-setup', params: { mode: PinSetupModeEnum.CREATE } });
 
     if (isPinEnabled) {
         const description = isBiometricEnabled && isDefined(biometricLabel) ? t`Encrypted · PIN and ${biometricLabel}` : t`Encrypted · PIN`;

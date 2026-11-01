@@ -879,6 +879,7 @@ msgid "A deposit in the funding account currency must receive the full funding a
 msgstr "Eine Einlage in der Währung des Finanzierungskontos muss den vollen Finanzierungsbetrag erhalten"
 
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
+#: src/auth/components/pin-forgotten-warning/pin-forgotten-warning.tsx
 msgid "A forgotten PIN can't be reset."
 msgstr "Eine vergessene PIN lässt sich nicht zurücksetzen."
 
@@ -1661,8 +1662,8 @@ msgid "Binance P2P orders are unavailable: the API key is missing P2P read permi
 msgstr "Binance-P2P-Orders sind nicht verfügbar: dem API-Schlüssel fehlt die P2P-Leseberechtigung."
 
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
-msgid "Biometric Authentication"
-msgstr "Biometrische Authentifizierung"
+msgid "Biometric data never leaves this phone"
+msgstr "Biometrische Daten verlassen dieses Telefon nie"
 
 #: src/settings/components/screenshot-protection-row/screenshot-protection-row.tsx
 msgid "Blank screenshots and recordings"
@@ -1737,6 +1738,10 @@ msgstr "Budgie konnte deine Daten nicht öffnen"
 msgid "Budgie deleted the damaged part. It starts again only when you ask."
 msgstr "Budgie hat den beschädigten Teil gelöscht. Der Download startet erst wieder, wenn du es möchtest."
 
+#: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
+msgid "Budgie encrypts your data on this phone. It takes a few seconds."
+msgstr "Budgie verschlüsselt deine Daten auf diesem Telefon. Das dauert ein paar Sekunden."
+
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "Budgie has no exchange rate for this payment currency yet."
 msgstr "Budgie hat noch keinen Wechselkurs für diese Zahlungswährung."
@@ -1756,10 +1761,6 @@ msgstr "Budgie wählt das Konto anhand des Kartennamens und dann über dein Stan
 #: src/budget/components/budget-fund-preview/budget-fund-preview.tsx
 msgid "Budgie plans to set aside {amountLabel} {rate}"
 msgstr "Budgie plant, {amountLabel} {rate} zurückzulegen"
-
-#: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
-msgid "Budgie re-encrypts {DB_NAME} ({fileSize}) on this phone. It takes a few seconds."
-msgstr "Budgie verschlüsselt {DB_NAME} ({fileSize}) auf diesem Telefon neu. Das dauert ein paar Sekunden."
 
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Budgie reads these statements on this phone."
@@ -2049,6 +2050,7 @@ msgstr "Kategorie wählen"
 msgid "Choose a category to continue"
 msgstr "Kategorie wählen, um fortzufahren"
 
+#: src/auth/components/pin-restart-button/pin-restart-button.tsx
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Choose a different PIN"
 msgstr "Eine andere PIN wählen"
@@ -2057,11 +2059,16 @@ msgstr "Eine andere PIN wählen"
 msgid "Choose a merchant category"
 msgstr "Händlerkategorie wählen"
 
+#: src/auth/utils/get-pin-setup-meta.util.ts
+msgid "Choose a new PIN"
+msgstr "Wähle eine neue PIN"
+
 #: src/transaction/components/statistics-period-control/statistics-period-control.tsx
 msgid "Choose a period"
 msgstr "Zeitraum wählen"
 
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
+#: src/auth/utils/get-pin-setup-meta.util.ts
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "Choose a PIN"
 msgstr "Wähle eine PIN"
@@ -2231,8 +2238,8 @@ msgid "Confirm"
 msgstr "Bestätigen"
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Confirm PIN"
-msgstr "PIN bestätigen"
+msgid "Confirm it's you before choosing a new one."
+msgstr "Bestätige, dass du es bist, bevor du eine neue wählst."
 
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 msgid "Confirm Split"
@@ -2241,6 +2248,15 @@ msgstr "Aufteilung bestätigen"
 #: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx
 msgid "Confirm tag selection"
 msgstr "Tag-Auswahl bestätigen"
+
+#: src/auth/utils/get-pin-setup-meta.util.ts
+msgid "Confirm your new PIN"
+msgstr "Bestätige deine neue PIN"
+
+#: src/auth/utils/get-pin-setup-meta.util.ts
+#: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
+msgid "Confirm your PIN"
+msgstr "Bestätige deine PIN"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Connect"
@@ -2282,7 +2298,6 @@ msgstr "enthält"
 msgid "Contains"
 msgstr "Enthält"
 
-#: src/auth/components/biometric-configuration/biometric-configuration.tsx
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 #: src/sync/component/create-file-bank-account-footer/create-file-bank-account-footer.tsx
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
@@ -2290,7 +2305,6 @@ msgid "Continue"
 msgstr "Weiter"
 
 #: src/onboarding/component/onboarding-phone-lock/onboarding-phone-lock.tsx
-#: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "Continue without a PIN"
 msgstr "Ohne PIN fortfahren"
 
@@ -2709,6 +2723,18 @@ msgstr "Liste konnte nicht geladen werden"
 msgid "Couldn’t load transaction counts"
 msgstr "Transaktionszahlen konnten nicht geladen werden"
 
+#: src/auth/hook/use-pin-setup.hook.tsx
+msgid "Couldn't save your PIN. Enter it again to retry."
+msgstr "Deine PIN konnte nicht gespeichert werden. Gib sie erneut ein, um es noch einmal zu versuchen."
+
+#: src/auth/hook/use-pin-setup.hook.tsx
+msgid "Couldn't save your PIN. Try again."
+msgstr "Deine PIN konnte nicht gespeichert werden. Versuche es erneut."
+
+#: src/auth/hook/use-pin-setup.hook.tsx
+msgid "Couldn't turn off app lock. Try again."
+msgstr "App-Sperre konnte nicht ausgeschaltet werden. Versuche es erneut."
+
 #: src/account/component/account-switch-field/account-switch-field.tsx
 msgid "Count it in your net worth"
 msgstr "Im Nettovermögen berücksichtigen"
@@ -2729,10 +2755,6 @@ msgstr "Erstellen Sie zuerst ein Schuldenkonto."
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Create a new System-generated API key"
 msgstr "Erstellen Sie einen neuen systemgenerierten API-Schlüssel"
-
-#: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Create a PIN"
-msgstr "PIN erstellen"
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Create a read-only API key and secret"
@@ -2927,6 +2949,10 @@ msgstr "Schuldenkonten können nicht an Überweisungen teilnehmen"
 msgid "Debts and loans"
 msgstr "Schulden und Kredite"
 
+#: src/auth/components/pin-setup/pin-setup.tsx
+msgid "Decrypting your data. Keep Budgie open, it restarts when finished."
+msgstr "Deine Daten werden entschlüsselt. Lass Budgie geöffnet, die App startet danach neu."
+
 #: src/settings/components/default-account-selector/default-account-selector.tsx
 msgid "Default account"
 msgstr "Standardkonto"
@@ -2989,6 +3015,10 @@ msgstr "Ereignis löschen?"
 #: src/budget/hooks/use-budget-fund-form.hook.ts
 msgid "Delete fund?"
 msgstr "Fonds löschen?"
+
+#: src/auth/components/pin-form-delete-button/pin-form-delete-button.tsx
+msgid "Delete last digit"
+msgstr "Letzte Ziffer löschen"
 
 #: src/account/component/archived-account-card/archived-account-card.tsx
 #: src/account/component/archived-account-delete-menu-item/archived-account-delete-menu-item.tsx
@@ -3362,22 +3392,9 @@ msgstr "leer"
 msgid "Empty canvas"
 msgstr "Leere Vorlage"
 
-#: src/auth/components/biometric-configuration/biometric-configuration.tsx
-#: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Enable biometric unlock?"
-msgstr "Biometrisches Entsperren aktivieren?"
-
-#: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Enable Face ID unlock?"
-msgstr "Face ID-Entsperrung aktivieren?"
-
 #: src/rule/components/rule-list-row/rule-list-row.tsx
 msgid "Enable rule: {primaryOutcome}"
 msgstr "Regel aktivieren: {primaryOutcome}"
-
-#: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Enable Touch ID unlock?"
-msgstr "Touch ID-Entsperrung aktivieren?"
 
 #: src/settings/components/app-lock-row/app-lock-row.tsx
 msgid "Encrypt with a PIN, unlock with {biometricLabel}"
@@ -3395,13 +3412,13 @@ msgstr "Verschlüsselt · PIN"
 msgid "Encrypted · PIN and {biometricLabel}"
 msgstr "Verschlüsselt · PIN und {biometricLabel}"
 
+#: src/auth/components/pin-setup/pin-setup.tsx
+msgid "Encrypting your data"
+msgstr "Deine Daten werden verschlüsselt"
+
 #: src/i18n/constant/languages.constant.ts
 msgid "English"
 msgstr "Englisch"
-
-#: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Enter a {PIN_LENGTH}-digit PIN"
-msgstr "Geben Sie eine {PIN_LENGTH}-stellige PIN ein"
 
 #: src/account/utils/get-debt-opening-messages.util.ts
 #: src/ai/component/voice-review-save-button/voice-review-save-button.tsx
@@ -3412,18 +3429,6 @@ msgstr "Alle Beträge eingeben"
 msgid "Enter current PIN"
 msgstr "Aktuelle PIN eingeben"
 
-#: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Enter current PIN to disable protection"
-msgstr "Aktuelle PIN eingeben, um Schutz zu deaktivieren"
-
-#: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
-msgid "Enter it once more"
-msgstr "Noch einmal eingeben"
-
-#: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Enter new PIN"
-msgstr "Neue PIN eingeben"
-
 #: src/app/bank-integration-key.tsx
 msgid "Enter new token"
 msgstr "Neues Token eingeben"
@@ -3433,12 +3438,9 @@ msgid "Enter the PIN this backup was sealed with"
 msgstr "Gib die PIN ein, mit der dieses Backup versiegelt wurde"
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Enter your {PIN_LENGTH}-digit PIN"
-msgstr "Geben Sie Ihre {PIN_LENGTH}-stellige PIN ein"
-
-#: src/auth/hook/use-pin-authentication.hook.ts
-msgid "Enter your {PIN_LENGTH}-digit PIN to unlock"
-msgstr "Geben Sie Ihre {PIN_LENGTH}-stellige PIN zum Entsperren ein"
+#: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
+msgid "Enter the same PIN again."
+msgstr "Gib dieselbe PIN noch einmal ein."
 
 #: src/sync/component/binance-sync-token-inputs/binance-sync-token-inputs.tsx
 msgid "Enter your Binance API key"
@@ -3452,13 +3454,13 @@ msgstr "Geben Sie Ihr Binance-API-Secret ein"
 msgid "Enter your Monobank API token"
 msgstr "Geben Sie Ihren Monobank API-Token ein"
 
-#: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
-msgid "Enter your new PIN again from the start. Take your time: this is the one you'll need to remember."
-msgstr "Gib deine neue PIN noch einmal von vorn ein. Lass dir Zeit: Diese musst du dir merken."
-
-#: src/auth/hook/use-pin-authentication.hook.ts
+#: src/auth/components/pin-unlock/pin-unlock.tsx
 msgid "Enter your PIN"
 msgstr "Geben Sie Ihre PIN ein"
+
+#: src/auth/utils/get-pin-setup-meta.util.ts
+msgid "Enter your PIN to turn it off. Anyone who can unlock this phone will be able to open Budgie."
+msgstr "Gib deine PIN ein, um sie auszuschalten. Dann kann jeder, der dieses Telefon entsperren kann, Budgie öffnen."
 
 #: src/app/resync-window-picker.tsx
 msgid "Entire history will be re-synced on next sync."
@@ -3615,13 +3617,13 @@ msgstr "Externe ID"
 msgid "Face ID"
 msgstr "Face ID"
 
-#: src/auth/components/biometric-configuration/biometric-configuration.tsx
-msgid "Face ID / Touch ID"
-msgstr "Face ID / Touch ID"
-
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Face ID day to day"
 msgstr "Face ID im Alltag"
+
+#: src/auth/hook/use-pin-setup.hook.tsx
+msgid "Face ID wasn't completed. Try again or continue without it."
+msgstr "Face ID wurde nicht abgeschlossen. Versuche es erneut oder fahre ohne fort."
 
 #: src/settings/hook/use-biometric-label.hook.ts
 msgid "Facial recognition"
@@ -3634,10 +3636,6 @@ msgstr "Blasse Balken sind aus deinen früheren Transaktionen mit deinen aktuell
 #: src/@generic/hook/use-contacts.hook.ts
 msgid "Failed to load contacts."
 msgstr "Kontakte konnten nicht geladen werden."
-
-#: src/auth/hook/use-pin-setup.hook.tsx
-msgid "Failed to save PIN. Please try again."
-msgstr "PIN konnte nicht gespeichert werden. Bitte versuchen Sie es erneut."
 
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
 #: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
@@ -4172,9 +4170,10 @@ msgstr "ist nicht"
 msgid "Is not"
 msgstr "Ist nicht"
 
+#: src/auth/utils/get-pin-setup-meta.util.ts
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
-msgid "It will encrypt everything you put in Budgie. Pick one you'll remember but others won't guess."
-msgstr "Sie verschlüsselt alles, was du in Budgie speicherst. Wähle eine, die du dir merkst, die andere aber nicht erraten."
+msgid "It encrypts everything in Budgie. Pick one you'll remember but others won't guess."
+msgstr "Sie verschlüsselt alles in Budgie. Wähle eine, die du dir merkst, die andere aber nicht erraten."
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "It will no longer appear in the calendar."
@@ -4195,6 +4194,10 @@ msgstr "Sparziele"
 #: src/ai/hook/use-ai-model-download-actions.hook.ts
 msgid "Keep"
 msgstr "Behalten"
+
+#: src/auth/components/pin-setup/pin-setup.tsx
+msgid "Keep Budgie open. It restarts when finished."
+msgstr "Lass Budgie geöffnet. Die App startet danach neu."
 
 #: src/budget/components/budget-pace-hint-line/budget-pace-hint-line.tsx
 msgid "Keep it under <0>{perDayAmount}/day</0>"
@@ -4395,8 +4398,8 @@ msgid "Loading market history"
 msgstr "Marktverlauf wird geladen"
 
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
-msgid "Lock Budgie with your own PIN"
-msgstr "Sperre Budgie mit deiner eigenen PIN"
+msgid "Lock Budgie with a PIN"
+msgstr "Budgie mit einer PIN sperren"
 
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "Looks right"
@@ -5297,6 +5300,18 @@ msgstr "Öffne Budgie nach der Aktualisierung einmal, kehre dann zu Shortcuts zu
 msgid "Open Budgie to see your finances"
 msgstr "Öffnen Sie Budgie, um Ihre Finanzen zu sehen"
 
+#: src/auth/utils/get-pin-setup-meta.util.ts
+msgid "Open Budgie with a glance. Your PIN stays the key to your data."
+msgstr "Öffne Budgie mit einem Blick. Deine PIN bleibt der Schlüssel zu deinen Daten."
+
+#: src/auth/utils/get-pin-setup-meta.util.ts
+msgid "Open Budgie with a touch. Your PIN stays the key to your data."
+msgstr "Öffne Budgie mit einer Berührung. Deine PIN bleibt der Schlüssel zu deinen Daten."
+
+#: src/auth/utils/get-pin-setup-meta.util.ts
+msgid "Open Budgie with Face ID or Touch ID. Your PIN stays the key to your data."
+msgstr "Öffne Budgie mit Face ID oder Touch ID. Deine PIN bleibt der Schlüssel zu deinen Daten."
+
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Open George (Erste Bank online banking)"
 msgstr "George (Erste Bank Online-Banking) öffnen"
@@ -5357,6 +5372,10 @@ msgstr "Optional. Leer lassen, um das Ereignis mit einem einzelnen Limit zu verf
 msgid "Optional. The overall limit applies without them."
 msgstr "Optional. Ohne sie gilt das Gesamtlimit."
 
+#: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
+msgid "Optionally turn on {biometricLabel}"
+msgstr "Optional {biometricLabel} einschalten"
+
 #: src/account/component/create-account-options-section/create-account-options-section.tsx
 #: src/account/component/update-account-page/update-account-page.tsx
 msgid "Options"
@@ -5377,6 +5396,14 @@ msgstr "oder +{extraCount}"
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Or fill it from"
 msgstr "Oder befüllen aus"
+
+#: src/auth/components/pin-unlock/pin-unlock.tsx
+msgid "Or unlock with Face ID."
+msgstr "Oder mit Face ID entsperren."
+
+#: src/auth/components/pin-unlock/pin-unlock.tsx
+msgid "Or unlock with Touch ID."
+msgstr "Oder mit Touch ID entsperren."
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Organize"
@@ -5627,9 +5654,18 @@ msgstr "Wähle einen Tag, um fortzufahren"
 msgid "Pick a window. Existing data is preserved."
 msgstr "Zeitraum wählen. Bestehende Daten bleiben erhalten."
 
+#: src/auth/utils/get-pin-setup-meta.util.ts
+msgid "Pick one you'll remember but others won't guess."
+msgstr "Wähle eine, die du dir merkst, die andere aber nicht erraten."
+
+#: src/auth/components/pin-form-dots/pin-form-dots.tsx
+msgid "PIN, {enteredCount} of {PIN_LENGTH} digits entered"
+msgstr "PIN, {enteredCount} von {PIN_LENGTH} Ziffern eingegeben"
+
 #: src/auth/hook/use-pin-setup.hook.tsx
-msgid "PINs do not match"
-msgstr "PINs stimmen nicht überein"
+#: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
+msgid "PINs don't match. Try again."
+msgstr "Die PINs stimmen nicht überein. Versuche es erneut."
 
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "PINs match"
@@ -5793,9 +5829,9 @@ msgstr "Erhöhe den Gesamtbetrag oder wähle weniger Zahlungen"
 msgid "Raised {dateLabel} · over the limit {count} periods in a row"
 msgstr "Erhöht am {dateLabel} · {count} Zeiträume in Folge über dem Limit"
 
-#: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Re-enter your PIN to confirm"
-msgstr "Geben Sie Ihre PIN zur Bestätigung erneut ein"
+#: src/auth/components/pin-setup/pin-setup.tsx
+msgid "Re-encrypting your data. Keep Budgie open, it restarts when finished."
+msgstr "Deine Daten werden neu verschlüsselt. Lass Budgie geöffnet, die App startet danach neu."
 
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
 msgid "Re-record"
@@ -6314,8 +6350,8 @@ msgid "Sealed."
 msgstr "Versiegelt."
 
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
-msgid "Sealed. Face ID or fingerprint is optional."
-msgstr "Versiegelt. Face ID oder Fingerabdruck ist optional."
+msgid "Sealed. Only your PIN opens it."
+msgstr "Versiegelt. Nur deine PIN öffnet sie."
 
 #: src/onboarding/component/onboarding-sealed-moment/onboarding-sealed-moment.tsx
 msgid "Sealed. Only your PIN opens this file."
@@ -6721,10 +6757,6 @@ msgstr "Teilt deine Summe in Kauf und Gebühr auf"
 msgid "Spreads irregular costs across the months."
 msgstr "Verteilt unregelmäßige Kosten auf die Monate."
 
-#: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
-msgid "Start again with your new PIN"
-msgstr "Mit deiner neuen PIN neu beginnen"
-
 #: src/account/component/start-deposit-form/start-deposit-form.tsx
 #: src/transaction/components/transaction-list-start-deposit-menu-item/transaction-list-start-deposit-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
@@ -6784,6 +6816,10 @@ msgstr "Kontoauszug importiert"
 #: src/wallet-capture/component/apple-pay-capture-setup-row/apple-pay-capture-setup-row.tsx
 msgid "Step {stepNumber}"
 msgstr "Schritt {stepNumber}"
+
+#: src/auth/components/pin-step-indicator/pin-step-indicator.tsx
+msgid "Step {stepNumber} of {total}"
+msgstr "Schritt {stepNumber} von {total}"
 
 #: src/account/constant/account-kind-title.constant.ts
 #: src/account/constant/account-type.constant.ts
@@ -7240,10 +7276,6 @@ msgstr "dieses Jahr"
 msgid "This Year"
 msgstr "Dieses Jahr"
 
-#: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
-msgid "Those didn't match"
-msgstr "Die stimmten nicht überein"
-
 #: src/budget/components/budget-funds-section/budget-funds-section.tsx
 msgid "Tick marks where savings should be by today."
 msgstr "Der Strich zeigt, wo die Rücklage heute stehen sollte."
@@ -7382,6 +7414,10 @@ msgstr "Gesamt verliehen"
 #: src/settings/hook/use-biometric-label.hook.ts
 msgid "Touch ID"
 msgstr "Touch ID"
+
+#: src/auth/hook/use-pin-setup.hook.tsx
+msgid "Touch ID wasn't completed. Try again or continue without it."
+msgstr "Touch ID wurde nicht abgeschlossen. Versuche es erneut oder fahre ohne fort."
 
 #: src/budget/components/budget-events-section/budget-events-section.tsx
 msgid "Track a trip or project with its own limit. Tagged expenses still count in this budget."
@@ -7552,6 +7588,7 @@ msgstr "Schalte mal den Flugmodus ein. Budgie funktioniert genauso."
 msgid "Tune limits automatically"
 msgstr "Limits automatisch anpassen"
 
+#: src/auth/utils/get-pin-setup-meta.util.ts
 #: src/settings/components/pin-management-rows/pin-management-rows.tsx
 msgid "Turn off app lock"
 msgstr "App-Sperre ausschalten"
@@ -7571,6 +7608,10 @@ msgstr "Schalte die On-Device-KI ein, um die Modelle herunterzuladen."
 #: src/rule/constant/rule-action-type.constant.ts
 msgid "Turn payments into transfers"
 msgstr "Zahlungen in Überweisungen umwandeln"
+
+#: src/auth/components/pin-setup/pin-setup.tsx
+msgid "Turning off app lock"
+msgstr "App-Sperre wird ausgeschaltet"
 
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "Turns a voice note into an expense"
@@ -7596,10 +7637,6 @@ msgstr "Typ"
 #: src/transaction/components/transaction-type-filter/transaction-type-filter.tsx
 msgid "Type ({selectedTypesCount})"
 msgstr "Typ ({selectedTypesCount})"
-
-#: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
-msgid "Type the same PIN again to make sure it's the one you meant."
-msgstr "Gib dieselbe PIN noch einmal ein, um sicherzugehen, dass es die richtige ist."
 
 #: src/runway/component/runway-flow-row/runway-flow-row.tsx
 #: src/runway/component/runway-history-legend/runway-history-legend.tsx
@@ -7666,6 +7703,10 @@ msgstr "{accountTitle} einblenden"
 msgid "Unknown card"
 msgstr "Unbekannte Karte"
 
+#: src/auth/components/biometric-configuration/biometric-configuration.tsx
+msgid "Unlock quickly without typing your PIN"
+msgstr "Schnell entsperren, ohne die PIN einzugeben"
+
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Unlock to view"
 msgstr "Zum Anzeigen entsperren"
@@ -7673,6 +7714,26 @@ msgstr "Zum Anzeigen entsperren"
 #: src/settings/components/pin-management-rows/pin-management-rows.tsx
 msgid "Unlock with {biometricLabel}"
 msgstr "Mit {biometricLabel} entsperren"
+
+#: src/auth/utils/get-pin-setup-meta.util.ts
+msgid "Unlock with biometrics?"
+msgstr "Biometrisch entsperren?"
+
+#: src/auth/components/pin-form-biometric-button/pin-form-biometric-button.tsx
+msgid "Unlock with Face ID"
+msgstr "Mit Face ID entsperren"
+
+#: src/auth/utils/get-pin-setup-meta.util.ts
+msgid "Unlock with Face ID?"
+msgstr "Mit Face ID entsperren?"
+
+#: src/auth/components/pin-form-biometric-button/pin-form-biometric-button.tsx
+msgid "Unlock with Touch ID"
+msgstr "Mit Touch ID entsperren"
+
+#: src/auth/utils/get-pin-setup-meta.util.ts
+msgid "Unlock with Touch ID?"
+msgstr "Mit Touch ID entsperren?"
 
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Unrealized P&L"
@@ -7722,6 +7783,10 @@ msgstr "{applied} von {total} Transaktionen aktualisiert."
 msgid "Updated {formattedDate}"
 msgstr "Aktualisiert {formattedDate}"
 
+#: src/auth/components/pin-setup/pin-setup.tsx
+msgid "Updating your PIN"
+msgstr "Deine PIN wird aktualisiert"
+
 #: src/budget/components/budget-fund-suggestion-banner/budget-fund-suggestion-banner.tsx
 msgid "Use"
 msgstr "Übernehmen"
@@ -7742,27 +7807,26 @@ msgstr "Verwende 1 bis {CATEGORY_TITLE_MAX_LENGTH} Zeichen"
 msgid "Use 1 to {TAG_TITLE_MAX_LENGTH} characters"
 msgstr "Verwende 1 bis {TAG_TITLE_MAX_LENGTH} Zeichen"
 
-#: src/auth/components/biometric-configuration/biometric-configuration.tsx
-#: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Use Face ID or Touch ID to unlock your app quickly and securely"
-msgstr "Verwenden Sie Face ID oder Touch ID, um Ihre App schnell und sicher zu entsperren"
-
-#: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Use Face ID to unlock your app quickly and securely"
-msgstr "Verwenden Sie Face ID, um Ihre App schnell und sicher zu entsperren"
+#: src/auth/components/pin-setup/pin-setup.tsx
+msgid "Use Face ID"
+msgstr "Face ID verwenden"
 
 #: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
 #: src/ai/component/ai-download-wifi-banner/ai-download-wifi-banner.tsx
 msgid "Use mobile data for {remaining} GB"
 msgstr "Mobile Daten für {remaining} GB nutzen"
 
+#: src/auth/components/biometric-configuration/biometric-configuration.tsx
+msgid "Use PIN only"
+msgstr "Nur PIN verwenden"
+
 #: src/app/(tabs)/settings/data.tsx
 msgid "Use these only if conversions, imports or balances look wrong."
 msgstr "Nur nötig, wenn Umrechnungen, Importe oder Salden falsch aussehen."
 
-#: src/auth/utils/get-pin-setup-meta.util.ts
-msgid "Use Touch ID to unlock your app quickly and securely"
-msgstr "Verwenden Sie Touch ID, um Ihre App schnell und sicher zu entsperren"
+#: src/auth/components/pin-setup/pin-setup.tsx
+msgid "Use Touch ID"
+msgstr "Touch ID verwenden"
 
 #: src/settings/components/default-currency-selector/default-currency-selector.tsx
 msgid "Used for totals and reports"
@@ -8066,6 +8130,7 @@ msgstr "Ihre Daten"
 msgid "Your data is safe. Reading it failed this time."
 msgstr "Deine Daten sind sicher. Nur das Lesen ist diesmal fehlgeschlagen."
 
+#: src/auth/components/pin-unlock/pin-unlock.tsx
 #: src/auth/components/security-lock-button/security-lock-button.tsx
 msgid "Your data is sealed. Only your PIN opens it."
 msgstr "Deine Daten sind versiegelt. Nur deine PIN öffnet sie."
@@ -8113,6 +8178,10 @@ msgstr "Deine PIN · Face ID"
 #: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
 msgid "Your PIN · Fingerprint"
 msgstr "Deine PIN · Fingerabdruck"
+
+#: src/auth/components/biometric-configuration/biometric-configuration.tsx
+msgid "Your PIN still works any time"
+msgstr "Deine PIN funktioniert weiterhin jederzeit"
 
 #: src/app/(tabs)/settings/tags.tsx
 #: src/tag/components/tag-destination-sheet/tag-destination-sheet.tsx

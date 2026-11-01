@@ -14,8 +14,10 @@ import { LoadingOverlay } from '../../../@generic/component/loading-overlay/load
 import { FullPage } from '../../../@generic/component/page/full-page';
 import { useFormatFileSize } from '../../../@generic/hook/use-format-file-size.hook';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
+import { PinFormHeader } from '../../../auth/components/pin-form-header/pin-form-header';
 import { PinForm } from '../../../auth/components/pin-form/pin-form';
 import { PIN_LENGTH } from '../../../auth/constant/pin-length.constant';
+import { getPinFormStatus } from '../../../auth/utils/get-pin-form-status.util';
 import { DatabaseImportService } from '../../service/database-import.service';
 
 interface Props {
@@ -82,6 +84,8 @@ export const ImportBackupPin = ({ sourceUri, onResult }: Props) => {
     const backupFileName = isDefined(backupFile) ? decodeURIComponent(backupFile.name) : '';
     const backupFileSize = isDefined(backupFile) && backupFile.exists ? formatFileSize(backupFile.size) : '';
 
+    const pinFormStatus = getPinFormStatus(isLoading, false);
+
     return (
         <FullPage>
             <View className="flex-row items-center gap-x-md px-5xl pt-lg">
@@ -94,11 +98,15 @@ export const ImportBackupPin = ({ sourceUri, onResult }: Props) => {
 
             <View className="flex-1 px-6xl justify-center">
                 <PinForm
-                    title={t`Enter the PIN this backup was sealed with`}
-                    description={t`If you don't remember it, this backup can't be opened. You can start fresh instead.`}
+                    header={
+                        <PinFormHeader
+                            title={t`Enter the PIN this backup was sealed with`}
+                            description={t`If you don't remember it, this backup can't be opened. You can start fresh instead.`}
+                        />
+                    }
                     currentInput={input}
                     error={error}
-                    isLoading={isLoading}
+                    status={pinFormStatus}
                     onDigitPress={addDigit}
                     onDeletePress={deleteDigit}
                 />

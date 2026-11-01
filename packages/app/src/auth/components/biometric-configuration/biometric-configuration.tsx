@@ -1,63 +1,109 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { Trans, useLingui } from '@lingui/react/macro';
-import { useState } from 'react';
-import { Text, View } from 'react-native';
+import { useLingui } from '@lingui/react/macro';
+import { useEffect, useEffectEvent } from 'react';
+import { AccessibilityInfo, Text, View } from 'react-native';
+import Animated, { FadeIn } from 'react-native-reanimated';
+
+import { isNotEmptyString } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
-import { Icon } from '../../../@generic/component/icon/icon';
-import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
-import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
+import { Card } from '../../../@generic/component/card/card';
+import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { ColorPaletteVariant } from '../../../@generic/type/color-palette-variant.type';
+import { PIN_ERROR_FADE_DURATION_MS, PIN_STEP_FADE_DURATION_MS } from '../../constant/pin-motion.constant';
+import { BiometricBenefitRow } from '../biometric-benefit-row/biometric-benefit-row';
 import { PinFormSelector } from '../pin-form/pin-form.selector';
 
 interface Props {
+    readonly title: string;
+    readonly description: string;
+    readonly icon: UserIconNameEnum;
+    readonly iconVariant: ColorPaletteVariant;
+    readonly enableLabel: string;
     readonly isLoading: boolean;
+    readonly error: string | null;
     readonly onSubmit: (enableBiometrics: boolean) => void;
 }
 
-export const BiometricConfiguration = ({ isLoading, onSubmit }: Props) => {
-    const [enableBiometrics, setEnableBiometrics] = useState(true);
+export const BiometricConfiguration = ({ title, description, icon, iconVariant, enableLabel, isLoading, error, onSubmit }: Props) => {
     const { t } = useLingui();
 
-    const handleContinue = () => void onSubmit(enableBiometrics);
+    const benefits = [
+        { icon: UserIconNameEnum.Zap, text: t`Unlock quickly without typing your PIN` },
+        { icon: UserIconNameEnum.ShieldCheck, text: t`Biometric data never leaves this phone` },
+        { icon: UserIconNameEnum.KeyRound, text: t`Your PIN still works any time` }
+    ];
+
+    const isErrorVisible = isNotEmptyString(error) && !isLoading;
+
+    const announceTitle = useEffectEvent(() => void AccessibilityInfo.announceForAccessibility(title));
+    const announceError = useEffectEvent(() => void AccessibilityInfo.announceForAccessibility(error ?? ''));
+
+    useEffect(() => {
+        announceTitle();
+    }, []);
+
+    useEffect(() => {
+        if (isErrorVisible) {
+            announceError();
+        }
+    }, [isErrorVisible]);
+
+    const handleEnable = () => void onSubmit(true);
+    const handleSkip = () => void onSubmit(false);
 
     return (
-        <View className="gap-y-8 flex-1 justify-center">
-            <View className="rounded-full bg-secondary-background p-8 mx-auto">
-                <Icon icon={UserIconNameEnum.Fingerprint} className="text-primary" size={80} />
+        <Animated.View entering={FadeIn.duration(PIN_STEP_FADE_DURATION_MS)} className="flex-1">
+            <View className="flex-1 justify-center gap-y-7xl">
+                <View className="items-center gap-y-5xl">
+                    <CircleIcon icon={icon} variant={iconVariant} size={88} iconSize={44} radius={28} />
+
+                    <View className="items-center gap-y-md px-xl">
+                        <Text className="text-3xl font-semibold tracking-tight text-primary text-center" accessibilityRole="header">
+                            {title}
+                        </Text>
+
+                        <Text className="text-sm text-secondary-foreground text-center max-w-[300px]">{description}</Text>
+                    </View>
+                </View>
+
+                <Card variant="secondary" size="md" className="gap-y-xl">
+                    {benefits.map(benefit => (
+                        <BiometricBenefitRow key={benefit.text} icon={benefit.icon} text={benefit.text} />
+                    ))}
+                </Card>
             </View>
 
-            <View className="gap-y-xl">
-                <Text className="text-4.5xl font-semibold text-primary text-center">
-                    <Trans>Enable biometric unlock?</Trans>
-                </Text>
+            <View className="gap-y-md pb-xl">
+                <View className="min-h-[52px] justify-end pb-md">
+                    {isErrorVisible ? (
+                        <Animated.Text
+                            entering={FadeIn.duration(PIN_ERROR_FADE_DURATION_MS)}
+                            className="text-sm font-medium text-destructive-foreground text-center"
+                            testID={PinFormSelector.Error}
+                        >
+                            {error}
+                        </Animated.Text>
+                    ) : null}
+                </View>
 
-                <Text className="text-md text-secondary-foreground text-center">
-                    <Trans>Use Face ID or Touch ID to unlock your app quickly and securely</Trans>
-                </Text>
+                <Button
+                    testID={PinFormSelector.ContinueButton}
+                    variant="cta"
+                    content={enableLabel}
+                    onPress={handleEnable}
+                    isLoading={isLoading}
+                />
+
+                <Button
+                    testID={PinFormSelector.SkipBiometricButton}
+                    variant="ghost"
+                    content={t`Use PIN only`}
+                    onPress={handleSkip}
+                    disabled={isLoading}
+                    className="border-0 bg-transparent"
+                />
             </View>
-
-            <SettingsCard
-                icon={UserIconNameEnum.Fingerprint}
-                variant="ghost"
-                title={t`Biometric Authentication`}
-                description={t`Face ID / Touch ID`}
-                right={
-                    <ThemedSwitch
-                        className="my-auto"
-                        testID={PinFormSelector.BiometricSetupSwitch}
-                        onValueChange={setEnableBiometrics}
-                        value={enableBiometrics}
-                    />
-                }
-            />
-
-            <Button
-                testID={PinFormSelector.ContinueButton}
-                onPress={handleContinue}
-                content={t`Continue`}
-                isLoading={isLoading}
-                disabled={isLoading}
-            />
-        </View>
+        </Animated.View>
     );
 };
