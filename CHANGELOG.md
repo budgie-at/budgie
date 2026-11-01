@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.139.0](https://github.com/budgie-at/budgie/compare/v6.138.0...v6.139.0) (2026-11-01)
+
+### Features
+
+* **app:** rebuild settings as grouped lists with a data tools screen ([#1844](https://github.com/budgie-at/budgie/issues/1844)) ([11a46d6](https://github.com/budgie-at/budgie/commit/11a46d694c1051e8834ac3b4a14fd045bc655501))
+
+
 # [6.138.0](https://github.com/budgie-at/budgie/compare/v6.137.1...v6.138.0) (2026-10-31)
 
 ### Bug Fixes
