@@ -1,12 +1,9 @@
-import { ReceiptMerchantLlmService } from '@budgie/ai';
-import { EmbeddingSuggestionService } from '@budgie/categorization';
-import { CategoryRepository, CurrencyEnum, LanguageEnum, SettingsRepository, convertFromMicroUnits } from '@budgie/contracts';
-import { parseReceipt } from '@budgie/import-export';
+import { CurrencyEnum, SettingsRepository, TransactionReceiptRepository, convertFromMicroUnits } from '@budgie/contracts';
+import { parseReceipt, toMerchantTitle } from '@budgie/import-export';
 import { ReceiptMatchResultKindEnum, ReceiptMatchService } from '@budgie/ledger';
 import { SyncFileReader } from '@budgie/sync';
 import * as Clock from 'effect/Clock';
 import * as Context from 'effect/Context';
-import * as Duration from 'effect/Duration';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 import * as Option from 'effect/Option';
@@ -16,36 +13,27 @@ import * as DocumentPicker from 'expo-document-picker';
 import { File } from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
 
-import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { ReceiptScannerModule } from '../../../modules/receipt-scanner';
 import { waitForIdle } from '../../@generic/utils/wait-for-idle.util';
-import { AiSubsystemNameEnum } from '../../ai/enum/ai-subsystem-name.enum';
-import { AiModelResidencyService } from '../../ai/service/ai-model-residency.service';
-import { ChatService } from '../../ai/service/chat.service';
-import { LocalEmbeddingService } from '../../ai/service/embedding.service';
 import { ReceiptScanFailureEnum } from '../enum/receipt-scan-failure.enum';
 import { ReceiptSourceEnum } from '../enum/receipt-source.enum';
 
 import type { PickedAssetsResultInterface } from '../interface/picked-assets-result.interface';
 import type { ReceiptProposalInterface } from '../interface/receipt-proposal.interface';
-import type { CategoryEntityInterface } from '@budgie/contracts';
-import type { ReceiptDraftInterface, ReceiptTextLineInterface } from '@budgie/import-export';
+import type { ReceiptTextLineInterface } from '@budgie/import-export';
 import type { PdfTextItemInterface } from '@budgie/sync';
 
 export class ReceiptScanService extends Context.Service<ReceiptScanService>()('@budgie/app/ReceiptScanService', {
     make: Effect.gen(function* () {
-        const aiModelResidencyService = yield* AiModelResidencyService;
-        const categoryRepository = yield* CategoryRepository;
-        const embeddingSuggestionService = yield* EmbeddingSuggestionService;
         const receiptMatchService = yield* ReceiptMatchService;
-        const receiptMerchantLlmService = yield* ReceiptMerchantLlmService;
+        const transactionReceiptRepository = yield* TransactionReceiptRepository;
         const settingsRepository = yield* SettingsRepository;
         const syncFileReader = yield* SyncFileReader;
         const nativeModule = ReceiptScannerModule;
         const processLock = yield* Semaphore.make(1);
 
-        const AI_SUBSYSTEMS = [AiSubsystemNameEnum.CHAT, AiSubsystemNameEnum.EMBEDDING] as const;
         const PDF_PATTERN = /\.pdf$/iu;
         const PDF_PAGE_SPAN = 100_000;
         const CONTEXT_LINE_COUNT = 15;
@@ -65,9 +53,6 @@ export class ReceiptScanService extends Context.Service<ReceiptScanService>()('@
             receipt: null
         });
 
-        const toTitleCase = (text: string): string =>
-            text.toLocaleLowerCase().replaceAll(/(^|\s)\p{L}/gu, letter => letter.toLocaleUpperCase());
-
         const toPdfLines = (items: readonly PdfTextItemInterface[]): ReceiptTextLineInterface[] =>
             items.map(item => ({ text: item.text, x: item.x, y: item.page * PDF_PAGE_SPAN - item.y - item.height, height: item.height }));
 
@@ -84,40 +69,7 @@ export class ReceiptScanService extends Context.Service<ReceiptScanService>()('@
             return isDefined(nativeModule) ? Effect.promise(() => nativeModule.recognize(uri)) : Effect.succeed([]);
         };
 
-        const nameMerchant = (draft: ReceiptDraftInterface, lines: readonly ReceiptTextLineInterface[], isChatReady: boolean) => {
-            const fallback = { title: toTitleCase(draft.merchantCandidates.at(0) ?? ''), description: null };
-
-            if (!isChatReady) {
-                return Effect.succeed(fallback);
-            }
-
-            return receiptMerchantLlmService.name([...draft.merchantCandidates, toContext(lines)].join('\n')).pipe(
-                Effect.timeoutOption(Duration.seconds(8)),
-                Effect.map(named =>
-                    Option.match(Option.flatMap(named, Option.fromNullishOr), {
-                        onNone: () => fallback,
-                        onSome: ({ merchant, description }) => ({
-                            title: isNotEmptyString(merchant.trim()) ? merchant.trim() : fallback.title,
-                            description: isNotEmptyString(description.trim()) ? description.trim() : null
-                        })
-                    })
-                ),
-                Effect.orElseSucceed(() => fallback)
-            );
-        };
-
-        const suggestCategoryId = (categories: CategoryEntityInterface[], title: string, description: string | null) =>
-            embeddingSuggestionService.suggestCategories(categories, title, null, description ?? '', '', null).pipe(
-                Effect.map(suggestions => suggestions.at(0)?.id ?? null),
-                Effect.orElseSucceed(() => null)
-            );
-
-        const processReceipt = Effect.fnUntraced(function* (
-            uri: string,
-            isChatReady: boolean,
-            categories: CategoryEntityInterface[],
-            baseCurrency: CurrencyEnum
-        ) {
+        const processReceipt = Effect.fnUntraced(function* (uri: string, baseCurrency: CurrencyEnum) {
             const lines = yield* readLines(uri);
 
             if (!isNotEmptyArray(lines)) {
@@ -135,21 +87,16 @@ export class ReceiptScanService extends Context.Service<ReceiptScanService>()('@
             const amount = convertFromMicroUnits(draft.total);
             const occurredAt = draft.occurredAt ?? new Date(now);
 
-            const { title, description } = draft.isPaid
-                ? yield* nameMerchant(draft, lines, isChatReady)
-                : { title: draft.merchantLegalName ?? '', description: null };
-            const categoryId =
-                draft.isPaid && isNotEmptyArray(categories) && isNotEmptyString(title)
-                    ? yield* suggestCategoryId(categories, title, description)
-                    : null;
-            const receipt = { ...draft, occurredAt, title, description, categoryId };
+            const title = toMerchantTitle(draft.isPaid ? (draft.merchantCandidates.at(0) ?? '') : (draft.merchantLegalName ?? ''));
+            const categoryId = draft.isPaid ? yield* transactionReceiptRepository.findMerchantCategoryId(draft.merchantVatId, title) : null;
+            const receipt = { ...draft, occurredAt, title, description: null, categoryId };
             const proposal = yield* receiptMatchService.propose(receipt);
 
             return {
                 kind: proposal.kind,
                 transactionId: proposal.transactionId,
                 title,
-                comment: description ?? '',
+                comment: '',
                 amount,
                 currency: draft.currency,
                 categoryId,
@@ -191,17 +138,11 @@ export class ReceiptScanService extends Context.Service<ReceiptScanService>()('@
                 function* (uri: string) {
                     const settings = yield* settingsRepository.findSettings();
                     const baseCurrency = Option.getOrElse(decodeCurrency(settings?.defaultInstrument?.code), () => CurrencyEnum.EUR);
-                    const allCategories = yield* categoryRepository.findAllNonSystemLocalized(settings?.language ?? LanguageEnum.EN);
 
-                    return yield* Effect.acquireUseRelease(
-                        Effect.forEach(AI_SUBSYSTEMS, subsystem => aiModelResidencyService.acquire(subsystem)),
-                        ([isChatReady, isEmbeddingReady]) =>
-                            processReceipt(uri, isChatReady, isEmbeddingReady ? allCategories : [], baseCurrency).pipe(
-                                Effect.catchCause(cause => Effect.as(Effect.logError(cause), failure(ReceiptScanFailureEnum.FAILED))),
-                                Effect.ensuring(Effect.ignore(Effect.try(() => void new File(uri).delete()))),
-                                Effect.tap(() => waitForIdle)
-                            ),
-                        () => Effect.forEach(AI_SUBSYSTEMS, subsystem => aiModelResidencyService.release(subsystem), { discard: true })
+                    return yield* processReceipt(uri, baseCurrency).pipe(
+                        Effect.catchCause(cause => Effect.as(Effect.logError(cause), failure(ReceiptScanFailureEnum.FAILED))),
+                        Effect.ensuring(Effect.ignore(Effect.try(() => void new File(uri).delete()))),
+                        Effect.tap(() => waitForIdle)
                     );
                 },
                 effect => processLock.withPermit(effect)
@@ -210,13 +151,6 @@ export class ReceiptScanService extends Context.Service<ReceiptScanService>()('@
     })
 }) {
     static readonly layer = Layer.effect(ReceiptScanService, ReceiptScanService.make).pipe(
-        Layer.provide([
-            AiModelResidencyService.layer,
-            CategoryRepository.layer,
-            EmbeddingSuggestionService.layer.pipe(Layer.provide(LocalEmbeddingService.invokerLayer)),
-            ReceiptMatchService.layer,
-            ReceiptMerchantLlmService.layer.pipe(Layer.provide(ChatService.invokerLayer)),
-            SettingsRepository.layer
-        ])
+        Layer.provide([ReceiptMatchService.layer, SettingsRepository.layer, TransactionReceiptRepository.layer])
     );
 }
