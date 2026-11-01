@@ -40,9 +40,10 @@ export const DeletableRowAction = ({ drag, translation, isOpen, label, variant, 
     }));
 
     const containerStyle = isOpen ? null : styleAnimation;
+    const accessibilityVisibility = isOpen ? 'auto' : 'no-hide-descendants';
 
     return (
-        <Reanimated.View style={containerStyle}>
+        <Reanimated.View style={containerStyle} accessibilityElementsHidden={!isOpen} importantForAccessibility={accessibilityVisibility}>
             <HapticPressable
                 testID={DeletableRowSelector.DeleteButton}
                 onPress={onPress}
