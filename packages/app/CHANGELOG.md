@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.143.0](https://github.com/budgie-at/budgie/compare/v6.142.0...v6.143.0) (2026-11-01)
+
+### Features
+
+* **app:** redesign rules list, editor and pickers ([#1851](https://github.com/budgie-at/budgie/issues/1851)) ([ade1c4b](https://github.com/budgie-at/budgie/commit/ade1c4b42459e0823a0a8f24f3c2425d732824b7)), closes [#tag](https://github.com/budgie-at/budgie/issues/tag)
+
+
 # [6.142.0](https://github.com/budgie-at/budgie/compare/v6.141.0...v6.142.0) (2026-11-01)
 
 ### Features
