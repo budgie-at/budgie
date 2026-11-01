@@ -7,5 +7,5 @@ export type CategoryCreateEntityInterface = PartialByKeysType<
         CategoryEntityInterface,
         BaseEntityKeyType | 'isDefault' | 'isSystemCategory' | 'titleSearch' | 'titleEn' | 'titleTags' | 'tagsGeneratedAt'
     >,
-    'parentId'
+    'parentId' | 'iconSource'
 >;

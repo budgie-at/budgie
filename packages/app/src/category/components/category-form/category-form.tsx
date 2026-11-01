@@ -2,6 +2,7 @@ import {
     CATEGORY_TITLE_MAX_LENGTH,
     CategoryCreateEntityInterface,
     CategoryEntityInterface,
+    CategoryIconSourceEnum,
     UserIconNameEnum,
     UserIconType
 } from '@budgie/contracts';
@@ -32,7 +33,6 @@ import { useSetting } from '../../../settings/hook/use-setting.hook';
 import { useCategoryForm } from '../../hooks/use-category-form.hook';
 import { useDeleteCategory } from '../../hooks/use-delete-category.hook';
 import { categoryUsageAtom } from '../../query/use-categories-with-usage.query';
-import { canAutoApplyCategoryIcon } from '../../utils/can-auto-apply-category-icon.util';
 import { createCategory } from '../../utils/create-category.util';
 import { getCategoryDeleteCopy } from '../../utils/get-category-delete-copy.util';
 import { getCategoryDisplayIcon } from '../../utils/get-category-display-icon.util';
@@ -71,7 +71,8 @@ export const CategoryForm = (props: Props) => {
 
     const isEditing = isDefined(category);
     const [hasPickedIcon, setHasPickedIcon] = useState(false);
-    const isIconChosen = hasPickedIcon || (isEditing && !canAutoApplyCategoryIcon(category, iconSearchEntries));
+    const iconSource = hasPickedIcon ? CategoryIconSourceEnum.USER : (category?.iconSource ?? CategoryIconSourceEnum.AUTO);
+    const isIconChosen = iconSource === CategoryIconSourceEnum.USER;
     const hasTitle = isNotEmptyString(title.trim());
     const isBusy = saveFlight.isLoading || operation.isPending;
     const transactionCount = AsyncResult.isSuccess(usageResult)
@@ -81,12 +82,10 @@ export const CategoryForm = (props: Props) => {
     const iconTerms = getCategoryIconTerms({ titleEn: null, titleTags: null, ...category, title });
     const suggestedIcon = iconSearchService.findConfidentIcon(iconSearchEntries, iconTerms);
     const resolvedIcon = isIconChosen || !isDefined(suggestedIcon) ? icon : suggestedIcon;
-    const triggerIcon =
-        hasPickedIcon || !isDefined(category)
-            ? resolvedIcon
-            : getCategoryDisplayIcon({ ...category, icon: resolvedIcon }, iconSearchEntries);
+    const triggerIcon = hasPickedIcon || !isDefined(category) ? resolvedIcon : getCategoryDisplayIcon({ ...category, icon: resolvedIcon });
 
-    const isChanged = !isDefined(category) || title !== category.title || resolvedIcon !== category.icon;
+    const isChanged =
+        !isDefined(category) || title !== category.title || resolvedIcon !== category.icon || iconSource !== category.iconSource;
     const isSaveDisabled = !hasTitle || operation.isPending;
     const deleteCopy = getCategoryDeleteCopy(transactionCount, t);
     const headerTitle = isEditing ? t`Edit Category` : t`Create Category`;
@@ -116,7 +115,7 @@ export const CategoryForm = (props: Props) => {
 
     const submitCategory = (values: CategoryCreateEntityInterface, submittedIcon: UserIconType) =>
         Effect.gen(function* () {
-            const input = { ...values, icon: submittedIcon };
+            const input = { ...values, icon: submittedIcon, iconSource };
 
             if (isDefined(category) && !isChanged) {
                 onCancel();

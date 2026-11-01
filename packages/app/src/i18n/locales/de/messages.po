@@ -83,8 +83,8 @@ msgstr "{0, plural, one {# weitere Gruppe anzeigen} other {# weitere Gruppen anz
 
 #. placeholder {0}: categoriesWithDefaultIcon.length
 #: src/app/(tabs)/settings/category-icons.tsx
-msgid "{0, plural, one {This category still has a placeholder icon. Tap a suggestion to save it.} other {These categories still have placeholder icons. Tap a suggestion to save it.}}"
-msgstr "{0, plural, one {Diese Kategorie hat noch ein Platzhaltersymbol. Tippe auf einen Vorschlag, um ihn zu speichern.} other {Diese Kategorien haben noch Platzhaltersymbole. Tippe auf einen Vorschlag, um ihn zu speichern.}}"
+msgid "{0, plural, one {This category still uses the default icon. Tap a suggestion to set it.} other {These categories still use the default icon. Tap a suggestion to set one.}}"
+msgstr "{0, plural, one {Diese Kategorie nutzt noch das Standardsymbol. Tippe auf einen Vorschlag, um es festzulegen.} other {Diese Kategorien nutzen noch das Standardsymbol. Tippe auf einen Vorschlag, um eines festzulegen.}}"
 
 #: src/onboarding/hook/use-onboarding-file-state.hook.ts
 msgid "{accountCount, plural, one {# account} other {# accounts}}"
@@ -155,6 +155,10 @@ msgstr "{code} · Basiswährung"
 msgid "{count, plural, =0 {“{sourceTitle}” is not on any transactions. It is removed after the merge.} one {Its # transaction gets the tag you pick, and “{sourceTitle}” is removed.} other {Its # transactions get the tag you pick, and “{sourceTitle}” is removed.}}"
 msgstr "{count, plural, =0 {„{sourceTitle}“ ist an keiner Transaktion. Der Tag wird nach dem Zusammenführen entfernt.} one {Seine # Transaktion erhält den gewählten Tag, und „{sourceTitle}“ wird entfernt.} other {Seine # Transaktionen erhalten den gewählten Tag, und „{sourceTitle}“ wird entfernt.}}"
 
+#: src/tag/hooks/use-merge-tag.hook.ts
+msgid "{count, plural, =0 {“{sourceTitle}” merges into “{targetTitle}” and will be removed.} one {# transaction → “{targetTitle}”. “{sourceTitle}” will be removed.} other {# transactions → “{targetTitle}”. “{sourceTitle}” will be removed.}}"
+msgstr "{count, plural, =0 {„{sourceTitle}“ wird mit „{targetTitle}“ zusammengeführt und entfernt.} one {# Transaktion → „{targetTitle}“. „{sourceTitle}“ wird entfernt.} other {# Transaktionen → „{targetTitle}“. „{sourceTitle}“ wird entfernt.}}"
+
 #: src/budget/components/budget-period-recap-rollover/budget-period-recap-rollover.tsx
 msgid "{count, plural, one {{formattedAmount} rolled over across # category} other {{formattedAmount} rolled over across # categories}}"
 msgstr "{count, plural, one {{formattedAmount} auf # Kategorie übertragen} other {{formattedAmount} auf # Kategorien übertragen}}"
@@ -171,6 +175,10 @@ msgstr "{count, plural, one {# Monat} other {# Monate}}"
 msgid "{count, plural, one {# sync repair} other {# sync repairs}}"
 msgstr "{count, plural, one {# Synchronisations-Reparatur} other {# Synchronisations-Reparaturen}}"
 
+#: src/category/hooks/use-move-and-delete-category.hook.ts
+msgid "{count, plural, one {# transaction → “{targetTitle}”. “{sourceTitle}” will be deleted.} other {# transactions → “{targetTitle}”. “{sourceTitle}” will be deleted.}}"
+msgstr "{count, plural, one {# Transaktion → „{targetTitle}“. „{sourceTitle}“ wird gelöscht.} other {# Transaktionen → „{targetTitle}“. „{sourceTitle}“ wird gelöscht.}}"
+
 #: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx
 msgid "{count, plural, one {# uncategorized} other {# uncategorized}}"
 msgstr "{count, plural, one {# ohne Kategorie} other {# ohne Kategorie}}"
@@ -183,25 +191,21 @@ msgstr "{count, plural, one {# anstehende Rechnung} other {# anstehende Rechnung
 msgid "{count, plural, one {Choose an icon for # category} other {Choose icons for # categories}}"
 msgstr "{count, plural, one {Symbol für # Kategorie wählen} other {Symbole für # Kategorien wählen}}"
 
-#: src/category/components/category-default-icon-button/category-default-icon-button.tsx
-msgid "{count, plural, one {It still has a placeholder icon} other {They still have placeholder icons}}"
-msgstr "{count, plural, one {Sie hat noch ein Platzhaltersymbol} other {Sie haben noch Platzhaltersymbole}}"
-
 #: src/tag/hooks/use-delete-tag.hook.ts
 msgid "{count, plural, one {It will be removed from # transaction. The transaction stays.} other {It will be removed from # transactions. The transactions stay.}}"
 msgstr "{count, plural, one {Er wird von # Transaktion entfernt. Die Transaktion bleibt erhalten.} other {Er wird von # Transaktionen entfernt. Die Transaktionen bleiben erhalten.}}"
 
 #: src/category/hooks/use-move-and-delete-category.hook.ts
-msgid "{count, plural, one {Move # transaction from “{sourceTitle}”, then delete it} other {Move # transactions from “{sourceTitle}”, then delete it}}"
-msgstr "{count, plural, one {# Transaktion aus „{sourceTitle}“ verschieben, dann löschen} other {# Transaktionen aus „{sourceTitle}“ verschieben, dann löschen}}"
-
-#: src/category/hooks/use-move-and-delete-category.hook.ts
-msgid "{count, plural, one {Move # transaction to “{targetTitle}” and delete “{sourceTitle}”} other {Move # transactions to “{targetTitle}” and delete “{sourceTitle}”}}"
-msgstr "{count, plural, one {# Transaktion nach „{targetTitle}“ verschieben und „{sourceTitle}“ löschen} other {# Transaktionen nach „{targetTitle}“ verschieben und „{sourceTitle}“ löschen}}"
+msgid "{count, plural, one {Its # transaction moves to the category you pick, and “{sourceTitle}” is deleted.} other {Its # transactions move to the category you pick, and “{sourceTitle}” is deleted.}}"
+msgstr "{count, plural, one {Seine # Transaktion wird in die gewählte Kategorie verschoben, und „{sourceTitle}“ wird gelöscht.} other {Seine # Transaktionen werden in die gewählte Kategorie verschoben, und „{sourceTitle}“ wird gelöscht.}}"
 
 #: src/categorize-inbox/components/categorize-inbox-payments-bar/categorize-inbox-payments-bar.tsx
 msgid "{count, plural, one {Use # payment} other {Use # payments}}"
 msgstr "{count, plural, one {# Zahlung verwenden} other {# Zahlungen verwenden}}"
+
+#: src/category/components/category-default-icon-button/category-default-icon-button.tsx
+msgid "{count, plural, one {Uses the default icon} other {Use the default icon}}"
+msgstr "{count, plural, one {Nutzt das Standardsymbol} other {Nutzen das Standardsymbol}}"
 
 #: src/categorize-inbox/components/categorize-inbox-payments-summary/categorize-inbox-payments-summary.tsx
 msgid "{count} of {rowCount} selected"
@@ -3772,12 +3776,12 @@ msgid "Merchant code"
 msgstr "Händlercode"
 
 #: src/tag/hooks/use-merge-tag.hook.ts
-msgid "Merge “{sourceTitle}” into…"
-msgstr "„{sourceTitle}“ zusammenführen mit…"
+msgid "Merge"
+msgstr "Zusammenführen"
 
 #: src/tag/hooks/use-merge-tag.hook.ts
-msgid "Merge into “{targetTitle}”"
-msgstr "Mit „{targetTitle}“ zusammenführen"
+msgid "Merge “{sourceTitle}” into…"
+msgstr "„{sourceTitle}“ zusammenführen mit…"
 
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Merge into another tag…"
@@ -3903,13 +3907,13 @@ msgstr "Mehr Monate"
 msgid "More tags"
 msgstr "Weitere Tags"
 
+#: src/category/hooks/use-move-and-delete-category.hook.ts
+msgid "Move “{sourceTitle}” transactions to…"
+msgstr "Transaktionen aus „{sourceTitle}“ verschieben nach…"
+
 #: src/categorize-inbox/components/categorize-inbox-group-primary-bar/categorize-inbox-group-primary-bar.tsx
 msgid "Move {cashCount} to cash"
 msgstr "{cashCount} zu Bargeld verschieben"
-
-#: src/category/hooks/use-move-and-delete-category.hook.ts
-msgid "Move {count} and delete “{sourceTitle}”"
-msgstr "{count} verschieben und „{sourceTitle}“ löschen"
 
 #: src/categorize-inbox/components/categorize-inbox-group-primary-bar/categorize-inbox-group-primary-bar.tsx
 msgid "Move {count} to {title}"
@@ -3926,6 +3930,10 @@ msgstr "{rowCount} zu Bargeld verschieben"
 #: src/categorize-inbox/components/categorize-inbox-move-all-to-cash-button/categorize-inbox-move-all-to-cash-button.tsx
 msgid "Move {rowCount} to cash · {total}"
 msgstr "{rowCount} zu Bargeld verschieben · {total}"
+
+#: src/category/hooks/use-move-and-delete-category.hook.ts
+msgid "Move and delete"
+msgstr "Verschieben und löschen"
 
 #: src/categorize-inbox/components/categorize-inbox-group-move-to-cash-option/categorize-inbox-group-move-to-cash-option.tsx
 msgid "Move to cash"
@@ -4724,10 +4732,6 @@ msgstr "Wähle einen Tag, um fortzufahren"
 #: src/app/resync-window-picker.tsx
 msgid "Pick a window. Existing data is preserved."
 msgstr "Zeitraum wählen. Bestehende Daten bleiben erhalten."
-
-#: src/category/hooks/use-move-and-delete-category.hook.ts
-msgid "Pick the category they move to."
-msgstr "Wähle die Kategorie, in die sie verschoben werden."
 
 #: src/settings/components/app-lock-row/app-lock-row.tsx
 msgid "PIN and {biometricLabel}. Encrypts your data."

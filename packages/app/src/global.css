@@ -113,6 +113,7 @@
 
             --color-destructive-foreground: rgba(239, 68, 68, 1);
             --color-destructive-fill: rgba(239, 68, 68, 1);
+            --color-destructive-action: rgb(196, 38, 45);
             --color-destructive-corner: rgba(239, 68, 68, 0.2);
             --color-destructive-background: rgba(239, 68, 68, 0.1);
 
@@ -199,6 +200,7 @@
 
             --color-destructive-foreground: rgba(255, 68, 68, 1);
             --color-destructive-fill: rgba(255, 68, 68, 1);
+            --color-destructive-action: rgb(196, 38, 45);
             --color-destructive-corner: rgba(255, 107, 107, 0.2);
             --color-destructive-background: rgba(255, 68, 68, 0.2);
 

@@ -31,20 +31,20 @@ export const useMoveAndDeleteCategory = () => {
             openCategorySelector(
                 {
                     excludeCategoryIds: [source.id],
-                    title: t({
+                    title: t`Move “${sourceTitle}” transactions to…`,
+                    description: t({
                         message: plural(count, {
-                            one: `Move # transaction from “${sourceTitle}”, then delete it`,
-                            other: `Move # transactions from “${sourceTitle}”, then delete it`
+                            one: `Its # transaction moves to the category you pick, and “${sourceTitle}” is deleted.`,
+                            other: `Its # transactions move to the category you pick, and “${sourceTitle}” is deleted.`
                         })
                     }),
-                    description: t`Pick the category they move to.`,
                     variant: 'primary',
-                    commitLabel: t`Move ${count} and delete “${sourceTitle}”`,
-                    getCommitLabel: targetTitle =>
+                    commitLabel: t`Move and delete`,
+                    getCommitSummary: targetTitle =>
                         t({
                             message: plural(count, {
-                                one: `Move # transaction to “${targetTitle}” and delete “${sourceTitle}”`,
-                                other: `Move # transactions to “${targetTitle}” and delete “${sourceTitle}”`
+                                one: `# transaction → “${targetTitle}”. “${sourceTitle}” will be deleted.`,
+                                other: `# transactions → “${targetTitle}”. “${sourceTitle}” will be deleted.`
                             })
                         })
                 },

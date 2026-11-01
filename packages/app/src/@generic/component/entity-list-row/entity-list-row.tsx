@@ -43,7 +43,7 @@ export const EntityListRow = ({ entity, usage, left, testID, isFirst, isLast, on
     const [notify] = useVibration();
     const formatUsage = useFormatEntityUsage();
     const { isPending, mutatingOperation, start } = useEntityOperation();
-    const { anchor, closeMenu, handleCloseComplete, handleToggleMenu, isMenuOpen } = usePopoverMenuAnchor();
+    const { anchor, frameRef, closeMenu, handleCloseComplete, handleToggleMenu, isMenuOpen } = usePopoverMenuAnchor();
     const mergeLabel = t`Merge into…`;
 
     const notifyWhenCompleted = (isCompleted: boolean) =>
@@ -90,7 +90,7 @@ export const EntityListRow = ({ entity, usage, left, testID, isFirst, isLast, on
     return (
         <GroupedListItem isFirst={isFirst} isLast={isLast}>
             <DeletableRow id={entity.id} onDelete={handleDelete} label={operations.deleteLabel} isDisabled={isPending} variant="fill">
-                <View className={cn(isMenuOpen && 'bg-surface-fill')}>
+                <View ref={frameRef} className={cn(isMenuOpen && 'bg-surface-fill')}>
                     <GroupedListRow
                         testID={testID}
                         left={left}
@@ -102,7 +102,7 @@ export const EntityListRow = ({ entity, usage, left, testID, isFirst, isLast, on
                     />
                 </View>
             </DeletableRow>
-            <PopoverMenu isOpen={isMenuOpen} onClose={closeMenu} onCloseComplete={handleCloseComplete} anchor={anchor} align="auto">
+            <PopoverMenu isOpen={isMenuOpen} onClose={closeMenu} onCloseComplete={handleCloseComplete} anchor={anchor} align="start">
                 <ActionsMenuContext value={closeMenu}>
                     <View className="py-sm">
                         <ActionsMenuItem icon={UserIconNameEnum.Pencil} label={t`Edit`} onPress={onOpen} />

@@ -8,5 +8,5 @@ import type { TagsSelectorModalParams, TagsSelectorResult } from '../context/tag
 export const TagsSelectorModalProvider = createModalProvider<TagsSelectorModalParams, TagsSelectorResult>(
     TagsSelectorModalContext,
     '/tags-selector',
-    params => (isDefined(params?.getCommitLabel) ? '/tag-destination' : '/tags-selector')
+    params => (isDefined(params?.getCommitSummary) ? '/tag-destination' : '/tags-selector')
 );

@@ -1,4 +1,4 @@
-import { CategoryEntityInterface, UserIconNameEnum, UserIconType } from '@budgie/contracts';
+import { CategoryEntityInterface, CategoryIconSourceEnum, UserIconNameEnum, UserIconType } from '@budgie/contracts';
 import { CategoryService } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -16,7 +16,7 @@ import { useIconSelectorModal } from '../../../@generic/context/icon-selector-mo
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { showSuccessToast } from '../../../@generic/utils/show-success-toast/show-success-toast';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
-import { PLACEHOLDER_CATEGORY_ICON } from '../../constant/placeholder-category-icon.constant';
+import { PLACEHOLDER_CATEGORY_ICON, PLACEHOLDER_CATEGORY_ICONS } from '../../constant/placeholder-category-icon.constant';
 import { getCategoryIconTerms } from '../../utils/get-category-icon-terms.util';
 
 import { CategoryIconFixRowSelector } from './category-icon-fix-row.selector';
@@ -35,7 +35,9 @@ export const CategoryIconFixRow = ({ category }: Props) => {
 
     const handleSelect = (icon: UserIconType) =>
         void run(
-            Effect.flatMap(CategoryService, categoryService => categoryService.updateIcon(category.id, icon)).pipe(
+            Effect.flatMap(CategoryService, categoryService =>
+                categoryService.updateIcon(category.id, icon, CategoryIconSourceEnum.USER)
+            ).pipe(
                 Effect.andThen(
                     Effect.sync(() => {
                         const message = t`Icon updated for ${categoryTitle}`;
@@ -80,6 +82,7 @@ export const CategoryIconFixRow = ({ category }: Props) => {
                 <IconSuggestions
                     terms={iconTerms}
                     limit={6}
+                    excludedIcons={PLACEHOLDER_CATEGORY_ICONS}
                     onSelect={handleSelect}
                     testID={CategoryIconFixRowSelector.Suggestions(category.title)}
                 />

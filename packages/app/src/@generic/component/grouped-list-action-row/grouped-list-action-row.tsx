@@ -1,13 +1,16 @@
+import { UserIconType } from '@budgie/contracts';
 import { Text, View } from 'react-native';
 
 import { cn } from '../../utils/cn.util';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
+import { Icon } from '../icon/icon';
 import { LoadingContent } from '../loading-content/loading-content';
 
 import type { ReactNode } from 'react';
 
 interface Props {
     readonly label: string;
+    readonly icon: UserIconType;
     readonly onPress: () => void;
     readonly isDisabled: boolean;
     readonly isLoading: boolean;
@@ -18,7 +21,7 @@ interface Props {
 
 const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
-export const GroupedListActionRow = ({ label, onPress, isDisabled, isLoading, labelClassName, trailing, testID }: Props) => {
+export const GroupedListActionRow = ({ label, icon, onPress, isDisabled, isLoading, labelClassName, trailing, testID }: Props) => {
     const isInactive = isDisabled || isLoading;
     const accessibilityState = { disabled: isInactive, busy: isLoading };
 
@@ -38,6 +41,7 @@ export const GroupedListActionRow = ({ label, onPress, isDisabled, isLoading, la
         >
             <LoadingContent isLoading={isLoading}>
                 <View className="flex-row items-center gap-x-md">
+                    <Icon icon={icon} size={20} className={labelClassName} />
                     <Text className={cn('flex-1 text-[17px]', labelClassName)}>{label}</Text>
                     {trailing}
                 </View>

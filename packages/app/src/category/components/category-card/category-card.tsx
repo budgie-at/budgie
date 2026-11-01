@@ -7,7 +7,6 @@ import { isPositiveNumber } from '@rnw-community/shared';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { EntityListRow } from '../../../@generic/component/entity-list-row/entity-list-row';
 import { TONAL_DISC_BACKGROUND } from '../../../@generic/constant/tonal-disc-background.constant';
-import { useIconSearchEntries } from '../../../@generic/hook/use-icon-search-entries.hook';
 import { useDeleteCategory } from '../../hooks/use-delete-category.hook';
 import { getCategoryDisplayIcon } from '../../utils/get-category-display-icon.util';
 
@@ -28,8 +27,7 @@ export const CategoryCard = ({ onOpen, category, usage, isFirst, isLast }: Props
     const { t } = useLingui();
     const deleteCategory = useDeleteCategory();
     const handleOpen = () => void onOpen(category);
-    const iconSearchEntries = useIconSearchEntries();
-    const icon = getCategoryDisplayIcon(category, iconSearchEntries);
+    const icon = getCategoryDisplayIcon(category);
     const iconSize = isEmojiIcon(icon) ? 22 : 18;
     const operations: EntityRowOperationsInterface = {
         deleteLabel: isPositiveNumber(usage?.transactionCount) ? t`Move transactions and delete…` : t`Delete…`,

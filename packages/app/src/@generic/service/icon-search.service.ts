@@ -53,6 +53,9 @@ class IconSearchService {
     private static readonly FALLBACK_ICONS: readonly UserIconType[] = [
         UserIconNameEnum.Folder,
         UserIconNameEnum.Briefcase,
+        UserIconNameEnum.Laptop,
+        UserIconNameEnum.Code,
+        UserIconNameEnum.Lightbulb,
         UserIconNameEnum.Star,
         UserIconNameEnum.Bookmark,
         UserIconNameEnum.Tag,
@@ -72,7 +75,11 @@ class IconSearchService {
         return this.score(entries, terms, true).map(({ entry }) => entry);
     }
 
-    suggest(entries: readonly IconSearchEntryInterface[], terms: readonly string[]): IconSearchEntryInterface[] {
+    suggest(
+        entries: readonly IconSearchEntryInterface[],
+        terms: readonly string[],
+        excludedIcons: readonly UserIconNameEnum[] = []
+    ): IconSearchEntryInterface[] {
         const relevant = this.score(entries, terms, false)
             .filter(({ score }) => score >= IconSearchService.MIN_SUGGESTION_SCORE)
             .map(({ entry }) => entry);
@@ -81,7 +88,7 @@ class IconSearchService {
             .map(icon => entries.find(entry => entry.icon === icon))
             .filter(isDefined);
 
-        const families = new Set<string>();
+        const families = new Set(excludedIcons.map(icon => this.getFamily(resolveReiconIcon(icon))));
 
         return [...relevant, ...fallback].filter(({ icon }) => {
             const family = this.getFamily(icon);

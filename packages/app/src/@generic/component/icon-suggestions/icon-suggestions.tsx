@@ -1,4 +1,4 @@
-import { UserIconType } from '@budgie/contracts';
+import { UserIconNameEnum, UserIconType } from '@budgie/contracts';
 import { ReactNode } from 'react';
 import { ScrollView, View } from 'react-native';
 
@@ -12,15 +12,16 @@ import { IconSuggestionChip } from '../icon-suggestion-chip/icon-suggestion-chip
 interface Props {
     readonly terms: readonly string[];
     readonly limit: number;
+    readonly excludedIcons?: readonly UserIconNameEnum[];
     readonly onSelect: (icon: UserIconType) => void;
     readonly testID?: string;
     readonly children?: ReactNode;
 }
 
-export const IconSuggestions = ({ terms, limit, onSelect, testID, children }: Props) => {
+export const IconSuggestions = ({ terms, limit, excludedIcons, onSelect, testID, children }: Props) => {
     const entries = useIconSearchEntries();
 
-    const suggestions = iconSearchService.suggest(entries, terms).slice(0, limit);
+    const suggestions = iconSearchService.suggest(entries, terms, excludedIcons).slice(0, limit);
 
     if (isEmptyArray(suggestions)) {
         return null;

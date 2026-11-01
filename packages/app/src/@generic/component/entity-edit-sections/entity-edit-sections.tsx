@@ -1,3 +1,5 @@
+import { UserIconNameEnum } from '@budgie/contracts';
+
 import { EntityOperationEnum } from '../../enum/entity-operation.enum';
 import { GroupedListActionRow } from '../grouped-list-action-row/grouped-list-action-row';
 import { GroupedListSection } from '../grouped-list-section/grouped-list-section';
@@ -30,6 +32,7 @@ export const EntityEditSections = ({
         <GroupedListSection footer={deleteFooter}>
             <GroupedListActionRow
                 label={deleteLabel}
+                icon={UserIconNameEnum.Trash2}
                 onPress={onDelete}
                 isDisabled={isDisabled}
                 isLoading={mutatingOperation === EntityOperationEnum.DELETE}

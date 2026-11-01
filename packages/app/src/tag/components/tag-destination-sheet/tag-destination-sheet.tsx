@@ -23,12 +23,13 @@ interface Props {
     readonly title: string;
     readonly description: string | undefined;
     readonly excludeTagIds: readonly number[];
-    readonly getCommitLabel: (destinationTitle: string) => string;
+    readonly commitLabel: string;
+    readonly getCommitSummary: (destinationTitle: string) => string;
     readonly onSelect: (tagId: number) => void;
 }
 
 export const TagDestinationSheet = (props: Props) => {
-    const { title, description, excludeTagIds, getCommitLabel, onSelect } = props;
+    const { title, description, excludeTagIds, commitLabel, getCommitSummary, onSelect } = props;
     const { t } = useLingui();
     const [openTagForm] = useTagFormModal();
     const [search, setSearch] = useState('');
@@ -38,7 +39,9 @@ export const TagDestinationSheet = (props: Props) => {
     const destinations = tags?.filter(tag => !excludeTagIds.includes(tag.id));
     const { selected, setSelected, isPending, handleRowSelect, handleCommit } = useDestinationSelection(destinations, onSelect);
     const sections = isDefined(destinations) ? [{ title: t`Your tags`, data: destinations }] : null;
-    const commitLabel = isDefined(selected) ? getCommitLabel(selected.title) : t`Pick a tag to continue`;
+    const footer = isDefined(selected)
+        ? { summary: getCommitSummary(selected.title), label: commitLabel }
+        : { summary: null, label: t`Pick a tag to continue` };
 
     const handleCreatePress = (defaultTitle: string) => {
         openTagForm({ defaultTitle }, result => {
@@ -90,9 +93,9 @@ export const TagDestinationSheet = (props: Props) => {
                 renderRow={renderRow}
                 emptyState={<TagEmptyState search={search} onClearSearch={handleClearSearch} onCreate={handleCreatePress} />}
             />
-            <DestinationSheetFooter>
+            <DestinationSheetFooter summary={footer.summary}>
                 <PillButton
-                    label={commitLabel}
+                    label={footer.label}
                     isDisabled={!isDefined(selected)}
                     onPress={handleCommit}
                     testID={TagsSelectorModalSelector.CommitButton}

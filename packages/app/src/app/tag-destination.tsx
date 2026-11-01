@@ -11,7 +11,7 @@ export default function TagDestinationModal() {
 
     const handleSelect = (tagId: number) => void resolveTagsSelector([tagId]);
 
-    if (!isDefined(currentParams?.title) || !isDefined(currentParams.getCommitLabel)) {
+    if (!isDefined(currentParams?.title) || !isDefined(currentParams.commitLabel) || !isDefined(currentParams.getCommitSummary)) {
         return null;
     }
 
@@ -20,7 +20,8 @@ export default function TagDestinationModal() {
             title={currentParams.title}
             description={currentParams.description}
             excludeTagIds={currentParams.excludeTagIds ?? []}
-            getCommitLabel={currentParams.getCommitLabel}
+            commitLabel={currentParams.commitLabel}
+            getCommitSummary={currentParams.getCommitSummary}
             onSelect={handleSelect}
         />
     );

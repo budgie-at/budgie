@@ -3,7 +3,6 @@ import { isEmojiIcon } from '@budgie/contracts';
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { DestinationRow } from '../../../@generic/component/destination-row/destination-row';
 import { TONAL_DISC_BACKGROUND } from '../../../@generic/constant/tonal-disc-background.constant';
-import { useIconSearchEntries } from '../../../@generic/hook/use-icon-search-entries.hook';
 import { CategorySelectorModalSelector } from '../../../app/category-selector-modal.selector';
 import { getCategoryDisplayIcon } from '../../utils/get-category-display-icon.util';
 
@@ -18,8 +17,7 @@ interface Props {
 }
 
 export const CategoryDestinationRow = ({ category, subtitle, isSelected, isDisabled, onSelect }: Props) => {
-    const iconSearchEntries = useIconSearchEntries();
-    const icon = getCategoryDisplayIcon(category, iconSearchEntries);
+    const icon = getCategoryDisplayIcon(category);
     const iconSize = isEmojiIcon(icon) ? 22 : 18;
 
     return (

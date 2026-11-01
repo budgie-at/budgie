@@ -1,7 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
 import { View } from 'react-native';
-import Reanimated, { SharedValue, useAnimatedStyle } from 'react-native-reanimated';
+import Reanimated, { SharedValue, useAnimatedReaction, useAnimatedStyle } from 'react-native-reanimated';
 
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { Icon } from '../icon/icon';
@@ -14,6 +14,7 @@ const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
 interface Props {
     readonly drag: SharedValue<number>;
+    readonly translation: SharedValue<number>;
     readonly isOpen: boolean;
     readonly label: string;
     readonly variant: DeletableRowVariant;
@@ -26,7 +27,14 @@ const fillVariants = cva('flex-1 items-center justify-center bg-destructive-fill
     variants: { variant: { pill: 'rounded-2xl', fill: '' } }
 });
 
-export const DeletableRowAction = ({ drag, isOpen, label, variant, onPress }: Props) => {
+export const DeletableRowAction = ({ drag, translation, isOpen, label, variant, onPress }: Props) => {
+    useAnimatedReaction(
+        () => drag.value,
+        value => {
+            translation.set(value);
+        }
+    );
+
     const styleAnimation = useAnimatedStyle(() => ({
         transform: [{ translateX: drag.value + 70 }]
     }));

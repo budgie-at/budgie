@@ -167,6 +167,7 @@ export const TagForm = (props: Props) => {
                     <GroupedListSection footer={mergeFooter}>
                         <GroupedListActionRow
                             label={t`Merge into another tag…`}
+                            icon={UserIconNameEnum.GitMerge}
                             onPress={handleMerge}
                             isDisabled={isBusy}
                             isLoading={operation.mutatingOperation === EntityOperationEnum.MERGE}

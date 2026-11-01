@@ -28,7 +28,7 @@ interface Props {
     readonly children: ReactNode;
     readonly anchor?: PopoverMenuAnchor;
     readonly placement?: 'bottom' | 'auto' | 'top';
-    readonly align?: 'end' | 'auto';
+    readonly align?: 'end' | 'auto' | 'start';
 }
 
 // eslint-disable-next-line max-statements -- Popover positioning derives many local values from layout, animation, and safe-area inputs
@@ -75,7 +75,7 @@ export const PopoverMenu = ({ isOpen, onClose, onCloseComplete, children, anchor
     const menuRight = hasAnchor
         ? Math.min(Math.max(screenWidth - anchor.x - anchor.width, MENU_MARGIN), screenWidth - MENU_MARGIN - menuWidth)
         : MENU_MARGIN;
-    const isStartAligned = hasAnchor && align === 'auto' && anchor.x + anchor.width / 2 < screenWidth / 2;
+    const isStartAligned = hasAnchor && (align === 'start' || (align === 'auto' && anchor.x + anchor.width / 2 < screenWidth / 2));
     const isMeasuring = hasAnchor && placement !== 'bottom' && menuHeight === 0;
     const measuringStyle: ViewStyle | null = isMeasuring ? { opacity: 0 } : null;
 

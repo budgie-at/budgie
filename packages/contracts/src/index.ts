@@ -151,6 +151,7 @@ export { ACCOUNT_DELETED_TRANSFER_CATEGORY_ID } from './category/constant/accoun
 export { CASH_WITHDRAWAL_TRACKED_CATEGORY_ID } from './category/constant/cash-withdrawal-tracked-category-id.constant';
 export { CATEGORY_TITLE_MAX_LENGTH } from './category/constant/category-title-max-length.constant';
 export { DEFAULT_CATEGORY_ICON } from './category/constant/default-category-icon.constant';
+export { CategoryIconSourceEnum } from './category/enum/category-icon-source.enum';
 
 export { CategoryEntityTable } from './category/table/category-entity.table';
 

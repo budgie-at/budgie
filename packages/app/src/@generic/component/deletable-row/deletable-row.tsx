@@ -2,7 +2,7 @@ import { useLingui } from '@lingui/react/macro';
 import { ReactNode, useRef, useState } from 'react';
 import { Alert } from 'react-native';
 import ReanimatedSwipeable, { SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
-import { SharedValue } from 'react-native-reanimated';
+import Reanimated, { Extrapolation, SharedValue, interpolate, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -26,11 +26,19 @@ export interface DeleteConfirmation {
     readonly buttonText?: string;
 }
 
+const ACTION_WIDTH = 70;
+const DRAGGED_CONTENT_OPACITY = 0.4;
+
 export const DeletableRow = ({ children, onDelete, id, confirmation, label, isDisabled = false, variant = 'pill' }: Props) => {
     const ref = useRef<SwipeableMethods>(null);
     const { t } = useLingui();
 
     const [isOpen, setIsOpen] = useState(false);
+    const translation = useSharedValue(0);
+    const contentStyle = useAnimatedStyle(() => ({
+        opacity:
+            variant === 'fill' ? interpolate(translation.get(), [-ACTION_WIDTH, 0], [DRAGGED_CONTENT_OPACITY, 1], Extrapolation.CLAMP) : 1
+    }));
     const actionLabel = label ?? t`Delete`;
 
     const handleOpen = () => void setIsOpen(true);
@@ -53,7 +61,7 @@ export const DeletableRow = ({ children, onDelete, id, confirmation, label, isDi
     };
 
     const renderRightActions = (_: SharedValue<number>, drag: SharedValue<number>) => (
-        <DeletableRowAction drag={drag} isOpen={isOpen} label={actionLabel} variant={variant} onPress={confirm} />
+        <DeletableRowAction drag={drag} translation={translation} isOpen={isOpen} label={actionLabel} variant={variant} onPress={confirm} />
     );
 
     return (
@@ -67,7 +75,7 @@ export const DeletableRow = ({ children, onDelete, id, confirmation, label, isDi
             onSwipeableOpen={handleOpen}
             onSwipeableClose={handleClose}
         >
-            {children}
+            <Reanimated.View style={contentStyle}>{children}</Reanimated.View>
         </ReanimatedSwipeable>
     );
 };

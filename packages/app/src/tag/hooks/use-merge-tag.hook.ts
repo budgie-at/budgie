@@ -26,12 +26,22 @@ export const useMergeTag = () => {
             })
         });
 
-        const getCommitLabel = (targetTitle: string) => t`Merge into “${targetTitle}”`;
+        const getCommitSummary = (targetTitle: string) =>
+            t({
+                message: plural(count, {
+                    0: `“${sourceTitle}” merges into “${targetTitle}” and will be removed.`,
+                    one: `# transaction → “${targetTitle}”. “${sourceTitle}” will be removed.`,
+                    other: `# transactions → “${targetTitle}”. “${sourceTitle}” will be removed.`
+                })
+            });
 
         return Effect.callback<TagsSelectorResult>(resume => {
-            openTagsSelector({ excludeTagIds: [sourceId], title, description, singleSelect: true, getCommitLabel }, selectedTagIds => {
-                resume(Effect.succeed(selectedTagIds));
-            });
+            openTagsSelector(
+                { excludeTagIds: [sourceId], title, description, singleSelect: true, commitLabel: t`Merge`, getCommitSummary },
+                selectedTagIds => {
+                    resume(Effect.succeed(selectedTagIds));
+                }
+            );
         });
     };
 

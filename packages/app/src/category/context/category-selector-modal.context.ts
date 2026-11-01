@@ -8,7 +8,7 @@ export interface CategorySelectorModalParams {
     readonly title?: string;
     readonly description?: string;
     readonly commitLabel?: string;
-    readonly getCommitLabel?: (destinationTitle: string) => string;
+    readonly getCommitSummary?: (destinationTitle: string) => string;
 }
 
 export type CategorySelectorResult = number | null;

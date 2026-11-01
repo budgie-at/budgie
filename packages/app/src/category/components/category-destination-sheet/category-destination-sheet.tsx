@@ -23,12 +23,12 @@ interface Props {
     readonly description: string | undefined;
     readonly excludeCategoryIds: readonly number[];
     readonly commitLabel: string;
-    readonly getCommitLabel: (destinationTitle: string) => string;
+    readonly getCommitSummary: (destinationTitle: string) => string;
     readonly onSelect: (categoryId: number) => void;
 }
 
 export const CategoryDestinationSheet = (props: Props) => {
-    const { title, description, excludeCategoryIds, commitLabel, getCommitLabel, onSelect } = props;
+    const { title, description, excludeCategoryIds, commitLabel, getCommitSummary, onSelect } = props;
     const { t } = useLingui();
     const [openCategoryForm] = useCategoryFormModal();
     const [search, setSearch] = useState('');
@@ -43,9 +43,9 @@ export const CategoryDestinationSheet = (props: Props) => {
               { title: t`Built-in`, data: destinations.filter(category => category.isDefault) }
           ]
         : null;
-    const footerLabels = isDefined(selected)
-        ? { label: commitLabel, accessibilityLabel: getCommitLabel(selected.title) }
-        : { label: t`Pick a category to continue` };
+    const footer = isDefined(selected)
+        ? { summary: getCommitSummary(selected.title), label: commitLabel }
+        : { summary: null, label: t`Pick a category to continue` };
 
     const handleCreatePress = (defaultTitle: string) => {
         openCategoryForm({ defaultTitle }, result => {
@@ -94,9 +94,9 @@ export const CategoryDestinationSheet = (props: Props) => {
                 renderRow={renderRow}
                 emptyState={<CategoryEmptyState search={search} onClearSearch={handleClearSearch} onCreate={handleCreatePress} />}
             />
-            <DestinationSheetFooter>
+            <DestinationSheetFooter summary={footer.summary}>
                 <PillButton
-                    {...footerLabels}
+                    label={footer.label}
                     variant="destructive"
                     isDisabled={!isDefined(selected)}
                     onPress={handleCommit}

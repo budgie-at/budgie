@@ -1,4 +1,4 @@
-import { CategoryRepository, DEFAULT_CATEGORY_ICON } from '@budgie/contracts';
+import { CategoryIconSourceEnum, CategoryRepository } from '@budgie/contracts';
 import { CategoryService } from '@budgie/ledger';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
@@ -7,7 +7,6 @@ import * as Layer from 'effect/Layer';
 import { isDefined, isEmptyArray } from '@rnw-community/shared';
 
 import { iconSearchService } from '../../@generic/service/icon-search.service';
-import { canAutoApplyCategoryIcon } from '../utils/can-auto-apply-category-icon.util';
 import { getCategoryIconTerms } from '../utils/get-category-icon-terms.util';
 
 export class CategoryIconBackfillService extends Context.Service<CategoryIconBackfillService>()('@budgie/app/CategoryIconBackfillService', {
@@ -18,7 +17,7 @@ export class CategoryIconBackfillService extends Context.Service<CategoryIconBac
         return {
             applyConfidentIcons: Effect.fn('CategoryIconBackfillService.applyConfidentIcons')(function* () {
                 const categories = (yield* categoryRepository.findAllNonSystem()).filter(
-                    category => !category.isDefault && category.icon === DEFAULT_CATEGORY_ICON
+                    category => !category.isDefault && category.iconSource === CategoryIconSourceEnum.AUTO
                 );
 
                 if (isEmptyArray(categories)) {
@@ -28,11 +27,13 @@ export class CategoryIconBackfillService extends Context.Service<CategoryIconBac
                 const entries = yield* iconSearchService.load();
 
                 yield* Effect.forEach(
-                    categories.filter(category => canAutoApplyCategoryIcon(category, entries)),
+                    categories,
                     category => {
                         const icon = iconSearchService.findConfidentIcon(entries, getCategoryIconTerms(category));
 
-                        return isDefined(icon) ? categoryService.updateIcon(category.id, icon) : Effect.void;
+                        return isDefined(icon) && icon !== category.icon
+                            ? categoryService.updateIcon(category.id, icon, CategoryIconSourceEnum.AUTO)
+                            : Effect.void;
                     },
                     { discard: true }
                 );

@@ -2,6 +2,7 @@ import { describe, expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
 import { iconSearchService } from '../src/@generic/service/icon-search.service';
+import { PLACEHOLDER_CATEGORY_ICONS } from '../src/category/constant/placeholder-category-icon.constant';
 import { getCategoryIconTerms } from '../src/category/utils/get-category-icon-terms.util';
 
 const suggestFor = (title: string) =>
@@ -66,11 +67,28 @@ describe('IconSearchService', () => {
         })
     );
 
+    it.effect('leavesThePlaceholderFamiliesOutOfSideProjectSuggestions', () =>
+        Effect.gen(function* () {
+            const entries = yield* iconSearchService.load();
+            const terms = getCategoryIconTerms({ title: 'Side project', titleEn: null, titleTags: null });
+            const suggestions = iconSearchService
+                .suggest(entries, terms, PLACEHOLDER_CATEGORY_ICONS)
+                .slice(0, 6)
+                .map(({ icon }) => icon);
+
+            expect(suggestions.filter(icon => /^reicon:(?:Folder|Home)/u.test(icon))).toEqual([]);
+            expect(suggestions).toEqual(expect.arrayContaining(['reicon:Briefcase', 'reicon:Laptop', 'reicon:Code']));
+        })
+    );
+
     it.effect('fallsBackToGenericIconsWhenNothingIsRelevant', () =>
         Effect.gen(function* () {
             expect((yield* suggestFor('Zzqx')).suggestions).toEqual([
                 'reicon:Folder',
                 'reicon:Briefcase',
+                'reicon:Laptop',
+                'reicon:Code',
+                'reicon:Lightbulb',
                 'reicon:Star',
                 'reicon:Bookmark',
                 'reicon:Tag',

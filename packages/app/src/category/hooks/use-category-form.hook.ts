@@ -14,7 +14,7 @@ const DEFAULT_VALUES: CategoryCreateEntityInterface = { icon: PLACEHOLDER_CATEGO
 export const useCategoryForm = (
     defaultValues: CategoryEntityInterface | null,
     defaultTitle?: string
-): UseFormReturn<CategoryCreateEntityInterface> & {
+): UseFormReturn<Omit<CategoryCreateEntityInterface, 'iconSource'>> & {
     readonly icon: CategoryCreateEntityInterface['icon'];
     readonly title: CategoryCreateEntityInterface['title'];
 } => {
