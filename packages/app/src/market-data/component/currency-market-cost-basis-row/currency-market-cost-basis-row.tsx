@@ -35,7 +35,7 @@ export const CurrencyMarketCostBasisRow = ({ position, costBasis, balance, instr
     const totalAmount = formatInstrumentAmount(balance, instrumentCode, InstrumentTypeEnum.CRYPTO);
     const averageCost = isDefined(position.averageCost) ? formatAverageCost(position.averageCost, symbol) : t`Unavailable`;
     const caption = isPartiallyCovered
-        ? t`Avg ${averageCost} per ${instrumentCode} · cost known for ${coveredAmount} of ${totalAmount}`
+        ? t`Avg ${averageCost} per ${instrumentCode} · known for ${coveredAmount} of ${totalAmount}`
         : t`Avg ${averageCost} per ${instrumentCode}`;
 
     return (

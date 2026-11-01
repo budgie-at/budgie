@@ -1577,8 +1577,8 @@ msgid "Avg {averageCost} per {instrumentCode}"
 msgstr "Avg {averageCost} per {instrumentCode}"
 
 #: src/market-data/component/currency-market-cost-basis-row/currency-market-cost-basis-row.tsx
-msgid "Avg {averageCost} per {instrumentCode} · cost known for {coveredAmount} of {totalAmount}"
-msgstr "Avg {averageCost} per {instrumentCode} · cost known for {coveredAmount} of {totalAmount}"
+msgid "Avg {averageCost} per {instrumentCode} · known for {coveredAmount} of {totalAmount}"
+msgstr "Avg {averageCost} per {instrumentCode} · known for {coveredAmount} of {totalAmount}"
 
 #: src/settings/components/backup-row/backup-row.tsx
 msgid "Back up"

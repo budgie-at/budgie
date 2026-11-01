@@ -20,7 +20,7 @@ export const CurrencyMarketChartStatus = ({ progress, testID }: Props) => {
     if (!isLoading) {
         return (
             <View className="h-[184px] w-full items-center justify-center px-7xl" testID={testID}>
-                <View pointerEvents="none" className="absolute inset-x-0 top-[82px] h-px bg-secondary-foreground/30" />
+                <View pointerEvents="none" className="absolute inset-x-0 top-[148px] h-px bg-secondary-foreground/30" />
                 <Text className="text-secondary-foreground text-center text-[15px] font-semibold">
                     <Trans>No price history yet</Trans>
                 </Text>
@@ -30,7 +30,7 @@ export const CurrencyMarketChartStatus = ({ progress, testID }: Props) => {
 
     return (
         <View className="h-[184px] w-full items-center justify-center gap-y-xs px-7xl" testID={testID}>
-            <View pointerEvents="none" className="absolute inset-x-0 top-[82px] h-px bg-secondary-foreground/30" />
+            <View pointerEvents="none" className="absolute inset-x-0 top-[148px] h-px bg-secondary-foreground/30" />
             <Text className="text-primary text-center text-[15px] font-semibold">
                 <Trans>Loading price history</Trans>
             </Text>
