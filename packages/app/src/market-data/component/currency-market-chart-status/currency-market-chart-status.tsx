@@ -1,6 +1,6 @@
 import { InstrumentMarketDataJobStatusEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
-import { ActivityIndicator, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
@@ -27,17 +27,6 @@ export const CurrencyMarketChartStatus = ({ progress, testID }: Props) => {
         );
     }
 
-    if (!isPositiveNumber(percent)) {
-        return (
-            <View className="h-[184px] w-full items-center justify-center gap-y-md px-7xl" testID={testID}>
-                <ActivityIndicator colorClassName="accent-secondary-foreground" />
-                <Text className="text-secondary-foreground text-center text-[13px] leading-[18px]">
-                    <Trans>Fetching price history…</Trans>
-                </Text>
-            </View>
-        );
-    }
-
     return (
         <View className="h-[184px] w-full items-center justify-center gap-y-xs px-7xl" testID={testID}>
             <Text className="text-primary text-center text-[15px] font-semibold">
@@ -50,8 +39,8 @@ export const CurrencyMarketChartStatus = ({ progress, testID }: Props) => {
                     </Trans>
                 </Text>
             ) : null}
-            <View className="mt-md w-[160px]">
-                <AiProgressBar progress={percent} />
+            <View className="mt-md w-[140px]">
+                <AiProgressBar progress={percent} trackClassName="h-1" />
             </View>
         </View>
     );

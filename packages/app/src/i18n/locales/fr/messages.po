@@ -627,6 +627,10 @@ msgstr "{projectedAmount} · {gapAmount} au-dessus"
 msgid "{projectedAmount} · {gapAmount} under"
 msgstr "{projectedAmount} · {gapAmount} en dessous"
 
+#: src/market-data/component/currency-market-account-row/currency-market-account-row.tsx
+msgid "{providerName} · No cost basis"
+msgstr "{providerName} · Aucun coût d’acquisition"
+
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "{providerName} sync"
 msgstr "Synchronisation {providerName}"
@@ -1560,6 +1564,10 @@ msgid "Average spend"
 msgstr "Dépense moyenne"
 
 #: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
+msgid "Avg {averageCost} · known for {coveredAmount} of {totalAmount}"
+msgstr "Moy. {averageCost} · connu pour {coveredAmount} sur {totalAmount}"
+
+#: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
 msgid "Avg {averageCost} per {instrumentCode}"
 msgstr "Moy. {averageCost} par {instrumentCode}"
 
@@ -2391,10 +2399,6 @@ msgstr "Copie le jeton et colle-le ci-dessous"
 #: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
 msgid "Cost basis"
 msgstr "Coût d'acquisition"
-
-#: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
-msgid "Cost known for {coveredAmount} of {totalAmount}"
-msgstr "Coût connu pour {coveredAmount} sur {totalAmount}"
 
 #: src/account/component/inactive-account-card/inactive-account-card.tsx
 msgid "Could not activate account."
@@ -3708,10 +3712,6 @@ msgstr "Récupérer les comptes"
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
 msgid "Fetching new..."
 msgstr "Récupération des nouvelles..."
-
-#: src/market-data/component/currency-market-chart-status/currency-market-chart-status.tsx
-msgid "Fetching price history…"
-msgstr "Récupération de l'historique des prix…"
 
 #: src/installment-plan/component/installment-count-picker/installment-count-picker.tsx
 msgid "Fewer months"

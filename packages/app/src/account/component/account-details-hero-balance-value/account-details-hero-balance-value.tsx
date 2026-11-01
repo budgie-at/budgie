@@ -7,6 +7,8 @@ import { MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-font-si
 import { PROTECTED_HERO_PLACEHOLDER } from '../../../@generic/constant/protected-hero-placeholder.constant';
 import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
 import { getTextStyleForTicket } from '../../../@generic/utils/get-text-style-for-ticket.util';
+import { MILLION } from '../../../i18n/constant/compact-thresholds.constant';
+import { useFormatCompactDigits } from '../../../i18n/hook/use-format-compact-digits.hook';
 import { ACCOUNT_DETAILS_HERO_BALANCE_HEIGHT } from '../../constant/account-details-hero-balance-height.constant';
 import { useAccountDetailsBalanceLabel } from '../../hook/use-account-details-balance-label.hook';
 import { isCryptoAccountType } from '../../utils/is-crypto-account-type.util';
@@ -19,6 +21,10 @@ interface Props {
 export const AccountDetailsHeroBalanceValue = ({ balance, account }: Props) => {
     const getBalanceLabel = useAccountDetailsBalanceLabel();
     const isAmountProtected = useIsAmountProtected();
+    const formatCompactDigits = useFormatCompactDigits(MILLION);
+
+    const balanceLabel =
+        Math.abs(balance) >= MILLION ? `${formatCompactDigits(balance)} ${account.instrument.code}` : getBalanceLabel(balance, account);
 
     if (isCryptoAccountType(account.type) && isAmountProtected) {
         return (
@@ -37,7 +43,7 @@ export const AccountDetailsHeroBalanceValue = ({ balance, account }: Props) => {
         return (
             <Ticker
                 hasAnimation
-                number={getBalanceLabel(balance, account)}
+                number={balanceLabel}
                 textClassName="font-semibold tracking-[-1px] text-primary"
                 minFontSize={24}
                 maxFontSize={ACCOUNT_DETAILS_HERO_BALANCE_HEIGHT}

@@ -1,17 +1,15 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Trans } from '@lingui/react/macro';
-import { parseISO } from 'date-fns/parseISO';
 import { Text, View } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
-import { getMarketChangeClassName } from '../../utils/get-market-change-class-name.util';
+import { useMarketPriceHeroSuffix } from '../../hook/use-market-price-hero-suffix.hook';
 import { getMarketChangeSign } from '../../utils/get-market-change-sign.util';
+import { getMarketMoveClassName } from '../../utils/get-market-move-class-name.util';
 import { getMarketPriceFractionDigits } from '../../utils/get-market-price-fraction-digits.util';
-import { isMarketPriceStale } from '../../utils/is-market-price-stale.util';
 import { CurrencyMarketPageSelector } from '../currency-market-page/currency-market-page.selector';
 import { CurrencyMarketStalePrice } from '../currency-market-stale-price/currency-market-stale-price';
 
@@ -44,7 +42,6 @@ export const CurrencyMarketPriceHero = ({
     priceBottom
 }: Props) => {
     const { symbol } = useAtomValue(defaultInstrumentAtom);
-    const { formatDayAndMonthAndYear, formatMonthAndDay } = useFormatDate();
     const formatPrice = useFormatDigits(MIN_PRICE_FRACTION_DIGITS, getMarketPriceFractionDigits(latestPrice?.price ?? 0));
     const formatPercent = useFormatDigits(MIN_PRICE_FRACTION_DIGITS);
 
@@ -55,13 +52,13 @@ export const CurrencyMarketPriceHero = ({
         isDefined(change) && isPositiveNumber(basePrice)
             ? `${changeSign}${formatPrice(Math.abs(change), symbol)} (${changeSign}${formatPercent(Math.abs((change / basePrice) * PERCENT))}%) `
             : null;
-    const stalePriceDate = isDefined(latestPrice) && isMarketPriceStale(latestPrice.priceDate) ? latestPrice.priceDate : null;
-    const staleWindowLabel =
-        isDefined(stalePriceDate) && isDefined(rangeStartDate)
-            ? `${formatMonthAndDay(parseISO(rangeStartDate))} – ${formatMonthAndDay(parseISO(stalePriceDate))}`
-            : rangeLabel;
-    const suffixLabel =
-        isScrubbing && isDefined(displayedPrice) ? formatDayAndMonthAndYear(parseISO(displayedPrice.priceDate)) : staleWindowLabel;
+    const { stalePriceDate, suffixLabel } = useMarketPriceHeroSuffix(
+        latestPrice,
+        isScrubbing ? displayedPrice : null,
+        rangeLabel,
+        rangeStartDate
+    );
+    const changeClassName = getMarketMoveClassName(isDefined(change) && isPositiveNumber(basePrice) ? change / basePrice : 0);
 
     const handlePriceLayout = (event: LayoutChangeEvent) =>
         void priceBottom.set(event.nativeEvent.layout.y + event.nativeEvent.layout.height);
@@ -100,7 +97,7 @@ export const CurrencyMarketPriceHero = ({
                 numberOfLines={1}
                 testID={CurrencyMarketPageSelector.Change(instrumentCode)}
             >
-                {isDefined(changeLabel) ? <Text className={getMarketChangeClassName(change ?? 0)}>{changeLabel}</Text> : null}
+                {isDefined(changeLabel) ? <Text className={changeClassName}>{changeLabel}</Text> : null}
                 {suffixLabel}
             </Text>
 

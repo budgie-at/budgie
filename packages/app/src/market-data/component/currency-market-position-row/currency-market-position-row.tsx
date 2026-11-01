@@ -16,7 +16,6 @@ interface Props {
     readonly subtitle?: string | null;
     readonly subtitleTestID?: string;
     readonly isSubtitleProtected?: boolean;
-    readonly secondarySubtitle?: string | null;
 }
 
 const PROTECTED_CLASSNAME = 'text-secondary-foreground';
@@ -28,15 +27,13 @@ export const CurrencyMarketPositionRow = ({
     testID,
     subtitle,
     subtitleTestID,
-    isSubtitleProtected = false,
-    secondarySubtitle
+    isSubtitleProtected = false
 }: Props) => {
     const isAmountProtected = useIsAmountProtected();
 
     const amountClassName = isAmountProtected ? PROTECTED_CLASSNAME : valueClassName;
     const shouldMask = isAmountProtected && isSubtitleProtected;
     const visibleSubtitle = shouldMask && isNotEmptyString(subtitle) ? PROTECTED_HERO_PLACEHOLDER : subtitle;
-    const visibleSecondarySubtitle = shouldMask && isNotEmptyString(secondarySubtitle) ? PROTECTED_HERO_PLACEHOLDER : secondarySubtitle;
 
     return (
         <GroupedListRow
@@ -56,9 +53,6 @@ export const CurrencyMarketPositionRow = ({
                         <Text className="text-secondary-foreground text-[13px] leading-[18px]" testID={subtitleTestID}>
                             {visibleSubtitle}
                         </Text>
-                    ) : null}
-                    {isNotEmptyString(visibleSecondarySubtitle) ? (
-                        <Text className="text-secondary-foreground text-[13px] leading-[18px]">{visibleSecondarySubtitle}</Text>
                     ) : null}
                 </View>
             }

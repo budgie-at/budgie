@@ -10,8 +10,8 @@ import { HapticPressable } from '../../../@generic/component/haptic-pressable/ha
 import { Icon } from '../../../@generic/component/icon/icon';
 import { cn } from '../../../@generic/utils/cn.util';
 import { AccountDetailsSelector } from '../../../app/(main)/account/[id]/account-details.selector';
-import { getMarketChangeClassName } from '../../../market-data/utils/get-market-change-class-name.util';
 import { getMarketChangeSign } from '../../../market-data/utils/get-market-change-sign.util';
+import { getMarketMoveClassName } from '../../../market-data/utils/get-market-move-class-name.util';
 import { useAccountDetailsMarketSummary } from '../../hook/use-account-details-market-summary.hook';
 
 import type { InstrumentEntityInterface } from '@budgie/contracts';
@@ -32,7 +32,7 @@ export const AccountDetailsMarketLink = ({ instrument }: Props) => {
     const accessibilityLabel = isDefined(changeShare)
         ? t`${marketName} market, ${priceLabel}, ${direction}`
         : t`${marketName} market, ${priceLabel}`;
-    const changeToneClassName = getMarketChangeClassName(change ?? 0);
+    const changeToneClassName = getMarketMoveClassName(change ?? 0);
     const changeLabel = `${getMarketChangeSign(change ?? 0)}${changeShare}`;
 
     const handlePress = () => void router.push({ pathname: '/currency/[id]', params: { id: String(instrument.id) } });

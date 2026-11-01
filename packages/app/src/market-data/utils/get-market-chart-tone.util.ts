@@ -1,8 +1,7 @@
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
+import { NEUTRAL_CHANGE_SHARE } from '../constant/neutral-change-share.constant';
 import { MarketChartToneEnum } from '../enum/market-chart-tone.enum';
-
-const NEUTRAL_CHANGE_SHARE = 0.001;
 
 export const getMarketChartTone = (values: readonly number[]): MarketChartToneEnum => {
     const first = values.at(0);

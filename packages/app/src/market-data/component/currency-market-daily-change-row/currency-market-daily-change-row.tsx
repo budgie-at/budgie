@@ -6,8 +6,8 @@ import { GroupedListRow } from '../../../@generic/component/grouped-list-row/gro
 import { cn } from '../../../@generic/utils/cn.util';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
-import { getMarketChangeClassName } from '../../utils/get-market-change-class-name.util';
 import { getMarketChangeSign } from '../../utils/get-market-change-sign.util';
+import { getMarketMoveClassName } from '../../utils/get-market-move-class-name.util';
 import { isMarketPriceStale } from '../../utils/is-market-price-stale.util';
 
 interface Props {
@@ -32,7 +32,7 @@ export const CurrencyMarketDailyChangeRow = ({ change, priceDate, testID }: Prop
         <GroupedListRow
             title={title}
             testID={testID}
-            right={<Text className={cn('text-[17px] font-semibold tabular-nums', getMarketChangeClassName(change))}>{changeLabel}</Text>}
+            right={<Text className={cn('text-[17px] font-semibold tabular-nums', getMarketMoveClassName(change))}>{changeLabel}</Text>}
         />
     );
 };

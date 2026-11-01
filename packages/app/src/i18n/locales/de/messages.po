@@ -627,6 +627,10 @@ msgstr "{projectedAmount} · {gapAmount} drüber"
 msgid "{projectedAmount} · {gapAmount} under"
 msgstr "{projectedAmount} · {gapAmount} darunter"
 
+#: src/market-data/component/currency-market-account-row/currency-market-account-row.tsx
+msgid "{providerName} · No cost basis"
+msgstr "{providerName} · Keine Anschaffungskosten"
+
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "{providerName} sync"
 msgstr "{providerName}-Synchronisation"
@@ -1560,6 +1564,10 @@ msgid "Average spend"
 msgstr "Durchschnittliche Ausgaben"
 
 #: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
+msgid "Avg {averageCost} · known for {coveredAmount} of {totalAmount}"
+msgstr "Ø {averageCost} · bekannt für {coveredAmount} von {totalAmount}"
+
+#: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
 msgid "Avg {averageCost} per {instrumentCode}"
 msgstr "Ø {averageCost} pro {instrumentCode}"
 
@@ -2391,10 +2399,6 @@ msgstr "Kopiere den Token und füge ihn unten ein"
 #: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
 msgid "Cost basis"
 msgstr "Kostenbasis"
-
-#: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
-msgid "Cost known for {coveredAmount} of {totalAmount}"
-msgstr "Kosten bekannt für {coveredAmount} von {totalAmount}"
 
 #: src/account/component/inactive-account-card/inactive-account-card.tsx
 msgid "Could not activate account."
@@ -3708,10 +3712,6 @@ msgstr "Konten abrufen"
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
 msgid "Fetching new..."
 msgstr "Neue abrufen..."
-
-#: src/market-data/component/currency-market-chart-status/currency-market-chart-status.tsx
-msgid "Fetching price history…"
-msgstr "Preisverlauf wird abgerufen…"
 
 #: src/installment-plan/component/installment-count-picker/installment-count-picker.tsx
 msgid "Fewer months"

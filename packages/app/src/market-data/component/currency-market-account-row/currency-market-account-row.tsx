@@ -34,7 +34,8 @@ export const CurrencyMarketAccountRow = ({ account, instrumentCode, sync, amount
     const formatCompactDigits = useFormatCompactDigits(MILLION);
 
     const providerTitle = isDefined(sync) ? BANK_PROVIDER_TITLE[sync.provider] : null;
-    const subtitle = isDefined(providerTitle) ? t(providerTitle) : null;
+    const providerName = isDefined(providerTitle) ? t(providerTitle) : null;
+    const subtitle = isDefined(providerName) ? t`${providerName} · No cost basis` : null;
     const fullAmountLabel = formatInstrumentAmount(amount, instrumentCode, InstrumentTypeEnum.CRYPTO);
     const amountLabel = Math.abs(amount) >= MILLION ? `${formatCompactDigits(amount)} ${instrumentCode}` : fullAmountLabel;
     const amountParts = isAmountProtected ? [] : [fullAmountLabel, valueLabel];
@@ -51,7 +52,7 @@ export const CurrencyMarketAccountRow = ({ account, instrumentCode, sync, amount
             onPress={handlePress}
             title={
                 <View className="my-px min-h-[34px] justify-center gap-y-xxs">
-                    <Text className="text-primary text-[15px] leading-[20px]" numberOfLines={2}>
+                    <Text className="text-primary text-[17px] leading-[22px]" numberOfLines={2}>
                         {account.title}
                     </Text>
                     {isNotEmptyString(subtitle) ? (
@@ -62,8 +63,8 @@ export const CurrencyMarketAccountRow = ({ account, instrumentCode, sync, amount
                 </View>
             }
             right={
-                <View className="flex-row items-start gap-x-xs mt-px self-start">
-                    <View className="w-[118px] shrink-0 grow-0 items-end">
+                <View className="flex-row items-center gap-x-xs">
+                    <View className="w-[118px] shrink-0 grow-0 items-end justify-center">
                         <ProtectedText
                             className="text-primary text-right text-[15px] leading-[20px] tabular-nums"
                             numberOfLines={1}

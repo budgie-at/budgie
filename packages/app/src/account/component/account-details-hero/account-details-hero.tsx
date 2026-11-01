@@ -25,7 +25,7 @@ export const AccountDetailsHero = ({ account, balance }: Props) => (
         {isCryptoAccountType(account.type) ? (
             <>
                 <CollapsibleChromeScrollFade>
-                    <AccountDetailsConvertedValue balance={balance} instrumentId={account.instrument.id} />
+                    <AccountDetailsConvertedValue balance={balance} instrument={account.instrument} />
                 </CollapsibleChromeScrollFade>
 
                 <AccountDetailsMarketLink instrument={account.instrument} />

@@ -38,7 +38,9 @@ export const CurrencyMarketReturnRows = ({ position, valuationRate, balance, ins
     const totalAmount = formatInstrumentAmount(balance, instrumentCode, InstrumentTypeEnum.CRYPTO);
     const isPartiallyCovered = convertToMicroUnits(position.amount) < convertToMicroUnits(balance);
     const averageCost = isDefined(position.averageCost) ? formatAverageCost(position.averageCost, symbol) : t`Unavailable`;
-    const coverageNote = isPartiallyCovered ? t`Cost known for ${coveredAmount} of ${totalAmount}` : null;
+    const averageCostCaption = isPartiallyCovered
+        ? t`Avg ${averageCost} · known for ${coveredAmount} of ${totalAmount}`
+        : t`Avg ${averageCost} per ${instrumentCode}`;
     const returnNote = staleNote ?? (isPartiallyCovered ? t`On the ${coveredAmountWithCode} with known cost` : null);
 
     if (!isDefined(position.costBasis)) {
@@ -59,8 +61,7 @@ export const CurrencyMarketReturnRows = ({ position, valuationRate, balance, ins
                 value={formatMoney(position.costBasis, symbol)}
                 valueClassName={SECONDARY_VALUE_CLASSNAME}
                 testID={CurrencyMarketPageSelector.CostBasis(instrumentCode)}
-                subtitle={t`Avg ${averageCost} per ${instrumentCode}`}
-                secondarySubtitle={coverageNote}
+                subtitle={averageCostCaption}
                 isSubtitleProtected
                 subtitleTestID={CurrencyMarketPageSelector.AverageCost(instrumentCode)}
             />
