@@ -26,11 +26,11 @@ export class TranslationDrainerService extends Context.Service<TranslationDraine
 
         const translateRow = (
             row: Pick<CategoryEntityInterface, 'id' | 'title'>,
-            updateTranslation: (id: number, titleEn: string, titleTags: string) => Effect.Effect<void, DbError, Db>
+            updateTranslation: (id: number, title: string, titleEn: string, titleTags: string) => Effect.Effect<void, DbError, Db>
         ): Effect.Effect<void, DbError | AiInvokeError, Db> =>
             translationLlmService
                 .translate(row.title)
-                .pipe(Effect.flatMap(result => updateTranslation(row.id, result.titleEn, result.titleTags)));
+                .pipe(Effect.flatMap(result => updateTranslation(row.id, row.title, result.titleEn, result.titleTags)));
 
         return yield* DrainerService.make<DbError | AiInvokeError>(
             {
@@ -51,9 +51,15 @@ export class TranslationDrainerService extends Context.Service<TranslationDraine
                         }
                     ).pipe(
                         Effect.map(([categories, tags]) => [
-                            ...categories.map(row => translateRow(row, categoryRepository.updateTranslation)),
+                            ...categories.map(row =>
+                                translateRow(row, (id, title, titleEn, titleTags) =>
+                                    categoryRepository.updateTranslationForTitle(id, title, titleEn, titleTags)
+                                )
+                            ),
                             ...tags.map(row =>
-                                translateRow(row, (id, titleEn, titleTags) => tagRepository.updateTranslation(id, titleEn, titleTags))
+                                translateRow(row, (id, title, titleEn, titleTags) =>
+                                    tagRepository.updateTranslationForTitle(id, title, titleEn, titleTags)
+                                )
                             )
                         ])
                     ),

@@ -63,13 +63,15 @@ const STACKED_FILTER_OPTIONS: NativeStackNavigationOptions = {
     contentStyle: { backgroundColor: 'transparent' }
 };
 
+const ENTITY_FORM_OPTIONS: NativeStackNavigationOptions = { presentation: 'fullScreenModal', headerShown: false };
+
 const PIN_OPTIONS: NativeStackNavigationOptions = { ...MODAL_OPTIONS, gestureEnabled: false };
 
 const LOCK_SCREEN_OPTIONS: NativeStackNavigationOptions = { presentation: 'fullScreenModal', animation: 'none' };
 
 const SELECTOR_OPTIONS = formSheetOptions([DETENT_40, DETENT_70], 0);
 
-const CATEGORY_SELECTOR_OPTIONS = formSheetOptions([DETENT_70, DETENT_96], 1);
+const DESTINATION_OPTIONS = formSheetOptions([DETENT_90]);
 
 enableScreens();
 enableFreeze();
@@ -170,10 +172,7 @@ export const RootLayoutContent = () => {
                                                                     <Stack.Screen name="(main)/transactions/[id]/transfer" />
                                                                     <Stack.Screen name="(main)/analytics/transactions" />
                                                                     <Stack.Screen name="(main)/categorize" />
-                                                                    <Stack.Screen
-                                                                        name="category-selector"
-                                                                        options={CATEGORY_SELECTOR_OPTIONS}
-                                                                    />
+                                                                    <Stack.Screen name="category-selector" options={SELECTOR_OPTIONS} />
                                                                     <Stack.Screen name="account-selector" options={SELECTOR_OPTIONS} />
                                                                     <Stack.Screen name="currency-selector" options={SELECTOR_OPTIONS} />
                                                                     <Stack.Screen name="language-selector" options={SELECTOR_OPTIONS} />
@@ -181,13 +180,18 @@ export const RootLayoutContent = () => {
                                                                     <Stack.Screen name="contact-selector" options={SELECTOR_OPTIONS} />
                                                                     <Stack.Screen name="tags-selector" options={SELECTOR_OPTIONS} />
                                                                     <Stack.Screen
+                                                                        name="category-destination"
+                                                                        options={DESTINATION_OPTIONS}
+                                                                    />
+                                                                    <Stack.Screen name="tag-destination" options={DESTINATION_OPTIONS} />
+                                                                    <Stack.Screen
                                                                         name="voice-review"
                                                                         options={formSheetOptions([0.65, DETENT_95], 0)}
                                                                     />
                                                                     <Stack.Screen name="budget-safe-to-spend" options={sheetOptions} />
                                                                     <Stack.Screen name="budget-limit-changes" options={sheetOptions} />
-                                                                    <Stack.Screen name="category-form" options={MODAL_OPTIONS} />
-                                                                    <Stack.Screen name="tag-form" options={MODAL_OPTIONS} />
+                                                                    <Stack.Screen name="category-form" options={ENTITY_FORM_OPTIONS} />
+                                                                    <Stack.Screen name="tag-form" options={ENTITY_FORM_OPTIONS} />
                                                                     <Stack.Screen
                                                                         name="date-picker"
                                                                         options={formSheetOptions([DETENT_46])}

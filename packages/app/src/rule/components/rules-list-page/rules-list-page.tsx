@@ -120,16 +120,15 @@ export const RulesListPage = ({ matchingRuleIds = [], onGoBack }: Props) => {
     const visibleRules = isMatchingRulesFilterActive && isDefined(rules) ? rules.filter(rule => matchingRuleIds.includes(rule.id)) : rules;
     const overlappingRuleIds = getOverlappingRuleIds(rules ?? []);
     const searchedRules = searchRules(visibleRules, search);
-    const lastIndex = (searchedRules?.length ?? 0) - 1;
     const deleteConfirmation = { title: t`Delete this rule?`, description: t`Payments it already changed stay as they are.` };
     const getDeleteConfirmation = () => deleteConfirmation;
     const handleClearSearch = () => void setSearch('');
 
-    const renderCard = (rule: RuleWithActionsRelationsEntityInterface, index: number) => (
+    const renderCard = (rule: RuleWithActionsRelationsEntityInterface, index: number, isLast: boolean) => (
         <RuleListRow
             rule={rule}
             index={index}
-            isLast={index === lastIndex}
+            isLast={isLast}
             hasOverlap={overlappingRuleIds.has(rule.id)}
             onOpen={handleOpenRule}
             onToggle={handleToggleRule}

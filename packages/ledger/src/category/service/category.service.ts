@@ -3,14 +3,15 @@ import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import type { CategoryCreateEntityInterface, CategoryEntityInterface, UserIconType } from '@budgie/contracts';
+import type { CategoryCreateEntityInterface, CategoryEntityInterface, CategoryIconSourceEnum, UserIconType } from '@budgie/contracts';
 
 export class CategoryService extends Context.Service<CategoryService>()('@budgie/ledger/CategoryService', {
     make: Effect.gen(function* () {
         const categoryRepository = yield* CategoryRepository;
 
         return {
-            updateIcon: (categoryId: number, icon: UserIconType) => categoryRepository.updateById(categoryId, { icon }),
+            updateIcon: (categoryId: number, icon: UserIconType, iconSource: CategoryIconSourceEnum) =>
+                categoryRepository.updateById(categoryId, { icon, iconSource }),
             bulkCreate: Effect.fn('CategoryService.bulkCreate')(function* (
                 inputs: CategoryCreateEntityInterface[],
                 batchSize: number = 100

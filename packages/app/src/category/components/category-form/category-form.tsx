@@ -1,34 +1,48 @@
-import { CategoryCreateEntityInterface, CategoryEntityInterface, CategoryRepository, UserIconType } from '@budgie/contracts';
-import { CategoryService } from '@budgie/ledger';
+import {
+    CATEGORY_TITLE_MAX_LENGTH,
+    CategoryCreateEntityInterface,
+    CategoryEntityInterface,
+    CategoryIconSourceEnum,
+    UserIconNameEnum,
+    UserIconType
+} from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
+import { useState } from 'react';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { AiTranslationFields } from '../../../@generic/component/ai-translation-fields/ai-translation-fields';
-import { ModalFormFooter } from '../../../@generic/component/modal-form-footer/modal-form-footer';
-import { ModalFormMergeButton } from '../../../@generic/component/modal-form-merge-button/modal-form-merge-button';
-import { PageHeader } from '../../../@generic/component/page-header/page-header';
-import { ModalPage } from '../../../@generic/component/page/modal-page';
+import { EntityEditSections } from '../../../@generic/component/entity-edit-sections/entity-edit-sections';
+import { EntityFormPage } from '../../../@generic/component/entity-form-page/entity-form-page';
+import { FormTitleInput } from '../../../@generic/component/form-title-input/form-title-input';
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
+import { IconTitleFieldTrigger } from '../../../@generic/component/icon-title-field-trigger/icon-title-field-trigger';
+import { IconTitleField } from '../../../@generic/component/icon-title-field/icon-title-field';
+import { Icon } from '../../../@generic/component/icon/icon';
+import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
+import { UsageFailureRow } from '../../../@generic/component/usage-failure-row/usage-failure-row';
 import { useIconSelectorModal } from '../../../@generic/context/icon-selector-modal.context';
-import { useAiTranslationFields } from '../../../@generic/hook/use-ai-translation-fields.hook';
-import { useRegenerateTranslation } from '../../../@generic/hook/use-regenerate-translation.hook';
+import { EntityOperationEnum } from '../../../@generic/enum/entity-operation.enum';
+import { useEntityOperation } from '../../../@generic/hook/use-entity-operation.hook';
+import { useEntityUsage } from '../../../@generic/hook/use-entity-usage.hook';
+import { useIconSearchEntries } from '../../../@generic/hook/use-icon-search-entries.hook';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
-import { useChatModelStatus } from '../../../ai/hook/use-chat-model-status.hook';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
-import { useCategorySelectorModal } from '../../context/category-selector-modal.context';
+import { PLACEHOLDER_CATEGORY_ICONS } from '../../constant/placeholder-category-icon.constant';
 import { useCategoryForm } from '../../hooks/use-category-form.hook';
+import { useDeleteCategory } from '../../hooks/use-delete-category.hook';
+import { categoryUsageAtom } from '../../query/use-categories-with-usage.query';
 import { createCategory } from '../../utils/create-category.util';
-import { getCategoryIconTerms } from '../../utils/get-category-icon-terms.util';
+import { getCategoryDeleteCopy } from '../../utils/get-category-delete-copy.util';
+import { getCategoryDisplayIcon } from '../../utils/get-category-display-icon.util';
+import { suggestCategoryIcon } from '../../utils/suggest-category-icon.util';
 import { updateCategory } from '../../utils/update-category.util';
-import { CategoryIconDisplay } from '../category-icon-display/category-icon-display';
-import { CategoryTitleInput } from '../category-title-input/category-title-input';
 
 import { CategoryFormSelector } from './category-form.selector';
 
-type CategoryFormAction = 'created' | 'updated' | 'merged' | 'cancelled';
+type CategoryFormAction = 'created' | 'updated' | 'cancelled';
 
 export interface CategoryFormResult {
     readonly category: CategoryEntityInterface;
@@ -47,132 +61,144 @@ export const CategoryForm = (props: Props) => {
     const { category, defaultTitle, onSuccess, onCancel } = props;
     const { t } = useLingui();
     const language = useSetting('language');
-    const [openCategorySelector] = useCategorySelectorModal();
-    const { run } = useSingleFlight();
+    const saveFlight = useSingleFlight();
+    const operation = useEntityOperation();
+    const { usage, isUsagePending, isUsageFailure, retryUsage } = useEntityUsage(categoryUsageAtom);
+    const deleteCategory = useDeleteCategory();
     const [openIconSelector] = useIconSelectorModal();
-    const { regenerate, isRegenerating } = useRegenerateTranslation((id, titleEn, titleTags) =>
-        Effect.flatMap(CategoryRepository, categoryRepository => categoryRepository.updateTranslation(id, titleEn, titleTags))
-    );
-    const isTranslationsEnabled = useSetting('isAiTranslationsEnabled');
-    const { isChatReady, modelStatus } = useChatModelStatus();
+    const iconSearchEntries = useIconSearchEntries();
 
-    const { handleSubmit, setValue, icon, title } = useCategoryForm(category ?? null, defaultTitle);
+    const { handleSubmit, setValue, formState, icon, title } = useCategoryForm(category ?? null, defaultTitle);
 
-    const isEditing = isDefined(category?.id);
+    const isEditing = isDefined(category);
+    const [hasPickedIcon, setHasPickedIcon] = useState(false);
+    const iconSource = hasPickedIcon ? CategoryIconSourceEnum.USER : (category?.iconSource ?? CategoryIconSourceEnum.AUTO);
+    const isIconChosen = iconSource === CategoryIconSourceEnum.USER;
+    const hasTitle = isNotEmptyString(title.trim());
+    const isBusy = saveFlight.isLoading || operation.isPending;
+    const transactionCount = usage?.find(entry => entry.id === category?.id)?.transactionCount ?? 0;
 
-    const { titleEn, titleTags, handleTitleBlur, translationFieldsProps } = useAiTranslationFields({
-        entity: category ?? null,
-        entityId: category?.id ?? 0,
-        currentTitle: title,
-        regenerate,
-        isRegenerating,
-        isModelReady: isTranslationsEnabled && isChatReady
-    });
+    const autoIcon = suggestCategoryIcon(iconSearchEntries, category, title);
+    const resolvedIcon = isIconChosen ? icon : autoIcon.icon;
+    const triggerIcon = hasPickedIcon || !isDefined(category) ? resolvedIcon : getCategoryDisplayIcon({ ...category, icon: resolvedIcon });
 
-    const isSaveDisabled = !isNotEmptyString(title);
+    const isChanged =
+        !isDefined(category) || title !== category.title || resolvedIcon !== category.icon || iconSource !== category.iconSource;
+    const isSaveDisabled = !hasTitle || operation.isPending;
+    const deleteCopy = getCategoryDeleteCopy(transactionCount, t);
     const headerTitle = isEditing ? t`Edit Category` : t`Create Category`;
-
-    const iconTerms = getCategoryIconTerms({ title, titleEn, titleTags });
-
-    const handleIconSelect = (selectedIcon: UserIconType) => void setValue('icon', selectedIcon);
+    const createLabel = hasTitle ? t`Create category` : t`Add a name to continue`;
+    const titleError = isDefined(formState.errors.title) ? t`Use 1 to ${CATEGORY_TITLE_MAX_LENGTH} characters` : void 0;
+    const deleteTrailing = isPositiveNumber(transactionCount) ? (
+        <Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />
+    ) : null;
+    const saveLabel = isEditing ? t`Save changes` : createLabel;
 
     const handleIconPress = () => {
-        openIconSelector({ selectedIcon: icon, keywords: iconTerms }, selectedIcon => {
-            if (isDefined(selectedIcon)) {
-                handleIconSelect(selectedIcon);
+        if (isBusy) {
+            return;
+        }
+
+        openIconSelector(
+            { selectedIcon: resolvedIcon, keywords: autoIcon.terms, excludedIcons: PLACEHOLDER_CATEGORY_ICONS, variant: 'primary' },
+            selectedIcon => {
+                if (isDefined(selectedIcon)) {
+                    setHasPickedIcon(true);
+                    setValue('icon', selectedIcon);
+                }
             }
-        });
+        );
     };
 
     const handleTitleChange = (value: string) => {
         setValue('title', value);
     };
 
-    const mergeInto = (sourceCategoryId: number, targetCategoryId: number) =>
+    const submitCategory = (values: CategoryCreateEntityInterface, submittedIcon: UserIconType) =>
         Effect.gen(function* () {
-            const categoryRepository = yield* CategoryRepository;
-            const categoryService = yield* CategoryService;
-            const [targetCategory] = yield* categoryRepository.findById(targetCategoryId, language);
-            yield* categoryService.mergeInto(sourceCategoryId, targetCategoryId);
+            const input = { ...values, icon: submittedIcon, iconSource };
 
-            if (isDefined(targetCategory)) {
-                onSuccess({ category: targetCategory, action: 'merged' });
-            }
-        }).pipe(toastOnFailure(t`Could not merge category`, t`Please try again later`));
-
-    const handleMerge = () => {
-        const sourceCategoryId = category?.id;
-
-        if (!isDefined(sourceCategoryId)) {
-            return;
-        }
-
-        openCategorySelector(
-            {
-                excludeCategoryIds: [sourceCategoryId],
-                description: t`Select a category to merge into`,
-                variant: 'primary'
-            },
-            targetCategoryId => {
-                if (isDefined(targetCategoryId)) {
-                    void run(mergeInto(sourceCategoryId, targetCategoryId));
-                }
-            }
-        );
-    };
-
-    const submitCategory = (values: CategoryCreateEntityInterface) =>
-        Effect.gen(function* () {
-            if (isDefined(category)) {
-                const updatedCategory = yield* updateCategory(category.id, values, { titleEn, titleTags }, language);
+            if (isDefined(category) && !isChanged) {
+                onCancel();
+            } else if (isDefined(category)) {
+                const isTitleChanged = values.title !== category.title;
+                const translation = isTitleChanged ? { titleEn: null, titleTags: null } : category;
+                const updatedCategory = yield* updateCategory(category.id, input, translation, language);
                 onSuccess({ category: updatedCategory, action: 'updated' });
             } else {
-                const createdCategory = yield* createCategory(values, { titleEn, titleTags });
+                const createdCategory = yield* createCategory(input, { titleEn: null, titleTags: null });
                 onSuccess({ category: createdCategory, action: 'created' });
             }
         }).pipe(toastOnFailure(isEditing ? t`Could not save category` : t`Could not create category`, t`Please try again later`));
 
-    const handleFormSubmit = handleSubmit(values => run(submitCategory(values)));
+    const handleDelete = () => {
+        if (isDefined(category)) {
+            operation.start(EntityOperationEnum.DELETE, trackMutation =>
+                deleteCategory(category.id, trackMutation).pipe(Effect.tap(isDeleted => (isDeleted ? Effect.sync(onCancel) : Effect.void)))
+            );
+        }
+    };
+
+    const keywordsFooter = isDefined(category) ? (
+        <AiTranslationFields title={category.title} titleEn={category.titleEn} titleTags={category.titleTags} />
+    ) : null;
+
+    const usageActions = isUsageFailure ? (
+        <UsageFailureRow onRetry={retryUsage} />
+    ) : (
+        <LoadingContent isLoading={isUsagePending}>
+            <EntityEditSections
+                deleteLabel={deleteCopy.label}
+                deleteFooter={deleteCopy.footer}
+                deleteTestID={CategoryFormSelector.Delete}
+                deleteTrailing={deleteTrailing}
+                onDelete={handleDelete}
+                isDisabled={isBusy}
+                mutatingOperation={operation.mutatingOperation}
+            />
+        </LoadingContent>
+    );
+
+    const handleFormSubmit = handleSubmit(values => saveFlight.run(submitCategory(values, resolvedIcon)));
 
     return (
-        <ModalPage header={<PageHeader title={headerTitle} onGoBack={onCancel} />}>
-            <KeyboardAwareScrollView
-                testID={CategoryFormSelector.ScrollView}
-                keyboardShouldPersistTaps="always"
-                showsVerticalScrollIndicator={false}
-                bounces={false}
-            >
-                <CategoryIconDisplay
-                    icon={icon}
-                    onPress={handleIconPress}
-                    triggerTestID={CategoryFormSelector.IconTrigger}
-                    iconTestID={CategoryFormSelector.CurrentIcon(icon)}
-                />
-
-                <CategoryTitleInput
-                    value={title}
-                    onChange={handleTitleChange}
-                    onBlur={handleTitleBlur}
-                    testID={CategoryFormSelector.Input}
-                />
-
-                <AiTranslationFields {...translationFieldsProps} isRegenerating={isRegenerating} modelStatus={modelStatus} />
-            </KeyboardAwareScrollView>
-
-            <ModalFormFooter
-                onCancel={onCancel}
-                onSave={handleFormSubmit}
-                isSaveDisabled={isSaveDisabled}
-                saveTestID={CategoryFormSelector.Submit}
-            >
-                {isEditing ? (
-                    <ModalFormMergeButton
-                        testID={CategoryFormSelector.Merge}
-                        onPress={handleMerge}
-                        content={t`Merge into another category`}
+        <EntityFormPage
+            title={headerTitle}
+            onCancel={onCancel}
+            saveLabel={saveLabel}
+            onSave={handleFormSubmit}
+            isSaving={saveFlight.isLoading}
+            isSaveDisabled={isSaveDisabled}
+            saveTestID={CategoryFormSelector.Submit}
+        >
+            <GroupedListSection title={t`Details`} footer={keywordsFooter}>
+                <IconTitleField
+                    tile={
+                        <IconTitleFieldTrigger
+                            icon={triggerIcon}
+                            variant="secondary"
+                            onPress={handleIconPress}
+                            testID={CategoryFormSelector.IconTrigger}
+                            iconTestID={CategoryFormSelector.CurrentIcon(triggerIcon)}
+                        />
+                    }
+                    label={t`Name`}
+                    error={titleError}
+                >
+                    <FormTitleInput
+                        autoFocus={!isEditing}
+                        editable={!isBusy}
+                        value={title}
+                        onChangeText={handleTitleChange}
+                        maxLength={CATEGORY_TITLE_MAX_LENGTH}
+                        placeholder={t`e.g. Climbing, Side project`}
+                        accessibilityLabel={t`Category name`}
+                        testID={CategoryFormSelector.Input}
                     />
-                ) : null}
-            </ModalFormFooter>
-        </ModalPage>
+                </IconTitleField>
+            </GroupedListSection>
+
+            {isDefined(category) ? usageActions : null}
+        </EntityFormPage>
     );
 };

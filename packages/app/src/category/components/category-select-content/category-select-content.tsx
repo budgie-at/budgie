@@ -1,8 +1,6 @@
-import { CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { CategoryEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
-
-import { emptyFn } from '@rnw-community/shared';
 
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
 import { SelectorGridContent } from '../../../@generic/component/selector-grid-content/selector-grid-content';
@@ -32,15 +30,7 @@ export const CategorySelectContent = (props: Props) => {
 
     const renderItem = ({ item }: { item: FlatListDataItem<CategoryEntityInterface> }) =>
         item.isEmpty ? (
-            <CategorySelectorCard
-                className="opacity-0"
-                isSelected={false}
-                onSelect={emptyFn}
-                title=""
-                variant={variant}
-                icon={UserIconNameEnum.Circle}
-                id={0}
-            />
+            <View className="flex-1" />
         ) : (
             <CategorySelectorCard
                 isSelected={selectedCategoryIds.includes(item.id)}

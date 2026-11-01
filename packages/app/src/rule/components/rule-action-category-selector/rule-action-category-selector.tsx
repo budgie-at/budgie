@@ -26,7 +26,7 @@ export const RuleActionCategorySelector = ({ index, testID }: Props) => {
     const isMissing = !isDefined(categoryId) && (formState.isDirty || formState.submitCount > 0);
 
     const handleOpen = () => {
-        openCategorySelector({ initialCategoryId: categoryId, variant: 'violet' }, selectedCategoryId => {
+        openCategorySelector({ initialCategoryId: categoryId, variant: 'violet', title: t`Choose a category` }, selectedCategoryId => {
             if (isDefined(selectedCategoryId)) {
                 onChange(selectedCategoryId);
             }

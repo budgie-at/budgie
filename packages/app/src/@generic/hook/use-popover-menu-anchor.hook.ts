@@ -4,7 +4,7 @@ import { EmptyFn, isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { PopoverMenuAnchor } from '../component/popover-menu/popover-menu';
 
-import type { GestureResponderEvent } from 'react-native';
+import type { GestureResponderEvent, View } from 'react-native';
 
 const TRIGGER_SIZE = 40;
 
@@ -12,6 +12,7 @@ export const usePopoverMenuAnchor = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [anchor, setAnchor] = useState<PopoverMenuAnchor>();
     const pendingActionRef = useRef<EmptyFn | null>(null);
+    const frameRef = useRef<View>(null);
 
     const closeMenu = (afterClose?: EmptyFn) => {
         if (!isMenuOpen) {
@@ -36,6 +37,17 @@ export const usePopoverMenuAnchor = () => {
             return;
         }
 
+        const frame = frameRef.current;
+
+        if (isDefined(frame)) {
+            frame.measureInWindow((x, y, width, height) => {
+                setAnchor({ x, y, width, height });
+                setIsMenuOpen(true);
+            });
+
+            return;
+        }
+
         const { pageX, pageY } = event.nativeEvent;
         const hasValidAnchor = Number.isFinite(pageX) && Number.isFinite(pageY) && isPositiveNumber(pageX) && isPositiveNumber(pageY);
 
@@ -48,5 +60,5 @@ export const usePopoverMenuAnchor = () => {
         setIsMenuOpen(true);
     };
 
-    return { anchor, closeMenu, handleCloseComplete, handleToggleMenu, isMenuOpen };
+    return { anchor, frameRef, closeMenu, handleCloseComplete, handleToggleMenu, isMenuOpen };
 };

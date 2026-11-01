@@ -1,10 +1,10 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
+import { SelectorModalDescription } from '../@generic/component/selector-modal-description/selector-modal-description';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { prepareSelectorGridData } from '../@generic/utils/prepare-selector-grid-data.util';
@@ -15,9 +15,6 @@ import { useSearchCategoriesQuery } from '../category/query/use-search-categorie
 
 import { CategorySelectorModalSelector } from './category-selector-modal.selector';
 
-const CATEGORY_LIST_TOP_OFFSET = 132;
-const CATEGORY_LIST_BOTTOM_PADDING = 16;
-
 export default function CategorySelectorModal() {
     const { t } = useLingui();
     const [openCategoryForm] = useCategoryFormModal();
@@ -27,7 +24,7 @@ export default function CategorySelectorModal() {
     const [search, setSearch] = useState('');
     const { categories, isLoading } = useSearchCategoriesQuery(search, true);
 
-    const { variant = 'primary', initialCategoryId = null, description, excludeCategoryIds = [] } = currentParams ?? {};
+    const { variant = 'primary', initialCategoryId = null, title, description, excludeCategoryIds = [] } = currentParams ?? {};
     const selectedCategoryIds = isDefined(initialCategoryId) ? [initialCategoryId] : [];
     const data = prepareSelectorGridData(categories, excludeCategoryIds, selectedCategoryIds);
 
@@ -44,30 +41,26 @@ export default function CategorySelectorModal() {
             <SelectorModalSearchHeader
                 search={search}
                 onSearchChange={setSearch}
-                placeholder={t`Search categories...`}
-                rightActionIcon={UserIconNameEnum.Plus}
-                rightActionOnPress={handleCreatePress}
-                rightActionTestID={CategorySelectorModalSelector.CreateButton}
+                placeholder={t`Search categories…`}
+                createLabel={t`Create category`}
+                onCreate={handleCreatePress}
+                createTestID={CategorySelectorModalSelector.CreateButton}
                 testID={CategorySelectorModalSelector.Input}
-                title={t`Choose a category`}
             />
 
-            {isNotEmptyString(description) ? (
-                <View className="px-xl pb-md">
-                    <Text className="text-foreground text-sm">{description}</Text>
-                </View>
-            ) : null}
-
-            <CategorySelectContent
-                data={data}
-                variant={variant}
-                selectedCategoryIds={selectedCategoryIds}
-                isLoading={isLoading}
-                onSelect={resolveCategorySelector}
-                cardTestID={CategorySelectorModalSelector.Card}
-                topOffset={CATEGORY_LIST_TOP_OFFSET}
-                additionalBottomPadding={CATEGORY_LIST_BOTTOM_PADDING}
-            />
+            <SelectorModalDescription title={title} description={description}>
+                {topOffset => (
+                    <CategorySelectContent
+                        topOffset={topOffset}
+                        data={data}
+                        variant={variant}
+                        selectedCategoryIds={selectedCategoryIds}
+                        isLoading={isLoading}
+                        onSelect={resolveCategorySelector}
+                        cardTestID={CategorySelectorModalSelector.Card}
+                    />
+                )}
+            </SelectorModalDescription>
         </View>
     );
 }

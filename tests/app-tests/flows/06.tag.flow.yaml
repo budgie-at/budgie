@@ -62,18 +62,17 @@ appId: ${APP_ID}
 - tapOn:
       id: 'TagCard.E2E Tag Search'
 
-- assertVisible: 'E2E Tag Search.*'
-- tapOn:
-      id: 'TagForm.Merge'
-- tapOn:
-      id: 'TagPickerBottomSheet.Input'
-- inputText: 'Primary'
 - extendedWaitUntil:
       visible:
-          id: 'TagPickerBottomSheet.Card.E2E Tag Primary'
+          id: 'TagForm.Delete'
       timeout: 10000
 - tapOn:
-      id: 'TagPickerBottomSheet.Card.E2E Tag Primary'
+      id: 'TagForm.Delete'
+- tapOn: 'Delete'
+- extendedWaitUntil:
+      notVisible:
+          id: 'TagForm.Delete'
+      timeout: 10000
 
 - assertNotVisible:
       id: 'TagCard.E2E Tag Search'

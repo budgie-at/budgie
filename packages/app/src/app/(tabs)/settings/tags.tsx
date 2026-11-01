@@ -2,25 +2,29 @@ import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 
+import { GroupedListSectionTitle } from '../../../@generic/component/grouped-list-section-title/grouped-list-section-title';
+import { SearchablePageErrorState } from '../../../@generic/component/searchable-page-error-state/searchable-page-error-state';
 import { SearchablePageList } from '../../../@generic/component/searchable-page-list/searchable-page-list';
 import { SearchablePage } from '../../../@generic/component/searchable-page/searchable-page';
+import { UsageFailureRow } from '../../../@generic/component/usage-failure-row/usage-failure-row';
+import { GROUPED_LIST_SIZING } from '../../../@generic/constant/grouped-list-sizing.constant';
 import { useCreateAction } from '../../../@generic/hook/use-create-action.hook';
 import { goBackToSettings } from '../../../settings/utils/go-back-to-settings.util';
 import { TagCard } from '../../../tag/components/tag-card/tag-card';
 import { TagEmptyState } from '../../../tag/components/tag-empty-state/tag-empty-state';
 import { useTagFormModal } from '../../../tag/context/tag-form-modal.context';
-import { useDeleteTag } from '../../../tag/hooks/use-delete-tag.hook';
-import { useSearchTagsQuery } from '../../../tag/query/use-search-tags.query';
+import { useTagsWithUsageQuery } from '../../../tag/query/use-tags-with-usage.query';
 
 import { TagPageSelector } from './tag-page.selector';
+
+const NO_TAGS: TagEntityInterface[] = [];
 
 export default function Tags() {
     const { t } = useLingui();
     const [openTagForm] = useTagFormModal();
 
     const [search, setSearch] = useState('');
-    const handleDeleteTag = useDeleteTag();
-    const { tags } = useSearchTagsQuery(search);
+    const { tags, usage, isUsageFailure, retryUsage, isFailure, retry } = useTagsWithUsageQuery(search);
 
     useCreateAction({
         icon: UserIconNameEnum.Tag,
@@ -33,22 +37,46 @@ export default function Tags() {
         openTagForm({ tag });
     };
 
-    const renderCard = (tag: TagEntityInterface) => <TagCard onOpen={handleOpenTag} tag={tag} />;
+    const handleClearSearch = () => void setSearch('');
+
+    const listData = isFailure ? NO_TAGS : tags;
+    const emptyState = isFailure ? (
+        <SearchablePageErrorState onRetry={retry} />
+    ) : (
+        <TagEmptyState search={search} onClearSearch={handleClearSearch} />
+    );
+
+    const renderCard = (tag: TagEntityInterface, index: number, isLast: boolean) => (
+        <TagCard
+            key={tag.id}
+            onOpen={handleOpenTag}
+            tag={tag}
+            usage={usage?.find(entry => entry.id === tag.id)}
+            isFirst={index === 0}
+            isLast={isLast}
+        />
+    );
 
     return (
         <SearchablePage
             title={t`Tags`}
             onGoBack={goBackToSettings}
             search={search}
-            searchPlaceholder={t`Search tags...`}
+            searchPlaceholder={t`Search tags…`}
             onSearchChange={setSearch}
             searchInputTestID={TagPageSelector.SearchInput}
         >
             <SearchablePageList
-                data={tags}
-                emptyState={<TagEmptyState search={search} />}
-                onDelete={handleDeleteTag}
+                data={listData}
+                emptyState={emptyState}
+                listHeader={
+                    <>
+                        {isUsageFailure ? <UsageFailureRow onRetry={retryUsage} /> : null}
+                        <GroupedListSectionTitle title={t`Your tags`} />
+                    </>
+                }
                 renderCard={renderCard}
+                sizing={GROUPED_LIST_SIZING}
             />
         </SearchablePage>
     );

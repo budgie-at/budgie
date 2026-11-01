@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.141.0](https://github.com/budgie-at/budgie/compare/v6.140.1...v6.141.0) (2026-11-01)
+
+**Note:** Version bump only for package @budgie/ai
+
+
+
+
+
+## [6.140.1](https://github.com/budgie-at/budgie/compare/v6.140.0...v6.140.1) (2026-11-01)
+
+### Bug Fixes
+
+* **app:** derive receipt merchant from receipt evidence and category from merchant memory ([02f9e44](https://github.com/budgie-at/budgie/commit/02f9e445c20ece025e44c9e30e0cb7d51a7ce5ec))
+
+
 # [6.140.0](https://github.com/budgie-at/budgie/compare/v6.139.2...v6.140.0) (2026-11-01)
 
 **Note:** Version bump only for package @budgie/ai

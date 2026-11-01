@@ -15,7 +15,7 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
       visible:
-          id: 'CategoryForm.ScrollView'
+          id: 'CategoryForm.Input'
       timeout: 15000
 
 - waitForAnimationToEnd

@@ -5,5 +5,5 @@ const RULES_LIST_ESTIMATED_ITEM_SIZE = 72;
 
 export const RULES_LIST_SIZING: LegendListSizingInterface<RuleWithActionsRelationsEntityInterface> = {
     estimatedItemSize: RULES_LIST_ESTIMATED_ITEM_SIZE,
-    contentGap: 0
+    gap: 0
 };

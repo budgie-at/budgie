@@ -1,18 +1,20 @@
-import { CategoryCreateEntityInterface, CategoryCreateEntitySchema, CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { CategoryCreateEntityInterface, CategoryCreateEntitySchema, CategoryEntityInterface } from '@budgie/contracts';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
 import * as Schema from 'effect/Schema';
 import { useForm, useWatch } from 'react-hook-form';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
+import { PLACEHOLDER_CATEGORY_ICON } from '../constant/placeholder-category-icon.constant';
+
 import type { UseFormReturn } from 'react-hook-form';
 
-const DEFAULT_VALUES: CategoryCreateEntityInterface = { icon: UserIconNameEnum.Folder, title: '' };
+const DEFAULT_VALUES: CategoryCreateEntityInterface = { icon: PLACEHOLDER_CATEGORY_ICON, title: '' };
 
 export const useCategoryForm = (
     defaultValues: CategoryEntityInterface | null,
     defaultTitle?: string
-): UseFormReturn<CategoryCreateEntityInterface> & {
+): UseFormReturn<Omit<CategoryCreateEntityInterface, 'iconSource'>> & {
     readonly icon: CategoryCreateEntityInterface['icon'];
     readonly title: CategoryCreateEntityInterface['title'];
 } => {

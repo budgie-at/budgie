@@ -23,7 +23,7 @@ interface Props extends Pick<CategoryEntityInterface, 'id' | 'icon' | 'title'> {
     readonly testID?: string;
 }
 
-const cardVariants = cva(`flex-1 rounded-2xl px-sm py-xs gap-y-0.5 border-2 items-center h-[82px]`, {
+const cardVariants = cva(`flex-1 rounded-2xl px-sm py-xs gap-y-0.5 border-2 items-center min-h-[82px]`, {
     variants: {
         isSelected: {
             true: '',
@@ -48,6 +48,7 @@ export const CategorySelectorCard = (props: Props) => {
 
     const hasTestID = isNotEmptyString(testID);
     const iconClassName = cn('rounded-4xl', TONAL_DISC_BACKGROUND[variant]);
+    const accessibilityState = { selected: isSelected };
 
     return (
         <HapticPressable
@@ -59,6 +60,7 @@ export const CategorySelectorCard = (props: Props) => {
             accessible
             accessibilityLabel={title}
             accessibilityRole="button"
+            accessibilityState={accessibilityState}
         >
             {hasTestID ? (
                 <View collapsable={false} nativeID={testID} pointerEvents="none" style={StyleSheet.absoluteFill} testID={testID} />

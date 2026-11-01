@@ -12,6 +12,7 @@ import { usePopoverAnimation } from './use-popover-animation.hook';
 const MENU_MARGIN = 16;
 const DEFAULT_MENU_TOP = 64;
 const ANCHOR_OFFSET = 8;
+const MENU_MIN_WIDTH = 220;
 
 export interface PopoverMenuAnchor {
     readonly x: number;
@@ -27,7 +28,7 @@ interface Props {
     readonly children: ReactNode;
     readonly anchor?: PopoverMenuAnchor;
     readonly placement?: 'bottom' | 'auto' | 'top';
-    readonly align?: 'end' | 'auto';
+    readonly align?: 'end' | 'auto' | 'start';
 }
 
 // eslint-disable-next-line max-statements -- Popover positioning derives many local values from layout, animation, and safe-area inputs
@@ -37,6 +38,7 @@ export const PopoverMenu = ({ isOpen, onClose, onCloseComplete, children, anchor
     const { top: safeTop, bottom: safeBottom } = useSafeAreaInsets();
     const { isRendered, isVisible, handleDismiss, backdropStyle, menuStyle } = usePopoverAnimation(isOpen, onCloseComplete);
     const [menuHeight, setMenuHeight] = useState(0);
+    const [menuWidth, setMenuWidth] = useState(MENU_MIN_WIDTH);
     const onCloseRef = useRef(onClose);
 
     useEffect(() => {
@@ -54,6 +56,7 @@ export const PopoverMenu = ({ isOpen, onClose, onCloseComplete, children, anchor
 
     const handleLayout = (event: LayoutChangeEvent) => {
         setMenuHeight(event.nativeEvent.layout.height);
+        setMenuWidth(event.nativeEvent.layout.width);
     };
 
     const hasAnchor = isDefined(anchor);
@@ -69,14 +72,21 @@ export const PopoverMenu = ({ isOpen, onClose, onCloseComplete, children, anchor
         menuTop = anchor.y + anchor.height + ANCHOR_OFFSET;
     }
 
-    const menuRight = hasAnchor ? screenWidth - anchor.x - anchor.width : MENU_MARGIN;
-    const isStartAligned = hasAnchor && align === 'auto' && anchor.x + anchor.width / 2 < screenWidth / 2;
+    const menuRight = hasAnchor
+        ? Math.min(Math.max(screenWidth - anchor.x - anchor.width, MENU_MARGIN), screenWidth - MENU_MARGIN - menuWidth)
+        : MENU_MARGIN;
+    const isStartAligned = hasAnchor && (align === 'start' || (align === 'auto' && anchor.x + anchor.width / 2 < screenWidth / 2));
     const isMeasuring = hasAnchor && placement !== 'bottom' && menuHeight === 0;
     const measuringStyle: ViewStyle | null = isMeasuring ? { opacity: 0 } : null;
 
     const menuMaxWidth = screenWidth - MENU_MARGIN * 2;
     const menuContainerStyle: ViewStyle = isStartAligned
-        ? { position: 'absolute', top: menuTop, left: anchor.x, maxWidth: menuMaxWidth }
+        ? {
+              position: 'absolute',
+              top: menuTop,
+              left: Math.min(Math.max(anchor.x, MENU_MARGIN), screenWidth - MENU_MARGIN - menuWidth),
+              maxWidth: menuMaxWidth
+          }
         : { position: 'absolute', top: menuTop, right: menuRight, maxWidth: menuMaxWidth };
     const animatedMenuStyle = [menuStyle, measuringStyle];
     const measuringPointerEvents = isMeasuring ? 'none' : 'auto';

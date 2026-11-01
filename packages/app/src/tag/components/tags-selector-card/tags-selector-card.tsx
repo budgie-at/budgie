@@ -31,7 +31,7 @@ const SCALE_SPRING = { damping: 14, stiffness: 220 };
 const filledStarIconWeight: IconWeight = 'Filled';
 const outlineStarIconWeight: IconWeight = 'Outline';
 
-const cardVariants = cva('relative border-2 rounded-3xl px-xl items-center justify-center gap-x-md', {
+const cardVariants = cva('relative border-2 rounded-3xl px-xl py-sm items-center justify-center gap-x-md', {
     variants: {
         isSelected: { true: '', false: '' },
         isPrimary: { true: '', false: '' },
@@ -115,7 +115,8 @@ export const TagsSelectorCard = ({
         transform: [{ scale: withSpring(isPrimary ? PRIMARY_SCALE : NORMAL_SCALE, SCALE_SPRING) }]
     }));
 
-    const wrapperStyle = variant === 'static' ? [{ height: TAG_CARD_HEIGHT }, scaleStyle] : scaleStyle;
+    const wrapperStyle = variant === 'static' ? [{ minHeight: TAG_CARD_HEIGHT }, scaleStyle] : scaleStyle;
+    const accessibilityState = { selected: isSelected };
 
     return (
         <Animated.View className="flex-1" style={wrapperStyle} layout={LinearTransition.springify()}>
@@ -124,6 +125,9 @@ export const TagsSelectorCard = ({
                 className={cn(cardVariants({ isSelected, isPrimary, variant }), className)}
                 onPress={handleSelect}
                 onLongPress={longPressHandler}
+                accessibilityRole="button"
+                accessibilityLabel={title}
+                accessibilityState={accessibilityState}
             >
                 <Text
                     className={cn(textVariants({ isSelected, isPrimary, variant }), 'self-stretch flex-shrink text-center')}

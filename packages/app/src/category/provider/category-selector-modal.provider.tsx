@@ -1,3 +1,5 @@
+import { isDefined } from '@rnw-community/shared';
+
 import { createModalProvider } from '../../@generic/utils/create-modal-provider/create-modal-provider.util';
 import { CategorySelectorModalContext } from '../context/category-selector-modal.context';
 
@@ -5,5 +7,6 @@ import type { CategorySelectorModalParams, CategorySelectorResult } from '../con
 
 export const CategorySelectorModalProvider = createModalProvider<CategorySelectorModalParams, CategorySelectorResult>(
     CategorySelectorModalContext,
-    '/category-selector'
+    '/category-selector',
+    params => (isDefined(params?.getCommitCopy) ? '/category-destination' : '/category-selector')
 );

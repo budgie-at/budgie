@@ -1,10 +1,10 @@
-import { and, between, desc, eq, inArray, isNotNull, isNull, notExists, notInArray, or, sql } from 'drizzle-orm';
+import { and, between, count, desc, eq, inArray, isNotNull, isNull, notExists, notInArray, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { transactionFilters } from '../../@generic/repository/base-transaction-filter.repository';
 import { Db } from '../../@generic/service/db.service';
@@ -20,6 +20,7 @@ import { TransactionReceiptEntityTable } from '../table/transaction-receipt-enti
 import type { CurrencyEnum } from '../../@generic/enum/currency.enum';
 import type { TransactionReceiptCreateEntityInterface } from '../entity/transaction-receipt-create-entity.interface';
 import type { ReceiptMatchCandidateQueryInterface } from '../interface/receipt-match-candidate-query.interface';
+import type { SQL } from 'drizzle-orm';
 
 export class TransactionReceiptRepository extends Context.Service<TransactionReceiptRepository>()(
     '@budgie/contracts/TransactionReceiptRepository',
@@ -63,6 +64,19 @@ export class TransactionReceiptRepository extends Context.Service<TransactionRec
                         .orderBy(desc(TransactionEntityTable.operatedAt), desc(TransactionEntityTable.id))
                         .limit(1)
                 ).pipe(Effect.map(rows => rows.at(0)?.accountId ?? null));
+
+            const findMostFrequentCategoryId = (merchantCondition: SQL) =>
+                Db.query(db =>
+                    db
+                        .select({ categoryId: TransactionEntryEntityTable.categoryId })
+                        .from(TransactionEntityTable)
+                        .innerJoin(TransactionEntryEntityTable, eq(TransactionEntryEntityTable.transactionId, TransactionEntityTable.id))
+                        .leftJoin(TransactionReceiptEntityTable, eq(TransactionReceiptEntityTable.transactionId, TransactionEntityTable.id))
+                        .where(and(expenseEntryCondition, isNotNull(TransactionEntryEntityTable.categoryId), merchantCondition))
+                        .groupBy(TransactionEntryEntityTable.categoryId)
+                        .orderBy(desc(count()), desc(sql`max(${TransactionEntityTable.operatedAt})`))
+                        .limit(1)
+                ).pipe(Effect.map(rows => rows.at(0)?.categoryId ?? null));
 
             return {
                 findByFingerprint: (fingerprint: string) =>
@@ -147,6 +161,25 @@ export class TransactionReceiptRepository extends Context.Service<TransactionRec
                                 )
                             )
                     ),
+                findMerchantCategoryId: Effect.fn('TransactionReceiptRepository.findMerchantCategoryId')(function* (
+                    merchantVatId: string | null,
+                    title: string
+                ) {
+                    const trimmedTitle = title.trim();
+
+                    const vatCategoryId = isDefined(merchantVatId)
+                        ? yield* findMostFrequentCategoryId(eq(TransactionReceiptEntityTable.merchantVatId, merchantVatId))
+                        : null;
+
+                    return (
+                        vatCategoryId ??
+                        (isNotEmptyString(trimmedTitle)
+                            ? yield* findMostFrequentCategoryId(
+                                  sql`(trim(${TransactionEntityTable.title}) = ${trimmedTitle} OR lower(trim(${TransactionEntityTable.title})) = ${trimmedTitle.toLocaleLowerCase()})`
+                              )
+                            : null)
+                    );
+                }),
                 findExpenseAccountId: Effect.fn('TransactionReceiptRepository.findExpenseAccountId')(function* (
                     currency: CurrencyEnum,
                     cardExternalId: string | null

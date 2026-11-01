@@ -4,28 +4,55 @@ import { Text } from 'react-native';
 import { HapticPressable } from '../haptic-pressable/haptic-pressable';
 import { LoadingContent } from '../loading-content/loading-content';
 
+type PillButtonVariant = 'primary' | 'destructive';
+
 interface Props {
     readonly label: string;
     readonly testID: string;
     readonly isLoading?: boolean;
     readonly isDisabled?: boolean;
-    readonly accessibilityHint?: string;
+    readonly variant?: PillButtonVariant;
+    readonly accessibilityLabel?: string;
     readonly onPress: () => void;
 }
 
 const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
-const containerVariants = cva('h-[52px] items-center justify-center rounded-full px-5xl active:opacity-80', {
-    variants: { isDisabled: { true: 'bg-cta-disabled-background', false: 'bg-cta-background' } }
+const containerVariants = cva('min-h-[52px] items-center justify-center rounded-full px-5xl py-md active:opacity-80', {
+    variants: {
+        variant: { primary: '', destructive: '' },
+        isDisabled: { true: '', false: '' }
+    },
+    compoundVariants: [
+        { variant: 'primary', isDisabled: false, className: 'bg-cta-background' },
+        { variant: 'primary', isDisabled: true, className: 'bg-cta-disabled-background' },
+        { variant: 'destructive', isDisabled: false, className: 'bg-destructive-action' },
+        { variant: 'destructive', isDisabled: true, className: 'bg-destructive-action/40' }
+    ]
 });
 
-const labelVariants = cva('text-[17px] font-semibold', {
-    variants: { isDisabled: { true: 'text-cta-disabled-foreground', false: 'text-cta-foreground' } }
+const labelVariants = cva('text-center text-[17px] font-semibold', {
+    variants: {
+        variant: { primary: '', destructive: '' },
+        isDisabled: { true: '', false: '' }
+    },
+    compoundVariants: [
+        { variant: 'primary', isDisabled: false, className: 'text-cta-foreground' },
+        { variant: 'primary', isDisabled: true, className: 'text-cta-disabled-foreground' },
+        { variant: 'destructive', isDisabled: false, className: 'text-white' },
+        { variant: 'destructive', isDisabled: true, className: 'text-primary/70' }
+    ]
 });
 
-export const PillButton = ({ label, testID, isLoading = false, isDisabled = false, accessibilityHint, onPress }: Props) => {
-    const containerClassName = containerVariants({ isDisabled });
-    const labelClassName = labelVariants({ isDisabled });
+export const PillButton = ({
+    label,
+    testID,
+    isLoading = false,
+    isDisabled = false,
+    variant = 'primary',
+    accessibilityLabel = label,
+    onPress
+}: Props) => {
     const isInactive = isLoading || isDisabled;
     const accessibilityState = { busy: isLoading, disabled: isDisabled };
 
@@ -33,18 +60,15 @@ export const PillButton = ({ label, testID, isLoading = false, isDisabled = fals
         <HapticPressable
             onPress={onPress}
             disabled={isInactive}
-            className={containerClassName}
+            className={containerVariants({ variant, isDisabled })}
             style={CONTINUOUS_CORNERS}
             accessibilityRole="button"
-            accessibilityLabel={label}
-            accessibilityHint={accessibilityHint}
+            accessibilityLabel={accessibilityLabel}
             accessibilityState={accessibilityState}
             testID={testID}
         >
             <LoadingContent isLoading={isLoading}>
-                <Text className={labelClassName} numberOfLines={1}>
-                    {label}
-                </Text>
+                <Text className={labelVariants({ variant, isDisabled })}>{label}</Text>
             </LoadingContent>
         </HapticPressable>
     );
