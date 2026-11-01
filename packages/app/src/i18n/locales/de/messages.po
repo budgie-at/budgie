@@ -224,6 +224,10 @@ msgstr "{count, plural, one {# ohne Kategorie} other {# ohne Kategorie}}"
 msgid "{count, plural, one {# upcoming bill} other {# upcoming bills}}"
 msgstr "{count, plural, one {# anstehende Rechnung} other {# anstehende Rechnungen}}"
 
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "{count, plural, one {+# more} other {+# more}}"
+msgstr "{count, plural, one {+# weitere} other {+# weitere}}"
+
 #: src/category/components/category-default-icon-button/category-default-icon-button.tsx
 msgid "{count, plural, one {Choose an icon for # category} other {Choose icons for # categories}}"
 msgstr "{count, plural, one {Symbol für # Kategorie wählen} other {Symbole für # Kategorien wählen}}"
@@ -290,6 +294,14 @@ msgstr "{downloaded} von {total} GB bleiben erhalten. Es geht weiter, sobald du 
 msgid "{duplicateTransactionCount, plural, one {# skipped} other {# skipped}}"
 msgstr "{duplicateTransactionCount, plural, one {# übersprungen} other {# übersprungen}}"
 
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "{entryStatusLabel}. {formattedAmount} {caption}. {formattedSpentLabel}, {formattedDaysLeft}."
+msgstr "{entryStatusLabel}. {formattedAmount} {caption}. {formattedSpentLabel}, {formattedDaysLeft}."
+
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "{entryStatusLabel}. {formattedAmount} {caption}. {reservedPrefix}{formattedPerDay}, {formattedDaysLeft}."
+msgstr "{entryStatusLabel}. {formattedAmount} {caption}. {reservedPrefix}{formattedPerDay}, {formattedDaysLeft}."
+
 #: src/settings/components/your-data-card/your-data-card.tsx
 msgid "{fileSize} · Stored only on this device"
 msgstr "{fileSize} · Nur auf diesem Gerät gespeichert"
@@ -314,9 +326,21 @@ msgstr "{formattedAmount} Mehrausgabe auf {name} übertragen"
 msgid "{formattedAmount} rolled into {name}"
 msgstr "{formattedAmount} auf {name} übertragen"
 
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "{formattedAveragePerDay} a day"
+msgstr "{formattedAveragePerDay} pro Tag"
+
 #: src/account/component/account-actions-menu/use-deposit-close-action.hook.ts
 msgid "{formattedBalance} will be transferred to {destinationAccountTitle} and this deposit will be archived. You can restore it anytime from Settings → Archived Accounts."
 msgstr "{formattedBalance} wird auf {destinationAccountTitle} übertragen und diese Einlage wird archiviert. Sie können sie jederzeit unter Einstellungen → Archivierte Konten wiederherstellen."
+
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "{formattedDifference} over limit"
+msgstr "{formattedDifference} über dem Limit"
+
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "{formattedDifference} under limit"
+msgstr "{formattedDifference} unter dem Limit"
 
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 msgid "{formattedRemaining} left to assign"
@@ -325,6 +349,18 @@ msgstr "{formattedRemaining} noch zuzuweisen"
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 msgid "{formattedRemaining} over budget"
 msgstr "{formattedRemaining} über Budget"
+
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "{formattedReservedAmount} reserved for bills"
+msgstr "{formattedReservedAmount} für Rechnungen reserviert"
+
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "{formattedSafePerDay} a day"
+msgstr "{formattedSafePerDay} pro Tag"
+
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "{formattedSpentAmount} spent"
+msgstr "{formattedSpentAmount} ausgegeben"
 
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
 msgid "{found, plural, one {# high-confidence match} other {# high-confidence matches}}"
@@ -812,6 +848,10 @@ msgstr "Etwa 6 Minuten"
 #: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
 msgid "About a minute"
 msgstr "Etwa eine Minute"
+
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "above {formattedLimit} limit"
+msgstr "über dem Limit von {formattedLimit}"
 
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
@@ -1311,6 +1351,10 @@ msgstr "Durchschnittliche Zahlung"
 msgid "Average per month"
 msgstr "Durchschnitt pro Monat"
 
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "Average spend"
+msgstr "Durchschnittliche Ausgaben"
+
 #: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
 msgid "Avg cost"
 msgstr "Ø-Kosten"
@@ -1486,6 +1530,10 @@ msgstr "Budget-Benachrichtigungen"
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "Budget limit reached"
 msgstr "Budgetlimit erreicht"
+
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "Budget locked, {formattedDaysLeft}. Unlock to view."
+msgstr "Budget gesperrt, {formattedDaysLeft}. Zum Anzeigen entsperren."
 
 #: src/budget/components/budget-setup-form/budget-setup-form.tsx
 msgid "Budget name"
@@ -1761,6 +1809,7 @@ msgstr "Kategoriesymbole"
 
 #: src/budget/components/budget-event-category-limits/budget-event-category-limits.tsx
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Category limits"
 msgstr "Kategoriegrenzen"
 
@@ -3873,6 +3922,10 @@ msgstr "Schlüssel abgelehnt"
 msgid "Key updated"
 msgstr "Schlüssel aktualisiert"
 
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "Know what’s safe to spend"
+msgstr "Wissen, was du ausgeben kannst"
+
 #: src/settings/components/language-selector/language-selector.tsx
 msgid "Language"
 msgstr "Sprache"
@@ -3949,14 +4002,14 @@ msgstr "Vorerst leer lassen"
 msgid "Leaves your income"
 msgstr "Verlässt deine Einnahmen"
 
-#: src/widget/service/widget-snapshot-builder.service.ts
-msgid "left"
-msgstr "übrig"
-
 #: src/budget/components/budget-setup-progress/budget-setup-progress.tsx
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx
 msgid "Left"
 msgstr "Übrig"
+
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "left of {formattedLimit}"
+msgstr "übrig von {formattedLimit}"
 
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
 #: src/account/constant/account-debt-type.constant.ts
@@ -3974,6 +4027,7 @@ msgstr "Hell"
 #: src/budget/components/budget-history-legend/budget-history-legend.tsx
 #: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Limit"
 msgstr "Limit"
 
@@ -4468,10 +4522,6 @@ msgstr "Noch keine Konten"
 #: src/app/transaction-account-filter.tsx
 msgid "No Accounts Yet"
 msgstr "Noch keine Konten"
-
-#: src/widget/service/widget-snapshot-builder.service.ts
-msgid "No active budget"
-msgstr "Kein aktives Budget"
 
 #: src/account/component/archived-accounts-empty-state/archived-accounts-empty-state.tsx
 msgid "No Archived Accounts"
@@ -5003,7 +5053,6 @@ msgid "Outstanding"
 msgstr "Ausstehend"
 
 #: src/budget/components/budget-verdict-figure/budget-verdict-figure.tsx
-#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "over"
 msgstr "drüber"
 
@@ -5144,10 +5193,6 @@ msgstr "Zahlungen pro Monat"
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "PDF statement"
 msgstr "PDF-Kontoauszug"
-
-#: src/widget/service/widget-snapshot-builder.service.ts
-msgid "per day"
-msgstr "pro Tag"
 
 #: src/runway/component/runway-verdict-figure/runway-verdict-figure.tsx
 msgid "per month"
@@ -5331,6 +5376,10 @@ msgstr "Privat durch Design"
 #: src/budget/components/budget-category-forecast/budget-category-forecast.tsx
 msgid "Projected {overAmount} over"
 msgstr "Prognose: {overAmount} drüber"
+
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "Projected spend"
+msgstr "Prognostizierte Ausgaben"
 
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Push notifications are disabled"
@@ -6084,6 +6133,10 @@ msgstr "Transaktionen trennen?"
 msgid "Set a default currency in Settings first"
 msgstr "Standardwährung zuerst in den Einstellungen festlegen"
 
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "Set a limit and get a daily allowance"
+msgstr "Lege ein Limit fest und erhalte ein Tagesbudget"
+
 #: src/budget/components/budget-empty-state/budget-empty-state.tsx
 msgid "Set a limit and track your spending"
 msgstr "Lege ein Limit fest und verfolge deine Ausgaben"
@@ -6099,6 +6152,10 @@ msgstr "Betrag eingeben, um fortzufahren"
 #: src/budget/components/budget-funds-section/budget-funds-section.tsx
 msgid "Set aside"
 msgstr "Zurückgelegt"
+
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "Set budget"
+msgstr "Budget festlegen"
 
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 msgid "Set Category"
@@ -6884,6 +6941,7 @@ msgstr "In diesem Zeitraum zurückzulegen"
 #: src/budget/components/budget-day-strip-key/budget-day-strip-key.tsx
 #: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
 #: src/transaction/query/use-get-transaction-sections.query.ts
+#: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Today"
 msgstr "Heute"
 
@@ -7190,6 +7248,10 @@ msgstr "Erstattung aufheben?"
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "Unknown card"
 msgstr "Unbekannte Karte"
+
+#: src/widget/service/widget-snapshot-builder.service.ts
+msgid "Unlock to view"
+msgstr "Zum Anzeigen entsperren"
 
 #: src/settings/components/pin-management-rows/pin-management-rows.tsx
 msgid "Unlock with {biometricLabel}"
