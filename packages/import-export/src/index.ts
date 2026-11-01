@@ -9,7 +9,7 @@ export { countCsvRows, parseCsvHeaders } from './import/utils/csv-parser.util';
 export type { ImporterColumnMapInterface } from './import/interface/importer-column-map.interface';
 export type { ImportColumnMapFormValues } from './import/schema/import-column-map.schema';
 
-export { parseReceipt } from './receipt/utils/parse-receipt.util';
+export { parseReceipt, toMerchantTitle } from './receipt/utils/parse-receipt.util';
 
 export type { ReceiptDraftInterface } from './receipt/interface/receipt-draft.interface';
 export type { ReceiptTextLineInterface } from './receipt/interface/receipt-text-line.interface';

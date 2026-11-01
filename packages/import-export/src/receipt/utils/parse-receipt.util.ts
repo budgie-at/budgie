@@ -379,20 +379,47 @@ const LEGAL_FORMS: Record<LanguageEnum, readonly string[]> = {
 };
 
 const LEGAL_FORM_PATTERN = buildReceiptKeywordPattern(Object.values(LEGAL_FORMS).flat(), 'u');
+const LEGAL_FORM_GLOBAL_PATTERN = new RegExp(LEGAL_FORM_PATTERN.source, 'gu');
+const MERCHANT_QUOTES_PATTERN = /["'«»„“”]/gu;
+const MERCHANT_EDGE_PUNCTUATION_PATTERN = /^[\s,.;:-]+|[\s,;:-]+$/gu;
+const MERCHANT_WORD_START_PATTERN = /(^|[\s-])\p{L}/gu;
 const MERCHANT_TEXT_PATTERN = /\p{L}{2}/u;
 const NUMERIC_RUN_PATTERN = /\d{3}/u;
 const TOP_BAND_RATIO = 0.2;
 const MAX_TOP_CANDIDATES = 3;
 
+export const toMerchantTitle = (name: string): string =>
+    name
+        .replaceAll(LEGAL_FORM_GLOBAL_PATTERN, ' ')
+        .replaceAll(MERCHANT_QUOTES_PATTERN, ' ')
+        .replaceAll(/\s+/gu, ' ')
+        .replaceAll(MERCHANT_EDGE_PUNCTUATION_PATTERN, '')
+        .toLocaleLowerCase()
+        .replaceAll(MERCHANT_WORD_START_PATTERN, letter => letter.toLocaleUpperCase());
+
+const MIN_EVIDENCE_TOKEN_LENGTH = 4;
+
+const foldText = (text: string): string => text.normalize('NFD').replaceAll(/\p{M}/gu, '').toLowerCase();
+
 const findTopCandidates = (lines: readonly ReceiptTextLineInterface[]): string[] => {
     const top = Math.min(...lines.map(line => line.y));
     const bottom = Math.max(...lines.map(line => line.y + line.height));
     const bandBottom = top + (bottom - top) * TOP_BAND_RATIO;
+    const foldedLines = lines.map(line => foldText(line.text));
+    const countEvidence = (lineIndex: number): number => {
+        const tokens = foldedLines[lineIndex]?.match(/\p{L}+/gu)?.filter(token => token.length >= MIN_EVIDENCE_TOKEN_LENGTH) ?? [];
+
+        return Math.max(
+            0,
+            ...tokens.map(token => foldedLines.filter((folded, index) => index !== lineIndex && folded.includes(token)).length)
+        );
+    };
 
     return lines
-        .filter(line => line.y < bandBottom && MERCHANT_TEXT_PATTERN.test(line.text) && !NUMERIC_RUN_PATTERN.test(line.text))
-        .sort((left, right) => right.height - left.height)
-        .map(line => line.text.trim())
+        .map((line, index) => ({ line, evidence: countEvidence(index) }))
+        .filter(({ line }) => line.y < bandBottom && MERCHANT_TEXT_PATTERN.test(line.text) && !NUMERIC_RUN_PATTERN.test(line.text))
+        .sort((left, right) => right.evidence - left.evidence || right.line.height - left.line.height)
+        .map(({ line }) => line.text.trim())
         .slice(0, MAX_TOP_CANDIDATES);
 };
 
