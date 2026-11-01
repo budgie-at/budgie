@@ -3,6 +3,8 @@ import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { PROTECTED_CAPTION_PLACEHOLDER } from '../../../@generic/constant/protected-caption-placeholder.constant';
+import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
 import { useFormatInstrumentAmount } from '../../../i18n/hook/use-format-instrument-amount.hook';
 import { CurrencyMarketCostBasisRow } from '../currency-market-cost-basis-row/currency-market-cost-basis-row';
 import { CurrencyMarketPageSelector } from '../currency-market-page/currency-market-page.selector';
@@ -22,8 +24,11 @@ interface Props {
 export const CurrencyMarketReturnRows = ({ position, valuationRate, balance, instrumentCode, staleNote }: Props) => {
     const { t } = useLingui();
     const formatInstrumentAmount = useFormatInstrumentAmount();
+    const isAmountProtected = useIsAmountProtected();
 
-    const coveredAmountWithCode = formatInstrumentAmount(position.amount, instrumentCode, InstrumentTypeEnum.CRYPTO);
+    const coveredAmountWithCode = isAmountProtected
+        ? `${PROTECTED_CAPTION_PLACEHOLDER} ${instrumentCode}`
+        : formatInstrumentAmount(position.amount, instrumentCode, InstrumentTypeEnum.CRYPTO);
     const isPartiallyCovered = convertToMicroUnits(position.amount) < convertToMicroUnits(balance);
     const partialNote = isDefined(staleNote)
         ? t`At last known price · on the ${coveredAmountWithCode} with known cost`
@@ -56,7 +61,6 @@ export const CurrencyMarketReturnRows = ({ position, valuationRate, balance, ins
                 balance={balance}
                 instrumentCode={instrumentCode}
                 subtitle={returnNote}
-                isSubtitleProtected={!isDefined(staleNote)}
             />
         </>
     );

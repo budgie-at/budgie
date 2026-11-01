@@ -20,8 +20,6 @@ export const AccountDetailsHero = ({ account, balance }: Props) => (
     <View className="items-center gap-y-lg pb-md">
         <View style={BALANCE_SLOT_STYLE} />
 
-        <AccountDetailsStatusLine account={account} />
-
         {isCryptoAccountType(account.type) ? (
             <>
                 <CollapsibleChromeScrollFade>
@@ -31,6 +29,8 @@ export const AccountDetailsHero = ({ account, balance }: Props) => (
                 <AccountDetailsMarketLink instrument={account.instrument} />
             </>
         ) : null}
+
+        <AccountDetailsStatusLine account={account} />
 
         <AccountDetailsMonthChips accountId={account.id} />
     </View>

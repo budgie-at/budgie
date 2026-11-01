@@ -23,8 +23,8 @@ export const CurrencyMarketStalePrice = ({ priceDate }: Props) => {
     return (
         <View className="flex-row items-center gap-x-xs">
             <Icon icon={UserIconNameEnum.Clock} size={13} className="text-secondary-foreground" />
-            <Text className="text-secondary-foreground text-[13px] tabular-nums" numberOfLines={1}>
-                {`${t`Price from ${date}`} · ${ageLabel}`}
+            <Text className="text-secondary-foreground text-[13px] font-semibold tabular-nums" numberOfLines={1}>
+                {t`Price ${ageLabel} · ${date}`}
             </Text>
         </View>
     );

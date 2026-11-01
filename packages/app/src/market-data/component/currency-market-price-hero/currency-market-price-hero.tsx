@@ -2,13 +2,13 @@ import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
+import { cn } from '../../../@generic/utils/cn.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
+import { useMarketPriceHeroChange } from '../../hook/use-market-price-hero-change.hook';
 import { useMarketPriceHeroSuffix } from '../../hook/use-market-price-hero-suffix.hook';
-import { getMarketChangeSign } from '../../utils/get-market-change-sign.util';
-import { getMarketMoveClassName } from '../../utils/get-market-move-class-name.util';
 import { getMarketPriceFractionDigits } from '../../utils/get-market-price-fraction-digits.util';
 import { CurrencyMarketPageSelector } from '../currency-market-page/currency-market-page.selector';
 import { CurrencyMarketStalePrice } from '../currency-market-stale-price/currency-market-stale-price';
@@ -20,45 +20,34 @@ import type { SharedValue } from 'react-native-reanimated';
 interface Props {
     readonly instrumentCode: string;
     readonly latestPrice: InstrumentDailyMarketPriceEntityInterface | undefined;
-    readonly displayedPrice: InstrumentDailyMarketPriceEntityInterface | undefined;
+    readonly scrubbedPrice: InstrumentDailyMarketPriceEntityInterface | null;
     readonly basePrice: number | null;
-    readonly isScrubbing: boolean;
+    readonly isHistoryLoading: boolean;
     readonly rangeLabel: string;
     readonly rangeStartDate: string | null;
     readonly priceBottom: SharedValue<number>;
 }
 
 const MIN_PRICE_FRACTION_DIGITS = 2;
-const PERCENT = 100;
 
 export const CurrencyMarketPriceHero = ({
     instrumentCode,
     latestPrice,
-    displayedPrice,
+    scrubbedPrice,
     basePrice,
-    isScrubbing,
+    isHistoryLoading,
     rangeLabel,
     rangeStartDate,
     priceBottom
 }: Props) => {
     const { symbol } = useAtomValue(defaultInstrumentAtom);
-    const formatPrice = useFormatDigits(MIN_PRICE_FRACTION_DIGITS, getMarketPriceFractionDigits(latestPrice?.price ?? 0));
-    const formatPercent = useFormatDigits(MIN_PRICE_FRACTION_DIGITS);
+    const fractionDigits = getMarketPriceFractionDigits(latestPrice?.price ?? 0);
+    const formatPrice = useFormatDigits(MIN_PRICE_FRACTION_DIGITS, fractionDigits);
 
-    const price = displayedPrice?.price;
-    const change = isDefined(price) && isPositiveNumber(basePrice) ? price - basePrice : null;
-    const changeSign = getMarketChangeSign(change ?? 0);
-    const changeLabel =
-        isDefined(change) && isPositiveNumber(basePrice)
-            ? `${changeSign}${formatPrice(Math.abs(change), symbol)} (${changeSign}${formatPercent(Math.abs((change / basePrice) * PERCENT))}%) `
-            : null;
-    const { stalePriceDate, suffixLabel } = useMarketPriceHeroSuffix(
-        latestPrice,
-        isScrubbing ? displayedPrice : null,
-        rangeLabel,
-        rangeStartDate
-    );
-    const changeClassName = getMarketMoveClassName(isDefined(change) && isPositiveNumber(basePrice) ? change / basePrice : 0);
+    const price = (scrubbedPrice ?? latestPrice)?.price;
+    const { changeLabel, changeClassName } = useMarketPriceHeroChange(price, basePrice, fractionDigits);
+    const { stalePriceDate, suffixLabel } = useMarketPriceHeroSuffix(latestPrice, scrubbedPrice, rangeLabel, rangeStartDate);
+    const emptyPriceClassName = isHistoryLoading ? 'text-[34px]' : 'text-[28px]';
 
     const handlePriceLayout = (event: LayoutChangeEvent) =>
         void priceBottom.set(event.nativeEvent.layout.y + event.nativeEvent.layout.height);
@@ -67,12 +56,12 @@ export const CurrencyMarketPriceHero = ({
         return (
             <View className="gap-y-xs">
                 <Text
-                    className="text-secondary-foreground text-[28px] leading-[41px] font-semibold"
+                    className={cn('text-secondary-foreground leading-[41px] font-semibold', emptyPriceClassName)}
                     numberOfLines={1}
                     testID={CurrencyMarketPageSelector.Price(instrumentCode)}
                     onLayout={handlePriceLayout}
                 >
-                    <Trans>No price yet</Trans>
+                    {isHistoryLoading ? '—' : <Trans>No price yet</Trans>}
                 </Text>
                 <View className="h-[20px]" />
             </View>

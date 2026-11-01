@@ -31,7 +31,11 @@ export const CurrencyMarketChartCursor = ({ activeIndex, xs, ys, dotClassName }:
 
     return (
         <>
-            <Animated.View pointerEvents="none" className="absolute top-0 bottom-0 left-0 w-px bg-secondary-foreground" style={lineStyle} />
+            <Animated.View
+                pointerEvents="none"
+                className="absolute top-[22px] bottom-0 left-0 w-px bg-secondary-foreground"
+                style={lineStyle}
+            />
             <Animated.View
                 pointerEvents="none"
                 className={cn('absolute top-0 left-0 size-[14px] rounded-full border-2 border-surface', dotClassName)}

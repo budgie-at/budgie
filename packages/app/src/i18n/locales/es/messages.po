@@ -5818,6 +5818,10 @@ msgstr "periodo anterior"
 msgid "Previous period"
 msgstr "Periodo anterior"
 
+#: src/market-data/component/currency-market-stale-price/currency-market-stale-price.tsx
+msgid "Price {ageLabel} · {date}"
+msgstr "Precio {ageLabel} · {date}"
+
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "Price changed"
 msgstr "Precio cambiado"
@@ -5825,10 +5829,6 @@ msgstr "Precio cambiado"
 #: src/market-data/hook/use-market-chart-accessibility.hook.ts
 msgid "Price chart, {rangeLabel}, from {fromLabel} to {toLabel}, high {highLabel}, low {lowLabel}"
 msgstr "Gráfico de precios, {rangeLabel}, de {fromLabel} a {toLabel}, máximo {highLabel}, mínimo {lowLabel}"
-
-#: src/market-data/component/currency-market-stale-price/currency-market-stale-price.tsx
-msgid "Price from {date}"
-msgstr "Precio del {date}"
 
 #: src/settings/components/support-settings-rows/support-settings-rows.tsx
 msgid "Privacy policy"

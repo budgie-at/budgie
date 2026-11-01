@@ -11,6 +11,7 @@ import { defaultInstrumentIdAtom } from '../../../settings/constants/settings-at
 import { MarketChartRangeEnum } from '../../enum/market-chart-range.enum';
 import { useMarketChartTimeline } from '../../hook/use-market-chart-timeline.hook';
 import { useInstrumentMarketDataProgressQuery } from '../../query/use-instrument-market-data-progress.query';
+import { isMarketHistoryLoading } from '../../utils/is-market-history-loading.util';
 import { CurrencyMarketChartStatus } from '../currency-market-chart-status/currency-market-chart-status';
 import { CurrencyMarketChart } from '../currency-market-chart/currency-market-chart';
 import { CurrencyMarketPageSelector } from '../currency-market-page/currency-market-page.selector';
@@ -46,7 +47,7 @@ export const CurrencyMarketOverview = ({ instrument, prices, priceBottom }: Prop
         ? prices.filter(price => differenceInCalendarDays(parseISO(latestPrice.priceDate), parseISO(price.priceDate)) <= RANGE_DAYS[range])
         : [];
     const values = rangePrices.map(price => price.price);
-    const scrubbedPrice = isDefined(scrubIndex) ? rangePrices.at(scrubIndex) : latestPrice;
+    const scrubbedPrice = isDefined(scrubIndex) ? (rangePrices.at(scrubIndex) ?? null) : null;
     const rangeLabels: Record<MarketChartRangeEnum, string> = {
         [MarketChartRangeEnum.WEEK]: t`Past week`,
         [MarketChartRangeEnum.MONTH]: t`Past month`,
@@ -67,10 +68,10 @@ export const CurrencyMarketOverview = ({ instrument, prices, priceBottom }: Prop
             <CurrencyMarketPriceHero
                 instrumentCode={instrument.code}
                 latestPrice={latestPrice}
-                displayedPrice={scrubbedPrice}
+                scrubbedPrice={scrubbedPrice}
                 basePrice={values.at(0) ?? null}
                 priceBottom={priceBottom}
-                isScrubbing={isDefined(scrubIndex)}
+                isHistoryLoading={isMarketHistoryLoading(progress)}
                 rangeLabel={rangeLabels[range]}
                 rangeStartDate={rangePrices.at(0)?.priceDate ?? null}
             />

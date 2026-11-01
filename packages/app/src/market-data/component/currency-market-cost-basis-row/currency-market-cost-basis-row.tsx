@@ -4,6 +4,8 @@ import { useLingui } from '@lingui/react/macro';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { PROTECTED_CAPTION_PLACEHOLDER } from '../../../@generic/constant/protected-caption-placeholder.constant';
+import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { useFormatInstrumentAmount } from '../../../i18n/hook/use-format-instrument-amount.hook';
@@ -30,10 +32,16 @@ export const CurrencyMarketCostBasisRow = ({ position, costBasis, balance, instr
     const formatMoney = useDisplayFormatDigits();
     const formatAverageCost = useFormatDigits(MIN_FRACTION_DIGITS, getMarketPriceFractionDigits(position.averageCost ?? 0));
     const formatInstrumentAmount = useFormatInstrumentAmount();
+    const isAmountProtected = useIsAmountProtected();
 
-    const coveredAmount = formatInstrumentAmount(position.amount, '', InstrumentTypeEnum.CRYPTO);
-    const totalAmount = formatInstrumentAmount(balance, instrumentCode, InstrumentTypeEnum.CRYPTO);
-    const averageCost = isDefined(position.averageCost) ? formatAverageCost(position.averageCost, symbol) : t`Unavailable`;
+    const coveredAmount = isAmountProtected
+        ? PROTECTED_CAPTION_PLACEHOLDER
+        : formatInstrumentAmount(position.amount, '', InstrumentTypeEnum.CRYPTO);
+    const totalAmount = isAmountProtected
+        ? `${PROTECTED_CAPTION_PLACEHOLDER} ${instrumentCode}`
+        : formatInstrumentAmount(balance, instrumentCode, InstrumentTypeEnum.CRYPTO);
+    const formattedAverageCost = isDefined(position.averageCost) ? formatAverageCost(position.averageCost, symbol) : t`Unavailable`;
+    const averageCost = isAmountProtected ? PROTECTED_CAPTION_PLACEHOLDER : formattedAverageCost;
     const caption = isPartiallyCovered
         ? t`Avg ${averageCost} per ${instrumentCode} · known for ${coveredAmount} of ${totalAmount}`
         : t`Avg ${averageCost} per ${instrumentCode}`;
@@ -45,7 +53,6 @@ export const CurrencyMarketCostBasisRow = ({ position, costBasis, balance, instr
             valueClassName="text-secondary-foreground"
             testID={CurrencyMarketPageSelector.CostBasis(instrumentCode)}
             subtitle={caption}
-            isSubtitleProtected
             subtitleTestID={CurrencyMarketPageSelector.AverageCost(instrumentCode)}
         />
     );

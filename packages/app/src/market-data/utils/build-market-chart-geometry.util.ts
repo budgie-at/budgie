@@ -9,6 +9,7 @@ const PADDING_Y = 24;
 const MIDDLE = 0.5;
 const FLAT_RELATIVE_SPAN = 0.01;
 const MIN_RELATIVE_HALF_SPAN = 0.005;
+const FLAT_SPAN_PADDING = 1.1;
 
 const toCommand = (command: string, x: number, y: number): string => `${command}${x},${y}`;
 
@@ -18,7 +19,7 @@ export const buildMarketChartGeometry = (values: readonly number[], width: numbe
     const mean = values.reduce((total, value) => total + value, 0) / Math.max(values.length, 1);
     const minHalfSpan = Math.abs(mean) * MIN_RELATIVE_HALF_SPAN;
     const isFlat = high - low < Math.abs(mean) * FLAT_RELATIVE_SPAN;
-    const halfSpan = isFlat ? Math.max(minHalfSpan, high - mean, mean - low) : (high - low) * MIDDLE;
+    const halfSpan = isFlat ? Math.max(minHalfSpan, Math.max(high - mean, mean - low) * FLAT_SPAN_PADDING) : (high - low) * MIDDLE;
     const min = isFlat ? mean - halfSpan : low;
     const range = halfSpan * 2;
     const drawableWidth = Math.max(width - MARKET_CHART_PADDING_X * 2, 0);

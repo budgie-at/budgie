@@ -1,10 +1,10 @@
-import { InstrumentMarketDataJobStatusEnum } from '@budgie/contracts';
 import { Trans } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { AiProgressBar } from '../../../settings/components/ai-progress-bar/ai-progress-bar';
+import { isMarketHistoryLoading } from '../../utils/is-market-history-loading.util';
 
 import type { useInstrumentMarketDataProgressQuery } from '../../query/use-instrument-market-data-progress.query';
 
@@ -14,13 +14,11 @@ interface Props {
 }
 
 export const CurrencyMarketChartStatus = ({ progress, testID }: Props) => {
-    const { loadedDays, percent, status, totalDays, isComplete } = progress;
-    const isLoading = status !== InstrumentMarketDataJobStatusEnum.FAILED && !isComplete;
+    const { loadedDays, percent, totalDays } = progress;
 
-    if (!isLoading) {
+    if (!isMarketHistoryLoading(progress)) {
         return (
             <View className="h-[184px] w-full items-center justify-center px-7xl" testID={testID}>
-                <View pointerEvents="none" className="absolute inset-x-0 top-[148px] h-px bg-secondary-foreground/30" />
                 <Text className="text-secondary-foreground text-center text-[15px] font-semibold">
                     <Trans>No price history yet</Trans>
                 </Text>
@@ -30,7 +28,6 @@ export const CurrencyMarketChartStatus = ({ progress, testID }: Props) => {
 
     return (
         <View className="h-[184px] w-full items-center justify-center gap-y-xs px-7xl" testID={testID}>
-            <View pointerEvents="none" className="absolute inset-x-0 top-[148px] h-px bg-secondary-foreground/30" />
             <Text className="text-primary text-center text-[15px] font-semibold">
                 <Trans>Loading price history</Trans>
             </Text>

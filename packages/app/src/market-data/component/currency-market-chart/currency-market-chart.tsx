@@ -4,7 +4,7 @@ import { GestureDetector } from 'react-native-gesture-handler';
 import Svg, { Defs, LinearGradient, Stop } from 'react-native-svg';
 import { useCSSVariable } from 'uniwind';
 
-import { isString } from '@rnw-community/shared';
+import { isNumber, isString } from '@rnw-community/shared';
 
 import { StyledLine } from '../../../@generic/component/styled-line/styled-line';
 import { MARKET_CHART_PLOT_HEIGHT } from '../../constant/market-chart-plot-height.constant';
@@ -14,6 +14,7 @@ import { useMarketChartScrub } from '../../hook/use-market-chart-scrub.hook';
 import { buildMarketChartGeometry } from '../../utils/build-market-chart-geometry.util';
 import { getMarketChartTone } from '../../utils/get-market-chart-tone.util';
 import { CurrencyMarketChartCursor } from '../currency-market-chart-cursor/currency-market-chart-cursor';
+import { CurrencyMarketChartDateChip } from '../currency-market-chart-date-chip/currency-market-chart-date-chip';
 import { CurrencyMarketChartExtremes } from '../currency-market-chart-extremes/currency-market-chart-extremes';
 import { CurrencyMarketChartScrubClip } from '../currency-market-chart-scrub-clip/currency-market-chart-scrub-clip';
 import { CurrencyMarketChartSeries } from '../currency-market-chart-series/currency-market-chart-series';
@@ -70,6 +71,7 @@ export const CurrencyMarketChart = ({ prices, selectedIndex, rangeLabel, startLa
     const geometry = buildMarketChartGeometry(values, width);
     const tone = TONE_STYLES[geometry.isFlat ? MarketChartToneEnum.NEUTRAL : getMarketChartTone(values)];
     const lineColor = useCSSVariable(tone.colorVariable);
+    const scrubDate = isNumber(selectedIndex) ? (prices.at(selectedIndex)?.priceDate ?? null) : null;
 
     const series = {
         linePath: geometry.linePath,
@@ -121,6 +123,8 @@ export const CurrencyMarketChart = ({ prices, selectedIndex, rangeLabel, startLa
                         chartWidth={width}
                         activeIndex={activeIndex}
                     />
+
+                    <CurrencyMarketChartDateChip activeIndex={activeIndex} xs={geometry.xs} chartWidth={width} priceDate={scrubDate} />
 
                     <CurrencyMarketChartCursor
                         activeIndex={activeIndex}

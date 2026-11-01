@@ -3,6 +3,7 @@ import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
+import { MARKET_CHART_PLOT_HEIGHT } from '../../constant/market-chart-plot-height.constant';
 import { getMarketPriceFractionDigits } from '../../utils/get-market-price-fraction-digits.util';
 import { CurrencyMarketChartExtreme } from '../currency-market-chart-extreme/currency-market-chart-extreme';
 
@@ -30,8 +31,8 @@ export const CurrencyMarketChartExtremes = ({ values, xs, ys, chartWidth, active
     const highIndex = values.indexOf(high);
     const lowIndex = values.indexOf(low);
 
-    const highTop = (ys[highIndex] ?? 0) - LABEL_GAP - LABEL_HEIGHT;
-    const lowTop = (ys[lowIndex] ?? 0) + LABEL_GAP;
+    const highTop = Math.max((ys[highIndex] ?? 0) - LABEL_GAP - LABEL_HEIGHT, 0);
+    const lowTop = Math.min((ys[lowIndex] ?? 0) + LABEL_GAP, MARKET_CHART_PLOT_HEIGHT - LABEL_HEIGHT);
     const highX = xs[highIndex] ?? 0;
     const lowX = xs[lowIndex] ?? 0;
 
