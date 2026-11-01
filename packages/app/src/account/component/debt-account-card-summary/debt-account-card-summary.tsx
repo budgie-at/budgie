@@ -22,10 +22,10 @@ export const DebtAccountCardSummary = ({ instrumentSymbol, outstandingAmount, ti
     const amountColorClassName = isPositiveNumber(outstandingAmount) ? 'text-primary' : 'text-secondary-foreground';
 
     return (
-        <View className="max-w-[55%] shrink-0 items-end gap-y-xxs">
+        <View className="max-w-[45%] shrink-0 items-end gap-y-xxs">
             <ProtectedText
                 adjustsFontSizeToFit
-                className={cn('text-lg font-semibold tracking-tight tabular-nums', amountColorClassName)}
+                className={cn('text-[17px] font-semibold tracking-tight tabular-nums', amountColorClassName)}
                 minimumFontScale={0.7}
                 numberOfLines={1}
                 testID={DebtAccountCardSummarySelector.OutstandingAmount(title, outstandingAmount)}
@@ -34,13 +34,13 @@ export const DebtAccountCardSummary = ({ instrumentSymbol, outstandingAmount, ti
             </ProtectedText>
 
             <View className="min-w-0 shrink flex-row items-baseline gap-x-xxs">
-                <Text className="text-xs text-secondary-foreground">
+                <Text className="text-[13px] text-secondary-foreground">
                     <Trans>of</Trans>
                 </Text>
 
                 <ProtectedText
                     adjustsFontSizeToFit
-                    className="shrink text-xs text-secondary-foreground tabular-nums"
+                    className="shrink text-[13px] text-secondary-foreground tabular-nums"
                     minimumFontScale={0.7}
                     numberOfLines={1}
                     testID={DebtAccountCardSummarySelector.TotalAmount(title, totalAmount)}

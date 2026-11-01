@@ -5,7 +5,6 @@ import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { Card } from '../../../@generic/component/card/card';
 import { MICRO_UNIT_DECIMAL_PLACES } from '../../../@generic/constant/micro-unit-decimal-places.constant';
 import { formatExchangeRate } from '../../../@generic/utils/format-exchange-rate.util';
 import { useCryptoValuationRateQuery } from '../../../exchange-rate/query/use-crypto-valuation-rate.query';
@@ -37,31 +36,28 @@ export const CryptoCurrencyGroupCard = ({ group, balance, balancesByAccountId }:
     const navigateToMarket = () => void router.push({ pathname: '/currency/[id]', params: { id: String(group.instrument.id) } });
     const formattedBalance = `${formatCryptoDigits(balance)} ${group.instrument.code}`;
     const formattedValue = isDefined(valuationRate) ? formatDigits(balance * valuationRate, defaultInstrument.symbol) : null;
-    const formattedRate = isDefined(valuationRate) ? formatExchangeRate(valuationRate) : null;
+    const formattedRate = isDefined(valuationRate) && valuationRate >= 1 ? formatDigits(valuationRate) : null;
+    const rateLabel = isDefined(valuationRate) ? (formattedRate ?? formatExchangeRate(valuationRate)) : null;
 
     return (
-        <View className="mb-lg gap-y-lg">
-            <Card size="sm" testID={CryptoCurrencyGroupCardSelector.Card(group.instrument.code)}>
-                <View className="gap-y-3">
-                    <CryptoCurrencyGroupMarketLink
-                        instrumentCode={group.instrument.code}
-                        instrumentName={group.instrument.name}
-                        formattedBalance={formattedBalance}
-                        formattedValue={formattedValue}
-                        onPress={navigateToMarket}
-                    />
+        <View testID={CryptoCurrencyGroupCardSelector.Card(group.instrument.code)}>
+            <CryptoCurrencyGroupMarketLink
+                instrumentCode={group.instrument.code}
+                instrumentName={group.instrument.name}
+                formattedBalance={formattedBalance}
+                formattedValue={formattedValue}
+                onPress={navigateToMarket}
+            />
 
-                    <CryptoCurrencyGroupToggleRow
-                        accountsCount={group.accounts.length}
-                        defaultInstrumentSymbol={defaultInstrument.symbol}
-                        formattedRate={formattedRate}
-                        instrumentCode={group.instrument.code}
-                        isOpen={isOpen}
-                        onPress={toggleOpen}
-                        testID={CryptoCurrencyGroupCardSelector.Toggle(group.instrument.code)}
-                    />
-                </View>
-            </Card>
+            <CryptoCurrencyGroupToggleRow
+                accountsCount={group.accounts.length}
+                defaultInstrumentSymbol={defaultInstrument.symbol}
+                formattedRate={rateLabel}
+                instrumentCode={group.instrument.code}
+                isOpen={isOpen}
+                onPress={toggleOpen}
+                testID={CryptoCurrencyGroupCardSelector.Toggle(group.instrument.code)}
+            />
 
             {isOpen ? <CryptoCurrencyGroupAccounts group={group} balancesByAccountId={balancesByAccountId} /> : null}
         </View>

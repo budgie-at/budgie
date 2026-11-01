@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { GroupedSurface } from '../../@generic/component/grouped-surface/grouped-surface';
 import { ScreenChromeThemeProvider } from '../../@generic/provider/screen-chrome-theme.provider';
 import { HomeSectionsList } from '../../account/component/home-sections-list/home-sections-list';
 import { NetWorthCollapsibleHeader } from '../../account/component/net-worth-collapsible-header/net-worth-collapsible-header';
@@ -22,7 +23,7 @@ export default function HomePage() {
     }
 
     const listHeaderComponent = (
-        <View className="mb-3xl gap-y-3xl">
+        <View className="mb-lg gap-y-xl pt-xs">
             <AiDownloadHomeStatus />
             <BudgetWidget />
         </View>
@@ -30,7 +31,7 @@ export default function HomePage() {
 
     return (
         <ScreenChromeThemeProvider>
-            <View className="flex-1 bg-background">
+            <GroupedSurface>
                 <NetWorthCollapsibleHeader
                     netWorth={balanceSummary.netWorth}
                     fiatTotal={balanceSummary.fiatTotal}
@@ -46,7 +47,7 @@ export default function HomePage() {
                     balanceSummary={balanceSummary}
                     listHeaderComponent={listHeaderComponent}
                 />
-            </View>
+            </GroupedSurface>
         </ScreenChromeThemeProvider>
     );
 }

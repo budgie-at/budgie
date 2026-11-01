@@ -7,6 +7,7 @@ import { isDefined } from '@rnw-community/shared';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/footnote-max-font-size-multiplier.constant';
 import { CryptoCurrencyGroupCardSelector } from '../crypto-currency-group-card/crypto-currency-group-card.selector';
 
 import type { EmptyFn } from '@rnw-community/shared';
@@ -46,18 +47,23 @@ export const CryptoCurrencyGroupToggleRow = ({
             accessibilityRole="button"
             accessibilityState={toggleAccessibilityState}
             onPress={onPress}
-            className="flex-row items-end justify-between gap-x-md"
+            className="min-h-[36px] flex-row flex-wrap items-center justify-between gap-x-md pt-xs pb-lg pr-xl pl-[64px] active:scale-100 active:bg-surface-fill"
             testID={testID}
         >
             <View className="flex-row items-center gap-x-xs">
-                <Text className="text-secondary-foreground text-xs" testID={CryptoCurrencyGroupCardSelector.AccountCount(instrumentCode)}>
+                <Text
+                    className="text-[13px] font-medium text-secondary-foreground"
+                    maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
+                    testID={CryptoCurrencyGroupCardSelector.AccountCount(instrumentCode)}
+                >
                     {accountsCountLabel}
                 </Text>
-                <Icon icon={chevronIcon} size={16} className="text-secondary-foreground" />
+                <Icon icon={chevronIcon} size={14} className="text-secondary-foreground" />
             </View>
 
             <Text
-                className="shrink-0 text-right text-secondary-foreground text-xs"
+                className="shrink text-right text-[13px] text-secondary-foreground tabular-nums"
+                maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
                 testID={CryptoCurrencyGroupCardSelector.Rate(instrumentCode)}
             >
                 {isDefined(formattedRate) ? (

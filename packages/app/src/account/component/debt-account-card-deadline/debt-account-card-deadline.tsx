@@ -29,13 +29,13 @@ export const DebtAccountCardDeadline = ({ deadline }: Props) => {
     if (!isOverdue && !isSoon) {
         const date = formatDayAndMonthAndYear(deadline);
 
-        return <Text className="text-xs text-secondary-foreground" numberOfLines={1}>{t`Due ${date}`}</Text>;
+        return <Text className="text-[13px] text-secondary-foreground" numberOfLines={1}>{t`Due ${date}`}</Text>;
     }
 
     return (
         <View className="flex-row items-center gap-x-xs">
             <View className={cn('h-[6px] w-[6px] rounded-full', dotClassName)} />
-            <Text className={cn('shrink text-xs tabular-nums', textClassName)} numberOfLines={1}>
+            <Text className={cn('shrink text-[13px] tabular-nums', textClassName)} numberOfLines={1}>
                 {dateLabel}
             </Text>
         </View>

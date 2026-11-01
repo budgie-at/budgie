@@ -19,7 +19,6 @@ import { HomeSectionKindEnum } from '../enum/home-section-kind.enum';
 import { buildIntegrationProviderMap } from '../utils/build-integration-provider-map.util';
 import { getDebtProgressDisplayState } from '../utils/get-debt-progress-display-state.util';
 import { getDebtSectionKind } from '../utils/get-debt-section-kind.util';
-import { pairAccountsIntoRows } from '../utils/pair-accounts-into-rows.util';
 import { resolveBankProviderGroup } from '../utils/resolve-bank-provider-group.util';
 
 import type { DebtSectionInterface } from '../interface/debt-section.interface';
@@ -81,7 +80,7 @@ const buildHomePageSections = (
                       instrument: group[0].instrument,
                       accounts: group
                   }))
-                : pairAccountsIntoRows(accounts)
+                : accounts
     }));
 
     const debtSectionKinds = [
@@ -116,7 +115,7 @@ const buildHomePageSections = (
                 !isDefined(label) && unlabeledSameProviderIntegrationIds.length > 1
                     ? unlabeledSameProviderIntegrationIds.indexOf(integrationId) + 1
                     : null,
-            data: pairAccountsIntoRows(accounts)
+            data: accounts
         };
     });
 

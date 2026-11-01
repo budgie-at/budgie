@@ -47,11 +47,11 @@ export const DebtAccountCard = ({ account, instrumentSymbol, debtProgressSummary
 
     const { outstandingAmount, paidAmount, percentage, totalAmount } = debtProgressSummary;
     const displayPercentage = percentage >= 100 ? 100 : Math.floor(percentage);
-    const separator = isDefined(deadlineBadge) ? <Text className="text-xs text-secondary-foreground">·</Text> : null;
+    const separator = isDefined(deadlineBadge) ? <Text className="text-[13px] text-secondary-foreground">·</Text> : null;
     const progressSubtitle = (
         <View className="flex-row items-center gap-x-xs">
             <Text
-                className="shrink-0 text-xs text-secondary-foreground tabular-nums"
+                className="shrink-0 text-[13px] text-secondary-foreground tabular-nums"
                 testID={DebtAccountCardSummarySelector.Percentage(title, displayPercentage)}
             >
                 <Trans>{displayPercentage}%</Trans>

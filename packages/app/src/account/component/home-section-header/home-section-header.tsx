@@ -16,7 +16,7 @@ interface Props {
 export const HomeSectionHeader = ({ section, balanceSummary }: Props) => {
     if (isBankProviderSection(section)) {
         const total = balanceSummary.bankProviderTotals.get(section.integrationId) ?? 0;
-        const importProgress = resolveInitialSyncProgress(section.data.flatMap(row => [row.left.sync, row.right?.sync ?? null]));
+        const importProgress = resolveInitialSyncProgress(section.data.map(account => account.sync));
 
         return (
             <BankProviderSectionHeader

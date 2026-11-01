@@ -1,7 +1,6 @@
 import { MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
-import { Text } from 'react-native';
 
 import { HomeSectionKindEnum } from '../../enum/home-section-kind.enum';
 import { AccountSectionHeaderFrame } from '../account-section-header-frame/account-section-header-frame';
@@ -19,9 +18,5 @@ const DEBT_SECTION_KIND_LABEL: Record<HomeSectionKindEnum.DEBT_YOU_OWE | HomeSec
 export const DebtSectionHeader = ({ sectionKind, total }: Props) => {
     const { t } = useLingui();
 
-    return (
-        <AccountSectionHeaderFrame total={total}>
-            <Text className="text-xs uppercase text-secondary-foreground">{t(DEBT_SECTION_KIND_LABEL[sectionKind])}</Text>
-        </AccountSectionHeaderFrame>
-    );
+    return <AccountSectionHeaderFrame title={t(DEBT_SECTION_KIND_LABEL[sectionKind])} total={total} />;
 };

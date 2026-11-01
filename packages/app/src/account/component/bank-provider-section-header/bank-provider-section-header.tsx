@@ -1,7 +1,6 @@
 import { ExternalSourceEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
-import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -39,12 +38,15 @@ export const BankProviderSectionHeader = ({ provider, integrationId, label, grou
         void router.push({ pathname: '/bank-integration/[id]', params: { id: String(integrationId) } });
 
     return (
-        <AccountSectionHeaderFrame total={total} footer={footer}>
-            <View className="flex-row items-center gap-sm">
-                <BankLogo bankProvider={provider} size={20} />
-                <Text className="text-xs uppercase text-secondary-foreground">{title}</Text>
+        <AccountSectionHeaderFrame
+            title={title}
+            total={total}
+            footer={footer}
+            leading={<BankLogo bankProvider={provider} size={22} />}
+            trailing={
                 <HapticPressable
-                    className="rounded-full active:bg-secondary-background"
+                    className="size-[28px] items-center justify-center rounded-full active:bg-surface-fill"
+                    hitSlop={8}
                     onPress={handleOpenIntegrationSettings}
                     accessibilityRole="button"
                     accessibilityLabel={t`Bank integration settings`}
@@ -52,7 +54,7 @@ export const BankProviderSectionHeader = ({ provider, integrationId, label, grou
                 >
                     <Icon className="text-secondary-foreground" icon={UserIconNameEnum.Settings} size={16} />
                 </HapticPressable>
-            </View>
-        </AccountSectionHeaderFrame>
+            }
+        />
     );
 };

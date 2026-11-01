@@ -4,6 +4,7 @@ import { Text } from 'react-native';
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
+import { ROW_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/row-max-font-size-multiplier.constant';
 import { cn } from '../../../@generic/utils/cn.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { decimalPlacesAtom } from '../../../settings/constants/settings-atoms.constant';
@@ -19,22 +20,21 @@ export const AccountCardBalance = ({ title, balance, instrumentSymbol }: Props) 
     const decimalPlaces = useAtomValue(decimalPlacesAtom);
     const formatDigits = useFormatDigits(decimalPlaces);
 
-    const formattedBalance = formatDigits(balance, instrumentSymbol);
+    const formattedBalance = formatDigits(balance, instrumentSymbol).replace(/^-/u, '−');
     const fractionStart = isPositiveNumber(decimalPlaces) ? formattedBalance.length - decimalPlaces - 1 : formattedBalance.length;
-    const isNegative = balance < 0;
-    const toneClassName = isNegative ? 'text-destructive-foreground' : 'text-primary';
-    const fractionToneClassName = isNegative ? 'text-destructive-foreground/70' : 'text-secondary-foreground';
+    const toneClassName = balance < 0 ? 'text-destructive-foreground' : 'text-primary';
 
     return (
         <ProtectedText
             testID={AccountCardBaseSelector.Balance(title, formatDigits(balance))}
             numberOfLines={1}
             adjustsFontSizeToFit
-            minimumFontScale={0.5}
-            className={cn('text-xl leading-[26px] font-semibold tracking-tight tabular-nums', toneClassName)}
+            minimumFontScale={0.6}
+            maxFontSizeMultiplier={ROW_MAX_FONT_SIZE_MULTIPLIER}
+            className={cn('text-[17px] font-semibold tracking-tight tabular-nums', toneClassName)}
         >
             {formattedBalance.slice(0, fractionStart)}
-            <Text className={cn('text-xs font-medium', fractionToneClassName)}>{formattedBalance.slice(fractionStart)}</Text>
+            <Text className="text-[13px] font-medium text-secondary-foreground">{formattedBalance.slice(fractionStart)}</Text>
         </ProtectedText>
     );
 };
