@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.142.0](https://github.com/budgie-at/budgie/compare/v6.141.0...v6.142.0) (2026-11-01)
+
+### Features
+
+* **app:** polish budget widgets ([#1848](https://github.com/budgie-at/budgie/issues/1848)) ([8712148](https://github.com/budgie-at/budgie/commit/8712148f59e40b229e4fc095027b0c284812a7cc))
+
+
 # [6.141.0](https://github.com/budgie-at/budgie/compare/v6.140.1...v6.141.0) (2026-11-01)
 
 ### Features
