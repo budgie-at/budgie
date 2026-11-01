@@ -8,7 +8,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { SafeAreaListener, SafeAreaListenerProps, SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
 import { enableFreeze, enableScreens } from 'react-native-screens';
-import { Uniwind } from 'uniwind';
+import { Uniwind, useCSSVariable } from 'uniwind';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -30,6 +30,7 @@ import { ModalProvider } from '../@generic/provider/modal.provider';
 import { ScreenChromeThemeProvider } from '../@generic/provider/screen-chrome-theme.provider';
 import { appRuntime } from '../@generic/runtime/app.runtime';
 import { Workload } from '../@generic/service/workload.service';
+import { fitToContentsSheetOptions } from '../@generic/utils/fit-to-contents-sheet-options.util';
 import { formSheetOptions } from '../@generic/utils/form-sheet-options.util';
 import { logAndContinue } from '../@generic/utils/log-and-continue.util';
 import { AiProvider } from '../ai/provider/ai.provider';
@@ -113,6 +114,8 @@ const handleAppStateChange = (isActive: boolean): void => {
 // eslint-disable-next-line max-lines-per-function -- Layout component requires many lines
 export const RootLayoutContent = () => {
     const databaseMigrationStatus = useDatabaseMigration();
+    const [sheetSurface, groupedSheetSurface] = useCSSVariable(['--color-sheet-surface', '--color-grouped-surface']);
+    const sheetOptions = fitToContentsSheetOptions(sheetSurface);
 
     useAppInitialization(databaseMigrationStatus === DatabaseMigrationStatusEnum.MIGRATED);
     useAppState(handleAppStateChange);
@@ -176,18 +179,8 @@ export const RootLayoutContent = () => {
                                                                         name="voice-review"
                                                                         options={formSheetOptions([0.65, DETENT_95], 0)}
                                                                     />
-                                                                    <Stack.Screen
-                                                                        name="budget-safe-to-spend"
-                                                                        options={formSheetOptions([DETENT_55, DETENT_95], 0)}
-                                                                    />
-                                                                    <Stack.Screen
-                                                                        name="budget-fund-form"
-                                                                        options={formSheetOptions([DETENT_70, DETENT_95], 0)}
-                                                                    />
-                                                                    <Stack.Screen
-                                                                        name="budget-limit-changes"
-                                                                        options={formSheetOptions([DETENT_55, DETENT_95], 0)}
-                                                                    />
+                                                                    <Stack.Screen name="budget-safe-to-spend" options={sheetOptions} />
+                                                                    <Stack.Screen name="budget-limit-changes" options={sheetOptions} />
                                                                     <Stack.Screen name="category-form" options={MODAL_OPTIONS} />
                                                                     <Stack.Screen name="tag-form" options={MODAL_OPTIONS} />
                                                                     <Stack.Screen
@@ -198,15 +191,9 @@ export const RootLayoutContent = () => {
                                                                         name="note-input"
                                                                         options={formSheetOptions([DETENT_12])}
                                                                     />
-                                                                    <Stack.Screen
-                                                                        name="bank-integration-key"
-                                                                        options={formSheetOptions('fitToContents')}
-                                                                    />
+                                                                    <Stack.Screen name="bank-integration-key" options={sheetOptions} />
                                                                     <Stack.Screen name="convert-to-transfer" options={MODAL_OPTIONS} />
-                                                                    <Stack.Screen
-                                                                        name="convert-to-installment"
-                                                                        options={formSheetOptions('fitToContents')}
-                                                                    />
+                                                                    <Stack.Screen name="convert-to-installment" options={sheetOptions} />
                                                                     <Stack.Screen
                                                                         name="convert-to-refund"
                                                                         options={formSheetOptions([DETENT_90, 1], 0)}
@@ -219,23 +206,17 @@ export const RootLayoutContent = () => {
                                                                         name="split-entries"
                                                                         options={formSheetOptions([0.3, DETENT_70])}
                                                                     />
-                                                                    <Stack.Screen
-                                                                        name="transaction-fee"
-                                                                        options={formSheetOptions('fitToContents')}
-                                                                    />
+                                                                    <Stack.Screen name="transaction-fee" options={sheetOptions} />
                                                                     <Stack.Screen
                                                                         name="consolidation-source"
-                                                                        options={formSheetOptions('fitToContents')}
+                                                                        options={fitToContentsSheetOptions(groupedSheetSurface)}
                                                                     />
                                                                     <Stack.Screen
                                                                         name="import-column-mapper"
                                                                         options={formSheetOptions([0.75, DETENT_95])}
                                                                     />
                                                                     <Stack.Screen name="import-backup-pin" options={PIN_OPTIONS} />
-                                                                    <Stack.Screen
-                                                                        name="add-pin"
-                                                                        options={formSheetOptions('fitToContents')}
-                                                                    />
+                                                                    <Stack.Screen name="add-pin" options={sheetOptions} />
                                                                     <Stack.Screen
                                                                         name="transaction-type-filter"
                                                                         options={formSheetOptions([DETENT_40])}
@@ -260,10 +241,7 @@ export const RootLayoutContent = () => {
                                                                         name="transaction-tag-filter"
                                                                         options={STACKED_FILTER_OPTIONS}
                                                                     />
-                                                                    <Stack.Screen
-                                                                        name="budget-period-summary"
-                                                                        options={formSheetOptions([0.6, DETENT_90])}
-                                                                    />
+                                                                    <Stack.Screen name="budget-period-summary" options={sheetOptions} />
                                                                     <Stack.Screen name="rule-form" options={MODAL_OPTIONS} />
                                                                     <Stack.Screen name="rule-selector" options={formSheetOptions([0.75])} />
                                                                     <Stack.Screen name="rule-mcc-selector" options={SELECTOR_OPTIONS} />

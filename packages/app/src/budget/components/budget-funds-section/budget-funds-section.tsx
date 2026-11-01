@@ -21,14 +21,18 @@ export const BudgetFundsSection = ({ budget, currencySymbol }: Props) => {
     const { funds } = useGetBudgetFundsQuery(budget.id);
 
     const handleAddPress = () => {
-        router.push('/budget-fund-form');
+        router.push('/budget/fund');
     };
 
-    const emptyHint = isEmptyArray(funds) ? (
+    const footnote = isEmptyArray(funds) ? (
         <Text className="text-sm text-secondary-foreground">
             <Trans>Save up for yearly bills a little each period so they never surprise you</Trans>
         </Text>
-    ) : null;
+    ) : (
+        <Text className="pt-md text-xs text-secondary-foreground">
+            <Trans>Tick marks where savings should be by today.</Trans>
+        </Text>
+    );
 
     return (
         <BudgetListSection
@@ -36,7 +40,7 @@ export const BudgetFundsSection = ({ budget, currencySymbol }: Props) => {
             testID={BudgetSelector.DetailsFundsSection}
             addTestID={BudgetSelector.DetailsFundAddButton}
             onAddPress={handleAddPress}
-            emptyHint={emptyHint}
+            footnote={footnote}
         >
             {funds.map(fund => (
                 <BudgetFundRow key={fund.id} fund={fund} budget={budget} currencySymbol={currencySymbol} />

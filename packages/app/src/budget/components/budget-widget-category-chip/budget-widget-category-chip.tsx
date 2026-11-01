@@ -12,8 +12,8 @@ const percentTextVariants = cva<{ tone: Record<BudgetBarTone, string> }>('text-x
     variants: {
         tone: {
             green: 'text-primary',
-            yellow: 'text-warning-foreground',
-            red: 'text-destructive-foreground'
+            yellow: 'text-warning-strong',
+            red: 'text-destructive-strong'
         }
     }
 });
@@ -34,8 +34,10 @@ export const BudgetWidgetCategoryChip = ({ categoryId, limitAmount, spent, testI
     const title = category?.title ?? '';
 
     return (
-        <View testID={testID} collapsable={false} className="flex-row items-center gap-x-xs">
-            <Text className="text-secondary-foreground text-xs">{title}</Text>
+        <View testID={testID} collapsable={false} className="shrink flex-row items-center gap-x-xs">
+            <Text className="shrink text-secondary-foreground text-xs" numberOfLines={1}>
+                {title}
+            </Text>
             <Text testID={spentTestID} className={percentTextVariants({ tone: resolveBudgetBarTone(ratio) })}>
                 {percentLabel}
             </Text>

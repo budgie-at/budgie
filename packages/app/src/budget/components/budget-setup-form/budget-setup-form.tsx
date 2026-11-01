@@ -1,22 +1,21 @@
-import { t } from '@lingui/core/macro';
-import * as Schema from 'effect/Schema';
+import { useLingui } from '@lingui/react/macro';
 import { useRef } from 'react';
 import { FormProvider, useWatch } from 'react-hook-form';
-import { View } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { LoadingScreen } from '../../../@generic/component/loading-screen/loading-screen';
+import { PillButtonFooter } from '../../../@generic/component/pill-button-footer/pill-button-footer';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { BudgetSelector } from '../../budget.selector';
-import { BudgetFormSchema } from '../../constant/budget-form-schema.constant';
 import { BudgetTemplateKindEnum } from '../../enum/budget-template-kind.enum';
 import { useBudgetForm } from '../../hooks/use-budget-form.hook';
+import { resolveBudgetSaveBlocker } from '../../utils/resolve-budget-save-blocker.util';
 import { BudgetAutoTuneField } from '../budget-auto-tune-field/budget-auto-tune-field';
-import { BudgetDeleteButton } from '../budget-delete-button/budget-delete-button';
-import { BudgetEditFooter } from '../budget-edit-footer/budget-edit-footer';
+import { BudgetDeleteRow } from '../budget-delete-row/budget-delete-row';
 import { BudgetInlineCategoryLimits } from '../budget-inline-category-limits/budget-inline-category-limits';
 import { BudgetLimitSourceField } from '../budget-limit-source-field/budget-limit-source-field';
 import { BudgetNameField } from '../budget-name-field/budget-name-field';
@@ -33,33 +32,22 @@ interface Props {
 }
 
 export const BudgetSetupForm = ({ defaultInstrumentId, editingId, templateKind }: Props) => {
+    const { t } = useLingui();
     const scrollViewRef = useRef<KeyboardAwareScrollViewRef | null>(null);
     const { form, handleCancel, handleSubmit, handleDelete, handlePeriodChange, isEditing, isLoading, budget } = useBudgetForm({
         defaultInstrumentId,
         editingId,
         templateKind
     });
-    const [overallLimit, otherLimit, categoryLimits, watchedInstrumentId] = useWatch({
-        control: form.control,
-        name: ['overallLimit', 'otherLimit', 'categoryLimits', 'instrumentId']
-    });
+    const { instrumentId: watchedInstrumentId } = useWatch({ control: form.control });
     const instrumentId = isPositiveNumber(watchedInstrumentId) ? watchedInstrumentId : defaultInstrumentId;
     const { instrument } = useGetInstrumentByIdQuery(instrumentId);
-    const isSaveDisabled = !Schema.is(BudgetFormSchema.from)({
-        ...form.getValues(),
-        overallLimit,
-        otherLimit,
-        categoryLimits,
-        instrumentId
-    });
+    const saveBlocker = isLoading ? null : resolveBudgetSaveBlocker({ ...form.getValues(), instrumentId });
     const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
-    const headerTitle = isEditing ? t`Edit budget` : t`Create budget`;
     const handleCategoryAdded = () => scrollViewRef.current?.scrollToEnd({ animated: true });
     const scrollViewProps = { ref: scrollViewRef };
-    const setupProgressBar =
-        isEditing && isDefined(budget) ? <BudgetSetupProgress budget={budget} currencySymbol={currencySymbol} /> : null;
-
-    const deleteButton = isEditing ? <BudgetDeleteButton testID={BudgetSelector.SetupDeleteButton} onDelete={handleDelete} /> : null;
+    const [headerTitle, submitLabel] = isEditing ? [t`Edit budget`, t`Save changes`] : [t`Create budget`, t`Create budget`];
+    const saveLabel = isDefined(saveBlocker) ? t(saveBlocker) : submitLabel;
 
     if (isLoading) {
         return <LoadingScreen />;
@@ -73,25 +61,33 @@ export const BudgetSetupForm = ({ defaultInstrumentId, editingId, templateKind }
                 contentClassName="gap-y-7xl"
                 scrollViewProps={scrollViewProps}
                 footer={
-                    <View className="gap-md pt-xl px-7xl">
-                        <BudgetEditFooter onSubmit={handleSubmit} disabled={isSaveDisabled} deleteButton={deleteButton} />
-                    </View>
+                    <PillButtonFooter
+                        label={saveLabel}
+                        isDisabled={isDefined(saveBlocker)}
+                        testID={BudgetSelector.SetupSaveButton}
+                        onPress={handleSubmit}
+                    />
                 }
             >
-                {setupProgressBar}
-                <View className="gap-y-lg">
+                {isEditing && isDefined(budget) ? <BudgetSetupProgress budget={budget} currencySymbol={currencySymbol} /> : null}
+                <GroupedListSection title={t`Details`}>
                     <BudgetNameField
                         control={form.control}
                         name="name"
                         placeholder={t`Budget name`}
                         testID={BudgetSelector.SetupNameInput}
                     />
+                </GroupedListSection>
+                <GroupedListSection title={t`Period`}>
                     <BudgetPeriodField onPeriodChange={handlePeriodChange} />
                     <BudgetStartsOnField />
-                </View>
+                </GroupedListSection>
                 <BudgetLimitSourceField currencySymbol={currencySymbol} />
                 <BudgetAutoTuneField />
                 <BudgetInlineCategoryLimits currencySymbol={currencySymbol} onCategoryAdded={handleCategoryAdded} />
+                {isEditing ? (
+                    <BudgetDeleteRow title={t`Delete budget`} testID={BudgetSelector.SetupDeleteButton} onDelete={handleDelete} />
+                ) : null}
             </CollapsibleChromePage>
         </FormProvider>
     );

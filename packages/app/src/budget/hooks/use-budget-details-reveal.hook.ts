@@ -17,7 +17,7 @@ const decodeHighlightParams = Schema.decodeUnknownOption(
     Schema.Struct({ scope: Schema.Enum(BudgetAlertScopeEnum), categoryId: Schema.optionalKey(Schema.NumberFromString) })
 );
 
-export const useBudgetDetailsReveal = (isLoading: boolean) => {
+export const useBudgetDetailsReveal = (isLoading: boolean, hint: BudgetHighlightTargetInterface | null) => {
     const reducedMotion = useReducedMotion();
     const searchParams = useLocalSearchParams();
     const scrollRef = useRef<KeyboardAwareScrollViewRef>(null);
@@ -45,6 +45,6 @@ export const useBudgetDetailsReveal = (isLoading: boolean) => {
         scrollRef,
         contentRef,
         setHighlightTarget,
-        highlightContextValue: { target: isLoading ? null : highlightTarget, reveal: handleReveal }
+        highlightContextValue: { target: isLoading ? null : highlightTarget, hint, reveal: handleReveal }
     };
 };

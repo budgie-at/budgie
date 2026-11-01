@@ -15,10 +15,11 @@ import type { BudgetEntityInterface, BudgetSinkingFundEntityInterface } from '@b
 interface Props {
     readonly fund: BudgetSinkingFundEntityInterface;
     readonly budget: BudgetEntityInterface;
+    readonly dueLabel: string;
     readonly currencySymbol: string;
 }
 
-export const BudgetFundRowStatus = ({ fund, budget, currencySymbol }: Props) => {
+export const BudgetFundRowStatus = ({ fund, budget, dueLabel, currencySymbol }: Props) => {
     const { t } = useLingui();
     const today = useToday();
     const formatDigits = useFormatDigits(0);
@@ -26,15 +27,19 @@ export const BudgetFundRowStatus = ({ fund, budget, currencySymbol }: Props) => 
     const setAsideLabel = formatDigits(convertFromMicroUnits(setAside), currencySymbol);
     const thisPeriod = t(BUDGET_PERIOD_THIS_LABEL[budget.period]);
     const rate = t(BUDGET_PERIOD_RATE_LABEL[budget.period]);
-    const settledLabel = setAside > 0 ? t`${setAsideLabel} set aside ${thisPeriod}` : t`Fully funded`;
+    const settledLabel = setAside > 0 ? t`${setAsideLabel} to set aside ${thisPeriod}` : t`Fully funded`;
 
     if (isFundBehind(fund, today)) {
         return (
             <Text className="text-xs text-secondary-foreground">
-                <Text className="text-warning-foreground">{t`Behind.`}</Text> {t`Setting aside ${setAsideLabel} ${rate} to catch up`}
+                {dueLabel} · <Text className="text-warning-strong">{t`Behind, ${setAsideLabel} ${rate} to catch up`}</Text>
             </Text>
         );
     }
 
-    return <Text className="text-xs text-secondary-foreground">{settledLabel}</Text>;
+    return (
+        <Text className="text-xs text-secondary-foreground">
+            {dueLabel} · {settledLabel}
+        </Text>
+    );
 };

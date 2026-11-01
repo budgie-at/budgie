@@ -22,7 +22,7 @@ export const BudgetWidgetFooterRow = ({ projection, currencySymbol }: Props) => 
     const labels = useBudgetProgressLabels(overall.spent, overall.limit, currencySymbol, 0);
     const freeAmount = formatProtectedAmount(convertFromMicroUnits(Math.max(overall.free, 0)), currencySymbol);
     const daysLabel = t({ message: plural(daysLeft, { one: '# day', other: '# days' }) });
-    const freeLabel = t`${freeAmount} free for ${daysLabel}`;
+    const freeLabel = t`${freeAmount} left · ${daysLabel}`;
 
     return (
         <View className="flex-row items-center justify-between gap-x-md">

@@ -139,7 +139,8 @@ env:
       env:
           DEEP_LINK: 'budgie://budget'
 - extendedWaitUntil:
-      visible: 'Budget details'
+      visible:
+          id: 'BudgetDetails.Screen'
       timeout: 3000
 - assertNotVisible: 'Edit budget'
 - assertVisible:
@@ -159,7 +160,8 @@ env:
 - tapOn:
       id: 'BudgetWidget.Card'
 - extendedWaitUntil:
-      visible: 'Budget details'
+      visible:
+          id: 'BudgetDetails.Screen'
       timeout: 3000
 - assertNotVisible: 'Edit budget'
 
@@ -200,7 +202,8 @@ env:
       id: 'BudgetSetup.SaveButton'
 
 - extendedWaitUntil:
-      visible: 'Budget details'
+      visible:
+          id: 'BudgetDetails.Screen'
       timeout: 3000
 - assertVisible:
       id: 'BudgetDetails.SpentLabel'
@@ -235,7 +238,8 @@ env:
 - waitForAnimationToEnd
 
 - extendedWaitUntil:
-      visible: 'Budget details'
+      visible:
+          id: 'BudgetDetails.Screen'
       timeout: 3000
 - assertNotVisible: 'Edit budget'
 - assertVisible:
@@ -251,6 +255,12 @@ env:
       visible: 'Edit budget'
       timeout: 3000
 
+- scrollUntilVisible:
+      element:
+          id: 'BudgetSetup.CategoryLimitAddButton'
+      direction: DOWN
+      centerElement: true
+- waitForAnimationToEnd
 - retry:
       maxRetries: 3
       commands:
@@ -278,6 +288,7 @@ env:
           id: 'BudgetSetup.CategoryLimit.0.AmountInput'
           text: '200'
       timeout: 3000
+- waitForAnimationToEnd
 - tapOn: 'Category limits'
 - waitForAnimationToEnd
 - retry:
@@ -307,6 +318,7 @@ env:
           id: 'BudgetSetup.CategoryLimit.1.AmountInput'
           text: '100'
       timeout: 3000
+- waitForAnimationToEnd
 - tapOn: 'Category limits'
 - waitForAnimationToEnd
 - retry:
@@ -336,6 +348,7 @@ env:
           id: 'BudgetSetup.CategoryLimit.2.AmountInput'
           text: '150'
       timeout: 3000
+- waitForAnimationToEnd
 - tapOn: 'Category limits'
 - waitForAnimationToEnd
 - retry:
@@ -365,6 +378,7 @@ env:
           id: 'BudgetSetup.CategoryLimit.3.AmountInput'
           text: '75'
       timeout: 3000
+- waitForAnimationToEnd
 - tapOn: 'Category limits'
 - waitForAnimationToEnd
 - extendedWaitUntil:
@@ -376,7 +390,8 @@ env:
       id: 'BudgetSetup.SaveButton'
 
 - extendedWaitUntil:
-      visible: 'Budget details'
+      visible:
+          id: 'BudgetDetails.Screen'
       timeout: 3000
 
 - tapOn:
@@ -391,17 +406,18 @@ env:
 - assertVisible:
       id: 'BudgetWidget.CategoryRow.11'
 - assertVisible:
-      id: 'BudgetWidget.CategoryRow.12'
-- assertVisible:
       id: 'BudgetWidget.MoreCategoriesLabel'
-      text: '+1 more'
+      text: '+2 more'
+- assertNotVisible:
+      id: 'BudgetWidget.CategoryRow.12'
 - assertNotVisible:
       id: 'BudgetWidget.CategoryRow.14'
 
 - tapOn:
       id: 'BudgetWidget.Card'
 - extendedWaitUntil:
-      visible: 'Budget details'
+      visible:
+          id: 'BudgetDetails.Screen'
       timeout: 3000
 
 - scrollUntilVisible:
@@ -464,7 +480,8 @@ env:
 - tapOn:
       id: 'BudgetWidget.Card'
 - extendedWaitUntil:
-      visible: 'Budget details'
+      visible:
+          id: 'BudgetDetails.Screen'
       timeout: 3000
 - scrollUntilVisible:
       element:
@@ -486,7 +503,8 @@ env:
 - tapOn:
       id: 'PageHeader.BackButton'
 - extendedWaitUntil:
-      visible: 'Budget details'
+      visible:
+          id: 'BudgetDetails.Screen'
       timeout: 3000
 
 - tapOn:
@@ -523,7 +541,8 @@ env:
       id: 'BudgetSetup.SaveButton'
 
 - extendedWaitUntil:
-      visible: 'Budget details'
+      visible:
+          id: 'BudgetDetails.Screen'
       timeout: 3000
 - assertVisible:
       id: 'BudgetDetails.CategoryRow.42'
@@ -678,7 +697,8 @@ env:
 - tapOn:
       id: 'BudgetWidget.Card'
 - extendedWaitUntil:
-      visible: 'Budget details'
+      visible:
+          id: 'BudgetDetails.Screen'
       timeout: 3000
 
 - tapOn:

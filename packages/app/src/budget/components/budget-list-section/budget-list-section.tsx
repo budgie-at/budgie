@@ -11,19 +11,19 @@ interface Props {
     readonly testID: string;
     readonly addTestID: string;
     readonly onAddPress: () => void;
-    readonly emptyHint: ReactNode;
+    readonly footnote: ReactNode;
     readonly children: ReactNode;
 }
 
-export const BudgetListSection = ({ label, testID, addTestID, onAddPress, emptyHint, children }: Props) => {
+export const BudgetListSection = ({ label, testID, addTestID, onAddPress, footnote, children }: Props) => {
     const { t } = useLingui();
 
     return (
         <EntranceReveal step={5} className="gap-y-lg">
-            <View collapsable={false} testID={testID}>
+            <View collapsable={false} className="gap-y-lg" testID={testID}>
                 <SectionHeader label={label} trailing={<HeaderTextAction label={t`Add`} onPress={onAddPress} testID={addTestID} />} />
-                <View className="gap-y-xl">{children}</View>
-                {emptyHint}
+                <View className="gap-y-lg">{children}</View>
+                {footnote}
             </View>
         </EntranceReveal>
     );

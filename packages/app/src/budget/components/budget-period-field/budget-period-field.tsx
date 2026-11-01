@@ -3,7 +3,6 @@ import { useLingui } from '@lingui/react/macro';
 import { Controller, UseControllerReturn, useFormContext } from 'react-hook-form';
 import { View } from 'react-native';
 
-import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { SegmentedTabs } from '../../../@generic/component/segmented-tabs/segmented-tabs';
 import { BudgetSelector } from '../../budget.selector';
 import { BudgetFormValues } from '../../constant/budget-form-schema.constant';
@@ -29,11 +28,9 @@ export const BudgetPeriodField = ({ onPeriodChange }: Props) => {
         };
 
         return (
-            <FormItem label={t`Period`}>
-                <View collapsable={false} testID={BudgetSelector.SetupPeriodTabs}>
-                    <SegmentedTabs options={options} value={value} onChange={handleChange} />
-                </View>
-            </FormItem>
+            <View className="px-3xl py-lg" collapsable={false} testID={BudgetSelector.SetupPeriodTabs}>
+                <SegmentedTabs options={options} value={value} onChange={handleChange} />
+            </View>
         );
     };
 

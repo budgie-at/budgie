@@ -19,7 +19,7 @@ export const HeaderTextAction = ({ label, onPress, testID }: Props) => (
         testID={testID}
         onPress={onPress}
     >
-        <Text maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER} className="text-md font-medium text-primary">
+        <Text maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER} className="text-md font-medium text-default-foreground">
             {label}
         </Text>
     </HapticPressable>

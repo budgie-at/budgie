@@ -4,6 +4,7 @@ import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
 import { GrowBar } from '../../../@generic/component/grow-bar/grow-bar';
 import { cn } from '../../../@generic/utils/cn.util';
+import { BUDGET_BAR_FILL_CLASS_NAME } from '../../constant/budget-bar-fill-class-name.constant';
 
 import type { BudgetPaceVariant } from '../../type/budget-pace-variant.type';
 
@@ -16,11 +17,6 @@ interface Props {
 }
 
 const PERCENT_MULTIPLIER = 100;
-const BAR_FILL_CLASS_NAME: Record<BudgetPaceVariant, string> = {
-    positive: 'bg-primary/85',
-    warning: 'bg-warning-fill',
-    destructive: 'bg-destructive-fill'
-};
 
 export const BudgetLimitBar = ({ spent, limit, tone, elapsedFraction, staggerIndex = 0 }: Props) => {
     const ratio = Math.max(isPositiveNumber(limit) ? Math.min(spent / limit, 1) : Number(isPositiveNumber(spent)), 0);
@@ -30,10 +26,14 @@ export const BudgetLimitBar = ({ spent, limit, tone, elapsedFraction, staggerInd
     return (
         <View className="h-[11px] justify-center">
             <View className="h-[3px] overflow-hidden rounded-full bg-secondary-corner">
-                <GrowBar ratio={ratio} className={cn('h-full rounded-full', BAR_FILL_CLASS_NAME[tone])} staggerIndex={staggerIndex} />
+                <GrowBar
+                    ratio={ratio}
+                    className={cn('h-full rounded-full', BUDGET_BAR_FILL_CLASS_NAME[tone])}
+                    staggerIndex={staggerIndex}
+                />
             </View>
             {isDefined(elapsedFraction) ? (
-                <View className="absolute top-0 h-[11px] w-[1.5px] -ms-[0.75px] rounded-full bg-primary" style={todayStyle} />
+                <View className="absolute top-0 h-[11px] w-[2px] -ms-[1px] rounded-full bg-secondary-foreground" style={todayStyle} />
             ) : null}
         </View>
     );

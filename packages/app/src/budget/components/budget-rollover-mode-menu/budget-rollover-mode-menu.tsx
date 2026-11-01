@@ -1,16 +1,13 @@
 import { BudgetRolloverModeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Controller, UseControllerReturn, useFormContext } from 'react-hook-form';
-import { Text } from 'react-native';
 
 import { ActionsMenu } from '../../../@generic/component/actions-menu/actions-menu';
-import { Icon } from '../../../@generic/component/icon/icon';
-import { cn } from '../../../@generic/utils/cn.util';
 import { BudgetFormValues } from '../../constant/budget-form-schema.constant';
+import { BudgetCategoryLimitLabel } from '../budget-category-limit-label/budget-category-limit-label';
 import { BudgetRolloverModeMenuItem } from '../budget-rollover-mode-menu-item/budget-rollover-mode-menu-item';
 
-const TRIGGER_SLOP = 12;
-const TRIGGER_HIT_SLOP = { top: 0, bottom: TRIGGER_SLOP, left: TRIGGER_SLOP, right: TRIGGER_SLOP };
+import type { UserIconType } from '@budgie/contracts';
 
 const ROLLOVER_MODE_ICONS: Record<BudgetRolloverModeEnum, UserIconNameEnum> = {
     [BudgetRolloverModeEnum.NONE]: UserIconNameEnum.Ban,
@@ -18,13 +15,15 @@ const ROLLOVER_MODE_ICONS: Record<BudgetRolloverModeEnum, UserIconNameEnum> = {
     [BudgetRolloverModeEnum.SURPLUS_AND_DEFICIT]: UserIconNameEnum.RefreshCw
 };
 const ROLLOVER_MODES = Object.values(BudgetRolloverModeEnum);
-const TRIGGER_CLASS_NAME = cn('flex-row', 'items-center', 'gap-x-xs', 'py-xs');
 
 interface Props {
     readonly name: `categoryLimits.${number}.rolloverMode` | 'otherRolloverMode';
+    readonly icon: UserIconType;
+    readonly title: string;
+    readonly testID: string;
 }
 
-export const BudgetRolloverModeMenu = ({ name }: Props) => {
+export const BudgetRolloverModeMenu = ({ name, icon, title, testID }: Props) => {
     const { t } = useLingui();
     const { control } = useFormContext<BudgetFormValues>();
     const labels: Record<BudgetRolloverModeEnum, string> = {
@@ -36,19 +35,14 @@ export const BudgetRolloverModeMenu = ({ name }: Props) => {
     const render = ({ field: { value, onChange } }: UseControllerReturn<BudgetFormValues, Props['name']>) => {
         const currentLabel = labels[value];
 
-        const trigger = (
-            <>
-                <Text className="text-xs text-secondary-foreground">{t`Rollover: ${currentLabel}`}</Text>
-                <Icon icon={UserIconNameEnum.ChevronDown} size={12} className="text-secondary-foreground" />
-            </>
-        );
+        const trigger = <BudgetCategoryLimitLabel icon={icon} title={title} testID={testID} menuValue={t`Rollover · ${currentLabel}`} />;
 
         return (
             <ActionsMenu
-                hitSlop={TRIGGER_HIT_SLOP}
+                hitSlop={0}
                 trigger={trigger}
-                triggerClassName={TRIGGER_CLASS_NAME}
-                accessibilityLabel={t`Rollover, ${currentLabel}. Double tap to change.`}
+                triggerClassName="active:opacity-70"
+                accessibilityLabel={t`${title}, rollover ${currentLabel}. Double tap to change.`}
             >
                 {ROLLOVER_MODES.map(mode => (
                     <BudgetRolloverModeMenuItem

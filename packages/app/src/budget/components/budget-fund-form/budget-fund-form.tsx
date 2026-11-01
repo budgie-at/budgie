@@ -1,18 +1,19 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import * as Schema from 'effect/Schema';
-import { FormProvider, useWatch } from 'react-hook-form';
-import { ScrollView, View } from 'react-native';
+import { FormProvider } from 'react-hook-form';
+import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
-import { Button } from '../../../@generic/component/button/button';
-import { FormsheetHeader } from '../../../@generic/component/formsheet-header/formsheet-header';
-import { ModalFormSaveButton } from '../../../@generic/component/modal-form-save-button/modal-form-save-button';
+import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
+import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
+import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
+import { PillButtonFooter } from '../../../@generic/component/pill-button-footer/pill-button-footer';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { BudgetSelector } from '../../budget.selector';
-import { BudgetFundFormSchema } from '../../constant/budget-fund-form-schema.constant';
 import { useBudgetFundForm } from '../../hooks/use-budget-fund-form.hook';
+import { resolveBudgetFundSaveBlocker } from '../../utils/resolve-budget-fund-save-blocker.util';
+import { BudgetDeleteRow } from '../budget-delete-row/budget-delete-row';
 import { BudgetFundCategoryField } from '../budget-fund-category-field/budget-fund-category-field';
 import { BudgetFundDueField } from '../budget-fund-due-field/budget-fund-due-field';
 import { BudgetFundPreview } from '../budget-fund-preview/budget-fund-preview';
@@ -34,46 +35,52 @@ export const BudgetFundForm = ({ budget, editingId }: Props) => {
         budget,
         editingId
     });
-    const values = useWatch({ control: form.control });
+    const values = form.watch();
     const { instrument } = useGetInstrumentByIdQuery(budget.instrumentId);
     const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
-    const isSaveDisabled = !Schema.is(BudgetFundFormSchema)({ ...form.getValues(), ...values });
+    const saveBlocker = resolveBudgetFundSaveBlocker(values);
+    const [title, submitLabel] = isEditing ? [t`Edit set aside`, t`Save changes`] : [t`New set aside`, t`Save set aside`];
+    const saveLabel = isDefined(saveBlocker) ? t(saveBlocker) : submitLabel;
     const fundedAmount = isDefined(editingFund) ? editingFund.fundedAmount : 0;
-    const suggestionBanner = isDefined(suggestion) ? (
-        <BudgetFundSuggestionBanner suggestion={suggestion} currencySymbol={currencySymbol} onUse={handleUseSuggestion} />
-    ) : null;
-    const deleteButton = isEditing ? (
-        <Button testID={BudgetSelector.FundDeleteButton} variant="destructive" leftIcon={UserIconNameEnum.Trash2} onPress={handleDelete} />
-    ) : null;
 
     return (
         <FormProvider {...form}>
-            <View className="flex-1 border-t-hairline border-secondary-corner bg-primary-reverse dark:bg-secondary-background">
-                <ScrollView
-                    contentContainerClassName="px-5xl gap-y-xl pb-5xl"
-                    contentInsetAdjustmentBehavior="never"
-                    keyboardShouldPersistTaps="handled"
-                    showsVerticalScrollIndicator={false}
-                >
-                    <FormsheetHeader size="md" title={t`Set aside for`} />
-                    {suggestionBanner}
-                    <BudgetNameField
-                        control={form.control}
-                        name="name"
-                        placeholder={t`e.g. Car insurance`}
-                        testID={BudgetSelector.FundNameInput}
+            <CollapsibleChromePage
+                title={title}
+                leading={<HeaderBackButton />}
+                footer={
+                    <PillButtonFooter
+                        label={saveLabel}
+                        isDisabled={isDefined(saveBlocker)}
+                        testID={BudgetSelector.FundSaveButton}
+                        onPress={handleSubmit}
                     />
-                    <BudgetFundCategoryField />
+                }
+            >
+                <FormLayoutGroup>
+                    {isDefined(suggestion) ? (
+                        <BudgetFundSuggestionBanner suggestion={suggestion} currencySymbol={currencySymbol} onUse={handleUseSuggestion} />
+                    ) : null}
                     <BudgetFundTargetField currencySymbol={currencySymbol} />
-                    <BudgetFundDueField />
-                    <BudgetFundRepeatField />
-                    <BudgetFundPreview budget={budget} fundedAmount={fundedAmount} currencySymbol={currencySymbol} />
-                    <View className="flex-row gap-x-md">
-                        {deleteButton}
-                        <ModalFormSaveButton testID={BudgetSelector.FundSaveButton} onPress={handleSubmit} disabled={isSaveDisabled} />
+                    <GroupedListSection>
+                        <BudgetNameField
+                            control={form.control}
+                            name="name"
+                            placeholder={t`e.g. Car insurance`}
+                            testID={BudgetSelector.FundNameInput}
+                        />
+                        <BudgetFundCategoryField />
+                        <BudgetFundDueField />
+                    </GroupedListSection>
+                    <View className="gap-y-md">
+                        <BudgetFundRepeatField />
+                        <BudgetFundPreview budget={budget} fundedAmount={fundedAmount} currencySymbol={currencySymbol} />
                     </View>
-                </ScrollView>
-            </View>
+                    {isEditing ? (
+                        <BudgetDeleteRow title={t`Delete set aside`} testID={BudgetSelector.FundDeleteButton} onDelete={handleDelete} />
+                    ) : null}
+                </FormLayoutGroup>
+            </CollapsibleChromePage>
         </FormProvider>
     );
 };

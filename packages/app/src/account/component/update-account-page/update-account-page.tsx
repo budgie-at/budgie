@@ -1,7 +1,6 @@
 import { AccountEntityInterface } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { ReactNode } from 'react';
-import { View } from 'react-native';
 
 import { EmptyFn, isDefined } from '@rnw-community/shared';
 
@@ -10,7 +9,7 @@ import { CollapsibleChromePage } from '../../../@generic/component/collapsible-c
 import { FormLayoutGroup } from '../../../@generic/component/form-layout-group/form-layout-group';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
-import { PillButton } from '../../../@generic/component/pill-button/pill-button';
+import { PillButtonFooter } from '../../../@generic/component/pill-button-footer/pill-button-footer';
 import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
 import { ACCOUNT_COLOR } from '../../constant/account-color.constant';
 import { ACCOUNT_KIND_TITLE } from '../../constant/account-kind-title.constant';
@@ -45,15 +44,12 @@ export const UpdateAccountPage = ({ account, fields, hero, children, onSubmit, i
             leading={<HeaderBackButton />}
             testID={CreateAccountScreenSelector.ScrollView}
             footer={
-                <View className="border-t-hairline border-surface-separator bg-surface px-5xl pt-lg">
-                    <View className="absolute inset-x-0 top-full h-[64px] bg-surface" pointerEvents="none" />
-                    <PillButton
-                        label={t`Save changes`}
-                        isLoading={isSubmitting}
-                        testID={CreateAccountScreenSelector.SubmitButton}
-                        onPress={onSubmit}
-                    />
-                </View>
+                <PillButtonFooter
+                    label={t`Save changes`}
+                    isLoading={isSubmitting}
+                    testID={CreateAccountScreenSelector.SubmitButton}
+                    onPress={onSubmit}
+                />
             }
         >
             {hero}

@@ -10,7 +10,7 @@ import { useToday } from '../../../@generic/hook/use-today.hook';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
 import { BudgetSelector } from '../../budget.selector';
 import { BudgetFormValues } from '../../constant/budget-form-schema.constant';
-import { BudgetStartsOnRowContent } from '../budget-starts-on-row-content/budget-starts-on-row-content';
+import { BudgetStartsOnRow } from '../budget-starts-on-row/budget-starts-on-row';
 import { BudgetWeekdayMenuItem } from '../budget-weekday-menu-item/budget-weekday-menu-item';
 
 const WEEKDAY_OFFSETS = [0, 1, 2, 3, 4, 5, 6] as const;
@@ -25,7 +25,7 @@ export const BudgetWeekdayStartField = () => {
     const selectedMs = isDefined(periodAnchorMs) ? periodAnchorMs : weekStart.getTime();
     const selectedWeekday = formatWeekday(new Date(selectedMs));
     const title = t`Starts on`;
-    const trigger = <BudgetStartsOnRowContent title={title} value={selectedWeekday} />;
+    const trigger = <BudgetStartsOnRow value={selectedWeekday} />;
 
     const handleSelect = (offset: number) => {
         setValue('periodAnchorMs', addDays(weekStart, offset).getTime(), { shouldDirty: true });

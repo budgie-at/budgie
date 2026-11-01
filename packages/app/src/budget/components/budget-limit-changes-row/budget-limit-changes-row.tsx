@@ -1,13 +1,13 @@
 import { BudgetLimitChangeReasonEnum, UserIconNameEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
-import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { EntranceReveal } from '../../../@generic/component/entrance-reveal/entrance-reveal';
-import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/component/icon/icon';
+import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
+import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
 import { BudgetSelector } from '../../budget.selector';
@@ -41,19 +41,16 @@ export const BudgetLimitChangesRow = ({ budget, currencySymbol }: Props) => {
     };
 
     return (
-        <EntranceReveal step={5}>
-            <HapticPressable
-                accessibilityRole="button"
-                className="min-h-[44px] flex-row items-center justify-between gap-x-md active:opacity-70"
-                testID={BudgetSelector.DetailsLimitChangesRow}
-                onPress={handlePress}
-            >
-                <View className="flex-1 gap-y-xs">
-                    <Text className="text-md font-medium text-primary">{t`Limit changes`}</Text>
-                    <Text className="text-xs text-secondary-foreground">{subtitle}</Text>
-                </View>
-                <Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />
-            </HapticPressable>
+        <EntranceReveal step={5} className="pt-xl">
+            <GroupedListSection>
+                <GroupedListRow
+                    left={<GroupedListIcon icon={UserIconNameEnum.WandSparkles} />}
+                    title={t`Limit changes`}
+                    subtitle={subtitle}
+                    testID={BudgetSelector.DetailsLimitChangesRow}
+                    onPress={handlePress}
+                />
+            </GroupedListSection>
         </EntranceReveal>
     );
 };

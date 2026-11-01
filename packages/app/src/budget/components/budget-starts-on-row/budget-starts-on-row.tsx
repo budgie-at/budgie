@@ -1,27 +1,25 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
-import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { isDefined } from '@rnw-community/shared';
+
+import { GroupedListValueRow } from '../../../@generic/component/grouped-list-value-row/grouped-list-value-row';
 import { BudgetSelector } from '../../budget.selector';
-import { BudgetStartsOnRowContent } from '../budget-starts-on-row-content/budget-starts-on-row-content';
 
 interface Props {
     readonly value: string;
-    readonly onPress: () => void;
+    readonly onPress?: () => void;
 }
 
 export const BudgetStartsOnRow = ({ value, onPress }: Props) => {
     const { t } = useLingui();
-    const title = t`Starts on`;
 
     return (
-        <HapticPressable
-            accessibilityLabel={`${title}, ${value}`}
-            accessibilityRole="button"
-            className="active:opacity-70"
-            testID={BudgetSelector.SetupStartsOnRow}
-            onPress={onPress}
-        >
-            <BudgetStartsOnRowContent title={title} value={value} />
-        </HapticPressable>
+        <GroupedListValueRow
+            icon={UserIconNameEnum.CalendarClock}
+            title={t`Starts on`}
+            value={value}
+            {...(isDefined(onPress) && { testID: BudgetSelector.SetupStartsOnRow, onPress })}
+        />
     );
 };

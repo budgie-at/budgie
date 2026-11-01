@@ -1,10 +1,9 @@
-import { useLingui } from '@lingui/react/macro';
 import { Controller, UseControllerReturn, useFormContext, useWatch } from 'react-hook-form';
 
-import { AmountInput } from '../../../@generic/component/amount-input/amount-input';
 import { BudgetSelector } from '../../budget.selector';
 import { BudgetEventFormValues } from '../../constant/budget-event-form-schema.constant';
 import { BudgetCategoryLimitDeletableRow } from '../budget-category-limit-deletable-row/budget-category-limit-deletable-row';
+import { BudgetEditableAmountInput } from '../budget-editable-amount-input/budget-editable-amount-input';
 
 interface Props {
     readonly currencySymbol: string;
@@ -13,24 +12,18 @@ interface Props {
 }
 
 export const BudgetEventCategoryLimitRow = ({ currencySymbol, index, onRemove }: Props) => {
-    const { t } = useLingui();
     const { control } = useFormContext<BudgetEventFormValues>();
     const categoryId = useWatch({ control, name: `categoryLimits.${index}.categoryId` });
 
     const renderAmount = ({
         field: { value, onChange }
     }: UseControllerReturn<BudgetEventFormValues, `categoryLimits.${number}.limitAmount`>) => (
-        <AmountInput
+        <BudgetEditableAmountInput
             testID={BudgetSelector.EventCategoryLimitAmountInput(index)}
             value={value}
+            currencySymbol={currencySymbol}
+            className="min-w-[104px] max-w-[136px] text-right"
             onChangeValue={onChange}
-            placeholder={t`e.g. 200`}
-            valuePrefix={currencySymbol}
-            size="md"
-            textAlign="right"
-            inputClassName="min-w-[104px] max-w-[136px]"
-            commitOnBlur
-            selectTextOnFocus
         />
     );
 
@@ -40,7 +33,6 @@ export const BudgetEventCategoryLimitRow = ({ currencySymbol, index, onRemove }:
             index={index}
             testID={BudgetSelector.EventCategoryLimitRow(index)}
             amountInput={<Controller control={control} name={`categoryLimits.${index}.limitAmount`} render={renderAmount} />}
-            subtitle={null}
             onRemove={onRemove}
         />
     );

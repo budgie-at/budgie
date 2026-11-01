@@ -1,18 +1,9 @@
-import { getInclusiveEnd } from '@budgie/budget';
-import { Trans } from '@lingui/react/macro';
 import { router } from 'expo-router';
-import { Text, View } from 'react-native';
-
-import { isDefined } from '@rnw-community/shared';
+import { View } from 'react-native';
 
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
-import { useToday } from '../../../@generic/hook/use-today.hook';
-import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
-import { useGetInstrumentByIdQuery } from '../../../instrument/query/use-get-instrument-by-id.query';
-import { useGetBudgetProjectionQuery } from '../../query/use-get-budget-projection.query';
-import { formatBudgetPeriodLabel } from '../../utils/format-budget-period-label.util';
-import { resolveBudgetWindow } from '../../utils/resolve-budget-window.util';
+import { useBudgetDetailsData } from '../../hooks/use-budget-details-data.hook';
 import { BudgetDetailsEditButton } from '../budget-details-edit-button/budget-details-edit-button';
 import { BudgetDetailsOverview } from '../budget-details-overview/budget-details-overview';
 
@@ -23,14 +14,11 @@ interface Props {
 }
 
 export const BudgetEventDetails = ({ budget }: Props) => {
-    const today = useToday();
-    const { projection, isLoading } = useGetBudgetProjectionQuery(budget);
-    const { instrument } = useGetInstrumentByIdQuery(budget.instrumentId);
-    const { formatMonthAndDay } = useFormatDate();
-    const periodWindow = resolveBudgetWindow(budget, today);
-    const periodEnd = getInclusiveEnd(periodWindow.nextPeriodStart);
-    const currencySymbol = isDefined(instrument) ? instrument.symbol : '';
-    const dateLabel = formatBudgetPeriodLabel(budget, formatMonthAndDay);
+    const { projection, isLoading, periodStart, periodEnd, currencySymbol, dateLabel } = useBudgetDetailsData(budget);
+
+    const handleFigurePress = () => {
+        router.push({ pathname: '/budget-safe-to-spend', params: { eventId: String(budget.id) } });
+    };
 
     const handleEditPress = () => {
         router.push({ pathname: '/budget/event/[id]/edit', params: { id: String(budget.id) } });
@@ -49,12 +37,10 @@ export const BudgetEventDetails = ({ budget }: Props) => {
                     projection={projection}
                     isLoading={isLoading}
                     currencySymbol={currencySymbol}
-                    periodStart={periodWindow.periodStart}
+                    periodStart={periodStart}
                     periodEnd={periodEnd}
+                    onFigurePress={handleFigurePress}
                 />
-                <Text className="text-xs text-secondary-foreground">
-                    <Trans>Tagged expenses also count in your main budget.</Trans>
-                </Text>
             </View>
         </CollapsibleChromePage>
     );

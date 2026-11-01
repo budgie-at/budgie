@@ -13,11 +13,12 @@ interface Props {
     readonly value: string;
     readonly variant: ColorPaletteVariant;
     readonly appearance?: StatCellAppearance;
+    readonly valueClassName?: string;
     readonly testID?: string;
 }
 
-export const StatCell = ({ label, value, variant, appearance = 'centered', testID }: Props) => {
-    const { container, label: labelClassName, value: valueClassName } = STAT_CELL_APPEARANCE_CLASS_NAME[appearance];
+export const StatCell = ({ label, value, variant, appearance = 'centered', valueClassName, testID }: Props) => {
+    const { container, label: labelClassName, value: appearanceValueClassName } = STAT_CELL_APPEARANCE_CLASS_NAME[appearance];
 
     return (
         <View className={cn(container)}>
@@ -36,7 +37,7 @@ export const StatCell = ({ label, value, variant, appearance = 'centered', testI
                 minimumFontScale={0.7}
                 maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
                 testID={testID}
-                className={cn(valueClassName, FOREGROUND_COLOR_PALETTE[variant])}
+                className={cn(appearanceValueClassName, FOREGROUND_COLOR_PALETTE[variant], valueClassName)}
             >
                 {value}
             </ProtectedText>

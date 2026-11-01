@@ -5,6 +5,7 @@ env:
     TAG_NAME: Rules Test Tag
     EVENT_NAME: E2E Trip
     EXPENSE_COMMENT: E2E Budget Event Match
+    FUND_NAME: E2E Insurance Fund
 ---
 - runFlow:
       file: setup/setup-budget-test.flow.yaml
@@ -62,7 +63,8 @@ env:
 - tapOn:
       id: 'BudgetWidget.Card'
 - extendedWaitUntil:
-      visible: 'Budget details'
+      visible:
+          id: 'BudgetDetails.Screen'
       timeout: 3000
 - extendedWaitUntil:
       visible:
@@ -80,7 +82,8 @@ env:
 - tapOn:
       id: 'PageHeader.BackButton'
 - extendedWaitUntil:
-      visible: 'Budget details'
+      visible:
+          id: 'BudgetDetails.Screen'
       timeout: 3000
 
 - runFlow:
@@ -124,7 +127,8 @@ env:
       env:
           DEEP_LINK: 'budgie://budget'
 - extendedWaitUntil:
-      visible: 'Budget details'
+      visible:
+          id: 'BudgetDetails.Screen'
       timeout: 3000
 - assertVisible:
       id: 'BudgetDetails.SpentLabel'
@@ -169,7 +173,8 @@ env:
       id: 'BudgetEvent.SaveButton'
 
 - extendedWaitUntil:
-      visible: 'Budget details'
+      visible:
+          id: 'BudgetDetails.Screen'
       timeout: 3000
 - scrollUntilVisible:
       element: ${EVENT_NAME}
@@ -185,3 +190,64 @@ env:
 - assertVisible:
       id: 'BudgetDetails.LimitLabel'
       text: '€500'
+
+# --- Set aside: create a fund end to end ---
+- runFlow:
+      file: subflows/navigation/open-deep-link.flow.yaml
+      env:
+          DEEP_LINK: 'budgie://budget'
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetDetails.Screen'
+      timeout: 3000
+- scrollUntilVisible:
+      element:
+          id: 'BudgetDetails.FundAddButton'
+      direction: DOWN
+      centerElement: true
+- tapOn:
+      id: 'BudgetDetails.FundAddButton'
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetFund.TargetInput'
+      timeout: 3000
+- tapOn:
+      id: 'BudgetFund.TargetInput'
+- inputText: '600'
+- waitForAnimationToEnd
+- tapOn:
+      id: 'BudgetFund.NameInput'
+- inputText: ${FUND_NAME}
+- waitForAnimationToEnd
+- tapOn:
+      id: 'BudgetFund.CategoryField'
+- runFlow:
+      file: subflows/shared/select-category-by-search.flow.yaml
+      env:
+          CATEGORY_NAME: ${CATEGORY_NAME}
+- tapOn:
+      id: 'BudgetFund.DueField'
+- extendedWaitUntil:
+      visible:
+          id: 'DatePicker.Day.20'
+      timeout: 10000
+- tapOn:
+      id: 'DatePicker.Day.20'
+- waitForAnimationToEnd
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetFund.SaveButton'
+          enabled: true
+      timeout: 3000
+- tapOn:
+      id: 'BudgetFund.SaveButton'
+- extendedWaitUntil:
+      visible:
+          id: 'BudgetDetails.Screen'
+      timeout: 3000
+- scrollUntilVisible:
+      element:
+          id: 'BudgetDetails\.FundRow\..*'
+          text: '${FUND_NAME}, .*'
+      direction: DOWN
+      centerElement: true

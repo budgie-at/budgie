@@ -1,10 +1,10 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { FormItem } from '../../../@generic/component/form-item/form-item';
-import { RuleSelectorButton } from '../../../rule/components/rule-selector-button/rule-selector-button';
+import { GroupedListValueRow } from '../../../@generic/component/grouped-list-value-row/grouped-list-value-row';
 import { useTagsSelectorModal } from '../../../tag/context/tags-selector-modal.context';
 import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query';
 import { BudgetSelector } from '../../budget.selector';
@@ -17,7 +17,7 @@ export const BudgetEventTagField = () => {
     const tagId = useWatch({ control, name: 'tagId' });
     const selectedTagIds = isPositiveNumber(tagId) ? [tagId] : [];
     const { tags } = useGetTagByIdsQuery(selectedTagIds);
-    const tagTitle = isNotEmptyArray(tags) ? tags[0].title : t`Select tag`;
+    const tagTitle = isNotEmptyArray(tags) ? tags[0].title : t`Choose`;
 
     const handleOpen = () => {
         openTagsSelector({ initialTagIds: selectedTagIds, singleSelect: true }, selectedTagIdsResult => {
@@ -28,8 +28,12 @@ export const BudgetEventTagField = () => {
     };
 
     return (
-        <FormItem label={t`Tag`}>
-            <RuleSelectorButton testID={BudgetSelector.EventTagField} value={tagTitle} onPress={handleOpen} />
-        </FormItem>
+        <GroupedListValueRow
+            icon={UserIconNameEnum.Tag}
+            title={t`Tag`}
+            value={tagTitle}
+            testID={BudgetSelector.EventTagField}
+            onPress={handleOpen}
+        />
     );
 };

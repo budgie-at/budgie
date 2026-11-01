@@ -1,12 +1,12 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { FormItem } from '../../../@generic/component/form-item/form-item';
+import { GroupedListValueRow } from '../../../@generic/component/grouped-list-value-row/grouped-list-value-row';
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
 import { useGetCategoryByIdQuery } from '../../../category/query/use-get-category-by-id.query';
-import { RuleSelectorButton } from '../../../rule/components/rule-selector-button/rule-selector-button';
 import { BudgetSelector } from '../../budget.selector';
 import { BudgetFundFormValues } from '../../constant/budget-fund-form-schema.constant';
 
@@ -16,7 +16,7 @@ export const BudgetFundCategoryField = () => {
     const [openCategorySelector] = useCategorySelectorModal();
     const categoryId = useWatch({ control, name: 'categoryId' });
     const { category } = useGetCategoryByIdQuery(categoryId);
-    const categoryTitle = isDefined(category) ? category.title : t`Select category`;
+    const categoryTitle = isDefined(category) ? category.title : t`Choose`;
 
     const handleOpen = () => {
         openCategorySelector({ initialCategoryId: isPositiveNumber(categoryId) ? categoryId : null }, selectedCategoryId => {
@@ -27,8 +27,12 @@ export const BudgetFundCategoryField = () => {
     };
 
     return (
-        <FormItem label={t`Category`}>
-            <RuleSelectorButton testID={BudgetSelector.FundCategoryField} value={categoryTitle} onPress={handleOpen} />
-        </FormItem>
+        <GroupedListValueRow
+            icon={UserIconNameEnum.Shapes}
+            title={t`Category`}
+            value={categoryTitle}
+            testID={BudgetSelector.FundCategoryField}
+            onPress={handleOpen}
+        />
     );
 };
