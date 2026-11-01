@@ -36,8 +36,8 @@ interface Props<T extends IdInterface> {
     renderCard: (item: T, index: number, isLast: boolean) => ReactNode;
     getDeleteConfirmation?: (item: T) => DeleteConfirmation | undefined;
     listHeader?: ReactElement | null;
+    listFooter?: ReactElement | null;
     sizing?: LegendListSizingInterface<T>;
-    gap?: number;
 }
 
 const MAINTAIN_VISIBLE_CONTENT_POSITION = { data: false, size: true };
@@ -51,8 +51,8 @@ export const SearchablePageList = <T extends IdInterface>({
     renderCard,
     getDeleteConfirmation,
     listHeader: customListHeader,
-    sizing,
-    gap = LEGEND_LIST_CONTENT_GAP
+    listFooter,
+    sizing
 }: Props<T>) => {
     const [notify] = useVibration();
     const { scrollY } = useCollapsibleHeaderScroll();
@@ -77,7 +77,7 @@ export const SearchablePageList = <T extends IdInterface>({
         );
     }
 
-    const contentContainerStyle = { gap, paddingTop, paddingBottom };
+    const contentContainerStyle = { gap: sizing?.gap ?? LEGEND_LIST_CONTENT_GAP, paddingTop, paddingBottom };
 
     const handleDeleteItem = (id: number) => {
         if (!isDefined(onDelete)) {
@@ -120,6 +120,7 @@ export const SearchablePageList = <T extends IdInterface>({
             estimatedItemSize={sizing?.estimatedItemSize}
             getItemType={sizing?.getItemType}
             keyboardShouldPersistTaps="handled"
+            ListFooterComponent={listFooter}
             sharedValues={sharedValues}
             recycleItems
             maintainVisibleContentPosition={MAINTAIN_VISIBLE_CONTENT_POSITION}

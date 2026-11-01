@@ -45,10 +45,10 @@ env:
 
 - extendedWaitUntil:
     visible:
-      text: 'Some transactions may match multiple rules\..*'
+      text: '.*the older rule wins.*'
 
-- swipe:
-    direction: DOWN
+- tapOn:
+    id: 'PageHeader.BackButton'
 - extendedWaitUntil:
     notVisible: 'Create Rule'
 

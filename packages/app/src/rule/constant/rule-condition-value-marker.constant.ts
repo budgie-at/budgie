@@ -1,0 +1,1 @@
+export const RULE_CONDITION_VALUE_MARKER = '\u2063';

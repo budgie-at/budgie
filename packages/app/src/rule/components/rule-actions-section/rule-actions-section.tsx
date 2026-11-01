@@ -1,14 +1,14 @@
 import { RuleActionTypeEnum, RuleCreateInputInterface } from '@budgie/contracts';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { useLingui } from '@lingui/react/macro';
 import { useWatch } from 'react-hook-form';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { useHasConflictingRules } from '../../hooks/use-has-conflicting-rules.hook';
 import { useMinimumFieldArray } from '../../hooks/use-minimum-field-array.hook';
 import { RuleActionRow } from '../rule-action-row/rule-action-row';
-import { RuleConflictWarning } from '../rule-conflict-warning/rule-conflict-warning';
+import { RuleFormAddRow } from '../rule-form-add-row/rule-form-add-row';
 import { RuleFormSelector } from '../rule-form-layout/rule-form-layout.selector';
-import { RuleFormSectionHeader } from '../rule-form-section-header/rule-form-section-header';
 
 const DEFAULT_ACTION = {
     type: RuleActionTypeEnum.ADD_TAG,
@@ -25,25 +25,23 @@ export const RuleActionsSection = ({ ruleId }: Props) => {
     const { t } = useLingui();
     const { fields, add, safeRemove, canRemove } = useMinimumFieldArray<RuleCreateInputInterface, 'actions'>('actions', DEFAULT_ACTION);
     const actions = useWatch<RuleCreateInputInterface, 'actions'>({ name: 'actions' });
-
-    const actionTypes = actions.map(action => action.type);
-    const hasConflict = useHasConflictingRules(actionTypes, ruleId);
+    const hasConflict = useHasConflictingRules(
+        actions.map(action => action.type),
+        ruleId
+    );
+    const appliesHint = t`Applies to new payments as they arrive from your bank or an import.`;
+    const conflictHint = t`If another rule also sets a category or transfer, the older rule wins.`;
+    const footer = hasConflict ? `${appliesHint} ${conflictHint}` : appliesHint;
 
     return (
-        <View className="gap-y-lg">
-            <RuleFormSectionHeader
-                title={t`Actions`}
-                onAdd={add}
-                testID={RuleFormSelector.ActionSectionHeader}
-                addButtonTestID={RuleFormSelector.ActionAddButton}
-            />
-            <Text className="text-secondary-foreground text-sm">
-                <Trans>Actions to apply when conditions match</Trans>
-            </Text>
-            {fields.map((field, index) => (
-                <RuleActionRow key={field.id} index={index} onRemove={safeRemove} canRemove={canRemove} />
-            ))}
-            <RuleConflictWarning hasConflict={hasConflict} />
+        <View testID={RuleFormSelector.ActionSectionHeader}>
+            <GroupedListSection title={t`Then`} footer={footer}>
+                {fields.map((field, index) => (
+                    <RuleActionRow key={field.id} index={index} onRemove={safeRemove} canRemove={canRemove} />
+                ))}
+
+                <RuleFormAddRow label={t`Add action`} onPress={add} testID={RuleFormSelector.ActionAddButton} />
+            </GroupedListSection>
         </View>
     );
 };

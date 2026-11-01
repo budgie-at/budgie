@@ -10,7 +10,9 @@ appId: ${APP_ID}
       element:
           id: 'TransactionInfo.Row.Tags'
       direction: DOWN
-- assertVisible: '${TAG_NAME}'
+- extendedWaitUntil:
+      visible: '${TAG_NAME}'
+      timeout: 5000
 - tapOn:
       id: 'PageHeader.BackButton'
 - extendedWaitUntil:

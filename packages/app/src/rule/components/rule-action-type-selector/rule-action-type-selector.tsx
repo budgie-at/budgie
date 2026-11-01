@@ -1,23 +1,13 @@
 import { RuleActionTypeEnum, RuleCreateInputInterface } from '@budgie/contracts';
-import { MessageDescriptor } from '@lingui/core';
-import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
-import { Controller, UseControllerReturn, useFormContext, useWatch } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 
-import { FormItem } from '../../../@generic/component/form-item/form-item';
 import { EXCLUSIVE_ACTION_TYPES } from '../../constant/exclusive-action-types.constant';
-import { RuleOptionPicker } from '../rule-option-picker/rule-option-picker';
+import { RULE_ACTION_TYPE } from '../../constant/rule-action-type.constant';
+import { useRuleOptionSheet } from '../../hooks/use-rule-option-sheet.hook';
+import { RuleFormPickerPill } from '../rule-form-picker-pill/rule-form-picker-pill';
 
-interface RuleActionTypeOptionInterface {
-    readonly value: RuleActionTypeEnum;
-    readonly label: MessageDescriptor;
-}
-
-const RULE_ACTION_TYPE_OPTIONS: RuleActionTypeOptionInterface[] = [
-    { value: RuleActionTypeEnum.SET_CATEGORY, label: msg`Set Category` },
-    { value: RuleActionTypeEnum.ADD_TAG, label: msg`Add Tag` },
-    { value: RuleActionTypeEnum.CONVERT_TO_TRANSFER, label: msg`Convert to Transfer` }
-];
+const ACTION_TYPE_VALUES = [RuleActionTypeEnum.SET_CATEGORY, RuleActionTypeEnum.ADD_TAG, RuleActionTypeEnum.CONVERT_TO_TRANSFER] as const;
 
 interface Props {
     readonly index: number;
@@ -26,30 +16,34 @@ interface Props {
 
 export const RuleActionTypeSelector = ({ index, testID }: Props) => {
     const { t } = useLingui();
-    const { control } = useFormContext<RuleCreateInputInterface>();
+    const { control, setValue } = useFormContext<RuleCreateInputInterface>();
     const actions = useWatch({ control, name: 'actions' });
-
-    const usedExclusiveTypes = new Set(
+    const actionType = useWatch({ control, name: `actions.${index}.type` });
+    const openActionSheet = useRuleOptionSheet(t`Choose an action`, RULE_ACTION_TYPE);
+    const label = t(RULE_ACTION_TYPE[actionType].label);
+    const usedExclusiveTypes = new Set<string>(
         actions
             .filter((_, actionIndex) => actionIndex !== index)
             .map(action => action.type)
             .filter(type => EXCLUSIVE_ACTION_TYPES.has(type))
     );
 
-    const availableOptions = RULE_ACTION_TYPE_OPTIONS.filter(({ value }) => !usedExclusiveTypes.has(value));
+    const handleSelect = (nextType: RuleActionTypeEnum) => void setValue(`actions.${index}.type`, nextType, { shouldDirty: true });
+    const handleOpen = () =>
+        void openActionSheet({
+            values: ACTION_TYPE_VALUES,
+            selectedValue: actionType,
+            disabledValues: usedExclusiveTypes,
+            onSelect: handleSelect
+        });
 
-    const renderSelector = ({ field: { value, onChange } }: UseControllerReturn<RuleCreateInputInterface, `actions.${number}.type`>) => (
-        <FormItem label={t`Action Type`}>
-            <RuleOptionPicker
-                value={value}
-                onChange={onChange}
-                options={availableOptions}
-                sheetTitle={t`Select Action Type`}
-                defaultLabel={t`Select Type`}
-                testID={testID}
-            />
-        </FormItem>
+    return (
+        <RuleFormPickerPill
+            label={label}
+            icon={RULE_ACTION_TYPE[actionType].icon}
+            accessibilityLabel={t`Action: ${label}`}
+            onPress={handleOpen}
+            testID={testID}
+        />
     );
-
-    return <Controller control={control} name={`actions.${index}.type`} render={renderSelector} />;
 };
