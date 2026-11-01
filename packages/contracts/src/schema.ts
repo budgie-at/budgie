@@ -30,4 +30,6 @@ export { BudgetEntityTable } from './budget/table/budget-entity.table';
 export { BudgetCategoryLimitEntityTable } from './budget-category-limit/table/budget-category-limit-entity.table';
 export { BudgetPeriodSnapshotEntityTable } from './budget-period-snapshot/table/budget-period-snapshot-entity.table';
 export { BudgetPeriodCategorySnapshotEntityTable } from './budget-period-category-snapshot/table/budget-period-category-snapshot-entity.table';
+export { BudgetSinkingFundEntityTable } from './budget-sinking-fund/table/budget-sinking-fund-entity.table';
+export { BudgetLimitChangeEntityTable } from './budget-limit-change/table/budget-limit-change-entity.table';
 export { RecurringSeriesEntityTable } from './recurring-series/table/recurring-series-entity.table';

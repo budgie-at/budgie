@@ -2,7 +2,8 @@ import type { BudgetPeriodCategorySnapshotCreateEntityInterface, BudgetPeriodSna
 
 export interface BudgetPeriodSnapshotRowsInterface extends Pick<
     BudgetPeriodSnapshotCreateEntityInterface,
-    'otherSpent' | 'otherCarriedIn'
+    'overallSpent' | 'otherSpent' | 'otherCarriedIn'
 > {
+    readonly otherFundCovered: number;
     readonly categories: readonly Omit<BudgetPeriodCategorySnapshotCreateEntityInterface, 'snapshotId'>[];
 }

@@ -24,6 +24,7 @@ const octoberInput = (overrides: Partial<BudgetProjectionInputInterface>): Budge
     categoryLimits: [{ categoryId: GROCERIES_ID, limitAmount: 1000 }],
     entries: [],
     upcomingCharges: [],
+    reservations: [],
     ...overrides
 });
 

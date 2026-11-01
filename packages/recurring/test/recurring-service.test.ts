@@ -52,6 +52,15 @@ const seedCharges = Effect.fnUntraced(function* (accountInput: Partial<AccountCr
 const seedMonthly = (seed: Effect.Success<ReturnType<typeof seedCharges>>, title: string, day: number, amount: number) =>
     Effect.forEach([6, 5, 4, 3, 2, 1], monthsAgo => seed(title, monthsAgo, day, amount), { discard: true });
 
+const seedSalaryAndNetflix = Effect.fnUntraced(function* () {
+    const seed = yield* seedCharges();
+
+    yield* Effect.forEach([6, 5, 4, 3, 2, 1], monthsAgo => seed('ACME SALARY', monthsAgo, 1, 3000, true), { discard: true });
+    yield* seedMonthly(seed, 'NETFLIX', 20, 12);
+
+    return seed;
+});
+
 const seedVariableUtilityBills = Effect.fnUntraced(function* () {
     const seed = yield* seedCharges();
     yield* Effect.forEach(
@@ -1528,9 +1537,7 @@ layer(TestLayer)('recurringService', it => {
 
     it.effect('ignores income and sums only active expense commitments', () =>
         Effect.gen(function* () {
-            const seed = yield* seedCharges();
-            yield* Effect.forEach([6, 5, 4, 3, 2, 1], monthsAgo => seed('ACME SALARY', monthsAgo, 1, 3000, true), { discard: true });
-            yield* seedMonthly(seed, 'NETFLIX', 20, 12);
+            const seed = yield* seedSalaryAndNetflix();
             yield* Effect.forEach([9, 6, 3], monthsAgo => seed('INSURANCE CO', monthsAgo, 20, 30), { discard: true });
             yield* Effect.forEach([10, 9, 8, 7, 6, 5], monthsAgo => seed('OLD GYM', monthsAgo, 20, 40), { discard: true });
 
@@ -1538,6 +1545,52 @@ layer(TestLayer)('recurringService', it => {
 
             expect(data.committedMonthlyExpense).toBeCloseTo(22);
             expect(allEntries(data).every(entry => entry.title !== 'ACME SALARY')).toBe(true);
+        })
+    );
+
+    it.effect('projects recurring income through the income calendar and keeps it out of the expense calendar', () =>
+        Effect.gen(function* () {
+            yield* seedSalaryAndNetflix();
+
+            const incomeData = yield* Effect.flatMap(RecurringService, service => service.incomeCalendar(2026, JULY, NOW));
+            const expenseData = yield* calendar(JULY);
+            const incomeTitles = allEntries(incomeData).map(entry => entry.title);
+
+            expect(incomeTitles).toContain('ACME SALARY');
+            expect(incomeTitles).not.toContain('NETFLIX');
+            expect(allEntries(expenseData).map(entry => entry.title)).not.toContain('ACME SALARY');
+            expect(forecastedAmounts(incomeData, 1)).toEqual([3000 * PRECISION]);
+        })
+    );
+
+    it.effect('persists income series separately and keeps the expense repository view expense-only', () =>
+        Effect.gen(function* () {
+            yield* seedSalaryAndNetflix();
+
+            const expenseData = yield* calendar(JULY);
+            const repository = yield* RecurringRepository;
+            const incomeRows = yield* repository.findSeries(RecurringSeriesKindEnum.INCOME);
+            const expenseRows = yield* repository.findSeries();
+
+            expect(incomeRows.map(row => row.kind)).toEqual([RecurringSeriesKindEnum.INCOME]);
+            expect(incomeRows[0].amount).toBe(3000 * PRECISION);
+            expect(expenseRows.every(row => row.kind === RecurringSeriesKindEnum.EXPENSE)).toBe(true);
+            expect(expenseData.committedMonthlyExpense).toBeCloseTo(12);
+            expect(allEntries(expenseData).every(entry => entry.title === 'NETFLIX')).toBe(true);
+        })
+    );
+
+    it.effect('does not duplicate income series across repeated syncs', () =>
+        Effect.gen(function* () {
+            const seed = yield* seedCharges();
+            yield* Effect.forEach([6, 5, 4, 3, 2, 1], monthsAgo => seed('ACME SALARY', monthsAgo, 1, 3000, true), { discard: true });
+            const service = yield* RecurringService;
+
+            yield* service.incomeCalendar(2026, JULY, NOW);
+            yield* service.incomeCalendar(2026, JULY, NOW);
+            const repository = yield* RecurringRepository;
+
+            expect(yield* repository.findSeries(RecurringSeriesKindEnum.INCOME)).toHaveLength(1);
         })
     );
 });

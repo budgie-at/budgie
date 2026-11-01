@@ -1,11 +1,16 @@
+import { BudgetKindEnum, UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
+import { router } from 'expo-router';
 import { Text } from 'react-native';
 
 import { isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
 import { EntranceReveal } from '../../../@generic/component/entrance-reveal/entrance-reveal';
+import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
+import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { SectionHeader } from '../../../@generic/component/section-header/section-header';
-import { useNonSystemCategoriesQuery } from '../../../category/query/use-non-system-categories.query';
+import { cn } from '../../../@generic/utils/cn.util';
 import { useGetBudgetEffectiveLimitsQuery } from '../../query/use-get-budget-effective-limits.query';
 import { BudgetDetailsCategoryRow } from '../budget-details-category-row/budget-details-category-row';
 import { BudgetDetailsOtherCategoryRow } from '../budget-details-other-category-row/budget-details-other-category-row';
@@ -23,12 +28,22 @@ interface Props {
 
 export const BudgetDetailsCategoryList = ({ budget, projection, periodStart, periodEnd, currencySymbol }: Props) => {
     const { t } = useLingui();
-    const { categories } = useNonSystemCategoriesQuery();
     const effectiveLimits = useGetBudgetEffectiveLimitsQuery(budget);
-    const titleByCategoryId = new Map(categories.map(category => [category.id, category.title]));
     const categoryIds = projection.categories.map(category => category.categoryId);
     const carriedAmountByCategory = new Map(effectiveLimits.categoryLimits.map(limit => [limit.categoryId, limit.carriedAmount]));
+    const isOtherRowVisible = budget.kind === BudgetKindEnum.MAIN || isPositiveNumber(projection.other.limit);
     const hasCategoryLimits = isNotEmptyArray(projection.categories) || isPositiveNumber(budget.otherLimit);
+
+    const isEvent = budget.kind === BudgetKindEnum.EVENT;
+    const noteClassName = hasCategoryLimits ? 'text-xs' : 'px-3xl text-[13px] leading-[18px]';
+
+    const handleAddLimitsPress = () => {
+        if (isEvent) {
+            router.push({ pathname: '/budget/event/[id]/edit', params: { id: String(budget.id) } });
+        } else {
+            router.push({ pathname: '/budget/edit', params: { id: String(budget.id) } });
+        }
+    };
 
     const rows = hasCategoryLimits ? (
         <>
@@ -36,7 +51,6 @@ export const BudgetDetailsCategoryList = ({ budget, projection, periodStart, per
                 <BudgetDetailsCategoryRow
                     key={category.categoryId}
                     categoryId={category.categoryId}
-                    title={titleByCategoryId.get(category.categoryId) ?? ''}
                     scope={category}
                     carriedAmount={carriedAmountByCategory.get(category.categoryId) ?? 0}
                     periodStart={periodStart}
@@ -45,20 +59,33 @@ export const BudgetDetailsCategoryList = ({ budget, projection, periodStart, per
                     staggerIndex={index}
                 />
             ))}
-            <BudgetDetailsOtherCategoryRow
-                categoryIds={categoryIds}
-                scope={projection.other}
-                carriedAmount={effectiveLimits.otherCarriedAmount}
-                periodStart={periodStart}
-                periodEnd={periodEnd}
-                currencySymbol={currencySymbol}
-                staggerIndex={categoryIds.length}
-            />
+            {isOtherRowVisible ? (
+                <BudgetDetailsOtherCategoryRow
+                    categoryIds={categoryIds}
+                    scope={projection.other}
+                    carriedAmount={effectiveLimits.otherCarriedAmount}
+                    periodStart={periodStart}
+                    periodEnd={periodEnd}
+                    currencySymbol={currencySymbol}
+                    staggerIndex={categoryIds.length}
+                />
+            ) : null}
+            <Text className="text-xs text-secondary-foreground">
+                <Trans>Tick marks where spending should be by today.</Trans>
+            </Text>
         </>
     ) : (
-        <Text className="text-sm text-secondary-foreground">
-            <Trans>No category limits yet</Trans>
-        </Text>
+        <GroupedListSection footer={t`Optional. The overall limit applies without them.`}>
+            <GroupedListRow
+                left={<GroupedListIcon icon={UserIconNameEnum.ListPlus} />}
+                title={
+                    <Text className="text-default-foreground text-[17px]" numberOfLines={2}>
+                        {t`Add category limits`}
+                    </Text>
+                }
+                onPress={handleAddLimitsPress}
+            />
+        </GroupedListSection>
     );
 
     return (
@@ -66,6 +93,12 @@ export const BudgetDetailsCategoryList = ({ budget, projection, periodStart, per
             <SectionHeader label={t`Categories`} />
 
             {rows}
+
+            {isEvent ? (
+                <Text className={cn('text-secondary-foreground', noteClassName)}>
+                    <Trans>Tagged expenses also count in your main budget.</Trans>
+                </Text>
+            ) : null}
         </EntranceReveal>
     );
 };

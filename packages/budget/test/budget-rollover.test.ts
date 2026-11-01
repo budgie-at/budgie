@@ -2,6 +2,7 @@ import { BudgetRolloverModeEnum } from '@budgie/contracts';
 import { expect, it } from '@effect/vitest';
 import * as Effect from 'effect/Effect';
 
+import { NO_FUND_COVERED } from '../src/fund/constant/no-fund-covered.constant';
 import { buildPeriodSnapshotRows } from '../src/history/utils/build-period-snapshot-rows.util';
 import { computeEffectiveLimits } from '../src/rollover/utils/budget-effective-limits.util';
 import { computeSnapshotCarryOuts } from '../src/rollover/utils/budget-snapshot-carry-outs.util';
@@ -29,7 +30,8 @@ const chain = (modes: readonly BudgetRolloverModeEnum[], spentByPeriod: readonly
         const rows = buildPeriodSnapshotRows(
             [{ categoryId: CATEGORY_ID, limitAmount: 1000, rolloverMode: mode }],
             { spentOverall: spentByPeriod[index] ?? 0, spentByCategory: [{ categoryId: CATEGORY_ID, spent: spentByPeriod[index] ?? 0 }] },
-            carryIn
+            carryIn,
+            NO_FUND_COVERED
         );
 
         carryIn = computeSnapshotCarryOuts({
@@ -88,7 +90,8 @@ it.effect('reconstructed periods carry nothing', () =>
         const rows = buildPeriodSnapshotRows(
             [{ categoryId: CATEGORY_ID, limitAmount: 1000, rolloverMode: BudgetRolloverModeEnum.NONE }],
             { spentOverall: 100, spentByCategory: [{ categoryId: CATEGORY_ID, spent: 100 }] },
-            computeSnapshotCarryOuts(undefined)
+            computeSnapshotCarryOuts(undefined),
+            NO_FUND_COVERED
         );
 
         expect(rows.categories[0]?.carriedIn).toBe(0);

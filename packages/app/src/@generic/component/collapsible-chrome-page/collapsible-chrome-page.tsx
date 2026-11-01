@@ -33,8 +33,7 @@ type Props = TitleProps & {
     readonly chromeConfig?: ScreenChromeConfigOverridesInterface;
 };
 
-const FOOTER_CONTENT_GAP = 32;
-const ESTIMATED_FOOTER_HEIGHT = 64;
+const FOOTER_CONTENT_BOTTOM_INSET = 96;
 
 export const CollapsibleChromePage = ({
     title,
@@ -50,8 +49,11 @@ export const CollapsibleChromePage = ({
     testID,
     chromeConfig
 }: Props): ReactNode => {
-    const [footerHeight, setFooterHeight] = useState(ESTIMATED_FOOTER_HEIGHT);
-    const contentInsetBottom = isDefined(footer) ? footerHeight + FOOTER_CONTENT_GAP : 0;
+    const [footerHeight, setFooterHeight] = useState(FOOTER_CONTENT_BOTTOM_INSET);
+    const handleFooterLayout = (event: LayoutChangeEvent) => {
+        setFooterHeight(event.nativeEvent.layout.height);
+    };
+    const contentInsetBottom = isDefined(footer) ? Math.max(footerHeight, FOOTER_CONTENT_BOTTOM_INSET) : 0;
     const { bottomOffset: bottomOffsetOverride, ...restScrollViewProps } = isDefined(scrollViewProps) ? scrollViewProps : {};
     const resolvedBottomOffset = isDefined(bottomOffsetOverride) ? bottomOffsetOverride : contentInsetBottom;
     const resolvedLargeTitle = isDefined(largeTitle) ? (
@@ -83,8 +85,6 @@ export const CollapsibleChromePage = ({
         </View>
     );
 
-    const handleFooterLayout = (event: LayoutChangeEvent) => void setFooterHeight(Math.ceil(event.nativeEvent.layout.height));
-
     return (
         <ScreenChromeThemeProvider syncNativeScrollOffset {...(isDefined(chromeConfig) && { config: chromeConfig })}>
             <ScreenChromeFrame>
@@ -111,11 +111,7 @@ export const CollapsibleChromePage = ({
                     collapsedTitle={resolvedSmallTitle}
                 />
 
-                {isDefined(footer) ? (
-                    <StickyFooterBand>
-                        <View onLayout={handleFooterLayout}>{footer}</View>
-                    </StickyFooterBand>
-                ) : null}
+                {isDefined(footer) ? <StickyFooterBand onLayout={handleFooterLayout}>{footer}</StickyFooterBand> : null}
             </ScreenChromeFrame>
         </ScreenChromeThemeProvider>
     );

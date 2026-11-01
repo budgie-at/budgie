@@ -1,10 +1,9 @@
 import { BudgetAlertScopeEnum } from '@budgie/budget';
-import { TransactionTypeEnum } from '@budgie/contracts';
+import { TransactionTypeEnum, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 
 import { AnalyticsTransactionsModeEnum } from '../../../transaction/enum/analytics-transactions-mode.enum';
-import { BudgetSelector } from '../../budget.selector';
 import { BudgetDetailsLimitRow } from '../budget-details-limit-row/budget-details-limit-row';
 
 import type { BudgetProjectionScopeInterface } from '@budgie/budget';
@@ -20,7 +19,6 @@ interface Props {
 }
 
 const HIGHLIGHT_TARGET = { scope: BudgetAlertScopeEnum.OTHER };
-const TEST_IDS = { row: BudgetSelector.DetailsOtherCategoryRow, spent: BudgetSelector.DetailsOtherCategorySpentLabel };
 
 export const BudgetDetailsOtherCategoryRow = (props: Props) => {
     const { categoryIds, scope, periodStart, periodEnd, currencySymbol, carriedAmount, staggerIndex } = props;
@@ -47,7 +45,7 @@ export const BudgetDetailsOtherCategoryRow = (props: Props) => {
             carriedAmount={carriedAmount}
             scope={scope}
             currencySymbol={currencySymbol}
-            testIDs={TEST_IDS}
+            icon={UserIconNameEnum.CircleEllipsis}
             onPress={handlePress}
             highlightTarget={HIGHLIGHT_TARGET}
             staggerIndex={staggerIndex}

@@ -70,6 +70,9 @@ import {
     AccountDebtTypeEnum,
     AccountEntityTable,
     AccountTypeEnum,
+    BudgetKindEnum,
+    BudgetLimitSourceEnum,
+    BudgetPeriodEnum,
     DEFAULT_TRANSACTION_FILTER,
     Db,
     InstrumentEntityTable,
@@ -99,6 +102,23 @@ type LiveAtom = Atom.Atom<AsyncResult.AsyncResult<unknown, unknown>>;
 const BASE_INSTRUMENT_ID = 1;
 const { EN } = LanguageEnum;
 const NOW = Date.now();
+
+const BUDGET_KEY = {
+    id: 1,
+    kind: BudgetKindEnum.MAIN,
+    period: BudgetPeriodEnum.MONTHLY,
+    periodStartDay: 1,
+    useLastDayOfMonth: false,
+    limitSource: BudgetLimitSourceEnum.FIXED,
+    instrumentId: BASE_INSTRUMENT_ID,
+    overallLimit: 100_000_000,
+    otherLimit: 0,
+    tagId: null,
+    periodAnchorMs: null,
+    startsAtMs: null,
+    endsAtMs: null,
+    dayStart: NOW
+};
 const FLUSH_WAIT = '120 millis';
 const tablesByName = new Map<string, SQLiteTable>(Object.values(schema).map(table => [getTableName(table), table]));
 
@@ -149,16 +169,8 @@ const liveAtoms = ({
     genericBudgetTemplate: genericBudgetTemplateAtom('USD'),
     activeBudget: activeBudgetAtom,
     budgetCategoryLimits: budgetCategoryLimitsAtom(1),
-    budgetProjection: budgetProjectionAtom({
-        id: 1,
-        periodStartDay: 1,
-        useLastDayOfMonth: false,
-        instrumentId: BASE_INSTRUMENT_ID,
-        overallLimit: 100_000_000,
-        otherLimit: 0,
-        dayStart: NOW
-    }),
-    budgetSpent: budgetSpentAtom({ periodStartDay: 1, useLastDayOfMonth: false, instrumentId: BASE_INSTRUMENT_ID, dayStart: NOW }),
+    budgetProjection: budgetProjectionAtom(BUDGET_KEY),
+    budgetSpent: budgetSpentAtom(BUDGET_KEY),
     uncategorizedRows: uncategorizedRowsAtom(DEFAULT_TRANSACTION_FILTER),
     untaggedRows: untaggedRowsAtom(DEFAULT_TRANSACTION_FILTER),
     categoryEvidence: categoryEvidenceAtom,

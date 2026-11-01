@@ -1,4 +1,7 @@
+import { BudgetPeriodEnum } from '@budgie/contracts';
+import { addDays } from 'date-fns/addDays';
 import { addMonths } from 'date-fns/addMonths';
+import { differenceInCalendarDays } from 'date-fns/differenceInCalendarDays';
 import { endOfMonth } from 'date-fns/endOfMonth';
 import { getMonth } from 'date-fns/getMonth';
 import { getYear } from 'date-fns/getYear';
@@ -8,7 +11,13 @@ import { startOfDay } from 'date-fns/startOfDay';
 import { startOfMonth } from 'date-fns/startOfMonth';
 import { subMonths } from 'date-fns/subMonths';
 
+import { BUDGET_NOMINAL_PERIOD_DAYS } from '../constant/budget-nominal-period-days.constant';
+
+import type { BudgetPeriodSpecInterface } from '../interface/budget-period-spec.interface';
 import type { BudgetPeriodWindowInterface } from '../interface/budget-period-window.interface';
+
+const FALLBACK_PERIOD_ANCHOR_YEAR = 2024;
+const FALLBACK_PERIOD_ANCHOR = new Date(FALLBACK_PERIOD_ANCHOR_YEAR, 0, 1);
 
 const buildMonthKey = (date: Date): string => `${getYear(date)}-${getMonth(date)}`;
 
@@ -61,12 +70,50 @@ const computeStartDayWindow = (periodStartDay: number, now: Date): BudgetPeriodW
     };
 };
 
-export const computePeriodWindow = (periodStartDay: number, useLastDayOfMonth: boolean, now: Date): BudgetPeriodWindowInterface => {
+const computeMonthlyWindow = (periodStartDay: number, useLastDayOfMonth: boolean, now: Date): BudgetPeriodWindowInterface => {
     if (useLastDayOfMonth) {
         return computeEndOfMonthWindow(now);
     }
 
     return computeStartDayWindow(periodStartDay, now);
+};
+
+const computeAnchoredWindow = (anchorDate: Date, periodDays: number, now: Date): BudgetPeriodWindowInterface => {
+    const anchorDay = startOfDay(anchorDate);
+    const periodIndex = Math.floor(differenceInCalendarDays(now, anchorDay) / periodDays);
+    const periodStart = addDays(anchorDay, periodIndex * periodDays);
+
+    return { periodStart, nextPeriodStart: addDays(periodStart, periodDays) };
+};
+
+const computeYearlyWindow = (anchorDate: Date, now: Date): BudgetPeriodWindowInterface => {
+    const anchorMonthIndex = anchorDate.getMonth();
+    const anchorDayOfMonth = anchorDate.getDate();
+    const startThisYear = clampDayToMonth(now.getFullYear(), anchorMonthIndex, anchorDayOfMonth);
+    const startYear = now.getTime() >= startThisYear.getTime() ? now.getFullYear() : now.getFullYear() - 1;
+
+    return {
+        periodStart: clampDayToMonth(startYear, anchorMonthIndex, anchorDayOfMonth),
+        nextPeriodStart: clampDayToMonth(startYear + 1, anchorMonthIndex, anchorDayOfMonth)
+    };
+};
+
+export const computePeriodWindow = (spec: BudgetPeriodSpecInterface, now: Date): BudgetPeriodWindowInterface => {
+    const anchorDate = spec.periodAnchorDate ?? FALLBACK_PERIOD_ANCHOR;
+
+    if (spec.period === BudgetPeriodEnum.WEEKLY) {
+        return computeAnchoredWindow(anchorDate, BUDGET_NOMINAL_PERIOD_DAYS[BudgetPeriodEnum.WEEKLY], now);
+    }
+
+    if (spec.period === BudgetPeriodEnum.BIWEEKLY) {
+        return computeAnchoredWindow(anchorDate, BUDGET_NOMINAL_PERIOD_DAYS[BudgetPeriodEnum.BIWEEKLY], now);
+    }
+
+    if (spec.period === BudgetPeriodEnum.YEARLY) {
+        return computeYearlyWindow(anchorDate, now);
+    }
+
+    return computeMonthlyWindow(spec.periodStartDay, spec.useLastDayOfMonth, now);
 };
 
 export const getInclusiveEnd = (nextPeriodStart: Date): Date => new Date(nextPeriodStart.getTime() - 1);

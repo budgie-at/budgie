@@ -1,8 +1,7 @@
-import { useLingui } from '@lingui/react/macro';
 import { Controller, UseControllerReturn, useFormContext } from 'react-hook-form';
 
-import { AmountInput } from '../../../@generic/component/amount-input/amount-input';
 import { BudgetFormValues } from '../../constant/budget-form-schema.constant';
+import { BudgetEditableAmountInput } from '../budget-editable-amount-input/budget-editable-amount-input';
 
 interface Props {
     readonly currencySymbol: string;
@@ -11,21 +10,15 @@ interface Props {
 }
 
 export const BudgetLimitAmountInput = ({ currencySymbol, name, testID }: Props) => {
-    const { t } = useLingui();
     const { control } = useFormContext<BudgetFormValues>();
 
     const render = ({ field: { value, onChange } }: UseControllerReturn<BudgetFormValues, Props['name']>) => (
-        <AmountInput
+        <BudgetEditableAmountInput
             testID={testID}
             value={value}
+            currencySymbol={currencySymbol}
+            className="min-w-[104px] max-w-[136px] text-right"
             onChangeValue={onChange}
-            placeholder={t`e.g. 200`}
-            valuePrefix={currencySymbol}
-            size="md"
-            textAlign="right"
-            inputClassName="min-w-[104px] max-w-[136px]"
-            commitOnBlur
-            selectTextOnFocus
         />
     );
 

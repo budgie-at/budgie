@@ -18,7 +18,7 @@ export const BudgetEmptyState = ({ testID }: Props) => {
             testID={testID}
             icon={UserIconNameEnum.PiggyBank}
             title={t`Create your budget`}
-            description={t`Set a monthly limit and track your spending`}
+            description={t`Set a limit and track your spending`}
             onPress={handleNavigate}
         />
     );

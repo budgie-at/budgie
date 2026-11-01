@@ -1,28 +1,23 @@
-import { BudgetRolloverModeEnum, UserIconNameEnum } from '@budgie/contracts';
+import { BudgetRolloverModeEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
-import { Trans } from '@lingui/react/macro';
 import { useRef } from 'react';
 import { useFieldArray, useFormContext, useWatch } from 'react-hook-form';
-import { StyleSheet, Text, View } from 'react-native';
+import { View } from 'react-native';
 
 import { isEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { Button } from '../../../@generic/component/button/button';
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
+import { HeaderTextAction } from '../../../@generic/component/header-text-action/header-text-action';
 import { useCategorySelectorModal } from '../../../category/context/category-selector-modal.context';
 import { BudgetSelector } from '../../budget.selector';
 import { BudgetFormValues } from '../../constant/budget-form-schema.constant';
+import { BudgetAddCategoryLimitRow } from '../budget-add-category-limit-row/budget-add-category-limit-row';
+import { BudgetAllocationSummary } from '../budget-allocation-summary/budget-allocation-summary';
 import { BudgetCategoryLimitCompactRow } from '../budget-category-limit-compact-row/budget-category-limit-compact-row';
-import { BudgetCategoryLimitsEmptyState } from '../budget-category-limits-empty-state/budget-category-limits-empty-state';
+import { BudgetGroupedSectionHeader } from '../budget-grouped-section-header/budget-grouped-section-header';
 import { BudgetInlineOtherLimitRow } from '../budget-inline-other-limit-row/budget-inline-other-limit-row';
 
 const BOTTOM_ADD_BUTTON_THRESHOLD = 5;
-
-const styles = StyleSheet.create({
-    headerAddButtonTarget: {
-        height: 46,
-        width: 46
-    }
-});
 
 interface Props {
     readonly currencySymbol: string;
@@ -39,6 +34,9 @@ export const BudgetInlineCategoryLimits = ({ currencySymbol, onCategoryAdded }: 
     const selectedCategoryIds = categoryLimits.map(limit => limit.categoryId).filter(isPositiveNumber);
     const isCategoryLimitsEmpty = isEmptyArray(fields);
     const isBottomAddButtonVisible = fields.length > BOTTOM_ADD_BUTTON_THRESHOLD;
+    const addRowTestID = isCategoryLimitsEmpty
+        ? BudgetSelector.SetupCategoryLimitAddButton
+        : BudgetSelector.SetupCategoryLimitBottomAddButton;
 
     const handleAddPress = () => {
         openCategorySelector(
@@ -62,47 +60,25 @@ export const BudgetInlineCategoryLimits = ({ currencySymbol, onCategoryAdded }: 
         }
     };
 
+    const addAction = isCategoryLimitsEmpty ? null : (
+        <HeaderTextAction label={t`Add`} onPress={handleAddPress} testID={BudgetSelector.SetupCategoryLimitAddButton} />
+    );
+
     return (
         <View className="gap-y-md" onLayout={handleLayout}>
-            <View testID={BudgetSelector.SetupCategoryLimitsHeader} className="flex-row items-center justify-between">
-                <Text className="text-primary text-lg font-semibold">
-                    <Trans>Category limits</Trans>
-                </Text>
-                <View className="relative" collapsable={false} style={styles.headerAddButtonTarget}>
-                    <Button
-                        accessibilityLabel={t`Add category`}
-                        leftIcon={UserIconNameEnum.Plus}
-                        onPress={handleAddPress}
-                        size="sm"
-                        variant="ghost"
-                    />
-                    <View
-                        collapsable={false}
-                        nativeID={BudgetSelector.SetupCategoryLimitAddButton}
-                        pointerEvents="none"
-                        style={StyleSheet.absoluteFill}
-                        testID={BudgetSelector.SetupCategoryLimitAddButton}
-                    />
-                </View>
-            </View>
-            <BudgetInlineOtherLimitRow currencySymbol={currencySymbol} />
-            {isCategoryLimitsEmpty ? (
-                <BudgetCategoryLimitsEmptyState onPress={handleAddPress} />
-            ) : (
-                fields.map((field, index) => (
+            <BudgetGroupedSectionHeader label={t`Category limits`} testID={BudgetSelector.SetupCategoryLimitsHeader} trailing={addAction} />
+            <GroupedListSection>
+                <BudgetInlineOtherLimitRow currencySymbol={currencySymbol} />
+                {fields.map((field, index) => (
                     <BudgetCategoryLimitCompactRow key={field.id} currencySymbol={currencySymbol} index={index} onRemove={remove} />
-                ))
-            )}
-            {isBottomAddButtonVisible ? (
-                <Button
-                    testID={BudgetSelector.SetupCategoryLimitBottomAddButton}
-                    variant="ghost"
-                    size="sm"
-                    leftIcon={UserIconNameEnum.Plus}
-                    content={t`Add category`}
-                    onPress={handleAddPress}
-                />
-            ) : null}
+                ))}
+                {isCategoryLimitsEmpty || isBottomAddButtonVisible ? (
+                    <BudgetAddCategoryLimitRow testID={addRowTestID} onPress={handleAddPress} />
+                ) : null}
+            </GroupedListSection>
+            <View className="px-3xl">
+                <BudgetAllocationSummary />
+            </View>
         </View>
     );
 };

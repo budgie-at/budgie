@@ -1,34 +1,57 @@
-import { convertFromMicroUnits } from '@budgie/contracts';
+import { BudgetLimitSourceEnum, convertFromMicroUnits } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { EntranceReveal } from '../../../@generic/component/entrance-reveal/entrance-reveal';
 import { HairlineStatRow } from '../../../@generic/component/hairline-stat-row/hairline-stat-row';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { BudgetSelector } from '../../budget.selector';
+import { BUDGET_PACE_TEXT_CLASS_NAME } from '../../constant/budget-pace-text-class-name.constant';
+import { BudgetHeldBackNote } from '../budget-held-back-note/budget-held-back-note';
 
+import type { BudgetDisplayStatusInterface } from '../../interface/budget-display-status.interface';
 import type { BudgetProjectionScopeInterface } from '@budgie/budget';
 
 interface Props {
     readonly scope: BudgetProjectionScopeInterface;
+    readonly displayStatus: BudgetDisplayStatusInterface;
+    readonly limitSource: BudgetLimitSourceEnum;
     readonly currencySymbol: string;
 }
 
-export const BudgetStatRow = ({ scope, currencySymbol }: Props) => {
+export const BudgetStatRow = ({ scope, displayStatus, limitSource, currencySymbol }: Props) => {
     const { t } = useLingui();
     const formatDigits = useDisplayFormatDigits();
-    const leftVariant = scope.free < 0 ? 'destructive' : 'positive';
+    const leftTone = scope.free < 0 ? 'destructive' : 'positive';
+    const isNeutralLeft = scope.free >= 0 && displayStatus.isTight;
 
     const formatAmount = (amount: number) => formatDigits(convertFromMicroUnits(amount), currencySymbol).replace('-', '−');
 
-    const stats = [
-        { label: t`Spent`, value: formatAmount(scope.spent), variant: 'primary', testID: BudgetSelector.DetailsSpentLabel },
-        { label: t`Left`, value: formatAmount(scope.free), variant: leftVariant, testID: BudgetSelector.DetailsRemainingLabel },
-        { label: t`Limit`, value: formatAmount(scope.limit), variant: 'primary', testID: BudgetSelector.DetailsLimitLabel }
-    ] as const;
+    const spentStat = {
+        label: t`Spent`,
+        value: formatAmount(scope.spent),
+        variant: 'primary',
+        testID: BudgetSelector.DetailsSpentLabel
+    } as const;
+    const leftStat = {
+        label: t`Left`,
+        value: formatAmount(scope.free),
+        variant: isNeutralLeft ? 'primary' : leftTone,
+        ...(!isNeutralLeft && { valueClassName: BUDGET_PACE_TEXT_CLASS_NAME[leftTone] }),
+        testID: BudgetSelector.DetailsRemainingLabel
+    } as const;
+    const limitValue = formatAmount(scope.limit);
+    const incomeLabel = limitSource === BudgetLimitSourceEnum.INCOME_EXPECTED ? t`Expected income` : t`Income`;
+    const incomeStat = { label: incomeLabel, value: limitValue, variant: 'primary', testID: BudgetSelector.DetailsLimitLabel } as const;
+    const limitStat = { label: t`Limit`, value: limitValue, variant: 'primary', testID: BudgetSelector.DetailsLimitLabel } as const;
+    const stats =
+        limitSource === BudgetLimitSourceEnum.FIXED
+            ? ([spentStat, leftStat, limitStat] as const)
+            : ([incomeStat, spentStat, leftStat] as const);
 
     return (
-        <EntranceReveal step={2}>
+        <EntranceReveal step={2} className="gap-y-xs">
             <HairlineStatRow stats={stats} />
+            <BudgetHeldBackNote scope={scope} currencySymbol={currencySymbol} />
         </EntranceReveal>
     );
 };

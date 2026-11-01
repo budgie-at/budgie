@@ -6,9 +6,7 @@ import {
     BudgetRepository,
     computeBudgetAlertTriggers,
     computeBudgetPaceTriggers,
-    computeEffectiveLimits,
-    computePeriodWindow,
-    computeSpent
+    computeEffectiveLimits
 } from '@budgie/budget';
 import { CategoryRepository, InstrumentRepository, LanguageEnum, SettingsRepository, convertFromMicroUnits } from '@budgie/contracts';
 import { i18n } from '@lingui/core';
@@ -29,7 +27,9 @@ import { postLocalNotification } from '../../@generic/utils/post-local-notificat
 import { DEFAULT_DECIMAL_PLACES } from '../../i18n/constant/default-decimal-places.constant';
 import { formatSymbolAmount } from '../../i18n/utils/format-symbol-amount.util';
 import { languageToLocale } from '../../i18n/utils/language-to-locale.util';
+import { BUDGET_PERIOD_THIS_LABEL } from '../constant/budget-period-this-label.constant';
 import { BudgetBackgroundTaskNameEnum } from '../enum/budget-background-task-name.enum';
+import { resolveBudgetWindow } from '../utils/resolve-budget-window.util';
 
 import { BudgetProjectionService } from './budget-projection.service';
 
@@ -39,7 +39,7 @@ import type {
     BudgetProjectionScopeInterface,
     BudgetSpentInterface
 } from '@budgie/budget';
-import type { BudgetEntityInterface } from '@budgie/contracts';
+import type { BudgetPeriodEnum } from '@budgie/contracts';
 
 export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonitorService>()('@budgie/app/BudgetAlertMonitorService', {
     make: Effect.gen(function* () {
@@ -99,15 +99,6 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
             ];
         };
 
-        const loadSpent = Effect.fn('BudgetAlertMonitorService.loadSpent')(function* (
-            budget: Pick<BudgetEntityInterface, 'periodStartDay' | 'useLastDayOfMonth' | 'instrumentId'>
-        ) {
-            const { periodStart, nextPeriodStart } = computePeriodWindow(budget.periodStartDay, budget.useLastDayOfMonth, new Date());
-            const entries = yield* budgetRepository.findBudgetSpentEntries(periodStart, nextPeriodStart, budget.instrumentId);
-
-            return computeSpent(entries, budget.instrumentId);
-        });
-
         const loadDeliveredTriggerKeys = Effect.fn('BudgetAlertMonitorService.loadDeliveredTriggerKeys')(function* (storageKey: string) {
             const raw = yield* Effect.promise(() => storage.getItem(storageKey));
 
@@ -121,33 +112,41 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
         const postOverallAlert = Effect.fn('BudgetAlertMonitorService.postOverallAlert')(function* (
             threshold: number,
             overallLimit: number,
-            spentOverall: number
+            spentOverall: number,
+            period: BudgetPeriodEnum
         ) {
+            const thisPeriod = i18n._(BUDGET_PERIOD_THIS_LABEL[period]);
             const spentPercent = isPositiveNumber(overallLimit) ? Math.round((spentOverall / overallLimit) * 100) : threshold;
             const title = threshold >= 100 ? i18n._(msg`Budget limit reached`) : i18n._(msg`Overall budget: ${threshold}% spent`);
-            const body = i18n._(msg`You have used ${spentPercent}% of your overall budget.`);
+            const body = i18n._(msg`You have used ${spentPercent}% of your overall budget ${thisPeriod}.`);
 
             yield* postLocalNotification(title, body);
         });
 
-        const postOtherAlert = Effect.fn('BudgetAlertMonitorService.postOtherAlert')(function* (threshold: number) {
+        const postOtherAlert = Effect.fn('BudgetAlertMonitorService.postOtherAlert')(function* (
+            threshold: number,
+            period: BudgetPeriodEnum
+        ) {
+            const thisPeriod = i18n._(BUDGET_PERIOD_THIS_LABEL[period]);
             const title = threshold >= 100 ? i18n._(msg`Other budget: limit reached`) : i18n._(msg`Other budget: ${threshold}% spent`);
-            const body = i18n._(msg`You have used ${threshold}% of your budget for spending outside category limits.`);
+            const body = i18n._(msg`You have used ${threshold}% of your budget for spending outside category limits ${thisPeriod}.`);
 
             yield* postLocalNotification(title, body);
         });
 
         const postCategoryAlert = Effect.fn('BudgetAlertMonitorService.postCategoryAlert')(function* (
             threshold: number,
-            categoryId: number
+            categoryId: number,
+            period: BudgetPeriodEnum
         ) {
+            const thisPeriod = i18n._(BUDGET_PERIOD_THIS_LABEL[period]);
             const settings = yield* settingsRepository.findSettings();
             const language = isDefined(settings) ? settings.language : LanguageEnum.EN;
             const [category] = yield* categoryRepository.findById(categoryId, language);
             const categoryName = isDefined(category) ? category.title : i18n._(msg`Category`);
             const title =
                 threshold >= 100 ? i18n._(msg`${categoryName}: limit reached`) : i18n._(msg`${categoryName}: ${threshold}% spent`);
-            const body = i18n._(msg`You have used ${threshold}% of the limit for ${categoryName}.`);
+            const body = i18n._(msg`You have used ${threshold}% of the limit for ${categoryName} ${thisPeriod}.`);
 
             yield* postLocalNotification(title, body);
         });
@@ -214,18 +213,19 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
         const postTrigger = Effect.fn('BudgetAlertMonitorService.postTrigger')(function* (
             trigger: BudgetAlertTriggerInterface,
             overallLimit: number,
-            spent: BudgetSpentInterface
+            spent: BudgetSpentInterface,
+            period: BudgetPeriodEnum
         ) {
             if (trigger.scope === BudgetAlertScopeEnum.OVERALL) {
-                return yield* postOverallAlert(trigger.threshold, overallLimit, spent.spentOverall);
+                return yield* postOverallAlert(trigger.threshold, overallLimit, spent.spentOverall, period);
             }
 
             if (trigger.scope === BudgetAlertScopeEnum.OTHER) {
-                return yield* postOtherAlert(trigger.threshold);
+                return yield* postOtherAlert(trigger.threshold, period);
             }
 
             if (isDefined(trigger.categoryId)) {
-                return yield* postCategoryAlert(trigger.threshold, trigger.categoryId);
+                return yield* postCategoryAlert(trigger.threshold, trigger.categoryId, period);
             }
 
             return yield* Effect.void;
@@ -233,7 +233,7 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
 
         return {
             run: Effect.fn('BudgetAlertMonitorService.run')(function* () {
-                const [budget, settings] = yield* Effect.all([budgetRepository.findActive(), settingsRepository.findSettings()], {
+                const [budget, settings] = yield* Effect.all([budgetRepository.findMain(), settingsRepository.findSettings()], {
                     concurrency: 'unbounded'
                 });
                 const isBudgetPushEnabled = isDefined(settings) ? settings.isBudgetPushEnabled : false;
@@ -242,16 +242,16 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
                     return;
                 }
 
-                const periodStartMs = computePeriodWindow(
-                    budget.periodStartDay,
-                    budget.useLastDayOfMonth,
-                    new Date()
-                ).periodStart.getTime();
-                const spent = yield* loadSpent(budget);
+                const now = new Date();
+                const periodStartMs = resolveBudgetWindow(budget, now).periodStart.getTime();
+                const spent = yield* budgetProjectionService.spent(budget, now);
                 const categoryLimits = yield* budgetCategoryLimitRepository.getByBudget(budget.id);
-                const projection = yield* budgetProjectionService.project(budget, new Date());
+                const projection = yield* budgetProjectionService.project(budget, now);
                 const [latestSnapshot] = yield* budgetPeriodSnapshotRepository.findRecent(budget.id, 1);
-                const effectiveLimits = computeEffectiveLimits(latestSnapshot, budget, categoryLimits);
+                const effectiveLimits = {
+                    ...computeEffectiveLimits(latestSnapshot, budget, categoryLimits),
+                    overallLimit: projection.overall.limit
+                };
                 const triggers = [
                     ...computeBudgetAlertTriggers(effectiveLimits, spent, effectiveLimits.categoryLimits),
                     ...computeBudgetPaceTriggers(projection)
@@ -263,7 +263,7 @@ export class BudgetAlertMonitorService extends Context.Service<BudgetAlertMonito
                     yield* Effect.forEach(newTriggers, trigger =>
                         (trigger.kind === BudgetAlertKindEnum.PACE
                             ? postPaceAlert(trigger, projection, budget.instrumentId)
-                            : postTrigger(trigger, effectiveLimits.overallLimit, spent)
+                            : postTrigger(trigger, effectiveLimits.overallLimit, spent, budget.period)
                         ).pipe(Effect.as(buildTriggerKey(trigger)), Effect.option)
                     )
                 );
