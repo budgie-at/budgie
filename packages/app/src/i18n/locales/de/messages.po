@@ -1332,6 +1332,10 @@ msgstr "Geliehener Betrag"
 msgid "Amount lent"
 msgstr "Verliehener Betrag"
 
+#: src/transaction/hook/use-quick-form-submit.hook.ts
+msgid "Amount must be larger than the fee"
+msgstr "Der Betrag muss grÃ¶Ãer als die GebÃ¼hr sein"
+
 #: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
 msgid "Amount or merchant is empty"
 msgstr "Betrag oder Händler fehlt"
@@ -1852,6 +1856,7 @@ msgstr "Kann später nicht geändert werden"
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
+#: src/transaction/components/transaction-keypad/transaction-keypad.tsx
 #: src/transaction/hook/use-convert-to-refund-action.hook.ts
 #: src/transaction/hook/use-delete-transaction.hook.ts
 #: src/transaction/hook/use-revert-consolidation.hook.ts
@@ -2033,6 +2038,7 @@ msgid "Choose \"Excel\" as the export format — PDF and CSV files can't be impo
 msgstr "Wählen Sie „Excel“ als Exportformat – PDF- und CSV-Dateien können nicht importiert werden"
 
 #: src/rule/components/rule-action-category-selector/rule-action-category-selector.tsx
+#: src/transaction/hook/use-quick-form-submit.hook.ts
 msgid "Choose a category"
 msgstr "Kategorie wählen"
 
@@ -2084,6 +2090,7 @@ msgid "Choose accounts"
 msgstr "Konten auswählen"
 
 #: src/rule/components/rule-condition-account-selector/rule-condition-account-selector.tsx
+#: src/transaction/hook/use-quick-form-submit.hook.ts
 msgid "Choose an account"
 msgstr "Konto wählen"
 
@@ -2102,6 +2109,10 @@ msgstr "PIN wählen und bestätigen"
 #: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
 msgid "Choose another icon…"
 msgstr "Anderes Symbol wählen…"
+
+#: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
+msgid "Choose both accounts"
+msgstr "Beide Konten auswÃ¤hlen"
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Choose dates to sync again"
@@ -2213,6 +2224,10 @@ msgstr "Monatlich gebunden: {committedExpense}"
 msgid "Comparison: {label}"
 msgstr "Vergleich: {label}"
 
+#: src/transaction/hook/use-quick-form-submit.hook.ts
+msgid "Complete every split entry"
+msgstr "FÃ¼lle jeden Aufteilungseintrag aus"
+
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "Confirm"
 msgstr "Bestätigen"
@@ -2220,10 +2235,6 @@ msgstr "Bestätigen"
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Confirm PIN"
 msgstr "PIN bestätigen"
-
-#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
-msgid "Confirm Split"
-msgstr "Aufteilung bestätigen"
 
 #: src/tag/components/tags-selector-done-button/tags-selector-done-button.tsx
 msgid "Confirm tag selection"
@@ -2858,6 +2869,7 @@ msgstr "Datenwerkzeuge"
 
 #: src/@generic/component/date-filter/date-filter.tsx
 #: src/app/(tabs)/settings/import.tsx
+#: src/app/date-picker.tsx
 #: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
 msgid "Date"
 msgstr "Datum"
@@ -3107,9 +3119,11 @@ msgstr "Enthält nicht"
 
 #: src/@generic/component/keyboard-done-accessory/keyboard-done-accessory.tsx
 #: src/app/import-column-mapper.tsx
+#: src/app/note-input.tsx
 #: src/categorize-inbox/components/categorize-inbox-empty-state/categorize-inbox-empty-state.tsx
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 msgid "Done"
 msgstr "Fertig"
 
@@ -3384,6 +3398,11 @@ msgstr "Geben Sie eine {PIN_LENGTH}-stellige PIN ein"
 msgid "Enter all amounts"
 msgstr "Alle Beträge eingeben"
 
+#: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
+#: src/transaction/hook/use-quick-form-submit.hook.ts
+msgid "Enter an amount"
+msgstr "Betrag eingeben"
+
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Enter current PIN"
 msgstr "Aktuelle PIN eingeben"
@@ -3616,6 +3635,7 @@ msgid "Failed to save PIN. Please try again."
 msgstr "PIN konnte nicht gespeichert werden. Bitte versuchen Sie es erneut."
 
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
+#: src/transaction/components/transaction-fee-modal-content/transaction-fee-modal-content.tsx
 #: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
 msgid "Fee"
 msgstr "Gebühr"
@@ -3799,6 +3819,10 @@ msgstr "Von einem Betrag bis zu einem anderen"
 #: src/budget/components/budget-fund-suggestion-banner/budget-fund-suggestion-banner.tsx
 msgid "From your recurring charges: {name}, {amountLabel} per cycle"
 msgstr "Aus deinen wiederkehrenden Zahlungen: {name}, {amountLabel} pro Zyklus"
+
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
+msgid "Fully assigned"
+msgstr "VollstÃ¤ndig zugewiesen"
 
 #: src/budget/components/budget-fund-row-status/budget-fund-row-status.tsx
 msgid "Fully funded"
@@ -5102,6 +5126,7 @@ msgstr "Nicht festgelegt"
 msgid "Not synced: Auto-Invest, Binance Pay, Binance Card, gift cards, sub-account transfers, margin and futures."
 msgstr "Nicht synchronisiert: Auto-Invest, Binance Pay, Binance Card, Geschenkkarten, Subkonto-Überweisungen, Margin und Futures."
 
+#: src/app/note-input.tsx
 #: src/transaction/components/transaction-info-note-group/transaction-info-note-group.tsx
 #: src/transaction/components/transaction-note-field-icon/transaction-note-field-icon.tsx
 msgid "Note"
@@ -6199,6 +6224,7 @@ msgstr "Gleicher Auslöser wie eine Regel darüber"
 
 #: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
+#: src/transaction/components/transaction-keypad-confirm-button/transaction-keypad-confirm-button.tsx
 msgid "Save"
 msgstr "Speichern"
 
@@ -6396,6 +6422,7 @@ msgstr "Wählen Sie eine gültige Spalte"
 
 #: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
 #: src/transaction/components/transaction-account-row/transaction-account-row.tsx
+#: src/transaction/components/transaction-transfer-accounts-row/transaction-transfer-accounts-row.tsx
 msgid "Select account"
 msgstr "Konto auswählen"
 
@@ -6682,6 +6709,7 @@ msgstr "Ausgaben <0>{formattedExpense}</0> · Einnahmen <1>{formattedIncome}</1>
 msgid "Spent so far"
 msgstr "Bisher ausgegeben"
 
+#: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
 #: src/transaction/components/transaction-split-field-icon/transaction-split-field-icon.tsx
 msgid "Split"
 msgstr "Aufteilen"
