@@ -5,6 +5,7 @@ import { CollapsibleHeaderBackdrop, ScreenChromeFrame } from '@rnw-community/rea
 import { EmptyFn } from '@rnw-community/shared';
 
 import { ScreenChromeThemeProvider } from '../../provider/screen-chrome-theme.provider';
+import { CollapsibleChromeHeaderScrim } from '../collapsible-chrome-header-scrim/collapsible-chrome-header-scrim';
 import { CollapsibleChromeHeader } from '../collapsible-chrome-header/collapsible-chrome-header';
 import { GoBackButton } from '../go-back-button/go-back-button';
 import { SearchablePageSearchInput } from '../searchable-page-search-input/searchable-page-search-input';
@@ -42,6 +43,8 @@ export const SearchablePage = (props: Props) => {
                     </View>
 
                     <CollapsibleHeaderBackdrop />
+
+                    <CollapsibleChromeHeaderScrim />
 
                     <CollapsibleChromeHeader
                         leading={<GoBackButton onPress={onGoBack} />}

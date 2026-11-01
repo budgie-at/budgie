@@ -1,3 +1,5 @@
+import { Text } from 'react-native';
+
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 
@@ -12,7 +14,15 @@ export const BudgetDeleteRow = ({ title, testID, onDelete }: Props) => {
 
     return (
         <GroupedListSection>
-            <GroupedListRow title={title} titleClassName="text-destructive-strong" testID={testID} onPress={handlePress} />
+            <GroupedListRow
+                title={
+                    <Text className="text-destructive-strong text-[17px]" numberOfLines={2}>
+                        {title}
+                    </Text>
+                }
+                testID={testID}
+                onPress={handlePress}
+            />
         </GroupedListSection>
     );
 };

@@ -1,4 +1,5 @@
 import { UserIconType } from '@budgie/contracts';
+import { Text } from 'react-native';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
@@ -19,7 +20,7 @@ interface Props {
 }
 
 export const SettingsRow = ({ icon, variant, title, subtitle, right, onPress, testID, titleTestID }: Props) => {
-    const titleClassName = variant === 'destructive' ? 'text-destructive-foreground' : 'text-primary';
+    const titleClassName = variant === 'destructive' ? 'text-destructive-foreground text-[17px]' : 'text-primary text-[17px]';
 
     return (
         <GroupedListRow
@@ -34,13 +35,15 @@ export const SettingsRow = ({ icon, variant, title, subtitle, right, onPress, te
                     className={TONAL_DISC_BACKGROUND[variant]}
                 />
             }
-            title={title}
-            titleClassName={titleClassName}
+            title={
+                <Text className={titleClassName} numberOfLines={2} testID={titleTestID}>
+                    {title}
+                </Text>
+            }
             subtitle={subtitle}
             right={right}
             onPress={onPress}
             testID={testID}
-            titleTestID={titleTestID}
         />
     );
 };

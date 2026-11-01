@@ -16,11 +16,11 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
       visible:
-          id: 'CategoryForm.Merge'
+          id: 'CategoryForm.Delete'
       timeout: 10000
 
 - tapOn:
-      id: 'CategoryForm.Merge'
+      id: 'CategoryForm.Delete'
 
 - extendedWaitUntil:
       visible:

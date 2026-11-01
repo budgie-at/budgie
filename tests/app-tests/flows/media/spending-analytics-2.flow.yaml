@@ -10,6 +10,16 @@ appId: ${APP_ID}
           id: '^CategoryStatisticsCard[.][^.]+$'
       timeout: 15000
 
+- scrollUntilVisible:
+      element:
+          id: '^CategoryStatisticsCard[.][^.]+$'
+          index: 2
+      direction: DOWN
+      speed: 20
+      centerElement: true
+
+- waitForAnimationToEnd
+
 - tapOn:
       id: '^CategoryStatisticsCard[.][^.]+$'
       index: 2

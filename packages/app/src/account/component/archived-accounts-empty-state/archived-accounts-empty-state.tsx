@@ -3,7 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 
 import { isNotEmptyString } from '@rnw-community/shared';
 
-import { SearchablePageEmptyState } from '../../../@generic/component/searchagle-page-empty-state/searchagle-page-empty-state';
+import { SearchablePageEmptyState } from '../../../@generic/component/searchable-page-empty-state/searchable-page-empty-state';
 
 interface Props {
     readonly search: string;

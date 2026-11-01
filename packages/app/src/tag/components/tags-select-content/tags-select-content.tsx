@@ -2,8 +2,6 @@ import { TagEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
-import { emptyFn } from '@rnw-community/shared';
-
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
 import { SelectorGridContent } from '../../../@generic/component/selector-grid-content/selector-grid-content';
 import { FlatListDataItem } from '../../../@generic/utils/map-to-flatlist-data.util';
@@ -41,7 +39,7 @@ export const TagsSelectContent = (props: Props) => {
 
     const renderItem = ({ item }: { item: FlatListDataItem<TagEntityInterface> }) =>
         item.isEmpty ? (
-            <TagsSelectorCard className="opacity-0" isSelected={false} onSelect={emptyFn} variant="static" title="" id={0} />
+            <View className="flex-1" />
         ) : (
             <TagsSelectorCard
                 isSelected={selectedTagIds.includes(item.id)}
