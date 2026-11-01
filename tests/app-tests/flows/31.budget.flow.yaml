@@ -717,7 +717,9 @@ env:
 - extendedWaitUntil:
       visible: 'Delete budget?'
       timeout: 3000
-- tapOn: 'Delete'
+- tapOn:
+      text: 'Delete'
+      below: 'Delete budget\?'
 
 - waitForAnimationToEnd
 - assertNotVisible:
