@@ -1,6 +1,6 @@
 import { cva } from 'class-variance-authority';
 import { ImpactFeedbackStyle } from 'expo-haptics';
-import { AccessibilityActionEvent, Pressable, Text } from 'react-native';
+import { Pressable, Text } from 'react-native';
 
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
 import { useIsCompactPinLayout } from '../../hook/use-is-compact-pin-layout.hook';
@@ -24,8 +24,6 @@ const keyVariants = cva(
     }
 );
 
-const ACCESSIBILITY_ACTIONS = [{ name: 'activate' }] as const;
-
 const digitVariants = cva('font-light text-primary', {
     variants: {
         isCompact: {
@@ -40,22 +38,13 @@ export const PinFormButton = ({ digit, onPress, disabled = false }: Props) => {
     const [, hapticImpact] = useVibration();
     const accessibilityState = { disabled };
 
-    const handlePressIn = () => {
-        hapticImpact(ImpactFeedbackStyle.Light);
-        onPress(digit);
-    };
-
-    const handleAccessibilityAction = (event: AccessibilityActionEvent) => {
-        if (!disabled && event.nativeEvent.actionName === 'activate') {
-            handlePressIn();
-        }
-    };
+    const handlePressIn = () => void hapticImpact(ImpactFeedbackStyle.Light);
+    const handlePress = () => void onPress(digit);
 
     return (
         <Pressable
             onPressIn={handlePressIn}
-            accessibilityActions={ACCESSIBILITY_ACTIONS}
-            onAccessibilityAction={handleAccessibilityAction}
+            onPress={handlePress}
             disabled={disabled}
             accessibilityRole="keyboardkey"
             accessibilityLabel={digit}
