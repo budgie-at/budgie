@@ -1,9 +1,11 @@
 import { Trans } from '@lingui/react/macro';
+import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
+import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 
@@ -16,16 +18,21 @@ interface Props {
     readonly totalAmount: number;
 }
 
+const summaryVariants = cva('gap-y-xxs', {
+    variants: { isStacked: { true: 'items-start', false: 'max-w-[45%] shrink-0 items-end' } }
+});
+
 export const DebtAccountCardSummary = ({ instrumentSymbol, outstandingAmount, title, totalAmount }: Props) => {
     const formatDigits = useDisplayFormatDigits();
+    const isStacked = useIsAccessibilityTextSize();
 
     const amountColorClassName = isPositiveNumber(outstandingAmount) ? 'text-primary' : 'text-secondary-foreground';
 
     return (
-        <View className="max-w-[55%] shrink-0 items-end gap-y-xxs">
+        <View className={summaryVariants({ isStacked })}>
             <ProtectedText
                 adjustsFontSizeToFit
-                className={cn('text-lg font-semibold tracking-tight tabular-nums', amountColorClassName)}
+                className={cn('text-[17px] font-semibold tracking-tight tabular-nums', amountColorClassName)}
                 minimumFontScale={0.7}
                 numberOfLines={1}
                 testID={DebtAccountCardSummarySelector.OutstandingAmount(title, outstandingAmount)}
@@ -34,13 +41,13 @@ export const DebtAccountCardSummary = ({ instrumentSymbol, outstandingAmount, ti
             </ProtectedText>
 
             <View className="min-w-0 shrink flex-row items-baseline gap-x-xxs">
-                <Text className="text-xs text-secondary-foreground">
+                <Text className="text-[13px] text-secondary-foreground">
                     <Trans>of</Trans>
                 </Text>
 
                 <ProtectedText
                     adjustsFontSizeToFit
-                    className="shrink text-xs text-secondary-foreground tabular-nums"
+                    className="shrink text-[13px] text-secondary-foreground tabular-nums"
                     minimumFontScale={0.7}
                     numberOfLines={1}
                     testID={DebtAccountCardSummarySelector.TotalAmount(title, totalAmount)}

@@ -1,84 +1,84 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Trans } from '@lingui/react/macro';
-import { useState } from 'react';
-import { Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+import { useCSSVariable } from 'uniwind';
 
 import { CollapsibleHeader } from '@rnw-community/react-native-collapsible-header';
 
-import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
+import { HeroFigure } from '../../../@generic/component/hero-figure/hero-figure';
+import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
+import { MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-font-size-multiplier.constant';
+import { toTrueMinus } from '../../../@generic/utils/to-true-minus.util';
 import { HomePageSelector } from '../../../app/(tabs)/home-page.selector';
 import { SecurityLockButton } from '../../../auth/components/security-lock-button/security-lock-button';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { RunwayPill } from '../../../runway/component/runway-pill/runway-pill';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
-import { NetWorthAssetChips } from '../net-worth-asset-chips/net-worth-asset-chips';
-
-import type { LayoutChangeEvent } from 'react-native';
 
 interface Props {
     readonly netWorth: number;
-    readonly fiatTotal: number;
-    readonly cryptoTotal: number;
-    readonly fiatCount: number;
-    readonly cryptoCount: number;
+    readonly isLoading: boolean;
 }
 
-const HEADER_COLLAPSED_HEIGHT = 40;
+const HEADER_COLLAPSED_HEIGHT = 44;
 const HEADER_EXPANDED_HEIGHT = 156;
-const SCROLL_THRESHOLD = 100;
-const EXPANDED_CONTENT_HORIZONTAL_PADDING = 32;
-const LOCK_BUTTON_RESERVED_WIDTH = 68;
+const SCROLL_THRESHOLD = 112;
 
-export const NetWorthCollapsibleHeader = ({ netWorth, fiatTotal, cryptoTotal, fiatCount, cryptoCount }: Props) => {
+export const NetWorthCollapsibleHeader = (props: Props) => {
+    const { netWorth, isLoading } = props;
+
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const isRunwayPillEnabled = useSetting('isRunwayPillEnabled');
     const formatDigits = useDisplayFormatDigits();
-    const [expandedHeaderWidth, setExpandedHeaderWidth] = useState(0);
+    const [surfaceColor, separatorColor] = useCSSVariable(['--color-grouped-surface', '--color-surface-separator']);
 
-    const handleExpandedHeaderLayout = (event: LayoutChangeEvent) => {
-        setExpandedHeaderWidth(event.nativeEvent.layout.width);
+    const formattedNetWorth = toTrueMinus(formatDigits(netWorth, defaultInstrument.symbol));
+    const formattedNetWorthValue = formatDigits(netWorth);
+    const backgroundStyle = {
+        backgroundColor: String(surfaceColor),
+        borderBottomColor: String(separatorColor),
+        borderBottomWidth: StyleSheet.hairlineWidth
     };
 
-    const formattedNetWorth = formatDigits(netWorth, defaultInstrument.symbol);
-    const formattedNetWorthValue = formatDigits(netWorth);
-    const netWorthValueTestID = HomePageSelector.NetWorthValue(formattedNetWorthValue);
-    const availableTickerWidth = Math.max(expandedHeaderWidth - EXPANDED_CONTENT_HORIZONTAL_PADDING - LOCK_BUTTON_RESERVED_WIDTH, 0);
-
     const expandedContent = (
-        <View className="flex-1 items-center justify-center px-3xl" onLayout={handleExpandedHeaderLayout}>
-            <Text className="text-xs uppercase text-secondary-foreground mb-md">
-                <Trans>Total Balance</Trans>
-            </Text>
+        <View className="flex-1 justify-end gap-y-sm pt-sm pr-[28px] pb-lg pl-[32px]">
+            <View className="flex-row items-center justify-between">
+                <Text maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER} className="text-[15px] font-medium text-secondary-foreground">
+                    <Trans>Total Balance</Trans>
+                </Text>
 
-            <View collapsable={false} testID={netWorthValueTestID}>
-                <ProtectedMoney
-                    minFontSize={24}
-                    maxFontSize={60}
-                    instrumentSymbol={defaultInstrument.symbol}
-                    availableWidth={availableTickerWidth}
-                    accessory={<SecurityLockButton />}
-                >
-                    {netWorth}
-                </ProtectedMoney>
+                <SecurityLockButton />
             </View>
 
-            <View className="mt-lg flex-row flex-wrap items-center justify-center gap-sm">
-                <NetWorthAssetChips fiatTotal={fiatTotal} cryptoTotal={cryptoTotal} fiatCount={fiatCount} cryptoCount={cryptoCount} />
+            <LoadingContent isLoading={isLoading} className="gap-y-sm">
+                <View collapsable={false} testID={HomePageSelector.NetWorthValue(formattedNetWorthValue)}>
+                    <HeroFigure amount={netWorth} currencySymbol={defaultInstrument.symbol} variant="primary" />
+                </View>
 
-                {isRunwayPillEnabled ? <RunwayPill /> : null}
-            </View>
+                {isRunwayPillEnabled ? (
+                    <View className="flex-row">
+                        <RunwayPill />
+                    </View>
+                ) : null}
+            </LoadingContent>
         </View>
     );
 
     const collapsedContent = (
-        <View className="flex-1 flex-row items-center justify-between px-3xl">
-            <Text className="text-xs uppercase text-secondary-foreground">
+        <View className="flex-1 flex-row items-center justify-between gap-x-md pr-[28px] pl-[32px]">
+            <Text
+                maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
+                numberOfLines={1}
+                className="shrink text-[15px] font-medium text-secondary-foreground"
+            >
                 <Trans>Total Balance</Trans>
             </Text>
             <ProtectedText
-                className="text-lg font-medium text-primary"
+                maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
+                numberOfLines={1}
+                className="text-[17px] font-semibold tracking-tight tabular-nums text-primary"
                 testID={HomePageSelector.NetWorthValueCollapsed(formattedNetWorthValue)}
             >
                 {formattedNetWorth}
@@ -93,6 +93,7 @@ export const NetWorthCollapsibleHeader = ({ netWorth, fiatTotal, cryptoTotal, fi
                 expandedHeight={HEADER_EXPANDED_HEIGHT}
                 collapsedHeight={HEADER_COLLAPSED_HEIGHT}
                 collapseDistance={SCROLL_THRESHOLD}
+                backgroundStyle={backgroundStyle}
                 expandedContent={expandedContent}
                 collapsedContent={collapsedContent}
             />

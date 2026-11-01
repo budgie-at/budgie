@@ -1,6 +1,6 @@
 import { ExternalSourceEnum, UserIconNameEnum } from '@budgie/contracts';
 import { cva } from 'class-variance-authority';
-import { ReactElement } from 'react';
+import { ReactElement, ReactNode } from 'react';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -17,6 +17,7 @@ interface Props {
     readonly bankProvider: ExternalSourceEnum;
     readonly size?: number;
     readonly variant?: ColorPaletteVariant;
+    readonly fallback?: ReactNode;
 }
 
 const iconVariant = cva('', {
@@ -45,11 +46,15 @@ const getBankIcon = (provider: ExternalSourceEnum, size: number): ReactElement |
     }
 };
 
-export const BankLogo = ({ bankProvider, size = 32, variant = 'default' }: Props) => {
+export const BankLogo = ({ bankProvider, size = 32, variant = 'default', fallback }: Props) => {
     const icon = getBankIcon(bankProvider, size);
 
     if (isDefined(icon)) {
         return icon;
+    }
+
+    if (isDefined(fallback)) {
+        return fallback;
     }
 
     return (

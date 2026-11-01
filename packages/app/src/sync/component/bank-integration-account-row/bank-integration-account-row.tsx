@@ -16,6 +16,7 @@ import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { testID } from '../../../@generic/utils/test-id.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
+import { AccountCardBaseSelector } from '../../../account/component/account-card-base/account-card-base.selector';
 import { AccountSyncBadge } from '../../../account/component/account-sync-badge/account-sync-badge';
 import { useAccountBalanceQuery } from '../../../account/query/use-account-balance.query';
 import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/bank-integration.selector';
@@ -74,7 +75,10 @@ export const BankIntegrationAccountRow = ({ account }: Props) => {
             description={description}
             right={
                 <View className="flex-row items-center gap-x-lg">
-                    <ProtectedText className="text-primary text-sm font-semibold">
+                    <ProtectedText
+                        className="text-primary text-sm font-semibold"
+                        testID={AccountCardBaseSelector.Balance(account.title, formatDigits(balance))}
+                    >
                         {formatDigits(balance, account.instrument.symbol)}
                     </ProtectedText>
 

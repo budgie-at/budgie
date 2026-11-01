@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.144.0](https://github.com/budgie-at/budgie/compare/v6.143.0...v6.144.0) (2026-11-01)
+
+### Bug Fixes
+
+* **app:** expose the crypto rate and bank account balances to UI tests ([c424751](https://github.com/budgie-at/budgie/commit/c4247515f5a87ba498827db55b551d2f7f0221d9))
+* **app:** keep tiny crypto rates, wrappable due labels and unsigned zero totals ([e47609a](https://github.com/budgie-at/budgie/commit/e47609a4945063e95e3d489142e0c4adee02d919))
+* **app:** total home sections from the accounts they show ([dd9edaf](https://github.com/budgie-at/budgie/commit/dd9edaf053f9aefe6cce837714cfec613eb6e92b))
+
+### Features
+
+* **app:** group home by institution with brand marks, an asset mix and a cash card ([83bf4c9](https://github.com/budgie-at/budgie/commit/83bf4c997d8f62efcf848a2f0f5703f6e27dd3c8))
+* **app:** rebuild home accounts as inset grouped rows under a bold net-worth hero ([b140dc7](https://github.com/budgie-at/budgie/commit/b140dc7dfbde8aca223855d0c84214ac50632b21))
+* **app:** stack home rows at accessibility sizes and pin an opaque balance bar ([e385b71](https://github.com/budgie-at/budgie/commit/e385b71eff6a62915fb4bef0606fe2a38f1be779))
+
+
 # [6.143.0](https://github.com/budgie-at/budgie/compare/v6.142.0...v6.143.0) (2026-11-01)
 
 ### Features

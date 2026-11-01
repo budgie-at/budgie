@@ -3,27 +3,20 @@ import { View } from 'react-native';
 
 import { CryptoCurrencyGroupInterface } from '../../interface/crypto-currency-group.interface';
 import { HomeAccountBalanceInterface } from '../../interface/home-account-balance.interface';
-import { pairAccountsIntoRows } from '../../utils/pair-accounts-into-rows.util';
-import { AccountGridRow } from '../account-grid-row/account-grid-row';
+import { AccountListItem } from '../account-list-item/account-list-item';
 
 interface Props {
     readonly group: CryptoCurrencyGroupInterface;
     readonly balancesByAccountId: ReadonlyMap<number, HomeAccountBalanceInterface>;
 }
 
-export const CryptoCurrencyGroupAccounts = ({ group, balancesByAccountId }: Props) => {
-    const rows = pairAccountsIntoRows(group.accounts);
-
-    return (
-        <View className="gap-y-lg">
-            {rows.map(row => (
-                <AccountGridRow
-                    key={row.left.id}
-                    row={row}
-                    accountType={AccountTypeEnum.CRYPTO}
-                    balancesByAccountId={balancesByAccountId}
-                />
-            ))}
-        </View>
-    );
-};
+export const CryptoCurrencyGroupAccounts = ({ group, balancesByAccountId }: Props) => (
+    <View>
+        {group.accounts.map(account => (
+            <View key={account.id}>
+                <View className="absolute top-0 right-0 left-[64px] h-hairline bg-surface-separator" pointerEvents="none" />
+                <AccountListItem account={account} type={AccountTypeEnum.CRYPTO} balancesByAccountId={balancesByAccountId} />
+            </View>
+        ))}
+    </View>
+);
