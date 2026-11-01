@@ -60,7 +60,7 @@ describe('IconSearchService', () => {
             const { confident, suggestions } = yield* suggestFor('Side project');
 
             expect(confident).toBeNull();
-            expect(suggestions.slice(0, 6).filter(icon => icon.startsWith('reicon:Folder'))).toEqual(['reicon:FolderOpen']);
+            expect(suggestions.slice(0, 6).filter(icon => icon.startsWith('reicon:Folder'))).toEqual(['reicon:Folder']);
             expect(suggestions.slice(0, 6)).toContain('reicon:Briefcase');
             expect(suggestions).not.toContain('🍳');
             expect(suggestions).not.toContain('reicon:FoodTray');
@@ -79,7 +79,26 @@ describe('IconSearchService', () => {
             expect(suggestions.filter(icon => /^reicon:(?:Folder|Home)/u.test(icon))).toEqual([]);
             expect(suggestions).toEqual(expect.arrayContaining(['reicon:Briefcase', 'reicon:Laptop', 'reicon:Code']));
             expect(suggestions.slice(0, 3)).not.toContain('reicon:Projector');
-            expect(suggestions.slice(0, 3)).toEqual(expect.arrayContaining(['reicon:Briefcase']));
+            expect(suggestions.slice(0, 3)).not.toContain('reicon:Presentation');
+            expect(suggestions.slice(0, 2)).toContain('reicon:Laptop');
+        })
+    );
+
+    it.effect('stopsPaddingWithGenericIconsWhenEnoughMatchesExist', () =>
+        Effect.gen(function* () {
+            const { suggestions } = yield* suggestFor('Groceries');
+
+            expect(suggestions.length).toBeGreaterThanOrEqual(4);
+            expect(suggestions).not.toContain('reicon:Star');
+        })
+    );
+
+    it.effect('humanizesCatalogNamesForLabels', () =>
+        Effect.gen(function* () {
+            const entries = yield* iconSearchService.load();
+
+            expect(entries.find(({ name }) => name.startsWith('|ac2|'))?.label).toBe('Ac');
+            expect(entries.find(({ name }) => name.startsWith('|add circle|'))?.label).toBe('Add circle');
         })
     );
 

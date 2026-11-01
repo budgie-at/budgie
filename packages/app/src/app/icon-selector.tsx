@@ -1,13 +1,14 @@
-import { isEmojiIcon, UserIconNameEnum } from '@budgie/contracts';
+import { isEmojiIcon } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { Text, View } from 'react-native';
 
-import { emptyFn, isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { BudgieLegendList } from '../@generic/component/budgie-legend-list/budgie-legend-list';
 import { EmptyState } from '../@generic/component/empty-state/empty-state';
 import { IconSelectorCard } from '../@generic/component/icon-selector-card/icon-selector-card';
+import { IconSelectorPaddingCell } from '../@generic/component/icon-selector-padding-cell/icon-selector-padding-cell';
 import { IconSuggestions } from '../@generic/component/icon-suggestions/icon-suggestions';
 import { LoadingContent } from '../@generic/component/loading-content/loading-content';
 import { SearchablePageErrorState } from '../@generic/component/searchable-page-error-state/searchable-page-error-state';
@@ -24,10 +25,10 @@ import { resolveReiconIcon } from '../@generic/utils/resolve-reicon-icon.util';
 
 import { IconSelectorModalSelector } from './icon-selector-modal.selector';
 
-const NUM_COLUMNS = 4;
+const NUM_COLUMNS = 5;
 const COLUMN_WRAPPER_STYLE = { columnGap: 10, rowGap: 10 };
 const LIST_HEADER_STYLE = { marginBottom: 12 };
-const ESTIMATED_ROW_HEIGHT = 110;
+const ESTIMATED_ROW_HEIGHT = 76;
 
 const keyExtractor = (item: FlatListDataItem<IconSearchEntryInterface>, index: number) => (item.isEmpty ? `empty-${index}` : item.icon);
 
@@ -40,23 +41,14 @@ export default function IconSelectorModal() {
     const [search, setSearch] = useState('');
     const { entries, isLoading, isFailure, retry } = useIconSearchCatalog();
 
-    const { selectedIcon, variant = 'default', keywords = [] } = currentParams ?? {};
+    const { selectedIcon, variant = 'default', keywords = [], excludedIcons } = currentParams ?? {};
     const hasSearch = isNotEmptyString(search.trim());
     const matchedEntries = hasSearch ? iconSearchService.rank(entries, [search]) : entries;
-    const data = padFlatListData([...matchedEntries], NUM_COLUMNS);
+    const selectedCatalogIcon = isDefined(selectedIcon) && !isEmojiIcon(selectedIcon) ? resolveReiconIcon(selectedIcon) : selectedIcon;
 
-    const renderItem = ({ item }: { item: FlatListDataItem<IconSearchEntryInterface> }) => {
-        const selectedCatalogIcon = isDefined(selectedIcon) && !isEmojiIcon(selectedIcon) ? resolveReiconIcon(selectedIcon) : selectedIcon;
-
-        return item.isEmpty ? (
-            <IconSelectorCard
-                className="opacity-0"
-                isSelected={false}
-                onSelect={emptyFn}
-                label=""
-                variant={variant}
-                icon={UserIconNameEnum.Circle}
-            />
+    const renderItem = ({ item }: { item: FlatListDataItem<IconSearchEntryInterface> }) =>
+        item.isEmpty ? (
+            <IconSelectorPaddingCell />
         ) : (
             <IconSelectorCard
                 isSelected={item.icon === selectedCatalogIcon}
@@ -66,12 +58,19 @@ export default function IconSelectorModal() {
                 icon={item.icon}
             />
         );
-    };
 
     const listHeader =
         hasSearch || isFailure ? null : (
             <View className="gap-y-xl">
-                <IconSuggestions terms={keywords} limit={8} onSelect={resolveIconSelector} testID={IconSelectorModalSelector.Suggestions}>
+                <IconSuggestions
+                    terms={keywords}
+                    limit={8}
+                    excludedIcons={excludedIcons}
+                    selectedIcon={selectedCatalogIcon}
+                    edgeFadeClassName="from-primary-reverse/0 to-primary-reverse"
+                    onSelect={resolveIconSelector}
+                    testID={IconSelectorModalSelector.Suggestions}
+                >
                     <Text className="text-secondary-foreground px-xs text-xxs font-semibold uppercase tracking-widest">
                         <Trans>Suggested</Trans>
                     </Text>
@@ -99,14 +98,14 @@ export default function IconSelectorModal() {
             <SelectorModalSearchHeader
                 search={search}
                 onSearchChange={setSearch}
-                placeholder={t`Search icons and emoji in any language...`}
+                placeholder={t`Search icons and emoji…`}
                 testID={IconSelectorModalSelector.SearchInput}
             />
 
             <View className="absolute inset-0 bg-primary-reverse">
                 <BudgieLegendList
                     style={LEGEND_LIST_STYLE}
-                    data={data}
+                    data={padFlatListData([...matchedEntries], NUM_COLUMNS)}
                     keyExtractor={keyExtractor}
                     renderItem={renderItem}
                     numColumns={NUM_COLUMNS}

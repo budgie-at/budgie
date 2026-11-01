@@ -23,6 +23,7 @@ class IconSearchService {
     private static readonly HEAD_WORD_WEIGHT = 0.65;
     private static readonly MODIFIER_WORD_WEIGHT = 0.6;
     private static readonly MIN_SUGGESTION_SCORE = IconSearchService.WORD_SCORE;
+    private static readonly MIN_RELEVANT_SUGGESTIONS = 4;
     private static readonly GENERIC_WORDS = new Set([
         'a',
         'activities',
@@ -80,23 +81,20 @@ class IconSearchService {
         terms: readonly string[],
         excludedIcons: readonly UserIconNameEnum[] = []
     ): IconSearchEntryInterface[] {
-        const relevant = this.score(entries, terms, false)
-            .filter(({ score }) => score >= IconSearchService.MIN_SUGGESTION_SCORE)
-            .map(({ entry }) => entry);
-        const relevantIcons = new Set(relevant.map(({ icon }) => icon));
-        const fallback = IconSearchService.FALLBACK_ICONS.filter(icon => !relevantIcons.has(icon))
-            .map(icon => entries.find(entry => entry.icon === icon))
-            .filter(isDefined);
+        const scored = this.score(entries, terms, false).filter(({ score }) => score >= IconSearchService.MIN_SUGGESTION_SCORE);
+        const relevant = this.distinctFamilies(
+            scored.map(({ entry }) => entry),
+            excludedIcons
+        );
 
-        const families = new Set(excludedIcons.map(icon => this.getFamily(resolveReiconIcon(icon))));
+        if (relevant.length >= IconSearchService.MIN_RELEVANT_SUGGESTIONS) {
+            return relevant;
+        }
 
-        return [...relevant, ...fallback].filter(({ icon }) => {
-            const family = this.getFamily(icon);
-            const isNewFamily = !families.has(family);
-            families.add(family);
+        const fallback = IconSearchService.FALLBACK_ICONS.map(icon => entries.find(entry => entry.icon === icon)).filter(isDefined);
+        const isConfident = scored.some(({ score }) => score >= IconSearchService.CONFIDENT_SCORE);
 
-            return isNewFamily;
-        });
+        return this.distinctFamilies(isConfident ? [...relevant, ...fallback] : [...fallback, ...relevant], excludedIcons);
     }
 
     findConfidentIcon(entries: readonly IconSearchEntryInterface[], terms: readonly string[]): UserIconType | null {
@@ -104,6 +102,21 @@ class IconSearchService {
         const top = confident.find(({ entry }) => !isEmojiIcon(entry.icon)) ?? confident.at(0);
 
         return top?.entry.icon ?? null;
+    }
+
+    private distinctFamilies(
+        candidates: readonly IconSearchEntryInterface[],
+        excludedIcons: readonly UserIconNameEnum[]
+    ): IconSearchEntryInterface[] {
+        const families = new Set(excludedIcons.map(icon => this.getFamily(resolveReiconIcon(icon))));
+
+        return candidates.filter(({ icon }) => {
+            const family = this.getFamily(icon);
+            const isNewFamily = !families.has(family);
+            families.add(family);
+
+            return isNewFamily;
+        });
     }
 
     private getFamily(icon: UserIconType): string {
@@ -174,10 +187,16 @@ class IconSearchService {
 
         return {
             icon,
-            label: nameKeywords.split('|')[0],
+            label: this.toReadableName(nameKeywords.split('|')[0]),
             name,
             keywords: `${name}${this.withTranslations(icon, otherKeywords, translations)}|`
         };
+    }
+
+    private toReadableName(name: string): string {
+        const readable = name.replaceAll(/(?<=\p{L})\d+\b/gu, '').trim();
+
+        return `${readable.charAt(0).toUpperCase()}${readable.slice(1)}`;
     }
 
     private withTranslations(icon: UserIconType, keywords: string, translations: Record<string, string>): string {

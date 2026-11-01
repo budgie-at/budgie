@@ -54,11 +54,14 @@ export const CategoryIconFixRow = ({ category }: Props) => {
             return;
         }
 
-        openIconSelector({ selectedIcon: category.icon, keywords: iconTerms }, selectedIcon => {
-            if (isDefined(selectedIcon)) {
-                handleSelect(selectedIcon);
+        openIconSelector(
+            { selectedIcon: category.icon, keywords: iconTerms, excludedIcons: PLACEHOLDER_CATEGORY_ICONS, variant: 'primary' },
+            selectedIcon => {
+                if (isDefined(selectedIcon)) {
+                    handleSelect(selectedIcon);
+                }
             }
-        });
+        );
     };
 
     return (

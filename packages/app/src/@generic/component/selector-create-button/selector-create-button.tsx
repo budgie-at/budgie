@@ -14,9 +14,9 @@ export const SelectorCreateButton = ({ label, onPress, testID }: Props) => (
         onPress={onPress}
         accessibilityRole="button"
         accessibilityLabel={label}
-        className="h-[44px] w-[44px] items-center justify-center rounded-full bg-white active:opacity-70"
+        className="h-[44px] w-[44px] items-center justify-center rounded-full bg-surface-fill active:opacity-70"
         testID={testID}
     >
-        <Icon icon={UserIconNameEnum.Plus} size={22} className="text-black" />
+        <Icon icon={UserIconNameEnum.Plus} size={22} className="text-primary" />
     </HapticPressable>
 );

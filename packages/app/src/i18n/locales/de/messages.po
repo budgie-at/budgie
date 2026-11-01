@@ -183,6 +183,10 @@ msgstr "{count, plural, one {# Synchronisations-Reparatur} other {# Synchronisat
 msgid "{count, plural, one {# transaction moves to “{targetTitle}”. “{sourceTitle}” will be deleted.} other {# transactions move to “{targetTitle}”. “{sourceTitle}” will be deleted.}}"
 msgstr "{count, plural, one {# Transaktion wird nach „{targetTitle}“ verschoben. „{sourceTitle}“ wird gelöscht.} other {# Transaktionen werden nach „{targetTitle}“ verschoben. „{sourceTitle}“ wird gelöscht.}}"
 
+#: src/category/hooks/use-move-and-delete-category.hook.ts
+msgid "{count, plural, one {# transaction} other {# transactions}}"
+msgstr "{count, plural, one {# Transaktion} other {# Transaktionen}}"
+
 #: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx
 msgid "{count, plural, one {# uncategorized} other {# uncategorized}}"
 msgstr "{count, plural, one {# ohne Kategorie} other {# ohne Kategorie}}"
@@ -206,10 +210,6 @@ msgstr "{count, plural, one {Er wird von # Transaktion entfernt. Die Transaktion
 #: src/category/hooks/use-move-and-delete-category.hook.ts
 msgid "{count, plural, one {Move # transaction to “{targetTitle}” and delete “{sourceTitle}”} other {Move # transactions to “{targetTitle}” and delete “{sourceTitle}”}}"
 msgstr "{count, plural, one {# Transaktion nach „{targetTitle}“ verschieben und „{sourceTitle}“ löschen} other {# Transaktionen nach „{targetTitle}“ verschieben und „{sourceTitle}“ löschen}}"
-
-#: src/category/hooks/use-move-and-delete-category.hook.ts
-msgid "{count, plural, one {Pick the category its # transaction moves to.} other {Pick the category its # transactions move to.}}"
-msgstr "{count, plural, one {Wähle die Kategorie, in die ihre # Transaktion verschoben wird.} other {Wähle die Kategorie, in die ihre # Transaktionen verschoben werden.}}"
 
 #: src/categorize-inbox/components/categorize-inbox-payments-bar/categorize-inbox-payments-bar.tsx
 msgid "{count, plural, one {Use # payment} other {Use # payments}}"
@@ -3516,10 +3516,6 @@ msgstr "Schlüssel abgelehnt"
 msgid "Key updated"
 msgstr "Schlüssel aktualisiert"
 
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx
-msgid "Keywords: {keywords} · added automatically for search"
-msgstr "Stichwörter: {keywords} · automatisch für die Suche ergänzt"
-
 #: src/settings/components/language-selector/language-selector.tsx
 msgid "Language"
 msgstr "Sprache"
@@ -4288,6 +4284,11 @@ msgstr "Nicht gleich"
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 msgid "Not now"
 msgstr "Nicht jetzt"
+
+#: src/category/utils/get-category-delete-copy.util.ts
+#: src/tag/components/tag-form/tag-form.tsx
+msgid "Not on any transactions. This can’t be undone."
+msgstr "Bei keiner Transaktion verwendet. Dies kann nicht rückgängig gemacht werden."
 
 #: src/transaction/components/transaction-field-icon/transaction-field-icon.tsx
 msgid "not set"
@@ -5358,16 +5359,16 @@ msgid "Search expenses refunded by this income"
 msgstr "Ausgaben suchen, die diese Einnahme erstattet"
 
 #: src/app/icon-selector.tsx
-msgid "Search icons and emoji in any language..."
-msgstr "Symbole und Emojis in jeder Sprache suchen..."
+msgid "Search icons and emoji…"
+msgstr "Symbole und Emojis suchen…"
 
 #: src/app/(tabs)/settings/inactive.tsx
 msgid "Search inactive accounts..."
 msgstr "Inaktive Konten suchen..."
 
 #: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx
-msgid "Search keywords: {keywords}. Generated automatically so search finds this by other words too."
-msgstr "Suchbegriffe: {keywords}. Automatisch erstellt, damit die Suche dies auch über andere Wörter findet."
+msgid "Search keywords: {keywords}"
+msgstr "Suchbegriffe: {keywords}"
 
 #: src/app/language-selector.tsx
 msgid "Search languages..."
@@ -6055,11 +6056,6 @@ msgstr "Dieses Backup wurde mit einer älteren Budgie-Version erstellt und kann 
 msgid "This backup was made by an older Budgie version and cannot be restored."
 msgstr "Dieses Backup wurde mit einer älteren Budgie-Version erstellt und kann nicht wiederhergestellt werden."
 
-#: src/category/utils/get-category-delete-copy.util.ts
-#: src/tag/components/tag-form/tag-form.tsx
-msgid "This can’t be undone."
-msgstr "Das lässt sich nicht rückgängig machen."
-
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "This capture looks similar to an existing transaction."
 msgstr "Diese Erfassung ähnelt einer vorhandenen Transaktion."
@@ -6571,6 +6567,7 @@ msgstr "{applied} von {total} Transaktionen aktualisiert."
 msgid "Updated {formattedDate}"
 msgstr "Aktualisiert {formattedDate}"
 
+#: src/@generic/component/icon-selector-card/icon-selector-card.tsx
 #: src/@generic/component/icon-suggestion-chip/icon-suggestion-chip.tsx
 msgid "Use {label} icon"
 msgstr "Symbol {label} verwenden"

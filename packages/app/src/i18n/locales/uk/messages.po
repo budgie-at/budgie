@@ -183,6 +183,10 @@ msgstr "{count, plural, one {# виправлення синхронізації
 msgid "{count, plural, one {# transaction moves to “{targetTitle}”. “{sourceTitle}” will be deleted.} other {# transactions move to “{targetTitle}”. “{sourceTitle}” will be deleted.}}"
 msgstr "{count, plural, one {# транзакція переходить до «{targetTitle}». «{sourceTitle}» буде видалено.} few {# транзакції переходять до «{targetTitle}». «{sourceTitle}» буде видалено.} many {# транзакцій переходять до «{targetTitle}». «{sourceTitle}» буде видалено.} other {# транзакції переходять до «{targetTitle}». «{sourceTitle}» буде видалено.}}"
 
+#: src/category/hooks/use-move-and-delete-category.hook.ts
+msgid "{count, plural, one {# transaction} other {# transactions}}"
+msgstr "{count, plural, one {# транзакція} few {# транзакції} many {# транзакцій} other {# транзакції}}"
+
 #: src/transaction/components/uncategorized-transactions-pill/uncategorized-transactions-pill.tsx
 msgid "{count, plural, one {# uncategorized} other {# uncategorized}}"
 msgstr "{count, plural, one {# без категорії} few {# без категорії} many {# без категорії} other {# без категорії}}"
@@ -206,10 +210,6 @@ msgstr "{count, plural, one {Його буде знято з # транзакц�
 #: src/category/hooks/use-move-and-delete-category.hook.ts
 msgid "{count, plural, one {Move # transaction to “{targetTitle}” and delete “{sourceTitle}”} other {Move # transactions to “{targetTitle}” and delete “{sourceTitle}”}}"
 msgstr "{count, plural, one {Перемістити # транзакцію до «{targetTitle}» і видалити «{sourceTitle}»} few {Перемістити # транзакції до «{targetTitle}» і видалити «{sourceTitle}»} many {Перемістити # транзакцій до «{targetTitle}» і видалити «{sourceTitle}»} other {Перемістити # транзакції до «{targetTitle}» і видалити «{sourceTitle}»}}"
-
-#: src/category/hooks/use-move-and-delete-category.hook.ts
-msgid "{count, plural, one {Pick the category its # transaction moves to.} other {Pick the category its # transactions move to.}}"
-msgstr "{count, plural, one {Виберіть категорію, куди перейде її # транзакція.} few {Виберіть категорію, куди перейдуть її # транзакції.} many {Виберіть категорію, куди перейдуть її # транзакцій.} other {Виберіть категорію, куди перейдуть її # транзакції.}}"
 
 #: src/categorize-inbox/components/categorize-inbox-payments-bar/categorize-inbox-payments-bar.tsx
 msgid "{count, plural, one {Use # payment} other {Use # payments}}"
@@ -3516,10 +3516,6 @@ msgstr "Ключ відхилено"
 msgid "Key updated"
 msgstr "Ключ оновлено"
 
-#: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx
-msgid "Keywords: {keywords} · added automatically for search"
-msgstr "Ключові слова: {keywords} · додано автоматично для пошуку"
-
 #: src/settings/components/language-selector/language-selector.tsx
 msgid "Language"
 msgstr "Мова"
@@ -4288,6 +4284,11 @@ msgstr "Не дорівнює"
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 msgid "Not now"
 msgstr "Не зараз"
+
+#: src/category/utils/get-category-delete-copy.util.ts
+#: src/tag/components/tag-form/tag-form.tsx
+msgid "Not on any transactions. This can’t be undone."
+msgstr "Не використовується в жодній транзакції. Це неможливо скасувати."
 
 #: src/transaction/components/transaction-field-icon/transaction-field-icon.tsx
 msgid "not set"
@@ -5358,16 +5359,16 @@ msgid "Search expenses refunded by this income"
 msgstr "Пошук витрат для цього повернення"
 
 #: src/app/icon-selector.tsx
-msgid "Search icons and emoji in any language..."
-msgstr "Шукайте іконки та емодзі будь-якою мовою..."
+msgid "Search icons and emoji…"
+msgstr "Пошук іконок та емодзі…"
 
 #: src/app/(tabs)/settings/inactive.tsx
 msgid "Search inactive accounts..."
 msgstr "Шукати неактивні рахунки..."
 
 #: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx
-msgid "Search keywords: {keywords}. Generated automatically so search finds this by other words too."
-msgstr "Ключові слова для пошуку: {keywords}. Згенеровано автоматично, щоб пошук знаходив це й за іншими словами."
+msgid "Search keywords: {keywords}"
+msgstr "Ключові слова для пошуку: {keywords}"
 
 #: src/app/language-selector.tsx
 msgid "Search languages..."
@@ -6055,11 +6056,6 @@ msgstr "Цю резервну копію створено старішою ве�
 msgid "This backup was made by an older Budgie version and cannot be restored."
 msgstr "Цю резервну копію створено старішою версією Budgie, її не можна відновити."
 
-#: src/category/utils/get-category-delete-copy.util.ts
-#: src/tag/components/tag-form/tag-form.tsx
-msgid "This can’t be undone."
-msgstr "Цю дію не можна скасувати."
-
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "This capture looks similar to an existing transaction."
 msgstr "Цей запис схожий на наявну транзакцію."
@@ -6571,6 +6567,7 @@ msgstr "Оновлено {applied} з {total} транзакцій."
 msgid "Updated {formattedDate}"
 msgstr "Оновлено {formattedDate}"
 
+#: src/@generic/component/icon-selector-card/icon-selector-card.tsx
 #: src/@generic/component/icon-suggestion-chip/icon-suggestion-chip.tsx
 msgid "Use {label} icon"
 msgstr "Використати іконку {label}"

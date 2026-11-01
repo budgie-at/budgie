@@ -18,6 +18,6 @@ export const getCategoryDeleteCopy = (transactionCount: number | null, t: Return
     }
 
     return isDefined(transactionCount)
-        ? { label: t(msg`Delete category`), footer: t(msg`This can’t be undone.`) }
+        ? { label: t(msg`Delete category`), footer: t(msg`Not on any transactions. This can’t be undone.`) }
         : { label: t(msg`Delete category…`), footer: null };
 };

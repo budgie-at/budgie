@@ -14,6 +14,7 @@ import { GroupedListActionRow } from '../../../@generic/component/grouped-list-a
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { IconTitleField } from '../../../@generic/component/icon-title-field/icon-title-field';
 import { Icon } from '../../../@generic/component/icon/icon';
+import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { EntityOperationEnum } from '../../../@generic/enum/entity-operation.enum';
 import { useEntityOperation } from '../../../@generic/hook/use-entity-operation.hook';
 import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
@@ -74,7 +75,7 @@ export const TagForm = (props: Props) => {
               })
           })
         : null;
-    const deleteFooter = transactionCount === 0 ? t`This can’t be undone.` : usedDeleteFooter;
+    const deleteFooter = transactionCount === 0 ? t`Not on any transactions. This can’t be undone.` : usedDeleteFooter;
     const tagTitle = tag?.title ?? '';
     const mergeFooter = isPositiveNumber(transactionCount)
         ? t({
@@ -157,29 +158,31 @@ export const TagForm = (props: Props) => {
             </GroupedListSection>
 
             {isDefined(tag) ? (
-                <EntityEditSections
-                    deleteLabel={t`Delete tag`}
-                    deleteFooter={deleteFooter}
-                    deleteTestID={TagFormSelector.Delete}
-                    onDelete={handleDelete}
-                    isDisabled={isBusy}
-                    mutatingOperation={operation.mutatingOperation}
-                >
-                    {transactionCount === 0 ? null : (
-                        <GroupedListSection footer={mergeFooter}>
-                            <GroupedListActionRow
-                                label={t`Merge into another tag…`}
-                                icon={UserIconNameEnum.GitMerge}
-                                onPress={handleMerge}
-                                isDisabled={isBusy}
-                                isLoading={operation.mutatingOperation === EntityOperationEnum.MERGE}
-                                labelClassName="text-primary"
-                                trailing={<Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />}
-                                testID={TagFormSelector.Merge}
-                            />
-                        </GroupedListSection>
-                    )}
-                </EntityEditSections>
+                <LoadingContent isLoading={!isDefined(transactionCount)} className="gap-7xl">
+                    <EntityEditSections
+                        deleteLabel={t`Delete tag`}
+                        deleteFooter={deleteFooter}
+                        deleteTestID={TagFormSelector.Delete}
+                        onDelete={handleDelete}
+                        isDisabled={isBusy}
+                        mutatingOperation={operation.mutatingOperation}
+                    >
+                        {isPositiveNumber(transactionCount) ? (
+                            <GroupedListSection footer={mergeFooter}>
+                                <GroupedListActionRow
+                                    label={t`Merge into another tag…`}
+                                    icon={UserIconNameEnum.GitMerge}
+                                    onPress={handleMerge}
+                                    isDisabled={isBusy}
+                                    isLoading={operation.mutatingOperation === EntityOperationEnum.MERGE}
+                                    labelClassName="text-primary"
+                                    trailing={<Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />}
+                                    testID={TagFormSelector.Merge}
+                                />
+                            </GroupedListSection>
+                        ) : null}
+                    </EntityEditSections>
+                </LoadingContent>
             ) : null}
         </EntityFormPage>
     );

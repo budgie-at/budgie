@@ -29,6 +29,7 @@ import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hoo
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
+import { PLACEHOLDER_CATEGORY_ICONS } from '../../constant/placeholder-category-icon.constant';
 import { useCategoryForm } from '../../hooks/use-category-form.hook';
 import { useDeleteCategory } from '../../hooks/use-delete-category.hook';
 import { categoryUsageAtom } from '../../query/use-categories-with-usage.query';
@@ -99,12 +100,15 @@ export const CategoryForm = (props: Props) => {
             return;
         }
 
-        openIconSelector({ selectedIcon: resolvedIcon, keywords: autoIcon.terms }, selectedIcon => {
-            if (isDefined(selectedIcon)) {
-                setHasPickedIcon(true);
-                setValue('icon', selectedIcon);
+        openIconSelector(
+            { selectedIcon: resolvedIcon, keywords: autoIcon.terms, excludedIcons: PLACEHOLDER_CATEGORY_ICONS, variant: 'primary' },
+            selectedIcon => {
+                if (isDefined(selectedIcon)) {
+                    setHasPickedIcon(true);
+                    setValue('icon', selectedIcon);
+                }
             }
-        });
+        );
     };
 
     const handleTitleChange = (value: string) => {

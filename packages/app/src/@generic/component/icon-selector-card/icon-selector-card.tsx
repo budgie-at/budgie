@@ -1,6 +1,7 @@
-import { UserIconType } from '@budgie/contracts';
+import { UserIconNameEnum, UserIconType } from '@budgie/contracts';
+import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
 import { IconSelectorModalSelector } from '../../../app/icon-selector-modal.selector';
 import { FOREGROUND_COLOR_PALETTE } from '../../constant/foreground-color-palette.constant';
@@ -14,45 +15,40 @@ interface Props {
     readonly variant: ColorPaletteVariant;
     readonly label: string;
     readonly isSelected: boolean;
-    readonly className?: string;
     readonly icon: UserIconType;
 }
 
-const selectorVariants = cva('flex-1 rounded-3xl py-3xl border-2 border-secondary-corner items-center gap-y-md', {
+const tileVariants = cva('aspect-square flex-1 items-center justify-center rounded-3xl border-2 bg-surface-disc active:opacity-70', {
     variants: {
         isSelected: {
-            true: 'bg-secondary-background border-secondary-corner',
-            false: 'border-secondary-corner/50'
+            true: 'border-primary',
+            false: 'border-transparent'
         }
     }
 });
 
-const nameVariants = cva('font-medium text-xxs px-lg', {
-    variants: {
-        isSelected: {
-            true: 'text-primary',
-            false: 'text-secondary-foreground'
-        }
-    }
-});
-
-export const IconSelectorCard = ({ className, isSelected, icon, label, onSelect, variant }: Props) => {
+export const IconSelectorCard = ({ isSelected, icon, label, onSelect, variant }: Props) => {
+    const { t } = useLingui();
     const handleSelect = () => void onSelect(icon);
     const iconClassName = isSelected ? FOREGROUND_COLOR_PALETTE[variant] : FOREGROUND_COLOR_PALETTE.secondary;
+    const accessibilityState = { selected: isSelected };
 
     return (
         <HapticPressable
             testID={IconSelectorModalSelector.IconCard(icon)}
-            className={cn(selectorVariants({ isSelected }), className)}
+            accessibilityRole="button"
+            accessibilityLabel={t`Use ${label} icon`}
+            accessibilityState={accessibilityState}
+            className={tileVariants({ isSelected })}
             onPress={handleSelect}
         >
-            <View className="p-md">
-                <Icon className={cn(iconClassName)} icon={icon} />
-            </View>
+            <Icon className={cn(iconClassName)} icon={icon} size={24} />
 
-            <Text className={nameVariants({ isSelected })} ellipsizeMode="tail" numberOfLines={1}>
-                {label}
-            </Text>
+            {isSelected ? (
+                <View className="absolute right-[6px] top-[6px] h-[18px] w-[18px] items-center justify-center rounded-full bg-primary">
+                    <Icon icon={UserIconNameEnum.Check} size={12} className="text-primary-reverse" />
+                </View>
+            ) : null}
         </HapticPressable>
     );
 };

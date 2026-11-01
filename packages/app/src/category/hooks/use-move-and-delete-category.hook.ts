@@ -34,8 +34,8 @@ export const useMoveAndDeleteCategory = () => {
                     title: t`Move “${sourceTitle}” transactions to…`,
                     description: t({
                         message: plural(count, {
-                            one: `Pick the category its # transaction moves to.`,
-                            other: `Pick the category its # transactions move to.`
+                            one: `# transaction`,
+                            other: `# transactions`
                         })
                     }),
                     variant: 'primary',
