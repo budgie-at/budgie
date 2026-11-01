@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [6.144.1](https://github.com/budgie-at/budgie/compare/v6.144.0...v6.144.1) (2026-11-01)
+
+### Bug Fixes
+
+* **app:** compute runway burn with robust one-off trimming ([#1856](https://github.com/budgie-at/budgie/issues/1856)) ([c7d9f33](https://github.com/budgie-at/budgie/commit/c7d9f33fd4e87496deacda3d992ced8e0b55e403))
+
+
 # [6.141.0](https://github.com/budgie-at/budgie/compare/v6.140.1...v6.141.0) (2026-11-01)
 
 ### Features
