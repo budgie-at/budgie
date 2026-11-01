@@ -115,7 +115,9 @@ appId: ${APP_ID}
       timeout: 10000
 - tapOn:
       id: 'DeletableRow.DeleteButton'
-- tapOn: 'Delete'
+- tapOn:
+      text: 'Delete'
+      below: 'Delete .+\?'
 - extendedWaitUntil:
       notVisible:
           id: 'TagCard.E2E Tag Updated'
