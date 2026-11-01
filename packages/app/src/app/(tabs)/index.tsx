@@ -1,4 +1,3 @@
-import { AccountTypeEnum } from '@budgie/contracts';
 import { Redirect } from 'expo-router';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -17,7 +16,7 @@ import { BudgetWidget } from '../../budget/components/budget-widget/budget-widge
 import { useOnboardingRedirect } from '../../onboarding/hook/use-onboarding-redirect.hook';
 
 export default function HomePage() {
-    const { activeAccountCount, balanceSummary, cashAccounts, isLoading, sections } = useHomePageDataQuery();
+    const { activeAccountCount, balanceSummary, cashAccounts, cashTotal, isLoading, sections } = useHomePageDataQuery();
     const { bottom } = useSafeAreaInsets();
     const onboardingHref = useOnboardingRedirect();
 
@@ -28,15 +27,11 @@ export default function HomePage() {
     const listHeaderComponent = (
         <View className="mb-lg gap-y-xl pt-xs">
             <View className="px-3xl">
-                <NetWorthComposition sections={sections} cashTotal={balanceSummary.accountTypeTotals.get(AccountTypeEnum.CASH) ?? 0} />
+                <NetWorthComposition sections={sections} cashTotal={cashTotal} />
             </View>
             <AiDownloadHomeStatus />
             <BudgetWidget />
-            <CashCard
-                accounts={cashAccounts}
-                total={balanceSummary.accountTypeTotals.get(AccountTypeEnum.CASH) ?? 0}
-                balancesByAccountId={balanceSummary.balancesByAccountId}
-            />
+            <CashCard accounts={cashAccounts} total={cashTotal} balancesByAccountId={balanceSummary.balancesByAccountId} />
         </View>
     );
 

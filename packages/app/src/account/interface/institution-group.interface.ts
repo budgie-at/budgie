@@ -6,4 +6,5 @@ export interface InstitutionGroupInterface {
     readonly label: string | null;
     readonly groupNumber: number | null;
     readonly accounts: AccountWithSyncEntityInterface[];
+    readonly total: number;
 }

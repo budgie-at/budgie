@@ -8,6 +8,7 @@ import { ProtectedText } from '../../../@generic/component/protected-text/protec
 import { StickySectionHeaderBackdrop } from '../../../@generic/component/sticky-section-header-backdrop/sticky-section-header-backdrop';
 import { FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/footnote-max-font-size-multiplier.constant';
 import { TITLE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/title-max-font-size-multiplier.constant';
+import { toTrueMinus } from '../../../@generic/utils/to-true-minus.util';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 
@@ -23,7 +24,7 @@ export const AccountSectionHeaderFrame = ({ title, total, leading, trailing, foo
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const formatDigits = useDisplayFormatDigits();
 
-    const formattedTotal = isDefined(total) ? formatDigits(total, defaultInstrument.symbol).replace(/^-/u, '−') : null;
+    const formattedTotal = isDefined(total) ? toTrueMinus(formatDigits(total, defaultInstrument.symbol)) : null;
 
     return (
         <View className="-mx-3xl gap-y-md pt-md pb-md pr-[28px] pl-[32px]">

@@ -9,6 +9,7 @@ import { HeroFigure } from '../../../@generic/component/hero-figure/hero-figure'
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/max-font-size-multiplier.constant';
+import { toTrueMinus } from '../../../@generic/utils/to-true-minus.util';
 import { HomePageSelector } from '../../../app/(tabs)/home-page.selector';
 import { SecurityLockButton } from '../../../auth/components/security-lock-button/security-lock-button';
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
@@ -33,7 +34,7 @@ export const NetWorthCollapsibleHeader = (props: Props) => {
     const formatDigits = useDisplayFormatDigits();
     const [surfaceColor, separatorColor] = useCSSVariable(['--color-grouped-surface', '--color-surface-separator']);
 
-    const formattedNetWorth = formatDigits(netWorth, defaultInstrument.symbol).replace(/^-/u, '−');
+    const formattedNetWorth = toTrueMinus(formatDigits(netWorth, defaultInstrument.symbol));
     const formattedNetWorthValue = formatDigits(netWorth);
     const backgroundStyle = {
         backgroundColor: String(surfaceColor),

@@ -24,15 +24,14 @@ import type { InstitutionGroupInterface } from '../../interface/institution-grou
 
 interface Props {
     readonly institution: InstitutionGroupInterface;
-    readonly total: number;
 }
 
 const rowVariants = cva('min-h-[64px] gap-x-xl py-lg pr-lg pl-3xl active:scale-100 active:bg-surface-fill', {
     variants: { isStacked: { true: 'gap-y-sm', false: 'flex-row items-center' } }
 });
 
-export const InstitutionRow = ({ institution, total }: Props) => {
-    const { integrationId, provider, label, groupNumber, accounts } = institution;
+export const InstitutionRow = ({ institution }: Props) => {
+    const { integrationId, provider, label, groupNumber, accounts, total } = institution;
 
     const { t } = useLingui();
     const isStacked = useIsAccessibilityTextSize();

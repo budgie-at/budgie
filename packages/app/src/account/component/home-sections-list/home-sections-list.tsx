@@ -12,6 +12,7 @@ import { CryptoCurrencyGroupInterface } from '../../interface/crypto-currency-gr
 import { HomeAccountBalanceSummaryInterface } from '../../interface/home-account-balance-summary.interface';
 import { HomeSectionInterface } from '../../interface/home-section.interface';
 import { InstitutionGroupInterface } from '../../interface/institution-group.interface';
+import { isInstitutionGroup } from '../../type-guard/is-institution-group.type-guard';
 import { getHomeSectionItemPosition } from '../../utils/get-home-section-item-position.util';
 import { AccountsEmptyState } from '../accounts-empty-state/accounts-empty-state';
 import { CollapsibleNetWorthHeaderScrollSpacer } from '../collapsible-net-worth-header-scroll-spacer/collapsible-net-worth-header-scroll-spacer';
@@ -62,7 +63,7 @@ export const HomeSectionsList = ({ sections, activeAccountCount, isLoading, bott
     );
 
     const keyExtractor = (item: HomeSectionsListItem) => {
-        if ('provider' in item) {
+        if (isInstitutionGroup(item)) {
             return `institution-${item.integrationId}`;
         }
 

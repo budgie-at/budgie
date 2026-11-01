@@ -8,6 +8,7 @@ import { HomeAccountBalanceSummaryInterface } from '../../interface/home-account
 import { HomeSectionInterface } from '../../interface/home-section.interface';
 import { InstitutionGroupInterface } from '../../interface/institution-group.interface';
 import { isDebtSection } from '../../type-guard/is-debt-section.type-guard';
+import { isInstitutionGroup } from '../../type-guard/is-institution-group.type-guard';
 import { AccountListItem } from '../account-list-item/account-list-item';
 import { CryptoCurrencyGroupCard } from '../crypto-currency-group-card/crypto-currency-group-card';
 import { DebtAccountCard } from '../debt-account-card/debt-account-card';
@@ -22,9 +23,9 @@ interface Props {
 }
 
 export const HomeSectionItem = ({ item, section, balanceSummary, position }: Props) => {
-    const { balancesByAccountId, bankProviderTotals } = balanceSummary;
+    const { balancesByAccountId } = balanceSummary;
 
-    if ('provider' in item && item.accounts.length === 1) {
+    if (isInstitutionGroup(item) && item.accounts.length === 1) {
         const [account] = item.accounts;
 
         return (
@@ -36,10 +37,10 @@ export const HomeSectionItem = ({ item, section, balanceSummary, position }: Pro
         );
     }
 
-    if ('provider' in item) {
+    if (isInstitutionGroup(item)) {
         return (
             <TransactionRowSurface position={position}>
-                <InstitutionRow institution={item} total={bankProviderTotals.get(item.integrationId) ?? 0} />
+                <InstitutionRow institution={item} />
             </TransactionRowSurface>
         );
     }
