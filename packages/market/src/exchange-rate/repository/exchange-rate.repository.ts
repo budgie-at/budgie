@@ -3,7 +3,7 @@ import {
     CRYPTO_ACCOUNT_TYPES,
     Db,
     ExchangeRateEntityTable,
-    InstrumentDailyMarketPriceEntityTable
+    getExchangeRateWithHistoricalFallbackSql
 } from '@budgie/contracts';
 import { and, inArray, isNull, sql } from 'drizzle-orm';
 import * as Context from 'effect/Context';
@@ -44,12 +44,7 @@ export class ExchangeRateRepository extends Context.Service<ExchangeRateReposito
                     db
                         .selectDistinct({
                             instrumentId: AccountEntityTable.instrumentId,
-                            rate: sql<
-                                number | null
-                            >`(SELECT ${ExchangeRateEntityTable.rate} FROM ${ExchangeRateEntityTable} WHERE ${ExchangeRateEntityTable.baseInstrumentId} = ${outerInstrumentId} AND ${ExchangeRateEntityTable.quoteInstrumentId} = ${quoteInstrumentId} LIMIT 1)`,
-                            price: sql<
-                                number | null
-                            >`(SELECT ${InstrumentDailyMarketPriceEntityTable.price} FROM ${InstrumentDailyMarketPriceEntityTable} WHERE ${InstrumentDailyMarketPriceEntityTable.instrumentId} = ${outerInstrumentId} AND ${InstrumentDailyMarketPriceEntityTable.quoteInstrumentId} = ${quoteInstrumentId} AND ${InstrumentDailyMarketPriceEntityTable.deletedAt} IS NULL ORDER BY ${InstrumentDailyMarketPriceEntityTable.priceDate} DESC LIMIT 1)`
+                            rate: sql<number | null>`${getExchangeRateWithHistoricalFallbackSql(quoteInstrumentId, outerInstrumentId)}`
                         })
                         .from(AccountEntityTable)
                         .where(and(inArray(AccountEntityTable.type, CRYPTO_ACCOUNT_TYPES), isNull(AccountEntityTable.deletedAt)))
