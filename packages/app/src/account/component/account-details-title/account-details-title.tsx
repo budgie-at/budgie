@@ -1,6 +1,5 @@
-import { useState } from 'react';
 import { Text, View } from 'react-native';
-import Animated, { Extrapolation, interpolate, useAnimatedStyle } from 'react-native-reanimated';
+import Animated, { Extrapolation, interpolate, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 
 import { useCollapsibleHeaderScroll } from '@rnw-community/react-native-collapsible-header';
 import { useScreenChrome } from '@rnw-community/react-native-screen-chrome';
@@ -18,20 +17,28 @@ const DEFAULT_TITLE_HEIGHT = 28;
 const Z_INDEX_STYLE = { zIndex: 4 };
 
 export const AccountDetailsTitle = ({ title }: Props) => {
-    const [titleHeight, setTitleHeight] = useState(DEFAULT_TITLE_HEIGHT);
+    const titleHeight = useSharedValue(DEFAULT_TITLE_HEIGHT);
 
     const { config } = useScreenChrome();
     const { scrollY } = useCollapsibleHeaderScroll();
 
-    const handleTitleLayout = (event: LayoutChangeEvent) => void setTitleHeight(event.nativeEvent.layout.height);
+    const handleTitleLayout = (event: LayoutChangeEvent) => void titleHeight.set(event.nativeEvent.layout.height);
 
-    const expandedTitleTop = (config.headerHeight - titleHeight) / 2;
-    const collapsedTitleTop = ((config.collapsedHeaderHeight ?? config.headerHeight) - titleHeight) / 2;
     const collapseRange = [config.collapseStart, config.collapseEnd];
 
     const titleAnimatedStyle = useAnimatedStyle(() => ({
         transform: [
-            { translateY: interpolate(scrollY.get(), collapseRange, [expandedTitleTop, collapsedTitleTop], Extrapolation.CLAMP) },
+            {
+                translateY: interpolate(
+                    scrollY.get(),
+                    collapseRange,
+                    [
+                        (config.headerHeight - titleHeight.get()) / 2,
+                        ((config.collapsedHeaderHeight ?? config.headerHeight) - titleHeight.get()) / 2
+                    ],
+                    Extrapolation.CLAMP
+                )
+            },
             { scale: interpolate(scrollY.get(), collapseRange, [1, COMPACT_TITLE_SCALE], Extrapolation.CLAMP) }
         ]
     }));
