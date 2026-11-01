@@ -11,16 +11,18 @@ interface Props {
 
 export const RuleListRowTitle = ({ primary, secondary, isEnabled, testID }: Props) => {
     const primaryClassName = isEnabled
-        ? 'max-w-full text-[17px] leading-[22px] font-semibold text-primary'
-        : 'max-w-full text-[17px] leading-[22px] font-semibold text-secondary-foreground';
+        ? 'text-[17px] leading-[22px] font-semibold text-primary'
+        : 'text-[17px] leading-[22px] font-semibold text-secondary-foreground';
 
     return (
-        <View testID={testID} className="h-[22px] flex-row flex-wrap items-baseline overflow-hidden">
-            <Text className={primaryClassName} numberOfLines={1}>
-                {primary}
-            </Text>
+        <View testID={testID} className="flex-row items-baseline">
+            <View className="min-w-0 shrink">
+                <Text className={primaryClassName} numberOfLines={1}>
+                    {primary}
+                </Text>
+            </View>
             {isNotEmptyString(secondary) ? (
-                <Text className="text-[17px] leading-[22px] text-secondary-foreground" numberOfLines={1}>
+                <Text className="shrink-0 text-[17px] leading-[22px] text-secondary-foreground" numberOfLines={1}>
                     {secondary}
                 </Text>
             ) : null}

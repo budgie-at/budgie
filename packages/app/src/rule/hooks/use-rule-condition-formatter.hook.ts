@@ -121,14 +121,16 @@ export const useRuleConditionFormatter = () => {
         const operator = t(RULE_CONDITION_OPERATOR[condition.operator].phrase);
         const parts = splitListValue(condition.value);
         const firstValue = resolveValue({ ...condition, value: parts.at(0) ?? '' });
-        const multiValue = parts.length > 1 ? `${firstValue} +${parts.length - 1}` : value;
+        const moreCount = parts.length - 1;
+        const listOverflow = moreCount > 0 ? t({ message: plural(moreCount, { one: '+# more', other: '+# more' }) }) : null;
 
         return {
             fieldLabel,
             field: t(RULE_CONDITION_FIELD[condition.field].phrase),
             operator,
             value,
-            listValue: multiValue,
+            listValue: moreCount > 0 ? firstValue : value,
+            listOverflow,
             sentenceTemplate: buildSentenceTemplate(fieldLabel, condition.operator),
             listTemplate: buildListTemplate(fieldLabel, condition.operator),
             phraseTemplate: buildSentenceTemplate(t(RULE_CONDITION_FIELD[condition.field].phrase), condition.operator),

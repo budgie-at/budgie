@@ -49,7 +49,10 @@ export const RuleFormSubmitBar = ({ submitLabel, isSubmitting, onSubmit }: Props
 
     return (
         <View className="px-5xl pt-lg">
-            <View className="absolute inset-x-0 top-0 -bottom-[64px] bg-surface" pointerEvents="none" />
+            <View
+                className="absolute inset-x-0 top-0 -bottom-[64px] border-t-hairline border-surface-separator bg-surface"
+                pointerEvents="none"
+            />
             <View>
                 {isDefined(issue) ? (
                     <HapticPressable

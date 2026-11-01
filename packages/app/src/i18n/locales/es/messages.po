@@ -465,6 +465,10 @@ msgstr "{months, plural, one {# mes} other {# meses}}"
 msgid "{monthsUsed} of {RUNWAY_MINIMUM_MONTHS} complete months"
 msgstr "{monthsUsed} de {RUNWAY_MINIMUM_MONTHS} meses completos"
 
+#: src/rule/hooks/use-rule-condition-formatter.hook.ts
+msgid "{moreCount, plural, one {+# more} other {+# more}}"
+msgstr "{moreCount, plural, one {+# más} other {+# más}}"
+
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "{newAccountCount, plural, one {Add # account} other {Add # accounts}}"
 msgstr "{newAccountCount, plural, one {Añadir # cuenta} other {Añadir # cuentas}}"

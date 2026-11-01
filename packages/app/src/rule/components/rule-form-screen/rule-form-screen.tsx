@@ -18,7 +18,7 @@ interface Props {
     readonly children?: ReactNode;
 }
 
-const RULE_FORM_CHROME_CONFIG = { ...SCREEN_CHROME_CONFIG, bottomFadeHeight: 128 };
+const RULE_FORM_CHROME_CONFIG = { ...SCREEN_CHROME_CONFIG, bottomFadeHeight: 112 };
 
 export const RuleFormScreen = ({ title, footer, onCancel, ruleId, children }: Props) => {
     const isKeyboardVisible = useKeyboardState(state => state.isVisible);
