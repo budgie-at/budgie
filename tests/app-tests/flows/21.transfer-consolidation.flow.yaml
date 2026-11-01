@@ -195,6 +195,16 @@ appId: ${APP_ID}
       id: 'AccountCard.AddBalance.E2E_Consolidation_Cash'
 - scrollUntilVisible:
       element:
+          id: 'InstitutionRow.1'
+      direction: DOWN
+- tapOn:
+      id: 'InstitutionRow.1'
+- extendedWaitUntil:
+      visible:
+          id: 'BankIntegration.Page'
+      timeout: 3000
+- scrollUntilVisible:
+      element:
           id: 'AccountCard.Balance.E2E_Consolidation_A.750'
       direction: DOWN
 - assertVisible:
