@@ -119,7 +119,7 @@ appId: ${APP_ID}
       timeout: 5000
 - assertVisible:
       id: 'RuleForm.Action.1.TagSelector.Value'
-      text: 'E2E Coffee Tag'
+      text: '#E2E Coffee Tag'
 - tapOn:
       id: 'PageHeader.BackButton'
 - extendedWaitUntil:
@@ -229,7 +229,7 @@ appId: ${APP_ID}
       timeout: 5000
 - assertVisible:
       id: 'RuleForm.Action.1.TagSelector.Value'
-      text: 'E2E Grocer Tag'
+      text: '#E2E Grocer Tag'
 - tapOn:
       id: 'PageHeader.BackButton'
 - extendedWaitUntil:
