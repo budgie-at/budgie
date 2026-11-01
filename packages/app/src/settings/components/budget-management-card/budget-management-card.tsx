@@ -6,7 +6,8 @@ import { isDefined } from '@rnw-community/shared';
 
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
 import { useGetActiveBudgetQuery } from '../../../budget/query/use-get-active-budget.query';
-import { SettingsCard } from '../settings-card/settings-card';
+import { SettingsRowAccessory } from '../settings-row-accessory/settings-row-accessory';
+import { SettingsRow } from '../settings-row/settings-row';
 
 export const BudgetManagementCard = () => {
     const { t } = useLingui();
@@ -22,16 +23,16 @@ export const BudgetManagementCard = () => {
         void router.push('/budget/create');
     };
 
+    const budgetValue = isDefined(budget) ? budget.name : t`Not set`;
+
     return (
-        <SettingsCard
+        <SettingsRow
             onPress={handlePress}
-            onTitlePress={handlePress}
             titleTestID={SettingsPageSelector.BudgetManagementCard}
-            title={t`Manage budget`}
-            description={t`Set a monthly limit and track spending`}
+            title={t`Active budget`}
             icon={UserIconNameEnum.PiggyBank}
-            variant="positive"
-            isLoading={isBudgetLoading}
+            variant="ghost"
+            right={<SettingsRowAccessory value={budgetValue} isLoading={isBudgetLoading} />}
         />
     );
 };

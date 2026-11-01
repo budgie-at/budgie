@@ -3,11 +3,11 @@ import { useLingui } from '@lingui/react/macro';
 
 import { SettingsPageSelector } from '../../../app/(tabs)/settings/settings-page.selector';
 import { SettingSwitch } from '../../../settings/components/setting-switch/setting-switch';
-import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
+import { SettingsRow } from '../../../settings/components/settings-row/settings-row';
 import { useSettingToggle } from '../../../settings/hook/use-setting-toggle.hook';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
 
-export const RunwaySettingsSection = () => {
+export const RunwaySettingsRows = () => {
     const { t } = useLingui();
     const isRunwayPillEnabled = useSetting('isRunwayPillEnabled');
     const isRunwayCryptoIncluded = useSetting('isRunwayCryptoIncluded');
@@ -16,32 +16,34 @@ export const RunwaySettingsSection = () => {
 
     return (
         <>
-            <SettingsCard
+            <SettingsRow
                 testID={SettingsPageSelector.RunwayPillCard}
-                title={t`Show on home`}
-                description={t`Display the runway pill next to your total balance`}
-                icon={UserIconNameEnum.TrendingUp}
-                variant="positive"
+                title={t`Show runway`}
+                subtitle={t`Months left beside your balance`}
+                icon={UserIconNameEnum.Hourglass}
+                variant="ghost"
                 right={
                     <SettingSwitch
                         value={isRunwayPillEnabled}
                         onValueChange={handlePillChange}
+                        accessibilityLabel={t`Show runway on Home screen`}
                         testID={SettingsPageSelector.RunwayPillSwitch}
                         stateOnTestID={SettingsPageSelector.RunwayPillSwitchStateOn}
                         stateOffTestID={SettingsPageSelector.RunwayPillSwitchStateOff}
                     />
                 }
             />
-            <SettingsCard
+            <SettingsRow
                 testID={SettingsPageSelector.RunwayCryptoCard}
                 title={t`Include crypto`}
-                description={t`Counts crypto at today's market value`}
+                subtitle={t`In runway, at today's prices`}
                 icon={UserIconNameEnum.Bitcoin}
-                variant="warning"
+                variant="ghost"
                 right={
                     <SettingSwitch
                         value={isRunwayCryptoIncluded}
                         onValueChange={handleCryptoChange}
+                        accessibilityLabel={t`Include crypto in runway`}
                         testID={SettingsPageSelector.RunwayCryptoSwitch}
                         stateOnTestID={SettingsPageSelector.RunwayCryptoSwitchStateOn}
                         stateOffTestID={SettingsPageSelector.RunwayCryptoSwitchStateOff}

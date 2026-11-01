@@ -3,7 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { Platform } from 'react-native';
 
-import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
+import { SettingsRow } from '../../../settings/components/settings-row/settings-row';
 
 interface Props {
     readonly testID: string;
@@ -19,12 +19,12 @@ export const ApplePayCaptureSettingsCard = ({ testID }: Props) => {
     }
 
     return (
-        <SettingsCard
+        <SettingsRow
             onPress={handleNavigate}
             title={t`Apple Pay capture`}
-            description={t`Automatically record eligible card taps using Shortcuts`}
+            subtitle={t`Record card taps with Shortcuts`}
             icon={UserIconNameEnum.WalletCards}
-            variant="positive"
+            variant="ghost"
             testID={testID}
         />
     );

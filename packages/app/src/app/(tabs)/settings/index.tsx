@@ -1,46 +1,39 @@
-import { SettingsEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import Constants from 'expo-constants';
 import { router, useLocalSearchParams } from 'expo-router';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
-import { Card } from '../../../@generic/component/card/card';
+import { isDefined } from '@rnw-community/shared';
+
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
-import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
-import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
-import { openGithubIssueCreation } from '../../../@generic/utils/open-github-issue-creation.util';
-import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { AiFeaturesSettingsCard } from '../../../ai/component/ai-features-settings-card/ai-features-settings-card';
-import { ExportCsv } from '../../../export/components/export-csv/export-csv';
-import { ImportCsv } from '../../../import/components/import-csv/import-csv';
-import { ImportDatabase } from '../../../import/components/import-database/import-database';
-import { MoneyDataUpgradeStatusCard } from '../../../money-data/component/money-data-upgrade-status-card/money-data-upgrade-status-card';
-import { RunwaySettingsSection } from '../../../runway/component/runway-settings-section/runway-settings-section';
+import { RunwaySettingsRows } from '../../../runway/component/runway-settings-rows/runway-settings-rows';
+import { AccountsSettingsRows } from '../../../settings/components/accounts-settings-rows/accounts-settings-rows';
 import { AutoAssignMccCategory } from '../../../settings/components/auto-assign-mcc-category/auto-assign-mcc-category';
 import { BudgetManagementCard } from '../../../settings/components/budget-management-card/budget-management-card';
 import { BudgetPushToggle } from '../../../settings/components/budget-push-toggle/budget-push-toggle';
 import { BudgetWidgetToggle } from '../../../settings/components/budget-widget-toggle/budget-widget-toggle';
-import { ConsolidateTransfers } from '../../../settings/components/consolidate-transfers/consolidate-transfers';
 import { DefaultAccountSelector } from '../../../settings/components/default-account-selector/default-account-selector';
 import { DefaultCurrencySelector } from '../../../settings/components/default-currency-selector/default-currency-selector';
 import { LanguageSelector } from '../../../settings/components/language-selector/language-selector';
-import { RecalculateBalances } from '../../../settings/components/recalculate-balances/recalculate-balances';
-import { RepairSyncData } from '../../../settings/components/repair-sync-data/repair-sync-data';
+import { OrganizeSettingsRows } from '../../../settings/components/organize-settings-rows/organize-settings-rows';
 import { SecurityCard } from '../../../settings/components/security-card/security-card';
-import { SettingsCard } from '../../../settings/components/settings-card/settings-card';
-import { SettingsGroup } from '../../../settings/components/settings-group/settings-group';
+import { SettingsAboutFooter } from '../../../settings/components/settings-about-footer/settings-about-footer';
+import { SettingsRow } from '../../../settings/components/settings-row/settings-row';
+import { ShowCentsRow } from '../../../settings/components/show-cents-row/show-cents-row';
+import { SupportSettingsRows } from '../../../settings/components/support-settings-rows/support-settings-rows';
 import { ThemeSwitch } from '../../../settings/components/theme-switch/theme-switch';
-import { TruncateData } from '../../../settings/components/truncate-data/truncate-data';
 import { YourDataCard } from '../../../settings/components/your-data-card/your-data-card';
 import { useScrollToAnchor } from '../../../settings/hook/use-scroll-to-anchor.hook';
 import { useSetting } from '../../../settings/hook/use-setting.hook';
-import { updateSettingsMutation } from '../../../settings/mutation/update-settings.mutation';
 import { ApplePayCaptureSettingsCard } from '../../../wallet-capture/component/apple-pay-capture-settings-card/apple-pay-capture-settings-card';
 
 import { SettingsPageSelector } from './settings-page.selector';
+
+const handleNavigateToData = () => void router.push('/settings/data');
 
 // eslint-disable-next-line max-lines-per-function
 export default function SettingsPage() {
@@ -48,192 +41,97 @@ export default function SettingsPage() {
     const { anchor } = useLocalSearchParams<{ anchor?: string }>();
     const { scrollViewRef, onScrollViewLayout, anchorLayout, anchorHighlight } = useScrollToAnchor(anchor);
 
-    const showCents = useSetting('showCents');
-    const handleNavigateToCategories = () => void router.push('/settings/categories');
-    const handleNavigateToArchived = () => void router.push('/settings/archived');
-    const handleNavigateToInactive = () => void router.push('/settings/inactive');
-    const handleNavigateToTags = () => void router.push('/settings/tags');
-    const handleNavigateToRules = () => void router.push('/settings/rules');
-    const handleReportBug = () =>
-        void appRuntime.runFork(logAndContinue(openGithubIssueCreation.pipe(toastOnFailure(t`Could not open GitHub`))));
-
-    const handleToggle = (key: keyof SettingsEntityInterface) => (checked: boolean) => {
-        appRuntime.runFork(logAndContinue(updateSettingsMutation({ [key]: checked })));
-    };
-    const handleToggleShowCents = () =>
-        void appRuntime.runFork(
-            logAndContinue(updateSettingsMutation({ showCents: !showCents }).pipe(toastOnFailure(t`Could not update settings`)))
-        );
-    const appVersion = Constants.expoConfig?.version ?? '1.0.0';
+    const lastBackupAt = useSetting('lastBackupAt');
+    const dataFooter = isDefined(lastBackupAt)
+        ? t`Back up regularly and after imports.`
+        : t`Without a backup, lost data can't be recovered.`;
     const scrollViewProps = { ref: scrollViewRef, onLayout: onScrollViewLayout };
 
     return (
         <CollapsibleChromePage title={t`Settings`} testID={SettingsPageSelector.Container} scrollViewProps={scrollViewProps}>
-            <View className="gap-y-7xl pb-5xl">
-                <SettingsGroup title={t`Your data`}>
+            <View className="gap-y-5xl pb-5xl">
+                <GroupedListSection title={t`Your data`} footer={dataFooter}>
                     <YourDataCard />
-                </SettingsGroup>
+                    <SettingsRow
+                        onPress={handleNavigateToData}
+                        title={t`Data tools`}
+                        subtitle={t`Import, export, repair and reset`}
+                        icon={UserIconNameEnum.SlidersHorizontal}
+                        variant="ghost"
+                        testID={SettingsPageSelector.DataCard}
+                    />
+                </GroupedListSection>
 
                 <View {...anchorLayout('security')}>
-                    <SettingsGroup title={t`Security`}>
-                        <Animated.View {...anchorHighlight('security')}>
+                    <Animated.View {...anchorHighlight('security')}>
+                        <GroupedListSection title={t`Security`}>
                             <SecurityCard />
-                        </Animated.View>
-                    </SettingsGroup>
+                        </GroupedListSection>
+                    </Animated.View>
                 </View>
 
                 <View {...anchorLayout('general')}>
-                    <SettingsGroup title={t`General`}>
-                        <Animated.View className="gap-y-lg" {...anchorHighlight('general')}>
+                    <Animated.View {...anchorHighlight('general')}>
+                        <GroupedListSection title={t`General`}>
                             <LanguageSelector />
                             <DefaultCurrencySelector />
                             <DefaultAccountSelector />
-                            <AutoAssignMccCategory />
-                            <ApplePayCaptureSettingsCard testID={SettingsPageSelector.ApplePayCaptureCard} />
-                        </Animated.View>
-                    </SettingsGroup>
-                </View>
-
-                <View {...anchorLayout('ai')}>
-                    <SettingsGroup title={t`AI`}>
-                        <Animated.View className="gap-y-lg" {...anchorHighlight('ai')}>
-                            <AiFeaturesSettingsCard />
-                        </Animated.View>
-                    </SettingsGroup>
-                </View>
-
-                <View {...anchorLayout('organization')}>
-                    <SettingsGroup title={t`Organization`}>
-                        <Animated.View className="gap-y-lg" {...anchorHighlight('organization')}>
-                            <SettingsCard
-                                onPress={handleNavigateToCategories}
-                                title={t`Manage Categories`}
-                                description={t`View and delete custom categories`}
-                                icon={UserIconNameEnum.Folder}
-                                variant="default"
-                                testID={SettingsPageSelector.ManageCategoriesCard}
-                            />
-                            <SettingsCard
-                                onPress={handleNavigateToTags}
-                                title={t`Manage Tags`}
-                                description={t`Create and organize transaction tags`}
-                                icon={UserIconNameEnum.Tag}
-                                variant="pink"
-                                testID={SettingsPageSelector.ManageTagsCard}
-                            />
-                            <SettingsCard
-                                testID={SettingsPageSelector.ManageRulesCard}
-                                onPress={handleNavigateToRules}
-                                title={t`Manage Rules`}
-                                description={t`Auto-categorize transactions`}
-                                icon={UserIconNameEnum.Zap}
-                                variant="ghost"
-                            />
-                            <SettingsCard
-                                onPress={handleNavigateToArchived}
-                                title={t`Archived Accounts`}
-                                description={t`View and restore archived accounts`}
-                                icon={UserIconNameEnum.Archive}
-                                variant="dark-warning"
-                                testID={SettingsPageSelector.ArchivedCard}
-                            />
-                            <SettingsCard
-                                onPress={handleNavigateToInactive}
-                                title={t`Inactive Accounts`}
-                                description={t`View and activate hidden accounts`}
-                                icon={UserIconNameEnum.EyeOff}
-                                variant="dark-warning"
-                                testID={SettingsPageSelector.InactiveCard}
-                            />
-                        </Animated.View>
-                    </SettingsGroup>
-                </View>
-
-                <View {...anchorLayout('budget')}>
-                    <SettingsGroup title={t`Budget`}>
-                        <Animated.View className="gap-y-lg" {...anchorHighlight('budget')}>
-                            <BudgetManagementCard />
-                            <BudgetWidgetToggle />
-                            <BudgetPushToggle />
-                        </Animated.View>
-                    </SettingsGroup>
-                </View>
-
-                <View {...anchorLayout('runway')}>
-                    <SettingsGroup title={t`Runway`}>
-                        <Animated.View className="gap-y-lg" {...anchorHighlight('runway')}>
-                            <RunwaySettingsSection />
-                        </Animated.View>
-                    </SettingsGroup>
+                        </GroupedListSection>
+                    </Animated.View>
                 </View>
 
                 <View {...anchorLayout('appearance')}>
-                    <SettingsGroup title={t`Appearance`}>
-                        <Animated.View className="gap-y-lg" {...anchorHighlight('appearance')}>
-                            <ThemeSwitch
-                                cardTestID={SettingsPageSelector.DarkModeCard}
-                                switchTestID={SettingsPageSelector.DarkModeSwitch}
-                            />
-                            <SettingsCard
-                                testID={SettingsPageSelector.ShowCentsCard}
-                                onPress={handleToggleShowCents}
-                                title={t`Show Cents`}
-                                description={t`Show $1,234.56 instead of $1,235`}
-                                icon={UserIconNameEnum.DollarSign}
-                                right={
-                                    <ThemedSwitch
-                                        className="my-auto"
-                                        testID={SettingsPageSelector.ShowCentsSwitch}
-                                        onValueChange={handleToggle('showCents')}
-                                        value={showCents}
-                                    />
-                                }
-                                variant="positive"
-                            />
-                        </Animated.View>
-                    </SettingsGroup>
-                </View>
-
-                <View {...anchorLayout('data')}>
-                    <SettingsGroup title={t`Data management`}>
-                        <Animated.View className="gap-y-lg" {...anchorHighlight('data')}>
-                            <ImportCsv />
-                            <ExportCsv />
-                            <ImportDatabase />
-                            <MoneyDataUpgradeStatusCard testID={SettingsPageSelector.MoneyDataUpgradeCard} />
-                            <RepairSyncData />
-                            <ConsolidateTransfers />
-                            <RecalculateBalances />
-                            <Animated.View {...anchorLayout('clear-data')} {...anchorHighlight('clear-data')}>
-                                <TruncateData />
-                            </Animated.View>
-                        </Animated.View>
-                    </SettingsGroup>
-                </View>
-
-                <SettingsGroup title={t`About`}>
-                    <Animated.View className="gap-y-lg">
-                        <SettingsCard
-                            onPress={handleReportBug}
-                            title={t`Report a Bug`}
-                            description={t`Found an issue or have an idea? Open GitHub issue templates.`}
-                            icon={UserIconNameEnum.Bug}
-                            variant="ghost"
-                            testID={SettingsPageSelector.ReportBugCard}
-                        />
-                        <Card variant="ghost" className="items-center gap-y-3xl">
-                            <Text className="text-primary text-base font-medium text-center">{t`Budgie`}</Text>
-                            <Text className="text-secondary-foreground text-sm text-center">
-                                {t`AI-powered budgeting app with complete privacy. All data processing happens locally on your device.`}
-                            </Text>
-                            <View className="self-stretch h-px bg-secondary-corner" />
-                            <View className="items-center gap-y-xs">
-                                <Text className="text-secondary-foreground text-xs uppercase tracking-wide">{t`App Version`}</Text>
-                                <Text className="text-primary text-sm font-semibold">{appVersion}</Text>
-                            </View>
-                        </Card>
+                    <Animated.View {...anchorHighlight('appearance')}>
+                        <GroupedListSection title={t`Display`}>
+                            <ThemeSwitch testID={SettingsPageSelector.DarkModeCard} />
+                            <ShowCentsRow />
+                        </GroupedListSection>
                     </Animated.View>
-                </SettingsGroup>
+                </View>
+
+                <View {...anchorLayout('organization')}>
+                    <Animated.View {...anchorHighlight('organization')}>
+                        <GroupedListSection title={t`Organize`}>
+                            <OrganizeSettingsRows />
+                            <AccountsSettingsRows />
+                        </GroupedListSection>
+                    </Animated.View>
+                </View>
+
+                <View {...anchorLayout('budget')}>
+                    <Animated.View {...anchorHighlight('budget')}>
+                        <GroupedListSection title={t`Budget`}>
+                            <BudgetManagementCard />
+                            <BudgetPushToggle />
+                        </GroupedListSection>
+                    </Animated.View>
+                </View>
+
+                <View {...anchorLayout('runway')}>
+                    <Animated.View {...anchorHighlight('runway')}>
+                        <GroupedListSection title={t`Home screen`} footer={t`Include crypto also changes the Runway tab.`}>
+                            <BudgetWidgetToggle />
+                            <RunwaySettingsRows />
+                        </GroupedListSection>
+                    </Animated.View>
+                </View>
+
+                <View {...anchorLayout('ai')}>
+                    <Animated.View {...anchorHighlight('ai')}>
+                        <GroupedListSection title={t`Automation`}>
+                            <AutoAssignMccCategory />
+                            <ApplePayCaptureSettingsCard testID={SettingsPageSelector.ApplePayCaptureCard} />
+                            <AiFeaturesSettingsCard />
+                        </GroupedListSection>
+                    </Animated.View>
+                </View>
+
+                <View>
+                    <GroupedListSection title={t`Support`}>
+                        <SupportSettingsRows />
+                    </GroupedListSection>
+                    <SettingsAboutFooter />
+                </View>
                 <MenuSpacer />
             </View>
         </CollapsibleChromePage>
