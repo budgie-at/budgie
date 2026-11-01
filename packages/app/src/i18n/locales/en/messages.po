@@ -4970,10 +4970,6 @@ msgstr "No income"
 msgid "No items to save"
 msgstr "No items to save"
 
-#: src/app/language-selector.tsx
-msgid "No languages found"
-msgstr "No languages found"
-
 #: src/budget/components/budget-limit-changes-sheet/budget-limit-changes-sheet.tsx
 msgid "No limit changes yet"
 msgstr "No limit changes yet"
@@ -6326,7 +6322,6 @@ msgstr "Sealed. Only your PIN opens this file."
 
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 #: src/app/icon-selector.tsx
-#: src/app/language-selector.tsx
 msgid "Search"
 msgstr "Search"
 
@@ -7509,7 +7504,6 @@ msgstr "Try a different merchant, amount, or date."
 #: src/@generic/component/icon-selector-empty-state/icon-selector-empty-state.tsx
 #: src/account/component/account-select-content/account-select-content.tsx
 #: src/app/contact-selector.tsx
-#: src/app/language-selector.tsx
 #: src/app/rule-mcc-selector.tsx
 #: src/category/components/category-select-content/category-select-content.tsx
 msgid "Try a different search term"

@@ -1,14 +1,11 @@
 import { useLingui } from '@lingui/react/macro';
-import { useState } from 'react';
-import { View } from 'react-native';
+import { cva } from 'class-variance-authority';
+import { Text, View } from 'react-native';
 
-import { emptyFn } from '@rnw-community/shared';
-
-import { CountryFlag } from '../@generic/component/country-flag/country-flag';
-import { EmptyState } from '../@generic/component/empty-state/empty-state';
-import { SearchableSelectorList } from '../@generic/component/searchable-selector-list/searchable-selector-list';
-import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
+import { FittedSheetSurface } from '../@generic/component/fitted-sheet-surface/fitted-sheet-surface';
+import { GroupedListSection } from '../@generic/component/grouped-list-section/grouped-list-section';
 import { SelectorRow } from '../@generic/component/selector-row/selector-row';
+import { SheetTitleRow } from '../@generic/component/sheet-title-row/sheet-title-row';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { LANGUAGES } from '../i18n/constant/languages.constant';
 import { useLanguageSelectorModal, useLanguageSelectorModalParams } from '../i18n/context/language-selector-modal.context';
@@ -16,66 +13,59 @@ import { LanguageInterface } from '../i18n/interface/language.interface';
 
 import { LanguageSelectorModalSelector } from './language-selector-modal.selector';
 
-const keyExtractor = (item: LanguageInterface) => item.code;
+const discVariants = cva('h-[36px] w-[36px] items-center justify-center rounded-full', {
+    variants: { isSelected: { true: 'bg-positive-action', false: 'bg-surface-disc' } }
+});
 
-const filterLanguages = (
-    languages: LanguageInterface[],
-    search: string,
-    translate: (name: LanguageInterface['name']) => string
-): LanguageInterface[] =>
-    languages.filter(({ name, nativeName, code }) =>
-        [translate(name), translate(nativeName), code].some(value => value.toLowerCase().includes(search.toLowerCase()))
-    );
+const codeVariants = cva('text-[13px] font-semibold tracking-[0.3px]', {
+    variants: { isSelected: { true: 'text-positive-action-foreground', false: 'text-primary' } }
+});
 
 export default function LanguageSelectorModal() {
     const { t } = useLingui();
     const [, resolveLanguageSelector, dismissLanguageSelector] = useLanguageSelectorModal();
     useModalDismiss(dismissLanguageSelector);
-    const currentParams = useLanguageSelectorModalParams();
-    const [search, setSearch] = useState('');
+    const selectedLanguage = useLanguageSelectorModalParams()?.selectedLanguage;
 
-    const selectedLanguage = currentParams?.selectedLanguage;
-    const sections = [{ title: null, data: filterLanguages(LANGUAGES, search, t) }];
+    const languages = [...LANGUAGES].sort((first, second) => t(first.nativeName).localeCompare(t(second.nativeName)));
 
-    const renderItem = (item: LanguageInterface) => {
-        const isSelected = item.code === selectedLanguage;
-        const handleSelect = isSelected ? emptyFn : () => void resolveLanguageSelector(item.code);
-
+    const renderLanguage = (item: LanguageInterface) => {
         const title = t(item.nativeName);
         const translatedName = t(item.name);
-        const subtitle = title === translatedName ? null : translatedName;
+        const isSelected = item.code === selectedLanguage;
+        const subtitle = isSelected ? null : translatedName;
+        const handleSelect = () => void resolveLanguageSelector(item.code);
 
         return (
             <SelectorRow
+                key={item.code}
                 isSelected={isSelected}
                 onPress={handleSelect}
                 testID={LanguageSelectorModalSelector.Option(item.code)}
                 left={
-                    <View className="h-[36px] w-[36px] items-center justify-center overflow-hidden rounded-full border-hairline border-primary/25">
-                        <CountryFlag language={item.code} size={54} />
+                    <View
+                        className={discVariants({ isSelected })}
+                        accessibilityElementsHidden
+                        importantForAccessibility="no-hide-descendants"
+                    >
+                        <Text className={codeVariants({ isSelected })}>{item.code.toUpperCase()}</Text>
                     </View>
                 }
                 title={title}
+                titleLanguage={item.code}
                 subtitle={subtitle}
             />
         );
     };
 
     return (
-        <SearchableSelectorList
-            header={
-                <SelectorModalSearchHeader
-                    title={t`Language`}
-                    search={search}
-                    onSearchChange={setSearch}
-                    placeholder={t`Search`}
-                    testID={LanguageSelectorModalSelector.SearchInput}
-                />
-            }
-            sections={sections}
-            keyExtractor={keyExtractor}
-            renderItem={renderItem}
-            emptyState={<EmptyState title={t`No languages found`} description={t`Try a different search term`} />}
-        />
+        <FittedSheetSurface>
+            <View className="px-3xl pt-7xl pb-5xl">
+                <SheetTitleRow title={t`Language`} />
+            </View>
+            <View className="px-3xl">
+                <GroupedListSection>{languages.map(renderLanguage)}</GroupedListSection>
+            </View>
+        </FittedSheetSurface>
     );
 }

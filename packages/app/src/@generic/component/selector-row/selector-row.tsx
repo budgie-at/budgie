@@ -14,9 +14,10 @@ interface Props {
     readonly onPress: () => void;
     readonly testID?: string;
     readonly titleTestID?: string;
+    readonly titleLanguage?: string;
 }
 
-export const SelectorRow = ({ title, subtitle, left, isSelected, onPress, testID, titleTestID }: Props) => {
+export const SelectorRow = ({ title, subtitle, left, isSelected, onPress, testID, titleTestID, titleLanguage }: Props) => {
     const check = isSelected ? (
         <Icon icon={UserIconNameEnum.Check} size={22} className="text-positive-action" />
     ) : (
@@ -24,7 +25,7 @@ export const SelectorRow = ({ title, subtitle, left, isSelected, onPress, testID
     );
     const pressableProps = { accessibilityState: { selected: isSelected } };
     const titleNode = (
-        <Text className="text-primary text-[17px]" numberOfLines={2} testID={titleTestID}>
+        <Text className="text-primary text-[17px]" numberOfLines={2} testID={titleTestID} accessibilityLanguage={titleLanguage}>
             {title}
         </Text>
     );

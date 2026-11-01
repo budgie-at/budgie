@@ -118,7 +118,11 @@ const handleAppStateChange = (isActive: boolean): void => {
 // eslint-disable-next-line max-lines-per-function -- Layout component requires many lines
 export const RootLayoutContent = () => {
     const databaseMigrationStatus = useDatabaseMigration();
-    const [sheetSurface, groupedSheetSurface] = useCSSVariable(['--color-sheet-surface', '--color-grouped-surface']);
+    const [sheetSurface, groupedSheetSurface, sheetGroupedSurface] = useCSSVariable([
+        '--color-sheet-surface',
+        '--color-grouped-surface',
+        '--color-sheet-grouped-surface'
+    ]);
     const sheetOptions = fitToContentsSheetOptions(sheetSurface);
 
     useAppInitialization(databaseMigrationStatus === DatabaseMigrationStatusEnum.MIGRATED);
@@ -177,7 +181,7 @@ export const RootLayoutContent = () => {
                                                                     <Stack.Screen name="currency-selector" options={SELECTOR_OPTIONS} />
                                                                     <Stack.Screen
                                                                         name="language-selector"
-                                                                        options={formSheetOptions([DETENT_55])}
+                                                                        options={fitToContentsSheetOptions(sheetGroupedSurface)}
                                                                     />
                                                                     <Stack.Screen name="resync-window-picker" options={SELECTOR_OPTIONS} />
                                                                     <Stack.Screen name="contact-selector" options={SELECTOR_OPTIONS} />
