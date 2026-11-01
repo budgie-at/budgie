@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.140.0](https://github.com/budgie-at/budgie/compare/v6.139.2...v6.140.0) (2026-11-01)
+
+### Features
+
+* **recurring:** detect recurring income series ([372ce6c](https://github.com/budgie-at/budgie/commit/372ce6c9d9bbeb6df741d4ab61398dba59d88c64))
+* **recurring:** project recurring income separately from expenses ([e111540](https://github.com/budgie-at/budgie/commit/e1115403791c1159b8ebf3eda0bada2003658466))
+
+
 # [6.138.0](https://github.com/budgie-at/budgie/compare/v6.137.1...v6.138.0) (2026-10-31)
 
 **Note:** Version bump only for package @budgie/recurring

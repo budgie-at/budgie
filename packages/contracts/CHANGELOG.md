@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.140.0](https://github.com/budgie-at/budgie/compare/v6.139.2...v6.140.0) (2026-11-01)
+
+### Features
+
+* **contracts:** add budget kind, limit source, cadences, auto-tune and fund-covered columns ([d52b494](https://github.com/budgie-at/budgie/commit/d52b494734270586a1bd4453d52184a419ecc45b))
+* **contracts:** add sinking fund and limit change tables ([9093d2a](https://github.com/budgie-at/budgie/commit/9093d2aa5f31330099f9e49e62db7bcbc0f4f860))
+
+
 # [6.138.0](https://github.com/budgie-at/budgie/compare/v6.137.1...v6.138.0) (2026-10-31)
 
 ### Bug Fixes
