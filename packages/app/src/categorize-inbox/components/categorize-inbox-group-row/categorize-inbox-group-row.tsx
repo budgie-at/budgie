@@ -33,17 +33,13 @@ export const CategorizeInboxGroupRow = ({ cluster, position }: Props) => {
     const linkClassName = hasAction
         ? 'min-h-[64px] min-w-0 flex-1 flex-row items-center gap-x-xl py-lg pr-xl pl-3xl active:opacity-70'
         : 'min-h-[64px] min-w-0 flex-1 flex-row items-center gap-x-xl py-lg px-3xl active:opacity-70';
-    const chevron = hasAction ? null : (
-        <View className="w-[32px] items-center">
-            <Icon icon={UserIconNameEnum.ChevronRight} size={13} className="text-secondary-foreground" />
-        </View>
-    );
+    const chevron = hasAction ? null : <Icon icon={UserIconNameEnum.ChevronRight} size={13} className="text-secondary-foreground" />;
     const actionButton = isCash ? (
         <CategorizeInboxGroupRowCashButton cluster={cluster} />
     ) : (
         <CategorizeInboxGroupRowFileButton cluster={cluster} />
     );
-    const action = hasAction ? <View className="w-[32px] items-center mr-3xl">{actionButton}</View> : null;
+    const action = hasAction ? <View className="mr-3xl">{actionButton}</View> : null;
 
     return (
         <CategorizeInboxCardRow position={position}>
@@ -56,12 +52,14 @@ export const CategorizeInboxGroupRow = ({ cluster, position }: Props) => {
                     >
                         <CategorizeInboxMerchantBadge cluster={cluster} />
                         <View className="min-w-0 flex-1 gap-y-xxs">
-                            <Text className="text-[15px] leading-[20px] font-semibold text-primary" numberOfLines={2}>
-                                {formatCategorizeInboxMerchantTitle(displayTitle)}
-                            </Text>
+                            <View className="flex-row items-start gap-x-md">
+                                <Text className="min-w-0 flex-1 text-[15px] leading-[20px] font-semibold text-primary" numberOfLines={2}>
+                                    {formatCategorizeInboxMerchantTitle(displayTitle)}
+                                </Text>
+                                <CategorizeInboxGroupRowAmount cluster={cluster} />
+                            </View>
                             <CategorizeInboxGroupRowSubtitle cluster={cluster} />
                         </View>
-                        <CategorizeInboxGroupRowAmount cluster={cluster} />
                         {chevron}
                     </HapticPressable>
                 </Link>

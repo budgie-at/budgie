@@ -27,7 +27,7 @@ export const CategorizeInboxGroupRowAmount = ({ cluster }: Props) => {
     const colorClassName = isIncome ? 'text-positive-foreground' : 'text-primary';
 
     return (
-        <Text className={cn('shrink-0 text-[15px] leading-[18px] font-semibold tabular-nums', colorClassName)} numberOfLines={1}>
+        <Text className={cn('shrink-0 text-[15px] leading-[20px] font-semibold tabular-nums', colorClassName)} numberOfLines={1}>
             {`${sign}${amountLabel(amount, symbol)}`}
         </Text>
     );

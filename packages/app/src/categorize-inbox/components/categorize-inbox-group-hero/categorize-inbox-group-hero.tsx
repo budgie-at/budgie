@@ -32,10 +32,9 @@ export const CategorizeInboxGroupHero = ({ cluster }: Props) => {
 
     return (
         <View className="items-center gap-y-sm px-3xl pb-xs pt-md">
-            <View className="items-center gap-y-xs self-stretch">
+            <View className="items-center gap-y-md self-stretch">
                 <Text
-                    className="text-primary text-center text-[22px] leading-[28px] font-semibold"
-                    numberOfLines={3}
+                    className="text-primary text-center text-[20px] leading-[26px] font-semibold"
                     accessibilityRole="header"
                     {...testID(CategorizeInboxGroupScreenSelector.Title)}
                 >

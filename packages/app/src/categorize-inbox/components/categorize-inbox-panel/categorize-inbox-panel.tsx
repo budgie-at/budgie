@@ -21,6 +21,7 @@ import type { ReactElement } from 'react';
 
 interface Props {
     readonly activeSection: CategorizeInboxSectionEnum | null;
+    readonly children?: ReactElement | null;
 }
 
 const HIDDEN_EDGE_FADE_PROPS = { style: { display: 'none' } } as const;
@@ -35,7 +36,7 @@ const SLOT_MOTION = {
 };
 const SLOT_REDUCED_MOTION = { entering: FadeIn.duration(SLOT_REDUCED_DURATION), exiting: FadeOut.duration(SLOT_REDUCED_DURATION) };
 
-export const CategorizeInboxPanel = ({ activeSection }: Props) => {
+export const CategorizeInboxPanel = ({ activeSection, children }: Props) => {
     const reducedMotion = useReducedMotion();
     const {
         items,
@@ -64,7 +65,7 @@ export const CategorizeInboxPanel = ({ activeSection }: Props) => {
         [CategorizeInboxSectionEnum.ONE_OFFS]: null
     };
     const primaryAction = isDefined(activeSection) ? sectionActions[activeSection] : acceptAll;
-    const slot = transferUndo ?? labelUndo ?? movedToCashUndo ?? primaryAction;
+    const slot = transferUndo ?? labelUndo ?? movedToCashUndo ?? primaryAction ?? children;
     const slotMotion = reducedMotion ? SLOT_REDUCED_MOTION : SLOT_MOTION;
 
     if (!isDefined(slot)) {
@@ -77,13 +78,8 @@ export const CategorizeInboxPanel = ({ activeSection }: Props) => {
                 className="border-t-hairline border-surface-separator bg-surface px-5xl pb-safe pt-md"
                 testID={CategorizeInboxPanelSelector.Panel}
             >
-                <View className="h-14">
-                    <Animated.View
-                        key={slot.key}
-                        entering={slotMotion.entering}
-                        exiting={slotMotion.exiting}
-                        className="absolute inset-0 justify-center"
-                    >
+                <View className="min-h-[52px] justify-center">
+                    <Animated.View key={slot.key} entering={slotMotion.entering} exiting={slotMotion.exiting} className="justify-center">
                         {slot}
                     </Animated.View>
                 </View>

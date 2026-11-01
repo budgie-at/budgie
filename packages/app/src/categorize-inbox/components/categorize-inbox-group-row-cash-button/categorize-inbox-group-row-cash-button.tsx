@@ -1,4 +1,3 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 
 import { isEmptyArray } from '@rnw-community/shared';
@@ -29,7 +28,7 @@ export const CategorizeInboxGroupRowCashButton = ({ cluster }: Props) => {
 
     return (
         <CategorizeInboxGroupRowActionButton
-            icon={UserIconNameEnum.Banknote}
+            title={t`To cash`}
             label={t`Move ${displayTitle} to cash`}
             isDisabled={isEmptyArray(transactionIds)}
             onPress={handlePress}

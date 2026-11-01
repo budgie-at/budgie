@@ -1,10 +1,9 @@
-import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/component/icon/icon';
+import { Text } from 'react-native';
 
-import type { UserIconType } from '@budgie/contracts';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 
 interface Props {
-    readonly icon: UserIconType;
+    readonly title: string;
     readonly label: string;
     readonly isDisabled: boolean;
     readonly onPress: () => void;
@@ -12,10 +11,12 @@ interface Props {
 }
 
 const BUTTON_HIT_SLOP = { top: 6, bottom: 6, left: 6, right: 6 } as const;
+const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
-export const CategorizeInboxGroupRowActionButton = ({ icon, label, isDisabled, onPress, testID }: Props) => (
+export const CategorizeInboxGroupRowActionButton = ({ title, label, isDisabled, onPress, testID }: Props) => (
     <HapticPressable
-        className="size-[32px] items-center justify-center rounded-full bg-surface-fill active:opacity-70"
+        className="h-[32px] min-w-[44px] items-center justify-center rounded-full bg-surface-disc px-xl active:opacity-70"
+        style={CONTINUOUS_CORNERS}
         hitSlop={BUTTON_HIT_SLOP}
         disabled={isDisabled}
         onPress={onPress}
@@ -23,6 +24,8 @@ export const CategorizeInboxGroupRowActionButton = ({ icon, label, isDisabled, o
         accessibilityLabel={label}
         testID={testID}
     >
-        <Icon icon={icon} size={16} className="text-primary" />
+        <Text className="text-[15px] leading-[20px] font-semibold text-primary" numberOfLines={1}>
+            {title}
+        </Text>
     </HapticPressable>
 );

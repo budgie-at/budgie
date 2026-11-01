@@ -5,14 +5,14 @@ import { ActivityIndicator, Text, View } from 'react-native';
 import { ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
 import { isEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { CollapsibleChromeHeaderScrim } from '../../../@generic/component/collapsible-chrome-header-scrim/collapsible-chrome-header-scrim';
 import { CollapsibleChromeHeader } from '../../../@generic/component/collapsible-chrome-header/collapsible-chrome-header';
 import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
-import { AccountDetailsHeaderBackdrop } from '../../../account/component/account-details-header-backdrop/account-details-header-backdrop';
 import { useCategorizeInboxContext } from '../../context/categorize-inbox.context';
+import { CategorizeInboxDoneButton } from '../categorize-inbox-done-button/categorize-inbox-done-button';
 import { CategorizeInboxEmptyState } from '../categorize-inbox-empty-state/categorize-inbox-empty-state';
 import { CategorizeInboxList } from '../categorize-inbox-list/categorize-inbox-list';
 import { CategorizeInboxNavSubtitle } from '../categorize-inbox-nav-subtitle/categorize-inbox-nav-subtitle';
+import { CategorizeInboxPageHeaderBackdrop } from '../categorize-inbox-page-header-backdrop/categorize-inbox-page-header-backdrop';
 import { CategorizeInboxPageSelector } from '../categorize-inbox-page/categorize-inbox-page.selector';
 import { CategorizeInboxPanel } from '../categorize-inbox-panel/categorize-inbox-panel';
 import { CategorizeInboxShowListButton } from '../categorize-inbox-show-list-button/categorize-inbox-show-list-button';
@@ -36,11 +36,12 @@ export const CategorizeInboxPageContent = ({ params }: Props) => {
 
     const emptyDescription =
         (isPositiveNumber(categorizedCount) ? strategy?.doneThisSession(categorizedCount) : strategy?.emptyDescription) ?? '';
-    const panel = isLoading ? null : <CategorizeInboxPanel activeSection={filterSection} />;
     const isEmpty = isEmptyArray(items);
+    const doneButton = isEmpty ? <CategorizeInboxDoneButton key="done" /> : null;
+    const panel = isLoading ? null : <CategorizeInboxPanel activeSection={filterSection}>{doneButton}</CategorizeInboxPanel>;
     const navSubtitle = isLoading || isEmpty ? null : <CategorizeInboxNavSubtitle />;
     const body = isEmpty ? (
-        <CategorizeInboxEmptyState description={emptyDescription} onDone={handleGoBack} />
+        <CategorizeInboxEmptyState description={emptyDescription} />
     ) : (
         <CategorizeInboxList items={items} filterSection={filterSection} onSectionPress={setActiveSection} />
     );
@@ -57,9 +58,7 @@ export const CategorizeInboxPageContent = ({ params }: Props) => {
         <ScreenChromeFrame testID={CategorizeInboxPageSelector.Container}>
             <View className="flex-1">{content}</View>
 
-            <AccountDetailsHeaderBackdrop />
-
-            <CollapsibleChromeHeaderScrim />
+            <CategorizeInboxPageHeaderBackdrop />
 
             <CollapsibleChromeHeader
                 leading={<GoBackButton onPress={handleGoBack} />}

@@ -25,6 +25,8 @@ export const CategorizeInboxGroupRecentPayments = ({ cluster }: Props) => {
         .sort((left, right) => right.operatedAt.getTime() - left.operatedAt.getTime())
         .slice(0, RECENT_PAYMENTS_LIMIT);
 
+    const linkLabel = total > RECENT_PAYMENTS_LIMIT ? t`See all ${total}` : t`Choose payments`;
+
     const handleSeeAllPress = (): void => void router.push({ pathname: '/categorize/payments/[key]', params: { key: cluster.key } });
 
     return (
@@ -40,12 +42,10 @@ export const CategorizeInboxGroupRecentPayments = ({ cluster }: Props) => {
                     onPress={handleSeeAllPress}
                     className="min-h-[52px] flex-row items-center gap-x-md px-3xl py-xl active:opacity-70"
                     accessibilityRole="button"
-                    accessibilityLabel={t`See all ${total}`}
+                    accessibilityLabel={linkLabel}
                 >
                     <View className="absolute top-0 right-0 left-[16px] h-hairline bg-surface-separator" pointerEvents="none" />
-                    <Text className="text-primary min-w-0 flex-1 text-[17px]">
-                        <Trans>See all {total}</Trans>
-                    </Text>
+                    <Text className="text-primary min-w-0 flex-1 text-[17px]">{linkLabel}</Text>
                     <CategorizeInboxOptionChevron />
                 </HapticPressable>
             </CategorizeInboxOptionCard>

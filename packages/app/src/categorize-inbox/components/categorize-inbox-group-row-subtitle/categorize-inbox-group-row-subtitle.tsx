@@ -30,7 +30,7 @@ export const CategorizeInboxGroupRowSubtitle = ({ cluster }: Props) => {
     const countText = isCash ? cashText : paymentsText;
     const labelText =
         !isCash && isNotEmptyString(label) ? (
-            <Text className="min-w-0 shrink text-[13px] leading-[17px] text-primary" numberOfLines={1}>
+            <Text className="min-w-0 shrink text-[13px] leading-[17px] text-secondary-foreground" numberOfLines={1}>
                 {label}
             </Text>
         ) : null;
