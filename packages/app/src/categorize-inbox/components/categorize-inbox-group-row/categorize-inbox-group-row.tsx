@@ -47,7 +47,7 @@ export const CategorizeInboxGroupRow = ({ cluster, position }: Props) => {
     ) : (
         <CategorizeInboxGroupRowFileButton cluster={cluster} />
     );
-    const actionSlot = hasAction ? <View className="mr-md w-[72px] items-center justify-center">{actionButton}</View> : null;
+    const actionSlot = hasAction ? <View className="mr-3xl items-center justify-center">{actionButton}</View> : null;
     const chevronSlot = hasAction ? null : (
         <View className="w-[24px] items-end">
             <Icon icon={UserIconNameEnum.ChevronRight} size={13} className="text-secondary-foreground" />
