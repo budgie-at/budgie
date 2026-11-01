@@ -45,7 +45,7 @@ env:
 
 - extendedWaitUntil:
     visible:
-      text: 'Some transactions may match multiple rules\..*'
+      text: '.*the older rule wins.*'
 
 - tapOn:
     id: 'PageHeader.BackButton'

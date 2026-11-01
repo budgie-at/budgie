@@ -15,7 +15,7 @@ interface Props {
 
 export const RuleConditionMccSelector = ({ index, testID }: Props) => {
     const { t } = useLingui();
-    const { value, onChange } = useRuleConditionValueField(index);
+    const { value, onChange, isMissing } = useRuleConditionValueField(index);
     const [openRuleMccSelector] = useRuleMccSelectorModal();
     const { mccCategories } = useGetAllMccCategoriesQuery();
     const selectedMcc = mccCategories.find(({ mcc }) => mcc === value);
@@ -33,6 +33,7 @@ export const RuleConditionMccSelector = ({ index, testID }: Props) => {
     return (
         <RuleValuePickerButton
             value={selectedLabel}
+            isMissing={isMissing}
             placeholder={t`Choose a merchant category`}
             name={t`Merchant category`}
             onPress={handleOpen}

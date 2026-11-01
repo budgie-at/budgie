@@ -9,20 +9,21 @@ interface Props {
     readonly testID: string;
     readonly isLoading?: boolean;
     readonly isDisabled?: boolean;
+    readonly accessibilityHint?: string;
     readonly onPress: () => void;
 }
 
 const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
 const containerVariants = cva('h-[52px] items-center justify-center rounded-full px-5xl active:opacity-80', {
-    variants: { isDisabled: { true: 'bg-cta-background opacity-40', false: 'bg-cta-background' } }
+    variants: { isDisabled: { true: 'bg-surface-fill', false: 'bg-cta-background' } }
 });
 
 const labelVariants = cva('text-[17px] font-semibold', {
-    variants: { isDisabled: { true: 'text-cta-foreground', false: 'text-cta-foreground' } }
+    variants: { isDisabled: { true: 'text-secondary-foreground', false: 'text-cta-foreground' } }
 });
 
-export const PillButton = ({ label, testID, isLoading = false, isDisabled = false, onPress }: Props) => {
+export const PillButton = ({ label, testID, isLoading = false, isDisabled = false, accessibilityHint, onPress }: Props) => {
     const containerClassName = containerVariants({ isDisabled });
     const labelClassName = labelVariants({ isDisabled });
     const isInactive = isLoading || isDisabled;
@@ -36,6 +37,7 @@ export const PillButton = ({ label, testID, isLoading = false, isDisabled = fals
             style={CONTINUOUS_CORNERS}
             accessibilityRole="button"
             accessibilityLabel={label}
+            accessibilityHint={accessibilityHint}
             accessibilityState={accessibilityState}
             testID={testID}
         >

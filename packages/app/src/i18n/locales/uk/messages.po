@@ -27,7 +27,7 @@ msgid "(pick one)"
 msgstr "(виберіть)"
 
 #. placeholder {0}: parts.length
-#: src/rule/hooks/use-rule-condition-label.hook.ts
+#: src/rule/hooks/use-rule-condition-formatter.hook.ts
 msgid "{0, plural, one {# account} other {# accounts}}"
 msgstr "{0, plural, one {# рахунок} few {# рахунки} many {# рахунків} other {# рахунку}}"
 
@@ -165,6 +165,14 @@ msgstr "{code} · 1 {code} ≈ {convertedAmount} {defaultCode}"
 msgid "{code} · Base currency"
 msgstr "{code} · Базова валюта"
 
+#: src/rule/components/rule-summary-hero/rule-summary-hero.tsx
+msgid "{conditionCount, plural, one {all # conditions match} other {all # conditions match}}"
+msgstr "{conditionCount, plural, one {виконано всі # умову} few {виконано всі # умови} many {виконано всі # умов} other {виконано всі # умови}}"
+
+#: src/rule/components/rule-summary-hero/rule-summary-hero.tsx
+msgid "{conditionCount, plural, one {any of # conditions matches} other {any of # conditions matches}}"
+msgstr "{conditionCount, plural, one {виконано одну з # умови} few {виконано одну з # умов} many {виконано одну з # умов} other {виконано одну з # умови}}"
+
 #: src/budget/components/budget-period-recap-rollover/budget-period-recap-rollover.tsx
 msgid "{count, plural, one {{formattedAmount} rolled over across # category} other {{formattedAmount} rolled over across # categories}}"
 msgstr "{count, plural, one {{formattedAmount} перенесено на # категорію} few {{formattedAmount} перенесено на # категорії} many {{formattedAmount} перенесено на # категорій} other {{formattedAmount} перенесено на # категорії}}"
@@ -255,13 +263,9 @@ msgstr "{downloadPercent}%"
 msgid "{duplicateTransactionCount, plural, one {# skipped} other {# skipped}}"
 msgstr "{duplicateTransactionCount, plural, one {# пропущено} few {# пропущено} many {# пропущено} other {# пропущено}}"
 
-#: src/rule/hooks/use-rule-row-summary.hook.ts
-msgid "{extraCount, plural, one {and # more} other {and # more}}"
-msgstr "{extraCount, plural, one {і ще #} few {і ще #} many {і ще #} other {і ще #}}"
-
-#: src/rule/hooks/use-rule-row-summary.hook.ts
-msgid "{extraCount, plural, one {or # more} other {or # more}}"
-msgstr "{extraCount, plural, one {або ще #} few {або ще #} many {або ще #} other {або ще #}}"
+#: src/rule/hooks/use-rule-text-value-meta.hook.ts
+msgid "{fieldLabel} {operatorLabel}, value"
+msgstr "{fieldLabel} {operatorLabel}, значення"
 
 #: src/settings/components/your-data-card/your-data-card.tsx
 msgid "{fileSize} · Stored only on this device"
@@ -327,7 +331,7 @@ msgstr "{freeAmount} вільно на {daysLabel}"
 msgid "{freeSize} GB free on this phone"
 msgstr "{freeSize} ГБ вільно на цьому телефоні"
 
-#: src/rule/hooks/use-rule-condition-label.hook.ts
+#: src/rule/hooks/use-rule-condition-formatter.hook.ts
 msgid "{fromAmount} and {toAmount}"
 msgstr "{fromAmount} і {toAmount}"
 
@@ -873,6 +877,10 @@ msgstr "PIN-код можна додати будь-коли пізніше"
 msgid "Add a transaction"
 msgstr "Додати транзакцію"
 
+#: src/rule/hooks/use-rule-text-value-meta.hook.ts
+msgid "Add a value"
+msgstr "Додайте значення"
+
 #: src/rule/utils/get-rule-form-issue.util.ts
 msgid "Add a value to save"
 msgstr "Додайте значення, щоб зберегти"
@@ -1057,7 +1065,7 @@ msgstr "Розподілено"
 msgid "Already in Budgie"
 msgstr "Уже в Budgie"
 
-#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
+#: src/rule/hooks/use-rule-option-sheet.hook.ts
 msgid "Already in this rule"
 msgstr "Уже є в цьому правилі"
 
@@ -1133,8 +1141,13 @@ msgstr "Аналітика з’явиться, щойно ми підтверд
 #: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx
 #: src/rule/components/rule-condition-row/rule-condition-row.tsx
 #: src/rule/components/rule-summary-hero/rule-summary-hero.tsx
+#: src/rule/hooks/use-rule-row-summary.hook.ts
 msgid "and"
 msgstr "та"
+
+#: src/rule/components/rule-actions-section/rule-actions-section.tsx
+msgid "Another rule also sets a category or transfer, and the older rule wins."
+msgstr "Інше правило теж задає категорію чи переказ, і перемагає старіше правило."
 
 #: src/rule/components/rule-condition-match-type-selector/rule-condition-match-type-selector.tsx
 msgid "Any condition"
@@ -1173,6 +1186,10 @@ msgstr "Збереження з Apple Pay"
 #: src/wallet-capture/service/wallet-capture-transaction.service.ts
 msgid "Apple Pay purchase"
 msgstr "Покупка через Apple Pay"
+
+#: src/rule/components/rule-actions-section/rule-actions-section.tsx
+msgid "Applies to new payments as they arrive from your bank or an import."
+msgstr "Діє для нових платежів, щойно вони надходять із банку чи імпорту."
 
 #: src/app/note-input.tsx
 #: src/rule/hooks/use-rule-form.hook.ts
@@ -1668,7 +1685,6 @@ msgstr "Категоризувати як {categoryTitle}"
 #: src/app/(tabs)/settings/categories.tsx
 #: src/app/(tabs)/settings/import.tsx
 #: src/budget/service/budget-alert-monitor.service.ts
-#: src/category/components/category-form-selector/category-form-selector.tsx
 #: src/rule/components/rule-action-category-selector/rule-action-category-selector.tsx
 #: src/transaction/components/transaction-category-field-icon/transaction-category-field-icon.tsx
 #: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
@@ -1891,6 +1907,10 @@ msgstr "Коментар"
 msgid "Committed {committedExpense} per month"
 msgstr "Регулярні витрати на місяць: {committedExpense}"
 
+#: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx
+msgid "Compared with the payment amount in its account currency, without the minus sign."
+msgstr "Порівнюється із сумою платежу у валюті рахунку, без знака мінус."
+
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Condition: {label}"
 msgstr "Умова: {label}"
@@ -1991,10 +2011,6 @@ msgstr "Перетворити на повернення"
 #: src/transaction/hook/use-convert-to-refund-action.hook.ts
 msgid "Convert to Refund?"
 msgstr "Перетворити на повернення?"
-
-#: src/rule/constant/rule-action-type.constant.ts
-msgid "Convert to transfer"
-msgstr "Перетворити на переказ"
 
 #: src/app/convert-to-transfer.tsx
 #: src/transaction/components/transaction-list-convert-to-transfer-menu-item/transaction-list-convert-to-transfer-menu-item.tsx
@@ -2766,7 +2782,7 @@ msgstr "До {date}"
 msgid "Duplicate rule"
 msgstr "Дублювати правило"
 
-#: src/rule/components/rule-condition-text-value-input/rule-condition-text-value-input.tsx
+#: src/rule/hooks/use-rule-text-value-meta.hook.ts
 msgid "e.g. ^uber.*trip"
 msgstr "напр. ^uber.*trip"
 
@@ -2806,7 +2822,7 @@ msgstr "напр. Продукти, Розваги"
 msgid "e.g. Loan to Alex"
 msgstr "напр. позика Олексі"
 
-#: src/rule/components/rule-condition-text-value-input/rule-condition-text-value-input.tsx
+#: src/rule/hooks/use-rule-text-value-meta.hook.ts
 msgid "e.g. lunch with team"
 msgstr "напр. обід з командою"
 
@@ -2814,7 +2830,7 @@ msgstr "напр. обід з командою"
 msgid "e.g. Main card"
 msgstr "напр. основна картка"
 
-#: src/rule/components/rule-condition-text-value-input/rule-condition-text-value-input.tsx
+#: src/rule/hooks/use-rule-text-value-meta.hook.ts
 msgid "e.g. Netflix"
 msgstr "напр. Netflix"
 
@@ -3036,10 +3052,6 @@ msgstr "Erste Bank (PDF)"
 #: src/budget/components/budget-period-summary/budget-period-summary.tsx
 msgid "Estimated from your past transactions using your current limits."
 msgstr "Оцінено за твоїми минулими транзакціями з поточними лімітами."
-
-#: src/rule/components/rule-actions-section/rule-actions-section.tsx
-msgid "Every action runs on each matching payment."
-msgstr "Кожна дія застосовується до кожного відповідного платежу."
 
 #: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
 msgid "Every tap, recorded"
@@ -3542,10 +3554,6 @@ msgstr "У плюсі"
 msgid "In runway, at today's prices"
 msgstr "У запасі, за сьогоднішніми цінами"
 
-#: src/rule/components/rule-summary-hero/rule-summary-hero.tsx
-msgid "In short"
-msgstr "Коротко"
-
 #: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
 msgid "In Shortcuts, add a personal automation with the Transaction trigger, select your cards and choose Run Immediately."
 msgstr "У Швидких командах додайте особисту автоматизацію з тригером «Транзакція», виберіть свої картки та оберіть «Запускати одразу»."
@@ -3805,7 +3813,7 @@ msgstr "Позичено"
 msgid "Less than"
 msgstr "Менше ніж"
 
-#: src/rule/components/rule-condition-text-value-input/rule-condition-text-value-input.tsx
+#: src/rule/hooks/use-rule-text-value-meta.hook.ts
 msgid "Letter case is ignored"
 msgstr "Регістр не враховується"
 
@@ -3872,10 +3880,6 @@ msgstr "Обслуговування"
 msgid "Make a PIN after all"
 msgstr "Усе ж створити PIN-код"
 
-#: src/rule/constant/rule-action-type.constant.ts
-msgid "make a transfer with"
-msgstr "створити переказ з"
-
 #: src/budget/components/budget-details-edit-button/budget-details-edit-button.tsx
 msgid "Manage budget"
 msgstr "Керувати бюджетом"
@@ -3940,13 +3944,45 @@ msgstr "Відповідні надходження перетворюються
 msgid "matches"
 msgstr "збігається"
 
+#: src/rule/components/rule-conditions-section/rule-conditions-section.tsx
+msgid "Matches any of the chosen values."
+msgstr "Збігається з будь-яким із вибраних значень."
+
+#: src/rule/components/rule-conditions-section/rule-conditions-section.tsx
+msgid "Matches everything except this exact value."
+msgstr "Збігається з усім, крім цього точного значення."
+
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "Matches one of several values"
 msgstr "Збігається з одним із кількох значень"
 
+#: src/rule/components/rule-conditions-section/rule-conditions-section.tsx
+msgid "Matches only this exact value, ignoring letter case."
+msgstr "Збігається лише з цим точним значенням, регістр не важливий."
+
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "Matches pattern"
 msgstr "Відповідає шаблону"
+
+#: src/rule/components/rule-conditions-section/rule-conditions-section.tsx
+msgid "Matches payments above this amount."
+msgstr "Збігається з платежами, більшими за цю суму."
+
+#: src/rule/components/rule-conditions-section/rule-conditions-section.tsx
+msgid "Matches payments below this amount."
+msgstr "Збігається з платежами, меншими за цю суму."
+
+#: src/rule/components/rule-conditions-section/rule-conditions-section.tsx
+msgid "Matches payments from the first amount to the second, both included."
+msgstr "Збігається з платежами від першої до другої суми включно."
+
+#: src/rule/components/rule-conditions-section/rule-conditions-section.tsx
+msgid "Matches when the text appears anywhere, ignoring letter case."
+msgstr "Збігається, коли текст трапляється будь-де, регістр не важливий."
+
+#: src/rule/components/rule-conditions-section/rule-conditions-section.tsx
+msgid "Matches when the text appears nowhere."
+msgstr "Збігається, коли текст ніде не трапляється."
 
 #: src/account/component/deposit-details-card/deposit-details-card.tsx
 msgid "Maturity Date"
@@ -4156,6 +4192,10 @@ msgstr "перенести в"
 #: src/categorize-inbox/components/categorize-inbox-group-move-to-cash-option/categorize-inbox-group-move-to-cash-option.tsx
 msgid "Move to cash"
 msgstr "У готівку"
+
+#: src/rule/constant/rule-action-type.constant.ts
+msgid "Move to category"
+msgstr "Перенести в категорію"
 
 #: src/categorize-inbox/components/categorize-inbox-moved-to-cash-undo/categorize-inbox-moved-to-cash-undo.tsx
 msgid "Moved to cash"
@@ -4545,10 +4585,6 @@ msgstr "з {total} ГБ"
 msgid "Off"
 msgstr "Вимкнено"
 
-#: src/rule/hooks/use-rule-row-summary.hook.ts
-msgid "Off · {fullTrigger}"
-msgstr "Вимкнено · {fullTrigger}"
-
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
 msgid "Off after an error"
 msgstr "Вимкнено після помилки"
@@ -4733,6 +4769,7 @@ msgstr "Параметри"
 
 #: src/rule/components/rule-condition-row/rule-condition-row.tsx
 #: src/rule/components/rule-summary-hero/rule-summary-hero.tsx
+#: src/rule/hooks/use-rule-row-summary.hook.ts
 msgid "or"
 msgstr "або"
 
@@ -4903,8 +4940,8 @@ msgid "Payment schedule unavailable"
 msgstr "Графік платежів недоступний"
 
 #: src/rule/constant/rule-condition-field.constant.ts
-msgid "Payment size, in any currency"
-msgstr "Сума платежу в будь-якій валюті"
+msgid "Payment size in its account currency"
+msgstr "Сума платежу у валюті рахунку"
 
 #: src/installment-plan/component/installment-plan-count-field/installment-plan-count-field.tsx
 msgid "Payments"
@@ -5468,13 +5505,9 @@ msgstr "Правило оновлено"
 msgid "Rules"
 msgstr "Правила"
 
-#: src/rule/components/rule-conditions-section/rule-conditions-section.tsx
-msgid "Rules check payments as they arrive from your bank or an import."
-msgstr "Правила перевіряють платежі, щойно вони надходять із банку чи імпорту."
-
 #: src/rule/components/rules-list-page/rules-list-page.tsx
-msgid "Rules run top to bottom, and the first match sets the category. Swipe left on a rule to delete it."
-msgstr "Правила виконуються згори донизу, і перше відповідне задає категорію. Проведіть правило вліво, щоб видалити його."
+msgid "Rules run in the order they were created. If two set a category, the older one wins."
+msgstr "Правила виконуються в порядку створення. Якщо два задають категорію, перемагає старіше."
 
 #: src/rule/components/rules-feature-intro/rules-feature-intro.tsx
 msgid "Rules work on imported transactions"
@@ -5533,7 +5566,6 @@ msgid "Save balances"
 msgstr "Зберегти баланси"
 
 #: src/account/component/update-account-page/update-account-page.tsx
-#: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 msgid "Save changes"
 msgstr "Зберегти зміни"
 
@@ -5548,6 +5580,10 @@ msgstr "Збережіть її"
 #: src/settings/components/backup-row/backup-row.tsx
 msgid "Save it to Files or another app."
 msgstr "Збережіть його у Файлах або іншому застосунку."
+
+#: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
+msgid "Save rule"
+msgstr "Зберегти правило"
 
 #: src/categorize-inbox/components/categorize-inbox-transfer-rule-switch/categorize-inbox-transfer-rule-switch.tsx
 msgid "Saved as a rule"
@@ -5717,10 +5753,6 @@ msgstr "Оберіть усі категорії"
 msgid "Select category"
 msgstr "Обрати категорію"
 
-#: src/category/components/category-form-selector/category-form-selector.tsx
-msgid "Select Category"
-msgstr "Вибрати категорію"
-
 #: src/import/components/import-column-mapper/import-column-mapper.tsx
 msgid "Select column..."
 msgstr "Виберіть стовпець..."
@@ -5773,10 +5805,6 @@ msgstr "Спочатку оберіть валюту за замовчуванн
 #: src/budget/components/budget-empty-state/budget-empty-state.tsx
 msgid "Set a monthly limit and track your spending"
 msgstr "Встановіть місячний ліміт та відстежуйте свої витрати"
-
-#: src/rule/constant/rule-action-type.constant.ts
-msgid "Set category"
-msgstr "Встановити категорію"
 
 #: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
 msgid "Set fee"
@@ -5895,10 +5923,6 @@ msgstr "Деякі емітенти не надають усіх полів тр
 #: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
 msgid "Some transactions may be hidden by the account or amount filter."
 msgstr "Деякі транзакції можуть бути приховані фільтром рахунку чи суми."
-
-#: src/rule/components/rule-actions-section/rule-actions-section.tsx
-msgid "Some transactions may match multiple rules. The first matching rule will take priority."
-msgstr "Деякі транзакції можуть відповідати кільком правилам. Перше відповідне правило матиме пріоритет."
 
 #: src/rule/components/rule-condition-phrase/rule-condition-phrase.tsx
 msgid "something"
@@ -6382,7 +6406,7 @@ msgstr "Цього місяця"
 msgid "This month: spent {formattedExpense}, income {formattedIncome}"
 msgstr "Цього місяця: витрачено {formattedExpense}, дохід {formattedIncome}"
 
-#: src/rule/components/rule-condition-text-value-input/rule-condition-text-value-input.tsx
+#: src/rule/hooks/use-rule-text-value-meta.hook.ts
 msgid "This pattern isn't valid yet"
 msgstr "Цей шаблон поки некоректний"
 
@@ -6656,6 +6680,10 @@ msgstr "Рахунок переказу"
 msgid "Transfer from savings jar"
 msgstr "Переказ з банки"
 
+#: src/rule/constant/rule-action-type.constant.ts
+msgid "transfer to"
+msgstr "переказати на"
+
 #: src/categorize-inbox/components/categorize-inbox-transfer-screen/categorize-inbox-transfer-screen.tsx
 msgid "Transfer to"
 msgstr "Переказ до"
@@ -6667,6 +6695,10 @@ msgstr "Переказ на {accountTitle}"
 #: src/categorize-inbox/components/categorize-inbox-group-learned-transfer-option/categorize-inbox-group-learned-transfer-option.tsx
 msgid "Transfer to {title}"
 msgstr "Переказ до {title}"
+
+#: src/rule/constant/rule-action-type.constant.ts
+msgid "Transfer to account"
+msgstr "Переказати на рахунок"
 
 #: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
 msgid "Transfer to an account"
@@ -6911,13 +6943,13 @@ msgstr "Використовуйте Touch ID для швидкого й без�
 msgid "Used for totals and reports"
 msgstr "Для підсумків і звітів"
 
+#: src/rule/components/rule-conditions-section/rule-conditions-section.tsx
+msgid "Uses a regular expression of up to 200 characters, ignoring letter case."
+msgstr "Використовує регулярний вираз до 200 символів, регістр не важливий."
+
 #: src/sync/component/binance-parked-assets-notice/binance-parked-assets-notice.tsx
 msgid "Valuation unavailable"
 msgstr "Оцінка недоступна"
-
-#: src/rule/components/rule-condition-text-value-input/rule-condition-text-value-input.tsx
-msgid "Value"
-msgstr "Значення"
 
 #: src/transaction/components/transaction-info-note-group/transaction-info-note-group.tsx
 msgid "View source transactions"
@@ -6998,8 +7030,8 @@ msgid "When"
 msgstr "Коли"
 
 #: src/rule/hooks/use-rule-row-summary.hook.ts
-msgid "When {field} {operator} {value}, {title}. {statusLabel}"
-msgstr "Коли {field} {operator} {value}, {title}. {statusLabel}"
+msgid "When {conditionsText}, {title}. {statusLabel}"
+msgstr "Коли {conditionsText}, {title}. {statusLabel}"
 
 #: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
 msgid "When does the deposit mature?"

@@ -5,7 +5,7 @@ import type { RuleOptionMetaInterface } from '../interface/rule-option-meta.inte
 
 export const RULE_ACTION_TYPE: Record<RuleActionTypeEnum, RuleOptionMetaInterface> = {
     [RuleActionTypeEnum.SET_CATEGORY]: {
-        label: msg`Set category`,
+        label: msg`Move to category`,
         phrase: msg`move to`,
         description: msg`Move matching payments to a category`,
         icon: UserIconNameEnum.FolderOpen,
@@ -19,8 +19,8 @@ export const RULE_ACTION_TYPE: Record<RuleActionTypeEnum, RuleOptionMetaInterfac
         variant: 'pink'
     },
     [RuleActionTypeEnum.CONVERT_TO_TRANSFER]: {
-        label: msg`Convert to transfer`,
-        phrase: msg`make a transfer with`,
+        label: msg`Transfer to account`,
+        phrase: msg`transfer to`,
         description: msg`Turn payments into transfers between accounts`,
         icon: UserIconNameEnum.ArrowRightLeft,
         variant: 'cyan'

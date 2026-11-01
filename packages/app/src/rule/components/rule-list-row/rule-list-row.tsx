@@ -26,7 +26,9 @@ const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 
 export const RuleListRow = ({ rule, index, isLast, hasOverlap, onOpen, onToggle }: Props) => {
     const { t } = useLingui();
-    const { title, subtitle, accessibilityLabel } = useRuleRowSummary(rule);
+    const { title, triggerPrefix, triggerValue, extraConditionCount, accessibilityLabel } = useRuleRowSummary(rule);
+    const hasExtraConditions = extraConditionCount > 0;
+    const extraConditionsLabel = `+${extraConditionCount}`;
     const isFirst = index === 0;
     const firstAction = rule.actions.at(0);
     const actionMeta = RULE_ACTION_TYPE[firstAction?.type ?? RuleActionTypeEnum.SET_CATEGORY];
@@ -64,16 +66,24 @@ export const RuleListRow = ({ rule, index, isLast, hasOverlap, onOpen, onToggle 
                     </View>
 
                     <View className="min-w-0 flex-1 gap-y-xxs">
-                        <Text testID={RulesPageSelector.RuleCardActions(index)} className={titleClassName} numberOfLines={1}>
+                        <Text testID={RulesPageSelector.RuleCardActions(index)} className={titleClassName} numberOfLines={2}>
                             {title}
                         </Text>
-                        <Text
-                            testID={RulesPageSelector.RuleCardConditions(index)}
-                            className="text-[13px] leading-[18px] text-secondary-foreground"
-                            numberOfLines={2}
-                        >
-                            {subtitle}
-                        </Text>
+                        <View testID={RulesPageSelector.RuleCardConditions(index)} className="flex-row items-center gap-x-xs">
+                            <Text className="shrink-0 text-[13px] leading-[18px] text-secondary-foreground" numberOfLines={1}>
+                                {triggerPrefix}
+                            </Text>
+                            <Text className="shrink text-[13px] leading-[18px] text-secondary-foreground" numberOfLines={1}>
+                                {triggerValue}
+                            </Text>
+                            {hasExtraConditions ? (
+                                <View className="rounded-full bg-surface-fill px-sm" style={CONTINUOUS_CORNERS}>
+                                    <Text className="text-[12px] font-semibold leading-[18px] text-secondary-foreground">
+                                        {extraConditionsLabel}
+                                    </Text>
+                                </View>
+                            ) : null}
+                        </View>
                         {hasOverlap ? (
                             <Text className="text-[13px] leading-[18px] text-warning-foreground" numberOfLines={1}>
                                 {t`Same trigger as a rule above`}

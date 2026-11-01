@@ -68,6 +68,8 @@ const LOCK_SCREEN_OPTIONS: NativeStackNavigationOptions = { presentation: 'fullS
 
 const SELECTOR_OPTIONS = formSheetOptions([DETENT_40, DETENT_70], 0);
 
+const CATEGORY_SELECTOR_OPTIONS = formSheetOptions([DETENT_70, DETENT_96], 0);
+
 enableScreens();
 enableFreeze();
 
@@ -165,7 +167,10 @@ export const RootLayoutContent = () => {
                                                                     <Stack.Screen name="(main)/transactions/[id]/transfer" />
                                                                     <Stack.Screen name="(main)/analytics/transactions" />
                                                                     <Stack.Screen name="(main)/categorize" />
-                                                                    <Stack.Screen name="category-selector" options={SELECTOR_OPTIONS} />
+                                                                    <Stack.Screen
+                                                                        name="category-selector"
+                                                                        options={CATEGORY_SELECTOR_OPTIONS}
+                                                                    />
                                                                     <Stack.Screen name="account-selector" options={SELECTOR_OPTIONS} />
                                                                     <Stack.Screen name="currency-selector" options={SELECTOR_OPTIONS} />
                                                                     <Stack.Screen name="language-selector" options={SELECTOR_OPTIONS} />

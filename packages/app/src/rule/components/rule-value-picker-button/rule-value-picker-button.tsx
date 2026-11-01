@@ -12,14 +12,16 @@ interface Props {
     readonly value: string | null;
     readonly placeholder: string;
     readonly name: string;
+    readonly isMissing: boolean;
     readonly onPress: () => void;
     readonly testID?: string;
 }
 
-export const RuleValuePickerButton = ({ value, placeholder, name, onPress, testID }: Props) => {
+export const RuleValuePickerButton = ({ value, placeholder, name, isMissing, onPress, testID }: Props) => {
     const hasValue = isNotEmptyString(value);
     const label = hasValue ? value : placeholder;
-    const labelClassName = hasValue ? 'flex-1 text-[17px] text-primary' : 'flex-1 text-[17px] text-secondary-foreground';
+    const placeholderClassName = isMissing ? 'flex-1 text-[17px] text-warning-foreground' : 'flex-1 text-[17px] text-secondary-foreground';
+    const labelClassName = hasValue ? 'flex-1 text-[17px] text-primary' : placeholderClassName;
 
     return (
         <HapticPressable

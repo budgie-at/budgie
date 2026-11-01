@@ -31,10 +31,10 @@ export const SelectorModalSearchHeader = (props: Props) => {
                 {hasRightAction && (
                     <HapticPressable
                         onPress={rightActionOnPress}
-                        className="h-[48px] w-[48px] items-center justify-center rounded-full bg-white"
+                        className="h-[48px] w-[48px] items-center justify-center rounded-full bg-surface-fill"
                         testID={rightActionTestID}
                     >
-                        <Icon icon={rightActionIcon} size={22} className="text-black" />
+                        <Icon icon={rightActionIcon} size={22} className="text-primary" />
                     </HapticPressable>
                 )}
             </SelectorSearchRow>

@@ -15,13 +15,17 @@ interface Props {
 
 export const RuleActionTagSelector = ({ index, testID }: Props) => {
     const { t } = useLingui();
-    const { control } = useFormContext<RuleCreateInputInterface>();
+    const { control, formState } = useFormContext<RuleCreateInputInterface>();
     const {
         field: { value: tagId, onChange }
     } = useController({ control, name: `actions.${index}.tagId` });
     const [openTagsSelector] = useTagsSelectorModal();
     const selectedTagIds = isDefined(tagId) ? [tagId] : [];
     const { tags } = useGetTagByIdsQuery(selectedTagIds);
+    const tagTitle = tags?.at(0)?.title;
+    const tagLabel = isDefined(tagTitle) ? `#${tagTitle}` : null;
+
+    const isMissing = !isDefined(tagId) && formState.isDirty;
 
     const handleOpen = () => {
         openTagsSelector({ initialTagIds: selectedTagIds, singleSelect: true }, nextTagIds => {
@@ -33,7 +37,8 @@ export const RuleActionTagSelector = ({ index, testID }: Props) => {
 
     return (
         <RuleValuePickerButton
-            value={tags?.at(0)?.title ?? null}
+            value={tagLabel}
+            isMissing={isMissing}
             placeholder={t`Choose a tag`}
             name={t`Tag`}
             onPress={handleOpen}

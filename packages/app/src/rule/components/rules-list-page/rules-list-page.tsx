@@ -155,7 +155,7 @@ export const RulesListPage = ({ matchingRuleIds = [], onGoBack }: Props) => {
                 listHeader={<RulesListHeader rules={searchedRules ?? []} matchingRulesCount={matchingRuleIds.length} />}
                 listFooter={
                     <Text className="text-secondary-foreground px-3xl pt-md text-[13px] leading-[18px]">
-                        {t`Rules run top to bottom, and the first match sets the category. Swipe left on a rule to delete it.`}
+                        {t`Rules run in the order they were created. If two set a category, the older one wins.`}
                     </Text>
                 }
                 sizing={RULES_LIST_SIZING}

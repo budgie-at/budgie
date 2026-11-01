@@ -16,16 +16,16 @@ export const RuleFormAddRow = ({ label, onPress, testID }: Props) => (
         left={
             <CircleIcon
                 icon={UserIconNameEnum.Plus}
-                variant="default"
+                variant="primary"
                 size={36}
                 iconSize={18}
                 radius={18}
                 border={false}
-                className={TONAL_DISC_BACKGROUND.default}
+                className={TONAL_DISC_BACKGROUND.primary}
             />
         }
         title={label}
-        titleClassName="text-default-foreground"
+        titleClassName="text-primary"
         right={<Fragment />}
         onPress={onPress}
         testID={testID}

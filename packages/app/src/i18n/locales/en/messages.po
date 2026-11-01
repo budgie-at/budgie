@@ -28,7 +28,7 @@ msgid "(pick one)"
 msgstr "(pick one)"
 
 #. placeholder {0}: parts.length
-#: src/rule/hooks/use-rule-condition-label.hook.ts
+#: src/rule/hooks/use-rule-condition-formatter.hook.ts
 msgid "{0, plural, one {# account} other {# accounts}}"
 msgstr "{0, plural, one {# account} other {# accounts}}"
 
@@ -166,6 +166,14 @@ msgstr "{code} · 1 {code} ≈ {convertedAmount} {defaultCode}"
 msgid "{code} · Base currency"
 msgstr "{code} · Base currency"
 
+#: src/rule/components/rule-summary-hero/rule-summary-hero.tsx
+msgid "{conditionCount, plural, one {all # conditions match} other {all # conditions match}}"
+msgstr "{conditionCount, plural, one {all # conditions match} other {all # conditions match}}"
+
+#: src/rule/components/rule-summary-hero/rule-summary-hero.tsx
+msgid "{conditionCount, plural, one {any of # conditions matches} other {any of # conditions matches}}"
+msgstr "{conditionCount, plural, one {any of # conditions matches} other {any of # conditions matches}}"
+
 #: src/budget/components/budget-period-recap-rollover/budget-period-recap-rollover.tsx
 msgid "{count, plural, one {{formattedAmount} rolled over across # category} other {{formattedAmount} rolled over across # categories}}"
 msgstr "{count, plural, one {{formattedAmount} rolled over across # category} other {{formattedAmount} rolled over across # categories}}"
@@ -256,13 +264,9 @@ msgstr "{downloadPercent}%"
 msgid "{duplicateTransactionCount, plural, one {# skipped} other {# skipped}}"
 msgstr "{duplicateTransactionCount, plural, one {# skipped} other {# skipped}}"
 
-#: src/rule/hooks/use-rule-row-summary.hook.ts
-msgid "{extraCount, plural, one {and # more} other {and # more}}"
-msgstr "{extraCount, plural, one {and # more} other {and # more}}"
-
-#: src/rule/hooks/use-rule-row-summary.hook.ts
-msgid "{extraCount, plural, one {or # more} other {or # more}}"
-msgstr "{extraCount, plural, one {or # more} other {or # more}}"
+#: src/rule/hooks/use-rule-text-value-meta.hook.ts
+msgid "{fieldLabel} {operatorLabel}, value"
+msgstr "{fieldLabel} {operatorLabel}, value"
 
 #: src/settings/components/your-data-card/your-data-card.tsx
 msgid "{fileSize} · Stored only on this device"
@@ -328,7 +332,7 @@ msgstr "{freeAmount} free for {daysLabel}"
 msgid "{freeSize} GB free on this phone"
 msgstr "{freeSize} GB free on this phone"
 
-#: src/rule/hooks/use-rule-condition-label.hook.ts
+#: src/rule/hooks/use-rule-condition-formatter.hook.ts
 msgid "{fromAmount} and {toAmount}"
 msgstr "{fromAmount} and {toAmount}"
 
@@ -874,6 +878,10 @@ msgstr "Add a PIN any time later"
 msgid "Add a transaction"
 msgstr "Add a transaction"
 
+#: src/rule/hooks/use-rule-text-value-meta.hook.ts
+msgid "Add a value"
+msgstr "Add a value"
+
 #: src/rule/utils/get-rule-form-issue.util.ts
 msgid "Add a value to save"
 msgstr "Add a value to save"
@@ -1058,7 +1066,7 @@ msgstr "Allocated"
 msgid "Already in Budgie"
 msgstr "Already in Budgie"
 
-#: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
+#: src/rule/hooks/use-rule-option-sheet.hook.ts
 msgid "Already in this rule"
 msgstr "Already in this rule"
 
@@ -1134,8 +1142,13 @@ msgstr "Analytics will appear once we can confirm your history is ready."
 #: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx
 #: src/rule/components/rule-condition-row/rule-condition-row.tsx
 #: src/rule/components/rule-summary-hero/rule-summary-hero.tsx
+#: src/rule/hooks/use-rule-row-summary.hook.ts
 msgid "and"
 msgstr "and"
+
+#: src/rule/components/rule-actions-section/rule-actions-section.tsx
+msgid "Another rule also sets a category or transfer, and the older rule wins."
+msgstr "Another rule also sets a category or transfer, and the older rule wins."
 
 #: src/rule/components/rule-condition-match-type-selector/rule-condition-match-type-selector.tsx
 msgid "Any condition"
@@ -1174,6 +1187,10 @@ msgstr "Apple Pay capture"
 #: src/wallet-capture/service/wallet-capture-transaction.service.ts
 msgid "Apple Pay purchase"
 msgstr "Apple Pay purchase"
+
+#: src/rule/components/rule-actions-section/rule-actions-section.tsx
+msgid "Applies to new payments as they arrive from your bank or an import."
+msgstr "Applies to new payments as they arrive from your bank or an import."
 
 #: src/app/note-input.tsx
 #: src/rule/hooks/use-rule-form.hook.ts
@@ -1669,7 +1686,6 @@ msgstr "Categorize as {categoryTitle}"
 #: src/app/(tabs)/settings/categories.tsx
 #: src/app/(tabs)/settings/import.tsx
 #: src/budget/service/budget-alert-monitor.service.ts
-#: src/category/components/category-form-selector/category-form-selector.tsx
 #: src/rule/components/rule-action-category-selector/rule-action-category-selector.tsx
 #: src/transaction/components/transaction-category-field-icon/transaction-category-field-icon.tsx
 #: src/transaction/components/transaction-info-category-rows/transaction-info-category-rows.tsx
@@ -1892,6 +1908,10 @@ msgstr "Comment"
 msgid "Committed {committedExpense} per month"
 msgstr "Committed {committedExpense} per month"
 
+#: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx
+msgid "Compared with the payment amount in its account currency, without the minus sign."
+msgstr "Compared with the payment amount in its account currency, without the minus sign."
+
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Condition: {label}"
 msgstr "Condition: {label}"
@@ -1992,10 +2012,6 @@ msgstr "Convert to Refund"
 #: src/transaction/hook/use-convert-to-refund-action.hook.ts
 msgid "Convert to Refund?"
 msgstr "Convert to Refund?"
-
-#: src/rule/constant/rule-action-type.constant.ts
-msgid "Convert to transfer"
-msgstr "Convert to transfer"
 
 #: src/app/convert-to-transfer.tsx
 #: src/transaction/components/transaction-list-convert-to-transfer-menu-item/transaction-list-convert-to-transfer-menu-item.tsx
@@ -2767,7 +2783,7 @@ msgstr "Due {date}"
 msgid "Duplicate rule"
 msgstr "Duplicate rule"
 
-#: src/rule/components/rule-condition-text-value-input/rule-condition-text-value-input.tsx
+#: src/rule/hooks/use-rule-text-value-meta.hook.ts
 msgid "e.g. ^uber.*trip"
 msgstr "e.g. ^uber.*trip"
 
@@ -2807,7 +2823,7 @@ msgstr "e.g. Groceries, Entertainment"
 msgid "e.g. Loan to Alex"
 msgstr "e.g. Loan to Alex"
 
-#: src/rule/components/rule-condition-text-value-input/rule-condition-text-value-input.tsx
+#: src/rule/hooks/use-rule-text-value-meta.hook.ts
 msgid "e.g. lunch with team"
 msgstr "e.g. lunch with team"
 
@@ -2815,7 +2831,7 @@ msgstr "e.g. lunch with team"
 msgid "e.g. Main card"
 msgstr "e.g. Main card"
 
-#: src/rule/components/rule-condition-text-value-input/rule-condition-text-value-input.tsx
+#: src/rule/hooks/use-rule-text-value-meta.hook.ts
 msgid "e.g. Netflix"
 msgstr "e.g. Netflix"
 
@@ -3037,10 +3053,6 @@ msgstr "Erste Bank (PDF)"
 #: src/budget/components/budget-period-summary/budget-period-summary.tsx
 msgid "Estimated from your past transactions using your current limits."
 msgstr "Estimated from your past transactions using your current limits."
-
-#: src/rule/components/rule-actions-section/rule-actions-section.tsx
-msgid "Every action runs on each matching payment."
-msgstr "Every action runs on each matching payment."
 
 #: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
 msgid "Every tap, recorded"
@@ -3543,10 +3555,6 @@ msgstr "In credit"
 msgid "In runway, at today's prices"
 msgstr "In runway, at today's prices"
 
-#: src/rule/components/rule-summary-hero/rule-summary-hero.tsx
-msgid "In short"
-msgstr "In short"
-
 #: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
 msgid "In Shortcuts, add a personal automation with the Transaction trigger, select your cards and choose Run Immediately."
 msgstr "In Shortcuts, add a personal automation with the Transaction trigger, select your cards and choose Run Immediately."
@@ -3806,7 +3814,7 @@ msgstr "Lent"
 msgid "Less than"
 msgstr "Less than"
 
-#: src/rule/components/rule-condition-text-value-input/rule-condition-text-value-input.tsx
+#: src/rule/hooks/use-rule-text-value-meta.hook.ts
 msgid "Letter case is ignored"
 msgstr "Letter case is ignored"
 
@@ -3873,10 +3881,6 @@ msgstr "Maintenance"
 msgid "Make a PIN after all"
 msgstr "Make a PIN after all"
 
-#: src/rule/constant/rule-action-type.constant.ts
-msgid "make a transfer with"
-msgstr "make a transfer with"
-
 #: src/budget/components/budget-details-edit-button/budget-details-edit-button.tsx
 msgid "Manage budget"
 msgstr "Manage budget"
@@ -3941,13 +3945,45 @@ msgstr "Matched income is converted into a transfer from this account."
 msgid "matches"
 msgstr "matches"
 
+#: src/rule/components/rule-conditions-section/rule-conditions-section.tsx
+msgid "Matches any of the chosen values."
+msgstr "Matches any of the chosen values."
+
+#: src/rule/components/rule-conditions-section/rule-conditions-section.tsx
+msgid "Matches everything except this exact value."
+msgstr "Matches everything except this exact value."
+
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "Matches one of several values"
 msgstr "Matches one of several values"
 
+#: src/rule/components/rule-conditions-section/rule-conditions-section.tsx
+msgid "Matches only this exact value, ignoring letter case."
+msgstr "Matches only this exact value, ignoring letter case."
+
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "Matches pattern"
 msgstr "Matches pattern"
+
+#: src/rule/components/rule-conditions-section/rule-conditions-section.tsx
+msgid "Matches payments above this amount."
+msgstr "Matches payments above this amount."
+
+#: src/rule/components/rule-conditions-section/rule-conditions-section.tsx
+msgid "Matches payments below this amount."
+msgstr "Matches payments below this amount."
+
+#: src/rule/components/rule-conditions-section/rule-conditions-section.tsx
+msgid "Matches payments from the first amount to the second, both included."
+msgstr "Matches payments from the first amount to the second, both included."
+
+#: src/rule/components/rule-conditions-section/rule-conditions-section.tsx
+msgid "Matches when the text appears anywhere, ignoring letter case."
+msgstr "Matches when the text appears anywhere, ignoring letter case."
+
+#: src/rule/components/rule-conditions-section/rule-conditions-section.tsx
+msgid "Matches when the text appears nowhere."
+msgstr "Matches when the text appears nowhere."
 
 #: src/account/component/deposit-details-card/deposit-details-card.tsx
 msgid "Maturity Date"
@@ -4157,6 +4193,10 @@ msgstr "move to"
 #: src/categorize-inbox/components/categorize-inbox-group-move-to-cash-option/categorize-inbox-group-move-to-cash-option.tsx
 msgid "Move to cash"
 msgstr "Move to cash"
+
+#: src/rule/constant/rule-action-type.constant.ts
+msgid "Move to category"
+msgstr "Move to category"
 
 #: src/categorize-inbox/components/categorize-inbox-moved-to-cash-undo/categorize-inbox-moved-to-cash-undo.tsx
 msgid "Moved to cash"
@@ -4546,10 +4586,6 @@ msgstr "of {total} GB"
 msgid "Off"
 msgstr "Off"
 
-#: src/rule/hooks/use-rule-row-summary.hook.ts
-msgid "Off · {fullTrigger}"
-msgstr "Off · {fullTrigger}"
-
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
 msgid "Off after an error"
 msgstr "Off after an error"
@@ -4734,6 +4770,7 @@ msgstr "Options"
 
 #: src/rule/components/rule-condition-row/rule-condition-row.tsx
 #: src/rule/components/rule-summary-hero/rule-summary-hero.tsx
+#: src/rule/hooks/use-rule-row-summary.hook.ts
 msgid "or"
 msgstr "or"
 
@@ -4904,8 +4941,8 @@ msgid "Payment schedule unavailable"
 msgstr "Payment schedule unavailable"
 
 #: src/rule/constant/rule-condition-field.constant.ts
-msgid "Payment size, in any currency"
-msgstr "Payment size, in any currency"
+msgid "Payment size in its account currency"
+msgstr "Payment size in its account currency"
 
 #: src/installment-plan/component/installment-plan-count-field/installment-plan-count-field.tsx
 msgid "Payments"
@@ -5469,13 +5506,9 @@ msgstr "Rule updated"
 msgid "Rules"
 msgstr "Rules"
 
-#: src/rule/components/rule-conditions-section/rule-conditions-section.tsx
-msgid "Rules check payments as they arrive from your bank or an import."
-msgstr "Rules check payments as they arrive from your bank or an import."
-
 #: src/rule/components/rules-list-page/rules-list-page.tsx
-msgid "Rules run top to bottom, and the first match sets the category. Swipe left on a rule to delete it."
-msgstr "Rules run top to bottom, and the first match sets the category. Swipe left on a rule to delete it."
+msgid "Rules run in the order they were created. If two set a category, the older one wins."
+msgstr "Rules run in the order they were created. If two set a category, the older one wins."
 
 #: src/rule/components/rules-feature-intro/rules-feature-intro.tsx
 msgid "Rules work on imported transactions"
@@ -5534,7 +5567,6 @@ msgid "Save balances"
 msgstr "Save balances"
 
 #: src/account/component/update-account-page/update-account-page.tsx
-#: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 msgid "Save changes"
 msgstr "Save changes"
 
@@ -5549,6 +5581,10 @@ msgstr "Save it"
 #: src/settings/components/backup-row/backup-row.tsx
 msgid "Save it to Files or another app."
 msgstr "Save it to Files or another app."
+
+#: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
+msgid "Save rule"
+msgstr "Save rule"
 
 #: src/categorize-inbox/components/categorize-inbox-transfer-rule-switch/categorize-inbox-transfer-rule-switch.tsx
 msgid "Saved as a rule"
@@ -5718,10 +5754,6 @@ msgstr "Select all categories"
 msgid "Select category"
 msgstr "Select category"
 
-#: src/category/components/category-form-selector/category-form-selector.tsx
-msgid "Select Category"
-msgstr "Select Category"
-
 #: src/import/components/import-column-mapper/import-column-mapper.tsx
 msgid "Select column..."
 msgstr "Select column..."
@@ -5774,10 +5806,6 @@ msgstr "Set a default currency in Settings first"
 #: src/budget/components/budget-empty-state/budget-empty-state.tsx
 msgid "Set a monthly limit and track your spending"
 msgstr "Set a monthly limit and track your spending"
-
-#: src/rule/constant/rule-action-type.constant.ts
-msgid "Set category"
-msgstr "Set category"
 
 #: src/transaction/components/transaction-fee-pill/transaction-fee-pill.tsx
 msgid "Set fee"
@@ -5896,10 +5924,6 @@ msgstr "Some issuers do not provide every Wallet trigger field. Edit the automat
 #: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
 msgid "Some transactions may be hidden by the account or amount filter."
 msgstr "Some transactions may be hidden by the account or amount filter."
-
-#: src/rule/components/rule-actions-section/rule-actions-section.tsx
-msgid "Some transactions may match multiple rules. The first matching rule will take priority."
-msgstr "Some transactions may match multiple rules. The first matching rule will take priority."
 
 #: src/rule/components/rule-condition-phrase/rule-condition-phrase.tsx
 msgid "something"
@@ -6383,7 +6407,7 @@ msgstr "This Month"
 msgid "This month: spent {formattedExpense}, income {formattedIncome}"
 msgstr "This month: spent {formattedExpense}, income {formattedIncome}"
 
-#: src/rule/components/rule-condition-text-value-input/rule-condition-text-value-input.tsx
+#: src/rule/hooks/use-rule-text-value-meta.hook.ts
 msgid "This pattern isn't valid yet"
 msgstr "This pattern isn't valid yet"
 
@@ -6657,6 +6681,10 @@ msgstr "Transfer account"
 msgid "Transfer from savings jar"
 msgstr "Transfer from savings jar"
 
+#: src/rule/constant/rule-action-type.constant.ts
+msgid "transfer to"
+msgstr "transfer to"
+
 #: src/categorize-inbox/components/categorize-inbox-transfer-screen/categorize-inbox-transfer-screen.tsx
 msgid "Transfer to"
 msgstr "Transfer to"
@@ -6668,6 +6696,10 @@ msgstr "Transfer to {accountTitle}"
 #: src/categorize-inbox/components/categorize-inbox-group-learned-transfer-option/categorize-inbox-group-learned-transfer-option.tsx
 msgid "Transfer to {title}"
 msgstr "Transfer to {title}"
+
+#: src/rule/constant/rule-action-type.constant.ts
+msgid "Transfer to account"
+msgstr "Transfer to account"
 
 #: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
 msgid "Transfer to an account"
@@ -6912,13 +6944,13 @@ msgstr "Use Touch ID to unlock your app quickly and securely"
 msgid "Used for totals and reports"
 msgstr "Used for totals and reports"
 
+#: src/rule/components/rule-conditions-section/rule-conditions-section.tsx
+msgid "Uses a regular expression of up to 200 characters, ignoring letter case."
+msgstr "Uses a regular expression of up to 200 characters, ignoring letter case."
+
 #: src/sync/component/binance-parked-assets-notice/binance-parked-assets-notice.tsx
 msgid "Valuation unavailable"
 msgstr "Valuation unavailable"
-
-#: src/rule/components/rule-condition-text-value-input/rule-condition-text-value-input.tsx
-msgid "Value"
-msgstr "Value"
 
 #: src/transaction/components/transaction-info-note-group/transaction-info-note-group.tsx
 msgid "View source transactions"
@@ -6999,8 +7031,8 @@ msgid "When"
 msgstr "When"
 
 #: src/rule/hooks/use-rule-row-summary.hook.ts
-msgid "When {field} {operator} {value}, {title}. {statusLabel}"
-msgstr "When {field} {operator} {value}, {title}. {statusLabel}"
+msgid "When {conditionsText}, {title}. {statusLabel}"
+msgstr "When {conditionsText}, {title}. {statusLabel}"
 
 #: src/account/component/deposit-maturity-date-field/deposit-maturity-date-field.tsx
 msgid "When does the deposit mature?"

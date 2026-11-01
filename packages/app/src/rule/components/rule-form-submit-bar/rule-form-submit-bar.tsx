@@ -19,13 +19,13 @@ export const RuleFormSubmitBar = ({ submitLabel, isSubmitting, onSubmit }: Props
     const { t } = useLingui();
     const [conditions, actions] = useWatch<RuleCreateInputInterface, ['conditions', 'actions']>({ name: ['conditions', 'actions'] });
     const issue = getRuleFormIssue({ conditions, actions });
-    const label = isDefined(issue) ? t(issue) : submitLabel;
+    const issueHint = isDefined(issue) ? t(issue) : '';
 
     return (
-        <View className="bg-surface px-5xl pt-lg">
-            <View className="absolute inset-x-0 top-full h-[64px] bg-surface" pointerEvents="none" />
+        <View className="px-5xl pt-lg">
             <PillButton
-                label={label}
+                label={submitLabel}
+                accessibilityHint={issueHint}
                 isLoading={isSubmitting}
                 isDisabled={isDefined(issue)}
                 testID={RuleFormSelector.SubmitButton}

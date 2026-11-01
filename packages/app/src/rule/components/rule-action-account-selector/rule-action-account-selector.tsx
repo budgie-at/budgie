@@ -49,7 +49,7 @@ const resolveTransferCopy = (hasExpenseCondition: boolean, hasIncomeCondition: b
 
 export const RuleActionAccountSelector = ({ index, testID }: Props) => {
     const { t } = useLingui();
-    const { control } = useFormContext<RuleCreateInputInterface>();
+    const { control, formState } = useFormContext<RuleCreateInputInterface>();
     const [openAccountSelector] = useAccountSelectorModal();
     const {
         field: { value: accountId, onChange }
@@ -60,6 +60,8 @@ export const RuleActionAccountSelector = ({ index, testID }: Props) => {
     const hasExpenseCondition = hasTransactionTypeCondition(conditions, TransactionTypeEnum.EXPENSE);
     const hasIncomeCondition = hasTransactionTypeCondition(conditions, TransactionTypeEnum.INCOME);
     const { label, hint } = resolveTransferCopy(hasExpenseCondition, hasIncomeCondition);
+
+    const isMissing = !isDefined(accountId) && formState.isDirty;
 
     const handleOpen = () => {
         openAccountSelector(
@@ -76,6 +78,7 @@ export const RuleActionAccountSelector = ({ index, testID }: Props) => {
         <View className="flex-1 pb-md">
             <RuleValuePickerButton
                 value={account?.title ?? null}
+                isMissing={isMissing}
                 placeholder={t(label)}
                 name={t`Transfer account`}
                 onPress={handleOpen}

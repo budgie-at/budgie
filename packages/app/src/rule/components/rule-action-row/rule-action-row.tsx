@@ -4,11 +4,13 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
 
 import { cn } from '../../../@generic/utils/cn.util';
+import { RULE_ACTION_TYPE } from '../../constant/rule-action-type.constant';
 import { RuleActionAccountSelector } from '../rule-action-account-selector/rule-action-account-selector';
 import { RuleActionCategorySelector } from '../rule-action-category-selector/rule-action-category-selector';
 import { RuleActionTagSelector } from '../rule-action-tag-selector/rule-action-tag-selector';
 import { RuleActionTypeSelector } from '../rule-action-type-selector/rule-action-type-selector';
 import { RuleFormRemoveButton } from '../rule-form-remove-button/rule-form-remove-button';
+import { RuleFormRowChip } from '../rule-form-row-chip/rule-form-row-chip';
 
 import { RuleActionRowSelector } from './rule-action-row.selector';
 
@@ -23,7 +25,7 @@ export const RuleActionRow = ({ index, onRemove, canRemove }: Props) => {
     const { control } = useFormContext<RuleCreateInputInterface>();
     const actionType = useWatch({ control, name: `actions.${index}.type` });
     const position = index + 1;
-    const headClassName = cn('flex-row', 'items-center', 'gap-x-md', 'pl-3xl', 'pt-sm', canRemove ? 'pr-md' : 'pr-3xl');
+    const headClassName = cn('flex-row', 'items-center', 'gap-x-xl', 'pl-3xl', 'py-xs', canRemove ? 'pr-md' : 'pr-3xl');
 
     const handleRemove = () => void onRemove(index);
 
@@ -31,7 +33,10 @@ export const RuleActionRow = ({ index, onRemove, canRemove }: Props) => {
         <View testID={RuleActionRowSelector.Row(index)}>
             <View className={headClassName}>
                 <View className="absolute top-0 right-0 left-[16px] h-hairline bg-surface-separator" pointerEvents="none" />
-                <RuleActionTypeSelector index={index} testID={RuleActionRowSelector.TypeSelector(index)} />
+                <RuleFormRowChip meta={RULE_ACTION_TYPE[actionType]} />
+                <View className="min-w-0 flex-1 flex-row">
+                    <RuleActionTypeSelector index={index} testID={RuleActionRowSelector.TypeSelector(index)} />
+                </View>
                 {canRemove ? (
                     <RuleFormRemoveButton
                         accessibilityLabel={t`Remove action ${position}`}
@@ -41,7 +46,7 @@ export const RuleActionRow = ({ index, onRemove, canRemove }: Props) => {
                 ) : null}
             </View>
 
-            <View className="flex-row pl-[64px] pr-3xl">
+            <View className="flex-row pr-3xl pb-xs pl-[64px]">
                 {actionType === RuleActionTypeEnum.SET_CATEGORY ? (
                     <RuleActionCategorySelector index={index} testID={RuleActionRowSelector.CategorySelector(index)} />
                 ) : null}

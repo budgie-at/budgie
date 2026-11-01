@@ -24,7 +24,7 @@ interface Props {
 
 export const RuleConditionValueEnumSelector = ({ index, options, icon, sheetTitle, placeholder, testID }: Props) => {
     const { t } = useLingui();
-    const { value, onChange } = useRuleConditionValueField(index);
+    const { value, onChange, isMissing } = useRuleConditionValueField(index);
     const [openRuleSelector] = useRuleSelectorModal();
     const selectedOption = options.find(option => option.value === value);
     const selectedLabel = isDefined(selectedOption) ? t(selectedOption.label) : null;
@@ -50,5 +50,14 @@ export const RuleConditionValueEnumSelector = ({ index, options, icon, sheetTitl
         );
     };
 
-    return <RuleValuePickerButton value={selectedLabel} placeholder={placeholder} name={sheetTitle} onPress={handleOpen} testID={testID} />;
+    return (
+        <RuleValuePickerButton
+            value={selectedLabel}
+            placeholder={placeholder}
+            name={sheetTitle}
+            isMissing={isMissing}
+            onPress={handleOpen}
+            testID={testID}
+        />
+    );
 };

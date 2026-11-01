@@ -15,15 +15,17 @@ interface Props {
 
 export const RuleActionCategorySelector = ({ index, testID }: Props) => {
     const { t } = useLingui();
-    const { control } = useFormContext<RuleCreateInputInterface>();
+    const { control, formState } = useFormContext<RuleCreateInputInterface>();
     const {
         field: { value: categoryId, onChange }
     } = useController({ control, name: `actions.${index}.categoryId` });
     const [openCategorySelector] = useCategorySelectorModal();
     const { category } = useGetCategoryByIdQuery(categoryId ?? 0);
 
+    const isMissing = !isDefined(categoryId) && formState.isDirty;
+
     const handleOpen = () => {
-        openCategorySelector({ initialCategoryId: categoryId, variant: 'primary' }, selectedCategoryId => {
+        openCategorySelector({ initialCategoryId: categoryId, variant: 'violet' }, selectedCategoryId => {
             if (isDefined(selectedCategoryId)) {
                 onChange(selectedCategoryId);
             }
@@ -33,6 +35,7 @@ export const RuleActionCategorySelector = ({ index, testID }: Props) => {
     return (
         <RuleValuePickerButton
             value={category?.title ?? null}
+            isMissing={isMissing}
             placeholder={t`Choose a category`}
             name={t`Category`}
             onPress={handleOpen}

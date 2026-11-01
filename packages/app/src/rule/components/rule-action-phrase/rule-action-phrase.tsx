@@ -28,10 +28,11 @@ export const RuleActionPhrase = ({ action }: Props) => {
     const { category } = useGetCategoryByIdQuery(action.type === RuleActionTypeEnum.SET_CATEGORY ? (action.categoryId ?? 0) : 0);
     const { tags } = useGetTagByIdsQuery(action.type === RuleActionTypeEnum.ADD_TAG && isDefined(action.tagId) ? [action.tagId] : []);
     const { account } = useGetAccountByIdQuery(action.type === RuleActionTypeEnum.CONVERT_TO_TRANSFER ? (action.accountId ?? 0) : 0);
-    const targets: Record<RuleActionTypeEnum, string | undefined> = {
-        [RuleActionTypeEnum.SET_CATEGORY]: category?.title,
-        [RuleActionTypeEnum.ADD_TAG]: tags?.at(0)?.title,
-        [RuleActionTypeEnum.CONVERT_TO_TRANSFER]: account?.title
+    const tagTitle = tags?.at(0)?.title;
+    const targets: Record<RuleActionTypeEnum, string | null> = {
+        [RuleActionTypeEnum.SET_CATEGORY]: category?.title ?? null,
+        [RuleActionTypeEnum.ADD_TAG]: isDefined(tagTitle) ? `#${tagTitle}` : null,
+        [RuleActionTypeEnum.CONVERT_TO_TRANSFER]: account?.title ?? null
     };
 
     const target = targets[action.type];

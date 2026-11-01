@@ -2,15 +2,10 @@ import { RuleConditionFieldEnum, RuleCreateInputInterface } from '@budgie/contra
 import { useLingui } from '@lingui/react/macro';
 import { useFormContext, useWatch } from 'react-hook-form';
 
-import { isDefined } from '@rnw-community/shared';
-
 import { RULE_CONDITION_FIELD } from '../../constant/rule-condition-field.constant';
 import { RULE_FIELD_OPERATORS } from '../../constant/rule-field-operators.constant';
-import { useRuleSelectorModal } from '../../context/rule-selector-modal.context';
-import { buildRuleSelectorOptions } from '../../utils/build-rule-selector-options.util';
-import { RuleFormPickerHead } from '../rule-form-picker-head/rule-form-picker-head';
-
-import type { MessageDescriptor } from '@lingui/core';
+import { useRuleOptionSheet } from '../../hooks/use-rule-option-sheet.hook';
+import { RuleFormPickerPill } from '../rule-form-picker-pill/rule-form-picker-pill';
 
 interface Props {
     readonly index: number;
@@ -33,7 +28,7 @@ export const RuleConditionFieldSelector = ({ index, testID }: Props) => {
     const { t } = useLingui();
     const { control, getValues, setValue } = useFormContext<RuleCreateInputInterface>();
     const field = useWatch({ control, name: `conditions.${index}.field` });
-    const [openRuleSelector] = useRuleSelectorModal();
+    const openFieldSheet = useRuleOptionSheet(t`Match on`, RULE_CONDITION_FIELD);
     const label = t(RULE_CONDITION_FIELD[field].label);
 
     const handleSelect = (nextField: RuleConditionFieldEnum) => {
@@ -52,30 +47,7 @@ export const RuleConditionFieldSelector = ({ index, testID }: Props) => {
         }
     };
 
-    const handleOpen = () => {
-        openRuleSelector(
-            {
-                title: t`Match on`,
-                options: buildRuleSelectorOptions(FIELD_VALUES, RULE_CONDITION_FIELD, (descriptor: MessageDescriptor) => t(descriptor)),
-                selectedValue: field
-            },
-            result => {
-                const nextField = FIELD_VALUES.find(value => value === result);
+    const handleOpen = () => void openFieldSheet({ values: FIELD_VALUES, selectedValue: field, onSelect: handleSelect });
 
-                if (isDefined(nextField)) {
-                    handleSelect(nextField);
-                }
-            }
-        );
-    };
-
-    return (
-        <RuleFormPickerHead
-            meta={RULE_CONDITION_FIELD[field]}
-            label={label}
-            accessibilityLabel={t`Match on ${label}`}
-            onPress={handleOpen}
-            testID={testID}
-        />
-    );
+    return <RuleFormPickerPill label={label} accessibilityLabel={t`Match on ${label}`} onPress={handleOpen} testID={testID} />;
 };

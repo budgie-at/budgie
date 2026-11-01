@@ -70,7 +70,7 @@ export const RuleFormEditContent = ({ rule, onSuccess, onCancel }: Props) => {
                 title={t`Edit Rule`}
                 onCancel={onCancel}
                 ruleId={rule.id}
-                footer={<RuleFormSubmitBar submitLabel={t`Save changes`} isSubmitting={isSubmitting} onSubmit={handleSubmit} />}
+                footer={<RuleFormSubmitBar submitLabel={t`Save rule`} isSubmitting={isSubmitting} onSubmit={handleSubmit} />}
             >
                 <GroupedListSection footer={t`Payments this rule already changed stay as they are.`}>
                     <SettingsRow

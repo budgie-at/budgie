@@ -21,7 +21,7 @@ export const RULE_CONDITION_FIELD: Record<RuleConditionFieldEnum, RuleOptionMeta
     [RuleConditionFieldEnum.AMOUNT]: {
         label: msg`Amount`,
         phrase: msg`amount`,
-        description: msg`Payment size, in any currency`,
+        description: msg`Payment size in its account currency`,
         icon: UserIconNameEnum.Banknote,
         variant: 'ghost'
     },

@@ -29,9 +29,9 @@ export const RuleActionsSection = ({ ruleId }: Props) => {
         actions.map(action => action.type),
         ruleId
     );
-    const footer = hasConflict
-        ? t`Some transactions may match multiple rules. The first matching rule will take priority.`
-        : t`Every action runs on each matching payment.`;
+    const appliesHint = t`Applies to new payments as they arrive from your bank or an import.`;
+    const conflictHint = t`Another rule also sets a category or transfer, and the older rule wins.`;
+    const footer = hasConflict ? `${appliesHint} ${conflictHint}` : appliesHint;
 
     return (
         <View testID={RuleFormSelector.ActionSectionHeader}>

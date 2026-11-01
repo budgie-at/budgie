@@ -3,7 +3,7 @@ import { useLingui } from '@lingui/react/macro';
 import { useController, useFormContext } from 'react-hook-form';
 import { View } from 'react-native';
 
-import { SegmentedTabs } from '../../../@generic/component/segmented-tabs/segmented-tabs';
+import { SegmentedControl } from '../../../@generic/component/segmented-control/segmented-control';
 import { RuleFormSelector } from '../rule-form-layout/rule-form-layout.selector';
 
 export const RuleConditionMatchTypeSelector = () => {
@@ -13,14 +13,14 @@ export const RuleConditionMatchTypeSelector = () => {
         field: { value, onChange }
     } = useController({ control, name: 'conditionMatchType' });
 
-    const options = [
+    const segments = [
         { value: RuleConditionMatchTypeEnum.ALL, label: t`All conditions` },
         { value: RuleConditionMatchTypeEnum.ANY, label: t`Any condition` }
     ];
 
     return (
         <View testID={RuleFormSelector.MatchTypeSelector} className="px-3xl py-md">
-            <SegmentedTabs options={options} value={value} onChange={onChange} />
+            <SegmentedControl segments={segments} value={value} onChange={onChange} />
         </View>
     );
 };

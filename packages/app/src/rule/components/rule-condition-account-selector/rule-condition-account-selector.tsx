@@ -14,7 +14,7 @@ interface Props {
 
 export const RuleConditionAccountSelector = ({ index, testID }: Props) => {
     const { t } = useLingui();
-    const { value, onChange } = useRuleConditionValueField(index);
+    const { value, onChange, isMissing } = useRuleConditionValueField(index);
     const [openAccountSelector] = useAccountSelectorModal();
     const parsedAccountId = Number.parseInt(value, 10);
     const accountId = isPositiveNumber(parsedAccountId) ? parsedAccountId : 0;
@@ -31,6 +31,7 @@ export const RuleConditionAccountSelector = ({ index, testID }: Props) => {
     return (
         <RuleValuePickerButton
             value={account?.title ?? null}
+            isMissing={isMissing}
             placeholder={t`Choose an account`}
             name={t`Account`}
             onPress={handleOpen}
