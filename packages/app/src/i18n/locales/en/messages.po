@@ -1042,7 +1042,7 @@ msgstr "Action: {label}"
 msgid "Active budget"
 msgstr "Active budget"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Activities"
 msgstr "Activities"
 
@@ -1371,7 +1371,7 @@ msgstr "and"
 msgid "and +{extraCount}"
 msgstr "and +{extraCount}"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Animals & nature"
 msgstr "Animals & nature"
 
@@ -3404,7 +3404,7 @@ msgstr "Edit Transfer"
 msgid "Edits the total of the plan"
 msgstr "Edits the total of the plan"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Education"
 msgstr "Education"
 
@@ -3523,7 +3523,7 @@ msgstr "Enter your new PIN again from the start. Take your time: this is the one
 msgid "Enter your PIN"
 msgstr "Enter your PIN"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Entertainment"
 msgstr "Entertainment"
 
@@ -3834,11 +3834,11 @@ msgstr "Fixed amount"
 msgid "Fixed-term savings with interest"
 msgstr "Fixed-term savings with interest"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Flags"
 msgstr "Flags"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Food & drink"
 msgstr "Food & drink"
 
@@ -3953,7 +3953,7 @@ msgstr "Get category, tag, and note suggestions from your history."
 msgid "Get started"
 msgstr "Get started"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Gifts"
 msgstr "Gifts"
 
@@ -3973,7 +3973,7 @@ msgstr "Goes back to the total worked out from the payments and fee"
 msgid "Growing"
 msgstr "Growing"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Health"
 msgstr "Health"
 
@@ -4020,7 +4020,7 @@ msgstr "History loading paused"
 msgid "Hold to seal with this PIN"
 msgstr "Hold to seal with this PIN"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Home"
 msgstr "Home"
 
@@ -4719,7 +4719,7 @@ msgstr "Models and downloads"
 msgid "Models download once, best on Wi-Fi"
 msgstr "Models download once, best on Wi-Fi"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Money"
 msgstr "Money"
 
@@ -5254,7 +5254,7 @@ msgstr "Now"
 msgid "Number of months"
 msgstr "Number of months"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Objects"
 msgstr "Objects"
 
@@ -6664,7 +6664,7 @@ msgstr "Setup"
 msgid "Shading shows how much your months usually vary."
 msgstr "Shading shows how much your months usually vary."
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Shopping"
 msgstr "Shopping"
 
@@ -6762,7 +6762,7 @@ msgstr "Smaller groups"
 msgid "Smart suggestions"
 msgstr "Smart suggestions"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Smileys & people"
 msgstr "Smileys & people"
 
@@ -6950,7 +6950,7 @@ msgstr "Swipe to remove this per-category cap from your budget."
 msgid "Switch on to start syncing"
 msgstr "Switch on to start syncing"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Symbols"
 msgstr "Symbols"
 
@@ -7638,15 +7638,15 @@ msgstr "Translation"
 msgid "Translations ready"
 msgstr "Translations ready"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Transport"
 msgstr "Transport"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Travel"
 msgstr "Travel"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Travel & places"
 msgstr "Travel & places"
 
@@ -8074,7 +8074,7 @@ msgstr "Within plan"
 msgid "Without a backup, lost data can't be recovered."
 msgstr "Without a backup, lost data can't be recovered."
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Work"
 msgstr "Work"
 

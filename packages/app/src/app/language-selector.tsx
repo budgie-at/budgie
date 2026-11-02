@@ -2,11 +2,12 @@ import { useLingui } from '@lingui/react/macro';
 import { cva } from 'class-variance-authority';
 import { Text, View } from 'react-native';
 
-import { FittedSheetSurface } from '../@generic/component/fitted-sheet-surface/fitted-sheet-surface';
 import { GroupedListSection } from '../@generic/component/grouped-list-section/grouped-list-section';
+import { GroupedSurface } from '../@generic/component/grouped-surface/grouped-surface';
 import { SelectorRowTitle } from '../@generic/component/selector-row-title/selector-row-title';
 import { SelectorRow } from '../@generic/component/selector-row/selector-row';
 import { SheetTitleRow } from '../@generic/component/sheet-title-row/sheet-title-row';
+import { GroupedSurfacePaletteEnum } from '../@generic/enum/grouped-surface-palette.enum';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { LANGUAGES } from '../i18n/constant/languages.constant';
 import { useLanguageSelectorModal, useLanguageSelectorModalParams } from '../i18n/context/language-selector-modal.context';
@@ -59,13 +60,13 @@ export default function LanguageSelectorModal() {
     };
 
     return (
-        <FittedSheetSurface>
+        <GroupedSurface palette={GroupedSurfacePaletteEnum.SHEET} className="flex-none">
             <View className="px-3xl pt-7xl pb-5xl">
                 <SheetTitleRow title={t`Language`} />
             </View>
             <View className="px-3xl">
                 <GroupedListSection>{languages.map(renderLanguage)}</GroupedListSection>
             </View>
-        </FittedSheetSurface>
+        </GroupedSurface>
     );
 }

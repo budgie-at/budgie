@@ -31,15 +31,18 @@ export const CurrencySelectorModalContent = ({ instrumentType, selectedInstrumen
     const title = isCrypto ? t`Crypto` : t`Currency`;
     const emptyHint = isCrypto ? t`Check the spelling or try a ticker like BTC.` : t`Check the spelling or try a code like EUR.`;
     const searchPlaceholder = isCrypto ? t`Search crypto` : t`Search currencies`;
-    const { selected, featured, other } = partitionInstruments(instruments, selectedInstrumentId, instrumentType);
-    const otherSections = isCrypto ? groupByInitial(other) : [{ title: t`Other currencies`, data: other }];
-    const browseSections = [
-        { title: t`Selected`, data: selected },
-        { title: isCrypto ? t`Top by market cap` : t`Common`, data: featured },
-        ...otherSections
-    ];
+    const toBrowseSections = () => {
+        const { selected, featured, other } = partitionInstruments(instruments, selectedInstrumentId, instrumentType);
+        const otherSections = isCrypto ? groupByInitial(other) : [{ title: t`Other currencies`, data: other }];
+
+        return [
+            { title: t`Selected`, data: selected },
+            { title: isCrypto ? t`Top by market cap` : t`Common`, data: featured },
+            ...otherSections
+        ];
+    };
     const sections = (
-        isNotEmptyString(search.trim()) ? [{ title: t`Results`, data: rankInstrumentSearch(instruments, search) }] : browseSections
+        isNotEmptyString(search.trim()) ? [{ title: t`Results`, data: rankInstrumentSearch(instruments, search) }] : toBrowseSections()
     ).filter(({ data }) => isNotEmptyArray(data));
 
     const renderItem = (item: InstrumentEntityInterface) => (

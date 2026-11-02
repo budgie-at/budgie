@@ -17,10 +17,13 @@ export const useSectionIndex = <T>(rows: readonly SelectorListRowInterface<T>[])
     const titles = rows.flatMap(row => (isDefined(row.item) ? [] : [row.title ?? '']));
     const letters = titles.filter(title => Array.from(title).length === 1);
     const featuredMark = isDefined(titles[0]) && !letters.includes(titles[0]) ? [FEATURED_SECTION_MARK] : [];
+    const letterSet = new Set(letters);
     const sectionLetterByRow = rows.reduce<string[]>((result, row) => {
         const sectionTitle = isDefined(row.item) ? (result.at(-1) ?? '') : (row.title ?? '');
 
-        return result.concat(letters.includes(sectionTitle) ? sectionTitle : FEATURED_SECTION_MARK);
+        result.push(letterSet.has(sectionTitle) ? sectionTitle : FEATURED_SECTION_MARK);
+
+        return result;
     }, []);
 
     const handleSectionLetter = (letter: string) => {

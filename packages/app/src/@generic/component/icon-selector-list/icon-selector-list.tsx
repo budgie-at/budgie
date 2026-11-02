@@ -33,6 +33,8 @@ const CONTENT_GAP = 8;
 const CHIP_STRIP_HEIGHT = 44;
 const TITLE_ROW_HEIGHT = 36;
 const SPACER_ROW_HEIGHT = 16;
+const TITLE_ROW_STYLE = { height: TITLE_ROW_HEIGHT };
+const SPACER_ROW_STYLE = { height: SPACER_ROW_HEIGHT };
 const TILE_GAP = 8;
 const LIST_HORIZONTAL_PADDING = 16;
 
@@ -85,12 +87,12 @@ export const IconSelectorList = ({ listRef, rows, chips, selectedIcon, onSelect,
 
     const stickyHeaderIndices = rows.flatMap((row, index) => (isDefined(row.title) ? [index] : []));
     const stickyHeaderConfig = { offset: chromeHeight };
-    const chipStripStyle = { top: SELECTOR_TITLED_HEADER_HEIGHT };
+    const chipStripStyle = { top: SELECTOR_TITLED_HEADER_HEIGHT, height: CHIP_STRIP_HEIGHT };
 
     const renderItem = ({ item }: { item: IconSelectorRowInterface }) => {
         if (isDefined(item.title)) {
             return (
-                <View className="h-[36px] justify-end bg-surface pb-md">
+                <View className="justify-end bg-surface pb-md" style={TITLE_ROW_STYLE}>
                     <Text className="text-secondary-foreground text-[15px] font-semibold" accessibilityRole="header">
                         {item.title}
                     </Text>
@@ -101,7 +103,7 @@ export const IconSelectorList = ({ listRef, rows, chips, selectedIcon, onSelect,
         return isNotEmptyArray(item.entries) ? (
             <IconSelectorTileRow entries={item.entries} selectedIcon={selectedIcon} onSelect={onSelect} />
         ) : (
-            <View className="h-[16px]" />
+            <View style={SPACER_ROW_STYLE} />
         );
     };
 
@@ -129,7 +131,7 @@ export const IconSelectorList = ({ listRef, rows, chips, selectedIcon, onSelect,
             </View>
 
             {hasChips ? (
-                <View className="absolute left-0 right-0 z-20 h-[44px] bg-surface" style={chipStripStyle}>
+                <View className="absolute left-0 right-0 z-20 bg-surface" style={chipStripStyle}>
                     <IconSelectorChipStrip chips={chips} activeIndex={activeChipIndex} onSelect={handleChipSelect} />
                 </View>
             ) : null}

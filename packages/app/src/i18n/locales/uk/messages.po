@@ -1041,7 +1041,7 @@ msgstr "Дія: {label}"
 msgid "Active budget"
 msgstr "Активний бюджет"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Activities"
 msgstr "Активності"
 
@@ -1370,7 +1370,7 @@ msgstr "та"
 msgid "and +{extraCount}"
 msgstr "і +{extraCount}"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Animals & nature"
 msgstr "Тварини й природа"
 
@@ -3403,7 +3403,7 @@ msgstr "Редагувати переказ"
 msgid "Edits the total of the plan"
 msgstr "Змінює загальну суму плану"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Education"
 msgstr "Освіта"
 
@@ -3522,7 +3522,7 @@ msgstr "Введіть новий PIN-код ще раз від початку. 
 msgid "Enter your PIN"
 msgstr "Введіть свій PIN-код"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Entertainment"
 msgstr "Розваги"
 
@@ -3833,11 +3833,11 @@ msgstr "Фіксована сума"
 msgid "Fixed-term savings with interest"
 msgstr "Строкові заощадження з відсотками"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Flags"
 msgstr "Прапори"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Food & drink"
 msgstr "Їжа й напої"
 
@@ -3952,7 +3952,7 @@ msgstr "Отримуйте пропозиції категорій, тегів �
 msgid "Get started"
 msgstr "Почати"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Gifts"
 msgstr "Подарунки"
 
@@ -3972,7 +3972,7 @@ msgstr "Повертає суму, розраховану з платежів і
 msgid "Growing"
 msgstr "Зростає"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Health"
 msgstr "Здоров’я"
 
@@ -4019,7 +4019,7 @@ msgstr "Завантаження історії призупинено"
 msgid "Hold to seal with this PIN"
 msgstr "Утримуйте, щоб запечатати цим PIN-кодом"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Home"
 msgstr "Дім"
 
@@ -4718,7 +4718,7 @@ msgstr "Моделі та завантаження"
 msgid "Models download once, best on Wi-Fi"
 msgstr "Моделі завантажуються один раз, краще через Wi-Fi"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Money"
 msgstr "Гроші"
 
@@ -5253,7 +5253,7 @@ msgstr "Зараз"
 msgid "Number of months"
 msgstr "Кількість місяців"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Objects"
 msgstr "Об’єкти"
 
@@ -6663,7 +6663,7 @@ msgstr "Налаштування"
 msgid "Shading shows how much your months usually vary."
 msgstr "Затінення показує, наскільки зазвичай різняться ваші місяці."
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Shopping"
 msgstr "Покупки"
 
@@ -6761,7 +6761,7 @@ msgstr "Менші групи"
 msgid "Smart suggestions"
 msgstr "Розумні підказки"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Smileys & people"
 msgstr "Смайлики й люди"
 
@@ -6949,7 +6949,7 @@ msgstr "Проведіть, щоб видалити цей ліміт катег
 msgid "Switch on to start syncing"
 msgstr "Увімкніть, щоб почати синхронізацію"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Symbols"
 msgstr "Символи"
 
@@ -7637,15 +7637,15 @@ msgstr "Переклад"
 msgid "Translations ready"
 msgstr "Переклади готові"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Transport"
 msgstr "Транспорт"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Travel"
 msgstr "Подорожі"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Travel & places"
 msgstr "Подорожі й місця"
 
@@ -8073,7 +8073,7 @@ msgstr "У межах плану"
 msgid "Without a backup, lost data can't be recovered."
 msgstr "Без резервної копії втрачені дані не відновити."
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Work"
 msgstr "Робота"
 

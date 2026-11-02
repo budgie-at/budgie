@@ -1041,7 +1041,7 @@ msgstr "Action : {label}"
 msgid "Active budget"
 msgstr "Budget actif"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Activities"
 msgstr "Activités"
 
@@ -1370,7 +1370,7 @@ msgstr "et"
 msgid "and +{extraCount}"
 msgstr "et +{extraCount}"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Animals & nature"
 msgstr "Animaux et nature"
 
@@ -3403,7 +3403,7 @@ msgstr "Modifier le transfert"
 msgid "Edits the total of the plan"
 msgstr "Modifie le montant total du plan"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Education"
 msgstr "Éducation"
 
@@ -3522,7 +3522,7 @@ msgstr "Saisis à nouveau ton nouveau code PIN depuis le début. Prends ton temp
 msgid "Enter your PIN"
 msgstr "Entrez votre code PIN"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Entertainment"
 msgstr "Divertissement"
 
@@ -3833,11 +3833,11 @@ msgstr "Montant fixe"
 msgid "Fixed-term savings with interest"
 msgstr "Épargne à terme avec intérêts"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Flags"
 msgstr "Drapeaux"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Food & drink"
 msgstr "Nourriture et boissons"
 
@@ -3952,7 +3952,7 @@ msgstr "Recevez des suggestions de catégories, d’étiquettes et de notes à p
 msgid "Get started"
 msgstr "Commencer"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Gifts"
 msgstr "Cadeaux"
 
@@ -3972,7 +3972,7 @@ msgstr "Revient au total calculé à partir des paiements et des frais"
 msgid "Growing"
 msgstr "En croissance"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Health"
 msgstr "Santé"
 
@@ -4019,7 +4019,7 @@ msgstr "Chargement de l'historique en pause"
 msgid "Hold to seal with this PIN"
 msgstr "Maintiens pour sceller avec ce code PIN"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Home"
 msgstr "Maison"
 
@@ -4718,7 +4718,7 @@ msgstr "Modèles et téléchargements"
 msgid "Models download once, best on Wi-Fi"
 msgstr "Les modèles se téléchargent une fois, idéalement en Wi-Fi"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Money"
 msgstr "Argent"
 
@@ -5253,7 +5253,7 @@ msgstr "Maintenant"
 msgid "Number of months"
 msgstr "Nombre de mois"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Objects"
 msgstr "Objets"
 
@@ -6663,7 +6663,7 @@ msgstr "Configuration"
 msgid "Shading shows how much your months usually vary."
 msgstr "La zone ombrée montre la variation habituelle de vos mois."
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Shopping"
 msgstr "Achats"
 
@@ -6761,7 +6761,7 @@ msgstr "Petits groupes"
 msgid "Smart suggestions"
 msgstr "Suggestions intelligentes"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Smileys & people"
 msgstr "Smileys et personnes"
 
@@ -6949,7 +6949,7 @@ msgstr "Balayez pour supprimer ce plafond par catégorie de votre budget."
 msgid "Switch on to start syncing"
 msgstr "Activez pour lancer la synchronisation"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Symbols"
 msgstr "Symboles"
 
@@ -7637,15 +7637,15 @@ msgstr "Traduction"
 msgid "Translations ready"
 msgstr "Traductions prêtes"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Transport"
 msgstr "Transport"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Travel"
 msgstr "Voyages"
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Travel & places"
 msgstr "Voyages et lieux"
 
@@ -8073,7 +8073,7 @@ msgstr "Dans le plan"
 msgid "Without a backup, lost data can't be recovered."
 msgstr "Sans sauvegarde, les données perdues ne peuvent pas être récupérées."
 
-#: src/@generic/constant/icon-category-label.constant.ts
+#: src/app/icon-selector.tsx
 msgid "Work"
 msgstr "Travail"
 
