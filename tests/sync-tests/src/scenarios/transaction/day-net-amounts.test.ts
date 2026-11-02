@@ -3,6 +3,8 @@ import {
     AccountTypeEnum,
     DEFAULT_TRANSACTION_FILTER,
     LanguageEnum,
+    InstrumentTypeEnum,
+    convertToMicroUnits,
     PRECISION,
     TransactionDayNetAmountRepository,
     TransactionViewRepository
@@ -48,7 +50,32 @@ describe('transaction/day-net-amounts', () => {
             expect(page).toHaveLength(2);
 
             const [day] = yield* getDayNetAmounts([account.id]);
-            expect(day).toMatchObject({ day: '2026-03-10', amount: -60 * PRECISION, instrumentCount: 1 });
+            expect(day).toMatchObject({
+                day: '2026-03-10',
+                amount: -60 * PRECISION,
+                instrumentCount: 1,
+                instrumentType: InstrumentTypeEnum.FIAT
+            });
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('carries the crypto instrument type for a single-instrument day', () =>
+        Effect.gen(function* () {
+            const instrument = yield* seed.instrument({ code: 'ETH', name: 'Ethereum', symbol: 'ETH', type: InstrumentTypeEnum.CRYPTO });
+            const account = yield* seed.account({ instrumentId: instrument.id });
+
+            yield* seed.manualExpense({ accountId: account.id, amount: convertToMicroUnits(0.001842), operatedAt: DAY });
+
+            const [day] = yield* getDayNetAmounts([account.id]);
+
+            expect(day).toMatchObject({
+                instrumentCount: 1,
+                instrumentType: InstrumentTypeEnum.CRYPTO,
+                instrumentSymbol: 'ETH',
+                amount: -convertToMicroUnits(0.001842),
+                baseAmount: -convertToMicroUnits(0.001842),
+                unvaluedCount: 0
+            });
         }).pipe(Effect.provide(TestLayer))
     );
 

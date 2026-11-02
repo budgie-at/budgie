@@ -66,7 +66,7 @@ export const StatisticsContent = ({ activeTab, filters, onChangeFilters: setFilt
                     <StatisticsFiltersMenu filters={filters} onChange={setFilters} />
                 ) : (
                     <TransactionFilters
-                        accountId={null}
+                        scopeAccountIds={null}
                         filters={filters}
                         onChange={setFilters}
                         showTypeFilter={false}

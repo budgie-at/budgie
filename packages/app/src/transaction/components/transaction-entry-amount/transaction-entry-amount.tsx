@@ -6,7 +6,7 @@ import { Text, View } from 'react-native';
 import { isDefined } from '@rnw-community/shared';
 
 import { FOREGROUND_COLOR_PALETTE } from '../../../@generic/constant/foreground-color-palette.constant';
-import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
+import { useFormatInstrumentAmount } from '../../../i18n/hook/use-format-instrument-amount.hook';
 import { defaultInstrumentIdAtom } from '../../../settings/constants/settings-atoms.constant';
 import { ConvertedAmountLabel } from '../converted-amount-label/converted-amount-label';
 import { DebtSettlementConvertedAmountLabel } from '../debt-settlement-converted-amount-label/debt-settlement-converted-amount-label';
@@ -29,10 +29,10 @@ const amountVariants = cva('text-[15px] font-semibold text-right tabular-nums', 
 
 export const TransactionEntryAmount = ({ debtEvent, entry, variant, sign, testID }: Props) => {
     const defaultInstrumentId = useAtomValue(defaultInstrumentIdAtom);
-    const formatDigits = useDisplayFormatDigits();
+    const formatDigits = useFormatInstrumentAmount();
 
     const amount = convertFromMicroUnits(entry.amount);
-    const formattedAmount = formatDigits(amount, entry.account.instrument.symbol);
+    const formattedAmount = formatDigits(amount, entry.account.instrument.symbol, entry.account.instrument.type);
     const isCrossCurrency = entry.account.instrument.id !== defaultInstrumentId;
     const debtConversionEvent =
         isDefined(debtEvent) && debtEvent[DebtEventAssociationEnum.DEBT_ACCOUNT].instrument.id !== entry.account.instrument.id
@@ -41,7 +41,8 @@ export const TransactionEntryAmount = ({ debtEvent, entry, variant, sign, testID
     const debtConversionAccessibilityLabel = isDefined(debtConversionEvent)
         ? `${sign}${formattedAmount} → ${formatDigits(
               convertFromMicroUnits(debtConversionEvent.amount),
-              debtConversionEvent[DebtEventAssociationEnum.DEBT_ACCOUNT].instrument.symbol
+              debtConversionEvent[DebtEventAssociationEnum.DEBT_ACCOUNT].instrument.symbol,
+              debtConversionEvent[DebtEventAssociationEnum.DEBT_ACCOUNT].instrument.type
           )}`
         : null;
     const convertedAmountLabel = isCrossCurrency ? (
