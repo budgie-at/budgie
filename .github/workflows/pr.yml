@@ -302,7 +302,7 @@ jobs:
             contents: read
             packages: write
             actions: read
-        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@da2319d96152d93adab650121f6f24812a399aa9 # feat/ios-e2e-simlock
+        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@bc126d4e137df2402e44a61ab7e13b5de4d3e2f6 # feat/ios-e2e-simlock
         with:
             control-runner-labels: '["self-hosted","trf-linux-amd64-2x4"]'
             build-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
