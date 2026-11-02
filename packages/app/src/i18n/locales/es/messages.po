@@ -4388,10 +4388,6 @@ msgstr "Últimos 7 días"
 msgid "Last 90 days"
 msgstr "Últimos 90 días"
 
-#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
-msgid "Last attempt failed"
-msgstr "El último intento falló"
-
 #: src/settings/components/backup-row/backup-row.tsx
 msgid "Last created {lastBackupDate}"
 msgstr "Creada por última vez {lastBackupDate}"
@@ -8352,7 +8348,7 @@ msgctxt "Categorize inbox section chip"
 msgid "Your call"
 msgstr "Tú decides"
 
-#: src/app/bank-integration-key.tsx
+#: src/sync/component/bank-integration-key-field/bank-integration-key-field.tsx
 msgid "Your current key was rejected."
 msgstr "Tu clave actual fue rechazada."
 

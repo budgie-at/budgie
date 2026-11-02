@@ -35,25 +35,25 @@ vi.mock('../src/sync/query/use-bank-integration-syncs.query', () => ({
 vi.mock('../src/sync/hook/use-account-sync.hook', () => ({ useAccountSync: () => ({ sync: state.hasSync ? state.sync : null }) }));
 
 it.each([
-    [false, false, 'FAILED', false, true, false, 'Sync failed · Sync off · USD', true],
-    [false, false, 'FAILED', true, false, false, 'Sync failed · Hidden from Home · USD', true],
-    [false, true, 'FAILED', false, false, false, 'Last attempt failed · Hidden from Home · USD', false],
+    [false, false, 'FAILED', false, true, false, 'Sync failed · Sync off', true],
+    [false, false, 'FAILED', true, false, false, 'Sync failed · Hidden from Home', true],
+    [false, true, 'FAILED', false, false, false, 'Sync failed · Hidden from Home', true],
     [false, true, 'SYNCING', true, true, false, 'USD', false],
-    [false, true, 'IDLE', false, false, false, 'Hidden from Home · USD', false],
-    [false, false, 'IDLE', false, true, false, 'Sync off · USD', false],
+    [false, true, 'IDLE', false, false, false, 'Hidden from Home', false],
+    [false, false, 'IDLE', false, true, false, 'Sync off', false],
     [true, false, 'IDLE', false, true, false, 'USD', false],
-    [true, false, 'IDLE', false, false, false, 'Hidden from Home · USD', false],
-    [false, false, 'SYNCING', true, false, false, 'Syncing… · Hidden from Home · USD', false],
-    [false, false, 'SYNCING', true, true, false, 'Syncing… · USD', false],
+    [true, false, 'IDLE', false, false, false, 'Hidden from Home', false],
+    [false, false, 'SYNCING', true, false, false, 'Syncing… · Hidden from Home', false],
+    [false, false, 'SYNCING', true, true, false, 'Syncing…', false],
     [false, false, 'IDLE', true, true, false, 'USD', false],
-    [false, false, 'IDLE', false, false, true, 'Excluded from imports · Hidden from Home · USD', false],
-    [false, false, 'FAILED', false, true, true, 'Sync failed · Excluded from imports · USD', true]
+    [false, false, 'IDLE', false, false, true, 'Excluded from imports · Hidden from Home', false],
+    [false, false, 'FAILED', false, true, true, 'Sync failed · Excluded from imports', true]
 ])('row subtitle %s/%s/%s/%s/%s/%s', (allSyncOff, rejected, status, enabled, active, fileImport, subtitle, failed) => {
     Object.assign(state, { allSyncOff, isKeyRejected: rejected, supportsLiveSync: !fileImport, supportsFileImport: fileImport });
     Object.assign(state.sync, { status, enabled });
     const title = 'Daily account';
     const result = useBankIntegrationAccountRowState({ id: 1, title, isActive: active, iban: null, instrument: DEFAULT_INSTRUMENT });
-    expect([result.failureLabel, result.description, result.identityLabel].filter(Boolean).join(' · ')).toBe(subtitle);
+    expect(result.leadLabel).toBe(subtitle);
     expect(result.isFailed).toBe(failed);
     expect(result.switchLabel).toBe(fileImport ? `Include ${title} in imports` : `Sync ${title}`);
     expect(result.isToggleVisible).toBe(true);
@@ -68,8 +68,6 @@ it.each(['MONOBANK', 'BINANCE'])('identity without sync for %s', provider => {
         iban: null,
         instrument: DEFAULT_INSTRUMENT
     });
-    expect(result.identityLabel).toBe(provider === 'BINANCE' ? '' : 'USD');
+    expect(result.leadLabel).toBe(provider === 'BINANCE' ? '' : 'USD');
     expect(result.isToggleVisible).toBe(false);
-    expect(result.description).toBe('');
-    expect(result.failureLabel).toBe('');
 });

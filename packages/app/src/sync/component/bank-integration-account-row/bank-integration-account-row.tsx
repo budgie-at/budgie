@@ -13,6 +13,7 @@ import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-s
 import { TONAL_DISC_BACKGROUND } from '../../../@generic/constant/tonal-disc-background.constant';
 import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
+import { cn } from '../../../@generic/utils/cn.util';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { testID } from '../../../@generic/utils/test-id.util';
 import { toTrueMinus } from '../../../@generic/utils/to-true-minus.util';
@@ -39,8 +40,7 @@ export const BankIntegrationAccountRow = ({ account }: Props) => {
     const { balance } = useAccountBalanceQuery(account.id);
     const formatDigits = useDisplayFormatDigits();
     const formatAmount = useFormatInstrumentAmount();
-    const { sync, isFailed, failureLabel, switchLabel, description, identityLabel, isToggleVisible } =
-        useBankIntegrationAccountRowState(account);
+    const { sync, isFailed, leadLabel, switchLabel, isToggleVisible } = useBankIntegrationAccountRowState(account);
 
     const rowTestID = BankIntegrationSelector.AccountRow(account.id);
     const handleToggle = (enabled: boolean) =>
@@ -51,10 +51,8 @@ export const BankIntegrationAccountRow = ({ account }: Props) => {
                 )
             )
         );
-    const failureClassName = isFailed ? 'text-destructive-strong' : 'text-secondary-foreground';
-    const failureSeparator = isNotEmptyString(failureLabel) ? ' · ' : '';
-    const subtitlePrefix = [description, identityLabel].filter(isNotEmptyString).join(' · ');
-    const balancePrefix = isNotEmptyString(subtitlePrefix) ? `${subtitlePrefix} · ` : '';
+    const leadClassName = isFailed ? 'text-destructive-strong' : 'text-secondary-foreground';
+    const leadText = isNotEmptyString(leadLabel) ? `${leadLabel} · ` : '';
 
     const toggle = isToggleVisible ? (
         <ThemedSwitch
@@ -85,10 +83,12 @@ export const BankIntegrationAccountRow = ({ account }: Props) => {
                     {account.title}
                 </Text>
                 <View className="flex-row">
-                    <Text className="shrink text-[13px] leading-[18px] text-secondary-foreground" numberOfLines={1}>
-                        <Text className={failureClassName}>{failureLabel}</Text>
-                        {failureSeparator}
-                        {balancePrefix}
+                    <Text
+                        className={cn('shrink text-[13px] leading-[18px]', leadClassName)}
+                        numberOfLines={1}
+                        accessibilityLabel={leadLabel}
+                    >
+                        {leadText}
                     </Text>
                     <ProtectedText
                         className="shrink-0 text-[13px] leading-[18px] text-secondary-foreground"

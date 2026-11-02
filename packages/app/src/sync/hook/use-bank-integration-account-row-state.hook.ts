@@ -29,8 +29,6 @@ export const useBankIntegrationAccountRowState = (
     const hasFailed = sync?.status === SyncStatusEnum.FAILED;
     const isRejected = capabilities.supportsLiveSync && isKeyRejected;
     const syncState = getAccountSyncState(sync);
-    const hiddenLabel = account.isActive ? '' : t`Hidden from Home`;
-    const failureLabel = isRejected ? t`Last attempt failed` : t`Sync failed`;
     const syncIssueLabels: Partial<Record<AccountSyncStateEnum, string>> = {
         [AccountSyncStateEnum.SYNCING]: isRejected ? '' : t`Syncing…`,
         [AccountSyncStateEnum.DISABLED]:
@@ -39,14 +37,17 @@ export const useBankIntegrationAccountRowState = (
     const liveSyncLabel = capabilities.supportsLiveSync && isDefined(syncState) ? (syncIssueLabels[syncState] ?? '') : '';
     const stateLabel = capabilities.supportsFileImport && sync?.enabled === false ? t`Excluded from imports` : liveSyncLabel;
 
+    const stateLabels = [hasFailed ? t`Sync failed` : '', stateLabel, account.isActive ? '' : t`Hidden from Home`]
+        .filter(isNotEmptyString)
+        .join(' · ');
+    const identityLabel =
+        integration.provider === ExternalSourceEnum.BINANCE ? '' : getAccountIdentityLabel(account.instrument.code, account.iban);
+
     return {
         sync,
-        isFailed: hasFailed && !isRejected,
-        failureLabel: hasFailed ? failureLabel : '',
+        isFailed: hasFailed,
+        leadLabel: isNotEmptyString(stateLabels) ? stateLabels : identityLabel,
         switchLabel: capabilities.supportsFileImport ? t`Include ${title} in imports` : t`Sync ${title}`,
-        description: [stateLabel, hiddenLabel].filter(isNotEmptyString).join(' · '),
-        identityLabel:
-            integration.provider === ExternalSourceEnum.BINANCE ? '' : getAccountIdentityLabel(account.instrument.code, account.iban),
         isToggleVisible: isDefined(sync) && (capabilities.supportsLiveSync || capabilities.supportsFileImport)
     };
 };

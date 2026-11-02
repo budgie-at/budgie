@@ -13,9 +13,10 @@ interface Props {
     readonly value: string;
     readonly onChangeText: (value: string) => void;
     readonly errorMessage: string;
+    readonly isKeyRejected: boolean;
 }
 
-export const BankIntegrationKeyField = ({ value, onChangeText, errorMessage }: Props) => {
+export const BankIntegrationKeyField = ({ value, onChangeText, errorMessage, isKeyRejected }: Props) => {
     const { t } = useLingui();
 
     return (
@@ -41,6 +42,11 @@ export const BankIntegrationKeyField = ({ value, onChangeText, errorMessage }: P
                 />
                 <PasteTokenButton className="h-[44px] py-0" onPaste={onChangeText} testID={SyncTokenSectionSelector.MonobankPasteButton} />
             </View>
+            {isKeyRejected ? (
+                <Text className="mt-[-2px] text-[13px] text-destructive-strong">
+                    <Trans>Your current key was rejected.</Trans>
+                </Text>
+            ) : null}
             {isNotEmptyString(errorMessage) ? <Text className="text-destructive-strong text-xs">{errorMessage}</Text> : null}
         </FormItem>
     );

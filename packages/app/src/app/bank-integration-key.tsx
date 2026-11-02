@@ -64,12 +64,12 @@ export default function BankIntegrationKeyModal() {
         <View className="bg-sheet-surface">
             <FormsheetHeader size="md" title={t`Monobank API key`} description={t`Paste the key from api.monobank.ua.`} />
             <View className="px-3xl gap-y-[8px]">
-                {isKeyRejected ? (
-                    <Text className="text-[13px] text-destructive-strong">
-                        <Trans>Your current key was rejected.</Trans>
-                    </Text>
-                ) : null}
-                <BankIntegrationKeyField value={key} onChangeText={handleKeyChange} errorMessage={errorMessage} />
+                <BankIntegrationKeyField
+                    value={key}
+                    onChangeText={handleKeyChange}
+                    errorMessage={errorMessage}
+                    isKeyRejected={isKeyRejected}
+                />
                 <HapticPressable
                     className="min-h-[44px] flex-row items-center gap-x-sm"
                     onPress={handleOpenKeyPage}
