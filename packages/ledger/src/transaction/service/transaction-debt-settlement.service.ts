@@ -31,7 +31,12 @@ import { AccountBalanceIncrementalService } from '../../account/service/account-
 import { getTransactionCategoryEntries } from '../utils/get-transaction-category-entries.util';
 
 import type { AttachDebtSettlementParamsInterface } from '../interface/attach-debt-settlement-params.interface';
-import type { AccountEntityInterface, TransactionEntryEntityInterface, TransactionWithEntriesEntityInterface } from '@budgie/contracts';
+import type {
+    AccountEntityInterface,
+    DebtEventEntityInterface,
+    TransactionEntryEntityInterface,
+    TransactionWithEntriesEntityInterface
+} from '@budgie/contracts';
 
 export class TransactionDebtSettlementService extends Context.Service<TransactionDebtSettlementService>()(
     '@budgie/ledger/TransactionDebtSettlementService',
@@ -262,6 +267,47 @@ export class TransactionDebtSettlementService extends Context.Service<Transactio
                 });
             });
 
+            const resyncInTransaction = Effect.fn('TransactionDebtSettlementService.resyncInTransaction')(function* (
+                transactionId: number
+            ) {
+                const debtEvent = yield* debtEventRepository.findByTransactionId(transactionId);
+
+                if (!isDefined(debtEvent) || debtEvent.source !== DebtEventSourceEnum.INCOME_ATTACHMENT) {
+                    return;
+                }
+
+                const transaction = yield* getTransactionOrFail(transactionId);
+                const debtAccount = yield* getDebtAccountOrFail(debtEvent.debtAccountId);
+
+                yield* assertTransactionSupportsDebtSettlement(transaction);
+                const primaryEntry = yield* getPrimaryEntryOrFail(transaction);
+                yield* assertDebtAccountIsNotPrimaryAccount(primaryEntry, debtAccount);
+
+                const fields = yield* buildSettlementEventFields(transaction, debtAccount, primaryEntry);
+
+                yield* debtEventRepository.updateById(debtEvent.id, fields);
+                yield* assignDebtPaymentCategory(primaryEntry, debtAccount);
+                yield* accountBalanceIncrementalService.updateBalancesByAccountIds([primaryEntry.accountId, debtAccount.id]);
+            });
+
+            const resyncConformingAttachment = Effect.fnUntraced(function* (
+                attachment: Pick<DebtEventEntityInterface, 'transactionId' | 'debtAccountId'>
+            ) {
+                const transaction = isDefined(attachment.transactionId)
+                    ? yield* transactionRepository.getByIdWithEntries(attachment.transactionId)
+                    : null;
+                const primaryEntries = isDefined(transaction) ? getPrimaryEntries(transaction) : [];
+                const isConforming =
+                    isDefined(transaction) &&
+                    (transaction.type === TransactionTypeEnum.EXPENSE || transaction.type === TransactionTypeEnum.INCOME) &&
+                    primaryEntries.length === 1 &&
+                    primaryEntries[0].accountId !== attachment.debtAccountId;
+
+                if (isConforming) {
+                    yield* resyncInTransaction(transaction.id);
+                }
+            });
+
             return {
                 attach: Effect.fn('TransactionDebtSettlementService.attach')(
                     function* (params: AttachDebtSettlementParamsInterface) {
@@ -308,25 +354,16 @@ export class TransactionDebtSettlementService extends Context.Service<Transactio
                     effect => Db.transaction(effect)
                 ),
                 inheritInstallmentCategory,
-                resyncInTransaction: Effect.fn('TransactionDebtSettlementService.resyncInTransaction')(function* (transactionId: number) {
-                    const debtEvent = yield* debtEventRepository.findByTransactionId(transactionId);
+                repairDebtPaymentCategories: Effect.fn('TransactionDebtSettlementService.repairDebtPaymentCategories')(function* () {
+                    yield* debtEventRepository.relinkAttachmentEntries();
+                    yield* transactionEntryRepository.assignDebtPaymentCategory(BORROWING_CATEGORY_ID, AccountDebtTypeEnum.BORROW);
+                    yield* transactionEntryRepository.assignDebtPaymentCategory(LENDING_CATEGORY_ID, AccountDebtTypeEnum.LENT);
+                }),
+                resyncInTransaction,
+                resyncTransactions: Effect.fn('TransactionDebtSettlementService.resyncTransactions')(function* (transactionIds: number[]) {
+                    const attachments = yield* debtEventRepository.findAttachmentsByTransactionIds(transactionIds);
 
-                    if (!isDefined(debtEvent) || debtEvent.source !== DebtEventSourceEnum.INCOME_ATTACHMENT) {
-                        return;
-                    }
-
-                    const transaction = yield* getTransactionOrFail(transactionId);
-                    const debtAccount = yield* getDebtAccountOrFail(debtEvent.debtAccountId);
-
-                    yield* assertTransactionSupportsDebtSettlement(transaction);
-                    const primaryEntry = yield* getPrimaryEntryOrFail(transaction);
-                    yield* assertDebtAccountIsNotPrimaryAccount(primaryEntry, debtAccount);
-
-                    const fields = yield* buildSettlementEventFields(transaction, debtAccount, primaryEntry);
-
-                    yield* debtEventRepository.updateById(debtEvent.id, fields);
-                    yield* assignDebtPaymentCategory(primaryEntry, debtAccount);
-                    yield* accountBalanceIncrementalService.updateBalancesByAccountIds([primaryEntry.accountId, debtAccount.id]);
+                    yield* Effect.forEach(attachments, resyncConformingAttachment, { discard: true });
                 })
             };
         })
