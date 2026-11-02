@@ -122,6 +122,11 @@ msgstr "{0, plural, one {Інші · # категорія} few {Інші · # к
 msgid "{0, plural, one {Show # more group} other {Show # more groups}}"
 msgstr "{0, plural, one {Показати ще # групу} few {Показати ще # групи} many {Показати ще # груп} other {Показати ще # групи}}"
 
+#. placeholder {0}: syncs.filter(sync => sync.status === SyncStatusEnum.FAILED).length
+#: src/sync/component/bank-integration-status-line/bank-integration-status-line.tsx
+msgid "{0, plural, one {Sync failed for # account} other {Sync failed for # accounts}}"
+msgstr "{0, plural, one {Не вдалося синхронізувати # рахунок} few {Не вдалося синхронізувати # рахунки} many {Не вдалося синхронізувати # рахунків} other {Не вдалося синхронізувати # рахунку}}"
+
 #. placeholder {0}: categoriesWithDefaultIcon.length
 #: src/app/(tabs)/settings/category-icons.tsx
 msgid "{0, plural, one {Tap a suggestion to replace the default icon} other {Tap a suggestion to replace each default icon}}"
@@ -330,10 +335,6 @@ msgstr "{entryStatusLabel}. {formattedAmount} {caption}. {formattedSpentLabel}, 
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "{entryStatusLabel}. {formattedAmount} {caption}. {reservedPrefix}{formattedPerDay}, {formattedDaysLeft}."
 msgstr "{entryStatusLabel}. {formattedAmount} {caption}. {reservedPrefix}{formattedPerDay}, {formattedDaysLeft}."
-
-#: src/sync/component/bank-integration-status-line/bank-integration-status-line.tsx
-msgid "{failedCount, plural, one {Sync failed for # account} other {Sync failed for # accounts}}"
-msgstr "{failedCount, plural, one {Не вдалося синхронізувати # рахунок} few {Не вдалося синхронізувати # рахунки} many {Не вдалося синхронізувати # рахунків} other {Не вдалося синхронізувати # рахунку}}"
 
 #: src/rule/hooks/use-rule-text-value-meta.hook.ts
 msgid "{fieldLabel} {operatorLabel}, value"

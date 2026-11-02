@@ -627,7 +627,7 @@ env:
 - extendedWaitUntil:
       visible:
           id: 'SettingsPage.BudgetPushSwitch'
-          text: '0'
+          checked: false
       timeout: 3000
 
 - tapOn:
@@ -635,7 +635,7 @@ env:
 - extendedWaitUntil:
       visible:
           id: 'SettingsPage.BudgetPushSwitch'
-          text: '1'
+          checked: true
       timeout: 3000
 
 - tapOn:
@@ -643,19 +643,19 @@ env:
 - extendedWaitUntil:
       visible:
           id: 'SettingsPage.BudgetPushSwitch'
-          text: '0'
+          checked: false
       timeout: 3000
 
 - assertVisible:
       id: 'SettingsPage.BudgetWidgetSwitch'
-      text: '1'
+      checked: true
 
 - tapOn:
       id: 'SettingsPage.BudgetWidgetSwitch'
 - extendedWaitUntil:
       visible:
           id: 'SettingsPage.BudgetWidgetSwitch'
-          text: '0'
+          checked: false
       timeout: 3000
 
 - tapOn:
@@ -676,7 +676,7 @@ env:
 - extendedWaitUntil:
       visible:
           id: 'SettingsPage.BudgetWidgetSwitch'
-          text: '0'
+          checked: false
       timeout: 3000
 
 - tapOn:
@@ -684,7 +684,7 @@ env:
 - extendedWaitUntil:
       visible:
           id: 'SettingsPage.BudgetWidgetSwitch'
-          text: '1'
+          checked: true
       timeout: 3000
 
 - tapOn:
