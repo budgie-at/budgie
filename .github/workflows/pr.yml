@@ -345,7 +345,9 @@ jobs:
             # farm. It replaces the Maestro shards: no macOS test runner is used.
             test-framework: e2e
             e2e-dir: e2e
-            e2e-runner-labels: '["self-hosted","linux-portable-4x8"]'
+            # Only ubuntu-vitalii shares the farm's LAN: over the public tunnel every device
+            # request costs ~100 ms instead of ~2 ms, and each lease uploads its own app copy.
+            e2e-runner-labels: '["self-hosted","trf-linux-amd64-4x8"]'
             e2e-workers: '10'
             e2e-retries: '1'
             e2e-timeout-minutes: 45
