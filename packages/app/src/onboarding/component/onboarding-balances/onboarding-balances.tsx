@@ -23,6 +23,7 @@ import { useOnboardingNavigation } from '../../hook/use-onboarding-navigation.ho
 import { OnboardingService } from '../../service/onboarding.service';
 import { OnboardingBalanceRow } from '../onboarding-balance-row/onboarding-balance-row';
 import { OnboardingFooterAction } from '../onboarding-footer-action/onboarding-footer-action';
+import { OnboardingKeyboardControls } from '../onboarding-keyboard-controls/onboarding-keyboard-controls';
 import { OnboardingStepIntro } from '../onboarding-step-intro/onboarding-step-intro';
 import { OnboardingStepLayout } from '../onboarding-step-layout/onboarding-step-layout';
 
@@ -124,6 +125,7 @@ export const OnboardingBalances = () => {
             isLoading={isLoading}
             footer={
                 <>
+                    <OnboardingKeyboardControls />
                     <PillButton
                         testID={OnboardingBalancesSelector.SaveButton}
                         label={saveLabel}

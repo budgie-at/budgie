@@ -6,17 +6,15 @@ import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { ScreenChromeFooter } from '@rnw-community/react-native-screen-chrome';
 
 import { cn } from '../../../@generic/utils/cn.util';
-import { OnboardingKeyboardControls } from '../onboarding-keyboard-controls/onboarding-keyboard-controls';
 
 interface Props {
     readonly children: ReactNode;
-    readonly hasKeyboardNavigation?: boolean;
 }
 
 const HIDDEN_EDGE_FADE_PROPS = { style: { display: 'none' } } as const;
 const IN_FLOW_STYLE = { position: 'relative' } as const;
 
-export const OnboardingStepFooter = ({ children, hasKeyboardNavigation = false }: Props) => {
+export const OnboardingStepFooter = ({ children }: Props) => {
     const isKeyboardVisible = useKeyboardState(state => state.isVisible);
     const { height } = useReanimatedKeyboardAnimation();
     const keyboardStyle = useAnimatedStyle(() => ({ transform: [{ translateY: height.value }] }));
@@ -27,7 +25,6 @@ export const OnboardingStepFooter = ({ children, hasKeyboardNavigation = false }
         <Animated.View className="absolute inset-x-0 bottom-0" style={keyboardStyle} pointerEvents="box-none">
             <ScreenChromeFooter includeBottomSafeArea={false} edgeFadeProps={HIDDEN_EDGE_FADE_PROPS} style={IN_FLOW_STYLE}>
                 <View className={cn('gap-y-xs border-t-hairline border-surface-separator bg-surface px-5xl', paddingClassName)}>
-                    {hasKeyboardNavigation ? <OnboardingKeyboardControls /> : null}
                     {children}
                 </View>
             </ScreenChromeFooter>

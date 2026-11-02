@@ -44,7 +44,6 @@ export const OnboardingStepLayout = (props: Props) => {
         }
     });
 
-    const hasKeyboardNavigation = step === OnboardingStepEnum.BALANCES;
     const headerRowStyle = { paddingHorizontal: 0 };
 
     return (
@@ -60,9 +59,7 @@ export const OnboardingStepLayout = (props: Props) => {
                             <OnboardingStepScroll>{children}</OnboardingStepScroll>
                         </RevealGate>
 
-                        {isDefined(footer) ? (
-                            <OnboardingStepFooter hasKeyboardNavigation={hasKeyboardNavigation}>{footer}</OnboardingStepFooter>
-                        ) : null}
+                        {isDefined(footer) ? <OnboardingStepFooter>{footer}</OnboardingStepFooter> : null}
                     </ScreenChromeFrame>
                 </BottomChromeInsetProvider>
             </ScreenChromeThemeProvider>
