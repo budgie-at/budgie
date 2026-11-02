@@ -321,8 +321,8 @@ msgid "{duplicateTransactionCount, plural, one {# skipped} other {# skipped}}"
 msgstr "{duplicateTransactionCount, plural, one {# skipped} other {# skipped}}"
 
 #: src/app/(tabs)/settings/sync-repairs.tsx
-msgid "{duplicateTransactionCount, plural, one {Remove # duplicate} other {Remove # duplicates}}"
-msgstr "{duplicateTransactionCount, plural, one {Remove # duplicate} other {Remove # duplicates}}"
+#~ msgid "{duplicateTransactionCount, plural, one {Remove # duplicate} other {Remove # duplicates}}"
+#~ msgstr "{duplicateTransactionCount, plural, one {Remove # duplicate} other {Remove # duplicates}}"
 
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "{entryStatusLabel}. {formattedAmount} {caption}. {formattedSpentLabel}, {formattedDaysLeft}."
@@ -537,6 +537,10 @@ msgstr "{minutesLeft, plural, one {About # minute left on Wi-Fi} other {About # 
 #: src/sync/component/sync-import-progress/sync-import-progress.tsx
 msgid "{minutesLeft, plural, one {About # minute left} other {About # minutes left}}"
 msgstr "{minutesLeft, plural, one {About # minute left} other {About # minutes left}}"
+
+#: src/import/utils/get-import-required-footer.util.ts
+msgid "{missingCount, plural, one {# required field still needs a column} other {# required fields still need a column}}"
+msgstr "{missingCount, plural, one {# required field still needs a column} other {# required fields still need a column}}"
 
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "{monobankAccountCount, plural, one {# account. Balances come straight from the bank.} other {# accounts. Balances come straight from the bank.}}"
@@ -1157,8 +1161,12 @@ msgid "Add both amounts to continue"
 msgstr "Add both amounts to continue"
 
 #: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
-msgid "Add Capture contactless payment and set Amount, Merchant and Card from the Shortcut Input."
-msgstr "Add Capture contactless payment and set Amount, Merchant and Card from the Shortcut Input."
+#~ msgid "Add Capture contactless payment and set Amount, Merchant and Card from the Shortcut Input."
+#~ msgstr "Add Capture contactless payment and set Amount, Merchant and Card from the Shortcut Input."
+
+#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
+msgid "Add Capture contactless payment. Set Amount, Merchant and Card to Shortcut Input."
+msgstr "Add Capture contactless payment. Set Amount, Merchant and Card to Shortcut Input."
 
 #: src/budget/components/budget-details-category-list/budget-details-category-list.tsx
 msgid "Add category limits"
@@ -1281,6 +1289,10 @@ msgstr "AI model download paused: no Wi-Fi"
 msgid "AI off"
 msgstr "AI off"
 
+#: src/app/(tabs)/settings/ai-features.tsx
+msgid "AI unavailable in this version"
+msgstr "AI unavailable in this version"
+
 #: src/@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle.tsx
 msgid "All"
 msgstr "All"
@@ -1316,6 +1328,10 @@ msgstr "All past amounts are converted"
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "All Recurring"
 msgstr "All Recurring"
+
+#: src/import/utils/get-import-required-footer.util.ts
+msgid "All required fields matched. Tap a field to change it."
+msgstr "All required fields matched. Tap a field to change it."
 
 #: src/i18n/hook/use-format-date-range.hook.ts
 msgid "All time"
@@ -1853,8 +1869,8 @@ msgid "Budgie hit an unexpected problem. You can restart the app or report the i
 msgstr "Budgie hit an unexpected problem. You can restart the app or report the issue so we can investigate."
 
 #: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
-msgid "Budgie picks the account from the card name, so one automation covers all your cards."
-msgstr "Budgie picks the account from the card name, so one automation covers all your cards."
+#~ msgid "Budgie picks the account from the card name, so one automation covers all your cards."
+#~ msgstr "Budgie picks the account from the card name, so one automation covers all your cards."
 
 #: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
 msgid "Budgie picks the account from the card name, then your default account. Name the account like the card, or set the optional Account field in the action to pin one."
@@ -1968,6 +1984,10 @@ msgstr "Cancel"
 msgid "Cancel and delete"
 msgstr "Cancel and delete"
 
+#: src/wallet-capture/component/apple-pay-capture-history-notice/apple-pay-capture-history-notice.tsx
+msgid "Captures new Apple Pay taps only. It can't import Wallet history or later bank settlement changes."
+msgstr "Captures new Apple Pay taps only. It can't import Wallet history or later bank settlement changes."
+
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "Card"
 msgstr "Card"
@@ -2034,8 +2054,12 @@ msgid "Categories break your spending down automatically. Add a transaction, or 
 msgstr "Categories break your spending down automatically. Add a transaction, or choose another period."
 
 #: src/app/(tabs)/settings/ai-features.tsx
-msgid "Categories still work with on-device rules."
-msgstr "Categories still work with on-device rules."
+msgid "Categories still use on-device rules."
+msgstr "Categories still use on-device rules."
+
+#: src/app/(tabs)/settings/ai-features.tsx
+#~ msgid "Categories still work with on-device rules."
+#~ msgstr "Categories still work with on-device rules."
 
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "Categories, tags and voice notes are handled on this phone."
@@ -2213,6 +2237,10 @@ msgstr "Choose and confirm a PIN"
 #: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
 #~ msgid "Choose another icon"
 #~ msgstr "Choose another icon"
+
+#: src/app/(main)/import-csv.tsx
+msgid "Choose columns for {missingFieldLabels}"
+msgstr "Choose columns for {missingFieldLabels}"
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Choose dates to sync again"
@@ -2974,6 +3002,7 @@ msgid "Current balance"
 msgstr "Current balance"
 
 #: src/budget/components/budget-fund-repeat-field/budget-fund-repeat-field.tsx
+#: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "Custom"
 msgstr "Custom"
 
@@ -3631,8 +3660,8 @@ msgid "Every N months"
 msgstr "Every N months"
 
 #: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
-msgid "Every tap, recorded"
-msgstr "Every tap, recorded"
+#~ msgid "Every tap, recorded"
+#~ msgstr "Every tap, recorded"
 
 #: src/export/components/export-csv/export-csv.tsx
 msgid "Every transaction as a spreadsheet"
@@ -4178,8 +4207,12 @@ msgid "In runway, at today's prices"
 msgstr "In runway, at today's prices"
 
 #: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
-msgid "In Shortcuts, add a personal automation with the Transaction trigger, select your cards and choose Run Immediately."
-msgstr "In Shortcuts, add a personal automation with the Transaction trigger, select your cards and choose Run Immediately."
+#~ msgid "In Shortcuts, add a personal automation with the Transaction trigger, select your cards and choose Run Immediately."
+#~ msgstr "In Shortcuts, add a personal automation with the Transaction trigger, select your cards and choose Run Immediately."
+
+#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
+msgid "In Shortcuts, add a Transaction automation. Pick cards and Run Immediately."
+msgstr "In Shortcuts, add a Transaction automation. Pick cards and Run Immediately."
 
 #: src/runway/component/runway-settings-rows/runway-settings-rows.tsx
 msgid "Include crypto"
@@ -4582,9 +4615,17 @@ msgstr "Market cap"
 msgid "Match on"
 msgstr "Match on"
 
+#: src/import/utils/get-import-match-description.util.ts
+msgid "Matched by column name"
+msgstr "Matched by column name"
+
 #: src/app/(main)/import-csv.tsx
-msgid "Matched by column name. Tap a field to change it."
-msgstr "Matched by column name. Tap a field to change it."
+#~ msgid "Matched by column name. Tap a field to change it."
+#~ msgstr "Matched by column name. Tap a field to change it."
+
+#: src/import/utils/get-import-match-description.util.ts
+msgid "Matched by column names and sample values"
+msgstr "Matched by column names and sample values"
 
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Matched expenses are converted into a transfer to this account."
@@ -5353,8 +5394,8 @@ msgid "On-device AI"
 msgstr "On-device AI"
 
 #: src/app/(tabs)/settings/ai-features.tsx
-msgid "On-device AI isn't available in this version"
-msgstr "On-device AI isn't available in this version"
+#~ msgid "On-device AI isn't available in this version"
+#~ msgstr "On-device AI isn't available in this version"
 
 #: src/ai/component/ai-features-settings-card/ai-features-settings-card.tsx
 msgid "On-device models and storage"
@@ -5410,8 +5451,8 @@ msgid "Only me, with a PIN"
 msgstr "Only me, with a PIN"
 
 #: src/wallet-capture/component/apple-pay-capture-history-notice/apple-pay-capture-history-notice.tsx
-msgid "Only new taps. Captures new eligible Apple Pay taps. It cannot import Wallet history or final bank settlement changes."
-msgstr "Only new taps. Captures new eligible Apple Pay taps. It cannot import Wallet history or final bank settlement changes."
+#~ msgid "Only new taps. Captures new eligible Apple Pay taps. It cannot import Wallet history or final bank settlement changes."
+#~ msgstr "Only new taps. Captures new eligible Apple Pay taps. It cannot import Wallet history or final bank settlement changes."
 
 #: ../ledger/src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only single-entry expenses can be converted"
@@ -5816,7 +5857,7 @@ msgstr "Pick a category to continue"
 msgid "Pick a category to set a limit"
 msgstr "Pick a category to set a limit"
 
-#: src/app/(main)/import-csv.tsx
+#: src/import/utils/get-import-required-footer.util.ts
 msgid "Pick a column for each field."
 msgstr "Pick a column for each field."
 
@@ -6147,6 +6188,10 @@ msgid "Recent payments"
 msgstr "Recent payments"
 
 #: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
+msgid "Record Apple Pay purchases"
+msgstr "Record Apple Pay purchases"
+
+#: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
 msgid "Record Apple Pay taps with a Shortcuts automation."
 msgstr "Record Apple Pay taps with a Shortcuts automation."
 
@@ -6201,6 +6246,7 @@ msgid "Remaining"
 msgstr "Remaining"
 
 #: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
+#: src/app/(tabs)/settings/sync-repairs.tsx
 #: src/budget/components/budget-category-limit-deletable-row/budget-category-limit-deletable-row.tsx
 msgid "Remove"
 msgstr "Remove"
@@ -6208,6 +6254,10 @@ msgstr "Remove"
 #: src/rule/components/rule-action-row/rule-action-row.tsx
 msgid "Remove action {position}"
 msgstr "Remove action {position}"
+
+#: src/app/(tabs)/settings/sync-repairs.tsx
+msgid "Remove all duplicates"
+msgstr "Remove all duplicates"
 
 #: src/budget/components/budget-category-limit-deletable-row/budget-category-limit-deletable-row.tsx
 msgid "Remove category limit?"
@@ -6488,6 +6538,10 @@ msgstr "Save rule"
 #: src/budget/components/budget-fund-form/budget-fund-form.tsx
 msgid "Save set aside"
 msgstr "Save set aside"
+
+#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
+msgid "Save the automation. Budgie matches card names to accounts for all your cards."
+msgstr "Save the automation. Budgie matches card names to accounts for all your cards."
 
 #: src/budget/components/budget-funds-section/budget-funds-section.tsx
 msgid "Save up for yearly bills a little each period so they never surprise you"

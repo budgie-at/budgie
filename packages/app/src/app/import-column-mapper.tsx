@@ -59,6 +59,7 @@ export default function ImportColumnMapperModal() {
                         <GroupedListCheckRow
                             key={header}
                             title={header}
+                            titleNumberOfLines={2}
                             subtitle={samples[header]}
                             isSelected={header === currentValue}
                             onPress={handleSelect(header)}

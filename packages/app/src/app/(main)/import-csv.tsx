@@ -19,7 +19,7 @@ import * as Schema from 'effect/Schema';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useRef, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { getErrorMessage, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
@@ -39,6 +39,8 @@ import { ImportPresetPicker } from '../../import/components/import-preset-picker
 import { EMPTY_IMPORT_CSV } from '../../import/constant/empty-import-csv.constant';
 import { importCsvAtom } from '../../import/constant/import-csv-atom.constant';
 import { detectImportPreset } from '../../import/utils/detect-import-preset.util';
+import { getImportMatchDescription } from '../../import/utils/get-import-match-description.util';
+import { getImportRequiredFooter } from '../../import/utils/get-import-required-footer.util';
 import { matchImportColumns } from '../../import/utils/match-import-columns.util';
 import { RuleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
 
@@ -80,7 +82,7 @@ export default function ImportScreen() {
     const isLoading = isReadingFile || isImporting;
     const hasDetectedPreset = useRef(false);
     const [detectedPreset, setDetectedPreset] = useState<ImportPresetEnum | undefined>();
-    const [hasMatchedColumns, setHasMatchedColumns] = useState(false);
+    const [matchDescription, setMatchDescription] = useState('');
     const [selectedPreset, setSelectedPreset] = useState<ImportPresetEnum | undefined>();
 
     const headersSet = new Set(headers);
@@ -145,9 +147,13 @@ export default function ImportScreen() {
                     setDetectedPreset(detectedPreset);
                     handlePresetSelect(detectedPreset);
                 } else {
-                    const matchedColumns = matchImportColumns(result.value.headers);
+                    const matchedByName = matchImportColumns(result.value.headers);
+                    const matchedColumns = matchImportColumns(result.value.headers, result.value.samples);
+                    const hasMatchedSamples = Object.values(matchedColumns).some(
+                        header => isNotEmptyString(header) && !Object.values(matchedByName).includes(header)
+                    );
                     reset(matchedColumns);
-                    setHasMatchedColumns(Object.values(matchedColumns).some(isNotEmptyString));
+                    setMatchDescription(getImportMatchDescription(matchedColumns, hasMatchedSamples, t));
                 }
             }
 
@@ -161,13 +167,19 @@ export default function ImportScreen() {
 
     const handleGoBack = () => void router.back();
 
-    const unmappedRequiredCount = IMPORT_COLUMN_FIELDS.filter(
+    const missingRequiredFields = IMPORT_COLUMN_FIELDS.filter(
         ({ isRequired, name }) => isRequired && !headersSet.has(formValues[name] ?? '')
-    ).length;
+    );
+    const unmappedRequiredCount = missingRequiredFields.length;
     const isImportDisabled = isPositiveNumber(unmappedRequiredCount) || isLoading;
-    const requiredFooter = hasMatchedColumns ? t`Matched by column name. Tap a field to change it.` : t`Pick a column for each field.`;
+    const requiredFooter = getImportRequiredFooter(unmappedRequiredCount, t);
+    const missingFieldLabels = missingRequiredFields.map(({ label }) => t(label)).join(', ');
+    const accessibilityHint = isPositiveNumber(unmappedRequiredCount) ? t`Choose columns for ${missingFieldLabels}` : '';
     const buttonVariant = isPositiveNumber(unmappedRequiredCount) ? 'secondary' : 'cta';
-    const buttonClassName = isPositiveNumber(unmappedRequiredCount) ? 'bg-surface-fill border-transparent' : '';
+    const buttonClassName = isPositiveNumber(unmappedRequiredCount) ? 'bg-surface-fill border-transparent opacity-100' : '';
+    const buttonLabelClassName = isPositiveNumber(unmappedRequiredCount)
+        ? 'text-secondary-foreground text-lg font-semibold text-center'
+        : 'text-cta-foreground text-lg font-semibold text-center';
     const footerStyle = { marginBottom: -bottom, paddingBottom: bottom + 12 };
     const buttonContent = isPositiveNumber(unmappedRequiredCount)
         ? t({ message: plural(unmappedRequiredCount, { one: 'Match # required field', other: 'Match # required fields' }) })
@@ -185,7 +197,9 @@ export default function ImportScreen() {
                 footer={
                     <View className="bg-surface border-t-hairline border-surface-separator px-5xl pt-lg" style={footerStyle}>
                         <Button
-                            content={buttonContent}
+                            content={<Text className={buttonLabelClassName}>{buttonContent}</Text>}
+                            accessibilityLabel={buttonContent}
+                            accessibilityHint={accessibilityHint}
                             variant={buttonVariant}
                             className={buttonClassName}
                             onPress={handleSubmit(handleStartImport)}
@@ -197,7 +211,13 @@ export default function ImportScreen() {
                     </View>
                 }
             >
-                <ImportPresetPicker detectedPreset={detectedPreset} selectedPreset={selectedPreset} onPresetSelect={handlePresetSelect} />
+                <ImportPresetPicker
+                    detectedPreset={detectedPreset}
+                    selectedPreset={selectedPreset}
+                    onPresetSelect={handlePresetSelect}
+                    hasMappedColumns={isPositiveNumber(selectedHeaders.length)}
+                    matchDescription={matchDescription}
+                />
                 {IMPORT_COLUMN_SECTIONS.map(({ title, isRequired }) => {
                     const sectionFooter = isRequired ? requiredFooter : null;
 

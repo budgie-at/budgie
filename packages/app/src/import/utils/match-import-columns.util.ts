@@ -1,6 +1,8 @@
 import { LanguageEnum } from '@budgie/contracts';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+
+import { isImportSampleMatch } from './is-import-sample-match.util';
 
 import type { ImportColumnMapFormValues } from '@budgie/import-export';
 
@@ -72,7 +74,10 @@ const COLUMN_KEYWORDS: Record<LanguageEnum, Record<keyof ImportColumnMapFormValu
     }
 };
 
-export const matchImportColumns = (headers: readonly string[]): ImportColumnMapFormValues => {
+export const matchImportColumns = (
+    headers: readonly string[],
+    samples: Readonly<Record<string, string>> = {}
+): ImportColumnMapFormValues => {
     const columnMap: ImportColumnMapFormValues = {
         toAccount: '',
         category: '',
@@ -113,6 +118,15 @@ export const matchImportColumns = (headers: readonly string[]): ImportColumnMapF
         );
 
         if (isDefined(header)) {
+            columnMap[field] = header;
+            usedHeaders.add(header);
+        }
+    }
+
+    for (const field of ['operatedAt', 'toAmount', 'toCurrency'] as const) {
+        const header = headers.find(candidate => !usedHeaders.has(candidate) && isImportSampleMatch(field, samples[candidate] ?? ''));
+
+        if (!isNotEmptyString(columnMap[field]) && isDefined(header)) {
             columnMap[field] = header;
             usedHeaders.add(header);
         }

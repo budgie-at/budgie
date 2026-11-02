@@ -13,6 +13,7 @@ import { GroupedListSection } from '../../../@generic/component/grouped-list-sec
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
+import { isAiEnabled } from '../../../@generic/utils/is-ai-enabled.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { SettingsPillButton } from '../../../settings/components/settings-pill-button/settings-pill-button';
 import { aiModelStorageAtom } from '../../constant/ai-model-storage-atom.constant';
@@ -47,6 +48,10 @@ export const AiModelStorage = () => {
             <Text className="text-[17px] text-secondary-foreground">{formatSize(totalBytes)}</Text>
         </LoadingContent>
     );
+
+    if (!isAiEnabled() && (isLoading || (AsyncResult.isSuccess(usage) && !isPositiveNumber(totalBytes)))) {
+        return null;
+    }
 
     return (
         <GroupedListSection title={t`Storage`}>

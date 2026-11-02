@@ -7,6 +7,7 @@ import { GroupedListRow } from '../grouped-list-row/grouped-list-row';
 import { Icon } from '../icon/icon';
 
 interface Props {
+    readonly titleNumberOfLines?: 1 | 2;
     readonly subtitle?: string;
     readonly title: string;
     readonly isSelected: boolean;
@@ -14,7 +15,7 @@ interface Props {
     readonly testID?: string;
 }
 
-export const GroupedListCheckRow = ({ title, subtitle, isSelected, onPress, testID }: Props) => {
+export const GroupedListCheckRow = ({ title, subtitle, isSelected, onPress, testID, titleNumberOfLines = 1 }: Props) => {
     const pressableProps = { accessibilityState: { selected: isSelected } };
 
     const subtitleNode = isNotEmptyString(subtitle) ? (
@@ -26,7 +27,7 @@ export const GroupedListCheckRow = ({ title, subtitle, isSelected, onPress, test
     return (
         <GroupedListRow
             title={
-                <Text className="text-primary text-[17px]" numberOfLines={1} ellipsizeMode="tail">
+                <Text className="text-primary text-[17px]" numberOfLines={titleNumberOfLines} ellipsizeMode="tail">
                     {title}
                 </Text>
             }

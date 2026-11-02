@@ -27,7 +27,7 @@ export const ApplePayCaptureHero = ({ children }: PropsWithChildren) => {
                 </View>
                 <View className="flex-1 gap-y-sm">
                     <Text accessibilityRole="header" className="text-primary text-[17px] font-semibold">
-                        <Trans>Every tap, recorded</Trans>
+                        <Trans>Record Apple Pay purchases</Trans>
                     </Text>
                     <Text className="text-secondary-foreground text-[13px] leading-[18px]">
                         <Trans>Record Apple Pay taps with a Shortcuts automation.</Trans>

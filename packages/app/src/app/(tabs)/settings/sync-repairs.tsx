@@ -1,4 +1,3 @@
-import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
@@ -11,6 +10,7 @@ import { GroupedListSection } from '../../../@generic/component/grouped-list-sec
 import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
+import { SettingsPillButton } from '../../../settings/components/settings-pill-button/settings-pill-button';
 import { SyncRepairSourceRow } from '../../../settings/components/sync-repair-source-row/sync-repair-source-row';
 import { SyncRepairsEmptyStateCard } from '../../../settings/components/sync-repairs-empty-state-card/sync-repairs-empty-state-card';
 import { SyncRepairsErrorCard } from '../../../settings/components/sync-repairs-error-card/sync-repairs-error-card';
@@ -30,10 +30,7 @@ export default function SyncRepairsPage() {
     const sources = preview?.sources ?? [];
     const shouldShowEmptyState = !isLoading && !hasError && !hasDuplicates;
     const shouldShowFound = !hasError && (isLoading || hasDuplicates);
-    const isRepairDisabled = !hasDuplicates || isLoading;
     const isActionLoading = isRepairing || isLoading;
-    const repairPressableProps = { disabled: isRepairDisabled || isRepairing, accessibilityState: { busy: isActionLoading } };
-    const actionLabel = t({ message: plural(duplicateTransactionCount, { one: 'Remove # duplicate', other: 'Remove # duplicates' }) });
 
     return (
         <GroupedSurface>
@@ -59,15 +56,16 @@ export default function SyncRepairsPage() {
                                 )}
                             </LoadingContent>
                             <GroupedListRow
-                                title={
-                                    <LoadingContent isLoading={isActionLoading}>
-                                        <Text className="text-primary text-[17px]">{actionLabel}</Text>
-                                    </LoadingContent>
+                                title={t`Remove all duplicates`}
+                                right={
+                                    <SettingsPillButton
+                                        label={t`Remove`}
+                                        variant="secondary"
+                                        onPress={handleRepair}
+                                        isLoading={isActionLoading}
+                                        testID={SyncRepairsPageSelector.RepairButton}
+                                    />
                                 }
-                                right={<View />}
-                                onPress={handleRepair}
-                                pressableProps={repairPressableProps}
-                                testID={SyncRepairsPageSelector.RepairButton}
                             />
                         </GroupedListSection>
                     ) : null}

@@ -1,18 +1,22 @@
 import { ImportPresetEnum } from '@budgie/import-export';
 import { useLingui } from '@lingui/react/macro';
 
+import { emptyFn, isDefined } from '@rnw-community/shared';
+
 import { GroupedListCheckRow } from '../../../@generic/component/grouped-list-check-row/grouped-list-check-row';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 
 import { ImportPresetPickerSelector } from './import-preset-picker.selector';
 
 interface Props {
+    readonly hasMappedColumns: boolean;
+    readonly matchDescription: string;
     readonly detectedPreset?: ImportPresetEnum;
     readonly selectedPreset: ImportPresetEnum | undefined;
     readonly onPresetSelect: (preset: ImportPresetEnum) => void;
 }
 
-export const ImportPresetPicker = ({ selectedPreset, detectedPreset, onPresetSelect }: Props) => {
+export const ImportPresetPicker = ({ selectedPreset, detectedPreset, onPresetSelect, hasMappedColumns, matchDescription }: Props) => {
     const { t } = useLingui();
 
     const handleBudgieSelect = () => void onPresetSelect(ImportPresetEnum.Budgie);
@@ -21,6 +25,7 @@ export const ImportPresetPicker = ({ selectedPreset, detectedPreset, onPresetSel
 
     const budgieSubtitle = detectedPreset === ImportPresetEnum.Budgie ? t`Detected from column names` : '';
     const smartBudgetSubtitle = detectedPreset === ImportPresetEnum.SmartBudget ? t`Detected from column names` : '';
+    const isCustomSelected = !isDefined(selectedPreset) && hasMappedColumns;
     const finEyeSubtitle = detectedPreset === ImportPresetEnum.FinEye ? t`Detected from column names` : '';
 
     return (
@@ -45,6 +50,13 @@ export const ImportPresetPicker = ({ selectedPreset, detectedPreset, onPresetSel
                 subtitle={finEyeSubtitle}
                 isSelected={selectedPreset === ImportPresetEnum.FinEye}
                 onPress={handleFinEyeSelect}
+            />
+            <GroupedListCheckRow
+                testID={ImportPresetPickerSelector.Custom}
+                title={t`Custom`}
+                subtitle={matchDescription}
+                isSelected={isCustomSelected}
+                onPress={emptyFn}
             />
         </GroupedListSection>
     );

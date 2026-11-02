@@ -72,3 +72,51 @@ describe('matchImportColumns', () => {
         expect(Object.values(matchImportColumns([])).every(value => value === '')).toBe(true);
     });
 });
+
+describe('matchImportColumns sample inference', () => {
+    it.each(['2026-11-02', '02.11.2026', '02/11/2026', '11/25/2026'])('infers dates from %s', sample => {
+        expect(matchImportColumns(['When'], { When: sample }).operatedAt).toBe('When');
+    });
+
+    it.each(['-12.50', '+12,50', '1 234,56', '1\u00a0234,56', '$1,234.56', '1.234,56 €'])('infers amounts from %s', sample => {
+        expect(matchImportColumns(['Value'], { Value: sample }).toAmount).toBe('Value');
+    });
+
+    it('infers ISO currencies and leaves account/category untouched', () => {
+        expect(matchImportColumns(['Unit', 'When', 'Value'], { Unit: 'EUR', When: '2026-11-02', Value: '-42.50' })).toMatchObject({
+            toCurrency: 'Unit',
+            operatedAt: 'When',
+            toAmount: 'Value',
+            toAccount: '',
+            category: ''
+        });
+    });
+
+    it('keeps name matches and never reuses already mapped headers', () => {
+        expect(
+            matchImportColumns(['Comment', 'Amount', 'Other', 'Unit'], {
+                Comment: '2026-11-02',
+                Amount: '-10.00',
+                Other: '-20.00',
+                Unit: 'USD'
+            })
+        ).toMatchObject({ comment: 'Comment', operatedAt: '', toAmount: 'Amount', toCurrency: 'Unit' });
+    });
+
+    it('does not use named optional columns as required sample matches', () => {
+        expect(matchImportColumns(['MCC', 'From currency'], { MCC: '1234', 'From currency': 'USD' })).toMatchObject({
+            mcc: 'MCC',
+            fromCurrency: 'From currency',
+            toAmount: '',
+            toCurrency: ''
+        });
+    });
+
+    it('chooses the first unused sample match', () => {
+        expect(matchImportColumns(['First', 'Second'], { First: '-10.00', Second: '-20.00' }).toAmount).toBe('First');
+    });
+
+    it.each(['XYZ', 'eur', 'EURO', '', '31.02.2026', '2026-13-01', '12/32/2026', 'not a value'])('rejects invalid samples %s', sample => {
+        expect(Object.values(matchImportColumns(['Unknown'], { Unknown: sample })).every(value => value === '')).toBe(true);
+    });
+});

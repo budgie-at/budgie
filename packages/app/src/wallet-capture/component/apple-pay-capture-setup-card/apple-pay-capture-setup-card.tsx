@@ -12,15 +12,15 @@ export const ApplePayCaptureSetupCard = ({ testID }: Props) => {
     const setupSteps = [
         {
             title: t`Create an automation`,
-            description: t`In Shortcuts, add a personal automation with the Transaction trigger, select your cards and choose Run Immediately.`
+            description: t`In Shortcuts, add a Transaction automation. Pick cards and Run Immediately.`
         },
         {
             title: t`Add the Budgie action`,
-            description: t`Add Capture contactless payment and set Amount, Merchant and Card from the Shortcut Input.`
+            description: t`Add Capture contactless payment. Set Amount, Merchant and Card to Shortcut Input.`
         },
         {
             title: t`Save it`,
-            description: t`Budgie picks the account from the card name, so one automation covers all your cards.`
+            description: t`Save the automation. Budgie matches card names to accounts for all your cards.`
         }
     ];
 
