@@ -42,6 +42,9 @@ const TENANT = 'budgie-e2e';
 /** A leased device that could not be set up (an app install failed): another device may well succeed. */
 class DeviceSetupFailed extends Error {}
 
+/** Errors that mean the farm, not one simulator, failed (simlock's gateway and agent-device wording). */
+const FARM_DOWN = /not connected to the gateway|no worker connected|Remote daemon is unavailable|ECONNREFUSED|ETIMEDOUT|fetch failed/i;
+
 /**
  * Leases one simulator per worker slot from a simlock worker through its
  * agent-device proxy (`/v1/agent-device`): the run drives the device from
@@ -185,7 +188,9 @@ export function simlockDevices(options: SimlockOptions): DeviceProvider {
             } catch (cause) {
                 // One bad simulator must not fail the whole run: its lease is already released,
                 // so lease another device, once. A second failure is the farm's, and is reported.
-                if (!(cause instanceof DeviceSetupFailed)) {
+                // A farm that is unreachable or has lost its worker fails every slot at once: a
+                // swap then only doubles the wipes on an already overloaded host, so it fails now.
+                if (!(cause instanceof DeviceSetupFailed) || FARM_DOWN.test(cause.message)) {
                     throw cause;
                 }
                 request.signal.throwIfAborted();

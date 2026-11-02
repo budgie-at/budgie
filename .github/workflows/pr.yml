@@ -345,13 +345,13 @@ jobs:
             # farm. It replaces the Maestro shards: no macOS test runner is used.
             test-framework: e2e
             e2e-dir: e2e
-            # Only ubuntu-vitalii shares the farm's LAN: over the public tunnel every device
-            # request costs ~100 ms instead of ~2 ms, and each lease uploads its own app copy.
             e2e-runner-labels: '["self-hosted","trf-linux-amd64-4x8"]'
             e2e-workers: '10'
             e2e-retries: '1'
             e2e-timeout-minutes: 45
-            simlock-url: http://10.10.1.28:4700
+            # The public gateway, not the LAN address: only one Linux host shares the farm's LAN,
+            # and the tunnel costs nothing measurable (10 flows: 4m12s public, 4m03s-4m25s LAN).
+            simlock-url: https://simlock.vitaliiyehorov.dev
         secrets:
             simlock-token: ${{ secrets.SIMLOCK_TOKEN }}
 
