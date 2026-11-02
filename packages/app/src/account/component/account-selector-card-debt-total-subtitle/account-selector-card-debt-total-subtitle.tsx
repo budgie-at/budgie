@@ -37,14 +37,18 @@ export const AccountSelectorCardDebtTotalSubtitle = ({ accountId, debtType, inst
 
     return (
         <View className="flex-row items-center">
-            <Text className="text-secondary-foreground text-xs flex-shrink" numberOfLines={1}>
+            <Text className="text-secondary-foreground text-[13px] leading-[18px] flex-shrink" numberOfLines={1}>
                 <Trans>Debt</Trans>
             </Text>
-            <Text className="text-secondary-foreground text-xs">&nbsp;•&nbsp;</Text>
-            <Text className="text-secondary-foreground text-xs flex-shrink" numberOfLines={1}>
+            <Text className="text-secondary-foreground text-[13px] leading-[18px]">&nbsp;•&nbsp;</Text>
+            <Text className="text-secondary-foreground text-[13px] leading-[18px] flex-shrink" numberOfLines={1}>
                 {debtTotalLabel}:&nbsp;
             </Text>
-            <ProtectedText className="text-sm font-medium text-primary" numberOfLines={1} testID={debtTotalTestID}>
+            <ProtectedText
+                className="text-secondary-foreground text-[13px] leading-[18px] tabular-nums"
+                numberOfLines={1}
+                testID={debtTotalTestID}
+            >
                 {formattedTotalAmount}
             </ProtectedText>
         </View>

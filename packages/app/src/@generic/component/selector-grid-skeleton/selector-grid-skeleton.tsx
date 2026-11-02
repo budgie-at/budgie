@@ -24,16 +24,12 @@ export const SelectorGridSkeleton = ({ itemHeight, additionalBottomPadding = 0, 
     };
 
     return (
-        <Animated.View className="absolute inset-0 bg-primary-reverse" style={pulseStyle} pointerEvents="none">
+        <Animated.View className="absolute inset-0 bg-surface" style={pulseStyle} pointerEvents="none">
             <View style={contentStyle} className="gap-y-lg">
                 {ROW_KEYS.map(rowKey => (
                     <View className="flex-row gap-x-lg" key={rowKey}>
                         {COLUMN_KEYS.slice(0, COLUMN_COUNT).map(columnKey => (
-                            <View
-                                className="flex-1 rounded-2xl border border-secondary-corner/50 bg-secondary-background"
-                                key={`${rowKey}-${columnKey}`}
-                                style={cardStyle}
-                            />
+                            <View className="flex-1 rounded-2xl bg-surface-row" key={`${rowKey}-${columnKey}`} style={cardStyle} />
                         ))}
                     </View>
                 ))}

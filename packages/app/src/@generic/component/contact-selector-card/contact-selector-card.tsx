@@ -9,7 +9,7 @@ import { EmptyFn, emptyFn, isNotEmptyArray, isNotEmptyString } from '@rnw-commun
 import { CreateAccountScreenSelector } from '../../../account/component/create-account-screen/create-account-screen.selector';
 import { CircleIcon } from '../circle-icon/circle-icon';
 import { Icon } from '../icon/icon';
-import { SelectorCard } from '../selector-card/selector-card';
+import { SelectorRow } from '../selector-row/selector-row';
 
 interface Props {
     readonly onSelect: EmptyFn;
@@ -31,9 +31,23 @@ export const ContactSelectorCard = (props: Props) => {
 
     const handleSelect = isSelected ? emptyFn : onSelect;
     const icon = isNotEmptyString(image) ? (
-        <StyledImage className="w-8 h-8 rounded-full" source={image} placeholder={placeholder} contentFit="cover" transition={1000} />
+        <StyledImage
+            className="h-[36px] w-[36px] rounded-full"
+            source={image}
+            placeholder={placeholder}
+            contentFit="cover"
+            transition={1000}
+        />
     ) : (
-        <CircleIcon icon={UserIconNameEnum.User} variant="secondary" size={32} iconSize={16} />
+        <CircleIcon
+            icon={UserIconNameEnum.User}
+            variant="secondary"
+            size={36}
+            iconSize={18}
+            radius={18}
+            border={false}
+            className="bg-surface-disc"
+        />
     );
 
     const hasEmails = isNotEmptyArray(emails);
@@ -41,29 +55,28 @@ export const ContactSelectorCard = (props: Props) => {
 
     const subtitle =
         hasEmails || hasPhoneNumbers ? (
-            <View className="gap-y-xs">
+            <View className="gap-y-xxs">
                 {emails.map(email => (
                     <View key={email} className="flex-row items-center gap-x-sm">
                         <Icon icon={UserIconNameEnum.Mail} className="text-secondary-foreground" size={12} />
-                        <Text className="text-secondary-foreground">{email}</Text>
+                        <Text className="text-secondary-foreground text-[13px] leading-[18px]">{email}</Text>
                     </View>
                 ))}
                 {phoneNumbers.map(phoneNumber => (
                     <View key={phoneNumber} className="flex-row items-center gap-x-sm">
                         <Icon icon={UserIconNameEnum.Phone} className="text-secondary-foreground" size={12} />
-                        <Text className="text-secondary-foreground">{phoneNumber}</Text>
+                        <Text className="text-secondary-foreground text-[13px] leading-[18px]">{phoneNumber}</Text>
                     </View>
                 ))}
             </View>
         ) : null;
 
     return (
-        <SelectorCard
+        <SelectorRow
             isSelected={isSelected}
             onPress={handleSelect}
-            verticalAlign="top"
             testID={CreateAccountScreenSelector.ContactOption(title)}
-            iconSlot={icon}
+            left={icon}
             title={title}
             subtitle={subtitle}
         />

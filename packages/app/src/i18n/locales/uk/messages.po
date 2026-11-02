@@ -189,6 +189,10 @@ msgstr "на {changePercent} більше, ніж за період {previousLab
 msgid "{clampedCount, plural, one {Set to # month} other {Set to # months}}"
 msgstr "{clampedCount, plural, one {Встановлено # місяць} few {Встановлено # місяці} many {Встановлено # місяців} other {Встановлено # місяця}}"
 
+#: src/@generic/component/currency-selector-card/currency-selector-card.tsx
+msgid "{code} · {symbol}"
+msgstr "{code} · {symbol}"
+
 #: src/@generic/component/create-account-currency-field/create-account-currency-field.tsx
 msgid "{code} · 1 {code} ≈ {convertedAmount} {defaultCode}"
 msgstr "{code} · 1 {code} ≈ {convertedAmount} {defaultCode}"
@@ -758,6 +762,10 @@ msgstr "{title} витрачається надто швидко"
 msgid "{title}, {protectedAmount} per month"
 msgstr "{title}, {protectedAmount} на місяць"
 
+#: src/tag/components/tags-selector-card/tags-selector-card.tsx
+msgid "{title}, primary"
+msgstr "{title}, основний"
+
 #: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
 msgid "{title}, rollover {currentLabel}. Double tap to change."
 msgstr "{title}, перенесення {currentLabel}. Двічі торкніться, щоб змінити."
@@ -849,6 +857,10 @@ msgstr "−{changePercent} до {shortPreviousLabel}"
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "≈ {formattedMonths} mo"
 msgstr "≈ {formattedMonths} міс."
+
+#: src/app/tags-selector.tsx
+msgid "★ Primary · hold another tag to change it"
+msgstr "★ Основний · утримуйте інший тег, щоб змінити"
 
 #: src/account/component/crypto-currency-group-market-link/crypto-currency-group-market-link.tsx
 msgid "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
@@ -950,6 +962,7 @@ msgstr "Більше за цю суму"
 msgid "account"
 msgstr "рахунок"
 
+#: src/app/account-selector.tsx
 #: src/rule/components/rule-condition-account-selector/rule-condition-account-selector.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
 #: src/transaction/components/adjustment-account-summary/adjustment-account-summary.tsx
@@ -1027,6 +1040,10 @@ msgstr "Дія: {label}"
 #: src/settings/components/budget-management-card/budget-management-card.tsx
 msgid "Active budget"
 msgstr "Активний бюджет"
+
+#: src/app/icon-selector.tsx
+msgid "Activities"
+msgstr "Активності"
 
 #: src/budget/components/budget-event-category-limits/budget-event-category-limits.tsx
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
@@ -1234,10 +1251,6 @@ msgstr "Усі стовпці було призначено"
 msgid "All conditions"
 msgstr "Усі умови"
 
-#: src/app/icon-selector.tsx
-msgid "All icons"
-msgstr "Усі іконки"
-
 #: src/money-data/component/money-data-upgrade-status-card/money-data-upgrade-status-card.tsx
 msgid "All past amounts are converted"
 msgstr "Усі минулі суми конвертовано"
@@ -1356,6 +1369,10 @@ msgstr "та"
 #: src/rule/hooks/use-rule-row-summary.hook.ts
 msgid "and +{extraCount}"
 msgstr "і +{extraCount}"
+
+#: src/app/icon-selector.tsx
+msgid "Animals & nature"
+msgstr "Тварини й природа"
 
 #: src/rule/components/rule-condition-match-type-selector/rule-condition-match-type-selector.tsx
 msgid "Any condition"
@@ -1954,6 +1971,7 @@ msgstr "Категоризувати як {categoryTitle}"
 
 #: src/app/(tabs)/settings/categories.tsx
 #: src/app/(tabs)/settings/import.tsx
+#: src/app/category-selector.tsx
 #: src/budget/components/budget-fund-category-field/budget-fund-category-field.tsx
 #: src/budget/service/budget-alert-monitor.service.ts
 #: src/rule/components/rule-action-category-selector/rule-action-category-selector.tsx
@@ -2006,10 +2024,12 @@ msgstr "Перевірте форму, щоб продовжити"
 msgid "Check the key and secret, then try again."
 msgstr "Перевірте ключ і секрет та спробуйте ще раз."
 
+#: src/app/category-selector.tsx
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "Check the spelling or create it as a new category."
 msgstr "Перевірте написання або створіть її як нову категорію."
 
+#: src/app/tags-selector.tsx
 #: src/tag/components/tag-empty-state/tag-empty-state.tsx
 msgid "Check the spelling or create it as a new tag."
 msgstr "Перевірте написання або створіть його як новий тег."
@@ -2017,6 +2037,18 @@ msgstr "Перевірте написання або створіть його �
 #: src/account/component/shelved-accounts-no-matches-state/shelved-accounts-no-matches-state.tsx
 msgid "Check the spelling or search by another name."
 msgstr "Перевірте написання або пошукайте за іншою назвою."
+
+#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
+msgid "Check the spelling or try a code like EUR."
+msgstr "Перевірте написання або спробуйте код, як-от EUR."
+
+#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
+msgid "Check the spelling or try a ticker like BTC."
+msgstr "Перевірте написання або спробуйте тікер, як-от BTC."
+
+#: src/account/component/account-select-content/account-select-content.tsx
+msgid "Check the spelling or try another account name."
+msgstr "Перевірте написання або спробуйте іншу назву рахунку."
 
 #: src/account/constant/account-kind-title.constant.ts
 #: src/app/(tabs)/settings/sync-repairs.tsx
@@ -2175,6 +2207,7 @@ msgstr "Буфер обміну не містить дійсного токен�
 msgid "Clipboard is empty"
 msgstr "Буфер обміну порожній"
 
+#: src/@generic/component/sheet-close-button/sheet-close-button.tsx
 #: src/sync/component/get-token-card/get-token-card.tsx
 msgid "Close"
 msgstr "Закрити"
@@ -2221,6 +2254,10 @@ msgstr "Коментар"
 #: src/transaction/components/recurring-calendar-content/recurring-calendar-content.tsx
 msgid "Committed {committedExpense} per month"
 msgstr "Регулярні витрати на місяць: {committedExpense}"
+
+#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
+msgid "Common"
+msgstr "Поширені"
 
 #: src/rule/components/rule-condition-operator-selector/rule-condition-operator-selector.tsx
 msgid "Comparison: {label}"
@@ -2273,6 +2310,10 @@ msgstr "Консолідація"
 #: src/account/component/debt-account-contact-field/debt-account-contact-field.tsx
 msgid "Contact (optional)"
 msgstr "Контакт (необов'язково)"
+
+#: src/app/contact-selector.tsx
+msgid "Contacts"
+msgstr "Контакти"
 
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "contains"
@@ -2718,6 +2759,7 @@ msgid "Covered by your liquid balance."
 msgstr "Покривається вашим ліквідним балансом."
 
 #: src/@generic/component/searchable-page-empty-state-actions/searchable-page-empty-state-actions.tsx
+#: src/@generic/component/selector-no-results-state/selector-no-results-state.tsx
 msgid "Create “{query}”"
 msgstr "Створити «{query}»"
 
@@ -2820,6 +2862,7 @@ msgstr "Створіть свій перший рахунок, щоб почат
 msgid "Credentials required"
 msgstr "Потрібні облікові дані"
 
+#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 #: src/account/constant/account-kind-title.constant.ts
 #: src/account/constant/account-type.constant.ts
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
@@ -2847,6 +2890,7 @@ msgstr "CSV експортовано"
 msgid "CSV files"
 msgstr "Файли CSV"
 
+#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 #: src/account/component/update-liability-account/update-liability-account.tsx
 msgid "Currency"
 msgstr "Валюта"
@@ -3088,6 +3132,11 @@ msgstr "Відʼєднує її від «{debtTitle}»"
 #: src/tag/components/tag-form/tag-form.tsx
 msgid "Details"
 msgstr "Деталі"
+
+#: src/i18n/constant/languages.constant.ts
+msgctxt "endonym"
+msgid "Deutsch"
+msgstr "Deutsch"
 
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "Didn't match"
@@ -3354,6 +3403,14 @@ msgstr "Редагувати переказ"
 msgid "Edits the total of the plan"
 msgstr "Змінює загальну суму плану"
 
+#: src/app/icon-selector.tsx
+msgid "Education"
+msgstr "Освіта"
+
+#: src/app/icon-selector.tsx
+msgid "Emoji"
+msgstr "Емодзі"
+
 #: src/onboarding/hook/use-onboarding-file-state.hook.ts
 msgid "empty"
 msgstr "порожній"
@@ -3398,6 +3455,11 @@ msgstr "Зашифровано · PIN і {biometricLabel}"
 #: src/i18n/constant/languages.constant.ts
 msgid "English"
 msgstr "Англійська"
+
+#: src/i18n/constant/languages.constant.ts
+msgctxt "endonym"
+msgid "English"
+msgstr "English"
 
 #: src/auth/utils/get-pin-setup-meta.util.ts
 msgid "Enter a {PIN_LENGTH}-digit PIN"
@@ -3460,6 +3522,10 @@ msgstr "Введіть новий PIN-код ще раз від початку. 
 msgid "Enter your PIN"
 msgstr "Введіть свій PIN-код"
 
+#: src/app/icon-selector.tsx
+msgid "Entertainment"
+msgstr "Розваги"
+
 #: src/app/resync-window-picker.tsx
 msgid "Entire history will be re-synced on next sync."
 msgstr "Уся історія буде повторно синхронізована під час наступної синхронізації."
@@ -3492,6 +3558,11 @@ msgstr "Erste Bank"
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Erste Bank (PDF)"
 msgstr "Erste Bank (PDF)"
+
+#: src/i18n/constant/languages.constant.ts
+msgctxt "endonym"
+msgid "Español"
+msgstr "Español"
 
 #: src/budget/components/budget-period-summary/budget-period-summary.tsx
 msgid "Estimated from your past transactions using your current limits."
@@ -3762,6 +3833,14 @@ msgstr "Фіксована сума"
 msgid "Fixed-term savings with interest"
 msgstr "Строкові заощадження з відсотками"
 
+#: src/app/icon-selector.tsx
+msgid "Flags"
+msgstr "Прапори"
+
+#: src/app/icon-selector.tsx
+msgid "Food & drink"
+msgstr "Їжа й напої"
+
 #: src/budget/components/budget-forecast-card/budget-forecast-card.tsx
 msgid "Forecast"
 msgstr "Прогноз"
@@ -3769,6 +3848,11 @@ msgstr "Прогноз"
 #: src/auth/components/pin-unlock/pin-unlock.tsx
 msgid "Forgot PIN?"
 msgstr "Забули PIN-код?"
+
+#: src/i18n/constant/languages.constant.ts
+msgctxt "endonym"
+msgid "Français"
+msgstr "Français"
 
 #: src/i18n/constant/languages.constant.ts
 msgid "French"
@@ -3868,6 +3952,10 @@ msgstr "Отримуйте пропозиції категорій, тегів �
 msgid "Get started"
 msgstr "Почати"
 
+#: src/app/icon-selector.tsx
+msgid "Gifts"
+msgstr "Подарунки"
+
 #: src/@generic/component/go-back-button/go-back-button.tsx
 msgid "Go back"
 msgstr "Назад"
@@ -3883,6 +3971,10 @@ msgstr "Повертає суму, розраховану з платежів і
 #: src/runway/component/runway-verdict/runway-verdict.tsx
 msgid "Growing"
 msgstr "Зростає"
+
+#: src/app/icon-selector.tsx
+msgid "Health"
+msgstr "Здоров’я"
 
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "Help sorting, without leaving the phone?"
@@ -3927,6 +4019,10 @@ msgstr "Завантаження історії призупинено"
 msgid "Hold to seal with this PIN"
 msgstr "Утримуйте, щоб запечатати цим PIN-кодом"
 
+#: src/app/icon-selector.tsx
+msgid "Home"
+msgstr "Дім"
+
 #: src/app/(tabs)/settings/index.tsx
 msgid "Home screen"
 msgstr "Головний екран"
@@ -3947,9 +4043,17 @@ msgstr "Як експортувати"
 msgid "I have a Budgie backup"
 msgstr "У мене є резервна копія Budgie"
 
+#: src/app/icon-selector.tsx
+msgid "Icon"
+msgstr "Іконка"
+
 #: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
 msgid "Icon updated for {categoryTitle}"
 msgstr "Іконку оновлено для «{categoryTitle}»"
+
+#: src/app/icon-selector.tsx
+msgid "Icons"
+msgstr "Іконки"
 
 #: src/app/(tabs)/settings/ai.tsx
 msgid "If a download arrives damaged, Budgie deletes it and asks before starting again."
@@ -4232,6 +4336,7 @@ msgstr "Знайте, скільки можна витратити"
 msgid "Label matching payments with a tag"
 msgstr "Позначати відповідні платежі тегом"
 
+#: src/app/language-selector.tsx
 #: src/settings/components/language-selector/language-selector.tsx
 msgid "Language"
 msgstr "Мова"
@@ -4422,6 +4527,10 @@ msgstr "Обслуговування"
 msgid "Make a PIN after all"
 msgstr "Усе ж створити PIN-код"
 
+#: src/tag/components/tags-selector-card/tags-selector-card.tsx
+msgid "Make primary"
+msgstr "Зробити основним"
+
 #: src/budget/components/budget-details-edit-button/budget-details-edit-button.tsx
 msgid "Manage budget"
 msgstr "Керувати бюджетом"
@@ -4608,6 +4717,10 @@ msgstr "Моделі та завантаження"
 #: src/app/(tabs)/settings/ai-features.tsx
 msgid "Models download once, best on Wi-Fi"
 msgstr "Моделі завантажуються один раз, краще через Wi-Fi"
+
+#: src/app/icon-selector.tsx
+msgid "Money"
+msgstr "Гроші"
 
 #: src/app/(main)/create-account/index.tsx
 msgid "Money you lent or borrowed"
@@ -4876,7 +4989,6 @@ msgstr "Без акаунта · Близько хвилини"
 msgid "No account. There's nothing to sign up for."
 msgstr "Жодного акаунта. Не треба ніде реєструватися."
 
-#: src/account/component/account-select-content/account-select-content.tsx
 #: src/app/transaction-account-filter.tsx
 msgid "No accounts found"
 msgstr "Рахунків не знайдено"
@@ -4926,14 +5038,6 @@ msgstr "На цьому пристрої не знайдено контакті�
 msgid "No contacts yet"
 msgstr "Поки немає контактів"
 
-#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
-msgid "No crypto found"
-msgstr "Криптовалют не знайдено"
-
-#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
-msgid "No currencies found"
-msgstr "Не знайдено жодної валюти"
-
 #: src/category/components/category-empty-state/category-empty-state.tsx
 msgid "No custom categories yet"
 msgstr "Власних категорій ще немає"
@@ -4958,7 +5062,7 @@ msgstr "Немає прихованих рахунків"
 msgid "No hidden accounts match “{search}”"
 msgstr "Немає прихованих рахунків за запитом «{search}»"
 
-#: src/app/icon-selector.tsx
+#: src/@generic/component/icon-selector-empty-state/icon-selector-empty-state.tsx
 msgid "No icons found"
 msgstr "Іконки не знайдено"
 
@@ -4969,10 +5073,6 @@ msgstr "Немає доходів"
 #: src/app/voice-review.tsx
 msgid "No items to save"
 msgstr "Немає елементів для збереження"
-
-#: src/app/language-selector.tsx
-msgid "No languages found"
-msgstr "Мов не знайдено"
 
 #: src/budget/components/budget-limit-changes-sheet/budget-limit-changes-sheet.tsx
 msgid "No limit changes yet"
@@ -5010,6 +5110,10 @@ msgstr "Чек не знайдено"
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
 msgid "No recurring payments detected"
 msgstr "Повторювані платежі не виявлено"
+
+#: src/@generic/component/selector-search-empty-state/selector-search-empty-state.tsx
+msgid "No results for “{query}”"
+msgstr "Немає результатів для «{query}»"
 
 #: src/rule/components/rule-empty-state/rule-empty-state.tsx
 msgid "No rules match “{search}”"
@@ -5148,6 +5252,10 @@ msgstr "Зараз"
 #: src/installment-plan/component/installment-count-picker/installment-count-picker.tsx
 msgid "Number of months"
 msgstr "Кількість місяців"
+
+#: src/app/icon-selector.tsx
+msgid "Objects"
+msgstr "Об’єкти"
 
 #: src/account/component/debt-account-card-summary/debt-account-card-summary.tsx
 msgid "of"
@@ -5418,6 +5526,10 @@ msgstr "Бюджет «Інше»: використано {threshold}%"
 #: src/budget/service/budget-alert-monitor.service.ts
 msgid "Other budget: limit reached"
 msgstr "Бюджет «Інше»: ліміт досягнуто"
+
+#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
+msgid "Other currencies"
+msgstr "Інші валюти"
 
 #: src/categorize-inbox/components/categorize-inbox-group-options/categorize-inbox-group-options.tsx
 msgid "Other options"
@@ -6118,6 +6230,10 @@ msgstr "Відновлення з копії замінює всі поточн�
 msgid "Restoring a backup replaces all current Budgie data. This backup is protected by a PIN, which becomes your app PIN. The app restarts afterwards. This can't be undone."
 msgstr "Відновлення з копії замінює всі поточні дані Budgie. Ця копія захищена PIN-кодом, який стане PIN-кодом застосунку. Після цього застосунок перезапуститься. Цю дію не можна скасувати."
 
+#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
+msgid "Results"
+msgstr "Результати"
+
 #: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
 msgid "Resume"
 msgstr "Продовжити"
@@ -6321,11 +6437,14 @@ msgstr "Запечатано. Face ID або відбиток пальця — �
 msgid "Sealed. Only your PIN opens this file."
 msgstr "Запечатано. Лише ваш PIN-код відкриває цей файл."
 
-#: src/app/account-selector.tsx
 #: src/app/transaction-account-filter.tsx
 #: src/categorize-inbox/components/categorize-inbox-transfer-screen/categorize-inbox-transfer-screen.tsx
 msgid "Search accounts..."
 msgstr "Пошук рахунків..."
+
+#: src/app/account-selector.tsx
+msgid "Search accounts…"
+msgstr "Пошук рахунків…"
 
 #: src/app/(tabs)/settings/archived.tsx
 msgid "Search archived accounts…"
@@ -6345,16 +6464,16 @@ msgid "Search categories…"
 msgstr "Пошук категорій…"
 
 #: src/app/contact-selector.tsx
-msgid "Search contacts..."
-msgstr "Шукати контакти..."
+msgid "Search contacts…"
+msgstr "Шукати контакти…"
 
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
-msgid "Search crypto..."
-msgstr "Пошук криптовалют..."
+msgid "Search crypto"
+msgstr "Пошук криптовалют"
 
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
-msgid "Search currencies..."
-msgstr "Пошук валют..."
+msgid "Search currencies"
+msgstr "Пошук валют"
 
 #: src/app/(tabs)/settings/categories.tsx
 msgid "Search custom categories…"
@@ -6369,16 +6488,12 @@ msgid "Search hidden accounts…"
 msgstr "Пошук прихованих рахунків…"
 
 #: src/app/icon-selector.tsx
-msgid "Search icons and emoji…"
-msgstr "Пошук іконок та емодзі…"
+msgid "Search icons"
+msgstr "Пошук іконок"
 
 #: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx
 msgid "Search keywords: {keywords}"
 msgstr "Ключові слова для пошуку: {keywords}"
-
-#: src/app/language-selector.tsx
-msgid "Search languages..."
-msgstr "Пошук мов..."
 
 #: src/rule/components/rules-list-page/rules-list-page.tsx
 msgid "Search rules"
@@ -6397,6 +6512,10 @@ msgstr "Пошук тегів…"
 #: src/@generic/component/selector-modal-search-header/selector-modal-search-header.tsx
 msgid "Search…"
 msgstr "Пошук…"
+
+#: src/@generic/component/section-index-rail/section-index-rail.tsx
+msgid "Section index"
+msgstr "Покажчик розділів"
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Security"
@@ -6462,6 +6581,7 @@ msgstr "Оберіть завантажений PDF-файл"
 msgid "Select the exported XLSX file"
 msgstr "Оберіть експортований XLSX-файл"
 
+#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 #: src/app/import-column-mapper.tsx
 msgid "Selected"
 msgstr "Вибрано"
@@ -6542,6 +6662,10 @@ msgstr "Налаштування"
 #: src/runway/component/runway-forecast-chart/runway-forecast-chart.tsx
 msgid "Shading shows how much your months usually vary."
 msgstr "Затінення показує, наскільки зазвичай різняться ваші місяці."
+
+#: src/app/icon-selector.tsx
+msgid "Shopping"
+msgstr "Покупки"
 
 #: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
 msgid "Shortcuts"
@@ -6636,6 +6760,10 @@ msgstr "Менші групи"
 #: src/ai/component/ai-settings-section/ai-settings-section.tsx
 msgid "Smart suggestions"
 msgstr "Розумні підказки"
+
+#: src/app/icon-selector.tsx
+msgid "Smileys & people"
+msgstr "Смайлики й люди"
 
 #: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
 msgid "Some issuers do not provide every Wallet trigger field. Edit the automation and check the variable bindings."
@@ -6821,6 +6949,10 @@ msgstr "Проведіть, щоб видалити цей ліміт катег
 msgid "Switch on to start syncing"
 msgstr "Увімкніть, щоб почати синхронізацію"
 
+#: src/app/icon-selector.tsx
+msgid "Symbols"
+msgstr "Символи"
+
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 #: src/sync/component/bank-integration-new-account-row/bank-integration-new-account-row.tsx
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
@@ -6916,6 +7048,7 @@ msgstr "Витрати з тегом також враховуються в ос
 #: src/@generic/component/analytics-segmented-control/analytics-segmented-control.tsx
 #: src/app/(tabs)/analytics.tsx
 #: src/app/(tabs)/settings/tags.tsx
+#: src/app/tags-selector.tsx
 #: src/settings/components/organize-settings-rows/organize-settings-rows.tsx
 #: src/transaction/components/statistics-filters-menu/statistics-filters-menu.tsx
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
@@ -7352,6 +7485,10 @@ msgstr "Зарано для прогнозу"
 msgid "Too many attempts. Try again in {time}"
 msgstr "Забагато спроб. Спробуйте ще раз через {time}"
 
+#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
+msgid "Top by market cap"
+msgstr "Топ за капіталізацією"
+
 #: src/account/component/account-selector-card-debt-total-subtitle/account-selector-card-debt-total-subtitle.tsx
 #: src/account/component/debt-account-balance/debt-account-balance.tsx
 #: src/account/component/debt-account-card/debt-account-card.tsx
@@ -7500,6 +7637,18 @@ msgstr "Переклад"
 msgid "Translations ready"
 msgstr "Переклади готові"
 
+#: src/app/icon-selector.tsx
+msgid "Transport"
+msgstr "Транспорт"
+
+#: src/app/icon-selector.tsx
+msgid "Travel"
+msgstr "Подорожі"
+
+#: src/app/icon-selector.tsx
+msgid "Travel & places"
+msgstr "Подорожі й місця"
+
 #: src/app/(tabs)/settings/apple-pay-capture.tsx
 msgid "Troubleshooting"
 msgstr "Усунення проблем"
@@ -7508,11 +7657,8 @@ msgstr "Усунення проблем"
 msgid "Try a different merchant, amount, or date."
 msgstr "Спробуйте іншого продавця, суму або дату."
 
-#: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
-#: src/account/component/account-select-content/account-select-content.tsx
+#: src/@generic/component/icon-selector-empty-state/icon-selector-empty-state.tsx
 #: src/app/contact-selector.tsx
-#: src/app/icon-selector.tsx
-#: src/app/language-selector.tsx
 #: src/app/rule-mcc-selector.tsx
 #: src/category/components/category-select-content/category-select-content.tsx
 msgid "Try a different search term"
@@ -7521,6 +7667,10 @@ msgstr "Спробуйте інший пошуковий запит"
 #: src/tag/components/tags-select-content/tags-select-content.tsx
 msgid "Try a different search term or create a new tag"
 msgstr "Спробуйте інший пошуковий запит або створіть новий тег"
+
+#: src/@generic/component/icon-selector-empty-state/icon-selector-empty-state.tsx
+msgid "Try a simpler word like “car” or “food”."
+msgstr "Спробуйте простіше слово, наприклад «авто» чи «їжа»."
 
 #: src/rule/components/rule-empty-state/rule-empty-state.tsx
 msgid "Try a title, category or tag name."
@@ -7923,6 +8073,10 @@ msgstr "У межах плану"
 msgid "Without a backup, lost data can't be recovered."
 msgstr "Без резервної копії втрачені дані не відновити."
 
+#: src/app/icon-selector.tsx
+msgid "Work"
+msgstr "Робота"
+
 #: src/ai/component/ai-download-eta/ai-download-eta.tsx
 msgid "Working out the time left…"
 msgstr "Обчислюємо, скільки залишилося…"
@@ -8130,3 +8284,8 @@ msgstr "Ваш файл транзакцій готовий до поширен�
 #: src/sync/service/background-sync-session.service.ts
 msgid "Your transactions keep importing in the background"
 msgstr "Ваші транзакції й далі імпортуються у фоновому режимі"
+
+#: src/i18n/constant/languages.constant.ts
+msgctxt "endonym"
+msgid "Українська"
+msgstr "Українська"

@@ -51,6 +51,7 @@ const DETENT_90 = 0.9;
 const DETENT_70 = 0.7;
 const DETENT_40 = 0.4;
 const DETENT_55 = 0.55;
+const DETENT_62 = 0.62;
 const DETENT_85 = 0.85;
 const DETENT_82 = 0.82;
 const DETENT_96 = 0.96;
@@ -70,6 +71,7 @@ const PIN_OPTIONS: NativeStackNavigationOptions = { ...MODAL_OPTIONS, gestureEna
 const LOCK_SCREEN_OPTIONS: NativeStackNavigationOptions = { presentation: 'fullScreenModal', animation: 'none' };
 
 const SELECTOR_OPTIONS = formSheetOptions([DETENT_40, DETENT_70], 0);
+const ACCOUNT_SELECTOR_OPTIONS = formSheetOptions([DETENT_55, DETENT_90], 0);
 
 const DESTINATION_OPTIONS = formSheetOptions([DETENT_90]);
 
@@ -118,7 +120,11 @@ const handleAppStateChange = (isActive: boolean): void => {
 // eslint-disable-next-line max-lines-per-function -- Layout component requires many lines
 export const RootLayoutContent = () => {
     const databaseMigrationStatus = useDatabaseMigration();
-    const [sheetSurface, groupedSheetSurface] = useCSSVariable(['--color-sheet-surface', '--color-grouped-surface']);
+    const [sheetSurface, groupedSheetSurface, sheetGroupedSurface] = useCSSVariable([
+        '--color-sheet-surface',
+        '--color-grouped-surface',
+        '--color-sheet-grouped-surface'
+    ]);
     const sheetOptions = fitToContentsSheetOptions(sheetSurface);
 
     useAppInitialization(databaseMigrationStatus === DatabaseMigrationStatusEnum.MIGRATED);
@@ -173,9 +179,18 @@ export const RootLayoutContent = () => {
                                                                     <Stack.Screen name="(main)/analytics/transactions" />
                                                                     <Stack.Screen name="(main)/categorize" />
                                                                     <Stack.Screen name="category-selector" options={SELECTOR_OPTIONS} />
-                                                                    <Stack.Screen name="account-selector" options={SELECTOR_OPTIONS} />
-                                                                    <Stack.Screen name="currency-selector" options={SELECTOR_OPTIONS} />
-                                                                    <Stack.Screen name="language-selector" options={SELECTOR_OPTIONS} />
+                                                                    <Stack.Screen
+                                                                        name="account-selector"
+                                                                        options={ACCOUNT_SELECTOR_OPTIONS}
+                                                                    />
+                                                                    <Stack.Screen
+                                                                        name="currency-selector"
+                                                                        options={formSheetOptions([DETENT_62, DETENT_90], 0)}
+                                                                    />
+                                                                    <Stack.Screen
+                                                                        name="language-selector"
+                                                                        options={fitToContentsSheetOptions(sheetGroupedSurface)}
+                                                                    />
                                                                     <Stack.Screen name="resync-window-picker" options={SELECTOR_OPTIONS} />
                                                                     <Stack.Screen name="contact-selector" options={SELECTOR_OPTIONS} />
                                                                     <Stack.Screen name="tags-selector" options={SELECTOR_OPTIONS} />

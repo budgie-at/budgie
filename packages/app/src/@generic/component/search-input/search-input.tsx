@@ -70,11 +70,13 @@ export const SearchInput = (props: Props) => {
                         <Pressable
                             accessibilityLabel={t`Tap to clear`}
                             accessibilityRole="button"
-                            className="h-[32px] w-[32px] items-center justify-center rounded-full bg-primary/10"
+                            className="h-[32px] w-[32px] items-center justify-center"
                             hitSlop={8}
                             onPress={handleClear}
                         >
-                            <Icon icon={UserIconNameEnum.X} size={16} className="text-primary" />
+                            <View className="h-[18px] w-[18px] items-center justify-center rounded-full bg-secondary-foreground/70">
+                                <Icon icon={UserIconNameEnum.X} size={11} className="text-primary-reverse" />
+                            </View>
                         </Pressable>
                     </Animated.View>
                 ) : null}

@@ -21,15 +21,12 @@ appId: ${APP_ID}
       file: subflows/navigation/open-settings-card.flow.yaml
       env:
           CARD_ID: '^SettingsPage[.]LanguageCard[.].+$'
-          DESTINATION_ID: 'LanguageSelector.SearchInput'
-- tapOn:
-      id: 'LanguageSelector.SearchInput'
-- inputText: 'de'
+          DESTINATION_ID: 'LanguageSelector.Option.de'
 - tapOn:
       id: 'LanguageSelector.Option.de'
 - extendedWaitUntil:
       notVisible:
-          id: 'LanguageSelector.SearchInput'
+          id: 'LanguageSelector.Option.de'
       timeout: 3000
 - extendedWaitUntil:
       visible:
@@ -40,15 +37,12 @@ appId: ${APP_ID}
       file: subflows/navigation/open-settings-card.flow.yaml
       env:
           CARD_ID: '^SettingsPage[.]LanguageCard[.].+$'
-          DESTINATION_ID: 'LanguageSelector.SearchInput'
-- tapOn:
-      id: 'LanguageSelector.SearchInput'
-- inputText: 'en'
+          DESTINATION_ID: 'LanguageSelector.Option.en'
 - tapOn:
       id: 'LanguageSelector.Option.en'
 - extendedWaitUntil:
       notVisible:
-          id: 'LanguageSelector.SearchInput'
+          id: 'LanguageSelector.Option.en'
       timeout: 3000
 - extendedWaitUntil:
       visible:

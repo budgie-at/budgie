@@ -1,11 +1,11 @@
 import { useLingui } from '@lingui/react/macro';
 import { useEffect, useReducer, useRef, useState } from 'react';
-import { View } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { SelectorModalDescription } from '../@generic/component/selector-modal-description/selector-modal-description';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
+import { SheetSurface } from '../@generic/component/sheet-surface/sheet-surface';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { prepareSelectorGridData } from '../@generic/utils/prepare-selector-grid-data.util';
 import { TagsSelectContent } from '../tag/components/tags-select-content/tags-select-content';
@@ -56,7 +56,10 @@ export default function TagsSelectorModal() {
 
     const hasResolvedRef = useRef(false);
 
-    const data = prepareSelectorGridData(tags, excludeTagIds, selected);
+    const data = prepareSelectorGridData(tags, excludeTagIds);
+    const query = search.trim();
+    const primaryHint = enablePrimarySelection && isNotEmptyArray(selected) ? t`★ Primary · hold another tag to change it` : null;
+    const resultCount = isLoading ? null : data.filter(item => !item.isEmpty).length;
     const dirty = isSelectionDirty(selected, initialTagIds) || primaryTagId !== initialPrimaryTagId;
 
     const resolveSelection = (tagIds: number[]) => {
@@ -75,7 +78,7 @@ export default function TagsSelectorModal() {
     const handlePrimarySelect = (tagId: number) => void dispatch({ type: TagsSelectorActionTypeEnum.PRIMARY_SELECTED, tagId });
 
     const handleCreatePress = () => {
-        openTagForm({ defaultTitle: search }, result => {
+        openTagForm({ defaultTitle: query }, result => {
             if (isDefined(result) && singleSelect) {
                 resolveSelection([result.tag.id]);
             } else if (isDefined(result)) {
@@ -96,10 +99,11 @@ export default function TagsSelectorModal() {
     );
 
     return (
-        <View className="flex-1 bg-primary-reverse" collapsable={false}>
+        <SheetSurface>
             <SelectorModalSearchHeader
                 search={search}
                 onSearchChange={setSearch}
+                title={t`Tags`}
                 placeholder={t`Search tags…`}
                 createLabel={t`Create tag`}
                 onCreate={handleCreatePress}
@@ -107,7 +111,14 @@ export default function TagsSelectorModal() {
                 testID={TagsSelectorModalSelector.Input}
             />
 
-            <SelectorModalDescription title={title} description={description}>
+            <SelectorModalDescription
+                title={title}
+                description={description}
+                query={query}
+                resultCount={resultCount}
+                noResultsHint={t`Check the spelling or create it as a new tag.`}
+                onCreate={handleCreatePress}
+            >
                 {topOffset => (
                     <TagsSelectContent
                         topOffset={topOffset}
@@ -122,8 +133,13 @@ export default function TagsSelectorModal() {
             </SelectorModalDescription>
 
             {dirty && !singleSelect ? (
-                <TagsSelectorDoneButton count={selected.length} onPress={handleDone} testID={TagsSelectorModalSelector.DoneButton} />
+                <TagsSelectorDoneButton
+                    count={selected.length}
+                    onPress={handleDone}
+                    hint={primaryHint}
+                    testID={TagsSelectorModalSelector.DoneButton}
+                />
             ) : null}
-        </View>
+        </SheetSurface>
     );
 }

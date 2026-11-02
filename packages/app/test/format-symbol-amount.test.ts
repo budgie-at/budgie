@@ -13,7 +13,7 @@ const format = (locale: string, value: number, symbol: string, fractionDigits: n
 
 describe('formatSymbolAmount', () => {
     it('places the minus before the symbol for en', () => {
-        expect(format('en-US', -642.8, '$', 2)).toBe('-$642.80');
+        expect(format('en-US', -642.8, '$', 2)).toBe('\u2212$642.80');
     });
 
     it('keeps positive amounts unchanged', () => {
@@ -22,18 +22,18 @@ describe('formatSymbolAmount', () => {
     });
 
     it('places the minus before the symbol for uk', () => {
-        expect(format('uk-UA', -9644, '₴', 0)).toBe(`-₴${new Intl.NumberFormat('uk-UA').format(9644)}`);
+        expect(format('uk-UA', -9644, '₴', 0)).toBe(`\u2212₴${new Intl.NumberFormat('uk-UA').format(9644)}`);
     });
 
     it('uses the locale minus sign and separators for de', () => {
-        expect(format('de-DE', -642.8, '€', 2)).toBe('-€642,80');
+        expect(format('de-DE', -642.8, '€', 2)).toBe('\u2212€642,80');
     });
 
     it('handles compact notation', () => {
-        expect(format('en-US', -253000, '₴', 0, 'compact')).toBe('-₴253K');
+        expect(format('en-US', -253000, '₴', 0, 'compact')).toBe('\u2212₴253K');
     });
 
     it('supports crypto codes and trailing-space symbols', () => {
-        expect(format('en-US', -1.5, 'BTC ', 1)).toBe('-BTC 1.5');
+        expect(format('en-US', -1.5, 'BTC ', 1)).toBe('\u2212BTC 1.5');
     });
 });

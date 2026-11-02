@@ -1,11 +1,11 @@
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
-import { View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { SelectorModalDescription } from '../@generic/component/selector-modal-description/selector-modal-description';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
+import { SheetSurface } from '../@generic/component/sheet-surface/sheet-surface';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { prepareSelectorGridData } from '../@generic/utils/prepare-selector-grid-data.util';
 import { CategorySelectContent } from '../category/components/category-select-content/category-select-content';
@@ -26,10 +26,12 @@ export default function CategorySelectorModal() {
 
     const { variant = 'primary', initialCategoryId = null, title, description, excludeCategoryIds = [] } = currentParams ?? {};
     const selectedCategoryIds = isDefined(initialCategoryId) ? [initialCategoryId] : [];
-    const data = prepareSelectorGridData(categories, excludeCategoryIds, selectedCategoryIds);
+    const data = prepareSelectorGridData(categories, excludeCategoryIds);
+    const query = search.trim();
+    const resultCount = isLoading ? null : data.filter(item => !item.isEmpty).length;
 
     const handleCreatePress = () => {
-        openCategoryForm({ defaultTitle: search }, result => {
+        openCategoryForm({ defaultTitle: query }, result => {
             if (isDefined(result)) {
                 resolveCategorySelector(result.category.id);
             }
@@ -37,10 +39,11 @@ export default function CategorySelectorModal() {
     };
 
     return (
-        <View className="flex-1 bg-primary-reverse" collapsable={false}>
+        <SheetSurface>
             <SelectorModalSearchHeader
                 search={search}
                 onSearchChange={setSearch}
+                title={t`Category`}
                 placeholder={t`Search categories…`}
                 createLabel={t`Create category`}
                 onCreate={handleCreatePress}
@@ -48,7 +51,14 @@ export default function CategorySelectorModal() {
                 testID={CategorySelectorModalSelector.Input}
             />
 
-            <SelectorModalDescription title={title} description={description}>
+            <SelectorModalDescription
+                title={title}
+                description={description}
+                query={query}
+                resultCount={resultCount}
+                noResultsHint={t`Check the spelling or create it as a new category.`}
+                onCreate={handleCreatePress}
+            >
                 {topOffset => (
                     <CategorySelectContent
                         topOffset={topOffset}
@@ -61,6 +71,6 @@ export default function CategorySelectorModal() {
                     />
                 )}
             </SelectorModalDescription>
-        </View>
+        </SheetSurface>
     );
 }

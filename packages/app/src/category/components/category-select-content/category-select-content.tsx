@@ -1,4 +1,4 @@
-import { CategoryEntityInterface } from '@budgie/contracts';
+import { CategoryEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
@@ -19,7 +19,7 @@ interface Props {
     readonly cardTestID?: (title: string) => string;
 }
 
-const CARD_HEIGHT = 82;
+const CARD_HEIGHT = 92;
 
 const keyExtractor = (item: FlatListDataItem<CategoryEntityInterface>, index: number) =>
     item.isEmpty ? `empty-${index}` : item.id.toString();
@@ -44,8 +44,8 @@ export const CategorySelectContent = (props: Props) => {
         );
 
     const listEmptyComponent = (
-        <View className="flex-1 justify-center">
-            <EmptyState title={t`No categories found`} description={t`Try a different search term`} />
+        <View className="pt-7xl">
+            <EmptyState icon={UserIconNameEnum.Search} title={t`No categories found`} description={t`Try a different search term`} />
         </View>
     );
 

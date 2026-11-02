@@ -14,8 +14,10 @@ interface Props {
 export const SelectorSearchRow = ({ search, onSearchChange, placeholder, children, testID }: Props) => (
     <View className="flex-row items-center gap-x-md">
         <SearchInput
-            containerClassName="h-[44px] flex-1"
+            containerClassName="h-[40px] flex-1 rounded-3xl border-0 bg-surface-fill px-md"
+            inputClassName="-my-[2px] ml-md h-[44px] text-[17px]"
             placeholder={placeholder}
+            returnKeyType="search"
             value={search}
             onChangeText={onSearchChange}
             testID={testID}

@@ -21,7 +21,7 @@ interface Props<Item> {
 
 const NUM_COLUMNS = 3;
 const ROW_GAP = 8;
-const COLUMN_GAP = 10;
+const COLUMN_GAP = 8;
 const COLUMN_WRAPPER_STYLE = { rowGap: ROW_GAP, columnGap: COLUMN_GAP };
 
 export const SelectorGridContent = <Item,>(props: Props<Item>) => {
@@ -35,7 +35,7 @@ export const SelectorGridContent = <Item,>(props: Props<Item>) => {
         additionalBottomPadding = 0,
         topOffset
     } = props;
-    const contentContainerStyle = useFormsheetListContentStyle(additionalBottomPadding, topOffset);
+    const contentContainerStyle = useFormsheetListContentStyle(additionalBottomPadding, topOffset, COLUMN_GAP);
 
     const estimatedItemSize = itemHeight + ROW_GAP;
 
@@ -44,7 +44,7 @@ export const SelectorGridContent = <Item,>(props: Props<Item>) => {
     }
 
     return (
-        <View className="absolute inset-0 bg-primary-reverse">
+        <View className="absolute inset-0">
             <BudgieLegendList
                 style={LEGEND_LIST_STYLE}
                 data={data}

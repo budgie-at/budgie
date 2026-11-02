@@ -6,8 +6,10 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import { BudgieLegendList } from '../../../@generic/component/budgie-legend-list/budgie-legend-list';
 import { EmptyState } from '../../../@generic/component/empty-state/empty-state';
-import { ListItemSeparator } from '../../../@generic/component/list-item-separator/list-item-separator';
+import { GroupedListItem } from '../../../@generic/component/grouped-list-item/grouped-list-item';
+import { SelectorSearchEmptyState } from '../../../@generic/component/selector-search-empty-state/selector-search-empty-state';
 import { LEGEND_LIST_STYLE } from '../../../@generic/constant/legend-list.constant';
+import { SELECTOR_TITLED_HEADER_OFFSET } from '../../../@generic/constant/selector-header-offset.constant';
 import { useFormsheetListContentStyle } from '../../../@generic/hook/use-formsheet-list-content-style/use-formsheet-list-content-style.hook';
 import { AccountSelectorCard } from '../account-selector-card/account-selector-card';
 import { AccountSelectorCreateActionCard } from '../account-selector-create-action-card/account-selector-create-action-card';
@@ -31,33 +33,37 @@ const keyExtractor = (item: AccountWithInstrumentEntityInterface) => item.id.toS
 export const AccountSelectContent = (props: Props) => {
     const { data, initialAccountId, search, onSelect, emptyStateDescription, showDebtTotal, createAction } = props;
     const { t } = useLingui();
-    const contentContainerStyle = useFormsheetListContentStyle();
+    const contentContainerStyle = useFormsheetListContentStyle(0, SELECTOR_TITLED_HEADER_OFFSET);
 
-    const renderItem = ({ item }: { item: AccountWithInstrumentEntityInterface }) => (
-        <AccountSelectorCard
-            isSelected={item.id === initialAccountId}
-            instrument={item.instrument}
-            isActive={item.isActive}
-            onSelect={onSelect}
-            title={item.title}
-            icon={item.icon}
-            type={item.type}
-            id={item.id}
-            debtType={item.debtType}
-            showDebtTotal={showDebtTotal}
-            targetBalance={item.targetBalance}
-        />
+    const renderItem = ({ item, index }: { item: AccountWithInstrumentEntityInterface; index: number }) => (
+        <GroupedListItem isFirst={index === 0} isLast={index === data.length - 1}>
+            <AccountSelectorCard
+                isSelected={item.id === initialAccountId}
+                instrument={item.instrument}
+                isActive={item.isActive}
+                onSelect={onSelect}
+                title={item.title}
+                icon={item.icon}
+                type={item.type}
+                id={item.id}
+                debtType={item.debtType}
+                showDebtTotal={showDebtTotal}
+                targetBalance={item.targetBalance}
+            />
+        </GroupedListItem>
     );
 
-    const emptyIcon = isNotEmptyString(search) ? UserIconNameEnum.Search : UserIconNameEnum.Wallet;
-    const emptyTitle = isNotEmptyString(search) ? t`No accounts found` : t`No accounts yet`;
-    const emptyDescription = isNotEmptyString(search)
-        ? t`Try a different search term`
-        : (emptyStateDescription ?? t`Create one to get started.`);
-
-    const listEmptyComponent = (
+    const listEmptyComponent = isNotEmptyString(search) ? (
+        <View className="pt-7xl">
+            <SelectorSearchEmptyState query={search.trim()} hint={t`Check the spelling or try another account name.`} />
+        </View>
+    ) : (
         <View className="flex-1 justify-center">
-            <EmptyState icon={emptyIcon} title={emptyTitle} description={emptyDescription} />
+            <EmptyState
+                icon={UserIconNameEnum.Wallet}
+                title={t`No accounts yet`}
+                description={emptyStateDescription ?? t`Create one to get started.`}
+            />
         </View>
     );
     const listHeaderComponent =
@@ -66,7 +72,7 @@ export const AccountSelectContent = (props: Props) => {
         );
 
     return (
-        <View className="absolute inset-0 bg-primary-reverse">
+        <View className="absolute inset-0">
             <BudgieLegendList
                 style={LEGEND_LIST_STYLE}
                 data={data}
@@ -76,7 +82,6 @@ export const AccountSelectContent = (props: Props) => {
                 contentContainerStyle={contentContainerStyle}
                 ListHeaderComponent={listHeaderComponent}
                 ListEmptyComponent={listEmptyComponent}
-                ItemSeparatorComponent={ListItemSeparator}
             />
         </View>
     );
