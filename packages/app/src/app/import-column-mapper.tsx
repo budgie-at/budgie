@@ -5,10 +5,10 @@ import { ScrollView, Text, View } from 'react-native';
 import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import { FormsheetHeader } from '../@generic/component/formsheet-header/formsheet-header';
+import { GroupedListCheckRow } from '../@generic/component/grouped-list-check-row/grouped-list-check-row';
 import { GroupedListRow } from '../@generic/component/grouped-list-row/grouped-list-row';
 import { GroupedListSection } from '../@generic/component/grouped-list-section/grouped-list-section';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
-import { ImportColumnMapperOption } from '../import/components/import-column-mapper-option/import-column-mapper-option';
 import { useImportColumnMapperModal, useImportColumnMapperModalParams } from '../import/context/import-column-mapper-modal.context';
 
 import { ImportColumnMapperModalSelector } from './import-column-mapper.selector';
@@ -55,11 +55,11 @@ export default function ImportColumnMapperModal() {
                         />
                     ) : null}
                     {availableHeaders.map(header => (
-                        <ImportColumnMapperOption
+                        <GroupedListCheckRow
                             key={header}
-                            header={header}
+                            title={header}
                             isSelected={header === currentValue}
-                            onSelect={handleSelect(header)}
+                            onPress={handleSelect(header)}
                             testID={ImportColumnMapperModalSelector.Header(header)}
                         />
                     ))}

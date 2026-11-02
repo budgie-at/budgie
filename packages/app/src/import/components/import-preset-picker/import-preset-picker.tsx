@@ -1,8 +1,8 @@
 import { ImportPresetEnum } from '@budgie/import-export';
 import { useLingui } from '@lingui/react/macro';
 
+import { GroupedListCheckRow } from '../../../@generic/component/grouped-list-check-row/grouped-list-check-row';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
-import { ImportPresetChip } from '../import-preset-chip/import-preset-chip';
 
 import { ImportPresetPickerSelector } from './import-preset-picker.selector';
 
@@ -20,23 +20,23 @@ export const ImportPresetPicker = ({ selectedPreset, onPresetSelect }: Props) =>
 
     return (
         <GroupedListSection title={t`Format`} footer={t`Pick the app that exported this file, or match columns yourself.`}>
-            <ImportPresetChip
+            <GroupedListCheckRow
                 testID={ImportPresetPickerSelector.Budgie}
                 title={t`Budgie`}
                 isSelected={selectedPreset === ImportPresetEnum.Budgie}
-                onSelect={handleBudgieSelect}
+                onPress={handleBudgieSelect}
             />
-            <ImportPresetChip
+            <GroupedListCheckRow
                 testID={ImportPresetPickerSelector.SmartBudget}
                 title={t`SmartBudget`}
                 isSelected={selectedPreset === ImportPresetEnum.SmartBudget}
-                onSelect={handleSmartBudgetSelect}
+                onPress={handleSmartBudgetSelect}
             />
-            <ImportPresetChip
+            <GroupedListCheckRow
                 testID={ImportPresetPickerSelector.FinEye}
                 title={t`FinEye`}
                 isSelected={selectedPreset === ImportPresetEnum.FinEye}
-                onSelect={handleFinEyeSelect}
+                onPress={handleFinEyeSelect}
             />
         </GroupedListSection>
     );

@@ -57,6 +57,11 @@ const IMPORT_COLUMN_FIELDS = [
     readonly isRequired: boolean;
 }[];
 
+const IMPORT_COLUMN_SECTIONS = [
+    { title: msg`Required`, isRequired: true },
+    { title: msg`Optional`, isRequired: false }
+] as const;
+
 // eslint-disable-next-line max-lines-per-function, max-statements
 export default function ImportScreen() {
     const { fileUri } = useLocalSearchParams<{ fileUri?: string }>();
@@ -176,32 +181,21 @@ export default function ImportScreen() {
             }
         >
             <ImportPresetPicker selectedPreset={selectedPreset} onPresetSelect={handlePresetSelect} />
-            <GroupedListSection title={t`Required`}>
-                {IMPORT_COLUMN_FIELDS.filter(field => field.isRequired).map(({ name, label, isRequired }) => (
-                    <ImportColumnMapField
-                        key={name}
-                        control={control}
-                        name={name}
-                        label={t(label)}
-                        headers={headers}
-                        selectedHeaders={selectedHeaders}
-                        isRequired={isRequired}
-                    />
-                ))}
-            </GroupedListSection>
-            <GroupedListSection title={t`Optional`}>
-                {IMPORT_COLUMN_FIELDS.filter(field => !field.isRequired).map(({ name, label, isRequired }) => (
-                    <ImportColumnMapField
-                        key={name}
-                        control={control}
-                        name={name}
-                        label={t(label)}
-                        headers={headers}
-                        selectedHeaders={selectedHeaders}
-                        isRequired={isRequired}
-                    />
-                ))}
-            </GroupedListSection>
+            {IMPORT_COLUMN_SECTIONS.map(({ title, isRequired }) => (
+                <GroupedListSection key={String(isRequired)} title={t(title)}>
+                    {IMPORT_COLUMN_FIELDS.filter(field => field.isRequired === isRequired).map(({ name, label }) => (
+                        <ImportColumnMapField
+                            key={name}
+                            control={control}
+                            name={name}
+                            label={t(label)}
+                            headers={headers}
+                            selectedHeaders={selectedHeaders}
+                            isRequired={isRequired}
+                        />
+                    ))}
+                </GroupedListSection>
+            ))}
             <MenuSpacer />
         </CollapsibleChromePage>
     );
