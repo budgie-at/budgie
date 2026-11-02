@@ -9,7 +9,6 @@ import {
 } from '@budgie/import-export';
 import { useAtomSubscribe, useAtomValue } from '@effect/atom-react/Hooks';
 import { standardSchemaResolver } from '@hookform/resolvers/standard-schema';
-import { MessageDescriptor } from '@lingui/core';
 import { msg, plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import * as Cause from 'effect/Cause';
@@ -54,11 +53,7 @@ const IMPORT_COLUMN_FIELDS = [
     { name: 'fromAmount', label: msg`From amount`, isRequired: false },
     { name: 'comment', label: msg`Comment`, isRequired: false },
     { name: 'mcc', label: msg`MCC`, isRequired: false }
-] as const satisfies readonly {
-    readonly name: keyof ImportColumnMapFormValues;
-    readonly label: MessageDescriptor;
-    readonly isRequired: boolean;
-}[];
+] as const;
 
 const IMPORT_COLUMN_SECTIONS = [
     { title: msg`Required`, isRequired: true },
@@ -78,11 +73,18 @@ export default function ImportScreen() {
     const { isLoading: isImporting, run } = useSingleFlight();
     const isLoading = isReadingFile || isImporting;
     const processedFileUri = useRef<string | null>(null);
-    const [detectedPreset, setDetectedPreset] = useState<ImportPresetEnum | undefined>();
-    const [sampleMatchedColumns, setSampleMatchedColumns] = useState<Partial<ImportColumnMapFormValues>>({});
     const [selectedPreset, setSelectedPreset] = useState<ImportPresetEnum | undefined>();
 
     const headersSet = new Set(headers);
+    const detectedPreset = detectImportPreset(headers) ?? void 0;
+    const matchedByName = matchImportColumns(headers);
+    const matchedColumns = matchImportColumns(headers, samples);
+    const sampleMatchedColumns = Object.fromEntries(
+        IMPORT_COLUMN_FIELDS.filter(
+            ({ name }) =>
+                !isNotEmptyString(detectedPreset) && isNotEmptyString(matchedColumns[name]) && !isNotEmptyString(matchedByName[name])
+        ).map(({ name }) => [name, matchedColumns[name]])
+    );
 
     const schemaWithHeaders = ImportColumnMapSchema.check(
         Schema.makeFilter(data =>
@@ -97,19 +99,7 @@ export default function ImportScreen() {
 
     const { control, handleSubmit, reset } = useForm<ImportColumnMapFormValues>({
         resolver: standardSchemaResolver(Schema.toStandardSchemaV1(schemaWithHeaders)),
-        defaultValues: {
-            toAccount: '',
-            category: '',
-            operatedAt: '',
-            toAmount: '',
-            toCurrency: '',
-            externalId: '',
-            fromAccount: '',
-            fromCurrency: '',
-            fromAmount: '',
-            comment: '',
-            mcc: ''
-        },
+        defaultValues: matchImportColumns([]),
         mode: 'onSubmit'
     });
 
@@ -142,23 +132,12 @@ export default function ImportScreen() {
                 processedFileUri.current = fileUri;
                 const detectedPreset = detectImportPreset(result.value.headers) ?? void 0;
 
-                setDetectedPreset(detectedPreset);
                 setSelectedPreset(detectedPreset);
-                setSampleMatchedColumns({});
 
                 if (isNotEmptyString(detectedPreset)) {
                     reset(IMPORT_PRESETS[detectedPreset]);
                 } else {
-                    const matchedByName = matchImportColumns(result.value.headers);
-                    const matchedColumns = matchImportColumns(result.value.headers, result.value.samples);
-                    setSampleMatchedColumns(
-                        Object.fromEntries(
-                            IMPORT_COLUMN_FIELDS.filter(
-                                ({ name }) => isNotEmptyString(matchedColumns[name]) && !isNotEmptyString(matchedByName[name])
-                            ).map(({ name }) => [name, matchedColumns[name]])
-                        )
-                    );
-                    reset(matchedColumns);
+                    reset(matchImportColumns(result.value.headers, result.value.samples));
                 }
             }
 
@@ -180,7 +159,7 @@ export default function ImportScreen() {
     const requiredFooter = getImportRequiredFooter(unmappedRequiredCount, t);
     const missingFieldLabels = missingRequiredFields.map(({ label }) => t(label)).join(', ');
     const accessibilityHint = isPositiveNumber(unmappedRequiredCount) ? t`Choose columns for ${missingFieldLabels}` : '';
-    const matchDescription = getImportMatchDescription(matchImportColumns(headers), sampleMatchedColumns, t);
+    const matchDescription = getImportMatchDescription(matchedByName, sampleMatchedColumns, t);
     const buttonContent = t({ message: plural(rowCount, { one: 'Import # transaction', other: 'Import # transactions' }) });
 
     return (
