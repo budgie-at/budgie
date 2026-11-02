@@ -1767,6 +1767,10 @@ msgstr "Geliehen"
 msgid "Borrowed debt account expected"
 msgstr "Geliehenes Schuldkonto erwartet"
 
+#: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
+msgid "Browse icons"
+msgstr ""
+
 #: src/app/(tabs)/settings/index.tsx
 #: src/budget/hooks/use-budget-form.hook.ts
 #: src/widget/service/widget-snapshot-builder.service.ts
@@ -2191,8 +2195,8 @@ msgid "Choose and confirm a PIN"
 msgstr "PIN wählen und bestätigen"
 
 #: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
-msgid "Choose another icon"
-msgstr ""
+#~ msgid "Choose another icon"
+#~ msgstr ""
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Choose dates to sync again"

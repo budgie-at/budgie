@@ -79,7 +79,7 @@ export const CategoryIconFixRow = ({ category, footer }: Props) => {
             </View>
             <GroupedListRow
                 testID={CategoryIconFixRowSelector.ChooseAnother(category.title)}
-                title={t`Choose another icon`}
+                title={t`Browse icons`}
                 onPress={handleOpenIconSelector}
             />
         </GroupedListSection>

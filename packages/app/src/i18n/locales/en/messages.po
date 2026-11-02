@@ -1768,6 +1768,10 @@ msgstr "Borrowed"
 msgid "Borrowed debt account expected"
 msgstr "Borrowed debt account expected"
 
+#: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
+msgid "Browse icons"
+msgstr "Browse icons"
+
 #: src/app/(tabs)/settings/index.tsx
 #: src/budget/hooks/use-budget-form.hook.ts
 #: src/widget/service/widget-snapshot-builder.service.ts
@@ -2192,8 +2196,8 @@ msgid "Choose and confirm a PIN"
 msgstr "Choose and confirm a PIN"
 
 #: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
-msgid "Choose another icon"
-msgstr "Choose another icon"
+#~ msgid "Choose another icon"
+#~ msgstr "Choose another icon"
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Choose dates to sync again"

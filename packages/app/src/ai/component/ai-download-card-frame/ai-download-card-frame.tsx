@@ -23,7 +23,7 @@ export const AiDownloadCardFrame = ({ status, testID, children }: PropsWithChild
     const stateValue = status === AiModelDownloadStatusEnum.READY ? t`Ready` : value;
 
     return (
-        <View testID={testID} className="min-h-[220px]">
+        <View testID={testID}>
             <GroupedListRow
                 left={<GroupedListIcon icon={icon} />}
                 title={t(label)}

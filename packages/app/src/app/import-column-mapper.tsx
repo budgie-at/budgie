@@ -43,8 +43,8 @@ export default function ImportColumnMapperModal() {
 
     return (
         <View className="flex-1 bg-secondary-background">
-            <FormsheetHeader size="sm" title={fieldLabel} description={description} />
             <ScrollView contentContainerClassName="px-5xl pb-5xl" showsVerticalScrollIndicator={false}>
+                <FormsheetHeader size="sm" title={fieldLabel} description={description} />
                 <GroupedListSection>
                     {canClear ? (
                         <GroupedListRow
