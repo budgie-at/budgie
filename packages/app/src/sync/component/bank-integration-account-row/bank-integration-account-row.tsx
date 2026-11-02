@@ -1,4 +1,4 @@
-import { AccountAssociationEnum, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
+import { AccountAssociationEnum, AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { SyncProviderRegistryService } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -7,6 +7,7 @@ import { Text, View } from 'react-native';
 import { isNotEmptyString } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { TONAL_DISC_BACKGROUND } from '../../../@generic/constant/tonal-disc-background.constant';
@@ -24,7 +25,6 @@ import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/ba
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useFormatInstrumentAmount } from '../../../i18n/hook/use-format-instrument-amount.hook';
 import { useBankIntegrationAccountRowState } from '../../hook/use-bank-integration-account-row-state.hook';
-import { BankIntegrationAccountMenuIcon } from '../bank-integration-account-menu-icon/bank-integration-account-menu-icon';
 import { BankIntegrationAccountMenu } from '../bank-integration-account-menu/bank-integration-account-menu';
 
 interface Props {
@@ -100,7 +100,7 @@ export const BankIntegrationAccountRow = ({ account }: Props) => {
             </View>
             <View className="flex-row items-center gap-x-[12px]">
                 <BankIntegrationAccountMenu accountId={account.id} title={account.title} rowTestID={rowTestID}>
-                    <BankIntegrationAccountMenuIcon />
+                    <Icon icon={UserIconNameEnum.Ellipsis} size={20} className="text-secondary-foreground" />
                 </BankIntegrationAccountMenu>
                 {toggle}
             </View>
