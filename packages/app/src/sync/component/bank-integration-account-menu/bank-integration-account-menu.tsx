@@ -59,7 +59,7 @@ export const BankIntegrationAccountMenu = ({ accountId, rowTestID, title, childr
     return (
         <ActionsMenu
             trigger={children}
-            accessibilityLabel={t`Actions for ${title}`}
+            accessibilityLabel={t`Options for ${title}`}
             isDisabled={isBusy}
             triggerClassName="items-center justify-center h-[44px] w-[28px]"
             hitSlop={8}

@@ -11,6 +11,7 @@ import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/ba
 import { useBankIntegration } from '../../context/bank-integration.context';
 import { BankIntegrationAccountRowSkeleton } from '../bank-integration-account-row-skeleton/bank-integration-account-row-skeleton';
 import { BankIntegrationAccountRow } from '../bank-integration-account-row/bank-integration-account-row';
+import { BankIntegrationAccountsFooter } from '../bank-integration-accounts-footer/bank-integration-accounts-footer';
 import { BankIntegrationAddDeposit } from '../bank-integration-add-deposit/bank-integration-add-deposit';
 import { BankIntegrationEmptyAccounts } from '../bank-integration-empty-accounts/bank-integration-empty-accounts';
 import { BankIntegrationNewAccounts } from '../bank-integration-new-accounts/bank-integration-new-accounts';
@@ -19,11 +20,7 @@ export const BankIntegrationAccountList = () => {
     const { t } = useLingui();
     const { integration, capabilities } = useBankIntegration();
     const { accounts, error } = useGetAccountsByIntegrationIdQuery(integration.id);
-    const accountsFooter = capabilities.supportsFileImport
-        ? t`Switched-off accounts are skipped when you import a statement.`
-        : t`Switched-off accounts stop syncing. Their history stays.`;
-    const footer =
-        integration.provider === ExternalSourceEnum.BINANCE ? t`Switched-off assets stop syncing. Their history stays.` : accountsFooter;
+    const footer = <BankIntegrationAccountsFooter />;
 
     if (isDefined(error)) {
         return (
@@ -54,12 +51,13 @@ export const BankIntegrationAccountList = () => {
     const accountCount = accounts.length;
     const countTitle = integration.provider === ExternalSourceEnum.BINANCE ? t`Assets · ${accountCount}` : t`Accounts · ${accountCount}`;
     const title = isEmptyArray(accounts) ? t`Accounts` : countTitle;
-    const resolvedFooter = isEmptyArray(accounts) ? <BankIntegrationEmptyAccounts /> : footer;
+    const emptyState = isEmptyArray(accounts) ? <BankIntegrationEmptyAccounts /> : null;
 
     return (
         <>
             {newAccounts}
-            <GroupedListSection title={title} footer={resolvedFooter}>
+            <GroupedListSection title={title} footer={footer}>
+                {emptyState}
                 {accounts.map(account => (
                     <BankIntegrationAccountRow key={account.id} account={account} />
                 ))}

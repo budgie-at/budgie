@@ -1,13 +1,13 @@
 import { ResyncService } from '@budgie/sync';
 import { MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 
-import { isDefined, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { FormsheetHeader } from '../@generic/component/formsheet-header/formsheet-header';
 import { GroupedListSection } from '../@generic/component/grouped-list-section/grouped-list-section';
@@ -38,10 +38,10 @@ export default function ResyncWindowPickerModal() {
     const options = isPositiveNumber(accountId) && isDefined(account) ? RESYNC_WINDOW_OPTIONS : [];
     const contentStyle = { paddingBottom: bottom };
     const accountTitle = account?.title;
-    const description =
-        isPositiveNumber(accountId) && isDefined(accountTitle)
-            ? t`${accountTitle}\nChoose a period to start syncing.`
-            : t`Choose a period to start syncing.`;
+    const accountHeading =
+        isPositiveNumber(accountId) && isNotEmptyString(accountTitle) ? (
+            <Text className="text-center text-[15px] font-semibold text-primary">{accountTitle}</Text>
+        ) : null;
 
     const resync = (sinceDays: number | null) => {
         void run(
@@ -72,8 +72,14 @@ export default function ResyncWindowPickerModal() {
 
     return (
         <View className="bg-grouped-surface" collapsable={false}>
-            <FormsheetHeader size="md" title={t`Sync past transactions`} description={description} />
-            <View className="px-3xl pt-[16px] gap-y-[24px]" style={contentStyle}>
+            <FormsheetHeader size="md" title={t`Sync past transactions`} className="pb-[4px]" />
+            <View className="gap-y-[4px] px-3xl">
+                {accountHeading}
+                <Text className="text-center text-[13px] text-secondary-foreground">
+                    <Trans>Sync starts when you choose a period.</Trans>
+                </Text>
+            </View>
+            <View className="px-3xl pt-[24px] gap-y-[24px]" style={contentStyle}>
                 <GroupedListSection>
                     {options
                         .filter(option => isDefined(option.sinceDays))

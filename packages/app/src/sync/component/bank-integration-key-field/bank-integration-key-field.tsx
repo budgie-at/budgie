@@ -44,7 +44,7 @@ export const BankIntegrationKeyField = ({ value, onChangeText, errorMessage, isK
             </View>
             {isKeyRejected ? (
                 <Text className="mt-[-2px] text-[13px] text-destructive-strong">
-                    <Trans>Your current key was rejected.</Trans>
+                    <Trans>Your current key was rejected. Paste a new one to resume syncing.</Trans>
                 </Text>
             ) : null}
             {isNotEmptyString(errorMessage) ? <Text className="text-destructive-strong text-xs">{errorMessage}</Text> : null}

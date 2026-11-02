@@ -7,7 +7,6 @@ import { Text, View } from 'react-native';
 import { isNotEmptyString } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { Icon } from '../../../@generic/component/icon/icon';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { TONAL_DISC_BACKGROUND } from '../../../@generic/constant/tonal-disc-background.constant';
@@ -100,7 +99,16 @@ export const BankIntegrationAccountRow = ({ account }: Props) => {
             </View>
             <View className="flex-row items-center gap-x-sm">
                 <BankIntegrationAccountMenu accountId={account.id} title={account.title} rowTestID={rowTestID}>
-                    <Icon icon={UserIconNameEnum.Ellipsis} size={20} className="text-secondary-foreground" />
+                    <CircleIcon
+                        icon={UserIconNameEnum.Ellipsis}
+                        variant="ghost"
+                        size={28}
+                        iconSize={18}
+                        radius={14}
+                        border={false}
+                        className={TONAL_DISC_BACKGROUND.ghost}
+                        iconClassName="text-secondary-foreground"
+                    />
                 </BankIntegrationAccountMenu>
                 {toggle}
             </View>

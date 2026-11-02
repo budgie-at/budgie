@@ -138,12 +138,6 @@ msgstr "{accountCount, plural, one {# account} other {# accounts}}"
 msgid "{accountsCount, plural, one {# account} other {# accounts}}"
 msgstr "{accountsCount, plural, one {# account} other {# accounts}}"
 
-#: src/app/resync-window-picker.tsx
-msgid "{accountTitle}\n"
-"Choose a period to start syncing."
-msgstr "{accountTitle}\n"
-"Choose a period to start syncing."
-
 #: src/market-data/component/currency-market-stale-price/currency-market-stale-price.tsx
 msgid "{ageDays, plural, one {# day old} other {# days old}}"
 msgstr "{ageDays, plural, one {# day old} other {# days old}}"
@@ -1075,13 +1069,13 @@ msgstr "Accounts · {accountCount}"
 msgid "Accounts ({selectedAccountsCount})"
 msgstr "Accounts ({selectedAccountsCount})"
 
+#: src/sync/component/bank-integration-accounts-footer/bank-integration-accounts-footer.tsx
+msgid "Accounts you sync appear here."
+msgstr "Accounts you sync appear here."
+
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 msgid "Action: {label}"
 msgstr "Action: {label}"
-
-#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
-msgid "Actions for {title}"
-msgstr "Actions for {title}"
 
 #: src/settings/components/budget-management-card/budget-management-card.tsx
 msgid "Active budget"
@@ -2164,10 +2158,6 @@ msgstr "Choose a new PIN"
 #: src/transaction/components/statistics-period-control/statistics-period-control.tsx
 msgid "Choose a period"
 msgstr "Choose a period"
-
-#: src/app/resync-window-picker.tsx
-msgid "Choose a period to start syncing."
-msgstr "Choose a period to start syncing."
 
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 #: src/auth/utils/get-pin-setup-meta.util.ts
@@ -4091,6 +4081,10 @@ msgstr "Ignores the minus sign."
 msgid "Import a PDF statement"
 msgstr "Import a PDF statement"
 
+#: src/sync/component/bank-integration-statements/bank-integration-statements.tsx
+msgid "Import a statement from {bank} to add your accounts."
+msgstr "Import a statement from {bank} to add your accounts."
+
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Import accounts and transactions from Erste Bank PDF statement"
 msgstr "Import accounts and transactions from Erste Bank PDF statement"
@@ -5018,20 +5012,13 @@ msgstr "No accounts found"
 
 #: src/account/component/account-select-content/account-select-content.tsx
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
+#: src/sync/component/bank-integration-empty-accounts/bank-integration-empty-accounts.tsx
 msgid "No accounts yet"
 msgstr "No accounts yet"
 
 #: src/app/transaction-account-filter.tsx
 msgid "No Accounts Yet"
 msgstr "No Accounts Yet"
-
-#: src/sync/component/bank-integration-empty-accounts/bank-integration-empty-accounts.tsx
-msgid "No accounts yet. Accounts you sync appear here."
-msgstr "No accounts yet. Accounts you sync appear here."
-
-#: src/sync/component/bank-integration-empty-accounts/bank-integration-empty-accounts.tsx
-msgid "No accounts yet. Import a statement from {bank} to add them."
-msgstr "No accounts yet. Import a statement from {bank} to add them."
 
 #: src/rule/hooks/use-rule-row-summary.hook.ts
 msgid "No action yet"
@@ -5544,6 +5531,10 @@ msgstr "Optionally turn on {biometricLabel}"
 #: src/account/component/update-account-page/update-account-page.tsx
 msgid "Options"
 msgstr "Options"
+
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "Options for {title}"
+msgstr "Options for {title}"
 
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 #: src/rule/components/rule-condition-row/rule-condition-row.tsx
@@ -7037,17 +7028,17 @@ msgstr "Swipe to remove this per-category cap from your budget."
 msgid "Switch on to start syncing."
 msgstr "Switch on to start syncing."
 
-#: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
-msgid "Switched-off accounts are skipped when you import a statement."
-msgstr "Switched-off accounts are skipped when you import a statement."
+#: src/sync/component/bank-integration-accounts-footer/bank-integration-accounts-footer.tsx
+msgid "Switched-off accounts are skipped on import."
+msgstr "Switched-off accounts are skipped on import."
 
-#: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
-msgid "Switched-off accounts stop syncing. Their history stays."
-msgstr "Switched-off accounts stop syncing. Their history stays."
+#: src/sync/component/bank-integration-accounts-footer/bank-integration-accounts-footer.tsx
+msgid "Switched-off accounts stop syncing. History stays."
+msgstr "Switched-off accounts stop syncing. History stays."
 
-#: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
-msgid "Switched-off assets stop syncing. Their history stays."
-msgstr "Switched-off assets stop syncing. Their history stays."
+#: src/sync/component/bank-integration-accounts-footer/bank-integration-accounts-footer.tsx
+msgid "Switched-off assets stop syncing. History stays."
+msgstr "Switched-off assets stop syncing. History stays."
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Sync"
@@ -7104,6 +7095,10 @@ msgstr "Sync paused"
 msgid "Sync Repairs"
 msgstr "Sync Repairs"
 
+#: src/app/resync-window-picker.tsx
+msgid "Sync starts when you choose a period."
+msgstr "Sync starts when you choose a period."
+
 #: src/sync/component/account-sync-problem-row/account-sync-problem-row.tsx
 msgid "Sync stopped"
 msgstr "Sync stopped"
@@ -7131,6 +7126,10 @@ msgstr "Syncing bank history"
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
 msgid "Syncing history..."
 msgstr "Syncing history..."
+
+#: src/sync/component/bank-integration-accounts-footer/bank-integration-accounts-footer.tsx
+msgid "Syncing resumes for all accounts once you update the key."
+msgstr "Syncing resumes for all accounts once you update the key."
 
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
@@ -8352,8 +8351,8 @@ msgid "Your call"
 msgstr "Your call"
 
 #: src/sync/component/bank-integration-key-field/bank-integration-key-field.tsx
-msgid "Your current key was rejected."
-msgstr "Your current key was rejected."
+msgid "Your current key was rejected. Paste a new one to resume syncing."
+msgstr "Your current key was rejected. Paste a new one to resume syncing."
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Your data"
