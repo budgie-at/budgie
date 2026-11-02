@@ -1,12 +1,17 @@
 import {
+    AccountDebtTypeEnum,
+    AccountTypeEnum,
     BANK_FEE_CATEGORY_ID,
+    BORROWING_CATEGORY_ID,
     CategoryEntityTable,
+    DebtEventEntityTable,
     ExternalSourceEnum,
     PRECISION,
     TransactionConsolidationTypeEnum,
     TransactionEntityTable,
     TransactionEntryEntityTable
 } from '@budgie/contracts';
+import { TransactionDebtSettlementService } from '@budgie/ledger';
 import {
     SyncAccountBalanceStateEnum,
     SyncAccountTypeEnum,
@@ -266,6 +271,32 @@ describe('import/file-reimport-heal', () => {
             expect(entries.map(entry => entry.amount)).toEqual([EXPENSE_AMOUNT * PRECISION, EXPENSE_AMOUNT * PRECISION]);
             expect((yield* testQueryService.findTransactionById(expenseId)).importFingerprint).toBe(fingerprint);
             expect((yield* testQueryService.findTransactionById(refundId)).consolidationParentTransactionId).toBe(expenseId);
+        }).pipe(Effect.provide(TestLayer))
+    );
+
+    it.effect('keeps the borrowing category and debt link when a bank change rebuilds a linked payment', () =>
+        Effect.gen(function* () {
+            const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
+            const account = yield* seedCard();
+            const debtAccount = yield* seed.account({
+                title: 'Heal Debt',
+                type: AccountTypeEnum.DEBT,
+                debtType: AccountDebtTypeEnum.BORROW,
+                instrumentId: account.instrumentId
+            });
+            yield* importStatement([buildExpenseRow()]);
+            const expenseId = yield* findTransactionId('heal-expense');
+            yield* transactionDebtSettlementService.attach({ transactionId: expenseId, debtAccountId: debtAccount.id });
+
+            yield* importStatement([buildExpenseRow(CHANGED_AMOUNT)]);
+
+            const [entry] = yield* fetchLiveEntries(expenseId);
+            const [debtEvent] = yield* testDb.select().from(DebtEventEntityTable).where(eq(DebtEventEntityTable.transactionId, expenseId));
+
+            expect(entry.amount).toBe(CHANGED_AMOUNT * PRECISION);
+            expect(entry.categoryId).toBe(BORROWING_CATEGORY_ID);
+            expect(debtEvent.transactionEntryId).toBe(entry.id);
+            expect(debtEvent.amount).toBe(CHANGED_AMOUNT * PRECISION);
         }).pipe(Effect.provide(TestLayer))
     );
 });

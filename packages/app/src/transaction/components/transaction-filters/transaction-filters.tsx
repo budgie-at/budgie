@@ -23,7 +23,7 @@ import type { ReactNode } from 'react';
 interface Props {
     readonly showTypeFilter?: boolean;
     readonly showDateFilter?: boolean;
-    readonly accountId: number | null;
+    readonly scopeAccountIds: number[] | null;
     readonly isClearAllVisible: boolean;
     readonly filters: TransactionFilterInterface;
     readonly onChange: (cb: TransactionFilterInterface | ((prev: TransactionFilterInterface) => TransactionFilterInterface)) => void;
@@ -31,7 +31,7 @@ interface Props {
 }
 
 export const TransactionFilters = (props: Props) => {
-    const { filters, onChange, accountId, showTypeFilter = true, showDateFilter = true, isClearAllVisible, leading } = props;
+    const { filters, onChange, scopeAccountIds, showTypeFilter = true, showDateFilter = true, isClearAllVisible, leading } = props;
     const { t } = useLingui();
     const [openTransactionAccountFilter] = useTransactionAccountFilterModal();
     const [openTransactionCategoryFilter] = useTransactionCategoryFilterModal();
@@ -49,7 +49,7 @@ export const TransactionFilters = (props: Props) => {
     const handleClear = () =>
         void onChange({
             ...DEFAULT_TRANSACTION_FILTER,
-            accountIds: isDefined(accountId) ? [accountId] : null,
+            accountIds: scopeAccountIds,
             ...(!showDateFilter && { date: filters.date })
         });
 
@@ -95,7 +95,7 @@ export const TransactionFilters = (props: Props) => {
                     onChange={createFilterHandler('tagIds')}
                 />
 
-                {isDefined(accountId) ? null : (
+                {isDefined(scopeAccountIds) ? null : (
                     <TransactionIdsFilterChip
                         label={t`Accounts`}
                         activeLabel={t`Accounts (${selectedAccountsCount})`}

@@ -10,7 +10,6 @@ import { AnalyticsTransactionsModeEnum } from '../../enum/analytics-transactions
 import { TransactionFilterPageHeaderModeEnum } from '../../enum/transaction-filter-page-header-mode.enum';
 import { useGetStatisticsTransactionsQuery } from '../../query/use-get-statistics-transactions.query';
 import { buildUncategorizedFilters } from '../../utils/build-uncategorized-filters.util';
-import { getSingleAccountId } from '../../utils/get-single-account-id.util';
 import { getStatisticsDrillDownEntity } from '../../utils/get-statistics-drill-down-entity.util';
 import { parseRouteDateRange } from '../../utils/parse-route-date-range.util';
 import { AnalyticsTransactionsPageContent } from '../analytics-transactions-page-content/analytics-transactions-page-content';
@@ -123,7 +122,7 @@ export const StatisticsAnalyticsTransactionsPage = (params: AnalyticsTransaction
                     <StatisticsDrillDownEmptyState isLoading={isLoading} hasFiltersSelected={hasFiltersSelected} type={summaryType} />
                 }
                 onLoadMore={loadMore}
-                accountId={getSingleAccountId(filters.accountIds)}
+                accountIds={filters.accountIds}
             />
         </StatisticsCategoryIdsContext.Provider>
     );

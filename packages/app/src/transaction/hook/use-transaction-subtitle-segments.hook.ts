@@ -13,8 +13,10 @@ import { useContext } from 'react';
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
 import { StatisticsCategoryIdsContext } from '../context/statistics-category-ids.context';
+import { TransactionAccountTitlePrefixContext } from '../context/transaction-account-title-prefix.context';
 import { getTransactionDisplayTitle } from '../utils/get-transaction-display-title.util';
 import { isUncategorizedTransaction } from '../utils/is-uncategorized-transaction.util';
+import { stripTransactionAccountTitlePrefix } from '../utils/strip-transaction-account-title-prefix.util';
 
 import { useRefundedLabel } from './use-refunded-label.hook';
 import { useTransactionFeeLabel } from './use-transaction-fee-label.hook';
@@ -93,18 +95,18 @@ export const useTransactionSubtitleSegments = (
     const refundedLabel = useRefundedLabel(transaction);
     const feeLabel = useTransactionFeeLabel(transaction);
     const scopedCategoryIds = useContext(StatisticsCategoryIdsContext);
+    const accountTitlePrefix = useContext(TransactionAccountTitlePrefixContext);
 
-    const counterparty = getTransactionCounterparty(transaction, accountId);
+    const counterparty = getTransactionCounterparty(transaction, isDefined(accountTitlePrefix) ? null : accountId);
     const displayTitle = getTransactionDisplayTitle(transaction);
-    const source = counterparty?.source;
-    const destination = counterparty?.destination;
+    const source = stripTransactionAccountTitlePrefix(counterparty?.source, accountTitlePrefix);
+    const destination = stripTransactionAccountTitlePrefix(counterparty?.destination, accountTitlePrefix);
     const categories =
         transaction.type === TransactionTypeEnum.TRANSFER
             ? []
             : getTransactionCategoryEntries(transaction.entries)
                   .map(entry => entry.category)
                   .filter(isDefined);
-    const categoryLabels = categories.map(category => category.title);
     const unscopedCategoryLabels = categories
         .filter(category => !(scopedCategoryIds?.length === 1 && scopedCategoryIds.includes(category.id)))
         .map(category => category.title);
@@ -119,7 +121,7 @@ export const useTransactionSubtitleSegments = (
 
     const { relationSegments, ownAccountTitle } = isDefined(repaidDebtAccount)
         ? {
-              relationSegments: [t`Repayment`, repaidDebtTitle],
+              relationSegments: [t`Repayment`, stripTransactionAccountTitlePrefix(repaidDebtTitle, accountTitlePrefix)],
               ownAccountTitle: moneyAccountTitle
           }
         : {
@@ -137,7 +139,7 @@ export const useTransactionSubtitleSegments = (
             ...relationSegments
         ].filter(isNotEmptyString),
         feeLabel,
-        accountTitle: ownAccountTitle,
-        categoryLabel: !isDefined(counterparty) && categoryLabels.length === 1 ? (categoryLabels.at(0) ?? null) : null
+        accountTitle: stripTransactionAccountTitlePrefix(ownAccountTitle, accountTitlePrefix),
+        categoryLabel: !isDefined(counterparty) && categories.length === 1 ? (categories.at(0)?.title ?? null) : null
     };
 };

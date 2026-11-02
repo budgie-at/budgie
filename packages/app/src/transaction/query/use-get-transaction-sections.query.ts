@@ -1,6 +1,7 @@
 import {
     AccountEntityTable,
     InstrumentEntityTable,
+    InstrumentTypeEnum,
     TransactionEntityTable,
     TransactionDayNetAmountRepository,
     TransactionEntryEntityTable
@@ -53,7 +54,7 @@ const toDayNetAmount = (
     row: TransactionDayNetAmountRowInterface,
     defaultInstrument: Pick<InstrumentEntityInterface, 'symbol'>
 ): TransactionsDayNetAmountInterface | null => {
-    if (row.instrumentCount === 1) {
+    if (row.instrumentCount === 1 && row.instrumentType !== InstrumentTypeEnum.CRYPTO) {
         return { amount: row.amount, instrumentSymbol: row.instrumentSymbol, isApproximate: false };
     }
 
