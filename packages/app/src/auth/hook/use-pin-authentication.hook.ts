@@ -1,12 +1,13 @@
 import { useAtomValue } from '@effect/atom-react/Hooks';
-import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
+import { NotificationFeedbackType } from 'expo-haptics';
 import { useEffect, useEffectEvent, useReducer, useState } from 'react';
 import { AppState } from 'react-native';
 
 import { emptyFn } from '@rnw-community/shared';
 
 import { appStateAtom } from '../../@generic/constant/app-state-atom.constant';
+import { useVibration } from '../../@generic/hook/use-vibration.hook';
 import { appRuntime } from '../../@generic/runtime/app.runtime';
 import { useSetting } from '../../settings/hook/use-setting.hook';
 import { PIN_LENGTH } from '../constant/pin-length.constant';
@@ -73,13 +74,13 @@ const useAutomaticBiometric = (canStart: boolean, attempt: () => boolean) => {
 };
 
 export const usePinAuthentication = () => {
-    const { t } = useLingui();
     const { isFaceIdAvailable, isSomeAvailable, setIsUnlocked } = useAuthContext();
     const isBiometricEnabled = useSetting('isBiometricEnabled');
     const canUseBiometric = isBiometricEnabled && isSomeAvailable;
     const [{ input, isLoading }, dispatch] = useReducer(reducer, { input: '', isLoading: false });
     const { invalidate, startBiometricAttempt, startPinAttempt } = useAuthAttempt();
     const { clearError, error, isLockedOut, reportIncorrectPin } = usePinError();
+    const [hapticNotification] = useVibration();
 
     const invalidateAuthAttempts = () => {
         dispatch({ type: PinAuthenticationActionTypeEnum.ATTEMPT_ENDED, shouldClearInput: invalidate() });
@@ -90,6 +91,7 @@ export const usePinAuthentication = () => {
         dispatch({ type: PinAuthenticationActionTypeEnum.ATTEMPT_ENDED, shouldClearInput: !success && isPinAttempt });
 
         if (success) {
+            hapticNotification(NotificationFeedbackType.Success);
             setIsUnlocked(true);
         } else if (isPinAttempt) {
             reportIncorrectPin();
@@ -131,14 +133,12 @@ export const usePinAuthentication = () => {
     return {
         addDigit,
         canUseBiometric,
-        description: t`Enter your ${PIN_LENGTH}-digit PIN to unlock`,
         deleteDigit,
         error,
         handleBiometricAuth: startBiometric,
         input,
         isFaceIdAvailable,
         isInputDisabled: isLoading || isLockedOut,
-        isLoading,
-        title: t`Enter your PIN`
+        isLoading
     };
 };

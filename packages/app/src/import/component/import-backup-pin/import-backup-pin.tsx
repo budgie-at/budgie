@@ -2,7 +2,7 @@ import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { File } from 'expo-file-system';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Text, View } from 'react-native';
 
 import { isDefined, isNotEmptyString } from '@rnw-community/shared';
@@ -10,13 +10,16 @@ import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 import { Button } from '../../../@generic/component/button/button';
 import { FileChip } from '../../../@generic/component/file-chip/file-chip';
 import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
-import { LoadingOverlay } from '../../../@generic/component/loading-overlay/loading-overlay';
 import { FullPage } from '../../../@generic/component/page/full-page';
 import { useFormatFileSize } from '../../../@generic/hook/use-format-file-size.hook';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
+import { PinFormHeader } from '../../../auth/components/pin-form-header/pin-form-header';
 import { PinForm } from '../../../auth/components/pin-form/pin-form';
 import { PIN_LENGTH } from '../../../auth/constant/pin-length.constant';
+import { getPinFormStatus } from '../../../auth/utils/get-pin-form-status.util';
 import { DatabaseImportService } from '../../service/database-import.service';
+
+import { ImportBackupPinSelector } from './import-backup-pin.selector';
 
 interface Props {
     readonly sourceUri: string | null;
@@ -82,30 +85,43 @@ export const ImportBackupPin = ({ sourceUri, onResult }: Props) => {
     const backupFileName = isDefined(backupFile) ? decodeURIComponent(backupFile.name) : '';
     const backupFileSize = isDefined(backupFile) && backupFile.exists ? formatFileSize(backupFile.size) : '';
 
+    const pinFormStatus = getPinFormStatus(isLoading, false);
+
     return (
         <FullPage>
             <View className="flex-row items-center gap-x-md px-5xl pt-lg">
-                <GoBackButton onPress={handleCancel} />
+                <GoBackButton onPress={handleCancel} disabled={isLoading} />
 
                 <FileChip icon={UserIconNameEnum.Archive} name={backupFileName}>
                     <Text className="ml-auto text-secondary-foreground text-xs">{backupFileSize}</Text>
                 </FileChip>
             </View>
 
-            <View className="flex-1 px-6xl justify-center">
+            <View className="flex-1 px-5xl">
                 <PinForm
-                    title={t`Enter the PIN this backup was sealed with`}
-                    description={t`If you don't remember it, this backup can't be opened. You can start fresh instead.`}
+                    header={
+                        <PinFormHeader
+                            title={t`Enter the backup's PIN`}
+                            description={t`Use the PIN this backup was sealed with. Without it, the backup can't be opened.`}
+                            icon={null}
+                        />
+                    }
                     currentInput={input}
                     error={error}
-                    isLoading={isLoading}
+                    status={pinFormStatus}
                     onDigitPress={addDigit}
                     onDeletePress={deleteDigit}
+                    footer={
+                        <Button
+                            testID={ImportBackupPinSelector.StartFreshButton}
+                            variant="ghost"
+                            content={t`Start fresh instead`}
+                            onPress={handleCancel}
+                            disabled={isLoading}
+                            className="border-0 bg-transparent px-5xl min-h-[44px]"
+                        />
+                    }
                 />
-
-                <Button variant="ghost" content={t`Start fresh instead`} onPress={handleCancel} className="mb-5xl" />
-
-                {isLoading ? <LoadingOverlay /> : null}
             </View>
         </FullPage>
     );
