@@ -24,26 +24,25 @@ export const QuickFormLayout = ({ hero, children, footer }: Props) => {
         contentStyle,
         keypadContainerStyle
     } = useQuickFormLayout();
-    const upperContent = (
-        <View className="grow" style={contentStyle}>
-            <View className="grow justify-center py-[16px]">
-                <View onLayout={handleHeroLayout}>{hero}</View>
-            </View>
-            <View onLayout={handleFieldsLayout}>{children}</View>
-        </View>
-    );
 
     return (
         <BottomChromeInsetProvider>
             <View className="flex-1" onLayout={handleLayout}>
-                {overflows ? (
-                    <ScrollView className="flex-1" bounces={false} showsVerticalScrollIndicator={false}>
-                        {upperContent}
-                    </ScrollView>
-                ) : (
-                    <View className="flex-1">{upperContent}</View>
-                )}
-                <View className="h-[12px]" />
+                <ScrollView
+                    className="flex-1"
+                    contentContainerStyle={contentStyle}
+                    scrollEnabled={overflows}
+                    bounces={false}
+                    showsVerticalScrollIndicator={false}
+                    contentInsetAdjustmentBehavior="never"
+                    automaticallyAdjustContentInsets={false}
+                >
+                    <View className="grow justify-center">
+                        <View onLayout={handleHeroLayout}>{hero}</View>
+                    </View>
+                    <View onLayout={handleFieldsLayout}>{children}</View>
+                </ScrollView>
+                <View className="h-[12px] shrink-0" />
                 <View style={footerStyle}>
                     <ScreenChromeFooter includeBottomSafeArea={false} edgeFadeProps={HIDDEN_EDGE_FADE_PROPS} bottomOffset={bottomPadding}>
                         <View style={keypadContainerStyle}>{footer}</View>

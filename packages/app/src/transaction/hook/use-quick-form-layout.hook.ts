@@ -4,8 +4,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { getTransactionKeypadLayout } from '../utils/get-transaction-keypad-layout.util';
 
-const HERO_VERTICAL_SPACING = 32;
-
 export const useQuickFormLayout = () => {
     const { fontScale } = useWindowDimensions();
     const insets = useSafeAreaInsets();
@@ -16,10 +14,10 @@ export const useQuickFormLayout = () => {
     const bottomPadding = Math.max(insets.bottom, 8) + 8 - insets.bottom;
     const footerHeight = Math.min(
         keypadStyle.maxHeight,
-        Math.max(keypadStyle.minHeight, height - heroHeight - fieldsHeight - HERO_VERTICAL_SPACING - 12 - bottomPadding)
+        Math.max(keypadStyle.minHeight, height - heroHeight - fieldsHeight - 12 - bottomPadding)
     );
     const upperHeight = Math.max(0, height - footerHeight - 12 - bottomPadding);
-    const overflows = heroHeight + fieldsHeight + HERO_VERTICAL_SPACING > upperHeight;
+    const overflows = heroHeight + fieldsHeight > upperHeight;
     const handleLayout = (event: LayoutChangeEvent) => void setHeight(event.nativeEvent.layout.height);
     const handleHeroLayout = (event: LayoutChangeEvent) => void setHeroHeight(event.nativeEvent.layout.height);
     const handleFieldsLayout = (event: LayoutChangeEvent) => void setFieldsHeight(event.nativeEvent.layout.height);
@@ -32,7 +30,7 @@ export const useQuickFormLayout = () => {
         bottomPadding,
         footerHeight,
         keypadContainerStyle: { height: footerHeight },
-        footerStyle: { height: footerHeight + bottomPadding, paddingBottom: bottomPadding },
+        footerStyle: { height: footerHeight + bottomPadding, flexShrink: 0 },
         contentStyle: { minHeight: upperHeight }
     };
 };
