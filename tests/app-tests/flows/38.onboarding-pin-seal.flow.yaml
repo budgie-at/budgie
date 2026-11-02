@@ -48,8 +48,16 @@ env:
           id: 'OnboardingSeal.HoldButton'
       timeout: 3000
 
-- longPressOn:
+- tapOn:
       id: 'OnboardingSeal.HoldButton'
+
+- extendedWaitUntil:
+      visible:
+          text: 'Seal'
+      timeout: 3000
+
+- tapOn:
+      text: 'Seal'
 
 - extendedWaitUntil:
       visible:
