@@ -1,4 +1,5 @@
-import { gzipSync } from 'node:zlib';
+import { fileURLToPath } from 'node:url';
+import { deflateRawSync } from 'node:zlib';
 
 /**
  * Host-side device work over simlock's HTTP API. `POST /v1/leases/<id>/exec`
@@ -48,10 +49,18 @@ export async function leaseIdForUdid(api: SimlockApi, udid: string): Promise<str
 
 /** Runs one `simctl` command on the leased simulator. */
 export async function exec(api: SimlockApi, leaseId: string, args: readonly string[], stdin?: string): Promise<ExecResult> {
-  const response = await call(api, `/v1/leases/${leaseId}/exec`, {
-    method: 'POST',
-    body: JSON.stringify({ tool: 'simctl', args, ...(stdin === undefined ? {} : { stdin }) }),
-  });
+  const body = JSON.stringify({ tool: 'simctl', args, ...(stdin === undefined ? {} : { stdin }) });
+  let response: Response;
+  for (let attempt = 1; ; attempt++) {
+    try {
+      response = await call(api, `/v1/leases/${leaseId}/exec`, { method: 'POST', body });
+      break;
+    } catch (cause) {
+      // A gateway's worker uplink can drop and reconnect within a second; every command the suite sends is idempotent.
+      if (attempt === 3 || !String(cause).includes('WORKER_UNREACHABLE')) throw cause;
+      await new Promise((resolve) => setTimeout(resolve, 2_000 * attempt));
+    }
+  }
   const text = await response.text();
   let stdout = '';
   let stderr = '';
@@ -77,20 +86,56 @@ export async function mustExec(api: SimlockApi, leaseId: string, args: readonly 
   return result.stdout;
 }
 
+/**
+ * E2EDrop, a helper app built for the simulator (`support/simlock/e2e-drop/`),
+ * which the provider installs beside the app under test. CoreSimulator on
+ * macOS 26 refuses to spawn the Mac's own tools and the simulator runtime has
+ * no shell, cp or tar, so every file the suite puts on the device goes
+ * through it.
+ */
+export const E2E_DROP_APP = fileURLToPath(new URL('./e2e-drop/E2EDrop.app', import.meta.url));
+export const E2E_DROP_BUNDLE_ID = 'dev.e2e.simlock.drop';
+
+const dropPaths = new Map<string, Promise<string>>();
+
+async function dropExecutable(api: SimlockApi, leaseId: string): Promise<string> {
+  let path = dropPaths.get(leaseId);
+  if (path === undefined) {
+    path = mustExec(api, leaseId, ['get_app_container', E2E_DROP_BUNDLE_ID, 'app']).then((out) => `${out.trim()}/E2EDrop`);
+    dropPaths.set(leaseId, path);
+    path.catch(() => dropPaths.delete(leaseId));
+  }
+  return path;
+}
+
+/** Runs one E2EDrop command on the leased simulator; `payload` travels on stdin. */
+export async function drop(api: SimlockApi, leaseId: string, args: readonly string[], payload?: Buffer): Promise<ExecResult> {
+  const executable = await dropExecutable(api, leaseId);
+  return exec(api, leaseId, ['spawn', executable, ...args], payload === undefined ? undefined : deflateRawSync(payload).toString('base64'));
+}
+
+export async function mustDrop(api: SimlockApi, leaseId: string, args: readonly string[], payload?: Buffer): Promise<string> {
+  const result = await drop(api, leaseId, args, payload);
+  if (result.exitCode !== 0) throw new Error(`e2e-drop ${args[0]} exited ${result.exitCode}: ${result.stderr.trim()}`);
+  return result.stdout;
+}
+
+/** Writes `bytes` to `path` on the device's filesystem. */
+export async function writeFile(api: SimlockApi, leaseId: string, path: string, bytes: Buffer): Promise<void> {
+  await mustDrop(api, leaseId, ['write', path], bytes);
+}
+
+/** Unpacks a ustar archive (`tar --format=ustar`) into `dir`. */
+export async function untar(api: SimlockApi, leaseId: string, dir: string, tar: Buffer): Promise<void> {
+  await mustDrop(api, leaseId, ['untar', dir], tar);
+}
+
 export const shellQuote = (value: string): string => `'${value.replaceAll("'", `'\\''`)}'`;
 
-/** Runs a POSIX shell script on the worker, inside the simulator's environment. */
+/**
+ * Runs a POSIX shell script on the worker. Works only on hosts whose
+ * CoreSimulator still spawns the Mac's own /bin/sh (macOS 15); prefer `drop`.
+ */
 export function sh(api: SimlockApi, leaseId: string, script: string, stdin?: string): Promise<string> {
   return mustExec(api, leaseId, ['spawn', '/bin/sh', '-c', script], stdin);
-}
-
-/** Writes `bytes` to `path` on the worker. */
-export async function writeFile(api: SimlockApi, leaseId: string, path: string, bytes: Buffer): Promise<void> {
-  const dir = path.slice(0, path.lastIndexOf('/'));
-  await sh(api, leaseId, `/bin/mkdir -p ${shellQuote(dir)} && /usr/bin/base64 -d | /usr/bin/gunzip > ${shellQuote(path)}`, gzipSync(bytes).toString('base64'));
-}
-
-/** Unpacks a `.tar.gz` into `dir` on the worker. */
-export async function extractTarGz(api: SimlockApi, leaseId: string, dir: string, tarGz: Buffer): Promise<void> {
-  await sh(api, leaseId, `/bin/mkdir -p ${shellQuote(dir)} && /usr/bin/base64 -d | /usr/bin/tar -xzf - -C ${shellQuote(dir)}`, tarGz.toString('base64'));
 }

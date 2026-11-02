@@ -1,6 +1,7 @@
 import { randomBytes } from 'node:crypto';
 import type { E2EConfig } from 'e2e';
 import { mobile } from '@e2e-dev/mobile';
+import { E2E_DROP_APP } from './support/simlock/exec.ts';
 import { simlockDevices } from './support/simlock/provider.ts';
 
 const env = (name: string): string => {
@@ -26,7 +27,7 @@ export default {
         session: process.env.E2E_SESSION,
         settle: Number(process.env.E2E_SETTLE ?? 400),
         transition: Number(process.env.E2E_TRANSITION ?? 800),
-        device: simlockDevices({ url: env('SIMLOCK_URL'), token: env('SIMLOCK_TOKEN'), device: process.env.SIMLOCK_DEVICE ?? 'iPhone 17 Pro' }),
+        device: simlockDevices({ url: env('SIMLOCK_URL'), token: env('SIMLOCK_TOKEN'), device: process.env.SIMLOCK_DEVICE ?? 'iPhone 17 Pro', extraApps: [E2E_DROP_APP] }),
       }),
       app: {
         bundleId: BUNDLE_ID,

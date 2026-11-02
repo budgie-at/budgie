@@ -3,7 +3,7 @@ import { mkdirSync, mkdtempSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { exec, extractTarGz, mustExec, sh, shellQuote, writeFile, type SimlockApi } from '../simlock/exec.ts';
+import { drop, exec, mustDrop, mustExec, untar, writeFile, type SimlockApi } from '../simlock/exec.ts';
 
 export const BUNDLE_ID = 'com.vitalyiegorov.budgie.e2e';
 
@@ -28,9 +28,9 @@ export function stagedDocuments(): Promise<Buffer> {
       stdio: ['ignore', 'ignore', 'inherit'],
     });
     execFileSync('touch', [join(container, MARKER)]);
-    const tarGz = execFileSync('tar', ['-czf', '-', '-C', container, 'Documents'], { maxBuffer: 512 * 1024 * 1024 });
-    console.log(`[fixtures] staged ${(tarGz.length / 1024 / 1024).toFixed(1)} MB of fixtures in ${((Date.now() - started) / 1000).toFixed(1)}s`);
-    return tarGz;
+    const tar = execFileSync('tar', ['--format=ustar', '-cf', '-', '-C', container, 'Documents'], { maxBuffer: 512 * 1024 * 1024 });
+    console.log(`[fixtures] staged ${(tar.length / 1024 / 1024).toFixed(1)} MB of fixtures in ${((Date.now() - started) / 1000).toFixed(1)}s`);
+    return tar;
   })();
   return staged;
 }
@@ -41,10 +41,10 @@ const prepared = new Set<string>();
 export async function ensureFixtures(api: SimlockApi, leaseId: string): Promise<string> {
   const container = (await mustExec(api, leaseId, ['get_app_container', BUNDLE_ID, 'data'])).trim();
   if (!container.startsWith('/')) throw new Error(`unexpected app data container for ${BUNDLE_ID}: ${container}`);
-  const present = await exec(api, leaseId, ['spawn', '/bin/test', '-f', `${container}/${MARKER}`]);
+  const present = await drop(api, leaseId, ['test', `${container}/${MARKER}`]);
   if (present.exitCode !== 0) {
     const started = Date.now();
-    await extractTarGz(api, leaseId, container, await stagedDocuments());
+    await untar(api, leaseId, container, await stagedDocuments());
     console.log(`[fixtures] installed into the app container in ${((Date.now() - started) / 1000).toFixed(1)}s`);
   }
   if (!prepared.has(leaseId)) {
@@ -78,11 +78,13 @@ export async function seedDatabase(api: SimlockApi, leaseId: string, container: 
   await stopApp(api, leaseId);
   const sqlite = `${container}/Documents/SQLite`;
   const source = `${container}/Documents/E2EFixtures/${name}`;
-  await sh(api, leaseId, `/bin/test -f ${shellQuote(source)} || { echo "no staged fixture ${name}" >&2; exit 3; }; /bin/mkdir -p ${shellQuote(sqlite)} && /bin/rm -f ${shellQuote(sqlite)}/budgie.db* && /bin/cp ${shellQuote(source)} ${shellQuote(sqlite)}/budgie.db`);
+  if ((await drop(api, leaseId, ['test', source])).exitCode !== 0) throw new Error(`no staged fixture ${name}`);
+  await mustDrop(api, leaseId, ['rm', sqlite, 'budgie.db']);
+  await mustDrop(api, leaseId, ['cp', source, `${sqlite}/budgie.db`]);
 }
 
 /** No database at all: the app starts as on first launch, fixtures still staged. */
 export async function clearDatabase(api: SimlockApi, leaseId: string, container: string): Promise<void> {
   await stopApp(api, leaseId);
-  await sh(api, leaseId, `/bin/rm -f ${shellQuote(`${container}/Documents/SQLite`)}/budgie.db*`);
+  await mustDrop(api, leaseId, ['rm', `${container}/Documents/SQLite`, 'budgie.db']);
 }

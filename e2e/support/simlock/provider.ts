@@ -10,6 +10,8 @@ export interface SimlockOptions {
   readonly token: string;
   /** A model simlock's catalog lists: `iPhone 17 Pro`. */
   readonly device: string;
+  /** Apps installed on every leased device after the app under test, such as `E2E_DROP_APP`. */
+  readonly extraApps?: readonly string[];
   /** Lease TTL; renewed every third of it while the run holds the lease. */
   readonly ttlMs?: number;
 }
@@ -71,6 +73,10 @@ export function simlockDevices(options: SimlockOptions): DeviceProvider {
           await scoped.apps.install({ platform: 'ios', udid, appPath: request.appPath, ...(request.app === undefined ? {} : { app: request.app }) });
           installedApp = request.app;
           request.log(`simlock uploaded and installed ${installedApp} in ${Date.now() - installStarted} ms`);
+        }
+        for (const extra of options.extraApps ?? []) {
+          const scoped = createAgentDeviceClient({ daemonBaseUrl: baseUrl, daemonAuthToken: options.token, session, ...scope });
+          await scoped.apps.install({ platform: 'ios', udid, appPath: extra });
         }
         const entry: Held = {
           id: lease.leaseId,
