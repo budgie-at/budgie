@@ -60,7 +60,7 @@ export const OnboardingKeyboardControls = () => {
                 onPress={handleDonePress}
                 className="min-h-[44px] min-w-[44px] items-center justify-center active:opacity-60"
             >
-                <Text className="text-primary text-[17px] font-semibold">
+                <Text className="text-primary text-[17px] font-medium">
                     <Trans>Done</Trans>
                 </Text>
             </Pressable>

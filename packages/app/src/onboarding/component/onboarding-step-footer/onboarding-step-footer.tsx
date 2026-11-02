@@ -24,8 +24,9 @@ export const OnboardingStepFooter = ({ children }: Props) => {
     return (
         <Animated.View className="absolute inset-x-0 bottom-0" style={keyboardStyle} pointerEvents="box-none">
             <ScreenChromeFooter includeBottomSafeArea={false} edgeFadeProps={HIDDEN_EDGE_FADE_PROPS} style={IN_FLOW_STYLE}>
-                <View className={cn('gap-y-xs border-t-hairline border-surface-separator bg-surface px-5xl', paddingClassName)}>
-                    {children}
+                <View className="bg-surface">
+                    <View className="h-hairline bg-surface-separator" />
+                    <View className={cn('gap-y-xs px-5xl', paddingClassName)}>{children}</View>
                 </View>
             </ScreenChromeFooter>
         </Animated.View>
