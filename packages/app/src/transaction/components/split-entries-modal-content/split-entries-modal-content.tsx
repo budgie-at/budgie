@@ -183,7 +183,7 @@ export const SplitEntriesModalContent = (props: Props) => {
                 >
                     {canDelete ? <SplitEntryDeleteButton index={index} categoryId={item.categoryId} onPress={handleDelete} /> : null}
                 </SplitEntryRow>
-                <View className="h-hairline bg-surface-separator ml-[72px]" />
+                {index < entries.length - 1 ? <View className="h-hairline bg-surface-separator ml-[72px]" /> : null}
             </View>
         );
     };
@@ -194,7 +194,7 @@ export const SplitEntriesModalContent = (props: Props) => {
     const remainderClassName = isOverBudget ? 'text-destructive-strong' : 'text-secondary-foreground';
 
     return (
-        <View className="min-h-[280px]">
+        <View className="min-h-[280px] bg-sheet-surface">
             <SheetTitle title={t`Split`} />
 
             <ScrollView contentContainerStyle={CONTENT_CONTAINER_STYLE} keyboardShouldPersistTaps="handled" style={scrollStyle}>
@@ -221,7 +221,7 @@ export const SplitEntriesModalContent = (props: Props) => {
             </ScrollView>
 
             <KeyboardStickyView offset={keyboardOffset} style={FOOTER_STYLE}>
-                <View className="px-xl pt-3xl pb-safe-or-[16px]">
+                <View className="bg-sheet-surface px-xl pt-3xl pb-safe-or-[16px]">
                     <PillButton
                         label={t`Done`}
                         isDisabled={!canConfirm}

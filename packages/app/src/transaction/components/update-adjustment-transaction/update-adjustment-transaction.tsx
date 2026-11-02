@@ -12,7 +12,7 @@ import { TransactionService } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useReducer, useRef } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -23,7 +23,6 @@ import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { useEmbeddingGenerator } from '../../../ai/hook/use-embedding-generator.hook';
 import { useKeypadInput } from '../../hook/use-keypad-input.hook';
 import { AdjustmentAccountSummary } from '../adjustment-account-summary/adjustment-account-summary';
-import { QuickFormBottom } from '../quick-form-bottom/quick-form-bottom';
 import { QuickFormLayout } from '../quick-form-layout/quick-form-layout';
 import { QuickFormSecondaryLine } from '../quick-form-secondary-line/quick-form-secondary-line';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
@@ -138,33 +137,31 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
     };
 
     return (
-        <QuickFormLayout>
-            <TransactionAmountDisplay
-                ref={amountDisplayRef}
-                amount={displayValue}
-                currencySymbol={signedInstrumentSymbol}
-                variant={variant}
-            >
-                <QuickFormSecondaryLine>
-                    <AmountSignPill isIncrease={isIncrease} onToggle={toggleIsIncrease} />
-                    <Text className="text-[13px] leading-[18px] text-secondary-foreground">{details.instrumentCode}</Text>
-                </QuickFormSecondaryLine>
-                <View className="min-h-[72px]" />
-            </TransactionAmountDisplay>
-
-            <QuickFormBottom>
-                <View className="min-h-[113px]" />
-                <View className="min-h-[128px] pb-md">
-                    <AdjustmentAccountSummary details={details} />
-                </View>
-
+        <QuickFormLayout
+            hero={
+                <TransactionAmountDisplay
+                    ref={amountDisplayRef}
+                    amount={displayValue}
+                    currencySymbol={signedInstrumentSymbol}
+                    variant={variant}
+                >
+                    <QuickFormSecondaryLine>
+                        <AmountSignPill isIncrease={isIncrease} onToggle={toggleIsIncrease} />
+                    </QuickFormSecondaryLine>
+                </TransactionAmountDisplay>
+            }
+            footer={
                 <TransactionKeypad
                     keypad={handlers}
                     onConfirm={handleConfirm}
                     onCancel={handleGoBack}
                     isConfirmDisabled={confirmDisabled}
                 />
-            </QuickFormBottom>
+            }
+        >
+            <View className="pt-[12px]">
+                <AdjustmentAccountSummary details={details} />
+            </View>
         </QuickFormLayout>
     );
 };

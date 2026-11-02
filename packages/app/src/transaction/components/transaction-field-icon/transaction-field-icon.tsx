@@ -1,7 +1,7 @@
 import { UserIconType } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
 import { RefObject, useImperativeHandle } from 'react';
-import { Text, View } from 'react-native';
+import { Text, useWindowDimensions, View } from 'react-native';
 import Animated, { ReduceMotion, FadeInUp, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
 import { isNotEmptyString } from '@rnw-community/shared';
@@ -34,6 +34,7 @@ const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 export const TransactionFieldIcon = (props: Props) => {
     const { ref, icon, label, value, onPress, animationDelay = 0, disabledHint, testID } = props;
 
+    const captionStyle = { height: 36 * useWindowDimensions().fontScale };
     const pressed = useSharedValue(false);
     const { shake, animatedStyle: shakeStyle } = useShakeAnimation();
 
@@ -53,9 +54,8 @@ export const TransactionFieldIcon = (props: Props) => {
 
     const hasValue = isNotEmptyString(value);
     const isDisabled = isNotEmptyString(disabledHint);
-    const tileClassName = hasValue ? 'border-[1.5px] border-primary' : 'border-hairline border-surface-separator';
-    const glyphClassName = hasValue ? 'text-primary' : 'text-secondary-foreground';
-    const glyphOpacityClassName = isDisabled ? 'opacity-50' : 'opacity-100';
+    const tileClassName = hasValue ? 'bg-surface-fill' : 'bg-transaction-detail-row';
+    const glyphClassName = cn(hasValue ? 'text-primary' : 'text-secondary-foreground', isDisabled ? 'opacity-50' : 'opacity-100');
     const accessibilityLabel = `${label}: ${value ?? t`not set`}`;
     const accessibilityState = { disabled: isDisabled };
 
@@ -79,18 +79,15 @@ export const TransactionFieldIcon = (props: Props) => {
                         testID={testID}
                     >
                         <View
-                            className={cn(
-                                'h-[44px] w-[44px] items-center justify-center rounded-[14px] bg-transaction-detail-row',
-                                tileClassName
-                            )}
+                            className={cn('h-[44px] w-[44px] items-center justify-center rounded-[14px]', tileClassName)}
                             style={CONTINUOUS_CORNERS}
                         >
-                            <Icon className={cn(glyphClassName, glyphOpacityClassName)} icon={icon} size={20} />
-                            {hasValue ? <View className="absolute top-[4px] right-[4px] size-[6px] rounded-full bg-primary" /> : null}
+                            <Icon className={glyphClassName} icon={icon} size={20} />
                         </View>
                         <Text
-                            className="min-h-[18px] self-stretch text-center text-[13px] leading-[18px] text-primary"
-                            numberOfLines={1}
+                            className="min-h-[36px] self-stretch text-center text-[13px] leading-[18px] text-primary"
+                            style={captionStyle}
+                            numberOfLines={2}
                             ellipsizeMode="tail"
                             {...testIDProps(testID, TestIDPartEnum.TITLE)}
                         >

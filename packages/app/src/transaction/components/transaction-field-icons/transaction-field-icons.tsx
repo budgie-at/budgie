@@ -5,4 +5,4 @@ interface Props {
     readonly children: ReactNode;
 }
 
-export const TransactionFieldIcons = ({ children }: Props) => <View className="flex-row pt-xs pb-md">{children}</View>;
+export const TransactionFieldIcons = ({ children }: Props) => <View className="flex-row">{children}</View>;

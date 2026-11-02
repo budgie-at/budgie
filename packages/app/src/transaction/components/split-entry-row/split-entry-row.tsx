@@ -32,8 +32,8 @@ const amountInputStyle = { textAlign: 'right' as const, fontSize: 17, fontWeight
 
 export const SplitEntryRow = (props: Props) => {
     const { index, entry, currencySymbol, autoFocus, onAmountChange, onCategoryPress, children } = props;
-    const { fontScale } = useWindowDimensions();
-    const amountWidthStyle = { width: AMOUNT_INPUT_WIDTH * fontScale };
+    const { width, fontScale } = useWindowDimensions();
+    const amountWidthStyle = { width: Math.min(AMOUNT_INPUT_WIDTH * fontScale, width - 104), minWidth: 88 };
     const categoryId = entry.categoryId ?? 0;
 
     const { t } = useLingui();
@@ -47,10 +47,10 @@ export const SplitEntryRow = (props: Props) => {
 
     return (
         <Animated.View entering={FadeIn} exiting={FadeOutDown} layout={LinearTransition}>
-            <View className="flex-row items-center gap-x-xl px-3xl py-xl">
+            <View className="flex-row flex-wrap items-center gap-x-md gap-y-md px-xl py-xl">
                 <HapticPressable
                     onPress={onCategoryPress}
-                    className="flex-row items-center gap-x-xl flex-1"
+                    className="flex-row items-center gap-x-md flex-1 min-w-[88px]"
                     testID={SplitEntryRowSelector.Category(index)}
                 >
                     <CircleIcon
@@ -61,23 +61,23 @@ export const SplitEntryRow = (props: Props) => {
                         variant={iconVariant}
                         iconClassName={titleClassName}
                     />
-                    <Text className={cn('text-md font-semibold flex-1', titleClassName)} numberOfLines={2} ellipsizeMode="tail">
+                    <Text className={cn('text-md font-semibold flex-1 shrink', titleClassName)} numberOfLines={1} ellipsizeMode="tail">
                         {categoryTitle}
                     </Text>
                 </HapticPressable>
 
-                <View className="max-w-[45%] justify-center" style={amountWidthStyle}>
+                <View className="min-h-[44px] flex-row items-center gap-x-xs border-b border-surface-separator" style={amountWidthStyle}>
+                    <Text className="text-primary text-[17px] font-semibold tabular-nums">{currencySymbol}</Text>
                     <AmountInput
                         value={entry.amount}
                         onChangeValue={onAmountChange}
-                        inputClassName="text-primary border-0 h-auto min-h-[44px] px-0"
+                        inputClassName="text-primary border-0 h-auto min-h-[44px] flex-1 px-0"
                         placeholderTextColorClassName="accent-primary/40"
                         borderless
                         autoFocus={autoFocus}
                         selectTextOnFocus
                         style={amountInputStyle}
-                        valuePrefix={currencySymbol}
-                        placeholder={`${currencySymbol}0.00`}
+                        placeholder="0.00"
                         minimumDecimalPlaces={DEFAULT_DECIMAL_PLACES}
                         testID={SplitEntryRowSelector.Amount(index)}
                     />

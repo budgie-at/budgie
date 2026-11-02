@@ -38,7 +38,7 @@ export const TransactionKeypad = (props: Props) => {
     return (
         <Animated.View
             entering={FadeInUp.delay(100).duration(250).reduceMotion(ReduceMotion.System)}
-            className="flex-1 pb-md"
+            className="flex-1"
             style={keypadStyle}
         >
             <View className="flex-1 gap-md">

@@ -15,7 +15,8 @@ const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
 export const TransactionFeeSaveButton = ({ isDisabled, onPress }: Props) => {
     const { t } = useLingui();
     const accessibilityState = { disabled: isDisabled };
-    const disabledClassName = isDisabled ? 'opacity-40' : 'active:opacity-80';
+    const backgroundClassName = isDisabled ? 'bg-cta-disabled-background' : 'bg-cta-background active:opacity-80';
+    const contentClassName = isDisabled ? 'text-cta-disabled-foreground' : 'text-cta-foreground';
 
     return (
         <HapticPressable
@@ -23,11 +24,11 @@ export const TransactionFeeSaveButton = ({ isDisabled, onPress }: Props) => {
             disabled={isDisabled}
             accessibilityRole="button"
             accessibilityState={accessibilityState}
-            className={cn('min-h-[52px] items-center justify-center rounded-full px-5xl py-md bg-cta-background', disabledClassName)}
+            className={cn('min-h-[52px] items-center justify-center rounded-full px-5xl py-md', backgroundClassName)}
             style={CONTINUOUS_CORNERS}
             testID={TransactionFeeModalContentSelector.SaveButton}
         >
-            <Text className="text-center text-[17px] font-semibold text-cta-foreground">{t`Save fee`}</Text>
+            <Text className={cn('text-center text-[17px] font-semibold', contentClassName)}>{t`Save fee`}</Text>
         </HapticPressable>
     );
 };

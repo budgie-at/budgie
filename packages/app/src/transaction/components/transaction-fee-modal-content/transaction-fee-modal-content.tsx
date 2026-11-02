@@ -3,6 +3,9 @@ import { t } from '@lingui/core/macro';
 import * as Effect from 'effect/Effect';
 import { useState } from 'react';
 import { View } from 'react-native';
+import { useReanimatedKeyboardAnimation } from 'react-native-keyboard-controller';
+import Animated, { interpolate, useAnimatedStyle } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -33,6 +36,9 @@ interface Props {
 const ROW_INDEX = 0;
 
 export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, variant, onConfirm }: Props) => {
+    const { bottom } = useSafeAreaInsets();
+    const { progress } = useReanimatedKeyboardAnimation();
+    const bottomPaddingStyle = useAnimatedStyle(() => ({ paddingBottom: interpolate(progress.value, [0, 1], [Math.max(bottom, 16), 8]) }));
     const [openCategorySelector] = useCategorySelectorModal();
     const [feeEntry, setFeeEntry] = useState<TransactionEntryCreateInputInterface>(
         entry ?? {
@@ -87,7 +93,7 @@ export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, v
         );
 
     return (
-        <View className="px-xl pb-safe-or-[16px] gap-lg bg-sheet-surface">
+        <Animated.View className="px-xl gap-lg bg-sheet-surface" style={bottomPaddingStyle}>
             <SheetTitle title={t`Fee`} />
 
             <GroupedListSection>
@@ -117,6 +123,6 @@ export const TransactionFeeModalContent = ({ accountId, currencySymbol, entry, v
                     <TransactionFeeSaveButton isDisabled={!canSave} onPress={handleConfirm} />
                 </View>
             </View>
-        </View>
+        </Animated.View>
     );
 };
