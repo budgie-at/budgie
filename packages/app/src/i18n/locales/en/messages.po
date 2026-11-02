@@ -123,11 +123,6 @@ msgstr "{0, plural, one {Other · # category} other {Other · # categories}}"
 msgid "{0, plural, one {Show # more group} other {Show # more groups}}"
 msgstr "{0, plural, one {Show # more group} other {Show # more groups}}"
 
-#. placeholder {0}: categoriesWithDefaultIcon.length
-#: src/app/(tabs)/settings/category-icons.tsx
-#~ msgid "{0, plural, one {Tap a suggestion to replace the default icon} other {Tap a suggestion to replace each default icon}}"
-#~ msgstr "{0, plural, one {Tap a suggestion to replace the default icon} other {Tap a suggestion to replace each default icon}}"
-
 #: src/onboarding/hook/use-onboarding-file-state.hook.ts
 msgid "{accountCount, plural, one {# account} other {# accounts}}"
 msgstr "{accountCount, plural, one {# account} other {# accounts}}"
@@ -319,10 +314,6 @@ msgstr "{downloaded} of {total} GB is kept. It carries on when you're back onlin
 #: src/sync/component/file-import-review-step/file-import-review-step.tsx
 msgid "{duplicateTransactionCount, plural, one {# skipped} other {# skipped}}"
 msgstr "{duplicateTransactionCount, plural, one {# skipped} other {# skipped}}"
-
-#: src/app/(tabs)/settings/sync-repairs.tsx
-#~ msgid "{duplicateTransactionCount, plural, one {Remove # duplicate} other {Remove # duplicates}}"
-#~ msgstr "{duplicateTransactionCount, plural, one {Remove # duplicate} other {Remove # duplicates}}"
 
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "{entryStatusLabel}. {formattedAmount} {caption}. {formattedSpentLabel}, {formattedDaysLeft}."
@@ -678,10 +669,6 @@ msgstr "{remainingCount, plural, one {or # other condition} other {or # other co
 #: src/categorize-inbox/components/categorize-inbox-hero/categorize-inbox-hero.tsx
 msgid "{remainingCount, plural, one {payment to sort} other {payments to sort}}"
 msgstr "{remainingCount, plural, one {payment to sort} other {payments to sort}}"
-
-#: src/settings/hooks/use-sync-repairs-action.hook.ts
-#~ msgid "{repairedTransactionCount, plural, one {# sync item repaired} other {# sync items repaired}}"
-#~ msgstr "{repairedTransactionCount, plural, one {# sync item repaired} other {# sync items repaired}}"
 
 #: src/settings/components/sync-repairs-empty-state-card/sync-repairs-empty-state-card.tsx
 msgid "{repairedTransactionCount, plural, one {Removed # duplicate} other {Removed # duplicates}}"
@@ -1161,10 +1148,6 @@ msgid "Add both amounts to continue"
 msgstr "Add both amounts to continue"
 
 #: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
-#~ msgid "Add Capture contactless payment and set Amount, Merchant and Card from the Shortcut Input."
-#~ msgstr "Add Capture contactless payment and set Amount, Merchant and Card from the Shortcut Input."
-
-#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
 msgid "Add Capture contactless payment. Set Amount, Merchant and Card to Shortcut Input."
 msgstr "Add Capture contactless payment. Set Amount, Merchant and Card to Shortcut Input."
 
@@ -1275,10 +1258,6 @@ msgstr "Ahead of pace"
 #: src/app/(tabs)/settings/ai.tsx
 msgid "AI features"
 msgstr "AI features"
-
-#: src/ai/component/ai-model-storage/ai-model-storage.tsx
-#~ msgid "AI features are not available in this build."
-#~ msgstr "AI features are not available in this build."
 
 #: src/ai/component/ai-download-wifi-banner/ai-download-wifi-banner.tsx
 msgid "AI model download paused: no Wi-Fi"
@@ -1868,10 +1847,6 @@ msgstr "Budgie has no exchange rate for this payment currency yet."
 msgid "Budgie hit an unexpected problem. You can restart the app or report the issue so we can investigate."
 msgstr "Budgie hit an unexpected problem. You can restart the app or report the issue so we can investigate."
 
-#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
-#~ msgid "Budgie picks the account from the card name, so one automation covers all your cards."
-#~ msgstr "Budgie picks the account from the card name, so one automation covers all your cards."
-
 #: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
 msgid "Budgie picks the account from the card name, then your default account. Name the account like the card, or set the optional Account field in the action to pin one."
 msgstr "Budgie picks the account from the card name, then your default account. Name the account like the card, or set the optional Account field in the action to pin one."
@@ -1883,10 +1858,6 @@ msgstr "Budgie plans to set aside {amountLabel} {rate}"
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "Budgie reads these statements on this phone."
 msgstr "Budgie reads these statements on this phone."
-
-#: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
-#~ msgid "Budgie records Apple Pay payments the moment you tap, through a Shortcuts automation."
-#~ msgstr "Budgie records Apple Pay payments the moment you tap, through a Shortcuts automation."
 
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Budgie removes repeated bank imports and fixes transfers that landed on inactive accounts. Manual transactions are never changed."
@@ -2056,10 +2027,6 @@ msgstr "Categories break your spending down automatically. Add a transaction, or
 #: src/app/(tabs)/settings/ai-features.tsx
 msgid "Categories still use on-device rules."
 msgstr "Categories still use on-device rules."
-
-#: src/app/(tabs)/settings/ai-features.tsx
-#~ msgid "Categories still work with on-device rules."
-#~ msgstr "Categories still work with on-device rules."
 
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "Categories, tags and voice notes are handled on this phone."
@@ -2233,10 +2200,6 @@ msgstr "Choose an action"
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 msgid "Choose and confirm a PIN"
 msgstr "Choose and confirm a PIN"
-
-#: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
-#~ msgid "Choose another icon"
-#~ msgstr "Choose another icon"
 
 #: src/app/(main)/import-csv.tsx
 msgid "Choose columns for {missingFieldLabels}"
@@ -3659,10 +3622,6 @@ msgstr "Events"
 msgid "Every N months"
 msgstr "Every N months"
 
-#: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
-#~ msgid "Every tap, recorded"
-#~ msgstr "Every tap, recorded"
-
 #: src/export/components/export-csv/export-csv.tsx
 msgid "Every transaction as a spreadsheet"
 msgstr "Every transaction as a spreadsheet"
@@ -3899,10 +3858,6 @@ msgstr "First {formattedPaid} already paid"
 #: src/installment-plan/component/convert-to-installment-parts/convert-to-installment-parts.tsx
 msgid "First {formattedPaid} already paid · last payment {formattedLast}"
 msgstr "First {formattedPaid} already paid · last payment {formattedLast}"
-
-#: src/app/(main)/import-csv.tsx
-#~ msgid "Fix errors"
-#~ msgstr "Fix errors"
 
 #: src/rule/utils/get-rule-form-issue.util.ts
 msgid "Fix the pattern to continue"
@@ -4205,10 +4160,6 @@ msgstr "In credit"
 #: src/runway/component/runway-settings-rows/runway-settings-rows.tsx
 msgid "In runway, at today's prices"
 msgstr "In runway, at today's prices"
-
-#: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
-#~ msgid "In Shortcuts, add a personal automation with the Transaction trigger, select your cards and choose Run Immediately."
-#~ msgstr "In Shortcuts, add a personal automation with the Transaction trigger, select your cards and choose Run Immediately."
 
 #: src/wallet-capture/component/apple-pay-capture-setup-card/apple-pay-capture-setup-card.tsx
 msgid "In Shortcuts, add a Transaction automation. Pick cards and Run Immediately."
@@ -4618,10 +4569,6 @@ msgstr "Match on"
 #: src/import/utils/get-import-match-description.util.ts
 msgid "Matched by column name"
 msgstr "Matched by column name"
-
-#: src/app/(main)/import-csv.tsx
-#~ msgid "Matched by column name. Tap a field to change it."
-#~ msgstr "Matched by column name. Tap a field to change it."
 
 #: src/import/utils/get-import-match-description.util.ts
 msgid "Matched by column names and sample values"
@@ -5393,10 +5340,6 @@ msgstr "On track"
 msgid "On-device AI"
 msgstr "On-device AI"
 
-#: src/app/(tabs)/settings/ai-features.tsx
-#~ msgid "On-device AI isn't available in this version"
-#~ msgstr "On-device AI isn't available in this version"
-
 #: src/ai/component/ai-features-settings-card/ai-features-settings-card.tsx
 msgid "On-device models and storage"
 msgstr "On-device models and storage"
@@ -5449,10 +5392,6 @@ msgstr "Only income transactions can be converted"
 #: src/onboarding/component/onboarding-key/onboarding-key.tsx
 msgid "Only me, with a PIN"
 msgstr "Only me, with a PIN"
-
-#: src/wallet-capture/component/apple-pay-capture-history-notice/apple-pay-capture-history-notice.tsx
-#~ msgid "Only new taps. Captures new eligible Apple Pay taps. It cannot import Wallet history or final bank settlement changes."
-#~ msgstr "Only new taps. Captures new eligible Apple Pay taps. It cannot import Wallet history or final bank settlement changes."
 
 #: ../ledger/src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only single-entry expenses can be converted"
@@ -7102,10 +7041,6 @@ msgstr "Switch on to start syncing"
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Sync"
 msgstr "Sync"
-
-#: src/settings/hooks/use-sync-repairs-action.hook.ts
-#~ msgid "Sync data repaired"
-#~ msgstr "Sync data repaired"
 
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
 msgid "Sync failed"
