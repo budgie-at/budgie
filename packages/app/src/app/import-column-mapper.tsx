@@ -4,6 +4,7 @@ import { ScrollView, Text, View } from 'react-native';
 
 import { isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
+import { FormsheetHeader } from '../@generic/component/formsheet-header/formsheet-header';
 import { GroupedListRow } from '../@generic/component/grouped-list-row/grouped-list-row';
 import { GroupedListSection } from '../@generic/component/grouped-list-section/grouped-list-section';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
@@ -42,12 +43,7 @@ export default function ImportColumnMapperModal() {
 
     return (
         <View className="flex-1 bg-secondary-background">
-            <View className="px-5xl pt-3xl pb-xl gap-y-xs">
-                <Text className="text-primary text-[17px] font-semibold" numberOfLines={1}>
-                    {fieldLabel}
-                </Text>
-                <Text className="text-secondary-foreground text-[13px]">{description}</Text>
-            </View>
+            <FormsheetHeader size="sm" title={fieldLabel} description={description} />
             <ScrollView contentContainerClassName="px-5xl pb-5xl" showsVerticalScrollIndicator={false}>
                 <GroupedListSection>
                     {canClear ? (

@@ -217,6 +217,10 @@ msgstr "{count, plural, =0 {Об’єднати «{sourceTitle}» з «{targetTi
 msgid "{count, plural, one {{formattedAmount} rolled over across # category} other {{formattedAmount} rolled over across # categories}}"
 msgstr "{count, plural, one {{formattedAmount} перенесено на # категорію} few {{formattedAmount} перенесено на # категорії} many {{formattedAmount} перенесено на # категорій} other {{formattedAmount} перенесено на # категорії}}"
 
+#: src/settings/utils/get-sync-repair-text.util.ts
+msgid "{count, plural, one {# duplicate} other {# duplicates}}"
+msgstr ""
+
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "{count, plural, one {# existing transaction matches this rule.} other {# existing transactions match this rule.}}"
 msgstr "{count, plural, one {# наявна транзакція відповідає цьому правилу.} few {# наявні транзакції відповідають цьому правилу.} many {# наявних транзакцій відповідають цьому правилу.} other {# наявної транзакції відповідають цьому правилу.}}"
@@ -224,10 +228,6 @@ msgstr "{count, plural, one {# наявна транзакція відпові�
 #: src/installment-plan/component/installment-count-chip/installment-count-chip.tsx
 msgid "{count, plural, one {# month} other {# months}}"
 msgstr "{count, plural, one {# місяць} few {# місяці} many {# місяців} other {# місяця}}"
-
-#: src/settings/utils/get-sync-repair-text.util.ts
-msgid "{count, plural, one {# sync repair} other {# sync repairs}}"
-msgstr "{count, plural, one {# виправлення синхронізації} few {# виправлення синхронізації} many {# виправлень синхронізації} other {# виправлення синхронізації}}"
 
 #: src/category/hooks/use-move-and-delete-category.hook.ts
 msgid "{count, plural, one {# transaction moves to “{targetTitle}”. “{sourceTitle}” will be deleted.} other {# transactions move to “{targetTitle}”. “{sourceTitle}” will be deleted.}}"
@@ -318,6 +318,10 @@ msgstr "{downloaded} з {total} ГБ збережено. Завантаженн�
 #: src/sync/component/file-import-review-step/file-import-review-step.tsx
 msgid "{duplicateTransactionCount, plural, one {# skipped} other {# skipped}}"
 msgstr "{duplicateTransactionCount, plural, one {# пропущено} few {# пропущено} many {# пропущено} other {# пропущено}}"
+
+#: src/app/(tabs)/settings/sync-repairs.tsx
+msgid "{duplicateTransactionCount, plural, one {Remove # duplicate} other {Remove # duplicates}}"
+msgstr ""
 
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "{entryStatusLabel}. {formattedAmount} {caption}. {formattedSpentLabel}, {formattedDaysLeft}."
@@ -678,6 +682,10 @@ msgstr "{repairedTransactionCount, plural, one {# елемент синхрон�
 msgid "{rowCount, plural, one {# payment} other {# payments}}"
 msgstr "{rowCount, plural, one {# платіж} few {# платежі} many {# платежів} other {# платежу}}"
 
+#: src/app/(main)/import-csv.tsx
+msgid "{rowCount, plural, one {# row found} other {# rows found}}"
+msgstr ""
+
 #: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
 msgid "{rowCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{rowCount, plural, one {# транзакція} few {# транзакції} many {# транзакцій} other {# транзакцій}}"
@@ -693,6 +701,10 @@ msgstr "{rowCount, plural, one {Віднести # готовий платіж �
 #: src/categorize-inbox/components/categorize-inbox-accept-all-button/categorize-inbox-accept-all-button.tsx
 msgid "{rowCount, plural, one {File # ready payment} other {File # ready payments}}"
 msgstr "{rowCount, plural, one {Розподілити # готовий платіж} few {Розподілити # готові платежі} many {Розподілити # готових платежів} other {Розподілити # готового платежу}}"
+
+#: src/app/(main)/import-csv.tsx
+msgid "{rowCount, plural, one {Import # transaction} other {Import # transactions}}"
+msgstr ""
 
 #: src/categorize-inbox/components/categorize-inbox-tag-provider/categorize-inbox-tag-provider.tsx
 msgid "{rowCount, plural, one {Tagged # transaction} other {Tagged # transactions}}"
@@ -1241,14 +1253,15 @@ msgstr "Після 5 невдалих спроб Budgie трохи довше ч
 msgid "Ahead of pace"
 msgstr "Швидше за план"
 
-#: src/ai/component/ai-model-storage/ai-model-storage.tsx
-msgid "AI downloads on this device: {totalSize}"
-msgstr "Завантаження ШІ на цьому пристрої: {totalSize}"
-
 #: src/ai/component/ai-features-settings-card/ai-features-settings-card.tsx
 #: src/app/(tabs)/settings/ai-features.tsx
+#: src/app/(tabs)/settings/ai.tsx
 msgid "AI features"
 msgstr "Функції ШІ"
+
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "AI features are not available in this build."
+msgstr ""
 
 #: src/ai/component/ai-download-wifi-banner/ai-download-wifi-banner.tsx
 msgid "AI model download paused: no Wi-Fi"
@@ -1276,8 +1289,8 @@ msgid "All caught up"
 msgstr "Усе оброблено"
 
 #: src/app/import-column-mapper.tsx
-msgid "All columns have been assigned"
-msgstr "Усі стовпці було призначено"
+msgid "All columns are already matched"
+msgstr ""
 
 #: src/rule/components/rule-condition-match-type-selector/rule-condition-match-type-selector.tsx
 msgid "All conditions"
@@ -1354,7 +1367,7 @@ msgstr "Також знаходиться як «{englishTitle}»"
 msgid "amount"
 msgstr "сума"
 
-#: src/app/(tabs)/settings/import.tsx
+#: src/app/(main)/import-csv.tsx
 #: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
 #: src/transaction/components/statistics-filters-menu/statistics-filters-menu.tsx
@@ -1503,7 +1516,6 @@ msgid "Are you sure you want to delete all your data? This action cannot be undo
 msgstr "Ви впевнені, що хочете видалити всі свої дані? Цю дію неможливо скасувати."
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
-#: src/settings/components/sync-repairs-confirmation-card/sync-repairs-confirmation-card.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
 msgid "Are you sure?"
 msgstr "Ви впевнені?"
@@ -1560,10 +1572,6 @@ msgstr "Автоматичне налаштування вимкнено"
 #: src/app/(tabs)/settings/index.tsx
 msgid "Automation"
 msgstr "Автоматизація"
-
-#: src/app/import-column-mapper.tsx
-msgid "Available Columns"
-msgstr "Доступні стовпці"
 
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "Available once the import finishes"
@@ -1781,6 +1789,7 @@ msgstr "Бюджет заблоковано, {formattedDaysLeft}. Розблок
 msgid "Budget name"
 msgstr "Назва бюджету"
 
+#: src/import/components/import-preset-picker/import-preset-picker.tsx
 #: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
 #: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
 msgid "Budgie"
@@ -1797,10 +1806,6 @@ msgstr "Дія Budgie відсутня"
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Budgie brings in the last month of history, then asks Monobank for new transactions when you open the app."
 msgstr "Budgie завантажить історію за останній місяць, а потім питатиме Monobank про нові транзакції, коли ви відкриваєте застосунок."
-
-#: src/settings/components/sync-repairs-intro-card/sync-repairs-intro-card.tsx
-msgid "Budgie can find duplicated bank sync imports and repair transfer consolidations that landed on inactive accounts."
-msgstr "Budgie може знайти дублікати імпортів банківської синхронізації та виправити консолідації переказів, що потрапили на неактивні рахунки."
 
 #: src/app/note-input.tsx
 msgid "Budgie can sort notes on this phone"
@@ -1850,6 +1855,10 @@ msgstr "Budgie читає ці виписки на цьому телефоні."
 msgid "Budgie records Apple Pay payments the moment you tap, through a Shortcuts automation."
 msgstr "Budgie записує платежі Apple Pay щойно ви прикладаєте пристрій — через автоматизацію в Швидких командах."
 
+#: src/app/(tabs)/settings/sync-repairs.tsx
+msgid "Budgie removes repeated bank imports and fixes transfers that landed on inactive accounts. Manual transactions are never changed."
+msgstr ""
+
 #: src/budget/hooks/use-budget-fund-form.hook.ts
 msgid "Budgie stops setting money aside for it. Your transactions are not affected."
 msgstr "Budgie більше не відкладає на це гроші. Ваші транзакції не зміняться."
@@ -1865,10 +1874,6 @@ msgstr "Budgie об'єднає надійні збіги переказів і �
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "Budgie will notify you when it finishes"
 msgstr "Budgie повідомить, коли імпорт завершиться"
-
-#: src/settings/components/sync-repairs-confirmation-card/sync-repairs-confirmation-card.tsx
-msgid "Budgie will soft-delete {countText}. This keeps your manual transactions unchanged."
-msgstr "Budgie позначить як видалені такі записи: {countText}. Ваші ручні транзакції залишаться без змін."
 
 #: src/category/components/category-destination-sheet/category-destination-sheet.tsx
 msgid "Built-in"
@@ -1912,7 +1917,6 @@ msgstr "Змінити пізніше не можна"
 #: src/account/hooks/use-delete-archived-account.hook.ts
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
-#: src/app/(tabs)/settings/import.tsx
 #: src/app/convert-to-transfer.tsx
 #: src/app/resync-window-picker.tsx
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
@@ -1928,7 +1932,6 @@ msgstr "Змінити пізніше не можна"
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
-#: src/settings/components/sync-repairs-confirmation-card/sync-repairs-confirmation-card.tsx
 #: src/settings/components/truncate-data/truncate-data.tsx
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
@@ -1947,10 +1950,6 @@ msgstr "Скасувати"
 #: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
 msgid "Cancel and delete"
 msgstr "Скасувати й видалити"
-
-#: src/wallet-capture/component/apple-pay-capture-history-notice/apple-pay-capture-history-notice.tsx
-msgid "Captures new eligible Apple Pay taps. It cannot import Wallet history or final bank settlement changes."
-msgstr "Зберігає нові відповідні оплати через Apple Pay. Історію Wallet та остаточні зміни банківського розрахунку імпортувати неможливо."
 
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "Card"
@@ -2033,8 +2032,8 @@ msgstr "Категоризувати"
 msgid "Categorize as {categoryTitle}"
 msgstr "Категоризувати як {categoryTitle}"
 
+#: src/app/(main)/import-csv.tsx
 #: src/app/(tabs)/settings/categories.tsx
-#: src/app/(tabs)/settings/import.tsx
 #: src/budget/components/budget-fund-category-field/budget-fund-category-field.tsx
 #: src/budget/service/budget-alert-monitor.service.ts
 #: src/rule/components/rule-action-category-selector/rule-action-category-selector.tsx
@@ -2045,8 +2044,8 @@ msgid "Category"
 msgstr "Категорія"
 
 #: src/app/(tabs)/settings/category-icons.tsx
-msgid "Category Icons"
-msgstr "Іконки категорій"
+msgid "Category icons"
+msgstr ""
 
 #: src/budget/components/budget-event-category-limits/budget-event-category-limits.tsx
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
@@ -2114,6 +2113,7 @@ msgstr "Перевіряємо історію транзакцій"
 
 #: src/budget/components/budget-event-tag-field/budget-event-tag-field.tsx
 #: src/budget/components/budget-fund-category-field/budget-fund-category-field.tsx
+#: src/import/components/import-column-map-field/import-column-map-field.tsx
 msgid "Choose"
 msgstr "Вибрати"
 
@@ -2153,10 +2153,6 @@ msgstr "Вибрати період"
 msgid "Choose a PIN"
 msgstr "Виберіть PIN-код"
 
-#: src/import/components/import-preset-picker/import-preset-picker.tsx
-msgid "Choose a preset to auto-fill column mappings"
-msgstr "Оберіть шаблон для автоматичного заповнення відповідностей стовпців"
-
 #: src/rule/components/rule-condition-value-input/rule-condition-value-input.tsx
 msgid "Choose a source"
 msgstr "Виберіть джерело"
@@ -2195,8 +2191,8 @@ msgid "Choose and confirm a PIN"
 msgstr "Виберіть і підтвердьте PIN-код"
 
 #: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
-msgid "Choose another icon…"
-msgstr "Вибрати іншу іконку…"
+msgid "Choose another icon"
+msgstr ""
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Choose dates to sync again"
@@ -2300,7 +2296,7 @@ msgstr "Згорнути умову {position}"
 msgid "comment"
 msgstr "коментар"
 
-#: src/app/(tabs)/settings/import.tsx
+#: src/app/(main)/import-csv.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
 msgid "Comment"
 msgstr "Коментар"
@@ -2575,17 +2571,17 @@ msgstr "Не вдалося експортувати CSV"
 msgid "Could not fetch accounts"
 msgstr "Не вдалося отримати рахунки"
 
-#: src/app/(tabs)/settings/import.tsx
+#: src/app/(main)/import-csv.tsx
 msgid "Could not import CSV file"
 msgstr "Не вдалося імпортувати CSV-файл"
+
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "Could not load"
+msgstr ""
 
 #: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
 msgid "Could not load accounts"
 msgstr "Не вдалося завантажити рахунки"
-
-#: src/ai/component/ai-model-storage/ai-model-storage.tsx
-msgid "Could not load AI downloads"
-msgstr "Не вдалося завантажити дані ШІ"
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "Could not load sources. Please try again."
@@ -2623,7 +2619,7 @@ msgstr "Не вдалося відкрити посилання"
 msgid "Could not reach the server. Check your connection; sync will retry automatically."
 msgstr "Не вдалося зв'язатися із сервером. Перевірте з'єднання; синхронізація повторить спробу автоматично."
 
-#: src/app/(tabs)/settings/import.tsx
+#: src/app/(main)/import-csv.tsx
 msgid "Could not read CSV file"
 msgstr "Не вдалося прочитати CSV-файл"
 
@@ -2976,7 +2972,7 @@ msgid "Data tools"
 msgstr "Інструменти даних"
 
 #: src/@generic/component/date-filter/date-filter.tsx
-#: src/app/(tabs)/settings/import.tsx
+#: src/app/(main)/import-csv.tsx
 #: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
 msgid "Date"
 msgstr "Дата"
@@ -3239,7 +3235,6 @@ msgid "Does not contain"
 msgstr "Не містить"
 
 #: src/@generic/component/keyboard-done-accessory/keyboard-done-accessory.tsx
-#: src/app/import-column-mapper.tsx
 #: src/categorize-inbox/components/categorize-inbox-empty-state/categorize-inbox-empty-state.tsx
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
@@ -3257,6 +3252,10 @@ msgstr "знизилась на {changeShare} {staleDate}"
 #: src/account/component/account-details-market-link/account-details-market-link.tsx
 msgid "down {changeShare} over the last 24 hours"
 msgstr "знизилась на {changeShare} за останні 24 години"
+
+#: src/app/(tabs)/settings/ai.tsx
+msgid "Download"
+msgstr ""
 
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "Download {remaining} GB"
@@ -3293,6 +3292,10 @@ msgstr "Завантаження зупинено"
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Download your statement as PDF"
 msgstr "Завантажте виписку у форматі PDF"
+
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "Downloaded models"
+msgstr ""
 
 #: src/ai/constant/ai-download-card-visuals.constant.ts
 msgid "Downloading"
@@ -3697,7 +3700,7 @@ msgstr "Експортувати CSV"
 msgid "External account"
 msgstr "Зовнішній рахунок"
 
-#: src/app/(tabs)/settings/import.tsx
+#: src/app/(main)/import-csv.tsx
 msgid "External ID"
 msgstr "Зовнішній ID"
 
@@ -3724,6 +3727,10 @@ msgstr "Бліді стовпчики оцінено за твоїми мину�
 #: src/@generic/hook/use-contacts.hook.ts
 msgid "Failed to load contacts."
 msgstr "Не вдалося завантажити контакти."
+
+#: src/ai/component/ai-settings-section/ai-settings-section.tsx
+msgid "Features"
+msgstr ""
 
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
 #: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
@@ -3808,6 +3815,10 @@ msgstr "Фільтри"
 msgid "Filters · {activeCount}"
 msgstr "Фільтри · {activeCount}"
 
+#: src/import/components/import-preset-picker/import-preset-picker.tsx
+msgid "FinEye"
+msgstr ""
+
 #: src/settings/hook/use-biometric-label.hook.ts
 msgid "Fingerprint"
 msgstr "Відбиток пальця"
@@ -3832,9 +3843,9 @@ msgstr "Перший {formattedPaid} уже сплачено"
 msgid "First {formattedPaid} already paid · last payment {formattedLast}"
 msgstr "Перший платіж {formattedPaid} уже сплачено · останній {formattedLast}"
 
-#: src/app/(tabs)/settings/import.tsx
-msgid "Fix Errors"
-msgstr "Виправити помилки"
+#: src/app/(main)/import-csv.tsx
+msgid "Fix errors"
+msgstr ""
 
 #: src/rule/utils/get-rule-form-issue.util.ts
 msgid "Fix the pattern to continue"
@@ -3855,6 +3866,14 @@ msgstr "Прогноз"
 #: src/auth/components/pin-unlock/pin-unlock.tsx
 msgid "Forgot PIN?"
 msgstr "Забули PIN-код?"
+
+#: src/import/components/import-preset-picker/import-preset-picker.tsx
+msgid "Format"
+msgstr ""
+
+#: src/app/(tabs)/settings/sync-repairs.tsx
+msgid "Found"
+msgstr ""
 
 #: src/i18n/constant/languages.constant.ts
 msgid "French"
@@ -3882,25 +3901,19 @@ msgid "From {source} to {destination}"
 msgstr "З {source} на {destination}"
 
 #: src/account/component/create-debt-account/create-debt-account.tsx
+#: src/app/(main)/import-csv.tsx
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "From account"
 msgstr "З рахунку"
 
-#: src/app/(tabs)/settings/import.tsx
-msgid "From Account"
-msgstr "З рахунку"
-
+#: src/app/(main)/import-csv.tsx
 #: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx
 msgid "From amount"
 msgstr "Від суми"
 
-#: src/app/(tabs)/settings/import.tsx
-msgid "From Amount"
-msgstr "Сума з"
-
-#: src/app/(tabs)/settings/import.tsx
-msgid "From Currency"
-msgstr "Валюта з"
+#: src/app/(main)/import-csv.tsx
+msgid "From currency"
+msgstr ""
 
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "From one amount to another"
@@ -4038,8 +4051,8 @@ msgid "Icon updated for {categoryTitle}"
 msgstr "Іконку оновлено для «{categoryTitle}»"
 
 #: src/app/(tabs)/settings/ai.tsx
-msgid "If a download arrives damaged, Budgie deletes it and asks before starting again."
-msgstr "Якщо завантаження надійде пошкодженим, Budgie видалить його та запитає, перш ніж почати знову."
+msgid "If a download arrives damaged, Budgie deletes it and waits for you to retry."
+msgstr ""
 
 #: src/rule/components/rule-actions-section/rule-actions-section.tsx
 msgid "If another rule also sets a category or transfer, the older rule wins."
@@ -4291,10 +4304,6 @@ msgstr "Тримайтеся до <0>{perDayAmount}/день</0>"
 msgid "Keep only \"Enable Reading\" on — never allow trading or withdrawals"
 msgstr "Залиште увімкненим лише \"Дозволити читання\" — ніколи не дозволяйте торгівлю чи виведення"
 
-#: src/app/(tabs)/settings/ai.tsx
-msgid "Keep using Budgie meanwhile. Until the model is ready, categories come from simple rules on the phone."
-msgstr "Користуйтеся Budgie тим часом. Поки модель не готова, категорії визначаються простими правилами на телефоні."
-
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Kept inside Budgie's file on this phone. Sent only to Monobank, never to us."
 msgstr "Зберігається у файлі Budgie на цьому телефоні. Надсилається лише в Monobank, ніколи нам."
@@ -4465,10 +4474,6 @@ msgstr "Слухаю..."
 msgid "Lives on"
 msgstr "Зберігається на"
 
-#: src/ai/component/ai-model-storage/ai-model-storage.tsx
-msgid "Loading AI downloads…"
-msgstr "Завантаження даних ШІ…"
-
 #: src/transaction/components/suggestion-loading-indicator/suggestion-loading-indicator.tsx
 msgid "Loading AI model..."
 msgstr "Завантаження моделі ШІ..."
@@ -4525,9 +4530,9 @@ msgstr "Вручну"
 msgid "Manual adjustment"
 msgstr "Ручне коригування"
 
-#: src/app/(tabs)/settings/import.tsx
-msgid "Map CSV Columns"
-msgstr "Зіставлення стовпців CSV"
+#: src/app/(main)/import-csv.tsx
+msgid "Map CSV columns"
+msgstr ""
 
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Mark as External?"
@@ -4544,10 +4549,6 @@ msgstr "Ринок"
 #: src/market-data/component/currency-market-stats/currency-market-stats.tsx
 msgid "Market cap"
 msgstr "Ринкова капіталізація"
-
-#: src/app/(tabs)/settings/import.tsx
-msgid "Match each field to a column from your CSV file"
-msgstr "Зіставте кожне поле зі стовпцем вашого CSV файлу"
 
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 msgid "Match on"
@@ -4617,7 +4618,7 @@ msgstr "Дата погашення (необов'язково)"
 msgid "Maximum amount"
 msgstr "Максимальна сума"
 
-#: src/app/(tabs)/settings/import.tsx
+#: src/app/(main)/import-csv.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
 msgid "MCC"
 msgstr "MCC"
@@ -4688,7 +4689,7 @@ msgstr "Курс відсутній"
 msgid "Models and downloads"
 msgstr "Моделі та завантаження"
 
-#: src/app/(tabs)/settings/ai-features.tsx
+#: src/ai/component/ai-settings-section/ai-settings-section.tsx
 msgid "Models download once, best on Wi-Fi"
 msgstr "Моделі завантажуються один раз, краще через Wi-Fi"
 
@@ -5097,6 +5098,10 @@ msgstr "Історії цін ще немає"
 msgid "No price yet"
 msgstr "Ціни ще немає"
 
+#: src/settings/components/sync-repairs-empty-state-card/sync-repairs-empty-state-card.tsx
+msgid "No problems found"
+msgstr ""
+
 #: src/market-data/component/currency-market-position-footer/currency-market-position-footer.tsx
 msgid "No purchase price is recorded for this balance, so the return can’t be calculated."
 msgstr "Для цього балансу не записано ціну купівлі, тому прибутковість неможливо розрахувати."
@@ -5139,10 +5144,6 @@ msgstr "Немає витрат, що відповідають цим фільт
 msgid "No spending or income yet"
 msgstr "Ще немає витрат чи доходів"
 
-#: src/settings/components/sync-repairs-empty-state-card/sync-repairs-empty-state-card.tsx
-msgid "No sync repairs found."
-msgstr "Виправлень синхронізації не знайдено."
-
 #: src/tag/components/tags-select-content/tags-select-content.tsx
 msgid "No tags found"
 msgstr "Тегів не знайдено"
@@ -5171,6 +5172,7 @@ msgstr "Жодна транзакція не відповідає"
 msgid "No transactions yet"
 msgstr "Поки немає транзакцій"
 
+#: src/app/import-column-mapper.tsx
 #: src/settings/components/default-account-selector/default-account-selector.tsx
 #: src/sync/component/file-import-review-step/file-import-review-step.tsx
 msgid "None"
@@ -5260,6 +5262,7 @@ msgstr "від {formattedBase} без комісії"
 msgid "of {total} GB"
 msgstr "з {total} ГБ"
 
+#: src/ai/component/ai-download-card-frame/ai-download-card-frame.tsx
 #: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
 #: src/rule/hooks/use-rule-row-summary.hook.ts
 #: src/settings/components/app-lock-row/app-lock-row.tsx
@@ -5306,6 +5309,7 @@ msgstr "На цьому телефоні"
 msgid "On track"
 msgstr "За планом"
 
+#: src/ai/component/ai-system-status-banner/ai-system-status-banner.tsx
 #: src/app/(tabs)/settings/ai.tsx
 msgid "On-device AI"
 msgstr "ШІ на пристрої"
@@ -5364,8 +5368,8 @@ msgid "Only me, with a PIN"
 msgstr "Лише я, з PIN-кодом"
 
 #: src/wallet-capture/component/apple-pay-capture-history-notice/apple-pay-capture-history-notice.tsx
-msgid "Only new taps"
-msgstr "Лише нові оплати"
+msgid "Only new taps. Captures new eligible Apple Pay taps. It cannot import Wallet history or final bank settlement changes."
+msgstr ""
 
 #: ../ledger/src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only single-entry expenses can be converted"
@@ -5463,6 +5467,10 @@ msgstr "Відкриває цю умову для редагування"
 #: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
 msgid "Opens with"
 msgstr "Відкривається"
+
+#: src/app/(main)/import-csv.tsx
+msgid "Optional"
+msgstr ""
 
 #: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
 msgid "Optional — without it the amount stays manual"
@@ -5778,6 +5786,10 @@ msgstr "Виберіть період. Наявні дані зберігают�
 msgid "Pick one you'll remember but others won't guess."
 msgstr "Виберіть такий, який ви запам'ятаєте, а інші не вгадають."
 
+#: src/import/components/import-preset-picker/import-preset-picker.tsx
+msgid "Pick the app that exported this file, or match columns yourself."
+msgstr ""
+
 #: src/auth/components/pin-form-dots/pin-form-dots.tsx
 msgid "PIN, {enteredCount} of {PIN_LENGTH} digits entered"
 msgstr "PIN-код, введено {enteredCount} з {PIN_LENGTH} цифр"
@@ -5871,10 +5883,6 @@ msgstr "Додатний"
 #: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
 msgid "Preparing conversions"
 msgstr "Підготовка конвертацій"
-
-#: src/import/components/import-preset-picker/import-preset-picker.tsx
-msgid "Preset applied. Adjust columns below if needed."
-msgstr "Шаблон застосовано. За потреби налаштуйте стовпці нижче."
 
 #: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
 msgid "Press and hold to seal"
@@ -6009,6 +6017,7 @@ msgstr "Читаю чек"
 msgid "Reading the day strip"
 msgstr "Як читати смугу днів"
 
+#: src/ai/component/ai-download-card-frame/ai-download-card-frame.tsx
 #: src/ai/constant/ai-download-card-visuals.constant.ts
 msgid "Ready"
 msgstr "Готово"
@@ -6179,8 +6188,8 @@ msgid "Remove split?"
 msgstr "Прибрати розділення?"
 
 #: src/ai/component/ai-model-storage/ai-model-storage.tsx
-msgid "Remove unused downloads ({unusedSize})"
-msgstr "Видалити невикористані завантаження ({unusedSize})"
+msgid "Remove unused downloads"
+msgstr ""
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "Rename"
@@ -6193,14 +6202,6 @@ msgstr "Перейменувати план, {value}"
 #: src/account/constant/debt-settled-label.constant.ts
 msgid "Repaid"
 msgstr "Погашено"
-
-#: src/settings/components/sync-repairs-confirmation-card/sync-repairs-confirmation-card.tsx
-msgid "Repair"
-msgstr "Виправити"
-
-#: src/app/(tabs)/settings/sync-repairs.tsx
-msgid "Repair Sync Data"
-msgstr "Виправити дані синхронізації"
 
 #: src/settings/components/repair-sync-data/repair-sync-data.tsx
 msgid "Repair synced data"
@@ -6226,6 +6227,7 @@ msgstr "Повідомити про помилку"
 msgid "Report a bug or idea"
 msgstr "Повідомити про помилку чи ідею"
 
+#: src/app/(main)/import-csv.tsx
 #: src/rule/components/rule-value-picker-button/rule-value-picker-button.tsx
 #: src/rule/hooks/use-rule-text-value-meta.hook.ts
 msgid "Required"
@@ -6587,7 +6589,7 @@ msgstr "Вибрати"
 msgid "Select a contact"
 msgstr "Виберіть контакт"
 
-#: src/app/(tabs)/settings/import.tsx
+#: src/app/(main)/import-csv.tsx
 msgid "Select a valid column"
 msgstr "Виберіть дійсний стовпець"
 
@@ -6611,17 +6613,9 @@ msgstr "Оберіть усі категорії"
 msgid "Select category"
 msgstr "Обрати категорію"
 
-#: src/import/components/import-column-mapper/import-column-mapper.tsx
-msgid "Select column..."
-msgstr "Виберіть стовпець..."
-
 #: src/sync/component/create-file-bank-account-footer/create-file-bank-account-footer.tsx
 msgid "Select File"
 msgstr "Обрати файл"
-
-#: src/import/components/import-preset-picker/import-preset-picker.tsx
-msgid "Select Import Preset"
-msgstr "Вибрати шаблон імпорту"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Select the downloaded PDF file"
@@ -6630,10 +6624,6 @@ msgstr "Оберіть завантажений PDF-файл"
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Select the exported XLSX file"
 msgstr "Оберіть експортований XLSX-файл"
-
-#: src/app/import-column-mapper.tsx
-msgid "Selected"
-msgstr "Вибрано"
 
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 msgid "Sending {fromCode}"
@@ -6806,6 +6796,10 @@ msgstr "Менші групи"
 msgid "Smart suggestions"
 msgstr "Розумні підказки"
 
+#: src/import/components/import-preset-picker/import-preset-picker.tsx
+msgid "SmartBudget"
+msgstr ""
+
 #: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
 msgid "Some issuers do not provide every Wallet trigger field. Edit the automation and check the variable bindings."
 msgstr "Деякі емітенти не надають усіх полів тригера Wallet. Відредагуйте автоматизацію та перевірте прив’язки змінних."
@@ -6904,10 +6898,6 @@ msgstr "Почати з чистого аркуша"
 msgid "Start from scratch and set every limit yourself"
 msgstr "Почніть з нуля та задайте кожен ліміт самостійно"
 
-#: src/app/(tabs)/settings/import.tsx
-msgid "Start Import"
-msgstr "Почати імпорт"
-
 #: src/sync/component/create-binance-account/create-binance-account.tsx
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Start Sync"
@@ -6946,6 +6936,10 @@ msgstr "Починається"
 msgid "Statement imported"
 msgstr "Виписку імпортовано"
 
+#: src/ai/component/ai-settings-section/ai-settings-section.tsx
+msgid "Status"
+msgstr ""
+
 #: src/wallet-capture/component/apple-pay-capture-setup-row/apple-pay-capture-setup-row.tsx
 msgid "Step {stepNumber}"
 msgstr "Крок {stepNumber}"
@@ -6954,11 +6948,19 @@ msgstr "Крок {stepNumber}"
 msgid "Step {stepNumber} of {total}"
 msgstr "Крок {stepNumber} з {total}"
 
+#: src/wallet-capture/component/apple-pay-capture-instructions-button/apple-pay-capture-instructions-button.tsx
+msgid "Step-by-step instructions"
+msgstr ""
+
 #: src/account/constant/account-kind-title.constant.ts
 #: src/account/constant/account-type.constant.ts
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "Stocks"
 msgstr "Акції"
+
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "Storage"
+msgstr ""
 
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
 msgid "Subscriptions"
@@ -7000,10 +7002,6 @@ msgstr "Синхронізація"
 msgid "Sync data repaired"
 msgstr "Дані синхронізації виправлено"
 
-#: src/settings/components/sync-repairs-intro-card/sync-repairs-intro-card.tsx
-msgid "Sync data repairs"
-msgstr "Виправлення даних синхронізації"
-
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
 msgid "Sync failed"
 msgstr "Синхронізація не вдалась"
@@ -7027,8 +7025,8 @@ msgid "Sync paused"
 msgstr "Синхронізацію призупинено"
 
 #: src/app/(tabs)/settings/sync-repairs.tsx
-msgid "Sync Repairs"
-msgstr "Виправлення синхронізації"
+msgid "Sync repairs"
+msgstr ""
 
 #: src/sync/component/account-sync-problem-row/account-sync-problem-row.tsx
 msgid "Sync stopped"
@@ -7041,6 +7039,14 @@ msgstr "Синхронізація з API-ключем лише для чита�
 #: src/sync/component/create-binance-account/create-binance-account.tsx
 msgid "Sync your Binance balances and transactions"
 msgstr "Синхронізуйте свої баланси та транзакції Binance"
+
+#: src/app/(tabs)/settings/sync-repairs.tsx
+msgid "Synced data"
+msgstr ""
+
+#: src/settings/components/sync-repairs-empty-state-card/sync-repairs-empty-state-card.tsx
+msgid "Synced data looks consistent."
+msgstr ""
 
 #: src/account/constant/account-sync-state-label.constant.ts
 msgid "Syncing"
@@ -7123,7 +7129,6 @@ msgid "Tap to change sign"
 msgstr "Торкніться, щоб змінити знак"
 
 #: src/@generic/component/search-input/search-input.tsx
-#: src/app/import-column-mapper.tsx
 msgid "Tap to clear"
 msgstr "Натисніть, щоб очистити"
 
@@ -7455,12 +7460,9 @@ msgid "To {toText}"
 msgstr "До {toText}"
 
 #: src/account/component/create-debt-account/create-debt-account.tsx
+#: src/app/(main)/import-csv.tsx
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "To account"
-msgstr "На рахунок"
-
-#: src/app/(tabs)/settings/import.tsx
-msgid "To Account"
 msgstr "На рахунок"
 
 #: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx
@@ -7472,9 +7474,9 @@ msgctxt "Move payments to the cash account"
 msgid "To cash"
 msgstr "У готівку"
 
-#: src/app/(tabs)/settings/import.tsx
-msgid "To Currency"
-msgstr "Валюта на"
+#: src/app/(main)/import-csv.tsx
+msgid "To currency"
+msgstr ""
 
 #: src/account/constant/debt-remaining-label.constant.ts
 msgid "To receive"
@@ -7704,13 +7706,13 @@ msgstr "Спробуйте налаштувати фільтри, щоб поб�
 #: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
 #: src/ai/component/ai-download-stopped-card/ai-download-stopped-card.tsx
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/settings/components/sync-repairs-error-card/sync-repairs-error-card.tsx
 #: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
 msgid "Try again"
 msgstr "Спробувати ще раз"
 
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
 #: src/ai/component/voice-input-error/voice-input-error.tsx
-#: src/settings/components/sync-repairs-error-card/sync-repairs-error-card.tsx
 msgid "Try Again"
 msgstr "Спробувати знову"
 
@@ -7889,6 +7891,10 @@ msgstr "До {periodEndLabel}"
 msgid "Until {toLabel}"
 msgstr "До {toLabel}"
 
+#: src/app/(tabs)/settings/ai.tsx
+msgid "Until the model is ready, categories come from simple rules on this phone. If a download arrives damaged, Budgie deletes it and waits for you to retry."
+msgstr ""
+
 #: src/account/component/account-details-market-link/account-details-market-link.tsx
 msgid "up {changeShare} on {staleDate}"
 msgstr "зросла на {changeShare} {staleDate}"
@@ -8003,10 +8009,6 @@ msgstr "Вартість"
 #: src/transaction/components/transaction-info-note-group/transaction-info-note-group.tsx
 msgid "View source transactions"
 msgstr "Переглянути вихідні транзакції"
-
-#: src/wallet-capture/component/apple-pay-capture-instructions-button/apple-pay-capture-instructions-button.tsx
-msgid "View step-by-step instructions"
-msgstr "Переглянути покрокові інструкції"
 
 #: src/ai/component/ai-settings-section/ai-settings-section.tsx
 msgid "Voice notes"

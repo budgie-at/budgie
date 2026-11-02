@@ -217,6 +217,10 @@ msgstr "{count, plural, =0 {Fusionner « {sourceTitle} » dans « {targetTitle} 
 msgid "{count, plural, one {{formattedAmount} rolled over across # category} other {{formattedAmount} rolled over across # categories}}"
 msgstr "{count, plural, one {{formattedAmount} reportés sur # catégorie} other {{formattedAmount} reportés sur # catégories}}"
 
+#: src/settings/utils/get-sync-repair-text.util.ts
+msgid "{count, plural, one {# duplicate} other {# duplicates}}"
+msgstr ""
+
 #: src/rule/hooks/use-rule-form.hook.ts
 msgid "{count, plural, one {# existing transaction matches this rule.} other {# existing transactions match this rule.}}"
 msgstr "{count, plural, one {# transaction existante correspond à cette règle.} other {# transactions existantes correspondent à cette règle.}}"
@@ -224,10 +228,6 @@ msgstr "{count, plural, one {# transaction existante correspond à cette règle.
 #: src/installment-plan/component/installment-count-chip/installment-count-chip.tsx
 msgid "{count, plural, one {# month} other {# months}}"
 msgstr "{count, plural, one {# mois} other {# mois}}"
-
-#: src/settings/utils/get-sync-repair-text.util.ts
-msgid "{count, plural, one {# sync repair} other {# sync repairs}}"
-msgstr "{count, plural, one {# réparation de synchronisation} other {# réparations de synchronisation}}"
 
 #: src/category/hooks/use-move-and-delete-category.hook.ts
 msgid "{count, plural, one {# transaction moves to “{targetTitle}”. “{sourceTitle}” will be deleted.} other {# transactions move to “{targetTitle}”. “{sourceTitle}” will be deleted.}}"
@@ -318,6 +318,10 @@ msgstr "{downloaded} sur {total} Go sont conservés. Le téléchargement reprend
 #: src/sync/component/file-import-review-step/file-import-review-step.tsx
 msgid "{duplicateTransactionCount, plural, one {# skipped} other {# skipped}}"
 msgstr "{duplicateTransactionCount, plural, one {# ignorée} other {# ignorées}}"
+
+#: src/app/(tabs)/settings/sync-repairs.tsx
+msgid "{duplicateTransactionCount, plural, one {Remove # duplicate} other {Remove # duplicates}}"
+msgstr ""
 
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "{entryStatusLabel}. {formattedAmount} {caption}. {formattedSpentLabel}, {formattedDaysLeft}."
@@ -678,6 +682,10 @@ msgstr "{repairedTransactionCount, plural, one {# élément de synchronisation r
 msgid "{rowCount, plural, one {# payment} other {# payments}}"
 msgstr "{rowCount, plural, one {# paiement} other {# paiements}}"
 
+#: src/app/(main)/import-csv.tsx
+msgid "{rowCount, plural, one {# row found} other {# rows found}}"
+msgstr ""
+
 #: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
 msgid "{rowCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{rowCount, plural, one {# transaction} other {# transactions}}"
@@ -693,6 +701,10 @@ msgstr "{rowCount, plural, one {Classer # paiement prêt · {total}} other {Clas
 #: src/categorize-inbox/components/categorize-inbox-accept-all-button/categorize-inbox-accept-all-button.tsx
 msgid "{rowCount, plural, one {File # ready payment} other {File # ready payments}}"
 msgstr "{rowCount, plural, one {Classer # paiement prêt} other {Classer # paiements prêts}}"
+
+#: src/app/(main)/import-csv.tsx
+msgid "{rowCount, plural, one {Import # transaction} other {Import # transactions}}"
+msgstr ""
 
 #: src/categorize-inbox/components/categorize-inbox-tag-provider/categorize-inbox-tag-provider.tsx
 msgid "{rowCount, plural, one {Tagged # transaction} other {Tagged # transactions}}"
@@ -1241,14 +1253,15 @@ msgstr "Après 5 essais erronés, Budgie attend un peu plus longtemps entre les 
 msgid "Ahead of pace"
 msgstr "En avance sur le rythme"
 
-#: src/ai/component/ai-model-storage/ai-model-storage.tsx
-msgid "AI downloads on this device: {totalSize}"
-msgstr "Téléchargements IA sur cet appareil : {totalSize}"
-
 #: src/ai/component/ai-features-settings-card/ai-features-settings-card.tsx
 #: src/app/(tabs)/settings/ai-features.tsx
+#: src/app/(tabs)/settings/ai.tsx
 msgid "AI features"
 msgstr "Fonctionnalités d’IA"
+
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "AI features are not available in this build."
+msgstr ""
 
 #: src/ai/component/ai-download-wifi-banner/ai-download-wifi-banner.tsx
 msgid "AI model download paused: no Wi-Fi"
@@ -1276,8 +1289,8 @@ msgid "All caught up"
 msgstr "Tout est à jour"
 
 #: src/app/import-column-mapper.tsx
-msgid "All columns have been assigned"
-msgstr "Toutes les colonnes ont été assignées"
+msgid "All columns are already matched"
+msgstr ""
 
 #: src/rule/components/rule-condition-match-type-selector/rule-condition-match-type-selector.tsx
 msgid "All conditions"
@@ -1354,7 +1367,7 @@ msgstr "Également trouvable sous « {englishTitle} »"
 msgid "amount"
 msgstr "montant"
 
-#: src/app/(tabs)/settings/import.tsx
+#: src/app/(main)/import-csv.tsx
 #: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
 #: src/transaction/components/statistics-filters-menu/statistics-filters-menu.tsx
@@ -1503,7 +1516,6 @@ msgid "Are you sure you want to delete all your data? This action cannot be undo
 msgstr "Êtes-vous sûr de vouloir supprimer toutes vos données ? Cette action ne peut pas être annulée."
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
-#: src/settings/components/sync-repairs-confirmation-card/sync-repairs-confirmation-card.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
 msgid "Are you sure?"
 msgstr "Êtes-vous sûr ?"
@@ -1560,10 +1572,6 @@ msgstr "L'ajustement automatique est désactivé"
 #: src/app/(tabs)/settings/index.tsx
 msgid "Automation"
 msgstr "Automatisation"
-
-#: src/app/import-column-mapper.tsx
-msgid "Available Columns"
-msgstr "Colonnes disponibles"
 
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "Available once the import finishes"
@@ -1781,6 +1789,7 @@ msgstr "Budget verrouillé, {formattedDaysLeft}. Déverrouillez pour l’affiche
 msgid "Budget name"
 msgstr "Nom du budget"
 
+#: src/import/components/import-preset-picker/import-preset-picker.tsx
 #: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
 #: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
 msgid "Budgie"
@@ -1797,10 +1806,6 @@ msgstr "L’action Budgie est manquante"
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Budgie brings in the last month of history, then asks Monobank for new transactions when you open the app."
 msgstr "Budgie récupère le dernier mois d'historique, puis demande les nouvelles transactions à Monobank quand tu ouvres l'app."
-
-#: src/settings/components/sync-repairs-intro-card/sync-repairs-intro-card.tsx
-msgid "Budgie can find duplicated bank sync imports and repair transfer consolidations that landed on inactive accounts."
-msgstr "Budgie peut détecter les imports de synchronisation bancaire en double et réparer les consolidations de virements associées à des comptes inactifs."
 
 #: src/app/note-input.tsx
 msgid "Budgie can sort notes on this phone"
@@ -1850,6 +1855,10 @@ msgstr "Budgie lit ces relevés sur ce téléphone."
 msgid "Budgie records Apple Pay payments the moment you tap, through a Shortcuts automation."
 msgstr "Budgie enregistre vos paiements Apple Pay dès que vous payez, grâce à une automatisation Raccourcis."
 
+#: src/app/(tabs)/settings/sync-repairs.tsx
+msgid "Budgie removes repeated bank imports and fixes transfers that landed on inactive accounts. Manual transactions are never changed."
+msgstr ""
+
 #: src/budget/hooks/use-budget-fund-form.hook.ts
 msgid "Budgie stops setting money aside for it. Your transactions are not affected."
 msgstr "Budgie cesse de mettre de l'argent de côté pour cela. Vos transactions ne sont pas modifiées."
@@ -1865,10 +1874,6 @@ msgstr "Budgie fusionnera les correspondances fiables de virements et de rembour
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "Budgie will notify you when it finishes"
 msgstr "Budgie vous préviendra lorsque ce sera terminé"
-
-#: src/settings/components/sync-repairs-confirmation-card/sync-repairs-confirmation-card.tsx
-msgid "Budgie will soft-delete {countText}. This keeps your manual transactions unchanged."
-msgstr "Budgie supprimera de façon réversible {countText}. Vos transactions manuelles resteront inchangées."
 
 #: src/category/components/category-destination-sheet/category-destination-sheet.tsx
 msgid "Built-in"
@@ -1912,7 +1917,6 @@ msgstr "Ne pourra pas être modifiée"
 #: src/account/hooks/use-delete-archived-account.hook.ts
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
-#: src/app/(tabs)/settings/import.tsx
 #: src/app/convert-to-transfer.tsx
 #: src/app/resync-window-picker.tsx
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
@@ -1928,7 +1932,6 @@ msgstr "Ne pourra pas être modifiée"
 #: src/rule/components/rule-suggestion-card/rule-suggestion-card.tsx
 #: src/settings/components/consolidate-transfers/consolidate-transfers.tsx
 #: src/settings/components/recalculate-balances/recalculate-balances.tsx
-#: src/settings/components/sync-repairs-confirmation-card/sync-repairs-confirmation-card.tsx
 #: src/settings/components/truncate-data/truncate-data.tsx
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
@@ -1947,10 +1950,6 @@ msgstr "Annuler"
 #: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
 msgid "Cancel and delete"
 msgstr "Annuler et supprimer"
-
-#: src/wallet-capture/component/apple-pay-capture-history-notice/apple-pay-capture-history-notice.tsx
-msgid "Captures new eligible Apple Pay taps. It cannot import Wallet history or final bank settlement changes."
-msgstr "Capture les nouveaux paiements Apple Pay admissibles. L’historique Wallet et les modifications finales du règlement bancaire ne peuvent pas être importés."
 
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "Card"
@@ -2033,8 +2032,8 @@ msgstr "Catégoriser"
 msgid "Categorize as {categoryTitle}"
 msgstr "Catégoriser comme {categoryTitle}"
 
+#: src/app/(main)/import-csv.tsx
 #: src/app/(tabs)/settings/categories.tsx
-#: src/app/(tabs)/settings/import.tsx
 #: src/budget/components/budget-fund-category-field/budget-fund-category-field.tsx
 #: src/budget/service/budget-alert-monitor.service.ts
 #: src/rule/components/rule-action-category-selector/rule-action-category-selector.tsx
@@ -2045,8 +2044,8 @@ msgid "Category"
 msgstr "Catégorie"
 
 #: src/app/(tabs)/settings/category-icons.tsx
-msgid "Category Icons"
-msgstr "Icônes des catégories"
+msgid "Category icons"
+msgstr ""
 
 #: src/budget/components/budget-event-category-limits/budget-event-category-limits.tsx
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
@@ -2114,6 +2113,7 @@ msgstr "Vérification de l’historique des transactions"
 
 #: src/budget/components/budget-event-tag-field/budget-event-tag-field.tsx
 #: src/budget/components/budget-fund-category-field/budget-fund-category-field.tsx
+#: src/import/components/import-column-map-field/import-column-map-field.tsx
 msgid "Choose"
 msgstr "Choisir"
 
@@ -2153,10 +2153,6 @@ msgstr "Choisir une période"
 msgid "Choose a PIN"
 msgstr "Choisis un code PIN"
 
-#: src/import/components/import-preset-picker/import-preset-picker.tsx
-msgid "Choose a preset to auto-fill column mappings"
-msgstr "Choisissez un modèle pour remplir automatiquement les correspondances de colonnes"
-
 #: src/rule/components/rule-condition-value-input/rule-condition-value-input.tsx
 msgid "Choose a source"
 msgstr "Choisir une source"
@@ -2195,8 +2191,8 @@ msgid "Choose and confirm a PIN"
 msgstr "Choisis et confirme un code PIN"
 
 #: src/category/components/category-icon-fix-row/category-icon-fix-row.tsx
-msgid "Choose another icon…"
-msgstr "Choisir une autre icône…"
+msgid "Choose another icon"
+msgstr ""
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "Choose dates to sync again"
@@ -2300,7 +2296,7 @@ msgstr "Replier la condition {position}"
 msgid "comment"
 msgstr "commentaire"
 
-#: src/app/(tabs)/settings/import.tsx
+#: src/app/(main)/import-csv.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
 msgid "Comment"
 msgstr "Commentaire"
@@ -2575,17 +2571,17 @@ msgstr "Impossible d'exporter le CSV"
 msgid "Could not fetch accounts"
 msgstr "Impossible de récupérer les comptes"
 
-#: src/app/(tabs)/settings/import.tsx
+#: src/app/(main)/import-csv.tsx
 msgid "Could not import CSV file"
 msgstr "Impossible d'importer le fichier CSV"
+
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "Could not load"
+msgstr ""
 
 #: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
 msgid "Could not load accounts"
 msgstr "Impossible de charger les comptes"
-
-#: src/ai/component/ai-model-storage/ai-model-storage.tsx
-msgid "Could not load AI downloads"
-msgstr "Impossible de charger les téléchargements IA"
 
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 msgid "Could not load sources. Please try again."
@@ -2623,7 +2619,7 @@ msgstr "Impossible d’ouvrir le lien"
 msgid "Could not reach the server. Check your connection; sync will retry automatically."
 msgstr "Impossible de joindre le serveur. Vérifiez votre connexion ; la synchronisation réessaiera automatiquement."
 
-#: src/app/(tabs)/settings/import.tsx
+#: src/app/(main)/import-csv.tsx
 msgid "Could not read CSV file"
 msgstr "Impossible de lire le fichier CSV"
 
@@ -2976,7 +2972,7 @@ msgid "Data tools"
 msgstr "Outils de données"
 
 #: src/@generic/component/date-filter/date-filter.tsx
-#: src/app/(tabs)/settings/import.tsx
+#: src/app/(main)/import-csv.tsx
 #: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
 msgid "Date"
 msgstr "Date"
@@ -3239,7 +3235,6 @@ msgid "Does not contain"
 msgstr "Ne contient pas"
 
 #: src/@generic/component/keyboard-done-accessory/keyboard-done-accessory.tsx
-#: src/app/import-column-mapper.tsx
 #: src/categorize-inbox/components/categorize-inbox-empty-state/categorize-inbox-empty-state.tsx
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
@@ -3257,6 +3252,10 @@ msgstr "en baisse de {changeShare} le {staleDate}"
 #: src/account/component/account-details-market-link/account-details-market-link.tsx
 msgid "down {changeShare} over the last 24 hours"
 msgstr "en baisse de {changeShare} sur les dernières 24 heures"
+
+#: src/app/(tabs)/settings/ai.tsx
+msgid "Download"
+msgstr ""
 
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "Download {remaining} GB"
@@ -3293,6 +3292,10 @@ msgstr "Téléchargement arrêté"
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Download your statement as PDF"
 msgstr "Téléchargez votre relevé au format PDF"
+
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "Downloaded models"
+msgstr ""
 
 #: src/ai/constant/ai-download-card-visuals.constant.ts
 msgid "Downloading"
@@ -3697,7 +3700,7 @@ msgstr "Exporter CSV"
 msgid "External account"
 msgstr "Compte externe"
 
-#: src/app/(tabs)/settings/import.tsx
+#: src/app/(main)/import-csv.tsx
 msgid "External ID"
 msgstr "ID externe"
 
@@ -3724,6 +3727,10 @@ msgstr "Les barres estompées sont estimées à partir de tes transactions pass�
 #: src/@generic/hook/use-contacts.hook.ts
 msgid "Failed to load contacts."
 msgstr "Échec du chargement des contacts."
+
+#: src/ai/component/ai-settings-section/ai-settings-section.tsx
+msgid "Features"
+msgstr ""
 
 #: src/installment-plan/component/convert-to-installment-fee/convert-to-installment-fee.tsx
 #: src/transaction/components/transaction-info-money-rows/transaction-info-money-rows.tsx
@@ -3808,6 +3815,10 @@ msgstr "Filtres"
 msgid "Filters · {activeCount}"
 msgstr "Filtres · {activeCount}"
 
+#: src/import/components/import-preset-picker/import-preset-picker.tsx
+msgid "FinEye"
+msgstr ""
+
 #: src/settings/hook/use-biometric-label.hook.ts
 msgid "Fingerprint"
 msgstr "Empreinte digitale"
@@ -3832,9 +3843,9 @@ msgstr "Premier {formattedPaid} déjà payé"
 msgid "First {formattedPaid} already paid · last payment {formattedLast}"
 msgstr "Premier paiement de {formattedPaid} déjà réglé · dernier paiement {formattedLast}"
 
-#: src/app/(tabs)/settings/import.tsx
-msgid "Fix Errors"
-msgstr "Corriger les erreurs"
+#: src/app/(main)/import-csv.tsx
+msgid "Fix errors"
+msgstr ""
 
 #: src/rule/utils/get-rule-form-issue.util.ts
 msgid "Fix the pattern to continue"
@@ -3855,6 +3866,14 @@ msgstr "Prévision"
 #: src/auth/components/pin-unlock/pin-unlock.tsx
 msgid "Forgot PIN?"
 msgstr "Code PIN oublié ?"
+
+#: src/import/components/import-preset-picker/import-preset-picker.tsx
+msgid "Format"
+msgstr ""
+
+#: src/app/(tabs)/settings/sync-repairs.tsx
+msgid "Found"
+msgstr ""
 
 #: src/i18n/constant/languages.constant.ts
 msgid "French"
@@ -3882,25 +3901,19 @@ msgid "From {source} to {destination}"
 msgstr "De {source} vers {destination}"
 
 #: src/account/component/create-debt-account/create-debt-account.tsx
+#: src/app/(main)/import-csv.tsx
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "From account"
 msgstr "Compte source"
 
-#: src/app/(tabs)/settings/import.tsx
-msgid "From Account"
-msgstr "Du compte"
-
+#: src/app/(main)/import-csv.tsx
 #: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx
 msgid "From amount"
 msgstr "Montant minimum"
 
-#: src/app/(tabs)/settings/import.tsx
-msgid "From Amount"
-msgstr "Montant source"
-
-#: src/app/(tabs)/settings/import.tsx
-msgid "From Currency"
-msgstr "Devise source"
+#: src/app/(main)/import-csv.tsx
+msgid "From currency"
+msgstr ""
 
 #: src/rule/constant/rule-condition-operator.constant.ts
 msgid "From one amount to another"
@@ -4038,8 +4051,8 @@ msgid "Icon updated for {categoryTitle}"
 msgstr "Icône mise à jour pour {categoryTitle}"
 
 #: src/app/(tabs)/settings/ai.tsx
-msgid "If a download arrives damaged, Budgie deletes it and asks before starting again."
-msgstr "Si un téléchargement arrive endommagé, Budgie le supprime et vous demande avant de recommencer."
+msgid "If a download arrives damaged, Budgie deletes it and waits for you to retry."
+msgstr ""
 
 #: src/rule/components/rule-actions-section/rule-actions-section.tsx
 msgid "If another rule also sets a category or transfer, the older rule wins."
@@ -4291,10 +4304,6 @@ msgstr "Restez sous <0>{perDayAmount}/jour</0>"
 msgid "Keep only \"Enable Reading\" on — never allow trading or withdrawals"
 msgstr "Activez uniquement \"Activer la lecture\" — n'autorisez jamais le trading ni les retraits"
 
-#: src/app/(tabs)/settings/ai.tsx
-msgid "Keep using Budgie meanwhile. Until the model is ready, categories come from simple rules on the phone."
-msgstr "Continuez à utiliser Budgie en attendant. Tant que le modèle n'est pas prêt, les catégories viennent de règles simples sur le téléphone."
-
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Kept inside Budgie's file on this phone. Sent only to Monobank, never to us."
 msgstr "Conservé dans le fichier de Budgie sur ce téléphone. Envoyé uniquement à Monobank, jamais à nous."
@@ -4465,10 +4474,6 @@ msgstr "Écoute..."
 msgid "Lives on"
 msgstr "Stocké sur"
 
-#: src/ai/component/ai-model-storage/ai-model-storage.tsx
-msgid "Loading AI downloads…"
-msgstr "Chargement des téléchargements IA…"
-
 #: src/transaction/components/suggestion-loading-indicator/suggestion-loading-indicator.tsx
 msgid "Loading AI model..."
 msgstr "Chargement du modèle d'IA..."
@@ -4525,9 +4530,9 @@ msgstr "Manuel"
 msgid "Manual adjustment"
 msgstr "Ajustement manuel"
 
-#: src/app/(tabs)/settings/import.tsx
-msgid "Map CSV Columns"
-msgstr "Mapper les colonnes CSV"
+#: src/app/(main)/import-csv.tsx
+msgid "Map CSV columns"
+msgstr ""
 
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Mark as External?"
@@ -4544,10 +4549,6 @@ msgstr "Marché"
 #: src/market-data/component/currency-market-stats/currency-market-stats.tsx
 msgid "Market cap"
 msgstr "Capitalisation"
-
-#: src/app/(tabs)/settings/import.tsx
-msgid "Match each field to a column from your CSV file"
-msgstr "Associez chaque champ à une colonne de votre fichier CSV"
 
 #: src/rule/components/rule-condition-field-selector/rule-condition-field-selector.tsx
 msgid "Match on"
@@ -4617,7 +4618,7 @@ msgstr "Date d'échéance (Facultatif)"
 msgid "Maximum amount"
 msgstr "Montant maximum"
 
-#: src/app/(tabs)/settings/import.tsx
+#: src/app/(main)/import-csv.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
 msgid "MCC"
 msgstr "MCC"
@@ -4688,7 +4689,7 @@ msgstr "Taux manquant"
 msgid "Models and downloads"
 msgstr "Modèles et téléchargements"
 
-#: src/app/(tabs)/settings/ai-features.tsx
+#: src/ai/component/ai-settings-section/ai-settings-section.tsx
 msgid "Models download once, best on Wi-Fi"
 msgstr "Les modèles se téléchargent une fois, idéalement en Wi-Fi"
 
@@ -5097,6 +5098,10 @@ msgstr "Pas encore d'historique des prix"
 msgid "No price yet"
 msgstr "Pas encore de prix"
 
+#: src/settings/components/sync-repairs-empty-state-card/sync-repairs-empty-state-card.tsx
+msgid "No problems found"
+msgstr ""
+
 #: src/market-data/component/currency-market-position-footer/currency-market-position-footer.tsx
 msgid "No purchase price is recorded for this balance, so the return can’t be calculated."
 msgstr "Aucun prix d'achat n'est enregistré pour ce solde, le rendement ne peut donc pas être calculé."
@@ -5139,10 +5144,6 @@ msgstr "Aucune dépense ne correspond à ces filtres"
 msgid "No spending or income yet"
 msgstr "Aucune dépense ni aucun revenu pour l’instant"
 
-#: src/settings/components/sync-repairs-empty-state-card/sync-repairs-empty-state-card.tsx
-msgid "No sync repairs found."
-msgstr "Aucune réparation de synchronisation trouvée."
-
 #: src/tag/components/tags-select-content/tags-select-content.tsx
 msgid "No tags found"
 msgstr "Aucune étiquette trouvée"
@@ -5171,6 +5172,7 @@ msgstr "Aucune transaction ne correspond"
 msgid "No transactions yet"
 msgstr "Aucune transaction pour le moment"
 
+#: src/app/import-column-mapper.tsx
 #: src/settings/components/default-account-selector/default-account-selector.tsx
 #: src/sync/component/file-import-review-step/file-import-review-step.tsx
 msgid "None"
@@ -5260,6 +5262,7 @@ msgstr "de {formattedBase} avant les frais"
 msgid "of {total} GB"
 msgstr "sur {total} Go"
 
+#: src/ai/component/ai-download-card-frame/ai-download-card-frame.tsx
 #: src/budget/components/budget-rollover-mode-menu/budget-rollover-mode-menu.tsx
 #: src/rule/hooks/use-rule-row-summary.hook.ts
 #: src/settings/components/app-lock-row/app-lock-row.tsx
@@ -5306,6 +5309,7 @@ msgstr "Sur ce téléphone"
 msgid "On track"
 msgstr "Dans les clous"
 
+#: src/ai/component/ai-system-status-banner/ai-system-status-banner.tsx
 #: src/app/(tabs)/settings/ai.tsx
 msgid "On-device AI"
 msgstr "IA sur l'appareil"
@@ -5364,8 +5368,8 @@ msgid "Only me, with a PIN"
 msgstr "Moi seul, avec un code PIN"
 
 #: src/wallet-capture/component/apple-pay-capture-history-notice/apple-pay-capture-history-notice.tsx
-msgid "Only new taps"
-msgstr "Uniquement les nouveaux paiements"
+msgid "Only new taps. Captures new eligible Apple Pay taps. It cannot import Wallet history or final bank settlement changes."
+msgstr ""
 
 #: ../ledger/src/transaction/constant/transfer-conversion-error-message.constant.ts
 msgid "Only single-entry expenses can be converted"
@@ -5463,6 +5467,10 @@ msgstr "Ouvre cette condition pour la modifier"
 #: src/onboarding/hook/use-onboarding-receipt-rows.hook.ts
 msgid "Opens with"
 msgstr "S'ouvre avec"
+
+#: src/app/(main)/import-csv.tsx
+msgid "Optional"
+msgstr ""
 
 #: src/account/component/debt-opening-account-field/debt-opening-account-field.tsx
 msgid "Optional — without it the amount stays manual"
@@ -5778,6 +5786,10 @@ msgstr "Choisissez une fenêtre. Les données existantes sont conservées."
 msgid "Pick one you'll remember but others won't guess."
 msgstr "Choisis-en un dont tu te souviendras, mais que les autres ne devineront pas."
 
+#: src/import/components/import-preset-picker/import-preset-picker.tsx
+msgid "Pick the app that exported this file, or match columns yourself."
+msgstr ""
+
 #: src/auth/components/pin-form-dots/pin-form-dots.tsx
 msgid "PIN, {enteredCount} of {PIN_LENGTH} digits entered"
 msgstr "Code PIN, {enteredCount} chiffres sur {PIN_LENGTH} saisis"
@@ -5871,10 +5883,6 @@ msgstr "Positif"
 #: src/money-data/utils/build-money-data-upgrade-status-text.util.ts
 msgid "Preparing conversions"
 msgstr "Préparation des conversions"
-
-#: src/import/components/import-preset-picker/import-preset-picker.tsx
-msgid "Preset applied. Adjust columns below if needed."
-msgstr "Modèle appliqué. Ajustez les colonnes ci-dessous si nécessaire."
 
 #: src/onboarding/component/onboarding-hold-to-seal-button/onboarding-hold-to-seal-button.tsx
 msgid "Press and hold to seal"
@@ -6009,6 +6017,7 @@ msgstr "Lecture du reçu"
 msgid "Reading the day strip"
 msgstr "Lire la bande des jours"
 
+#: src/ai/component/ai-download-card-frame/ai-download-card-frame.tsx
 #: src/ai/constant/ai-download-card-visuals.constant.ts
 msgid "Ready"
 msgstr "Prêt"
@@ -6179,8 +6188,8 @@ msgid "Remove split?"
 msgstr "Supprimer la répartition ?"
 
 #: src/ai/component/ai-model-storage/ai-model-storage.tsx
-msgid "Remove unused downloads ({unusedSize})"
-msgstr "Supprimer les téléchargements inutilisés ({unusedSize})"
+msgid "Remove unused downloads"
+msgstr ""
 
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "Rename"
@@ -6193,14 +6202,6 @@ msgstr "Renommer le plan, {value}"
 #: src/account/constant/debt-settled-label.constant.ts
 msgid "Repaid"
 msgstr "Remboursé"
-
-#: src/settings/components/sync-repairs-confirmation-card/sync-repairs-confirmation-card.tsx
-msgid "Repair"
-msgstr "Réparer"
-
-#: src/app/(tabs)/settings/sync-repairs.tsx
-msgid "Repair Sync Data"
-msgstr "Réparer les données de synchronisation"
 
 #: src/settings/components/repair-sync-data/repair-sync-data.tsx
 msgid "Repair synced data"
@@ -6226,6 +6227,7 @@ msgstr "Signaler un bug"
 msgid "Report a bug or idea"
 msgstr "Signaler un bug ou une idée"
 
+#: src/app/(main)/import-csv.tsx
 #: src/rule/components/rule-value-picker-button/rule-value-picker-button.tsx
 #: src/rule/hooks/use-rule-text-value-meta.hook.ts
 msgid "Required"
@@ -6587,7 +6589,7 @@ msgstr "Sélectionner"
 msgid "Select a contact"
 msgstr "Sélectionner un contact"
 
-#: src/app/(tabs)/settings/import.tsx
+#: src/app/(main)/import-csv.tsx
 msgid "Select a valid column"
 msgstr "Sélectionnez une colonne valide"
 
@@ -6611,17 +6613,9 @@ msgstr "Sélectionner toutes les catégories"
 msgid "Select category"
 msgstr "Sélectionner la catégorie"
 
-#: src/import/components/import-column-mapper/import-column-mapper.tsx
-msgid "Select column..."
-msgstr "Sélectionner une colonne..."
-
 #: src/sync/component/create-file-bank-account-footer/create-file-bank-account-footer.tsx
 msgid "Select File"
 msgstr "Sélectionner un fichier"
-
-#: src/import/components/import-preset-picker/import-preset-picker.tsx
-msgid "Select Import Preset"
-msgstr "Sélectionner un modèle d'importation"
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Select the downloaded PDF file"
@@ -6630,10 +6624,6 @@ msgstr "Sélectionnez le fichier PDF téléchargé"
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Select the exported XLSX file"
 msgstr "Sélectionnez le fichier XLSX exporté"
-
-#: src/app/import-column-mapper.tsx
-msgid "Selected"
-msgstr "Sélectionné"
 
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 msgid "Sending {fromCode}"
@@ -6806,6 +6796,10 @@ msgstr "Petits groupes"
 msgid "Smart suggestions"
 msgstr "Suggestions intelligentes"
 
+#: src/import/components/import-preset-picker/import-preset-picker.tsx
+msgid "SmartBudget"
+msgstr ""
+
 #: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
 msgid "Some issuers do not provide every Wallet trigger field. Edit the automation and check the variable bindings."
 msgstr "Certains émetteurs ne fournissent pas tous les champs du déclencheur Wallet. Modifiez l’automatisation et vérifiez les associations de variables."
@@ -6904,10 +6898,6 @@ msgstr "Repartir de zéro"
 msgid "Start from scratch and set every limit yourself"
 msgstr "Partez de zéro et définissez chaque limite vous-même"
 
-#: src/app/(tabs)/settings/import.tsx
-msgid "Start Import"
-msgstr "Démarrer l'importation"
-
 #: src/sync/component/create-binance-account/create-binance-account.tsx
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Start Sync"
@@ -6946,6 +6936,10 @@ msgstr "Commence le"
 msgid "Statement imported"
 msgstr "Relevé importé"
 
+#: src/ai/component/ai-settings-section/ai-settings-section.tsx
+msgid "Status"
+msgstr ""
+
 #: src/wallet-capture/component/apple-pay-capture-setup-row/apple-pay-capture-setup-row.tsx
 msgid "Step {stepNumber}"
 msgstr "Étape {stepNumber}"
@@ -6954,11 +6948,19 @@ msgstr "Étape {stepNumber}"
 msgid "Step {stepNumber} of {total}"
 msgstr "Étape {stepNumber} sur {total}"
 
+#: src/wallet-capture/component/apple-pay-capture-instructions-button/apple-pay-capture-instructions-button.tsx
+msgid "Step-by-step instructions"
+msgstr ""
+
 #: src/account/constant/account-kind-title.constant.ts
 #: src/account/constant/account-type.constant.ts
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "Stocks"
 msgstr "Actions"
+
+#: src/ai/component/ai-model-storage/ai-model-storage.tsx
+msgid "Storage"
+msgstr ""
 
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
 msgid "Subscriptions"
@@ -7000,10 +7002,6 @@ msgstr "Synchronisation"
 msgid "Sync data repaired"
 msgstr "Données de synchronisation réparées"
 
-#: src/settings/components/sync-repairs-intro-card/sync-repairs-intro-card.tsx
-msgid "Sync data repairs"
-msgstr "Réparations des données de synchronisation"
-
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
 msgid "Sync failed"
 msgstr "Échec de la synchronisation"
@@ -7027,8 +7025,8 @@ msgid "Sync paused"
 msgstr "Synchronisation en pause"
 
 #: src/app/(tabs)/settings/sync-repairs.tsx
-msgid "Sync Repairs"
-msgstr "Réparations de synchronisation"
+msgid "Sync repairs"
+msgstr ""
 
 #: src/sync/component/account-sync-problem-row/account-sync-problem-row.tsx
 msgid "Sync stopped"
@@ -7041,6 +7039,14 @@ msgstr "Synchroniser avec une clé API en lecture seule"
 #: src/sync/component/create-binance-account/create-binance-account.tsx
 msgid "Sync your Binance balances and transactions"
 msgstr "Synchronisez vos soldes et transactions Binance"
+
+#: src/app/(tabs)/settings/sync-repairs.tsx
+msgid "Synced data"
+msgstr ""
+
+#: src/settings/components/sync-repairs-empty-state-card/sync-repairs-empty-state-card.tsx
+msgid "Synced data looks consistent."
+msgstr ""
 
 #: src/account/constant/account-sync-state-label.constant.ts
 msgid "Syncing"
@@ -7123,7 +7129,6 @@ msgid "Tap to change sign"
 msgstr "Touchez pour changer le signe"
 
 #: src/@generic/component/search-input/search-input.tsx
-#: src/app/import-column-mapper.tsx
 msgid "Tap to clear"
 msgstr "Appuyez pour effacer"
 
@@ -7455,13 +7460,10 @@ msgid "To {toText}"
 msgstr "Jusqu’à {toText}"
 
 #: src/account/component/create-debt-account/create-debt-account.tsx
+#: src/app/(main)/import-csv.tsx
 #: src/transaction/components/transaction-info-account-rows/transaction-info-account-rows.tsx
 msgid "To account"
 msgstr "Compte de destination"
-
-#: src/app/(tabs)/settings/import.tsx
-msgid "To Account"
-msgstr "Vers le compte"
 
 #: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx
 msgid "To amount"
@@ -7472,9 +7474,9 @@ msgctxt "Move payments to the cash account"
 msgid "To cash"
 msgstr "En espèces"
 
-#: src/app/(tabs)/settings/import.tsx
-msgid "To Currency"
-msgstr "Devise cible"
+#: src/app/(main)/import-csv.tsx
+msgid "To currency"
+msgstr ""
 
 #: src/account/constant/debt-remaining-label.constant.ts
 msgid "To receive"
@@ -7704,13 +7706,13 @@ msgstr "Essayez d'ajuster vos filtres pour voir plus de résultats"
 #: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
 #: src/ai/component/ai-download-stopped-card/ai-download-stopped-card.tsx
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
+#: src/settings/components/sync-repairs-error-card/sync-repairs-error-card.tsx
 #: src/sync/component/analytics-history-boundary/analytics-history-boundary.tsx
 msgid "Try again"
 msgstr "Réessayer"
 
 #: src/@generic/component/database-restore-screen/database-restore-screen.tsx
 #: src/ai/component/voice-input-error/voice-input-error.tsx
-#: src/settings/components/sync-repairs-error-card/sync-repairs-error-card.tsx
 msgid "Try Again"
 msgstr "Réessayer"
 
@@ -7889,6 +7891,10 @@ msgstr "Jusqu'au {periodEndLabel}"
 msgid "Until {toLabel}"
 msgstr "Jusqu’au {toLabel}"
 
+#: src/app/(tabs)/settings/ai.tsx
+msgid "Until the model is ready, categories come from simple rules on this phone. If a download arrives damaged, Budgie deletes it and waits for you to retry."
+msgstr ""
+
 #: src/account/component/account-details-market-link/account-details-market-link.tsx
 msgid "up {changeShare} on {staleDate}"
 msgstr "en hausse de {changeShare} le {staleDate}"
@@ -8003,10 +8009,6 @@ msgstr "Valeur"
 #: src/transaction/components/transaction-info-note-group/transaction-info-note-group.tsx
 msgid "View source transactions"
 msgstr "Voir les transactions source"
-
-#: src/wallet-capture/component/apple-pay-capture-instructions-button/apple-pay-capture-instructions-button.tsx
-msgid "View step-by-step instructions"
-msgstr "Voir les instructions étape par étape"
 
 #: src/ai/component/ai-settings-section/ai-settings-section.tsx
 msgid "Voice notes"
