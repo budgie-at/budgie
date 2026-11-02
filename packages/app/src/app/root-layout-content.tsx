@@ -161,6 +161,7 @@ export const RootLayoutContent = () => {
                                                                     <Stack.Screen name="(main)/pin" options={LOCK_SCREEN_OPTIONS} />
                                                                     <Stack.Screen name="(main)/create-account" />
                                                                     <Stack.Screen name="(main)/account/[id]/details" />
+                                                                    <Stack.Screen name="(main)/institution/[id]" />
                                                                     <Stack.Screen name="(main)/account/[id]/update" />
                                                                     <Stack.Screen name="(main)/currency/[id]" />
                                                                     <Stack.Screen name="(main)/create-transaction/expense" />

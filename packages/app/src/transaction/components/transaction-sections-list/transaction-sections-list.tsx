@@ -17,6 +17,7 @@ import { TransactionsByDaySectionInterface } from '../../interface/transactions-
 import { TransactionListItemType } from '../../type/transaction-list-item.type';
 import { buildTransactionListItems } from '../../utils/build-transaction-list-items.util';
 import { getTransactionHref } from '../../utils/get-transaction-href.util';
+import { getTransactionRowAccountId } from '../../utils/get-transaction-row-account-id.util';
 import { TransactionCard } from '../transaction-card/transaction-card';
 import { TransactionListContextMenu } from '../transaction-list-context-menu/transaction-list-context-menu';
 import { TransactionSectionHeader } from '../transaction-section-header/transaction-section-header';
@@ -28,7 +29,7 @@ interface Props {
     readonly sections: TransactionsByDaySectionInterface[];
     readonly onEndReached: () => void;
     readonly listEmptyState: ReactElement;
-    readonly accountId?: number | null;
+    readonly accountIds?: number[] | null;
     readonly footerSpacerMultiplier?: number;
     readonly listHeader?: ReactElement;
     readonly listComponent?: ComponentType<
@@ -47,7 +48,7 @@ export const TransactionSectionsList = ({
     sections,
     onEndReached,
     listEmptyState,
-    accountId = null,
+    accountIds = null,
     footerSpacerMultiplier = 1,
     listHeader,
     listComponent: ListComponent = BudgieLegendList,
@@ -76,7 +77,7 @@ export const TransactionSectionsList = ({
             <TransactionCard
                 transaction={item.transaction}
                 position={item.position}
-                accountId={accountId}
+                accountId={getTransactionRowAccountId(item.transaction, accountIds)}
                 onPress={handlePress}
                 onLongPress={handleLongPress}
             />
