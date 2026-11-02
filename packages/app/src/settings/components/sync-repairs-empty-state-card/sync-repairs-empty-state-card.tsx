@@ -1,16 +1,22 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { Trans } from '@lingui/react/macro';
-import { Text } from 'react-native';
+import { useLingui } from '@lingui/react/macro';
 
-import { Card } from '../../../@generic/component/card/card';
-import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
+import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { SyncRepairsPageSelector } from '../../../app/(tabs)/settings/sync-repairs-page.selector';
 
-export const SyncRepairsEmptyStateCard = () => (
-    <Card testID={SyncRepairsPageSelector.EmptyState} className="items-center gap-y-2xl" variant="positive">
-        <CircleIcon icon={UserIconNameEnum.CircleCheck} variant="positive" border={false} size={44} iconSize={22} />
-        <Text className="text-positive-foreground text-sm font-medium text-center">
-            <Trans>No sync repairs found.</Trans>
-        </Text>
-    </Card>
-);
+export const SyncRepairsEmptyStateCard = () => {
+    const { t } = useLingui();
+
+    return (
+        <GroupedListSection>
+            <GroupedListRow
+                testID={SyncRepairsPageSelector.EmptyState}
+                title={t`No problems found`}
+                subtitle={t`Synced data looks consistent.`}
+                left={<Icon icon={UserIconNameEnum.CircleCheck} size={24} className="text-positive-foreground" />}
+            />
+        </GroupedListSection>
+    );
+};

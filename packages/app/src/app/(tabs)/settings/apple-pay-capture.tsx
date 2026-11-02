@@ -2,11 +2,11 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { useEffect } from 'react';
 import { Text, View } from 'react-native';
 
-import { Card } from '../../../@generic/component/card/card';
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
+import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
-import { SettingsGroup } from '../../../settings/components/settings-group/settings-group';
 import { goBackToSettings } from '../../../settings/utils/go-back-to-settings.util';
 import { ApplePayCaptureHero } from '../../../wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero';
 import { ApplePayCaptureHistoryNotice } from '../../../wallet-capture/component/apple-pay-capture-history-notice/apple-pay-capture-history-notice';
@@ -43,32 +43,37 @@ export default function ApplePayCaptureSettingsPage() {
             leading={<GoBackButton onPress={goBackToSettings} />}
             testID={ApplePayCaptureSettingsSelector.Container}
         >
-            <View className="gap-y-xl pb-5xl">
+            <View className="gap-y-7xl pb-5xl">
                 <ApplePayCaptureHero>
                     <ApplePayCaptureOpenShortcutsButton testID={ApplePayCaptureSettingsSelector.OpenShortcutsButton} />
                     <ApplePayCaptureInstructionsButton testID={ApplePayCaptureSettingsSelector.InstructionsGuideLink} />
                 </ApplePayCaptureHero>
 
                 {errorMessage ? (
-                    <Card testID={ApplePayCaptureSettingsSelector.ErrorCard} variant="destructive" className="gap-y-sm">
-                        <Text className="text-primary text-base font-semibold">
-                            <Trans>Could not read Wallet captures</Trans>
-                        </Text>
-                        <Text className="text-secondary-foreground text-sm" selectable>
-                            {errorMessage}
-                        </Text>
-                    </Card>
+                    <GroupedListSection>
+                        <GroupedListRow
+                            testID={ApplePayCaptureSettingsSelector.ErrorCard}
+                            title={
+                                <Text className="text-destructive-foreground text-[17px]">
+                                    <Trans>Could not read Wallet captures</Trans>
+                                </Text>
+                            }
+                            subtitle={
+                                <Text className="text-secondary-foreground text-[13px]" selectable>
+                                    {errorMessage}
+                                </Text>
+                            }
+                        />
+                    </GroupedListSection>
                 ) : null}
 
-                <SettingsGroup title={t`Setup`}>
+                <GroupedListSection title={t`Setup`} footer={<ApplePayCaptureHistoryNotice />}>
                     <ApplePayCaptureSetupCard testID={ApplePayCaptureSettingsSelector.SetupCard} />
-                </SettingsGroup>
-
-                <ApplePayCaptureHistoryNotice />
+                </GroupedListSection>
 
                 {hasReviewItems ? (
-                    <SettingsGroup title={t`Needs review`}>
-                        <Card testID={ApplePayCaptureSettingsSelector.ReviewGroup} className="gap-y-lg">
+                    <GroupedListSection title={t`Needs review`}>
+                        <View testID={ApplePayCaptureSettingsSelector.ReviewGroup}>
                             <WalletCaptureReviewList
                                 reviewItems={reviewItems}
                                 mutatingCaptureIds={mutatingCaptureIds}
@@ -77,13 +82,13 @@ export default function ApplePayCaptureSettingsPage() {
                                 importCapture={importCapture}
                                 dismissCapture={dismissCapture}
                             />
-                        </Card>
-                    </SettingsGroup>
+                        </View>
+                    </GroupedListSection>
                 ) : null}
 
-                <SettingsGroup title={t`Troubleshooting`}>
+                <GroupedListSection title={t`Troubleshooting`}>
                     <ApplePayCaptureTroubleshootingCard />
-                </SettingsGroup>
+                </GroupedListSection>
 
                 <MenuSpacer />
             </View>

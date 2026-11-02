@@ -18,11 +18,10 @@ export default function AiFeaturesPage() {
     return (
         <CollapsibleChromePage
             title={t`AI features`}
-            subtitle={t`Models download once, best on Wi-Fi`}
             leading={<GoBackButton onPress={goBackToSettings} />}
             testID={AiFeaturesPageSelector.Container}
         >
-            <View className="gap-y-lg pb-5xl">
+            <View className="gap-y-7xl pb-5xl">
                 {isAiBuildEnabled ? <AiSettingsSection /> : null}
                 <AiModelStorage />
                 <MenuSpacer />

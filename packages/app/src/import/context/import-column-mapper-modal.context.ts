@@ -5,6 +5,7 @@ export interface ImportColumnMapperModalParams {
     readonly selectedHeaders: string[];
     readonly currentValue: string | undefined;
     readonly fieldLabel: string;
+    readonly isRequired?: boolean;
 }
 
 export type ImportColumnMapperResult = { readonly type: 'select'; readonly header: string } | { readonly type: 'clear' } | null;

@@ -1,10 +1,7 @@
 import { ImportPresetEnum } from '@budgie/import-export';
-/* oxlint-disable lingui/no-unlocalized-strings */
 import { useLingui } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
 
-import { isDefined } from '@rnw-community/shared';
-
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { ImportPresetChip } from '../import-preset-chip/import-preset-chip';
 
 import { ImportPresetPickerSelector } from './import-preset-picker.selector';
@@ -22,35 +19,25 @@ export const ImportPresetPicker = ({ selectedPreset, onPresetSelect }: Props) =>
     const handleFinEyeSelect = () => void onPresetSelect(ImportPresetEnum.FinEye);
 
     return (
-        <View className="gap-y-lg mb-xl">
-            <View className="gap-y-xs">
-                <Text className="text-primary font-semibold text-lg">{t`Select Import Preset`}</Text>
-                <Text className="text-secondary-foreground text-sm">
-                    {isDefined(selectedPreset)
-                        ? t`Preset applied. Adjust columns below if needed.`
-                        : t`Choose a preset to auto-fill column mappings`}
-                </Text>
-            </View>
-            <View className="flex-row flex-wrap gap-sm">
-                <ImportPresetChip
-                    testID={ImportPresetPickerSelector.PresetChip('Budgie')}
-                    title="Budgie"
-                    isSelected={selectedPreset === ImportPresetEnum.Budgie}
-                    onSelect={handleBudgieSelect}
-                />
-                <ImportPresetChip
-                    testID={ImportPresetPickerSelector.PresetChip('SmartBudget')}
-                    title="SmartBudget"
-                    isSelected={selectedPreset === ImportPresetEnum.SmartBudget}
-                    onSelect={handleSmartBudgetSelect}
-                />
-                <ImportPresetChip
-                    testID={ImportPresetPickerSelector.PresetChip('FinEye')}
-                    title="FinEye"
-                    isSelected={selectedPreset === ImportPresetEnum.FinEye}
-                    onSelect={handleFinEyeSelect}
-                />
-            </View>
-        </View>
+        <GroupedListSection title={t`Format`} footer={t`Pick the app that exported this file, or match columns yourself.`}>
+            <ImportPresetChip
+                testID={ImportPresetPickerSelector.Budgie}
+                title={t`Budgie`}
+                isSelected={selectedPreset === ImportPresetEnum.Budgie}
+                onSelect={handleBudgieSelect}
+            />
+            <ImportPresetChip
+                testID={ImportPresetPickerSelector.SmartBudget}
+                title={t`SmartBudget`}
+                isSelected={selectedPreset === ImportPresetEnum.SmartBudget}
+                onSelect={handleSmartBudgetSelect}
+            />
+            <ImportPresetChip
+                testID={ImportPresetPickerSelector.FinEye}
+                title={t`FinEye`}
+                isSelected={selectedPreset === ImportPresetEnum.FinEye}
+                onSelect={handleFinEyeSelect}
+            />
+        </GroupedListSection>
     );
 };

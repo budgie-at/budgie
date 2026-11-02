@@ -13,18 +13,7 @@ import { showErrorToast } from '../../@generic/utils/show-error-toast/show-error
 export const useSyncRepairsAction = (refresh: () => void) => {
     const { t } = useLingui();
     const [isRepairing, setIsRepairing] = useState(false);
-    const [isConfirmingRepair, setIsConfirmingRepair] = useState(false);
     const isRepairingRef = useRef(false);
-
-    const handleShowConfirmation = () => {
-        setIsConfirmingRepair(true);
-    };
-
-    const handleCancelConfirmation = () => {
-        if (!isRepairing) {
-            setIsConfirmingRepair(false);
-        }
-    };
 
     const handleRepairSuccess = (repairedTransactionCount: number) => {
         const repairedText = t({
@@ -33,14 +22,13 @@ export const useSyncRepairsAction = (refresh: () => void) => {
 
         Toast.show({ type: 'success', text1: t`Sync data repaired`, text2: repairedText });
         refresh();
-        setIsConfirmingRepair(false);
     };
 
     const handleRepairError = (error: unknown) => {
         showErrorToast(t`Could not repair sync data`, getErrorMessage(error));
     };
 
-    const handleConfirmRepair = () => {
+    const handleRepair = () => {
         if (isRepairingRef.current) {
             return;
         }
@@ -64,11 +52,5 @@ export const useSyncRepairsAction = (refresh: () => void) => {
         );
     };
 
-    return {
-        handleCancelConfirmation,
-        handleConfirmRepair,
-        handleShowConfirmation,
-        isConfirmingRepair,
-        isRepairing
-    };
+    return { handleRepair, isRepairing };
 };

@@ -1,19 +1,21 @@
 import { UserIconNameEnum } from '@budgie/contracts';
+import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
-import { ScrollView, View } from 'react-native';
+import { Text, View } from 'react-native';
 
-import { isDefined, isEmptyArray, isPositiveNumber } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/shared';
 
-import { Button } from '../../../@generic/component/button/button';
-import { PageHeader } from '../../../@generic/component/page-header/page-header';
-import { Page } from '../../../@generic/component/page/page';
+import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
+import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
+import { GroupedListActionRow } from '../../../@generic/component/grouped-list-action-row/grouped-list-action-row';
+import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
+import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
+import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { SyncRepairSourceRow } from '../../../settings/components/sync-repair-source-row/sync-repair-source-row';
-import { SyncRepairsConfirmationCard } from '../../../settings/components/sync-repairs-confirmation-card/sync-repairs-confirmation-card';
 import { SyncRepairsEmptyStateCard } from '../../../settings/components/sync-repairs-empty-state-card/sync-repairs-empty-state-card';
 import { SyncRepairsErrorCard } from '../../../settings/components/sync-repairs-error-card/sync-repairs-error-card';
-import { SyncRepairsIntroCard } from '../../../settings/components/sync-repairs-intro-card/sync-repairs-intro-card';
 import { useSyncRepairsAction } from '../../../settings/hooks/use-sync-repairs-action.hook';
-import { getSyncRepairText } from '../../../settings/utils/get-sync-repair-text.util';
 import { goBackToSettings } from '../../../settings/utils/go-back-to-settings.util';
 import { useSyncDuplicateRepairPreviewQuery } from '../../../sync/query/use-sync-duplicate-repair-preview.query';
 
@@ -22,54 +24,57 @@ import { SyncRepairsPageSelector } from './sync-repairs-page.selector';
 export default function SyncRepairsPage() {
     const { t } = useLingui();
     const { errorMessage, isLoading, preview, refresh } = useSyncDuplicateRepairPreviewQuery();
-    const repairAction = useSyncRepairsAction(refresh);
-
+    const { handleRepair, isRepairing } = useSyncRepairsAction(refresh);
     const duplicateTransactionCount = preview?.duplicateTransactionCount ?? 0;
     const hasDuplicates = isPositiveNumber(duplicateTransactionCount);
     const hasError = isDefined(errorMessage);
     const sources = preview?.sources ?? [];
     const shouldShowEmptyState = !isLoading && !hasError && !hasDuplicates;
-    const shouldShowSources = !isLoading && !isEmptyArray(sources);
-    const isRepairButtonDisabled = !hasDuplicates || isLoading || repairAction.isRepairing;
-    const shouldShowConfirmation = repairAction.isConfirmingRepair && hasDuplicates;
-    const buttonContent = isLoading ? t`Checking` : t`Repair Sync Data`;
-    const confirmationCountText = getSyncRepairText(duplicateTransactionCount, t);
+    const shouldShowFound = !hasError && (isLoading || hasDuplicates);
+    const isRepairDisabled = !hasDuplicates || isLoading;
+    const isActionLoading = isRepairing || isLoading;
+    const actionLabel = t({ message: plural(duplicateTransactionCount, { one: 'Remove # duplicate', other: 'Remove # duplicates' }) });
 
     return (
-        <Page testID={SyncRepairsPageSelector.Container} header={<PageHeader title={t`Sync Repairs`} onGoBack={goBackToSettings} />}>
-            <ScrollView className="flex-1" contentContainerClassName="gap-y-xl pb-5xl pt-3xl" showsVerticalScrollIndicator={false}>
-                <SyncRepairsIntroCard />
-
+        <CollapsibleChromePage
+            title={t`Sync repairs`}
+            leading={<GoBackButton onPress={goBackToSettings} />}
+            testID={SyncRepairsPageSelector.Container}
+        >
+            <View className="gap-y-7xl pb-5xl">
                 {hasError ? <SyncRepairsErrorCard errorMessage={errorMessage} isLoading={isLoading} onRefresh={refresh} /> : null}
-
                 {shouldShowEmptyState ? <SyncRepairsEmptyStateCard /> : null}
-
-                {shouldShowSources ? (
-                    <View className="gap-y-lg">
-                        {sources.map(source => (
-                            <SyncRepairSourceRow key={source.externalSource} {...source} />
-                        ))}
-                    </View>
+                {shouldShowFound ? (
+                    <GroupedListSection title={t`Found`}>
+                        <LoadingContent isLoading={isLoading}>
+                            {isNotEmptyArray(sources) ? (
+                                sources.map(source => <SyncRepairSourceRow key={source.externalSource} {...source} />)
+                            ) : (
+                                <GroupedListRow
+                                    title={t`Synced data`}
+                                    right={<Text className="text-secondary-foreground text-[17px]">{t`Checking`}</Text>}
+                                />
+                            )}
+                        </LoadingContent>
+                    </GroupedListSection>
                 ) : null}
-
-                {shouldShowConfirmation ? (
-                    <SyncRepairsConfirmationCard
-                        countText={confirmationCountText}
-                        isRepairing={repairAction.isRepairing}
-                        onCancel={repairAction.handleCancelConfirmation}
-                        onConfirm={repairAction.handleConfirmRepair}
-                    />
-                ) : (
-                    <Button
-                        testID={SyncRepairsPageSelector.RepairButton}
-                        onPress={repairAction.handleShowConfirmation}
-                        disabled={isRepairButtonDisabled}
-                        content={buttonContent}
-                        leftIcon={UserIconNameEnum.Wrench}
-                        variant="destructive"
-                    />
-                )}
-            </ScrollView>
-        </Page>
+                <GroupedListSection
+                    footer={t`Budgie removes repeated bank imports and fixes transfers that landed on inactive accounts. Manual transactions are never changed.`}
+                >
+                    {shouldShowFound ? (
+                        <GroupedListActionRow
+                            label={actionLabel}
+                            icon={UserIconNameEnum.Wrench}
+                            onPress={handleRepair}
+                            isDisabled={isRepairDisabled}
+                            isLoading={isActionLoading}
+                            labelClassName="text-primary"
+                            testID={SyncRepairsPageSelector.RepairButton}
+                        />
+                    ) : null}
+                </GroupedListSection>
+                <MenuSpacer />
+            </View>
+        </CollapsibleChromePage>
     );
 }

@@ -1,16 +1,21 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useAtomRefresh } from '@effect/atom-react/Hooks';
-import { Trans, useLingui } from '@lingui/react/macro';
+import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import * as AsyncResult from 'effect/reactivity/AsyncResult';
-import { Text, View } from 'react-native';
+import { Text } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
-import { Button } from '../../../@generic/component/button/button';
+import { GroupedListActionRow } from '../../../@generic/component/grouped-list-action-row/grouped-list-action-row';
+import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
+import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
+import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
+import { isAiEnabled } from '../../../@generic/utils/is-ai-enabled.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
+import { SettingsPillButton } from '../../../settings/components/settings-pill-button/settings-pill-button';
 import { aiModelStorageAtom } from '../../constant/ai-model-storage-atom.constant';
 import { AiModelStorageService } from '../../service/ai-model-storage.service';
 
@@ -26,45 +31,39 @@ export const AiModelStorage = () => {
     };
     const handleDelete = () =>
         void runDelete(
-            Effect.flatMap(AiModelStorageService, aiModelStorageService => aiModelStorageService.deleteUnused()).pipe(
+            Effect.flatMap(AiModelStorageService, service => service.deleteUnused()).pipe(
                 Effect.ensuring(Effect.sync(refresh)),
                 toastOnFailure(t`Could not remove unused downloads`)
             )
         );
-
-    if (AsyncResult.isInitial(usage)) {
-        return (
-            <Text className="text-secondary-foreground text-sm">
-                <Trans>Loading AI downloads…</Trans>
-            </Text>
-        );
-    }
-    if (AsyncResult.isFailure(usage)) {
-        return (
-            <View className="gap-y-lg">
-                <Text className="text-secondary-foreground text-sm">
-                    <Trans>Could not load AI downloads</Trans>
-                </Text>
-                <Button content={t`Retry`} onPress={refresh} />
-            </View>
-        );
-    }
-    const totalSize = formatSize(usage.value.totalBytes);
-    const unusedSize = formatSize(usage.value.unusedBytes);
+    const isLoading = AsyncResult.isInitial(usage);
+    const isFailure = AsyncResult.isFailure(usage);
+    const totalBytes = AsyncResult.isSuccess(usage) ? usage.value.totalBytes : 0;
+    const unusedBytes = AsyncResult.isSuccess(usage) ? usage.value.unusedBytes : 0;
+    const failureSubtitle = isFailure ? t`Could not load` : void 0;
+    const footer = isAiEnabled() ? void 0 : t`AI features are not available in this build.`;
+    const accessory = isFailure ? (
+        <SettingsPillButton label={t`Retry`} variant="secondary" onPress={refresh} />
+    ) : (
+        <LoadingContent isLoading={isLoading}>
+            <Text className="text-[17px] text-secondary-foreground">{formatSize(totalBytes)}</Text>
+        </LoadingContent>
+    );
 
     return (
-        <View className="gap-y-lg">
-            <Text className="text-secondary-foreground text-sm">{t`AI downloads on this device: ${totalSize}`}</Text>
-
-            {isPositiveNumber(usage.value.unusedBytes) ? (
-                <Button
-                    content={t`Remove unused downloads (${unusedSize})`}
-                    leftIcon={UserIconNameEnum.Trash2}
-                    variant="destructive"
-                    isLoading={isDeleting}
+        <GroupedListSection title={t`Storage`} footer={footer}>
+            <GroupedListRow title={t`Downloaded models`} subtitle={failureSubtitle} right={accessory} />
+            {isPositiveNumber(unusedBytes) ? (
+                <GroupedListActionRow
+                    label={t`Remove unused downloads`}
+                    icon={UserIconNameEnum.Trash2}
                     onPress={handleDelete}
+                    isDisabled={false}
+                    isLoading={isDeleting}
+                    labelClassName="text-destructive-foreground"
+                    trailing={<Text className="text-[17px] text-secondary-foreground">{formatSize(unusedBytes)}</Text>}
                 />
             ) : null}
-        </View>
+        </GroupedListSection>
     );
 };

@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react/macro';
+import { View } from 'react-native';
 
-import { Card } from '../../../@generic/component/card/card';
 import { ApplePayCaptureSetupRow } from '../apple-pay-capture-setup-row/apple-pay-capture-setup-row';
 
 interface Props {
@@ -25,16 +25,10 @@ export const ApplePayCaptureSetupCard = ({ testID }: Props) => {
     ];
 
     return (
-        <Card testID={testID} size="md">
+        <View testID={testID}>
             {setupSteps.map((step, index) => (
-                <ApplePayCaptureSetupRow
-                    key={step.title}
-                    title={step.title}
-                    description={step.description}
-                    index={index}
-                    stepCount={setupSteps.length}
-                />
+                <ApplePayCaptureSetupRow key={step.title} title={step.title} description={step.description} index={index} />
             ))}
-        </Card>
+        </View>
     );
 };

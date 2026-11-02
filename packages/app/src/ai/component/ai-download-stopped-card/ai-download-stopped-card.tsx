@@ -1,10 +1,9 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
-import { Button } from '../../../@generic/component/button/button';
+import { SettingsPillButton } from '../../../settings/components/settings-pill-button/settings-pill-button';
 import { AiDownloadSelector } from '../../ai-download.selector';
 import { AiModelDownloadStatusEnum } from '../../enum/ai-model-download-status.enum';
 import { useAiModelDownloadActions } from '../../hook/use-ai-model-download-actions.hook';
@@ -27,25 +26,22 @@ export const AiDownloadStoppedCard = () => {
     return (
         <AiDownloadCardFrame status={summary.status} testID={AiDownloadSelector.StatusCard}>
             <View className="gap-y-sm">
-                <Text className="text-lg font-semibold text-primary">{title}</Text>
-                <Text className="text-sm text-secondary-foreground">{description}</Text>
+                <Text className="text-[17px] text-primary">{title}</Text>
+                <Text className="text-[13px] leading-[18px] text-secondary-foreground">{description}</Text>
             </View>
 
             <View className="flex-row flex-wrap gap-md">
-                <Button
+                <SettingsPillButton
                     testID={AiDownloadSelector.RetryButton}
-                    size="sm"
-                    variant="primary"
-                    leftIcon={UserIconNameEnum.RotateCw}
-                    content={retryLabel}
+                    variant="secondary"
+                    label={retryLabel}
                     onPress={actions.resume}
                 />
                 {hasDownloadedPart ? (
-                    <Button
+                    <SettingsPillButton
                         testID={AiDownloadSelector.CancelButton}
-                        size="sm"
-                        variant="ghost"
-                        content={t`Delete the ${downloaded} GB part`}
+                        variant="secondary"
+                        label={t`Delete the ${downloaded} GB part`}
                         onPress={actions.cancel}
                     />
                 ) : null}

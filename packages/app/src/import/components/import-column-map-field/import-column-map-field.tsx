@@ -1,10 +1,15 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { ImportColumnMapFormValues } from '@budgie/import-export';
-import { Control, Controller, UseControllerReturn } from 'react-hook-form';
+import { useLingui } from '@lingui/react/macro';
+import { Control, useController } from 'react-hook-form';
+import { Text, View } from 'react-native';
 
-import { isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyString } from '@rnw-community/shared';
 
-import { FormItem } from '../../../@generic/component/form-item/form-item';
-import { ImportColumnMapper } from '../import-column-mapper/import-column-mapper';
+import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
+import { Icon } from '../../../@generic/component/icon/icon';
+import { cn } from '../../../@generic/utils/cn.util';
+import { useImportColumnMapperModal } from '../../context/import-column-mapper-modal.context';
 import { ImportColumnMapperSelector } from '../import-column-mapper/import-column-mapper.selector';
 
 interface Props {
@@ -17,24 +22,42 @@ interface Props {
 }
 
 export const ImportColumnMapField = ({ control, name, label, headers, selectedHeaders, isRequired = false }: Props) => {
-    const renderField = ({ field: { value, onChange }, fieldState: { error } }: UseControllerReturn<ImportColumnMapFormValues>) => {
-        const handleClear = () => void onChange('');
+    const { t } = useLingui();
+    const {
+        field: { value, onChange },
+        fieldState: { error }
+    } = useController({ control, name });
+    const [openImportColumnMapper] = useImportColumnMapperModal();
 
-        return (
-            <FormItem isRequired={isRequired} label={label} error={error?.message} className="gap-y-xs">
-                <ImportColumnMapper
-                    value={value}
-                    headers={headers}
-                    selectedHeaders={selectedHeaders}
-                    fieldLabel={label}
-                    onSelect={onChange}
-                    onClear={handleClear}
-                    hasError={isNotEmptyString(error)}
-                    testID={ImportColumnMapperSelector.Row(name)}
-                />
-            </FormItem>
-        );
+    const handleOpen = () => {
+        openImportColumnMapper({ headers, selectedHeaders, currentValue: value, fieldLabel: label, isRequired }, result => {
+            if (isDefined(result)) {
+                onChange(result.type === 'select' ? result.header : '');
+            }
+        });
     };
 
-    return <Controller control={control} name={name} render={renderField} />;
+    const displayValue = isNotEmptyString(value) ? value : t`Choose`;
+    const subtitle = isDefined(error) ? <Text className="text-destructive-foreground text-[13px]">{error.message}</Text> : null;
+
+    return (
+        <GroupedListRow
+            title={label}
+            subtitle={subtitle}
+            onPress={handleOpen}
+            testID={ImportColumnMapperSelector.Row(name)}
+            right={
+                <View className="max-w-[55%] flex-row items-center gap-x-md">
+                    <Text
+                        className={cn('shrink text-secondary-foreground text-[17px]', isDefined(error) && 'text-destructive-foreground')}
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                    >
+                        {displayValue}
+                    </Text>
+                    <Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />
+                </View>
+            }
+        />
+    );
 };

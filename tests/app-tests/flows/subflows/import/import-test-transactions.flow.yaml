@@ -5,23 +5,16 @@ env:
 - runFlow:
       file: ../navigation/open-deep-link.flow.yaml
       env:
-          DEEP_LINK: 'budgie://settings/import?fileUri=${E2E_CSV_FIXTURES_URI}/${CSV_DISPLAY_NAME}.csv'
+          DEEP_LINK: 'budgie://import-csv?fileUri=${E2E_CSV_FIXTURES_URI}/${CSV_DISPLAY_NAME}.csv'
 
 - extendedWaitUntil:
       visible:
           id: 'ImportScreen.PresetChip.Budgie'
       timeout: 10000
 
-- tapOn: 'Budgie'
-
-- extendedWaitUntil:
-      visible: 'Preset applied. Adjust columns below if needed.'
-      timeout: 10000
-
 - extendedWaitUntil:
       visible:
           id: 'CsvPage.StartImportButton.Label'
-          text: 'Start Import'
       timeout: 10000
 
 - tapOn:

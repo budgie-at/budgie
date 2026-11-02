@@ -1,6 +1,6 @@
 appId: ${APP_ID}
 ---
-- openLink: 'budgie://settings/import?fileUri=file://${APP_DATA_CONTAINER}/Documents/E2EFixtures/e2e-budgie-import.csv'
+- openLink: 'budgie://import-csv?fileUri=file://${APP_DATA_CONTAINER}/Documents/E2EFixtures/e2e-budgie-import.csv'
 
 - waitForAnimationToEnd
 

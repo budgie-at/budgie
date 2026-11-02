@@ -1,9 +1,8 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
-import { Button } from '../../../@generic/component/button/button';
 import { AiProgressBar } from '../../../settings/components/ai-progress-bar/ai-progress-bar';
+import { SettingsPillButton } from '../../../settings/components/settings-pill-button/settings-pill-button';
 import { AiDownloadSelector } from '../../ai-download.selector';
 import { AiModelDownloadStatusEnum } from '../../enum/ai-model-download-status.enum';
 import { useAiModelDownloadActions } from '../../hook/use-ai-model-download-actions.hook';
@@ -30,8 +29,8 @@ export const AiDownloadProgressCard = () => {
     return (
         <AiDownloadCardFrame status={summary.status} testID={AiDownloadSelector.StatusCard}>
             <View className="flex-row items-baseline gap-x-sm">
-                <Text className="text-4xl font-semibold text-primary">{downloaded}</Text>
-                <Text className="text-md text-secondary-foreground">
+                <Text className="text-[17px] text-primary">{downloaded}</Text>
+                <Text className="text-[17px] text-secondary-foreground">
                     <Trans>of {total} GB</Trans>
                 </Text>
             </View>
@@ -41,44 +40,38 @@ export const AiDownloadProgressCard = () => {
             {isDownloading ? (
                 <AiDownloadEta etaSeconds={summary.etaSeconds} />
             ) : (
-                <Text className="text-sm text-secondary-foreground">{captions[summary.status]}</Text>
+                <Text className="text-[13px] leading-[18px] text-secondary-foreground">{captions[summary.status]}</Text>
             )}
 
             <View className="flex-row flex-wrap gap-md">
                 {isDownloading ? (
-                    <Button
+                    <SettingsPillButton
                         testID={AiDownloadSelector.PauseButton}
-                        size="sm"
-                        variant="primary"
-                        leftIcon={UserIconNameEnum.Pause}
-                        content={t`Pause`}
+                        variant="secondary"
+                        label={t`Pause`}
                         onPress={actions.pause}
                     />
                 ) : null}
                 {canResume ? (
-                    <Button
+                    <SettingsPillButton
                         testID={AiDownloadSelector.ResumeButton}
-                        size="sm"
-                        variant="primary"
-                        leftIcon={UserIconNameEnum.Play}
-                        content={resumeLabel}
+                        variant="secondary"
+                        label={resumeLabel}
                         onPress={actions.resume}
                     />
                 ) : null}
                 {isWaitingForWifi ? (
-                    <Button
+                    <SettingsPillButton
                         testID={AiDownloadSelector.MobileDataButton}
-                        size="sm"
-                        variant="primary"
-                        content={t`Use mobile data for ${remaining} GB`}
+                        variant="secondary"
+                        label={t`Use mobile data for ${remaining} GB`}
                         onPress={actions.allowMobileData}
                     />
                 ) : null}
-                <Button
+                <SettingsPillButton
                     testID={AiDownloadSelector.CancelButton}
-                    size="sm"
-                    variant="ghost"
-                    content={t`Cancel and delete`}
+                    variant="secondary"
+                    label={t`Cancel and delete`}
                     onPress={actions.cancel}
                 />
             </View>

@@ -30,8 +30,8 @@ export const ApplePayCaptureInstructionsButton = ({ testID }: Props) => {
         <Button
             testID={testID}
             onPress={handlePressInstructionsGuide}
-            content={t`View step-by-step instructions`}
-            leftIcon={UserIconNameEnum.ExternalLink}
+            content={t`Step-by-step instructions`}
+            rightIcon={UserIconNameEnum.ArrowUpRight}
             variant="ghost"
         />
     );

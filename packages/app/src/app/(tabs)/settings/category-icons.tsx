@@ -9,6 +9,7 @@ import { isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
+import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { SearchablePageEmptyState } from '../../../@generic/component/searchable-page-empty-state/searchable-page-empty-state';
 import { SearchablePageErrorState } from '../../../@generic/component/searchable-page-error-state/searchable-page-error-state';
 import { useIconSearchCatalog } from '../../../@generic/hook/use-icon-search-catalog.hook';
@@ -66,16 +67,18 @@ export default function CategoryIconsPage() {
 
     return (
         <CollapsibleChromePage
-            title={t`Category Icons`}
-            subtitle={subtitle}
+            title={t`Category icons`}
             leading={<GoBackButton onPress={handleGoBack} />}
             testID={CategoryIconsPageSelector.Container}
         >
             {isNotEmptyArray(categoriesWithDefaultIcon) ? (
-                <View className="gap-y-3xl">
-                    {categoriesWithDefaultIcon.map(category => (
-                        <CategoryIconFixRow key={category.id} category={category} />
-                    ))}
+                <View className="gap-y-7xl">
+                    {categoriesWithDefaultIcon.map((category, index) => {
+                        const footer = index === categoriesWithDefaultIcon.length - 1 ? subtitle : void 0;
+
+                        return <CategoryIconFixRow key={category.id} category={category} footer={footer} />;
+                    })}
+                    <MenuSpacer />
                 </View>
             ) : (
                 fallback
