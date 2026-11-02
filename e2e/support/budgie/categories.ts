@@ -6,7 +6,7 @@ import { byId, done, expectId, expectNoId, sleep, tapId, tapUntil, type Ctx } fr
  * subflows/shared/create-entity-from-transaction: open a picker from the
  * transaction form, type a new name, create it and save the form that opens.
  */
-export async function createEntityFromTransaction(
+async function createEntityFromTransaction(
     ctx: Ctx,
     ids: { selector: string; pickerInput: string; createButton: string; formInput: string; submit: string },
     name: string

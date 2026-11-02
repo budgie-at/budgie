@@ -41,7 +41,7 @@ export async function setOverallLimit(ctx: Ctx, value: string): Promise<void> {
  * the "Limit from" label above it (the flows tap "Category limits", which the
  * pad hides here), else drag the form a little, until the pad is gone.
  */
-export async function endAmountEditing(ctx: Ctx): Promise<void> {
+async function endAmountEditing(ctx: Ctx): Promise<void> {
     const { screen } = ctx;
     const pad = byId(screen, 'inputView');
     if (!(await pad.isVisible())) return;

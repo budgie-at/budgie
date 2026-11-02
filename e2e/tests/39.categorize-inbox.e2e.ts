@@ -69,7 +69,7 @@ test('39 categorize inbox', { tags: ['categorize'] }, async ({ budgie }) => {
         await b.tapId(ctx, 'CategorizeInboxUndoBar.RuleButton');
         await expect(id('RuleForm.Action.0.CategorySelector.Value')).toHaveText('Restaurants & Cafes', { timeout: 5_000 });
         await b.scrollTo(ctx, 'RuleForm.Action.1.TagSelector.Value');
-        await expect(id('RuleForm.Action.1.TagSelector.Value')).toHaveText('E2E Coffee Tag');
+        await expect(id('RuleForm.Action.1.TagSelector.Value')).toHaveText('#E2E Coffee Tag');
         await back();
         await b.expectNoId(ctx, 'RuleForm.Footer.SubmitButton', 5_000);
         await b.expectId(ctx, 'CategorizeInboxUndoBar');
@@ -121,7 +121,7 @@ test('39 categorize inbox', { tags: ['categorize'] }, async ({ budgie }) => {
         await b.tapId(ctx, 'CategorizeInboxUndoBar.RuleButton');
         await expect(id('RuleForm.Action.0.CategorySelector.Value')).toHaveText('Groceries', { timeout: 5_000 });
         await b.scrollTo(ctx, 'RuleForm.Action.1.TagSelector.Value');
-        await expect(id('RuleForm.Action.1.TagSelector.Value')).toHaveText('E2E Grocer Tag');
+        await expect(id('RuleForm.Action.1.TagSelector.Value')).toHaveText('#E2E Grocer Tag');
         await back();
         await b.expectNoId(ctx, 'RuleForm.Footer.SubmitButton', 5_000);
         await b.expectId(ctx, 'CategorizeInboxUndoBar');

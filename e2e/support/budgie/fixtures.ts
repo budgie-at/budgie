@@ -20,7 +20,7 @@ const MARKER = 'Documents/E2EFixtures/.simlock-staged';
  * is the app container's `Documents/`, packed once per run.
  */
 let staged: Promise<Buffer> | undefined;
-export function stagedDocuments(): Promise<Buffer> {
+function stagedDocuments(): Promise<Buffer> {
     staged ??= (async () => {
         const started = Date.now();
         const container = mkdtempSync(join(tmpdir(), 'budgie-container-'));

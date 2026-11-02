@@ -1,5 +1,6 @@
 import { expect } from 'e2e';
 
+import { scrollToCentre } from './accounts.ts';
 import {
     byId,
     byText,
@@ -105,18 +106,14 @@ export async function openActionCategorySelector(ctx: Ctx, index = 0): Promise<v
 export async function deleteFirstRuleViaForm(ctx: Ctx): Promise<void> {
     const { screen } = ctx;
     await tapUntil(ctx, 'RulesPage.RuleCardActions.0', () => expect(byText(screen, 'Edit Rule')).toBeVisible({ timeout: 5_000 }));
-    await tapId(ctx, 'RuleForm.Footer.DeleteButton.Label');
-    await expect(screen.getByText('Delete').last()).toBeVisible({ timeout: 3_000 });
+    // centerElement: at the bottom of the form the label sits under the floating Save footer, which takes the tap.
+    await scrollToCentre(ctx, 'RuleForm.Footer.DeleteButton.Label');
+    // The form can still be animating in: a tap then is dropped, so tap again until the confirmation shows.
+    await tapUntil(ctx, 'RuleForm.Footer.DeleteButton.Label', () =>
+        expect(screen.getByText('Delete').last()).toBeVisible({ timeout: 3_000 })
+    );
     await screen.getByText('Delete').last().tap();
     await expectId(ctx, 'RulesPage.Page', 5_000);
-}
-
-/** Maestro's bare `swipe: DOWN` on a modal sheet: drags from the sheet's title down most of the screen, which dismisses it. */
-export async function swipeDownToDismiss(ctx: Ctx, title: string): Promise<void> {
-    const box = await byText(ctx.screen, title).boundingBox();
-    if (box === null) throw new Error(`"${title}" has no bounds`);
-    const from = { x: box.x + box.width / 2, y: box.y + box.height / 2 };
-    await ctx.screen.swipe({ from, to: { x: from.x, y: from.y + 600 }, duration: 400 });
 }
 
 /** The rule form's account picker sheet is opening: search `name`, pick it, wait for the sheet to close. */
@@ -152,21 +149,20 @@ export async function createSuggestedRuleFromTransaction(
     await expectId(ctx, 'RulesPage.RuleCard.0', 10_000);
     await expectId(ctx, 'RulesPage.RuleCardActions.0', 10_000);
     await tapUntil(ctx, 'RulesPage.RuleCardActions.0', () => expect(byText(screen, 'Edit Rule')).toBeVisible());
-    await expectId(ctx, 'RuleForm.Condition.0.FieldSelector.Value');
-    await expectId(ctx, 'RuleForm.Condition.1.FieldSelector');
+    await expectId(ctx, 'RuleForm.Condition.0.Row');
+    await expectId(ctx, 'RuleForm.Condition.1.Row');
     if (options.conditions === 3) {
         // The third row sits under the footer on a 6.3" screen.
         await dragUp(ctx, 'RuleForm.Condition.1.Row');
-        await expectId(ctx, 'RuleForm.Condition.2.FieldSelector');
+        await expectId(ctx, 'RuleForm.Condition.2.Row');
     }
-    await tapId(ctx, 'PageHeader.BackButton');
-    await expectId(ctx, 'RulesPage.Page');
+    await tapUntil(ctx, 'PageHeader.BackButton', () => expectId(ctx, 'RulesPage.Page', 5_000));
     await deleteFirstRuleViaForm(ctx);
     await expectNoRules(ctx);
 }
 
 /** A raw finger drag up from `testId`'s centre (300 pt): moves the rule form, which ignores synthesized scrolls. */
-export async function dragUp(ctx: Ctx, testId: string, distance = 300): Promise<void> {
+async function dragUp(ctx: Ctx, testId: string, distance = 300): Promise<void> {
     const box = await byId(ctx.screen, testId).boundingBox();
     if (box === null) throw new Error(`${testId} has no bounds`);
     const from = { x: box.x + box.width / 2, y: box.y + box.height / 2 };
@@ -178,7 +174,11 @@ export async function dragUp(ctx: Ctx, testId: string, distance = 300): Promise<
 export async function assertTransactionTagged(ctx: Ctx, labelId: string, tag: string): Promise<void> {
     await tapUntil(ctx, `TransactionCard.Label.${labelId}`, () => expectId(ctx, 'TransactionInfo.Page', 5_000));
     await scrollTo(ctx, 'TransactionInfo.Row.Tags');
-    await expect(byText(ctx.screen, tag)).toBeVisible();
+    // The info page draws the tag inside the row's accessible name ("Tags, <tag>"), not as a node of its own.
+    const escaped = tag.replaceAll(/[.*+?^${}()|[\]\\]/gu, '\\$&');
+    await expect(byId(ctx.screen, 'TransactionInfo.Row.Tags')).toHaveAccessibleName(new RegExp(`(^|, )${escaped}(,|$)`), {
+        timeout: 5_000
+    });
     await sleep(400);
     await tapUntil(ctx, 'PageHeader.BackButton', () => expectId(ctx, 'TransactionsPage.Container', 5_000));
 }

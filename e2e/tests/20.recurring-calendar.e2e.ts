@@ -29,7 +29,8 @@ test('20 recurring calendar', { tags: ['recurring'] }, async ({ budgie }) => {
         await b.expectId(ctx, 'RecurringCalendar.SelectedDayHeader.19', 5_000);
         await b.expectId(ctx, 'RecurringCalendar.Row.E2E_Recurring_Rent');
         await b.tapId(ctx, 'RecurringCalendar.Day.CurrentMonth.19');
-        await b.expectId(ctx, 'RecurringCalendar.Day.CurrentMonth.19', 5_000);
+        await b.expectNoId(ctx, 'RecurringCalendar.SelectedDayHeader.19', 5_000);
+        await b.expectId(ctx, 'RecurringCalendar.Day.CurrentMonth.19');
         await upcomingIfShown();
     });
 

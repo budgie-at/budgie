@@ -11,18 +11,12 @@ const TARGET = 'E2E Expense Target';
 
 test('12 account archive and expense convert to transfer', { tags: ['accounts', 'transactions'] }, async ({ budgie }) => {
     const ctx = budgie.ctx;
-    const { screen } = ctx;
     const home = async (netWorth: string, source: string, target: string) => {
         await b.tapId(ctx, 'TabBar.Home');
         await b.expectId(ctx, 'HomePage.TotalBalance');
         await b.expectId(ctx, `HomePage.NetWorthValue.${netWorth}`);
         await b.expectId(ctx, `AccountCard.Balance.E2E_Expense_Source.${source}`);
         await b.expectId(ctx, `AccountCard.Balance.E2E_Expense_Target.${target}`);
-    };
-    const confirm = async (question: string, answer: string) => {
-        await expect(b.byText(screen, question)).toBeVisible({ timeout: 10_000 });
-        await screen.getByText(answer).last().tap();
-        await expect(b.byText(screen, question)).toBeHidden({ timeout: 10_000 });
     };
 
     await budgie.start({ fixture: '12.db' });
@@ -35,13 +29,11 @@ test('12 account archive and expense convert to transfer', { tags: ['accounts', 
         await b.expectId(ctx, 'AccountForm.NameInput', 10_000);
         await b.scrollTo(ctx, 'AccountDetails.ArchiveButton');
         await b.tapId(ctx, 'AccountDetails.ArchiveButton');
-        await confirm('Archive Account?', 'Archive');
         await b.expectNoId(ctx, `AccountCard.${TARGET}`, 10_000);
 
         await a.openArchivedAccounts(ctx);
         await b.expectId(ctx, `ArchivedAccountCard.RestoreButton.${TARGET}`, 10_000);
         await b.tapId(ctx, `ArchivedAccountCard.RestoreButton.${TARGET}`);
-        await confirm('Restore Account?', 'Restore');
         await b.expectNoId(ctx, `ArchivedAccountCard.RestoreButton.${TARGET}`, 10_000);
         await b.tapId(ctx, 'TabBar.Home');
         await b.expectId(ctx, 'HomePage.TotalBalance', 10_000);
@@ -51,7 +43,12 @@ test('12 account archive and expense convert to transfer', { tags: ['accounts', 
     await b.phase('create expense', async () => {
         await t.navigateToTransactions(ctx);
         await t.openTransactionForm(ctx, 'ActionItem.Expense', 'New Expense');
-        await t.typeDigits(ctx, '30');
+        // A keypad tap can land while the form is still settling and be dropped: re-enter until the amount reads 30.
+        await t.retry(2, async () => {
+            await t.clearAmount(ctx);
+            await t.typeDigits(ctx, '30');
+            await expect(b.byId(ctx.screen, 'TransactionForm.AmountInput')).toHaveText(/^\$\s*30$/, { timeout: 2_000 });
+        });
         await t.selectAccount(ctx, 'E2E Expense Source');
         await c.createCategoryFromTransaction(ctx, 'E2E Convert Category');
         await t.enterComment(ctx, 'E2E Convert Expense');

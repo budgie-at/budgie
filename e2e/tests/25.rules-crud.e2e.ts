@@ -66,7 +66,7 @@ test('25 rules CRUD', { tags: ['rules'] }, async ({ budgie }) => {
         await r.pick(ctx, 'RuleForm.Condition.1.FieldSelector', 'COMMENT');
         await b.fillId(ctx, 'RuleForm.Condition.1.ValueInput', 'Premium');
         await b.done(ctx);
-        await expect(screen.getByText('Match All').first()).toBeVisible();
+        await expect(screen.getByText('All conditions').first()).toBeVisible();
         await b.scrollTo(ctx, 'RuleForm.Action.0.CategorySelector');
         await category();
         await r.submitRuleSkipExisting(ctx);
@@ -220,7 +220,7 @@ test('25 rules CRUD', { tags: ['rules'] }, async ({ budgie }) => {
         await r.openCreateRuleForm(ctx);
         await r.pick(ctx, 'RuleForm.Condition.0.FieldSelector.Value', 'MCC_CODE');
         await b.tapId(ctx, 'RuleForm.Condition.0.ValueInput');
-        await screen.getByPlaceholder('Search by code or description...').first().fill('0742');
+        await b.fillId(ctx, 'RuleMccSelector.SearchInput', '0742');
         await b.done(ctx);
         await expect(id('RuleMccSelector.Card.0742')).toBeVisible({ timeout: 10_000 });
         await b.tapId(ctx, 'RuleMccSelector.Card.0742');

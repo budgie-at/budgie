@@ -76,7 +76,9 @@ test('10 transfer transaction', { tags: ['transactions'] }, async ({ budgie }) =
         await b.expectId(ctx, 'TransactionInfo.Page', 3_000);
         await b.tapId(ctx, 'PageHeader.BackButton');
         await b.expectId(ctx, 'TransactionCard.Label.E2E_Edited_Transfer', 5_000);
-        await expect(b.byText(screen, /^From E2E Transfer Account to E2E Txn Account/i)).toBeVisible();
+        await expect(b.byId(screen, 'TransactionCard.Label.E2E_Edited_Transfer')).toHaveText(
+            /From E2E Transfer Account to E2E Txn Account/i
+        );
         await home('125', '75');
         await t.navigateToTransactions(ctx);
     });

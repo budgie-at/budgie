@@ -33,10 +33,24 @@
         "rimraf",
         "emojibase-data"
     ],
-    "ignoreBinaries": ["build"],
+    "ignoreBinaries": [
+        "build"
+    ],
     "workspaces": {
         "tests/sync-tests": {
-            "ignoreDependencies": ["@lingui/core", "expo-app-intents"]
+            "ignoreDependencies": [
+                "@lingui/core",
+                "expo-app-intents"
+            ]
+        },
+        "e2e": {
+            "entry": [
+                "e2e.config.ts",
+                "tests/**/*.e2e.ts"
+            ],
+            "project": [
+                "**/*.ts"
+            ]
         }
     }
 }

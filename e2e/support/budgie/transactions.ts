@@ -19,7 +19,7 @@ export async function retry(retries: number, body: (attempt: number) => Promise<
 }
 
 /** Taps `testId` until `targetId` shows (each wait `timeout`), up to `1 + retries` taps. */
-export async function tapUntilId(ctx: Ctx, testId: string, targetId: string, retries = 3, timeout = 3_000): Promise<void> {
+async function tapUntilId(ctx: Ctx, testId: string, targetId: string, retries = 3, timeout = 3_000): Promise<void> {
     await retry(retries, async () => {
         await tapId(ctx, testId);
         await expectId(ctx, targetId, timeout);
@@ -124,7 +124,7 @@ export async function submitTransactionAndReturnToList(ctx: Ctx): Promise<void> 
 }
 
 /** subflows/transactions/confirm-delete-dialog */
-export async function confirmDeleteDialog(ctx: Ctx): Promise<void> {
+async function confirmDeleteDialog(ctx: Ctx): Promise<void> {
     const ask = byText(ctx.screen, 'Are you sure?');
     await expect(ask).toBeVisible({ timeout: 3_000 });
     await ctx.screen.getByText('Delete').last().tap();
@@ -143,15 +143,6 @@ export async function deleteTransaction(ctx: Ctx): Promise<void> {
 export async function openTransaction(ctx: Ctx, labelId: string, timeout = 5_000): Promise<void> {
     await tapId(ctx, `TransactionCard.Label.${labelId}`);
     await expectId(ctx, 'TransactionInfo.Page', timeout);
-}
-
-/** subflows/transactions/assert-transaction-tag */
-export async function assertTransactionTag(ctx: Ctx, labelId: string, tag: string): Promise<void> {
-    await openTransaction(ctx, labelId);
-    await scrollTo(ctx, 'TransactionInfo.Row.Tags');
-    await expect(byText(ctx.screen, new RegExp(`^${escapeRegExp(tag)}$`, 'i'))).toBeVisible();
-    await sleep(400);
-    await tapUntilId(ctx, 'PageHeader.BackButton', 'TransactionsPage.Container', 1, 5_000);
 }
 
 /** subflows/transactions/long-press-transaction-action */
@@ -202,26 +193,6 @@ export async function openInfoConversions(ctx: Ctx): Promise<void> {
     await tapId(ctx, 'TransactionInfo.ConvertButton');
 }
 
-/** subflows/transactions/open-convert-to-refund-picker */
-export async function openConvertToRefundPicker(ctx: Ctx, transactionId: number | string, candidateRowId: string): Promise<void> {
-    await openLink(ctx, `budgie://transactions/${transactionId}/income`);
-    await expectId(ctx, 'TransactionInfo.Page', 15_000);
-    await scrollTo(ctx, 'TransactionInfo.ConvertButton');
-    await sleep(400);
-    await tapId(ctx, 'TransactionInfo.ConvertButton');
-    await expectId(ctx, 'TransactionActionsMenu.ConvertToRefundButton', 5_000);
-    await tapId(ctx, 'TransactionActionsMenu.ConvertToRefundButton');
-    await expectId(ctx, candidateRowId, 15_000);
-}
-
-/** subflows/transactions/open-split-entries */
-export async function openSplitEntries(ctx: Ctx, transactionId: number | string, lastRowId: string): Promise<void> {
-    await openLink(ctx, `budgie://transactions/${transactionId}/expense/edit`);
-    await expectId(ctx, 'TransactionFieldIcon.Split', 15_000);
-    await tapId(ctx, 'TransactionFieldIcon.Split');
-    await expectId(ctx, lastRowId, 10_000);
-}
-
 /** subflows/transactions/select-split-category */
 export async function selectSplitCategory(ctx: Ctx, entryIndex: number, category: string): Promise<void> {
     await tapId(ctx, `SplitEntryRow.Category.${entryIndex}`);
@@ -249,11 +220,14 @@ export async function selectExistingTag(ctx: Ctx, tag: string): Promise<void> {
     await expectNoId(ctx, 'TagPickerBottomSheet.Input');
 }
 
-/** subflows/transactions/create-expense: a whole expense from the transactions list; `amount` is `'25'` or `'10'` (else the keypad's default). */
+/** subflows/transactions/create-expense: a whole expense from the transactions list; `amount` is `'25'` or `'10'`, the two the subflow can type. */
 export async function createExpense(
     ctx: Ctx,
     options: { amount: string; account: string; category: string; comment: string }
 ): Promise<void> {
+    if (options.amount !== '25' && options.amount !== '10') {
+        throw new Error(`createExpense: amount '${options.amount}' is not one the create-expense subflow types ('25' or '10')`);
+    }
     await navigateToTransactions(ctx);
     await openTransactionForm(ctx, 'ActionItem.Expense', 'New Expense');
     await selectAccount(ctx, options.account);
@@ -261,13 +235,11 @@ export async function createExpense(
     await selectCategoryBySearch(ctx, options.category);
     await enterComment(ctx, options.comment);
     await expectId(ctx, 'TransactionKeypad.Digit.1');
-    if (options.amount === '25' || options.amount === '10') {
-        await retry(3, async () => {
-            await clearAmount(ctx);
-            await typeDigits(ctx, options.amount);
-            await expect(byText(ctx.screen, new RegExp(` ${options.amount}$`))).toBeVisible({ timeout: 1_000 });
-        });
-    }
+    await retry(3, async () => {
+        await clearAmount(ctx);
+        await typeDigits(ctx, options.amount);
+        await expect(byText(ctx.screen, new RegExp(` ${options.amount}$`))).toBeVisible({ timeout: 1_000 });
+    });
     await submitTransactionAndWait(ctx);
 }
 
@@ -290,7 +262,7 @@ export async function openAndDismissFeeSheet(ctx: Ctx, formTitle: string): Promi
  * the other way a user closes it, is tapped instead. The sheet may stop at its collapsed detent on the way,
  * so this tries up to three times.
  */
-export async function dismissSheetByDrag(ctx: Ctx, contentId: string): Promise<void> {
+async function dismissSheetByDrag(ctx: Ctx, contentId: string): Promise<void> {
     const { screen } = ctx;
     const grabber = screen.getByRole('button', { name: 'Sheet Grabber' }).first();
     let keyboardUp = false;
@@ -328,10 +300,6 @@ export async function dismissSheetByDrag(ctx: Ctx, contentId: string): Promise<v
     }
 }
 
-export function escapeRegExp(value: string): string {
-    return value.replaceAll(/[.*+?^${}()|[\]\\]/gu, '\\$&');
-}
-
 /** The transfer form's account fields: tap `selectorId` (`TransferForm.FromAccount` / `.ToAccount`), search and pick `name`. */
 export async function pickTransferAccount(ctx: Ctx, selectorId: string, name: string): Promise<void> {
     await tapId(ctx, selectorId);
@@ -355,7 +323,7 @@ export async function consolidateMatches(ctx: Ctx): Promise<void> {
 }
 
 /** A point inside `locator` at fractions of its size, in the node's own coordinates (for `tap({ position })`, Maestro's `point: 'x%,y%'`). */
-export async function relativePoint(locator: Locator, fx: number, fy: number): Promise<{ x: number; y: number }> {
+async function relativePoint(locator: Locator, fx: number, fy: number): Promise<{ x: number; y: number }> {
     const box = await locator.boundingBox();
     if (box === null) throw new Error('the node to tap has no bounds');
     return { x: Math.round(box.width * fx), y: Math.round(box.height * fy) };
@@ -366,22 +334,4 @@ export async function closeMenu(ctx: Ctx): Promise<void> {
     const backdrop = ctx.screen.getByText('Close menu').first();
     await backdrop.tap({ position: await relativePoint(backdrop, 0.1, 0.08) });
     await expect(backdrop).toBeHidden({ timeout: 3_000 });
-}
-
-/** subflows/installment/open-convert-to-installment */
-export async function openConvertToInstallment(ctx: Ctx, transactionId: number | string): Promise<void> {
-    await openLink(ctx, `budgie://transactions/${transactionId}/expense`);
-    await expectId(ctx, 'TransactionInfo.Page', 15_000);
-    await scrollTo(ctx, 'TransactionInfo.ConvertButton');
-    await sleep(400);
-    await tapId(ctx, 'TransactionInfo.ConvertButton');
-    await ctx.screen.getByText('Pay in parts').first().tap();
-    await expectId(ctx, 'ConvertToInstallment.Page', 10_000);
-}
-
-/** subflows/installment/create-installment-plan */
-export async function createInstallmentPlan(ctx: Ctx, transactionId: number | string, progressId: string): Promise<void> {
-    await openConvertToInstallment(ctx, transactionId);
-    await tapId(ctx, 'ConvertToInstallment.CreateButton');
-    await expectId(ctx, progressId, 15_000);
 }

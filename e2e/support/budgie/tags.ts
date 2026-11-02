@@ -1,22 +1,6 @@
 import { expect } from 'e2e';
 
-import { createEntityFromTransaction } from './categories.ts';
 import { byId, done, expectId, expectNoId, tapId, tapUntil, type Ctx } from './core.ts';
-
-/** subflows/tags/create-tag-from-transaction */
-export async function createTagFromTransaction(ctx: Ctx, name: string): Promise<void> {
-    await createEntityFromTransaction(
-        ctx,
-        {
-            selector: 'TransactionForm.TagsSelector',
-            pickerInput: 'TagPickerBottomSheet.Input',
-            createButton: 'TagPickerBottomSheet.CreateButton',
-            formInput: 'TagForm.Input',
-            submit: 'TagForm.Submit'
-        },
-        name
-    );
-}
 
 /** subflows/shared/select-tag-by-search */
 export async function selectTagBySearch(ctx: Ctx, name: string): Promise<void> {

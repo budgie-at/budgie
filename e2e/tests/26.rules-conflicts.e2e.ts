@@ -30,8 +30,8 @@ test('26 rules conflicts', { tags: ['rules'] }, async ({ budgie }) => {
         await r.openCreateRuleForm(ctx);
         await b.fillId(ctx, 'RuleForm.Condition.0.ValueInput', 'Other');
         await b.done(ctx);
-        await expect(b.byText(screen, /^Some transactions may match multiple rules\./)).toBeVisible();
-        await r.swipeDownToDismiss(ctx, 'Create Rule');
+        await expect(b.byText(screen, /the older rule wins/i)).toBeVisible();
+        await b.tapId(ctx, 'PageHeader.BackButton');
         await expect(b.byText(screen, 'Create Rule')).toBeHidden();
     });
 

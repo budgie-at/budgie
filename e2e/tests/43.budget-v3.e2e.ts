@@ -79,7 +79,10 @@ test('43 budget v3', { tags: ['budget'] }, async ({ budgie }) => {
         await b.tapText(ctx, 'Category limits');
         await b.tapId(ctx, 'BudgetEvent.SaveButton');
         await b.expectId(ctx, 'BudgetDetails.Screen', 3_000);
-        const event = b.byText(screen, EVENT);
+        const event = screen
+            .getByTestId(/^BudgetDetails\.EventRow\./)
+            .filter({ hasText: new RegExp(`^${EVENT}, `, 'i') })
+            .first();
         await screen.scrollUntilVisible(event, { direction: 'down', timeout: 20_000 });
         await event.tap();
         await expect(b.byText(screen, 'Tagged expenses also count in your main budget.')).toBeVisible({ timeout: 3_000 });

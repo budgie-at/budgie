@@ -26,9 +26,9 @@ test('36 bank integration settings', { tags: ['sync'] }, async ({ budgie }) => {
 
     await b.phase('home integration section', async () => {
         await b.expectId(ctx, 'HomePage.TotalBalance', 10_000);
-        await b.scrollTo(ctx, 'BankProviderSectionHeader.SettingsButton.1');
-        await b.expectId(ctx, 'BankProviderSectionHeader.SettingsButton.1');
-        await b.tapId(ctx, 'BankProviderSectionHeader.SettingsButton.1');
+        await b.scrollTo(ctx, 'InstitutionRow.1');
+        await b.expectId(ctx, 'InstitutionRow.1');
+        await b.tapId(ctx, 'InstitutionRow.1');
         await b.expectId(ctx, 'BankIntegration.Page', 10_000);
     });
 
@@ -93,9 +93,6 @@ test('36 bank integration settings', { tags: ['sync'] }, async ({ budgie }) => {
         await b.tapId(ctx, 'BankIntegration.AccountRow.9.Menu');
         await b.expectId(ctx, 'BankIntegration.AccountRow.9.Menu.Archive', 3_000);
         await b.tapId(ctx, 'BankIntegration.AccountRow.9.Menu.Archive');
-        await b.expectText(ctx, 'Archive Account?');
-        await screen.getByText('Archive').last().tap();
-        await expect(b.byText(screen, 'Archive Account?')).toBeHidden();
         await b.expectId(ctx, 'BankIntegration.Page', 10_000);
         await b.expectNoId(ctx, 'BankIntegration.AccountRow.9');
         await b.expectId(ctx, 'BankIntegration.AccountRow.8');

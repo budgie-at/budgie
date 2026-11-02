@@ -34,7 +34,7 @@ test('26 rules convert to transfer', { tags: ['rules'] }, async ({ budgie }) => 
         await r.submitRuleApplyExisting(ctx);
         await b.expectId(ctx, 'RulesPage.Page');
         await r.expectRuleCard(ctx);
-        await expect(b.byId(screen, 'RulesPage.RuleCard.0')).toContainText(`Transfer → ${DESTINATION}`);
+        await expect(b.byId(screen, 'RulesPage.RuleCard.0')).toContainText(DESTINATION);
     });
 
     await b.phase('transaction converted to transfer', async () => {

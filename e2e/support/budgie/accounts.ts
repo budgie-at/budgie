@@ -121,7 +121,7 @@ export async function updateAccountBalance(ctx: Ctx, newBalance: string): Promis
 }
 
 /** subflows/accounts/rename-account: on the edit form. */
-export async function renameAccount(ctx: Ctx, newName: string): Promise<void> {
+async function renameAccount(ctx: Ctx, newName: string): Promise<void> {
     await scrollTo(ctx, 'AccountForm.NameInput', 'up');
     const input = byId(ctx.screen, 'AccountForm.NameInput');
     await input.clear();
@@ -133,7 +133,7 @@ export async function renameAccount(ctx: Ctx, newName: string): Promise<void> {
 }
 
 /** subflows/accounts/set-debt-return-date: on the edit form. */
-export async function setDebtReturnDate(ctx: Ctx, day: string, label: string | RegExp): Promise<void> {
+async function setDebtReturnDate(ctx: Ctx, day: string, label: string | RegExp): Promise<void> {
     await scrollTo(ctx, 'AccountForm.ReturnDate');
     await tapId(ctx, 'AccountForm.ReturnDate');
     await expectId(ctx, `DatePicker.Day.${day}`, 10_000);
@@ -148,7 +148,7 @@ export async function openArchivedAccounts(ctx: Ctx): Promise<void> {
 }
 
 /** subflows/accounts/open-inactive-accounts */
-export async function openInactiveAccounts(ctx: Ctx): Promise<void> {
+async function openInactiveAccounts(ctx: Ctx): Promise<void> {
     await openLink(ctx, 'budgie://settings/inactive');
     await expectId(ctx, 'InactiveAccountsPage.Container', 15_000);
 }
@@ -160,7 +160,7 @@ export async function assertAdjustmentTransaction(ctx: Ctx, delta: string): Prom
 }
 
 /** subflows/accounts/set-main-currency */
-export async function setMainCurrency(ctx: Ctx, currency: string): Promise<void> {
+async function setMainCurrency(ctx: Ctx, currency: string): Promise<void> {
     const search = byId(ctx.screen, 'CurrencySelector.SearchInput');
     await navigateToSettings(ctx);
     for (let attempt = 1; ; attempt++) {
@@ -184,7 +184,7 @@ export async function setMainCurrency(ctx: Ctx, currency: string): Promise<void>
 }
 
 /** The account form's currency selector: open it, search `currency`, pick it. */
-export async function pickAccountCurrency(ctx: Ctx, currency: string, expectSelected = true): Promise<void> {
+async function pickAccountCurrency(ctx: Ctx, currency: string, expectSelected = true): Promise<void> {
     const search = byId(ctx.screen, 'CurrencySelector.SearchInput');
     await tapRetry(byId(ctx.screen, 'AccountForm.CurrencySelector'), () => expect(search).toBeVisible({ timeout: 3_000 }));
     await search.clear();
@@ -196,7 +196,7 @@ export async function pickAccountCurrency(ctx: Ctx, currency: string, expectSele
 }
 
 /** Taps an account type on the create-account list and waits for the form. */
-export async function chooseAccountType(ctx: Ctx, typeId: string): Promise<void> {
+async function chooseAccountType(ctx: Ctx, typeId: string): Promise<void> {
     await expectId(ctx, typeId, 3_000);
     await tapRetry(byId(ctx.screen, typeId), () => expectId(ctx, 'AccountForm.NameInput', 3_000));
 }
@@ -302,8 +302,6 @@ export async function createCryptoAccount(ctx: Ctx, account: { name: string; cur
 async function activateInactiveAccount(ctx: Ctx, name: string): Promise<void> {
     await expectId(ctx, `InactiveAccountCard.${name}`, 10_000);
     await tapId(ctx, `InactiveAccountCard.ActivateButton.${name}`);
-    await expect(byText(ctx.screen, 'Activate Account?')).toBeVisible({ timeout: 3_000 });
-    await ctx.screen.getByText('Activate').last().tap();
     await expectNoId(ctx, `InactiveAccountCard.${name}`, 10_000);
     await tapId(ctx, 'TabBar.Home');
 }
@@ -315,11 +313,10 @@ async function toggleAndSave(ctx: Ctx, rowId: string): Promise<void> {
     await tapId(ctx, 'AccountForm.SubmitButton');
 }
 
-/** On the edit form: archive the account. */
+/** On the edit form: archive the account (no confirmation dialog). */
 async function archiveFromSettings(ctx: Ctx): Promise<void> {
     await scrollToCentre(ctx, 'AccountDetails.ArchiveButton');
     await tapId(ctx, 'AccountDetails.ArchiveButton');
-    await ctx.screen.getByText('Archive').last().tap();
 }
 
 export interface DebtExercise {
@@ -522,7 +519,7 @@ export async function scrollToCentre(ctx: Ctx, testId: string, direction: 'up' |
  * Types an amount into a money field. The field swallows a lone `0` (it stays empty and shows its `0` placeholder),
  * which fails `fill`'s read-back; that end state is the same as typing `0`, so it is accepted.
  */
-export async function fillAmount(field: Locator, value: string): Promise<void> {
+async function fillAmount(field: Locator, value: string): Promise<void> {
     try {
         await field.fill(value);
     } catch (cause) {

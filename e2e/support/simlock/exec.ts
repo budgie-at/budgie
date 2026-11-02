@@ -100,7 +100,7 @@ export async function mustExec(api: SimlockApi, leaseId: string, args: readonly 
  * through it.
  */
 export const E2E_DROP_APP = fileURLToPath(new URL('./e2e-drop/E2EDrop.app', import.meta.url));
-export const E2E_DROP_BUNDLE_ID = 'dev.e2e.simlock.drop';
+const E2E_DROP_BUNDLE_ID = 'dev.e2e.simlock.drop';
 
 const dropPaths = new Map<string, Promise<string>>();
 
@@ -139,14 +139,4 @@ export async function writeFile(api: SimlockApi, leaseId: string, path: string, 
 /** Unpacks a ustar archive (`tar --format=ustar`) into `dir`. */
 export async function untar(api: SimlockApi, leaseId: string, dir: string, tar: Buffer): Promise<void> {
     await mustDrop(api, leaseId, ['untar', dir], tar);
-}
-
-export const shellQuote = (value: string): string => `'${value.replaceAll("'", `'\\''`)}'`;
-
-/**
- * Runs a POSIX shell script on the worker. Works only on hosts whose
- * CoreSimulator still spawns the Mac's own /bin/sh (macOS 15); prefer `drop`.
- */
-export function sh(api: SimlockApi, leaseId: string, script: string, stdin?: string): Promise<string> {
-    return mustExec(api, leaseId, ['spawn', '/bin/sh', '-c', script], stdin);
 }

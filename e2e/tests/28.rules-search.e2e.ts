@@ -47,8 +47,8 @@ test('28 rules search', { tags: ['rules'] }, async ({ budgie }) => {
 
         await search.fill('MissingRuleSearch');
         await b.expectId(ctx, 'RulesPage.EmptyState');
-        await expect(b.byText(screen, 'No Results')).toBeVisible();
-        await expect(b.byText(screen, 'Try a different search term')).toBeVisible();
+        await expect(b.byText(screen, /^No rules match/i)).toBeVisible();
+        await expect(b.byText(screen, 'Try a title, category or tag name.')).toBeVisible();
 
         await search.clear();
         await b.expectId(ctx, 'RulesPage.RuleCard.0');

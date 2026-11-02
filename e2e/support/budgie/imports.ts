@@ -36,7 +36,7 @@ const folderId = (name: string): RegExp => new RegExp(`^${quote(name)}(, (Folder
  * list), walk to On My iPhone → budgie (E2E) → E2EFixtures, going back up
  * when it is elsewhere.
  */
-export async function openE2EFixturesFullPath(ctx: Ctx, row: Locator): Promise<void> {
+async function openE2EFixturesFullPath(ctx: Ctx, row: Locator): Promise<void> {
     const { screen } = ctx;
     const item = (name: string) => screen.getByTestId(folderId(name)).first();
     const inside = (title: string) => screen.getByTestId(new RegExp(`Title: ${quote(title)}$`)).first();
@@ -100,7 +100,7 @@ async function centerPickerRow(ctx: Ctx, row: Locator, x: number, top: number, b
  * closed. A list the picker reopened scrolled past `row` is reset by going
  * up a folder and back into it.
  */
-export async function scrollPickerTo(ctx: Ctx, row: Locator): Promise<void> {
+async function scrollPickerTo(ctx: Ctx, row: Locator): Promise<void> {
     const { screen } = ctx;
     const picker = byId(screen, 'DOC.browsingModeTabBar');
     const nav = await byId(screen, 'FullDocumentManagerViewControllerNavigationBar').boundingBox();
