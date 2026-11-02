@@ -53,6 +53,7 @@ const DETENT_55 = 0.55;
 const DETENT_85 = 0.85;
 const DETENT_82 = 0.82;
 const DETENT_96 = 0.96;
+const DETENT_74 = 0.74;
 
 const MODAL_OPTIONS: NativeStackNavigationOptions = { presentation: 'modal', headerShown: false };
 
@@ -209,7 +210,7 @@ export const RootLayoutContent = () => {
                                                                     />
                                                                     <Stack.Screen
                                                                         name="split-entries"
-                                                                        options={formSheetOptions([0.3, DETENT_70])}
+                                                                        options={formSheetOptions([DETENT_74])}
                                                                     />
                                                                     <Stack.Screen name="transaction-fee" options={sheetOptions} />
                                                                     <Stack.Screen

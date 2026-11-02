@@ -86,6 +86,7 @@ const getAdjustmentDetails = (transaction: TransactionWithRelationsEntityInterfa
         accountIcon: entry.account.icon,
         instrumentCode: entry.account.instrument.code,
         instrumentSymbol: entry.account.instrument.symbol,
+        instrumentType: entry.account.instrument.type,
         initialAmount: convertFromMicroUnits(entry.amount),
         initialIsIncrease,
         entry
@@ -99,14 +100,17 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
     const details = getAdjustmentDetails(transaction);
     const { isLoading: isSubmitting, run } = useSingleFlight();
     const [isIncrease, toggleIsIncrease] = useReducer((current: boolean) => !current, details?.initialIsIncrease ?? true);
-    const { displayValue, numericValue, handlers } = useKeypadInput({ initialValue: details?.initialAmount ?? 0 });
+    const { displayValue, numericValue, handlers } = useKeypadInput({
+        initialValue: details?.initialAmount ?? 0,
+        ...(isDefined(details) && { instrumentType: details.instrumentType })
+    });
 
     if (!isDefined(details)) {
         return null;
     }
 
     const variant: ColorPaletteVariant = isIncrease ? 'positive' : 'primary';
-    const signedInstrumentSymbol = `${isIncrease ? '+' : '-'}${details.instrumentSymbol}`;
+    const signedInstrumentSymbol = `${isIncrease ? '+' : '\u2212'}${details.instrumentSymbol}`;
     const confirmDisabled = isSubmitting || !isPositiveNumber(numericValue);
 
     const handleGoBack = () => void goBackOrReplace('/');
@@ -134,6 +138,8 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
 
     return (
         <View className="flex-1">
+            <View className="min-h-[16px] flex-1" />
+
             <TransactionAmountDisplay
                 ref={amountDisplayRef}
                 amount={displayValue}
@@ -141,20 +147,17 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
                 variant={variant}
             >
                 <QuickFormSecondaryLine>
+                    <AmountSignPill
+                        isNegative={!isIncrease}
+                        variant={variant}
+                        accessibilityLabel={t`Decrease balance`}
+                        onToggle={toggleIsIncrease}
+                    />
                     <CurrencyModePill label={details.instrumentCode} isFlipped={false} />
                 </QuickFormSecondaryLine>
             </TransactionAmountDisplay>
 
             <View className="flex-1" />
-
-            <View className="mb-md items-center">
-                <AmountSignPill
-                    isNegative={!isIncrease}
-                    variant={variant}
-                    accessibilityLabel={t`Decrease balance`}
-                    onToggle={toggleIsIncrease}
-                />
-            </View>
 
             <View className="mb-md">
                 <AdjustmentAccountSummary details={details} />

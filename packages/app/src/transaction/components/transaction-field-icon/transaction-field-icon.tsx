@@ -89,10 +89,10 @@ export const TransactionFieldIcon = (props: Props) => {
                         >
                             <Icon className={glyphClassName} icon={icon} size={20} />
                         </View>
-                        <View className="min-h-[32px] items-center self-stretch">
+                        <View className="min-h-[36px] items-center self-stretch">
                             {hasValue ? (
                                 <Text
-                                    className="self-stretch text-center text-[12px] leading-[16px] font-medium text-primary"
+                                    className="self-stretch text-center text-[13px] leading-[18px] font-medium text-primary"
                                     maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
                                     numberOfLines={2}
                                     ellipsizeMode="tail"
@@ -102,7 +102,7 @@ export const TransactionFieldIcon = (props: Props) => {
                                 </Text>
                             ) : (
                                 <Text
-                                    className="self-stretch text-center text-[12px] leading-[16px] text-secondary-foreground"
+                                    className="self-stretch text-center text-[13px] leading-[18px] text-secondary-foreground"
                                     maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
                                     numberOfLines={1}
                                     {...testIDProps(testID, TestIDPartEnum.TITLE)}

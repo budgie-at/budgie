@@ -29,7 +29,7 @@ interface Props {
 
 const textVariants = cva('text-center font-semibold tabular-nums', {
     variants: {
-        variant: FOREGROUND_COLOR_PALETTE
+        variant: { ...FOREGROUND_COLOR_PALETTE, positive: 'text-positive-strong' }
     }
 });
 
@@ -62,7 +62,7 @@ export const TransactionAmountDisplay = ({ ref, amount, currencySymbol, variant,
         transform: [{ scale: scale.value }]
     }));
 
-    const fullDisplay = `${currencySymbol} ${formatKeypadAmount(amount, decimalSeparator, digitGroupingSeparator)}`;
+    const fullDisplay = `${currencySymbol}${formatKeypadAmount(amount, decimalSeparator, digitGroupingSeparator)}`;
 
     return (
         <Animated.View entering={FadeIn.duration(200)} className="items-center self-stretch">

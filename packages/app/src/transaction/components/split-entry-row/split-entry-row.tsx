@@ -1,6 +1,6 @@
 import { TransactionEntryCreateInputInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import { Text, View } from 'react-native';
 import Animated, { FadeIn, FadeOutDown, LinearTransition } from 'react-native-reanimated';
 
@@ -29,21 +29,29 @@ interface Props {
 
 const CIRCLE_ICON_SIZE = 44;
 const CIRCLE_ICON_INNER_SIZE = 22;
-const AMOUNT_INPUT_WIDTH = 90;
-const amountInputStyle = { width: AMOUNT_INPUT_WIDTH, textAlign: 'right' as const, fontSize: 15, fontWeight: '600' as const };
+const AMOUNT_INPUT_WIDTH = 104;
+const amountInputStyle = { width: AMOUNT_INPUT_WIDTH, textAlign: 'right' as const, fontSize: 17, fontWeight: '600' as const };
 
 export const SplitEntryRow = (props: Props) => {
     const { index, entry, currencySymbol, variant, autoFocus, onAmountChange, onCategoryPress, children } = props;
     const categoryId = entry.categoryId ?? 0;
 
     const { t } = useLingui();
+    const [isAmountFocused, setIsAmountFocused] = useState(false);
+    const handleAmountFocus = () => {
+        setIsAmountFocused(true);
+    };
+    const handleAmountBlur = () => {
+        setIsAmountFocused(false);
+    };
+    const amountUnderlineClassName = isAmountFocused ? 'border-primary' : 'border-transparent';
 
     const hasCategorySelected = isPositiveNumber(categoryId);
     const { category } = useGetCategoryByIdQuery(categoryId);
 
     const categoryIcon = hasCategorySelected && isDefined(category) ? category.icon : UserIconNameEnum.Circle;
     const categoryTitle = isDefined(category) ? category.title : t`Select category`;
-    const titleClassName = hasCategorySelected ? 'text-primary' : 'text-warning-foreground';
+    const titleClassName = hasCategorySelected ? 'text-primary' : 'text-warning-strong';
     const iconVariant = hasCategorySelected ? variant : 'warning';
 
     return (
@@ -66,19 +74,23 @@ export const SplitEntryRow = (props: Props) => {
                     </Text>
                 </HapticPressable>
 
-                <AmountInput
-                    value={entry.amount}
-                    onChangeValue={onAmountChange}
-                    inputClassName="text-primary border-0 h-auto"
-                    borderless
-                    autoFocus={autoFocus}
-                    selectTextOnFocus
-                    style={amountInputStyle}
-                    valuePrefix={`${currencySymbol} `}
-                    placeholder={`${currencySymbol} 0`}
-                    minimumDecimalPlaces={DEFAULT_DECIMAL_PLACES}
-                    testID={SplitEntryRowSelector.Amount(index)}
-                />
+                <View className={cn('border-b-2 pb-xs', amountUnderlineClassName)}>
+                    <AmountInput
+                        value={entry.amount}
+                        onChangeValue={onAmountChange}
+                        inputClassName="text-primary border-0 h-auto"
+                        borderless
+                        autoFocus={autoFocus}
+                        selectTextOnFocus
+                        style={amountInputStyle}
+                        valuePrefix={currencySymbol}
+                        placeholder={`${currencySymbol}0.00`}
+                        minimumDecimalPlaces={DEFAULT_DECIMAL_PLACES}
+                        onFocus={handleAmountFocus}
+                        onBlur={handleAmountBlur}
+                        testID={SplitEntryRowSelector.Amount(index)}
+                    />
+                </View>
 
                 {children}
             </View>

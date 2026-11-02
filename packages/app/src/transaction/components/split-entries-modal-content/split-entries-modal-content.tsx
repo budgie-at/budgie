@@ -2,7 +2,6 @@ import {
     CategorySourceEnum,
     TransactionEntryCreateInputInterface,
     TransactionEntryTypeEnum,
-    UserIconNameEnum,
     convertFromMicroUnits,
     convertToMicroUnits
 } from '@budgie/contracts';
@@ -16,8 +15,8 @@ import { KeyboardStickyView } from 'react-native-keyboard-controller';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
-import { Button } from '../../../@generic/component/button/button';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
+import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { PillButton } from '../../../@generic/component/pill-button/pill-button';
 import { SheetTitle } from '../../../@generic/component/sheet-title/sheet-title';
 import { useVibration } from '../../../@generic/hook/use-vibration.hook';
@@ -186,8 +185,9 @@ export const SplitEntriesModalContent = (props: Props) => {
     const assignedLabel = isFullySplit ? t`Fully assigned` : t`${formattedRemaining} left to assign`;
     const pendingLabel = hasMissingCategories ? t`Select all categories` : assignedLabel;
     const remainderLabel = isOverBudget ? t`${formattedRemaining} over budget` : pendingLabel;
-    const pendingClassName = isFullySplit && !hasMissingCategories ? 'text-secondary-foreground' : 'text-warning-foreground';
-    const remainderClassName = isOverBudget ? 'text-destructive-foreground' : pendingClassName;
+    const fullySplitClassName = hasMissingCategories ? 'text-warning-strong' : 'text-positive-strong';
+    const pendingClassName = isFullySplit ? fullySplitClassName : 'text-secondary-foreground';
+    const remainderClassName = isOverBudget ? 'text-destructive-strong' : pendingClassName;
 
     return (
         <View className="flex-1">
@@ -197,29 +197,25 @@ export const SplitEntriesModalContent = (props: Props) => {
                 <GroupedListSection>{entries.map(renderEntry)}</GroupedListSection>
                 <SplitEntriesAddItemFooter canAddEntry={canAddEntry} onAddEntry={handleAddEntry} />
                 <Text className={cn('pt-lg text-center text-[15px] leading-[20px]', remainderClassName)}>{remainderLabel}</Text>
+                {canRemoveSplit ? (
+                    <HapticPressable
+                        onPress={handleRemoveSplit}
+                        className="items-center py-xl"
+                        testID={SplitEntriesModalContentSelector.RemoveSplitButton}
+                    >
+                        <Text className="text-md font-semibold text-destructive-strong">{t`Remove split`}</Text>
+                    </HapticPressable>
+                ) : null}
             </ScrollView>
 
             <KeyboardStickyView offset={keyboardOffset}>
-                <View className="flex-row items-center gap-x-md px-xl pb-xl">
-                    {canRemoveSplit ? (
-                        <Button
-                            leftIcon={UserIconNameEnum.X}
-                            variant="destructive"
-                            size="md"
-                            className="aspect-square"
-                            onPress={handleRemoveSplit}
-                            testID={SplitEntriesModalContentSelector.RemoveSplitButton}
-                        />
-                    ) : null}
-
-                    <View className="flex-1">
-                        <PillButton
-                            label={t`Done`}
-                            isDisabled={!canConfirm}
-                            onPress={handleConfirm}
-                            testID={SplitEntriesModalContentSelector.ConfirmButton}
-                        />
-                    </View>
+                <View className="px-xl pb-xl">
+                    <PillButton
+                        label={t`Done`}
+                        isDisabled={!canConfirm}
+                        onPress={handleConfirm}
+                        testID={SplitEntriesModalContentSelector.ConfirmButton}
+                    />
                 </View>
             </KeyboardStickyView>
         </View>

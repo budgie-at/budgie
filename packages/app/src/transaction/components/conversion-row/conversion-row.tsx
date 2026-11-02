@@ -35,7 +35,7 @@ export const ConversionRow = (props: Props) => {
     const formattedRate = isPositiveNumber(exchangeRate) ? formatExchangeRate(exchangeRate) : '—';
     const rateLabel = t`1 ${sourceCode} = ${formattedRate} ${destinationCode}`;
     const exchangeRateLabel = t`Exchange rate: ${rateLabel}`;
-    const accessibilityLabel = `${label}: ${prefix} ${destinationSymbol} ${formattedAmount}. ${exchangeRateLabel}`;
+    const accessibilityLabel = `${label}: ${prefix} ${destinationSymbol}${formattedAmount}. ${exchangeRateLabel}`;
 
     return (
         <Animated.View entering={ENTERING_ANIMATION}>
@@ -60,7 +60,8 @@ export const ConversionRow = (props: Props) => {
                         maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
                         numberOfLines={1}
                     >
-                        {prefix} {destinationSymbol} {formattedAmount}
+                        {prefix} {destinationSymbol}
+                        {formattedAmount}
                     </Text>
                 </View>
                 <Text

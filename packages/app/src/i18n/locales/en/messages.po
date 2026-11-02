@@ -3133,6 +3133,7 @@ msgstr "Does not contain"
 #: src/transaction/components/consolidation-source-modal-content/consolidation-source-modal-content.tsx
 #: src/transaction/components/convert-to-refund-footer/convert-to-refund-footer.tsx
 #: src/transaction/components/split-entries-modal-content/split-entries-modal-content.tsx
+#: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 msgid "Done"
 msgstr "Done"
 
@@ -5923,6 +5924,10 @@ msgid "Received"
 msgstr "Received"
 
 #: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
+msgid "Receiving · {toCode}"
+msgstr "Receiving · {toCode}"
+
+#: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 msgid "Receiving {toCode}"
 msgstr "Receiving {toCode}"
 
@@ -6237,7 +6242,8 @@ msgstr "Same trigger as a rule above"
 
 #: src/@generic/component/modal-form-save-button/modal-form-save-button.tsx
 #: src/sync/component/sync-token-section-actions/sync-token-section-actions.tsx
-#: src/transaction/components/transaction-keypad-confirm-button/transaction-keypad-confirm-button.tsx
+#: src/transaction/components/transaction-keypad/transaction-keypad.tsx
+#: src/transaction/components/transfer-quick-form/transfer-quick-form.tsx
 msgid "Save"
 msgstr "Save"
 

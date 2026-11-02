@@ -43,7 +43,7 @@ export const CurrencyModePill = ({ label, isFlipped, accessibilityLabel, onPress
             <HapticPressable
                 accessibilityLabel={accessibilityLabel ?? label}
                 accessibilityRole={accessibilityRole}
-                className="flex-row items-center gap-x-xs rounded-full bg-ghost-background px-md py-xxs"
+                className="flex-row items-center gap-x-xs rounded-full border-hairline border-surface-separator bg-transaction-detail-row px-md py-xxs dark:border-transparent"
                 disabled={!isDefined(onPress)}
                 hitSlop={HIT_SLOP}
                 onPress={onPress}

@@ -59,7 +59,7 @@ export const UpdateTransferTransaction = ({ transaction, openFeeOnMount }: Updat
                     initialDestinationAmount={initialDestinationAmount}
                     onSubmit={handleSubmit}
                     onCancel={handleGoBack}
-                    showInlineFeeAction={false}
+                    isNewTransaction={false}
                     {...(isConsolidated && { onConsolidationPress: () => void openConsolidationSource({ transactionId: transaction.id }) })}
                 />
             </FullPage>

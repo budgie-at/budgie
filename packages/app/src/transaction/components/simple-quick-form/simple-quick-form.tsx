@@ -2,6 +2,8 @@ import { TransactionTypeEnum } from '@budgie/contracts';
 import { ReactNode, Ref, useImperativeHandle, useRef } from 'react';
 import { View } from 'react-native';
 
+import { isPositiveNumber } from '@rnw-community/shared';
+
 import { useQuickFormAmount } from '../../hook/use-quick-form-amount.hook';
 import { useQuickFormFee } from '../../hook/use-quick-form-fee.hook';
 import { useSimpleQuickFormState } from '../../hook/use-simple-quick-form-state.hook';
@@ -9,9 +11,9 @@ import { MccInfoRow } from '../mcc-info-row/mcc-info-row';
 import { QuickFormSecondaryLine } from '../quick-form-secondary-line/quick-form-secondary-line';
 import { QuickFormValidationSlot } from '../quick-form-validation-slot/quick-form-validation-slot';
 import { SimpleQuickFormControls } from '../simple-quick-form-controls/simple-quick-form-controls';
-import { SimpleQuickFormFeePill } from '../simple-quick-form-fee-pill/simple-quick-form-fee-pill';
 import { SuggestionsContainer } from '../suggestions-container/suggestions-container';
 import { TransactionAmountDisplay, TransactionAmountDisplayRef } from '../transaction-amount-display/transaction-amount-display';
+import { TransactionFeePill } from '../transaction-fee-pill/transaction-fee-pill';
 
 import { SimpleQuickFormSelector } from './simple-quick-form.selector';
 
@@ -38,9 +40,10 @@ export const SimpleQuickForm = ({
 }: Props) => {
     const isExpense = transactionType === TransactionTypeEnum.EXPENSE;
     const variant = isExpense ? 'destructive' : 'positive';
-    const amountVariant = isExpense ? 'primary' : 'positive';
     const accountFieldName = isExpense ? 'fromAccountId' : 'toAccountId';
-    const { displayValue, currencySymbol, instrumentType, keypadHandlers, setFromNumeric } = useQuickFormAmount({ accountFieldName });
+    const { displayValue, numericValue, currencySymbol, instrumentType, keypadHandlers, setFromNumeric } = useQuickFormAmount({
+        accountFieldName
+    });
     const formState = useSimpleQuickFormState({ accountFieldName, setFromNumeric });
     const { feeAmount, handleFeePress } = useQuickFormFee({
         accountFieldName,
@@ -51,11 +54,14 @@ export const SimpleQuickForm = ({
         setFromNumeric
     });
     const amountDisplayRef = useRef<TransactionAmountDisplayRef>(null);
+    const amountVariant = !isExpense && isPositiveNumber(numericValue) ? 'positive' : 'primary';
 
     useImperativeHandle(ref, () => ({ openFee: handleFeePress }));
 
     return (
         <View className="flex-1">
+            <View className="min-h-[16px] flex-1" />
+
             <TransactionAmountDisplay
                 ref={amountDisplayRef}
                 amount={displayValue}
@@ -68,11 +74,11 @@ export const SimpleQuickForm = ({
                     <MccInfoRow transactionTitle={formState.title} mccCategoryId={formState.mccCategoryId} />
                 </QuickFormSecondaryLine>
                 <QuickFormValidationSlot>
-                    <SimpleQuickFormFeePill
+                    <TransactionFeePill
                         amount={feeAmount}
                         currencySymbol={currencySymbol}
                         instrumentType={instrumentType}
-                        showInlineAction={isNewTransaction}
+                        showEmptyState={isNewTransaction}
                         onPress={handleFeePress}
                     />
                 </QuickFormValidationSlot>

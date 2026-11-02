@@ -22,12 +22,15 @@ interface Props {
     readonly onConfirm: () => void;
     readonly onCancel: () => void;
     readonly isConfirmDisabled?: boolean;
+    readonly confirmLabel?: string;
     readonly confirmTestID?: string;
 }
 
 export const TransactionKeypad = (props: Props) => {
-    const { keypad, onConfirm, onCancel, isConfirmDisabled = false, confirmTestID } = props;
+    const { keypad, onConfirm, onCancel, isConfirmDisabled = false, confirmLabel, confirmTestID } = props;
     const { t } = useLingui();
+
+    const resolvedConfirmLabel = confirmLabel ?? t`Save`;
 
     return (
         <Animated.View entering={FadeInUp.delay(100).duration(250)} className="shrink pb-md">
@@ -55,7 +58,12 @@ export const TransactionKeypad = (props: Props) => {
 
                 <View className="flex-row gap-md">
                     <TransactionKeypadButton icon={UserIconNameEnum.X} variant="cancel" accessibilityLabel={t`Cancel`} onPress={onCancel} />
-                    <TransactionKeypadConfirmButton isDisabled={isConfirmDisabled} onPress={onConfirm} testID={confirmTestID} />
+                    <TransactionKeypadConfirmButton
+                        label={resolvedConfirmLabel}
+                        isDisabled={isConfirmDisabled}
+                        onPress={onConfirm}
+                        testID={confirmTestID}
+                    />
                 </View>
             </View>
         </Animated.View>

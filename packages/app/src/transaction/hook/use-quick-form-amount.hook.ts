@@ -32,15 +32,16 @@ export const useQuickFormAmount = ({ accountFieldName }: UseQuickFormAmountConfi
         setValue('amount', value);
     };
 
-    const { displayValue, numericValue, handlers, setFromNumeric } = useKeypadInput({
-        initialValue: initialAmount,
-        onChange: handleAmountChange
-    });
-
     const accountId = useWatch({ control, name: accountFieldName });
     const { account } = useGetAccountByIdQuery(accountId ?? 0);
     const currencySymbol = account?.instrument.symbol ?? defaultInstrument.symbol;
     const instrumentType = account?.instrument.type ?? defaultInstrument.type;
+
+    const { displayValue, numericValue, handlers, setFromNumeric } = useKeypadInput({
+        initialValue: initialAmount,
+        instrumentType,
+        onChange: handleAmountChange
+    });
 
     return { displayValue, numericValue, currencySymbol, instrumentType, keypadHandlers: handlers, setFromNumeric };
 };
