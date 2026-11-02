@@ -3,6 +3,8 @@ import { msg } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { ResyncWindowPickerSelector } from '../../../app/resync-window-picker.selector';
 import { SettingsRow } from '../../../settings/components/settings-row/settings-row';
 
@@ -22,12 +24,12 @@ const WINDOW_LABELS: Record<string, MessageDescriptor> = {
 
 export const ResyncWindowOptionRow = ({ option, onSelect }: Props) => {
     const { t } = useLingui();
-    const subtitle =
-        option.sinceDays === null ? (
-            <Text className="text-[13px] text-secondary-foreground">
-                <Trans>May take a few minutes</Trans>
-            </Text>
-        ) : null;
+    const isEntireHistory = !isDefined(option.sinceDays);
+    const subtitle = isEntireHistory ? (
+        <Text className="text-[13px] text-secondary-foreground">
+            <Trans>May take a few minutes</Trans>
+        </Text>
+    ) : null;
     const handlePress = () => void onSelect(option.sinceDays);
 
     return (

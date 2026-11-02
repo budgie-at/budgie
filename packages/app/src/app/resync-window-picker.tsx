@@ -3,7 +3,7 @@ import { MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { View } from 'react-native';
+import { ScrollView, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 
@@ -34,8 +34,10 @@ export default function ResyncWindowPickerModal() {
 
     const accountId = useResyncWindowPickerModalParams()?.accountId ?? 0;
     const { account } = useGetAccountByIdQuery(accountId);
-    const { bottom } = useSafeAreaInsets();
-    const contentContainerStyle = { paddingBottom: bottom + 8 };
+    const { bottom, top } = useSafeAreaInsets();
+    const { height } = useWindowDimensions();
+    const options = isPositiveNumber(accountId) && isDefined(account) ? RESYNC_WINDOW_OPTIONS : [];
+    const styles = { scrollView: { maxHeight: height - top }, content: { paddingBottom: bottom + 8 } };
     const accountTitle = account?.title;
     const description =
         isPositiveNumber(accountId) && isDefined(accountTitle)
@@ -61,25 +63,33 @@ export default function ResyncWindowPickerModal() {
     };
 
     const handleOptionPress = (sinceDays: number | null) => {
+        if (!isPositiveNumber(accountId) || !isDefined(account)) {
+            return;
+        }
+
         resolveResyncWindowPicker(null);
         resync(sinceDays);
     };
 
     return (
-        <View className="bg-grouped-surface" collapsable={false}>
+        <ScrollView className="bg-grouped-surface" style={styles.scrollView} bounces={false}>
             <FormsheetHeader size="md" title={t`Sync past transactions`} description={description} />
-            <View className="px-3xl pt-[16px] gap-y-[24px]" style={contentContainerStyle}>
+            <View className="px-3xl pt-[16px] gap-y-[24px]" style={styles.content}>
                 <GroupedListSection>
-                    {RESYNC_WINDOW_OPTIONS.filter(option => isDefined(option.sinceDays)).map(option => (
-                        <ResyncWindowOptionRow key={String(option.sinceDays)} option={option} onSelect={handleOptionPress} />
-                    ))}
+                    {options
+                        .filter(option => isDefined(option.sinceDays))
+                        .map(option => (
+                            <ResyncWindowOptionRow key={String(option.sinceDays)} option={option} onSelect={handleOptionPress} />
+                        ))}
                 </GroupedListSection>
                 <GroupedListSection footer={t`Re-downloads every transaction. Your categories, tags and notes stay.`}>
-                    {RESYNC_WINDOW_OPTIONS.filter(option => !isDefined(option.sinceDays)).map(option => (
-                        <ResyncWindowOptionRow key={String(option.sinceDays)} option={option} onSelect={handleOptionPress} />
-                    ))}
+                    {options
+                        .filter(option => !isDefined(option.sinceDays))
+                        .map(option => (
+                            <ResyncWindowOptionRow key={String(option.sinceDays)} option={option} onSelect={handleOptionPress} />
+                        ))}
                 </GroupedListSection>
             </View>
-        </View>
+        </ScrollView>
     );
 }

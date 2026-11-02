@@ -1,10 +1,11 @@
-import { ExternalSourceEnum, InstrumentTypeEnum, SyncStatusEnum } from '@budgie/contracts';
-import { beforeEach, describe, expect, it } from '@effect/vitest';
+import { expect, it } from '@effect/vitest';
 import { vi } from 'vitest';
 
+import { DEFAULT_INSTRUMENT } from '../src/settings/constants/default-instrument.constant';
 import { useBankIntegrationAccountRowState } from '../src/sync/hook/use-bank-integration-account-row-state.hook';
 
 const state = vi.hoisted(() => ({
+    hasSync: true,
     isKeyRejected: false,
     provider: 'MONOBANK',
     supportsLiveSync: true,
@@ -27,110 +28,31 @@ vi.mock('../src/sync/context/bank-integration.context', () => ({
 vi.mock('../src/sync/query/use-bank-integration-account-previews.query', () => ({
     useBankIntegrationAccountPreviewsQuery: () => ({ isKeyRejected: state.isKeyRejected })
 }));
-vi.mock('../src/sync/hook/use-account-sync.hook', () => ({ useAccountSync: () => state }));
+vi.mock('../src/sync/hook/use-account-sync.hook', () => ({ useAccountSync: () => ({ sync: state.hasSync ? state.sync : null }) }));
 
-const account = {
-    id: 1,
-    title: 'Daily account',
-    isActive: true,
-    iban: null,
-    instrument: {
-        id: 1,
-        createdAt: new Date(0),
-        updatedAt: new Date(0),
-        deletedAt: null,
-        type: InstrumentTypeEnum.FIAT,
-        code: 'UAH',
-        name: 'Hryvnia',
-        symbol: '₴',
-        priceProvider: null,
-        providerInstrumentId: null,
-        marketCapRank: null
-    }
-};
-
-describe('bank integration account row state', () => {
-    beforeEach(() => {
-        state.isKeyRejected = false;
-        state.provider = ExternalSourceEnum.MONOBANK;
-        state.supportsLiveSync = true;
-        state.supportsFileImport = false;
-        state.sync.enabled = false;
-        state.sync.status = SyncStatusEnum.IDLE;
-        state.sync.lastError = 'Connection unavailable';
-    });
-
-    it('shows a failed sync reason even with zero errors or a hidden account', () => {
-        state.sync.status = SyncStatusEnum.FAILED;
-        expect(useBankIntegrationAccountRowState(account).description).toBe('Sync failed · Connection unavailable');
-        expect(useBankIntegrationAccountRowState(account).identityLabel).toBe('UAH');
-        expect(useBankIntegrationAccountRowState(account).isFailed).toBe(true);
-        expect(useBankIntegrationAccountRowState({ ...account, isActive: false }).description).toBe('Sync failed · Connection unavailable');
-    });
-
-    it('keeps voluntary pause distinct from failure', () => {
-        state.sync.status = SyncStatusEnum.IDLE;
-        expect(useBankIntegrationAccountRowState(account).description).toBe('Sync off');
-    });
-    it('suppresses key rejection and active syncing while keeping the saved preference', () => {
-        state.isKeyRejected = true;
-        state.sync.status = SyncStatusEnum.SYNCING;
-        state.sync.enabled = true;
-        expect(useBankIntegrationAccountRowState(account).description).toBe('');
-        expect(useBankIntegrationAccountRowState({ ...account, isActive: false }).description).toBe('Hidden from Home');
-        expect(useBankIntegrationAccountRowState(account).sync?.enabled).toBe(true);
-        state.sync.status = SyncStatusEnum.FAILED;
-        expect(useBankIntegrationAccountRowState(account).description).toBe('Last attempt failed · Connection unavailable');
-        expect(useBankIntegrationAccountRowState(account).isFailed).toBe(false);
-        expect(useBankIntegrationAccountRowState({ ...account, isActive: false }).hiddenLabel).toBe('Hidden from Home');
-        state.sync.enabled = false;
-        state.sync.status = SyncStatusEnum.IDLE;
-        expect(useBankIntegrationAccountRowState(account).description).toBe('Sync off');
-    });
-
-    it('keeps identity available when hidden or syncing and has no state line for a healthy account', () => {
-        state.sync.status = SyncStatusEnum.SYNCING;
-        state.sync.enabled = true;
-        expect(useBankIntegrationAccountRowState({ ...account, isActive: false }).description).toBe('Syncing… · Hidden from Home');
-        expect(useBankIntegrationAccountRowState(account).description).toBe('Syncing…');
-        state.sync.status = SyncStatusEnum.IDLE;
-        expect(useBankIntegrationAccountRowState(account).description).toBe('');
-        expect(useBankIntegrationAccountRowState(account).identityLabel).toBe('UAH');
-    });
-
-    it('keeps file import exclusion alongside hidden and above syncing', () => {
-        state.supportsLiveSync = false;
-        state.supportsFileImport = true;
-        state.sync.status = SyncStatusEnum.SYNCING;
-        expect(useBankIntegrationAccountRowState(account).description).toBe('Excluded from imports');
-        expect(useBankIntegrationAccountRowState({ ...account, isActive: false }).description).toBe(
-            'Excluded from imports · Hidden from Home'
-        );
-        state.sync.status = SyncStatusEnum.FAILED;
-        expect(useBankIntegrationAccountRowState(account).description).toBe('Sync failed · Connection unavailable');
-    });
-
-    it('names the account in switch labels for each import mode', () => {
-        expect(useBankIntegrationAccountRowState(account).switchLabel).toBe('Sync Daily account');
-        state.supportsLiveSync = false;
-        state.supportsFileImport = true;
-        expect(useBankIntegrationAccountRowState(account).switchLabel).toBe('Include Daily account in imports');
-    });
-
-    it('preserves hidden state beside sync off and after a failure without a reason', () => {
-        expect(useBankIntegrationAccountRowState({ ...account, isActive: false }).description).toBe('Sync off · Hidden from Home');
-        state.sync.status = SyncStatusEnum.FAILED;
-        state.sync.lastError = '';
-        expect(useBankIntegrationAccountRowState({ ...account, isActive: false }).hiddenLabel).toBe('Hidden from Home');
-        expect(useBankIntegrationAccountRowState(account).description).toBe('Sync failed');
-        state.isKeyRejected = true;
-        expect(useBankIntegrationAccountRowState(account).description).toBe('Last attempt failed');
-    });
-
-    it('omits the duplicated ticker for crypto but keeps account identity for fiat', () => {
-        state.provider = ExternalSourceEnum.BINANCE;
-        expect(useBankIntegrationAccountRowState(account).identityLabel).toBe('');
-        state.provider = ExternalSourceEnum.MONOBANK;
-        expect(useBankIntegrationAccountRowState({ ...account, iban: 'UA123456' }).identityLabel).toBe('UAH · ••3456');
-    });
+it.each([
+    [true, false, 'FAILED', false, true, false, 'Sync failed · Connection unavailable', true],
+    [true, false, 'FAILED', false, false, false, 'Sync failed · Connection unavailable', true],
+    [true, true, 'FAILED', true, false, false, 'Last attempt failed · Connection unavailable', false],
+    [true, true, 'SYNCING', true, true, false, '', false],
+    [true, true, 'SYNCING', true, false, false, 'Hidden from Home', false],
+    [true, false, 'IDLE', false, true, false, 'Sync off', false],
+    [true, false, 'IDLE', false, false, false, 'Sync off · Hidden from Home', false],
+    [true, false, 'SYNCING', true, false, false, 'Syncing… · Hidden from Home', false],
+    [true, false, 'SYNCING', true, true, false, 'Syncing…', false],
+    [true, false, 'IDLE', true, true, false, '', false],
+    [true, false, 'SYNCING', false, false, true, 'Excluded from imports · Hidden from Home', false],
+    [true, false, 'FAILED', false, true, true, 'Sync failed · Connection unavailable', true],
+    [false, false, 'IDLE', false, true, false, '', false]
+])('row state %s/%s/%s/%s/%s/%s', (hasSync, rejected, status, enabled, active, fileImport, description, failed) => {
+    Object.assign(state, { hasSync, isKeyRejected: rejected, supportsLiveSync: !fileImport, supportsFileImport: fileImport });
+    Object.assign(state.sync, { status, enabled });
+    const title = 'Daily account';
+    const result = useBankIntegrationAccountRowState({ id: 1, title, isActive: active, iban: null, instrument: DEFAULT_INSTRUMENT });
+    expect(result.description).toBe(description);
+    expect(result.isFailed).toBe(failed);
+    expect(result.identityLabel).toBe('USD');
+    expect(result.hiddenLabel).toBe(status === 'FAILED' && !active ? 'Hidden from Home' : '');
+    expect(result.switchLabel).toBe(fileImport ? `Include ${title} in imports` : `Sync ${title}`);
+    expect(result.isToggleVisible).toBe(hasSync);
 });

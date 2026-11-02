@@ -74,39 +74,37 @@ export const BankIntegrationAccountRow = ({ account }: Props) => {
     return (
         <View testID={rowTestID} className="min-h-[60px] flex-row items-center gap-x-xl px-3xl">
             <View className="absolute top-0 left-[64px] right-0 h-hairline bg-surface-separator" pointerEvents="none" />
-            <View className="min-w-0 flex-1">
-                <BankIntegrationAccountMenu accountId={account.id} accountTitle={account.title} rowTestID={rowTestID}>
-                    <View className="relative">
-                        <CircleIcon
-                            icon={account.icon}
-                            variant="primary"
-                            size={36}
-                            iconSize={18}
-                            radius={18}
-                            border={false}
-                            className={TONAL_DISC_BACKGROUND.primary}
-                        />
-                        {isFailed ? <AccountSyncBadge state={AccountSyncStateEnum.FAILED} /> : null}
-                    </View>
-                    <View className="min-w-0 flex-1 gap-y-xxs">
-                        <Text className="text-[17px] text-primary" numberOfLines={2}>
-                            {account.title}
-                        </Text>
-                        {stateDescription}
-                        <Text className="text-[13px] leading-[18px] text-secondary-foreground" numberOfLines={1}>
-                            {balancePrefix}
-                            <ProtectedText
-                                className="text-[13px] text-secondary-foreground"
-                                testID={AccountCardBaseSelector.Balance(account.title, formatDigits(balance))}
-                            >
-                                {toTrueMinus(formatAmount(balance, account.instrument.symbol, account.instrument.type))}
-                            </ProtectedText>
-                            {hiddenSuffix}
-                        </Text>
-                    </View>
-                    <Icon icon={UserIconNameEnum.Ellipsis} size={18} className="text-secondary-foreground" />
-                </BankIntegrationAccountMenu>
+            <View className="relative">
+                <CircleIcon
+                    icon={account.icon}
+                    variant="primary"
+                    size={36}
+                    iconSize={18}
+                    radius={18}
+                    border={false}
+                    className={TONAL_DISC_BACKGROUND.primary}
+                />
+                {isFailed ? <AccountSyncBadge state={AccountSyncStateEnum.FAILED} /> : null}
             </View>
+            <View className="min-w-0 flex-1 gap-y-xxs py-lg">
+                <Text className="text-[17px] text-primary" numberOfLines={2}>
+                    {account.title}
+                </Text>
+                {stateDescription}
+                <View className="flex-row flex-wrap">
+                    <Text className="text-[13px] leading-[18px] text-secondary-foreground">{balancePrefix}</Text>
+                    <ProtectedText
+                        className="text-[13px] leading-[18px] text-secondary-foreground"
+                        testID={AccountCardBaseSelector.Balance(account.title, formatDigits(balance))}
+                    >
+                        {toTrueMinus(formatAmount(balance, account.instrument.symbol, account.instrument.type))}
+                    </ProtectedText>
+                    <Text className="text-[13px] leading-[18px] text-secondary-foreground">{hiddenSuffix}</Text>
+                </View>
+            </View>
+            <BankIntegrationAccountMenu accountId={account.id} title={account.title} rowTestID={rowTestID}>
+                <Icon icon={UserIconNameEnum.Ellipsis} size={20} className="text-secondary-foreground" />
+            </BankIntegrationAccountMenu>
             {toggle}
         </View>
     );

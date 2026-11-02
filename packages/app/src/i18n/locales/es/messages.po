@@ -141,10 +141,6 @@ msgstr "{accountsCount, plural, one {# cuenta} other {# cuentas}}"
 msgid "{accountTitle} · duplicates are merged automatically"
 msgstr "{accountTitle} · los duplicados se fusionan automáticamente"
 
-#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
-msgid "{accountTitle}, account actions"
-msgstr "{accountTitle}, acciones de la cuenta"
-
 #: src/market-data/component/currency-market-stale-price/currency-market-stale-price.tsx
 msgid "{ageDays, plural, one {# day old} other {# days old}}"
 msgstr "{ageDays, plural, one {hace # día} other {hace # días}}"
@@ -1079,6 +1075,10 @@ msgstr "Cuentas ({selectedAccountsCount})"
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 msgid "Action: {label}"
 msgstr "Acción: {label}"
+
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "Actions for {title}"
+msgstr "Acciones para {title}"
 
 #: src/settings/components/budget-management-card/budget-management-card.tsx
 msgid "Active budget"

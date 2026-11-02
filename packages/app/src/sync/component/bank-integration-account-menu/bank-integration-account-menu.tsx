@@ -20,11 +20,11 @@ import type { ReactNode } from 'react';
 interface Props {
     readonly accountId: number;
     readonly rowTestID: string;
-    readonly accountTitle: string;
+    readonly title: string;
     readonly children: ReactNode;
 }
 
-export const BankIntegrationAccountMenu = ({ accountId, rowTestID, accountTitle, children }: Props) => {
+export const BankIntegrationAccountMenu = ({ accountId, rowTestID, title, children }: Props) => {
     const { t } = useLingui();
     const router = useRouter();
     const { handleArchive, isLoading } = useArchiveAccount(accountId, emptyFn);
@@ -59,9 +59,9 @@ export const BankIntegrationAccountMenu = ({ accountId, rowTestID, accountTitle,
     return (
         <ActionsMenu
             trigger={children}
-            accessibilityLabel={t`${accountTitle}, account actions`}
+            accessibilityLabel={t`Actions for ${title}`}
             isDisabled={isBusy}
-            triggerClassName="flex-row items-center gap-x-sm min-h-[60px] py-lg"
+            triggerClassName="items-center justify-center h-[44px] w-[44px] -mx-[8px]"
             hitSlop={0}
             triggerTestID={triggerTestID}
         >

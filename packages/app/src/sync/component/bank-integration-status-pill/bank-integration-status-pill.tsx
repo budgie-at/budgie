@@ -2,20 +2,38 @@ import { ExternalSourceEnum, SyncEntityInterface, SyncStatusEnum, UserIconNameEn
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
+import * as Clock from 'effect/Clock';
+import * as Duration from 'effect/Duration';
+import * as Effect from 'effect/Effect';
+import * as Fiber from 'effect/Fiber';
+import * as Atom from 'effect/reactivity/Atom';
+import * as Schedule from 'effect/Schedule';
 import { Text, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
 import { Icon } from '../../../@generic/component/icon/icon';
+import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { cn } from '../../../@generic/utils/cn.util';
 import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/bank-integration.selector';
 import { useFormatDate } from '../../../i18n/hook/use-format-date.hook';
-import { bankIntegrationStatusNowAtom } from '../../constant/bank-integration-status-now-atom.constant';
 import { useBankIntegration } from '../../context/bank-integration.context';
 import { BankIntegrationSyncStatusEnum } from '../../enum/bank-integration-sync-status.enum';
 import { useBankIntegrationAccountPreviewsQuery } from '../../query/use-bank-integration-account-previews.query';
 import { getBankIntegrationSyncStatus } from '../../utils/get-bank-integration-sync-status.util';
 import { BankIntegrationImportStatus } from '../bank-integration-import-status/bank-integration-import-status';
+
+const bankIntegrationStatusNowAtom = Atom.make(context => {
+    const fiber = appRuntime.runFork(
+        Clock.currentTimeMillis.pipe(
+            Effect.tap(now => Effect.sync(() => void context.setSelf(now))),
+            Effect.repeat(Schedule.spaced(Duration.minutes(1)))
+        )
+    );
+    context.addFinalizer(() => void appRuntime.runFork(Fiber.interrupt(fiber)));
+
+    return Date.now();
+});
 
 interface Props {
     readonly syncs: Array<Pick<SyncEntityInterface, 'enabled' | 'status' | 'mode' | 'forwardSyncedAt'>>;

@@ -141,10 +141,6 @@ msgstr "{accountsCount, plural, one {# рахунок} few {# рахунки} ma
 msgid "{accountTitle} · duplicates are merged automatically"
 msgstr "{accountTitle} · дублікати об’єднуються автоматично"
 
-#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
-msgid "{accountTitle}, account actions"
-msgstr "{accountTitle}, дії з рахунком"
-
 #: src/market-data/component/currency-market-stale-price/currency-market-stale-price.tsx
 msgid "{ageDays, plural, one {# day old} other {# days old}}"
 msgstr "{ageDays, plural, one {# день тому} few {# дні тому} many {# днів тому} other {# дня тому}}"
@@ -1079,6 +1075,10 @@ msgstr "Рахунки ({selectedAccountsCount})"
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 msgid "Action: {label}"
 msgstr "Дія: {label}"
+
+#: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
+msgid "Actions for {title}"
+msgstr "Дії для {title}"
 
 #: src/settings/components/budget-management-card/budget-management-card.tsx
 msgid "Active budget"
