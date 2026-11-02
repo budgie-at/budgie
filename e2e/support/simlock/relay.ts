@@ -1,5 +1,6 @@
 import { createServer, request as httpRequest, type IncomingMessage, type Server } from 'node:http';
 import { request as httpsRequest } from 'node:https';
+import { pipeline } from 'node:stream/promises';
 
 import type { AddressInfo } from 'node:net';
 
@@ -64,7 +65,11 @@ export async function startBootRelay(upstreamBaseUrl: string): Promise<BootRelay
      * can only ever reach the simlock gateway.
      */
     const upstreamPath = (requestTarget: string): string => {
-        if (!/^\/(?!\/)[A-Za-z0-9._~!$&'()*+,;=:@%/?-]*$/.test(requestTarget) || /(^|\/)\.\.?(\/|\?|$)/.test(requestTarget)) {
+        if (
+            !/^\/(?!\/)[A-Za-z0-9._~!$&'()*+,;=:@%/?-]*$/.test(requestTarget) ||
+            /(^|\/)\.\.?(\/|\?|$)/.test(requestTarget) ||
+            /%(2e|2f|5c)/i.test(requestTarget)
+        ) {
             throw new RefusedTarget(requestTarget);
         }
         return `${destination.base}${requestTarget}`;
@@ -103,10 +108,11 @@ export async function startBootRelay(upstreamBaseUrl: string): Promise<BootRelay
     const server: Server = createServer(async (incoming, outgoing) => {
         try {
             const path = incoming.url ?? '/';
-            if (incoming.method !== 'POST' || !path.startsWith('/rpc')) {
+            if (incoming.method !== 'POST' || !(path === '/rpc' || path.startsWith('/rpc?'))) {
                 const reply = await forward(incoming, path);
                 outgoing.writeHead(reply.status, endToEnd(reply.headers));
-                reply.stream!.pipe(outgoing);
+                // A client that goes away stops the upstream transfer, and a broken upstream ends the reply.
+                pipeline(reply.stream!, outgoing).catch(() => reply.stream!.destroy());
                 return;
             }
             const chunks: Buffer[] = [];
@@ -114,6 +120,20 @@ export async function startBootRelay(upstreamBaseUrl: string): Promise<BootRelay
             const raw = Buffer.concat(chunks);
             const rpc = JSON.parse(raw.toString('utf8')) as { params?: { command?: string } } & Record<string, unknown>;
             const command = rpc.params?.command;
+            const positionals = (rpc.params as { positionals?: unknown[] } | undefined)?.positionals ?? [];
+            if (command === 'close' && positionals.length === 0) {
+                // A session close ends a simlock proxy lease and wipes the simulator, and the
+                // engine closes a slot's session on a worker respawn or a recording reset mid-run.
+                // The lease's life is the provider's: it releases it at the end of the run. (A bare
+                // device.closeApp() is such a close too, so it leaves the app running here.)
+                if (DEBUG) console.error('[relay] close answered locally; the provider releases the lease');
+                const session = (rpc.params as { session?: unknown } | undefined)?.session;
+                const data = { session: typeof session === 'string' ? session : '', identifiers: { session } };
+                const body = Buffer.from(JSON.stringify({ jsonrpc: '2.0', id: rpc.id, result: { ok: true, data } }));
+                outgoing.writeHead(200, { 'content-type': 'application/json', 'content-length': String(body.length) });
+                outgoing.end(body);
+                return;
+            }
             if (command !== 'boot') {
                 const reply = await forward(incoming, path, raw);
                 if (DEBUG) console.error(`[relay] ${command} -> ${reply.status}`);

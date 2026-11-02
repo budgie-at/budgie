@@ -62,6 +62,6 @@ export async function shareFixtureWithApp(budgie: Budgie, fixture: string, mimeT
     await exec(api, lease, ['terminate', BUNDLE_ID]);
     await writeFile(api, lease, target, bytes);
     await writeFile(api, lease, `${group}/Library/Preferences/${APP_GROUP}.plist`, Buffer.from(plist));
-    await exec(api, lease, ['spawn', 'launchctl', 'kill', 'SIGKILL', 'system/com.apple.cfprefsd.xpc.daemon']);
+    await mustExec(api, lease, ['spawn', 'launchctl', 'kill', 'SIGKILL', 'system/com.apple.cfprefsd.xpc.daemon']);
     await openLink(budgie.ctx, `budgie://dataUrl=${SHARE_KEY}?nonce=${randomUUID()}#file`);
 }

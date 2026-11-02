@@ -1,6 +1,7 @@
 import { expect } from 'e2e';
 
 import { byId, byText, done, expectId, expectNoId, openLink, scrollTo as coreScrollTo, sleep, tapId, type Ctx } from './core.ts';
+import { scrollToCentered } from './settings.ts';
 
 import type { Locator } from 'e2e';
 
@@ -79,7 +80,8 @@ export async function openNewAccount(ctx: Ctx): Promise<void> {
 /** subflows/accounts/open-account-details */
 export async function openAccountDetails(ctx: Ctx, name: string): Promise<void> {
     await sleep(400);
-    await scrollTo(ctx, `AccountCard.${name}`);
+    // A card in the bottom band sits under the tab bar and the action button: a tap there lands on them.
+    await scrollToCentered(ctx, `AccountCard.${name}`);
     await tapRetry(byId(ctx.screen, `AccountCard.${name}`), () => expectId(ctx, 'AccountDetails.Page', 10_000));
 }
 

@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, mkdtempSync, readFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -24,13 +24,17 @@ function stagedDocuments(): Promise<Buffer> {
     staged ??= (async () => {
         const started = Date.now();
         const container = mkdtempSync(join(tmpdir(), 'budgie-container-'));
-        mkdirSync(join(container, 'Documents'), { recursive: true });
-        execFileSync('bash', [join(APP_TESTS, 'scripts/setup-ios-e2e-fixtures.sh'), 'linux-staging', BUNDLE_ID], {
-            env: { ...process.env, APP_DATA_CONTAINER: container },
-            stdio: ['ignore', 'ignore', 'inherit']
-        });
-        execFileSync('touch', [join(container, MARKER)]);
-        const tar = execFileSync('tar', ['--format=ustar', '-cf', '-', '-C', container, 'Documents'], { maxBuffer: 512 * 1024 * 1024 });
+        let tar: Buffer;
+        try {
+            mkdirSync(join(container, 'Documents'), { recursive: true });
+            execFileSync('bash', [join(APP_TESTS, 'scripts/setup-ios-e2e-fixtures.sh'), 'linux-staging', BUNDLE_ID], {
+                env: { ...process.env, APP_DATA_CONTAINER: container },
+                stdio: ['ignore', 'ignore', 'inherit']
+            });
+            tar = execFileSync('tar', ['--format=ustar', '-cf', '-', '-C', container, 'Documents'], { maxBuffer: 512 * 1024 * 1024 });
+        } finally {
+            rmSync(container, { recursive: true, force: true });
+        }
         console.log(
             `[fixtures] staged ${(tar.length / 1024 / 1024).toFixed(1)} MB of fixtures in ${((Date.now() - started) / 1000).toFixed(1)}s`
         );
@@ -49,17 +53,19 @@ export async function ensureFixtures(api: SimlockApi, leaseId: string): Promise<
     if (present.exitCode !== 0) {
         const started = Date.now();
         await untar(api, leaseId, container, await stagedDocuments());
+        // Written only once every file is in place: an untar cut off midway leaves no marker.
+        await writeFile(api, leaseId, `${container}/${MARKER}`, Buffer.alloc(0));
         console.log(`[fixtures] installed into the app container in ${((Date.now() - started) / 1000).toFixed(1)}s`);
     }
     if (!prepared.has(leaseId)) {
-        await prepareSimulator(api, leaseId);
+        await prepareSimulator(api, leaseId, container);
         prepared.add(leaseId);
     }
     return container;
 }
 
 /** The once-per-device part of the shard setup: keyboard, language, reduced motion, contacts, grants. */
-async function prepareSimulator(api: SimlockApi, leaseId: string): Promise<void> {
+async function prepareSimulator(api: SimlockApi, leaseId: string, container: string): Promise<void> {
     await mustExec(api, leaseId, [
         'spawn',
         'defaults',
@@ -72,15 +78,26 @@ async function prepareSimulator(api: SimlockApi, leaseId: string): Promise<void>
     ]);
     await mustExec(api, leaseId, ['spawn', 'defaults', 'write', '.GlobalPreferences', 'AppleLanguages', '-array', 'en-US']);
     await mustExec(api, leaseId, ['spawn', 'defaults', 'write', 'com.apple.Accessibility', 'ReduceMotionEnabled', '-bool', 'true']);
-    const contact = `/tmp/simlock-${leaseId}-contact.vcf`;
-    await writeFile(api, leaseId, contact, readFileSync(join(APP_TESTS, 'fixtures/maestro-e2e-contact.vcf')));
-    await exec(api, leaseId, ['addmedia', contact]);
-    for (const service of ['contacts', 'microphone']) await exec(api, leaseId, ['privacy', 'grant', service, BUNDLE_ID]);
+    // addmedia adds the contact again each time it runs: once per device (a worker respawn
+    // prepares again), or the debt flows see two and their pickers turn ambiguous.
+    const contactAdded = `${container}/Documents/.simlock-contact-added`;
+    if ((await drop(api, leaseId, ['test', contactAdded])).exitCode !== 0) {
+        const contact = `/tmp/simlock-${leaseId}-contact.vcf`;
+        await writeFile(api, leaseId, contact, readFileSync(join(APP_TESTS, 'fixtures/maestro-e2e-contact.vcf')));
+        // Best effort, as in setup-ios-e2e-fixtures.sh: no flow reads the contact any more, and a
+        // slim simulator has no contacts daemon (simlock's slim mode turns PIM off).
+        const added = await exec(api, leaseId, ['addmedia', contact]);
+        if (added.exitCode === 0) await writeFile(api, leaseId, contactAdded, Buffer.alloc(0));
+        else console.log(`[fixtures] contact not imported (exit ${added.exitCode}): ${added.stderr.trim().split('\n')[0] ?? ''}`);
+    }
+    for (const service of ['contacts', 'microphone']) await mustExec(api, leaseId, ['privacy', 'grant', service, BUNDLE_ID]);
 }
 
 async function stopApp(api: SimlockApi, leaseId: string): Promise<void> {
+    // terminate fails harmlessly when the app is not running; a keychain that survives does not:
+    // a PIN set by one test would lock the next one out.
     await exec(api, leaseId, ['terminate', BUNDLE_ID]);
-    await exec(api, leaseId, ['keychain', 'reset']);
+    await mustExec(api, leaseId, ['keychain', 'reset']);
 }
 
 /**

@@ -17,6 +17,10 @@ test('31 transaction info', { tags: ['transactions'] }, async ({ budgie }) => {
         // `index: 1`: the second "E2E Similar Expense" card. Each card's testID is exposed twice (host and wrapper).
         const cards = screen.getByTestId('TransactionCard.Label.E2E_Similar_Expense');
         await expect(cards.first()).toBeVisible();
+        // Both cards must be on screen before choosing: read mid-render, the count can make nth()
+        // land on the first card's duplicate testID instead of the second card.
+        await expect.poll(() => cards.count(), { timeout: 5_000 }).toBeGreaterThanOrEqual(2);
+        await b.sleep(400);
         const perCard = (await cards.count()) >= 4 ? 2 : 1;
         await cards.nth(perCard).tap();
         await b.expectId(ctx, 'TransactionInfo.Page', 5_000);

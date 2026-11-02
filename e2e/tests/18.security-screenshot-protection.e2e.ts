@@ -19,7 +19,8 @@ test('18 security screenshot protection', { tags: ['security'] }, async ({ budgi
     await b.phase('setting persists', async () => {
         await s.openSettingsAnchor(ctx, 'security');
         await b.scrollTo(ctx, 'SettingsPage.ScreenshotProtectionSwitch');
-        await expect(b.byId(ctx.screen, 'SettingsPage.ScreenshotProtectionSwitch')).toBeVisible();
+        // The fixture starts with protection off, so the earlier tap must have left it on.
+        await expect(b.byId(ctx.screen, 'SettingsPage.ScreenshotProtectionSwitch')).toBeChecked();
         await s.goHome(ctx);
     });
 });

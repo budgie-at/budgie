@@ -27,8 +27,12 @@ export function simlockApiFromEnv(env: NodeJS.ProcessEnv = process.env): Simlock
     return { url, token };
 }
 
+/** No request to the farm may hang a test: a simctl exec (an untar included) gets its 10 minute cap. */
+const REQUEST_TIMEOUT_MS = 11 * 60_000;
+
 async function call(api: SimlockApi, path: string, init: RequestInit = {}): Promise<Response> {
     const response = await fetch(`${api.url.replace(/\/$/, '')}${path}`, {
+        signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
         ...init,
         headers: { authorization: `Bearer ${api.token}`, 'content-type': 'application/json', ...(init.headers ?? {}) }
     });
@@ -65,6 +69,7 @@ export async function exec(api: SimlockApi, leaseId: string, args: readonly stri
     let stdout = '';
     let stderr = '';
     let exitCode = -1;
+    let sawExit = false;
     let event = '';
     for (const line of text.split('\n')) {
         if (line.startsWith('event: ')) event = line.slice(7).trim();
@@ -79,10 +84,15 @@ export async function exec(api: SimlockApi, leaseId: string, args: readonly stri
             if (event === 'output') {
                 if (data.stream === 'stderr') stderr += data.chunk ?? '';
                 else stdout += data.chunk ?? '';
-            } else if (event === 'exit') exitCode = data.exitCode ?? -1;
-            else if (event === 'error') throw new Error(`simlock exec ${args.slice(0, 2).join(' ')} failed: ${data.code} ${data.message}`);
+            } else if (event === 'exit') {
+                exitCode = data.exitCode ?? -1;
+                sawExit = true;
+            } else if (event === 'error')
+                throw new Error(`simlock exec ${args.slice(0, 2).join(' ')} failed: ${data.code} ${data.message}`);
         }
     }
+    // A stream cut off before its exit event says nothing about the command: never a result.
+    if (!sawExit) throw new Error(`simlock exec ${args.slice(0, 2).join(' ')} ended without an exit status (stream cut off)`);
     return { exitCode, stdout, stderr };
 }
 

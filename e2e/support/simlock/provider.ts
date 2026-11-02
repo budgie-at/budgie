@@ -1,4 +1,6 @@
 import { randomBytes } from 'node:crypto';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 import { createAgentDeviceClient } from 'agent-device';
 
@@ -15,7 +17,10 @@ export interface SimlockOptions {
     readonly device: string;
     /** Apps installed on every leased device after the app under test, such as `E2E_DROP_APP`. */
     readonly extraApps?: readonly string[];
-    /** Lease TTL; renewed every third of it while the run holds the lease. */
+    /**
+     * Lease TTL, renewed every third of it while the run holds the lease. Short on purpose: a
+     * run killed before it releases (a cancelled CI job) frees its simulator within one TTL.
+     */
     readonly ttlMs?: number;
 }
 
@@ -34,6 +39,9 @@ interface Held extends DeviceLease {
 
 const TENANT = 'budgie-e2e';
 
+/** A leased device that could not be set up (an app install failed): another device may well succeed. */
+class DeviceSetupFailed extends Error {}
+
 /**
  * Leases one simulator per worker slot from a simlock worker through its
  * agent-device proxy (`/v1/agent-device`): the run drives the device from
@@ -43,98 +51,146 @@ const TENANT = 'budgie-e2e';
  */
 export function simlockDevices(options: SimlockOptions): DeviceProvider {
     const baseUrl = `${options.url.replace(/\/$/, '')}/v1/agent-device`;
-    const ttlMs = options.ttlMs ?? 15 * 60_000;
+    const ttlMs = options.ttlMs ?? 3 * 60_000;
     const held = new Map<string, Held>();
     let relay: Promise<BootRelay> | undefined;
 
     const client = (session: string) => createAgentDeviceClient({ daemonBaseUrl: baseUrl, daemonAuthToken: options.token, session });
+    const startRelay = (): Promise<BootRelay> => {
+        relay ??= startBootRelay(baseUrl).catch((cause: unknown) => {
+            relay = undefined;
+            throw cause;
+        });
+        return relay;
+    };
+
+    /**
+     * Every lease id this run acquired, in `.e2e/simlock-leases.json`: mobile-ci's e2e job
+     * releases them in an `if: always()` step, so a run killed mid-way still frees the farm.
+     */
+    const recordLease = (projectRoot: string, id: string): void => {
+        const file = join(projectRoot, '.e2e', 'simlock-leases.json');
+        let ids: string[] = [];
+        try {
+            ids = JSON.parse(readFileSync(file, 'utf8')) as string[];
+        } catch {
+            ids = [];
+        }
+        mkdirSync(join(projectRoot, '.e2e'), { recursive: true });
+        writeFileSync(file, JSON.stringify([...new Set([...ids, id])]));
+    };
+
+    const leaseOnce = async (request: DeviceRequest, attempt: number): Promise<DeviceLease> => {
+        const session = `e2e-${request.runId.slice(0, 12)}-${request.slot}${attempt === 0 ? '' : `-r${attempt}`}`;
+        const started = Date.now();
+        const scopeBase = {
+            tenant: TENANT,
+            runId: request.runId,
+            leaseBackend: 'ios-instance' as const,
+            leaseProvider: 'proxy' as const
+        };
+        const c = client(session);
+        const clientId = randomBytes(8).toString('hex');
+        const lease = await c.leases.allocate({
+            ...scopeBase,
+            clientId,
+            leaseId: randomBytes(16).toString('hex'),
+            ttlMs,
+            platform: 'ios',
+            target: 'mobile',
+            device: options.device
+        });
+        const scope = {
+            ...scopeBase,
+            leaseId: lease.leaseId,
+            clientId: lease.clientId ?? clientId,
+            ...(lease.deviceKey === undefined ? {} : { deviceKey: lease.deviceKey })
+        };
+        // The proxy lists every simulator its token holds, so each command names the leased one.
+        const udid = lease.deviceKey?.split(':').pop();
+        recordLease(request.projectRoot, lease.leaseId);
+        request.log(`simlock lease ${lease.leaseId} granted in ${Date.now() - started} ms (${options.device} ${udid ?? 'no udid'})`);
+        let missedHeartbeats = 0;
+        const timer = setInterval(
+            () => {
+                c.leases
+                    .heartbeat({ ...scope, ttlMs })
+                    .then(() => {
+                        missedHeartbeats = 0;
+                    })
+                    .catch((cause: unknown) => {
+                        missedHeartbeats += 1;
+                        request.log(
+                            missedHeartbeats >= 2
+                                ? `simlock lease ${lease.leaseId} missed ${missedHeartbeats} heartbeats: it may have expired, and failures on its device are infrastructure, not tests (${String(cause)})`
+                                : `simlock heartbeat failed: ${String(cause)}`
+                        );
+                    });
+            },
+            Math.max(10_000, Math.floor(ttlMs / 3))
+        );
+        timer.unref();
+        try {
+            if (udid === undefined)
+                throw new Error(`simlock lease ${lease.leaseId} names no device (deviceKey ${String(lease.deviceKey)})`);
+            request.signal.throwIfAborted();
+            let installedApp: string | undefined;
+            const scoped = createAgentDeviceClient({ daemonBaseUrl: baseUrl, daemonAuthToken: options.token, session, ...scope });
+            const install = async (appPath: string, app?: string): Promise<void> => {
+                try {
+                    await scoped.apps.install({ platform: 'ios', udid, appPath, ...(app === undefined ? {} : { app }) });
+                } catch (cause) {
+                    throw new DeviceSetupFailed(`${String(cause instanceof Error ? cause.message : cause)} (${udid})`, { cause });
+                }
+            };
+            if (request.appPath !== undefined) {
+                const installStarted = Date.now();
+                await install(request.appPath, request.app);
+                installedApp = request.app;
+                request.log(`simlock uploaded and installed ${installedApp} in ${Date.now() - installStarted} ms`);
+            }
+            for (const extra of options.extraApps ?? []) await install(extra);
+            const entry: Held = {
+                id: lease.leaseId,
+                daemon: { baseUrl: (await startRelay()).baseUrl, authToken: options.token },
+                client: scope,
+                deviceId: udid,
+                ...(installedApp === undefined ? {} : { installedApp }),
+                stop: () => clearInterval(timer),
+                scope
+            };
+            held.set(entry.id, entry);
+            return entry;
+        } catch (cause) {
+            // The engine releases only leases acquire returned: hand this one back now, not one TTL later.
+            clearInterval(timer);
+            await c.leases
+                .release(scope)
+                .catch((cleanup: unknown) => request.log(`simlock release after a failed acquire failed: ${String(cleanup)}`));
+            throw cause;
+        }
+    };
 
     return {
         name: 'simlock',
         async acquire(request: DeviceRequest): Promise<DeviceLease> {
             if (request.platform !== 'ios') throw new Error(`simlockDevices leases iOS simulators, not ${request.platform}`);
-            const session = `e2e-${request.runId.slice(0, 12)}-${request.slot}`;
-            const started = Date.now();
-            const scopeBase = {
-                tenant: TENANT,
-                runId: request.runId,
-                leaseBackend: 'ios-instance' as const,
-                leaseProvider: 'proxy' as const
-            };
-            const c = client(session);
-            const clientId = randomBytes(8).toString('hex');
-            const lease = await c.leases.allocate({
-                ...scopeBase,
-                clientId,
-                leaseId: randomBytes(16).toString('hex'),
-                ttlMs,
-                platform: 'ios',
-                target: 'mobile',
-                device: options.device
-            });
-            const scope = {
-                ...scopeBase,
-                leaseId: lease.leaseId,
-                clientId: lease.clientId ?? clientId,
-                ...(lease.deviceKey === undefined ? {} : { deviceKey: lease.deviceKey })
-            };
-            // The proxy lists every simulator its token holds, so each command names the leased one.
-            const udid = lease.deviceKey?.split(':').pop();
-            request.log(`simlock lease ${lease.leaseId} granted in ${Date.now() - started} ms (${options.device} ${udid ?? 'no udid'})`);
-            const timer = setInterval(
-                () => {
-                    c.leases
-                        .heartbeat({ ...scope, ttlMs })
-                        .catch((cause: unknown) => request.log(`simlock heartbeat failed: ${String(cause)}`));
-                },
-                Math.max(10_000, Math.floor(ttlMs / 3))
-            );
-            timer.unref();
             try {
-                if (udid === undefined)
-                    throw new Error(`simlock lease ${lease.leaseId} names no device (deviceKey ${String(lease.deviceKey)})`);
-                let installedApp: string | undefined;
-                if (request.appPath !== undefined) {
-                    const installStarted = Date.now();
-                    const scoped = createAgentDeviceClient({ daemonBaseUrl: baseUrl, daemonAuthToken: options.token, session, ...scope });
-                    await scoped.apps.install({
-                        platform: 'ios',
-                        udid,
-                        appPath: request.appPath,
-                        ...(request.app === undefined ? {} : { app: request.app })
-                    });
-                    installedApp = request.app;
-                    request.log(`simlock uploaded and installed ${installedApp} in ${Date.now() - installStarted} ms`);
-                }
-                for (const extra of options.extraApps ?? []) {
-                    const scoped = createAgentDeviceClient({ daemonBaseUrl: baseUrl, daemonAuthToken: options.token, session, ...scope });
-                    await scoped.apps.install({ platform: 'ios', udid, appPath: extra });
-                }
-                const entry: Held = {
-                    id: lease.leaseId,
-                    daemon: { baseUrl: (await (relay ??= startBootRelay(baseUrl))).baseUrl, authToken: options.token },
-                    client: scope,
-                    deviceId: udid,
-                    ...(installedApp === undefined ? {} : { installedApp }),
-                    stop: () => clearInterval(timer),
-                    scope
-                };
-                held.set(entry.id, entry);
-                return entry;
+                return await leaseOnce(request, 0);
             } catch (cause) {
-                // The engine releases only leases acquire returned: hand this one back now, not one TTL later.
-                clearInterval(timer);
-                await c.leases
-                    .release(scope)
-                    .catch((cleanup: unknown) => request.log(`simlock release after a failed acquire failed: ${String(cleanup)}`));
-                throw cause;
+                // One bad simulator must not fail the whole run: its lease is already released,
+                // so lease another device, once. A second failure is the farm's, and is reported.
+                if (!(cause instanceof DeviceSetupFailed)) throw cause;
+                request.signal.throwIfAborted();
+                request.log(`simlock: ${cause.message}; leasing another device`);
+                return leaseOnce(request, 1);
             }
         },
-        async release(lease: DeviceLease): Promise<void> {
+        async release(lease: DeviceLease, context): Promise<void> {
             const entry = held.get(lease.id);
             if (entry === undefined) return;
             entry.stop();
-            await client(`release-${lease.id.slice(0, 8)}`).leases.release(entry.scope);
+            await client(`release-${lease.id.slice(0, 8)}`).leases.release({ ...entry.scope, signal: context.signal });
             held.delete(lease.id);
             if (held.size === 0 && relay !== undefined) {
                 await (await relay).close();
