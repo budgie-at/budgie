@@ -3677,10 +3677,6 @@ msgstr "Wechselkurs nicht gefunden"
 msgid "Exchange rate: {rateLabel}. Tap to edit receiving amount"
 msgstr "Wechselkurs: {rateLabel}. Tippen, um den Empfangsbetrag zu bearbeiten"
 
-#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
-msgid "Excluded from imports"
-msgstr "Von Importen ausgeschlossen"
-
 #: src/budget/components/budget-limit-source-field/budget-limit-source-field.tsx
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx
 msgid "Expected income"
@@ -4159,6 +4155,10 @@ msgstr "Verlauf wird importiert · {percent}%"
 #: src/sync/component/sync-import-progress/sync-import-progress.tsx
 msgid "Importing history…"
 msgstr "Verlauf wird importiert…"
+
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
+msgid "Imports off"
+msgstr "Import aus"
 
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
 msgid "in {month}"

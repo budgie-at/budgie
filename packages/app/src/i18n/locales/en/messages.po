@@ -3678,10 +3678,6 @@ msgstr "Exchange rate not found"
 msgid "Exchange rate: {rateLabel}. Tap to edit receiving amount"
 msgstr "Exchange rate: {rateLabel}. Tap to edit receiving amount"
 
-#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
-msgid "Excluded from imports"
-msgstr "Excluded from imports"
-
 #: src/budget/components/budget-limit-source-field/budget-limit-source-field.tsx
 #: src/budget/components/budget-stat-row/budget-stat-row.tsx
 msgid "Expected income"
@@ -4160,6 +4156,10 @@ msgstr "Importing history · {percent}%"
 #: src/sync/component/sync-import-progress/sync-import-progress.tsx
 msgid "Importing history…"
 msgstr "Importing history…"
+
+#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
+msgid "Imports off"
+msgstr "Imports off"
 
 #: src/categorize-inbox/components/categorize-inbox-group-finding/categorize-inbox-group-finding.tsx
 msgid "in {month}"

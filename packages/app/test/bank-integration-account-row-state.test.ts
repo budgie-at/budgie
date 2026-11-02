@@ -46,8 +46,8 @@ it.each([
     [false, false, 'SYNCING', true, false, false, 'Syncing… · Hidden from Home', false],
     [false, false, 'SYNCING', true, true, false, 'Syncing…', false],
     [false, false, 'IDLE', true, true, false, 'USD', false],
-    [false, false, 'IDLE', false, false, true, 'Excluded from imports · Hidden from Home', false],
-    [false, false, 'FAILED', false, true, true, 'Sync failed · Excluded from imports', true]
+    [false, false, 'IDLE', false, false, true, 'Imports off · Hidden from Home', false],
+    [false, false, 'FAILED', false, true, true, 'Sync failed · Imports off', true]
 ])('row subtitle %s/%s/%s/%s/%s/%s', (allSyncOff, rejected, status, enabled, active, fileImport, subtitle, failed) => {
     Object.assign(state, { allSyncOff, isKeyRejected: rejected, supportsLiveSync: !fileImport, supportsFileImport: fileImport });
     Object.assign(state.sync, { status, enabled });

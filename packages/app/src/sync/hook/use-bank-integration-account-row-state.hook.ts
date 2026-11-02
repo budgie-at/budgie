@@ -35,7 +35,7 @@ export const useBankIntegrationAccountRowState = (
             isRejected || getBankIntegrationSyncStatus(syncs, isRejected, 0) === BankIntegrationSyncStatusEnum.PAUSED ? '' : t`Sync off`
     };
     const liveSyncLabel = capabilities.supportsLiveSync && isDefined(syncState) ? (syncIssueLabels[syncState] ?? '') : '';
-    const stateLabel = capabilities.supportsFileImport && sync?.enabled === false ? t`Excluded from imports` : liveSyncLabel;
+    const stateLabel = capabilities.supportsFileImport && sync?.enabled === false ? t`Imports off` : liveSyncLabel;
 
     const stateLabels = [hasFailed ? t`Sync failed` : '', stateLabel, account.isActive ? '' : t`Hidden from Home`]
         .filter(isNotEmptyString)
