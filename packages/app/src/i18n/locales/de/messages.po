@@ -1013,6 +1013,10 @@ msgstr "Konten"
 msgid "Accounts · {accountCount}"
 msgstr "Konten · {accountCount}"
 
+#: src/account/component/institution-accounts/institution-accounts.tsx
+msgid "Accounts · {accountsCount}"
+msgstr "Konten · {accountsCount}"
+
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
 msgid "Accounts ({selectedAccountsCount})"
 msgstr "Konten ({selectedAccountsCount})"
@@ -1463,6 +1467,10 @@ msgstr "Sind Sie sicher?"
 #: src/account/component/net-worth-composition/net-worth-composition.tsx
 msgid "Asset mix"
 msgstr "Vermögensaufteilung"
+
+#: src/account/component/institution-accounts/institution-accounts.tsx
+msgid "Assets · {accountsCount}"
+msgstr "Vermögenswerte · {accountsCount}"
 
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
@@ -2277,6 +2285,11 @@ msgstr "Binance verbinden"
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Connect Monobank"
 msgstr "Monobank verbinden"
+
+#: src/account/component/institution-connection-row/institution-connection-row.tsx
+#: src/account/component/institution-settings-button/institution-settings-button.tsx
+msgid "Connection settings"
+msgstr "Verbindungseinstellungen"
 
 #: ../ledger/src/transaction/service/transaction-transfer.service.ts
 msgid "Consolidated transactions cannot start a deposit"
@@ -4215,6 +4228,7 @@ msgstr "Wird in Budgies Datei auf diesem Telefon gespeichert. Nur an Monobank ge
 msgid "Key has too many permissions"
 msgstr "Schlüssel hat zu viele Berechtigungen"
 
+#: src/account/component/institution-connection-row/institution-connection-row.tsx
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
 msgid "Key rejected"
 msgstr "Schlüssel abgelehnt"
@@ -4778,6 +4792,7 @@ msgstr "Die Namen sind aktuell. Tippe, um es erneut zu versuchen."
 msgid "Navigate to Account → Statements"
 msgstr "Zu Konto → Kontoauszüge navigieren"
 
+#: src/account/component/institution-connection-row/institution-connection-row.tsx
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
 msgid "Needs attention"
 msgstr "Erfordert Aufmerksamkeit"
@@ -6582,6 +6597,10 @@ msgstr "Kurzbefehle"
 #: src/wallet-capture/component/apple-pay-capture-open-shortcuts-button/apple-pay-capture-open-shortcuts-button.tsx
 msgid "Shortcuts is not available on this device."
 msgstr "Shortcuts ist auf diesem Gerät nicht verfügbar."
+
+#: src/account/component/institution-accounts/institution-accounts.tsx
+msgid "Show all {accountsCount} accounts"
+msgstr "Alle {accountsCount} Konten anzeigen"
 
 #: src/app/transaction-amount-filter.tsx
 msgid "Show all amounts"

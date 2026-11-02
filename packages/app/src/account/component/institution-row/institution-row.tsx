@@ -38,7 +38,7 @@ export const InstitutionRow = ({ institution }: Props) => {
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const protectAmount = useProtectedAmountLabel();
 
-    const handlePress = () => void router.push({ pathname: '/bank-integration/[id]', params: { id: String(integrationId) } });
+    const handlePress = () => void router.push({ pathname: '/institution/[id]', params: { id: String(integrationId) } });
 
     const titleDescriptor = BANK_PROVIDER_TITLE[provider];
     const title = getBankIntegrationTitle(isDefined(titleDescriptor) ? t(titleDescriptor) : provider, label, groupNumber);

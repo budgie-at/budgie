@@ -26,7 +26,7 @@ export const TransactionList = () => {
                 <TransactionFilters
                     filters={activeFilters}
                     onChange={setInternalFilters}
-                    accountId={null}
+                    scopeAccountIds={null}
                     isClearAllVisible={isClearAllVisible}
                     leading={<TransactionListUncategorizedPill filters={activeFilters} />}
                 />

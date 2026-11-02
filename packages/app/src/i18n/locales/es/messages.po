@@ -1013,6 +1013,10 @@ msgstr "Cuentas"
 msgid "Accounts · {accountCount}"
 msgstr "Cuentas · {accountCount}"
 
+#: src/account/component/institution-accounts/institution-accounts.tsx
+msgid "Accounts · {accountsCount}"
+msgstr "Cuentas · {accountsCount}"
+
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
 msgid "Accounts ({selectedAccountsCount})"
 msgstr "Cuentas ({selectedAccountsCount})"
@@ -1463,6 +1467,10 @@ msgstr "¿Estás seguro?"
 #: src/account/component/net-worth-composition/net-worth-composition.tsx
 msgid "Asset mix"
 msgstr "Composición de activos"
+
+#: src/account/component/institution-accounts/institution-accounts.tsx
+msgid "Assets · {accountsCount}"
+msgstr "Activos · {accountsCount}"
 
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
@@ -2277,6 +2285,11 @@ msgstr "Conectar Binance"
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Connect Monobank"
 msgstr "Conectar Monobank"
+
+#: src/account/component/institution-connection-row/institution-connection-row.tsx
+#: src/account/component/institution-settings-button/institution-settings-button.tsx
+msgid "Connection settings"
+msgstr "Ajustes de conexión"
 
 #: ../ledger/src/transaction/service/transaction-transfer.service.ts
 msgid "Consolidated transactions cannot start a deposit"
@@ -4215,6 +4228,7 @@ msgstr "Se guarda en el archivo de Budgie en este teléfono. Solo se envía a Mo
 msgid "Key has too many permissions"
 msgstr "La clave tiene demasiados permisos"
 
+#: src/account/component/institution-connection-row/institution-connection-row.tsx
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
 msgid "Key rejected"
 msgstr "Clave rechazada"
@@ -4778,6 +4792,7 @@ msgstr "Los nombres están al día. Toca para reintentar."
 msgid "Navigate to Account → Statements"
 msgstr "Navega a Cuenta → Extractos"
 
+#: src/account/component/institution-connection-row/institution-connection-row.tsx
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
 msgid "Needs attention"
 msgstr "Requiere atención"
@@ -6582,6 +6597,10 @@ msgstr "Atajos"
 #: src/wallet-capture/component/apple-pay-capture-open-shortcuts-button/apple-pay-capture-open-shortcuts-button.tsx
 msgid "Shortcuts is not available on this device."
 msgstr "Shortcuts no está disponible en este dispositivo."
+
+#: src/account/component/institution-accounts/institution-accounts.tsx
+msgid "Show all {accountsCount} accounts"
+msgstr "Mostrar las {accountsCount} cuentas"
 
 #: src/app/transaction-amount-filter.tsx
 msgid "Show all amounts"
