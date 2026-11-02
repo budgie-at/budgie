@@ -1,3 +1,4 @@
+import { AccountTypeEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
@@ -43,9 +44,9 @@ export const InstitutionRow = ({ institution }: Props) => {
     const titleDescriptor = BANK_PROVIDER_TITLE[provider];
     const title = getBankIntegrationTitle(isDefined(titleDescriptor) ? t(titleDescriptor) : provider, label, groupNumber);
     const accountsCount = accounts.length;
-    const accountsCountLabel = t({
-        message: plural(accountsCount, { one: '# account', other: '# accounts' })
-    });
+    const accountsCountLabel = accounts.every(account => account.type === AccountTypeEnum.CRYPTO_SYNC)
+        ? t({ message: plural(accountsCount, { one: '# asset', other: '# assets' }) })
+        : t({ message: plural(accountsCount, { one: '# account', other: '# accounts' }) });
     const accessibilityLabel = [title, protectAmount(total, defaultInstrument.symbol), accountsCountLabel].join(', ');
 
     return (

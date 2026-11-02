@@ -1,9 +1,11 @@
 import { resolveInitialSyncProgress } from '@budgie/sync';
+import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
 import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { InstitutionSelector } from '../../../app/(main)/institution/institution.selector';
+import { SettingsGroup } from '../../../settings/components/settings-group/settings-group';
 import { BankIntegrationStatusPill } from '../../../sync/component/bank-integration-status-pill/bank-integration-status-pill';
 import { SyncImportProgress } from '../../../sync/component/sync-import-progress/sync-import-progress';
 import { ACCOUNT_DETAILS_HERO_BALANCE_HEIGHT } from '../../constant/account-details-hero-balance-height.constant';
@@ -19,6 +21,7 @@ interface Props {
 }
 
 export const InstitutionDetailsSummary = ({ institution, balancesByAccountId }: Props) => {
+    const { t } = useLingui();
     const syncs = institution.accounts.map(account => account.sync).filter(isDefined);
     const balanceSlotStyle = { height: ACCOUNT_DETAILS_HERO_BALANCE_HEIGHT };
     const progress = resolveInitialSyncProgress(syncs);
@@ -32,6 +35,7 @@ export const InstitutionDetailsSummary = ({ institution, balancesByAccountId }: 
             {isDefined(progress) ? <SyncImportProgress progress={progress} /> : null}
             <InstitutionAccounts institution={institution} balancesByAccountId={balancesByAccountId} />
             <InstitutionConnectionRow syncs={syncs} />
+            <SettingsGroup title={t`Transactions`}>{null}</SettingsGroup>
         </View>
     );
 };

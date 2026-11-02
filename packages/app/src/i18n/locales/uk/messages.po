@@ -137,6 +137,10 @@ msgstr "{accountCount, plural, one {# рахунок} few {# рахунки} man
 msgid "{accountsCount, plural, one {# account} other {# accounts}}"
 msgstr "{accountsCount, plural, one {# рахунок} few {# рахунки} many {# рахунків} other {# рахунка}}"
 
+#: src/account/component/institution-row/institution-row.tsx
+msgid "{accountsCount, plural, one {# asset} other {# assets}}"
+msgstr "{accountsCount, plural, one {# актив} few {# активи} many {# активів} other {# активу}}"
+
 #: src/market-data/component/currency-market-stale-price/currency-market-stale-price.tsx
 msgid "{ageDays, plural, one {# day old} other {# days old}}"
 msgstr "{ageDays, plural, one {# день тому} few {# дні тому} many {# днів тому} other {# дня тому}}"
@@ -7617,6 +7621,7 @@ msgid "Transaction type"
 msgstr "Тип транзакції"
 
 #: src/@generic/component/transactions-page-header/transactions-page-header.tsx
+#: src/account/component/institution-details-summary/institution-details-summary.tsx
 #: src/transaction/hook/use-transaction-filter-page-title.hook.ts
 msgid "Transactions"
 msgstr "Транзакції"
