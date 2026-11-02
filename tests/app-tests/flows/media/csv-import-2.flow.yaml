@@ -14,4 +14,7 @@ appId: ${APP_ID}
 
 - waitForAnimationToEnd
 
+- assertVisible:
+      text: 'Import [0-9]+ transactions?'
+
 - takeScreenshot: scene

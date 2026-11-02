@@ -1,5 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
@@ -24,12 +24,7 @@ export const AiDownloadStoppedCard = () => {
     const retryLabel = isNeedsSpace ? t`Try again` : t`Download ${remaining} GB again`;
 
     return (
-        <AiDownloadCardFrame status={summary.status} testID={AiDownloadSelector.StatusCard}>
-            <View className="gap-y-sm">
-                <Text className="text-[17px] text-primary">{title}</Text>
-                <Text className="text-[13px] leading-[18px] text-secondary-foreground">{description}</Text>
-            </View>
-
+        <AiDownloadCardFrame status={summary.status} testID={AiDownloadSelector.StatusCard} subtitle={`${title} ${description}`}>
             <View className="flex-row flex-wrap gap-md">
                 <SettingsPillButton
                     testID={AiDownloadSelector.RetryButton}

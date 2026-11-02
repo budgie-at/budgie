@@ -8,6 +8,7 @@ import { FormsheetHeader } from '../@generic/component/formsheet-header/formshee
 import { GroupedListCheckRow } from '../@generic/component/grouped-list-check-row/grouped-list-check-row';
 import { GroupedListRow } from '../@generic/component/grouped-list-row/grouped-list-row';
 import { GroupedListSection } from '../@generic/component/grouped-list-section/grouped-list-section';
+import { GroupedSurface } from '../@generic/component/grouped-surface/grouped-surface';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
 import { useImportColumnMapperModal, useImportColumnMapperModalParams } from '../import/context/import-column-mapper-modal.context';
 
@@ -42,9 +43,9 @@ export default function ImportColumnMapperModal() {
     };
 
     return (
-        <View className="flex-1 bg-secondary-background">
+        <GroupedSurface>
+            <FormsheetHeader size="sm" title={fieldLabel} description={description} />
             <ScrollView contentContainerClassName="px-5xl pb-5xl" showsVerticalScrollIndicator={false}>
-                <FormsheetHeader size="sm" title={fieldLabel} description={description} />
                 <GroupedListSection>
                     {canClear ? (
                         <GroupedListRow
@@ -70,6 +71,6 @@ export default function ImportColumnMapperModal() {
                     </View>
                 )}
             </ScrollView>
-        </View>
+        </GroupedSurface>
     );
 }

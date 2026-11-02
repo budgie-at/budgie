@@ -2,6 +2,7 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
 import { useFormatGigabytes } from '../../../@generic/hook/use-format-gigabytes.hook';
+import { isAiEnabled } from '../../../@generic/utils/is-ai-enabled.util';
 import { SettingsPillButton } from '../../../settings/components/settings-pill-button/settings-pill-button';
 import { AiDownloadSelector } from '../../ai-download.selector';
 import { AiModelDownloadStatusEnum } from '../../enum/ai-model-download-status.enum';
@@ -22,11 +23,12 @@ export const AiDownloadIdleCard = () => {
 
     if (preflight.status === AiModelDownloadStatusEnum.NOT_STARTED) {
         return (
-            <AiDownloadCardFrame status={preflight.status} testID={AiDownloadSelector.StatusCard}>
+            <AiDownloadCardFrame
+                status={preflight.status}
+                testID={AiDownloadSelector.StatusCard}
+                subtitle={t`${remaining} GB one-time download`}
+            >
                 <View className="gap-y-sm">
-                    <Text className="text-[17px] text-primary">
-                        <Trans>{remaining} GB one-time download</Trans>
-                    </Text>
                     <AiDownloadPreflightNote preflight={preflight} />
                 </View>
 
@@ -44,16 +46,16 @@ export const AiDownloadIdleCard = () => {
     const description = isReady
         ? t`Categories, tags and voice notes are handled on this phone.`
         : t`Turn on on-device AI to download the models.`;
+    const subtitle = isAiEnabled() ? description : t`Not available in this version`;
 
     return (
-        <AiDownloadCardFrame status={preflight.status} testID={AiDownloadSelector.StatusCard}>
+        <AiDownloadCardFrame status={preflight.status} testID={AiDownloadSelector.StatusCard} subtitle={subtitle}>
             <View className="gap-y-sm">
                 {isReady ? (
                     <Text className="text-[17px] text-primary">
                         <Trans>{total} GB on this phone</Trans>
                     </Text>
                 ) : null}
-                <Text className="text-[13px] leading-[18px] text-secondary-foreground">{description}</Text>
             </View>
         </AiDownloadCardFrame>
     );

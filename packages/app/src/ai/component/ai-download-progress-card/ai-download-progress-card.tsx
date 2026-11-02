@@ -27,7 +27,11 @@ export const AiDownloadProgressCard = () => {
     const resumeLabel = summary.status === AiModelDownloadStatusEnum.FAILED ? t`Try again` : t`Resume`;
 
     return (
-        <AiDownloadCardFrame status={summary.status} testID={AiDownloadSelector.StatusCard}>
+        <AiDownloadCardFrame
+            status={summary.status}
+            testID={AiDownloadSelector.StatusCard}
+            subtitle={captions[summary.status] ?? t`Downloading models to this phone.`}
+        >
             <View className="flex-row items-baseline gap-x-sm">
                 <Text className="text-[17px] text-primary">{downloaded}</Text>
                 <Text className="text-[17px] text-secondary-foreground">
@@ -37,11 +41,7 @@ export const AiDownloadProgressCard = () => {
 
             <AiProgressBar progress={summary.percent} />
 
-            {isDownloading ? (
-                <AiDownloadEta etaSeconds={summary.etaSeconds} />
-            ) : (
-                <Text className="text-[13px] leading-[18px] text-secondary-foreground">{captions[summary.status]}</Text>
-            )}
+            {isDownloading ? <AiDownloadEta etaSeconds={summary.etaSeconds} /> : null}
 
             <View className="flex-row flex-wrap gap-md">
                 {isDownloading ? (

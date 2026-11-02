@@ -6,6 +6,7 @@ import { CollapsibleChromePage } from '../../../@generic/component/collapsible-c
 import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
+import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { goBackToSettings } from '../../../settings/utils/go-back-to-settings.util';
 import { ApplePayCaptureHero } from '../../../wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero';
@@ -38,60 +39,63 @@ export default function ApplePayCaptureSettingsPage() {
     }, [refresh]);
 
     return (
-        <CollapsibleChromePage
-            title={t`Apple Pay capture`}
-            leading={<GoBackButton onPress={goBackToSettings} />}
-            testID={ApplePayCaptureSettingsSelector.Container}
-        >
-            <View className="gap-y-7xl pb-5xl">
-                <ApplePayCaptureHero>
-                    <ApplePayCaptureOpenShortcutsButton testID={ApplePayCaptureSettingsSelector.OpenShortcutsButton} />
-                    <ApplePayCaptureInstructionsButton testID={ApplePayCaptureSettingsSelector.InstructionsGuideLink} />
-                </ApplePayCaptureHero>
+        <GroupedSurface>
+            <CollapsibleChromePage
+                scrimClassName="bg-surface"
+                title={t`Apple Pay capture`}
+                leading={<GoBackButton onPress={goBackToSettings} />}
+                testID={ApplePayCaptureSettingsSelector.Container}
+            >
+                <View className="gap-y-7xl pb-5xl">
+                    <ApplePayCaptureHero>
+                        <ApplePayCaptureOpenShortcutsButton testID={ApplePayCaptureSettingsSelector.OpenShortcutsButton} />
+                        <ApplePayCaptureInstructionsButton testID={ApplePayCaptureSettingsSelector.InstructionsGuideLink} />
+                    </ApplePayCaptureHero>
 
-                {errorMessage ? (
-                    <GroupedListSection>
-                        <GroupedListRow
-                            testID={ApplePayCaptureSettingsSelector.ErrorCard}
-                            title={
-                                <Text className="text-destructive-foreground text-[17px]">
-                                    <Trans>Could not read Wallet captures</Trans>
-                                </Text>
-                            }
-                            subtitle={
-                                <Text className="text-secondary-foreground text-[13px]" selectable>
-                                    {errorMessage}
-                                </Text>
-                            }
-                        />
-                    </GroupedListSection>
-                ) : null}
-
-                <GroupedListSection title={t`Setup`} footer={<ApplePayCaptureHistoryNotice />}>
-                    <ApplePayCaptureSetupCard testID={ApplePayCaptureSettingsSelector.SetupCard} />
-                </GroupedListSection>
-
-                {hasReviewItems ? (
-                    <GroupedListSection title={t`Needs review`}>
-                        <View testID={ApplePayCaptureSettingsSelector.ReviewGroup}>
-                            <WalletCaptureReviewList
-                                reviewItems={reviewItems}
-                                mutatingCaptureIds={mutatingCaptureIds}
-                                getAccountTitle={getAccountTitle}
-                                getAccountInstrumentSymbol={getAccountInstrumentSymbol}
-                                importCapture={importCapture}
-                                dismissCapture={dismissCapture}
+                    {errorMessage ? (
+                        <GroupedListSection>
+                            <GroupedListRow
+                                testID={ApplePayCaptureSettingsSelector.ErrorCard}
+                                title={
+                                    <Text className="text-destructive-foreground text-[17px]">
+                                        <Trans>Could not read Wallet captures</Trans>
+                                    </Text>
+                                }
+                                subtitle={
+                                    <Text className="text-secondary-foreground text-[13px]" selectable>
+                                        {errorMessage}
+                                    </Text>
+                                }
                             />
-                        </View>
+                        </GroupedListSection>
+                    ) : null}
+
+                    <GroupedListSection title={t`Setup`} footer={<ApplePayCaptureHistoryNotice />}>
+                        <ApplePayCaptureSetupCard testID={ApplePayCaptureSettingsSelector.SetupCard} />
                     </GroupedListSection>
-                ) : null}
 
-                <GroupedListSection title={t`Troubleshooting`}>
-                    <ApplePayCaptureTroubleshootingCard />
-                </GroupedListSection>
+                    {hasReviewItems ? (
+                        <GroupedListSection title={t`Needs review`}>
+                            <View testID={ApplePayCaptureSettingsSelector.ReviewGroup}>
+                                <WalletCaptureReviewList
+                                    reviewItems={reviewItems}
+                                    mutatingCaptureIds={mutatingCaptureIds}
+                                    getAccountTitle={getAccountTitle}
+                                    getAccountInstrumentSymbol={getAccountInstrumentSymbol}
+                                    importCapture={importCapture}
+                                    dismissCapture={dismissCapture}
+                                />
+                            </View>
+                        </GroupedListSection>
+                    ) : null}
 
-                <MenuSpacer />
-            </View>
-        </CollapsibleChromePage>
+                    <GroupedListSection title={t`Troubleshooting`}>
+                        <ApplePayCaptureTroubleshootingCard />
+                    </GroupedListSection>
+
+                    <MenuSpacer />
+                </View>
+            </CollapsibleChromePage>
+        </GroupedSurface>
     );
 }

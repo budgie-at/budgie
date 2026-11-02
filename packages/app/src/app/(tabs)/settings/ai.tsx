@@ -9,8 +9,10 @@ import { GoBackButton } from '../../../@generic/component/go-back-button/go-back
 import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
+import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
+import { isAiEnabled } from '../../../@generic/utils/is-ai-enabled.util';
 import { AiDownloadSelector } from '../../../ai/ai-download.selector';
 import { AiDownloadStatusCard } from '../../../ai/component/ai-download-status-card/ai-download-status-card';
 import { aiModelDownloadSummaryAtom } from '../../../ai/constant/ai-model-download-summary-atom.constant';
@@ -29,6 +31,7 @@ export default function AiSettingsPage() {
     const handleEnableAi = () => void router.push('/settings/ai-features');
     const isReady = status === AiModelDownloadStatusEnum.READY;
     const isDisabled = status === AiModelDownloadStatusEnum.DISABLED;
+    const canEnableAi = isDisabled && isAiEnabled();
     const wifiClassName = isDisabled ? 'opacity-40' : '';
     const footer = isReady
         ? t`If a download arrives damaged, Budgie deletes it and waits for you to retry.`
@@ -39,7 +42,7 @@ export default function AiSettingsPage() {
             <View testID={wifiStateTestID} className="h-1 w-1" />
             <ThemedSwitch
                 disabled
-                value={isAiWifiOnly}
+                value={false}
                 testID={AiDownloadSelector.WifiOnlySwitch}
                 accessibilityLabel={t`Download only on Wi-Fi`}
             />
@@ -56,37 +59,40 @@ export default function AiSettingsPage() {
     );
 
     return (
-        <CollapsibleChromePage
-            title={t`On-device AI`}
-            leading={<GoBackButton onPress={goBackToSettings} />}
-            testID={AiDownloadSelector.Page}
-        >
-            <View className="gap-y-7xl pb-5xl">
-                <GroupedListSection>
-                    <AiDownloadStatusCard />
-                    {isDisabled ? <GroupedListRow title={t`AI features`} onPress={handleEnableAi} /> : null}
-                </GroupedListSection>
-                <GroupedListSection title={t`Download`} footer={footer}>
-                    <View className={wifiClassName}>
+        <GroupedSurface>
+            <CollapsibleChromePage
+                scrimClassName="bg-surface"
+                title={t`On-device AI`}
+                leading={<GoBackButton onPress={goBackToSettings} />}
+                testID={AiDownloadSelector.Page}
+            >
+                <View className="gap-y-7xl pb-5xl">
+                    <GroupedListSection>
+                        <AiDownloadStatusCard />
+                        {canEnableAi ? <GroupedListRow title={t`AI features`} onPress={handleEnableAi} /> : null}
+                    </GroupedListSection>
+                    <GroupedListSection title={t`Download`} footer={footer}>
+                        <View className={wifiClassName}>
+                            <GroupedListRow
+                                testID={AiDownloadSelector.WifiOnlyCard}
+                                left={<GroupedListIcon icon={UserIconNameEnum.Wifi} />}
+                                title={t`Download only on Wi-Fi`}
+                                right={wifiOnlySlot}
+                            />
+                        </View>
                         <GroupedListRow
-                            testID={AiDownloadSelector.WifiOnlyCard}
-                            left={<GroupedListIcon icon={UserIconNameEnum.Wifi} />}
-                            title={t`Download only on Wi-Fi`}
-                            right={wifiOnlySlot}
+                            title={t`Runs on`}
+                            left={<GroupedListIcon icon={UserIconNameEnum.Smartphone} />}
+                            right={
+                                <Text className="text-[17px] text-secondary-foreground">
+                                    <Trans>This phone only</Trans>
+                                </Text>
+                            }
                         />
-                    </View>
-                    <GroupedListRow
-                        title={t`Runs on`}
-                        left={<GroupedListIcon icon={UserIconNameEnum.Smartphone} />}
-                        right={
-                            <Text className="text-[17px] text-secondary-foreground">
-                                <Trans>This phone only</Trans>
-                            </Text>
-                        }
-                    />
-                </GroupedListSection>
-                <MenuSpacer />
-            </View>
-        </CollapsibleChromePage>
+                    </GroupedListSection>
+                    <MenuSpacer />
+                </View>
+            </CollapsibleChromePage>
+        </GroupedSurface>
     );
 }

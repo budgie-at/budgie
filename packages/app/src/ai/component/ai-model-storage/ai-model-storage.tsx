@@ -13,7 +13,6 @@ import { GroupedListSection } from '../../../@generic/component/grouped-list-sec
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { useLiveAtomValue } from '../../../@generic/hook/use-live-atom-value.hook';
 import { useSingleFlight } from '../../../@generic/hook/use-single-flight.hook';
-import { isAiEnabled } from '../../../@generic/utils/is-ai-enabled.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
 import { SettingsPillButton } from '../../../settings/components/settings-pill-button/settings-pill-button';
 import { aiModelStorageAtom } from '../../constant/ai-model-storage-atom.constant';
@@ -41,7 +40,6 @@ export const AiModelStorage = () => {
     const totalBytes = AsyncResult.isSuccess(usage) ? usage.value.totalBytes : 0;
     const unusedBytes = AsyncResult.isSuccess(usage) ? usage.value.unusedBytes : 0;
     const failureSubtitle = isFailure ? t`Could not load` : void 0;
-    const footer = isAiEnabled() ? void 0 : t`AI features are not available in this build.`;
     const accessory = isFailure ? (
         <SettingsPillButton label={t`Retry`} variant="secondary" onPress={refresh} />
     ) : (
@@ -51,7 +49,7 @@ export const AiModelStorage = () => {
     );
 
     return (
-        <GroupedListSection title={t`Storage`} footer={footer}>
+        <GroupedListSection title={t`Storage`}>
             <GroupedListRow title={t`Downloaded models`} subtitle={failureSubtitle} right={accessory} />
             {isPositiveNumber(unusedBytes) ? (
                 <GroupedListActionRow

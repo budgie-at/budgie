@@ -33,6 +33,7 @@ export const ApplePayCaptureInstructionsButton = ({ testID }: Props) => {
             content={t`Step-by-step instructions`}
             rightIcon={UserIconNameEnum.ArrowUpRight}
             variant="ghost"
+            className="h-[48px] rounded-full py-0"
         />
     );
 };

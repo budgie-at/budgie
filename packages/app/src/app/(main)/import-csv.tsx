@@ -1,4 +1,4 @@
-import { UserIconNameEnum, YIELD_TO_UI } from '@budgie/contracts';
+import { YIELD_TO_UI } from '@budgie/contracts';
 import {
     IMPORT_PRESETS,
     ImportColumnMapFormValues,
@@ -20,14 +20,16 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useRef, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { getErrorMessage, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
+import { getErrorMessage, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
 import { ImportScreenSelector } from '../(tabs)/settings/import-screen.selector';
 import { Button } from '../../@generic/component/button/button';
 import { CollapsibleChromePage } from '../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { GoBackButton } from '../../@generic/component/go-back-button/go-back-button';
 import { GroupedListSection } from '../../@generic/component/grouped-list-section/grouped-list-section';
+import { GroupedSurface } from '../../@generic/component/grouped-surface/grouped-surface';
 import { MenuSpacer } from '../../@generic/component/menu-spacer/menu-spacer';
 import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
 import { showErrorToast } from '../../@generic/utils/show-error-toast/show-error-toast';
@@ -67,6 +69,7 @@ export default function ImportScreen() {
     const { fileUri } = useLocalSearchParams<{ fileUri?: string }>();
 
     const { t } = useLingui();
+    const { bottom } = useSafeAreaInsets();
 
     const csvAtom = importCsvAtom(isNotEmptyString(fileUri) ? fileUri : null);
     const importCsvResult = useAtomValue(csvAtom);
@@ -88,12 +91,7 @@ export default function ImportScreen() {
         )
     );
 
-    const {
-        control,
-        handleSubmit,
-        reset,
-        formState: { errors }
-    } = useForm<ImportColumnMapFormValues>({
+    const { control, handleSubmit, reset } = useForm<ImportColumnMapFormValues>({
         resolver: standardSchemaResolver(Schema.toStandardSchemaV1(schemaWithHeaders)),
         defaultValues: {
             toAccount: '',
@@ -155,48 +153,56 @@ export default function ImportScreen() {
 
     const handleGoBack = () => void router.back();
 
-    const hasErrors = isNotEmptyArray(Object.keys(errors));
-    const buttonContent = hasErrors
-        ? t`Fix errors`
+    const unmappedRequiredCount = IMPORT_COLUMN_FIELDS.filter(
+        ({ isRequired, name }) => isRequired && !headersSet.has(formValues[name] ?? '')
+    ).length;
+    const isImportDisabled = isPositiveNumber(unmappedRequiredCount) || isLoading;
+    const footerStyle = { marginBottom: -bottom, paddingBottom: bottom + 12 };
+    const buttonContent = isPositiveNumber(unmappedRequiredCount)
+        ? t({ message: plural(unmappedRequiredCount, { one: 'Match # required field', other: 'Match # required fields' }) })
         : t({ message: plural(rowCount, { one: 'Import # transaction', other: 'Import # transactions' }) });
     const rowCountDescription = t({ message: plural(rowCount, { one: '# row found', other: '# rows found' }) });
 
     return (
-        <CollapsibleChromePage
-            title={t`Map CSV columns`}
-            subtitle={rowCountDescription}
-            leading={<GoBackButton onPress={handleGoBack} />}
-            contentClassName="gap-y-7xl"
-            footer={
-                <View className="px-5xl py-lg">
-                    <Button
-                        content={buttonContent}
-                        variant="primary"
-                        onPress={handleSubmit(handleStartImport)}
-                        leftIcon={UserIconNameEnum.Database}
-                        isLoading={isLoading}
-                        testID={ImportScreenSelector.StartImportButton}
-                    />
-                </View>
-            }
-        >
-            <ImportPresetPicker selectedPreset={selectedPreset} onPresetSelect={handlePresetSelect} />
-            {IMPORT_COLUMN_SECTIONS.map(({ title, isRequired }) => (
-                <GroupedListSection key={String(isRequired)} title={t(title)}>
-                    {IMPORT_COLUMN_FIELDS.filter(field => field.isRequired === isRequired).map(({ name, label }) => (
-                        <ImportColumnMapField
-                            key={name}
-                            control={control}
-                            name={name}
-                            label={t(label)}
-                            headers={headers}
-                            selectedHeaders={selectedHeaders}
-                            isRequired={isRequired}
+        <GroupedSurface>
+            <CollapsibleChromePage
+                scrimClassName="bg-surface"
+                title={t`Map CSV columns`}
+                subtitle={rowCountDescription}
+                leading={<GoBackButton onPress={handleGoBack} />}
+                contentClassName="gap-y-7xl"
+                footer={
+                    <View className="bg-surface px-5xl pt-lg" style={footerStyle}>
+                        <Button
+                            content={buttonContent}
+                            variant="primary"
+                            onPress={handleSubmit(handleStartImport)}
+                            size="lg"
+                            disabled={isImportDisabled}
+                            isLoading={isLoading}
+                            testID={ImportScreenSelector.StartImportButton}
                         />
-                    ))}
-                </GroupedListSection>
-            ))}
-            <MenuSpacer />
-        </CollapsibleChromePage>
+                    </View>
+                }
+            >
+                <ImportPresetPicker selectedPreset={selectedPreset} onPresetSelect={handlePresetSelect} />
+                {IMPORT_COLUMN_SECTIONS.map(({ title, isRequired }) => (
+                    <GroupedListSection key={String(isRequired)} title={t(title)}>
+                        {IMPORT_COLUMN_FIELDS.filter(field => field.isRequired === isRequired).map(({ name, label }) => (
+                            <ImportColumnMapField
+                                key={name}
+                                control={control}
+                                name={name}
+                                label={t(label)}
+                                headers={headers}
+                                selectedHeaders={selectedHeaders}
+                                isRequired={isRequired}
+                            />
+                        ))}
+                    </GroupedListSection>
+                ))}
+                <MenuSpacer />
+            </CollapsibleChromePage>
+        </GroupedSurface>
     );
 }

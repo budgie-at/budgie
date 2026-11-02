@@ -16,11 +16,7 @@ export const GroupedListCheckRow = ({ title, isSelected, onPress, testID }: Prop
 
     return (
         <GroupedListRow
-            title={
-                <Text className="text-primary text-[17px]" numberOfLines={1} ellipsizeMode="tail">
-                    {title}
-                </Text>
-            }
+            title={<Text className="text-primary text-[17px]">{title}</Text>}
             onPress={onPress}
             testID={testID}
             pressableProps={pressableProps}

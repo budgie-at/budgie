@@ -37,7 +37,8 @@ export const ImportColumnMapField = ({ control, name, label, headers, selectedHe
         });
     };
 
-    const displayValue = isNotEmptyString(value) ? value : t`Choose`;
+    const emptyValue = isRequired ? t`Required` : t`None`;
+    const displayValue = isNotEmptyString(value) ? value : emptyValue;
     const subtitle = isDefined(error) ? <Text className="text-destructive-foreground text-[13px]">{error.message}</Text> : null;
 
     return (

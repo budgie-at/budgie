@@ -124,8 +124,8 @@ msgstr "{0, plural, one {Показати ще # групу} few {Показат
 
 #. placeholder {0}: categoriesWithDefaultIcon.length
 #: src/app/(tabs)/settings/category-icons.tsx
-msgid "{0, plural, one {Tap a suggestion to replace the default icon} other {Tap a suggestion to replace each default icon}}"
-msgstr "{0, plural, one {Торкніться пропозиції, щоб замінити типову іконку} few {Торкніться пропозиції, щоб замінити кожну типову іконку} many {Торкніться пропозиції, щоб замінити кожну типову іконку} other {Торкніться пропозиції, щоб замінити кожну типову іконку}}"
+#~ msgid "{0, plural, one {Tap a suggestion to replace the default icon} other {Tap a suggestion to replace each default icon}}"
+#~ msgstr "{0, plural, one {Торкніться пропозиції, щоб замінити типову іконку} few {Торкніться пропозиції, щоб замінити кожну типову іконку} many {Торкніться пропозиції, щоб замінити кожну типову іконку} other {Торкніться пропозиції, щоб замінити кожну типову іконку}}"
 
 #: src/onboarding/hook/use-onboarding-file-state.hook.ts
 msgid "{accountCount, plural, one {# account} other {# accounts}}"
@@ -675,8 +675,12 @@ msgid "{remainingCount, plural, one {payment to sort} other {payments to sort}}"
 msgstr "{remainingCount, plural, one {платіж до сортування} few {платежі до сортування} many {платежів до сортування} other {платежу до сортування}}"
 
 #: src/settings/hooks/use-sync-repairs-action.hook.ts
-msgid "{repairedTransactionCount, plural, one {# sync item repaired} other {# sync items repaired}}"
-msgstr "{repairedTransactionCount, plural, one {# елемент синхронізації виправлено} few {# елементи синхронізації виправлено} many {# елементів синхронізації виправлено} other {# елемента синхронізації виправлено}}"
+#~ msgid "{repairedTransactionCount, plural, one {# sync item repaired} other {# sync items repaired}}"
+#~ msgstr "{repairedTransactionCount, plural, one {# елемент синхронізації виправлено} few {# елементи синхронізації виправлено} many {# елементів синхронізації виправлено} other {# елемента синхронізації виправлено}}"
+
+#: src/settings/components/sync-repairs-empty-state-card/sync-repairs-empty-state-card.tsx
+msgid "{repairedTransactionCount, plural, one {Removed # duplicate} other {Removed # duplicates}}"
+msgstr ""
 
 #: src/categorize-inbox/components/categorize-inbox-payments-select-all/categorize-inbox-payments-select-all.tsx
 msgid "{rowCount, plural, one {# payment} other {# payments}}"
@@ -833,6 +837,10 @@ msgstr "Синхронізовано транзакцій: {transactionCount} з
 #: src/categorize-inbox/components/categorize-inbox-transfer-undo/categorize-inbox-transfer-undo.tsx
 msgid "{transferCount} now transfers"
 msgstr "Тепер переказів: {transferCount}"
+
+#: src/app/(main)/import-csv.tsx
+msgid "{unmappedRequiredCount, plural, one {Match # required field} other {Match # required fields}}"
+msgstr ""
 
 #: src/settings/components/show-cents-row/show-cents-row.tsx
 msgid "{withCents} instead of {withoutCents}"
@@ -1260,8 +1268,8 @@ msgid "AI features"
 msgstr "Функції ШІ"
 
 #: src/ai/component/ai-model-storage/ai-model-storage.tsx
-msgid "AI features are not available in this build."
-msgstr ""
+#~ msgid "AI features are not available in this build."
+#~ msgstr ""
 
 #: src/ai/component/ai-download-wifi-banner/ai-download-wifi-banner.tsx
 msgid "AI model download paused: no Wi-Fi"
@@ -1856,8 +1864,8 @@ msgid "Budgie reads these statements on this phone."
 msgstr "Budgie читає ці виписки на цьому телефоні."
 
 #: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
-msgid "Budgie records Apple Pay payments the moment you tap, through a Shortcuts automation."
-msgstr "Budgie записує платежі Apple Pay щойно ви прикладаєте пристрій — через автоматизацію в Швидких командах."
+#~ msgid "Budgie records Apple Pay payments the moment you tap, through a Shortcuts automation."
+#~ msgstr "Budgie записує платежі Apple Pay щойно ви прикладаєте пристрій — через автоматизацію в Швидких командах."
 
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Budgie removes repeated bank imports and fixes transfers that landed on inactive accounts. Manual transactions are never changed."
@@ -2020,6 +2028,10 @@ msgstr "Категорії ({selectedCategoriesCount})"
 msgid "Categories break your spending down automatically. Add a transaction, or choose another period."
 msgstr "Категорії автоматично розподіляють ваші витрати. Додайте транзакцію або виберіть інший період."
 
+#: src/app/(tabs)/settings/ai-features.tsx
+msgid "Categories still work with on-device rules."
+msgstr ""
+
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "Categories, tags and voice notes are handled on this phone."
 msgstr "Категорії, теги та голосові нотатки обробляються на цьому телефоні."
@@ -2117,7 +2129,6 @@ msgstr "Перевіряємо історію транзакцій"
 
 #: src/budget/components/budget-event-tag-field/budget-event-tag-field.tsx
 #: src/budget/components/budget-fund-category-field/budget-fund-category-field.tsx
-#: src/import/components/import-column-map-field/import-column-map-field.tsx
 msgid "Choose"
 msgstr "Вибрати"
 
@@ -3317,6 +3328,10 @@ msgstr "Завантаження моделей ШІ через Wi-Fi"
 msgid "Downloading AI models…"
 msgstr "Завантаження моделей ШІ…"
 
+#: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
+msgid "Downloading models to this phone."
+msgstr ""
+
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
 msgid "Due {date}"
 msgstr "До {date}"
@@ -3848,8 +3863,8 @@ msgid "First {formattedPaid} already paid · last payment {formattedLast}"
 msgstr "Перший платіж {formattedPaid} уже сплачено · останній {formattedLast}"
 
 #: src/app/(main)/import-csv.tsx
-msgid "Fix errors"
-msgstr ""
+#~ msgid "Fix errors"
+#~ msgstr ""
 
 #: src/rule/utils/get-rule-form-issue.util.ts
 msgid "Fix the pattern to continue"
@@ -5177,6 +5192,7 @@ msgid "No transactions yet"
 msgstr "Поки немає транзакцій"
 
 #: src/app/import-column-mapper.tsx
+#: src/import/components/import-column-map-field/import-column-map-field.tsx
 #: src/settings/components/default-account-selector/default-account-selector.tsx
 #: src/sync/component/file-import-review-step/file-import-review-step.tsx
 msgid "None"
@@ -5185,6 +5201,10 @@ msgstr "Немає"
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "Not all of your bank history is imported yet"
 msgstr "Ще не вся історія з банку імпортована"
+
+#: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
+msgid "Not available in this version"
+msgstr ""
 
 #: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
 msgid "Not counted as spending"
@@ -5313,10 +5333,15 @@ msgstr "На цьому телефоні"
 msgid "On track"
 msgstr "За планом"
 
+#: src/ai/component/ai-download-card-frame/ai-download-card-frame.tsx
 #: src/ai/component/ai-system-status-banner/ai-system-status-banner.tsx
 #: src/app/(tabs)/settings/ai.tsx
 msgid "On-device AI"
 msgstr "ШІ на пристрої"
+
+#: src/app/(tabs)/settings/ai-features.tsx
+msgid "On-device AI isn't available in this version"
+msgstr ""
 
 #: src/ai/component/ai-features-settings-card/ai-features-settings-card.tsx
 msgid "On-device models and storage"
@@ -6104,6 +6129,10 @@ msgstr "Сума зарахування має бути більшою за ну
 msgid "Recent payments"
 msgstr "Останні платежі"
 
+#: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
+msgid "Record Apple Pay taps with a Shortcuts automation."
+msgstr ""
+
 #: src/wallet-capture/component/apple-pay-capture-settings-card/apple-pay-capture-settings-card.tsx
 msgid "Record card taps with Shortcuts"
 msgstr "Записувати оплати карткою через Швидкі команди"
@@ -6232,6 +6261,7 @@ msgid "Report a bug or idea"
 msgstr "Повідомити про помилку чи ідею"
 
 #: src/app/(main)/import-csv.tsx
+#: src/import/components/import-column-map-field/import-column-map-field.tsx
 #: src/rule/components/rule-value-picker-button/rule-value-picker-button.tsx
 #: src/rule/hooks/use-rule-text-value-meta.hook.ts
 msgid "Required"
@@ -7003,8 +7033,8 @@ msgid "Sync"
 msgstr "Синхронізація"
 
 #: src/settings/hooks/use-sync-repairs-action.hook.ts
-msgid "Sync data repaired"
-msgstr "Дані синхронізації виправлено"
+#~ msgid "Sync data repaired"
+#~ msgstr "Дані синхронізації виправлено"
 
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
 msgid "Sync failed"
@@ -7046,6 +7076,10 @@ msgstr "Синхронізуйте свої баланси та транзакц
 
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Synced data"
+msgstr ""
+
+#: src/settings/components/sync-repairs-empty-state-card/sync-repairs-empty-state-card.tsx
+msgid "Synced data looks consistent now."
 msgstr ""
 
 #: src/settings/components/sync-repairs-empty-state-card/sync-repairs-empty-state-card.tsx
@@ -7123,6 +7157,10 @@ msgstr "Натисніть \"Отримати API-ключ\" вгорі та у�
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Tap \"Get API Token\" above to open api.monobank.ua"
 msgstr "Торкніться «Get API Token» вище, щоб відкрити api.monobank.ua"
+
+#: src/app/(tabs)/settings/category-icons.tsx
+msgid "Tap a suggestion to use it for that category."
+msgstr ""
 
 #: src/app/voice-review.tsx
 msgid "Tap re-record to try again"

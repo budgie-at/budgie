@@ -12,9 +12,9 @@ interface Props {
 }
 
 export const ApplePayCaptureFlowNode = ({ icon, label, variant }: Props) => (
-    <View className="items-center gap-y-sm w-[72px]">
-        <CircleIcon icon={icon} variant={variant} size={40} iconSize={18} radius={20} />
-        <Text className="text-secondary-foreground text-xs font-medium text-center" numberOfLines={1}>
+    <View className="items-center gap-y-[4px] w-[72px]">
+        <CircleIcon icon={icon} variant={variant} size={28} iconSize={16} radius={14} border={false} />
+        <Text className="text-secondary-foreground text-[13px] leading-[18px] font-medium text-center" numberOfLines={1}>
             {label}
         </Text>
     </View>

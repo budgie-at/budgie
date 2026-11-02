@@ -6,6 +6,7 @@ import { AccessibilityInfo, View } from 'react-native';
 
 import { isDefined } from '@rnw-community/shared';
 
+import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { IconSuggestions } from '../../../@generic/component/icon-suggestions/icon-suggestions';
@@ -64,9 +65,10 @@ export const CategoryIconFixRow = ({ category, footer }: Props) => {
     };
 
     return (
-        <GroupedListSection title={category.title} footer={footer}>
+        <GroupedListSection footer={footer}>
+            <GroupedListRow title={category.title} left={<GroupedListIcon icon={category.icon} />} />
             <View testID={CategoryIconFixRowSelector.Row(category.title)}>
-                <LoadingContent isLoading={isLoading} className="pl-3xl py-lg">
+                <LoadingContent isLoading={isLoading} className="pl-[16px] py-lg">
                     <IconSuggestions
                         terms={iconTerms}
                         limit={6}

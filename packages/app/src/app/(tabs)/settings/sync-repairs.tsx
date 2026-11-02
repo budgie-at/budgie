@@ -10,6 +10,7 @@ import { GoBackButton } from '../../../@generic/component/go-back-button/go-back
 import { GroupedListActionRow } from '../../../@generic/component/grouped-list-action-row/grouped-list-action-row';
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
+import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { LoadingContent } from '../../../@generic/component/loading-content/loading-content';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { SyncRepairSourceRow } from '../../../settings/components/sync-repair-source-row/sync-repair-source-row';
@@ -24,7 +25,7 @@ import { SyncRepairsPageSelector } from './sync-repairs-page.selector';
 export default function SyncRepairsPage() {
     const { t } = useLingui();
     const { errorMessage, isLoading, preview, refresh } = useSyncDuplicateRepairPreviewQuery();
-    const { handleRepair, isRepairing } = useSyncRepairsAction(refresh);
+    const { handleRepair, isRepairing, repairedTransactionCount } = useSyncRepairsAction(refresh);
     const duplicateTransactionCount = preview?.duplicateTransactionCount ?? 0;
     const hasDuplicates = isPositiveNumber(duplicateTransactionCount);
     const hasError = isDefined(errorMessage);
@@ -36,45 +37,49 @@ export default function SyncRepairsPage() {
     const actionLabel = t({ message: plural(duplicateTransactionCount, { one: 'Remove # duplicate', other: 'Remove # duplicates' }) });
 
     return (
-        <CollapsibleChromePage
-            title={t`Sync repairs`}
-            leading={<GoBackButton onPress={goBackToSettings} />}
-            testID={SyncRepairsPageSelector.Container}
-        >
-            <View className="gap-y-7xl pb-5xl">
-                {hasError ? <SyncRepairsErrorCard errorMessage={errorMessage} isLoading={isLoading} onRefresh={refresh} /> : null}
-                {shouldShowEmptyState ? <SyncRepairsEmptyStateCard /> : null}
-                {shouldShowFound ? (
-                    <GroupedListSection title={t`Found`}>
-                        <LoadingContent isLoading={isLoading}>
-                            {isNotEmptyArray(sources) ? (
-                                sources.map(source => <SyncRepairSourceRow key={source.externalSource} {...source} />)
-                            ) : (
-                                <GroupedListRow
-                                    title={t`Synced data`}
-                                    right={<Text className="text-secondary-foreground text-[17px]">{t`Checking`}</Text>}
-                                />
-                            )}
-                        </LoadingContent>
-                    </GroupedListSection>
-                ) : null}
-                <GroupedListSection
-                    footer={t`Budgie removes repeated bank imports and fixes transfers that landed on inactive accounts. Manual transactions are never changed.`}
-                >
+        <GroupedSurface>
+            <CollapsibleChromePage
+                scrimClassName="bg-surface"
+                title={t`Sync repairs`}
+                leading={<GoBackButton onPress={goBackToSettings} />}
+                testID={SyncRepairsPageSelector.Container}
+            >
+                <View className="gap-y-7xl pb-5xl">
+                    {hasError ? <SyncRepairsErrorCard errorMessage={errorMessage} isLoading={isLoading} onRefresh={refresh} /> : null}
+                    {shouldShowEmptyState ? <SyncRepairsEmptyStateCard repairedTransactionCount={repairedTransactionCount} /> : null}
                     {shouldShowFound ? (
-                        <GroupedListActionRow
-                            label={actionLabel}
-                            icon={UserIconNameEnum.Wrench}
-                            onPress={handleRepair}
-                            isDisabled={isRepairDisabled}
-                            isLoading={isActionLoading}
-                            labelClassName="text-primary"
-                            testID={SyncRepairsPageSelector.RepairButton}
-                        />
+                        <GroupedListSection title={t`Found`}>
+                            <LoadingContent isLoading={isLoading}>
+                                {isNotEmptyArray(sources) ? (
+                                    sources.map(source => <SyncRepairSourceRow key={source.externalSource} {...source} />)
+                                ) : (
+                                    <GroupedListRow
+                                        title={t`Synced data`}
+                                        right={<Text className="text-secondary-foreground text-[17px]">{t`Checking`}</Text>}
+                                    />
+                                )}
+                            </LoadingContent>
+                        </GroupedListSection>
                     ) : null}
-                </GroupedListSection>
-                <MenuSpacer />
-            </View>
-        </CollapsibleChromePage>
+                    {shouldShowFound ? (
+                        <GroupedListSection>
+                            <GroupedListActionRow
+                                label={actionLabel}
+                                icon={UserIconNameEnum.Wrench}
+                                onPress={handleRepair}
+                                isDisabled={isRepairDisabled}
+                                isLoading={isActionLoading}
+                                labelClassName="text-primary"
+                                testID={SyncRepairsPageSelector.RepairButton}
+                            />
+                        </GroupedListSection>
+                    ) : null}
+                    <Text className="text-secondary-foreground px-3xl text-[13px] leading-[18px]">
+                        {t`Budgie removes repeated bank imports and fixes transfers that landed on inactive accounts. Manual transactions are never changed.`}
+                    </Text>
+                    <MenuSpacer />
+                </View>
+            </CollapsibleChromePage>
+        </GroupedSurface>
     );
 }

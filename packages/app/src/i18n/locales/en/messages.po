@@ -125,8 +125,8 @@ msgstr "{0, plural, one {Show # more group} other {Show # more groups}}"
 
 #. placeholder {0}: categoriesWithDefaultIcon.length
 #: src/app/(tabs)/settings/category-icons.tsx
-msgid "{0, plural, one {Tap a suggestion to replace the default icon} other {Tap a suggestion to replace each default icon}}"
-msgstr "{0, plural, one {Tap a suggestion to replace the default icon} other {Tap a suggestion to replace each default icon}}"
+#~ msgid "{0, plural, one {Tap a suggestion to replace the default icon} other {Tap a suggestion to replace each default icon}}"
+#~ msgstr "{0, plural, one {Tap a suggestion to replace the default icon} other {Tap a suggestion to replace each default icon}}"
 
 #: src/onboarding/hook/use-onboarding-file-state.hook.ts
 msgid "{accountCount, plural, one {# account} other {# accounts}}"
@@ -676,8 +676,12 @@ msgid "{remainingCount, plural, one {payment to sort} other {payments to sort}}"
 msgstr "{remainingCount, plural, one {payment to sort} other {payments to sort}}"
 
 #: src/settings/hooks/use-sync-repairs-action.hook.ts
-msgid "{repairedTransactionCount, plural, one {# sync item repaired} other {# sync items repaired}}"
-msgstr "{repairedTransactionCount, plural, one {# sync item repaired} other {# sync items repaired}}"
+#~ msgid "{repairedTransactionCount, plural, one {# sync item repaired} other {# sync items repaired}}"
+#~ msgstr "{repairedTransactionCount, plural, one {# sync item repaired} other {# sync items repaired}}"
+
+#: src/settings/components/sync-repairs-empty-state-card/sync-repairs-empty-state-card.tsx
+msgid "{repairedTransactionCount, plural, one {Removed # duplicate} other {Removed # duplicates}}"
+msgstr "{repairedTransactionCount, plural, one {Removed # duplicate} other {Removed # duplicates}}"
 
 #: src/categorize-inbox/components/categorize-inbox-payments-select-all/categorize-inbox-payments-select-all.tsx
 msgid "{rowCount, plural, one {# payment} other {# payments}}"
@@ -834,6 +838,10 @@ msgstr "{transactionCount} transactions synced since {historyStart}"
 #: src/categorize-inbox/components/categorize-inbox-transfer-undo/categorize-inbox-transfer-undo.tsx
 msgid "{transferCount} now transfers"
 msgstr "{transferCount} now transfers"
+
+#: src/app/(main)/import-csv.tsx
+msgid "{unmappedRequiredCount, plural, one {Match # required field} other {Match # required fields}}"
+msgstr "{unmappedRequiredCount, plural, one {Match # required field} other {Match # required fields}}"
 
 #: src/settings/components/show-cents-row/show-cents-row.tsx
 msgid "{withCents} instead of {withoutCents}"
@@ -1261,8 +1269,8 @@ msgid "AI features"
 msgstr "AI features"
 
 #: src/ai/component/ai-model-storage/ai-model-storage.tsx
-msgid "AI features are not available in this build."
-msgstr "AI features are not available in this build."
+#~ msgid "AI features are not available in this build."
+#~ msgstr "AI features are not available in this build."
 
 #: src/ai/component/ai-download-wifi-banner/ai-download-wifi-banner.tsx
 msgid "AI model download paused: no Wi-Fi"
@@ -1857,8 +1865,8 @@ msgid "Budgie reads these statements on this phone."
 msgstr "Budgie reads these statements on this phone."
 
 #: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
-msgid "Budgie records Apple Pay payments the moment you tap, through a Shortcuts automation."
-msgstr "Budgie records Apple Pay payments the moment you tap, through a Shortcuts automation."
+#~ msgid "Budgie records Apple Pay payments the moment you tap, through a Shortcuts automation."
+#~ msgstr "Budgie records Apple Pay payments the moment you tap, through a Shortcuts automation."
 
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Budgie removes repeated bank imports and fixes transfers that landed on inactive accounts. Manual transactions are never changed."
@@ -2021,6 +2029,10 @@ msgstr "Categories ({selectedCategoriesCount})"
 msgid "Categories break your spending down automatically. Add a transaction, or choose another period."
 msgstr "Categories break your spending down automatically. Add a transaction, or choose another period."
 
+#: src/app/(tabs)/settings/ai-features.tsx
+msgid "Categories still work with on-device rules."
+msgstr "Categories still work with on-device rules."
+
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "Categories, tags and voice notes are handled on this phone."
 msgstr "Categories, tags and voice notes are handled on this phone."
@@ -2118,7 +2130,6 @@ msgstr "Checking transaction history"
 
 #: src/budget/components/budget-event-tag-field/budget-event-tag-field.tsx
 #: src/budget/components/budget-fund-category-field/budget-fund-category-field.tsx
-#: src/import/components/import-column-map-field/import-column-map-field.tsx
 msgid "Choose"
 msgstr "Choose"
 
@@ -3318,6 +3329,10 @@ msgstr "Downloading AI models on Wi-Fi"
 msgid "Downloading AI models…"
 msgstr "Downloading AI models…"
 
+#: src/ai/component/ai-download-progress-card/ai-download-progress-card.tsx
+msgid "Downloading models to this phone."
+msgstr "Downloading models to this phone."
+
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
 msgid "Due {date}"
 msgstr "Due {date}"
@@ -3849,8 +3864,8 @@ msgid "First {formattedPaid} already paid · last payment {formattedLast}"
 msgstr "First {formattedPaid} already paid · last payment {formattedLast}"
 
 #: src/app/(main)/import-csv.tsx
-msgid "Fix errors"
-msgstr "Fix errors"
+#~ msgid "Fix errors"
+#~ msgstr "Fix errors"
 
 #: src/rule/utils/get-rule-form-issue.util.ts
 msgid "Fix the pattern to continue"
@@ -5178,6 +5193,7 @@ msgid "No transactions yet"
 msgstr "No transactions yet"
 
 #: src/app/import-column-mapper.tsx
+#: src/import/components/import-column-map-field/import-column-map-field.tsx
 #: src/settings/components/default-account-selector/default-account-selector.tsx
 #: src/sync/component/file-import-review-step/file-import-review-step.tsx
 msgid "None"
@@ -5186,6 +5202,10 @@ msgstr "None"
 #: src/budget/components/budget-suggested-template-card/budget-suggested-template-card.tsx
 msgid "Not all of your bank history is imported yet"
 msgstr "Not all of your bank history is imported yet"
+
+#: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
+msgid "Not available in this version"
+msgstr "Not available in this version"
 
 #: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
 msgid "Not counted as spending"
@@ -5314,10 +5334,15 @@ msgstr "On this phone"
 msgid "On track"
 msgstr "On track"
 
+#: src/ai/component/ai-download-card-frame/ai-download-card-frame.tsx
 #: src/ai/component/ai-system-status-banner/ai-system-status-banner.tsx
 #: src/app/(tabs)/settings/ai.tsx
 msgid "On-device AI"
 msgstr "On-device AI"
+
+#: src/app/(tabs)/settings/ai-features.tsx
+msgid "On-device AI isn't available in this version"
+msgstr "On-device AI isn't available in this version"
 
 #: src/ai/component/ai-features-settings-card/ai-features-settings-card.tsx
 msgid "On-device models and storage"
@@ -6105,6 +6130,10 @@ msgstr "Receiving amount must be greater than zero"
 msgid "Recent payments"
 msgstr "Recent payments"
 
+#: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
+msgid "Record Apple Pay taps with a Shortcuts automation."
+msgstr "Record Apple Pay taps with a Shortcuts automation."
+
 #: src/wallet-capture/component/apple-pay-capture-settings-card/apple-pay-capture-settings-card.tsx
 msgid "Record card taps with Shortcuts"
 msgstr "Record card taps with Shortcuts"
@@ -6233,6 +6262,7 @@ msgid "Report a bug or idea"
 msgstr "Report a bug or idea"
 
 #: src/app/(main)/import-csv.tsx
+#: src/import/components/import-column-map-field/import-column-map-field.tsx
 #: src/rule/components/rule-value-picker-button/rule-value-picker-button.tsx
 #: src/rule/hooks/use-rule-text-value-meta.hook.ts
 msgid "Required"
@@ -7004,8 +7034,8 @@ msgid "Sync"
 msgstr "Sync"
 
 #: src/settings/hooks/use-sync-repairs-action.hook.ts
-msgid "Sync data repaired"
-msgstr "Sync data repaired"
+#~ msgid "Sync data repaired"
+#~ msgstr "Sync data repaired"
 
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
 msgid "Sync failed"
@@ -7048,6 +7078,10 @@ msgstr "Sync your Binance balances and transactions"
 #: src/app/(tabs)/settings/sync-repairs.tsx
 msgid "Synced data"
 msgstr "Synced data"
+
+#: src/settings/components/sync-repairs-empty-state-card/sync-repairs-empty-state-card.tsx
+msgid "Synced data looks consistent now."
+msgstr "Synced data looks consistent now."
 
 #: src/settings/components/sync-repairs-empty-state-card/sync-repairs-empty-state-card.tsx
 msgid "Synced data looks consistent."
@@ -7124,6 +7158,10 @@ msgstr "Tap \"Get API Key\" above and sign in to Binance"
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Tap \"Get API Token\" above to open api.monobank.ua"
 msgstr "Tap \"Get API Token\" above to open api.monobank.ua"
+
+#: src/app/(tabs)/settings/category-icons.tsx
+msgid "Tap a suggestion to use it for that category."
+msgstr "Tap a suggestion to use it for that category."
 
 #: src/app/voice-review.tsx
 msgid "Tap re-record to try again"

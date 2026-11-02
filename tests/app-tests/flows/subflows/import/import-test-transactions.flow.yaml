@@ -17,6 +17,9 @@ env:
           id: 'CsvPage.StartImportButton.Label'
       timeout: 10000
 
+- assertVisible:
+      text: 'Import [0-9]+ transactions?'
+
 - tapOn:
       id: 'CsvPage.StartImportButton.Label'
       retryTapIfNoChange: true

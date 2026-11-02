@@ -1,9 +1,7 @@
 import { SyncRepairService } from '@budgie/sync';
-import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useRef, useState } from 'react';
-import Toast from 'react-native-toast-message';
 
 import { getErrorMessage } from '@rnw-community/shared';
 
@@ -14,13 +12,10 @@ export const useSyncRepairsAction = (refresh: () => void) => {
     const { t } = useLingui();
     const [isRepairing, setIsRepairing] = useState(false);
     const isRepairingRef = useRef(false);
+    const [repairedTransactionCount, setRepairedTransactionCount] = useState<number | null>(null);
 
-    const handleRepairSuccess = (repairedTransactionCount: number) => {
-        const repairedText = t({
-            message: plural(repairedTransactionCount, { one: '# sync item repaired', other: '# sync items repaired' })
-        });
-
-        Toast.show({ type: 'success', text1: t`Sync data repaired`, text2: repairedText });
+    const handleRepairSuccess = (count: number) => {
+        setRepairedTransactionCount(count);
         refresh();
     };
 
@@ -52,5 +47,5 @@ export const useSyncRepairsAction = (refresh: () => void) => {
         );
     };
 
-    return { handleRepair, isRepairing };
+    return { handleRepair, isRepairing, repairedTransactionCount };
 };

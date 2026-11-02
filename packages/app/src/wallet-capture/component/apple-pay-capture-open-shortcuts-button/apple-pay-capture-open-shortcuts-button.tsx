@@ -3,10 +3,10 @@ import * as Effect from 'effect/Effect';
 import { Linking } from 'react-native';
 import Toast from 'react-native-toast-message';
 
+import { Button } from '../../../@generic/component/button/button';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { toastOnFailure } from '../../../@generic/utils/toast-on-failure.util';
-import { SettingsPillButton } from '../../../settings/components/settings-pill-button/settings-pill-button';
 
 interface Props {
     readonly testID: string;
@@ -33,5 +33,13 @@ export const ApplePayCaptureOpenShortcutsButton = ({ testID }: Props) => {
             )
         );
 
-    return <SettingsPillButton testID={testID} onPress={handlePressOpenShortcuts} label={t`Open Shortcuts`} variant="cta" />;
+    return (
+        <Button
+            testID={testID}
+            onPress={handlePressOpenShortcuts}
+            content={t`Open Shortcuts`}
+            variant="cta"
+            className="h-[48px] rounded-full py-0"
+        />
+    );
 };
