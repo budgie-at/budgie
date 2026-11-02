@@ -3,7 +3,7 @@ import { MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { ScrollView, useWindowDimensions, View } from 'react-native';
+import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 
@@ -34,10 +34,9 @@ export default function ResyncWindowPickerModal() {
 
     const accountId = useResyncWindowPickerModalParams()?.accountId ?? 0;
     const { account } = useGetAccountByIdQuery(accountId);
-    const { bottom, top } = useSafeAreaInsets();
-    const { height } = useWindowDimensions();
+    const { bottom } = useSafeAreaInsets();
     const options = isPositiveNumber(accountId) && isDefined(account) ? RESYNC_WINDOW_OPTIONS : [];
-    const styles = { scrollView: { maxHeight: height - top }, content: { paddingBottom: bottom + 8 } };
+    const contentStyle = { paddingBottom: bottom + 8 };
     const accountTitle = account?.title;
     const description =
         isPositiveNumber(accountId) && isDefined(accountTitle)
@@ -72,9 +71,9 @@ export default function ResyncWindowPickerModal() {
     };
 
     return (
-        <ScrollView className="bg-grouped-surface" style={styles.scrollView} bounces={false}>
+        <View className="bg-grouped-surface" collapsable={false}>
             <FormsheetHeader size="md" title={t`Sync past transactions`} description={description} />
-            <View className="px-3xl pt-[16px] gap-y-[24px]" style={styles.content}>
+            <View className="px-3xl pt-[16px] gap-y-[24px]" style={contentStyle}>
                 <GroupedListSection>
                     {options
                         .filter(option => isDefined(option.sinceDays))
@@ -90,6 +89,6 @@ export default function ResyncWindowPickerModal() {
                         ))}
                 </GroupedListSection>
             </View>
-        </ScrollView>
+        </View>
     );
 }
