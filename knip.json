@@ -50,6 +50,9 @@
             ],
             "project": [
                 "**/*.ts"
+            ],
+            "ignoreBinaries": [
+                "e2e"
             ]
         }
     }
