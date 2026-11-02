@@ -4,7 +4,7 @@ import type { ResyncWindowOptionInterface } from '../interface/resync-window-opt
 
 export const RESYNC_WINDOW_OPTIONS: readonly ResyncWindowOptionInterface[] = [
     { sinceDays: 7, icon: UserIconNameEnum.Clock },
-    { sinceDays: 30, icon: UserIconNameEnum.CalendarDays },
+    { sinceDays: 30, icon: UserIconNameEnum.Calendar },
     { sinceDays: 90, icon: UserIconNameEnum.CalendarRange },
     { sinceDays: null, icon: UserIconNameEnum.History }
 ];

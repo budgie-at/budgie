@@ -138,8 +138,8 @@ msgid "{accountsCount, plural, one {# account} other {# accounts}}"
 msgstr "{accountsCount, plural, one {# рахунок} few {# рахунки} many {# рахунків} other {# рахунка}}"
 
 #: src/app/resync-window-picker.tsx
-msgid "{accountTitle} · duplicates are merged automatically"
-msgstr "{accountTitle} · дублікати об’єднуються автоматично"
+msgid "{accountTitle} · Choose a period to start syncing."
+msgstr "{accountTitle} · Виберіть період, щоб почати синхронізацію."
 
 #: src/market-data/component/currency-market-stale-price/currency-market-stale-price.tsx
 msgid "{ageDays, plural, one {# day old} other {# days old}}"
@@ -2162,6 +2162,10 @@ msgstr "Виберіть новий PIN-код"
 msgid "Choose a period"
 msgstr "Вибрати період"
 
+#: src/app/resync-window-picker.tsx
+msgid "Choose a period to start syncing."
+msgstr "Виберіть період, щоб почати синхронізацію."
+
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 #: src/auth/utils/get-pin-setup-meta.util.ts
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
@@ -3350,8 +3354,8 @@ msgid "Duplicate rule"
 msgstr "Дублювати правило"
 
 #: src/app/resync-window-picker.tsx
-msgid "Duplicates are merged automatically."
-msgstr "Дублікати об’єднуються автоматично."
+msgid "Duplicates are merged automatically. Your categories, tags and notes stay."
+msgstr "Дублікати об’єднуються автоматично. Ваші категорії, теги та нотатки зберігаються."
 
 #: src/rule/hooks/use-rule-text-value-meta.hook.ts
 msgid "e.g. ^uber.*trip"
@@ -5718,8 +5722,8 @@ msgid "Paste API key"
 msgstr "Вставте ключ API"
 
 #: src/app/bank-integration-key.tsx
-msgid "Paste the key from api.monobank.ua. Budgie checks it right away."
-msgstr "Вставте ключ із api.monobank.ua. Budgie одразу його перевірить."
+msgid "Paste the key from api.monobank.ua."
+msgstr "Вставте ключ із api.monobank.ua."
 
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "Paste your API token below:"
@@ -6016,10 +6020,6 @@ msgstr "Підвищено {dateLabel} · понад ліміт {count} пері
 #: src/market-data/component/currency-market-stats/currency-market-stats.tsx
 msgid "Rank"
 msgstr "Рейтинг"
-
-#: src/app/resync-window-picker.tsx
-msgid "Re-downloads every transaction. Your categories, tags and notes stay."
-msgstr "Повторно завантажує всі транзакції. Ваші категорії, теги й нотатки зберігаються."
 
 #: src/auth/components/pin-setup/pin-setup.tsx
 msgid "Re-encrypting your data. Keep Budgie open, it restarts when finished."
@@ -8351,6 +8351,10 @@ msgstr "Ваш вибір"
 msgctxt "Categorize inbox section chip"
 msgid "Your call"
 msgstr "Ваш вибір"
+
+#: src/app/bank-integration-key.tsx
+msgid "Your current key was rejected."
+msgstr "Ваш поточний ключ відхилено."
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Your data"

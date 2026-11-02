@@ -6,6 +6,7 @@ import { useBankIntegrationAccountRowState } from '../src/sync/hook/use-bank-int
 
 const state = vi.hoisted(() => ({
     hasSync: true,
+    allSyncOff: false,
     isKeyRejected: false,
     provider: 'MONOBANK',
     supportsLiveSync: true,
@@ -28,31 +29,47 @@ vi.mock('../src/sync/context/bank-integration.context', () => ({
 vi.mock('../src/sync/query/use-bank-integration-account-previews.query', () => ({
     useBankIntegrationAccountPreviewsQuery: () => ({ isKeyRejected: state.isKeyRejected })
 }));
+vi.mock('../src/sync/query/use-bank-integration-syncs.query', () => ({
+    useBankIntegrationSyncsQuery: () => [state.sync, { enabled: !state.allSyncOff, status: 'IDLE' }]
+}));
 vi.mock('../src/sync/hook/use-account-sync.hook', () => ({ useAccountSync: () => ({ sync: state.hasSync ? state.sync : null }) }));
 
 it.each([
-    [true, false, 'FAILED', false, true, false, 'Sync failed · Connection unavailable', true],
-    [true, false, 'FAILED', false, false, false, 'Sync failed · Connection unavailable', true],
-    [true, true, 'FAILED', true, false, false, 'Last attempt failed · Connection unavailable', false],
-    [true, true, 'SYNCING', true, true, false, '', false],
-    [true, true, 'SYNCING', true, false, false, 'Hidden from Home', false],
-    [true, false, 'IDLE', false, true, false, 'Sync off', false],
-    [true, false, 'IDLE', false, false, false, 'Sync off · Hidden from Home', false],
-    [true, false, 'SYNCING', true, false, false, 'Syncing… · Hidden from Home', false],
-    [true, false, 'SYNCING', true, true, false, 'Syncing…', false],
-    [true, false, 'IDLE', true, true, false, '', false],
-    [true, false, 'SYNCING', false, false, true, 'Excluded from imports · Hidden from Home', false],
-    [true, false, 'FAILED', false, true, true, 'Sync failed · Connection unavailable', true],
-    [false, false, 'IDLE', false, true, false, '', false]
-])('row state %s/%s/%s/%s/%s/%s', (hasSync, rejected, status, enabled, active, fileImport, description, failed) => {
-    Object.assign(state, { hasSync, isKeyRejected: rejected, supportsLiveSync: !fileImport, supportsFileImport: fileImport });
+    [false, false, 'FAILED', false, true, false, 'Sync failed · Sync off · USD', true],
+    [false, false, 'FAILED', true, false, false, 'Sync failed · Hidden from Home · USD', true],
+    [false, true, 'FAILED', false, false, false, 'Last attempt failed · Hidden from Home · USD', false],
+    [false, true, 'SYNCING', true, true, false, 'USD', false],
+    [false, true, 'IDLE', false, false, false, 'Hidden from Home · USD', false],
+    [false, false, 'IDLE', false, true, false, 'Sync off · USD', false],
+    [true, false, 'IDLE', false, true, false, 'USD', false],
+    [true, false, 'IDLE', false, false, false, 'Hidden from Home · USD', false],
+    [false, false, 'SYNCING', true, false, false, 'Syncing… · Hidden from Home · USD', false],
+    [false, false, 'SYNCING', true, true, false, 'Syncing… · USD', false],
+    [false, false, 'IDLE', true, true, false, 'USD', false],
+    [false, false, 'IDLE', false, false, true, 'Excluded from imports · Hidden from Home · USD', false],
+    [false, false, 'FAILED', false, true, true, 'Sync failed · Excluded from imports · USD', true]
+])('row subtitle %s/%s/%s/%s/%s/%s', (allSyncOff, rejected, status, enabled, active, fileImport, subtitle, failed) => {
+    Object.assign(state, { allSyncOff, isKeyRejected: rejected, supportsLiveSync: !fileImport, supportsFileImport: fileImport });
     Object.assign(state.sync, { status, enabled });
     const title = 'Daily account';
     const result = useBankIntegrationAccountRowState({ id: 1, title, isActive: active, iban: null, instrument: DEFAULT_INSTRUMENT });
-    expect(result.description).toBe(description);
+    expect([result.failureLabel, result.description, result.identityLabel].filter(Boolean).join(' · ')).toBe(subtitle);
     expect(result.isFailed).toBe(failed);
-    expect(result.identityLabel).toBe('USD');
-    expect(result.hiddenLabel).toBe(status === 'FAILED' && !active ? 'Hidden from Home' : '');
     expect(result.switchLabel).toBe(fileImport ? `Include ${title} in imports` : `Sync ${title}`);
-    expect(result.isToggleVisible).toBe(hasSync);
+    expect(result.isToggleVisible).toBe(true);
+});
+
+it.each(['MONOBANK', 'BINANCE'])('identity without sync for %s', provider => {
+    Object.assign(state, { provider, hasSync: false, isKeyRejected: false });
+    const result = useBankIntegrationAccountRowState({
+        id: 1,
+        title: 'Account',
+        isActive: true,
+        iban: null,
+        instrument: DEFAULT_INSTRUMENT
+    });
+    expect(result.identityLabel).toBe(provider === 'BINANCE' ? '' : 'USD');
+    expect(result.isToggleVisible).toBe(false);
+    expect(result.description).toBe('');
+    expect(result.failureLabel).toBe('');
 });

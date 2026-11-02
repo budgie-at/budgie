@@ -36,12 +36,12 @@ export default function ResyncWindowPickerModal() {
     const { account } = useGetAccountByIdQuery(accountId);
     const { bottom } = useSafeAreaInsets();
     const options = isPositiveNumber(accountId) && isDefined(account) ? RESYNC_WINDOW_OPTIONS : [];
-    const contentStyle = { paddingBottom: bottom + 8 };
+    const contentStyle = { paddingBottom: bottom };
     const accountTitle = account?.title;
     const description =
         isPositiveNumber(accountId) && isDefined(accountTitle)
-            ? t`${accountTitle} · duplicates are merged automatically`
-            : t`Duplicates are merged automatically.`;
+            ? t`${accountTitle} · Choose a period to start syncing.`
+            : t`Choose a period to start syncing.`;
 
     const resync = (sinceDays: number | null) => {
         void run(
@@ -81,7 +81,7 @@ export default function ResyncWindowPickerModal() {
                             <ResyncWindowOptionRow key={String(option.sinceDays)} option={option} onSelect={handleOptionPress} />
                         ))}
                 </GroupedListSection>
-                <GroupedListSection footer={t`Re-downloads every transaction. Your categories, tags and notes stay.`}>
+                <GroupedListSection footer={t`Duplicates are merged automatically. Your categories, tags and notes stay.`}>
                     {options
                         .filter(option => !isDefined(option.sinceDays))
                         .map(option => (

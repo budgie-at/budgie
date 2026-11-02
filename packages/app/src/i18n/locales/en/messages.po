@@ -139,8 +139,8 @@ msgid "{accountsCount, plural, one {# account} other {# accounts}}"
 msgstr "{accountsCount, plural, one {# account} other {# accounts}}"
 
 #: src/app/resync-window-picker.tsx
-msgid "{accountTitle} · duplicates are merged automatically"
-msgstr "{accountTitle} · duplicates are merged automatically"
+msgid "{accountTitle} · Choose a period to start syncing."
+msgstr "{accountTitle} · Choose a period to start syncing."
 
 #: src/market-data/component/currency-market-stale-price/currency-market-stale-price.tsx
 msgid "{ageDays, plural, one {# day old} other {# days old}}"
@@ -2163,6 +2163,10 @@ msgstr "Choose a new PIN"
 msgid "Choose a period"
 msgstr "Choose a period"
 
+#: src/app/resync-window-picker.tsx
+msgid "Choose a period to start syncing."
+msgstr "Choose a period to start syncing."
+
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 #: src/auth/utils/get-pin-setup-meta.util.ts
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
@@ -3351,8 +3355,8 @@ msgid "Duplicate rule"
 msgstr "Duplicate rule"
 
 #: src/app/resync-window-picker.tsx
-msgid "Duplicates are merged automatically."
-msgstr "Duplicates are merged automatically."
+msgid "Duplicates are merged automatically. Your categories, tags and notes stay."
+msgstr "Duplicates are merged automatically. Your categories, tags and notes stay."
 
 #: src/rule/hooks/use-rule-text-value-meta.hook.ts
 msgid "e.g. ^uber.*trip"
@@ -5719,8 +5723,8 @@ msgid "Paste API key"
 msgstr "Paste API key"
 
 #: src/app/bank-integration-key.tsx
-msgid "Paste the key from api.monobank.ua. Budgie checks it right away."
-msgstr "Paste the key from api.monobank.ua. Budgie checks it right away."
+msgid "Paste the key from api.monobank.ua."
+msgstr "Paste the key from api.monobank.ua."
 
 #: src/sync/component/token-input-step/token-input-step.tsx
 msgid "Paste your API token below:"
@@ -6017,10 +6021,6 @@ msgstr "Raised {dateLabel} · over the limit {count} periods in a row"
 #: src/market-data/component/currency-market-stats/currency-market-stats.tsx
 msgid "Rank"
 msgstr "Rank"
-
-#: src/app/resync-window-picker.tsx
-msgid "Re-downloads every transaction. Your categories, tags and notes stay."
-msgstr "Re-downloads every transaction. Your categories, tags and notes stay."
 
 #: src/auth/components/pin-setup/pin-setup.tsx
 msgid "Re-encrypting your data. Keep Budgie open, it restarts when finished."
@@ -8352,6 +8352,10 @@ msgstr "Your call"
 msgctxt "Categorize inbox section chip"
 msgid "Your call"
 msgstr "Your call"
+
+#: src/app/bank-integration-key.tsx
+msgid "Your current key was rejected."
+msgstr "Your current key was rejected."
 
 #: src/app/(tabs)/settings/index.tsx
 msgid "Your data"

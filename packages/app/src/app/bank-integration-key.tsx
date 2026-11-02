@@ -1,6 +1,5 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { MONOBANK_AUTH_URL, SyncProviderRegistryService } from '@budgie/sync';
-import { useAtomRefresh } from '@effect/atom-react/Hooks';
 import { Trans, useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { useState } from 'react';
@@ -18,7 +17,7 @@ import { useSingleFlight } from '../@generic/hook/use-single-flight.hook';
 import { toastOnFailure } from '../@generic/utils/toast-on-failure.util';
 import { BankIntegrationKeyField } from '../sync/component/bank-integration-key-field/bank-integration-key-field';
 import { useBankIntegrationKeyModal, useBankIntegrationKeyModalParams } from '../sync/context/bank-integration-key-modal.context';
-import { bankIntegrationAccountPreviewsAtom } from '../sync/query/use-bank-integration-account-previews.query';
+import { useBankIntegrationAccountPreviewsQuery } from '../sync/query/use-bank-integration-account-previews.query';
 
 import { BankIntegrationKeyModalSelector } from './bank-integration-key.selector';
 
@@ -27,7 +26,7 @@ export default function BankIntegrationKeyModal() {
     const [, resolveKeyModal, dismissKeyModal] = useBankIntegrationKeyModal();
     useModalDismiss(dismissKeyModal);
     const integrationId = useBankIntegrationKeyModalParams() ?? 0;
-    const refreshAccountPreviews = useAtomRefresh(bankIntegrationAccountPreviewsAtom(integrationId));
+    const { isKeyRejected, refresh: refreshAccountPreviews } = useBankIntegrationAccountPreviewsQuery(integrationId);
     const [key, setKey] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const { isLoading: isSaving, run } = useSingleFlight();
@@ -63,12 +62,13 @@ export default function BankIntegrationKeyModal() {
 
     return (
         <View className="bg-sheet-surface">
-            <FormsheetHeader
-                size="md"
-                title={t`Monobank API key`}
-                description={t`Paste the key from api.monobank.ua. Budgie checks it right away.`}
-            />
+            <FormsheetHeader size="md" title={t`Monobank API key`} description={t`Paste the key from api.monobank.ua.`} />
             <View className="px-3xl gap-y-[8px]">
+                {isKeyRejected ? (
+                    <Text className="text-[13px] text-destructive-strong">
+                        <Trans>Your current key was rejected.</Trans>
+                    </Text>
+                ) : null}
                 <BankIntegrationKeyField value={key} onChangeText={handleKeyChange} errorMessage={errorMessage} />
                 <HapticPressable
                     className="min-h-[44px] flex-row items-center gap-x-sm"

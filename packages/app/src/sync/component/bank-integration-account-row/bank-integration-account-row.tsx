@@ -1,4 +1,4 @@
-import { AccountAssociationEnum, AccountWithInstrumentEntityInterface, UserIconNameEnum } from '@budgie/contracts';
+import { AccountAssociationEnum, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
 import { SyncProviderRegistryService } from '@budgie/sync';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
@@ -7,13 +7,11 @@ import { Text, View } from 'react-native';
 import { isNotEmptyString } from '@rnw-community/shared';
 
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
-import { Icon } from '../../../@generic/component/icon/icon';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { TONAL_DISC_BACKGROUND } from '../../../@generic/constant/tonal-disc-background.constant';
 import { TestIDPartEnum } from '../../../@generic/enum/test-id-part.enum';
 import { appRuntime } from '../../../@generic/runtime/app.runtime';
-import { cn } from '../../../@generic/utils/cn.util';
 import { logAndContinue } from '../../../@generic/utils/log-and-continue.util';
 import { testID } from '../../../@generic/utils/test-id.util';
 import { toTrueMinus } from '../../../@generic/utils/to-true-minus.util';
@@ -26,6 +24,7 @@ import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/ba
 import { useDisplayFormatDigits } from '../../../i18n/hook/use-display-format-digits.hook';
 import { useFormatInstrumentAmount } from '../../../i18n/hook/use-format-instrument-amount.hook';
 import { useBankIntegrationAccountRowState } from '../../hook/use-bank-integration-account-row-state.hook';
+import { BankIntegrationAccountMenuIcon } from '../bank-integration-account-menu-icon/bank-integration-account-menu-icon';
 import { BankIntegrationAccountMenu } from '../bank-integration-account-menu/bank-integration-account-menu';
 
 interface Props {
@@ -40,7 +39,7 @@ export const BankIntegrationAccountRow = ({ account }: Props) => {
     const { balance } = useAccountBalanceQuery(account.id);
     const formatDigits = useDisplayFormatDigits();
     const formatAmount = useFormatInstrumentAmount();
-    const { sync, isFailed, isFailureDescription, hiddenLabel, switchLabel, description, identityLabel, isToggleVisible } =
+    const { sync, isFailed, failureLabel, switchLabel, description, identityLabel, isToggleVisible } =
         useBankIntegrationAccountRowState(account);
 
     const rowTestID = BankIntegrationSelector.AccountRow(account.id);
@@ -52,15 +51,10 @@ export const BankIntegrationAccountRow = ({ account }: Props) => {
                 )
             )
         );
-    const subtitleClassName = isFailed ? 'text-destructive-strong' : 'text-secondary-foreground';
-    const subtitlePrefix = isFailureDescription ? identityLabel : description || identityLabel;
+    const failureClassName = isFailed ? 'text-destructive-strong' : 'text-secondary-foreground';
+    const failureSeparator = isNotEmptyString(failureLabel) ? ' · ' : '';
+    const subtitlePrefix = [description, identityLabel].filter(isNotEmptyString).join(' · ');
     const balancePrefix = isNotEmptyString(subtitlePrefix) ? `${subtitlePrefix} · ` : '';
-    const hiddenSuffix = isNotEmptyString(hiddenLabel) ? ` · ${hiddenLabel}` : '';
-    const stateDescription = isFailureDescription ? (
-        <Text className={cn('text-[13px] leading-[18px]', subtitleClassName)} numberOfLines={2}>
-            {description}
-        </Text>
-    ) : null;
 
     const toggle = isToggleVisible ? (
         <ThemedSwitch
@@ -90,22 +84,26 @@ export const BankIntegrationAccountRow = ({ account }: Props) => {
                 <Text className="text-[17px] text-primary" numberOfLines={2}>
                     {account.title}
                 </Text>
-                {stateDescription}
                 <View className="flex-row flex-wrap">
-                    <Text className="text-[13px] leading-[18px] text-secondary-foreground">{balancePrefix}</Text>
+                    <Text className="text-[13px] leading-[18px] text-secondary-foreground">
+                        <Text className={failureClassName}>{failureLabel}</Text>
+                        {failureSeparator}
+                        {balancePrefix}
+                    </Text>
                     <ProtectedText
                         className="text-[13px] leading-[18px] text-secondary-foreground"
                         testID={AccountCardBaseSelector.Balance(account.title, formatDigits(balance))}
                     >
                         {toTrueMinus(formatAmount(balance, account.instrument.symbol, account.instrument.type))}
                     </ProtectedText>
-                    <Text className="text-[13px] leading-[18px] text-secondary-foreground">{hiddenSuffix}</Text>
                 </View>
             </View>
-            <BankIntegrationAccountMenu accountId={account.id} title={account.title} rowTestID={rowTestID}>
-                <Icon icon={UserIconNameEnum.Ellipsis} size={20} className="text-secondary-foreground" />
-            </BankIntegrationAccountMenu>
-            {toggle}
+            <View className="flex-row items-center gap-x-[12px]">
+                <BankIntegrationAccountMenu accountId={account.id} title={account.title} rowTestID={rowTestID}>
+                    <BankIntegrationAccountMenuIcon />
+                </BankIntegrationAccountMenu>
+                {toggle}
+            </View>
         </View>
     );
 };
