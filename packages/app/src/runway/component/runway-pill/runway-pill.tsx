@@ -6,6 +6,7 @@ import { router } from 'expo-router';
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
 import { Icon } from '../../../@generic/component/icon/icon';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
+import { FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/footnote-max-font-size-multiplier.constant';
 import { useIsAmountProtected } from '../../../@generic/hook/use-is-amount-protected.hook';
 import { cn } from '../../../@generic/utils/cn.util';
 import { useFormatDigits } from '../../../i18n/hook/use-format-digits.hook';
@@ -15,14 +16,14 @@ import { useLiquidBalanceQuery } from '../../query/use-liquid-balance.query';
 import { useRunwayQuery } from '../../query/use-runway.query';
 import { RunwaySelector } from '../../runway.selector';
 
-const BASE_PILL_CLASSNAME = 'flex-row items-center gap-x-xs rounded-full border px-md py-xs';
+const BASE_PILL_CLASSNAME = 'min-h-[28px] flex-row items-center gap-x-xs rounded-full px-md py-xs';
 const GROWING_VARIANT = {
-    pillClassName: `${BASE_PILL_CLASSNAME} bg-positive-background border-positive-corner`,
+    pillClassName: `${BASE_PILL_CLASSNAME} bg-positive-background`,
     labelClassName: 'text-positive-foreground',
     icon: UserIconNameEnum.TrendingUp
 } as const;
 const BURNING_VARIANT = {
-    pillClassName: `${BASE_PILL_CLASSNAME} bg-dark-warning-background border-dark-warning-corner`,
+    pillClassName: `${BASE_PILL_CLASSNAME} bg-dark-warning-background`,
     labelClassName: 'text-dark-warning-foreground',
     icon: UserIconNameEnum.TrendingDown
 } as const;
@@ -33,7 +34,7 @@ export const RunwayPill = () => {
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
     const isAmountProtected = useIsAmountProtected();
     const liquid = useLiquidBalanceQuery();
-    const { computation } = useRunwayQuery({ dimension: RunwayDriverDimensionEnum.CATEGORY, liquid, isAllIn: false });
+    const { computation } = useRunwayQuery({ dimension: RunwayDriverDimensionEnum.CATEGORY, liquid, isAllIn: true });
     const formatDigits = useFormatDigits(0);
 
     if (computation.monthsUsed < RUNWAY_MINIMUM_MONTHS) {
@@ -56,7 +57,12 @@ export const RunwayPill = () => {
             className={pillClassName}
         >
             <Icon icon={icon} size={ICON_SIZE} className={labelClassName} />
-            <ProtectedText className={cn('text-xs font-medium', labelClassName)}>{label}</ProtectedText>
+            <ProtectedText
+                maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
+                className={cn('text-[13px] font-medium tabular-nums', labelClassName)}
+            >
+                {label}
+            </ProtectedText>
         </HapticPressable>
     );
 };

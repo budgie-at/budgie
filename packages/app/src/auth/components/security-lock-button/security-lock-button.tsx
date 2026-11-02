@@ -23,7 +23,7 @@ export const SecurityLockButton = () => {
     return (
         <HapticPressable
             testID={SecurityLockButtonSelector.Root}
-            className="ml-md -mr-[34px] size-[26px] items-center justify-center self-center"
+            className="-my-md -mr-md size-[44px] items-center justify-center rounded-full active:bg-surface-fill"
             onPress={handlePress}
             accessibilityRole="button"
             accessibilityLabel={accessibilityLabel}

@@ -2,37 +2,33 @@ import { AccountArchiveService } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 
-import { EmptyFn } from '@rnw-community/shared';
+import { EmptyFn, isNotEmptyString } from '@rnw-community/shared';
 
-import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
-import { confirmAlert } from '../../@generic/utils/confirm-alert/confirm-alert.util';
-import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
+import { useSetting } from '../../settings/hook/use-setting.hook';
+import { updateSettingsMutation } from '../../settings/mutation/update-settings.mutation';
+import { useGetAccountByIdQuery } from '../query/use-get-account-by-id.query';
+
+import { useShelvedAccountAction } from './use-shelved-account-action.hook';
 
 export const useArchiveAccount = (accountId: number, onArchived: EmptyFn) => {
     const { t } = useLingui();
-    const { isLoading, run } = useSingleFlight();
+    const { isLoading, runWithFeedback } = useShelvedAccountAction();
+    const { account } = useGetAccountByIdQuery(accountId);
+    const defaultAccountId = useSetting('defaultAccountId');
+
+    const accountTitle = account?.title ?? '';
+    const isDefaultAccount = defaultAccountId === accountId;
+    const restore = Effect.flatMap(AccountArchiveService, accountArchiveService => accountArchiveService.restoreById(accountId));
 
     const handleArchive = () =>
-        void run(
-            Effect.gen(function* () {
-                const confirmed = yield* confirmAlert({
-                    title: t`Archive Account?`,
-                    message: t`This account will be hidden from your main view and won't be included in totals. You can restore it anytime from Settings → Archived Accounts.`,
-                    confirmText: t`Archive`,
-                    cancelText: t`Cancel`,
-                    isDestructive: true
-                });
-
-                if (!confirmed) {
-                    return;
-                }
-
-                const accountArchiveService = yield* AccountArchiveService;
-
-                yield* accountArchiveService.archiveById(accountId);
-                onArchived();
-            }).pipe(toastOnFailure(t`Could not archive account`))
-        );
+        void runWithFeedback({
+            action: Effect.flatMap(AccountArchiveService, accountArchiveService => accountArchiveService.archiveById(accountId)).pipe(
+                Effect.tap(() => Effect.sync(onArchived))
+            ),
+            successText: isNotEmptyString(accountTitle) ? t`Archived “${accountTitle}”` : t`Account archived`,
+            errorText: t`Could not archive account.`,
+            undo: isDefaultAccount ? restore.pipe(Effect.andThen(updateSettingsMutation({ defaultAccountId: accountId }))) : restore
+        });
 
     return { handleArchive, isLoading };
 };

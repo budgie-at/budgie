@@ -1,36 +1,33 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
-import { Trans, useLingui } from '@lingui/react/macro';
-import { Text, View } from 'react-native';
-
-import { isDefined } from '@rnw-community/shared';
+import { useLingui } from '@lingui/react/macro';
+import { cva } from 'class-variance-authority';
+import { Text } from 'react-native';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
-import { Icon } from '../../../@generic/component/icon/icon';
+import { ScaledIcon } from '../../../@generic/component/scaled-icon/scaled-icon';
+import { FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER } from '../../../@generic/constant/footnote-max-font-size-multiplier.constant';
+import { useIsAccessibilityTextSize } from '../../../@generic/hook/use-is-accessibility-text-size.hook';
 import { CryptoCurrencyGroupCardSelector } from '../crypto-currency-group-card/crypto-currency-group-card.selector';
 
 import type { EmptyFn } from '@rnw-community/shared';
 
 interface Props {
     readonly accountsCount: number;
-    readonly defaultInstrumentSymbol: string;
-    readonly formattedRate: string | null;
     readonly instrumentCode: string;
     readonly isOpen: boolean;
     readonly onPress: EmptyFn;
     readonly testID: string;
 }
 
-export const CryptoCurrencyGroupToggleRow = ({
-    accountsCount,
-    defaultInstrumentSymbol,
-    formattedRate,
-    instrumentCode,
-    isOpen,
-    onPress,
-    testID
-}: Props) => {
+const toggleVariants = cva('min-h-[32px] flex-row items-center gap-x-xs self-start pt-xxs pb-md pr-xl active:scale-100 active:opacity-60', {
+    variants: { isStacked: { true: 'pl-3xl', false: 'pl-[64px]' } }
+});
+
+export const CryptoCurrencyGroupToggleRow = ({ accountsCount, instrumentCode, isOpen, onPress, testID }: Props) => {
     const { t } = useLingui();
+    const isStacked = useIsAccessibilityTextSize();
+
     const chevronIcon = isOpen ? UserIconNameEnum.ChevronDown : UserIconNameEnum.ChevronRight;
     const toggleAccessibilityState = { expanded: isOpen };
     const accountsCountLabel = t({
@@ -46,29 +43,17 @@ export const CryptoCurrencyGroupToggleRow = ({
             accessibilityRole="button"
             accessibilityState={toggleAccessibilityState}
             onPress={onPress}
-            className="flex-row items-end justify-between gap-x-md"
+            className={toggleVariants({ isStacked })}
             testID={testID}
         >
-            <View className="flex-row items-center gap-x-xs">
-                <Text className="text-secondary-foreground text-xs" testID={CryptoCurrencyGroupCardSelector.AccountCount(instrumentCode)}>
-                    {accountsCountLabel}
-                </Text>
-                <Icon icon={chevronIcon} size={16} className="text-secondary-foreground" />
-            </View>
-
             <Text
-                className="shrink-0 text-right text-secondary-foreground text-xs"
-                testID={CryptoCurrencyGroupCardSelector.Rate(instrumentCode)}
+                className="text-[13px] font-medium text-secondary-foreground"
+                maxFontSizeMultiplier={FOOTNOTE_MAX_FONT_SIZE_MULTIPLIER}
+                testID={CryptoCurrencyGroupCardSelector.AccountCount(instrumentCode)}
             >
-                {isDefined(formattedRate) ? (
-                    <Trans>
-                        1 {instrumentCode} ≈ {defaultInstrumentSymbol}
-                        {formattedRate}
-                    </Trans>
-                ) : (
-                    <Trans>Missing rate</Trans>
-                )}
+                {accountsCountLabel}
             </Text>
+            <ScaledIcon icon={chevronIcon} size={14} className="text-secondary-foreground" />
         </HapticPressable>
     );
 };

@@ -23,6 +23,19 @@ msgstr "Binance P2P buy {assetCode}"
 msgid "Binance P2P sell {assetCode}"
 msgstr "Binance P2P sell {assetCode}"
 
+#: src/account/component/archived-account-card/archived-account-card.tsx
+msgid ", closed at the provider"
+msgstr ", closed at the provider"
+
+#: src/account/hooks/use-restore-archived-account.hook.ts
+msgid "“{accountTitle}” is back in Hidden accounts"
+msgstr "“{accountTitle}” is back in Hidden accounts"
+
+#: src/account/hooks/use-restore-archived-account.hook.ts
+#: src/account/hooks/use-unhide-account.hook.ts
+msgid "“{accountTitle}” is back on Home"
+msgstr "“{accountTitle}” is back on Home"
+
 #: src/category/hooks/use-move-and-delete-category.hook.ts
 msgid "“{sourceTitle}” deleted, transactions moved to “{targetTitle}”"
 msgstr "“{sourceTitle}” deleted, transactions moved to “{targetTitle}”"
@@ -40,7 +53,9 @@ msgstr "“{title}” deleted"
 msgid "(pick one)"
 msgstr "(pick one)"
 
+#. placeholder {0}: filteredAccounts?.length ?? 0
 #. placeholder {0}: parts.length
+#: src/account/component/shelved-accounts-page/shelved-accounts-page.tsx
 #: src/rule/hooks/use-rule-condition-formatter.hook.ts
 msgid "{0, plural, one {# account} other {# accounts}}"
 msgstr "{0, plural, one {# account} other {# accounts}}"
@@ -119,20 +134,9 @@ msgstr "{accountCount, plural, one {# account} other {# accounts}}"
 
 #: src/account/component/accounts-group/accounts-group.tsx
 #: src/account/component/crypto-currency-group-toggle-row/crypto-currency-group-toggle-row.tsx
+#: src/account/component/institution-row/institution-row.tsx
 msgid "{accountsCount, plural, one {# account} other {# accounts}}"
 msgstr "{accountsCount, plural, one {# account} other {# accounts}}"
-
-#: src/app/(tabs)/settings/archived.tsx
-msgid "{accountTitle} and its transactions will be permanently deleted. Transfers with other accounts stay there as “Transfer (account deleted)” and are left out of statistics. This cannot be undone."
-msgstr "{accountTitle} and its transactions will be permanently deleted. Transfers with other accounts stay there as “Transfer (account deleted)” and are left out of statistics. This cannot be undone."
-
-#: src/account/component/archived-account-card/archived-account-card.tsx
-msgid "{accountTitle} will be restored to your main view and included in totals."
-msgstr "{accountTitle} will be restored to your main view and included in totals."
-
-#: src/account/component/inactive-account-card/inactive-account-card.tsx
-msgid "{accountTitle} will be restored to your main view."
-msgstr "{accountTitle} will be restored to your main view."
 
 #: src/rule/utils/show-rule-application-toast.util.ts
 msgid "{applied, plural, one {# matching transaction updated} other {# matching transactions updated}}"
@@ -859,7 +863,7 @@ msgstr "≈ {formattedMonths} mo"
 msgid "★ Primary · hold another tag to change it"
 msgstr "★ Primary · hold another tag to change it"
 
-#: src/account/component/crypto-currency-group-toggle-row/crypto-currency-group-toggle-row.tsx
+#: src/account/component/crypto-currency-group-market-link/crypto-currency-group-market-link.tsx
 msgid "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
 msgstr "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
 
@@ -990,6 +994,10 @@ msgstr "Account {accountId} not found"
 msgid "Account actions"
 msgstr "Account actions"
 
+#: src/account/hooks/use-archive-account.hook.ts
+msgid "Account archived"
+msgstr "Account archived"
+
 #: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx
 msgid "account currency"
 msgstr "account currency"
@@ -1022,14 +1030,6 @@ msgstr "Accounts · {accountCount}"
 msgid "Accounts ({selectedAccountsCount})"
 msgstr "Accounts ({selectedAccountsCount})"
 
-#: src/account/component/archived-accounts-empty-state/archived-accounts-empty-state.tsx
-msgid "Accounts you archive will appear here. They won't be included in your totals or main view."
-msgstr "Accounts you archive will appear here. They won't be included in your totals or main view."
-
-#: src/account/component/inactive-accounts-empty-state/inactive-accounts-empty-state.tsx
-msgid "Accounts you mark as inactive will appear here. They won't be shown on the main page."
-msgstr "Accounts you mark as inactive will appear here. They won't be shown on the main page."
-
 #: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
 msgid "Accounts you sync or import appear here."
 msgstr "Accounts you sync or import appear here."
@@ -1037,14 +1037,6 @@ msgstr "Accounts you sync or import appear here."
 #: src/rule/components/rule-action-type-selector/rule-action-type-selector.tsx
 msgid "Action: {label}"
 msgstr "Action: {label}"
-
-#: src/account/component/inactive-account-card/inactive-account-card.tsx
-msgid "Activate"
-msgstr "Activate"
-
-#: src/account/component/inactive-account-card/inactive-account-card.tsx
-msgid "Activate Account?"
-msgstr "Activate Account?"
 
 #: src/settings/components/budget-management-card/budget-management-card.tsx
 msgid "Active budget"
@@ -1100,7 +1092,7 @@ msgstr "Add action"
 msgid "Add an action to continue"
 msgstr "Add an action to continue"
 
-#: src/account/component/account-grid-item/account-grid-item.tsx
+#: src/account/component/account-list-item/account-list-item.tsx
 msgid "Add balance"
 msgstr "Add balance"
 
@@ -1440,7 +1432,8 @@ msgstr "Apply to existing transactions?"
 
 #: src/account/component/account-actions-menu/account-actions-menu.tsx
 #: src/account/component/debt-account-paid-off/debt-account-paid-off.tsx
-#: src/account/hooks/use-archive-account.hook.ts
+#: src/account/component/hidden-account-archive-menu-item/hidden-account-archive-menu-item.tsx
+#: src/account/component/inactive-account-card/inactive-account-card.tsx
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "Archive"
 msgstr "Archive"
@@ -1449,17 +1442,30 @@ msgstr "Archive"
 msgid "Archive account"
 msgstr "Archive account"
 
-#: src/account/hooks/use-archive-account.hook.ts
-msgid "Archive Account?"
-msgstr "Archive Account?"
+#: src/app/(tabs)/settings/archived.tsx
+msgid "Archive accounts you no longer use from their edit screen. Their history is kept so you can restore them."
+msgstr "Archive accounts you no longer use from their edit screen. Their history is kept so you can restore them."
 
+#: src/account/component/archived-account-card/archived-account-card.tsx
+msgid "Archived"
+msgstr "Archived"
+
+#: src/account/hooks/use-archive-account.hook.ts
+msgid "Archived “{accountTitle}”"
+msgstr "Archived “{accountTitle}”"
+
+#: src/account/component/archived-account-card/archived-account-card.tsx
+msgid "Archived {archivedDate}"
+msgstr "Archived {archivedDate}"
+
+#: src/app/(tabs)/settings/archived.tsx
 #: src/settings/components/accounts-settings-rows/accounts-settings-rows.tsx
 msgid "Archived accounts"
 msgstr "Archived accounts"
 
 #: src/app/(tabs)/settings/archived.tsx
-msgid "Archived Accounts"
-msgstr "Archived Accounts"
+msgid "Archived accounts are left out of Home, totals and budgets. Restore one to put it back with its history."
+msgstr "Archived accounts are left out of Home, totals and budgets. Restore one to put it back with its history."
 
 #: src/settings/components/truncate-data/truncate-data.tsx
 msgid "Are you sure you want to delete all your data? This action cannot be undone."
@@ -1470,6 +1476,10 @@ msgstr "Are you sure you want to delete all your data? This action cannot be und
 #: src/transaction/hook/use-delete-transaction.hook.ts
 msgid "Are you sure?"
 msgstr "Are you sure?"
+
+#: src/account/component/net-worth-composition/net-worth-composition.tsx
+msgid "Asset mix"
+msgstr "Asset mix"
 
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
@@ -1578,7 +1588,6 @@ msgid "Bank account"
 msgstr "Bank account"
 
 #: src/account/component/account-card-menu/account-card-menu.tsx
-#: src/account/component/bank-provider-section-header/bank-provider-section-header.tsx
 msgid "Bank integration settings"
 msgstr "Bank integration settings"
 
@@ -1651,6 +1660,7 @@ msgstr "Between {lowestCount} and {MAX_INSTALLMENT_COUNT} months"
 msgid "Billing Dates"
 msgstr "Billing Dates"
 
+#: src/account/constant/bank-provider-title.constant.ts
 #: src/app/(main)/create-account/index.tsx
 #: src/rule/constant/external-source.constant.ts
 msgid "Binance"
@@ -1835,9 +1845,8 @@ msgstr "Can't be changed later"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/@generic/component/modal-form-cancel-button/modal-form-cancel-button.tsx
-#: src/account/component/account-action-button/account-action-button.tsx
 #: src/account/component/account-actions-menu/use-deposit-close-action.hook.ts
-#: src/account/hooks/use-archive-account.hook.ts
+#: src/account/hooks/use-delete-archived-account.hook.ts
 #: src/ai/component/ai-subsystem-status-card-layout/ai-subsystem-status-card-layout.tsx
 #: src/ai/component/voice-review-footer/voice-review-footer.tsx
 #: src/app/(tabs)/settings/import.tsx
@@ -2026,6 +2035,10 @@ msgstr "Check the spelling or create it as a new category."
 msgid "Check the spelling or create it as a new tag."
 msgstr "Check the spelling or create it as a new tag."
 
+#: src/account/component/shelved-accounts-no-matches-state/shelved-accounts-no-matches-state.tsx
+msgid "Check the spelling or search by another name."
+msgstr "Check the spelling or search by another name."
+
 #: src/@generic/component/currency-selector-modal-content/currency-selector-modal-content.tsx
 msgid "Check the spelling or try a code like EUR."
 msgstr "Check the spelling or try a code like EUR."
@@ -2182,6 +2195,7 @@ msgid "Clear filters"
 msgstr "Clear filters"
 
 #: src/@generic/component/searchable-page-empty-state-actions/searchable-page-empty-state-actions.tsx
+#: src/account/component/shelved-accounts-no-matches-state/shelved-accounts-no-matches-state.tsx
 #: src/rule/components/rule-empty-state/rule-empty-state.tsx
 msgid "Clear search"
 msgstr "Clear search"
@@ -2212,10 +2226,15 @@ msgstr "Close Deposit?"
 msgid "Close menu"
 msgstr "Close menu"
 
+#: src/account/component/archived-account-trailing/archived-account-trailing.tsx
+msgid "Closed"
+msgstr "Closed"
+
 #: src/sync/component/file-import-review-step/file-import-review-step.tsx
 msgid "Closing balance · {title}"
 msgstr "Closing balance · {title}"
 
+#: src/account/constant/bank-provider-title.constant.ts
 #: src/rule/constant/external-source.constant.ts
 msgid "Coinbase"
 msgstr "Coinbase"
@@ -2372,17 +2391,13 @@ msgstr "Copy the token and paste it below"
 msgid "Cost basis"
 msgstr "Cost basis"
 
-#: src/account/component/inactive-account-card/inactive-account-card.tsx
-msgid "Could not activate account."
-msgstr "Could not activate account."
-
 #: src/rule/utils/show-rule-application-toast.util.ts
 msgid "Could not apply rule to existing transactions"
 msgstr "Could not apply rule to existing transactions"
 
 #: src/account/hooks/use-archive-account.hook.ts
-msgid "Could not archive account"
-msgstr "Could not archive account"
+msgid "Could not archive account."
+msgstr "Could not archive account."
 
 #: ../ledger/src/transaction/service/transaction-debt-settlement.service.ts
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
@@ -2455,7 +2470,7 @@ msgstr "Could not create transaction"
 msgid "Could not create transaction. Please try again later."
 msgstr "Could not create transaction. Please try again later."
 
-#: src/account/hooks/use-delete-account.hook.ts
+#: src/account/hooks/use-delete-archived-account.hook.ts
 msgid "Could not delete account."
 msgstr "Could not delete account."
 
@@ -2584,7 +2599,7 @@ msgstr "Could not repair sync data"
 msgid "Could not reset bank sync"
 msgstr "Could not reset bank sync"
 
-#: src/account/component/archived-account-card/archived-account-card.tsx
+#: src/account/hooks/use-restore-archived-account.hook.ts
 msgid "Could not restore account."
 msgstr "Could not restore account."
 
@@ -2642,6 +2657,14 @@ msgstr "Could not tag transactions"
 #: src/categorize-inbox/hook/use-categorize-inbox-move-to-cash.hook.ts
 msgid "Could not undo the move to cash"
 msgstr "Could not undo the move to cash"
+
+#: src/account/hooks/use-shelved-account-action.hook.ts
+msgid "Could not undo."
+msgstr "Could not undo."
+
+#: src/account/hooks/use-unhide-account.hook.ts
+msgid "Could not unhide account."
+msgstr "Could not unhide account."
 
 #: src/ai/component/ai-feature-toggle/ai-feature-toggle.tsx
 msgid "Could not update AI feature"
@@ -2958,6 +2981,7 @@ msgid "Default currency"
 msgstr "Default currency"
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
+#: src/account/hooks/use-delete-archived-account.hook.ts
 #: src/ai/hook/use-ai-model-download-actions.hook.ts
 #: src/budget/hooks/use-budget-event-form.hook.ts
 #: src/budget/hooks/use-budget-form.hook.ts
@@ -2970,14 +2994,14 @@ msgstr "Default currency"
 msgid "Delete"
 msgstr "Delete"
 
+#: src/account/hooks/use-delete-archived-account.hook.ts
+msgid "Delete “{accountTitle}” permanently?"
+msgstr "Delete “{accountTitle}” permanently?"
+
 #: src/category/hooks/use-delete-category.hook.ts
 #: src/tag/hooks/use-delete-tag.hook.ts
 msgid "Delete “{title}”?"
 msgstr "Delete “{title}”?"
-
-#: src/app/(tabs)/settings/archived.tsx
-msgid "Delete Account Permanently?"
-msgstr "Delete Account Permanently?"
 
 #: src/settings/components/truncate-data/truncate-data.tsx
 msgid "Delete all data"
@@ -3011,9 +3035,10 @@ msgstr "Delete event?"
 msgid "Delete fund?"
 msgstr "Delete fund?"
 
-#: src/app/(tabs)/settings/archived.tsx
-msgid "Delete Permanently"
-msgstr "Delete Permanently"
+#: src/account/component/archived-account-card/archived-account-card.tsx
+#: src/account/component/archived-account-delete-menu-item/archived-account-delete-menu-item.tsx
+msgid "Delete permanently"
+msgstr "Delete permanently"
 
 #: src/rule/components/rule-form-edit-content/rule-form-edit-content.tsx
 msgid "Delete rule"
@@ -3049,6 +3074,10 @@ msgstr "Delete Transaction"
 #: src/category/components/category-card/category-card.tsx
 msgid "Delete…"
 msgstr "Delete…"
+
+#: src/account/hooks/use-delete-archived-account.hook.ts
+msgid "Deleted “{accountTitle}”"
+msgstr "Deleted “{accountTitle}”"
 
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 msgid "Deletes {DB_NAME} from this phone"
@@ -3306,6 +3335,7 @@ msgstr "Edit"
 #: src/account/component/account-actions-menu/account-actions-menu.tsx
 #: src/account/component/account-card-base/account-card-base.tsx
 #: src/account/component/account-card-menu/account-card-menu.tsx
+#: src/account/component/hidden-account-edit-menu-item/hidden-account-edit-menu-item.tsx
 msgid "Edit account"
 msgstr "Edit account"
 
@@ -3951,17 +3981,20 @@ msgstr "Health"
 msgid "Help sorting, without leaving the phone?"
 msgstr "Help sorting, without leaving the phone?"
 
+#: src/app/(tabs)/settings/inactive.tsx
 #: src/settings/components/accounts-settings-rows/accounts-settings-rows.tsx
 msgid "Hidden accounts"
 msgstr "Hidden accounts"
 
+#: src/app/(tabs)/settings/inactive.tsx
+msgid "Hidden accounts stay off Home. Their totals and net worth settings don’t change."
+msgstr "Hidden accounts stay off Home. Their totals and net worth settings don’t change."
+
+#: src/account/component/account-details-hidden-pill/account-details-hidden-pill.tsx
+#: src/account/component/account-inactive-icon/account-inactive-icon.tsx
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Hidden from Home"
 msgstr "Hidden from Home"
-
-#: src/account/component/update-account-page/update-account-page.tsx
-msgid "Hidden from Home and totals. Restore it in Settings."
-msgstr "Hidden from Home and totals. Restore it in Settings."
 
 #: src/transaction/components/statistics-share-bar/statistics-share-bar.tsx
 msgid "Hide breakdown"
@@ -4130,14 +4163,6 @@ msgstr "In runway, at today's prices"
 msgid "In Shortcuts, add a personal automation with the Transaction trigger, select your cards and choose Run Immediately."
 msgstr "In Shortcuts, add a personal automation with the Transaction trigger, select your cards and choose Run Immediately."
 
-#: src/account/component/account-inactive-icon/account-inactive-icon.tsx
-msgid "Inactive"
-msgstr "Inactive"
-
-#: src/app/(tabs)/settings/inactive.tsx
-msgid "Inactive Accounts"
-msgstr "Inactive Accounts"
-
 #: src/runway/component/runway-settings-rows/runway-settings-rows.tsx
 msgid "Include crypto"
 msgstr "Include crypto"
@@ -4264,6 +4289,10 @@ msgstr "It will no longer appear in the calendar."
 msgid "It's the only key to your file. There's no account and no copy on a server, so there's nothing to reset it from."
 msgstr "It's the only key to your file. There's no account and no copy on a server, so there's nothing to reset it from."
 
+#: src/account/hooks/use-delete-archived-account.hook.ts
+msgid "Its transactions go too. Transfers stay in the other account as “Transfer (account deleted)”. This can’t be undone."
+msgstr "Its transactions go too. Transfers stay in the other account as “Transfer (account deleted)”. This can’t be undone."
+
 #: src/sync/component/account-selection-step/account-selection-step.tsx
 msgid "Jars"
 msgstr "Jars"
@@ -4380,6 +4409,10 @@ msgstr "Learning up to date"
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
 msgid "Leave it empty for now"
 msgstr "Leave it empty for now"
+
+#: src/account/component/update-account-page/update-account-page.tsx
+msgid "Leaves Home, totals and budgets. Restore it from Settings → Archived accounts."
+msgstr "Leaves Home, totals and budgets. Restore it from Settings → Archived accounts."
 
 #: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
 msgid "Leaves your income"
@@ -4674,7 +4707,7 @@ msgstr "Minimum amount"
 msgid "Missing categories"
 msgstr "Missing categories"
 
-#: src/account/component/crypto-currency-group-toggle-row/crypto-currency-group-toggle-row.tsx
+#: src/account/component/crypto-currency-group-market-link/crypto-currency-group-market-link.tsx
 msgid "Missing rate"
 msgstr "Missing rate"
 
@@ -4978,13 +5011,13 @@ msgstr "No Accounts Yet"
 msgid "No action yet"
 msgstr "No action yet"
 
-#: src/account/component/archived-accounts-empty-state/archived-accounts-empty-state.tsx
-msgid "No Archived Accounts"
-msgstr "No Archived Accounts"
+#: src/app/(tabs)/settings/archived.tsx
+msgid "No archived accounts"
+msgstr "No archived accounts"
 
-#: src/account/component/archived-accounts-empty-state/archived-accounts-empty-state.tsx
-msgid "No archived accounts match your search"
-msgstr "No archived accounts match your search"
+#: src/app/(tabs)/settings/archived.tsx
+msgid "No archived accounts match “{search}”"
+msgstr "No archived accounts match “{search}”"
 
 #: src/category/components/category-select-content/category-select-content.tsx
 msgid "No categories found"
@@ -5022,17 +5055,17 @@ msgstr "No enabled accounts were found in this file"
 msgid "No fee"
 msgstr "No fee"
 
+#: src/app/(tabs)/settings/inactive.tsx
+msgid "No hidden accounts"
+msgstr "No hidden accounts"
+
+#: src/app/(tabs)/settings/inactive.tsx
+msgid "No hidden accounts match “{search}”"
+msgstr "No hidden accounts match “{search}”"
+
 #: src/@generic/component/icon-selector-empty-state/icon-selector-empty-state.tsx
 msgid "No icons found"
 msgstr "No icons found"
-
-#: src/account/component/inactive-accounts-empty-state/inactive-accounts-empty-state.tsx
-msgid "No Inactive Accounts"
-msgstr "No Inactive Accounts"
-
-#: src/account/component/inactive-accounts-empty-state/inactive-accounts-empty-state.tsx
-msgid "No inactive accounts match your search"
-msgstr "No inactive accounts match your search"
 
 #: src/transaction/components/statistics-drill-down-empty-state/statistics-drill-down-empty-state.tsx
 msgid "No income"
@@ -5078,11 +5111,6 @@ msgstr "No receipt found"
 #: src/transaction/components/recurring-calendar-empty-state/recurring-calendar-empty-state.tsx
 msgid "No recurring payments detected"
 msgstr "No recurring payments detected"
-
-#: src/account/component/archived-accounts-empty-state/archived-accounts-empty-state.tsx
-#: src/account/component/inactive-accounts-empty-state/inactive-accounts-empty-state.tsx
-msgid "No Results"
-msgstr "No Results"
 
 #: src/@generic/component/selector-search-empty-state/selector-search-empty-state.tsx
 msgid "No results for “{query}”"
@@ -5161,6 +5189,10 @@ msgstr "Not all of your bank history is imported yet"
 #: src/categorize-inbox/components/categorize-inbox-group-transfer-option/categorize-inbox-group-transfer-option.tsx
 msgid "Not counted as spending"
 msgstr "Not counted as spending"
+
+#: src/account/component/inactive-account-card/inactive-account-card.tsx
+msgid "Not counted in net worth"
+msgstr "Not counted in net worth"
 
 #: src/settings/components/backup-row/backup-row.tsx
 msgid "Not created yet"
@@ -6012,6 +6044,10 @@ msgstr "Recent payments"
 msgid "Record card taps with Shortcuts"
 msgstr "Record card taps with Shortcuts"
 
+#: src/account/component/cash-card/cash-card.tsx
+msgid "Record expense"
+msgstr "Record expense"
+
 #: src/@generic/component/transactions-page-header/transactions-page-header.tsx
 #: src/budget/components/budget-upcoming-charge-row/budget-upcoming-charge-row.tsx
 msgid "Recurring"
@@ -6161,17 +6197,19 @@ msgid "Restart App"
 msgstr "Restart App"
 
 #: src/account/component/archived-account-card/archived-account-card.tsx
+#: src/account/component/archived-account-restore-menu-item/archived-account-restore-menu-item.tsx
+#: src/account/component/archived-account-trailing/archived-account-trailing.tsx
 #: src/import/hook/use-restore-backup.hook.ts
 msgid "Restore"
 msgstr "Restore"
 
+#: src/account/component/archived-account-trailing/archived-account-trailing.tsx
+msgid "Restore {accountTitle}"
+msgstr "Restore {accountTitle}"
+
 #: src/auth/components/forgot-pin-sheet/forgot-pin-sheet.tsx
 msgid "Restore a backup"
 msgstr "Restore a backup"
-
-#: src/account/component/archived-account-card/archived-account-card.tsx
-msgid "Restore Account?"
-msgstr "Restore Account?"
 
 #: src/import/components/import-database/import-database.tsx
 msgid "Restore backup"
@@ -6219,6 +6257,7 @@ msgstr "Returned"
 msgid "Review sync settings"
 msgstr "Review sync settings"
 
+#: src/account/constant/bank-provider-title.constant.ts
 #: src/rule/constant/external-source.constant.ts
 msgid "Revolut"
 msgstr "Revolut"
@@ -6409,8 +6448,8 @@ msgid "Search accounts…"
 msgstr "Search accounts…"
 
 #: src/app/(tabs)/settings/archived.tsx
-msgid "Search archived accounts..."
-msgstr "Search archived accounts..."
+msgid "Search archived accounts…"
+msgstr "Search archived accounts…"
 
 #: src/app/rule-mcc-selector.tsx
 msgid "Search by code or description…"
@@ -6445,13 +6484,13 @@ msgstr "Search custom categories…"
 msgid "Search expenses refunded by this income"
 msgstr "Search expenses refunded by this income"
 
+#: src/app/(tabs)/settings/inactive.tsx
+msgid "Search hidden accounts…"
+msgstr "Search hidden accounts…"
+
 #: src/app/icon-selector.tsx
 msgid "Search icons"
 msgstr "Search icons"
-
-#: src/app/(tabs)/settings/inactive.tsx
-msgid "Search inactive accounts..."
-msgstr "Search inactive accounts..."
 
 #: src/@generic/component/ai-translation-fields/ai-translation-fields.tsx
 msgid "Search keywords: {keywords}"
@@ -6747,8 +6786,7 @@ msgstr "something"
 msgid "Something went wrong"
 msgstr "Something went wrong"
 
-#: src/account/component/account-action-button/account-action-button.tsx
-#: src/account/hooks/use-delete-account.hook.ts
+#: src/account/hooks/use-shelved-account-action.hook.ts
 msgid "Something went wrong. Please try again later."
 msgstr "Something went wrong. Please try again later."
 
@@ -7155,13 +7193,13 @@ msgstr "There is no \"forgot PIN\"."
 msgid "these two weeks"
 msgstr "these two weeks"
 
+#: src/account/component/archived-account-closed-menu-note/archived-account-closed-menu-note.tsx
+msgid "This account was closed at the provider, so it can’t come back to Home."
+msgstr "This account was closed at the provider, so it can’t come back to Home."
+
 #: src/sync/component/bank-integration-account-menu/bank-integration-account-menu.tsx
 msgid "This account will be archived and its transfers will become income and expenses on your other accounts. This cannot be undone."
 msgstr "This account will be archived and its transfers will become income and expenses on your other accounts. This cannot be undone."
-
-#: src/account/hooks/use-archive-account.hook.ts
-msgid "This account will be hidden from your main view and won't be included in totals. You can restore it anytime from Settings → Archived Accounts."
-msgstr "This account will be hidden from your main view and won't be included in totals. You can restore it anytime from Settings → Archived Accounts."
 
 #: src/@generic/component/deletable-row/deletable-row.tsx
 #: src/transaction/hook/use-delete-transaction.hook.ts
@@ -7669,6 +7707,10 @@ msgstr "Tune limits automatically"
 msgid "Turn off app lock"
 msgstr "Turn off app lock"
 
+#: src/app/(tabs)/settings/inactive.tsx
+msgid "Turn off Show on Home in an account’s edit screen to tuck it away here."
+msgstr "Turn off Show on Home in an account’s edit screen to tuck it away here."
+
 #: src/app/note-input.tsx
 msgid "Turn on On-device AI in Settings. Tap to see what it downloads."
 msgstr "Turn on On-device AI in Settings. Tap to see what it downloads."
@@ -7744,6 +7786,7 @@ msgstr "Unchecked payments stay in your inbox."
 msgid "Under limit"
 msgstr "Under limit"
 
+#: src/account/hooks/use-shelved-account-action.hook.ts
 #: src/categorize-inbox/components/categorize-inbox-undo-layout/categorize-inbox-undo-layout.tsx
 msgid "Undo"
 msgstr "Undo"
@@ -7758,6 +7801,17 @@ msgstr "Undo Refund"
 #: src/transaction/hook/use-revert-consolidation.hook.ts
 msgid "Undo refund?"
 msgstr "Undo refund?"
+
+#: src/account/component/account-details-hidden-pill/account-details-hidden-pill.tsx
+#: src/account/component/hidden-account-unhide-menu-item/hidden-account-unhide-menu-item.tsx
+#: src/account/component/inactive-account-card/inactive-account-card.tsx
+msgid "Unhide"
+msgstr "Unhide"
+
+#: src/account/component/account-details-hidden-pill/account-details-hidden-pill.tsx
+#: src/account/component/inactive-account-card/inactive-account-card.tsx
+msgid "Unhide {accountTitle}"
+msgstr "Unhide {accountTitle}"
 
 #: src/wallet-capture/component/wallet-capture-review-card/wallet-capture-review-card.tsx
 msgid "Unknown card"
@@ -8007,6 +8061,7 @@ msgstr "Whole period"
 msgid "Will be created on this phone"
 msgstr "Will be created on this phone"
 
+#: src/account/constant/bank-provider-title.constant.ts
 #: src/rule/constant/external-source.constant.ts
 msgid "Wise"
 msgstr "Wise"
