@@ -136,4 +136,13 @@ describe('IconSearchService', () => {
             expect(iconSearchService.suggest(entries, ['Plants']).map(({ icon }) => icon)).not.toContain('reicon:Airplane');
         })
     );
+
+    it.effect('ranksPartialSearchesByTheirPrefix', () =>
+        Effect.gen(function* () {
+            const entries = yield* iconSearchService.load();
+
+            expect(iconSearchService.rank(entries, ['coff']).map(({ icon }) => icon)).toContain('reicon:Coffee');
+            expect(iconSearchService.rank(entries, ['zzqx'])).toEqual([]);
+        })
+    );
 });
