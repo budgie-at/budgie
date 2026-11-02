@@ -262,6 +262,29 @@ export class TransactionDebtSettlementService extends Context.Service<Transactio
                 });
             });
 
+            const resyncInTransaction = Effect.fn('TransactionDebtSettlementService.resyncInTransaction')(function* (
+                transactionId: number
+            ) {
+                const debtEvent = yield* debtEventRepository.findByTransactionId(transactionId);
+
+                if (!isDefined(debtEvent) || debtEvent.source !== DebtEventSourceEnum.INCOME_ATTACHMENT) {
+                    return;
+                }
+
+                const transaction = yield* getTransactionOrFail(transactionId);
+                const debtAccount = yield* getDebtAccountOrFail(debtEvent.debtAccountId);
+
+                yield* assertTransactionSupportsDebtSettlement(transaction);
+                const primaryEntry = yield* getPrimaryEntryOrFail(transaction);
+                yield* assertDebtAccountIsNotPrimaryAccount(primaryEntry, debtAccount);
+
+                const fields = yield* buildSettlementEventFields(transaction, debtAccount, primaryEntry);
+
+                yield* debtEventRepository.updateById(debtEvent.id, fields);
+                yield* assignDebtPaymentCategory(primaryEntry, debtAccount);
+                yield* accountBalanceIncrementalService.updateBalancesByAccountIds([primaryEntry.accountId, debtAccount.id]);
+            });
+
             return {
                 attach: Effect.fn('TransactionDebtSettlementService.attach')(
                     function* (params: AttachDebtSettlementParamsInterface) {
@@ -308,25 +331,20 @@ export class TransactionDebtSettlementService extends Context.Service<Transactio
                     effect => Db.transaction(effect)
                 ),
                 inheritInstallmentCategory,
-                resyncInTransaction: Effect.fn('TransactionDebtSettlementService.resyncInTransaction')(function* (transactionId: number) {
-                    const debtEvent = yield* debtEventRepository.findByTransactionId(transactionId);
+                repairDebtPaymentCategories: Effect.fn('TransactionDebtSettlementService.repairDebtPaymentCategories')(function* () {
+                    yield* debtEventRepository.relinkAttachmentEntries();
+                    yield* transactionEntryRepository.assignDebtPaymentCategory(BORROWING_CATEGORY_ID, AccountDebtTypeEnum.BORROW);
+                    yield* transactionEntryRepository.assignDebtPaymentCategory(LENDING_CATEGORY_ID, AccountDebtTypeEnum.LENT);
+                }),
+                resyncInTransaction,
+                resyncTransactions: Effect.fn('TransactionDebtSettlementService.resyncTransactions')(function* (transactionIds: number[]) {
+                    const attachments = yield* debtEventRepository.findAttachmentsByTransactionIds(transactionIds);
 
-                    if (!isDefined(debtEvent) || debtEvent.source !== DebtEventSourceEnum.INCOME_ATTACHMENT) {
-                        return;
-                    }
-
-                    const transaction = yield* getTransactionOrFail(transactionId);
-                    const debtAccount = yield* getDebtAccountOrFail(debtEvent.debtAccountId);
-
-                    yield* assertTransactionSupportsDebtSettlement(transaction);
-                    const primaryEntry = yield* getPrimaryEntryOrFail(transaction);
-                    yield* assertDebtAccountIsNotPrimaryAccount(primaryEntry, debtAccount);
-
-                    const fields = yield* buildSettlementEventFields(transaction, debtAccount, primaryEntry);
-
-                    yield* debtEventRepository.updateById(debtEvent.id, fields);
-                    yield* assignDebtPaymentCategory(primaryEntry, debtAccount);
-                    yield* accountBalanceIncrementalService.updateBalancesByAccountIds([primaryEntry.accountId, debtAccount.id]);
+                    yield* Effect.forEach(
+                        attachments.map(attachment => attachment.transactionId).filter(isDefined),
+                        transactionId => resyncInTransaction(transactionId),
+                        { discard: true }
+                    );
                 })
             };
         })
