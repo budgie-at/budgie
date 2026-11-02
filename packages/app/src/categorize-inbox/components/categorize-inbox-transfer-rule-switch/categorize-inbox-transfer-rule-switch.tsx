@@ -25,8 +25,6 @@ export const CategorizeInboxTransferRuleSwitch = ({ cluster, value, onValueChang
 
     const matchedAccount = useCategorizeInboxMatchedAccount(cluster);
 
-    const handlePress = (): void => void onValueChange(!value);
-
     const { displayTitle } = cluster;
     const jarName = getCategorizeInboxJarName(displayTitle) ?? (isDefined(matchedAccount) ? displayTitle : null);
     const title = t`Do this automatically`;
@@ -51,7 +49,6 @@ export const CategorizeInboxTransferRuleSwitch = ({ cluster, value, onValueChang
                 left={<GroupedListIcon icon={UserIconNameEnum.Repeat} />}
                 title={title}
                 subtitle={subtitleNode}
-                onPress={handlePress}
                 right={switchNode}
             />
         </GroupedListSection>

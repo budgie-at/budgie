@@ -38,6 +38,7 @@ export const CategorizeInboxSessionProgress = () => {
         <Animated.View
             className="mt-md h-[4px] w-[160px] overflow-hidden rounded-full bg-surface-disc"
             style={trackStyle}
+            accessible
             accessibilityRole="progressbar"
             accessibilityLabel={t`Sorted this session`}
             accessibilityValue={accessibilityValue}
