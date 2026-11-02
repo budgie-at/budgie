@@ -8,30 +8,24 @@ import { CurrencyMarketPageSelector } from '../currency-market-page/currency-mar
 import type { InstrumentEntityInterface } from '@budgie/contracts';
 
 interface Props {
-    readonly instrument: InstrumentEntityInterface;
+    readonly instrument: Pick<InstrumentEntityInterface, 'code' | 'symbol' | 'type' | 'name' | 'marketCapRank'>;
+    readonly hasPrice: boolean;
 }
 
-export const CurrencyMarketLargeTitle = ({ instrument }: Props) => {
-    const rank = isDefined(instrument.marketCapRank) ? `#${instrument.marketCapRank}` : null;
+export const CurrencyMarketLargeTitle = ({ instrument, hasPrice }: Props) => {
+    const caption = hasPrice && isDefined(instrument.marketCapRank) ? `${instrument.code} · #${instrument.marketCapRank}` : instrument.code;
 
     return (
-        <View className="flex-row items-center gap-x-md" testID={CurrencyMarketPageSelector.Header(instrument.code)}>
-            <CurrencySelectorInstrumentIcon code={instrument.code} symbol={instrument.symbol} type={instrument.type} size={36} />
-
-            <View className="min-w-0 flex-1">
-                <Text className="text-primary text-lg font-semibold" numberOfLines={1}>
+        <View className="gap-y-xxs" testID={CurrencyMarketPageSelector.Header(instrument.code)}>
+            <View className="flex-row items-center gap-x-md">
+                <CurrencySelectorInstrumentIcon code={instrument.code} symbol={instrument.symbol} type={instrument.type} size={32} />
+                <Text accessibilityRole="header" className="text-primary min-w-0 flex-1 text-[28px] font-bold" numberOfLines={1}>
                     {instrument.name}
                 </Text>
-                <Text className="text-warning-foreground text-xs font-semibold uppercase">{instrument.code}</Text>
             </View>
-
-            {isDefined(rank) ? (
-                <View className="border-secondary-corner bg-secondary-background h-8 min-w-8 items-center justify-center rounded-full border px-sm">
-                    <Text selectable className="text-primary text-center text-sm font-semibold">
-                        {rank}
-                    </Text>
-                </View>
-            ) : null}
+            <Text className="text-secondary-foreground text-[15px]" numberOfLines={1}>
+                {caption}
+            </Text>
         </View>
     );
 };

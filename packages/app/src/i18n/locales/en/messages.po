@@ -138,6 +138,10 @@ msgstr "{accountCount, plural, one {# account} other {# accounts}}"
 msgid "{accountsCount, plural, one {# account} other {# accounts}}"
 msgstr "{accountsCount, plural, one {# account} other {# accounts}}"
 
+#: src/market-data/component/currency-market-stale-price/currency-market-stale-price.tsx
+msgid "{ageDays, plural, one {# day old} other {# days old}}"
+msgstr "{ageDays, plural, one {# day old} other {# days old}}"
+
 #: src/rule/utils/show-rule-application-toast.util.ts
 msgid "{applied, plural, one {# matching transaction updated} other {# matching transactions updated}}"
 msgstr "{applied, plural, one {# matching transaction updated} other {# matching transactions updated}}"
@@ -273,6 +277,10 @@ msgstr "{count} of {rowCount} selected"
 #: src/budget/components/budget-upcoming-charge-row/budget-upcoming-charge-row.tsx
 msgid "{dateLabel}, {kindLabel}"
 msgstr "{dateLabel}, {kindLabel}"
+
+#: src/market-data/hook/use-market-chart-accessibility.hook.ts
+msgid "{dateLabel}, {priceLabel}"
+msgstr "{dateLabel}, {priceLabel}"
 
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
 msgid "{days, plural, one {In # day} other {In # days}}"
@@ -488,9 +496,9 @@ msgstr "{installmentCount, plural, one {# payment in total} other {# payments in
 msgid "{installmentCount, plural, one {Split into # payment} other {Split into # payments}}"
 msgstr "{installmentCount, plural, one {Split into # payment} other {Split into # payments}}"
 
-#: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
-msgid "{loadedDays}/{totalDays} days"
-msgstr "{loadedDays}/{totalDays} days"
+#: src/market-data/component/currency-market-chart-status/currency-market-chart-status.tsx
+msgid "{loadedDays} of {totalDays} days"
+msgstr "{loadedDays} of {totalDays} days"
 
 #: src/app/transaction-type-filter.tsx
 msgid "{localSelectedCount, plural, =0 {Show all types} one {Show # type} other {Show # types}}"
@@ -499,6 +507,14 @@ msgstr "{localSelectedCount, plural, =0 {Show all types} one {Show # type} other
 #: src/installment-plan/component/installment-count-picker/installment-count-picker.tsx
 msgid "{lowestCount}–{MAX_INSTALLMENT_COUNT} months · showing {selectedCount}"
 msgstr "{lowestCount}–{MAX_INSTALLMENT_COUNT} months · showing {selectedCount}"
+
+#: src/account/component/account-details-market-link/account-details-market-link.tsx
+msgid "{marketName} market, {priceLabel}"
+msgstr "{marketName} market, {priceLabel}"
+
+#: src/account/component/account-details-market-link/account-details-market-link.tsx
+msgid "{marketName} market, {priceLabel}, {direction}"
+msgstr "{marketName} market, {priceLabel}, {direction}"
 
 #: src/rule/components/matching-rules-pill/matching-rules-pill.tsx
 #: src/rule/components/rules-list-header/rules-list-header.tsx
@@ -618,6 +634,10 @@ msgstr "{projectedAmount} · {gapAmount} over"
 #: src/budget/hooks/use-budget-forecast-labels.hook.ts
 msgid "{projectedAmount} · {gapAmount} under"
 msgstr "{projectedAmount} · {gapAmount} under"
+
+#: src/market-data/component/currency-market-account-row/currency-market-account-row.tsx
+msgid "{providerName} · No cost basis"
+msgstr "{providerName} · No cost basis"
 
 #: src/sync/component/account-sync-card/account-sync-card.tsx
 msgid "{providerName} sync"
@@ -859,9 +879,37 @@ msgstr "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
 msgid "1 {sourceCode} = {formattedRate} {destinationCode}"
 msgstr "1 {sourceCode} = {formattedRate} {destinationCode}"
 
+#: src/market-data/component/currency-market-range-control/currency-market-range-control.tsx
+msgid "1M"
+msgstr "1M"
+
+#: src/market-data/component/currency-market-range-control/currency-market-range-control.tsx
+msgid "1W"
+msgstr "1W"
+
+#: src/market-data/component/currency-market-range-control/currency-market-range-control.tsx
+msgid "1Y"
+msgstr "1Y"
+
 #: src/budget/components/budget-day-strip-key/budget-day-strip-key.tsx
 msgid "2× plan"
 msgstr "2× plan"
+
+#: src/account/component/account-details-market-link/account-details-market-link.tsx
+msgid "24h"
+msgstr "24h"
+
+#: src/market-data/component/currency-market-daily-change-row/currency-market-daily-change-row.tsx
+msgid "24h change"
+msgstr "24h change"
+
+#: src/market-data/component/currency-market-daily-change-row/currency-market-daily-change-row.tsx
+msgid "24h change · {staleDate}"
+msgstr "24h change · {staleDate}"
+
+#: src/market-data/component/currency-market-range-control/currency-market-range-control.tsx
+msgid "3M"
+msgstr "3M"
 
 #: src/budget/components/budget-template-chooser/budget-template-chooser.tsx
 msgid "A balanced starter budget with common categories"
@@ -1465,6 +1513,30 @@ msgstr "Are you sure?"
 msgid "Asset mix"
 msgstr "Asset mix"
 
+#: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
+msgid "At {rateLabel} per {instrumentCode}"
+msgstr "At {rateLabel} per {instrumentCode}"
+
+#: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
+msgid "At ≈ {rateLabel} per {instrumentCode}"
+msgstr "At ≈ {rateLabel} per {instrumentCode}"
+
+#: src/market-data/component/currency-market-position/currency-market-position.tsx
+msgid "At last known price"
+msgstr "At last known price"
+
+#: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
+msgid "At last known price · on the {coveredAmountWithCode} with known cost"
+msgstr "At last known price · on the {coveredAmountWithCode} with known cost"
+
+#: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
+msgid "At last known price, {rateLabel} per {instrumentCode}"
+msgstr "At last known price, {rateLabel} per {instrumentCode}"
+
+#: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
+msgid "At last known price, ≈ {rateLabel} per {instrumentCode}"
+msgstr "At last known price, ≈ {rateLabel} per {instrumentCode}"
+
 #: src/transaction/components/transaction-list-attach-debt-menu-item/transaction-list-attach-debt-menu-item.tsx
 #: src/transaction/hook/use-simple-transaction-actions-menu.hook.ts
 msgid "Attach debt"
@@ -1514,9 +1586,13 @@ msgstr "Average per month"
 msgid "Average spend"
 msgstr "Average spend"
 
-#: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
-msgid "Avg cost"
-msgstr "Avg cost"
+#: src/market-data/component/currency-market-cost-basis-row/currency-market-cost-basis-row.tsx
+msgid "Avg {averageCost} per {instrumentCode}"
+msgstr "Avg {averageCost} per {instrumentCode}"
+
+#: src/market-data/component/currency-market-cost-basis-row/currency-market-cost-basis-row.tsx
+msgid "Avg {averageCost} per {instrumentCode} · known for {coveredAmount} of {totalAmount}"
+msgstr "Avg {averageCost} per {instrumentCode} · known for {coveredAmount} of {totalAmount}"
 
 #: src/settings/components/backup-row/backup-row.tsx
 msgid "Back up"
@@ -1533,6 +1609,10 @@ msgstr "Backup file"
 #: src/settings/components/backup-row/backup-row.tsx
 msgid "Backup file ready"
 msgstr "Backup file ready"
+
+#: src/market-data/component/currency-market-position/currency-market-position.tsx
+msgid "Balance"
+msgstr "Balance"
 
 #: src/app/(main)/transactions/[id]/adjustment.tsx
 #: src/transaction/components/transaction-card-content/transaction-card-content.tsx
@@ -2360,7 +2440,7 @@ msgstr "Copy the API Key and Secret Key into the fields below"
 msgid "Copy the token and paste it below"
 msgstr "Copy the token and paste it below"
 
-#: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
+#: src/market-data/component/currency-market-cost-basis-row/currency-market-cost-basis-row.tsx
 msgid "Cost basis"
 msgstr "Cost basis"
 
@@ -3171,6 +3251,14 @@ msgstr "Done"
 msgid "Done ({count})"
 msgstr "Done ({count})"
 
+#: src/account/component/account-details-market-link/account-details-market-link.tsx
+msgid "down {changeShare} on {staleDate}"
+msgstr "down {changeShare} on {staleDate}"
+
+#: src/account/component/account-details-market-link/account-details-market-link.tsx
+msgid "down {changeShare} over the last 24 hours"
+msgstr "down {changeShare} over the last 24 hours"
+
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
 msgid "Download {remaining} GB"
 msgstr "Download {remaining} GB"
@@ -3883,6 +3971,10 @@ msgstr "Goes back to the total worked out from the payments and fee"
 msgid "Growing"
 msgstr "Growing"
 
+#: src/market-data/component/currency-market-accounts/currency-market-accounts.tsx
+msgid "Held in"
+msgstr "Held in"
+
 #: src/onboarding/component/onboarding-ai/onboarding-ai.tsx
 msgid "Help sorting, without leaving the phone?"
 msgstr "Help sorting, without leaving the phone?"
@@ -3917,10 +4009,6 @@ msgstr "History import needs attention"
 #: src/sync/utils/get-history-import-status-message.util.ts
 msgid "History import paused"
 msgstr "History import paused"
-
-#: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
-msgid "History loading paused"
-msgstr "History loading paused"
 
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Hold to seal with this PIN"
@@ -4390,9 +4478,9 @@ msgstr "Loading AI model..."
 msgid "Loading debt progress"
 msgstr "Loading debt progress"
 
-#: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
-msgid "Loading market history"
-msgstr "Loading market history"
+#: src/market-data/component/currency-market-chart-status/currency-market-chart-status.tsx
+msgid "Loading price history"
+msgstr "Loading price history"
 
 #: src/auth/components/add-pin-sheet/add-pin-sheet.tsx
 msgid "Lock Budgie with a PIN"
@@ -4450,17 +4538,13 @@ msgstr "Mark as External?"
 msgid "Mark External"
 msgstr "Mark External"
 
-#: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
+#: src/market-data/component/currency-market-stats/currency-market-stats.tsx
+msgid "Market"
+msgstr "Market"
+
+#: src/market-data/component/currency-market-stats/currency-market-stats.tsx
 msgid "Market cap"
 msgstr "Market cap"
-
-#: src/market-data/component/market-data-sparkline/market-data-sparkline.tsx
-msgid "Market history is loading quietly."
-msgstr "Market history is loading quietly."
-
-#: src/market-data/component/currency-market-price-card/currency-market-price-card.tsx
-msgid "Market price"
-msgstr "Market price"
 
 #: src/app/(tabs)/settings/import.tsx
 msgid "Match each field to a column from your CSV file"
@@ -4978,6 +5062,10 @@ msgstr "No languages found"
 msgid "No limit changes yet"
 msgstr "No limit changes yet"
 
+#: src/market-data/component/currency-market-position-footer/currency-market-position-footer.tsx
+msgid "No market price yet, so value and return can’t be calculated."
+msgstr "No market price yet, so value and return can’t be calculated."
+
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "No matching accounts"
 msgstr "No matching accounts"
@@ -5001,6 +5089,18 @@ msgstr "No MCC codes found"
 #: src/sync/hook/use-quick-import.hook.ts
 msgid "No new transactions"
 msgstr "No new transactions"
+
+#: src/market-data/component/currency-market-chart-status/currency-market-chart-status.tsx
+msgid "No price history yet"
+msgstr "No price history yet"
+
+#: src/market-data/component/currency-market-price-hero/currency-market-price-hero.tsx
+msgid "No price yet"
+msgstr "No price yet"
+
+#: src/market-data/component/currency-market-position-footer/currency-market-position-footer.tsx
+msgid "No purchase price is recorded for this balance, so the return can’t be calculated."
+msgstr "No purchase price is recorded for this balance, so the return can’t be calculated."
 
 #: src/receipt/hook/use-receipt-scan.hook.ts
 msgid "No receipt found"
@@ -5191,6 +5291,10 @@ msgstr "On {nextDate} · Monthly"
 msgid "On pace to run out by {runOutDate}. Keeping under {perDayAmount}/day keeps it on track."
 msgstr "On pace to run out by {runOutDate}. Keeping under {perDayAmount}/day keeps it on track."
 
+#: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
+msgid "On the {coveredAmountWithCode} with known cost"
+msgstr "On the {coveredAmountWithCode} with known cost"
+
 #: src/settings/components/your-data-card/your-data-card.tsx
 msgid "On this iPhone"
 msgstr "On this iPhone"
@@ -5284,6 +5388,10 @@ msgstr "Only you hold the key."
 #: src/onboarding/component/onboarding-receipt/onboarding-receipt.tsx
 msgid "Only your PIN opens this file."
 msgstr "Only your PIN opens this file."
+
+#: src/market-data/component/currency-market-chart-open-label/currency-market-chart-open-label.tsx
+msgid "Open {openPrice}"
+msgstr "Open {openPrice}"
 
 #: src/sync/constant/bank-credentials-step-config.constant.ts
 msgid "Open Binance to get your API key"
@@ -5517,6 +5625,14 @@ msgstr "Paid to date: {paid}"
 msgid "Pair transfers and refunds"
 msgstr "Pair transfers and refunds"
 
+#: src/market-data/component/currency-market-overview/currency-market-overview.tsx
+msgid "Past 3 months"
+msgstr "Past 3 months"
+
+#: src/market-data/component/currency-market-overview/currency-market-overview.tsx
+msgid "Past month"
+msgstr "Past month"
+
 #: src/budget/constant/budget-period-past-label.constant.ts
 msgid "Past months"
 msgstr "Past months"
@@ -5525,9 +5641,17 @@ msgstr "Past months"
 msgid "Past two-week periods"
 msgstr "Past two-week periods"
 
+#: src/market-data/component/currency-market-overview/currency-market-overview.tsx
+msgid "Past week"
+msgstr "Past week"
+
 #: src/budget/constant/budget-period-past-label.constant.ts
 msgid "Past weeks"
 msgstr "Past weeks"
+
+#: src/market-data/component/currency-market-overview/currency-market-overview.tsx
+msgid "Past year"
+msgstr "Past year"
 
 #: src/budget/constant/budget-period-past-label.constant.ts
 msgid "Past years"
@@ -5765,13 +5889,17 @@ msgstr "previous period"
 msgid "Previous period"
 msgstr "Previous period"
 
+#: src/market-data/component/currency-market-stale-price/currency-market-stale-price.tsx
+msgid "Price {ageLabel} · {date}"
+msgstr "Price {ageLabel} · {date}"
+
 #: src/transaction/components/recurring-calendar-entry-row/recurring-calendar-entry-row.tsx
 msgid "Price changed"
 msgstr "Price changed"
 
-#: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
-msgid "Prices fill in quietly while you use the app."
-msgstr "Prices fill in quietly while you use the app."
+#: src/market-data/hook/use-market-chart-accessibility.hook.ts
+msgid "Price chart, {rangeLabel}, from {fromLabel} to {toLabel}, high {highLabel}, low {lowLabel}"
+msgstr "Price chart, {rangeLabel}, from {fromLabel} to {toLabel}, high {highLabel}, low {lowLabel}"
 
 #: src/settings/components/support-settings-rows/support-settings-rows.tsx
 msgid "Privacy policy"
@@ -5825,6 +5953,10 @@ msgstr "Raise the total or choose fewer payments"
 #: src/budget/components/budget-limit-change-row/budget-limit-change-row.tsx
 msgid "Raised {dateLabel} · over the limit {count} periods in a row"
 msgstr "Raised {dateLabel} · over the limit {count} periods in a row"
+
+#: src/market-data/component/currency-market-stats/currency-market-stats.tsx
+msgid "Rank"
+msgstr "Rank"
 
 #: src/auth/components/pin-setup/pin-setup.tsx
 msgid "Re-encrypting your data. Keep Budgie open, it restarts when finished."
@@ -6160,6 +6292,11 @@ msgstr "Resume"
 #: src/sync/component/bank-integration-new-accounts/bank-integration-new-accounts.tsx
 msgid "Retry"
 msgstr "Retry"
+
+#: src/market-data/component/currency-market-return-row/currency-market-return-row.tsx
+#: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
+msgid "Return"
+msgstr "Return"
 
 #: src/sync/component/create-privatbank-account/create-privatbank-account.tsx
 msgid "Return to Budgie and select the saved XLSX file below"
@@ -7355,6 +7492,7 @@ msgstr "To set aside this period"
 #: src/@generic/constant/date-period.constant.ts
 #: src/account/component/debt-account-card-deadline/debt-account-card-deadline.tsx
 #: src/budget/components/budget-day-strip-key/budget-day-strip-key.tsx
+#: src/market-data/hook/use-market-chart-timeline.hook.ts
 #: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
 #: src/transaction/query/use-get-transaction-sections.query.ts
 #: src/widget/service/widget-snapshot-builder.service.ts
@@ -7652,6 +7790,12 @@ msgstr "Unable to check transaction history"
 msgid "Unassigned {remainingLabel}"
 msgstr "Unassigned {remainingLabel}"
 
+#: src/market-data/component/currency-market-cost-basis-row/currency-market-cost-basis-row.tsx
+#: src/market-data/component/currency-market-return-row/currency-market-return-row.tsx
+#: src/market-data/component/currency-market-return-rows/currency-market-return-rows.tsx
+msgid "Unavailable"
+msgstr "Unavailable"
+
 #: src/category/components/stats-by-categories-panel/stats-by-categories-panel.tsx
 #: src/category/components/stats-by-categories/stats-by-categories.tsx
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
@@ -7732,10 +7876,6 @@ msgstr "Unlock with Touch ID"
 msgid "Unlock with Touch ID?"
 msgstr "Unlock with Touch ID?"
 
-#: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
-msgid "Unrealized P&L"
-msgstr "Unrealized P&L"
-
 #: src/runway/component/runway-driver-row/runway-driver-row.tsx
 #: src/tag/components/stats-by-tags/stats-by-tags.tsx
 #: src/transaction/hook/use-transaction-filter-page-title.hook.ts
@@ -7749,6 +7889,14 @@ msgstr "Until {periodEndLabel}"
 #: src/i18n/hook/use-format-date-range.hook.ts
 msgid "Until {toLabel}"
 msgstr "Until {toLabel}"
+
+#: src/account/component/account-details-market-link/account-details-market-link.tsx
+msgid "up {changeShare} on {staleDate}"
+msgstr "up {changeShare} on {staleDate}"
+
+#: src/account/component/account-details-market-link/account-details-market-link.tsx
+msgid "up {changeShare} over the last 24 hours"
+msgstr "up {changeShare} over the last 24 hours"
 
 #: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
@@ -7776,9 +7924,17 @@ msgstr "Update rule?"
 msgid "Updated {applied} of {total} transactions."
 msgstr "Updated {applied} of {total} transactions."
 
-#: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
-msgid "Updated {formattedDate}"
-msgstr "Updated {formattedDate}"
+#: src/market-data/component/currency-market-stats-footer/currency-market-stats-footer.tsx
+msgid "Updated {updatedDate}"
+msgstr "Updated {updatedDate}"
+
+#: src/market-data/component/currency-market-stats-footer/currency-market-stats-footer.tsx
+msgid "Updated today"
+msgstr "Updated today"
+
+#: src/market-data/component/currency-market-stats-footer/currency-market-stats-footer.tsx
+msgid "Updated yesterday"
+msgstr "Updated yesterday"
 
 #: src/auth/components/pin-setup/pin-setup.tsx
 msgid "Updating your PIN"
@@ -7841,6 +7997,10 @@ msgstr "Uses a regular expression of up to 200 characters, ignoring letter case.
 msgid "Valuation unavailable"
 msgstr "Valuation unavailable"
 
+#: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
+msgid "Value"
+msgstr "Value"
+
 #: src/transaction/components/transaction-info-note-group/transaction-info-note-group.tsx
 msgid "View source transactions"
 msgstr "View source transactions"
@@ -7853,9 +8013,9 @@ msgstr "View step-by-step instructions"
 msgid "Voice notes"
 msgstr "Voice notes"
 
-#: src/market-data/component/currency-market-metrics/currency-market-metrics.tsx
-msgid "Volume"
-msgstr "Volume"
+#: src/market-data/component/currency-market-stats/currency-market-stats.tsx
+msgid "Volume (24h)"
+msgstr "Volume (24h)"
 
 #: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
@@ -7870,6 +8030,10 @@ msgstr "Waiting for a connection"
 msgid "Waiting for a key"
 msgstr "Waiting for a key"
 
+#: src/market-data/component/currency-market-price-hero/currency-market-price-hero.tsx
+msgid "Waiting for the first market quote"
+msgstr "Waiting for the first market quote"
+
 #: src/app/(main)/create-account/index.tsx
 msgid "Wallets and exchange balances"
 msgstr "Wallets and exchange balances"
@@ -7881,10 +8045,6 @@ msgstr "Warning"
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "We never see your PIN, and there's no account to reset it through. {noResetSentence}"
 msgstr "We never see your PIN, and there's no account to reset it through. {noResetSentence}"
-
-#: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
-msgid "We will retry this quietly."
-msgstr "We will retry this quietly."
 
 #: src/runway/component/runway-content/runway-content.tsx
 msgid "We’re still importing transaction history for your Runway accounts. Your forecast will appear when their history is ready."
@@ -8148,10 +8308,6 @@ msgstr "Your data: {state}"
 msgid "Your device clock is out of sync. Enable automatic date and time, then try again."
 msgstr "Your device clock is out of sync. Enable automatic date and time, then try again."
 
-#: src/market-data/component/currency-market-holdings-card/currency-market-holdings-card.tsx
-msgid "Your holdings"
-msgstr "Your holdings"
-
 #: src/budget/components/budget-limit-source-field/budget-limit-source-field.tsx
 msgid "Your limit grows as income arrives this period"
 msgstr "Your limit grows as income arrives this period"
@@ -8183,6 +8339,10 @@ msgstr "Your PIN · Fingerprint"
 #: src/auth/components/biometric-configuration/biometric-configuration.tsx
 msgid "Your PIN still works any time"
 msgstr "Your PIN still works any time"
+
+#: src/market-data/component/currency-market-position/currency-market-position.tsx
+msgid "Your position"
+msgstr "Your position"
 
 #: src/app/(tabs)/settings/tags.tsx
 #: src/tag/components/tag-destination-sheet/tag-destination-sheet.tsx
