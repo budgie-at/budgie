@@ -138,8 +138,10 @@ msgid "{accountsCount, plural, one {# account} other {# accounts}}"
 msgstr "{accountsCount, plural, one {# cuenta} other {# cuentas}}"
 
 #: src/app/resync-window-picker.tsx
-msgid "{accountTitle} · Choose a period to start syncing."
-msgstr "{accountTitle} · Elige un período para empezar a sincronizar."
+msgid "{accountTitle}\n"
+"Choose a period to start syncing."
+msgstr "{accountTitle}\n"
+"Elige un período para empezar a sincronizar."
 
 #: src/market-data/component/currency-market-stale-price/currency-market-stale-price.tsx
 msgid "{ageDays, plural, one {# day old} other {# days old}}"

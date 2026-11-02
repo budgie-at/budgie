@@ -40,7 +40,7 @@ export default function ResyncWindowPickerModal() {
     const accountTitle = account?.title;
     const description =
         isPositiveNumber(accountId) && isDefined(accountTitle)
-            ? t`${accountTitle} · Choose a period to start syncing.`
+            ? t`${accountTitle}\nChoose a period to start syncing.`
             : t`Choose a period to start syncing.`;
 
     const resync = (sinceDays: number | null) => {
