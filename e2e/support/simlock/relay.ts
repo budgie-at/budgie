@@ -18,6 +18,18 @@ const DEBUG = process.env.SIMLOCK_RELAY_DEBUG === '1';
 
 class RefusedTarget extends Error {}
 
+type Headers = Record<string, string | string[] | undefined>;
+
+/** Headers that apply to one hop only (RFC 9110 §7.6.1), plus any the Connection header names. */
+const HOP_BY_HOP = ['connection', 'keep-alive', 'proxy-authenticate', 'proxy-authorization', 'proxy-connection', 'te', 'trailer', 'transfer-encoding', 'upgrade'];
+
+function endToEnd(headers: Headers): Headers {
+  const named = String(headers.connection ?? '').split(',').map((name) => name.trim().toLowerCase()).filter(Boolean);
+  const result: Headers = { ...headers };
+  for (const name of [...HOP_BY_HOP, ...named]) delete result[name];
+  return result;
+}
+
 export async function startBootRelay(upstreamBaseUrl: string): Promise<BootRelay> {
   const upstream = new URL(upstreamBaseUrl.endsWith('/') ? upstreamBaseUrl : `${upstreamBaseUrl}/`);
   const send = upstream.protocol === 'https:' ? httpsRequest : httpRequest;
@@ -47,7 +59,7 @@ export async function startBootRelay(upstreamBaseUrl: string): Promise<BootRelay
   const forward = (incoming: IncomingMessage, requestTarget: string, body?: Buffer) =>
     new Promise<{ status: number; headers: Record<string, string | string[] | undefined>; body?: Buffer; stream?: IncomingMessage }>((resolve, reject) => {
       const path = upstreamPath(requestTarget);
-      const headers = { ...incoming.headers, host: destination.host };
+      const headers: Headers = { ...endToEnd(incoming.headers), host: destination.host };
       if (body !== undefined) headers['content-length'] = String(body.length);
       const options = { protocol: destination.protocol, hostname: destination.hostname, port: destination.port, path, method: incoming.method, headers };
       const out = send(options, (response) => {
@@ -67,7 +79,7 @@ export async function startBootRelay(upstreamBaseUrl: string): Promise<BootRelay
       const path = incoming.url ?? '/';
       if (incoming.method !== 'POST' || !path.startsWith('/rpc')) {
         const reply = await forward(incoming, path);
-        outgoing.writeHead(reply.status, reply.headers);
+        outgoing.writeHead(reply.status, endToEnd(reply.headers));
         reply.stream!.pipe(outgoing);
         return;
       }
@@ -79,7 +91,7 @@ export async function startBootRelay(upstreamBaseUrl: string): Promise<BootRelay
       if (command !== 'boot') {
         const reply = await forward(incoming, path, raw);
         if (DEBUG) console.error(`[relay] ${command} -> ${reply.status}`);
-        outgoing.writeHead(reply.status, reply.headers);
+        outgoing.writeHead(reply.status, endToEnd(reply.headers));
         outgoing.end(reply.body);
         return;
       }

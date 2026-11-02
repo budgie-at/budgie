@@ -5,7 +5,8 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { drop, exec, mustDrop, mustExec, untar, writeFile, type SimlockApi } from '../simlock/exec.ts';
 
-export const BUNDLE_ID = 'com.vitalyiegorov.budgie.e2e';
+// The same override e2e.config.ts reads (not imported: loading the config sets E2E_SESSION).
+export const BUNDLE_ID = process.env.E2E_APP_ID ?? 'com.vitalyiegorov.budgie.e2e';
 
 const APP_TESTS = fileURLToPath(new URL('../../../tests/app-tests/', import.meta.url));
 const MARKER = 'Documents/E2EFixtures/.simlock-staged';
