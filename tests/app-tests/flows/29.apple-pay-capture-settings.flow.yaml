@@ -21,8 +21,11 @@ appId: ${APP_ID}
       centerElement: true
 - assertVisible:
       id: 'ApplePayCaptureSettings.OpenShortcutsButton'
-- assertVisible:
-      id: 'ApplePayCaptureSettings.InstructionsGuideLink'
+- scrollUntilVisible:
+      element:
+          id: 'ApplePayCaptureSettings.InstructionsGuideLink'
+      direction: DOWN
+      centerElement: true
 - scrollUntilVisible:
       element: '.*Wallet history.*'
       direction: DOWN

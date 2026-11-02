@@ -2,8 +2,9 @@ import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
-import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { AI_DOWNLOAD_CARD_VISUALS } from '../../constant/ai-download-card-visuals.constant';
 import { aiModelDownloadSummaryAtom } from '../../constant/ai-model-download-summary-atom.constant';
 import { AiModelDownloadStatusEnum } from '../../enum/ai-model-download-status.enum';
@@ -25,13 +26,15 @@ export const AiDownloadCardFrame = ({ status, testID, subtitle, children }: Prop
 
     return (
         <View testID={testID}>
-            <GroupedListRow
-                left={<GroupedListIcon icon={icon} />}
-                title={t`On-device AI`}
-                subtitle={<Text className="text-[13px] leading-[18px] text-secondary-foreground">{subtitle}</Text>}
-                right={<Text className="text-[17px] text-secondary-foreground">{stateValue}</Text>}
-            />
-            <View className="gap-y-lg px-3xl pb-3xl pt-lg">{children}</View>
+            <View className="flex-row items-center gap-x-xl px-3xl py-[16px]">
+                <GroupedListIcon icon={icon} />
+                <View className="min-w-0 flex-1 gap-y-xxs">
+                    <Text className="text-[17px] text-primary">{t`On-device AI`}</Text>
+                    <Text className="text-[13px] leading-[18px] text-secondary-foreground">{subtitle}</Text>
+                </View>
+                <Text className="text-[17px] font-normal text-secondary-foreground">{stateValue}</Text>
+            </View>
+            {isDefined(children) ? <View className="gap-y-lg px-3xl pb-lg pt-lg">{children}</View> : null}
         </View>
     );
 };

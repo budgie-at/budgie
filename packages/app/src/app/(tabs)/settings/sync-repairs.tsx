@@ -1,4 +1,3 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { Text, View } from 'react-native';
@@ -7,7 +6,6 @@ import { isDefined, isNotEmptyArray, isPositiveNumber } from '@rnw-community/sha
 
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
-import { GroupedListActionRow } from '../../../@generic/component/grouped-list-action-row/grouped-list-action-row';
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
@@ -34,6 +32,7 @@ export default function SyncRepairsPage() {
     const shouldShowFound = !hasError && (isLoading || hasDuplicates);
     const isRepairDisabled = !hasDuplicates || isLoading;
     const isActionLoading = isRepairing || isLoading;
+    const repairPressableProps = { disabled: isRepairDisabled || isRepairing, accessibilityState: { busy: isActionLoading } };
     const actionLabel = t({ message: plural(duplicateTransactionCount, { one: 'Remove # duplicate', other: 'Remove # duplicates' }) });
 
     return (
@@ -44,7 +43,7 @@ export default function SyncRepairsPage() {
                 leading={<GoBackButton onPress={goBackToSettings} />}
                 testID={SyncRepairsPageSelector.Container}
             >
-                <View className="gap-y-7xl pb-5xl">
+                <View className="gap-y-[8px] pb-5xl">
                     {hasError ? <SyncRepairsErrorCard errorMessage={errorMessage} isLoading={isLoading} onRefresh={refresh} /> : null}
                     {shouldShowEmptyState ? <SyncRepairsEmptyStateCard repairedTransactionCount={repairedTransactionCount} /> : null}
                     {shouldShowFound ? (
@@ -59,17 +58,15 @@ export default function SyncRepairsPage() {
                                     />
                                 )}
                             </LoadingContent>
-                        </GroupedListSection>
-                    ) : null}
-                    {shouldShowFound ? (
-                        <GroupedListSection>
-                            <GroupedListActionRow
-                                label={actionLabel}
-                                icon={UserIconNameEnum.Wrench}
+                            <GroupedListRow
+                                title={
+                                    <LoadingContent isLoading={isActionLoading}>
+                                        <Text className="text-primary text-[17px]">{actionLabel}</Text>
+                                    </LoadingContent>
+                                }
+                                right={<View />}
                                 onPress={handleRepair}
-                                isDisabled={isRepairDisabled}
-                                isLoading={isActionLoading}
-                                labelClassName="text-primary"
+                                pressableProps={repairPressableProps}
                                 testID={SyncRepairsPageSelector.RepairButton}
                             />
                         </GroupedListSection>

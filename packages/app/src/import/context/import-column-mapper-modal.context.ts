@@ -1,6 +1,7 @@
 import { createModalContext } from '../../@generic/utils/create-modal-context/create-modal-context.util';
 
 export interface ImportColumnMapperModalParams {
+    readonly samples: Record<string, string>;
     readonly headers: string[];
     readonly selectedHeaders: string[];
     readonly currentValue: string | undefined;

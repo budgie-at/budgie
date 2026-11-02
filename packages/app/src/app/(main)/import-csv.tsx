@@ -39,6 +39,7 @@ import { ImportPresetPicker } from '../../import/components/import-preset-picker
 import { EMPTY_IMPORT_CSV } from '../../import/constant/empty-import-csv.constant';
 import { importCsvAtom } from '../../import/constant/import-csv-atom.constant';
 import { detectImportPreset } from '../../import/utils/detect-import-preset.util';
+import { matchImportColumns } from '../../import/utils/match-import-columns.util';
 import { RuleApplicationDrainerService } from '../../rule/service/rule-application-drainer.service';
 
 const IMPORT_COLUMN_FIELDS = [
@@ -73,11 +74,13 @@ export default function ImportScreen() {
 
     const csvAtom = importCsvAtom(isNotEmptyString(fileUri) ? fileUri : null);
     const importCsvResult = useAtomValue(csvAtom);
-    const { csvText, headers, rowCount } = AsyncResult.getOrElse(importCsvResult, () => EMPTY_IMPORT_CSV);
+    const { csvText, headers, rowCount, samples } = AsyncResult.getOrElse(importCsvResult, () => EMPTY_IMPORT_CSV);
     const isReadingFile = AsyncResult.isWaiting(importCsvResult);
     const { isLoading: isImporting, run } = useSingleFlight();
     const isLoading = isReadingFile || isImporting;
     const hasDetectedPreset = useRef(false);
+    const [detectedPreset, setDetectedPreset] = useState<ImportPresetEnum | undefined>();
+    const [hasMatchedColumns, setHasMatchedColumns] = useState(false);
     const [selectedPreset, setSelectedPreset] = useState<ImportPresetEnum | undefined>();
 
     const headersSet = new Set(headers);
@@ -139,7 +142,12 @@ export default function ImportScreen() {
                 const detectedPreset = detectImportPreset(result.value.headers);
 
                 if (isNotEmptyString(detectedPreset)) {
+                    setDetectedPreset(detectedPreset);
                     handlePresetSelect(detectedPreset);
+                } else {
+                    const matchedColumns = matchImportColumns(result.value.headers);
+                    reset(matchedColumns);
+                    setHasMatchedColumns(Object.values(matchedColumns).some(isNotEmptyString));
                 }
             }
 
@@ -157,6 +165,9 @@ export default function ImportScreen() {
         ({ isRequired, name }) => isRequired && !headersSet.has(formValues[name] ?? '')
     ).length;
     const isImportDisabled = isPositiveNumber(unmappedRequiredCount) || isLoading;
+    const requiredFooter = hasMatchedColumns ? t`Matched by column name. Tap a field to change it.` : t`Pick a column for each field.`;
+    const buttonVariant = isPositiveNumber(unmappedRequiredCount) ? 'secondary' : 'cta';
+    const buttonClassName = isPositiveNumber(unmappedRequiredCount) ? 'bg-surface-fill border-transparent' : '';
     const footerStyle = { marginBottom: -bottom, paddingBottom: bottom + 12 };
     const buttonContent = isPositiveNumber(unmappedRequiredCount)
         ? t({ message: plural(unmappedRequiredCount, { one: 'Match # required field', other: 'Match # required fields' }) })
@@ -172,10 +183,11 @@ export default function ImportScreen() {
                 leading={<GoBackButton onPress={handleGoBack} />}
                 contentClassName="gap-y-7xl"
                 footer={
-                    <View className="bg-surface px-5xl pt-lg" style={footerStyle}>
+                    <View className="bg-surface border-t-hairline border-surface-separator px-5xl pt-lg" style={footerStyle}>
                         <Button
                             content={buttonContent}
-                            variant="primary"
+                            variant={buttonVariant}
+                            className={buttonClassName}
                             onPress={handleSubmit(handleStartImport)}
                             size="lg"
                             disabled={isImportDisabled}
@@ -185,22 +197,27 @@ export default function ImportScreen() {
                     </View>
                 }
             >
-                <ImportPresetPicker selectedPreset={selectedPreset} onPresetSelect={handlePresetSelect} />
-                {IMPORT_COLUMN_SECTIONS.map(({ title, isRequired }) => (
-                    <GroupedListSection key={String(isRequired)} title={t(title)}>
-                        {IMPORT_COLUMN_FIELDS.filter(field => field.isRequired === isRequired).map(({ name, label }) => (
-                            <ImportColumnMapField
-                                key={name}
-                                control={control}
-                                name={name}
-                                label={t(label)}
-                                headers={headers}
-                                selectedHeaders={selectedHeaders}
-                                isRequired={isRequired}
-                            />
-                        ))}
-                    </GroupedListSection>
-                ))}
+                <ImportPresetPicker detectedPreset={detectedPreset} selectedPreset={selectedPreset} onPresetSelect={handlePresetSelect} />
+                {IMPORT_COLUMN_SECTIONS.map(({ title, isRequired }) => {
+                    const sectionFooter = isRequired ? requiredFooter : null;
+
+                    return (
+                        <GroupedListSection key={String(isRequired)} title={t(title)} footer={sectionFooter}>
+                            {IMPORT_COLUMN_FIELDS.filter(field => field.isRequired === isRequired).map(({ name, label }) => (
+                                <ImportColumnMapField
+                                    key={name}
+                                    control={control}
+                                    name={name}
+                                    label={t(label)}
+                                    headers={headers}
+                                    samples={samples}
+                                    selectedHeaders={selectedHeaders}
+                                    isRequired={isRequired}
+                                />
+                            ))}
+                        </GroupedListSection>
+                    );
+                })}
                 <MenuSpacer />
             </CollapsibleChromePage>
         </GroupedSurface>

@@ -16,12 +16,13 @@ interface Props {
     readonly control: Control<ImportColumnMapFormValues>;
     readonly name: keyof ImportColumnMapFormValues;
     readonly label: string;
+    readonly samples: Record<string, string>;
     readonly headers: string[];
     readonly selectedHeaders: string[];
     readonly isRequired?: boolean;
 }
 
-export const ImportColumnMapField = ({ control, name, label, headers, selectedHeaders, isRequired = false }: Props) => {
+export const ImportColumnMapField = ({ control, name, label, headers, selectedHeaders, samples, isRequired = false }: Props) => {
     const { t } = useLingui();
     const {
         field: { value, onChange },
@@ -30,7 +31,7 @@ export const ImportColumnMapField = ({ control, name, label, headers, selectedHe
     const [openImportColumnMapper] = useImportColumnMapperModal();
 
     const handleOpen = () => {
-        openImportColumnMapper({ headers, selectedHeaders, currentValue: value, fieldLabel: label, isRequired }, result => {
+        openImportColumnMapper({ headers, selectedHeaders, samples, currentValue: value, fieldLabel: label, isRequired }, result => {
             if (isDefined(result)) {
                 onChange(result.type === 'select' ? result.header : '');
             }

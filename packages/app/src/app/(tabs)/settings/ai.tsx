@@ -29,13 +29,15 @@ export default function AiSettingsPage() {
     const persistWifiOnly = useSettingToggle('isAiWifiOnly', t`Could not update the download setting`);
     const handleWifiOnlyChange = (next: boolean) => void persistWifiOnly(next);
     const handleEnableAi = () => void router.push('/settings/ai-features');
-    const isReady = status === AiModelDownloadStatusEnum.READY;
     const isDisabled = status === AiModelDownloadStatusEnum.DISABLED;
-    const canEnableAi = isDisabled && isAiEnabled();
+    const isAiBuildEnabled = isAiEnabled();
+    const canEnableAi = isDisabled || !isAiBuildEnabled;
     const wifiClassName = isDisabled ? 'opacity-40' : '';
-    const footer = isReady
-        ? t`If a download arrives damaged, Budgie deletes it and waits for you to retry.`
-        : t`Until the model is ready, categories come from simple rules on this phone. If a download arrives damaged, Budgie deletes it and waits for you to retry.`;
+    const downloadFooter =
+        status === AiModelDownloadStatusEnum.READY
+            ? t`If a download arrives damaged, Budgie deletes it and waits for you to retry.`
+            : t`Until the model is ready, categories come from simple rules on this phone. If a download arrives damaged, Budgie deletes it and waits for you to retry.`;
+    const footer = isDisabled ? t`Available when on-device AI is on.` : downloadFooter;
     const wifiStateTestID = isAiWifiOnly ? AiDownloadSelector.WifiOnlySwitchStateOn : AiDownloadSelector.WifiOnlySwitchStateOff;
     const wifiOnlySlot = isDisabled ? (
         <View className="flex-row items-center gap-x-xs">
@@ -71,25 +73,27 @@ export default function AiSettingsPage() {
                         <AiDownloadStatusCard />
                         {canEnableAi ? <GroupedListRow title={t`AI features`} onPress={handleEnableAi} /> : null}
                     </GroupedListSection>
-                    <GroupedListSection title={t`Download`} footer={footer}>
-                        <View className={wifiClassName}>
+                    {isAiBuildEnabled ? (
+                        <GroupedListSection title={t`Download`} footer={footer}>
+                            <View className={wifiClassName}>
+                                <GroupedListRow
+                                    testID={AiDownloadSelector.WifiOnlyCard}
+                                    left={<GroupedListIcon icon={UserIconNameEnum.Wifi} />}
+                                    title={t`Download only on Wi-Fi`}
+                                    right={wifiOnlySlot}
+                                />
+                            </View>
                             <GroupedListRow
-                                testID={AiDownloadSelector.WifiOnlyCard}
-                                left={<GroupedListIcon icon={UserIconNameEnum.Wifi} />}
-                                title={t`Download only on Wi-Fi`}
-                                right={wifiOnlySlot}
+                                title={t`Runs on`}
+                                left={<GroupedListIcon icon={UserIconNameEnum.Smartphone} />}
+                                right={
+                                    <Text className="text-[17px] text-secondary-foreground">
+                                        <Trans>This phone only</Trans>
+                                    </Text>
+                                }
                             />
-                        </View>
-                        <GroupedListRow
-                            title={t`Runs on`}
-                            left={<GroupedListIcon icon={UserIconNameEnum.Smartphone} />}
-                            right={
-                                <Text className="text-[17px] text-secondary-foreground">
-                                    <Trans>This phone only</Trans>
-                                </Text>
-                            }
-                        />
-                    </GroupedListSection>
+                        </GroupedListSection>
+                    ) : null}
                     <MenuSpacer />
                 </View>
             </CollapsibleChromePage>

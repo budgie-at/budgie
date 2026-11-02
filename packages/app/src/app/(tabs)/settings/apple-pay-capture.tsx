@@ -49,7 +49,6 @@ export default function ApplePayCaptureSettingsPage() {
                 <View className="gap-y-7xl pb-5xl">
                     <ApplePayCaptureHero>
                         <ApplePayCaptureOpenShortcutsButton testID={ApplePayCaptureSettingsSelector.OpenShortcutsButton} />
-                        <ApplePayCaptureInstructionsButton testID={ApplePayCaptureSettingsSelector.InstructionsGuideLink} />
                     </ApplePayCaptureHero>
 
                     {errorMessage ? (
@@ -72,6 +71,7 @@ export default function ApplePayCaptureSettingsPage() {
 
                     <GroupedListSection title={t`Setup`} footer={<ApplePayCaptureHistoryNotice />}>
                         <ApplePayCaptureSetupCard testID={ApplePayCaptureSettingsSelector.SetupCard} />
+                        <ApplePayCaptureInstructionsButton testID={ApplePayCaptureSettingsSelector.InstructionsGuideLink} />
                     </GroupedListSection>
 
                     {hasReviewItems ? (

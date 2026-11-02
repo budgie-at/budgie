@@ -22,7 +22,7 @@ export default function ImportColumnMapperModal() {
     useModalDismiss(dismissImportColumnMapper);
     const currentParams = useImportColumnMapperModalParams();
 
-    const { headers = [], selectedHeaders = [], currentValue, fieldLabel = '', isRequired = false } = currentParams ?? {};
+    const { samples = {}, headers = [], selectedHeaders = [], currentValue, fieldLabel = '', isRequired = false } = currentParams ?? {};
 
     const availableHeaders = headers.filter(header => header === currentValue || !selectedHeaders.includes(header)).sort(sortHeaders);
     const availableCount = availableHeaders.length;
@@ -59,6 +59,7 @@ export default function ImportColumnMapperModal() {
                         <GroupedListCheckRow
                             key={header}
                             title={header}
+                            subtitle={samples[header]}
                             isSelected={header === currentValue}
                             onPress={handleSelect(header)}
                             testID={ImportColumnMapperModalSelector.Header(header)}

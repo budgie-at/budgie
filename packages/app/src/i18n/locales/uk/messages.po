@@ -1585,6 +1585,10 @@ msgstr "Автоматизація"
 msgid "Available once the import finishes"
 msgstr "Стане доступним після завершення імпорту"
 
+#: src/app/(tabs)/settings/ai.tsx
+msgid "Available when on-device AI is on."
+msgstr ""
+
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "Average"
 msgstr "Середнє"
@@ -3210,6 +3214,10 @@ msgstr "Відʼєднує її від «{debtTitle}»"
 msgid "Details"
 msgstr "Деталі"
 
+#: src/import/components/import-preset-picker/import-preset-picker.tsx
+msgid "Detected from column names"
+msgstr ""
+
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "Didn't match"
 msgstr "Не збігається"
@@ -4573,6 +4581,10 @@ msgstr "Ринкова капіталізація"
 msgid "Match on"
 msgstr "Порівнювати за"
 
+#: src/app/(main)/import-csv.tsx
+msgid "Matched by column name. Tap a field to change it."
+msgstr ""
+
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Matched expenses are converted into a transfer to this account."
 msgstr "Відповідні витрати перетворюються на переказ на цей рахунок."
@@ -5802,6 +5814,10 @@ msgstr "Виберіть категорію, щоб продовжити"
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
 msgid "Pick a category to set a limit"
 msgstr "Оберіть категорію для встановлення ліміту"
+
+#: src/app/(main)/import-csv.tsx
+msgid "Pick a column for each field."
+msgstr ""
 
 #: src/tag/components/tag-destination-sheet/tag-destination-sheet.tsx
 msgid "Pick a tag to continue"

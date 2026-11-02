@@ -50,13 +50,11 @@ export const AiDownloadIdleCard = () => {
 
     return (
         <AiDownloadCardFrame status={preflight.status} testID={AiDownloadSelector.StatusCard} subtitle={subtitle}>
-            <View className="gap-y-sm">
-                {isReady ? (
-                    <Text className="text-[17px] text-primary">
-                        <Trans>{total} GB on this phone</Trans>
-                    </Text>
-                ) : null}
-            </View>
+            {isReady ? (
+                <Text className="text-[17px] text-primary">
+                    <Trans>{total} GB on this phone</Trans>
+                </Text>
+            ) : null}
         </AiDownloadCardFrame>
     );
 };

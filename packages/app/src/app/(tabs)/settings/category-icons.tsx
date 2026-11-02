@@ -1,7 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
-import { useLingui } from '@lingui/react/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { isEmptyArray, isNotEmptyArray } from '@rnw-community/shared';
 
@@ -67,11 +67,12 @@ export default function CategoryIconsPage() {
             >
                 {isNotEmptyArray(categoriesWithDefaultIcon) ? (
                     <View className="gap-y-7xl">
-                        {categoriesWithDefaultIcon.map((category, index) => {
-                            const footer = index === 0 ? t`Tap a suggestion to use it for that category.` : void 0;
-
-                            return <CategoryIconFixRow key={category.id} category={category} footer={footer} />;
-                        })}
+                        <Text className="px-[16px] text-[13px] leading-[18px] text-secondary-foreground">
+                            <Trans>Tap a suggestion to use it for that category.</Trans>
+                        </Text>
+                        {categoriesWithDefaultIcon.map(category => (
+                            <CategoryIconFixRow key={category.id} category={category} />
+                        ))}
                         <MenuSpacer />
                     </View>
                 ) : (

@@ -1585,6 +1585,10 @@ msgstr "Automatisation"
 msgid "Available once the import finishes"
 msgstr "Disponible une fois l'importation terminée"
 
+#: src/app/(tabs)/settings/ai.tsx
+msgid "Available when on-device AI is on."
+msgstr ""
+
 #: src/transaction/components/transaction-info-similar-card/transaction-info-similar-card.tsx
 msgid "Average"
 msgstr "Moyenne"
@@ -3210,6 +3214,10 @@ msgstr "La détache de « {debtTitle} »"
 msgid "Details"
 msgstr "Détails"
 
+#: src/import/components/import-preset-picker/import-preset-picker.tsx
+msgid "Detected from column names"
+msgstr ""
+
 #: src/onboarding/component/onboarding-pin/onboarding-pin.tsx
 msgid "Didn't match"
 msgstr "Ne correspond pas"
@@ -4573,6 +4581,10 @@ msgstr "Capitalisation"
 msgid "Match on"
 msgstr "Comparer sur"
 
+#: src/app/(main)/import-csv.tsx
+msgid "Matched by column name. Tap a field to change it."
+msgstr ""
+
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Matched expenses are converted into a transfer to this account."
 msgstr "Les dépenses correspondantes sont converties en virement vers ce compte."
@@ -5802,6 +5814,10 @@ msgstr "Choisissez une catégorie pour continuer"
 #: src/budget/components/budget-inline-category-limits/budget-inline-category-limits.tsx
 msgid "Pick a category to set a limit"
 msgstr "Choisissez une catégorie pour définir une limite"
+
+#: src/app/(main)/import-csv.tsx
+msgid "Pick a column for each field."
+msgstr ""
 
 #: src/tag/components/tag-destination-sheet/tag-destination-sheet.tsx
 msgid "Pick a tag to continue"

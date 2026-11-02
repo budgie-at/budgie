@@ -1,6 +1,8 @@
 import * as Effect from 'effect/Effect';
 import Papa, { ParseResult } from 'papaparse';
 
+import { isNotEmptyString } from '@rnw-community/shared';
+
 export const parseCsvHeaders = (csvText: string) =>
     Effect.callback<string[], Error>(resume => {
         Papa.parse<Record<string, string>>(csvText, {
@@ -21,6 +23,30 @@ export const countCsvRows = (csvText: string) =>
                 count += data.length;
             },
             complete: () => void resume(Effect.succeed(count)),
+            error: (error: Error) => void resume(Effect.fail(error))
+        });
+    });
+
+export const parseCsvSample = (csvText: string) =>
+    Effect.callback<Record<string, string>, Error>(resume => {
+        Papa.parse<Record<string, string>>(csvText, {
+            header: true,
+            preview: 20,
+            skipEmptyLines: true,
+            complete: ({ data, meta }: ParseResult<Record<string, string>>) => {
+                const samples: Record<string, string> = {};
+
+                for (const header of meta.fields ?? []) {
+                    samples[header] =
+                        data
+                            .map(row => row[header])
+                            .filter(isNotEmptyString)
+                            .map(value => value.trim())
+                            .find(isNotEmptyString) ?? '';
+                }
+
+                resume(Effect.succeed(samples));
+            },
             error: (error: Error) => void resume(Effect.fail(error))
         });
     });
