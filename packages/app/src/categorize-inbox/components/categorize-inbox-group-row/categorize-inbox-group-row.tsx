@@ -1,18 +1,16 @@
 import { CategorizeInboxSectionEnum } from '@budgie/categorization';
-import { useLingui } from '@lingui/react/macro';
+import { UserIconNameEnum } from '@budgie/contracts';
 import { Link } from 'expo-router';
 import { useWindowDimensions, View } from 'react-native';
 
 import { HapticPressable } from '../../../@generic/component/haptic-pressable/haptic-pressable';
+import { Icon } from '../../../@generic/component/icon/icon';
 import { testID } from '../../../@generic/utils/test-id.util';
-import { CATEGORIZE_INBOX_STACKED_FONT_SCALE } from '../../constant/categorize-inbox-stacked-font-scale.constant';
 import { CategorizeInboxCardRow } from '../categorize-inbox-card-row/categorize-inbox-card-row';
-import { CategorizeInboxGroupRowActionPill } from '../categorize-inbox-group-row-action-pill/categorize-inbox-group-row-action-pill';
-import { CategorizeInboxGroupRowBody } from '../categorize-inbox-group-row-body/categorize-inbox-group-row-body';
 import { CategorizeInboxGroupRowCashButton } from '../categorize-inbox-group-row-cash-button/categorize-inbox-group-row-cash-button';
-import { CategorizeInboxGroupRowColumnsOverlay } from '../categorize-inbox-group-row-columns-overlay/categorize-inbox-group-row-columns-overlay';
+import { CategorizeInboxGroupRowColumns } from '../categorize-inbox-group-row-columns/categorize-inbox-group-row-columns';
 import { CategorizeInboxGroupRowFileButton } from '../categorize-inbox-group-row-file-button/categorize-inbox-group-row-file-button';
-import { CategorizeInboxGroupRowGhost } from '../categorize-inbox-group-row-ghost/categorize-inbox-group-row-ghost';
+import { CategorizeInboxGroupRowStackedBody } from '../categorize-inbox-group-row-stacked-body/categorize-inbox-group-row-stacked-body';
 import { CategorizeInboxMerchantBadge } from '../categorize-inbox-merchant-badge/categorize-inbox-merchant-badge';
 
 import { CategorizeInboxGroupRowSelector } from './categorize-inbox-group-row.selector';
@@ -25,49 +23,52 @@ interface Props {
     readonly position: TransactionListRowPositionEnum;
 }
 
+const STACKED_FONT_SCALE = 1.3;
+
 export const CategorizeInboxGroupRow = ({ cluster, position }: Props) => {
-    const { t } = useLingui();
     const { fontScale } = useWindowDimensions();
 
     const { key, section } = cluster;
     const isCash = section === CategorizeInboxSectionEnum.CASH_WITHDRAWALS;
     const hasAction = isCash || section === CategorizeInboxSectionEnum.CONFIDENT;
 
-    const rowClassName =
-        hasAction && fontScale < CATEGORIZE_INBOX_STACKED_FONT_SCALE
-            ? 'min-h-[64px] flex-row items-center gap-x-lg px-3xl py-md active:opacity-70'
-            : 'min-h-[64px] flex-row items-center gap-x-lg px-3xl py-xl active:opacity-70';
-
     const href = { pathname: '/categorize/group/[key]', params: { key } } as const;
-    const actionTitle = isCash ? t`To cash` : t({ message: 'File', context: 'Categorize action' });
+    const linkClassName = hasAction
+        ? 'min-h-[64px] min-w-0 flex-1 flex-row items-center gap-x-lg py-xl pr-xl pl-3xl active:opacity-70'
+        : 'min-h-[64px] min-w-0 flex-1 flex-row items-center gap-x-lg py-xl pr-3xl pl-3xl active:opacity-70';
+    const body =
+        fontScale >= STACKED_FONT_SCALE ? (
+            <CategorizeInboxGroupRowStackedBody cluster={cluster} />
+        ) : (
+            <CategorizeInboxGroupRowColumns cluster={cluster} />
+        );
     const actionButton = isCash ? (
         <CategorizeInboxGroupRowCashButton cluster={cluster} />
     ) : (
         <CategorizeInboxGroupRowFileButton cluster={cluster} />
     );
-    const actionPlaceholder = hasAction ? (
-        <CategorizeInboxGroupRowGhost>
-            <CategorizeInboxGroupRowActionPill title={actionTitle} />
-        </CategorizeInboxGroupRowGhost>
-    ) : null;
-    const overlay = hasAction ? (
-        <CategorizeInboxGroupRowColumnsOverlay cluster={cluster}>{actionButton}</CategorizeInboxGroupRowColumnsOverlay>
-    ) : null;
+    const actionSlot = hasAction ? <View className="mr-3xl items-center justify-center">{actionButton}</View> : null;
+    const chevronSlot = hasAction ? null : (
+        <View className="w-[24px] items-end">
+            <Icon icon={UserIconNameEnum.ChevronRight} size={13} className="text-secondary-foreground" />
+        </View>
+    );
 
     return (
         <CategorizeInboxCardRow position={position}>
-            <View>
+            <View className="flex-row items-center">
                 <Link href={href} asChild>
                     <HapticPressable
-                        className={rowClassName}
+                        className={linkClassName}
                         accessibilityRole="link"
                         {...testID(CategorizeInboxGroupRowSelector.Row, key)}
                     >
                         <CategorizeInboxMerchantBadge cluster={cluster} />
-                        <CategorizeInboxGroupRowBody cluster={cluster}>{actionPlaceholder}</CategorizeInboxGroupRowBody>
+                        {body}
+                        {chevronSlot}
                     </HapticPressable>
                 </Link>
-                {overlay}
+                {actionSlot}
             </View>
         </CategorizeInboxCardRow>
     );
