@@ -1,4 +1,5 @@
 import { test as base } from '@e2e-dev/mobile';
+
 import { Budgie } from './core.ts';
 
 /**
@@ -7,7 +8,7 @@ import { Budgie } from './core.ts';
  * (`budgie.ctx`).
  */
 export const test = base.extend<{ budgie: Budgie }>({
-  budgie: async ({ screen, app, device }, use) => {
-    await use(new Budgie({ screen, app, device }));
-  },
+    budgie: async ({ screen, app, device }, use) => {
+        await use(new Budgie({ screen, app, device }));
+    }
 });
