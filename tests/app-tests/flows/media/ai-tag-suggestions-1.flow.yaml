@@ -9,11 +9,11 @@ env:
 
 - extendedWaitUntil:
       visible:
-          id: 'TransactionForm.CategorySelector.Title'
+          id: 'TransactionForm.CategorySelector'
       timeout: 15000
 
 - tapOn:
-      id: 'TransactionForm.CategorySelector.Title'
+      id: 'TransactionForm.CategorySelector'
 
 - extendedWaitUntil:
       visible:

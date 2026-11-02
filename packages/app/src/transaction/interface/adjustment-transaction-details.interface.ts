@@ -1,4 +1,4 @@
-import type { InstrumentTypeEnum, TransactionEntryCreateInputInterface, UserIconType } from '@budgie/contracts';
+import type { TransactionEntryCreateInputInterface, UserIconType } from '@budgie/contracts';
 
 export interface AdjustmentTransactionDetailsInterface {
     readonly accountId: number;
@@ -6,7 +6,6 @@ export interface AdjustmentTransactionDetailsInterface {
     readonly accountIcon: UserIconType;
     readonly instrumentCode: string;
     readonly instrumentSymbol: string;
-    readonly instrumentType: InstrumentTypeEnum;
     readonly initialAmount: number;
     readonly initialIsIncrease: boolean;
     readonly entry: TransactionEntryCreateInputInterface;

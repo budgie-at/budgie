@@ -39,7 +39,6 @@ export const useQuickFormAmount = ({ accountFieldName }: UseQuickFormAmountConfi
 
     const { displayValue, numericValue, handlers, setFromNumeric } = useKeypadInput({
         initialValue: initialAmount,
-        instrumentType,
         onChange: handleAmountChange
     });
 

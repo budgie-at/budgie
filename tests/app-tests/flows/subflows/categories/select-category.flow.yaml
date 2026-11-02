@@ -1,7 +1,7 @@
 appId: ${APP_ID}
 ---
 - tapOn:
-      id: 'TransactionForm.CategorySelector.Title'
+      id: 'TransactionForm.CategorySelector'
 - extendedWaitUntil:
       visible:
           id: 'CategoryPickerBottomSheet.Input'

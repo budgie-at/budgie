@@ -2,6 +2,7 @@ import { useAmountInput } from '@budgie/amount-input';
 import { ComponentProps } from 'react';
 
 import { useAmountFormat } from '../../hook/use-amount-format.hook';
+import { normalizeAmountDecimalSeparators } from '../../utils/normalize-amount-decimal-separators.util';
 import { Input } from '../input/input';
 
 interface Props extends Omit<ComponentProps<typeof Input>, 'value' | 'className'> {
@@ -32,11 +33,7 @@ export const AmountInput = (props: Props) => {
     const amountInputProps = useAmountInput({ value, format, onChangeValue, commitOnBlur, selectTextOnFocus, onFocus, onBlur });
 
     const handleChangeText = (text: string) => {
-        amountInputProps.onChangeText(
-            Array.from(text)
-                .map(character => (acceptedDecimalSeparators.includes(character) ? format.decimalSeparator : character))
-                .join('')
-        );
+        amountInputProps.onChangeText(normalizeAmountDecimalSeparators(text, format.decimalSeparator, acceptedDecimalSeparators));
     };
 
     return <Input {...rest} {...amountInputProps} onChangeText={handleChangeText} className={inputClassName} />;

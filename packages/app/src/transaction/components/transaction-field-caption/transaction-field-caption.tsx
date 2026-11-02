@@ -21,11 +21,16 @@ export const TransactionFieldCaption = ({ label, value, testID }: Props) => {
                 style={nameStyle}
                 numberOfLines={1}
                 ellipsizeMode="tail"
-                {...testIDProps(testID, TestIDPartEnum.TITLE)}
             >
                 {label}
             </Text>
-            <Text className="text-center text-[13px] leading-[18px] text-primary" style={valueStyle} numberOfLines={2} ellipsizeMode="tail">
+            <Text
+                className="text-center text-[13px] leading-[18px] text-primary"
+                style={valueStyle}
+                numberOfLines={2}
+                ellipsizeMode="tail"
+                {...testIDProps(testID, TestIDPartEnum.TITLE)}
+            >
                 {value}
             </Text>
         </View>

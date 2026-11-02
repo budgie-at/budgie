@@ -87,7 +87,6 @@ const getAdjustmentDetails = (transaction: TransactionWithRelationsEntityInterfa
         accountIcon: entry.account.icon,
         instrumentCode: entry.account.instrument.code,
         instrumentSymbol: entry.account.instrument.symbol,
-        instrumentType: entry.account.instrument.type,
         initialAmount: convertFromMicroUnits(entry.amount),
         initialIsIncrease,
         entry
@@ -102,8 +101,7 @@ export const UpdateAdjustmentTransaction = ({ transaction, transactionId }: Prop
     const { isLoading: isSubmitting, run } = useSingleFlight();
     const [isIncrease, toggleIsIncrease] = useReducer((current: boolean) => !current, details?.initialIsIncrease ?? true);
     const { displayValue, numericValue, handlers } = useKeypadInput({
-        initialValue: details?.initialAmount ?? 0,
-        ...(isDefined(details) && { instrumentType: details.instrumentType })
+        initialValue: details?.initialAmount ?? 0
     });
 
     if (!isDefined(details)) {

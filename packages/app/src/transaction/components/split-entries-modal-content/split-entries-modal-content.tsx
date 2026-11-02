@@ -40,8 +40,7 @@ import {
 } from '../../utils/entry-with-local-id.util';
 import { sumEntryAmounts } from '../../utils/sum-entry-amounts.util';
 import { SplitEntriesAddItemFooter } from '../split-entries-add-item-footer/split-entries-add-item-footer';
-import { SplitEntryDeleteButton } from '../split-entry-delete-button/split-entry-delete-button';
-import { SplitEntryRow } from '../split-entry-row/split-entry-row';
+import { SplitEntriesItem } from '../split-entries-item/split-entries-item';
 
 import { SplitEntriesModalContentSelector } from './split-entries-modal-content.selector';
 
@@ -81,7 +80,6 @@ export const SplitEntriesModalContent = (props: Props) => {
     const isFullySplit = remainingAmountMicroUnits === 0 && entriesTotalMicroUnits > 0;
     const isOverBudget = remainingAmountMicroUnits < 0;
     const formattedRemaining = formatDigits(Math.abs(remainingAmount), currencySymbol);
-    const canDelete = entries.length > 1;
     const canRemoveSplit = initialEntries.length > 1 || entries.length > 1;
     const accountId = entries[0]?.accountId ?? 0;
     const allEntriesValid = entries.every(entry => isPositiveNumber(entry.categoryId) && isPositiveNumber(entry.amount));
@@ -163,30 +161,6 @@ export const SplitEntriesModalContent = (props: Props) => {
         );
     };
 
-    const renderEntry = (item: EntryWithLocalIdInterface, index: number) => {
-        const handleCategory = () => {
-            handleCategoryPress(index);
-        };
-        const handleDelete = () => void handleRemoveEntry(index);
-        const handleAmount = (amount: number) => void handleAmountChange(index, amount);
-
-        return (
-            <View key={item.localId}>
-                <SplitEntryRow
-                    index={index}
-                    entry={item}
-                    currencySymbol={currencySymbol}
-                    autoFocus={index === autoFocusIndex}
-                    onAmountChange={handleAmount}
-                    onCategoryPress={handleCategory}
-                >
-                    {canDelete ? <SplitEntryDeleteButton index={index} categoryId={item.categoryId} onPress={handleDelete} /> : null}
-                </SplitEntryRow>
-                {index < entries.length - 1 ? <View className="h-hairline bg-surface-separator ml-[72px]" /> : null}
-            </View>
-        );
-    };
-
     const assignedLabel = isFullySplit ? t`Fully assigned` : t`${formattedRemaining} left to assign`;
     const pendingLabel = hasMissingCategories ? t`Select all categories` : assignedLabel;
     const remainderLabel = isOverBudget ? t`${formattedRemaining} over budget` : pendingLabel;
@@ -197,7 +171,21 @@ export const SplitEntriesModalContent = (props: Props) => {
             <SheetTitle title={t`Split`} />
 
             <ScrollView contentContainerStyle={CONTENT_CONTAINER_STYLE} keyboardShouldPersistTaps="handled" style={scrollStyle}>
-                <GroupedListSection>{entries.map(renderEntry)}</GroupedListSection>
+                <GroupedListSection>
+                    {entries.map((entry, index) => (
+                        <SplitEntriesItem
+                            key={entry.localId}
+                            entry={entry}
+                            index={index}
+                            currencySymbol={currencySymbol}
+                            autoFocus={index === autoFocusIndex}
+                            entryCount={entries.length}
+                            onAmountChange={handleAmountChange}
+                            onCategoryPress={handleCategoryPress}
+                            onDelete={handleRemoveEntry}
+                        />
+                    ))}
+                </GroupedListSection>
                 <SplitEntriesAddItemFooter canAddEntry={canAddEntry} onAddEntry={handleAddEntry} />
                 <View className="pt-lg flex-row items-center justify-center gap-x-sm">
                     {canConfirm ? <Icon icon={UserIconNameEnum.Check} size={16} className="text-secondary-foreground" /> : null}

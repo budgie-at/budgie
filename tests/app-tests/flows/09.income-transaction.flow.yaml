@@ -19,6 +19,7 @@ appId: ${APP_ID}
 - tapOn:
     id: 'TransactionForm.SubmitButton'
 - assertVisible: 'New Income'
+- assertVisible: 'Enter an amount'
 
 - tapOn:
     id: 'TransactionForm.SubmitButton'

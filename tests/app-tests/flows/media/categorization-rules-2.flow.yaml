@@ -37,11 +37,11 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
       visible:
-          id: 'TransactionForm.CategorySelector.Title'
+          id: 'TransactionForm.CategorySelector'
       timeout: 10000
 
 - tapOn:
-      id: 'TransactionForm.CategorySelector.Title'
+      id: 'TransactionForm.CategorySelector'
 
 - extendedWaitUntil:
       visible:

@@ -83,13 +83,11 @@ export const TransferQuickForm = (props: Props) => {
 
     const sourceKeypad = useKeypadInput({
         initialValue: initialAmount,
-        instrumentType: feeInstrumentType,
         onChange: handleSourceAmountChange
     });
 
     const destinationKeypad = useKeypadInput({
-        initialValue: initialDestinationAmount ?? 0,
-        instrumentType: toAccount?.instrument.type ?? defaultInstrument.type
+        initialValue: initialDestinationAmount ?? 0
     });
 
     const activeKeypad = isEditingDestination ? destinationKeypad : sourceKeypad;
