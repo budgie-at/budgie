@@ -4,6 +4,8 @@ import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { Text, View } from 'react-native';
 
+import { isNotEmptyString } from '@rnw-community/shared';
+
 import { CircleIcon } from '../../../@generic/component/circle-icon/circle-icon';
 import { ProtectedText } from '../../../@generic/component/protected-text/protected-text';
 import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
@@ -51,6 +53,16 @@ export const BankIntegrationAccountRow = ({ account }: Props) => {
     const isFailed = syncState === AccountSyncStateEnum.FAILED;
     const subtitleClassName = isFailed ? 'text-destructive-foreground' : 'text-secondary-foreground';
     const subtitleLines = isFailed ? 2 : 1;
+    const subtitlePrefix = isNotEmptyString(description) ? `${description} · ` : '';
+    const balanceContent = isFailed ? null : (
+        <ProtectedText
+            className="text-[13px] text-secondary-foreground"
+            testID={AccountCardBaseSelector.Balance(account.title, formatDigits(balance))}
+        >
+            {toTrueMinus(formatAmount(balance, account.instrument.symbol, account.instrument.type))}
+        </ProtectedText>
+    );
+    const subtitle = isFailed ? description : subtitlePrefix;
 
     const toggle = isToggleVisible ? (
         <ThemedSwitch
@@ -83,14 +95,8 @@ export const BankIntegrationAccountRow = ({ account }: Props) => {
                             {account.title}
                         </Text>
                         <Text className={cn('text-[13px] leading-[18px]', subtitleClassName)} numberOfLines={subtitleLines}>
-                            {description}
-                            {' · '}
-                            <ProtectedText
-                                className="text-[13px] text-secondary-foreground"
-                                testID={AccountCardBaseSelector.Balance(account.title, formatDigits(balance))}
-                            >
-                                {toTrueMinus(formatAmount(balance, account.instrument.symbol, account.instrument.type))}
-                            </ProtectedText>
+                            {subtitle}
+                            {balanceContent}
                         </Text>
                     </View>
                 </BankIntegrationAccountMenu>

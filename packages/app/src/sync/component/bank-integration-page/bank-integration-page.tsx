@@ -5,7 +5,9 @@ import { useLingui } from '@lingui/react/macro';
 import { isNotEmptyString } from '@rnw-community/shared';
 
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
+import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { HeaderBackButton } from '../../../@generic/component/header-back-button/header-back-button';
+import { SCREEN_CHROME_CONFIG } from '../../../@generic/constant/screen-chrome-config.constant';
 import { getBankIntegrationTitle } from '../../../account/utils/get-bank-integration-title.util';
 import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/bank-integration.selector';
 import { EXTERNAL_SOURCE } from '../../../rule/constant/external-source.constant';
@@ -38,20 +40,25 @@ export const BankIntegrationPage = ({ integration }: Props) => {
     const title = getBankIntegrationTitle(t(EXTERNAL_SOURCE[integration.provider]), integration.label, null);
 
     const contextValue = { integration, capabilities };
+    const chromeConfig = { ...SCREEN_CHROME_CONFIG, largeTitleEnd: 32, smallTitleStart: 40 };
 
     return (
-        <CollapsibleChromePage
-            testID={BankIntegrationSelector.Page}
-            title={title}
-            leading={<HeaderBackButton />}
-            contentClassName="gap-y-3xl"
-        >
-            <BankIntegrationContext.Provider value={contextValue}>
-                <BankIntegrationOverview />
-                {statements}
-                {keyCard}
-                <BankIntegrationAccountList />
-            </BankIntegrationContext.Provider>
-        </CollapsibleChromePage>
+        <GroupedSurface>
+            <CollapsibleChromePage
+                testID={BankIntegrationSelector.Page}
+                title={title}
+                leading={<HeaderBackButton />}
+                contentClassName="gap-y-3xl"
+                scrimClassName="bg-surface"
+                chromeConfig={chromeConfig}
+            >
+                <BankIntegrationContext.Provider value={contextValue}>
+                    <BankIntegrationOverview />
+                    {statements}
+                    {keyCard}
+                    <BankIntegrationAccountList />
+                </BankIntegrationContext.Provider>
+            </CollapsibleChromePage>
+        </GroupedSurface>
     );
 };

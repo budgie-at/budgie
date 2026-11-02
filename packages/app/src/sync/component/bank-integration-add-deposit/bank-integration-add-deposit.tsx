@@ -20,7 +20,7 @@ export const BankIntegrationAddDeposit = () => {
     return capabilities.supportsDeposit ? (
         <GroupedListRow
             title={
-                <Text className="text-[17px] text-primary-accent">
+                <Text className="text-[17px] text-default-foreground">
                     <Trans>Add deposit</Trans>
                 </Text>
             }

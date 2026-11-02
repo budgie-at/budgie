@@ -1073,7 +1073,7 @@ msgstr "Accounts · {accountCount}"
 msgid "Accounts ({selectedAccountsCount})"
 msgstr "Accounts ({selectedAccountsCount})"
 
-#: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
+#: src/sync/component/bank-integration-empty-accounts/bank-integration-empty-accounts.tsx
 msgid "Accounts you sync appear here."
 msgstr "Accounts you sync appear here."
 
@@ -4080,17 +4080,13 @@ msgstr "If you forget it, nobody can open this file, including you and us."
 msgid "Ignores the minus sign."
 msgstr "Ignores the minus sign."
 
-#: src/sync/component/bank-integration-statements/bank-integration-statements.tsx
-msgid "Import a {bank} statement to add your accounts"
-msgstr "Import a {bank} statement to add your accounts"
-
 #: src/app/(main)/create-account/index.tsx
 msgid "Import a PDF statement"
 msgstr "Import a PDF statement"
 
-#: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
-msgid "Import a statement to add accounts."
-msgstr "Import a statement to add accounts."
+#: src/sync/component/bank-integration-empty-accounts/bank-integration-empty-accounts.tsx
+msgid "Import a statement from {bank} to add your accounts."
+msgstr "Import a statement from {bank} to add your accounts."
 
 #: src/sync/component/create-erste-account/create-erste-account.tsx
 msgid "Import accounts and transactions from Erste Bank PDF statement"
@@ -4141,6 +4137,10 @@ msgstr "Import statement"
 #: src/app/(tabs)/settings/index.tsx
 msgid "Import, export, repair and reset"
 msgstr "Import, export, repair and reset"
+
+#: src/sync/component/bank-integration-import-status/bank-integration-import-status.tsx
+msgid "Imported from statement files"
+msgstr "Imported from statement files"
 
 #: src/sync/utils/get-history-import-status-message.util.ts
 msgid "Importing history"
@@ -4389,6 +4389,10 @@ msgstr "Last created {lastBackupDate}"
 msgid "Last day of each month"
 msgstr "Last day of each month"
 
+#: src/sync/component/bank-integration-import-status/bank-integration-import-status.tsx
+msgid "Last import {importDate}"
+msgstr "Last import {importDate}"
+
 #: src/@generic/constant/date-period.constant.ts
 msgid "Last Month"
 msgstr "Last Month"
@@ -4400,6 +4404,10 @@ msgstr "last payment {formattedLast}"
 #: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
 msgid "Last synced {relative}"
 msgstr "Last synced {relative}"
+
+#: src/sync/component/bank-integration-key-card/bank-integration-key-card.tsx
+msgid "Last synced {relative}. Budgie syncs automatically in the background."
+msgstr "Last synced {relative}. Budgie syncs automatically in the background."
 
 #: src/@generic/constant/date-period.constant.ts
 msgid "Last Week"
@@ -5000,7 +5008,7 @@ msgstr "No accounts found"
 
 #: src/account/component/account-select-content/account-select-content.tsx
 #: src/account/component/accounts-empty-state/accounts-empty-state.tsx
-#: src/sync/component/bank-integration-account-list/bank-integration-account-list.tsx
+#: src/sync/component/bank-integration-empty-accounts/bank-integration-empty-accounts.tsx
 msgid "No accounts yet"
 msgstr "No accounts yet"
 
@@ -5720,10 +5728,6 @@ msgstr "Pause"
 #: src/ai/constant/ai-download-card-visuals.constant.ts
 msgid "Paused"
 msgstr "Paused"
-
-#: src/sync/hook/use-bank-integration-account-row-state.hook.ts
-msgid "Paused · key rejected"
-msgstr "Paused · key rejected"
 
 #: src/ai/constant/ai-download-card-visuals.constant.ts
 msgid "Paused: no Wi-Fi"
@@ -7967,6 +7971,10 @@ msgstr "Upcoming this period"
 msgid "Update rule?"
 msgstr "Update rule?"
 
+#: src/sync/component/bank-integration-key-card/bank-integration-key-card.tsx
+msgid "Update your API key to resume automatic sync."
+msgstr "Update your API key to resume automatic sync."
+
 #: src/rule/utils/show-rule-application-toast.util.ts
 msgid "Updated {applied} of {total} transactions."
 msgstr "Updated {applied} of {total} transactions."
@@ -7974,14 +7982,6 @@ msgstr "Updated {applied} of {total} transactions."
 #: src/market-data/component/currency-market-stats-footer/currency-market-stats-footer.tsx
 msgid "Updated {updatedDate}"
 msgstr "Updated {updatedDate}"
-
-#: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
-msgid "Updated from statement files"
-msgstr "Updated from statement files"
-
-#: src/sync/component/bank-integration-status-pill/bank-integration-status-pill.tsx
-msgid "Updated from statement files · last import {importDate}"
-msgstr "Updated from statement files · last import {importDate}"
 
 #: src/market-data/component/currency-market-stats-footer/currency-market-stats-footer.tsx
 msgid "Updated today"

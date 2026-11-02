@@ -12,6 +12,7 @@ import { useBankIntegration } from '../../context/bank-integration.context';
 import { BankIntegrationAccountRowSkeleton } from '../bank-integration-account-row-skeleton/bank-integration-account-row-skeleton';
 import { BankIntegrationAccountRow } from '../bank-integration-account-row/bank-integration-account-row';
 import { BankIntegrationAddDeposit } from '../bank-integration-add-deposit/bank-integration-add-deposit';
+import { BankIntegrationEmptyAccounts } from '../bank-integration-empty-accounts/bank-integration-empty-accounts';
 import { BankIntegrationNewAccounts } from '../bank-integration-new-accounts/bank-integration-new-accounts';
 
 export const BankIntegrationAccountList = () => {
@@ -48,20 +49,20 @@ export const BankIntegrationAccountList = () => {
     const newAccounts = capabilities.supportsAccountDiscovery ? (
         <BankIntegrationNewAccounts linkedExternalIds={new Set(accounts.map(account => account.externalId).filter(isNotEmptyString))} />
     ) : null;
-    const emptyDescription = capabilities.supportsFileImport ? t`Import a statement to add accounts.` : t`Accounts you sync appear here.`;
     const linkedAccounts = isEmptyArray(accounts) ? (
-        <GroupedListRow title={t`No accounts yet`} subtitle={emptyDescription} testID={BankIntegrationSelector.EmptyState} />
+        <BankIntegrationEmptyAccounts />
     ) : (
         accounts.map(account => <BankIntegrationAccountRow key={account.id} account={account} />)
     );
     const accountCount = accounts.length;
     const countTitle = integration.provider === ExternalSourceEnum.BINANCE ? t`Assets · ${accountCount}` : t`Accounts · ${accountCount}`;
     const title = isEmptyArray(accounts) ? t`Accounts` : countTitle;
+    const accountsFooter = isEmptyArray(accounts) ? null : footer;
 
     return (
         <>
             {newAccounts}
-            <GroupedListSection title={title} footer={footer}>
+            <GroupedListSection title={title} footer={accountsFooter}>
                 {linkedAccounts}
                 <BankIntegrationAddDeposit />
             </GroupedListSection>

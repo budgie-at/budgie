@@ -3,7 +3,7 @@ import { MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
-import { ScrollView, View } from 'react-native';
+import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 
@@ -37,7 +37,7 @@ export default function ResyncWindowPickerModal() {
     const { bottom } = useSafeAreaInsets();
     const contentContainerStyle = { paddingBottom: bottom + 16 };
     const explanation = t`Budgie downloads them again and merges duplicates automatically.`;
-    const description = isPositiveNumber(accountId) ? `${account?.title ?? ' '}\n${explanation}` : explanation;
+    const description = isPositiveNumber(accountId) && isDefined(account) ? `${account.title}\n${explanation}` : explanation;
 
     const resync = (sinceDays: number | null) => {
         void run(
@@ -63,13 +63,9 @@ export default function ResyncWindowPickerModal() {
     };
 
     return (
-        <View className="flex-1 bg-sheet-surface">
+        <View className="bg-grouped-surface" collapsable={false}>
             <FormsheetHeader size="md" title={t`Re-sync transactions`} description={description} />
-            <ScrollView
-                contentContainerClassName="px-3xl pt-md gap-y-3xl"
-                contentContainerStyle={contentContainerStyle}
-                showsVerticalScrollIndicator={false}
-            >
+            <View className="px-3xl pt-[16px] gap-y-[24px]" style={contentContainerStyle}>
                 <GroupedListSection>
                     {RESYNC_WINDOW_OPTIONS.filter(option => isDefined(option.sinceDays)).map(option => (
                         <ResyncWindowOptionRow key={String(option.sinceDays)} option={option} onSelect={handleOptionPress} />
@@ -80,7 +76,7 @@ export default function ResyncWindowPickerModal() {
                         <ResyncWindowOptionRow key={String(option.sinceDays)} option={option} onSelect={handleOptionPress} />
                     ))}
                 </GroupedListSection>
-            </ScrollView>
+            </View>
         </View>
     );
 }

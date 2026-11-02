@@ -1,3 +1,4 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { MONOBANK_AUTH_URL, SyncProviderRegistryService } from '@budgie/sync';
 import { useAtomRefresh } from '@effect/atom-react/Hooks';
 import { Trans, useLingui } from '@lingui/react/macro';
@@ -10,6 +11,8 @@ import { isNotEmptyString } from '@rnw-community/shared';
 
 import { FormItem } from '../@generic/component/form-item/form-item';
 import { FormsheetHeader } from '../@generic/component/formsheet-header/formsheet-header';
+import { HapticPressable } from '../@generic/component/haptic-pressable/haptic-pressable';
+import { Icon } from '../@generic/component/icon/icon';
 import { Input } from '../@generic/component/input/input';
 import { ModalFormFooter } from '../@generic/component/modal-form-footer/modal-form-footer';
 import { useModalDismiss } from '../@generic/hook/use-modal-dismiss/use-modal-dismiss.hook';
@@ -85,14 +88,17 @@ export default function BankIntegrationKeyModal() {
                         <PasteTokenButton onPaste={handleKeyChange} testID={SyncTokenSectionSelector.MonobankPasteButton} />
                     </View>
                 </FormItem>
-                <Text
-                    className="text-[15px] text-primary-accent min-h-[44px] py-lg"
+                <HapticPressable
+                    className="min-h-[44px] flex-row items-center gap-x-sm"
                     onPress={handleOpenKeyPage}
                     accessibilityRole="link"
                     testID={BankIntegrationKeyModalSelector.GetNewKeyLink}
                 >
-                    <Trans>Get a new key</Trans>
-                </Text>
+                    <Text className="text-[15px] text-default-foreground">
+                        <Trans>Get a new key</Trans>
+                    </Text>
+                    <Icon icon={UserIconNameEnum.ArrowUpRight} size={14} className="text-default-foreground" />
+                </HapticPressable>
             </View>
             <ModalFormFooter
                 onCancel={handleCancel}

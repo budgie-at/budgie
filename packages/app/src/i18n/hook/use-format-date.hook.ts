@@ -1,26 +1,13 @@
-import { minutesInDay } from 'date-fns/constants';
 import { isThisYear } from 'date-fns/isThisYear';
 
 import { useI18nContext } from '../context/i18n.context';
+import { formatRelativeToNow } from '../utils/format-relative-to-now.util';
 
 export const useFormatDate = () => {
     const { intl } = useI18nContext();
 
     return {
-        formatRelativeToNow: (date: Date, now: number) => {
-            const minutes = Math.max(0, Math.floor((now - date.getTime()) / 60000));
-            if (minutes < 1) {
-                return intl.formatRelativeTime(0, 'second', { numeric: 'auto' });
-            }
-            if (minutes < 60) {
-                return intl.formatRelativeTime(-minutes, 'minute');
-            }
-            if (minutes < minutesInDay) {
-                return intl.formatRelativeTime(-Math.floor(minutes / 60), 'hour');
-            }
-
-            return intl.formatRelativeTime(-Math.floor(minutes / minutesInDay), 'day');
-        },
+        formatRelativeToNow: (date: Date, now: number) => formatRelativeToNow(date, now, intl),
         formatWeekdayAndDateWithTime: (date: Date | string) =>
             intl.formatDate(date, {
                 weekday: 'long',
