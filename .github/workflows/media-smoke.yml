@@ -3,7 +3,10 @@ name: Media smoke
 on:
     pull_request:
         paths:
-            - 'tests/app-tests/flows/media/**'
+            - 'e2e/media/**'
+            - 'e2e/media.config.ts'
+            - 'e2e/support/**'
+            - 'e2e/package-lock.json'
             - 'tests/app-tests/fixtures/screenshots/**'
             - 'tests/app-tests/scripts/seed-screenshot-scene.sh'
             - 'tests/app-tests/scripts/capture-store-screenshots.sh'
@@ -27,11 +30,11 @@ jobs:
             contents: read
             packages: write
             actions: read
-        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@f90309c791283d6e2dd1e35eb2ae6c5aee2151cd # v4.7.0
+        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@aa39eec581af46f5481400f03750483594109e6d # feat/store-screenshots-e2e
         with:
             control-runner-labels: '["self-hosted","trf-linux-amd64-2x4"]'
+            # A native build still runs on macOS when this commit's native key has no published base.
             build-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
-            test-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
             targets: >-
                 [{"name":"e2e","appDir":"packages/app","workspace":"budgieE2E.xcworkspace","scheme":"budgieE2E",
                 "appId":"com.vitalyiegorov.budgie.e2e","prebuildCommand":"npx expo prebuild -p ios --clean --no-install"}]
@@ -39,32 +42,35 @@ jobs:
                 APP_VARIANT=e2e
                 EXPO_PUBLIC_AI_DISABLE=true
                 EXPO_PUBLIC_LOGGING_DISABLE=true
-            # mobile-ci v3.3.0 gates pull requests on turbo even when target-packages
-            # is empty (it derives @budgie-at/app from targets[].appDir), and the media
-            # flows, fixtures and scripts this workflow triggers on live in
-            # @budgie-at/app-tests, which the app does not depend on. Without app-tests
-            # here a media-only pull request would skip the very smoke it triggered.
+            # The media scenes live in the e2e project (e2e/media, e2e/support/media), outside
+            # every workspace package turbo sees; @budgie-at/app-tests holds the scene fixtures
+            # and the seed script the capture builds each scene's database with.
             target-packages: |
                 @budgie-at/app
                 @budgie-at/app-tests
-            # turbo attributes no change outside a workspace package, so the two
-            # .github files in `paths` would otherwise skip the smoke they trigger.
+            # turbo attributes no change outside a workspace package, so these would otherwise
+            # skip the smoke they trigger.
             trigger-paths: |
                 .github/workflows/media-smoke.yml
                 .github/landing-media.config.json
-            flows-dir: tests/app-tests/flows/media
-            shard-count: 1
-            maestro-config: tests/app-tests/config.yaml
-            pre-run-flow: tests/app-tests/flows/setup/prime-deep-links.flow.yaml
-            pre-flow-command: SCENE="${FLOW_NAME%.flow.yaml}" LOCALE=en APPEARANCE=dark bash tests/app-tests/scripts/seed-screenshot-scene.sh
-            flow-retries: '0'
-            maestro-version: '2.8.0'
-            simulator-device: iPhone 17 Pro
-            simulator-requires: push,universal-links
-            # Measured on #1182: 41 scenarios need ~26.5 min end to end (~3.3 min
-            # of job setup + ~23 min of flows), so the old 25-minute cap cancelled
-            # a shard whose every flow was passing. 40 leaves real headroom.
-            test-timeout-minutes: 40
+                e2e/media/**
+                e2e/media.config.ts
+                e2e/support/**
+                e2e/package-lock.json
+            # Every capture scene the e2e build can drive (support/media/scenes.ts; the AI-build
+            # and credential-bound ones are left out), once, in en/dark on an iPhone 17 Pro, seeded
+            # by seed-screenshot-scene.sh as the store and landing captures are. media.config.ts is
+            # its own e2e config, so the PR suite (e2e.config.ts, tests/) never collects these. The
+            # captures land in e2e/.e2e/media/raw/ios/iphone-17-pro/en/dark/<scene>.png and ship
+            # in the e2e-ios-e2e report artifact.
+            test-framework: e2e
+            e2e-dir: e2e
+            e2e-command: npx e2e run --config media.config.ts --target ios
+            e2e-runner-labels: '["self-hosted","trf-linux-amd64-4x8"]'
+            e2e-workers: '4'
+            e2e-retries: '1'
+            e2e-timeout-minutes: 45
+            simlock-url: http://10.10.1.28:4700
             install-command: pnpm install --frozen-lockfile
             package-manager: pnpm
             build-command: pnpm exec turbo build --filter='@budgie/*'
@@ -83,3 +89,5 @@ jobs:
                 extra.appVariant=e2e
                 extra.aiEnabled=false
                 extra.loggingEnabled=false
+        secrets:
+            simlock-token: ${{ secrets.SIMLOCK_TOKEN }}
