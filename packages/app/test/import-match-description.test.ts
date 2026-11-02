@@ -2,6 +2,7 @@ import { describe, expect, it } from '@effect/vitest';
 import { vi } from 'vitest';
 
 import { getImportMatchDescription } from '../src/import/utils/get-import-match-description.util';
+import { getImportRequiredFooter } from '../src/import/utils/get-import-required-footer.util';
 import { matchImportColumns } from '../src/import/utils/match-import-columns.util';
 
 import type { MacroMessageDescriptor } from '@lingui/core/macro';
@@ -57,5 +58,28 @@ describe('import match description', () => {
         getImportMatchDescription(matchImportColumns(['Unit']), { toCurrency: 'Unit' }, translate);
 
         expect(translate).toHaveBeenLastCalledWith({ message: 'Currency matched from sample values.' });
+    });
+});
+
+describe('required import footer', () => {
+    it('keeps the guidance for an entirely unmapped file', () => {
+        const translate = vi.fn<(descriptor: MacroMessageDescriptor | TemplateStringsArray) => string>().mockReturnValue('translated');
+
+        expect(getImportRequiredFooter(5, translate)).toBe('translated');
+        expect(translate).toHaveBeenLastCalledWith({ message: 'Pick a column for each field.' });
+    });
+
+    it.each([1, 2, 3, 4])('leaves partial-match blocker guidance to the action tray (%i missing)', missingCount => {
+        const translate = vi.fn<(descriptor: MacroMessageDescriptor | TemplateStringsArray) => string>();
+
+        expect(getImportRequiredFooter(missingCount, translate)).toBeNull();
+        expect(translate).not.toHaveBeenCalled();
+    });
+
+    it('keeps the all-matched guidance', () => {
+        const translate = vi.fn<(descriptor: MacroMessageDescriptor | TemplateStringsArray) => string>().mockReturnValue('translated');
+
+        expect(getImportRequiredFooter(0, translate)).toBe('translated');
+        expect(translate).toHaveBeenLastCalledWith({ message: 'All required fields matched. Tap a field to change it.' });
     });
 });

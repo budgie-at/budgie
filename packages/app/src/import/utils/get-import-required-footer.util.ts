@@ -1,8 +1,8 @@
-import { msg, plural } from '@lingui/core/macro';
+import { msg } from '@lingui/core/macro';
 
 import type { useLingui } from '@lingui/react/macro';
 
-export const getImportRequiredFooter = (missingCount: number, t: ReturnType<typeof useLingui>['t']): string => {
+export const getImportRequiredFooter = (missingCount: number, t: ReturnType<typeof useLingui>['t']): string | null => {
     if (missingCount === 0) {
         return t(msg`All required fields matched. Tap a field to change it.`);
     }
@@ -11,7 +11,5 @@ export const getImportRequiredFooter = (missingCount: number, t: ReturnType<type
         return t(msg`Pick a column for each field.`);
     }
 
-    return t({
-        message: plural(missingCount, { one: '# required field still needs a column.', other: '# required fields still need a column.' })
-    });
+    return null;
 };

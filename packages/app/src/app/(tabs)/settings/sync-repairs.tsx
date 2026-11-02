@@ -30,6 +30,10 @@ export default function SyncRepairsPage() {
     const sources = preview?.sources ?? [];
     const shouldShowEmptyState = !isLoading && !hasError && !hasDuplicates;
     const shouldShowFound = !hasError && (isLoading || hasDuplicates);
+    const footer =
+        isDefined(repairedTransactionCount) && shouldShowEmptyState
+            ? t`Nothing left to repair.`
+            : t`Budgie removes repeated bank imports and fixes transfers that landed on inactive accounts. Manual transactions are never changed.`;
     const isActionLoading = isRepairing || isLoading;
 
     return (
@@ -60,7 +64,7 @@ export default function SyncRepairsPage() {
                                 right={
                                     <SettingsPillButton
                                         label={t`Remove`}
-                                        className="light:bg-grouped-surface dark:bg-surface-fill min-h-[34px] self-center px-[16px]"
+                                        className="light:bg-grouped-surface dark:bg-surface-fill min-h-[44px] self-center px-[16px]"
                                         variant="secondary"
                                         onPress={handleRepair}
                                         isLoading={isActionLoading}
@@ -70,9 +74,7 @@ export default function SyncRepairsPage() {
                             />
                         </GroupedListSection>
                     ) : null}
-                    <Text className="text-secondary-foreground px-3xl text-[13px] leading-[18px]">
-                        {t`Budgie removes repeated bank imports and fixes transfers that landed on inactive accounts. Manual transactions are never changed.`}
-                    </Text>
+                    <Text className="text-secondary-foreground px-3xl text-[13px] leading-[18px]">{footer}</Text>
                     <MenuSpacer />
                 </View>
             </CollapsibleChromePage>

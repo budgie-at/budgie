@@ -1,5 +1,6 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { ImportPresetEnum } from '@budgie/import-export';
+import { plural } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { Text, View } from 'react-native';
@@ -14,7 +15,7 @@ import { ImportPresetOptions } from '../import-preset-options/import-preset-opti
 import { ImportPresetPickerSelector } from './import-preset-picker.selector';
 
 interface Props {
-    readonly title?: string;
+    readonly rowCount: number;
     readonly hasMappedColumns: boolean;
     readonly matchDescription: string;
     readonly detectedPreset?: ImportPresetEnum;
@@ -28,7 +29,7 @@ export const ImportPresetPicker = ({
     onPresetSelect,
     hasMappedColumns,
     matchDescription,
-    title
+    rowCount
 }: Props) => {
     const { t } = useLingui();
 
@@ -53,13 +54,16 @@ export const ImportPresetPicker = ({
         isCustomSelected && isNotEmptyString(matchDescription)
             ? matchDescription
             : t`Pick the app that exported this file, or match columns yourself.`;
-    const footer =
+    const formatDescription =
         isDefined(detectedPreset) && detectedPreset === selectedPreset
             ? t`Detected automatically. Tap to pick another format.`
             : customFooter;
 
+    const rowCountDescription = t({ message: plural(rowCount, { one: '# row found.', other: '# rows found.' }) });
+    const footer = `${formatDescription} ${rowCountDescription}`;
+
     return (
-        <GroupedListSection title={title} footer={footer}>
+        <GroupedListSection footer={footer}>
             <GroupedListRow
                 title={t`Format`}
                 onPress={handleToggle}

@@ -540,9 +540,9 @@ msgstr "{minutesLeft, plural, one {Environ # minute restante en Wi-Fi} other {En
 msgid "{minutesLeft, plural, one {About # minute left} other {About # minutes left}}"
 msgstr "{minutesLeft, plural, one {Environ # minute restante} other {Environ # minutes restantes}}"
 
-#: src/import/utils/get-import-required-footer.util.ts
-msgid "{missingCount, plural, one {# required field still needs a column.} other {# required fields still need a column.}}"
-msgstr "{missingCount, plural, one {# champ obligatoire nécessite encore une colonne.} other {# champs obligatoires nécessitent encore une colonne.}}"
+#: src/import/components/import-screen-footer/import-screen-footer.tsx
+msgid "{missingRequiredCount, plural, one {Choose a column for # required field.} other {Choose columns for # required fields.}}"
+msgstr "{missingRequiredCount, plural, one {Choisissez une colonne pour # champ obligatoire.} other {Choisissez des colonnes pour # champs obligatoires.}}"
 
 #: src/onboarding/component/onboarding-balances/onboarding-balances.tsx
 msgid "{monobankAccountCount, plural, one {# account. Balances come straight from the bank.} other {# accounts. Balances come straight from the bank.}}"
@@ -689,9 +689,9 @@ msgstr "{repairedTransactionCount, plural, one {# doublon supprimé} other {# do
 msgid "{rowCount, plural, one {# payment} other {# payments}}"
 msgstr "{rowCount, plural, one {# paiement} other {# paiements}}"
 
-#: src/app/(main)/import-csv.tsx
-msgid "{rowCount, plural, one {# row found} other {# rows found}}"
-msgstr "{rowCount, plural, one {# ligne trouvée} other {# lignes trouvées}}"
+#: src/import/components/import-preset-picker/import-preset-picker.tsx
+msgid "{rowCount, plural, one {# row found.} other {# rows found.}}"
+msgstr "{rowCount, plural, one {# ligne trouvée.} other {# lignes trouvées.}}"
 
 #: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
 msgid "{rowCount, plural, one {# transaction} other {# transactions}}"
@@ -1858,8 +1858,8 @@ msgid "Budgie hit an unexpected problem. You can restart the app or report the i
 msgstr "Budgie a rencontré un problème inattendu. Vous pouvez redémarrer l’application ou signaler le problème afin que nous puissions l’examiner."
 
 #: src/wallet-capture/component/apple-pay-capture-troubleshooting-card/apple-pay-capture-troubleshooting-card.tsx
-msgid "Budgie picks the account from the card name, then your default account. Name the account like the card, or set the optional Account field in the action to pin one."
-msgstr "Budgie choisit le compte d'après le nom de la carte, puis ton compte par défaut. Nomme le compte comme la carte, ou fixe-en un avec le champ facultatif Compte de l'action."
+msgid "Budgie matches the card name, then uses your default account. Rename the account to match, or choose Account in the Shortcuts action."
+msgstr "Budgie fait correspondre le nom de la carte, puis utilise votre compte par défaut. Renommez le compte pour qu’il corresponde ou choisissez Compte dans l’action Raccourcis."
 
 #: src/budget/components/budget-fund-preview/budget-fund-preview.tsx
 msgid "Budgie plans to set aside {amountLabel} {rate}"
@@ -4570,7 +4570,7 @@ msgstr "Manuel"
 msgid "Manual adjustment"
 msgstr "Ajustement manuel"
 
-#: src/app/(main)/import-csv.tsx
+#: src/import/components/import-screen-header/import-screen-header.tsx
 msgid "Map CSV columns"
 msgstr "Associer les colonnes CSV"
 
@@ -5295,6 +5295,10 @@ msgstr "Note"
 #: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
 msgid "Nothing from the past is imported"
 msgstr "Rien du passé n'est importé"
+
+#: src/app/(tabs)/settings/sync-repairs.tsx
+msgid "Nothing left to repair."
+msgstr "Plus rien à réparer."
 
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Notify me near a limit"

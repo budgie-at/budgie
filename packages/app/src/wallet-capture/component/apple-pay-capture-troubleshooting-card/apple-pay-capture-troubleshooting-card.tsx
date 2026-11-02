@@ -22,7 +22,7 @@ export const ApplePayCaptureTroubleshootingCard = () => {
             <ApplePayCaptureTroubleshootingRow
                 icon={UserIconNameEnum.Wallet}
                 title={t`Wrong or missing account`}
-                description={t`Budgie picks the account from the card name, then your default account. Name the account like the card, or set the optional Account field in the action to pin one.`}
+                description={t`Budgie matches the card name, then uses your default account. Rename the account to match, or choose Account in the Shortcuts action.`}
             />
         </View>
     );

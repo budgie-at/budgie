@@ -1,5 +1,6 @@
 import { describe, expect, it } from '@effect/vitest';
 
+import { isImportColumnNameInformative } from '../src/import/utils/is-import-column-name-informative.util';
 import { matchImportColumns } from '../src/import/utils/match-import-columns.util';
 
 describe('matchImportColumns', () => {
@@ -129,5 +130,29 @@ describe('matchImportColumns sample inference', () => {
 
     it.each(['XYZ', 'eur', 'EURO', '', '31.02.2026', '2026-13-01', '12/32/2026', 'not a value'])('rejects invalid samples %s', sample => {
         expect(Object.values(matchImportColumns(['Unknown'], { Unknown: sample })).every(value => value === '')).toBe(true);
+    });
+});
+
+describe('informative mapped column names', () => {
+    it.each([
+        ['Account', 'To account'],
+        ['Currency', 'To currency'],
+        ['Date', 'Date'],
+        [' AMOUNT ', 'Amount'],
+        ['To_account', 'To account'],
+        ['Category', 'Category'],
+        ['WÄHRUNG', 'Zu Währung'],
+        ['日付', '日付']
+    ])('hides redundant header %s for %s', (header, label) => {
+        expect(isImportColumnNameInformative(header, label)).toBe(false);
+    });
+
+    it.each([
+        ['Col A', 'To account'],
+        ['operatedAt', 'Date'],
+        ['Account', 'Category'],
+        ['From amount', 'Amount']
+    ])('keeps informative header %s for %s', (header, label) => {
+        expect(isImportColumnNameInformative(header, label)).toBe(true);
     });
 });

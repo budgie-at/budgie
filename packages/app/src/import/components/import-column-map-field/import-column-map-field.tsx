@@ -10,6 +10,7 @@ import { GroupedListRow } from '../../../@generic/component/grouped-list-row/gro
 import { Icon } from '../../../@generic/component/icon/icon';
 import { cn } from '../../../@generic/utils/cn.util';
 import { useImportColumnMapperModal } from '../../context/import-column-mapper-modal.context';
+import { isImportColumnNameInformative } from '../../utils/is-import-column-name-informative.util';
 import { ImportColumnMapperSelector } from '../import-column-mapper/import-column-mapper.selector';
 
 interface Props {
@@ -40,6 +41,7 @@ export const ImportColumnMapField = ({ control, name, label, headers, selectedHe
 
     const emptyValue = isRequired ? t`Choose` : t`None`;
     const displayValue = isNotEmptyString(value) ? value : emptyValue;
+    const showColumnName = !isNotEmptyString(value) || isImportColumnNameInformative(value, label);
     const sampleSubtitle = isNotEmptyString(value) ? samples[value] : null;
     const subtitle = isDefined(error) ? <Text className="text-destructive-foreground text-[13px]">{error.message}</Text> : sampleSubtitle;
 
@@ -58,9 +60,11 @@ export const ImportColumnMapField = ({ control, name, label, headers, selectedHe
             testID={ImportColumnMapperSelector.Row(name)}
             right={
                 <View className="max-w-[55%] flex-row items-center gap-x-md">
-                    <Text className={valueClassName} numberOfLines={1} ellipsizeMode="tail">
-                        {displayValue}
-                    </Text>
+                    {showColumnName ? (
+                        <Text className={valueClassName} numberOfLines={1} ellipsizeMode="tail">
+                            {displayValue}
+                        </Text>
+                    ) : null}
                     <Icon icon={UserIconNameEnum.ChevronRight} size={16} className="text-secondary-foreground" />
                 </View>
             }

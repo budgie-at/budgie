@@ -19,20 +19,10 @@ import * as Schema from 'effect/Schema';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useRef, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-import { Text, View } from 'react-native';
-import { useResolveClassNames } from 'uniwind';
 
-import {
-    BottomChromeInsetProvider,
-    ScreenChromeFrame,
-    ScreenChromeHeader,
-    ScreenChromeFooter
-} from '@rnw-community/react-native-screen-chrome';
+import { BottomChromeInsetProvider, ScreenChromeFrame } from '@rnw-community/react-native-screen-chrome';
 import { getErrorMessage, isNotEmptyString, isPositiveNumber } from '@rnw-community/shared';
 
-import { ImportScreenSelector } from '../(tabs)/settings/import-screen.selector';
-import { Button } from '../../@generic/component/button/button';
-import { GoBackButton } from '../../@generic/component/go-back-button/go-back-button';
 import { GroupedListSection } from '../../@generic/component/grouped-list-section/grouped-list-section';
 import { GroupedSurface } from '../../@generic/component/grouped-surface/grouped-surface';
 import { useSingleFlight } from '../../@generic/hook/use-single-flight.hook';
@@ -41,6 +31,8 @@ import { showErrorToast } from '../../@generic/utils/show-error-toast/show-error
 import { toastOnFailure } from '../../@generic/utils/toast-on-failure.util';
 import { ImportColumnMapField } from '../../import/components/import-column-map-field/import-column-map-field';
 import { ImportPresetPicker } from '../../import/components/import-preset-picker/import-preset-picker';
+import { ImportScreenFooter } from '../../import/components/import-screen-footer/import-screen-footer';
+import { ImportScreenHeader } from '../../import/components/import-screen-header/import-screen-header';
 import { ImportScreenScroll } from '../../import/components/import-screen-scroll/import-screen-scroll';
 import { EMPTY_IMPORT_CSV } from '../../import/constant/empty-import-csv.constant';
 import { importCsvAtom } from '../../import/constant/import-csv-atom.constant';
@@ -78,7 +70,6 @@ export default function ImportScreen() {
     const { fileUri } = useLocalSearchParams<{ fileUri?: string }>();
 
     const { t } = useLingui();
-    const headerStyle = useResolveClassNames('bg-surface');
 
     const csvAtom = importCsvAtom(isNotEmptyString(fileUri) ? fileUri : null);
     const importCsvResult = useAtomValue(csvAtom);
@@ -189,14 +180,8 @@ export default function ImportScreen() {
     const requiredFooter = getImportRequiredFooter(unmappedRequiredCount, t);
     const missingFieldLabels = missingRequiredFields.map(({ label }) => t(label)).join(', ');
     const accessibilityHint = isPositiveNumber(unmappedRequiredCount) ? t`Choose columns for ${missingFieldLabels}` : '';
-    const buttonClassName = isImportDisabled ? 'bg-surface-fill border-transparent opacity-100' : '';
-    const buttonLabelClassName = isImportDisabled
-        ? 'text-secondary-foreground text-lg font-semibold text-center'
-        : 'text-cta-foreground text-lg font-semibold text-center';
     const matchDescription = getImportMatchDescription(matchImportColumns(headers), sampleMatchedColumns, t);
     const buttonContent = t({ message: plural(rowCount, { one: 'Import # transaction', other: 'Import # transactions' }) });
-    const buttonLabel = <Text className={buttonLabelClassName}>{buttonContent}</Text>;
-    const rowCountDescription = t({ message: plural(rowCount, { one: '# row found', other: '# rows found' }) });
 
     return (
         <GroupedSurface>
@@ -206,7 +191,7 @@ export default function ImportScreen() {
                         <ImportScreenScroll>
                             <ImportPresetPicker
                                 key={fileUri}
-                                title={rowCountDescription}
+                                rowCount={rowCount}
                                 detectedPreset={detectedPreset}
                                 selectedPreset={selectedPreset}
                                 onPresetSelect={handlePresetSelect}
@@ -234,30 +219,15 @@ export default function ImportScreen() {
                                 );
                             })}
                         </ImportScreenScroll>
-                        <ScreenChromeHeader style={headerStyle}>
-                            <View className="absolute inset-0 items-center justify-center px-[60px]" pointerEvents="none">
-                                <Text className="text-primary text-[17px] font-semibold" accessibilityRole="header">
-                                    {t`Map CSV columns`}
-                                </Text>
-                            </View>
-                            <GoBackButton onPress={handleGoBack} />
-                        </ScreenChromeHeader>
-                        <ScreenChromeFooter>
-                            <View className="bg-surface border-t-hairline border-surface-separator px-5xl py-lg">
-                                <Button
-                                    content={buttonLabel}
-                                    accessibilityLabel={buttonContent}
-                                    accessibilityHint={accessibilityHint}
-                                    variant="cta"
-                                    className={buttonClassName}
-                                    onPress={handleSubmit(handleStartImport)}
-                                    size="lg"
-                                    disabled={isImportDisabled}
-                                    isLoading={isLoading}
-                                    testID={ImportScreenSelector.StartImportButton}
-                                />
-                            </View>
-                        </ScreenChromeFooter>
+                        <ImportScreenHeader onGoBack={handleGoBack} />
+                        <ImportScreenFooter
+                            buttonContent={buttonContent}
+                            accessibilityHint={accessibilityHint}
+                            onImport={handleSubmit(handleStartImport)}
+                            isDisabled={isImportDisabled}
+                            isLoading={isLoading}
+                            missingRequiredCount={unmappedRequiredCount}
+                        />
                     </ScreenChromeFrame>
                 </BottomChromeInsetProvider>
             </ScreenChromeThemeProvider>
