@@ -293,7 +293,7 @@ jobs:
         # Starts beside code-quality rather than after it: Required CI still
         # fails the PR when either fails.
         needs: [detect-mobile-impact]
-        name: iOS Maestro E2E
+        name: iOS E2E
         # A reusable workflow can only narrow the token it is given: the base
         # binary every pull request repacks is fetched (packages) and published
         # (packages: write, default-branch runs) by mobile-ci's plan/build jobs,
@@ -302,11 +302,10 @@ jobs:
             contents: read
             packages: write
             actions: read
-        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@bc126d4e137df2402e44a61ab7e13b5de4d3e2f6 # feat/ios-e2e-simlock
+        uses: rnw-community/mobile-ci/.github/workflows/ios-maestro.yml@7fe1769d13cae6d41a65290fd126b806caf3bd9f # feat/ios-e2e-simlock
         with:
             control-runner-labels: '["self-hosted","trf-linux-amd64-2x4"]'
             build-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
-            test-runner-labels: '["self-hosted","macOS","ARM64","macos-maestro"]'
             # Gate on the turbo graph as well as detect-mobile-impact's path
             # list: iOS Maestro runs only when the app, its workspace
             # dependencies or the Maestro suite changed.
@@ -324,19 +323,6 @@ jobs:
                 APP_VARIANT=e2e
                 EXPO_PUBLIC_AI_DISABLE=true
                 EXPO_PUBLIC_LOGGING_DISABLE=true
-            flows-dir: tests/app-tests/flows
-            shard-count: 2
-            shard-manifest-dir: tests/app-tests/shards
-            maestro-config: tests/app-tests/config.yaml
-            pre-run-flow: tests/app-tests/flows/setup/prime-deep-links.flow.yaml
-            flow-recovery-flow: tests/app-tests/flows/setup/recover-after-failed-flow.flow.yaml
-            pre-test-command: bash tests/app-tests/scripts/setup-ios-e2e-fixtures.sh "$SIMULATOR_UDID" "$APP_ID"
-            pre-flow-command: bash tests/app-tests/scripts/seed-flow-fixture.sh
-            flow-retries: '1'
-            simulator-device: iPhone 17 Pro
-            simulator-reduce-motion: 'true'
-            simulator-requires: push,universal-links
-            test-timeout-minutes: 110
             install-command: pnpm install --frozen-lockfile
             package-manager: pnpm
             build-command: pnpm exec turbo build --filter='@budgie/*'
@@ -355,15 +341,13 @@ jobs:
                 extra.appVariant=e2e
                 extra.aiEnabled=false
                 extra.loggingEnabled=false
-            # The e2e port of the Maestro suite (e2e/), run from Linux against the
-            # Mac Studio simlock farm. A non-blocking shadow while it proves itself:
-            # Maestro still gates (test-framework both, e2e-required false).
-            test-framework: both
+            # The e2e suite (e2e/), run from Linux against the Mac Studio simlock
+            # farm. It replaces the Maestro shards: no macOS test runner is used.
+            test-framework: e2e
             e2e-dir: e2e
             e2e-runner-labels: '["self-hosted","trf-linux-amd64-4x8"]'
             e2e-workers: '10'
             e2e-retries: '1'
-            e2e-required: false
             e2e-timeout-minutes: 45
             simlock-url: http://10.10.1.28:4700
         secrets:
