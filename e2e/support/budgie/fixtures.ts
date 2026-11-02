@@ -83,7 +83,7 @@ async function prepareSimulator(api: SimlockApi, leaseId: string, container: str
     const contactAdded = `${container}/Documents/.simlock-contact-added`;
     if ((await drop(api, leaseId, ['test', contactAdded])).exitCode !== 0) {
         const contact = `/tmp/simlock-${leaseId}-contact.vcf`;
-        await writeFile(api, leaseId, contact, readFileSync(join(APP_TESTS, 'fixtures/maestro-e2e-contact.vcf')));
+        await writeFile(api, leaseId, contact, readFileSync(join(APP_TESTS, 'fixtures/e2e-contact.vcf')));
         // Best effort, as in setup-ios-e2e-fixtures.sh: no flow reads the contact any more, and a
         // slim simulator has no contacts daemon (simlock's slim mode turns PIM off).
         const added = await exec(api, leaseId, ['addmedia', contact]);

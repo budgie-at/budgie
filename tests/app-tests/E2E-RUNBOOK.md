@@ -1,58 +1,58 @@
 # E2E Local Run Runbook
 
-How to build, install, and run Maestro flows against real local code. Read this before claiming any E2E result.
+How to build an E2E app and run the e2e suite (`e2e/`) against it on the simlock farm. Read this before claiming any E2E result.
 
-## Golden path (iOS simulator)
+## Golden path
 
 ```bash
-# 0. CocoaPods needs a UTF-8 locale (see trap 2) — harmless if already set
-export LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
+# 0. The app: the branch's CI artifact is the quickest, a local build otherwise
+gh run download <run-id> -n ios-e2e-app-e2e -D /tmp/app && tar -xzf /tmp/app/ios-e2e-app-e2e.tar.gz -C /tmp/app
+#    (local build on a Mac: see "Building locally" below)
 
-# 1. Clean native tree for the e2e variant
-cd packages/app && APP_VARIANT=e2e npx expo prebuild -p ios --clean
+# 1. The e2e project's dependencies (its own npm project, not a pnpm workspace)
+cd e2e && npm ci
 
-# 1b. Slim the target simulator before anything is installed on it (see AGENTS.md
-#     "Simulator Dev Testing"); brew install mobai-app/tap/simslim if missing
-. ../../tests/app-tests/scripts/mobile-ci-slim-simulator.sh && slim_simulator <UDID>
-
-# 2. Build + install Release on the booted sim (use the real booted UDID from `xcrun simctl list devices booted`)
-APP_VARIANT=e2e EXPO_PUBLIC_AI_DISABLE=true EXPO_PUBLIC_LOGGING_DISABLE=true \
-  npx expo run:ios --configuration Release --scheme budgieE2E --device <UDID> --port 8082
-
-# 3. Refresh fixtures (reinstall wipes them)
-cd ../.. && sh tests/app-tests/scripts/setup-ios-e2e-fixtures.sh <UDID> com.vitalyiegorov.budgie.e2e
-
-# 4. Run a flow, then print the status trap 6 requires you to observe
-maestro test tests/app-tests/flows/14.transaction-filters.flow.yaml \
-  -e APP_ID=com.vitalyiegorov.budgie.e2e --config tests/app-tests/config.yaml
-MAESTRO_EXIT=$?; echo "MAESTRO_EXIT=$MAESTRO_EXIT"
+# 2. Run one test file, or the whole suite, against simulators leased from the farm
+E2E_APP_PATH=/tmp/app/Base.app SIMLOCK_URL=<gateway> SIMLOCK_TOKEN=<agent token> \
+  npx e2e run --target ios tests/14.transaction-filters.e2e.ts
 ```
+
+`SIMLOCK_URL` is `http://10.10.1.28:4700` on the LAN (the CI runners); a token comes
+from the farm's handoff, never from the CI secret. `E2E_WORKERS=<n>` leases n
+simulators and spreads the tests over them. The run report, junit and per-test
+traces land in `e2e/.e2e/`; a failed test's `trace.md` has every step and the whole
+accessibility tree at the failure, the fastest way to the real testIDs.
+
+## Building locally
+
+```bash
+export LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8   # CocoaPods needs it (trap 2)
+cd packages/app && APP_VARIANT=e2e npx expo prebuild -p ios --clean
+xcodebuild -workspace ios/budgieE2E.xcworkspace -scheme budgieE2E -configuration Release \
+  -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' -derivedDataPath ~/budgie-e2e-derived \
+  CODE_SIGNING_ALLOWED=NO build
+```
+
+The app is `~/budgie-e2e-derived/Build/Products/Release-iphonesimulator/budgieE2E.app`.
 
 ## Traps that cost real time
 
-1. **EAS build cache silently serves a STALE binary.** `expo run:ios` honors `experiments.buildCacheProvider: 'eas'` in `app.config.js` and downloads a fingerprint-matched cached `.app` instead of compiling your code (`"Searching builds with matching fingerprint" / "Using custom binary path"` in the log). `--no-build-cache` does **not** stop it. To force a true local compile of code under test, temporarily remove the `buildCacheProvider` line from `app.config.js` (revert after — do not commit). Confirm the log shows local bundling (`iOS Bundled … packages/app/index.js`), not a cached download.
-2. **`pod install` dies instantly in any shell without a UTF-8 locale.** `expo prebuild` fails at the CocoaPods step with `Unicode Normalization not appropriate for ASCII-8BIT (Encoding::CompatibilityError)`, preceded by `WARNING: CocoaPods requires your terminal to be using UTF-8 encoding`. The traceback points at `cocoapods/config.rb`, which makes it look like a CocoaPods or Podfile bug — it isn't, and nothing was compiled. Interactive terminals inherit `LANG` from the user profile and never hit this; **agent shells, CI runners, and `ssh`/`cron` invocations do.** Fix by exporting `LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8` before the build (step 0 of the golden path).
-3. **The trailing `osascript … "Simulator" … non-zero` error is benign.** It only fails the post-install window-activation. If the log already shows `Installing on … / Opening on …`, the app built and installed fine; do not treat that exit code as a build failure.
-4. **A non-existent `--device` UDID makes Maestro hang with zero output.** Always take the UDID from `xcrun simctl list devices booted`, never from memory or earlier scrolled output.
-5. **`continueOnFailure: false`** (config.yaml) — a flow halts at the first failed step; later assertions are never evaluated. Fix the first failure, re-run; don't assume the rest pass.
-6. **Verdict comes from the run, not from you.** Only claim pass on observed `MAESTRO_EXIT=0`. Never write a pass count into a commit message before the run finishes.
+1. **EAS build cache silently serves a STALE binary.** `expo run:ios` honors `experiments.buildCacheProvider: 'eas'` in `app.config.js` and downloads a fingerprint-matched cached `.app` instead of compiling your code (`"Searching builds with matching fingerprint" / "Using custom binary path"` in the log). `--no-build-cache` does **not** stop it. Build with `xcodebuild` as above, or temporarily remove the `buildCacheProvider` line (revert after — do not commit).
+2. **`pod install` dies instantly in any shell without a UTF-8 locale.** `expo prebuild` fails at the CocoaPods step with `Unicode Normalization not appropriate for ASCII-8BIT (Encoding::CompatibilityError)`. Agent shells, CI runners, and `ssh`/`cron` invocations hit it; export `LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8` first.
+3. **The farm is shared.** One run at a time per agent, never more workers than you need, and never kill a run's container mid-test: it keeps holding its simulators until their lease expires.
+4. **Verdict comes from the run, not from you.** Only claim pass on the run's own summary (`Tests  N passed`). Never write a pass count into a commit message before the run finishes.
 
 ## After merging `main` into a fixture-changing branch
 
-E2E fixtures (`tests/app-tests/scripts/prepare-date-sensitive-fixtures.js`) feed hard-coded assertions in the flows. If your branch adds/removes seeded transactions, `main`'s newer count/total assertions drift and `pnpm ts/lint/cpd` cannot catch it. Re-run every Maestro flow that touches the changed fixture and reconcile counts against the **regenerated** fixture, e.g.:
+E2E fixtures (`tests/app-tests/scripts/prepare-date-sensitive-fixtures.js`) feed hard-coded assertions in the tests. If your branch adds/removes seeded transactions, `main`'s newer count/total assertions drift and `pnpm ts/lint/cpd` cannot catch it. Re-run every test that touches the changed fixture and reconcile counts against the **regenerated** fixture, e.g.:
 
 ```bash
 node tests/app-tests/scripts/prepare-date-sensitive-fixtures.js /tmp/fx
 sqlite3 /tmp/fx/14.db "SELECT type, COUNT(*) FROM transactions WHERE deleted_at IS NULL GROUP BY type;"
 ```
 
-## Not every `NN.db` a flow imports is a file in `fixtures/`
+## Not every `NN.db` a test seeds is a file in `fixtures/`
 
-`setup-ios-e2e-fixtures.sh` is the only source of truth for what lands on the simulator, and many fixture names are **aliases or generated copies**, not tracked files. `install_database_fixture ".../01.db" "23.db"` means flow 23 imports `23.db` on the device while the repo only stores `01.db`; `14.db`, `15.db`, `20.db`, `21.db`, `22.db`, `31-debt.db`, `31-transaction-info.db`, `34-matching-rules.db` and `budget-multi-currency.db` are generated into a temp dir by `prepare-date-sensitive-fixtures.js`.
+`setup-ios-e2e-fixtures.sh` is the only source of truth for what lands on the simulator, and many fixture names are **aliases or generated copies**, not tracked files. `install_database_fixture ".../01.db" "23.db"` means `budgie.start({ fixture: '23.db' })` seeds `23.db` on the device while the repo only stores `01.db`; `14.db`, `15.db`, `20.db`, `21.db`, `22.db`, `31-debt.db`, `31-transaction-info.db`, `34-matching-rules.db` and `budget-multi-currency.db` are generated into a temp dir by `prepare-date-sensitive-fixtures.js`.
 
-So a flow referencing `FIXTURE_ROW_ID_MATCH: 'NN.db'` with no `tests/app-tests/fixtures/NN.db` on disk is **normal, not a missing fixture**. Check the install script before "fixing" it, and never commit a stray `fixtures/NN.db` for an aliased name — it would be dead weight the script ignores.
-
-## Reading background logs
-
-Maestro/xcodebuild output is CR-heavy. Sanitize before grepping:
-`LC_ALL=C tr -cd '\11\12\15\40-\176' < log | LC_ALL=C tr '\r' '\n'`
+So a test seeding `NN.db` with no `tests/app-tests/fixtures/NN.db` on disk is **normal, not a missing fixture**. Check the install script before "fixing" it, and never commit a stray `fixtures/NN.db` for an aliased name — it would be dead weight the script ignores.

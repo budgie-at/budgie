@@ -18,7 +18,7 @@ export const DevMenuController = () => {
             return;
         }
 
-        // Hide Expo's floating dev-menu button so it doesn't block app controls during Maestro runs.
+        // Hide Expo's floating dev-menu button so it doesn't block app controls during e2e runs.
         void devMenuPreferences.setPreferencesAsync({
             showFloatingActionButton: false,
             touchGestureEnabled: false,
