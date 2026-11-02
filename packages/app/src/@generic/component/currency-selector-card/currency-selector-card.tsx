@@ -29,7 +29,7 @@ export const CurrencySelectorCard = ({ isSelected, name, onSelect, code, symbol,
             onPress={handleSelect}
             testID={CreateAccountScreenSelector.CurrencyOption(code)}
             left={<CurrencySelectorInstrumentIcon code={code} symbol={symbol} type={type} size={36} />}
-            title={<SelectorRowTitle text={name} highlight={highlight} />}
+            title={<SelectorRowTitle text={name} highlight={highlight} isSelected={isSelected} />}
             subtitle={subtitle}
         />
     );

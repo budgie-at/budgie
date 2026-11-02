@@ -26,7 +26,7 @@ export const SelectorRow = ({ title, subtitle, left, isSelected, onPress, testID
         <View className="w-[22px]" />
     );
     const pressableProps = { accessibilityState: { selected: isSelected } };
-    const titleNode = isString(title) ? <SelectorRowTitle text={title} testID={titleTestID} /> : title;
+    const titleNode = isString(title) ? <SelectorRowTitle text={title} testID={titleTestID} isSelected={isSelected} /> : title;
 
     return (
         <GroupedListRow

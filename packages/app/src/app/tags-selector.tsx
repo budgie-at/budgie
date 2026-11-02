@@ -1,7 +1,7 @@
 import { useLingui } from '@lingui/react/macro';
 import { useEffect, useReducer, useRef, useState } from 'react';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { SelectorModalDescription } from '../@generic/component/selector-modal-description/selector-modal-description';
 import { SelectorModalSearchHeader } from '../@generic/component/selector-modal-search-header/selector-modal-search-header';
@@ -58,7 +58,7 @@ export default function TagsSelectorModal() {
 
     const data = prepareSelectorGridData(tags, excludeTagIds);
     const query = search.trim();
-    const primaryHint = enablePrimarySelection && selected.length > 1 ? t`Hold a tag to make it primary` : null;
+    const primaryHint = enablePrimarySelection && isNotEmptyArray(selected) ? t`★ Primary · hold another tag to change it` : null;
     const resultCount = isLoading ? null : data.filter(item => !item.isEmpty).length;
     const dirty = isSelectionDirty(selected, initialTagIds) || primaryTagId !== initialPrimaryTagId;
 

@@ -52,7 +52,7 @@ export default function LanguageSelectorModal() {
                         <Text className={codeVariants({ isSelected })}>{item.code.toUpperCase()}</Text>
                     </View>
                 }
-                title={<SelectorRowTitle text={title} language={item.code} />}
+                title={<SelectorRowTitle text={title} language={item.code} isSelected={isSelected} />}
                 subtitle={subtitle}
             />
         );

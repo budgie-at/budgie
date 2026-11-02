@@ -24,7 +24,7 @@ export const BudgetStatRow = ({ scope, displayStatus, limitSource, currencySymbo
     const leftTone = scope.free < 0 ? 'destructive' : 'positive';
     const isNeutralLeft = scope.free >= 0 && displayStatus.isTight;
 
-    const formatAmount = (amount: number) => formatDigits(convertFromMicroUnits(amount), currencySymbol).replace('-', '−');
+    const formatAmount = (amount: number) => formatDigits(convertFromMicroUnits(amount), currencySymbol);
 
     const spentStat = {
         label: t`Spent`,

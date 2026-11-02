@@ -854,6 +854,10 @@ msgstr "−{changePercent} до {shortPreviousLabel}"
 msgid "≈ {formattedMonths} mo"
 msgstr "≈ {formattedMonths} міс."
 
+#: src/app/tags-selector.tsx
+msgid "★ Primary · hold another tag to change it"
+msgstr "★ Основний · утримуйте інший тег, щоб змінити"
+
 #: src/account/component/crypto-currency-group-toggle-row/crypto-currency-group-toggle-row.tsx
 msgid "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
 msgstr "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
@@ -3977,10 +3981,6 @@ msgstr "Імпорт історії призупинено"
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "History loading paused"
 msgstr "Завантаження історії призупинено"
-
-#: src/app/tags-selector.tsx
-msgid "Hold a tag to make it primary"
-msgstr "Утримуйте тег, щоб зробити його основним"
 
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Hold to seal with this PIN"

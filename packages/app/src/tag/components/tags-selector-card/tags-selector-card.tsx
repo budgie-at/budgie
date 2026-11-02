@@ -118,7 +118,6 @@ export const TagsSelectorCard = ({
                         className="text-primary-reverse"
                     />
                 ) : null}
-                {showLeadingMark && !isPrimary ? <Icon icon={UserIconNameEnum.Check} size={14} className="text-primary-reverse" /> : null}
 
                 <Text className={textVariants({ isSelected, isPrimary, variant })} numberOfLines={1} ellipsizeMode="tail">
                     {title}

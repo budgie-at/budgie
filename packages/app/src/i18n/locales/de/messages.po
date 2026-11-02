@@ -854,6 +854,10 @@ msgstr "−{changePercent} ggü. {shortPreviousLabel}"
 msgid "≈ {formattedMonths} mo"
 msgstr "≈ {formattedMonths} Mon."
 
+#: src/app/tags-selector.tsx
+msgid "★ Primary · hold another tag to change it"
+msgstr "★ Haupttag · halte ein anderes Tag gedrückt, um ihn zu ändern"
+
 #: src/account/component/crypto-currency-group-toggle-row/crypto-currency-group-toggle-row.tsx
 msgid "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
 msgstr "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
@@ -3977,10 +3981,6 @@ msgstr "Verlaufsimport pausiert"
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "History loading paused"
 msgstr "Laden des Verlaufs pausiert"
-
-#: src/app/tags-selector.tsx
-msgid "Hold a tag to make it primary"
-msgstr "Halte ein Tag gedrückt, um es zum Haupttag zu machen"
 
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Hold to seal with this PIN"

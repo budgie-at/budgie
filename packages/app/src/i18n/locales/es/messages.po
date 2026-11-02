@@ -854,6 +854,10 @@ msgstr "−{changePercent} vs. {shortPreviousLabel}"
 msgid "≈ {formattedMonths} mo"
 msgstr "≈ {formattedMonths} m."
 
+#: src/app/tags-selector.tsx
+msgid "★ Primary · hold another tag to change it"
+msgstr "★ Principal · mantén pulsada otra etiqueta para cambiarla"
+
 #: src/account/component/crypto-currency-group-toggle-row/crypto-currency-group-toggle-row.tsx
 msgid "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
 msgstr "1 {instrumentCode} ≈ {defaultInstrumentSymbol}{formattedRate}"
@@ -3977,10 +3981,6 @@ msgstr "Importación del historial en pausa"
 #: src/market-data/component/market-data-history-progress/market-data-history-progress.tsx
 msgid "History loading paused"
 msgstr "Carga del historial en pausa"
-
-#: src/app/tags-selector.tsx
-msgid "Hold a tag to make it primary"
-msgstr "Mantén pulsada una etiqueta para hacerla principal"
 
 #: src/onboarding/component/onboarding-seal/onboarding-seal.tsx
 msgid "Hold to seal with this PIN"
