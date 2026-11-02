@@ -1,17 +1,14 @@
-import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
-import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
-import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
-import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
 import { isAiEnabled } from '../../../@generic/utils/is-ai-enabled.util';
 import { AiModelStorage } from '../../../ai/component/ai-model-storage/ai-model-storage';
 import { AiSettingsSection } from '../../../ai/component/ai-settings-section/ai-settings-section';
+import { AiUnavailableSection } from '../../../ai/component/ai-unavailable-section/ai-unavailable-section';
 import { goBackToSettings } from '../../../settings/utils/go-back-to-settings.util';
 
 import { AiFeaturesPageSelector } from './ai-features-page.selector';
@@ -29,17 +26,7 @@ export default function AiFeaturesPage() {
                 testID={AiFeaturesPageSelector.Container}
             >
                 <View className="gap-y-7xl pb-5xl">
-                    {isAiBuildEnabled ? (
-                        <AiSettingsSection />
-                    ) : (
-                        <GroupedListSection title={t`Status`}>
-                            <GroupedListRow
-                                left={<GroupedListIcon icon={UserIconNameEnum.Sparkles} />}
-                                title={t`Not available in this version`}
-                                subtitle={t`Categories still use on-device rules.`}
-                            />
-                        </GroupedListSection>
-                    )}
+                    {isAiBuildEnabled ? <AiSettingsSection /> : <AiUnavailableSection />}
                     <AiModelStorage />
                     <MenuSpacer />
                 </View>

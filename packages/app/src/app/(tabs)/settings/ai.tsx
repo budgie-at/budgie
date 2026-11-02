@@ -11,7 +11,6 @@ import { GroupedListRow } from '../../../@generic/component/grouped-list-row/gro
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
 import { MenuSpacer } from '../../../@generic/component/menu-spacer/menu-spacer';
-import { ThemedSwitch } from '../../../@generic/component/themed-switch/themed-switch';
 import { isAiEnabled } from '../../../@generic/utils/is-ai-enabled.util';
 import { AiDownloadSelector } from '../../../ai/ai-download.selector';
 import { AiDownloadStatusCard } from '../../../ai/component/ai-download-status-card/ai-download-status-card';
@@ -38,20 +37,11 @@ export default function AiSettingsPage() {
             ? t`If a download arrives damaged, Budgie deletes it and waits for you to retry.`
             : t`Until the model is ready, categories come from simple rules on this phone. If a download arrives damaged, Budgie deletes it and waits for you to retry.`;
     const footer = isDisabled ? t`Available when on-device AI is on.` : downloadFooter;
-    const wifiStateTestID = isAiWifiOnly ? AiDownloadSelector.WifiOnlySwitchStateOn : AiDownloadSelector.WifiOnlySwitchStateOff;
-    const wifiOnlySlot = isDisabled ? (
-        <View className="flex-row items-center gap-x-xs">
-            <View testID={wifiStateTestID} className="h-1 w-1" />
-            <ThemedSwitch
-                disabled
-                value={false}
-                testID={AiDownloadSelector.WifiOnlySwitch}
-                accessibilityLabel={t`Download only on Wi-Fi`}
-            />
-        </View>
-    ) : (
+    const wifiOnlyValue = isDisabled ? false : isAiWifiOnly;
+    const wifiOnlySlot = (
         <SettingSwitch
-            value={isAiWifiOnly}
+            value={wifiOnlyValue}
+            disabled={isDisabled}
             onValueChange={handleWifiOnlyChange}
             testID={AiDownloadSelector.WifiOnlySwitch}
             stateOnTestID={AiDownloadSelector.WifiOnlySwitchStateOn}
