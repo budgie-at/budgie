@@ -121,7 +121,11 @@ appId: ${APP_ID}
 - assertVisible:
       id: 'CurrencyMarket.Price.BTC'
 - assertVisible:
-      id: 'CurrencyMarket.Rate.BTC'
+      id: 'CurrencyMarket.Change.BTC'
+- assertVisible:
+      id: 'CurrencyMarket.Sparkline.BTC'
+- tapOn:
+      id: 'CurrencyMarket.Range.YEAR'
 - assertVisible:
       id: 'CurrencyMarket.Sparkline.BTC'
 - assertVisible:
@@ -131,18 +135,24 @@ appId: ${APP_ID}
 - assertVisible:
       id: 'CurrencyMarket.Holdings.Value.BTC'
 - assertVisible:
-      id: 'CurrencyMarket.Holdings.AverageCost.BTC'
-- assertVisible:
-      id: 'CurrencyMarket.Holdings.CostBasis.BTC'
-- assertVisible:
       id: 'CurrencyMarket.Holdings.UnrealizedProfit.BTC'
 - assertVisible: '4 BTC'
+
+- scrollUntilVisible:
+      element:
+          id: 'CurrencyMarket.Account.BTC.2'
+      direction: DOWN
+      timeout: 3000
+- assertVisible:
+      id: 'CurrencyMarket.Account.BTC.2'
 
 - scrollUntilVisible:
       element:
           id: 'CurrencyMarket.MarketCap.BTC'
       direction: DOWN
       timeout: 3000
+- assertVisible:
+      id: 'CurrencyMarket.DailyChange.BTC'
 - assertVisible:
       id: 'CurrencyMarket.Volume.BTC'
 - assertVisible:
@@ -177,8 +187,6 @@ appId: ${APP_ID}
       timeout: 10000
 - assertVisible:
       id: 'CurrencyMarket.Price.ETH'
-- assertVisible:
-      id: 'CurrencyMarket.Rate.ETH'
 - assertVisible:
       id: 'CurrencyMarket.Sparkline.ETH'
 - assertVisible:
@@ -225,6 +233,22 @@ appId: ${APP_ID}
       centerElement: true
 - tapOn:
       id: 'AccountCard.Balance.E2E_Crypto_Vault.2_BTC'
+- extendedWaitUntil:
+      visible:
+          id: 'AccountDetails.ActionsButton'
+      timeout: 10000
+- assertVisible:
+      id: 'AccountDetails.ConvertedValue'
+- assertVisible:
+      id: 'AccountDetails.MarketLink'
+- tapOn:
+      id: 'AccountDetails.MarketLink'
+- extendedWaitUntil:
+      visible:
+          id: 'CurrencyMarket.Header.BTC'
+      timeout: 10000
+- tapOn:
+      id: 'PageHeader.BackButton'
 - extendedWaitUntil:
       visible:
           id: 'AccountDetails.ActionsButton'
@@ -285,10 +309,6 @@ appId: ${APP_ID}
           id: 'CurrencyMarket.Header.BTC'
       timeout: 10000
 - assertVisible: '5 BTC'
-- assertVisible:
-      id: 'CurrencyMarket.Holdings.AverageCost.BTC'
-- assertVisible:
-      id: 'CurrencyMarket.Holdings.CostBasis.BTC'
 - assertVisible:
       id: 'CurrencyMarket.Holdings.UnrealizedProfit.BTC'
 

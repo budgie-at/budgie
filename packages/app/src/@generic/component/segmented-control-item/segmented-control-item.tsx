@@ -9,17 +9,22 @@ import type { SegmentedControlSegmentInterface } from '../../interface/segmented
 interface Props<T extends string> {
     readonly segment: SegmentedControlSegmentInterface<T>;
     readonly isActive: boolean;
+    readonly disabled: boolean;
     readonly onPress: (value: T) => void;
 }
 
-const labelVariants = cva('text-[13px] text-primary', {
-    variants: { isActive: { true: 'font-semibold', false: 'font-medium' } }
+const labelVariants = cva('text-[13px]', {
+    variants: {
+        isActive: { true: 'font-semibold', false: 'font-medium' },
+        disabled: { true: 'text-secondary-foreground/50', false: 'text-primary' }
+    }
 });
 
-export const SegmentedControlItem = <T extends string>({ segment, isActive, onPress }: Props<T>) => {
+export const SegmentedControlItem = <T extends string>({ segment, isActive, disabled, onPress }: Props<T>) => {
     const handlePress = () => void onPress(segment.value);
 
-    const accessibilityState = { selected: isActive };
+    const isSelected = isActive && !disabled;
+    const accessibilityState = { selected: isSelected, disabled };
 
     return (
         <HapticPressable
@@ -27,6 +32,7 @@ export const SegmentedControlItem = <T extends string>({ segment, isActive, onPr
             accessibilityState={accessibilityState}
             className="flex-1 items-center justify-center px-md py-sm active:scale-100"
             hitSlop={0}
+            disabled={disabled}
             testID={segment.testID}
             onPress={handlePress}
         >
@@ -35,7 +41,7 @@ export const SegmentedControlItem = <T extends string>({ segment, isActive, onPr
                 adjustsFontSizeToFit
                 minimumFontScale={0.6}
                 maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
-                className={labelVariants({ isActive })}
+                className={labelVariants({ isActive: isSelected, disabled })}
             >
                 {segment.label}
             </Text>

@@ -1,0 +1,1 @@
+export const NEUTRAL_CHANGE_SHARE = 0.001;

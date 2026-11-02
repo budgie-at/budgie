@@ -6,20 +6,21 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useCollapsibleHeaderScroll } from '@rnw-community/react-native-collapsible-header';
 import { useScreenChrome } from '@rnw-community/react-native-screen-chrome';
 
-import { ProtectedMoney } from '../../../@generic/component/protected-money/protected-money';
 import { SCREEN_CHROME_CONTENT_INSET_TOP } from '../../../@generic/constant/screen-chrome-content-inset.constant';
-import { useProtectedAmountLabel } from '../../../@generic/hook/use-protected-amount-label.hook';
 import { AccountDetailsSelector } from '../../../app/(main)/account/[id]/account-details.selector';
 import { ACCOUNT_DETAILS_HERO_BALANCE_HEIGHT } from '../../constant/account-details-hero-balance-height.constant';
 import { ACCOUNT_DETAILS_NAV_BALANCE_FADE_START } from '../../constant/account-details-nav-balance-fade-start.constant';
 import { ACCOUNT_DETAILS_NAV_BALANCE_OFFSET } from '../../constant/account-details-nav-balance-offset.constant';
+import { useAccountDetailsBalanceLabel } from '../../hook/use-account-details-balance-label.hook';
 import { useIsStaticAccountDetailsHeader } from '../../hook/use-is-static-account-details-header.hook';
+import { AccountDetailsHeroBalanceValue } from '../account-details-hero-balance-value/account-details-hero-balance-value';
 
+import type { AccountAssociationEnum, AccountWithInstrumentEntityInterface } from '@budgie/contracts';
 import type { LayoutChangeEvent } from 'react-native';
 
 interface Props {
     readonly balance: number;
-    readonly instrumentSymbol: string;
+    readonly account: Pick<AccountWithInstrumentEntityInterface, 'type' | AccountAssociationEnum.INSTRUMENT>;
 }
 
 const NAV_FONT_SIZE = 13;
@@ -28,9 +29,9 @@ const NAV_OPACITY = 0.72;
 const STATIC_FADE_DISTANCE = 16;
 const Z_INDEX = 4;
 
-export const AccountDetailsHeroBalance = ({ balance, instrumentSymbol }: Props) => {
+export const AccountDetailsHeroBalance = ({ balance, account }: Props) => {
     const { t } = useLingui();
-    const protectAmount = useProtectedAmountLabel();
+    const getBalanceLabel = useAccountDetailsBalanceLabel();
     const { config } = useScreenChrome();
     const { scrollY } = useCollapsibleHeaderScroll();
     const { top } = useSafeAreaInsets();
@@ -40,7 +41,7 @@ export const AccountDetailsHeroBalance = ({ balance, instrumentSymbol }: Props) 
 
     const heroTop = top + SCREEN_CHROME_CONTENT_INSET_TOP;
     const collapsedHeaderHeight = config.collapsedHeaderHeight ?? config.headerHeight;
-    const formattedBalance = protectAmount(balance, instrumentSymbol);
+    const formattedBalance = getBalanceLabel(balance, account);
 
     const animatedStyle = useAnimatedStyle(() => {
         if (isStatic) {
@@ -84,14 +85,7 @@ export const AccountDetailsHeroBalance = ({ balance, instrumentSymbol }: Props) 
                 collapsable={false}
                 onLayout={handleLayout}
             >
-                <ProtectedMoney
-                    className="font-semibold tracking-[-1px]"
-                    minFontSize={24}
-                    maxFontSize={ACCOUNT_DETAILS_HERO_BALANCE_HEIGHT}
-                    instrumentSymbol={instrumentSymbol}
-                >
-                    {balance}
-                </ProtectedMoney>
+                <AccountDetailsHeroBalanceValue balance={balance} account={account} />
             </View>
         </Animated.View>
     );

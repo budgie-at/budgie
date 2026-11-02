@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [6.147.0](https://github.com/budgie-at/budgie/compare/v6.146.1...v6.147.0) (2026-11-02)
+
+### Bug Fixes
+
+* **app:** harden crypto ranges, daily change and return against stale and partial data ([28c6d69](https://github.com/budgie-at/budgie/commit/28c6d695b6faa3605e35fd1ac526b9be9e413545))
+* **app:** keep crypto return signs, rounding and VoiceOver selection consistent ([a8919cb](https://github.com/budgie-at/budgie/commit/a8919cb6c7766ae1f5d489c493c4195596ac4a39))
+* **app:** keep shared guards out of the chart open-label worklet ([141bc2d](https://github.com/budgie-at/budgie/commit/141bc2dc2120ffbb97f46faecf360849b0c3911d))
+* **app:** keep the crypto loading baseline clear of its label ([c37bf37](https://github.com/budgie-at/budgie/commit/c37bf3750f314cf10bb35b0dcbc52cefc29e667d))
+* **app:** let crypto position rows scroll from any point ([c133fae](https://github.com/budgie-at/budgie/commit/c133fae15223f87c0379adecafca9f61c7276505))
+* **app:** move the crypto chart open label off the price line ([5df0931](https://github.com/budgie-at/budgie/commit/5df093192dd39fcb236bbcd4610fa70a44a278cb))
+* **market:** value crypto rows with the net-worth exchange rate ([c74b1d0](https://github.com/budgie-at/budgie/commit/c74b1d02dc2f1e46d83bbe9458a470678ef17438))
+* **market:** value each crypto by its own price and cost only known lots ([4c92a18](https://github.com/budgie-at/budgie/commit/4c92a186315c04463f662e17ad76ddc8262ea2cd))
+
+### Features
+
+* **app:** centre crypto holding rows and show compact huge balances ([a8f7a6a](https://github.com/budgie-at/budgie/commit/a8f7a6a297755945d58cb9366d70aa43fdbdf290))
+* **app:** keep crypto rows readable and privacy masks stable ([664d86c](https://github.com/budgie-at/budgie/commit/664d86c798d9f2ab6da2466be09db68c228df8b0))
+* **app:** label crypto scrub dates and keep privacy captions readable ([c1b1086](https://github.com/budgie-at/budgie/commit/c1b10867b54567f5ba275701d39df6848b2eb4e2))
+* **app:** label the crypto chart open and keep tiny changes precise ([49d77d1](https://github.com/budgie-at/budgie/commit/49d77d1a6d19f48736e28ff4d14fa5287c0a5143))
+* **app:** mask crypto positions in privacy mode and reconcile value with price ([35b1c4a](https://github.com/budgie-at/budgie/commit/35b1c4af4c9ff2d69b3f1a55e537f5a6f5e6141c))
+* **app:** polish crypto chart scrub, cost wording and no-price layout ([823e952](https://github.com/budgie-at/budgie/commit/823e9525b235e561e10a54eb7e1ecbe5345cefb7))
+* **app:** reconcile crypto value captions to the cent and calm flat charts ([ee614cd](https://github.com/budgie-at/budgie/commit/ee614cd100b3d8d73291695b85693566e9dcbe48))
+* **app:** redesign crypto market and account screens ([c592805](https://github.com/budgie-at/budgie/commit/c592805d898f40c2a4a0463f22b7d744fbb1a254))
+* **app:** refine crypto market chrome, chart and states ([16c2384](https://github.com/budgie-at/budgie/commit/16c2384a7e79c357c02b99d9fd18510f458044a6))
+* **app:** translate crypto market strings ([e467e8d](https://github.com/budgie-at/budgie/commit/e467e8d85c1cba4de84007c449f469a28261a98b))
+
+
 ## [6.146.1](https://github.com/budgie-at/budgie/compare/v6.146.0...v6.146.1) (2026-11-02)
 
 ### Performance Improvements

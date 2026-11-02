@@ -11,13 +11,14 @@ interface Props<T extends string> {
     readonly segments: readonly SegmentedControlSegmentInterface<T>[];
     readonly value: T;
     readonly onChange: (value: T) => void;
+    readonly disabled?: boolean;
 }
 
 const TRACK_PADDING = 2;
 const THUMB_SPRING = { damping: 30, stiffness: 420, mass: 0.8 };
 const continuousCorners = { borderCurve: 'continuous' as const };
 
-export const SegmentedControl = <T extends string>({ segments, value, onChange }: Props<T>) => {
+export const SegmentedControl = <T extends string>({ segments, value, onChange, disabled = false }: Props<T>) => {
     const reducedMotion = useReducedMotion();
     const segmentWidth = useSharedValue(0);
     const activeIndex = Math.max(
@@ -36,21 +37,31 @@ export const SegmentedControl = <T extends string>({ segments, value, onChange }
         void segmentWidth.set((event.nativeEvent.layout.width - TRACK_PADDING * 2) / segments.length);
 
     const thumbStyle = [continuousCorners, thumbAnimatedStyle];
+    const accessibilityState = { disabled };
 
     return (
         <View
             accessibilityRole="tablist"
+            accessibilityState={accessibilityState}
             className="min-h-[36px] flex-row rounded-[10px] bg-surface-fill p-[2px]"
             style={continuousCorners}
             onLayout={handleLayout}
         >
-            <Animated.View
-                className="absolute top-[2px] bottom-[2px] left-[2px] rounded-[8px] bg-white shadow-sm dark:bg-[rgb(99,99,102)]"
-                style={thumbStyle}
-            />
+            {disabled ? null : (
+                <Animated.View
+                    className="absolute top-[2px] bottom-[2px] left-[2px] rounded-[8px] bg-white shadow-sm dark:bg-[rgb(99,99,102)]"
+                    style={thumbStyle}
+                />
+            )}
 
             {segments.map(segment => (
-                <SegmentedControlItem key={segment.value} segment={segment} isActive={segment.value === value} onPress={onChange} />
+                <SegmentedControlItem
+                    key={segment.value}
+                    segment={segment}
+                    isActive={segment.value === value}
+                    disabled={disabled}
+                    onPress={onChange}
+                />
             ))}
         </View>
     );
