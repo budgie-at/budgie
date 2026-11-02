@@ -11,11 +11,11 @@ export const stripTransactionAccountTitlePrefix = (title: string | null | undefi
 
     const suffix = title.slice(prefix.length);
 
-    if (!/^[\s·:-]/u.test(suffix)) {
+    if (!/^[\s·:–—−-]/u.test(suffix)) {
         return title;
     }
 
-    const remainder = suffix.replace(/^[\s·:-]+/u, '').trim();
+    const remainder = suffix.replace(/^[\s·:–—−-]+/u, '').trim();
 
     return isNotEmptyString(remainder) ? remainder : title;
 };

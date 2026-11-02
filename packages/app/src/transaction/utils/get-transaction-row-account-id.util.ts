@@ -1,29 +1,39 @@
-import { isDefined } from '@rnw-community/shared';
+import { TransactionAssociationEnum } from '@budgie/contracts';
 
-import { getSingleAccountId } from './get-single-account-id.util';
+import { isDefined } from '@rnw-community/shared';
 
 import type { TransactionWithRelationsEntityInterface } from '@budgie/contracts';
 
 export const getTransactionRowAccountId = (
-    transaction: Pick<TransactionWithRelationsEntityInterface, 'fromAccountId' | 'toAccountId'>,
+    transaction: Pick<TransactionWithRelationsEntityInterface, 'fromAccountId' | 'toAccountId' | TransactionAssociationEnum.ENTRIES>,
     accountIds: number[] | null
 ): number | null => {
-    const singleAccountId = getSingleAccountId(accountIds);
-
-    if (isDefined(singleAccountId)) {
-        return singleAccountId;
+    if (!isDefined(accountIds)) {
+        return null;
     }
 
-    if (!isDefined(accountIds) || !isDefined(transaction.fromAccountId) || !isDefined(transaction.toAccountId)) {
+    if (accountIds.length === 1) {
+        return accountIds[0];
+    }
+
+    if (!isDefined(transaction.fromAccountId) || !isDefined(transaction.toAccountId)) {
         return null;
     }
 
     const isFromAccountScoped = accountIds.includes(transaction.fromAccountId);
     const isToAccountScoped = accountIds.includes(transaction.toAccountId);
 
-    if (isFromAccountScoped === isToAccountScoped) {
+    if (isFromAccountScoped !== isToAccountScoped) {
+        return isFromAccountScoped ? transaction.fromAccountId : transaction.toAccountId;
+    }
+
+    if (isFromAccountScoped) {
         return null;
     }
 
-    return isFromAccountScoped ? transaction.fromAccountId : transaction.toAccountId;
+    const scopedEntryAccountIds = [
+        ...new Set(transaction.entries.map(entry => entry.accountId).filter(accountId => accountIds.includes(accountId)))
+    ];
+
+    return scopedEntryAccountIds.length === 1 ? scopedEntryAccountIds[0] : null;
 };

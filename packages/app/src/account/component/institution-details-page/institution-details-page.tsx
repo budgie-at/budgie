@@ -64,7 +64,7 @@ export const InstitutionDetailsPage = ({ integration, institution, balancesByAcc
 
     const transactionList = (
         <View className="flex-1">
-            <TransactionAccountTitlePrefixContext.Provider value={providerTitle}>
+            <TransactionAccountTitlePrefixContext.Provider value={institution.provider}>
                 <CollapsibleChromeTransactionList accountIds={institution.accounts.map(account => account.id)}>
                     <InstitutionDetailsSummary institution={institution} balancesByAccountId={balancesByAccountId} />
                 </CollapsibleChromeTransactionList>
