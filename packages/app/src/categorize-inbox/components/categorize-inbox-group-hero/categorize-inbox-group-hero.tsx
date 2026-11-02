@@ -5,6 +5,7 @@ import { Text, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { useScrollFadeStyle } from '@rnw-community/react-native-screen-chrome';
+import { isDefined } from '@rnw-community/shared';
 
 import { cn } from '../../../@generic/utils/cn.util';
 import { testID } from '../../../@generic/utils/test-id.util';
@@ -32,10 +33,20 @@ export const CategorizeInboxGroupHero = ({ cluster }: Props) => {
     const protectAmount = useCategorizeInboxAmountLabel();
     const defaultInstrument = useAtomValue(defaultInstrumentAtom);
 
-    const { amount, symbol, sign } = getCategorizeInboxClusterTotal(cluster, defaultInstrument.symbol);
+    const total = getCategorizeInboxClusterTotal(cluster, defaultInstrument.symbol);
     const isAverageShown = !hasCategorizeInboxUniformAmounts(cluster.rows) && !hasCategorizeInboxMonthlyVariation(cluster.rows);
     const amountColorClassName = cluster.rows.at(0)?.type === TransactionTypeEnum.INCOME ? 'text-positive-foreground' : 'text-primary';
     const averageLine = isAverageShown ? <CategorizeInboxGroupStatsLine cluster={cluster} /> : null;
+    const amountLine = isDefined(total) ? (
+        <Text
+            className={cn('text-[40px] leading-[48px] font-semibold tracking-[-1px] tabular-nums', amountColorClassName)}
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            minimumFontScale={0.6}
+        >
+            {`${total.sign}${protectAmount(total.amount, total.symbol)}`}
+        </Text>
+    ) : null;
 
     return (
         <View className="items-center gap-y-sm px-3xl pb-xs pt-md">
@@ -49,14 +60,7 @@ export const CategorizeInboxGroupHero = ({ cluster }: Props) => {
                         {formatCategorizeInboxMerchantTitle(cluster.displayTitle)}
                     </Text>
                 </Animated.View>
-                <Text
-                    className={cn('text-[40px] leading-[48px] font-semibold tracking-[-1px] tabular-nums', amountColorClassName)}
-                    numberOfLines={1}
-                    adjustsFontSizeToFit
-                    minimumFontScale={0.6}
-                >
-                    {`${sign}${protectAmount(amount, symbol)}`}
-                </Text>
+                {amountLine}
             </View>
             <Text className="text-secondary-foreground text-center text-[15px] leading-[20px]">
                 <Plural value={cluster.rows.length} one="# payment" other="# payments" />

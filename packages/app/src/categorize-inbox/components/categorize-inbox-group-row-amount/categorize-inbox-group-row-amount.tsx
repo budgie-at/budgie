@@ -2,6 +2,8 @@ import { TransactionTypeEnum } from '@budgie/contracts';
 import { useAtomValue } from '@effect/atom-react/Hooks';
 import { Text } from 'react-native';
 
+import { isDefined } from '@rnw-community/shared';
+
 import { cn } from '../../../@generic/utils/cn.util';
 import { defaultInstrumentAtom } from '../../../settings/constants/settings-atoms.constant';
 import { useCategorizeInboxAmountLabel } from '../../hook/use-categorize-inbox-amount-label.hook';
@@ -20,8 +22,13 @@ export const CategorizeInboxGroupRowAmount = ({ cluster }: Props) => {
     const [firstRow] = cluster.rows;
     const total = getCategorizeInboxClusterTotal(cluster, defaultInstrument.symbol);
     const isSingleRow = cluster.rows.length === 1;
-    const amount = isSingleRow ? firstRow.amount : total.amount;
-    const symbol = isSingleRow ? firstRow.instrumentSymbol : total.symbol;
+    const amount = isSingleRow ? firstRow.amount : total?.amount;
+    const symbol = isSingleRow ? firstRow.instrumentSymbol : total?.symbol;
+
+    if (!isDefined(amount) || !isDefined(symbol)) {
+        return null;
+    }
+
     const isIncome = firstRow.type === TransactionTypeEnum.INCOME;
     const sign = isIncome ? '+' : '';
     const colorClassName = isIncome ? 'text-positive-foreground' : 'text-primary';

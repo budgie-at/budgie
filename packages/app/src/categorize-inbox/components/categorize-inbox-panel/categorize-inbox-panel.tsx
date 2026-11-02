@@ -65,7 +65,9 @@ export const CategorizeInboxPanel = ({ activeSection, children }: Props) => {
         [CategorizeInboxSectionEnum.ONE_OFFS]: null
     };
     const primaryAction = isDefined(activeSection) ? sectionActions[activeSection] : acceptAll;
-    const slot = transferUndo ?? labelUndo ?? movedToCashUndo ?? primaryAction ?? children;
+    const undo = transferUndo ?? labelUndo ?? movedToCashUndo;
+    const slot = isDefined(children) ? children : (undo ?? primaryAction);
+    const doneUndo = isDefined(children) ? undo : null;
     const slotMotion = reducedMotion ? SLOT_REDUCED_MOTION : SLOT_MOTION;
 
     if (!isDefined(slot)) {
@@ -78,6 +80,7 @@ export const CategorizeInboxPanel = ({ activeSection, children }: Props) => {
                 className="border-t-hairline border-surface-separator bg-surface px-5xl pb-safe pt-md"
                 testID={CategorizeInboxPanelSelector.Panel}
             >
+                {doneUndo}
                 <View className="min-h-[52px] justify-center">
                     <Animated.View key={slot.key} entering={slotMotion.entering} exiting={slotMotion.exiting} className="justify-center">
                         {slot}
