@@ -20,9 +20,19 @@ interface Props {
     readonly headers: string[];
     readonly selectedHeaders: string[];
     readonly isRequired?: boolean;
+    readonly inferredHeader?: string;
 }
 
-export const ImportColumnMapField = ({ control, name, label, headers, selectedHeaders, samples, isRequired = false }: Props) => {
+export const ImportColumnMapField = ({
+    control,
+    name,
+    label,
+    headers,
+    selectedHeaders,
+    samples,
+    isRequired = false,
+    inferredHeader
+}: Props) => {
     const { t } = useLingui();
     const {
         field: { value, onChange },
@@ -38,9 +48,10 @@ export const ImportColumnMapField = ({ control, name, label, headers, selectedHe
         });
     };
 
-    const emptyValue = isRequired ? t`Required` : t`None`;
+    const emptyValue = isRequired ? t`Choose` : t`None`;
     const displayValue = isNotEmptyString(value) ? value : emptyValue;
-    const subtitle = isDefined(error) ? <Text className="text-destructive-foreground text-[13px]">{error.message}</Text> : null;
+    const sampleSubtitle = isNotEmptyString(value) && value === inferredHeader ? samples[value] : null;
+    const subtitle = isDefined(error) ? <Text className="text-destructive-foreground text-[13px]">{error.message}</Text> : sampleSubtitle;
 
     return (
         <GroupedListRow
@@ -51,7 +62,11 @@ export const ImportColumnMapField = ({ control, name, label, headers, selectedHe
             right={
                 <View className="max-w-[55%] flex-row items-center gap-x-md">
                     <Text
-                        className={cn('shrink text-secondary-foreground text-[17px]', isDefined(error) && 'text-destructive-foreground')}
+                        className={cn(
+                            'shrink text-secondary-foreground text-[17px]',
+                            isRequired && !isNotEmptyString(value) && 'text-primary',
+                            isDefined(error) && 'text-destructive-foreground'
+                        )}
                         numberOfLines={1}
                         ellipsizeMode="tail"
                     >

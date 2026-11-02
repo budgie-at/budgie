@@ -1,8 +1,10 @@
+import { UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { View } from 'react-native';
 
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
 import { GoBackButton } from '../../../@generic/component/go-back-button/go-back-button';
+import { GroupedListIcon } from '../../../@generic/component/grouped-list-icon/grouped-list-icon';
 import { GroupedListRow } from '../../../@generic/component/grouped-list-row/grouped-list-row';
 import { GroupedListSection } from '../../../@generic/component/grouped-list-section/grouped-list-section';
 import { GroupedSurface } from '../../../@generic/component/grouped-surface/grouped-surface';
@@ -30,8 +32,12 @@ export default function AiFeaturesPage() {
                     {isAiBuildEnabled ? (
                         <AiSettingsSection />
                     ) : (
-                        <GroupedListSection>
-                            <GroupedListRow title={t`AI unavailable in this version`} subtitle={t`Categories still use on-device rules.`} />
+                        <GroupedListSection title={t`Status`}>
+                            <GroupedListRow
+                                left={<GroupedListIcon icon={UserIconNameEnum.Sparkles} />}
+                                title={t`Not available in this version`}
+                                subtitle={t`Categories still use on-device rules.`}
+                            />
                         </GroupedListSection>
                     )}
                     <AiModelStorage />

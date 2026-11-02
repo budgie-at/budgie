@@ -9,7 +9,7 @@ env:
 
 - extendedWaitUntil:
       visible:
-          id: 'ImportScreen.PresetChip.Budgie'
+          id: 'ImportPresetPickerSelector.Toggle'
       timeout: 10000
 
 - extendedWaitUntil:
@@ -26,7 +26,7 @@ env:
 
 - extendedWaitUntil:
       notVisible:
-          id: 'ImportScreen.PresetChip.Budgie'
+          id: 'ImportPresetPickerSelector.Toggle'
       timeout: 60000
 
 - runFlow: ../navigation/navigate-to-transactions.flow.yaml

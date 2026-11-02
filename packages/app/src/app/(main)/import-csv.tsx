@@ -71,7 +71,7 @@ const IMPORT_COLUMN_SECTIONS = [
 export default function ImportScreen() {
     const { fileUri } = useLocalSearchParams<{ fileUri?: string }>();
 
-    const { t } = useLingui();
+    const { t, i18n } = useLingui();
     const { bottom } = useSafeAreaInsets();
 
     const csvAtom = importCsvAtom(isNotEmptyString(fileUri) ? fileUri : null);
@@ -82,7 +82,7 @@ export default function ImportScreen() {
     const isLoading = isReadingFile || isImporting;
     const hasDetectedPreset = useRef(false);
     const [detectedPreset, setDetectedPreset] = useState<ImportPresetEnum | undefined>();
-    const [matchDescription, setMatchDescription] = useState('');
+    const [sampleMatchedColumns, setSampleMatchedColumns] = useState<Partial<ImportColumnMapFormValues>>({});
     const [selectedPreset, setSelectedPreset] = useState<ImportPresetEnum | undefined>();
 
     const headersSet = new Set(headers);
@@ -117,9 +117,9 @@ export default function ImportScreen() {
     const formValues = useWatch({ control });
     const selectedHeaders = Object.values(formValues).filter(isNotEmptyString);
 
-    const handlePresetSelect = (preset: ImportPresetEnum) => {
+    const handlePresetSelect = (preset: ImportPresetEnum | undefined) => {
         setSelectedPreset(preset);
-        reset(IMPORT_PRESETS[preset]);
+        reset(isNotEmptyString(preset) ? IMPORT_PRESETS[preset] : matchImportColumns(headers, samples));
     };
 
     const handleStartImport = (columnMap: ImporterColumnMapInterface) =>
@@ -149,11 +149,14 @@ export default function ImportScreen() {
                 } else {
                     const matchedByName = matchImportColumns(result.value.headers);
                     const matchedColumns = matchImportColumns(result.value.headers, result.value.samples);
-                    const hasMatchedSamples = Object.values(matchedColumns).some(
-                        header => isNotEmptyString(header) && !Object.values(matchedByName).includes(header)
+                    setSampleMatchedColumns(
+                        Object.fromEntries(
+                            IMPORT_COLUMN_FIELDS.filter(
+                                ({ name }) => isNotEmptyString(matchedColumns[name]) && !isNotEmptyString(matchedByName[name])
+                            ).map(({ name }) => [name, matchedColumns[name]])
+                        )
                     );
                     reset(matchedColumns);
-                    setMatchDescription(getImportMatchDescription(matchedColumns, hasMatchedSamples, t));
                 }
             }
 
@@ -175,11 +178,8 @@ export default function ImportScreen() {
     const requiredFooter = getImportRequiredFooter(unmappedRequiredCount, t);
     const missingFieldLabels = missingRequiredFields.map(({ label }) => t(label)).join(', ');
     const accessibilityHint = isPositiveNumber(unmappedRequiredCount) ? t`Choose columns for ${missingFieldLabels}` : '';
-    const buttonVariant = isPositiveNumber(unmappedRequiredCount) ? 'secondary' : 'cta';
-    const buttonClassName = isPositiveNumber(unmappedRequiredCount) ? 'bg-surface-fill border-transparent opacity-100' : '';
-    const buttonLabelClassName = isPositiveNumber(unmappedRequiredCount)
-        ? 'text-secondary-foreground text-lg font-semibold text-center'
-        : 'text-cta-foreground text-lg font-semibold text-center';
+    const buttonClassName = isImportDisabled ? 'opacity-30' : '';
+    const matchDescription = getImportMatchDescription(matchImportColumns(headers), sampleMatchedColumns, t, i18n.locale);
     const footerStyle = { marginBottom: -bottom, paddingBottom: bottom + 12 };
     const buttonContent = isPositiveNumber(unmappedRequiredCount)
         ? t({ message: plural(unmappedRequiredCount, { one: 'Match # required field', other: 'Match # required fields' }) })
@@ -197,10 +197,10 @@ export default function ImportScreen() {
                 footer={
                     <View className="bg-surface border-t-hairline border-surface-separator px-5xl pt-lg" style={footerStyle}>
                         <Button
-                            content={<Text className={buttonLabelClassName}>{buttonContent}</Text>}
+                            content={<Text className="text-cta-foreground text-lg font-semibold text-center">{buttonContent}</Text>}
                             accessibilityLabel={buttonContent}
                             accessibilityHint={accessibilityHint}
-                            variant={buttonVariant}
+                            variant="cta"
                             className={buttonClassName}
                             onPress={handleSubmit(handleStartImport)}
                             size="lg"
@@ -233,6 +233,7 @@ export default function ImportScreen() {
                                     samples={samples}
                                     selectedHeaders={selectedHeaders}
                                     isRequired={isRequired}
+                                    inferredHeader={sampleMatchedColumns[name]}
                                 />
                             ))}
                         </GroupedListSection>

@@ -30,7 +30,7 @@ export const ApplePayCaptureHero = ({ children }: PropsWithChildren) => {
                         <Trans>Record Apple Pay purchases</Trans>
                     </Text>
                     <Text className="text-secondary-foreground text-[13px] leading-[18px]">
-                        <Trans>Record Apple Pay taps with a Shortcuts automation.</Trans>
+                        <Trans>A Shortcuts automation logs each tap for you.</Trans>
                     </Text>
                 </View>
             </View>

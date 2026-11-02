@@ -3,6 +3,7 @@ import { CategoryService } from '@budgie/ledger';
 import { useLingui } from '@lingui/react/macro';
 import * as Effect from 'effect/Effect';
 import { AccessibilityInfo, View } from 'react-native';
+import { ScopedVariables, useCSSVariable } from 'uniwind';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -28,6 +29,8 @@ export const CategoryIconFixRow = ({ category }: Props) => {
     const { t } = useLingui();
     const [openIconSelector] = useIconSelectorModal();
     const iconTerms = getCategoryIconTerms(category);
+    const primaryForeground = useCSSVariable('--color-primary');
+    const suggestionVariables = { ...(isDefined(primaryForeground) && { '--color-secondary-foreground': primaryForeground }) };
 
     const { run, isLoading } = useSingleFlight();
     const categoryTitle = category.title;
@@ -68,14 +71,16 @@ export const CategoryIconFixRow = ({ category }: Props) => {
             <GroupedListRow title={category.title} left={<GroupedListIcon icon={category.icon} />} />
             <View testID={CategoryIconFixRowSelector.Row(category.title)}>
                 <LoadingContent isLoading={isLoading} className="pl-[16px] py-lg">
-                    <IconSuggestions
-                        terms={iconTerms}
-                        limit={6}
-                        edgeFadeClassName="from-grouped-surface-row/0 to-grouped-surface-row"
-                        excludedIcons={PLACEHOLDER_CATEGORY_ICONS}
-                        onSelect={handleSelect}
-                        testID={CategoryIconFixRowSelector.Suggestions(category.title)}
-                    />
+                    <ScopedVariables variables={suggestionVariables}>
+                        <IconSuggestions
+                            terms={iconTerms}
+                            limit={6}
+                            edgeFadeClassName="from-grouped-surface-row/0 to-grouped-surface-row"
+                            excludedIcons={PLACEHOLDER_CATEGORY_ICONS}
+                            onSelect={handleSelect}
+                            testID={CategoryIconFixRowSelector.Suggestions(category.title)}
+                        />
+                    </ScopedVariables>
                 </LoadingContent>
             </View>
             <GroupedListRow

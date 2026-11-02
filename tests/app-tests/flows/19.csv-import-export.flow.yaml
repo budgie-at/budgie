@@ -14,8 +14,11 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
     visible:
-      id: 'ImportScreen.PresetChip.Budgie'
+      id: 'ImportPresetPickerSelector.Toggle'
     timeout: 15000
+
+- tapOn:
+    id: 'ImportPresetPickerSelector.Toggle'
 
 - tapOn:
     id: 'ImportScreen.PresetChip.Budgie'
@@ -134,8 +137,11 @@ appId: ${APP_ID}
 
 - extendedWaitUntil:
     visible:
-      id: 'ImportScreen.PresetChip.Budgie'
+      id: 'ImportPresetPickerSelector.Toggle'
     timeout: 15000
+
+- tapOn:
+    id: 'ImportPresetPickerSelector.Toggle'
 
 - tapOn:
     id: 'ImportScreen.PresetChip.Budgie'

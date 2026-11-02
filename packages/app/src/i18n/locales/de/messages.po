@@ -370,6 +370,10 @@ msgstr "{fieldLabel} ist nicht {value}"
 msgid "{fieldLabel} matches {value}"
 msgstr "{fieldLabel} entspricht {value}"
 
+#: src/import/utils/get-import-match-description.util.ts
+msgid "{fields} matched from sample values"
+msgstr ""
+
 #: src/settings/components/your-data-card/your-data-card.tsx
 msgid "{fileSize} · Stored only on this device"
 msgstr "{fileSize} · Nur auf diesem Gerät gespeichert"
@@ -966,6 +970,10 @@ msgstr "Eine Regel erkennt eingehende Banktransaktionen und weist automatisch ei
 msgid "A rule with the same conditions already exists."
 msgstr "Eine Regel mit denselben Bedingungen existiert bereits."
 
+#: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
+msgid "A Shortcuts automation logs each tap for you."
+msgstr ""
+
 #: src/budget/constant/budget-period-rate-label.constant.ts
 msgid "a week"
 msgstr "pro Woche"
@@ -1268,8 +1276,8 @@ msgid "AI off"
 msgstr "KI aus"
 
 #: src/app/(tabs)/settings/ai-features.tsx
-msgid "AI unavailable in this version"
-msgstr "KI in dieser Version nicht verfügbar"
+#~ msgid "AI unavailable in this version"
+#~ msgstr "KI in dieser Version nicht verfügbar"
 
 #: src/@generic/component/filter-sheet/filter-sheet-bulk-toggle/filter-sheet-bulk-toggle.tsx
 msgid "All"
@@ -1366,11 +1374,13 @@ msgstr "Auch für neue Zahlungen «{jarName}»"
 msgid "Also found as “{englishTitle}”"
 msgstr "Auch zu finden als „{englishTitle}“"
 
+#: src/import/utils/get-import-match-description.util.ts
 #: src/rule/constant/rule-condition-field.constant.ts
 msgid "amount"
 msgstr "Betrag"
 
 #: src/app/(main)/import-csv.tsx
+#: src/import/utils/get-import-match-description.util.ts
 #: src/rule/components/rule-condition-amount-value-input/rule-condition-amount-value-input.tsx
 #: src/rule/constant/rule-condition-field.constant.ts
 #: src/transaction/components/statistics-filters-menu/statistics-filters-menu.tsx
@@ -1800,6 +1810,7 @@ msgstr "Budget gesperrt, {formattedDaysLeft}. Zum Anzeigen entsperren."
 msgid "Budget name"
 msgstr "Budgetname"
 
+#: src/import/components/import-preset-options/import-preset-options.tsx
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 #: src/onboarding/component/onboarding-welcome/onboarding-welcome.tsx
 #: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
@@ -2124,6 +2135,8 @@ msgstr "Transaktionsverlauf wird geprüft"
 
 #: src/budget/components/budget-event-tag-field/budget-event-tag-field.tsx
 #: src/budget/components/budget-fund-category-field/budget-fund-category-field.tsx
+#: src/import/components/import-column-map-field/import-column-map-field.tsx
+#: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "Choose"
 msgstr "Auswählen"
 
@@ -2955,7 +2968,12 @@ msgstr "CSV exportiert"
 msgid "CSV files"
 msgstr "CSV-Dateien"
 
+#: src/import/utils/get-import-match-description.util.ts
+msgid "currency"
+msgstr ""
+
 #: src/account/component/update-liability-account/update-liability-account.tsx
+#: src/import/utils/get-import-match-description.util.ts
 msgid "Currency"
 msgstr "Währung"
 
@@ -2964,6 +2982,7 @@ msgid "Current balance"
 msgstr "Aktueller Saldo"
 
 #: src/budget/components/budget-fund-repeat-field/budget-fund-repeat-field.tsx
+#: src/import/components/import-preset-options/import-preset-options.tsx
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "Custom"
 msgstr "Benutzerdefiniert"
@@ -2982,8 +3001,13 @@ msgstr "Dunkel"
 msgid "Data tools"
 msgstr "Datenwerkzeuge"
 
+#: src/import/utils/get-import-match-description.util.ts
+msgid "date"
+msgstr ""
+
 #: src/@generic/component/date-filter/date-filter.tsx
 #: src/app/(main)/import-csv.tsx
+#: src/import/utils/get-import-match-description.util.ts
 #: src/transaction/components/transaction-date-field-icon/transaction-date-field-icon.tsx
 msgid "Date"
 msgstr "Datum"
@@ -3207,6 +3231,10 @@ msgid "Details"
 msgstr "Details"
 
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
+msgid "Detected automatically. Tap to pick another format."
+msgstr ""
+
+#: src/import/components/import-preset-options/import-preset-options.tsx
 msgid "Detected from column names"
 msgstr "Anhand der Spaltennamen erkannt"
 
@@ -3830,6 +3858,7 @@ msgstr "Filter"
 msgid "Filters · {activeCount}"
 msgstr "Filter · {activeCount}"
 
+#: src/import/components/import-preset-options/import-preset-options.tsx
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "FinEye"
 msgstr "FinEye"
@@ -4570,8 +4599,12 @@ msgid "Matched by column name"
 msgstr "Über Spaltennamen zugeordnet"
 
 #: src/import/utils/get-import-match-description.util.ts
-msgid "Matched by column names and sample values"
-msgstr "Über Spaltennamen und Beispielwerte zugeordnet"
+msgid "Matched by column name and sample values"
+msgstr ""
+
+#: src/import/utils/get-import-match-description.util.ts
+#~ msgid "Matched by column names and sample values"
+#~ msgstr "Über Spaltennamen und Beispielwerte zugeordnet"
 
 #: src/rule/components/rule-action-account-selector/rule-action-account-selector.tsx
 msgid "Matched expenses are converted into a transfer to this account."
@@ -5203,6 +5236,7 @@ msgid "Not all of your bank history is imported yet"
 msgstr "Dein Bankverlauf ist noch nicht vollständig importiert"
 
 #: src/ai/component/ai-download-idle-card/ai-download-idle-card.tsx
+#: src/app/(tabs)/settings/ai-features.tsx
 msgid "Not available in this version"
 msgstr "In dieser Version nicht verfügbar"
 
@@ -6130,8 +6164,8 @@ msgid "Record Apple Pay purchases"
 msgstr "Apple-Pay-Käufe erfassen"
 
 #: src/wallet-capture/component/apple-pay-capture-hero/apple-pay-capture-hero.tsx
-msgid "Record Apple Pay taps with a Shortcuts automation."
-msgstr "Apple-Pay-Zahlungen mit einer Kurzbefehl-Automatisierung erfassen."
+#~ msgid "Record Apple Pay taps with a Shortcuts automation."
+#~ msgstr "Apple-Pay-Zahlungen mit einer Kurzbefehl-Automatisierung erfassen."
 
 #: src/wallet-capture/component/apple-pay-capture-settings-card/apple-pay-capture-settings-card.tsx
 msgid "Record card taps with Shortcuts"
@@ -6266,7 +6300,6 @@ msgid "Report a bug or idea"
 msgstr "Fehler oder Idee melden"
 
 #: src/app/(main)/import-csv.tsx
-#: src/import/components/import-column-map-field/import-column-map-field.tsx
 #: src/rule/components/rule-value-picker-button/rule-value-picker-button.tsx
 #: src/rule/hooks/use-rule-text-value-meta.hook.ts
 msgid "Required"
@@ -6839,6 +6872,7 @@ msgstr "Kleinere Gruppen"
 msgid "Smart suggestions"
 msgstr "Intelligente Vorschläge"
 
+#: src/import/components/import-preset-options/import-preset-options.tsx
 #: src/import/components/import-preset-picker/import-preset-picker.tsx
 msgid "SmartBudget"
 msgstr "SmartBudget"
@@ -6980,6 +7014,7 @@ msgid "Statement imported"
 msgstr "Kontoauszug importiert"
 
 #: src/ai/component/ai-settings-section/ai-settings-section.tsx
+#: src/app/(tabs)/settings/ai-features.tsx
 msgid "Status"
 msgstr "Status"
 

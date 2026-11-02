@@ -14,6 +14,7 @@ interface Props {
     readonly testID?: string;
     readonly accessibilityLabel?: string;
     readonly size?: 'md' | 'sm';
+    readonly className?: string;
 }
 
 const CONTINUOUS_CORNERS = { borderCurve: 'continuous' } as const;
@@ -26,7 +27,8 @@ export const SettingsPillButton = ({
     isLoading = false,
     testID,
     accessibilityLabel = label,
-    size = 'md'
+    size = 'md',
+    className
 }: Props) => {
     const backgroundClassName = variant === 'cta' ? 'bg-cta-background' : 'bg-surface-fill';
     const labelClassName = variant === 'cta' ? 'text-cta-foreground' : 'text-primary';
@@ -44,7 +46,7 @@ export const SettingsPillButton = ({
     if (!isDefined(onPress)) {
         return (
             <View
-                className={cn('items-center justify-center rounded-full py-xs', minWidthClassName, backgroundClassName)}
+                className={cn('items-center justify-center rounded-full py-xs', minWidthClassName, backgroundClassName, className)}
                 style={CONTINUOUS_CORNERS}
                 testID={testID}
                 importantForAccessibility="no-hide-descendants"
@@ -57,7 +59,12 @@ export const SettingsPillButton = ({
 
     return (
         <HapticPressable
-            className={cn('items-center justify-center rounded-full py-xs active:opacity-70', minWidthClassName, backgroundClassName)}
+            className={cn(
+                'items-center justify-center rounded-full py-xs active:opacity-70',
+                minWidthClassName,
+                backgroundClassName,
+                className
+            )}
             style={CONTINUOUS_CORNERS}
             hitSlop={HIT_SLOP}
             onPress={onPress}
