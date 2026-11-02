@@ -19,6 +19,8 @@ export const useBankIntegrationAccountRowState = (
     const { sync } = useAccountSync(account.id);
     const { isKeyRejected } = useBankIntegrationAccountPreviewsQuery(integration.id);
 
+    const { title } = account;
+
     const isFailureDescription = sync?.status === SyncStatusEnum.FAILED;
     const isRejected = capabilities.supportsLiveSync && isKeyRejected;
     const syncState = getAccountSyncState(sync);
@@ -37,7 +39,7 @@ export const useBankIntegrationAccountRowState = (
         isFailed: isFailureDescription && !isRejected,
         isFailureDescription,
         hiddenLabel: isFailureDescription ? hiddenLabel : '',
-        switchLabel: capabilities.supportsFileImport ? t`Include ${account.title} in imports` : t`Sync ${account.title}`,
+        switchLabel: capabilities.supportsFileImport ? t`Include ${title} in imports` : t`Sync ${title}`,
         description: isFailureDescription ? failureDescription : [stateLabel, hiddenLabel].filter(isNotEmptyString).join(' · '),
         identityLabel:
             integration.provider === ExternalSourceEnum.BINANCE ? '' : getAccountIdentityLabel(account.instrument.code, account.iban),
