@@ -18,9 +18,17 @@ appId: ${APP_ID}
 - assertVisible:
       id: 'InstitutionRow.1'
 
-# 3. Open the integration settings page
+# 3. Open the institution, verify its overview, then open connection settings
 - tapOn:
       id: 'InstitutionRow.1'
+- extendedWaitUntil:
+      visible:
+          id: 'Institution.Page'
+      timeout: 10000
+- assertVisible:
+      id: 'Institution.Accounts'
+- tapOn:
+      id: 'Institution.SettingsButton'
 - extendedWaitUntil:
       visible:
           id: 'BankIntegration.Page'

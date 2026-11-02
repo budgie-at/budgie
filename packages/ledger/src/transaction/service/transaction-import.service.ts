@@ -26,6 +26,7 @@ import { stampForDeferredEmbedding } from '../utils/stamp-for-deferred-embedding
 import { ImportedBatchNormalizerService } from './imported-batch-normalizer.service';
 import { RefreshedImportedEntriesService } from './refreshed-imported-entries.service';
 import { TransactionBatchCreateService } from './transaction-batch-create.service';
+import { TransactionDebtSettlementService } from './transaction-debt-settlement.service';
 import { TransactionDepositSafetyService } from './transaction-deposit-safety.service';
 
 import type { ImportedBatchPreparationInterface } from '../interface/imported-batch-preparation.interface';
@@ -44,6 +45,7 @@ export class TransactionImportService extends Context.Service<TransactionImportS
         const refreshedImportedEntriesService = yield* RefreshedImportedEntriesService;
         const transactionBatchCreateService = yield* TransactionBatchCreateService;
         const transactionDepositSafetyService = yield* TransactionDepositSafetyService;
+        const transactionDebtSettlementService = yield* TransactionDebtSettlementService;
 
         const mapExternalIdAlias = (
             input: TransactionCreateInputInterface,
@@ -319,6 +321,12 @@ export class TransactionImportService extends Context.Service<TransactionImportS
                 updateImportedTransaction(input, existingTransaction, refreshModes[index])
             );
 
+            yield* transactionDebtSettlementService.resyncTransactions(
+                refreshParams
+                    .filter((_param, index) => refreshModes[index] !== ImportedTransactionRefreshModeEnum.KEEP_APP_VALUES)
+                    .map(({ existingTransaction }) => existingTransaction.id)
+            );
+
             refilledTransactions.push(
                 ...updatedTransactions.filter((_transaction, index) => refreshModes[index] === ImportedTransactionRefreshModeEnum.REFILL)
             );
@@ -395,7 +403,8 @@ export class TransactionImportService extends Context.Service<TransactionImportS
             ImportedBatchNormalizerService.layer,
             RefreshedImportedEntriesService.layer,
             TransactionBatchCreateService.layer,
-            TransactionDepositSafetyService.layer
+            TransactionDepositSafetyService.layer,
+            TransactionDebtSettlementService.layer
         ])
     );
 }

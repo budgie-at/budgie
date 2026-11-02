@@ -36,7 +36,8 @@ appId: ${APP_ID}
           id: 'AccountCard.E2E Monero Ledger'
       timeout: 10000
 - assertVisible:
-      id: 'AccountCard.Balance.E2E_Monero_Ledger.22_123456_XMR'
+      id: 'AccountCard.E2E Monero Ledger'
+      text: 'E2E Monero Ledger, 22.123456 XMR'
 
 - tapOn:
       id: 'CryptoGroup.Market.XMR'

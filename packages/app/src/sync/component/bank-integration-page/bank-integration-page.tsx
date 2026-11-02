@@ -1,10 +1,9 @@
-import { BankIntegrationEntityInterface, ExternalSourceEnum, UserIconNameEnum } from '@budgie/contracts';
-import { SYNC_PROVIDER_CAPABILITIES } from '@budgie/sync';
+import { BankIntegrationEntityInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
 import { router } from 'expo-router';
 import { View } from 'react-native';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined } from '@rnw-community/shared';
 
 import { Button } from '../../../@generic/component/button/button';
 import { CollapsibleChromePage } from '../../../@generic/component/collapsible-chrome-page/collapsible-chrome-page';
@@ -13,6 +12,7 @@ import { getBankIntegrationTitle } from '../../../account/utils/get-bank-integra
 import { BankIntegrationSelector } from '../../../app/(main)/bank-integration/bank-integration.selector';
 import { EXTERNAL_SOURCE } from '../../../rule/constant/external-source.constant';
 import { BankIntegrationContext } from '../../context/bank-integration.context';
+import { getBankIntegrationCapabilities } from '../../utils/get-bank-integration-capabilities.util';
 import { BankIntegrationAccountList } from '../bank-integration-account-list/bank-integration-account-list';
 import { BankIntegrationKeyCard } from '../bank-integration-key-card/bank-integration-key-card';
 import { BankIntegrationOverview } from '../bank-integration-overview/bank-integration-overview';
@@ -24,15 +24,7 @@ interface Props {
 export const BankIntegrationPage = ({ integration }: Props) => {
     const { t } = useLingui();
 
-    const providerCapabilities = SYNC_PROVIDER_CAPABILITIES[integration.provider];
-    const hasToken = isNotEmptyString(integration.token);
-    const supportsLiveSync = hasToken && providerCapabilities.supportsTokenAuth;
-    const capabilities = {
-        supportsLiveSync,
-        supportsFileImport: !hasToken && providerCapabilities.supportsFileImport,
-        supportsAccountDiscovery: supportsLiveSync && integration.provider === ExternalSourceEnum.MONOBANK,
-        supportsDeposit: providerCapabilities.supportsDeposit
-    };
+    const capabilities = getBankIntegrationCapabilities(integration);
 
     const handleImportFile = () => void router.push({ pathname: '/create-account/[type]', params: { type: integration.provider } });
 

@@ -1,4 +1,5 @@
-import { and, asc, eq, inArray, isNotNull, isNull, or } from 'drizzle-orm';
+import { and, asc, eq, exists, inArray, isNotNull, isNull, or } from 'drizzle-orm';
+import { QueryBuilder } from 'drizzle-orm/sqlite-core';
 import * as Context from 'effect/Context';
 import * as Effect from 'effect/Effect';
 import * as Layer from 'effect/Layer';
@@ -7,8 +8,15 @@ import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { transactionFilters } from '../../@generic/repository/base-transaction-filter.repository';
 import { Db } from '../../@generic/service/db.service';
+import { AccountEntityTable } from '../../account/table/account-entity.table';
+import { CategoryEntityTable } from '../../category/table/category-entity.table';
+import { DebtEventSourceEnum } from '../../debt-event/enum/debt-event-source.enum';
+import { DebtEventEntityTable } from '../../debt-event/table/debt-event-entity.table';
+import { TransactionEntityTable } from '../../transaction/table/transaction-entity.table';
+import { CategorySourceEnum } from '../enum/category-source.enum';
 import { TransactionEntryEntityTable } from '../table/transaction-entry-entity.table';
 
+import type { AccountDebtTypeEnum } from '../../account/enum/account-debt-type.enum';
 import type { TransactionEntryCreateEntityInterface } from '../entity/transaction-entry-create-entity.interface';
 import type { TransactionEntryUpdateInputInterface } from '../input/transaction-entry-update-input.interface';
 import type { SQL } from 'drizzle-orm';
@@ -17,6 +25,8 @@ export class TransactionEntryRepository extends Context.Service<TransactionEntry
     '@budgie/contracts/TransactionEntryRepository',
     {
         make: Effect.sync(() => {
+            const queryBuilder = new QueryBuilder();
+
             const deleteLiveEntries = (...conditions: SQL[]) =>
                 Db.query(db =>
                     db
@@ -183,6 +193,50 @@ export class TransactionEntryRepository extends Context.Service<TransactionEntry
                             )
                             .returning()
                     ).pipe(Effect.map(transactionEntries => transactionEntries.at(0))),
+                assignDebtPaymentCategory: (categoryId: number, debtType: AccountDebtTypeEnum) =>
+                    Db.query(db =>
+                        db
+                            .update(TransactionEntryEntityTable)
+                            .set({ categoryId, categorySource: CategorySourceEnum.DEBT_SETTLEMENT })
+                            .where(
+                                and(
+                                    inArray(
+                                        TransactionEntryEntityTable.id,
+                                        queryBuilder
+                                            .select({ id: DebtEventEntityTable.transactionEntryId })
+                                            .from(DebtEventEntityTable)
+                                            .innerJoin(AccountEntityTable, eq(AccountEntityTable.id, DebtEventEntityTable.debtAccountId))
+                                            .innerJoin(
+                                                TransactionEntityTable,
+                                                eq(TransactionEntityTable.id, DebtEventEntityTable.transactionId)
+                                            )
+                                            .where(
+                                                and(
+                                                    eq(DebtEventEntityTable.source, DebtEventSourceEnum.INCOME_ATTACHMENT),
+                                                    isNotNull(DebtEventEntityTable.transactionEntryId),
+                                                    isNull(DebtEventEntityTable.deletedAt),
+                                                    isNull(TransactionEntityTable.deletedAt),
+                                                    eq(AccountEntityTable.debtType, debtType)
+                                                )
+                                            )
+                                    ),
+                                    transactionFilters.buildCategorizableEntryCondition(),
+                                    exists(
+                                        queryBuilder
+                                            .select({ id: CategoryEntityTable.id })
+                                            .from(CategoryEntityTable)
+                                            .where(and(eq(CategoryEntityTable.id, categoryId), isNull(CategoryEntityTable.deletedAt)))
+                                    ),
+                                    or(
+                                        isNull(TransactionEntryEntityTable.categoryId),
+                                        inArray(TransactionEntryEntityTable.categorySource, [
+                                            CategorySourceEnum.MCC_DEFAULT,
+                                            CategorySourceEnum.AI
+                                        ])
+                                    )
+                                )
+                            )
+                    ),
                 deleteByTransactionId: (transactionId: number) =>
                     Db.query(db =>
                         db.delete(TransactionEntryEntityTable).where(eq(TransactionEntryEntityTable.transactionId, transactionId))

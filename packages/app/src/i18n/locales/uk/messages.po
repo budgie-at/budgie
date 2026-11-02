@@ -137,6 +137,10 @@ msgstr "{accountCount, plural, one {# рахунок} few {# рахунки} man
 msgid "{accountsCount, plural, one {# account} other {# accounts}}"
 msgstr "{accountsCount, plural, one {# рахунок} few {# рахунки} many {# рахунків} other {# рахунка}}"
 
+#: src/account/component/institution-row/institution-row.tsx
+msgid "{accountsCount, plural, one {# asset} other {# assets}}"
+msgstr "{accountsCount, plural, one {# актив} few {# активи} many {# активів} other {# активу}}"
+
 #: src/market-data/component/currency-market-stale-price/currency-market-stale-price.tsx
 msgid "{ageDays, plural, one {# day old} other {# days old}}"
 msgstr "{ageDays, plural, one {# день тому} few {# дні тому} many {# днів тому} other {# дня тому}}"
@@ -1062,6 +1066,10 @@ msgstr "Рахунки"
 msgid "Accounts · {accountCount}"
 msgstr "Рахунки · {accountCount}"
 
+#: src/account/component/institution-accounts/institution-accounts.tsx
+msgid "Accounts · {accountsCount}"
+msgstr "Рахунки · {accountsCount}"
+
 #: src/transaction/components/transaction-filters/transaction-filters.tsx
 msgid "Accounts ({selectedAccountsCount})"
 msgstr "Рахунки ({selectedAccountsCount})"
@@ -1516,6 +1524,10 @@ msgstr "Ви впевнені?"
 #: src/account/component/net-worth-composition/net-worth-composition.tsx
 msgid "Asset mix"
 msgstr "Структура активів"
+
+#: src/account/component/institution-accounts/institution-accounts.tsx
+msgid "Assets · {accountsCount}"
+msgstr "Активи · {accountsCount}"
 
 #: src/market-data/component/currency-market-value-row/currency-market-value-row.tsx
 msgid "At {rateLabel} per {instrumentCode}"
@@ -2370,6 +2382,10 @@ msgstr "Підключити Binance"
 msgid "Connect Monobank"
 msgstr "Підключити Монобанк"
 
+#: src/account/component/institution-settings-button/institution-settings-button.tsx
+msgid "Connection settings"
+msgstr "Налаштування підключення"
+
 #: ../ledger/src/transaction/service/transaction-transfer.service.ts
 msgid "Consolidated transactions cannot start a deposit"
 msgstr "Неможливо відкрити депозит із консолідованих транзакцій"
@@ -2391,7 +2407,7 @@ msgid "Contains"
 msgstr "Містить"
 
 #: src/onboarding/component/onboarding-accounts/onboarding-accounts.tsx
-#: src/onboarding/component/onboarding-sealed-moment/onboarding-sealed-moment.tsx
+#: src/onboarding/component/onboarding-sealed-actions/onboarding-sealed-actions.tsx
 #: src/sync/component/create-file-bank-account-footer/create-file-bank-account-footer.tsx
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Continue"
@@ -4381,6 +4397,10 @@ msgstr "Минулий місяць"
 msgid "last payment {formattedLast}"
 msgstr "останній платіж {formattedLast}"
 
+#: src/account/component/institution-connection-row/institution-connection-row.tsx
+msgid "Last successful sync · {lastSyncedTime}"
+msgstr "Остання успішна синхронізація · {lastSyncedTime}"
+
 #: src/@generic/constant/date-period.constant.ts
 msgid "Last Week"
 msgstr "Минулий тиждень"
@@ -6328,6 +6348,10 @@ msgstr "Поверніться до Budgie і виберіть нижче збе
 msgid "Returned"
 msgstr "Повернено"
 
+#: src/account/component/institution-connection-row/institution-connection-row.tsx
+msgid "Review connection"
+msgstr "Перевірити підключення"
+
 #: src/sync/component/analytics-sync-account-progress/analytics-sync-account-progress.tsx
 msgid "Review sync settings"
 msgstr "Переглянути налаштування синхронізації"
@@ -6505,7 +6529,7 @@ msgstr "Запечатати цим PIN-кодом"
 msgid "Sealed · {contents}"
 msgstr "Запечатано · {contents}"
 
-#: src/onboarding/component/onboarding-sealed-moment/onboarding-sealed-moment.tsx
+#: src/onboarding/component/onboarding-sealed-body/onboarding-sealed-body.tsx
 msgid "Sealed."
 msgstr "Запечатано."
 
@@ -6746,6 +6770,10 @@ msgstr "Швидкі команди"
 #: src/wallet-capture/component/apple-pay-capture-open-shortcuts-button/apple-pay-capture-open-shortcuts-button.tsx
 msgid "Shortcuts is not available on this device."
 msgstr "Shortcuts недоступний на цьому пристрої."
+
+#: src/account/component/institution-accounts/institution-accounts.tsx
+msgid "Show all {accountsCount} accounts"
+msgstr "Показати всі рахунки ({accountsCount})"
 
 #: src/app/transaction-amount-filter.tsx
 msgid "Show all amounts"
@@ -7031,11 +7059,11 @@ msgstr "Дані синхронізації виправлено"
 msgid "Sync data repairs"
 msgstr "Виправлення даних синхронізації"
 
+#: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/component/account-sync-toggle-row/account-sync-toggle-row.tsx
 msgid "Sync failed"
 msgstr "Синхронізація не вдалась"
 
-#: src/account/constant/account-sync-state-label.constant.ts
 #: src/sync/hook/use-bank-integration-account-row-state.hook.ts
 msgid "Sync Failed"
 msgstr "Синхронізація не вдалась"
@@ -7154,7 +7182,7 @@ msgstr "Торкніться, щоб змінити знак"
 msgid "Tap to clear"
 msgstr "Натисніть, щоб очистити"
 
-#: src/onboarding/component/onboarding-sealed-moment/onboarding-sealed-moment.tsx
+#: src/onboarding/component/onboarding-sealed-body/onboarding-sealed-body.tsx
 msgid "Tap to continue"
 msgstr "Торкніться, щоб продовжити"
 
@@ -7524,6 +7552,10 @@ msgstr "Відкласти в цьому періоді"
 #: src/widget/service/widget-snapshot-builder.service.ts
 msgid "Today"
 msgstr "Сьогодні"
+
+#: src/sync/hook/use-format-sync-time.hook.ts
+msgid "Today {time}"
+msgstr "Сьогодні {time}"
 
 #: src/sync/component/create-monobank-account/create-monobank-account.tsx
 msgid "Token already connected"
@@ -7945,6 +7977,10 @@ msgstr "Незабаром"
 #: src/budget/components/budget-safe-to-spend-summary/budget-safe-to-spend-summary.tsx
 msgid "Upcoming this period"
 msgstr "Очікується в цьому періоді"
+
+#: src/account/component/institution-connection-row/institution-connection-row.tsx
+msgid "Update access key"
+msgstr "Оновити ключ доступу"
 
 #: src/rule/components/rule-update-card/rule-update-card.tsx
 msgid "Update rule?"

@@ -202,12 +202,18 @@ appId: ${APP_ID}
       id: 'InstitutionRow.1'
 - extendedWaitUntil:
       visible:
-          id: 'BankIntegration.Page'
+          id: 'Institution.Page'
       timeout: 3000
 - scrollUntilVisible:
       element:
-          id: 'AccountCard.Balance.E2E_Consolidation_A.750'
+          id: 'Institution.ShowAllAccounts'
       direction: DOWN
+- tapOn:
+      id: 'Institution.ShowAllAccounts'
+- scrollUntilVisible:
+      element:
+          id: 'AccountCard.Balance.E2E_Consolidation_A.750'
+      direction: UP
 - assertVisible:
       id: 'AccountCard.Balance.E2E_Consolidation_A.750'
 - assertVisible:
