@@ -1,6 +1,6 @@
 import { InstrumentTypeEnum } from '@budgie/contracts';
 import { t } from '@lingui/core/macro';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { isPositiveNumber } from '@rnw-community/shared';
 
@@ -37,18 +37,20 @@ export const TransactionFeePill = ({ amount, currencySymbol, instrumentType, sho
         <HapticPressable
             accessibilityLabel={label}
             accessibilityRole="button"
-            className="min-h-[32px] max-w-full flex-row items-center rounded-full border-hairline border-surface-separator bg-transaction-detail-row px-xl dark:border-transparent active:opacity-70"
+            className="min-h-[44px] max-w-full shrink justify-center active:opacity-70"
             hitSlop={HIT_SLOP}
             onPress={onPress}
             testID={TransactionFeePillSelector.Pill}
         >
-            <Text
-                className={cn('shrink text-[13px] font-medium tabular-nums', labelClassName)}
-                maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
-                numberOfLines={1}
-            >
-                {label}
-            </Text>
+            <View className="min-h-[28px] max-w-full flex-row items-center rounded-full border-hairline border-surface-separator bg-transaction-detail-row px-xl py-[4px] dark:border-transparent">
+                <Text
+                    className={cn('shrink text-[13px] leading-[18px] font-medium tabular-nums', labelClassName)}
+                    maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
+                    numberOfLines={1}
+                >
+                    {label}
+                </Text>
+            </View>
         </HapticPressable>
     );
 };

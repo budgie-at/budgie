@@ -1,6 +1,6 @@
 import { TransactionEntryCreateInputInterface, UserIconNameEnum } from '@budgie/contracts';
 import { useLingui } from '@lingui/react/macro';
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import { Text, View, useWindowDimensions } from 'react-native';
 import Animated, { FadeIn, FadeOutDown, LinearTransition } from 'react-native-reanimated';
 
@@ -25,15 +25,19 @@ interface Props {
     readonly children?: ReactNode;
 }
 
-const AMOUNT_INPUT_WIDTH = 104;
+const ACCESSIBILITY_FONT_SCALE = 1.35;
 const CIRCLE_ICON_SIZE = 44;
 const CIRCLE_ICON_INNER_SIZE = 22;
 const amountInputStyle = { textAlign: 'right' as const, fontSize: 17, fontWeight: '600' as const, fontVariant: ['tabular-nums' as const] };
 
 export const SplitEntryRow = (props: Props) => {
     const { index, entry, currencySymbol, autoFocus, onAmountChange, onCategoryPress, children } = props;
-    const { width, fontScale } = useWindowDimensions();
-    const amountWidthStyle = { width: Math.min(AMOUNT_INPUT_WIDTH * fontScale, width - 104), minWidth: 88 };
+    const { fontScale } = useWindowDimensions();
+    const [isAmountFocused, setIsAmountFocused] = useState(false);
+    const categoryLayoutClassName = fontScale >= ACCESSIBILITY_FONT_SCALE ? 'w-full' : 'flex-1';
+
+    const handleAmountFocus = () => void setIsAmountFocused(true);
+    const handleAmountBlur = () => void setIsAmountFocused(false);
     const categoryId = entry.categoryId ?? 0;
 
     const { t } = useLingui();
@@ -50,7 +54,7 @@ export const SplitEntryRow = (props: Props) => {
             <View className="flex-row flex-wrap items-center gap-x-md gap-y-md px-xl py-xl">
                 <HapticPressable
                     onPress={onCategoryPress}
-                    className="flex-row items-center gap-x-md flex-1 min-w-[88px]"
+                    className={cn('flex-row items-center gap-x-md min-h-[44px] min-w-[88px]', categoryLayoutClassName)}
                     testID={SplitEntryRowSelector.Category(index)}
                 >
                     <CircleIcon
@@ -66,13 +70,19 @@ export const SplitEntryRow = (props: Props) => {
                     </Text>
                 </HapticPressable>
 
-                <View className="min-h-[44px] flex-row items-center gap-x-xs border-b border-surface-separator" style={amountWidthStyle}>
+                <View
+                    data-focused={isAmountFocused}
+                    className="ml-auto min-h-[44px] min-w-[104px] max-w-full shrink flex-row items-center justify-end gap-x-[4px] rounded-full px-[8px] data-[focused=true]:bg-surface-fill"
+                >
                     <Text className="text-primary text-[17px] font-semibold tabular-nums">{currencySymbol}</Text>
                     <AmountInput
                         value={entry.amount}
                         onChangeValue={onAmountChange}
-                        inputClassName="text-primary border-0 h-auto min-h-[44px] flex-1 px-0"
-                        placeholderTextColorClassName="accent-primary/40"
+                        inputClassName="text-primary border-0 h-auto min-h-[44px] shrink px-0"
+                        placeholderTextColorClassName="accent-secondary-foreground"
+                        onFocus={handleAmountFocus}
+                        onBlur={handleAmountBlur}
+                        hitSlop={22}
                         borderless
                         autoFocus={autoFocus}
                         selectTextOnFocus

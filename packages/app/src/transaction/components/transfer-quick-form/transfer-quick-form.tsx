@@ -4,7 +4,7 @@ import { useAtomValue } from '@effect/atom-react/Hooks';
 import { useLingui } from '@lingui/react/macro';
 import { Ref, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { isDefined, isPositiveNumber } from '@rnw-community/shared';
 
@@ -17,6 +17,7 @@ import { useQuickFormModals } from '../../hook/use-quick-form-modals.hook';
 import { useQuickFormValidation } from '../../hook/use-quick-form-validation.hook';
 import { useTransferAccounts } from '../../hook/use-transfer-accounts.hook';
 import { computeTransferDisplay } from '../../utils/compute-transfer-display.util';
+import { shouldShowTransferPillSeparator } from '../../utils/should-show-transfer-pill-separator.util';
 import { ConversionRow } from '../conversion-row/conversion-row';
 import { CurrencyModePill } from '../currency-mode-pill/currency-mode-pill';
 import { QuickFormLayout } from '../quick-form-layout/quick-form-layout';
@@ -172,6 +173,7 @@ export const TransferQuickForm = (props: Props) => {
 
     useImperativeHandle(ref, () => ({ openFee: handleFeePress }));
     const currencyPillLabel = isEditingDestination ? t`Receiving · ${toCode}` : fromCode;
+    const showPillSeparator = shouldShowTransferPillSeparator(display.amountCode, isNewTransaction, feeAmount);
     const confirmLabel = isEditingDestination ? t`Done` : t`Save`;
     const conversionPress = conversion.isCrossCurrency ? handleConversionRowPress : void 0;
 
@@ -241,8 +243,11 @@ export const TransferQuickForm = (props: Props) => {
                                 onPress={conversionPress}
                             />
                         ) : null}
-                    </QuickFormSecondaryLine>
-                    <QuickFormValidationSlot>
+                        {showPillSeparator ? (
+                            <Text className="self-center text-secondary-foreground" accessible={false}>
+                                ·
+                            </Text>
+                        ) : null}
                         <TransactionFeePill
                             amount={feeAmount}
                             currencySymbol={feeCurrencySymbol}
@@ -250,7 +255,8 @@ export const TransferQuickForm = (props: Props) => {
                             showEmptyState={isNewTransaction}
                             onPress={handleFeePress}
                         />
-                    </QuickFormValidationSlot>
+                    </QuickFormSecondaryLine>
+                    <QuickFormValidationSlot />
                 </TransactionAmountDisplay>
             }
             footer={

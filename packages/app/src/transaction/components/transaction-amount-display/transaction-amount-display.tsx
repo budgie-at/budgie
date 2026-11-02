@@ -35,8 +35,8 @@ const textVariants = cva('text-center font-semibold tabular-nums', {
 
 const AMOUNT_MIN_HEIGHT = 64;
 const BOUNCE_SCALE = 1.04;
-const BOUNCE_SPRING = { damping: 12, mass: 0.8, stiffness: 200 };
-const RETURN_SPRING = { damping: 15, mass: 1, stiffness: 150 };
+const BOUNCE_SPRING = { damping: 12, mass: 0.8, stiffness: 200, reduceMotion: ReduceMotion.System };
+const RETURN_SPRING = { damping: 15, mass: 1, stiffness: 150, reduceMotion: ReduceMotion.System };
 
 export const TransactionAmountDisplay = ({ ref, amount, currencySymbol, variant, topContent, onPress, testID, children }: Props) => {
     const amountContainerStyle = { minHeight: AMOUNT_MIN_HEIGHT * useWindowDimensions().fontScale };

@@ -34,7 +34,7 @@ export const QuickFormValidationSlot = ({ children }: Props) => {
 
     return (
         <View className="items-center gap-xxs self-stretch">
-            <View className="min-h-[32px] items-center justify-center">{children}</View>
+            <View className="min-h-[44px] items-center justify-center">{children}</View>
             <View className="items-center justify-center self-stretch px-xl" style={captionStyle} accessibilityLiveRegion="polite">
                 {isNotEmptyString(message) ? (
                     <Text

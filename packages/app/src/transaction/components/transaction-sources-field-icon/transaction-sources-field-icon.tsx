@@ -18,7 +18,6 @@ export const TransactionSourcesFieldIcon = ({ onPress }: Props) => {
             icon={UserIconNameEnum.GitMerge}
             label={t`Sources`}
             onPress={onPress}
-            animationDelay={155}
             testID={TransactionFieldIconsSelector.Sources}
         />
     );

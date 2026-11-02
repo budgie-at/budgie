@@ -10,7 +10,8 @@ export default function SplitEntriesModal() {
     const [, resolveSplitEntries, dismissSplitEntries] = useSplitEntriesModal();
     const currentParams = useSplitEntriesModalParams();
     const contentStyle = useResolveClassNames('bg-sheet-surface');
-    const screenOptions = useModalRouteState(currentParams, dismissSplitEntries);
+    const modalRouteOptions = useModalRouteState(currentParams, dismissSplitEntries);
+    const screenOptions = { ...modalRouteOptions, contentStyle };
 
     if (!currentParams) {
         return null;
@@ -18,7 +19,7 @@ export default function SplitEntriesModal() {
 
     return (
         <View className="bg-sheet-surface" collapsable={false}>
-            <Stack.Screen options={{ ...screenOptions, contentStyle }} />
+            <Stack.Screen options={screenOptions} />
             <SplitEntriesModalContent
                 initialEntries={currentParams.entries}
                 variant={currentParams.variant}

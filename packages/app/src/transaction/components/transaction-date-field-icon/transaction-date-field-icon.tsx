@@ -25,13 +25,5 @@ export const TransactionDateFieldIcon = ({ onPress }: Props) => {
         formatDate: intl.formatDate
     });
 
-    return (
-        <TransactionFieldIcon
-            icon={UserIconNameEnum.Calendar}
-            label={t`Date`}
-            value={formattedDate}
-            onPress={onPress}
-            animationDelay={110}
-        />
-    );
+    return <TransactionFieldIcon icon={UserIconNameEnum.Calendar} label={t`Date`} value={formattedDate} onPress={onPress} />;
 };

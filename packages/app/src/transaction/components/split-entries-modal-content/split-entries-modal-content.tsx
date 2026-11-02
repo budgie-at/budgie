@@ -47,7 +47,6 @@ import { SplitEntriesModalContentSelector } from './split-entries-modal-content.
 
 const SHEET_MAX_HEIGHT_RATIO = 0.7;
 const SHEET_CHROME_HEIGHT = 160;
-const FOOTER_STYLE = { marginTop: 'auto' } as const;
 const keyboardOffset = { closed: 0, opened: 8 };
 const CONTENT_CONTAINER_STYLE = { paddingHorizontal: 16, paddingBottom: 12 };
 
@@ -194,7 +193,7 @@ export const SplitEntriesModalContent = (props: Props) => {
     const remainderClassName = isOverBudget ? 'text-destructive-strong' : 'text-secondary-foreground';
 
     return (
-        <View className="min-h-[280px] bg-sheet-surface">
+        <View className="bg-sheet-surface">
             <SheetTitle title={t`Split`} />
 
             <ScrollView contentContainerStyle={CONTENT_CONTAINER_STYLE} keyboardShouldPersistTaps="handled" style={scrollStyle}>
@@ -220,8 +219,8 @@ export const SplitEntriesModalContent = (props: Props) => {
                 ) : null}
             </ScrollView>
 
-            <KeyboardStickyView offset={keyboardOffset} style={FOOTER_STYLE}>
-                <View className="bg-sheet-surface px-xl pt-3xl pb-safe-or-[16px]">
+            <KeyboardStickyView offset={keyboardOffset}>
+                <View className="bg-sheet-surface px-xl pt-3xl pb-safe-or-[16px] ios:pb-0">
                     <PillButton
                         label={t`Done`}
                         isDisabled={!canConfirm}

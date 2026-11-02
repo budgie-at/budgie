@@ -9,6 +9,7 @@ import { useQuickFormAmount } from './use-quick-form-amount.hook';
 import { useQuickFormFee } from './use-quick-form-fee.hook';
 import { useSimpleQuickFormState } from './use-simple-quick-form-state.hook';
 
+import type { ColorPaletteVariant } from '../../@generic/type/color-palette-variant.type';
 import type { SimpleQuickFormRefInterface } from '../interface/simple-quick-form-ref.interface';
 
 export const useSimpleQuickForm = (transactionType: TransactionTypeEnum, ref?: Ref<SimpleQuickFormRefInterface>) => {
@@ -28,7 +29,7 @@ export const useSimpleQuickForm = (transactionType: TransactionTypeEnum, ref?: R
         setFromNumeric
     });
     const amountDisplayRef = useRef<TransactionAmountDisplayRef>(null);
-    const amountVariant = !isExpense && isPositiveNumber(numericValue) ? 'positive' : 'primary';
+    const amountVariant: ColorPaletteVariant = !isExpense && isPositiveNumber(numericValue) ? 'positive' : 'primary';
 
     useImperativeHandle(ref, () => ({ openFee: handleFeePress }));
 

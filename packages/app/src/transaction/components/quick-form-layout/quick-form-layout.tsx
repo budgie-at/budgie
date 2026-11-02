@@ -26,8 +26,9 @@ export const QuickFormLayout = ({ hero, children, footer }: Props) => {
     } = useQuickFormLayout();
     const upperContent = (
         <View className="grow" style={contentStyle}>
-            <View onLayout={handleHeroLayout}>{hero}</View>
-            <View className="flex-1" />
+            <View className="grow justify-center py-[16px]">
+                <View onLayout={handleHeroLayout}>{hero}</View>
+            </View>
             <View onLayout={handleFieldsLayout}>{children}</View>
         </View>
     );

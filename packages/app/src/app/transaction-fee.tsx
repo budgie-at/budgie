@@ -10,7 +10,8 @@ export default function TransactionFeeModal() {
     const [, resolveTransactionFee, dismissTransactionFee] = useTransactionFeeModal();
     const currentParams = useTransactionFeeModalParams();
     const contentStyle = useResolveClassNames('bg-sheet-surface');
-    const screenOptions = useModalRouteState(currentParams, dismissTransactionFee);
+    const modalRouteOptions = useModalRouteState(currentParams, dismissTransactionFee);
+    const screenOptions = { ...modalRouteOptions, contentStyle };
 
     if (!currentParams) {
         return null;
@@ -18,7 +19,7 @@ export default function TransactionFeeModal() {
 
     return (
         <View className="bg-sheet-surface" collapsable={false}>
-            <Stack.Screen options={{ ...screenOptions, contentStyle }} />
+            <Stack.Screen options={screenOptions} />
             <TransactionFeeModalContent
                 accountId={currentParams.accountId}
                 currencySymbol={currentParams.currencySymbol}

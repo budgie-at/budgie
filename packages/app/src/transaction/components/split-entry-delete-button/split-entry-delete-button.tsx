@@ -26,7 +26,8 @@ export const SplitEntryDeleteButton = ({ index, categoryId, onPress }: Props) =>
     return (
         <HapticPressable
             onPress={onPress}
-            className="min-h-[44px] min-w-[44px] items-center justify-center"
+            className="h-[44px] w-[44px] shrink-0 items-center justify-center"
+            hitSlop={0}
             accessibilityRole="button"
             accessibilityLabel={accessibilityLabel}
             testID={SplitEntryRowSelector.Delete(index)}

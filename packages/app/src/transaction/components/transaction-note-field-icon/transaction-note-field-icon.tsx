@@ -26,7 +26,6 @@ export const TransactionNoteFieldIcon = ({ onPress }: Props) => {
             label={t`Note`}
             value={noteValue}
             onPress={onPress}
-            animationDelay={140}
             testID={SimpleQuickFormSelector.CommentInput}
         />
     );

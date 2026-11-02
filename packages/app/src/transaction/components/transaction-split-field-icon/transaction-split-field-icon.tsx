@@ -34,7 +34,6 @@ export const TransactionSplitFieldIcon = ({ splitEntryCount, isAmountPositive, o
             label={t`Split`}
             value={splitValue}
             onPress={onPress}
-            animationDelay={170}
             disabledHint={disabledHint}
             testID={TransactionFieldIconsSelector.Split}
         />

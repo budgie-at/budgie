@@ -1,7 +1,7 @@
 import { UserIconNameEnum } from '@budgie/contracts';
 import { useEffect } from 'react';
-import { Text } from 'react-native';
-import Animated, { FadeIn, FadeOut, LinearTransition, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import { Text, View } from 'react-native';
+import Animated, { FadeIn, FadeOut, ReduceMotion, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
 import { isDefined } from '@rnw-community/shared';
 
@@ -17,13 +17,12 @@ interface Props {
 }
 
 const ANIMATION_DURATION = 200;
-const ENTERING = FadeIn.duration(ANIMATION_DURATION);
-const EXITING = FadeOut.duration(ANIMATION_DURATION);
-const LAYOUT = LinearTransition.duration(ANIMATION_DURATION);
+const ENTERING = FadeIn.duration(ANIMATION_DURATION).reduceMotion(ReduceMotion.System);
+const EXITING = FadeOut.duration(ANIMATION_DURATION).reduceMotion(ReduceMotion.System);
 const ICON_SIZE = 12;
 const HIT_SLOP = 10;
 const ROTATION_DEGREES = 180;
-const SPRING_CONFIG = { damping: 12, stiffness: 200 };
+const SPRING_CONFIG = { damping: 12, stiffness: 200, reduceMotion: ReduceMotion.System };
 
 export const CurrencyModePill = ({ label, isFlipped, accessibilityLabel, onPress }: Props) => {
     const rotation = useSharedValue(0);
@@ -39,26 +38,30 @@ export const CurrencyModePill = ({ label, isFlipped, accessibilityLabel, onPress
     }));
 
     return (
-        <Animated.View entering={ENTERING} exiting={EXITING} layout={LAYOUT}>
+        <Animated.View entering={ENTERING} exiting={EXITING} className="min-w-0 shrink">
             <HapticPressable
                 accessibilityLabel={accessibilityLabel ?? label}
                 accessibilityRole={accessibilityRole}
-                className="flex-row items-center gap-x-xs rounded-full border-hairline border-surface-separator bg-transaction-detail-row px-md py-xxs dark:border-transparent"
+                className="min-h-[44px] max-w-full justify-center"
                 disabled={!isDefined(onPress)}
                 hitSlop={HIT_SLOP}
                 onPress={onPress}
             >
-                {isDefined(onPress) ? (
-                    <Animated.View style={iconStyle}>
-                        <Icon icon={UserIconNameEnum.ArrowUpDown} className="text-secondary-foreground" size={ICON_SIZE} />
-                    </Animated.View>
-                ) : null}
-                <Text
-                    className="text-[13px] leading-[18px] font-semibold text-secondary-foreground"
-                    maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
-                >
-                    {label}
-                </Text>
+                <View className="min-h-[28px] max-w-full flex-row items-center gap-x-xs rounded-full border-hairline border-surface-separator bg-transaction-detail-row px-md py-[4px] dark:border-transparent">
+                    {isDefined(onPress) ? (
+                        <Animated.View style={iconStyle}>
+                            <Icon icon={UserIconNameEnum.ArrowUpDown} className="text-secondary-foreground" size={ICON_SIZE} />
+                        </Animated.View>
+                    ) : null}
+                    <Text
+                        className="shrink text-[13px] leading-[18px] font-semibold text-secondary-foreground"
+                        maxFontSizeMultiplier={MAX_FONT_SIZE_MULTIPLIER}
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                    >
+                        {label}
+                    </Text>
+                </View>
             </HapticPressable>
         </Animated.View>
     );

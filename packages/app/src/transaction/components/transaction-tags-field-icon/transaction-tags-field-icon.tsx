@@ -2,7 +2,7 @@ import { TransactionCreateInputInterface, UserIconNameEnum } from '@budgie/contr
 import { useLingui } from '@lingui/react/macro';
 import { useFormContext, useWatch } from 'react-hook-form';
 
-import { isDefined } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray } from '@rnw-community/shared';
 
 import { useTagsSelectorModal } from '../../../tag/context/tags-selector-modal.context';
 import { useGetTagByIdsQuery } from '../../../tag/query/use-get-tag-by-ids.query';
@@ -26,14 +26,15 @@ export const TransactionTagsFieldIcon = () => {
     };
 
     const tagsValue = getTagsDisplayValue(tags);
+    const tagsAccessibilityValue = isNotEmptyArray(tags) ? tags.map(tag => tag.title).join(', ') : void 0;
 
     return (
         <TransactionFieldIcon
             icon={UserIconNameEnum.Tag}
             label={t`Tags`}
             value={tagsValue}
+            accessibilityValue={tagsAccessibilityValue}
             onPress={handlePress}
-            animationDelay={80}
             testID={SimpleQuickFormSelector.TagsSelector}
         />
     );
