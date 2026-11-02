@@ -24,9 +24,27 @@ describe('import match description', () => {
     it('describes column-name matches without claiming sample inference', () => {
         const translate = vi.fn<(descriptor: MacroMessageDescriptor | TemplateStringsArray) => string>().mockReturnValue('translated');
 
-        getImportMatchDescription(matchImportColumns(['Account', 'Date', 'Amount']), {}, translate);
+        getImportMatchDescription(
+            matchImportColumns(['Account', 'Date', 'Amount'], { Date: ['2026-11-02'], Amount: ['12.50'] }, false),
+            {},
+            translate
+        );
 
         expect(translate).toHaveBeenLastCalledWith({ message: 'Matched by column name.' });
+    });
+
+    it('does not claim a name match for an unsafe amount column', () => {
+        const translate = vi.fn<(descriptor: MacroMessageDescriptor | TemplateStringsArray) => string>();
+
+        expect(getImportMatchDescription(matchImportColumns(['Betrag'], { Betrag: ['1.234,56'] }, false), {}, translate)).toBe('');
+        expect(translate).not.toHaveBeenCalled();
+    });
+
+    it('keeps sample inference separate from validated name matches', () => {
+        expect(matchImportColumns(['Amount', 'When'], { Amount: ['12.50'], When: ['2026-11-02'] }, false)).toMatchObject({
+            toAmount: 'Amount',
+            operatedAt: ''
+        });
     });
 
     it('describes mixed name and sample matches', () => {

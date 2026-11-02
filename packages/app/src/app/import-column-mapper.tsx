@@ -60,7 +60,7 @@ export default function ImportColumnMapperModal() {
                             key={header}
                             title={header}
                             titleNumberOfLines={2}
-                            subtitle={samples[header]}
+                            subtitle={samples[header]?.[0]}
                             isSelected={header === currentValue}
                             onPress={handleSelect(header)}
                             testID={ImportColumnMapperModalSelector.Header(header)}

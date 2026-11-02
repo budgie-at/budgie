@@ -77,7 +77,7 @@ export default function ImportScreen() {
 
     const headersSet = new Set(headers);
     const detectedPreset = detectImportPreset(headers) ?? void 0;
-    const matchedByName = matchImportColumns(headers);
+    const matchedByName = matchImportColumns(headers, samples, false);
     const matchedColumns = matchImportColumns(headers, samples);
     const sampleMatchedColumns = Object.fromEntries(
         IMPORT_COLUMN_FIELDS.filter(

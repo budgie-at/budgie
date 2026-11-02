@@ -28,21 +28,20 @@ export const countCsvRows = (csvText: string) =>
     });
 
 export const parseCsvSample = (csvText: string) =>
-    Effect.callback<Record<string, string>, Error>(resume => {
+    Effect.callback<Record<string, readonly string[]>, Error>(resume => {
         Papa.parse<Record<string, string>>(csvText, {
             header: true,
             preview: 20,
             skipEmptyLines: true,
             complete: ({ data, meta }: ParseResult<Record<string, string>>) => {
-                const samples: Record<string, string> = {};
+                const samples: Record<string, readonly string[]> = {};
 
                 for (const header of meta.fields ?? []) {
-                    samples[header] =
-                        data
-                            .map(row => row[header])
-                            .filter(isNotEmptyString)
-                            .map(value => value.trim())
-                            .find(isNotEmptyString) ?? '';
+                    samples[header] = data
+                        .map(row => row[header])
+                        .filter(isNotEmptyString)
+                        .map(value => value.trim())
+                        .filter(isNotEmptyString);
                 }
 
                 resume(Effect.succeed(samples));

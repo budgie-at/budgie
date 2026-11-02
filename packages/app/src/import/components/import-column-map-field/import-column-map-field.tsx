@@ -17,7 +17,7 @@ interface Props {
     readonly control: Control<ImportColumnMapFormValues>;
     readonly name: keyof ImportColumnMapFormValues;
     readonly label: string;
-    readonly samples: Record<string, string>;
+    readonly samples: Record<string, readonly string[]>;
     readonly headers: string[];
     readonly selectedHeaders: string[];
     readonly isRequired?: boolean;
@@ -42,7 +42,7 @@ export const ImportColumnMapField = ({ control, name, label, headers, selectedHe
     const emptyValue = isRequired ? t`Choose` : t`None`;
     const displayValue = isNotEmptyString(value) ? value : emptyValue;
     const showColumnName = !isNotEmptyString(value) || isImportColumnNameInformative(value, label);
-    const sampleSubtitle = isNotEmptyString(value) ? samples[value] : null;
+    const sampleSubtitle = isNotEmptyString(value) ? samples[value]?.[0] : null;
     const subtitle = isDefined(error) ? <Text className="text-destructive-foreground text-[13px]">{error.message}</Text> : sampleSubtitle;
 
     const baseClassName = 'shrink text-secondary-foreground text-[17px]';

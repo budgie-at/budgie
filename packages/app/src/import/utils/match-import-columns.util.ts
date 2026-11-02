@@ -1,7 +1,7 @@
 import { CurrencyEnum, LanguageEnum } from '@budgie/contracts';
 import { isValid, parse } from 'date-fns';
 
-import { isDefined, isNotEmptyString } from '@rnw-community/shared';
+import { isDefined, isNotEmptyArray, isNotEmptyString } from '@rnw-community/shared';
 
 import type { ImportColumnMapFormValues } from '@budgie/import-export';
 
@@ -73,27 +73,34 @@ const COLUMN_KEYWORDS: Record<LanguageEnum, Record<keyof ImportColumnMapFormValu
     }
 };
 
-const isImportSampleMatch = (field: keyof ImportColumnMapFormValues, sample: string): boolean => {
-    const value = sample.trim();
-
-    if (field === 'toCurrency') {
-        return Object.values(CurrencyEnum).some((currency: string) => currency === value);
+const isImportSampleMatch = (field: keyof ImportColumnMapFormValues, samples: readonly string[]): boolean => {
+    if (!isNotEmptyArray(samples)) {
+        return false;
     }
 
-    if (field === 'toAmount') {
-        return /^[+-]?\d+(\.\d+)?$/u.test(value);
-    }
+    return samples.every(sample => {
+        const value = sample.trim();
 
-    if (field === 'operatedAt') {
-        return isValid(parse(value, 'yyyy-MM-dd', new Date())) || isValid(parse(value, String.raw`MM/dd/yyyy HH:mm:ss`, new Date()));
-    }
+        if (field === 'toCurrency') {
+            return Object.values(CurrencyEnum).some((currency: string) => currency === value);
+        }
 
-    return false;
+        if (field === 'toAmount' || field === 'fromAmount') {
+            return /^[+-]?\d+(\.\d+)?$/u.test(value);
+        }
+
+        if (field === 'operatedAt') {
+            return isValid(parse(value, 'yyyy-MM-dd', new Date())) || isValid(parse(value, String.raw`MM/dd/yyyy HH:mm:ss`, new Date()));
+        }
+
+        return false;
+    });
 };
 
 export const matchImportColumns = (
     headers: readonly string[],
-    samples: Readonly<Record<string, string>> = {}
+    samples: Readonly<Record<string, readonly string[]>> = {},
+    inferFromSamples = true
 ): ImportColumnMapFormValues => {
     const columnMap: ImportColumnMapFormValues = {
         toAccount: '',
@@ -127,6 +134,8 @@ export const matchImportColumns = (
         const header = headers.find(
             candidate =>
                 !usedHeaders.has(candidate) &&
+                (!(field === 'toAmount' || field === 'fromAmount' || field === 'operatedAt') ||
+                    isImportSampleMatch(field, samples[candidate] ?? [])) &&
                 keywords.some(
                     keyword =>
                         candidate.toLowerCase().replaceAll(/[^\p{L}\p{N}]/gu, '') ===
@@ -140,8 +149,12 @@ export const matchImportColumns = (
         }
     }
 
+    if (!inferFromSamples) {
+        return columnMap;
+    }
+
     for (const field of ['operatedAt', 'toAmount', 'toCurrency'] as const) {
-        const header = headers.find(candidate => !usedHeaders.has(candidate) && isImportSampleMatch(field, samples[candidate] ?? ''));
+        const header = headers.find(candidate => !usedHeaders.has(candidate) && isImportSampleMatch(field, samples[candidate] ?? []));
 
         if (!isNotEmptyString(columnMap[field]) && isDefined(header)) {
             columnMap[field] = header;
