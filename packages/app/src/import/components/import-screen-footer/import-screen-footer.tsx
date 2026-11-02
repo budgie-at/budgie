@@ -35,7 +35,7 @@ export const ImportScreenFooter = (props: Props) => {
         <ScreenChromeFooter style={style} edgeFadeProps={edgeFadeProps}>
             <View className="bg-surface border-t-hairline border-surface-separator gap-y-[8px] px-5xl py-lg">
                 {isPositiveNumber(missingRequiredCount) ? (
-                    <Text className="text-secondary-foreground text-[13px] leading-[18px]">{blockerDescription}</Text>
+                    <Text className="text-secondary-foreground px-3xl text-[13px] leading-[18px]">{blockerDescription}</Text>
                 ) : null}
                 <Button
                     content={buttonContent}

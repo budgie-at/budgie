@@ -170,7 +170,6 @@ export default function ImportScreen() {
                         <ImportScreenScroll>
                             <ImportPresetPicker
                                 key={fileUri}
-                                rowCount={rowCount}
                                 detectedPreset={detectedPreset}
                                 selectedPreset={selectedPreset}
                                 onPresetSelect={handlePresetSelect}

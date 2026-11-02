@@ -30,10 +30,7 @@ export default function SyncRepairsPage() {
     const sources = preview?.sources ?? [];
     const shouldShowEmptyState = !isLoading && !hasError && !hasDuplicates;
     const shouldShowFound = !hasError && (isLoading || hasDuplicates);
-    const footer =
-        isDefined(repairedTransactionCount) && shouldShowEmptyState
-            ? t`Nothing left to repair.`
-            : t`Budgie removes repeated bank imports and fixes transfers that landed on inactive accounts. Manual transactions are never changed.`;
+    const footer = t`Budgie removes repeated bank imports and fixes transfers that landed on inactive accounts. Manual transactions are never changed.`;
     const isActionLoading = isRepairing || isLoading;
 
     return (

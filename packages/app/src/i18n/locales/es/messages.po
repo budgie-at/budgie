@@ -689,10 +689,6 @@ msgstr "{repairedTransactionCount, plural, one {# duplicado eliminado} other {# 
 msgid "{rowCount, plural, one {# payment} other {# payments}}"
 msgstr "{rowCount, plural, one {# pago} other {# pagos}}"
 
-#: src/import/components/import-preset-picker/import-preset-picker.tsx
-msgid "{rowCount, plural, one {# row found.} other {# rows found.}}"
-msgstr "{rowCount, plural, one {# fila encontrada.} other {# filas encontradas.}}"
-
 #: src/categorize-inbox/components/categorize-inbox-undo-bar/categorize-inbox-undo-bar.tsx
 msgid "{rowCount, plural, one {# transaction} other {# transactions}}"
 msgstr "{rowCount, plural, one {# transacción} other {# transacciones}}"
@@ -5295,10 +5291,6 @@ msgstr "Nota"
 #: src/sync/component/sync-history-depth-step/sync-history-depth-step.tsx
 msgid "Nothing from the past is imported"
 msgstr "No se importa nada del pasado"
-
-#: src/app/(tabs)/settings/sync-repairs.tsx
-msgid "Nothing left to repair."
-msgstr "No queda nada por reparar."
 
 #: src/settings/components/budget-push-toggle/budget-push-toggle.tsx
 msgid "Notify me near a limit"
